@@ -1,0 +1,68 @@
+/*
+ *  PolySceneMesh.h
+ *  TAU
+ *
+ *  Created by Ivan Safrin on 3/18/08.
+ *  Copyright 2008 __MyCompanyName__. All rights reserved.
+ *
+ */
+
+// @package Scene
+ 
+#pragma once
+#include "PolyGlobals.h"
+#include "PolyCoreServices.h"
+#include "PolySceneEntity.h"
+#include "PolyMesh.h"
+#include "PolySkeleton.h"
+#include "PolyMaterial.h"
+#include "PolyImage.h"
+#include <string>
+
+using namespace std;
+
+namespace Polycode {
+
+	class Texture;
+
+	class _PolyExport SceneMesh : public SceneEntity {
+		public:
+			SceneMesh(string fileName);
+			SceneMesh(int meshType);
+			SceneMesh(Mesh *mesh);
+			virtual ~SceneMesh();
+			
+			void Render();
+			
+			ShaderBinding *getLocalShaderOptions();
+			
+			Mesh *getMesh();
+			Texture *getTexture();
+			Material *getMaterial();
+			void loadTexture(string fileName);
+			void loadSkeleton(string fileName);
+			void setTexture(Texture *texture);
+			void setMaterial(Material *material);
+			void setMaterial(string materialName);
+		
+			void setSkeleton(Skeleton *skeleton);
+			Skeleton *getSkeleton();
+		
+			void renderMeshLocally();
+			void cacheToVertexBuffer(bool cache);
+	
+			// for static lightmaps
+			unsigned int lightmapIndex;
+			
+			bool showVertexNormals;
+		
+		protected:
+		
+			bool useVertexBuffer;
+			Mesh *mesh;
+			Texture *texture;
+			Material *material;
+			Skeleton *skeleton;
+			ShaderBinding *localShaderOptions;
+	};
+}

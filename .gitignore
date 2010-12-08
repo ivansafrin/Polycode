@@ -1,0 +1,10 @@
+*.dll
+*.exe
+*.o
+*.lo
+*.a
+*.la
+*.dylib
+*.so
+
+Core/Dependencies

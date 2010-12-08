@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<substanceRuntime>
+	<entryPoint>/Source/Classes.lua</entryPoint>
+	<backgroundColor red="0" green="0" blue="0"></backgroundColor>
+	<defaultWidth>640</defaultWidth>
+	<defaultHeight>480</defaultHeight>
+	<frameRate>60</frameRate>
+	<antiAliasingLevel>0</antiAliasingLevel>
+	<fullScreen>false</fullScreen>
+</substanceRuntime>

@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<PolyConfig>
+	<uiDefaultFontName>sans</uiDefaultFontName>
+	<uiTextInputFontName>sans</uiTextInputFontName>
+	<uiTextInputFontNameMultiLine>mono</uiTextInputFontNameMultiLine>
+	<uiDefaultFontSize>11</uiDefaultFontSize>
+	<uiTextInputFontSize>11</uiTextInputFontSize>
+	<uiTreeArrowIconImage>arrowIcon.png</uiTreeArrowIconImage>
+	<uiTreeCellHeight>20</uiTreeCellHeight>
+	<uiTreeCellPadding>4</uiTreeCellPadding>
+	
+	<uiTreeCellSkin>treeCellBg.png</uiTreeCellSkin>
+	<uiTreeCellSkinPadding>0</uiTreeCellSkinPadding>
+	<uiTreeCellSkinT>3</uiTreeCellSkinT>
+	<uiTreeCellSkinR>3</uiTreeCellSkinR>
+	<uiTreeCellSkinB>3</uiTreeCellSkinB>
+	<uiTreeCellSkinL>3</uiTreeCellSkinL>
+	
+	<uiTreeCellSelectorSkin>selector.png</uiTreeCellSelectorSkin>
+	<uiTreeCellSelectorSkinPadding>4</uiTreeCellSelectorSkinPadding>
+	<uiTreeCellSelectorSkinT>4</uiTreeCellSelectorSkinT>
+	<uiTreeCellSelectorSkinR>0</uiTreeCellSelectorSkinR>
+	<uiTreeCellSelectorSkinB>4</uiTreeCellSelectorSkinB>
+	<uiTreeCellSelectorSkinL>0</uiTreeCellSelectorSkinL>
+	
+	<uiTreeContainerSkin>treeBg.png</uiTreeContainerSkin>
+	<uiTreeContainerSkinPadding>2</uiTreeContainerSkinPadding>
+	<uiTreeContainerSkinT>2</uiTreeContainerSkinT>
+	<uiTreeContainerSkinR>2</uiTreeContainerSkinR>
+	<uiTreeContainerSkinB>2</uiTreeContainerSkinB>
+	<uiTreeContainerSkinL>2</uiTreeContainerSkinL>
+	
+	<uiScrollDefaultSize>19</uiScrollDefaultSize>
+	
+	<uiScrollPanePadding>0</uiScrollPanePadding>
+
+
+	<uiButtonSkin>button.png</uiButtonSkin>
+	<uiButtonFocusedSkin>buttonFocused.png</uiButtonFocusedSkin>
+	<uiButtonFontSize>11</uiButtonFontSize>	
+	<uiButtonSkinT>4</uiButtonSkinT>
+	<uiButtonSkinR>4</uiButtonSkinR>
+	<uiButtonSkinB>4</uiButtonSkinB>
+	<uiButtonSkinL>4</uiButtonSkinL>
+
+
+	<uiWindowSkin>windowBg.png</uiWindowSkin>
+	<uiWindowSkinT>29</uiWindowSkinT>
+	<uiWindowSkinR>3</uiWindowSkinR>
+	<uiWindowSkinB>3</uiWindowSkinB>
+	<uiWindowSkinL>3</uiWindowSkinL>
+	<uiWindowSkinPadding>10</uiWindowSkinPadding>
+		
+	<uiWindowTitleFont>sans</uiWindowTitleFont>
+	<uiWindowTitleFontSize>12</uiWindowTitleFontSize>
+	<uiWindowTitleX>5</uiWindowTitleX>	
+	<uiWindowTitleY>7</uiWindowTitleY>		
+	<uiWindowCloseIcon>closeIcon.png</uiWindowCloseIcon>
+	<uiCloseIconX>6</uiCloseIconX>	
+	<uiCloseIconY>7</uiCloseIconY>		
+
+	
+	<uiScrollBgSkin>scrollBg.png</uiScrollBgSkin>
+	<uiScrollBgSkinPadding>2</uiScrollBgSkinPadding>
+	<uiScrollBgSkinT>2</uiScrollBgSkinT>
+	<uiScrollBgSkinR>2</uiScrollBgSkinR>
+	<uiScrollBgSkinB>2</uiScrollBgSkinB>
+	<uiScrollBgSkinL>2</uiScrollBgSkinL>
+	
+	<uiScrollHandleSkin>scrollHandle.png</uiScrollHandleSkin>
+	<uiScrollHandleSkinT>6</uiScrollHandleSkinT>
+	<uiScrollHandleSkinR>6</uiScrollHandleSkinR>
+	<uiScrollHandleSkinB>6</uiScrollHandleSkinB>
+	<uiScrollHandleSkinL>6</uiScrollHandleSkinL>
+	
+	<textBgSkin>textfield.png</textBgSkin>
+	<textBgSkinT>3</textBgSkinT>
+	<textBgSkinR>3</textBgSkinR>
+	<textBgSkinB>3</textBgSkinB>
+	<textBgSkinL>3</textBgSkinL>
+	<textBgSkinPadding>5</textBgSkinPadding>
+	<textEditLineSpacing>4</textEditLineSpacing>
+	
+	<uiScrollHandleMinSize>30</uiScrollHandleMinSize>
+	
+	<uiTreeContainerScrollBarOffset>27</uiTreeContainerScrollBarOffset>
+</PolyConfig>

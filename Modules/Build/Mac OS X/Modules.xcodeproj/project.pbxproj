@@ -1,0 +1,455 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		6DFB01D112A741EB00C43A7D /* PolyCGProgram.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFB01CA12A741EB00C43A7D /* PolyCGProgram.h */; };
+		6DFB01D212A741EB00C43A7D /* PolyCGShader.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFB01CB12A741EB00C43A7D /* PolyCGShader.h */; };
+		6DFB01D312A741EB00C43A7D /* PolyCGShaderModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFB01CC12A741EB00C43A7D /* PolyCGShaderModule.h */; };
+		6DFB01D412A741EB00C43A7D /* PolyCGProgram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFB01CE12A741EB00C43A7D /* PolyCGProgram.cpp */; };
+		6DFB01D512A741EB00C43A7D /* PolyCGShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFB01CF12A741EB00C43A7D /* PolyCGShader.cpp */; };
+		6DFB01D612A741EB00C43A7D /* PolyCGShaderModule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFB01D012A741EB00C43A7D /* PolyCGShaderModule.cpp */; };
+		6DFBF85812A3F26900C43A7D /* PolyUIBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF84A12A3F26900C43A7D /* PolyUIBox.cpp */; };
+		6DFBF85912A3F26900C43A7D /* PolyUIButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF84B12A3F26900C43A7D /* PolyUIButton.cpp */; };
+		6DFBF85A12A3F26900C43A7D /* PolyUICheckBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF84C12A3F26900C43A7D /* PolyUICheckBox.cpp */; };
+		6DFBF85B12A3F26900C43A7D /* PolyUIEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF84D12A3F26900C43A7D /* PolyUIEvent.cpp */; };
+		6DFBF85C12A3F26900C43A7D /* PolyUIHScrollBar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF84E12A3F26900C43A7D /* PolyUIHScrollBar.cpp */; };
+		6DFBF85D12A3F26900C43A7D /* PolyUIHSlider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF84F12A3F26900C43A7D /* PolyUIHSlider.cpp */; };
+		6DFBF85E12A3F26900C43A7D /* PolyUIImageButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF85012A3F26900C43A7D /* PolyUIImageButton.cpp */; };
+		6DFBF85F12A3F26900C43A7D /* PolyUIScrollContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF85112A3F26900C43A7D /* PolyUIScrollContainer.cpp */; };
+		6DFBF86012A3F26900C43A7D /* PolyUITextInput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF85212A3F26900C43A7D /* PolyUITextInput.cpp */; };
+		6DFBF86112A3F26900C43A7D /* PolyUITree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF85312A3F26900C43A7D /* PolyUITree.cpp */; };
+		6DFBF86212A3F26900C43A7D /* PolyUITreeContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF85412A3F26900C43A7D /* PolyUITreeContainer.cpp */; };
+		6DFBF86312A3F26900C43A7D /* PolyUITreeEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF85512A3F26900C43A7D /* PolyUITreeEvent.cpp */; };
+		6DFBF86412A3F26900C43A7D /* PolyUIVScrollBar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF85612A3F26900C43A7D /* PolyUIVScrollBar.cpp */; };
+		6DFBF86512A3F26900C43A7D /* PolyUIWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF85712A3F26900C43A7D /* PolyUIWindow.cpp */; };
+		6DFBF87512A3F27B00C43A7D /* PolyUIBox.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF86712A3F27B00C43A7D /* PolyUIBox.h */; };
+		6DFBF87612A3F27B00C43A7D /* PolyUIButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF86812A3F27B00C43A7D /* PolyUIButton.h */; };
+		6DFBF87712A3F27B00C43A7D /* PolyUICheckBox.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF86912A3F27B00C43A7D /* PolyUICheckBox.h */; };
+		6DFBF87812A3F27B00C43A7D /* PolyUIEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF86A12A3F27B00C43A7D /* PolyUIEvent.h */; };
+		6DFBF87912A3F27B00C43A7D /* PolyUIHScrollBar.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF86B12A3F27B00C43A7D /* PolyUIHScrollBar.h */; };
+		6DFBF87A12A3F27B00C43A7D /* PolyUIHSlider.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF86C12A3F27B00C43A7D /* PolyUIHSlider.h */; };
+		6DFBF87B12A3F27B00C43A7D /* PolyUIImageButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF86D12A3F27B00C43A7D /* PolyUIImageButton.h */; };
+		6DFBF87C12A3F27B00C43A7D /* PolyUIScrollContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF86E12A3F27B00C43A7D /* PolyUIScrollContainer.h */; };
+		6DFBF87D12A3F27B00C43A7D /* PolyUITextInput.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF86F12A3F27B00C43A7D /* PolyUITextInput.h */; };
+		6DFBF87E12A3F27B00C43A7D /* PolyUITree.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF87012A3F27B00C43A7D /* PolyUITree.h */; };
+		6DFBF87F12A3F27B00C43A7D /* PolyUITreeContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF87112A3F27B00C43A7D /* PolyUITreeContainer.h */; };
+		6DFBF88012A3F27B00C43A7D /* PolyUITreeEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF87212A3F27B00C43A7D /* PolyUITreeEvent.h */; };
+		6DFBF88112A3F27B00C43A7D /* PolyUIVScrollBar.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF87312A3F27B00C43A7D /* PolyUIVScrollBar.h */; };
+		6DFBF88212A3F27B00C43A7D /* PolyUIWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF87412A3F27B00C43A7D /* PolyUIWindow.h */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		6DFB00FC12A736A900C43A7D /* libPolycodeCg.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPolycodeCg.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		6DFB01CA12A741EB00C43A7D /* PolyCGProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyCGProgram.h; path = ../../Contents/CgShading/Include/PolyCGProgram.h; sourceTree = "<group>"; };
+		6DFB01CB12A741EB00C43A7D /* PolyCGShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyCGShader.h; path = ../../Contents/CgShading/Include/PolyCGShader.h; sourceTree = "<group>"; };
+		6DFB01CC12A741EB00C43A7D /* PolyCGShaderModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyCGShaderModule.h; path = ../../Contents/CgShading/Include/PolyCGShaderModule.h; sourceTree = "<group>"; };
+		6DFB01CE12A741EB00C43A7D /* PolyCGProgram.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyCGProgram.cpp; path = ../../Contents/CgShading/Source/PolyCGProgram.cpp; sourceTree = "<group>"; };
+		6DFB01CF12A741EB00C43A7D /* PolyCGShader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyCGShader.cpp; path = ../../Contents/CgShading/Source/PolyCGShader.cpp; sourceTree = "<group>"; };
+		6DFB01D012A741EB00C43A7D /* PolyCGShaderModule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyCGShaderModule.cpp; path = ../../Contents/CgShading/Source/PolyCGShaderModule.cpp; sourceTree = "<group>"; };
+		6DFBF84712A3F24F00C43A7D /* libPolycodeUI.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPolycodeUI.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		6DFBF84A12A3F26900C43A7D /* PolyUIBox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyUIBox.cpp; path = ../../Contents/UI/Source/PolyUIBox.cpp; sourceTree = SOURCE_ROOT; };
+		6DFBF84B12A3F26900C43A7D /* PolyUIButton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyUIButton.cpp; path = ../../Contents/UI/Source/PolyUIButton.cpp; sourceTree = SOURCE_ROOT; };
+		6DFBF84C12A3F26900C43A7D /* PolyUICheckBox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyUICheckBox.cpp; path = ../../Contents/UI/Source/PolyUICheckBox.cpp; sourceTree = SOURCE_ROOT; };
+		6DFBF84D12A3F26900C43A7D /* PolyUIEvent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyUIEvent.cpp; path = ../../Contents/UI/Source/PolyUIEvent.cpp; sourceTree = SOURCE_ROOT; };
+		6DFBF84E12A3F26900C43A7D /* PolyUIHScrollBar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyUIHScrollBar.cpp; path = ../../Contents/UI/Source/PolyUIHScrollBar.cpp; sourceTree = SOURCE_ROOT; };
+		6DFBF84F12A3F26900C43A7D /* PolyUIHSlider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyUIHSlider.cpp; path = ../../Contents/UI/Source/PolyUIHSlider.cpp; sourceTree = SOURCE_ROOT; };
+		6DFBF85012A3F26900C43A7D /* PolyUIImageButton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyUIImageButton.cpp; path = ../../Contents/UI/Source/PolyUIImageButton.cpp; sourceTree = SOURCE_ROOT; };
+		6DFBF85112A3F26900C43A7D /* PolyUIScrollContainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyUIScrollContainer.cpp; path = ../../Contents/UI/Source/PolyUIScrollContainer.cpp; sourceTree = SOURCE_ROOT; };
+		6DFBF85212A3F26900C43A7D /* PolyUITextInput.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyUITextInput.cpp; path = ../../Contents/UI/Source/PolyUITextInput.cpp; sourceTree = SOURCE_ROOT; };
+		6DFBF85312A3F26900C43A7D /* PolyUITree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyUITree.cpp; path = ../../Contents/UI/Source/PolyUITree.cpp; sourceTree = SOURCE_ROOT; };
+		6DFBF85412A3F26900C43A7D /* PolyUITreeContainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyUITreeContainer.cpp; path = ../../Contents/UI/Source/PolyUITreeContainer.cpp; sourceTree = SOURCE_ROOT; };
+		6DFBF85512A3F26900C43A7D /* PolyUITreeEvent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyUITreeEvent.cpp; path = ../../Contents/UI/Source/PolyUITreeEvent.cpp; sourceTree = SOURCE_ROOT; };
+		6DFBF85612A3F26900C43A7D /* PolyUIVScrollBar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyUIVScrollBar.cpp; path = ../../Contents/UI/Source/PolyUIVScrollBar.cpp; sourceTree = SOURCE_ROOT; };
+		6DFBF85712A3F26900C43A7D /* PolyUIWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyUIWindow.cpp; path = ../../Contents/UI/Source/PolyUIWindow.cpp; sourceTree = SOURCE_ROOT; };
+		6DFBF86712A3F27B00C43A7D /* PolyUIBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyUIBox.h; path = ../../Contents/UI/Include/PolyUIBox.h; sourceTree = SOURCE_ROOT; };
+		6DFBF86812A3F27B00C43A7D /* PolyUIButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyUIButton.h; path = ../../Contents/UI/Include/PolyUIButton.h; sourceTree = SOURCE_ROOT; };
+		6DFBF86912A3F27B00C43A7D /* PolyUICheckBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyUICheckBox.h; path = ../../Contents/UI/Include/PolyUICheckBox.h; sourceTree = SOURCE_ROOT; };
+		6DFBF86A12A3F27B00C43A7D /* PolyUIEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyUIEvent.h; path = ../../Contents/UI/Include/PolyUIEvent.h; sourceTree = SOURCE_ROOT; };
+		6DFBF86B12A3F27B00C43A7D /* PolyUIHScrollBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyUIHScrollBar.h; path = ../../Contents/UI/Include/PolyUIHScrollBar.h; sourceTree = SOURCE_ROOT; };
+		6DFBF86C12A3F27B00C43A7D /* PolyUIHSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyUIHSlider.h; path = ../../Contents/UI/Include/PolyUIHSlider.h; sourceTree = SOURCE_ROOT; };
+		6DFBF86D12A3F27B00C43A7D /* PolyUIImageButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyUIImageButton.h; path = ../../Contents/UI/Include/PolyUIImageButton.h; sourceTree = SOURCE_ROOT; };
+		6DFBF86E12A3F27B00C43A7D /* PolyUIScrollContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyUIScrollContainer.h; path = ../../Contents/UI/Include/PolyUIScrollContainer.h; sourceTree = SOURCE_ROOT; };
+		6DFBF86F12A3F27B00C43A7D /* PolyUITextInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyUITextInput.h; path = ../../Contents/UI/Include/PolyUITextInput.h; sourceTree = SOURCE_ROOT; };
+		6DFBF87012A3F27B00C43A7D /* PolyUITree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyUITree.h; path = ../../Contents/UI/Include/PolyUITree.h; sourceTree = SOURCE_ROOT; };
+		6DFBF87112A3F27B00C43A7D /* PolyUITreeContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyUITreeContainer.h; path = ../../Contents/UI/Include/PolyUITreeContainer.h; sourceTree = SOURCE_ROOT; };
+		6DFBF87212A3F27B00C43A7D /* PolyUITreeEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyUITreeEvent.h; path = ../../Contents/UI/Include/PolyUITreeEvent.h; sourceTree = SOURCE_ROOT; };
+		6DFBF87312A3F27B00C43A7D /* PolyUIVScrollBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyUIVScrollBar.h; path = ../../Contents/UI/Include/PolyUIVScrollBar.h; sourceTree = SOURCE_ROOT; };
+		6DFBF87412A3F27B00C43A7D /* PolyUIWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyUIWindow.h; path = ../../Contents/UI/Include/PolyUIWindow.h; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		6DFB00FA12A736A900C43A7D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6DFBF84512A3F24F00C43A7D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* Modules */ = {
+			isa = PBXGroup;
+			children = (
+				08FB7795FE84155DC02AAC07 /* Source */,
+				C6A0FF2B0290797F04C91782 /* Documentation */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+			);
+			name = Modules;
+			sourceTree = "<group>";
+		};
+		08FB7795FE84155DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				6DFB00F012A7364300C43A7D /* PolycodeCg */,
+				6DFB00C012A71A5B00C43A7D /* PolycodeUI */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6DFBF84712A3F24F00C43A7D /* libPolycodeUI.a */,
+				6DFB00FC12A736A900C43A7D /* libPolycodeCg.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		6DFB00C012A71A5B00C43A7D /* PolycodeUI */ = {
+			isa = PBXGroup;
+			children = (
+				6DFBF86712A3F27B00C43A7D /* PolyUIBox.h */,
+				6DFBF86812A3F27B00C43A7D /* PolyUIButton.h */,
+				6DFBF86912A3F27B00C43A7D /* PolyUICheckBox.h */,
+				6DFBF86A12A3F27B00C43A7D /* PolyUIEvent.h */,
+				6DFBF86B12A3F27B00C43A7D /* PolyUIHScrollBar.h */,
+				6DFBF86C12A3F27B00C43A7D /* PolyUIHSlider.h */,
+				6DFBF86D12A3F27B00C43A7D /* PolyUIImageButton.h */,
+				6DFBF86E12A3F27B00C43A7D /* PolyUIScrollContainer.h */,
+				6DFBF86F12A3F27B00C43A7D /* PolyUITextInput.h */,
+				6DFBF87012A3F27B00C43A7D /* PolyUITree.h */,
+				6DFBF87112A3F27B00C43A7D /* PolyUITreeContainer.h */,
+				6DFBF87212A3F27B00C43A7D /* PolyUITreeEvent.h */,
+				6DFBF87312A3F27B00C43A7D /* PolyUIVScrollBar.h */,
+				6DFBF87412A3F27B00C43A7D /* PolyUIWindow.h */,
+				6DFBF84A12A3F26900C43A7D /* PolyUIBox.cpp */,
+				6DFBF84B12A3F26900C43A7D /* PolyUIButton.cpp */,
+				6DFBF84C12A3F26900C43A7D /* PolyUICheckBox.cpp */,
+				6DFBF84D12A3F26900C43A7D /* PolyUIEvent.cpp */,
+				6DFBF84E12A3F26900C43A7D /* PolyUIHScrollBar.cpp */,
+				6DFBF84F12A3F26900C43A7D /* PolyUIHSlider.cpp */,
+				6DFBF85012A3F26900C43A7D /* PolyUIImageButton.cpp */,
+				6DFBF85112A3F26900C43A7D /* PolyUIScrollContainer.cpp */,
+				6DFBF85212A3F26900C43A7D /* PolyUITextInput.cpp */,
+				6DFBF85312A3F26900C43A7D /* PolyUITree.cpp */,
+				6DFBF85412A3F26900C43A7D /* PolyUITreeContainer.cpp */,
+				6DFBF85512A3F26900C43A7D /* PolyUITreeEvent.cpp */,
+				6DFBF85612A3F26900C43A7D /* PolyUIVScrollBar.cpp */,
+				6DFBF85712A3F26900C43A7D /* PolyUIWindow.cpp */,
+			);
+			name = PolycodeUI;
+			sourceTree = "<group>";
+		};
+		6DFB00F012A7364300C43A7D /* PolycodeCg */ = {
+			isa = PBXGroup;
+			children = (
+				6DFB01CA12A741EB00C43A7D /* PolyCGProgram.h */,
+				6DFB01CB12A741EB00C43A7D /* PolyCGShader.h */,
+				6DFB01CC12A741EB00C43A7D /* PolyCGShaderModule.h */,
+				6DFB01CE12A741EB00C43A7D /* PolyCGProgram.cpp */,
+				6DFB01CF12A741EB00C43A7D /* PolyCGShader.cpp */,
+				6DFB01D012A741EB00C43A7D /* PolyCGShaderModule.cpp */,
+			);
+			name = PolycodeCg;
+			sourceTree = "<group>";
+		};
+		C6A0FF2B0290797F04C91782 /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Documentation;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		6DFB00F812A736A900C43A7D /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6DFB01D112A741EB00C43A7D /* PolyCGProgram.h in Headers */,
+				6DFB01D212A741EB00C43A7D /* PolyCGShader.h in Headers */,
+				6DFB01D312A741EB00C43A7D /* PolyCGShaderModule.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6DFBF84312A3F24F00C43A7D /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6DFBF87512A3F27B00C43A7D /* PolyUIBox.h in Headers */,
+				6DFBF87612A3F27B00C43A7D /* PolyUIButton.h in Headers */,
+				6DFBF87712A3F27B00C43A7D /* PolyUICheckBox.h in Headers */,
+				6DFBF87812A3F27B00C43A7D /* PolyUIEvent.h in Headers */,
+				6DFBF87912A3F27B00C43A7D /* PolyUIHScrollBar.h in Headers */,
+				6DFBF87A12A3F27B00C43A7D /* PolyUIHSlider.h in Headers */,
+				6DFBF87B12A3F27B00C43A7D /* PolyUIImageButton.h in Headers */,
+				6DFBF87C12A3F27B00C43A7D /* PolyUIScrollContainer.h in Headers */,
+				6DFBF87D12A3F27B00C43A7D /* PolyUITextInput.h in Headers */,
+				6DFBF87E12A3F27B00C43A7D /* PolyUITree.h in Headers */,
+				6DFBF87F12A3F27B00C43A7D /* PolyUITreeContainer.h in Headers */,
+				6DFBF88012A3F27B00C43A7D /* PolyUITreeEvent.h in Headers */,
+				6DFBF88112A3F27B00C43A7D /* PolyUIVScrollBar.h in Headers */,
+				6DFBF88212A3F27B00C43A7D /* PolyUIWindow.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		6DFB00FB12A736A900C43A7D /* PolycodeCg */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6DFB010A12A736BE00C43A7D /* Build configuration list for PBXNativeTarget "PolycodeCg" */;
+			buildPhases = (
+				6DFB00F812A736A900C43A7D /* Headers */,
+				6DFB00F912A736A900C43A7D /* Sources */,
+				6DFB00FA12A736A900C43A7D /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PolycodeCg;
+			productName = PolycodeCg;
+			productReference = 6DFB00FC12A736A900C43A7D /* libPolycodeCg.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		6DFBF84612A3F24F00C43A7D /* PolycodeUI */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6DFBF86612A3F26900C43A7D /* Build configuration list for PBXNativeTarget "PolycodeUI" */;
+			buildPhases = (
+				6DFBF84312A3F24F00C43A7D /* Headers */,
+				6DFBF84412A3F24F00C43A7D /* Sources */,
+				6DFBF84512A3F24F00C43A7D /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PolycodeUI;
+			productName = PolycodeUI;
+			productReference = 6DFBF84712A3F24F00C43A7D /* libPolycodeUI.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB91EF08733DB70010E9CD /* Build configuration list for PBXProject "Modules" */;
+			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = 08FB7794FE84155DC02AAC07 /* Modules */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				6DFBF84612A3F24F00C43A7D /* PolycodeUI */,
+				6DFB00FB12A736A900C43A7D /* PolycodeCg */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		6DFB00F912A736A900C43A7D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6DFB01D412A741EB00C43A7D /* PolyCGProgram.cpp in Sources */,
+				6DFB01D512A741EB00C43A7D /* PolyCGShader.cpp in Sources */,
+				6DFB01D612A741EB00C43A7D /* PolyCGShaderModule.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6DFBF84412A3F24F00C43A7D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6DFBF85812A3F26900C43A7D /* PolyUIBox.cpp in Sources */,
+				6DFBF85912A3F26900C43A7D /* PolyUIButton.cpp in Sources */,
+				6DFBF85A12A3F26900C43A7D /* PolyUICheckBox.cpp in Sources */,
+				6DFBF85B12A3F26900C43A7D /* PolyUIEvent.cpp in Sources */,
+				6DFBF85C12A3F26900C43A7D /* PolyUIHScrollBar.cpp in Sources */,
+				6DFBF85D12A3F26900C43A7D /* PolyUIHSlider.cpp in Sources */,
+				6DFBF85E12A3F26900C43A7D /* PolyUIImageButton.cpp in Sources */,
+				6DFBF85F12A3F26900C43A7D /* PolyUIScrollContainer.cpp in Sources */,
+				6DFBF86012A3F26900C43A7D /* PolyUITextInput.cpp in Sources */,
+				6DFBF86112A3F26900C43A7D /* PolyUITree.cpp in Sources */,
+				6DFBF86212A3F26900C43A7D /* PolyUITreeContainer.cpp in Sources */,
+				6DFBF86312A3F26900C43A7D /* PolyUITreeEvent.cpp in Sources */,
+				6DFBF86412A3F26900C43A7D /* PolyUIVScrollBar.cpp in Sources */,
+				6DFBF86512A3F26900C43A7D /* PolyUIWindow.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB91F008733DB70010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					../../../Core/Contents/Include,
+					../../../Core/Dependencies/libvorbis/include,
+					../../../Core/Dependencies/libogg/include,
+					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Versions/A/Headers,
+					../../../Core/Dependencies/freetype/include,
+					../../../Core/Dependencies/libpng,
+					../../../Core/Dependencies/physfs,
+				);
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.6;
+				USER_HEADER_SEARCH_PATHS = "";
+			};
+			name = Debug;
+		};
+		1DEB91F108733DB70010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.6;
+			};
+			name = Release;
+		};
+		6DFB00FD12A736AA00C43A7D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = (
+					../../../Core/Contents/Include,
+					../../../Core/Dependencies/libvorbis/include,
+					../../../Core/Dependencies/libogg/include,
+					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Versions/A/Headers,
+					../../../Core/Dependencies/freetype/include,
+					../../../Core/Dependencies/libpng,
+					../../../Core/Dependencies/physfs,
+				);
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = PolycodeCg;
+			};
+			name = Debug;
+		};
+		6DFB00FE12A736AA00C43A7D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = PolycodeCg;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		6DFBF84812A3F24F00C43A7D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = PolycodeUI;
+			};
+			name = Debug;
+		};
+		6DFBF84912A3F24F00C43A7D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = PolycodeUI;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB91EF08733DB70010E9CD /* Build configuration list for PBXProject "Modules" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB91F008733DB70010E9CD /* Debug */,
+				1DEB91F108733DB70010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6DFB010A12A736BE00C43A7D /* Build configuration list for PBXNativeTarget "PolycodeCg" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6DFB00FD12A736AA00C43A7D /* Debug */,
+				6DFB00FE12A736AA00C43A7D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6DFBF86612A3F26900C43A7D /* Build configuration list for PBXNativeTarget "PolycodeUI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6DFBF84812A3F24F00C43A7D /* Debug */,
+				6DFBF84912A3F24F00C43A7D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

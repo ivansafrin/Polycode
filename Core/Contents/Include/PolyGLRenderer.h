@@ -1,0 +1,201 @@
+/*
+ *  PolyGLRenderer.h
+ *  TAU
+ *
+ *  Created by Ivan Safrin on 3/12/08.
+ *  Copyright 2008 __MyCompanyName__. All rights reserved.
+ *
+ */
+// @package Renderer
+
+#pragma once
+#include "PolyLogger.h"
+#include "PolyGlobals.h"
+#include "PolyRenderer.h"
+#include "PolyTexture.h"
+#include "PolyGLTexture.h"
+#include "PolyCubemap.h"
+#include "PolyGLCubemap.h"
+#include "PolyGLVertexBuffer.h"
+#include "PolyFixedShader.h"
+#include "PolyMesh.h"
+
+#ifdef _WINDOWS
+	#include <windows.h>
+#endif
+
+#if defined(__APPLE__) && defined(__MACH__)
+#include <OpenGL/gl.h>
+#include <OpenGL/glext.h>
+#include <OpenGL/glu.h>	
+#else
+#include <GL/gl.h>	
+#include <GL/glu.h>	
+#include <GL/glext.h>
+#endif
+
+#ifdef _WINDOWS 
+
+#define GL_EXT_framebuffer_object           1
+
+#if GL_EXT_framebuffer_object
+#define GL_FRAMEBUFFER_EXT                 0x8D40
+#define GL_RENDERBUFFER_EXT                0x8D41
+#define GL_STENCIL_INDEX1_EXT              0x8D46
+#define GL_STENCIL_INDEX4_EXT              0x8D47
+#define GL_STENCIL_INDEX8_EXT              0x8D48
+#define GL_STENCIL_INDEX16_EXT             0x8D49
+#define GL_RENDERBUFFER_WIDTH_EXT           0x8D42
+#define GL_RENDERBUFFER_HEIGHT_EXT          0x8D43
+#define GL_RENDERBUFFER_INTERNAL_FORMAT_EXT 0x8D44
+#define GL_RENDERBUFFER_RED_SIZE_EXT        0x8D50
+#define GL_RENDERBUFFER_GREEN_SIZE_EXT      0x8D51
+#define GL_RENDERBUFFER_BLUE_SIZE_EXT       0x8D52
+#define GL_RENDERBUFFER_ALPHA_SIZE_EXT      0x8D53
+#define GL_RENDERBUFFER_DEPTH_SIZE_EXT      0x8D54
+#define GL_RENDERBUFFER_STENCIL_SIZE_EXT    0x8D55
+#define GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE_EXT           0x8CD0
+#define GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME_EXT           0x8CD1
+#define GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL_EXT         0x8CD2
+#define GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE_EXT 0x8CD3
+#define GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_3D_ZOFFSET_EXT    0x8CD4
+#define GL_COLOR_ATTACHMENT0_EXT           0x8CE0
+#define GL_COLOR_ATTACHMENT1_EXT           0x8CE1
+#define GL_COLOR_ATTACHMENT2_EXT           0x8CE2
+#define GL_COLOR_ATTACHMENT3_EXT           0x8CE3
+#define GL_COLOR_ATTACHMENT4_EXT           0x8CE4
+#define GL_COLOR_ATTACHMENT5_EXT           0x8CE5
+#define GL_COLOR_ATTACHMENT6_EXT           0x8CE6
+#define GL_COLOR_ATTACHMENT7_EXT           0x8CE7
+#define GL_COLOR_ATTACHMENT8_EXT           0x8CE8
+#define GL_COLOR_ATTACHMENT9_EXT           0x8CE9
+#define GL_COLOR_ATTACHMENT10_EXT          0x8CEA
+#define GL_COLOR_ATTACHMENT11_EXT          0x8CEB
+#define GL_COLOR_ATTACHMENT12_EXT          0x8CEC
+#define GL_COLOR_ATTACHMENT13_EXT          0x8CED
+#define GL_COLOR_ATTACHMENT14_EXT          0x8CEE
+#define GL_COLOR_ATTACHMENT15_EXT          0x8CEF
+#define GL_DEPTH_ATTACHMENT_EXT            0x8D00
+#define GL_STENCIL_ATTACHMENT_EXT          0x8D20
+#define GL_FRAMEBUFFER_COMPLETE_EXT                        0x8CD5
+#define GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT           0x8CD6
+#define GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT   0x8CD7
+#define GL_FRAMEBUFFER_INCOMPLETE_DUPLICATE_ATTACHMENT_EXT 0x8CD8
+#define GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT           0x8CD9
+#define GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT              0x8CDA
+#define GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT          0x8CDB
+#define GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT          0x8CDC
+#define GL_FRAMEBUFFER_UNSUPPORTED_EXT                     0x8CDD
+#define GL_FRAMEBUFFER_BINDING_EXT         0x8CA6
+#define GL_RENDERBUFFER_BINDING_EXT        0x8CA7
+#define GL_MAX_COLOR_ATTACHMENTS_EXT       0x8CDF
+#define GL_MAX_RENDERBUFFER_SIZE_EXT       0x84E8
+#define GL_INVALID_FRAMEBUFFER_OPERATION_EXT 0x0506
+#endif
+#endif
+
+namespace Polycode {
+	class _PolyExport OpenGLRenderer : public Renderer {
+		
+	public:
+		
+		OpenGLRenderer();
+		~OpenGLRenderer();
+		
+		void Resize(int xRes, int yRes);
+		void BeginRender();
+		void EndRender();
+		
+		Cubemap *createCubemap(Texture *t0, Texture *t1, Texture *t2, Texture *t3, Texture *t4, Texture *t5);
+		Texture *createTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, int type = Image::IMAGE_RGBA);
+		Texture *createFramebufferTexture(unsigned int width, unsigned int height);
+		void createRenderTextures(Texture **colorBuffer, Texture **depthBuffer, int width, int height);
+		
+		void enableAlphaTest(bool val);
+		
+		void createVertexBufferForMesh(Mesh *mesh);
+		void drawVertexBuffer(VertexBuffer *buffer);						
+		void bindFrameBufferTexture(Texture *texture);
+		void unbindFramebuffers();
+		
+		void pushRenderDataArray(RenderDataArray *array);
+		RenderDataArray *createRenderDataArrayForMesh(Mesh *mesh, int arrayType);
+		RenderDataArray *createRenderDataArray(int arrayType);
+		void setRenderArrayData(RenderDataArray *array, float *arrayData);
+		void drawArrays(int drawType);		
+				
+		void setOrthoMode();
+		void setPerspectiveMode();
+		
+		void enableBackfaceCulling(bool val);
+		void setViewportSize(int w, int h, float fov=45.0f);
+		
+		void setLineSmooth(bool val);		
+		
+		void loadIdentity();
+		void setClearColor(float r, float g, float b);
+		
+		void setTexture(Texture *texture);		
+		
+		void renderToTexture(Texture *targetTexture);		
+		void renderZBufferToTexture(Texture *targetTexture);
+		void clearScreen();	
+		
+		void translate2D(float x, float y);
+		void rotate2D(float angle);
+		void scale2D(Vector2 *scale);
+		
+		void setLineSize(float lineSize);
+		
+		void setVertexColor(float r, float g, float b, float a);
+		
+		void setBlendingMode(int blendingMode);
+		
+		void enableLighting(bool enable);	
+		void enableFog(bool enable);
+		void setFogProperties(int fogMode, Color color, float density, float startDepth, float endDepth);		
+				
+		void translate3D(Vector3 *position);
+		void translate3D(float x, float y, float z);
+		void scale3D(Vector3 *scale);
+		
+		Matrix4 getProjectionMatrix();
+		Matrix4 getModelviewMatrix();		
+		void setModelviewMatrix(Matrix4 m);	
+		void multModelviewMatrix(Matrix4 m);
+		
+		void enableDepthTest(bool val);
+				
+		void clearBuffer(bool colorBuffer, bool depthBuffer);	
+		void drawToColorBuffer(bool val);
+		
+		void drawScreenQuad(float qx, float qy);
+				
+		void pushMatrix();
+		void popMatrix();
+		
+		bool test2DCoordinate(float x, float y, Polycode::Polygon *poly, const Matrix4 &matrix, bool billboardMode);
+		
+		void setFOV(float fov);
+		
+		Vector3 Unproject(float x, float y);
+		
+		void setDepthFunction(int depthFunction);
+						
+		void clearShader();
+		void applyMaterial(Material *material,  ShaderBinding *localOptions, unsigned int shaderIndex);
+		
+	protected:
+
+		
+		float nearPlane;
+		float farPlane;
+		
+		int verticesToDraw;
+		
+		GLdouble sceneProjectionMatrix[16];
+	
+		
+	};
+}
+
