@@ -307,7 +307,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R ../../Contents/Resources/* build/Debug/Polycode.app/Contents/Resources\ncp -R ../../Contents/Resources/* build/Release/Polycode.app/Contents/Resources";
+			shellScript = "cp -R ../../Contents/Resources/* build/Debug/Polycode.app/Contents/Resources";
 		};
 /* End PBXShellScriptBuildPhase section */
 
