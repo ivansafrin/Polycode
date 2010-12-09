@@ -11,7 +11,7 @@
 
 using namespace Polycode;
 
-UIImageButton::UIImageButton(string imageName) : ScreenEntity() {
+UIImageButton::UIImageButton(String imageName) : ScreenEntity() {
 	setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	
 	buttonImage = new ScreenImage(imageName.c_str());

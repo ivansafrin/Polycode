@@ -9,6 +9,7 @@
 // @package Scene
 
 #pragma once
+#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolyRenderer.h"
 #include "PolySceneEntity.h"

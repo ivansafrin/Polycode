@@ -31,9 +31,9 @@ long custom_tellfunc(void *datasource) {
 	return OSBasics::tell(file);
 }
 
-Sound::Sound(string fileName) {
+Sound::Sound(String fileName) {
 	
-	string extension;
+	String extension;
 	size_t found;
 	found=fileName.rfind(".");
 	if (found!=string::npos) {
@@ -57,12 +57,12 @@ Sound::~Sound() {
 	alDeleteSources(1,&soundSource);
 }
 
-void Sound::soundCheck(bool result, string err) {
+void Sound::soundCheck(bool result, String err) {
 	if(!result)
 		soundError(err);
 }
 
-void Sound::soundError(string err) {
+void Sound::soundError(String err) {
 	Logger::log("SOUND ERROR: %s\n", err.c_str());
 }
 
@@ -91,7 +91,7 @@ void Sound::Play(bool once) {
 	alSourcePlay(soundSource);
 }
 
-void Sound::checkALError(string operation) {
+void Sound::checkALError(String operation) {
 	ALenum error = alGetError();
 	if(error != AL_NO_ERROR) {
 		switch(error) {
@@ -154,7 +154,7 @@ ALuint Sound::GenSource(ALuint buffer) {
 	return source;
 }
 
-ALuint Sound::loadOGG(string fileName) {
+ALuint Sound::loadOGG(String fileName) {
 	
 	vector<char> buffer;
 	
@@ -210,7 +210,7 @@ ALuint Sound::loadOGG(string fileName) {
 	return bufferID;
 }
 
-ALuint Sound::loadWAV(string fileName) {
+ALuint Sound::loadWAV(String fileName) {
 	long bytes;
 	vector <char> data;
 	ALenum format;
@@ -236,18 +236,18 @@ ALuint Sound::loadWAV(string fileName) {
 		
 		// check magic
 		soundCheck(OSBasics::read(magic,4,1,f) == 1, "LoadWav: Cannot read wav file "+ fileName );
-		soundCheck(std::string(magic) == "RIFF", "LoadWav: Wrong wav file format. This file is not a .wav file (no RIFF magic): "+ fileName );
+		soundCheck(String(magic) == "RIFF", "LoadWav: Wrong wav file format. This file is not a .wav file (no RIFF magic): "+ fileName );
 		
 		// skip 4 bytes (file size)
 		OSBasics::seek(f,4,SEEK_CUR);
 		
 		// check file format
 		soundCheck(OSBasics::read(magic,4,1,f) == 1, "LoadWav: Cannot read wav file "+ fileName );
-		soundCheck(std::string(magic) == "WAVE", "LoadWav: Wrong wav file format. This file is not a .wav file (no WAVE format): "+ fileName );
+		soundCheck(String(magic) == "WAVE", "LoadWav: Wrong wav file format. This file is not a .wav file (no WAVE format): "+ fileName );
 		
 		// check 'fmt ' sub chunk (1)
 		soundCheck(OSBasics::read(magic,4,1,f) == 1, "LoadWav: Cannot read wav file "+ fileName );
-		soundCheck(std::string(magic) == "fmt ", "LoadWav: Wrong wav file format. This file is not a .wav file (no 'fmt ' subchunk): "+ fileName );
+		soundCheck(String(magic) == "fmt ", "LoadWav: Wrong wav file format. This file is not a .wav file (no 'fmt ' subchunk): "+ fileName );
 		
 		// read (1)'s size
 		soundCheck(OSBasics::read(buffer32,4,1,f) == 1, "LoadWav: Cannot read wav file "+ fileName );
@@ -281,7 +281,7 @@ ALuint Sound::loadWAV(string fileName) {
 		
 		// check 'data' sub chunk (2)
 		soundCheck(OSBasics::read(magic,4,1,f) == 1, "LoadWav: Cannot read wav file "+ fileName );
-		soundCheck(std::string(magic) == "data", "LoadWav: Wrong wav file format. This file is not a .wav file (no data subchunk): "+ fileName );
+		soundCheck(String(magic) == "data", "LoadWav: Wrong wav file format. This file is not a .wav file (no data subchunk): "+ fileName );
 		
 		soundCheck(OSBasics::read(buffer32,4,1,f) == 1, "LoadWav: Cannot read wav file "+ fileName );
 		unsigned long subChunk2Size = readByte32(buffer32);

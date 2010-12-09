@@ -10,6 +10,7 @@
 // @package Services
  
 #pragma once
+#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolyCoreServices.h"
 #include "PolyTexture.h"
@@ -40,7 +41,7 @@ namespace Polycode {
 			Texture *createTexture(int width, int height, char *imageData, bool clamp=true, int type=Image::IMAGE_RGBA);
 			Texture *createNewTexture(int width, int height, bool clamp=true, int type=Image::IMAGE_RGBA);
 			Texture *createTextureFromImage(Image *image, bool clamp=true);
-			Texture *createTextureFromFile(string fileName);
+			Texture *createTextureFromFile(String fileName);
 			void deleteTexture(Texture *texture);
 		
 			void reloadTextures();
@@ -51,14 +52,14 @@ namespace Polycode {
 			void addShaderModule(PolycodeShaderModule *module);		
 		
 			//SceneRenderTexture *createRenderTexture(Scene *targetScene, Camera *targetCamera, int renderWidth,int renderHeight);
-			Texture *getTextureByResourcePath(string resourcePath);
+			Texture *getTextureByResourcePath(String resourcePath);
 			
 			// cubemaps
 		
 			Cubemap *cubemapFromXMLNode(TiXmlNode *node);
 		
 			// materials
-			void loadMaterialsFromFile(string fileName);
+			void loadMaterialsFromFile(String fileName);
 			Material *materialFromXMLNode(TiXmlNode *node);
 			Shader *setShaderFromXMLNode(TiXmlNode *node);
 			Shader *createShaderFromXMLNode(TiXmlNode *node);

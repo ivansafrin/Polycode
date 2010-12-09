@@ -13,6 +13,7 @@
 
 #include "PolyLogger.h"
 #include "PolyGlobals.h"
+#include "PolyString.h"
 
 #ifdef _WINDOWS
 	#include <windows.h>
@@ -27,17 +28,18 @@
 #include "physfs.h"
 
 using namespace std;
+using namespace Polycode;
 
 class _PolyExport OSFileEntry {
 	public:
 		OSFileEntry() {};
-		OSFileEntry(string path, string name, int type);
+		OSFileEntry(String path, String name, int type);
 		
-		string name;
-		string extension;
-		string nameWithoutExtension;
-		string basePath;
-		string fullPath;
+		String name;
+		String extension;
+		String nameWithoutExtension;
+		String basePath;
+		String fullPath;
 		int type;
 		
 		static const int TYPE_FILE = 0;
@@ -60,17 +62,17 @@ public:
 class _PolyExport OSBasics {
 	public:
 	
-		static OSFILE *open(string filename, string opts);
+		static OSFILE *open(String filename, String opts);
 		static int close(OSFILE *file);
 		static size_t read( void * ptr, size_t size, size_t count, OSFILE * stream );	
 		static size_t write( const void * ptr, size_t size, size_t count, OSFILE * stream );
 		static int seek(OSFILE * stream, long int offset, int origin );
 		static long tell(OSFILE * stream);
 	
-		static vector<OSFileEntry> parsePhysFSFolder(string pathString, bool showHidden);
-		static vector<OSFileEntry> parseFolder(string pathString, bool showHidden);
-		static bool isFolder(string pathString);
-		static void createFolder(string pathString);
+		static vector<OSFileEntry> parsePhysFSFolder(String pathString, bool showHidden);
+		static vector<OSFileEntry> parseFolder(String pathString, bool showHidden);
+		static bool isFolder(String pathString);
+		static void createFolder(String pathString);
 		
 	private:
 	

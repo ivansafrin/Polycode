@@ -9,6 +9,7 @@
 // @package Materials
 
 #pragma once
+#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolyResource.h"
 #include "PolyTexture.h"
@@ -23,8 +24,8 @@ namespace Polycode {
 			virtual ~Shader();
 
 			int getType();
-			void setName(string name);
-			string getName();
+			void setName(String name);
+			String getName();
 			
 			virtual ShaderBinding *createBinding() = 0;
 
@@ -33,13 +34,13 @@ namespace Polycode {
 							
 		protected:
 		
-			string name;
+			String name;
 			int type;
 	};
 	
 	class _PolyExport ShaderRenderTarget {
 		public:
-			string id;
+			String id;
 			float width;
 			float height;
 			int sizeMode;
@@ -51,13 +52,13 @@ namespace Polycode {
 	};
 	
 	typedef struct {
-		string name;
+		String name;
 		void *data;		
 	} LocalShaderParam;	
 	
 	typedef struct {
-			string id;
-			string name;
+			String id;
+			String name;
 			int mode;
 			Texture *texture;
 			float width;
@@ -71,14 +72,14 @@ namespace Polycode {
 			ShaderBinding(Shader *shader);
 			virtual ~ShaderBinding();
 			
-			virtual void clearTexture(string name){};
-			virtual void addTexture(string name, Texture *texture)  {};
-			virtual void addParam(string type, string name, string value) {};
-			virtual void addCubemap(string name, Cubemap *cubemap) {};
+			virtual void clearTexture(String name){};
+			virtual void addTexture(String name, Texture *texture)  {};
+			virtual void addParam(String type, String name, String value) {};
+			virtual void addCubemap(String name, Cubemap *cubemap) {};
 		
 			unsigned int getNumLocalParams();
 			LocalShaderParam *getLocalParam(unsigned int index);
-			LocalShaderParam *getLocalParamByName(string name);
+			LocalShaderParam *getLocalParamByName(String name);
 			
 			void addRenderTargetBinding(RenderTargetBinding *binding);
 

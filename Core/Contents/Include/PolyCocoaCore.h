@@ -10,8 +10,10 @@
 // @package Core
 
 #pragma once
+#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolyCore.h"
+#include "PolyString.h"
 #include "PolyRectangle.h"
 #include <vector>
 #include <OpenGL/gl.h>
@@ -61,17 +63,17 @@ namespace Polycode {
 		void resizeTo(int xRes, int yRes);
 		void createThread(Threaded *target);		
 		
-		void createFolder(string folderPath);
-		void copyDiskItem(string itemPath, string destItemPath);
-		void moveDiskItem(string itemPath, string destItemPath);		
-		void removeDiskItem(string itemPath);		
-		string openFolderPicker();
+		void createFolder(String folderPath);
+		void copyDiskItem(String itemPath, String destItemPath);
+		void moveDiskItem(String itemPath, String destItemPath);		
+		void removeDiskItem(String itemPath);		
+		String openFolderPicker();
 		vector<string> openFilePicker(vector<CoreFileExtension> extensions, bool allowMultiple);
 		
 		void setCursor(int cursorType);
 		
-		void copyStringToClipboard(wstring str);
-		wstring getClipboardString();		
+		void copyStringToClipboard(String str);
+		String getClipboardString();		
 		
 //		static pascal OSStatus coreEventHandler (EventHandlerCallRef next, EventRef event, void *data);	
 		

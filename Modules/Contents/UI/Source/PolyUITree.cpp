@@ -12,7 +12,7 @@
 
 using namespace Polycode;
 
-UITree::UITree(string icon, wstring text, float treeWidth, float treeOffset) : ScreenEntity() {
+UITree::UITree(String icon, String text, float treeWidth, float treeOffset) : ScreenEntity() {
 		
 	
 	Config *conf = CoreServices::getInstance()->getConfig();
@@ -146,7 +146,7 @@ void UITree::handleEvent(Event *event) {
 	}
 }
 
-void UITree::setIcon(string iconFile) {
+void UITree::setIcon(String iconFile) {
 	Texture *texture = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(iconFile);
 	iconImage->setTexture(texture);
 }
@@ -233,7 +233,7 @@ void UITree::setUserData(void *data) {
 	userData = data;
 }
 
-UITree *UITree::addTreeChild(string icon, wstring text, void *userData) {
+UITree *UITree::addTreeChild(String icon, String text, void *userData) {
 	UITree *newTree = new UITree(icon, text, treeWidth, treeOffset+11);
 	newTree->setUserData(userData);
 	addChild(newTree);

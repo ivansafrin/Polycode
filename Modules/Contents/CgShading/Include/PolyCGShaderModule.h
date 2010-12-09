@@ -30,10 +30,10 @@ namespace Polycode {
 			CGShaderModule();
 			virtual ~CGShaderModule();
 		
-			bool acceptsExtension(string extension);
-			Resource* createProgramFromFile(string extension, string fullPath);	
+			bool acceptsExtension(String extension);
+			Resource* createProgramFromFile(String extension, String fullPath);	
 			void reloadPrograms();
-			string getShaderType();
+			String getShaderType();
 			Shader *createShader(TiXmlNode *node);
 			bool applyShaderMaterial(Renderer *renderer, Material *material, ShaderBinding *localOptions, unsigned int shaderIndex);	
 			void clearShader();
@@ -41,8 +41,8 @@ namespace Polycode {
 	protected:
 
 		void addParamToProgram(CGProgram *program,TiXmlNode *node);		
-		void recreateCGProgram(CGProgram *prog, string fileName, int type);
-		CGProgram *createCGProgram(string fileName, int type);		
+		void recreateCGProgram(CGProgram *prog, String fileName, int type);
+		CGProgram *createCGProgram(String fileName, int type);		
 		void updateCGParam(Renderer *renderer, CGProgramParam &param, ShaderBinding *materialOptions, ShaderBinding *localOptions);		
 			
 		void setCGAreaLightPositionParameter(Renderer *renderer, CGProgramParam &param, int lightIndex);

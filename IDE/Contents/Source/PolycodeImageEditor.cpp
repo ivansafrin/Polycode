@@ -9,7 +9,7 @@ PolycodeImageEditor::~PolycodeImageEditor() {
 	
 }
 
-bool PolycodeImageEditor::openFile(string filePath) {
+bool PolycodeImageEditor::openFile(String filePath) {
 	
 	grid = new ScreenImage("editorGrid.png");
 	

@@ -10,7 +10,7 @@
 // @package BasicTypes
 
 #pragma once
-
+#include "PolyString.h"
 #include <math.h>
 #include "PolyGlobals.h"
 #include "PolyVertex.h"

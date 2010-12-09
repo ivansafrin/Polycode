@@ -11,7 +11,7 @@
 
 using namespace Polycode;
 
-Font::Font(string fileName) {
+Font::Font(String fileName) {
 	FT_Library FTLibrary;
 	FT_Init_FreeType(&FTLibrary);
 	

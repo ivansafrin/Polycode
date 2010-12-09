@@ -9,6 +9,7 @@
 // @package Materials
 
 #pragma once
+#include "PolyString.h"
 #include "PolyLogger.h"
 #include "PolyGlobals.h"
 #include "PolyShader.h"
@@ -32,9 +33,9 @@ namespace Polycode {
 			FixedShaderBinding(FixedShader *shader);
 			~FixedShaderBinding();
 			
-			void addTexture(string name, Texture *texture); 
-			void addCubemap(string name, Cubemap *cubemap);		
-			void addParam(string type, string name, string value);
+			void addTexture(String name, Texture *texture); 
+			void addCubemap(String name, Cubemap *cubemap);		
+			void addParam(String type, String name, String value);
 			
 			Texture *getDiffuseTexture();
 			

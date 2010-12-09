@@ -10,7 +10,7 @@
 // @package Screen
 
 #pragma once
-
+#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolyCoreServices.h"
 #include "PolyScreenShape.h"
@@ -30,12 +30,12 @@ namespace Polycode {
 	class _PolyExport ScreenLabel : public ScreenShape {
 		public:
 			
-			ScreenLabel(string fontName, wstring text, int size, int amode);
+			ScreenLabel(String fontName, String text, int size, int amode);
 			~ScreenLabel();		
 		
 			void addDropShadow(Color color, float size, float offsetX, float offsetY);
-			void setText(wstring newText);
-			wstring getText();
+			void setText(String newText);
+			String getText();
 		
 			Label *getLabel();
 			

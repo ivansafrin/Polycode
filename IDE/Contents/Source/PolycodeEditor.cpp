@@ -10,7 +10,7 @@ PolycodeEditorFactory::~PolycodeEditorFactory() {
 	
 }
 
-bool PolycodeEditorFactory::canHandleExtension(string extension) {
+bool PolycodeEditorFactory::canHandleExtension(String extension) {
 	for(int i=0; i < extensions.size(); i++) {
 		if(extension == extensions[i])
 		   return true;

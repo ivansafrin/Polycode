@@ -25,12 +25,12 @@ namespace Polycode {
 
 	class _PolyExport UITree : public ScreenEntity {
 		public:
-			UITree(string icon, wstring text, float treeWidth, float treeOffset=0);
+			UITree(String icon, String text, float treeWidth, float treeOffset=0);
 			~UITree();
 			
 			void handleEvent(Event *event);
 			void toggleCollapsed();
-			UITree *addTreeChild(string icon, wstring text, void *userData = NULL);
+			UITree *addTreeChild(String icon, String text, void *userData = NULL);
 			void Update();
 			void refreshTree();
 			float getTreeHeight();
@@ -40,7 +40,7 @@ namespace Polycode {
 			void *getUserData();
 			void setUserData(void *data);
 			UITree *getSelectedNode();
-			void setIcon(string iconFile);
+			void setIcon(String iconFile);
 			void setSelected();
 		
 			float handleRotation;
@@ -63,8 +63,8 @@ namespace Polycode {
 			bool collapsed;
 			bool collapsing;
 			ScreenImage *arrowIconImage;
-			string arrowIcon;
-			string fontName;
+			String arrowIcon;
+			String fontName;
 			int size;
 			float cellHeight;
 			float cellPadding;

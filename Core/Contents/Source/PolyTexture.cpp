@@ -69,11 +69,11 @@ Texture::Texture(Image *image) : Resource(Resource::RESOURCE_TEXTURE) {
 
 }
 
-void Texture::setResourcePath(string newPath) {
+void Texture::setResourcePath(String newPath) {
 	resourcePath = newPath;
 }
 
-string Texture::getResourcePath() {
+String Texture::getResourcePath() {
 	return resourcePath;
 }
 

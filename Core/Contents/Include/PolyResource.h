@@ -10,6 +10,7 @@
 // @package BasicTypes
 
 #pragma once
+#include "PolyString.h"
 #include "PolyGlobals.h"
 #include <vector>
 #include <string>
@@ -23,11 +24,11 @@ namespace Polycode {
 			Resource(int type);
 			virtual ~Resource();
 			
-			string getResourceName();
+			String getResourceName();
 			int getResourceType();
-			void setResourceName(string newName);
-			void setResourcePath(string path);
-			string getResourcePath();		
+			void setResourceName(String newName);
+			void setResourcePath(String path);
+			String getResourcePath();		
 
 			static const int RESOURCE_TEXTURE = 0;
 			static const int RESOURCE_MATERIAL = 1;
@@ -39,8 +40,8 @@ namespace Polycode {
 		protected:
 			
 			int type;
-			string resourcePath;
-			string name;
+			String resourcePath;
+			String name;
 	
 					
 	};

@@ -17,7 +17,7 @@ void user_read_data(png_structp png_ptr, png_bytep data, png_size_t length) {
 	OSBasics::read(data, length, 1, file);
 }
 
-Image::Image(string fileName) : imageData(NULL) {
+Image::Image(String fileName) : imageData(NULL) {
 	setPixelType(IMAGE_RGBA);
 	loaded = false;
 	if(!loadImage(fileName)) {
@@ -122,7 +122,7 @@ void Image::perlinNoise(int seed, bool alpha) {
 	}
 }
 
-void Image::writeBMP(string fileName) {
+void Image::writeBMP(String fileName) {
 //	SDL_Surface *image;
 //	image = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 32, 0x0000FF, 0x00FF00, 0xFF0000, 0x000000);
 //	memcpy(image->pixels,imageData,width * height * 4);
@@ -447,11 +447,11 @@ void Image::fill(float r, float g, float b, float a) {
 	}
 }
 
-bool Image::loadImage(string fileName) {
+bool Image::loadImage(String fileName) {
 	return loadPNG(fileName);
 }
 
-bool Image::loadPNG(string fileName) {
+bool Image::loadPNG(String fileName) {
 	OSFILE         *infile;
 	
 	png_structp   png_ptr;

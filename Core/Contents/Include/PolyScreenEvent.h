@@ -10,6 +10,7 @@
 // @package Screen
 
 #pragma once
+#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolyEvent.h"
 

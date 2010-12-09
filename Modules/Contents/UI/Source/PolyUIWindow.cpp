@@ -13,7 +13,7 @@
 using namespace Polycode;
 
 
-UIWindow::UIWindow(wstring windowName, float width, float height) : ScreenEntity() {
+UIWindow::UIWindow(String windowName, float width, float height) : ScreenEntity() {
 	
 	closeOnEscape = false;
 	
@@ -21,7 +21,7 @@ UIWindow::UIWindow(wstring windowName, float width, float height) : ScreenEntity
 	
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	
-	string fontName = conf->getStringValue("Polycode", "uiWindowTitleFont");
+	String fontName = conf->getStringValue("Polycode", "uiWindowTitleFont");
 	int fontSize = conf->getNumericValue("Polycode", "uiWindowTitleFontSize");	
 	
 	float st = conf->getNumericValue("Polycode", "uiWindowSkinT");

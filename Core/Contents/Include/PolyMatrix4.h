@@ -9,6 +9,7 @@
 // @package Math
  
 #pragma once
+#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolyVector3.h"
 #include <string.h>

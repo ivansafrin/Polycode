@@ -10,7 +10,7 @@
 // @package Screen
 
 #pragma once
-
+#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolyScreenEntity.h"
 #include "PolyRenderer.h"
@@ -40,7 +40,7 @@ namespace Polycode {
 		void Render();
 		void setRenderer(Renderer *renderer);
 		
-		void setScreenShader(string shaderName);
+		void setScreenShader(String shaderName);
 		
 		void handleEvent(Event *event);
 		int getHighestZIndex();

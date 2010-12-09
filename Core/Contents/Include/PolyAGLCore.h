@@ -12,6 +12,7 @@
 #include "PolyGlobals.h"
 #include "PolyCore.h"
 #include "PolyRectangle.h"
+#include "PolyString.h"
 #include <vector>
 #include <OpenGL/gl.h>
 #include <OpenGL/OpenGL.h>

@@ -9,6 +9,7 @@
 // @package BasicTypes
 
 #pragma once
+#include "PolyString.h"
 #include "PolyLogger.h"
 #include "PolyGlobals.h"
 #include <string>
@@ -22,7 +23,7 @@ namespace Polycode {
 	
 	class _PolyExport Font {
 		public:
-			Font(string fileName);
+			Font(String fileName);
 			~Font();
 			
 			FT_Face getFace();

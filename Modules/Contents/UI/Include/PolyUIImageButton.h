@@ -19,7 +19,7 @@ namespace Polycode {
 
 	class _PolyExport UIImageButton : public ScreenEntity {
 		public:
-			UIImageButton(string imageName);
+			UIImageButton(String imageName);
 			~UIImageButton();
 		
 			void handleEvent(Event *event);

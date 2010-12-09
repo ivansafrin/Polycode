@@ -10,6 +10,7 @@
 // @package Screen
 
 #pragma once
+#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolyCoreServices.h"
 #include "PolyScreenEntity.h"
@@ -24,7 +25,7 @@ namespace Polycode {
 
 	class _PolyExport ScreenMesh : public ScreenEntity {
 		public:
-			ScreenMesh(string fileName);
+			ScreenMesh(String fileName);
 			ScreenMesh(int meshType);
 			~ScreenMesh();
 			
@@ -32,7 +33,7 @@ namespace Polycode {
 			
 			Mesh *getMesh();
 			Texture *getTexture();
-			void loadTexture(string fileName);
+			void loadTexture(String fileName);
 			void loadTexture(Image *image);	
 			void setTexture(Texture *texture);
 			

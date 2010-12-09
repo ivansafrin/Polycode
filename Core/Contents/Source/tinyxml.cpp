@@ -943,6 +943,9 @@ bool TiXmlDocument::LoadFile( const char* _filename, TiXmlEncoding encoding )
 	// address as it's c_str() method, and so bad things happen. Looks
 	// like a bug in the Microsoft STL implementation.
 	// Add an extra string to avoid the crash.
+	
+	printf("Reading xml from %s\n", _filename);
+	
 	TIXML_STRING filename( _filename );
 	value = filename;
 

@@ -9,7 +9,7 @@
 // @package BasicTypes
  
 #pragma once
-
+#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolyFont.h"
 #include "PolyImage.h"
@@ -27,12 +27,12 @@ namespace Polycode {
 	class _PolyExport Label : public Image {
 		public:
 			
-			Label(Font *font, wstring text, int size, int antiAliasMode);
+			Label(Font *font, String text, int size, int antiAliasMode);
 			~Label();
-			void setText(wstring text);
-			wstring getText();
-			int getTextWidth(Font *font, wstring text, int size);
-			int getTextHeight(Font *font, wstring text, int size);
+			void setText(String text);
+			String getText();
+			int getTextWidth(Font *font, String text, int size);
+			int getTextHeight(Font *font, String text, int size);
 					
 			float getTextWidth();		
 			float getTextHeight();
@@ -48,7 +48,7 @@ namespace Polycode {
 			float currentTextHeight;
 			int antiAliasMode;
 			int size;
-			wstring text;
+			String text;
 			Font *font;
 	};
 

@@ -9,6 +9,7 @@
 // @package Services
 
 #pragma once
+#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolyTween.h"
 #include <vector>

@@ -8,13 +8,13 @@ using namespace Polycode;
 
 class PolycodeProject {
 	public:
-		PolycodeProject(string name, string path);
+		PolycodeProject(String name, String path);
 		~PolycodeProject();	
 	
-		wstring getProjectName() { return projectName; }
-		wstring getRootFolder() { return projectFolder; }	
+		String getProjectName() { return projectName; }
+		String getRootFolder() { return projectFolder; }	
 	
 private:
-	wstring projectFolder;	
-	wstring projectName;
+	String projectFolder;	
+	String projectName;
 };

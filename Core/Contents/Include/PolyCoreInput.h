@@ -9,6 +9,7 @@
 // @package Core
 
 #pragma once
+#include "PolyString.h"
 #include "PolyLogger.h"
 #include "PolyGlobals.h"
 #include "PolyVector2.h"

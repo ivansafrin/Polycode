@@ -10,7 +10,7 @@
 // @package Services
 
 #pragma once
-
+#include "PolyString.h"
 #include "PolyGlobals.h"
 #include <string>
 #include <vector>
@@ -24,10 +24,10 @@ namespace Polycode {
 
 	class ConfigEntry {
 	public:
-		string key;
-		string configNamespace;
+		String key;
+		String configNamespace;
 		float numVal;
-		string stringVal;
+		String stringVal;
 		bool isString;
 	};
 	
@@ -36,16 +36,16 @@ namespace Polycode {
 		Config();
 		~Config();		
 
-		void loadConfig(string configNamespace, string fileName);	
-		void saveConfig(string configNamespace, string fileName);
+		void loadConfig(String configNamespace, String fileName);	
+		void saveConfig(String configNamespace, String fileName);
 		
-		ConfigEntry *getEntry(string configNamespace, string key);
+		ConfigEntry *getEntry(String configNamespace, String key);
 		
-		void setStringValue(string configNamespace, string key, string value);
-		void setNumericValue(string configNamespace, string key, float value);		
+		void setStringValue(String configNamespace, String key, String value);
+		void setNumericValue(String configNamespace, String key, float value);		
 			
-		float getNumericValue(string configNamespace, string key);
-		string getStringValue(string configNamespace, string key);
+		float getNumericValue(String configNamespace, String key);
+		String getStringValue(String configNamespace, String key);
 		
 	private:
 		

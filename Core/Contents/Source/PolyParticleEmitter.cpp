@@ -11,7 +11,7 @@
 
 using namespace Polycode;
 
-ParticleEmitter::ParticleEmitter(string imageFile, Mesh *particleMesh, SceneMesh *emitter, Scene *particleParentScene, int particleType, int emitterType, float lifespan, unsigned int numParticles,  Vector3 direction, Vector3 gravity, Vector3 deviation) 
+ParticleEmitter::ParticleEmitter(String imageFile, Mesh *particleMesh, SceneMesh *emitter, Scene *particleParentScene, int particleType, int emitterType, float lifespan, unsigned int numParticles,  Vector3 direction, Vector3 gravity, Vector3 deviation) 
 : SceneEntity() {
 	
 	emitterMesh = emitter;

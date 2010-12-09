@@ -11,7 +11,7 @@
 
 using namespace Polycode;
 
-SceneLabel::SceneLabel(string fontName, wstring text, int size, float scale, int amode) : SceneEntity() {
+SceneLabel::SceneLabel(String fontName, String text, int size, float scale, int amode) : SceneEntity() {
 	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size, amode);
 	this->scale = scale;
 	setText(text);
@@ -61,7 +61,7 @@ bool SceneLabel::testMouseCollision(float x, float y) {
 	return false; //CoreServices::getInstance()->getRenderer()->test2DCoordinate(x, y, imagePolygon, fullMatrix, billboardRoll);
 }
 
-void SceneLabel::setText(wstring newText) {
+void SceneLabel::setText(String newText) {
 	if(texture)
 		CoreServices::getInstance()->getMaterialManager()->deleteTexture(texture);
 		

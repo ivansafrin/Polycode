@@ -10,6 +10,7 @@
 // @package Materials
 
 #pragma once
+#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolyResource.h"
 #include "PolyImage.h"
@@ -35,8 +36,8 @@ namespace Polycode {
 			void setImageData(Image *data);
 		
 			void updateScroll(int elapsed);
-			void setResourcePath(string newPath);
-			string getResourcePath();
+			void setResourcePath(String newPath);
+			String getResourcePath();
 		
 			char *getTextureData() { return textureData;}
 			
@@ -52,7 +53,7 @@ namespace Polycode {
 		
 			int width;
 			int height;
-			string resourcePath;
+			String resourcePath;
 			char *textureData;
 			float scrollOffsetX;
 			float scrollOffsetY;

@@ -14,6 +14,7 @@
 #include <windows.h>
 #endif
 
+#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolyTexture.h"
 #include "PolyGLRenderer.h"

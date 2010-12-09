@@ -9,7 +9,7 @@
 // @package Services
 
 #pragma once
-
+#include "PolyString.h"
 #include "PolyGlobals.h"
 #include <string>
 #include <vector>
@@ -23,9 +23,5 @@ namespace Polycode {
 
 	class _PolyExport StringUtil {
 		public:
-			static string toLowerCase(const std::string &str);
-			static vector<std::string> split(const std::string &str, const std::string &delims);
-			static string replace(const std::string &str, const std::string &what, const std::string &withWhat);
-			static string floatToString(float value);
 	};
 }

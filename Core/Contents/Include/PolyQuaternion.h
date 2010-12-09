@@ -8,6 +8,7 @@
  */
  
 #pragma once
+#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolyBasics.h"
 #include "PolyMatrix4.h"

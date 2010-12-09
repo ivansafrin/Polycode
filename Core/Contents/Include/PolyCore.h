@@ -10,6 +10,7 @@
 // @package Core
 
 #pragma once
+#include "PolyString.h"
 #include "PolyLogger.h"
 #include "PolyGlobals.h"
 #include "PolyRenderer.h"
@@ -45,8 +46,8 @@ namespace Polycode {
 	
 	class _PolyExport CoreFileExtension {
 	public:
-		string extension;
-		string description;
+		String extension;
+		String description;
 	};
 	
 	class _PolyExport Core : public EventDispatcher {
@@ -67,8 +68,8 @@ namespace Polycode {
 		virtual void unlockMutex(CoreMutex *mutex) = 0;
 		virtual CoreMutex *createMutex() = 0;
 		
-		virtual void copyStringToClipboard(wstring str) = 0;
-		virtual wstring getClipboardString() = 0;
+		virtual void copyStringToClipboard(String str) = 0;
+		virtual String getClipboardString() = 0;
 		
 		CoreServices *getServices();
 		float getFPS();
@@ -85,12 +86,12 @@ namespace Polycode {
 		virtual vector<Rectangle> getVideoModes() = 0;
 		
 		
-		virtual void createFolder(string folderPath) = 0;
-		virtual void copyDiskItem(string itemPath, string destItemPath) = 0;		
-		virtual void moveDiskItem(string itemPath, string destItemPath) = 0;		
-		virtual void removeDiskItem(string itemPath) = 0;
+		virtual void createFolder(String folderPath) = 0;
+		virtual void copyDiskItem(String itemPath, String destItemPath) = 0;		
+		virtual void moveDiskItem(String itemPath, String destItemPath) = 0;		
+		virtual void removeDiskItem(String itemPath) = 0;
 
-		virtual string openFolderPicker() = 0;
+		virtual String openFolderPicker() = 0;
 		virtual vector<string> openFilePicker(vector<CoreFileExtension> extensions, bool allowMultiple) = 0;
 		
 		void setVideoModeIndex(int index, bool fullScreen, int aaLevel);

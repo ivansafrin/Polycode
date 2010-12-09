@@ -11,7 +11,7 @@
 
 using namespace Polycode;
 
-UICheckBox::UICheckBox(Font *font, string checkImage, wstring caption, bool checked) {
+UICheckBox::UICheckBox(Font *font, String checkImage, String caption, bool checked) {
 	buttonImage = new ScreenImage(checkImage.c_str());
 	buttonImage->setPosition(2, 3);
 	this->checked = checked;

@@ -9,6 +9,7 @@
 // @package BasicTypes
 
 #pragma once
+#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolyBone.h"
 #include <string>
@@ -63,10 +64,10 @@ namespace Polycode {
 
 	class _PolyExport SkeletonAnimation {
 		public:
-			SkeletonAnimation(string name, float duration);
+			SkeletonAnimation(String name, float duration);
 			~SkeletonAnimation();			
 			void addBoneTrack(BoneTrack *boneTrack);
-			string getName();
+			String getName();
 			void Play();
 			void Stop();
 			void Update();
@@ -75,22 +76,22 @@ namespace Polycode {
 			
 		private:
 			
-			string name;
+			String name;
 			float duration;
 			vector<BoneTrack*> boneTracks;
 	};
 
 	class _PolyExport Skeleton : public SceneEntity {
 		public:
-			Skeleton(string fileName);
-			void loadSkeleton(string fileName);
+			Skeleton(String fileName);
+			void loadSkeleton(String fileName);
 			~Skeleton();
 		
-			void playAnimation(string animName);
-			SkeletonAnimation *getAnimation(string name);
+			void playAnimation(String animName);
+			SkeletonAnimation *getAnimation(String name);
 			void Update();
 			
-			Bone *getBoneByName(string name);
+			Bone *getBoneByName(String name);
 			void bonesVisible(bool val);
 			void enableBoneLabels(Font *font, float size, float scale);
 					

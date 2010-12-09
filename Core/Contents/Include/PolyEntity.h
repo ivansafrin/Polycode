@@ -10,6 +10,7 @@
 // @package BasicTypes
 
 #pragma once
+#include "PolyString.h"
 #include "PolyLogger.h"
 #include "PolyGlobals.h"
 #include "PolyMatrix4.h"
@@ -25,8 +26,8 @@ namespace Polycode {
 	
 	class _PolyExport EntityProp {
 	public:
-		string propName;
-		string propValue;		
+		String propName;
+		String propValue;		
 	};	
 
 	class _PolyExport Entity {
@@ -126,10 +127,10 @@ namespace Polycode {
 		
 			Vector3 getCompoundScale();
 		
-			string custEntityType;
+			String custEntityType;
 			vector <EntityProp> entityProps;				
 		
-			string getEntityProp(string propName);
+			String getEntityProp(String propName);
 		
 			Vector3 bBox;
 			bool billboardMode;			

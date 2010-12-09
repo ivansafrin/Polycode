@@ -11,6 +11,7 @@
 #pragma once
 #include "PolyLogger.h"
 #include "PolyGlobals.h"
+#include "PolyString.h"
 #include "PolySceneEntity.h"
 #include "PolyMesh.h"
 #include "PolyFont.h"
@@ -21,10 +22,10 @@ namespace Polycode {
 
 	class _PolyExport Bone : public SceneEntity {
 		public:
-			Bone(string boneName);
+			Bone(String boneName);
 			~Bone();
 			void enableBoneLabel(Font *font, float size, float scale);
-			string getName();
+			String getName();
 			void Render();
 
 			void setParentBone(Bone *bone);
@@ -49,7 +50,7 @@ namespace Polycode {
 			Matrix4 restMatrix;
 			Bone* parentBone;
 			vector<Bone*> childBones;
-			string boneName;
+			String boneName;
 			Mesh *boneMesh;
 	};
 

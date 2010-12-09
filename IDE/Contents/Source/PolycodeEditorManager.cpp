@@ -10,7 +10,7 @@ PolycodeEditorManager::~PolycodeEditorManager() {
 	
 }
 
-PolycodeEditor *PolycodeEditorManager::createEditorForExtension(string extension) {
+PolycodeEditor *PolycodeEditorManager::createEditorForExtension(String extension) {
 	for(int i=0;i < editorFactories.size(); i++) {
 		PolycodeEditorFactory *factory = editorFactories[i];
 		if(factory->canHandleExtension(extension)) {
@@ -22,7 +22,7 @@ PolycodeEditor *PolycodeEditorManager::createEditorForExtension(string extension
 	return NULL;
 }
 
-PolycodeEditor *PolycodeEditorManager::getEditorForPath(string path) {
+PolycodeEditor *PolycodeEditorManager::getEditorForPath(String path) {
 	for(int i=0; i < openEditors.size();i++) {
 		PolycodeEditor *editor = openEditors[i];
 		if(editor->getFilePath() == path)

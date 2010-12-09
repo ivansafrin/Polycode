@@ -10,6 +10,7 @@
 // @package Math
 
 #pragma once
+#include "PolyString.h"
 #include "PolyGlobals.h"
 
 #define SAMPLE_SIZE 1024

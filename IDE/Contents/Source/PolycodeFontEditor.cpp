@@ -10,7 +10,7 @@ PolycodeFontEditor::~PolycodeFontEditor() {
 	
 }
 
-bool PolycodeFontEditor::openFile(string filePath) {
+bool PolycodeFontEditor::openFile(String filePath) {
 	
 	CoreServices::getInstance()->getFontManager()->registerFont(filePath, filePath);
 	

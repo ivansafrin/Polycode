@@ -8,7 +8,7 @@
  */
 // @package Core
 #pragma once
-
+#include "PolyString.h"
 #include "PolyGlobals.h"
 
 namespace Polycode{

@@ -10,6 +10,7 @@
 // @package Core
 
 #pragma once
+#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolyCore.h"
 #include "PolyRectangle.h"

@@ -18,7 +18,7 @@ namespace Polycode {
 	
 	class _PolyExport UIBox : public ScreenEntity {
 	public:
-		UIBox(string imageFile, float t, float r, float b, float l, float boxWidth, float boxHeight);
+		UIBox(String imageFile, float t, float r, float b, float l, float boxWidth, float boxHeight);
 		~UIBox();
 		
 		void resizeBox(float newWidth, float newHeight);		

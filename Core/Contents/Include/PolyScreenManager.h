@@ -10,7 +10,7 @@
 // @package Services
 
 #pragma once
-
+#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolyScreen.h"
 //#include "PolyPhysicsScreen.h"

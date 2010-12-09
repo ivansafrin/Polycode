@@ -127,7 +127,7 @@ void Screen::handleEvent(Event *event) {
 	}
 }
 
-void Screen::setScreenShader(string shaderName) {
+void Screen::setScreenShader(String shaderName) {
 	filterShaderMaterial = (Material*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_MATERIAL, shaderName);
 	if(!filterShaderMaterial)
 		return;

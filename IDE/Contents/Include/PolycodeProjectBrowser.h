@@ -24,7 +24,7 @@ public:
 	
 	void handleEvent(Event *event);
 	
-	void parseFolderIntoNode(UITree *node, string spath);
+	void parseFolderIntoNode(UITree *node, String spath);
 	
 	BrowserUserData *getSelectedData() { return selectedData; }
 	

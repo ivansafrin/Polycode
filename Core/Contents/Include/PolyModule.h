@@ -8,6 +8,7 @@
  */
 
 #pragma once
+#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "tinyxml.h"
 #include "PolyShader.h"
@@ -35,9 +36,9 @@ namespace Polycode {
 		PolycodeShaderModule();
 		virtual ~PolycodeShaderModule();
 		
-		virtual bool acceptsExtension(string extension) = 0;
-		virtual Resource* createProgramFromFile(string extension, string fullPath) = 0;
-		virtual string getShaderType() = 0;
+		virtual bool acceptsExtension(String extension) = 0;
+		virtual Resource* createProgramFromFile(String extension, String fullPath) = 0;
+		virtual String getShaderType() = 0;
 		virtual Shader *createShader(TiXmlNode *node) = 0;
 	
 		virtual bool applyShaderMaterial(Renderer *renderer, Material *material, ShaderBinding *localOptions, unsigned int shaderIndex) = 0;

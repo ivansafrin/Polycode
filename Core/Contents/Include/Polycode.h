@@ -9,6 +9,7 @@
  
 #pragma once
 
+#include "PolyString.h"
 #include "PolyLogger.h"
 #include "PolyConfig.h"
 #include "PolyEntity.h"

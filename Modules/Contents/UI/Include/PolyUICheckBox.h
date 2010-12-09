@@ -20,7 +20,7 @@ namespace Polycode {
 
 	class _PolyExport UICheckBox : public ScreenEntity {
 		public:
-			UICheckBox(Font *font, string checkImage, wstring caption, bool checked);
+			UICheckBox(Font *font, String checkImage, String caption, bool checked);
 			~UICheckBox();
 		
 			void changeCheck();

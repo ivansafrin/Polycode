@@ -26,13 +26,13 @@ namespace Polycode {
 
 	typedef struct {
 		Texture *texture;
-		string name;
+		String name;
 		CGparameter vpParam;
 	} CGTextureBinding;
 
 	typedef struct {
 		Cubemap *cubemap;
-		string name;
+		String name;
 		CGparameter vpParam;
 	} CGCubemapBinding;
 	
@@ -56,10 +56,10 @@ namespace Polycode {
 			CGShaderBinding(CGShader *shader);
 			virtual ~CGShaderBinding();
 			
-			void addTexture(string name, Texture *texture); 
-			void addCubemap(string name, Cubemap *cubemap);				
-			void clearTexture(string name);			
-			void addParam(string type, string name, string value);
+			void addTexture(String name, Texture *texture); 
+			void addCubemap(String name, Cubemap *cubemap);				
+			void clearTexture(String name);			
+			void addParam(String type, String name, String value);
 			
 			vector<CGTextureBinding> textures;
 			vector<CGCubemapBinding> cubemaps;		

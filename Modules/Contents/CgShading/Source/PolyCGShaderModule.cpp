@@ -44,7 +44,7 @@ CGShaderModule::~CGShaderModule() {
 	cgDestroyContext(cgContext);	
 }
 
-bool CGShaderModule::acceptsExtension(string extension) {
+bool CGShaderModule::acceptsExtension(String extension) {
 	if(extension == "cgvert" || extension == "cgfrag") {
 		return true;
 	} else {
@@ -52,7 +52,7 @@ bool CGShaderModule::acceptsExtension(string extension) {
 	}
 }
 
-string CGShaderModule::getShaderType() {
+String CGShaderModule::getShaderType() {
 	return "cg";
 }
 
@@ -396,7 +396,7 @@ void CGShaderModule::addParamToProgram(CGProgram *program,TiXmlNode *node) {
 		
 		if(strcmp(node->ToElement()->Attribute("type"), "auto") == 0) {
 			isAuto = true;
-			string pid = node->ToElement()->Attribute("id");
+			String pid = node->ToElement()->Attribute("id");
 			if(pid == "TAU_MODELVIEWPROJ_MATRIX")
 				autoID = CGProgramParam::TAU_MODELVIEWPROJ_MATRIX;
 			else if(pid == "TAU_AREA_LIGHT_POSITION_0")
@@ -496,7 +496,7 @@ void CGShaderModule::reloadPrograms() {
 	}	
 }
 
-void CGShaderModule::recreateCGProgram(CGProgram *prog, string fileName, int type) {
+void CGShaderModule::recreateCGProgram(CGProgram *prog, String fileName, int type) {
 	
 	OSFILE *file = OSBasics::open(fileName, "r");
 	OSBasics::seek(file, 0, SEEK_END);	
@@ -524,14 +524,14 @@ void CGShaderModule::recreateCGProgram(CGProgram *prog, string fileName, int typ
 	
 }
 
-CGProgram *CGShaderModule::createCGProgram(string fileName, int type) {
+CGProgram *CGShaderModule::createCGProgram(String fileName, int type) {
 	CGProgram *prog = new CGProgram(type);	
 	recreateCGProgram(prog, fileName, type);	
 	programs.push_back(prog);
 	return prog;
 }
 
-Resource* CGShaderModule::createProgramFromFile(string extension, string fullPath) {
+Resource* CGShaderModule::createProgramFromFile(String extension, String fullPath) {
 	if(extension == "cgvert") {
 		Logger::log("Adding CG vertex program %s\n", fullPath.c_str());				
 		return createCGProgram(fullPath, CGProgram::TYPE_VERT);

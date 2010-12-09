@@ -11,7 +11,7 @@
 
 using namespace Polycode;
 
-Skeleton::Skeleton(string fileName) : SceneEntity() {
+Skeleton::Skeleton(String fileName) : SceneEntity() {
 	loadSkeleton(fileName);
 	currentAnimation = NULL;
 }
@@ -23,7 +23,7 @@ int Skeleton::getNumBones() {
 	return bones.size();
 }
 
-Bone *Skeleton::getBoneByName(string name) {
+Bone *Skeleton::getBoneByName(String name) {
 	for(int i=0; i < bones.size(); i++) {
 		if(bones[i]->getName() == name)
 			return bones[i];
@@ -41,7 +41,7 @@ void Skeleton::enableBoneLabels(Font *font, float size, float scale) {
 	}	
 }
 
-void Skeleton::playAnimation(string animName) {
+void Skeleton::playAnimation(String animName) {
 	SkeletonAnimation *anim = getAnimation(animName);
 	if(!anim)
 		return;
@@ -56,7 +56,7 @@ void Skeleton::playAnimation(string animName) {
 	anim->Play();
 }
 
-SkeletonAnimation *Skeleton::getAnimation(string name) {
+SkeletonAnimation *Skeleton::getAnimation(String name) {
 	for(int i=0; i < animations.size(); i++) {
 		if(animations[i]->getName() == name)
 			return animations[i];
@@ -71,7 +71,7 @@ void Skeleton::Update() {
 	}
 }
 
-void Skeleton::loadSkeleton(string fileName) {
+void Skeleton::loadSkeleton(String fileName) {
 	OSFILE *inFile = OSBasics::open(fileName.c_str(), "rb");
 	if(!inFile) {
 		return;
@@ -324,7 +324,7 @@ void BoneTrack::setSpeed(float speed) {
 }
 
 
-SkeletonAnimation::SkeletonAnimation(string name, float duration) {
+SkeletonAnimation::SkeletonAnimation(String name, float duration) {
 	this->name = name;
 	this->duration = duration;
 }
@@ -357,7 +357,7 @@ SkeletonAnimation::~SkeletonAnimation() {
 
 }
 
-string SkeletonAnimation::getName() {
+String SkeletonAnimation::getName() {
 	return name;
 }
 

@@ -13,3 +13,10 @@ Core/Build/Mac\ OS\ X/build
 IDE/Build/Mac\ OS\ X/build
 Modules/Build/Mac\ OS\ X/build
 Core/Dependencies
+
+# OS generated files #
+######################
+.DS_Store?
+ehthumbs.db
+Icon?
+Thumbs.db

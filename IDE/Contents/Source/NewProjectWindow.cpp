@@ -11,7 +11,7 @@ NewProjectWindow::NewProjectWindow() : UIWindow(L"Create New Project", 500, 300)
 	defaultTemplateTree = NULL;
 	
 	Config *conf = CoreServices::getInstance()->getConfig();	
-	string fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
+	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
 	int fontSize = conf->getNumericValue("Polycode", "uiDefaultFontSize");
 	
 	
@@ -32,9 +32,7 @@ NewProjectWindow::NewProjectWindow() : UIWindow(L"Create New Project", 500, 300)
 	for(int i=0; i < templates.size(); i++) {
 		OSFileEntry entry = templates[i];
 		if(entry.type == OSFileEntry::TYPE_FOLDER) {
-			wstring name;
-			name.assign(entry.name.begin(),entry.name.end());
-			UITree *newChild = templateContainer->getRootNode()->addTreeChild("folder.png", name, NULL);			
+			UITree *newChild = templateContainer->getRootNode()->addTreeChild("folder.png", entry.name, NULL);			
 			TemplateUserData *data = new TemplateUserData();
 			data->type = 0;
 			newChild->setUserData(data);			
@@ -80,15 +78,15 @@ NewProjectWindow::NewProjectWindow() : UIWindow(L"Create New Project", 500, 300)
 	okButton->setPosition(500-100-padding, 265);
 }
 
-string NewProjectWindow::getTemplateFolder() {
+String NewProjectWindow::getTemplateFolder() {
 	return templateFolder;
 }
 
-wstring NewProjectWindow::getProjectName() {
+String NewProjectWindow::getProjectName() {
 	return projectNameInput->getText();
 }
 
-wstring NewProjectWindow::getProjectLocation() {
+String NewProjectWindow::getProjectLocation() {
 	return projectLocationInput->getText();
 }
 
@@ -113,10 +111,8 @@ void NewProjectWindow::handleEvent(Event *event) {
 			}			
 			
 			if(event->getDispatcher() == locationSelectButton) {
-				string pathName = CoreServices::getInstance()->getCore()->openFolderPicker();
-				wstring wPathName;
-				wPathName.assign(pathName.begin(), pathName.end());
-				projectLocationInput->setText(wPathName);
+				String pathName = CoreServices::getInstance()->getCore()->openFolderPicker();
+				projectLocationInput->setText(pathName);
 			}			
 			
 		}
@@ -139,9 +135,7 @@ void NewProjectWindow::parseTemplatesIntoTree(UITree *tree, OSFileEntry folder) 
 	for(int i=0; i < templates.size(); i++) {
 		OSFileEntry entry = templates[i];
 		if(entry.type == OSFileEntry::TYPE_FOLDER) {
-			wstring name;
-			name.assign(entry.name.begin(),entry.name.end());
-			UITree *newChild = tree->addTreeChild("templateIcon.png", name, NULL);			
+			UITree *newChild = tree->addTreeChild("templateIcon.png", entry.name, NULL);			
 			TemplateUserData *data = new TemplateUserData();
 			data->type = 1;
 			data->templateFolder = entry.fullPath;

@@ -9,7 +9,7 @@
 // @package Materials
 
 #pragma once
-
+#include "PolyString.h"
 #include "PolyGlobals.h"
 #include <string>
 #include <vector>
@@ -25,7 +25,7 @@ namespace Polycode {
 	
 	class _PolyExport Material : public Resource {
 		public:
-			Material(string name);
+			Material(String name);
 			virtual ~Material();
 			
 			void addShader(Shader *shader,ShaderBinding *shaderBinding);
@@ -35,10 +35,10 @@ namespace Polycode {
 			int getNumShaderRenderTargets();
 			ShaderRenderTarget *getShaderRenderTarget(unsigned int index);
 				
-			string getName();
+			String getName();
 			Shader *getShader(unsigned int index);
 			ShaderBinding *getShaderBinding(unsigned int index);
-			void loadMaterial(string fileName);
+			void loadMaterial(String fileName);
 			
 		protected:
 		
@@ -46,7 +46,7 @@ namespace Polycode {
 			vector<ShaderBinding*> shaderBindings;
 			vector<ShaderRenderTarget*> renderTargets;
 					
-			string name;
+			String name;
 		
 	};
 }

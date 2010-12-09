@@ -9,6 +9,7 @@
 // @package Scene
  
 #pragma once
+#include "PolyString.h"
 #include "PolyLogger.h"
 #include "PolyGlobals.h"
 #include <vector>
@@ -30,18 +31,18 @@ namespace Polycode {
 			
 			void Render();
 			void RenderDepthOnly(Camera *targetCamera);
-			void addGrid(string gridTexture);
+			void addGrid(String gridTexture);
 	
-			static string readString(OSFILE *inFile);
-			void loadScene(string fileName);
+			static String readString(OSFILE *inFile);
+			void loadScene(String fileName);
 			void generateLightmaps(float lightMapRes, float lightMapQuality, int numRadPasses);
 
 			void addLight(SceneLight *light);
 			SceneLight *getNearestLight(Vector3 pos);
 			
 			void writeEntityMatrix(SceneEntity *entity, OSFILE *outFile);
-			void writeString(string str, OSFILE *outFile);
-			void saveScene(string fileName);
+			void writeString(String str, OSFILE *outFile);
+			void saveScene(String fileName);
 	
 			int getNumStaticGeometry();
 			SceneMesh *getStaticGeometry(int index);
@@ -51,8 +52,8 @@ namespace Polycode {
 			int getNumLights();
 			SceneLight *getLight(int index);
 			
-			SceneEntity *getCustomEntityByType(string type);
-			vector<SceneEntity*> getCustomEntitiesByType(string type);		
+			SceneEntity *getCustomEntityByType(String type);
+			vector<SceneEntity*> getCustomEntitiesByType(String type);		
 			
 			static const unsigned int ENTITY_MESH = 0;
 			static const unsigned int ENTITY_LIGHT = 1;			

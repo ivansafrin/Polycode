@@ -19,7 +19,7 @@ Resource::~Resource() {
 
 }
 
-string Resource::getResourceName() {
+String Resource::getResourceName() {
 	return name;
 }
 
@@ -27,14 +27,14 @@ int Resource::getResourceType() {
 	return type;
 }
 
-void Resource::setResourceName(string newName) {
+void Resource::setResourceName(String newName) {
 	name = newName;
 }
 
-void Resource::setResourcePath(string path) {
+void Resource::setResourcePath(String path) {
 	resourcePath = path;
 }
 
-string Resource::getResourcePath() {
+String Resource::getResourcePath() {
 	return resourcePath;
 }

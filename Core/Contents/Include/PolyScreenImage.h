@@ -10,6 +10,7 @@
 // @package Screen
 
 #pragma once
+#include "PolyString.h"
 #include <math.h>
 #include "PolyGlobals.h"
 #include "PolyScreenShape.h"
@@ -26,7 +27,7 @@ namespace Polycode {
 
 	class _PolyExport ScreenImage : public ScreenShape {
 		public:
-		ScreenImage(string fileName);
+		ScreenImage(String fileName);
 		ScreenImage(Image *image);		
 		~ScreenImage();
 		

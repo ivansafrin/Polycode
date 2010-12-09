@@ -11,7 +11,7 @@ class PolycodeImageEditor : public PolycodeEditor {
 	PolycodeImageEditor();
 	virtual ~PolycodeImageEditor();
 	
-	bool openFile(string filePath);
+	bool openFile(String filePath);
 	void Resize(int x, int y);
 	
 	protected:

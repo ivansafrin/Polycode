@@ -9,6 +9,7 @@
 // @package Events
 
 #pragma once
+#include "PolyString.h"
 #include "PolyLogger.h"
 #include "PolyGlobals.h"
 #include <string>
@@ -28,14 +29,14 @@ namespace Polycode {
 			void setEventCode(int eventCode);
 			EventDispatcher *getDispatcher();
 			void setDispatcher(EventDispatcher *dispatcher);
-			string getEventType();
+			String getEventType();
 			
 			static const int COMPLETE_EVENT = 0;
 			static const int CHANGE_EVENT = 1;
 						
 		protected:
 			
-			string eventType;
+			String eventType;
 			EventDispatcher *dispatcher;
 			int eventCode;
 			

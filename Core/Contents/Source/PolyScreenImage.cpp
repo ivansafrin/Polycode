@@ -11,7 +11,7 @@
 
 using namespace Polycode;
 
-ScreenImage::ScreenImage(string fileName) : ScreenShape(ScreenShape::SHAPE_RECT,1,1) {
+ScreenImage::ScreenImage(String fileName) : ScreenShape(ScreenShape::SHAPE_RECT,1,1) {
 	loadTexture(fileName);
 	
 	imageWidth = texture->getWidth();

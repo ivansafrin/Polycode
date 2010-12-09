@@ -10,6 +10,7 @@
 // @package Scene
 
 #pragma once
+#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolySceneMesh.h"
 #include "PolyCoreServices.h"

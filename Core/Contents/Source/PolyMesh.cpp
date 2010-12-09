@@ -11,7 +11,7 @@
 
 namespace Polycode {
 
-	Mesh::Mesh(string fileName) {
+	Mesh::Mesh(String fileName) {
 		
 		for(int i=0; i < 16; i++) {
 			arrayDirtyMap[i] = false;
@@ -204,7 +204,7 @@ namespace Polycode {
 		this->numUVs = numUVs;				
 	}
 	
-	void Mesh::loadMesh(string fileName) {
+	void Mesh::loadMesh(String fileName) {
 		OSFILE *inFile = OSBasics::open(fileName.c_str(), "rb");
 		if(!inFile) {
 			Logger::log("Error opening mesh file %s", fileName.c_str());

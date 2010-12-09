@@ -6,7 +6,8 @@
  *  Copyright 2009 __MyCompanyName__. All rights reserved.
  *
  */
-
+#pragma once
+#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolyCoreServices.h"
 #include "PolyScreenShape.h"
@@ -18,7 +19,7 @@ namespace Polycode {
 class SpriteAnimation {
 	public:
 		float speed;
-		string name;
+		String name;
 		int numFrames;
 	
 		vector<Vector2> framesOffsets;
@@ -27,11 +28,11 @@ class SpriteAnimation {
 class ScreenSprite : public ScreenShape 
 {
 	public:
-		ScreenSprite(string fileName, float spriteWidth, float spriteHeight);
+		ScreenSprite(String fileName, float spriteWidth, float spriteHeight);
 		~ScreenSprite();
 		
-		void addAnimation(string name, string frames, float speed);
-		void playAnimation(string name, int startFrame, bool once);
+		void addAnimation(String name, String frames, float speed);
+		void playAnimation(String name, int startFrame, bool once);
 		void Update();
 		
 	private:

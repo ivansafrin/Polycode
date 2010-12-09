@@ -15,8 +15,8 @@ class PolycodeProjectManager {
 		PolycodeProjectManager();
 		~PolycodeProjectManager();
 	
-	void createNewProject(string templateFolder, wstring projectName, wstring projectLocation);
-	void openProject(string path);
+	void createNewProject(String templateFolder, String projectName, String projectLocation);
+	void openProject(String path);
 	void setProjectBrowser(PolycodeProjectBrowser *projectBrowser) { this->projectBrowser = projectBrowser; }
 	
 protected:

@@ -11,17 +11,17 @@ PolycodeProjectManager::~PolycodeProjectManager() {
 }
 
 
-void PolycodeProjectManager::openProject(string path) {
+void PolycodeProjectManager::openProject(String path) {
 	printf("Opening project  %s\n", path.c_str());
 	
-	vector<std::string> bits = StringUtil::split(path, "/.");
+	vector<String> bits = path.split("/.");
 	
-	string projectPath = "";
+	String projectPath = "";
 	for(int i=0; i < bits.size() - 2; i++) {
 		projectPath += "/"+bits[i];
 	}
 	
-	string projectName = bits[bits.size()-2];
+	String projectName = bits[bits.size()-2];
 	
 	PolycodeProject* newProject = new PolycodeProject(projectName, projectPath);
 	projects.push_back(newProject);
@@ -30,15 +30,9 @@ void PolycodeProjectManager::openProject(string path) {
 	
 }
 
-void PolycodeProjectManager::createNewProject(string templateFolder, wstring projectName, wstring projectLocation) {
-	string _projectName;
-	_projectName.assign(projectName.begin(),projectName.end());
-	
-	string _projectLocation;
-	_projectLocation.assign(projectLocation.begin(),projectLocation.end());
-	
-	CoreServices::getInstance()->getCore()->createFolder(_projectLocation);		
-	CoreServices::getInstance()->getCore()->copyDiskItem(templateFolder, _projectLocation+"/"+_projectName);
-	CoreServices::getInstance()->getCore()->moveDiskItem(_projectLocation+"/"+_projectName+"/template.polyproject",  _projectLocation+"/"+_projectName+"/"+_projectName+".polyproject");
-	openProject(_projectLocation+"/"+_projectName+"/"+_projectName+".polyproject");	
+void PolycodeProjectManager::createNewProject(String templateFolder, String projectName, String projectLocation) {	
+	CoreServices::getInstance()->getCore()->createFolder(projectLocation);		
+	CoreServices::getInstance()->getCore()->copyDiskItem(templateFolder, projectLocation+"/"+projectName);
+	CoreServices::getInstance()->getCore()->moveDiskItem(projectLocation+"/"+projectName+"/template.polyproject",  projectLocation+"/"+projectName+"/"+projectName+".polyproject");
+	openProject(projectLocation+"/"+projectName+"/"+projectName+".polyproject");	
 }

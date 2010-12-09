@@ -31,9 +31,9 @@ void ctow(WCHAR* Dest, const char* Source)
 
 #endif
 
-OSFileEntry::OSFileEntry(string path, string name, int type) {
+OSFileEntry::OSFileEntry(String path, String name, int type) {
 	this->basePath = path;
-	this->fullPath = path + "/" + string(name);
+	this->fullPath = path + "/" + name;
 	this->name = name;
 	this->type = type;
 
@@ -60,7 +60,7 @@ void OSFILE::debugDump() {
 	OSBasics::seek(this, tellval, SEEK_SET);
 }
 
-OSFILE *OSBasics::open(string filename, string opts) {
+OSFILE *OSBasics::open(String filename, String opts) {
 	OSFILE *retFile = NULL;
 	if(PHYSFS_exists(filename.c_str())) {
 		if(!PHYSFS_isDirectory(filename.c_str())) {
@@ -174,14 +174,14 @@ int OSBasics::seek(OSFILE * stream, long int offset, int origin ) {
 	return 0;	
 }
 
-vector<OSFileEntry> OSBasics::parsePhysFSFolder(string pathString, bool showHidden) {
+vector<OSFileEntry> OSBasics::parsePhysFSFolder(String pathString, bool showHidden) {
 	vector<OSFileEntry> returnVector;
 	
 	char **rc = PHYSFS_enumerateFiles(pathString.c_str());
 	char **i;
 	
-	string fullPath;
-	string fname;
+	String fullPath;
+	String fname;
 	for (i = rc; *i != NULL; i++) {
 		fname = string(*i);
 		fullPath = pathString + "/" + fname;
@@ -198,7 +198,7 @@ vector<OSFileEntry> OSBasics::parsePhysFSFolder(string pathString, bool showHidd
 	return returnVector;
 }
 
-vector<OSFileEntry> OSBasics::parseFolder(string pathString, bool showHidden) {
+vector<OSFileEntry> OSBasics::parseFolder(String pathString, bool showHidden) {
 	vector<OSFileEntry> returnVector;
 	
 	if(pathString.size() < 128) {
@@ -232,7 +232,7 @@ vector<OSFileEntry> OSBasics::parseFolder(string pathString, bool showHidden) {
 	do {		
 		memset(fileName, 0, 260);
 		wtoc(fileName, findFileData.cFileName);
-		string fname = string(fileName);
+		String fname = string(fileName);
 		
 		if((fname.c_str()[0] != '.' || (fname.c_str()[0] == '.'  && showHidden)) && fname != "..") {
 			if( findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) {
@@ -267,14 +267,14 @@ vector<OSFileEntry> OSBasics::parseFolder(string pathString, bool showHidden) {
 	return returnVector;
 }
 
-void OSBasics::createFolder(string pathString) {
+void OSBasics::createFolder(String pathString) {
 #ifdef _WINDOWS
 #else
 	mkdir(pathString.c_str(),  S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 #endif
 }
 
-bool OSBasics::isFolder(string pathString) {	
+bool OSBasics::isFolder(String pathString) {	
 	bool retVal = false;
 #ifdef _WINDOWS
 #else

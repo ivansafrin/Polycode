@@ -21,11 +21,7 @@ void PolycodeProjectBrowser::addProject(PolycodeProject *project) {
 	UITree *projectTree = treeContainer->getRootNode()->addTreeChild("projectIcon.png", project->getProjectName(), (void*) project);
 	projectTree->toggleCollapsed();
 	
-	wstring projectPath = project->getRootFolder();
-	string wpath;
-	wpath.assign(projectPath.begin(), projectPath.end());	
-	
-	parseFolderIntoNode(projectTree, wpath);	
+	parseFolderIntoNode(projectTree, project->getRootFolder());	
 }
 
 void PolycodeProjectBrowser::handleEvent(Event *event) {
@@ -39,24 +35,20 @@ void PolycodeProjectBrowser::handleEvent(Event *event) {
 	ScreenEntity::handleEvent(event);
 }
 
-void PolycodeProjectBrowser::parseFolderIntoNode(UITree *node, string spath) {
+void PolycodeProjectBrowser::parseFolderIntoNode(UITree *node, String spath) {
 	printf("Parsing %s\n", spath.c_str());
 	vector<OSFileEntry> files = OSBasics::parseFolder(spath, false);
 	for(int i=0; i < files.size(); i++) {
 		OSFileEntry entry = files[i];
 		if(entry.type == OSFileEntry::TYPE_FOLDER) {
-			wstring name;
-			name.assign(entry.name.begin(),entry.name.end());			
 			BrowserUserData *data = new BrowserUserData();
 			data->fileEntry = entry;
-			UITree *newChild = node->addTreeChild("folder.png", name, (void*) data);
+			UITree *newChild = node->addTreeChild("folder.png", entry.name, (void*) data);
 			parseFolderIntoNode(newChild, entry.fullPath);
 		} else {
-			wstring name;
-			name.assign(entry.name.begin(),entry.name.end());			
 			BrowserUserData *data = new BrowserUserData();
 			data->fileEntry = entry;
-			UITree *newChild = node->addTreeChild("file.png", name, (void*) data);			
+			UITree *newChild = node->addTreeChild("file.png", entry.name, (void*) data);			
 		}
 	}	
 }

@@ -10,7 +10,7 @@
 // @package Services
 
 #pragma once
-
+#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolyFont.h"
 #include <vector>
@@ -23,7 +23,7 @@ namespace Polycode {
 
 	class FontEntry {
 	public:
-		string fontName;
+		String fontName;
 		Font *font;
 	};
 	
@@ -32,8 +32,8 @@ namespace Polycode {
 		FontManager();
 		~FontManager();
 
-		void registerFont(string fontName, string fontPath);		
-		Font *getFontByName(string fontName);		
+		void registerFont(String fontName, String fontPath);		
+		Font *getFontByName(String fontName);		
 		
 	private:
 		

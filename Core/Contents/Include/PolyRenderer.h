@@ -10,6 +10,7 @@
 // @package Renderer
 
 #pragma once
+#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolyColor.h"
 #include "PolyPolygon.h"

@@ -20,7 +20,7 @@ CGProgram::~CGProgram() {
 
 }
 
-void CGProgram::addParam(string name, bool isAuto, int autoID, int paramType, void *defaultData) {
+void CGProgram::addParam(String name, bool isAuto, int autoID, int paramType, void *defaultData) {
 	CGProgramParam newParam;
 	newParam.name = name;
 	newParam.paramType = paramType;
@@ -31,7 +31,7 @@ void CGProgram::addParam(string name, bool isAuto, int autoID, int paramType, vo
 	params.push_back(newParam);
 }
 
-void *CGProgramParam::createParamData(int *retType, string type, string value) {
+void *CGProgramParam::createParamData(int *retType, String type, String value) {
 		void *defaultData;
 		if(type == "float") {
 			*retType = CGProgramParam::PARAM_FLOAT;
@@ -43,7 +43,7 @@ void *CGProgramParam::createParamData(int *retType, string type, string value) {
 			*retType = CGProgramParam::PARAM_FLOAT3;
 			Vector3 *val = new Vector3();
 			defaultData = (void*)val;
-			vector<string> values = StringUtil::split(value, " ");
+			vector<String> values = value.split(" ");
 			if(values.size() == 3) {
 				val->set(atof(values[0].c_str()), atof(values[1].c_str()), atof(values[2].c_str()));
 			} else {

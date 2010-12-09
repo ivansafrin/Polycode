@@ -21,11 +21,11 @@ FixedShaderBinding::~FixedShaderBinding() {
 }
 
 
-void FixedShaderBinding::addCubemap(string name, Cubemap *cubemap) {
+void FixedShaderBinding::addCubemap(String name, Cubemap *cubemap) {
 	cubemaps.push_back(cubemap);
 }
 
-void FixedShaderBinding::addTexture(string name, Texture *texture) {
+void FixedShaderBinding::addTexture(String name, Texture *texture) {
 	textures.push_back(texture);
 }
 
@@ -33,7 +33,7 @@ Texture *FixedShaderBinding::getDiffuseTexture() {
 	return textures[0];
 }
 
-void FixedShaderBinding::addParam(string type, string name, string value) {
+void FixedShaderBinding::addParam(String type, String name, String value) {
 
 }
 

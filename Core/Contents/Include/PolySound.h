@@ -10,7 +10,7 @@
 
 #pragma once
 #include <vorbis/vorbisfile.h>
-
+#include "PolyString.h"
 #include "PolyLogger.h"
 #include "PolyGlobals.h"
 #include <string>
@@ -36,21 +36,21 @@ namespace Polycode {
 	
 	class _PolyExport Sound {
 	public:
-		Sound(string fileName);
+		Sound(String fileName);
 		~Sound();
 		
 		void Play(bool once);
 		void Stop();
 		
-		ALuint loadWAV(string fileName);
-		ALuint loadOGG(string fileName);
+		ALuint loadWAV(String fileName);
+		ALuint loadOGG(String fileName);
 		
 		ALuint GenSource(ALuint buffer);
 		ALuint GenSource();
 	
-		void checkALError(string operation);
-		void soundError(string err);
-		void soundCheck(bool result, string err);
+		void checkALError(String operation);
+		void soundError(String err);
+		void soundCheck(bool result, String err);
 		static unsigned long readByte32(const unsigned char buffer[4]);		
 		static unsigned short readByte16(const unsigned char buffer[2]);
 

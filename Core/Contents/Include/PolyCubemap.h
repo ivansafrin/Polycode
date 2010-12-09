@@ -10,6 +10,7 @@
 // @package Materials
 
 #pragma once
+#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolyResource.h"
 #include "PolyTexture.h"

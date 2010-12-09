@@ -10,7 +10,7 @@
 // @package BasicTypes
  
 #pragma once
-
+#include "PolyString.h"
 #include <math.h>
 #include "PolyGlobals.h"
 #include "PolyPolygon.h"
@@ -70,13 +70,13 @@ namespace Polycode {
 
 	class _PolyExport Mesh {
 		public:
-			Mesh(string fileName);
+			Mesh(String fileName);
 			Mesh(int meshType);
 			~Mesh();
 			
 			void addPolygon(Polygon *newPolygon);
 			
-			void loadMesh(string fileName);
+			void loadMesh(String fileName);
 
 			void loadFromFile(OSFILE *inFile);
 			void saveToFile(OSFILE *outFile);

@@ -10,6 +10,7 @@
 // @package Scene
 
 #pragma once
+#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolyEntity.h"
 #include "PolyScenePrimitive.h"
@@ -22,7 +23,7 @@ using std::vector;
 namespace Polycode {
 	class _PolyExport ParticleEmitter : public SceneEntity {
 		public:
-			ParticleEmitter(string imageFile, Mesh *particleMesh, SceneMesh *emitter, Scene *particleParentScene, int particleType, int emitterType, float lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation);
+			ParticleEmitter(String imageFile, Mesh *particleMesh, SceneMesh *emitter, Scene *particleParentScene, int particleType, int emitterType, float lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation);
 			~ParticleEmitter();
 			void setRotationSpeed(float speed);
 			void setStartingColor(Color c);

@@ -14,7 +14,7 @@ using namespace Polycode;
 #define NORMAL_FT_FLAGS FT_LOAD_TARGET_LIGHT
 
 
-Label::Label(Font *font, wstring text, int size, int antiAliasMode) {
+Label::Label(Font *font, String text, int size, int antiAliasMode) {
 		setPixelType(Image::IMAGE_RGBA);
 		this->font = font;
 		this->size = size;
@@ -29,7 +29,7 @@ Label::~Label() {
 
 }
 
-int Label::getTextWidth(Font *font, wstring text, int size) {
+int Label::getTextWidth(Font *font, String text, int size) {
 	FT_Vector delta;
 	FT_UInt previous = 0;
 	FT_UInt glyph_index;
@@ -37,7 +37,7 @@ int Label::getTextWidth(Font *font, wstring text, int size) {
 	FT_Set_Pixel_Sizes(font->getFace(), 0,  size);
 	int width = 0;
 	
-	wstring actualString = text; //StringUtil::replace(text, "\t", TAB_REPLACE);
+	String actualString = text; //StringUtil::replace(text, "\t", TAB_REPLACE);
 	
 	for(int i=0; i< actualString.length();i++)
 	{
@@ -73,9 +73,9 @@ int Label::getTextWidth(Font *font, wstring text, int size) {
 	return width+5;
 }
 
-int Label::getTextHeight(Font *font, wstring text, int size) {
+int Label::getTextHeight(Font *font, String text, int size) {
 	
-	wstring actualString = text; //StringUtil::replace(text, "\t", TAB_REPLACE);
+	String actualString = text; //StringUtil::replace(text, "\t", TAB_REPLACE);
 	
 	int height = 0;
 	
@@ -116,11 +116,11 @@ Font *Label::getFont() {
 	return font;
 }
 
-wstring Label::getText() {
+String Label::getText() {
 	return text;
 }
 
-void Label::setText(wstring text) {
+void Label::setText(String text) {
 //	Logger::logw((char*)text.c_str());
 	
 	
@@ -132,7 +132,7 @@ void Label::setText(wstring text) {
 	if(!font->isValid())
 		return;
 	
-	wstring actualString = text; //StringUtil::replace(text, "\t", TAB_REPLACE);
+	String actualString = text; //StringUtil::replace(text, "\t", TAB_REPLACE);
 	
 	int textWidth = getTextWidth(font, actualString, size);
 	int textHeight = size+getTextHeight(font, actualString, size);

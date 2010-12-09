@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6D8656A912AF5FCD008A486E /* PolyString.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D8656A812AF5FCD008A486E /* PolyString.h */; };
+		6D8656AB12AF5FD5008A486E /* PolyString.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D8656AA12AF5FD5008A486E /* PolyString.cpp */; };
 		6DFB016F12A73BC200C43A7D /* PolyModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFB016E12A73BC200C43A7D /* PolyModule.h */; };
 		6DFB017112A73BCF00C43A7D /* PolyModule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFB017012A73BCF00C43A7D /* PolyModule.cpp */; };
 		6DFBF3BD12A3184E00C43A7D /* OSBasics.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF30D12A3184E00C43A7D /* OSBasics.h */; };
@@ -201,6 +203,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6D8656A812AF5FCD008A486E /* PolyString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyString.h; sourceTree = "<group>"; };
+		6D8656AA12AF5FD5008A486E /* PolyString.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyString.cpp; sourceTree = "<group>"; };
 		6DFB016E12A73BC200C43A7D /* PolyModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyModule.h; sourceTree = "<group>"; };
 		6DFB017012A73BCF00C43A7D /* PolyModule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyModule.cpp; sourceTree = "<group>"; };
 		6DFBF30D12A3184E00C43A7D /* OSBasics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSBasics.h; sourceTree = "<group>"; };
@@ -450,6 +454,7 @@
 		6DFBF30B12A3184E00C43A7D /* Include */ = {
 			isa = PBXGroup;
 			children = (
+				6D8656A812AF5FCD008A486E /* PolyString.h */,
 				6DFBF30D12A3184E00C43A7D /* OSBasics.h */,
 				6DFBF30E12A3184E00C43A7D /* Poly_iPhone.h */,
 				6DFBF30F12A3184E00C43A7D /* PolyAGLCore.h */,
@@ -547,6 +552,7 @@
 		6DFBF36612A3184E00C43A7D /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				6D8656AA12AF5FD5008A486E /* PolyString.cpp */,
 				6DFBF36712A3184E00C43A7D /* OSBasics.cpp */,
 				6DFBF36812A3184E00C43A7D /* PolyAGLCore.cpp */,
 				6DFBF36912A3184E00C43A7D /* PolyBezierCurve.cpp */,
@@ -771,6 +777,7 @@
 				6DFBF77712A383AF00C43A7D /* physfs_platforms.h in Headers */,
 				6DFBF77A12A383AF00C43A7D /* physfs.h in Headers */,
 				6DFB016F12A73BC200C43A7D /* PolyModule.h in Headers */,
+				6D8656A912AF5FCD008A486E /* PolyString.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -920,6 +927,7 @@
 				6DFBF7B712A3846A00C43A7D /* posix.c in Sources */,
 				6DFBF7B812A3846A00C43A7D /* unix.c in Sources */,
 				6DFB017112A73BCF00C43A7D /* PolyModule.cpp in Sources */,
+				6D8656AB12AF5FD5008A486E /* PolyString.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -9,6 +9,7 @@
 // @package Services
 
 #pragma once
+#include "PolyString.h"
 #include "PolyGlobals.h"
 #include <vector>
 #include <string>
@@ -33,18 +34,18 @@ namespace Polycode {
 			
 			void addResource(Resource *resource);
 			
-			void addDirResource(string dirPath, bool recursive);
-			void addArchive(string zipPath);
+			void addDirResource(String dirPath, bool recursive);
+			void addArchive(String zipPath);
 		
-			bool readFile(string fileName){ return false;}
+			bool readFile(String fileName){ return false;}
 		
-			void parseTextures(string dirPath, bool recursive);
-			void parseMaterials(string dirPath, bool recursive);
-			void parseShaders(string dirPath, bool recursive);
-			void parsePrograms(string dirPath, bool recursive);
-			void parseCubemaps(string dirPath, bool recursive);
+			void parseTextures(String dirPath, bool recursive);
+			void parseMaterials(String dirPath, bool recursive);
+			void parseShaders(String dirPath, bool recursive);
+			void parsePrograms(String dirPath, bool recursive);
+			void parseCubemaps(String dirPath, bool recursive);
 		
-			Resource *getResource(int resourceType, string resourceName);
+			Resource *getResource(int resourceType, String resourceName);
 		
 			void addShaderModule(PolycodeShaderModule *module);
 		

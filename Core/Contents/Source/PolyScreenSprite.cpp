@@ -13,7 +13,7 @@
 
 using namespace Polycode;
 
-ScreenSprite::ScreenSprite(string fileName, float spriteWidth, float spriteHeight) : ScreenShape(ScreenShape::SHAPE_RECT, spriteWidth, spriteHeight) {
+ScreenSprite::ScreenSprite(String fileName, float spriteWidth, float spriteHeight) : ScreenShape(ScreenShape::SHAPE_RECT, spriteWidth, spriteHeight) {
 	this->spriteWidth = spriteWidth;
 	this->spriteHeight = spriteHeight;	
 	loadTexture(fileName);
@@ -29,10 +29,10 @@ ScreenSprite::~ScreenSprite() {
 	
 }
 
-void ScreenSprite::addAnimation(string name, string frames, float speed) {
+void ScreenSprite::addAnimation(String name, String frames, float speed) {
 	SpriteAnimation *newAnimation = new SpriteAnimation();
 	
-	vector<string> frameNumbers = StringUtil::split(frames, ",");
+	vector<String> frameNumbers = frames.split(",");
 	
 	int numFramesX = texture->getWidth() / spriteWidth;
 	int numFramesY = texture->getHeight() / spriteHeight;
@@ -54,7 +54,7 @@ void ScreenSprite::addAnimation(string name, string frames, float speed) {
 	animations.push_back(newAnimation);
 }
 
-void ScreenSprite::playAnimation(string name, int startFrame, bool once) {
+void ScreenSprite::playAnimation(String name, int startFrame, bool once) {
 	for(int i=0; i < animations.size(); i++) {
 		if(animations[i]->name == name) {
 			currentAnimation = animations[i];

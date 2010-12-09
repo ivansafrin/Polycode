@@ -1,7 +1,6 @@
 // @package Services
 
 #pragma once
-
 #include "PolyGlobals.h"
 #include <stdio.h>
 #include <stdarg.h>

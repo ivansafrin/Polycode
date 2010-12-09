@@ -12,7 +12,7 @@
 #ifdef _WINDOWS
 #include <windows.h>
 #endif
-
+#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolyMesh.h"
 #include "PolyGLRenderer.h"

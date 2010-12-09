@@ -24,7 +24,7 @@ namespace Polycode {
 		
 	}
 	
-	string Event::getEventType() {
+	String Event::getEventType() {
 		return eventType;
 	}
 	

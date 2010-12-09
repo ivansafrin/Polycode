@@ -19,7 +19,7 @@ FontManager::~FontManager() {
 
 }
 
-void FontManager::registerFont(string fontName, string fontPath) {
+void FontManager::registerFont(String fontName, String fontPath) {
 	Font *font = new Font(fontPath);
 	FontEntry newEntry;
 	newEntry.font = font;
@@ -27,7 +27,7 @@ void FontManager::registerFont(string fontName, string fontPath) {
 	fonts.push_back(newEntry);
 }
 
-Font *FontManager::getFontByName(string fontName) {
+Font *FontManager::getFontByName(String fontName) {
 	for(int i=0; i < fonts.size(); i++) {
 		FontEntry entry = fonts[i];
 		if(entry.fontName == fontName)

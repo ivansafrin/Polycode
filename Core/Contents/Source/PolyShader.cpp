@@ -27,7 +27,7 @@ LocalShaderParam *ShaderBinding::getLocalParam(unsigned int index) {
 	return localParams[index];
 }
 
-LocalShaderParam *ShaderBinding::getLocalParamByName(string name) {
+LocalShaderParam *ShaderBinding::getLocalParamByName(String name) {
 	for(int i=0; i < localParams.size(); i++) {
 		if(localParams[i]->name == name) {
 			return localParams[i];
@@ -82,10 +82,10 @@ int Shader::getType() {
 	return type;
 }
 
-void Shader::setName(string name) {
+void Shader::setName(String name) {
 	this->name = name;
 }
 
-string Shader::getName() {
+String Shader::getName() {
 	return name;
 }

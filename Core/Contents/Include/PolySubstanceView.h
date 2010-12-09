@@ -11,6 +11,7 @@
 #include <OpenGL/gl.h>
 #include <OpenGL/OpenGL.h>
 
+#include "PolyString.h"
 #include "Polycode.h"
 #include "PolyCocoaCore.h"
 

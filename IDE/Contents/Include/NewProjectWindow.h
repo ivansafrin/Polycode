@@ -9,7 +9,7 @@ using namespace Polycode;
 
 class TemplateUserData  {
 public:
-	string templateFolder;
+	String templateFolder;
 	int type;
 };
 
@@ -20,9 +20,9 @@ class NewProjectWindow : public UIWindow {
 	
 	void parseTemplatesIntoTree(UITree *tree, OSFileEntry folder);
 
-	string getTemplateFolder();
-	wstring getProjectName();
-	wstring getProjectLocation();
+	String getTemplateFolder();
+	String getProjectName();
+	String getProjectLocation();
 	
 	void handleEvent(Event *event);
 	void ResetForm();
@@ -39,5 +39,5 @@ class NewProjectWindow : public UIWindow {
 		UIButton *locationSelectButton;	
 		UITreeContainer *templateContainer;
 	
-		string templateFolder;
+		String templateFolder;
 };

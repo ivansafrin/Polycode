@@ -11,6 +11,7 @@
 
 #pragma once
 #include "PolyLogger.h"
+#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolyCoreServices.h"
 #include "PolySceneEntity.h"
@@ -46,7 +47,7 @@ namespace Polycode {
 			float getExposureLevel();
 			
 			void createPostFilter(Material *shaderMaterial);
-			void setPostFilter(string shaderName);
+			void setPostFilter(String shaderName);
 			
 		private:
 		

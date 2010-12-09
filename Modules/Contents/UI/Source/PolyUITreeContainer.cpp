@@ -11,7 +11,7 @@
 
 using namespace Polycode;
 
-UITreeContainer::UITreeContainer(string icon, wstring text, float treeWidth, float treeHeight) : ScreenEntity() {
+UITreeContainer::UITreeContainer(String icon, String text, float treeWidth, float treeHeight) : ScreenEntity() {
 	
 	Config *conf = CoreServices::getInstance()->getConfig();
 	

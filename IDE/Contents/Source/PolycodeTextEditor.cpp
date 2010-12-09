@@ -10,7 +10,7 @@ PolycodeTextEditor::~PolycodeTextEditor() {
 	
 }
 
-bool PolycodeTextEditor::openFile(string filePath) {
+bool PolycodeTextEditor::openFile(String filePath) {
 	
 	textInput = new UITextInput(true, 600, 550);
 	addChild(textInput);	

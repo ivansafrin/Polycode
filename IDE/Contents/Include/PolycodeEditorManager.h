@@ -11,8 +11,8 @@ class PolycodeEditorManager {
 		PolycodeEditorManager();
 		~PolycodeEditorManager();
 	
-		PolycodeEditor *getEditorForPath(string path);
-		PolycodeEditor *createEditorForExtension(string extension);
+		PolycodeEditor *getEditorForPath(String path);
+		PolycodeEditor *createEditorForExtension(String extension);
 		void registerEditorFactory(PolycodeEditorFactory *editorFactory);
 	
 		

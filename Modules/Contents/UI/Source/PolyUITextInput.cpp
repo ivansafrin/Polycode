@@ -208,8 +208,8 @@ void UITextInput::setSelection(int lineStart, int lineEnd, int colStart, int col
 
 void UITextInput::deleteSelection() {
 	if(selectionTop == selectionBottom) {
-		wstring ctext = lines[selectionTop]->getText();
-		wstring newText = ctext.substr(0, selectionL);
+		String ctext = lines[selectionTop]->getText();
+		String newText = ctext.substr(0, selectionL);
 		int rside = selectionR;
 		if(rside > ctext.length()-1)
 			rside = ctext.length() - 1;
@@ -217,8 +217,8 @@ void UITextInput::deleteSelection() {
 		lines[selectionTop]->setText(newText);
 	} else {
 		
-		wstring ctext = lines[selectionTop]->getText();
-		wstring newText = ctext.substr(0, selectionL);
+		String ctext = lines[selectionTop]->getText();
+		String newText = ctext.substr(0, selectionL);
 		lines[selectionTop]->setText(newText);
 
 		ScreenLabel *bottomLine = lines[selectionBottom];
@@ -273,8 +273,8 @@ int UITextInput::insertLine(bool after) {
 	if(after) {	
 		
 		if(currentLine) {
-			wstring ctext = currentLine->getText();
-			wstring text2 = ctext.substr(caretPosition, ctext.length()-caretPosition);
+			String ctext = currentLine->getText();
+			String text2 = ctext.substr(caretPosition, ctext.length()-caretPosition);
 			ctext = ctext.substr(0,caretPosition);
 			currentLine->setText(ctext);
 			newLine->setText(text2);
@@ -307,7 +307,7 @@ void UITextInput::restructLines() {
 	}
 }
 
-void UITextInput::setText(wstring text) {
+void UITextInput::setText(String text) {
 	if(!multiLine) {
 		currentLine->setText(text);
 	} else {
@@ -320,12 +320,12 @@ void UITextInput::onLoseFocus() {
 	blinkerRect->visible  = false;
 }
 
-wstring UITextInput::getText() {
+String UITextInput::getText() {
 	
 	if(!multiLine) {
 		return currentLine->getText();
 	} else {
-		wstring totalText = L"";
+		String totalText = L"";
 		for(int i=0; i < lines.size(); i++) {
 				totalText += lines[i]->getText();					
 				totalText += L"\n";
@@ -340,11 +340,11 @@ void UITextInput::updateCaretPosition() {
 		caretImagePosition = padding;
 	} else if(caretPosition > currentLine->getText().length()) {
 		caretPosition = currentLine->getText().length();
-		wstring caretSubString = currentLine->getText().substr(0,caretPosition);
+		String caretSubString = currentLine->getText().substr(0,caretPosition);
 		caretImagePosition = currentLine->getLabel()->getTextWidth(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), caretSubString, fontSize);		
 		caretImagePosition = caretImagePosition - 4.0f + padding;		
 	} else {
-		wstring caretSubString = currentLine->getText().substr(0,caretPosition);
+		String caretSubString = currentLine->getText().substr(0,caretPosition);
 		caretImagePosition = currentLine->getLabel()->getTextWidth(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), caretSubString, fontSize);
 		caretImagePosition = caretImagePosition - 4.0f + padding;		
 	}
@@ -397,7 +397,7 @@ void UITextInput::dragSelectionTo(float x, float y) {
 
 int UITextInput::caretSkipWordBack(int caretLine, int caretPosition) {
 	for(int i=caretPosition; i > 0; i--) {
-		wstring bit = lines[caretLine]->getText().substr(i,1);
+		String bit = lines[caretLine]->getText().substr(i,1);
 		wchar_t chr = ((wchar_t*)bit.c_str())[0]; 
 		if(((chr > 0 && chr < 48) || (chr > 57 && chr < 65) || (chr > 90 && chr < 97) || (chr > 122 && chr < 127)) && i < caretPosition-1) {
 			return i+1;
@@ -409,7 +409,7 @@ int UITextInput::caretSkipWordBack(int caretLine, int caretPosition) {
 int UITextInput::caretSkipWordForward(int caretLine, int caretPosition) {
 	int len = lines[caretLine]->getText().length();
 	for(int i=caretPosition; i < len; i++) {
-		wstring bit = lines[caretLine]->getText().substr(i,1);
+		String bit = lines[caretLine]->getText().substr(i,1);
 		wchar_t chr = ((wchar_t*)bit.c_str())[0]; 
 		if(((chr > 0 && chr < 48) || (chr > 57 && chr < 65) || (chr > 90 && chr < 97) || (chr > 122 && chr < 127)) && i > caretPosition) {
 			return i;
@@ -425,7 +425,7 @@ void UITextInput::selectWordAtCaret() {
 	int selectEnd = len;
 	
 	for(int i=this->caretPosition; i > 0; i--) {
-		wstring bit = currentLine->getText().substr(i,1);
+		String bit = currentLine->getText().substr(i,1);
 		wchar_t chr = ((wchar_t*)bit.c_str())[0]; 
 		if( (chr > 0 && chr < 48) || (chr > 57 && chr < 65) || (chr > 90 && chr < 97) || (chr > 122 && chr < 127)) {
 			selectStart = i+1;
@@ -434,7 +434,7 @@ void UITextInput::selectWordAtCaret() {
 	}	
 
 	for(int i=this->caretPosition; i < len; i++) {
-		wstring bit = currentLine->getText().substr(i,1);
+		String bit = currentLine->getText().substr(i,1);
 		wchar_t chr = ((wchar_t*)bit.c_str())[0]; 
 		if( (chr > 0 && chr < 48) || (chr > 57 && chr < 65) || (chr > 90 && chr < 97) || (chr > 122 && chr < 127)) {
 			selectEnd = i;
@@ -486,12 +486,12 @@ void UITextInput::selectAll() {
 	setSelection(0, lines.size()-1, 0, lines[lines.size()-1]->getText().length());
 }
 
-void UITextInput::insertText(wstring text) {
+void UITextInput::insertText(String text) {
 	
 }
 
-wstring UITextInput::getSelectionText() {
-	wstring totalText = L"";
+String UITextInput::getSelectionText() {
+	String totalText = L"";
 	if(selectionTop == selectionBottom) {
 		totalText = lines[selectionTop]->getText().substr(selectionL, selectionR-selectionL);	
 		return totalText;
@@ -684,7 +684,7 @@ void UITextInput::onKeyDown(TAUKey key, wchar_t charCode) {
 		return;
 	}	
 	
-	wstring ctext = currentLine->getText();
+	String ctext = currentLine->getText();
 	
 	
 //	if(1) {
@@ -692,9 +692,9 @@ void UITextInput::onKeyDown(TAUKey key, wchar_t charCode) {
 		if(hasSelection)
 			deleteSelection();
 		ctext = currentLine->getText();		
-		wstring text2 = ctext.substr(caretPosition, ctext.length()-caretPosition);
+		String text2 = ctext.substr(caretPosition, ctext.length()-caretPosition);
 		ctext = ctext.substr(0,caretPosition);
-		ctext += (wchar_t)charCode + text2;
+		ctext += charCode + text2;
 		caretPosition++;
 	}
 	
@@ -702,7 +702,7 @@ void UITextInput::onKeyDown(TAUKey key, wchar_t charCode) {
 		if(hasSelection)
 			deleteSelection();		
 		ctext = currentLine->getText();				
-		wstring text2 = ctext.substr(caretPosition, ctext.length()-caretPosition);
+		String text2 = ctext.substr(caretPosition, ctext.length()-caretPosition);
 		ctext = ctext.substr(0,caretPosition);
 		ctext += (wchar_t)'\t' + text2;
 		caretPosition++;		
@@ -716,7 +716,7 @@ void UITextInput::onKeyDown(TAUKey key, wchar_t charCode) {
 		ctext = currentLine->getText();					
 		if(caretPosition > 0) {
 			if(ctext.length() > 0) {
-				wstring text2 = ctext.substr(caretPosition, ctext.length()-caretPosition);
+				String text2 = ctext.substr(caretPosition, ctext.length()-caretPosition);
 				ctext = ctext.substr(0,caretPosition-1);
 				ctext += text2;
 				caretPosition--;

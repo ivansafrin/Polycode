@@ -13,6 +13,7 @@
 
 #include "PolyLogger.h"
 #include "PolyGlobals.h"
+#include "PolyString.h"
 #include "PolyVector3.h"
 #include <vector>
 

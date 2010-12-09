@@ -52,7 +52,7 @@ CocoaCore::CocoaCore(SubstanceView *view, int xRes, int yRes, bool fullScreen,in
 
 }
 
-void CocoaCore::copyStringToClipboard(wstring str) {
+void CocoaCore::copyStringToClipboard(String str) {
 	NSPasteboard *pb = [NSPasteboard generalPasteboard];
     NSArray *types = [NSArray arrayWithObjects:NSStringPboardType, nil];
     [pb declareTypes:types owner:glView];
@@ -66,7 +66,7 @@ void CocoaCore::copyStringToClipboard(wstring str) {
     [pb setString: nsstr forType:NSStringPboardType];	
 }
 
-wstring CocoaCore::getClipboardString() {
+String CocoaCore::getClipboardString() {
 	
 }
 
@@ -218,23 +218,23 @@ void CocoaCore::checkEvents() {
 	unlockMutex(eventMutex);		
 }
 
-void CocoaCore::createFolder(string folderPath) {
+void CocoaCore::createFolder(String folderPath) {
 	[[NSFileManager defaultManager] createDirectoryAtPath:[NSString stringWithUTF8String: folderPath.c_str()] withIntermediateDirectories:YES attributes:nil error:nil];
 }
 
-void CocoaCore::copyDiskItem(string itemPath, string destItemPath) {
+void CocoaCore::copyDiskItem(String itemPath, String destItemPath) {
 	[[NSFileManager defaultManager] copyItemAtPath: [NSString stringWithUTF8String: itemPath.c_str()] toPath: [NSString stringWithUTF8String: destItemPath.c_str()] error: nil];	
 }
 
-void CocoaCore::moveDiskItem(string itemPath, string destItemPath) {
+void CocoaCore::moveDiskItem(String itemPath, String destItemPath) {
 	[[NSFileManager defaultManager] moveItemAtPath: [NSString stringWithUTF8String: itemPath.c_str()] toPath: [NSString stringWithUTF8String: destItemPath.c_str()] error: nil];		
 }
 
-void CocoaCore::removeDiskItem(string itemPath) {
+void CocoaCore::removeDiskItem(String itemPath) {
 	[[NSFileManager defaultManager] removeItemAtPath: [NSString stringWithUTF8String: itemPath.c_str()] error:nil];
 }
 
-string CocoaCore::openFolderPicker() {
+String CocoaCore::openFolderPicker() {
 	NSOpenPanel *attachmentPanel = [NSOpenPanel openPanel];	
 	[attachmentPanel setCanChooseFiles:NO];
 	[attachmentPanel setCanCreateDirectories: YES];

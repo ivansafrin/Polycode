@@ -11,7 +11,7 @@
 
 using namespace Polycode;
 
-ScreenLabel::ScreenLabel(string fontName, wstring text, int size, int amode) : ScreenShape(ScreenShape::SHAPE_RECT,1,1) {
+ScreenLabel::ScreenLabel(String fontName, String text, int size, int amode) : ScreenShape(ScreenShape::SHAPE_RECT,1,1) {
 	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size, amode);
 	texture = NULL;
 	setText(text);		
@@ -39,11 +39,11 @@ void ScreenLabel::addDropShadow(Color color, float size, float offsetX, float of
 	dropShadowImage->getMesh()->getPolygon(0)->flipUVY();
 }
 
-wstring ScreenLabel::getText() {
+String ScreenLabel::getText() {
 	return label->getText();
 }	
 
-void ScreenLabel::setText(wstring newText) {		
+void ScreenLabel::setText(String newText) {		
 	label->setText(newText);
 	
 	if(texture) {

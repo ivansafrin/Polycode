@@ -9,7 +9,7 @@
 // @package BasicTypes
 
 #pragma once
-
+#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "png.h"
 #include "PolyColor.h"
@@ -23,15 +23,15 @@ using std::string;
 namespace Polycode {
 	class _PolyExport Image {
 		public:
-			Image(string fileName);
+			Image(String fileName);
 			Image(int width, int height, int type = IMAGE_RGBA);
 			Image(char *data, int width, int height, int type = IMAGE_RGBA);
 			Image(Image *copyImage);		
 			Image();			
 			~Image();
 
-			bool loadImage(string fileName);
-			bool loadPNG(string fileName);
+			bool loadImage(String fileName);
+			bool loadPNG(String fileName);
 		
 			
 			void createEmpty(unsigned int width, unsigned int height);
@@ -66,7 +66,7 @@ namespace Polycode {
 		
 			int getType() { return imageType; }
 			
-			void writeBMP(string fileName);
+			void writeBMP(String fileName);
 			
 			unsigned int getWidth();
 			unsigned int getHeight();

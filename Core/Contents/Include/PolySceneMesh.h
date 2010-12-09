@@ -10,6 +10,7 @@
 // @package Scene
  
 #pragma once
+#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolyCoreServices.h"
 #include "PolySceneEntity.h"
@@ -27,7 +28,7 @@ namespace Polycode {
 
 	class _PolyExport SceneMesh : public SceneEntity {
 		public:
-			SceneMesh(string fileName);
+			SceneMesh(String fileName);
 			SceneMesh(int meshType);
 			SceneMesh(Mesh *mesh);
 			virtual ~SceneMesh();
@@ -39,11 +40,11 @@ namespace Polycode {
 			Mesh *getMesh();
 			Texture *getTexture();
 			Material *getMaterial();
-			void loadTexture(string fileName);
-			void loadSkeleton(string fileName);
+			void loadTexture(String fileName);
+			void loadSkeleton(String fileName);
 			void setTexture(Texture *texture);
 			void setMaterial(Material *material);
-			void setMaterial(string materialName);
+			void setMaterial(String materialName);
 		
 			void setSkeleton(Skeleton *skeleton);
 			Skeleton *getSkeleton();

@@ -10,15 +10,15 @@ public:
 	PolycodeEditor(bool _isReadOnly);
 	virtual ~PolycodeEditor();
 	
-	virtual bool openFile(string filePath){ this->filePath = filePath; }
+	virtual bool openFile(String filePath){ this->filePath = filePath; }
 	virtual void Resize(int x, int y) = 0;
 	
-	string getFilePath() { return filePath; }
+	String getFilePath() { return filePath; }
 	
 	bool isReadOnly() { return _isReadOnly; }
 	
 protected:
-	string filePath;
+	String filePath;
 	bool _isReadOnly;
 };
 
@@ -30,7 +30,7 @@ public:
 
 	virtual PolycodeEditor *createEditor() = 0;
 	
-	bool canHandleExtension(string extension);
+	bool canHandleExtension(String extension);
 	
 protected:
 	vector<string> extensions;

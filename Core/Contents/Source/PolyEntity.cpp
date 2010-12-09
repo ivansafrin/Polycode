@@ -419,7 +419,7 @@ void Entity::rebuildRotation() {
 	rotationQuat.fromAxes(pitch, yaw, roll);
 }
 
-string Entity::getEntityProp(string propName) {
+String Entity::getEntityProp(String propName) {
 	for(int i=0; i < entityProps.size(); i++) {
 		if(entityProps[i].propName == propName) {
 			return entityProps[i].propValue;

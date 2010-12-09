@@ -21,7 +21,7 @@ CGShaderBinding::~CGShaderBinding() {
 }
 
 
-void CGShaderBinding::addTexture(string name, Texture *texture) {
+void CGShaderBinding::addTexture(String name, Texture *texture) {
 	CGTextureBinding binding;
 	binding.name = name;
 	binding.texture = texture;
@@ -29,7 +29,7 @@ void CGShaderBinding::addTexture(string name, Texture *texture) {
 	textures.push_back(binding);
 }
 
-void CGShaderBinding::addCubemap(string name, Cubemap *cubemap) {
+void CGShaderBinding::addCubemap(String name, Cubemap *cubemap) {
 	CGCubemapBinding binding;
 	binding.cubemap = cubemap;
 	binding.name = name;
@@ -37,7 +37,7 @@ void CGShaderBinding::addCubemap(string name, Cubemap *cubemap) {
 	cubemaps.push_back(binding);
 }
 
-void CGShaderBinding::clearTexture(string name) {
+void CGShaderBinding::clearTexture(String name) {
 	for(int i=0; i < textures.size(); i++) {
 		if(textures[i].name == name) {
 			textures.erase(textures.begin()+i);
@@ -47,7 +47,7 @@ void CGShaderBinding::clearTexture(string name) {
 }
 
 
-void CGShaderBinding::addParam(string type, string name, string value) {
+void CGShaderBinding::addParam(String type, String name, String value) {
 	int paramType;
 	void *defaultData = CGProgramParam::createParamData(&paramType, type, value);
 	LocalShaderParam *newParam = new LocalShaderParam;

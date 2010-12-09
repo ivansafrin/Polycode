@@ -19,9 +19,16 @@ Config::~Config() {
 	
 }
 
-void Config::loadConfig(string configNamespace, string fileName) {
+void Config::loadConfig(String configNamespace, String fileName) {
 	TiXmlDocument doc(fileName.c_str());
-	doc.LoadFile();
+	
+	Logger::log("Loading config: %s\n", fileName.c_str());
+	
+	if(!doc.LoadFile()) {
+		Logger::log("Error loading config file...\n");
+		Logger::log("Error: %s\n", doc.ErrorDesc());
+		return;
+	}
 	
 	TiXmlElement *rootElement = doc.RootElement();
 	
@@ -37,7 +44,7 @@ void Config::loadConfig(string configNamespace, string fileName) {
 	
 }
 
-void Config::saveConfig(string configNamespace, string fileName) {
+void Config::saveConfig(String configNamespace, String fileName) {
 
 	TiXmlDocument doc;  
 	TiXmlElement* node;  
@@ -55,17 +62,19 @@ void Config::saveConfig(string configNamespace, string fileName) {
 			if(entries[i]->isString)
 				node->LinkEndChild( new	TiXmlText(entries[i]->stringVal.c_str()));  
 			else
-				node->LinkEndChild( new	TiXmlText(StringUtil::floatToString(entries[i]->numVal).c_str()));  						
+				node->LinkEndChild( new	TiXmlText(String::floatToString(entries[i]->numVal).c_str()));  						
 			root->LinkEndChild( node);		
 		}
 	}
 	doc.SaveFile(fileName.c_str());  	
 }
 
-ConfigEntry *Config::getEntry(string configNamespace, string key) {
+ConfigEntry *Config::getEntry(String configNamespace, String key) {
+	
 	for(int i=0; i < entries.size(); i++) {
-		if(entries[i]->key == key && entries[i]->configNamespace == configNamespace) {
-			return entries[i];
+		ConfigEntry *entry = entries[i];
+		if(entry->key == key && entry->configNamespace == configNamespace) {
+			return entry;
 		}
 	}
 	ConfigEntry *newEntry = new ConfigEntry();
@@ -77,22 +86,22 @@ ConfigEntry *Config::getEntry(string configNamespace, string key) {
 	return newEntry;
 }
 
-void Config::setStringValue(string configNamespace, string key, string value) {
+void Config::setStringValue(String configNamespace, String key, String value) {
 	getEntry(configNamespace, key)->stringVal = value;
 	getEntry(configNamespace, key)->isString = true;	
 }
 
-void Config::setNumericValue(string configNamespace, string key, float value) {
+void Config::setNumericValue(String configNamespace, String key, float value) {
 	getEntry(configNamespace, key)->numVal = value;	
 	getEntry(configNamespace, key)->isString = false;		
 }
 
 
-float Config::getNumericValue(string configNamespace, string key) {
+float Config::getNumericValue(String configNamespace, String key) {
 	return getEntry(configNamespace, key)->numVal;
 }
 
-string Config::getStringValue(string configNamespace, string key) {
+String Config::getStringValue(String configNamespace, String key) {
 	return getEntry(configNamespace, key)->stringVal;	
 }
 

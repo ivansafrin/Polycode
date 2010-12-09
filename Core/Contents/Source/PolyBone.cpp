@@ -11,7 +11,7 @@
 
 using namespace Polycode;
 
-Bone::Bone(string boneName) : SceneEntity() {
+Bone::Bone(String boneName) : SceneEntity() {
 	this->boneName = boneName;
 
 	boneMesh = new Mesh(Mesh::QUAD_MESH);
@@ -100,7 +100,7 @@ void Bone::setRestMatrix(Matrix4 matrix) {
 	restMatrix = matrix;
 }
 
-string Bone::getName() {
+String Bone::getName() {
 	return boneName;
 }
 

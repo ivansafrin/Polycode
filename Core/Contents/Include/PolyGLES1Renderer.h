@@ -10,6 +10,7 @@
 // @package Renderer
 
 #pragma once
+#include "PolyString.h"
 #include "PolyLogger.h"
 #include "PolyGlobals.h"
 #include "PolyRenderer.h"

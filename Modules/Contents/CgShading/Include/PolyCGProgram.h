@@ -29,13 +29,13 @@ class _PolyExport CGProgramParam {
 	public:
 	
 	CGparameter cgParam;
-	string name;
+	String name;
 	bool isAuto;
 	int autoID;
 	void *defaultData;
 	int paramType;
 	
-	static void *createParamData(int *retType, string type, string value);
+	static void *createParamData(int *retType, String type, String value);
 	
 	static const int TAU_MODELVIEWPROJ_MATRIX = 0;
 	static const int TAU_MODELVIEW_MATRIX = 2;
@@ -91,7 +91,7 @@ class _PolyExport CGProgramParam {
 			CGProgram(int type);
 			~CGProgram();
 			
-			void addParam(string name, bool isAuto, int autoID, int paramType, void *defaultData);
+			void addParam(String name, bool isAuto, int autoID, int paramType, void *defaultData);
 		
 			CGprogram program;
 			CGparameter modelViewProjection;

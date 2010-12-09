@@ -24,7 +24,7 @@ ResourceManager::~ResourceManager() {
 		resources.clear();
 }
 
-void ResourceManager::parseShaders(string dirPath, bool recursive) {
+void ResourceManager::parseShaders(String dirPath, bool recursive) {
 	vector<OSFileEntry> resourceDir;
 	resourceDir = OSBasics::parseFolder(dirPath, false);
 	
@@ -63,7 +63,7 @@ void ResourceManager::addShaderModule(PolycodeShaderModule *module) {
 	shaderModules.push_back(module);
 }
 
-void ResourceManager::parsePrograms(string dirPath, bool recursive) {
+void ResourceManager::parsePrograms(String dirPath, bool recursive) {
 	vector<OSFileEntry> resourceDir;
 	resourceDir = OSBasics::parseFolder(dirPath, false);
 	for(int i=0; i < resourceDir.size(); i++) {	
@@ -86,7 +86,7 @@ void ResourceManager::parsePrograms(string dirPath, bool recursive) {
 	}	
 }
 
-void ResourceManager::parseMaterials(string dirPath, bool recursive) {
+void ResourceManager::parseMaterials(String dirPath, bool recursive) {
 	vector<OSFileEntry> resourceDir;
 	resourceDir = OSBasics::parseFolder(dirPath, false);
 	
@@ -117,7 +117,7 @@ void ResourceManager::parseMaterials(string dirPath, bool recursive) {
 	}
 }
 
-void ResourceManager::parseCubemaps(string dirPath, bool recursive) {
+void ResourceManager::parseCubemaps(String dirPath, bool recursive) {
 	vector<OSFileEntry> resourceDir;
 	resourceDir = OSBasics::parseFolder(dirPath, false);
 	
@@ -154,7 +154,7 @@ void ResourceManager::addResource(Resource *resource) {
 	resources.push_back(resource);
 }
 
-void ResourceManager::parseTextures(string dirPath, bool recursive) {
+void ResourceManager::parseTextures(String dirPath, bool recursive) {
 	vector<OSFileEntry> resourceDir;
 	resourceDir = OSBasics::parseFolder(dirPath, false);
 	for(int i=0; i < resourceDir.size(); i++) {	
@@ -173,7 +173,7 @@ void ResourceManager::parseTextures(string dirPath, bool recursive) {
 }
 
 
-void ResourceManager::addArchive(string zipPath) {
+void ResourceManager::addArchive(String zipPath) {
 	if(PHYSFS_addToSearchPath(zipPath.c_str(), 1, getThreadID()) == 0) {
 		Logger::log("Error adding archive to resource manager...\n");
 	} else {
@@ -181,7 +181,7 @@ void ResourceManager::addArchive(string zipPath) {
 	}
 }
 
-void ResourceManager::addDirResource(string dirPath, bool recursive) {
+void ResourceManager::addDirResource(String dirPath, bool recursive) {
 	parseTextures(dirPath, recursive);
 	parsePrograms(dirPath, recursive);
 	parseShaders(dirPath, recursive);
@@ -189,7 +189,7 @@ void ResourceManager::addDirResource(string dirPath, bool recursive) {
 	parseMaterials(dirPath, recursive);
 }
 
-Resource *ResourceManager::getResource(int resourceType, string resourceName) {
+Resource *ResourceManager::getResource(int resourceType, String resourceName) {
 	Logger::log("requested %s\n", resourceName.c_str());
 	for(int i =0; i < resources.size(); i++) {
 //		Logger::log("is it %s?\n", resources[i]->getResourceName().c_str());		

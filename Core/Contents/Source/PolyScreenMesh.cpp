@@ -13,7 +13,7 @@
 
 using namespace Polycode;
 
-ScreenMesh::ScreenMesh(string fileName) : ScreenEntity(), texture(NULL) {
+ScreenMesh::ScreenMesh(String fileName) : ScreenEntity(), texture(NULL) {
 	mesh = new Mesh(fileName);
 }
 
@@ -38,7 +38,7 @@ void ScreenMesh::setTexture(Texture *texture) {
 	this->texture = texture;
 }
 
-void ScreenMesh::loadTexture(string fileName) {
+void ScreenMesh::loadTexture(String fileName) {
 	texture = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(fileName);
 }
 

@@ -147,7 +147,7 @@ SceneLight *GenericScene::getNearestLight(Vector3 pos) {
 }
 
 
-string GenericScene::readString(OSFILE *inFile) {
+String GenericScene::readString(OSFILE *inFile) {
 	char buffer[1024];
 	unsigned int namelen;
 	OSBasics::read(&namelen, sizeof(unsigned int), 1, inFile);
@@ -157,7 +157,7 @@ string GenericScene::readString(OSFILE *inFile) {
 	
 }
 
-void GenericScene::loadScene(string fileName) {
+void GenericScene::loadScene(String fileName) {
 	OSFILE *inFile = OSBasics::open(fileName.c_str(), "rb");
 	if(!inFile) {
 		Logger::log("Error opening scene file\n");
@@ -241,7 +241,7 @@ void GenericScene::loadScene(string fileName) {
 				break;
 				case ENTITY_ENTITY: {
 					Logger::log("loading entity\n");
-					string entityType = readString(inFile);					
+					String entityType = readString(inFile);					
 					SceneEntity *newCustomEntity = new SceneEntity();
 					newCustomEntity->custEntityType = entityType;					
 					newEntity = newCustomEntity;
@@ -308,7 +308,7 @@ void GenericScene::loadScene(string fileName) {
 			unsigned int numProps;
 			OSBasics::read(&numProps, sizeof(unsigned int), 1, inFile);
 			for(int i=0; i < numProps; i++) {
-				string propName,propValue;
+				String propName,propValue;
 				propName = readString(inFile);
 				propValue = readString(inFile);
 				EntityProp prop;
@@ -361,7 +361,7 @@ void GenericScene::loadScene(string fileName) {
 	OSBasics::close(inFile);
 }
 
-vector<SceneEntity*> GenericScene::getCustomEntitiesByType(string type) {
+vector<SceneEntity*> GenericScene::getCustomEntitiesByType(String type) {
 	vector<SceneEntity*> retVector;
 	for(int i=0; i < customEntities.size(); i++) {
 		if(customEntities[i]->custEntityType == type) {
@@ -371,7 +371,7 @@ vector<SceneEntity*> GenericScene::getCustomEntitiesByType(string type) {
 	return retVector;	
 }
 
-SceneEntity *GenericScene::getCustomEntityByType(string type) {
+SceneEntity *GenericScene::getCustomEntityByType(String type) {
 	for(int i=0; i < customEntities.size(); i++) {
 		if(customEntities[i]->custEntityType == type) {
 			return customEntities[i];
@@ -396,7 +396,7 @@ void GenericScene::writeEntityMatrix(SceneEntity *entity, OSFILE *outFile) {
 	
 }
 
-void GenericScene::saveScene(string fileName) {
+void GenericScene::saveScene(String fileName) {
 	OSFILE *outFile = OSBasics::open(fileName.c_str(), "wb");
 	if(!outFile) {
 		Logger::log("Error opening scene file for writing\n");
@@ -526,7 +526,7 @@ void GenericScene::saveScene(string fileName) {
 	OSBasics::close(outFile);
 }
 
-void GenericScene::writeString(string str, OSFILE *outFile) {
+void GenericScene::writeString(String str, OSFILE *outFile) {
 	unsigned int stLen = str.length();
 	OSBasics::write(&stLen, sizeof(unsigned int), 1, outFile);
 	OSBasics::write(str.c_str(), 1, stLen, outFile);
@@ -563,7 +563,7 @@ void GenericScene::generateLightmaps(float lightMapRes, float lightMapQuality, i
  */
 }
 
-void GenericScene::addGrid(string gridTexture) {
+void GenericScene::addGrid(String gridTexture) {
 	ScenePrimitive *gridMesh = new ScenePrimitive(ScenePrimitive::TYPE_PLANE, 20,20,0);
 	gridMesh->loadTexture(gridTexture);
 	gridMesh->setPitch(-90.0f);

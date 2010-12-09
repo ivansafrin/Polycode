@@ -25,7 +25,7 @@ void MaterialManager::Update(int elapsed) {
 	}
 }
 
-Texture *MaterialManager::getTextureByResourcePath(string resourcePath) {
+Texture *MaterialManager::getTextureByResourcePath(String resourcePath) {
 	for(int i=0;i < textures.size(); i++) {
 		if(textures[i]->getResourcePath() == resourcePath)
 			return textures[i];
@@ -61,7 +61,7 @@ void MaterialManager::addShaderModule(PolycodeShaderModule *module) {
 	shaderModules.push_back(module);
 }
 
-Texture *MaterialManager::createTextureFromFile(string fileName) {
+Texture *MaterialManager::createTextureFromFile(String fileName) {
 	Texture *newTexture;
 	newTexture = getTextureByResourcePath(fileName);
 	if(newTexture) {
@@ -79,7 +79,7 @@ Texture *MaterialManager::createTextureFromFile(string fileName) {
 		
 	delete image;
 
-	vector<string> bits = StringUtil::split(fileName, "/");
+	vector<String> bits = fileName.split("/");
 	
 	newTexture->setResourcePath(bits[bits.size()-1]);
 	return newTexture;
@@ -123,7 +123,7 @@ void MaterialManager::reloadTextures() {
 	}
 }
 
-void MaterialManager::loadMaterialsFromFile(string fileName) {
+void MaterialManager::loadMaterialsFromFile(String fileName) {
 	
 }
 
@@ -132,7 +132,7 @@ Shader *MaterialManager::createShaderFromXMLNode(TiXmlNode *node) {
 	
 	
 	if(node->ToElement()->Attribute("type")) {
-		string shaderType = node->ToElement()->Attribute("type");
+		String shaderType = node->ToElement()->Attribute("type");
 //		Logger::log("Attempting to create %s shader\n", shaderType.c_str());
 		
 		for(int m=0; m < shaderModules.size(); m++) {
@@ -149,7 +149,7 @@ Shader *MaterialManager::createShaderFromXMLNode(TiXmlNode *node) {
 Shader *MaterialManager::setShaderFromXMLNode(TiXmlNode *node) {
 	Shader *retShader = NULL;
 	if(node->ToElement()->Attribute("type")) {
-		string shaderType = node->ToElement()->Attribute("type");
+		String shaderType = node->ToElement()->Attribute("type");
 		if(shaderType == "fixed") {
 			FixedShader *fShader =  new FixedShader();		
 			retShader = fShader;
@@ -174,10 +174,10 @@ Shader *MaterialManager::setShaderFromXMLNode(TiXmlNode *node) {
 Cubemap *MaterialManager::cubemapFromXMLNode(TiXmlNode *node) {
 	Cubemap *newCubemap;
 	
-	string name = node->ToElement()->Attribute("name");
-	string mapString = node->ToElement()->GetText();
+	String name = node->ToElement()->Attribute("name");
+	String mapString = node->ToElement()->GetText();
 	
-	vector<string> maps = StringUtil::split(mapString, ",");	
+	vector<String> maps = mapString.split(",");	
 	if(maps.size() != 6) {
 		Logger::log("Error: A cubemap must contain 6 images \n");
 		return NULL;
@@ -196,7 +196,7 @@ Cubemap *MaterialManager::cubemapFromXMLNode(TiXmlNode *node) {
 }
 
 Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
-	string mname = node->ToElement()->Attribute("name");
+	String mname = node->ToElement()->Attribute("name");
 	TiXmlNode* pChild, *pChild2,*pChild3;
 	Shader *materialShader;
 	ShaderBinding *newShaderBinding;
@@ -253,9 +253,9 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 					if(strcmp(pChild->Value(), "params") == 0) {
 						for (pChild2 = pChild->FirstChild(); pChild2 != 0; pChild2 = pChild2->NextSibling()) {
 							if(strcmp(pChild2->Value(), "param") == 0){
-								string pname =  pChild2->ToElement()->Attribute("name");
-								string ptype =  pChild2->ToElement()->Attribute("type");
-								string pvalue =  pChild2->ToElement()->Attribute("value");
+								String pname =  pChild2->ToElement()->Attribute("name");
+								String ptype =  pChild2->ToElement()->Attribute("type");
+								String pvalue =  pChild2->ToElement()->Attribute("value");
 								newShaderBinding->addParam(ptype, pname, pvalue);
 							}						
 						}
@@ -271,7 +271,7 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 								if(pChild2->ToElement()->Attribute("name")) {
 									newBinding->name = pChild2->ToElement()->Attribute("name");
 								}
-								string mode = pChild2->ToElement()->Attribute("mode");
+								String mode = pChild2->ToElement()->Attribute("mode");
 								if(strcmp(mode.c_str(), "in") == 0) {
 									newBinding->mode = RenderTargetBinding::MODE_IN;
 								} else {
@@ -299,7 +299,7 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 					if(strcmp(pChild->Value(), "textures") == 0) {
 						for (pChild2 = pChild->FirstChild(); pChild2 != 0; pChild2 = pChild2->NextSibling()) {
 							if(strcmp(pChild2->Value(), "texture") == 0){
-								string tname = "";
+								String tname = "";
 								if(pChild2->ToElement()->Attribute("name")) {
 									tname =  pChild2->ToElement()->Attribute("name");
 								}
@@ -307,7 +307,7 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 							}
 							
 							if(strcmp(pChild2->Value(), "cubemap") == 0){
-								string tname = "";
+								String tname = "";
 								if(pChild2->ToElement()->Attribute("name")) {
 									tname =  pChild2->ToElement()->Attribute("name");
 								}

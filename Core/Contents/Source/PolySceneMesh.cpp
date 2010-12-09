@@ -11,7 +11,7 @@
 
 using namespace Polycode;
 
-SceneMesh::SceneMesh(string fileName) : SceneEntity(), texture(NULL), material(NULL) {
+SceneMesh::SceneMesh(String fileName) : SceneEntity(), texture(NULL), material(NULL) {
 	mesh = new Mesh(fileName);
 	bBoxRadius = mesh->getRadius();
 	bBox = mesh->calculateBBox();
@@ -60,7 +60,7 @@ void SceneMesh::setMaterial(Material *material) {
 	localShaderOptions = material->getShader(0)->createBinding();
 }
 
-void SceneMesh::setMaterial(string materialName) {
+void SceneMesh::setMaterial(String materialName) {
 	Material *material =  (Material*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_MATERIAL, materialName);
 	if(!material)
 		return;
@@ -72,7 +72,7 @@ Texture *SceneMesh::getTexture() {
 }
 
 
-void SceneMesh::loadTexture(string fileName) {
+void SceneMesh::loadTexture(String fileName) {
 	texture = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(fileName);
 }
 
@@ -80,7 +80,7 @@ ShaderBinding *SceneMesh::getLocalShaderOptions() {
 	return localShaderOptions;
 }
 
-void SceneMesh::loadSkeleton(string fileName) {
+void SceneMesh::loadSkeleton(String fileName) {
 	skeleton = new Skeleton(fileName);
 	addEntity(skeleton);
 	

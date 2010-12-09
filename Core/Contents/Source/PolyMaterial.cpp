@@ -12,7 +12,7 @@
 
 using namespace Polycode;
 
-Material::Material(string name) : Resource(Resource::RESOURCE_MATERIAL) {
+Material::Material(String name) : Resource(Resource::RESOURCE_MATERIAL) {
 	this->name = name;
 }
 
@@ -49,7 +49,7 @@ unsigned int Material::getNumShaders() {
 	return materialShaders.size();
 }
 
-string Material::getName() {
+String Material::getName() {
 	return name;
 }
 
@@ -61,7 +61,7 @@ ShaderBinding *Material::getShaderBinding(unsigned int index) {
 	return shaderBindings[index];
 }
 
-void Material::loadMaterial(string fileName) {
+void Material::loadMaterial(String fileName) {
 
 }
 

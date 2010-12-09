@@ -12,11 +12,11 @@
 
 using namespace Polycode;
 
-UIButton::UIButton(wstring text, float width, float height) : ScreenEntity() {
+UIButton::UIButton(String text, float width, float height) : ScreenEntity() {
 
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	
-	string fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
+	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
 	int fontSize = conf->getNumericValue("Polycode", "uiButtonFontSize");	
 	
 	float st = conf->getNumericValue("Polycode", "uiButtonSkinT");

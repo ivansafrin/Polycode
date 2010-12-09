@@ -30,8 +30,8 @@ namespace Polycode {
 			void handleEvent(Event *event);
 			void Update();
 			
-			void setText(wstring text);
-			wstring getText();
+			void setText(String text);
+			String getText();
 			void onLoseFocus();
 		
 			int insertLine(bool after);
@@ -46,8 +46,8 @@ namespace Polycode {
 		
 			void Resize(int x, int y);
 		
-			wstring getSelectionText();
-			void insertText(wstring text);
+			String getSelectionText();
+			void insertText(String text);
 		
 		protected:
 		
@@ -94,7 +94,7 @@ namespace Polycode {
 		
 			float caretImagePosition;
 		
-			string fontName;
+			String fontName;
 			float fontSize;
 		
 			float lineHeight;
