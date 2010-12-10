@@ -61,6 +61,11 @@ void Data::loadFromFile(String fileName) {
 
 String Data::getAsString(int encoding) {
 	String str;
-	str.setDataWithEncoding(data, encoding);
+	
+	char *strData = (char*)malloc(dataSize+1);
+	memcpy(strData, data, dataSize);
+	memset(strData+dataSize, 0, 1);
+	str.setDataWithEncoding(strData, encoding);
+	free(strData);
 	return str;
 }
