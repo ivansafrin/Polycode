@@ -9,12 +9,19 @@ using std::vector;
 
 using namespace std;
 
+typedef std::string Str;
+typedef std::wstring WStr;
+
+void utf8toWStr(WStr& dest, const Str& src);
+void wstrToUtf8(Str& dest, const WStr& src);	
+
 namespace Polycode {
 
 	class _PolyExport String {
 		public:
 			String();
 			String(const wchar_t *str);
+			String(const wchar_t *str, size_t n);		
 			String(const char *str);
 			String(string str);
 			String(wstring str);
@@ -57,10 +64,18 @@ namespace Polycode {
 		
 			const wchar_t *data(){ return contents.data(); }
 
+			const char *getDataWithEncoding(int encoding);
+			void setDataWithEncoding(char *data, int encoding);	
+			size_t getDataSizeWithEncoding(int encoding);
+		
 			wstring contents;	
 			string s_contents;
+		
+			static const int ENCODING_UTF8 = 0; 
+			
+		
 		private:
-
+		
 	};
 
 	static inline String operator+ (const char *str, const String &rstr) { return String(String(str).contents + rstr.contents); }

@@ -15,6 +15,7 @@ public:
 	
 	bool openFile(String filePath);
 	void Resize(int x, int y);
+	void saveFile();	
 	
 protected:
 

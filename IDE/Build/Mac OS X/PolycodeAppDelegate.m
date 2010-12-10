@@ -42,4 +42,8 @@
 	app->openProject();
 }
 
+-(void) saveFile: (id) sender {
+	app->saveFile();
+}
+
 @end

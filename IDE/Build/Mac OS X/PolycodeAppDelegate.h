@@ -26,5 +26,6 @@
 
 -(void) newProject: (id) sender;
 -(void) openProject: (id) sender;
+-(void) saveFile: (id) sender;
 
 @end

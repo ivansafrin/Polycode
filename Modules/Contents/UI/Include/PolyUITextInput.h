@@ -35,6 +35,7 @@ namespace Polycode {
 			void onLoseFocus();
 		
 			int insertLine(bool after);
+		
 			
 			void onKeyDown(TAUKey key, wchar_t charCode);
 		

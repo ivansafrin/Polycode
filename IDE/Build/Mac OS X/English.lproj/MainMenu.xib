@@ -723,14 +723,6 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
-						<string key="label">saveDocument:</string>
-						<reference key="source" ref="1014"/>
-						<reference key="destination" ref="1023925487"/>
-					</object>
-					<int key="connectionID">362</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
 						<string key="label">saveDocumentAs:</string>
 						<reference key="source" ref="1014"/>
 						<reference key="destination" ref="117038363"/>
@@ -848,6 +840,14 @@
 						<reference key="destination" ref="722745758"/>
 					</object>
 					<int key="connectionID">549</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">saveFile:</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="1023925487"/>
+					</object>
+					<int key="connectionID">550</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1604,7 +1604,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">549</int>
+			<int key="maxID">550</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1618,9 +1618,11 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>newProject:</string>
 							<string>openProject:</string>
+							<string>saveFile:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 						</object>
@@ -1631,6 +1633,7 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>newProject:</string>
 							<string>openProject:</string>
+							<string>saveFile:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1640,6 +1643,10 @@
 							</object>
 							<object class="IBActionInfo">
 								<string key="name">openProject:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">saveFile:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 						</object>

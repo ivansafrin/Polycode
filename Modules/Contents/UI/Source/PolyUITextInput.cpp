@@ -487,7 +487,21 @@ void UITextInput::selectAll() {
 }
 
 void UITextInput::insertText(String text) {
-	
+	vector<String> strings = text.split("\n");
+	int numLines = lines.size();
+	for(int i=0; i < strings.size(); i++) {
+		if(i < numLines) {
+			lines[i]->setText(strings[i]);
+		} else {
+			numLines++;	
+			ScreenLabel *newLine = new ScreenLabel(fontName, L"", fontSize, Label::ANTIALIAS_FULL);
+			newLine->setColor(0,0,0,1);
+			addChild(newLine);			
+			lines.push_back(newLine);
+			newLine->setText(strings[i]);
+		}
+	}
+	restructLines();	
 }
 
 String UITextInput::getSelectionText() {

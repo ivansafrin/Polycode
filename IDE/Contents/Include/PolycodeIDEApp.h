@@ -34,6 +34,7 @@ public:
 	// menu commands
 	void newProject();
 	void openProject();
+	void saveFile();
 	
 protected:	
 	PolycodeFrame *frame;

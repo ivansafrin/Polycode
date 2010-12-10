@@ -15,9 +15,13 @@ class PolycodeEditorManager {
 		PolycodeEditor *createEditorForExtension(String extension);
 		void registerEditorFactory(PolycodeEditorFactory *editorFactory);
 	
+		void setCurrentEditor(PolycodeEditor *editor) { currentEditor = editor; }
+		PolycodeEditor *getCurrentEditor() { return currentEditor; }
 		
-	
 protected:
+	
+	PolycodeEditor *currentEditor;
+	
 	vector<PolycodeEditor*> openEditors;
 	vector<PolycodeEditorFactory*> editorFactories;	
 };

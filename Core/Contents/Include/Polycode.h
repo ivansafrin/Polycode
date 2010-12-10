@@ -10,6 +10,7 @@
 #pragma once
 
 #include "PolyString.h"
+#include "PolyData.h"
 #include "PolyLogger.h"
 #include "PolyConfig.h"
 #include "PolyEntity.h"

@@ -72,6 +72,10 @@ void PolycodeIDEApp::openProject() {
 	}
 }
 
+void PolycodeIDEApp::saveFile() {
+	editorManager->getCurrentEditor()->saveFile();
+}
+
 void PolycodeIDEApp::handleEvent(Event *event) {
 	if(event->getDispatcher() == core) {
 		switch(event->getEventCode()) {
@@ -98,9 +102,15 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 						frame->showEditor(editor);
 					} else {
 						delete editor;
+						editor = NULL;
 					}
 				}
 			}
+				
+				if(editor) {
+					editorManager->setCurrentEditor(editor);
+				}
+				
 			}
 		}
 	}	

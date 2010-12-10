@@ -3,7 +3,7 @@
 
 
 PolycodeEditorManager::PolycodeEditorManager() {
-	
+	currentEditor = NULL;
 }
 
 PolycodeEditorManager::~PolycodeEditorManager() {
