@@ -3,7 +3,7 @@
 #include "PolycodeProjectManager.h"
 
 PolycodeProjectManager::PolycodeProjectManager() {
-	
+	activeProject = NULL;
 }
 
 PolycodeProjectManager::~PolycodeProjectManager() {
@@ -11,7 +11,7 @@ PolycodeProjectManager::~PolycodeProjectManager() {
 }
 
 
-void PolycodeProjectManager::openProject(String path) {
+PolycodeProject* PolycodeProjectManager::openProject(String path) {
 	printf("Opening project  %s\n", path.c_str());
 	
 	vector<String> bits = path.split("/.");
@@ -27,7 +27,7 @@ void PolycodeProjectManager::openProject(String path) {
 	projects.push_back(newProject);
 	
 	projectBrowser->addProject(newProject);
-	
+	return newProject;
 }
 
 void PolycodeProjectManager::createNewProject(String templateFolder, String projectName, String projectLocation) {	

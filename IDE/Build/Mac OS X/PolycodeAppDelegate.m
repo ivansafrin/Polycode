@@ -38,6 +38,10 @@
 	app->newProject();
 }
 
+-(void) newFile: (id) sender {
+	app->newFile();
+}
+
 -(void) openProject: (id) sender {
 	app->openProject();
 }

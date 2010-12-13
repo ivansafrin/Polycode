@@ -16,10 +16,15 @@ class PolycodeProjectManager {
 		~PolycodeProjectManager();
 	
 	void createNewProject(String templateFolder, String projectName, String projectLocation);
-	void openProject(String path);
+	PolycodeProject* openProject(String path);
 	void setProjectBrowser(PolycodeProjectBrowser *projectBrowser) { this->projectBrowser = projectBrowser; }
 	
+	PolycodeProject* getActiveProject() { return activeProject; }
+	void setActiveProject(PolycodeProject* project) { activeProject = project; }
+	
 protected:
+	
+	PolycodeProject* activeProject;
 	
 	PolycodeProjectBrowser *projectBrowser;
 	vector<PolycodeProject*> projects;

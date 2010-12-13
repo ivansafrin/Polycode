@@ -11,6 +11,7 @@ using namespace Polycode;
 class BrowserUserData  {
 public:
 	OSFileEntry fileEntry;
+	int type;
 };
 
 

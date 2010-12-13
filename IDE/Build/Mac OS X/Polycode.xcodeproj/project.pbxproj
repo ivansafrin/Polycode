@@ -12,6 +12,7 @@
 		6D43F54112AB3E5C001E6D87 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D43F53F12AB3E5C001E6D87 /* libz.a */; };
 		6D43F54212AB3E5C001E6D87 /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D43F54012AB3E5C001E6D87 /* libpng.a */; };
 		6D43F55E12AB3E9E001E6D87 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D43F55D12AB3E9E001E6D87 /* libfreetype.a */; };
+		6D70AB2A12B29BF200EB6D94 /* NewFileWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D70AB2912B29BF200EB6D94 /* NewFileWindow.cpp */; };
 		6D80E91E12AB53FB0037A708 /* PolycodeFrame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D80E91912AB53FB0037A708 /* PolycodeFrame.cpp */; };
 		6D80E91F12AB53FB0037A708 /* PolycodeIDEApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D80E91A12AB53FB0037A708 /* PolycodeIDEApp.cpp */; };
 		6D80E92012AB53FB0037A708 /* PolycodeProject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D80E91B12AB53FB0037A708 /* PolycodeProject.cpp */; };
@@ -59,6 +60,8 @@
 		6D43F53F12AB3E5C001E6D87 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = ../../../Core/Dependencies/zlib/libz.a; sourceTree = SOURCE_ROOT; };
 		6D43F54012AB3E5C001E6D87 /* libpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng.a; path = ../../../Core/Dependencies/libpng/libpng.a; sourceTree = SOURCE_ROOT; };
 		6D43F55D12AB3E9E001E6D87 /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = ../../../Core/Dependencies/freetype/libfreetype.a; sourceTree = SOURCE_ROOT; };
+		6D70AB2812B29BEC00EB6D94 /* NewFileWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewFileWindow.h; sourceTree = "<group>"; };
+		6D70AB2912B29BF200EB6D94 /* NewFileWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NewFileWindow.cpp; sourceTree = "<group>"; };
 		6D80E91312AB53FB0037A708 /* PolycodeFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolycodeFrame.h; sourceTree = "<group>"; };
 		6D80E91412AB53FB0037A708 /* PolycodeIDEApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolycodeIDEApp.h; sourceTree = "<group>"; };
 		6D80E91512AB53FB0037A708 /* PolycodeProject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolycodeProject.h; sourceTree = "<group>"; };
@@ -200,6 +203,7 @@
 		6D80E91212AB53FB0037A708 /* Include */ = {
 			isa = PBXGroup;
 			children = (
+				6D70AB2812B29BEC00EB6D94 /* NewFileWindow.h */,
 				6D91B3B312AF2B1600261ED4 /* PolycodeTextEditor.h */,
 				6DCE865312AE146600566FAE /* PolycodeFontEditor.h */,
 				6DCE85B512AE082300566FAE /* PolycodeImageEditor.h */,
@@ -220,6 +224,7 @@
 		6D80E91812AB53FB0037A708 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				6D70AB2912B29BF200EB6D94 /* NewFileWindow.cpp */,
 				6D91B3B412AF2B1D00261ED4 /* PolycodeTextEditor.cpp */,
 				6DCE865412AE146C00566FAE /* PolycodeFontEditor.cpp */,
 				6DCE85B612AE082B00566FAE /* PolycodeImageEditor.cpp */,
@@ -330,6 +335,7 @@
 				6DCE85B712AE082B00566FAE /* PolycodeImageEditor.cpp in Sources */,
 				6DCE865512AE146C00566FAE /* PolycodeFontEditor.cpp in Sources */,
 				6D91B3B512AF2B1D00261ED4 /* PolycodeTextEditor.cpp in Sources */,
+				6D70AB2A12B29BF200EB6D94 /* NewFileWindow.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

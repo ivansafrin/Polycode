@@ -42,6 +42,9 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	newProjectWindow = new NewProjectWindow();
 	newProjectWindow->visible = false;
 	
+	newFileWindow = new NewFileWindow();
+	newFileWindow->visible = false;
+	
 	currentEditor = NULL;
 	
 }

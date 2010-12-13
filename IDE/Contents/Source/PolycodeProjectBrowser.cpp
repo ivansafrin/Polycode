@@ -7,6 +7,10 @@ PolycodeProjectBrowser::PolycodeProjectBrowser() : ScreenEntity() {
 	treeContainer->getRootNode()->toggleCollapsed();
 	treeContainer->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
 	
+	BrowserUserData *data = new BrowserUserData();
+	data->type = 0;
+	treeContainer->getRootNode()->setUserData((void*) data)	;
+	
 	addChild(treeContainer);		
 	treeContainer->setPosition(0,45);	
 	
@@ -21,14 +25,21 @@ void PolycodeProjectBrowser::addProject(PolycodeProject *project) {
 	UITree *projectTree = treeContainer->getRootNode()->addTreeChild("projectIcon.png", project->getProjectName(), (void*) project);
 	projectTree->toggleCollapsed();
 	
+	BrowserUserData *data = new BrowserUserData();
+	data->type = 0;
+	projectTree->setUserData((void*) data)	;
+	
 	parseFolderIntoNode(projectTree, project->getRootFolder());	
 }
 
 void PolycodeProjectBrowser::handleEvent(Event *event) {
 	if(event->getDispatcher() == treeContainer->getRootNode()) {
 		if(event->getEventCode() == UITreeEvent::SELECTED_EVENT){ 
-			selectedData =  (BrowserUserData *)treeContainer->getRootNode()->getSelectedNode()->getUserData();
-			dispatchEvent(new Event(), Event::CHANGE_EVENT);
+			BrowserUserData *data = (BrowserUserData *)treeContainer->getRootNode()->getSelectedNode()->getUserData();
+			if(data->type != 0) {
+				selectedData =  data;
+				dispatchEvent(new Event(), Event::CHANGE_EVENT);
+			}
 		}
 	}
 	
@@ -44,10 +55,12 @@ void PolycodeProjectBrowser::parseFolderIntoNode(UITree *node, String spath) {
 			BrowserUserData *data = new BrowserUserData();
 			data->fileEntry = entry;
 			UITree *newChild = node->addTreeChild("folder.png", entry.name, (void*) data);
+			data->type = 2;			
 			parseFolderIntoNode(newChild, entry.fullPath);
 		} else {
 			BrowserUserData *data = new BrowserUserData();
 			data->fileEntry = entry;
+			data->type = 1;
 			UITree *newChild = node->addTreeChild("file.png", entry.name, (void*) data);			
 		}
 	}	

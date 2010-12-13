@@ -57,6 +57,14 @@ PolycodeIDEApp::PolycodeIDEApp(SubstanceView *view) : EventHandler() {
 void PolycodeIDEApp::newProject() {
 	frame->newProjectWindow->ResetForm();
 	frame->showModal(frame->newProjectWindow);
+	
+}
+
+void PolycodeIDEApp::newFile() {
+	if(projectManager->getActiveProject()) {
+		frame->newFileWindow->resetForm();
+		frame->showModal(frame->newFileWindow);
+	}
 }
 
 void PolycodeIDEApp::openProject() {
@@ -68,8 +76,9 @@ void PolycodeIDEApp::openProject() {
 	extensions.push_back(ext);
 	vector<string> paths = core->openFilePicker(extensions, false);
 	if(paths[0] != "") {
-		projectManager->openProject(paths[0]);
-	}
+		PolycodeProject *project = projectManager->openProject(paths[0]);
+		projectManager->setActiveProject(project);
+	}		
 }
 
 void PolycodeIDEApp::saveFile() {

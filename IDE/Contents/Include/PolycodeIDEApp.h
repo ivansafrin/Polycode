@@ -33,6 +33,7 @@ public:
 	
 	// menu commands
 	void newProject();
+	void newFile();	
 	void openProject();
 	void saveFile();
 	
