@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
 		256AC3DA0F4B6AC300CF3369 /* PolycodeAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 256AC3D90F4B6AC300CF3369 /* PolycodeAppDelegate.m */; };
+		6D34143012B816B60034FA9B /* libphysfs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D34142F12B816B60034FA9B /* libphysfs.a */; };
+		6D34143412B816BC0034FA9B /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D34143312B816BC0034FA9B /* IOKit.framework */; };
+		6D3414F812B829C90034FA9B /* libluajit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D3414F712B829C90034FA9B /* libluajit.a */; };
 		6D43F54112AB3E5C001E6D87 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D43F53F12AB3E5C001E6D87 /* libz.a */; };
 		6D43F54212AB3E5C001E6D87 /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D43F54012AB3E5C001E6D87 /* libpng.a */; };
 		6D43F55E12AB3E9E001E6D87 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D43F55D12AB3E9E001E6D87 /* libfreetype.a */; };
@@ -57,6 +60,9 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		6D34142F12B816B60034FA9B /* libphysfs.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libphysfs.a; path = ../../../Core/Dependencies/physfs/Debug/libphysfs.a; sourceTree = SOURCE_ROOT; };
+		6D34143312B816BC0034FA9B /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
+		6D3414F712B829C90034FA9B /* libluajit.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libluajit.a; path = ../../../Core/Dependencies/luajit/src/libluajit.a; sourceTree = SOURCE_ROOT; };
 		6D43F53F12AB3E5C001E6D87 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = ../../../Core/Dependencies/zlib/libz.a; sourceTree = SOURCE_ROOT; };
 		6D43F54012AB3E5C001E6D87 /* libpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng.a; path = ../../../Core/Dependencies/libpng/libpng.a; sourceTree = SOURCE_ROOT; };
 		6D43F55D12AB3E9E001E6D87 /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = ../../../Core/Dependencies/freetype/libfreetype.a; sourceTree = SOURCE_ROOT; };
@@ -108,6 +114,9 @@
 				6D43F54112AB3E5C001E6D87 /* libz.a in Frameworks */,
 				6D43F54212AB3E5C001E6D87 /* libpng.a in Frameworks */,
 				6D43F55E12AB3E9E001E6D87 /* libfreetype.a in Frameworks */,
+				6D34143012B816B60034FA9B /* libphysfs.a in Frameworks */,
+				6D34143412B816BC0034FA9B /* IOKit.framework in Frameworks */,
+				6D3414F812B829C90034FA9B /* libluajit.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -126,6 +135,9 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6D3414F712B829C90034FA9B /* libluajit.a */,
+				6D34143312B816BC0034FA9B /* IOKit.framework */,
+				6D34142F12B816B60034FA9B /* libphysfs.a */,
 				6D43F55D12AB3E9E001E6D87 /* libfreetype.a */,
 				6D43F53F12AB3E5C001E6D87 /* libz.a */,
 				6D43F54012AB3E5C001E6D87 /* libpng.a */,
@@ -312,7 +324,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R ../../Contents/Resources/* build/Debug/Polycode.app/Contents/Resources";
+			shellScript = "cp -R ../../Contents/Resources/* build/Debug/Polycode.app/Contents/Resources\ncp ../../../Core/Dependencies/luajit/src/libluajit.so build/Debug/Polycode.app/Contents/MacOS\ninstall_name_tool -change \"libluajit.so\" \"@executable_path/libluajit.so\" build/Debug/Polycode.app/Contents/MacOS/Polycode";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -386,6 +398,7 @@
 					"\"$(SRCROOT)/../../../Modules/Build/Mac OS X/build/Debug\"",
 					"\"$(SRCROOT)/../../../Core/Dependencies/zlib\"",
 					"\"$(SRCROOT)/../../../Core/Dependencies/libpng\"",
+					"\"$(SRCROOT)/../../../Core/Dependencies/luajit/src\"",
 				);
 				PRODUCT_NAME = Polycode;
 			};
@@ -413,6 +426,7 @@
 					"\"$(SRCROOT)/../../../Modules/Build/Mac OS X/build/Debug\"",
 					"\"$(SRCROOT)/../../../Core/Dependencies/zlib\"",
 					"\"$(SRCROOT)/../../../Core/Dependencies/libpng\"",
+					"\"$(SRCROOT)/../../../Core/Dependencies/luajit/src\"",
 				);
 				PRODUCT_NAME = Polycode;
 			};
@@ -428,6 +442,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					../../../Core/Contents/Include,
+					../../../Core/Dependencies/luajit/src,
 					../../../Core/Dependencies/libvorbis/include,
 					../../../Core/Dependencies/libogg/include,
 					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Versions/A/Headers,
@@ -451,6 +466,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					../../../Core/Contents/Include,
+					../../../Core/Dependencies/luajit/src,
 					../../../Core/Dependencies/libvorbis/include,
 					../../../Core/Dependencies/libogg/include,
 					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Versions/A/Headers,

@@ -52,6 +52,13 @@ PolycodeIDEApp::PolycodeIDEApp(SubstanceView *view) : EventHandler() {
 	frame->Resize(core->getXRes(), core->getYRes());	
 	core->setVideoMode(1000, 600, false, 0);
 	
+	
+	CoreServices::getInstance()->getResourceManager()->addArchive(RESOURCE_PATH"tomato.polyapp");
+	
+//	ScreenImage *img = new ScreenImage("tomato.png");
+//	screen->addChild(img);
+	
+	
 }
 
 void PolycodeIDEApp::newProject() {

@@ -6,7 +6,6 @@
 // Compile support for lua bindings.
 //#define _COMPILE_LUA
 
-
 #define COMPILE_GL_RENDERER
 
 #ifdef MSVC

@@ -184,24 +184,6 @@
 		6DFBF46912A3184E00C43A7D /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF3BA12A3184E00C43A7D /* tinyxmlerror.cpp */; };
 		6DFBF46A12A3184E00C43A7D /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF3BB12A3184E00C43A7D /* tinyxmlparser.cpp */; };
 		6DFBF46B12A3184E00C43A7D /* xmltest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF3BC12A3184E00C43A7D /* xmltest.cpp */; };
-		6DFBF77412A383AF00C43A7D /* physfs_byteorder.c in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF76D12A383AF00C43A7D /* physfs_byteorder.c */; };
-		6DFBF77512A383AF00C43A7D /* physfs_casefolding.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF76E12A383AF00C43A7D /* physfs_casefolding.h */; };
-		6DFBF77612A383AF00C43A7D /* physfs_internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF76F12A383AF00C43A7D /* physfs_internal.h */; };
-		6DFBF77712A383AF00C43A7D /* physfs_platforms.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF77012A383AF00C43A7D /* physfs_platforms.h */; };
-		6DFBF77812A383AF00C43A7D /* physfs_unicode.c in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF77112A383AF00C43A7D /* physfs_unicode.c */; };
-		6DFBF77912A383AF00C43A7D /* physfs.c in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF77212A383AF00C43A7D /* physfs.c */; };
-		6DFBF77A12A383AF00C43A7D /* physfs.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF77312A383AF00C43A7D /* physfs.h */; };
-		6DFBF78612A383DF00C43A7D /* macosx.c in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF78512A383DF00C43A7D /* macosx.c */; };
-		6DFBF79D12A3840F00C43A7D /* dir.c in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF79512A3840F00C43A7D /* dir.c */; };
-		6DFBF79E12A3840F00C43A7D /* grp.c in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF79612A3840F00C43A7D /* grp.c */; };
-		6DFBF79F12A3840F00C43A7D /* hog.c in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF79712A3840F00C43A7D /* hog.c */; };
-		6DFBF7A012A3840F00C43A7D /* lzma.c in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF79812A3840F00C43A7D /* lzma.c */; };
-		6DFBF7A112A3840F00C43A7D /* mvl.c in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF79912A3840F00C43A7D /* mvl.c */; };
-		6DFBF7A212A3840F00C43A7D /* qpak.c in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF79A12A3840F00C43A7D /* qpak.c */; };
-		6DFBF7A312A3840F00C43A7D /* wad.c in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF79B12A3840F00C43A7D /* wad.c */; };
-		6DFBF7A412A3840F00C43A7D /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF79C12A3840F00C43A7D /* zip.c */; };
-		6DFBF7B712A3846A00C43A7D /* posix.c in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF7B512A3846A00C43A7D /* posix.c */; };
-		6DFBF7B812A3846A00C43A7D /* unix.c in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF7B612A3846A00C43A7D /* unix.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -386,24 +368,6 @@
 		6DFBF3BA12A3184E00C43A7D /* tinyxmlerror.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlerror.cpp; sourceTree = "<group>"; };
 		6DFBF3BB12A3184E00C43A7D /* tinyxmlparser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlparser.cpp; sourceTree = "<group>"; };
 		6DFBF3BC12A3184E00C43A7D /* xmltest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xmltest.cpp; sourceTree = "<group>"; };
-		6DFBF76D12A383AF00C43A7D /* physfs_byteorder.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = physfs_byteorder.c; path = ../../Dependencies/physfs/physfs_byteorder.c; sourceTree = SOURCE_ROOT; };
-		6DFBF76E12A383AF00C43A7D /* physfs_casefolding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = physfs_casefolding.h; path = ../../Dependencies/physfs/physfs_casefolding.h; sourceTree = SOURCE_ROOT; };
-		6DFBF76F12A383AF00C43A7D /* physfs_internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = physfs_internal.h; path = ../../Dependencies/physfs/physfs_internal.h; sourceTree = SOURCE_ROOT; };
-		6DFBF77012A383AF00C43A7D /* physfs_platforms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = physfs_platforms.h; path = ../../Dependencies/physfs/physfs_platforms.h; sourceTree = SOURCE_ROOT; };
-		6DFBF77112A383AF00C43A7D /* physfs_unicode.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = physfs_unicode.c; path = ../../Dependencies/physfs/physfs_unicode.c; sourceTree = SOURCE_ROOT; };
-		6DFBF77212A383AF00C43A7D /* physfs.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = physfs.c; path = ../../Dependencies/physfs/physfs.c; sourceTree = SOURCE_ROOT; };
-		6DFBF77312A383AF00C43A7D /* physfs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = physfs.h; path = ../../Dependencies/physfs/physfs.h; sourceTree = SOURCE_ROOT; };
-		6DFBF78512A383DF00C43A7D /* macosx.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = macosx.c; path = ../../Dependencies/physfs/platform/macosx.c; sourceTree = SOURCE_ROOT; };
-		6DFBF79512A3840F00C43A7D /* dir.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dir.c; path = ../../Dependencies/physfs/archivers/dir.c; sourceTree = SOURCE_ROOT; };
-		6DFBF79612A3840F00C43A7D /* grp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = grp.c; path = ../../Dependencies/physfs/archivers/grp.c; sourceTree = SOURCE_ROOT; };
-		6DFBF79712A3840F00C43A7D /* hog.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hog.c; path = ../../Dependencies/physfs/archivers/hog.c; sourceTree = SOURCE_ROOT; };
-		6DFBF79812A3840F00C43A7D /* lzma.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lzma.c; path = ../../Dependencies/physfs/archivers/lzma.c; sourceTree = SOURCE_ROOT; };
-		6DFBF79912A3840F00C43A7D /* mvl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mvl.c; path = ../../Dependencies/physfs/archivers/mvl.c; sourceTree = SOURCE_ROOT; };
-		6DFBF79A12A3840F00C43A7D /* qpak.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = qpak.c; path = ../../Dependencies/physfs/archivers/qpak.c; sourceTree = SOURCE_ROOT; };
-		6DFBF79B12A3840F00C43A7D /* wad.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = wad.c; path = ../../Dependencies/physfs/archivers/wad.c; sourceTree = SOURCE_ROOT; };
-		6DFBF79C12A3840F00C43A7D /* zip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = zip.c; path = ../../Dependencies/physfs/archivers/zip.c; sourceTree = SOURCE_ROOT; };
-		6DFBF7B512A3846A00C43A7D /* posix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = posix.c; path = ../../Dependencies/physfs/platform/posix.c; sourceTree = SOURCE_ROOT; };
-		6DFBF7B612A3846A00C43A7D /* unix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = unix.c; path = ../../Dependencies/physfs/platform/unix.c; sourceTree = SOURCE_ROOT; };
 		D2AAC046055464E500DB518D /* libPolyCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPolyCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -421,7 +385,6 @@
 		08FB7794FE84155DC02AAC07 /* PolyCore */ = {
 			isa = PBXGroup;
 			children = (
-				6DFBF76C12A3839D00C43A7D /* physfs */,
 				08FB7795FE84155DC02AAC07 /* Source */,
 				C6A0FF2B0290797F04C91782 /* Documentation */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
@@ -650,31 +613,6 @@
 			path = Source;
 			sourceTree = "<group>";
 		};
-		6DFBF76C12A3839D00C43A7D /* physfs */ = {
-			isa = PBXGroup;
-			children = (
-				6DFBF7B512A3846A00C43A7D /* posix.c */,
-				6DFBF7B612A3846A00C43A7D /* unix.c */,
-				6DFBF79512A3840F00C43A7D /* dir.c */,
-				6DFBF79612A3840F00C43A7D /* grp.c */,
-				6DFBF79712A3840F00C43A7D /* hog.c */,
-				6DFBF79812A3840F00C43A7D /* lzma.c */,
-				6DFBF79912A3840F00C43A7D /* mvl.c */,
-				6DFBF79A12A3840F00C43A7D /* qpak.c */,
-				6DFBF79B12A3840F00C43A7D /* wad.c */,
-				6DFBF79C12A3840F00C43A7D /* zip.c */,
-				6DFBF78512A383DF00C43A7D /* macosx.c */,
-				6DFBF76D12A383AF00C43A7D /* physfs_byteorder.c */,
-				6DFBF76E12A383AF00C43A7D /* physfs_casefolding.h */,
-				6DFBF76F12A383AF00C43A7D /* physfs_internal.h */,
-				6DFBF77012A383AF00C43A7D /* physfs_platforms.h */,
-				6DFBF77112A383AF00C43A7D /* physfs_unicode.c */,
-				6DFBF77212A383AF00C43A7D /* physfs.c */,
-				6DFBF77312A383AF00C43A7D /* physfs.h */,
-			);
-			name = physfs;
-			sourceTree = "<group>";
-		};
 		C6A0FF2B0290797F04C91782 /* Documentation */ = {
 			isa = PBXGroup;
 			children = (
@@ -778,10 +716,6 @@
 				6DFBF41312A3184E00C43A7D /* PolyVertex.h in Headers */,
 				6DFBF41412A3184E00C43A7D /* tinystr.h in Headers */,
 				6DFBF41512A3184E00C43A7D /* tinyxml.h in Headers */,
-				6DFBF77512A383AF00C43A7D /* physfs_casefolding.h in Headers */,
-				6DFBF77612A383AF00C43A7D /* physfs_internal.h in Headers */,
-				6DFBF77712A383AF00C43A7D /* physfs_platforms.h in Headers */,
-				6DFBF77A12A383AF00C43A7D /* physfs.h in Headers */,
 				6DFB016F12A73BC200C43A7D /* PolyModule.h in Headers */,
 				6D8656A912AF5FCD008A486E /* PolyString.h in Headers */,
 				6D865AC212B07363008A486E /* PolyData.h in Headers */,
@@ -919,20 +853,6 @@
 				6DFBF46912A3184E00C43A7D /* tinyxmlerror.cpp in Sources */,
 				6DFBF46A12A3184E00C43A7D /* tinyxmlparser.cpp in Sources */,
 				6DFBF46B12A3184E00C43A7D /* xmltest.cpp in Sources */,
-				6DFBF77412A383AF00C43A7D /* physfs_byteorder.c in Sources */,
-				6DFBF77812A383AF00C43A7D /* physfs_unicode.c in Sources */,
-				6DFBF77912A383AF00C43A7D /* physfs.c in Sources */,
-				6DFBF78612A383DF00C43A7D /* macosx.c in Sources */,
-				6DFBF79D12A3840F00C43A7D /* dir.c in Sources */,
-				6DFBF79E12A3840F00C43A7D /* grp.c in Sources */,
-				6DFBF79F12A3840F00C43A7D /* hog.c in Sources */,
-				6DFBF7A012A3840F00C43A7D /* lzma.c in Sources */,
-				6DFBF7A112A3840F00C43A7D /* mvl.c in Sources */,
-				6DFBF7A212A3840F00C43A7D /* qpak.c in Sources */,
-				6DFBF7A312A3840F00C43A7D /* wad.c in Sources */,
-				6DFBF7A412A3840F00C43A7D /* zip.c in Sources */,
-				6DFBF7B712A3846A00C43A7D /* posix.c in Sources */,
-				6DFBF7B812A3846A00C43A7D /* unix.c in Sources */,
 				6DFB017112A73BCF00C43A7D /* PolyModule.cpp in Sources */,
 				6D8656AB12AF5FD5008A486E /* PolyString.cpp in Sources */,
 				6D865AC412B0736C008A486E /* PolyData.cpp in Sources */,
@@ -984,6 +904,7 @@
 					../../Dependencies/physfs,
 				);
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "-DPHYSFS_SUPPORTS_ZIP";
 				PREBINDING = NO;
 				SDKROOT = macosx10.6;
 			};
@@ -996,6 +917,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				OTHER_CFLAGS = "-DPHYSFS_SUPPORTS_ZIP";
 				PREBINDING = NO;
 				SDKROOT = macosx10.6;
 			};

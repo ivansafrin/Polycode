@@ -21,6 +21,12 @@
 #include "PolycodeFontEditor.h"
 #include "PolycodeTextEditor.h"
 
+extern "C" {	
+#include <stdio.h>
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
+	
 using namespace Polycode;
 
 class PolycodeIDEApp : public EventHandler {
@@ -45,3 +51,4 @@ protected:
 	PolycodeProjectManager *projectManager;
 	
 };
+}

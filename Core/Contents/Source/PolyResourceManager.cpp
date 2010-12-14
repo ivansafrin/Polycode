@@ -174,8 +174,10 @@ void ResourceManager::parseTextures(String dirPath, bool recursive) {
 
 
 void ResourceManager::addArchive(String zipPath) {
-	if(PHYSFS_addToSearchPath(zipPath.c_str(), 1, getThreadID()) == 0) {
-		Logger::log("Error adding archive to resource manager...\n");
+//	Logger::log("Adding archive: %s\n", zipPath.c_str());
+//	if(PHYSFS_addToSearchPath(zipPath.c_str(), 1, getThreadID()) == 0) {
+	if(PHYSFS_addToSearchPath(zipPath.c_str(), 1) == 0) {	
+		Logger::log("Error adding archive to resource manager... %s\n", PHYSFS_getLastError());
 	} else {
 		Logger::log("Added archive: %s\n", zipPath.c_str());
 	}

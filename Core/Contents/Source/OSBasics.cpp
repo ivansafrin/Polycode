@@ -87,6 +87,8 @@ OSFILE *OSBasics::open(String filename, String opts) {
 			}
 			return retFile;
 		}
+	} else {
+	//	Logger::log("File doesn't exist in archive\n");
 	}
 	
 	FILE *file = fopen(filename.c_str(), opts.c_str());
