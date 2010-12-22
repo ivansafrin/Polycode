@@ -11,10 +11,13 @@
 
 @implementation SubstanceView
 
+@synthesize viewReady;
+
 - (id)initWithFrame:(NSRect)frameRect pixelFormat:(NSOpenGLPixelFormat *)format 
 {
 	self = [super initWithFrame:frameRect pixelFormat:format];
 	if(self) {
+		viewReady = NO;
 		currentCursor = NULL;
 		contextLock = [[NSLock alloc] init];
 	}
@@ -30,6 +33,13 @@
 	[[NSNotificationCenter defaultCenter] addObserver:self  selector:@selector(windowResized:) name:NSWindowDidResizeNotification object:[self window]];
 	
 	[self setAutoresizesSubviews: YES];
+}
+
+-(void) viewDidMoveToWindow
+{
+	[super viewDidMoveToWindow];
+	viewReady = YES;
+	NSLog(@"VIEW READY!");	
 }
 
 

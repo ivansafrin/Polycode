@@ -1,0 +1,241 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		6D3415FA12B837080034FA9B /* PolycodeLUA.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D3415F712B837080034FA9B /* PolycodeLUA.h */; };
+		6D3415FB12B837080034FA9B /* PolycodeLUA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D3415F912B837080034FA9B /* PolycodeLUA.cpp */; };
+		6D3418F712B91DBF0034FA9B /* PolycodeLUA2D.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D3418F612B91DBF0034FA9B /* PolycodeLUA2D.h */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		6D3415EF12B836CE0034FA9B /* libPolycodeLUA.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPolycodeLUA.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		6D3415F712B837080034FA9B /* PolycodeLUA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolycodeLUA.h; sourceTree = "<group>"; };
+		6D3415F912B837080034FA9B /* PolycodeLUA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolycodeLUA.cpp; sourceTree = "<group>"; };
+		6D3418F612B91DBF0034FA9B /* PolycodeLUA2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolycodeLUA2D.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		6D3415ED12B836CE0034FA9B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		6D3415D712B8360B0034FA9B = {
+			isa = PBXGroup;
+			children = (
+				6D3415F512B837080034FA9B /* LUA */,
+				6D3415F012B836CE0034FA9B /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		6D3415F012B836CE0034FA9B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6D3415EF12B836CE0034FA9B /* libPolycodeLUA.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		6D3415F512B837080034FA9B /* LUA */ = {
+			isa = PBXGroup;
+			children = (
+				6D3415F612B837080034FA9B /* Include */,
+				6D3415F812B837080034FA9B /* Source */,
+			);
+			name = LUA;
+			path = ../../Contents/LUA;
+			sourceTree = SOURCE_ROOT;
+		};
+		6D3415F612B837080034FA9B /* Include */ = {
+			isa = PBXGroup;
+			children = (
+				6D3418F612B91DBF0034FA9B /* PolycodeLUA2D.h */,
+				6D3415F712B837080034FA9B /* PolycodeLUA.h */,
+			);
+			path = Include;
+			sourceTree = "<group>";
+		};
+		6D3415F812B837080034FA9B /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				6D3415F912B837080034FA9B /* PolycodeLUA.cpp */,
+			);
+			path = Source;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		6D3415EB12B836CE0034FA9B /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6D3415FA12B837080034FA9B /* PolycodeLUA.h in Headers */,
+				6D3418F712B91DBF0034FA9B /* PolycodeLUA2D.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		6D3415EE12B836CE0034FA9B /* PolycodeLUA */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6D3415F312B836CE0034FA9B /* Build configuration list for PBXNativeTarget "PolycodeLUA" */;
+			buildPhases = (
+				6D3415EB12B836CE0034FA9B /* Headers */,
+				6D3415EC12B836CE0034FA9B /* Sources */,
+				6D3415ED12B836CE0034FA9B /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PolycodeLUA;
+			productName = PolycodeLUA;
+			productReference = 6D3415EF12B836CE0034FA9B /* libPolycodeLUA.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		6D3415D912B8360B0034FA9B /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 6D3415DC12B8360B0034FA9B /* Build configuration list for PBXProject "Bindings" */;
+			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = 6D3415D712B8360B0034FA9B;
+			productRefGroup = 6D3415F012B836CE0034FA9B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				6D3415EE12B836CE0034FA9B /* PolycodeLUA */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		6D3415EC12B836CE0034FA9B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6D3415FB12B837080034FA9B /* PolycodeLUA.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		6D3415DA12B8360B0034FA9B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ONLY_ACTIVE_ARCH_PRE_XCODE_3_1)";
+				COPY_PHASE_STRIP = NO;
+				HEADER_SEARCH_PATHS = (
+					../../../Core/Contents/Include,
+					../../../Core/Dependencies/luajit/src,
+					../../../Core/Dependencies/libvorbis/include,
+					../../../Core/Dependencies/libogg/include,
+					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Versions/A/Headers,
+					../../../Core/Dependencies/freetype/include,
+					../../../Core/Dependencies/libpng,
+					../../../Core/Dependencies/physfs,
+					../../../Modules/Contents/UI/Include,
+				);
+				ONLY_ACTIVE_ARCH_PRE_XCODE_3_1 = "$(NATIVE_ARCH_ACTUAL)";
+			};
+			name = Debug;
+		};
+		6D3415DB12B8360B0034FA9B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ONLY_ACTIVE_ARCH_PRE_XCODE_3_1)";
+				COPY_PHASE_STRIP = YES;
+				HEADER_SEARCH_PATHS = (
+					../../../Core/Contents/Include,
+					../../../Core/Dependencies/luajit/src,
+					../../../Core/Dependencies/libvorbis/include,
+					../../../Core/Dependencies/libogg/include,
+					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Versions/A/Headers,
+					../../../Core/Dependencies/freetype/include,
+					../../../Core/Dependencies/libpng,
+					../../../Core/Dependencies/physfs,
+					../../../Modules/Contents/UI/Include,
+				);
+				ONLY_ACTIVE_ARCH_PRE_XCODE_3_1 = "$(NATIVE_ARCH_ACTUAL)";
+			};
+			name = Release;
+		};
+		6D3415F112B836CE0034FA9B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/lib;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				PRODUCT_NAME = PolycodeLUA;
+			};
+			name = Debug;
+		};
+		6D3415F212B836CE0034FA9B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				PRODUCT_NAME = PolycodeLUA;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		6D3415DC12B8360B0034FA9B /* Build configuration list for PBXProject "Bindings" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6D3415DA12B8360B0034FA9B /* Debug */,
+				6D3415DB12B8360B0034FA9B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6D3415F312B836CE0034FA9B /* Build configuration list for PBXNativeTarget "PolycodeLUA" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6D3415F112B836CE0034FA9B /* Debug */,
+				6D3415F212B836CE0034FA9B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 6D3415D912B8360B0034FA9B /* Project object */;
+}

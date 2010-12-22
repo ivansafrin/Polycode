@@ -13,24 +13,6 @@
 @synthesize substanceView;
 
 
-void *threadFunc(void *data) {
-	NSAutoreleasePool *pool;
-    pool = [[NSAutoreleasePool alloc] init];
-	
-	CocoaPolycodePlayer *player = (CocoaPolycodePlayer*)data;
-	player->runThread();	
-
-	NSDocument *doc = (NSDocument*)player->windowData;
-	@synchronized(doc) {	
-		[doc close];
-	}
-	
-	[pool drain];		
-	
-	return NULL;
-}
-
-
 - (id)init
 {
     self = [super init];
@@ -53,17 +35,28 @@ void *threadFunc(void *data) {
 - (void)windowControllerDidLoadNib:(NSWindowController *) aController
 {
     [super windowControllerDidLoadNib:aController];
-    // Add any code here that needs to be executed once the windowController has loaded the document's window.
-	
-		
+    // Add any code here that needs to be executed once the windowController has loaded the document's window.		
+
 	player =  new CocoaPolycodePlayer(substanceView, [docFileName cStringUsingEncoding:NSASCIIStringEncoding], false);
 	playerProxy = new PolycodeProxy();
 	playerProxy->playerDocument = self;
 	player->addEventListener(playerProxy, PolycodeDebugEvent::EVENT_RESIZE);
 	player->windowData = self;
-	pthread_t thread;
-	pthread_create( &thread, NULL, threadFunc, (void*)player);	
 	
+	player->runPlayer();
+
+	
+	timer = [NSTimer timerWithTimeInterval:(1.0f/90.0f) target:self selector:@selector(animationTimer:) userInfo:nil repeats:YES];
+	[[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
+	[[NSRunLoop currentRunLoop] addTimer:timer forMode:NSEventTrackingRunLoopMode]; // ensure timer fires during resize		
+}
+
+- (void)animationTimer:(NSTimer *)timer
+{
+
+	if(!player->Update()) {
+		[self close];
+	}
 }
 
 - (NSData *)dataOfType:(NSString *)typeName error:(NSError **)outError

@@ -40,9 +40,9 @@ CocoaCore::CocoaCore(SubstanceView *view, int xRes, int yRes, bool fullScreen,in
 	
 	initTime = mach_absolute_time();					
 	
-	while(![view isContextReady]) {
+//	while(![view isContextReady]) {
 		
-	}
+//	}
 	
 	renderer = new OpenGLRenderer();
 	services->setRenderer(renderer);	

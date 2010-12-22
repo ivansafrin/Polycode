@@ -493,7 +493,7 @@ void UITextInput::insertText(String text) {
 		if(i < numLines) {
 			lines[i]->setText(strings[i]);
 		} else {
-			numLines++;	
+			numLines++;		
 			ScreenLabel *newLine = new ScreenLabel(fontName, L"", fontSize, Label::ANTIALIAS_FULL);
 			newLine->setColor(0,0,0,1);
 			addChild(newLine);			

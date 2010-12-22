@@ -13,6 +13,7 @@
 #include <fstream>
 
 #include "Polycode.h"
+#include "PolycodeLUA.h"
 
 extern "C" {	
 #include <stdio.h>
@@ -48,7 +49,7 @@ public:
 	PolycodePlayer(String fileName, bool knownArchive);
 	virtual ~PolycodePlayer();
 	
-	void runThread();
+	void runPlayer();
 	
 	void loadFile(const char *fileName);
 	void runFile(String fileName);

@@ -29,8 +29,10 @@ using namespace Polycode;
 	
 	NSCursor *currentCursor;
 	bool contextReady;
+	
 }
 
+@property BOOL viewReady;
 
 - (void) setCurrentCursor: (NSCursor*) newCursor;
 

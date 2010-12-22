@@ -18,6 +18,7 @@ extern "C" {
 		module += ".lua";
 		
 		const char* fullPath = module.c_str();		
+		printf("Loading custom class: %s\n", module.c_str());
 		OSFILE *inFile = OSBasics::open(module, "r");	
 		if(inFile) {
 			OSBasics::seek(inFile, 0, SEEK_END);	
@@ -93,6 +94,7 @@ extern "C" {
 		 */
 		luaL_openlibs(L);
 		
+		luaopen_Polycode(L);
 		//luaopen_Tau(L);	// load the wrappered module
 		
 		
@@ -118,7 +120,16 @@ extern "C" {
 		// Table is still on the stack.  Get rid of it now.
 		lua_pop(L, 1);
 		
+		lua_getfield(L, LUA_GLOBALSINDEX, "require");
+		lua_pushstring(L, "class");		
+		lua_call(L, 1, 0);
+
+		lua_getfield(L, LUA_GLOBALSINDEX, "require");
+		lua_pushstring(L, "defaults");		
+		lua_call(L, 1, 0);
 		
+		
+//		String prepend = "";
 		//string prepend = "for k,v in pairs(Tau) do _G[k]=v end for k,v in pairs(math) do _G[k]=v end for k,v in pairs(table) do _G[k]=v end _G[\"count\"]=_G[\"getn\"] RESOURCE_MANAGER = CoreServices_getInstance():getResourceManager() CORE = CoreServices_getInstance():getCore() INPUT = CORE:getInput() RENDERER = CoreServices_getInstance():getRenderer() listener = EventHandler() listener.onEvent = function(e) inputEvent = CoreInput_createEvent(e) if e:getEventCode() == EVENT_MOUSEUP then if onMouseUp ~= nil then onMouseUp(inputEvent.mousePosition.x, inputEvent.mousePosition.y, inputEvent.mouseButton) end end if e:getEventCode() == EVENT_MOUSEDOWN then if onMouseDown ~= nil then onMouseDown(inputEvent.mousePosition.x, inputEvent.mousePosition.y, inputEvent.mouseButton) end end if e:getEventCode() == EVENT_MOUSEMOVE then if onMouseMove ~= nil then onMouseMove(inputEvent.mousePosition.x, inputEvent.mousePosition.y) end end if e:getEventCode() == EVENT_KEYDOWN then if onKeyDown ~= nil then onKeyDown(inputEvent:keyCode()) end end if e:getEventCode() == EVENT_KEYUP then if onKeyUp ~= nil then onKeyUp(inputEvent:keyCode()) end end end INPUT:addEventListener(listener, EVENT_KEYDOWN) INPUT:addEventListener(listener, EVENT_KEYUP) INPUT:addEventListener(listener, EVENT_MOUSEDOWN) INPUT:addEventListener(listener, EVENT_MOUSEMOVE) INPUT:addEventListener(listener, EVENT_MOUSEUP)";
 //		String prepend = "for k,v in pairs(math) do _G[k]=v end for k,v in pairs(table) do _G[k]=v end _G[\"count\"]=_G[\"getn\"] RESOURCE_MANAGER = Tau.CoreServices_getInstance():getResourceManager() CORE = Tau.CoreServices_getInstance():getCore() FONT_MANAGER = Tau.CoreServices_getInstance():getFontManager() INPUT = CORE:getInput() RENDERER = Tau.CoreServices_getInstance():getRenderer() listener = Tau.EventHandler() listener.onEvent = function(e) inputEvent = Tau.CoreInput_createEvent(e) if e:getEventCode() == Tau.EVENT_MOUSEUP then if onMouseUp ~= nil then onMouseUp(inputEvent.mousePosition.x, inputEvent.mousePosition.y, inputEvent.mouseButton) end end if e:getEventCode() == Tau.EVENT_MOUSEDOWN then if onMouseDown ~= nil then onMouseDown(inputEvent.mousePosition.x, inputEvent.mousePosition.y, inputEvent.mouseButton) end end if e:getEventCode() == Tau.EVENT_MOUSEMOVE then if onMouseMove ~= nil then onMouseMove(inputEvent.mousePosition.x, inputEvent.mousePosition.y) end end if e:getEventCode() == Tau.EVENT_KEYDOWN then if onKeyDown ~= nil then onKeyDown(inputEvent:keyCode()) end end if e:getEventCode() == Tau.EVENT_KEYUP then if onKeyUp ~= nil then onKeyUp(inputEvent:keyCode()) end end end INPUT:addEventListener(listener, Tau.EVENT_KEYDOWN) INPUT:addEventListener(listener, Tau.EVENT_KEYUP) INPUT:addEventListener(listener, Tau.EVENT_MOUSEDOWN) INPUT:addEventListener(listener, Tau.EVENT_MOUSEMOVE) INPUT:addEventListener(listener, Tau.EVENT_MOUSEUP) ";
 		
@@ -161,8 +172,8 @@ extern "C" {
 		String postpend = ""; //" \nif update == nil then\nfunction update(e)\nend\nend\nwhile CORE:Update() do\nupdate(CORE:getElapsed())\nend";
 		
 		//String fullScript = prepend + prepend2 + prepend3 + fileData;// + postpend;
-		
-		String fullScript = fileData;// + postpend;
+		String fullScript = fileData;
+		//String fullScript = fileData;// + postpend;
 		
 		doneLoading = true;
 		
@@ -235,6 +246,16 @@ void PolycodePlayer::loadFile(const char *fileName) {
 		loadingArchive = true;
 		Logger::log("Reading configuration from POLYAPP file... (%s)\n", nameString.c_str());
 	} else {
+		ResourceManager *rman = CoreServices::getInstance()->getResourceManager();
+		
+		String fileDir = "";
+		vector<String> bits = String(fileName).split("/");
+		for(int i=0; i < bits.size()-1; i++) {
+			fileDir += "/"+bits[i];
+		}
+		
+		rman->addArchive(fileDir);
+		
 		Logger::log("Reading configuration from .polycode file directly... (%s)\n", fileName);		
 		TiXmlDocument doc1(fileName);	
 		doc = doc1;
@@ -289,7 +310,7 @@ void PolycodePlayer::loadFile(const char *fileName) {
 		}
 	}
 	
-	Logger::log(mainFile.c_str());
+	Logger::log("Mainfile: %s\n", mainFile.c_str());
 	
 	PolycodeDebugEvent *event = new PolycodeDebugEvent();			
 	event->xRes = xRes;
@@ -297,13 +318,16 @@ void PolycodePlayer::loadFile(const char *fileName) {
 	
 	createCore();
 	
+	Logger::log("Core created...\n");
+	
 	core->setUserPointer(this);
-	core->addEventListener(this, Core::EVENT_CORE_RESIZE);
+	//core->addEventListener(this, Core::EVENT_CORE_RESIZE);
 	core->setVideoMode(xRes, yRes, fullScreen, aaLevel);
 		
 //	dispatchEvent(event, PolycodeDebugEvent::EVENT_RESIZE);		
 	
 	CoreServices::getInstance()->getRenderer()->setClearColor(red, green, blue);
+//	CoreServices::getInstance()->getRenderer()->setClearColor(1,0,0);
 	srand(core->getTicks());
 	
 	string fullPath;
@@ -320,7 +344,8 @@ void PolycodePlayer::loadFile(const char *fileName) {
 	runFile(fullPath);
 }
 
-void PolycodePlayer::runThread() {
+void PolycodePlayer::runPlayer() {
+	Logger::log("Running player\n");	
 	loadFile(fileToRun.c_str());
 	Logger::log("Done running player...\n");
 }
@@ -348,5 +373,10 @@ void PolycodePlayer::handleEvent(Event *event) {
 
 
 bool PolycodePlayer::Update() {
+	
+	lua_getfield(L, LUA_GLOBALSINDEX, "Update");
+	lua_pushnumber(L, core->getElapsed());
+	lua_call(L, 1, 0);
+	
 	return core->Update();
 }

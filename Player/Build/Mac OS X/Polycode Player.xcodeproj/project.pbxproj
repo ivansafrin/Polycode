@@ -13,6 +13,7 @@
 		6D34133512B7FC760034FA9B /* libphysfs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D34133412B7FC760034FA9B /* libphysfs.a */; };
 		6D34134112B7FCD00034FA9B /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D34134012B7FCD00034FA9B /* IOKit.framework */; };
 		6D34153C12B82C7A0034FA9B /* liblua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D34153B12B82C7A0034FA9B /* liblua.a */; };
+		6D34160612B837250034FA9B /* libPolycodeLUA.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D34160512B837250034FA9B /* libPolycodeLUA.a */; };
 		6DBAB04B12B6EA4300986D01 /* PolySubstanceView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DBAB04912B6EA4300986D01 /* PolySubstanceView.m */; };
 		6DBAB07E12B6EAAD00986D01 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DBAB07712B6EAAD00986D01 /* libfreetype.a */; };
 		6DBAB07F12B6EAAD00986D01 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DBAB07812B6EAAD00986D01 /* libz.a */; };
@@ -48,6 +49,7 @@
 		6D34133412B7FC760034FA9B /* libphysfs.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libphysfs.a; path = ../../../Core/Dependencies/physfs/Debug/libphysfs.a; sourceTree = SOURCE_ROOT; };
 		6D34134012B7FCD00034FA9B /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		6D34153B12B82C7A0034FA9B /* liblua.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblua.a; path = ../../../Core/Dependencies/lua/src/liblua.a; sourceTree = SOURCE_ROOT; };
+		6D34160512B837250034FA9B /* libPolycodeLUA.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycodeLUA.a; path = "../../../Bindings/Build/Mac OS X/build/Debug/libPolycodeLUA.a"; sourceTree = SOURCE_ROOT; };
 		6DBAB04912B6EA4300986D01 /* PolySubstanceView.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; name = PolySubstanceView.m; path = ../../../Core/Contents/Source/PolySubstanceView.m; sourceTree = SOURCE_ROOT; };
 		6DBAB04A12B6EA4300986D01 /* PolySubstanceView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolySubstanceView.h; path = ../../../Core/Contents/Include/PolySubstanceView.h; sourceTree = SOURCE_ROOT; };
 		6DBAB07712B6EAAD00986D01 /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = ../../../Core/Dependencies/freetype/libfreetype.a; sourceTree = SOURCE_ROOT; };
@@ -81,6 +83,7 @@
 				6D34133512B7FC760034FA9B /* libphysfs.a in Frameworks */,
 				6D34134112B7FCD00034FA9B /* IOKit.framework in Frameworks */,
 				6D34153C12B82C7A0034FA9B /* liblua.a in Frameworks */,
+				6D34160612B837250034FA9B /* libPolycodeLUA.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -90,6 +93,7 @@
 		1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6D34160512B837250034FA9B /* libPolycodeLUA.a */,
 				6D34153B12B82C7A0034FA9B /* liblua.a */,
 				6D34134012B7FCD00034FA9B /* IOKit.framework */,
 				6D34133412B7FC760034FA9B /* libphysfs.a */,
@@ -333,6 +337,7 @@
 					"\"$(SRCROOT)/../../../Core/Dependencies/luajit/src\"",
 					"\"$(SRCROOT)/../../../Core/Dependencies/physfs/Debug\"",
 					"\"$(SRCROOT)/../../../Core/Dependencies/lua/src\"",
+					"\"$(SRCROOT)/../../../Bindings/Build/Mac OS X/build/Debug\"",
 				);
 				PRODUCT_NAME = "Polycode Player";
 			};
@@ -358,6 +363,7 @@
 					"\"$(SRCROOT)/../../../Core/Dependencies/luajit/src\"",
 					"\"$(SRCROOT)/../../../Core/Dependencies/physfs/Debug\"",
 					"\"$(SRCROOT)/../../../Core/Dependencies/lua/src\"",
+					"\"$(SRCROOT)/../../../Bindings/Build/Mac OS X/build/Debug\"",
 				);
 				PRODUCT_NAME = "Polycode Player";
 			};
@@ -372,6 +378,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
+					../../../Bindings/Contents/LUA/Include,
 					../../../Core/Contents/Include,
 					../../../Core/Dependencies/luajit/src,
 					../../../Core/Dependencies/libvorbis/include,
@@ -396,6 +403,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
+					../../../Bindings/Contents/LUA/Include,
 					../../../Core/Contents/Include,
 					../../../Core/Dependencies/luajit/src,
 					../../../Core/Dependencies/libvorbis/include,
