@@ -19,6 +19,7 @@ Screen::Screen() : EventDispatcher() {
 	CoreServices::getInstance()->getScreenManager()->addScreen(this);
 	filterShaderMaterial = NULL;
 	_hasFilterShader = false;
+	useNormalizedCoordinates = false;
 	rootEntity = new ScreenEntity();
 	addChild(rootEntity);
 }
@@ -27,6 +28,11 @@ Screen::~Screen() {
 	for(int i=0; i<children.size();i++) {
 		//	delete children[i];
 	}
+}
+
+void Screen::setNormalizedCoordinates(bool newVal, float yCoordinateSize) {
+	useNormalizedCoordinates = newVal;
+	this->yCoordinateSize = yCoordinateSize;
 }
 
 void Screen::handleInputEvent(InputEvent *inputEvent) {

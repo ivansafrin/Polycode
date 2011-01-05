@@ -53,12 +53,12 @@ PolycodeIDEApp::PolycodeIDEApp(SubstanceView *view) : EventHandler() {
 	core->setVideoMode(1000, 600, false, 0);
 	
 	
-	CoreServices::getInstance()->getResourceManager()->addArchive(RESOURCE_PATH"tomato.polyapp");
+//	CoreServices::getInstance()->getResourceManager()->addArchive(RESOURCE_PATH"tomato.polyapp");
 	
 //	ScreenImage *img = new ScreenImage("tomato.png");
 //	screen->addChild(img);
 	
-	
+	loadConfigFile();
 }
 
 void PolycodeIDEApp::newProject() {
@@ -139,7 +139,19 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 	}
 }
 
+void PolycodeIDEApp::saveConfigFile() {
+	
+}
+
+void PolycodeIDEApp::loadConfigFile() {
+	
+}
+
+
 PolycodeIDEApp::~PolycodeIDEApp() {
+	
+	saveConfigFile();
+	
 	delete core;
 }
 

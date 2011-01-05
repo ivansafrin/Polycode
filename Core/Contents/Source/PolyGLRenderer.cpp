@@ -292,7 +292,10 @@ void OpenGLRenderer::drawVertexBuffer(VertexBuffer *buffer) {
 	glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getTextCoordBufferID());
 	glTexCoordPointer( 2, GL_FLOAT, 0, (char *) NULL );
 	
-	glDrawArrays( GL_TRIANGLES, 0, buffer->getVertexCount() );
+	if(buffer->verticesPerFace == 3)
+		glDrawArrays( GL_TRIANGLES, 0, buffer->getVertexCount() );
+	else
+		glDrawArrays( GL_QUADS, 0, buffer->getVertexCount() );
 	
 	glDisableClientState( GL_VERTEX_ARRAY);	
 	glDisableClientState( GL_TEXTURE_COORD_ARRAY );		
@@ -318,7 +321,7 @@ void OpenGLRenderer::setBlendingMode(int blendingMode) {
 				glBlendFunc (GL_SRC_ALPHA, GL_ONE);
 		break;
 		case BLEND_MODE_COLOR:
-				glBlendFunc (GL_DST_COLOR, GL_ONE);
+				glBlendFunc (GL_SRC_ALPHA_SATURATE, GL_ONE);
 		break;
 		default:
 			glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -377,7 +380,14 @@ void OpenGLRenderer::setFogProperties(int fogMode, Color color, float density, f
 	glClearColor(color.r, color.g, color.b, color.a);
 }
 
-void OpenGLRenderer::setOrthoMode() {
+void OpenGLRenderer::setOrthoMode(float xSize, float ySize) {
+	
+	if(xSize == 0)
+		xSize = xRes;
+
+	if(ySize == 0)
+		ySize = yRes;
+		
 	setBlendingMode(BLEND_MODE_NORMAL);
 	if(!orthoMode) {
 		glDisable(GL_LIGHTING);
@@ -385,8 +395,7 @@ void OpenGLRenderer::setOrthoMode() {
 		glDisable(GL_CULL_FACE);
 		glPushMatrix();
 		glLoadIdentity();
-		glOrtho(0.0f,xRes,yRes,0,-1.0f,1.0f);
-//		glOrtho(0.0f,2500.0f,2500.0f,0,-1.0f,1.0f);
+		glOrtho(0.0f,xSize,ySize,0,-1.0f,1.0f);
 		orthoMode = true;
 	}
 	glMatrixMode(GL_MODELVIEW);	

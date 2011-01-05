@@ -26,6 +26,8 @@ namespace Polycode {
 	class _PolyExport VertexBuffer {
 		public:	
 			int getVertexCount() { return vertexCount;}
+		
+			int verticesPerFace;
 		protected:
 		int vertexCount;
 			

@@ -12,7 +12,7 @@
 #pragma once
 #include "PolyGlobals.h"
 #include "PolyScreen.h"
-#include "Box2D.h"
+#include "Box2D/Box2D.h"
 //#include "PolyCoreServices.h"
 #include "PolyScreenLine.h"
 #include "PolyPhysicsScreenEntity.h"
@@ -58,13 +58,12 @@ class _PolyExport PhysicsScreen : public Screen, b2ContactListener {
 
 public:
 	PhysicsScreen();
-	PhysicsScreen(float freq);
-	
-	PhysicsScreen(Vector2 physicsWorldLowerBound, Vector2 physicsWorldUpperBound);
+	PhysicsScreen(float worldScale, float freq);
+
 	~PhysicsScreen();
 	
 	void Update();
-	PhysicsScreenEntity *addPhysicsChild(ScreenEntity *newEntity, int entType, float friction, float density, float restitution = 0, bool isSensor = false);
+	PhysicsScreenEntity *addPhysicsChild(ScreenEntity *newEntity, int entType, float friction, float density, float restitution = 0, bool isSensor = false, bool fixedRotation = false);
 	void removePhysicsChild(PhysicsScreenEntity *entityToRemove);
 	
 	PhysicsScreenEntity *addCollisionChild(ScreenEntity *newEntity, int entType);
@@ -72,9 +71,11 @@ public:
 	void createDistanceJoint(ScreenEntity *ent1, ScreenEntity *ent2, bool collideConnected);
 	void createPrismaticJoint(ScreenEntity *ent1, ScreenEntity *ent2, bool collideConnected);
 	b2RevoluteJoint *createRevoluteJoint(ScreenEntity *ent1, ScreenEntity *ent2, float ax, float ay, bool enableLimit, float lowerLimit, float upperLimit, bool motorEnabled, float motorSpeed, float maxTorque);
-	b2MouseJoint *createMouseJoint(ScreenEntity *ent1, Vector2 *mp);
+//	b2MouseJoint *createMouseJoint(ScreenEntity *ent1, Vector2 *mp);
 	void applyForce(ScreenEntity *ent, float fx, float fy);
 	void applyImpulse(ScreenEntity *ent, float fx, float fy);
+	
+	void setGravity(Vector2 newGravity);
 	
 	PhysicsScreenEntity *getPhysicsEntityByShape(b2Shape *shape);
 	
@@ -82,9 +83,14 @@ public:
 	void setVelocityX(ScreenEntity *ent, float fx);	
 	void setVelocityY(ScreenEntity *ent, float fy);	
 	
+	/*
 	void Add(const b2ContactPoint* point);
 	void Persist(const b2ContactPoint* point);
 	void Remove(const b2ContactPoint* point);				
+	*/
+		
+	void BeginContact (b2Contact *contact);
+	void EndContact (b2Contact *contact);	
 	
 	void wakeUp(ScreenEntity *ent);
 	
@@ -104,7 +110,10 @@ public:
 
 protected:
 	
-	void init(Vector2 physicsWorldLowerBound, Vector2 physicsWorldUpperBound, float physicsTimeStep, int physicsIterations, Vector2 physicsGravity);
+	
+	float worldScale;
+	
+	void init(float worldScale, float physicsTimeStep, int physicsIterations, Vector2 physicsGravity);
 
 	Timer *updateTimer;
 	vector <PhysicsScreenEntity*> physicsChildren;

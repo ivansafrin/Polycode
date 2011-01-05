@@ -20,11 +20,24 @@ long getThreadID() {
 CocoaCore::CocoaCore(SubstanceView *view, int xRes, int yRes, bool fullScreen,int aaLevel, int frameRate) : Core(xRes, yRes, fullScreen,aaLevel, frameRate) {	
 	eventMutex = createMutex();
 	
+//	NSLog(@"BUNDLE: %@", [[NSBundle mainBundle] bundlePath]);
+	chdir([[[NSBundle mainBundle] bundlePath] UTF8String]);
+	
 	NSOpenGLPixelFormatAttribute attrs[] =
 	{
-		NSOpenGLPFADoubleBuffer,
-		NSOpenGLPFADepthSize, 24,
-		0
+			NSOpenGLPFADoubleBuffer,	
+		NSOpenGLPFADepthSize, 16,
+//		NSOpenGLPFAFullScreen,
+//		NSOpenGLPFAScreenMask,
+//		CGDisplayIDToOpenGLDisplayMask(kCGDirectMainDisplay),
+		//		NSOpenGLPFASampleBuffers, 1,
+//		NSOpenGLPFASamples,  aaLevel,
+//		NSOpenGLPFANoRecovery,	
+//		NSOpenGLPFAWindow,
+//		NSOpenGLPFAMultisample,
+//		NSOpenGLPFAAccelerated,
+//		NSOpenGLPFAAccumSize, 0,
+		nil
 	};	
 	
 	[view lockContext];
@@ -32,9 +45,30 @@ CocoaCore::CocoaCore(SubstanceView *view, int xRes, int yRes, bool fullScreen,in
 	[view setCore:this];	
 	NSOpenGLPixelFormat *format = [[NSOpenGLPixelFormat alloc] initWithAttributes:attrs];
 	context = [[NSOpenGLContext alloc] initWithFormat: format shareContext:nil];
-	[view clearGLContext];
-	[view setOpenGLContext:context];	
-	[context setView: view];	
+
+	if (context == nil) {
+        NSLog(@"Failed to create open gl context");
+	}	
+	
+	if(fullScreen) {
+	
+		[context makeCurrentContext];
+		[context setFullScreen];
+		CGDisplayCapture (kCGDirectMainDisplay ) ;		
+//		CGDisplayCapture (kCGDirectMainDisplay ) ;
+//		CGDisplaySwitchToMode (kCGDirectMainDisplay,
+//							   CGDisplayBestModeForParameters (kCGDirectMainDisplay,
+//															   32, xRes, yRes, NULL) );		
+		
+		[context clearDrawable];
+        [context release];		
+	} else {
+		[view clearGLContext];
+		[view setOpenGLContext:context];	
+		[context setView: view];					
+	}
+	
+	
 	
 	glView = view;
 	
@@ -47,7 +81,7 @@ CocoaCore::CocoaCore(SubstanceView *view, int xRes, int yRes, bool fullScreen,in
 	renderer = new OpenGLRenderer();
 	services->setRenderer(renderer);	
 	[view unlockContext];			
-	setVideoMode(xRes,yRes,fullScreen,aaLevel);
+	setVideoMode(xRes,yRes,fullScreen,aaLevel);		
 
 
 }
@@ -88,6 +122,14 @@ void CocoaCore::setVideoMode(int xRes, int yRes, bool fullScreen, int aaLevel) {
 //	frame.origin.y = (visibleFrame.size.height - frame.size.height) * (9.0/10.0);
 	
 	[[glView window] setFrame: frame display: YES animate: NO];
+	
+	/*
+	if(aaLevel > 0) {
+		glEnable( GL_MULTISAMPLE_ARB );	
+	} else {
+		glDisable( GL_MULTISAMPLE_ARB );			
+	}
+	*/
 }
 
 void CocoaCore::resizeTo(int xRes, int yRes) {

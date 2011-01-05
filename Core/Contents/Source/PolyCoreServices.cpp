@@ -140,7 +140,7 @@ void CoreServices::Update(int elapsed) {
 	sceneManager->UpdateVirtual();
 	renderer->clearScreen();
 	sceneManager->Update();
-	renderer->setOrthoMode();
+//	renderer->setOrthoMode();
 	screenManager->Update();
 }
 

@@ -40,6 +40,7 @@ namespace Polycode {
 		void Render();
 		void setRenderer(Renderer *renderer);
 		
+		void setNormalizedCoordinates(bool newVal, float yCoordinateSize = 1.0f);
 		void setScreenShader(String shaderName);
 		
 		void handleEvent(Event *event);
@@ -52,6 +53,9 @@ namespace Polycode {
 		bool hasFilterShader();
 		void drawFilter();
 		
+		bool usesNormalizedCoordinates() { return useNormalizedCoordinates; }
+		float getYCoordinateSize() { return yCoordinateSize; }
+		
 		bool Lua_EntitiesEqual(ScreenEntity *ent1, ScreenEntity *ent2) { return ent1 == ent2; }
 		
 		ScreenEntity *getRootEntity() { return rootEntity; }
@@ -59,6 +63,9 @@ namespace Polycode {
 		bool enabled;
 		
 	protected:
+		
+		bool useNormalizedCoordinates;
+		float yCoordinateSize;		
 		
 		ScreenEntity *rootEntity;
 		

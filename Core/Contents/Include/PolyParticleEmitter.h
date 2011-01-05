@@ -14,6 +14,7 @@
 #include "PolyGlobals.h"
 #include "PolyEntity.h"
 #include "PolyScenePrimitive.h"
+#include "PolyScreenMesh.h"
 #include "PolyCoreServices.h"
 #include "PolyParticle.h"
 #include <vector>
@@ -21,14 +22,17 @@
 using std::vector;
 
 namespace Polycode {
-	class _PolyExport ParticleEmitter : public SceneEntity {
+	class _PolyExport ParticleEmitter {
 		public:
-			ParticleEmitter(String imageFile, Mesh *particleMesh, SceneMesh *emitter, Scene *particleParentScene, int particleType, int emitterType, float lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation);
-			~ParticleEmitter();
+			ParticleEmitter(String imageFile, Mesh *particleMesh, int particleType, int emitterType, float lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation);
+			virtual ~ParticleEmitter();
+		
+			void createParticles();
+			
 			void setRotationSpeed(float speed);
 			void setStartingColor(Color c);
 			void setEndingColor(Color c);
-			void setBlendingMode(int mode);
+			void setParticleBlendingMode(int mode);
 			void setDepthWrite(bool val);
 			void setAlphaTest(bool val);
 		
@@ -49,11 +53,14 @@ namespace Polycode {
 			
 			void setPerlinModSize(float size);
 			void setParticleCount(int count);
-
+		
+			virtual void addParticleBody(Entity *particleBody) = 0;
+			virtual Matrix4 getBaseMatrix() = 0;
+		
 			float particleSpeedMod;
 			float brightnessDeviation;
 			
-			void Update();
+			void updateEmitter();
 
 			static const int CONTINUOUS_EMITTER = 0;
 			static const int TRIGGERED_EMITTER = 1;
@@ -76,13 +83,16 @@ namespace Polycode {
 		
 		protected:
 		
-			SceneMesh *emitterMesh;
+			bool isScreenEmitter;
 			Mesh *pMesh;
 		
 			bool allAtOnce;
 			int emitterType;
 			int particleType;
 			Material *particleMaterial;
+			Texture *particleTexture;
+		
+			String textureFile;
 		
 			bool isEmitterEnabled;
 		
@@ -95,8 +105,6 @@ namespace Polycode {
 			float startingScaleMod;
 			float endingScaleMod;
 			
-			Scene *particleParentScene;			
-			
 			Color startingColor;
 			Color endingColor;
 			
@@ -108,4 +116,18 @@ namespace Polycode {
 			Timer *timer;
 	};
 
+	
+	class _PolyExport ScreenParticleEmitter : public ScreenEntity, public ParticleEmitter {
+	public:
+		ScreenParticleEmitter(String imageFile, Mesh *particleMesh, ScreenMesh *emitter, Screen *particleParentScreen, int particleType, int emitterType, float lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation);
+		~ScreenParticleEmitter();		
+		
+		void addParticleBody(Entity *particleBody);
+		Matrix4 getBaseMatrix();
+		void Update();
+		
+	protected:
+		ScreenMesh *emitterMesh;		
+		Screen *particleParentScreen;
+	};		
 }

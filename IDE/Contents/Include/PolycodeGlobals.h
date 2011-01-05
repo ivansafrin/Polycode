@@ -1,4 +1,4 @@
 
 #pragma once
 
-#define RESOURCE_PATH "Polycode.app/Contents/Resources/"
+#define RESOURCE_PATH "Contents/Resources/"

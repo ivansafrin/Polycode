@@ -24,10 +24,12 @@ namespace Polycode {
 			~CollisionSceneEntity();
 			
 			SceneEntity *getSceneEntity();
-			void Update();
-		
+			virtual void Update();
 			int getType() { return type; }
-			btConvexShape *getShape(){ return shape; }
+		
+			btConvexShape *getConvexShape(){ return convexShape; }
+					
+			btCollisionShape *createCollisionShape(SceneEntity *entity, int type);
 		
 			btCollisionObject *collisionObject;
 			bool gravityEnabled;
@@ -38,17 +40,21 @@ namespace Polycode {
 		
 			Vector3 lastPosition;
 		
-			static const int SHAPE_BOX = 0;
-			static const int SHAPE_TERRAIN = 1;
-			static const int SHAPE_SPHERE = 2;	
-			static const int SHAPE_MESH = 3;			
+		static const int SHAPE_BOX = 0;
+		static const int SHAPE_TERRAIN = 1;
+		static const int SHAPE_SPHERE = 2;	
+		static const int SHAPE_MESH = 3;			
+		static const int CHARACTER_CONTROLLER = 4;
+		static const int SHAPE_CAPSULE = 5;		
 		
 			bool enabled;
+			btCollisionShape *shape;
 		
-		private:
+		protected:
 		
-			
-			btConvexShape *shape;
+
+			btConvexShape *convexShape;
+			btConcaveShape *concaveShape;
 		
 			int type;
 			SceneEntity *sceneEntity;

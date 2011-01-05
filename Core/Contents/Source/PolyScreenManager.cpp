@@ -62,12 +62,23 @@ Screen *ScreenManager::createScreen(int screenType) {
 */
 
 void ScreenManager::Update() {
+
+	Renderer *renderer = CoreServices::getInstance()->getRenderer();
 	for(int i=0;i<screens.size();i++) {
-		if(screens[i]->enabled)
+		if(screens[i]->enabled) {
+			if(!screens[i]->usesNormalizedCoordinates()) {
+				renderer->setOrthoMode(renderer->getXRes(), renderer->getYRes());
+			} else {
+				float yCoordinateSize = screens[i]->getYCoordinateSize();
+				float ratio = ((float)renderer->getXRes())/((float)renderer->getYRes());
+				renderer->setOrthoMode(ratio*yCoordinateSize, yCoordinateSize);								
+			}
+		
 			if(screens[i]->hasFilterShader()) {
 				screens[i]->drawFilter();
 			} else {
 				screens[i]->Render();
 			}
+		}
 	}
 }

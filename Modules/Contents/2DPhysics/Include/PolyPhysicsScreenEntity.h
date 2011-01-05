@@ -12,13 +12,13 @@
 #pragma once
 #include "PolyGlobals.h"
 #include "PolyScreenEntity.h"
-#include "Box2D.h"
+#include "Box2D/Box2D.h"
 
 namespace Polycode {
 
 	class _PolyExport PhysicsScreenEntity {
 		public:
-			PhysicsScreenEntity(ScreenEntity *entity, b2World *world, int entType, float friction, float density, float restitution, bool isSensor);
+			PhysicsScreenEntity(ScreenEntity *entity, b2World *world, float worldScale, int entType, float friction, float density, float restitution, bool isSensor, bool fixedRotation);
 			~PhysicsScreenEntity();		
 			
 			ScreenEntity *getScreenEntity();
@@ -40,6 +40,7 @@ namespace Polycode {
 		
 		protected:
 		
+		float worldScale;
 		Vector2 lastPosition;
 		float lastRotation;
 			

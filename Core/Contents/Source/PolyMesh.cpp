@@ -259,11 +259,16 @@ namespace Polycode {
 	
 	Vector3 Mesh::calculateBBox() {
 		Vector3 retVec;
-		for(int i=0; i < vertices.size(); i++) {
-			retVec.x = max(retVec.x,fabsf(vertices[i]->x));
-			retVec.y = max(retVec.y,fabsf(vertices[i]->y));
-			retVec.z = max(retVec.z,fabsf(vertices[i]->z));			
+		
+		for(int i=0; i < polygons.size(); i++) {
+			for(int j=0; j < polygons[i]->getVertexCount(); j++) {				
+				retVec.x = max(retVec.x,fabsf(polygons[i]->getVertex(j)->x));
+				retVec.y = max(retVec.y,fabsf(polygons[i]->getVertex(j)->y));
+				retVec.z = max(retVec.z,fabsf(polygons[i]->getVertex(j)->z));							
+				
+			}
 		}
+		
 		return retVec*2;
 	}
 	

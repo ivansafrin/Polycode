@@ -20,6 +20,7 @@
 #include <OpenGL/OpenGL.h>
 #include "PolyGLRenderer.h"
 #include <mach/mach_time.h>
+#include <unistd.h>
 
 #import <Cocoa/Cocoa.h>
 

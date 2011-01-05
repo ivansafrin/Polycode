@@ -61,7 +61,7 @@ namespace Polycode {
 		virtual void setViewportSize(int w, int h, float fov=45.0f) = 0;
 		
 		virtual void loadIdentity() = 0;		
-		virtual void setOrthoMode() = 0;
+		virtual void setOrthoMode(float xSize=0.0f, float ySize=0.0f) = 0;
 		virtual void setPerspectiveMode() = 0;
 		
 		virtual void setTexture(Texture *texture) = 0;		

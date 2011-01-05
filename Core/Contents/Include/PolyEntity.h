@@ -96,6 +96,7 @@ namespace Polycode {
 			Matrix4 getConcatenatedRollMatrix();		
 		
 			void setTransformByMatrix(Matrix4 matrix);	
+			void setTransformByMatrixPure(Matrix4 matrix);	
 		
 			void setRenderer(Renderer *renderer);
 			

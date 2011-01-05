@@ -230,7 +230,7 @@ CollisionResult CollisionScene::testCollisionOnCollisionChild_RayTest(CollisionS
 	CollisionResult result;
 	result.collided = false;
 	result.setOldPosition = false;
-	btConvexShape *shape = cEnt1->getShape();
+	btConvexShape *shape = cEnt1->getConvexShape();
 	if(!shape)
 		return result;
 	
@@ -288,7 +288,7 @@ CollisionResult CollisionScene::testCollisionOnCollisionChild_RayTest(CollisionS
 }
 
 CollisionResult CollisionScene::testCollisionOnCollisionChild(CollisionSceneEntity *cEnt1, CollisionSceneEntity *cEnt2) {
-	if(cEnt2->getType() == CollisionSceneEntity::SHAPE_TERRAIN || cEnt2->getType() == CollisionSceneEntity::SHAPE_MESH) {
+	if(cEnt2->getType() == CollisionSceneEntity::SHAPE_MESH) {
 		return testCollisionOnCollisionChild_RayTest(cEnt1, cEnt2);		
 	} else {
 		return testCollisionOnCollisionChild_Convex(cEnt1, cEnt2);
@@ -322,7 +322,13 @@ void CollisionScene::loadCollisionChild(SceneEntity *entity, bool autoCollide, i
 
 CollisionSceneEntity *CollisionScene::trackCollision(SceneEntity *newEntity, bool autoCollide, int type) {
 	CollisionSceneEntity *newCollisionEntity = new CollisionSceneEntity(newEntity,autoCollide, type);
-	world->addCollisionObject(newCollisionEntity->collisionObject);
+
+	if(type == CollisionSceneEntity::CHARACTER_CONTROLLER) {
+		world->addCollisionObject(newCollisionEntity->collisionObject,btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);		
+	} else {
+		world->addCollisionObject(newCollisionEntity->collisionObject);		
+	}
+	
 	collisionChildren.push_back(newCollisionEntity);
 //	newCollisionEntity->Update();
 	return newCollisionEntity;

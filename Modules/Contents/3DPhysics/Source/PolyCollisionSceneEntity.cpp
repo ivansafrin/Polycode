@@ -21,33 +21,48 @@ CollisionSceneEntity::CollisionSceneEntity(SceneEntity *entity, bool autoCollide
 	enabled = true;
 	
 	gravityStrength = 5.0f;
+	lastPosition = *entity->getPosition();	
+	
 	
 	btMatrix3x3 basisA;
 	basisA.setIdentity();
+	
 	collisionObject = new btCollisionObject();
 	collisionObject->getWorldTransform().setBasis(basisA);
 	
-	lastPosition = *entity->getPosition();
-	
-	shape = NULL;
-	
-	btBoxShape* box;
-	btSphereShape* sphere;	
-	SceneMesh *sceneMesh;
 
+	shape = createCollisionShape(entity, type);;
+	if(shape) {
+		collisionObject->setCollisionShape(shape);
+	}	
+	
+	if(type == SHAPE_MESH) {		
+		concaveShape = dynamic_cast<btConcaveShape*>(shape);
+	} else {
+		convexShape	= dynamic_cast<btConvexShape*>(shape);		
+	}
+		
+	gVelocity.set(0,0,0);
+}
+
+btCollisionShape *CollisionSceneEntity::createCollisionShape(SceneEntity *entity, int type) {
+	
+	btCollisionShape *collisionShape = NULL;	
+	
 	switch(type) {
+		case SHAPE_CAPSULE:
+		case CHARACTER_CONTROLLER:
+			collisionShape = new btCapsuleShape(entity->bBox.x/2.0f, entity->bBox.y/2.0f);			
+		break;
 		case SHAPE_BOX:
-			box = new btBoxShape(btVector3(entity->bBox.x/2.0f, entity->bBox.y/2.0f,entity->bBox.z/2.0f));
-			collisionObject->setCollisionShape(box);
-			shape = box;
-		break;
+			collisionShape = new btBoxShape(btVector3(entity->bBox.x/2.0f, entity->bBox.y/2.0f,entity->bBox.z/2.0f));			
+			break;
 		case SHAPE_SPHERE:
-			sphere = new btSphereShape(entity->bBox.x/2.0f);
-			collisionObject->setCollisionShape(sphere);
-			shape = sphere;			
-		break;
+			collisionShape = new btSphereShape(entity->bBox.x/2.0f);
+			break;
 		case SHAPE_MESH:
-			sceneMesh = dynamic_cast<SceneMesh*>(entity);
+		{
+			SceneMesh* sceneMesh = dynamic_cast<SceneMesh*>(entity);
 			if(sceneMesh != NULL) {
 				btTriangleMesh *btMesh = new btTriangleMesh();
 				for(int i=0; i < sceneMesh->getMesh()->getPolygonCount(); i++) {
@@ -57,40 +72,15 @@ CollisionSceneEntity::CollisionSceneEntity(SceneEntity *entity, bool autoCollide
 					btVector3 v2= btVector3(btScalar(poly->getVertex(2)->x),btScalar(poly->getVertex(2)->y),btScalar(poly->getVertex(2)->z));					
 					btMesh->addTriangle(v2,v1,v0);
 				}
-				btBvhTriangleMeshShape *concaveShape = new btBvhTriangleMeshShape(btMesh, true);
-				collisionObject->setCollisionShape(concaveShape);
+				collisionShape = new btBvhTriangleMeshShape(btMesh, true);
 			} else {
 				Logger::log("Tried to make a mesh collision object from a non-mesh\n");
-				box = new btBoxShape(btVector3(entity->bBox.x/2.0f, entity->bBox.y/2.0f,entity->bBox.z/2.0f));			
-				collisionObject->setCollisionShape(box);	
-				shape = box;				
-			}			
-		break;
-		case SHAPE_TERRAIN:			
-			/*
-			Terrain *terrain = dynamic_cast<Terrain*>(entity);
-			if(terrain != NULL) {
-//				btHeightfieldTerrainShape *hf = new btHeightfieldTerrainShape(ter
-				btTriangleMesh *btMesh = new btTriangleMesh();
-				for(int i=0; i < terrain->getMesh()->getPolygonCount(); i++) {
-					Polygon *poly = terrain->getMesh()->getPolygon(i);
-					btVector3 v0 = btVector3(btScalar(poly->getVertex(0)->x),btScalar(poly->getVertex(0)->y),btScalar(poly->getVertex(0)->z));
-					btVector3 v1= btVector3(btScalar(poly->getVertex(1)->x),btScalar(poly->getVertex(1)->y),btScalar(poly->getVertex(1)->z));
-					btVector3 v2= btVector3(btScalar(poly->getVertex(2)->x),btScalar(poly->getVertex(2)->y),btScalar(poly->getVertex(2)->z));					
-					btMesh->addTriangle(v2,v1,v0);
-				}
-				btBvhTriangleMeshShape *concaveShape = new btBvhTriangleMeshShape(btMesh, true);
-				collisionObject->setCollisionShape(concaveShape);
-			} else {
-				Logger::log("Tried to make a terrain collision object from a non-terrain\n");
-				box = new btBoxShape(btVector3(entity->bBox.x/2.0f, entity->bBox.y/2.0f,entity->bBox.z/2.0f));			
-				collisionObject->setCollisionShape(box);	
-				shape = box;				
+				collisionShape = new btBoxShape(btVector3(entity->bBox.x/2.0f, entity->bBox.y/2.0f,entity->bBox.z/2.0f));			
 			}
-			 */
+		}
 		break;
-	}
-	gVelocity.set(0,0,0);
+	}	
+	return collisionShape; 
 }
 
 void CollisionSceneEntity::Update() {

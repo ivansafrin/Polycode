@@ -12,6 +12,12 @@
 using namespace Polycode;
 
 OpenGLVertexBuffer::OpenGLVertexBuffer(Mesh *mesh) : VertexBuffer() {
+	if(mesh->getMeshType() == Mesh::QUAD_MESH) {
+		verticesPerFace = 4;		
+	} else {
+		verticesPerFace = 3;				
+	}
+
 	
 	glGenBuffersARB(1, &vertexBufferID);
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB, vertexBufferID);

@@ -13,51 +13,57 @@
 
 using namespace Polycode;
 
-PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, int entType, float friction, float density, float restitution, bool isSensor) {
+PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, float worldScale, int entType, float friction, float density, float restitution, bool isSensor, bool fixedRotation) {
+	
+	this->worldScale = worldScale;
+	
 	screenEntity = entity;
 	
 	bodyDef = new b2BodyDef();
-	bodyDef->position.Set(screenEntity->getPosition()->x/10.0f, screenEntity->getPosition()->y/10.0f);
-	bodyDef->angle = screenEntity->getRotation()*(PI/180.0f);
-	body = world->CreateBody(bodyDef);
-	bodyDef->isBullet = isSensor;
+	bodyDef->position.Set(screenEntity->getPosition()->x/worldScale, screenEntity->getPosition()->y/worldScale);
+	bodyDef->angle = screenEntity->getRotation()*(PI/180.0f);	
+	bodyDef->bullet = isSensor;	
+	bodyDef->fixedRotation = fixedRotation;
 	
+	if(entType != ENTITY_STATICRECT)
+		bodyDef->type = b2_dynamicBody;	
+	
+	body = world->CreateBody(bodyDef);
+	
+	b2FixtureDef fDef;
+	fDef.friction = friction;
+	fDef.restitution = restitution;
+	fDef.density = density;
+	fDef.isSensor = isSensor;
+		
 	switch(entType) {
-		case ENTITY_STATICRECT:{
-			b2PolygonDef *groundShapeDef = new b2PolygonDef();
-			groundShapeDef->isSensor = isSensor;
-			groundShapeDef->SetAsBox(screenEntity->getWidth()/20.0f, screenEntity->getHeight()/20.0f);
-			shape = body->CreateShape(groundShapeDef);
+		case ENTITY_STATICRECT:
+		{
+			b2PolygonShape b2shape;			
+			b2shape.SetAsBox(screenEntity->getWidth()/(worldScale*2.0f), screenEntity->getHeight()/(worldScale*2.0f));
+			fDef.shape = &b2shape;			
 		}
 		break;
-		case ENTITY_RECT: {
-			b2PolygonDef *shapeDef;
-			shapeDef = new b2PolygonDef();
-			shapeDef->SetAsBox(screenEntity->getWidth()/20.0f, screenEntity->getHeight()/20.0f);
-			shapeDef->density = density;
-			shapeDef->friction = friction;
-			shapeDef->restitution = restitution;
-			shapeDef->isSensor = isSensor;			
-			shape = body->CreateShape(shapeDef);
-			}
+		case ENTITY_RECT: 
+		{
+			b2PolygonShape b2shape;			
+			b2shape.SetAsBox(screenEntity->getWidth()/(worldScale*2.0f), screenEntity->getHeight()/(worldScale*2.0f));
+			fDef.shape = &b2shape;						
+		}
 		break;			
-		case ENTITY_CIRCLE: {
-			b2CircleDef *shapeDef = new b2CircleDef();
-			shapeDef->radius = screenEntity->getWidth()/20.0f;
-			shapeDef->density = density;
-//			shapeDef->SetAsBox(screenEntity->getWidth()/20.0f, screenEntity->getHeight()/20.0f);
-			shapeDef->friction = friction;
-			shapeDef->restitution = restitution;
-			shapeDef->isSensor = isSensor;				
-			shape = body->CreateShape(shapeDef);
-			}
+		case ENTITY_CIRCLE:
+		{			
+			b2CircleShape b2shape;
+			b2shape.m_radius = screenEntity->getWidth()/(worldScale*2.0f);
+			fDef.shape = &b2shape;
+		}
 		break;
 	}
 	
+	body->CreateFixture(&fDef);	
+	
 	lastPosition.x = screenEntity->getPosition2D().x;
 	lastPosition.y = screenEntity->getPosition2D().y;
-
-	body->SetMassFromShapes();
 
 	collisionOnly = false;
 }
@@ -67,7 +73,7 @@ void PhysicsScreenEntity::applyTorque(float torque) {
 }
 
 void PhysicsScreenEntity::applyForce(Vector2 force){
-	body->WakeUp();
+	body->SetAwake(true);
 	body->ApplyForce(b2Vec2(force.x,force.y), b2Vec2(body->GetPosition().x,body->GetPosition().y));
 }
 
@@ -79,25 +85,26 @@ void PhysicsScreenEntity::Update() {
 	b2Vec2 position = body->GetPosition();
 	float32 angle = body->GetAngle();
 
+	
 	if(lastRotation != screenEntity->getRotation() || collisionOnly) {
-		body->SetXForm(position, screenEntity->getRotation()*(PI/180.0f));		
+		body->SetTransform(position, screenEntity->getRotation()*(PI/180.0f));		
 	} else {
 		screenEntity->setRotation(angle*(180.0f/PI));	
 	}
 	
 	if(lastPosition != screenEntity->getPosition2D() || collisionOnly) {
 		b2Vec2 newPos;
-		newPos.x = screenEntity->getPosition2D().x/10.0f; 
-		newPos.y = screenEntity->getPosition2D().y/10.0f;				
-		body->SetXForm(newPos, screenEntity->getRotation()*(PI/180.0f));
-		position.x = screenEntity->getPosition2D().x/10.0f; 
-		position.y = screenEntity->getPosition2D().y/10.0f; 				
+		newPos.x = screenEntity->getPosition2D().x/worldScale; 
+		newPos.y = screenEntity->getPosition2D().y/worldScale;				
+		body->SetTransform(newPos, screenEntity->getRotation()*(PI/180.0f));
+		position.x = screenEntity->getPosition2D().x/worldScale; 
+		position.y = screenEntity->getPosition2D().y/worldScale; 				
 	} else {
-		screenEntity->setPosition(position.x*10.0f, position.y*10.0f);
+		screenEntity->setPosition(position.x*worldScale, position.y*worldScale);
 	}
 	
-	lastPosition.x = position.x*10.0f;
-	lastPosition.y = position.y*10.0f;	
+	lastPosition.x = position.x*worldScale;
+	lastPosition.y = position.y*worldScale;	
 	
 	lastRotation = angle * (180.0f/PI);
 }

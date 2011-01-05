@@ -125,7 +125,7 @@ namespace Polycode {
 		void setRenderArrayData(RenderDataArray *array, float *arrayData);
 		void drawArrays(int drawType);		
 				
-		void setOrthoMode();
+		void setOrthoMode(float xSize=0.0f, float ySize=0.0f);
 		void setPerspectiveMode();
 		
 		void enableBackfaceCulling(bool val);

@@ -36,15 +36,16 @@ struct CollisionResult {
 		Vector3 position;
 	};
 
+	
 	class _PolyExport CollisionScene : public GenericScene {
 		public:
 			CollisionScene();
 			CollisionScene(bool virtualScene);		
-			~CollisionScene();
+			virtual ~CollisionScene();
 		
 			void initCollisionScene();
 		
-			void Update();		
+			virtual void Update();		
 			void enableCollision(SceneEntity *entity, bool val);		
 			CollisionSceneEntity *getCollisionEntityByObject(btCollisionObject *collisionObject);		
 			RayTestResult getFirstEntityInRay(const Vector3 &origin,  const Vector3 &dest);
@@ -60,10 +61,10 @@ struct CollisionResult {
 			void loadCollisionChild(SceneEntity *entity, bool autoCollide=false, int type=0);
 			void enableGravity(SceneEntity *entity);
 			
-			CollisionSceneEntity *addCollisionChild(SceneEntity *newEntity, bool autoCollide=false, int type=0);
+			virtual CollisionSceneEntity *addCollisionChild(SceneEntity *newEntity, bool autoCollide=false, int type=0);
 			CollisionSceneEntity *trackCollision(SceneEntity *newEntity, bool autoCollide, int type=0);
 			void adjustForCollision(CollisionSceneEntity *collisionEntity);
-		private:
+		protected:
 		
 			vector<CollisionSceneEntity*> collisionChildren;
 			btCollisionWorld *world;

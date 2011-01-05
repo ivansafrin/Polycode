@@ -37,6 +37,9 @@ public:
 	void handleEvent(Event *event);	
 	bool Update();
 	
+	void saveConfigFile();
+	void loadConfigFile();
+	
 	// menu commands
 	void newProject();
 	void newFile();	

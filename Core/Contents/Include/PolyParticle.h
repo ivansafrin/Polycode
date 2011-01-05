@@ -12,6 +12,7 @@
 #include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolySceneEntity.h"
+#include "PolyScreenShape.h"
 #include "PolyScenePrimitive.h"
 #include "PolyCoreServices.h"
 
@@ -20,11 +21,14 @@ namespace Polycode {
 
 	class _PolyExport Particle {
 		public:
-			Particle(int particleType, Material *texture, Mesh *particleMesh);
+			Particle(int particleType, bool isScreenParticle, Material *material, Texture *texture, Mesh *particleMesh);
 			~Particle();
 			void Reset();
 			
-			SceneEntity *particleBody;						
+			void createSceneParticle(int particleType, Material *material, Mesh *particleMesh);
+			void createScreenParticle(int particleType, Texture *texture, Mesh *particleMesh);
+		
+			Entity *particleBody;						
 			
 			Vector3 velVector;
 			Vector3 dirVector;	

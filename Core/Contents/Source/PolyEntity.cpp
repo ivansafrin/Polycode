@@ -451,6 +451,10 @@ float Entity::getRoll() {
 	return roll;
 }
 
+void Entity::setTransformByMatrixPure(Matrix4 matrix) {
+	transformMatrix = matrix;
+}
+
 void Entity::setTransformByMatrix(Matrix4 matrix) {
 	setPosition(matrix.getPosition());	
 	float x,y,z;

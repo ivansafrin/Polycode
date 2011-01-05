@@ -7,11 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6D690D8412C1D99700C444B0 /* Polycode3DPhysics.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D690D7E12C1D99700C444B0 /* Polycode3DPhysics.h */; };
-		6D690D8512C1D99700C444B0 /* PolyCollisionScene.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D690D7F12C1D99700C444B0 /* PolyCollisionScene.h */; };
-		6D690D8612C1D99700C444B0 /* PolyCollisionSceneEntity.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D690D8012C1D99700C444B0 /* PolyCollisionSceneEntity.h */; };
-		6D690D8712C1D99700C444B0 /* PolyCollisionScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D690D8212C1D99700C444B0 /* PolyCollisionScene.cpp */; };
-		6D690D8812C1D99700C444B0 /* PolyCollisionSceneEntity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D690D8312C1D99700C444B0 /* PolyCollisionSceneEntity.cpp */; };
+		6D1B705012C29AFE0076D5C4 /* Polycode3DPhysics.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D1B704612C29AFE0076D5C4 /* Polycode3DPhysics.h */; };
+		6D1B705112C29AFE0076D5C4 /* PolyCollisionScene.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D1B704712C29AFE0076D5C4 /* PolyCollisionScene.h */; };
+		6D1B705212C29AFE0076D5C4 /* PolyCollisionSceneEntity.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D1B704812C29AFE0076D5C4 /* PolyCollisionSceneEntity.h */; };
+		6D1B705312C29AFE0076D5C4 /* PolyPhysicsScene.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D1B704912C29AFE0076D5C4 /* PolyPhysicsScene.h */; };
+		6D1B705412C29AFE0076D5C4 /* PolyPhysicsSceneEntity.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D1B704A12C29AFE0076D5C4 /* PolyPhysicsSceneEntity.h */; };
+		6D1B705512C29AFE0076D5C4 /* PolyCollisionScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D1B704C12C29AFE0076D5C4 /* PolyCollisionScene.cpp */; };
+		6D1B705612C29AFE0076D5C4 /* PolyCollisionSceneEntity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D1B704D12C29AFE0076D5C4 /* PolyCollisionSceneEntity.cpp */; };
+		6D1B705712C29AFE0076D5C4 /* PolyPhysicsScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D1B704E12C29AFE0076D5C4 /* PolyPhysicsScene.cpp */; };
+		6D1B705812C29AFE0076D5C4 /* PolyPhysicsSceneEntity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D1B704F12C29AFE0076D5C4 /* PolyPhysicsSceneEntity.cpp */; };
+		6D580E0A12D29FB5006FB999 /* PolyPhysicsScreen.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D580E0512D29FB5006FB999 /* PolyPhysicsScreen.h */; };
+		6D580E0B12D29FB5006FB999 /* PolyPhysicsScreenEntity.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D580E0612D29FB5006FB999 /* PolyPhysicsScreenEntity.h */; };
+		6D580E0C12D29FB5006FB999 /* PolyPhysicsScreen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D580E0812D29FB5006FB999 /* PolyPhysicsScreen.cpp */; };
+		6D580E0D12D29FB5006FB999 /* PolyPhysicsScreenEntity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D580E0912D29FB5006FB999 /* PolyPhysicsScreenEntity.cpp */; };
 		6DFB01D112A741EB00C43A7D /* PolyCGProgram.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFB01CA12A741EB00C43A7D /* PolyCGProgram.h */; };
 		6DFB01D212A741EB00C43A7D /* PolyCGShader.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFB01CB12A741EB00C43A7D /* PolyCGShader.h */; };
 		6DFB01D312A741EB00C43A7D /* PolyCGShaderModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFB01CC12A741EB00C43A7D /* PolyCGShaderModule.h */; };
@@ -49,12 +57,21 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6D1B704612C29AFE0076D5C4 /* Polycode3DPhysics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Polycode3DPhysics.h; sourceTree = "<group>"; };
+		6D1B704712C29AFE0076D5C4 /* PolyCollisionScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyCollisionScene.h; sourceTree = "<group>"; };
+		6D1B704812C29AFE0076D5C4 /* PolyCollisionSceneEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyCollisionSceneEntity.h; sourceTree = "<group>"; };
+		6D1B704912C29AFE0076D5C4 /* PolyPhysicsScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyPhysicsScene.h; sourceTree = "<group>"; };
+		6D1B704A12C29AFE0076D5C4 /* PolyPhysicsSceneEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyPhysicsSceneEntity.h; sourceTree = "<group>"; };
+		6D1B704C12C29AFE0076D5C4 /* PolyCollisionScene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyCollisionScene.cpp; sourceTree = "<group>"; };
+		6D1B704D12C29AFE0076D5C4 /* PolyCollisionSceneEntity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyCollisionSceneEntity.cpp; sourceTree = "<group>"; };
+		6D1B704E12C29AFE0076D5C4 /* PolyPhysicsScene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyPhysicsScene.cpp; sourceTree = "<group>"; };
+		6D1B704F12C29AFE0076D5C4 /* PolyPhysicsSceneEntity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyPhysicsSceneEntity.cpp; sourceTree = "<group>"; };
+		6D580DF112D29F52006FB999 /* libPolycode2DPhysics.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPolycode2DPhysics.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		6D580E0512D29FB5006FB999 /* PolyPhysicsScreen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyPhysicsScreen.h; sourceTree = "<group>"; };
+		6D580E0612D29FB5006FB999 /* PolyPhysicsScreenEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyPhysicsScreenEntity.h; sourceTree = "<group>"; };
+		6D580E0812D29FB5006FB999 /* PolyPhysicsScreen.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyPhysicsScreen.cpp; sourceTree = "<group>"; };
+		6D580E0912D29FB5006FB999 /* PolyPhysicsScreenEntity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyPhysicsScreenEntity.cpp; sourceTree = "<group>"; };
 		6D690D1B12C1D74A00C444B0 /* libPolycode3DPhysics.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPolycode3DPhysics.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		6D690D7E12C1D99700C444B0 /* Polycode3DPhysics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Polycode3DPhysics.h; sourceTree = "<group>"; };
-		6D690D7F12C1D99700C444B0 /* PolyCollisionScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyCollisionScene.h; sourceTree = "<group>"; };
-		6D690D8012C1D99700C444B0 /* PolyCollisionSceneEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyCollisionSceneEntity.h; sourceTree = "<group>"; };
-		6D690D8212C1D99700C444B0 /* PolyCollisionScene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyCollisionScene.cpp; sourceTree = "<group>"; };
-		6D690D8312C1D99700C444B0 /* PolyCollisionSceneEntity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyCollisionSceneEntity.cpp; sourceTree = "<group>"; };
 		6DFB00FC12A736A900C43A7D /* libPolycodeCg.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPolycodeCg.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DFB01CA12A741EB00C43A7D /* PolyCGProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyCGProgram.h; path = ../../Contents/CgShading/Include/PolyCGProgram.h; sourceTree = "<group>"; };
 		6DFB01CB12A741EB00C43A7D /* PolyCGShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyCGShader.h; path = ../../Contents/CgShading/Include/PolyCGShader.h; sourceTree = "<group>"; };
@@ -94,6 +111,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		6D580DEF12D29F52006FB999 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6D690D1912C1D74A00C444B0 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -131,7 +155,8 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				6D690D7C12C1D99700C444B0 /* 3DPhysics */,
+				6D580E0312D29FB5006FB999 /* 2DPhysics */,
+				6D1B704412C29AFE0076D5C4 /* 3DPhysics */,
 				6DFB00F012A7364300C43A7D /* PolycodeCg */,
 				6DFB00C012A71A5B00C43A7D /* PolycodeUI */,
 			);
@@ -144,35 +169,68 @@
 				6DFBF84712A3F24F00C43A7D /* libPolycodeUI.a */,
 				6DFB00FC12A736A900C43A7D /* libPolycodeCg.a */,
 				6D690D1B12C1D74A00C444B0 /* libPolycode3DPhysics.a */,
+				6D580DF112D29F52006FB999 /* libPolycode2DPhysics.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		6D690D7C12C1D99700C444B0 /* 3DPhysics */ = {
+		6D1B704412C29AFE0076D5C4 /* 3DPhysics */ = {
 			isa = PBXGroup;
 			children = (
-				6D690D7D12C1D99700C444B0 /* Include */,
-				6D690D8112C1D99700C444B0 /* Source */,
+				6D1B704512C29AFE0076D5C4 /* Include */,
+				6D1B704B12C29AFE0076D5C4 /* Source */,
 			);
 			name = 3DPhysics;
 			path = ../../Contents/3DPhysics;
 			sourceTree = SOURCE_ROOT;
 		};
-		6D690D7D12C1D99700C444B0 /* Include */ = {
+		6D1B704512C29AFE0076D5C4 /* Include */ = {
 			isa = PBXGroup;
 			children = (
-				6D690D7E12C1D99700C444B0 /* Polycode3DPhysics.h */,
-				6D690D7F12C1D99700C444B0 /* PolyCollisionScene.h */,
-				6D690D8012C1D99700C444B0 /* PolyCollisionSceneEntity.h */,
+				6D1B704612C29AFE0076D5C4 /* Polycode3DPhysics.h */,
+				6D1B704712C29AFE0076D5C4 /* PolyCollisionScene.h */,
+				6D1B704812C29AFE0076D5C4 /* PolyCollisionSceneEntity.h */,
+				6D1B704912C29AFE0076D5C4 /* PolyPhysicsScene.h */,
+				6D1B704A12C29AFE0076D5C4 /* PolyPhysicsSceneEntity.h */,
 			);
 			path = Include;
 			sourceTree = "<group>";
 		};
-		6D690D8112C1D99700C444B0 /* Source */ = {
+		6D1B704B12C29AFE0076D5C4 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				6D690D8212C1D99700C444B0 /* PolyCollisionScene.cpp */,
-				6D690D8312C1D99700C444B0 /* PolyCollisionSceneEntity.cpp */,
+				6D1B704C12C29AFE0076D5C4 /* PolyCollisionScene.cpp */,
+				6D1B704D12C29AFE0076D5C4 /* PolyCollisionSceneEntity.cpp */,
+				6D1B704E12C29AFE0076D5C4 /* PolyPhysicsScene.cpp */,
+				6D1B704F12C29AFE0076D5C4 /* PolyPhysicsSceneEntity.cpp */,
+			);
+			path = Source;
+			sourceTree = "<group>";
+		};
+		6D580E0312D29FB5006FB999 /* 2DPhysics */ = {
+			isa = PBXGroup;
+			children = (
+				6D580E0412D29FB5006FB999 /* Include */,
+				6D580E0712D29FB5006FB999 /* Source */,
+			);
+			name = 2DPhysics;
+			path = ../../Contents/2DPhysics;
+			sourceTree = SOURCE_ROOT;
+		};
+		6D580E0412D29FB5006FB999 /* Include */ = {
+			isa = PBXGroup;
+			children = (
+				6D580E0512D29FB5006FB999 /* PolyPhysicsScreen.h */,
+				6D580E0612D29FB5006FB999 /* PolyPhysicsScreenEntity.h */,
+			);
+			path = Include;
+			sourceTree = "<group>";
+		};
+		6D580E0712D29FB5006FB999 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				6D580E0812D29FB5006FB999 /* PolyPhysicsScreen.cpp */,
+				6D580E0912D29FB5006FB999 /* PolyPhysicsScreenEntity.cpp */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -235,13 +293,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		6D580DED12D29F52006FB999 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6D580E0A12D29FB5006FB999 /* PolyPhysicsScreen.h in Headers */,
+				6D580E0B12D29FB5006FB999 /* PolyPhysicsScreenEntity.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6D690D1712C1D74A00C444B0 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6D690D8412C1D99700C444B0 /* Polycode3DPhysics.h in Headers */,
-				6D690D8512C1D99700C444B0 /* PolyCollisionScene.h in Headers */,
-				6D690D8612C1D99700C444B0 /* PolyCollisionSceneEntity.h in Headers */,
+				6D1B705012C29AFE0076D5C4 /* Polycode3DPhysics.h in Headers */,
+				6D1B705112C29AFE0076D5C4 /* PolyCollisionScene.h in Headers */,
+				6D1B705212C29AFE0076D5C4 /* PolyCollisionSceneEntity.h in Headers */,
+				6D1B705312C29AFE0076D5C4 /* PolyPhysicsScene.h in Headers */,
+				6D1B705412C29AFE0076D5C4 /* PolyPhysicsSceneEntity.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -279,6 +348,23 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		6D580DF012D29F52006FB999 /* Polycode2DPhysics */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6D580DF512D29F55006FB999 /* Build configuration list for PBXNativeTarget "Polycode2DPhysics" */;
+			buildPhases = (
+				6D580DED12D29F52006FB999 /* Headers */,
+				6D580DEE12D29F52006FB999 /* Sources */,
+				6D580DEF12D29F52006FB999 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Polycode2DPhysics;
+			productName = Polycode2DPhysics;
+			productReference = 6D580DF112D29F52006FB999 /* libPolycode2DPhysics.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 		6D690D1A12C1D74A00C444B0 /* Polycode3DPhysics */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6D690D2012C1D76A00C444B0 /* Build configuration list for PBXNativeTarget "Polycode3DPhysics" */;
@@ -352,17 +438,29 @@
 				6DFBF84612A3F24F00C43A7D /* PolycodeUI */,
 				6DFB00FB12A736A900C43A7D /* PolycodeCg */,
 				6D690D1A12C1D74A00C444B0 /* Polycode3DPhysics */,
+				6D580DF012D29F52006FB999 /* Polycode2DPhysics */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
+		6D580DEE12D29F52006FB999 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6D580E0C12D29FB5006FB999 /* PolyPhysicsScreen.cpp in Sources */,
+				6D580E0D12D29FB5006FB999 /* PolyPhysicsScreenEntity.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6D690D1812C1D74A00C444B0 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6D690D8712C1D99700C444B0 /* PolyCollisionScene.cpp in Sources */,
-				6D690D8812C1D99700C444B0 /* PolyCollisionSceneEntity.cpp in Sources */,
+				6D1B705512C29AFE0076D5C4 /* PolyCollisionScene.cpp in Sources */,
+				6D1B705612C29AFE0076D5C4 /* PolyCollisionSceneEntity.cpp in Sources */,
+				6D1B705712C29AFE0076D5C4 /* PolyPhysicsScene.cpp in Sources */,
+				6D1B705812C29AFE0076D5C4 /* PolyPhysicsSceneEntity.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -409,6 +507,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
+					../../../Core/Dependencies/box2d/Box2D,
 					../../../Core/Contents/Include,
 					../../../Core/Dependencies/bullet/src,
 					../../../Core/Dependencies/libvorbis/include,
@@ -434,6 +533,36 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
 				SDKROOT = macosx10.6;
+			};
+			name = Release;
+		};
+		6D580DF212D29F52006FB999 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = Polycode2DPhysics;
+			};
+			name = Debug;
+		};
+		6D580DF312D29F52006FB999 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = Polycode2DPhysics;
+				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
@@ -544,6 +673,15 @@
 			buildConfigurations = (
 				1DEB91F008733DB70010E9CD /* Debug */,
 				1DEB91F108733DB70010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6D580DF512D29F55006FB999 /* Build configuration list for PBXNativeTarget "Polycode2DPhysics" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6D580DF212D29F52006FB999 /* Debug */,
+				6D580DF312D29F52006FB999 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
