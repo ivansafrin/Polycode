@@ -4,9 +4,9 @@
 #include "PolyString.h"
 #include "OSBasics.h"
 
-namespace _PolyExport Polycode {
+namespace Polycode {
 
-	class Data {
+	class _PolyExport Data {
 		public:
 			Data();
 			~Data();

@@ -29,7 +29,7 @@ extern "C" {
 	
 using namespace Polycode;
 
-class PolycodeIDEApp : public EventHandler {
+class PolycodeIDEApp : public EventDispatcher {
 public:
 	PolycodeIDEApp(SubstanceView *view);
 	~PolycodeIDEApp();
@@ -45,6 +45,8 @@ public:
 	void newFile();	
 	void openProject();
 	void saveFile();
+	
+	const static int EVENT_SHOW_MENU = 1;
 	
 protected:	
 	PolycodeFrame *frame;

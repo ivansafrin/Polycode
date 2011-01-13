@@ -45,6 +45,7 @@ namespace Polycode {
 			void setTexture(Texture *texture);
 			void setMaterial(Material *material);
 			void setMaterial(String materialName);
+			void setMesh(Mesh *mesh);
 		
 			void setSkeleton(Skeleton *skeleton);
 			Skeleton *getSkeleton();
@@ -56,6 +57,7 @@ namespace Polycode {
 			unsigned int lightmapIndex;
 			
 			bool showVertexNormals;
+			
 		
 		protected:
 		

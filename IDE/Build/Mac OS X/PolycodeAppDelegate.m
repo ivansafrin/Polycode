@@ -17,6 +17,7 @@
 	// Insert code here to initialize your application 
 	
 	app = new PolycodeIDEApp(substanceView);
+	app->addEventListener(eventHandler, PolycodeIDEApp::EVENT_SHOW_MENU);
 	
 	timer = [NSTimer timerWithTimeInterval:(1.0f/90.0f) target:self selector:@selector(animationTimer:) userInfo:nil repeats:YES];
 	[[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];

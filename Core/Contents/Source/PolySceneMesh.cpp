@@ -41,6 +41,14 @@ SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL) {
 	useVertexBuffer = false;	
 }
 
+void SceneMesh::setMesh(Mesh *mesh) {
+	this->mesh = mesh;
+	bBoxRadius = mesh->getRadius();
+	bBox = mesh->calculateBBox();
+	showVertexNormals = false;	
+	useVertexBuffer = false;	
+}
+
 
 SceneMesh::~SceneMesh() {
 	Logger::log("Destroying Scene Mesh...\n");
@@ -160,8 +168,10 @@ void SceneMesh::renderMeshLocally() {
 		//CoreServices::getInstance()->getRenderer()->draw3DPolygon(mesh->getPolygon(i));
 	}
 */
-	
-//	renderer->pushDataArrayForMesh(mesh, RenderDataArray::COLOR_DATA_ARRAY);
+
+//	if(mesh->useVertexColors) {
+//		renderer->pushDataArrayForMesh(mesh, RenderDataArray::COLOR_DATA_ARRAY);
+//	}
 	 
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::VERTEX_DATA_ARRAY);
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::NORMAL_DATA_ARRAY);		

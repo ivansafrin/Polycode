@@ -29,7 +29,7 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, f
 		bodyDef->type = b2_dynamicBody;	
 	
 	body = world->CreateBody(bodyDef);
-	
+		
 	b2FixtureDef fDef;
 	fDef.friction = friction;
 	fDef.restitution = restitution;
@@ -60,7 +60,7 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, f
 		break;
 	}
 	
-	body->CreateFixture(&fDef);	
+	fixture = body->CreateFixture(&fDef);	
 	
 	lastPosition.x = screenEntity->getPosition2D().x;
 	lastPosition.y = screenEntity->getPosition2D().y;
@@ -81,17 +81,22 @@ ScreenEntity *PhysicsScreenEntity::getScreenEntity() {
 	return screenEntity;
 }
 			
+
+void PhysicsScreenEntity::setTransform(Vector2 pos, float angle) {
+	body->SetTransform(b2Vec2(pos.x/worldScale, pos.y/worldScale), angle*(PI/180.0f));
+}
+
 void PhysicsScreenEntity::Update() {
 	b2Vec2 position = body->GetPosition();
 	float32 angle = body->GetAngle();
 
 	
-	if(lastRotation != screenEntity->getRotation() || collisionOnly) {
-		body->SetTransform(position, screenEntity->getRotation()*(PI/180.0f));		
-	} else {
+//	if(lastRotation != screenEntity->getRotation() || collisionOnly) {
+//		body->SetTransform(position, screenEntity->getRotation()*(PI/180.0f));		
+//	} else {
 		screenEntity->setRotation(angle*(180.0f/PI));	
-	}
-	
+//	}
+/*	
 	if(lastPosition != screenEntity->getPosition2D() || collisionOnly) {
 		b2Vec2 newPos;
 		newPos.x = screenEntity->getPosition2D().x/worldScale; 
@@ -100,8 +105,12 @@ void PhysicsScreenEntity::Update() {
 		position.x = screenEntity->getPosition2D().x/worldScale; 
 		position.y = screenEntity->getPosition2D().y/worldScale; 				
 	} else {
+ */
 		screenEntity->setPosition(position.x*worldScale, position.y*worldScale);
-	}
+//	}
+	
+	screenEntity->dirtyMatrix(true);
+	screenEntity->rebuildTransformMatrix();
 	
 	lastPosition.x = position.x*worldScale;
 	lastPosition.y = position.y*worldScale;	

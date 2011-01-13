@@ -25,6 +25,9 @@ namespace Polycode {
 	
 	class _PolyExport VertexBuffer {
 		public:	
+			VertexBuffer(){}
+			virtual ~VertexBuffer(){}
+		
 			int getVertexCount() { return vertexCount;}
 		
 			int verticesPerFace;
@@ -122,6 +125,8 @@ namespace Polycode {
 					
 			bool arrayDirtyMap[16];
 			RenderDataArray *renderDataArrays[16];
+		
+			bool useVertexColors;
 		
 		private:
 		

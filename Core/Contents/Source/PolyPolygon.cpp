@@ -27,6 +27,11 @@ Polygon::~Polygon() {
 		delete texCoords2[i];
 	}
 	texCoords2.clear();
+	
+	for(int i=0; i < vertices.size(); i++) {	
+		delete vertices[i];
+	}
+	vertices.clear();
 }
 	
 void Polygon::flipUVY() {

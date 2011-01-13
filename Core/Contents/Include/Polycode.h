@@ -11,6 +11,7 @@
 
 #include "PolyString.h"
 #include "PolyData.h"
+#include "PolyObject.h"
 #include "PolyLogger.h"
 #include "PolyConfig.h"
 #include "PolyEntity.h"

@@ -54,6 +54,8 @@
 		6DFBF88012A3F27B00C43A7D /* PolyUITreeEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF87212A3F27B00C43A7D /* PolyUITreeEvent.h */; };
 		6DFBF88112A3F27B00C43A7D /* PolyUIVScrollBar.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF87312A3F27B00C43A7D /* PolyUIVScrollBar.h */; };
 		6DFBF88212A3F27B00C43A7D /* PolyUIWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF87412A3F27B00C43A7D /* PolyUIWindow.h */; };
+		6DFD118412DEAA1F0080A2BE /* PolycodeKinect.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFD118112DEAA1F0080A2BE /* PolycodeKinect.h */; };
+		6DFD118512DEAA1F0080A2BE /* PolycodeKinect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFD118312DEAA1F0080A2BE /* PolycodeKinect.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -108,6 +110,9 @@
 		6DFBF87212A3F27B00C43A7D /* PolyUITreeEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyUITreeEvent.h; path = ../../Contents/UI/Include/PolyUITreeEvent.h; sourceTree = SOURCE_ROOT; };
 		6DFBF87312A3F27B00C43A7D /* PolyUIVScrollBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyUIVScrollBar.h; path = ../../Contents/UI/Include/PolyUIVScrollBar.h; sourceTree = SOURCE_ROOT; };
 		6DFBF87412A3F27B00C43A7D /* PolyUIWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyUIWindow.h; path = ../../Contents/UI/Include/PolyUIWindow.h; sourceTree = SOURCE_ROOT; };
+		6DFD116912DEA9C60080A2BE /* libPolycodeKinect.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPolycodeKinect.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		6DFD118112DEAA1F0080A2BE /* PolycodeKinect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolycodeKinect.h; sourceTree = "<group>"; };
+		6DFD118312DEAA1F0080A2BE /* PolycodeKinect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolycodeKinect.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,6 +144,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		6DFD116712DEA9C60080A2BE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -155,6 +167,7 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				6DFD117F12DEAA1F0080A2BE /* Kinect */,
 				6D580E0312D29FB5006FB999 /* 2DPhysics */,
 				6D1B704412C29AFE0076D5C4 /* 3DPhysics */,
 				6DFB00F012A7364300C43A7D /* PolycodeCg */,
@@ -170,6 +183,7 @@
 				6DFB00FC12A736A900C43A7D /* libPolycodeCg.a */,
 				6D690D1B12C1D74A00C444B0 /* libPolycode3DPhysics.a */,
 				6D580DF112D29F52006FB999 /* libPolycode2DPhysics.a */,
+				6DFD116912DEA9C60080A2BE /* libPolycodeKinect.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -283,6 +297,32 @@
 			name = PolycodeCg;
 			sourceTree = "<group>";
 		};
+		6DFD117F12DEAA1F0080A2BE /* Kinect */ = {
+			isa = PBXGroup;
+			children = (
+				6DFD118012DEAA1F0080A2BE /* Include */,
+				6DFD118212DEAA1F0080A2BE /* Source */,
+			);
+			name = Kinect;
+			path = ../../Contents/Kinect;
+			sourceTree = SOURCE_ROOT;
+		};
+		6DFD118012DEAA1F0080A2BE /* Include */ = {
+			isa = PBXGroup;
+			children = (
+				6DFD118112DEAA1F0080A2BE /* PolycodeKinect.h */,
+			);
+			path = Include;
+			sourceTree = "<group>";
+		};
+		6DFD118212DEAA1F0080A2BE /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				6DFD118312DEAA1F0080A2BE /* PolycodeKinect.cpp */,
+			);
+			path = Source;
+			sourceTree = "<group>";
+		};
 		C6A0FF2B0290797F04C91782 /* Documentation */ = {
 			isa = PBXGroup;
 			children = (
@@ -342,6 +382,14 @@
 				6DFBF88012A3F27B00C43A7D /* PolyUITreeEvent.h in Headers */,
 				6DFBF88112A3F27B00C43A7D /* PolyUIVScrollBar.h in Headers */,
 				6DFBF88212A3F27B00C43A7D /* PolyUIWindow.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6DFD116512DEA9C60080A2BE /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6DFD118412DEAA1F0080A2BE /* PolycodeKinect.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -416,6 +464,23 @@
 			productReference = 6DFBF84712A3F24F00C43A7D /* libPolycodeUI.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		6DFD116812DEA9C60080A2BE /* PolycodeKinect */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6DFD117012DEA9DD0080A2BE /* Build configuration list for PBXNativeTarget "PolycodeKinect" */;
+			buildPhases = (
+				6DFD116512DEA9C60080A2BE /* Headers */,
+				6DFD116612DEA9C60080A2BE /* Sources */,
+				6DFD116712DEA9C60080A2BE /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PolycodeKinect;
+			productName = PolycodeKinect;
+			productReference = 6DFD116912DEA9C60080A2BE /* libPolycodeKinect.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -439,6 +504,7 @@
 				6DFB00FB12A736A900C43A7D /* PolycodeCg */,
 				6D690D1A12C1D74A00C444B0 /* Polycode3DPhysics */,
 				6D580DF012D29F52006FB999 /* Polycode2DPhysics */,
+				6DFD116812DEA9C60080A2BE /* PolycodeKinect */,
 			);
 		};
 /* End PBXProject section */
@@ -495,6 +561,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		6DFD116612DEA9C60080A2BE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6DFD118512DEAA1F0080A2BE /* PolycodeKinect.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
@@ -507,6 +581,8 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
+					/usr/local/include/,
+					/usr/local/include/libfreenect,
 					../../../Core/Dependencies/box2d/Box2D,
 					../../../Core/Contents/Include,
 					../../../Core/Dependencies/bullet/src,
@@ -665,6 +741,36 @@
 			};
 			name = Release;
 		};
+		6DFD116A12DEA9C70080A2BE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = PolycodeKinect;
+			};
+			name = Debug;
+		};
+		6DFD116B12DEA9C70080A2BE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = PolycodeKinect;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -709,6 +815,15 @@
 			buildConfigurations = (
 				6DFBF84812A3F24F00C43A7D /* Debug */,
 				6DFBF84912A3F24F00C43A7D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6DFD117012DEA9DD0080A2BE /* Build configuration list for PBXNativeTarget "PolycodeKinect" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6DFD116A12DEA9C70080A2BE /* Debug */,
+				6DFD116B12DEA9C70080A2BE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

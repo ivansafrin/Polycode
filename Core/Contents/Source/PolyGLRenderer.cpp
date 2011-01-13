@@ -281,10 +281,10 @@ void OpenGLRenderer::drawVertexBuffer(VertexBuffer *buffer) {
 	glEnableClientState(GL_VERTEX_ARRAY);		
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);	
-//	glEnableClientState(GL_COLOR_ARRAY);		
+	glEnableClientState(GL_COLOR_ARRAY);		
 		
-//	glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getColorBufferID());
-//	glTexCoordPointer( 4, GL_FLOAT, 0, (char *) NULL );	
+	glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getColorBufferID());
+	glTexCoordPointer( 4, GL_FLOAT, 0, (char *) NULL );	
 	glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getVertexBufferID());
 	glVertexPointer( 3, GL_FLOAT, 0, (char *) NULL );	
 	glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getNormalBufferID());
@@ -300,7 +300,7 @@ void OpenGLRenderer::drawVertexBuffer(VertexBuffer *buffer) {
 	glDisableClientState( GL_VERTEX_ARRAY);	
 	glDisableClientState( GL_TEXTURE_COORD_ARRAY );		
 	glDisableClientState( GL_NORMAL_ARRAY );
-//	glDisableClientState( GL_COLOR_ARRAY );	
+	glDisableClientState( GL_COLOR_ARRAY );	
 }
 
 void OpenGLRenderer::enableFog(bool enable) {
@@ -654,8 +654,8 @@ void OpenGLRenderer::pushRenderDataArray(RenderDataArray *array) {
 			verticesToDraw = array->count;
 		break;
 		case RenderDataArray::COLOR_DATA_ARRAY:			
-	//		glColorPointer(array->size, GL_FLOAT, 0, array->arrayPtr);			
-	//		glEnableClientState(GL_COLOR_ARRAY);
+			glColorPointer(array->size, GL_FLOAT, 0, array->arrayPtr);			
+			glEnableClientState(GL_COLOR_ARRAY);
 		break;
 		case RenderDataArray::TEXCOORD_DATA_ARRAY:
 			glEnableClientState(GL_TEXTURE_COORD_ARRAY);						
@@ -842,7 +842,7 @@ void OpenGLRenderer::drawArrays(int drawType) {
 	glDisableClientState( GL_VERTEX_ARRAY);	
 	glDisableClientState( GL_TEXTURE_COORD_ARRAY );		
 	glDisableClientState( GL_NORMAL_ARRAY );
-//	glDisableClientState( GL_COLOR_ARRAY );		
+	glDisableClientState( GL_COLOR_ARRAY );		
 }
 
 /*

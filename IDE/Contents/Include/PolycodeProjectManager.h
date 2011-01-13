@@ -22,6 +22,9 @@ class PolycodeProjectManager {
 	PolycodeProject* getActiveProject() { return activeProject; }
 	void setActiveProject(PolycodeProject* project) { activeProject = project; }
 	
+	int getProjectCount() { return projects.size(); }
+	PolycodeProject *getProjectByIndex(int index) { return projects[index]; }
+	
 protected:
 	
 	PolycodeProject* activeProject;

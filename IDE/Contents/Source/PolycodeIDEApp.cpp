@@ -13,7 +13,7 @@
 
 using namespace Polycode;
 
-PolycodeIDEApp::PolycodeIDEApp(SubstanceView *view) : EventHandler() {
+PolycodeIDEApp::PolycodeIDEApp(SubstanceView *view) : EventDispatcher() {
 	core = new CocoaCore(view, 800,600,false,0,60);	
 	core->addEventListener(this, Core::EVENT_CORE_RESIZE);	
 	CoreServices::getInstance()->getRenderer()->setClearColor(0.4,0.4,0.4);
@@ -130,7 +130,7 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 			}
 		}
 	}	
-	
+
 	if(event->getDispatcher() == frame->newProjectWindow) {
 		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {
 			projectManager->createNewProject(frame->newProjectWindow->getTemplateFolder(), frame->newProjectWindow->getProjectName(), frame->newProjectWindow->getProjectLocation());
@@ -140,11 +140,34 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 }
 
 void PolycodeIDEApp::saveConfigFile() {
-	
+	Object configFile;
+	configFile.root.name = "config";
+	configFile.root.addChild("open_projects");
+	for(int i=0; i < projectManager->getProjectCount(); i++) {
+		PolycodeProject *project = projectManager->getProjectByIndex(i);		
+		ObjectEntry *projectEntry = configFile.root["open_projects"]->addChild("project");
+		projectEntry->addChild("name", project->getProjectName());
+		projectEntry->addChild("path", project->getProjectFile());
+	}
+	core->createFolder("/Users/ivansafrin/Library/Application Support/Polycode");
+	configFile.saveToXML("/Users/ivansafrin/Library/Application Support/Polycode/config.xml");		
 }
 
 void PolycodeIDEApp::loadConfigFile() {
-	
+
+	Object configFile;
+	configFile.loadFromXML("/Users/ivansafrin/Library/Application Support/Polycode/config.xml");		
+	if(configFile.root["open_projects"]) {
+		ObjectEntry *projects = configFile.root["open_projects"];
+		if(projects) {
+		for(int i=0; i < projects->length; i++) {
+			ObjectEntry *entry = (*(*projects)[i])["path"];
+			if(entry) {
+				projectManager->openProject(entry->stringVal);	
+			}
+		}
+		}
+	}
 }
 
 

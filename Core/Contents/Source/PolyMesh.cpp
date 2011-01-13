@@ -24,6 +24,7 @@ namespace Polycode {
 		meshHasVertexBuffer = false;
 		loadMesh(fileName);
 		vertexBuffer = NULL;			
+		useVertexColors = false;
 			}
 	
 	Mesh::Mesh(int meshType) {
@@ -35,21 +36,20 @@ namespace Polycode {
 		meshHasVertexBuffer = false;		
 		numUVs = 1;
 		vertexBuffer = NULL;
-				
+		useVertexColors = false;				
 	}
 	
 	
 	Mesh::~Mesh() {
-		Logger::log("deleting mesh...\n");
 		for(int i=0; i < vertices.size(); i++) {	
 			delete vertices[i];
 		}
 		vertices.clear();
 		for(int i=0; i < polygons.size(); i++) {	
-//			delete polygons[i];
+			delete polygons[i];
 		}
 		polygons.clear();
-
+		delete vertexBuffer;
 	}
 	
 	VertexBuffer *Mesh::getVertexBuffer() {

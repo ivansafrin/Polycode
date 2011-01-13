@@ -36,6 +36,8 @@ namespace Polycode {
 			}			
 			
 			void setColorHex(unsigned int hex);
+			void setColorHexRGB(unsigned int hex);
+		
 			void setColorHSV(float h, float s, float v);
 			void setColorRGBA(int r, int g, int b, int a);
 			void setColorRGB(int r, int g, int b);

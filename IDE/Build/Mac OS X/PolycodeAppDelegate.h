@@ -11,6 +11,10 @@
 
 #include "PolycodeIDEApp.h"
 
+class PolycodeAppEventHandler : public EventHandler() {
+	<#declarations#>
+};
+
 @interface PolycodeAppDelegate : NSObject <NSApplicationDelegate> {
     NSWindow *window;	
 	PolycodeIDEApp *app;

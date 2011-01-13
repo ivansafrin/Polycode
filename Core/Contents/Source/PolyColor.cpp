@@ -31,6 +31,20 @@ Color::Color(unsigned int hex) {
 	setColorHex(hex);
 }
 
+void Color::setColorHexRGB(unsigned int hex) {
+
+	int tr = (hex >> 24) & 0xFF;
+	int tb = (hex >> 16) & 0xFF;
+	int tg = (hex >> 8) & 0xFF;
+//	int ta = (hex ) & 0xFF;
+	
+	r = ((float)tr)/255.0f;
+	g = ((float)tg)/255.0f;
+	b = ((float)tb)/255.0f;
+//	a = ((float)ta)/255.0f;	
+	
+}
+
 void Color::setColorHex(unsigned int hex) {
 	int tr = (hex >> 24) & 0xFF;
 	int tg = (hex >> 16) & 0xFF;

@@ -25,6 +25,8 @@ namespace Polycode {
 			
 			void applyTorque(float torque);
 			void applyForce(Vector2 force);
+		
+			void setTransform(Vector2 pos, float angle);
 			
 			void Update();
 			
@@ -32,6 +34,7 @@ namespace Polycode {
 			static const int ENTITY_CIRCLE = 2;	
 			static const int ENTITY_STATICRECT = 3;
 		
+			b2Fixture *fixture;		
 			b2Body* body;
 			b2BodyDef *bodyDef;
 			b2Shape *shape;

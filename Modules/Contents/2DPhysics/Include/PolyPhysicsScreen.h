@@ -53,6 +53,14 @@ struct ContactPoint
 	ContactState state;
 };
 	
+
+class _PolyExport PhysicsJoint {
+public:
+	PhysicsJoint() {}
+	~PhysicsJoint() {}
+	b2Joint *box2DJoint;
+	
+};
 	
 class _PolyExport PhysicsScreen : public Screen, b2ContactListener {
 
@@ -63,32 +71,33 @@ public:
 	~PhysicsScreen();
 	
 	void Update();
-	PhysicsScreenEntity *addPhysicsChild(ScreenEntity *newEntity, int entType, float friction, float density, float restitution = 0, bool isSensor = false, bool fixedRotation = false);
+	PhysicsScreenEntity *addPhysicsChild(ScreenEntity *newEntity, int entType, float friction=0.1, float density=1, float restitution = 0, bool isSensor = false, bool fixedRotation = false);
 	void removePhysicsChild(PhysicsScreenEntity *entityToRemove);
 	
 	PhysicsScreenEntity *addCollisionChild(ScreenEntity *newEntity, int entType);
 	
+	void destroyJoint(PhysicsJoint *joint);
 	void createDistanceJoint(ScreenEntity *ent1, ScreenEntity *ent2, bool collideConnected);
 	void createPrismaticJoint(ScreenEntity *ent1, ScreenEntity *ent2, bool collideConnected);
-	b2RevoluteJoint *createRevoluteJoint(ScreenEntity *ent1, ScreenEntity *ent2, float ax, float ay, bool enableLimit, float lowerLimit, float upperLimit, bool motorEnabled, float motorSpeed, float maxTorque);
+	PhysicsJoint *createRevoluteJoint(ScreenEntity *ent1, ScreenEntity *ent2, float ax, float ay, bool enableLimit, float lowerLimit, float upperLimit, bool motorEnabled, float motorSpeed, float maxTorque);
 //	b2MouseJoint *createMouseJoint(ScreenEntity *ent1, Vector2 *mp);
 	void applyForce(ScreenEntity *ent, float fx, float fy);
 	void applyImpulse(ScreenEntity *ent, float fx, float fy);
 	
 	void setGravity(Vector2 newGravity);
 	
+	void setTransform(ScreenEntity *ent, Vector2 pos, float angle);
+	
 	PhysicsScreenEntity *getPhysicsEntityByShape(b2Shape *shape);
+	PhysicsScreenEntity *getPhysicsEntityByFixture(b2Fixture *fixture);
 	
 	void setVelocity(ScreenEntity *ent, float fx, float fy);	
 	void setVelocityX(ScreenEntity *ent, float fx);	
 	void setVelocityY(ScreenEntity *ent, float fy);	
+	void setSpin(ScreenEntity *ent, float spin);
 	
-	/*
-	void Add(const b2ContactPoint* point);
-	void Persist(const b2ContactPoint* point);
-	void Remove(const b2ContactPoint* point);				
-	*/
-		
+	Vector2 getVelocity(ScreenEntity *ent);
+			
 	void BeginContact (b2Contact *contact);
 	void EndContact (b2Contact *contact);	
 	

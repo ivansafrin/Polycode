@@ -184,6 +184,8 @@
 		6DFBF46912A3184E00C43A7D /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF3BA12A3184E00C43A7D /* tinyxmlerror.cpp */; };
 		6DFBF46A12A3184E00C43A7D /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF3BB12A3184E00C43A7D /* tinyxmlparser.cpp */; };
 		6DFBF46B12A3184E00C43A7D /* xmltest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF3BC12A3184E00C43A7D /* xmltest.cpp */; };
+		6DFE5FC512D450C30005B100 /* PolyObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFE5FC412D450C30005B100 /* PolyObject.h */; };
+		6DFE5FC812D450CB0005B100 /* PolyObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFE5FC712D450CB0005B100 /* PolyObject.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -368,6 +370,8 @@
 		6DFBF3BA12A3184E00C43A7D /* tinyxmlerror.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlerror.cpp; sourceTree = "<group>"; };
 		6DFBF3BB12A3184E00C43A7D /* tinyxmlparser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlparser.cpp; sourceTree = "<group>"; };
 		6DFBF3BC12A3184E00C43A7D /* xmltest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xmltest.cpp; sourceTree = "<group>"; };
+		6DFE5FC412D450C30005B100 /* PolyObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyObject.h; sourceTree = "<group>"; };
+		6DFE5FC712D450CB0005B100 /* PolyObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyObject.cpp; sourceTree = "<group>"; };
 		D2AAC046055464E500DB518D /* libPolyCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPolyCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -421,6 +425,7 @@
 		6DFBF30B12A3184E00C43A7D /* Include */ = {
 			isa = PBXGroup;
 			children = (
+				6DFE5FC412D450C30005B100 /* PolyObject.h */,
 				6D865AC112B07363008A486E /* PolyData.h */,
 				6D8656A812AF5FCD008A486E /* PolyString.h */,
 				6DFBF30D12A3184E00C43A7D /* OSBasics.h */,
@@ -520,6 +525,7 @@
 		6DFBF36612A3184E00C43A7D /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				6DFE5FC712D450CB0005B100 /* PolyObject.cpp */,
 				6D865AC312B0736C008A486E /* PolyData.cpp */,
 				6D8656AA12AF5FD5008A486E /* PolyString.cpp */,
 				6DFBF36712A3184E00C43A7D /* OSBasics.cpp */,
@@ -719,6 +725,7 @@
 				6DFB016F12A73BC200C43A7D /* PolyModule.h in Headers */,
 				6D8656A912AF5FCD008A486E /* PolyString.h in Headers */,
 				6D865AC212B07363008A486E /* PolyData.h in Headers */,
+				6DFE5FC512D450C30005B100 /* PolyObject.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -856,6 +863,7 @@
 				6DFB017112A73BCF00C43A7D /* PolyModule.cpp in Sources */,
 				6D8656AB12AF5FD5008A486E /* PolyString.cpp in Sources */,
 				6D865AC412B0736C008A486E /* PolyData.cpp in Sources */,
+				6DFE5FC812D450CB0005B100 /* PolyObject.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

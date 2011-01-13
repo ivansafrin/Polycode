@@ -23,7 +23,7 @@ PolycodeProject* PolycodeProjectManager::openProject(String path) {
 	
 	String projectName = bits[bits.size()-2];
 	
-	PolycodeProject* newProject = new PolycodeProject(projectName, projectPath);
+	PolycodeProject* newProject = new PolycodeProject(projectName, projectPath, path);
 	projects.push_back(newProject);
 	
 	projectBrowser->addProject(newProject);
