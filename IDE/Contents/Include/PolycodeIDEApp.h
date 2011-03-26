@@ -44,6 +44,7 @@ public:
 	void newProject();
 	void newFile();	
 	void openProject();
+	void closeProject();	
 	void saveFile();
 	
 	const static int EVENT_SHOW_MENU = 1;

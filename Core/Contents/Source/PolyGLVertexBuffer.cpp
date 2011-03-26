@@ -17,7 +17,7 @@ OpenGLVertexBuffer::OpenGLVertexBuffer(Mesh *mesh) : VertexBuffer() {
 	} else {
 		verticesPerFace = 3;				
 	}
-
+	meshType = mesh->getMeshType();
 	
 	glGenBuffersARB(1, &vertexBufferID);
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB, vertexBufferID);
@@ -45,7 +45,7 @@ OpenGLVertexBuffer::OpenGLVertexBuffer(Mesh *mesh) : VertexBuffer() {
 	glGenBuffersARB(1, &texCoordBufferID);
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB, texCoordBufferID);
 	
-	bufferSize = 0;
+	bufferSize = 0;	
 	newBufferSize = 0;		
 	buffer = (GLfloat*)malloc(1);	
 	

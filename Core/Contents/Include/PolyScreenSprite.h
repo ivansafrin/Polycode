@@ -18,7 +18,7 @@ namespace Polycode {
 
 class SpriteAnimation {
 	public:
-		float speed;
+		Number speed;
 		String name;
 		int numFrames;
 	
@@ -28,23 +28,23 @@ class SpriteAnimation {
 class ScreenSprite : public ScreenShape 
 {
 	public:
-		ScreenSprite(String fileName, float spriteWidth, float spriteHeight);
+		ScreenSprite(String fileName, Number spriteWidth, Number spriteHeight);
 		~ScreenSprite();
 		
-		void addAnimation(String name, String frames, float speed);
+		void addAnimation(String name, String frames, Number speed);
 		void playAnimation(String name, int startFrame, bool once);
 		void Update();
 		
 	private:
 	
-		float spriteWidth;
-		float spriteHeight;
+		Number spriteWidth;
+		Number spriteHeight;
 			
 		bool playingOnce;
-		float lastTick;
+		Number lastTick;
 		
-		float spriteUVWidth;
-		float spriteUVHeight;
+		Number spriteUVWidth;
+		Number spriteUVHeight;
 		int currentFrame;
 		SpriteAnimation *currentAnimation;
 		

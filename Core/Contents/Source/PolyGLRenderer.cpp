@@ -122,7 +122,7 @@ void OpenGLRenderer::Resize(int xRes, int yRes) {
 	
 	glLineWidth(1.0f);
 	
-	glEnable(GL_LINE_SMOOTH);
+//	glEnable(GL_LINE_SMOOTH);
 	
 	GLint numBuffers;
 	glGetIntegerv(GL_MAX_DRAW_BUFFERS, &numBuffers);
@@ -157,7 +157,7 @@ void OpenGLRenderer::setLineSmooth(bool val) {
 		glDisable(GL_LINE_SMOOTH);
 }
 
-void OpenGLRenderer::setFOV(float fov) {
+void OpenGLRenderer::setFOV(Number fov) {
 	this->fov = fov;
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -167,7 +167,7 @@ void OpenGLRenderer::setFOV(float fov) {
 	glMatrixMode(GL_MODELVIEW);	
 }
 
-void OpenGLRenderer::setViewportSize(int w, int h, float fov) {
+void OpenGLRenderer::setViewportSize(int w, int h, Number fov) {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(fov,(GLfloat)w/(GLfloat)h,nearPlane,farPlane);
@@ -176,7 +176,7 @@ void OpenGLRenderer::setViewportSize(int w, int h, float fov) {
 	glMatrixMode(GL_MODELVIEW);
 }
 
-Vector3 OpenGLRenderer::Unproject(float x, float y) {
+Vector3 OpenGLRenderer::Unproject(Number x, Number y) {
 	Vector3 coords;
 	GLfloat wx, wy, wz;
 	GLdouble cx, cy, cz;
@@ -190,8 +190,8 @@ Vector3 OpenGLRenderer::Unproject(float x, float y) {
 	GLint vp[4];
 	glGetIntegerv( GL_VIEWPORT, vp );
 	
-	wx = ( float ) x;
-	wy = ( float ) vp[3] - ( float ) y;
+	wx = ( Number ) x;
+	wy = ( Number ) vp[3] - ( Number ) y;
 	glReadPixels( x, wy, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &wz );
 	
 	gluUnProject( wx, wy, wz, mv, proj, vp, &cx, &cy, &cz );
@@ -202,7 +202,7 @@ Vector3 OpenGLRenderer::Unproject(float x, float y) {
 	
 }
 
-bool OpenGLRenderer::test2DCoordinate(float x, float y, Polycode::Polygon *poly, const Matrix4 &matrix, bool billboardMode) {
+bool OpenGLRenderer::test2DCoordinate(Number x, Number y, Polycode::Polygon *poly, const Matrix4 &matrix, bool billboardMode) {
 	GLdouble nearPlane[3],farPlane[3];
 	
 	GLdouble mv[16];
@@ -241,32 +241,34 @@ bool OpenGLRenderer::test2DCoordinate(float x, float y, Polycode::Polygon *poly,
 	}
 }
 
-void OpenGLRenderer::enableDepthTest(bool val) {
-//	if(val)
-//		glEnable(GL_DEPTH_TEST);
-//	else
-//		glDisable(GL_DEPTH_TEST);
+void OpenGLRenderer::enableDepthWrite(bool val) {
 	if(val)
 		glDepthMask(GL_TRUE);
 	else
-		glDepthMask(GL_FALSE);
-	
+		glDepthMask(GL_FALSE);	
+}
+
+void OpenGLRenderer::enableDepthTest(bool val) {
+	if(val)
+		glEnable(GL_DEPTH_TEST);
+	else
+		glDisable(GL_DEPTH_TEST);	
 }
 
 void OpenGLRenderer::setModelviewMatrix(Matrix4 m) {
-	glLoadMatrixf(m.ml);
+	glLoadMatrixd(m.ml);
 }
 
 void OpenGLRenderer::multModelviewMatrix(Matrix4 m) {
 //	glMatrixMode(GL_MODELVIEW);
-	glMultMatrixf(m.ml);
+	glMultMatrixd(m.ml);
 }
 
 void OpenGLRenderer::enableLighting(bool enable) {
 	lightingEnabled = enable;
 }
 
-void OpenGLRenderer::setLineSize(float lineSize) {
+void OpenGLRenderer::setLineSize(Number lineSize) {
 	glLineWidth(lineSize);
 }
 
@@ -281,10 +283,10 @@ void OpenGLRenderer::drawVertexBuffer(VertexBuffer *buffer) {
 	glEnableClientState(GL_VERTEX_ARRAY);		
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);	
-	glEnableClientState(GL_COLOR_ARRAY);		
+//	glEnableClientState(GL_COLOR_ARRAY);		
 		
-	glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getColorBufferID());
-	glTexCoordPointer( 4, GL_FLOAT, 0, (char *) NULL );	
+//	glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getColorBufferID());
+//	glTexCoordPointer( 4, GL_FLOAT, 0, (char *) NULL );	
 	glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getVertexBufferID());
 	glVertexPointer( 3, GL_FLOAT, 0, (char *) NULL );	
 	glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getNormalBufferID());
@@ -292,15 +294,54 @@ void OpenGLRenderer::drawVertexBuffer(VertexBuffer *buffer) {
 	glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getTextCoordBufferID());
 	glTexCoordPointer( 2, GL_FLOAT, 0, (char *) NULL );
 	
-	if(buffer->verticesPerFace == 3)
-		glDrawArrays( GL_TRIANGLES, 0, buffer->getVertexCount() );
-	else
-		glDrawArrays( GL_QUADS, 0, buffer->getVertexCount() );
+	
+	GLenum mode = GL_TRIANGLES;
+	
+	switch(buffer->meshType) {
+		case Mesh::TRI_MESH:
+			switch(renderMode) {
+				case RENDER_MODE_NORMAL:
+					mode = GL_TRIANGLES;
+					break;
+				case RENDER_MODE_WIREFRAME:
+					mode = GL_LINE_LOOP;
+					break;
+			}
+			break;
+		case Mesh::TRIFAN_MESH:
+			switch(renderMode) {
+				case RENDER_MODE_NORMAL:
+					mode = GL_TRIANGLE_FAN;
+					break;
+				case RENDER_MODE_WIREFRAME:
+					mode = GL_LINE_LOOP;
+					break;
+			}
+			break;
+		case Mesh::QUAD_MESH:
+			switch(renderMode) {
+				case RENDER_MODE_NORMAL:
+					mode = GL_QUADS;
+					break;
+				case RENDER_MODE_WIREFRAME:
+					mode = GL_LINE_LOOP;
+					break;
+			}
+			break;
+		case Mesh::LINE_MESH:
+			mode = GL_LINES;
+			break;	
+		case Mesh::POINT_MESH:
+			mode = GL_POINTS;
+			break;
+	}	
+	
+	glDrawArrays( mode, 0, buffer->getVertexCount() );
 	
 	glDisableClientState( GL_VERTEX_ARRAY);	
 	glDisableClientState( GL_TEXTURE_COORD_ARRAY );		
 	glDisableClientState( GL_NORMAL_ARRAY );
-	glDisableClientState( GL_COLOR_ARRAY );	
+//	glDisableClientState( GL_COLOR_ARRAY );	
 }
 
 void OpenGLRenderer::enableFog(bool enable) {
@@ -331,14 +372,14 @@ void OpenGLRenderer::setBlendingMode(int blendingMode) {
 }
 
 Matrix4 OpenGLRenderer::getProjectionMatrix() {
-	float m[16];
-	glGetFloatv( GL_PROJECTION_MATRIX, m);
+	Number m[16];
+	glGetDoublev( GL_PROJECTION_MATRIX, m);
 	return Matrix4(m);
 }
 
 Matrix4 OpenGLRenderer::getModelviewMatrix() {
-	float m[16];
-    glGetFloatv( GL_MODELVIEW_MATRIX, m);
+	Number m[16];
+    glGetDoublev( GL_MODELVIEW_MATRIX, m);
 	return Matrix4(m);
 }
 
@@ -355,7 +396,7 @@ void OpenGLRenderer::renderToTexture(Texture *targetTexture) {
 
 }
 
-void OpenGLRenderer::setFogProperties(int fogMode, Color color, float density, float startDepth, float endDepth) {
+void OpenGLRenderer::setFogProperties(int fogMode, Color color, Number density, Number startDepth, Number endDepth) {
 	switch(fogMode) {
 		case FOG_LINEAR:
 			glFogi(GL_FOG_MODE, GL_LINEAR);
@@ -380,7 +421,20 @@ void OpenGLRenderer::setFogProperties(int fogMode, Color color, float density, f
 	glClearColor(color.r, color.g, color.b, color.a);
 }
 
-void OpenGLRenderer::setOrthoMode(float xSize, float ySize) {
+
+void OpenGLRenderer::_setOrthoMode() {
+	if(!orthoMode) {
+		glMatrixMode(GL_PROJECTION);
+		glPushMatrix();
+		glLoadIdentity();
+		glOrtho(-1,1,-1,1,nearPlane,farPlane);
+		orthoMode = true;
+	}
+	glMatrixMode(GL_MODELVIEW);	
+	glLoadIdentity();	
+}
+
+void OpenGLRenderer::setOrthoMode(Number xSize, Number ySize) {
 	
 	if(xSize == 0)
 		xSize = xRes;
@@ -433,7 +487,7 @@ void OpenGLRenderer::BeginRender() {
 	currentTexture = NULL;
 }
 
-void OpenGLRenderer::setClearColor(float r, float g, float b) {
+void OpenGLRenderer::setClearColor(Number r, Number g, Number b) {
 	clearColor.setColor(r,g,b,1.0f);	
 	glClearColor(r,g,b,0.0f);
 }
@@ -442,7 +496,7 @@ void OpenGLRenderer::translate3D(Vector3 *position) {
 	glTranslatef(position->x, position->y, position->z);
 }
 
-void OpenGLRenderer::translate3D(float x, float y, float z) {
+void OpenGLRenderer::translate3D(Number x, Number y, Number z) {
 	glTranslatef(x, y, z);
 }
 
@@ -653,7 +707,7 @@ void OpenGLRenderer::pushRenderDataArray(RenderDataArray *array) {
 			glVertexPointer(array->size, GL_FLOAT, 0, array->arrayPtr);
 			verticesToDraw = array->count;
 		break;
-		case RenderDataArray::COLOR_DATA_ARRAY:			
+		case RenderDataArray::COLOR_DATA_ARRAY:		
 			glColorPointer(array->size, GL_FLOAT, 0, array->arrayPtr);			
 			glEnableClientState(GL_COLOR_ARRAY);
 		break;
@@ -791,7 +845,7 @@ RenderDataArray *OpenGLRenderer::createRenderDataArray(int arrayType) {
 	return newArray;
 }
 
-void OpenGLRenderer::setRenderArrayData(RenderDataArray *array, float *arrayData) {
+void OpenGLRenderer::setRenderArrayData(RenderDataArray *array, Number *arrayData) {
 	
 }
 
@@ -832,7 +886,10 @@ void OpenGLRenderer::drawArrays(int drawType) {
 			break;
 		case Mesh::LINE_MESH:
 			mode = GL_LINES;
-			break;			
+			break;	
+		case Mesh::POINT_MESH:
+			mode = GL_POINTS;
+		break;
 	}
 	
 	glDrawArrays( mode, 0, verticesToDraw);	
@@ -860,11 +917,11 @@ void OpenGLRenderer::draw3DVertex2UV(Vertex *vertex, Vector2 *faceUV1, Vector2 *
 }
 */
 
-void OpenGLRenderer::drawScreenQuad(float qx, float qy) {
+void OpenGLRenderer::drawScreenQuad(Number qx, Number qy) {
 	setOrthoMode();
 	
-	float xscale = qx/((float)getXRes()) * 2.0f;
-	float yscale = qy/((float)getYRes()) * 2.0f;
+	Number xscale = qx/((Number)getXRes()) * 2.0f;
+	Number yscale = qy/((Number)getYRes()) * 2.0f;
 
 	glBegin(GL_QUADS);
 		glColor4f(1.0f,1.0f,1.0f,1.0f);
@@ -885,7 +942,7 @@ void OpenGLRenderer::drawScreenQuad(float qx, float qy) {
 }
 
 
-void OpenGLRenderer::translate2D(float x, float y) {
+void OpenGLRenderer::translate2D(Number x, Number y) {
 	glTranslatef(x, y, 0.0f);
 }
 
@@ -894,16 +951,15 @@ void OpenGLRenderer::scale2D(Vector2 *scale) {
 }
 
 void OpenGLRenderer::loadIdentity() {
-	setBlendingMode(BLEND_MODE_NORMAL);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
 
-void OpenGLRenderer::rotate2D(float angle) {
+void OpenGLRenderer::rotate2D(Number angle) {
 	glRotatef(angle, 0.0f, 0.0f, 1.0f);
 }
 
-void OpenGLRenderer::setVertexColor(float r, float g, float b, float a) {
+void OpenGLRenderer::setVertexColor(Number r, Number g, Number b, Number a) {
 	glColor4f(r,g,b,a);
 }
 

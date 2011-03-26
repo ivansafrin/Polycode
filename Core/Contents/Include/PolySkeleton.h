@@ -14,21 +14,23 @@
 #include "PolyBone.h"
 #include <string>
 #include <vector>
+#include "PolyBezierCurve.h"
+#include "PolyTween.h"
 
 using std::string;
 using std::vector;
 
 namespace Polycode {
-
+	
 	class _PolyExport BoneTrack {
 		public:
-			BoneTrack(Bone *bone);
+			BoneTrack(Bone *bone, Number length);
 			~BoneTrack();
 			void Play();
 			void Stop();
 			void Update();
 		
-			void setSpeed(float speed);
+			void setSpeed(Number speed);
 			
 			BezierCurve *scaleX;
 			BezierCurve *scaleY;
@@ -45,6 +47,11 @@ namespace Polycode {
 			Vector3 LocYVec;
 			Vector3 LocZVec;						
 
+			Vector3 ScaleXVec;
+			Vector3 ScaleYVec;
+			Vector3 ScaleZVec;						
+		
+		
 			Quaternion boneQuat;
 			QuaternionTween *quatTween;
 			
@@ -52,9 +59,12 @@ namespace Polycode {
 			Vector3 QuatXVec;
 			Vector3 QuatYVec;			
 			Vector3 QuatZVec;		
+		
 			
 		protected:
-			
+		
+			Number length;
+		
 			bool initialized;
 		
 			Bone *targetBone;
@@ -64,7 +74,7 @@ namespace Polycode {
 
 	class _PolyExport SkeletonAnimation {
 		public:
-			SkeletonAnimation(String name, float duration);
+			SkeletonAnimation(String name, Number duration);
 			~SkeletonAnimation();			
 			void addBoneTrack(BoneTrack *boneTrack);
 			String getName();
@@ -72,28 +82,31 @@ namespace Polycode {
 			void Stop();
 			void Update();
 		
-			void setSpeed(float speed);
+			void setSpeed(Number speed);
 			
 		private:
 			
 			String name;
-			float duration;
+			Number duration;
 			vector<BoneTrack*> boneTracks;
 	};
 
 	class _PolyExport Skeleton : public SceneEntity {
 		public:
 			Skeleton(String fileName);
+			Skeleton();
 			void loadSkeleton(String fileName);
 			~Skeleton();
 		
 			void playAnimation(String animName);
+			void playAnimationByIndex(int index);		
+			void addAnimation(String name, String fileName);
 			SkeletonAnimation *getAnimation(String name);
 			void Update();
 			
 			Bone *getBoneByName(String name);
 			void bonesVisible(bool val);
-			void enableBoneLabels(Font *font, float size, float scale);
+			void enableBoneLabels(String labelFont, Number size, Number scale, Color labelColor);
 					
 			int getNumBones();
 			Bone *getBone(int index);
@@ -101,6 +114,9 @@ namespace Polycode {
 			SkeletonAnimation *getCurrentAnimation() { return currentAnimation; }
 		
 		private:
+		
+			SceneEntity *bonesEntity;
+		
 			SkeletonAnimation *currentAnimation;
 			vector<Bone*> bones;
 			vector<SkeletonAnimation*> animations;

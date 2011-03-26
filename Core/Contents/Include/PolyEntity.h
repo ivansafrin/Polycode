@@ -50,45 +50,45 @@ namespace Polycode {
 			void renderChildren();		
 
 			Vector3 *getPosition();
-			void setPosition(float x, float y, float z);
+			void setPosition(Number x, Number y, Number z);
 			
-			void setPositionX(float x);
-			void setPositionY(float y);
-			void setPositionZ(float z);
+			void setPositionX(Number x);
+			void setPositionY(Number y);
+			void setPositionZ(Number z);
 
-			void setScaleX(float x);
-			void setScaleY(float y);
-			void setScaleZ(float z);
+			void setScaleX(Number x);
+			void setScaleY(Number y);
+			void setScaleZ(Number z);
 		
 		
 			void setPosition(Vector3 posVec);
 		
-			void Translate(float x, float y, float z);
+			void Translate(Number x, Number y, Number z);
 			void Translate(Vector3 tVec);
-			void Scale(float x, float y, float z);
-			void setScale(float x, float y, float z);
+			void Scale(Number x, Number y, Number z);
+			void setScale(Number x, Number y, Number z);
 			Vector3 getScale();		
 		
 			Vector3 getCombinedPosition();
-			float getCombinedPitch();
-			float getCombinedYaw();
-			float getCombinedRoll();
+			Number getCombinedPitch();
+			Number getCombinedYaw();
+			Number getCombinedRoll();
 			void setParentEntity(Entity *entity);
 			Entity *getParentEntity();
 			void rebuildRotation();
 			void dirtyMatrix(bool val);
 		
-			void setPitch(float pitch);
-			void setYaw(float yaw);
-			void setRoll(float roll);
-			void Roll(float roll);
-			void Yaw(float roll);
-			void Pitch(float roll);
-			float getPitch();
-			float getYaw();
-			float getRoll();
+			void setPitch(Number pitch);
+			void setYaw(Number yaw);
+			void setRoll(Number roll);
+			void Roll(Number roll);
+			void Yaw(Number roll);
+			void Pitch(Number roll);
+			Number getPitch();
+			Number getYaw();
+			Number getRoll();
 		
-			void setRotationQuat(float w, float x, float y, float z);
+			void setRotationQuat(Number w, Number x, Number y, Number z);
 			Quaternion getRotationQuat();
 		
 			Matrix4 getTransformMatrix();
@@ -101,14 +101,14 @@ namespace Polycode {
 			void setRenderer(Renderer *renderer);
 			
 			Color getCombinedColor();
-			void setColor(float r, float g, float b, float a);
+			void setColor(Number r, Number g, Number b, Number a);
 			void setColorInt(int r, int g, int b, int a);	
 			void setColor(Color color);
 		
 			void recalculateBBox();
-			float getBBoxRadius();
-			float getCompoundBBoxRadius();
-			void setBBoxRadius(float rad);			
+			Number getBBoxRadius();
+			Number getCompoundBBoxRadius();
+			void setBBoxRadius(Number rad);			
 			void setBlendingMode(int newBlendingMode);		
 			Vector3 getChildCenter();
 		
@@ -145,8 +145,13 @@ namespace Polycode {
 			bool enabled;
 			bool visible;
 		
+			bool depthWrite;		
+			bool depthTest;
+		
 			bool colorAffectsChildren;		
 			bool depthOnly;
+		
+			bool ignoreParentMatrix;
 		
 			// deprecated, remove!
 			bool maskByZbuffer;
@@ -158,7 +163,7 @@ namespace Polycode {
 
 			int blendingMode;
 			Vector3 childCenter;
-			float bBoxRadius;		
+			Number bBoxRadius;		
 		
 			Vector3 position;
 			Vector3 scale;		
@@ -169,10 +174,10 @@ namespace Polycode {
 			bool matrixDirty;
 			Matrix4 transformMatrix;
 		
-			float matrixAdj;
-			float pitch;
-			float yaw;			
-			float roll;
+			Number matrixAdj;
+			Number pitch;
+			Number yaw;			
+			Number roll;
 		
 			Entity *parentEntity;
 		
@@ -183,7 +188,6 @@ namespace Polycode {
 		
 			Entity *maskEntity;
 		
-			bool depthWrite;		
 		
 			Renderer *renderer;
 	};

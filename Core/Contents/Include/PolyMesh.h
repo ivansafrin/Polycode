@@ -31,6 +31,7 @@ namespace Polycode {
 			int getVertexCount() { return vertexCount;}
 		
 			int verticesPerFace;
+			int meshType;
 		protected:
 		int vertexCount;
 			
@@ -56,6 +57,13 @@ namespace Polycode {
 		float x;
 		float y;
 		float z;
+		float w;		
+	} Vector4_struct;
+	
+	typedef struct {
+		float x;
+		float y;
+		float z;
 	} Vector3_struct;
 
 	typedef struct {
@@ -63,16 +71,6 @@ namespace Polycode {
 		float y;
 	} Vector2_struct;
 	
-	typedef struct {
-		unsigned int v1;
-		unsigned int v2;
-		unsigned int v3;
-		float nx;
-		float ny;
-		float nz;
-		Vector2_struct uvs[3];
-	} Face_struct;
-
 	class _PolyExport Mesh {
 		public:
 			Mesh(String fileName);
@@ -89,13 +87,15 @@ namespace Polycode {
 			unsigned int getPolygonCount();
 			Polygon *getPolygon(unsigned int index);
 					
-			void createPlane(float w, float h);
-			void createBox(float w, float d, float h);
-			void createSphere(float radius, float numRings, float numSegments);
+			void createPlane(Number w, Number h);
+			void createBox(Number w, Number d, Number h);
+			void createSphere(Number radius, Number numRings, Number numSegments);
 		
 			void addVertex(Vertex* vertex);
 			Vertex *getVertex(unsigned int index);
 			unsigned int getNumVertices();
+				
+			Vector3 recenterMesh();
 		
 			void useVertexNormals(bool val);
 			int getVertexIndex(Vertex *vertex);
@@ -104,7 +104,7 @@ namespace Polycode {
 			VertexBuffer *getVertexBuffer();
 		
 			bool usesFaceUV() { return useFaceUV; }
-			float getRadius();
+			Number getRadius();
 			
 			void calculateNormals();	
 			
@@ -120,7 +120,8 @@ namespace Polycode {
 			static const int TRIFAN_MESH = 2;
 			static const int TRISTRIP_MESH = 3;
 			static const int LINE_MESH = 4;
-
+			static const int POINT_MESH = 5;
+		
 			unsigned int numUVs;			
 					
 			bool arrayDirtyMap[16];

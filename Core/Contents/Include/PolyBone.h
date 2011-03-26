@@ -14,17 +14,16 @@
 #include "PolyString.h"
 #include "PolySceneEntity.h"
 #include "PolyMesh.h"
-#include "PolyFont.h"
 #include "PolyCoreServices.h"
 #include "PolySceneLabel.h"
-
+#include "PolySceneLine.h"
 namespace Polycode {
 
 	class _PolyExport Bone : public SceneEntity {
 		public:
 			Bone(String boneName);
 			~Bone();
-			void enableBoneLabel(Font *font, float size, float scale);
+			void enableBoneLabel(String labelFont, Number size, Number scale, Color labelColor);
 			String getName();
 			void Render();
 
@@ -41,17 +40,24 @@ namespace Polycode {
 			Matrix4 getParentRestMatrix();
 			Matrix4 getFinalMatrix();
 			void setRestMatrix(Matrix4 matrix);
-
+			void setBaseMatrix(Matrix4 matrix);
+			Matrix4 getBaseMatrix() { return baseMatrix; }
+			Matrix4 getFullBaseMatrix();
+		
 			int parentBoneId;			
-		
-		protected:
-		
+
 			Matrix4 boneMatrix;
 			Matrix4 restMatrix;
+			Matrix4 baseMatrix;
+		
+		
+		
+		protected:
+			Mesh *boneMesh;
+		
 			Bone* parentBone;
 			vector<Bone*> childBones;
 			String boneName;
-			Mesh *boneMesh;
 	};
 
 }

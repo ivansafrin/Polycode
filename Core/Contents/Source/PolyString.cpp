@@ -117,7 +117,7 @@ String String::toLowerCase() {
 	return String(str);
 }
 
-String String::floatToString(float value) {
+String String::NumberToString(Number value) {
 	char temp[128];
 	sprintf(temp, "%f", value);
 	return String(temp);

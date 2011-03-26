@@ -11,8 +11,8 @@
 
 using namespace Polycode;
 
-ScreenShape::ScreenShape(int shapeType, float option1, float option2, float option3, float option4) : ScreenMesh(Mesh::QUAD_MESH) {
-	float DEG2RAD = 3.14159/180;
+ScreenShape::ScreenShape(int shapeType, Number option1, Number option2, Number option3, Number option4) : ScreenMesh(Mesh::QUAD_MESH) {
+	Number DEG2RAD = 3.14159/180;
 	strokeWidth = 1.0f;
 	this->shapeType = shapeType;
 	width = option1;
@@ -54,7 +54,7 @@ ScreenShape::ScreenShape(int shapeType, float option1, float option2, float opti
 				poly->addVertex(cosf(0)*(width/2),sinf(0)*(height/2), 0, (cosf(0)*0.5) + 0.5,(sinf(0) * 0.5)+ 0.5);
 			
 			for (int i=0; i < 361; i+= step) {
-				float degInRad = i*DEG2RAD;
+				Number degInRad = i*DEG2RAD;
 				poly->addVertex(cos(degInRad)*(width/2),sin(degInRad)*(height/2), 0, (cos(degInRad) * 0.5)+ 0.5 ,(sin(degInRad) * 0.5)+ 0.5);
 			}
 			mesh->addPolygon(poly);
@@ -73,15 +73,15 @@ ScreenShape::ScreenShape(int shapeType, float option1, float option2, float opti
 	strokeEnabled = false;
 }
 
-void ScreenShape::setShapeSize(float newWidth, float newHeight) {
+void ScreenShape::setShapeSize(Number newWidth, Number newHeight) {
 	width = newWidth;
 	height = newHeight;
 	
 	hitwidth = width;
 	hitheight = height;	
 	
-	float whalf = floor(width/2.0f);
-	float hhalf = floor(height/2.0f);
+	Number whalf = floor(width/2.0f);
+	Number hhalf = floor(height/2.0f);
 	Polygon *polygon;
 	Vertex *vertex;
 	
@@ -106,11 +106,11 @@ void ScreenShape::setShapeSize(float newWidth, float newHeight) {
 	matrixDirty = true;
 }
 
-void ScreenShape::addShapePoint(float x, float y) {
+void ScreenShape::addShapePoint(Number x, Number y) {
 	customShapePoly->addVertex(x,y,0,0,0);
 }
 
-void ScreenShape::setGradient(float r1, float g1, float b1, float a1, float r2, float g2, float b2, float a2) {
+void ScreenShape::setGradient(Number r1, Number g1, Number b1, Number a1, Number r2, Number g2, Number b2, Number a2) {
 
 	for(int i=0; i < mesh->getPolygon(0)->getVertexCount(); i++) {
 		mesh->getPolygon(0)->getVertex(i)->useVertexColor = true;
@@ -139,11 +139,11 @@ void ScreenShape::clearGradient() {
 	}
 }
 
-void ScreenShape::setStrokeWidth(float width) {
+void ScreenShape::setStrokeWidth(Number width) {
 	strokeWidth = width;
 }
 
-void ScreenShape::setStrokeColor(float r, float g, float b, float a) {
+void ScreenShape::setStrokeColor(Number r, Number g, Number b, Number a) {
 	strokeColor.setColor(r,g,b,a);
 }
 

@@ -17,7 +17,7 @@ void depth_cb(freenect_device *dev, void *v_depth, uint32_t timestamp);
 void rgb_cb(freenect_device *dev, void *rgb, uint32_t timestamp);
 
 
-#define MAX_KINECT_POINTS	6000
+#define MAX_KINECT_POINTS	8000
 
 class PolycodeRunner : public Threaded {
 public:
@@ -46,7 +46,7 @@ public:
 		
 	freenect_context *f_ctx;
 	freenect_device *f_dev;
-	
+	int depthMap[FREENECT_FRAME_PIX];	
 	
 protected:
 	
@@ -62,7 +62,7 @@ protected:
 
 class PolycodeKinect : EventHandler {
 	public:
-		PolycodeKinect(bool calculatePoints);
+		PolycodeKinect(bool calculatePoints, int depthStart, int depthEnd, int pixelSkip);
 		~PolycodeKinect();
 	
 		Texture *getRGBTexture();
@@ -77,6 +77,10 @@ class PolycodeKinect : EventHandler {
 		Vector3 points[MAX_KINECT_POINTS];	
 		Color colors[MAX_KINECT_POINTS];
 protected:
+	
+	int depthStart;
+	int depthEnd;
+	int pixelSkip;
 	
 	Timer *updateTimer;
 

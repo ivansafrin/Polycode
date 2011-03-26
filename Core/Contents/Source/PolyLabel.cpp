@@ -104,11 +104,11 @@ int Label::getTextHeight(Font *font, String text, int size) {
 	return height;
 }
 
-float Label::getTextWidth() {
+Number Label::getTextWidth() {
 	return currentTextWidth;
 }
 
-float Label::getTextHeight() {
+Number Label::getTextHeight() {
 	return currentTextHeight;
 }
 

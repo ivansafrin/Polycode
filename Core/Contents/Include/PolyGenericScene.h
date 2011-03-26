@@ -35,7 +35,7 @@ namespace Polycode {
 	
 			static String readString(OSFILE *inFile);
 			void loadScene(String fileName);
-			void generateLightmaps(float lightMapRes, float lightMapQuality, int numRadPasses);
+			void generateLightmaps(Number lightMapRes, Number lightMapQuality, int numRadPasses);
 
 			void addLight(SceneLight *light);
 			SceneLight *getNearestLight(Vector3 pos);

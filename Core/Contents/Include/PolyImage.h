@@ -35,10 +35,10 @@ namespace Polycode {
 		
 			
 			void createEmpty(unsigned int width, unsigned int height);
-			void fill(float r, float g, float b, float a);
+			void fill(Number r, Number g, Number b, Number a);
 			
 			// drawing
-			void setPixel(int x, int y, float r, float g, float b, float a);
+			void setPixel(int x, int y, Number r, Number g, Number b, Number a);
 			void setPixel(int x, int y, Color col);
 			Color getPixel(int x, int y);
 						   
@@ -55,9 +55,9 @@ namespace Polycode {
 			void fastBlur(int blurSize);
 			void fastBlurVert(int blurSize);
 			void fastBlurHor(int blurSize);
-			void darken(float amt, bool color, bool alpha);
-			void lighten(float amt, bool color, bool alpha);
-			void multiply(float amt, bool color, bool alpha);
+			void darken(Number amt, bool color, bool alpha);
+			void lighten(Number amt, bool color, bool alpha);
+			void multiply(Number amt, bool color, bool alpha);
 			
 			int getBrushX();
 			int getBrushY();

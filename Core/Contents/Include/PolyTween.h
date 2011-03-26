@@ -23,11 +23,11 @@ namespace Polycode {
 	
 	class _PolyExport Tween : public EventDispatcher {
 	public:
-		Tween(float *target, int easeType, float startVal, float endVal, float time, bool repeat=false);
+		Tween(Number *target, int easeType, Number startVal, Number endVal, Number time, bool repeat=false);
 		~Tween();
 		
 		void handleEvent(Event *event);
-		float interpolateTween();
+		Number interpolateTween();
 		virtual void updateCustomTween() {}
 		void doOnComplete();
 		
@@ -64,7 +64,7 @@ namespace Polycode {
 		bool isComplete();
 		bool repeat;
 		
-		void setSpeed(float speed);
+		void setSpeed(Number speed);
 		
 
 	protected:
@@ -72,25 +72,25 @@ namespace Polycode {
 		
 		int easeType;
 		bool complete;
-		float endVal;
-		float cVal;
-		float startVal;
-		float actEndTime;
-		float endTime;
-		float *targetVal;
-		float localTargetVal;
-		float tweenTime;
+		Number endVal;
+		Number cVal;
+		Number startVal;
+		Number actEndTime;
+		Number endTime;
+		Number *targetVal;
+		Number localTargetVal;
+		Number tweenTime;
 		Timer *tweenTimer;
 	};
 	
 	class _PolyExport BezierPathTween : public Tween {
 		public:
-			BezierPathTween(Vector3 *target, BezierCurve *curve, int easeType, float time, bool repeat=false);
+			BezierPathTween(Vector3 *target, BezierCurve *curve, int easeType, Number time, bool repeat=false);
 			~BezierPathTween();
 			void updateCustomTween();
 
 		protected:
-			float pathValue;
+			Number pathValue;
 			Tween *pathTween;
 			BezierCurve *curve;
 			Vector3 *target;
@@ -99,11 +99,11 @@ namespace Polycode {
 	class _PolyExport QuaternionTween : public Tween {
 		public:
 			QuaternionTween(Quaternion *target, BezierCurve *wCurve, BezierCurve *xCurve, BezierCurve *yCurve,
-							BezierCurve *zCurve, int easeType, float time, bool repeat=false);
+							BezierCurve *zCurve, int easeType, Number time, bool repeat=false);
 			~QuaternionTween();
 			void updateCustomTween();
 		private:
-			float pathValue;
+			Number pathValue;
 			Tween *pathTween;
 			QuaternionCurve	*quatCurve;
 			Quaternion *target;			

@@ -49,7 +49,9 @@ void ScreenMesh::loadTexture(Image *image) {
 void ScreenMesh::Render() {	
 	Renderer *renderer = CoreServices::getInstance()->getRenderer();
 	renderer->setTexture(texture);
-	renderer->pushDataArrayForMesh(mesh, RenderDataArray::COLOR_DATA_ARRAY);
+	if(mesh->useVertexColors) {
+		renderer->pushDataArrayForMesh(mesh, RenderDataArray::COLOR_DATA_ARRAY);
+	}
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::VERTEX_DATA_ARRAY);
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::TEXCOORD_DATA_ARRAY);	
 	renderer->drawArrays(mesh->getMeshType());

@@ -65,3 +65,6 @@
 #define PACKET_TYPE_DISONNECT 3
 #define PACKET_TYPE_CLIENT_DATA 4
 
+
+typedef double Number;
+

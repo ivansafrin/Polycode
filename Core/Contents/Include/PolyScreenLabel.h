@@ -33,7 +33,7 @@ namespace Polycode {
 			ScreenLabel(String fontName, String text, int size, int amode);
 			~ScreenLabel();		
 		
-			void addDropShadow(Color color, float size, float offsetX, float offsetY);
+			void addDropShadow(Color color, Number size, Number offsetX, Number offsetY);
 			void setText(String newText);
 			String getText();
 		

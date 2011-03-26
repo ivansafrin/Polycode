@@ -95,6 +95,9 @@ void GenericScene::Render() {
 	defaultCamera->doCameraTransform();
 	defaultCamera->buildFrustrumPlanes();
 	
+	if(defaultCamera->getOrthoMode()) {
+		CoreServices::getInstance()->getRenderer()->_setOrthoMode();
+	}
 	
 	for(int i=0; i<entities.size();i++) {
 		if(entities[i]->getBBoxRadius() > 0) {
@@ -104,6 +107,11 @@ void GenericScene::Render() {
 			entities[i]->transformAndRender();		
 		}
 	}
+	
+	if(defaultCamera->getOrthoMode()) {
+		CoreServices::getInstance()->getRenderer()->setPerspectiveMode();
+	}
+	
 }
 
 
@@ -164,23 +172,23 @@ void GenericScene::loadScene(String fileName) {
 		return;
 	}
 	
-	float r,g,b,a;
+	Number r,g,b,a;
 	
-	OSBasics::read(&r, sizeof(float), 1, inFile);
-	OSBasics::read(&g, sizeof(float), 1, inFile);
-	OSBasics::read(&b, sizeof(float), 1, inFile);
+	OSBasics::read(&r, sizeof(Number), 1, inFile);
+	OSBasics::read(&g, sizeof(Number), 1, inFile);
+	OSBasics::read(&b, sizeof(Number), 1, inFile);
 	clearColor.setColor(r,g,b,1.0f);
 
-	OSBasics::read(&r, sizeof(float), 1, inFile);
-	OSBasics::read(&g, sizeof(float), 1, inFile);
-	OSBasics::read(&b, sizeof(float), 1, inFile);
+	OSBasics::read(&r, sizeof(Number), 1, inFile);
+	OSBasics::read(&g, sizeof(Number), 1, inFile);
+	OSBasics::read(&b, sizeof(Number), 1, inFile);
 	ambientColor.setColor(r,g,b,1.0f);
 	
 	
 	unsigned int numObjects, objectType,namelen;
 	char buffer[1024];
 	char flag;
-	float t[3],rq[4];
+	Number t[3],rq[4];
 	SceneEntity *newEntity;
 	
 	unsigned int lightmapIndex = 0;
@@ -194,8 +202,8 @@ void GenericScene::loadScene(String fileName) {
 	Logger::log("Loading scene (%d objects)\n", numObjects);
 	for(int i=0; i < numObjects; i++) {
 		
-		OSBasics::read(t, sizeof(float), 3, inFile);
-		OSBasics::read(rq, sizeof(float), 4, inFile);
+		OSBasics::read(t, sizeof(Number), 3, inFile);
+		OSBasics::read(rq, sizeof(Number), 4, inFile);
 		newEntity = NULL;
 		
 		OSBasics::read(&objectType, sizeof(unsigned int), 1, inFile);
@@ -220,10 +228,10 @@ void GenericScene::loadScene(String fileName) {
 				
 				Logger::log("adding mesh (texture: %s)\n", buffer);
 				
-				OSBasics::read(&r, sizeof(float), 1, inFile);
-				OSBasics::read(&g, sizeof(float), 1, inFile);
-				OSBasics::read(&b, sizeof(float), 1, inFile);
-				OSBasics::read(&a, sizeof(float), 1, inFile);
+				OSBasics::read(&r, sizeof(Number), 1, inFile);
+				OSBasics::read(&g, sizeof(Number), 1, inFile);
+				OSBasics::read(&b, sizeof(Number), 1, inFile);
+				OSBasics::read(&a, sizeof(Number), 1, inFile);
 				
 				newMaterial = (Material*) CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_MATERIAL, buffer);
 				newMesh = new Mesh(Mesh::TRI_MESH);
@@ -249,14 +257,14 @@ void GenericScene::loadScene(String fileName) {
 				} break;
 				case ENTITY_COLLMESH: {
 					unsigned int collType,numVertices,numFaces;
-					float co[3];
+					Number co[3];
 					OSBasics::read(&collType, sizeof(unsigned int), 1, inFile);
 					OSBasics::read(&numVertices, sizeof(unsigned int), 1, inFile);
 
 					Mesh *mesh = new Mesh(Mesh::TRI_MESH);
 					
 					for(int i=0; i < numVertices; i++) {
-						OSBasics::read(co, sizeof(float), 3, inFile);
+						OSBasics::read(co, sizeof(Number), 3, inFile);
 						Vertex *newVert = new Vertex(co[0], co[1], co[2]);
 						mesh->addVertex(newVert);
 					}
@@ -289,12 +297,12 @@ void GenericScene::loadScene(String fileName) {
 				break;
 				case ENTITY_LIGHT:
 				
-				float col[3],e,d;
+				Number col[3],e,d;
 				unsigned int lType;
 				OSBasics::read(&lType, sizeof(unsigned int), 1, inFile);				
-				OSBasics::read(&e, sizeof(float), 1, inFile);
-				OSBasics::read(&d, sizeof(float), 1, inFile);
-				OSBasics::read(col, sizeof(float), 3, inFile);
+				OSBasics::read(&e, sizeof(Number), 1, inFile);
+				OSBasics::read(&d, sizeof(Number), 1, inFile);
+				OSBasics::read(col, sizeof(Number), 3, inFile);
 
 				SceneLight *newLight = new SceneLight(lType, e, d, this);
 				newLight->lightColor.setColor(col[0],col[1],col[2],1.0f);
@@ -381,7 +389,7 @@ SceneEntity *GenericScene::getCustomEntityByType(String type) {
 }
 
 void GenericScene::writeEntityMatrix(SceneEntity *entity, OSFILE *outFile) {
-	float t[3],rq[4];
+	Number t[3],rq[4];
 	t[0] = entity->getPosition()->x;
 	t[1] = entity->getPosition()->y;
 	t[2] = entity->getPosition()->z;
@@ -391,8 +399,8 @@ void GenericScene::writeEntityMatrix(SceneEntity *entity, OSFILE *outFile) {
 	rq[2] = entity->getRotationQuat().y;
 	rq[3] = entity->getRotationQuat().z;						
 	
-	OSBasics::write(t, sizeof(float), 3, outFile);
-	OSBasics::write(rq, sizeof(float), 4, outFile);
+	OSBasics::write(t, sizeof(Number), 3, outFile);
+	OSBasics::write(rq, sizeof(Number), 4, outFile);
 	
 }
 
@@ -446,13 +454,13 @@ void GenericScene::saveScene(String fileName) {
 		
 		unsigned int numVertices = mesh->getMesh()->getNumVertices();
 		OSBasics::write(&numVertices, sizeof(unsigned int), 1, outFile);
-		float pos[3];
+		Number pos[3];
 		for(int j=0; j < numVertices; j++) {
 			Vertex *vert = mesh->getMesh()->getVertex(j);
 			pos[0] = vert->x;
 			pos[1] = vert->y;
 			pos[2] = vert->z;			
-			OSBasics::write(pos, sizeof(float),3, outFile);
+			OSBasics::write(pos, sizeof(Number),3, outFile);
 		}
 
 		unsigned int numFaces = mesh->getMesh()->getPolygonCount();
@@ -467,7 +475,7 @@ void GenericScene::saveScene(String fileName) {
 		}
 	}
 	
-	float col[3],e,d;
+	Number col[3],e,d;
 	for(int i=0; i < lights.size(); i++) {
 	
 		writeEntityMatrix(lights[i], outFile);
@@ -480,9 +488,9 @@ void GenericScene::saveScene(String fileName) {
 		e = lights[i]->getIntensity();
 		d = lights[i]->getDistance();
 		
-		OSBasics::write(&e, sizeof(float), 1, outFile);
-		OSBasics::write(&d, sizeof(float), 1, outFile);
-		OSBasics::write(col, sizeof(float), 3, outFile);
+		OSBasics::write(&e, sizeof(Number), 1, outFile);
+		OSBasics::write(&d, sizeof(Number), 1, outFile);
+		OSBasics::write(col, sizeof(Number), 3, outFile);
 	}
 
 	for(int i=0; i < customEntities.size(); i++) {
@@ -549,7 +557,7 @@ SceneLight *GenericScene::getLight(int index) {
 	return lights[index];
 }
 
-void GenericScene::generateLightmaps(float lightMapRes, float lightMapQuality, int numRadPasses) {
+void GenericScene::generateLightmaps(Number lightMapRes, Number lightMapQuality, int numRadPasses) {
 /*	
 	packer = new LightmapPacker(this);
 	packer->generateTextures(lightMapRes, lightMapQuality);

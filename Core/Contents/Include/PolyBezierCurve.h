@@ -25,7 +25,7 @@ namespace Polycode {
 
 	class _PolyExport BezierPoint {
 		public:
-		BezierPoint(float p1x, float p1y, float p1z, float p2x, float p2y, float p2z, float p3x, float p3y, float p3z);
+		BezierPoint(Number p1x, Number p1y, Number p1z, Number p2x, Number p2y, Number p2z, Number p3x, Number p3y, Number p3z);
 		Vector3 p1;
 		Vector3 p2;
 		Vector3 p3;
@@ -39,30 +39,32 @@ namespace Polycode {
 		BezierPoint *getControlPoint(unsigned int index);
 		unsigned int getNumControlPoints();
 			
-		void addControlPoint(float p1x, float p1y, float p1z, float p2x, float p2y, float p2z, float p3x, float p3y, float p3z);
+		void addControlPoint(Number p1x, Number p1y, Number p1z, Number p2x, Number p2y, Number p2z, Number p3x, Number p3y, Number p3z);
 
-		void addControlPoint3dWithHandles(float p1x, float p1y, float p1z, float p2x, float p2y, float p2z, float p3x, float p3y, float p3z);
-		void addControlPoint3d(float x, float y, float z);		
-		void addControlPoint2dWithHandles(float p1x, float p1y, float p2x, float p2y, float p3x, float p3y);
-		void addControlPoint2d(float x, float y);
+		void addControlPoint3dWithHandles(Number p1x, Number p1y, Number p1z, Number p2x, Number p2y, Number p2z, Number p3x, Number p3y, Number p3z);
+		void addControlPoint3d(Number x, Number y, Number z);		
+		void addControlPoint2dWithHandles(Number p1x, Number p1y, Number p2x, Number p2y, Number p3x, Number p3y);
+		void addControlPoint2d(Number x, Number y);
 		
-		float getHeightAt(float a);
+		Number getHeightAt(Number a);
 		
-		Vector3 getPointAt(float a);
-		inline Vector3 getPointBetween(float a, BezierPoint *bp1, BezierPoint *bp2);
+		Vector3 getPointAt(Number a);
+		inline Vector3 getPointBetween(Number a, BezierPoint *bp1, BezierPoint *bp2);
 			
 		void rebuildBuffers();
+		
+		Number heightBuffer[BUFFER_CACHE_PRECISION];
+
+		vector<BezierPoint*> controlPoints;
+		vector<Number> distances;
+		
 		
 		protected:
 		
 			bool buffersDirty;
 		
-			float heightBuffer[BUFFER_CACHE_PRECISION];
-		
 			void recalculateDistances();
 	
-			vector<BezierPoint*> controlPoints;
-			vector<float> distances;
 			
 	};
 

@@ -65,7 +65,7 @@ void Scene::enableFog(bool enable) {
 	
 }
 
-void Scene::setFogProperties(int fogMode, Color color, float density, float startDepth, float endDepth) {
+void Scene::setFogProperties(int fogMode, Color color, Number density, Number startDepth, Number endDepth) {
 	this->fogMode = fogMode;
 	fogColor = color;
 	fogDensity = density;
@@ -76,7 +76,7 @@ void Scene::setFogProperties(int fogMode, Color color, float density, float star
 	
 }
 
-SceneEntity *Scene::getEntityAtCursor(float x, float y) {
+SceneEntity *Scene::getEntityAtCursor(Number x, Number y) {
 	for(int i =0; i< entities.size(); i++) {
 		if(entities[i]->testMouseCollision(x,y)) {
 			return entities[i];

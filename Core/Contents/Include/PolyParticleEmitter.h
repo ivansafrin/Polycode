@@ -24,16 +24,17 @@ using std::vector;
 namespace Polycode {
 	class _PolyExport ParticleEmitter {
 		public:
-			ParticleEmitter(String imageFile, Mesh *particleMesh, int particleType, int emitterType, float lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation);
+			ParticleEmitter(String imageFile, Mesh *particleMesh, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation);
 			virtual ~ParticleEmitter();
 		
 			void createParticles();
 			
-			void setRotationSpeed(float speed);
+			void setRotationSpeed(Number speed);
 			void setStartingColor(Color c);
 			void setEndingColor(Color c);
 			void setParticleBlendingMode(int mode);
 			void setDepthWrite(bool val);
+			void setDepthTest(bool val);		
 			void setAlphaTest(bool val);
 		
 			void enablePerlin(bool val);
@@ -41,9 +42,9 @@ namespace Polycode {
 			void enableEmitter(bool val);
 			bool emitterEnabled();
 			
-			void setEmitterRadius(float rad);
-			void setStartingScaleModifier(float mod);
-			void setEndingScaleModifier(float mod);
+			void setEmitterRadius(Number rad);
+			void setStartingScaleModifier(Number mod);
+			void setEndingScaleModifier(Number mod);
 			void setEmitRotationVector(Vector3 rotVector);
 			void setEmitRotationDeviance(Vector3 rotVector);
 			void setAllAtOnce(bool val);
@@ -51,14 +52,14 @@ namespace Polycode {
 			void Trigger();
 			void resetParticle(Particle *particle);
 			
-			void setPerlinModSize(float size);
+			void setPerlinModSize(Number size);
 			void setParticleCount(int count);
 		
 			virtual void addParticleBody(Entity *particleBody) = 0;
 			virtual Matrix4 getBaseMatrix() = 0;
 		
-			float particleSpeedMod;
-			float brightnessDeviation;
+			Number particleSpeedMod;
+			Number brightnessDeviation;
 			
 			void updateEmitter();
 
@@ -70,7 +71,7 @@ namespace Polycode {
 			Vector3 dirVector;
 			Vector3 gravVector;			
 
-			float lifespan;
+			Number lifespan;
 		
 			bool rotationFollowsPath;
 		
@@ -98,28 +99,42 @@ namespace Polycode {
 		
 			Vector3 emitRotationVector;
 			Vector3 emitRotationDeviance;
-			float emitterRadius;
-			float perlinModSize;
+			Number emitterRadius;
+			Number perlinModSize;
 			Perlin *motionPerlin;
 			bool perlinEnabled;
-			float startingScaleMod;
-			float endingScaleMod;
+			Number startingScaleMod;
+			Number endingScaleMod;
 			
 			Color startingColor;
 			Color endingColor;
 			
-			float rotationSpeed;
-			float numParticles;
+			Number rotationSpeed;
+			Number numParticles;
 			vector<Particle*> particles;
 			
-			float emitSpeed;
+			Number emitSpeed;
 			Timer *timer;
 	};
 
+	class _PolyExport SceneParticleEmitter : public SceneEntity, public ParticleEmitter {
+	public:
+		SceneParticleEmitter(String imageFile, Mesh *particleMesh, SceneMesh *emitter, Scene *particleParentScene, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation);
+		~SceneParticleEmitter();		
+		
+		void addParticleBody(Entity *particleBody);
+		Matrix4 getBaseMatrix();
+		void Update();
+		
+	protected:
+		SceneMesh *emitterMesh;		
+		Scene *particleParentScene;
+	};	
+	
 	
 	class _PolyExport ScreenParticleEmitter : public ScreenEntity, public ParticleEmitter {
 	public:
-		ScreenParticleEmitter(String imageFile, Mesh *particleMesh, ScreenMesh *emitter, Screen *particleParentScreen, int particleType, int emitterType, float lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation);
+		ScreenParticleEmitter(String imageFile, Mesh *particleMesh, ScreenMesh *emitter, Screen *particleParentScreen, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation);
 		~ScreenParticleEmitter();		
 		
 		void addParticleBody(Entity *particleBody);

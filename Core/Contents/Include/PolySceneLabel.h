@@ -28,10 +28,10 @@ namespace Polycode {
 	class _PolyExport SceneLabel : public SceneEntity {
 		public:
 			
-			SceneLabel(String fontName, String text, int size, float scale, int amode);
+			SceneLabel(String fontName, String text, int size, Number scale, int amode);
 			~SceneLabel();			
 		
-			bool testMouseCollision(float x, float y);
+			bool testMouseCollision(Number x, Number y);
 		
 			void setText(String newText);
 			Label *getLabel();
@@ -42,7 +42,7 @@ namespace Polycode {
 			Mesh *mesh;
 			Texture *texture;		
 		
-			float scale;
+			Number scale;
 			Label *label;
 	};
 }

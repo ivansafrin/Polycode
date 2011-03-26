@@ -21,11 +21,15 @@ ScreenEntity::ScreenEntity() : Entity(), EventDispatcher() {
 	positionMode = POSITION_TOPLEFT;
 	mouseOver = false;
 	isDragged = false;
+
 	dragOffsetX = 0;
 	dragOffsetY = 0;
 	parentEntity = NULL;
 	zindex = 0;
+	
 	depthWrite = false;
+	depthTest = false;
+	
 	focusable = false;
 	hasFocus = false;
 	focusChildren = false;	
@@ -63,7 +67,7 @@ void ScreenEntity::focusNextChild() {
 	}
 }
 
-float ScreenEntity::getRotation() {
+Number ScreenEntity::getRotation() {
 	return this->getRoll();
 }
 
@@ -81,7 +85,7 @@ bool ScreenEntity::isFocusable() {
 	return focusable;
 }
 
-void ScreenEntity::startDrag(float xOffset, float yOffset) {
+void ScreenEntity::startDrag(Number xOffset, Number yOffset) {
 	isDragged = true;
 	dragOffsetX = xOffset;
 	dragOffsetY = yOffset;
@@ -99,27 +103,27 @@ void ScreenEntity::setBlendingMode(int newBlendingMode) {
 	blendingMode = newBlendingMode;
 }
 
-void ScreenEntity::setPosition(float x, float y) {
+void ScreenEntity::setPosition(Number x, Number y) {
 	position.x  = x;
 	position.y  = y;
 	matrixDirty = true;
 }
 
-void ScreenEntity::setScale(float x, float y) {
+void ScreenEntity::setScale(Number x, Number y) {
 	scale.x = x;
 	scale.y = y;
 	matrixDirty = true;	
 }
 
-float ScreenEntity::getWidth() {
+Number ScreenEntity::getWidth() {
 	return width;
 }
 
-float ScreenEntity::getHeight() {
+Number ScreenEntity::getHeight() {
 	return height;
 }
 
-bool ScreenEntity::hitTest(float x, float y) {
+bool ScreenEntity::hitTest(Number x, Number y) {
 	bool retVal = false;
 //			Logger::log("hittest %f,%f in %f %f %f %f\n",x, y, position.x, position.y, hitwidth, hitheight);	
 	switch(positionMode) {
@@ -171,7 +175,7 @@ void ScreenEntity::clearDragLimits() {
 	dragLimits = NULL;
 }
 
-void ScreenEntity::_onMouseMove(float x, float y, int timestamp) {
+void ScreenEntity::_onMouseMove(Number x, Number y, int timestamp) {
 
 	if(isDragged) {
 		setPosition(x-dragOffsetX,y-dragOffsetY);
@@ -213,25 +217,32 @@ void ScreenEntity::_onMouseMove(float x, float y, int timestamp) {
 	}
 }
 
-bool ScreenEntity::_onMouseUp(float x, float y, int timestamp) {
+bool ScreenEntity::_onMouseUp(Number x, Number y, int mouseButton, int timestamp) {
 	bool retVal = false;
 	if(hitTest(x,y) && enabled) {
 		onMouseUp(x,y);
-		dispatchEvent(new InputEvent(Vector2(x,y), timestamp), InputEvent::EVENT_MOUSEUP);
+		
+		InputEvent *inputEvent = new InputEvent(Vector2(x,y), timestamp);		
+		inputEvent->mouseButton = mouseButton;		
+		dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEUP);
 		retVal = true;		
 	} else {
-		dispatchEvent(new InputEvent(Vector2(x,y), timestamp), InputEvent::EVENT_MOUSEUP_OUTSIDE);
+		
+		InputEvent *inputEvent = new InputEvent(Vector2(x,y), timestamp);		
+		inputEvent->mouseButton = mouseButton;
+		
+		dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEUP_OUTSIDE);
 	}
 	
 	if(enabled) {
 		for(int i=0;i<children.size();i++) {
-			((ScreenEntity*)children[i])->_onMouseUp(x-position.x,y-position.y, timestamp);
+			((ScreenEntity*)children[i])->_onMouseUp(x-position.x,y-position.y, mouseButton, timestamp);
 		}
 	}
 	return retVal;
 }
 
-void ScreenEntity::_onMouseWheelUp(float x, float y, int timestamp) {
+void ScreenEntity::_onMouseWheelUp(Number x, Number y, int timestamp) {
 	bool doTest = true;
 	
 	if(hasMask) {
@@ -257,7 +268,7 @@ void ScreenEntity::_onMouseWheelUp(float x, float y, int timestamp) {
 	}	
 }
 
-void ScreenEntity::_onMouseWheelDown(float x, float y, int timestamp) {
+void ScreenEntity::_onMouseWheelDown(Number x, Number y, int timestamp) {
 	bool doTest = true;
 	
 	if(hasMask) {
@@ -284,7 +295,7 @@ void ScreenEntity::_onMouseWheelDown(float x, float y, int timestamp) {
 }
 
 
-bool ScreenEntity::_onMouseDown(float x, float y, int timestamp) {
+bool ScreenEntity::_onMouseDown(Number x, Number y, int mouseButton, int timestamp) {
 	bool retVal = false;
 	
 	bool doTest = true;
@@ -298,16 +309,23 @@ bool ScreenEntity::_onMouseDown(float x, float y, int timestamp) {
 	if(doTest) {
 	if(hitTest(x,y) && enabled) {
 		onMouseDown(x,y);
-		dispatchEvent(new InputEvent(Vector2(x,y), timestamp), InputEvent::EVENT_MOUSEDOWN);
-		if(timestamp - lastClickTicks < 400)
-			dispatchEvent(new InputEvent(Vector2(x,y), timestamp), InputEvent::EVENT_DOUBLECLICK);
+		
+		InputEvent *inputEvent = new InputEvent(Vector2(x,y), timestamp);		
+		inputEvent->mouseButton = mouseButton;
+		dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEDOWN);
+		
+		if(timestamp - lastClickTicks < 400) {
+			InputEvent *inputEvent = new InputEvent(Vector2(x,y), timestamp);
+			inputEvent->mouseButton = mouseButton;			
+			dispatchEvent(inputEvent, InputEvent::EVENT_DOUBLECLICK);
+		}
 		lastClickTicks = timestamp;		
 		retVal = true;
 	}
 	if(enabled) {
 		for(int i=children.size()-1;i>=0;i--) {
 			
-			((ScreenEntity*)children[i])->_onMouseDown(x-position.x,y-position.y, timestamp);
+			((ScreenEntity*)children[i])->_onMouseDown(x-position.x,y-position.y, mouseButton, timestamp);
 			if(((ScreenEntity*)children[i])->blockMouseInput && ((ScreenEntity*)children[i])->enabled) {
 				if(((ScreenEntity*)children[i])->hitTest(x-position.x,y-position.y))
 				   break;
@@ -319,7 +337,7 @@ bool ScreenEntity::_onMouseDown(float x, float y, int timestamp) {
 	return retVal;
 }
 
-void ScreenEntity::setRotation(float rotation) {
+void ScreenEntity::setRotation(Number rotation) {
 	setRoll(rotation);
 }
 

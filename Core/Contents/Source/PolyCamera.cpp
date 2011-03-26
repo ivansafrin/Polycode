@@ -24,26 +24,26 @@ Camera::~Camera() {
 
 }
 
-void Camera::setExposureLevel(float level) {
+void Camera::setExposureLevel(Number level) {
 	exposureLevel = level;
 }
 
-float Camera::getExposureLevel() {
+Number Camera::getExposureLevel() {
 	return exposureLevel;
 }
 
 
-void Camera::setFOV(float fov) {
+void Camera::setFOV(Number fov) {
 	this->fov = fov;
 	fovSet = true;
 }
 
-float Camera::getFOV() {
+Number Camera::getFOV() {
 	return fov;
 }
 
 
-bool Camera::isSphereInFrustrum(Vector3 pos, float fRadius) {
+bool Camera::isSphereInFrustrum(Vector3 pos, Number fRadius) {
     for( int i = 0; i < 6; ++i )
     {
         if( frustumPlanes[i][0] * pos.x +
@@ -69,7 +69,7 @@ void Camera::buildFrustrumPlanes() {
 	Matrix4 p; 
 	Matrix4 mv;
 	Matrix4 mvp;
-	float t;
+	Number t;
 
 	p = CoreServices::getInstance()->getRenderer()->getProjectionMatrix();
     mv = CoreServices::getInstance()->getRenderer()->getModelviewMatrix();
@@ -109,7 +109,7 @@ void Camera::buildFrustrumPlanes() {
     frustumPlanes[0][2] = mvp.ml[11] - mvp.ml[ 8];
     frustumPlanes[0][3] = mvp.ml[15] - mvp.ml[12];
 
-    t = (float) sqrt( frustumPlanes[0][0] * frustumPlanes[0][0] + 
+    t = (Number) sqrt( frustumPlanes[0][0] * frustumPlanes[0][0] + 
                       frustumPlanes[0][1] * frustumPlanes[0][1] + 
                       frustumPlanes[0][2] * frustumPlanes[0][2] );
 
@@ -127,7 +127,7 @@ void Camera::buildFrustrumPlanes() {
     frustumPlanes[1][2] = mvp.ml[11] + mvp.ml[ 8];
     frustumPlanes[1][3] = mvp.ml[15] + mvp.ml[12];
 
-    t = (float) sqrt( frustumPlanes[1][0] * frustumPlanes[1][0] + 
+    t = (Number) sqrt( frustumPlanes[1][0] * frustumPlanes[1][0] + 
                       frustumPlanes[1][1] * frustumPlanes[1][1] + 
                       frustumPlanes[1][2] * frustumPlanes[1][2] );
 
@@ -145,7 +145,7 @@ void Camera::buildFrustrumPlanes() {
     frustumPlanes[2][2] = mvp.ml[11] + mvp.ml[ 9];
     frustumPlanes[2][3] = mvp.ml[15] + mvp.ml[13];
 
-    t = (float) sqrt( frustumPlanes[2][0] * frustumPlanes[2][0] + 
+    t = (Number) sqrt( frustumPlanes[2][0] * frustumPlanes[2][0] + 
                       frustumPlanes[2][1] * frustumPlanes[2][1] + 
                       frustumPlanes[2][2] * frustumPlanes[2][2] );
 
@@ -163,7 +163,7 @@ void Camera::buildFrustrumPlanes() {
     frustumPlanes[3][2] = mvp.ml[11] - mvp.ml[ 9];
     frustumPlanes[3][3] = mvp.ml[15] - mvp.ml[13];
 
-    t = (float) sqrt( frustumPlanes[3][0] * frustumPlanes[3][0] + 
+    t = (Number) sqrt( frustumPlanes[3][0] * frustumPlanes[3][0] + 
                       frustumPlanes[3][1] * frustumPlanes[3][1] + 
                       frustumPlanes[3][2] * frustumPlanes[3][2] );
 
@@ -181,7 +181,7 @@ void Camera::buildFrustrumPlanes() {
     frustumPlanes[4][2] = mvp.ml[11] - mvp.ml[10];
     frustumPlanes[4][3] = mvp.ml[15] - mvp.ml[14];
 
-    t = (float) sqrt( frustumPlanes[4][0] * frustumPlanes[4][0] +  
+    t = (Number) sqrt( frustumPlanes[4][0] * frustumPlanes[4][0] +  
                       frustumPlanes[4][1] * frustumPlanes[4][1] + 
                       frustumPlanes[4][2] * frustumPlanes[4][2] );
 
@@ -199,7 +199,7 @@ void Camera::buildFrustrumPlanes() {
     frustumPlanes[5][2] = mvp.ml[11] + mvp.ml[10];
     frustumPlanes[5][3] = mvp.ml[15] + mvp.ml[14];
 
-    t = (float) sqrt( frustumPlanes[5][0] * frustumPlanes[5][0] + 
+    t = (Number) sqrt( frustumPlanes[5][0] * frustumPlanes[5][0] + 
                       frustumPlanes[5][1] * frustumPlanes[5][1] + 
                       frustumPlanes[5][2] * frustumPlanes[5][2] );
 

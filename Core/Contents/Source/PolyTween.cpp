@@ -12,7 +12,7 @@
 
 using namespace Polycode;
 
-Tween::	Tween(float *target, int easeType, float startVal, float endVal, float time, bool repeat) : EventDispatcher() {
+Tween::	Tween(Number *target, int easeType, Number startVal, Number endVal, Number time, bool repeat) : EventDispatcher() {
 	targetVal = target;
 	this->repeat = repeat;
 	this->easeType = easeType;
@@ -35,7 +35,7 @@ void Tween::Pause(bool pauseVal) {
 	tweenTimer->Pause(pauseVal);
 }
 
-void Tween::setSpeed(float speed) {
+void Tween::setSpeed(Number speed) {
 	if(speed <= 0 )		
 		endTime = 0;
 	else
@@ -59,6 +59,7 @@ void Tween::handleEvent(Event *event) {
 	if(tweenTime >= endTime) {
 		if(repeat){
 			Reset();
+			updateCustomTween();			
 		} else {
 			*targetVal = endVal;			
 			complete = true;
@@ -79,8 +80,8 @@ void Tween::Reset() {
 	complete = false;
 }
 
-float Tween::interpolateTween() {
-	float t = tweenTime;
+Number Tween::interpolateTween() {
+	Number t = tweenTime;
 	
 	switch(easeType) {
 		case EASE_IN_QUAD:
@@ -199,7 +200,7 @@ float Tween::interpolateTween() {
 	}
 }
 
-BezierPathTween::BezierPathTween(Vector3 *target, BezierCurve *curve, int easeType, float time, bool repeat) : Tween(&pathValue, easeType, 0.0f, 1.0f, time, repeat) {
+BezierPathTween::BezierPathTween(Vector3 *target, BezierCurve *curve, int easeType, Number time, bool repeat) : Tween(&pathValue, easeType, 0.0f, 1.0f, time, repeat) {
 	this->curve = curve;
 	this->target = target;
 	pathValue = 0;
@@ -213,7 +214,7 @@ BezierPathTween::~BezierPathTween() {
 
 }
 
-QuaternionTween::QuaternionTween(Quaternion *target, BezierCurve *wCurve, BezierCurve *xCurve, BezierCurve *yCurve, BezierCurve *zCurve, int easeType, float time, bool repeat) : Tween(&pathValue, easeType, 0.0f, 1.0f, time, repeat) {
+QuaternionTween::QuaternionTween(Quaternion *target, BezierCurve *wCurve, BezierCurve *xCurve, BezierCurve *yCurve, BezierCurve *zCurve, int easeType, Number time, bool repeat) : Tween(&pathValue, easeType, 0.0f, 1.0f, time, repeat) {
 	this->quatCurve = new QuaternionCurve(wCurve, xCurve, yCurve, zCurve);		
 	this->target = target;
 	pathValue = 0;

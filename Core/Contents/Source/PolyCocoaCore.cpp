@@ -23,6 +23,39 @@ CocoaCore::CocoaCore(SubstanceView *view, int xRes, int yRes, bool fullScreen,in
 //	NSLog(@"BUNDLE: %@", [[NSBundle mainBundle] bundlePath]);
 	chdir([[[NSBundle mainBundle] bundlePath] UTF8String]);
 	
+	NSOpenGLPixelFormatAttribute attrs[32];
+	
+	int atindx = 0;
+	attrs[atindx++] = NSOpenGLPFADoubleBuffer;
+	
+	attrs[atindx++] = NSOpenGLPFADepthSize;
+	attrs[atindx++] = 32;
+	
+	if(aaLevel > 0) {
+		attrs[atindx++] = NSOpenGLPFASampleBuffers;	
+		attrs[atindx++] = 1;	
+	
+		attrs[atindx++] = NSOpenGLPFASamples;	
+		attrs[atindx++] = aaLevel;	
+	
+		attrs[atindx++] = NSOpenGLPFAMultisample;	
+	}
+	
+	attrs[atindx++] = NSOpenGLPFANoRecovery;		
+
+	if(fullScreen) {
+		
+//		attrs[atindx++] = NSOpenGLPFAFullScreen;		
+//		attrs[atindx++] = NSOpenGLPFAScreenMask;	
+//		attrs[atindx++] = CGDisplayIDToOpenGLDisplayMask(kCGDirectMainDisplay);
+		
+	}
+	
+	attrs[atindx++] = NSOpenGLPFAAccelerated;			
+	
+	
+	attrs[atindx++] = nil;				
+/*	
 	NSOpenGLPixelFormatAttribute attrs[] =
 	{
 			NSOpenGLPFADoubleBuffer,	
@@ -30,44 +63,60 @@ CocoaCore::CocoaCore(SubstanceView *view, int xRes, int yRes, bool fullScreen,in
 //		NSOpenGLPFAFullScreen,
 //		NSOpenGLPFAScreenMask,
 //		CGDisplayIDToOpenGLDisplayMask(kCGDirectMainDisplay),
-		//		NSOpenGLPFASampleBuffers, 1,
-//		NSOpenGLPFASamples,  aaLevel,
-//		NSOpenGLPFANoRecovery,	
+		NSOpenGLPFASampleBuffers, 1,
+		NSOpenGLPFASamples,  aaLevel,
+		NSOpenGLPFANoRecovery,	
 //		NSOpenGLPFAWindow,
-//		NSOpenGLPFAMultisample,
+		NSOpenGLPFAMultisample,
 //		NSOpenGLPFAAccelerated,
 //		NSOpenGLPFAAccumSize, 0,
 		nil
 	};	
-	
-	[view lockContext];
+*/
+
+//	[view lockContext];
 	
 	[view setCore:this];	
 	NSOpenGLPixelFormat *format = [[NSOpenGLPixelFormat alloc] initWithAttributes:attrs];
+	
+	if(!format) {
+		NSLog(@"Error creating pixel format!\n");
+	}
+	
 	context = [[NSOpenGLContext alloc] initWithFormat: format shareContext:nil];
 
 	if (context == nil) {
         NSLog(@"Failed to create open gl context");
 	}	
 	
-	if(fullScreen) {
-	
-		[context makeCurrentContext];
-		[context setFullScreen];
-		CGDisplayCapture (kCGDirectMainDisplay ) ;		
-//		CGDisplayCapture (kCGDirectMainDisplay ) ;
-//		CGDisplaySwitchToMode (kCGDirectMainDisplay,
-//							   CGDisplayBestModeForParameters (kCGDirectMainDisplay,
-//															   32, xRes, yRes, NULL) );		
+	if(false) {
+
+//		[view enterFullScreenMode:[NSScreen mainScreen] withOptions:0];
+//		[view removeFromSuperview];
+//		[[view window] orderOut:nil];
 		
-		[context clearDrawable];
-        [context release];		
+//		CGDisplayCapture (kCGDirectMainDisplay ) ;			
+//		CGDisplaySwitchToMode (kCGDirectMainDisplay, CGDisplayBestModeForParameters (kCGDirectMainDisplay, 32, xRes, yRes, NULL) );				
+		
+		
+//		[context makeCurrentContext];		
+//		[context setFullScreen];
+//		[context flushBuffer];	
+//		CGDisplayCapture (kCGDirectMainDisplay ) ;		
+
+
+		
+//		[context clearDrawable];
+  //      [context release];		
 	} else {
 		[view clearGLContext];
 		[view setOpenGLContext:context];	
 		[context setView: view];					
 	}
 	
+	if(fullScreen) {
+	//	[view enterFullScreenMode:[NSScreen mainScreen] withOptions:0];	
+	}
 	
 	
 	glView = view;
@@ -80,7 +129,7 @@ CocoaCore::CocoaCore(SubstanceView *view, int xRes, int yRes, bool fullScreen,in
 	
 	renderer = new OpenGLRenderer();
 	services->setRenderer(renderer);	
-	[view unlockContext];			
+	//[view unlockContext];			
 	setVideoMode(xRes,yRes,fullScreen,aaLevel);		
 
 
@@ -115,14 +164,25 @@ void CocoaCore::setVideoMode(int xRes, int yRes, bool fullScreen, int aaLevel) {
 	dispatchEvent(new Event(), EVENT_CORE_RESIZE);	
 
 	
-	NSRect visibleFrame = [[NSScreen mainScreen] visibleFrame];	
-	NSRect frame = NSMakeRect([[glView window] frame].origin.x, [[glView window] frame].origin.y, xRes, yRes);
+//	NSRect visibleFrame = [[NSScreen mainScreen] visibleFrame];	
+//	NSRect frame = NSMakeRect([[glView window] frame].origin.x, [[glView window] frame].origin.y, xRes, yRes);
 	
 //	frame.origin.x = (visibleFrame.size.width - frame.size.width) * 0.5;
 //	frame.origin.y = (visibleFrame.size.height - frame.size.height) * (9.0/10.0);
 	
-	[[glView window] setFrame: frame display: YES animate: NO];
-	
+//	[[glView window] setFrame: frame display: YES animate: NO];
+//	if(!fullScreen) {
+		[[glView window] setContentSize: NSMakeSize(xRes, yRes)];
+//	} else {
+//		CGDisplaySwitchToMode (kCGDirectMainDisplay, CGDisplayBestModeForParameters (kCGDirectMainDisplay, 32, xRes, yRes, NULL) );						
+//	}
+	if(fullScreen) {	
+		CGDisplaySwitchToMode (kCGDirectMainDisplay, CGDisplayBestModeForParameters (kCGDirectMainDisplay, 32, xRes, yRes, NULL) );						
+		[glView enterFullScreenMode:[NSScreen mainScreen] withOptions:[NSDictionary dictionaryWithObjectsAndKeys:
+																	   nil]];
+		
+	}
+		
 	/*
 	if(aaLevel > 0) {
 		glEnable( GL_MULTISAMPLE_ARB );	
@@ -145,6 +205,12 @@ vector<Polycode::Rectangle> CocoaCore::getVideoModes() {
 }
 
 CocoaCore::~CocoaCore() {
+	
+	if(fullScreen) {
+		[glView exitFullScreenModeWithOptions:nil];
+		
+	}
+	
 	[glView clearGLContext];	
 	[context release];
 }
@@ -188,6 +254,11 @@ unsigned int CocoaCore::getTicks() {
 }
 
 void CocoaCore::enableMouse(bool newval) {
+	
+	if(newval) 
+		CGDisplayShowCursor(kCGDirectMainDisplay);			
+	else
+		CGDisplayHideCursor(kCGDirectMainDisplay);	
 	Core::enableMouse(newval);
 }
 
@@ -275,7 +346,7 @@ void CocoaCore::moveDiskItem(String itemPath, String destItemPath) {
 void CocoaCore::removeDiskItem(String itemPath) {
 	[[NSFileManager defaultManager] removeItemAtPath: [NSString stringWithUTF8String: itemPath.c_str()] error:nil];
 }
-
+	
 String CocoaCore::openFolderPicker() {
 	NSOpenPanel *attachmentPanel = [NSOpenPanel openPanel];	
 	[attachmentPanel setCanChooseFiles:NO];

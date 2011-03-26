@@ -60,8 +60,8 @@ namespace Polycode {
 	}
 	
 	void CoreInput::setDeltaPosition(int x, int y) {
-		deltaMousePosition.x = (float)x;
-		deltaMousePosition.y = (float)y;
+		deltaMousePosition.x = (Number)x;
+		deltaMousePosition.y = (Number)y;
 	}
 
 	Vector2 CoreInput::getMousePosition() {

@@ -12,9 +12,15 @@
 
 @synthesize window;
 @synthesize substanceView;
+@synthesize projectMenu;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
 	// Insert code here to initialize your application 
+	
+	mustShowProjectMenu = NO;
+	
+	eventHandler = new PolycodeAppEventHandler();
+	eventHandler->appDelegate = self;
 	
 	app = new PolycodeIDEApp(substanceView);
 	app->addEventListener(eventHandler, PolycodeIDEApp::EVENT_SHOW_MENU);
@@ -29,6 +35,29 @@
 	if(!app->Update()) {
 		[[NSApplication sharedApplication] stop:self];
 	}
+	
+	if(mustShowProjectMenu) {
+		NSPoint menuOrigin = NSMakePoint(substanceView.mouseX, substanceView.mouseY);
+		
+		NSEvent *event =  [NSEvent mouseEventWithType:NSLeftMouseDown
+											 location:menuOrigin
+										modifierFlags:NSLeftMouseDownMask // 0x100
+											timestamp:nil
+										 windowNumber:[window windowNumber]
+											  context:[window graphicsContext]
+										  eventNumber:0
+										   clickCount:1
+											 pressure:1];	
+		
+		[NSMenu popUpContextMenu:projectMenu withEvent:event forView:substanceView];
+		
+		mustShowProjectMenu = NO;
+	}
+}
+
+- (void) showProjectMenu {
+	
+	mustShowProjectMenu = YES;	
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
@@ -45,6 +74,10 @@
 
 -(void) openProject: (id) sender {
 	app->openProject();
+}
+
+-(void) closeProject: (id) sender {
+	app->closeProject();
 }
 
 -(void) saveFile: (id) sender {

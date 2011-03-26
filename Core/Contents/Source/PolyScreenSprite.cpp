@@ -13,13 +13,13 @@
 
 using namespace Polycode;
 
-ScreenSprite::ScreenSprite(String fileName, float spriteWidth, float spriteHeight) : ScreenShape(ScreenShape::SHAPE_RECT, spriteWidth, spriteHeight) {
+ScreenSprite::ScreenSprite(String fileName, Number spriteWidth, Number spriteHeight) : ScreenShape(ScreenShape::SHAPE_RECT, spriteWidth, spriteHeight) {
 	this->spriteWidth = spriteWidth;
 	this->spriteHeight = spriteHeight;	
 	loadTexture(fileName);
 		
-	spriteUVWidth = 1.0f / ((float) texture->getWidth() / spriteWidth);
-	spriteUVHeight = 1.0f / ((float) texture->getHeight() / spriteHeight);
+	spriteUVWidth = 1.0f / ((Number) texture->getWidth() / spriteWidth);
+	spriteUVHeight = 1.0f / ((Number) texture->getHeight() / spriteHeight);
 	
 	currentFrame = 0;
 	currentAnimation = NULL;
@@ -29,7 +29,7 @@ ScreenSprite::~ScreenSprite() {
 	
 }
 
-void ScreenSprite::addAnimation(String name, String frames, float speed) {
+void ScreenSprite::addAnimation(String name, String frames, Number speed) {
 	SpriteAnimation *newAnimation = new SpriteAnimation();
 	
 	vector<String> frameNumbers = frames.split(",");
@@ -71,9 +71,9 @@ void ScreenSprite::Update() {
 	if(!currentAnimation)
 		return;
 	
-	float newTick = CoreServices::getInstance()->getCore()->getTicksFloat();
+	Number newTick = CoreServices::getInstance()->getCore()->getTicksFloat();
 	
-	float elapsed = newTick - lastTick;
+	Number elapsed = newTick - lastTick;
 	
 	if(elapsed > currentAnimation->speed) {
 	currentFrame++;
@@ -84,8 +84,8 @@ void ScreenSprite::Update() {
 			currentFrame = 0;
 	}
 	
-	float xOffset = currentAnimation->framesOffsets[currentFrame].x;
-	float yOffset = 1.0f - currentAnimation->framesOffsets[currentFrame].y - spriteUVHeight;
+	Number xOffset = currentAnimation->framesOffsets[currentFrame].x;
+	Number yOffset = 1.0f - currentAnimation->framesOffsets[currentFrame].y - spriteUVHeight;
 	
 	Polygon *imagePolygon = mesh->getPolygon(0);
 		

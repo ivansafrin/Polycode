@@ -39,7 +39,7 @@ namespace Polycode {
 		
 		void enableLighting(bool enable);
 		void enableFog(bool enable);
-		void setFogProperties(int fogMode, Color color, float density, float startDepth, float endDepth);
+		void setFogProperties(int fogMode, Color color, Number density, Number startDepth, Number endDepth);
 
 		virtual void Update();
 		void setVirtual(bool val);
@@ -51,7 +51,7 @@ namespace Polycode {
 		int getNumEntities() { return entities.size(); }
 		SceneEntity *getEntity(int index) { return entities[index]; }
 		
-		SceneEntity *getEntityAtCursor(float x, float y);
+		SceneEntity *getEntityAtCursor(Number x, Number y);
 		
 	protected:
 		
@@ -65,9 +65,9 @@ namespace Polycode {
 		bool fogEnabled;
 		int fogMode;
 		Color fogColor;
-		float fogDensity;
-		float fogStartDepth;
-		float fogEndDepth;
+		Number fogDensity;
+		Number fogStartDepth;
+		Number fogEndDepth;
 		
 	};
 }

@@ -61,7 +61,7 @@ void MaterialManager::addShaderModule(PolycodeShaderModule *module) {
 	shaderModules.push_back(module);
 }
 
-Texture *MaterialManager::createTextureFromFile(String fileName) {
+Texture *MaterialManager::createTextureFromFile(String fileName, bool clamp) {
 	Texture *newTexture;
 	newTexture = getTextureByResourcePath(fileName);
 	if(newTexture) {
@@ -70,7 +70,7 @@ Texture *MaterialManager::createTextureFromFile(String fileName) {
 	
 	Image *image = new Image(fileName);
 	if(image->isLoaded()) {
-		newTexture = createTexture(image->getWidth(), image->getHeight(), image->getPixels(), true);
+		newTexture = createTexture(image->getWidth(), image->getHeight(), image->getPixels(), clamp);
 	} else {
 		char *data = (char*)malloc(4);
 		newTexture = createTexture(1, 1, data, true);
@@ -224,8 +224,8 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 								if(newTarget->height > 1.0f)
 									newTarget->height = 1.0f;
 									
-								newTarget->width = ((float)CoreServices::getInstance()->getRenderer()->getXRes()) * newTarget->width;
-								newTarget->height = ((float)CoreServices::getInstance()->getRenderer()->getYRes()) * newTarget->height;
+								newTarget->width = ((Number)CoreServices::getInstance()->getRenderer()->getXRes()) * newTarget->width;
+								newTarget->height = ((Number)CoreServices::getInstance()->getRenderer()->getYRes()) * newTarget->height;
 							}						
 						}
 					}						

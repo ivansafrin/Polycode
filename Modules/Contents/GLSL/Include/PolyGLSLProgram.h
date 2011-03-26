@@ -1,5 +1,5 @@
 /*
- *  PolyCGProgram.h
+ *  PolyGLSLProgram.h
  *  Poly
  *
  *  Created by Ivan Safrin on 9/20/08.
@@ -10,29 +10,43 @@
 
 #pragma once
 
+#include "Polycode.h"
+
 #include "PolyGlobals.h"
-#ifdef COMPILE_CG_SUPPORT
 
 #include "PolyLogger.h"
 #include "PolyResource.h"
 #include "PolyVector3.h"
 #include "PolyUtil.h"
 #include <vector>
-#include <CG/cg.h>
+
+
+#if defined(__APPLE__) && defined(__MACH__)
+#include <OpenGL/gl.h>
+#include <OpenGL/glext.h>
+#include <OpenGL/glu.h>	
+#else
+#include <GL/gl.h>	
+#include <GL/glu.h>	
+#include <GL/glext.h>
+#endif
+
+
 
 using std::vector;
 
-class _PolyExport CGProgramParam {
+namespace Polycode {
+
+class _PolyExport GLSLProgramParam {
 	public:
 	
-	CGparameter cgParam;
-	string name;
+	String name;
 	bool isAuto;
 	int autoID;
 	void *defaultData;
 	int paramType;
 	
-	static void *createParamData(int *retType, string type, string value);
+	static void *createParamData(int *retType, String type, String value);
 	
 	static const int TAU_MODELVIEWPROJ_MATRIX = 0;
 	static const int TAU_MODELVIEW_MATRIX = 2;
@@ -81,27 +95,23 @@ class _PolyExport CGProgramParam {
 	static const int PARAM_FLOAT3 = 2;
 	static const int PARAM_FLOAT4 = 3;
 	
-};
+	};
 
-namespace Polycode {
-
-	class _PolyExport CGProgram : public Resource {
+	class _PolyExport GLSLProgram : public Resource {
 		public:
-			CGProgram(int type);
-			~CGProgram();
+			GLSLProgram(int type);
+			~GLSLProgram();
 			
-			void addParam(string name, bool isAuto, int autoID, int paramType, void *defaultData);
+			void addParam(String name, bool isAuto, int autoID, int paramType, void *defaultData);
 		
-			CGprogram program;
-			CGparameter modelViewProjection;
+			unsigned int program;
+//			GLSLparameter modelViewProjection;
 	
 			static const int TYPE_VERT = 0;
 			static const int TYPE_FRAG = 1;		
 			
 			int type;
 			
-			vector<CGProgramParam> params;
+			vector<GLSLProgramParam> params;
 	};
 }
-
-#endif

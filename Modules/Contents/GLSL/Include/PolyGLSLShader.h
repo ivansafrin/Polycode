@@ -1,5 +1,5 @@
 /*
- *  PolyCGShader.h
+ *  PolyGLSLShader.h
  *  Poly
  *
  *  Created by Ivan Safrin on 9/20/08.
@@ -11,15 +11,24 @@
 #pragma once
 
 #include "PolyGlobals.h"
-#ifdef COMPILE_CG_SUPPORT
 
 #include "PolyLogger.h"
 #include "PolyShader.h"
-#include "PolyCGProgram.h"
+#include "PolyGLSLProgram.h"
 #include "PolyTexture.h"
 #include "PolyCubemap.h"
 #include <vector>
-#include <CG/cg.h>
+
+#if defined(__APPLE__) && defined(__MACH__)
+#include <OpenGL/gl.h>
+#include <OpenGL/glext.h>
+#include <OpenGL/glu.h>	
+#else
+#include <GL/gl.h>	
+#include <GL/glu.h>	
+#include <GL/glext.h>
+#endif
+
 
 using std::vector;
 
@@ -27,46 +36,43 @@ namespace Polycode {
 
 	typedef struct {
 		Texture *texture;
-		string name;
-		CGparameter vpParam;
-	} CGTextureBinding;
+		String name;
+	} GLSLTextureBinding;
 
 	typedef struct {
 		Cubemap *cubemap;
-		string name;
-		CGparameter vpParam;
-	} CGCubemapBinding;
+		String name;
+	} GLSLCubemapBinding;
 	
 	
-	class _PolyExport CGShader : public Shader {
+	class _PolyExport GLSLShader : public Shader {
 		public:
-			CGShader(CGProgram *vp, CGProgram *fp);
-			virtual ~CGShader();
+			GLSLShader(GLSLProgram *vp, GLSLProgram *fp);
+			virtual ~GLSLShader();
 
 			ShaderBinding *createBinding();
 			
-			CGProgram *vp;
-			CGProgram *fp;			
+			unsigned int shader_id;		
+			GLSLProgram *vp;
+			GLSLProgram *fp;			
 			
 		protected:
 			
 	};
 	
-	class _PolyExport CGShaderBinding : public ShaderBinding {
+	class _PolyExport GLSLShaderBinding : public ShaderBinding {
 		public:
-			CGShaderBinding(CGShader *shader);
-			virtual ~CGShaderBinding();
+			GLSLShaderBinding(GLSLShader *shader);
+			virtual ~GLSLShaderBinding();
 			
-			void addTexture(string name, Texture *texture); 
-			void addCubemap(string name, Cubemap *cubemap);				
-			void clearTexture(string name);			
-			void addParam(string type, string name, string value);
+			void addTexture(String name, Texture *texture); 
+			void addCubemap(String name, Cubemap *cubemap);				
+			void clearTexture(String name);			
+			void addParam(String type, String name, String value);
 			
-			vector<CGTextureBinding> textures;
-			vector<CGCubemapBinding> cubemaps;		
+			vector<GLSLTextureBinding> textures;
+			vector<GLSLCubemapBinding> cubemaps;		
 		
-			CGShader *cgShader;
+			GLSLShader *glslShader;
 	};
 }
-
-#endif

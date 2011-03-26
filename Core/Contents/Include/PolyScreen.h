@@ -31,16 +31,16 @@ namespace Polycode {
 		ScreenEntity* addChild(ScreenEntity *newEntity);
 		ScreenEntity* removeChild(ScreenEntity *entityToRemove);
 		
-		void setScreenOffset(float x, float y);
+		void setScreenOffset(Number x, Number y);
 		Vector2 getScreenOffset();
 		
 		virtual void Shutdown();
 		virtual void Update();
-		ScreenEntity *getEntityAt(float x, float y);
+		ScreenEntity *getEntityAt(Number x, Number y);
 		void Render();
 		void setRenderer(Renderer *renderer);
 		
-		void setNormalizedCoordinates(bool newVal, float yCoordinateSize = 1.0f);
+		void setNormalizedCoordinates(bool newVal, Number yCoordinateSize = 1.0f);
 		void setScreenShader(String shaderName);
 		
 		void handleEvent(Event *event);
@@ -54,7 +54,7 @@ namespace Polycode {
 		void drawFilter();
 		
 		bool usesNormalizedCoordinates() { return useNormalizedCoordinates; }
-		float getYCoordinateSize() { return yCoordinateSize; }
+		Number getYCoordinateSize() { return yCoordinateSize; }
 		
 		bool Lua_EntitiesEqual(ScreenEntity *ent1, ScreenEntity *ent2) { return ent1 == ent2; }
 		
@@ -65,7 +65,7 @@ namespace Polycode {
 	protected:
 		
 		bool useNormalizedCoordinates;
-		float yCoordinateSize;		
+		Number yCoordinateSize;		
 		
 		ScreenEntity *rootEntity;
 		

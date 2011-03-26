@@ -19,8 +19,8 @@ namespace Polycode {
 		public:
 		
 			Vector2();
-			Vector2(float x, float y);
-			~Vector2();
+			Vector2(Number x, Number y);
+			virtual ~Vector2();
 		
 			inline bool operator == ( const Vector2& v2)  {
 				return (v2.x == x && v2.y == y);
@@ -30,8 +30,8 @@ namespace Polycode {
 				return (v2.x != x || v2.y != y);
 			}				
 		
-			float x;
-			float y;			
+			Number x;
+			Number y;			
 			
 		private:
 

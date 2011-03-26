@@ -23,15 +23,15 @@ namespace Polycode {
 			Texture(Image *image);
 			virtual ~Texture();
 
-			float scrollSpeedX;
-			float scrollSpeedY;
+			Number scrollSpeedX;
+			Number scrollSpeedY;
 			
 			virtual void setTextureData(char *data) = 0;
 
 			virtual void recreateFromImageData() = 0;
 
-			float getScrollOffsetX();
-			float getScrollOffsetY();
+			Number getScrollOffsetX();
+			Number getScrollOffsetY();
 			
 			void setImageData(Image *data);
 		
@@ -55,7 +55,7 @@ namespace Polycode {
 			int height;
 			String resourcePath;
 			char *textureData;
-			float scrollOffsetX;
-			float scrollOffsetY;
+			Number scrollOffsetX;
+			Number scrollOffsetY;
 	};
 }

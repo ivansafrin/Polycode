@@ -40,7 +40,7 @@ TiXmlElement *Object::createElementFromObjectEntry(ObjectEntry *entry) {
 					newElement->SetAttribute(childEntry->name.c_str(), "false");
 			break;
 			case ObjectEntry::FLOAT_ENTRY:
-				newElement->SetAttribute(childEntry->name.c_str(), String::floatToString(childEntry->floatVal).c_str());								
+				newElement->SetAttribute(childEntry->name.c_str(), String::NumberToString(childEntry->NumberVal).c_str());								
 			break;
 			case ObjectEntry::INT_ENTRY:				
 				newElement->SetAttribute(childEntry->name.c_str(), childEntry->intVal);												
@@ -98,7 +98,7 @@ void Object::createFromXMLElement(TiXmlElement *element, ObjectEntry *entry) {
 		if (pAttrib->QueryIntValue(&ival)==TIXML_SUCCESS) {
 			
 			if(newEntry->stringVal.find(".") != -1 && pAttrib->QueryDoubleValue(&dval)==TIXML_SUCCESS) {
-				newEntry->floatVal = dval;
+				newEntry->NumberVal = dval;
 				newEntry->type = ObjectEntry::FLOAT_ENTRY;				
 			} else {
 				newEntry->intVal = ival;

@@ -15,6 +15,16 @@ Polygon::Polygon()  : useVertexNormals(false), vertexCount(0), useFaceUV(false) 
 	normal = new Vector3();
 	hasSecUVs = false;
 	useVertexNormals = true;
+	
+	for(int i=0; i < 3; i++) {
+		Vector2 *newCoord = new Vector2(0,0);
+		texCoords.push_back(newCoord);
+	}
+	
+	for(int i=0; i < 3; i++) {	
+		Vector2 *newCoord2 = new Vector2(0,0);
+		texCoords2.push_back(newCoord2);
+	}
 }
 
 Polygon::~Polygon() {
@@ -92,6 +102,10 @@ Rectangle Polygon::getBounds2D() {
 	
 	return retBox;
 }
+	
+void Polygon::removeVertex(int index) {
+	vertices.erase(vertices.begin() + index);
+}
 
 void Polygon::setNormal(Vector3 normal) {
 	*this->normal = normal;
@@ -116,28 +130,28 @@ void Polygon::calculateNormal() {
 	}
 }
 
-Vertex *Polygon::addVertex(float x, float y, float z) {
+Vertex *Polygon::addVertex(Number x, Number y, Number z) {
 	Vertex *vertex = new Vertex(x,y,z);
 	vertices.push_back(vertex);
 	return vertex;
 }
 
-void Polygon::addTexCoord2(float u, float v) {
-	Vector2 *newCoord = new Vector2(u,v);
-	texCoords2.push_back(newCoord);
+void Polygon::addTexCoord2(Number u, Number v) {
+//	Vector2 *newCoord = new Vector2(u,v);
+//	texCoords2.push_back(newCoord);
 	hasSecUVs =true;
 }
 
-void Polygon::addTexCoord(float u, float v) {
-	Vector2 *newCoord = new Vector2(u,v);
-	texCoords.push_back(newCoord);
+void Polygon::addTexCoord(Number u, Number v) {
+//	Vector2 *newCoord = new Vector2(u,v);
+//	texCoords.push_back(newCoord);
 }
 
 void Polygon::addVertex(Vertex *vertex) {
 	vertices.push_back(vertex);
 }
 
-Vertex *Polygon::addVertex(float x, float y, float z, float u, float v) {
+Vertex *Polygon::addVertex(Number x, Number y, Number z, Number u, Number v) {
 	Vertex *vertex = new Vertex(x,y,z,u,v);
 	vertices.push_back(vertex);
 	return vertex;

@@ -11,7 +11,7 @@
 
 using namespace Polycode;
 
-void Rectangle::setRect(float x, float y, float w, float h) {
+void Rectangle::setRect(Number x, Number y, Number w, Number h) {
 	this->x = x;
 	this->y = y;
 	this->w = w;

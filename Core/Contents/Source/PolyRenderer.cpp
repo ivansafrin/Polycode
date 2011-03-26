@@ -56,20 +56,20 @@ void Renderer::addShadowMap(Texture *texture) {
 	shadowMapTextures.push_back(texture);
 }
 
-void Renderer::setExposureLevel(float level) {
+void Renderer::setExposureLevel(Number level) {
 	exposureLevel = level;
 }
 
 bool Renderer::rayTriangleIntersect(Vector3 ray_origin, Vector3 ray_direction, Vector3 vert0, Vector3 vert1, Vector3 vert2, Vector3 *hitPoint)
 {
-	float t,u,v;
+	Number t,u,v;
 	t = 0; u = 0; v = 0;
 	
 	Vector3 edge1 = vert1 - vert0;
 	Vector3 edge2 = vert2 - vert0;
 	
 	Vector3 tvec, pvec, qvec;
-	float det, inv_det;
+	Number det, inv_det;
 	
 	
 	pvec = ray_direction.crossProduct(edge2);
@@ -108,7 +108,7 @@ void Renderer::addShaderModule(PolycodeShaderModule *module) {
 	shaderModules.push_back(module);
 }
 
-void Renderer::addLight(Vector3 position, Vector3 direction, int type, Color color, float distance, float intensity, Matrix4 *textureMatrix) {
+void Renderer::addLight(Vector3 position, Vector3 direction, int type, Color color, Number distance, Number intensity, Matrix4 *textureMatrix) {
 	numLights++;
 	
 	LightInfo info;
@@ -182,6 +182,7 @@ void Renderer::pushDataArrayForMesh(Mesh *mesh, int arrayType) {
 	if(mesh->arrayDirtyMap[arrayType] == true || mesh->renderDataArrays[arrayType] == NULL) {
 		if(mesh->renderDataArrays[arrayType] != NULL) {
 			free(mesh->renderDataArrays[arrayType]->arrayPtr);
+			delete mesh->renderDataArrays[arrayType];
 		}
 		mesh->renderDataArrays[arrayType] = createRenderDataArrayForMesh(mesh, arrayType);
 		mesh->arrayDirtyMap[arrayType] = false;
@@ -197,7 +198,7 @@ int Renderer::getYRes() {
 	return yRes;
 }
 
-void Renderer::setAmbientColor(float r, float g, float b) {
+void Renderer::setAmbientColor(Number r, Number g, Number b) {
 	ambientColor.setColor(r,g,b,1.0f);
 }
 

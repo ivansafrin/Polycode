@@ -43,7 +43,11 @@ namespace Polycode {
 			void setIcon(String iconFile);
 			void setSelected();
 		
-			float handleRotation;
+			int getNumTreeChildren() { return treeChildren.size(); }
+			UITree *getTreeChild(int index) { return treeChildren[index]; }
+			void removeTreeChild(UITree *child);
+		
+			Number handleRotation;
 		
 		private:
 		

@@ -34,7 +34,7 @@ ScreenLine::~ScreenLine() {
 }
 
 
-void ScreenLine::setLineWidth(float width) {
+void ScreenLine::setLineWidth(Number width) {
 	lineWidth = width;
 }
 

@@ -30,9 +30,14 @@ using namespace Polycode;
 	NSCursor *currentCursor;
 	bool contextReady;
 	
+	int mouseX;
+	int mouseY;
+	
 }
 
 @property BOOL viewReady;
+@property int mouseX;
+@property int mouseY;
 
 - (void) setCurrentCursor: (NSCursor*) newCursor;
 

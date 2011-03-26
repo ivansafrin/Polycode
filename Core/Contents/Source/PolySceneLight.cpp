@@ -12,7 +12,7 @@
 
 using namespace Polycode;
 
-SceneLight::SceneLight(int type, float intensity, float distance, Scene *parentScene) : SceneEntity() {
+SceneLight::SceneLight(int type, Number intensity, Number distance, Scene *parentScene) : SceneEntity() {
 	this->type = type;
 	this->intensity = intensity;
 	this->distance = distance;
@@ -28,7 +28,7 @@ SceneLight::SceneLight(int type, float intensity, float distance, Scene *parentS
 	shadowsEnabled = false;
 }
 
-void SceneLight::enableShadows(bool val, float resolution) {
+void SceneLight::enableShadows(bool val, Number resolution) {
 	if(val) {
 		if(!zBufferTexture) {
 			CoreServices::getInstance()->getRenderer()->createRenderTextures(NULL, &zBufferTexture, resolution, resolution);
@@ -49,7 +49,7 @@ bool SceneLight::areShadowsEnabled() {
 	return shadowsEnabled;
 }
 
-void SceneLight::setShadowMapFOV(float fov) {
+void SceneLight::setShadowMapFOV(Number fov) {
 	
 }
 
@@ -81,11 +81,11 @@ Texture *SceneLight::getZBufferTexture() {
 	return zBufferTexture;
 }
 
-float SceneLight::getIntensity() {
+Number SceneLight::getIntensity() {
 	return intensity;
 }
 
-float SceneLight::getDistance() {
+Number SceneLight::getDistance() {
 	return distance;
 }
 

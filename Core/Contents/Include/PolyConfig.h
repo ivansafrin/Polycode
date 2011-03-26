@@ -26,7 +26,7 @@ namespace Polycode {
 	public:
 		String key;
 		String configNamespace;
-		float numVal;
+		Number numVal;
 		String stringVal;
 		bool isString;
 	};
@@ -42,9 +42,9 @@ namespace Polycode {
 		ConfigEntry *getEntry(String configNamespace, String key);
 		
 		void setStringValue(String configNamespace, String key, String value);
-		void setNumericValue(String configNamespace, String key, float value);		
+		void setNumericValue(String configNamespace, String key, Number value);		
 			
-		float getNumericValue(String configNamespace, String key);
+		Number getNumericValue(String configNamespace, String key);
 		String getStringValue(String configNamespace, String key);
 		
 	private:

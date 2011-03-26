@@ -71,7 +71,7 @@ void OpenGLES1Renderer::setLineSmooth(bool val) {
 		glDisable(GL_LINE_SMOOTH);
 }
 
-void OpenGLES1Renderer::setFOV(float fov) {
+void OpenGLES1Renderer::setFOV(Number fov) {
 	this->fov = fov;
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -81,7 +81,7 @@ void OpenGLES1Renderer::setFOV(float fov) {
 	glMatrixMode(GL_MODELVIEW);	
 }
 
-void OpenGLES1Renderer::setViewportSize(int w, int h, float fov) {
+void OpenGLES1Renderer::setViewportSize(int w, int h, Number fov) {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(fov,(GLfloat)w/(GLfloat)h,nearPlane,farPlane);
@@ -90,7 +90,7 @@ void OpenGLES1Renderer::setViewportSize(int w, int h, float fov) {
 	glMatrixMode(GL_MODELVIEW);
 }
 
-Vector3 OpenGLES1Renderer::Unproject(float x, float y) {
+Vector3 OpenGLES1Renderer::Unproject(Number x, Number y) {
 	Vector3 coords;
 	GLfloat wx, wy, wz;
 	GLfloat cx, cy, cz;
@@ -104,8 +104,8 @@ Vector3 OpenGLES1Renderer::Unproject(float x, float y) {
 	GLint vp[4];
 	glGetIntegerv( GL_VIEWPORT, vp );
 	
-	wx = ( float ) x;
-	wy = ( float ) vp[3] - ( float ) y;
+	wx = ( Number ) x;
+	wy = ( Number ) vp[3] - ( Number ) y;
 	glReadPixels( x, wy, 1, 1, GL_DEPTH_COMPONENT16_OES, GL_FLOAT, &wz );
 	
 	gluUnProject((GLdouble)wx, (GLdouble)wy, (GLdouble)wz, (GLdouble*)mv, (GLdouble*)proj, vp, (GLdouble*)&cx, (GLdouble*)&cy, (GLdouble*)&cz );
@@ -116,7 +116,7 @@ Vector3 OpenGLES1Renderer::Unproject(float x, float y) {
 	
 }
 
-bool OpenGLES1Renderer::test2DCoordinate(float x, float y, Poly::Polygon *poly, const Matrix4 &matrix, bool billboardMode) {
+bool OpenGLES1Renderer::test2DCoordinate(Number x, Number y, Poly::Polygon *poly, const Matrix4 &matrix, bool billboardMode) {
 	GLfloat nearPlane[3],farPlane[3];
 	
 	GLfloat mv[16];
@@ -180,7 +180,7 @@ void OpenGLES1Renderer::enableLighting(bool enable) {
 	lightingEnabled = enable;
 }
 
-void OpenGLES1Renderer::setLineSize(float lineSize) {
+void OpenGLES1Renderer::setLineSize(Number lineSize) {
 	glLineWidth(lineSize);
 }
 
@@ -244,13 +244,13 @@ void OpenGLES1Renderer::setBlendingMode(int blendingMode) {
 }
 
 Matrix4 OpenGLES1Renderer::getProjectionMatrix() {
-	float m[16];
+	Number m[16];
 	glGetFloatv( GL_PROJECTION_MATRIX, m);
 	return Matrix4(m);
 }
 
 Matrix4 OpenGLES1Renderer::getModelviewMatrix() {
-	float m[16];
+	Number m[16];
     glGetFloatv( GL_MODELVIEW_MATRIX, m);
 	return Matrix4(m);
 }
@@ -268,7 +268,7 @@ void OpenGLES1Renderer::renderToTexture(Texture *targetTexture) {
 	
 }
 
-void OpenGLES1Renderer::setFogProperties(int fogMode, Color color, float density, float startDepth, float endDepth) {
+void OpenGLES1Renderer::setFogProperties(int fogMode, Color color, Number density, Number startDepth, Number endDepth) {
 	switch(fogMode) {
 		case FOG_LINEAR:
 			glFogx(GL_FOG_MODE, GL_LINEAR);
@@ -340,7 +340,7 @@ void OpenGLES1Renderer::BeginRender() {
 	currentTexture = NULL;
 }
 
-void OpenGLES1Renderer::setClearColor(float r, float g, float b) {
+void OpenGLES1Renderer::setClearColor(Number r, Number g, Number b) {
 	clearColor.setColor(r,g,b,1.0f);	
 	glClearColor(r,g,b,0.0f);
 }
@@ -349,7 +349,7 @@ void OpenGLES1Renderer::translate3D(Vector3 *position) {
 	glTranslatef(position->x, position->y, position->z);
 }
 
-void OpenGLES1Renderer::translate3D(float x, float y, float z) {
+void OpenGLES1Renderer::translate3D(Number x, Number y, Number z) {
 	glTranslatef(x, y, z);
 }
 
@@ -613,12 +613,12 @@ void OpenGLES1Renderer::draw3DVertex(Vertex *vertex, Vector2 *faceUV) {
 	 */
 }
 
-void OpenGLES1Renderer::drawScreenQuad(float qx, float qy) {
+void OpenGLES1Renderer::drawScreenQuad(Number qx, Number qy) {
 	/*
 	setOrthoMode();
 	
-	float xscale = qx/((float)getXRes()) * 2.0f;
-	float yscale = qy/((float)getYRes()) * 2.0f;
+	Number xscale = qx/((Number)getXRes()) * 2.0f;
+	Number yscale = qy/((Number)getYRes()) * 2.0f;
 	
 	glBegin(GL_QUADS);
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
@@ -650,7 +650,7 @@ void OpenGLES1Renderer::draw2DVertex(Vertex *vertex) {
 	 */
 }
 
-void OpenGLES1Renderer::draw3DLine(Vector3 origin, Vector3 direction, float length, Color color)  {
+void OpenGLES1Renderer::draw3DLine(Vector3 origin, Vector3 direction, Number length, Color color)  {
 	/*
 	glColor4f(color.r,color.g,color.b,color.a);	
 	//	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -661,7 +661,7 @@ void OpenGLES1Renderer::draw3DLine(Vector3 origin, Vector3 direction, float leng
 	 */
 }
 
-void OpenGLES1Renderer::translate2D(float x, float y) {
+void OpenGLES1Renderer::translate2D(Number x, Number y) {
 	glTranslatef(x, y, 0.0f);
 }
 
@@ -675,11 +675,11 @@ void OpenGLES1Renderer::loadIdentity() {
 	glLoadIdentity();
 }
 
-void OpenGLES1Renderer::rotate2D(float angle) {
+void OpenGLES1Renderer::rotate2D(Number angle) {
 	glRotatef(angle, 0.0f, 0.0f, 1.0f);
 }
 
-void OpenGLES1Renderer::setVertexColor(float r, float g, float b, float a) {
+void OpenGLES1Renderer::setVertexColor(Number r, Number g, Number b, Number a) {
 	glColor4f(r,g,b,a);
 }
 

@@ -1,5 +1,5 @@
 /*
- *  PolyCGShader.cpp
+ *  PolyGLSLShader.cpp
  *  Poly
  *
  *  Created by Ivan Safrin on 9/20/08.
@@ -8,36 +8,36 @@
  */
 
 
-#include "PolyCGShader.h"
+#include "PolyGLSLShader.h"
 
 using namespace Polycode;
 
-CGShaderBinding::CGShaderBinding(CGShader *shader) : ShaderBinding(shader) {
-	cgShader = shader;
+GLSLShaderBinding::GLSLShaderBinding(GLSLShader *shader) : ShaderBinding(shader) {
+	glslShader = shader;
 }
 
-CGShaderBinding::~CGShaderBinding() {
+GLSLShaderBinding::~GLSLShaderBinding() {
 	
 }
 
 
-void CGShaderBinding::addTexture(string name, Texture *texture) {
-	CGTextureBinding binding;
+void GLSLShaderBinding::addTexture(String name, Texture *texture) {
+	GLSLTextureBinding binding;
 	binding.name = name;
 	binding.texture = texture;
-	binding.vpParam = cgGetNamedParameter(cgShader->fp->program, name.c_str());
+//	binding.vpParam = GLSLGetNamedParameter(glslShader->fp->program, name.c_str());
 	textures.push_back(binding);
 }
 
-void CGShaderBinding::addCubemap(string name, Cubemap *cubemap) {
-	CGCubemapBinding binding;
+void GLSLShaderBinding::addCubemap(String name, Cubemap *cubemap) {
+	GLSLCubemapBinding binding;
 	binding.cubemap = cubemap;
 	binding.name = name;
-	binding.vpParam = cgGetNamedParameter(cgShader->fp->program, name.c_str());
+//	binding.vpParam = GLSLGetNamedParameter(GLSLShader->fp->program, name.c_str());
 	cubemaps.push_back(binding);
 }
 
-void CGShaderBinding::clearTexture(string name) {
+void GLSLShaderBinding::clearTexture(String name) {
 	for(int i=0; i < textures.size(); i++) {
 		if(textures[i].name == name) {
 			textures.erase(textures.begin()+i);
@@ -47,24 +47,31 @@ void CGShaderBinding::clearTexture(string name) {
 }
 
 
-void CGShaderBinding::addParam(string type, string name, string value) {
+void GLSLShaderBinding::addParam(String type, String name, String value) {
 	int paramType;
-	void *defaultData = CGProgramParam::createParamData(&paramType, type, value);
+	void *defaultData = GLSLProgramParam::createParamData(&paramType, type, value);
 	LocalShaderParam *newParam = new LocalShaderParam;
 	newParam->data = defaultData;
 	newParam->name = name;
 	localParams.push_back(newParam);
 }
 
-CGShader::CGShader(CGProgram *vp, CGProgram *fp) : Shader(Shader::CG_SHADER) {
+GLSLShader::GLSLShader(GLSLProgram *vp, GLSLProgram *fp) : Shader(Shader::MODULE_SHADER) {
 	this->vp = vp;
 	this->fp = fp;
+	
+	shader_id = glCreateProgram();
+    glAttachShader(shader_id, fp->program);
+    glAttachShader(shader_id, vp->program);
+    glLinkProgram(shader_id);	
 }
 
-CGShader::~CGShader() {
-
+GLSLShader::~GLSLShader() {
+	glDetachShader(shader_id, fp->program);
+    glDetachShader(shader_id, vp->program);
+	glDeleteProgram(shader_id);	
 }
 
-ShaderBinding *CGShader::createBinding() {
-	return new CGShaderBinding(this);
+ShaderBinding *GLSLShader::createBinding() {
+	return new GLSLShaderBinding(this);
 }

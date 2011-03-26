@@ -20,9 +20,9 @@ ScreenCurve::ScreenCurve(BezierCurve *curve, int numVertices) : ScreenShape(Scre
 	Polygon *poly = new Polygon();
 
 	Color c;
-	float interval = 1.0f/numVertices;
+	Number interval = 1.0f/numVertices;
 	Vector3 vec;
-	float offset = 1.0f;
+	Number offset = 1.0f;
 	Vertex *v;
 	for(int i=0; i < numVertices; i++) {
 		vec = curve->getPointAt(offset);

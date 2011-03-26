@@ -36,11 +36,11 @@ CollisionSceneEntity::CollisionSceneEntity(SceneEntity *entity, bool autoCollide
 		collisionObject->setCollisionShape(shape);
 	}	
 	
-	if(type == SHAPE_MESH) {		
-		concaveShape = dynamic_cast<btConcaveShape*>(shape);
-	} else {
+//	if(type == SHAPE_MESH) {		
+//		concaveShape = dynamic_cast<btConcaveShape*>(shape);
+//	} else {
 		convexShape	= dynamic_cast<btConvexShape*>(shape);		
-	}
+//	}
 		
 	gVelocity.set(0,0,0);
 }
@@ -54,6 +54,9 @@ btCollisionShape *CollisionSceneEntity::createCollisionShape(SceneEntity *entity
 		case CHARACTER_CONTROLLER:
 			collisionShape = new btCapsuleShape(entity->bBox.x/2.0f, entity->bBox.y/2.0f);			
 		break;
+		case SHAPE_PLANE:
+			collisionShape = new btBoxShape(btVector3(entity->bBox.x/2.0f, entity->bBox.y/2.0f,0.1f));			
+			break;
 		case SHAPE_BOX:
 			collisionShape = new btBoxShape(btVector3(entity->bBox.x/2.0f, entity->bBox.y/2.0f,entity->bBox.z/2.0f));			
 			break;
@@ -64,6 +67,7 @@ btCollisionShape *CollisionSceneEntity::createCollisionShape(SceneEntity *entity
 		{
 			SceneMesh* sceneMesh = dynamic_cast<SceneMesh*>(entity);
 			if(sceneMesh != NULL) {
+				/*
 				btTriangleMesh *btMesh = new btTriangleMesh();
 				for(int i=0; i < sceneMesh->getMesh()->getPolygonCount(); i++) {
 					Polygon *poly = sceneMesh->getMesh()->getPolygon(i);
@@ -73,6 +77,17 @@ btCollisionShape *CollisionSceneEntity::createCollisionShape(SceneEntity *entity
 					btMesh->addTriangle(v2,v1,v0);
 				}
 				collisionShape = new btBvhTriangleMeshShape(btMesh, true);
+				*/
+				btConvexHullShape *hullShape = new btConvexHullShape();
+				for(int i=0; i < sceneMesh->getMesh()->getPolygonCount(); i++) {
+					Polygon *poly = sceneMesh->getMesh()->getPolygon(i);
+					for(int j=0; j < poly->getVertexCount(); j++) {					
+						hullShape->addPoint(btVector3((btScalar)poly->getVertex(j)->x, (btScalar)poly->getVertex(j)->y,(btScalar)poly->getVertex(j)->z));
+					}
+				}
+				
+				collisionShape = hullShape;
+				
 			} else {
 				Logger::log("Tried to make a mesh collision object from a non-mesh\n");
 				collisionShape = new btBoxShape(btVector3(entity->bBox.x/2.0f, entity->bBox.y/2.0f,entity->bBox.z/2.0f));			

@@ -69,7 +69,7 @@ PhysicsSceneEntity::PhysicsSceneEntity(SceneEntity *entity, int type, float mass
 		btDefaultMotionState* myMotionState = new btDefaultMotionState(transform);
 		btRigidBody::btRigidBodyConstructionInfo rbInfo(mass,myMotionState,shape,localInertia);
 		rigidBody = new btRigidBody(rbInfo);
-		rigidBody->setActivationState(ISLAND_SLEEPING);		
+//		rigidBody->setActivationState(ISLAND_SLEEPING);		
 		rigidBody->setFriction(friction);
 		rigidBody->setRestitution(restitution);
 	}

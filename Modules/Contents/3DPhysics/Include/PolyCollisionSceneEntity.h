@@ -46,6 +46,7 @@ namespace Polycode {
 		static const int SHAPE_MESH = 3;			
 		static const int CHARACTER_CONTROLLER = 4;
 		static const int SHAPE_CAPSULE = 5;		
+		static const int SHAPE_PLANE = 6;		
 		
 			bool enabled;
 			btCollisionShape *shape;

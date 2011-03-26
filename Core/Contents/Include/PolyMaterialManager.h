@@ -41,7 +41,7 @@ namespace Polycode {
 			Texture *createTexture(int width, int height, char *imageData, bool clamp=true, int type=Image::IMAGE_RGBA);
 			Texture *createNewTexture(int width, int height, bool clamp=true, int type=Image::IMAGE_RGBA);
 			Texture *createTextureFromImage(Image *image, bool clamp=true);
-			Texture *createTextureFromFile(String fileName);
+			Texture *createTextureFromFile(String fileName, bool clamp=true);
 			void deleteTexture(Texture *texture);
 		
 			void reloadTextures();

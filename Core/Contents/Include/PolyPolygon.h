@@ -34,13 +34,16 @@ namespace Polycode {
 			
 			unsigned int getVertexCount();
 			Vertex *getVertex(unsigned int index);
-			Vertex *addVertex(float x, float y, float z);
-			void addTexCoord(float u, float v);
-			void addTexCoord2(float u, float v);
+			Vertex *addVertex(Number x, Number y, Number z);
+			
+			void removeVertex(int index);
+		
+			void addTexCoord(Number u, Number v);
+			void addTexCoord2(Number u, Number v);
 			Vector2 *getTexCoord(int index);
 			Vector2 *getTexCoord2(int index);
 			void addVertex(Vertex *vertex);
-			Vertex *addVertex(float x, float y, float z, float u, float v);
+			Vertex *addVertex(Number x, Number y, Number z, Number u, Number v);
 			void calculateNormal();
 			
 			Vector3 getFaceNormal();

@@ -41,8 +41,8 @@ namespace Polycode {
 	class _PolyExport ShaderRenderTarget {
 		public:
 			String id;
-			float width;
-			float height;
+			Number width;
+			Number height;
 			int sizeMode;
 			bool hasSize;
 			Texture *texture;
@@ -61,8 +61,8 @@ namespace Polycode {
 			String name;
 			int mode;
 			Texture *texture;
-			float width;
-			float height;			
+			Number width;
+			Number height;			
 			static const int MODE_IN= 0;
 			static const int MODE_OUT = 1;
 	} RenderTargetBinding;

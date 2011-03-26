@@ -113,7 +113,9 @@ void CoreServices::handleEvent(Event *event) {
 				dispatchEvent(new InputEvent(inputEvent->key, inputEvent->charCode, inputEvent->timestamp), inputEvent->getEventCode());			
 			break;
 			default:
-				dispatchEvent(new InputEvent(inputEvent->mousePosition, inputEvent->timestamp), inputEvent->getEventCode());			
+				InputEvent *_inputEvent = new InputEvent(inputEvent->mousePosition, inputEvent->timestamp);
+				_inputEvent->mouseButton = inputEvent->mouseButton;
+				dispatchEvent(_inputEvent, inputEvent->getEventCode());			
 			break;
 		}
 	}

@@ -16,20 +16,20 @@ Vector3::Vector3() : x(0),y(0),z(0){
 
 }
 
-void Vector3::set(float x, float y, float z) {
+void Vector3::set(Number x, Number y, Number z) {
 	this->x = x;
 	this->y = y;
 	this->z = z;	
 }
 
-Vector3::Vector3(float x,float y,float z) {
+Vector3::Vector3(Number x,Number y,Number z) {
 	set(x,y,z);
 }
 
 void Vector3::Normalize() {
-	float tL = sqrtf( x * x + y * y + z * z );
+	Number tL = sqrtf( x * x + y * y + z * z );
 	if(tL > 1e-08 ) {
-		float invTl = 1.0 / tL;
+		Number invTl = 1.0 / tL;
 		x *= invTl;
 		y *= invTl;
 		z *= invTl;

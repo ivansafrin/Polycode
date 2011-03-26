@@ -34,8 +34,8 @@ namespace Polycode {
 			int getTextWidth(Font *font, String text, int size);
 			int getTextHeight(Font *font, String text, int size);
 					
-			float getTextWidth();		
-			float getTextHeight();
+			Number getTextWidth();		
+			Number getTextHeight();
 		
 			Font *getFont();
 					
@@ -44,8 +44,8 @@ namespace Polycode {
 			
 		private:
 
-			float currentTextWidth;
-			float currentTextHeight;
+			Number currentTextWidth;
+			Number currentTextHeight;
 			int antiAliasMode;
 			int size;
 			String text;

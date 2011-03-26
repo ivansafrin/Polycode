@@ -31,14 +31,14 @@ namespace Polycode {
 		ScreenImage(Image *image);		
 		~ScreenImage();
 		
-		void setImageCoordinates(float x, float y, float width, float height);
-		float getImageWidth();
-		float getImageHeight();
+		void setImageCoordinates(Number x, Number y, Number width, Number height);
+		Number getImageWidth();
+		Number getImageHeight();
 		
 		private:
 
-		float imageWidth;
-		float imageHeight;
+		Number imageWidth;
+		Number imageHeight;
 		
 	};
 

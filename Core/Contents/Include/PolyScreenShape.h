@@ -26,19 +26,19 @@ namespace Polycode {
 	class _PolyExport ScreenShape : public ScreenMesh {
 		public:
 			
-			ScreenShape(int shapeType, float option1=0, float option2=0, float option3=0, float option4=0);
+			ScreenShape(int shapeType, Number option1=0, Number option2=0, Number option3=0, Number option4=0);
 			~ScreenShape();
 			void Render();
 					
-			void setStrokeColor(float r, float g, float b, float a);
-			void setStrokeWidth(float width);
+			void setStrokeColor(Number r, Number g, Number b, Number a);
+			void setStrokeWidth(Number width);
 			
-			void setGradient(float r1, float g1, float b1, float a1, float r2, float g2, float b2, float a2);
+			void setGradient(Number r1, Number g1, Number b1, Number a1, Number r2, Number g2, Number b2, Number a2);
 			void clearGradient();
 		
-			void setShapeSize(float newWidth, float newHeight);
+			void setShapeSize(Number newWidth, Number newHeight);
 		
-			void addShapePoint(float x, float y);
+			void addShapePoint(Number x, Number y);
 			
 			static const int SHAPE_RECT = 1;
 			static const int SHAPE_CIRCLE = 2;
@@ -51,13 +51,13 @@ namespace Polycode {
 			
 		protected:
 		
-			float option1;
-			float option2;
-			float option3;
-			float option4;
+			Number option1;
+			Number option2;
+			Number option3;
+			Number option4;
 									
 			Polygon *customShapePoly;
-			float strokeWidth;
+			Number strokeWidth;
 			int shapeType;
 			
 	};

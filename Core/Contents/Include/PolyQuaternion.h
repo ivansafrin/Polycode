@@ -20,15 +20,15 @@ namespace Polycode {
 
 	class _PolyExport Quaternion {
 		public:
-			Quaternion(float w, float x, float y, float z) {
+			Quaternion(Number w, Number x, Number y, Number z) {
 				set(w,x,y,z);
 			}
 			Quaternion();
 			~Quaternion();
 		
 		inline void setFromMatrix(const Matrix4 &kRot) {
-			float fTrace = kRot.m[0][0]+kRot.m[1][1]+kRot.m[2][2];
-			float fRoot;
+			Number fTrace = kRot.m[0][0]+kRot.m[1][1]+kRot.m[2][2];
+			Number fRoot;
 			
 			if ( fTrace > 0.0 )
 			{
@@ -53,7 +53,7 @@ namespace Polycode {
 				size_t k = s_iNext[j];
 				
 				fRoot = sqrtf(kRot.m[i][i]-kRot.m[j][j]-kRot.m[k][k] + 1.0);
-				float* apkQuat[3] = { &x, &y, &z };
+				Number* apkQuat[3] = { &x, &y, &z };
 				*apkQuat[i] = 0.5*fRoot;
 				fRoot = 0.5/fRoot;
 				w = (kRot.m[k][j]-kRot.m[j][k])*fRoot;
@@ -62,15 +62,15 @@ namespace Polycode {
 			}			
 		}
 			
-			static Quaternion Slerp(float fT, const Quaternion& rkP, const Quaternion& rkQ, bool shortestPath=false);
-			float Dot(const Quaternion& rkQ) const;
+			static Quaternion Slerp(Number fT, const Quaternion& rkP, const Quaternion& rkQ, bool shortestPath=false);
+			Number Dot(const Quaternion& rkQ) const;
 	Quaternion Log () const;
     Quaternion Exp () const;	
-    float Norm () const;
-    float normalise(void);	
+    Number Norm () const;
+    Number normalise(void);	
     Quaternion operator+ (const Quaternion& rkQ) const;
     Quaternion operator* (const Quaternion& rkQ) const;
-    Quaternion operator* (float fScalar) const;
+    Quaternion operator* (Number fScalar) const;
 		
 		inline void lookAt(const Vector3 &D, const Vector3 &upVector) {
 			/*
@@ -89,7 +89,7 @@ namespace Polycode {
 		}
 		
 		void createFromMatrix(Matrix4 matrix) {
-			float  tr, s, q[4];
+			Number  tr, s, q[4];
 			int    i, j, k;
 			
 			static const int nxt[3] = {1, 2, 0};			
@@ -148,7 +148,7 @@ namespace Polycode {
 	}
 
 
-    static Quaternion Squad(float fT, const Quaternion& rkP, const Quaternion& rkA, const Quaternion& rkB, const Quaternion& rkQ, bool shortestPath);
+    static Quaternion Squad(Number fT, const Quaternion& rkP, const Quaternion& rkA, const Quaternion& rkB, const Quaternion& rkQ, bool shortestPath);
 	Quaternion Inverse () const;
 	
     Quaternion operator- () const
@@ -156,7 +156,7 @@ namespace Polycode {
         return Quaternion(-w,-x,-y,-z);
     }
 			
-			void set(float w, float x, float y, float z) {
+			void set(Number w, Number x, Number y, Number z) {
 				this->w = w;
 				this->x = x;
 				this->y = y;
@@ -164,33 +164,33 @@ namespace Polycode {
 			}
 			
 			Quaternion inverse() {
-				float fNorm = w*w+x*x+y*y+z*z;
-				float fInvNorm = 1.0/fNorm;
+				Number fNorm = w*w+x*x+y*y+z*z;
+				Number fInvNorm = 1.0/fNorm;
 				return Quaternion(w*fInvNorm,-x*fInvNorm,-y*fInvNorm,-z*fInvNorm);
 
 			}
 			
-	float InvSqrt(float x){
-   float xhalf = 0.5f * x;
-   int i = *(int*)&x; // store floating-point bits in integer
+	Number InvSqrt(Number x){
+   Number xhalf = 0.5f * x;
+   int i = *(int*)&x; // store Numbering-point bits in integer
    i = 0x5f3759d5 - (i >> 1); // initial guess for Newton's method
-   x = *(float*)&i; // convert new bits into float
+   x = *(Number*)&i; // convert new bits into Number
    x = x*(1.5f - xhalf*x*x); // One round of Newton's method
    return x;
 }
 		
-	inline void fromAxes(float az, float ay, float ax) {
+	inline void fromAxes(Number az, Number ay, Number ax) {
 		ax *= TORADIANS;
 		ay *= TORADIANS;
 		az *= TORADIANS;		
 		
-		float c1 = cos(ay / 2.0f);
-		float c2 = cos(ax / 2.0f);
-		float c3 = cos(az / 2.0f);
+		Number c1 = cos(ay / 2.0f);
+		Number c2 = cos(ax / 2.0f);
+		Number c3 = cos(az / 2.0f);
 		
-		float s1 = sin(ay / 2.0f);
-		float s2 = sin(ax / 2.0f);
-		float s3 = sin(az / 2.0f);
+		Number s1 = sin(ay / 2.0f);
+		Number s2 = sin(ax / 2.0f);
+		Number s3 = sin(az / 2.0f);
 		
 		w = (c1*c2*c3) - (s1*s2*s3);
 		x = (s1*s2*c3) + (c1*c2*s3);
@@ -199,27 +199,27 @@ namespace Polycode {
 	}
 			
 			
-    void FromAngleAxis (const float& rfAngle,
+    void FromAngleAxis (const Number& rfAngle,
         const Vector3& rkAxis)
     {
-        float fHalfAngle ( 0.5*rfAngle );
-        float fSin = sin(fHalfAngle);
+        Number fHalfAngle ( 0.5*rfAngle );
+        Number fSin = sin(fHalfAngle);
         w = cos(fHalfAngle);
         x = fSin*rkAxis.x;
         y = fSin*rkAxis.y;
         z = fSin*rkAxis.z;
     }
     //-----------------------------------------------------------------------
-    void ToAngleAxis (float& rfAngle, Vector3& rkAxis) 
+    void ToAngleAxis (Number& rfAngle, Vector3& rkAxis) 
     {
         // The quaternion representing the rotation is
         //   q = cos(A/2)+sin(A/2)*(x*i+y*j+z*k)
 
-        float fSqrLength = x*x+y*y+z*z;
+        Number fSqrLength = x*x+y*y+z*z;
         if ( fSqrLength > 0.0 )
         {
             rfAngle = 2.0*acos(w);
-            float fInvLength = InvSqrt(fSqrLength);
+            Number fInvLength = InvSqrt(fSqrLength);
             rkAxis.x = x*fInvLength;
             rkAxis.y = y*fInvLength;
             rkAxis.z = z*fInvLength;
@@ -227,24 +227,24 @@ namespace Polycode {
         else
         {
             // angle is 0 (mod 2*pi), so any axis will do
-            rfAngle = float(0.0);
+            rfAngle = Number(0.0);
             rkAxis.x = 1.0;
             rkAxis.y = 0.0;
             rkAxis.z = 0.0;
         }
     }			
 			
-			void createFromAxisAngle(float x, float y, float z, float degrees);
+			void createFromAxisAngle(Number x, Number y, Number z, Number degrees);
 			Matrix4 createMatrix();
 			
 			
 			
 			Quaternion operator *(Quaternion q);
 			
-			float x;
-			float y;
-			float z;
-			float w;
+			Number x;
+			Number y;
+			Number z;
+			Number w;
 			
 		protected:
 	};

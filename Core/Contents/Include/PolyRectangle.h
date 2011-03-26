@@ -16,12 +16,12 @@ namespace Polycode {
 	class _PolyExport Rectangle {
 		public:
 			Rectangle(){x=0;y=0;w=0;h=0;}
-			Rectangle(float px, float py, float pw, float ph){x=px;y=py;w=pw;h=ph;}
-			void setRect(float x, float y, float w, float h);
+			Rectangle(Number px, Number py, Number pw, Number ph){x=px;y=py;w=pw;h=ph;}
+			void setRect(Number x, Number y, Number w, Number h);
 			
-			float x;
-			float y;
-			float w;
-			float h;
+			Number x;
+			Number y;
+			Number w;
+			Number h;
 	};
 }

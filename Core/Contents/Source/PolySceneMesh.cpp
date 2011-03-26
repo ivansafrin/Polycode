@@ -51,8 +51,6 @@ void SceneMesh::setMesh(Mesh *mesh) {
 
 
 SceneMesh::~SceneMesh() {
-	Logger::log("Destroying Scene Mesh...\n");
-	//delete mesh;
 }
 
 Mesh *SceneMesh::getMesh() {
@@ -80,8 +78,8 @@ Texture *SceneMesh::getTexture() {
 }
 
 
-void SceneMesh::loadTexture(String fileName) {
-	texture = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(fileName);
+void SceneMesh::loadTexture(String fileName,bool clamp) {
+	texture = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(fileName, clamp);
 }
 
 ShaderBinding *SceneMesh::getLocalShaderOptions() {
@@ -120,6 +118,56 @@ Skeleton *SceneMesh::getSkeleton() {
 void SceneMesh::renderMeshLocally() {
 	Renderer *renderer = CoreServices::getInstance()->getRenderer();
 	
+	if(skeleton) {	
+		for(int i=0; i < mesh->getPolygonCount(); i++) {
+			Polygon *polygon = mesh->getPolygon(i);			
+			unsigned int vCount = polygon->getVertexCount();			
+			for(int j=0; j < vCount; j++) {
+				Vertex *vert = polygon->getVertex(j);
+				Vector3 norm;
+				
+					Vector3 aPos = vert->restPosition;
+					Vector3 tPos;
+				
+					Number mult = 0;
+					for(int b =0; b < vert->getNumBoneAssignments(); b++) {
+						BoneAssignment *bas = vert->getBoneAssignment(b);
+						mult += bas->weight;
+					}
+					mult = 1.0f/mult;
+				
+					for(int b =0; b < vert->getNumBoneAssignments(); b++) {
+						BoneAssignment *bas = vert->getBoneAssignment(b);
+						Bone *bone = bas->bone;
+						if(bone) {
+							
+							Matrix4 restMatrix = bone->getRestMatrix();
+							Matrix4 finalMatrix = bone->getFinalMatrix();
+							
+							Vector3 vec = restMatrix * aPos;
+							tPos += finalMatrix * vec * (bas->weight*mult);
+							
+							Vector3 nvec = vert->restNormal;
+							nvec = restMatrix.rotateVector(nvec);
+							nvec = finalMatrix.rotateVector(nvec);
+							
+							norm += nvec * (bas->weight*mult);
+						}
+					}					
+					
+				
+					vert->x = tPos.x;
+					vert->y = tPos.y;
+					vert->z = tPos.z;				
+				
+					norm.Normalize();
+					vert->setNormal(norm.x, norm.y, norm.z);
+				
+			}
+		}
+		mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
+		mesh->arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;		
+	}
 	/*
 	Matrix4 boneMat;
 	for(int i=0; i < mesh->getPolygonCount(); i++) {
@@ -158,7 +206,7 @@ void SceneMesh::renderMeshLocally() {
 			if(polygon->usesFaceUV()) {
 				if(polygon->hasSecUVs)
 					CoreServices::getInstance()->getRenderer()->draw3DVertex2UV(vert, polygon->getTexCoord(j), polygon->getTexCoord2(j));
-				elseBitworld is gonna be included on next month's PC Gamer CD!
+				else
 					CoreServices::getInstance()->getRenderer()->draw3DVertex(vert, polygon->getTexCoord(j));
 			} else {
 				CoreServices::getInstance()->getRenderer()->draw3DVertex(vert, NULL);
@@ -169,9 +217,9 @@ void SceneMesh::renderMeshLocally() {
 	}
 */
 
-//	if(mesh->useVertexColors) {
-//		renderer->pushDataArrayForMesh(mesh, RenderDataArray::COLOR_DATA_ARRAY);
-//	}
+	if(mesh->useVertexColors) {
+		renderer->pushDataArrayForMesh(mesh, RenderDataArray::COLOR_DATA_ARRAY);
+	}
 	 
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::VERTEX_DATA_ARRAY);
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::NORMAL_DATA_ARRAY);		

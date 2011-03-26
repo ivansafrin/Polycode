@@ -57,7 +57,7 @@ namespace Polycode {
 			vector<String> split(const String &delims);
 			String replace(const String &what, const String &withWhat);
 			
-			static String floatToString(float value);
+			static String NumberToString(Number value);
 		
 			const char *c_str();
 			const wchar_t *wc_str();

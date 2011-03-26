@@ -29,7 +29,7 @@ namespace Polycode {
 			SceneEntity();
 			virtual ~SceneEntity();
 		
-			virtual bool testMouseCollision(float x, float y) { return false;}
+			virtual bool testMouseCollision(Number x, Number y) { return false;}
 
 			void ok() { Logger::log("ok!!1\n"); }
 			

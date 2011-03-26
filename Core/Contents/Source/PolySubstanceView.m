@@ -12,6 +12,8 @@
 @implementation SubstanceView
 
 @synthesize viewReady;
+@synthesize mouseX;
+@synthesize mouseY;
 
 - (id)initWithFrame:(NSRect)frameRect pixelFormat:(NSOpenGLPixelFormat *)format 
 {
@@ -380,6 +382,11 @@
 	newEvent.mouseButton = CoreInput::MOUSE_BUTTON1;
 	newEvent.mouseX = mouseLoc.x;
 	newEvent.mouseY = core->getYRes() - mouseLoc.y;
+	
+	mouseX = mouseLoc.x;
+	mouseY = mouseLoc.y;
+	
+	
 	core->cocoaEvents.push_back(newEvent);	
 	core->unlockMutex(core->eventMutex);	
 }
@@ -397,6 +404,11 @@
 	newEvent.mouseButton = CoreInput::MOUSE_BUTTON1;	
 	newEvent.mouseX = mouseLoc.x;
 	newEvent.mouseY = core->getYRes() - mouseLoc.y;
+	
+	mouseX = mouseLoc.x;
+	mouseY = mouseLoc.y;
+	
+	
 	core->cocoaEvents.push_back(newEvent);	
 	core->unlockMutex(core->eventMutex);	
 }
@@ -507,6 +519,10 @@
 	newEvent.eventCode = InputEvent::EVENT_MOUSEMOVE;
 	newEvent.mouseX = mouseLoc.x;
 	newEvent.mouseY = core->getYRes() - mouseLoc.y;
+	
+	mouseX = mouseLoc.x;
+	mouseY = mouseLoc.y;
+	
 	core->cocoaEvents.push_back(newEvent);	
 	core->unlockMutex(core->eventMutex);
 }

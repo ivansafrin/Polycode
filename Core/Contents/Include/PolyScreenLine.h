@@ -30,11 +30,11 @@ namespace Polycode {
 
 			void Update();
 			void Render();
-			void setLineWidth(float width);
+			void setLineWidth(Number width);
 			
 		protected:
 		
-			float lineWidth;
+			Number lineWidth;
 			
 			Vertex startVertex;
 			Vertex endVertex;

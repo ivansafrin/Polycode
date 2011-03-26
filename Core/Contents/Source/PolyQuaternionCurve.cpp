@@ -55,10 +55,10 @@ void QuaternionCurve::generatePointsFromCurves(BezierCurve *wCurve, BezierCurve 
 	}
 }
 
-    Quaternion QuaternionCurve::interpolate(float t, bool useShortestPath)
+    Quaternion QuaternionCurve::interpolate(Number t, bool useShortestPath)
     {
         // Work out which segment this is in
-        float fSeg = t * (tPoints.size() - 1);
+        Number fSeg = t * (tPoints.size() - 1);
         unsigned int segIdx = (unsigned int)fSeg;
         // Apportion t 
         t = fSeg - segIdx;
@@ -67,7 +67,7 @@ void QuaternionCurve::generatePointsFromCurves(BezierCurve *wCurve, BezierCurve 
 
     }
     //---------------------------------------------------------------------
-    Quaternion QuaternionCurve::interpolate(unsigned int fromIndex, float t,
+    Quaternion QuaternionCurve::interpolate(unsigned int fromIndex, Number t,
 		bool useShortestPath)
     {
         // Bounds check
@@ -98,7 +98,6 @@ void QuaternionCurve::generatePointsFromCurves(BezierCurve *wCurve, BezierCurve 
         Quaternion &b = tPoints[fromIndex+1].q1;		
 		
 		if ((fromIndex + 1) == tPoints.size() && tPoints[fromIndex].q2 == tPoints[0].q2) {
-			Logger::log("ASDASDADS\n");
 			q = tPoints[1].q2;
 			b = tPoints[1].q1;					
 		} 

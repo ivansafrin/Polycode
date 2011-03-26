@@ -320,21 +320,34 @@ void CollisionScene::loadCollisionChild(SceneEntity *entity, bool autoCollide, i
 	addCollisionChild(entity, autoCollide, type);
 }
 
-CollisionSceneEntity *CollisionScene::trackCollision(SceneEntity *newEntity, bool autoCollide, int type) {
+void CollisionScene::stopTrackingCollision(SceneEntity *entity) {
+	CollisionSceneEntity *cEnt = getCollisionByScreenEntity(entity);	
+	world->removeCollisionObject(cEnt->collisionObject);
+	for(int i=0; i < collisionChildren.size(); i++) {
+		if(collisionChildren[i] == cEnt) {
+			collisionChildren.erase(collisionChildren.begin() + i);
+			delete cEnt;
+			
+			return;
+		}
+	}
+}
+
+CollisionSceneEntity *CollisionScene::trackCollision(SceneEntity *newEntity, bool autoCollide, int type, int group) {
 	CollisionSceneEntity *newCollisionEntity = new CollisionSceneEntity(newEntity,autoCollide, type);
 
-	if(type == CollisionSceneEntity::CHARACTER_CONTROLLER) {
-		world->addCollisionObject(newCollisionEntity->collisionObject,btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);		
-	} else {
-		world->addCollisionObject(newCollisionEntity->collisionObject);		
-	}
+//	if(type == CollisionSceneEntity::CHARACTER_CONTROLLER) {
+//		world->addCollisionObject(newCollisionEntity->collisionObject,btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);		
+//	} else {
+		world->addCollisionObject(newCollisionEntity->collisionObject, group);
+//	}
 	
 	collisionChildren.push_back(newCollisionEntity);
 //	newCollisionEntity->Update();
 	return newCollisionEntity;
 }
 
-CollisionSceneEntity *CollisionScene::addCollisionChild(SceneEntity *newEntity, bool autoCollide, int type) {
+CollisionSceneEntity *CollisionScene::addCollisionChild(SceneEntity *newEntity, bool autoCollide, int type, int group) {
 	addEntity(newEntity);
 	return trackCollision(newEntity, autoCollide, type);
 

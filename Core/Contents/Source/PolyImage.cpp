@@ -110,10 +110,10 @@ void Image::perlinNoise(int seed, bool alpha) {
 	Perlin *perlin = new Perlin(12,33,1,seed);
 	unsigned int *imageData32 = (unsigned int*)imageData;
 	Color pixelColor;
-	float noiseVal;
+	Number noiseVal;
 	
 	for(int i=0; i < width*height;i++) {
-			noiseVal = fabs(1.0f/perlin->Get( 0.1+(0.9f/((float)width)) * (i%width), (1.0f/((float)height)) *   (i - (i%width))));
+			noiseVal = fabs(1.0f/perlin->Get( 0.1+(0.9f/((Number)width)) * (i%width), (1.0f/((Number)height)) *   (i - (i%width))));
 			if(alpha)
 				pixelColor.setColor(noiseVal, noiseVal, noiseVal, noiseVal);
 			else
@@ -181,7 +181,7 @@ void Image::lineTo(int x, int y, Color col) {
 	line(brushPosX, brushPosY, brushPosX+x, brushPosY+y, col);
 }
 
-void Image::setPixel(int x, int y, float r, float g, float b, float a) {
+void Image::setPixel(int x, int y, Number r, Number g, Number b, Number a) {
 	if(x < 0 || x > width || y < 0 || y > height)
 		return;
 
@@ -191,7 +191,7 @@ void Image::setPixel(int x, int y, float r, float g, float b, float a) {
 	imageData32[x+(y*width)] = color.getUint();
 }
 
-void Image::multiply(float amt, bool color, bool alpha) {
+void Image::multiply(Number amt, bool color, bool alpha) {
 	int startIndex = 0;
 	int endIndex = 3;
 	if(!color)
@@ -201,17 +201,17 @@ void Image::multiply(float amt, bool color, bool alpha) {
 		
 	for (int i = 0; i < height*width*pixelSize; i+=pixelSize) {
 		for(int j = startIndex; j < endIndex+1;j++) {
-			if(((float)imageData[i+j]) * amt< 0)
+			if(((Number)imageData[i+j]) * amt< 0)
 				imageData[i+j] = 0;
-			else if(((float)imageData[i+j]) * amt > 255)
+			else if(((Number)imageData[i+j]) * amt > 255)
 				imageData[i+j] = 255;
 			else
-				imageData[i+j] = (char)(((float)imageData[i+j]) * amt);
+				imageData[i+j] = (char)(((Number)imageData[i+j]) * amt);
 		}
 	}
 }
 
-void Image::darken(float amt, bool color, bool alpha) {
+void Image::darken(Number amt, bool color, bool alpha) {
 	char decAmt = 255.0f * amt;
 	int startIndex = 0;
 	int endIndex = 3;
@@ -230,7 +230,7 @@ void Image::darken(float amt, bool color, bool alpha) {
 	}
 }
 
-void Image::lighten(float amt, bool color, bool alpha) {
+void Image::lighten(Number amt, bool color, bool alpha) {
 	char decAmt = 255.0f * amt;
 	int startIndex = 0;
 	int endIndex = 3;
@@ -414,9 +414,9 @@ void Image::line(int x0, int y0, int x1, int y1, Color col) {
 	
 	int deltax = x1 - x0;
 	int deltay = abs(y1 - y0);
-	float error = 0;
+	Number error = 0;
 
-     float deltaerr = ((float)deltay) / ((float)deltax);
+     Number deltaerr = ((Number)deltay) / ((Number)deltax);
      int ystep;
      int y = y0;
      if(y0 < y1)
@@ -430,7 +430,7 @@ void Image::line(int x0, int y0, int x1, int y1, Color col) {
 		} else {
 			setPixel(x,y,col);
 		}
-         error = error + ((float)deltaerr);
+         error = error + ((Number)deltaerr);
          if(error >= 0.5) {
              y = y + ystep;
              error = error - 1.0;
@@ -438,7 +438,7 @@ void Image::line(int x0, int y0, int x1, int y1, Color col) {
 	}
 }
 
-void Image::fill(float r, float g, float b, float a) {
+void Image::fill(Number r, Number g, Number b, Number a) {
 	Color *color = new Color(r,g,b,a);
 	unsigned int val = color->getUint();
 	unsigned int *imageData32 = (unsigned int*) imageData;

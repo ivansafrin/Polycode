@@ -31,8 +31,8 @@ namespace Polycode {
 			QuaternionCurve(BezierCurve *wCurve, BezierCurve *xCurve, BezierCurve *yCurve, BezierCurve *zCurve);
 			~QuaternionCurve();
 		
-			Quaternion interpolate(float t, bool useShortestPath);
-			Quaternion interpolate(unsigned int fromIndex, float t, bool useShortestPath);
+			Quaternion interpolate(Number t, bool useShortestPath);
+			Quaternion interpolate(unsigned int fromIndex, Number t, bool useShortestPath);
 						
 			void generatePointsFromCurves(BezierCurve *wCurve, BezierCurve *xCurve, BezierCurve *yCurve, BezierCurve *zCurve);
 			void recalcTangents(void);

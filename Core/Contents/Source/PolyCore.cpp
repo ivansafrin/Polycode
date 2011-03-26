@@ -37,11 +37,11 @@ namespace Polycode {
 		return numVideoModes;
 	}
 	
-	float Core::getXRes() {
+	Number Core::getXRes() {
 		return xRes;
 	}
 
-	float Core::getYRes() {
+	Number Core::getYRes() {
 		return yRes;
 	}
 	
@@ -58,12 +58,12 @@ namespace Polycode {
 		running = false;
 	}
 	
-	float Core::getElapsed() {
-		return ((float)elapsed)/1000.0f;
+	Number Core::getElapsed() {
+		return ((Number)elapsed)/1000.0f;
 	}
 	
-	float Core::getTicksFloat() {
-		return ((float)getTicks())/1000.0f;		
+	Number Core::getTicksFloat() {
+		return ((Number)getTicks())/1000.0f;		
 	}
 	
 	void Core::setVideoModeIndex(int index, bool fullScreen, int aaLevel) {
@@ -101,7 +101,7 @@ namespace Polycode {
 	}
 	
 	
-	float Core::getFPS() {
+	Number Core::getFPS() {
 		return fps;
 	}
 	

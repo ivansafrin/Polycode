@@ -122,19 +122,20 @@ namespace Polycode {
 		void pushRenderDataArray(RenderDataArray *array);
 		RenderDataArray *createRenderDataArrayForMesh(Mesh *mesh, int arrayType);
 		RenderDataArray *createRenderDataArray(int arrayType);
-		void setRenderArrayData(RenderDataArray *array, float *arrayData);
+		void setRenderArrayData(RenderDataArray *array, Number *arrayData);
 		void drawArrays(int drawType);		
 				
-		void setOrthoMode(float xSize=0.0f, float ySize=0.0f);
+		void setOrthoMode(Number xSize=0.0f, Number ySize=0.0f);
+		void _setOrthoMode();
 		void setPerspectiveMode();
 		
 		void enableBackfaceCulling(bool val);
-		void setViewportSize(int w, int h, float fov=45.0f);
+		void setViewportSize(int w, int h, Number fov=45.0f);
 		
 		void setLineSmooth(bool val);		
 		
 		void loadIdentity();
-		void setClearColor(float r, float g, float b);
+		void setClearColor(Number r, Number g, Number b);
 		
 		void setTexture(Texture *texture);		
 		
@@ -142,22 +143,22 @@ namespace Polycode {
 		void renderZBufferToTexture(Texture *targetTexture);
 		void clearScreen();	
 		
-		void translate2D(float x, float y);
-		void rotate2D(float angle);
+		void translate2D(Number x, Number y);
+		void rotate2D(Number angle);
 		void scale2D(Vector2 *scale);
 		
-		void setLineSize(float lineSize);
+		void setLineSize(Number lineSize);
 		
-		void setVertexColor(float r, float g, float b, float a);
+		void setVertexColor(Number r, Number g, Number b, Number a);
 		
 		void setBlendingMode(int blendingMode);
 		
 		void enableLighting(bool enable);	
 		void enableFog(bool enable);
-		void setFogProperties(int fogMode, Color color, float density, float startDepth, float endDepth);		
+		void setFogProperties(int fogMode, Color color, Number density, Number startDepth, Number endDepth);		
 				
 		void translate3D(Vector3 *position);
-		void translate3D(float x, float y, float z);
+		void translate3D(Number x, Number y, Number z);
 		void scale3D(Vector3 *scale);
 		
 		Matrix4 getProjectionMatrix();
@@ -166,20 +167,21 @@ namespace Polycode {
 		void multModelviewMatrix(Matrix4 m);
 		
 		void enableDepthTest(bool val);
+		void enableDepthWrite(bool val);
 				
 		void clearBuffer(bool colorBuffer, bool depthBuffer);	
 		void drawToColorBuffer(bool val);
 		
-		void drawScreenQuad(float qx, float qy);
+		void drawScreenQuad(Number qx, Number qy);
 				
 		void pushMatrix();
 		void popMatrix();
 		
-		bool test2DCoordinate(float x, float y, Polycode::Polygon *poly, const Matrix4 &matrix, bool billboardMode);
+		bool test2DCoordinate(Number x, Number y, Polycode::Polygon *poly, const Matrix4 &matrix, bool billboardMode);
 		
-		void setFOV(float fov);
+		void setFOV(Number fov);
 		
-		Vector3 Unproject(float x, float y);
+		Vector3 Unproject(Number x, Number y);
 		
 		void setDepthFunction(int depthFunction);
 						
@@ -189,8 +191,8 @@ namespace Polycode {
 	protected:
 
 		
-		float nearPlane;
-		float farPlane;
+		Number nearPlane;
+		Number farPlane;
 		
 		int verticesToDraw;
 		

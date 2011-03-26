@@ -78,15 +78,15 @@ String Texture::getResourcePath() {
 }
 
 void Texture::updateScroll(int elapsed) {
-	float ef = ((float)(elapsed))/1000.0f;
+	Number ef = ((Number)(elapsed))/1000.0f;
 	scrollOffsetX += scrollSpeedX*ef;
 	scrollOffsetY += scrollSpeedY*ef;
 }
 
-float Texture::getScrollOffsetX() {
+Number Texture::getScrollOffsetX() {
 	return scrollOffsetX;
 }
 
-float Texture::getScrollOffsetY() {
+Number Texture::getScrollOffsetY() {
 	return scrollOffsetY;
 }

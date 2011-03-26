@@ -25,10 +25,10 @@ namespace Polycode {
 
 
         inline Matrix4(
-            float m00, float m01, float m02, float m03,
-            float m10, float m11, float m12, float m13,
-            float m20, float m21, float m22, float m23,
-            float m30, float m31, float m32, float m33 )
+            Number m00, Number m01, Number m02, Number m03,
+            Number m10, Number m11, Number m12, Number m13,
+            Number m20, Number m21, Number m22, Number m23,
+            Number m30, Number m31, Number m32, Number m33 )
         {
             m[0][0] = m00;
             m[0][1] = m01;
@@ -49,18 +49,18 @@ namespace Polycode {
         }
 
 			
-			Matrix4(float *m);
+			Matrix4(Number *m);
 			~Matrix4();
 			
 			void init();
 			
 			union {
-				float m[4][4];
-				float ml[16];
+				Number m[4][4];
+				Number ml[16];
 			};
 			
 			inline void identity() {
-				memset(ml, 0, sizeof(float)*16);
+				memset(ml, 0, sizeof(Number)*16);
 				ml[0] = 1;
 				ml[5] = 1;
 				ml[10] = 1;
@@ -93,16 +93,22 @@ namespace Polycode {
 								v2.x*m[0][2] + v2.y*m[1][2] + v2.z*m[2][2] + m[3][2]);
 			}			
 			
-			inline float* operator [] ( int row ) { return m[row];}
+			inline Number* operator [] ( int row ) { return m[row];}
 
-			inline void setPosition(float x, float y, float z) {
+			inline void setPosition(Number x, Number y, Number z) {
 				m[3][0] = x;
 				m[3][1] = y;
 				m[3][2] = z;
 			}
+		
+			inline void setScale(Vector3 scale) {
+				m[0][0] = scale.x;
+				m[1][1] = scale.y;
+				m[2][2] = scale.z;
+			}
 
-			inline void getEulerAngles(float *ax, float *ay, float *az) {
-				float angle_x, angle_y, angle_z,tr_x,tr_y,C;
+			inline void getEulerAngles(Number *ax, Number *ay, Number *az) {
+				Number angle_x, angle_y, angle_z,tr_x,tr_y,C;
 				
 				angle_y = asin(m[0][2]);
 				

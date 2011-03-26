@@ -26,14 +26,14 @@ namespace Polycode {
 			~Camera();
 			
 			void buildFrustrumPlanes();
-			bool isSphereInFrustrum(Vector3 pos, float fRadius);
+			bool isSphereInFrustrum(Vector3 pos, Number fRadius);
 		
 			bool canSee(SceneEntity *entity);
 			
 			void setOrthoMode(bool mode);
 			bool getOrthoMode();
-			void setFOV(float fov);
-			float getFOV();
+			void setFOV(Number fov);
+			Number getFOV();
 			void doCameraTransform();
 
 			void setLightDepthTexture(Texture *texture);
@@ -43,18 +43,18 @@ namespace Polycode {
 			void drawFilter();
 			
 			
-			void setExposureLevel(float level);
-			float getExposureLevel();
+			void setExposureLevel(Number level);
+			Number getExposureLevel();
 			
 			void createPostFilter(Material *shaderMaterial);
 			void setPostFilter(String shaderName);
 			
 		private:
 		
-			float exposureLevel;
+			Number exposureLevel;
 			bool orthoMode;
-			float fov;
-			float frustumPlanes[6][4];
+			Number fov;
+			Number frustumPlanes[6][4];
 			Scene *parentScene;
 		
 			bool fovSet;

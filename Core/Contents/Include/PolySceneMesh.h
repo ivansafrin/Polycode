@@ -40,7 +40,7 @@ namespace Polycode {
 			Mesh *getMesh();
 			Texture *getTexture();
 			Material *getMaterial();
-			void loadTexture(String fileName);
+			void loadTexture(String fileName, bool clamp=true);
 			void loadSkeleton(String fileName);
 			void setTexture(Texture *texture);
 			void setMaterial(Material *material);

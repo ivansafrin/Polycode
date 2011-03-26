@@ -30,6 +30,23 @@ PolycodeProject* PolycodeProjectManager::openProject(String path) {
 	return newProject;
 }
 
+int PolycodeProjectManager::removeProject(PolycodeProject *project) {		
+	for(int i=0;i<projects.size();i++) {
+		if(projects[i] == project) {
+			projects.erase(projects.begin()+i);
+		}
+	}	
+	
+	if(activeProject == project) {
+		activeProject = NULL;
+	}
+	
+	delete project;
+	
+	return 1;
+}
+
+
 void PolycodeProjectManager::createNewProject(String templateFolder, String projectName, String projectLocation) {	
 	CoreServices::getInstance()->getCore()->createFolder(projectLocation);		
 	CoreServices::getInstance()->getCore()->copyDiskItem(templateFolder, projectLocation+"/"+projectName);

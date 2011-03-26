@@ -13,15 +13,15 @@ using namespace Polycode;
 
 Bone::Bone(String boneName) : SceneEntity() {
 	this->boneName = boneName;
-
-	boneMesh = new Mesh(Mesh::QUAD_MESH);
-	boneMesh->createBox(0.1,0.1,0.1);
-	bBoxRadius = boneMesh->getRadius();
-	bBox = boneMesh->calculateBBox();
-//	color.setColor(1.0f, 0.0f, 0.0f, 1.0f);
-	this->setDepthWrite(false);
+//	boneMesh = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 0.1, 0.1, 0.1);
+	this->depthTest = false;
 	parentBone = NULL;
 	boneMatrix.init();
+//	addChild(boneMesh);
+	
+	boneMesh = new Mesh(Mesh::QUAD_MESH);
+	boneMesh->createBox(0.2,0.2,0.2);
+	
 }
 
 
@@ -61,7 +61,7 @@ Matrix4 Bone::getBoneMatrix() {
 }
 
 Matrix4 Bone::getFinalMatrix() {
-	Matrix4 final = boneMatrix * restMatrix;
+	Matrix4 final = boneMatrix;
 
 	if(parentBone) {
 		final = final * parentBone->getFinalMatrix();
@@ -72,6 +72,10 @@ Matrix4 Bone::getFinalMatrix() {
 
 void Bone::setBoneMatrix(Matrix4 matrix) {
 	boneMatrix = matrix;
+}
+
+void Bone::setBaseMatrix(Matrix4 matrix) {
+	baseMatrix = matrix;
 }
 
 Matrix4 Bone::getRestMatrix() {
@@ -86,6 +90,15 @@ Matrix4 Bone::getParentRestMatrix() {
 		ident.identity();
 		return ident;
 	}
+}
+
+Matrix4 Bone::getFullBaseMatrix() {
+	if(parentBone)
+		return baseMatrix * parentBone->getFullBaseMatrix();
+	else {
+		return baseMatrix;
+	}
+	
 }
 
 Matrix4 Bone::getFullRestMatrix() {
@@ -104,19 +117,21 @@ String Bone::getName() {
 	return boneName;
 }
 
-void Bone::enableBoneLabel(Font *font, float size, float scale) {
-//	SceneLabel *label = new SceneLabel("", boneName, size, scale, Label::ANTIALIAS_FULL);
-	SceneLabel *label = new SceneLabel("", L"FIX ME", size, scale, Label::ANTIALIAS_FULL);	
+void Bone::enableBoneLabel(String fontLabel, Number size, Number scale, Color labelColor) {
+	SceneLabel *label = new SceneLabel(fontLabel, boneName, size, scale, Label::ANTIALIAS_FULL);
+	label->setColor(labelColor);
 	label->billboardMode = true;
-	label->setDepthWrite(false);
+	label->depthTest = false;
 	addEntity(label);
 }
 
 void Bone::Render() {
+
 	CoreServices::getInstance()->getRenderer()->setTexture(NULL);	
 //	renderer->pushDataArrayForMesh(boneMesh, RenderDataArray::COLOR_DATA_ARRAY);
-//	renderer->pushDataArrayForMesh(boneMesh, RenderDataArray::VERTEX_DATA_ARRAY);
-//	renderer->pushDataArrayForMesh(boneMesh, RenderDataArray::TEXCOORD_DATA_ARRAY);	
-//	renderer->pushDataArrayForMesh(boneMesh, RenderDataArray::NORMAL_DATA_ARRAY);		
-//	renderer->drawArrays(boneMesh->getMeshType());	
+	renderer->pushDataArrayForMesh(boneMesh, RenderDataArray::VERTEX_DATA_ARRAY);
+	renderer->pushDataArrayForMesh(boneMesh, RenderDataArray::TEXCOORD_DATA_ARRAY);	
+	renderer->pushDataArrayForMesh(boneMesh, RenderDataArray::NORMAL_DATA_ARRAY);		
+	renderer->drawArrays(boneMesh->getMeshType());	
+
 }

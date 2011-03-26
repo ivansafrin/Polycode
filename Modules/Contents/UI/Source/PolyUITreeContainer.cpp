@@ -38,12 +38,23 @@ UITreeContainer::UITreeContainer(String icon, String text, float treeWidth, floa
 	
 	mainContainer = new UIScrollContainer(scrollChild, false, true, treeWidth-conf->getNumericValue("Polycode", "uiScrollDefaultSize"), treeHeight);
 	addChild(mainContainer);
+	
+	width = treeWidth;
+	height = treeHeight;
+	hitwidth = width;
+	hitheight = height;
 }
 
 void UITreeContainer::Resize(int x, int y) {
 	mainContainer->Resize(x,y);
 	bgBox->resizeBox(x, y);
 	mainContainer->setPositionY(0);
+
+//	width = x;
+//	height = y;
+	hitwidth = x;
+	hitheight = y;
+
 }
 
 void UITreeContainer::handleEvent(Event *event) {

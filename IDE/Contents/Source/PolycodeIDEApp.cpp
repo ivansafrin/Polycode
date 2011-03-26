@@ -48,6 +48,7 @@ PolycodeIDEApp::PolycodeIDEApp(SubstanceView *view) : EventDispatcher() {
 	projectManager->setProjectBrowser(frame->getProjectBrowser());
 	
 	frame->getProjectBrowser()->addEventListener(this, Event::CHANGE_EVENT);
+	frame->getProjectBrowser()->addEventListener(this, PolycodeProjectBrowserEvent::SHOW_MENU);
 	
 	frame->Resize(core->getXRes(), core->getYRes());	
 	core->setVideoMode(1000, 600, false, 0);
@@ -71,6 +72,13 @@ void PolycodeIDEApp::newFile() {
 	if(projectManager->getActiveProject()) {
 		frame->newFileWindow->resetForm();
 		frame->showModal(frame->newFileWindow);
+	}
+}
+
+void PolycodeIDEApp::closeProject() {
+	if(projectManager->getActiveProject()) {
+		frame->getProjectBrowser()->removeProject(projectManager->getActiveProject());
+		projectManager->removeProject(projectManager->getActiveProject());
 	}
 }
 
@@ -102,8 +110,21 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 	}
 	
 	if(event->getDispatcher()  == frame->getProjectBrowser()) {
+		
+		if(event->getEventType() == "PolycodeProjectBrowserEvent") {
+			switch(event->getEventCode()) {
+				case PolycodeProjectBrowserEvent::SHOW_MENU:
+					dispatchEvent(new Event(), EVENT_SHOW_MENU);
+				break;
+			}
+		}
+		
 		if(event->getEventCode() == Event::CHANGE_EVENT) {
 			BrowserUserData *selectedData = frame->getProjectBrowser()->getSelectedData();
+			
+			projectManager->setActiveProject(selectedData->parentProject);
+			if(selectedData->type == 0)
+				return;			
 			
 			if(selectedData) {
 			PolycodeEditor *editor;

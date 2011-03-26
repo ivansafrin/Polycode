@@ -23,7 +23,7 @@ namespace Polycode {
 	class _PolyExport ScenePrimitive : public SceneMesh {
 		public:
 		
-			ScenePrimitive(int type, float v1=1.0f, float v2=1.0f, float v3=1.0f);
+			ScenePrimitive(int type, Number v1=1.0f, Number v2=1.0f, Number v3=1.0f);
 			virtual ~ScenePrimitive();
 
 			static const int TYPE_BOX = 0;		

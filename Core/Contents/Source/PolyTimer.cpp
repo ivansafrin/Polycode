@@ -39,8 +39,8 @@ void Timer::Pause(bool paused) {
 	this->paused = paused;
 }
 
-float Timer::getElapsedf() {
-	return ((float)(elapsed))/1000.0f;
+Number Timer::getElapsedf() {
+	return ((Number)(elapsed))/1000.0f;
 }
 
 bool Timer::isPaused() {

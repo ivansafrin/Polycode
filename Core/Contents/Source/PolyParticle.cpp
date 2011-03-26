@@ -16,21 +16,23 @@ Particle::Particle(int particleType, bool isScreenParticle, Material *material, 
 	if(isScreenParticle) {
 		createScreenParticle(particleType, texture, particleMesh);		
 	} else {
-		createSceneParticle(particleType, material, particleMesh);
+		createSceneParticle(particleType, texture, particleMesh);
 	}
 	
-	Reset();
+	Reset(true);
 }
 
-void Particle::createSceneParticle(int particleType, Material *material, Mesh *particleMesh) {
+void Particle::createSceneParticle(int particleType, Texture *texture, Mesh *particleMesh) {
 	switch(particleType) {
 		case BILLBOARD_PARTICLE:
 		{
 			ScenePrimitive *primitive = new ScenePrimitive(ScenePrimitive::TYPE_PLANE, 1.0f, 1.0f);
-			primitive->setMaterial(material);
+			primitive->setTexture(texture);
 			primitive->billboardMode = true;
 			primitive->billboardRoll = true;
-			primitive->setDepthWrite(false);
+//			primitive->alphaTest = true;
+//			primitive->depthTest = false;
+			primitive->depthWrite = false;
 			primitive->backfaceCulled = false;
 			particleBody = primitive;			
 		}
@@ -40,14 +42,17 @@ void Particle::createSceneParticle(int particleType, Material *material, Mesh *p
 			SceneMesh *primitive = new SceneMesh(particleMesh);
 			if(particleMesh->getMeshType() == Mesh::TRI_MESH)
 				primitive->cacheToVertexBuffer(true);
-			primitive->setMaterial(material);
+			primitive->setTexture(texture);
 			//			primitive->billboardMode = true;
 			//			primitive->billboardRoll = true;
 			//primitive->depthTest = false;
 			//			primitive->backfaceCulled = false;
 			particleBody = primitive;						
 		}			
-			break;
+		break;
+		default:
+			assert(0);
+		break;
 	}
 }
 
@@ -78,15 +83,19 @@ void Particle::createScreenParticle(int particleType, Texture *texture, Mesh *pa
 }
 
 
-void Particle::Reset() {
-	if(life > lifespan)
-		life = 0 + (life - lifespan);
-	else
-		life = 0;
+void Particle::Reset(bool continuious) {
+	if(continuious) {
+		if(life > lifespan)
+			life = 0 + (life - lifespan);
+		else
+			life = 0;
+	} else {
+			life = 0;		
+	}
 
-	perlinPosX = (float)rand()/RAND_MAX;
-	perlinPosY = (float)rand()/RAND_MAX;
-	perlinPosZ = (float)rand()/RAND_MAX;
+	perlinPosX = (Number)rand()/RAND_MAX;
+	perlinPosY = (Number)rand()/RAND_MAX;
+	perlinPosZ = (Number)rand()/RAND_MAX;
 	
 }
 

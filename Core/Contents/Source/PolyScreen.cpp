@@ -30,7 +30,7 @@ Screen::~Screen() {
 	}
 }
 
-void Screen::setNormalizedCoordinates(bool newVal, float yCoordinateSize) {
+void Screen::setNormalizedCoordinates(bool newVal, Number yCoordinateSize) {
 	useNormalizedCoordinates = newVal;
 	this->yCoordinateSize = yCoordinateSize;
 }
@@ -40,7 +40,7 @@ void Screen::handleInputEvent(InputEvent *inputEvent) {
 	for(int i=children.size()-1; i >= 0; i--) {
 		switch(inputEvent->getEventCode()) {
 			case InputEvent::EVENT_MOUSEDOWN:
-				if(children[i]->_onMouseDown(inputEvent->mousePosition.x-offset.x, inputEvent->mousePosition.y-offset.y, inputEvent->timestamp) &&
+				if(children[i]->_onMouseDown(inputEvent->mousePosition.x-offset.x, inputEvent->mousePosition.y-offset.y, inputEvent->mouseButton, inputEvent->timestamp) &&
 				children[i]->blockMouseInput)
 					return;
 			break;
@@ -48,7 +48,7 @@ void Screen::handleInputEvent(InputEvent *inputEvent) {
 				children[i]->_onMouseMove(inputEvent->mousePosition.x-offset.x, inputEvent->mousePosition.y-offset.y, inputEvent->timestamp);
 			break;
 			case InputEvent::EVENT_MOUSEUP:
-				if(children[i]->_onMouseUp(inputEvent->mousePosition.x-offset.x, inputEvent->mousePosition.y-offset.y, inputEvent->timestamp) &&
+				if(children[i]->_onMouseUp(inputEvent->mousePosition.x-offset.x, inputEvent->mousePosition.y-offset.y, inputEvent->mouseButton, inputEvent->timestamp) &&
 				children[i]->blockMouseInput)
 					return;
 			break;
@@ -72,7 +72,7 @@ void Screen::setRenderer(Renderer *renderer) {
 	this->renderer = renderer;
 }
 
-void Screen::setScreenOffset(float x, float y) {
+void Screen::setScreenOffset(Number x, Number y) {
 	offset.x = x;
 	offset.y = y;
 }
@@ -242,7 +242,7 @@ void Screen::Update() {
 
 }
 
-ScreenEntity *Screen::getEntityAt(float x, float y) {
+ScreenEntity *Screen::getEntityAt(Number x, Number y) {
 	for(int i=children.size()-1; i >= 0;i--) {
 		if(children[i]->hitTest(x,y))
 			return children[i];

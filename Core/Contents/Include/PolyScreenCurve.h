@@ -27,7 +27,7 @@ namespace Polycode {
 			
 		protected:
 		
-			float numVertices;
+			Number numVertices;
 			BezierCurve *curve;
 	};
 }

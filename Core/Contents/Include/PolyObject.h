@@ -14,7 +14,7 @@ namespace Polycode {
 		int type;
 		String name;
 		
-		float floatVal;
+		Number NumberVal;
 		int intVal;
 		String stringVal;
 		bool boolVal;		
@@ -30,10 +30,10 @@ namespace Polycode {
 		}
 		
 		
-		ObjectEntry *addChild(String name, float val) {
+		ObjectEntry *addChild(String name, Number val) {
 			ObjectEntry *entry = new ObjectEntry();
 			entry->type = ObjectEntry::FLOAT_ENTRY;			
-			entry->floatVal = val;
+			entry->NumberVal = val;
 			entry->name = name;
 			children.push_back(entry);
 			length = children.size();			

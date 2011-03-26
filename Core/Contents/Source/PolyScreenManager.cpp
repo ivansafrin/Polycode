@@ -69,8 +69,8 @@ void ScreenManager::Update() {
 			if(!screens[i]->usesNormalizedCoordinates()) {
 				renderer->setOrthoMode(renderer->getXRes(), renderer->getYRes());
 			} else {
-				float yCoordinateSize = screens[i]->getYCoordinateSize();
-				float ratio = ((float)renderer->getXRes())/((float)renderer->getYRes());
+				Number yCoordinateSize = screens[i]->getYCoordinateSize();
+				Number ratio = ((Number)renderer->getXRes())/((Number)renderer->getYRes());
 				renderer->setOrthoMode(ratio*yCoordinateSize, yCoordinateSize);								
 			}
 		

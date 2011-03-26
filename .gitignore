@@ -18,6 +18,7 @@ Bindings/Build/Mac\ OS\ X/build
 Core/Dependencies
 Modules/Dependencies
 IDE/Dependencies
+Tools/Dependencies
 
 # OS generated files #
 ######################

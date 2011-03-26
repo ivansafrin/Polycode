@@ -1,5 +1,5 @@
 /*
- *  PolyCGProgram.cpp
+ *  PolyGLSLProgram.cpp
  *  Poly
  *
  *  Created by Ivan Safrin on 9/20/08.
@@ -8,42 +8,42 @@
  */
 
 
-#include "PolyCGProgram.h"
+#include "PolyGLSLProgram.h"
 
 using namespace Polycode;
 
-CGProgram::CGProgram(int type) : Resource(Resource::RESOURCE_PROGRAM) {
+GLSLProgram::GLSLProgram(int type) : Resource(Resource::RESOURCE_PROGRAM) {
 	this->type = type;
 }
 
-CGProgram::~CGProgram() {
-
+GLSLProgram::~GLSLProgram() {
+	glDeleteShader(program);
 }
 
-void CGProgram::addParam(string name, bool isAuto, int autoID, int paramType, void *defaultData) {
-	CGProgramParam newParam;
+void GLSLProgram::addParam(String name, bool isAuto, int autoID, int paramType, void *defaultData) {
+	GLSLProgramParam newParam;
 	newParam.name = name;
 	newParam.paramType = paramType;
 	newParam.defaultData = defaultData;
 	newParam.isAuto = isAuto;
 	newParam.autoID = autoID;
-	newParam.cgParam = cgGetNamedParameter(program, name.c_str());
+//	newParam.cgParam = cgGetNamedParameter(program, name.c_str());
 	params.push_back(newParam);
 }
 
-void *CGProgramParam::createParamData(int *retType, string type, string value) {
+void *GLSLProgramParam::createParamData(int *retType, String type, String value) {
 		void *defaultData;
 		if(type == "float") {
-			*retType = CGProgramParam::PARAM_FLOAT;
+			*retType = GLSLProgramParam::PARAM_FLOAT;
 			float *val = new float();
 			*val = atof(value.c_str());
 			defaultData = (void*)val;
 			return defaultData;			
 		} else if(type == "float3") {
-			*retType = CGProgramParam::PARAM_FLOAT3;
+			*retType = GLSLProgramParam::PARAM_FLOAT3;
 			Vector3 *val = new Vector3();
 			defaultData = (void*)val;
-			vector<string> values = StringUtil::split(value, " ");
+			vector<String> values = value.split(" ");
 			if(values.size() == 3) {
 				val->set(atof(values[0].c_str()), atof(values[1].c_str()), atof(values[2].c_str()));
 			} else {
@@ -51,7 +51,7 @@ void *CGProgramParam::createParamData(int *retType, string type, string value) {
 			}
 			return defaultData;
 		} else {
-			*retType = CGProgramParam::PARAM_UNKNOWN;
+			*retType = GLSLProgramParam::PARAM_UNKNOWN;
 			return NULL;
 		}
 

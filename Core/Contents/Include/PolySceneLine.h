@@ -14,18 +14,22 @@
 #include "PolyGlobals.h"
 #include "PolySceneEntity.h"
 #include "PolyCoreServices.h"
+#include "PolyMesh.h"
 
 namespace Polycode {
 	class _PolyExport SceneLine : public SceneEntity {
 		public:
-			SceneLine(Vector3 p1, Vector3 p2);
+			SceneLine(SceneEntity *ent1, SceneEntity *ent2);
 			~SceneLine();
 			
 			void Render();
 			
-		private:
-			Vertex v1;
-			Vertex v2;
+		private:		
+		
+			Mesh *mesh;
+		
+			SceneEntity *ent1;
+			SceneEntity *ent2;
 	};
 
 }

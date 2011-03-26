@@ -41,22 +41,22 @@ ScreenImage::~ScreenImage() {
 
 }
 
-void ScreenImage::setImageCoordinates(float x, float y, float width, float height) {
+void ScreenImage::setImageCoordinates(Number x, Number y, Number width, Number height) {
 	Vertex *vertex;
-	float pixelSizeX = 1/imageWidth;
-	float pixelSizeY = 1/imageHeight;
+	Number pixelSizeX = 1/imageWidth;
+	Number pixelSizeY = 1/imageHeight;
 	
 	this->width = width;
 	this->height = height;
 	hitwidth = width;
 	hitheight = height;
-	float whalf = floor(width/2.0f);
-	float hhalf = floor(height/2.0f);	
+	Number whalf = floor(width/2.0f);
+	Number hhalf = floor(height/2.0f);	
 		
-	float xFloat = x * pixelSizeX;
-	float yFloat = 1 - (y * pixelSizeY);
-	float wFloat = width * pixelSizeX;
-	float hFloat = height * pixelSizeY;
+	Number xFloat = x * pixelSizeX;
+	Number yFloat = 1 - (y * pixelSizeY);
+	Number wFloat = width * pixelSizeX;
+	Number hFloat = height * pixelSizeY;
 	
 	Polygon *imagePolygon = mesh->getPolygon(0);	
 	vertex = imagePolygon->getVertex(0);
@@ -82,10 +82,10 @@ void ScreenImage::setImageCoordinates(float x, float y, float width, float heigh
 	
 }
 
-float ScreenImage::getImageWidth() {
+Number ScreenImage::getImageWidth() {
 	return imageWidth;
 }
 
-float ScreenImage::getImageHeight() {
+Number ScreenImage::getImageHeight() {
 	return imageHeight;	
 }

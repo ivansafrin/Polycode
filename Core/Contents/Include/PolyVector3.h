@@ -24,27 +24,27 @@ namespace Polycode {
 		public:
 		
 			Vector3();
-			Vector3(float x,float y,float z);
-			~Vector3();
+			Vector3(Number x,Number y,Number z);
+			virtual ~Vector3();
 
-			void set(float x, float y, float z);
+			void set(Number x, Number y, Number z);
 
 			inline Vector3 operator - ( const Vector3& v2 ) const {
 				return Vector3(x - v2.x, y - v2.y, z - v2.z);
 			}
 
-			inline float distance(const Vector3& rhs) const {
+			inline Number distance(const Vector3& rhs) const {
 				return (*this - rhs).length();
 			}
 
-			inline Vector3& operator * (const float val) {
+			inline Vector3& operator * (const Number val) {
 				x *= val;
 				y *= val;
 				z *= val;
 				return *this;				
 			}
 
-			inline Vector3& operator / (const float val) {
+			inline Vector3& operator / (const Number val) {
 				assert( val != 0.0 );
 				x /= val;
 				y /= val;
@@ -75,13 +75,13 @@ namespace Polycode {
 	
 			inline Vector3 operator + ( const Vector3& v2 ) const {
 				return Vector3(x + v2.x, y + v2.y, z + v2.z);
-			}
+			}		
 
-			inline float length () const {
+			inline Number length () const {
 				return sqrtf( x * x + y * y + z * z );
 			}
 			
-			inline float dot(Vector3 &u) {
+			inline Number dot(Vector3 &u) {
 				return x * u.x + y * u.y + z * u.z;
 			}
 
@@ -94,9 +94,9 @@ namespace Polycode {
 
 			void Normalize();
 		
-			float x;
-			float y;
-			float z;			
+			Number x;
+			Number y;
+			Number z;			
 			
 		private:
 

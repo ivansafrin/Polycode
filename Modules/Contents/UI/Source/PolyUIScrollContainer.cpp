@@ -34,7 +34,7 @@ UIScrollContainer::UIScrollContainer(ScreenEntity *scrolledEntity, bool hScroll,
 	maskShape = new ScreenShape(ScreenShape::SHAPE_RECT, width, height);
 	maskShape->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	addChild(maskShape);
-	maskShape->setColor(1.0f,1.0f,1.0f,0.2f);
+	maskShape->setColor(1.0f,0,0,0.8f);
 	
 	scrollChild = scrolledEntity;
 	addChild(scrollChild);

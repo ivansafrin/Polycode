@@ -61,8 +61,10 @@ struct CollisionResult {
 			void loadCollisionChild(SceneEntity *entity, bool autoCollide=false, int type=0);
 			void enableGravity(SceneEntity *entity);
 			
-			virtual CollisionSceneEntity *addCollisionChild(SceneEntity *newEntity, bool autoCollide=false, int type=0);
-			CollisionSceneEntity *trackCollision(SceneEntity *newEntity, bool autoCollide, int type=0);
+			void stopTrackingCollision(SceneEntity *entity);
+		
+			virtual CollisionSceneEntity *addCollisionChild(SceneEntity *newEntity, bool autoCollide=false, int type=0, int group=0);
+			CollisionSceneEntity *trackCollision(SceneEntity *newEntity, bool autoCollide, int type=0, int group=0);
 			void adjustForCollision(CollisionSceneEntity *collisionEntity);
 		protected:
 		

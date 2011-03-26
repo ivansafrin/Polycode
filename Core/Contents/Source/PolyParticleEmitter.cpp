@@ -11,8 +11,34 @@
 
 using namespace Polycode;
 
+SceneParticleEmitter::SceneParticleEmitter(String imageFile, Mesh *particleMesh, SceneMesh *emitter, Scene *particleParentScene, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation)
+: ParticleEmitter(imageFile, particleMesh, particleType, emitterType, lifespan, numParticles,  direction, gravity, deviation),
+SceneEntity()
+{
+	isScreenEmitter = false;
+	emitterMesh = emitter;	
+	this->particleParentScene = particleParentScene;	
+	createParticles();	
+}
 
-ScreenParticleEmitter::ScreenParticleEmitter(String imageFile, Mesh *particleMesh, ScreenMesh *emitter, Screen *particleParentScreen, int particleType, int emitterType, float lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation) 
+SceneParticleEmitter::~SceneParticleEmitter() {
+	
+}
+
+void SceneParticleEmitter::addParticleBody(Entity *particleBody) {
+	particleParentScene->addEntity((SceneEntity*)particleBody);	
+}
+
+Matrix4 SceneParticleEmitter::getBaseMatrix() {
+	return getConcatenatedMatrix();	
+}
+
+void SceneParticleEmitter::Update() {
+	updateEmitter();
+}
+
+
+ScreenParticleEmitter::ScreenParticleEmitter(String imageFile, Mesh *particleMesh, ScreenMesh *emitter, Screen *particleParentScreen, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation) 
 : ParticleEmitter(imageFile, particleMesh, particleType, emitterType, lifespan, numParticles,  direction, gravity, deviation),
 ScreenEntity()
 {
@@ -38,7 +64,7 @@ Matrix4 ScreenParticleEmitter::getBaseMatrix() {
 	return getConcatenatedMatrix();
 }
 
-ParticleEmitter::ParticleEmitter(String imageFile, Mesh *particleMesh, int particleType, int emitterType, float lifespan, unsigned int numParticles,  Vector3 direction, Vector3 gravity, Vector3 deviation)  {
+ParticleEmitter::ParticleEmitter(String imageFile, Mesh *particleMesh, int particleType, int emitterType, Number lifespan, unsigned int numParticles,  Vector3 direction, Vector3 gravity, Vector3 deviation)  {
 	
 	isScreenEmitter = false;
 	dirVector = direction;
@@ -63,6 +89,8 @@ ParticleEmitter::ParticleEmitter(String imageFile, Mesh *particleMesh, int parti
 	isEmitterEnabled = true;
 	allAtOnce = false;
 	
+	this->particleType = particleType;
+	
 	this->numParticles = numParticles;
 
 	this->lifespan = lifespan;
@@ -74,10 +102,10 @@ ParticleEmitter::ParticleEmitter(String imageFile, Mesh *particleMesh, int parti
 
 void ParticleEmitter::createParticles() {
 	
-	if(isScreenEmitter)
+//	if(isScreenEmitter)
 		particleTexture = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(textureFile);	
-	else
-		particleMaterial = (Material*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_MATERIAL, textureFile);	
+//	else
+//		particleMaterial = (Material*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_MATERIAL, textureFile);	
 	
 	
 	Particle *particle;	
@@ -90,12 +118,12 @@ void ParticleEmitter::createParticles() {
 		particles.push_back(particle);
 		addParticleBody(particle->particleBody);					
 		resetParticle(particle);
-		particle->life = lifespan * ((float)rand()/RAND_MAX);		
+		particle->life = lifespan * ((Number)rand()/RAND_MAX);		
 	}
 	updateEmitter();	
 }
 
-void ParticleEmitter::setEmitterRadius(float rad) {
+void ParticleEmitter::setEmitterRadius(Number rad) {
 	emitterRadius = rad;
 }
 
@@ -107,15 +135,15 @@ void ParticleEmitter::setStartingColor(Color c) {
 	startingColor = c;
 }
 
-void ParticleEmitter::setRotationSpeed(float speed) {
+void ParticleEmitter::setRotationSpeed(Number speed) {
 	rotationSpeed = speed;
 }
 
-void ParticleEmitter::setStartingScaleModifier(float mod) {
+void ParticleEmitter::setStartingScaleModifier(Number mod) {
 	startingScaleMod = mod;
 }
 
-void ParticleEmitter::setEndingScaleModifier(float mod) {
+void ParticleEmitter::setEndingScaleModifier(Number mod) {
 	endingScaleMod = mod;
 }
 
@@ -133,9 +161,16 @@ void ParticleEmitter::setAlphaTest(bool val) {
 
 void ParticleEmitter::setDepthWrite(bool val) {
 	for(int i=0;i < particles.size(); i++) {
-		particles[i]->particleBody->setDepthWrite(true);
+		particles[i]->particleBody->setDepthWrite(val);
 	}	
 }
+
+void ParticleEmitter::setDepthTest(bool val) {
+	for(int i=0;i < particles.size(); i++) {
+		particles[i]->particleBody->depthTest= val;
+	}	
+}
+
 
 void ParticleEmitter::setBillboardMode(bool mode) {
 	for(int i=0;i < particles.size(); i++) {
@@ -169,7 +204,7 @@ void ParticleEmitter::setParticleCount(int count) {
 			particle->dirVector = dirVector;
 			particle->deviation = deviation;
 			particle->lifespan = lifespan;
-			particle->life = lifespan * ((float)rand()/RAND_MAX);
+			particle->life = lifespan * ((Number)rand()/RAND_MAX);
 			particles.push_back(particle);
 			addParticleBody(particle->particleBody);
 		}
@@ -184,7 +219,7 @@ void ParticleEmitter::setParticleCount(int count) {
 
 }
 
-void ParticleEmitter::setPerlinModSize(float size) {
+void ParticleEmitter::setPerlinModSize(Number size) {
 	perlinModSize = size;
 
 }
@@ -193,7 +228,7 @@ void ParticleEmitter::enableEmitter(bool val) {
 	isEmitterEnabled = val;
 	if(val) {
 		for(int i=0;i < numParticles; i++) {
-			particles[i]->life = particles[i]->lifespan * ((float)rand()/RAND_MAX);
+			particles[i]->life = particles[i]->lifespan * ((Number)rand()/RAND_MAX);
 		}
 	}
 }
@@ -221,28 +256,28 @@ void ParticleEmitter::resetParticle(Particle *particle) {
 //		startVector = *randPoly->getVertex(rand() % 3);
 //		startVector = emitterMesh->getConcatenatedMatrix() * startVector;
 //	} else {
-		startVector = Vector3(-(emitterRadius/2.0f)+emitterRadius*((float)rand()/RAND_MAX),-(emitterRadius/2.0f)+emitterRadius*((float)rand()/RAND_MAX),-(emitterRadius/2.0f)+emitterRadius*((float)rand()/RAND_MAX));	
+		startVector = Vector3(-(emitterRadius/2.0f)+emitterRadius*((Number)rand()/RAND_MAX),-(emitterRadius/2.0f)+emitterRadius*((Number)rand()/RAND_MAX),-(emitterRadius/2.0f)+emitterRadius*((Number)rand()/RAND_MAX));	
 //	}
 	
-	particle->Reset();	
+	particle->Reset(emitterType != TRIGGERED_EMITTER);	
 	particle->velVector = particle->dirVector;
-	float dev = ((deviation.x/2.0f)*-1.0f) + ((deviation.x)*((float)rand()/RAND_MAX));
+	Number dev = ((deviation.x/2.0f)*-1.0f) + ((deviation.x)*((Number)rand()/RAND_MAX));
 	particle->velVector.x += dev;
-	dev = (deviation.y/2.0f*-1.0f) + ((deviation.y)*((float)rand()/RAND_MAX));
+	dev = (deviation.y/2.0f*-1.0f) + ((deviation.y)*((Number)rand()/RAND_MAX));
 	particle->velVector.y += dev;
-	dev = (deviation.z/2.0f*-1.0f) + ((deviation.z)*((float)rand()/RAND_MAX));
+	dev = (deviation.z/2.0f*-1.0f) + ((deviation.z)*((Number)rand()/RAND_MAX));
 	particle->velVector.z += dev;
 	
-	particle->brightnessDeviation = 1.0f - ( (-brightnessDeviation) + ((brightnessDeviation*2) * ((float)rand()/RAND_MAX)));
+	particle->brightnessDeviation = 1.0f - ( (-brightnessDeviation) + ((brightnessDeviation*2) * ((Number)rand()/RAND_MAX)));
 	
 	particle->velVector = concatMatrix.rotateVector(particle->velVector);	
 	particle->particleBody->setTransformByMatrix(concatMatrix);
 	particle->particleBody->Translate(startVector);
 	particle->particleBody->rebuildTransformMatrix();	
 	
-//	particle->particleBody->setPitch(emitRotationVector.y+(emitRotationDeviance.y*((float)rand()/RAND_MAX)));
-//	particle->particleBody->setRoll(emitRotationVector.x+(emitRotationDeviance.x*((float)rand()/RAND_MAX)));
-//	particle->particleBody->setYaw(emitRotationVector.z+(emitRotationDeviance.z*((float)rand()/RAND_MAX)));	
+//	particle->particleBody->setPitch(emitRotationVector.y+(emitRotationDeviance.y*((Number)rand()/RAND_MAX)));
+//	particle->particleBody->setRoll(emitRotationVector.x+(emitRotationDeviance.x*((Number)rand()/RAND_MAX)));
+//	particle->particleBody->setYaw(emitRotationVector.z+(emitRotationDeviance.z*((Number)rand()/RAND_MAX)));	
 	
 	particle->particleBody->setScale(scaleCurve.getHeightAt(0),
 									 scaleCurve.getHeightAt(0),
@@ -262,17 +297,17 @@ void ParticleEmitter::setAllAtOnce(bool val) {
 		if(allAtOnce)
 			particles[i]->life = 0;
 		else
-			particles[i]->life = particles[i]->lifespan * ((float)rand()/RAND_MAX);
+			particles[i]->life = particles[i]->lifespan * ((Number)rand()/RAND_MAX);
 	}
 }
 
 void ParticleEmitter::updateEmitter() {	
 	
 	Vector3 translationVector;
-	float elapsed = timer->getElapsedf();
+	Number elapsed = timer->getElapsedf();
 	
 	Particle *particle;
-	float normLife;
+	Number normLife;
 	
 	for(int i=0;i < numParticles; i++) {				
 		particle = particles[i];
@@ -317,7 +352,7 @@ void ParticleEmitter::updateEmitter() {
 			if(emitterType == CONTINUOUS_EMITTER) {
 				resetParticle(particle);
 			} else {
-				particle->particleBody->visible = false;
+//				particle->particleBody->visible = false;
 			}
 		}
 	}

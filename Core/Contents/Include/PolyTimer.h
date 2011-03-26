@@ -29,7 +29,7 @@ namespace Polycode {
 		void Update(unsigned int ticks);
 		void Reset();
 		bool hasElapsed();
-		float getElapsedf();		
+		Number getElapsedf();		
 
 		static const int EVENT_TRIGGER = 0;
 		

@@ -91,6 +91,21 @@ UITree::UITree(String icon, String text, float treeWidth, float treeOffset) : Sc
 	refreshTree();
 }
 
+void UITree::removeTreeChild(UITree *child) {
+	for(int i=0; i < treeChildren.size(); i++) {
+		if(treeChildren[i] == child) {			
+			removeChild(child);
+			child->removeEventListener(this, UITreeEvent::NEED_REFRESH_EVENT);
+			child->removeEventListener(this, UITreeEvent::SELECTED_EVENT);
+			child->removeEventListener(this, UITreeEvent::EXECUTED_EVENT);
+			treeChildren.erase(treeChildren.begin()+i);			
+			delete child;
+			refreshTree();			
+			return;
+		}
+	}
+}
+
 void UITree::setSelected() {
 	selected = true;
 	refreshTree();
@@ -211,6 +226,15 @@ void UITree::toggleCollapsed() {
 }
 
 UITree::~UITree() {
+	for(int i=0; i < treeChildren.size(); i++) {
+		UITree *child = treeChildren[i];
+		removeChild(child);
+		child->removeEventListener(this, UITreeEvent::NEED_REFRESH_EVENT);
+		child->removeEventListener(this, UITreeEvent::SELECTED_EVENT);
+		child->removeEventListener(this, UITreeEvent::EXECUTED_EVENT);
+		//treeChildren.erase(treeChildren.begin()+i);			
+		delete child;
+	}
 }
 
 void UITree::Update() {

@@ -38,7 +38,6 @@ PolycodeRunner::PolycodeRunner() : Threaded() {
 		t_gamma[i] = v*6*256;
 	}
 	
-	
 	initKinect();	
 }
 
@@ -47,7 +46,7 @@ int PolycodeRunner::initKinect() {
 	if (freenect_init(&f_ctx, NULL) < 0) {
 		printf("freenect_init() failed\n");
 		return 0;
-	}
+	}	
 	
 	freenect_set_log_level(f_ctx, FREENECT_LOG_FATAL);
 	
@@ -88,8 +87,8 @@ void PolycodeRunner::runThread() {
 		state = freenect_get_tilt_state(f_dev);
 		double dx,dy,dz;
 		freenect_get_mks_accel(state, &dx, &dy, &dz);
-		printf("\r raw acceleration: %4d %4d %4d  mks acceleration: %4f %4f %4f", state->accelerometer_x, state->accelerometer_y, state->accelerometer_z, dx, dy, dz);
-		fflush(stdout);
+//		printf("\r raw acceleration: %4d %4d %4d  mks acceleration: %4f %4f %4f", state->accelerometer_x, state->accelerometer_y, state->accelerometer_z, dx, dy, dz);
+//		fflush(stdout);
 		
 		if (requested_format != current_format) {
 			freenect_stop_video(f_dev);
@@ -133,8 +132,8 @@ void PolycodeRunner::depthCallback(freenect_device *dev, void *v_depth, uint32_t
 	for (i=0; i<FREENECT_FRAME_PIX; i++) {
 		int pval = t_gamma[depth[i]];
 		int lb = pval & 0xff;
-		
-		/*
+		depthMap[i] = pval;
+
 		if(pval>>8 == 0) {
 			depth_mid[3*i+0] = 255-lb;
 			depth_mid[3*i+1] = 255-lb;
@@ -144,8 +143,8 @@ void PolycodeRunner::depthCallback(freenect_device *dev, void *v_depth, uint32_t
 			depth_mid[3*i+1] = 0;
 			depth_mid[3*i+2] = 0;
 		}
-		 */
 
+/*
 		switch (pval>>8) {
 			case 0:
 				depth_mid[3*i+0] = 255;
@@ -183,6 +182,7 @@ void PolycodeRunner::depthCallback(freenect_device *dev, void *v_depth, uint32_t
 				depth_mid[3*i+2] = 0;
 				break;
 		}
+ */
 			/*	
 		 
 			case 0:
@@ -269,7 +269,11 @@ void PolycodeRunner::Level() {
 	
 }
 
-PolycodeKinect::PolycodeKinect(bool calculatePoints) : EventHandler() {
+PolycodeKinect::PolycodeKinect(bool calculatePoints, int depthStart, int depthEnd, int pixelSkip) : EventHandler() {
+	
+	this->pixelSkip = pixelSkip;
+	this->depthStart = depthStart;
+	this->depthEnd = depthEnd;	
 	
 	this->calculatePoints = calculatePoints;
 	this->calculateColors = true;
@@ -308,19 +312,25 @@ void PolycodeKinect::handleEvent(Event *event) {
 			int ptIndex = 0;
 			char *data = closeDepthTexture->getTextureData();
 			char *colorData = rgbTexture->getTextureData();
+			Color depthColor;
+			int pixelOffsetX = 30;
+			int pixelOffsetY = 0;
 			
-				for(int y=0; y < 480; y+= 7) {							
-					for(int x=0; x < 640; x += 7) {					
-					char *testArr = data + ((x*3)+(y*640*3));
-					unsigned int testArrColor = *((unsigned int*) (colorData + ((x-30)*3)+((y+30)*640*3)));
-					
-					if(testArr[1] > 0) {
+				for(int y=0; y < 480; y+= pixelSkip) {
+					for(int x=0; x < 640; x += pixelSkip) {					
+						
+					unsigned int depthArrColor = *((unsigned int*) (data + ((x-pixelOffsetX)*3)+((y+pixelOffsetY)*640*3)));						
+					unsigned int testArrColor = *((unsigned int*) (colorData + ((x-pixelOffsetX)*3)+((y+pixelOffsetY)*640*3)));
+					depthColor.setColorHexRGB(depthArrColor);
+					int pval = runner->depthMap[x + (y*640)];
+						
+					if(pval > depthStart && pval < depthEnd) {
 						if(ptIndex < MAX_KINECT_POINTS) {							
 							if(calculateColors) {
 								colors[ptIndex].setColorHexRGB(testArrColor);
 							}
 							if(calculatePoints) {
-								points[ptIndex] = Vector3(x, y, testArr[1]);
+								points[ptIndex] = Vector3(x, y, pval);
 							}
 							
 							ptIndex++;

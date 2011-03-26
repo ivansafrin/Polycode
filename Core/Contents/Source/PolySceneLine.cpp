@@ -11,24 +11,43 @@
 
 using namespace Polycode;
 
-SceneLine::SceneLine(Vector3 p1, Vector3 p2) : SceneEntity() {
-	v1.set(p1.x,p1.y,p1.z);
-	v2.set(p2.x,p2.y,p2.z);
+SceneLine::SceneLine(SceneEntity *ent1, SceneEntity *ent2) : SceneEntity() {
+	this->ent1 = ent1;
+	this->ent2 = ent2;	
+
+	mesh = new Mesh(Mesh::LINE_MESH);	
+	
+	Polygon *poly = new Polygon();
+	poly->addVertex(0,0,0);
+	poly->addVertex(0,0,0);	
+	mesh->addPolygon(poly);
+	
+	ignoreParentMatrix = true;
 }
 
 SceneLine::~SceneLine() {
 
 }
-			
-void SceneLine::Render() {
-	/*
-	int rmode = CoreServices::getInstance()->getRenderer()->getRenderMode();
-	CoreServices::getInstance()->getRenderer()->setRenderMode(Renderer::RENDER_MODE_WIREFRAME);
-	CoreServices::getInstance()->getRenderer()->setLineSize(1.0f);
-	CoreServices::getInstance()->getRenderer()->beginRenderOperation(Mesh::TRIFAN_MESH);
-	CoreServices::getInstance()->getRenderer()->draw3DVertex(&v1, NULL);
-	CoreServices::getInstance()->getRenderer()->draw3DVertex(&v2, NULL);
-	CoreServices::getInstance()->getRenderer()->endRenderOperation();
-	CoreServices::getInstance()->getRenderer()->setRenderMode(rmode);
-	 */
+
+
+void SceneLine::Render() {	
+	
+	Vector3 v1;
+	v1 = ent1->getConcatenatedMatrix().getPosition();
+	Vector3 v2;
+	v2 = ent2->getConcatenatedMatrix().getPosition();
+
+	
+	mesh->getPolygon(0)->getVertex(0)->set(v1.x,v1.y,v1.z); 
+	mesh->getPolygon(0)->getVertex(1)->set(v2.x,v2.y,v2.z); 	
+	mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
+	
+	Renderer *renderer = CoreServices::getInstance()->getRenderer();
+	renderer->setTexture(NULL);	
+	renderer->pushDataArrayForMesh(mesh, RenderDataArray::VERTEX_DATA_ARRAY);
+	renderer->pushDataArrayForMesh(mesh, RenderDataArray::TEXCOORD_DATA_ARRAY);	
+	renderer->pushDataArrayForMesh(mesh, RenderDataArray::NORMAL_DATA_ARRAY);		
+	
+	renderer->drawArrays(mesh->getMeshType());	
+	
 }

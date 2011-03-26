@@ -18,6 +18,7 @@ Entity::Entity() {
 	roll = 0;
 	renderer = NULL;
 	enabled = true;
+	depthTest = true;
 	visible = true;
 	bBoxRadius = 0;
 	color.setColor(1.0f,1.0f,1.0f,1.0f);
@@ -29,6 +30,7 @@ Entity::Entity() {
 	backfaceCulled = true;
 	depthOnly = false;
 	depthWrite = true;
+	ignoreParentMatrix = false;
 	alphaTest = false;
 	blendingMode = Renderer::BLEND_MODE_NORMAL;	
 	lockMatrix = false;
@@ -111,7 +113,7 @@ void Entity::setColorInt(int r, int g, int b, int a) {
 	color.setColorRGBA(r,g, b, a);
 }
 
-void Entity::setColor(float r, float g, float b, float a) {
+void Entity::setColor(Number r, Number g, Number b, Number a) {
 	color.setColor(r,g,b,a);
 }
 
@@ -123,9 +125,9 @@ void Entity::setBlendingMode(int newBlendingMode) {
 	blendingMode = newBlendingMode;
 }
 
-float Entity::getBBoxRadius() {
-	float compRad;
-	float biggest = bBoxRadius;
+Number Entity::getBBoxRadius() {
+	Number compRad;
+	Number biggest = bBoxRadius;
 	for(int i=0;i<children.size();i++) {
 		compRad = children[i]->getCompoundBBoxRadius();
 		if(compRad > biggest)
@@ -134,9 +136,9 @@ float Entity::getBBoxRadius() {
 	return biggest;
 }
 
-float Entity::getCompoundBBoxRadius() {
-	float compRad;
-	float biggest = bBoxRadius + position.distance(Vector3(0,0,0));
+Number Entity::getCompoundBBoxRadius() {
+	Number compRad;
+	Number biggest = bBoxRadius + position.distance(Vector3(0,0,0));
 	for(int i=0;i<children.size();i++) {
 		compRad = children[i]->getCompoundBBoxRadius();
 		if(compRad > biggest)
@@ -145,7 +147,7 @@ float Entity::getCompoundBBoxRadius() {
 	return biggest;
 }
 
-void Entity::setBBoxRadius(float rad) {
+void Entity::setBBoxRadius(Number rad) {
 	bBoxRadius = rad;
 }
 
@@ -236,6 +238,10 @@ void Entity::setMask(Entity *mask) {
 	mask->enabled = false;
 	maskEntity = mask;
 	hasMask = true;
+	
+//	for(int i=0; i < children.size(); i++) {
+//		children[i]->setMask(mask);
+//	}
 }
 
 void Entity::clearMask() {
@@ -271,7 +277,11 @@ void Entity::transformAndRender() {
 	}
 	
 	renderer->pushMatrix();	
-	renderer->multModelviewMatrix(transformMatrix);
+	if(ignoreParentMatrix && parentEntity) {
+		renderer->multModelviewMatrix(parentEntity->getConcatenatedMatrix().inverse());
+	}else {
+		renderer->multModelviewMatrix(transformMatrix);
+	}
 	renderer->setVertexColor(color.r,color.g,color.b,color.a);
 	if(billboardMode) {
 		renderer->billboardMatrixWithScale(getCompoundScale());
@@ -279,12 +289,22 @@ void Entity::transformAndRender() {
 			renderer->multModelviewMatrix(getConcatenatedRollMatrix());
 		}
 	}
-		
+
+	if(hasMask) {
+		renderer->enableDepthWrite(false);
+		renderer->enableDepthTest(true);		
+	} else {
 	if(!depthWrite)
+		renderer->enableDepthWrite(false);
+	else
+		renderer->enableDepthWrite(true);
+	
+	if(!depthTest) 
 		renderer->enableDepthTest(false);
 	else
 		renderer->enableDepthTest(true);
-		
+	}
+		 
 	renderer->enableAlphaTest(alphaTest);
 	
 	Color combined = getCombinedColor();
@@ -315,8 +335,8 @@ void Entity::transformAndRender() {
 		renderer->clearBuffer(false, true);
 	}
 	
-	if(!depthWrite)
-		renderer->enableDepthTest(true);
+//	if(!depthWrite)
+//		renderer->enableDepthWrite(true);
 	
 	
 	if(hasMask) {
@@ -339,6 +359,10 @@ void Entity::addEntity(Entity *newChild) {
 	newChild->setRenderer(renderer);
 	newChild->setParentEntity(this);
 	children.push_back(newChild);
+	
+	if(hasMask) {
+		newChild->setMask(maskEntity);
+	}
 }
 
 
@@ -352,7 +376,7 @@ void Entity::dirtyMatrix(bool val) {
 	matrixDirty = val;
 }
 
-void Entity::setRotationQuat(float w, float x, float y, float z) {
+void Entity::setRotationQuat(Number w, Number x, Number y, Number z) {
 	rotationQuat.w = w;
 	rotationQuat.x = x;
 	rotationQuat.y = y;
@@ -364,13 +388,13 @@ Quaternion Entity::getRotationQuat() {
 	return rotationQuat;
 }
 
-void Entity::setPitch(float pitch) {
+void Entity::setPitch(Number pitch) {
 	this->pitch = pitch;
 	rebuildRotation();	
 	matrixDirty = true;
 }
 
-void Entity::setYaw(float yaw) {
+void Entity::setYaw(Number yaw) {
 	this->yaw = yaw;
 	rebuildRotation();	
 	matrixDirty = true;
@@ -391,25 +415,25 @@ Matrix4 Entity::getTransformMatrix() {
 	return transformMatrix;
 }
 
-void Entity::Pitch(float pitch) {
+void Entity::Pitch(Number pitch) {
 	this->pitch += pitch;
 	rebuildRotation();	
 	matrixDirty = true;
 }
 
-void Entity::Yaw(float yaw) {
+void Entity::Yaw(Number yaw) {
 	this->yaw += yaw;
 	rebuildRotation();	
 	matrixDirty = true;
 }
 
-void Entity::Roll(float roll) {
+void Entity::Roll(Number roll) {
 	this->roll += roll;
 	rebuildRotation();
 	matrixDirty = true;
 }
 
-void Entity::setRoll(float roll) {
+void Entity::setRoll(Number roll) {
 	this->roll= roll;
 	rebuildRotation();
 	matrixDirty = true;
@@ -439,15 +463,15 @@ void Entity::setParentEntity(Entity *entity) {
 	parentEntity = entity;
 }
 
-float Entity::getPitch() {
+Number Entity::getPitch() {
 	return pitch;
 }
 
-float Entity::getYaw() {
+Number Entity::getYaw() {
 	return yaw;
 }
 
-float Entity::getRoll() {
+Number Entity::getRoll() {
 	return roll;
 }
 
@@ -457,7 +481,7 @@ void Entity::setTransformByMatrixPure(Matrix4 matrix) {
 
 void Entity::setTransformByMatrix(Matrix4 matrix) {
 	setPosition(matrix.getPosition());	
-	float x,y,z;
+	Number x,y,z;
 	matrix.getEulerAngles(&x,&y,&z);
 
 	setPitch(x);
@@ -475,39 +499,39 @@ void Entity::setPosition(Vector3 posVec) {
 	matrixDirty = true;
 }
 
-void Entity::setPositionX(float x) {
+void Entity::setPositionX(Number x) {
 	position.x = x;
 	matrixDirty = true;
 }
 
-void Entity::setPositionY(float y) {
+void Entity::setPositionY(Number y) {
 	position.y = y;
 	matrixDirty = true;	
 }
 
-void Entity::setPositionZ(float z) {
+void Entity::setPositionZ(Number z) {
 	position.z = z;
 	matrixDirty = true;	
 }
 
 
-void Entity::setScaleX(float x) {
+void Entity::setScaleX(Number x) {
 	scale.x = x;
 	matrixDirty = true;	
 }
 
-void Entity::setScaleY(float y) {
+void Entity::setScaleY(Number y) {
 	scale.y = y;
 	matrixDirty = true;		
 }
 
-void Entity::setScaleZ(float z) {
+void Entity::setScaleZ(Number z) {
 	scale.z = z;
 	matrixDirty = true;		
 }
 
 
-void Entity::setPosition(float x, float y, float z) {
+void Entity::setPosition(Number x, Number y, Number z) {
 	position.x = x;
 	position.y = y;
 	position.z = z;
@@ -519,21 +543,21 @@ void Entity::Translate(Vector3 tVec) {
 	matrixDirty = true;
 }
 
-void Entity::Translate(float x, float y, float z) {
+void Entity::Translate(Number x, Number y, Number z) {
 	position.x += x;
 	position.y += y;
 	position.z += z;
 	matrixDirty = true;
 }
 
-void Entity::Scale(float x, float y, float z) {
+void Entity::Scale(Number x, Number y, Number z) {
 	scale.x *= x;
 	scale.y *= y;
 	scale.z *= z;	
 	matrixDirty = true;
 }
 
-void Entity::setScale(float x, float y, float z) {
+void Entity::setScale(Number x, Number y, Number z) {
 	scale.x = x;
 	scale.y = y;
 	scale.z = z;
@@ -544,21 +568,21 @@ Vector3 *Entity::getPosition() {
 	return &position;
 }
 
-float Entity::getCombinedPitch() {
+Number Entity::getCombinedPitch() {
 	if(parentEntity != NULL)
 		return parentEntity->getCombinedPitch()+pitch;
 	else
 		return pitch;
 }
 
-float Entity::getCombinedYaw() {
+Number Entity::getCombinedYaw() {
 	if(parentEntity != NULL)
 		return parentEntity->getCombinedYaw()+yaw;
 	else
 		return yaw;
 }
 
-float Entity::getCombinedRoll() {
+Number Entity::getCombinedRoll() {
 	if(parentEntity != NULL)
 		return parentEntity->getCombinedRoll()+roll;
 	else

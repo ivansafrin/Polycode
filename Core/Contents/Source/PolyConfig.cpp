@@ -62,7 +62,7 @@ void Config::saveConfig(String configNamespace, String fileName) {
 			if(entries[i]->isString)
 				node->LinkEndChild( new	TiXmlText(entries[i]->stringVal.c_str()));  
 			else
-				node->LinkEndChild( new	TiXmlText(String::floatToString(entries[i]->numVal).c_str()));  						
+				node->LinkEndChild( new	TiXmlText(String::NumberToString(entries[i]->numVal).c_str()));  						
 			root->LinkEndChild( node);		
 		}
 	}
@@ -91,13 +91,13 @@ void Config::setStringValue(String configNamespace, String key, String value) {
 	getEntry(configNamespace, key)->isString = true;	
 }
 
-void Config::setNumericValue(String configNamespace, String key, float value) {
+void Config::setNumericValue(String configNamespace, String key, Number value) {
 	getEntry(configNamespace, key)->numVal = value;	
 	getEntry(configNamespace, key)->isString = false;		
 }
 
 
-float Config::getNumericValue(String configNamespace, String key) {
+Number Config::getNumericValue(String configNamespace, String key) {
 	return getEntry(configNamespace, key)->numVal;
 }
 

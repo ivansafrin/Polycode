@@ -32,8 +32,8 @@ namespace Polycode {
 			Vector3 position;
 			Vector3 color;
 			Vector3 dir;
-			float distance;
-			float intensity;
+			Number distance;
+			Number intensity;
 			int type;
 			Matrix4 textureMatrix;
 	};
@@ -58,52 +58,53 @@ namespace Polycode {
 		
 		virtual void renderToTexture(Texture *targetTexture) = 0;
 		virtual void renderZBufferToTexture(Texture *targetTexture) = 0;
-		virtual void setViewportSize(int w, int h, float fov=45.0f) = 0;
+		virtual void setViewportSize(int w, int h, Number fov=45.0f) = 0;
 		
 		virtual void loadIdentity() = 0;		
-		virtual void setOrthoMode(float xSize=0.0f, float ySize=0.0f) = 0;
+		virtual void setOrthoMode(Number xSize=0.0f, Number ySize=0.0f) = 0;
+		virtual void _setOrthoMode() = 0;
 		virtual void setPerspectiveMode() = 0;
 		
 		virtual void setTexture(Texture *texture) = 0;		
 		virtual void enableBackfaceCulling(bool val) = 0;
 		
-		virtual void setClearColor(float r, float g, float b) = 0;
+		virtual void setClearColor(Number r, Number g, Number b) = 0;
 		virtual void setClearColor(Color color);
 		
-		virtual void setAmbientColor(float r, float g, float b);
+		virtual void setAmbientColor(Number r, Number g, Number b);
 		
 		virtual void clearScreen() = 0;
 		
-		virtual void translate2D(float x, float y) = 0;
-		virtual void rotate2D(float angle) = 0;
+		virtual void translate2D(Number x, Number y) = 0;
+		virtual void rotate2D(Number angle) = 0;
 		virtual void scale2D(Vector2 *scale) = 0;
 		
-		virtual void setFOV(float fov) = 0;		
+		virtual void setFOV(Number fov) = 0;		
 		
-		virtual void setVertexColor(float r, float g, float b, float a) = 0;
+		virtual void setVertexColor(Number r, Number g, Number b, Number a) = 0;
 		
 		void pushDataArrayForMesh(Mesh *mesh, int arrayType);
 		
 		virtual void pushRenderDataArray(RenderDataArray *array) = 0;
 		virtual RenderDataArray *createRenderDataArrayForMesh(Mesh *mesh, int arrayType) = 0;
 		virtual RenderDataArray *createRenderDataArray(int arrayType) = 0;
-		virtual void setRenderArrayData(RenderDataArray *array, float *arrayData) = 0;
+		virtual void setRenderArrayData(RenderDataArray *array, Number *arrayData) = 0;
 		virtual void drawArrays(int drawType) = 0;
 		
 		virtual void translate3D(Vector3 *position) = 0;
-		virtual void translate3D(float x, float y, float z) = 0;
+		virtual void translate3D(Number x, Number y, Number z) = 0;
 		virtual void scale3D(Vector3 *scale) = 0;
 		
 		virtual void pushMatrix() = 0;
 		virtual void popMatrix() = 0;
 		
 		virtual void setLineSmooth(bool val) = 0;
-		virtual void setLineSize(float lineSize) = 0;
+		virtual void setLineSize(Number lineSize) = 0;
 		
 		virtual void enableLighting(bool enable) = 0;
 			
 		virtual void enableFog(bool enable) = 0;
-		virtual void setFogProperties(int fogMode, Color color, float density, float startDepth, float endDepth) = 0;
+		virtual void setFogProperties(int fogMode, Color color, Number density, Number startDepth, Number endDepth) = 0;
 				
 		virtual void multModelviewMatrix(Matrix4 m) = 0;
 		virtual void setModelviewMatrix(Matrix4 m) = 0;
@@ -122,6 +123,7 @@ namespace Polycode {
 		int getRenderMode();
 		
 		virtual void enableDepthTest(bool val) = 0;
+		virtual void enableDepthWrite(bool val) = 0;
 		
 		void billboardMatrix();
 		void billboardMatrixWithScale(Vector3 scale);
@@ -137,15 +139,15 @@ namespace Polycode {
 		void setCameraMatrix(Matrix4 matrix);
 		void setCameraPosition(Vector3 pos);
 		
-		virtual void drawScreenQuad(float qx, float qy) = 0;
+		virtual void drawScreenQuad(Number qx, Number qy) = 0;
 		
 		int getXRes();
 		int getYRes();
 		
 		void clearLights();
-		void addLight(Vector3 position, Vector3 direction, int type, Color color, float distance, float intensity, Matrix4 *textureMatrix);
+		void addLight(Vector3 position, Vector3 direction, int type, Color color, Number distance, Number intensity, Matrix4 *textureMatrix);
 		
-		void setExposureLevel(float level);
+		void setExposureLevel(Number level);
 		
 		bool rayTriangleIntersect(Vector3 ray_origin, Vector3 ray_direction, Vector3 vert0, Vector3 vert1, Vector3 vert2, Vector3 *hitPoint);
 		
@@ -153,7 +155,7 @@ namespace Polycode {
 		
 		void addShaderModule(PolycodeShaderModule *module);
 		
-		virtual bool test2DCoordinate(float x, float y, Polygon *poly, const Matrix4 &matrix, bool billboardMode) = 0;
+		virtual bool test2DCoordinate(Number x, Number y, Polygon *poly, const Matrix4 &matrix, bool billboardMode) = 0;
 		
 		virtual Matrix4 getProjectionMatrix() = 0;
 		virtual Matrix4 getModelviewMatrix() = 0;
@@ -178,11 +180,11 @@ namespace Polycode {
 		void addShadowMap(Texture *texture);
 		vector<Texture*> getShadowMapTextures(){ return shadowMapTextures; };
 		
-		virtual Vector3 Unproject(float x, float y) = 0;
+		virtual Vector3 Unproject(Number x, Number y) = 0;
 		
 		Color	ambientColor;
 		Color	clearColor;		
-		float exposureLevel;		
+		Number exposureLevel;		
 		Vector3 cameraPosition;
 		
 		int getNumAreaLights() { return numAreaLights; }
@@ -219,7 +221,7 @@ namespace Polycode {
 		int numSpotLights;
 		
 		bool shadersEnabled;
-		float fov;
+		Number fov;
 		
 		bool lightingEnabled;
 		

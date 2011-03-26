@@ -18,6 +18,8 @@ class PolycodeEditorManager {
 		void setCurrentEditor(PolycodeEditor *editor) { currentEditor = editor; }
 		PolycodeEditor *getCurrentEditor() { return currentEditor; }
 		
+	//	int close
+	
 protected:
 	
 	PolycodeEditor *currentEditor;

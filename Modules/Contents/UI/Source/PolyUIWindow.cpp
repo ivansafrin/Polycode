@@ -113,13 +113,13 @@ void UIWindow::onMouseDown(float x, float y) {
 void UIWindow::showWindow() {
 //	if(!visible) {
 		visible = true;
-		windowTween = new Tween(&color.a, Tween::EASE_IN_QUAD, 0.0f, 1.0f, 0.1f);
+		windowTween = new Tween(&color.a, Tween::EASE_IN_QUAD, 0.0f, 1.0f, 0.01f);
 //	}
 }
 
 void UIWindow::hideWindow() {
 //	if(visible) {
-		windowTween = new Tween(&color.a, Tween::EASE_IN_QUAD, 1.0f, 0.0f, 0.1f);
+		windowTween = new Tween(&color.a, Tween::EASE_IN_QUAD, 1.0f, 0.0f, 0.01f);
 		windowTween->addEventListener(this, Event::COMPLETE_EVENT);
 //	}
 }

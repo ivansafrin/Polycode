@@ -16,6 +16,12 @@
 		6D1B705612C29AFE0076D5C4 /* PolyCollisionSceneEntity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D1B704D12C29AFE0076D5C4 /* PolyCollisionSceneEntity.cpp */; };
 		6D1B705712C29AFE0076D5C4 /* PolyPhysicsScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D1B704E12C29AFE0076D5C4 /* PolyPhysicsScene.cpp */; };
 		6D1B705812C29AFE0076D5C4 /* PolyPhysicsSceneEntity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D1B704F12C29AFE0076D5C4 /* PolyPhysicsSceneEntity.cpp */; };
+		6D4B04801312472200C62698 /* PolyGLSLProgram.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D4B047D1312472200C62698 /* PolyGLSLProgram.h */; };
+		6D4B04811312472200C62698 /* PolyGLSLShader.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D4B047E1312472200C62698 /* PolyGLSLShader.h */; };
+		6D4B04821312472200C62698 /* PolyGLSLShaderModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D4B047F1312472200C62698 /* PolyGLSLShaderModule.h */; };
+		6D4B04861312472E00C62698 /* PolyGLSLProgram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D4B04831312472E00C62698 /* PolyGLSLProgram.cpp */; };
+		6D4B04871312472E00C62698 /* PolyGLSLShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D4B04841312472E00C62698 /* PolyGLSLShader.cpp */; };
+		6D4B04881312472E00C62698 /* PolyGLSLShaderModule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D4B04851312472E00C62698 /* PolyGLSLShaderModule.cpp */; };
 		6D580E0A12D29FB5006FB999 /* PolyPhysicsScreen.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D580E0512D29FB5006FB999 /* PolyPhysicsScreen.h */; };
 		6D580E0B12D29FB5006FB999 /* PolyPhysicsScreenEntity.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D580E0612D29FB5006FB999 /* PolyPhysicsScreenEntity.h */; };
 		6D580E0C12D29FB5006FB999 /* PolyPhysicsScreen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D580E0812D29FB5006FB999 /* PolyPhysicsScreen.cpp */; };
@@ -68,6 +74,13 @@
 		6D1B704D12C29AFE0076D5C4 /* PolyCollisionSceneEntity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyCollisionSceneEntity.cpp; sourceTree = "<group>"; };
 		6D1B704E12C29AFE0076D5C4 /* PolyPhysicsScene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyPhysicsScene.cpp; sourceTree = "<group>"; };
 		6D1B704F12C29AFE0076D5C4 /* PolyPhysicsSceneEntity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyPhysicsSceneEntity.cpp; sourceTree = "<group>"; };
+		6D4B04211312428500C62698 /* libPolycodeGLSL.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPolycodeGLSL.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		6D4B047D1312472200C62698 /* PolyGLSLProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyGLSLProgram.h; path = ../../Contents/GLSL/Include/PolyGLSLProgram.h; sourceTree = "<group>"; };
+		6D4B047E1312472200C62698 /* PolyGLSLShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyGLSLShader.h; path = ../../Contents/GLSL/Include/PolyGLSLShader.h; sourceTree = "<group>"; };
+		6D4B047F1312472200C62698 /* PolyGLSLShaderModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyGLSLShaderModule.h; path = ../../Contents/GLSL/Include/PolyGLSLShaderModule.h; sourceTree = "<group>"; };
+		6D4B04831312472E00C62698 /* PolyGLSLProgram.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyGLSLProgram.cpp; path = ../../Contents/GLSL/Source/PolyGLSLProgram.cpp; sourceTree = SOURCE_ROOT; };
+		6D4B04841312472E00C62698 /* PolyGLSLShader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyGLSLShader.cpp; path = ../../Contents/GLSL/Source/PolyGLSLShader.cpp; sourceTree = SOURCE_ROOT; };
+		6D4B04851312472E00C62698 /* PolyGLSLShaderModule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyGLSLShaderModule.cpp; path = ../../Contents/GLSL/Source/PolyGLSLShaderModule.cpp; sourceTree = SOURCE_ROOT; };
 		6D580DF112D29F52006FB999 /* libPolycode2DPhysics.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPolycode2DPhysics.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D580E0512D29FB5006FB999 /* PolyPhysicsScreen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyPhysicsScreen.h; sourceTree = "<group>"; };
 		6D580E0612D29FB5006FB999 /* PolyPhysicsScreenEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyPhysicsScreenEntity.h; sourceTree = "<group>"; };
@@ -116,6 +129,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		6D4B041F1312428500C62698 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6D580DEF12D29F52006FB999 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -167,6 +187,7 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				6D4B047C1312470E00C62698 /* PolycodeGLSL */,
 				6DFD117F12DEAA1F0080A2BE /* Kinect */,
 				6D580E0312D29FB5006FB999 /* 2DPhysics */,
 				6D1B704412C29AFE0076D5C4 /* 3DPhysics */,
@@ -184,6 +205,7 @@
 				6D690D1B12C1D74A00C444B0 /* libPolycode3DPhysics.a */,
 				6D580DF112D29F52006FB999 /* libPolycode2DPhysics.a */,
 				6DFD116912DEA9C60080A2BE /* libPolycodeKinect.a */,
+				6D4B04211312428500C62698 /* libPolycodeGLSL.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -219,6 +241,19 @@
 				6D1B704F12C29AFE0076D5C4 /* PolyPhysicsSceneEntity.cpp */,
 			);
 			path = Source;
+			sourceTree = "<group>";
+		};
+		6D4B047C1312470E00C62698 /* PolycodeGLSL */ = {
+			isa = PBXGroup;
+			children = (
+				6D4B04831312472E00C62698 /* PolyGLSLProgram.cpp */,
+				6D4B04841312472E00C62698 /* PolyGLSLShader.cpp */,
+				6D4B04851312472E00C62698 /* PolyGLSLShaderModule.cpp */,
+				6D4B047D1312472200C62698 /* PolyGLSLProgram.h */,
+				6D4B047E1312472200C62698 /* PolyGLSLShader.h */,
+				6D4B047F1312472200C62698 /* PolyGLSLShaderModule.h */,
+			);
+			name = PolycodeGLSL;
 			sourceTree = "<group>";
 		};
 		6D580E0312D29FB5006FB999 /* 2DPhysics */ = {
@@ -333,6 +368,16 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		6D4B041D1312428500C62698 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6D4B04801312472200C62698 /* PolyGLSLProgram.h in Headers */,
+				6D4B04811312472200C62698 /* PolyGLSLShader.h in Headers */,
+				6D4B04821312472200C62698 /* PolyGLSLShaderModule.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6D580DED12D29F52006FB999 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -396,6 +441,23 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		6D4B04201312428500C62698 /* PolycodeGLSL */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6D4B04341312429E00C62698 /* Build configuration list for PBXNativeTarget "PolycodeGLSL" */;
+			buildPhases = (
+				6D4B041D1312428500C62698 /* Headers */,
+				6D4B041E1312428500C62698 /* Sources */,
+				6D4B041F1312428500C62698 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PolycodeGLSL;
+			productName = PolycodeGLSL;
+			productReference = 6D4B04211312428500C62698 /* libPolycodeGLSL.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 		6D580DF012D29F52006FB999 /* Polycode2DPhysics */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6D580DF512D29F55006FB999 /* Build configuration list for PBXNativeTarget "Polycode2DPhysics" */;
@@ -505,11 +567,22 @@
 				6D690D1A12C1D74A00C444B0 /* Polycode3DPhysics */,
 				6D580DF012D29F52006FB999 /* Polycode2DPhysics */,
 				6DFD116812DEA9C60080A2BE /* PolycodeKinect */,
+				6D4B04201312428500C62698 /* PolycodeGLSL */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
+		6D4B041E1312428500C62698 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6D4B04861312472E00C62698 /* PolyGLSLProgram.cpp in Sources */,
+				6D4B04871312472E00C62698 /* PolyGLSLShader.cpp in Sources */,
+				6D4B04881312472E00C62698 /* PolyGLSLShaderModule.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6D580DEE12D29F52006FB999 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -609,6 +682,36 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
 				SDKROOT = macosx10.6;
+			};
+			name = Release;
+		};
+		6D4B04221312428500C62698 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = PolycodeGLSL;
+			};
+			name = Debug;
+		};
+		6D4B04231312428500C62698 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = PolycodeGLSL;
+				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
@@ -779,6 +882,15 @@
 			buildConfigurations = (
 				1DEB91F008733DB70010E9CD /* Debug */,
 				1DEB91F108733DB70010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6D4B04341312429E00C62698 /* Build configuration list for PBXNativeTarget "PolycodeGLSL" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6D4B04221312428500C62698 /* Debug */,
+				6D4B04231312428500C62698 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

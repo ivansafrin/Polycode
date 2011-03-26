@@ -24,11 +24,11 @@ namespace Polycode {
 	class Camera;
 	class _PolyExport SceneLight : public SceneEntity {
 		public:
-			SceneLight(int type, float intensity, float distance, Scene *parentScene);
+			SceneLight(int type, Number intensity, Number distance, Scene *parentScene);
 			virtual ~SceneLight();
 		
-			float getIntensity();
-			float getDistance();
+			Number getIntensity();
+			Number getDistance();
 			int getType();
 			
 			void renderDepthMap(Scene *scene);
@@ -43,9 +43,9 @@ namespace Polycode {
 			Texture *getZBufferTexture();
 			Color lightColor;
 		
-			void setLightColor(float r, float g, float b) { lightColor.r = r; lightColor.g = g; lightColor.b = b; }
-			void enableShadows(bool val, float resolution=256);
-			void setShadowMapFOV(float fov);
+			void setLightColor(Number r, Number g, Number b) { lightColor.r = r; lightColor.g = g; lightColor.b = b; }
+			void enableShadows(bool val, Number resolution=256);
+			void setShadowMapFOV(Number fov);
 		
 			bool areShadowsEnabled();
 		
@@ -54,7 +54,7 @@ namespace Polycode {
 		private:
 		
 			int type;
-			float intensity;
+			Number intensity;
 			
 			Camera *spotCamera;
 			Texture *zBufferTexture;
@@ -63,11 +63,11 @@ namespace Polycode {
 			
 			Matrix4 lightViewMatrix;
 		
-			float shadowMapRes;
-			float shadowMapFOV;	
+			Number shadowMapRes;
+			Number shadowMapFOV;	
 			bool shadowsEnabled;
 		
-			float distance;
+			Number distance;
 			Mesh *lightMesh;
 	};
 }

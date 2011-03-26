@@ -19,31 +19,31 @@ Quaternion::~Quaternion() {
 
 }
 
-void Quaternion::createFromAxisAngle(float ax, float ay, float az, float degrees)
+void Quaternion::createFromAxisAngle(Number ax, Number ay, Number az, Number degrees)
 {
-	float angle = float((degrees / 180.0f) * PI);
-	float result = (float)sin( angle / 2.0f );
-	w = (float)cos( angle / 2.0f );
-	x = float(ax * result);
-	y = float(ay * result);
-	z = float(az * result);
+	Number angle = Number((degrees / 180.0f) * PI);
+	Number result = (Number)sin( angle / 2.0f );
+	w = (Number)cos( angle / 2.0f );
+	x = Number(ax * result);
+	y = Number(ay * result);
+	z = Number(az * result);
 }
 
 Matrix4 Quaternion::createMatrix()
 {
 	Matrix4 m;
-        float fTx  = 2.0*x;
-        float fTy  = 2.0*y;
-        float fTz  = 2.0*z;
-        float fTwx = fTx*w;
-        float fTwy = fTy*w;
-        float fTwz = fTz*w;
-        float fTxx = fTx*x;
-        float fTxy = fTy*x;
-        float fTxz = fTz*x;
-        float fTyy = fTy*y;
-        float fTyz = fTz*y;
-        float fTzz = fTz*z;
+        Number fTx  = 2.0*x;
+        Number fTy  = 2.0*y;
+        Number fTz  = 2.0*z;
+        Number fTwx = fTx*w;
+        Number fTwy = fTy*w;
+        Number fTwz = fTz*w;
+        Number fTxx = fTx*x;
+        Number fTxy = fTy*x;
+        Number fTxz = fTz*x;
+        Number fTyy = fTy*y;
+        Number fTyz = fTz*y;
+        Number fTzz = fTz*z;
 
         m[0][0] = 1.0-(fTyy+fTzz);
         m[1][0] = fTxy-fTwz;
@@ -57,7 +57,7 @@ Matrix4 Quaternion::createMatrix()
 	return m;
 }
 
-    float Quaternion::Dot (const Quaternion& rkQ) const
+    Number Quaternion::Dot (const Quaternion& rkQ) const
     {
         return w*rkQ.w+x*rkQ.x+y*rkQ.y+z*rkQ.z;
     }
@@ -73,12 +73,12 @@ Matrix4 Quaternion::createMatrix()
         );
     }
 
-    Quaternion Quaternion::operator* (float fScalar) const
+    Quaternion Quaternion::operator* (Number fScalar) const
     {
         return Quaternion(fScalar*w,fScalar*x,fScalar*y,fScalar*z);
     }
 
-    Quaternion operator* (float fScalar, const Quaternion& rkQ)
+    Quaternion operator* (Number fScalar, const Quaternion& rkQ)
     {
         return Quaternion(fScalar*rkQ.w,fScalar*rkQ.x,fScalar*rkQ.y,
             fScalar*rkQ.z);
@@ -95,15 +95,15 @@ Matrix4 Quaternion::createMatrix()
         // exp(q) = cos(A)+sin(A)*(x*i+y*j+z*k).  If sin(A) is near zero,
         // use exp(q) = cos(A)+A*(x*i+y*j+z*k) since A/sin(A) has limit 1.
 
-        float fAngle ( sqrtf(x*x+y*y+z*z) );
-        float fSin = sinf(fAngle);
+        Number fAngle ( sqrtf(x*x+y*y+z*z) );
+        Number fSin = sinf(fAngle);
 
         Quaternion kResult;
         kResult.w = cosf(fAngle);
 
         if ( fabs(fSin) >= 1e-03 )
         {
-            float fCoeff = fSin/fAngle;
+            Number fCoeff = fSin/fAngle;
             kResult.x = fCoeff*x;
             kResult.y = fCoeff*y;
             kResult.z = fCoeff*z;
@@ -120,10 +120,10 @@ Matrix4 Quaternion::createMatrix()
 	
 	Quaternion Quaternion::Inverse () const
     {
-        float fNorm = w*w+x*x+y*y+z*z;
+        Number fNorm = w*w+x*x+y*y+z*z;
         if ( fNorm > 0.0 )
         {
-            float fInvNorm = 1.0/fNorm;
+            Number fInvNorm = 1.0/fNorm;
             return Quaternion(w*fInvNorm,-x*fInvNorm,-y*fInvNorm,-z*fInvNorm);
         }
         else
@@ -141,11 +141,11 @@ Matrix4 Quaternion::createMatrix()
 
         if ( fabs(w) < 1.0 )
         {
-            float fAngle ( acosf(w) );
-            float fSin = sinf(fAngle);
+            Number fAngle ( acosf(w) );
+            Number fSin = sinf(fAngle);
             if ( fabs(fSin) >= 1e-03 )
             {
-                float fCoeff = fAngle/fSin;
+                Number fCoeff = fAngle/fSin;
                 kResult.x = fCoeff*x;
                 kResult.y = fCoeff*y;
                 kResult.z = fCoeff*z;
@@ -160,22 +160,22 @@ Matrix4 Quaternion::createMatrix()
         return kResult;
     }
 
-    float Quaternion::Norm () const
+    Number Quaternion::Norm () const
     {
         return w*w+x*x+y*y+z*z;
     }
 
-    float Quaternion::normalise(void)
+    Number Quaternion::normalise(void)
     {
-        float len = Norm();
-        float factor = 1.0f / sqrtf(len);
+        Number len = Norm();
+        Number factor = 1.0f / sqrtf(len);
         *this = *this * factor;
         return len;
     }
 
-    Quaternion Quaternion::Slerp(float fT, const Quaternion& rkP, const Quaternion& rkQ, bool shortestPath)
+    Quaternion Quaternion::Slerp(Number fT, const Quaternion& rkP, const Quaternion& rkQ, bool shortestPath)
     {
-        float fCos = rkP.Dot(rkQ);
+		Number fCos = rkP.Dot(rkQ);
         Quaternion rkT;
 
         // Do we need to invert rotation?
@@ -192,11 +192,11 @@ Matrix4 Quaternion::createMatrix()
         if (fabs(fCos) < 1 - 1e-03)
         {
             // Standard case (slerp)
-            float fSin = sqrtf(1 - (fCos*fCos));
-            float fAngle = atan2f(fSin, fCos);
-            float fInvSin = 1.0f / fSin;
-            float fCoeff0 = sinf((1.0f - fT) * fAngle) * fInvSin;
-            float fCoeff1 = sinf(fT * fAngle) * fInvSin;
+            Number fSin = sqrtf(1 - (fCos*fCos));
+            Number fAngle = atan2f(fSin, fCos);
+            Number fInvSin = 1.0f / fSin;
+            Number fCoeff0 = sinf((1.0f - fT) * fAngle) * fInvSin;
+            Number fCoeff1 = sinf(fT * fAngle) * fInvSin;
             return fCoeff0 * rkP + fCoeff1 * rkT;
         }
         else
@@ -214,14 +214,14 @@ Matrix4 Quaternion::createMatrix()
         }
     }
 	
-    Quaternion Quaternion::Squad (float fT,
+    Quaternion Quaternion::Squad (Number fT,
         const Quaternion& rkP, const Quaternion& rkA,
         const Quaternion& rkB, const Quaternion& rkQ, bool shortestPath)
     {
-        float fSlerpT = 2.0*fT*(1.0-fT);
+        Number fSlerpT = 2.0*fT*(1.0-fT);
         Quaternion kSlerpP = Slerp(fT, rkP, rkQ, shortestPath);
-        Quaternion kSlerpQ = Slerp(fT, rkA, rkB);
-        return Slerp(fSlerpT, kSlerpP ,kSlerpQ);
+        Quaternion kSlerpQ = Slerp(fT, rkA, rkB, shortestPath);
+        return Slerp(fSlerpT, kSlerpP ,kSlerpQ, shortestPath);
     }	
 
 Quaternion Quaternion::operator *(Quaternion q)

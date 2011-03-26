@@ -17,35 +17,35 @@ Vertex::Vertex() : Vector3(0,0,0) {
 	useVertexColor = false;
 }
 
-Vertex::Vertex(float pos_x, float pos_y, float pos_z, float nor_x, float nor_y, float nor_z) : Vector3(pos_x, pos_y, pos_z) {
+Vertex::Vertex(Number pos_x, Number pos_y, Number pos_z, Number nor_x, Number nor_y, Number nor_z) : Vector3(pos_x, pos_y, pos_z) {
 	normal = new Vector3(nor_x, nor_y, nor_z);
 	texCoord = new Vector2(0,0);
 	useVertexColor = false;
 	restPosition.set(pos_x, pos_y, pos_z);
 }
 
-Vertex::Vertex(float pos_x, float pos_y, float pos_z, float nor_x, float nor_y, float nor_z, float u, float v): Vector3(pos_x, pos_y, pos_z) {
+Vertex::Vertex(Number pos_x, Number pos_y, Number pos_z, Number nor_x, Number nor_y, Number nor_z, Number u, Number v): Vector3(pos_x, pos_y, pos_z) {
 	normal = new Vector3(nor_x, nor_y, nor_z);
 	texCoord = new Vector2(u,v);
 	useVertexColor = false;
 	restPosition.set(pos_x, pos_y, pos_z);	
 }
 
-Vertex::Vertex(float x, float y, float z) : Vector3(x,y,z) {
+Vertex::Vertex(Number x, Number y, Number z) : Vector3(x,y,z) {
 	texCoord = new Vector2(0,0);
 	normal = new Vector3(0,0,0);
 	useVertexColor = false;
 	restPosition.set(x, y, z);
 }
 
-Vertex::Vertex(float x, float y, float z, float u, float v) : Vector3(x,y,z) {
+Vertex::Vertex(Number x, Number y, Number z, Number u, Number v) : Vector3(x,y,z) {
 	texCoord = new Vector2(u,v);	
 	normal = new Vector3(0,0,0);
 	useVertexColor = false;
 	restPosition.set(x, y, z);
 }
 
-void Vertex::addBoneAssignment(unsigned int boneID, float boneWeight) {
+void Vertex::addBoneAssignment(unsigned int boneID, Number boneWeight) {
 	BoneAssignment *newBas = new BoneAssignment();
 	newBas->boneID = boneID;
 	if(boneWeight > 1)
@@ -57,14 +57,14 @@ void Vertex::addBoneAssignment(unsigned int boneID, float boneWeight) {
 	boneAssignments.push_back(newBas);
 }
 
-void Vertex::setNormal(float x, float y, float z) {
+void Vertex::setNormal(Number x, Number y, Number z) {
 	normal->x = x;
 	normal->y = y;
 	normal->z = z;	
 }
 
 void Vertex::normalizeWeights() {
-	float allWeights = 0;
+	Number allWeights = 0;
 //	if(boneAssignments.size() == 1)
 //		if(boneAssignments[0]->weight < 1)
 //			return;
@@ -87,14 +87,15 @@ BoneAssignment *Vertex::getBoneAssignment(unsigned int index) {
 }
 
 Vertex::~Vertex() {
-
+//	delete normal;
+//	delete texCoord;
 }
 
 Vector2 *Vertex::getTexCoord() {
 	return texCoord;
 }
 
-void Vertex::setTexCoord(float u, float v) {
+void Vertex::setTexCoord(Number u, Number v) {
 	texCoord->x = u;
 	texCoord->y = v;
 }

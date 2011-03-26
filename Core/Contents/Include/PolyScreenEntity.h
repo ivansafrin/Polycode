@@ -31,22 +31,22 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		ScreenEntity();
 		~ScreenEntity();
 		
-		void setPosition(float x, float y);
-		void setScale(float x, float y);
-		void setRotation(float roatation);
-		float getRotation();
+		void setPosition(Number x, Number y);
+		void setScale(Number x, Number y);
+		void setRotation(Number roatation);
+		Number getRotation();
 			
-		bool _onMouseDown(float x, float y, int timestamp);
-		bool _onMouseUp(float x, float y, int timestamp);
-		void _onMouseMove(float x, float y, int timestamp);
-		void _onMouseWheelUp(float x, float y, int timestamp);
-		void _onMouseWheelDown(float x, float y, int timestamp);
+		bool _onMouseDown(Number x, Number y, int mouseButton, int timestamp);
+		bool _onMouseUp(Number x, Number y, int mouseButton, int timestamp);
+		void _onMouseMove(Number x, Number y, int timestamp);
+		void _onMouseWheelUp(Number x, Number y, int timestamp);
+		void _onMouseWheelDown(Number x, Number y, int timestamp);
 	
-		virtual void onMouseDown(float x, float y){}
-		virtual void onMouseUp(float x, float y){}
-		virtual	void onMouseMove(float x, float y){}
-		virtual void onMouseWheelUp(float x, float y) {}
-		virtual void onMouseWheelDown(float x, float y) {}
+		virtual void onMouseDown(Number x, Number y){}
+		virtual void onMouseUp(Number x, Number y){}
+		virtual	void onMouseMove(Number x, Number y){}
+		virtual void onMouseWheelUp(Number x, Number y) {}
+		virtual void onMouseWheelDown(Number x, Number y) {}
 	
 		void _onKeyDown(TAUKey key, wchar_t charCode);	
 		void _onKeyUp(TAUKey key, wchar_t charCode);	
@@ -54,21 +54,21 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		virtual void onKeyDown(TAUKey key, wchar_t charCode){}
 		virtual void onKeyUp(TAUKey key, wchar_t charCode){}
 		
-		bool hitTest(float x, float y);		
+		bool hitTest(Number x, Number y);		
 	
 		Matrix4 buildPositionMatrix();
 		void adjustMatrixForChildren();
 
-		float getWidth();
-		float getHeight();
+		Number getWidth();
+		Number getHeight();
 	
-		void setWidth(float w) { width = w; hitwidth = w; }
-		void setHeight(float h) { height = h; hitheight = h; }
+		void setWidth(Number w) { width = w; hitwidth = w; }
+		void setHeight(Number h) { height = h; hitheight = h; }
 	
 		virtual void onGainFocus(){}
 		virtual void onLoseFocus(){}		
 		
-		void startDrag(float xOffset, float yOffset);
+		void startDrag(Number xOffset, Number yOffset);
 		void stopDrag();
 				
 		void setBlendingMode(int newBlendingMode);
@@ -100,18 +100,18 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		bool focusChildren;
 		
 		bool isDragged;
-		float dragOffsetX;
-		float dragOffsetY;
+		Number dragOffsetX;
+		Number dragOffsetY;
 		
 		bool mouseOver;
-		float width;
-		float height;
+		Number width;
+		Number height;
 
-		float hitwidth;
-		float hitheight;
+		Number hitwidth;
+		Number hitheight;
 		
-		float xmouse;
-		float ymouse;
+		Number xmouse;
+		Number ymouse;
 		
 		int positionMode;		
 		Rectangle *dragLimits;

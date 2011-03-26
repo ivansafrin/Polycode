@@ -72,15 +72,15 @@ namespace Polycode {
 		virtual String getClipboardString() = 0;
 		
 		CoreServices *getServices();
-		float getFPS();
+		Number getFPS();
 		void Shutdown();
 		
 		bool isFullscreen(){ return fullScreen; }
 		int getAALevel() { return aaLevel; }
 				
 		CoreInput *getInput();
-		float getXRes();
-		float getYRes();
+		Number getXRes();
+		Number getYRes();
 		
 		int getNumVideoModes();
 		virtual vector<Rectangle> getVideoModes() = 0;
@@ -100,8 +100,8 @@ namespace Polycode {
 		
 		void doSleep();
 		
-		float getElapsed();	
-		float getTicksFloat();
+		Number getElapsed();	
+		Number getTicksFloat();
 		
 		void setUserPointer(void *ptr) { userPointer = ptr; }
 		void *getUserPointer() { return userPointer; }
@@ -123,7 +123,7 @@ namespace Polycode {
 		int numVideoModes;
 		
 		bool running;
-		float fps;
+		Number fps;
 		unsigned int frameTicks;
 		unsigned int lastFrameTicks;
 		unsigned int lastFPSTicks;

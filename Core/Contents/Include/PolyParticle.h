@@ -23,9 +23,9 @@ namespace Polycode {
 		public:
 			Particle(int particleType, bool isScreenParticle, Material *material, Texture *texture, Mesh *particleMesh);
 			~Particle();
-			void Reset();
+			void Reset(bool continuious);
 			
-			void createSceneParticle(int particleType, Material *material, Mesh *particleMesh);
+			void createSceneParticle(int particleType, Texture *texture, Mesh *particleMesh);
 			void createScreenParticle(int particleType, Texture *texture, Mesh *particleMesh);
 		
 			Entity *particleBody;						
@@ -33,12 +33,12 @@ namespace Polycode {
 			Vector3 velVector;
 			Vector3 dirVector;	
 			Vector3 deviation;		
-			float life;
-			float lifespan;
-			float brightnessDeviation;
-			float perlinPosX;
-			float perlinPosY;
-			float perlinPosZ;
+			Number life;
+			Number lifespan;
+			Number brightnessDeviation;
+			Number perlinPosX;
+			Number perlinPosY;
+			Number perlinPosZ;
 			
 			static const int BILLBOARD_PARTICLE = 0;
 			static const int MESH_PARTICLE = 1;

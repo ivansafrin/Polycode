@@ -11,13 +11,12 @@
 
 using namespace Polycode;
 
-SceneLabel::SceneLabel(String fontName, String text, int size, float scale, int amode) : SceneEntity() {
+SceneLabel::SceneLabel(String fontName, String text, int size, Number scale, int amode) : SceneEntity() {
 	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size, amode);
 	this->scale = scale;
 	setText(text);
-	texture = NULL;
 	mesh = new Mesh(Mesh::QUAD_MESH);
-	mesh->createPlane(1,1);
+	mesh->createPlane(label->getWidth()*scale,label->getHeight()*scale);
 }
 
 SceneLabel::~SceneLabel() {
@@ -27,7 +26,7 @@ Label *SceneLabel::getLabel() {
 	return label;
 }
 
-bool SceneLabel::testMouseCollision(float x, float y) {
+bool SceneLabel::testMouseCollision(Number x, Number y) {
 	
 	Matrix4 fullMatrix = getConcatenatedMatrix();
 	if(billboardMode) {
@@ -76,7 +75,6 @@ void SceneLabel::setText(String newText) {
 void SceneLabel::Render() {
 	Renderer *renderer = CoreServices::getInstance()->getRenderer();
 	renderer->setTexture(texture);	
-	renderer->pushDataArrayForMesh(mesh, RenderDataArray::COLOR_DATA_ARRAY);
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::VERTEX_DATA_ARRAY);
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::TEXCOORD_DATA_ARRAY);	
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::NORMAL_DATA_ARRAY);		

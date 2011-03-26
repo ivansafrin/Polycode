@@ -32,10 +32,10 @@ using namespace Polycode;
 	r0 = t - (int)t;\
 	r1 = r0 - 1.0f;
 
-float Perlin::noise1(float arg)
+Number Perlin::noise1(Number arg)
 {
 	int bx0, bx1;
-	float rx0, rx1, sx, t, u, v, vec[1];
+	Number rx0, rx1, sx, t, u, v, vec[1];
 
 	vec[0] = arg;
 
@@ -56,10 +56,10 @@ float Perlin::noise1(float arg)
 	return lerp(sx, u, v);
 }
 
-float Perlin::noise2(float vec[2])
+Number Perlin::noise2(Number vec[2])
 {
 	int bx0, bx1, by0, by1, b00, b10, b01, b11;
-	float rx0, rx1, ry0, ry1, *q, sx, sy, a, b, t, u, v;
+	Number rx0, rx1, ry0, ry1, *q, sx, sy, a, b, t, u, v;
 	int i, j;
 
 	if (mStart)
@@ -100,10 +100,10 @@ float Perlin::noise2(float vec[2])
 	return lerp(sy, a, b);
 }
 
-float Perlin::noise3(float vec[3])
+Number Perlin::noise3(Number vec[3])
 {
 	int bx0, bx1, by0, by1, bz0, bz1, b00, b10, b01, b11;
-	float rx0, rx1, ry0, ry1, rz0, rz1, *q, sy, sz, a, b, c, d, t, u, v;
+	Number rx0, rx1, ry0, ry1, rz0, rz1, *q, sy, sz, a, b, c, d, t, u, v;
 	int i, j;
 
 	if (mStart)
@@ -154,21 +154,21 @@ float Perlin::noise3(float vec[3])
 	return lerp(sz, c, d);
 }
 
-void Perlin::normalize2(float v[2])
+void Perlin::normalize2(Number v[2])
 {
-	float s;
+	Number s;
 
-	s = (float)sqrt(v[0] * v[0] + v[1] * v[1]);
+	s = (Number)sqrt(v[0] * v[0] + v[1] * v[1]);
   s = 1.0f/s;
 	v[0] = v[0] * s;
 	v[1] = v[1] * s;
 }
 
-void Perlin::normalize3(float v[3])
+void Perlin::normalize3(Number v[3])
 {
-	float s;
+	Number s;
 
-	s = (float)sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+	s = (Number)sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
   s = 1.0f/s;
 
 	v[0] = v[0] * s;
@@ -183,12 +183,12 @@ void Perlin::init(void)
 	for (i = 0 ; i < B ; i++)
   {
 		p[i] = i;
-		g1[i] = (float)((rand() % (B + B)) - B) / B;
+		g1[i] = (Number)((rand() % (B + B)) - B) / B;
 		for (j = 0 ; j < 2 ; j++)
-			g2[i][j] = (float)((rand() % (B + B)) - B) / B;
+			g2[i][j] = (Number)((rand() % (B + B)) - B) / B;
 		normalize2(g2[i]);
 		for (j = 0 ; j < 3 ; j++)
-			g3[i][j] = (float)((rand() % (B + B)) - B) / B;
+			g3[i][j] = (Number)((rand() % (B + B)) - B) / B;
 		normalize3(g3[i]);
 	}
 
@@ -212,12 +212,12 @@ void Perlin::init(void)
 }
 
 
-float Perlin::perlin_noise_2D(float vec[2])
+Number Perlin::perlin_noise_2D(Number vec[2])
 {
   int terms    = mOctaves;
-	float freq   = mFrequency;
-	float result = 0.0f;
-  float amp = mAmplitude;
+	Number freq   = mFrequency;
+	Number result = 0.0f;
+  Number amp = mAmplitude;
 
   vec[0]*=mFrequency;
   vec[1]*=mFrequency;
@@ -236,7 +236,7 @@ float Perlin::perlin_noise_2D(float vec[2])
 
 
 
-Perlin::Perlin(int octaves,float freq,float amp,int seed)
+Perlin::Perlin(int octaves,Number freq,Number amp,int seed)
 {
   mOctaves = octaves;
   mFrequency = freq;

@@ -27,7 +27,7 @@ namespace Polycode {
 				bone = NULL;
 			}
 			unsigned int boneID;
-			float weight;
+			Number weight;
 			Bone *bone;
 	};
 
@@ -35,22 +35,23 @@ namespace Polycode {
 		public:
 		
 			Vertex();
-			Vertex(float pos_x, float pos_y, float pos_z, float nor_x, float nor_y, float nor_z);
-			Vertex(float pos_x, float pos_y, float pos_z, float nor_x, float nor_y, float nor_z, float u, float v);		
-			Vertex(float x, float y, float z);
-			Vertex(float x, float y, float z, float u, float v);
-			~Vertex();
+			Vertex(Number pos_x, Number pos_y, Number pos_z, Number nor_x, Number nor_y, Number nor_z);
+			Vertex(Number pos_x, Number pos_y, Number pos_z, Number nor_x, Number nor_y, Number nor_z, Number u, Number v);		
+			Vertex(Number x, Number y, Number z);
+			Vertex(Number x, Number y, Number z, Number u, Number v);
+			virtual ~Vertex();
 			
-			void addBoneAssignment(unsigned int boneID, float boneWeight);
+			void addBoneAssignment(unsigned int boneID, Number boneWeight);
 			int getNumBoneAssignments();
 			BoneAssignment *getBoneAssignment(unsigned int index);
 			
 			void normalizeWeights();
 			
 			Vector2 *getTexCoord();
-			void setTexCoord(float u, float v);
-			void setNormal(float x, float y, float z);
+			void setTexCoord(Number u, Number v);
+			void setNormal(Number x, Number y, Number z);
 
+			Vector3 restNormal;
 			Vector3 *normal;
 			Vector3 restPosition;
 

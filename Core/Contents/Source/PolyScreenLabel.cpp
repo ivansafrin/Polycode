@@ -28,7 +28,7 @@ Label *ScreenLabel::getLabel() {
 	return label;
 }
 
-void ScreenLabel::addDropShadow(Color color, float size, float offsetX, float offsetY) {
+void ScreenLabel::addDropShadow(Color color, Number size, Number offsetX, Number offsetY) {
 	Image *labelImage = new Image(label);
 	labelImage->fastBlur(size);
 	dropShadowImage = new ScreenImage(labelImage);	

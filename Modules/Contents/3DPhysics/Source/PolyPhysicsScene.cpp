@@ -27,8 +27,8 @@ void PhysicsScene::initPhysicsScene() {
 	
 	btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver();
 	
-	btVector3 worldMin(-1000,-1000,-1000);
-	btVector3 worldMax(1000,1000,1000);
+	btVector3 worldMin(-100,-100,-100);
+	btVector3 worldMax(100,100,100);
 	btAxisSweep3* sweepBP = new btAxisSweep3(worldMin,worldMax);	
 	
 	physicsWorld = new btDiscreteDynamicsWorld(dispatcher,sweepBP,solver,collisionConfiguration);
@@ -58,11 +58,11 @@ void PhysicsScene::Update() {
 	
 }
 
-PhysicsCharacter *PhysicsScene::addCharacterChild(SceneEntity *newEntity,float mass, float friction, float stepSize) {
+PhysicsCharacter *PhysicsScene::addCharacterChild(SceneEntity *newEntity,float mass, float friction, float stepSize, int group) {
 	addEntity(newEntity);	
 	PhysicsCharacter *newPhysicsEntity = new PhysicsCharacter(newEntity, mass, friction, stepSize);
 	
-	physicsWorld->addCollisionObject(newPhysicsEntity->ghostObject,btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);
+	physicsWorld->addCollisionObject(newPhysicsEntity->ghostObject,group, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);
 	physicsWorld->addAction(newPhysicsEntity->character);
 	
 	
@@ -77,12 +77,15 @@ PhysicsCharacter *PhysicsScene::addCharacterChild(SceneEntity *newEntity,float m
 	
 }
 
-PhysicsSceneEntity *PhysicsScene::addPhysicsChild(SceneEntity *newEntity, int type, float mass, float friction, float restitution) {
-	addEntity(newEntity);	
+PhysicsSceneEntity *PhysicsScene::trackPhysicsChild(SceneEntity *newEntity, int type, float mass, float friction, float restitution, int group) {
 	PhysicsSceneEntity *newPhysicsEntity = new PhysicsSceneEntity(newEntity, type, mass, friction,restitution);
-	physicsWorld->addRigidBody(newPhysicsEntity->rigidBody);	
-	newPhysicsEntity->rigidBody->setActivationState(ISLAND_SLEEPING);	
+	physicsWorld->addRigidBody(newPhysicsEntity->rigidBody, group, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);	
+	//	newPhysicsEntity->rigidBody->setActivationState(ISLAND_SLEEPING);	
 	physicsChildren.push_back(newPhysicsEntity);
-	return newPhysicsEntity;
-	
+	return newPhysicsEntity;	
+}
+
+PhysicsSceneEntity *PhysicsScene::addPhysicsChild(SceneEntity *newEntity, int type, float mass, float friction, float restitution, int group) {
+	addEntity(newEntity);	
+	return trackPhysicsChild(newEntity, type, mass, friction, restitution, group);	
 }
