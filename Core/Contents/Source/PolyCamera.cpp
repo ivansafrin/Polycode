@@ -211,7 +211,7 @@ void Camera::buildFrustrumPlanes() {
 }
 
 bool Camera::canSee(SceneEntity *entity) {
-	return isSphereInFrustrum(*entity->getPosition(), entity->getBBoxRadius());
+	return isSphereInFrustrum(entity->getPosition(), entity->getBBoxRadius());
 }
 
 void Camera::setParentScene(Scene *parentScene) {

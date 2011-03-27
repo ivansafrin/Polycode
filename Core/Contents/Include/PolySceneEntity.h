@@ -1,6 +1,6 @@
 /*
  *  PolySceneEntity.h
- *  TAU
+ *  Poly
  *
  *  Created by Ivan Safrin on 3/18/08.
  *  Copyright 2008 __MyCompanyName__. All rights reserved.
@@ -30,8 +30,6 @@ namespace Polycode {
 			virtual ~SceneEntity();
 		
 			virtual bool testMouseCollision(Number x, Number y) { return false;}
-
-			void ok() { Logger::log("ok!!1\n"); }
 			
 		protected:
 

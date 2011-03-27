@@ -62,7 +62,7 @@ UIVScrollBar::UIVScrollBar(float width, float height, float initialRatio) : Scre
 	dragRectHeight = height-(padding*2)-scrollHandleHeight;
 	handleBox->setDragLimits(Rectangle(padding,padding,width-(padding*2)-(width-(padding*2)), dragRectHeight));
 	
-	lastPositionY = handleBox->getPosition()->y;
+	lastPositionY = handleBox->getPosition().y;
 	
 	this->height = height;
 	this->width = width;	
@@ -81,8 +81,8 @@ void UIVScrollBar::Resize(int newHeight) {
 
 void UIVScrollBar::Update() {
 	
-	if(lastPositionY != handleBox->getPosition()->y) {
-		lastPositionY = handleBox->getPosition()->y;
+	if(lastPositionY != handleBox->getPosition().y) {
+		lastPositionY = handleBox->getPosition().y;
 		scrollValue = (lastPositionY-padding)/dragRectHeight;
 		if(scrollValue < 0) scrollValue = 0;
 		if(scrollValue > 1) scrollValue = 1;		
@@ -110,7 +110,7 @@ void UIVScrollBar::onMouseWheelDown(float x, float y) {
 }
 
 void UIVScrollBar::scrollUpOneTick() {
-	float newPos = handleBox->getPosition()->y - 5;
+	float newPos = handleBox->getPosition().y - 5;
 	
 	if(newPos < padding)
 		newPos = padding;
@@ -119,7 +119,7 @@ void UIVScrollBar::scrollUpOneTick() {
 }
 
 void UIVScrollBar::scrollDownOneTick() {
-	float newPos = handleBox->getPosition()->y + 5;	
+	float newPos = handleBox->getPosition().y + 5;	
 	
 	if(newPos > dragRectHeight)
 		newPos = dragRectHeight;
@@ -137,13 +137,13 @@ void UIVScrollBar::handleEvent(Event *event) {
 		InputEvent *inputEvent = (InputEvent*)event;
 		switch(event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEDOWN:
-				if(inputEvent->mousePosition.y < handleBox->getPosition()->y)  {
-					float newPos = handleBox->getPosition()->y - scrollHandleHeight;
+				if(inputEvent->mousePosition.y < handleBox->getPosition().y)  {
+					float newPos = handleBox->getPosition().y - scrollHandleHeight;
 					if(newPos < padding)
 						newPos = padding;
 					handleBox->setPositionY(newPos);
 				} else {
-					float newPos = handleBox->getPosition()->y + scrollHandleHeight;
+					float newPos = handleBox->getPosition().y + scrollHandleHeight;
 					if(newPos > dragRectHeight)
 						newPos = dragRectHeight;
 					handleBox->setPositionY(newPos);					
@@ -160,7 +160,7 @@ void UIVScrollBar::handleEvent(Event *event) {
 				handleBox->stopDrag();
 				break;
 			case InputEvent::EVENT_MOUSEDOWN:
-				handleBox->startDrag(inputEvent->mousePosition.x-handleBox->getPosition()->x,inputEvent->mousePosition.y-handleBox->getPosition()->y);
+				handleBox->startDrag(inputEvent->mousePosition.x-handleBox->getPosition().x,inputEvent->mousePosition.y-handleBox->getPosition().y);
 				break;		
 		}
 	}

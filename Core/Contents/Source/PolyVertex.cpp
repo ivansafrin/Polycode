@@ -1,6 +1,6 @@
 /*
  *  PolyVertex.cpp
- *  TAU
+ *  Poly
  *
  *  Created by Ivan Safrin on 3/14/08.
  *  Copyright 2008 __MyCompanyName__. All rights reserved.
@@ -12,35 +12,32 @@
 using namespace Polycode;
 
 Vertex::Vertex() : Vector3(0,0,0) {
-	texCoord = new Vector2(0,0);	
-	normal = new Vector3(0,0,0);
+	texCoord = Vector2(0,0);	
+	normal = Vector3(0,0,0);
 	useVertexColor = false;
 }
 
 Vertex::Vertex(Number pos_x, Number pos_y, Number pos_z, Number nor_x, Number nor_y, Number nor_z) : Vector3(pos_x, pos_y, pos_z) {
-	normal = new Vector3(nor_x, nor_y, nor_z);
-	texCoord = new Vector2(0,0);
+	normal = Vector3(nor_x, nor_y, nor_z);
+	texCoord = Vector2(0,0);
 	useVertexColor = false;
 	restPosition.set(pos_x, pos_y, pos_z);
 }
 
 Vertex::Vertex(Number pos_x, Number pos_y, Number pos_z, Number nor_x, Number nor_y, Number nor_z, Number u, Number v): Vector3(pos_x, pos_y, pos_z) {
-	normal = new Vector3(nor_x, nor_y, nor_z);
-	texCoord = new Vector2(u,v);
+	normal = Vector3(nor_x, nor_y, nor_z);
+	texCoord = Vector2(u,v);
 	useVertexColor = false;
 	restPosition.set(pos_x, pos_y, pos_z);	
 }
 
 Vertex::Vertex(Number x, Number y, Number z) : Vector3(x,y,z) {
-	texCoord = new Vector2(0,0);
-	normal = new Vector3(0,0,0);
 	useVertexColor = false;
 	restPosition.set(x, y, z);
 }
 
 Vertex::Vertex(Number x, Number y, Number z, Number u, Number v) : Vector3(x,y,z) {
-	texCoord = new Vector2(u,v);	
-	normal = new Vector3(0,0,0);
+	texCoord = Vector2(u,v);	
 	useVertexColor = false;
 	restPosition.set(x, y, z);
 }
@@ -58,9 +55,9 @@ void Vertex::addBoneAssignment(unsigned int boneID, Number boneWeight) {
 }
 
 void Vertex::setNormal(Number x, Number y, Number z) {
-	normal->x = x;
-	normal->y = y;
-	normal->z = z;	
+	normal.x = x;
+	normal.y = y;
+	normal.z = z;	
 }
 
 void Vertex::normalizeWeights() {
@@ -91,11 +88,11 @@ Vertex::~Vertex() {
 //	delete texCoord;
 }
 
-Vector2 *Vertex::getTexCoord() {
+Vector2 Vertex::getTexCoord() {
 	return texCoord;
 }
 
 void Vertex::setTexCoord(Number u, Number v) {
-	texCoord->x = u;
-	texCoord->y = v;
+	texCoord.x = u;
+	texCoord.y = v;
 }

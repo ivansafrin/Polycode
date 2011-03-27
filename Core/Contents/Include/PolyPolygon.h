@@ -1,6 +1,6 @@
 /*
  *  PolyPolygon.h
- *  TAU
+ *  Poly
  *
  *  Created by Ivan Safrin on 3/14/08.
  *  Copyright 2008 __MyCompanyName__. All rights reserved.
@@ -40,8 +40,8 @@ namespace Polycode {
 		
 			void addTexCoord(Number u, Number v);
 			void addTexCoord2(Number u, Number v);
-			Vector2 *getTexCoord(int index);
-			Vector2 *getTexCoord2(int index);
+			Vector2 getTexCoord(int index);
+			Vector2 getTexCoord2(int index);
 			void addVertex(Vertex *vertex);
 			Vertex *addVertex(Number x, Number y, Number z, Number u, Number v);
 			void calculateNormal();
@@ -65,9 +65,9 @@ namespace Polycode {
 			bool useFaceUV;
 			unsigned int vertexCount;
 			vector<Vertex*> vertices;
-			vector<Vector2*> texCoords;
-			vector<Vector2*> texCoords2;
-			Vector3			*normal;
+			vector<Vector2> texCoords;
+			vector<Vector2> texCoords2;
+			Vector3			normal;
 	};
 
 }

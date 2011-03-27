@@ -327,7 +327,7 @@ void ParticleEmitter::updateEmitter() {
 		particle->particleBody->Translate(translationVector);
 		
 		if(rotationFollowsPath)  {
-			particle->particleBody->lookAt(*particle->particleBody->getPosition() + translationVector, Vector3(1,0,0));			
+			particle->particleBody->lookAt(particle->particleBody->getPosition() + translationVector, Vector3(1,0,0));			
 		} else {
 			if(isScreenEmitter) {
 				particle->particleBody->Roll(rotationSpeed*elapsed);

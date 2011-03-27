@@ -123,7 +123,7 @@ PhysicsJoint *PhysicsScreen::createRevoluteJoint(ScreenEntity *ent1, ScreenEntit
 	if(pEnt1 == NULL || pEnt2 == NULL)
 		return NULL;
 	
-	b2Vec2 anchor((ent1->getPosition()->x+ax)/worldScale, (ent1->getPosition()->y+ay)/worldScale);
+	b2Vec2 anchor((ent1->getPosition().x+ax)/worldScale, (ent1->getPosition().y+ay)/worldScale);
 	b2RevoluteJointDef *jointDef = new b2RevoluteJointDef();
 	jointDef->collideConnected = false;
 	jointDef->lowerAngle = lowerLimit * (PI/180.0f);
@@ -255,8 +255,8 @@ void PhysicsScreen::createDistanceJoint(ScreenEntity *ent1, ScreenEntity *ent2, 
 	if(pEnt1 == NULL || pEnt2 == NULL)
 		return;
 	
-	b2Vec2 a1(ent1->getPosition()->x/worldScale, ent1->getPosition()->y/worldScale);
-	b2Vec2 a2(ent2->getPosition()->x/worldScale, ent2->getPosition()->y/worldScale);
+	b2Vec2 a1(ent1->getPosition().x/worldScale, ent1->getPosition().y/worldScale);
+	b2Vec2 a2(ent2->getPosition().x/worldScale, ent2->getPosition().y/worldScale);
 	b2DistanceJointDef *jointDef = new b2DistanceJointDef();
 	jointDef->Initialize(pEnt1->body, pEnt2->body, a1, a2);
 	jointDef->collideConnected = collideConnected;

@@ -20,7 +20,7 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, f
 	screenEntity = entity;
 	
 	bodyDef = new b2BodyDef();
-	bodyDef->position.Set(screenEntity->getPosition()->x/worldScale, screenEntity->getPosition()->y/worldScale);
+	bodyDef->position.Set(screenEntity->getPosition().x/worldScale, screenEntity->getPosition().y/worldScale);
 	bodyDef->angle = screenEntity->getRotation()*(PI/180.0f);	
 	bodyDef->bullet = isSensor;	
 	bodyDef->fixedRotation = fixedRotation;

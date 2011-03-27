@@ -1,6 +1,6 @@
 /*
  *  PolyTexture.h
- *  TAU
+ *  Poly
  *
  *  Created by Ivan Safrin on 3/13/08.
  *  Copyright 2008 __MyCompanyName__. All rights reserved.

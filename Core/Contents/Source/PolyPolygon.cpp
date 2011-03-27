@@ -1,6 +1,6 @@
 /*
  *  PolyPolygon.cpp
- *  TAU
+ *  Poly
  *
  *  Created by Ivan Safrin on 3/14/08.
  *  Copyright 2008 __MyCompanyName__. All rights reserved.
@@ -12,30 +12,22 @@
 namespace Polycode {
 
 Polygon::Polygon()  : useVertexNormals(false), vertexCount(0), useFaceUV(false) {
-	normal = new Vector3();
 	hasSecUVs = false;
 	useVertexNormals = true;
 	
 	for(int i=0; i < 3; i++) {
-		Vector2 *newCoord = new Vector2(0,0);
+		Vector2 newCoord;
 		texCoords.push_back(newCoord);
 	}
 	
 	for(int i=0; i < 3; i++) {	
-		Vector2 *newCoord2 = new Vector2(0,0);
+		Vector2 newCoord2;
 		texCoords2.push_back(newCoord2);
 	}
 }
 
 Polygon::~Polygon() {
-	for(int i=0; i < texCoords.size(); i++) {	
-		delete texCoords[i];
-	}
 	texCoords.clear();
-
-	for(int i=0; i < texCoords2.size(); i++) {	
-		delete texCoords2[i];
-	}
 	texCoords2.clear();
 	
 	for(int i=0; i < vertices.size(); i++) {	
@@ -46,8 +38,8 @@ Polygon::~Polygon() {
 	
 void Polygon::flipUVY() {
 	for(int i=0; i < vertices.size(); i++) {
-		Vector2 *coord = vertices[i]->getTexCoord();
-		vertices[i]->setTexCoord(coord->x, 1-coord->y);
+		Vector2 coord = vertices[i]->getTexCoord();
+		vertices[i]->setTexCoord(coord.x, 1-coord.y);
 	}
 }
 
@@ -59,11 +51,11 @@ bool Polygon::usesFaceUV() {
 	return useFaceUV;
 }
 
-Vector2 *Polygon::getTexCoord(int index) {
+Vector2 Polygon::getTexCoord(int index) {
 	return texCoords[index];
 }
 
-Vector2 *Polygon::getTexCoord2(int index) {
+Vector2 Polygon::getTexCoord2(int index) {
 	return texCoords2[index];
 }
 
@@ -84,7 +76,7 @@ Vector3 Polygon::getFaceNormal() {
 	fNormal.Normalize();	
 	return fNormal;
 	*/
-	return *normal;
+	return normal;
 }
 
 Rectangle Polygon::getBounds2D() {
@@ -108,7 +100,7 @@ void Polygon::removeVertex(int index) {
 }
 
 void Polygon::setNormal(Vector3 normal) {
-	*this->normal = normal;
+	this->normal = normal;
 }	
 
 void Polygon::calculateNormal() {
@@ -119,14 +111,14 @@ void Polygon::calculateNormal() {
 //	normal->y = (vertices[0]->x-vertices[1]->x)*(vertices[2]->z-vertices[1]->z)-(vertices[0]->z-vertices[1]->z)*(vertices[2]->x-vertices[1]->x);
 //	normal->z = (vertices[0]->y-vertices[1]->y)*(vertices[2]->x-vertices[1]->x)-(vertices[0]->x-vertices[1]->x)*(vertices[2]->y-vertices[1]->y);
 
-	*normal = (*vertices[0] - *vertices[1]).crossProduct((*vertices[1] - *vertices[2]));
+	normal = (*vertices[0] - *vertices[1]).crossProduct((*vertices[1] - *vertices[2]));
 	
-	normal->Normalize();
+	normal.Normalize();
 	
 	for(int i=0; i < vertices.size(); i++) {
-		vertices[i]->normal->x = normal->x;
-		vertices[i]->normal->y = normal->y;
-		vertices[i]->normal->z = normal->z;		
+		vertices[i]->normal.x = normal.x;
+		vertices[i]->normal.y = normal.y;
+		vertices[i]->normal.z = normal.z;		
 	}
 }
 

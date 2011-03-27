@@ -164,7 +164,7 @@ void CGShaderModule::setCGSpotLightTextureMatrixParameter(Renderer *renderer, CG
 		vector<LightInfo> spotLights = renderer->getSpotLights();			
 		glMatrixMode(GL_MODELVIEW);
 		glPushMatrix();
-		glLoadMatrixf(spotLights[lightIndex].textureMatrix.ml);				
+		glLoadMatrixf((GLfloat*)spotLights[lightIndex].textureMatrix.ml);				
 		cgGLSetStateMatrixParameter(param.cgParam, CG_GL_MODELVIEW_MATRIX,CG_GL_MATRIX_IDENTITY);
 		glPopMatrix();
 	}					

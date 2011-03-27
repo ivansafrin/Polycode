@@ -1,6 +1,6 @@
 /*
  *  PolyVertex.h
- *  TAU
+ *  Poly
  *
  *  Created by Ivan Safrin on 3/14/08.
  *  Copyright 2008 __MyCompanyName__. All rights reserved.
@@ -47,12 +47,12 @@ namespace Polycode {
 			
 			void normalizeWeights();
 			
-			Vector2 *getTexCoord();
+			Vector2 getTexCoord();
 			void setTexCoord(Number u, Number v);
 			void setNormal(Number x, Number y, Number z);
 
 			Vector3 restNormal;
-			Vector3 *normal;
+			Vector3 normal;
 			Vector3 restPosition;
 
 			Color vertexColor;		
@@ -61,7 +61,7 @@ namespace Polycode {
 		private:
 		
 			vector <BoneAssignment*> boneAssignments;
-			Vector2 *texCoord;
+			Vector2 texCoord;
 		
 	};
 }

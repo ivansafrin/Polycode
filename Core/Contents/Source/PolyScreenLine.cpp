@@ -41,9 +41,12 @@ void ScreenLine::setLineWidth(Number width) {
 void ScreenLine::Update() {
 	if(!target1)
 		return;
-	setPosition(target1->getPosition()->x, target1->getPosition()->y);
-	endVertex.x = target2->getPosition()->x-target1->getPosition()->x;
-	endVertex.y = target2->getPosition()->y-target1->getPosition()->y;
+	Vector3 pos1 = target1->getPosition();
+	Vector3 pos2 = target2->getPosition();
+	
+	setPosition(pos1.x, pos1.y);
+	endVertex.x = pos2.x-pos1.x;
+	endVertex.y = pos2.y-pos1.y;
 }
 
 

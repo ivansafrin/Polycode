@@ -1,6 +1,6 @@
 /*
  *  PolyGenericScene.cpp
- *  TAU
+ *  Poly
  *
  *  Created by Ivan Safrin on 3/18/08.
  *  Copyright 2008 __MyCompanyName__. All rights reserved.
@@ -85,7 +85,7 @@ void GenericScene::Render() {
 			}
 		}
 
-		position = *light->getPosition();
+		position = light->getPosition();
 		if(light->getParentEntity() != NULL) {
 			position = light->getParentEntity()->getConcatenatedMatrix() * position;			
 		}
@@ -101,7 +101,7 @@ void GenericScene::Render() {
 	
 	for(int i=0; i<entities.size();i++) {
 		if(entities[i]->getBBoxRadius() > 0) {
-			if(defaultCamera->isSphereInFrustrum((*entities[i]->getPosition()), entities[i]->getBBoxRadius()))
+			if(defaultCamera->isSphereInFrustrum((entities[i]->getPosition()), entities[i]->getBBoxRadius()))
 				entities[i]->transformAndRender();
 		} else {
 			entities[i]->transformAndRender();		
@@ -133,7 +133,7 @@ void GenericScene::RenderDepthOnly(Camera *targetCamera) {
 	CoreServices::getInstance()->getRenderer()->enableShaders(false);
 	for(int i=0; i<entities.size();i++) {
 		if(entities[i]->getBBoxRadius() > 0) {
-			if(targetCamera->isSphereInFrustrum((*entities[i]->getPosition()), entities[i]->getBBoxRadius()))
+			if(targetCamera->isSphereInFrustrum((entities[i]->getPosition()), entities[i]->getBBoxRadius()))
 				entities[i]->transformAndRender();
 		} else {
 			entities[i]->transformAndRender();		
@@ -390,9 +390,10 @@ SceneEntity *GenericScene::getCustomEntityByType(String type) {
 
 void GenericScene::writeEntityMatrix(SceneEntity *entity, OSFILE *outFile) {
 	Number t[3],rq[4];
-	t[0] = entity->getPosition()->x;
-	t[1] = entity->getPosition()->y;
-	t[2] = entity->getPosition()->z;
+	Vector3 pos = entity->getPosition();
+	t[0] = pos.x;
+	t[1] = pos.y;
+	t[2] = pos.z;
 	
 	rq[0] = entity->getRotationQuat().w;
 	rq[1] = entity->getRotationQuat().x;

@@ -49,7 +49,7 @@ namespace Polycode {
 			void updateEntityMatrix();
 			void renderChildren();		
 
-			Vector3 *getPosition();
+			Vector3 getPosition();
 			void setPosition(Number x, Number y, Number z);
 			
 			void setPositionX(Number x);

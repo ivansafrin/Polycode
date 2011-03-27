@@ -50,7 +50,7 @@ void CollisionScene::Update() {
 	
 	for(int i=0; i < collisionChildren.size(); i++) {
 		if(collisionChildren[i]->enabled)		
-			collisionChildren[i]->lastPosition = *collisionChildren[i]->getSceneEntity()->getPosition();
+			collisionChildren[i]->lastPosition = collisionChildren[i]->getSceneEntity()->getPosition();
 	}	
 }
 
@@ -240,7 +240,7 @@ CollisionResult CollisionScene::testCollisionOnCollisionChild_RayTest(CollisionS
 	world->removeCollisionObject(cEnt1->collisionObject);	
 
 	btVector3 fVec(cEnt1->lastPosition.x, cEnt1->lastPosition.y, cEnt1->lastPosition.z);
-	btVector3 toVec(cEnt1->getSceneEntity()->getPosition()->x, cEnt1->getSceneEntity()->getPosition()->y, cEnt1->getSceneEntity()->getPosition()->z);
+	btVector3 toVec(cEnt1->getSceneEntity()->getPosition().x, cEnt1->getSceneEntity()->getPosition().y, cEnt1->getSceneEntity()->getPosition().z);
 	
 	btCollisionWorld::ClosestConvexResultCallback cb(toVec, fVec);
 	btQuaternion qFrom;	
@@ -277,7 +277,7 @@ CollisionResult CollisionScene::testCollisionOnCollisionChild_RayTest(CollisionS
 		Logger::log("dist: %f\n", result.colDist);
 		*/
 		
-//		result.colNormal = cEnt1->getSceneEntity()->getPosition()->(cEnt1->lastPosition);		
+//		result.colNormal = cEnt1->getSceneEntity()->getPosition().(cEnt1->lastPosition);		
 		result.colNormal = Vector3(cb.m_hitNormalWorld.getX(), cb.m_hitNormalWorld.getY(), cb.m_hitNormalWorld.getZ());
 		result.colNormal.Normalize();
 	}

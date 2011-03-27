@@ -1,6 +1,6 @@
 /*
  *  PolyLabel.cpp
- *  TAU
+ *  Poly
  *
  *  Created by Ivan Safrin on 3/16/08.
  *  Copyright 2008 Ivan Safrin. All rights reserved.

@@ -88,8 +88,8 @@ void UIBox::resizeBox(float newWidth, float newHeight) {
 	bImage->setShapeSize(newWidth-l-r, b);
 	tImage->setShapeSize(newWidth-l-r, t);	
 	
-	bImage->setPosition(bImage->getPosition()->x, newHeight-bImage->getHeight());	
-	rImage->setPosition(newWidth-rImage->getWidth(),rImage->getPosition()->y);
+	bImage->setPosition(bImage->getPosition().x, newHeight-bImage->getHeight());	
+	rImage->setPosition(newWidth-rImage->getWidth(),rImage->getPosition().y);
 	
 	width=newWidth;
 	height = newHeight;

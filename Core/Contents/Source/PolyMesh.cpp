@@ -1,6 +1,6 @@
 /*
  *  PolyMesh.cpp
- *  TAU
+ *  Poly
  *
  *  Created by Ivan Safrin on 3/18/08.
  *  Copyright 2008 __MyCompanyName__. All rights reserved.
@@ -98,17 +98,17 @@ namespace Polycode {
 				pos.y =  polygons[i]->getVertex(j)->y;
 				pos.z =  polygons[i]->getVertex(j)->z;
 
-				nor.x =  polygons[i]->getVertex(j)->normal->x;
-				nor.y =  polygons[i]->getVertex(j)->normal->y;
-				nor.z =  polygons[i]->getVertex(j)->normal->z;
+				nor.x =  polygons[i]->getVertex(j)->normal.x;
+				nor.y =  polygons[i]->getVertex(j)->normal.y;
+				nor.z =  polygons[i]->getVertex(j)->normal.z;
 
 				col.x =  polygons[i]->getVertex(j)->vertexColor.r;
 				col.y =  polygons[i]->getVertex(j)->vertexColor.g;
 				col.z =  polygons[i]->getVertex(j)->vertexColor.b;
 				col.w =  polygons[i]->getVertex(j)->vertexColor.a;
 				
-				tex.x = polygons[i]->getVertex(j)->getTexCoord()->x;
-				tex.y = polygons[i]->getVertex(j)->getTexCoord()->y;
+				tex.x = polygons[i]->getVertex(j)->getTexCoord().x;
+				tex.y = polygons[i]->getVertex(j)->getTexCoord().y;
 				
 				OSBasics::write(&pos, sizeof(Vector3_struct), 1, outFile);
 				OSBasics::write(&nor, sizeof(Vector3_struct), 1, outFile);

@@ -21,7 +21,7 @@ CollisionSceneEntity::CollisionSceneEntity(SceneEntity *entity, bool autoCollide
 	enabled = true;
 	
 	gravityStrength = 5.0f;
-	lastPosition = *entity->getPosition();	
+	lastPosition = entity->getPosition();	
 	
 	
 	btMatrix3x3 basisA;
@@ -112,7 +112,7 @@ void CollisionSceneEntity::Update() {
 
 	btQuaternion orn;
 //	collisionObject->getCollisionShape()->setLocalScaling
-	collisionObject->getWorldTransform().setFromOpenGLMatrix(sceneEntity->getConcatenatedMatrix().ml);
+	collisionObject->getWorldTransform().setFromOpenGLMatrix((float*)sceneEntity->getConcatenatedMatrix().ml);
 
 /*	
 	float rads = PI/180.0f;

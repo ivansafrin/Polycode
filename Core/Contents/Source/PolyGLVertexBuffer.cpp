@@ -54,11 +54,11 @@ OpenGLVertexBuffer::OpenGLVertexBuffer(Mesh *mesh) : VertexBuffer() {
 			newBufferSize = bufferSize + 2;			
 			buffer = (GLfloat*)realloc(buffer, newBufferSize * sizeof(GLfloat));		
 			if(mesh->getPolygon(i)->usesFaceUV()) {
-				buffer[bufferSize+0] = mesh->getPolygon(i)->getTexCoord(j)->x;
-				buffer[bufferSize+1] = mesh->getPolygon(i)->getTexCoord(j)->y;
+				buffer[bufferSize+0] = mesh->getPolygon(i)->getTexCoord(j).x;
+				buffer[bufferSize+1] = mesh->getPolygon(i)->getTexCoord(j).y;
 			} else {
-				buffer[bufferSize+0] = mesh->getPolygon(i)->getVertex(j)->getTexCoord()->x;
-				buffer[bufferSize+1] = mesh->getPolygon(i)->getVertex(j)->getTexCoord()->y;
+				buffer[bufferSize+0] = mesh->getPolygon(i)->getVertex(j)->getTexCoord().x;
+				buffer[bufferSize+1] = mesh->getPolygon(i)->getVertex(j)->getTexCoord().y;
 			}
 			bufferSize = newBufferSize;					
 		}		   
@@ -80,9 +80,9 @@ OpenGLVertexBuffer::OpenGLVertexBuffer(Mesh *mesh) : VertexBuffer() {
 			newBufferSize = bufferSize + 3;			
 			buffer = (GLfloat*)realloc(buffer, newBufferSize * sizeof(GLfloat));		
 			if(mesh->getPolygon(i)->useVertexNormals) {
-				buffer[bufferSize+0] = mesh->getPolygon(i)->getVertex(j)->normal->x;
-				buffer[bufferSize+1] = mesh->getPolygon(i)->getVertex(j)->normal->y;
-				buffer[bufferSize+2] = mesh->getPolygon(i)->getVertex(j)->normal->z;				
+				buffer[bufferSize+0] = mesh->getPolygon(i)->getVertex(j)->normal.x;
+				buffer[bufferSize+1] = mesh->getPolygon(i)->getVertex(j)->normal.y;
+				buffer[bufferSize+2] = mesh->getPolygon(i)->getVertex(j)->normal.z;				
 			} else {
 				buffer[bufferSize+0] = mesh->getPolygon(i)->getFaceNormal().x;
 				buffer[bufferSize+1] = mesh->getPolygon(i)->getFaceNormal().y;

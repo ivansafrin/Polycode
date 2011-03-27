@@ -15,10 +15,10 @@ using namespace Polycode;
 PhysicsCharacter::PhysicsCharacter(SceneEntity *entity, float mass, float friction, float stepSize) : PhysicsSceneEntity(entity, PhysicsSceneEntity::CHARACTER_CONTROLLER, mass, friction, 1) {	
 	ghostObject = new btPairCachingGhostObject();
 	
-	Vector3 *pos = entity->getPosition();	
+	Vector3 pos = entity->getPosition();	
 	btTransform transform;
 	transform.setIdentity();		
-	transform.setOrigin(btVector3(pos->x,pos->y,pos->z));	
+	transform.setOrigin(btVector3(pos.x,pos.y,pos.z));	
 	
 	ghostObject->setWorldTransform(transform);	
 	ghostObject->setCollisionShape (shape);
@@ -54,10 +54,10 @@ PhysicsSceneEntity::PhysicsSceneEntity(SceneEntity *entity, int type, float mass
 
 	this->mass = mass;
 	btVector3 localInertia(0,0,0);
-	Vector3 *pos = entity->getPosition();	
+	Vector3 pos = entity->getPosition();	
 	btTransform transform;
 	transform.setIdentity();		
-	transform.setOrigin(btVector3(pos->x,pos->y,pos->z));
+	transform.setOrigin(btVector3(pos.x,pos.y,pos.z));
 	
 	if(mass != 0.0f) {
 		shape->calculateLocalInertia(mass,localInertia);

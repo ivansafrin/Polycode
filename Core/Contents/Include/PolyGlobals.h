@@ -1,7 +1,7 @@
  
 #pragma once
 
-// TAU CORE LIBRARY CONFIGURATION SECTION
+// Polycode CORE LIBRARY CONFIGURATION SECTION
 
 // Compile support for lua bindings.
 //#define _COMPILE_LUA

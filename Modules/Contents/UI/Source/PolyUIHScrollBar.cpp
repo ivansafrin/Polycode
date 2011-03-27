@@ -63,15 +63,15 @@ UIHScrollBar::UIHScrollBar(float width, float height, float initialRatio) : Scre
 	dragRectWidth = width-(padding*2)-scrollHandleWidth;
 	handleBox->setDragLimits(Rectangle(padding,padding,dragRectWidth, height-(padding*2)-(height-(padding*2))));
 	
-	lastPositionX = handleBox->getPosition()->x;
+	lastPositionX = handleBox->getPosition().x;
 	
 	this->height = height;
 	this->width = width;	
 }
 
 void UIHScrollBar::Update() {
-	if(lastPositionX != handleBox->getPosition()->x) {
-		lastPositionX = handleBox->getPosition()->x;
+	if(lastPositionX != handleBox->getPosition().x) {
+		lastPositionX = handleBox->getPosition().x;
 		scrollValue = (lastPositionX-padding)/dragRectWidth;
 		if(scrollValue < 0) scrollValue = 0;
 		if(scrollValue > 1) scrollValue = 1;		
@@ -100,13 +100,13 @@ void UIHScrollBar::handleEvent(Event *event) {
 		InputEvent *inputEvent = (InputEvent*)event;
 		switch(event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEDOWN:
-				if(inputEvent->mousePosition.x < handleBox->getPosition()->x)  {
-					float newPos = handleBox->getPosition()->x - scrollHandleWidth;
+				if(inputEvent->mousePosition.x < handleBox->getPosition().x)  {
+					float newPos = handleBox->getPosition().x - scrollHandleWidth;
 					if(newPos < padding)
 						newPos = padding;
 					handleBox->setPositionX(newPos);
 				} else {
-					float newPos = handleBox->getPosition()->x + scrollHandleWidth;
+					float newPos = handleBox->getPosition().x + scrollHandleWidth;
 					if(newPos > dragRectWidth)
 						newPos = dragRectWidth;
 					handleBox->setPositionX(newPos);					
@@ -123,7 +123,7 @@ void UIHScrollBar::handleEvent(Event *event) {
 				handleBox->stopDrag();
 				break;
 			case InputEvent::EVENT_MOUSEDOWN:
-				handleBox->startDrag(inputEvent->mousePosition.x-handleBox->getPosition()->x,inputEvent->mousePosition.y-handleBox->getPosition()->y);
+				handleBox->startDrag(inputEvent->mousePosition.x-handleBox->getPosition().x,inputEvent->mousePosition.y-handleBox->getPosition().y);
 				break;		
 		}
 	}

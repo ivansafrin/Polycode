@@ -58,8 +58,8 @@ ScreenShape *UIHSlider::getBgRect() {
 
 void UIHSlider::setSliderValue(float val) {
 	if(val >= startValue && val <= endValue) {
-		gripRect->getPosition()->x = sliderWidth * ((val-startValue)/(endValue-startValue));
-		shadowRect->getPosition()->x = gripRect->getPosition()->x;
+		gripRect->getPosition().x = sliderWidth * ((val-startValue)/(endValue-startValue));
+		shadowRect->getPosition().x = gripRect->getPosition().x;
 	}
 }
 
@@ -72,8 +72,8 @@ void UIHSlider::handleEvent(Event *event) {
 		InputEvent *inputEvent = (InputEvent*)event;
 		switch(event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEDOWN:
-				gripRect->startDrag(inputEvent->mousePosition.x-gripRect->getPosition()->x,inputEvent->mousePosition.y-gripRect->getPosition()->y);
-				shadowRect->startDrag(inputEvent->mousePosition.x-2-gripRect->getPosition()->x,inputEvent->mousePosition.y-3-gripRect->getPosition()->y);		
+				gripRect->startDrag(inputEvent->mousePosition.x-gripRect->getPosition().x,inputEvent->mousePosition.y-gripRect->getPosition().y);
+				shadowRect->startDrag(inputEvent->mousePosition.x-2-gripRect->getPosition().x,inputEvent->mousePosition.y-3-gripRect->getPosition().y);		
 			break;
 			case InputEvent::EVENT_MOUSEUP:
 			case InputEvent::EVENT_MOUSEUP_OUTSIDE:
@@ -86,8 +86,8 @@ void UIHSlider::handleEvent(Event *event) {
 
 
 void UIHSlider::Update() {
-	if(gripRect->getPosition()->x != gripPos) {
-		gripPos = gripRect->getPosition()->x;
+	if(gripRect->getPosition().x != gripPos) {
+		gripPos = gripRect->getPosition().x;
 		sliderValue = startValue+((endValue - startValue) * (gripPos/sliderWidth));
 		dispatchEvent(new UIEvent(), UIEvent::CHANGE_EVENT);
 	}

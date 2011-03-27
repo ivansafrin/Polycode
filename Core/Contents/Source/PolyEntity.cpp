@@ -88,9 +88,9 @@ void Entity::lookAt(const Vector3 &loc, const Vector3 &upVector) {
 
 void Entity::lookAtEntity(Entity *entity,  const Vector3 &upVector) {
 	if(entity->getParentEntity())
-		lookAt(entity->getParentEntity()->getConcatenatedMatrix() * (*entity->getPosition()), upVector);		
+		lookAt(entity->getParentEntity()->getConcatenatedMatrix() * (entity->getPosition()), upVector);		
 	else
-		lookAt(*entity->getPosition(), upVector);
+		lookAt(entity->getPosition(), upVector);
 }
 
 void Entity::removeChild(Entity *entityToRemove) {
@@ -290,10 +290,10 @@ void Entity::transformAndRender() {
 		}
 	}
 
-	if(hasMask) {
-		renderer->enableDepthWrite(false);
-		renderer->enableDepthTest(true);		
-	} else {
+//	if(hasMask) {
+//		renderer->enableDepthWrite(false);
+//		renderer->enableDepthTest(true);		
+//	} else {
 	if(!depthWrite)
 		renderer->enableDepthWrite(false);
 	else
@@ -303,7 +303,7 @@ void Entity::transformAndRender() {
 		renderer->enableDepthTest(false);
 	else
 		renderer->enableDepthTest(true);
-	}
+//	}
 		 
 	renderer->enableAlphaTest(alphaTest);
 	
@@ -335,8 +335,8 @@ void Entity::transformAndRender() {
 		renderer->clearBuffer(false, true);
 	}
 	
-//	if(!depthWrite)
-//		renderer->enableDepthWrite(true);
+	if(!depthWrite)
+		renderer->enableDepthWrite(true);
 	
 	
 	if(hasMask) {
@@ -564,8 +564,8 @@ void Entity::setScale(Number x, Number y, Number z) {
 	matrixDirty = true;
 }
 
-Vector3 *Entity::getPosition() {
-	return &position;
+Vector3 Entity::getPosition() {
+	return position;
 }
 
 Number Entity::getCombinedPitch() {
