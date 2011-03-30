@@ -125,6 +125,10 @@ extern "C" {
 		lua_call(L, 1, 0);
 
 		lua_getfield(L, LUA_GLOBALSINDEX, "require");
+		lua_pushstring(L, "Polycode");		
+		lua_call(L, 1, 0);		
+		
+		lua_getfield(L, LUA_GLOBALSINDEX, "require");
 		lua_pushstring(L, "defaults");		
 		lua_call(L, 1, 0);
 		
@@ -155,6 +159,7 @@ extern "C" {
 		 */
 		OSFILE *inFile = OSBasics::open(fileName, "r");	
 		if(inFile) {
+			Logger::log("Opened entrypoint file...");
 			OSBasics::seek(inFile, 0, SEEK_END);	
 			long progsize = OSBasics::tell(inFile);
 			OSBasics::seek(inFile, 0, SEEK_SET);
@@ -264,9 +269,9 @@ void PolycodePlayer::loadFile(const char *fileName) {
 	string mainFile = "";
 	string basePath = fileName;
 	
-	float red = 0.2f;
-	float green = 0.2f;
-	float blue = 0.2f;
+	Number red = 0.2f;
+	Number green = 0.2f;
+	Number blue = 0.2f;
 	
 	frameRate = 60;
 	
@@ -314,7 +319,7 @@ void PolycodePlayer::loadFile(const char *fileName) {
 	
 	PolycodeDebugEvent *event = new PolycodeDebugEvent();			
 	event->xRes = xRes;
-	event->yRes = yRes;
+	event->yRes = yRes;	
 	
 	createCore();
 	

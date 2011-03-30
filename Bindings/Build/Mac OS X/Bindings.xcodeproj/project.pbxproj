@@ -9,14 +9,14 @@
 /* Begin PBXBuildFile section */
 		6D3415FA12B837080034FA9B /* PolycodeLUA.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D3415F712B837080034FA9B /* PolycodeLUA.h */; };
 		6D3415FB12B837080034FA9B /* PolycodeLUA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D3415F912B837080034FA9B /* PolycodeLUA.cpp */; };
-		6D3418F712B91DBF0034FA9B /* PolycodeLUA2D.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D3418F612B91DBF0034FA9B /* PolycodeLUA2D.h */; };
+		6D67482E133FE26D00218B97 /* PolycodeLUAWrappers.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D67482D133FE26D00218B97 /* PolycodeLUAWrappers.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		6D3415EF12B836CE0034FA9B /* libPolycodeLUA.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPolycodeLUA.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D3415F712B837080034FA9B /* PolycodeLUA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolycodeLUA.h; sourceTree = "<group>"; };
 		6D3415F912B837080034FA9B /* PolycodeLUA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolycodeLUA.cpp; sourceTree = "<group>"; };
-		6D3418F612B91DBF0034FA9B /* PolycodeLUA2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolycodeLUA2D.h; sourceTree = "<group>"; };
+		6D67482D133FE26D00218B97 /* PolycodeLUAWrappers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolycodeLUAWrappers.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,7 +59,7 @@
 		6D3415F612B837080034FA9B /* Include */ = {
 			isa = PBXGroup;
 			children = (
-				6D3418F612B91DBF0034FA9B /* PolycodeLUA2D.h */,
+				6D67482D133FE26D00218B97 /* PolycodeLUAWrappers.h */,
 				6D3415F712B837080034FA9B /* PolycodeLUA.h */,
 			);
 			path = Include;
@@ -81,7 +81,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6D3415FA12B837080034FA9B /* PolycodeLUA.h in Headers */,
-				6D3418F712B91DBF0034FA9B /* PolycodeLUA2D.h in Headers */,
+				6D67482E133FE26D00218B97 /* PolycodeLUAWrappers.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

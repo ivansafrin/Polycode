@@ -54,9 +54,7 @@ namespace Polycode {
 		void drawFilter();
 		
 		bool usesNormalizedCoordinates() { return useNormalizedCoordinates; }
-		Number getYCoordinateSize() { return yCoordinateSize; }
-		
-		bool Lua_EntitiesEqual(ScreenEntity *ent1, ScreenEntity *ent2) { return ent1 == ent2; }
+		Number getYCoordinateSize() { return yCoordinateSize; }	
 		
 		ScreenEntity *getRootEntity() { return rootEntity; }
 		

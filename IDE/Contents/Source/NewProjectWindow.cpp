@@ -45,25 +45,25 @@ NewProjectWindow::NewProjectWindow() : UIWindow(L"Create New Project", 500, 300)
 	
 	ScreenLabel *label2 = new ScreenLabel(fontName, L"Project Name", fontSize, Label::ANTIALIAS_FULL);
 	addChild(label2);
-	label2->setPosition(padding+220, templateContainer->getPosition()->y);		
+	label2->setPosition(padding+220, templateContainer->getPosition().y);		
 
 	projectNameInput = new UITextInput(false, 500-padding-220-padding-padding, 12);	
 	addChild(projectNameInput);
-	projectNameInput->setPosition(label2->getPosition()->x, label2->getPosition()->y+label2->getHeight()+2);
+	projectNameInput->setPosition(label2->getPosition().x, label2->getPosition().y+label2->getHeight()+2);
 	
 	ScreenLabel *label3 = new ScreenLabel(fontName, L"Project Location", fontSize, Label::ANTIALIAS_FULL);
 	addChild(label3);
-	label3->setPosition(padding+220, templateContainer->getPosition()->y+50);		
+	label3->setPosition(padding+220, templateContainer->getPosition().y+50);		
 	
 	projectLocationInput = new UITextInput(false, 500-padding-220-padding-padding, 12);	
 	addChild(projectLocationInput);
-	projectLocationInput->setPosition(label3->getPosition()->x, label3->getPosition()->y+label3->getHeight()+2);
+	projectLocationInput->setPosition(label3->getPosition().x, label3->getPosition().y+label3->getHeight()+2);
 
 	
 	locationSelectButton = new UIButton(L"Choose...", 100);
 	locationSelectButton->addEventListener(this, UIEvent::CLICK_EVENT);	
 	addChild(locationSelectButton);
-	locationSelectButton->setPosition(500-100-padding, projectLocationInput->getPosition()->y+projectLocationInput->getHeight()+5);
+	locationSelectButton->setPosition(500-100-padding, projectLocationInput->getPosition().y+projectLocationInput->getHeight()+5);
 	
 	
 	cancelButton = new UIButton(L"Cancel", 100);

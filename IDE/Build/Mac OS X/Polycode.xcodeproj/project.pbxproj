@@ -32,6 +32,7 @@
 		6DFBF64A12A3758400C43A7D /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DFBF64812A3758400C43A7D /* OpenAL.framework */; };
 		6DFBF64B12A3758400C43A7D /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DFBF64912A3758400C43A7D /* OpenGL.framework */; };
 		6DFBF8AB12A3F30F00C43A7D /* libPolycodeUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DFBF8AA12A3F30F00C43A7D /* libPolycodeUI.a */; };
+		6DFF70531342F77200B0C47E /* main_icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6DFF70521342F77200B0C47E /* main_icon.icns */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -97,6 +98,7 @@
 		6DFBF64812A3758400C43A7D /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		6DFBF64912A3758400C43A7D /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		6DFBF8AA12A3F30F00C43A7D /* libPolycodeUI.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycodeUI.a; path = "../../../Modules/Build/Mac OS X/build/Debug/libPolycodeUI.a"; sourceTree = SOURCE_ROOT; };
+		6DFF70521342F77200B0C47E /* main_icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = main_icon.icns; path = ../../../Assets/main_icon.icns; sourceTree = SOURCE_ROOT; };
 		8D1107310486CEB800E47090 /* Polycode-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Polycode-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Polycode.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Polycode.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -196,6 +198,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				6DFF70521342F77200B0C47E /* main_icon.icns */,
 				8D1107310486CEB800E47090 /* Polycode-Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				1DDD58140DA1D0A300B32029 /* MainMenu.xib */,
@@ -307,6 +310,7 @@
 			files = (
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */,
+				6DFF70531342F77200B0C47E /* main_icon.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
