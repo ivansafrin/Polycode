@@ -79,8 +79,8 @@ namespace Polycode {
 		frameTicks = getTicks();
 		elapsed = frameTicks - lastFrameTicks;
 		
-		if(elapsed > 100)
-			elapsed = 100;
+		if(elapsed > refreshInterval)
+			elapsed = refreshInterval;
 		services->Update(elapsed);
 
 		if(frameTicks-lastFPSTicks >= 1000) {

@@ -19,6 +19,9 @@ Core/Dependencies
 Modules/Dependencies
 IDE/Dependencies
 Tools/Dependencies
+Bindings/Dependencies
+IDE/Mac\ OS\ X
+Examples
 
 # OS generated files #
 ######################

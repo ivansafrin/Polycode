@@ -40,3 +40,7 @@ function OSBasics:createFolder(pathString)
 	return Polycore.OSBasics_createFolder(self.__ptr, pathString)
 end
 
+function OSBasics:removeItem(pathString)
+	return Polycore.OSBasics_removeItem(self.__ptr, pathString)
+end
+

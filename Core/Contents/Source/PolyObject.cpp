@@ -30,7 +30,7 @@ TiXmlElement *Object::createElementFromObjectEntry(ObjectEntry *entry) {
 	for(int i=0; i < entry->children.size(); i++) {
 		ObjectEntry *childEntry = entry->children[i];
 		
-		printf("Parsing %s (type: %d)\n", childEntry->name.c_str(), childEntry->type);
+//		printf("Parsing %s (type: %d)\n", childEntry->name.c_str(), childEntry->type);
 		
 		switch(childEntry->type) {
 			case ObjectEntry::BOOL_ENTRY:
@@ -64,30 +64,32 @@ TiXmlElement *Object::createElementFromObjectEntry(ObjectEntry *entry) {
 	return newElement;
 }
 
-void Object::loadFromXML(String fileName) {
+bool Object::loadFromXML(String fileName) {
 
 	TiXmlDocument doc(fileName.c_str());
 	doc.LoadFile();
 
 	if(doc.Error()) {
 		Logger::log("Error loading xml file: %s\n", doc.ErrorDesc());
-		return;
+		return false;
 	}
 	
 	TiXmlElement *rootElement = doc.RootElement();
 	createFromXMLElement(rootElement, &root);
+	return true;	
 }
 
 
 void Object::createFromXMLElement(TiXmlElement *element, ObjectEntry *entry) {
 	entry->name = element->Value();
 	entry->type = ObjectEntry::CONTAINER_ENTRY;
+
+	int ival;
+	double dval;	
 	
 	// run through the attributes
 	TiXmlAttribute* pAttrib=element->FirstAttribute();
 	int i=0;
-	int ival;
-	double dval;
 	while (pAttrib)
 	{
 		ObjectEntry *newEntry = new ObjectEntry();
@@ -96,12 +98,13 @@ void Object::createFromXMLElement(TiXmlElement *element, ObjectEntry *entry) {
 		newEntry->name = pAttrib->Name();
 		
 		if (pAttrib->QueryIntValue(&ival)==TIXML_SUCCESS) {
-			
 			if(newEntry->stringVal.find(".") != -1 && pAttrib->QueryDoubleValue(&dval)==TIXML_SUCCESS) {
 				newEntry->NumberVal = dval;
+				newEntry->intVal = dval;				
 				newEntry->type = ObjectEntry::FLOAT_ENTRY;				
 			} else {
 				newEntry->intVal = ival;
+				newEntry->NumberVal = (Number)ival;				
 				newEntry->type = ObjectEntry::INT_ENTRY;
 			}
 		}
@@ -126,6 +129,19 @@ void Object::createFromXMLElement(TiXmlElement *element, ObjectEntry *entry) {
 	if(element->GetText()) {
 		entry->stringVal = element->GetText();
 		entry->type = ObjectEntry::STRING_ENTRY;
+		
+		entry->intVal = atoi(entry->stringVal.c_str());
+		entry->NumberVal = atof(entry->stringVal.c_str());
+		
+		if(entry->stringVal == "true") {
+			entry->boolVal = true;
+			entry->type = ObjectEntry::BOOL_ENTRY;
+		}
+		if(entry->stringVal == "false") {
+			entry->boolVal = false;
+			entry->type = ObjectEntry::BOOL_ENTRY;
+		}
+		
 		return;
 	}
 		

@@ -3,6 +3,7 @@
 
 #include "stdio.h"
 #include "PolyString.h"
+#include "PolyObject.h"
 #include "OSBasics.h"
 
 using namespace Polycode;

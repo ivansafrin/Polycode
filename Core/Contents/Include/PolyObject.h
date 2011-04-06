@@ -89,7 +89,7 @@ namespace Polycode {
 		Object();
 		~Object();
 		
-		void loadFromXML(String fileName);
+		bool loadFromXML(String fileName);
 		void saveToXML(String fileName);
 		void createFromXMLElement(TiXmlElement *element, ObjectEntry *entry);
 		TiXmlElement *createElementFromObjectEntry(ObjectEntry *entry);

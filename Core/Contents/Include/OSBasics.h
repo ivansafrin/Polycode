@@ -73,6 +73,7 @@ class _PolyExport OSBasics {
 		static vector<OSFileEntry> parseFolder(String pathString, bool showHidden);
 		static bool isFolder(String pathString);
 		static void createFolder(String pathString);
+		static void removeItem(String pathString);
 		
 	private:
 	

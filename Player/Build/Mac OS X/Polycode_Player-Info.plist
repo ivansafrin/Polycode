@@ -24,7 +24,7 @@
 				<string>polyapp</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
-			<string></string>
+			<string>app_file_icon</string>
 			<key>CFBundleTypeName</key>
 			<string>Polycode Application Bundle</string>
 			<key>CFBundleTypeOSTypes</key>

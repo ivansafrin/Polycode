@@ -38,7 +38,8 @@ namespace Polycode {
 		
 			size_t rfind ( const String &str, size_t pos = wstring::npos ) const { return contents.rfind(str.contents, pos); }
 			size_t find ( const String &str, size_t pos = 0 ) const { return contents.find(str.contents, pos); }
-
+			size_t find_last_of(const String& str, size_t pos = wstring::npos ) { return contents.find_last_of(str.contents, pos); }
+		
 			inline String operator + (const char *str) const { return String(contents + String(str).contents); }
 		
 			inline String operator + (const String &str) const { return String(contents + str.contents); }

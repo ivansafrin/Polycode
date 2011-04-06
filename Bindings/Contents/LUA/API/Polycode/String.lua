@@ -34,6 +34,10 @@ function String:find(str, pos)
 	return Polycore.String_find(self.__ptr, str.__ptr, pos.__ptr)
 end
 
+function String:find_last_of(str, pos)
+	return Polycore.String_find_last_of(self.__ptr, str.__ptr, pos.__ptr)
+end
+
 function String:toLowerCase()
 	return Polycore.String_toLowerCase(self.__ptr)
 end

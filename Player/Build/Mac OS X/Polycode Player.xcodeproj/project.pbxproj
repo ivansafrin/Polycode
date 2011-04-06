@@ -29,6 +29,7 @@
 		6DBAB0BF12B6ECCB00986D01 /* PolycodeCocoaPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DBAB0BE12B6ECCB00986D01 /* PolycodeCocoaPlayer.cpp */; };
 		6DBAB0C412B6EE4400986D01 /* PolycodePlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DBAB0C312B6EE4400986D01 /* PolycodePlayer.cpp */; };
 		6DFF70421342F4AD00B0C47E /* player_icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6DFF70411342F4AD00B0C47E /* player_icon.icns */; };
+		6DFF707D1343059400B0C47E /* app_file_icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6DFF707C1343059400B0C47E /* app_file_icon.icns */; };
 		8D15AC2C0486D014006FF6A4 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */; };
 		8D15AC2F0486D014006FF6A4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165FFE840EACC02AAC07 /* InfoPlist.strings */; };
 		8D15AC310486D014006FF6A4 /* MyDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4ACFDCFA73011CA2CEA /* MyDocument.m */; settings = {ATTRIBUTES = (); }; };
@@ -73,6 +74,7 @@
 		6DBAB0C212B6EE2200986D01 /* PolycodePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodePlayer.h; path = ../../Contents/Include/PolycodePlayer.h; sourceTree = SOURCE_ROOT; };
 		6DBAB0C312B6EE4400986D01 /* PolycodePlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolycodePlayer.cpp; path = ../../Contents/Source/PolycodePlayer.cpp; sourceTree = SOURCE_ROOT; };
 		6DFF70411342F4AD00B0C47E /* player_icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = player_icon.icns; path = ../../../Assets/player_icon.icns; sourceTree = SOURCE_ROOT; };
+		6DFF707C1343059400B0C47E /* app_file_icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = app_file_icon.icns; path = ../../../Assets/app_file_icon.icns; sourceTree = SOURCE_ROOT; };
 		8D15AC360486D014006FF6A4 /* Polycode_Player-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Polycode_Player-Info.plist"; sourceTree = "<group>"; };
 		8D15AC370486D014006FF6A4 /* Polycode Player.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Polycode Player.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -186,6 +188,7 @@
 		2A37F4B8FDCFA73011CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				6DFF707C1343059400B0C47E /* app_file_icon.icns */,
 				6DFF70411342F4AD00B0C47E /* player_icon.icns */,
 				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
 				8D15AC360486D014006FF6A4 /* Polycode_Player-Info.plist */,
@@ -261,6 +264,7 @@
 				1DDD582C0DA1D0D100B32029 /* MyDocument.xib in Resources */,
 				1DDD582D0DA1D0D100B32029 /* MainMenu.xib in Resources */,
 				6DFF70421342F4AD00B0C47E /* player_icon.icns in Resources */,
+				6DFF707D1343059400B0C47E /* app_file_icon.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -278,7 +282,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "";
+			shellScript = "cp -R ../../../Bindings/Contents/LUA/API build/Debug/Polycode\\ Player.app/Contents/Resources/";
 		};
 /* End PBXShellScriptBuildPhase section */
 

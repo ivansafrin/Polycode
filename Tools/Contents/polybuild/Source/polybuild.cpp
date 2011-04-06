@@ -56,13 +56,9 @@ uLong filetime(
   return ret;
 }
 
-
-void addFolderToZip(zipFile z, String folderPath, String parentFolder) {
-
-	std::vector<OSFileEntry> files = OSBasics::parseFolder(folderPath, false);
-	for(int i=0; i < files.size(); i++) {
-		if(files[i].type == OSFileEntry::TYPE_FILE) {
-			printf("Adding %s\n", files[i].name.c_str());
+void addFileToZip(zipFile z, String filePath, String pathInZip, bool silent) {
+			if(!silent)
+				printf("Packaging %s as %s\n", filePath.c_str(), pathInZip.c_str());
 
                 	zip_fileinfo zi;
                 	zi.tmz_date.tm_sec = zi.tmz_date.tm_min = zi.tmz_date.tm_hour =
@@ -70,17 +66,11 @@ void addFolderToZip(zipFile z, String folderPath, String parentFolder) {
 			 zi.dosDate = 0;
               	 	 zi.internal_fa = 0;
              		   zi.external_fa = 0;
-             		   filetime(files[i].fullPath.c_str(),&zi.tmz_date,&zi.dosDate);
+             		   filetime(filePath.c_str(),&zi.tmz_date,&zi.dosDate);
 	
-			String pathInZip;
-			if(parentFolder == "") {
-				pathInZip = files[i].name;
-			} else {
-				pathInZip = parentFolder + "/" + files[i].name;
-			}
 			zipOpenNewFileInZip(z, pathInZip.c_str(), &zi, NULL, 0, NULL, 0, NULL, Z_DEFLATED, 2);
 
-			FILE *f = fopen(files[i].fullPath.c_str(), "rb");
+			FILE *f = fopen(filePath.c_str(), "rb");
 			fseek(f, 0, SEEK_END);
 			long fileSize = ftell(f);
 			fseek(f, 0, SEEK_SET);
@@ -91,15 +81,33 @@ void addFolderToZip(zipFile z, String folderPath, String parentFolder) {
 			fclose(f);
 
 			zipCloseFileInZip(z);
+
+}
+
+void addFolderToZip(zipFile z, String folderPath, String parentFolder, bool silent) {
+
+	std::vector<OSFileEntry> files = OSBasics::parseFolder(folderPath, false);
+	for(int i=0; i < files.size(); i++) {
+		if(files[i].type == OSFileEntry::TYPE_FILE) {
+
+			String pathInZip;
+			if(parentFolder == "") {
+				pathInZip = files[i].name;
+			} else {
+				pathInZip = parentFolder + "/" + files[i].name;
+			}
+
+			addFileToZip(z, files[i].fullPath, pathInZip, silent);
+
 		} else {
-			addFolderToZip(z, files[i].fullPath.c_str(), files[i].name);
+			addFolderToZip(z, files[i].fullPath.c_str(), files[i].name, silent);
 		}
 	}
 }
 
 int main(int argc, char **argv) {
 
-	printf("Polycode build tool v0.1.0\n");
+	printf("Polycode build tool v0.1.1\n");
 
 	for(int i=0; i < argc; i++) {
 		String argString = String(argv[i]);
@@ -113,21 +121,132 @@ int main(int argc, char **argv) {
 		
 	}
 	
-	if(getArg("--project") == "") {
-		printf("\n\nInput project missing. Use --project=projectPath to specify.\n\n");
+	if(getArg("--config") == "") {
+		printf("\n\nInput config XML missing. Use --config=path to specify.\n\n");
 		return 0;
 	}
 
+	
 	if(getArg("--out") == "") {
 		printf("\n\nOutput file not specified. Use --out=outfile.polyapp to specify.\n\n");
 		return 0;		
 	}
-	
+
+	char dirPath[4098];
+	getcwd(dirPath, sizeof(dirPath));
+	String currentPath = String(dirPath);
+
+	String configPath = getArg("--config");
+
+	String finalPath = configPath;
+	if(configPath[0] != '/') {
+		finalPath = currentPath+"/"+configPath;
+	}
+
+	printf("Reading config file from %s\n", finalPath.c_str());
+
+	Object configFile;
+	if(!configFile.loadFromXML(finalPath)) {
+		printf("Specified config file doesn't exist!\n");
+		return 0;
+	}
+
+	// start required params
+
+	String entryPoint;
+	int defaultWidth;
+	int defaultHeight;
+	int frameRate = 60;
+	int antiAliasingLevel = 0;
+	bool fullScreen = false;
+	float backgroundColorR = 0.2;
+	float backgroundColorG = 0.2;
+	float backgroundColorB = 0.2;
+
+	if(configFile.root["entryPoint"]) {
+		printf("Entry point: %s\n", configFile.root["entryPoint"]->stringVal.c_str());
+		entryPoint = configFile.root["entryPoint"]->stringVal;
+	} else {
+		printf("Required parameter: \"entryPoint\" is missing from config file!\n");
+		return 0;		
+	}
+
+	if(configFile.root["defaultWidth"]) {
+		printf("Width: %d\n", configFile.root["defaultWidth"]->intVal);
+		defaultWidth = configFile.root["defaultWidth"]->intVal;
+	} else {
+		printf("Required parameter: \"defaultWidth\" is missing from config file!\n");
+		return 0;		
+	}
+
+	if(configFile.root["defaultHeight"]) {
+		printf("Height: %d\n", configFile.root["defaultHeight"]->intVal);
+		defaultHeight = configFile.root["defaultHeight"]->intVal;
+	} else {
+		printf("Required parameter: \"defaultHeight\" is missing from config file!\n");
+		return 0;		
+	}
+
+	// start optional params
+
+	if(configFile.root["frameRate"]) {
+		printf("Frame rate: %d\n", configFile.root["frameRate"]->intVal);
+		frameRate = configFile.root["frameRate"]->intVal;
+	}
+
+	if(configFile.root["antiAliasingLevel"]) {
+		printf("Anti-aliasing level: %d\n", configFile.root["antiAliasingLevel"]->intVal);
+		antiAliasingLevel = configFile.root["antiAliasingLevel"]->intVal;
+	}
+
+	if(configFile.root["fullScreen"]) {
+		fullScreen = configFile.root["fullScreen"]->boolVal;
+		if(fullScreen) {
+			printf("Full-screen: true\n");
+		} else {
+			printf("Full-screen: false\n");
+		}
+	}
+
+	if(configFile.root["backgroundColor"]) {
+		ObjectEntry *color = configFile.root["backgroundColor"];
+		if((*color)["red"] && (*color)["green"] && (*color)["blue"]) {
+			backgroundColorR = (*color)["red"]->NumberVal;
+			backgroundColorG = (*color)["green"]->NumberVal;
+			backgroundColorB = (*color)["blue"]->NumberVal;
+			printf("Background color: %f %f %f\n", backgroundColorR, backgroundColorG, backgroundColorB);
+
+		} else {
+			printf("backgroundColor node specified, but missing all three color attributes (red,green,blue). Ignoring.\n");
+		}
+	}
+
 	zipFile z = zipOpen(getArg("--out").c_str(), 0);
 	
-	addFolderToZip(z, getArg("--project"), "");
+
+	Object runInfo;
+	runInfo.root.name = "PolycodeApp";
+	runInfo.root.addChild("entryPoint", entryPoint);
+	runInfo.root.addChild("defaultHeight", defaultHeight);
+	runInfo.root.addChild("defaultWidth", defaultWidth);
+	runInfo.root.addChild("frameRate", frameRate);
+	runInfo.root.addChild("antiAliasingLevel", antiAliasingLevel);
+	runInfo.root.addChild("fullScreen", fullScreen);
+	
+	ObjectEntry *color = runInfo.root.addChild("backgroundColor");
+	color->addChild("red", backgroundColorR);
+	color->addChild("green", backgroundColorG);
+	color->addChild("blue", backgroundColorB);
+	runInfo.saveToXML("runinfo_tmp_zzzz.polyrun");
+
+	addFileToZip(z, entryPoint, entryPoint, false);
+	addFileToZip(z, "runinfo_tmp_zzzz.polyrun", "runinfo.polyrun", true);
+
+	//addFolderToZip(z, getArg("--project"), "");
 	
 	zipClose(z, "");	
+
+	OSBasics::removeItem("runinfo_tmp_zzzz.polyrun");
 
 	return 1;
 }

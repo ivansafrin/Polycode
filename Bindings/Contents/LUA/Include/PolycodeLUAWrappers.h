@@ -146,6 +146,15 @@ static int Polycore_OSBasics_createFolder(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_OSBasics_removeItem(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	OSBasics *inst = (OSBasics*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TSTRING);
+	String pathString = lua_tostring(L, 2);
+	inst->removeItem(pathString);
+	return 0;
+}
+
 static int Polycore_BezierCurve(lua_State *L) {
 	BezierCurve *inst = new BezierCurve();
 	lua_pushlightuserdata(L, (void*)inst);
@@ -5726,6 +5735,17 @@ static int Polycore_String_find(lua_State *L) {
 	luaL_checktype(L, 3, LUA_TLIGHTUSERDATA);
 	size_t pos = *(size_t*)lua_topointer(L, 3);
 	lua_pushinteger(L, inst->find(str, pos));
+	return 1;
+}
+
+static int Polycore_String_find_last_of(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	String *inst = (String*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	const String & str = *( String *)lua_topointer(L, 2);
+	luaL_checktype(L, 3, LUA_TLIGHTUSERDATA);
+	size_t pos = *(size_t*)lua_topointer(L, 3);
+	lua_pushinteger(L, inst->find_last_of(str, pos));
 	return 1;
 }
 

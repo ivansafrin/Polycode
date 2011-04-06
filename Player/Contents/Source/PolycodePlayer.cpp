@@ -11,15 +11,24 @@
 
 extern "C" {	
 //	extern int luaopen_Tau(lua_State* L); // declare the wrapped module
+		//	loadFileIntoState(L, "Polycode Player.app/Contents/Resources/API/class.lua");
 	
 	int MyLoader(lua_State* pState)
-	{
+	{		
 		std::string module = lua_tostring(pState, 1);
 		module += ".lua";
+		
+		string defaultPath = "Contents/Resources/API/";
+		defaultPath.append(module);
 		
 		const char* fullPath = module.c_str();		
 		printf("Loading custom class: %s\n", module.c_str());
 		OSFILE *inFile = OSBasics::open(module, "r");	
+		
+		if(!inFile) {
+			inFile =  OSBasics::open(defaultPath, "r");	
+		}
+		
 		if(inFile) {
 			OSBasics::seek(inFile, 0, SEEK_END);	
 			long progsize = OSBasics::tell(inFile);
@@ -118,7 +127,7 @@ extern "C" {
 		lua_rawset(L, -3);
 		
 		// Table is still on the stack.  Get rid of it now.
-		lua_pop(L, 1);
+		lua_pop(L, 1);		
 		
 		lua_getfield(L, LUA_GLOBALSINDEX, "require");
 		lua_pushstring(L, "class");		
@@ -235,19 +244,19 @@ PolycodePlayer::PolycodePlayer(String fileName, bool knownArchive) : EventDispat
 
 void PolycodePlayer::loadFile(const char *fileName) {
 	
-	TiXmlDocument doc;
-	
 	String nameString = fileName;
 	String ext = nameString.substr(nameString.length() - 8, nameString.length());
 	
 	printf("Loading %s\n", fileName);
 	
 	bool loadingArchive = false;
+	
+	String configPath;
+	
 	if(ext == ".polyapp" || _knownArchive) {
 		ResourceManager *rman = CoreServices::getInstance()->getResourceManager();
 		rman->addArchive(nameString);
-		TiXmlDocument doc1("runinfo.polyrun");
-		doc = doc1;
+		configPath = "runinfo.polyrun";
 		loadingArchive = true;
 		Logger::log("Reading configuration from POLYAPP file... (%s)\n", nameString.c_str());
 	} else {
@@ -260,14 +269,12 @@ void PolycodePlayer::loadFile(const char *fileName) {
 		}
 		
 		rman->addArchive(fileDir);
-		
+		configPath = fileName;
 		Logger::log("Reading configuration from .polycode file directly... (%s)\n", fileName);		
-		TiXmlDocument doc1(fileName);	
-		doc = doc1;
 	}
 	
-	string mainFile = "";
-	string basePath = fileName;
+	String mainFile = "";
+	String basePath = fileName;
 	
 	Number red = 0.2f;
 	Number green = 0.2f;
@@ -275,44 +282,38 @@ void PolycodePlayer::loadFile(const char *fileName) {
 	
 	frameRate = 60;
 	
-	doc.LoadFile();
-	if(doc.Error()) {
-		Logger::log("Error loading file: %s\n", doc.ErrorDesc());
-	} else {
-		TiXmlElement *rootElement = doc.RootElement();		
+	Object configFile;
+	if(!configFile.loadFromXML(configPath)) {
+		Logger::log("Error loading config file\n");
+	} else {		
 		
-		TiXmlNode* pChild;
-		for (pChild = rootElement->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {
-			if(strcmp(pChild->Value(), "entryPoint") == 0) {
-				mainFile = pChild->ToElement()->GetText();
-			}
-			if(strcmp(pChild->Value(), "defaultWidth") == 0) {
-				xRes = atoi(pChild->ToElement()->GetText());
+		if(configFile.root["entryPoint"]) {
+			mainFile = configFile.root["entryPoint"]->stringVal;
+		}		
+		if(configFile.root["defaultWidth"]) {
+			xRes = configFile.root["defaultWidth"]->intVal;
+		}		
+		if(configFile.root["defaultHeight"]) {
+			yRes = configFile.root["defaultHeight"]->intVal;
+		}		
+		if(configFile.root["frameRate"]) {
+			frameRate = configFile.root["frameRate"]->intVal;
+		}		
+		if(configFile.root["antiAliasingLevel"]) {
+			aaLevel = configFile.root["antiAliasingLevel"]->intVal;
+		}		
+		if(configFile.root["fullScreen"]) {
+			fullScreen = configFile.root["fullScreen"]->boolVal;
+		}		
+		if(configFile.root["backgroundColor"]) {
+			ObjectEntry *color = configFile.root["backgroundColor"];
+			if((*color)["red"] && (*color)["green"] && (*color)["blue"]) {
+				red = (*color)["red"]->NumberVal;
+				green = (*color)["green"]->NumberVal;
+				blue = (*color)["blue"]->NumberVal;
+				
 			}			
-			if(strcmp(pChild->Value(), "defaultHeight") == 0) {
-				yRes = atoi(pChild->ToElement()->GetText());
-			}						
-
-			if(strcmp(pChild->Value(), "frameRate") == 0) {
-				frameRate = atoi(pChild->ToElement()->GetText());
-			}									
-			
-			if(strcmp(pChild->Value(), "antiAliasingLevel") == 0) {
-				aaLevel = atoi(pChild->ToElement()->GetText());
-			}									
-			
-			if(strcmp(pChild->Value(), "fullScreen") == 0) {
-				if(strcmp(pChild->ToElement()->GetText(),"true") == 0)
-					fullScreen = true;
-			}												
-			
-			if(strcmp(pChild->Value(), "backgroundColor") == 0) {
-				pChild->ToElement()->QueryFloatAttribute("red", &red);
-				pChild->ToElement()->QueryFloatAttribute("green", &green);
-				pChild->ToElement()->QueryFloatAttribute("blue", &blue);				
-			}			
-			
-		}
+		}		
 	}
 	
 	Logger::log("Mainfile: %s\n", mainFile.c_str());
@@ -335,14 +336,14 @@ void PolycodePlayer::loadFile(const char *fileName) {
 //	CoreServices::getInstance()->getRenderer()->setClearColor(1,0,0);
 	srand(core->getTicks());
 	
-	string fullPath;
+	String fullPath;
 	
 	if(loadingArchive) {
 		fullPath = mainFile;
 	} else {
-		int lindex = basePath.find_last_of('/');
+		int lindex = basePath.find_last_of("/");
 		fullPath = basePath.substr(0, lindex);	
-		fullPath.append(mainFile);	
+		fullPath += mainFile;	
 		Logger::log(fullPath.c_str());
 	}
 	

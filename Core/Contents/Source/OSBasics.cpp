@@ -88,7 +88,7 @@ OSFILE *OSBasics::open(String filename, String opts) {
 			return retFile;
 		}
 	} else {
-		Logger::log("File doesn't exist in archive (%s)\n", filename.c_str());
+//		Logger::log("File doesn't exist in archive (%s)\n", filename.c_str());
 	}
 	
 	FILE *file = fopen(filename.c_str(), opts.c_str());
@@ -267,6 +267,13 @@ vector<OSFileEntry> OSBasics::parseFolder(String pathString, bool showHidden) {
 #endif
 		
 	return returnVector;
+}
+
+void OSBasics::removeItem(String pathString) {
+#ifdef _WINDOWS
+#else
+	remove(pathString.c_str());
+#endif	
 }
 
 void OSBasics::createFolder(String pathString) {
