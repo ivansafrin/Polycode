@@ -2,25 +2,40 @@ require "Polycode/EventDispatcher"
 
 class "ScreenManager" (EventDispatcher)
 
-function ScreenManager:ScreenManager()
-	if self.__ptr == nil then
-		self.__ptr = Polycore.ScreenManager()
+
+
+REGULAR_SCREEN = 1
+PHYSICS_SCREEN = 2
+
+
+
+
+function ScreenManager:ScreenManager(...)
+	for k,v in pairs(arg) do
+		if type(v) == "table" then
+			if v.__ptr ~= nil then
+				arg[k] = v.__ptr
+			end
+		end
+	end
+	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
+		self.__ptr = Polycore.ScreenManager(unpack(arg))
 	end
 end
 
 function ScreenManager:removeScreen(screen)
-	return Polycore.ScreenManager_removeScreen(self.__ptr, screen.__ptr)
+	local retVal = Polycore.ScreenManager_removeScreen(self.__ptr, screen.__ptr)
 end
 
 function ScreenManager:addScreen(screen)
-	return Polycore.ScreenManager_addScreen(self.__ptr, screen.__ptr)
+	local retVal = Polycore.ScreenManager_addScreen(self.__ptr, screen.__ptr)
 end
 
 function ScreenManager:Update()
-	return Polycore.ScreenManager_Update(self.__ptr)
+	local retVal =  Polycore.ScreenManager_Update(self.__ptr)
 end
 
 function ScreenManager:handleEvent(event)
-	return Polycore.ScreenManager_handleEvent(self.__ptr, event.__ptr)
+	local retVal = Polycore.ScreenManager_handleEvent(self.__ptr, event.__ptr)
 end
 

@@ -26,6 +26,7 @@
 		6D580E0B12D29FB5006FB999 /* PolyPhysicsScreenEntity.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D580E0612D29FB5006FB999 /* PolyPhysicsScreenEntity.h */; };
 		6D580E0C12D29FB5006FB999 /* PolyPhysicsScreen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D580E0812D29FB5006FB999 /* PolyPhysicsScreen.cpp */; };
 		6D580E0D12D29FB5006FB999 /* PolyPhysicsScreenEntity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D580E0912D29FB5006FB999 /* PolyPhysicsScreenEntity.cpp */; };
+		6D994DB2134D92640044DD0B /* libPolycodeGLSL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D4B04211312428500C62698 /* libPolycodeGLSL.a */; };
 		6DFB01D112A741EB00C43A7D /* PolyCGProgram.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFB01CA12A741EB00C43A7D /* PolyCGProgram.h */; };
 		6DFB01D212A741EB00C43A7D /* PolyCGShader.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFB01CB12A741EB00C43A7D /* PolyCGShader.h */; };
 		6DFB01D312A741EB00C43A7D /* PolyCGShaderModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFB01CC12A741EB00C43A7D /* PolyCGShaderModule.h */; };
@@ -87,6 +88,19 @@
 		6D580E0812D29FB5006FB999 /* PolyPhysicsScreen.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyPhysicsScreen.cpp; sourceTree = "<group>"; };
 		6D580E0912D29FB5006FB999 /* PolyPhysicsScreenEntity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyPhysicsScreenEntity.cpp; sourceTree = "<group>"; };
 		6D690D1B12C1D74A00C444B0 /* libPolycode3DPhysics.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPolycode3DPhysics.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		6D994C7E134D8EEA0044DD0B /* libPolycodeGLSLModule.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libPolycodeGLSLModule.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		6D994C9F134D8FC00044DD0B /* libPolyCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolyCore.a; path = "../../../Core/Build/Mac OS X/build/Debug/libPolyCore.a"; sourceTree = SOURCE_ROOT; };
+		6D994CBB134D90090044DD0B /* libvorbisfile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbisfile.a; path = ../../../Core/Dependencies/libvorbis/libvorbisfile.a; sourceTree = SOURCE_ROOT; };
+		6D994CBC134D90090044DD0B /* libvorbis.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbis.a; path = ../../../Core/Dependencies/libvorbis/libvorbis.a; sourceTree = SOURCE_ROOT; };
+		6D994CBD134D90090044DD0B /* libogg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libogg.a; path = ../../../Core/Dependencies/libogg/libogg.a; sourceTree = SOURCE_ROOT; };
+		6D994CBE134D90090044DD0B /* libphysfs.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libphysfs.a; path = ../../../Core/Dependencies/physfs/Debug/libphysfs.a; sourceTree = SOURCE_ROOT; };
+		6D994CBF134D90090044DD0B /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = ../../../Core/Dependencies/freetype/libfreetype.a; sourceTree = SOURCE_ROOT; };
+		6D994CC0134D90090044DD0B /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = ../../../Core/Dependencies/zlib/libz.a; sourceTree = SOURCE_ROOT; };
+		6D994CC1134D90090044DD0B /* libpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng.a; path = ../../../Core/Dependencies/libpng/libpng.a; sourceTree = SOURCE_ROOT; };
+		6D994CC2134D90090044DD0B /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
+		6D994CC3134D90090044DD0B /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
+		6D994CCF134D90290044DD0B /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		6D994CD5134D903E0044DD0B /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		6DFB00FC12A736A900C43A7D /* libPolycodeCg.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPolycodeCg.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DFB01CA12A741EB00C43A7D /* PolyCGProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyCGProgram.h; path = ../../Contents/CgShading/Include/PolyCGProgram.h; sourceTree = "<group>"; };
 		6DFB01CB12A741EB00C43A7D /* PolyCGShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyCGShader.h; path = ../../Contents/CgShading/Include/PolyCGShader.h; sourceTree = "<group>"; };
@@ -150,6 +164,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		6D994C7C134D8EEA0044DD0B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6D994DB2134D92640044DD0B /* libPolycodeGLSL.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6DFB00FA12A736A900C43A7D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -177,6 +199,7 @@
 		08FB7794FE84155DC02AAC07 /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				6D994C9E134D8FAA0044DD0B /* Frameworks */,
 				08FB7795FE84155DC02AAC07 /* Source */,
 				C6A0FF2B0290797F04C91782 /* Documentation */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
@@ -187,6 +210,7 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				6D994DBE134D928A0044DD0B /* Modules */,
 				6D4B047C1312470E00C62698 /* PolycodeGLSL */,
 				6DFD117F12DEAA1F0080A2BE /* Kinect */,
 				6D580E0312D29FB5006FB999 /* 2DPhysics */,
@@ -206,6 +230,7 @@
 				6D580DF112D29F52006FB999 /* libPolycode2DPhysics.a */,
 				6DFD116912DEA9C60080A2BE /* libPolycodeKinect.a */,
 				6D4B04211312428500C62698 /* libPolycodeGLSL.a */,
+				6D994C7E134D8EEA0044DD0B /* libPolycodeGLSLModule.dylib */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -282,6 +307,40 @@
 				6D580E0912D29FB5006FB999 /* PolyPhysicsScreenEntity.cpp */,
 			);
 			path = Source;
+			sourceTree = "<group>";
+		};
+		6D994C9E134D8FAA0044DD0B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6D994CD5134D903E0044DD0B /* IOKit.framework */,
+				6D994CCF134D90290044DD0B /* Cocoa.framework */,
+				6D994CBB134D90090044DD0B /* libvorbisfile.a */,
+				6D994CBC134D90090044DD0B /* libvorbis.a */,
+				6D994CBD134D90090044DD0B /* libogg.a */,
+				6D994CBE134D90090044DD0B /* libphysfs.a */,
+				6D994CBF134D90090044DD0B /* libfreetype.a */,
+				6D994CC0134D90090044DD0B /* libz.a */,
+				6D994CC1134D90090044DD0B /* libpng.a */,
+				6D994CC2134D90090044DD0B /* OpenAL.framework */,
+				6D994CC3134D90090044DD0B /* OpenGL.framework */,
+				6D994C9F134D8FC00044DD0B /* libPolyCore.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		6D994DBE134D928A0044DD0B /* Modules */ = {
+			isa = PBXGroup;
+			children = (
+				6D994DC0134D92960044DD0B /* GLSLModule */,
+			);
+			name = Modules;
+			sourceTree = "<group>";
+		};
+		6D994DC0134D92960044DD0B /* GLSLModule */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = GLSLModule;
 			sourceTree = "<group>";
 		};
 		6DFB00C012A71A5B00C43A7D /* PolycodeUI */ = {
@@ -399,6 +458,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		6D994C7A134D8EEA0044DD0B /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6DFB00F812A736A900C43A7D /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -492,6 +558,23 @@
 			productReference = 6D690D1B12C1D74A00C444B0 /* libPolycode3DPhysics.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		6D994C7D134D8EEA0044DD0B /* PolycodeGLSLModule */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6D994C81134D8F190044DD0B /* Build configuration list for PBXNativeTarget "PolycodeGLSLModule" */;
+			buildPhases = (
+				6D994C7A134D8EEA0044DD0B /* Headers */,
+				6D994C7B134D8EEA0044DD0B /* Sources */,
+				6D994C7C134D8EEA0044DD0B /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PolycodeGLSLModule;
+			productName = PolycodeGLSLModule;
+			productReference = 6D994C7E134D8EEA0044DD0B /* libPolycodeGLSLModule.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
 		6DFB00FB12A736A900C43A7D /* PolycodeCg */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6DFB010A12A736BE00C43A7D /* Build configuration list for PBXNativeTarget "PolycodeCg" */;
@@ -568,6 +651,7 @@
 				6D580DF012D29F52006FB999 /* Polycode2DPhysics */,
 				6DFD116812DEA9C60080A2BE /* PolycodeKinect */,
 				6D4B04201312428500C62698 /* PolycodeGLSL */,
+				6D994C7D134D8EEA0044DD0B /* PolycodeGLSLModule */,
 			);
 		};
 /* End PBXProject section */
@@ -600,6 +684,13 @@
 				6D1B705612C29AFE0076D5C4 /* PolyCollisionSceneEntity.cpp in Sources */,
 				6D1B705712C29AFE0076D5C4 /* PolyPhysicsScene.cpp in Sources */,
 				6D1B705812C29AFE0076D5C4 /* PolyPhysicsSceneEntity.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6D994C7B134D8EEA0044DD0B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -775,6 +866,58 @@
 			};
 			name = Release;
 		};
+		6D994C7F134D8EEA0044DD0B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/lib;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../../Core/Build/Mac OS X/build/Debug\"",
+					"\"$(SRCROOT)/../../../Core/Dependencies/libvorbis\"",
+					"\"$(SRCROOT)/../../../Core/Dependencies/libogg\"",
+					"\"$(SRCROOT)/../../../Core/Dependencies/physfs/Debug\"",
+					"\"$(SRCROOT)/../../../Core/Dependencies/freetype\"",
+					"\"$(SRCROOT)/../../../Core/Dependencies/zlib\"",
+					"\"$(SRCROOT)/../../../Core/Dependencies/libpng\"",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = PolycodeGLSLModule;
+			};
+			name = Debug;
+		};
+		6D994C80134D8EEA0044DD0B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EXECUTABLE_PREFIX = lib;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../../Core/Build/Mac OS X/build/Debug\"",
+					"\"$(SRCROOT)/../../../Core/Dependencies/libvorbis\"",
+					"\"$(SRCROOT)/../../../Core/Dependencies/libogg\"",
+					"\"$(SRCROOT)/../../../Core/Dependencies/physfs/Debug\"",
+					"\"$(SRCROOT)/../../../Core/Dependencies/freetype\"",
+					"\"$(SRCROOT)/../../../Core/Dependencies/zlib\"",
+					"\"$(SRCROOT)/../../../Core/Dependencies/libpng\"",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = PolycodeGLSLModule;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 		6DFB00FD12A736AA00C43A7D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -909,6 +1052,15 @@
 			buildConfigurations = (
 				6D690D1C12C1D74A00C444B0 /* Debug */,
 				6D690D1D12C1D74A00C444B0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6D994C81134D8F190044DD0B /* Build configuration list for PBXNativeTarget "PolycodeGLSLModule" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6D994C7F134D8EEA0044DD0B /* Debug */,
+				6D994C80134D8EEA0044DD0B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -1,32 +1,77 @@
 class "Vector3"
 
-function Vector3:Vector3()
-	if self.__ptr == nil then
-		self.__ptr = Polycore.Vector3()
+
+
+function Vector3:__index__(name)
+	if name == "x" then
+		return Polycore.Vector3_get_x(self.__ptr)
+	elseif name == "y" then
+		return Polycore.Vector3_get_y(self.__ptr)
+	elseif name == "z" then
+		return Polycore.Vector3_get_z(self.__ptr)
+	end
+end
+
+
+function Vector3:__set_callback(name,value)
+	if name == "x" then
+		Polycore.Vector3_set_x(self.__ptr, value)
+		return true
+	elseif name == "y" then
+		Polycore.Vector3_set_y(self.__ptr, value)
+		return true
+	elseif name == "z" then
+		Polycore.Vector3_set_z(self.__ptr, value)
+		return true
+	end
+	return false
+end
+
+
+function Vector3:Vector3(...)
+	for k,v in pairs(arg) do
+		if type(v) == "table" then
+			if v.__ptr ~= nil then
+				arg[k] = v.__ptr
+			end
+		end
+	end
+	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
+		self.__ptr = Polycore.Vector3(unpack(arg))
 	end
 end
 
 function Vector3:set(x, y, z)
-	return Polycore.Vector3_set(self.__ptr, x, y, z)
+	local retVal = Polycore.Vector3_set(self.__ptr, x, y, z)
 end
 
 function Vector3:distance(rhs)
-	return Polycore.Vector3_distance(self.__ptr, rhs.__ptr)
+	local retVal = Polycore.Vector3_distance(self.__ptr, rhs.__ptr)
+	return retVal
 end
 
 function Vector3:length()
-	return Polycore.Vector3_length(self.__ptr)
+	local retVal =  Polycore.Vector3_length(self.__ptr)
+	return retVal
 end
 
 function Vector3:dot(u)
-	return Polycore.Vector3_dot(self.__ptr, u.__ptr)
+	local retVal = Polycore.Vector3_dot(self.__ptr, u.__ptr)
+	return retVal
 end
 
 function Vector3:crossProduct(rkVector)
-	return Polycore.Vector3_crossProduct(self.__ptr, rkVector.__ptr)
+	local retVal = Polycore.Vector3_crossProduct(self.__ptr, rkVector.__ptr)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 
 function Vector3:Normalize()
-	return Polycore.Vector3_Normalize(self.__ptr)
+	local retVal =  Polycore.Vector3_Normalize(self.__ptr)
 end
 

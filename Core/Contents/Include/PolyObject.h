@@ -60,6 +60,12 @@ namespace Polycode {
 			return entry;			
 		}		
 		
+		ObjectEntry *addChild(ObjectEntry *entry) {
+			children.push_back(entry);
+			length = children.size();			
+			return entry;			
+		}
+		
 		ObjectEntry *addChild(String name, bool val) {
 			ObjectEntry *entry = new ObjectEntry();
 			entry->type = ObjectEntry::BOOL_ENTRY;			

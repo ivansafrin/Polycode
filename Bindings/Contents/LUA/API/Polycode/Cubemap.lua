@@ -2,9 +2,22 @@ require "Polycode/Resource"
 
 class "Cubemap" (Resource)
 
-function Cubemap:Cubemap(t0, t1, t2, t3, t4, t5)
-	if self.__ptr == nil then
-		self.__ptr = Polycore.Cubemap(t0, t1, t2, t3, t4, t5)
+
+
+
+
+
+
+function Cubemap:Cubemap(...)
+	for k,v in pairs(arg) do
+		if type(v) == "table" then
+			if v.__ptr ~= nil then
+				arg[k] = v.__ptr
+			end
+		end
+	end
+	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
+		self.__ptr = Polycore.Cubemap(unpack(arg))
 	end
 end
 

@@ -54,7 +54,6 @@
 #include "PolyCoreServices.h"
 #include "PolyCamera.h"
 #include "PolyScene.h"
-#include "PolyGenericScene.h"
 #include "PolyCollisionScene.h"
 #include "PolyCollisionSceneEntity.h"
 #include "PolySceneEntity.h"

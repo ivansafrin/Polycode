@@ -2,75 +2,172 @@ require "Polycode/EventDispatcher"
 
 class "CoreServices" (EventDispatcher)
 
+
+
+
+
+
+
 function CoreServices:getInstance()
-	return Polycore.CoreServices_getInstance(self.__ptr)
+	local retVal =  Polycore.CoreServices_getInstance()
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = CoreServices("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 
 function CoreServices:getRenderMutex()
-	return Polycore.CoreServices_getRenderMutex(self.__ptr)
+	local retVal =  Polycore.CoreServices_getRenderMutex()
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = CoreMutex("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 
 function CoreServices:setRenderer(r_enderer)
-	return Polycore.CoreServices_setRenderer(self.__ptr, r_enderer.__ptr)
+	local retVal = Polycore.CoreServices_setRenderer(self.__ptr, r_enderer.__ptr)
 end
 
 function CoreServices:getRenderer()
-	return Polycore.CoreServices_getRenderer(self.__ptr)
+	local retVal =  Polycore.CoreServices_getRenderer(self.__ptr)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = Renderer("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 
 function CoreServices:Update(elapsed)
-	return Polycore.CoreServices_Update(self.__ptr, elapsed)
+	local retVal = Polycore.CoreServices_Update(self.__ptr, elapsed)
 end
 
 function CoreServices:setCore(core)
-	return Polycore.CoreServices_setCore(self.__ptr, core.__ptr)
+	local retVal = Polycore.CoreServices_setCore(self.__ptr, core.__ptr)
 end
 
 function CoreServices:getCore()
-	return Polycore.CoreServices_getCore(self.__ptr)
+	local retVal =  Polycore.CoreServices_getCore(self.__ptr)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = Core("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 
 function CoreServices:handleEvent(event)
-	return Polycore.CoreServices_handleEvent(self.__ptr, event.__ptr)
+	local retVal = Polycore.CoreServices_handleEvent(self.__ptr, event.__ptr)
 end
 
 function CoreServices:installModule(module)
-	return Polycore.CoreServices_installModule(self.__ptr, module.__ptr)
+	local retVal = Polycore.CoreServices_installModule(self.__ptr, module.__ptr)
 end
 
 function CoreServices:getMaterialManager()
-	return Polycore.CoreServices_getMaterialManager(self.__ptr)
+	local retVal =  Polycore.CoreServices_getMaterialManager(self.__ptr)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = MaterialManager("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 
 function CoreServices:getScreenManager()
-	return Polycore.CoreServices_getScreenManager(self.__ptr)
+	local retVal =  Polycore.CoreServices_getScreenManager(self.__ptr)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = ScreenManager("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 
 function CoreServices:getSceneManager()
-	return Polycore.CoreServices_getSceneManager(self.__ptr)
+	local retVal =  Polycore.CoreServices_getSceneManager(self.__ptr)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = SceneManager("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 
 function CoreServices:getTimerManager()
-	return Polycore.CoreServices_getTimerManager(self.__ptr)
+	local retVal =  Polycore.CoreServices_getTimerManager(self.__ptr)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = TimerManager("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 
 function CoreServices:getTweenManager()
-	return Polycore.CoreServices_getTweenManager(self.__ptr)
+	local retVal =  Polycore.CoreServices_getTweenManager(self.__ptr)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = TweenManager("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 
 function CoreServices:getResourceManager()
-	return Polycore.CoreServices_getResourceManager(self.__ptr)
+	local retVal =  Polycore.CoreServices_getResourceManager(self.__ptr)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = ResourceManager("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 
 function CoreServices:getSoundManager()
-	return Polycore.CoreServices_getSoundManager(self.__ptr)
+	local retVal =  Polycore.CoreServices_getSoundManager(self.__ptr)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = SoundManager("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 
 function CoreServices:getFontManager()
-	return Polycore.CoreServices_getFontManager(self.__ptr)
+	local retVal =  Polycore.CoreServices_getFontManager(self.__ptr)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = FontManager("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 
 function CoreServices:getConfig()
-	return Polycore.CoreServices_getConfig(self.__ptr)
+	local retVal =  Polycore.CoreServices_getConfig(self.__ptr)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = Config("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 

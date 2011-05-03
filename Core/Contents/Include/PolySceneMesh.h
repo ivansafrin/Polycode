@@ -25,7 +25,8 @@ using namespace std;
 namespace Polycode {
 
 	class Texture;
-
+	class Skeleton;
+	
 	class _PolyExport SceneMesh : public SceneEntity {
 		public:
 			SceneMesh(String fileName);
@@ -44,7 +45,7 @@ namespace Polycode {
 			void loadSkeleton(String fileName);
 			void setTexture(Texture *texture);
 			void setMaterial(Material *material);
-			void setMaterial(String materialName);
+			void setMaterialByName(String materialName);
 			void setMesh(Mesh *mesh);
 		
 			void setSkeleton(Skeleton *skeleton);

@@ -1,28 +1,52 @@
 class "Event"
 
-function Event:Event()
-	if self.__ptr == nil then
-		self.__ptr = Polycore.Event()
+
+
+COMPLETE_EVENT = 0
+CHANGE_EVENT = 1
+
+
+
+
+function Event:Event(...)
+	for k,v in pairs(arg) do
+		if type(v) == "table" then
+			if v.__ptr ~= nil then
+				arg[k] = v.__ptr
+			end
+		end
+	end
+	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
+		self.__ptr = Polycore.Event(unpack(arg))
 	end
 end
 
 function Event:getEventCode()
-	return Polycore.Event_getEventCode(self.__ptr)
+	local retVal =  Polycore.Event_getEventCode(self.__ptr)
+	return retVal
 end
 
 function Event:setEventCode(eventCode)
-	return Polycore.Event_setEventCode(self.__ptr, eventCode)
+	local retVal = Polycore.Event_setEventCode(self.__ptr, eventCode)
 end
 
 function Event:getDispatcher()
-	return Polycore.Event_getDispatcher(self.__ptr)
+	local retVal =  Polycore.Event_getDispatcher(self.__ptr)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = EventDispatcher("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 
 function Event:setDispatcher(dispatcher)
-	return Polycore.Event_setDispatcher(self.__ptr, dispatcher.__ptr)
+	local retVal = Polycore.Event_setDispatcher(self.__ptr, dispatcher.__ptr)
 end
 
 function Event:getEventType()
-	return Polycore.Event_getEventType(self.__ptr)
+	local retVal =  Polycore.Event_getEventType(self.__ptr)
+	return retVal
 end
 

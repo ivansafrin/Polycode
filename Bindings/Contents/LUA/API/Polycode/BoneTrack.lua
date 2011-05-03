@@ -1,24 +1,37 @@
 class "BoneTrack"
 
-function BoneTrack:BoneTrack(bone, length)
-	if self.__ptr == nil then
-		self.__ptr = Polycore.BoneTrack(bone, length)
+
+
+
+
+
+
+function BoneTrack:BoneTrack(...)
+	for k,v in pairs(arg) do
+		if type(v) == "table" then
+			if v.__ptr ~= nil then
+				arg[k] = v.__ptr
+			end
+		end
+	end
+	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
+		self.__ptr = Polycore.BoneTrack(unpack(arg))
 	end
 end
 
 function BoneTrack:Play()
-	return Polycore.BoneTrack_Play(self.__ptr)
+	local retVal =  Polycore.BoneTrack_Play(self.__ptr)
 end
 
 function BoneTrack:Stop()
-	return Polycore.BoneTrack_Stop(self.__ptr)
+	local retVal =  Polycore.BoneTrack_Stop(self.__ptr)
 end
 
 function BoneTrack:Update()
-	return Polycore.BoneTrack_Update(self.__ptr)
+	local retVal =  Polycore.BoneTrack_Update(self.__ptr)
 end
 
 function BoneTrack:setSpeed(speed)
-	return Polycore.BoneTrack_setSpeed(self.__ptr, speed)
+	local retVal = Polycore.BoneTrack_setSpeed(self.__ptr, speed)
 end
 

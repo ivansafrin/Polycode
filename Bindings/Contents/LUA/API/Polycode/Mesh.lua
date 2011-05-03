@@ -1,104 +1,177 @@
 class "Mesh"
 
-function Mesh:Mesh(fileName)
-	if self.__ptr == nil then
-		self.__ptr = Polycore.Mesh(fileName)
+
+
+QUAD_MESH = 0
+TRI_MESH = 1
+TRIFAN_MESH = 2
+TRISTRIP_MESH = 3
+LINE_MESH = 4
+POINT_MESH = 5
+function Mesh:__index__(name)
+	if name == "useVertexColors" then
+		return Polycore.Mesh_get_useVertexColors(self.__ptr)
+	end
+end
+
+
+function Mesh:__set_callback(name,value)
+	if name == "useVertexColors" then
+		Polycore.Mesh_set_useVertexColors(self.__ptr, value)
+		return true
+	end
+	return false
+end
+
+
+function Mesh:Mesh(...)
+	for k,v in pairs(arg) do
+		if type(v) == "table" then
+			if v.__ptr ~= nil then
+				arg[k] = v.__ptr
+			end
+		end
+	end
+	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
+		self.__ptr = Polycore.Mesh(unpack(arg))
 	end
 end
 
 function Mesh:addPolygon(newPolygon)
-	return Polycore.Mesh_addPolygon(self.__ptr, newPolygon.__ptr)
+	local retVal = Polycore.Mesh_addPolygon(self.__ptr, newPolygon.__ptr)
 end
 
 function Mesh:loadMesh(fileName)
-	return Polycore.Mesh_loadMesh(self.__ptr, fileName)
+	local retVal = Polycore.Mesh_loadMesh(self.__ptr, fileName)
 end
 
 function Mesh:loadFromFile(inFile)
-	return Polycore.Mesh_loadFromFile(self.__ptr, inFile.__ptr)
+	local retVal = Polycore.Mesh_loadFromFile(self.__ptr, inFile.__ptr)
 end
 
 function Mesh:saveToFile(outFile)
-	return Polycore.Mesh_saveToFile(self.__ptr, outFile.__ptr)
+	local retVal = Polycore.Mesh_saveToFile(self.__ptr, outFile.__ptr)
 end
 
 function Mesh:getPolygonCount()
-	return Polycore.Mesh_getPolygonCount(self.__ptr)
+	local retVal =  Polycore.Mesh_getPolygonCount(self.__ptr)
+	return retVal
 end
 
 function Mesh:getPolygon(index)
-	return Polycore.Mesh_getPolygon(self.__ptr, index)
+	local retVal = Polycore.Mesh_getPolygon(self.__ptr, index)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = Polygon("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 
 function Mesh:createPlane(w, h)
-	return Polycore.Mesh_createPlane(self.__ptr, w, h)
+	local retVal = Polycore.Mesh_createPlane(self.__ptr, w, h)
 end
 
 function Mesh:createBox(w, d, h)
-	return Polycore.Mesh_createBox(self.__ptr, w, d, h)
+	local retVal = Polycore.Mesh_createBox(self.__ptr, w, d, h)
 end
 
 function Mesh:createSphere(radius, numRings, numSegments)
-	return Polycore.Mesh_createSphere(self.__ptr, radius, numRings, numSegments)
+	local retVal = Polycore.Mesh_createSphere(self.__ptr, radius, numRings, numSegments)
 end
 
 function Mesh:addVertex(vertex)
-	return Polycore.Mesh_addVertex(self.__ptr, vertex.__ptr)
+	local retVal = Polycore.Mesh_addVertex(self.__ptr, vertex.__ptr)
 end
 
 function Mesh:getVertex(index)
-	return Polycore.Mesh_getVertex(self.__ptr, index)
+	local retVal = Polycore.Mesh_getVertex(self.__ptr, index)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = Vertex("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 
 function Mesh:getNumVertices()
-	return Polycore.Mesh_getNumVertices(self.__ptr)
+	local retVal =  Polycore.Mesh_getNumVertices(self.__ptr)
+	return retVal
 end
 
 function Mesh:recenterMesh()
-	return Polycore.Mesh_recenterMesh(self.__ptr)
+	local retVal =  Polycore.Mesh_recenterMesh(self.__ptr)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 
 function Mesh:useVertexNormals(val)
-	return Polycore.Mesh_useVertexNormals(self.__ptr, val)
+	local retVal = Polycore.Mesh_useVertexNormals(self.__ptr, val)
 end
 
 function Mesh:getVertexIndex(vertex)
-	return Polycore.Mesh_getVertexIndex(self.__ptr, vertex.__ptr)
+	local retVal = Polycore.Mesh_getVertexIndex(self.__ptr, vertex.__ptr)
+	return retVal
 end
 
 function Mesh:setVertexBuffer(buffer)
-	return Polycore.Mesh_setVertexBuffer(self.__ptr, buffer.__ptr)
+	local retVal = Polycore.Mesh_setVertexBuffer(self.__ptr, buffer.__ptr)
 end
 
 function Mesh:getVertexBuffer()
-	return Polycore.Mesh_getVertexBuffer(self.__ptr)
+	local retVal =  Polycore.Mesh_getVertexBuffer(self.__ptr)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = VertexBuffer("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 
 function Mesh:usesFaceUV()
-	return Polycore.Mesh_usesFaceUV(self.__ptr)
+	local retVal =  Polycore.Mesh_usesFaceUV(self.__ptr)
+	return retVal
 end
 
 function Mesh:getRadius()
-	return Polycore.Mesh_getRadius(self.__ptr)
+	local retVal =  Polycore.Mesh_getRadius(self.__ptr)
+	return retVal
 end
 
 function Mesh:calculateNormals()
-	return Polycore.Mesh_calculateNormals(self.__ptr)
+	local retVal =  Polycore.Mesh_calculateNormals(self.__ptr)
 end
 
 function Mesh:getMeshType()
-	return Polycore.Mesh_getMeshType(self.__ptr)
+	local retVal =  Polycore.Mesh_getMeshType(self.__ptr)
+	return retVal
 end
 
 function Mesh:setMeshType(newType)
-	return Polycore.Mesh_setMeshType(self.__ptr, newType)
+	local retVal = Polycore.Mesh_setMeshType(self.__ptr, newType)
 end
 
 function Mesh:calculateBBox()
-	return Polycore.Mesh_calculateBBox(self.__ptr)
+	local retVal =  Polycore.Mesh_calculateBBox(self.__ptr)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 
 function Mesh:hasVertexBuffer()
-	return Polycore.Mesh_hasVertexBuffer(self.__ptr)
+	local retVal =  Polycore.Mesh_hasVertexBuffer(self.__ptr)
+	return retVal
 end
 

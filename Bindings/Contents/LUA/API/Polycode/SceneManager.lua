@@ -1,28 +1,41 @@
 class "SceneManager"
 
-function SceneManager:SceneManager()
-	if self.__ptr == nil then
-		self.__ptr = Polycore.SceneManager()
+
+
+
+
+
+
+function SceneManager:SceneManager(...)
+	for k,v in pairs(arg) do
+		if type(v) == "table" then
+			if v.__ptr ~= nil then
+				arg[k] = v.__ptr
+			end
+		end
+	end
+	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
+		self.__ptr = Polycore.SceneManager(unpack(arg))
 	end
 end
 
 function SceneManager:addScene(newScene)
-	return Polycore.SceneManager_addScene(self.__ptr, newScene.__ptr)
+	local retVal = Polycore.SceneManager_addScene(self.__ptr, newScene.__ptr)
 end
 
 function SceneManager:Update()
-	return Polycore.SceneManager_Update(self.__ptr)
+	local retVal =  Polycore.SceneManager_Update(self.__ptr)
 end
 
 function SceneManager:UpdateVirtual()
-	return Polycore.SceneManager_UpdateVirtual(self.__ptr)
+	local retVal =  Polycore.SceneManager_UpdateVirtual(self.__ptr)
 end
 
 function SceneManager:removeScene(scene)
-	return Polycore.SceneManager_removeScene(self.__ptr, scene.__ptr)
+	local retVal = Polycore.SceneManager_removeScene(self.__ptr, scene.__ptr)
 end
 
 function SceneManager:registerRenderTexture(r_enderTexture)
-	return Polycore.SceneManager_registerRenderTexture(self.__ptr, r_enderTexture.__ptr)
+	local retVal = Polycore.SceneManager_registerRenderTexture(self.__ptr, r_enderTexture.__ptr)
 end
 

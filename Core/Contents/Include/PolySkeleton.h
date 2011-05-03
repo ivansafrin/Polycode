@@ -22,6 +22,9 @@ using std::vector;
 
 namespace Polycode {
 	
+	class QuaternionTween;
+	class BezierPathTween;
+	
 	class _PolyExport BoneTrack {
 		public:
 			BoneTrack(Bone *bone, Number length);

@@ -15,6 +15,7 @@
 #include "PolySceneEntity.h"
 #include "PolyCamera.h"
 #include "PolySceneLight.h"
+#include "PolySceneMesh.h"
 #include <vector>
 
 using std::vector;
@@ -23,15 +24,15 @@ namespace Polycode {
 		
 	class Camera;
 	class SceneLight;
+	class SceneMesh;
 	
 	class _PolyExport Scene : public EventDispatcher {
 	public:
 		
 		Scene();
+		Scene(bool virtualScene);
 		virtual ~Scene();
 		
-		virtual void Render() = 0;
-		virtual void RenderDepthOnly(Camera *targetCamera) = 0;
 		
 		void addEntity(SceneEntity *entity);
 		void removeEntity(SceneEntity *entity);
@@ -53,7 +54,55 @@ namespace Polycode {
 		
 		SceneEntity *getEntityAtCursor(Number x, Number y);
 		
+		void Render();
+		void RenderDepthOnly(Camera *targetCamera);
+//		void addGrid(String gridTexture);
+		
+		static String readString(OSFILE *inFile);
+		void loadScene(String fileName);
+		void generateLightmaps(Number lightMapRes, Number lightMapQuality, int numRadPasses);
+		
+		void addLight(SceneLight *light);
+		SceneLight *getNearestLight(Vector3 pos);
+		
+		void writeEntityMatrix(SceneEntity *entity, OSFILE *outFile);
+		void writeString(String str, OSFILE *outFile);
+		void saveScene(String fileName);
+		
+		int getNumStaticGeometry();
+		SceneMesh *getStaticGeometry(int index);
+		
+		virtual void loadCollisionChild(SceneEntity *entity, bool autoCollide=false, int type=0){}
+		
+		int getNumLights();
+		SceneLight *getLight(int index);
+		
+		SceneEntity *getCustomEntityByType(String type);
+		vector<SceneEntity*> getCustomEntitiesByType(String type);		
+		
+		static const unsigned int ENTITY_MESH = 0;
+		static const unsigned int ENTITY_LIGHT = 1;			
+		static const unsigned int ENTITY_CAMERA = 2;			
+		static const unsigned int ENTITY_ENTITY = 3;
+		static const unsigned int ENTITY_COLLMESH = 4;
+		
+		Color clearColor;
+		Color ambientColor;		
+		Color fogColor;				
+		
+		
 	protected:
+		
+		bool useClearColor;
+		bool virtualScene;
+		bool hasLightmaps;
+		//			LightmapPacker *packer;
+		
+		vector <SceneLight*> lights;				
+		vector <SceneMesh*> staticGeometry;
+		vector <SceneMesh*> collisionGeometry;
+		vector <SceneEntity*> customEntities;
+		
 		
 		bool isSceneVirtual;
 		bool enabled;
@@ -64,7 +113,6 @@ namespace Polycode {
 		bool lightingEnabled;
 		bool fogEnabled;
 		int fogMode;
-		Color fogColor;
 		Number fogDensity;
 		Number fogStartDepth;
 		Number fogEndDepth;

@@ -1,16 +1,29 @@
 class "Logger"
 
-function Logger:Logger()
-	if self.__ptr == nil then
-		self.__ptr = Polycore.Logger()
+
+
+
+
+
+
+function Logger:Logger(...)
+	for k,v in pairs(arg) do
+		if type(v) == "table" then
+			if v.__ptr ~= nil then
+				arg[k] = v.__ptr
+			end
+		end
+	end
+	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
+		self.__ptr = Polycore.Logger(unpack(arg))
 	end
 end
 
 function Logger:log(format)
-	return Polycore.Logger_log(self.__ptr, format.__ptr)
+	local retVal = Polycore.Logger_log(format.__ptr)
 end
 
 function Logger:logw(str)
-	return Polycore.Logger_logw(self.__ptr, str.__ptr)
+	local retVal = Polycore.Logger_logw(str.__ptr)
 end
 
