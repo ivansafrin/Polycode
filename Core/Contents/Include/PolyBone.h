@@ -1,12 +1,24 @@
 /*
- *  PolyBone.h
- *  Poly
- *
- *  Created by Ivan Safrin on 9/5/08.
- *  Copyright 2008 __MyCompanyName__. All rights reserved.
- *
+ Copyright (C) 2011 by Ivan Safrin
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
  */
-// @package BasicTypes
 
 #pragma once
 #include "PolyLogger.h"
@@ -17,33 +29,124 @@
 #include "PolyCoreServices.h"
 #include "PolySceneLabel.h"
 #include "PolySceneLine.h"
+
 namespace Polycode {
 
+	/** 
+	* Skeleton bone. Bones are bound to vertices of a mesh and when transformed, move the bound vertices of the mesh along with them. Bones are subclassed from SceneEntity, but have their own hierarchy system.
+	* @see Skeleton
+	*/			
 	class _PolyExport Bone : public SceneEntity {
 		public:
+			/** 
+			* Constructor.
+			* @param boneName Name of the bone.
+			*/				
 			Bone(String boneName);
 			~Bone();
+			
 			void enableBoneLabel(String labelFont, Number size, Number scale, Color labelColor);
+			
+			/**
+			* Returns the name of the bone.
+			* @return Name of the bone.
+			*/
 			String getName();
 			void Render();
 
+			/**
+			* Sets the parent bone of this bone.
+			* @param bone New parent bone.
+			*/
 			void setParentBone(Bone *bone);
+			
+			/**
+			* Adds another bone as the child of this bone.
+			* @param bone New parent bone.
+			*/			
 			void addChildBone(Bone *bone);
+			
+			/**
+			* Returns the parent bone of this bone.
+			* @return Parent bone of this bone.
+			*/						
 			Bone* getParentBone();
+			
+			/**
+			* Returns the number of child bones of this bone.
+			* @return Number of child bones.
+			*/									
 			int getNumChildBones();
+			
+			/**
+			* Returns the child bone of this bone at the specified index.
+			* @param index Index of the child bone to return.
+			* @return Parent bone of this bone.
+			*/									
 			Bone *getChildBone(unsigned int index);
 
+			/**
+			* Returns the bone matrix
+			* @return Bone matrix.
+			*/									
 			Matrix4 getBoneMatrix();
+			
+			/**
+			* Sets the bone matrix.
+			* @return Bone matrix.
+			*/												
 			void setBoneMatrix(Matrix4 matrix);
+			
+			/**
+			* Returns the rest matrix of this bone.
+			* @return Rest matrix.
+			*/															
 			Matrix4 getRestMatrix();
+			
+			/**
+			* Returns the full rest matrix of this bone.
+			* @return Full rest matrix.
+			*/																		
 			Matrix4 getFullRestMatrix();
+			
+			/**
+			* Returns the rest matrix of this bone's parent.
+			* @return Rest matrix of the bone's parent.
+			*/																					
 			Matrix4 getParentRestMatrix();
+			
+			/**
+			* @see getBoneMatrix()
+			*/																								
 			Matrix4 getFinalMatrix();
+			
+			/**
+			* Sets the rest matrix for this bone.
+			* @param matrix New rest matrix.
+			*/
 			void setRestMatrix(Matrix4 matrix);
+			
+			/**
+			* Sets the base matrix for this bone.
+			* @param matrix New base matrix.
+			*/			
 			void setBaseMatrix(Matrix4 matrix);
+			
+			/**
+			* Returns the base matrix of this bone.
+			* @return Base matrix.
+			*/			
 			Matrix4 getBaseMatrix() { return baseMatrix; }
+			
+			/**
+			* Returns the full base matrix of this bone.
+			* @return Full base matrix.
+			*/						
 			Matrix4 getFullBaseMatrix();
 		
+			/**
+			* Id of the bone.
+			*/								
 			int parentBoneId;			
 
 			Matrix4 boneMatrix;

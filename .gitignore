@@ -22,10 +22,13 @@ Tools/Dependencies
 Bindings/Dependencies
 IDE/Mac\ OS\ X
 Examples
+Release
+Documentation
 
 # OS generated files #
 ######################
 .DS_Store?
+.DS_Store
 ehthumbs.db
 Icon?
 Thumbs.db

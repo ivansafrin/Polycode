@@ -11,6 +11,8 @@
 		6D8656AB12AF5FD5008A486E /* PolyString.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D8656AA12AF5FD5008A486E /* PolyString.cpp */; };
 		6D865AC212B07363008A486E /* PolyData.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D865AC112B07363008A486E /* PolyData.h */; };
 		6D865AC412B0736C008A486E /* PolyData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D865AC312B0736C008A486E /* PolyData.cpp */; };
+		6DD40E2B136C68B700D602D3 /* PolycodeView.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DD40E2A136C68B700D602D3 /* PolycodeView.h */; };
+		6DD40E2D136C68C400D602D3 /* PolycodeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DD40E2C136C68C400D602D3 /* PolycodeView.mm */; };
 		6DFB016F12A73BC200C43A7D /* PolyModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFB016E12A73BC200C43A7D /* PolyModule.h */; };
 		6DFB017112A73BCF00C43A7D /* PolyModule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFB017012A73BCF00C43A7D /* PolyModule.cpp */; };
 		6DFBF3BD12A3184E00C43A7D /* OSBasics.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF30D12A3184E00C43A7D /* OSBasics.h */; };
@@ -89,7 +91,6 @@
 		6DFBF40612A3184E00C43A7D /* PolySkeleton.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF35612A3184E00C43A7D /* PolySkeleton.h */; };
 		6DFBF40712A3184E00C43A7D /* PolySound.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF35712A3184E00C43A7D /* PolySound.h */; };
 		6DFBF40812A3184E00C43A7D /* PolySoundManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF35812A3184E00C43A7D /* PolySoundManager.h */; };
-		6DFBF40912A3184E00C43A7D /* PolySubstanceView.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF35912A3184E00C43A7D /* PolySubstanceView.h */; };
 		6DFBF40A12A3184E00C43A7D /* PolyTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF35A12A3184E00C43A7D /* PolyTexture.h */; };
 		6DFBF40B12A3184E00C43A7D /* PolyThreaded.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF35B12A3184E00C43A7D /* PolyThreaded.h */; };
 		6DFBF40C12A3184E00C43A7D /* PolyTimer.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF35C12A3184E00C43A7D /* PolyTimer.h */; };
@@ -178,7 +179,6 @@
 		6DFBF46312A3184E00C43A7D /* PolyVector2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF3B412A3184E00C43A7D /* PolyVector2.cpp */; };
 		6DFBF46412A3184E00C43A7D /* PolyVector3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF3B512A3184E00C43A7D /* PolyVector3.cpp */; };
 		6DFBF46512A3184E00C43A7D /* PolyVertex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF3B612A3184E00C43A7D /* PolyVertex.cpp */; };
-		6DFBF46612A3184E00C43A7D /* PolySubstanceView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF3B712A3184E00C43A7D /* PolySubstanceView.m */; };
 		6DFBF46712A3184E00C43A7D /* tinystr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF3B812A3184E00C43A7D /* tinystr.cpp */; };
 		6DFBF46812A3184E00C43A7D /* tinyxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF3B912A3184E00C43A7D /* tinyxml.cpp */; };
 		6DFBF46912A3184E00C43A7D /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF3BA12A3184E00C43A7D /* tinyxmlerror.cpp */; };
@@ -192,6 +192,8 @@
 		6D8656AA12AF5FD5008A486E /* PolyString.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyString.cpp; sourceTree = "<group>"; };
 		6D865AC112B07363008A486E /* PolyData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyData.h; sourceTree = "<group>"; };
 		6D865AC312B0736C008A486E /* PolyData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyData.cpp; sourceTree = "<group>"; };
+		6DD40E2A136C68B700D602D3 /* PolycodeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolycodeView.h; sourceTree = "<group>"; };
+		6DD40E2C136C68C400D602D3 /* PolycodeView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PolycodeView.mm; sourceTree = "<group>"; };
 		6DFB016E12A73BC200C43A7D /* PolyModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyModule.h; sourceTree = "<group>"; };
 		6DFB017012A73BCF00C43A7D /* PolyModule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyModule.cpp; sourceTree = "<group>"; };
 		6DFBF30D12A3184E00C43A7D /* OSBasics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSBasics.h; sourceTree = "<group>"; };
@@ -270,7 +272,6 @@
 		6DFBF35612A3184E00C43A7D /* PolySkeleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolySkeleton.h; sourceTree = "<group>"; };
 		6DFBF35712A3184E00C43A7D /* PolySound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolySound.h; sourceTree = "<group>"; };
 		6DFBF35812A3184E00C43A7D /* PolySoundManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolySoundManager.h; sourceTree = "<group>"; };
-		6DFBF35912A3184E00C43A7D /* PolySubstanceView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolySubstanceView.h; sourceTree = "<group>"; };
 		6DFBF35A12A3184E00C43A7D /* PolyTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyTexture.h; sourceTree = "<group>"; };
 		6DFBF35B12A3184E00C43A7D /* PolyThreaded.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyThreaded.h; sourceTree = "<group>"; };
 		6DFBF35C12A3184E00C43A7D /* PolyTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyTimer.h; sourceTree = "<group>"; };
@@ -363,7 +364,6 @@
 		6DFBF3B412A3184E00C43A7D /* PolyVector2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyVector2.cpp; sourceTree = "<group>"; };
 		6DFBF3B512A3184E00C43A7D /* PolyVector3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyVector3.cpp; sourceTree = "<group>"; };
 		6DFBF3B612A3184E00C43A7D /* PolyVertex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyVertex.cpp; sourceTree = "<group>"; };
-		6DFBF3B712A3184E00C43A7D /* PolySubstanceView.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = PolySubstanceView.m; sourceTree = "<group>"; };
 		6DFBF3B812A3184E00C43A7D /* tinystr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinystr.cpp; sourceTree = "<group>"; };
 		6DFBF3B912A3184E00C43A7D /* tinyxml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxml.cpp; sourceTree = "<group>"; };
 		6DFBF3BA12A3184E00C43A7D /* tinyxmlerror.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlerror.cpp; sourceTree = "<group>"; };
@@ -423,6 +423,7 @@
 		6DFBF30B12A3184E00C43A7D /* Include */ = {
 			isa = PBXGroup;
 			children = (
+				6DD40E2A136C68B700D602D3 /* PolycodeView.h */,
 				6DFE5FC412D450C30005B100 /* PolyObject.h */,
 				6D865AC112B07363008A486E /* PolyData.h */,
 				6D8656A812AF5FCD008A486E /* PolyString.h */,
@@ -502,7 +503,6 @@
 				6DFBF35612A3184E00C43A7D /* PolySkeleton.h */,
 				6DFBF35712A3184E00C43A7D /* PolySound.h */,
 				6DFBF35812A3184E00C43A7D /* PolySoundManager.h */,
-				6DFBF35912A3184E00C43A7D /* PolySubstanceView.h */,
 				6DFBF35A12A3184E00C43A7D /* PolyTexture.h */,
 				6DFBF35B12A3184E00C43A7D /* PolyThreaded.h */,
 				6DFBF35C12A3184E00C43A7D /* PolyTimer.h */,
@@ -523,6 +523,7 @@
 		6DFBF36612A3184E00C43A7D /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				6DD40E2C136C68C400D602D3 /* PolycodeView.mm */,
 				6DFE5FC712D450CB0005B100 /* PolyObject.cpp */,
 				6D865AC312B0736C008A486E /* PolyData.cpp */,
 				6D8656AA12AF5FD5008A486E /* PolyString.cpp */,
@@ -606,7 +607,6 @@
 				6DFBF3B412A3184E00C43A7D /* PolyVector2.cpp */,
 				6DFBF3B512A3184E00C43A7D /* PolyVector3.cpp */,
 				6DFBF3B612A3184E00C43A7D /* PolyVertex.cpp */,
-				6DFBF3B712A3184E00C43A7D /* PolySubstanceView.m */,
 				6DFBF3B812A3184E00C43A7D /* tinystr.cpp */,
 				6DFBF3B912A3184E00C43A7D /* tinyxml.cpp */,
 				6DFBF3BA12A3184E00C43A7D /* tinyxmlerror.cpp */,
@@ -706,7 +706,6 @@
 				6DFBF40612A3184E00C43A7D /* PolySkeleton.h in Headers */,
 				6DFBF40712A3184E00C43A7D /* PolySound.h in Headers */,
 				6DFBF40812A3184E00C43A7D /* PolySoundManager.h in Headers */,
-				6DFBF40912A3184E00C43A7D /* PolySubstanceView.h in Headers */,
 				6DFBF40A12A3184E00C43A7D /* PolyTexture.h in Headers */,
 				6DFBF40B12A3184E00C43A7D /* PolyThreaded.h in Headers */,
 				6DFBF40C12A3184E00C43A7D /* PolyTimer.h in Headers */,
@@ -723,6 +722,7 @@
 				6D8656A912AF5FCD008A486E /* PolyString.h in Headers */,
 				6D865AC212B07363008A486E /* PolyData.h in Headers */,
 				6DFE5FC512D450C30005B100 /* PolyObject.h in Headers */,
+				6DD40E2B136C68B700D602D3 /* PolycodeView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -851,7 +851,6 @@
 				6DFBF46312A3184E00C43A7D /* PolyVector2.cpp in Sources */,
 				6DFBF46412A3184E00C43A7D /* PolyVector3.cpp in Sources */,
 				6DFBF46512A3184E00C43A7D /* PolyVertex.cpp in Sources */,
-				6DFBF46612A3184E00C43A7D /* PolySubstanceView.m in Sources */,
 				6DFBF46712A3184E00C43A7D /* tinystr.cpp in Sources */,
 				6DFBF46812A3184E00C43A7D /* tinyxml.cpp in Sources */,
 				6DFBF46912A3184E00C43A7D /* tinyxmlerror.cpp in Sources */,
@@ -860,6 +859,7 @@
 				6D8656AB12AF5FD5008A486E /* PolyString.cpp in Sources */,
 				6D865AC412B0736C008A486E /* PolyData.cpp in Sources */,
 				6DFE5FC812D450CB0005B100 /* PolyObject.cpp in Sources */,
+				6DD40E2D136C68C400D602D3 /* PolycodeView.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -877,6 +877,8 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INSTALL_PATH = /usr/local/lib;
 				PRODUCT_NAME = PolyCore;
+				STRIP_INSTALLED_PRODUCT = NO;
+				STRIP_STYLE = debugging;
 			};
 			name = Debug;
 		};
@@ -886,8 +888,20 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = s;
+				HEADER_SEARCH_PATHS = (
+					../../Dependencies/libvorbis/include,
+					../../Dependencies/libogg/include,
+					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Versions/A/Headers,
+					../../Dependencies/freetype/include,
+					../../Dependencies/libpng,
+					../../Dependencies/physfs,
+				);
 				INSTALL_PATH = /usr/local/lib;
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = PolyCore;
+				STRIP_INSTALLED_PRODUCT = NO;
+				STRIP_STYLE = debugging;
 			};
 			name = Release;
 		};

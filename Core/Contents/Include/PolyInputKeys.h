@@ -3,7 +3,7 @@
  *  Poly
  *
  *  Created by Ivan Safrin on 5/28/08.
- *  Copyright 2008 __MyCompanyName__. All rights reserved.
+ *  Copyright 2008 Ivan Safrin. All rights reserved.
  *
  */
 // @package Core
@@ -13,9 +13,11 @@
 namespace Polycode {
 
 	// copied from SDL for conveniece :)
-	
+
+	/**
+	* Keys values.
+	*/
 	typedef enum {
-		/* The keyboard syms have been cleverly chosen to map to ASCII */
 		TAUK_UNKNOWN		= 0,
 		TAUK_FIRST		= 0,
 		TAUK_BACKSPACE		= 8,
@@ -269,7 +271,7 @@ namespace Polycode {
 		/* Add any other keys here */
 		
 		TAUK_LAST
-	} TAUKey;
+	} PolyKEY;
 
 };
 	

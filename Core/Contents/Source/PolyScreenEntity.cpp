@@ -3,7 +3,7 @@
  *  Poly
  *
  *  Created by Ivan Safrin on 3/13/08.
- *  Copyright 2008 __MyCompanyName__. All rights reserved.
+ *  Copyright 2008 Ivan Safrin. All rights reserved.
  *
  */
 
@@ -147,14 +147,14 @@ void ScreenEntity::setPositionMode(int newPositionMode) {
 	positionMode = newPositionMode;
 }
 
-void ScreenEntity::_onKeyDown(TAUKey key, wchar_t charCode) {
+void ScreenEntity::_onKeyDown(PolyKEY key, wchar_t charCode) {
 	onKeyDown(key, charCode);
 	for(int i=0;i<children.size();i++) {
 		((ScreenEntity*)children[i])->_onKeyDown(key, charCode);
 	}
 }
 
-void ScreenEntity::_onKeyUp(TAUKey key, wchar_t charCode) {
+void ScreenEntity::_onKeyUp(PolyKEY key, wchar_t charCode) {
 	onKeyUp(key, charCode);
 	for(int i=0;i<children.size();i++) {
 		((ScreenEntity*)children[i])->_onKeyUp(key, charCode);

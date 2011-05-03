@@ -69,7 +69,7 @@ void String::setDataWithEncoding(char *data, int encoding) {
 }
 
 
-vector<String> String::split(const String &delims) {
+vector<String> String::split(const String &delim) {
 	
 	vector<String> tokens;
 	bool trimEmpty = false;
@@ -77,7 +77,7 @@ vector<String> String::split(const String &delims) {
 		std::wstring::size_type pos, lastPos = 0;
 		while(true)
 		{
-			pos = contents.find_first_of(delims.contents, lastPos);
+			pos = contents.find_first_of(delim.contents, lastPos);
 			if(pos == std::wstring::npos)
 			{
 				pos = contents.length();
@@ -116,6 +116,13 @@ String String::toLowerCase() {
 	std::transform(str.begin(), str.end(), str.begin(),std::tolower);	
 	return String(str);
 }
+
+String String::toUpperCase() {
+	wstring str = contents;
+	std::transform(str.begin(), str.end(), str.begin(),std::toupper);	
+	return String(str);
+}
+
 
 String String::NumberToString(Number value) {
 	char temp[128];

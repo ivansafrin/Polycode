@@ -3,7 +3,7 @@
  *  Poly
  *
  *  Created by Ivan Safrin on 3/28/08.
- *  Copyright 2008 __MyCompanyName__. All rights reserved.
+ *  Copyright 2008 Ivan Safrin. All rights reserved.
  *
  */
 
@@ -21,8 +21,8 @@ namespace Polycode {
 	class _PolyExport InputEvent : public Event {
 		public:
 			InputEvent(Vector2 mousePosition,int timestamp);
-//			InputEvent(TAUKey key, int timestamp);
-			InputEvent(TAUKey key, wchar_t charCode, int timestamp);			
+//			InputEvent(PolyKEY key, int timestamp);
+			InputEvent(PolyKEY key, wchar_t charCode, int timestamp);			
 			~InputEvent();
 		
 		static const int EVENT_MOUSEDOWN = 0;
@@ -40,7 +40,7 @@ namespace Polycode {
 		
 		int mouseButton;
 		Vector2 mousePosition;
-		TAUKey key;
+		PolyKEY key;
 		
 		int keyCode() { return key; }
 		

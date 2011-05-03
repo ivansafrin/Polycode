@@ -3,7 +3,7 @@
  *  Poly
  *
  *  Created by Ivan Safrin on 3/12/08.
- *  Copyright 2008 __MyCompanyName__. All rights reserved.
+ *  Copyright 2008 Ivan Safrin. All rights reserved.
  *
  */
 /*
@@ -133,13 +133,13 @@ bool SDLCore::Update() {
 					running = false;
 				break;
 				case SDL_JOYBUTTONDOWN:
-//					input->setKeyState((TAUKey)(event.key.keysym.sym), true);
+//					input->setKeyState((PolyKEY)(event.key.keysym.sym), true);
 				break;
 				case SDL_KEYDOWN:
-					input->setKeyState((TAUKey)(event.key.keysym.sym), (char)event.key.keysym.unicode, true, getTicks());
+					input->setKeyState((PolyKEY)(event.key.keysym.sym), (char)event.key.keysym.unicode, true, getTicks());
 				break;
 				case SDL_KEYUP:
-					input->setKeyState((TAUKey)(event.key.keysym.sym), (char)event.key.keysym.unicode, false, getTicks());
+					input->setKeyState((PolyKEY)(event.key.keysym.sym), (char)event.key.keysym.unicode, false, getTicks());
 				break;
 				case SDL_MOUSEBUTTONDOWN:
 					if(event.button.button == SDL_BUTTON_WHEELUP) {

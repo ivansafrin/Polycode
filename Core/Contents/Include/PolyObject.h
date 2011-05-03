@@ -1,3 +1,24 @@
+/*
+ Copyright (C) 2011 by Ivan Safrin
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
+ */
 
 
 #include "PolyGlobals.h"
@@ -6,20 +27,57 @@
 
 namespace Polycode {
 
+	/**
+	* Single entry in an Object. Object entries can be accessed as dictionaries or arrays.
+	*/
 	class _PolyExport ObjectEntry {
 	public:
 		
+		/**
+		* Default constructor
+		*/
 		ObjectEntry() { type = ObjectEntry::CONTAINER_ENTRY; }
-		
+				
+		/**
+		* Type of entry. Possible values are (FLOAT_ENTRY, INT_ENTRY, BOOL_ENTRY, ARRAY_ENTRY, STRING_ENTRY, CONTAINER_ENTRY).
+		*/
 		int type;
-		String name;
 		
+		/**
+		* Lookup key for this object entry.
+		*/		
+		String name;
+
+		/**
+		* Number value of this object entry.
+		*/				
 		Number NumberVal;
+		
+		/**
+		* Integer value of this object entry.
+		*/						
 		int intVal;
+		
+		/**
+		* String value of this object entry.
+		*/								
 		String stringVal;
+		
+		/**
+		* Boolean value of this object entry.
+		*/								
 		bool boolVal;		
+		
+		/**
+		* Length of this object entry if its type is ARRAY_ENTRY.
+		*/										
 		int length;
 		
+		/**
+		* Adds an empty child entry.
+		* @param name Lookup key for the object entry.
+		* @return The added object entry.
+		*/				
 		ObjectEntry *addChild(String name) {
 			ObjectEntry *entry = new ObjectEntry();
 			entry->type = ObjectEntry::CONTAINER_ENTRY;			
@@ -29,7 +87,12 @@ namespace Polycode {
 			return entry;
 		}
 		
-		
+		/**
+		* Adds an empty child entry with a number value.
+		* @param name Lookup key for the object entry.
+		* @param val Number to set as value in the object entry.
+		* @return The added object entry.
+		*/						
 		ObjectEntry *addChild(String name, Number val) {
 			ObjectEntry *entry = new ObjectEntry();
 			entry->type = ObjectEntry::FLOAT_ENTRY;			
@@ -40,6 +103,13 @@ namespace Polycode {
 			return entry;			
 		}
 
+		/**
+		* Adds an empty child entry with an integer value.
+		* @param name Lookup key for the object entry.
+		* @param val Integer to set as value in the object entry.
+		* @return The added object entry.
+		*/						
+
 		ObjectEntry *addChild(String name, int val) {
 			ObjectEntry *entry = new ObjectEntry();
 			entry->type = ObjectEntry::INT_ENTRY;
@@ -49,7 +119,13 @@ namespace Polycode {
 			length = children.size();			
 			return entry;			
 		}
-
+		
+		/**
+		* Adds an empty child entry with a string value.
+		* @param name Lookup key for the object entry.
+		* @param val String to set as value in the object entry.
+		* @return The added object entry.
+		*/						
 		ObjectEntry *addChild(String name, String val) {
 			ObjectEntry *entry = new ObjectEntry();
 			entry->type = ObjectEntry::STRING_ENTRY;
@@ -60,6 +136,12 @@ namespace Polycode {
 			return entry;			
 		}		
 		
+		/**
+		* Adds an empty child entry with a boolean value.
+		* @param name Lookup key for the object entry.
+		* @param val Boolean to set as value in the object entry.
+		* @return The added object entry.
+		*/								
 		ObjectEntry *addChild(String name, bool val) {
 			ObjectEntry *entry = new ObjectEntry();
 			entry->type = ObjectEntry::BOOL_ENTRY;			
@@ -77,23 +159,55 @@ namespace Polycode {
 		static const int ARRAY_ENTRY = 3;
 		static const int STRING_ENTRY = 4;	
 		static const int CONTAINER_ENTRY = 5;	
-		
+
+		/**
+		* Accesses an object entry as an array by an integer lookup.
+		* @param index Lookup index to return value for.
+		* @return Object entry corresponding to the lookup index or NULL if one doesn't exist.
+		*/		
 		inline ObjectEntry *operator [] ( int index) { return children[index];}
+		
+		/**
+		* Accesses an object entry by a string lookup and returns the corresponding object entry.
+		* @param key Lookup key to return value for.
+		* @return Object entry corresponding to the string value or NULL if one doesn't exist.
+		*/
 		inline ObjectEntry *operator [] ( String key) { for(int i=0; i < children.size(); i++) { if(children[i]->name == key) { return children[i]; } } return NULL; }		
 		
 		vector<ObjectEntry*> children;		
 	};
 	
+	/**
+	* Basic dictionary data object. Objects can store organized data and save and load it from disk. An object contains a hierarchy of ObjectEntry classes which hold the actual data.
+	*/
+	
 	class _PolyExport Object {
 	public:
+		/**
+		* Default constructor
+		*/	
 		Object();
 		~Object();
 		
+		/**
+		* Loads data from XML file into the object. 
+		* @param fileName Path to the XML file to load.
+		* @return Returns true is succesful, false if otherwise.
+		*/		
 		bool loadFromXML(String fileName);
+		
+		/**
+		* Saves the object to an XML file.
+		* @param fileName Path to the XML file to save to.
+		*/				
 		void saveToXML(String fileName);
+		
 		void createFromXMLElement(TiXmlElement *element, ObjectEntry *entry);
 		TiXmlElement *createElementFromObjectEntry(ObjectEntry *entry);
 		
+		/**
+		* Root object entry.
+		*/
 		ObjectEntry root;
 		
 	};

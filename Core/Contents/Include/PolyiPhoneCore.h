@@ -33,7 +33,7 @@ namespace Polycode {
 		int mouseX;
 		int mouseY;
 		
-		TAUKey keyCode;
+		PolyKEY keyCode;
 		wchar_t unicodeChar;
 		
 		char mouseButton;

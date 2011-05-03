@@ -3,7 +3,7 @@
  *  Poly
  *
  *  Created by Ivan Safrin on 3/13/08.
- *  Copyright 2008 __MyCompanyName__. All rights reserved.
+ *  Copyright 2008 Ivan Safrin. All rights reserved.
  *
  */
 
@@ -48,11 +48,11 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		virtual void onMouseWheelUp(Number x, Number y) {}
 		virtual void onMouseWheelDown(Number x, Number y) {}
 	
-		void _onKeyDown(TAUKey key, wchar_t charCode);	
-		void _onKeyUp(TAUKey key, wchar_t charCode);	
+		void _onKeyDown(PolyKEY key, wchar_t charCode);	
+		void _onKeyUp(PolyKEY key, wchar_t charCode);	
 		
-		virtual void onKeyDown(TAUKey key, wchar_t charCode){}
-		virtual void onKeyUp(TAUKey key, wchar_t charCode){}
+		virtual void onKeyDown(PolyKEY key, wchar_t charCode){}
+		virtual void onKeyUp(PolyKEY key, wchar_t charCode){}
 		
 		bool hitTest(Number x, Number y);		
 	

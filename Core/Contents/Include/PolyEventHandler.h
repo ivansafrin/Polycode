@@ -3,7 +3,7 @@
  *  Poly
  *
  *  Created by Ivan Safrin on 3/28/08.
- *  Copyright 2008 __MyCompanyName__. All rights reserved.
+ *  Copyright 2008 Ivan Safrin. All rights reserved.
  *
  */
 
@@ -21,8 +21,14 @@
 
 namespace Polycode {
 
+	/**
+	* Can handle events from EventDispatcher classes.
+	*/
 	class _PolyExport EventHandler {
 		public:
+			/**
+			* Default constructor
+			*/
 			EventHandler();
 			~EventHandler();
 
@@ -31,6 +37,11 @@ namespace Polycode {
 #endif
 
 		void secondaryHandler(Event *event);		
+		
+		/** 
+		* This method gets called by an EventDispatcher that the handler is listening to if the dispatching event's code matches the code that handler is listening for. Typically, you subclass EventHandler and implement the handleEvent method to handle specific events.
+		* @see EventDispatcher
+		*/
 		virtual void handleEvent(Event *event){}
 			
 		private:

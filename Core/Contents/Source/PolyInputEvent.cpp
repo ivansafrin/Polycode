@@ -3,7 +3,7 @@
  *  Poly
  *
  *  Created by Ivan Safrin on 3/28/08.
- *  Copyright 2008 __MyCompanyName__. All rights reserved.
+ *  Copyright 2008 Ivan Safrin. All rights reserved.
  *
  */
 
@@ -18,14 +18,14 @@ InputEvent::InputEvent(Vector2 mousePosition, int timestamp) : Event() {
 	eventType = "InputEvent";
 }
 
-InputEvent::InputEvent(TAUKey key, wchar_t charCode, int timestamp) : Event() {
+InputEvent::InputEvent(PolyKEY key, wchar_t charCode, int timestamp) : Event() {
 	this->key = key;
 	this->charCode = charCode;
 	this->timestamp = timestamp;
 }
 
 /*
-InputEvent::InputEvent(TAUKey key, int timestamp)  : Event() {
+InputEvent::InputEvent(PolyKEY key, int timestamp)  : Event() {
 	this->key = key;
 	this->timestamp = timestamp;	
 }

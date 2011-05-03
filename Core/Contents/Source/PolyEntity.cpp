@@ -3,7 +3,7 @@
  *  Poly
  *
  *  Created by Ivan Safrin on 1/18/09.
- *  Copyright 2009 __MyCompanyName__. All rights reserved.
+ *  Copyright 2009 Ivan Safrin. All rights reserved.
  *
  */
 
@@ -158,10 +158,6 @@ Vector3 Entity::getChildCenter() {
 	return childCenter;
 }
 
-void Entity::setMatrix(Matrix4 matrix) {
-	transformMatrix = matrix;
-	matrixDirty = false;
-}
 
 Matrix4 Entity::buildPositionMatrix() {
 	Matrix4 posMatrix;
@@ -231,7 +227,7 @@ Matrix4 Entity::getConcatenatedRollMatrix() {
 }
 
 void Entity::setMask(Entity *mask) {	
-	mask->setDepthWrite(true);
+	mask->depthWrite = true;
 	mask->depthOnly = true;
 	mask->setPositionZ(0.999);
 	mask->isMask = true;
@@ -245,19 +241,12 @@ void Entity::setMask(Entity *mask) {
 }
 
 void Entity::clearMask() {
-	maskEntity->setDepthWrite(false);
+	maskEntity->depthWrite = false;
 	maskEntity->depthOnly = false;	
 	maskEntity->setPositionZ(0);	
 	maskEntity->enabled = true;
 	maskEntity = NULL;	
 	hasMask = false;	
-}
-
-void Entity::setDepthWrite(bool val) {
-	depthWrite = val;
-	for(int i=0;i<children.size();i++) {
-		children[i]->setDepthWrite(val);
-	}	
 }
 
 void Entity::transformAndRender() {

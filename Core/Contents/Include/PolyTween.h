@@ -3,7 +3,7 @@
  *  Poly
  *
  *  Created by Ivan Safrin on 7/7/08.
- *  Copyright 2008 __MyCompanyName__. All rights reserved.
+ *  Copyright 2008 Ivan Safrin. All rights reserved.
  *
  */
 
@@ -21,8 +21,21 @@ namespace Polycode {
 	
 	class Timer;
 	
+	/**
+	* Tween animation class. This class lets you tween a floating point value over a period of time with different easing types.
+	*/	
 	class _PolyExport Tween : public EventDispatcher {
 	public:
+		
+		/**
+		* Constructor.
+		* @param target Pointer to the Number to tween
+		* @param easeType Easing type. See the static members of this class for the different types of easing you can use.
+		* @param startVal Starting value of the number at tween's start.
+		* @param endVal The value to tween the number to.
+		* @param time The duration of the tween.
+		* @param repeat If true, this tween will repeat over and over.
+		*/
 		Tween(Number *target, int easeType, Number startVal, Number endVal, Number time, bool repeat=false);
 		~Tween();
 		
@@ -31,8 +44,15 @@ namespace Polycode {
 		virtual void updateCustomTween() {}
 		void doOnComplete();
 		
+		/**
+		* Pauses and resumes the tween.
+		* @param pauseVal If true, pauses the tweem, if false, resumes it.
+		*/
 		void Pause(bool pauseVal);
-		
+
+		/**
+		* Resets the tween to starting position.
+		*/		
 		void Reset();
 		
 		static const int EASE_NONE = 0;
@@ -64,6 +84,10 @@ namespace Polycode {
 		bool isComplete();
 		bool repeat;
 		
+		/*
+		* Set a speed multiplier for the tween
+		* @param speed Speed multiplier.
+		*/
 		void setSpeed(Number speed);
 		
 
@@ -83,9 +107,21 @@ namespace Polycode {
 		Timer *tweenTimer;
 	};
 	
+	/**
+	* Tweens a position along a bezier path. This class automatically animates a 3d position over a 3d bezier curve. You can use it for 2d curves as well, of course, just ignore the z!
+	*/
 	class _PolyExport BezierPathTween : public Tween {
 		public:
+			/**
+			* Constructor.
+			* @param target Target vector to animate.
+			* @param curve The curve to animate along.
+			* @param easeType Easing type (@see Tween)
+			* @param time The duration of the tween.
+			* @param repeat If true, this tween will repeat over and over.
+			*/
 			BezierPathTween(Vector3 *target, BezierCurve *curve, int easeType, Number time, bool repeat=false);
+			
 			~BezierPathTween();
 			void updateCustomTween();
 

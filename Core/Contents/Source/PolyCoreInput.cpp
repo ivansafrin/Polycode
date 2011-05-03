@@ -3,7 +3,7 @@
  *  Poly
  *
  *  Created by Ivan Safrin on 3/27/08.
- *  Copyright 2008 __MyCompanyName__. All rights reserved.
+ *  Copyright 2008 Ivan Safrin. All rights reserved.
  *
  */
 
@@ -68,14 +68,14 @@ namespace Polycode {
 		return mousePosition;
 	}
 	
-	bool CoreInput::getKeyState(TAUKey keyCode) {
+	bool CoreInput::getKeyState(PolyKEY keyCode) {
 		if(keyCode < 512)
 			return keyboardState[keyCode];
 		else
 			return false;
 	}
 	
-	void CoreInput::setKeyState(TAUKey keyCode, wchar_t code, bool newState, int ticks) {
+	void CoreInput::setKeyState(PolyKEY keyCode, wchar_t code, bool newState, int ticks) {
 		InputEvent *evt = new InputEvent(keyCode, code, ticks);
 		if(keyCode < 512)
 			keyboardState[keyCode] = newState;

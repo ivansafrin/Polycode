@@ -3,7 +3,7 @@
  *  Poly
  *
  *  Created by Ivan Safrin on 9/4/08.
- *  Copyright 2008 __MyCompanyName__. All rights reserved.
+ *  Copyright 2008 Ivan Safrin. All rights reserved.
  *
  */
 
@@ -47,7 +47,7 @@ void Skeleton::enableBoneLabels(String labelFont, Number size, Number scale, Col
 	SceneLabel *label = new SceneLabel(labelFont, "Skeleton", size, scale, Label::ANTIALIAS_FULL);
 	label->setColor(labelColor);
 	label->billboardMode = true;
-	label->setDepthWrite(false);
+	label->depthWrite = false;
 	addEntity(label);
 	
 }

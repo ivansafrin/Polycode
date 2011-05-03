@@ -3,7 +3,7 @@
  *  Poly
  *
  *  Created by Ivan Safrin on 7/18/08.
- *  Copyright 2008 __MyCompanyName__. All rights reserved.
+ *  Copyright 2008 Ivan Safrin. All rights reserved.
  *
  */
 
@@ -161,7 +161,7 @@ void ParticleEmitter::setAlphaTest(bool val) {
 
 void ParticleEmitter::setDepthWrite(bool val) {
 	for(int i=0;i < particles.size(); i++) {
-		particles[i]->particleBody->setDepthWrite(val);
+		particles[i]->particleBody->depthWrite = val;
 	}	
 }
 

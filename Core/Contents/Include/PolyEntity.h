@@ -1,13 +1,24 @@
 /*
- *  PolyEntity.h
- *  Poly
- *
- *  Created by Ivan Safrin on 1/18/09.
- *  Copyright 2009 __MyCompanyName__. All rights reserved.
- *
+ Copyright (C) 2011 by Ivan Safrin
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
  */
-
-// @package BasicTypes
 
 #pragma once
 #include "PolyString.h"
@@ -22,146 +33,537 @@
 using std::vector;
 
 namespace Polycode {
-	
-	
+
 	class _PolyExport EntityProp {
 	public:
 		String propName;
 		String propValue;		
 	};	
 
+	/**
+	* Base class for both 2D and 3D objects in Polycode. It provides position and color transformations as well as hierarchy for all Polycode objects.
+	*/
 	class _PolyExport Entity {
 		public:
 			Entity();
 			~Entity();
 
+			/**
+			* Main render method. Override this to do your own drawing.
+			*/
 			virtual void Render(){};
-			virtual void Update(){};
-			virtual void transformAndRender();		
-		
-			void setMatrix(Matrix4 matrix);
-			void rebuildTransformMatrix();
-		
-			void addEntity(Entity *newChild);
-			void addChild(Entity *newChild);
-			void removeChild(Entity *entityToRemove);
-		
-			void updateEntityMatrix();
-			void renderChildren();		
+			/**
+			* Main update method. Override this to do your updates before the render cycle.
+			*/			
+			virtual void Update(){};			
 
+			virtual void transformAndRender();		
+
+			void renderChildren();					
+		
+		
+			// ----------------------------------------------------------------------------------------------------------------
+			/** @name Matrix operations.
+			*  These methods operate directly on the entity's matrix.
+			*/
+			//@{
+									
+			/** 
+			* Sets the state of the dirty matrix flag. The dirty matrix flag gets set automatically when a transformation is applied to the entity and the transfrom matrix needs to be rebuilt. This method is provided to manually override that flag.
+			@param val New value of the dirty matrix flag.
+			*/
+			void dirtyMatrix(bool val);
+			
+			/**
+			* Forces the transformation matrix to be rebuilt.
+			*/
+			void rebuildTransformMatrix();
+
+			/**
+			* Forces the matrix to be rebuilt if the matrix flag is dirty. This is also called on all of the entity's children.
+			*/
+			void updateEntityMatrix();
+			
+			/**
+			* Returns the entity's transform matrix.
+			@return Transform matrix.
+			*/
+			Matrix4 getTransformMatrix();
+			
+			/** 
+			* Returns the entity's matrix multiplied by its parent's concatenated matrix. This, in effect, returns the entity's actual world transformation.
+			@return Entity's concatenated matrix.
+			*/
+			Matrix4 getConcatenatedMatrix();
+			
+			/** 
+			* Returns Same as getConcatenatedMatrix(), but contains only roll information for rotation. Used internally for billboards.
+			@return Entity's concatenated roll matrix.
+			@see getConcatenatedMatrix()
+			*/			
+			Matrix4 getConcatenatedRollMatrix();				
+			
+			/**
+			* Sets all of the individual transform properties from the matrix and rebuilds the transform matrix.
+			@param matrix 4x4 transform matrix to apply.
+			*/			
+			void setTransformByMatrix(Matrix4 matrix);	
+			
+			/**
+			* Sets the transform matrix directly, without setting all of the individual transfrom properties of the entity.
+			@param matrix 4x4 transform matrix to apply.
+			*/						
+			void setTransformByMatrixPure(Matrix4 matrix);	
+			
+			/** Returns the matrix for the entity looking at a location based on a location and an up vector.
+			* @param loc Location to look at.
+			* @param upVector Up vector.
+			* @return The resulting lookAt matrix.
+			*/
+			Matrix4 getLookAtMatrix(const Vector3 &loc, const Vector3 &upVector = Vector3(0,1,0));
+
+			
+			//@}
+			// ----------------------------------------------------------------------------------------------------------------
+			
+			/** @name Hierarchy operations.
+			*  These methods add and remove entities to and from each other.
+			*/
+			//@{			
+			
+			/**
+			* @see addChild()
+			*/		
+			void addEntity(Entity *newChild);
+
+			/**
+			* Adds another entity as a child. The children inherit the parent's transforms.
+			@param newChild The entity to be added.
+			*/					
+			void addChild(Entity *newChild);
+			
+			/**
+			* Removes an entity from the entity's children.
+			@param entityToRemove Entity to be removed.
+			*/
+			void removeChild(Entity *entityToRemove);
+
+			/**
+			* Manually sets the entity's parent. This method does not add the entity to the parent and should not be called manually.
+			@param entity Parent entity.
+			*/		
+			void setParentEntity(Entity *entity);
+			
+			/** 
+			* Returns the parent entity of the entity.
+			@return Parent entity of this entity.
+			*/
+			Entity *getParentEntity();
+				
+			//@}
+			// ----------------------------------------------------------------------------------------------------------------
+				
+
+			/** @name Transform operations.
+			*  These methods apply various transformations to the entity.
+			*/
+			//@{			
+
+			/**
+			* Returns the entity's position.
+			@return Entity's position as a vector.
+			*/			
 			Vector3 getPosition();
+			
+			/**
+			* Returns the entity's position added to the combined position of its parent. This method is here only for convenience of calculating certain properties and should not be used to get an entity's actual position in the world. To get the actual world position of the entity, use the entity's concatendated matrix.
+			@see getConcatenatedMatrix()
+			@return Entity's position as a vector.
+			*/			
+			Vector3 getCombinedPosition();			
+
+			/**
+			* Sets the entity's position.
+			@param x X-axis value.
+			@param y Y-axis value.
+			@param z Z-axis value.						
+			*/						
 			void setPosition(Number x, Number y, Number z);
 			
+			/**
+			* Sets the entity's position with a vector.
+			@param posVec New position as a vector.
+			*/								
+			void setPosition(Vector3 posVec);
+			
+			/**
+			* Returns the entity's position on the X axis.
+			@param x X-axis value.
+			*/									
 			void setPositionX(Number x);
+
+			/**
+			* Returns the entity's position on the Y axis.
+			@param y Y-axis value.
+			*/												
 			void setPositionY(Number y);
+				
+			/**
+			* Translates the entity relative to its current position.
+			@param x X-axis value.
+			@param y Y-axis value.
+			@param z Z-axis value.						
+			*/						
+			void Translate(Number x, Number y, Number z);
+			
+			/**
+			* Translates the entity relative to its current position with a vector.
+			@param tVec New position as a vector.
+			*/											
+			void Translate(Vector3 tVec);
+
+			/**
+			* Returns the entity's position on the Z axis.
+			@param z Z-axis value.
+			*/															
 			void setPositionZ(Number z);
 
+			/**
+			* Returns the entity's scale on the X axis.
+			@param x X-axis scale value.
+			*/												
 			void setScaleX(Number x);
+			
+			/**
+			* Returns the entity's scale on the Y axis.
+			@param y Y-axis scale value.
+			*/															
 			void setScaleY(Number y);
+			
+			/**
+			* Returns the entity's scale on the Z axis.
+			@param z Z-axis scale value.
+			*/																		
 			void setScaleZ(Number z);
-		
-		
-			void setPosition(Vector3 posVec);
-		
-			void Translate(Number x, Number y, Number z);
-			void Translate(Vector3 tVec);
+
+			
+			/**
+			* Scales the entity relative to its current scale.
+			@param x X-axis value.
+			@param y Y-axis value.
+			@param z Z-axis value.						
+			*/									
 			void Scale(Number x, Number y, Number z);
+			
+			/**
+			* Sets the entity's scale.
+			@param x X-axis value.
+			@param y Y-axis value.
+			@param z Z-axis value.						
+			*/									
 			void setScale(Number x, Number y, Number z);
+			
+			/**
+			* Returns the entity's scale multiplied by its parent's compound scale.
+			* @return Compound scale as vector.
+			*/			
+			Vector3 getCompoundScale();			
+			
+			/**
+			* Returns the entity's scale.
+			@return Entity's scale as a vector.
+			*/						
 			Vector3 getScale();		
 		
-			Vector3 getCombinedPosition();
+			/**
+			* Returns the entity's pitch combined with the combined pitch of its parent.
+			@return Entity's combined pitch.
+			*/									
 			Number getCombinedPitch();
+			
+			/**
+			* Returns the entity's yaw combined with the combined yaw of its parent.
+			@return Entity's combined yaw.
+			*/									
 			Number getCombinedYaw();
+			
+			/**
+			* Returns the entity's roll combined with the combined roll of its parent.
+			@return Entity's combined roll.
+			*/												
 			Number getCombinedRoll();
-			void setParentEntity(Entity *entity);
-			Entity *getParentEntity();
-			void rebuildRotation();
-			void dirtyMatrix(bool val);
-		
+			
+			/**
+			* Forces the rotation quaternion to be rebuilt.
+			*/
+			void rebuildRotation();					
+			
+			/**
+			* Sets the pitch rotation of the entity.
+			* @param pitch New pitch value in degrees.
+			*/								
 			void setPitch(Number pitch);
+			
+			/**
+			* Sets the yaw rotation of the entity.
+			* @param yaw New yaw value in degrees.
+			*/											
 			void setYaw(Number yaw);
+			
+			/**
+			* Sets the roll rotation of the entity.
+			* @param roll New roll value in degrees.
+			*/														
 			void setRoll(Number roll);
+			
+			/**
+			* Rolls the entity relative to its current roll.
+			* @param roll Roll value in degrees.
+			*/																	
 			void Roll(Number roll);
-			void Yaw(Number roll);
-			void Pitch(Number roll);
+			
+			/**
+			* Yaws the entity relative to its current yaw.
+			* @param yaw Yaw value in degrees.
+			*/																				
+			void Yaw(Number yaw);
+			
+			/**
+			* Pitches the entity relative to its current pitch.
+			* @param pitch Pitch value in degrees.
+			*/																				
+			void Pitch(Number pitch);
+			
+			/**
+			* Returns the current pitch of the entity.
+			* @return Current pitch value.
+			*/																				
 			Number getPitch();
+			
+			/**
+			* Returns the current yaw of the entity.
+			* @return Current yaw value.
+			*/																							
 			Number getYaw();
+			
+			/**
+			* Returns the current roll of the entity.
+			* @return Current roll value.
+			*/																										
 			Number getRoll();
 		
+			/**
+			* Sets the rotation with quaternion value.
+			* @param Current yaw value.
+			*/																									
 			void setRotationQuat(Number w, Number x, Number y, Number z);
+			
+			/**
+			* Returns the current rotation as a quaternion.
+			* @return Current rotation value.
+			*/																												
 			Quaternion getRotationQuat();
-		
-			Matrix4 getTransformMatrix();
-			Matrix4 getConcatenatedMatrix();		
-			Matrix4 getConcatenatedRollMatrix();		
-		
-			void setTransformByMatrix(Matrix4 matrix);	
-			void setTransformByMatrixPure(Matrix4 matrix);	
-		
-			void setRenderer(Renderer *renderer);
 			
-			Color getCombinedColor();
-			void setColor(Number r, Number g, Number b, Number a);
-			void setColorInt(int r, int g, int b, int a);	
-			void setColor(Color color);
-		
-			void recalculateBBox();
-			Number getBBoxRadius();
-			Number getCompoundBBoxRadius();
-			void setBBoxRadius(Number rad);			
-			void setBlendingMode(int newBlendingMode);		
-			Vector3 getChildCenter();
-		
-			void setDepthWrite(bool val);
-		
-			void doUpdates();
-		
+			/**
+			* Orients the entity towards the specified location with the provided up vector. The up vector determines which side of the entity will be pointing in that direction.
+			* @param loc Location to look at.
+			* @param upVector The up vector.
+			*/																															
 			void lookAt(const Vector3 &loc, const Vector3 &upVector = Vector3(0,1,0));
-			void lookAtEntity(Entity *entity, const Vector3 &upVector = Vector3(0,1,0));		
-			Matrix4 getLookAtMatrix(const Vector3 &loc, const Vector3 &upVector = Vector3(0,1,0));
-		
-			virtual Matrix4 buildPositionMatrix();
-			virtual void adjustMatrixForChildren(){}
 			
+			/**
+			* Orients the entity towards another entity with the provided up vector. The up vector determines which side of the entity will be pointing in that direction.
+			* @param loc Location to look at.
+			* @param upVector The up vector.
+			* @see lookAt()
+			*/																																		
+			void lookAtEntity(Entity *entity, const Vector3 &upVector = Vector3(0,1,0));		
+			
+			/**
+			* Returns the entity's color multiplied by its parent entity's combined color.
+			* @return Entity's combined color.
+			*/
+			Color getCombinedColor();
+			
+			/**
+			* Sets the color of the entity as normalized floating point values.
+			* @param r Red value as a 0-1 floating point number.
+			* @param g Green value as a 0-1 floating point number.
+			* @param b Blue value as a 0-1 floating point number.
+			* @param a Alpha value as a 0-1 floating point number.									
+			*/			
+			void setColor(Number r, Number g, Number b, Number a);
+			
+			/**
+			* Sets the color of the entity as 0-255 integers.
+			* @param r Red value as a 0-255 integer.
+			* @param g Green value as a 0-255 integer.
+			* @param b Blue value as a 0-255 integer.
+			* @param a Alpha value as a 0-255 integer.
+			*/						
+			void setColorInt(int r, int g, int b, int a);	
+			
+			/**
+			* Sets the color of the entity as 0-255 integers.
+			* @param r Red value as a 0-255 integer.
+			* @param g Green value as a 0-255 integer.
+			* @param b Blue value as a 0-255 integer.
+			* @param a Alpha value as a 0-255 integer.
+			*/									
+			void setColor(Color color);
+
+			//@}
+			// ----------------------------------------------------------------------------------------------------------------
+	
+			/** @name Bounding box operations.
+			*  These methods modify the bounding box of the entity. The bounding box is used for culling and collision detection.
+			*/
+			//@{			
+	
+			/**
+			* Recalculates the bounding box of the entity based on its size.
+			*/
+			void recalculateBBox();
+			
+			/**
+			* Returns the bounding box radius.
+			* @return The bounding box radius.
+			*/			
+			Number getBBoxRadius();
+			
+			/**
+			* Returns the entity's bounding box radius compounded from its children's bounding box radii.
+			* @return The compound bounding box radius.
+			*/						
+			Number getCompoundBBoxRadius();
+			
+			/**
+			* Sets the bounding box radius.
+			* @param rad New bounding box radius.
+			*/
+			void setBBoxRadius(Number rad);		
+			
+					
+
+			//@}			
+			// ----------------------------------------------------------------------------------------------------------------
+		
+			/** @name Rendering properties
+			*  Methods and properties affecting the way the entity is rendered.
+			*/
+			//@{			
+		
+			/**
+			* Sets another entity as a mask for this entity (This is not really working properly right now).
+			*/
 			void setMask(Entity *mask);
+			
+			/**
+			* Removes the entity's mask.
+			*/
 			void clearMask();
 		
-			Vector3 getCompoundScale();
-		
+			/**
+			* You can set a custom string identifier for user purposes.
+			*/									
 			String custEntityType;
-			vector <EntityProp> entityProps;				
-		
-			String getEntityProp(String propName);
-		
-			Vector3 bBox;
+								
+			/**
+			* If this flag is true, the entity will always face the camera. False by default.
+			*/						
 			bool billboardMode;			
+			
+			/**
+			* Normally, if billboardMode is on, no rotation is allowed at all. If this flag is also true, you can rotate the entity around the axis pointing to the camera.
+			*/									
 			bool billboardRoll;
+			
+			/**
+			* Normally, translucent textures do not affect the depth buffer, but if this flag is set to true, this entity's alpha channel is written to the depth buffer at a preset threshold. This flag is set to false by default.
+			*/			
 			bool alphaTest;
+			
+			/**
+			* If this flag is set to false, backface culling is disabled when rendering this entity, rendering both sides of each face. Set to true by default.
+			*/
 			bool backfaceCulled;	
 		
+			/**
+			* If this flag is set to true, the entity will render in wireframe. 
+			*/							
 			bool renderWireframe;
-		
+
+			/**
+			* The entity's color.
+			*/					
 			Color color;
+			
+			/**
+			* If this flag is set to false, this entity will not be rendered or updated.
+			*/			
 			bool enabled;
+			
+			/**
+			* If this flag is set to false, this entity will not be rendered.
+			*/
 			bool visible;
 		
+			/** 
+			* If this flag is set to false, this entity will not write to the depth buffer when it's rendered.
+			*/
 			bool depthWrite;		
+			
+			/** 
+			* If this flag is set to false, this entity will not check the depth buffer when it's rendering.
+			*/			
 			bool depthTest;
-		
+			
+			/**
+			* Blending mode for rendering this entity. Possible blending modes are:
+			*	Renderer::BLEND_MODE_NORMAL - Draw entity normally 
+			*   Renderer::BLEND_MODE_LIGHTEN - Add the entity's color on top of the background color.
+			*   Renderer::BLEND_MODE_COLOR - Only change the color of the background.
+			*/
+			int blendingMode;	
+			
+			/**
+			* If set to false, the children of this entity will not multiply by this entity's color. Set to true by default.
+			*/ 
 			bool colorAffectsChildren;		
-			bool depthOnly;
-		
+			
+			/**
+			* If this flag is set to true, this entity will render only into the depth buffer. This, effectively, means that it will be invisible, but still obscuring other entities.
+			*/
+			bool depthOnly;		
+			
+			/**
+			* If this flag is set to true, this entity's transformations will not take into account its parent, making its transforms always relative to 0.
+			*/
+			//@}
+			// ----------------------------------------------------------------------------------------------------------------
+			
+				
+			void setBlendingMode(int newBlendingMode);
+				
+			Vector3 getChildCenter();
+							
+			vector <EntityProp> entityProps;						
+			String getEntityProp(String propName);		
+			
+			void doUpdates();				
+			virtual Matrix4 buildPositionMatrix();
+			virtual void adjustMatrixForChildren(){}
+			void setRenderer(Renderer *renderer);
+						
+			
+			
+			Vector3 bBox;			
 			bool ignoreParentMatrix;
-		
-			// deprecated, remove!
-			bool maskByZbuffer;
-		
 			bool isMask;
 		
 		protected:
 			vector<Entity*> children;
 
-			int blendingMode;
 			Vector3 childCenter;
 			Number bBoxRadius;		
 		

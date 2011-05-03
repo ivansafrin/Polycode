@@ -17,7 +17,7 @@ long getThreadID() {
 	return (long)pthread_self();
 }
 
-CocoaCore::CocoaCore(SubstanceView *view, int xRes, int yRes, bool fullScreen,int aaLevel, int frameRate) : Core(xRes, yRes, fullScreen,aaLevel, frameRate) {	
+CocoaCore::CocoaCore(PolycodeView *view, int xRes, int yRes, bool fullScreen,int aaLevel, int frameRate) : Core(xRes, yRes, fullScreen,aaLevel, frameRate) {	
 	eventMutex = createMutex();
 	
 //	NSLog(@"BUNDLE: %@", [[NSBundle mainBundle] bundlePath]);

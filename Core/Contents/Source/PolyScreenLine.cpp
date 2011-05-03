@@ -3,7 +3,7 @@
  *  Poly
  *
  *  Created by Ivan Safrin on 5/8/08.
- *  Copyright 2008 __MyCompanyName__. All rights reserved.
+ *  Copyright 2008 Ivan Safrin. All rights reserved.
  *
  */
 
