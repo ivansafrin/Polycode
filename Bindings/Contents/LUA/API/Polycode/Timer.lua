@@ -2,37 +2,55 @@ require "Polycode/EventDispatcher"
 
 class "Timer" (EventDispatcher)
 
-function Timer:Timer(triggerMode, msecs)
-	if self.__ptr == nil then
-		self.__ptr = Polycore.Timer(triggerMode, msecs)
+
+
+EVENT_TRIGGER = 0
+
+
+
+
+function Timer:Timer(...)
+	for k,v in pairs(arg) do
+		if type(v) == "table" then
+			if v.__ptr ~= nil then
+				arg[k] = v.__ptr
+			end
+		end
+	end
+	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
+		self.__ptr = Polycore.Timer(unpack(arg))
 	end
 end
 
 function Timer:Pause(paused)
-	return Polycore.Timer_Pause(self.__ptr, paused)
+	local retVal = Polycore.Timer_Pause(self.__ptr, paused)
 end
 
 function Timer:isPaused()
-	return Polycore.Timer_isPaused(self.__ptr)
+	local retVal =  Polycore.Timer_isPaused(self.__ptr)
+	return retVal
 end
 
 function Timer:getTicks()
-	return Polycore.Timer_getTicks(self.__ptr)
+	local retVal =  Polycore.Timer_getTicks(self.__ptr)
+	return retVal
 end
 
 function Timer:Update(ticks)
-	return Polycore.Timer_Update(self.__ptr, ticks)
+	local retVal = Polycore.Timer_Update(self.__ptr, ticks)
 end
 
 function Timer:Reset()
-	return Polycore.Timer_Reset(self.__ptr)
+	local retVal =  Polycore.Timer_Reset(self.__ptr)
 end
 
 function Timer:hasElapsed()
-	return Polycore.Timer_hasElapsed(self.__ptr)
+	local retVal =  Polycore.Timer_hasElapsed(self.__ptr)
+	return retVal
 end
 
 function Timer:getElapsedf()
-	return Polycore.Timer_getElapsedf(self.__ptr)
+	local retVal =  Polycore.Timer_getElapsedf(self.__ptr)
+	return retVal
 end
 

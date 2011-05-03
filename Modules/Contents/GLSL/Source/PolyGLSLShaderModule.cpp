@@ -86,7 +86,7 @@ void GLSLShaderModule::setGLSLAreaLightPositionParameter(Renderer *renderer, GLS
 	if(renderer->getNumAreaLights() > lightIndex) {
 		vector<LightInfo> areaLights = renderer->getAreaLights();			
 		Vector3 lPos(areaLights[lightIndex].position.x,areaLights[lightIndex].position.y,areaLights[lightIndex].position.z);
-		GLfloat LightPosition[] = {lPos.x, lPos.y, lPos.z, 0};		
+		GLfloat LightPosition[] = {lPos.x, lPos.y, lPos.z, 1};		
 		glLightfv (GL_LIGHT0+lightIndex, GL_POSITION, LightPosition); //change the 	
 	} else {
 	}	
@@ -302,6 +302,9 @@ void GLSLShaderModule::updateGLSLParam(Renderer *renderer, GLSLProgramParam &par
 
 bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *material, ShaderBinding *localOptions, unsigned int shaderIndex) {	
 	
+	glPushMatrix();
+	glLoadIdentity();
+	
 	glEnable(GL_TEXTURE_2D);
 		
 	GLSLShader *glslShader = (GLSLShader*)material->getShader(shaderIndex);
@@ -365,6 +368,7 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 	
 
 	 */
+	glPopMatrix();
 }
 
 void GLSLShaderModule::addParamToProgram(GLSLProgram *program,TiXmlNode *node) {

@@ -37,7 +37,6 @@
 		6DFBF3D012A3184E00C43A7D /* PolyFixedShader.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF32012A3184E00C43A7D /* PolyFixedShader.h */; };
 		6DFBF3D112A3184E00C43A7D /* PolyFont.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF32112A3184E00C43A7D /* PolyFont.h */; };
 		6DFBF3D212A3184E00C43A7D /* PolyFontManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF32212A3184E00C43A7D /* PolyFontManager.h */; };
-		6DFBF3D312A3184E00C43A7D /* PolyGenericScene.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF32312A3184E00C43A7D /* PolyGenericScene.h */; };
 		6DFBF3D412A3184E00C43A7D /* PolyGLCubemap.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF32412A3184E00C43A7D /* PolyGLCubemap.h */; };
 		6DFBF3D512A3184E00C43A7D /* PolyGLES1Renderer.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF32512A3184E00C43A7D /* PolyGLES1Renderer.h */; };
 		6DFBF3D612A3184E00C43A7D /* PolyGLES1Texture.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF32612A3184E00C43A7D /* PolyGLES1Texture.h */; };
@@ -121,7 +120,6 @@
 		6DFBF42612A3184E00C43A7D /* PolyFixedShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF37712A3184E00C43A7D /* PolyFixedShader.cpp */; };
 		6DFBF42712A3184E00C43A7D /* PolyFont.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF37812A3184E00C43A7D /* PolyFont.cpp */; };
 		6DFBF42812A3184E00C43A7D /* PolyFontManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF37912A3184E00C43A7D /* PolyFontManager.cpp */; };
-		6DFBF42912A3184E00C43A7D /* PolyGenericScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF37A12A3184E00C43A7D /* PolyGenericScene.cpp */; };
 		6DFBF42A12A3184E00C43A7D /* PolyGLCubemap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF37B12A3184E00C43A7D /* PolyGLCubemap.cpp */; };
 		6DFBF42D12A3184E00C43A7D /* PolyGLRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF37E12A3184E00C43A7D /* PolyGLRenderer.cpp */; };
 		6DFBF42E12A3184E00C43A7D /* PolyGLTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFBF37F12A3184E00C43A7D /* PolyGLTexture.cpp */; };
@@ -218,7 +216,6 @@
 		6DFBF32012A3184E00C43A7D /* PolyFixedShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyFixedShader.h; sourceTree = "<group>"; };
 		6DFBF32112A3184E00C43A7D /* PolyFont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyFont.h; sourceTree = "<group>"; };
 		6DFBF32212A3184E00C43A7D /* PolyFontManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyFontManager.h; sourceTree = "<group>"; };
-		6DFBF32312A3184E00C43A7D /* PolyGenericScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyGenericScene.h; sourceTree = "<group>"; };
 		6DFBF32412A3184E00C43A7D /* PolyGLCubemap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyGLCubemap.h; sourceTree = "<group>"; };
 		6DFBF32512A3184E00C43A7D /* PolyGLES1Renderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyGLES1Renderer.h; sourceTree = "<group>"; };
 		6DFBF32612A3184E00C43A7D /* PolyGLES1Texture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyGLES1Texture.h; sourceTree = "<group>"; };
@@ -303,7 +300,6 @@
 		6DFBF37712A3184E00C43A7D /* PolyFixedShader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyFixedShader.cpp; sourceTree = "<group>"; };
 		6DFBF37812A3184E00C43A7D /* PolyFont.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyFont.cpp; sourceTree = "<group>"; };
 		6DFBF37912A3184E00C43A7D /* PolyFontManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyFontManager.cpp; sourceTree = "<group>"; };
-		6DFBF37A12A3184E00C43A7D /* PolyGenericScene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyGenericScene.cpp; sourceTree = "<group>"; };
 		6DFBF37B12A3184E00C43A7D /* PolyGLCubemap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyGLCubemap.cpp; sourceTree = "<group>"; };
 		6DFBF37C12A3184E00C43A7D /* PolyGLES1Renderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyGLES1Renderer.cpp; sourceTree = "<group>"; };
 		6DFBF37D12A3184E00C43A7D /* PolyGLES1Texture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyGLES1Texture.cpp; sourceTree = "<group>"; };
@@ -449,7 +445,6 @@
 				6DFBF32012A3184E00C43A7D /* PolyFixedShader.h */,
 				6DFBF32112A3184E00C43A7D /* PolyFont.h */,
 				6DFBF32212A3184E00C43A7D /* PolyFontManager.h */,
-				6DFBF32312A3184E00C43A7D /* PolyGenericScene.h */,
 				6DFBF32412A3184E00C43A7D /* PolyGLCubemap.h */,
 				6DFBF32512A3184E00C43A7D /* PolyGLES1Renderer.h */,
 				6DFBF32612A3184E00C43A7D /* PolyGLES1Texture.h */,
@@ -546,7 +541,6 @@
 				6DFBF37712A3184E00C43A7D /* PolyFixedShader.cpp */,
 				6DFBF37812A3184E00C43A7D /* PolyFont.cpp */,
 				6DFBF37912A3184E00C43A7D /* PolyFontManager.cpp */,
-				6DFBF37A12A3184E00C43A7D /* PolyGenericScene.cpp */,
 				6DFBF37B12A3184E00C43A7D /* PolyGLCubemap.cpp */,
 				6DFBF37C12A3184E00C43A7D /* PolyGLES1Renderer.cpp */,
 				6DFBF37D12A3184E00C43A7D /* PolyGLES1Texture.cpp */,
@@ -652,7 +646,6 @@
 				6DFBF3D012A3184E00C43A7D /* PolyFixedShader.h in Headers */,
 				6DFBF3D112A3184E00C43A7D /* PolyFont.h in Headers */,
 				6DFBF3D212A3184E00C43A7D /* PolyFontManager.h in Headers */,
-				6DFBF3D312A3184E00C43A7D /* PolyGenericScene.h in Headers */,
 				6DFBF3D412A3184E00C43A7D /* PolyGLCubemap.h in Headers */,
 				6DFBF3D512A3184E00C43A7D /* PolyGLES1Renderer.h in Headers */,
 				6DFBF3D612A3184E00C43A7D /* PolyGLES1Texture.h in Headers */,
@@ -793,7 +786,6 @@
 				6DFBF42612A3184E00C43A7D /* PolyFixedShader.cpp in Sources */,
 				6DFBF42712A3184E00C43A7D /* PolyFont.cpp in Sources */,
 				6DFBF42812A3184E00C43A7D /* PolyFontManager.cpp in Sources */,
-				6DFBF42912A3184E00C43A7D /* PolyGenericScene.cpp in Sources */,
 				6DFBF42A12A3184E00C43A7D /* PolyGLCubemap.cpp in Sources */,
 				6DFBF42D12A3184E00C43A7D /* PolyGLRenderer.cpp in Sources */,
 				6DFBF42E12A3184E00C43A7D /* PolyGLTexture.cpp in Sources */,

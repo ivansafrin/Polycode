@@ -136,6 +136,7 @@ namespace Polycode {
 			return entry;			
 		}		
 		
+
 		/**
 		* Adds an empty child entry with a boolean value.
 		* @param name Lookup key for the object entry.
@@ -151,6 +152,12 @@ namespace Polycode {
 			length = children.size();			
 			return entry;			
 		}
+		
+		ObjectEntry *addChild(ObjectEntry *entry) {
+			children.push_back(entry);
+			length = children.size();			
+			return entry;			
+		}		
 		
 		
 		static const int FLOAT_ENTRY = 0;		

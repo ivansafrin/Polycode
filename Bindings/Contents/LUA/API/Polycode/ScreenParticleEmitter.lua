@@ -2,21 +2,41 @@ require "Polycode/ScreenEntity"
 
 class "ScreenParticleEmitter" (ScreenEntity)
 
-function ScreenParticleEmitter:ScreenParticleEmitter(imageFile, particleMesh, emitter, particleParentScreen, particleType, emitterType, lifespan, numParticles, direction, gravity, deviation)
-	if self.__ptr == nil then
-		self.__ptr = Polycore.ScreenParticleEmitter(imageFile, particleMesh, emitter, particleParentScreen, particleType, emitterType, lifespan, numParticles, direction, gravity, deviation)
+
+
+
+
+
+
+function ScreenParticleEmitter:ScreenParticleEmitter(...)
+	for k,v in pairs(arg) do
+		if type(v) == "table" then
+			if v.__ptr ~= nil then
+				arg[k] = v.__ptr
+			end
+		end
+	end
+	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
+		self.__ptr = Polycore.ScreenParticleEmitter(unpack(arg))
 	end
 end
 
 function ScreenParticleEmitter:addParticleBody(particleBody)
-	return Polycore.ScreenParticleEmitter_addParticleBody(self.__ptr, particleBody.__ptr)
+	local retVal = Polycore.ScreenParticleEmitter_addParticleBody(self.__ptr, particleBody.__ptr)
 end
 
 function ScreenParticleEmitter:getBaseMatrix()
-	return Polycore.ScreenParticleEmitter_getBaseMatrix(self.__ptr)
+	local retVal =  Polycore.ScreenParticleEmitter_getBaseMatrix(self.__ptr)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = Matrix4("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 
 function ScreenParticleEmitter:Update()
-	return Polycore.ScreenParticleEmitter_Update(self.__ptr)
+	local retVal =  Polycore.ScreenParticleEmitter_Update(self.__ptr)
 end
 

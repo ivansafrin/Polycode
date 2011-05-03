@@ -2,93 +2,158 @@ require "Polycode/EventDispatcher"
 
 class "Screen" (EventDispatcher)
 
-function Screen:Screen()
-	if self.__ptr == nil then
-		self.__ptr = Polycore.Screen()
+
+
+function Screen:__index__(name)
+	if name == "enabled" then
+		return Polycore.Screen_get_enabled(self.__ptr)
+	end
+end
+
+
+function Screen:__set_callback(name,value)
+	if name == "enabled" then
+		Polycore.Screen_set_enabled(self.__ptr, value)
+		return true
+	end
+	return false
+end
+
+
+function Screen:Screen(...)
+	for k,v in pairs(arg) do
+		if type(v) == "table" then
+			if v.__ptr ~= nil then
+				arg[k] = v.__ptr
+			end
+		end
+	end
+	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
+		self.__ptr = Polycore.Screen(unpack(arg))
 	end
 end
 
 function Screen:addChild(newEntity)
-	return Polycore.Screen_addChild(self.__ptr, newEntity.__ptr)
+	local retVal = Polycore.Screen_addChild(self.__ptr, newEntity.__ptr)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = ScreenEntity("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 
 function Screen:removeChild(entityToRemove)
-	return Polycore.Screen_removeChild(self.__ptr, entityToRemove.__ptr)
+	local retVal = Polycore.Screen_removeChild(self.__ptr, entityToRemove.__ptr)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = ScreenEntity("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 
 function Screen:setScreenOffset(x, y)
-	return Polycore.Screen_setScreenOffset(self.__ptr, x, y)
+	local retVal = Polycore.Screen_setScreenOffset(self.__ptr, x, y)
 end
 
 function Screen:getScreenOffset()
-	return Polycore.Screen_getScreenOffset(self.__ptr)
+	local retVal =  Polycore.Screen_getScreenOffset(self.__ptr)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = Vector2("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 
 function Screen:Shutdown()
-	return Polycore.Screen_Shutdown(self.__ptr)
+	local retVal =  Polycore.Screen_Shutdown(self.__ptr)
 end
 
 function Screen:Update()
-	return Polycore.Screen_Update(self.__ptr)
+	local retVal =  Polycore.Screen_Update(self.__ptr)
 end
 
 function Screen:getEntityAt(x, y)
-	return Polycore.Screen_getEntityAt(self.__ptr, x, y)
+	local retVal = Polycore.Screen_getEntityAt(self.__ptr, x, y)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = ScreenEntity("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 
 function Screen:Render()
-	return Polycore.Screen_Render(self.__ptr)
+	local retVal =  Polycore.Screen_Render(self.__ptr)
 end
 
 function Screen:setRenderer(r_enderer)
-	return Polycore.Screen_setRenderer(self.__ptr, r_enderer.__ptr)
+	local retVal = Polycore.Screen_setRenderer(self.__ptr, r_enderer.__ptr)
 end
 
 function Screen:setNormalizedCoordinates(newVal, yCoordinateSize)
-	return Polycore.Screen_setNormalizedCoordinates(self.__ptr, newVal, yCoordinateSize)
+	local retVal = Polycore.Screen_setNormalizedCoordinates(self.__ptr, newVal, yCoordinateSize)
 end
 
 function Screen:setScreenShader(shaderName)
-	return Polycore.Screen_setScreenShader(self.__ptr, shaderName)
+	local retVal = Polycore.Screen_setScreenShader(self.__ptr, shaderName)
 end
 
 function Screen:handleEvent(event)
-	return Polycore.Screen_handleEvent(self.__ptr, event.__ptr)
+	local retVal = Polycore.Screen_handleEvent(self.__ptr, event.__ptr)
 end
 
 function Screen:getHighestZIndex()
-	return Polycore.Screen_getHighestZIndex(self.__ptr)
+	local retVal =  Polycore.Screen_getHighestZIndex(self.__ptr)
+	return retVal
 end
 
 function Screen:sortChildren()
-	return Polycore.Screen_sortChildren(self.__ptr)
+	local retVal =  Polycore.Screen_sortChildren(self.__ptr)
 end
 
 function Screen:cmpZindex(left, right)
-	return Polycore.Screen_cmpZindex(self.__ptr, left.__ptr, right.__ptr)
+	local retVal = Polycore.Screen_cmpZindex(left.__ptr, right.__ptr)
+	return retVal
 end
 
 function Screen:handleInputEvent(inputEvent)
-	return Polycore.Screen_handleInputEvent(self.__ptr, inputEvent.__ptr)
+	local retVal = Polycore.Screen_handleInputEvent(self.__ptr, inputEvent.__ptr)
 end
 
 function Screen:hasFilterShader()
-	return Polycore.Screen_hasFilterShader(self.__ptr)
+	local retVal =  Polycore.Screen_hasFilterShader(self.__ptr)
+	return retVal
 end
 
 function Screen:drawFilter()
-	return Polycore.Screen_drawFilter(self.__ptr)
+	local retVal =  Polycore.Screen_drawFilter(self.__ptr)
 end
 
 function Screen:usesNormalizedCoordinates()
-	return Polycore.Screen_usesNormalizedCoordinates(self.__ptr)
+	local retVal =  Polycore.Screen_usesNormalizedCoordinates(self.__ptr)
+	return retVal
 end
 
 function Screen:getYCoordinateSize()
-	return Polycore.Screen_getYCoordinateSize(self.__ptr)
+	local retVal =  Polycore.Screen_getYCoordinateSize(self.__ptr)
+	return retVal
 end
 
 function Screen:getRootEntity()
-	return Polycore.Screen_getRootEntity(self.__ptr)
+	local retVal =  Polycore.Screen_getRootEntity(self.__ptr)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = ScreenEntity("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 

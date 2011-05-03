@@ -25,7 +25,7 @@ using namespace std;
 namespace Polycode {
 
 	/**
-	* 2D rendering base. The Screen is the base class for all 2D rendering in Polycode.
+	* 2D rendering base. The Screen is the base class for all 2D rendering in Polycode. Screens are
 	*/	
 	class _PolyExport Screen : public EventDispatcher {
 	public:

@@ -1,46 +1,57 @@
 class "OSBasics"
 
+
+
+
+
+
+
 function OSBasics:open(filename, opts)
-	return Polycore.OSBasics_open(self.__ptr, filename, opts)
+	local retVal = Polycore.OSBasics_open(filename, opts)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = OSFILE("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 
 function OSBasics:close(file)
-	return Polycore.OSBasics_close(self.__ptr, file.__ptr)
+	local retVal = Polycore.OSBasics_close(file.__ptr)
+	return retVal
 end
 
 function OSBasics:read(ptr, size, count, stream)
-	return Polycore.OSBasics_read(self.__ptr, ptr.__ptr, size.__ptr, count.__ptr, stream.__ptr)
+	local retVal = Polycore.OSBasics_read(ptr.__ptr, size.__ptr, count.__ptr, stream.__ptr)
+	return retVal
 end
 
 function OSBasics:write(ptr, size, count, stream)
-	return Polycore.OSBasics_write(self.__ptr, ptr.__ptr, size.__ptr, count.__ptr, stream.__ptr)
+	local retVal = Polycore.OSBasics_write(ptr.__ptr, size.__ptr, count.__ptr, stream.__ptr)
+	return retVal
 end
 
 function OSBasics:seek(stream, offset, origin)
-	return Polycore.OSBasics_seek(self.__ptr, stream.__ptr, offset.__ptr, origin)
+	local retVal = Polycore.OSBasics_seek(stream.__ptr, offset.__ptr, origin)
+	return retVal
 end
 
 function OSBasics:tell(stream)
-	return Polycore.OSBasics_tell(self.__ptr, stream.__ptr)
-end
-
-function OSBasics:parsePhysFSFolder(pathString, showHidden)
-	return Polycore.OSBasics_parsePhysFSFolder(self.__ptr, pathString, showHidden)
-end
-
-function OSBasics:parseFolder(pathString, showHidden)
-	return Polycore.OSBasics_parseFolder(self.__ptr, pathString, showHidden)
+	local retVal = Polycore.OSBasics_tell(stream.__ptr)
+	return retVal
 end
 
 function OSBasics:isFolder(pathString)
-	return Polycore.OSBasics_isFolder(self.__ptr, pathString)
+	local retVal = Polycore.OSBasics_isFolder(pathString)
+	return retVal
 end
 
 function OSBasics:createFolder(pathString)
-	return Polycore.OSBasics_createFolder(self.__ptr, pathString)
+	local retVal = Polycore.OSBasics_createFolder(pathString)
 end
 
 function OSBasics:removeItem(pathString)
-	return Polycore.OSBasics_removeItem(self.__ptr, pathString)
+	local retVal = Polycore.OSBasics_removeItem(pathString)
 end
 

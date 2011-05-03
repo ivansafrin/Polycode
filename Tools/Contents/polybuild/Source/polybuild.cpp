@@ -123,13 +123,13 @@ int main(int argc, char **argv) {
 	
 	if(getArg("--config") == "") {
 		printf("\n\nInput config XML missing. Use --config=path to specify.\n\n");
-		return 0;
+		return 1;
 	}
 
 	
 	if(getArg("--out") == "") {
 		printf("\n\nOutput file not specified. Use --out=outfile.polyapp to specify.\n\n");
-		return 0;		
+		return 1;		
 	}
 
 	char dirPath[4098];
@@ -148,7 +148,7 @@ int main(int argc, char **argv) {
 	Object configFile;
 	if(!configFile.loadFromXML(finalPath)) {
 		printf("Specified config file doesn't exist!\n");
-		return 0;
+		return 1;
 	}
 
 	// start required params
@@ -168,7 +168,7 @@ int main(int argc, char **argv) {
 		entryPoint = configFile.root["entryPoint"]->stringVal;
 	} else {
 		printf("Required parameter: \"entryPoint\" is missing from config file!\n");
-		return 0;		
+		return 1;		
 	}
 
 	if(configFile.root["defaultWidth"]) {
@@ -176,7 +176,7 @@ int main(int argc, char **argv) {
 		defaultWidth = configFile.root["defaultWidth"]->intVal;
 	} else {
 		printf("Required parameter: \"defaultWidth\" is missing from config file!\n");
-		return 0;		
+		return 1;		
 	}
 
 	if(configFile.root["defaultHeight"]) {
@@ -184,7 +184,7 @@ int main(int argc, char **argv) {
 		defaultHeight = configFile.root["defaultHeight"]->intVal;
 	} else {
 		printf("Required parameter: \"defaultHeight\" is missing from config file!\n");
-		return 0;		
+		return 1;		
 	}
 
 	// start optional params
@@ -237,9 +237,29 @@ int main(int argc, char **argv) {
 	color->addChild("red", backgroundColorR);
 	color->addChild("green", backgroundColorG);
 	color->addChild("blue", backgroundColorB);
-	runInfo.saveToXML("runinfo_tmp_zzzz.polyrun");
 
 	addFileToZip(z, entryPoint, entryPoint, false);
+
+	if(configFile.root["packedItems"]) {
+		ObjectEntry *packed = configFile.root["packedItems"];
+		if(packed) {
+			for(int i=0; i < packed->length; i++) {
+				ObjectEntry *entryPath = (*(*packed)[i])["path"];
+				ObjectEntry *entryType = (*(*packed)[i])["type"];
+				if(entryPath && entryType) {
+					if(entryType->stringVal == "folder") {
+						addFolderToZip(z, entryPath->stringVal, entryPath->stringVal, false);
+					} else {
+						addFileToZip(z, entryPath->stringVal, entryPath->stringVal, false);
+					}
+				}
+			}
+		}
+	}
+
+	runInfo.root.addChild(configFile.root["packedItems"]);
+
+	runInfo.saveToXML("runinfo_tmp_zzzz.polyrun");
 	addFileToZip(z, "runinfo_tmp_zzzz.polyrun", "runinfo.polyrun", true);
 
 	//addFolderToZip(z, getArg("--project"), "");
@@ -248,5 +268,5 @@ int main(int argc, char **argv) {
 
 	OSBasics::removeItem("runinfo_tmp_zzzz.polyrun");
 
-	return 1;
+	return 0;
 }

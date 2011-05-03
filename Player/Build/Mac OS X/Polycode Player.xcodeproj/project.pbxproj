@@ -18,11 +18,11 @@
 		6D674A071340FE2D00218B97 /* libvorbisfile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D674A041340FE2D00218B97 /* libvorbisfile.a */; };
 		6D674A081340FE2D00218B97 /* libvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D674A051340FE2D00218B97 /* libvorbis.a */; };
 		6D674A091340FE2D00218B97 /* libogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D674A061340FE2D00218B97 /* libogg.a */; };
+		6D994DC5134D932A0044DD0B /* libPolycodeGLSL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D994DC4134D932A0044DD0B /* libPolycodeGLSL.a */; };
 		6DBAB04B12B6EA4300986D01 /* PolySubstanceView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DBAB04912B6EA4300986D01 /* PolySubstanceView.m */; };
 		6DBAB07E12B6EAAD00986D01 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DBAB07712B6EAAD00986D01 /* libfreetype.a */; };
 		6DBAB07F12B6EAAD00986D01 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DBAB07812B6EAAD00986D01 /* libz.a */; };
 		6DBAB08012B6EAAD00986D01 /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DBAB07912B6EAAD00986D01 /* libpng.a */; };
-		6DBAB08112B6EAAD00986D01 /* libPolycodeUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DBAB07A12B6EAAD00986D01 /* libPolycodeUI.a */; };
 		6DBAB08212B6EAAD00986D01 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DBAB07B12B6EAAD00986D01 /* OpenAL.framework */; };
 		6DBAB08312B6EAAD00986D01 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DBAB07C12B6EAAD00986D01 /* OpenGL.framework */; };
 		6DBAB08412B6EAAD00986D01 /* libPolyCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DBAB07D12B6EAAD00986D01 /* libPolyCore.a */; };
@@ -60,12 +60,12 @@
 		6D674A041340FE2D00218B97 /* libvorbisfile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbisfile.a; path = ../../../Core/Dependencies/libvorbis/libvorbisfile.a; sourceTree = SOURCE_ROOT; };
 		6D674A051340FE2D00218B97 /* libvorbis.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbis.a; path = ../../../Core/Dependencies/libvorbis/libvorbis.a; sourceTree = SOURCE_ROOT; };
 		6D674A061340FE2D00218B97 /* libogg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libogg.a; path = ../../../Core/Dependencies/libogg/libogg.a; sourceTree = SOURCE_ROOT; };
+		6D994DC4134D932A0044DD0B /* libPolycodeGLSL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycodeGLSL.a; path = "../../../Modules/Build/Mac OS X/build/Debug/libPolycodeGLSL.a"; sourceTree = SOURCE_ROOT; };
 		6DBAB04912B6EA4300986D01 /* PolySubstanceView.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; name = PolySubstanceView.m; path = ../../../Core/Contents/Source/PolySubstanceView.m; sourceTree = SOURCE_ROOT; };
 		6DBAB04A12B6EA4300986D01 /* PolySubstanceView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolySubstanceView.h; path = ../../../Core/Contents/Include/PolySubstanceView.h; sourceTree = SOURCE_ROOT; };
 		6DBAB07712B6EAAD00986D01 /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = ../../../Core/Dependencies/freetype/libfreetype.a; sourceTree = SOURCE_ROOT; };
 		6DBAB07812B6EAAD00986D01 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = ../../../Core/Dependencies/zlib/libz.a; sourceTree = SOURCE_ROOT; };
 		6DBAB07912B6EAAD00986D01 /* libpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng.a; path = ../../../Core/Dependencies/libpng/libpng.a; sourceTree = SOURCE_ROOT; };
-		6DBAB07A12B6EAAD00986D01 /* libPolycodeUI.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycodeUI.a; path = "../../../Modules/Build/Mac OS X/build/Debug/libPolycodeUI.a"; sourceTree = SOURCE_ROOT; };
 		6DBAB07B12B6EAAD00986D01 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		6DBAB07C12B6EAAD00986D01 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		6DBAB07D12B6EAAD00986D01 /* libPolyCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolyCore.a; path = "../../../Core/Build/Mac OS X/build/Debug/libPolyCore.a"; sourceTree = SOURCE_ROOT; };
@@ -88,7 +88,6 @@
 				6DBAB07E12B6EAAD00986D01 /* libfreetype.a in Frameworks */,
 				6DBAB07F12B6EAAD00986D01 /* libz.a in Frameworks */,
 				6DBAB08012B6EAAD00986D01 /* libpng.a in Frameworks */,
-				6DBAB08112B6EAAD00986D01 /* libPolycodeUI.a in Frameworks */,
 				6DBAB08212B6EAAD00986D01 /* OpenAL.framework in Frameworks */,
 				6DBAB08312B6EAAD00986D01 /* OpenGL.framework in Frameworks */,
 				6DBAB08412B6EAAD00986D01 /* libPolyCore.a in Frameworks */,
@@ -100,6 +99,7 @@
 				6D674A071340FE2D00218B97 /* libvorbisfile.a in Frameworks */,
 				6D674A081340FE2D00218B97 /* libvorbis.a in Frameworks */,
 				6D674A091340FE2D00218B97 /* libogg.a in Frameworks */,
+				6D994DC5134D932A0044DD0B /* libPolycodeGLSL.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -109,6 +109,7 @@
 		1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6D994DC4134D932A0044DD0B /* libPolycodeGLSL.a */,
 				6D674A021340FE2700218B97 /* libogg.0.dylib */,
 				6D674A041340FE2D00218B97 /* libvorbisfile.a */,
 				6D674A051340FE2D00218B97 /* libvorbis.a */,
@@ -120,7 +121,6 @@
 				6DBAB07712B6EAAD00986D01 /* libfreetype.a */,
 				6DBAB07812B6EAAD00986D01 /* libz.a */,
 				6DBAB07912B6EAAD00986D01 /* libpng.a */,
-				6DBAB07A12B6EAAD00986D01 /* libPolycodeUI.a */,
 				6DBAB07B12B6EAAD00986D01 /* OpenAL.framework */,
 				6DBAB07C12B6EAAD00986D01 /* OpenGL.framework */,
 				6DBAB07D12B6EAAD00986D01 /* libPolyCore.a */,
@@ -415,6 +415,7 @@
 					../../../Core/Dependencies/freetype/include,
 					../../../Core/Dependencies/libpng,
 					../../../Core/Dependencies/physfs,
+					../../../Modules/Contents/GLSL/Include,
 					../../../Modules/Contents/UI/Include,
 				);
 				ONLY_ACTIVE_ARCH = YES;

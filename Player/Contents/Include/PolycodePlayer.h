@@ -14,6 +14,7 @@
 
 #include "Polycode.h"
 #include "PolycodeLUA.h"
+#include "PolyGLSLShaderModule.h"
 
 extern "C" {	
 #include <stdio.h>

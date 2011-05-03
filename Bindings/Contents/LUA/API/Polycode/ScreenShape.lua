@@ -2,37 +2,71 @@ require "Polycode/ScreenMesh"
 
 class "ScreenShape" (ScreenMesh)
 
-function ScreenShape:ScreenShape(shapeType, option1, option2, option3, option4)
-	if self.__ptr == nil then
-		self.__ptr = Polycore.ScreenShape(shapeType, option1, option2, option3, option4)
+
+
+SHAPE_RECT = 1
+SHAPE_CIRCLE = 2
+SHAPE_CIRCLE_OUTLINE = 3
+SHAPE_CUSTOM = 4
+function ScreenShape:__index__(name)
+	if name == "strokeEnabled" then
+		return Polycore.ScreenShape_get_strokeEnabled(self.__ptr)
+	elseif name == "lineSmooth" then
+		return Polycore.ScreenShape_get_lineSmooth(self.__ptr)
+	end
+end
+
+
+function ScreenShape:__set_callback(name,value)
+	if name == "strokeEnabled" then
+		Polycore.ScreenShape_set_strokeEnabled(self.__ptr, value)
+		return true
+	elseif name == "lineSmooth" then
+		Polycore.ScreenShape_set_lineSmooth(self.__ptr, value)
+		return true
+	end
+	return false
+end
+
+
+function ScreenShape:ScreenShape(...)
+	for k,v in pairs(arg) do
+		if type(v) == "table" then
+			if v.__ptr ~= nil then
+				arg[k] = v.__ptr
+			end
+		end
+	end
+	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
+		self.__ptr = Polycore.ScreenShape(unpack(arg))
 	end
 end
 
 function ScreenShape:Render()
-	return Polycore.ScreenShape_Render(self.__ptr)
+	local retVal =  Polycore.ScreenShape_Render(self.__ptr)
 end
 
 function ScreenShape:setStrokeColor(r, g, b, a)
-	return Polycore.ScreenShape_setStrokeColor(self.__ptr, r, g, b, a)
+	local retVal = Polycore.ScreenShape_setStrokeColor(self.__ptr, r, g, b, a)
 end
 
 function ScreenShape:setStrokeWidth(width)
-	return Polycore.ScreenShape_setStrokeWidth(self.__ptr, width)
+	local retVal = Polycore.ScreenShape_setStrokeWidth(self.__ptr, width)
 end
 
 function ScreenShape:setGradient(r1, g1, b1, a1, r2, g2, b2, a2)
-	return Polycore.ScreenShape_setGradient(self.__ptr, r1, g1, b1, a1, r2, g2, b2, a2)
+	local retVal = Polycore.ScreenShape_setGradient(self.__ptr, r1, g1, b1, a1, r2, g2, b2, a2)
 end
 
 function ScreenShape:clearGradient()
-	return Polycore.ScreenShape_clearGradient(self.__ptr)
+	local retVal =  Polycore.ScreenShape_clearGradient(self.__ptr)
 end
 
 function ScreenShape:setShapeSize(newWidth, newHeight)
-	return Polycore.ScreenShape_setShapeSize(self.__ptr, newWidth, newHeight)
+	local retVal = Polycore.ScreenShape_setShapeSize(self.__ptr, newWidth, newHeight)
 end
 
 function ScreenShape:addShapePoint(x, y)
-	return Polycore.ScreenShape_addShapePoint(self.__ptr, x, y)
+	local retVal = Polycore.ScreenShape_addShapePoint(self.__ptr, x, y)
 end
 

@@ -23,8 +23,8 @@ namespace Polycode {
 	class _PolyExport Vector3 {
 		public:
 		
+			Vector3(Number x,Number y,Number z);		
 			Vector3();
-			Vector3(Number x,Number y,Number z);
 			virtual ~Vector3();
 
 			void set(Number x, Number y, Number z);

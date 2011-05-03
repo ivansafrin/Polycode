@@ -218,7 +218,7 @@ extern "C" {
 
 			}
 		}
-		Logger::log("Done shutting down Lua\n");		
+
 	}
 }
 
@@ -326,6 +326,25 @@ void PolycodePlayer::loadFile(const char *fileName) {
 	
 	Logger::log("Core created...\n");
 	
+	CoreServices::getInstance()->installModule(new GLSLShaderModule());	
+	
+	
+	if(configFile.root["packedItems"]) {
+		ObjectEntry *packed = configFile.root["packedItems"];
+		if(packed) {
+			for(int i=0; i < packed->length; i++) {
+				ObjectEntry *entryIsResource = (*(*packed)[i])["isResource"];				
+				ObjectEntry *entryPath = (*(*packed)[i])["path"];
+				if(entryIsResource && entryPath) {
+					if(entryIsResource->boolVal == true) {
+						CoreServices::getInstance()->getResourceManager()->addDirResource(entryPath->stringVal, true);
+					}
+				}
+			}
+		}
+	}
+	
+	
 	core->setUserPointer(this);
 	//core->addEventListener(this, Core::EVENT_CORE_RESIZE);
 	core->setVideoMode(xRes, yRes, fullScreen, aaLevel);
@@ -353,7 +372,6 @@ void PolycodePlayer::loadFile(const char *fileName) {
 void PolycodePlayer::runPlayer() {
 	Logger::log("Running player\n");	
 	loadFile(fileToRun.c_str());
-	Logger::log("Done running player...\n");
 }
 
 PolycodePlayer::~PolycodePlayer() {

@@ -66,7 +66,7 @@ void SceneMesh::setMaterial(Material *material) {
 	localShaderOptions = material->getShader(0)->createBinding();
 }
 
-void SceneMesh::setMaterial(String materialName) {
+void SceneMesh::setMaterialByName(String materialName) {
 	Material *material =  (Material*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_MATERIAL, materialName);
 	if(!material)
 		return;

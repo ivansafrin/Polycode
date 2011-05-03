@@ -32,10 +32,6 @@ namespace Polycode {
 			EventHandler();
 			~EventHandler();
 
-#ifdef _COMPILE_LUA
-		SWIGLUA_REF onEvent;
-#endif
-
 		void secondaryHandler(Event *event);		
 		
 		/** 
@@ -44,6 +40,9 @@ namespace Polycode {
 		*/
 		virtual void handleEvent(Event *event){}
 			
+		void *secondaryHandlerData;
+		
+		
 		private:
 	
 	};

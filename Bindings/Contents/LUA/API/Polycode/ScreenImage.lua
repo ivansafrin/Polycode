@@ -2,21 +2,36 @@ require "Polycode/ScreenShape"
 
 class "ScreenImage" (ScreenShape)
 
-function ScreenImage:ScreenImage(fileName)
-	if self.__ptr == nil then
-		self.__ptr = Polycore.ScreenImage(fileName)
+
+
+
+
+
+
+function ScreenImage:ScreenImage(...)
+	for k,v in pairs(arg) do
+		if type(v) == "table" then
+			if v.__ptr ~= nil then
+				arg[k] = v.__ptr
+			end
+		end
+	end
+	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
+		self.__ptr = Polycore.ScreenImage(unpack(arg))
 	end
 end
 
 function ScreenImage:setImageCoordinates(x, y, width, height)
-	return Polycore.ScreenImage_setImageCoordinates(self.__ptr, x, y, width, height)
+	local retVal = Polycore.ScreenImage_setImageCoordinates(self.__ptr, x, y, width, height)
 end
 
 function ScreenImage:getImageWidth()
-	return Polycore.ScreenImage_getImageWidth(self.__ptr)
+	local retVal =  Polycore.ScreenImage_getImageWidth(self.__ptr)
+	return retVal
 end
 
 function ScreenImage:getImageHeight()
-	return Polycore.ScreenImage_getImageHeight(self.__ptr)
+	local retVal =  Polycore.ScreenImage_getImageHeight(self.__ptr)
+	return retVal
 end
 
