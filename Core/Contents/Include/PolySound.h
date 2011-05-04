@@ -20,7 +20,6 @@
  THE SOFTWARE.
  */
 
-
 #pragma once
 #include <vorbis/vorbisfile.h>
 #include "PolyString.h"

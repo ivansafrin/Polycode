@@ -1,12 +1,25 @@
 /*
- *  PolyQuaternion.h
- *  Poly
- *
- *  Created by Ivan Safrin on 3/26/08.
- *  Copyright 2008 Ivan Safrin. All rights reserved.
- *
- */
- 
+Copyright (C) 2011 by Ivan Safrin
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+
 #pragma once
 #include "PolyString.h"
 #include "PolyGlobals.h"
@@ -14,51 +27,68 @@
 #include "PolyMatrix4.h"
 #include <math.h>
 
-// @package Math
-
 namespace Polycode {
 
+	/**
+	* Rotation quaternion.
+	*/
 	class _PolyExport Quaternion {
 		public:
+		
+			/**
+			* Construct from w,x,y,z values.
+			* @param w W value.
+			* @param x X value.
+			* @param y Y value.
+			* @param z Z value.									
+			*/ 
 			Quaternion(Number w, Number x, Number y, Number z) {
 				set(w,x,y,z);
 			}
+			
+			/**
+			* Default constructor.
+			*/ 			
 			Quaternion();
 			~Quaternion();
+			
+			// ----------------------------------------------------------------------------------------------------------------
+			/** @name Public members
+			*  Available public members
+			*/
+			//@{
+			
 		
-		inline void setFromMatrix(const Matrix4 &kRot) {
-			Number fTrace = kRot.m[0][0]+kRot.m[1][1]+kRot.m[2][2];
+			inline void setFromMatrix(const Matrix4 &_mat) {
+			Number fTrace = _mat.m[0][0]+_mat.m[1][1]+_mat.m[2][2];
 			Number fRoot;
 			
-			if ( fTrace > 0.0 )
-			{
-				// |w| > 1/2, may as well choose w > 1/2
+			if ( fTrace > 0.0 ) {
 				fRoot = sqrtf(fTrace + 1.0);  // 2w
 				w = 0.5*fRoot;
-				fRoot = 0.5/fRoot;  // 1/(4w)
-				x = (kRot.m[2][1]-kRot.m[1][2])*fRoot;
-				y = (kRot.m[0][2]-kRot.m[2][0])*fRoot;
-				z = (kRot.m[1][0]-kRot.m[0][1])*fRoot;
+				fRoot = 0.5/fRoot;
+				x = (_mat.m[2][1]-_mat.m[1][2])*fRoot;
+				y = (_mat.m[0][2]-_mat.m[2][0])*fRoot;
+				z = (_mat.m[1][0]-_mat.m[0][1])*fRoot;
 			}
 			else
 			{
-				// |w| <= 1/2
 				static size_t s_iNext[3] = { 1, 2, 0 };
 				size_t i = 0;
-				if ( kRot.m[1][1] > kRot.m[0][0] )
+				if ( _mat.m[1][1] > _mat.m[0][0] )
 					i = 1;
-				if ( kRot.m[2][2] > kRot.m[i][i] )
+				if ( _mat.m[2][2] > _mat.m[i][i] )
 					i = 2;
 				size_t j = s_iNext[i];
 				size_t k = s_iNext[j];
 				
-				fRoot = sqrtf(kRot.m[i][i]-kRot.m[j][j]-kRot.m[k][k] + 1.0);
+				fRoot = sqrtf(_mat.m[i][i]-_mat.m[j][j]-_mat.m[k][k] + 1.0);
 				Number* apkQuat[3] = { &x, &y, &z };
 				*apkQuat[i] = 0.5*fRoot;
 				fRoot = 0.5/fRoot;
-				w = (kRot.m[k][j]-kRot.m[j][k])*fRoot;
-				*apkQuat[j] = (kRot.m[j][i]+kRot.m[i][j])*fRoot;
-				*apkQuat[k] = (kRot.m[k][i]+kRot.m[i][k])*fRoot;
+				w = (_mat.m[k][j]-_mat.m[j][k])*fRoot;
+				*apkQuat[j] = (_mat.m[j][i]+_mat.m[i][j])*fRoot;
+				*apkQuat[k] = (_mat.m[k][i]+_mat.m[i][k])*fRoot;
 			}			
 		}
 			
@@ -67,7 +97,7 @@ namespace Polycode {
 	Quaternion Log () const;
     Quaternion Exp () const;	
     Number Norm () const;
-    Number normalise(void);	
+    Number normalize(void);	
     Quaternion operator+ (const Quaternion& rkQ) const;
     Quaternion operator* (const Quaternion& rkQ) const;
     Quaternion operator* (Number fScalar) const;
@@ -245,6 +275,8 @@ namespace Polycode {
 			Number y;
 			Number z;
 			Number w;
+			
+			//@}			
 			
 		protected:
 	};

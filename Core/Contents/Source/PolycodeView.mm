@@ -1,10 +1,24 @@
-//
-//  PolycodeView.m
-//  Polycode
-//
-//  Created by Ivan Safrin on 2/21/10.
-//  Copyright 2010 Ivan Safrin. All rights reserved.
-//
+/*
+ Copyright (C) 2011 by Ivan Safrin
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
+ */
 
 #import "PolycodeView.h"
 
@@ -41,7 +55,6 @@
 {
 	[super viewDidMoveToWindow];
 	viewReady = YES;
-	NSLog(@"VIEW READY!");	
 }
 
 
@@ -51,125 +64,125 @@
 		modifierMap[i] = 0;	
 	}
 	
-	keymap[0x00] = TAUK_a;
-	keymap[0x01] = TAUK_s;
-	keymap[0x02] = TAUK_d;
-	keymap[0x03] = TAUK_f;
-	keymap[0x04] = TAUK_g;
-	keymap[0x05] = TAUK_h;
-	keymap[0x06] = TAUK_z;
-	keymap[0x07] = TAUK_x;
-	keymap[0x08] = TAUK_c;
-	keymap[0x09] = TAUK_v;
-	keymap[0x0B] = TAUK_b;
-	keymap[0x0C] = TAUK_q;
-	keymap[0x0D] = TAUK_w;
-	keymap[0x0E] = TAUK_e;
-	keymap[0x0F] = TAUK_r;
-	keymap[0x10] = TAUK_y;
-	keymap[0x11] = TAUK_t;
-	keymap[0x12] = TAUK_1;
-	keymap[0x13] = TAUK_2;
-	keymap[0x14] = TAUK_3;
-	keymap[0x15] = TAUK_4;
-	keymap[0x16] = TAUK_6;
-	keymap[0x17] = TAUK_5;
-	keymap[0x18] = TAUK_EQUALS;
-	keymap[0x19] = TAUK_9;
-	keymap[0x1A] = TAUK_7;
-	keymap[0x1B] = TAUK_MINUS;
-	keymap[0x1C] = TAUK_8;
-	keymap[0x1D] = TAUK_0;
-	keymap[0x1E] = TAUK_RIGHTBRACKET;
-	keymap[0x1F] = TAUK_o;
-	keymap[0x20] = TAUK_u;
-	keymap[0x21] = TAUK_LEFTBRACKET;
-	keymap[0x22] = TAUK_i;
-	keymap[0x23] = TAUK_p;
-	keymap[0x25] = TAUK_l;
-	keymap[0x26] = TAUK_j;
-	keymap[0x27] = TAUK_QUOTE;
-	keymap[0x28] = TAUK_k;
-	keymap[0x29] = TAUK_SEMICOLON;
-	keymap[0x2A] = TAUK_BACKSLASH;
-	keymap[0x2B] = TAUK_COMMA;
-	keymap[0x2C] = TAUK_SLASH;
-	keymap[0x2D] = TAUK_n;
-	keymap[0x2E] = TAUK_m;
-	keymap[0x2F] = TAUK_PERIOD;
-	//	keymap[0x32] = TAUK_GRAVE;
-	keymap[0x41] = TAUK_KP_PERIOD;
-	keymap[0x43] = TAUK_KP_MULTIPLY;
-	keymap[0x45] = TAUK_KP_PLUS;
-	//	keymap[0x47] = TAUK_KeypadClear;
-	keymap[0x4B] = TAUK_KP_DIVIDE;
-	keymap[0x4C] = TAUK_KP_ENTER;
-	keymap[0x4E] = TAUK_KP_MINUS;
-	keymap[0x51] = TAUK_KP_EQUALS;
-	keymap[0x52] = TAUK_KP0;
-	keymap[0x53] = TAUK_KP1;
-	keymap[0x54] = TAUK_KP2;
-	keymap[0x55] = TAUK_KP3;
-	keymap[0x56] = TAUK_KP4;
-	keymap[0x57] = TAUK_KP5;
-	keymap[0x58] = TAUK_KP6;
-	keymap[0x59] = TAUK_KP7;
-	keymap[0x5B] = TAUK_KP8;
-	keymap[0x5C] = TAUK_KP9;
-	keymap[0x24] = TAUK_RETURN;
-	keymap[0x30] = TAUK_TAB;
-	keymap[0x31] = TAUK_SPACE;
-	keymap[0x33] = TAUK_BACKSPACE;
-	keymap[0x35] = TAUK_ESCAPE;
-	keymap[0x37] = TAUK_LSUPER;
-	keymap[0x36] = TAUK_RSUPER;
-	keymap[0x38] = TAUK_LSHIFT;
-	keymap[0x39] = TAUK_CAPSLOCK;
-	keymap[0x3A] = TAUK_LALT;
-	keymap[0x3D] = TAUK_RALT;	
-	keymap[0x3B] = TAUK_LCTRL;
-	keymap[0x3C] = TAUK_RSHIFT;
-	keymap[0x3E] = TAUK_RCTRL;
-	keymap[0x3F] = TAUK_COMPOSE;
-	//	keymap[0x40] = TAUK_F17;
-	//	keymap[0x48] = TAUK_VolumeUp;
-	//	keymap[0x49] = TAUK_VolumeDown;
-	//	keymap[0x4A] = TAUK_Mute;
-	//	keymap[0x4F] = TAUK_F18;
-	//	keymap[0x50] = TAUK_F19;
-	//	keymap[0x5A] = TAUK_F20;
-	keymap[0x60] = TAUK_F5;
-	keymap[0x61] = TAUK_F6;
-	keymap[0x62] = TAUK_F7;
-	keymap[0x63] = TAUK_F3;
-	keymap[0x64] = TAUK_F8;
-	keymap[0x65] = TAUK_F9;
-	keymap[0x67] = TAUK_F11;
-	keymap[0x69] = TAUK_F13;
-	//	keymap[0x6A] = TAUK_F16;
-	keymap[0x6B] = TAUK_F14;
-	keymap[0x6D] = TAUK_F10;
-	keymap[0x6F] = TAUK_F12;
-	keymap[0x71] = TAUK_F15;
-	keymap[0x72] = TAUK_HELP;
-	keymap[0x73] = TAUK_HOME;
-	keymap[0x74] = TAUK_PAGEUP;
-	keymap[0x75] = TAUK_DELETE;
-	keymap[0x76] = TAUK_F4;
-	keymap[0x77] = TAUK_END;
-	keymap[0x78] = TAUK_F2;
-	keymap[0x79] = TAUK_PAGEDOWN;
-	keymap[0x7A] = TAUK_F1;
-	keymap[0x7B] = TAUK_LEFT;
-	keymap[0x7C] = TAUK_RIGHT;
-	keymap[0x7D] = TAUK_DOWN;
-	keymap[0x7E] = TAUK_UP;
-	//	keymap[0x0A] = TAUK_ISO_Section;
-	//	keymap[0x5D] = TAUK_JIS_Yen;
-	//	keymap[0x5E] = TAUK_JIS_Underscore;
-	//	keymap[0x5F] = TAUK_JIS_KeypadComma;
-	//	keymap[0x66] = TAUK_JIS_Eisu;
-	//	keymap[0x68] = TAUK_JIS_Kana;	
+	keymap[0x00] = KEY_a;
+	keymap[0x01] = KEY_s;
+	keymap[0x02] = KEY_d;
+	keymap[0x03] = KEY_f;
+	keymap[0x04] = KEY_g;
+	keymap[0x05] = KEY_h;
+	keymap[0x06] = KEY_z;
+	keymap[0x07] = KEY_x;
+	keymap[0x08] = KEY_c;
+	keymap[0x09] = KEY_v;
+	keymap[0x0B] = KEY_b;
+	keymap[0x0C] = KEY_q;
+	keymap[0x0D] = KEY_w;
+	keymap[0x0E] = KEY_e;
+	keymap[0x0F] = KEY_r;
+	keymap[0x10] = KEY_y;
+	keymap[0x11] = KEY_t;
+	keymap[0x12] = KEY_1;
+	keymap[0x13] = KEY_2;
+	keymap[0x14] = KEY_3;
+	keymap[0x15] = KEY_4;
+	keymap[0x16] = KEY_6;
+	keymap[0x17] = KEY_5;
+	keymap[0x18] = KEY_EQUALS;
+	keymap[0x19] = KEY_9;
+	keymap[0x1A] = KEY_7;
+	keymap[0x1B] = KEY_MINUS;
+	keymap[0x1C] = KEY_8;
+	keymap[0x1D] = KEY_0;
+	keymap[0x1E] = KEY_RIGHTBRACKET;
+	keymap[0x1F] = KEY_o;
+	keymap[0x20] = KEY_u;
+	keymap[0x21] = KEY_LEFTBRACKET;
+	keymap[0x22] = KEY_i;
+	keymap[0x23] = KEY_p;
+	keymap[0x25] = KEY_l;
+	keymap[0x26] = KEY_j;
+	keymap[0x27] = KEY_QUOTE;
+	keymap[0x28] = KEY_k;
+	keymap[0x29] = KEY_SEMICOLON;
+	keymap[0x2A] = KEY_BACKSLASH;
+	keymap[0x2B] = KEY_COMMA;
+	keymap[0x2C] = KEY_SLASH;
+	keymap[0x2D] = KEY_n;
+	keymap[0x2E] = KEY_m;
+	keymap[0x2F] = KEY_PERIOD;
+	//	keymap[0x32] = KEY_GRAVE;
+	keymap[0x41] = KEY_KP_PERIOD;
+	keymap[0x43] = KEY_KP_MULTIPLY;
+	keymap[0x45] = KEY_KP_PLUS;
+	//	keymap[0x47] = KEY_KeypadClear;
+	keymap[0x4B] = KEY_KP_DIVIDE;
+	keymap[0x4C] = KEY_KP_ENTER;
+	keymap[0x4E] = KEY_KP_MINUS;
+	keymap[0x51] = KEY_KP_EQUALS;
+	keymap[0x52] = KEY_KP0;
+	keymap[0x53] = KEY_KP1;
+	keymap[0x54] = KEY_KP2;
+	keymap[0x55] = KEY_KP3;
+	keymap[0x56] = KEY_KP4;
+	keymap[0x57] = KEY_KP5;
+	keymap[0x58] = KEY_KP6;
+	keymap[0x59] = KEY_KP7;
+	keymap[0x5B] = KEY_KP8;
+	keymap[0x5C] = KEY_KP9;
+	keymap[0x24] = KEY_RETURN;
+	keymap[0x30] = KEY_TAB;
+	keymap[0x31] = KEY_SPACE;
+	keymap[0x33] = KEY_BACKSPACE;
+	keymap[0x35] = KEY_ESCAPE;
+	keymap[0x37] = KEY_LSUPER;
+	keymap[0x36] = KEY_RSUPER;
+	keymap[0x38] = KEY_LSHIFT;
+	keymap[0x39] = KEY_CAPSLOCK;
+	keymap[0x3A] = KEY_LALT;
+	keymap[0x3D] = KEY_RALT;	
+	keymap[0x3B] = KEY_LCTRL;
+	keymap[0x3C] = KEY_RSHIFT;
+	keymap[0x3E] = KEY_RCTRL;
+	keymap[0x3F] = KEY_COMPOSE;
+	//	keymap[0x40] = KEY_F17;
+	//	keymap[0x48] = KEY_VolumeUp;
+	//	keymap[0x49] = KEY_VolumeDown;
+	//	keymap[0x4A] = KEY_Mute;
+	//	keymap[0x4F] = KEY_F18;
+	//	keymap[0x50] = KEY_F19;
+	//	keymap[0x5A] = KEY_F20;
+	keymap[0x60] = KEY_F5;
+	keymap[0x61] = KEY_F6;
+	keymap[0x62] = KEY_F7;
+	keymap[0x63] = KEY_F3;
+	keymap[0x64] = KEY_F8;
+	keymap[0x65] = KEY_F9;
+	keymap[0x67] = KEY_F11;
+	keymap[0x69] = KEY_F13;
+	//	keymap[0x6A] = KEY_F16;
+	keymap[0x6B] = KEY_F14;
+	keymap[0x6D] = KEY_F10;
+	keymap[0x6F] = KEY_F12;
+	keymap[0x71] = KEY_F15;
+	keymap[0x72] = KEY_HELP;
+	keymap[0x73] = KEY_HOME;
+	keymap[0x74] = KEY_PAGEUP;
+	keymap[0x75] = KEY_DELETE;
+	keymap[0x76] = KEY_F4;
+	keymap[0x77] = KEY_END;
+	keymap[0x78] = KEY_F2;
+	keymap[0x79] = KEY_PAGEDOWN;
+	keymap[0x7A] = KEY_F1;
+	keymap[0x7B] = KEY_LEFT;
+	keymap[0x7C] = KEY_RIGHT;
+	keymap[0x7D] = KEY_DOWN;
+	keymap[0x7E] = KEY_UP;
+	//	keymap[0x0A] = KEY_ISO_Section;
+	//	keymap[0x5D] = KEY_JIS_Yen;
+	//	keymap[0x5E] = KEY_JIS_Underscore;
+	//	keymap[0x5F] = KEY_JIS_KeypadComma;
+	//	keymap[0x66] = KEY_JIS_Eisu;
+	//	keymap[0x68] = KEY_JIS_Kana;	
 }
 
 -(void) setCurrentCursor: (NSCursor*) newCursor

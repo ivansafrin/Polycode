@@ -1,11 +1,24 @@
 /*
- *  PolyMesh.cpp
- *  Poly
- *
- *  Created by Ivan Safrin on 3/18/08.
- *  Copyright 2008 Ivan Safrin. All rights reserved.
- *
- */
+ Copyright (C) 2011 by Ivan Safrin
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
+*/
 
 #include "PolyMesh.h"
 
@@ -20,7 +33,6 @@ namespace Polycode {
 
 		
 		meshType = TRI_MESH;
-		numUVs = 1;
 		meshHasVertexBuffer = false;
 		loadMesh(fileName);
 		vertexBuffer = NULL;			
@@ -34,17 +46,12 @@ namespace Polycode {
 		}		
 		this->meshType = meshType;
 		meshHasVertexBuffer = false;		
-		numUVs = 1;
 		vertexBuffer = NULL;
 		useVertexColors = false;				
 	}
 	
 	
 	Mesh::~Mesh() {
-		for(int i=0; i < vertices.size(); i++) {	
-			delete vertices[i];
-		}
-		vertices.clear();
 		for(int i=0; i < polygons.size(); i++) {	
 			delete polygons[i];
 		}
@@ -72,10 +79,12 @@ namespace Polycode {
 	Number Mesh::getRadius() {
 		Number hRad = 0;
 		Number len;
-		for(int i=0; i < vertices.size(); i++) {
-			len = vertices[i]->length();
-			if(len > hRad)
-				hRad = len;
+		for(int i=0; i < polygons.size(); i++) {	
+			for(int j=0; j < polygons[i]->getVertexCount(); j++) {
+				len = polygons[i]->getVertex(j)->length();
+				if(len > hRad)
+					hRad = len;
+			}
 		}
 		return hRad;
 	}
@@ -129,13 +138,6 @@ namespace Polycode {
 		}
 	}
 
-	int Mesh::getVertexIndex(Vertex *vertex) {
-		for(int i=0; i < vertices.size(); i++) {
-			if(vertex == vertices[i])
-				return i;
-		}
-		return 0;
-	}
 	
 	void Mesh::loadFromFile(OSFILE *inFile) {
 
@@ -198,71 +200,18 @@ namespace Polycode {
 		
 		arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
 		arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
-		arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;						
-		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;										
-		
-		
-//		int i;
-//		
-//		Vertex *newVertex;
-//		Polygon *polygon;
-//		unsigned int numVertices, numFaces, hasWeights, numWeights, numUVs;
-//		
-//		unsigned int boneID;
-//		Number boneWeight;
-//		
-//		OSBasics::read(&numUVs, sizeof(unsigned int), 1, inFile);
-//		OSBasics::read(&numVertices, sizeof(unsigned int), 1, inFile);
-//		Vector3_struct pos;
-//		Vector3_struct nor;
-//		Face_struct face;
-//		
-//		for(i=0; i<numVertices; i++) {
-//			OSBasics::read(&pos, sizeof(Vector3_struct), 1, inFile);
-//			OSBasics::read(&nor, sizeof(Vector3_struct), 1, inFile);
-//			
-//			newVertex = new Vertex(pos.x, pos.y, pos.z, nor.x, nor.y,nor.z);
-//			
-//			OSBasics::read(&hasWeights, sizeof(unsigned int), 1, inFile);
-//			if(hasWeights == 1) {
-//					OSBasics::read(&numWeights, sizeof(unsigned int), 1, inFile);
-//					for(int j=0; j < numWeights; j++) {
-//						OSBasics::read(&boneID, sizeof(unsigned int), 1, inFile);
-//						OSBasics::read(&boneWeight, sizeof(Number), 1, inFile);
-//						newVertex->addBoneAssignment(boneID, boneWeight);
-//					}
-//					newVertex->normalizeWeights();
-//			}
-//			vertices.push_back(newVertex);
-//		}
-//		
-//		OSBasics::read(&numFaces, sizeof(unsigned int), 1, inFile);
-//		
-//		for(i=0; i<numFaces; i++) {
-//			OSBasics::read(&face, sizeof(Face_struct), 1, inFile);
-//			polygon = new Polygon();			
-//			polygon->setNormal(Vector3(face.nx,face.ny,face.nz));
-//			
-//			vertices[face.v1]->setTexCoord(face.uvs[0].x,face.uvs[0].y);
-//			vertices[face.v2]->setTexCoord(face.uvs[1].x,face.uvs[1].y);
-//			vertices[face.v3]->setTexCoord(face.uvs[2].x,face.uvs[2].y);
-//			
-//			polygon->addTexCoord(face.uvs[0].x,face.uvs[0].y);
-//			polygon->addTexCoord(face.uvs[1].x,face.uvs[1].y);
-//			polygon->addTexCoord(face.uvs[2].x,face.uvs[2].y);	
-//			polygon->setUseFaceUV(true);
-//			
-//			if(numUVs == 2) {
-//				Vector2_struct uv2s[3];
-//				OSBasics::read(uv2s, sizeof(Vector2_struct), 3, inFile);
-//				polygon->addTexCoord2(uv2s[0].x,uv2s[0].y);
-//				polygon->addTexCoord2(uv2s[1].x,uv2s[1].y);
-//				polygon->addTexCoord2(uv2s[2].x,uv2s[2].y);	
-//			}
-//			
-//			polygons.push_back(polygon);
-//		}
-//		this->numUVs = numUVs;				
+		arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;
+		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;							
+	}
+	
+	void Mesh::saveToFile(String fileName) {
+		OSFILE *outFile = OSBasics::open(fileName.c_str(), "wb");
+		if(!outFile) {
+			Logger::log("Error opening mesh file for saving: %s", fileName.c_str());
+		}
+		saveToFile(outFile);
+		OSBasics::close(outFile);	
+	
 	}
 	
 	void Mesh::loadMesh(String fileName) {
@@ -301,23 +250,7 @@ namespace Polycode {
 		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;										
 		
 	}
-	
-	void Mesh::addVertex(Vertex* vertex) {
-		vertices.push_back(vertex);
-		arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
-		arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
-		arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;						
-		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;												
-	}
-	
-	unsigned int Mesh::getNumVertices() {
-		return vertices.size();
-	}
-	
-	Vertex *Mesh::getVertex(unsigned int index) {
-		return vertices[index];
-	}
-	
+
 	Vector3 Mesh::recenterMesh() {
 		Vector3 positiveOffset;
 		Vector3 negativeOffset;
@@ -403,7 +336,7 @@ namespace Polycode {
 				
 				Vector3 nor = Vector3(x0, y0, z0);
 				nor.Normalize();
-				
+
 				
 			}
 		}
@@ -500,7 +433,7 @@ namespace Polycode {
 		polygons.push_back(newPolygon);
 		arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
 		arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
-		arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;						
+		arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;		
 		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;								
 	}
 	

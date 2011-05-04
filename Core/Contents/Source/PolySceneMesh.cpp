@@ -1,11 +1,24 @@
 /*
- *  PolySceneMesh.cpp
- *  Poly
- *
- *  Created by Ivan Safrin on 3/18/08.
- *  Copyright 2008 Ivan Safrin. All rights reserved.
- *
- */
+ Copyright (C) 2011 by Ivan Safrin
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
+*/
 
 #include "PolySceneMesh.h"
 
@@ -168,54 +181,6 @@ void SceneMesh::renderMeshLocally() {
 		mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
 		mesh->arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;		
 	}
-	/*
-	Matrix4 boneMat;
-	for(int i=0; i < mesh->getPolygonCount(); i++) {
-		Polygon *polygon = mesh->getPolygon(i);
-		CoreServices::getInstance()->getRenderer()->setNormal(polygon->getFaceNormal());
-		
-		unsigned int vCount = polygon->getVertexCount();
-		for(int j=0; j < vCount; j++) {
-			Vertex *vert = polygon->getVertex(j);
-			Vector3 norm = *vert->normal;
-			if(skeleton) {
-				Vector3 aPos = vert->restPosition;
-				Vector3 tPos;
-				for(int b =0; b < vert->getNumBoneAssignments(); b++) {
-					BoneAssignment *bas = vert->getBoneAssignment(b);
-					Bone *bone = bas->bone;
-					if(bone) {
-						Vector3 vec = bone->getFullRestMatrix().inverse() * aPos;
-						tPos += bone->getFinalMatrix() * vec * bas->weight;
-					}
-				}
-				
-				vert->x = tPos.x;
-				vert->y = tPos.y;
-				vert->z = tPos.z;
-				
-				norm.x += tPos.x;
-				norm.y += tPos.y;
-				norm.z += tPos.z;									
-			}
-			
-			if(polygon->useVertexNormals) {
-				CoreServices::getInstance()->getRenderer()->setNormal(norm);
-			}
-			
-			if(polygon->usesFaceUV()) {
-				if(polygon->hasSecUVs)
-					CoreServices::getInstance()->getRenderer()->draw3DVertex2UV(vert, polygon->getTexCoord(j), polygon->getTexCoord2(j));
-				else
-					CoreServices::getInstance()->getRenderer()->draw3DVertex(vert, polygon->getTexCoord(j));
-			} else {
-				CoreServices::getInstance()->getRenderer()->draw3DVertex(vert, NULL);
-			}
-			
-		}
-		//CoreServices::getInstance()->getRenderer()->draw3DPolygon(mesh->getPolygon(i));
-	}
-*/
 
 	if(mesh->useVertexColors) {
 		renderer->pushDataArrayForMesh(mesh, RenderDataArray::COLOR_DATA_ARRAY);

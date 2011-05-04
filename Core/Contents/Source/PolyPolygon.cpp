@@ -1,34 +1,34 @@
 /*
- *  PolyPolygon.cpp
- *  Poly
- *
- *  Created by Ivan Safrin on 3/14/08.
- *  Copyright 2008 Ivan Safrin. All rights reserved.
- *
- */
+ Copyright (C) 2011 by Ivan Safrin
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
+*/
 
 #include "PolyPolygon.h"
 
 namespace Polycode {
 
-Polygon::Polygon()  : useVertexNormals(false), vertexCount(0), useFaceUV(false) {
-	hasSecUVs = false;
-	useVertexNormals = true;
-	
-	for(int i=0; i < 3; i++) {
-		Vector2 newCoord;
-		texCoords.push_back(newCoord);
-	}
-	
-	for(int i=0; i < 3; i++) {	
-		Vector2 newCoord2;
-		texCoords2.push_back(newCoord2);
-	}
+Polygon::Polygon()  : useVertexNormals(false), vertexCount(0) {
+	useVertexNormals = true;	
 }
 
 Polygon::~Polygon() {
-	texCoords.clear();
-	texCoords2.clear();
 	
 	for(int i=0; i < vertices.size(); i++) {	
 		delete vertices[i];
@@ -41,22 +41,6 @@ void Polygon::flipUVY() {
 		Vector2 coord = vertices[i]->getTexCoord();
 		vertices[i]->setTexCoord(coord.x, 1-coord.y);
 	}
-}
-
-void Polygon::setUseFaceUV(bool val) {
-	useFaceUV = val;
-}
-
-bool Polygon::usesFaceUV() {
-	return useFaceUV;
-}
-
-Vector2 Polygon::getTexCoord(int index) {
-	return texCoords[index];
-}
-
-Vector2 Polygon::getTexCoord2(int index) {
-	return texCoords2[index];
 }
 
 unsigned int Polygon::getVertexCount() {
@@ -96,7 +80,9 @@ Rectangle Polygon::getBounds2D() {
 }
 	
 void Polygon::removeVertex(int index) {
+	Vertex *vert = vertices[index];
 	vertices.erase(vertices.begin() + index);
+	delete vert;
 }
 
 void Polygon::setNormal(Vector3 normal) {
@@ -126,17 +112,6 @@ Vertex *Polygon::addVertex(Number x, Number y, Number z) {
 	Vertex *vertex = new Vertex(x,y,z);
 	vertices.push_back(vertex);
 	return vertex;
-}
-
-void Polygon::addTexCoord2(Number u, Number v) {
-//	Vector2 *newCoord = new Vector2(u,v);
-//	texCoords2.push_back(newCoord);
-	hasSecUVs =true;
-}
-
-void Polygon::addTexCoord(Number u, Number v) {
-//	Vector2 *newCoord = new Vector2(u,v);
-//	texCoords.push_back(newCoord);
 }
 
 void Polygon::addVertex(Vertex *vertex) {

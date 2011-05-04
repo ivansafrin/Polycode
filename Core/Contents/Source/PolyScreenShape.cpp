@@ -1,11 +1,24 @@
 /*
- *  PolyScreenShape.cpp
- *  Poly
- *
- *  Created by Ivan Safrin on 5/6/08.
- *  Copyright 2008 Ivan Safrin. All rights reserved.
- *
- */
+ Copyright (C) 2011 by Ivan Safrin
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
+*/
 
 #include "PolyScreenShape.h"
 
@@ -39,7 +52,6 @@ ScreenShape::ScreenShape(int shapeType, Number option1, Number option2, Number o
 			mesh->addPolygon(poly);
 			}
 		break;
-		case SHAPE_CIRCLE_OUTLINE:
 		case SHAPE_CIRCLE: {
 			mesh->setMeshType(Mesh::TRIFAN_MESH);
 			Polygon *poly = new Polygon();
@@ -123,8 +135,7 @@ void ScreenShape::setGradient(Number r1, Number g1, Number b1, Number a1, Number
 				mesh->getPolygon(0)->getVertex(2)->vertexColor.setColor(r2,g2,b2,a2);
 				mesh->getPolygon(0)->getVertex(3)->vertexColor.setColor(r2,g2,b2,a2);
 		break;
-		case SHAPE_CIRCLE:
-		case SHAPE_CIRCLE_OUTLINE:			
+		case SHAPE_CIRCLE:	
 			mesh->getPolygon(0)->getVertex(0)->vertexColor.setColor(r1,g1,b1,a1);
 			for(int i=1; i < mesh->getPolygon(0)->getVertexCount(); i++) {
 				mesh->getPolygon(0)->getVertex(i)->vertexColor.setColor(r2,g2,b2,a2);

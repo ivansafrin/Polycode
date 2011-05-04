@@ -1,11 +1,24 @@
 /*
- *  PolyScene.cpp
- *  Poly
- *
- *  Created by Ivan Safrin on 3/18/08.
- *  Copyright 2008 Ivan Safrin. All rights reserved.
- *
- */
+ Copyright (C) 2011 by Ivan Safrin
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
+*/
 
 #include "PolyScene.h"
 
@@ -21,13 +34,19 @@ Scene::Scene() : EventDispatcher() {
 	
 	hasLightmaps = false;
 	clearColor.setColor(0.13f,0.13f,0.13f,1.0f); 
-	virtualScene = false;
-	useClearColor = false;
-	
+	useClearColor = false;	
 }
 
 Scene::Scene(bool virtualScene) {
-	this->virtualScene = virtualScene;	
+	defaultCamera = new Camera(this);
+	fogEnabled = false;
+	lightingEnabled = false;
+	enabled = true;
+	isSceneVirtual = virtualScene;
+	
+	hasLightmaps = false;
+	clearColor.setColor(0.13f,0.13f,0.13f,1.0f); 
+	useClearColor = false;	
 }
 
 
@@ -71,9 +90,6 @@ void Scene::enableLighting(bool enable) {
 
 void Scene::enableFog(bool enable) {
 	fogEnabled = enable;
-	if(enable)
-		CoreServices::getInstance()->getRenderer()->setFogProperties(fogMode, fogColor, fogDensity, fogStartDepth, fogEndDepth);
-	CoreServices::getInstance()->getRenderer()->enableFog(enable);
 	
 }
 
@@ -83,12 +99,10 @@ void Scene::setFogProperties(int fogMode, Color color, Number density, Number st
 	fogDensity = density;
 	fogStartDepth = startDepth;
 	fogEndDepth = endDepth;
-	if(fogEnabled)
-		CoreServices::getInstance()->getRenderer()->setFogProperties(fogMode, fogColor, fogDensity, fogStartDepth, fogEndDepth);
 	
 }
 
-SceneEntity *Scene::getEntityAtCursor(Number x, Number y) {
+SceneEntity *Scene::getEntityAtScreenPosition(Number x, Number y) {
 	for(int i =0; i< entities.size(); i++) {
 		if(entities[i]->testMouseCollision(x,y)) {
 			return entities[i];
@@ -133,10 +147,7 @@ void Scene::Render() {
 	
 	
 	defaultCamera->rebuildTransformMatrix();
-	
-	if(virtualScene)
-		return;
-	
+		
 	if(useClearColor)
 		CoreServices::getInstance()->getRenderer()->setClearColor(clearColor.r,clearColor.g,clearColor.b);	
 	
@@ -189,6 +200,12 @@ void Scene::Render() {
 		CoreServices::getInstance()->getRenderer()->_setOrthoMode();
 	}
 	
+	CoreServices::getInstance()->getRenderer()->enableFog(fogEnabled);	
+	if(fogEnabled) {
+		CoreServices::getInstance()->getRenderer()->setFogProperties(fogMode, fogColor, fogDensity, fogStartDepth, fogEndDepth);
+	}
+	
+	
 	for(int i=0; i<entities.size();i++) {
 		if(entities[i]->getBBoxRadius() > 0) {
 			if(defaultCamera->isSphereInFrustrum((entities[i]->getPosition()), entities[i]->getBBoxRadius()))
@@ -213,10 +230,7 @@ void Scene::RenderDepthOnly(Camera *targetCamera) {
 	}
 	
 	targetCamera->doCameraTransform();
-	
-	if(virtualScene)
-		return;	
-	
+		
 	targetCamera->buildFrustrumPlanes();
 	
 	CoreServices::getInstance()->getRenderer()->setTexture(NULL);
@@ -346,6 +360,7 @@ void Scene::loadScene(String fileName) {
 				customEntities.push_back(newCustomEntity);					
 			} break;
 			case ENTITY_COLLMESH: {
+			/*
 				unsigned int collType,numVertices,numFaces;
 				Number co[3];
 				OSBasics::read(&collType, sizeof(unsigned int), 1, inFile);
@@ -379,8 +394,9 @@ void Scene::loadScene(String fileName) {
 				
 				//					ScenePrimitive *test = new ScenePrimitive(ScenePrimitive::TYPE_BOX, newMesh->bBox.x,newMesh->bBox.y,newMesh->bBox.z);				
 				//					newMesh->addEntity(test);
-				
+				*/
 			}
+			
 				break;
 			case ENTITY_CAMERA:
 				newEntity = (SceneEntity*)this->getDefaultCamera();
@@ -533,7 +549,7 @@ void Scene::saveScene(String fileName) {
 		mesh->getMesh()->saveToFile(outFile);		
 	}
 	
-	
+	/*
 	for(int i=0; i < collisionGeometry.size(); i++) {
 		SceneMesh *mesh = collisionGeometry[i];
 		writeEntityMatrix(mesh, outFile);
@@ -565,7 +581,7 @@ void Scene::saveScene(String fileName) {
 			OSBasics::write(ind, sizeof(unsigned int),3, outFile);
 		}
 	}
-	
+	*/
 	Number col[3],e,d;
 	for(int i=0; i < lights.size(); i++) {
 		

@@ -1,12 +1,24 @@
 /*
- *  PolyImage.h
- *  Poly
- *
- *  Created by Ivan Safrin on 3/13/08.
- *  Copyright 2008 Ivan Safrin. All rights reserved.
- *
- */
-// @package BasicTypes
+Copyright (C) 2011 by Ivan Safrin
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
 
 #pragma once
 #include "PolyString.h"
@@ -21,45 +33,167 @@
 using std::string;
 
 namespace Polycode {
+
+	/**
+	* An image in memory. Basic RGB or RGBA images stored in memory. Can be loaded from PNG files, created into textures and written to file.
+	*/
 	class _PolyExport Image {
 		public:
+		
+			/**
+			* Create image from file name.
+			* @param fileName Path to image file to load.
+			*/ 
 			Image(String fileName);
+			
+			/**
+			* Create a blank image of specified size and type.
+			* @param width Width of the image to create.
+			* @param height Height of the image to create.			
+			* @param type Type of image to create. Can be IMAGE_RGBA or IMAGE_RGB.
+			*/ 			
 			Image(int width, int height, int type = IMAGE_RGBA);
+			
+			/**
+			* Create an image of specified size and type and set its contents from the specified buffer.
+			* @param data Data buffer to set contents from.
+			* @param width Width of the image to create.
+			* @param height Height of the image to create.			
+			* @param type Type of image to create. Can be IMAGE_RGBA or IMAGE_RGB.
+			*/ 						
 			Image(char *data, int width, int height, int type = IMAGE_RGBA);
+			
+			/**
+			* Create an image from another image.
+			* @param copyImage The image to copy.
+			*/ 						
 			Image(Image *copyImage);		
 			Image();			
 			~Image();
 
+			/**
+			* Load an image from a file
+			* @param fileName Path to image file to load.
+			* @return True if successfully loaded, false otherwise.
+			*/ 			
 			bool loadImage(String fileName);
-			bool loadPNG(String fileName);
-		
+			bool loadPNG(String fileName);		
 			
+			/**
+			* Recreate the image as an empty image of specified size. The image type stays the same.
+			* @param width Width of the image to create.
+			* @param height Height of the image to create.			
+			*/ 						
 			void createEmpty(unsigned int width, unsigned int height);
+			
+			/**
+			* Fills the image with the specified color values.
+			* @param r Red value 0-1.
+			* @param g Green value 0-1
+			* @param b Blue value 0-1
+			* @param a Alpha value 0-1									
+			*/ 									
 			void fill(Number r, Number g, Number b, Number a);
 			
-			// drawing
+			/**
+			* Sets a pixel at specified coordinates to specified color.
+			* @param x X position of pixel.
+			* @param y Y position of pixel.			
+			* @param r Red value 0-1.
+			* @param g Green value 0-1
+			* @param b Blue value 0-1
+			* @param a Alpha value 0-1												
+			*/
 			void setPixel(int x, int y, Number r, Number g, Number b, Number a);
+			
+			/**
+			* Sets a pixel at specified coordinates to specified color.
+			* @param x X position of pixel.
+			* @param y Y position of pixel.			
+			* @param col Color to set.
+			*/			
 			void setPixel(int x, int y, Color col);
+			
+			/**
+			* Returns the pixel color at specified position.
+			* @param x X position of pixel.
+			* @param y Y position of pixel.						
+			* @return Pixel color at specified position.
+			*/			
 			Color getPixel(int x, int y);
 						   
-			void setAAPixel(int x, int y, Color col);
 			void swap(int *v1, int *v2);
+			
+			/**
+			* Draws a line with specified color.
+			* @param x0 Starting x position.
+			* @param y0 Starting y position.
+			* @param x1 Ending x position.
+			* @param y1 Ending y position.
+			* @param col Color to use.						
+			*/						
 			void line(int x0, int y0, int x1, int y1, Color col);
+
+			/**
+			* Moves brush to specified position
+			* @param x New brush position X
+			* @param y New brush position Y
+			*/									
 			void moveTo(int x, int y);
+			
+			/**
+			* Translates brush a specified amount relative to its current position.
+			* @param x Amount to translate on X axis
+			* @param y Amount to translate on Y axis
+			*/												
 			void move(int x, int y);
+			
+			/**
+			* Draws a line to specified position.
+			* @param x Ending x position.
+			* @param y Ending y position.
+			* @param col Color to use.						
+			*/												
 			void lineTo(int x, int y, Color col);
+			
+			/**
+			* Draws a rectangle with specified color.
+			* @param x Rectangle x position.
+			* @param y Rectangle y position.
+			* @param w Rectangle width.
+			* @param h Rectangle height.
+			* @param col Color to use.						
+			*/									
 			void drawRect(int x, int y, int w, int h, Color col);
 			
-			// effex
+			/**
+			* Draws perlin noise in the image
+			* @param seed Seed for the noise
+			* @param alpha If true, affects alpha, if false only affects the color.
+			*/									
 			void perlinNoise(int seed, bool alpha);
+			
+			/**
+			* Blurs the image using box blur.
+			* @param blurSize Size of the blur in pixels.
+			*/												
 			void fastBlur(int blurSize);
 			void fastBlurVert(int blurSize);
 			void fastBlurHor(int blurSize);
+			
+			// What are these??? I wrote them way too long ago.
 			void darken(Number amt, bool color, bool alpha);
 			void lighten(Number amt, bool color, bool alpha);
 			void multiply(Number amt, bool color, bool alpha);
 			
+			/**
+			* Returns the x position of the brush.
+			*/
 			int getBrushX();
+			
+			/**
+			* Returns the y position of the brush.
+			*/			
 			int getBrushY();
 		
 			bool isLoaded();
@@ -68,8 +202,20 @@ namespace Polycode {
 			
 			void writeBMP(String fileName);
 			
+			/**
+			* Returns the width of the image.
+			*/			
 			unsigned int getWidth();
+			
+			/**
+			* Returns the height of the image.
+			*/						
 			unsigned int getHeight();
+			
+			/**
+			* Returns the raw image data
+			* @return Pointer to raw image data.
+			*/						
 			char *getPixels();
 		
 			static const int IMAGE_RGB = 0;

@@ -1,12 +1,24 @@
 /*
- *  PolyMatrix4.h
- *  Poly
- *
- *  Created by Ivan Safrin on 3/26/08.
- *  Copyright 2008 Ivan Safrin. All rights reserved.
- *
- */
-// @package Math
+Copyright (C) 2011 by Ivan Safrin
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
  
 #pragma once
 #include "PolyString.h"
@@ -18,12 +30,17 @@ namespace Polycode {
 
 	class Vector3;
 	
+	/**
+	* 4x4 Matrix.
+	*/
 	class _PolyExport Matrix4 {
 	
 		public:
 			Matrix4();
 
-
+		/**
+		* Construct with 16 matrix values.
+		*/ 
         inline Matrix4(
             Number m00, Number m01, Number m02, Number m03,
             Number m10, Number m11, Number m12, Number m13,
@@ -48,17 +65,20 @@ namespace Polycode {
             m[3][3] = m33;
         }
 
-			
+			/**
+			* Construct with pointer to 16 Number values.
+			*/ 			
 			Matrix4(Number *m);
-			~Matrix4();
-			
-			void init();
+			~Matrix4();			
 			
 			union {
 				Number m[4][4];
 				Number ml[16];
 			};
 			
+			/**
+			* Resets the matrix to identity.
+			*/
 			inline void identity() {
 				memset(ml, 0, sizeof(Number)*16);
 				ml[0] = 1;
@@ -67,13 +87,20 @@ namespace Polycode {
 				ml[15] = 1;		
 			}
 		
-			
+			/**
+			* Rotates a vector by the matrix values.
+			* @param v2 Vector to rotate.
+			*/			
 			inline Vector3 rotateVector(const Vector3 &v2) {
 				return Vector3(v2.x*m[0][0] + v2.y*m[1][0] + v2.z*m[2][0],
 								v2.x*m[0][1] + v2.y*m[1][1] + v2.z*m[2][1],
 								v2.x*m[0][2] + v2.y*m[1][2] + v2.z*m[2][2]);
 			}
 			
+			/**
+			* Returns the position from the matrix.
+			* @return Position.
+			*/						
 			inline Vector3 getPosition() {
 				Vector3 pos;
 				pos.x = m[3][0];
@@ -81,11 +108,14 @@ namespace Polycode {
 				pos.z = m[3][2];
 				return pos;
 			}
-			/*
-			void setTransform(Vector3 pos, Vector3 scale, Quaternion rot) {
-			
-			}
-	*/
+
+			// ----------------------------------------------------------------------------------------------------------------
+			/** @name Operators
+			*  Available vector operators.
+			*/
+			//@{
+
+
 			inline Vector3 operator * ( const Vector3 &v2 ) const
 			{
 				return Vector3(v2.x*m[0][0] + v2.y*m[1][0] + v2.z*m[2][0] + m[3][0],
@@ -94,19 +124,93 @@ namespace Polycode {
 			}			
 			
 			inline Number* operator [] ( int row ) { return m[row];}
+			
+			inline Matrix4 operator + ( const Matrix4 &m2 ) const {
+				Matrix4 r;
+				
+				r.m[0][0] = m[0][0] + m2.m[0][0];
+				r.m[0][1] = m[0][1] + m2.m[0][1];
+				r.m[0][2] = m[0][2] + m2.m[0][2];
+				r.m[0][3] = m[0][3] + m2.m[0][3];
+				
+				r.m[1][0] = m[1][0] + m2.m[1][0];
+				r.m[1][1] = m[1][1] + m2.m[1][1];
+				r.m[1][2] = m[1][2] + m2.m[1][2];
+				r.m[1][3] = m[1][3] + m2.m[1][3];
 
+				r.m[2][0] = m[2][0] + m2.m[2][0];
+				r.m[2][1] = m[2][1] + m2.m[2][1];
+				r.m[2][2] = m[2][2] + m2.m[2][2];
+				r.m[2][3] = m[2][3] + m2.m[2][3];
+				
+				r.m[3][0] = m[3][0] + m2.m[3][0];
+				r.m[3][1] = m[3][1] + m2.m[3][1];
+				r.m[3][2] = m[3][2] + m2.m[3][2];
+				r.m[3][3] = m[3][3] + m2.m[3][3];
+				
+				return r;
+			}
+			
+			inline Matrix4 operator * (const Matrix4 &m2) const {
+           Matrix4 r;
+            r.m[0][0] = m[0][0] * m2.m[0][0] + m[0][1] * m2.m[1][0] + m[0][2] * m2.m[2][0] + m[0][3] * m2.m[3][0];
+            r.m[0][1] = m[0][0] * m2.m[0][1] + m[0][1] * m2.m[1][1] + m[0][2] * m2.m[2][1] + m[0][3] * m2.m[3][1];
+            r.m[0][2] = m[0][0] * m2.m[0][2] + m[0][1] * m2.m[1][2] + m[0][2] * m2.m[2][2] + m[0][3] * m2.m[3][2];
+            r.m[0][3] = m[0][0] * m2.m[0][3] + m[0][1] * m2.m[1][3] + m[0][2] * m2.m[2][3] + m[0][3] * m2.m[3][3];
+
+            r.m[1][0] = m[1][0] * m2.m[0][0] + m[1][1] * m2.m[1][0] + m[1][2] * m2.m[2][0] + m[1][3] * m2.m[3][0];
+            r.m[1][1] = m[1][0] * m2.m[0][1] + m[1][1] * m2.m[1][1] + m[1][2] * m2.m[2][1] + m[1][3] * m2.m[3][1];
+            r.m[1][2] = m[1][0] * m2.m[0][2] + m[1][1] * m2.m[1][2] + m[1][2] * m2.m[2][2] + m[1][3] * m2.m[3][2];
+            r.m[1][3] = m[1][0] * m2.m[0][3] + m[1][1] * m2.m[1][3] + m[1][2] * m2.m[2][3] + m[1][3] * m2.m[3][3];
+
+            r.m[2][0] = m[2][0] * m2.m[0][0] + m[2][1] * m2.m[1][0] + m[2][2] * m2.m[2][0] + m[2][3] * m2.m[3][0];
+            r.m[2][1] = m[2][0] * m2.m[0][1] + m[2][1] * m2.m[1][1] + m[2][2] * m2.m[2][1] + m[2][3] * m2.m[3][1];
+            r.m[2][2] = m[2][0] * m2.m[0][2] + m[2][1] * m2.m[1][2] + m[2][2] * m2.m[2][2] + m[2][3] * m2.m[3][2];
+            r.m[2][3] = m[2][0] * m2.m[0][3] + m[2][1] * m2.m[1][3] + m[2][2] * m2.m[2][3] + m[2][3] * m2.m[3][3];
+
+            r.m[3][0] = m[3][0] * m2.m[0][0] + m[3][1] * m2.m[1][0] + m[3][2] * m2.m[2][0] + m[3][3] * m2.m[3][0];
+            r.m[3][1] = m[3][0] * m2.m[0][1] + m[3][1] * m2.m[1][1] + m[3][2] * m2.m[2][1] + m[3][3] * m2.m[3][1];
+            r.m[3][2] = m[3][0] * m2.m[0][2] + m[3][1] * m2.m[1][2] + m[3][2] * m2.m[2][2] + m[3][3] * m2.m[3][2];
+            r.m[3][3] = m[3][0] * m2.m[0][3] + m[3][1] * m2.m[1][3] + m[3][2] * m2.m[2][3] + m[3][3] * m2.m[3][3];
+
+            return r;
+
+					}
+			
+
+			//@}
+			// ----------------------------------------------------------------------------------------------------------------
+
+			/**
+			* Sets the position in the matrix.
+			* @param x X coordinate.
+			* @param y Y coordinate.			
+			* @param z Z coordinate.												
+			*/
 			inline void setPosition(Number x, Number y, Number z) {
 				m[3][0] = x;
 				m[3][1] = y;
 				m[3][2] = z;
 			}
 		
+			/**
+			* Sets the scale in the matrix.
+			* @param x X scale.
+			* @param y Y scale.			
+			* @param z Z scale.												
+			*/		
 			inline void setScale(Vector3 scale) {
 				m[0][0] = scale.x;
 				m[1][1] = scale.y;
 				m[2][2] = scale.z;
 			}
-
+			
+			/**
+			* Returns the matrix rotation as euler angles. (This might be kind of buggy).
+			* @param ax Pointer to roll angle to set.
+			* @param ay Pointer to pitch angle to set.
+			* @param az Pointer to yaw angle to set.
+			*/					
 			inline void getEulerAngles(Number *ax, Number *ay, Number *az) {
 				Number angle_x, angle_y, angle_z,tr_x,tr_y,C;
 				
@@ -139,60 +243,16 @@ namespace Polycode {
 
 			}
 
-			inline Matrix4 operator + ( const Matrix4 &m2 ) const {
-				Matrix4 r;
-				
-				r.m[0][0] = m[0][0] + m2.m[0][0];
-				r.m[0][1] = m[0][1] + m2.m[0][1];
-				r.m[0][2] = m[0][2] + m2.m[0][2];
-				r.m[0][3] = m[0][3] + m2.m[0][3];
-				
-				r.m[1][0] = m[1][0] + m2.m[1][0];
-				r.m[1][1] = m[1][1] + m2.m[1][1];
-				r.m[1][2] = m[1][2] + m2.m[1][2];
-				r.m[1][3] = m[1][3] + m2.m[1][3];
-
-				r.m[2][0] = m[2][0] + m2.m[2][0];
-				r.m[2][1] = m[2][1] + m2.m[2][1];
-				r.m[2][2] = m[2][2] + m2.m[2][2];
-				r.m[2][3] = m[2][3] + m2.m[2][3];
-				
-				r.m[3][0] = m[3][0] + m2.m[3][0];
-				r.m[3][1] = m[3][1] + m2.m[3][1];
-				r.m[3][2] = m[3][2] + m2.m[3][2];
-				r.m[3][3] = m[3][3] + m2.m[3][3];
-				
-				return r;
-			}
-			
+			/**
+			* Returns the inverse of the matrix.
+			*/
 			Matrix4 inverse();
+			
+			/**
+			* Returns the affine inverse of the matrix.
+			*/			
 			Matrix4 inverseAffine();
 	
-			inline Matrix4 operator * (const Matrix4 &m2) const {
-           Matrix4 r;
-            r.m[0][0] = m[0][0] * m2.m[0][0] + m[0][1] * m2.m[1][0] + m[0][2] * m2.m[2][0] + m[0][3] * m2.m[3][0];
-            r.m[0][1] = m[0][0] * m2.m[0][1] + m[0][1] * m2.m[1][1] + m[0][2] * m2.m[2][1] + m[0][3] * m2.m[3][1];
-            r.m[0][2] = m[0][0] * m2.m[0][2] + m[0][1] * m2.m[1][2] + m[0][2] * m2.m[2][2] + m[0][3] * m2.m[3][2];
-            r.m[0][3] = m[0][0] * m2.m[0][3] + m[0][1] * m2.m[1][3] + m[0][2] * m2.m[2][3] + m[0][3] * m2.m[3][3];
-
-            r.m[1][0] = m[1][0] * m2.m[0][0] + m[1][1] * m2.m[1][0] + m[1][2] * m2.m[2][0] + m[1][3] * m2.m[3][0];
-            r.m[1][1] = m[1][0] * m2.m[0][1] + m[1][1] * m2.m[1][1] + m[1][2] * m2.m[2][1] + m[1][3] * m2.m[3][1];
-            r.m[1][2] = m[1][0] * m2.m[0][2] + m[1][1] * m2.m[1][2] + m[1][2] * m2.m[2][2] + m[1][3] * m2.m[3][2];
-            r.m[1][3] = m[1][0] * m2.m[0][3] + m[1][1] * m2.m[1][3] + m[1][2] * m2.m[2][3] + m[1][3] * m2.m[3][3];
-
-            r.m[2][0] = m[2][0] * m2.m[0][0] + m[2][1] * m2.m[1][0] + m[2][2] * m2.m[2][0] + m[2][3] * m2.m[3][0];
-            r.m[2][1] = m[2][0] * m2.m[0][1] + m[2][1] * m2.m[1][1] + m[2][2] * m2.m[2][1] + m[2][3] * m2.m[3][1];
-            r.m[2][2] = m[2][0] * m2.m[0][2] + m[2][1] * m2.m[1][2] + m[2][2] * m2.m[2][2] + m[2][3] * m2.m[3][2];
-            r.m[2][3] = m[2][0] * m2.m[0][3] + m[2][1] * m2.m[1][3] + m[2][2] * m2.m[2][3] + m[2][3] * m2.m[3][3];
-
-            r.m[3][0] = m[3][0] * m2.m[0][0] + m[3][1] * m2.m[1][0] + m[3][2] * m2.m[2][0] + m[3][3] * m2.m[3][0];
-            r.m[3][1] = m[3][0] * m2.m[0][1] + m[3][1] * m2.m[1][1] + m[3][2] * m2.m[2][1] + m[3][3] * m2.m[3][1];
-            r.m[3][2] = m[3][0] * m2.m[0][2] + m[3][1] * m2.m[1][2] + m[3][2] * m2.m[2][2] + m[3][3] * m2.m[3][2];
-            r.m[3][3] = m[3][0] * m2.m[0][3] + m[3][1] * m2.m[1][3] + m[3][2] * m2.m[2][3] + m[3][3] * m2.m[3][3];
-
-            return r;
-
-					}
 		protected:
 		
 	};
