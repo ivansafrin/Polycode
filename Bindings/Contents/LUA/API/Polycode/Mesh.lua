@@ -45,12 +45,12 @@ function Mesh:loadMesh(fileName)
 	local retVal = Polycore.Mesh_loadMesh(self.__ptr, fileName)
 end
 
-function Mesh:loadFromFile(inFile)
-	local retVal = Polycore.Mesh_loadFromFile(self.__ptr, inFile.__ptr)
+function Mesh:saveToFile(fileName)
+	local retVal = Polycore.Mesh_saveToFile(self.__ptr, fileName)
 end
 
-function Mesh:saveToFile(outFile)
-	local retVal = Polycore.Mesh_saveToFile(self.__ptr, outFile.__ptr)
+function Mesh:loadFromFile(inFile)
+	local retVal = Polycore.Mesh_loadFromFile(self.__ptr, inFile.__ptr)
 end
 
 function Mesh:getPolygonCount()
@@ -81,26 +81,6 @@ function Mesh:createSphere(radius, numRings, numSegments)
 	local retVal = Polycore.Mesh_createSphere(self.__ptr, radius, numRings, numSegments)
 end
 
-function Mesh:addVertex(vertex)
-	local retVal = Polycore.Mesh_addVertex(self.__ptr, vertex.__ptr)
-end
-
-function Mesh:getVertex(index)
-	local retVal = Polycore.Mesh_getVertex(self.__ptr, index)
-	if Polycore.__ptr_lookup[retVal] ~= nil then
-		return Polycore.__ptr_lookup[retVal]
-	else
-		Polycore.__ptr_lookup[retVal] = Vertex("__skip_ptr__")
-		Polycore.__ptr_lookup[retVal].__ptr = retVal
-		return Polycore.__ptr_lookup[retVal]
-	end
-end
-
-function Mesh:getNumVertices()
-	local retVal =  Polycore.Mesh_getNumVertices(self.__ptr)
-	return retVal
-end
-
 function Mesh:recenterMesh()
 	local retVal =  Polycore.Mesh_recenterMesh(self.__ptr)
 	if Polycore.__ptr_lookup[retVal] ~= nil then
@@ -116,11 +96,6 @@ function Mesh:useVertexNormals(val)
 	local retVal = Polycore.Mesh_useVertexNormals(self.__ptr, val)
 end
 
-function Mesh:getVertexIndex(vertex)
-	local retVal = Polycore.Mesh_getVertexIndex(self.__ptr, vertex.__ptr)
-	return retVal
-end
-
 function Mesh:setVertexBuffer(buffer)
 	local retVal = Polycore.Mesh_setVertexBuffer(self.__ptr, buffer.__ptr)
 end
@@ -134,11 +109,6 @@ function Mesh:getVertexBuffer()
 		Polycore.__ptr_lookup[retVal].__ptr = retVal
 		return Polycore.__ptr_lookup[retVal]
 	end
-end
-
-function Mesh:usesFaceUV()
-	local retVal =  Polycore.Mesh_usesFaceUV(self.__ptr)
-	return retVal
 end
 
 function Mesh:getRadius()

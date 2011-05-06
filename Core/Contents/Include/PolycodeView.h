@@ -47,6 +47,9 @@ using namespace Polycode;
 	
 	int mouseX;
 	int mouseY;
+	
+	int glSizeX;
+	int glSizeY;	
     
     BOOL viewReady;
 	

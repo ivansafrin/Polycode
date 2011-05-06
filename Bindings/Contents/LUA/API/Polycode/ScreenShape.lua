@@ -6,7 +6,6 @@ class "ScreenShape" (ScreenMesh)
 
 SHAPE_RECT = 1
 SHAPE_CIRCLE = 2
-SHAPE_CIRCLE_OUTLINE = 3
 SHAPE_CUSTOM = 4
 function ScreenShape:__index__(name)
 	if name == "strokeEnabled" then

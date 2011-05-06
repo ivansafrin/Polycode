@@ -33,7 +33,7 @@ CocoaCore::CocoaCore(PolycodeView *view, int xRes, int yRes, bool fullScreen,int
 	eventMutex = createMutex();
 	
 //	NSLog(@"BUNDLE: %@", [[NSBundle mainBundle] bundlePath]);
-	chdir([[[NSBundle mainBundle] bundlePath] UTF8String]);
+	chdir([[[[NSBundle mainBundle] bundlePath] stringByAppendingString:@"/Contents/Resources"] UTF8String]);
 	
 	NSOpenGLPixelFormatAttribute attrs[32];
 	

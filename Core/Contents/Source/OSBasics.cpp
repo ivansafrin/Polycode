@@ -200,7 +200,6 @@ vector<OSFileEntry> OSBasics::parsePhysFSFolder(String pathString, bool showHidd
 	for (i = rc; *i != NULL; i++) {
 		fname = string(*i);
 		fullPath = pathString + "/" + fname;
-		printf("parsing in %s\n", *i);
 		if((fname.c_str()[0] != '.' || (fname.c_str()[0] == '.'  && showHidden)) && fname != "..") {
 			if(PHYSFS_isDirectory(fullPath.c_str())) {
 				returnVector.push_back(OSFileEntry(pathString, fname, OSFileEntry::TYPE_FOLDER));

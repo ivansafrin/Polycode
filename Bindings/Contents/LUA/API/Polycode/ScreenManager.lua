@@ -4,8 +4,6 @@ class "ScreenManager" (EventDispatcher)
 
 
 
-REGULAR_SCREEN = 1
-PHYSICS_SCREEN = 2
 
 
 

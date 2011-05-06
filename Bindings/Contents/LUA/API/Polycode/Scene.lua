@@ -9,8 +9,25 @@ ENTITY_LIGHT = 1
 ENTITY_CAMERA = 2
 ENTITY_ENTITY = 3
 ENTITY_COLLMESH = 4
+function Scene:__index__(name)
+	if name == "useClearColor" then
+		return Polycore.Scene_get_useClearColor(self.__ptr)
+	elseif name == "enabled" then
+		return Polycore.Scene_get_enabled(self.__ptr)
+	end
+end
 
 
+function Scene:__set_callback(name,value)
+	if name == "useClearColor" then
+		Polycore.Scene_set_useClearColor(self.__ptr, value)
+		return true
+	elseif name == "enabled" then
+		Polycore.Scene_set_enabled(self.__ptr, value)
+		return true
+	end
+	return false
+end
 
 
 function Scene:Scene(...)
@@ -95,8 +112,8 @@ function Scene:getEntity(index)
 	end
 end
 
-function Scene:getEntityAtCursor(x, y)
-	local retVal = Polycore.Scene_getEntityAtCursor(self.__ptr, x, y)
+function Scene:getEntityAtScreenPosition(x, y)
+	local retVal = Polycore.Scene_getEntityAtScreenPosition(self.__ptr, x, y)
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

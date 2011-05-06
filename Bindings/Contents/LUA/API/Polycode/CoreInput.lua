@@ -24,27 +24,6 @@ function CoreInput:CoreInput(...)
 	end
 end
 
-function CoreInput:mouseWheelUp(ticks)
-	local retVal = Polycore.CoreInput_mouseWheelUp(self.__ptr, ticks)
-end
-
-function CoreInput:mouseWheelDown(ticks)
-	local retVal = Polycore.CoreInput_mouseWheelDown(self.__ptr, ticks)
-end
-
-function CoreInput:getMouseButtonState(mouseButton)
-	local retVal = Polycore.CoreInput_getMouseButtonState(self.__ptr, mouseButton)
-	return retVal
-end
-
-function CoreInput:setMouseButtonState(mouseButton, state, ticks)
-	local retVal = Polycore.CoreInput_setMouseButtonState(self.__ptr, mouseButton, state, ticks)
-end
-
-function CoreInput:setMousePosition(x, y, ticks)
-	local retVal = Polycore.CoreInput_setMousePosition(self.__ptr, x, y, ticks)
-end
-
 function CoreInput:getMousePosition()
 	local retVal =  Polycore.CoreInput_getMousePosition(self.__ptr)
 	if Polycore.__ptr_lookup[retVal] ~= nil then
@@ -54,10 +33,6 @@ function CoreInput:getMousePosition()
 		Polycore.__ptr_lookup[retVal].__ptr = retVal
 		return Polycore.__ptr_lookup[retVal]
 	end
-end
-
-function CoreInput:setKeyState(keyCode, code, newState, ticks)
-	local retVal = Polycore.CoreInput_setKeyState(self.__ptr, keyCode.__ptr, code.__ptr, newState, ticks)
 end
 
 function CoreInput:getKeyState(keyCode)
@@ -74,6 +49,31 @@ function CoreInput:getMouseDelta()
 		Polycore.__ptr_lookup[retVal].__ptr = retVal
 		return Polycore.__ptr_lookup[retVal]
 	end
+end
+
+function CoreInput:getMouseButtonState(mouseButton)
+	local retVal = Polycore.CoreInput_getMouseButtonState(self.__ptr, mouseButton)
+	return retVal
+end
+
+function CoreInput:mouseWheelUp(ticks)
+	local retVal = Polycore.CoreInput_mouseWheelUp(self.__ptr, ticks)
+end
+
+function CoreInput:mouseWheelDown(ticks)
+	local retVal = Polycore.CoreInput_mouseWheelDown(self.__ptr, ticks)
+end
+
+function CoreInput:setMouseButtonState(mouseButton, state, ticks)
+	local retVal = Polycore.CoreInput_setMouseButtonState(self.__ptr, mouseButton, state, ticks)
+end
+
+function CoreInput:setMousePosition(x, y, ticks)
+	local retVal = Polycore.CoreInput_setMousePosition(self.__ptr, x, y, ticks)
+end
+
+function CoreInput:setKeyState(keyCode, code, newState, ticks)
+	local retVal = Polycore.CoreInput_setKeyState(self.__ptr, keyCode.__ptr, code.__ptr, newState, ticks)
 end
 
 function CoreInput:setDeltaPosition(x, y)

@@ -185,9 +185,24 @@ void ResourceManager::parseTextures(String dirPath, bool recursive) {
 	}
 }
 
+void ResourceManager::parseOthers(String dirPath, bool recursive) {
+	vector<OSFileEntry> resourceDir;
+	resourceDir = OSBasics::parseFolder(dirPath, false);
+	for(int i=0; i < resourceDir.size(); i++) {	
+		if(resourceDir[i].type == OSFileEntry::TYPE_FILE) {
+			if(resourceDir[i].extension == "ttf") {
+				Logger::log("Registering font: %s\n", resourceDir[i].nameWithoutExtension.c_str());
+				CoreServices::getInstance()->getFontManager()->registerFont(resourceDir[i].nameWithoutExtension, resourceDir[i].fullPath);
+			}
+		} else {
+			if(recursive)
+				parseOthers(dirPath+"/"+resourceDir[i].name, true);
+		}	
+	}
+}
+
 
 void ResourceManager::addArchive(String zipPath) {
-//	Logger::log("Adding archive: %s\n", zipPath.c_str());
 //	if(PHYSFS_addToSearchPath(zipPath.c_str(), 1, getThreadID()) == 0) {
 	if(PHYSFS_addToSearchPath(zipPath.c_str(), 1) == 0) {	
 		Logger::log("Error adding archive to resource manager... %s\n", PHYSFS_getLastError());
@@ -202,6 +217,7 @@ void ResourceManager::addDirResource(String dirPath, bool recursive) {
 	parseShaders(dirPath, recursive);
 	parseCubemaps(dirPath, recursive);	
 	parseMaterials(dirPath, recursive);
+	parseOthers(dirPath, recursive);	
 }
 
 Resource *ResourceManager::getResource(int resourceType, String resourceName) {

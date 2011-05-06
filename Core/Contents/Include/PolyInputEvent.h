@@ -39,6 +39,11 @@ namespace Polycode {
 			InputEvent(PolyKEY key, wchar_t charCode, int timestamp);			
 			~InputEvent();
 		
+			// ----------------------------------------------------------------------------------------------------------------
+			/** @name Input event types.
+			*  Possible input event types dispatched by CoreInput.
+			*/
+			//@{
 		static const int EVENT_MOUSEDOWN = 0;
 		static const int EVENT_MOUSEUP = 1;
 		static const int EVENT_MOUSEMOVE = 2;
@@ -52,12 +57,29 @@ namespace Polycode {
 		static const int EVENT_KEYDOWN = 13;
 		static const int EVENT_KEYUP = 14;
 		
+		//@}
+		// ----------------------------------------------------------------------------------------------------------------
+		
+		/**
+		* If this is a mouse click event, the mouse button that's pressed.
+		*/
 		int mouseButton;
+		
+		/**
+		* If this is a mouse event, the mouse position.
+		*/
 		Vector2 mousePosition;
+		
+		/**
+		* If this is a key event, the key code that's coming down or up.
+		*/		
 		PolyKEY key;
 		
 		int keyCode() { return key; }
 		
+		/**
+		* If this is a key press event, this will contain the unicode character that's being typed.
+		*/				
 		wchar_t charCode;
 		int timestamp;
 		

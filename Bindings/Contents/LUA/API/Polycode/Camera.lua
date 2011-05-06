@@ -53,16 +53,16 @@ function Camera:getFOV()
 	return retVal
 end
 
+function Camera:setParentScene(parentScene)
+	local retVal = Polycore.Camera_setParentScene(self.__ptr, parentScene.__ptr)
+end
+
 function Camera:doCameraTransform()
 	local retVal =  Polycore.Camera_doCameraTransform(self.__ptr)
 end
 
 function Camera:setLightDepthTexture(texture)
 	local retVal = Polycore.Camera_setLightDepthTexture(self.__ptr, texture.__ptr)
-end
-
-function Camera:setParentScene(parentScene)
-	local retVal = Polycore.Camera_setParentScene(self.__ptr, parentScene.__ptr)
 end
 
 function Camera:hasFilterShader()

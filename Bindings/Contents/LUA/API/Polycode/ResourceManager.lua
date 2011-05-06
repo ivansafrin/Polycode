@@ -56,6 +56,10 @@ function ResourceManager:parseCubemaps(dirPath, recursive)
 	local retVal = Polycore.ResourceManager_parseCubemaps(self.__ptr, dirPath, recursive)
 end
 
+function ResourceManager:parseOthers(dirPath, recursive)
+	local retVal = Polycore.ResourceManager_parseOthers(self.__ptr, dirPath, recursive)
+end
+
 function ResourceManager:getResource(resourceType, resourceName)
 	local retVal = Polycore.ResourceManager_getResource(self.__ptr, resourceType, resourceName)
 	if Polycore.__ptr_lookup[retVal] ~= nil then

@@ -26,10 +26,6 @@ function Event:getEventCode()
 	return retVal
 end
 
-function Event:setEventCode(eventCode)
-	local retVal = Polycore.Event_setEventCode(self.__ptr, eventCode)
-end
-
 function Event:getDispatcher()
 	local retVal =  Polycore.Event_getDispatcher(self.__ptr)
 	if Polycore.__ptr_lookup[retVal] ~= nil then
@@ -39,6 +35,10 @@ function Event:getDispatcher()
 		Polycore.__ptr_lookup[retVal].__ptr = retVal
 		return Polycore.__ptr_lookup[retVal]
 	end
+end
+
+function Event:setEventCode(eventCode)
+	local retVal = Polycore.Event_setEventCode(self.__ptr, eventCode)
 end
 
 function Event:setDispatcher(dispatcher)

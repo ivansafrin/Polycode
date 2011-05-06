@@ -37,6 +37,7 @@ OpenGLES1Renderer::OpenGLES1Renderer() : Renderer() {
 }
 
 void OpenGLES1Renderer::Resize(int xRes, int yRes) {
+
 	this->xRes = xRes;
 	this->yRes = yRes;
 	glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
@@ -59,8 +60,7 @@ void OpenGLES1Renderer::Resize(int xRes, int yRes) {
 	
 	glEnable(GL_DEPTH_TEST);
 	
-	glLineWidth(1.0f);
-	
+	glLineWidth(1.0f);	
 	glEnable(GL_LINE_SMOOTH);
 	
 	GLint numBuffers = 0;

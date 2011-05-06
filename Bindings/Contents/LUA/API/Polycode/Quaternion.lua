@@ -46,8 +46,8 @@ function Quaternion:Quaternion(...)
 	end
 end
 
-function Quaternion:setFromMatrix(kRot)
-	local retVal = Polycore.Quaternion_setFromMatrix(self.__ptr, kRot.__ptr)
+function Quaternion:setFromMatrix(_mat)
+	local retVal = Polycore.Quaternion_setFromMatrix(self.__ptr, _mat.__ptr)
 end
 
 function Quaternion:Slerp(fT, rkP, rkQ, shortestPath)
@@ -93,8 +93,8 @@ function Quaternion:Norm()
 	return retVal
 end
 
-function Quaternion:normalise()
-	local retVal =  Polycore.Quaternion_normalise(self.__ptr)
+function Quaternion:normalize()
+	local retVal =  Polycore.Quaternion_normalize(self.__ptr)
 	return retVal
 end
 

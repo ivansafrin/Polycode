@@ -136,7 +136,6 @@ String Label::getText() {
 void Label::setText(String text) {
 //	Logger::logw((char*)text.c_str());
 	
-	
 	this->text = text;
 	
 	if(!font)
@@ -176,7 +175,7 @@ void Label::setText(String text) {
 			}
 			
 		} else {	
-		glyph_index = FT_Get_Char_Index( font->getFace(), (wchar_t)actualString[i]);
+		glyph_index = FT_Get_Char_Index( font->getFace(), (FT_ULong)actualString[i]);
 		if(previous && glyph_index) {
 			FT_Get_Kerning(font->getFace(), previous, glyph_index, FT_KERNING_DEFAULT, &delta);
 			penX += delta.x >> 6;

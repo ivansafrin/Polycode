@@ -19,10 +19,6 @@ function Matrix4:Matrix4(...)
 	end
 end
 
-function Matrix4:init()
-	local retVal =  Polycore.Matrix4_init(self.__ptr)
-end
-
 function Matrix4:identity()
 	local retVal =  Polycore.Matrix4_identity(self.__ptr)
 end

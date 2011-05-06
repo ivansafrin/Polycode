@@ -77,6 +77,11 @@ function String:toLowerCase()
 	return retVal
 end
 
+function String:toUpperCase()
+	local retVal =  Polycore.String_toUpperCase(self.__ptr)
+	return retVal
+end
+
 function String:replace(what, withWhat)
 	local retVal = Polycore.String_replace(self.__ptr, what.__ptr, withWhat.__ptr)
 	return retVal
@@ -131,12 +136,12 @@ function String:getDataWithEncoding(encoding)
 	end
 end
 
-function String:setDataWithEncoding(data, encoding)
-	local retVal = Polycore.String_setDataWithEncoding(self.__ptr, data.__ptr, encoding)
-end
-
 function String:getDataSizeWithEncoding(encoding)
 	local retVal = Polycore.String_getDataSizeWithEncoding(self.__ptr, encoding)
 	return retVal
+end
+
+function String:setDataWithEncoding(data, encoding)
+	local retVal = Polycore.String_setDataWithEncoding(self.__ptr, data.__ptr, encoding)
 end
 

@@ -51,7 +51,7 @@ namespace Polycode {
 			* @param size Size in pixels.
 			* @param Anti-aliasing mode.
 			*/
-			ScreenLabel(String fontName, String text, int size, int amode);
+			ScreenLabel(String text, int size, String fontName = "sans", int amode = 0);
 			~ScreenLabel();		
 		
 			/**

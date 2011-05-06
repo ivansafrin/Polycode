@@ -23,14 +23,14 @@ function Entity:__index__(name)
 		return Polycore.Entity_get_depthWrite(self.__ptr)
 	elseif name == "depthTest" then
 		return Polycore.Entity_get_depthTest(self.__ptr)
+	elseif name == "blendingMode" then
+		return Polycore.Entity_get_blendingMode(self.__ptr)
 	elseif name == "colorAffectsChildren" then
 		return Polycore.Entity_get_colorAffectsChildren(self.__ptr)
 	elseif name == "depthOnly" then
 		return Polycore.Entity_get_depthOnly(self.__ptr)
 	elseif name == "ignoreParentMatrix" then
 		return Polycore.Entity_get_ignoreParentMatrix(self.__ptr)
-	elseif name == "maskByZbuffer" then
-		return Polycore.Entity_get_maskByZbuffer(self.__ptr)
 	elseif name == "isMask" then
 		return Polycore.Entity_get_isMask(self.__ptr)
 	end
@@ -68,6 +68,9 @@ function Entity:__set_callback(name,value)
 	elseif name == "depthTest" then
 		Polycore.Entity_set_depthTest(self.__ptr, value)
 		return true
+	elseif name == "blendingMode" then
+		Polycore.Entity_set_blendingMode(self.__ptr, value)
+		return true
 	elseif name == "colorAffectsChildren" then
 		Polycore.Entity_set_colorAffectsChildren(self.__ptr, value)
 		return true
@@ -76,9 +79,6 @@ function Entity:__set_callback(name,value)
 		return true
 	elseif name == "ignoreParentMatrix" then
 		Polycore.Entity_set_ignoreParentMatrix(self.__ptr, value)
-		return true
-	elseif name == "maskByZbuffer" then
-		Polycore.Entity_set_maskByZbuffer(self.__ptr, value)
 		return true
 	elseif name == "isMask" then
 		Polycore.Entity_set_isMask(self.__ptr, value)
@@ -113,197 +113,20 @@ function Entity:transformAndRender()
 	local retVal =  Polycore.Entity_transformAndRender(self.__ptr)
 end
 
-function Entity:setMatrix(matrix)
-	local retVal = Polycore.Entity_setMatrix(self.__ptr, matrix.__ptr)
-end
-
-function Entity:rebuildTransformMatrix()
-	local retVal =  Polycore.Entity_rebuildTransformMatrix(self.__ptr)
-end
-
-function Entity:addEntity(newChild)
-	local retVal = Polycore.Entity_addEntity(self.__ptr, newChild.__ptr)
-end
-
-function Entity:addChild(newChild)
-	local retVal = Polycore.Entity_addChild(self.__ptr, newChild.__ptr)
-end
-
-function Entity:removeChild(entityToRemove)
-	local retVal = Polycore.Entity_removeChild(self.__ptr, entityToRemove.__ptr)
-end
-
-function Entity:updateEntityMatrix()
-	local retVal =  Polycore.Entity_updateEntityMatrix(self.__ptr)
-end
-
 function Entity:renderChildren()
 	local retVal =  Polycore.Entity_renderChildren(self.__ptr)
-end
-
-function Entity:getPosition()
-	local retVal =  Polycore.Entity_getPosition(self.__ptr)
-	if Polycore.__ptr_lookup[retVal] ~= nil then
-		return Polycore.__ptr_lookup[retVal]
-	else
-		Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
-		Polycore.__ptr_lookup[retVal].__ptr = retVal
-		return Polycore.__ptr_lookup[retVal]
-	end
-end
-
-function Entity:setPosition(x, y, z)
-	local retVal = Polycore.Entity_setPosition(self.__ptr, x, y, z)
-end
-
-function Entity:setPositionX(x)
-	local retVal = Polycore.Entity_setPositionX(self.__ptr, x)
-end
-
-function Entity:setPositionY(y)
-	local retVal = Polycore.Entity_setPositionY(self.__ptr, y)
-end
-
-function Entity:setPositionZ(z)
-	local retVal = Polycore.Entity_setPositionZ(self.__ptr, z)
-end
-
-function Entity:setScaleX(x)
-	local retVal = Polycore.Entity_setScaleX(self.__ptr, x)
-end
-
-function Entity:setScaleY(y)
-	local retVal = Polycore.Entity_setScaleY(self.__ptr, y)
-end
-
-function Entity:setScaleZ(z)
-	local retVal = Polycore.Entity_setScaleZ(self.__ptr, z)
-end
-
-function Entity:Translate(x, y, z)
-	local retVal = Polycore.Entity_Translate(self.__ptr, x, y, z)
-end
-
-function Entity:Scale(x, y, z)
-	local retVal = Polycore.Entity_Scale(self.__ptr, x, y, z)
-end
-
-function Entity:setScale(x, y, z)
-	local retVal = Polycore.Entity_setScale(self.__ptr, x, y, z)
-end
-
-function Entity:getScale()
-	local retVal =  Polycore.Entity_getScale(self.__ptr)
-	if Polycore.__ptr_lookup[retVal] ~= nil then
-		return Polycore.__ptr_lookup[retVal]
-	else
-		Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
-		Polycore.__ptr_lookup[retVal].__ptr = retVal
-		return Polycore.__ptr_lookup[retVal]
-	end
-end
-
-function Entity:getCombinedPosition()
-	local retVal =  Polycore.Entity_getCombinedPosition(self.__ptr)
-	if Polycore.__ptr_lookup[retVal] ~= nil then
-		return Polycore.__ptr_lookup[retVal]
-	else
-		Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
-		Polycore.__ptr_lookup[retVal].__ptr = retVal
-		return Polycore.__ptr_lookup[retVal]
-	end
-end
-
-function Entity:getCombinedPitch()
-	local retVal =  Polycore.Entity_getCombinedPitch(self.__ptr)
-	return retVal
-end
-
-function Entity:getCombinedYaw()
-	local retVal =  Polycore.Entity_getCombinedYaw(self.__ptr)
-	return retVal
-end
-
-function Entity:getCombinedRoll()
-	local retVal =  Polycore.Entity_getCombinedRoll(self.__ptr)
-	return retVal
-end
-
-function Entity:setParentEntity(entity)
-	local retVal = Polycore.Entity_setParentEntity(self.__ptr, entity.__ptr)
-end
-
-function Entity:getParentEntity()
-	local retVal =  Polycore.Entity_getParentEntity(self.__ptr)
-	if Polycore.__ptr_lookup[retVal] ~= nil then
-		return Polycore.__ptr_lookup[retVal]
-	else
-		Polycore.__ptr_lookup[retVal] = Entity("__skip_ptr__")
-		Polycore.__ptr_lookup[retVal].__ptr = retVal
-		return Polycore.__ptr_lookup[retVal]
-	end
-end
-
-function Entity:rebuildRotation()
-	local retVal =  Polycore.Entity_rebuildRotation(self.__ptr)
 end
 
 function Entity:dirtyMatrix(val)
 	local retVal = Polycore.Entity_dirtyMatrix(self.__ptr, val)
 end
 
-function Entity:setPitch(pitch)
-	local retVal = Polycore.Entity_setPitch(self.__ptr, pitch)
+function Entity:rebuildTransformMatrix()
+	local retVal =  Polycore.Entity_rebuildTransformMatrix(self.__ptr)
 end
 
-function Entity:setYaw(yaw)
-	local retVal = Polycore.Entity_setYaw(self.__ptr, yaw)
-end
-
-function Entity:setRoll(roll)
-	local retVal = Polycore.Entity_setRoll(self.__ptr, roll)
-end
-
-function Entity:Roll(roll)
-	local retVal = Polycore.Entity_Roll(self.__ptr, roll)
-end
-
-function Entity:Yaw(roll)
-	local retVal = Polycore.Entity_Yaw(self.__ptr, roll)
-end
-
-function Entity:Pitch(roll)
-	local retVal = Polycore.Entity_Pitch(self.__ptr, roll)
-end
-
-function Entity:getPitch()
-	local retVal =  Polycore.Entity_getPitch(self.__ptr)
-	return retVal
-end
-
-function Entity:getYaw()
-	local retVal =  Polycore.Entity_getYaw(self.__ptr)
-	return retVal
-end
-
-function Entity:getRoll()
-	local retVal =  Polycore.Entity_getRoll(self.__ptr)
-	return retVal
-end
-
-function Entity:setRotationQuat(w, x, y, z)
-	local retVal = Polycore.Entity_setRotationQuat(self.__ptr, w, x, y, z)
-end
-
-function Entity:getRotationQuat()
-	local retVal =  Polycore.Entity_getRotationQuat(self.__ptr)
-	if Polycore.__ptr_lookup[retVal] ~= nil then
-		return Polycore.__ptr_lookup[retVal]
-	else
-		Polycore.__ptr_lookup[retVal] = Quaternion("__skip_ptr__")
-		Polycore.__ptr_lookup[retVal].__ptr = retVal
-		return Polycore.__ptr_lookup[retVal]
-	end
+function Entity:updateEntityMatrix()
+	local retVal =  Polycore.Entity_updateEntityMatrix(self.__ptr)
 end
 
 function Entity:getTransformMatrix()
@@ -347,8 +170,207 @@ function Entity:setTransformByMatrixPure(matrix)
 	local retVal = Polycore.Entity_setTransformByMatrixPure(self.__ptr, matrix.__ptr)
 end
 
-function Entity:setRenderer(r_enderer)
-	local retVal = Polycore.Entity_setRenderer(self.__ptr, r_enderer.__ptr)
+function Entity:getLookAtMatrix(loc, upVector)
+	local retVal = Polycore.Entity_getLookAtMatrix(self.__ptr, loc.__ptr, upVector.__ptr)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = Matrix4("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
+end
+
+function Entity:addEntity(newChild)
+	local retVal = Polycore.Entity_addEntity(self.__ptr, newChild.__ptr)
+end
+
+function Entity:addChild(newChild)
+	local retVal = Polycore.Entity_addChild(self.__ptr, newChild.__ptr)
+end
+
+function Entity:removeChild(entityToRemove)
+	local retVal = Polycore.Entity_removeChild(self.__ptr, entityToRemove.__ptr)
+end
+
+function Entity:setParentEntity(entity)
+	local retVal = Polycore.Entity_setParentEntity(self.__ptr, entity.__ptr)
+end
+
+function Entity:getParentEntity()
+	local retVal =  Polycore.Entity_getParentEntity(self.__ptr)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = Entity("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
+end
+
+function Entity:getPosition()
+	local retVal =  Polycore.Entity_getPosition(self.__ptr)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
+end
+
+function Entity:getCombinedPosition()
+	local retVal =  Polycore.Entity_getCombinedPosition(self.__ptr)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
+end
+
+function Entity:setPosition(x, y, z)
+	local retVal = Polycore.Entity_setPosition(self.__ptr, x, y, z)
+end
+
+function Entity:setPositionX(x)
+	local retVal = Polycore.Entity_setPositionX(self.__ptr, x)
+end
+
+function Entity:setPositionY(y)
+	local retVal = Polycore.Entity_setPositionY(self.__ptr, y)
+end
+
+function Entity:Translate(x, y, z)
+	local retVal = Polycore.Entity_Translate(self.__ptr, x, y, z)
+end
+
+function Entity:setPositionZ(z)
+	local retVal = Polycore.Entity_setPositionZ(self.__ptr, z)
+end
+
+function Entity:setScaleX(x)
+	local retVal = Polycore.Entity_setScaleX(self.__ptr, x)
+end
+
+function Entity:setScaleY(y)
+	local retVal = Polycore.Entity_setScaleY(self.__ptr, y)
+end
+
+function Entity:setScaleZ(z)
+	local retVal = Polycore.Entity_setScaleZ(self.__ptr, z)
+end
+
+function Entity:Scale(x, y, z)
+	local retVal = Polycore.Entity_Scale(self.__ptr, x, y, z)
+end
+
+function Entity:setScale(x, y, z)
+	local retVal = Polycore.Entity_setScale(self.__ptr, x, y, z)
+end
+
+function Entity:getCompoundScale()
+	local retVal =  Polycore.Entity_getCompoundScale(self.__ptr)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
+end
+
+function Entity:getScale()
+	local retVal =  Polycore.Entity_getScale(self.__ptr)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
+end
+
+function Entity:getCombinedPitch()
+	local retVal =  Polycore.Entity_getCombinedPitch(self.__ptr)
+	return retVal
+end
+
+function Entity:getCombinedYaw()
+	local retVal =  Polycore.Entity_getCombinedYaw(self.__ptr)
+	return retVal
+end
+
+function Entity:getCombinedRoll()
+	local retVal =  Polycore.Entity_getCombinedRoll(self.__ptr)
+	return retVal
+end
+
+function Entity:rebuildRotation()
+	local retVal =  Polycore.Entity_rebuildRotation(self.__ptr)
+end
+
+function Entity:setPitch(pitch)
+	local retVal = Polycore.Entity_setPitch(self.__ptr, pitch)
+end
+
+function Entity:setYaw(yaw)
+	local retVal = Polycore.Entity_setYaw(self.__ptr, yaw)
+end
+
+function Entity:setRoll(roll)
+	local retVal = Polycore.Entity_setRoll(self.__ptr, roll)
+end
+
+function Entity:Roll(roll)
+	local retVal = Polycore.Entity_Roll(self.__ptr, roll)
+end
+
+function Entity:Yaw(yaw)
+	local retVal = Polycore.Entity_Yaw(self.__ptr, yaw)
+end
+
+function Entity:Pitch(pitch)
+	local retVal = Polycore.Entity_Pitch(self.__ptr, pitch)
+end
+
+function Entity:getPitch()
+	local retVal =  Polycore.Entity_getPitch(self.__ptr)
+	return retVal
+end
+
+function Entity:getYaw()
+	local retVal =  Polycore.Entity_getYaw(self.__ptr)
+	return retVal
+end
+
+function Entity:getRoll()
+	local retVal =  Polycore.Entity_getRoll(self.__ptr)
+	return retVal
+end
+
+function Entity:setRotationQuat(w, x, y, z)
+	local retVal = Polycore.Entity_setRotationQuat(self.__ptr, w, x, y, z)
+end
+
+function Entity:getRotationQuat()
+	local retVal =  Polycore.Entity_getRotationQuat(self.__ptr)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = Quaternion("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
+end
+
+function Entity:lookAt(loc, upVector)
+	local retVal = Polycore.Entity_lookAt(self.__ptr, loc.__ptr, upVector.__ptr)
+end
+
+function Entity:lookAtEntity(entity, upVector)
+	local retVal = Polycore.Entity_lookAtEntity(self.__ptr, entity.__ptr, upVector.__ptr)
 end
 
 function Entity:getCombinedColor()
@@ -388,6 +410,14 @@ function Entity:setBBoxRadius(rad)
 	local retVal = Polycore.Entity_setBBoxRadius(self.__ptr, rad)
 end
 
+function Entity:setMask(mask)
+	local retVal = Polycore.Entity_setMask(self.__ptr, mask.__ptr)
+end
+
+function Entity:clearMask()
+	local retVal =  Polycore.Entity_clearMask(self.__ptr)
+end
+
 function Entity:setBlendingMode(newBl_endingMode)
 	local retVal = Polycore.Entity_setBlendingMode(self.__ptr, newBl_endingMode)
 end
@@ -403,31 +433,13 @@ function Entity:getChildCenter()
 	end
 end
 
-function Entity:setDepthWrite(val)
-	local retVal = Polycore.Entity_setDepthWrite(self.__ptr, val)
+function Entity:getEntityProp(propName)
+	local retVal = Polycore.Entity_getEntityProp(self.__ptr, propName)
+	return retVal
 end
 
 function Entity:doUpdates()
 	local retVal =  Polycore.Entity_doUpdates(self.__ptr)
-end
-
-function Entity:lookAt(loc, upVector)
-	local retVal = Polycore.Entity_lookAt(self.__ptr, loc.__ptr, upVector.__ptr)
-end
-
-function Entity:lookAtEntity(entity, upVector)
-	local retVal = Polycore.Entity_lookAtEntity(self.__ptr, entity.__ptr, upVector.__ptr)
-end
-
-function Entity:getLookAtMatrix(loc, upVector)
-	local retVal = Polycore.Entity_getLookAtMatrix(self.__ptr, loc.__ptr, upVector.__ptr)
-	if Polycore.__ptr_lookup[retVal] ~= nil then
-		return Polycore.__ptr_lookup[retVal]
-	else
-		Polycore.__ptr_lookup[retVal] = Matrix4("__skip_ptr__")
-		Polycore.__ptr_lookup[retVal].__ptr = retVal
-		return Polycore.__ptr_lookup[retVal]
-	end
 end
 
 function Entity:buildPositionMatrix()
@@ -445,27 +457,7 @@ function Entity:adjustMatrixForChildren()
 	local retVal =  Polycore.Entity_adjustMatrixForChildren(self.__ptr)
 end
 
-function Entity:setMask(mask)
-	local retVal = Polycore.Entity_setMask(self.__ptr, mask.__ptr)
-end
-
-function Entity:clearMask()
-	local retVal =  Polycore.Entity_clearMask(self.__ptr)
-end
-
-function Entity:getCompoundScale()
-	local retVal =  Polycore.Entity_getCompoundScale(self.__ptr)
-	if Polycore.__ptr_lookup[retVal] ~= nil then
-		return Polycore.__ptr_lookup[retVal]
-	else
-		Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
-		Polycore.__ptr_lookup[retVal].__ptr = retVal
-		return Polycore.__ptr_lookup[retVal]
-	end
-end
-
-function Entity:getEntityProp(propName)
-	local retVal = Polycore.Entity_getEntityProp(self.__ptr, propName)
-	return retVal
+function Entity:setRenderer(r_enderer)
+	local retVal = Polycore.Entity_setRenderer(self.__ptr, r_enderer.__ptr)
 end
 

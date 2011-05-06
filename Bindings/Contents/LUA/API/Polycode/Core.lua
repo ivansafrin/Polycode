@@ -14,17 +14,6 @@ function Core:Update()
 	return retVal
 end
 
-function Core:getTicks()
-	local retVal =  Polycore.Core_getTicks(self.__ptr)
-	if Polycore.__ptr_lookup[retVal] ~= nil then
-		return Polycore.__ptr_lookup[retVal]
-	else
-		Polycore.__ptr_lookup[retVal] = unsignedint("__skip_ptr__")
-		Polycore.__ptr_lookup[retVal].__ptr = retVal
-		return Polycore.__ptr_lookup[retVal]
-	end
-end
-
 function Core:enableMouse(newval)
 	local retVal = Polycore.Core_enableMouse(self.__ptr, newval)
 end
@@ -173,6 +162,17 @@ end
 function Core:getElapsed()
 	local retVal =  Polycore.Core_getElapsed(self.__ptr)
 	return retVal
+end
+
+function Core:getTicks()
+	local retVal =  Polycore.Core_getTicks(self.__ptr)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = unsignedint("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 
 function Core:getTicksFloat()

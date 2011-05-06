@@ -85,9 +85,10 @@ Texture *MaterialManager::createTextureFromFile(String fileName, bool clamp) {
 	if(image->isLoaded()) {
 		newTexture = createTexture(image->getWidth(), image->getHeight(), image->getPixels(), clamp);
 	} else {
-		char *data = (char*)malloc(4);
-		newTexture = createTexture(1, 1, data, true);
-		free(data);
+		Logger::log("Error loading image, using default texture.\n");
+		delete image;		
+		newTexture = getTextureByResourcePath("default.png");
+		return newTexture;
 	}
 		
 	delete image;

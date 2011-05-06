@@ -34,7 +34,8 @@ String::String(const wchar_t *str) {
 
 String::String(const char *str) {
 	string sstr = string(str);
-	contents.assign(sstr.begin(), sstr.end());
+	utf8toWStr(contents, sstr);	
+//	contents.assign(sstr.begin(), sstr.end());
 }
 
 String::String(const wchar_t *str, size_t n) {

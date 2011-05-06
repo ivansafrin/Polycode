@@ -24,7 +24,7 @@
 
 using namespace Polycode;
 
-ScreenLabel::ScreenLabel(String fontName, String text, int size, int amode) : ScreenShape(ScreenShape::SHAPE_RECT,1,1) {
+ScreenLabel::ScreenLabel(String text, int size, String fontName, int amode) : ScreenShape(ScreenShape::SHAPE_RECT,1,1) {
 	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size, amode);
 	texture = NULL;
 	setText(text);		

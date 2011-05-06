@@ -13,23 +13,21 @@
 		6D34133512B7FC760034FA9B /* libphysfs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D34133412B7FC760034FA9B /* libphysfs.a */; };
 		6D34134112B7FCD00034FA9B /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D34134012B7FCD00034FA9B /* IOKit.framework */; };
 		6D34153C12B82C7A0034FA9B /* liblua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D34153B12B82C7A0034FA9B /* liblua.a */; };
-		6D34160612B837250034FA9B /* libPolycodeLUA.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D34160512B837250034FA9B /* libPolycodeLUA.a */; };
-		6D674A031340FE2700218B97 /* libogg.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D674A021340FE2700218B97 /* libogg.0.dylib */; };
-		6D674A071340FE2D00218B97 /* libvorbisfile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D674A041340FE2D00218B97 /* libvorbisfile.a */; };
-		6D674A081340FE2D00218B97 /* libvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D674A051340FE2D00218B97 /* libvorbis.a */; };
-		6D674A091340FE2D00218B97 /* libogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D674A061340FE2D00218B97 /* libogg.a */; };
-		6D994DC5134D932A0044DD0B /* libPolycodeGLSL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D994DC4134D932A0044DD0B /* libPolycodeGLSL.a */; };
-		6DBAB04B12B6EA4300986D01 /* PolySubstanceView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DBAB04912B6EA4300986D01 /* PolySubstanceView.m */; };
 		6DBAB07E12B6EAAD00986D01 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DBAB07712B6EAAD00986D01 /* libfreetype.a */; };
 		6DBAB07F12B6EAAD00986D01 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DBAB07812B6EAAD00986D01 /* libz.a */; };
 		6DBAB08012B6EAAD00986D01 /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DBAB07912B6EAAD00986D01 /* libpng.a */; };
 		6DBAB08212B6EAAD00986D01 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DBAB07B12B6EAAD00986D01 /* OpenAL.framework */; };
 		6DBAB08312B6EAAD00986D01 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DBAB07C12B6EAAD00986D01 /* OpenGL.framework */; };
-		6DBAB08412B6EAAD00986D01 /* libPolyCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DBAB07D12B6EAAD00986D01 /* libPolyCore.a */; };
-		6DBAB0BF12B6ECCB00986D01 /* PolycodeCocoaPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DBAB0BE12B6ECCB00986D01 /* PolycodeCocoaPlayer.cpp */; };
-		6DBAB0C412B6EE4400986D01 /* PolycodePlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DBAB0C312B6EE4400986D01 /* PolycodePlayer.cpp */; };
-		6DFF70421342F4AD00B0C47E /* player_icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6DFF70411342F4AD00B0C47E /* player_icon.icns */; };
-		6DFF707D1343059400B0C47E /* app_file_icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6DFF707C1343059400B0C47E /* app_file_icon.icns */; };
+		6DBAB0BF12B6ECCB00986D01 /* PolycodeCocoaPlayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DBAB0BE12B6ECCB00986D01 /* PolycodeCocoaPlayer.mm */; };
+		6DBAB0C412B6EE4400986D01 /* PolycodePlayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DBAB0C312B6EE4400986D01 /* PolycodePlayer.mm */; };
+		6DD40EF0137361AE00D602D3 /* app_file_icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6DD40EEE137361AE00D602D3 /* app_file_icon.icns */; };
+		6DD40EF1137361AE00D602D3 /* player_icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6DD40EEF137361AE00D602D3 /* player_icon.icns */; };
+		6DD40EF4137361E600D602D3 /* PolycodeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DD40EF3137361E600D602D3 /* PolycodeView.mm */; };
+		6DD40EF6137363C800D602D3 /* libPolycodeLUA.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DD40EF5137363C800D602D3 /* libPolycodeLUA.a */; };
+		6DD40EF81373683000D602D3 /* libPolyCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DD40EF71373682F00D602D3 /* libPolyCore.a */; };
+		6DD40F8413736CF200D602D3 /* libogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DD40F8313736CF200D602D3 /* libogg.a */; };
+		6DD40F8613736CF900D602D3 /* libvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DD40F8513736CF900D602D3 /* libvorbis.a */; };
+		6DD40F8A13736D0C00D602D3 /* libvorbisfile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DD40F8913736D0C00D602D3 /* libvorbisfile.a */; };
 		8D15AC2C0486D014006FF6A4 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */; };
 		8D15AC2F0486D014006FF6A4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165FFE840EACC02AAC07 /* InfoPlist.strings */; };
 		8D15AC310486D014006FF6A4 /* MyDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4ACFDCFA73011CA2CEA /* MyDocument.m */; settings = {ATTRIBUTES = (); }; };
@@ -55,26 +53,115 @@
 		6D34133412B7FC760034FA9B /* libphysfs.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libphysfs.a; path = ../../../Core/Dependencies/physfs/Debug/libphysfs.a; sourceTree = SOURCE_ROOT; };
 		6D34134012B7FCD00034FA9B /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		6D34153B12B82C7A0034FA9B /* liblua.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblua.a; path = ../../../Core/Dependencies/lua/src/liblua.a; sourceTree = SOURCE_ROOT; };
-		6D34160512B837250034FA9B /* libPolycodeLUA.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycodeLUA.a; path = "../../../Bindings/Build/Mac OS X/build/Debug/libPolycodeLUA.a"; sourceTree = SOURCE_ROOT; };
-		6D674A021340FE2700218B97 /* libogg.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libogg.0.dylib; path = ../../../Core/Dependencies/libogg/libogg.0.dylib; sourceTree = SOURCE_ROOT; };
-		6D674A041340FE2D00218B97 /* libvorbisfile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbisfile.a; path = ../../../Core/Dependencies/libvorbis/libvorbisfile.a; sourceTree = SOURCE_ROOT; };
-		6D674A051340FE2D00218B97 /* libvorbis.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbis.a; path = ../../../Core/Dependencies/libvorbis/libvorbis.a; sourceTree = SOURCE_ROOT; };
-		6D674A061340FE2D00218B97 /* libogg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libogg.a; path = ../../../Core/Dependencies/libogg/libogg.a; sourceTree = SOURCE_ROOT; };
-		6D994DC4134D932A0044DD0B /* libPolycodeGLSL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycodeGLSL.a; path = "../../../Modules/Build/Mac OS X/build/Debug/libPolycodeGLSL.a"; sourceTree = SOURCE_ROOT; };
-		6DBAB04912B6EA4300986D01 /* PolySubstanceView.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; name = PolySubstanceView.m; path = ../../../Core/Contents/Source/PolySubstanceView.m; sourceTree = SOURCE_ROOT; };
-		6DBAB04A12B6EA4300986D01 /* PolySubstanceView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolySubstanceView.h; path = ../../../Core/Contents/Include/PolySubstanceView.h; sourceTree = SOURCE_ROOT; };
 		6DBAB07712B6EAAD00986D01 /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = ../../../Core/Dependencies/freetype/libfreetype.a; sourceTree = SOURCE_ROOT; };
 		6DBAB07812B6EAAD00986D01 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = ../../../Core/Dependencies/zlib/libz.a; sourceTree = SOURCE_ROOT; };
 		6DBAB07912B6EAAD00986D01 /* libpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng.a; path = ../../../Core/Dependencies/libpng/libpng.a; sourceTree = SOURCE_ROOT; };
 		6DBAB07B12B6EAAD00986D01 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		6DBAB07C12B6EAAD00986D01 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
-		6DBAB07D12B6EAAD00986D01 /* libPolyCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolyCore.a; path = "../../../Core/Build/Mac OS X/build/Debug/libPolyCore.a"; sourceTree = SOURCE_ROOT; };
 		6DBAB0BD12B6ECC400986D01 /* PolycodeCocoaPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeCocoaPlayer.h; path = ../../Contents/Include/PolycodeCocoaPlayer.h; sourceTree = SOURCE_ROOT; };
-		6DBAB0BE12B6ECCB00986D01 /* PolycodeCocoaPlayer.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; name = PolycodeCocoaPlayer.cpp; path = ../../Contents/Source/PolycodeCocoaPlayer.cpp; sourceTree = SOURCE_ROOT; };
+		6DBAB0BE12B6ECCB00986D01 /* PolycodeCocoaPlayer.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; name = PolycodeCocoaPlayer.mm; path = ../../Contents/Source/PolycodeCocoaPlayer.mm; sourceTree = SOURCE_ROOT; };
 		6DBAB0C212B6EE2200986D01 /* PolycodePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodePlayer.h; path = ../../Contents/Include/PolycodePlayer.h; sourceTree = SOURCE_ROOT; };
-		6DBAB0C312B6EE4400986D01 /* PolycodePlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolycodePlayer.cpp; path = ../../Contents/Source/PolycodePlayer.cpp; sourceTree = SOURCE_ROOT; };
-		6DFF70411342F4AD00B0C47E /* player_icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = player_icon.icns; path = ../../../Assets/player_icon.icns; sourceTree = SOURCE_ROOT; };
-		6DFF707C1343059400B0C47E /* app_file_icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = app_file_icon.icns; path = ../../../Assets/app_file_icon.icns; sourceTree = SOURCE_ROOT; };
+		6DBAB0C312B6EE4400986D01 /* PolycodePlayer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = PolycodePlayer.mm; path = ../../Contents/Source/PolycodePlayer.mm; sourceTree = SOURCE_ROOT; };
+		6DD40EEE137361AE00D602D3 /* app_file_icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = app_file_icon.icns; path = ../../../Assets/Icons/app_file_icon.icns; sourceTree = "<group>"; };
+		6DD40EEF137361AE00D602D3 /* player_icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = player_icon.icns; path = ../../../Assets/Icons/player_icon.icns; sourceTree = "<group>"; };
+		6DD40EF2137361E600D602D3 /* PolycodeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeView.h; path = "../../../Release/Mac OS X/Framework/Core/PolycodeView/PolycodeView.h"; sourceTree = "<group>"; };
+		6DD40EF3137361E600D602D3 /* PolycodeView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = PolycodeView.mm; path = "../../../Release/Mac OS X/Framework/Core/PolycodeView/PolycodeView.mm"; sourceTree = "<group>"; };
+		6DD40EF5137363C800D602D3 /* libPolycodeLUA.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycodeLUA.a; path = "../../../../../../Library/Developer/Xcode/DerivedData/Bindings-bojbiqnjfgqgjpgcdihwtncgpnvk/Build/Products/Debug/libPolycodeLUA.a"; sourceTree = "<group>"; };
+		6DD40EF71373682F00D602D3 /* libPolyCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolyCore.a; path = "../../../../../../Library/Developer/Xcode/DerivedData/PolyCore-ecbhldydhvplehavgvhjdlapyvwd/Build/Products/Debug/libPolyCore.a"; sourceTree = "<group>"; };
+		6DD40EFC137368B100D602D3 /* class.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = class.lua; sourceTree = "<group>"; };
+		6DD40EFD137368B100D602D3 /* defaults.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = defaults.lua; sourceTree = "<group>"; };
+		6DD40EFF137368B100D602D3 /* BezierCurve.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = BezierCurve.lua; sourceTree = "<group>"; };
+		6DD40F00137368B100D602D3 /* BezierPathTween.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = BezierPathTween.lua; sourceTree = "<group>"; };
+		6DD40F01137368B100D602D3 /* Bone.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Bone.lua; sourceTree = "<group>"; };
+		6DD40F02137368B100D602D3 /* BoneTrack.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = BoneTrack.lua; sourceTree = "<group>"; };
+		6DD40F03137368B100D602D3 /* Camera.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Camera.lua; sourceTree = "<group>"; };
+		6DD40F04137368B100D602D3 /* Color.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Color.lua; sourceTree = "<group>"; };
+		6DD40F05137368B100D602D3 /* Config.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Config.lua; sourceTree = "<group>"; };
+		6DD40F06137368B100D602D3 /* Core.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Core.lua; sourceTree = "<group>"; };
+		6DD40F07137368B100D602D3 /* CoreInput.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = CoreInput.lua; sourceTree = "<group>"; };
+		6DD40F08137368B100D602D3 /* CoreServices.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = CoreServices.lua; sourceTree = "<group>"; };
+		6DD40F09137368B100D602D3 /* Cubemap.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cubemap.lua; sourceTree = "<group>"; };
+		6DD40F0A137368B100D602D3 /* Data.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Data.lua; sourceTree = "<group>"; };
+		6DD40F0B137368B100D602D3 /* Entity.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Entity.lua; sourceTree = "<group>"; };
+		6DD40F0C137368B100D602D3 /* Event.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Event.lua; sourceTree = "<group>"; };
+		6DD40F0D137368B100D602D3 /* EventDispatcher.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = EventDispatcher.lua; sourceTree = "<group>"; };
+		6DD40F0E137368B100D602D3 /* EventHandler.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = EventHandler.lua; sourceTree = "<group>"; };
+		6DD40F0F137368B100D602D3 /* FixedShader.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = FixedShader.lua; sourceTree = "<group>"; };
+		6DD40F10137368B100D602D3 /* FixedShaderBinding.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = FixedShaderBinding.lua; sourceTree = "<group>"; };
+		6DD40F11137368B100D602D3 /* Font.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Font.lua; sourceTree = "<group>"; };
+		6DD40F12137368B100D602D3 /* FontManager.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = FontManager.lua; sourceTree = "<group>"; };
+		6DD40F13137368B100D602D3 /* GenericScene.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = GenericScene.lua; sourceTree = "<group>"; };
+		6DD40F14137368B100D602D3 /* Image.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Image.lua; sourceTree = "<group>"; };
+		6DD40F15137368B100D602D3 /* InputEvent.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = InputEvent.lua; sourceTree = "<group>"; };
+		6DD40F16137368B100D602D3 /* Label.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Label.lua; sourceTree = "<group>"; };
+		6DD40F17137368B100D602D3 /* Logger.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Logger.lua; sourceTree = "<group>"; };
+		6DD40F18137368B100D602D3 /* Material.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Material.lua; sourceTree = "<group>"; };
+		6DD40F19137368B100D602D3 /* MaterialManager.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = MaterialManager.lua; sourceTree = "<group>"; };
+		6DD40F1A137368B100D602D3 /* Matrix4.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Matrix4.lua; sourceTree = "<group>"; };
+		6DD40F1B137368B100D602D3 /* Mesh.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Mesh.lua; sourceTree = "<group>"; };
+		6DD40F1C137368B100D602D3 /* ObjectEntry.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = ObjectEntry.lua; sourceTree = "<group>"; };
+		6DD40F1D137368B100D602D3 /* OpenGLCubemap.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = OpenGLCubemap.lua; sourceTree = "<group>"; };
+		6DD40F1E137368B100D602D3 /* OSBasics.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = OSBasics.lua; sourceTree = "<group>"; };
+		6DD40F1F137368B100D602D3 /* OSFILE.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = OSFILE.lua; sourceTree = "<group>"; };
+		6DD40F20137368B100D602D3 /* OSFileEntry.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = OSFileEntry.lua; sourceTree = "<group>"; };
+		6DD40F21137368B100D602D3 /* Particle.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Particle.lua; sourceTree = "<group>"; };
+		6DD40F22137368B100D602D3 /* ParticleEmitter.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = ParticleEmitter.lua; sourceTree = "<group>"; };
+		6DD40F23137368B100D602D3 /* Perlin.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Perlin.lua; sourceTree = "<group>"; };
+		6DD40F24137368B100D602D3 /* PolycodeModule.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = PolycodeModule.lua; sourceTree = "<group>"; };
+		6DD40F25137368B100D602D3 /* Polygon.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Polygon.lua; sourceTree = "<group>"; };
+		6DD40F26137368B100D602D3 /* Quaternion.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Quaternion.lua; sourceTree = "<group>"; };
+		6DD40F27137368B100D602D3 /* QuaternionCurve.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = QuaternionCurve.lua; sourceTree = "<group>"; };
+		6DD40F28137368B100D602D3 /* QuaternionTween.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = QuaternionTween.lua; sourceTree = "<group>"; };
+		6DD40F29137368B100D602D3 /* Rectangle.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Rectangle.lua; sourceTree = "<group>"; };
+		6DD40F2A137368B100D602D3 /* Renderer.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Renderer.lua; sourceTree = "<group>"; };
+		6DD40F2B137368B100D602D3 /* Resource.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Resource.lua; sourceTree = "<group>"; };
+		6DD40F2C137368B100D602D3 /* ResourceManager.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = ResourceManager.lua; sourceTree = "<group>"; };
+		6DD40F2D137368B100D602D3 /* Scene.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Scene.lua; sourceTree = "<group>"; };
+		6DD40F2E137368B100D602D3 /* SceneEntity.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = SceneEntity.lua; sourceTree = "<group>"; };
+		6DD40F2F137368B100D602D3 /* SceneLabel.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = SceneLabel.lua; sourceTree = "<group>"; };
+		6DD40F30137368B100D602D3 /* SceneLight.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = SceneLight.lua; sourceTree = "<group>"; };
+		6DD40F31137368B100D602D3 /* SceneLine.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = SceneLine.lua; sourceTree = "<group>"; };
+		6DD40F32137368B100D602D3 /* SceneManager.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = SceneManager.lua; sourceTree = "<group>"; };
+		6DD40F33137368B100D602D3 /* SceneMesh.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = SceneMesh.lua; sourceTree = "<group>"; };
+		6DD40F34137368B100D602D3 /* SceneParticleEmitter.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = SceneParticleEmitter.lua; sourceTree = "<group>"; };
+		6DD40F35137368B100D602D3 /* ScenePrimitive.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = ScenePrimitive.lua; sourceTree = "<group>"; };
+		6DD40F36137368B100D602D3 /* SceneRenderTexture.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = SceneRenderTexture.lua; sourceTree = "<group>"; };
+		6DD40F37137368B100D602D3 /* Screen.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Screen.lua; sourceTree = "<group>"; };
+		6DD40F38137368B100D602D3 /* ScreenCurve.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = ScreenCurve.lua; sourceTree = "<group>"; };
+		6DD40F39137368B100D602D3 /* ScreenEntity.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = ScreenEntity.lua; sourceTree = "<group>"; };
+		6DD40F3A137368B100D602D3 /* ScreenEvent.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = ScreenEvent.lua; sourceTree = "<group>"; };
+		6DD40F3B137368B100D602D3 /* ScreenImage.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = ScreenImage.lua; sourceTree = "<group>"; };
+		6DD40F3C137368B100D602D3 /* ScreenLabel.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = ScreenLabel.lua; sourceTree = "<group>"; };
+		6DD40F3D137368B100D602D3 /* ScreenLine.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = ScreenLine.lua; sourceTree = "<group>"; };
+		6DD40F3E137368B100D602D3 /* ScreenManager.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = ScreenManager.lua; sourceTree = "<group>"; };
+		6DD40F3F137368B100D602D3 /* ScreenMesh.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = ScreenMesh.lua; sourceTree = "<group>"; };
+		6DD40F40137368B100D602D3 /* ScreenParticleEmitter.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = ScreenParticleEmitter.lua; sourceTree = "<group>"; };
+		6DD40F41137368B100D602D3 /* ScreenShape.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = ScreenShape.lua; sourceTree = "<group>"; };
+		6DD40F42137368B100D602D3 /* ScreenSprite.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = ScreenSprite.lua; sourceTree = "<group>"; };
+		6DD40F43137368B100D602D3 /* Shader.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Shader.lua; sourceTree = "<group>"; };
+		6DD40F44137368B100D602D3 /* ShaderBinding.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = ShaderBinding.lua; sourceTree = "<group>"; };
+		6DD40F45137368B100D602D3 /* Skeleton.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Skeleton.lua; sourceTree = "<group>"; };
+		6DD40F46137368B100D602D3 /* SkeletonAnimation.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = SkeletonAnimation.lua; sourceTree = "<group>"; };
+		6DD40F47137368B100D602D3 /* Sound.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Sound.lua; sourceTree = "<group>"; };
+		6DD40F48137368B100D602D3 /* SoundManager.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = SoundManager.lua; sourceTree = "<group>"; };
+		6DD40F49137368B100D602D3 /* String.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = String.lua; sourceTree = "<group>"; };
+		6DD40F4A137368B100D602D3 /* Texture.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Texture.lua; sourceTree = "<group>"; };
+		6DD40F4B137368B100D602D3 /* Timer.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Timer.lua; sourceTree = "<group>"; };
+		6DD40F4C137368B100D602D3 /* TimerManager.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = TimerManager.lua; sourceTree = "<group>"; };
+		6DD40F4D137368B100D602D3 /* Tween.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Tween.lua; sourceTree = "<group>"; };
+		6DD40F4E137368B100D602D3 /* TweenManager.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = TweenManager.lua; sourceTree = "<group>"; };
+		6DD40F4F137368B100D602D3 /* Vector2.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Vector2.lua; sourceTree = "<group>"; };
+		6DD40F50137368B100D602D3 /* Vector3.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Vector3.lua; sourceTree = "<group>"; };
+		6DD40F51137368B100D602D3 /* Vertex.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Vertex.lua; sourceTree = "<group>"; };
+		6DD40F52137368B100D602D3 /* VertexBuffer.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = VertexBuffer.lua; sourceTree = "<group>"; };
+		6DD40F53137368B100D602D3 /* Polycode.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = Polycode.lua; sourceTree = "<group>"; };
+		6DD40F55137368B100D602D3 /* PolycodeLUA.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PolycodeLUA.h; sourceTree = "<group>"; };
+		6DD40F56137368B100D602D3 /* PolycodeLUA2D.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PolycodeLUA2D.h; sourceTree = "<group>"; };
+		6DD40F57137368B100D602D3 /* PolycodeLUAWrappers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PolycodeLUAWrappers.h; sourceTree = "<group>"; };
+		6DD40F59137368B100D602D3 /* PolycodeLUA.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PolycodeLUA.cpp; sourceTree = "<group>"; };
+		6DD40F8313736CF200D602D3 /* libogg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libogg.a; path = "../../../../../../Library/Developer/Xcode/DerivedData/Ogg-hciijcupphkumzcznsrkjblfzoze/Build/Products/Debug/libogg.a"; sourceTree = "<group>"; };
+		6DD40F8513736CF900D602D3 /* libvorbis.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbis.a; path = "../../../../../../Library/Developer/Xcode/DerivedData/Vorbis-ajdgxoyxsyfhmzbffuvabiolqjkv/Build/Products/Debug/libvorbis.a"; sourceTree = "<group>"; };
+		6DD40F8913736D0C00D602D3 /* libvorbisfile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbisfile.a; path = "../../../../../../Library/Developer/Xcode/DerivedData/Vorbis-ajdgxoyxsyfhmzbffuvabiolqjkv/Build/Products/Debug/libvorbisfile.a"; sourceTree = "<group>"; };
 		8D15AC360486D014006FF6A4 /* Polycode_Player-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Polycode_Player-Info.plist"; sourceTree = "<group>"; };
 		8D15AC370486D014006FF6A4 /* Polycode Player.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Polycode Player.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -84,22 +171,20 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6DD40EF6137363C800D602D3 /* libPolycodeLUA.a in Frameworks */,
 				8D15AC340486D014006FF6A4 /* Cocoa.framework in Frameworks */,
 				6DBAB07E12B6EAAD00986D01 /* libfreetype.a in Frameworks */,
 				6DBAB07F12B6EAAD00986D01 /* libz.a in Frameworks */,
 				6DBAB08012B6EAAD00986D01 /* libpng.a in Frameworks */,
 				6DBAB08212B6EAAD00986D01 /* OpenAL.framework in Frameworks */,
 				6DBAB08312B6EAAD00986D01 /* OpenGL.framework in Frameworks */,
-				6DBAB08412B6EAAD00986D01 /* libPolyCore.a in Frameworks */,
 				6D34133512B7FC760034FA9B /* libphysfs.a in Frameworks */,
 				6D34134112B7FCD00034FA9B /* IOKit.framework in Frameworks */,
 				6D34153C12B82C7A0034FA9B /* liblua.a in Frameworks */,
-				6D34160612B837250034FA9B /* libPolycodeLUA.a in Frameworks */,
-				6D674A031340FE2700218B97 /* libogg.0.dylib in Frameworks */,
-				6D674A071340FE2D00218B97 /* libvorbisfile.a in Frameworks */,
-				6D674A081340FE2D00218B97 /* libvorbis.a in Frameworks */,
-				6D674A091340FE2D00218B97 /* libogg.a in Frameworks */,
-				6D994DC5134D932A0044DD0B /* libPolycodeGLSL.a in Frameworks */,
+				6DD40EF81373683000D602D3 /* libPolyCore.a in Frameworks */,
+				6DD40F8413736CF200D602D3 /* libogg.a in Frameworks */,
+				6DD40F8613736CF900D602D3 /* libvorbis.a in Frameworks */,
+				6DD40F8A13736D0C00D602D3 /* libvorbisfile.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -109,12 +194,6 @@
 		1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				6D994DC4134D932A0044DD0B /* libPolycodeGLSL.a */,
-				6D674A021340FE2700218B97 /* libogg.0.dylib */,
-				6D674A041340FE2D00218B97 /* libvorbisfile.a */,
-				6D674A051340FE2D00218B97 /* libvorbis.a */,
-				6D674A061340FE2D00218B97 /* libogg.a */,
-				6D34160512B837250034FA9B /* libPolycodeLUA.a */,
 				6D34153B12B82C7A0034FA9B /* liblua.a */,
 				6D34134012B7FCD00034FA9B /* IOKit.framework */,
 				6D34133412B7FC760034FA9B /* libphysfs.a */,
@@ -123,7 +202,6 @@
 				6DBAB07912B6EAAD00986D01 /* libpng.a */,
 				6DBAB07B12B6EAAD00986D01 /* OpenAL.framework */,
 				6DBAB07C12B6EAAD00986D01 /* OpenGL.framework */,
-				6DBAB07D12B6EAAD00986D01 /* libPolyCore.a */,
 				1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */,
 			);
 			name = "Linked Frameworks";
@@ -150,6 +228,7 @@
 		2A37F4AAFDCFA73011CA2CEA /* Polycode Player */ = {
 			isa = PBXGroup;
 			children = (
+				6DD40EFA137368B100D602D3 /* LUA */,
 				2A37F4ABFDCFA73011CA2CEA /* Classes */,
 				2A37F4AFFDCFA73011CA2CEA /* Other Sources */,
 				2A37F4B8FDCFA73011CA2CEA /* Resources */,
@@ -162,12 +241,12 @@
 		2A37F4ABFDCFA73011CA2CEA /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				6DBAB0C312B6EE4400986D01 /* PolycodePlayer.cpp */,
+				6DD40EF2137361E600D602D3 /* PolycodeView.h */,
+				6DD40EF3137361E600D602D3 /* PolycodeView.mm */,
+				6DBAB0C312B6EE4400986D01 /* PolycodePlayer.mm */,
 				6DBAB0C212B6EE2200986D01 /* PolycodePlayer.h */,
-				6DBAB0BE12B6ECCB00986D01 /* PolycodeCocoaPlayer.cpp */,
+				6DBAB0BE12B6ECCB00986D01 /* PolycodeCocoaPlayer.mm */,
 				6DBAB0BD12B6ECC400986D01 /* PolycodeCocoaPlayer.h */,
-				6DBAB04912B6EA4300986D01 /* PolySubstanceView.m */,
-				6DBAB04A12B6EA4300986D01 /* PolySubstanceView.h */,
 				2A37F4AEFDCFA73011CA2CEA /* MyDocument.h */,
 				2A37F4ACFDCFA73011CA2CEA /* MyDocument.m */,
 				6D34117912B7D6ED0034FA9B /* PPlayerDocumentController.h */,
@@ -188,8 +267,8 @@
 		2A37F4B8FDCFA73011CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				6DFF707C1343059400B0C47E /* app_file_icon.icns */,
-				6DFF70411342F4AD00B0C47E /* player_icon.icns */,
+				6DD40EEE137361AE00D602D3 /* app_file_icon.icns */,
+				6DD40EEF137361AE00D602D3 /* player_icon.icns */,
 				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
 				8D15AC360486D014006FF6A4 /* Polycode_Player-Info.plist */,
 				089C165FFE840EACC02AAC07 /* InfoPlist.strings */,
@@ -202,10 +281,146 @@
 		2A37F4C3FDCFA73011CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6DD40F8913736D0C00D602D3 /* libvorbisfile.a */,
+				6DD40F8513736CF900D602D3 /* libvorbis.a */,
+				6DD40F8313736CF200D602D3 /* libogg.a */,
+				6DD40EF71373682F00D602D3 /* libPolyCore.a */,
+				6DD40EF5137363C800D602D3 /* libPolycodeLUA.a */,
 				1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */,
 				1058C7A8FEA54F5311CA2CBB /* Other Frameworks */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		6DD40EFA137368B100D602D3 /* LUA */ = {
+			isa = PBXGroup;
+			children = (
+				6DD40EFB137368B100D602D3 /* API */,
+				6DD40F54137368B100D602D3 /* Include */,
+				6DD40F58137368B100D602D3 /* Source */,
+			);
+			name = LUA;
+			path = ../../../Bindings/Contents/LUA;
+			sourceTree = "<group>";
+		};
+		6DD40EFB137368B100D602D3 /* API */ = {
+			isa = PBXGroup;
+			children = (
+				6DD40EFC137368B100D602D3 /* class.lua */,
+				6DD40EFD137368B100D602D3 /* defaults.lua */,
+				6DD40EFE137368B100D602D3 /* Polycode */,
+				6DD40F53137368B100D602D3 /* Polycode.lua */,
+			);
+			path = API;
+			sourceTree = "<group>";
+		};
+		6DD40EFE137368B100D602D3 /* Polycode */ = {
+			isa = PBXGroup;
+			children = (
+				6DD40EFF137368B100D602D3 /* BezierCurve.lua */,
+				6DD40F00137368B100D602D3 /* BezierPathTween.lua */,
+				6DD40F01137368B100D602D3 /* Bone.lua */,
+				6DD40F02137368B100D602D3 /* BoneTrack.lua */,
+				6DD40F03137368B100D602D3 /* Camera.lua */,
+				6DD40F04137368B100D602D3 /* Color.lua */,
+				6DD40F05137368B100D602D3 /* Config.lua */,
+				6DD40F06137368B100D602D3 /* Core.lua */,
+				6DD40F07137368B100D602D3 /* CoreInput.lua */,
+				6DD40F08137368B100D602D3 /* CoreServices.lua */,
+				6DD40F09137368B100D602D3 /* Cubemap.lua */,
+				6DD40F0A137368B100D602D3 /* Data.lua */,
+				6DD40F0B137368B100D602D3 /* Entity.lua */,
+				6DD40F0C137368B100D602D3 /* Event.lua */,
+				6DD40F0D137368B100D602D3 /* EventDispatcher.lua */,
+				6DD40F0E137368B100D602D3 /* EventHandler.lua */,
+				6DD40F0F137368B100D602D3 /* FixedShader.lua */,
+				6DD40F10137368B100D602D3 /* FixedShaderBinding.lua */,
+				6DD40F11137368B100D602D3 /* Font.lua */,
+				6DD40F12137368B100D602D3 /* FontManager.lua */,
+				6DD40F13137368B100D602D3 /* GenericScene.lua */,
+				6DD40F14137368B100D602D3 /* Image.lua */,
+				6DD40F15137368B100D602D3 /* InputEvent.lua */,
+				6DD40F16137368B100D602D3 /* Label.lua */,
+				6DD40F17137368B100D602D3 /* Logger.lua */,
+				6DD40F18137368B100D602D3 /* Material.lua */,
+				6DD40F19137368B100D602D3 /* MaterialManager.lua */,
+				6DD40F1A137368B100D602D3 /* Matrix4.lua */,
+				6DD40F1B137368B100D602D3 /* Mesh.lua */,
+				6DD40F1C137368B100D602D3 /* ObjectEntry.lua */,
+				6DD40F1D137368B100D602D3 /* OpenGLCubemap.lua */,
+				6DD40F1E137368B100D602D3 /* OSBasics.lua */,
+				6DD40F1F137368B100D602D3 /* OSFILE.lua */,
+				6DD40F20137368B100D602D3 /* OSFileEntry.lua */,
+				6DD40F21137368B100D602D3 /* Particle.lua */,
+				6DD40F22137368B100D602D3 /* ParticleEmitter.lua */,
+				6DD40F23137368B100D602D3 /* Perlin.lua */,
+				6DD40F24137368B100D602D3 /* PolycodeModule.lua */,
+				6DD40F25137368B100D602D3 /* Polygon.lua */,
+				6DD40F26137368B100D602D3 /* Quaternion.lua */,
+				6DD40F27137368B100D602D3 /* QuaternionCurve.lua */,
+				6DD40F28137368B100D602D3 /* QuaternionTween.lua */,
+				6DD40F29137368B100D602D3 /* Rectangle.lua */,
+				6DD40F2A137368B100D602D3 /* Renderer.lua */,
+				6DD40F2B137368B100D602D3 /* Resource.lua */,
+				6DD40F2C137368B100D602D3 /* ResourceManager.lua */,
+				6DD40F2D137368B100D602D3 /* Scene.lua */,
+				6DD40F2E137368B100D602D3 /* SceneEntity.lua */,
+				6DD40F2F137368B100D602D3 /* SceneLabel.lua */,
+				6DD40F30137368B100D602D3 /* SceneLight.lua */,
+				6DD40F31137368B100D602D3 /* SceneLine.lua */,
+				6DD40F32137368B100D602D3 /* SceneManager.lua */,
+				6DD40F33137368B100D602D3 /* SceneMesh.lua */,
+				6DD40F34137368B100D602D3 /* SceneParticleEmitter.lua */,
+				6DD40F35137368B100D602D3 /* ScenePrimitive.lua */,
+				6DD40F36137368B100D602D3 /* SceneRenderTexture.lua */,
+				6DD40F37137368B100D602D3 /* Screen.lua */,
+				6DD40F38137368B100D602D3 /* ScreenCurve.lua */,
+				6DD40F39137368B100D602D3 /* ScreenEntity.lua */,
+				6DD40F3A137368B100D602D3 /* ScreenEvent.lua */,
+				6DD40F3B137368B100D602D3 /* ScreenImage.lua */,
+				6DD40F3C137368B100D602D3 /* ScreenLabel.lua */,
+				6DD40F3D137368B100D602D3 /* ScreenLine.lua */,
+				6DD40F3E137368B100D602D3 /* ScreenManager.lua */,
+				6DD40F3F137368B100D602D3 /* ScreenMesh.lua */,
+				6DD40F40137368B100D602D3 /* ScreenParticleEmitter.lua */,
+				6DD40F41137368B100D602D3 /* ScreenShape.lua */,
+				6DD40F42137368B100D602D3 /* ScreenSprite.lua */,
+				6DD40F43137368B100D602D3 /* Shader.lua */,
+				6DD40F44137368B100D602D3 /* ShaderBinding.lua */,
+				6DD40F45137368B100D602D3 /* Skeleton.lua */,
+				6DD40F46137368B100D602D3 /* SkeletonAnimation.lua */,
+				6DD40F47137368B100D602D3 /* Sound.lua */,
+				6DD40F48137368B100D602D3 /* SoundManager.lua */,
+				6DD40F49137368B100D602D3 /* String.lua */,
+				6DD40F4A137368B100D602D3 /* Texture.lua */,
+				6DD40F4B137368B100D602D3 /* Timer.lua */,
+				6DD40F4C137368B100D602D3 /* TimerManager.lua */,
+				6DD40F4D137368B100D602D3 /* Tween.lua */,
+				6DD40F4E137368B100D602D3 /* TweenManager.lua */,
+				6DD40F4F137368B100D602D3 /* Vector2.lua */,
+				6DD40F50137368B100D602D3 /* Vector3.lua */,
+				6DD40F51137368B100D602D3 /* Vertex.lua */,
+				6DD40F52137368B100D602D3 /* VertexBuffer.lua */,
+			);
+			path = Polycode;
+			sourceTree = "<group>";
+		};
+		6DD40F54137368B100D602D3 /* Include */ = {
+			isa = PBXGroup;
+			children = (
+				6DD40F55137368B100D602D3 /* PolycodeLUA.h */,
+				6DD40F56137368B100D602D3 /* PolycodeLUA2D.h */,
+				6DD40F57137368B100D602D3 /* PolycodeLUAWrappers.h */,
+			);
+			path = Include;
+			sourceTree = "<group>";
+		};
+		6DD40F58137368B100D602D3 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				6DD40F59137368B100D602D3 /* PolycodeLUA.cpp */,
+			);
+			path = Source;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -218,7 +433,7 @@
 				8D15AC2B0486D014006FF6A4 /* Resources */,
 				8D15AC300486D014006FF6A4 /* Sources */,
 				8D15AC330486D014006FF6A4 /* Frameworks */,
-				6DBAB13C12B73A1800986D01 /* ShellScript */,
+				6DD40F8C13736EEC00D602D3 /* Run Script */,
 			);
 			buildRules = (
 			);
@@ -263,26 +478,27 @@
 				8D15AC2F0486D014006FF6A4 /* InfoPlist.strings in Resources */,
 				1DDD582C0DA1D0D100B32029 /* MyDocument.xib in Resources */,
 				1DDD582D0DA1D0D100B32029 /* MainMenu.xib in Resources */,
-				6DFF70421342F4AD00B0C47E /* player_icon.icns in Resources */,
-				6DFF707D1343059400B0C47E /* app_file_icon.icns in Resources */,
+				6DD40EF0137361AE00D602D3 /* app_file_icon.icns in Resources */,
+				6DD40EF1137361AE00D602D3 /* player_icon.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		6DBAB13C12B73A1800986D01 /* ShellScript */ = {
+		6DD40F8C13736EEC00D602D3 /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = "Run Script";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R ../../../Bindings/Contents/LUA/API build/Debug/Polycode\\ Player.app/Contents/Resources/";
+			shellScript = "cp -R ../../../Bindings/Contents/LUA/API $BUILT_PRODUCTS_DIR/Polycode\\ Player.app/Contents/Resources\ncp -R ../../../Assets/Default\\ asset\\ pack/default.pak $BUILT_PRODUCTS_DIR/Polycode\\ Player.app/Contents/Resources";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -293,10 +509,10 @@
 			files = (
 				8D15AC310486D014006FF6A4 /* MyDocument.m in Sources */,
 				8D15AC320486D014006FF6A4 /* main.m in Sources */,
-				6DBAB04B12B6EA4300986D01 /* PolySubstanceView.m in Sources */,
-				6DBAB0BF12B6ECCB00986D01 /* PolycodeCocoaPlayer.cpp in Sources */,
-				6DBAB0C412B6EE4400986D01 /* PolycodePlayer.cpp in Sources */,
+				6DBAB0BF12B6ECCB00986D01 /* PolycodeCocoaPlayer.mm in Sources */,
+				6DBAB0C412B6EE4400986D01 /* PolycodePlayer.mm in Sources */,
 				6D34117B12B7D6ED0034FA9B /* PPlayerDocumentController.m in Sources */,
+				6DD40EF4137361E600D602D3 /* PolycodeView.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -364,6 +580,11 @@
 					"\"$(SRCROOT)/../../../Bindings/Build/Mac OS X/build/Debug\"",
 					"\"$(SRCROOT)/../../../Core/Dependencies/libogg\"",
 					"\"$(SRCROOT)/../../../Core/Dependencies/libvorbis\"",
+					"\"$(SRCROOT)/../../../../../../Library/Developer/Xcode/DerivedData/Bindings-bojbiqnjfgqgjpgcdihwtncgpnvk/Build/Products/Debug\"",
+					"\"$(SRCROOT)/../../../../../../Library/Developer/Xcode/DerivedData/PolyCore-ecbhldydhvplehavgvhjdlapyvwd/Build/Products/Debug\"",
+					"\"$(SRCROOT)/../../../../../../Library/Developer/Xcode/DerivedData/Ogg-dehvynarqzqpyfeqgzpikemxralf/Build/Products/Debug\"",
+					"\"$(SRCROOT)/../../../../../../Library/Developer/Xcode/DerivedData/Ogg-hciijcupphkumzcznsrkjblfzoze/Build/Products/Debug\"",
+					"\"$(SRCROOT)/../../../../../../Library/Developer/Xcode/DerivedData/Vorbis-ajdgxoyxsyfhmzbffuvabiolqjkv/Build/Products/Debug\"",
 				);
 				PRODUCT_NAME = "Polycode Player";
 			};
@@ -392,7 +613,13 @@
 					"\"$(SRCROOT)/../../../Bindings/Build/Mac OS X/build/Debug\"",
 					"\"$(SRCROOT)/../../../Core/Dependencies/libogg\"",
 					"\"$(SRCROOT)/../../../Core/Dependencies/libvorbis\"",
+					"\"$(SRCROOT)/../../../../../../Library/Developer/Xcode/DerivedData/Bindings-bojbiqnjfgqgjpgcdihwtncgpnvk/Build/Products/Debug\"",
+					"\"$(SRCROOT)/../../../../../../Library/Developer/Xcode/DerivedData/PolyCore-ecbhldydhvplehavgvhjdlapyvwd/Build/Products/Debug\"",
+					"\"$(SRCROOT)/../../../../../../Library/Developer/Xcode/DerivedData/Ogg-dehvynarqzqpyfeqgzpikemxralf/Build/Products/Debug\"",
+					"\"$(SRCROOT)/../../../../../../Library/Developer/Xcode/DerivedData/Ogg-hciijcupphkumzcznsrkjblfzoze/Build/Products/Debug\"",
+					"\"$(SRCROOT)/../../../../../../Library/Developer/Xcode/DerivedData/Vorbis-ajdgxoyxsyfhmzbffuvabiolqjkv/Build/Products/Debug\"",
 				);
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "Polycode Player";
 			};
 			name = Release;

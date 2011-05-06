@@ -33,6 +33,8 @@
 {
 	self = [super initWithFrame:frameRect pixelFormat:format];
 	if(self) {
+		glSizeX = 0;
+		glSizeY = 0;		
 		viewReady = NO;
 		currentCursor = NULL;
 		contextLock = [[NSLock alloc] init];
@@ -265,14 +267,18 @@
 }
 
 - (void) drawRect:(NSRect)rect {
-	
+	if(glSizeX != (int)[self frame].size.width || glSizeY != (int)[self frame].size.height) {
+		glSizeX = (int)[self frame].size.width;
+		glSizeY = (int)[self frame].size.height;		
+		
+		if(core != NULL) {
+			core->resizeTo(glSizeX, glSizeY);
+		}
+		
+	}
 }
 
 -(void) windowResized: (NSNotification *) notification {
-	NSSize size = [self frame].size;
-	if(core == NULL)
-			return;	
-	core->resizeTo(size.width, size.height);
 }
 
 -(void) dealloc {

@@ -45,8 +45,8 @@ function Vector3:set(x, y, z)
 	local retVal = Polycore.Vector3_set(self.__ptr, x, y, z)
 end
 
-function Vector3:distance(rhs)
-	local retVal = Polycore.Vector3_distance(self.__ptr, rhs.__ptr)
+function Vector3:distance(vec2)
+	local retVal = Polycore.Vector3_distance(self.__ptr, vec2.__ptr)
 	return retVal
 end
 
@@ -60,8 +60,8 @@ function Vector3:dot(u)
 	return retVal
 end
 
-function Vector3:crossProduct(rkVector)
-	local retVal = Polycore.Vector3_crossProduct(self.__ptr, rkVector.__ptr)
+function Vector3:crossProduct(vec2)
+	local retVal = Polycore.Vector3_crossProduct(self.__ptr, vec2.__ptr)
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

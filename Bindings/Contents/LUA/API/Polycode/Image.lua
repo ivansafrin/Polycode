@@ -54,10 +54,6 @@ function Image:getPixel(x, y)
 	end
 end
 
-function Image:setAAPixel(x, y, col)
-	local retVal = Polycore.Image_setAAPixel(self.__ptr, x, y, col.__ptr)
-end
-
 function Image:swap(v1, v2)
 	local retVal = Polycore.Image_swap(self.__ptr, v1.__ptr, v2.__ptr)
 end

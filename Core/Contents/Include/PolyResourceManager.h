@@ -59,7 +59,7 @@ namespace Polycode {
 			* @param dirPath Path to directory to load resources from.
 			* @param recursive If true, will recurse into subdirectories.
 			*/
-			void addDirResource(String dirPath, bool recursive);
+			void addDirResource(String dirPath, bool recursive=true);
 			
 			/**
 			* Adds a zip as a readable source. This doesn't actually load resources from it, just mounts it as a readable source, so you can call addDirResource on the folders inside of it like you would on regular folders. Most other disk IO in the engine (loading images, etc.) will actually check mounted archive files as well.
@@ -73,6 +73,7 @@ namespace Polycode {
 			void parseShaders(String dirPath, bool recursive);
 			void parsePrograms(String dirPath, bool recursive);
 			void parseCubemaps(String dirPath, bool recursive);
+			void parseOthers(String dirPath, bool recursive);	
 		
 			/**
 			* Request a loaded resource. You need to manually cast it to its subclass based on its type.

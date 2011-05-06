@@ -1,26 +1,11 @@
-class "Vector2"
+require "Polycode/Vector3"
+
+class "Vector2" (Vector3)
 
 
 
-function Vector2:__index__(name)
-	if name == "x" then
-		return Polycore.Vector2_get_x(self.__ptr)
-	elseif name == "y" then
-		return Polycore.Vector2_get_y(self.__ptr)
-	end
-end
 
 
-function Vector2:__set_callback(name,value)
-	if name == "x" then
-		Polycore.Vector2_set_x(self.__ptr, value)
-		return true
-	elseif name == "y" then
-		Polycore.Vector2_set_y(self.__ptr, value)
-		return true
-	end
-	return false
-end
 
 
 function Vector2:Vector2(...)
