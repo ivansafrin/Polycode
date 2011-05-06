@@ -174,6 +174,7 @@ for fileName in files:
 							param["name"] = param["name"].replace("end", "_end").replace("repeat", "_repeat")
 							if"type" in param:
 								luatype = "LUA_TLIGHTUSERDATA"
+								checkfunc = "lua_islightuserdata"
 								if param["type"].find("*") > -1:
 									luafunc = "(%s)lua_topointer" % (param["type"].replace("Polygon", "Polycode::Polygon"))
 								elif param["type"].find("&") > -1:
@@ -184,24 +185,39 @@ for fileName in files:
 								if param["type"] == "int" or param["type"] == "unsigned int":
 									luafunc = "lua_tointeger"
 									luatype = "LUA_TNUMBER"
+									checkfunc = "lua_isnumber"
 									lend = ""
 								if param["type"] == "bool":
 									luafunc = "lua_toboolean"
 									luatype = "LUA_TBOOLEAN"
+									checkfunc = "lua_isboolean"
 									lend = ""
 								if param["type"] == "Number":
 									luatype = "LUA_TNUMBER"
 									luafunc = "lua_tonumber"
+									checkfunc = "lua_isnumber"
 									lend = ""
 								if param["type"] == "String":
 									luatype = "LUA_TSTRING"
 									luafunc = "lua_tostring"
+									checkfunc = "lua_isstring"
 									lend = ""
 								
 								param["type"] = param["type"].replace("Polygon", "Polycode::Polygon")
 
-								out += "\tluaL_checktype(L, %d, %s);\n" % (idx, luatype);
-								out += "\t%s %s = %s(L, %d);\n" % (param["type"], param["name"], luafunc, idx)
+								if "defaltValue" in param and checkfunc != "lua_islightuserdata":
+									param["defaltValue"] = param["defaltValue"].replace(" 0f", ".0f")
+									param["defaltValue"] = param["defaltValue"].replace(": :", "::")
+
+									out += "\t%s %s;\n" % (param["type"], param["name"])
+									out += "\tif(%s(L, %d)) {\n" % (checkfunc, idx)
+									out += "\t\t%s = %s(L, %d);\n" % (param["name"], luafunc, idx)
+									out += "\t} else {\n"
+									out += "\t\t%s = %s;\n" % (param["name"], param["defaltValue"])
+									out += "\t}\n"
+								else:
+									out += "\tluaL_checktype(L, %d, %s);\n" % (idx, luatype);
+									out += "\t%s %s = %s(L, %d);\n" % (param["type"], param["name"], luafunc, idx)
 								paramlist.append(param["name"])
 							
 								lparamlist.append(param["name"]+lend)
