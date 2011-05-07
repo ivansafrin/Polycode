@@ -15,15 +15,15 @@ function EventHandler:EventHandler(...)
 		end
 	end
 	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
-		self.__ptr = Polycore.EventHandler(unpack(arg))
+		self.__ptr = Polycore.EventHandler(self)
+		Polycore.__ptr_lookup[self.__ptr] = self
 	end
 end
 
-function EventHandler:secondaryHandler(event)
-	local retVal = Polycore.EventHandler_secondaryHandler(self.__ptr, event.__ptr)
-end
 
-function EventHandler:handleEvent(event)
-	local retVal = Polycore.EventHandler_handleEvent(self.__ptr, event.__ptr)
-end
 
+function EventHandler:__handleEvent(event)
+	evt = Event("__skip_ptr__")
+	evt.__ptr = event
+	self:handleEvent(evt)
+end

@@ -25,6 +25,9 @@ Examples
 Release
 Documentation
 
+Tools/Build/Linux/polybuild*
+Tools/Build/Linux/polyimport*
+
 # OS generated files #
 ######################
 .DS_Store?

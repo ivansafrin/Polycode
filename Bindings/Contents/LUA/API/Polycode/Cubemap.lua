@@ -18,6 +18,7 @@ function Cubemap:Cubemap(...)
 	end
 	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
 		self.__ptr = Polycore.Cubemap(unpack(arg))
+		Polycore.__ptr_lookup[self.__ptr] = self
 	end
 end
 

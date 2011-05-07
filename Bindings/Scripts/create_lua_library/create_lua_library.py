@@ -23,6 +23,21 @@ out += "#include \"lua.h\"\n"
 out += "#include \"lualib.h\"\n"
 out += "#include \"lauxlib.h\"\n\n"
 
+out += "class LuaEventHandler : public EventHandler {\n"
+out += "public:\n"
+out += "	LuaEventHandler() : EventHandler() {}\n"
+out += "	~LuaEventHandler();\n"
+out += "	void handleEvent(Event *e) {\n"
+out += "		lua_rawgeti( L, LUA_REGISTRYINDEX, wrapperIndex );\n"
+out += "		lua_getfield(L, -1, \"__handleEvent\");\n"
+out += "		lua_rawgeti( L, LUA_REGISTRYINDEX, wrapperIndex );\n"
+out += "		lua_pushlightuserdata(L, e);\n"
+out += "		lua_call(L, 2, 0);\n"
+out += "	}\n"
+out += "	int wrapperIndex;\n"
+out += "	lua_State *L;\n"
+out += "};\n"
+
 
 files = os.listdir("../../../Core/Contents/Include")
 for fileName in files:
@@ -53,7 +68,7 @@ for fileName in files:
 				if ckey == "OSFileEntry":
 					print c["methods"]["public"]
 				parsed_methods = []
-				ignore_methods = ["readByte32", "readByte16", "getCustomEntitiesByType", "Core","ParticleEmitter", "Renderer", "Shader", "Texture"]
+				ignore_methods = ["readByte32", "readByte16", "getCustomEntitiesByType", "Core","ParticleEmitter", "Renderer", "Shader", "Texture", "handleEvent", "secondaryHandler"]
 				lout += "\n\n"
 
 				pps = []
@@ -224,7 +239,12 @@ for fileName in files:
 								idx = idx +1
 					
 						if pm["name"] == ckey:
-							out += "\t%s *inst = new %s(%s);\n" % (ckey.replace("Polygon", "Polycode::Polygon"), ckey.replace("Polygon", "Polycode::Polygon"), ", ".join(paramlist))
+							if ckey == "EventHandler":
+								out += "\tLuaEventHandler *inst = new LuaEventHandler();\n"
+								out += "\tinst->wrapperIndex = luaL_ref(L, LUA_REGISTRYINDEX );\n"
+								out += "\tinst->L = L;\n"
+							else:
+								out += "\t%s *inst = new %s(%s);\n" % (ckey.replace("Polygon", "Polycode::Polygon"), ckey.replace("Polygon", "Polycode::Polygon"), ", ".join(paramlist))
 							out += "\tlua_pushlightuserdata(L, (void*)inst);\n"
 							out += "\treturn 1;\n"
 						else:
@@ -279,7 +299,11 @@ for fileName in files:
 							lout += "\t\tend\n"
 							lout += "\tend\n"
 							lout += "\tif self.__ptr == nil and arg[1] ~= \"__skip_ptr__\" then\n"
-							lout += "\t\tself.__ptr = Polycore.%s(unpack(arg))\n" % (ckey)
+							if ckey == "EventHandler":
+								lout += "\t\tself.__ptr = Polycore.%s(self)\n" % (ckey)
+							else:
+								lout += "\t\tself.__ptr = Polycore.%s(unpack(arg))\n" % (ckey)
+							lout += "\t\tPolycore.__ptr_lookup[self.__ptr] = self\n"
 							lout += "\tend\n"
 							lout += "end\n\n"
 						else:
@@ -310,6 +334,14 @@ for fileName in files:
 							lout += "end\n\n"
 
 					parsed_methods.append(pm["name"])
+				if ckey == "EventHandler":
+					lout += "\n\n"
+					lout += "function EventHandler:__handleEvent(event)\n"
+					lout += "\tevt = Event(\"__skip_ptr__\")\n"
+					lout += "\tevt.__ptr = event\n"
+					lout += "\tself:handleEvent(evt)\n"
+					#lout += "\tself:handleEvent(event)\n"
+					lout += "end\n"
 				lfout += "require \"Polycode/%s\"\n" % ckey
 				fout = open("../../Contents/LUA/API/Polycode/%s.lua" % ckey, "w")
 				fout.write(lout)

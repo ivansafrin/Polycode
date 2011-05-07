@@ -64,10 +64,6 @@ function CoreServices:getCore()
 	end
 end
 
-function CoreServices:handleEvent(event)
-	local retVal = Polycore.CoreServices_handleEvent(self.__ptr, event.__ptr)
-end
-
 function CoreServices:installModule(module)
 	local retVal = Polycore.CoreServices_installModule(self.__ptr, module.__ptr)
 end

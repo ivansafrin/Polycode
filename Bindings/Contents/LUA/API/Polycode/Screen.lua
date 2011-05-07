@@ -30,6 +30,7 @@ function Screen:Screen(...)
 	end
 	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
 		self.__ptr = Polycore.Screen(unpack(arg))
+		Polycore.__ptr_lookup[self.__ptr] = self
 	end
 end
 
@@ -103,10 +104,6 @@ end
 
 function Screen:setScreenShader(shaderName)
 	local retVal = Polycore.Screen_setScreenShader(self.__ptr, shaderName)
-end
-
-function Screen:handleEvent(event)
-	local retVal = Polycore.Screen_handleEvent(self.__ptr, event.__ptr)
 end
 
 function Screen:getHighestZIndex()

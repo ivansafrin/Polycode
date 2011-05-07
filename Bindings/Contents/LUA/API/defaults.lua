@@ -42,4 +42,3 @@ Services.FontManager.__ptr = Polycore.CoreServices_getFontManager(Polycore.CoreS
 function Update(e)
 end
 
-print("OKGO!")
