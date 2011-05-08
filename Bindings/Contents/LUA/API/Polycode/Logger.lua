@@ -28,3 +28,9 @@ function Logger:logw(str)
 	local retVal = Polycore.Logger_logw(str.__ptr)
 end
 
+
+
+function Logger:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_Logger(self.__ptr)
+end

@@ -417,3 +417,9 @@ function Renderer:getNumLights()
 	return retVal
 end
 
+
+
+function Renderer:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_Renderer(self.__ptr)
+end

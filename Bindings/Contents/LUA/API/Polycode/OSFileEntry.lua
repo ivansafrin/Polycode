@@ -59,3 +59,9 @@ function OSFileEntry:OSFileEntry(...)
 	end
 end
 
+
+
+function OSFileEntry:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_OSFileEntry(self.__ptr)
+end

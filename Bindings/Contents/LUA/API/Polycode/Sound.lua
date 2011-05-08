@@ -73,3 +73,9 @@ function Sound:soundCheck(result, err)
 	local retVal = Polycore.Sound_soundCheck(self.__ptr, result, err)
 end
 
+
+
+function Sound:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_Sound(self.__ptr)
+end

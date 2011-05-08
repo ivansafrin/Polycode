@@ -9,6 +9,11 @@
 			<key>orderHint</key>
 			<integer>5</integer>
 		</dict>
+		<key>Polycode2DPhysicsModule.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>7</integer>
+		</dict>
 		<key>Polycode3DPhysics.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -24,6 +29,11 @@
 			<key>orderHint</key>
 			<integer>2</integer>
 		</dict>
+		<key>PolycodeGLSLModule.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>6</integer>
+		</dict>
 		<key>PolycodeKinect.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -37,6 +47,11 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>6D28012913766CE200BD8D0D</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>6D4B04201312428500C62698</key>
 		<dict>
 			<key>primary</key>
@@ -48,6 +63,11 @@
 			<true/>
 		</dict>
 		<key>6D690D1A12C1D74A00C444B0</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>6D994C7D134D8EEA0044DD0B</key>
 		<dict>
 			<key>primary</key>
 			<true/>

@@ -79,3 +79,9 @@ function ObjectEntry:addChild(name)
 	end
 end
 
+
+
+function ObjectEntry:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_ObjectEntry(self.__ptr)
+end

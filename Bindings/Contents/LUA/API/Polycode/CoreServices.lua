@@ -167,3 +167,9 @@ function CoreServices:getConfig()
 	end
 end
 
+
+
+function CoreServices:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_CoreServices(self.__ptr)
+end

@@ -195,3 +195,9 @@ function Core:getUserPointer()
 	end
 end
 
+
+
+function Core:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_Core(self.__ptr)
+end

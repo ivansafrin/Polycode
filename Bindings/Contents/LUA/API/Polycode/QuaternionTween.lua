@@ -9,6 +9,12 @@ class "QuaternionTween" (Tween)
 
 
 function QuaternionTween:QuaternionTween(...)
+	if type(arg[1]) == "table" and count(arg) == 1 then
+		if ""..arg[1]:class() == "Tween" then
+			self.__ptr = arg[1].__ptr
+			return
+		end
+	end
 	for k,v in pairs(arg) do
 		if type(v) == "table" then
 			if v.__ptr ~= nil then
@@ -26,3 +32,9 @@ function QuaternionTween:updateCustomTween()
 	local retVal =  Polycore.QuaternionTween_updateCustomTween(self.__ptr)
 end
 
+
+
+function QuaternionTween:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_QuaternionTween(self.__ptr)
+end

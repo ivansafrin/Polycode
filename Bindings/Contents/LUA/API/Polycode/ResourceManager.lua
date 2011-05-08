@@ -76,3 +76,9 @@ function ResourceManager:addShaderModule(module)
 	local retVal = Polycore.ResourceManager_addShaderModule(self.__ptr, module.__ptr)
 end
 
+
+
+function ResourceManager:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_ResourceManager(self.__ptr)
+end

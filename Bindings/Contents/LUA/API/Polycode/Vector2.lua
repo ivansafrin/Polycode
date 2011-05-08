@@ -9,6 +9,12 @@ class "Vector2" (Vector3)
 
 
 function Vector2:Vector2(...)
+	if type(arg[1]) == "table" and count(arg) == 1 then
+		if ""..arg[1]:class() == "Vector3" then
+			self.__ptr = arg[1].__ptr
+			return
+		end
+	end
 	for k,v in pairs(arg) do
 		if type(v) == "table" then
 			if v.__ptr ~= nil then
@@ -22,3 +28,9 @@ function Vector2:Vector2(...)
 	end
 end
 
+
+
+function Vector2:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_Vector2(self.__ptr)
+end

@@ -115,3 +115,9 @@ function ShaderBinding:getOutTargetBinding(index)
 	end
 end
 
+
+
+function ShaderBinding:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_ShaderBinding(self.__ptr)
+end

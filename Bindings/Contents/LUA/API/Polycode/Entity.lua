@@ -462,3 +462,9 @@ function Entity:setRenderer(r_enderer)
 	local retVal = Polycore.Entity_setRenderer(self.__ptr, r_enderer.__ptr)
 end
 
+
+
+function Entity:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_Entity(self.__ptr)
+end

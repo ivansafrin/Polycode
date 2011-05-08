@@ -9,6 +9,12 @@ class "SceneLabel" (SceneEntity)
 
 
 function SceneLabel:SceneLabel(...)
+	if type(arg[1]) == "table" and count(arg) == 1 then
+		if ""..arg[1]:class() == "SceneEntity" then
+			self.__ptr = arg[1].__ptr
+			return
+		end
+	end
 	for k,v in pairs(arg) do
 		if type(v) == "table" then
 			if v.__ptr ~= nil then
@@ -46,3 +52,9 @@ function SceneLabel:Render()
 	local retVal =  Polycore.SceneLabel_Render(self.__ptr)
 end
 
+
+
+function SceneLabel:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_SceneLabel(self.__ptr)
+end

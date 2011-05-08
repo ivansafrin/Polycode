@@ -9,6 +9,12 @@ class "ScreenSprite" (ScreenShape)
 
 
 function ScreenSprite:ScreenSprite(...)
+	if type(arg[1]) == "table" and count(arg) == 1 then
+		if ""..arg[1]:class() == "ScreenShape" then
+			self.__ptr = arg[1].__ptr
+			return
+		end
+	end
 	for k,v in pairs(arg) do
 		if type(v) == "table" then
 			if v.__ptr ~= nil then
@@ -34,3 +40,9 @@ function ScreenSprite:Update()
 	local retVal =  Polycore.ScreenSprite_Update(self.__ptr)
 end
 
+
+
+function ScreenSprite:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_ScreenSprite(self.__ptr)
+end

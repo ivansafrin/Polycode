@@ -158,3 +158,9 @@ function MaterialManager:createShaderFromXMLNode(node)
 	end
 end
 
+
+
+function MaterialManager:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_MaterialManager(self.__ptr)
+end

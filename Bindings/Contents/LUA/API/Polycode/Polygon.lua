@@ -97,3 +97,9 @@ function Polygon:flipUVY()
 	local retVal =  Polycore.Polygon_flipUVY(self.__ptr)
 end
 
+
+
+function Polygon:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_Polygon(self.__ptr)
+end

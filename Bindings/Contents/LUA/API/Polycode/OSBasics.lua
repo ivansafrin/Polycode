@@ -55,3 +55,9 @@ function OSBasics:removeItem(pathString)
 	local retVal = Polycore.OSBasics_removeItem(pathString)
 end
 
+
+
+function OSBasics:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_OSBasics(self.__ptr)
+end

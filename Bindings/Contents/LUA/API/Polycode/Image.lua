@@ -152,3 +152,9 @@ function Image:getPixels()
 	end
 end
 
+
+
+function Image:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_Image(self.__ptr)
+end

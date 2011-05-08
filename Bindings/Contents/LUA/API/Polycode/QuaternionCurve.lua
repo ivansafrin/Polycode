@@ -39,3 +39,9 @@ function QuaternionCurve:recalcTangents()
 	local retVal =  Polycore.QuaternionCurve_recalcTangents(self.__ptr)
 end
 
+
+
+function QuaternionCurve:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_QuaternionCurve(self.__ptr)
+end

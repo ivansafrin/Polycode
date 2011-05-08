@@ -9,6 +9,12 @@ class "ScreenImage" (ScreenShape)
 
 
 function ScreenImage:ScreenImage(...)
+	if type(arg[1]) == "table" and count(arg) == 1 then
+		if ""..arg[1]:class() == "ScreenShape" then
+			self.__ptr = arg[1].__ptr
+			return
+		end
+	end
 	for k,v in pairs(arg) do
 		if type(v) == "table" then
 			if v.__ptr ~= nil then
@@ -36,3 +42,9 @@ function ScreenImage:getImageHeight()
 	return retVal
 end
 
+
+
+function ScreenImage:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_ScreenImage(self.__ptr)
+end

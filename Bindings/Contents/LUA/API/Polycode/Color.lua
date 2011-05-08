@@ -85,3 +85,9 @@ function Color:getUint()
 	return retVal
 end
 
+
+
+function Color:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_Color(self.__ptr)
+end

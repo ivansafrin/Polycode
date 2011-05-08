@@ -25,3 +25,9 @@ function Perlin:Get(x, y)
 	return retVal
 end
 
+
+
+function Perlin:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_Perlin(self.__ptr)
+end

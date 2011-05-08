@@ -57,3 +57,9 @@ function SceneRenderTexture:getTargetCamera()
 	end
 end
 
+
+
+function SceneRenderTexture:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_SceneRenderTexture(self.__ptr)
+end

@@ -80,3 +80,9 @@ function Matrix4:inverseAffine()
 	end
 end
 
+
+
+function Matrix4:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_Matrix4(self.__ptr)
+end

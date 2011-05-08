@@ -176,3 +176,9 @@ function Quaternion:createMatrix()
 	end
 end
 
+
+
+function Quaternion:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_Quaternion(self.__ptr)
+end

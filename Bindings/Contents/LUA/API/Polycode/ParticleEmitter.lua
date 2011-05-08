@@ -144,3 +144,9 @@ function ParticleEmitter:updateEmitter()
 	local retVal =  Polycore.ParticleEmitter_updateEmitter(self.__ptr)
 end
 
+
+
+function ParticleEmitter:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_ParticleEmitter(self.__ptr)
+end

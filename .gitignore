@@ -8,6 +8,7 @@
 *.so
 *.pbxuser
 *.mode1v3
+*.swp
 
 Core/Build/Mac\ OS\ X/build
 IDE/Build/Mac\ OS\ X/build

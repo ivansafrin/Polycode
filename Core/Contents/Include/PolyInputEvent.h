@@ -70,6 +70,10 @@ namespace Polycode {
 		*/
 		Vector2 mousePosition;
 		
+		Vector2 getMousePosition() { return mousePosition; }
+		PolyKEY getKey() { return key; }
+		int getMouseButton() { return mouseButton; }
+						
 		/**
 		* If this is a key event, the key code that's coming down or up.
 		*/		

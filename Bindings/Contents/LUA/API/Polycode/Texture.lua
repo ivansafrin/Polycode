@@ -86,3 +86,9 @@ function Texture:getHeight()
 	return retVal
 end
 
+
+
+function Texture:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_Texture(self.__ptr)
+end

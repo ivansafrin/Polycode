@@ -32,3 +32,9 @@ function TimerManager:Update()
 	local retVal =  Polycore.TimerManager_Update(self.__ptr)
 end
 
+
+
+function TimerManager:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_TimerManager(self.__ptr)
+end

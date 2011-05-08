@@ -36,3 +36,9 @@ function Font:isValid()
 	return retVal
 end
 
+
+
+function Font:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_Font(self.__ptr)
+end

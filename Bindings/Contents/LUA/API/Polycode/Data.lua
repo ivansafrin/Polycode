@@ -49,3 +49,9 @@ function Data:getData()
 	end
 end
 
+
+
+function Data:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_Data(self.__ptr)
+end

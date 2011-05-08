@@ -25,43 +25,92 @@ THE SOFTWARE.
 @implementation MyDocument
 
 @synthesize mainView;
+@synthesize consoleWindow;
+@synthesize consoleTextView;
 
 - (id)init
 {
     self = [super init];
     if (self) {
-    
-        // Add your subclass-specific initialization here.
-        // If an error occurs here, send a [self release] message and return nil.
-    
+			showingConsole = NO;
     }
     return self;
 }
 
 - (NSString *)windowNibName
 {
-    // Override returning the nib file name of the document
-    // If you need to use a subclass of NSWindowController or if your document supports multiple NSWindowControllers, you should remove this method and override -makeWindowControllers instead.
     return @"MyDocument";
 }
 
 - (void)windowControllerDidLoadNib:(NSWindowController *) aController
 {
     [super windowControllerDidLoadNib:aController];
-    // Add any code here that needs to be executed once the windowController has loaded the document's window.		
-
+	
 	player =  new CocoaPolycodePlayer(mainView, [docFileName cStringUsingEncoding:NSASCIIStringEncoding], false);
 	playerProxy = new PolycodeProxy();
 	playerProxy->playerDocument = self;
 	player->addEventListener(playerProxy, PolycodeDebugEvent::EVENT_RESIZE);
+	player->addEventListener(playerProxy, PolycodeDebugEvent::EVENT_PRINT);		
+	player->addEventListener(playerProxy, PolycodeDebugEvent::EVENT_ERROR);			
 	player->windowData = self;
 	
 	player->runPlayer();
-
 	
 	timer = [NSTimer timerWithTimeInterval:(1.0f/90.0f) target:self selector:@selector(animationTimer:) userInfo:nil repeats:YES];
 	[[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
 	[[NSRunLoop currentRunLoop] addTimer:timer forMode:NSEventTrackingRunLoopMode]; // ensure timer fires during resize		
+}
+
+- (IBAction) showConsoleWindow: (id) sender 
+{
+	if(!showingConsole) {
+		[consoleWindow makeKeyAndOrderFront:nil];
+	} else{
+		[consoleWindow close];
+	}
+	showingConsole = !showingConsole;  
+}
+
+- (void) handleDebugError: (NSString*) error onLine:(int) lineNumber
+{
+ 
+NSTextStorage *textStorage = [consoleTextView textStorage];
+
+	[consoleTextView setInsertionPointColor: [NSColor whiteColor]];
+[textStorage beginEditing];
+
+NSMutableString *fullText = [[NSMutableString alloc] initWithString:@"Error:\""];
+[fullText appendString:error];
+[fullText appendFormat:@"\" on line %d.", lineNumber];
+NSMutableAttributedString *str = [[NSMutableAttributedString alloc ]initWithString: fullText];
+[fullText release];
+
+[str addAttribute:NSForegroundColorAttributeName value:[NSColor redColor] range:NSMakeRange(0,[str length])];
+[str addAttribute:NSFontAttributeName value:[NSFont fontWithName:@"Menlo" size: 10] range:NSMakeRange(0,[str length])];
+
+[textStorage appendAttributedString:str];
+[textStorage endEditing];
+[str release];
+
+showingConsole = NO;
+[self showConsoleWindow:self];
+
+}
+
+- (void) printToConsole: (NSString*) message 
+{
+ 
+NSTextStorage *textStorage = [consoleTextView textStorage];
+
+	[consoleTextView setInsertionPointColor: [NSColor whiteColor]];
+[textStorage beginEditing];
+NSMutableAttributedString *str = [[NSMutableAttributedString alloc ]initWithString: message];
+[str addAttribute:NSForegroundColorAttributeName value:[NSColor whiteColor] range:NSMakeRange(0,[str length])];
+[str addAttribute:NSFontAttributeName value:[NSFont fontWithName:@"Menlo" size: 10] range:NSMakeRange(0,[str length])];
+
+[textStorage appendAttributedString:str];
+[textStorage endEditing];
+[str release];
 }
 
 - (void)animationTimer:(NSTimer *)timer

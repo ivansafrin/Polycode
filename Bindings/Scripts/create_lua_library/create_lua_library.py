@@ -232,7 +232,10 @@ for fileName in files:
 									out += "\t}\n"
 								else:
 									out += "\tluaL_checktype(L, %d, %s);\n" % (idx, luatype);
-									out += "\t%s %s = %s(L, %d);\n" % (param["type"], param["name"], luafunc, idx)
+									if param["type"] == "String":
+										out += "\t%s %s = String(%s(L, %d));\n" % (param["type"], param["name"], luafunc, idx)
+									else:
+										out += "\t%s %s = %s(L, %d);\n" % (param["type"], param["name"], luafunc, idx)
 								paramlist.append(param["name"])
 							
 								lparamlist.append(param["name"]+lend)
@@ -291,6 +294,13 @@ for fileName in files:
 						
 						if pm["name"] == ckey:
 							lout += "function %s:%s(...)\n" % (ckey, ckey)
+							if inherits:
+								lout += "\tif type(arg[1]) == \"table\" and count(arg) == 1 then\n"
+								lout += "\t\tif \"\"..arg[1]:class() == \"%s\" then\n" % (c["inherits"][0]["class"])
+								lout += "\t\t\tself.__ptr = arg[1].__ptr\n"
+								lout += "\t\t\treturn\n"
+								lout += "\t\tend\n"
+								lout += "\tend\n"
 							lout += "\tfor k,v in pairs(arg) do\n"
 							lout += "\t\tif type(v) == \"table\" then\n"
 							lout += "\t\t\tif v.__ptr ~= nil then\n"
@@ -334,6 +344,21 @@ for fileName in files:
 							lout += "end\n\n"
 
 					parsed_methods.append(pm["name"])
+	
+				#cleanup
+				sout += "\t\t{\"delete_%s\", Polycore_delete_%s},\n" % (ckey, ckey)
+				out += "static int Polycore_delete_%s(lua_State *L) {\n" % (ckey)
+				out += "\tluaL_checktype(L, 1, LUA_TLIGHTUSERDATA);\n"
+				out += "\t%s *inst = (%s*)lua_topointer(L, 1);\n" % (ckey.replace("Polygon", "Polycode::Polygon"), ckey.replace("Polygon", "Polycode::Polygon"))
+				out += "\tdelete inst;\n"
+				out += "\treturn 0;\n"
+				out += "}\n\n"
+
+				lout += "\n\n"
+				lout += "function %s:__delete()\n" % (ckey)
+				lout += "\tPolycore.__ptr_lookup[self.__ptr] = nil\n"
+				lout += "\tPolycore.delete_%s(self.__ptr)\n" % (ckey)
+				lout += "end\n"
 				if ckey == "EventHandler":
 					lout += "\n\n"
 					lout += "function EventHandler:__handleEvent(event)\n"

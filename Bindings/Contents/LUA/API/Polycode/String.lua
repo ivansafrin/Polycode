@@ -146,3 +146,9 @@ function String:setDataWithEncoding(data, encoding)
 	local retVal = Polycore.String_setDataWithEncoding(self.__ptr, data.__ptr, encoding)
 end
 
+
+
+function String:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_String(self.__ptr)
+end

@@ -51,3 +51,9 @@ function Rectangle:setRect(x, y, w, h)
 	local retVal = Polycore.Rectangle_setRect(self.__ptr, x, y, w, h)
 end
 
+
+
+function Rectangle:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_Rectangle(self.__ptr)
+end

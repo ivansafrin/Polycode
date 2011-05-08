@@ -49,3 +49,9 @@ function Resource:getResourcePath()
 	return retVal
 end
 
+
+
+function Resource:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_Resource(self.__ptr)
+end

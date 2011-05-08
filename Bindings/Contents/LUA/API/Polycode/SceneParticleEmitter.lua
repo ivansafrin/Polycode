@@ -9,6 +9,12 @@ class "SceneParticleEmitter" (SceneEntity)
 
 
 function SceneParticleEmitter:SceneParticleEmitter(...)
+	if type(arg[1]) == "table" and count(arg) == 1 then
+		if ""..arg[1]:class() == "SceneEntity" then
+			self.__ptr = arg[1].__ptr
+			return
+		end
+	end
 	for k,v in pairs(arg) do
 		if type(v) == "table" then
 			if v.__ptr ~= nil then
@@ -41,3 +47,9 @@ function SceneParticleEmitter:Update()
 	local retVal =  Polycore.SceneParticleEmitter_Update(self.__ptr)
 end
 
+
+
+function SceneParticleEmitter:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_SceneParticleEmitter(self.__ptr)
+end

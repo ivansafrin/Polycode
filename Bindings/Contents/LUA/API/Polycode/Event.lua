@@ -51,3 +51,9 @@ function Event:getEventType()
 	return retVal
 end
 
+
+
+function Event:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_Event(self.__ptr)
+end

@@ -57,3 +57,9 @@ function Config:getStringValue(configNamespace, key)
 	return retVal
 end
 
+
+
+function Config:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_Config(self.__ptr)
+end

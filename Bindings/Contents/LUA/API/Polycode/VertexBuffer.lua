@@ -42,3 +42,9 @@ function VertexBuffer:getVertexCount()
 	return retVal
 end
 
+
+
+function VertexBuffer:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_VertexBuffer(self.__ptr)
+end

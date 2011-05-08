@@ -35,3 +35,9 @@ function FontManager:getFontByName(fontName)
 	end
 end
 
+
+
+function FontManager:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_FontManager(self.__ptr)
+end

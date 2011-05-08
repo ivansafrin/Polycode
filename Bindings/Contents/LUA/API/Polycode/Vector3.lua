@@ -76,3 +76,9 @@ function Vector3:Normalize()
 	local retVal =  Polycore.Vector3_Normalize(self.__ptr)
 end
 
+
+
+function Vector3:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_Vector3(self.__ptr)
+end

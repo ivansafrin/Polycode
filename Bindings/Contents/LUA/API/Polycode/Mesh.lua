@@ -146,3 +146,9 @@ function Mesh:hasVertexBuffer()
 	return retVal
 end
 
+
+
+function Mesh:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_Mesh(self.__ptr)
+end

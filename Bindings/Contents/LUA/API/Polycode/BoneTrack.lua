@@ -36,3 +36,9 @@ function BoneTrack:setSpeed(speed)
 	local retVal = Polycore.BoneTrack_setSpeed(self.__ptr, speed)
 end
 
+
+
+function BoneTrack:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_BoneTrack(self.__ptr)
+end

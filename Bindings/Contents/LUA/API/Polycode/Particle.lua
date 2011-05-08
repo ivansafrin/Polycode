@@ -71,3 +71,9 @@ function Particle:createScreenParticle(particleType, texture, particleMesh)
 	local retVal = Polycore.Particle_createScreenParticle(self.__ptr, particleType, texture.__ptr, particleMesh.__ptr)
 end
 
+
+
+function Particle:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_Particle(self.__ptr)
+end

@@ -27,3 +27,9 @@ function PolycodeModule:getType()
 	return retVal
 end
 
+
+
+function PolycodeModule:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_PolycodeModule(self.__ptr)
+end

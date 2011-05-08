@@ -53,6 +53,13 @@ static int Polycore_OSFILE_debugDump(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_delete_OSFILE(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	OSFILE *inst = (OSFILE*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_OSFileEntry_get_name(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	OSFileEntry *inst = (OSFileEntry*)lua_topointer(L, 1);
@@ -149,11 +156,18 @@ static int Polycore_OSFileEntry(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_delete_OSFileEntry(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	OSFileEntry *inst = (OSFileEntry*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_OSBasics_open(lua_State *L) {
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String filename = lua_tostring(L, 2);
+	String filename = String(lua_tostring(L, 2));
 	luaL_checktype(L, 3, LUA_TSTRING);
-	String opts = lua_tostring(L, 3);
+	String opts = String(lua_tostring(L, 3));
 	lua_pushlightuserdata(L, (void*)OSBasics::open(filename, opts));
 	return 1;
 }
@@ -211,22 +225,29 @@ static int Polycore_OSBasics_tell(lua_State *L) {
 
 static int Polycore_OSBasics_isFolder(lua_State *L) {
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String pathString = lua_tostring(L, 2);
+	String pathString = String(lua_tostring(L, 2));
 	lua_pushboolean(L, OSBasics::isFolder(pathString));
 	return 1;
 }
 
 static int Polycore_OSBasics_createFolder(lua_State *L) {
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String pathString = lua_tostring(L, 2);
+	String pathString = String(lua_tostring(L, 2));
 	OSBasics::createFolder(pathString);
 	return 0;
 }
 
 static int Polycore_OSBasics_removeItem(lua_State *L) {
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String pathString = lua_tostring(L, 2);
+	String pathString = String(lua_tostring(L, 2));
 	OSBasics::removeItem(pathString);
+	return 0;
+}
+
+static int Polycore_delete_OSBasics(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	OSBasics *inst = (OSBasics*)lua_topointer(L, 1);
+	delete inst;
 	return 0;
 }
 
@@ -387,6 +408,13 @@ static int Polycore_BezierCurve_rebuildBuffers(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_delete_BezierCurve(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	BezierCurve *inst = (BezierCurve*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_Bone_get_parentBoneId(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Bone *inst = (Bone*)lua_topointer(L, 1);
@@ -404,7 +432,7 @@ static int Polycore_Bone_set_parentBoneId(lua_State *L) {
 
 static int Polycore_Bone(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TSTRING);
-	String boneName = lua_tostring(L, 1);
+	String boneName = String(lua_tostring(L, 1));
 	Bone *inst = new Bone(boneName);
 	lua_pushlightuserdata(L, (void*)inst);
 	return 1;
@@ -414,7 +442,7 @@ static int Polycore_Bone_enableBoneLabel(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Bone *inst = (Bone*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String labelFont = lua_tostring(L, 2);
+	String labelFont = String(lua_tostring(L, 2));
 	luaL_checktype(L, 3, LUA_TNUMBER);
 	Number size = lua_tonumber(L, 3);
 	luaL_checktype(L, 4, LUA_TNUMBER);
@@ -570,6 +598,13 @@ static int Polycore_Bone_getFullBaseMatrix(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_delete_Bone(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Bone *inst = (Bone*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_Camera(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Scene * parentScene = (Scene *)lua_topointer(L, 1);
@@ -705,8 +740,15 @@ static int Polycore_Camera_setPostFilter(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Camera *inst = (Camera*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String shaderName = lua_tostring(L, 2);
+	String shaderName = String(lua_tostring(L, 2));
 	inst->setPostFilter(shaderName);
+	return 0;
+}
+
+static int Polycore_delete_Camera(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Camera *inst = (Camera*)lua_topointer(L, 1);
+	delete inst;
 	return 0;
 }
 
@@ -871,6 +913,13 @@ static int Polycore_Color_getUint(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_delete_Color(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Color *inst = (Color*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_Config(lua_State *L) {
 	Config *inst = new Config();
 	lua_pushlightuserdata(L, (void*)inst);
@@ -881,9 +930,9 @@ static int Polycore_Config_loadConfig(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Config *inst = (Config*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String configNamespace = lua_tostring(L, 2);
+	String configNamespace = String(lua_tostring(L, 2));
 	luaL_checktype(L, 3, LUA_TSTRING);
-	String fileName = lua_tostring(L, 3);
+	String fileName = String(lua_tostring(L, 3));
 	inst->loadConfig(configNamespace, fileName);
 	return 0;
 }
@@ -892,9 +941,9 @@ static int Polycore_Config_saveConfig(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Config *inst = (Config*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String configNamespace = lua_tostring(L, 2);
+	String configNamespace = String(lua_tostring(L, 2));
 	luaL_checktype(L, 3, LUA_TSTRING);
-	String fileName = lua_tostring(L, 3);
+	String fileName = String(lua_tostring(L, 3));
 	inst->saveConfig(configNamespace, fileName);
 	return 0;
 }
@@ -903,9 +952,9 @@ static int Polycore_Config_getEntry(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Config *inst = (Config*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String configNamespace = lua_tostring(L, 2);
+	String configNamespace = String(lua_tostring(L, 2));
 	luaL_checktype(L, 3, LUA_TSTRING);
-	String key = lua_tostring(L, 3);
+	String key = String(lua_tostring(L, 3));
 	lua_pushlightuserdata(L, (void*)inst->getEntry(configNamespace, key));
 	return 1;
 }
@@ -914,11 +963,11 @@ static int Polycore_Config_setStringValue(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Config *inst = (Config*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String configNamespace = lua_tostring(L, 2);
+	String configNamespace = String(lua_tostring(L, 2));
 	luaL_checktype(L, 3, LUA_TSTRING);
-	String key = lua_tostring(L, 3);
+	String key = String(lua_tostring(L, 3));
 	luaL_checktype(L, 4, LUA_TSTRING);
-	String value = lua_tostring(L, 4);
+	String value = String(lua_tostring(L, 4));
 	inst->setStringValue(configNamespace, key, value);
 	return 0;
 }
@@ -927,9 +976,9 @@ static int Polycore_Config_setNumericValue(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Config *inst = (Config*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String configNamespace = lua_tostring(L, 2);
+	String configNamespace = String(lua_tostring(L, 2));
 	luaL_checktype(L, 3, LUA_TSTRING);
-	String key = lua_tostring(L, 3);
+	String key = String(lua_tostring(L, 3));
 	luaL_checktype(L, 4, LUA_TNUMBER);
 	Number value = lua_tonumber(L, 4);
 	inst->setNumericValue(configNamespace, key, value);
@@ -940,9 +989,9 @@ static int Polycore_Config_getNumericValue(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Config *inst = (Config*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String configNamespace = lua_tostring(L, 2);
+	String configNamespace = String(lua_tostring(L, 2));
 	luaL_checktype(L, 3, LUA_TSTRING);
-	String key = lua_tostring(L, 3);
+	String key = String(lua_tostring(L, 3));
 	lua_pushnumber(L, inst->getNumericValue(configNamespace, key));
 	return 1;
 }
@@ -951,11 +1000,18 @@ static int Polycore_Config_getStringValue(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Config *inst = (Config*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String configNamespace = lua_tostring(L, 2);
+	String configNamespace = String(lua_tostring(L, 2));
 	luaL_checktype(L, 3, LUA_TSTRING);
-	String key = lua_tostring(L, 3);
+	String key = String(lua_tostring(L, 3));
 	lua_pushstring(L, inst->getStringValue(configNamespace, key).c_str());
 	return 1;
+}
+
+static int Polycore_delete_Config(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Config *inst = (Config*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
 }
 
 static int Polycore_Core_Update(lua_State *L) {
@@ -1021,7 +1077,7 @@ static int Polycore_Core_copyStringToClipboard(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Core *inst = (Core*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String str = lua_tostring(L, 2);
+	String str = String(lua_tostring(L, 2));
 	inst->copyStringToClipboard(str);
 	return 0;
 }
@@ -1102,7 +1158,7 @@ static int Polycore_Core_createFolder(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Core *inst = (Core*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String folderPath = lua_tostring(L, 2);
+	String folderPath = String(lua_tostring(L, 2));
 	inst->createFolder(folderPath);
 	return 0;
 }
@@ -1111,9 +1167,9 @@ static int Polycore_Core_copyDiskItem(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Core *inst = (Core*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String itemPath = lua_tostring(L, 2);
+	String itemPath = String(lua_tostring(L, 2));
 	luaL_checktype(L, 3, LUA_TSTRING);
-	String destItemPath = lua_tostring(L, 3);
+	String destItemPath = String(lua_tostring(L, 3));
 	inst->copyDiskItem(itemPath, destItemPath);
 	return 0;
 }
@@ -1122,9 +1178,9 @@ static int Polycore_Core_moveDiskItem(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Core *inst = (Core*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String itemPath = lua_tostring(L, 2);
+	String itemPath = String(lua_tostring(L, 2));
 	luaL_checktype(L, 3, LUA_TSTRING);
-	String destItemPath = lua_tostring(L, 3);
+	String destItemPath = String(lua_tostring(L, 3));
 	inst->moveDiskItem(itemPath, destItemPath);
 	return 0;
 }
@@ -1133,7 +1189,7 @@ static int Polycore_Core_removeDiskItem(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Core *inst = (Core*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String itemPath = lua_tostring(L, 2);
+	String itemPath = String(lua_tostring(L, 2));
 	inst->removeDiskItem(itemPath);
 	return 0;
 }
@@ -1230,6 +1286,13 @@ static int Polycore_Core_getUserPointer(lua_State *L) {
 	Core *inst = (Core*)lua_topointer(L, 1);
 	lua_pushlightuserdata(L, (void*)inst->getUserPointer());
 	return 1;
+}
+
+static int Polycore_delete_Core(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Core *inst = (Core*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
 }
 
 static int Polycore_CoreInput(lua_State *L) {
@@ -1349,6 +1412,13 @@ static int Polycore_CoreInput_createEvent(lua_State *L) {
 	Event * event = (Event *)lua_topointer(L, 2);
 	lua_pushlightuserdata(L, (void*)CoreInput::createEvent(event));
 	return 1;
+}
+
+static int Polycore_delete_CoreInput(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	CoreInput *inst = (CoreInput*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
 }
 
 static int Polycore_CoreServices_getInstance(lua_State *L) {
@@ -1474,6 +1544,13 @@ static int Polycore_CoreServices_getConfig(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_delete_CoreServices(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	CoreServices *inst = (CoreServices*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_Cubemap(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Texture * t0 = (Texture *)lua_topointer(L, 1);
@@ -1492,6 +1569,13 @@ static int Polycore_Cubemap(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_delete_Cubemap(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Cubemap *inst = (Cubemap*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_Data(lua_State *L) {
 	Data *inst = new Data();
 	lua_pushlightuserdata(L, (void*)inst);
@@ -1502,7 +1586,7 @@ static int Polycore_Data_loadFromFile(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Data *inst = (Data*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String fileName = lua_tostring(L, 2);
+	String fileName = String(lua_tostring(L, 2));
 	inst->loadFromFile(fileName);
 	return 0;
 }
@@ -1520,7 +1604,7 @@ static int Polycore_Data_setFromString(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Data *inst = (Data*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String str = lua_tostring(L, 2);
+	String str = String(lua_tostring(L, 2));
 	luaL_checktype(L, 3, LUA_TNUMBER);
 	int encoding = lua_tointeger(L, 3);
 	inst->setFromString(str, encoding);
@@ -1531,7 +1615,7 @@ static int Polycore_Data_saveToFile(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Data *inst = (Data*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String fileName = lua_tostring(L, 2);
+	String fileName = String(lua_tostring(L, 2));
 	lua_pushboolean(L, inst->saveToFile(fileName));
 	return 1;
 }
@@ -1541,6 +1625,13 @@ static int Polycore_Data_getData(lua_State *L) {
 	Data *inst = (Data*)lua_topointer(L, 1);
 	lua_pushlightuserdata(L, (void*)inst->getData());
 	return 1;
+}
+
+static int Polycore_delete_Data(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Data *inst = (Data*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
 }
 
 static int Polycore_Entity_get_custEntityType(lua_State *L) {
@@ -2324,7 +2415,7 @@ static int Polycore_Entity_getEntityProp(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Entity *inst = (Entity*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String propName = lua_tostring(L, 2);
+	String propName = String(lua_tostring(L, 2));
 	lua_pushstring(L, inst->getEntityProp(propName).c_str());
 	return 1;
 }
@@ -2358,6 +2449,13 @@ static int Polycore_Entity_setRenderer(lua_State *L) {
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
 	Renderer * r_enderer = (Renderer *)lua_topointer(L, 2);
 	inst->setRenderer(r_enderer);
+	return 0;
+}
+
+static int Polycore_delete_Entity(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Entity *inst = (Entity*)lua_topointer(L, 1);
+	delete inst;
 	return 0;
 }
 
@@ -2404,6 +2502,13 @@ static int Polycore_Event_getEventType(lua_State *L) {
 	Event *inst = (Event*)lua_topointer(L, 1);
 	lua_pushstring(L, inst->getEventType().c_str());
 	return 1;
+}
+
+static int Polycore_delete_Event(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Event *inst = (Event*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
 }
 
 static int Polycore_EventDispatcher(lua_State *L) {
@@ -2483,12 +2588,26 @@ static int Polycore_EventDispatcher_dispatchEventNoDelete(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_delete_EventDispatcher(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	EventDispatcher *inst = (EventDispatcher*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_EventHandler(lua_State *L) {
 	LuaEventHandler *inst = new LuaEventHandler();
 	inst->wrapperIndex = luaL_ref(L, LUA_REGISTRYINDEX );
 	inst->L = L;
 	lua_pushlightuserdata(L, (void*)inst);
 	return 1;
+}
+
+static int Polycore_delete_EventHandler(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	EventHandler *inst = (EventHandler*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
 }
 
 static int Polycore_FixedShader(lua_State *L) {
@@ -2504,6 +2623,13 @@ static int Polycore_FixedShader_createBinding(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_delete_FixedShader(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	FixedShader *inst = (FixedShader*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_FixedShaderBinding(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	FixedShader * shader = (FixedShader *)lua_topointer(L, 1);
@@ -2516,7 +2642,7 @@ static int Polycore_FixedShaderBinding_addTexture(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	FixedShaderBinding *inst = (FixedShaderBinding*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String name = lua_tostring(L, 2);
+	String name = String(lua_tostring(L, 2));
 	luaL_checktype(L, 3, LUA_TLIGHTUSERDATA);
 	Texture * texture = (Texture *)lua_topointer(L, 3);
 	inst->addTexture(name, texture);
@@ -2527,7 +2653,7 @@ static int Polycore_FixedShaderBinding_addCubemap(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	FixedShaderBinding *inst = (FixedShaderBinding*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String name = lua_tostring(L, 2);
+	String name = String(lua_tostring(L, 2));
 	luaL_checktype(L, 3, LUA_TLIGHTUSERDATA);
 	Cubemap * cubemap = (Cubemap *)lua_topointer(L, 3);
 	inst->addCubemap(name, cubemap);
@@ -2538,11 +2664,11 @@ static int Polycore_FixedShaderBinding_addParam(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	FixedShaderBinding *inst = (FixedShaderBinding*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String type = lua_tostring(L, 2);
+	String type = String(lua_tostring(L, 2));
 	luaL_checktype(L, 3, LUA_TSTRING);
-	String name = lua_tostring(L, 3);
+	String name = String(lua_tostring(L, 3));
 	luaL_checktype(L, 4, LUA_TSTRING);
-	String value = lua_tostring(L, 4);
+	String value = String(lua_tostring(L, 4));
 	inst->addParam(type, name, value);
 	return 0;
 }
@@ -2554,9 +2680,16 @@ static int Polycore_FixedShaderBinding_getDiffuseTexture(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_delete_FixedShaderBinding(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	FixedShaderBinding *inst = (FixedShaderBinding*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_Font(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TSTRING);
-	String fileName = lua_tostring(L, 1);
+	String fileName = String(lua_tostring(L, 1));
 	Font *inst = new Font(fileName);
 	lua_pushlightuserdata(L, (void*)inst);
 	return 1;
@@ -2578,6 +2711,13 @@ static int Polycore_Font_isValid(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_delete_Font(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Font *inst = (Font*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_FontManager(lua_State *L) {
 	FontManager *inst = new FontManager();
 	lua_pushlightuserdata(L, (void*)inst);
@@ -2588,9 +2728,9 @@ static int Polycore_FontManager_registerFont(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	FontManager *inst = (FontManager*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String fontName = lua_tostring(L, 2);
+	String fontName = String(lua_tostring(L, 2));
 	luaL_checktype(L, 3, LUA_TSTRING);
-	String fontPath = lua_tostring(L, 3);
+	String fontPath = String(lua_tostring(L, 3));
 	inst->registerFont(fontName, fontPath);
 	return 0;
 }
@@ -2599,9 +2739,16 @@ static int Polycore_FontManager_getFontByName(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	FontManager *inst = (FontManager*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String fontName = lua_tostring(L, 2);
+	String fontName = String(lua_tostring(L, 2));
 	lua_pushlightuserdata(L, (void*)inst->getFontByName(fontName));
 	return 1;
+}
+
+static int Polycore_delete_FontManager(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	FontManager *inst = (FontManager*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
 }
 
 static int Polycore_OpenGLCubemap(lua_State *L) {
@@ -2631,9 +2778,16 @@ static int Polycore_OpenGLCubemap_getTextureID(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_delete_OpenGLCubemap(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	OpenGLCubemap *inst = (OpenGLCubemap*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_Image(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TSTRING);
-	String fileName = lua_tostring(L, 1);
+	String fileName = String(lua_tostring(L, 1));
 	Image *inst = new Image(fileName);
 	lua_pushlightuserdata(L, (void*)inst);
 	return 1;
@@ -2643,7 +2797,7 @@ static int Polycore_Image_loadImage(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Image *inst = (Image*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String fileName = lua_tostring(L, 2);
+	String fileName = String(lua_tostring(L, 2));
 	lua_pushboolean(L, inst->loadImage(fileName));
 	return 1;
 }
@@ -2652,7 +2806,7 @@ static int Polycore_Image_loadPNG(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Image *inst = (Image*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String fileName = lua_tostring(L, 2);
+	String fileName = String(lua_tostring(L, 2));
 	lua_pushboolean(L, inst->loadPNG(fileName));
 	return 1;
 }
@@ -2904,7 +3058,7 @@ static int Polycore_Image_writeBMP(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Image *inst = (Image*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String fileName = lua_tostring(L, 2);
+	String fileName = String(lua_tostring(L, 2));
 	inst->writeBMP(fileName);
 	return 0;
 }
@@ -2928,6 +3082,13 @@ static int Polycore_Image_getPixels(lua_State *L) {
 	Image *inst = (Image*)lua_topointer(L, 1);
 	lua_pushlightuserdata(L, (void*)inst->getPixels());
 	return 1;
+}
+
+static int Polycore_delete_Image(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Image *inst = (Image*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
 }
 
 static int Polycore_InputEvent_get_mouseButton(lua_State *L) {
@@ -2970,6 +3131,31 @@ static int Polycore_InputEvent(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_InputEvent_getMousePosition(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	InputEvent *inst = (InputEvent*)lua_topointer(L, 1);
+	Vector2 *retInst = new Vector2();
+	*retInst = inst->getMousePosition();
+	lua_pushlightuserdata(L, retInst);
+	return 1;
+}
+
+static int Polycore_InputEvent_getKey(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	InputEvent *inst = (InputEvent*)lua_topointer(L, 1);
+	PolyKEY *retInst = new PolyKEY();
+	*retInst = inst->getKey();
+	lua_pushlightuserdata(L, retInst);
+	return 1;
+}
+
+static int Polycore_InputEvent_getMouseButton(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	InputEvent *inst = (InputEvent*)lua_topointer(L, 1);
+	lua_pushinteger(L, inst->getMouseButton());
+	return 1;
+}
+
 static int Polycore_InputEvent_keyCode(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	InputEvent *inst = (InputEvent*)lua_topointer(L, 1);
@@ -2977,11 +3163,18 @@ static int Polycore_InputEvent_keyCode(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_delete_InputEvent(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	InputEvent *inst = (InputEvent*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_Label(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Font * font = (Font *)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String text = lua_tostring(L, 2);
+	String text = String(lua_tostring(L, 2));
 	luaL_checktype(L, 3, LUA_TNUMBER);
 	int size = lua_tointeger(L, 3);
 	luaL_checktype(L, 4, LUA_TNUMBER);
@@ -2995,7 +3188,7 @@ static int Polycore_Label_setText(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Label *inst = (Label*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String text = lua_tostring(L, 2);
+	String text = String(lua_tostring(L, 2));
 	inst->setText(text);
 	return 0;
 }
@@ -3013,7 +3206,7 @@ static int Polycore_Label_getTextWidth(lua_State *L) {
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
 	Font * font = (Font *)lua_topointer(L, 2);
 	luaL_checktype(L, 3, LUA_TSTRING);
-	String text = lua_tostring(L, 3);
+	String text = String(lua_tostring(L, 3));
 	luaL_checktype(L, 4, LUA_TNUMBER);
 	int size = lua_tointeger(L, 4);
 	lua_pushinteger(L, inst->getTextWidth(font, text, size));
@@ -3026,7 +3219,7 @@ static int Polycore_Label_getTextHeight(lua_State *L) {
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
 	Font * font = (Font *)lua_topointer(L, 2);
 	luaL_checktype(L, 3, LUA_TSTRING);
-	String text = lua_tostring(L, 3);
+	String text = String(lua_tostring(L, 3));
 	luaL_checktype(L, 4, LUA_TNUMBER);
 	int size = lua_tointeger(L, 4);
 	lua_pushinteger(L, inst->getTextHeight(font, text, size));
@@ -3038,6 +3231,13 @@ static int Polycore_Label_getFont(lua_State *L) {
 	Label *inst = (Label*)lua_topointer(L, 1);
 	lua_pushlightuserdata(L, (void*)inst->getFont());
 	return 1;
+}
+
+static int Polycore_delete_Label(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Label *inst = (Label*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
 }
 
 static int Polycore_Logger(lua_State *L) {
@@ -3060,9 +3260,16 @@ static int Polycore_Logger_logw(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_delete_Logger(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Logger *inst = (Logger*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_Material(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TSTRING);
-	String name = lua_tostring(L, 1);
+	String name = String(lua_tostring(L, 1));
 	Material *inst = new Material(name);
 	lua_pushlightuserdata(L, (void*)inst);
 	return 1;
@@ -3140,8 +3347,15 @@ static int Polycore_Material_loadMaterial(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Material *inst = (Material*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String fileName = lua_tostring(L, 2);
+	String fileName = String(lua_tostring(L, 2));
 	inst->loadMaterial(fileName);
+	return 0;
+}
+
+static int Polycore_delete_Material(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Material *inst = (Material*)lua_topointer(L, 1);
+	delete inst;
 	return 0;
 }
 
@@ -3240,7 +3454,7 @@ static int Polycore_MaterialManager_createTextureFromFile(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	MaterialManager *inst = (MaterialManager*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String fileName = lua_tostring(L, 2);
+	String fileName = String(lua_tostring(L, 2));
 	bool clamp;
 	if(lua_isboolean(L, 3)) {
 		clamp = lua_toboolean(L, 3);
@@ -3294,7 +3508,7 @@ static int Polycore_MaterialManager_getTextureByResourcePath(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	MaterialManager *inst = (MaterialManager*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String resourcePath = lua_tostring(L, 2);
+	String resourcePath = String(lua_tostring(L, 2));
 	lua_pushlightuserdata(L, (void*)inst->getTextureByResourcePath(resourcePath));
 	return 1;
 }
@@ -3312,7 +3526,7 @@ static int Polycore_MaterialManager_loadMaterialsFromFile(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	MaterialManager *inst = (MaterialManager*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String fileName = lua_tostring(L, 2);
+	String fileName = String(lua_tostring(L, 2));
 	inst->loadMaterialsFromFile(fileName);
 	return 0;
 }
@@ -3342,6 +3556,13 @@ static int Polycore_MaterialManager_createShaderFromXMLNode(lua_State *L) {
 	TiXmlNode * node = (TiXmlNode *)lua_topointer(L, 2);
 	lua_pushlightuserdata(L, (void*)inst->createShaderFromXMLNode(node));
 	return 1;
+}
+
+static int Polycore_delete_MaterialManager(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	MaterialManager *inst = (MaterialManager*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
 }
 
 static int Polycore_Matrix4(lua_State *L) {
@@ -3430,6 +3651,13 @@ static int Polycore_Matrix4_inverseAffine(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_delete_Matrix4(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Matrix4 *inst = (Matrix4*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_Mesh_get_useVertexColors(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Mesh *inst = (Mesh*)lua_topointer(L, 1);
@@ -3447,7 +3675,7 @@ static int Polycore_Mesh_set_useVertexColors(lua_State *L) {
 
 static int Polycore_Mesh(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TSTRING);
-	String fileName = lua_tostring(L, 1);
+	String fileName = String(lua_tostring(L, 1));
 	Mesh *inst = new Mesh(fileName);
 	lua_pushlightuserdata(L, (void*)inst);
 	return 1;
@@ -3466,7 +3694,7 @@ static int Polycore_Mesh_loadMesh(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Mesh *inst = (Mesh*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String fileName = lua_tostring(L, 2);
+	String fileName = String(lua_tostring(L, 2));
 	inst->loadMesh(fileName);
 	return 0;
 }
@@ -3475,7 +3703,7 @@ static int Polycore_Mesh_saveToFile(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Mesh *inst = (Mesh*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String fileName = lua_tostring(L, 2);
+	String fileName = String(lua_tostring(L, 2));
 	inst->saveToFile(fileName);
 	return 0;
 }
@@ -3622,6 +3850,13 @@ static int Polycore_Mesh_hasVertexBuffer(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_delete_Mesh(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Mesh *inst = (Mesh*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_VertexBuffer_get_verticesPerFace(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	VertexBuffer *inst = (VertexBuffer*)lua_topointer(L, 1);
@@ -3665,6 +3900,13 @@ static int Polycore_VertexBuffer_getVertexCount(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_delete_VertexBuffer(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	VertexBuffer *inst = (VertexBuffer*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_PolycodeModule(lua_State *L) {
 	PolycodeModule *inst = new PolycodeModule();
 	lua_pushlightuserdata(L, (void*)inst);
@@ -3676,6 +3918,13 @@ static int Polycore_PolycodeModule_getType(lua_State *L) {
 	PolycodeModule *inst = (PolycodeModule*)lua_topointer(L, 1);
 	lua_pushinteger(L, inst->getType());
 	return 1;
+}
+
+static int Polycore_delete_PolycodeModule(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PolycodeModule *inst = (PolycodeModule*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
 }
 
 static int Polycore_ObjectEntry_get_type(lua_State *L) {
@@ -3793,9 +4042,16 @@ static int Polycore_ObjectEntry_addChild(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	ObjectEntry *inst = (ObjectEntry*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String name = lua_tostring(L, 2);
+	String name = String(lua_tostring(L, 2));
 	lua_pushlightuserdata(L, (void*)inst->addChild(name));
 	return 1;
+}
+
+static int Polycore_delete_ObjectEntry(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	ObjectEntry *inst = (ObjectEntry*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
 }
 
 static int Polycore_Particle_get_life(lua_State *L) {
@@ -3939,9 +4195,16 @@ static int Polycore_Particle_createScreenParticle(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_delete_Particle(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Particle *inst = (Particle*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_ScreenParticleEmitter(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TSTRING);
-	String imageFile = lua_tostring(L, 1);
+	String imageFile = String(lua_tostring(L, 1));
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
 	Mesh * particleMesh = (Mesh *)lua_topointer(L, 2);
 	luaL_checktype(L, 3, LUA_TLIGHTUSERDATA);
@@ -3992,9 +4255,16 @@ static int Polycore_ScreenParticleEmitter_Update(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_delete_ScreenParticleEmitter(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	ScreenParticleEmitter *inst = (ScreenParticleEmitter*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_SceneParticleEmitter(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TSTRING);
-	String imageFile = lua_tostring(L, 1);
+	String imageFile = String(lua_tostring(L, 1));
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
 	Mesh * particleMesh = (Mesh *)lua_topointer(L, 2);
 	luaL_checktype(L, 3, LUA_TLIGHTUSERDATA);
@@ -4042,6 +4312,13 @@ static int Polycore_SceneParticleEmitter_Update(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	SceneParticleEmitter *inst = (SceneParticleEmitter*)lua_topointer(L, 1);
 	inst->Update();
+	return 0;
+}
+
+static int Polycore_delete_SceneParticleEmitter(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	SceneParticleEmitter *inst = (SceneParticleEmitter*)lua_topointer(L, 1);
+	delete inst;
 	return 0;
 }
 
@@ -4322,6 +4599,13 @@ static int Polycore_ParticleEmitter_updateEmitter(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_delete_ParticleEmitter(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	ParticleEmitter *inst = (ParticleEmitter*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_Perlin(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TNUMBER);
 	int octaves = lua_tointeger(L, 1);
@@ -4345,6 +4629,13 @@ static int Polycore_Perlin_Get(lua_State *L) {
 	Number y = lua_tonumber(L, 3);
 	lua_pushnumber(L, inst->Get(x, y));
 	return 1;
+}
+
+static int Polycore_delete_Perlin(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Perlin *inst = (Perlin*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
 }
 
 static int Polycore_Polygon_get_useVertexNormals(lua_State *L) {
@@ -4444,6 +4735,13 @@ static int Polycore_Polygon_flipUVY(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Polycode::Polygon *inst = (Polycode::Polygon*)lua_topointer(L, 1);
 	inst->flipUVY();
+	return 0;
+}
+
+static int Polycore_delete_Polygon(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Polycode::Polygon *inst = (Polycode::Polygon*)lua_topointer(L, 1);
+	delete inst;
 	return 0;
 }
 
@@ -4730,6 +5028,13 @@ static int Polycore_Quaternion_createMatrix(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_delete_Quaternion(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Quaternion *inst = (Quaternion*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_QuaternionCurve(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	BezierCurve * wCurve = (BezierCurve *)lua_topointer(L, 1);
@@ -4776,6 +5081,13 @@ static int Polycore_QuaternionCurve_recalcTangents(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	QuaternionCurve *inst = (QuaternionCurve*)lua_topointer(L, 1);
 	inst->recalcTangents();
+	return 0;
+}
+
+static int Polycore_delete_QuaternionCurve(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	QuaternionCurve *inst = (QuaternionCurve*)lua_topointer(L, 1);
+	delete inst;
 	return 0;
 }
 
@@ -4857,6 +5169,13 @@ static int Polycore_Rectangle_setRect(lua_State *L) {
 	luaL_checktype(L, 5, LUA_TNUMBER);
 	Number h = lua_tonumber(L, 5);
 	inst->setRect(x, y, w, h);
+	return 0;
+}
+
+static int Polycore_delete_Rectangle(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Rectangle *inst = (Rectangle*)lua_topointer(L, 1);
+	delete inst;
 	return 0;
 }
 
@@ -5672,6 +5991,13 @@ static int Polycore_Renderer_getNumLights(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_delete_Renderer(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Renderer *inst = (Renderer*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_Resource(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TNUMBER);
 	int type = lua_tointeger(L, 1);
@@ -5698,7 +6024,7 @@ static int Polycore_Resource_setResourceName(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Resource *inst = (Resource*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String newName = lua_tostring(L, 2);
+	String newName = String(lua_tostring(L, 2));
 	inst->setResourceName(newName);
 	return 0;
 }
@@ -5707,7 +6033,7 @@ static int Polycore_Resource_setResourcePath(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Resource *inst = (Resource*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String path = lua_tostring(L, 2);
+	String path = String(lua_tostring(L, 2));
 	inst->setResourcePath(path);
 	return 0;
 }
@@ -5717,6 +6043,13 @@ static int Polycore_Resource_getResourcePath(lua_State *L) {
 	Resource *inst = (Resource*)lua_topointer(L, 1);
 	lua_pushstring(L, inst->getResourcePath().c_str());
 	return 1;
+}
+
+static int Polycore_delete_Resource(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Resource *inst = (Resource*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
 }
 
 static int Polycore_ResourceManager(lua_State *L) {
@@ -5738,7 +6071,7 @@ static int Polycore_ResourceManager_addDirResource(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	ResourceManager *inst = (ResourceManager*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String dirPath = lua_tostring(L, 2);
+	String dirPath = String(lua_tostring(L, 2));
 	bool recursive;
 	if(lua_isboolean(L, 3)) {
 		recursive = lua_toboolean(L, 3);
@@ -5753,7 +6086,7 @@ static int Polycore_ResourceManager_addArchive(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	ResourceManager *inst = (ResourceManager*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String zipPath = lua_tostring(L, 2);
+	String zipPath = String(lua_tostring(L, 2));
 	inst->addArchive(zipPath);
 	return 0;
 }
@@ -5762,7 +6095,7 @@ static int Polycore_ResourceManager_readFile(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	ResourceManager *inst = (ResourceManager*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String fileName = lua_tostring(L, 2);
+	String fileName = String(lua_tostring(L, 2));
 	lua_pushboolean(L, inst->readFile(fileName));
 	return 1;
 }
@@ -5771,7 +6104,7 @@ static int Polycore_ResourceManager_parseTextures(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	ResourceManager *inst = (ResourceManager*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String dirPath = lua_tostring(L, 2);
+	String dirPath = String(lua_tostring(L, 2));
 	luaL_checktype(L, 3, LUA_TBOOLEAN);
 	bool recursive = lua_toboolean(L, 3);
 	inst->parseTextures(dirPath, recursive);
@@ -5782,7 +6115,7 @@ static int Polycore_ResourceManager_parseMaterials(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	ResourceManager *inst = (ResourceManager*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String dirPath = lua_tostring(L, 2);
+	String dirPath = String(lua_tostring(L, 2));
 	luaL_checktype(L, 3, LUA_TBOOLEAN);
 	bool recursive = lua_toboolean(L, 3);
 	inst->parseMaterials(dirPath, recursive);
@@ -5793,7 +6126,7 @@ static int Polycore_ResourceManager_parseShaders(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	ResourceManager *inst = (ResourceManager*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String dirPath = lua_tostring(L, 2);
+	String dirPath = String(lua_tostring(L, 2));
 	luaL_checktype(L, 3, LUA_TBOOLEAN);
 	bool recursive = lua_toboolean(L, 3);
 	inst->parseShaders(dirPath, recursive);
@@ -5804,7 +6137,7 @@ static int Polycore_ResourceManager_parsePrograms(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	ResourceManager *inst = (ResourceManager*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String dirPath = lua_tostring(L, 2);
+	String dirPath = String(lua_tostring(L, 2));
 	luaL_checktype(L, 3, LUA_TBOOLEAN);
 	bool recursive = lua_toboolean(L, 3);
 	inst->parsePrograms(dirPath, recursive);
@@ -5815,7 +6148,7 @@ static int Polycore_ResourceManager_parseCubemaps(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	ResourceManager *inst = (ResourceManager*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String dirPath = lua_tostring(L, 2);
+	String dirPath = String(lua_tostring(L, 2));
 	luaL_checktype(L, 3, LUA_TBOOLEAN);
 	bool recursive = lua_toboolean(L, 3);
 	inst->parseCubemaps(dirPath, recursive);
@@ -5826,7 +6159,7 @@ static int Polycore_ResourceManager_parseOthers(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	ResourceManager *inst = (ResourceManager*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String dirPath = lua_tostring(L, 2);
+	String dirPath = String(lua_tostring(L, 2));
 	luaL_checktype(L, 3, LUA_TBOOLEAN);
 	bool recursive = lua_toboolean(L, 3);
 	inst->parseOthers(dirPath, recursive);
@@ -5839,7 +6172,7 @@ static int Polycore_ResourceManager_getResource(lua_State *L) {
 	luaL_checktype(L, 2, LUA_TNUMBER);
 	int resourceType = lua_tointeger(L, 2);
 	luaL_checktype(L, 3, LUA_TSTRING);
-	String resourceName = lua_tostring(L, 3);
+	String resourceName = String(lua_tostring(L, 3));
 	lua_pushlightuserdata(L, (void*)inst->getResource(resourceType, resourceName));
 	return 1;
 }
@@ -5850,6 +6183,13 @@ static int Polycore_ResourceManager_addShaderModule(lua_State *L) {
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
 	PolycodeShaderModule * module = (PolycodeShaderModule *)lua_topointer(L, 2);
 	inst->addShaderModule(module);
+	return 0;
+}
+
+static int Polycore_delete_ResourceManager(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	ResourceManager *inst = (ResourceManager*)lua_topointer(L, 1);
+	delete inst;
 	return 0;
 }
 
@@ -6042,7 +6382,7 @@ static int Polycore_Scene_loadScene(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Scene *inst = (Scene*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String fileName = lua_tostring(L, 2);
+	String fileName = String(lua_tostring(L, 2));
 	inst->loadScene(fileName);
 	return 0;
 }
@@ -6093,7 +6433,7 @@ static int Polycore_Scene_writeString(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Scene *inst = (Scene*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String str = lua_tostring(L, 2);
+	String str = String(lua_tostring(L, 2));
 	luaL_checktype(L, 3, LUA_TLIGHTUSERDATA);
 	OSFILE * outFile = (OSFILE *)lua_topointer(L, 3);
 	inst->writeString(str, outFile);
@@ -6104,7 +6444,7 @@ static int Polycore_Scene_saveScene(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Scene *inst = (Scene*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String fileName = lua_tostring(L, 2);
+	String fileName = String(lua_tostring(L, 2));
 	inst->saveScene(fileName);
 	return 0;
 }
@@ -6166,9 +6506,16 @@ static int Polycore_Scene_getCustomEntityByType(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Scene *inst = (Scene*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String type = lua_tostring(L, 2);
+	String type = String(lua_tostring(L, 2));
 	lua_pushlightuserdata(L, (void*)inst->getCustomEntityByType(type));
 	return 1;
+}
+
+static int Polycore_delete_Scene(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Scene *inst = (Scene*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
 }
 
 static int Polycore_SceneEntity(lua_State *L) {
@@ -6188,11 +6535,18 @@ static int Polycore_SceneEntity_testMouseCollision(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_delete_SceneEntity(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	SceneEntity *inst = (SceneEntity*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_SceneLabel(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TSTRING);
-	String fontName = lua_tostring(L, 1);
+	String fontName = String(lua_tostring(L, 1));
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String text = lua_tostring(L, 2);
+	String text = String(lua_tostring(L, 2));
 	luaL_checktype(L, 3, LUA_TNUMBER);
 	int size = lua_tointeger(L, 3);
 	luaL_checktype(L, 4, LUA_TNUMBER);
@@ -6219,7 +6573,7 @@ static int Polycore_SceneLabel_setText(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	SceneLabel *inst = (SceneLabel*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String newText = lua_tostring(L, 2);
+	String newText = String(lua_tostring(L, 2));
 	inst->setText(newText);
 	return 0;
 }
@@ -6235,6 +6589,13 @@ static int Polycore_SceneLabel_Render(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	SceneLabel *inst = (SceneLabel*)lua_topointer(L, 1);
 	inst->Render();
+	return 0;
+}
+
+static int Polycore_delete_SceneLabel(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	SceneLabel *inst = (SceneLabel*)lua_topointer(L, 1);
+	delete inst;
 	return 0;
 }
 
@@ -6356,6 +6717,13 @@ static int Polycore_SceneLight_getLightType(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_delete_SceneLight(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	SceneLight *inst = (SceneLight*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_SceneLine(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	SceneEntity * ent1 = (SceneEntity *)lua_topointer(L, 1);
@@ -6370,6 +6738,13 @@ static int Polycore_SceneLine_Render(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	SceneLine *inst = (SceneLine*)lua_topointer(L, 1);
 	inst->Render();
+	return 0;
+}
+
+static int Polycore_delete_SceneLine(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	SceneLine *inst = (SceneLine*)lua_topointer(L, 1);
+	delete inst;
 	return 0;
 }
 
@@ -6420,6 +6795,13 @@ static int Polycore_SceneManager_registerRenderTexture(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_delete_SceneManager(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	SceneManager *inst = (SceneManager*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_SceneMesh_get_showVertexNormals(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	SceneMesh *inst = (SceneMesh*)lua_topointer(L, 1);
@@ -6437,7 +6819,7 @@ static int Polycore_SceneMesh_set_showVertexNormals(lua_State *L) {
 
 static int Polycore_SceneMesh(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TSTRING);
-	String fileName = lua_tostring(L, 1);
+	String fileName = String(lua_tostring(L, 1));
 	SceneMesh *inst = new SceneMesh(fileName);
 	lua_pushlightuserdata(L, (void*)inst);
 	return 1;
@@ -6482,7 +6864,7 @@ static int Polycore_SceneMesh_loadTexture(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	SceneMesh *inst = (SceneMesh*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String fileName = lua_tostring(L, 2);
+	String fileName = String(lua_tostring(L, 2));
 	bool clamp;
 	if(lua_isboolean(L, 3)) {
 		clamp = lua_toboolean(L, 3);
@@ -6497,7 +6879,7 @@ static int Polycore_SceneMesh_loadSkeleton(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	SceneMesh *inst = (SceneMesh*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String fileName = lua_tostring(L, 2);
+	String fileName = String(lua_tostring(L, 2));
 	inst->loadSkeleton(fileName);
 	return 0;
 }
@@ -6524,7 +6906,7 @@ static int Polycore_SceneMesh_setMaterialByName(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	SceneMesh *inst = (SceneMesh*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String materialName = lua_tostring(L, 2);
+	String materialName = String(lua_tostring(L, 2));
 	inst->setMaterialByName(materialName);
 	return 0;
 }
@@ -6570,6 +6952,13 @@ static int Polycore_SceneMesh_cacheToVertexBuffer(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_delete_SceneMesh(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	SceneMesh *inst = (SceneMesh*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_ScenePrimitive(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TNUMBER);
 	int type = lua_tointeger(L, 1);
@@ -6594,6 +6983,13 @@ static int Polycore_ScenePrimitive(lua_State *L) {
 	ScenePrimitive *inst = new ScenePrimitive(type, v1, v2, v3);
 	lua_pushlightuserdata(L, (void*)inst);
 	return 1;
+}
+
+static int Polycore_delete_ScenePrimitive(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	ScenePrimitive *inst = (ScenePrimitive*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
 }
 
 static int Polycore_SceneRenderTexture(lua_State *L) {
@@ -6636,6 +7032,13 @@ static int Polycore_SceneRenderTexture_getTargetCamera(lua_State *L) {
 	SceneRenderTexture *inst = (SceneRenderTexture*)lua_topointer(L, 1);
 	lua_pushlightuserdata(L, (void*)inst->getTargetCamera());
 	return 1;
+}
+
+static int Polycore_delete_SceneRenderTexture(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	SceneRenderTexture *inst = (SceneRenderTexture*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
 }
 
 static int Polycore_Screen_get_enabled(lua_State *L) {
@@ -6757,7 +7160,7 @@ static int Polycore_Screen_setScreenShader(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Screen *inst = (Screen*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String shaderName = lua_tostring(L, 2);
+	String shaderName = String(lua_tostring(L, 2));
 	inst->setScreenShader(shaderName);
 	return 0;
 }
@@ -6829,6 +7232,13 @@ static int Polycore_Screen_getRootEntity(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_delete_Screen(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Screen *inst = (Screen*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_ScreenCurve(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	BezierCurve * curve = (BezierCurve *)lua_topointer(L, 1);
@@ -6837,6 +7247,13 @@ static int Polycore_ScreenCurve(lua_State *L) {
 	ScreenCurve *inst = new ScreenCurve(curve, numVertices);
 	lua_pushlightuserdata(L, (void*)inst);
 	return 1;
+}
+
+static int Polycore_delete_ScreenCurve(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	ScreenCurve *inst = (ScreenCurve*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
 }
 
 static int Polycore_ScreenEntity_get_hasFocus(lua_State *L) {
@@ -7268,15 +7685,29 @@ static int Polycore_ScreenEntity_isFocusable(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_delete_ScreenEntity(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	ScreenEntity *inst = (ScreenEntity*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_ScreenEvent(lua_State *L) {
 	ScreenEvent *inst = new ScreenEvent();
 	lua_pushlightuserdata(L, (void*)inst);
 	return 1;
 }
 
+static int Polycore_delete_ScreenEvent(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	ScreenEvent *inst = (ScreenEvent*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_ScreenImage(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TSTRING);
-	String fileName = lua_tostring(L, 1);
+	String fileName = String(lua_tostring(L, 1));
 	ScreenImage *inst = new ScreenImage(fileName);
 	lua_pushlightuserdata(L, (void*)inst);
 	return 1;
@@ -7311,9 +7742,16 @@ static int Polycore_ScreenImage_getImageHeight(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_delete_ScreenImage(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	ScreenImage *inst = (ScreenImage*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_ScreenLabel(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TSTRING);
-	String text = lua_tostring(L, 1);
+	String text = String(lua_tostring(L, 1));
 	luaL_checktype(L, 2, LUA_TNUMBER);
 	int size = lua_tointeger(L, 2);
 	String fontName;
@@ -7352,7 +7790,7 @@ static int Polycore_ScreenLabel_setText(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	ScreenLabel *inst = (ScreenLabel*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String newText = lua_tostring(L, 2);
+	String newText = String(lua_tostring(L, 2));
 	inst->setText(newText);
 	return 0;
 }
@@ -7369,6 +7807,13 @@ static int Polycore_ScreenLabel_getLabel(lua_State *L) {
 	ScreenLabel *inst = (ScreenLabel*)lua_topointer(L, 1);
 	lua_pushlightuserdata(L, (void*)inst->getLabel());
 	return 1;
+}
+
+static int Polycore_delete_ScreenLabel(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	ScreenLabel *inst = (ScreenLabel*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
 }
 
 static int Polycore_ScreenLine(lua_State *L) {
@@ -7404,6 +7849,13 @@ static int Polycore_ScreenLine_setLineWidth(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_delete_ScreenLine(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	ScreenLine *inst = (ScreenLine*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_ScreenManager(lua_State *L) {
 	ScreenManager *inst = new ScreenManager();
 	lua_pushlightuserdata(L, (void*)inst);
@@ -7435,9 +7887,16 @@ static int Polycore_ScreenManager_Update(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_delete_ScreenManager(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	ScreenManager *inst = (ScreenManager*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_ScreenMesh(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TSTRING);
-	String fileName = lua_tostring(L, 1);
+	String fileName = String(lua_tostring(L, 1));
 	ScreenMesh *inst = new ScreenMesh(fileName);
 	lua_pushlightuserdata(L, (void*)inst);
 	return 1;
@@ -7468,7 +7927,7 @@ static int Polycore_ScreenMesh_loadTexture(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	ScreenMesh *inst = (ScreenMesh*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String fileName = lua_tostring(L, 2);
+	String fileName = String(lua_tostring(L, 2));
 	inst->loadTexture(fileName);
 	return 0;
 }
@@ -7479,6 +7938,13 @@ static int Polycore_ScreenMesh_setTexture(lua_State *L) {
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
 	Texture * texture = (Texture *)lua_topointer(L, 2);
 	inst->setTexture(texture);
+	return 0;
+}
+
+static int Polycore_delete_ScreenMesh(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	ScreenMesh *inst = (ScreenMesh*)lua_topointer(L, 1);
+	delete inst;
 	return 0;
 }
 
@@ -7627,9 +8093,16 @@ static int Polycore_ScreenShape_addShapePoint(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_delete_ScreenShape(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	ScreenShape *inst = (ScreenShape*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_ScreenSprite(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TSTRING);
-	String fileName = lua_tostring(L, 1);
+	String fileName = String(lua_tostring(L, 1));
 	luaL_checktype(L, 2, LUA_TNUMBER);
 	Number spriteWidth = lua_tonumber(L, 2);
 	luaL_checktype(L, 3, LUA_TNUMBER);
@@ -7643,9 +8116,9 @@ static int Polycore_ScreenSprite_addAnimation(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	ScreenSprite *inst = (ScreenSprite*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String name = lua_tostring(L, 2);
+	String name = String(lua_tostring(L, 2));
 	luaL_checktype(L, 3, LUA_TSTRING);
-	String frames = lua_tostring(L, 3);
+	String frames = String(lua_tostring(L, 3));
 	luaL_checktype(L, 4, LUA_TNUMBER);
 	Number speed = lua_tonumber(L, 4);
 	inst->addAnimation(name, frames, speed);
@@ -7656,7 +8129,7 @@ static int Polycore_ScreenSprite_playAnimation(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	ScreenSprite *inst = (ScreenSprite*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String name = lua_tostring(L, 2);
+	String name = String(lua_tostring(L, 2));
 	luaL_checktype(L, 3, LUA_TNUMBER);
 	int startFrame = lua_tointeger(L, 3);
 	luaL_checktype(L, 4, LUA_TBOOLEAN);
@@ -7672,6 +8145,13 @@ static int Polycore_ScreenSprite_Update(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_delete_ScreenSprite(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	ScreenSprite *inst = (ScreenSprite*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_Shader_getType(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Shader *inst = (Shader*)lua_topointer(L, 1);
@@ -7683,7 +8163,7 @@ static int Polycore_Shader_setName(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Shader *inst = (Shader*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String name = lua_tostring(L, 2);
+	String name = String(lua_tostring(L, 2));
 	inst->setName(name);
 	return 0;
 }
@@ -7702,6 +8182,13 @@ static int Polycore_Shader_createBinding(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_delete_Shader(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Shader *inst = (Shader*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_ShaderBinding(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Shader * shader = (Shader *)lua_topointer(L, 1);
@@ -7714,7 +8201,7 @@ static int Polycore_ShaderBinding_clearTexture(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	ShaderBinding *inst = (ShaderBinding*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String name = lua_tostring(L, 2);
+	String name = String(lua_tostring(L, 2));
 	inst->clearTexture(name);
 	return 0;
 }
@@ -7723,7 +8210,7 @@ static int Polycore_ShaderBinding_addTexture(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	ShaderBinding *inst = (ShaderBinding*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String name = lua_tostring(L, 2);
+	String name = String(lua_tostring(L, 2));
 	luaL_checktype(L, 3, LUA_TLIGHTUSERDATA);
 	Texture * texture = (Texture *)lua_topointer(L, 3);
 	inst->addTexture(name, texture);
@@ -7734,11 +8221,11 @@ static int Polycore_ShaderBinding_addParam(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	ShaderBinding *inst = (ShaderBinding*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String type = lua_tostring(L, 2);
+	String type = String(lua_tostring(L, 2));
 	luaL_checktype(L, 3, LUA_TSTRING);
-	String name = lua_tostring(L, 3);
+	String name = String(lua_tostring(L, 3));
 	luaL_checktype(L, 4, LUA_TSTRING);
-	String value = lua_tostring(L, 4);
+	String value = String(lua_tostring(L, 4));
 	inst->addParam(type, name, value);
 	return 0;
 }
@@ -7747,7 +8234,7 @@ static int Polycore_ShaderBinding_addCubemap(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	ShaderBinding *inst = (ShaderBinding*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String name = lua_tostring(L, 2);
+	String name = String(lua_tostring(L, 2));
 	luaL_checktype(L, 3, LUA_TLIGHTUSERDATA);
 	Cubemap * cubemap = (Cubemap *)lua_topointer(L, 3);
 	inst->addCubemap(name, cubemap);
@@ -7774,7 +8261,7 @@ static int Polycore_ShaderBinding_getLocalParamByName(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	ShaderBinding *inst = (ShaderBinding*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String name = lua_tostring(L, 2);
+	String name = String(lua_tostring(L, 2));
 	lua_pushlightuserdata(L, (void*)inst->getLocalParamByName(name));
 	return 1;
 }
@@ -7836,9 +8323,16 @@ static int Polycore_ShaderBinding_getOutTargetBinding(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_delete_ShaderBinding(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	ShaderBinding *inst = (ShaderBinding*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_SkeletonAnimation(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TSTRING);
-	String name = lua_tostring(L, 1);
+	String name = String(lua_tostring(L, 1));
 	luaL_checktype(L, 2, LUA_TNUMBER);
 	Number duration = lua_tonumber(L, 2);
 	SkeletonAnimation *inst = new SkeletonAnimation(name, duration);
@@ -7892,6 +8386,13 @@ static int Polycore_SkeletonAnimation_setSpeed(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_delete_SkeletonAnimation(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	SkeletonAnimation *inst = (SkeletonAnimation*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_BoneTrack(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Bone * bone = (Bone *)lua_topointer(L, 1);
@@ -7932,9 +8433,16 @@ static int Polycore_BoneTrack_setSpeed(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_delete_BoneTrack(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	BoneTrack *inst = (BoneTrack*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_Skeleton(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TSTRING);
-	String fileName = lua_tostring(L, 1);
+	String fileName = String(lua_tostring(L, 1));
 	Skeleton *inst = new Skeleton(fileName);
 	lua_pushlightuserdata(L, (void*)inst);
 	return 1;
@@ -7944,7 +8452,7 @@ static int Polycore_Skeleton_loadSkeleton(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Skeleton *inst = (Skeleton*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String fileName = lua_tostring(L, 2);
+	String fileName = String(lua_tostring(L, 2));
 	inst->loadSkeleton(fileName);
 	return 0;
 }
@@ -7953,7 +8461,7 @@ static int Polycore_Skeleton_playAnimation(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Skeleton *inst = (Skeleton*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String animName = lua_tostring(L, 2);
+	String animName = String(lua_tostring(L, 2));
 	inst->playAnimation(animName);
 	return 0;
 }
@@ -7971,9 +8479,9 @@ static int Polycore_Skeleton_addAnimation(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Skeleton *inst = (Skeleton*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String name = lua_tostring(L, 2);
+	String name = String(lua_tostring(L, 2));
 	luaL_checktype(L, 3, LUA_TSTRING);
-	String fileName = lua_tostring(L, 3);
+	String fileName = String(lua_tostring(L, 3));
 	inst->addAnimation(name, fileName);
 	return 0;
 }
@@ -7982,7 +8490,7 @@ static int Polycore_Skeleton_getAnimation(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Skeleton *inst = (Skeleton*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String name = lua_tostring(L, 2);
+	String name = String(lua_tostring(L, 2));
 	lua_pushlightuserdata(L, (void*)inst->getAnimation(name));
 	return 1;
 }
@@ -7998,7 +8506,7 @@ static int Polycore_Skeleton_getBoneByName(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Skeleton *inst = (Skeleton*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String name = lua_tostring(L, 2);
+	String name = String(lua_tostring(L, 2));
 	lua_pushlightuserdata(L, (void*)inst->getBoneByName(name));
 	return 1;
 }
@@ -8016,7 +8524,7 @@ static int Polycore_Skeleton_enableBoneLabels(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Skeleton *inst = (Skeleton*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String labelFont = lua_tostring(L, 2);
+	String labelFont = String(lua_tostring(L, 2));
 	luaL_checktype(L, 3, LUA_TNUMBER);
 	Number size = lua_tonumber(L, 3);
 	luaL_checktype(L, 4, LUA_TNUMBER);
@@ -8050,9 +8558,16 @@ static int Polycore_Skeleton_getCurrentAnimation(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_delete_Skeleton(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Skeleton *inst = (Skeleton*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_Sound(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TSTRING);
-	String fileName = lua_tostring(L, 1);
+	String fileName = String(lua_tostring(L, 1));
 	Sound *inst = new Sound(fileName);
 	lua_pushlightuserdata(L, (void*)inst);
 	return 1;
@@ -8078,7 +8593,7 @@ static int Polycore_Sound_loadWAV(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Sound *inst = (Sound*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String fileName = lua_tostring(L, 2);
+	String fileName = String(lua_tostring(L, 2));
 	ALuint *retInst = new ALuint();
 	*retInst = inst->loadWAV(fileName);
 	lua_pushlightuserdata(L, retInst);
@@ -8089,7 +8604,7 @@ static int Polycore_Sound_loadOGG(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Sound *inst = (Sound*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String fileName = lua_tostring(L, 2);
+	String fileName = String(lua_tostring(L, 2));
 	ALuint *retInst = new ALuint();
 	*retInst = inst->loadOGG(fileName);
 	lua_pushlightuserdata(L, retInst);
@@ -8111,7 +8626,7 @@ static int Polycore_Sound_checkALError(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Sound *inst = (Sound*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String operation = lua_tostring(L, 2);
+	String operation = String(lua_tostring(L, 2));
 	inst->checkALError(operation);
 	return 0;
 }
@@ -8120,7 +8635,7 @@ static int Polycore_Sound_soundError(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Sound *inst = (Sound*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String err = lua_tostring(L, 2);
+	String err = String(lua_tostring(L, 2));
 	inst->soundError(err);
 	return 0;
 }
@@ -8131,8 +8646,15 @@ static int Polycore_Sound_soundCheck(lua_State *L) {
 	luaL_checktype(L, 2, LUA_TBOOLEAN);
 	bool result = lua_toboolean(L, 2);
 	luaL_checktype(L, 3, LUA_TSTRING);
-	String err = lua_tostring(L, 3);
+	String err = String(lua_tostring(L, 3));
 	inst->soundCheck(result, err);
+	return 0;
+}
+
+static int Polycore_delete_Sound(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Sound *inst = (Sound*)lua_topointer(L, 1);
+	delete inst;
 	return 0;
 }
 
@@ -8146,6 +8668,13 @@ static int Polycore_SoundManager_initAL(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	SoundManager *inst = (SoundManager*)lua_topointer(L, 1);
 	inst->initAL();
+	return 0;
+}
+
+static int Polycore_delete_SoundManager(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	SoundManager *inst = (SoundManager*)lua_topointer(L, 1);
+	delete inst;
 	return 0;
 }
 
@@ -8313,6 +8842,13 @@ static int Polycore_String_setDataWithEncoding(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_delete_String(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	String *inst = (String*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_Texture_get_scrollSpeedX(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Texture *inst = (Texture*)lua_topointer(L, 1);
@@ -8410,7 +8946,7 @@ static int Polycore_Texture_setResourcePath(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Texture *inst = (Texture*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
-	String newPath = lua_tostring(L, 2);
+	String newPath = String(lua_tostring(L, 2));
 	inst->setResourcePath(newPath);
 	return 0;
 }
@@ -8441,6 +8977,13 @@ static int Polycore_Texture_getHeight(lua_State *L) {
 	Texture *inst = (Texture*)lua_topointer(L, 1);
 	lua_pushinteger(L, inst->getHeight());
 	return 1;
+}
+
+static int Polycore_delete_Texture(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Texture *inst = (Texture*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
 }
 
 static int Polycore_Timer(lua_State *L) {
@@ -8506,6 +9049,13 @@ static int Polycore_Timer_getElapsedf(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_delete_Timer(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Timer *inst = (Timer*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_TimerManager(lua_State *L) {
 	TimerManager *inst = new TimerManager();
 	lua_pushlightuserdata(L, (void*)inst);
@@ -8534,6 +9084,13 @@ static int Polycore_TimerManager_Update(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	TimerManager *inst = (TimerManager*)lua_topointer(L, 1);
 	inst->Update();
+	return 0;
+}
+
+static int Polycore_delete_TimerManager(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	TimerManager *inst = (TimerManager*)lua_topointer(L, 1);
+	delete inst;
 	return 0;
 }
 
@@ -8627,6 +9184,13 @@ static int Polycore_Tween_setSpeed(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_delete_Tween(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Tween *inst = (Tween*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_BezierPathTween(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Vector3 * target = (Vector3 *)lua_topointer(L, 1);
@@ -8651,6 +9215,13 @@ static int Polycore_BezierPathTween_updateCustomTween(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	BezierPathTween *inst = (BezierPathTween*)lua_topointer(L, 1);
 	inst->updateCustomTween();
+	return 0;
+}
+
+static int Polycore_delete_BezierPathTween(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	BezierPathTween *inst = (BezierPathTween*)lua_topointer(L, 1);
+	delete inst;
 	return 0;
 }
 
@@ -8687,6 +9258,13 @@ static int Polycore_QuaternionTween_updateCustomTween(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_delete_QuaternionTween(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	QuaternionTween *inst = (QuaternionTween*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_TweenManager(lua_State *L) {
 	TweenManager *inst = new TweenManager();
 	lua_pushlightuserdata(L, (void*)inst);
@@ -8709,10 +9287,24 @@ static int Polycore_TweenManager_Update(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_delete_TweenManager(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	TweenManager *inst = (TweenManager*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_Vector2(lua_State *L) {
 	Vector2 *inst = new Vector2();
 	lua_pushlightuserdata(L, (void*)inst);
 	return 1;
+}
+
+static int Polycore_delete_Vector2(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Vector2 *inst = (Vector2*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
 }
 
 static int Polycore_Vector3_get_x(lua_State *L) {
@@ -8828,6 +9420,13 @@ static int Polycore_Vector3_Normalize(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_delete_Vector3(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Vector3 *inst = (Vector3*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_Vertex_get_useVertexColor(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Vertex *inst = (Vertex*)lua_topointer(L, 1);
@@ -8913,6 +9512,13 @@ static int Polycore_Vertex_setNormal(lua_State *L) {
 	luaL_checktype(L, 4, LUA_TNUMBER);
 	Number z = lua_tonumber(L, 4);
 	inst->setNormal(x, y, z);
+	return 0;
+}
+
+static int Polycore_delete_Vertex(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Vertex *inst = (Vertex*)lua_topointer(L, 1);
+	delete inst;
 	return 0;
 }
 

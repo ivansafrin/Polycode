@@ -87,3 +87,9 @@ function BezierCurve:rebuildBuffers()
 	local retVal =  Polycore.BezierCurve_rebuildBuffers(self.__ptr)
 end
 
+
+
+function BezierCurve:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_BezierCurve(self.__ptr)
+end

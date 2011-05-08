@@ -24,3 +24,9 @@ function SoundManager:initAL()
 	local retVal =  Polycore.SoundManager_initAL(self.__ptr)
 end
 
+
+
+function SoundManager:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_SoundManager(self.__ptr)
+end

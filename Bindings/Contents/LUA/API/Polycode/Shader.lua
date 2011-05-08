@@ -35,3 +35,9 @@ function Shader:createBinding()
 	end
 end
 
+
+
+function Shader:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_Shader(self.__ptr)
+end

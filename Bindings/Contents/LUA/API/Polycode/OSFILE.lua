@@ -38,3 +38,9 @@ function OSFILE:debugDump()
 	local retVal =  Polycore.OSFILE_debugDump(self.__ptr)
 end
 
+
+
+function OSFILE:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_OSFILE(self.__ptr)
+end

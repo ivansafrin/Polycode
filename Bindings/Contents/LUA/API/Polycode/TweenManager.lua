@@ -28,3 +28,9 @@ function TweenManager:Update()
 	local retVal =  Polycore.TweenManager_Update(self.__ptr)
 end
 
+
+
+function TweenManager:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_TweenManager(self.__ptr)
+end

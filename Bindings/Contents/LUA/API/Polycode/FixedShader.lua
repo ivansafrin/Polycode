@@ -9,6 +9,12 @@ class "FixedShader" (Shader)
 
 
 function FixedShader:FixedShader(...)
+	if type(arg[1]) == "table" and count(arg) == 1 then
+		if ""..arg[1]:class() == "Shader" then
+			self.__ptr = arg[1].__ptr
+			return
+		end
+	end
 	for k,v in pairs(arg) do
 		if type(v) == "table" then
 			if v.__ptr ~= nil then
@@ -33,3 +39,9 @@ function FixedShader:createBinding()
 	end
 end
 
+
+
+function FixedShader:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_FixedShader(self.__ptr)
+end

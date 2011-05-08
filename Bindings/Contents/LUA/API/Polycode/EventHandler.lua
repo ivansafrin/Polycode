@@ -22,6 +22,12 @@ end
 
 
 
+function EventHandler:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_EventHandler(self.__ptr)
+end
+
+
 function EventHandler:__handleEvent(event)
 	evt = Event("__skip_ptr__")
 	evt.__ptr = event

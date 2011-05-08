@@ -36,10 +36,10 @@ public:
 		PolycodeDebugEvent *debugEvent = (PolycodeDebugEvent*)event;		
 		switch(event->getEventCode()) {
 			case PolycodeDebugEvent::EVENT_ERROR:
-				//				[playerDocument handleDebugError: [NSString stringWithCString:debugEvent->errorString.c_str()] onLine: debugEvent->lineNumber];
+				[playerDocument handleDebugError: [NSString stringWithCString:debugEvent->errorString.c_str()] onLine: debugEvent->lineNumber];
 				break;
 			case PolycodeDebugEvent::EVENT_PRINT:
-				//				[playerDocument printToConsole: [NSString stringWithCString:debugEvent->errorString.c_str()]];				
+				[playerDocument printToConsole: [NSString stringWithCString:debugEvent->errorString.c_str()]];				
 				break;
 			case PolycodeDebugEvent::EVENT_RESIZE:
 //				printf("RERERERERESIZE\n");
@@ -58,8 +58,17 @@ public:
 	NSTimer* timer;
 	CocoaPolycodePlayer *player;
 	PolycodeProxy *playerProxy;
+	NSWindow *consoleWindow;
+	NSTextView *consoleTextView;
+	bool showingConsole;
 }
 
+- (void) printToConsole: (NSString*) message;
+- (void) handleDebugError: (NSString*) error onLine:(int) lineNumber;
+- (IBAction) showConsoleWindow: (id) sender;
+
 @property (assign) IBOutlet PolycodeView *mainView;
+@property (assign) IBOutlet NSWindow *consoleWindow;
+@property (assign) IBOutlet NSTextView *consoleTextView;
 
 @end

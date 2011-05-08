@@ -45,3 +45,9 @@ function SkeletonAnimation:setSpeed(speed)
 	local retVal = Polycore.SkeletonAnimation_setSpeed(self.__ptr, speed)
 end
 
+
+
+function SkeletonAnimation:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_SkeletonAnimation(self.__ptr)
+end

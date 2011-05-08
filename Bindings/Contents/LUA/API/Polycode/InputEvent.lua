@@ -37,6 +37,12 @@ end
 
 
 function InputEvent:InputEvent(...)
+	if type(arg[1]) == "table" and count(arg) == 1 then
+		if ""..arg[1]:class() == "Event" then
+			self.__ptr = arg[1].__ptr
+			return
+		end
+	end
 	for k,v in pairs(arg) do
 		if type(v) == "table" then
 			if v.__ptr ~= nil then
@@ -50,8 +56,41 @@ function InputEvent:InputEvent(...)
 	end
 end
 
+function InputEvent:getMousePosition()
+	local retVal =  Polycore.InputEvent_getMousePosition(self.__ptr)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = Vector2("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
+end
+
+function InputEvent:getKey()
+	local retVal =  Polycore.InputEvent_getKey(self.__ptr)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = PolyKEY("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
+end
+
+function InputEvent:getMouseButton()
+	local retVal =  Polycore.InputEvent_getMouseButton(self.__ptr)
+	return retVal
+end
+
 function InputEvent:keyCode()
 	local retVal =  Polycore.InputEvent_keyCode(self.__ptr)
 	return retVal
 end
 
+
+
+function InputEvent:__delete()
+	Polycore.__ptr_lookup[self.__ptr] = nil
+	Polycore.delete_InputEvent(self.__ptr)
+end

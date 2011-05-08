@@ -254,10 +254,10 @@ int main(int argc, char **argv) {
 					}
 				}
 			}
+			runInfo.root.addChild(configFile.root["packedItems"]);
 		}
 	}
 
-	runInfo.root.addChild(configFile.root["packedItems"]);
 
 	runInfo.saveToXML("runinfo_tmp_zzzz.polyrun");
 	addFileToZip(z, "runinfo_tmp_zzzz.polyrun", "runinfo.polyrun", true);

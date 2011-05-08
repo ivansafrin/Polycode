@@ -142,6 +142,8 @@ extern "C" {
 		// Table is still on the stack.  Get rid of it now.
 		lua_pop(L, 1);		
 		
+		lua_register(L, "debugPrint", debugPrint);			
+		
 		lua_getfield(L, LUA_GLOBALSINDEX, "require");
 		lua_pushstring(L, "class");		
 		lua_call(L, 1, 0);
@@ -165,7 +167,7 @@ extern "C" {
 			char *buffer = (char*)malloc(progsize+1);
 			memset(buffer, 0, progsize+1);
 			OSBasics::read(buffer, progsize, 1, inFile);
-			fileData = buffer;		
+			fileData = String(buffer);		
 			free(buffer);
 			OSBasics::close(inFile);	
 		} else {
@@ -183,7 +185,6 @@ extern "C" {
 		
 		//lua_gc(L, LUA_GCSTOP, 0);
 		
-		lua_register(L, "debugPrint", debugPrint);		
 		
 /*
 		lua_pushliteral(L, "debug");
