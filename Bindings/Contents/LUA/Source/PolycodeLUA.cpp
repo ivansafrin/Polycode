@@ -2,7 +2,7 @@
 #include "PolycodeLUAWrappers.h"
 
 int luaopen_Polycode(lua_State *L) {
-	static const struct luaL_reg polycodeLib [] = {		{"OSFILE_get_fileType", Polycore_OSFILE_get_fileType},
+	static const struct luaL_reg polycoreLib [] = {		{"OSFILE_get_fileType", Polycore_OSFILE_get_fileType},
 		{"OSFILE_set_fileType", Polycore_OSFILE_set_fileType},
 		{"OSFILE", Polycore_OSFILE},
 		{"OSFILE_debugDump", Polycore_OSFILE_debugDump},
@@ -317,9 +317,6 @@ int luaopen_Polycode(lua_State *L) {
 		{"FontManager_registerFont", Polycore_FontManager_registerFont},
 		{"FontManager_getFontByName", Polycore_FontManager_getFontByName},
 		{"delete_FontManager", Polycore_delete_FontManager},
-		{"OpenGLCubemap", Polycore_OpenGLCubemap},
-		{"OpenGLCubemap_getTextureID", Polycore_OpenGLCubemap_getTextureID},
-		{"delete_OpenGLCubemap", Polycore_delete_OpenGLCubemap},
 		{"Image", Polycore_Image},
 		{"Image_loadImage", Polycore_Image_loadImage},
 		{"Image_loadPNG", Polycore_Image_loadPNG},
@@ -1066,6 +1063,6 @@ int luaopen_Polycode(lua_State *L) {
 		{"delete_Vertex", Polycore_delete_Vertex},
 		{NULL, NULL}
 	};
-	luaL_openlib(L, "Polycore", polycodeLib, 0);
+	luaL_openlib(L, "Polycore", polycoreLib, 0);
 	return 1;
 }

@@ -91,11 +91,11 @@ PhysicsScreen::PhysicsScreen() : Screen() {
 	init(10.0f, 1.0f/60.0f,10,Vector2(0.0f, 10.0f));
 }
 
-PhysicsScreen::PhysicsScreen(float worldScale, float freq) : Screen() {
+PhysicsScreen::PhysicsScreen(Number worldScale, Number freq) : Screen() {
 	init(worldScale, 1.0f/freq,10,Vector2(0.0f, 10.0f));	
 }
 
-void PhysicsScreen::init(float worldScale, float physicsTimeStep, int physicsIterations, Vector2 physicsGravity) {
+void PhysicsScreen::init(Number worldScale, Number physicsTimeStep, int physicsIterations, Vector2 physicsGravity) {
 	
 	this->worldScale = worldScale;
 	
@@ -130,7 +130,7 @@ void PhysicsScreen::destroyJoint(PhysicsJoint *joint) {
 }
 
 
-PhysicsJoint *PhysicsScreen::createRevoluteJoint(ScreenEntity *ent1, ScreenEntity *ent2, float ax, float ay, bool enableLimit, float lowerLimit, float upperLimit, bool motorEnabled, float motorSpeed, float maxTorque) {
+PhysicsJoint *PhysicsScreen::createRevoluteJoint(ScreenEntity *ent1, ScreenEntity *ent2, Number ax, Number ay, bool enableLimit, Number lowerLimit, Number upperLimit, bool motorEnabled, Number motorSpeed, Number maxTorque) {
 	PhysicsScreenEntity *pEnt1 = getPhysicsByScreenEntity(ent1);
 	PhysicsScreenEntity *pEnt2 = getPhysicsByScreenEntity(ent2);
 	if(pEnt1 == NULL || pEnt2 == NULL)
@@ -176,7 +176,7 @@ Vector2 PhysicsScreen::getVelocity(ScreenEntity *ent) {
 	return Vector2(vec.x, vec.y);
 }
 
-void PhysicsScreen::setSpin(ScreenEntity *ent, float spin) {
+void PhysicsScreen::setSpin(ScreenEntity *ent, Number spin) {
 	PhysicsScreenEntity *pEnt = getPhysicsByScreenEntity(ent);
 	if(pEnt == NULL)
 		return;
@@ -184,7 +184,7 @@ void PhysicsScreen::setSpin(ScreenEntity *ent, float spin) {
 	pEnt->body->SetAngularVelocity(spin);
 }
 
-void PhysicsScreen::setVelocity(ScreenEntity *ent, float fx, float fy) {
+void PhysicsScreen::setVelocity(ScreenEntity *ent, Number fx, Number fy) {
 	PhysicsScreenEntity *pEnt = getPhysicsByScreenEntity(ent);
 	if(pEnt == NULL)
 		return;
@@ -199,7 +199,7 @@ void PhysicsScreen::setVelocity(ScreenEntity *ent, float fx, float fy) {
 	pEnt->body->SetLinearVelocity(f);
 }
 
-void PhysicsScreen::setVelocityX(ScreenEntity *ent, float fx) {
+void PhysicsScreen::setVelocityX(ScreenEntity *ent, Number fx) {
 	PhysicsScreenEntity *pEnt = getPhysicsByScreenEntity(ent);
 	if(pEnt == NULL)
 		return;
@@ -211,7 +211,7 @@ void PhysicsScreen::setVelocityX(ScreenEntity *ent, float fx) {
 	
 }
 
-void PhysicsScreen::setVelocityY(ScreenEntity *ent, float fy) {
+void PhysicsScreen::setVelocityY(ScreenEntity *ent, Number fy) {
 	PhysicsScreenEntity *pEnt = getPhysicsByScreenEntity(ent);
 	if(pEnt == NULL)
 		return;
@@ -230,14 +230,14 @@ PhysicsScreenEntity *PhysicsScreen::addCollisionChild(ScreenEntity *newEntity, i
 	return ret;
 }
 
-void PhysicsScreen::setTransform(ScreenEntity *ent, Vector2 pos, float angle) {
+void PhysicsScreen::setTransform(ScreenEntity *ent, Vector2 pos, Number angle) {
 	PhysicsScreenEntity *pEnt = getPhysicsByScreenEntity(ent);
 	if(pEnt == NULL)
 		return;
 	pEnt->setTransform(pos, angle);
 }
 
-void PhysicsScreen::applyForce(ScreenEntity *ent, float fx, float fy) {
+void PhysicsScreen::applyForce(ScreenEntity *ent, Number fx, Number fy) {
 	PhysicsScreenEntity *pEnt = getPhysicsByScreenEntity(ent);
 	if(pEnt == NULL)
 		return;
@@ -249,7 +249,7 @@ void PhysicsScreen::applyForce(ScreenEntity *ent, float fx, float fy) {
 	pEnt->body->ApplyForce(f, p);
 }
 
-void PhysicsScreen::applyImpulse(ScreenEntity *ent, float fx, float fy) {
+void PhysicsScreen::applyImpulse(ScreenEntity *ent, Number fx, Number fy) {
 	PhysicsScreenEntity *pEnt = getPhysicsByScreenEntity(ent);
 	if(pEnt == NULL)
 		return;
@@ -288,8 +288,8 @@ b2MouseJoint *PhysicsScreen::createMouseJoint(ScreenEntity *ent1, Vector2 *mp) {
 	
 	b2Vec2 mpos(mp->x/10.0f, mp->y/10.0f);
 	mj->target = mpos;
-#ifdef TARGET_FLOAT32_IS_FIXED
-	mj->maxForce = (pEnt1->body->GetMass() < 16.0)? (1000.0f * pEnt1->body->GetMass()) : float32(16000.0);
+#ifdef TARGET_Number_IS_FIXED
+	mj->maxForce = (pEnt1->body->GetMass() < 16.0)? (1000.0f * pEnt1->body->GetMass()) : Number(16000.0);
 #else
 	mj->maxForce = 1000.0f * pEnt1->body->GetMass();
 #endif
@@ -346,7 +346,7 @@ bool PhysicsScreen::areEntitiesColliding(ScreenEntity *ent1, ScreenEntity *ent2)
 	return false;
 }
 
-ScreenEntity *PhysicsScreen::getEntityAtPosition(float x, float y) {
+ScreenEntity *PhysicsScreen::getEntityAtPosition(Number x, Number y) {
 	ScreenEntity *ret = NULL;
 	
 	b2Vec2 mousePosition;
@@ -361,7 +361,7 @@ ScreenEntity *PhysicsScreen::getEntityAtPosition(float x, float y) {
 	return ret;
 }
 
-bool PhysicsScreen::testEntityAtPosition(ScreenEntity *ent, float x, float y) {
+bool PhysicsScreen::testEntityAtPosition(ScreenEntity *ent, Number x, Number y) {
 	PhysicsScreenEntity *pEnt = getPhysicsByScreenEntity(ent);	
 	
 	if(pEnt == NULL)
@@ -383,7 +383,7 @@ void PhysicsScreen::destroyMouseJoint(b2MouseJoint *mJoint) {
 		mJoint = NULL;
 }
 
-PhysicsScreenEntity *PhysicsScreen::addPhysicsChild(ScreenEntity *newEntity, int entType, float friction, float density, float restitution, bool isSensor, bool fixedRotation) {
+PhysicsScreenEntity *PhysicsScreen::addPhysicsChild(ScreenEntity *newEntity, int entType, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation) {
 	addChild(newEntity);
 	newEntity->setPositionMode(ScreenEntity::POSITION_CENTER);
 	PhysicsScreenEntity *newPhysicsEntity = new PhysicsScreenEntity(newEntity, world, worldScale, entType, friction, density, restitution, isSensor,fixedRotation);

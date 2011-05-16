@@ -320,14 +320,14 @@ void CGShaderModule::updateCGParam(Renderer *renderer, CGProgramParam &param, Sh
 		if(localParam)
 			paramData = localParam->data;
 		
-		float *fval;
+		Number *fval;
 		
 		switch(param.paramType) {
-			case CGProgramParam::PARAM_FLOAT:
-				fval = (float*)paramData;
+			case CGProgramParam::PARAM_Number:
+				fval = (Number*)paramData;
 				cgGLSetParameter1f(param.cgParam, *fval);
 				break;
-			case CGProgramParam::PARAM_FLOAT3:
+			case CGProgramParam::PARAM_Number3:
 				Vector3 *fval3 = (Vector3*)paramData;
 				cgGLSetParameter3f(param.cgParam, fval3->x,fval3->y,fval3->z);
 				break;

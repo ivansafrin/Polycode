@@ -1,6 +1,7 @@
 
 #include "polybuild.h"
 #include "zip.h"
+#include <mach-o/dyld.h>
 
 vector<BuildArg> args;
 #define MAXFILENAME (256)
@@ -100,13 +101,28 @@ void addFolderToZip(zipFile z, String folderPath, String parentFolder, bool sile
 			addFileToZip(z, files[i].fullPath, pathInZip, silent);
 
 		} else {
-			addFolderToZip(z, files[i].fullPath.c_str(), files[i].name, silent);
+			if(parentFolder == "") {
+				addFolderToZip(z, files[i].fullPath.c_str(), files[i].name, silent);
+			} else {
+				addFolderToZip(z, files[i].fullPath.c_str(), parentFolder + "/" + files[i].name, silent);
+			}
 		}
 	}
 }
 
 int main(int argc, char **argv) {
 
+	char path[2048];
+	unsigned int size = sizeof(path);
+	_NSGetExecutablePath(path, &size);
+	String basePath = path;
+	vector<String> cpts = basePath.split("/");
+	String installPath = "";
+	for(int i=0; i < cpts.size() - 2; i++) {
+		installPath = installPath + cpts[i];
+		installPath += String("/");
+	}
+	
 	printf("Polycode build tool v0.1.1\n");
 
 	for(int i=0; i < argc; i++) {
@@ -239,6 +255,24 @@ int main(int argc, char **argv) {
 	color->addChild("blue", backgroundColorB);
 
 	addFileToZip(z, entryPoint, entryPoint, false);
+
+	if(configFile.root["modules"]) {
+		String modulesPath = installPath + "Modules/";
+		ObjectEntry *modules = configFile.root["modules"];
+		if(modules) {		
+			for(int i=0; i < modules->length; i++) {
+				printf("Adding module: %s\n", (*modules)[i]->stringVal.c_str());
+				String modulePath = modulesPath + (*modules)[i]->stringVal;
+				String moduleAPIPath = modulePath + "/API";
+				String moduleLibPath = modulePath + "/Lib";
+				addFolderToZip(z, moduleAPIPath, "", false);
+				addFolderToZip(z, moduleLibPath, "__lib", false);
+				
+				//String module = configFile.root["entryPoint"]->stringVal;
+			}
+			runInfo.root.addChild(configFile.root["modules"]);
+		}
+	}
 
 	if(configFile.root["packedItems"]) {
 		ObjectEntry *packed = configFile.root["packedItems"];

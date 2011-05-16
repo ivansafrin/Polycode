@@ -11,17 +11,17 @@
 
 using namespace Polycode;
 
-UITreeContainer::UITreeContainer(String icon, String text, float treeWidth, float treeHeight) : ScreenEntity() {
+UITreeContainer::UITreeContainer(String icon, String text, Number treeWidth, Number treeHeight) : ScreenEntity() {
 	
 	Config *conf = CoreServices::getInstance()->getConfig();
 	
-	float st = conf->getNumericValue("Polycode", "uiTreeContainerSkinT");
-	float sr = conf->getNumericValue("Polycode", "uiTreeContainerSkinR");
-	float sb = conf->getNumericValue("Polycode", "uiTreeContainerSkinB");
-	float sl = conf->getNumericValue("Polycode", "uiTreeContainerSkinL");	
-	float padding = conf->getNumericValue("Polycode", "uiTreeContainerSkinPadding");	
+	Number st = conf->getNumericValue("Polycode", "uiTreeContainerSkinT");
+	Number sr = conf->getNumericValue("Polycode", "uiTreeContainerSkinR");
+	Number sb = conf->getNumericValue("Polycode", "uiTreeContainerSkinB");
+	Number sl = conf->getNumericValue("Polycode", "uiTreeContainerSkinL");	
+	Number padding = conf->getNumericValue("Polycode", "uiTreeContainerSkinPadding");	
 	
-//	float scrollBarOffset = conf->getNumericValue("Polycode", "uiTreeContainerScrollBarOffset");	
+//	Number scrollBarOffset = conf->getNumericValue("Polycode", "uiTreeContainerScrollBarOffset");	
 	
 	bgBox = new UIBox(conf->getStringValue("Polycode", "uiTreeContainerSkin"),
 						  st,sr,sb,sl,

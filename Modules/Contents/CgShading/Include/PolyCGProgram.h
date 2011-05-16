@@ -92,9 +92,9 @@ class _PolyExport CGProgramParam {
 	static const int TAU_SPOT_LIGHT_TEXTUREMATRIX_3 = 45;
 	
 	static const int PARAM_UNKNOWN = 0;	
-	static const int PARAM_FLOAT = 1;
-	static const int PARAM_FLOAT3 = 2;
-	static const int PARAM_FLOAT4 = 3;
+	static const int PARAM_Number = 1;
+	static const int PARAM_Number3 = 2;
+	static const int PARAM_Number4 = 3;
 	
 	};
 

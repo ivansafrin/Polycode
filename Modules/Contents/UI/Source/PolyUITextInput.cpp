@@ -12,7 +12,7 @@
 
 using namespace Polycode;
 
-UITextInput::UITextInput(bool multiLine, float width, float height) : ScreenEntity() {
+UITextInput::UITextInput(bool multiLine, Number width, Number height) : ScreenEntity() {
 	this->multiLine = multiLine;
 	
 	draggingSelection = false;
@@ -38,17 +38,17 @@ UITextInput::UITextInput(bool multiLine, float width, float height) : ScreenEnti
 	
 	fontSize = conf->getNumericValue("Polycode", "uiTextInputFontSize");
 	
-	float rectHeight = height;
+	Number rectHeight = height;
 	if(!multiLine) {
 		rectHeight = fontSize+12;
 	} 
 	
 	lineSpacing = conf->getNumericValue("Polycode", "textEditLineSpacing");
 	
-	float st = conf->getNumericValue("Polycode", "textBgSkinT");
-	float sr = conf->getNumericValue("Polycode", "textBgSkinR");
-	float sb = conf->getNumericValue("Polycode", "textBgSkinB");
-	float sl = conf->getNumericValue("Polycode", "textBgSkinL");
+	Number st = conf->getNumericValue("Polycode", "textBgSkinT");
+	Number sr = conf->getNumericValue("Polycode", "textBgSkinR");
+	Number sb = conf->getNumericValue("Polycode", "textBgSkinB");
+	Number sl = conf->getNumericValue("Polycode", "textBgSkinL");
 	
 	padding = conf->getNumericValue("Polycode", "textBgSkinPadding");	
 	
@@ -157,12 +157,12 @@ void UITextInput::setSelection(int lineStart, int lineEnd, int colStart, int col
 	if(colStart+1 > topLine->getText().length())
 		return;
 	
-	float fColEnd  = colEnd;
+	Number fColEnd  = colEnd;
 	
 	if(colEnd > topLine->getText().length() || lineStart != lineEnd)
 		fColEnd = topLine->getText().length();
 
-	float topSize, topHeight, topX;
+	Number topSize, topHeight, topX;
 	
 	selectorRectTop->visible = true;	
 	topSize = topLine->getLabel()->getTextWidth(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), topLine->getText().substr(colStart,fColEnd-colStart), fontSize) - 4; 
@@ -179,16 +179,16 @@ void UITextInput::setSelection(int lineStart, int lineEnd, int colStart, int col
 	if(lineEnd > lineStart && lineEnd < lines.size()) {
 		ScreenLabel *bottomLine = lines[lineEnd];	
 		selectorRectBottom->visible = true;		
-		float bottomSize = bottomLine->getLabel()->getTextWidth(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), bottomLine->getText().substr(0,colEnd), fontSize) - 4; 
-		float bottomHeight = lineHeight+lineSpacing;
+		Number bottomSize = bottomLine->getLabel()->getTextWidth(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), bottomLine->getText().substr(0,colEnd), fontSize) - 4; 
+		Number bottomHeight = lineHeight+lineSpacing;
 		selectorRectBottom->setScale(bottomSize, bottomHeight);
 		selectorRectBottom->setPosition(padding + (bottomSize/2.0) + 1, padding + (lineEnd * (lineHeight+lineSpacing)) + (bottomHeight/2.0));
 		
 		if(lineEnd != lineStart+1) {
 			// need filler
 			selectorRectMiddle->visible = true;		
-			float midSize = this->width-padding;
-			float midHeight = 0;			
+			Number midSize = this->width-padding;
+			Number midHeight = 0;			
 			for(int i=lineStart+1; i < lineEnd;i++) {
 				midHeight += lineHeight+lineSpacing;
 			}
@@ -367,7 +367,7 @@ void UITextInput::selectLineFromOffset() {
 	}
 }
 
-void UITextInput::dragSelectionTo(float x, float y) {
+void UITextInput::dragSelectionTo(Number x, Number y) {
 	x -= padding;
 	y -= padding;
 	int lineOffset = y  / (lineHeight+lineSpacing);
@@ -377,7 +377,7 @@ void UITextInput::dragSelectionTo(float x, float y) {
 	ScreenLabel *selectToLine = lines[lineOffset];
 	
 	int len = selectToLine->getText().length();
-	float slen;
+	Number slen;
 	int caretPosition = selectToLine->getLabel()->getTextWidth(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), selectToLine->getText().substr(0,len), fontSize);
 	for(int i=0; i < len; i++) {
 		slen = selectToLine->getLabel()->getTextWidth(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), selectToLine->getText().substr(0,i), fontSize);
@@ -446,7 +446,7 @@ void UITextInput::selectWordAtCaret() {
 	setSelection(this->lineOffset, this->lineOffset, selectStart, selectEnd);
 }
 
-void UITextInput::setCaretToMouse(float x, float y) {
+void UITextInput::setCaretToMouse(Number x, Number y) {
 	clearSelection();
 	x -= padding;
 	y -= padding;
@@ -458,7 +458,7 @@ void UITextInput::setCaretToMouse(float x, float y) {
 	//}
 	
 	int len = currentLine->getText().length();
-	float slen;
+	Number slen;
 	for(int i=0; i < len; i++) {
 		slen = currentLine->getLabel()->getTextWidth(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), currentLine->getText().substr(0,i), fontSize);
 		if(slen > x) {

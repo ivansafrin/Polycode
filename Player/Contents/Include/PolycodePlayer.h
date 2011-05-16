@@ -27,6 +27,7 @@ THE SOFTWARE.
 
 #include "Polycode.h"
 #include "PolycodeLUA.h"
+#include "PolyGLSLShaderModule.h"
 
 extern "C" {	
 #include <stdio.h>
@@ -91,6 +92,8 @@ public:
 protected:
 	
 	lua_State *L;		
+	
+	std::vector<String> loadedModules;
 	
 	bool _knownArchive;
 	String fileToRun;

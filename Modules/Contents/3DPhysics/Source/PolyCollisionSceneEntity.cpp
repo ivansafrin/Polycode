@@ -115,7 +115,7 @@ void CollisionSceneEntity::Update() {
 	
 //	lastPosition = *getSceneEntity()->getPosition();	
 	if(gravityEnabled) {	
-		float elapsed = CoreServices::getInstance()->getCore()->getElapsed();
+		Number elapsed = CoreServices::getInstance()->getCore()->getElapsed();
 		Vector3 elapsedGrav = gravityVector;
 		elapsedGrav * elapsed * gravityStrength;
 		gVelocity = gVelocity+(elapsedGrav);
@@ -128,7 +128,7 @@ void CollisionSceneEntity::Update() {
 	collisionObject->getWorldTransform().setFromOpenGLMatrix((float*)sceneEntity->getConcatenatedMatrix().ml);
 
 /*	
-	float rads = PI/180.0f;
+	Number rads = PI/180.0f;
 	orn.setEuler(sceneEntity->getCombinedYaw()*rads,sceneEntity->getCombinedPitch()*rads,sceneEntity->getCombinedRoll()*rads);
 	collisionObject->getWorldTransform().setRotation(orn);
 	collisionObject->getWorldTransform().setOrigin(btVector3(sceneEntity->getCombinedPosition().x, sceneEntity->getCombinedPosition().y, sceneEntity->getCombinedPosition().z));

@@ -13,7 +13,7 @@
 using namespace Polycode;
 
 
-UIWindow::UIWindow(String windowName, float width, float height) : ScreenEntity() {
+UIWindow::UIWindow(String windowName, Number width, Number height) : ScreenEntity() {
 	
 	closeOnEscape = false;
 	
@@ -24,10 +24,10 @@ UIWindow::UIWindow(String windowName, float width, float height) : ScreenEntity(
 	String fontName = conf->getStringValue("Polycode", "uiWindowTitleFont");
 	int fontSize = conf->getNumericValue("Polycode", "uiWindowTitleFontSize");	
 	
-	float st = conf->getNumericValue("Polycode", "uiWindowSkinT");
-	float sr = conf->getNumericValue("Polycode", "uiWindowSkinR");
-	float sb = conf->getNumericValue("Polycode", "uiWindowSkinB");
-	float sl = conf->getNumericValue("Polycode", "uiWindowSkinL");
+	Number st = conf->getNumericValue("Polycode", "uiWindowSkinT");
+	Number sr = conf->getNumericValue("Polycode", "uiWindowSkinR");
+	Number sb = conf->getNumericValue("Polycode", "uiWindowSkinB");
+	Number sl = conf->getNumericValue("Polycode", "uiWindowSkinL");
 	
 	topPadding = st;
 	
@@ -65,7 +65,7 @@ UIWindow::UIWindow(String windowName, float width, float height) : ScreenEntity(
 	blockMouseInput = true;
 }
 
-void UIWindow::setWindowSize(float w, float h) {
+void UIWindow::setWindowSize(Number w, Number h) {
 //	windowRect->setScale(w/windowRect->getWidth(), h/windowRect->getHeight());
 //	shadowRect->setScale(w/shadowRect->getWidth(), h/shadowRect->getHeight());
 //	titlebarRect->setScale((w-4)/titlebarRect->getWidth(), 1.0f);
@@ -97,7 +97,7 @@ void UIWindow::onLoseFocus() {
 		}
 }
 
-void UIWindow::onMouseDown(float x, float y) {
+void UIWindow::onMouseDown(Number x, Number y) {
 	if(hasFocus)
 		return;
 	hasFocus = true;

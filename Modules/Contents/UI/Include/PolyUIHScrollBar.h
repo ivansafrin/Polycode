@@ -14,25 +14,25 @@ namespace Polycode {
 	
 	class _PolyExport UIHScrollBar : public ScreenEntity {
 	public:
-		UIHScrollBar(float width, float height, float initialRatio);
+		UIHScrollBar(Number width, Number height, Number initialRatio);
 		~UIHScrollBar();
 		
 		void Update();
-		float getScrollValue();
+		Number getScrollValue();
 		void handleEvent(Event *event);
 		
-		float minHandleSize;
+		Number minHandleSize;
 		
-		void setHandleRatio(float newRatio);
+		void setHandleRatio(Number newRatio);
 		
 	private:		
 		
 		
-		float padding;
-		float scrollValue;
-		float lastPositionX;
-		float scrollHandleWidth;	
-		float dragRectWidth;
+		Number padding;
+		Number scrollValue;
+		Number lastPositionX;
+		Number scrollHandleWidth;	
+		Number dragRectWidth;
 		
 		UIBox *bgBox;
 		UIBox *handleBox;

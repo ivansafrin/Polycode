@@ -12,7 +12,7 @@
 
 using namespace Polycode;
 
-UIVScrollBar::UIVScrollBar(float width, float height, float initialRatio) : ScreenEntity() {
+UIVScrollBar::UIVScrollBar(Number width, Number height, Number initialRatio) : ScreenEntity() {
 
 	scrollValue = 0;
 	
@@ -20,10 +20,10 @@ UIVScrollBar::UIVScrollBar(float width, float height, float initialRatio) : Scre
 	
 	minHandleSize = conf->getNumericValue("Polycode", "uiScrollHandleMinSize");
 	
-	float st = conf->getNumericValue("Polycode", "uiScrollBgSkinT");
-	float sr = conf->getNumericValue("Polycode", "uiScrollBgSkinR");
-	float sb = conf->getNumericValue("Polycode", "uiScrollBgSkinB");
-	float sl = conf->getNumericValue("Polycode", "uiScrollBgSkinL");	
+	Number st = conf->getNumericValue("Polycode", "uiScrollBgSkinT");
+	Number sr = conf->getNumericValue("Polycode", "uiScrollBgSkinR");
+	Number sb = conf->getNumericValue("Polycode", "uiScrollBgSkinB");
+	Number sl = conf->getNumericValue("Polycode", "uiScrollBgSkinL");	
 	padding = conf->getNumericValue("Polycode", "uiScrollBgSkinPadding");		
 		
 	bgBox = new UIBox(conf->getStringValue("Polycode", "uiScrollBgSkin"),
@@ -90,7 +90,7 @@ void UIVScrollBar::Update() {
 	}
 }
 
-void UIVScrollBar::setHandleRatio(float newRatio) {
+void UIVScrollBar::setHandleRatio(Number newRatio) {
 	scrollHandleHeight = height*newRatio;	
 	
 	if(scrollHandleHeight < minHandleSize)
@@ -101,16 +101,16 @@ void UIVScrollBar::setHandleRatio(float newRatio) {
 	handleBox->setDragLimits(Rectangle(padding,padding,width-(padding*2)-(width-(padding*2)), dragRectHeight));	
 }
 
-void UIVScrollBar::onMouseWheelUp(float x, float y) {
+void UIVScrollBar::onMouseWheelUp(Number x, Number y) {
 	scrollUpOneTick();
 }
 
-void UIVScrollBar::onMouseWheelDown(float x, float y) {
+void UIVScrollBar::onMouseWheelDown(Number x, Number y) {
 	scrollDownOneTick();
 }
 
 void UIVScrollBar::scrollUpOneTick() {
-	float newPos = handleBox->getPosition().y - 5;
+	Number newPos = handleBox->getPosition().y - 5;
 	
 	if(newPos < padding)
 		newPos = padding;
@@ -119,7 +119,7 @@ void UIVScrollBar::scrollUpOneTick() {
 }
 
 void UIVScrollBar::scrollDownOneTick() {
-	float newPos = handleBox->getPosition().y + 5;	
+	Number newPos = handleBox->getPosition().y + 5;	
 	
 	if(newPos > dragRectHeight)
 		newPos = dragRectHeight;
@@ -128,7 +128,7 @@ void UIVScrollBar::scrollDownOneTick() {
 }
 
 
-float UIVScrollBar::getScrollValue() {
+Number UIVScrollBar::getScrollValue() {
 	return scrollValue;
 }
 
@@ -138,12 +138,12 @@ void UIVScrollBar::handleEvent(Event *event) {
 		switch(event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEDOWN:
 				if(inputEvent->mousePosition.y < handleBox->getPosition().y)  {
-					float newPos = handleBox->getPosition().y - scrollHandleHeight;
+					Number newPos = handleBox->getPosition().y - scrollHandleHeight;
 					if(newPos < padding)
 						newPos = padding;
 					handleBox->setPositionY(newPos);
 				} else {
-					float newPos = handleBox->getPosition().y + scrollHandleHeight;
+					Number newPos = handleBox->getPosition().y + scrollHandleHeight;
 					if(newPos > dragRectHeight)
 						newPos = dragRectHeight;
 					handleBox->setPositionY(newPos);					

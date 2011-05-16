@@ -13,6 +13,7 @@
 		6D34133512B7FC760034FA9B /* libphysfs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D34133412B7FC760034FA9B /* libphysfs.a */; };
 		6D34134112B7FCD00034FA9B /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D34134012B7FCD00034FA9B /* IOKit.framework */; };
 		6D34153C12B82C7A0034FA9B /* liblua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D34153B12B82C7A0034FA9B /* liblua.a */; };
+		6D3F98FF1380F973002AC8AE /* libPolycodeGLSL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D3F98FE1380F973002AC8AE /* libPolycodeGLSL.a */; };
 		6DBAB07E12B6EAAD00986D01 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DBAB07712B6EAAD00986D01 /* libfreetype.a */; };
 		6DBAB07F12B6EAAD00986D01 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DBAB07812B6EAAD00986D01 /* libz.a */; };
 		6DBAB08012B6EAAD00986D01 /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DBAB07912B6EAAD00986D01 /* libpng.a */; };
@@ -53,6 +54,7 @@
 		6D34133412B7FC760034FA9B /* libphysfs.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libphysfs.a; path = ../../../Core/Dependencies/physfs/Debug/libphysfs.a; sourceTree = SOURCE_ROOT; };
 		6D34134012B7FCD00034FA9B /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		6D34153B12B82C7A0034FA9B /* liblua.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblua.a; path = ../../../Core/Dependencies/lua/src/liblua.a; sourceTree = SOURCE_ROOT; };
+		6D3F98FE1380F973002AC8AE /* libPolycodeGLSL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycodeGLSL.a; path = "../../../../../../Library/Developer/Xcode/DerivedData/Modules-epduxiffqrcazabvaazmexadjpgk/Build/Products/Debug/libPolycodeGLSL.a"; sourceTree = "<group>"; };
 		6DBAB07712B6EAAD00986D01 /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = ../../../Core/Dependencies/freetype/libfreetype.a; sourceTree = SOURCE_ROOT; };
 		6DBAB07812B6EAAD00986D01 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = ../../../Core/Dependencies/zlib/libz.a; sourceTree = SOURCE_ROOT; };
 		6DBAB07912B6EAAD00986D01 /* libpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng.a; path = ../../../Core/Dependencies/libpng/libpng.a; sourceTree = SOURCE_ROOT; };
@@ -185,6 +187,7 @@
 				6DD40F8413736CF200D602D3 /* libogg.a in Frameworks */,
 				6DD40F8613736CF900D602D3 /* libvorbis.a in Frameworks */,
 				6DD40F8A13736D0C00D602D3 /* libvorbisfile.a in Frameworks */,
+				6D3F98FF1380F973002AC8AE /* libPolycodeGLSL.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -281,6 +284,7 @@
 		2A37F4C3FDCFA73011CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6D3F98FE1380F973002AC8AE /* libPolycodeGLSL.a */,
 				6DD40F8913736D0C00D602D3 /* libvorbisfile.a */,
 				6DD40F8513736CF900D602D3 /* libvorbis.a */,
 				6DD40F8313736CF200D602D3 /* libogg.a */,
@@ -585,6 +589,7 @@
 					"\"$(SRCROOT)/../../../../../../Library/Developer/Xcode/DerivedData/Ogg-dehvynarqzqpyfeqgzpikemxralf/Build/Products/Debug\"",
 					"\"$(SRCROOT)/../../../../../../Library/Developer/Xcode/DerivedData/Ogg-hciijcupphkumzcznsrkjblfzoze/Build/Products/Debug\"",
 					"\"$(SRCROOT)/../../../../../../Library/Developer/Xcode/DerivedData/Vorbis-ajdgxoyxsyfhmzbffuvabiolqjkv/Build/Products/Debug\"",
+					"\"$(SRCROOT)/../../../../../../Library/Developer/Xcode/DerivedData/Modules-epduxiffqrcazabvaazmexadjpgk/Build/Products/Debug\"",
 				);
 				PRODUCT_NAME = "Polycode Player";
 			};
@@ -618,6 +623,7 @@
 					"\"$(SRCROOT)/../../../../../../Library/Developer/Xcode/DerivedData/Ogg-dehvynarqzqpyfeqgzpikemxralf/Build/Products/Debug\"",
 					"\"$(SRCROOT)/../../../../../../Library/Developer/Xcode/DerivedData/Ogg-hciijcupphkumzcznsrkjblfzoze/Build/Products/Debug\"",
 					"\"$(SRCROOT)/../../../../../../Library/Developer/Xcode/DerivedData/Vorbis-ajdgxoyxsyfhmzbffuvabiolqjkv/Build/Products/Debug\"",
+					"\"$(SRCROOT)/../../../../../../Library/Developer/Xcode/DerivedData/Modules-epduxiffqrcazabvaazmexadjpgk/Build/Products/Debug\"",
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "Polycode Player";

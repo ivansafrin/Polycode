@@ -46,7 +46,7 @@ PolycodeRunner::PolycodeRunner() : Threaded() {
 	
 	int i;
 	for (i=0; i<2048; i++) {
-		float v = i/2048.0;
+		Number v = i/2048.0;
 		v = powf(v, 3)* 5;
 		t_gamma[i] = v*6*256;
 	}

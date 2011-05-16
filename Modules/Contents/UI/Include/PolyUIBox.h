@@ -18,17 +18,17 @@ namespace Polycode {
 	
 	class _PolyExport UIBox : public ScreenEntity {
 	public:
-		UIBox(String imageFile, float t, float r, float b, float l, float boxWidth, float boxHeight);
+		UIBox(String imageFile, Number t, Number r, Number b, Number l, Number boxWidth, Number boxHeight);
 		~UIBox();
 		
-		void resizeBox(float newWidth, float newHeight);		
+		void resizeBox(Number newWidth, Number newHeight);		
 		
 	private:
 				
-		float t;
-		float r;
-		float b;
-		float l;
+		Number t;
+		Number r;
+		Number b;
+		Number l;
 		
 		ScreenImage *tlImage;
 		ScreenImage *trImage;		

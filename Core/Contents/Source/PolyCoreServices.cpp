@@ -26,7 +26,7 @@ using namespace Polycode;
 
 std::map<long, CoreServices*> CoreServices::instanceMap;
 CoreMutex *CoreServices::renderMutex = 0;
-
+CoreServices* CoreServices::overrideInstance = NULL;
 
 CoreMutex *CoreServices::getRenderMutex() {
 	if(renderMutex == NULL) {
@@ -36,7 +36,16 @@ CoreMutex *CoreServices::getRenderMutex() {
 	return renderMutex;
 }
 
+void CoreServices::setInstance(CoreServices *_instance) {
+	overrideInstance = _instance;
+}
+
 CoreServices* CoreServices::getInstance() {
+
+	if(overrideInstance) {
+		return overrideInstance;
+	}
+
 	long threadID = getThreadID(); 
 	CoreServices *instance;
 	if(instanceMap.find(threadID) == instanceMap.end()) {

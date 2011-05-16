@@ -26,7 +26,7 @@ THE SOFTWARE.
 
 using namespace Polycode;
 
-PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, float worldScale, int entType, float friction, float density, float restitution, bool isSensor, bool fixedRotation) {
+PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, Number worldScale, int entType, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation) {
 	
 	this->worldScale = worldScale;
 	
@@ -81,7 +81,7 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, f
 	collisionOnly = false;
 }
 
-void PhysicsScreenEntity::applyTorque(float torque) {
+void PhysicsScreenEntity::applyTorque(Number torque) {
 	body->ApplyTorque(torque);
 }
 
@@ -95,13 +95,13 @@ ScreenEntity *PhysicsScreenEntity::getScreenEntity() {
 }
 			
 
-void PhysicsScreenEntity::setTransform(Vector2 pos, float angle) {
+void PhysicsScreenEntity::setTransform(Vector2 pos, Number angle) {
 	body->SetTransform(b2Vec2(pos.x/worldScale, pos.y/worldScale), angle*(PI/180.0f));
 }
 
 void PhysicsScreenEntity::Update() {
 	b2Vec2 position = body->GetPosition();
-	float32 angle = body->GetAngle();
+	Number angle = body->GetAngle();
 
 	
 //	if(lastRotation != screenEntity->getRotation() || collisionOnly) {

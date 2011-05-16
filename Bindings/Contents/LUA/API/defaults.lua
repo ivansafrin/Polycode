@@ -4,6 +4,8 @@ _G["count"]=_G["getn"]
 
 _G["print"] = _G["debugPrint"]
 
+__core__services__instance = Polycore.CoreServices_getInstance()
+
 Polycore.__ptr_lookup = {}
 
 Services = {}

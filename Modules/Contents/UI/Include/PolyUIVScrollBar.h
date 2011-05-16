@@ -15,34 +15,34 @@ namespace Polycode {
 	
 	class _PolyExport UIVScrollBar : public ScreenEntity {
 	public:
-		UIVScrollBar(float width, float height, float initialRatio);
+		UIVScrollBar(Number width, Number height, Number initialRatio);
 		~UIVScrollBar();
 		
 		void Update();
-		float getScrollValue();
+		Number getScrollValue();
 		void handleEvent(Event *event);
 		
 		void Resize(int newHeight);
 		
-		void onMouseWheelDown(float x, float y);
-		void onMouseWheelUp(float x, float y);
+		void onMouseWheelDown(Number x, Number y);
+		void onMouseWheelUp(Number x, Number y);
 		
 		void scrollUpOneTick();
 		void scrollDownOneTick();
 		
-		float minHandleSize;
+		Number minHandleSize;
 		
-		void setHandleRatio(float newRatio);
+		void setHandleRatio(Number newRatio);
 
 		
 	private:		
 		
 		
-		float padding;
-		float scrollValue;
-		float lastPositionY;
-		float scrollHandleHeight;	
-		float dragRectHeight;
+		Number padding;
+		Number scrollValue;
+		Number lastPositionY;
+		Number scrollHandleHeight;	
+		Number dragRectHeight;
 		
 		UIBox *bgBox;
 		UIBox *handleBox;

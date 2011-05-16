@@ -63,7 +63,7 @@ void PhysicsScene::Update() {
 	}
 	
 	
-	float elapsed = CoreServices::getInstance()->getCore()->getElapsed();
+	Number elapsed = CoreServices::getInstance()->getCore()->getElapsed();
 	physicsWorld->stepSimulation(elapsed);	
 
 	
@@ -71,7 +71,7 @@ void PhysicsScene::Update() {
 	
 }
 
-PhysicsCharacter *PhysicsScene::addCharacterChild(SceneEntity *newEntity,float mass, float friction, float stepSize, int group) {
+PhysicsCharacter *PhysicsScene::addCharacterChild(SceneEntity *newEntity,Number mass, Number friction, Number stepSize, int group) {
 	addEntity(newEntity);	
 	PhysicsCharacter *newPhysicsEntity = new PhysicsCharacter(newEntity, mass, friction, stepSize);
 	
@@ -90,7 +90,7 @@ PhysicsCharacter *PhysicsScene::addCharacterChild(SceneEntity *newEntity,float m
 	
 }
 
-PhysicsSceneEntity *PhysicsScene::trackPhysicsChild(SceneEntity *newEntity, int type, float mass, float friction, float restitution, int group) {
+PhysicsSceneEntity *PhysicsScene::trackPhysicsChild(SceneEntity *newEntity, int type, Number mass, Number friction, Number restitution, int group) {
 	PhysicsSceneEntity *newPhysicsEntity = new PhysicsSceneEntity(newEntity, type, mass, friction,restitution);
 	physicsWorld->addRigidBody(newPhysicsEntity->rigidBody, group, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);	
 	//	newPhysicsEntity->rigidBody->setActivationState(ISLAND_SLEEPING);	
@@ -98,7 +98,7 @@ PhysicsSceneEntity *PhysicsScene::trackPhysicsChild(SceneEntity *newEntity, int 
 	return newPhysicsEntity;	
 }
 
-PhysicsSceneEntity *PhysicsScene::addPhysicsChild(SceneEntity *newEntity, int type, float mass, float friction, float restitution, int group) {
+PhysicsSceneEntity *PhysicsScene::addPhysicsChild(SceneEntity *newEntity, int type, Number mass, Number friction, Number restitution, int group) {
 	addEntity(newEntity);	
 	return trackPhysicsChild(newEntity, type, mass, friction, restitution, group);	
 }

@@ -23,7 +23,7 @@ THE SOFTWARE.
 #pragma once
 #include "PolyLogger.h"
 #include "PolyGlobals.h"
-#include "PolyGenericScene.h"
+#include "PolyScene.h"
 #include "PolyCollisionSceneEntity.h"
 #include "btBulletCollisionCommon.h"
 #include "PolyVector3.h"
@@ -36,7 +36,7 @@ namespace Polycode {
 struct CollisionResult {
 	bool collided;
 	Vector3 colNormal;
-	float colDist;
+	Number colDist;
 	bool setOldPosition;
 	Vector3 newPos;
 };
@@ -48,7 +48,7 @@ struct CollisionResult {
 	};
 
 	
-	class _PolyExport CollisionScene : public GenericScene {
+	class _PolyExport CollisionScene : public Scene {
 		public:
 			CollisionScene();
 			CollisionScene(bool virtualScene);		
@@ -68,7 +68,7 @@ struct CollisionResult {
 			CollisionResult testCollisionOnCollisionChild_RayTest(CollisionSceneEntity *cEnt1, CollisionSceneEntity *cEnt2);					
 			Vector3 getCollisionNormalFromCollisionEnts(CollisionSceneEntity *cEnt1, CollisionSceneEntity *cEnt2);			
 			Vector3 getCollisionNormal(SceneEntity *ent1, SceneEntity *ent2);			
-			void applyVelocity(SceneEntity *entity, float x, float y, float z);			
+			void applyVelocity(SceneEntity *entity, Number x, Number y, Number z);			
 			void loadCollisionChild(SceneEntity *entity, bool autoCollide=false, int type=0);
 			void enableGravity(SceneEntity *entity);
 			

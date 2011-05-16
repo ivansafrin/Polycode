@@ -12,7 +12,7 @@
 
 using namespace Polycode;
 
-UITree::UITree(String icon, String text, float treeWidth, float treeOffset) : ScreenEntity() {
+UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : ScreenEntity() {
 		
 	
 	Config *conf = CoreServices::getInstance()->getConfig();
@@ -33,12 +33,12 @@ UITree::UITree(String icon, String text, float treeWidth, float treeOffset) : Sc
 								Label::ANTIALIAS_FULL);
 
 /*	
-	float st = conf->getNumericValue("Polycode", "uiTreeCellSkinT");
-	float sr = conf->getNumericValue("Polycode", "uiTreeCellSkinR");
-	float sb = conf->getNumericValue("Polycode", "uiTreeCellSkinB");
-	float sl = conf->getNumericValue("Polycode", "uiTreeCellSkinL");	
+	Number st = conf->getNumericValue("Polycode", "uiTreeCellSkinT");
+	Number sr = conf->getNumericValue("Polycode", "uiTreeCellSkinR");
+	Number sb = conf->getNumericValue("Polycode", "uiTreeCellSkinB");
+	Number sl = conf->getNumericValue("Polycode", "uiTreeCellSkinL");	
 	
-	float padding = conf->getNumericValue("Polycode", "uiTreeCellSkinPadding");	
+	Number padding = conf->getNumericValue("Polycode", "uiTreeCellSkinPadding");	
 	
 	bgBox = new UIBox(conf->getStringValue("Polycode", "uiTreeCellSkin"),
 						  st,sr,sb,sl,
@@ -51,12 +51,12 @@ UITree::UITree(String icon, String text, float treeWidth, float treeOffset) : Sc
 	addChild(bgBox);
 	
 	
-	float st = conf->getNumericValue("Polycode", "uiTreeCellSelectorSkinT");
-	float sr = conf->getNumericValue("Polycode", "uiTreeCellSelectorSkinR");
-	float sb = conf->getNumericValue("Polycode", "uiTreeCellSelectorSkinB");
-	float sl = conf->getNumericValue("Polycode", "uiTreeCellSelectorSkinL");
+	Number st = conf->getNumericValue("Polycode", "uiTreeCellSelectorSkinT");
+	Number sr = conf->getNumericValue("Polycode", "uiTreeCellSelectorSkinR");
+	Number sb = conf->getNumericValue("Polycode", "uiTreeCellSelectorSkinB");
+	Number sl = conf->getNumericValue("Polycode", "uiTreeCellSelectorSkinL");
 	
-	float padding = conf->getNumericValue("Polycode", "uiTreeCellSelectorSkinPadding");	
+	Number padding = conf->getNumericValue("Polycode", "uiTreeCellSelectorSkinPadding");	
 	
 	selection = new UIBox(conf->getStringValue("Polycode", "uiTreeCellSelectorSkin"),
 						  st,sr,sb,sl,
@@ -215,7 +215,7 @@ void UITree::refreshTree() {
 	selection->visible = selected;
 }
 
-float UITree::getTreeHeight() {
+Number UITree::getTreeHeight() {
 	return treeHeight;
 }
 

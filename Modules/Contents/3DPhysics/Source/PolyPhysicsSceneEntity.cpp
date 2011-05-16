@@ -24,13 +24,16 @@ THE SOFTWARE.
 
 using namespace Polycode;
 
-PhysicsCharacter::PhysicsCharacter(SceneEntity *entity, float mass, float friction, float stepSize) : PhysicsSceneEntity(entity, PhysicsSceneEntity::CHARACTER_CONTROLLER, mass, friction, 1) {	
+PhysicsCharacter::PhysicsCharacter(SceneEntity *entity, Number mass, Number friction, Number stepSize) : PhysicsSceneEntity(entity, PhysicsSceneEntity::CHARACTER_CONTROLLER, mass, friction, 1) {	
 	ghostObject = new btPairCachingGhostObject();
 	
 	Vector3 pos = entity->getPosition();	
 	btTransform transform;
 	transform.setIdentity();		
 	transform.setOrigin(btVector3(pos.x,pos.y,pos.z));	
+	
+	Quaternion q = entity->getRotationQuat();
+	transform.setRotation(btQuaternion(q.x,q.y,q.z,q.w));
 	
 	ghostObject->setWorldTransform(transform);	
 	ghostObject->setCollisionShape (shape);
@@ -62,7 +65,7 @@ PhysicsCharacter::~PhysicsCharacter() {
 	
 }
 
-PhysicsSceneEntity::PhysicsSceneEntity(SceneEntity *entity, int type, float mass, float friction, float restitution) : CollisionSceneEntity(entity, false, type) {
+PhysicsSceneEntity::PhysicsSceneEntity(SceneEntity *entity, int type, Number mass, Number friction, Number restitution) : CollisionSceneEntity(entity, false, type) {
 
 	this->mass = mass;
 	btVector3 localInertia(0,0,0);
@@ -70,6 +73,9 @@ PhysicsSceneEntity::PhysicsSceneEntity(SceneEntity *entity, int type, float mass
 	btTransform transform;
 	transform.setIdentity();		
 	transform.setOrigin(btVector3(pos.x,pos.y,pos.z));
+	Quaternion q = entity->getRotationQuat();
+	transform.setRotation(btQuaternion(q.x,q.y,q.z,q.w));
+	
 	
 	if(mass != 0.0f) {
 		shape->calculateLocalInertia(mass,localInertia);
@@ -85,6 +91,10 @@ PhysicsSceneEntity::PhysicsSceneEntity(SceneEntity *entity, int type, float mass
 		rigidBody->setFriction(friction);
 		rigidBody->setRestitution(restitution);
 	}
+}
+
+void PhysicsSceneEntity::setFriction(Number friction) {
+		rigidBody->setFriction(friction);
 }
 
 void PhysicsSceneEntity::Update() {		

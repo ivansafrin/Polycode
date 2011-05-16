@@ -21,7 +21,7 @@ namespace Polycode {
 
 	class _PolyExport UIButton : public ScreenEntity {
 		public:
-			UIButton(String text, float width, float height = 26);
+			UIButton(String text, Number width, Number height = 26);
 			~UIButton();		
 			void handleEvent(Event *event);
 			
@@ -29,8 +29,8 @@ namespace Polycode {
 				
 		private:
 			
-			float labelXPos;
-			float labelYPos;
+			Number labelXPos;
+			Number labelYPos;
 			UIBox *buttonRect;
 			UIBox *buttonFocusedRect;		
 			ScreenLabel *buttonLabel;

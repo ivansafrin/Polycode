@@ -24,7 +24,7 @@ namespace Polycode {
 
 	class _PolyExport UITextInput : public ScreenEntity {
 		public:
-			UITextInput(bool multiLine, float width, float height);
+			UITextInput(bool multiLine, Number width, Number height);
 			~UITextInput();
 		
 			void handleEvent(Event *event);
@@ -57,8 +57,8 @@ namespace Polycode {
 		
 			void selectLineFromOffset();
 			void updateCaretPosition();
-			void setCaretToMouse(float x, float y);
-			void dragSelectionTo(float x, float y);		
+			void setCaretToMouse(Number x, Number y);
+			void dragSelectionTo(Number x, Number y);		
 		
 			void selectWordAtCaret();
 		
@@ -70,8 +70,8 @@ namespace Polycode {
 			ScreenShape *selectorRectBottom;		
 			int numLines;
 			
-			float padding;
-			float lineSpacing;
+			Number padding;
+			Number lineSpacing;
 		
 			int selectionTop;
 			int selectionBottom;
@@ -83,7 +83,7 @@ namespace Polycode {
 		
 			bool draggingSelection;
 			bool hasSelection; 
-			float caretX,caretY;
+			Number caretX,caretY;
 		
 			int caretPosition;
 			bool doSelectToCaret;
@@ -93,12 +93,12 @@ namespace Polycode {
 			UIBox *inputRect;
 			ScreenShape *blinkerRect;
 		
-			float caretImagePosition;
+			Number caretImagePosition;
 		
 			String fontName;
-			float fontSize;
+			Number fontSize;
 		
-			float lineHeight;
+			Number lineHeight;
 		
 			int lineOffset;
 			ScreenLabel *currentLine;		

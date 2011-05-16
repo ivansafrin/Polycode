@@ -12,17 +12,17 @@
 
 using namespace Polycode;
 
-UIButton::UIButton(String text, float width, float height) : ScreenEntity() {
+UIButton::UIButton(String text, Number width, Number height) : ScreenEntity() {
 
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	
 	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
 	int fontSize = conf->getNumericValue("Polycode", "uiButtonFontSize");	
 	
-	float st = conf->getNumericValue("Polycode", "uiButtonSkinT");
-	float sr = conf->getNumericValue("Polycode", "uiButtonSkinR");
-	float sb = conf->getNumericValue("Polycode", "uiButtonSkinB");
-	float sl = conf->getNumericValue("Polycode", "uiButtonSkinL");
+	Number st = conf->getNumericValue("Polycode", "uiButtonSkinT");
+	Number sr = conf->getNumericValue("Polycode", "uiButtonSkinR");
+	Number sb = conf->getNumericValue("Polycode", "uiButtonSkinB");
+	Number sl = conf->getNumericValue("Polycode", "uiButtonSkinL");
 	
 	
 	buttonRect = new UIBox(conf->getStringValue("Polycode", "uiButtonSkin"),

@@ -39,12 +39,12 @@ namespace Polycode {
 	
 	class _PolyExport PhysicsSceneEntity : public CollisionSceneEntity {
 	public:
-		PhysicsSceneEntity(SceneEntity *entity, int type, float mass, float friction, float restitution);
+		PhysicsSceneEntity(SceneEntity *entity, int type, Number mass, Number friction, Number restitution);
 		virtual ~PhysicsSceneEntity();
 		
 		SceneEntity *getSceneEntity();
 		virtual void Update();
-		void setFriction(float friction);
+		void setFriction(Number friction);
 		
 		int getType() { return type; }	
 		
@@ -62,13 +62,13 @@ namespace Polycode {
 		
 	protected:
 	
-		float mass;
+		Number mass;
 	};
 	
 	
 	class _PolyExport PhysicsCharacter : public PhysicsSceneEntity {
 		public:
-			PhysicsCharacter(SceneEntity *entity, float mass, float friction, float stepSize);
+			PhysicsCharacter(SceneEntity *entity, Number mass, Number friction, Number stepSize);
 			virtual ~PhysicsCharacter();
 	
 			void setWalkDirection(Vector3 direction);

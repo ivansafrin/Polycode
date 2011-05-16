@@ -12,7 +12,7 @@
 
 using namespace Polycode;
 
-UIHSlider::UIHSlider(Font *font, float start, float end, float width) {
+UIHSlider::UIHSlider(Font *font, Number start, Number end, Number width) {
 	bgRect = new ScreenShape(ScreenShape::SHAPE_RECT, width,8,0,0);
 	bgRect->setPosition(0,6);
 	bgRect->setColor(0.11f, 0.11f, 0.11f, 1.0f);
@@ -56,14 +56,14 @@ ScreenShape *UIHSlider::getBgRect() {
 	return bgRect;
 }
 
-void UIHSlider::setSliderValue(float val) {
+void UIHSlider::setSliderValue(Number val) {
 	if(val >= startValue && val <= endValue) {
 		gripRect->getPosition().x = sliderWidth * ((val-startValue)/(endValue-startValue));
 		shadowRect->getPosition().x = gripRect->getPosition().x;
 	}
 }
 
-float UIHSlider::getSliderValue() {
+Number UIHSlider::getSliderValue() {
 	return sliderValue;
 }
 			

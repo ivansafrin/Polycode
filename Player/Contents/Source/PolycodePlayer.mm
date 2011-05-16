@@ -155,6 +155,29 @@ extern "C" {
 		lua_getfield(L, LUA_GLOBALSINDEX, "require");
 		lua_pushstring(L, "defaults");		
 		lua_call(L, 1, 0);
+		
+		for(int i=0; i < loadedModules.size(); i++) {
+			String moduleName = loadedModules[i];
+			String moduleDestPath = String("/tmp/") + moduleName+ String(".dylib");
+			String moduleLoadCall = String("luaopen_") + moduleName;
+			lua_getfield(L, LUA_GLOBALSINDEX, "require");
+			lua_pushstring(L, moduleName.c_str());		
+			lua_call(L, 1, 0);
+
+			lua_getfield(L, LUA_GLOBALSINDEX, "package");
+			lua_getfield(L, -1, "loadlib");	
+			lua_pushstring(L, moduleDestPath.c_str());
+			lua_pushstring(L, moduleLoadCall.c_str());			
+			lua_call(L, 2, 1);
+			lua_setfield(L, LUA_GLOBALSINDEX, "f");			
+			
+			lua_getfield(L, LUA_GLOBALSINDEX, "f");
+			lua_getfield(L, LUA_GLOBALSINDEX, "__core__services__instance");						
+			lua_call(L, 1, 0);			
+			//local f = package.loadlib("/Users/ivansafrin/Desktop/Workshop/HelloPolycodeLUA/libPolycode2DPhysicsModule.dylib", "luaopen_Physics2D")
+			//f(Polycore.CoreServices_getInstance())
+					
+		}
 
 		String fileData = "";
 
@@ -304,7 +327,38 @@ void PolycodePlayer::loadFile(const char *fileName) {
 				blue = (*color)["blue"]->NumberVal;
 				
 			}			
-		}		
+		}
+		ObjectEntry *modules = configFile.root["modules"];			
+		if(modules) {
+			for(int i=0; i < modules->length; i++) {			
+				String moduleName = (*modules)[i]->stringVal;
+				printf("Loading module: %s\n", moduleName.c_str());				
+				String moduleFileName = String("__lib/osx/") + moduleName+ String(".dylib");
+				String moduleDestPath = String("/tmp/") + moduleName+ String(".dylib");
+				
+				OSFILE *inFile = OSBasics::open(moduleFileName, "r");	
+				if(inFile) {
+					OSBasics::seek(inFile, 0, SEEK_END);	
+					long progsize = OSBasics::tell(inFile);
+					OSBasics::seek(inFile, 0, SEEK_SET);
+					char *buffer = (char*)malloc(progsize+1);
+					memset(buffer, 0, progsize+1);
+					OSBasics::read(buffer, progsize, 1, inFile);
+					
+					OSFILE *outFile = OSBasics::open(moduleDestPath, "w");						
+					OSBasics::write(buffer, progsize, 1, outFile);
+					OSBasics::close(outFile);	
+					
+					free(buffer);
+					OSBasics::close(inFile);	
+					
+					loadedModules.push_back(moduleName);
+				} else {
+					printf("Error loading module: %s\n", (*modules)[i]->stringVal.c_str());									
+				}
+			}
+
+		}			
 	}
 	
 	Logger::log("Mainfile: %s\n", mainFile.c_str());
@@ -321,7 +375,7 @@ void PolycodePlayer::loadFile(const char *fileName) {
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default");
 	
 	
-//	CoreServices::getInstance()->installModule(new GLSLShaderModule());	
+	CoreServices::getInstance()->installModule(new GLSLShaderModule());	
 	
 	
 	if(configFile.root["packedItems"]) {

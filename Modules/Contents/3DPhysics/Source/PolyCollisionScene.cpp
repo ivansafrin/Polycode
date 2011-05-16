@@ -24,11 +24,11 @@ THE SOFTWARE.
 
 using namespace Polycode;
 
-CollisionScene::CollisionScene() : GenericScene() {
+CollisionScene::CollisionScene() : Scene() {
 	initCollisionScene();
 }
 
-CollisionScene::CollisionScene(bool virtualScene) : GenericScene(virtualScene) { 
+CollisionScene::CollisionScene(bool virtualScene) : Scene(virtualScene) { 
 	initCollisionScene();
 }
 
@@ -76,7 +76,7 @@ void CollisionScene::enableCollision(SceneEntity *entity, bool val) {
 
 void CollisionScene::adjustForCollision(CollisionSceneEntity *collisionEntity) {
 	CollisionResult result;
-//	float elapsed = CoreServices::getInstance()->getCore()->getElapsed();
+//	Number elapsed = CoreServices::getInstance()->getCore()->getElapsed();
 	result.collided = false;
 	for(int i=0; i < collisionChildren.size(); i++) {
 		if(collisionChildren[i] != collisionEntity) {
@@ -117,7 +117,7 @@ CollisionSceneEntity *CollisionScene::getCollisionByScreenEntity(SceneEntity *en
 
 }
 
-void CollisionScene::applyVelocity(SceneEntity *entity, float x, float y, float z) {
+void CollisionScene::applyVelocity(SceneEntity *entity, Number x, Number y, Number z) {
 	CollisionSceneEntity *cEnt1 = getCollisionByScreenEntity(entity);
 	if(!cEnt1)
 		return;
@@ -195,10 +195,10 @@ CollisionResult CollisionScene::testCollisionOnCollisionChild_Convex(CollisionSc
 	}
 	
 	if(numAdds > 0) {
-		result.colNormal = result.colNormal / (float)numAdds;
+		result.colNormal = result.colNormal / (Number)numAdds;
 		//		result.colNormal = Vector3(0,1,0);
 		//		result.colNormal.Normalize();
-		result.colDist  = result.colDist / (float)numAdds;
+		result.colDist  = result.colDist / (Number)numAdds;
 	}
 	
 	return result;

@@ -25,7 +25,7 @@ namespace Polycode {
 
 	class _PolyExport UIWindow : public ScreenEntity {
 		public:
-			UIWindow(String windowName, float width, float height);
+			UIWindow(String windowName, Number width, Number height);
 			~UIWindow();
 			
 			void showWindow();
@@ -34,14 +34,14 @@ namespace Polycode {
 			virtual void onClose(){}
 			void onLoseFocus();
 			
-			void setWindowSize(float w, float h);
+			void setWindowSize(Number w, Number h);
 			
-			void onMouseDown(float x, float y);
+			void onMouseDown(Number x, Number y);
 					
 			virtual void handleEvent(Event *event);
 		
-			float padding;
-			float topPadding;
+			Number padding;
+			Number topPadding;
 		
 			bool closeOnEscape;
 		

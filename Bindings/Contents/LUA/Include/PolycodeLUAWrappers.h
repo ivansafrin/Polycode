@@ -2,8 +2,6 @@
 
 #include <Polycode.h>
 
-#include <PolyGLRenderer.h>
-
 extern "C" {
 
 #include <stdio.h>
@@ -2747,40 +2745,6 @@ static int Polycore_FontManager_getFontByName(lua_State *L) {
 static int Polycore_delete_FontManager(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	FontManager *inst = (FontManager*)lua_topointer(L, 1);
-	delete inst;
-	return 0;
-}
-
-static int Polycore_OpenGLCubemap(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
-	Texture * t0 = (Texture *)lua_topointer(L, 1);
-	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	Texture * t1 = (Texture *)lua_topointer(L, 2);
-	luaL_checktype(L, 3, LUA_TLIGHTUSERDATA);
-	Texture * t2 = (Texture *)lua_topointer(L, 3);
-	luaL_checktype(L, 4, LUA_TLIGHTUSERDATA);
-	Texture * t3 = (Texture *)lua_topointer(L, 4);
-	luaL_checktype(L, 5, LUA_TLIGHTUSERDATA);
-	Texture * t4 = (Texture *)lua_topointer(L, 5);
-	luaL_checktype(L, 6, LUA_TLIGHTUSERDATA);
-	Texture * t5 = (Texture *)lua_topointer(L, 6);
-	OpenGLCubemap *inst = new OpenGLCubemap(t0, t1, t2, t3, t4, t5);
-	lua_pushlightuserdata(L, (void*)inst);
-	return 1;
-}
-
-static int Polycore_OpenGLCubemap_getTextureID(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
-	OpenGLCubemap *inst = (OpenGLCubemap*)lua_topointer(L, 1);
-	GLuint *retInst = new GLuint();
-	*retInst = inst->getTextureID();
-	lua_pushlightuserdata(L, retInst);
-	return 1;
-}
-
-static int Polycore_delete_OpenGLCubemap(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
-	OpenGLCubemap *inst = (OpenGLCubemap*)lua_topointer(L, 1);
 	delete inst;
 	return 0;
 }

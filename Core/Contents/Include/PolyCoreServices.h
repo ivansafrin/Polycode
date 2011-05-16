@@ -63,6 +63,7 @@ namespace Polycode {
 			* Returns the singleton instance. NOTE: The singleton instance is unique to each thread and currently Polycode does not support multithreaded access to the core services. The reason for this is being able to run multiple cores in the same application and still have global singleton access to these services.
 			*/ 
 			static CoreServices *getInstance();		
+			static void setInstance(CoreServices *_instance);
 			static CoreMutex *getRenderMutex();
 			
 			void setRenderer(Renderer *renderer);
@@ -165,6 +166,7 @@ namespace Polycode {
 					
 		private:
 		
+			static CoreServices* overrideInstance;
 			static std::map <long, CoreServices*> instanceMap;
 			static CoreMutex *renderMutex;
 		

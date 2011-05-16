@@ -298,14 +298,14 @@ void GLSLShaderModule::updateGLSLParam(Renderer *renderer, GLSLProgramParam &par
 		if(localParam)
 			paramData = localParam->data;
 		
-		float *fval;
+		Number *fval;
 		
 		switch(param.paramType) {
-			case GLSLProgramParam::PARAM_FLOAT:
-				fval = (float*)paramData;
+			case GLSLProgramParam::PARAM_Number:
+				fval = (Number*)paramData;
 //				cgGLSetParameter1f(param.cgParam, *fval);
 				break;
-			case GLSLProgramParam::PARAM_FLOAT3:
+			case GLSLProgramParam::PARAM_Number3:
 				Vector3 *fval3 = (Vector3*)paramData;
 //				cgGLSetParameter3f(param.cgParam, fval3->x,fval3->y,fval3->z);
 				break;

@@ -11,7 +11,7 @@
 
 using namespace Polycode;
 
-UIScrollContainer::UIScrollContainer(ScreenEntity *scrolledEntity, bool hScroll, bool vScroll, float width, float height) : ScreenEntity() {
+UIScrollContainer::UIScrollContainer(ScreenEntity *scrolledEntity, bool hScroll, bool vScroll, Number width, Number height) : ScreenEntity() {
 	
 	scrolledEntity->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	
@@ -27,7 +27,7 @@ UIScrollContainer::UIScrollContainer(ScreenEntity *scrolledEntity, bool hScroll,
 	this->hitwidth = width;
 	this->hitheight = height;
 	
-	float uiScrollPanePadding = conf->getNumericValue("Polycode", "uiScrollPanePadding");			
+	Number uiScrollPanePadding = conf->getNumericValue("Polycode", "uiScrollPanePadding");			
 	
 	defaultScrollSize = conf->getNumericValue("Polycode", "uiScrollDefaultSize");			
 	
@@ -75,18 +75,18 @@ void UIScrollContainer::Resize(int x, int y) {
 	vScrollBar->setPositionY(0);
 }
 
-void UIScrollContainer::onMouseWheelUp(float x, float y) {
+void UIScrollContainer::onMouseWheelUp(Number x, Number y) {
 	if(vScrollBar->enabled)
 		vScrollBar->scrollUpOneTick();
 }
 
-void UIScrollContainer::onMouseWheelDown(float x, float y) {
+void UIScrollContainer::onMouseWheelDown(Number x, Number y) {
 	if(vScrollBar->enabled)
 		vScrollBar->scrollDownOneTick();
 }
 
 
-void UIScrollContainer::setContentSize(float newContentWidth, float newContentHeight) {
+void UIScrollContainer::setContentSize(Number newContentWidth, Number newContentHeight) {
 	
 	contentHeight = newContentHeight;
 	contentWidth = newContentWidth;

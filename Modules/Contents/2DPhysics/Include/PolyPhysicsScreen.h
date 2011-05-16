@@ -72,17 +72,35 @@ public:
 	b2Joint *box2DJoint;
 	
 };
-	
+
+/**
+* A 2D Physics enabled screen. 
+*/	
 class _PolyExport PhysicsScreen : public Screen, b2ContactListener {
 
 public:
-	PhysicsScreen();
-	PhysicsScreen(float worldScale, float freq);
 
+	/**
+	*
+	*/ 
+	PhysicsScreen(Number worldScale, Number freq);
+	
+	/**
+	* Default constructor.
+	*/
+	PhysicsScreen();
+	
 	~PhysicsScreen();
 	
 	void Update();
-	PhysicsScreenEntity *addPhysicsChild(ScreenEntity *newEntity, int entType, float friction=0.1, float density=1, float restitution = 0, bool isSensor = false, bool fixedRotation = false);
+	
+	/**
+	* Adds a ScreenEntity as a physics enabled child. 
+	* @param newEntity Screen entity to add.
+	* @param entType Physics entity type to add as. Possible values are PhysicsScreenEntity::ENTITY_RECT, PhysicsScreenEntity::ENTITY_CIRCLE and PhysicsScreenEntity::ENTITY_STATICRECT
+	* @return The physics entity wrapper.
+	*/
+	PhysicsScreenEntity *addPhysicsChild(ScreenEntity *newEntity, int entType, Number friction=0.1, Number density=1, Number restitution = 0, bool isSensor = false, bool fixedRotation = false);
 	void removePhysicsChild(PhysicsScreenEntity *entityToRemove);
 	
 	PhysicsScreenEntity *addCollisionChild(ScreenEntity *newEntity, int entType);
@@ -90,22 +108,22 @@ public:
 	void destroyJoint(PhysicsJoint *joint);
 	void createDistanceJoint(ScreenEntity *ent1, ScreenEntity *ent2, bool collideConnected);
 	void createPrismaticJoint(ScreenEntity *ent1, ScreenEntity *ent2, bool collideConnected);
-	PhysicsJoint *createRevoluteJoint(ScreenEntity *ent1, ScreenEntity *ent2, float ax, float ay, bool enableLimit, float lowerLimit, float upperLimit, bool motorEnabled, float motorSpeed, float maxTorque);
+	PhysicsJoint *createRevoluteJoint(ScreenEntity *ent1, ScreenEntity *ent2, Number ax, Number ay, bool enableLimit, Number lowerLimit, Number upperLimit, bool motorEnabled, Number motorSpeed, Number maxTorque);
 //	b2MouseJoint *createMouseJoint(ScreenEntity *ent1, Vector2 *mp);
-	void applyForce(ScreenEntity *ent, float fx, float fy);
-	void applyImpulse(ScreenEntity *ent, float fx, float fy);
+	void applyForce(ScreenEntity *ent, Number fx, Number fy);
+	void applyImpulse(ScreenEntity *ent, Number fx, Number fy);
 	
 	void setGravity(Vector2 newGravity);
 	
-	void setTransform(ScreenEntity *ent, Vector2 pos, float angle);
+	void setTransform(ScreenEntity *ent, Vector2 pos, Number angle);
 	
 	PhysicsScreenEntity *getPhysicsEntityByShape(b2Shape *shape);
 	PhysicsScreenEntity *getPhysicsEntityByFixture(b2Fixture *fixture);
 	
-	void setVelocity(ScreenEntity *ent, float fx, float fy);	
-	void setVelocityX(ScreenEntity *ent, float fx);	
-	void setVelocityY(ScreenEntity *ent, float fy);	
-	void setSpin(ScreenEntity *ent, float spin);
+	void setVelocity(ScreenEntity *ent, Number fx, Number fy);	
+	void setVelocityX(ScreenEntity *ent, Number fx);	
+	void setVelocityY(ScreenEntity *ent, Number fy);	
+	void setSpin(ScreenEntity *ent, Number spin);
 	
 	Vector2 getVelocity(ScreenEntity *ent);
 			
@@ -119,8 +137,8 @@ public:
 	Vector2 getEntityCollisionNormal(ScreenEntity *ent1, ScreenEntity *ent2);
 	
 	bool areEntitiesColliding(ScreenEntity *ent1, ScreenEntity *ent2);
-	ScreenEntity *getEntityAtPosition(float x, float y);
-	bool testEntityAtPosition(ScreenEntity *ent, float x, float y);
+	ScreenEntity *getEntityAtPosition(Number x, Number y);
+	bool testEntityAtPosition(ScreenEntity *ent, Number x, Number y);
 	
 	void Shutdown();
 	
@@ -131,9 +149,9 @@ public:
 protected:
 	
 	
-	float worldScale;
+	Number worldScale;
 	
-	void init(float worldScale, float physicsTimeStep, int physicsIterations, Vector2 physicsGravity);
+	void init(Number worldScale, Number physicsTimeStep, int physicsIterations, Vector2 physicsGravity);
 
 	Timer *updateTimer;
 	vector <PhysicsScreenEntity*> physicsChildren;
@@ -142,7 +160,7 @@ protected:
 	int32 numContactPoints;
 	
 	b2World *world;
-	float32 timeStep;
+	Number timeStep;
 	int32 iterations;
 };
 

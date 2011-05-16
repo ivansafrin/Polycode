@@ -20,30 +20,30 @@ namespace Polycode {
 
 	class _PolyExport UIHSlider : public ScreenEntity {
 		public:
-			UIHSlider(Font *font, float start, float end, float width);
+			UIHSlider(Font *font, Number start, Number end, Number width);
 			~UIHSlider();		
 			void handleEvent(Event *event);
 			void Update();
 			
-			void setSliderValue(float val);
-			float getSliderValue();
+			void setSliderValue(Number val);
+			Number getSliderValue();
 			
 			ScreenShape *getBgRect();
 			
 		private:
 		
-			float gripPos;
+			Number gripPos;
 			
-			float labelXPos;
-			float labelYPos;
+			Number labelXPos;
+			Number labelYPos;
 			ScreenShape *bgRect;
 			ScreenShape *gripRect;
 			ScreenShape *shadowRect;
 			
-			float sliderValue;
-			float startValue;
-			float endValue;
-			float sliderWidth;
+			Number sliderValue;
+			Number startValue;
+			Number endValue;
+			Number sliderWidth;
 			
 			ScreenLabel *buttonLabel;
 			bool pressedDown;

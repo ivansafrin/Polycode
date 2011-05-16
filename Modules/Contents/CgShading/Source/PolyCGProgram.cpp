@@ -46,21 +46,21 @@ void CGProgram::addParam(String name, bool isAuto, int autoID, int paramType, vo
 
 void *CGProgramParam::createParamData(int *retType, String type, String value) {
 		void *defaultData;
-		if(type == "float") {
-			*retType = CGProgramParam::PARAM_FLOAT;
-			float *val = new float();
+		if(type == "Number") {
+			*retType = CGProgramParam::PARAM_Number;
+			Number *val = new Number();
 			*val = atof(value.c_str());
 			defaultData = (void*)val;
 			return defaultData;			
-		} else if(type == "float3") {
-			*retType = CGProgramParam::PARAM_FLOAT3;
+		} else if(type == "Number3") {
+			*retType = CGProgramParam::PARAM_Number3;
 			Vector3 *val = new Vector3();
 			defaultData = (void*)val;
 			vector<String> values = value.split(" ");
 			if(values.size() == 3) {
 				val->set(atof(values[0].c_str()), atof(values[1].c_str()), atof(values[2].c_str()));
 			} else {
-				Logger::log("Error: A float3 must have 3 values (%d provided)!\n", values.size());
+				Logger::log("Error: A Number3 must have 3 values (%d provided)!\n", values.size());
 			}
 			return defaultData;
 		} else {

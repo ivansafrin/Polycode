@@ -12,7 +12,7 @@
 
 using namespace Polycode;
 
-UIHScrollBar::UIHScrollBar(float width, float height, float initialRatio) : ScreenEntity() {
+UIHScrollBar::UIHScrollBar(Number width, Number height, Number initialRatio) : ScreenEntity() {
 	
 	scrollValue = 0;
 	
@@ -20,10 +20,10 @@ UIHScrollBar::UIHScrollBar(float width, float height, float initialRatio) : Scre
 	
 	minHandleSize = conf->getNumericValue("Polycode", "uiScrollHandleMinSize");
 	
-	float st = conf->getNumericValue("Polycode", "uiScrollBgSkinT");
-	float sr = conf->getNumericValue("Polycode", "uiScrollBgSkinR");
-	float sb = conf->getNumericValue("Polycode", "uiScrollBgSkinB");
-	float sl = conf->getNumericValue("Polycode", "uiScrollBgSkinL");	
+	Number st = conf->getNumericValue("Polycode", "uiScrollBgSkinT");
+	Number sr = conf->getNumericValue("Polycode", "uiScrollBgSkinR");
+	Number sb = conf->getNumericValue("Polycode", "uiScrollBgSkinB");
+	Number sl = conf->getNumericValue("Polycode", "uiScrollBgSkinL");	
 	padding = conf->getNumericValue("Polycode", "uiScrollBgSkinPadding");		
 	
 	bgBox = new UIBox(conf->getStringValue("Polycode", "uiScrollBgSkin"),
@@ -79,7 +79,7 @@ void UIHScrollBar::Update() {
 	}
 }
 
-void UIHScrollBar::setHandleRatio(float newRatio) {
+void UIHScrollBar::setHandleRatio(Number newRatio) {
 	scrollHandleWidth = width*newRatio;	
 	
 	if(scrollHandleWidth < minHandleSize)
@@ -91,7 +91,7 @@ void UIHScrollBar::setHandleRatio(float newRatio) {
 	handleBox->setDragLimits(Rectangle(padding,padding,dragRectWidth, height-(padding*2)-(height-(padding*2))));	
 }
 
-float UIHScrollBar::getScrollValue() {
+Number UIHScrollBar::getScrollValue() {
 	return scrollValue;
 }
 
@@ -101,12 +101,12 @@ void UIHScrollBar::handleEvent(Event *event) {
 		switch(event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEDOWN:
 				if(inputEvent->mousePosition.x < handleBox->getPosition().x)  {
-					float newPos = handleBox->getPosition().x - scrollHandleWidth;
+					Number newPos = handleBox->getPosition().x - scrollHandleWidth;
 					if(newPos < padding)
 						newPos = padding;
 					handleBox->setPositionX(newPos);
 				} else {
-					float newPos = handleBox->getPosition().x + scrollHandleWidth;
+					Number newPos = handleBox->getPosition().x + scrollHandleWidth;
 					if(newPos > dragRectWidth)
 						newPos = dragRectWidth;
 					handleBox->setPositionX(newPos);					

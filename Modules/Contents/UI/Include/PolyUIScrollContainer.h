@@ -18,24 +18,24 @@ namespace Polycode {
 	
 	class _PolyExport UIScrollContainer : public ScreenEntity {
 	public:
-		UIScrollContainer(ScreenEntity *scrolledEntity, bool hScroll, bool vScroll, float width, float height);
+		UIScrollContainer(ScreenEntity *scrolledEntity, bool hScroll, bool vScroll, Number width, Number height);
 		~UIScrollContainer();
 		
-		void setContentSize(float newContentWidth, float newContentHeight);
+		void setContentSize(Number newContentWidth, Number newContentHeight);
 		
 		void Resize(int x, int y);
 		
-		void onMouseWheelDown(float x, float y);
-		void onMouseWheelUp(float x, float y);		
+		void onMouseWheelDown(Number x, Number y);
+		void onMouseWheelUp(Number x, Number y);		
 		
 		void handleEvent(Event *event);
 		
 	private:		
 		
-		float defaultScrollSize;
+		Number defaultScrollSize;
 		
-		float contentWidth;
-		float contentHeight;
+		Number contentWidth;
+		Number contentHeight;
 		
 		ScreenEntity *scrollChild;		
 		ScreenShape *maskShape;		

@@ -41,10 +41,10 @@ namespace Polycode {
 		
 		void Update();		
 		
-		PhysicsSceneEntity *addPhysicsChild(SceneEntity *newEntity, int type=0, float mass = 0.0f, float friction=1, float restitution=0, int group=1);		
-		PhysicsSceneEntity *trackPhysicsChild(SceneEntity *newEntity, int type=0, float mass = 0.0f, float friction=1, float restitution=0, int group=1);		
+		PhysicsSceneEntity *addPhysicsChild(SceneEntity *newEntity, int type=0, Number mass = 0.0f, Number friction=1, Number restitution=0, int group=1);		
+		PhysicsSceneEntity *trackPhysicsChild(SceneEntity *newEntity, int type=0, Number mass = 0.0f, Number friction=1, Number restitution=0, int group=1);		
 		
-		PhysicsCharacter *addCharacterChild(SceneEntity *newEntity, float mass, float friction, float stepSize, int group  = 1);
+		PhysicsCharacter *addCharacterChild(SceneEntity *newEntity, Number mass, Number friction, Number stepSize, int group  = 1);
 
 		
 	protected:

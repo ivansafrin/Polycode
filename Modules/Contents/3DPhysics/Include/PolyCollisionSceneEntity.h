@@ -48,7 +48,7 @@ namespace Polycode {
 			bool autoCollide;
 			Vector3 gravityVector;
 			Vector3 gVelocity;
-			float gravityStrength;
+			Number gravityStrength;
 		
 			Vector3 lastPosition;
 		
