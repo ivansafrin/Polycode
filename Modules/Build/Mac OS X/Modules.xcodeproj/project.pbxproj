@@ -20,6 +20,11 @@
 		6D26112F13766DC900745E74 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D26112E13766DC900745E74 /* IOKit.framework */; };
 		6D26113113766DD500745E74 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D26113013766DD500745E74 /* OpenGL.framework */; };
 		6D26113313766DDC00745E74 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D26113213766DDC00745E74 /* OpenAL.framework */; };
+		6D26114C1376780900745E74 /* Polycode2DPhysics.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D26114B1376780900745E74 /* Polycode2DPhysics.h */; };
+		6D26114E1376792000745E74 /* liblua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D26114D1376792000745E74 /* liblua.a */; };
+		6D26115413767A8300745E74 /* Physics2DLUA.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D26115013767A8300745E74 /* Physics2DLUA.h */; };
+		6D26115513767A8300745E74 /* Physics2DLUAWrappers.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D26115113767A8300745E74 /* Physics2DLUAWrappers.h */; };
+		6D26115613767A8300745E74 /* Physics2DLUA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D26115313767A8300745E74 /* Physics2DLUA.cpp */; };
 		6D28012F13766D1200BD8D0D /* PolyPhysicsScreen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D580E0812D29FB5006FB999 /* PolyPhysicsScreen.cpp */; };
 		6D28013013766D1200BD8D0D /* PolyPhysicsScreenEntity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D580E0912D29FB5006FB999 /* PolyPhysicsScreenEntity.cpp */; };
 		6D28013413766D7100BD8D0D /* libBox2D.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D28013313766D7000BD8D0D /* libBox2D.a */; };
@@ -81,6 +86,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6D045366137CB3740089C096 /* libPolycode3DPhysicsModule.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libPolycode3DPhysicsModule.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D1B704612C29AFE0076D5C4 /* Polycode3DPhysics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Polycode3DPhysics.h; sourceTree = "<group>"; };
 		6D1B704712C29AFE0076D5C4 /* PolyCollisionScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyCollisionScene.h; sourceTree = "<group>"; };
 		6D1B704812C29AFE0076D5C4 /* PolyCollisionSceneEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyCollisionSceneEntity.h; sourceTree = "<group>"; };
@@ -94,6 +100,11 @@
 		6D26112E13766DC900745E74 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		6D26113013766DD500745E74 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		6D26113213766DDC00745E74 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
+		6D26114B1376780900745E74 /* Polycode2DPhysics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Polycode2DPhysics.h; path = Include/Polycode2DPhysics.h; sourceTree = "<group>"; };
+		6D26114D1376792000745E74 /* liblua.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblua.a; path = ../../../Core/Dependencies/lua/src/liblua.a; sourceTree = "<group>"; };
+		6D26115013767A8300745E74 /* Physics2DLUA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Physics2DLUA.h; sourceTree = "<group>"; };
+		6D26115113767A8300745E74 /* Physics2DLUAWrappers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Physics2DLUAWrappers.h; sourceTree = "<group>"; };
+		6D26115313767A8300745E74 /* Physics2DLUA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Physics2DLUA.cpp; sourceTree = "<group>"; };
 		6D28012A13766CE200BD8D0D /* libPolycode2DPhysicsModule.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libPolycode2DPhysicsModule.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D28013113766D4E00BD8D0D /* libPolyCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolyCore.a; path = "../../../Release/Mac OS X/Framework/Core/Lib/libPolyCore.a"; sourceTree = "<group>"; };
 		6D28013313766D7000BD8D0D /* libBox2D.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBox2D.a; path = ../../../Core/Dependencies/box2d/Box2D/Box2D/Debug/libBox2D.a; sourceTree = "<group>"; };
@@ -173,6 +184,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		6D045363137CB3740089C096 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6D28012713766CE200BD8D0D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -187,6 +205,7 @@
 				6D28013F13766D9F00BD8D0D /* libogg.a in Frameworks */,
 				6D28014013766D9F00BD8D0D /* libphysfs.a in Frameworks */,
 				6D28014113766D9F00BD8D0D /* libpng.a in Frameworks */,
+				6D26114E1376792000745E74 /* liblua.a in Frameworks */,
 				6D28014213766D9F00BD8D0D /* libvorbis.a in Frameworks */,
 				6D28014313766D9F00BD8D0D /* libvorbisfile.a in Frameworks */,
 				6D28014413766D9F00BD8D0D /* libz.a in Frameworks */,
@@ -249,20 +268,7 @@
 		08FB7794FE84155DC02AAC07 /* Modules */ = {
 			isa = PBXGroup;
 			children = (
-				6D26113213766DDC00745E74 /* OpenAL.framework */,
-				6D26113013766DD500745E74 /* OpenGL.framework */,
-				6D26112E13766DC900745E74 /* IOKit.framework */,
-				6D26112B13766DC300745E74 /* Cocoa.framework */,
-				6D28013113766D4E00BD8D0D /* libPolyCore.a */,
-				6D28013513766D9000BD8D0D /* libPolyCore.a */,
-				6D28013713766D9C00BD8D0D /* libfreetype.a */,
-				6D28013813766D9C00BD8D0D /* libogg.a */,
-				6D28013913766D9C00BD8D0D /* libphysfs.a */,
-				6D28013A13766D9D00BD8D0D /* libpng.a */,
-				6D28013B13766D9E00BD8D0D /* libvorbis.a */,
-				6D28013C13766D9E00BD8D0D /* libvorbisfile.a */,
-				6D28013D13766D9F00BD8D0D /* libz.a */,
-				6D28013313766D7000BD8D0D /* libBox2D.a */,
+				6D26115D1377BA0300745E74 /* ModuleFrameworks */,
 				6D994C9E134D8FAA0044DD0B /* Frameworks */,
 				08FB7795FE84155DC02AAC07 /* Source */,
 				C6A0FF2B0290797F04C91782 /* Documentation */,
@@ -274,7 +280,6 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				6D994DBE134D928A0044DD0B /* Modules */,
 				6D4B047C1312470E00C62698 /* PolycodeGLSL */,
 				6DFD117F12DEAA1F0080A2BE /* Kinect */,
 				6D580E0312D29FB5006FB999 /* 2DPhysics */,
@@ -296,13 +301,22 @@
 				6D4B04211312428500C62698 /* libPolycodeGLSL.a */,
 				6D994C7E134D8EEA0044DD0B /* libPolycodeGLSLModule.dylib */,
 				6D28012A13766CE200BD8D0D /* libPolycode2DPhysicsModule.dylib */,
+				6D045366137CB3740089C096 /* libPolycode3DPhysicsModule.dylib */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		6D045359137CAFAA0089C096 /* Module */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Module;
 			sourceTree = "<group>";
 		};
 		6D1B704412C29AFE0076D5C4 /* 3DPhysics */ = {
 			isa = PBXGroup;
 			children = (
+				6D045359137CAFAA0089C096 /* Module */,
 				6D1B704512C29AFE0076D5C4 /* Include */,
 				6D1B704B12C29AFE0076D5C4 /* Source */,
 			);
@@ -336,8 +350,52 @@
 		6D26113413766E6200745E74 /* Module */ = {
 			isa = PBXGroup;
 			children = (
+				6D26114F13767A8300745E74 /* Include */,
+				6D26115213767A8300745E74 /* Source */,
+				6D26114B1376780900745E74 /* Polycode2DPhysics.h */,
 			);
 			name = Module;
+			sourceTree = "<group>";
+		};
+		6D26114F13767A8300745E74 /* Include */ = {
+			isa = PBXGroup;
+			children = (
+				6D26115013767A8300745E74 /* Physics2DLUA.h */,
+				6D26115113767A8300745E74 /* Physics2DLUAWrappers.h */,
+			);
+			name = Include;
+			path = ../../Bindings/2DPhysics/Include;
+			sourceTree = "<group>";
+		};
+		6D26115213767A8300745E74 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				6D26115313767A8300745E74 /* Physics2DLUA.cpp */,
+			);
+			name = Source;
+			path = ../../Bindings/2DPhysics/Source;
+			sourceTree = "<group>";
+		};
+		6D26115D1377BA0300745E74 /* ModuleFrameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6D26113213766DDC00745E74 /* OpenAL.framework */,
+				6D26113013766DD500745E74 /* OpenGL.framework */,
+				6D26112E13766DC900745E74 /* IOKit.framework */,
+				6D26112B13766DC300745E74 /* Cocoa.framework */,
+				6D28013113766D4E00BD8D0D /* libPolyCore.a */,
+				6D28013513766D9000BD8D0D /* libPolyCore.a */,
+				6D28013713766D9C00BD8D0D /* libfreetype.a */,
+				6D28013813766D9C00BD8D0D /* libogg.a */,
+				6D28013913766D9C00BD8D0D /* libphysfs.a */,
+				6D28013A13766D9D00BD8D0D /* libpng.a */,
+				6D26114D1376792000745E74 /* liblua.a */,
+				6D28013B13766D9E00BD8D0D /* libvorbis.a */,
+				6D28013C13766D9E00BD8D0D /* libvorbisfile.a */,
+				6D28013D13766D9F00BD8D0D /* libz.a */,
+				6D28013313766D7000BD8D0D /* libBox2D.a */,
+			);
+			name = ModuleFrameworks;
 			sourceTree = "<group>";
 		};
 		6D4B047C1312470E00C62698 /* PolycodeGLSL */ = {
@@ -399,21 +457,6 @@
 				6D994C9F134D8FC00044DD0B /* libPolyCore.a */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		6D994DBE134D928A0044DD0B /* Modules */ = {
-			isa = PBXGroup;
-			children = (
-				6D994DC0134D92960044DD0B /* GLSLModule */,
-			);
-			name = Modules;
-			sourceTree = "<group>";
-		};
-		6D994DC0134D92960044DD0B /* GLSLModule */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = GLSLModule;
 			sourceTree = "<group>";
 		};
 		6DFB00C012A71A5B00C43A7D /* PolycodeUI */ = {
@@ -500,10 +543,20 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		6D045364137CB3740089C096 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6D28012813766CE200BD8D0D /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6D26114C1376780900745E74 /* Polycode2DPhysics.h in Headers */,
+				6D26115413767A8300745E74 /* Physics2DLUA.h in Headers */,
+				6D26115513767A8300745E74 /* Physics2DLUAWrappers.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -587,6 +640,23 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		6D045365137CB3740089C096 /* Polycode3DPhysicsModule */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6D045367137CB3740089C096 /* Build configuration list for PBXNativeTarget "Polycode3DPhysicsModule" */;
+			buildPhases = (
+				6D045362137CB3740089C096 /* Sources */,
+				6D045363137CB3740089C096 /* Frameworks */,
+				6D045364137CB3740089C096 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Polycode3DPhysicsModule;
+			productName = Polycode3DPhysicsModule;
+			productReference = 6D045366137CB3740089C096 /* libPolycode3DPhysicsModule.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
 		6D28012913766CE200BD8D0D /* Polycode2DPhysicsModule */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6D28012D13766CE200BD8D0D /* Build configuration list for PBXNativeTarget "Polycode2DPhysicsModule" */;
@@ -750,17 +820,26 @@
 				6D4B04201312428500C62698 /* PolycodeGLSL */,
 				6D994C7D134D8EEA0044DD0B /* PolycodeGLSLModule */,
 				6D28012913766CE200BD8D0D /* Polycode2DPhysicsModule */,
+				6D045365137CB3740089C096 /* Polycode3DPhysicsModule */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
+		6D045362137CB3740089C096 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6D28012613766CE200BD8D0D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				6D28012F13766D1200BD8D0D /* PolyPhysicsScreen.cpp in Sources */,
 				6D28013013766D1200BD8D0D /* PolyPhysicsScreenEntity.cpp in Sources */,
+				6D26115613767A8300745E74 /* Physics2DLUA.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -883,6 +962,40 @@
 			};
 			name = Release;
 		};
+		6D045368137CB3740089C096 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		6D045369137CB3740089C096 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EXECUTABLE_PREFIX = lib;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
 		6D28012B13766CE200BD8D0D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -895,11 +1008,26 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include/,
+					/usr/local/include/libfreenect,
+					../../../Core/Dependencies/box2d/Box2D,
+					../../../Core/Contents/Include,
+					../../../Core/Dependencies/bullet/src,
+					../../../Core/Dependencies/libvorbis/include,
+					../../../Core/Dependencies/libogg/include,
+					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Versions/A/Headers,
+					../../../Core/Dependencies/freetype/include,
+					../../../Core/Dependencies/libpng,
+					../../../Core/Dependencies/physfs,
+					../../../Core/Dependencies/luajit/src,
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../../Release/Mac OS X/Framework/Core/Lib\"",
 					"\"$(SRCROOT)/../../../Core/Dependencies/box2d/Box2D/Box2D/Debug\"",
 					"\"$(SRCROOT)/../../../Release/Mac OS X/Framework/Dependencies/Lib\"",
+					"\"$(SRCROOT)/../../../Core/Dependencies/lua/src\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -922,6 +1050,7 @@
 					"\"$(SRCROOT)/../../../Release/Mac OS X/Framework/Core/Lib\"",
 					"\"$(SRCROOT)/../../../Core/Dependencies/box2d/Box2D/Box2D/Debug\"",
 					"\"$(SRCROOT)/../../../Release/Mac OS X/Framework/Dependencies/Lib\"",
+					"\"$(SRCROOT)/../../../Core/Dependencies/lua/src\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -998,6 +1127,18 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include/,
+					/usr/local/include/libfreenect,
+					../../../Core/Contents/Include,
+					../../../Core/Dependencies/bullet/src,
+					../../../Core/Dependencies/libvorbis/include,
+					../../../Core/Dependencies/libogg/include,
+					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Versions/A/Headers,
+					../../../Core/Dependencies/freetype/include,
+					../../../Core/Dependencies/libpng,
+					../../../Core/Dependencies/physfs,
+				);
 				INSTALL_PATH = /usr/local/lib;
 				PREBINDING = NO;
 				PRODUCT_NAME = Polycode3DPhysics;
@@ -1207,6 +1348,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		6D045367137CB3740089C096 /* Build configuration list for PBXNativeTarget "Polycode3DPhysicsModule" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6D045368137CB3740089C096 /* Debug */,
+				6D045369137CB3740089C096 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 		6D28012D13766CE200BD8D0D /* Build configuration list for PBXNativeTarget "Polycode2DPhysicsModule" */ = {
 			isa = XCConfigurationList;

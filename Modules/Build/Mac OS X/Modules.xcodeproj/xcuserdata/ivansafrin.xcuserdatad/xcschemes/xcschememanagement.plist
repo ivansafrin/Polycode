@@ -19,6 +19,11 @@
 			<key>orderHint</key>
 			<integer>4</integer>
 		</dict>
+		<key>Polycode3DPhysicsModule.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>8</integer>
+		</dict>
 		<key>PolycodeCg.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -47,6 +52,11 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>6D045365137CB3740089C096</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>6D28012913766CE200BD8D0D</key>
 		<dict>
 			<key>primary</key>
