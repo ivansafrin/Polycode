@@ -67,6 +67,19 @@ btCollisionShape *CollisionSceneEntity::createCollisionShape(SceneEntity *entity
 		case CHARACTER_CONTROLLER:
 			collisionShape = new btCapsuleShape(entity->bBox.x/2.0f, entity->bBox.y/2.0f);			
 		break;
+		case SHAPE_CONE: {
+			Number largest = entity->bBox.x;
+			if(entity->bBox.z > largest) {
+				largest = entity->bBox.z;
+			}
+			collisionShape = new btConeShape(largest/2.0f, entity->bBox.y);					
+			}
+		break;
+		case SHAPE_CYLINDER:
+		{
+			collisionShape = new btCylinderShape(btVector3(entity->bBox.x/2.0f, entity->bBox.y/2.0f,entity->bBox.z/2.0f));
+		}
+		break;
 		case SHAPE_PLANE:
 			collisionShape = new btBoxShape(btVector3(entity->bBox.x/2.0f, entity->bBox.y/2.0f,0.1f));			
 			break;
@@ -94,7 +107,7 @@ btCollisionShape *CollisionSceneEntity::createCollisionShape(SceneEntity *entity
 				btConvexHullShape *hullShape = new btConvexHullShape();
 				for(int i=0; i < sceneMesh->getMesh()->getPolygonCount(); i++) {
 					Polygon *poly = sceneMesh->getMesh()->getPolygon(i);
-					for(int j=0; j < poly->getVertexCount(); j++) {					
+					for(int j=0; j < 3; j++) {					
 						hullShape->addPoint(btVector3((btScalar)poly->getVertex(j)->x, (btScalar)poly->getVertex(j)->y,(btScalar)poly->getVertex(j)->z));
 					}
 				}

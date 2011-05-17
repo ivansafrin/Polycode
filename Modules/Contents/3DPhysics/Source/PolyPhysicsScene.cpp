@@ -66,7 +66,7 @@ void PhysicsScene::Update() {
 	Number elapsed = CoreServices::getInstance()->getCore()->getElapsed();
 	physicsWorld->stepSimulation(elapsed);	
 
-	
+	physicsWorld->debugDrawWorld();
 	CollisionScene::Update();
 	
 }
@@ -89,6 +89,35 @@ PhysicsCharacter *PhysicsScene::addCharacterChild(SceneEntity *newEntity,Number 
 	return newPhysicsEntity;
 	
 }
+
+PhysicsVehicle *PhysicsScene::addVehicleChild(SceneEntity *newEntity, Number mass, Number friction, int group) {
+	addEntity(newEntity);		
+	
+	btDefaultVehicleRaycaster *m_vehicleRayCaster = new btDefaultVehicleRaycaster(physicsWorld);
+	
+	PhysicsVehicle *newPhysicsEntity = new PhysicsVehicle(newEntity, mass, friction,m_vehicleRayCaster);		
+	physicsWorld->addRigidBody(newPhysicsEntity->rigidBody, group, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);	
+		
+	newPhysicsEntity->vehicle = new btRaycastVehicle(newPhysicsEntity->tuning,newPhysicsEntity->rigidBody,m_vehicleRayCaster);	
+	
+	newPhysicsEntity->rigidBody->setActivationState(DISABLE_DEACTIVATION);
+	
+		
+	int rightIndex = 0; 
+		int upIndex = 1; 
+		int forwardIndex = 2;
+			
+	physicsWorld->addVehicle(newPhysicsEntity->vehicle);
+	
+	newPhysicsEntity->vehicle->setCoordinateSystem(rightIndex,upIndex,forwardIndex);
+
+	newPhysicsEntity->vehicle->resetSuspension();
+
+	physicsChildren.push_back(newPhysicsEntity);
+	
+	return newPhysicsEntity;
+}
+
 
 PhysicsSceneEntity *PhysicsScene::trackPhysicsChild(SceneEntity *newEntity, int type, Number mass, Number friction, Number restitution, int group) {
 	PhysicsSceneEntity *newPhysicsEntity = new PhysicsSceneEntity(newEntity, type, mass, friction,restitution);

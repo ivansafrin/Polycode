@@ -350,6 +350,129 @@ namespace Polycode {
 		
 	}
 
+	void Mesh::createCylinder(Number height, Number radius, int numSegments) {
+	
+		setMeshType(Mesh::TRI_MESH);
+		Number lastx = -1;
+		Number lastz = -1;		
+		for (int i=0 ; i < numSegments+1; i++) {
+			Number pos = ((PI*2.0)/((Number)numSegments)) * i;
+			Number x = sinf(pos) * radius;
+			Number z = cosf(pos) * radius;
+			
+			if(lastx > -1) {
+				Polygon *polygon = new Polygon();
+				polygon->addVertex(lastx,0,lastz,0,0);				
+				polygon->addVertex(x,0,z, 1, 0);
+				polygon->addVertex(x,height,z, 1, 1);				
+				addPolygon(polygon);							
+
+				polygon = new Polygon();	
+				polygon->addVertex(x,height,z, 1, 1);								
+				polygon->addVertex(lastx,height,lastz, 1, 1);																												
+				polygon->addVertex(lastx,0,lastz,0,0);												
+				addPolygon(polygon);	
+				
+				polygon = new Polygon();	
+				polygon->addVertex(lastx,height,lastz, 1, 1);				
+				polygon->addVertex(x,height,z, 1, 1);														
+				polygon->addVertex(0,height,0,0,0);							
+				addPolygon(polygon);			
+
+				polygon = new Polygon();	
+				polygon->addVertex(lastx,0,lastz, 1, 1);						
+				polygon->addVertex(0,0,0,0,0);																																					
+				polygon->addVertex(x,0,z, 1, 1);								
+				addPolygon(polygon);			
+
+								
+			}
+			lastx = x;
+			lastz = z;			
+		/*
+			Polygon *polygon = new Polygon();
+			polygon->addVertex(w,0,h, 1, 1);
+			polygon->addVertex(0,0,h, 1, 0);
+			polygon->addVertex(0,0,0,0,0);
+			polygon->addVertex(w,0,0,0,1);
+			addPolygon(polygon);			
+			*/
+        }
+		
+		for(int i=0; i < polygons.size(); i++) {
+			for(int j=0; j < polygons[i]->getVertexCount(); j++) {
+//				polygons[i]->getVertex(j)->x = polygons[i]->getVertex(j)->x - (radius/2.0f);
+				polygons[i]->getVertex(j)->y = polygons[i]->getVertex(j)->y - (height/2.0f);
+//				polygons[i]->getVertex(j)->z = polygons[i]->getVertex(j)->z - (radius/2.0f);	
+			}
+		}
+		
+		
+		calculateNormals();
+		arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
+		arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
+		arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;						
+		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;										
+		
+	}
+	
+	void Mesh::createCone(Number height, Number radius, int numSegments) {
+	
+	
+		setMeshType(Mesh::TRI_MESH);
+		Number lastx = -1;
+		Number lastz = -1;		
+		for (int i=0 ; i < numSegments+1; i++) {
+			Number pos = ((PI*2.0)/((Number)numSegments)) * i;
+			Number x = sinf(pos) * radius;
+			Number z = cosf(pos) * radius;
+			
+			if(lastx > -1) {
+				Polygon *polygon = new Polygon();
+				polygon->addVertex(lastx,0,lastz,0,0);				
+				polygon->addVertex(x,0,z, 1, 0);
+				polygon->addVertex(0,height,0, 1, 1);				
+				addPolygon(polygon);							
+			
+
+				polygon = new Polygon();	
+				polygon->addVertex(x,0,z, 1, 1);												
+				polygon->addVertex(lastx,0,lastz, 1, 1);																														
+				polygon->addVertex(0,0,0,0,0);												
+				addPolygon(polygon);			
+
+								
+			}
+			lastx = x;
+			lastz = z;			
+		/*
+			Polygon *polygon = new Polygon();
+			polygon->addVertex(w,0,h, 1, 1);
+			polygon->addVertex(0,0,h, 1, 0);
+			polygon->addVertex(0,0,0,0,0);
+			polygon->addVertex(w,0,0,0,1);
+			addPolygon(polygon);			
+			*/
+        }
+		
+		for(int i=0; i < polygons.size(); i++) {
+			for(int j=0; j < polygons[i]->getVertexCount(); j++) {
+//				polygons[i]->getVertex(j)->x = polygons[i]->getVertex(j)->x - (radius/2.0f);
+				polygons[i]->getVertex(j)->y = polygons[i]->getVertex(j)->y - (height/2.0f);
+//				polygons[i]->getVertex(j)->z = polygons[i]->getVertex(j)->z - (radius/2.0f);	
+			}
+		}
+		
+		
+		calculateNormals();
+		arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
+		arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
+		arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;						
+		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;										
+			
+	
+	}
+
 	void Mesh::createBox(Number w, Number d, Number h) {
 		Polygon *polygon = new Polygon();
 		polygon->addVertex(w,0,h, 1, 1);

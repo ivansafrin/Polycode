@@ -48,13 +48,17 @@ namespace Polycode {
 		
 		int getType() { return type; }	
 		
+		
 		static const int SHAPE_BOX = 0;
 		static const int SHAPE_TERRAIN = 1;
 		static const int SHAPE_SPHERE = 2;	
 		static const int SHAPE_MESH = 3;			
 		static const int CHARACTER_CONTROLLER = 4;
 		static const int SHAPE_CAPSULE = 5;		
-		static const int SHAPE_PLANE = 6;		
+		static const int SHAPE_PLANE = 6;
+		static const int SHAPE_CONE = 7;
+		static const int SHAPE_CYLINDER = 8;						
+
 		
 		bool enabled;
 		
@@ -80,5 +84,33 @@ namespace Polycode {
 				
 		
 		protected:
+	};
+	
+	class PhysicsVehicleWheelInfo {
+		public:
+			unsigned int wheelIndex;
+			SceneEntity *wheelEntity;
+	};
+	
+	class _PolyExport PhysicsVehicle : public PhysicsSceneEntity {
+		public:
+			PhysicsVehicle(SceneEntity *entity, Number mass, Number friction, btDefaultVehicleRaycaster *rayCaster);
+
+			void addWheel(SceneEntity *entity, Vector3 connection, Vector3 direction, Vector3 axle, Number suspentionRestLength, Number wheelRadius, bool isFrontWheel,Number suspensionStiffness = 20.0f, Number suspensionDamping = 1.0f, Number suspensionCompression = 4.0f, Number wheelFriction = 10000.0f, Number rollInfluence = 0.05f);
+			void applyEngineForce(Number force, unsigned int wheelIndex);
+			void setSteeringValue(Number value, unsigned int wheelIndex);
+			void setBrake(Number value, unsigned int wheelIndex);
+						
+			void Update();
+			virtual ~PhysicsVehicle();
+						
+		
+		btRaycastVehicle::btVehicleTuning tuning;
+		btDefaultVehicleRaycaster *rayCaster;
+		btRaycastVehicle *vehicle;
+		
+		protected:
+			vector<PhysicsVehicleWheelInfo> wheels;
+
 	};
 }

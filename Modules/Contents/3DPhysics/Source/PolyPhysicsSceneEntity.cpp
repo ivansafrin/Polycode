@@ -24,6 +24,79 @@ THE SOFTWARE.
 
 using namespace Polycode;
 
+PhysicsVehicle::PhysicsVehicle(SceneEntity *entity, Number mass, Number friction,btDefaultVehicleRaycaster *rayCaster): PhysicsSceneEntity(entity, PhysicsSceneEntity::SHAPE_BOX, mass, friction, 1) {
+	
+}
+
+void PhysicsVehicle::addWheel(SceneEntity *entity, Vector3 connection, Vector3 direction, Vector3 axle, Number suspentionRestLength, Number wheelRadius, bool isFrontWheel,Number  suspensionStiffness, Number  suspensionDamping, Number suspensionCompression, Number  wheelFriction, Number rollInfluence) {
+	vehicle->addWheel(btVector3(connection.x, connection.y, connection.z),
+					btVector3(direction.x, direction.y, direction.z),
+					btVector3(axle.x, axle.y, axle.z),	
+					suspentionRestLength,
+					wheelRadius, 
+					tuning, 
+					isFrontWheel);
+					
+					
+					
+	PhysicsVehicleWheelInfo wheel_info;
+	wheel_info.wheelEntity = entity;
+	wheel_info.wheelIndex = wheels.size();
+	
+	
+			btWheelInfo& wheel = vehicle->getWheelInfo(wheel_info.wheelIndex);
+			wheel.m_suspensionStiffness = suspensionStiffness;
+			wheel.m_wheelsDampingRelaxation = suspensionDamping;
+			wheel.m_wheelsDampingCompression = suspensionCompression;
+			wheel.m_frictionSlip = wheelFriction;
+			wheel.m_rollInfluence = rollInfluence;
+	
+	
+	wheels.push_back(wheel_info);
+	
+}
+
+void PhysicsVehicle::setBrake(Number value, unsigned int wheelIndex) {
+	if ( wheelIndex < wheels.size()) {
+		vehicle->setBrake(value, wheelIndex);
+	}
+}
+
+void PhysicsVehicle::setSteeringValue(Number value, unsigned int wheelIndex) {
+	if ( wheelIndex < wheels.size()) {
+		vehicle->setSteeringValue(value, wheelIndex);
+	}
+}
+
+void PhysicsVehicle::applyEngineForce(Number force, unsigned int wheelIndex) {
+	if ( wheelIndex < wheels.size()) {
+		vehicle->applyEngineForce(force, wheelIndex);
+	}
+}
+
+void PhysicsVehicle::Update() {
+	Matrix4 m;
+	
+	for(int i=0; i < wheels.size(); i++) {	
+		PhysicsVehicleWheelInfo wheel_info = wheels[i];
+		vehicle->updateWheelTransform(i,true);
+		
+		btScalar mat[16];		
+//		vehicle->getWheelTransformWS(i).getOpenGLMatrix(mat);
+		vehicle->getWheelInfo(i).m_worldTransform.getOpenGLMatrix(mat);
+	
+		for(int j=0; j < 16; j++) {
+			m.ml[j] = mat[j];
+		}			
+		wheel_info.wheelEntity->setTransformByMatrixPure(m);		
+	}
+	
+	PhysicsSceneEntity::Update();
+}
+
+PhysicsVehicle::~PhysicsVehicle() {
+}
+
 PhysicsCharacter::PhysicsCharacter(SceneEntity *entity, Number mass, Number friction, Number stepSize) : PhysicsSceneEntity(entity, PhysicsSceneEntity::CHARACTER_CONTROLLER, mass, friction, 1) {	
 	ghostObject = new btPairCachingGhostObject();
 	

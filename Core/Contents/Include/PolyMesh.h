@@ -168,12 +168,29 @@ namespace Polycode {
 			void createBox(Number w, Number d, Number h);
 			
 			/**
-			* Creates a sphere mesh of specified size. (Not fully implemented!).
+			* Creates a sphere mesh of specified size.
 			* @param radius Radius of sphere.
 			* @param numRings Number of rings.	
 			* @param numSegments Number of segments.
 			*/ 						
 			void createSphere(Number radius, Number numRings, Number numSegments);
+
+			/**
+			* Creates a cylinder mesh.
+			* @param height Height of the cylinder.
+			* @param radius Radius of the cylinder.
+			* @param numSegments Number of segments.
+			*/ 								
+			void createCylinder(Number height, Number radius, int numSegments);
+
+			/**
+			* Creates a cone mesh.
+			* @param height Height of the cone.
+			* @param radius Radius of the cone.
+			* @param numSegments Number of segments.
+			*/ 								
+			void createCone(Number height, Number radius, int numSegments);
+
 		
 			/**
 			* Recenters the mesh with all vertices being as equidistant from origin as possible.

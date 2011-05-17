@@ -685,12 +685,15 @@ void OpenGLRenderer::clearShader() {
 
 void OpenGLRenderer::setTexture(Texture *texture) {
 	if(texture == NULL) {
+		glActiveTexture(GL_TEXTURE0);		
 		glDisable(GL_TEXTURE_2D);
 		return;
 	}
 	
 	if(renderMode == RENDER_MODE_NORMAL) {
 		glEnable (GL_TEXTURE_2D);
+		glActiveTexture(GL_TEXTURE0);	
+		
 		if(currentTexture != texture) {			
 			OpenGLTexture *glTexture = (OpenGLTexture*)texture;
 			glBindTexture (GL_TEXTURE_2D, glTexture->getTextureID());

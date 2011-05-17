@@ -56,6 +56,15 @@ namespace Polycode {
 			* A sphere.
 			*/			
 			static const int TYPE_SPHERE = 2;
+			/**
+			* A cylinder.
+			*/			
+			static const int TYPE_CYLINDER = 3;
+			/**
+			* A cone.
+			*/			
+			static const int TYPE_CONE = 4;
+
 		
 		private:
 		

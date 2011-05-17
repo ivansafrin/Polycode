@@ -100,7 +100,12 @@ void GLSLShaderModule::setGLSLAreaLightPositionParameter(Renderer *renderer, GLS
 		vector<LightInfo> areaLights = renderer->getAreaLights();			
 		Vector3 lPos(areaLights[lightIndex].position.x,areaLights[lightIndex].position.y,areaLights[lightIndex].position.z);
 		GLfloat LightPosition[] = {lPos.x, lPos.y, lPos.z, 1};		
+		
 		glLightfv (GL_LIGHT0+lightIndex, GL_POSITION, LightPosition); //change the 	
+		
+//		glLightf(GL_LIGHT0+lightIndex, GL_CONSTANT_ATTENUATION, areaLights[lightIndex].distance);
+//		glLightf(GL_LIGHT0+lightIndex, GL_LINEAR_ATTENUATION, areaLights[lightIndex].intensity);			
+//		glLightf(GL_LIGHT0+lightIndex, GL_QUADRATIC_ATTENUATION, areaLights[lightIndex].intensity);					
 	} else {
 	}	
 }
@@ -332,24 +337,31 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 		GLSLProgramParam param = glslShader->fp->params[i];
 		updateGLSLParam(renderer, param, material->getShaderBinding(shaderIndex), localOptions);
 	}	
+	
 	glUseProgram(glslShader->shader_id);	
-	
-//	glActiveTexture(GL_TEXTURE0);
-	
+	int textureIndex = 0;
 	for(int i=0; i < cgBinding->textures.size(); i++) {
 		int texture_location = glGetUniformLocation(glslShader->shader_id, cgBinding->textures[i].name.c_str());
-		glUniform1i(texture_location, 0);
+		glUniform1i(texture_location, textureIndex);
+		glActiveTexture(GL_TEXTURE0 + textureIndex);		
 		glBindTexture(GL_TEXTURE_2D, ((OpenGLTexture*)cgBinding->textures[i].texture)->getTextureID());	
+		textureIndex++;
 	}	
+		
 	
-	/*
+
 	//			Logger::log("applying %s (%s %s)\n", material->getShader()->getName().c_str(), cgShader->vp->getResourceName().c_str(), cgShader->fp->getResourceName().c_str());
 		
 	for(int i=0; i < cgBinding->cubemaps.size(); i++) {
-		cgGLSetTextureParameter(cgBinding->cubemaps[i].vpParam, ((OpenGLCubemap*)cgBinding->cubemaps[i].cubemap)->getTextureID());
-		cgGLEnableTextureParameter(cgBinding->cubemaps[i].vpParam);
+		int texture_location = glGetUniformLocation(glslShader->shader_id, cgBinding->cubemaps[i].name.c_str());
+		glUniform1i(texture_location, textureIndex);
+		
+		glActiveTexture(GL_TEXTURE0 + textureIndex);	
+			
+		glBindTexture(GL_TEXTURE_CUBE_MAP, ((OpenGLCubemap*)cgBinding->cubemaps[i].cubemap)->getTextureID());	
+		textureIndex++;
 	}
-	
+/*	
 	cgBinding = (GLSLShaderBinding*)localOptions;
 	for(int i=0; i < cgBinding->textures.size(); i++) {
 		cgGLSetTextureParameter(cgBinding->textures[i].vpParam, ((OpenGLTexture*)cgBinding->textures[i].texture)->getTextureID());

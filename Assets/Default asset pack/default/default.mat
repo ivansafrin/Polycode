@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<tau>
+	<shaders>		
+		<shader type="glsl" name="DefaultShader">		
+			<vp source="DefaultShader.vert">
+				<params>
+				</params>
+			</vp>
+			<fp source="DefaultShader.frag">
+				<params>			
+				</params>					
+			</fp>
+		</shader>	
+	</shaders>
+	<materials>
+		<material name="default">
+			<shader name="DefaultShader">
+			</shader>
+		</material>		
+	</materials>
+</tau>
