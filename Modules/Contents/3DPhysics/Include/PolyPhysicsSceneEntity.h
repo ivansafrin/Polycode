@@ -100,7 +100,9 @@ namespace Polycode {
 			void applyEngineForce(Number force, unsigned int wheelIndex);
 			void setSteeringValue(Number value, unsigned int wheelIndex);
 			void setBrake(Number value, unsigned int wheelIndex);
-						
+			
+			void ResetVehicle();
+
 			void Update();
 			virtual ~PhysicsVehicle();
 						

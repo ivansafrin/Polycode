@@ -499,6 +499,25 @@ static int Physics3D_PhysicsScene_addCharacterChild(lua_State *L) {
 	return 1;
 }
 
+static int Physics3D_PhysicsScene_addVehicleChild(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsScene *inst = (PhysicsScene*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	SceneEntity * newEntity = (SceneEntity *)lua_topointer(L, 2);
+	luaL_checktype(L, 3, LUA_TNUMBER);
+	Number mass = lua_tonumber(L, 3);
+	luaL_checktype(L, 4, LUA_TNUMBER);
+	Number friction = lua_tonumber(L, 4);
+	int group;
+	if(lua_isnumber(L, 5)) {
+		group = lua_tointeger(L, 5);
+	} else {
+		group = 1;
+	}
+	lua_pushlightuserdata(L, (void*)inst->addVehicleChild(newEntity, mass, friction, group));
+	return 1;
+}
+
 static int Physics3D_delete_PhysicsScene(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScene *inst = (PhysicsScene*)lua_topointer(L, 1);
@@ -614,6 +633,118 @@ static int Physics3D_PhysicsCharacter_Update(lua_State *L) {
 static int Physics3D_delete_PhysicsCharacter(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsCharacter *inst = (PhysicsCharacter*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
+static int Physics3D_PhysicsVehicle(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	SceneEntity * entity = (SceneEntity *)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	Number mass = lua_tonumber(L, 2);
+	luaL_checktype(L, 3, LUA_TNUMBER);
+	Number friction = lua_tonumber(L, 3);
+	luaL_checktype(L, 4, LUA_TLIGHTUSERDATA);
+	btDefaultVehicleRaycaster * rayCaster = (btDefaultVehicleRaycaster *)lua_topointer(L, 4);
+	PhysicsVehicle *inst = new PhysicsVehicle(entity, mass, friction, rayCaster);
+	lua_pushlightuserdata(L, (void*)inst);
+	return 1;
+}
+
+static int Physics3D_PhysicsVehicle_addWheel(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsVehicle *inst = (PhysicsVehicle*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	SceneEntity * entity = (SceneEntity *)lua_topointer(L, 2);
+	luaL_checktype(L, 3, LUA_TLIGHTUSERDATA);
+	Vector3 connection = *(Vector3*)lua_topointer(L, 3);
+	luaL_checktype(L, 4, LUA_TLIGHTUSERDATA);
+	Vector3 direction = *(Vector3*)lua_topointer(L, 4);
+	luaL_checktype(L, 5, LUA_TLIGHTUSERDATA);
+	Vector3 axle = *(Vector3*)lua_topointer(L, 5);
+	luaL_checktype(L, 6, LUA_TNUMBER);
+	Number suspentionRestLength = lua_tonumber(L, 6);
+	luaL_checktype(L, 7, LUA_TNUMBER);
+	Number wheelRadius = lua_tonumber(L, 7);
+	luaL_checktype(L, 8, LUA_TBOOLEAN);
+	bool isFrontWheel = lua_toboolean(L, 8);
+	Number suspensionStiffness;
+	if(lua_isnumber(L, 9)) {
+		suspensionStiffness = lua_tonumber(L, 9);
+	} else {
+		suspensionStiffness = 20.0f;
+	}
+	Number suspensionDamping;
+	if(lua_isnumber(L, 10)) {
+		suspensionDamping = lua_tonumber(L, 10);
+	} else {
+		suspensionDamping = 1.0f;
+	}
+	Number suspensionCompression;
+	if(lua_isnumber(L, 11)) {
+		suspensionCompression = lua_tonumber(L, 11);
+	} else {
+		suspensionCompression = 4.0f;
+	}
+	Number wheelFriction;
+	if(lua_isnumber(L, 12)) {
+		wheelFriction = lua_tonumber(L, 12);
+	} else {
+		wheelFriction = 10000.0f;
+	}
+	Number rollInfluence;
+	if(lua_isnumber(L, 13)) {
+		rollInfluence = lua_tonumber(L, 13);
+	} else {
+		rollInfluence = 0.05f;
+	}
+	inst->addWheel(entity, connection, direction, axle, suspentionRestLength, wheelRadius, isFrontWheel, suspensionStiffness, suspensionDamping, suspensionCompression, wheelFriction, rollInfluence);
+	return 0;
+}
+
+static int Physics3D_PhysicsVehicle_applyEngineForce(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsVehicle *inst = (PhysicsVehicle*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	Number force = lua_tonumber(L, 2);
+	luaL_checktype(L, 3, LUA_TNUMBER);
+	unsigned int wheelIndex = lua_tointeger(L, 3);
+	inst->applyEngineForce(force, wheelIndex);
+	return 0;
+}
+
+static int Physics3D_PhysicsVehicle_setSteeringValue(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsVehicle *inst = (PhysicsVehicle*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	Number value = lua_tonumber(L, 2);
+	luaL_checktype(L, 3, LUA_TNUMBER);
+	unsigned int wheelIndex = lua_tointeger(L, 3);
+	inst->setSteeringValue(value, wheelIndex);
+	return 0;
+}
+
+static int Physics3D_PhysicsVehicle_setBrake(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsVehicle *inst = (PhysicsVehicle*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	Number value = lua_tonumber(L, 2);
+	luaL_checktype(L, 3, LUA_TNUMBER);
+	unsigned int wheelIndex = lua_tointeger(L, 3);
+	inst->setBrake(value, wheelIndex);
+	return 0;
+}
+
+static int Physics3D_PhysicsVehicle_Update(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsVehicle *inst = (PhysicsVehicle*)lua_topointer(L, 1);
+	inst->Update();
+	return 0;
+}
+
+static int Physics3D_delete_PhysicsVehicle(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsVehicle *inst = (PhysicsVehicle*)lua_topointer(L, 1);
 	delete inst;
 	return 0;
 }

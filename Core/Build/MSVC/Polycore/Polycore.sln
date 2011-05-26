@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C++ Express 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Polycore", "Polycore.vcxproj", "{EE44C688-BAA1-4A9B-902E-7CEDBED6612D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EE44C688-BAA1-4A9B-902E-7CEDBED6612D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{EE44C688-BAA1-4A9B-902E-7CEDBED6612D}.Debug|Win32.Build.0 = Debug|Win32
+		{EE44C688-BAA1-4A9B-902E-7CEDBED6612D}.Release|Win32.ActiveCfg = Release|Win32
+		{EE44C688-BAA1-4A9B-902E-7CEDBED6612D}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

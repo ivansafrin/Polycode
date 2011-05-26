@@ -1,12 +1,24 @@
 
 #include "polybuild.h"
 #include "zip.h"
+
+#if defined(__APPLE__) && defined(__MACH__)
 #include <mach-o/dyld.h>
+#endif
 
 vector<BuildArg> args;
 #define MAXFILENAME (256)
 
 String getArg(String argName) {
+	/*
+	if(argName == "--config")
+		return "ExampleProject.xml";
+
+	if(argName == "--out")
+		return "ExampleProject.polyapp";
+
+		*/
+
 	for(int i=0; i < args.size(); i++) {
 		if(args[i].name == argName) {
 			return args[i].value;
@@ -38,12 +50,17 @@ uLong filetime(
 
     if (name[len - 1] == '/')
       name[len - 1] = '\0';
+
     /* not all systems allow stat'ing a file with / appended */
+#ifdef _WINDOWS
+
+#else
     if (stat(name,&s)==0)
     {
       tm_t = s.st_mtime;
       ret = 1;
     }
+#endif
   }
   filedate = localtime(&tm_t);
 
@@ -86,7 +103,6 @@ void addFileToZip(zipFile z, String filePath, String pathInZip, bool silent) {
 }
 
 void addFolderToZip(zipFile z, String folderPath, String parentFolder, bool silent) {
-
 	std::vector<OSFileEntry> files = OSBasics::parseFolder(folderPath, false);
 	for(int i=0; i < files.size(); i++) {
 		if(files[i].type == OSFileEntry::TYPE_FILE) {
@@ -110,11 +126,20 @@ void addFolderToZip(zipFile z, String folderPath, String parentFolder, bool sile
 	}
 }
 
-int main(int argc, char **argv) {
+#ifdef _WINDOWS
+void wtoc(char* Dest, TCHAR* Source, int SourceSize)
+{
+for(int i = 0; i < SourceSize; ++i)
+Dest[i] = (char)Source[i];
+}
+#endif
 
-	char path[2048];
-	unsigned int size = sizeof(path);
-	_NSGetExecutablePath(path, &size);
+int main(int argc, char **argv) {
+		
+#if defined(__APPLE__) && defined(__MACH__)
+	char path[2049];
+	_NSGetExecutablePath(path, 2048);
+
 	String basePath = path;
 	vector<String> cpts = basePath.split("/");
 	String installPath = "";
@@ -122,7 +147,22 @@ int main(int argc, char **argv) {
 		installPath = installPath + cpts[i];
 		installPath += String("/");
 	}
+#else
+	char path[2049];
+	TCHAR tpath[2049];
+	GetModuleFileName(NULL, (LPWSTR)tpath, 2048);
+	wtoc(path, tpath, 2048);
 	
+	String basePath = path;
+	vector<String> cpts = basePath.split("\\");
+	String installPath = "";
+	for(int i=0; i < cpts.size() - 2; i++) {
+		installPath = installPath + cpts[i];
+		installPath += String("\\");
+	}
+
+#endif
+
 	printf("Polycode build tool v0.1.1\n");
 
 	for(int i=0; i < argc; i++) {
@@ -148,16 +188,32 @@ int main(int argc, char **argv) {
 		return 1;		
 	}
 
-	char dirPath[4098];
-	getcwd(dirPath, sizeof(dirPath));
+	char dirPath[4099];
+#if defined(__APPLE__) && defined(__MACH__)
+	_getcwd(dirPath, sizeof(dirPath));
+#else	
+	TCHAR tdirpath[4099];
+	GetCurrentDirectory(4098, (LPWSTR)tdirpath);
+	wtoc(dirPath, tdirpath, 4098);
+
+#endif
 	String currentPath = String(dirPath);
 
 	String configPath = getArg("--config");
 
 	String finalPath = configPath;
 	if(configPath[0] != '/') {
+
+#ifdef _WINDOWS
+		finalPath = currentPath+"\\"+configPath;
+#else
 		finalPath = currentPath+"/"+configPath;
+#endif
 	}
+
+	finalPath = finalPath.replace(":", "");
+	finalPath = finalPath.replace("\\", "/");
+	finalPath = finalPath.substr(1, finalPath.length() - 1);
 
 	printf("Reading config file from %s\n", finalPath.c_str());
 
@@ -166,7 +222,7 @@ int main(int argc, char **argv) {
 		printf("Specified config file doesn't exist!\n");
 		return 1;
 	}
-
+	printf("OK!\n");
 	// start required params
 
 	String entryPoint;
@@ -257,17 +313,35 @@ int main(int argc, char **argv) {
 	addFileToZip(z, entryPoint, entryPoint, false);
 
 	if(configFile.root["modules"]) {
+#ifdef _WINDOWS
+		String modulesPath = installPath + "Modules\\";
+#else
 		String modulesPath = installPath + "Modules/";
+#endif
+
 		ObjectEntry *modules = configFile.root["modules"];
 		if(modules) {		
 			for(int i=0; i < modules->length; i++) {
 				printf("Adding module: %s\n", (*modules)[i]->stringVal.c_str());
 				String modulePath = modulesPath + (*modules)[i]->stringVal;
+#ifdef _WINDOWS
+				String moduleAPIPath = modulePath + "\\API";
+				String moduleLibPath = modulePath + "\\Lib";
+				moduleAPIPath = moduleAPIPath.replace("\\", "/");
+				moduleAPIPath = moduleAPIPath.substr(2, moduleAPIPath.length() - 2);	
+				moduleLibPath = moduleLibPath.replace("\\", "/");
+				moduleLibPath = moduleLibPath.substr(2, moduleLibPath.length() - 2);	
+
+#else
 				String moduleAPIPath = modulePath + "/API";
 				String moduleLibPath = modulePath + "/Lib";
+#endif
+				printf("Path:%s\n", moduleAPIPath.c_str());		
+
+
 				addFolderToZip(z, moduleAPIPath, "", false);
 				addFolderToZip(z, moduleLibPath, "__lib", false);
-				
+
 				//String module = configFile.root["entryPoint"]->stringVal;
 			}
 			runInfo.root.addChild(configFile.root["modules"]);

@@ -25,7 +25,38 @@ THE SOFTWARE.
 
 using namespace Polycode;
 
+#ifdef _WINDOWS
+PFNGLUSEPROGRAMPROC glUseProgram;
+PFNGLUNIFORM1IPROC glUniform1i;
+PFNGLGETUNIFORMLOCATIONARBPROC glGetUniformLocation;
+PFNGLACTIVETEXTUREPROC glActiveTexture;
+PFNGLCREATESHADERPROC glCreateShader;
+PFNGLSHADERSOURCEPROC glShaderSource;
+PFNGLCOMPILESHADERPROC glCompileShader;
+PFNGLCREATEPROGRAMPROC glCreateProgram;
+PFNGLATTACHSHADERPROC glAttachShader;
+PFNGLLINKPROGRAMPROC glLinkProgram;
+PFNGLDETACHSHADERPROC glDetachShader;
+PFNGLDELETESHADERPROC glDeleteShader;
+PFNGLDELETEPROGRAMPROC glDeleteProgram;
+#endif
+
 GLSLShaderModule::GLSLShaderModule() : PolycodeShaderModule() {
+#ifdef _WINDOWS
+	glActiveTexture   = (PFNGLACTIVETEXTUREPROC)wglGetProcAddress("glActiveTexture");
+	glUseProgram   = (PFNGLUSEPROGRAMPROC)wglGetProcAddress("glUseProgram");
+	glUniform1i = (PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i");
+	glGetUniformLocation = (PFNGLGETUNIFORMLOCATIONARBPROC)wglGetProcAddress("glGetUniformLocation");
+	glCreateShader = (PFNGLCREATESHADERPROC)wglGetProcAddress("glCreateShader");
+	glShaderSource = (PFNGLSHADERSOURCEPROC)wglGetProcAddress("glShaderSource");
+	glCompileShader = (PFNGLCOMPILESHADERPROC)wglGetProcAddress("glCompileShader");
+	glCreateProgram = (PFNGLCREATEPROGRAMPROC)wglGetProcAddress("glCreateProgram");
+	glAttachShader = (PFNGLATTACHSHADERPROC)wglGetProcAddress("glAttachShader");
+	glLinkProgram = (PFNGLLINKPROGRAMPROC)wglGetProcAddress("glLinkProgram");
+	glDetachShader = (PFNGLDETACHSHADERPROC)wglGetProcAddress("glDetachShader");
+	glDeleteShader = (PFNGLDELETESHADERPROC)wglGetProcAddress("glDeleteShader");
+	glDeleteProgram = (PFNGLDELETEPROGRAMPROC)wglGetProcAddress("glDeleteProgram");
+#endif
 }
 
 GLSLShaderModule::~GLSLShaderModule() {
@@ -52,7 +83,7 @@ Shader *GLSLShaderModule::createShader(TiXmlNode *node) {
 	
 	for (pChild = node->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {
 		if(strcmp(pChild->Value(), "vp") == 0) {
-			vp = (GLSLProgram*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_PROGRAM, pChild->ToElement()->Attribute("source"));
+			vp = (GLSLProgram*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_PROGRAM, String(pChild->ToElement()->Attribute("source")));
 			if(vp) {
 				for (pChild2 = pChild->FirstChild(); pChild2 != 0; pChild2 = pChild2->NextSibling()) {
 					if(strcmp(pChild2->Value(), "params") == 0) {
@@ -66,7 +97,7 @@ Shader *GLSLShaderModule::createShader(TiXmlNode *node) {
 			}
 		}
 		if(strcmp(pChild->Value(), "fp") == 0) {
-			fp = (GLSLProgram*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_PROGRAM, pChild->ToElement()->Attribute("source"));
+			fp = (GLSLProgram*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_PROGRAM, String(pChild->ToElement()->Attribute("source")));
 			if(fp) {
 				for (pChild2 = pChild->FirstChild(); pChild2 != 0; pChild2 = pChild2->NextSibling()) {
 					if(strcmp(pChild2->Value(), "params") == 0) {
@@ -83,7 +114,7 @@ Shader *GLSLShaderModule::createShader(TiXmlNode *node) {
 	}
 	if(vp != NULL && fp != NULL) {
 		GLSLShader *cgShader = new GLSLShader(vp,fp);
-		cgShader->setName(node->ToElement()->Attribute("name"));
+		cgShader->setName(String(node->ToElement()->Attribute("name")));
 		retShader = cgShader;
 		shaders.push_back((Shader*)cgShader);
 	}
@@ -394,6 +425,7 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 
 	 */
 	glPopMatrix();
+	return true;
 }
 
 void GLSLShaderModule::addParamToProgram(GLSLProgram *program,TiXmlNode *node) {

@@ -11,6 +11,8 @@ SHAPE_MESH = 3
 CHARACTER_CONTROLLER = 4
 SHAPE_CAPSULE = 5
 SHAPE_PLANE = 6
+SHAPE_CONE = 7
+SHAPE_CYLINDER = 8
 function PhysicsSceneEntity:__index__(name)
 	if name == "enabled" then
 		return Physics3D.PhysicsSceneEntity_get_enabled(self.__ptr)

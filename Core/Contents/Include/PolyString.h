@@ -25,7 +25,7 @@
 #include "PolyGlobals.h"
 #include <string>
 #include <vector>
-
+#include <algorithm>
 using std::vector;
 
 using namespace std;

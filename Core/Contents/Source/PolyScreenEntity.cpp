@@ -22,6 +22,8 @@
 
 #include "PolyScreenEntity.h"
 
+inline double round(double x) { return floor(x + 0.5); }
+
 using namespace Polycode;
 
 ScreenEntity::ScreenEntity() : Entity(), EventDispatcher() {

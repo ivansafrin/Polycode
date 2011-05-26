@@ -28,6 +28,13 @@ PhysicsVehicle::PhysicsVehicle(SceneEntity *entity, Number mass, Number friction
 	
 }
 
+void PhysicsVehicle::ResetVehicle(){
+	vehicle->getRigidBody()->setCenterOfMassTransform(btTransform::getIdentity());
+	vehicle->getRigidBody()->setLinearVelocity(btVector3(0,0,0));
+	vehicle->getRigidBody()->setAngularVelocity(btVector3(0,0,0));
+
+}
+
 void PhysicsVehicle::addWheel(SceneEntity *entity, Vector3 connection, Vector3 direction, Vector3 axle, Number suspentionRestLength, Number wheelRadius, bool isFrontWheel,Number  suspensionStiffness, Number  suspensionDamping, Number suspensionCompression, Number  wheelFriction, Number rollInfluence) {
 	vehicle->addWheel(btVector3(connection.x, connection.y, connection.z),
 					btVector3(direction.x, direction.y, direction.z),

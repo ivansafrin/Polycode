@@ -1,0 +1,258 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{EE44C688-BAA1-4A9B-902E-7CEDBED6612D}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Polycore</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Documents and Settings\Administrator\Desktop\Workshop\Polycode\Core\Build\MSVC\Polycore;C:\Documents and Settings\Administrator\Desktop\Workshop\Polycode\Core\Contents\Include;C:\Documents and Settings\Administrator\Desktop\Workshop\Polycode\Release\Win\Framework\Dependencies\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Documents and Settings\Administrator\Desktop\Workshop\Polycode\Release\Win\Framework\Dependencies\Lib\Debug;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\Documents and Settings\Administrator\Desktop\Workshop\Polycode\Core\Build\MSVC\Polycore;C:\Documents and Settings\Administrator\Desktop\Workshop\Polycode\Core\Contents\Include;C:\Documents and Settings\Administrator\Desktop\Workshop\Polycode\Release\Win\Framework\Dependencies\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Documents and Settings\Administrator\Desktop\Workshop\Polycode\Release\Win\Framework\Dependencies\Lib\Release;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>MSVC;WIN32;_DEBUG;_WINDOWS;_USRDLL;POLYCORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>glu32.lib;opengl32.lib;OpenAL32.lib;libvorbisfile_static.lib;libogg_static.lib;libvorbis_static.lib;opengl32.lib;zlib.lib;libpng15.lib;physfs.lib;freetype244MT_D.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>MSVC;WIN32;NDEBUG;_WINDOWS;_USRDLL;POLYCORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>glu32.lib;opengl32.lib;OpenAL32.lib;libvorbisfile_static.lib;libogg_static.lib;libvorbis_static.lib;opengl32.lib;zlib.lib;libpng15.lib;physfs.lib;freetype244MT.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\Contents\Include\OSBasics.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyBasics.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyBezierCurve.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyBone.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyCamera.h" />
+    <ClInclude Include="..\..\..\Contents\Include\Polycode.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyColor.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyConfig.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyCore.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyCoreInput.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyCoreServices.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyCubemap.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyData.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyEntity.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyEvent.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyEventDispatcher.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyEventHandler.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyFixedShader.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyFont.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyFontManager.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyGLCubemap.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyGlobals.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyGLRenderer.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyGLTexture.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyGLVertexBuffer.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyImage.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyInputEvent.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyInputKeys.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyiPhoneCore.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyLabel.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyLogger.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyMaterial.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyMaterialManager.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyMatrix4.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyMesh.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyModule.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyObject.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyParticle.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyParticleEmitter.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyPerlin.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyPolygon.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyQuaternion.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyQuaternionCurve.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyRectangle.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyRenderer.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyResource.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyResourceManager.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyScene.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolySceneEntity.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolySceneLabel.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolySceneLight.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolySceneLine.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolySceneManager.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolySceneMesh.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyScenePrimitive.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolySceneRenderTexture.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyScreen.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyScreenCurve.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyScreenEntity.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyScreenEvent.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyScreenImage.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyScreenLabel.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyScreenLine.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyScreenManager.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyScreenMesh.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyScreenShape.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyScreenSprite.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyShader.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolySkeleton.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolySound.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolySoundManager.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyString.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyTexture.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyThreaded.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyTimer.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyTimerManager.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyTween.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyTweenManager.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyVector2.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyVector3.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyVertex.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyWinCore.h" />
+    <ClInclude Include="..\..\..\Contents\Include\tinystr.h" />
+    <ClInclude Include="..\..\..\Contents\Include\tinyxml.h" />
+    <ClInclude Include="PolycodeView.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\Contents\Source\OSBasics.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyBezierCurve.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyBone.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyCamera.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyColor.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyConfig.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyCore.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyCoreInput.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyCoreServices.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyCubemap.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyData.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyEntity.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyEvent.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyEventDispatcher.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyEventHandler.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyFixedShader.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyFont.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyFontManager.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyGLCubemap.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyGLRenderer.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyGLTexture.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyGLVertexBuffer.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyImage.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyInputEvent.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyLabel.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyLogger.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyMaterial.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyMaterialManager.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyMatrix4.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyMesh.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyModule.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyObject.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyParticle.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyParticleEmitter.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyPerlin.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyPolygon.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyQuaternion.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyQuaternionCurve.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyRectangle.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyRenderer.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyResource.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyResourceManager.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyScene.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolySceneEntity.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolySceneLabel.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolySceneLight.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolySceneLine.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolySceneManager.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolySceneMesh.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyScenePrimitive.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolySceneRenderTexture.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyScreen.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyScreenCurve.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyScreenEntity.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyScreenEvent.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyScreenImage.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyScreenLabel.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyScreenLine.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyScreenManager.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyScreenMesh.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyScreenShape.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyScreenSprite.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyShader.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolySkeleton.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolySound.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolySoundManager.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyString.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyTexture.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyTimer.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyTimerManager.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyTween.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyTweenManager.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyVector2.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyVector3.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyVertex.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyWinCore.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\tinystr.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\tinyxml.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\tinyxmlerror.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\tinyxmlparser.cpp" />
+    <ClCompile Include="PolycodeView.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

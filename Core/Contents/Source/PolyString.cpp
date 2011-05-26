@@ -25,7 +25,8 @@
 using namespace Polycode;
 
 String::String() {
-	
+	contents = L"";
+	s_contents = "";
 }
 
 String::String(const wchar_t *str) {
@@ -135,13 +136,13 @@ String String::replace(const String &what, const String &withWhat) {
 
 String String::toLowerCase() {
 	wstring str = contents;
-	std::transform(str.begin(), str.end(), str.begin(),std::tolower);	
+	std::transform(str.begin(), str.end(), str.begin(),tolower);	
 	return String(str);
 }
 
 String String::toUpperCase() {
 	wstring str = contents;
-	std::transform(str.begin(), str.end(), str.begin(),std::toupper);	
+	std::transform(str.begin(), str.end(), str.begin(),toupper);	
 	return String(str);
 }
 

@@ -9,6 +9,8 @@ SHAPE_MESH = 3
 CHARACTER_CONTROLLER = 4
 SHAPE_CAPSULE = 5
 SHAPE_PLANE = 6
+SHAPE_CONE = 7
+SHAPE_CYLINDER = 8
 function CollisionSceneEntity:__index__(name)
 	if name == "gravityEnabled" then
 		return Physics3D.CollisionSceneEntity_get_gravityEnabled(self.__ptr)

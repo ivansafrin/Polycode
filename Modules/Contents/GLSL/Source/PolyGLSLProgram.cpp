@@ -23,6 +23,22 @@ THE SOFTWARE.
 
 #include "PolyGLSLProgram.h"
 
+#ifdef _WINDOWS
+extern PFNGLUSEPROGRAMPROC glUseProgram;
+extern PFNGLUNIFORM1IPROC glUniform1i;
+extern PFNGLGETUNIFORMLOCATIONARBPROC glGetUniformLocation;
+extern PFNGLACTIVETEXTUREPROC glActiveTexture;
+extern PFNGLCREATESHADERPROC glCreateShader;
+extern PFNGLSHADERSOURCEPROC glShaderSource;
+extern PFNGLCOMPILESHADERPROC glCompileShader;
+extern PFNGLCREATEPROGRAMPROC glCreateProgram;
+extern PFNGLATTACHSHADERPROC glAttachShader;
+extern PFNGLLINKPROGRAMPROC glLinkProgram;
+extern PFNGLDETACHSHADERPROC glDetachShader;
+extern PFNGLDELETESHADERPROC glDeleteShader;
+extern PFNGLDELETEPROGRAMPROC glDeleteProgram;
+#endif
+
 using namespace Polycode;
 
 GLSLProgram::GLSLProgram(int type) : Resource(Resource::RESOURCE_PROGRAM) {

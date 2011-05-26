@@ -39,6 +39,9 @@ THE SOFTWARE.
 #include <GL/gl.h>	
 #include <GL/glu.h>	
 #include <GL/glext.h>
+#ifdef _WINDOWS
+#include <GL/wglext.h>
+#endif
 #endif
 
 

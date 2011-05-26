@@ -165,16 +165,16 @@ Number Tween::interpolateTween() {
 			return -cVal/2.0f * (cos(PI*t/endTime) - 1.0f) + startVal;
 			break;
 		case EASE_IN_EXPO:
-			return cVal * pow( 2.0f, 10.0f * (t/endTime - 1.0f) ) + startVal;
+			return cVal * powf( 2.0f, 10.0f * (t/endTime - 1.0f) ) + startVal;
 			break;
 		case EASE_OUT_EXPO:
-			return cVal * ( -pow( 2.0f, -10.0f * t/endTime ) + 1.0f ) + startVal;
+			return cVal * ( -powf( 2.0f, -10.0f * t/endTime ) + 1.0f ) + startVal;
 			break;
 		case EASE_INOUT_EXPO:
 			t /= endTime/2.0f;
-			if (t < 1.0f) return cVal/2.0f * pow( 2.0f, 10.0f * (t - 1.0f) ) + startVal;
+			if (t < 1.0f) return cVal/2.0f * powf( 2.0f, 10.0f * (t - 1.0f) ) + startVal;
 			t--;
-			return cVal/2.0f * ( -pow( 2.0f, -10.0f * t) + 2.0f ) + startVal;
+			return cVal/2.0f * ( -powf( 2.0f, -10.0f * t) + 2.0f ) + startVal;
 			break;
 		case EASE_IN_CIRC:
 			t /= endTime;

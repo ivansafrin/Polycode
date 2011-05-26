@@ -30,7 +30,7 @@ void addToMesh(Polycode::Mesh *tmesh, const struct aiScene *sc, const struct aiN
 
 		for (t = 0; t < mesh->mNumFaces; ++t) {
 			const struct aiFace* face = &mesh->mFaces[t];
-			Polygon *poly = new Polygon();			
+			Polycode::Polygon *poly = new Polycode::Polygon();			
 	
 			for(i = 0; i < face->mNumIndices; i++) {
 				Vertex *vertex = new Vertex();
@@ -161,6 +161,7 @@ int exportToFile(const char *fileName, bool swapZY) {
 
 
 	delete mesh;
+	return 1;
 }
 
 int main(int argc, char **argv) {

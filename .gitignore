@@ -9,6 +9,21 @@
 *.pbxuser
 *.mode1v3
 *.swp
+*.ipch
+*.sdf
+*.filters
+*.user
+*.tlog
+*.obj
+*.res
+*.rc
+*.log
+*.pdb
+*.idb
+*.ilk
+*.lastbuildstate
+*.lib
+*.manifest
 
 Core/Build/Mac\ OS\ X/build
 IDE/Build/Mac\ OS\ X/build

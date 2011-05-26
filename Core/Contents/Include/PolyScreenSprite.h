@@ -30,7 +30,7 @@ THE SOFTWARE.
 
 namespace Polycode {
 
-class SpriteAnimation {
+class _PolyExport SpriteAnimation {
 	public:
 		Number speed;
 		String name;
@@ -42,7 +42,7 @@ class SpriteAnimation {
 /**
 * Animated 2D image sprite. This screen entity can load spritesheet images and play back animations.
 */
-class ScreenSprite : public ScreenShape 
+class _PolyExport ScreenSprite : public ScreenShape 
 {
 	public:
 		/**

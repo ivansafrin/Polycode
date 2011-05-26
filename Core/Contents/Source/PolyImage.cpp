@@ -509,9 +509,13 @@ bool Image::loadPNG(String fileName) {
 	
 	png_set_sig_bytes(png_ptr, 8);
 	png_read_info(png_ptr, info_ptr);
+#ifdef _WINDOWS
+		png_get_IHDR(png_ptr, info_ptr, (png_uint_32*)&width, (png_uint_32*)&height, &bit_depth, 
+				 &color_type, NULL, NULL, NULL);
+#else
 	png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, 
 				 &color_type, NULL, NULL, NULL);
-	
+#endif
 	this->width = width;
 	this->height = height;
 	

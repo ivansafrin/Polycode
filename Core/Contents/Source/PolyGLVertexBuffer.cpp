@@ -24,6 +24,21 @@
 
 using namespace Polycode;
 
+#ifdef _WINDOWS
+// ARB_vertex_buffer_object
+extern PFNGLBINDBUFFERARBPROC glBindBufferARB;
+extern PFNGLDELETEBUFFERSARBPROC glDeleteBuffersARB;
+extern PFNGLGENBUFFERSARBPROC glGenBuffersARB;
+extern PFNGLISBUFFERARBPROC glIsBufferARB;
+extern PFNGLBUFFERDATAARBPROC glBufferDataARB;
+extern PFNGLBUFFERSUBDATAARBPROC glBufferSubDataARB;
+extern PFNGLGETBUFFERSUBDATAARBPROC glGetBufferSubDataARB;
+extern PFNGLMAPBUFFERARBPROC glMapBufferARB;
+extern PFNGLUNMAPBUFFERARBPROC glUnmapBufferARB;
+extern PFNGLGETBUFFERPARAMETERIVARBPROC glGetBufferParameterivARB;
+extern PFNGLGETBUFFERPOINTERVARBPROC glGetBufferPointervARB;
+#endif
+
 OpenGLVertexBuffer::OpenGLVertexBuffer(Mesh *mesh) : VertexBuffer() {
 	if(mesh->getMeshType() == Mesh::QUAD_MESH) {
 		verticesPerFace = 4;		

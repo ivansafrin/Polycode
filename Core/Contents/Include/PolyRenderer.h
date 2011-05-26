@@ -166,6 +166,8 @@ namespace Polycode {
 		bool rayTriangleIntersect(Vector3 ray_origin, Vector3 ray_direction, Vector3 vert0, Vector3 vert1, Vector3 vert2, Vector3 *hitPoint);
 		
 		void enableShaders(bool flag);
+
+		virtual void initOSSpecific() {};
 		
 		void addShaderModule(PolycodeShaderModule *module);
 		

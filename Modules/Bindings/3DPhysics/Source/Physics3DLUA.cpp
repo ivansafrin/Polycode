@@ -45,6 +45,7 @@ CoreServices::setInstance(inst);
 		{"PhysicsScene_addPhysicsChild", Physics3D_PhysicsScene_addPhysicsChild},
 		{"PhysicsScene_trackPhysicsChild", Physics3D_PhysicsScene_trackPhysicsChild},
 		{"PhysicsScene_addCharacterChild", Physics3D_PhysicsScene_addCharacterChild},
+		{"PhysicsScene_addVehicleChild", Physics3D_PhysicsScene_addVehicleChild},
 		{"delete_PhysicsScene", Physics3D_delete_PhysicsScene},
 		{"PhysicsSceneEntity_get_enabled", Physics3D_PhysicsSceneEntity_get_enabled},
 		{"PhysicsSceneEntity_set_enabled", Physics3D_PhysicsSceneEntity_set_enabled},
@@ -59,6 +60,13 @@ CoreServices::setInstance(inst);
 		{"PhysicsCharacter_jump", Physics3D_PhysicsCharacter_jump},
 		{"PhysicsCharacter_Update", Physics3D_PhysicsCharacter_Update},
 		{"delete_PhysicsCharacter", Physics3D_delete_PhysicsCharacter},
+		{"PhysicsVehicle", Physics3D_PhysicsVehicle},
+		{"PhysicsVehicle_addWheel", Physics3D_PhysicsVehicle_addWheel},
+		{"PhysicsVehicle_applyEngineForce", Physics3D_PhysicsVehicle_applyEngineForce},
+		{"PhysicsVehicle_setSteeringValue", Physics3D_PhysicsVehicle_setSteeringValue},
+		{"PhysicsVehicle_setBrake", Physics3D_PhysicsVehicle_setBrake},
+		{"PhysicsVehicle_Update", Physics3D_PhysicsVehicle_Update},
+		{"delete_PhysicsVehicle", Physics3D_delete_PhysicsVehicle},
 		{NULL, NULL}
 	};
 	luaL_openlib(L, "Physics3D", physics3dLib, 0);

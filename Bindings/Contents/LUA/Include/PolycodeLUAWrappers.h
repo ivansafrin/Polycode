@@ -1424,6 +1424,13 @@ static int Polycore_CoreServices_getInstance(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_CoreServices_setInstance(lua_State *L) {
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	CoreServices * _instance = (CoreServices *)lua_topointer(L, 2);
+	CoreServices::setInstance(_instance);
+	return 0;
+}
+
 static int Polycore_CoreServices_getRenderMutex(lua_State *L) {
 	lua_pushlightuserdata(L, (void*)CoreServices::getRenderMutex());
 	return 1;
@@ -3734,6 +3741,32 @@ static int Polycore_Mesh_createSphere(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_Mesh_createCylinder(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Mesh *inst = (Mesh*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	Number height = lua_tonumber(L, 2);
+	luaL_checktype(L, 3, LUA_TNUMBER);
+	Number radius = lua_tonumber(L, 3);
+	luaL_checktype(L, 4, LUA_TNUMBER);
+	int numSegments = lua_tointeger(L, 4);
+	inst->createCylinder(height, radius, numSegments);
+	return 0;
+}
+
+static int Polycore_Mesh_createCone(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Mesh *inst = (Mesh*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	Number height = lua_tonumber(L, 2);
+	luaL_checktype(L, 3, LUA_TNUMBER);
+	Number radius = lua_tonumber(L, 3);
+	luaL_checktype(L, 4, LUA_TNUMBER);
+	int numSegments = lua_tointeger(L, 4);
+	inst->createCone(height, radius, numSegments);
+	return 0;
+}
+
 static int Polycore_Mesh_recenterMesh(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Mesh *inst = (Mesh*)lua_topointer(L, 1);
@@ -4680,7 +4713,7 @@ static int Polycore_Polygon_getFaceNormal(lua_State *L) {
 static int Polycore_Polygon_getBounds2D(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Polycode::Polygon *inst = (Polycode::Polygon*)lua_topointer(L, 1);
-	Rectangle *retInst = new Rectangle();
+	Polycode::Rectangle *retInst = new Polycode::Rectangle();
 	*retInst = inst->getBounds2D();
 	lua_pushlightuserdata(L, retInst);
 	return 1;
@@ -5057,35 +5090,35 @@ static int Polycore_delete_QuaternionCurve(lua_State *L) {
 
 static int Polycore_Rectangle_get_x(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
-	Rectangle *inst = (Rectangle*)lua_topointer(L, 1);
+	Polycode::Rectangle *inst = (Polycode::Rectangle*)lua_topointer(L, 1);
 	lua_pushnumber(L, inst->x);
 	return 1;
 }
 
 static int Polycore_Rectangle_get_y(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
-	Rectangle *inst = (Rectangle*)lua_topointer(L, 1);
+	Polycode::Rectangle *inst = (Polycode::Rectangle*)lua_topointer(L, 1);
 	lua_pushnumber(L, inst->y);
 	return 1;
 }
 
 static int Polycore_Rectangle_get_w(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
-	Rectangle *inst = (Rectangle*)lua_topointer(L, 1);
+	Polycode::Rectangle *inst = (Polycode::Rectangle*)lua_topointer(L, 1);
 	lua_pushnumber(L, inst->w);
 	return 1;
 }
 
 static int Polycore_Rectangle_get_h(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
-	Rectangle *inst = (Rectangle*)lua_topointer(L, 1);
+	Polycode::Rectangle *inst = (Polycode::Rectangle*)lua_topointer(L, 1);
 	lua_pushnumber(L, inst->h);
 	return 1;
 }
 
 static int Polycore_Rectangle_set_x(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
-	Rectangle *inst = (Rectangle*)lua_topointer(L, 1);
+	Polycode::Rectangle *inst = (Polycode::Rectangle*)lua_topointer(L, 1);
 	Number param = lua_tonumber(L, 2);
 	inst->x = param;
 	return 0;
@@ -5093,7 +5126,7 @@ static int Polycore_Rectangle_set_x(lua_State *L) {
 
 static int Polycore_Rectangle_set_y(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
-	Rectangle *inst = (Rectangle*)lua_topointer(L, 1);
+	Polycode::Rectangle *inst = (Polycode::Rectangle*)lua_topointer(L, 1);
 	Number param = lua_tonumber(L, 2);
 	inst->y = param;
 	return 0;
@@ -5101,7 +5134,7 @@ static int Polycore_Rectangle_set_y(lua_State *L) {
 
 static int Polycore_Rectangle_set_w(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
-	Rectangle *inst = (Rectangle*)lua_topointer(L, 1);
+	Polycode::Rectangle *inst = (Polycode::Rectangle*)lua_topointer(L, 1);
 	Number param = lua_tonumber(L, 2);
 	inst->w = param;
 	return 0;
@@ -5109,21 +5142,21 @@ static int Polycore_Rectangle_set_w(lua_State *L) {
 
 static int Polycore_Rectangle_set_h(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
-	Rectangle *inst = (Rectangle*)lua_topointer(L, 1);
+	Polycode::Rectangle *inst = (Polycode::Rectangle*)lua_topointer(L, 1);
 	Number param = lua_tonumber(L, 2);
 	inst->h = param;
 	return 0;
 }
 
 static int Polycore_Rectangle(lua_State *L) {
-	Rectangle *inst = new Rectangle();
+	Polycode::Rectangle *inst = new Polycode::Rectangle();
 	lua_pushlightuserdata(L, (void*)inst);
 	return 1;
 }
 
 static int Polycore_Rectangle_setRect(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
-	Rectangle *inst = (Rectangle*)lua_topointer(L, 1);
+	Polycode::Rectangle *inst = (Polycode::Rectangle*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TNUMBER);
 	Number x = lua_tonumber(L, 2);
 	luaL_checktype(L, 3, LUA_TNUMBER);
@@ -5138,7 +5171,7 @@ static int Polycore_Rectangle_setRect(lua_State *L) {
 
 static int Polycore_delete_Rectangle(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
-	Rectangle *inst = (Rectangle*)lua_topointer(L, 1);
+	Polycode::Rectangle *inst = (Polycode::Rectangle*)lua_topointer(L, 1);
 	delete inst;
 	return 0;
 }
@@ -7605,7 +7638,7 @@ static int Polycore_ScreenEntity_setDragLimits(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	ScreenEntity *inst = (ScreenEntity*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	Rectangle rect = *(Rectangle*)lua_topointer(L, 2);
+	Polycode::Rectangle rect = *(Polycode::Rectangle*)lua_topointer(L, 2);
 	inst->setDragLimits(rect);
 	return 0;
 }

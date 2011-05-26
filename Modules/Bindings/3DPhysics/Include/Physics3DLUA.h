@@ -6,5 +6,5 @@ extern "C" {
 #include "lua.h"
 #include "lualib.h"
 #include "lauxlib.h"
-int luaopen_Physics3D(lua_State *L);
+int _PolyExport luaopen_Physics3D(lua_State *L);
 }

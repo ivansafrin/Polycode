@@ -175,8 +175,10 @@ void ResourceManager::parseTextures(String dirPath, bool recursive) {
 			if(resourceDir[i].extension == "png") {
 				Logger::log("Adding texture %s\n", resourceDir[i].nameWithoutExtension.c_str());
 				Texture *t = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(resourceDir[i].fullPath);
-				t->setResourceName(resourceDir[i].name);
-				resources.push_back(t);
+				if(t) {
+					t->setResourceName(resourceDir[i].name);
+					resources.push_back(t);
+				}
 			}
 		} else {
 			if(recursive)

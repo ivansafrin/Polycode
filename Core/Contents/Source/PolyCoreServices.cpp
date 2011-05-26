@@ -38,6 +38,7 @@ CoreMutex *CoreServices::getRenderMutex() {
 
 void CoreServices::setInstance(CoreServices *_instance) {
 	overrideInstance = _instance;
+	Logger::log("Overriding core instance...\n");
 }
 
 CoreServices* CoreServices::getInstance() {
@@ -46,6 +47,11 @@ CoreServices* CoreServices::getInstance() {
 		return overrideInstance;
 	}
 
+#ifdef _WINDOWS
+		overrideInstance = new CoreServices;
+		Logger::log("Creating new core services instance...\n");
+		return overrideInstance;
+#else
 	long threadID = getThreadID(); 
 	CoreServices *instance;
 	if(instanceMap.find(threadID) == instanceMap.end()) {
@@ -56,6 +62,7 @@ CoreServices* CoreServices::getInstance() {
 		instance = instanceMap[threadID];
 	}
 	return instance;
+#endif
 }
 
 MaterialManager *CoreServices::getMaterialManager() {

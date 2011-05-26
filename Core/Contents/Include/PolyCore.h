@@ -61,6 +61,13 @@ namespace Polycode {
 		String description;
 	};
 	
+	class _PolyExport PolycodeViewBase {
+	public:
+		PolycodeViewBase() { windowData = NULL; }
+		virtual ~PolycodeViewBase(){}
+		void *windowData;
+	};
+
 	/**
 	* The main core of the framework. The core deals with system-level functions, such as window initialization and OS interaction. Each platform has its own implementation of this base class. NOTE: SOME OF THE FUNCTIONALITY IN THE CORE IS NOT FULLY IMPLEMENTED!!
 	*/

@@ -21,6 +21,10 @@
 */
 
 #include "PolyCore.h"
+#ifdef _WINDOWS
+#include <windows.h>
+
+#endif
 
 namespace Polycode {
 	
@@ -109,7 +113,11 @@ namespace Polycode {
 		unsigned int ticks = getTicks();
 		unsigned int ticksSinceLastFrame = ticks - lastSleepFrameTicks;
 		if(ticksSinceLastFrame <= refreshInterval)
+#ifdef _WINDOWS
+		Sleep((refreshInterval - ticksSinceLastFrame));
+#else
 			usleep((refreshInterval - ticksSinceLastFrame) * 1000);
+#endif
 		lastSleepFrameTicks = ticks;
 	}
 	

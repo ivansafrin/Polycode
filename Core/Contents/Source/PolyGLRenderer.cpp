@@ -70,7 +70,10 @@ OpenGLRenderer::OpenGLRenderer() : Renderer() {
 	nearPlane = 0.1f;
 	farPlane = 1000.0f;
 	verticesToDraw = 0;
-	
+}
+
+void OpenGLRenderer::initOSSpecific(){
+		
 #ifdef _WINDOWS
 	glActiveTexture   = (PFNGLACTIVETEXTUREPROC)wglGetProcAddress("glActiveTexture");
 	glMultiTexCoord2f = (PFNGLMULTITEXCOORD2FPROC)wglGetProcAddress("glMultiTexCoord2f");

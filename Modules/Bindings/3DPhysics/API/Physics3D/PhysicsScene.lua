@@ -65,6 +65,17 @@ function PhysicsScene:addCharacterChild(newEntity, mass, friction, stepSize, gro
 	end
 end
 
+function PhysicsScene:addVehicleChild(newEntity, mass, friction, group)
+	local retVal = Physics3D.PhysicsScene_addVehicleChild(self.__ptr, newEntity.__ptr, mass, friction, group)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = PhysicsVehicle("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
+end
+
 
 
 function PhysicsScene:__delete()

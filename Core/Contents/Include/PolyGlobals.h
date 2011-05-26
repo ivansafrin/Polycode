@@ -29,7 +29,7 @@ THE SOFTWARE.
 
 #define COMPILE_GL_RENDERER
 
-#ifdef MSVC
+#ifdef _WINDOWS
 	#define WIN32_LEAN_AND_MEAN
 
 	#pragma warning(disable:4251)
@@ -38,7 +38,6 @@ THE SOFTWARE.
 	#pragma warning(disable:4018)
 	#pragma warning(disable:4996)
 	#pragma warning(disable:4309)
-
 	#define NULL 0
 #endif
  

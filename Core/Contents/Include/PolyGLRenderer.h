@@ -46,10 +46,10 @@ THE SOFTWARE.
 #include <GL/gl.h>	
 #include <GL/glu.h>	
 #include <GL/glext.h>
+#include <GL/wglext.h>
 #endif
-
+/*
 #ifdef _WINDOWS 
-
 #define GL_EXT_framebuffer_object           1
 
 #if GL_EXT_framebuffer_object
@@ -105,8 +105,10 @@ THE SOFTWARE.
 #define GL_MAX_COLOR_ATTACHMENTS_EXT       0x8CDF
 #define GL_MAX_RENDERBUFFER_SIZE_EXT       0x84E8
 #define GL_INVALID_FRAMEBUFFER_OPERATION_EXT 0x0506
+
 #endif
 #endif
+*/
 
 namespace Polycode {
 	class _PolyExport OpenGLRenderer : public Renderer {
@@ -159,6 +161,8 @@ namespace Polycode {
 		void translate2D(Number x, Number y);
 		void rotate2D(Number angle);
 		void scale2D(Vector2 *scale);
+
+		void initOSSpecific();
 		
 		void setLineSize(Number lineSize);
 		
