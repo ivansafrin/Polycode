@@ -7,6 +7,8 @@ class "ScenePrimitive" (SceneMesh)
 TYPE_BOX = 0
 TYPE_PLANE = 1
 TYPE_SPHERE = 2
+TYPE_CYLINDER = 3
+TYPE_CONE = 4
 
 
 

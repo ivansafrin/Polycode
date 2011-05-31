@@ -6,8 +6,25 @@ class "Shader" (Resource)
 
 FIXED_SHADER = 0
 MODULE_SHADER = 1
+function Shader:__index__(name)
+	if name == "numSpotLights" then
+		return Polycore.Shader_get_numSpotLights(self.__ptr)
+	elseif name == "numAreaLights" then
+		return Polycore.Shader_get_numAreaLights(self.__ptr)
+	end
+end
 
 
+function Shader:__set_callback(name,value)
+	if name == "numSpotLights" then
+		Polycore.Shader_set_numSpotLights(self.__ptr, value)
+		return true
+	elseif name == "numAreaLights" then
+		Polycore.Shader_set_numAreaLights(self.__ptr, value)
+		return true
+	end
+	return false
+end
 
 
 function Shader:getType()

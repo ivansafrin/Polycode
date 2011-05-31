@@ -113,7 +113,7 @@ namespace Polycode {
 		*/
 		SceneEntity *getEntityAtScreenPosition(Number x, Number y);
 		
-		void Render();
+		void Render(Camera *targetCamera = NULL);
 		void RenderDepthOnly(Camera *targetCamera);
 		
 		static String readString(OSFILE *inFile);

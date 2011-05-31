@@ -112,6 +112,10 @@ function Screen:setScreenShader(shaderName)
 	local retVal = Polycore.Screen_setScreenShader(self.__ptr, shaderName)
 end
 
+function Screen:clearScreenShader()
+	local retVal =  Polycore.Screen_clearScreenShader(self.__ptr)
+end
+
 function Screen:getHighestZIndex()
 	local retVal =  Polycore.Screen_getHighestZIndex(self.__ptr)
 	return retVal

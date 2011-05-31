@@ -1,21 +1,61 @@
 <?xml version="1.0" ?>
-<tau>
+<polycode>	
 	<shaders>		
-		<shader type="glsl" name="DefaultShader">		
+		<shader type="glsl" name="DefaultShader" numAreaLights="4" numSpotLights="2">		
 			<vp source="DefaultShader.vert">
-				<params>
-				</params>
+				<params>			
+				</params>				
 			</vp>
 			<fp source="DefaultShader.frag">
 				<params>			
-				</params>					
+				</params>				
 			</fp>
 		</shader>	
+		<shader type="glsl" name="DefaultShaderNoTexture" numAreaLights="4" numSpotLights="2">		
+			<vp source="DefaultShaderNoTexture.vert">
+				<params>			
+				</params>				
+			</vp>
+			<fp source="DefaultShaderNoTexture.frag">
+				<params>			
+				</params>				
+			</fp>
+		</shader>		
+		<shader type="glsl" name="DefaultShaderVertex" numAreaLights="4" numSpotLights="2">		
+			<vp source="DefaultShaderVertex.vert">
+				<params>			
+				</params>				
+			</vp>
+			<fp source="DefaultShaderVertex.frag">
+				<params>			
+				</params>				
+			</fp>
+		</shader>			
+		<shader type="glsl" name="DefaultShaderVertexNoTexture" numAreaLights="4" numSpotLights="2">		
+			<vp source="DefaultShaderVertexNoTexture.vert">
+				<params>			
+				</params>				
+			</vp>
+			<fp source="DefaultShaderVertexNoTexture.frag">
+				<params>			
+				</params>				
+			</fp>
+		</shader>			
+		<shader type="glsl" name="DefaultShaderShadows" numAreaLights="4" numSpotLights="2">		
+			<vp source="DefaultShaderShadows.vert">
+				<params>			
+				</params>				
+			</vp>
+			<fp source="DefaultShaderShadows.frag">
+				<params>			
+				</params>				
+			</fp>
+		</shader>		
 	</shaders>
 	<materials>
-		<material name="default">
-			<shader name="DefaultShader">
+		<material name="Default">
+			<shader name="DefaultShaderNoTexture">
 			</shader>
-		</material>		
+		</material>			
 	</materials>
-</tau>
+</polycode>

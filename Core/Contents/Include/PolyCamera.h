@@ -106,6 +106,11 @@ namespace Polycode {
 			*/												
 			void setPostFilter(String shaderName);
 			
+			/**
+			* Removes the currently assigned post filter.
+			*/
+			void removePostFilter();
+			
 		private:
 		
 			Number exposureLevel;

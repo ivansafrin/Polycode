@@ -35,8 +35,18 @@ function SceneLight:getIntensity()
 	return retVal
 end
 
-function SceneLight:getDistance()
-	local retVal =  Polycore.SceneLight_getDistance(self.__ptr)
+function SceneLight:getConstantAttenuation()
+	local retVal =  Polycore.SceneLight_getConstantAttenuation(self.__ptr)
+	return retVal
+end
+
+function SceneLight:getLinearAttenuation()
+	local retVal =  Polycore.SceneLight_getLinearAttenuation(self.__ptr)
+	return retVal
+end
+
+function SceneLight:getQuadraticAttenuation()
+	local retVal =  Polycore.SceneLight_getQuadraticAttenuation(self.__ptr)
 	return retVal
 end
 
@@ -77,6 +87,20 @@ end
 
 function SceneLight:setLightColor(r, g, b)
 	local retVal = Polycore.SceneLight_setLightColor(self.__ptr, r, g, b)
+end
+
+function SceneLight:setSpotlightProperties(spotlightCutoff, spotlightExponent)
+	local retVal = Polycore.SceneLight_setSpotlightProperties(self.__ptr, spotlightCutoff, spotlightExponent)
+end
+
+function SceneLight:getSpotlightCutoff()
+	local retVal =  Polycore.SceneLight_getSpotlightCutoff(self.__ptr)
+	return retVal
+end
+
+function SceneLight:getSpotlightExponent()
+	local retVal =  Polycore.SceneLight_getSpotlightExponent(self.__ptr)
+	return retVal
 end
 
 function SceneLight:enableShadows(val, resolution)

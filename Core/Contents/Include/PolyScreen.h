@@ -99,6 +99,11 @@ namespace Polycode {
 		*/				
 		void setScreenShader(String shaderName);
 		
+		/**
+		* Removes the current screen shader for this screen.
+		*/
+		void clearScreenShader();
+		
 		void handleEvent(Event *event);
 		int getHighestZIndex();
 		

@@ -76,32 +76,29 @@ void calculateLighting(in int numLights, in vec3 N, in vec3 V, in float shinines
 
     }
 }
+
+uniform sampler2D diffuse;
 varying vec3 normal;
 varying vec3 vertex;
 varying vec4 vertexColor;
+
 void main()
 {
-    // Normalize the normal. A varying variable CANNOT
-    // be modified by a fragment shader. So a new variable
-    // needs to be created.
     vec3 n = normalize(normal);
    
-    vec4 ambient  = vec4(0.0);
-    vec4 diffuse  = vec4(0.0);
-    vec4 specular = vec4(0.0);
+    vec4 ambient_c  = vec4(0.0);
+    vec4 diffuse_c  = vec4(0.0);
+    vec4 specular_c = vec4(0.0);
 
-    // In this case the built in uniform gl_MaxLights is used
-    // to denote the number of lights. A better option may be passing
-    // in the number of lights as a uniform or replacing the current
-    // value with a smaller value.
-    calculateLighting(1, n, vertex, gl_FrontMaterial.shininess,
-                      ambient, diffuse, specular);
+    calculateLighting(6, n, vertex, gl_FrontMaterial.shininess, ambient_c, diffuse_c, specular_c);
    
+	vec4 texColor = texture2D(diffuse, gl_TexCoord[0].st);
+    
     vec4 color = gl_FrontLightModelProduct.sceneColor  +
-                 (ambient  * 1.0) +
-                 (diffuse  * 1.0) +
-                 (specular * 0.0);
-    color = clamp(color*vertexColor, 0.0, 1.0);
+                 (ambient_c  * 1.0) +
+                 (diffuse_c  * 1.0) +
+                 (specular_c * 1.0);
+    color = clamp(color*texColor*vertexColor, 0.0, 1.0);
     color.a = vertexColor.a;
     gl_FragColor = color;
 }

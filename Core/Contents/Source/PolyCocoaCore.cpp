@@ -144,6 +144,7 @@ CocoaCore::CocoaCore(PolycodeView *view, int xRes, int yRes, bool fullScreen,int
 	//[view unlockContext];			
 	setVideoMode(xRes,yRes,fullScreen,aaLevel);		
 
+	CoreServices::getInstance()->installModule(new GLSLShaderModule());	
 
 }
 

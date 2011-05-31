@@ -201,127 +201,127 @@ void GLSLShaderModule::setGLSLSpotLightTextureMatrixParameter(Renderer *renderer
 void GLSLShaderModule::updateGLSLParam(Renderer *renderer, GLSLProgramParam &param, ShaderBinding *materialOptions, ShaderBinding *localOptions) {
 	if(param.isAuto) {
 		switch(param.autoID) {
-			case GLSLProgramParam::TAU_MODELVIEWPROJ_MATRIX:
+			case GLSLProgramParam::POLY_MODELVIEWPROJ_MATRIX:
 //				cgGLSetStateMatrixParameter(param.cgParam, GLSL_GL_MODELVIEW_PROJECTION_MATRIX,GLSL_GL_MATRIX_IDENTITY);
 				break;
 				
-			case GLSLProgramParam::TAU_SPOT_LIGHT_TEXTUREMATRIX_0:
+			case GLSLProgramParam::POLY_SPOT_LIGHT_TEXTUREMATRIX_0:
 				setGLSLSpotLightTextureMatrixParameter(renderer, param, 0);					
 				break;
-			case GLSLProgramParam::TAU_SPOT_LIGHT_TEXTUREMATRIX_1:
+			case GLSLProgramParam::POLY_SPOT_LIGHT_TEXTUREMATRIX_1:
 				setGLSLSpotLightTextureMatrixParameter(renderer, param, 1);					
 				break;
-			case GLSLProgramParam::TAU_SPOT_LIGHT_TEXTUREMATRIX_2:
+			case GLSLProgramParam::POLY_SPOT_LIGHT_TEXTUREMATRIX_2:
 				setGLSLSpotLightTextureMatrixParameter(renderer, param, 2);					
 				break;
-			case GLSLProgramParam::TAU_SPOT_LIGHT_TEXTUREMATRIX_3:
+			case GLSLProgramParam::POLY_SPOT_LIGHT_TEXTUREMATRIX_3:
 				setGLSLSpotLightTextureMatrixParameter(renderer, param, 3);					
 				break;
 				
 				
-			case GLSLProgramParam::TAU_AMBIENTCOLOR:
+			case GLSLProgramParam::POLY_AMBIENTCOLOR:
 //				cgGLSetParameter3f(param.cgParam, renderer->ambientColor.r,renderer->ambientColor.g,renderer->ambientColor.b);
 				break;
-			case GLSLProgramParam::TAU_CLEARCOLOR:
+			case GLSLProgramParam::POLY_CLEARCOLOR:
 //				cgGLSetParameter3f(param.cgParam, renderer->clearColor.r,renderer->clearColor.g,renderer->clearColor.b);				
 				break;				
 				
-			case GLSLProgramParam::TAU_SPOT_LIGHT_DIRECTION_0:
+			case GLSLProgramParam::POLY_SPOT_LIGHT_DIRECTION_0:
 				setGLSLSpotLightDirectionParameter(renderer, param, 0);
 				break;
-			case GLSLProgramParam::TAU_SPOT_LIGHT_DIRECTION_1:
+			case GLSLProgramParam::POLY_SPOT_LIGHT_DIRECTION_1:
 				setGLSLSpotLightDirectionParameter(renderer, param, 1);
 				break;
-			case GLSLProgramParam::TAU_SPOT_LIGHT_DIRECTION_2:
+			case GLSLProgramParam::POLY_SPOT_LIGHT_DIRECTION_2:
 				setGLSLSpotLightDirectionParameter(renderer, param, 2);
 				break;
-			case GLSLProgramParam::TAU_SPOT_LIGHT_DIRECTION_3:
+			case GLSLProgramParam::POLY_SPOT_LIGHT_DIRECTION_3:
 				setGLSLSpotLightDirectionParameter(renderer, param, 3);
 				break;
 				
-			case GLSLProgramParam::TAU_AREA_LIGHT_POSITION_0:
+			case GLSLProgramParam::POLY_AREA_LIGHT_POSITION_0:
 				setGLSLAreaLightPositionParameter(renderer, param, 0);
 				break;
-			case GLSLProgramParam::TAU_AREA_LIGHT_POSITION_1:
+			case GLSLProgramParam::POLY_AREA_LIGHT_POSITION_1:
 				setGLSLAreaLightPositionParameter(renderer, param, 1);
 				break;
-			case GLSLProgramParam::TAU_AREA_LIGHT_POSITION_2:
+			case GLSLProgramParam::POLY_AREA_LIGHT_POSITION_2:
 				setGLSLAreaLightPositionParameter(renderer, param, 2);
 				break;
-			case GLSLProgramParam::TAU_AREA_LIGHT_POSITION_3:
+			case GLSLProgramParam::POLY_AREA_LIGHT_POSITION_3:
 				setGLSLAreaLightPositionParameter(renderer, param, 3);
 				break;
-			case GLSLProgramParam::TAU_AREA_LIGHT_POSITION_4:
+			case GLSLProgramParam::POLY_AREA_LIGHT_POSITION_4:
 				setGLSLAreaLightPositionParameter(renderer, param, 4);
 				break;
-			case GLSLProgramParam::TAU_AREA_LIGHT_POSITION_5:
+			case GLSLProgramParam::POLY_AREA_LIGHT_POSITION_5:
 				setGLSLAreaLightPositionParameter(renderer, param, 5);
 				break;
-			case GLSLProgramParam::TAU_AREA_LIGHT_POSITION_6:
+			case GLSLProgramParam::POLY_AREA_LIGHT_POSITION_6:
 				setGLSLAreaLightPositionParameter(renderer, param, 6);
 				break;
-			case GLSLProgramParam::TAU_AREA_LIGHT_POSITION_7:
+			case GLSLProgramParam::POLY_AREA_LIGHT_POSITION_7:
 				setGLSLAreaLightPositionParameter(renderer, param, 7);
 				break;				
 				
-			case GLSLProgramParam::TAU_SPOT_LIGHT_POSITION_0:
+			case GLSLProgramParam::POLY_SPOT_LIGHT_POSITION_0:
 				setGLSLSpotLightPositionParameter(renderer, param, 0);
 				break;				
-			case GLSLProgramParam::TAU_SPOT_LIGHT_POSITION_1:
+			case GLSLProgramParam::POLY_SPOT_LIGHT_POSITION_1:
 				setGLSLSpotLightPositionParameter(renderer, param, 1);
 				break;				
-			case GLSLProgramParam::TAU_SPOT_LIGHT_POSITION_2:
+			case GLSLProgramParam::POLY_SPOT_LIGHT_POSITION_2:
 				setGLSLSpotLightPositionParameter(renderer, param, 2);
 				break;				
-			case GLSLProgramParam::TAU_SPOT_LIGHT_POSITION_3:
+			case GLSLProgramParam::POLY_SPOT_LIGHT_POSITION_3:
 				setGLSLSpotLightPositionParameter(renderer, param, 3);
 				break;				
 				
-			case GLSLProgramParam::TAU_AREA_LIGHT_COLOR_0:
+			case GLSLProgramParam::POLY_AREA_LIGHT_COLOR_0:
 				setGLSLAreaLightColorParameter(renderer, param, 0);
 				break;
-			case GLSLProgramParam::TAU_AREA_LIGHT_COLOR_1:
+			case GLSLProgramParam::POLY_AREA_LIGHT_COLOR_1:
 				setGLSLAreaLightColorParameter(renderer, param, 1);
 				break;
-			case GLSLProgramParam::TAU_AREA_LIGHT_COLOR_2:
+			case GLSLProgramParam::POLY_AREA_LIGHT_COLOR_2:
 				setGLSLAreaLightColorParameter(renderer, param, 2);
 				break;
-			case GLSLProgramParam::TAU_AREA_LIGHT_COLOR_3:
+			case GLSLProgramParam::POLY_AREA_LIGHT_COLOR_3:
 				setGLSLAreaLightColorParameter(renderer, param, 3);
 				break;
-			case GLSLProgramParam::TAU_AREA_LIGHT_COLOR_4:
+			case GLSLProgramParam::POLY_AREA_LIGHT_COLOR_4:
 				setGLSLAreaLightColorParameter(renderer, param, 4);
 				break;
-			case GLSLProgramParam::TAU_AREA_LIGHT_COLOR_5:
+			case GLSLProgramParam::POLY_AREA_LIGHT_COLOR_5:
 				setGLSLAreaLightColorParameter(renderer, param, 5);
 				break;
-			case GLSLProgramParam::TAU_AREA_LIGHT_COLOR_6:
+			case GLSLProgramParam::POLY_AREA_LIGHT_COLOR_6:
 				setGLSLAreaLightColorParameter(renderer, param, 6);
 				break;
-			case GLSLProgramParam::TAU_AREA_LIGHT_COLOR_7:
+			case GLSLProgramParam::POLY_AREA_LIGHT_COLOR_7:
 				setGLSLAreaLightColorParameter(renderer, param, 7);
 				break;
 				
-			case GLSLProgramParam::TAU_SPOT_LIGHT_COLOR_0:
+			case GLSLProgramParam::POLY_SPOT_LIGHT_COLOR_0:
 				setGLSLSpotLightColorParameter(renderer, param, 0);
 				break;
-			case GLSLProgramParam::TAU_SPOT_LIGHT_COLOR_1:
+			case GLSLProgramParam::POLY_SPOT_LIGHT_COLOR_1:
 				setGLSLSpotLightColorParameter(renderer, param, 1);
 				break;
-			case GLSLProgramParam::TAU_SPOT_LIGHT_COLOR_2:
+			case GLSLProgramParam::POLY_SPOT_LIGHT_COLOR_2:
 				setGLSLSpotLightColorParameter(renderer, param, 2);
 				break;
-			case GLSLProgramParam::TAU_SPOT_LIGHT_COLOR_3:
+			case GLSLProgramParam::POLY_SPOT_LIGHT_COLOR_3:
 				setGLSLSpotLightColorParameter(renderer, param, 3);
 				break;				
 				
-			case GLSLProgramParam::TAU_MODELVIEW_MATRIX: 
+			case GLSLProgramParam::POLY_MODELVIEW_MATRIX: 
 //				cgGLSetStateMatrixParameter(param.cgParam, GLSL_GL_MODELVIEW_MATRIX,GLSL_GL_MATRIX_IDENTITY); }
 				break;
-			case GLSLProgramParam::TAU_MODELVIEW_INVERSE_MATRIX:
+			case GLSLProgramParam::POLY_MODELVIEW_INVERSE_MATRIX:
 //				cgGLSetStateMatrixParameter(param.cgParam, GLSL_GL_MODELVIEW_MATRIX,GLSL_GL_MATRIX_INVERSE_TRANSPOSE);
 				break;
-			case GLSLProgramParam::TAU_EXPOSURE_LEVEL:
+			case GLSLProgramParam::POLY_EXPOSURE_LEVEL:
 //				cgGLSetParameter1f(param.cgParam, renderer->exposureLevel);
 				break;
 		}
@@ -378,8 +378,6 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 		glBindTexture(GL_TEXTURE_2D, ((OpenGLTexture*)cgBinding->textures[i].texture)->getTextureID());	
 		textureIndex++;
 	}	
-		
-	
 
 	//			Logger::log("applying %s (%s %s)\n", material->getShader()->getName().c_str(), cgShader->vp->getResourceName().c_str(), cgShader->fp->getResourceName().c_str());
 		
@@ -437,89 +435,89 @@ void GLSLShaderModule::addParamToProgram(GLSLProgram *program,TiXmlNode *node) {
 		if(strcmp(node->ToElement()->Attribute("type"), "auto") == 0) {
 			isAuto = true;
 			String pid = node->ToElement()->Attribute("id");
-			if(pid == "TAU_MODELVIEWPROJ_MATRIX")
-				autoID = GLSLProgramParam::TAU_MODELVIEWPROJ_MATRIX;
-			else if(pid == "TAU_AREA_LIGHT_POSITION_0")
-				autoID = GLSLProgramParam::TAU_AREA_LIGHT_POSITION_0;
-			else if(pid == "TAU_AREA_LIGHT_POSITION_1")
-				autoID = GLSLProgramParam::TAU_AREA_LIGHT_POSITION_1;
-			else if(pid == "TAU_AREA_LIGHT_POSITION_2")
-				autoID = GLSLProgramParam::TAU_AREA_LIGHT_POSITION_2;
-			else if(pid == "TAU_AREA_LIGHT_POSITION_3")
-				autoID = GLSLProgramParam::TAU_AREA_LIGHT_POSITION_3;
-			else if(pid == "TAU_AREA_LIGHT_POSITION_4")
-				autoID = GLSLProgramParam::TAU_AREA_LIGHT_POSITION_4;
-			else if(pid == "TAU_AREA_LIGHT_POSITION_5")
-				autoID = GLSLProgramParam::TAU_AREA_LIGHT_POSITION_5;
-			else if(pid == "TAU_AREA_LIGHT_POSITION_6")
-				autoID = GLSLProgramParam::TAU_AREA_LIGHT_POSITION_6;
-			else if(pid == "TAU_AREA_LIGHT_POSITION_7")
-				autoID = GLSLProgramParam::TAU_AREA_LIGHT_POSITION_7;
+			if(pid == "POLY_MODELVIEWPROJ_MATRIX")
+				autoID = GLSLProgramParam::POLY_MODELVIEWPROJ_MATRIX;
+			else if(pid == "POLY_AREA_LIGHT_POSITION_0")
+				autoID = GLSLProgramParam::POLY_AREA_LIGHT_POSITION_0;
+			else if(pid == "POLY_AREA_LIGHT_POSITION_1")
+				autoID = GLSLProgramParam::POLY_AREA_LIGHT_POSITION_1;
+			else if(pid == "POLY_AREA_LIGHT_POSITION_2")
+				autoID = GLSLProgramParam::POLY_AREA_LIGHT_POSITION_2;
+			else if(pid == "POLY_AREA_LIGHT_POSITION_3")
+				autoID = GLSLProgramParam::POLY_AREA_LIGHT_POSITION_3;
+			else if(pid == "POLY_AREA_LIGHT_POSITION_4")
+				autoID = GLSLProgramParam::POLY_AREA_LIGHT_POSITION_4;
+			else if(pid == "POLY_AREA_LIGHT_POSITION_5")
+				autoID = GLSLProgramParam::POLY_AREA_LIGHT_POSITION_5;
+			else if(pid == "POLY_AREA_LIGHT_POSITION_6")
+				autoID = GLSLProgramParam::POLY_AREA_LIGHT_POSITION_6;
+			else if(pid == "POLY_AREA_LIGHT_POSITION_7")
+				autoID = GLSLProgramParam::POLY_AREA_LIGHT_POSITION_7;
 			
-			else if(pid == "TAU_SPOT_LIGHT_POSITION_0")
-				autoID = GLSLProgramParam::TAU_SPOT_LIGHT_POSITION_0;
-			else if(pid == "TAU_SPOT_LIGHT_POSITION_1")
-				autoID = GLSLProgramParam::TAU_SPOT_LIGHT_POSITION_1;
-			else if(pid == "TAU_SPOT_LIGHT_POSITION_2")
-				autoID = GLSLProgramParam::TAU_SPOT_LIGHT_POSITION_2;
-			else if(pid == "TAU_SPOT_LIGHT_POSITION_3")
-				autoID = GLSLProgramParam::TAU_SPOT_LIGHT_POSITION_3;
+			else if(pid == "POLY_SPOT_LIGHT_POSITION_0")
+				autoID = GLSLProgramParam::POLY_SPOT_LIGHT_POSITION_0;
+			else if(pid == "POLY_SPOT_LIGHT_POSITION_1")
+				autoID = GLSLProgramParam::POLY_SPOT_LIGHT_POSITION_1;
+			else if(pid == "POLY_SPOT_LIGHT_POSITION_2")
+				autoID = GLSLProgramParam::POLY_SPOT_LIGHT_POSITION_2;
+			else if(pid == "POLY_SPOT_LIGHT_POSITION_3")
+				autoID = GLSLProgramParam::POLY_SPOT_LIGHT_POSITION_3;
 			
 			
-			else if(pid == "TAU_AREA_LIGHT_COLOR_0")
-				autoID = GLSLProgramParam::TAU_AREA_LIGHT_COLOR_0;
-			else if(pid == "TAU_AREA_LIGHT_COLOR_1")
-				autoID = GLSLProgramParam::TAU_AREA_LIGHT_COLOR_1;
-			else if(pid == "TAU_AREA_LIGHT_COLOR_2")
-				autoID = GLSLProgramParam::TAU_AREA_LIGHT_COLOR_2;
-			else if(pid == "TAU_AREA_LIGHT_COLOR_3")
-				autoID = GLSLProgramParam::TAU_AREA_LIGHT_COLOR_3;
-			else if(pid == "TAU_AREA_LIGHT_COLOR_4")
-				autoID = GLSLProgramParam::TAU_AREA_LIGHT_COLOR_4;
-			else if(pid == "TAU_AREA_LIGHT_COLOR_5")
-				autoID = GLSLProgramParam::TAU_AREA_LIGHT_COLOR_5;
-			else if(pid == "TAU_AREA_LIGHT_COLOR_6")
-				autoID = GLSLProgramParam::TAU_AREA_LIGHT_COLOR_6;
-			else if(pid == "TAU_AREA_LIGHT_COLOR_7")
-				autoID = GLSLProgramParam::TAU_AREA_LIGHT_COLOR_7;
+			else if(pid == "POLY_AREA_LIGHT_COLOR_0")
+				autoID = GLSLProgramParam::POLY_AREA_LIGHT_COLOR_0;
+			else if(pid == "POLY_AREA_LIGHT_COLOR_1")
+				autoID = GLSLProgramParam::POLY_AREA_LIGHT_COLOR_1;
+			else if(pid == "POLY_AREA_LIGHT_COLOR_2")
+				autoID = GLSLProgramParam::POLY_AREA_LIGHT_COLOR_2;
+			else if(pid == "POLY_AREA_LIGHT_COLOR_3")
+				autoID = GLSLProgramParam::POLY_AREA_LIGHT_COLOR_3;
+			else if(pid == "POLY_AREA_LIGHT_COLOR_4")
+				autoID = GLSLProgramParam::POLY_AREA_LIGHT_COLOR_4;
+			else if(pid == "POLY_AREA_LIGHT_COLOR_5")
+				autoID = GLSLProgramParam::POLY_AREA_LIGHT_COLOR_5;
+			else if(pid == "POLY_AREA_LIGHT_COLOR_6")
+				autoID = GLSLProgramParam::POLY_AREA_LIGHT_COLOR_6;
+			else if(pid == "POLY_AREA_LIGHT_COLOR_7")
+				autoID = GLSLProgramParam::POLY_AREA_LIGHT_COLOR_7;
 			
-			else if(pid == "TAU_SPOT_LIGHT_COLOR_0")
-				autoID = GLSLProgramParam::TAU_SPOT_LIGHT_COLOR_0;
-			else if(pid == "TAU_SPOT_LIGHT_COLOR_1")
-				autoID = GLSLProgramParam::TAU_SPOT_LIGHT_COLOR_1;
-			else if(pid == "TAU_SPOT_LIGHT_COLOR_2")
-				autoID = GLSLProgramParam::TAU_SPOT_LIGHT_COLOR_2;
-			else if(pid == "TAU_SPOT_LIGHT_COLOR_3")
-				autoID = GLSLProgramParam::TAU_SPOT_LIGHT_COLOR_3;
+			else if(pid == "POLY_SPOT_LIGHT_COLOR_0")
+				autoID = GLSLProgramParam::POLY_SPOT_LIGHT_COLOR_0;
+			else if(pid == "POLY_SPOT_LIGHT_COLOR_1")
+				autoID = GLSLProgramParam::POLY_SPOT_LIGHT_COLOR_1;
+			else if(pid == "POLY_SPOT_LIGHT_COLOR_2")
+				autoID = GLSLProgramParam::POLY_SPOT_LIGHT_COLOR_2;
+			else if(pid == "POLY_SPOT_LIGHT_COLOR_3")
+				autoID = GLSLProgramParam::POLY_SPOT_LIGHT_COLOR_3;
 			
-			else if(pid == "TAU_SPOT_LIGHT_DIRECTION_0")
-				autoID = GLSLProgramParam::TAU_SPOT_LIGHT_DIRECTION_0;		
-			else if(pid == "TAU_SPOT_LIGHT_DIRECTION_1")
-				autoID = GLSLProgramParam::TAU_SPOT_LIGHT_DIRECTION_1;		
-			else if(pid == "TAU_SPOT_LIGHT_DIRECTION_2")
-				autoID = GLSLProgramParam::TAU_SPOT_LIGHT_DIRECTION_2;		
-			else if(pid == "TAU_SPOT_LIGHT_DIRECTION_3")
-				autoID = GLSLProgramParam::TAU_SPOT_LIGHT_DIRECTION_3;
+			else if(pid == "POLY_SPOT_LIGHT_DIRECTION_0")
+				autoID = GLSLProgramParam::POLY_SPOT_LIGHT_DIRECTION_0;		
+			else if(pid == "POLY_SPOT_LIGHT_DIRECTION_1")
+				autoID = GLSLProgramParam::POLY_SPOT_LIGHT_DIRECTION_1;		
+			else if(pid == "POLY_SPOT_LIGHT_DIRECTION_2")
+				autoID = GLSLProgramParam::POLY_SPOT_LIGHT_DIRECTION_2;		
+			else if(pid == "POLY_SPOT_LIGHT_DIRECTION_3")
+				autoID = GLSLProgramParam::POLY_SPOT_LIGHT_DIRECTION_3;
 			
-			else if(pid == "TAU_SPOT_LIGHT_TEXTUREMATRIX_0")
-				autoID = GLSLProgramParam::TAU_SPOT_LIGHT_TEXTUREMATRIX_0;
-			else if(pid == "TAU_SPOT_LIGHT_TEXTUREMATRIX_1")
-				autoID = GLSLProgramParam::TAU_SPOT_LIGHT_TEXTUREMATRIX_1;
-			else if(pid == "TAU_SPOT_LIGHT_TEXTUREMATRIX_2")
-				autoID = GLSLProgramParam::TAU_SPOT_LIGHT_TEXTUREMATRIX_2;
-			else if(pid == "TAU_SPOT_LIGHT_TEXTUREMATRIX_3")
-				autoID = GLSLProgramParam::TAU_SPOT_LIGHT_TEXTUREMATRIX_3;		
+			else if(pid == "POLY_SPOT_LIGHT_TEXTUREMATRIX_0")
+				autoID = GLSLProgramParam::POLY_SPOT_LIGHT_TEXTUREMATRIX_0;
+			else if(pid == "POLY_SPOT_LIGHT_TEXTUREMATRIX_1")
+				autoID = GLSLProgramParam::POLY_SPOT_LIGHT_TEXTUREMATRIX_1;
+			else if(pid == "POLY_SPOT_LIGHT_TEXTUREMATRIX_2")
+				autoID = GLSLProgramParam::POLY_SPOT_LIGHT_TEXTUREMATRIX_2;
+			else if(pid == "POLY_SPOT_LIGHT_TEXTUREMATRIX_3")
+				autoID = GLSLProgramParam::POLY_SPOT_LIGHT_TEXTUREMATRIX_3;		
 			
-			else if(pid == "TAU_MODELVIEW_MATRIX")
-				autoID = GLSLProgramParam::TAU_MODELVIEW_MATRIX;
-			else if(pid == "TAU_MODELVIEW_INVERSE_MATRIX")
-				autoID = GLSLProgramParam::TAU_MODELVIEW_INVERSE_MATRIX;
-			else if(pid == "TAU_EXPOSURE_LEVEL")
-				autoID = GLSLProgramParam::TAU_EXPOSURE_LEVEL;
-			else if(pid == "TAU_CLEARCOLOR")
-				autoID = GLSLProgramParam::TAU_CLEARCOLOR;		
-			else if(pid == "TAU_AMBIENTCOLOR")
-				autoID = GLSLProgramParam::TAU_AMBIENTCOLOR;				
+			else if(pid == "POLY_MODELVIEW_MATRIX")
+				autoID = GLSLProgramParam::POLY_MODELVIEW_MATRIX;
+			else if(pid == "POLY_MODELVIEW_INVERSE_MATRIX")
+				autoID = GLSLProgramParam::POLY_MODELVIEW_INVERSE_MATRIX;
+			else if(pid == "POLY_EXPOSURE_LEVEL")
+				autoID = GLSLProgramParam::POLY_EXPOSURE_LEVEL;
+			else if(pid == "POLY_CLEARCOLOR")
+				autoID = GLSLProgramParam::POLY_CLEARCOLOR;		
+			else if(pid == "POLY_AMBIENTCOLOR")
+				autoID = GLSLProgramParam::POLY_AMBIENTCOLOR;				
 			else
 				isAuto = false;
 		} else {

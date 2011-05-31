@@ -335,12 +335,16 @@ function Renderer:getYRes()
 	return retVal
 end
 
+function Renderer:cullFrontFaces(val)
+	local retVal = Polycore.Renderer_cullFrontFaces(self.__ptr, val)
+end
+
 function Renderer:clearLights()
 	local retVal =  Polycore.Renderer_clearLights(self.__ptr)
 end
 
-function Renderer:addLight(position, direction, type, color, distance, intensity, textureMatrix)
-	local retVal = Polycore.Renderer_addLight(self.__ptr, position.__ptr, direction.__ptr, type, color.__ptr, distance, intensity, textureMatrix.__ptr)
+function Renderer:addLight(position, direction, type, color, constantAttenuation, linearAttenuation, quadraticAttenuation, intensity, spotlightCutoff, spotlightExponent, shadowsEnabled, textureMatrix)
+	local retVal = Polycore.Renderer_addLight(self.__ptr, position.__ptr, direction.__ptr, type, color.__ptr, constantAttenuation, linearAttenuation, quadraticAttenuation, intensity, spotlightCutoff, spotlightExponent, shadowsEnabled, textureMatrix.__ptr)
 end
 
 function Renderer:setExposureLevel(level)
@@ -354,6 +358,10 @@ end
 
 function Renderer:enableShaders(flag)
 	local retVal = Polycore.Renderer_enableShaders(self.__ptr, flag)
+end
+
+function Renderer:initOSSpecific()
+	local retVal =  Polycore.Renderer_initOSSpecific(self.__ptr)
 end
 
 function Renderer:addShaderModule(module)
@@ -400,6 +408,10 @@ function Renderer:Unproject(x, y)
 		Polycore.__ptr_lookup[retVal].__ptr = retVal
 		return Polycore.__ptr_lookup[retVal]
 	end
+end
+
+function Renderer:sortLights()
+	local retVal =  Polycore.Renderer_sortLights(self.__ptr)
 end
 
 function Renderer:getNumAreaLights()

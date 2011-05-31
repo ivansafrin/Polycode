@@ -1,0 +1,413 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		6DE45BB9138DA66C000BDFBA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DE45BB8138DA66C000BDFBA /* Cocoa.framework */; };
+		6DE45BC3138DA66C000BDFBA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6DE45BC1138DA66C000BDFBA /* InfoPlist.strings */; };
+		6DE45BC6138DA66C000BDFBA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DE45BC5138DA66C000BDFBA /* main.m */; };
+		6DE45BCC138DA66C000BDFBA /* StandalonePlayerAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DE45BCB138DA66C000BDFBA /* StandalonePlayerAppDelegate.mm */; };
+		6DE45BCF138DA66C000BDFBA /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6DE45BCD138DA66C000BDFBA /* MainMenu.xib */; };
+		6DE45BDD138DA6A6000BDFBA /* liblua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DE45BD5138DA6A6000BDFBA /* liblua.a */; };
+		6DE45BDE138DA6A6000BDFBA /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DE45BD6138DA6A6000BDFBA /* IOKit.framework */; };
+		6DE45BDF138DA6A6000BDFBA /* libphysfs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DE45BD7138DA6A6000BDFBA /* libphysfs.a */; };
+		6DE45BE0138DA6A6000BDFBA /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DE45BD8138DA6A6000BDFBA /* libfreetype.a */; };
+		6DE45BE1138DA6A6000BDFBA /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DE45BD9138DA6A6000BDFBA /* libz.a */; };
+		6DE45BE2138DA6A6000BDFBA /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DE45BDA138DA6A6000BDFBA /* libpng.a */; };
+		6DE45BE3138DA6A6000BDFBA /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DE45BDB138DA6A6000BDFBA /* OpenAL.framework */; };
+		6DE45BE4138DA6A6000BDFBA /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DE45BDC138DA6A6000BDFBA /* OpenGL.framework */; };
+		6DE45BF0138DA6C3000BDFBA /* libogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DE45BED138DA6C3000BDFBA /* libogg.a */; };
+		6DE45BF1138DA6C3000BDFBA /* libvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DE45BEE138DA6C3000BDFBA /* libvorbis.a */; };
+		6DE45BF2138DA6C3000BDFBA /* libvorbisfile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DE45BEF138DA6C3000BDFBA /* libvorbisfile.a */; };
+		6DE45BF6138DA6F8000BDFBA /* libPolycodeGLSL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DE45BF3138DA6F8000BDFBA /* libPolycodeGLSL.a */; };
+		6DE45BF7138DA6F8000BDFBA /* libPolyCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DE45BF4138DA6F8000BDFBA /* libPolyCore.a */; };
+		6DE45BF8138DA6F8000BDFBA /* libPolycodeLUA.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DE45BF5138DA6F8000BDFBA /* libPolycodeLUA.a */; };
+		6DE45BFB138DA707000BDFBA /* PolycodeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DE45BFA138DA707000BDFBA /* PolycodeView.mm */; };
+		6DE45BFE138DA70E000BDFBA /* PolycodeCocoaPlayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DE45BFC138DA70E000BDFBA /* PolycodeCocoaPlayer.mm */; };
+		6DE45C01138DA717000BDFBA /* PolycodePlayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DE45BFF138DA717000BDFBA /* PolycodePlayer.mm */; };
+		6DE45C12138DAE6F000BDFBA /* player_icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6DE45C11138DAE6F000BDFBA /* player_icon.icns */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		6DE45BB4138DA66C000BDFBA /* StandalonePlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StandalonePlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6DE45BB8138DA66C000BDFBA /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		6DE45BBB138DA66C000BDFBA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		6DE45BBC138DA66C000BDFBA /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		6DE45BBD138DA66C000BDFBA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		6DE45BC0138DA66C000BDFBA /* StandalonePlayer-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "StandalonePlayer-Info.plist"; sourceTree = "<group>"; };
+		6DE45BC2138DA66C000BDFBA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		6DE45BC4138DA66C000BDFBA /* StandalonePlayer-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "StandalonePlayer-Prefix.pch"; sourceTree = "<group>"; };
+		6DE45BC5138DA66C000BDFBA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		6DE45BCA138DA66C000BDFBA /* StandalonePlayerAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StandalonePlayerAppDelegate.h; sourceTree = "<group>"; };
+		6DE45BCB138DA66C000BDFBA /* StandalonePlayerAppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = StandalonePlayerAppDelegate.mm; sourceTree = "<group>"; };
+		6DE45BCE138DA66C000BDFBA /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		6DE45BD5138DA6A6000BDFBA /* liblua.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblua.a; path = ../../../../Core/Dependencies/lua/src/liblua.a; sourceTree = "<group>"; };
+		6DE45BD6138DA6A6000BDFBA /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
+		6DE45BD7138DA6A6000BDFBA /* libphysfs.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libphysfs.a; path = ../../../../Core/Dependencies/physfs/Debug/libphysfs.a; sourceTree = "<group>"; };
+		6DE45BD8138DA6A6000BDFBA /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = ../../../../Core/Dependencies/freetype/libfreetype.a; sourceTree = "<group>"; };
+		6DE45BD9138DA6A6000BDFBA /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = ../../../../Core/Dependencies/zlib/libz.a; sourceTree = "<group>"; };
+		6DE45BDA138DA6A6000BDFBA /* libpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng.a; path = ../../../../Core/Dependencies/libpng/libpng.a; sourceTree = "<group>"; };
+		6DE45BDB138DA6A6000BDFBA /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
+		6DE45BDC138DA6A6000BDFBA /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = ../../../../../../../../../System/Library/Frameworks/OpenGL.framework; sourceTree = "<group>"; };
+		6DE45BED138DA6C3000BDFBA /* libogg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libogg.a; path = "../../../../Release/Mac OS X/Framework/Dependencies/Lib/libogg.a"; sourceTree = "<group>"; };
+		6DE45BEE138DA6C3000BDFBA /* libvorbis.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbis.a; path = "../../../../Release/Mac OS X/Framework/Dependencies/Lib/libvorbis.a"; sourceTree = "<group>"; };
+		6DE45BEF138DA6C3000BDFBA /* libvorbisfile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbisfile.a; path = "../../../../Release/Mac OS X/Framework/Dependencies/Lib/libvorbisfile.a"; sourceTree = "<group>"; };
+		6DE45BF3138DA6F8000BDFBA /* libPolycodeGLSL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycodeGLSL.a; path = "../../../../../../../Library/Developer/Xcode/DerivedData/Modules-epduxiffqrcazabvaazmexadjpgk/Build/Products/Debug/libPolycodeGLSL.a"; sourceTree = "<group>"; };
+		6DE45BF4138DA6F8000BDFBA /* libPolyCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolyCore.a; path = "../../../../../../../Library/Developer/Xcode/DerivedData/PolyCore-ecbhldydhvplehavgvhjdlapyvwd/Build/Products/Debug/libPolyCore.a"; sourceTree = "<group>"; };
+		6DE45BF5138DA6F8000BDFBA /* libPolycodeLUA.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycodeLUA.a; path = "../../../../../../../Library/Developer/Xcode/DerivedData/Bindings-bojbiqnjfgqgjpgcdihwtncgpnvk/Build/Products/Debug/libPolycodeLUA.a"; sourceTree = "<group>"; };
+		6DE45BF9138DA707000BDFBA /* PolycodeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeView.h; path = "../../../../../Release/Mac OS X/Framework/Core/PolycodeView/PolycodeView.h"; sourceTree = "<group>"; };
+		6DE45BFA138DA707000BDFBA /* PolycodeView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = PolycodeView.mm; path = "../../../../../Release/Mac OS X/Framework/Core/PolycodeView/PolycodeView.mm"; sourceTree = "<group>"; };
+		6DE45BFC138DA70E000BDFBA /* PolycodeCocoaPlayer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = PolycodeCocoaPlayer.mm; path = ../../../../Contents/Source/PolycodeCocoaPlayer.mm; sourceTree = "<group>"; };
+		6DE45BFD138DA70E000BDFBA /* PolycodeCocoaPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeCocoaPlayer.h; path = ../../../../Contents/Include/PolycodeCocoaPlayer.h; sourceTree = "<group>"; };
+		6DE45BFF138DA717000BDFBA /* PolycodePlayer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = PolycodePlayer.mm; path = ../../../../Contents/Source/PolycodePlayer.mm; sourceTree = "<group>"; };
+		6DE45C00138DA717000BDFBA /* PolycodePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodePlayer.h; path = ../../../../Contents/Include/PolycodePlayer.h; sourceTree = "<group>"; };
+		6DE45C11138DAE6F000BDFBA /* player_icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = player_icon.icns; path = ../../../../../Assets/Icons/player_icon.icns; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		6DE45BB1138DA66C000BDFBA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6DE45BB9138DA66C000BDFBA /* Cocoa.framework in Frameworks */,
+				6DE45BDD138DA6A6000BDFBA /* liblua.a in Frameworks */,
+				6DE45BDE138DA6A6000BDFBA /* IOKit.framework in Frameworks */,
+				6DE45BDF138DA6A6000BDFBA /* libphysfs.a in Frameworks */,
+				6DE45BE0138DA6A6000BDFBA /* libfreetype.a in Frameworks */,
+				6DE45BE1138DA6A6000BDFBA /* libz.a in Frameworks */,
+				6DE45BE2138DA6A6000BDFBA /* libpng.a in Frameworks */,
+				6DE45BE3138DA6A6000BDFBA /* OpenAL.framework in Frameworks */,
+				6DE45BE4138DA6A6000BDFBA /* OpenGL.framework in Frameworks */,
+				6DE45BF0138DA6C3000BDFBA /* libogg.a in Frameworks */,
+				6DE45BF1138DA6C3000BDFBA /* libvorbis.a in Frameworks */,
+				6DE45BF2138DA6C3000BDFBA /* libvorbisfile.a in Frameworks */,
+				6DE45BF6138DA6F8000BDFBA /* libPolycodeGLSL.a in Frameworks */,
+				6DE45BF7138DA6F8000BDFBA /* libPolyCore.a in Frameworks */,
+				6DE45BF8138DA6F8000BDFBA /* libPolycodeLUA.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		6DE45BA9138DA66C000BDFBA = {
+			isa = PBXGroup;
+			children = (
+				6DE45BBE138DA66C000BDFBA /* StandalonePlayer */,
+				6DE45BB7138DA66C000BDFBA /* Frameworks */,
+				6DE45BB5138DA66C000BDFBA /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		6DE45BB5138DA66C000BDFBA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6DE45BB4138DA66C000BDFBA /* StandalonePlayer.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		6DE45BB7138DA66C000BDFBA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6DE45BF3138DA6F8000BDFBA /* libPolycodeGLSL.a */,
+				6DE45BF4138DA6F8000BDFBA /* libPolyCore.a */,
+				6DE45BF5138DA6F8000BDFBA /* libPolycodeLUA.a */,
+				6DE45BED138DA6C3000BDFBA /* libogg.a */,
+				6DE45BEE138DA6C3000BDFBA /* libvorbis.a */,
+				6DE45BEF138DA6C3000BDFBA /* libvorbisfile.a */,
+				6DE45BD5138DA6A6000BDFBA /* liblua.a */,
+				6DE45BD6138DA6A6000BDFBA /* IOKit.framework */,
+				6DE45BD7138DA6A6000BDFBA /* libphysfs.a */,
+				6DE45BD8138DA6A6000BDFBA /* libfreetype.a */,
+				6DE45BD9138DA6A6000BDFBA /* libz.a */,
+				6DE45BDA138DA6A6000BDFBA /* libpng.a */,
+				6DE45BDB138DA6A6000BDFBA /* OpenAL.framework */,
+				6DE45BDC138DA6A6000BDFBA /* OpenGL.framework */,
+				6DE45BB8138DA66C000BDFBA /* Cocoa.framework */,
+				6DE45BBA138DA66C000BDFBA /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		6DE45BBA138DA66C000BDFBA /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6DE45BBB138DA66C000BDFBA /* AppKit.framework */,
+				6DE45BBC138DA66C000BDFBA /* CoreData.framework */,
+				6DE45BBD138DA66C000BDFBA /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		6DE45BBE138DA66C000BDFBA /* StandalonePlayer */ = {
+			isa = PBXGroup;
+			children = (
+				6DE45C11138DAE6F000BDFBA /* player_icon.icns */,
+				6DE45BFF138DA717000BDFBA /* PolycodePlayer.mm */,
+				6DE45C00138DA717000BDFBA /* PolycodePlayer.h */,
+				6DE45BFC138DA70E000BDFBA /* PolycodeCocoaPlayer.mm */,
+				6DE45BFD138DA70E000BDFBA /* PolycodeCocoaPlayer.h */,
+				6DE45BF9138DA707000BDFBA /* PolycodeView.h */,
+				6DE45BFA138DA707000BDFBA /* PolycodeView.mm */,
+				6DE45BCA138DA66C000BDFBA /* StandalonePlayerAppDelegate.h */,
+				6DE45BCB138DA66C000BDFBA /* StandalonePlayerAppDelegate.mm */,
+				6DE45BCD138DA66C000BDFBA /* MainMenu.xib */,
+				6DE45BBF138DA66C000BDFBA /* Supporting Files */,
+			);
+			path = StandalonePlayer;
+			sourceTree = "<group>";
+		};
+		6DE45BBF138DA66C000BDFBA /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				6DE45BC0138DA66C000BDFBA /* StandalonePlayer-Info.plist */,
+				6DE45BC1138DA66C000BDFBA /* InfoPlist.strings */,
+				6DE45BC4138DA66C000BDFBA /* StandalonePlayer-Prefix.pch */,
+				6DE45BC5138DA66C000BDFBA /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		6DE45BB3138DA66C000BDFBA /* StandalonePlayer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6DE45BD2138DA66C000BDFBA /* Build configuration list for PBXNativeTarget "StandalonePlayer" */;
+			buildPhases = (
+				6DE45BB0138DA66C000BDFBA /* Sources */,
+				6DE45BB1138DA66C000BDFBA /* Frameworks */,
+				6DE45BB2138DA66C000BDFBA /* Resources */,
+				6DE45C02138DAC19000BDFBA /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = StandalonePlayer;
+			productName = StandalonePlayer;
+			productReference = 6DE45BB4138DA66C000BDFBA /* StandalonePlayer.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		6DE45BAB138DA66C000BDFBA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				ORGANIZATIONNAME = Tomatogon;
+			};
+			buildConfigurationList = 6DE45BAE138DA66C000BDFBA /* Build configuration list for PBXProject "StandalonePlayer" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 6DE45BA9138DA66C000BDFBA;
+			productRefGroup = 6DE45BB5138DA66C000BDFBA /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				6DE45BB3138DA66C000BDFBA /* StandalonePlayer */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		6DE45BB2138DA66C000BDFBA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6DE45BC3138DA66C000BDFBA /* InfoPlist.strings in Resources */,
+				6DE45BCF138DA66C000BDFBA /* MainMenu.xib in Resources */,
+				6DE45C12138DAE6F000BDFBA /* player_icon.icns in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		6DE45C02138DAC19000BDFBA /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cp -R ../../../../Bindings/Contents/LUA/API $BUILT_PRODUCTS_DIR/StandalonePlayer.app/Contents/Resources\ncp -R ../../../../Assets/Default\\ asset\\ pack/default.pak $BUILT_PRODUCTS_DIR/StandalonePlayer.app/Contents/Resources";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		6DE45BB0138DA66C000BDFBA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6DE45BC6138DA66C000BDFBA /* main.m in Sources */,
+				6DE45BCC138DA66C000BDFBA /* StandalonePlayerAppDelegate.mm in Sources */,
+				6DE45BFB138DA707000BDFBA /* PolycodeView.mm in Sources */,
+				6DE45BFE138DA70E000BDFBA /* PolycodeCocoaPlayer.mm in Sources */,
+				6DE45C01138DA717000BDFBA /* PolycodePlayer.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		6DE45BC1138DA66C000BDFBA /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				6DE45BC2138DA66C000BDFBA /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		6DE45BCD138DA66C000BDFBA /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				6DE45BCE138DA66C000BDFBA /* en */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		6DE45BD0138DA66C000BDFBA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		6DE45BD1138DA66C000BDFBA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		6DE45BD3138DA66C000BDFBA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "StandalonePlayer/StandalonePlayer-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/../../../../Release/Mac OS X/Framework/Core/Include\"",
+					"\"$(SRCROOT)/../../../../Release/Mac OS X/Framework/Dependencies/Include\"",
+					"\"$(SRCROOT)/../../../../Release/Mac OS X/Framework/Modules/Include\"",
+					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
+					"\"$(SRCROOT)/../../../../Core/Dependencies/lua/src\"",
+					"\"$(SRCROOT)/../../../../Bindings/Contents/LUA/Include\"",
+				);
+				INFOPLIST_FILE = "StandalonePlayer/StandalonePlayer-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../../../Core/Dependencies/lua/src\"",
+					"\"$(SRCROOT)/../../../../Core/Dependencies/physfs/Debug\"",
+					"\"$(SRCROOT)/../../../../Core/Dependencies/freetype\"",
+					"\"$(SRCROOT)/../../../../Core/Dependencies/zlib\"",
+					"\"$(SRCROOT)/../../../../Core/Dependencies/libpng\"",
+					"\"$(SRCROOT)/../../../../Release/Mac OS X/Framework/Dependencies/Lib\"",
+					"\"$(SRCROOT)/../../../../../../../Library/Developer/Xcode/DerivedData/Modules-epduxiffqrcazabvaazmexadjpgk/Build/Products/Debug\"",
+					"\"$(SRCROOT)/../../../../../../../Library/Developer/Xcode/DerivedData/PolyCore-ecbhldydhvplehavgvhjdlapyvwd/Build/Products/Debug\"",
+					"\"$(SRCROOT)/../../../../../../../Library/Developer/Xcode/DerivedData/Bindings-bojbiqnjfgqgjpgcdihwtncgpnvk/Build/Products/Debug\"",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		6DE45BD4138DA66C000BDFBA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "StandalonePlayer/StandalonePlayer-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/../../../../Release/Mac OS X/Framework/Core/Include\"",
+					"\"$(SRCROOT)/../../../../Release/Mac OS X/Framework/Dependencies/Include\"",
+					"\"$(SRCROOT)/../../../../Release/Mac OS X/Framework/Modules/Include\"",
+					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
+					"\"$(SRCROOT)/../../../../Core/Dependencies/lua/src\"",
+					"\"$(SRCROOT)/../../../../Bindings/Contents/LUA/Include\"",
+				);
+				INFOPLIST_FILE = "StandalonePlayer/StandalonePlayer-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../../../Core/Dependencies/lua/src\"",
+					"\"$(SRCROOT)/../../../../Core/Dependencies/physfs/Debug\"",
+					"\"$(SRCROOT)/../../../../Core/Dependencies/freetype\"",
+					"\"$(SRCROOT)/../../../../Core/Dependencies/zlib\"",
+					"\"$(SRCROOT)/../../../../Core/Dependencies/libpng\"",
+					"\"$(SRCROOT)/../../../../Release/Mac OS X/Framework/Dependencies/Lib\"",
+					"\"$(SRCROOT)/../../../../../../../Library/Developer/Xcode/DerivedData/Modules-epduxiffqrcazabvaazmexadjpgk/Build/Products/Debug\"",
+					"\"$(SRCROOT)/../../../../../../../Library/Developer/Xcode/DerivedData/PolyCore-ecbhldydhvplehavgvhjdlapyvwd/Build/Products/Debug\"",
+					"\"$(SRCROOT)/../../../../../../../Library/Developer/Xcode/DerivedData/Bindings-bojbiqnjfgqgjpgcdihwtncgpnvk/Build/Products/Debug\"",
+				);
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		6DE45BAE138DA66C000BDFBA /* Build configuration list for PBXProject "StandalonePlayer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6DE45BD0138DA66C000BDFBA /* Debug */,
+				6DE45BD1138DA66C000BDFBA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6DE45BD2138DA66C000BDFBA /* Build configuration list for PBXNativeTarget "StandalonePlayer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6DE45BD3138DA66C000BDFBA /* Debug */,
+				6DE45BD4138DA66C000BDFBA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 6DE45BAB138DA66C000BDFBA /* Project object */;
+}

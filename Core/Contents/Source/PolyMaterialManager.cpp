@@ -148,7 +148,6 @@ Shader *MaterialManager::createShaderFromXMLNode(TiXmlNode *node) {
 	if(node->ToElement()->Attribute("type")) {
 		String shaderType = node->ToElement()->Attribute("type");
 //		Logger::log("Attempting to create %s shader\n", shaderType.c_str());
-		
 		for(int m=0; m < shaderModules.size(); m++) {
 			PolycodeShaderModule *shaderModule = shaderModules[m];
 			if(shaderModule->getShaderType() == shaderType) {
@@ -156,6 +155,21 @@ Shader *MaterialManager::createShaderFromXMLNode(TiXmlNode *node) {
 			}
 		}		
 	}
+
+	int numAreaLights = 0;
+	int numSpotLights = 0;
+		
+	if(node->ToElement()->Attribute("numAreaLights")) {
+		numAreaLights = atoi(node->ToElement()->Attribute("numAreaLights"));
+	}
+	if(node->ToElement()->Attribute("numSpotLights")) {
+		numSpotLights = atoi(node->ToElement()->Attribute("numSpotLights"));
+	}
+	
+	if(retShader) {
+		retShader->numAreaLights = numAreaLights;
+		retShader->numSpotLights = numSpotLights;		
+	}	
 	
 	return retShader;
 }
@@ -298,6 +312,7 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 								
 								for(int l=0; l < renderTargets.size(); l++) {
 									if(renderTargets[l]->id == newBinding->id) {
+										printf("Assigning texture to %s\n", newBinding->id.c_str());
 										newBinding->texture = renderTargets[l]->texture;
 										newBinding->width = renderTargets[l]->width;
 										newBinding->height = renderTargets[l]->height;

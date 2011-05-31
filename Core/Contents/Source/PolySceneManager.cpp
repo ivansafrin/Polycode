@@ -59,9 +59,15 @@ void SceneManager::UpdateVirtual() {
 	for(int i=0;i<renderTextures.size();i++) {
 		CoreServices::getInstance()->getRenderer()->setViewportSize(renderTextures[i]->getTargetTexture()->getWidth(), renderTextures[i]->getTargetTexture()->getHeight());
 		CoreServices::getInstance()->getRenderer()->loadIdentity();
-		renderTextures[i]->getTargetScene()->Update();
-		renderTextures[i]->getTargetScene()->Render();
-		renderTextures[i]->drawScreen();
+		if(renderTextures[i]->getTargetScene()->isVirtual())
+			renderTextures[i]->getTargetScene()->Update();
+			
+	CoreServices::getInstance()->getRenderer()->bindFrameBufferTexture(renderTextures[i]->getTargetTexture());	
+			
+			
+		renderTextures[i]->getTargetScene()->Render(renderTextures[i]->getTargetCamera());
+		//renderTextures[i]->drawScreen();
+		CoreServices::getInstance()->getRenderer()->unbindFramebuffers();		
 		CoreServices::getInstance()->getRenderer()->clearScreen();
 		CoreServices::getInstance()->getRenderer()->loadIdentity();
 	}

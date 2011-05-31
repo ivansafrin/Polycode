@@ -129,10 +129,13 @@ Camera *Scene::getDefaultCamera() {
 	return defaultCamera;
 }
 
-void Scene::Render() {
+void Scene::Render(Camera *targetCamera) {
 	
-	if(!defaultCamera)
+	if(!targetCamera && !defaultCamera)
 		return;
+	
+	if(!targetCamera)
+		targetCamera = defaultCamera;
 	
 	// prepare lights...
 	for(int i=0; i<entities.size();i++) {
@@ -146,7 +149,7 @@ void Scene::Render() {
 	Matrix4 *matrixPtr;
 	
 	
-	defaultCamera->rebuildTransformMatrix();
+	targetCamera->rebuildTransformMatrix();
 		
 	if(useClearColor)
 		CoreServices::getInstance()->getRenderer()->setClearColor(clearColor.r,clearColor.g,clearColor.b);	
@@ -163,25 +166,26 @@ void Scene::Render() {
 		Vector3 position;
 		matrixPtr = NULL;				
 		direction.x = 0;		
-		direction.y = 1;
-		direction.z = 0;
+		direction.y = 0;
+		direction.z = -1;
+		
 		
 		direction = light->getConcatenatedMatrix().rotateVector(direction);
 		direction.Normalize();
 		
 		if(light->areShadowsEnabled()) {
 			if(light->getType() == SceneLight::SPOT_LIGHT) {
-				textureMatrix.identity();
+//				textureMatrix.identity();
 				
 				Matrix4 matTexAdj(0.5f,	0.0f,	0.0f,	0.0f,
 								  0.0f,	0.5f,	0.0f,	0.0f,
 								  0.0f,	0.0f,	0.5f,	0.0f,
 								  0.5f,	0.5f,	0.5f,	1.0f );
 				
-				textureMatrix =  defaultCamera->getConcatenatedMatrix() * light->getLightViewMatrix() * matTexAdj;
-				
-				matrixPtr = &textureMatrix;
+								
 				light->renderDepthMap(this);
+				textureMatrix = light->getLightViewMatrix() * matTexAdj;				
+				matrixPtr = &textureMatrix;				
 				CoreServices::getInstance()->getRenderer()->addShadowMap(light->getZBufferTexture());
 			}
 		}
@@ -190,13 +194,13 @@ void Scene::Render() {
 		if(light->getParentEntity() != NULL) {
 			position = light->getParentEntity()->getConcatenatedMatrix() * position;			
 		}
-		CoreServices::getInstance()->getRenderer()->addLight(position, direction, light->getLightType(), light->lightColor, light->getDistance(), light->getIntensity(), matrixPtr);
+		CoreServices::getInstance()->getRenderer()->addLight(position, direction, light->getLightType(), light->lightColor, light->getConstantAttenuation(), light->getLinearAttenuation(), light->getQuadraticAttenuation(), light->getIntensity(), light->getSpotlightCutoff(), light->getSpotlightExponent(), light->areShadowsEnabled(), matrixPtr);
 	}	
 	
-	defaultCamera->doCameraTransform();
-	defaultCamera->buildFrustrumPlanes();
+	targetCamera->doCameraTransform();
+	targetCamera->buildFrustrumPlanes();
 	
-	if(defaultCamera->getOrthoMode()) {
+	if(targetCamera->getOrthoMode()) {
 		CoreServices::getInstance()->getRenderer()->_setOrthoMode();
 	}
 	
@@ -208,14 +212,14 @@ void Scene::Render() {
 	
 	for(int i=0; i<entities.size();i++) {
 		if(entities[i]->getBBoxRadius() > 0) {
-			if(defaultCamera->isSphereInFrustrum((entities[i]->getPosition()), entities[i]->getBBoxRadius()))
+			if(targetCamera->isSphereInFrustrum((entities[i]->getPosition()), entities[i]->getBBoxRadius()))
 				entities[i]->transformAndRender();
 		} else {
 			entities[i]->transformAndRender();		
 		}
 	}
 	
-	if(defaultCamera->getOrthoMode()) {
+	if(targetCamera->getOrthoMode()) {
 		CoreServices::getInstance()->getRenderer()->setPerspectiveMode();
 	}
 	
@@ -224,13 +228,15 @@ void Scene::Render() {
 
 void Scene::RenderDepthOnly(Camera *targetCamera) {
 	
+	CoreServices::getInstance()->getRenderer()->cullFrontFaces(true);
+	
 	for(int i=0; i<entities.size();i++) {
 		entities[i]->doUpdates();		
 		entities[i]->updateEntityMatrix();
 	}
 	
-	targetCamera->doCameraTransform();
-		
+	targetCamera->rebuildTransformMatrix();	
+	targetCamera->doCameraTransform();	
 	targetCamera->buildFrustrumPlanes();
 	
 	CoreServices::getInstance()->getRenderer()->setTexture(NULL);
@@ -244,6 +250,7 @@ void Scene::RenderDepthOnly(Camera *targetCamera) {
 		}
 	}	
 	CoreServices::getInstance()->getRenderer()->enableShaders(true);
+	CoreServices::getInstance()->getRenderer()->cullFrontFaces(false);	
 }
 
 void Scene::addLight(SceneLight *light) {
@@ -402,7 +409,7 @@ void Scene::loadScene(String fileName) {
 				newEntity = (SceneEntity*)this->getDefaultCamera();
 				break;
 			case ENTITY_LIGHT:
-				
+				/*
 				Number col[3],e,d;
 				unsigned int lType;
 				OSBasics::read(&lType, sizeof(unsigned int), 1, inFile);				
@@ -414,6 +421,7 @@ void Scene::loadScene(String fileName) {
 				newLight->lightColor.setColor(col[0],col[1],col[2],1.0f);
 				addLight(newLight);
 				newEntity = (SceneEntity*)newLight;
+				*/
 				break;
 		}
 		
@@ -582,6 +590,7 @@ void Scene::saveScene(String fileName) {
 		}
 	}
 	*/
+	/*
 	Number col[3],e,d;
 	for(int i=0; i < lights.size(); i++) {
 		
@@ -599,7 +608,7 @@ void Scene::saveScene(String fileName) {
 		OSBasics::write(&d, sizeof(Number), 1, outFile);
 		OSBasics::write(col, sizeof(Number), 3, outFile);
 	}
-	
+	*/
 	for(int i=0; i < customEntities.size(); i++) {
 		SceneEntity *custEnt = customEntities[i];
 		

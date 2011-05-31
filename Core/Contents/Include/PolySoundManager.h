@@ -27,15 +27,26 @@
 #include <stdio.h>
 #include "al.h"
 #include "alc.h"
+#include "PolyVector3.h"
 
 namespace Polycode {
 	
+	/**
+	* Controls global sound settings.
+	*/
 	class _PolyExport SoundManager {
 	public:
 		SoundManager();
 		~SoundManager();
 		
+		void setListenerPosition(Vector3 position);
+		void setListenerOrientation(Vector3 orientation);	
 		void initAL();
+		
+		/**
+		* Sets the global sound volume.
+		*/ 
+		void setGlobalVolume(Number globalVolume);
 		
 		
 	private:

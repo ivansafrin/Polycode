@@ -20,8 +20,20 @@ function SoundManager:SoundManager(...)
 	end
 end
 
+function SoundManager:setListenerPosition(position)
+	local retVal = Polycore.SoundManager_setListenerPosition(self.__ptr, position.__ptr)
+end
+
+function SoundManager:setListenerOrientation(orientation)
+	local retVal = Polycore.SoundManager_setListenerOrientation(self.__ptr, orientation.__ptr)
+end
+
 function SoundManager:initAL()
 	local retVal =  Polycore.SoundManager_initAL(self.__ptr)
+end
+
+function SoundManager:setGlobalVolume(globalVolume)
+	local retVal = Polycore.SoundManager_setGlobalVolume(self.__ptr, globalVolume)
 end
 
 

@@ -29,6 +29,7 @@ Screen::Screen() : EventDispatcher() {
 	offset.y = 0;
 	enabled = true;
 	focusChild = NULL;
+	originalSceneTexture = NULL;
 	CoreServices::getInstance()->getScreenManager()->addScreen(this);
 	filterShaderMaterial = NULL;
 	_hasFilterShader = false;
@@ -151,17 +152,27 @@ void Screen::setScreenShader(String shaderName) {
 	if(!filterShaderMaterial)
 		return;
 	
-	CoreServices::getInstance()->getRenderer()->createRenderTextures(&originalSceneTexture, &zBufferSceneTexture, CoreServices::getInstance()->getCore()->getXRes(), CoreServices::getInstance()->getCore()->getYRes());
+	if(!originalSceneTexture) {
+	CoreServices::getInstance()->getRenderer()->createRenderTextures(&originalSceneTexture, NULL, CoreServices::getInstance()->getCore()->getXRes(), CoreServices::getInstance()->getCore()->getYRes());
+	}
 	
 	for(int i=0; i < filterShaderMaterial->getNumShaders(); i++) {
 		ShaderBinding* binding = filterShaderMaterial->getShader(i)->createBinding();		
-		binding->addTexture("tauSceneRender", originalSceneTexture);
-		binding->addTexture("tauSceneZBuffer", zBufferSceneTexture);
+		if( i == 0) 
+			binding->addTexture("screenColorBuffer", originalSceneTexture);
+			
 		localShaderOptions.push_back(binding);
 	}
 		
 	_hasFilterShader = true;
 	
+}
+
+void Screen::clearScreenShader() {
+	if(_hasFilterShader) {
+		_hasFilterShader = false;
+		filterShaderMaterial = NULL;
+	}
 }
 
 
@@ -170,7 +181,7 @@ void Screen::drawFilter() {
 	if(!filterShaderMaterial)
 		return;
 	
-	CoreServices::getInstance()->getRenderer()->bindFrameBufferTexture(zBufferSceneTexture);
+	CoreServices::getInstance()->getRenderer()->bindFrameBufferTexture(originalSceneTexture);
 	
 	Render();
 	//CoreServices::getInstance()->getRenderer()->renderToTexture(originalSceneTexture);	
@@ -180,7 +191,8 @@ void Screen::drawFilter() {
 	ShaderBinding* materialBinding;		
 	for(int i=0; i < filterShaderMaterial->getNumShaders(); i++) {
 		materialBinding = filterShaderMaterial->getShaderBinding(i);
-		CoreServices::getInstance()->getRenderer()->applyMaterial(filterShaderMaterial, localShaderOptions[i], i);		
+		CoreServices::getInstance()->getRenderer()->applyMaterial(filterShaderMaterial, localShaderOptions[i], i);	
+			
 		if(i==filterShaderMaterial->getNumShaders()-1) {
 	//		CoreServices::getInstance()->getRenderer()->clearScreen();
 			CoreServices::getInstance()->getRenderer()->loadIdentity();
@@ -190,12 +202,13 @@ void Screen::drawFilter() {
 				//				CoreServices::getInstance()->getRenderer()->clearScreen();
 				//				CoreServices::getInstance()->getRenderer()->loadIdentity();
 				CoreServices::getInstance()->getRenderer()->bindFrameBufferTexture(materialBinding->getOutTargetBinding(j)->texture);
-				//				Logger::log("drawing quad (%s) %f,%f\n", materialBinding->getOutTargetBinding(j)->texture->getResourceName().c_str(), materialBinding->getOutTargetBinding(j)->width, materialBinding->getOutTargetBinding(j)->height);
+				//				Logger::log("drawing quad (%s) %f,%f\n", materialBinding->getOutTargetBinding(j)->texture->getResourceName().c_str(), materialBinding->getOutTargetBinding(j)->width, materialBinding->getOutTargetBinding(j)->height);		
+				
 				CoreServices::getInstance()->getRenderer()->drawScreenQuad(materialBinding->getOutTargetBinding(j)->width, materialBinding->getOutTargetBinding(j)->height);
 				CoreServices::getInstance()->getRenderer()->unbindFramebuffers();
 				
 				//				CoreServices::getInstance()->getRenderer()->renderToTexture(materialBinding->getOutTargetBinding(j)->texture);
-			}		
+			}						
 		}
 		CoreServices::getInstance()->getRenderer()->clearShader();
 		CoreServices::getInstance()->getRenderer()->loadIdentity();

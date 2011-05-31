@@ -37,15 +37,31 @@ namespace Polycode {
 			
 			ScreenEntity *getScreenEntity();
 			
+			/**
+			* Applies torque to the physics entity		
+			*/
 			void applyTorque(Number torque);
+			
+			/**
+			* Applies force to the physics entity		
+			*/			
 			void applyForce(Vector2 force);
 		
 			void setTransform(Vector2 pos, Number angle);
 			
 			void Update();
 			
+			/**
+			* Rectangular physics entity
+			*/ 
 			static const int ENTITY_RECT = 1;
+			/**
+			* Circular physics entity
+			*/ 			
 			static const int ENTITY_CIRCLE = 2;	
+			/**
+			* Static rectangular entity.
+			*/ 						
 			static const int ENTITY_STATICRECT = 3;
 		
 			b2Fixture *fixture;		

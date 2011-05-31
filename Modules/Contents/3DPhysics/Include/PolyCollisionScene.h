@@ -47,9 +47,14 @@ struct CollisionResult {
 		Vector3 position;
 	};
 
-	
+	/**
+	* A scene that tracks collisions between entities. The collision scene acts like a regular scene, only it automatically tracks collisions between its child entities.
+	*/
 	class _PolyExport CollisionScene : public Scene {
 		public:
+			/**
+			* Creates a collision scene.
+			*/
 			CollisionScene();
 			CollisionScene(bool virtualScene);		
 			virtual ~CollisionScene();
@@ -57,6 +62,12 @@ struct CollisionResult {
 			void initCollisionScene();
 		
 			virtual void Update();		
+			
+			/**
+			* Enables collision tracking for an entity.
+			* @param entity Entity to track collision for.
+			* @param 
+			*/			
 			void enableCollision(SceneEntity *entity, bool val);		
 			CollisionSceneEntity *getCollisionEntityByObject(btCollisionObject *collisionObject);		
 			RayTestResult getFirstEntityInRay(const Vector3 &origin,  const Vector3 &dest);

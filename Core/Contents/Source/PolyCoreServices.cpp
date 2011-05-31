@@ -120,6 +120,9 @@ CoreServices::~CoreServices() {
 	delete tweenManager;
 	delete resourceManager;
 	delete soundManager;
+	instanceMap.clear();
+	overrideInstance = NULL;
+	
 }
 
 void CoreServices::setCore(Core *core) {

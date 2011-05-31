@@ -11,8 +11,18 @@
 		6D8656AB12AF5FD5008A486E /* PolyString.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D8656AA12AF5FD5008A486E /* PolyString.cpp */; };
 		6D865AC212B07363008A486E /* PolyData.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D865AC112B07363008A486E /* PolyData.h */; };
 		6D865AC412B0736C008A486E /* PolyData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D865AC312B0736C008A486E /* PolyData.cpp */; };
+		6DB5B5B91394A9F0008C00CA /* PolySceneSound.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DB5B5B71394A9EF008C00CA /* PolySceneSound.h */; };
+		6DB5B5BA1394A9F0008C00CA /* PolyScreenSound.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DB5B5B81394A9EF008C00CA /* PolyScreenSound.h */; };
+		6DB5B5BE1394AA11008C00CA /* PolySceneSound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DB5B5BC1394AA0C008C00CA /* PolySceneSound.cpp */; };
+		6DB5B5BF1394AA11008C00CA /* PolyScreenSound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DB5B5BD1394AA0F008C00CA /* PolyScreenSound.cpp */; };
 		6DD40E2B136C68B700D602D3 /* PolycodeView.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DD40E2A136C68B700D602D3 /* PolycodeView.h */; };
 		6DD40E2D136C68C400D602D3 /* PolycodeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DD40E2C136C68C400D602D3 /* PolycodeView.mm */; };
+		6DE45C54138EF8CB000BDFBA /* PolyGLSLProgram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DE45C51138EF8CA000BDFBA /* PolyGLSLProgram.cpp */; };
+		6DE45C55138EF8CB000BDFBA /* PolyGLSLShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DE45C52138EF8CB000BDFBA /* PolyGLSLShader.cpp */; };
+		6DE45C56138EF8CB000BDFBA /* PolyGLSLShaderModule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DE45C53138EF8CB000BDFBA /* PolyGLSLShaderModule.cpp */; };
+		6DE45C5A138EF933000BDFBA /* PolyGLSLProgram.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DE45C57138EF933000BDFBA /* PolyGLSLProgram.h */; };
+		6DE45C5B138EF933000BDFBA /* PolyGLSLShader.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DE45C58138EF933000BDFBA /* PolyGLSLShader.h */; };
+		6DE45C5C138EF933000BDFBA /* PolyGLSLShaderModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DE45C59138EF933000BDFBA /* PolyGLSLShaderModule.h */; };
 		6DFB016F12A73BC200C43A7D /* PolyModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFB016E12A73BC200C43A7D /* PolyModule.h */; };
 		6DFB017112A73BCF00C43A7D /* PolyModule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DFB017012A73BCF00C43A7D /* PolyModule.cpp */; };
 		6DFBF3BD12A3184E00C43A7D /* OSBasics.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DFBF30D12A3184E00C43A7D /* OSBasics.h */; };
@@ -185,8 +195,18 @@
 		6D8656AA12AF5FD5008A486E /* PolyString.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyString.cpp; sourceTree = "<group>"; };
 		6D865AC112B07363008A486E /* PolyData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyData.h; sourceTree = "<group>"; };
 		6D865AC312B0736C008A486E /* PolyData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyData.cpp; sourceTree = "<group>"; };
+		6DB5B5B71394A9EF008C00CA /* PolySceneSound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolySceneSound.h; sourceTree = "<group>"; };
+		6DB5B5B81394A9EF008C00CA /* PolyScreenSound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyScreenSound.h; sourceTree = "<group>"; };
+		6DB5B5BC1394AA0C008C00CA /* PolySceneSound.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolySceneSound.cpp; sourceTree = "<group>"; };
+		6DB5B5BD1394AA0F008C00CA /* PolyScreenSound.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyScreenSound.cpp; sourceTree = "<group>"; };
 		6DD40E2A136C68B700D602D3 /* PolycodeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolycodeView.h; sourceTree = "<group>"; };
 		6DD40E2C136C68C400D602D3 /* PolycodeView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; lineEnding = 0; path = PolycodeView.mm; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		6DE45C51138EF8CA000BDFBA /* PolyGLSLProgram.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyGLSLProgram.cpp; sourceTree = "<group>"; };
+		6DE45C52138EF8CB000BDFBA /* PolyGLSLShader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyGLSLShader.cpp; sourceTree = "<group>"; };
+		6DE45C53138EF8CB000BDFBA /* PolyGLSLShaderModule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyGLSLShaderModule.cpp; sourceTree = "<group>"; };
+		6DE45C57138EF933000BDFBA /* PolyGLSLProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyGLSLProgram.h; sourceTree = "<group>"; };
+		6DE45C58138EF933000BDFBA /* PolyGLSLShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyGLSLShader.h; sourceTree = "<group>"; };
+		6DE45C59138EF933000BDFBA /* PolyGLSLShaderModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyGLSLShaderModule.h; sourceTree = "<group>"; };
 		6DFB016E12A73BC200C43A7D /* PolyModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyModule.h; sourceTree = "<group>"; };
 		6DFB017012A73BCF00C43A7D /* PolyModule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyModule.cpp; sourceTree = "<group>"; };
 		6DFBF30D12A3184E00C43A7D /* OSBasics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSBasics.h; sourceTree = "<group>"; };
@@ -408,6 +428,11 @@
 		6DFBF30B12A3184E00C43A7D /* Include */ = {
 			isa = PBXGroup;
 			children = (
+				6DB5B5B71394A9EF008C00CA /* PolySceneSound.h */,
+				6DB5B5B81394A9EF008C00CA /* PolyScreenSound.h */,
+				6DE45C57138EF933000BDFBA /* PolyGLSLProgram.h */,
+				6DE45C58138EF933000BDFBA /* PolyGLSLShader.h */,
+				6DE45C59138EF933000BDFBA /* PolyGLSLShaderModule.h */,
 				6DD40E2A136C68B700D602D3 /* PolycodeView.h */,
 				6DFE5FC412D450C30005B100 /* PolyObject.h */,
 				6D865AC112B07363008A486E /* PolyData.h */,
@@ -504,6 +529,11 @@
 		6DFBF36612A3184E00C43A7D /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				6DB5B5BC1394AA0C008C00CA /* PolySceneSound.cpp */,
+				6DB5B5BD1394AA0F008C00CA /* PolyScreenSound.cpp */,
+				6DE45C51138EF8CA000BDFBA /* PolyGLSLProgram.cpp */,
+				6DE45C52138EF8CB000BDFBA /* PolyGLSLShader.cpp */,
+				6DE45C53138EF8CB000BDFBA /* PolyGLSLShaderModule.cpp */,
 				6DD40E2C136C68C400D602D3 /* PolycodeView.mm */,
 				6DFE5FC712D450CB0005B100 /* PolyObject.cpp */,
 				6D865AC312B0736C008A486E /* PolyData.cpp */,
@@ -696,6 +726,11 @@
 				6D865AC212B07363008A486E /* PolyData.h in Headers */,
 				6DFE5FC512D450C30005B100 /* PolyObject.h in Headers */,
 				6DD40E2B136C68B700D602D3 /* PolycodeView.h in Headers */,
+				6DE45C5A138EF933000BDFBA /* PolyGLSLProgram.h in Headers */,
+				6DE45C5B138EF933000BDFBA /* PolyGLSLShader.h in Headers */,
+				6DE45C5C138EF933000BDFBA /* PolyGLSLShaderModule.h in Headers */,
+				6DB5B5B91394A9F0008C00CA /* PolySceneSound.h in Headers */,
+				6DB5B5BA1394A9F0008C00CA /* PolyScreenSound.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -830,6 +865,11 @@
 				6D865AC412B0736C008A486E /* PolyData.cpp in Sources */,
 				6DFE5FC812D450CB0005B100 /* PolyObject.cpp in Sources */,
 				6DD40E2D136C68C400D602D3 /* PolycodeView.mm in Sources */,
+				6DE45C54138EF8CB000BDFBA /* PolyGLSLProgram.cpp in Sources */,
+				6DE45C55138EF8CB000BDFBA /* PolyGLSLShader.cpp in Sources */,
+				6DE45C56138EF8CB000BDFBA /* PolyGLSLShaderModule.cpp in Sources */,
+				6DB5B5BE1394AA11008C00CA /* PolySceneSound.cpp in Sources */,
+				6DB5B5BF1394AA11008C00CA /* PolyScreenSound.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -25,6 +25,7 @@
 #include "PolyString.h"
 #include "PolyLogger.h"
 #include "PolyGlobals.h"
+#include "PolyVector3.h"
 #include <string>
 #include <vector>
 #include "al.h"
@@ -63,12 +64,32 @@ namespace Polycode {
 		* Play the sound once or in a loop.
 		* @param once If this is true, play it once, otherwise, loop.
 		*/
-		void Play(bool once);
+		void Play(bool loop=false);
 		
 		/**
 		* Stop the sound playback.
 		*/		
 		void Stop();
+		
+		/**
+		* Sets the volume of this sound.
+		* @param newVolume A Number 0-1, where 0 is no sound and 1 is the loudest.
+		*/
+		void setVolume(Number newVolume);
+
+		/**
+		* Sets the pitch of this sound.
+		* @param newPitch A Number 0-1.
+		*/		
+		void setPitch(Number newPitch);
+				
+		void setIsPositional(bool isPositional);
+		
+		void setSoundPosition(Vector3 position);
+		void setSoundVelocity(Vector3 velocity);
+		void setSoundDirection(Vector3 direction);
+		
+		void setPositionalProperties(Number referenceDistance, Number maxDistance);
 		
 		ALuint loadWAV(String fileName);
 		ALuint loadOGG(String fileName);
@@ -84,6 +105,7 @@ namespace Polycode {
 
 	private:
 	
+		bool isPositional;
 		ALuint soundSource;
 		
 	};

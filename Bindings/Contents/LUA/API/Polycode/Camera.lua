@@ -98,6 +98,10 @@ function Camera:setPostFilter(shaderName)
 	local retVal = Polycore.Camera_setPostFilter(self.__ptr, shaderName)
 end
 
+function Camera:removePostFilter()
+	local retVal =  Polycore.Camera_removePostFilter(self.__ptr)
+end
+
 
 
 function Camera:__delete()

@@ -19,6 +19,10 @@ function CoreServices:getInstance()
 	end
 end
 
+function CoreServices:setInstance(_instance)
+	local retVal = Polycore.CoreServices_setInstance(_instance.__ptr)
+end
+
 function CoreServices:getRenderMutex()
 	local retVal =  Polycore.CoreServices_getRenderMutex()
 	if Polycore.__ptr_lookup[retVal] ~= nil then

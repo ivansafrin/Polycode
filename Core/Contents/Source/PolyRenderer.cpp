@@ -42,6 +42,7 @@ Renderer::Renderer() : currentTexture(NULL), xRes(0), yRes(0), renderMode(0), or
 	currentFrameBufferTexture = NULL;
 	previousFrameBufferTexture = NULL;
 	fov = 45.0;
+	cullingFrontFaces = false;
 }
 
 Renderer::~Renderer() {
@@ -121,7 +122,16 @@ void Renderer::addShaderModule(PolycodeShaderModule *module) {
 	shaderModules.push_back(module);
 }
 
-void Renderer::addLight(Vector3 position, Vector3 direction, int type, Color color, Number distance, Number intensity, Matrix4 *textureMatrix) {
+void Renderer::sortLights(){
+	LightSorter sorter;
+	sorter.basePosition = (getModelviewMatrix()).getPosition();
+	sorter.cameraMatrix = getCameraMatrix().inverse();	
+	sort (areaLights.begin(), areaLights.end(), sorter);
+	sort (spotLights.begin(), spotLights.end(), sorter);	
+}
+
+void Renderer::addLight(Vector3 position, Vector3 direction, int type, Color color, Number constantAttenuation, Number linearAttenuation, Number quadraticAttenuation, Number intensity, Number spotlightCutoff, Number spotlightExponent, bool shadowsEnabled, Matrix4 *textureMatrix) {
+
 	numLights++;
 	
 	LightInfo info;
@@ -129,10 +139,16 @@ void Renderer::addLight(Vector3 position, Vector3 direction, int type, Color col
 		info.textureMatrix = *textureMatrix;
 	}
 	
+	info.shadowsEnabled = shadowsEnabled;
+	info.spotlightCutoff = spotlightCutoff;
+	info.spotlightExponent = spotlightExponent;	
 	info.intensity = intensity;
 	info.type = type;
 	info.dir = direction;
-	info.distance = distance;
+	info.constantAttenuation = constantAttenuation;
+	info.linearAttenuation = linearAttenuation;
+	info.quadraticAttenuation = quadraticAttenuation;
+			
 	info.color.set(color.r, color.g, color.b);
 	info.position = position;
 	lights.push_back(info);

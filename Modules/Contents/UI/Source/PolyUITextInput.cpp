@@ -536,29 +536,29 @@ void UITextInput::onKeyDown(TAUKey key, wchar_t charCode) {
 	
 	CoreInput *input = CoreServices::getInstance()->getCore()->getInput();	
 
-	if(key == TAUK_a && (input->getKeyState(TAUK_LSUPER) || input->getKeyState(TAUK_RSUPER))) {
+	if(key == KEY_a && (input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER))) {
 		selectAll();
 		return;
 	}
 
-	if(key == TAUK_c && (input->getKeyState(TAUK_LSUPER) || input->getKeyState(TAUK_RSUPER))) {
+	if(key == KEY_c && (input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER))) {
 		CoreServices::getInstance()->getCore()->copyStringToClipboard(getSelectionText());
 		return;
 	}
 
-	if(key == TAUK_x && (input->getKeyState(TAUK_LSUPER) || input->getKeyState(TAUK_RSUPER))) {
+	if(key == KEY_x && (input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER))) {
 		return;
 	}
 
-	if(key == TAUK_v && (input->getKeyState(TAUK_LSUPER) || input->getKeyState(TAUK_RSUPER))) {
+	if(key == KEY_v && (input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER))) {
 		insertText(CoreServices::getInstance()->getCore()->getClipboardString());
 		return;
 	}	
 	
 	
-	if(key == TAUK_LEFT) {
-		if(input->getKeyState(TAUK_LSUPER) || input->getKeyState(TAUK_RSUPER)) {
-			if(input->getKeyState(TAUK_LSHIFT) || input->getKeyState(TAUK_RSHIFT)) {
+	if(key == KEY_LEFT) {
+		if(input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER)) {
+			if(input->getKeyState(KEY_LSHIFT) || input->getKeyState(KEY_RSHIFT)) {
 				if(hasSelection) {
 					setSelection(this->lineOffset, selectionLine, this->caretPosition, 0);					
 				} else {
@@ -569,8 +569,8 @@ void UITextInput::onKeyDown(TAUKey key, wchar_t charCode) {
 				clearSelection();				
 				updateCaretPosition();
 			}
-		} else if (input->getKeyState(TAUK_LALT) || input->getKeyState(TAUK_RALT)) {
-			if(input->getKeyState(TAUK_LSHIFT) || input->getKeyState(TAUK_RSHIFT)) {
+		} else if (input->getKeyState(KEY_LALT) || input->getKeyState(KEY_RALT)) {
+			if(input->getKeyState(KEY_LSHIFT) || input->getKeyState(KEY_RSHIFT)) {
 				if(hasSelection) {
 					setSelection(this->lineOffset, selectionLine, this->caretPosition, caretSkipWordBack(selectionLine, selectionCaretPosition));
 				} else {
@@ -583,7 +583,7 @@ void UITextInput::onKeyDown(TAUKey key, wchar_t charCode) {
 			}
 		} else {
 			if(caretPosition > 0) {
-				if(input->getKeyState(TAUK_LSHIFT) || input->getKeyState(TAUK_RSHIFT)) {
+				if(input->getKeyState(KEY_LSHIFT) || input->getKeyState(KEY_RSHIFT)) {
 					if(hasSelection) {
 						if(selectionCaretPosition > 0)
 							setSelection(this->lineOffset, selectionLine, this->caretPosition, selectionCaretPosition-1);
@@ -600,10 +600,10 @@ void UITextInput::onKeyDown(TAUKey key, wchar_t charCode) {
 		return;
 	}
 	
-	if(key == TAUK_RIGHT) {
+	if(key == KEY_RIGHT) {
 		if(caretPosition < currentLine->getText().length()) {			
-			if(input->getKeyState(TAUK_LSUPER) || input->getKeyState(TAUK_RSUPER)) {
-				if(input->getKeyState(TAUK_LSHIFT) || input->getKeyState(TAUK_RSHIFT)) {
+			if(input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER)) {
+				if(input->getKeyState(KEY_LSHIFT) || input->getKeyState(KEY_RSHIFT)) {
 					if(hasSelection) {
 						setSelection(this->lineOffset, selectionLine, this->caretPosition, lines[selectionLine]->getText().length());					
 					} else {
@@ -613,8 +613,8 @@ void UITextInput::onKeyDown(TAUKey key, wchar_t charCode) {
 					caretPosition = currentLine->getText().length();
 					clearSelection();
 				}				
-			} else if (input->getKeyState(TAUK_LALT) || input->getKeyState(TAUK_RALT)) {
-				if(input->getKeyState(TAUK_LSHIFT) || input->getKeyState(TAUK_RSHIFT)) {
+			} else if (input->getKeyState(KEY_LALT) || input->getKeyState(KEY_RALT)) {
+				if(input->getKeyState(KEY_LSHIFT) || input->getKeyState(KEY_RSHIFT)) {
 					if(hasSelection) {
 						setSelection(this->lineOffset, selectionLine, this->caretPosition, caretSkipWordForward(selectionLine, selectionCaretPosition));
 					} else {
@@ -625,7 +625,7 @@ void UITextInput::onKeyDown(TAUKey key, wchar_t charCode) {
 					clearSelection();					
 				}				
 			} else {
-				if(input->getKeyState(TAUK_LSHIFT) || input->getKeyState(TAUK_RSHIFT)) {
+				if(input->getKeyState(KEY_LSHIFT) || input->getKeyState(KEY_RSHIFT)) {
 					if(hasSelection) {
 						setSelection(this->lineOffset, selectionLine, this->caretPosition, selectionCaretPosition+1);
 					} else {
@@ -641,9 +641,9 @@ void UITextInput::onKeyDown(TAUKey key, wchar_t charCode) {
 		return;
 	}
 	
-	if(key == TAUK_UP) {		
+	if(key == KEY_UP) {		
 		if(multiLine) {
-			if(input->getKeyState(TAUK_LSHIFT) || input->getKeyState(TAUK_RSHIFT)) {			
+			if(input->getKeyState(KEY_LSHIFT) || input->getKeyState(KEY_RSHIFT)) {			
 				if(hasSelection) {
 					if(selectionLine > 0)
 						setSelection(this->lineOffset, selectionLine-1, this->caretPosition, selectionCaretPosition);
@@ -664,9 +664,9 @@ void UITextInput::onKeyDown(TAUKey key, wchar_t charCode) {
 		return;
 	}
 	
-	if(key == TAUK_DOWN) {
+	if(key == KEY_DOWN) {
 		if(multiLine) {
-			if(input->getKeyState(TAUK_LSHIFT) || input->getKeyState(TAUK_RSHIFT)) {			
+			if(input->getKeyState(KEY_LSHIFT) || input->getKeyState(KEY_RSHIFT)) {			
 				if(hasSelection) {
 					if(selectionLine < lines.size()-1)
 						setSelection(this->lineOffset, selectionLine+1, this->caretPosition, selectionCaretPosition);
@@ -688,7 +688,7 @@ void UITextInput::onKeyDown(TAUKey key, wchar_t charCode) {
 	}
 	
 	
-	if(key == TAUK_RETURN) {
+	if(key == KEY_RETURN) {
 		if(hasSelection)
 			deleteSelection();		
 		if(multiLine) {
@@ -712,7 +712,7 @@ void UITextInput::onKeyDown(TAUKey key, wchar_t charCode) {
 		caretPosition++;
 	}
 	
-	if(key == TAUK_TAB && multiLine) {
+	if(key == KEY_TAB && multiLine) {
 		if(hasSelection)
 			deleteSelection();		
 		ctext = currentLine->getText();				
@@ -722,7 +722,7 @@ void UITextInput::onKeyDown(TAUKey key, wchar_t charCode) {
 		caretPosition++;		
 	}
 	
-	if(key == TAUK_BACKSPACE) {
+	if(key == KEY_BACKSPACE) {
 		if(hasSelection) {
 			deleteSelection();
 			return;

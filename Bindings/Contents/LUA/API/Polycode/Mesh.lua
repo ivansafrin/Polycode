@@ -82,6 +82,14 @@ function Mesh:createSphere(radius, numRings, numSegments)
 	local retVal = Polycore.Mesh_createSphere(self.__ptr, radius, numRings, numSegments)
 end
 
+function Mesh:createCylinder(height, radius, numSegments)
+	local retVal = Polycore.Mesh_createCylinder(self.__ptr, height, radius, numSegments)
+end
+
+function Mesh:createCone(height, radius, numSegments)
+	local retVal = Polycore.Mesh_createCone(self.__ptr, height, radius, numSegments)
+end
+
 function Mesh:recenterMesh()
 	local retVal =  Polycore.Mesh_recenterMesh(self.__ptr)
 	if Polycore.__ptr_lookup[retVal] ~= nil then

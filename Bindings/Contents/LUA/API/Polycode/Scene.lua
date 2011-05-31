@@ -130,8 +130,8 @@ function Scene:getEntityAtScreenPosition(x, y)
 	end
 end
 
-function Scene:Render()
-	local retVal =  Polycore.Scene_Render(self.__ptr)
+function Scene:Render(targetCamera)
+	local retVal = Polycore.Scene_Render(self.__ptr, targetCamera.__ptr)
 end
 
 function Scene:RenderDepthOnly(targetCamera)

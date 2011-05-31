@@ -24,10 +24,16 @@
 
 using namespace Polycode;
 
-SceneLight::SceneLight(int type, Number intensity, Number distance, Scene *parentScene) : SceneEntity() {
+SceneLight::SceneLight(int type, Scene *parentScene, Number intensity, Number constantAttenuation, Number linearAttenuation, Number quadraticAttenuation) : SceneEntity() {
 	this->type = type;
 	this->intensity = intensity;
-	this->distance = distance;
+	this->constantAttenuation = constantAttenuation;
+	this->linearAttenuation = linearAttenuation;
+	this->quadraticAttenuation = quadraticAttenuation;
+	
+	spotlightCutoff = 40;
+	spotlightExponent = 10;
+		
 	this->depthWrite = false;
 	lightMesh = new Mesh(Mesh::QUAD_MESH);
 	lightMesh->createBox(0.1,0.1,0.1);
@@ -38,6 +44,7 @@ SceneLight::SceneLight(int type, Number intensity, Number distance, Scene *paren
 	spotCamera = NULL;
 	this->parentScene = parentScene;
 	shadowsEnabled = false;
+	lightColor.setColor(1.0f,1.0f,1.0f,1.0f);
 }
 
 void SceneLight::enableShadows(bool val, Number resolution) {
@@ -47,7 +54,7 @@ void SceneLight::enableShadows(bool val, Number resolution) {
 		}
 		if(!spotCamera) {
 			spotCamera = new Camera(parentScene);
-			spotCamera->setPitch(-90.0f);
+//			spotCamera->setPitch(-45.0f);
 			addEntity(spotCamera);	
 		}
 		shadowMapRes = resolution;
@@ -62,7 +69,7 @@ bool SceneLight::areShadowsEnabled() {
 }
 
 void SceneLight::setShadowMapFOV(Number fov) {
-	
+	shadowMapFOV = fov;
 }
 
 SceneLight::~SceneLight() {
@@ -78,7 +85,7 @@ void SceneLight::renderDepthMap(Scene *scene) {
 	CoreServices::getInstance()->getRenderer()->bindFrameBufferTexture(zBufferTexture);	
 
 	scene->RenderDepthOnly(spotCamera);
-	
+		
 	lightViewMatrix = CoreServices::getInstance()->getRenderer()->getModelviewMatrix() *  CoreServices::getInstance()->getRenderer()->getProjectionMatrix();
 	CoreServices::getInstance()->getRenderer()->unbindFramebuffers();
 	CoreServices::getInstance()->getRenderer()->popMatrix();
@@ -95,10 +102,6 @@ Texture *SceneLight::getZBufferTexture() {
 
 Number SceneLight::getIntensity() {
 	return intensity;
-}
-
-Number SceneLight::getDistance() {
-	return distance;
 }
 
 void SceneLight::Render() {
