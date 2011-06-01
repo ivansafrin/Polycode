@@ -28,6 +28,17 @@ function ScreenParticleEmitter:ScreenParticleEmitter(...)
 	end
 end
 
+function ScreenParticleEmitter:getEmitter()
+	local retVal =  Polycore.ScreenParticleEmitter_getEmitter(self.__ptr)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = ParticleEmitter("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
+end
+
 function ScreenParticleEmitter:addParticleBody(particleBody)
 	local retVal = Polycore.ScreenParticleEmitter_addParticleBody(self.__ptr, particleBody.__ptr)
 end

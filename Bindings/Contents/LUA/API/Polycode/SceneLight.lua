@@ -6,8 +6,23 @@ class "SceneLight" (SceneEntity)
 
 AREA_LIGHT = 0
 SPOT_LIGHT = 1
+function SceneLight:__index__(name)
+	if name == "lightColor" then
+		retVal = Polycore.SceneLight_get_lightColor(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Color("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	end
+end
 
 
+function SceneLight:__set_callback(name,value)
+	return false
+end
 
 
 function SceneLight:SceneLight(...)

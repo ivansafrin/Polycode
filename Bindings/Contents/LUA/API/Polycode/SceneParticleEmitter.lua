@@ -28,6 +28,17 @@ function SceneParticleEmitter:SceneParticleEmitter(...)
 	end
 end
 
+function SceneParticleEmitter:getEmitter()
+	local retVal =  Polycore.SceneParticleEmitter_getEmitter(self.__ptr)
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = ParticleEmitter("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
+end
+
 function SceneParticleEmitter:addParticleBody(particleBody)
 	local retVal = Polycore.SceneParticleEmitter_addParticleBody(self.__ptr, particleBody.__ptr)
 end

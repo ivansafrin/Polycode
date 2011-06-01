@@ -14,7 +14,7 @@ void pointLight(in int i, in vec3 N, in vec3 V, in float shininess,
     float dist = length(D);
     float attenuation = calculateAttenuation(i, dist);
 
-    float nDotL = dot(N,L);
+    float nDotL = 1.0; //dot(N,L);
 
     if (nDotL > 0.0)
     {   
@@ -38,9 +38,8 @@ void spotLight(in int i, in vec3 N, in vec3 V, in float shininess,
 
     float dist = length(D);
     float attenuation = calculateAttenuation(i, dist);
-
-    float nDotL = dot(N,L);
-
+	
+    float nDotL = dot(N,L);	
     if (nDotL > 0.0)
     {   
         float spotEffect = dot(normalize(gl_LightSource[i].spotDirection), -L);
@@ -77,25 +76,28 @@ void calculateLighting(in int numLights, in vec3 N, in vec3 V, in float shinines
     }
 }
 
+uniform sampler2D diffuse;
+varying vec3 normal;
+varying vec3 vertex;
 varying vec4 vertexColor;
+
 void main()
 {
-
-    gl_TexCoord[0] = gl_MultiTexCoord0;		
-    vec3 normal = normalize(gl_NormalMatrix * gl_Normal);   
-    vec3 vertex = vec3(gl_ModelViewMatrix * gl_Vertex);     
-    gl_Position = ftransform();    
+    vec3 n = normalize(normal);
    
     vec4 ambient_c  = vec4(0.0);
     vec4 diffuse_c  = vec4(0.0);
     vec4 specular_c = vec4(0.0);
+
+    calculateLighting(6, n, vertex, gl_FrontMaterial.shininess, ambient_c, diffuse_c, specular_c);
+   
+	vec4 texColor = texture2D(diffuse, gl_TexCoord[0].st);
     
-    calculateLighting(6, normal, vertex, gl_FrontMaterial.shininess, ambient_c, diffuse_c, specular_c);   
     vec4 color = gl_FrontLightModelProduct.sceneColor  +
                  (ambient_c  * 1.0) +
                  (diffuse_c  * 1.0) +
                  (specular_c * 1.0);
-	color.a = 1.0;				 
-    color = clamp(color*gl_Color, 0.0, 1.0);
-   vertexColor = color;    
+	color.a = 1.0;
+    color = clamp(color*texColor*vertexColor, 0.0, 1.0);
+    gl_FragColor = color;
 }

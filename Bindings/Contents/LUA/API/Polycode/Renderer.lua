@@ -15,8 +15,35 @@ DEPTH_FUNCTION_LEQUAL = 1
 TEX_FILTERING_NEAREST = 0
 TEX_FILTERING_LINEAR = 1
 function Renderer:__index__(name)
-	if name == "exposureLevel" then
+	if name == "ambientColor" then
+		retVal = Polycore.Renderer_get_ambientColor(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Color("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "clearColor" then
+		retVal = Polycore.Renderer_get_clearColor(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Color("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "exposureLevel" then
 		return Polycore.Renderer_get_exposureLevel(self.__ptr)
+	elseif name == "cameraPosition" then
+		retVal = Polycore.Renderer_get_cameraPosition(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
 	end
 end
 

@@ -124,8 +124,8 @@ void main()
                  (ambient_c  * 1.0) +
                  (diffuse_c  * 1.0) +
                  (specular_c * 1.0);
+	color.a = 1.0;				 
     color = clamp(color*texColor*vertexColor, 0.0, 1.0);
-    color.a = vertexColor.a;
     gl_FragColor = color;
 
 }

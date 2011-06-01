@@ -5,7 +5,16 @@ class "SceneMesh" (SceneEntity)
 
 
 function SceneMesh:__index__(name)
-	if name == "showVertexNormals" then
+	if name == "lightmapIndex" then
+		retVal = Polycore.SceneMesh_get_lightmapIndex(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = unsigned int("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "showVertexNormals" then
 		return Polycore.SceneMesh_get_showVertexNormals(self.__ptr)
 	end
 end

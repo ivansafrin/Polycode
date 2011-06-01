@@ -24,7 +24,7 @@
 
 using namespace Polycode;
 
-SceneParticleEmitter::SceneParticleEmitter(String imageFile, Mesh *particleMesh, SceneMesh *emitter, Scene *particleParentScene, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation)
+SceneParticleEmitter::SceneParticleEmitter(String imageFile, Scene *particleParentScene, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Mesh *particleMesh, SceneMesh *emitter)
 : ParticleEmitter(imageFile, particleMesh, particleType, emitterType, lifespan, numParticles,  direction, gravity, deviation),
 SceneEntity()
 {
@@ -51,8 +51,8 @@ void SceneParticleEmitter::Update() {
 }
 
 
-ScreenParticleEmitter::ScreenParticleEmitter(String imageFile, Mesh *particleMesh, ScreenMesh *emitter, Screen *particleParentScreen, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation) 
-: ParticleEmitter(imageFile, particleMesh, particleType, emitterType, lifespan, numParticles,  direction, gravity, deviation),
+ScreenParticleEmitter::ScreenParticleEmitter(String imageFile, Screen *particleParentScreen, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Mesh *particleMesh, ScreenMesh *emitter)
+		: ParticleEmitter(imageFile, particleMesh, particleType, emitterType, lifespan, numParticles,  direction, gravity, deviation),
 ScreenEntity()
 {
 	isScreenEmitter = true;
@@ -87,18 +87,12 @@ ParticleEmitter::ParticleEmitter(String imageFile, Mesh *particleMesh, int parti
 	this->deviation = deviation;
 	pMesh = particleMesh;
 	rotationFollowsPath = false;
-	rotationSpeed = 0.0f;
-	startingColor.setColor(1.0f,1.0f,1.0f,1.0f);
-	endingColor.setColor(1.0f,1.0f,1.0f,1.0f);	
+	rotationSpeed = 100.0f;
 	perlinEnabled = false;
-	startingScaleMod = 1.0f;
-	endingScaleMod = 1.0f;
-	emitterRadius = 0.0f;
+	emitterRadius = Vector3(0.0f,0.0f,0.0f);
 	perlinModSize = 0.002;
 	brightnessDeviation = 0.0f;
 	particleSpeedMod = 1.0f;
-	emitRotationVector.set(0.0f, 0.0f, 0.0f);
-	emitRotationDeviance.set(360.0f, 360.0f, 360.0f);
 	isEmitterEnabled = true;
 	allAtOnce = false;
 	
@@ -111,14 +105,17 @@ ParticleEmitter::ParticleEmitter(String imageFile, Mesh *particleMesh, int parti
 	motionPerlin = new Perlin(3,5,1.0,rand());
 	
 	textureFile = imageFile;
+	
+	useColorCurves = false;
+	useScaleCurves = false;	
 }
 
 void ParticleEmitter::createParticles() {
 	
-//	if(isScreenEmitter)
+	if(isScreenEmitter)
 		particleTexture = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(textureFile);	
-//	else
-//		particleMaterial = (Material*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_MATERIAL, textureFile);	
+	else
+		particleMaterial = (Material*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_MATERIAL, textureFile);	
 	
 	
 	Particle *particle;	
@@ -136,29 +133,14 @@ void ParticleEmitter::createParticles() {
 	updateEmitter();	
 }
 
-void ParticleEmitter::setEmitterRadius(Number rad) {
+void ParticleEmitter::setEmitterRadius(Vector3 rad) {
 	emitterRadius = rad;
-}
-
-void ParticleEmitter::setEndingColor(Color c) {
-	endingColor = c;
-}
-
-void ParticleEmitter::setStartingColor(Color c) {
-	startingColor = c;
 }
 
 void ParticleEmitter::setRotationSpeed(Number speed) {
 	rotationSpeed = speed;
 }
 
-void ParticleEmitter::setStartingScaleModifier(Number mod) {
-	startingScaleMod = mod;
-}
-
-void ParticleEmitter::setEndingScaleModifier(Number mod) {
-	endingScaleMod = mod;
-}
 
 void ParticleEmitter::setParticleBlendingMode(int mode) {
 	for(int i=0;i < particles.size(); i++) {
@@ -189,14 +171,6 @@ void ParticleEmitter::setBillboardMode(bool mode) {
 	for(int i=0;i < particles.size(); i++) {
 		particles[i]->particleBody->billboardMode = mode;
 	}
-}
-
-void ParticleEmitter::setEmitRotationVector(Vector3 rotVector) {
-	emitRotationVector = rotVector;
-}
-
-void ParticleEmitter::setEmitRotationDeviance(Vector3 rotVector) {
-	emitRotationDeviance = rotVector;
 }
 
 void ParticleEmitter::enablePerlin(bool val) {
@@ -269,7 +243,7 @@ void ParticleEmitter::resetParticle(Particle *particle) {
 //		startVector = *randPoly->getVertex(rand() % 3);
 //		startVector = emitterMesh->getConcatenatedMatrix() * startVector;
 //	} else {
-		startVector = Vector3(-(emitterRadius/2.0f)+emitterRadius*((Number)rand()/RAND_MAX),-(emitterRadius/2.0f)+emitterRadius*((Number)rand()/RAND_MAX),-(emitterRadius/2.0f)+emitterRadius*((Number)rand()/RAND_MAX));	
+		startVector = Vector3(-(emitterRadius.x/2.0f)+emitterRadius.x*((Number)rand()/RAND_MAX),-(emitterRadius.y/2.0f)+emitterRadius.y*((Number)rand()/RAND_MAX),-(emitterRadius.z/2.0f)+emitterRadius.z*((Number)rand()/RAND_MAX));	
 //	}
 	
 	particle->Reset(emitterType != TRIGGERED_EMITTER);	
@@ -288,18 +262,18 @@ void ParticleEmitter::resetParticle(Particle *particle) {
 	particle->particleBody->Translate(startVector);
 	particle->particleBody->rebuildTransformMatrix();	
 	
-//	particle->particleBody->setPitch(emitRotationVector.y+(emitRotationDeviance.y*((Number)rand()/RAND_MAX)));
-//	particle->particleBody->setRoll(emitRotationVector.x+(emitRotationDeviance.x*((Number)rand()/RAND_MAX)));
-//	particle->particleBody->setYaw(emitRotationVector.z+(emitRotationDeviance.z*((Number)rand()/RAND_MAX)));	
-	
-	particle->particleBody->setScale(scaleCurve.getHeightAt(0),
+	if(useScaleCurves) {
+		particle->particleBody->setScale(scaleCurve.getHeightAt(0),
 									 scaleCurve.getHeightAt(0),
 									 scaleCurve.getHeightAt(0));
-
-	particle->particleBody->color.setColor(colorCurveR.getHeightAt(0),
+	}
+	
+	if(useColorCurves) {
+		particle->particleBody->color.setColor(colorCurveR.getHeightAt(0),
 										   colorCurveG.getHeightAt(0),
 										   colorCurveB.getHeightAt(0),
 										   colorCurveA.getHeightAt(0));
+	}
 	
 			
 }
@@ -322,7 +296,7 @@ void ParticleEmitter::updateEmitter() {
 	Particle *particle;
 	Number normLife;
 	
-	for(int i=0;i < numParticles; i++) {				
+	for(int i=0;i < numParticles; i++) {	
 		particle = particles[i];
 		
 		normLife = particle->life / particle->lifespan;
@@ -337,10 +311,19 @@ void ParticleEmitter::updateEmitter() {
 			translationVector.z += ((perlinModSize * motionPerlin->Get((particle->life/particle->lifespan), particle->perlinPosZ))*elapsed*particleSpeedMod);
 		}
 		
+		if(isScreenEmitter) {		
+			translationVector.z = 0;
+		}
+		
 		particle->particleBody->Translate(translationVector);
 		
+		
 		if(rotationFollowsPath)  {
-			particle->particleBody->lookAt(particle->particleBody->getPosition() + translationVector, Vector3(1,0,0));			
+			if(isScreenEmitter) {
+				particle->particleBody->lookAt(particle->particleBody->getPosition() + translationVector, Vector3(1,0,0));													
+			} else {
+				particle->particleBody->lookAt(particle->particleBody->getPosition() + translationVector, Vector3(1,0,0));			
+			}
 		} else {
 			if(isScreenEmitter) {
 				particle->particleBody->Roll(rotationSpeed*elapsed);
@@ -351,16 +334,22 @@ void ParticleEmitter::updateEmitter() {
 			}
 		}		
 		
-		particle->particleBody->color.setColor(colorCurveR.getHeightAt(normLife)*particle->brightnessDeviation,
+//		if(isScreenEmitter)
+//			particle->particleBody->setPositionZ(0);		
+		
+		if(useColorCurves) {
+			particle->particleBody->color.setColor(colorCurveR.getHeightAt(normLife)*particle->brightnessDeviation,
 											   colorCurveG.getHeightAt(normLife)*particle->brightnessDeviation,
 											   colorCurveB.getHeightAt(normLife)*particle->brightnessDeviation,
 											   colorCurveA.getHeightAt(normLife)*particle->brightnessDeviation);
-											   		
-
-		particle->particleBody->setScale(scaleCurve.getHeightAt(normLife),
+		}
+	
+		if(useScaleCurves) {
+			particle->particleBody->setScale(scaleCurve.getHeightAt(normLife),
 										 scaleCurve.getHeightAt(normLife),
 										 scaleCurve.getHeightAt(normLife));
 		
+		}
 		if(particle->life > particle->lifespan && isEmitterEnabled) {
 			if(emitterType == CONTINUOUS_EMITTER) {
 				resetParticle(particle);

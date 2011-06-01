@@ -18,6 +18,33 @@ EVENT_KEYUP = 14
 function InputEvent:__index__(name)
 	if name == "mouseButton" then
 		return Polycore.InputEvent_get_mouseButton(self.__ptr)
+	elseif name == "mousePosition" then
+		retVal = Polycore.InputEvent_get_mousePosition(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Vector2("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "key" then
+		retVal = Polycore.InputEvent_get_key(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = PolyKEY("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "charCode" then
+		retVal = Polycore.InputEvent_get_charCode(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = wchar_t("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
 	elseif name == "timestamp" then
 		return Polycore.InputEvent_get_timestamp(self.__ptr)
 	end

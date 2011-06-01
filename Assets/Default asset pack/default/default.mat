@@ -50,7 +50,27 @@
 				<params>			
 				</params>				
 			</fp>
-		</shader>		
+		</shader>	
+		<shader type="glsl" name="DefaultParticleShader" numAreaLights="4" numSpotLights="2">		
+			<vp source="DefaultParticleShader.vert">
+				<params>			
+				</params>				
+			</vp>
+			<fp source="DefaultParticleShader.frag">
+				<params>			
+				</params>				
+			</fp>
+		</shader>	
+		<shader type="glsl" name="Unlit" numAreaLights="0" numSpotLights="0">		
+			<vp source="Unlit.vert">
+				<params>			
+				</params>				
+			</vp>
+			<fp source="Unlit.frag">
+				<params>			
+				</params>				
+			</fp>
+		</shader>										
 	</shaders>
 	<materials>
 		<material name="Default">

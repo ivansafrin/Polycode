@@ -10,6 +10,15 @@ SHAPE_CUSTOM = 4
 function ScreenShape:__index__(name)
 	if name == "strokeEnabled" then
 		return Polycore.ScreenShape_get_strokeEnabled(self.__ptr)
+	elseif name == "strokeColor" then
+		retVal = Polycore.ScreenShape_get_strokeColor(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Color("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
 	elseif name == "lineSmooth" then
 		return Polycore.ScreenShape_get_lineSmooth(self.__ptr)
 	end

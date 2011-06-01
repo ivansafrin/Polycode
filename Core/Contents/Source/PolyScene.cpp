@@ -229,12 +229,12 @@ void Scene::Render(Camera *targetCamera) {
 void Scene::RenderDepthOnly(Camera *targetCamera) {
 	
 	CoreServices::getInstance()->getRenderer()->cullFrontFaces(true);
-	
+/*	
 	for(int i=0; i<entities.size();i++) {
 		entities[i]->doUpdates();		
 		entities[i]->updateEntityMatrix();
 	}
-	
+*/	
 	targetCamera->rebuildTransformMatrix();	
 	targetCamera->doCameraTransform();	
 	targetCamera->buildFrustrumPlanes();

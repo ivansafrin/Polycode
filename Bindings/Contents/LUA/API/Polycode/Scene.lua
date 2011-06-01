@@ -10,8 +10,35 @@ ENTITY_CAMERA = 2
 ENTITY_ENTITY = 3
 ENTITY_COLLMESH = 4
 function Scene:__index__(name)
-	if name == "useClearColor" then
+	if name == "clearColor" then
+		retVal = Polycore.Scene_get_clearColor(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Color("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "useClearColor" then
 		return Polycore.Scene_get_useClearColor(self.__ptr)
+	elseif name == "ambientColor" then
+		retVal = Polycore.Scene_get_ambientColor(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Color("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "fogColor" then
+		retVal = Polycore.Scene_get_fogColor(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Color("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
 	elseif name == "enabled" then
 		return Polycore.Scene_get_enabled(self.__ptr)
 	end

@@ -7,6 +7,33 @@ class "Bone" (SceneEntity)
 function Bone:__index__(name)
 	if name == "parentBoneId" then
 		return Polycore.Bone_get_parentBoneId(self.__ptr)
+	elseif name == "boneMatrix" then
+		retVal = Polycore.Bone_get_boneMatrix(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Matrix4("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "restMatrix" then
+		retVal = Polycore.Bone_get_restMatrix(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Matrix4("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "baseMatrix" then
+		retVal = Polycore.Bone_get_baseMatrix(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Matrix4("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
 	end
 end
 

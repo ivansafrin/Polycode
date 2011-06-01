@@ -15,6 +15,15 @@ function Entity:__index__(name)
 		return Polycore.Entity_get_backfaceCulled(self.__ptr)
 	elseif name == "renderWireframe" then
 		return Polycore.Entity_get_renderWireframe(self.__ptr)
+	elseif name == "color" then
+		retVal = Polycore.Entity_get_color(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Color("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
 	elseif name == "enabled" then
 		return Polycore.Entity_get_enabled(self.__ptr)
 	elseif name == "visible" then
@@ -29,6 +38,15 @@ function Entity:__index__(name)
 		return Polycore.Entity_get_colorAffectsChildren(self.__ptr)
 	elseif name == "depthOnly" then
 		return Polycore.Entity_get_depthOnly(self.__ptr)
+	elseif name == "bBox" then
+		retVal = Polycore.Entity_get_bBox(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
 	elseif name == "ignoreParentMatrix" then
 		return Polycore.Entity_get_ignoreParentMatrix(self.__ptr)
 	elseif name == "isMask" then
