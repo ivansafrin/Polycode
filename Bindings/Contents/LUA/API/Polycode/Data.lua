@@ -40,6 +40,7 @@ end
 
 function Data:getData()
 	local retVal =  Polycore.Data_getData(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

@@ -67,6 +67,7 @@ end
 
 function Texture:getTextureData()
 	local retVal =  Polycore.Texture_getTextureData(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

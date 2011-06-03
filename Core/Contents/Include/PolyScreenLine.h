@@ -23,7 +23,7 @@ THE SOFTWARE.
 #pragma once
 #include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyScreenEntity.h"
+#include "PolyScreenMesh.h"
 #include "PolyCoreServices.h"
 #include "PolyMesh.h"
 
@@ -35,7 +35,7 @@ namespace Polycode {
 	/**
 	* A 2D line between two points or two ScreenEntity instances.
 	*/ 
-	class _PolyExport ScreenLine : public ScreenEntity {
+	class _PolyExport ScreenLine : public ScreenMesh {
 		public:
 			/**
 			* Create a line between two points.
@@ -51,6 +51,7 @@ namespace Polycode {
 			*/			
 			ScreenLine(ScreenEntity* target1, ScreenEntity* target2);
 			~ScreenLine();
+			
 
 			void Update();
 			void Render();
@@ -63,13 +64,13 @@ namespace Polycode {
 			
 		protected:
 		
+			void initMesh();
+		
 			Number lineWidth;
 			
-			Vertex startVertex;
-			Vertex endVertex;
+			Vertex *startVertex;
+			Vertex *endVertex;
 		
-			RenderDataArray *vertexDataArray;
-
 			ScreenEntity *target1;
 			ScreenEntity *target2;
 			

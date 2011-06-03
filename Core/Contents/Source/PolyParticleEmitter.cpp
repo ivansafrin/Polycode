@@ -24,8 +24,8 @@
 
 using namespace Polycode;
 
-SceneParticleEmitter::SceneParticleEmitter(String imageFile, Scene *particleParentScene, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Mesh *particleMesh, SceneMesh *emitter)
-: ParticleEmitter(imageFile, particleMesh, particleType, emitterType, lifespan, numParticles,  direction, gravity, deviation),
+SceneParticleEmitter::SceneParticleEmitter(String materialName, Scene *particleParentScene, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Mesh *particleMesh, SceneMesh *emitter)
+: ParticleEmitter(materialName, particleMesh, particleType, emitterType, lifespan, numParticles,  direction, gravity, deviation),
 SceneEntity()
 {
 	isScreenEmitter = false;

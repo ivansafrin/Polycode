@@ -46,6 +46,7 @@ end
 
 function Skeleton:getAnimation(name)
 	local retVal = Polycore.Skeleton_getAnimation(self.__ptr, name)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -61,6 +62,7 @@ end
 
 function Skeleton:getBoneByName(name)
 	local retVal = Polycore.Skeleton_getBoneByName(self.__ptr, name)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -85,6 +87,7 @@ end
 
 function Skeleton:getBone(index)
 	local retVal = Polycore.Skeleton_getBone(self.__ptr, index)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -96,6 +99,7 @@ end
 
 function Skeleton:getCurrentAnimation()
 	local retVal =  Polycore.Skeleton_getCurrentAnimation(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

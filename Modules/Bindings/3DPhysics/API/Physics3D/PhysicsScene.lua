@@ -34,6 +34,7 @@ end
 
 function PhysicsScene:addPhysicsChild(newEntity, type, mass, friction, restitution, group)
 	local retVal = Physics3D.PhysicsScene_addPhysicsChild(self.__ptr, newEntity.__ptr, type, mass, friction, restitution, group)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -45,6 +46,7 @@ end
 
 function PhysicsScene:trackPhysicsChild(newEntity, type, mass, friction, restitution, group)
 	local retVal = Physics3D.PhysicsScene_trackPhysicsChild(self.__ptr, newEntity.__ptr, type, mass, friction, restitution, group)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -56,6 +58,7 @@ end
 
 function PhysicsScene:addCharacterChild(newEntity, mass, friction, stepSize, group)
 	local retVal = Physics3D.PhysicsScene_addCharacterChild(self.__ptr, newEntity.__ptr, mass, friction, stepSize, group)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -67,6 +70,7 @@ end
 
 function PhysicsScene:addVehicleChild(newEntity, mass, friction, group)
 	local retVal = Physics3D.PhysicsScene_addVehicleChild(self.__ptr, newEntity.__ptr, mass, friction, group)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

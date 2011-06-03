@@ -202,6 +202,7 @@ end
 
 function ParticleEmitter:getBaseMatrix()
 	local retVal =  Polycore.ParticleEmitter_getBaseMatrix(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

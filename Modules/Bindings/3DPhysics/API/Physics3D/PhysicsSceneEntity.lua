@@ -51,6 +51,7 @@ end
 
 function PhysicsSceneEntity:getSceneEntity()
 	local retVal =  Physics3D.PhysicsSceneEntity_getSceneEntity(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

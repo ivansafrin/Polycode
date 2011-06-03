@@ -26,6 +26,7 @@ end
 
 function SceneRenderTexture:getTargetTexture()
 	local retVal =  Polycore.SceneRenderTexture_getTargetTexture(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -37,6 +38,7 @@ end
 
 function SceneRenderTexture:getTargetScene()
 	local retVal =  Polycore.SceneRenderTexture_getTargetScene(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -48,6 +50,7 @@ end
 
 function SceneRenderTexture:getTargetCamera()
 	local retVal =  Polycore.SceneRenderTexture_getTargetCamera(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

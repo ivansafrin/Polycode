@@ -87,6 +87,7 @@ end
 
 function Vertex:getBoneAssignment(index)
 	local retVal = Polycore.Vertex_getBoneAssignment(self.__ptr, index)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -102,6 +103,7 @@ end
 
 function Vertex:getTexCoord()
 	local retVal =  Polycore.Vertex_getTexCoord(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

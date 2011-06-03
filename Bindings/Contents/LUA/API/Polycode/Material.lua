@@ -48,6 +48,7 @@ end
 
 function Material:getShaderRenderTarget(index)
 	local retVal = Polycore.Material_getShaderRenderTarget(self.__ptr, index)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -64,6 +65,7 @@ end
 
 function Material:getShader(index)
 	local retVal = Polycore.Material_getShader(self.__ptr, index)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -75,6 +77,7 @@ end
 
 function Material:getShaderBinding(index)
 	local retVal = Polycore.Material_getShaderBinding(self.__ptr, index)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

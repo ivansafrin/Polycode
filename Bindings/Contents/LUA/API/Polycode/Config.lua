@@ -30,6 +30,7 @@ end
 
 function Config:getEntry(configNamespace, key)
 	local retVal = Polycore.Config_getEntry(self.__ptr, configNamespace, key)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

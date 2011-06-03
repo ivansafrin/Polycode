@@ -26,6 +26,7 @@ end
 
 function FontManager:getFontByName(fontName)
 	local retVal = Polycore.FontManager_getFontByName(self.__ptr, fontName)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

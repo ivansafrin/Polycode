@@ -58,6 +58,7 @@ end
 
 function Sound:loadWAV(fileName)
 	local retVal = Polycore.Sound_loadWAV(self.__ptr, fileName)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -69,6 +70,7 @@ end
 
 function Sound:loadOGG(fileName)
 	local retVal = Polycore.Sound_loadOGG(self.__ptr, fileName)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -80,6 +82,7 @@ end
 
 function Sound:GenSource(buffer)
 	local retVal = Polycore.Sound_GenSource(self.__ptr, buffer.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

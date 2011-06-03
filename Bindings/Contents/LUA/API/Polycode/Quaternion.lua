@@ -53,6 +53,7 @@ end
 
 function Quaternion:Slerp(fT, rkP, rkQ, shortestPath)
 	local retVal = Polycore.Quaternion_Slerp(fT, rkP.__ptr, rkQ.__ptr, shortestPath)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -69,6 +70,7 @@ end
 
 function Quaternion:Log()
 	local retVal =  Polycore.Quaternion_Log(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -80,6 +82,7 @@ end
 
 function Quaternion:Exp()
 	local retVal =  Polycore.Quaternion_Exp(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -109,6 +112,7 @@ end
 
 function Quaternion:Squad(fT, rkP, rkA, rkB, rkQ, shortestPath)
 	local retVal = Polycore.Quaternion_Squad(fT, rkP.__ptr, rkA.__ptr, rkB.__ptr, rkQ.__ptr, shortestPath)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -120,6 +124,7 @@ end
 
 function Quaternion:Inverse()
 	local retVal =  Polycore.Quaternion_Inverse(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -135,6 +140,7 @@ end
 
 function Quaternion:inverse()
 	local retVal =  Polycore.Quaternion_inverse(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -167,6 +173,7 @@ end
 
 function Quaternion:createMatrix()
 	local retVal =  Polycore.Quaternion_createMatrix(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

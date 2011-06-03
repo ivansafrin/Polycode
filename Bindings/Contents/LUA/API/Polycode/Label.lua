@@ -51,6 +51,7 @@ end
 
 function Label:getFont()
 	local retVal =  Polycore.Label_getFont(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

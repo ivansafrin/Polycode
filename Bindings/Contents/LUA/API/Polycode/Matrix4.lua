@@ -26,6 +26,7 @@ end
 
 function Matrix4:rotateVector(v2)
 	local retVal = Polycore.Matrix4_rotateVector(self.__ptr, v2.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -37,6 +38,7 @@ end
 
 function Matrix4:getPosition()
 	local retVal =  Polycore.Matrix4_getPosition(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -60,6 +62,7 @@ end
 
 function Matrix4:inverse()
 	local retVal =  Polycore.Matrix4_inverse(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -71,6 +74,7 @@ end
 
 function Matrix4:inverseAffine()
 	local retVal =  Polycore.Matrix4_inverseAffine(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

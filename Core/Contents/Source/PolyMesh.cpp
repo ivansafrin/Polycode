@@ -349,6 +349,14 @@ namespace Polycode {
 		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;										
 		
 	}
+	
+	unsigned int Mesh::getVertexCount() {
+		unsigned int total = 0;
+		for(int i=0; i < polygons.size(); i++) {
+			total += polygons[i]->getVertexCount();
+		}
+		return total;
+	}
 
 	void Mesh::createCylinder(Number height, Number radius, int numSegments) {
 	

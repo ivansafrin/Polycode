@@ -149,6 +149,12 @@ namespace Polycode {
 			unsigned int getPolygonCount();
 			
 			/**
+			* Returns the total vertex count in the mesh.
+			* @return Number of vertices in the mesh.
+			*/
+			unsigned int getVertexCount();
+			
+			/**
 			* Returns a polygon at specified index.
 			* @param index Index of polygon.
 			* @return Polygon at index.

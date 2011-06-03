@@ -26,6 +26,7 @@ end
 
 function MaterialManager:createFramebufferTexture(width, height, type)
 	local retVal = Polycore.MaterialManager_createFramebufferTexture(self.__ptr, width, height, type)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -37,6 +38,7 @@ end
 
 function MaterialManager:createTexture(width, height, imageData, clamp, type)
 	local retVal = Polycore.MaterialManager_createTexture(self.__ptr, width, height, imageData.__ptr, clamp, type)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -48,6 +50,7 @@ end
 
 function MaterialManager:createNewTexture(width, height, clamp, type)
 	local retVal = Polycore.MaterialManager_createNewTexture(self.__ptr, width, height, clamp, type)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -59,6 +62,7 @@ end
 
 function MaterialManager:createTextureFromImage(image, clamp)
 	local retVal = Polycore.MaterialManager_createTextureFromImage(self.__ptr, image.__ptr, clamp)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -70,6 +74,7 @@ end
 
 function MaterialManager:createTextureFromFile(fileName, clamp)
 	local retVal = Polycore.MaterialManager_createTextureFromFile(self.__ptr, fileName, clamp)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -101,6 +106,7 @@ end
 
 function MaterialManager:getTextureByResourcePath(resourcePath)
 	local retVal = Polycore.MaterialManager_getTextureByResourcePath(self.__ptr, resourcePath)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -112,6 +118,7 @@ end
 
 function MaterialManager:cubemapFromXMLNode(node)
 	local retVal = Polycore.MaterialManager_cubemapFromXMLNode(self.__ptr, node.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -127,6 +134,7 @@ end
 
 function MaterialManager:materialFromXMLNode(node)
 	local retVal = Polycore.MaterialManager_materialFromXMLNode(self.__ptr, node.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -138,6 +146,7 @@ end
 
 function MaterialManager:setShaderFromXMLNode(node)
 	local retVal = Polycore.MaterialManager_setShaderFromXMLNode(self.__ptr, node.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -149,6 +158,7 @@ end
 
 function MaterialManager:createShaderFromXMLNode(node)
 	local retVal = Polycore.MaterialManager_createShaderFromXMLNode(self.__ptr, node.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

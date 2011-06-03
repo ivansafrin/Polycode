@@ -59,8 +59,14 @@ function Mesh:getPolygonCount()
 	return retVal
 end
 
+function Mesh:getVertexCount()
+	local retVal =  Polycore.Mesh_getVertexCount(self.__ptr)
+	return retVal
+end
+
 function Mesh:getPolygon(index)
 	local retVal = Polycore.Mesh_getPolygon(self.__ptr, index)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -92,6 +98,7 @@ end
 
 function Mesh:recenterMesh()
 	local retVal =  Polycore.Mesh_recenterMesh(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -111,6 +118,7 @@ end
 
 function Mesh:getVertexBuffer()
 	local retVal =  Polycore.Mesh_getVertexBuffer(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -140,6 +148,7 @@ end
 
 function Mesh:calculateBBox()
 	local retVal =  Polycore.Mesh_calculateBBox(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

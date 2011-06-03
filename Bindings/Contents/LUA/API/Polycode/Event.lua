@@ -29,6 +29,7 @@ end
 
 function Event:getDispatcher()
 	local retVal =  Polycore.Event_getDispatcher(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

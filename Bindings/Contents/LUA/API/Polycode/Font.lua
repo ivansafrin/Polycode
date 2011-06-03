@@ -22,6 +22,7 @@ end
 
 function Font:getFace()
 	local retVal =  Polycore.Font_getFace(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

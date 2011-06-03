@@ -87,6 +87,7 @@ end
 
 function Scene:getDefaultCamera()
 	local retVal =  Polycore.Scene_getDefaultCamera(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -137,6 +138,7 @@ end
 
 function Scene:getEntity(index)
 	local retVal = Polycore.Scene_getEntity(self.__ptr, index)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -148,6 +150,7 @@ end
 
 function Scene:getEntityAtScreenPosition(x, y)
 	local retVal = Polycore.Scene_getEntityAtScreenPosition(self.__ptr, x, y)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -184,6 +187,7 @@ end
 
 function Scene:getNearestLight(pos)
 	local retVal = Polycore.Scene_getNearestLight(self.__ptr, pos.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -212,6 +216,7 @@ end
 
 function Scene:getStaticGeometry(index)
 	local retVal = Polycore.Scene_getStaticGeometry(self.__ptr, index)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -232,6 +237,7 @@ end
 
 function Scene:getLight(index)
 	local retVal = Polycore.Scene_getLight(self.__ptr, index)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -243,6 +249,7 @@ end
 
 function Scene:getCustomEntityByType(type)
 	local retVal = Polycore.Scene_getCustomEntityByType(self.__ptr, type)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

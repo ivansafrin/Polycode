@@ -42,6 +42,7 @@ end
 
 function Screen:addChild(newEntity)
 	local retVal = Polycore.Screen_addChild(self.__ptr, newEntity.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -53,6 +54,7 @@ end
 
 function Screen:removeChild(entityToRemove)
 	local retVal = Polycore.Screen_removeChild(self.__ptr, entityToRemove.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -68,6 +70,7 @@ end
 
 function Screen:getScreenOffset()
 	local retVal =  Polycore.Screen_getScreenOffset(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -87,6 +90,7 @@ end
 
 function Screen:getEntityAt(x, y)
 	local retVal = Polycore.Screen_getEntityAt(self.__ptr, x, y)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -155,6 +159,7 @@ end
 
 function Screen:getRootEntity()
 	local retVal =  Polycore.Screen_getRootEntity(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

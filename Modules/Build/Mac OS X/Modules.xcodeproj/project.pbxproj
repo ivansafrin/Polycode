@@ -1160,6 +1160,20 @@
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include/,
+					/usr/local/include/libfreenect,
+					../../../Core/Dependencies/box2d/Box2D,
+					../../../Core/Contents/Include,
+					../../../Core/Dependencies/bullet/src,
+					../../../Core/Dependencies/libvorbis/include,
+					../../../Core/Dependencies/libogg/include,
+					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Versions/A/Headers,
+					../../../Core/Dependencies/freetype/include,
+					../../../Core/Dependencies/libpng,
+					../../../Core/Dependencies/physfs,
+					../../../Core/Dependencies/luajit/src,
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../../Release/Mac OS X/Framework/Core/Lib\"",
@@ -1168,6 +1182,7 @@
 					"\"$(SRCROOT)/../../../Core/Dependencies/lua/src\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};

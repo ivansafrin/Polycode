@@ -8,6 +8,7 @@ class "OSBasics"
 
 function OSBasics:open(filename, opts)
 	local retVal = Polycore.OSBasics_open(filename, opts)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

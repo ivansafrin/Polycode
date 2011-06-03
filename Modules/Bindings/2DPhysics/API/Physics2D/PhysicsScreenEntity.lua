@@ -4,7 +4,7 @@ class "PhysicsScreenEntity"
 
 ENTITY_RECT = 1
 ENTITY_CIRCLE = 2
-ENTITY_STATICRECT = 3
+ENTITY_MESH = 3
 function PhysicsScreenEntity:__index__(name)
 	if name == "collisionOnly" then
 		return Physics2D.PhysicsScreenEntity_get_collisionOnly(self.__ptr)
@@ -37,6 +37,7 @@ end
 
 function PhysicsScreenEntity:getScreenEntity()
 	local retVal =  Physics2D.PhysicsScreenEntity_getScreenEntity(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

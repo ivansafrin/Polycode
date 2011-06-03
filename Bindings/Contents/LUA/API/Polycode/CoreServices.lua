@@ -10,6 +10,7 @@ class "CoreServices" (EventDispatcher)
 
 function CoreServices:getInstance()
 	local retVal =  Polycore.CoreServices_getInstance()
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -25,6 +26,7 @@ end
 
 function CoreServices:getRenderMutex()
 	local retVal =  Polycore.CoreServices_getRenderMutex()
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -40,6 +42,7 @@ end
 
 function CoreServices:getRenderer()
 	local retVal =  Polycore.CoreServices_getRenderer(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -59,6 +62,7 @@ end
 
 function CoreServices:getCore()
 	local retVal =  Polycore.CoreServices_getCore(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -74,6 +78,7 @@ end
 
 function CoreServices:getMaterialManager()
 	local retVal =  Polycore.CoreServices_getMaterialManager(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -85,6 +90,7 @@ end
 
 function CoreServices:getScreenManager()
 	local retVal =  Polycore.CoreServices_getScreenManager(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -96,6 +102,7 @@ end
 
 function CoreServices:getSceneManager()
 	local retVal =  Polycore.CoreServices_getSceneManager(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -107,6 +114,7 @@ end
 
 function CoreServices:getTimerManager()
 	local retVal =  Polycore.CoreServices_getTimerManager(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -118,6 +126,7 @@ end
 
 function CoreServices:getTweenManager()
 	local retVal =  Polycore.CoreServices_getTweenManager(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -129,6 +138,7 @@ end
 
 function CoreServices:getResourceManager()
 	local retVal =  Polycore.CoreServices_getResourceManager(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -140,6 +150,7 @@ end
 
 function CoreServices:getSoundManager()
 	local retVal =  Polycore.CoreServices_getSoundManager(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -151,6 +162,7 @@ end
 
 function CoreServices:getFontManager()
 	local retVal =  Polycore.CoreServices_getFontManager(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -162,6 +174,7 @@ end
 
 function CoreServices:getConfig()
 	local retVal =  Polycore.CoreServices_getConfig(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

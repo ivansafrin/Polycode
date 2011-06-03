@@ -26,7 +26,7 @@ THE SOFTWARE.
 
 using namespace Polycode;
 
-PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, Number worldScale, int entType, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation) {
+PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, Number worldScale, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation) {
 	
 	this->worldScale = worldScale;
 	
@@ -38,9 +38,11 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 	bodyDef->bullet = isSensor;	
 	bodyDef->fixedRotation = fixedRotation;
 	
-	if(entType != ENTITY_STATICRECT)
+	if(isStatic) {
+		bodyDef->type = b2_staticBody;		
+	} else {
 		bodyDef->type = b2_dynamicBody;	
-	
+	}
 	body = world->CreateBody(bodyDef);
 		
 	b2FixtureDef fDef;
@@ -50,25 +52,47 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 	fDef.isSensor = isSensor;
 		
 	switch(entType) {
-		case ENTITY_STATICRECT:
+		case ENTITY_MESH:
 		{
-			b2PolygonShape b2shape;			
-			b2shape.SetAsBox(screenEntity->getWidth()/(worldScale*2.0f), screenEntity->getHeight()/(worldScale*2.0f));
-			fDef.shape = &b2shape;			
+			b2PolygonShape *b2shape = new b2PolygonShape;			
+			
+			ScreenMesh* screenMesh = dynamic_cast<ScreenMesh*>(entity);
+			if(screenMesh != NULL) {
+				b2Vec2 *vertices = (b2Vec2*)malloc(sizeof(b2Vec2) * screenMesh->getMesh()->getVertexCount());
+	
+				int index = 0;
+				for(int i=0; i < screenMesh->getMesh()->getPolygonCount(); i++) {
+					Polycode::Polygon *poly = screenMesh->getMesh()->getPolygon(i);
+					for(int j = 0; j < poly->getVertexCount(); j++) {
+						vertices[index].x = poly->getVertex(j)->x/worldScale;
+						vertices[index].y = poly->getVertex(j)->y/worldScale;						
+						index++;
+					}
+				}
+				b2shape->Set(vertices, screenMesh->getMesh()->getVertexCount());	
+				free(vertices);
+			} else {
+				Logger::log("Tried to make a mesh collision object from a non-mesh\n");							
+			}
+
+			fDef.shape = b2shape;				
+			shape = b2shape;
 		}
 		break;
 		case ENTITY_RECT: 
 		{
-			b2PolygonShape b2shape;			
-			b2shape.SetAsBox(screenEntity->getWidth()/(worldScale*2.0f), screenEntity->getHeight()/(worldScale*2.0f));
-			fDef.shape = &b2shape;						
+			b2PolygonShape *b2shape = new b2PolygonShape;			
+			b2shape->SetAsBox(screenEntity->getWidth()/(worldScale*2.0f), screenEntity->getHeight()/(worldScale*2.0f));
+			fDef.shape = b2shape;						
+			shape = b2shape;
 		}
 		break;			
 		case ENTITY_CIRCLE:
 		{			
-			b2CircleShape b2shape;
-			b2shape.m_radius = screenEntity->getWidth()/(worldScale*2.0f);
-			fDef.shape = &b2shape;
+			b2CircleShape *b2shape = new b2CircleShape;
+			b2shape->m_radius = screenEntity->getWidth()/(worldScale*2.0f);
+			fDef.shape = b2shape;
+			shape = b2shape;
 		}
 		break;
 	}
@@ -79,6 +103,7 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 	lastPosition.y = screenEntity->getPosition2D().y;
 
 	collisionOnly = false;
+	
 }
 
 void PhysicsScreenEntity::applyTorque(Number torque) {
@@ -104,13 +129,13 @@ void PhysicsScreenEntity::Update() {
 	Number angle = body->GetAngle();
 
 	
-//	if(lastRotation != screenEntity->getRotation() || collisionOnly) {
-//		body->SetTransform(position, screenEntity->getRotation()*(PI/180.0f));		
-//	} else {
+	if(collisionOnly) {
+		body->SetTransform(position, screenEntity->getRotation()*(PI/180.0f));		
+	} else {
 		screenEntity->setRotation(angle*(180.0f/PI));	
-//	}
-/*	
-	if(lastPosition != screenEntity->getPosition2D() || collisionOnly) {
+	}
+	
+	if(collisionOnly) {
 		b2Vec2 newPos;
 		newPos.x = screenEntity->getPosition2D().x/worldScale; 
 		newPos.y = screenEntity->getPosition2D().y/worldScale;				
@@ -118,9 +143,8 @@ void PhysicsScreenEntity::Update() {
 		position.x = screenEntity->getPosition2D().x/worldScale; 
 		position.y = screenEntity->getPosition2D().y/worldScale; 				
 	} else {
- */
 		screenEntity->setPosition(position.x*worldScale, position.y*worldScale);
-//	}
+	}
 	
 	screenEntity->dirtyMatrix(true);
 	screenEntity->rebuildTransformMatrix();

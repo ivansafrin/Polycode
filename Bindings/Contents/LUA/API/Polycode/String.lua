@@ -57,6 +57,7 @@ end
 
 function String:getSTLString()
 	local retVal =  Polycore.String_getSTLString(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -68,6 +69,7 @@ end
 
 function String:getSTLWString()
 	local retVal =  Polycore.String_getSTLWString(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -119,6 +121,7 @@ end
 
 function String:c_str()
 	local retVal =  Polycore.String_c_str(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -130,6 +133,7 @@ end
 
 function String:wc_str()
 	local retVal =  Polycore.String_wc_str(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -141,6 +145,7 @@ end
 
 function String:data()
 	local retVal =  Polycore.String_data(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -152,6 +157,7 @@ end
 
 function String:getDataWithEncoding(encoding)
 	local retVal = Polycore.String_getDataWithEncoding(self.__ptr, encoding)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

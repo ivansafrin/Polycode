@@ -427,6 +427,7 @@ int luaopen_Polycode(lua_State *L) {
 		{"Mesh_saveToFile", Polycore_Mesh_saveToFile},
 		{"Mesh_loadFromFile", Polycore_Mesh_loadFromFile},
 		{"Mesh_getPolygonCount", Polycore_Mesh_getPolygonCount},
+		{"Mesh_getVertexCount", Polycore_Mesh_getVertexCount},
 		{"Mesh_getPolygon", Polycore_Mesh_getPolygon},
 		{"Mesh_createPlane", Polycore_Mesh_createPlane},
 		{"Mesh_createBox", Polycore_Mesh_createBox},

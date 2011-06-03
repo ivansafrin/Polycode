@@ -4,8 +4,23 @@ class "PhysicsVehicle" (PhysicsSceneEntity)
 
 
 
+function PhysicsVehicle:__index__(name)
+	if name == "tuning" then
+		retVal = Physics3D.PhysicsVehicle_get_tuning(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = btRaycastVehicle::btVehicleTuning("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	end
+end
 
 
+function PhysicsVehicle:__set_callback(name,value)
+	return false
+end
 
 
 function PhysicsVehicle:PhysicsVehicle(...)
@@ -42,6 +57,10 @@ end
 
 function PhysicsVehicle:setBrake(value, wheelIndex)
 	local retVal = Physics3D.PhysicsVehicle_setBrake(self.__ptr, value, wheelIndex)
+end
+
+function PhysicsVehicle:ResetVehicle()
+	local retVal =  Physics3D.PhysicsVehicle_ResetVehicle(self.__ptr)
 end
 
 function PhysicsVehicle:Update()

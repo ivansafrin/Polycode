@@ -16,8 +16,35 @@ function CollisionSceneEntity:__index__(name)
 		return Physics3D.CollisionSceneEntity_get_gravityEnabled(self.__ptr)
 	elseif name == "autoCollide" then
 		return Physics3D.CollisionSceneEntity_get_autoCollide(self.__ptr)
+	elseif name == "gravityVector" then
+		retVal = Physics3D.CollisionSceneEntity_get_gravityVector(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "gVelocity" then
+		retVal = Physics3D.CollisionSceneEntity_get_gVelocity(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
 	elseif name == "gravityStrength" then
 		return Physics3D.CollisionSceneEntity_get_gravityStrength(self.__ptr)
+	elseif name == "lastPosition" then
+		retVal = Physics3D.CollisionSceneEntity_get_lastPosition(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
 	elseif name == "enabled" then
 		return Physics3D.CollisionSceneEntity_get_enabled(self.__ptr)
 	end
@@ -58,6 +85,7 @@ end
 
 function CollisionSceneEntity:getSceneEntity()
 	local retVal =  Physics3D.CollisionSceneEntity_getSceneEntity(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -78,6 +106,7 @@ end
 
 function CollisionSceneEntity:getConvexShape()
 	local retVal =  Physics3D.CollisionSceneEntity_getConvexShape(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -89,6 +118,7 @@ end
 
 function CollisionSceneEntity:createCollisionShape(entity, type)
 	local retVal = Physics3D.CollisionSceneEntity_createCollisionShape(self.__ptr, entity.__ptr, type)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

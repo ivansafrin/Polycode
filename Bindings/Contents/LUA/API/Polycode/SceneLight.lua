@@ -80,6 +80,7 @@ end
 
 function SceneLight:getLightViewMatrix()
 	local retVal =  Polycore.SceneLight_getLightViewMatrix(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -91,6 +92,7 @@ end
 
 function SceneLight:getZBufferTexture()
 	local retVal =  Polycore.SceneLight_getZBufferTexture(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

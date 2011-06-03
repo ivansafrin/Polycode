@@ -24,21 +24,33 @@
 
 using namespace Polycode;
 
-ScreenLine::ScreenLine(Vector2* start, Vector2* end) {
+ScreenLine::ScreenLine(Vector2* start, Vector2* end) : ScreenMesh(Mesh::LINE_MESH) {
 	target1 = NULL;
-	startVertex.x = start->x;
-	startVertex.y = start->y;
-	endVertex.x = end->x;
-	endVertex.y = end->y;
-	
-	vertexDataArray = CoreServices::getInstance()->getRenderer()->createRenderDataArray(RenderDataArray::VERTEX_DATA_ARRAY);	
+	initMesh();
+		
+	startVertex->x = start->x;
+	startVertex->y = start->y;
+	endVertex->x = end->x;
+	endVertex->y = end->y;
+	mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;	
 }
 
-ScreenLine::ScreenLine(ScreenEntity* target1, ScreenEntity* target2) : ScreenEntity() {
+ScreenLine::ScreenLine(ScreenEntity* target1, ScreenEntity* target2) : ScreenMesh(Mesh::LINE_MESH) {
+	initMesh();	
 	this->target1 = target1;
 	this->target2 = target2;
 	lineWidth = 1.0f;
-	vertexDataArray = CoreServices::getInstance()->getRenderer()->createRenderDataArray(RenderDataArray::VERTEX_DATA_ARRAY);
+
+}
+
+void ScreenLine::initMesh() {
+	Polygon *poly = new Polygon();
+	startVertex = poly->addVertex(0, 0, 0, 0,0);
+	endVertex = poly->addVertex(0,0,0,1,0);	
+	mesh->addPolygon(poly);
+	mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;			
+	mesh->arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;			
+	mesh->arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;				
 }
 
 ScreenLine::~ScreenLine() {
@@ -57,24 +69,22 @@ void ScreenLine::Update() {
 	Vector3 pos2 = target2->getPosition();
 	
 	setPosition(pos1.x, pos1.y);
-	endVertex.x = pos2.x-pos1.x;
-	endVertex.y = pos2.y-pos1.y;
+	endVertex->x = pos2.x-pos1.x;
+	endVertex->y = pos2.y-pos1.y;
+
+	mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;			
+	
 }
 
 
 void ScreenLine::Render() {
-	Renderer *renderer = CoreServices::getInstance()->getRenderer();	
-	int rmode = renderer->getRenderMode();
-
-	renderer->setRenderMode(Renderer::RENDER_MODE_WIREFRAME);
+	Renderer *renderer = CoreServices::getInstance()->getRenderer();
 	renderer->setLineSize(lineWidth);
-	renderer->setTexture(NULL);
-	
-//	renderer->draw2DVertex(&startVertex);
-//	renderer->draw2DVertex(&endVertex);		
-	renderer->pushRenderDataArray(vertexDataArray);
-	renderer->drawArrays(Mesh::TRIFAN_MESH);
-	
-	
-	renderer->setRenderMode(rmode);
+	renderer->setTexture(texture);
+	if(mesh->useVertexColors) {
+		renderer->pushDataArrayForMesh(mesh, RenderDataArray::COLOR_DATA_ARRAY);
+	}
+	renderer->pushDataArrayForMesh(mesh, RenderDataArray::VERTEX_DATA_ARRAY);
+	renderer->pushDataArrayForMesh(mesh, RenderDataArray::TEXCOORD_DATA_ARRAY);	
+	renderer->drawArrays(mesh->getMeshType());
 }

@@ -85,6 +85,7 @@ end
 
 function InputEvent:getMousePosition()
 	local retVal =  Polycore.InputEvent_getMousePosition(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -96,6 +97,7 @@ end
 
 function InputEvent:getKey()
 	local retVal =  Polycore.InputEvent_getKey(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

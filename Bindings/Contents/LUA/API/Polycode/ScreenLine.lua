@@ -1,6 +1,6 @@
-require "Polycode/ScreenEntity"
+require "Polycode/ScreenMesh"
 
-class "ScreenLine" (ScreenEntity)
+class "ScreenLine" (ScreenMesh)
 
 
 
@@ -10,7 +10,7 @@ class "ScreenLine" (ScreenEntity)
 
 function ScreenLine:ScreenLine(...)
 	if type(arg[1]) == "table" and count(arg) == 1 then
-		if ""..arg[1]:class() == "ScreenEntity" then
+		if ""..arg[1]:class() == "ScreenMesh" then
 			self.__ptr = arg[1].__ptr
 			return
 		end

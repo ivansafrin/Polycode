@@ -33,6 +33,7 @@ end
 
 function CoreInput:getMousePosition()
 	local retVal =  Polycore.CoreInput_getMousePosition(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -49,6 +50,7 @@ end
 
 function CoreInput:getMouseDelta()
 	local retVal =  Polycore.CoreInput_getMouseDelta(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -89,6 +91,7 @@ end
 
 function CoreInput:createEvent(event)
 	local retVal = Polycore.CoreInput_createEvent(event.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

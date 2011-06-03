@@ -71,6 +71,7 @@ end
 
 function Renderer:createCubemap(t0, t1, t2, t3, t4, t5)
 	local retVal = Polycore.Renderer_createCubemap(self.__ptr, t0.__ptr, t1.__ptr, t2.__ptr, t3.__ptr, t4.__ptr, t5.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -82,6 +83,7 @@ end
 
 function Renderer:createTexture(width, height, textureData, clamp, type)
 	local retVal = Polycore.Renderer_createTexture(self.__ptr, width, height, textureData.__ptr, clamp, type)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -97,6 +99,7 @@ end
 
 function Renderer:createFramebufferTexture(width, height)
 	local retVal = Polycore.Renderer_createFramebufferTexture(self.__ptr, width, height)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -192,6 +195,7 @@ end
 
 function Renderer:createRenderDataArrayForMesh(mesh, arrayType)
 	local retVal = Polycore.Renderer_createRenderDataArrayForMesh(self.__ptr, mesh.__ptr, arrayType)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -203,6 +207,7 @@ end
 
 function Renderer:createRenderDataArray(arrayType)
 	local retVal = Polycore.Renderer_createRenderDataArray(self.__ptr, arrayType)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -331,6 +336,7 @@ end
 
 function Renderer:getCameraMatrix()
 	local retVal =  Polycore.Renderer_getCameraMatrix(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -402,6 +408,7 @@ end
 
 function Renderer:getProjectionMatrix()
 	local retVal =  Polycore.Renderer_getProjectionMatrix(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -413,6 +420,7 @@ end
 
 function Renderer:getModelviewMatrix()
 	local retVal =  Polycore.Renderer_getModelviewMatrix(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -428,6 +436,7 @@ end
 
 function Renderer:Unproject(x, y)
 	local retVal = Polycore.Renderer_Unproject(self.__ptr, x, y)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

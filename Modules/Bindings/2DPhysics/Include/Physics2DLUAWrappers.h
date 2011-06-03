@@ -33,37 +33,44 @@ static int Physics2D_PhysicsScreen_addPhysicsChild(lua_State *L) {
 	ScreenEntity * newEntity = (ScreenEntity *)lua_topointer(L, 2);
 	luaL_checktype(L, 3, LUA_TNUMBER);
 	int entType = lua_tointeger(L, 3);
+	luaL_checktype(L, 4, LUA_TBOOLEAN);
+	bool isStatic = lua_toboolean(L, 4);
 	Number friction;
-	if(lua_isnumber(L, 4)) {
-		friction = lua_tonumber(L, 4);
+	if(lua_isnumber(L, 5)) {
+		friction = lua_tonumber(L, 5);
 	} else {
 		friction = 0.1;
 	}
 	Number density;
-	if(lua_isnumber(L, 5)) {
-		density = lua_tonumber(L, 5);
+	if(lua_isnumber(L, 6)) {
+		density = lua_tonumber(L, 6);
 	} else {
 		density = 1;
 	}
 	Number restitution;
-	if(lua_isnumber(L, 6)) {
-		restitution = lua_tonumber(L, 6);
+	if(lua_isnumber(L, 7)) {
+		restitution = lua_tonumber(L, 7);
 	} else {
 		restitution = 0;
 	}
 	bool isSensor;
-	if(lua_isboolean(L, 7)) {
-		isSensor = lua_toboolean(L, 7);
+	if(lua_isboolean(L, 8)) {
+		isSensor = lua_toboolean(L, 8);
 	} else {
 		isSensor = false;
 	}
 	bool fixedRotation;
-	if(lua_isboolean(L, 8)) {
-		fixedRotation = lua_toboolean(L, 8);
+	if(lua_isboolean(L, 9)) {
+		fixedRotation = lua_toboolean(L, 9);
 	} else {
 		fixedRotation = false;
 	}
-	lua_pushlightuserdata(L, (void*)inst->addPhysicsChild(newEntity, entType, friction, density, restitution, isSensor, fixedRotation));
+	void *ptrRetVal = (void*)inst->addPhysicsChild(newEntity, entType, isStatic, friction, density, restitution, isSensor, fixedRotation);
+	if(ptrRetVal == NULL) {
+		lua_pushnil(L);
+	} else {
+		lua_pushlightuserdata(L, ptrRetVal);
+	}
 	return 1;
 }
 
@@ -83,7 +90,12 @@ static int Physics2D_PhysicsScreen_addCollisionChild(lua_State *L) {
 	ScreenEntity * newEntity = (ScreenEntity *)lua_topointer(L, 2);
 	luaL_checktype(L, 3, LUA_TNUMBER);
 	int entType = lua_tointeger(L, 3);
-	lua_pushlightuserdata(L, (void*)inst->addCollisionChild(newEntity, entType));
+	void *ptrRetVal = (void*)inst->addCollisionChild(newEntity, entType);
+	if(ptrRetVal == NULL) {
+		lua_pushnil(L);
+	} else {
+		lua_pushlightuserdata(L, ptrRetVal);
+	}
 	return 1;
 }
 
@@ -105,8 +117,13 @@ static int Physics2D_PhysicsScreen_createDistanceJoint(lua_State *L) {
 	ScreenEntity * ent2 = (ScreenEntity *)lua_topointer(L, 3);
 	luaL_checktype(L, 4, LUA_TBOOLEAN);
 	bool collideConnected = lua_toboolean(L, 4);
-	inst->createDistanceJoint(ent1, ent2, collideConnected);
-	return 0;
+	void *ptrRetVal = (void*)inst->createDistanceJoint(ent1, ent2, collideConnected);
+	if(ptrRetVal == NULL) {
+		lua_pushnil(L);
+	} else {
+		lua_pushlightuserdata(L, ptrRetVal);
+	}
+	return 1;
 }
 
 static int Physics2D_PhysicsScreen_createPrismaticJoint(lua_State *L) {
@@ -116,10 +133,61 @@ static int Physics2D_PhysicsScreen_createPrismaticJoint(lua_State *L) {
 	ScreenEntity * ent1 = (ScreenEntity *)lua_topointer(L, 2);
 	luaL_checktype(L, 3, LUA_TLIGHTUSERDATA);
 	ScreenEntity * ent2 = (ScreenEntity *)lua_topointer(L, 3);
-	luaL_checktype(L, 4, LUA_TBOOLEAN);
-	bool collideConnected = lua_toboolean(L, 4);
-	inst->createPrismaticJoint(ent1, ent2, collideConnected);
-	return 0;
+	luaL_checktype(L, 4, LUA_TLIGHTUSERDATA);
+	Vector2 worldAxis = *(Vector2*)lua_topointer(L, 4);
+	luaL_checktype(L, 5, LUA_TNUMBER);
+	Number ax = lua_tonumber(L, 5);
+	luaL_checktype(L, 6, LUA_TNUMBER);
+	Number ay = lua_tonumber(L, 6);
+	bool collideConnected;
+	if(lua_isboolean(L, 7)) {
+		collideConnected = lua_toboolean(L, 7);
+	} else {
+		collideConnected = false;
+	}
+	Number lowerTranslation;
+	if(lua_isnumber(L, 8)) {
+		lowerTranslation = lua_tonumber(L, 8);
+	} else {
+		lowerTranslation = 0;
+	}
+	Number upperTranslation;
+	if(lua_isnumber(L, 9)) {
+		upperTranslation = lua_tonumber(L, 9);
+	} else {
+		upperTranslation = 0;
+	}
+	bool enableLimit;
+	if(lua_isboolean(L, 10)) {
+		enableLimit = lua_toboolean(L, 10);
+	} else {
+		enableLimit = false;
+	}
+	Number motorSpeed;
+	if(lua_isnumber(L, 11)) {
+		motorSpeed = lua_tonumber(L, 11);
+	} else {
+		motorSpeed = 0;
+	}
+	Number motorForce;
+	if(lua_isnumber(L, 12)) {
+		motorForce = lua_tonumber(L, 12);
+	} else {
+		motorForce = 0;
+	}
+	bool motorEnabled;
+	if(lua_isboolean(L, 13)) {
+		motorEnabled = lua_toboolean(L, 13);
+	} else {
+		motorEnabled = false;
+	}
+	void *ptrRetVal = (void*)inst->createPrismaticJoint(ent1, ent2, worldAxis, ax, ay, collideConnected, lowerTranslation, upperTranslation, enableLimit, motorSpeed, motorForce, motorEnabled);
+	if(ptrRetVal == NULL) {
+		lua_pushnil(L);
+	} else {
+		lua_pushlightuserdata(L, ptrRetVal);
+	}
+	return 1;
 }
 
 static int Physics2D_PhysicsScreen_createRevoluteJoint(lua_State *L) {
@@ -133,19 +201,54 @@ static int Physics2D_PhysicsScreen_createRevoluteJoint(lua_State *L) {
 	Number ax = lua_tonumber(L, 4);
 	luaL_checktype(L, 5, LUA_TNUMBER);
 	Number ay = lua_tonumber(L, 5);
-	luaL_checktype(L, 6, LUA_TBOOLEAN);
-	bool enableLimit = lua_toboolean(L, 6);
-	luaL_checktype(L, 7, LUA_TNUMBER);
-	Number lowerLimit = lua_tonumber(L, 7);
-	luaL_checktype(L, 8, LUA_TNUMBER);
-	Number upperLimit = lua_tonumber(L, 8);
-	luaL_checktype(L, 9, LUA_TBOOLEAN);
-	bool motorEnabled = lua_toboolean(L, 9);
-	luaL_checktype(L, 10, LUA_TNUMBER);
-	Number motorSpeed = lua_tonumber(L, 10);
-	luaL_checktype(L, 11, LUA_TNUMBER);
-	Number maxTorque = lua_tonumber(L, 11);
-	lua_pushlightuserdata(L, (void*)inst->createRevoluteJoint(ent1, ent2, ax, ay, enableLimit, lowerLimit, upperLimit, motorEnabled, motorSpeed, maxTorque));
+	bool collideConnected;
+	if(lua_isboolean(L, 6)) {
+		collideConnected = lua_toboolean(L, 6);
+	} else {
+		collideConnected = false;
+	}
+	bool enableLimit;
+	if(lua_isboolean(L, 7)) {
+		enableLimit = lua_toboolean(L, 7);
+	} else {
+		enableLimit = false;
+	}
+	Number lowerLimit;
+	if(lua_isnumber(L, 8)) {
+		lowerLimit = lua_tonumber(L, 8);
+	} else {
+		lowerLimit = 0;
+	}
+	Number upperLimit;
+	if(lua_isnumber(L, 9)) {
+		upperLimit = lua_tonumber(L, 9);
+	} else {
+		upperLimit = 0;
+	}
+	bool motorEnabled;
+	if(lua_isboolean(L, 10)) {
+		motorEnabled = lua_toboolean(L, 10);
+	} else {
+		motorEnabled = false;
+	}
+	Number motorSpeed;
+	if(lua_isnumber(L, 11)) {
+		motorSpeed = lua_tonumber(L, 11);
+	} else {
+		motorSpeed = 0;
+	}
+	Number maxTorque;
+	if(lua_isnumber(L, 12)) {
+		maxTorque = lua_tonumber(L, 12);
+	} else {
+		maxTorque = 0;
+	}
+	void *ptrRetVal = (void*)inst->createRevoluteJoint(ent1, ent2, ax, ay, collideConnected, enableLimit, lowerLimit, upperLimit, motorEnabled, motorSpeed, maxTorque);
+	if(ptrRetVal == NULL) {
+		lua_pushnil(L);
+	} else {
+		lua_pushlightuserdata(L, ptrRetVal);
+	}
 	return 1;
 }
 
@@ -202,7 +305,12 @@ static int Physics2D_PhysicsScreen_getPhysicsEntityByShape(lua_State *L) {
 	PhysicsScreen *inst = (PhysicsScreen*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
 	b2Shape * shape = (b2Shape *)lua_topointer(L, 2);
-	lua_pushlightuserdata(L, (void*)inst->getPhysicsEntityByShape(shape));
+	void *ptrRetVal = (void*)inst->getPhysicsEntityByShape(shape);
+	if(ptrRetVal == NULL) {
+		lua_pushnil(L);
+	} else {
+		lua_pushlightuserdata(L, ptrRetVal);
+	}
 	return 1;
 }
 
@@ -211,7 +319,12 @@ static int Physics2D_PhysicsScreen_getPhysicsEntityByFixture(lua_State *L) {
 	PhysicsScreen *inst = (PhysicsScreen*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
 	b2Fixture * fixture = (b2Fixture *)lua_topointer(L, 2);
-	lua_pushlightuserdata(L, (void*)inst->getPhysicsEntityByFixture(fixture));
+	void *ptrRetVal = (void*)inst->getPhysicsEntityByFixture(fixture);
+	if(ptrRetVal == NULL) {
+		lua_pushnil(L);
+	} else {
+		lua_pushlightuserdata(L, ptrRetVal);
+	}
 	return 1;
 }
 
@@ -290,6 +403,17 @@ static int Physics2D_PhysicsScreen_EndContact(lua_State *L) {
 	return 0;
 }
 
+static int Physics2D_PhysicsScreen_PostSolve(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsScreen *inst = (PhysicsScreen*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	b2Contact * contact = (b2Contact *)lua_topointer(L, 2);
+	luaL_checktype(L, 3, LUA_TLIGHTUSERDATA);
+	const b2ContactImpulse * impulse = (const b2ContactImpulse *)lua_topointer(L, 3);
+	inst->PostSolve(contact, impulse);
+	return 0;
+}
+
 static int Physics2D_PhysicsScreen_wakeUp(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScreen *inst = (PhysicsScreen*)lua_topointer(L, 1);
@@ -299,30 +423,6 @@ static int Physics2D_PhysicsScreen_wakeUp(lua_State *L) {
 	return 0;
 }
 
-static int Physics2D_PhysicsScreen_getEntityCollisionNormal(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
-	PhysicsScreen *inst = (PhysicsScreen*)lua_topointer(L, 1);
-	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	ScreenEntity * ent1 = (ScreenEntity *)lua_topointer(L, 2);
-	luaL_checktype(L, 3, LUA_TLIGHTUSERDATA);
-	ScreenEntity * ent2 = (ScreenEntity *)lua_topointer(L, 3);
-	Vector2 *retInst = new Vector2();
-	*retInst = inst->getEntityCollisionNormal(ent1, ent2);
-	lua_pushlightuserdata(L, retInst);
-	return 1;
-}
-
-static int Physics2D_PhysicsScreen_areEntitiesColliding(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
-	PhysicsScreen *inst = (PhysicsScreen*)lua_topointer(L, 1);
-	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	ScreenEntity * ent1 = (ScreenEntity *)lua_topointer(L, 2);
-	luaL_checktype(L, 3, LUA_TLIGHTUSERDATA);
-	ScreenEntity * ent2 = (ScreenEntity *)lua_topointer(L, 3);
-	lua_pushboolean(L, inst->areEntitiesColliding(ent1, ent2));
-	return 1;
-}
-
 static int Physics2D_PhysicsScreen_getEntityAtPosition(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScreen *inst = (PhysicsScreen*)lua_topointer(L, 1);
@@ -330,7 +430,12 @@ static int Physics2D_PhysicsScreen_getEntityAtPosition(lua_State *L) {
 	Number x = lua_tonumber(L, 2);
 	luaL_checktype(L, 3, LUA_TNUMBER);
 	Number y = lua_tonumber(L, 3);
-	lua_pushlightuserdata(L, (void*)inst->getEntityAtPosition(x, y));
+	void *ptrRetVal = (void*)inst->getEntityAtPosition(x, y);
+	if(ptrRetVal == NULL) {
+		lua_pushnil(L);
+	} else {
+		lua_pushlightuserdata(L, ptrRetVal);
+	}
 	return 1;
 }
 
@@ -359,7 +464,12 @@ static int Physics2D_PhysicsScreen_getPhysicsByScreenEntity(lua_State *L) {
 	PhysicsScreen *inst = (PhysicsScreen*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
 	ScreenEntity * ent = (ScreenEntity *)lua_topointer(L, 2);
-	lua_pushlightuserdata(L, (void*)inst->getPhysicsByScreenEntity(ent));
+	void *ptrRetVal = (void*)inst->getPhysicsByScreenEntity(ent);
+	if(ptrRetVal == NULL) {
+		lua_pushnil(L);
+	} else {
+		lua_pushlightuserdata(L, ptrRetVal);
+	}
 	return 1;
 }
 
@@ -392,6 +502,94 @@ static int Physics2D_delete_PhysicsJoint(lua_State *L) {
 	return 0;
 }
 
+static int Physics2D_PhysicsScreenEvent_get_localCollisionNormal(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsScreenEvent *inst = (PhysicsScreenEvent*)lua_topointer(L, 1);
+	lua_pushlightuserdata(L, &inst->localCollisionNormal);
+	return 1;
+}
+
+static int Physics2D_PhysicsScreenEvent_get_worldCollisionNormal(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsScreenEvent *inst = (PhysicsScreenEvent*)lua_topointer(L, 1);
+	lua_pushlightuserdata(L, &inst->worldCollisionNormal);
+	return 1;
+}
+
+static int Physics2D_PhysicsScreenEvent_get_localCollisionPoint(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsScreenEvent *inst = (PhysicsScreenEvent*)lua_topointer(L, 1);
+	lua_pushlightuserdata(L, &inst->localCollisionPoint);
+	return 1;
+}
+
+static int Physics2D_PhysicsScreenEvent_get_impactStrength(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsScreenEvent *inst = (PhysicsScreenEvent*)lua_topointer(L, 1);
+	lua_pushnumber(L, inst->impactStrength);
+	return 1;
+}
+
+static int Physics2D_PhysicsScreenEvent_get_frictionStrength(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsScreenEvent *inst = (PhysicsScreenEvent*)lua_topointer(L, 1);
+	lua_pushnumber(L, inst->frictionStrength);
+	return 1;
+}
+
+static int Physics2D_PhysicsScreenEvent_set_impactStrength(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsScreenEvent *inst = (PhysicsScreenEvent*)lua_topointer(L, 1);
+	Number param = lua_tonumber(L, 2);
+	inst->impactStrength = param;
+	return 0;
+}
+
+static int Physics2D_PhysicsScreenEvent_set_frictionStrength(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsScreenEvent *inst = (PhysicsScreenEvent*)lua_topointer(L, 1);
+	Number param = lua_tonumber(L, 2);
+	inst->frictionStrength = param;
+	return 0;
+}
+
+static int Physics2D_PhysicsScreenEvent(lua_State *L) {
+	PhysicsScreenEvent *inst = new PhysicsScreenEvent();
+	lua_pushlightuserdata(L, (void*)inst);
+	return 1;
+}
+
+static int Physics2D_PhysicsScreenEvent_getFirstEntity(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsScreenEvent *inst = (PhysicsScreenEvent*)lua_topointer(L, 1);
+	void *ptrRetVal = (void*)inst->getFirstEntity();
+	if(ptrRetVal == NULL) {
+		lua_pushnil(L);
+	} else {
+		lua_pushlightuserdata(L, ptrRetVal);
+	}
+	return 1;
+}
+
+static int Physics2D_PhysicsScreenEvent_getSecondEntity(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsScreenEvent *inst = (PhysicsScreenEvent*)lua_topointer(L, 1);
+	void *ptrRetVal = (void*)inst->getSecondEntity();
+	if(ptrRetVal == NULL) {
+		lua_pushnil(L);
+	} else {
+		lua_pushlightuserdata(L, ptrRetVal);
+	}
+	return 1;
+}
+
+static int Physics2D_delete_PhysicsScreenEvent(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsScreenEvent *inst = (PhysicsScreenEvent*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Physics2D_PhysicsScreenEntity_get_collisionOnly(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScreenEntity *inst = (PhysicsScreenEntity*)lua_topointer(L, 1);
@@ -416,17 +614,19 @@ static int Physics2D_PhysicsScreenEntity(lua_State *L) {
 	Number worldScale = lua_tonumber(L, 3);
 	luaL_checktype(L, 4, LUA_TNUMBER);
 	int entType = lua_tointeger(L, 4);
-	luaL_checktype(L, 5, LUA_TNUMBER);
-	Number friction = lua_tonumber(L, 5);
+	luaL_checktype(L, 5, LUA_TBOOLEAN);
+	bool isStatic = lua_toboolean(L, 5);
 	luaL_checktype(L, 6, LUA_TNUMBER);
-	Number density = lua_tonumber(L, 6);
+	Number friction = lua_tonumber(L, 6);
 	luaL_checktype(L, 7, LUA_TNUMBER);
-	Number restitution = lua_tonumber(L, 7);
-	luaL_checktype(L, 8, LUA_TBOOLEAN);
-	bool isSensor = lua_toboolean(L, 8);
+	Number density = lua_tonumber(L, 7);
+	luaL_checktype(L, 8, LUA_TNUMBER);
+	Number restitution = lua_tonumber(L, 8);
 	luaL_checktype(L, 9, LUA_TBOOLEAN);
-	bool fixedRotation = lua_toboolean(L, 9);
-	PhysicsScreenEntity *inst = new PhysicsScreenEntity(entity, world, worldScale, entType, friction, density, restitution, isSensor, fixedRotation);
+	bool isSensor = lua_toboolean(L, 9);
+	luaL_checktype(L, 10, LUA_TBOOLEAN);
+	bool fixedRotation = lua_toboolean(L, 10);
+	PhysicsScreenEntity *inst = new PhysicsScreenEntity(entity, world, worldScale, entType, isStatic, friction, density, restitution, isSensor, fixedRotation);
 	lua_pushlightuserdata(L, (void*)inst);
 	return 1;
 }
@@ -434,7 +634,12 @@ static int Physics2D_PhysicsScreenEntity(lua_State *L) {
 static int Physics2D_PhysicsScreenEntity_getScreenEntity(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScreenEntity *inst = (PhysicsScreenEntity*)lua_topointer(L, 1);
-	lua_pushlightuserdata(L, (void*)inst->getScreenEntity());
+	void *ptrRetVal = (void*)inst->getScreenEntity();
+	if(ptrRetVal == NULL) {
+		lua_pushnil(L);
+	} else {
+		lua_pushlightuserdata(L, ptrRetVal);
+	}
 	return 1;
 }
 

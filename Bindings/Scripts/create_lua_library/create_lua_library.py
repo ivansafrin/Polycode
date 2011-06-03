@@ -56,6 +56,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 				cppHeader = CppHeaderParser.CppHeader(contents, "string")
 				ignore_classes = ["PolycodeShaderModule", "Object", "Threaded", "OpenGLCubemap"]
 				for ckey in cppHeader.classes:
+					print ">> Parsing class %s" % ckey
 					c = cppHeader.classes[ckey]
 		#			if ckey == "ParticleEmitter":
 		#				print c
@@ -325,7 +326,12 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 										basicType = True
 	
 									if pm["rtnType"].find("*") > -1:
-										out += "\t%s(L, (void*)%s%s);\n" % (outfunc, call, retFunc)
+										out += "\tvoid *ptrRetVal = (void*)%s%s;\n" % (call, retFunc)
+										out += "\tif(ptrRetVal == NULL) {\n"
+										out += "\t\tlua_pushnil(L);\n"
+										out += "\t} else {\n"
+										out += "\t\t%s(L, ptrRetVal);\n" % (outfunc)
+										out += "\t}\n"
 									elif basicType == True:
 										out += "\t%s(L, %s%s);\n" % (outfunc, call, retFunc)
 									else:
@@ -382,6 +388,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 										lout += "\treturn retVal\n"
 									else:
 										className = pm["rtnType"].replace("const", "").replace("&", "").replace("inline", "").replace("virtual", "").replace("static", "").replace("*","").replace(" ", "")
+										lout += "\tif retVal == nil then return nil end\n"
 										lout += "\tif Polycore.__ptr_lookup[retVal] ~= nil then\n"
 										lout += "\t\treturn Polycore.__ptr_lookup[retVal]\n"
 										lout += "\telse\n"
@@ -401,7 +408,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 					out += "\tdelete inst;\n"
 					out += "\treturn 0;\n"
 					out += "}\n\n"
-	
+
 					lout += "\n\n"
 					lout += "function %s:__delete()\n" % (ckey)
 					lout += "\tPolycore.__ptr_lookup[self.__ptr] = nil\n"

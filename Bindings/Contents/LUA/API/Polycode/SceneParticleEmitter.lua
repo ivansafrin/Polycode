@@ -30,6 +30,7 @@ end
 
 function SceneParticleEmitter:getEmitter()
 	local retVal =  Polycore.SceneParticleEmitter_getEmitter(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -45,6 +46,7 @@ end
 
 function SceneParticleEmitter:getBaseMatrix()
 	local retVal =  Polycore.SceneParticleEmitter_getBaseMatrix(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

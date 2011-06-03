@@ -33,16 +33,70 @@ THE SOFTWARE.
 #define MAX_B2DCONTACTPOINTS 2048
 
 namespace Polycode {
-	
+
+/**
+* Event sent out by the PhysicsScreen class when collisions begin and end.
+*/	
 class _PolyExport PhysicsScreenEvent : public Event {
 	public:	
+		PhysicsScreenEvent();
+		~PhysicsScreenEvent();
 		
-		PhysicsScreenEntity *entity1;	
-		PhysicsScreenEntity *entity2;	
+		/**
+		* First colliding entity.
+		*/
+		ScreenEntity *entity1;	
+		
+		/**
+		* Second colliding entity.
+		*/		
+		ScreenEntity *entity2;	
+
+		/**
+		* First colliding entity.
+		*/
+		ScreenEntity *getFirstEntity();	
+		
+		/**
+		* Second colliding entity.
+		*/		
+		ScreenEntity *getSecondEntity();	
+
 	
+		/**
+		* Local collision normal.
+		*/
+		Vector2 localCollisionNormal;
+
+		/**
+		* Collision normal in world space
+		*/		
+		Vector2 worldCollisionNormal;
+		
+		/**
+		* Collision point
+		*/			
+		Vector2 localCollisionPoint;
+			
+		/**
+		* Strength of the collision impact.
+		*/
+		Number impactStrength;	
+		
+		/**
+		* Friction strength of the impact
+		*/		
+		Number frictionStrength;	
+							
+		/**
+		* Event sent out when a collision begins
+		*/					
 		static const int EVENT_NEW_SHAPE_COLLISION = 0;
+		
+		/**
+		* Event sent out when a collision ends
+		*/							
 		static const int EVENT_END_SHAPE_COLLISION = 1;
-		static const int EVENT_PERSIST_SHAPE_COLLISION = 2;	
 };		
 
 
@@ -97,7 +151,8 @@ public:
 	/**
 	* Adds a ScreenEntity as a physics enabled child. 
 	* @param newEntity Screen entity to add.
-	* @param entType Physics entity type to add as. Possible values are PhysicsScreenEntity::ENTITY_RECT, PhysicsScreenEntity::ENTITY_CIRCLE and PhysicsScreenEntity::ENTITY_STATICRECT
+	* @param entType Physics entity type to add as. Possible values are PhysicsScreenEntity::ENTITY_RECT, PhysicsScreenEntity::ENTITY_CIRCLE and PhysicsScreenEntity::ENTITY_MESH. If the type is ENTITY_MESH, the ScreenEntity passed must be a ScreenMesh!
+	* @param isStatic If this parameter is true, the body is static (doesn't move on its own).
 	* @param friction Friction of the physics entity. Friction controls how entities drag along each other.
 	* @param density Density of the physics entity. Density controls how heavy the entity is.
 	* @param restitution Restitution of the physics entity. Restitution controls how bouncy the entity is.
@@ -105,7 +160,7 @@ public:
 	* @param fixedRotation If this is set to true, the entity will always have a locked rotation.
 	* @return The physics entity wrapper.
 	*/
-	PhysicsScreenEntity *addPhysicsChild(ScreenEntity *newEntity, int entType, Number friction=0.1, Number density=1, Number restitution = 0, bool isSensor = false, bool fixedRotation = false);
+	PhysicsScreenEntity *addPhysicsChild(ScreenEntity *newEntity, int entType, bool isStatic, Number friction=0.1, Number density=1, Number restitution = 0, bool isSensor = false, bool fixedRotation = false);
 	
 	/**
 	* Removes a physics child from the screen.
@@ -132,16 +187,27 @@ public:
 	* @param ent1 First entity to join.
 	* @param ent2 Second entity to join.	
 	* @param collideConnected If set to true, both entities will collide with each other, if false, they will not.
+	* @return Created physics joint.	
 	*/ 
-	void createDistanceJoint(ScreenEntity *ent1, ScreenEntity *ent2, bool collideConnected);
+	PhysicsJoint *createDistanceJoint(ScreenEntity *ent1, ScreenEntity *ent2, bool collideConnected);
 	
 	/**
 	* Creates a new prismatic joint. Prismatic joints provide one degree of freedom between two entities. 
 	* @param ent1 First entity to join.
 	* @param ent2 Second entity to join.	
 	* @param collideConnected If set to true, both entities will collide with each other, if false, they will not.
+	* @param ax Anchor point x (relative to first entity)
+	* @param ay Anchor point y (relative to first entity)
+	* @param enableLimit If true, the rotation will be limited to the specified values 
+	* @param lowerTranslation If enableLimit is true, specifies the lower translation limit.
+	* @param upperTranslation If enableLimit is true, specifies the upper translation limit.
+	* @param motorEnabled If enabled, applies a constant motor to the rotation joint.
+	* @param motorSpeed If motorEnabled is true, controls the speed at which the motor rotates.
+	* @param maxTorque	If motorEnabled is true, specifies the maximum force applied.		
+	* @param worldAxis Specifies the relative world axis for the prismatic joint.	
+	* @return Created physics joint.	
 	*/ 	
-	void createPrismaticJoint(ScreenEntity *ent1, ScreenEntity *ent2, bool collideConnected);
+	PhysicsJoint *createPrismaticJoint(ScreenEntity *ent1, ScreenEntity *ent2, Vector2 worldAxis, Number ax, Number ay, bool collideConnected=false, Number lowerTranslation=0, Number upperTranslation=0, bool enableLimit=false, Number motorSpeed=0, Number motorForce=0, bool motorEnabled=false);
 
 	/**
 	* Creates a new revolute joint. Revolute joints enable one entity to rotate around a point on another entity.
@@ -157,7 +223,7 @@ public:
 	* @param maxTorque	If motorEnabled is true, specifies the maximum torque applied.		
 	* @return Created physics joint.
 	*/ 		
-	PhysicsJoint *createRevoluteJoint(ScreenEntity *ent1, ScreenEntity *ent2, Number ax, Number ay, bool enableLimit, Number lowerLimit, Number upperLimit, bool motorEnabled, Number motorSpeed, Number maxTorque);
+	PhysicsJoint *createRevoluteJoint(ScreenEntity *ent1, ScreenEntity *ent2, Number ax, Number ay, bool collideConnected=false, bool enableLimit=false, Number lowerLimit=0, Number upperLimit=0, bool motorEnabled=false, Number motorSpeed=0, Number maxTorque=0);
 	
 //	b2MouseJoint *createMouseJoint(ScreenEntity *ent1, Vector2 *mp);
 
@@ -233,6 +299,7 @@ public:
 			
 	void BeginContact (b2Contact *contact);
 	void EndContact (b2Contact *contact);	
+	void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse);
 
 	/**
 	* Wake up a sleeping entity. The physics engine puts non-moving entities to sleep automatically. Use this to wake them up.
@@ -242,22 +309,6 @@ public:
 	
 	void handleEvent(Event *event);
 
-	/**
-	* Returns the collision normal between two collision-tracked or physics entities.
-	* @param ent1 First entity to check.
-	* @param ent2 Second entity to check.	
-	* @return If the specified entities are colliding, this will return the collision normal or (0,0) otherwise.
-	*/ 											
-	Vector2 getEntityCollisionNormal(ScreenEntity *ent1, ScreenEntity *ent2);
-
-	/**
-	* Returns the collision status between two collision-tracked or physics entities.
-	* @param ent1 First entity to check.
-	* @param ent2 Second entity to check.	
-	* @return If the specified entities are colliding, will return true, and false if they are not.
-	*/ 												
-	bool areEntitiesColliding(ScreenEntity *ent1, ScreenEntity *ent2);
-	
 	/**
 	* Returns the entity at the specified position.
 	* @param x X position.
@@ -295,10 +346,7 @@ protected:
 
 	Timer *updateTimer;
 	vector <PhysicsScreenEntity*> physicsChildren;
-	
-	ContactPoint m_points[MAX_B2DCONTACTPOINTS];
-	int32 numContactPoints;
-	
+	vector<b2Contact*> contacts;
 	b2World *world;
 	Number timeStep;
 	int32 iterations;

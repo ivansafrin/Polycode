@@ -43,6 +43,7 @@ end
 
 function Shader:createBinding()
 	local retVal =  Polycore.Shader_createBinding(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

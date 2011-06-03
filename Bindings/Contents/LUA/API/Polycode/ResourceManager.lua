@@ -63,6 +63,7 @@ end
 
 function ResourceManager:getResource(resourceType, resourceName)
 	local retVal = Polycore.ResourceManager_getResource(self.__ptr, resourceType, resourceName)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

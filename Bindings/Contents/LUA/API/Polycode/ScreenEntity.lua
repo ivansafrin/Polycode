@@ -139,6 +139,7 @@ end
 
 function ScreenEntity:buildPositionMatrix()
 	local retVal =  Polycore.ScreenEntity_buildPositionMatrix(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -212,6 +213,7 @@ end
 
 function ScreenEntity:getPosition2D()
 	local retVal =  Polycore.ScreenEntity_getPosition2D(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

@@ -23,7 +23,6 @@
 		6DE45BF0138DA6C3000BDFBA /* libogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DE45BED138DA6C3000BDFBA /* libogg.a */; };
 		6DE45BF1138DA6C3000BDFBA /* libvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DE45BEE138DA6C3000BDFBA /* libvorbis.a */; };
 		6DE45BF2138DA6C3000BDFBA /* libvorbisfile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DE45BEF138DA6C3000BDFBA /* libvorbisfile.a */; };
-		6DE45BF6138DA6F8000BDFBA /* libPolycodeGLSL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DE45BF3138DA6F8000BDFBA /* libPolycodeGLSL.a */; };
 		6DE45BF7138DA6F8000BDFBA /* libPolyCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DE45BF4138DA6F8000BDFBA /* libPolyCore.a */; };
 		6DE45BF8138DA6F8000BDFBA /* libPolycodeLUA.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DE45BF5138DA6F8000BDFBA /* libPolycodeLUA.a */; };
 		6DE45BFB138DA707000BDFBA /* PolycodeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DE45BFA138DA707000BDFBA /* PolycodeView.mm */; };
@@ -56,7 +55,6 @@
 		6DE45BED138DA6C3000BDFBA /* libogg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libogg.a; path = "../../../../Release/Mac OS X/Framework/Dependencies/Lib/libogg.a"; sourceTree = "<group>"; };
 		6DE45BEE138DA6C3000BDFBA /* libvorbis.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbis.a; path = "../../../../Release/Mac OS X/Framework/Dependencies/Lib/libvorbis.a"; sourceTree = "<group>"; };
 		6DE45BEF138DA6C3000BDFBA /* libvorbisfile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbisfile.a; path = "../../../../Release/Mac OS X/Framework/Dependencies/Lib/libvorbisfile.a"; sourceTree = "<group>"; };
-		6DE45BF3138DA6F8000BDFBA /* libPolycodeGLSL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycodeGLSL.a; path = "../../../../../../../Library/Developer/Xcode/DerivedData/Modules-epduxiffqrcazabvaazmexadjpgk/Build/Products/Debug/libPolycodeGLSL.a"; sourceTree = "<group>"; };
 		6DE45BF4138DA6F8000BDFBA /* libPolyCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolyCore.a; path = "../../../../../../../Library/Developer/Xcode/DerivedData/PolyCore-ecbhldydhvplehavgvhjdlapyvwd/Build/Products/Debug/libPolyCore.a"; sourceTree = "<group>"; };
 		6DE45BF5138DA6F8000BDFBA /* libPolycodeLUA.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycodeLUA.a; path = "../../../../../../../Library/Developer/Xcode/DerivedData/Bindings-bojbiqnjfgqgjpgcdihwtncgpnvk/Build/Products/Debug/libPolycodeLUA.a"; sourceTree = "<group>"; };
 		6DE45BF9138DA707000BDFBA /* PolycodeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeView.h; path = "../../../../../Release/Mac OS X/Framework/Core/PolycodeView/PolycodeView.h"; sourceTree = "<group>"; };
@@ -85,7 +83,6 @@
 				6DE45BF0138DA6C3000BDFBA /* libogg.a in Frameworks */,
 				6DE45BF1138DA6C3000BDFBA /* libvorbis.a in Frameworks */,
 				6DE45BF2138DA6C3000BDFBA /* libvorbisfile.a in Frameworks */,
-				6DE45BF6138DA6F8000BDFBA /* libPolycodeGLSL.a in Frameworks */,
 				6DE45BF7138DA6F8000BDFBA /* libPolyCore.a in Frameworks */,
 				6DE45BF8138DA6F8000BDFBA /* libPolycodeLUA.a in Frameworks */,
 			);
@@ -114,7 +111,6 @@
 		6DE45BB7138DA66C000BDFBA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				6DE45BF3138DA6F8000BDFBA /* libPolycodeGLSL.a */,
 				6DE45BF4138DA6F8000BDFBA /* libPolyCore.a */,
 				6DE45BF5138DA6F8000BDFBA /* libPolycodeLUA.a */,
 				6DE45BED138DA6C3000BDFBA /* libogg.a */,

@@ -90,6 +90,7 @@ end
 
 function Bone:getParentBone()
 	local retVal =  Polycore.Bone_getParentBone(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -106,6 +107,7 @@ end
 
 function Bone:getChildBone(index)
 	local retVal = Polycore.Bone_getChildBone(self.__ptr, index)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -117,6 +119,7 @@ end
 
 function Bone:getBoneMatrix()
 	local retVal =  Polycore.Bone_getBoneMatrix(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -132,6 +135,7 @@ end
 
 function Bone:getRestMatrix()
 	local retVal =  Polycore.Bone_getRestMatrix(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -143,6 +147,7 @@ end
 
 function Bone:getFullRestMatrix()
 	local retVal =  Polycore.Bone_getFullRestMatrix(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -154,6 +159,7 @@ end
 
 function Bone:getParentRestMatrix()
 	local retVal =  Polycore.Bone_getParentRestMatrix(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -165,6 +171,7 @@ end
 
 function Bone:getFinalMatrix()
 	local retVal =  Polycore.Bone_getFinalMatrix(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -184,6 +191,7 @@ end
 
 function Bone:getBaseMatrix()
 	local retVal =  Polycore.Bone_getBaseMatrix(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -195,6 +203,7 @@ end
 
 function Bone:getFullBaseMatrix()
 	local retVal =  Polycore.Bone_getFullBaseMatrix(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
