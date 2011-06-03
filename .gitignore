@@ -27,6 +27,7 @@
 *.exp
 *.zip
 *.swo
+*.opensdf
 
 Core/Build/Mac\ OS\ X/build
 IDE/Build/Mac\ OS\ X/build

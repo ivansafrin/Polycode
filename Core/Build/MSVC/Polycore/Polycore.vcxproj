@@ -106,6 +106,9 @@
     <ClInclude Include="..\..\..\Contents\Include\PolyGLCubemap.h" />
     <ClInclude Include="..\..\..\Contents\Include\PolyGlobals.h" />
     <ClInclude Include="..\..\..\Contents\Include\PolyGLRenderer.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyGLSLProgram.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyGLSLShader.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolyGLSLShaderModule.h" />
     <ClInclude Include="..\..\..\Contents\Include\PolyGLTexture.h" />
     <ClInclude Include="..\..\..\Contents\Include\PolyGLVertexBuffer.h" />
     <ClInclude Include="..\..\..\Contents\Include\PolyImage.h" />
@@ -139,6 +142,7 @@
     <ClInclude Include="..\..\..\Contents\Include\PolySceneMesh.h" />
     <ClInclude Include="..\..\..\Contents\Include\PolyScenePrimitive.h" />
     <ClInclude Include="..\..\..\Contents\Include\PolySceneRenderTexture.h" />
+    <ClInclude Include="..\..\..\Contents\Include\PolySceneSound.h" />
     <ClInclude Include="..\..\..\Contents\Include\PolyScreen.h" />
     <ClInclude Include="..\..\..\Contents\Include\PolyScreenCurve.h" />
     <ClInclude Include="..\..\..\Contents\Include\PolyScreenEntity.h" />
@@ -190,6 +194,9 @@
     <ClCompile Include="..\..\..\Contents\Source\PolyFontManager.cpp" />
     <ClCompile Include="..\..\..\Contents\Source\PolyGLCubemap.cpp" />
     <ClCompile Include="..\..\..\Contents\Source\PolyGLRenderer.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyGLSLProgram.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyGLSLShader.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyGLSLShaderModule.cpp" />
     <ClCompile Include="..\..\..\Contents\Source\PolyGLTexture.cpp" />
     <ClCompile Include="..\..\..\Contents\Source\PolyGLVertexBuffer.cpp" />
     <ClCompile Include="..\..\..\Contents\Source\PolyImage.cpp" />
@@ -221,6 +228,7 @@
     <ClCompile Include="..\..\..\Contents\Source\PolySceneMesh.cpp" />
     <ClCompile Include="..\..\..\Contents\Source\PolyScenePrimitive.cpp" />
     <ClCompile Include="..\..\..\Contents\Source\PolySceneRenderTexture.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolySceneSound.cpp" />
     <ClCompile Include="..\..\..\Contents\Source\PolyScreen.cpp" />
     <ClCompile Include="..\..\..\Contents\Source\PolyScreenCurve.cpp" />
     <ClCompile Include="..\..\..\Contents\Source\PolyScreenEntity.cpp" />
@@ -231,6 +239,7 @@
     <ClCompile Include="..\..\..\Contents\Source\PolyScreenManager.cpp" />
     <ClCompile Include="..\..\..\Contents\Source\PolyScreenMesh.cpp" />
     <ClCompile Include="..\..\..\Contents\Source\PolyScreenShape.cpp" />
+    <ClCompile Include="..\..\..\Contents\Source\PolyScreenSound.cpp" />
     <ClCompile Include="..\..\..\Contents\Source\PolyScreenSprite.cpp" />
     <ClCompile Include="..\..\..\Contents\Source\PolyShader.cpp" />
     <ClCompile Include="..\..\..\Contents\Source\PolySkeleton.cpp" />

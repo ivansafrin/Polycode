@@ -375,7 +375,7 @@ void PolycodePlayer::loadFile(const char *fileName) {
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default");
 	
 	
-	CoreServices::getInstance()->installModule(new GLSLShaderModule());	
+	//CoreServices::getInstance()->installModule(new GLSLShaderModule());	
 	
 	
 	if(configFile.root["packedItems"]) {

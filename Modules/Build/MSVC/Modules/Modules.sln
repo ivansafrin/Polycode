@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C++ Express 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libPolycodeGLSL", "..\libPolycodeGLSL\libPolycodeGLSL.vcxproj", "{EDF0C4BB-B062-431D-BE69-7487A2B7C92E}"
-EndProject
+# Visual Studio 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libPolycode3DPhysics", "libPolycode3DPhysics\libPolycode3DPhysics.vcxproj", "{B443C52F-21D6-4B45-B8B3-E3E4361D2972}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Physics2D", "Physics2D\Physics2D.vcxproj", "{A413360F-DCCA-49C0-9DC2-9B49B2FAE388}"
@@ -17,10 +15,6 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{EDF0C4BB-B062-431D-BE69-7487A2B7C92E}.Debug|Win32.ActiveCfg = Debug|Win32
-		{EDF0C4BB-B062-431D-BE69-7487A2B7C92E}.Debug|Win32.Build.0 = Debug|Win32
-		{EDF0C4BB-B062-431D-BE69-7487A2B7C92E}.Release|Win32.ActiveCfg = Release|Win32
-		{EDF0C4BB-B062-431D-BE69-7487A2B7C92E}.Release|Win32.Build.0 = Release|Win32
 		{B443C52F-21D6-4B45-B8B3-E3E4361D2972}.Debug|Win32.ActiveCfg = Debug|Win32
 		{B443C52F-21D6-4B45-B8B3-E3E4361D2972}.Debug|Win32.Build.0 = Debug|Win32
 		{B443C52F-21D6-4B45-B8B3-E3E4361D2972}.Release|Win32.ActiveCfg = Release|Win32
