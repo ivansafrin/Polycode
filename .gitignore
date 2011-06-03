@@ -24,6 +24,7 @@
 *.lastbuildstate
 *.lib
 *.manifest
+*.exp
 
 Core/Build/Mac\ OS\ X/build
 IDE/Build/Mac\ OS\ X/build
@@ -38,6 +39,7 @@ Tools/Dependencies
 Bindings/Dependencies
 IDE/Mac\ OS\ X
 Examples
+Debug
 Release
 Documentation
 
