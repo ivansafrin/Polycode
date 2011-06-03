@@ -36,6 +36,7 @@ end
 
 function Core:createMutex()
 	local retVal =  Polycore.Core_createMutex(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -51,6 +52,7 @@ end
 
 function Core:getClipboardString()
 	local retVal =  Polycore.Core_getClipboardString(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -62,6 +64,7 @@ end
 
 function Core:getServices()
 	local retVal =  Polycore.Core_getServices(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -92,6 +95,7 @@ end
 
 function Core:getInput()
 	local retVal =  Polycore.Core_getInput(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -134,6 +138,7 @@ end
 
 function Core:openFolderPicker()
 	local retVal =  Polycore.Core_openFolderPicker(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -166,6 +171,7 @@ end
 
 function Core:getTicks()
 	local retVal =  Polycore.Core_getTicks(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -186,6 +192,7 @@ end
 
 function Core:getUserPointer()
 	local retVal =  Polycore.Core_getUserPointer(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

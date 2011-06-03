@@ -5,7 +5,34 @@ class "Particle"
 BILLBOARD_PARTICLE = 0
 MESH_PARTICLE = 1
 function Particle:__index__(name)
-	if name == "life" then
+	if name == "velVector" then
+		retVal = Polycore.Particle_get_velVector(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "dirVector" then
+		retVal = Polycore.Particle_get_dirVector(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "deviation" then
+		retVal = Polycore.Particle_get_deviation(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "life" then
 		return Polycore.Particle_get_life(self.__ptr)
 	elseif name == "lifespan" then
 		return Polycore.Particle_get_lifespan(self.__ptr)
@@ -63,8 +90,8 @@ function Particle:Reset(continuious)
 	local retVal = Polycore.Particle_Reset(self.__ptr, continuious)
 end
 
-function Particle:createSceneParticle(particleType, texture, particleMesh)
-	local retVal = Polycore.Particle_createSceneParticle(self.__ptr, particleType, texture.__ptr, particleMesh.__ptr)
+function Particle:createSceneParticle(particleType, material, particleMesh)
+	local retVal = Polycore.Particle_createSceneParticle(self.__ptr, particleType, material.__ptr, particleMesh.__ptr)
 end
 
 function Particle:createScreenParticle(particleType, texture, particleMesh)

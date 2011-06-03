@@ -22,6 +22,7 @@ end
 
 function QuaternionCurve:interpolate(t, useShortestPath)
 	local retVal = Polycore.QuaternionCurve_interpolate(self.__ptr, t, useShortestPath)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

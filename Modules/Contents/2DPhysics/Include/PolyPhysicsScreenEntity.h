@@ -23,6 +23,7 @@ THE SOFTWARE.
 #pragma once
 #include "PolyGlobals.h"
 #include "PolyScreenEntity.h"
+#include "PolyScreenMesh.h"
 #include "Box2D/Box2D.h"
 
 namespace Polycode {
@@ -32,21 +33,40 @@ namespace Polycode {
 	*/	
 	class _PolyExport PhysicsScreenEntity {
 		public:
-			PhysicsScreenEntity(ScreenEntity *entity, b2World *world, Number worldScale, int entType, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation);
+			PhysicsScreenEntity(ScreenEntity *entity, b2World *world, Number worldScale, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation);
 			~PhysicsScreenEntity();		
 			
+			/**
+			* Returns the screen entity associated with this physics entity.
+			*/
 			ScreenEntity *getScreenEntity();
 			
+			/**
+			* Applies torque to the physics entity		
+			*/
 			void applyTorque(Number torque);
+			
+			/**
+			* Applies force to the physics entity		
+			*/			
 			void applyForce(Vector2 force);
 		
 			void setTransform(Vector2 pos, Number angle);
 			
 			void Update();
 			
+			/**
+			* Rectangular physics entity
+			*/ 
 			static const int ENTITY_RECT = 1;
+			/**
+			* Circular physics entity
+			*/ 			
 			static const int ENTITY_CIRCLE = 2;	
-			static const int ENTITY_STATICRECT = 3;
+			/**
+			* Mesh entity.
+			*/ 						
+			static const int ENTITY_MESH = 3;
 		
 			b2Fixture *fixture;		
 			b2Body* body;

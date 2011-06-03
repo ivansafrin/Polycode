@@ -2,8 +2,113 @@ class "BoneTrack"
 
 
 
+function BoneTrack:__index__(name)
+	if name == "LocXVec" then
+		retVal = Polycore.BoneTrack_get_LocXVec(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "LocYVec" then
+		retVal = Polycore.BoneTrack_get_LocYVec(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "LocZVec" then
+		retVal = Polycore.BoneTrack_get_LocZVec(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "ScaleXVec" then
+		retVal = Polycore.BoneTrack_get_ScaleXVec(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "ScaleYVec" then
+		retVal = Polycore.BoneTrack_get_ScaleYVec(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "ScaleZVec" then
+		retVal = Polycore.BoneTrack_get_ScaleZVec(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "boneQuat" then
+		retVal = Polycore.BoneTrack_get_boneQuat(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Quaternion("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "QuatWVec" then
+		retVal = Polycore.BoneTrack_get_QuatWVec(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "QuatXVec" then
+		retVal = Polycore.BoneTrack_get_QuatXVec(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "QuatYVec" then
+		retVal = Polycore.BoneTrack_get_QuatYVec(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "QuatZVec" then
+		retVal = Polycore.BoneTrack_get_QuatZVec(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	end
+end
 
 
+function BoneTrack:__set_callback(name,value)
+	return false
+end
 
 
 function BoneTrack:BoneTrack(...)

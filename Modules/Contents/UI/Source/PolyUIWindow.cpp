@@ -78,13 +78,13 @@ UIWindow::~UIWindow() {
 
 void UIWindow::onKeyDown(TAUKey key, wchar_t charCode) {
 	
-	if(key == TAUK_TAB) {
+	if(key == KEY_TAB) {
 		if(hasFocus) {
 			focusNextChild();
 		}
 	}
 	
-	if(key == TAUK_ESCAPE && closeOnEscape) {
+	if(key == KEY_ESCAPE && closeOnEscape) {
 		onClose();
 		dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);		
 	}

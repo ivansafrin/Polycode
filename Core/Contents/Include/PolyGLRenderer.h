@@ -134,6 +134,8 @@ namespace Polycode {
 		void bindFrameBufferTexture(Texture *texture);
 		void unbindFramebuffers();
 		
+		void cullFrontFaces(bool val);
+				
 		void pushRenderDataArray(RenderDataArray *array);
 		RenderDataArray *createRenderDataArrayForMesh(Mesh *mesh, int arrayType);
 		RenderDataArray *createRenderDataArray(int arrayType);

@@ -45,7 +45,6 @@ long custom_tellfunc(void *datasource) {
 }
 
 Sound::Sound(String fileName) {
-	
 	String extension;
 	size_t found;
 	found=fileName.rfind(".");
@@ -63,6 +62,7 @@ Sound::Sound(String fileName) {
 	}
 	
 	soundSource = GenSource(buffer);
+	setIsPositional(false);
 }
 
 Sound::~Sound() {
@@ -95,13 +95,53 @@ unsigned short Sound::readByte16(const unsigned char buffer[2]) {
 #endif	
 }
 
-void Sound::Play(bool once) {
-	if(once) {
+void Sound::Play(bool loop) {
+	if(!loop) {
 		alSourcei(soundSource, AL_LOOPING, AL_FALSE);
 	} else {
 		alSourcei(soundSource, AL_LOOPING, AL_TRUE);		
 	}
 	alSourcePlay(soundSource);
+}
+
+void Sound::setVolume(Number newVolume) {
+	alSourcef(soundSource, AL_GAIN, newVolume);
+}
+
+void Sound::setPitch(Number newPitch) {
+	alSourcef(soundSource, AL_PITCH, newPitch);
+}
+
+void Sound::setSoundPosition(Vector3 position) {
+	if(isPositional)
+		alSource3f(soundSource,AL_POSITION, position.x, position.y, position.z);
+}
+
+void Sound::setSoundVelocity(Vector3 velocity) {
+	if(isPositional)
+		alSource3f(soundSource,AL_VELOCITY, velocity.x, velocity.y, velocity.z);
+}
+
+void Sound::setSoundDirection(Vector3 direction) {
+	if(isPositional)
+		alSource3f(soundSource,AL_DIRECTION, direction.x, direction.y, direction.z);
+}
+
+void Sound::setPositionalProperties(Number referenceDistance, Number maxDistance) { 
+	alSourcef(soundSource,AL_REFERENCE_DISTANCE, referenceDistance);
+	alSourcef(soundSource,AL_MAX_DISTANCE, maxDistance);	
+}
+
+void Sound::setIsPositional(bool isPositional) {
+	this->isPositional = isPositional;
+	if(isPositional) {
+		alSourcei(soundSource, AL_SOURCE_RELATIVE, AL_FALSE);
+	} else {
+		alSourcei(soundSource, AL_SOURCE_RELATIVE, AL_TRUE);	
+		alSource3f(soundSource,AL_POSITION, 0,0,0);
+		alSource3f(soundSource,AL_VELOCITY, 0,0,0);
+		alSource3f(soundSource,AL_DIRECTION, 0,0,0);				
+	}
 }
 
 void Sound::checkALError(String operation) {

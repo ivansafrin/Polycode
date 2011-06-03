@@ -53,8 +53,10 @@ void ShaderBinding::addRenderTargetBinding(RenderTargetBinding *binding) {
 	renderTargetBindings.push_back(binding);
 	if(binding->mode == RenderTargetBinding::MODE_IN) {
 		inTargetBindings.push_back(binding);
+		printf("Adding in target binding [%s] [%s]\n", binding->id.c_str(), binding->name.c_str());
 	} else {
 		outTargetBindings.push_back(binding);	
+		printf("Adding out target binding [%s]\n", binding->id.c_str());		
 	}
 }
 
@@ -84,6 +86,8 @@ RenderTargetBinding *ShaderBinding::getOutTargetBinding(unsigned int index) {
 
 
 Shader::Shader(int type) : Resource(Resource::RESOURCE_SHADER) {
+	numSpotLights = 0;
+	numAreaLights = 0;
 	this->type = type;
 }
 

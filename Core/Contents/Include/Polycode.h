@@ -84,3 +84,5 @@
 #include "PolyThreaded.h"
 #include "PolySound.h"
 #include "PolySoundManager.h"
+#include "PolySceneSound.h"
+#include "PolyScreenSound.h"

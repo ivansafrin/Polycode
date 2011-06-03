@@ -5,7 +5,16 @@ class "SceneMesh" (SceneEntity)
 
 
 function SceneMesh:__index__(name)
-	if name == "showVertexNormals" then
+	if name == "lightmapIndex" then
+		retVal = Polycore.SceneMesh_get_lightmapIndex(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = unsigned int("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "showVertexNormals" then
 		return Polycore.SceneMesh_get_showVertexNormals(self.__ptr)
 	end
 end
@@ -46,6 +55,7 @@ end
 
 function SceneMesh:getLocalShaderOptions()
 	local retVal =  Polycore.SceneMesh_getLocalShaderOptions(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -57,6 +67,7 @@ end
 
 function SceneMesh:getMesh()
 	local retVal =  Polycore.SceneMesh_getMesh(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -68,6 +79,7 @@ end
 
 function SceneMesh:getTexture()
 	local retVal =  Polycore.SceneMesh_getTexture(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -79,6 +91,7 @@ end
 
 function SceneMesh:getMaterial()
 	local retVal =  Polycore.SceneMesh_getMaterial(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -118,6 +131,7 @@ end
 
 function SceneMesh:getSkeleton()
 	local retVal =  Polycore.SceneMesh_getSkeleton(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

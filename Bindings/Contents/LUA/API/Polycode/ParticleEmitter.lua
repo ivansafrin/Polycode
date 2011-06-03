@@ -4,16 +4,91 @@ class "ParticleEmitter"
 
 CONTINUOUS_EMITTER = 0
 TRIGGERED_EMITTER = 1
-CLOUD_EMITTER = 2
 function ParticleEmitter:__index__(name)
 	if name == "particleSpeedMod" then
 		return Polycore.ParticleEmitter_get_particleSpeedMod(self.__ptr)
 	elseif name == "brightnessDeviation" then
 		return Polycore.ParticleEmitter_get_brightnessDeviation(self.__ptr)
+	elseif name == "deviation" then
+		retVal = Polycore.ParticleEmitter_get_deviation(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "dirVector" then
+		retVal = Polycore.ParticleEmitter_get_dirVector(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "gravVector" then
+		retVal = Polycore.ParticleEmitter_get_gravVector(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
 	elseif name == "lifespan" then
 		return Polycore.ParticleEmitter_get_lifespan(self.__ptr)
 	elseif name == "rotationFollowsPath" then
 		return Polycore.ParticleEmitter_get_rotationFollowsPath(self.__ptr)
+	elseif name == "scaleCurve" then
+		retVal = Polycore.ParticleEmitter_get_scaleCurve(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = BezierCurve("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "colorCurveR" then
+		retVal = Polycore.ParticleEmitter_get_colorCurveR(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = BezierCurve("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "colorCurveG" then
+		retVal = Polycore.ParticleEmitter_get_colorCurveG(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = BezierCurve("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "colorCurveB" then
+		retVal = Polycore.ParticleEmitter_get_colorCurveB(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = BezierCurve("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "colorCurveA" then
+		retVal = Polycore.ParticleEmitter_get_colorCurveA(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = BezierCurve("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "useColorCurves" then
+		return Polycore.ParticleEmitter_get_useColorCurves(self.__ptr)
+	elseif name == "useScaleCurves" then
+		return Polycore.ParticleEmitter_get_useScaleCurves(self.__ptr)
 	end
 end
 
@@ -31,10 +106,30 @@ function ParticleEmitter:__set_callback(name,value)
 	elseif name == "rotationFollowsPath" then
 		Polycore.ParticleEmitter_set_rotationFollowsPath(self.__ptr, value)
 		return true
+	elseif name == "useColorCurves" then
+		Polycore.ParticleEmitter_set_useColorCurves(self.__ptr, value)
+		return true
+	elseif name == "useScaleCurves" then
+		Polycore.ParticleEmitter_set_useScaleCurves(self.__ptr, value)
+		return true
 	end
 	return false
 end
 
+
+function ParticleEmitter:ParticleEmitter(...)
+	for k,v in pairs(arg) do
+		if type(v) == "table" then
+			if v.__ptr ~= nil then
+				arg[k] = v.__ptr
+			end
+		end
+	end
+	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
+		self.__ptr = Polycore.ParticleEmitter(unpack(arg))
+		Polycore.__ptr_lookup[self.__ptr] = self
+	end
+end
 
 function ParticleEmitter:createParticles()
 	local retVal =  Polycore.ParticleEmitter_createParticles(self.__ptr)
@@ -42,14 +137,6 @@ end
 
 function ParticleEmitter:setRotationSpeed(speed)
 	local retVal = Polycore.ParticleEmitter_setRotationSpeed(self.__ptr, speed)
-end
-
-function ParticleEmitter:setStartingColor(c)
-	local retVal = Polycore.ParticleEmitter_setStartingColor(self.__ptr, c.__ptr)
-end
-
-function ParticleEmitter:setEndingColor(c)
-	local retVal = Polycore.ParticleEmitter_setEndingColor(self.__ptr, c.__ptr)
 end
 
 function ParticleEmitter:setParticleBlendingMode(mode)
@@ -86,23 +173,7 @@ function ParticleEmitter:emitterEnabled()
 end
 
 function ParticleEmitter:setEmitterRadius(rad)
-	local retVal = Polycore.ParticleEmitter_setEmitterRadius(self.__ptr, rad)
-end
-
-function ParticleEmitter:setStartingScaleModifier(mod)
-	local retVal = Polycore.ParticleEmitter_setStartingScaleModifier(self.__ptr, mod)
-end
-
-function ParticleEmitter:setEndingScaleModifier(mod)
-	local retVal = Polycore.ParticleEmitter_setEndingScaleModifier(self.__ptr, mod)
-end
-
-function ParticleEmitter:setEmitRotationVector(rotVector)
-	local retVal = Polycore.ParticleEmitter_setEmitRotationVector(self.__ptr, rotVector.__ptr)
-end
-
-function ParticleEmitter:setEmitRotationDeviance(rotVector)
-	local retVal = Polycore.ParticleEmitter_setEmitRotationDeviance(self.__ptr, rotVector.__ptr)
+	local retVal = Polycore.ParticleEmitter_setEmitterRadius(self.__ptr, rad.__ptr)
 end
 
 function ParticleEmitter:setAllAtOnce(val)
@@ -131,6 +202,7 @@ end
 
 function ParticleEmitter:getBaseMatrix()
 	local retVal =  Polycore.ParticleEmitter_getBaseMatrix(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'StandalonePlayer' target in the 'StandalonePlayer' project
+//
+
+#ifdef __OBJC__
+	#import <Cocoa/Cocoa.h>
+#endif

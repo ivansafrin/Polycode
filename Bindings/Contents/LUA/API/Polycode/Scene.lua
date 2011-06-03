@@ -10,8 +10,35 @@ ENTITY_CAMERA = 2
 ENTITY_ENTITY = 3
 ENTITY_COLLMESH = 4
 function Scene:__index__(name)
-	if name == "useClearColor" then
+	if name == "clearColor" then
+		retVal = Polycore.Scene_get_clearColor(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Color("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "useClearColor" then
 		return Polycore.Scene_get_useClearColor(self.__ptr)
+	elseif name == "ambientColor" then
+		retVal = Polycore.Scene_get_ambientColor(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Color("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "fogColor" then
+		retVal = Polycore.Scene_get_fogColor(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Color("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
 	elseif name == "enabled" then
 		return Polycore.Scene_get_enabled(self.__ptr)
 	end
@@ -60,6 +87,7 @@ end
 
 function Scene:getDefaultCamera()
 	local retVal =  Polycore.Scene_getDefaultCamera(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -110,6 +138,7 @@ end
 
 function Scene:getEntity(index)
 	local retVal = Polycore.Scene_getEntity(self.__ptr, index)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -121,6 +150,7 @@ end
 
 function Scene:getEntityAtScreenPosition(x, y)
 	local retVal = Polycore.Scene_getEntityAtScreenPosition(self.__ptr, x, y)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -130,8 +160,8 @@ function Scene:getEntityAtScreenPosition(x, y)
 	end
 end
 
-function Scene:Render()
-	local retVal =  Polycore.Scene_Render(self.__ptr)
+function Scene:Render(targetCamera)
+	local retVal = Polycore.Scene_Render(self.__ptr, targetCamera.__ptr)
 end
 
 function Scene:RenderDepthOnly(targetCamera)
@@ -157,6 +187,7 @@ end
 
 function Scene:getNearestLight(pos)
 	local retVal = Polycore.Scene_getNearestLight(self.__ptr, pos.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -185,6 +216,7 @@ end
 
 function Scene:getStaticGeometry(index)
 	local retVal = Polycore.Scene_getStaticGeometry(self.__ptr, index)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -205,6 +237,7 @@ end
 
 function Scene:getLight(index)
 	local retVal = Polycore.Scene_getLight(self.__ptr, index)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -216,6 +249,7 @@ end
 
 function Scene:getCustomEntityByType(type)
 	local retVal = Polycore.Scene_getCustomEntityByType(self.__ptr, type)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

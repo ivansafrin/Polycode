@@ -46,6 +46,7 @@ end
 
 function Image:getPixel(x, y)
 	local retVal = Polycore.Image_getPixel(self.__ptr, x, y)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -143,6 +144,7 @@ end
 
 function Image:getPixels()
 	local retVal =  Polycore.Image_getPixels(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

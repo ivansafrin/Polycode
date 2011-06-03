@@ -24,23 +24,51 @@
 
 using namespace Polycode;
 
+Mesh *Particle::billboardMesh = NULL;
+
 Particle::Particle(int particleType, bool isScreenParticle, Material *material, Texture *texture, Mesh *particleMesh) {
 	life = 0;
 	if(isScreenParticle) {
 		createScreenParticle(particleType, texture, particleMesh);		
 	} else {
-		createSceneParticle(particleType, texture, particleMesh);
+		createSceneParticle(particleType, material, particleMesh);
 	}
 	
 	Reset(true);
 }
 
-void Particle::createSceneParticle(int particleType, Texture *texture, Mesh *particleMesh) {
+void Particle::createSceneParticle(int particleType, Material *material, Mesh *particleMesh) {
 	switch(particleType) {
 		case BILLBOARD_PARTICLE:
 		{
-			ScenePrimitive *primitive = new ScenePrimitive(ScenePrimitive::TYPE_PLANE, 1.0f, 1.0f);
-			primitive->setTexture(texture);
+			if(!billboardMesh) {
+				billboardMesh = new Mesh(Mesh::QUAD_MESH);
+				
+				Polygon *imagePolygon = new Polygon();
+				imagePolygon->addVertex(0,1,0,0,0);	
+				imagePolygon->addVertex(1,1,0, 1, 0);			
+				imagePolygon->addVertex(1,0,0, 1, 1);		
+				imagePolygon->addVertex(0,0,0,0,1);
+
+				billboardMesh->addPolygon(imagePolygon);
+		
+		for(int i=0; i < billboardMesh->getPolygonCount(); i++) {
+			for(int j=0; j < billboardMesh->getPolygon(i)->getVertexCount(); j++) {
+				billboardMesh->getPolygon(i)->getVertex(j)->x = billboardMesh->getPolygon(i)->getVertex(j)->x - (1.0/2.0f);
+				billboardMesh->getPolygon(i)->getVertex(j)->z = billboardMesh->getPolygon(i)->getVertex(j)->z - (1.0/2.0f);
+			}
+		}
+
+		billboardMesh->calculateNormals();
+		billboardMesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
+		billboardMesh->arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
+		billboardMesh->arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;						
+		billboardMesh->arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;					
+				
+			} 
+			SceneMesh *primitive = new SceneMesh(billboardMesh);
+			
+			primitive->setMaterial(material);
 			primitive->billboardMode = true;
 			primitive->billboardRoll = true;
 //			primitive->alphaTest = true;
@@ -55,7 +83,7 @@ void Particle::createSceneParticle(int particleType, Texture *texture, Mesh *par
 			SceneMesh *primitive = new SceneMesh(particleMesh);
 			if(particleMesh->getMeshType() == Mesh::TRI_MESH)
 				primitive->cacheToVertexBuffer(true);
-			primitive->setTexture(texture);
+			primitive->setMaterial(material);
 			//			primitive->billboardMode = true;
 			//			primitive->billboardRoll = true;
 			//primitive->depthTest = false;
@@ -71,8 +99,11 @@ void Particle::createSceneParticle(int particleType, Texture *texture, Mesh *par
 
 void Particle::createScreenParticle(int particleType, Texture *texture, Mesh *particleMesh) {
 	
-	ScreenShape *primitive = new ScreenShape(ScreenShape::SHAPE_RECT, 1.0f, 1.0f);
+	ScreenShape *primitive = new ScreenShape(ScreenShape::SHAPE_RECT, 10.0f, 10.0f);
 	primitive->setTexture(texture);	
+//	primitive->billboardMode = true;
+//	primitive->billboardRoll = true;
+	
 	particleBody = primitive;			
 	return;
 	

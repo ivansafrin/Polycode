@@ -32,8 +32,9 @@ function PhysicsScreen:Update()
 	local retVal =  Physics2D.PhysicsScreen_Update(self.__ptr)
 end
 
-function PhysicsScreen:addPhysicsChild(newEntity, entType, friction, density, restitution, isSensor, fixedRotation)
-	local retVal = Physics2D.PhysicsScreen_addPhysicsChild(self.__ptr, newEntity.__ptr, entType, friction, density, restitution, isSensor, fixedRotation)
+function PhysicsScreen:addPhysicsChild(newEntity, entType, isStatic, friction, density, restitution, isSensor, fixedRotation)
+	local retVal = Physics2D.PhysicsScreen_addPhysicsChild(self.__ptr, newEntity.__ptr, entType, isStatic, friction, density, restitution, isSensor, fixedRotation)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -49,6 +50,7 @@ end
 
 function PhysicsScreen:addCollisionChild(newEntity, entType)
 	local retVal = Physics2D.PhysicsScreen_addCollisionChild(self.__ptr, newEntity.__ptr, entType)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -64,14 +66,31 @@ end
 
 function PhysicsScreen:createDistanceJoint(ent1, ent2, collideConnected)
 	local retVal = Physics2D.PhysicsScreen_createDistanceJoint(self.__ptr, ent1.__ptr, ent2.__ptr, collideConnected)
+	if retVal == nil then return nil end
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = PhysicsJoint("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 
-function PhysicsScreen:createPrismaticJoint(ent1, ent2, collideConnected)
-	local retVal = Physics2D.PhysicsScreen_createPrismaticJoint(self.__ptr, ent1.__ptr, ent2.__ptr, collideConnected)
+function PhysicsScreen:createPrismaticJoint(ent1, ent2, worldAxis, ax, ay, collideConnected, lowerTranslation, upperTranslation, enableLimit, motorSpeed, motorForce, motorEnabled)
+	local retVal = Physics2D.PhysicsScreen_createPrismaticJoint(self.__ptr, ent1.__ptr, ent2.__ptr, worldAxis.__ptr, ax, ay, collideConnected, lowerTranslation, upperTranslation, enableLimit, motorSpeed, motorForce, motorEnabled)
+	if retVal == nil then return nil end
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = PhysicsJoint("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 
-function PhysicsScreen:createRevoluteJoint(ent1, ent2, ax, ay, enableLimit, lowerLimit, upperLimit, motorEnabled, motorSpeed, maxTorque)
-	local retVal = Physics2D.PhysicsScreen_createRevoluteJoint(self.__ptr, ent1.__ptr, ent2.__ptr, ax, ay, enableLimit, lowerLimit, upperLimit, motorEnabled, motorSpeed, maxTorque)
+function PhysicsScreen:createRevoluteJoint(ent1, ent2, ax, ay, collideConnected, enableLimit, lowerLimit, upperLimit, motorEnabled, motorSpeed, maxTorque)
+	local retVal = Physics2D.PhysicsScreen_createRevoluteJoint(self.__ptr, ent1.__ptr, ent2.__ptr, ax, ay, collideConnected, enableLimit, lowerLimit, upperLimit, motorEnabled, motorSpeed, maxTorque)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -99,6 +118,7 @@ end
 
 function PhysicsScreen:getPhysicsEntityByShape(shape)
 	local retVal = Physics2D.PhysicsScreen_getPhysicsEntityByShape(self.__ptr, shape.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -110,6 +130,7 @@ end
 
 function PhysicsScreen:getPhysicsEntityByFixture(fixture)
 	local retVal = Physics2D.PhysicsScreen_getPhysicsEntityByFixture(self.__ptr, fixture.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -137,6 +158,7 @@ end
 
 function PhysicsScreen:getVelocity(ent)
 	local retVal = Physics2D.PhysicsScreen_getVelocity(self.__ptr, ent.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -154,28 +176,17 @@ function PhysicsScreen:EndContact(contact)
 	local retVal = Physics2D.PhysicsScreen_EndContact(self.__ptr, contact.__ptr)
 end
 
+function PhysicsScreen:PostSolve(contact, impulse)
+	local retVal = Physics2D.PhysicsScreen_PostSolve(self.__ptr, contact.__ptr, impulse.__ptr)
+end
+
 function PhysicsScreen:wakeUp(ent)
 	local retVal = Physics2D.PhysicsScreen_wakeUp(self.__ptr, ent.__ptr)
 end
 
-function PhysicsScreen:getEntityCollisionNormal(ent1, ent2)
-	local retVal = Physics2D.PhysicsScreen_getEntityCollisionNormal(self.__ptr, ent1.__ptr, ent2.__ptr)
-	if Polycore.__ptr_lookup[retVal] ~= nil then
-		return Polycore.__ptr_lookup[retVal]
-	else
-		Polycore.__ptr_lookup[retVal] = Vector2("__skip_ptr__")
-		Polycore.__ptr_lookup[retVal].__ptr = retVal
-		return Polycore.__ptr_lookup[retVal]
-	end
-end
-
-function PhysicsScreen:areEntitiesColliding(ent1, ent2)
-	local retVal = Physics2D.PhysicsScreen_areEntitiesColliding(self.__ptr, ent1.__ptr, ent2.__ptr)
-	return retVal
-end
-
 function PhysicsScreen:getEntityAtPosition(x, y)
 	local retVal = Physics2D.PhysicsScreen_getEntityAtPosition(self.__ptr, x, y)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -196,6 +207,7 @@ end
 
 function PhysicsScreen:getPhysicsByScreenEntity(ent)
 	local retVal = Physics2D.PhysicsScreen_getPhysicsByScreenEntity(self.__ptr, ent.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

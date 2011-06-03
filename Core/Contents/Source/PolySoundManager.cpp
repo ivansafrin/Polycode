@@ -81,7 +81,23 @@ void SoundManager::initAL() {
 //		ShutdownAL();
 //		PCCE_THROW("InitializeAL: Could not set listener position");
 	}
+	
+	alDistanceModel(AL_LINEAR_DISTANCE_CLAMPED);
+//	alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
+	
 	Logger::log("OpenAL initialized...\n");
+}
+
+void SoundManager::setGlobalVolume(Number globalVolume) {
+	alListenerf(AL_GAIN, globalVolume);
+}
+
+void SoundManager::setListenerPosition(Vector3 position) {
+	alListener3f(AL_POSITION, position.x, position.y, position.z);
+}
+
+void SoundManager::setListenerOrientation(Vector3 orientation) {
+	alListener3f(AL_ORIENTATION, orientation.x, orientation.y, orientation.z);
 }
 
 SoundManager::~SoundManager() {

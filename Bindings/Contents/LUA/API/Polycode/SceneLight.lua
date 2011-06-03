@@ -6,8 +6,23 @@ class "SceneLight" (SceneEntity)
 
 AREA_LIGHT = 0
 SPOT_LIGHT = 1
+function SceneLight:__index__(name)
+	if name == "lightColor" then
+		retVal = Polycore.SceneLight_get_lightColor(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Color("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	end
+end
 
 
+function SceneLight:__set_callback(name,value)
+	return false
+end
 
 
 function SceneLight:SceneLight(...)
@@ -35,8 +50,18 @@ function SceneLight:getIntensity()
 	return retVal
 end
 
-function SceneLight:getDistance()
-	local retVal =  Polycore.SceneLight_getDistance(self.__ptr)
+function SceneLight:getConstantAttenuation()
+	local retVal =  Polycore.SceneLight_getConstantAttenuation(self.__ptr)
+	return retVal
+end
+
+function SceneLight:getLinearAttenuation()
+	local retVal =  Polycore.SceneLight_getLinearAttenuation(self.__ptr)
+	return retVal
+end
+
+function SceneLight:getQuadraticAttenuation()
+	local retVal =  Polycore.SceneLight_getQuadraticAttenuation(self.__ptr)
 	return retVal
 end
 
@@ -55,6 +80,7 @@ end
 
 function SceneLight:getLightViewMatrix()
 	local retVal =  Polycore.SceneLight_getLightViewMatrix(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -66,6 +92,7 @@ end
 
 function SceneLight:getZBufferTexture()
 	local retVal =  Polycore.SceneLight_getZBufferTexture(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -77,6 +104,20 @@ end
 
 function SceneLight:setLightColor(r, g, b)
 	local retVal = Polycore.SceneLight_setLightColor(self.__ptr, r, g, b)
+end
+
+function SceneLight:setSpotlightProperties(spotlightCutoff, spotlightExponent)
+	local retVal = Polycore.SceneLight_setSpotlightProperties(self.__ptr, spotlightCutoff, spotlightExponent)
+end
+
+function SceneLight:getSpotlightCutoff()
+	local retVal =  Polycore.SceneLight_getSpotlightCutoff(self.__ptr)
+	return retVal
+end
+
+function SceneLight:getSpotlightExponent()
+	local retVal =  Polycore.SceneLight_getSpotlightExponent(self.__ptr)
+	return retVal
 end
 
 function SceneLight:enableShadows(val, resolution)

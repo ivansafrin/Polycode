@@ -22,6 +22,7 @@ end
 
 function BezierCurve:getControlPoint(index)
 	local retVal = Polycore.BezierCurve_getControlPoint(self.__ptr, index)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -63,6 +64,7 @@ end
 
 function BezierCurve:getPointAt(a)
 	local retVal = Polycore.BezierCurve_getPointAt(self.__ptr, a)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -74,6 +76,7 @@ end
 
 function BezierCurve:getPointBetween(a, bp1, bp2)
 	local retVal = Polycore.BezierCurve_getPointBetween(self.__ptr, a, bp1.__ptr, bp2.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

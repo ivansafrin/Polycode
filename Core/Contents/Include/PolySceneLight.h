@@ -44,23 +44,24 @@ namespace Polycode {
 			/**
 			* Constructs a light with parameters.
 			* @param type Type of light to create. Can be SceneLight::AREA_LIGHT or SceneLight::SPOT_LIGHT
-			* @param intensity Light intensity.
-			* @param distance Light falloff disatance.
-			* @param parentScene Scene to light. The reason this parameter is required is for shadow buffer generation.
+			* @param parentScene Scene to light.
+			* @param intensity Light color intensity
+			* @param constantAttenuation Constant falloff attenuation value	
+			* @param linearAttenuation Linear falloff attenuation value	
+			* @param quadraticAttenuation Quadratic falloff attenuation value				
 			*/ 
-			SceneLight(int type, Number intensity, Number distance, Scene *parentScene);
+			SceneLight(int type, Scene *parentScene, Number intensity, Number constantAttenuation=1, Number linearAttenuation=1, Number quadraticAttenuation=1);
 			virtual ~SceneLight();
 		
 			/*
 			* Returns the light's intensity.
 			*/
 			Number getIntensity();
-			
-			/*
-			* Returns the light's falloff distance.
-			*/			
-			Number getDistance();
-			
+						
+			Number getConstantAttenuation() { return constantAttenuation; }
+			Number getLinearAttenuation() { return linearAttenuation; }
+			Number getQuadraticAttenuation() { return quadraticAttenuation; }
+									
 			/*
 			* Returns the light's type.
 			*/			
@@ -92,6 +93,20 @@ namespace Polycode {
 			void setLightColor(Number r, Number g, Number b) { lightColor.r = r; lightColor.g = g; lightColor.b = b; }
 			
 			/**
+			* Sets the spotlight properties. These control the shape of the spotlight beam.
+			* @param spotlightExponent Spotlight exponent size
+			* @param spotlightCutoff Spotlight furstrum cutoff.
+			*/
+			void setSpotlightProperties(Number spotlightCutoff, Number spotlightExponent) {
+				this->spotlightCutoff = spotlightCutoff;
+				this->spotlightExponent = spotlightExponent;				
+			}
+			
+			Number getSpotlightCutoff() { return spotlightCutoff; }
+			Number getSpotlightExponent() { return spotlightExponent; }
+						
+			
+			/**
 			* If this is called with 'true', the light will generate a shadow map.
 			* @param val If set to true, enables this light to cast shadows.
 			* @param resolution Resolution of the shadow map. (defaults to 256x256).
@@ -116,12 +131,19 @@ namespace Polycode {
 		
 		private:
 		
+			Number spotlightExponent;
+			Number spotlightCutoff;
+		
+			Number constantAttenuation;
+			Number linearAttenuation;
+			Number quadraticAttenuation;
+		
 			int type;
 			Number intensity;
 			
 			Camera *spotCamera;
 			Texture *zBufferTexture;
-		
+
 			Scene *parentScene;
 			
 			Matrix4 lightViewMatrix;

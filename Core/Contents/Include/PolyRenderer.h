@@ -43,10 +43,22 @@ namespace Polycode {
 			Vector3 position;
 			Vector3 color;
 			Vector3 dir;
-			Number distance;
+			Number constantAttenuation;
+			Number linearAttenuation;
+			Number quadraticAttenuation;			
 			Number intensity;
+			Number spotlightCutoff;
+			Number spotlightExponent;			
 			int type;
+			bool shadowsEnabled;
 			Matrix4 textureMatrix;
+	};
+
+	class _PolyExport LightSorter {
+		public:
+			Vector3 basePosition;
+			Matrix4 cameraMatrix;
+			bool operator() (LightInfo i,LightInfo j) { return ((cameraMatrix*i.position).distance(basePosition)<(cameraMatrix*j.position).distance(basePosition));}
 	};
 
 	/**
@@ -158,8 +170,10 @@ namespace Polycode {
 		int getXRes();
 		int getYRes();
 		
+		virtual void cullFrontFaces(bool val) = 0;
+		
 		void clearLights();
-		void addLight(Vector3 position, Vector3 direction, int type, Color color, Number distance, Number intensity, Matrix4 *textureMatrix);
+		void addLight(Vector3 position, Vector3 direction, int type, Color color, Number constantAttenuation, Number linearAttenuation, Number quadraticAttenuation, Number intensity, Number spotlightCutoff, Number spotlightExponent, bool shadowsEnabled, Matrix4 *textureMatrix);
 		
 		void setExposureLevel(Number level);
 		
@@ -203,6 +217,8 @@ namespace Polycode {
 		Number exposureLevel;		
 		Vector3 cameraPosition;
 		
+		void sortLights();
+		
 		int getNumAreaLights() { return numAreaLights; }
 		int getNumSpotLights() { return numSpotLights; }
 		int getNumLights() { return numLights; }
@@ -212,6 +228,7 @@ namespace Polycode {
 		
 	protected:
 	
+		bool cullingFrontFaces;
 				
 		Texture *currentTexture;
 		Material *currentMaterial;

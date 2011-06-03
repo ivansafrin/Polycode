@@ -15,6 +15,15 @@ function Entity:__index__(name)
 		return Polycore.Entity_get_backfaceCulled(self.__ptr)
 	elseif name == "renderWireframe" then
 		return Polycore.Entity_get_renderWireframe(self.__ptr)
+	elseif name == "color" then
+		retVal = Polycore.Entity_get_color(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Color("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
 	elseif name == "enabled" then
 		return Polycore.Entity_get_enabled(self.__ptr)
 	elseif name == "visible" then
@@ -29,6 +38,15 @@ function Entity:__index__(name)
 		return Polycore.Entity_get_colorAffectsChildren(self.__ptr)
 	elseif name == "depthOnly" then
 		return Polycore.Entity_get_depthOnly(self.__ptr)
+	elseif name == "bBox" then
+		retVal = Polycore.Entity_get_bBox(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
 	elseif name == "ignoreParentMatrix" then
 		return Polycore.Entity_get_ignoreParentMatrix(self.__ptr)
 	elseif name == "isMask" then
@@ -132,6 +150,7 @@ end
 
 function Entity:getTransformMatrix()
 	local retVal =  Polycore.Entity_getTransformMatrix(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -143,6 +162,7 @@ end
 
 function Entity:getConcatenatedMatrix()
 	local retVal =  Polycore.Entity_getConcatenatedMatrix(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -154,6 +174,7 @@ end
 
 function Entity:getConcatenatedRollMatrix()
 	local retVal =  Polycore.Entity_getConcatenatedRollMatrix(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -173,6 +194,7 @@ end
 
 function Entity:getLookAtMatrix(loc, upVector)
 	local retVal = Polycore.Entity_getLookAtMatrix(self.__ptr, loc.__ptr, upVector.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -200,6 +222,7 @@ end
 
 function Entity:getParentEntity()
 	local retVal =  Polycore.Entity_getParentEntity(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -211,6 +234,7 @@ end
 
 function Entity:getPosition()
 	local retVal =  Polycore.Entity_getPosition(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -222,6 +246,7 @@ end
 
 function Entity:getCombinedPosition()
 	local retVal =  Polycore.Entity_getCombinedPosition(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -273,6 +298,7 @@ end
 
 function Entity:getCompoundScale()
 	local retVal =  Polycore.Entity_getCompoundScale(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -284,6 +310,7 @@ end
 
 function Entity:getScale()
 	local retVal =  Polycore.Entity_getScale(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -357,6 +384,7 @@ end
 
 function Entity:getRotationQuat()
 	local retVal =  Polycore.Entity_getRotationQuat(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -376,6 +404,7 @@ end
 
 function Entity:getCombinedColor()
 	local retVal =  Polycore.Entity_getCombinedColor(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -425,6 +454,7 @@ end
 
 function Entity:getChildCenter()
 	local retVal =  Polycore.Entity_getChildCenter(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -445,6 +475,7 @@ end
 
 function Entity:buildPositionMatrix()
 	local retVal =  Polycore.Entity_buildPositionMatrix(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

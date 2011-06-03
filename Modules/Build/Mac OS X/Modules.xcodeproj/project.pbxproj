@@ -131,7 +131,7 @@
 		6D26112E13766DC900745E74 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		6D26113013766DD500745E74 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		6D26113213766DDC00745E74 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
-		6D26114B1376780900745E74 /* Polycode2DPhysics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Polycode2DPhysics.h; path = Include/Polycode2DPhysics.h; sourceTree = "<group>"; };
+		6D26114B1376780900745E74 /* Polycode2DPhysics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Polycode2DPhysics.h; sourceTree = "<group>"; };
 		6D26114D1376792000745E74 /* liblua.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblua.a; path = ../../../Core/Dependencies/lua/src/liblua.a; sourceTree = "<group>"; };
 		6D26115013767A8300745E74 /* Physics2DLUA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Physics2DLUA.h; sourceTree = "<group>"; };
 		6D26115113767A8300745E74 /* Physics2DLUAWrappers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Physics2DLUAWrappers.h; sourceTree = "<group>"; };
@@ -425,7 +425,6 @@
 			children = (
 				6D26114F13767A8300745E74 /* Include */,
 				6D26115213767A8300745E74 /* Source */,
-				6D26114B1376780900745E74 /* Polycode2DPhysics.h */,
 			);
 			name = Module;
 			sourceTree = "<group>";
@@ -498,6 +497,7 @@
 		6D580E0412D29FB5006FB999 /* Include */ = {
 			isa = PBXGroup;
 			children = (
+				6D26114B1376780900745E74 /* Polycode2DPhysics.h */,
 				6D580E0512D29FB5006FB999 /* PolyPhysicsScreen.h */,
 				6D580E0612D29FB5006FB999 /* PolyPhysicsScreenEntity.h */,
 			);
@@ -1160,6 +1160,20 @@
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include/,
+					/usr/local/include/libfreenect,
+					../../../Core/Dependencies/box2d/Box2D,
+					../../../Core/Contents/Include,
+					../../../Core/Dependencies/bullet/src,
+					../../../Core/Dependencies/libvorbis/include,
+					../../../Core/Dependencies/libogg/include,
+					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Versions/A/Headers,
+					../../../Core/Dependencies/freetype/include,
+					../../../Core/Dependencies/libpng,
+					../../../Core/Dependencies/physfs,
+					../../../Core/Dependencies/luajit/src,
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../../Release/Mac OS X/Framework/Core/Lib\"",
@@ -1168,6 +1182,7 @@
 					"\"$(SRCROOT)/../../../Core/Dependencies/lua/src\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
@@ -1213,6 +1228,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INSTALL_PATH = /usr/local/lib;
+				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
 				PRODUCT_NAME = Polycode2DPhysics;
 			};
@@ -1226,7 +1242,21 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include/,
+					/usr/local/include/libfreenect,
+					../../../Core/Dependencies/box2d/Box2D,
+					../../../Core/Contents/Include,
+					../../../Core/Dependencies/bullet/src,
+					../../../Core/Dependencies/libvorbis/include,
+					../../../Core/Dependencies/libogg/include,
+					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Versions/A/Headers,
+					../../../Core/Dependencies/freetype/include,
+					../../../Core/Dependencies/libpng,
+					../../../Core/Dependencies/physfs,
+				);
 				INSTALL_PATH = /usr/local/lib;
+				ONLY_ACTIVE_ARCH = NO;
 				PREBINDING = NO;
 				PRODUCT_NAME = Polycode2DPhysics;
 				ZERO_LINK = NO;

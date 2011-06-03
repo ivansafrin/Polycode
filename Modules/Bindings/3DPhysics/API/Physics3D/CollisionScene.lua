@@ -42,6 +42,7 @@ end
 
 function CollisionScene:getCollisionEntityByObject(collisionObject)
 	local retVal = Physics3D.CollisionScene_getCollisionEntityByObject(self.__ptr, collisionObject.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -53,6 +54,7 @@ end
 
 function CollisionScene:getFirstEntityInRay(origin, dest)
 	local retVal = Physics3D.CollisionScene_getFirstEntityInRay(self.__ptr, origin.__ptr, dest.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -64,6 +66,7 @@ end
 
 function CollisionScene:getCollisionByScreenEntity(ent)
 	local retVal = Physics3D.CollisionScene_getCollisionByScreenEntity(self.__ptr, ent.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -75,6 +78,7 @@ end
 
 function CollisionScene:testCollision(ent1, ent2)
 	local retVal = Physics3D.CollisionScene_testCollision(self.__ptr, ent1.__ptr, ent2.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -86,6 +90,7 @@ end
 
 function CollisionScene:testCollisionOnCollisionChild(cEnt1, cEnt2)
 	local retVal = Physics3D.CollisionScene_testCollisionOnCollisionChild(self.__ptr, cEnt1.__ptr, cEnt2.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -97,6 +102,7 @@ end
 
 function CollisionScene:testCollisionOnCollisionChild_Convex(cEnt1, cEnt2)
 	local retVal = Physics3D.CollisionScene_testCollisionOnCollisionChild_Convex(self.__ptr, cEnt1.__ptr, cEnt2.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -108,6 +114,7 @@ end
 
 function CollisionScene:testCollisionOnCollisionChild_RayTest(cEnt1, cEnt2)
 	local retVal = Physics3D.CollisionScene_testCollisionOnCollisionChild_RayTest(self.__ptr, cEnt1.__ptr, cEnt2.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -119,6 +126,7 @@ end
 
 function CollisionScene:getCollisionNormalFromCollisionEnts(cEnt1, cEnt2)
 	local retVal = Physics3D.CollisionScene_getCollisionNormalFromCollisionEnts(self.__ptr, cEnt1.__ptr, cEnt2.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -130,6 +138,7 @@ end
 
 function CollisionScene:getCollisionNormal(ent1, ent2)
 	local retVal = Physics3D.CollisionScene_getCollisionNormal(self.__ptr, ent1.__ptr, ent2.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -157,6 +166,7 @@ end
 
 function CollisionScene:addCollisionChild(newEntity, autoCollide, type, group)
 	local retVal = Physics3D.CollisionScene_addCollisionChild(self.__ptr, newEntity.__ptr, autoCollide, type, group)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -168,6 +178,7 @@ end
 
 function CollisionScene:trackCollision(newEntity, autoCollide, type, group)
 	local retVal = Physics3D.CollisionScene_trackCollision(self.__ptr, newEntity.__ptr, autoCollide, type, group)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

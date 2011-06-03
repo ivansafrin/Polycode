@@ -63,6 +63,7 @@ end
 
 function Vector3:crossProduct(vec2)
 	local retVal = Polycore.Vector3_crossProduct(self.__ptr, vec2.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

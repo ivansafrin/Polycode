@@ -25,65 +25,98 @@ THE SOFTWARE.
 
 using namespace Polycode;
 
-/*
-void PhysicsScreen::Add(const b2ContactPoint* point) {
-	if (numContactPoints == MAX_B2DCONTACTPOINTS) {
-		return;
-	}
-	
-	ContactPoint* cp = m_points + numContactPoints;
-	cp->shape1 = point->shape1;
-	cp->shape2 = point->shape2;
-	cp->position = point->position;
-	cp->normal = point->normal;
-	cp->id = point->id;
-	cp->state = e_contactAdded;
-	
-	++numContactPoints;
+PhysicsScreenEvent::PhysicsScreenEvent() : Event() {
+
 }
 
-void PhysicsScreen::Persist(const b2ContactPoint* point) {
-	if (numContactPoints == MAX_B2DCONTACTPOINTS) {
-		return;
-	}
-	
-	ContactPoint* cp = m_points + numContactPoints;
-	cp->shape1 = point->shape1;
-	cp->shape2 = point->shape2;
-	cp->position = point->position;
-	cp->normal = point->normal;
-	cp->id = point->id;
-	cp->state = e_contactPersisted;
-	
-	++numContactPoints;
+PhysicsScreenEvent::~PhysicsScreenEvent() {
+
 }
 
-void PhysicsScreen::Remove(const b2ContactPoint* point) {
-	if (numContactPoints == MAX_B2DCONTACTPOINTS) {
-		return;
-	}
-	
-	ContactPoint* cp = m_points + numContactPoints;
-	cp->shape1 = point->shape1;
-	cp->shape2 = point->shape2;
-	cp->position = point->position;
-	cp->normal = point->normal;
-	cp->id = point->id;
-	cp->state = e_contactRemoved;
-	
-	++numContactPoints;
+ScreenEntity *PhysicsScreenEvent::getFirstEntity() {
+	return entity1;
 }
-*/
+
+ScreenEntity *PhysicsScreenEvent::getSecondEntity() {
+	return entity2;
+}
+
 
 void PhysicsScreen::BeginContact (b2Contact *contact) {
+
+	if(!contact->GetFixtureA()->IsSensor() && !contact->GetFixtureB()->IsSensor()) {
+		return;
+	}
+	
 	PhysicsScreenEvent *newEvent = new PhysicsScreenEvent();
-	newEvent->entity1 = getPhysicsEntityByFixture(contact->GetFixtureA());
-	newEvent->entity2 = getPhysicsEntityByFixture(contact->GetFixtureB());			
+	newEvent->entity1 = getPhysicsEntityByFixture(contact->GetFixtureA())->getScreenEntity();
+	newEvent->entity2 = getPhysicsEntityByFixture(contact->GetFixtureB())->getScreenEntity();			
+
+	b2Manifold *manifold = contact->GetManifold();
+	b2Vec2 nor = manifold->localNormal;
+	b2Vec2 point = manifold->localPoint;
+	
+
+	b2WorldManifold w_manifold;
+	contact->GetWorldManifold(&w_manifold);
+	b2Vec2 w_nor = w_manifold.normal;
+
+	newEvent->localCollisionNormal.x = nor.x;
+	newEvent->localCollisionNormal.y = nor.y;	
+	newEvent->worldCollisionNormal.x = w_nor.x;
+	newEvent->worldCollisionNormal.y = w_nor.y;	
+
+	newEvent->localCollisionPoint.x = point.x;
+	newEvent->localCollisionPoint.y = point.y;	
+	
+	newEvent->impactStrength = 0;
+	newEvent->frictionStrength = 0;
+
+	dispatchEvent(newEvent, PhysicsScreenEvent::EVENT_NEW_SHAPE_COLLISION);
+}
+
+void PhysicsScreen::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse) {
+	PhysicsScreenEvent *newEvent = new PhysicsScreenEvent();
+	newEvent->entity1 = getPhysicsEntityByFixture(contact->GetFixtureA())->getScreenEntity();
+	newEvent->entity2 = getPhysicsEntityByFixture(contact->GetFixtureB())->getScreenEntity();			
+
+	b2Manifold *manifold = contact->GetManifold();
+	b2Vec2 nor = manifold->localNormal;
+	b2Vec2 point = manifold->localPoint;
+	
+
+	b2WorldManifold w_manifold;
+	contact->GetWorldManifold(&w_manifold);
+	b2Vec2 w_nor = w_manifold.normal;
+
+	newEvent->localCollisionNormal.x = nor.x;
+	newEvent->localCollisionNormal.y = nor.y;	
+	newEvent->worldCollisionNormal.x = w_nor.x;
+	newEvent->worldCollisionNormal.y = w_nor.y;	
+
+	newEvent->localCollisionPoint.x = point.x;
+	newEvent->localCollisionPoint.y = point.y;	
+	
+	newEvent->impactStrength = 0;
+	newEvent->frictionStrength = 0;
+
+	for(int i=0; i < manifold->pointCount; i++) {
+		if(impulse->normalImpulses[i] > newEvent->impactStrength)
+			newEvent->impactStrength = impulse->normalImpulses[i];
+			
+		if(impulse->tangentImpulses[i] > newEvent->frictionStrength)
+			newEvent->frictionStrength = impulse->tangentImpulses[i];		
+	}
+
 	dispatchEvent(newEvent, PhysicsScreenEvent::EVENT_NEW_SHAPE_COLLISION);
 }
 
 void PhysicsScreen::EndContact (b2Contact *contact) {
-	
+	PhysicsScreenEvent *newEvent = new PhysicsScreenEvent();
+	newEvent->entity1 = getPhysicsEntityByFixture(contact->GetFixtureA())->getScreenEntity();
+	newEvent->entity2 = getPhysicsEntityByFixture(contact->GetFixtureB())->getScreenEntity();		
+		
+	dispatchEvent(newEvent, PhysicsScreenEvent::EVENT_END_SHAPE_COLLISION);
 }
 
 
@@ -99,7 +132,6 @@ void PhysicsScreen::init(Number worldScale, Number physicsTimeStep, int physicsI
 	
 	this->worldScale = worldScale;
 	
-	numContactPoints = 0;	
 	timeStep = physicsTimeStep;
 	iterations = physicsIterations;
 	
@@ -109,8 +141,8 @@ void PhysicsScreen::init(Number worldScale, Number physicsTimeStep, int physicsI
 	
 	world->SetContactListener(this);
 
-	updateTimer = new Timer(true, 3);
-	updateTimer->addEventListener(this, Timer::EVENT_TRIGGER);
+//	updateTimer = new Timer(true, 3);
+//	updateTimer->addEventListener(this, Timer::EVENT_TRIGGER);
 }
 
 void PhysicsScreen::setGravity(Vector2 newGravity) {
@@ -130,7 +162,7 @@ void PhysicsScreen::destroyJoint(PhysicsJoint *joint) {
 }
 
 
-PhysicsJoint *PhysicsScreen::createRevoluteJoint(ScreenEntity *ent1, ScreenEntity *ent2, Number ax, Number ay, bool enableLimit, Number lowerLimit, Number upperLimit, bool motorEnabled, Number motorSpeed, Number maxTorque) {
+PhysicsJoint *PhysicsScreen::createRevoluteJoint(ScreenEntity *ent1, ScreenEntity *ent2, Number ax, Number ay, bool collideConnected, bool enableLimit, Number lowerLimit, Number upperLimit, bool motorEnabled, Number motorSpeed, Number maxTorque) {
 	PhysicsScreenEntity *pEnt1 = getPhysicsByScreenEntity(ent1);
 	PhysicsScreenEntity *pEnt2 = getPhysicsByScreenEntity(ent2);
 	if(pEnt1 == NULL || pEnt2 == NULL)
@@ -138,7 +170,7 @@ PhysicsJoint *PhysicsScreen::createRevoluteJoint(ScreenEntity *ent1, ScreenEntit
 	
 	b2Vec2 anchor((ent1->getPosition().x+ax)/worldScale, (ent1->getPosition().y+ay)/worldScale);
 	b2RevoluteJointDef *jointDef = new b2RevoluteJointDef();
-	jointDef->collideConnected = false;
+	jointDef->collideConnected = collideConnected;
 	jointDef->lowerAngle = lowerLimit * (PI/180.0f);
 	jointDef->upperAngle = upperLimit * (PI/180.0f);
 	jointDef->enableLimit = enableLimit;
@@ -147,14 +179,38 @@ PhysicsJoint *PhysicsScreen::createRevoluteJoint(ScreenEntity *ent1, ScreenEntit
 	jointDef->enableMotor = motorEnabled;	
 	jointDef->Initialize(pEnt1->body, pEnt2->body, anchor);
 	
-	PhysicsJoint *joint = new PhysicsJoint();
-	
+	PhysicsJoint *joint = new PhysicsJoint();	
 	joint->box2DJoint = world->CreateJoint(jointDef);
 	return joint;
 	
 }
 
-void PhysicsScreen::createPrismaticJoint(ScreenEntity *ent1, ScreenEntity *ent2, bool collideConnected) {
+PhysicsJoint *PhysicsScreen::createPrismaticJoint(ScreenEntity *ent1, ScreenEntity *ent2, Vector2 worldAxis, Number ax, Number ay, bool collideConnected, Number lowerTranslation, Number upperTranslation, bool enableLimit, Number motorSpeed, Number motorForce, bool motorEnabled) {
+	PhysicsScreenEntity *pEnt1 = getPhysicsByScreenEntity(ent1);
+	PhysicsScreenEntity *pEnt2 = getPhysicsByScreenEntity(ent2);
+	if(pEnt1 == NULL || pEnt2 == NULL)
+		return NULL;
+	
+	b2Vec2 anchor((ent1->getPosition().x+ax)/worldScale, (ent1->getPosition().y+ay)/worldScale);
+	
+	b2PrismaticJointDef *jointDef = new b2PrismaticJointDef();
+	jointDef->collideConnected = collideConnected;
+	
+	jointDef->lowerTranslation = lowerTranslation/worldScale;
+	jointDef->upperTranslation = upperTranslation/worldScale;
+	jointDef->enableLimit = enableLimit;
+	
+	jointDef->motorSpeed = motorSpeed;
+	jointDef->maxMotorForce = motorForce;
+	jointDef->enableMotor = motorEnabled;	
+	
+	b2Vec2 _worldAxis(worldAxis.x, worldAxis.y);
+	
+	jointDef->Initialize(pEnt1->body, pEnt2->body, anchor, _worldAxis);
+	
+	PhysicsJoint *joint = new PhysicsJoint();	
+	joint->box2DJoint = world->CreateJoint(jointDef);
+	return joint;
 
 }
 
@@ -225,7 +281,7 @@ void PhysicsScreen::setVelocityY(ScreenEntity *ent, Number fy) {
 
 PhysicsScreenEntity *PhysicsScreen::addCollisionChild(ScreenEntity *newEntity, int entType) {
 	PhysicsScreenEntity *ret;
-	ret = addPhysicsChild(newEntity, entType, 0,0.1,0, true);
+	ret = addPhysicsChild(newEntity, entType, false, 0,0.1,0, true);
 	ret->collisionOnly = true; 
 	return ret;
 }
@@ -262,18 +318,21 @@ void PhysicsScreen::applyImpulse(ScreenEntity *ent, Number fx, Number fy) {
 
 
 
-void PhysicsScreen::createDistanceJoint(ScreenEntity *ent1, ScreenEntity *ent2, bool collideConnected) {
+PhysicsJoint *PhysicsScreen::createDistanceJoint(ScreenEntity *ent1, ScreenEntity *ent2, bool collideConnected) {
 	PhysicsScreenEntity *pEnt1 = getPhysicsByScreenEntity(ent1);
 	PhysicsScreenEntity *pEnt2 = getPhysicsByScreenEntity(ent2);
 	if(pEnt1 == NULL || pEnt2 == NULL)
-		return;
+		return NULL;
 	
 	b2Vec2 a1(ent1->getPosition().x/worldScale, ent1->getPosition().y/worldScale);
 	b2Vec2 a2(ent2->getPosition().x/worldScale, ent2->getPosition().y/worldScale);
 	b2DistanceJointDef *jointDef = new b2DistanceJointDef();
 	jointDef->Initialize(pEnt1->body, pEnt2->body, a1, a2);
 	jointDef->collideConnected = collideConnected;
-	world->CreateJoint(jointDef);
+	
+	PhysicsJoint *joint = new PhysicsJoint();	
+	joint->box2DJoint = world->CreateJoint(jointDef);
+	return joint;	
 }
 /*
 b2MouseJoint *PhysicsScreen::createMouseJoint(ScreenEntity *ent1, Vector2 *mp) {
@@ -299,52 +358,6 @@ b2MouseJoint *PhysicsScreen::createMouseJoint(ScreenEntity *ent1, Vector2 *mp) {
 	return m_mouseJoint;
 }
 */
-
-Vector2 PhysicsScreen::getEntityCollisionNormal(ScreenEntity *ent1, ScreenEntity *ent2) {
-	PhysicsScreenEntity *pEnt1 = getPhysicsByScreenEntity(ent1);
-	PhysicsScreenEntity *pEnt2 = getPhysicsByScreenEntity(ent2);	
-	if(pEnt1 == NULL || pEnt2 == NULL)
-		return Vector2(0,0);	
-	
-	PhysicsScreenEntity *rEnt1;
-	PhysicsScreenEntity *rEnt2;
-	for (int32 i = 0; i < numContactPoints; ++i)
-	{
-		ContactPoint* point = m_points + i;		
-		if (point->state == 0 || point->state == 1) {	
-			rEnt1= getPhysicsEntityByShape(point->shape1);
-			rEnt2 = getPhysicsEntityByShape(point->shape2);						
-			if((rEnt1 == pEnt1 && rEnt2 == pEnt2) || 
-			   (rEnt1 == pEnt2 && rEnt2 == pEnt1)) {
-				return Vector2(point->normal.x,point->normal.y);
-			}
-		}
-	}
-	return Vector2(0,0);	
-}
-
-bool PhysicsScreen::areEntitiesColliding(ScreenEntity *ent1, ScreenEntity *ent2) {
-	PhysicsScreenEntity *pEnt1 = getPhysicsByScreenEntity(ent1);
-	PhysicsScreenEntity *pEnt2 = getPhysicsByScreenEntity(ent2);	
-	if(pEnt1 == NULL || pEnt2 == NULL)
-		return false;
-	
-	PhysicsScreenEntity *rEnt1;
-	PhysicsScreenEntity *rEnt2;
-	for (int32 i = 0; i < numContactPoints; ++i)
-	{
-		ContactPoint* point = m_points + i;		
-		if (point->state == 0 || point->state == 1) {	
-			rEnt1= getPhysicsEntityByShape(point->shape1);
-			rEnt2 = getPhysicsEntityByShape(point->shape2);						
-			if((rEnt1 == pEnt1 && rEnt2 == pEnt2) || 
-			   (rEnt1 == pEnt2 && rEnt2 == pEnt1)) {
-				return true;
-			}
-		}
-	}
-	return false;
-}
 
 ScreenEntity *PhysicsScreen::getEntityAtPosition(Number x, Number y) {
 	ScreenEntity *ret = NULL;
@@ -383,10 +396,10 @@ void PhysicsScreen::destroyMouseJoint(b2MouseJoint *mJoint) {
 		mJoint = NULL;
 }
 
-PhysicsScreenEntity *PhysicsScreen::addPhysicsChild(ScreenEntity *newEntity, int entType, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation) {
+PhysicsScreenEntity *PhysicsScreen::addPhysicsChild(ScreenEntity *newEntity, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation) {
 	addChild(newEntity);
 	newEntity->setPositionMode(ScreenEntity::POSITION_CENTER);
-	PhysicsScreenEntity *newPhysicsEntity = new PhysicsScreenEntity(newEntity, world, worldScale, entType, friction, density, restitution, isSensor,fixedRotation);
+	PhysicsScreenEntity *newPhysicsEntity = new PhysicsScreenEntity(newEntity, world, worldScale, entType, isStatic, friction, density, restitution, isSensor,fixedRotation);
 	physicsChildren.push_back(newPhysicsEntity);
 	newPhysicsEntity->body->SetAwake(true);
 	return newPhysicsEntity;
@@ -430,42 +443,13 @@ PhysicsScreenEntity *PhysicsScreen::getPhysicsEntityByShape(b2Shape *shape) {
 	return NULL;
 }
 	
-void PhysicsScreen::handleEvent(Event *event) {
-	
-	numContactPoints = 0;
-	
-	if(event->getDispatcher() == updateTimer) {		
-		world->Step(timeStep, iterations,iterations);
-	}
-	/*
-	for (int32 i = 0; i < numContactPoints; ++i)
-	{
-		ContactPoint* point = m_points + i;		
-		if (point->state == 0) {	
-			PhysicsScreenEvent *newEvent = new PhysicsScreenEvent();
-			newEvent->entity1 = getPhysicsEntityByShape(point->shape1);
-			newEvent->entity2 = getPhysicsEntityByShape(point->shape2);			
-	
-			dispatchEvent(newEvent, PhysicsScreenEvent::EVENT_NEW_SHAPE_COLLISION);
-		} else if (point->state == 1) {
-			// Persist
-//			DrawPoint(point->position, 5.0f, b2Color(0.3f, 0.3f, 0.95f));
-		} else {
-			// Remove
-//			DrawPoint(point->position, 10.0f, b2Color(0.95f, 0.3f, 0.3f));
-			dispatchEvent(new PhysicsScreenEvent(), PhysicsScreenEvent::EVENT_END_SHAPE_COLLISION);			
-		}
-	}
-	*/
+void PhysicsScreen::handleEvent(Event *event) {	
 	Screen::handleEvent(event);
 }
 
 void PhysicsScreen::Update() {
-//	unsigned int elapsed = updateTimer->getTicks();	
-//	if(updateTimer->hasElapsed()) {
-//		world->Step(timeStep, iterations);
-		for(int i=0; i<physicsChildren.size();i++) {
-			physicsChildren[i]->Update();
-		}
-//	}
+	for(int i=0; i<physicsChildren.size();i++) {
+		physicsChildren[i]->Update();
+	}
+	world->Step(timeStep, iterations,iterations);	
 }

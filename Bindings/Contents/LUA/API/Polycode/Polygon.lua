@@ -39,6 +39,7 @@ end
 
 function Polygon:getVertex(index)
 	local retVal = Polycore.Polygon_getVertex(self.__ptr, index)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -50,6 +51,7 @@ end
 
 function Polygon:addVertex(x, y, z)
 	local retVal = Polycore.Polygon_addVertex(self.__ptr, x, y, z)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -69,6 +71,7 @@ end
 
 function Polygon:getFaceNormal()
 	local retVal =  Polycore.Polygon_getFaceNormal(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -80,6 +83,7 @@ end
 
 function Polygon:getBounds2D()
 	local retVal =  Polycore.Polygon_getBounds2D(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

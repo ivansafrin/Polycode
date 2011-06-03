@@ -121,6 +121,15 @@ NSMutableAttributedString *str = [[NSMutableAttributedString alloc ]initWithStri
 	}
 }
 
+- (void)close
+{
+	[timer invalidate];
+	[timer release];	
+	delete player;
+	delete playerProxy;
+	[super close];
+}
+
 - (NSData *)dataOfType:(NSString *)typeName error:(NSError **)outError
 {
     // Insert code here to write your document to data of the specified type. If the given outError != NULL, ensure that you set *outError when returning nil.

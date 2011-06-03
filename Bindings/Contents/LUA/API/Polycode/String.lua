@@ -3,8 +3,32 @@ class "String"
 
 
 ENCODING_UTF8 = 0
+function String:__index__(name)
+	if name == "contents" then
+		retVal = Polycore.String_get_contents(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = wstring("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "s_contents" then
+		retVal = Polycore.String_get_s_contents(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = string("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	end
+end
 
 
+function String:__set_callback(name,value)
+	return false
+end
 
 
 function String:String(...)
@@ -33,6 +57,7 @@ end
 
 function String:getSTLString()
 	local retVal =  Polycore.String_getSTLString(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -44,6 +69,7 @@ end
 
 function String:getSTLWString()
 	local retVal =  Polycore.String_getSTLWString(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -95,6 +121,7 @@ end
 
 function String:c_str()
 	local retVal =  Polycore.String_c_str(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -106,6 +133,7 @@ end
 
 function String:wc_str()
 	local retVal =  Polycore.String_wc_str(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -117,6 +145,7 @@ end
 
 function String:data()
 	local retVal =  Polycore.String_data(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -128,6 +157,7 @@ end
 
 function String:getDataWithEncoding(encoding)
 	local retVal = Polycore.String_getDataWithEncoding(self.__ptr, encoding)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

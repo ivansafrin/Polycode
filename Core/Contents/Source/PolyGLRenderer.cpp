@@ -68,7 +68,7 @@ using namespace Polycode;
 OpenGLRenderer::OpenGLRenderer() : Renderer() {
 
 	nearPlane = 0.1f;
-	farPlane = 1000.0f;
+	farPlane = 100.0f;
 	verticesToDraw = 0;
 }
 
@@ -633,6 +633,16 @@ void OpenGLRenderer::drawToColorBuffer(bool val) {
 		glDrawBuffer(GL_BACK);
 	} else {
 		glDrawBuffer(GL_NONE);		
+	}
+}
+
+void OpenGLRenderer::cullFrontFaces(bool val) {
+	if(val) {
+		glCullFace(GL_FRONT);
+		cullingFrontFaces = true;
+	} else {
+		glCullFace(GL_BACK);	
+		cullingFrontFaces = false;	
 	}
 }
 

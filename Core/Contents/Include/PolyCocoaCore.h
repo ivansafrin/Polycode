@@ -33,6 +33,7 @@
 #include <mach/mach_time.h>
 #include <unistd.h>
 
+#include "PolyGLSLShaderModule.h"
 #import <Cocoa/Cocoa.h>
 
 using std::vector;

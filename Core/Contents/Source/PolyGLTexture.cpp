@@ -63,6 +63,7 @@ void OpenGLTexture::recreateFromImageData() {
 	
 	if(textureData) {
 		glTexImage2D(GL_TEXTURE_2D, 0, glTextureType, width, height, 0, glTextureType, GL_UNSIGNED_BYTE, textureData);							
+//		gluBuild2DMipmaps(GL_TEXTURE_2D, 3, glTextureType, width, height, glTextureType, GL_UNSIGNED_BYTE, textureData);
 	}
 	glTextureLoaded = true;
 }

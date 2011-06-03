@@ -105,17 +105,20 @@ namespace Polycode {
 	*/
 	class _PolyExport Mesh {
 		public:
-			/**
-			* Construct from a mesh loaded from a file.
-			* @param fileName Path to mesh file.
-			*/
-			Mesh(String fileName);
+		
 			
 			/**
 			* Construct with an empty mesh of specified type.
 			* @param meshType Type of mesh. Possible values are: Mesh::QUAD_MESH, Mesh::TRI_MESH, Mesh::TRIFAN_MESH, Mesh::TRISTRIP_MESH, Mesh::LINE_MESH, Mesh::POINT_MESH.
 			*/			
 			Mesh(int meshType);
+					
+			/**
+			* Construct from a mesh loaded from a file.
+			* @param fileName Path to mesh file.
+			*/
+			Mesh(String fileName);
+
 			~Mesh();
 			
 			/**
@@ -144,6 +147,12 @@ namespace Polycode {
 			* @return Number of polygons in the mesh.
 			*/						
 			unsigned int getPolygonCount();
+			
+			/**
+			* Returns the total vertex count in the mesh.
+			* @return Number of vertices in the mesh.
+			*/
+			unsigned int getVertexCount();
 			
 			/**
 			* Returns a polygon at specified index.

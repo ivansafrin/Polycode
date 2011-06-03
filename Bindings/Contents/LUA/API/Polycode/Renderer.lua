@@ -15,8 +15,35 @@ DEPTH_FUNCTION_LEQUAL = 1
 TEX_FILTERING_NEAREST = 0
 TEX_FILTERING_LINEAR = 1
 function Renderer:__index__(name)
-	if name == "exposureLevel" then
+	if name == "ambientColor" then
+		retVal = Polycore.Renderer_get_ambientColor(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Color("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "clearColor" then
+		retVal = Polycore.Renderer_get_clearColor(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Color("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "exposureLevel" then
 		return Polycore.Renderer_get_exposureLevel(self.__ptr)
+	elseif name == "cameraPosition" then
+		retVal = Polycore.Renderer_get_cameraPosition(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
 	end
 end
 
@@ -44,6 +71,7 @@ end
 
 function Renderer:createCubemap(t0, t1, t2, t3, t4, t5)
 	local retVal = Polycore.Renderer_createCubemap(self.__ptr, t0.__ptr, t1.__ptr, t2.__ptr, t3.__ptr, t4.__ptr, t5.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -55,6 +83,7 @@ end
 
 function Renderer:createTexture(width, height, textureData, clamp, type)
 	local retVal = Polycore.Renderer_createTexture(self.__ptr, width, height, textureData.__ptr, clamp, type)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -70,6 +99,7 @@ end
 
 function Renderer:createFramebufferTexture(width, height)
 	local retVal = Polycore.Renderer_createFramebufferTexture(self.__ptr, width, height)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -165,6 +195,7 @@ end
 
 function Renderer:createRenderDataArrayForMesh(mesh, arrayType)
 	local retVal = Polycore.Renderer_createRenderDataArrayForMesh(self.__ptr, mesh.__ptr, arrayType)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -176,6 +207,7 @@ end
 
 function Renderer:createRenderDataArray(arrayType)
 	local retVal = Polycore.Renderer_createRenderDataArray(self.__ptr, arrayType)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -304,6 +336,7 @@ end
 
 function Renderer:getCameraMatrix()
 	local retVal =  Polycore.Renderer_getCameraMatrix(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -335,12 +368,16 @@ function Renderer:getYRes()
 	return retVal
 end
 
+function Renderer:cullFrontFaces(val)
+	local retVal = Polycore.Renderer_cullFrontFaces(self.__ptr, val)
+end
+
 function Renderer:clearLights()
 	local retVal =  Polycore.Renderer_clearLights(self.__ptr)
 end
 
-function Renderer:addLight(position, direction, type, color, distance, intensity, textureMatrix)
-	local retVal = Polycore.Renderer_addLight(self.__ptr, position.__ptr, direction.__ptr, type, color.__ptr, distance, intensity, textureMatrix.__ptr)
+function Renderer:addLight(position, direction, type, color, constantAttenuation, linearAttenuation, quadraticAttenuation, intensity, spotlightCutoff, spotlightExponent, shadowsEnabled, textureMatrix)
+	local retVal = Polycore.Renderer_addLight(self.__ptr, position.__ptr, direction.__ptr, type, color.__ptr, constantAttenuation, linearAttenuation, quadraticAttenuation, intensity, spotlightCutoff, spotlightExponent, shadowsEnabled, textureMatrix.__ptr)
 end
 
 function Renderer:setExposureLevel(level)
@@ -356,6 +393,10 @@ function Renderer:enableShaders(flag)
 	local retVal = Polycore.Renderer_enableShaders(self.__ptr, flag)
 end
 
+function Renderer:initOSSpecific()
+	local retVal =  Polycore.Renderer_initOSSpecific(self.__ptr)
+end
+
 function Renderer:addShaderModule(module)
 	local retVal = Polycore.Renderer_addShaderModule(self.__ptr, module.__ptr)
 end
@@ -367,6 +408,7 @@ end
 
 function Renderer:getProjectionMatrix()
 	local retVal =  Polycore.Renderer_getProjectionMatrix(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -378,6 +420,7 @@ end
 
 function Renderer:getModelviewMatrix()
 	local retVal =  Polycore.Renderer_getModelviewMatrix(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -393,6 +436,7 @@ end
 
 function Renderer:Unproject(x, y)
 	local retVal = Polycore.Renderer_Unproject(self.__ptr, x, y)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -400,6 +444,10 @@ function Renderer:Unproject(x, y)
 		Polycore.__ptr_lookup[retVal].__ptr = retVal
 		return Polycore.__ptr_lookup[retVal]
 	end
+end
+
+function Renderer:sortLights()
+	local retVal =  Polycore.Renderer_sortLights(self.__ptr)
 end
 
 function Renderer:getNumAreaLights()

@@ -37,7 +37,7 @@ namespace Polycode {
 			~Particle();
 			void Reset(bool continuious);
 			
-			void createSceneParticle(int particleType, Texture *texture, Mesh *particleMesh);
+			void createSceneParticle(int particleType, Material *material, Mesh *particleMesh);
 			void createScreenParticle(int particleType, Texture *texture, Mesh *particleMesh);
 		
 			Entity *particleBody;						
@@ -51,6 +51,8 @@ namespace Polycode {
 			Number perlinPosX;
 			Number perlinPosY;
 			Number perlinPosZ;
+			
+			static Mesh* billboardMesh;
 			
 			static const int BILLBOARD_PARTICLE = 0;
 			static const int MESH_PARTICLE = 1;

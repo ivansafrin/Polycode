@@ -43,6 +43,7 @@ end
 
 function ShaderBinding:getLocalParam(index)
 	local retVal = Polycore.ShaderBinding_getLocalParam(self.__ptr, index)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -54,6 +55,7 @@ end
 
 function ShaderBinding:getLocalParamByName(name)
 	local retVal = Polycore.ShaderBinding_getLocalParamByName(self.__ptr, name)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -74,6 +76,7 @@ end
 
 function ShaderBinding:getRenderTargetBinding(index)
 	local retVal = Polycore.ShaderBinding_getRenderTargetBinding(self.__ptr, index)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -90,6 +93,7 @@ end
 
 function ShaderBinding:getInTargetBinding(index)
 	local retVal = Polycore.ShaderBinding_getInTargetBinding(self.__ptr, index)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -106,6 +110,7 @@ end
 
 function ShaderBinding:getOutTargetBinding(index)
 	local retVal = Polycore.ShaderBinding_getOutTargetBinding(self.__ptr, index)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else

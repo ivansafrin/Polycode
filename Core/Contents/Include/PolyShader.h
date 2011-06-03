@@ -43,6 +43,9 @@ namespace Polycode {
 
 			static const int FIXED_SHADER = 0;
 			static const int MODULE_SHADER = 1;
+
+			int numSpotLights;
+			int numAreaLights;
 							
 		protected:
 		
@@ -103,7 +106,6 @@ namespace Polycode {
 
 			unsigned int getNumOutTargetBindings();
 			RenderTargetBinding *getOutTargetBinding(unsigned int index);
-
 			
 			Shader* shader;
 			vector<LocalShaderParam*> localParams;

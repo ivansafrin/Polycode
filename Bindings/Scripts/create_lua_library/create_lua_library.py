@@ -13,8 +13,9 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 	sout += "#include \"%sLUAWrappers.h\"\n\n" % (prefix)
 	
 	sout += "int luaopen_%s(lua_State *L) {\n" % (prefix)
-	sout += "CoreServices *inst = (CoreServices*)lua_topointer(L, 1);\n"
-	sout += "CoreServices::setInstance(inst);\n"
+	if prefix != "Polycode":
+		sout += "CoreServices *inst = (CoreServices*)lua_topointer(L, 1);\n"
+		sout += "CoreServices::setInstance(inst);\n"
 	sout += "\tstatic const struct luaL_reg %sLib [] = {" % (libSmallName)
 	
 	out += "#pragma once\n\n"
@@ -45,7 +46,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 	files = os.listdir(inputPath)
 	for fileName in files:
 		inheritInModule = ["PhysicsSceneEntity", "CollisionScene", "CollisionSceneEntity"]
-		ignore = ["PolyCocoaCore", "PolyAGLCore", "PolyGLES1Renderer", "PolyGLRenderer", "tinyxml", "tinystr", "OpenGLCubemap", "PolyiPhoneCore", "PolyGLES1Texture", "PolyGLTexture", "PolyGLVertexBuffer", "PolyThreaded"]
+		ignore = ["PolyGLSLProgram", "PolyGLSLShader", "PolyGLSLShaderModule", "PolyWinCore", "PolyCocoaCore", "PolyAGLCore", "PolyGLES1Renderer", "PolyGLRenderer", "tinyxml", "tinystr", "OpenGLCubemap", "PolyiPhoneCore", "PolyGLES1Texture", "PolyGLTexture", "PolyGLVertexBuffer", "PolyThreaded"]
 		if fileName.split(".")[1] == "h" and fileName.split(".")[0] not in ignore:
 			headerFile = "%s/%s" % (inputPath, fileName)
 			print "Parsing %s" % fileName
@@ -55,7 +56,10 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 				cppHeader = CppHeaderParser.CppHeader(contents, "string")
 				ignore_classes = ["PolycodeShaderModule", "Object", "Threaded", "OpenGLCubemap"]
 				for ckey in cppHeader.classes:
+					print ">> Parsing class %s" % ckey
 					c = cppHeader.classes[ckey]
+		#			if ckey == "ParticleEmitter":
+		#				print c
 					lout = ""
 					inherits = False
 					if len(c["inherits"]) > 0:
@@ -75,20 +79,29 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 					if ckey == "OSFileEntry":
 						print c["methods"]["public"]
 					parsed_methods = []
-					ignore_methods = ["readByte32", "readByte16", "getCustomEntitiesByType", "Core","ParticleEmitter", "Renderer", "Shader", "Texture", "handleEvent", "secondaryHandler"]
+					ignore_methods = ["readByte32", "readByte16", "getCustomEntitiesByType", "Core", "Renderer", "Shader", "Texture", "handleEvent", "secondaryHandler"]
 					lout += "\n\n"
 	
 					pps = []
 					for pp in c["properties"]["public"]:
 						if pp["type"].find("static ") != -1:
-							lout += "%s = %s\n" % (pp["name"], pp["defaltValue"])
+							if "defaltValue" in pp:
+								lout += "%s = %s\n" % (pp["name"], pp["defaltValue"])
 						else:
-							if pp["type"] == "Number" or  pp["type"] == "String" or pp["type"] == "int" or pp["type"] == "bool":
+							#there are some bugs in the class parser that cause it to return junk
+							if pp["type"].find("*") == -1 and pp["type"].find("vector") == -1 and pp["name"] != "16" and pp["name"] != "setScale" and pp["name"] != "setPosition" and pp["name"] != "BUFFER_CACHE_PRECISION":
 								pps.append(pp)
+							#if pp["type"] == "Number" or  pp["type"] == "String" or pp["type"] == "int" or pp["type"] == "bool":
+							#	pps.append(pp)
 							#else:
 							#	print(">>> Skipping %s[%s %s]" % (ckey, pp["type"], pp["name"]))
 	
 					pidx = 0
+			
+					# hack to fix the lack of multiple inheritance
+					#if ckey == "ScreenParticleEmitter" or ckey == "SceneParticleEmitter":
+					#		pps.append({"name": "emitter", "type": "ParticleEmitter"})
+	
 					if len(pps) > 0:
 						lout += "function %s:__index__(name)\n" % ckey
 						for pp in pps:
@@ -96,29 +109,47 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 								lout += "\tif name == \"%s\" then\n" % (pp["name"])
 							else:
 								lout += "\telseif name == \"%s\" then\n" % (pp["name"])
-							lout += "\t\treturn %s.%s_get_%s(self.__ptr)\n" % (libName, ckey, pp["name"])
-							
-							sout += "\t\t{\"%s_get_%s\", %s_%s_get_%s},\n" % (ckey, pp["name"], libName, ckey, pp["name"])
-							out += "static int %s_%s_get_%s(lua_State *L) {\n" % (libName, ckey, pp["name"])
-							out += "\tluaL_checktype(L, 1, LUA_TLIGHTUSERDATA);\n"
-							out += "\t%s *inst = (%s*)lua_topointer(L, 1);\n" % (ckey.replace("Polygon", "Polycode::Polygon"), ckey.replace("Polygon", "Polycode::Polygon"))
+
+							if pp["type"] == "Number" or  pp["type"] == "String" or pp["type"] == "int" or pp["type"] == "bool":
+								lout += "\t\treturn %s.%s_get_%s(self.__ptr)\n" % (libName, ckey, pp["name"])
+							elif (ckey == "ScreenParticleEmitter" or ckey == "SceneParticleEmitter") and pp["name"] == "emitter":
+								lout += "\t\tlocal ret = %s(\"__skip_ptr__\")\n" % (pp["type"])
+								lout += "\t\tret.__ptr = self.__ptr\n"
+								lout += "\t\treturn ret\n"
+							else:
+								lout += "\t\tretVal = %s.%s_get_%s(self.__ptr)\n" % (libName, ckey, pp["name"])
+								lout += "\t\tif Polycore.__ptr_lookup[retVal] ~= nil then\n"
+								lout += "\t\t\treturn Polycore.__ptr_lookup[retVal]\n"
+								lout += "\t\telse\n"
+								lout += "\t\t\tPolycore.__ptr_lookup[retVal] = %s(\"__skip_ptr__\")\n" % (pp["type"])
+								lout += "\t\t\tPolycore.__ptr_lookup[retVal].__ptr = retVal\n"
+								lout += "\t\t\treturn Polycore.__ptr_lookup[retVal]\n"
+								lout += "\t\tend\n"
+
+							if not ((ckey == "ScreenParticleEmitter" or ckey == "SceneParticleEmitter") and pp["name"] == "emitter"):
+								sout += "\t\t{\"%s_get_%s\", %s_%s_get_%s},\n" % (ckey, pp["name"], libName, ckey, pp["name"])
+								out += "static int %s_%s_get_%s(lua_State *L) {\n" % (libName, ckey, pp["name"])
+								out += "\tluaL_checktype(L, 1, LUA_TLIGHTUSERDATA);\n"
+								out += "\t%s *inst = (%s*)lua_topointer(L, 1);\n" % (ckey.replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"), ckey.replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"))
 	
-							outfunc = "lua_pushlightuserdata"
-							retFunc = ""
-							if pp["type"] == "Number":
-								outfunc = "lua_pushnumber"
-							if pp["type"] == "String":
-								outfunc = "lua_pushstring"
-								retFunc = ".c_str()"
-							if pp["type"] == "int":
-								outfunc = "lua_pushinteger"
-							if pp["type"] == "bool":
-								outfunc = "lua_pushboolean"
+								outfunc = "lua_pushlightuserdata"
+								retFunc = ""
+								if pp["type"] == "Number":
+									outfunc = "lua_pushnumber"
+								if pp["type"] == "String":
+									outfunc = "lua_pushstring"
+									retFunc = ".c_str()"
+								if pp["type"] == "int":
+									outfunc = "lua_pushinteger"
+								if pp["type"] == "bool":
+									outfunc = "lua_pushboolean"
 	
-							out += "\t%s(L, inst->%s%s);\n" % (outfunc, pp["name"], retFunc)
-	
-							out += "\treturn 1;\n"
-							out += "}\n\n"
+								if pp["type"] == "Number" or  pp["type"] == "String" or pp["type"] == "int" or pp["type"] == "bool":
+									out += "\t%s(L, inst->%s%s);\n" % (outfunc, pp["name"], retFunc)
+								else:
+									out += "\t%s(L, &inst->%s%s);\n" % (outfunc, pp["name"], retFunc)
+								out += "\treturn 1;\n"
+								out += "}\n\n"
 							pidx = pidx + 1
 	
 						lout += "\tend\n"
@@ -129,36 +160,37 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 					if len(pps) > 0:
 						lout += "function %s:__set_callback(name,value)\n" % ckey
 						for pp in pps:
-							if pidx == 0:
-								lout += "\tif name == \"%s\" then\n" % (pp["name"])
-							else:
-								lout += "\telseif name == \"%s\" then\n" % (pp["name"])
-							lout += "\t\t%s.%s_set_%s(self.__ptr, value)\n" % (libName, ckey, pp["name"])
-							lout += "\t\treturn true\n"
+							if pp["type"] == "Number" or  pp["type"] == "String" or pp["type"] == "int" or pp["type"] == "bool":
+								if pidx == 0:
+									lout += "\tif name == \"%s\" then\n" % (pp["name"])
+								else:
+									lout += "\telseif name == \"%s\" then\n" % (pp["name"])
+								lout += "\t\t%s.%s_set_%s(self.__ptr, value)\n" % (libName, ckey, pp["name"])
+								lout += "\t\treturn true\n"
 	
-							sout += "\t\t{\"%s_set_%s\", %s_%s_set_%s},\n" % (ckey, pp["name"], libName, ckey, pp["name"])
-							out += "static int %s_%s_set_%s(lua_State *L) {\n" % (libName, ckey, pp["name"])
-							out += "\tluaL_checktype(L, 1, LUA_TLIGHTUSERDATA);\n"
-							out += "\t%s *inst = (%s*)lua_topointer(L, 1);\n" % (ckey.replace("Polygon", "Polycode::Polygon"), ckey.replace("Polygon", "Polycode::Polygon"))
+								sout += "\t\t{\"%s_set_%s\", %s_%s_set_%s},\n" % (ckey, pp["name"], libName, ckey, pp["name"])
+								out += "static int %s_%s_set_%s(lua_State *L) {\n" % (libName, ckey, pp["name"])
+								out += "\tluaL_checktype(L, 1, LUA_TLIGHTUSERDATA);\n"
+								out += "\t%s *inst = (%s*)lua_topointer(L, 1);\n" % (ckey.replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"), ckey.replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"))
 	
-							outfunc = "lua_topointer"
-							if pp["type"] == "Number":
-								outfunc = "lua_tonumber"
-							if pp["type"] == "String":
-								outfunc = "lua_tostring"
-							if pp["type"] == "int":
-								outfunc = "lua_tointeger"
-							if pp["type"] == "bool":
-								outfunc = "lua_toboolean"
+								outfunc = "lua_topointer"
+								if pp["type"] == "Number":
+									outfunc = "lua_tonumber"
+								if pp["type"] == "String":
+									outfunc = "lua_tostring"
+								if pp["type"] == "int":
+									outfunc = "lua_tointeger"
+								if pp["type"] == "bool":
+									outfunc = "lua_toboolean"
 	
-							out += "\t%s param = %s(L, 2);\n" % (pp["type"], outfunc)
-							out += "\tinst->%s = param;\n" % (pp["name"])
-	
-							out += "\treturn 0;\n"
-							out += "}\n\n"
-							pidx = pidx + 1
-	
-						lout += "\tend\n"
+								out += "\t%s param = %s(L, 2);\n" % (pp["type"], outfunc)
+								out += "\tinst->%s = param;\n" % (pp["name"])
+		
+								out += "\treturn 0;\n"
+								out += "}\n\n"
+								pidx = pidx + 1
+						if pidx != 0:
+							lout += "\tend\n"
 						lout += "\treturn false\n"
 						lout += "end\n"
 						
@@ -183,7 +215,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 	
 								if pm["rtnType"].find("static ") == -1:
 									out += "\tluaL_checktype(L, 1, LUA_TLIGHTUSERDATA);\n"
-									out += "\t%s *inst = (%s*)lua_topointer(L, 1);\n" % (ckey.replace("Polygon", "Polycode::Polygon"), ckey.replace("Polygon", "Polycode::Polygon"))
+									out += "\t%s *inst = (%s*)lua_topointer(L, 1);\n" % (ckey.replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"), ckey.replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"))
 								idx = 2
 							paramlist = []
 							lparamlist = []
@@ -198,11 +230,11 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 									luatype = "LUA_TLIGHTUSERDATA"
 									checkfunc = "lua_islightuserdata"
 									if param["type"].find("*") > -1:
-										luafunc = "(%s)lua_topointer" % (param["type"].replace("Polygon", "Polycode::Polygon"))
+										luafunc = "(%s)lua_topointer" % (param["type"].replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"))
 									elif param["type"].find("&") > -1:
-										luafunc = "*(%s*)lua_topointer" % (param["type"].replace("const", "").replace("&", "").replace("Polygon", "Polycode::Polygon"))
+										luafunc = "*(%s*)lua_topointer" % (param["type"].replace("const", "").replace("&", "").replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"))
 									else:
-										luafunc = "*(%s*)lua_topointer" % (param["type"])
+										luafunc = "*(%s*)lua_topointer" % (param["type"].replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"))
 									lend = ".__ptr"
 									if param["type"] == "int" or param["type"] == "unsigned int":
 										luafunc = "lua_tointeger"
@@ -225,19 +257,26 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 										checkfunc = "lua_isstring"
 										lend = ""
 									
-									param["type"] = param["type"].replace("Polygon", "Polycode::Polygon")
+									param["type"] = param["type"].replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle")
 	
-									if "defaltValue" in param and checkfunc != "lua_islightuserdata":
-										param["defaltValue"] = param["defaltValue"].replace(" 0f", ".0f")
-										param["defaltValue"] = param["defaltValue"].replace(": :", "::")
-										param["defaltValue"] = param["defaltValue"].replace("0 ", "0.")
+									if "defaltValue" in param:
+										if checkfunc != "lua_islightuserdata" or (checkfunc == "lua_islightuserdata" and param["defaltValue"] == "NULL"):
+											param["defaltValue"] = param["defaltValue"].replace(" 0f", ".0f")
+											param["defaltValue"] = param["defaltValue"].replace(": :", "::")
+											param["defaltValue"] = param["defaltValue"].replace("0 ", "0.")
 	
-										out += "\t%s %s;\n" % (param["type"], param["name"])
-										out += "\tif(%s(L, %d)) {\n" % (checkfunc, idx)
-										out += "\t\t%s = %s(L, %d);\n" % (param["name"], luafunc, idx)
-										out += "\t} else {\n"
-										out += "\t\t%s = %s;\n" % (param["name"], param["defaltValue"])
-										out += "\t}\n"
+											out += "\t%s %s;\n" % (param["type"], param["name"])
+											out += "\tif(%s(L, %d)) {\n" % (checkfunc, idx)
+											out += "\t\t%s = %s(L, %d);\n" % (param["name"], luafunc, idx)
+											out += "\t} else {\n"
+											out += "\t\t%s = %s;\n" % (param["name"], param["defaltValue"])
+											out += "\t}\n"
+										else:
+											out += "\tluaL_checktype(L, %d, %s);\n" % (idx, luatype);
+											if param["type"] == "String":
+												out += "\t%s %s = String(%s(L, %d));\n" % (param["type"], param["name"], luafunc, idx)
+											else:
+												out += "\t%s %s = %s(L, %d);\n" % (param["type"], param["name"], luafunc, idx)
 									else:
 										out += "\tluaL_checktype(L, %d, %s);\n" % (idx, luatype);
 										if param["type"] == "String":
@@ -255,7 +294,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 									out += "\tinst->wrapperIndex = luaL_ref(L, LUA_REGISTRYINDEX );\n"
 									out += "\tinst->L = L;\n"
 								else:
-									out += "\t%s *inst = new %s(%s);\n" % (ckey.replace("Polygon", "Polycode::Polygon"), ckey.replace("Polygon", "Polycode::Polygon"), ", ".join(paramlist))
+									out += "\t%s *inst = new %s(%s);\n" % (ckey.replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"), ckey.replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"), ", ".join(paramlist))
 								out += "\tlua_pushlightuserdata(L, (void*)inst);\n"
 								out += "\treturn 1;\n"
 							else:
@@ -287,13 +326,20 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 										basicType = True
 	
 									if pm["rtnType"].find("*") > -1:
-										out += "\t%s(L, (void*)%s%s);\n" % (outfunc, call, retFunc)
+										out += "\tvoid *ptrRetVal = (void*)%s%s;\n" % (call, retFunc)
+										out += "\tif(ptrRetVal == NULL) {\n"
+										out += "\t\tlua_pushnil(L);\n"
+										out += "\t} else {\n"
+										out += "\t\t%s(L, ptrRetVal);\n" % (outfunc)
+										out += "\t}\n"
 									elif basicType == True:
 										out += "\t%s(L, %s%s);\n" % (outfunc, call, retFunc)
 									else:
 										className = pm["rtnType"].replace("const", "").replace("&", "").replace("inline", "").replace("virtual", "").replace("static", "")
 										if className == "Polygon":
 											className = "Polycode::Polygon"
+										if className == "Rectangle":
+											className = "Polycode::Rectangle"
 										out += "\t%s *retInst = new %s();\n" % (className, className)
 										out += "\t*retInst = %s;\n" % (call)
 										out += "\t%s(L, retInst);\n" % (outfunc)
@@ -342,6 +388,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 										lout += "\treturn retVal\n"
 									else:
 										className = pm["rtnType"].replace("const", "").replace("&", "").replace("inline", "").replace("virtual", "").replace("static", "").replace("*","").replace(" ", "")
+										lout += "\tif retVal == nil then return nil end\n"
 										lout += "\tif Polycore.__ptr_lookup[retVal] ~= nil then\n"
 										lout += "\t\treturn Polycore.__ptr_lookup[retVal]\n"
 										lout += "\telse\n"
@@ -357,11 +404,11 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 					sout += "\t\t{\"delete_%s\", %s_delete_%s},\n" % (ckey, libName, ckey)
 					out += "static int %s_delete_%s(lua_State *L) {\n" % (libName, ckey)
 					out += "\tluaL_checktype(L, 1, LUA_TLIGHTUSERDATA);\n"
-					out += "\t%s *inst = (%s*)lua_topointer(L, 1);\n" % (ckey.replace("Polygon", "Polycode::Polygon"), ckey.replace("Polygon", "Polycode::Polygon"))
+					out += "\t%s *inst = (%s*)lua_topointer(L, 1);\n" % (ckey.replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"), ckey.replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"))
 					out += "\tdelete inst;\n"
 					out += "\treturn 0;\n"
 					out += "}\n\n"
-	
+
 					lout += "\n\n"
 					lout += "function %s:__delete()\n" % (ckey)
 					lout += "\tPolycore.__ptr_lookup[self.__ptr] = nil\n"
@@ -400,7 +447,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 	shout += "#include \"lua.h\"\n"
 	shout += "#include \"lualib.h\"\n"
 	shout += "#include \"lauxlib.h\"\n"
-	shout += "int luaopen_%s(lua_State *L);\n" % (prefix)
+	shout += "int _PolyExport luaopen_%s(lua_State *L);\n" % (prefix)
 	shout += "}\n"
 	
 	fout = open("%s/%sLUA.h" % (includePath, prefix), "w")

@@ -34,6 +34,7 @@ end
 
 function ScreenMesh:getMesh()
 	local retVal =  Polycore.ScreenMesh_getMesh(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
@@ -45,6 +46,7 @@ end
 
 function ScreenMesh:getTexture()
 	local retVal =  Polycore.ScreenMesh_getTexture(self.__ptr)
+	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
 	else
