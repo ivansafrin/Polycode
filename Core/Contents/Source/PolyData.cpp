@@ -21,7 +21,7 @@
 */
 
 #include "PolyData.h"
-
+#include <string.h>
 
 using namespace Polycode;
 
