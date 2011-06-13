@@ -29,7 +29,7 @@ AC_CHECK_LIB([vorbis], [vorbis_info_init],[], [
 		exit -1])
 
 AC_CHECK_LIB([vorbisfile], [ov_open_callbacks],[], [
-		echo "libpng is required!"
+		echo "libvorbisfile is required!"
 		exit -1])
 
 AC_CHECK_LIB([physfs], [PHYSFS_init],[], [
