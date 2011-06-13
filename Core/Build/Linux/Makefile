@@ -335,7 +335,7 @@ top_build_prefix =
 top_builddir = .
 top_srcdir = .
 AUTOMAKE_OPTIONS = foreign
-AM_CPPFLAGS = -02 -DGL_GLEXT_PROTOTYPES -I../../Contents/Include -I/usr/local/include/freetype2 -I/usr/local/include/AL
+AM_CPPFLAGS = -O2 -DGL_GLEXT_PROTOTYPES -I../../Contents/Include `freetype-config --cflags`
 lib_LTLIBRARIES = libPolyCore.la
 libPolyCore_la_SOURCES = ../../Contents/Source/OSBasics.cpp \
 	../../Contents/Source/PolyBezierCurve.cpp \
