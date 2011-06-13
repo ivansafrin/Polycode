@@ -173,7 +173,27 @@ PolySDLCore.o: ../../Contents/Source/PolySDLCore.cpp \
  /usr/lib/i386-linux-gnu/gcc/i686-linux-gnu/4.5.2/include/stdint.h \
  /usr/include/stdint.h /usr/include/GL/glu.h \
  ../../Contents/Include/PolyGLCubemap.h \
- ../../Contents/Include/PolyGLVertexBuffer.h /usr/include/SDL/SDL.h \
+ ../../Contents/Include/PolyGLVertexBuffer.h \
+ ../../Contents/Include/PolyGLSLShaderModule.h \
+ ../../Contents/Include/Polycode.h ../../Contents/Include/PolyData.h \
+ ../../Contents/Include/PolyObject.h \
+ ../../Contents/Include/PolyScreenLine.h \
+ ../../Contents/Include/PolyScreenMesh.h \
+ ../../Contents/Include/PolyScreenShape.h \
+ ../../Contents/Include/PolyScreenImage.h \
+ ../../Contents/Include/PolyScreenSprite.h \
+ ../../Contents/Include/PolyScreenLabel.h \
+ ../../Contents/Include/PolyScreenCurve.h \
+ ../../Contents/Include/PolyScenePrimitive.h \
+ ../../Contents/Include/PolyParticleEmitter.h \
+ ../../Contents/Include/PolyParticle.h ../../Contents/Include/PolySound.h \
+ /usr/local/include/vorbis/vorbisfile.h /usr/local/include/vorbis/codec.h \
+ /usr/local/include/ogg/ogg.h /usr/local/include/ogg/os_types.h \
+ /usr/local/include/ogg/config_types.h \
+ ../../Contents/Include/PolySceneSound.h \
+ ../../Contents/Include/PolyScreenSound.h \
+ ../../Contents/Include/PolyGLSLProgram.h \
+ ../../Contents/Include/PolyGLSLShader.h /usr/include/SDL/SDL.h \
  /usr/include/SDL/SDL_main.h /usr/include/SDL/SDL_stdinc.h \
  /usr/include/SDL/SDL_config.h /usr/include/SDL/SDL_platform.h \
  /usr/include/strings.h /usr/include/iconv.h \
@@ -688,6 +708,54 @@ PolySDLCore.o: ../../Contents/Source/PolySDLCore.cpp \
 ../../Contents/Include/PolyGLCubemap.h:
 
 ../../Contents/Include/PolyGLVertexBuffer.h:
+
+../../Contents/Include/PolyGLSLShaderModule.h:
+
+../../Contents/Include/Polycode.h:
+
+../../Contents/Include/PolyData.h:
+
+../../Contents/Include/PolyObject.h:
+
+../../Contents/Include/PolyScreenLine.h:
+
+../../Contents/Include/PolyScreenMesh.h:
+
+../../Contents/Include/PolyScreenShape.h:
+
+../../Contents/Include/PolyScreenImage.h:
+
+../../Contents/Include/PolyScreenSprite.h:
+
+../../Contents/Include/PolyScreenLabel.h:
+
+../../Contents/Include/PolyScreenCurve.h:
+
+../../Contents/Include/PolyScenePrimitive.h:
+
+../../Contents/Include/PolyParticleEmitter.h:
+
+../../Contents/Include/PolyParticle.h:
+
+../../Contents/Include/PolySound.h:
+
+/usr/local/include/vorbis/vorbisfile.h:
+
+/usr/local/include/vorbis/codec.h:
+
+/usr/local/include/ogg/ogg.h:
+
+/usr/local/include/ogg/os_types.h:
+
+/usr/local/include/ogg/config_types.h:
+
+../../Contents/Include/PolySceneSound.h:
+
+../../Contents/Include/PolyScreenSound.h:
+
+../../Contents/Include/PolyGLSLProgram.h:
+
+../../Contents/Include/PolyGLSLShader.h:
 
 /usr/include/SDL/SDL.h:
 

@@ -188,7 +188,10 @@ PolycodeView.o: PolycodeView.cpp PolycodeView.h \
  ../../Contents/Include/PolyGLTexture.h /usr/include/GL/gl.h \
  /usr/include/GL/glext.h /usr/include/GL/glu.h \
  ../../Contents/Include/PolyGLCubemap.h \
- ../../Contents/Include/PolyGLVertexBuffer.h /usr/include/SDL/SDL.h \
+ ../../Contents/Include/PolyGLVertexBuffer.h \
+ ../../Contents/Include/PolyGLSLShaderModule.h \
+ ../../Contents/Include/PolyGLSLProgram.h \
+ ../../Contents/Include/PolyGLSLShader.h /usr/include/SDL/SDL.h \
  /usr/include/SDL/SDL_main.h /usr/include/SDL/SDL_stdinc.h \
  /usr/include/SDL/SDL_config.h /usr/include/SDL/SDL_platform.h \
  /usr/include/strings.h /usr/include/iconv.h \
@@ -747,6 +750,12 @@ PolycodeView.h:
 ../../Contents/Include/PolyGLCubemap.h:
 
 ../../Contents/Include/PolyGLVertexBuffer.h:
+
+../../Contents/Include/PolyGLSLShaderModule.h:
+
+../../Contents/Include/PolyGLSLProgram.h:
+
+../../Contents/Include/PolyGLSLShader.h:
 
 /usr/include/SDL/SDL.h:
 

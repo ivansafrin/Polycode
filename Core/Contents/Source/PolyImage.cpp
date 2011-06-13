@@ -81,7 +81,8 @@ Image::Image(char *data, int width, int height, int type) {
 	this->height = height;
 }
 
-Image::Image() : imageData(NULL) {
+Image::Image() {
+	imageData = NULL;
 }
 
 Image::~Image() {
@@ -461,8 +462,8 @@ bool Image::loadPNG(String fileName) {
 	char         sig[8];
 	int           bit_depth;
 	int           color_type;
-	unsigned long width;
-	unsigned long height;
+	png_uint_32 width;
+	png_uint_32 height;
 	unsigned int rowbytes;
 	image_data = NULL;
 	int i;
@@ -509,7 +510,7 @@ bool Image::loadPNG(String fileName) {
 	
 	png_set_sig_bytes(png_ptr, 8);
 	png_read_info(png_ptr, info_ptr);
-	png_get_IHDR(png_ptr, info_ptr, (png_uint_32*)&width, (png_uint_32*)&height, &bit_depth, 
+	png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, 
 				 &color_type, NULL, NULL, NULL);
 	this->width = width;
 	this->height = height;
