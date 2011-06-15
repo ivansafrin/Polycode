@@ -388,7 +388,7 @@ Matrix4 ScreenEntity::buildPositionMatrix() {
 
 void ScreenEntity::adjustMatrixForChildren() {
 	if(positionMode == POSITION_TOPLEFT)
-		renderer->translate2D(-floor(width/2.0f)*scale.x, -floor(height/2.0f)*scale.y);	
+		renderer->translate2D(-floor(width/2.0f), -floor(height/2.0f));	
 }
 
 /*

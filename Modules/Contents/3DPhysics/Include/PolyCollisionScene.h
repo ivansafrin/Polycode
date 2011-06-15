@@ -33,17 +33,47 @@ using std::vector;
 
 namespace Polycode {
 
+/**
+* Result of a collision test.
+*/
 struct CollisionResult {
+
+	/**
+	* True if collided.
+	*/ 
 	bool collided;
+	
+	/**
+	* Collision normal.
+	*/ 	
 	Vector3 colNormal;
+	
+	/**
+	* Collision distance.
+	*/ 		
 	Number colDist;
+		
 	bool setOldPosition;
 	Vector3 newPos;
 };
-
+	
+	/**
+	* Result of a ray test.
+	*/
 	struct RayTestResult {
+		/**
+		* Entity returned.
+		*/
 		SceneEntity *entity;
+		
+		/**
+		* Ray normal
+		*/		
 		Vector3 normal;
+		
+		/**
+		* Ray position.
+		*/				
 		Vector3 position;
 	};
 
@@ -62,16 +92,17 @@ struct CollisionResult {
 			void initCollisionScene();
 		
 			virtual void Update();		
-			
-			/**
-			* Enables collision tracking for an entity.
-			* @param entity Entity to track collision for.
-			* @param 
-			*/			
-			void enableCollision(SceneEntity *entity, bool val);		
+						
 			CollisionSceneEntity *getCollisionEntityByObject(btCollisionObject *collisionObject);		
-			RayTestResult getFirstEntityInRay(const Vector3 &origin,  const Vector3 &dest);
+
 			
+			/** @name Collision scene
+			*  Public methods
+			*/
+			//@{			
+			
+			RayTestResult getFirstEntityInRay(const Vector3 &origin,  const Vector3 &dest);			
+			void enableCollision(SceneEntity *entity, bool val);											
 			CollisionSceneEntity *getCollisionByScreenEntity(SceneEntity *ent);
 			CollisionResult testCollision(SceneEntity *ent1, SceneEntity *ent2);
 			CollisionResult testCollisionOnCollisionChild(CollisionSceneEntity *cEnt1, CollisionSceneEntity *cEnt2);				
@@ -81,13 +112,16 @@ struct CollisionResult {
 			Vector3 getCollisionNormal(SceneEntity *ent1, SceneEntity *ent2);			
 			void applyVelocity(SceneEntity *entity, Number x, Number y, Number z);			
 			void loadCollisionChild(SceneEntity *entity, bool autoCollide=false, int type=0);
-			void enableGravity(SceneEntity *entity);
-			
+			void enableGravity(SceneEntity *entity);			
 			void stopTrackingCollision(SceneEntity *entity);
 		
 			virtual CollisionSceneEntity *addCollisionChild(SceneEntity *newEntity, bool autoCollide=false, int type=0, int group=0);
 			CollisionSceneEntity *trackCollision(SceneEntity *newEntity, bool autoCollide, int type=0, int group=0);
 			void adjustForCollision(CollisionSceneEntity *collisionEntity);
+			
+			//@}
+			// ----------------------------------------------------------------------------------------------------------------
+			
 		protected:
 		
 			vector<CollisionSceneEntity*> collisionChildren;

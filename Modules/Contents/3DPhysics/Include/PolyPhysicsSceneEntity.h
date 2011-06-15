@@ -37,27 +37,71 @@ THE SOFTWARE.
 
 namespace Polycode {
 	
+	/**
+	* A wrapper around SceneEntity that provides physics information.
+	*/
 	class _PolyExport PhysicsSceneEntity : public CollisionSceneEntity {
 	public:
 		PhysicsSceneEntity(SceneEntity *entity, int type, Number mass, Number friction, Number restitution);
 		virtual ~PhysicsSceneEntity();
-		
-		SceneEntity *getSceneEntity();
 		virtual void Update();
-		void setFriction(Number friction);
-		
+				
+			/** @name Physics scene entity
+			*  Public methods
+			*/
+			//@{			
+				
+		SceneEntity *getSceneEntity();
+		void setFriction(Number friction);		
 		int getType() { return type; }	
+			//@}
+			// ----------------------------------------------------------------------------------------------------------------
+			
+			
 		
-		
-		static const int SHAPE_BOX = 0;
+	/**
+		* Box shape
+		*/
+		static const int SHAPE_BOX = 0;		
+		/**
+		* Terrain shape
+		*/		
 		static const int SHAPE_TERRAIN = 1;
+		
+		/**
+		* Sphere shape
+		*/		
 		static const int SHAPE_SPHERE = 2;	
+		
+		/**
+		* Mesh shape
+		*/		
 		static const int SHAPE_MESH = 3;			
+		
+		/**
+		* Character controller shape
+		*/				
 		static const int CHARACTER_CONTROLLER = 4;
+		
+		/**
+		* Capsule shape
+		*/						
 		static const int SHAPE_CAPSULE = 5;		
+		
+		/**
+		* Plane shape
+		*/								
 		static const int SHAPE_PLANE = 6;
+		
+		/**
+		* Cone shape
+		*/										
 		static const int SHAPE_CONE = 7;
-		static const int SHAPE_CYLINDER = 8;						
+		
+		/**
+		* Cylinder shape
+		*/												
+		static const int SHAPE_CYLINDER = 8;
 
 		
 		bool enabled;
@@ -69,15 +113,27 @@ namespace Polycode {
 		Number mass;
 	};
 	
-	
+	/**
+	* A Physics character controller.
+	*/
 	class _PolyExport PhysicsCharacter : public PhysicsSceneEntity {
 		public:
 			PhysicsCharacter(SceneEntity *entity, Number mass, Number friction, Number stepSize);
 			virtual ~PhysicsCharacter();
 	
+			virtual void Update();
+				
+			/** @name Physics character
+			*  Public methods
+			*/
+			//@{			
+	
 			void setWalkDirection(Vector3 direction);
 			void jump();
-			virtual void Update();
+		
+			//@}
+			// ----------------------------------------------------------------------------------------------------------------
+		
 		
 			btKinematicCharacterController *character;
 			btPairCachingGhostObject *ghostObject;
@@ -86,15 +142,34 @@ namespace Polycode {
 		protected:
 	};
 	
+	/**
+	* Physics vehicle wheel info.
+	*/
 	class PhysicsVehicleWheelInfo {
 		public:
+			/**
+			* Wheel index.
+			*/
 			unsigned int wheelIndex;
+			
+			/**
+			* Wheel scene entity.
+			*/			
 			SceneEntity *wheelEntity;
 	};
 	
+	/**
+	* A physics vehicle controller.
+	*/
 	class _PolyExport PhysicsVehicle : public PhysicsSceneEntity {
 		public:
+				
 			PhysicsVehicle(SceneEntity *entity, Number mass, Number friction, btDefaultVehicleRaycaster *rayCaster);
+
+			/** @name Physics vehicle
+			*  Public methods
+			*/
+			//@{			
 
 			void addWheel(SceneEntity *entity, Vector3 connection, Vector3 direction, Vector3 axle, Number suspentionRestLength, Number wheelRadius, bool isFrontWheel,Number suspensionStiffness = 20.0f, Number suspensionDamping = 1.0f, Number suspensionCompression = 4.0f, Number wheelFriction = 10000.0f, Number rollInfluence = 0.05f);
 			void applyEngineForce(Number force, unsigned int wheelIndex);
@@ -102,6 +177,10 @@ namespace Polycode {
 			void setBrake(Number value, unsigned int wheelIndex);
 			
 			void ResetVehicle();
+
+			//@}
+			// ----------------------------------------------------------------------------------------------------------------
+
 
 			void Update();
 			virtual ~PhysicsVehicle();

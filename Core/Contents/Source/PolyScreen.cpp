@@ -42,6 +42,7 @@ Screen::~Screen() {
 	for(int i=0; i<children.size();i++) {
 		//	delete children[i];
 	}
+	CoreServices::getInstance()->getScreenManager()->removeScreen(this);	
 }
 
 void Screen::setNormalizedCoordinates(bool newVal, Number yCoordinateSize) {

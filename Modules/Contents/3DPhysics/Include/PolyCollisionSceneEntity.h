@@ -30,14 +30,30 @@ THE SOFTWARE.
 
 namespace Polycode {
 
+	/**
+	* A wrapped around SceneEntity that provides collision information.
+	*/
 	class _PolyExport CollisionSceneEntity {
 		public:
+			/**
+			* Main constructor.
+			*/ 
 			CollisionSceneEntity(SceneEntity *entity, bool autoCollide, int type);
 			~CollisionSceneEntity();
 			
-			SceneEntity *getSceneEntity();
-			virtual void Update();
+			/** @name Collision scene entity
+			*  Public methods
+			*/
+			//@{			
+			
+			SceneEntity *getSceneEntity();			
+			
 			int getType() { return type; }
+						
+			//@}
+			// ----------------------------------------------------------------------------------------------------------------
+			
+			virtual void Update();
 		
 			btConvexShape *getConvexShape(){ return convexShape; }
 					
@@ -52,14 +68,48 @@ namespace Polycode {
 		
 			Vector3 lastPosition;
 		
-		static const int SHAPE_BOX = 0;
+		/**
+		* Box shape
+		*/
+		static const int SHAPE_BOX = 0;		
+		/**
+		* Terrain shape
+		*/		
 		static const int SHAPE_TERRAIN = 1;
+		
+		/**
+		* Sphere shape
+		*/		
 		static const int SHAPE_SPHERE = 2;	
+		
+		/**
+		* Mesh shape
+		*/		
 		static const int SHAPE_MESH = 3;			
+		
+		/**
+		* Character controller shape
+		*/				
 		static const int CHARACTER_CONTROLLER = 4;
+		
+		/**
+		* Capsule shape
+		*/						
 		static const int SHAPE_CAPSULE = 5;		
+		
+		/**
+		* Plane shape
+		*/								
 		static const int SHAPE_PLANE = 6;
+		
+		/**
+		* Cone shape
+		*/										
 		static const int SHAPE_CONE = 7;
+		
+		/**
+		* Cylinder shape
+		*/												
 		static const int SHAPE_CYLINDER = 8;
 						
 			bool enabled;

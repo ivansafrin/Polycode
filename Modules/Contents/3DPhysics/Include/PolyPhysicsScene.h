@@ -34,12 +34,24 @@ using std::vector;
 
 namespace Polycode {
 
+	/**
+	* A scene subclass that simulates physics for its children.
+	*/
 	class _PolyExport PhysicsScene : public CollisionScene {
 	public:
+		/**
+		* Main constructor.
+		*/
 		PhysicsScene();
 		virtual ~PhysicsScene();	
 		
 		void Update();		
+		
+			/** @name Physics scene
+			*  Public methods
+			*/
+			//@{			
+		
 		
 		PhysicsSceneEntity *addPhysicsChild(SceneEntity *newEntity, int type=0, Number mass = 0.0f, Number friction=1, Number restitution=0, int group=1);		
 		PhysicsSceneEntity *trackPhysicsChild(SceneEntity *newEntity, int type=0, Number mass = 0.0f, Number friction=1, Number restitution=0, int group=1);		
@@ -47,6 +59,8 @@ namespace Polycode {
 		PhysicsCharacter *addCharacterChild(SceneEntity *newEntity, Number mass, Number friction, Number stepSize, int group  = 1);
 		
 		PhysicsVehicle *addVehicleChild(SceneEntity *newEntity, Number mass, Number friction, int group  = 1);
+			//@}
+			// ----------------------------------------------------------------------------------------------------------------
 
 		
 	protected:
