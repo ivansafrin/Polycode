@@ -26,6 +26,7 @@
 #include "PolyGlobals.h"
 #include "PolyCore.h"
 #include "PolyGLRenderer.h"
+#include "PolyGLSLShaderModule.h"
 #include <windows.h>
 #include <windowsx.h>
 #include <WinUser.h>

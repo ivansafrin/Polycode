@@ -25,8 +25,8 @@
 #include "PolyLogger.h"
 #include "PolyGlobals.h"
 #include <stdio.h>
-#include "al.h"
-#include "alc.h"
+#include "AL/al.h"
+#include "AL/alc.h"
 #include "PolyVector3.h"
 
 namespace Polycode {

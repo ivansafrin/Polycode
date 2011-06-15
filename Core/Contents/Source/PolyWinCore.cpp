@@ -69,6 +69,8 @@ Win32Core::Win32Core(PolycodeViewBase *view, int xRes, int yRes, bool fullScreen
 //	}
 
 	((OpenGLRenderer*)renderer)->initOSSpecific();
+
+	CoreServices::getInstance()->installModule(new GLSLShaderModule());	
 }
 
 Win32Core::~Win32Core() {

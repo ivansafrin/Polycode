@@ -27,7 +27,7 @@ using namespace Polycode;
 #define NORMAL_FT_FLAGS FT_LOAD_TARGET_LIGHT
 
 
-Label::Label(Font *font, String text, int size, int antiAliasMode) {
+Label::Label(Font *font, String text, int size, int antiAliasMode) : Image() {
 		setPixelType(Image::IMAGE_RGBA);
 		this->font = font;
 		this->size = size;

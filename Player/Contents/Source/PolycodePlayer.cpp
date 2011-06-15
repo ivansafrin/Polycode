@@ -405,12 +405,6 @@ void PolycodePlayer::loadFile(const char *fileName) {
 	Logger::log("Core created...\n");
 	
 	CoreServices::getInstance()->getResourceManager()->addArchive("api.pak");
-	CoreServices::getInstance()->getResourceManager()->addArchive("default.pak");
-	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
-	
-	
-	CoreServices::getInstance()->installModule(new GLSLShaderModule());	
-	
 	
 	if(configFile.root["packedItems"]) {
 		ObjectEntry *packed = configFile.root["packedItems"];
@@ -432,6 +426,10 @@ void PolycodePlayer::loadFile(const char *fileName) {
 	//core->addEventListener(this, Core::EVENT_CORE_RESIZE);
 	core->setVideoMode(xRes, yRes, fullScreen, aaLevel);
 		
+	CoreServices::getInstance()->getResourceManager()->addArchive("default.pak");
+	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
+
+
 //	dispatchEvent(event, PolycodeDebugEvent::EVENT_RESIZE);		
 	
 	CoreServices::getInstance()->getRenderer()->setClearColor(red, green, blue);

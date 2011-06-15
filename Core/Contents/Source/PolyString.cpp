@@ -136,13 +136,13 @@ String String::replace(const String &what, const String &withWhat) {
 
 String String::toLowerCase() {
 	wstring str = contents;
-	std::transform(str.begin(), str.end(), str.begin(),tolower);	
+	std::transform(str.begin(), str.end(), str.begin(),::tolower);	
 	return String(str);
 }
 
 String String::toUpperCase() {
 	wstring str = contents;
-	std::transform(str.begin(), str.end(), str.begin(),toupper);	
+	std::transform(str.begin(), str.end(), str.begin(),::toupper);	
 	return String(str);
 }
 
