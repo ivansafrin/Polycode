@@ -8,17 +8,17 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	core = new SDLCore(view, 640,480,false,0,90);	  
 #endif
 
-	CoreServices::getInstance()->getResourceManager()->addArchive("default.pak");
+	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
 
 	CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_NEAREST);
 
 	Scene *scene = new Scene();
-	SceneMesh *mesh = new SceneMesh("ninja.mesh");
-	mesh->loadTexture("ninja.png");
+	SceneMesh *mesh = new SceneMesh("Resources/ninja.mesh");
+	mesh->loadTexture("Resources/ninja.png");
 	scene->addEntity(mesh);
-	mesh->loadSkeleton("ninja.skeleton");
-	mesh->getSkeleton()->addAnimation("Run", "run.anim");
+	mesh->loadSkeleton("Resources/ninja.skeleton");
+	mesh->getSkeleton()->addAnimation("Run", "Resources/run.anim");
 	mesh->getSkeleton()->playAnimation("Run");
 
 	scene->getDefaultCamera()->setPosition(25,25,25);

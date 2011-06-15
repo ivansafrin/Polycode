@@ -8,12 +8,12 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	core = new SDLCore(view, 640,480,false,0,90);	  
 #endif
 
-	CoreServices::getInstance()->getResourceManager()->addArchive("default.pak");
+	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
 
 	CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_NEAREST);
 	Screen *screen = new Screen();
-	ScreenSprite *sprite = new ScreenSprite("sprite_sheet.png", 93, 78);
+	ScreenSprite *sprite = new ScreenSprite("Resources/sprite_sheet.png", 93, 78);
 	sprite->setPosition(350,150);
 	sprite->setScale(7,7);
 	screen->addChild(sprite);

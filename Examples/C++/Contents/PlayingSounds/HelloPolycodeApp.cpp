@@ -8,7 +8,7 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	core = new SDLCore(view, 640,480,false,0,90);	  
 #endif
 	
-	CoreServices::getInstance()->getResourceManager()->addArchive("default.pak");
+	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
 	
 	Screen *screen = new Screen();
@@ -16,7 +16,7 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	screen->addChild(label);
 		
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
-	testSound = new Sound("test.wav");
+	testSound = new Sound("Resources/test.wav");
 }
 
 void HelloPolycodeApp::handleEvent(Event *e) {

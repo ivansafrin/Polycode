@@ -8,7 +8,7 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	core = new SDLCore(view, 640,480,false,0,90);	  
 #endif
 
-	CoreServices::getInstance()->getResourceManager()->addArchive("default.pak");
+	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
 
 	Screen *hud = new Screen();
@@ -22,12 +22,12 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	scene = new PhysicsScene();
 
 	ScenePrimitive *ground = new ScenePrimitive(ScenePrimitive::TYPE_PLANE, 10, 10);
-	ground->loadTexture("green_texture.png");
+	ground->loadTexture("Resources/green_texture.png");
 	scene->addPhysicsChild(ground, PhysicsSceneEntity::SHAPE_PLANE, 0.0);
 
 	for(int i=0; i < 10; i++) {
 		ScenePrimitive *box = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 0.8,0.8,0.8);
-		box->loadTexture("pink_texture.png");
+		box->loadTexture("Resources/pink_texture.png");
 		box->Roll(-45 + (rand() % 90));
 		box->Pitch(-45 + (rand() % 90));		
 		box->setPosition(-2 + (rand() % 4), i*0.5, -2 + (rand() % 4));
@@ -35,7 +35,7 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	}
 
 	player = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 0.5,1.0,0.5);
-	player->loadTexture("pink_texture.png");
+	player->loadTexture("Resources/pink_texture.png");
 	player->setColor(1.0, 1.0, 0.0, 1.0);
 	player->setPosition(2,1,2);
 	playerController = scene->addCharacterChild(player, 10.0, 1.0, 0.5);	
@@ -44,7 +44,7 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	playerDirection = 0;
 	
 	testBox = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 2, 2, 2);
-	testBox->loadTexture("pink_texture.png");
+	testBox->loadTexture("Resources/pink_texture.png");
 	testBox->setColor(0.3,0.5, 1.0,0.4);
 	testBox->setPosition(2,1,-2);
 	scene->addCollisionChild(testBox, PhysicsSceneEntity::SHAPE_BOX);

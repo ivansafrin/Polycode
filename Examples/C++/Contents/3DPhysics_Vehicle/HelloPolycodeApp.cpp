@@ -8,7 +8,7 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	core = new SDLCore(view, 640,480,false,0,90);	  
 #endif
 
-	CoreServices::getInstance()->getResourceManager()->addArchive("default.pak");
+	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
 
 	Screen *hud = new Screen();
@@ -19,7 +19,7 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	scene = new PhysicsScene();
 
 	ScenePrimitive *ground = new ScenePrimitive(ScenePrimitive::TYPE_PLANE, 30, 30);
-	ground->loadTexture("green_texture.png");
+	ground->loadTexture("Resources/green_texture.png");
 	scene->addPhysicsChild(ground, PhysicsSceneEntity::SHAPE_PLANE, 0.0);
 
 	// Some obstacles	
@@ -27,25 +27,25 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	box->setPitch(25.0);
 	box->setPosition(7,-1.05, 0.0);
 	box->setColor(0.5,0.5,1.0,1.0);
-	box->loadTexture("green_texture.png");
+	box->loadTexture("Resources/green_texture.png");
 	scene->addPhysicsChild(box, PhysicsSceneEntity::SHAPE_BOX, 0.0);
 
 	box = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 4,4,6);	
 	box->setPitch(25.0);
 	box->setPosition(-7,-1.05, 0.0);
 	box->setColor(0.5,0.5,1.0,1.0);
-	box->loadTexture("green_texture.png");
+	box->loadTexture("Resources/green_texture.png");
 	scene->addPhysicsChild(box, PhysicsSceneEntity::SHAPE_BOX, 0.0);
 
 	box = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 20,2,5);	
 	box->setPosition(0.0,1.0, -4.3);
 	box->setColor(0.5,0.5,1.0,1.0);
-	box->loadTexture("green_texture.png");
+	box->loadTexture("Resources/green_texture.png");
 	scene->addPhysicsChild(box, PhysicsSceneEntity::SHAPE_BOX, 0.0);
 
 	for(int i=0; i < 10; i++) {
 		ScenePrimitive *box = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 0.7,0.7,0.7);
-		box->loadTexture("pink_texture.png");
+		box->loadTexture("Resources/pink_texture.png");
 		box->Roll(-45 + (rand() % 90));
 		box->Pitch(-45 + (rand() % 90));		
 		box->setPosition(-3 + (rand() % 6), 2 + i*0.5, -5 + (rand() % 3));
@@ -54,31 +54,31 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 
 	// The vehicle
 	vehicle = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 1.0,0.5,2.0);
-	vehicle->loadTexture("pink_texture.png");
+	vehicle->loadTexture("Resources/pink_texture.png");
 	vehicle->setColor(1.0, 1.0, 0.0, 1.0);
 	vehicle->setPosition(6,1,5);
 	vehicleController = scene->addVehicleChild(vehicle, 5.0, 1.0);
 	
 	ScenePrimitive *wheel = new ScenePrimitive(ScenePrimitive::TYPE_SPHERE, 0.3, 10, 10);
-	wheel->loadTexture("pink_texture.png");
+	wheel->loadTexture("Resources/pink_texture.png");
 	wheel->setColor(0.0, 1.0, 0.0, 1.0);
 	vehicleController->addWheel(wheel, Vector3(0.6,0,-0.5), Vector3(0,-1,0), Vector3(-1,0,0), 0.2,  0.3, true);
 	scene->addEntity(wheel);
 
 	wheel = new ScenePrimitive(ScenePrimitive::TYPE_SPHERE, 0.3, 10, 10);
-	wheel->loadTexture("pink_texture.png");
+	wheel->loadTexture("Resources/pink_texture.png");
 	wheel->setColor(0.0, 1.0, 0.0, 1.0);
 	vehicleController->addWheel(wheel, Vector3(-0.6,0,-0.5), Vector3(0,-1,0), Vector3(-1,0,0), 0.2,  0.3, true);
 	scene->addEntity(wheel);
 
 	wheel = new ScenePrimitive(ScenePrimitive::TYPE_SPHERE, 0.3, 10, 10);
-	wheel->loadTexture("pink_texture.png");
+	wheel->loadTexture("Resources/pink_texture.png");
 	wheel->setColor(0.0, 1.0, 0.0, 1.0);
 	vehicleController->addWheel(wheel, Vector3(0.6,0,0.5), Vector3(0,-1,0), Vector3(-1,0,0), 0.2,  0.3, false);
 	scene->addEntity(wheel);
 
 	wheel = new ScenePrimitive(ScenePrimitive::TYPE_SPHERE, 0.3, 10, 10);
-	wheel->loadTexture("pink_texture.png");
+	wheel->loadTexture("Resources/pink_texture.png");
 	wheel->setColor(0.0, 1.0, 0.0, 1.0);
 	vehicleController->addWheel(wheel, Vector3(-0.6,0,0.5), Vector3(0,-1,0), Vector3(-1,0,0), 0.2,  0.3, false);
 	scene->addEntity(wheel);
@@ -88,7 +88,7 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	breaking = false;
 	
 	testBox = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 4, 4, 4);
-	testBox->loadTexture("pink_texture.png");
+	testBox->loadTexture("Resources/pink_texture.png");
 	testBox->setColor(0.3,0.5, 1.0,0.4);
 	testBox->setPosition(-5,2,7);
 	scene->addCollisionChild(testBox, PhysicsSceneEntity::SHAPE_BOX);

@@ -8,13 +8,13 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 	core = new SDLCore(view, 640,480,false,0,90);	  
 #endif
 	
-	CoreServices::getInstance()->getResourceManager()->addArchive("default.pak");
+	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);	
 
 	Screen *screen = new Screen();
 	
 	sourceEntity = new ScreenEntity();
-	ScreenSound *testSound = new ScreenSound("test.wav", 200, 600);
+	ScreenSound *testSound = new ScreenSound("Resources/test.wav", 200, 600);
 	testSound->getSound()->Play(true);
 	sourceEntity->addChild(testSound);
 	ScreenShape *soundShape = new ScreenShape(ScreenShape::SHAPE_CIRCLE, 20,20,10);

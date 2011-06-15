@@ -8,7 +8,7 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 	core = new SDLCore(view, 640,480,false,0,90);	  
 #endif
 
-	CoreServices::getInstance()->getResourceManager()->addArchive("default.pak");
+	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
 
 	Screen *screen = new Screen();			

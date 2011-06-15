@@ -8,11 +8,11 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 	core = new SDLCore(view, 640,480,false,0,90);	  
 #endif
 
-	CoreServices::getInstance()->getResourceManager()->addArchive("default.pak");
+	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
 	
 	Screen *screen = new Screen();	
-	ScreenParticleEmitter *emitter = new ScreenParticleEmitter("particle.png", screen,
+	ScreenParticleEmitter *emitter = new ScreenParticleEmitter("Resoruces/particle.png", screen,
 		 Particle::BILLBOARD_PARTICLE, ParticleEmitter::CONTINUOUS_EMITTER, 4, 200,
 		Vector3(0.0,-50.0,0.0), Vector3(0.0,0.0,0.0), Vector3(20.5, 40.0, 0.0));
 	

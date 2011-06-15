@@ -8,16 +8,16 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 	core = new SDLCore(view, 640,480,false,0,90);	  
 #endif
 
-	CoreServices::getInstance()->getResourceManager()->addArchive("default.pak");
+	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
 
 	Scene *scene = new Scene();
 	ScenePrimitive *ground = new ScenePrimitive(ScenePrimitive::TYPE_PLANE, 5,5);
-	ground->loadTexture("green_texture.png");
+	ground->loadTexture("Resources/green_texture.png");
 	scene->addEntity(ground);
 
 	ScenePrimitive *box = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 1,1,1);
-	box->loadTexture("pink_texture.png");
+	box->loadTexture("Resources/pink_texture.png");
 	box->setPosition(0.0, 0.5, 0.0);
 	scene->addEntity(box);
 	

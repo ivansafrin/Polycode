@@ -8,7 +8,7 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	core = new SDLCore(view, 640,480,false,0,90);	  
 #endif
 	
-	CoreServices::getInstance()->getResourceManager()->addArchive("default.pak");
+	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);	
 
 	screen = new PhysicsScreen(10, 60);		
@@ -23,7 +23,7 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 		shape->setPosition(rand() % 640, rand() % 300);
 		screen->addPhysicsChild(shape, PhysicsScreenEntity::ENTITY_RECT, false);		
 	}
-	collisionSound = new Sound("hit.wav");
+	collisionSound = new Sound("Resources/hit.wav");
 	screen->addEventListener(this, PhysicsScreenEvent::EVENT_NEW_SHAPE_COLLISION);
 }
 

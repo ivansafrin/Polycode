@@ -8,12 +8,12 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	core = new SDLCore(view, 640,480,false,0,90);	  
 #endif
 
-	CoreServices::getInstance()->getResourceManager()->addArchive("default.pak");
+	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
 
 	Screen *screen = new Screen();			
 	for(Number i=0; i < 10; i++) {
-		ScreenImage *image = new ScreenImage("polycode_logo.png");
+		ScreenImage *image = new ScreenImage("Resources/polycode_logo.png");
 		screen->addChild(image);	
 		image->setPosition(160+(42*i), 230);
 		image->setPositionMode(ScreenEntity::POSITION_CENTER);

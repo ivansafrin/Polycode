@@ -8,7 +8,7 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 	core = new SDLCore(view, 640,480,false,0,90);	  
 #endif
 
-	CoreServices::getInstance()->getResourceManager()->addArchive("default.pak");
+	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
 
 	Screen *hud = new Screen();
@@ -18,21 +18,21 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 	scene = new CollisionScene();
 
 	ScenePrimitive *ground = new ScenePrimitive(ScenePrimitive::TYPE_PLANE, 10, 10);
-	ground->loadTexture("green_texture.png");
+	ground->loadTexture("Resources/green_texture.png");
 	scene->addEntity(ground);
 
 	box = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 1,1,1);
-	box->loadTexture("pink_texture.png");
+	box->loadTexture("Resources/pink_texture.png");
 	box->setPosition(0,1,0);
 	scene->addCollisionChild(box, CollisionSceneEntity::SHAPE_MESH);
 
 	box = new ScenePrimitive(ScenePrimitive::TYPE_CONE, 1,1,10);
-	box->loadTexture("pink_texture.png");
+	box->loadTexture("Resources/pink_texture.png");
 	box->setPosition(1,1,2);
 	scene->addCollisionChild(box, CollisionSceneEntity::SHAPE_CONE);
 
 	box = new ScenePrimitive(ScenePrimitive::TYPE_CYLINDER, 2,0.5,10);
-	box->loadTexture("pink_texture.png");
+	box->loadTexture("Resources/pink_texture.png");
 	box->setPosition(2,1,-1);
 	scene->addCollisionChild(box, CollisionSceneEntity::SHAPE_CYLINDER);
 

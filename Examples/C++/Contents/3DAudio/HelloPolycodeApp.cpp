@@ -8,13 +8,13 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 	core = new SDLCore(view, 640,480,false,0,90);	  
 #endif
 	
-	CoreServices::getInstance()->getResourceManager()->addArchive("default.pak");
+	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);	
 
 	Scene *scene = new Scene();
 	
 	sourceEntity = new SceneEntity();
-	SceneSound *testSound = new SceneSound("test.wav", 20, 50);
+	SceneSound *testSound = new SceneSound("Resources/test.wav", 20, 50);
 	testSound->getSound()->Play(true);
 	sourceEntity->addChild(testSound);
 	ScenePrimitive *soundShape = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 1,1,1);

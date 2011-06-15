@@ -8,13 +8,13 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	core = new SDLCore(view, 640,480,false,0,90);	  
 #endif
 
-	CoreServices::getInstance()->getResourceManager()->addArchive("default.pak");
+	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
 
 	gameScreen = new Screen();	
 
 	Screen *hudScreen = new Screen();
-	ScreenLabel *label = new ScreenLabel("Example client.  Connecting.... Press escape to exit.", 16);
+	ScreenLabel *label = new ScreenLabel("Example client.  Press escape to exit.", 16);
 	hudScreen->addChild(label);
 	
 	motdLabel =  new ScreenLabel("", 16);
@@ -31,8 +31,7 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	core->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 	core->getInput()->addEventListener(this, InputEvent::EVENT_KEYUP);
 	
-//	client->Connect("127.0.0.1", 52345);
-	client->Connect("192.168.2.3", 52345);
+	client->Connect("127.0.0.1", 52345);
 	state = 0;
 }	
 

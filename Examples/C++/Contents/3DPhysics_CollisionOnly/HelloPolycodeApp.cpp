@@ -8,22 +8,22 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 	core = new SDLCore(view, 640,480,false,0,90);	  
 #endif
 
-	CoreServices::getInstance()->getResourceManager()->addArchive("default.pak");
+	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
 
 	scene = new CollisionScene();
 
 	ScenePrimitive *ground = new ScenePrimitive(ScenePrimitive::TYPE_PLANE, 10, 10);
-	ground->loadTexture("green_texture.png");
+	ground->loadTexture("Resources/green_texture.png");
 	scene->addEntity(ground);
 
 	box = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 0.5,0.5,0.5);
-	box->loadTexture("pink_texture.png");
+	box->loadTexture("Resources/pink_texture.png");
 	box->setPosition(0,1,0);
 	scene->addCollisionChild(box, CollisionSceneEntity::SHAPE_BOX);
 
 	bigBox = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 2,2,2);
-	bigBox->loadTexture("pink_texture.png");
+	bigBox->loadTexture("Resources/pink_texture.png");
 	bigBox->setColor(0.0,1.0,1.0,0.5);
 	bigBox->setPosition(0,1,0);
 	scene->addCollisionChild(bigBox, CollisionSceneEntity::SHAPE_BOX);
