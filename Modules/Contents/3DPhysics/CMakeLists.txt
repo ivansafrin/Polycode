@@ -16,7 +16,7 @@ SET(polycode3DPhysics_HDRS
 )
 
 INCLUDE_DIRECTORIES(
-    ${BULLET_INCLUDE_DIRS}
+    ${BULLET_INCLUDE_DIR}
     Include
 )
 

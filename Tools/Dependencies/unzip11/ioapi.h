@@ -40,13 +40,13 @@
         #endif
 #endif
 
-#define fopen64 fopen
-#define ftello64 ftello
-#define fseeko64 fseeko
-
 #include <stdio.h>
 #include <stdlib.h>
 #include "zlib.h"
+
+#define fopen64 fopen
+#define ftello64 ftello
+#define fseeko64 fseeko
 
 #if defined(USE_FILE32API)
 #define fopen64 fopen
