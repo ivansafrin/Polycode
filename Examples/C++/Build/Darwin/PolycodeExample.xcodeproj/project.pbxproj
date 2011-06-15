@@ -2848,7 +2848,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources/* \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
 		6D11ABF913F723D800898F64 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2861,7 +2861,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources/* \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
 		6D180D8F13EC8AB700103604 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2874,7 +2874,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources/* \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
 		6D180DB213EC8C9D00103604 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2887,7 +2887,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources/* \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
 		6D180DD513EC8D1900103604 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2900,7 +2900,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources/* \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
 		6D180DF813EC8DB500103604 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2913,7 +2913,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources/* \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
 		6D180E2313EF01B500103604 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2926,7 +2926,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources/* \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
 		6D180E5713EF281300103604 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2939,7 +2939,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources/* \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
 		6D180E7D13EF4F4300103604 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2952,7 +2952,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources/* \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
 		6D180EDF13EF795500103604 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2965,7 +2965,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources/* \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
 		6D180F0613EF9F0500103604 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2978,7 +2978,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources/* \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
 		6D180F4C13F0658400103604 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2991,7 +2991,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources/* \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
 		6D4F9EA313EA062700D1590C /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3004,7 +3004,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources/* \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
 		6D5E8DBD13E9FF530008A6B3 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3017,7 +3017,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources/* \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
 		6D6EBF4613EBD6BB00FCEA29 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3030,7 +3030,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources/* \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
 		6D6EBF6813EBE2A800FCEA29 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3043,7 +3043,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources/* \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
 		6D6EBF9013EC52B400FCEA29 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3056,7 +3056,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources/* \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
 		6D6EBFB113EC54C700FCEA29 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3069,7 +3069,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources/* \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
 		6D6EBFD213EC55E800FCEA29 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3082,7 +3082,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources/* \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
 		6D6EBFF313EC573100FCEA29 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3095,7 +3095,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources/* \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
 		6D6EC01413EC5E4F00FCEA29 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3108,7 +3108,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources/* \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
 		6D6EC03513EC5F1E00FCEA29 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3121,7 +3121,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources/* \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
 		6D6EC05613EC7AA000FCEA29 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3134,7 +3134,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources/* \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
 		6D6EC07713EC833B00FCEA29 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3147,7 +3147,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources/* \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
 		6DB7CE0513E8B75A00398A04 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3160,7 +3160,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources/* \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
 		6DE0EE2113E8BA5400A0842D /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3173,7 +3173,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources/* \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
 		6DE0EE4D13E913F600A0842D /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3186,7 +3186,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources/* \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
 		6DE0EE6F13E9174600A0842D /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3199,7 +3199,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources/* \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
 		6DE0EE9013E91AFA00A0842D /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3212,7 +3212,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources/* \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
 		6DE0EEB213E91C6200A0842D /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3225,7 +3225,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources/* \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
 		6DE0EED313E91E6100A0842D /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3238,7 +3238,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources/* \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
 		6DE0EEF413E91F9F00A0842D /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3251,7 +3251,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources/* \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -4806,6 +4806,7 @@
 					"\"$(SRCROOT)/../../Core/Dependencies/include\"",
 					"\"$(SRCROOT)/../../Modules/include\"",
 					"\"$(SRCROOT)/../../Modules/Dependencies/include\"",
+					"\"$(SRCROOT)/../../Modules/Dependencies/include/bullet\"",
 					"\"$(SRCROOT)/Contents\"",
 				);
 				LIBRARY_SEARCH_PATHS = (
@@ -4839,6 +4840,7 @@
 					"\"$(SRCROOT)/../../Core/Dependencies/include\"",
 					"\"$(SRCROOT)/../../Modules/include\"",
 					"\"$(SRCROOT)/../../Modules/Dependencies/include\"",
+					"\"$(SRCROOT)/../../Modules/Dependencies/include/bullet\"",
 					"\"$(SRCROOT)/Contents\"",
 				);
 				LIBRARY_SEARCH_PATHS = (
