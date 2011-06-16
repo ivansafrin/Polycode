@@ -165,7 +165,12 @@ extern "C" {
 			GetLongPathNameW(_tempPath, tempPath, 4098);
 			String moduleDestPath = String(tempPath) + String("\\") + moduleName+ String(".dll");
 #else
+
+	#ifdef APPLE
 			String moduleDestPath = String("/tmp/") + moduleName+ String(".dylib");
+	#else
+			String moduleDestPath = String("/tmp/") + moduleName+ String(".so");
+	#endif
 #endif
 			String moduleLoadCall = String("luaopen_") + moduleName;
 			lua_getfield(L, LUA_GLOBALSINDEX, "require");
@@ -357,8 +362,13 @@ void PolycodePlayer::loadFile(const char *fileName) {
 			String moduleFileName = String("__lib/win/") + moduleName+ String(".dll");
 
 #else
+	#ifdef APPLE
 				String moduleFileName = String("__lib/osx/") + moduleName+ String(".dylib");
 				String moduleDestPath = String("/tmp/") + moduleName+ String(".dylib");
+	#else
+				String moduleFileName = String("__lib/linux/") + moduleName+ String(".so");
+				String moduleDestPath = String("/tmp/") + moduleName+ String(".so");
+	#endif
 #endif				
 				OSFILE *inFile = OSBasics::open(moduleFileName, "rb");	
 				if(inFile) {
