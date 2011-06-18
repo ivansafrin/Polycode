@@ -99,9 +99,12 @@ perform the following steps in the Polycode directory from a terminal:
 
 ### Notes ###
 
-The Polycode CMake build will look for dependencies installed on the 
-system and by the above dependency build step. The only exception to
-this is SDL for the Linux build, which you must manually install.
+The Polycode CMake build will look for dependencies installed as
+static libraries in the Release folder by the above
+dependency build step. It will not use system level versions
+of these libraries, even if you have them installed. The only exception to
+this is SDL for the Linux build, which you must manually install on
+the system level.
 
 If you want to build documentation, you must have Doxygen installed 
 and in your run path. You can get Doxygen from http://www.doxygen.org
