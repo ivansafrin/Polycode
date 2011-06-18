@@ -182,6 +182,66 @@ foreach(xib ${PolycodePlayerStandalone_XIBS})
                       COMMENT "Compiling ${Polycode_SOURCE_DIR}/Player/Contents/Platform/Darwin/Standalone/${xib}.xib")
 
 endforeach()
+ELSE(MSVC)
+
+ SET(polycodeplayer_SRCS 
+        Source/PolycodePlayer.cpp
+        Source/PolycodeLinuxPlayer.cpp
+        Platform/Linux/main.cpp
+    )
+
+    SET(polycodeplayer_HDRS 
+        Include/PolycodePlayer.h
+        Include/PolycodeLinuxPlayer.h
+    )
+  
+    SET(polycodeplayerstandalone_SRCS 
+        Source/PolycodePlayer.cpp
+        Source/PolycodeLinuxPlayer.cpp
+        Platform/Linux/Standalone/main.cpp
+    )
+    SET(polycodeplayerstandalone_HDRS 
+        Include/PolycodePlayer.h
+        Include/PolycodeLinuxPlayer.h
+    )
+ 
+    INCLUDE_DIRECTORIES(Include)
+ 
+    ADD_EXECUTABLE(PolycodePlayer ${polycodeplayer_SRCS} ${polycodeplayer_HDRS})
+    ADD_EXECUTABLE(StandalonePlayer ${polycodeplayerstandalone_SRCS} ${polycodeplayerstandalone_HDRS})
+    
+
+    TARGET_LINK_LIBRARIES(PolycodePlayer 
+        PolycodeLua 
+        Polycore 
+        ${LUA_LIBRARY}
+        ${OPENGL_LIBRARIES}
+        ${OPENAL_LIBRARY}
+        ${PNG_LIBRARIES}
+        ${FREETYPE_LIBRARIES}
+        ${PHYSFS_LIBRARY}
+        ${OGG_LIBRARY}
+        ${VORBIS_LIBRARY}
+        ${VORBISFILE_LIBRARY}
+        ${SDL_LIBRARY}
+     )
+
+    TARGET_LINK_LIBRARIES(StandalonePlayer 
+        PolycodeLua 
+        Polycore 
+        ${LUA_LIBRARY}
+        ${OPENGL_LIBRARIES}
+        ${OPENAL_LIBRARY}
+        ${PNG_LIBRARIES}
+        ${FREETYPE_LIBRARIES}
+        ${PHYSFS_LIBRARY}
+        ${OGG_LIBRARY}
+        ${VORBIS_LIBRARY}
+        ${VORBISFILE_LIBRARY}
+        ${SDL_LIBRARY}
+     )
+
+    
 
 ENDIF(MSVC)
 
@@ -197,6 +257,19 @@ IF(POLYCODE_INSTALL_PLAYER)
 
     INSTALL(TARGETS StandalonePlayer 
         DESTINATION Player)
+
+IF(MSVC)
+    INSTALL(FILES "${Polycode_SOURCE_DIR}/Assets/Default\ asset\ pack/default.pak" DESTINATION Player)
+    INSTALL(FILES "${Polycode_SOURCE_DIR}/Assets/Default\ asset\ pack/hdr.pak" DESTINATION Player)
+    INSTALL(FILES "${Polycode_SOURCE_DIR}/Assets/SamplePolyapp/main.polyapp" DESTINATION Player)
+    INSTALL(FILES "${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/API/api.pak" DESTINATION Player)
+ELSEIF(APPLE)
+ELSE(MSVC)
+    INSTALL(FILES "${Polycode_SOURCE_DIR}/Assets/Default\ asset\ pack/default.pak" DESTINATION Player)
+    INSTALL(FILES "${Polycode_SOURCE_DIR}/Assets/Default\ asset\ pack/hdr.pak" DESTINATION Player)
+    INSTALL(FILES "${Polycode_SOURCE_DIR}/Assets/SamplePolyapp/main.polyapp" DESTINATION Player)
+    INSTALL(FILES "${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/API/api.pak" DESTINATION Player)
+ENDIF(MSVC)
 
 #    ENDIF()
 ENDIF(POLYCODE_INSTALL_PLAYER)
