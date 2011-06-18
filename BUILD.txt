@@ -97,8 +97,15 @@ perform the following steps in the Polycode directory from a terminal:
     
 ## Building Polycode ##
 
+### Notes ###
+
 The Polycode CMake build will look for dependencies installed on the 
-system and by the above dependency build step.
+system and by the above dependency build step. The only exception to
+this is SDL for the Linux build, which you must manually install.
+
+If you want to build documentation, you must have Doxygen installed 
+and in your run path. You can get Doxygen from http://www.doxygen.org
+or install it using a package manager. 
 
 ### Mac OS X and Xcode ###
 
