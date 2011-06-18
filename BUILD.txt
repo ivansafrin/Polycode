@@ -163,6 +163,13 @@ templates and examples that will build out of the box.
 
 ## Building Polycode Lua ##
 
+Note: To build a complete distribution of the standalone Lua tools
+as it appears in the binary release, you will need to build it on all
+supported platforms and copy the module libraries and deployment
+templates from all three into the folder. If you do not have access
+to all the supported platforms, you will not be able to build a complete
+distribution!
+
 To build Polycode Lua, you need to build the bindings and the player,
 which are disabled by default. To do this, you need to add a couple
 of variables to the cmake commands above. To build the bindings, you
@@ -186,7 +193,7 @@ following commands in the Polycode source root:
     cmake -G "Unix Makefiles" ..
     make install
 
-This will create a Release/<YourArchitecture>/Standalone folder with the
+This will create a Release/YourArchitecture/Standalone folder with the
 same structure as the binary Polycode Lua release.
 
 ### Windows ###
@@ -201,6 +208,13 @@ This will create a Standalone.sln solution in the Build directory. Build the
 
 This will create a Release/Windows/Standalone folder with the
 same structure as the binary Polycode Lua release.
+
+### Final steps ###
+
+Since the standalone Lua distribution is supposed to compile packages for
+all platforms, you need to do this build step on all of the platforms and
+merge the Standalone/Modules and Standalone/Publish folders with the one
+you just built.
 
 ## TODO ##
 
