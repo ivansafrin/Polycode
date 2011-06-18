@@ -35,12 +35,16 @@ SET(CMAKE_DEBUG_POSTFIX "_d")
 
 SET_TARGET_PROPERTIES(Physics3D PROPERTIES PREFIX "")
 
+IF(MSVC)
+ELSEIF(APPLE)
+    SET(EXTRA_LIBS "-framework Cocoa" "-frameword IOKit")
+ELSE(MSVC)
+ENDIF(MSVC)
+
 TARGET_LINK_LIBRARIES(Physics3D
 	Polycore
 	${LUA_LIBRARY}
 	${BULLET_LIBRARIES}
-        "-framework Cocoa"
-        "-framework IOKit"
         ${OPENGL_LIBRARIES}
         ${OPENAL_LIBRARY}
         ${PNG_LIBRARIES}

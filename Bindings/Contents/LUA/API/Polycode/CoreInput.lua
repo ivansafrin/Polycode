@@ -7,23 +7,8 @@ class "CoreInput" (EventDispatcher)
 MOUSE_BUTTON1 = 0
 MOUSE_BUTTON2 = 1
 MOUSE_BUTTON3 = 2
-function CoreInput:__index__(name)
-	if name == "PolyCore" then
-		retVal = Polycore.CoreInput_get_PolyCore(self.__ptr)
-		if Polycore.__ptr_lookup[retVal] ~= nil then
-			return Polycore.__ptr_lookup[retVal]
-		else
-			Polycore.__ptr_lookup[retVal] = friend class("__skip_ptr__")
-			Polycore.__ptr_lookup[retVal].__ptr = retVal
-			return Polycore.__ptr_lookup[retVal]
-		end
-	end
-end
 
 
-function CoreInput:__set_callback(name,value)
-	return false
-end
 
 
 function CoreInput:CoreInput(...)
