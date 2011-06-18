@@ -64,6 +64,7 @@ THE SOFTWARE.
 #elif defined(__APPLE__) && defined(__MACH__)
 	#define PLATFORM PLATFORM_MAC
 #else
+	#include <cstddef>
 	#define PLATFORM PLATFORM_UNIX
 #endif
 
