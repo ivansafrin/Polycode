@@ -231,6 +231,9 @@ IF(POLYCODE_INSTALL_FRAMEWORK)
     IF(APPLE)
         INSTALL(FILES "PolycodeView/Mac OS X/PolycodeView.h" "PolycodeView/Mac OS X/PolycodeView.mm"
             DESTINATION "Core/PolycodeView")
+    ELSE(APPLE)
+        INSTALL(FILES "PolycodeView/Linux/PolycodeView.h" "PolycodeView/Linux/PolycodeView.cpp"
+            DESTINATION "Core/PolycodeView")
     ENDIF(APPLE)
 
     # install libraries

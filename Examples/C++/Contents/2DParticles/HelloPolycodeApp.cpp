@@ -12,7 +12,7 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
 	
 	Screen *screen = new Screen();	
-	ScreenParticleEmitter *emitter = new ScreenParticleEmitter("Resoruces/particle.png", screen,
+	ScreenParticleEmitter *emitter = new ScreenParticleEmitter("Resources/particle.png", screen,
 		 Particle::BILLBOARD_PARTICLE, ParticleEmitter::CONTINUOUS_EMITTER, 4, 200,
 		Vector3(0.0,-50.0,0.0), Vector3(0.0,0.0,0.0), Vector3(20.5, 40.0, 0.0));
 	

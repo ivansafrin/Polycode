@@ -15,6 +15,11 @@ EVENT_MOUSEWHEEL_UP = 7
 EVENT_MOUSEWHEEL_DOWN = 8
 EVENT_KEYDOWN = 13
 EVENT_KEYUP = 14
+EVENT_JOYBUTTON_DOWN = 15
+EVENT_JOYBUTTON_UP = 16
+EVENT_JOYAXIS_MOVED = 17
+EVENT_JOYDEVICE_ATTACHED = 18
+EVENT_JOYDEVICE_DETACHED = 19
 function InputEvent:__index__(name)
 	if name == "mouseButton" then
 		return Polycore.InputEvent_get_mouseButton(self.__ptr)
@@ -47,6 +52,42 @@ function InputEvent:__index__(name)
 		end
 	elseif name == "timestamp" then
 		return Polycore.InputEvent_get_timestamp(self.__ptr)
+	elseif name == "joystickDeviceID" then
+		retVal = Polycore.InputEvent_get_joystickDeviceID(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = unsigned int("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "joystickAxisValue" then
+		retVal = Polycore.InputEvent_get_joystickAxisValue(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = float("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "joystickButton" then
+		retVal = Polycore.InputEvent_get_joystickButton(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = unsigned int("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "joystickAxis" then
+		retVal = Polycore.InputEvent_get_joystickAxis(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = unsigned int("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
 	end
 end
 

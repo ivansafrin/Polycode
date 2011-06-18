@@ -175,6 +175,7 @@ int main(int argc, char **argv) {
 		installPath += String("\\");
 	}
 #else
+	PHYSFS_init(argv[0]);
 	String basePath = PHYSFS_getBaseDir();
 	vector<String> cpts = basePath.split("/");
 	String installPath = "";
