@@ -186,7 +186,7 @@ following commands in the Polycode source root:
     cmake -G "Unix Makefiles" ..
     make install
 
-This will create a Release/<YourArchitecture>/Standalone folder with the
+This will create a Release/YourArchitecture/Standalone folder with the
 same structure as the binary Polycode Lua release.
 
 ### Windows ###
