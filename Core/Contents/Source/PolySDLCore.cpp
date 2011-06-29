@@ -24,6 +24,10 @@
 
 using namespace Polycode;
 
+long getThreadID() {
+	return (long)pthread_self();
+}
+
 SDLCore::SDLCore(PolycodeViewBase *view, int xRes, int yRes, bool fullScreen,int aaLevel, int frameRate) : Core(xRes, yRes, fullScreen,aaLevel, frameRate) {
 
 	String *windowTitle = (String*)view->windowData;
