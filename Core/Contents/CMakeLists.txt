@@ -1,7 +1,3 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
-
-PROJECT(PolyCore)
-
 SET(polycore_SRCS
     ../Build/Linux/PolycodeView.cpp
     Source/OSBasics.cpp
@@ -198,19 +194,6 @@ SET(polycore_HDRS
 #   Include/PolyWinCore.h
     Include/tinystr.h
     Include/tinyxml.h
-)
-
-FIND_PACKAGE(OpenGL REQUIRED)
-FIND_PACKAGE(Freetype REQUIRED)
-FIND_PACKAGE(PNG REQUIRED)
-FIND_PACKAGE(PhysFS REQUIRED)
-#FIND_PACKAGE(Vorbis REQUIRED)
-
-ADD_DEFINITIONS(-DGL_GLEXT_PROTOTYPES ${PNG_DEFINITIONS})
-
-INCLUDE_DIRECTORIES(Include
-	${OPENGL_INCLUDE_DIR}
-	${FREETYPE_INCLUDE_DIRS}
 )
 
 #ADD_LIBRARY(PolyCore SHARED ${polycore_SRCS} ${polycore_HDRS})

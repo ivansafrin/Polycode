@@ -1,0 +1,4 @@
+INCLUDE_DIRECTORIES(../Dependencies/Include)
+
+ADD_SUBDIRECTORY(2DPhysics)
+ADD_SUBDIRECTORY(3DPhysics)
