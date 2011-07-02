@@ -140,17 +140,23 @@ Number ScreenEntity::getHeight() {
 
 bool ScreenEntity::hitTest(Number x, Number y) {
 	bool retVal = false;
-//			Logger::log("hittest %f,%f in %f %f %f %f\n",x, y, position.x, position.y, hitwidth, hitheight);	
+    // apply compound scale to test hit against
+    Vector3 compScale = getCompoundScale();
+    Number hx = position.x * compScale.x;
+    Number hy = position.y * compScale.y;
+    Number hw = hitwidth * compScale.x;
+    Number hh = hitheight * compScale.y;
+    //        Logger::log("hittest %f,%f in %f %f %f %f\n",x, y, hx, hy, hw, hh);
 	switch(positionMode) {
 		case ScreenEntity::POSITION_TOPLEFT:
 						
-			if(x > position.x && x < (position.x + hitwidth) 
-				&& y > position.y && y < (position.y + hitheight))
+            if(x > hx && x < (hx + hw)
+                && y > hy && y < (hy + hh))
 				retVal = true;			
 		break;
 		case ScreenEntity::POSITION_CENTER:
-			if(x > (position.x - hitwidth/2.0f) && x < (position.x + hitwidth/2.0f) 
-				&& y > (position.y - hitheight/2.0f) && y < (position.y + hitheight/2.0f))
+            if(x > (hx - hw/2.0f) && x < (hx + hw/2.0f)
+                && y > (hy - hh/2.0f) && y < (hy + hh/2.0f))
 				retVal = true;	
 		break;
 	}
