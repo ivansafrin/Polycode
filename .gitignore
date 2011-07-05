@@ -45,6 +45,8 @@ Debug
 Release
 Documentation
 qtcreator-build
+build
+
 
 Tools/Build/Linux/polybuild*
 Tools/Build/Linux/polyimport*

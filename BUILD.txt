@@ -1,0 +1,39 @@
+Windows dependencies:
+
+Core
+
+zlib
+http://zlib.net/zlib125.zip
+
+PNG
+http://cdnetworks-us-1.dl.sourceforge.net/project/libpng/libpng15/1.5.2/lpng152.zip
+
+Freetype2
+http://surfnet.dl.sourceforge.net/project/freetype/freetype2/2.4.5/ft245.zip
+
+PhysFS
+http://offload1.icculus.org:9090/physfs/downloads/physfs-2.0.2.tar.gz
+
+OpenAL
+http://kcat.strangesoft.net/openal-releases/openal-soft-1.13.tar.bz2
+http://connect.creativelabs.com/openal/Downloads/oalinst.zip
+
+Ogg
+Vorbis
+http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.2.zip
+
+Lua
+http://www.lua.org/ftp/lua-5.1.4.tar.gz
+
+glext.h & wglext.h
+http://www.opengl.org/registry/#headers
+
+Build all and install to Releases/Win/Framework/Dependencies
+
+Modules
+
+Box2D
+http://box2d.googlecode.com/files/Box2D_v2.1.2.zip
+
+Bullet
+http://bullet.googlecode.com/files/bullet-2.78.zip

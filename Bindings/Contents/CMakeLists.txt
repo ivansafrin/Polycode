@@ -13,6 +13,13 @@ INCLUDE_DIRECTORIES(
     LUA/Include
 )
 
-ADD_LIBRARY(PolycodeLua SHARED ${polycodeLua_SRCS} ${polycodeLua_HDRS})
-ADD_LIBRARY(PolycodeLuaStatic ${polycodeLua_SRCS} ${polycodeLua_HDRS})
+IF(POLYCODE_BUILD_SHARED)
+    LINK_LIBRARIES(Polycore)
+    ADD_LIBRARY(PolycodeLua SHARED ${polycodeLua_SRCS} ${polycodeLua_HDRS})
+ENDIF(POLYCODE_BUILD_SHARED)
+
+IF(POLYCODE_BUILD_STATIC)
+    LINK_LIBRARIES(Polycore_static)
+    ADD_LIBRARY(PolycodeLua_static ${polycodeLua_SRCS} ${polycodeLua_HDRS})
+ENDIF(POLYCODE_BUILD_STATIC)
 
