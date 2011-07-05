@@ -11,8 +11,8 @@ OPTION(POLYCODE_BUILD_SHARED "Build Polycode shared libraries" ON)
 OPTION(POLYCODE_BUILD_STATIC "Build Polycode static libraries" OFF)
 OPTION(POLYCODE_BUILD_BINDINGS "Build Polycode Lua bindings" ON)
 OPTION(POLYCODE_BUILD_EXAMPLES "Build Polycode examples" OFF)
-OPTION(POLYCODE_BUILD_MODULES "Build Polycode modules" ON)
-OPTION(POLYCODE_BUILD_TOOLS "Build Polycode tools" ON)
+OPTION(POLYCODE_BUILD_MODULES "Build Polycode modules" OFF)
+OPTION(POLYCODE_BUILD_TOOLS "Build Polycode tools" OFF)
 
 # Some non-standard CMake modules
 SET(CMAKE_MODULE_PATH ${PolyCode_SOURCE_DIR}/Core/Build/CMake ${CMAKE_MODULE_PATH})
@@ -36,20 +36,20 @@ FIND_LIBRARY(VORBISFILE_LIBRARY NAMES vorbisfile)
 
 # platform specific include directories for win and sdl
 IF(MSVC)
-    ADD_DEFINITIONS(/D_UNICODE /DUNICODE /DGL_GLEXT_PROTOTYPES)
+    ADD_DEFINITIONS(/D_UNICODE /DUNICODE)
     INCLUDE_DIRECTORIES(${PolyCode_SOURCE_DIR}/Core/Build/MSVC/Polycore)
 ELSEIF(APPLE)
     ADD_DEFINITIONS(-DGL_GLEXT_PROTOTYPES)
 ELSE(MSVC)
-#   ADD_DEFINITIONS(-DGL_GLEXT_PROTOTYPES) # defined in PolyGLRenderer.cpp
+    ADD_DEFINITIONS(-DGL_GLEXT_PROTOTYPES)
     INCLUDE_DIRECTORIES(${PolyCode_SOURCE_DIR}/Core/Build/Linux)
 ENDIF(MSVC)
 
 INCLUDE_DIRECTORIES(
+    ${PolyCode_SOURCE_DIR}/Core/Contents/Include
     ${OPENGL_INCLUDE_DIR}
     ${OPENAL_INCLUDE_DIR}
     ${FREETYPE_INCLUDE_DIRS}
-    ${PolyCode_SOURCE_DIR}/Core/Contents/Include
 )
 
 ADD_SUBDIRECTORY(Core/Contents)

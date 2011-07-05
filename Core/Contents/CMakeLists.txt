@@ -190,14 +190,14 @@ SET(polycore_HDRS
 
 # platform specific
 IF(MSVC)
-SET(polycore_SRCS ${polycore_SRCS} ../Build/MSVC/Polycore/PolycodeView.cpp Source/PolyWinCore.cpp)
-SET(polycore_HDRS ${polycore_HDRS} ../Build/MSVC/Polycore/PolycodeView.h Include/PolyWinCore.h)
+    SET(polycore_SRCS ${polycore_SRCS} ../Build/MSVC/Polycore/PolycodeView.cpp Source/PolyWinCore.cpp)
+    SET(polycore_HDRS ${polycore_HDRS} ../Build/MSVC/Polycore/PolycodeView.h Include/PolyWinCore.h)
 ELSEIF(APPLE)
-SET(polycore_SRCS ${polycore_SRCS} Source/PolyAGLCore.cpp Source/PolyCocoaCore.cpp Source/PolycodeView.mm)
-SET(polycore_HDRS ${polycore_HDRS} Include/PolyAGLCore.h Include/PolyCocoaCore.h Include/PolycodeView.h)
+    SET(polycore_SRCS ${polycore_SRCS} Source/PolyAGLCore.cpp Source/PolyCocoaCore.cpp Source/PolycodeView.mm)
+    SET(polycore_HDRS ${polycore_HDRS} Include/PolyAGLCore.h Include/PolyCocoaCore.h Include/PolycodeView.h)
 ELSE(MSVC)
-SET(polycore_SRCS ${polycore_SRCS} ../Build/Linux/PolycodeView.cpp Source/PolySDLCore.cpp)
-SET(polycore_HDRS ${polycore_HDRS} ../Build/Linux/PolycodeView.h Include/PolySDLCore.h)
+    SET(polycore_SRCS ${polycore_SRCS} ../Build/Linux/PolycodeView.cpp Source/PolySDLCore.cpp)
+    SET(polycore_HDRS ${polycore_HDRS} ../Build/Linux/PolycodeView.h Include/PolySDLCore.h)
 ENDIF(MSVC)
 
 IF(POLYCODE_BUILD_SHARED)
