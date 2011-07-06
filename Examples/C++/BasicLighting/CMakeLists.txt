@@ -1,2 +1,11 @@
 INCLUDE_DIRECTORIES(.)
-ADD_EXECUTABLE(BasicLighting ../main.cpp HelloPolycodeApp.cpp HelloPolycodeApp.h)
+
+IF(POLYCODE_BUILD_SHARED)
+	ADD_EXECUTABLE(BasicLighting ../main.cpp HelloPolycodeApp.cpp HelloPolycodeApp.h)
+	TARGET_LINK_LIBRARIES(BasicLighting PolyCore)
+ENDIF(POLYCODE_BUILD_SHARED)
+
+IF(POLYCODE_BUILD_STATIC)
+	ADD_EXECUTABLE(BasicLighting_static ../main.cpp HelloPolycodeApp.cpp HelloPolycodeApp.h)
+	TARGET_LINK_LIBRARIES(BasicLighting_static PolyCore_static)
+ENDIF(POLYCODE_BUILD_STATIC)

@@ -1,2 +1,12 @@
 INCLUDE_DIRECTORIES(.)
-ADD_EXECUTABLE(3DAudio ../main.cpp HelloPolycodeApp.cpp HelloPolycodeApp.h)
+
+IF(POLYCODE_BUILD_SHARED)
+	ADD_EXECUTABLE(3DAudio ../main.cpp HelloPolycodeApp.cpp HelloPolycodeApp.h)
+	TARGET_LINK_LIBRARIES(3DAudio PolyCore)
+ENDIF(POLYCODE_BUILD_SHARED)
+
+IF(POLYCODE_BUILD_STATIC)
+	ADD_EXECUTABLE(3DAudio_static ../main.cpp HelloPolycodeApp.cpp HelloPolycodeApp.h)
+	TARGET_LINK_LIBRARIES(3DAudio_static PolyCore_static)
+ENDIF(POLYCODE_BUILD_STATIC)
+

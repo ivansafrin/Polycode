@@ -1,2 +1,12 @@
 INCLUDE_DIRECTORIES(.)
-ADD_EXECUTABLE(AdvancedLighting ../main.cpp HelloPolycodeApp.cpp HelloPolycodeApp.h)
+
+IF(POLYCODE_BUILD_SHARED)
+	ADD_EXECUTABLE(AdvancedLighting ../main.cpp HelloPolycodeApp.cpp HelloPolycodeApp.h)
+	TARGET_LINK_LIBRARIES(AdvancedLighting PolyCore)
+ENDIF(POLYCODE_BUILD_SHARED)
+
+IF(POLYCODE_BUILD_STATIC)
+	ADD_EXECUTABLE(AdvancedLighting_static ../main.cpp HelloPolycodeApp.cpp HelloPolycodeApp.h)
+	TARGET_LINK_LIBRARIES(AdvancedLighting_static PolyCore_static)
+ENDIF(POLYCODE_BUILD_STATIC)
+
