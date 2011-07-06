@@ -31,9 +31,6 @@ Material::Material(String name) : Resource(Resource::RESOURCE_MATERIAL) {
 Material::~Material() {
 	
 	Logger::log("deleting material (%s)\n", name.c_str());
-	vector<Shader*> materialShaders;
-	vector<ShaderBinding*> shaderBindings;
-	vector<ShaderRenderTarget*> renderTargets;	
 	
 	for(int i=0; i < materialShaders.size(); i++)	{
 		delete materialShaders[i];
