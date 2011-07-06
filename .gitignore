@@ -29,27 +29,27 @@
 *.swo
 *.opensdf
 
-Core/Build/Mac\ OS\ X/build
-IDE/Build/Mac\ OS\ X/build
-Modules/Build/Mac\ OS\ X/build
-Tools/Build/Mac\ OS\ X/build
-Player/Build/Mac\ OS\ X/build
-Bindings/Build/Mac\ OS\ X/build
-Core/Dependencies
-Modules/Dependencies
-IDE/Dependencies
-Tools/Dependencies/assimp
-Bindings/Dependencies
-IDE/Mac\ OS\ X
-Debug
-Release
-Documentation
+/Core/Build/Mac\ OS\ X/build
+/IDE/Build/Mac\ OS\ X/build
+/Modules/Build/Mac\ OS\ X/build
+/Tools/Build/Mac\ OS\ X/build
+/Player/Build/Mac\ OS\ X/build
+/Bindings/Build/Mac\ OS\ X/build
+/Core/Dependencies
+/Modules/Dependencies
+/IDE/Dependencies
+/Tools/Dependencies/assimp
+/Bindings/Dependencies
+/IDE/Mac\ OS\ X
+/Debug
+/Release
+/Documentation
 qtcreator-build
-build
+/build
 
 
-Tools/Build/Linux/polybuild*
-Tools/Build/Linux/polyimport*
+/Tools/Build/Linux/polybuild*
+/Tools/Build/Linux/polyimport*
 
 # OS generated files #
 ######################
