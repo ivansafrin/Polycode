@@ -11,7 +11,7 @@ OPTION(POLYCODE_BUILD_SHARED "Build Polycode shared libraries" ON)
 OPTION(POLYCODE_BUILD_STATIC "Build Polycode static libraries" OFF)
 OPTION(POLYCODE_BUILD_BINDINGS "Build Polycode Lua bindings" ON)
 OPTION(POLYCODE_BUILD_EXAMPLES "Build Polycode examples" ON)
-OPTION(POLYCODE_BUILD_MODULES "Build Polycode modules" OFF)
+OPTION(POLYCODE_BUILD_MODULES "Build Polycode modules" ON)
 OPTION(POLYCODE_BUILD_TOOLS "Build Polycode tools" ON)
 
 # Some non-standard CMake modules
