@@ -11,6 +11,7 @@
 *.swp
 *.ipch
 *.sdf
+*.suo
 *.filters
 *.user
 *.tlog
@@ -41,11 +42,11 @@
 /Tools/Dependencies/assimp
 /Bindings/Dependencies
 /IDE/Mac\ OS\ X
-/Debug
-/Release
-/Documentation
-qtcreator-build
 /build
+/qtcreator-build
+Debug
+Release
+Documentation
 
 
 /Tools/Build/Linux/polybuild*
