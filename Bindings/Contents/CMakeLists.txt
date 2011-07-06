@@ -14,12 +14,12 @@ INCLUDE_DIRECTORIES(
 )
 
 IF(POLYCODE_BUILD_SHARED)
-    LINK_LIBRARIES(Polycore)
     ADD_LIBRARY(PolycodeLua SHARED ${polycodeLua_SRCS} ${polycodeLua_HDRS})
+    TARGET_LINK_LIBRARIES(PolycodeLua PolyCore ${LUA_LIBRARY})
 ENDIF(POLYCODE_BUILD_SHARED)
 
 IF(POLYCODE_BUILD_STATIC)
-    LINK_LIBRARIES(Polycore_static)
+    LINK_LIBRARIES(PolyCore_static)
     ADD_LIBRARY(PolycodeLua_static ${polycodeLua_SRCS} ${polycodeLua_HDRS})
 ENDIF(POLYCODE_BUILD_STATIC)
 
