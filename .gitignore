@@ -29,6 +29,7 @@
 *.zip
 *.swo
 *.opensdf
+*.user.*
 
 /Core/Build/Mac\ OS\ X/build
 /IDE/Build/Mac\ OS\ X/build
