@@ -224,10 +224,11 @@ IF(POLYCODE_INSTALL_FRAMEWORK)
     # install libraries
     IF(POLYCODE_BUILD_SHARED)
         INSTALL(TARGETS PolyCore EXPORT PolyCore-targets DESTINATION Framework/Core/Lib/${CMAKE_BUILD_TYPE})
-    ENDIF()
+    ENDIF(POLYCODE_BUILD_SHARED)
+    
     IF(POLYCODE_BUILD_STATIC)
         INSTALL(TARGETS PolyCore_static EXPORT PolyCore-targets DESTINATION Framework/Core/Lib/${CMAKE_BUILD_TYPE})
-    ENDIF()
+    ENDIF(POLYCODE_BUILD_STATIC)
 
     # from Box2D's cmake file - not sure what it does yet
     # install build system hooks for third-party apps
