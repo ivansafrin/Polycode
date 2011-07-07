@@ -217,3 +217,20 @@ IF(POLYCODE_BUILD_STATIC)
     ADD_LIBRARY(PolyCore_static ${polycore_SRCS} ${polycore_HDRS})
 ENDIF(POLYCODE_BUILD_STATIC)
 
+IF(POLYCODE_INSTALL_FRAMEWORK)
+    # install headers
+    INSTALL(FILES ${polycore_HDRS} DESTINATION Framework/Core/Include)
+
+    # install libraries
+    IF(POLYCODE_BUILD_SHARED)
+        INSTALL(TARGETS PolyCore EXPORT PolyCore-targets DESTINATION Framework/Core/Lib/${CMAKE_BUILD_TYPE})
+    ENDIF()
+    IF(POLYCODE_BUILD_STATIC)
+        INSTALL(TARGETS PolyCore_static EXPORT PolyCore-targets DESTINATION Framework/Core/Lib/${CMAKE_BUILD_TYPE})
+    ENDIF()
+
+    # from Box2D's cmake file - not sure what it does yet
+    # install build system hooks for third-party apps
+    # INSTALL(EXPORT PolyCore-targets DESTINATION Lib/Box2D)
+    # INSTALL(FILES Box2DConfig.cmake DESTINATION Lib/Box2D)
+ENDIF(POLYCODE_INSTALL_FRAMEWORK)

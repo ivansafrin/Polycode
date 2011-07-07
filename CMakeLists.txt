@@ -15,11 +15,14 @@ OPTION(POLYCODE_BUILD_MODULES "Build Polycode modules" ON)
 OPTION(POLYCODE_BUILD_PLAYER "Build Polycode standalone player" ON)
 OPTION(POLYCODE_BUILD_TOOLS "Build Polycode tools" ON)
 
+OPTION(POLYCODE_INSTALL_FRAMEWORK "Install Polycode Core, Modules and Tools" ON)
+
 # Some non-standard CMake modules
 SET(CMAKE_MODULE_PATH ${PolyCode_SOURCE_DIR}/Core/Build/CMake ${CMAKE_MODULE_PATH})
 
 IF(WIN32)
     SET(CMAKE_PREFIX_PATH ${PolyCode_SOURCE_DIR}/Release/Win/Framework/Dependencies)
+    SET(CMAKE_SYSTEM_LIBRARY_PATH ${CMAKE_PREFIX_PATH}/Lib/Release)
 ENDIF(WIN32)
 
 FIND_PACKAGE(PhysFS REQUIRED)
@@ -36,7 +39,7 @@ ENDIF(UNIX AND NOT APPLE)
 
 FIND_LIBRARY(VORBISFILE_LIBRARY NAMES vorbisfile)
 
-# platform specific include directories for win and sdl
+# platform specific defines and include directories for win and sdl
 IF(MSVC)
     ADD_DEFINITIONS(/D_UNICODE /DUNICODE)
     INCLUDE_DIRECTORIES(${PolyCode_SOURCE_DIR}/Core/Build/MSVC/Polycore)
@@ -47,6 +50,7 @@ ELSE(MSVC)
     INCLUDE_DIRECTORIES(${PolyCode_SOURCE_DIR}/Core/Build/Linux)
 ENDIF(MSVC)
 
+# Set up common include directories
 INCLUDE_DIRECTORIES(
     ${PolyCode_SOURCE_DIR}/Core/Contents/Include
     ${OPENGL_INCLUDE_DIR}
@@ -54,6 +58,7 @@ INCLUDE_DIRECTORIES(
     ${FREETYPE_INCLUDE_DIRS}
 )
 
+# Process subdirectories
 ADD_SUBDIRECTORY(Core/Contents)
 
 IF(POLYCODE_BUILD_BINDINGS)
@@ -80,3 +85,5 @@ IF(POLYCODE_BUILD_TOOLS)
     FIND_PACKAGE(Assimp REQUIRED)
     ADD_SUBDIRECTORY(Tools/Contents)
 ENDIF(POLYCODE_BUILD_TOOLS)
+
+# Install assets and dependencies
