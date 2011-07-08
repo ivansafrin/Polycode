@@ -18,7 +18,7 @@ OPTION(POLYCODE_BUILD_TOOLS "Build Polycode tools" ON)
 OPTION(POLYCODE_INSTALL_FRAMEWORK "Install Polycode Core, Modules and Tools" ON)
 
 # Some non-standard CMake modules
-SET(CMAKE_MODULE_PATH ${PolyCode_SOURCE_DIR}/Core/Build/CMake ${CMAKE_MODULE_PATH})
+SET(CMAKE_MODULE_PATH ${PolyCode_SOURCE_DIR}/Build/CMakeModules ${CMAKE_MODULE_PATH})
 
 IF(WIN32)
     SET(CMAKE_PREFIX_PATH ${PolyCode_SOURCE_DIR}/Release/Win/Framework/Dependencies)
