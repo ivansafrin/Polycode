@@ -1,3 +1,10 @@
+INCLUDE(PolycodeIncludes)
+
+INCLUDE_DIRECTORIES(
+    ${LUA_INCLUDE_DIR}
+    LUA/Include
+)
+
 SET(polycodeLua_SRCS
     LUA/Source/PolycodeLUA.cpp
 )
@@ -6,11 +13,6 @@ SET(polycodeLua_HDRS
     LUA/Include/PolycodeLUAWrappers.h
     LUA/Include/PolycodeLUA.h
     LUA/Include/PolycodeLUA2D.h
-)
-
-INCLUDE_DIRECTORIES(
-    ${LUA_INCLUDE_DIR}
-    LUA/Include
 )
 
 IF(POLYCODE_BUILD_SHARED)

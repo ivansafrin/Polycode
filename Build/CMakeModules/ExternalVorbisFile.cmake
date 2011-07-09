@@ -26,6 +26,7 @@ EXTERNALPROJECT_ADD(ogg
 # Set the build target for the appropriate build
 IF(MSVC10)
 	SET(vorbis_BUILD msbuild.exe win32/VS2010/vorbis_dynamic.sln /p:Configuration=Release)
+    SET(VORBISFILE_LIBRARY src/vorbis/win32/VS2010/Win32/Release/libvorbisfile.lib)
 ENDIF(MSVC10)
 
 EXTERNALPROJECT_ADD(vorbis
@@ -41,11 +42,7 @@ EXTERNALPROJECT_ADD(vorbis
 )
 
 # tell CMake to use this version
-#  PNG_INCLUDE_DIR, where to find png.h, etc.
-#  PNG_LIBRARIES, the libraries to link against to use PNG.
-#  PNG_DEFINITIONS - You should add_definitons(${PNG_DEFINITIONS}) before compiling code that includes png library files.
-#  PNG_FOUND, If false, do not try to use PNG.
+SET(OGG_INCLUDE_DIR ${vorbis_PREFIX}/src/ogg/include)
+SET(VORBISFILE_INCLUDE_DIR ${vorbis_PREFIX}/src/vorbis/include)
 
-SET(VORBISFILE_INCLUDE_DIR ${vorbis_PREFIX}/include)
-SET(VORBISFILE_LIBRARY ${vorbis_PREFIX}/lib)
 

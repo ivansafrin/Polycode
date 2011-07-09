@@ -1,3 +1,6 @@
+
+INCLUDE(PolycodeIncludes)
+
 SET(polycore_SRCS
     Source/OSBasics.cpp
     Source/PolyBezierCurve.cpp
@@ -201,9 +204,7 @@ ELSE(MSVC)
 ENDIF(MSVC)
 
 IF(POLYCODE_BUILD_SHARED)
-    ADD_LIBRARY(PolyCore SHARED ${polycore_SRCS} ${polycore_HDRS})
-    TARGET_LINK_LIBRARIES(
-        PolyCore
+    LINK_LIBRARIES(
         ${OPENGL_LIBRARIES}
         ${OPENAL_LIBRARY}
         ${PNG_LIBRARIES}
@@ -211,6 +212,10 @@ IF(POLYCODE_BUILD_SHARED)
         ${PHYSFS_LIBRARY}
         ${VORBISFILE_LIBRARY}
         ${SDL_LIBRARY}
+    )
+    ADD_LIBRARY(PolyCore SHARED ${polycore_SRCS} ${polycore_HDRS})
+    TARGET_LINK_LIBRARIES(
+        PolyCore
     )
 ENDIF(POLYCODE_BUILD_SHARED)
 

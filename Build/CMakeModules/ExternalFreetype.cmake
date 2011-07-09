@@ -8,6 +8,7 @@ SET(freetype_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/Dependencies/freetype)
 IF(MSVC10)
 	# BUILD_COMMAND would be better but it returns a single string which is escaped when it shouldn't be
 	SET(freetype_BUILD msbuild.exe builds/win32/vc2010/freetype.sln /p:Configuration=Release)
+    SET(freetype_LIB ${freetype_PREFIX}/src/freetype/objs/win32/vc2010/freetype245.lib)
 ENDIF(MSVC10)
 
 ExternalProject_Add(freetype
@@ -21,6 +22,6 @@ ExternalProject_Add(freetype
 )
 
 # tell CMake to use this version
-SET(FREETYPE_INCLUDE_DIR)
-SET(FREETYPE_LIBRARY)
+SET(FREETYPE_INCLUDE_DIR ${freetype_PREFIX}/src/freetype/include)
+
 

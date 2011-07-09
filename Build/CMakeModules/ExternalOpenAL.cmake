@@ -12,6 +12,6 @@ ExternalProject_Add(openal
 )
 
 # tell CMake to use this version
-SET(OPENAL_INCLUDE_DIR)
-SET(OPENAL_LIBRARY)
-SET(OPENAL_FOUND)
+SET(OPENAL_INCLUDE_DIR ${openal_PREFIX}/include)
+SET(OPENAL_LIBRARY ${openal_PREFIX}/lib/OpenAL32${CMAKE_LINK_LIBRARY_SUFFIX})
+

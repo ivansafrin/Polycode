@@ -11,6 +11,5 @@ ExternalProject_Add(physfs
 )
 
 # tell CMake to use this version
-SET(PHYSFS_INCLUDE_DIR)
-SET(PHYSFS_LIBRARY)
-SET(PHYSFS_FOUND)
+SET(PHYSFS_INCLUDE_DIR ${physfs_PREFIX}/include)
+SET(PHYSFS_LIBRARY physfs ${physfs_PREFIX}/lib/physfs${CMAKE_LINK_LIBRARY_SUFFIX})

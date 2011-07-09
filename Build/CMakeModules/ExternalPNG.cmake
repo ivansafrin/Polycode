@@ -22,11 +22,7 @@ EXTERNALPROJECT_ADD(libpng
 )
 
 # tell CMake to use this version
-#  PNG_INCLUDE_DIR, where to find png.h, etc.
-#  PNG_LIBRARIES, the libraries to link against to use PNG.
-#  PNG_DEFINITIONS - You should add_definitons(${PNG_DEFINITIONS}) before compiling code that includes png library files.
-#  PNG_FOUND, If false, do not try to use PNG.
-
 SET(PNG_INCLUDE_DIR ${png_PREFIX}/include)
-SET(PNG_LIBRARIES ${png_PREFIX}/lib)
+SET(PNG_LIBRARY ${png_PREFIX}/lib/libpng15.${CMAKE_LINK_LIBRARY_SUFFIX})
+
 
