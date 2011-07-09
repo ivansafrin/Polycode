@@ -29,15 +29,23 @@ FontManager::FontManager() {
 }
 
 FontManager::~FontManager() {
-
+	for(int i=0; i < fonts.size(); i++) {
+		FontEntry entry = fonts[i];
+		delete entry.font;
+	}
+	fonts.clear();
 }
 
 void FontManager::registerFont(String fontName, String fontPath) {
 	Font *font = new Font(fontPath);
-	FontEntry newEntry;
-	newEntry.font = font;
-	newEntry.fontName = fontName;
-	fonts.push_back(newEntry);
+	if(font->loaded) {
+		FontEntry newEntry;
+		newEntry.font = font;
+		newEntry.fontName = fontName;
+		fonts.push_back(newEntry);
+	} else {
+		delete font;
+	}
 }
 
 Font *FontManager::getFontByName(String fontName) {
