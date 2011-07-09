@@ -37,3 +37,8 @@ http://box2d.googlecode.com/files/Box2D_v2.1.2.zip
 
 Bullet
 http://bullet.googlecode.com/files/bullet-2.78.zip
+
+Tools
+
+Assimp
+http://sourceforge.net/projects/assimp/files/assimp-2.0/assimp--2.0.863-sdk.zip/download

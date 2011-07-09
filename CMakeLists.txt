@@ -7,6 +7,7 @@ IF(NOT CMAKE_BUILD_TYPE)
 #   SET(CMAKE_BUILD_TYPE "Release")
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
+# Options for what components to build
 OPTION(POLYCODE_BUILD_SHARED "Build Polycode shared libraries" ON)
 OPTION(POLYCODE_BUILD_STATIC "Build Polycode static libraries" OFF)
 OPTION(POLYCODE_BUILD_BINDINGS "Build Polycode Lua bindings" ON)
@@ -14,6 +15,10 @@ OPTION(POLYCODE_BUILD_EXAMPLES "Build Polycode examples" ON)
 OPTION(POLYCODE_BUILD_MODULES "Build Polycode modules" ON)
 OPTION(POLYCODE_BUILD_PLAYER "Build Polycode standalone player" ON)
 OPTION(POLYCODE_BUILD_TOOLS "Build Polycode tools" ON)
+
+# Options for what components should be downloaded and built
+OPTION(POLYCODE_BUILD_BOX2D "Download and build the Box2D package" ON)
+OPTION(POLYCODE_BUILD_ASSIMP "Download and build the Assimp package" ON)
 
 OPTION(POLYCODE_INSTALL_FRAMEWORK "Install Polycode Core, Modules and Tools" ON)
 
@@ -71,9 +76,9 @@ IF(POLYCODE_BUILD_EXAMPLES)
 ENDIF(POLYCODE_BUILD_EXAMPLES)
 
 IF(POLYCODE_BUILD_MODULES)
-    FIND_PACKAGE(Box2D)
+    #FIND_PACKAGE(Box2D)
     FIND_PACKAGE(Bullet)
-    ADD_SUBDIRECTORY(Modules/Contents)
+    ADD_SUBDIRECTORY(Modules)
 ENDIF(POLYCODE_BUILD_MODULES)
 
 IF(POLYCODE_BUILD_PLAYER)
@@ -82,8 +87,7 @@ IF(POLYCODE_BUILD_PLAYER)
 ENDIF(POLYCODE_BUILD_PLAYER)
 
 IF(POLYCODE_BUILD_TOOLS)
-    FIND_PACKAGE(Assimp REQUIRED)
-    ADD_SUBDIRECTORY(Tools/Contents)
+    ADD_SUBDIRECTORY(Tools)
 ENDIF(POLYCODE_BUILD_TOOLS)
 
 # Install assets and dependencies
