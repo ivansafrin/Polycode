@@ -158,6 +158,8 @@ namespace Polycode {
 		
 		void setTextureFilteringMode(int mode);
 		
+		virtual void setClippingPlanes(Number near, Number far) = 0;
+		
 		virtual void enableAlphaTest(bool val) = 0;
 		
 		virtual void clearBuffer(bool colorBuffer, bool depthBuffer) = 0;
