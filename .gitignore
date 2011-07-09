@@ -28,6 +28,9 @@
 *.zip
 *.swo
 *.opensdf
+*.xcuserstate
+*.xcworkspace
+*.origxcuserdata
 
 Core/Build/Mac\ OS\ X/build
 IDE/Build/Mac\ OS\ X/build
