@@ -124,6 +124,7 @@ void ScreenShape::addShapePoint(Number x, Number y) {
 
 void ScreenShape::setGradient(Number r1, Number g1, Number b1, Number a1, Number r2, Number g2, Number b2, Number a2) {
 
+	mesh->useVertexColors = true;
 	for(int i=0; i < mesh->getPolygon(0)->getVertexCount(); i++) {
 		mesh->getPolygon(0)->getVertex(i)->useVertexColor = true;
 	}
@@ -148,6 +149,7 @@ void ScreenShape::clearGradient() {
 	for(int i=0; i < mesh->getPolygon(0)->getVertexCount(); i++) {
 		mesh->getPolygon(0)->getVertex(i)->useVertexColor = false;
 	}
+	mesh->useVertexColors = false;
 }
 
 void ScreenShape::setStrokeWidth(Number width) {
@@ -173,9 +175,9 @@ void ScreenShape::Render() {
 		int rmode = renderer->getRenderMode();
 		renderer->setRenderMode(Renderer::RENDER_MODE_WIREFRAME);
 
-		renderer->pushDataArrayForMesh(mesh, RenderDataArray::COLOR_DATA_ARRAY);
+//		renderer->pushDataArrayForMesh(mesh, RenderDataArray::COLOR_DATA_ARRAY);
 		renderer->pushDataArrayForMesh(mesh, RenderDataArray::VERTEX_DATA_ARRAY);
-		renderer->pushDataArrayForMesh(mesh, RenderDataArray::TEXCOORD_DATA_ARRAY);	
+//		renderer->pushDataArrayForMesh(mesh, RenderDataArray::TEXCOORD_DATA_ARRAY);	
 		renderer->drawArrays(mesh->getMeshType());		
 		
 		renderer->setRenderMode(rmode);
