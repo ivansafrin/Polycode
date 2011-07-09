@@ -330,7 +330,7 @@ namespace Polycode {
 			*/
 			bool useVertexColors;
 		
-		private:
+		protected:
 					
 		VertexBuffer *vertexBuffer;
 		bool meshHasVertexBuffer;

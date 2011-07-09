@@ -229,7 +229,7 @@ namespace Polycode {
 			static const int ENCODING_UTF8 = 0; 
 			
 		
-		private:
+		protected:
 		
 	};
 

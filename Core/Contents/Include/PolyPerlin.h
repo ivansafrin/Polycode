@@ -57,7 +57,7 @@ public:
 		return perlin_noise_2D(vec);
 	};
 
-private:
+protected:
   void init_perlin(int n,Number p);
   Number perlin_noise_2D(Number vec[2]);
 

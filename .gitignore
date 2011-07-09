@@ -30,7 +30,7 @@
 *.opensdf
 *.xcuserstate
 *.xcworkspace
-*.origxcuserdata
+*.xcuserdata
 
 Core/Build/Mac\ OS\ X/build
 IDE/Build/Mac\ OS\ X/build

@@ -50,7 +50,7 @@ namespace Polycode {
 		void *secondaryHandlerData;
 		
 		
-		private:
+		protected:
 	
 	};
 }

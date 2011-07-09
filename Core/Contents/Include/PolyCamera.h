@@ -122,7 +122,7 @@ namespace Polycode {
 			Material *getScreenShaderMaterial() { return filterShaderMaterial; }
 			
 			
-		private:
+		protected:
 		
 			Number exposureLevel;
 			bool orthoMode;

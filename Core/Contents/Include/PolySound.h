@@ -110,7 +110,7 @@ namespace Polycode {
 		static unsigned long readByte32(const unsigned char buffer[4]);		
 		static unsigned short readByte16(const unsigned char buffer[2]);
 
-	private:
+	protected:
 	
 		bool isPositional;
 		ALuint soundSource;

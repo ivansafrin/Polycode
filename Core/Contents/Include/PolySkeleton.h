@@ -124,7 +124,7 @@ namespace Polycode {
 			*/					
 			void setSpeed(Number speed);
 			
-		private:
+		protected:
 			
 			String name;
 			Number duration;
@@ -211,7 +211,7 @@ namespace Polycode {
 			*/
 			SkeletonAnimation *getCurrentAnimation() { return currentAnimation; }
 		
-		private:
+		protected:
 		
 			SceneEntity *bonesEntity;
 		

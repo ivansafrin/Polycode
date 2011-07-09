@@ -56,7 +56,7 @@ namespace Polycode {
 		void setGlobalVolume(Number globalVolume);
 		
 		
-	private:
+	protected:
 		
 		ALCdevice* device;
 		ALCcontext* context;		

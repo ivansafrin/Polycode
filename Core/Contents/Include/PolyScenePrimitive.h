@@ -75,7 +75,7 @@ namespace Polycode {
 			static const int TYPE_TORUS = 6;			
 
 		
-		private:
+		protected:
 		
 	};
 	

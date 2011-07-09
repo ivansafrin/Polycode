@@ -186,7 +186,7 @@ namespace Polycode {
 		
 			SceneEntity *lightShape;
 			
-		private:
+		protected:
 		
 			Number spotlightExponent;
 			Number spotlightCutoff;
