@@ -228,6 +228,30 @@ namespace Polycode {
 		
 	}
 	
+	void Mesh::createVPlane(Number w, Number h) { 
+		Polygon *imagePolygon = new Polygon();
+		imagePolygon->addVertex(0,h,0,0,0);	
+		imagePolygon->addVertex(w,h,0, 1, 0);			
+		imagePolygon->addVertex(w,0,0, 1, 1);		
+		imagePolygon->addVertex(0,0,0,0,1);
+
+		addPolygon(imagePolygon);
+		
+		for(int i=0; i < polygons.size(); i++) {
+			for(int j=0; j < polygons[i]->getVertexCount(); j++) {
+				polygons[i]->getVertex(j)->x = polygons[i]->getVertex(j)->x - (w/2.0f);
+				polygons[i]->getVertex(j)->z = polygons[i]->getVertex(j)->y - (h/2.0f);
+			}
+		}
+
+		calculateNormals();
+		arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
+		arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
+		arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;						
+		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;										
+		
+	}	
+	
 	void Mesh::createPlane(Number w, Number h) { 
 		Polygon *imagePolygon = new Polygon();
 		imagePolygon->addVertex(0,0,h,0,0);	
@@ -358,45 +382,112 @@ namespace Polycode {
 		return total;
 	}
 
+	void Mesh::createTorus(Number radius, Number tubeRadius, int rSegments, int tSegments) {
+	
+		setMeshType(Mesh::TRI_MESH);
+			
+		Vector3 **grid = (Vector3 **) malloc(sizeof(Vector3*) * rSegments);
+		for (int i=0 ; i < rSegments; i++) {
+			grid[i] = (Vector3*) malloc(sizeof(Vector3) * tSegments);		
+		}
+		
+		for (int i=0 ; i < rSegments; i++) {
+			for (int j = 0; j < tSegments; ++j) {
+				Number u = ((Number)i) / rSegments * 2.0 * PI;
+				Number v = ((Number)j) / tSegments * 2.0 * PI;	
+
+				grid[i][j] = Vector3((radius + tubeRadius*cos(v))*cos(u), tubeRadius*sin(v), (radius + tubeRadius*cos(v))*sin(u));							
+													
+			}
+		}	
+		
+		for (int i=0 ; i < rSegments; i++) {
+			for (int j = 0; j < tSegments; ++j) {
+
+				int ip = (i+1) % rSegments;
+				int jp = (j+1) % tSegments;
+					
+				Vector3 a = grid[i ][j];
+				Vector3 b = grid[ip][j];
+				Vector3 c = grid[i ][jp];
+				Vector3 d = grid[ip][jp];
+
+				Vector2 uva = Vector2(((Number)i)     / ((Number)rSegments), ((Number)j)     / ((Number)tSegments));
+				Vector2 uvb = Vector2((((Number)i)+1.0) / ((Number)rSegments), ((Number)j)     / ((Number)tSegments));
+				Vector2 uvc = Vector2(((Number)i)    / ((Number)rSegments), (((Number)j)+1.0) / ((Number)tSegments));
+				Vector2 uvd = Vector2((((Number)i)+1.0) / ((Number)rSegments), (((Number)j)+1.0) / ((Number)tSegments));
+
+
+				Polygon *polygon = new Polygon();
+				polygon->addVertex(c.x, c.y, c.z, uvc.x ,uvc.y);
+				polygon->addVertex(b.x, b.y, b.z, uvb.x ,uvb.y);							
+				polygon->addVertex(a.x, a.y, a.z, uva.x ,uva.y);
+				addPolygon(polygon);	
+
+				polygon = new Polygon();
+				polygon->addVertex(b.x, b.y, b.z, uvb.x ,uvb.y);
+				polygon->addVertex(c.x, c.y, c.z, uvc.x ,uvc.y);					
+				polygon->addVertex(d.x, d.y, d.z, uvd.x ,uvd.y);				
+				addPolygon(polygon);	
+			}
+		}
+		
+		for (int i=0 ; i < rSegments; i++) {
+			free(grid[i]);
+		}		
+		free(grid);
+		
+	
+		calculateNormals();
+		arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
+		arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
+		arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;						
+		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;										
+				
+	}
+
 	void Mesh::createCylinder(Number height, Number radius, int numSegments) {
 	
 		setMeshType(Mesh::TRI_MESH);
-		Number lastx = -1;
-		Number lastz = -1;		
+		Number lastx = 0;
+		Number lastz = 0;
+		Number lastv = 0;		
 		for (int i=0 ; i < numSegments+1; i++) {
+			Number v = ((Number)i)/((Number)numSegments);
 			Number pos = ((PI*2.0)/((Number)numSegments)) * i;
-			Number x = sinf(pos) * radius;
-			Number z = cosf(pos) * radius;
+			Number x = sin(pos) * radius;
+			Number z = cos(pos) * radius;
 			
-			if(lastx > -1) {
+			if(i > 0) {
 				Polygon *polygon = new Polygon();
-				polygon->addVertex(lastx,0,lastz,0,0);				
-				polygon->addVertex(x,0,z, 1, 0);
-				polygon->addVertex(x,height,z, 1, 1);				
+				polygon->addVertex(lastx,0,lastz,lastv,0);				
+				polygon->addVertex(x,0,z, v, 0);
+				polygon->addVertex(x,height,z, v, 1);				
 				addPolygon(polygon);							
 
 				polygon = new Polygon();	
-				polygon->addVertex(x,height,z, 1, 1);								
-				polygon->addVertex(lastx,height,lastz, 1, 1);																												
-				polygon->addVertex(lastx,0,lastz,0,0);												
+				polygon->addVertex(x,height,z, v, 1);							
+				polygon->addVertex(lastx,height,lastz, lastv, 1);
+				polygon->addVertex(lastx,0,lastz,lastv,0);												
 				addPolygon(polygon);	
 				
 				polygon = new Polygon();	
-				polygon->addVertex(lastx,height,lastz, 1, 1);				
-				polygon->addVertex(x,height,z, 1, 1);														
-				polygon->addVertex(0,height,0,0,0);							
+				polygon->addVertex(lastx,height,lastz, 0.5+(lastz/radius*0.5), 0.5+(lastx/radius*0.5));			
+				polygon->addVertex(x,height,z, 0.5+(z/radius*0.5), 0.5+(x/radius*0.5));														
+				polygon->addVertex(0,height,0,0.5,0.5);							
 				addPolygon(polygon);			
 
 				polygon = new Polygon();	
-				polygon->addVertex(lastx,0,lastz, 1, 1);						
-				polygon->addVertex(0,0,0,0,0);																																					
-				polygon->addVertex(x,0,z, 1, 1);								
+				polygon->addVertex(lastx,0,lastz, 0.5+(lastz/radius*0.5), 0.5+(lastx/radius*0.5));						
+				polygon->addVertex(0,0,0,0.5,0.5);																																					
+				polygon->addVertex(x,0,z, 0.5+(z/radius*0.5), 0.5+(x/radius*0.5));								
 				addPolygon(polygon);			
 
 								
 			}
 			lastx = x;
 			lastz = z;			
+			lastv = v;
 		/*
 			Polygon *polygon = new Polygon();
 			polygon->addVertex(w,0,h, 1, 1);
@@ -546,10 +637,46 @@ namespace Polycode {
 		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;										
 	}
 	
-	void Mesh::calculateNormals() {
+	vector<Polygon*> Mesh::getConnectedFaces(Vertex *v) {
+		vector<Polygon*> retVec;	
+		for(int i=0; i < polygons.size(); i++) {
+			bool pushed = false;		
+			for(int j=0; j < polygons[i]->getVertexCount(); j++) {		
+				Vertex *vn =  polygons[i]->getVertex(j);			
+				if(*vn == *v) {
+					if(!pushed) {
+						retVec.push_back(polygons[i]);
+						pushed = true;
+					}
+				}
+			}
+		}
+		return retVec;
+	}
+	
+	void Mesh::calculateNormals(bool smooth, Number smoothAngle) {
 		for(int i =0; i < polygons.size(); i++) {
 			polygons[i]->calculateNormal();
-		}
+		}	
+		
+		if(smooth) {
+			for(int i=0; i < polygons.size(); i++) {
+				for(int j=0; j < polygons[i]->getVertexCount(); j++) {		
+					Vertex *v =  polygons[i]->getVertex(j);
+
+					Vector3 normal;		
+					vector<Polygon*> connectedFaces = getConnectedFaces(v);
+					for(int k=0; k < connectedFaces.size(); k++) {					
+						normal += connectedFaces[k]->getFaceNormal();
+					}					
+					normal = normal / connectedFaces.size();
+					normal.Normalize();
+					v->setNormal(normal.x, normal.y, normal.z);
+				}
+			}
+		
+		} 
+		
 		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;										
 	}
 	

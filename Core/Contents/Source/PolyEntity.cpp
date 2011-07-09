@@ -317,10 +317,10 @@ void Entity::transformAndRender() {
 	int mode = renderer->getRenderMode();
 	if(renderWireframe)
 		renderer->setRenderMode(Renderer::RENDER_MODE_WIREFRAME);
-		
+	else
+		renderer->setRenderMode(Renderer::RENDER_MODE_NORMAL);	
 	if(visible) {
 		Render();
-		renderer->setRenderMode(mode);
 	
 	
 //	renderer->pushMatrix();
@@ -329,7 +329,7 @@ void Entity::transformAndRender() {
 //	renderer->popMatrix();	
 	
 	}		
-	
+	renderer->setRenderMode(mode);	
 	renderer->popMatrix();
 	
 	if(hasMask) {

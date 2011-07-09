@@ -28,8 +28,15 @@
 #include "PolyVector3.h"
 #include <string>
 #include <vector>
-#include "AL/al.h"
-#include "AL/alc.h"
+
+#if defined(__APPLE__) && defined(__MACH__)
+	#include "al.h"
+	#include "alc.h"
+#else
+	#include "AL/al.h"
+	#include "AL/alc.h"
+#endif
+
 #include "OSBasics.h"
 
 using std::string;

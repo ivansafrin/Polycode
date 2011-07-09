@@ -39,12 +39,39 @@ SceneLight::SceneLight(int type, Scene *parentScene, Number intensity, Number co
 	lightMesh->createBox(0.1,0.1,0.1);
 	bBoxRadius = lightMesh->getRadius();
 	bBox = lightMesh->calculateBBox();
-	shadowMapFOV = 70.0f;
+	shadowMapFOV = 60.0f;
 	zBufferTexture = NULL;
 	spotCamera = NULL;
 	this->parentScene = parentScene;
 	shadowsEnabled = false;
 	lightColor.setColor(1.0f,1.0f,1.0f,1.0f);
+	setSpotlightProperties(40,0.1);
+	
+	/*
+	if(type == SceneLight::SPOT_LIGHT) {
+		lightShape = new ScenePrimitive(ScenePrimitive::TYPE_CONE, 3, 1.0, 8);
+		lightShape->Translate(0,0,-1.5);
+		lightShape->setPitch(90.0);
+		lightShape->setColor(1.0,1.0,0.0, 0.75);
+		lightShape->renderWireframe = true;
+		addChild(lightShape);		
+	} else {
+		lightShape = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 0.5, 0.5, 0.5);
+		lightShape->setColor(1.0,1.0,0.0, 0.75);
+		lightShape->renderWireframe = true;
+		addChild(lightShape);		
+	}
+	lightShape->castShadows = false;
+	lightShape->visible = false;
+	*/
+	
+	lightShape = NULL;
+}
+
+void SceneLight::enableDebugDraw(bool val) {
+	if(lightShape) {
+		lightShape->visible = val;
+	}
 }
 
 void SceneLight::enableShadows(bool val, Number resolution) {
@@ -66,6 +93,17 @@ void SceneLight::enableShadows(bool val, Number resolution) {
 
 bool SceneLight::areShadowsEnabled() {
 	return shadowsEnabled;
+}
+
+void SceneLight::setAttenuation(Number constantAttenuation, Number linearAttenuation, Number quadraticAttenuation) {
+	this->constantAttenuation = constantAttenuation;
+	this->linearAttenuation = linearAttenuation;
+	this->quadraticAttenuation = quadraticAttenuation;
+}			
+
+
+void SceneLight::setIntensity(Number newIntensity) {
+	intensity = newIntensity;
 }
 
 void SceneLight::setShadowMapFOV(Number fov) {

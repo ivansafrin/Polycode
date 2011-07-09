@@ -26,6 +26,7 @@ using namespace Polycode;
 
 Material::Material(String name) : Resource(Resource::RESOURCE_MATERIAL) {
 	this->name = name;
+	specularValue = 75.0;
 }
 
 Material::~Material() {

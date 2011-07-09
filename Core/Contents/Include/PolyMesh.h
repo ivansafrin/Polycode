@@ -34,6 +34,12 @@ using namespace std;
  
 namespace Polycode {
 	
+	class _PolyExport VertexSorter {
+		public:
+			Vertex *target;
+			bool operator() (Vertex *v1,Vertex *v2) { return (v1->distance(*target)<v2->distance(*target));}
+	};	
+	
 	class _PolyExport VertexBuffer {
 		public:	
 			VertexBuffer(){}
@@ -169,6 +175,22 @@ namespace Polycode {
 			void createPlane(Number w, Number h);
 			
 			/**
+			* Creates a vertical plane mesh of specified size.
+			* @param w Width of plane.
+			* @param h Depth of plane.			
+			*/ 
+			void createVPlane(Number w, Number h);
+
+			/**
+			* Creates a torus.
+			* @param radius Radius of the torus.
+			* @param tubeRadius Radious of the tube.
+			* @param rSegments Number of radial segments.
+			* @param tSegments Number of tube segments.
+			*/ 	
+			void createTorus(Number radius, Number tubeRadius, int rSegments, int tSegments);
+			
+			/**
 			* Creates a cube mesh of specified size.
 			* @param w Width of cube.
 			* @param d Depth of cube.			
@@ -232,8 +254,12 @@ namespace Polycode {
 			
 			/**
 			* Recalculates the mesh normals (flat normals only).
+			* @param smooth If true, will use smooth normals.
+			* @param smoothAngle If smooth, this parameter sets the angle tolerance for the approximation function.
 			*/
-			void calculateNormals();	
+			void calculateNormals(bool smooth=true, Number smoothAngle=90.0);	
+			
+			vector<Polygon*> getConnectedFaces(Vertex *v);
 			
 			/**
 			* Returns the mesh type.

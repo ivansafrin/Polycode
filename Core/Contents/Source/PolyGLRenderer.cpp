@@ -434,7 +434,6 @@ void OpenGLRenderer::setFogProperties(int fogMode, Color color, Number density, 
 	glHint(GL_FOG_HINT, GL_DONT_CARE);
 	glFogf(GL_FOG_START, startDepth);
 	glFogf(GL_FOG_END, endDepth);
-	glClearColor(color.r, color.g, color.b, color.a);
 }
 
 
@@ -665,6 +664,26 @@ void OpenGLRenderer::applyMaterial(Material *material,  ShaderBinding *localOpti
 		setTexture(NULL);
 		return;
 	}
+
+	GLfloat data4[] = {material->diffuseColor.r, material->diffuseColor.g, material->diffuseColor.b, material->diffuseColor.a};					
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, data4);
+
+	data4[0] = material->specularColor.r;
+	data4[1] = material->specularColor.g;
+	data4[2] = material->specularColor.b;
+	data4[3] = material->specularColor.a;
+				
+	glMaterialfv(GL_FRONT, GL_SPECULAR, data4);
+
+	glMaterialf(GL_FRONT, GL_SHININESS, material->specularValue);
+
+
+
+	data4[0] = ambientColor.r;
+	data4[1] = ambientColor.g;
+	data4[2] = ambientColor.b;
+	data4[3] = 1.0;
+	glMaterialfv(GL_FRONT, GL_AMBIENT, data4);
 
 	FixedShaderBinding *fBinding;
 

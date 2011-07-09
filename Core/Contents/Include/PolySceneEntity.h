@@ -53,6 +53,11 @@ namespace Polycode {
 			*/
 			virtual bool testMouseCollision(Number x, Number y) { return false;}
 			
+			/**
+			* If set to true, will cast shadows (Defaults to true).
+			*/
+			bool castShadows;
+			
 		protected:
 
 	};
