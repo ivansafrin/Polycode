@@ -2,7 +2,7 @@ IF(POLYCODE_BUILD_BOX2D)
     
     INCLUDE(ExternalProject)
 
-    SET(box2d_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/Dependencies/Box2D)
+    SET(box2d_PREFIX ${PROJECT_BINARY_DIR}/Modules/Dependencies/Box2D)
     
     # Needs fpic to link in shared lib on Linux
     IF(CMAKE_COMPILER_IS_GNUCXX)
@@ -20,9 +20,36 @@ IF(POLYCODE_BUILD_BOX2D)
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR> -DBOX2D_BUILD_EXAMPLES=OFF ${box2d_CXX_ARGS}
     )
     
-    SET(CMAKE_PREFIX_PATH ${box2d_PREFIX})
+    SET(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${box2d_PREFIX})
 ENDIF(POLYCODE_BUILD_BOX2D)
 
 FIND_PACKAGE(Box2D)
+
+IF(POLYCODE_BUILD_BULLET)
+    
+    INCLUDE(ExternalProject)
+
+    SET(bullet_PREFIX ${PROJECT_BINARY_DIR}/Modules/Dependencies/Bullet)
+        
+    # Needs fpic to link in shared lib on Linux
+    IF(CMAKE_COMPILER_IS_GNUCXX)
+        SET(bullet_CXX_ARGS -DCMAKE_CXX_FLAGS=-fPIC)
+    ENDIF(CMAKE_COMPILER_IS_GNUCXX)
+
+    ExternalProject_Add(bullet
+        PREFIX ${bullet_PREFIX}
+        
+        URL http://bullet.googlecode.com/files/bullet-2.78.zip
+        URL_MD5 99d4070864c9f73521481ba9cda25038
+
+        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR> -DBUILD_CPU_DEMOS=OFF ${bullet_CXX_ARGS}
+    )
+    
+    # cmake seems to have trouble finding the includes
+    SET(BULLET_INCLUDE_DIR ${bullet_PREFIX}/include/bullet)
+    SET(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${bullet_PREFIX})
+ENDIF(POLYCODE_BUILD_BULLET)
+
+FIND_PACKAGE(Bullet)
 
 ADD_SUBDIRECTORY(Contents)

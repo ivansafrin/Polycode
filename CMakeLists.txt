@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 PROJECT(PolyCode)
 
@@ -18,12 +18,13 @@ OPTION(POLYCODE_BUILD_TOOLS "Build Polycode tools" ON)
 
 # Options for what components should be downloaded and built
 OPTION(POLYCODE_BUILD_BOX2D "Download and build the Box2D package" ON)
+OPTION(POLYCODE_BUILD_BULLET "Download and build the Bullet package" ON)
 OPTION(POLYCODE_BUILD_ASSIMP "Download and build the Assimp package" ON)
 
 OPTION(POLYCODE_INSTALL_FRAMEWORK "Install Polycode Core, Modules and Tools" ON)
 
 # Some non-standard CMake modules
-SET(CMAKE_MODULE_PATH ${PolyCode_SOURCE_DIR}/Build/CMakeModules ${CMAKE_MODULE_PATH})
+SET(CMAKE_MODULE_PATH ${PolyCode_SOURCE_DIR}/Build/CMakeModules)
 
 IF(WIN32)
     SET(CMAKE_PREFIX_PATH ${PolyCode_SOURCE_DIR}/Release/Win/Framework/Dependencies)
@@ -76,8 +77,6 @@ IF(POLYCODE_BUILD_EXAMPLES)
 ENDIF(POLYCODE_BUILD_EXAMPLES)
 
 IF(POLYCODE_BUILD_MODULES)
-    #FIND_PACKAGE(Box2D)
-    FIND_PACKAGE(Bullet)
     ADD_SUBDIRECTORY(Modules)
 ENDIF(POLYCODE_BUILD_MODULES)
 
