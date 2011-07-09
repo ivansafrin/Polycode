@@ -344,29 +344,75 @@ namespace Polycode {
 		return retVec*2;
 	}
 	
-	void Mesh::createSphere(Number radius, Number numRings, Number numSegments) {
+	void Mesh::createSphere(Number _radius, int _segmentsH, int _segmentsW) {
 
-		Number fDeltaRingAngle = (PI / numRings);
-        Number fDeltaSegAngle = (2 * PI / numSegments);
-		
-		for(int i=0; i < numRings; i++) {
-			Number r0 = radius * sinf (i * fDeltaRingAngle);
-			Number y0 = radius * cosf (i * fDeltaRingAngle);			
-			for(int j=0; j < numSegments; j++) {
-				Number x0 = r0 * sinf(j * fDeltaSegAngle);
-				Number z0 = r0 * cosf(j * fDeltaSegAngle);
-				
-				Number tx0 = (Number) j / (Number) numSegments;
-				Number tx1 = (Number) i / (Number) numRings;
-				
-				Vector3 nor = Vector3(x0, y0, z0);
-				nor.Normalize();
+		setMeshType(Mesh::TRI_MESH);
 
-				
-			}
+
+		Vector3 **grid = (Vector3 **) malloc(sizeof(Vector3*) * (_segmentsH+1));
+		for (int i=0 ; i < _segmentsH+1; i++) {
+			grid[i] = (Vector3*) malloc(sizeof(Vector3) * _segmentsW+1);		
 		}
 		
-		useVertexNormals(true);
+	
+		for (int i = 0; i < _segmentsW; i++) {
+			grid[0][i] = Vector3(0,-_radius,0);
+		}
+			
+		for (int j = 1; j < _segmentsH; j++) {
+			Number horangle = ((float)j) / ((float)_segmentsH) * PI;
+			Number z = -_radius * cos(horangle);
+			Number ringradius = _radius * sin(horangle);
+
+			for (int i = 0; i < _segmentsW; i++) {
+				Number verangle = 2.0 * ((float)i) / ((float)_segmentsW) * PI;
+				Number x = ringradius * sin(verangle);
+				Number y = ringradius * cos(verangle);
+				grid[j][i] = Vector3(y, z, x);
+            }
+		}
+
+		for (int i = 0; i < _segmentsW; i++) {
+                grid[_segmentsH][i] = Vector3(0,_radius, 0);
+		}
+
+		for (int j = 1; j <= _segmentsH; j++) {
+			for (int i = 0; i < _segmentsW; i++) {
+				Vector3 a = grid[j][i];
+				Vector3 b = grid[j][(i-1+_segmentsW) % _segmentsW];
+				Vector3 c = grid[j-1][(i-1+_segmentsW) % _segmentsW];
+				Vector3 d = grid[j-1][i];
+
+				int i2 = i;
+				if (i == 0) i2 = _segmentsW;
+
+				Number vab = ((float)j) / ((float)_segmentsH);
+				Number vcd = (((float)j)-1.0) / ((float)_segmentsH);
+				Number uad = ((float)i2) / ((float)_segmentsW);
+				Number ubc = (((float)i2)-1.0) / ((float)_segmentsW);
+				Vector2 uva = Vector2(uad,vab);
+				Vector2 uvb = Vector2(ubc,vab);
+				Vector2 uvc = Vector2(ubc,vcd);
+				Vector2 uvd = Vector2(uad,vcd);
+
+				if (j < _segmentsH) {
+					Polygon *polygon = new Polygon();
+					polygon->addVertex(c.x, c.y, c.z, uvc.x ,uvc.y);
+					polygon->addVertex(b.x, b.y, b.z, uvb.x ,uvb.y);							
+					polygon->addVertex(a.x, a.y, a.z, uva.x ,uva.y);
+					addPolygon(polygon);								
+				}
+				if (j > 1) {
+					Polygon *polygon = new Polygon();
+					polygon->addVertex(d.x, d.y, d.z, uvd.x ,uvd.y);												
+					polygon->addVertex(c.x, c.y, c.z, uvc.x ,uvc.y);
+					polygon->addVertex(a.x, a.y, a.z, uva.x ,uva.y);
+					addPolygon(polygon);					
+				}
+			}
+		}
+
+		calculateNormals();
 		arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
 		arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
 		arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;						

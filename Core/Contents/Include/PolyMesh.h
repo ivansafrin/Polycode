@@ -204,7 +204,7 @@ namespace Polycode {
 			* @param numRings Number of rings.	
 			* @param numSegments Number of segments.
 			*/ 						
-			void createSphere(Number radius, Number numRings, Number numSegments);
+			void createSphere(Number radius, int numRings, int numSegments);
 
 			/**
 			* Creates a cylinder mesh.
