@@ -1,6 +1,8 @@
+INCLUDE(PolycodeIncludes)
+    
 INCLUDE_DIRECTORIES(
     ${LUA_INCLUDE_DIR}
-    ${PolyCode_SOURCE_DIR}/Bindings/Contents/LUA/Include
+    ${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/Include
 )
 
 IF(MSVC)

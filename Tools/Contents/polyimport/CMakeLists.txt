@@ -1,4 +1,10 @@
-INCLUDE_DIRECTORIES(${PolyCode_SOURCE_DIR}/Core/Contents/Include Include ${ASSIMP_INCLUDE_DIR})
+FIND_PACKAGE(Assimp REQUIRED)
+
+INCLUDE(PolycodeIncludes)
+
+INCLUDE_DIRECTORIES(
+    ${ASSIMP_INCLUDE_DIR} 
+    Include)
 
 IF(POLYCODE_BUILD_SHARED)
     ADD_EXECUTABLE(polyimport Source/polyimport.cpp Include/polyimport.h)

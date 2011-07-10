@@ -1,3 +1,5 @@
+INCLUDE(PolycodeIncludes)
+
 SET(polycode3DPhysics_SRCS
     Source/PolyPhysicsSceneEntity.cpp
     Source/PolyPhysicsScene.cpp

@@ -1,4 +1,11 @@
-INCLUDE_DIRECTORIES(${PolyCode_SOURCE_DIR}/Tools/Dependencies/unzip11 Include)
+FIND_PACKAGE(ZLIB)
+
+INCLUDE(PolycodeIncludes)
+
+INCLUDE_DIRECTORIES(
+    ${ZLIB_INCLUDE_DIR}
+    ${Polycode_SOURCE_DIR}/Tools/Dependencies/unzip11 
+    Include)
 
 SET(minizip_SRCS 
     ../../Dependencies/unzip11/ioapi.c

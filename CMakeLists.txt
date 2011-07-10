@@ -1,10 +1,11 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
-PROJECT(PolyCode)
+PROJECT(Polycode)
 
 IF(NOT CMAKE_BUILD_TYPE)
     SET(CMAKE_BUILD_TYPE "Debug")
-#   SET(CMAKE_BUILD_TYPE "Release")
+    #SET(CMAKE_BUILD_TYPE "Release")
+    MESSAGE("No CMAKE_BUILD_TYPE specified, defaulting to ${CMAKE_BUILD_TYPE}") 
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
 # Options for what components to build
@@ -16,28 +17,28 @@ OPTION(POLYCODE_BUILD_MODULES "Build Polycode modules" ON)
 OPTION(POLYCODE_BUILD_PLAYER "Build Polycode standalone player" ON)
 OPTION(POLYCODE_BUILD_TOOLS "Build Polycode tools" ON)
 
-# Download and build all dependencies on Windows and Mac
-IF(APPLE OR WIN32)
-	SET(common_externals ON)
-ELSE()
-	SET(common_externals OFF)
-ENDIF()
-
 OPTION(POLYCODE_INSTALL_FRAMEWORK "Install Polycode Core, Modules and Tools" ON)
 
 # Some non-standard CMake modules
-SET(CMAKE_MODULE_PATH ${PolyCode_SOURCE_DIR}/CMake)
+SET(CMAKE_MODULE_PATH ${Polycode_SOURCE_DIR}/CMake)
 
-IF(WIN32)
-    SET(CMAKE_PREFIX_PATH ${PolyCode_SOURCE_DIR}/Release/Win/Framework/Dependencies)
-    SET(CMAKE_SYSTEM_LIBRARY_PATH ${CMAKE_PREFIX_PATH}/Lib/Release)
-ENDIF(WIN32)
+IF(NOT POLYCODE_RELEASE_DIR)
+    SET(POLYCODE_RELEASE_DIR ${Polycode_SOURCE_DIR}/Release/${CMAKE_SYSTEM_NAME})
+    MESSAGE("No POLYCODE_RELEASE_DIR specified, to ${POLYCODE_RELEASE_DIR}") 
+ENDIF(NOT POLYCODE_RELEASE_DIR)
+
+# set default externals install location
+SET(CMAKE_PREFIX_PATH 
+    ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies
+    ${POLYCODE_RELEASE_DIR}/Framework/Modules/Dependencies
+    ${POLYCODE_RELEASE_DIR}/Framework/Tools/Dependencies)
+
+MESSAGE(DEBUG "CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}")
 
 # Process subdirectories
-ADD_SUBDIRECTORY(Core)
+ADD_SUBDIRECTORY(Core/Contents)
 
 IF(POLYCODE_BUILD_BINDINGS)
-    FIND_PACKAGE(Lua51 REQUIRED)
     ADD_SUBDIRECTORY(Bindings/Contents)
 ENDIF(POLYCODE_BUILD_BINDINGS)
 
@@ -46,11 +47,10 @@ IF(POLYCODE_BUILD_EXAMPLES)
 ENDIF(POLYCODE_BUILD_EXAMPLES)
 
 IF(POLYCODE_BUILD_MODULES)
-    ADD_SUBDIRECTORY(Modules)
+    ADD_SUBDIRECTORY(Modules/Contents)
 ENDIF(POLYCODE_BUILD_MODULES)
 
 IF(POLYCODE_BUILD_PLAYER)
-    FIND_PACKAGE(Lua51 REQUIRED)
     ADD_SUBDIRECTORY(Player/Contents)
 ENDIF(POLYCODE_BUILD_PLAYER)
 

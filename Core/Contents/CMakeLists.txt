@@ -1,4 +1,16 @@
+FIND_PACKAGE(OpenGL REQUIRED)
+FIND_PACKAGE(PNG REQUIRED)
+FIND_PACKAGE(PhysFS REQUIRED)
+FIND_PACKAGE(OpenAL REQUIRED)
+FIND_PACKAGE(Freetype REQUIRED)
+FIND_PACKAGE(VorbisFile REQUIRED)
 
+# Use SDL on non-Apple unixes
+IF(UNIX AND NOT APPLE)
+    FIND_PACKAGE(SDL REQUIRED)
+ENDIF(UNIX AND NOT APPLE)
+
+# set up common includes
 INCLUDE(PolycodeIncludes)
 
 SET(polycore_SRCS
@@ -214,9 +226,6 @@ IF(POLYCODE_BUILD_SHARED)
         ${SDL_LIBRARY}
     )
     ADD_LIBRARY(PolyCore SHARED ${polycore_SRCS} ${polycore_HDRS})
-    TARGET_LINK_LIBRARIES(
-        PolyCore
-    )
 ENDIF(POLYCODE_BUILD_SHARED)
 
 IF(POLYCODE_BUILD_STATIC)
@@ -225,19 +234,14 @@ ENDIF(POLYCODE_BUILD_STATIC)
 
 IF(POLYCODE_INSTALL_FRAMEWORK)
     # install headers
-    INSTALL(FILES ${polycore_HDRS} DESTINATION Framework/Core/Include)
+    INSTALL(FILES ${polycore_HDRS} DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Core/Include)
 
     # install libraries
     IF(POLYCODE_BUILD_SHARED)
-        INSTALL(TARGETS PolyCore EXPORT PolyCore-targets DESTINATION Framework/Core/Lib/${CMAKE_BUILD_TYPE})
+        INSTALL(TARGETS PolyCore EXPORT PolyCore-targets DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Core/Lib/${CMAKE_BUILD_TYPE})
     ENDIF(POLYCODE_BUILD_SHARED)
     
     IF(POLYCODE_BUILD_STATIC)
-        INSTALL(TARGETS PolyCore_static EXPORT PolyCore-targets DESTINATION Framework/Core/Lib/${CMAKE_BUILD_TYPE})
+        INSTALL(TARGETS PolyCore_static EXPORT PolyCore-targets DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Core/Lib/${CMAKE_BUILD_TYPE})
     ENDIF(POLYCODE_BUILD_STATIC)
-
-    # from Box2D's cmake file - not sure what it does yet
-    # install build system hooks for third-party apps
-    # INSTALL(EXPORT PolyCore-targets DESTINATION Lib/Box2D)
-    # INSTALL(FILES Box2DConfig.cmake DESTINATION Lib/Box2D)
 ENDIF(POLYCODE_INSTALL_FRAMEWORK)
