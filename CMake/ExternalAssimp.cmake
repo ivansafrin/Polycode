@@ -11,10 +11,12 @@ ExternalProject_Add(assimp
 )
 
 # install built files
+ExternalProject_Get_Property(assimp install_dir)
+
 INSTALL(DIRECTORY ${install_dir}/include 
     DESTINATION ${POLYCODE_EXTERNALS_MODULES_PREFIX}
     FILES_MATCHING PATTERN "*.h")
-INSTALL(DIRECTORY ${install_dir}/bin
-    DESTINATION ${POLYCODE_EXTERNALS_MODULES_PREFIX}/bin)
+#INSTALL(DIRECTORY ${install_dir}/bin
+#    DESTINATION ${POLYCODE_EXTERNALS_MODULES_PREFIX}/bin)
 INSTALL(DIRECTORY ${install_dir}/lib
     DESTINATION ${POLYCODE_EXTERNALS_MODULES_PREFIX}/lib)
