@@ -23,22 +23,10 @@ ELSE()
 	SET(common_externals OFF)
 ENDIF()
 
-# Options for what components should be downloaded and built
-OPTION(POLYCODE_EXTERNAL_PHYSFS "Download and build the PhysFS package" ${common_externals})
-#OPTION(OpenGL REQUIRED)
-OPTION(POLYCODE_EXTERNAL_OPENAL "Download and build the OpenAL package" ${common_externals})
-OPTION(POLYCODE_EXTERNAL_FREETYPE "Download and build the Freetype2 package" ${common_externals})
-OPTION(POLYCODE_EXTERNAL_PNG "Download and build the PNG package" ${common_externals})
-OPTION(POLYCODE_EXTERNAL_VORBISFILE "Download and build the Vorbis File package" ${common_externals})
-
-OPTION(POLYCODE_BUILD_BOX2D "Download and build the Box2D package" ON)
-OPTION(POLYCODE_BUILD_BULLET "Download and build the Bullet package" ON)
-OPTION(POLYCODE_BUILD_ASSIMP "Download and build the Assimp package" ON)
-
 OPTION(POLYCODE_INSTALL_FRAMEWORK "Install Polycode Core, Modules and Tools" ON)
 
 # Some non-standard CMake modules
-SET(CMAKE_MODULE_PATH ${PolyCode_SOURCE_DIR}/Build/CMakeModules)
+SET(CMAKE_MODULE_PATH ${PolyCode_SOURCE_DIR}/CMake)
 
 IF(WIN32)
     SET(CMAKE_PREFIX_PATH ${PolyCode_SOURCE_DIR}/Release/Win/Framework/Dependencies)

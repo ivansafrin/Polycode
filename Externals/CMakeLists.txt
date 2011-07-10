@@ -1,0 +1,83 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+
+PROJECT(PolycodeExternals)
+
+IF(NOT CMAKE_BUILD_TYPE)
+    #SET(CMAKE_BUILD_TYPE "Debug")
+    SET(CMAKE_BUILD_TYPE "Release")
+    MESSAGE("No CMAKE_BUILD_TYPE specified, defaulting to ${CMAKE_BUILD_TYPE}") 
+ENDIF(NOT CMAKE_BUILD_TYPE)
+
+IF(NOT POLYCODE_RELEASE_DIR)
+    SET(POLYCODE_RELEASE_DIR ${PolycodeExternals_SOURCE_DIR}/../Release/${CMAKE_SYSTEM_NAME})
+    MESSAGE("No POLYCODE_RELEASE_DIR specified, to ${POLYCODE_RELEASE_DIR}") 
+ENDIF(NOT POLYCODE_RELEASE_DIR)
+
+SET(POLYCODE_EXTERNALS_CORE_PREFIX ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies)
+SET(POLYCODE_EXTERNALS_MODULES_PREFIX ${POLYCODE_RELEASE_DIR}/Framework/Modules/Dependencies)
+SET(POLYCODE_EXTERNALS_TOOLS_PREFIX ${POLYCODE_RELEASE_DIR}/Framework/Tools/Dependencies)
+
+# Download and build all dependencies on Windows and Mac
+IF(APPLE OR WIN32)
+    SET(common_externals ON)
+ELSE()
+    SET(common_externals OFF)
+ENDIF()
+
+# Options for what components should be downloaded and built
+OPTION(POLYCODE_EXTERNAL_PHYSFS "Download and build the PhysFS package" ${common_externals})
+#OPTION(OpenGL REQUIRED)
+OPTION(POLYCODE_EXTERNAL_GLEXT "Download additional OpenGL headers" ${common_externals})
+OPTION(POLYCODE_EXTERNAL_OPENAL "Download and build the OpenAL package" ${common_externals})
+OPTION(POLYCODE_EXTERNAL_FREETYPE "Download and build the Freetype2 package" ${common_externals})
+OPTION(POLYCODE_EXTERNAL_PNG "Download and build the PNG package" ${common_externals})
+OPTION(POLYCODE_EXTERNAL_VORBISFILE "Download and build the Vorbis File package" ${common_externals})
+
+OPTION(POLYCODE_EXTERNAL_BOX2D "Download and build the Box2D package" ON)
+OPTION(POLYCODE_EXTERNAL_BULLET "Download and build the Bullet package" ON)
+OPTION(POLYCODE_EXTERNAL_ASSIMP "Download and build the Assimp package" ON)
+
+# Some non-standard CMake modules
+SET(CMAKE_MODULE_PATH ${PolycodeExternals_SOURCE_DIR}/../CMake)
+
+IF(POLYCODE_EXTERNAL_PNG)
+    INCLUDE(ExternalPNG)
+ENDIF(POLYCODE_EXTERNAL_PNG)
+
+IF(POLYCODE_EXTERNAL_PHYSFS)
+    INCLUDE(ExternalPhysFS)
+ENDIF(POLYCODE_EXTERNAL_PHYSFS)
+
+IF(POLYCODE_EXTERNAL_OPENAL)
+    INCLUDE(ExternalOpenAL)
+ENDIF(POLYCODE_EXTERNAL_OPENAL)
+
+IF(POLYCODE_EXTERNAL_FREETYPE)
+    INCLUDE(ExternalFreetype)
+ENDIF(POLYCODE_EXTERNAL_FREETYPE)
+
+IF(POLYCODE_EXTERNAL_VORBISFILE)
+    INCLUDE(ExternalVorbisFile)
+ENDIF(POLYCODE_EXTERNAL_VORBISFILE)
+
+IF(POLYCODE_EXTERNAL_BOX2D)
+    INCLUDE(ExternalBox2D)
+ENDIF(POLYCODE_EXTERNAL_BOX2D)
+
+IF(POLYCODE_EXTERNAL_BULLET)
+    INCLUDE(ExternalBullet)
+ENDIF(POLYCODE_EXTERNAL_BULLET)
+
+IF(POLYCODE_EXTERNAL_ASSIMP)
+    INCLUDE(ExternalAssimp)
+ENDIF(POLYCODE_EXTERNAL_ASSIMP)
+
+# Use SDL on non-Apple unixes
+#IF(UNIX AND NOT APPLE)
+#    FIND_PACKAGE(SDL REQUIRED)
+#ENDIF(UNIX AND NOT APPLE)
+
+# Get missing GL headers for Windows
+IF(POLYCODE_EXTERNAL_GLEXT)
+    INCLUDE(ExternalGLExt)
+ENDIF(POLYCODE_EXTERNAL_GLEXT)

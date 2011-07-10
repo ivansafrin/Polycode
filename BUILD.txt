@@ -6,12 +6,9 @@ zlib
 http://zlib.net/zlib125.zip
 
 PNG
-ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng-1.5.4.tar.gz
-http://download.sourceforge.net/libpng/libpng-1.5.4.tar.gz
 http://cdnetworks-us-1.dl.sourceforge.net/project/libpng/libpng15/1.5.2/lpng152.zip
 
 Freetype2
-http://download.savannah.gnu.org/releases/freetype/freetype-2.4.5.tar.gz
 http://surfnet.dl.sourceforge.net/project/freetype/freetype2/2.4.5/ft245.zip
 
 PhysFS
