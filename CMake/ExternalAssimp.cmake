@@ -13,9 +13,17 @@ ExternalProject_Add(assimp
 # install built files
 ExternalProject_Get_Property(assimp install_dir)
 
-INSTALL(DIRECTORY ${install_dir}/include 
-    DESTINATION ${POLYCODE_EXTERNALS_TOOLS_PREFIX})
-#INSTALL(DIRECTORY ${install_dir}/bin
-#    DESTINATION ${POLYCODE_EXTERNALS_TOOLS_PREFIX})
-INSTALL(DIRECTORY ${install_dir}/lib
-    DESTINATION ${POLYCODE_EXTERNALS_TOOLS_PREFIX})
+# install includes
+INSTALL(DIRECTORY ${install_dir}/include/
+    DESTINATION ${POLYCODE_EXTERNALS_TOOLS_PREFIX}/Include)
+
+# install debug lib
+INSTALL(FILES ${install_dir}/lib/assimp${CMAKE_STATIC_LIBRARY_SUFFIX} 
+    DESTINATION ${POLYCODE_EXTERNALS_TOOLS_PREFIX}/Lib/Debug
+    CONFIGURATIONS Debug
+    RENAME assimpd${CMAKE_STATIC_LIBRARY_SUFFIX})
+
+# install release lib
+INSTALL(FILES ${install_dir}/lib/assimp${CMAKE_STATIC_LIBRARY_SUFFIX} 
+    DESTINATION ${POLYCODE_EXTERNALS_TOOLS_PREFIX}/Lib/Release
+    CONFIGURATIONS Release)
