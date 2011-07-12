@@ -16,7 +16,9 @@ SET(box2d_CMAKE_ARGS
 
 ExternalProject_Add(box2d
     PREFIX ${box2d_PREFIX}
-    
+
+    DOWNLOAD_DIR ${POLYCODE_EXTERNALS_DOWNLOAD_DIR}
+
     URL http://box2d.googlecode.com/files/Box2D_v2.1.2.zip
     URL_MD5 59d142cd8d4d73e8832c7b67591f590c
 

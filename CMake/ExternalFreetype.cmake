@@ -30,8 +30,11 @@ MESSAGE(DEBUG ${freetype_BUILD})
 
 ExternalProject_Add(freetype
     PREFIX ${freetype_PREFIX}
+
+    DOWNLOAD_DIR ${POLYCODE_EXTERNALS_DOWNLOAD_DIR}
     URL http://download.savannah.gnu.org/releases/freetype/freetype-2.4.5.tar.gz
     URL_MD5 0e67460b312df905dc1cc1586690e7b2
+
     CONFIGURE_COMMAND ""
     BUILD_IN_SOURCE 1
     BUILD_COMMAND ${freetype_BUILD}

@@ -5,6 +5,9 @@ SET(openal_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/openal)
 
 ExternalProject_Add(openal
     PREFIX ${openal_PREFIX}
+
+    DOWNLOAD_DIR ${POLYCODE_EXTERNALS_DOWNLOAD_DIR}
+
     URL http://kcat.strangesoft.net/openal-releases/openal-soft-1.13.tar.bz2
     URL_MD5 58b7d2809790c70681b825644c5f3614
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>

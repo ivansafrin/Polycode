@@ -18,6 +18,8 @@ ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 ExternalProject_Add(bullet
     PREFIX ${bullet_PREFIX}
     
+    DOWNLOAD_DIR ${POLYCODE_EXTERNALS_DOWNLOAD_DIR}
+
     URL http://bullet.googlecode.com/files/bullet-2.78.zip
     URL_MD5 99d4070864c9f73521481ba9cda25038
 
