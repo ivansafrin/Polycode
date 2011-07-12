@@ -65,15 +65,15 @@ INSTALL(FILES ${install_dir}/lib/libvorbisfile${CMAKE_STATIC_LIBRARY_SUFFIX}
 
 # install debug shared library
 INSTALL(FILES ${install_dir}/bin/liboggd${CMAKE_SHARED_LIBRARY_SUFFIX}
-    DESTINATION ${POLYCODE_DEPS_CORE_PREFIX}/Lib/Debug
+    DESTINATION ${POLYCODE_DEPS_CORE_PREFIX}/Bin/Debug
     CONFIGURATIONS Debug)
 
 INSTALL(FILES ${install_dir}/bin/libvorbisd${CMAKE_SHARED_LIBRARY_SUFFIX}
-    DESTINATION ${POLYCODE_DEPS_CORE_PREFIX}/Lib/Debug
+    DESTINATION ${POLYCODE_DEPS_CORE_PREFIX}/Bin/Debug
     CONFIGURATIONS Debug)
 
 INSTALL(FILES ${install_dir}/bin/libvorbisfiled${CMAKE_SHARED_LIBRARY_SUFFIX}
-    DESTINATION ${POLYCODE_DEPS_CORE_PREFIX}/Lib/Debug
+    DESTINATION ${POLYCODE_DEPS_CORE_PREFIX}/Bin/Debug
     CONFIGURATIONS Debug)
 
 # install release shared library
