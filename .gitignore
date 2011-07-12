@@ -31,7 +31,8 @@
 *.opensdf
 *.user.*
 
-/Externals/Build
+/Dependencies/Build
+/Dependencies/Downloads
 /Core/Build/Mac\ OS\ X/build
 /IDE/Build/Mac\ OS\ X/build
 /Modules/Build/Mac\ OS\ X/build
