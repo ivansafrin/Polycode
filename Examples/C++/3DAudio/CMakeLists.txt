@@ -2,11 +2,11 @@ INCLUDE_DIRECTORIES(.)
 
 IF(POLYCODE_BUILD_SHARED)
 	ADD_EXECUTABLE(3DAudio ../main.cpp HelloPolycodeApp.cpp HelloPolycodeApp.h)
-	TARGET_LINK_LIBRARIES(3DAudio PolyCore)
+	TARGET_LINK_LIBRARIES(3DAudio Polycore)
 ENDIF(POLYCODE_BUILD_SHARED)
 
 IF(POLYCODE_BUILD_STATIC)
 	ADD_EXECUTABLE(3DAudio_static ../main.cpp HelloPolycodeApp.cpp HelloPolycodeApp.h)
-	TARGET_LINK_LIBRARIES(3DAudio_static PolyCore_static)
+	TARGET_LINK_LIBRARIES(3DAudio_static Polycore_static)
 ENDIF(POLYCODE_BUILD_STATIC)
 

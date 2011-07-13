@@ -19,15 +19,18 @@ SET(polycodeLua_HDRS
 
 SET(CMAKE_DEBUG_POSTFIX "_d")
 
-IF(POLYCODE_BUILD_SHARED)
-    ADD_LIBRARY(PolycodeLua SHARED ${polycodeLua_SRCS} ${polycodeLua_HDRS})
-    TARGET_LINK_LIBRARIES(PolycodeLua PolyCore ${LUA_LIBRARY})
-ENDIF(POLYCODE_BUILD_SHARED)
+#IF(POLYCODE_BUILD_SHARED)
+#    ADD_LIBRARY(PolycodeLua SHARED ${polycodeLua_SRCS} ${polycodeLua_HDRS})
+#    TARGET_LINK_LIBRARIES(PolycodeLua Polycore ${LUA_LIBRARY})
+#ENDIF(POLYCODE_BUILD_SHARED)
 
-IF(POLYCODE_BUILD_STATIC)
-    ADD_LIBRARY(PolycodeLua_static ${polycodeLua_SRCS} ${polycodeLua_HDRS})
-    TARGET_LINK_LIBRARIES(PolycodeLua_static PolyCore_static)
-ENDIF(POLYCODE_BUILD_STATIC)
+#IF(POLYCODE_BUILD_STATIC)
+#    ADD_LIBRARY(PolycodeLua_static ${polycodeLua_SRCS} ${polycodeLua_HDRS})
+#    TARGET_LINK_LIBRARIES(PolycodeLua_static Polycore_static)
+#ENDIF(POLYCODE_BUILD_STATIC)
+
+ADD_LIBRARY(PolycodeLua ${polycodeLua_SRCS} ${polycodeLua_HDRS})
+TARGET_LINK_LIBRARIES(PolycodeLua)
 
 IF(POLYCODE_INSTALL_FRAMEWORK)
     

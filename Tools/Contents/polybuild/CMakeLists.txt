@@ -15,11 +15,11 @@ SET(minizip_SRCS
 )
 
 IF(POLYCODE_BUILD_SHARED)
-    LINK_LIBRARIES(PolyCore)
+    LINK_LIBRARIES(Polycore)
     ADD_EXECUTABLE(polybuild ${minizip_SRCS} Source/polybuild.cpp Include/polybuild.h)
 ENDIF(POLYCODE_BUILD_SHARED)
 
 IF(POLYCODE_BUILD_STATIC)
-    LINK_LIBRARIES(PolyCore_static)
+    LINK_LIBRARIES(Polycore_static)
     ADD_EXECUTABLE(polybuild_static ${minizip_SRCS} Source/polybuild.cpp Include/polybuild.h)
 ENDIF(POLYCODE_BUILD_STATIC)

@@ -24,7 +24,7 @@ ENDIF(MSVC)
 ADD_LIBRARY(libogg_dynamic SHARED ${libogg_SRCS} ${libogg_HDRS})
 ADD_LIBRARY(libogg_static ${libogg_SRCS} ${libogg_HDRS})
 
-SET_TARGET_PROPERTIES(libogg_dynamic libogg_static 
+SET_TARGET_PROPERTIES(libogg_dynamic #libogg_static 
     PROPERTIES OUTPUT_NAME libogg)
 
 INSTALL(TARGETS libogg_dynamic libogg_static
