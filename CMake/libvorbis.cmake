@@ -113,10 +113,10 @@ ADD_LIBRARY(libvorbisfile_static lib/vorbisfile.c include/vorbis/vorbisfile.h)
 
 TARGET_LINK_LIBRARIES(libvorbisfile_dynamic libvorbis_dynamic ${OGG_LIBRARY})
 
-SET_TARGET_PROPERTIES(libvorbis_dynamic libvorbis_static 
+SET_TARGET_PROPERTIES(libvorbis_dynamic #libvorbis_static
     PROPERTIES OUTPUT_NAME libvorbis)
 
-SET_TARGET_PROPERTIES(libvorbisfile_dynamic libvorbisfile_static 
+SET_TARGET_PROPERTIES(libvorbisfile_dynamic #libvorbisfile_static 
     PROPERTIES OUTPUT_NAME libvorbisfile)
 
 INSTALL(TARGETS 

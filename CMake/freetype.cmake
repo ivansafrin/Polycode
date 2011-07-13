@@ -9,7 +9,7 @@ IF(NOT CMAKE_BUILD_TYPE)
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
 # to distinguish between debug and release lib
-SET(CMAKE_DEBUG_POSTFIX "d")
+SET(CMAKE_DEBUG_POSTFIX "_d")
 
 SET(freetype_SRCS
     src/autofit/autofit.c

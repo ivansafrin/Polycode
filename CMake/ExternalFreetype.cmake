@@ -23,11 +23,11 @@ INSTALL(DIRECTORY ${install_dir}/include/
     FILES_MATCHING PATTERN "*.h")
 
 # install debug libs
-INSTALL(FILES ${install_dir}/lib/freetyped${CMAKE_STATIC_LIBRARY_SUFFIX} 
-    DESTINATION ${POLYCODE_DEPS_CORE_PREFIX}/Lib/Debug
+INSTALL(FILES ${install_dir}/lib/freetype_d${CMAKE_STATIC_LIBRARY_SUFFIX} 
+    DESTINATION ${POLYCODE_DEPS_CORE_PREFIX}/Lib
     CONFIGURATIONS Debug)
 
 # install release lib
 INSTALL(FILES ${install_dir}/lib/freetype${CMAKE_STATIC_LIBRARY_SUFFIX}
-    DESTINATION ${POLYCODE_DEPS_CORE_PREFIX}/Lib/Release
+    DESTINATION ${POLYCODE_DEPS_CORE_PREFIX}/Lib
     CONFIGURATIONS Release)

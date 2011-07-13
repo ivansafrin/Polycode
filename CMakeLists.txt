@@ -18,6 +18,7 @@ OPTION(POLYCODE_BUILD_PLAYER "Build Polycode standalone player" ON)
 OPTION(POLYCODE_BUILD_TOOLS "Build Polycode tools" ON)
 
 OPTION(POLYCODE_INSTALL_FRAMEWORK "Install Polycode Core, Modules and Tools" ON)
+OPTION(POLYCODE_INSTALL_PLAYER "Install Polycode Player" ON)
 
 # Some non-standard CMake modules
 SET(CMAKE_MODULE_PATH ${Polycode_SOURCE_DIR}/CMake)
@@ -55,7 +56,7 @@ IF(POLYCODE_BUILD_PLAYER)
 ENDIF(POLYCODE_BUILD_PLAYER)
 
 IF(POLYCODE_BUILD_TOOLS)
-    ADD_SUBDIRECTORY(Tools)
+    ADD_SUBDIRECTORY(Tools/Contents)
 ENDIF(POLYCODE_BUILD_TOOLS)
 
 # Install assets and dependencies
