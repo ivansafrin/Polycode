@@ -3,6 +3,11 @@ INCLUDE(ExternalProject)
 
 SET(freetype_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/freetype)
 
+SET(freetype_CMAKE_ARGS
+    -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR> 
+    -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+)
+
 EXTERNALPROJECT_ADD(freetype
     PREFIX ${freetype_PREFIX}
 
@@ -12,22 +17,6 @@ EXTERNALPROJECT_ADD(freetype
 
     PATCH_COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PolycodeDependencies_SOURCE_DIR}/../CMake/freetype.cmake <SOURCE_DIR>/CMakeLists.txt
 
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
+    INSTALL_DIR ${POLYCODE_DEPS_CORE_PREFIX}
+    CMAKE_ARGS ${freetype_CMAKE_ARGS}
 )
-
-ExternalProject_Get_Property(freetype install_dir)
-
-# install built files
-INSTALL(DIRECTORY ${install_dir}/include/
-    DESTINATION ${POLYCODE_DEPS_CORE_PREFIX}/Include
-    FILES_MATCHING PATTERN "*.h")
-
-# install debug libs
-INSTALL(FILES ${install_dir}/lib/freetype_d${CMAKE_STATIC_LIBRARY_SUFFIX} 
-    DESTINATION ${POLYCODE_DEPS_CORE_PREFIX}/Lib
-    CONFIGURATIONS Debug)
-
-# install release lib
-INSTALL(FILES ${install_dir}/lib/freetype${CMAKE_STATIC_LIBRARY_SUFFIX}
-    DESTINATION ${POLYCODE_DEPS_CORE_PREFIX}/Lib
-    CONFIGURATIONS Release)

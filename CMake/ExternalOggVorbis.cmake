@@ -3,6 +3,11 @@ INCLUDE(ExternalProject)
 
 SET(oggvorbis_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/oggvorbis)
 
+SET(oggvorbis_CMAKE_ARGS
+    -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR> 
+    -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+)
+
 EXTERNALPROJECT_ADD(libogg
     PREFIX ${oggvorbis_PREFIX}
 
@@ -12,7 +17,8 @@ EXTERNALPROJECT_ADD(libogg
 
     PATCH_COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PolycodeDependencies_SOURCE_DIR}/../CMake/libogg.cmake <SOURCE_DIR>/CMakeLists.txt
 
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
+    INSTALL_DIR ${POLYCODE_DEPS_CORE_PREFIX}
+    CMAKE_ARGS ${oggvorbis_CMAKE_ARGS}
 )
 
 ExternalProject_Get_Property(libogg install_dir)
@@ -27,64 +33,6 @@ EXTERNALPROJECT_ADD(libvorbis
 
     PATCH_COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PolycodeDependencies_SOURCE_DIR}/../CMake/libvorbis.cmake <SOURCE_DIR>/CMakeLists.txt
 
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR> -DCMAKE_PREFIX_PATH=${install_dir} # to find libogg
+    INSTALL_DIR ${POLYCODE_DEPS_CORE_PREFIX}
+    CMAKE_ARGS ${oggvorbis_CMAKE_ARGS} -DCMAKE_PREFIX_PATH=${install_dir} # to find libogg
 )
-
-ExternalProject_Get_Property(libvorbis install_dir)
-
-# install built files
-INSTALL(DIRECTORY ${install_dir}/include/
-    DESTINATION ${POLYCODE_DEPS_CORE_PREFIX}/Include
-    FILES_MATCHING PATTERN "*.h")
-
-# install debug libs
-INSTALL(FILES ${install_dir}/lib/liboggd${CMAKE_STATIC_LIBRARY_SUFFIX} 
-    DESTINATION ${POLYCODE_DEPS_CORE_PREFIX}/Lib
-    CONFIGURATIONS Debug)
-
-INSTALL(FILES ${install_dir}/lib/libvorbisd${CMAKE_STATIC_LIBRARY_SUFFIX} 
-    DESTINATION ${POLYCODE_DEPS_CORE_PREFIX}/Lib
-    CONFIGURATIONS Debug)
-
-INSTALL(FILES ${install_dir}/lib/libvorbisfiled${CMAKE_STATIC_LIBRARY_SUFFIX} 
-    DESTINATION ${POLYCODE_DEPS_CORE_PREFIX}/Lib
-    CONFIGURATIONS Debug)
-
-# install release lib
-INSTALL(FILES ${install_dir}/lib/libogg${CMAKE_STATIC_LIBRARY_SUFFIX}
-    DESTINATION ${POLYCODE_DEPS_CORE_PREFIX}/Lib
-    CONFIGURATIONS Release)
-
-INSTALL(FILES ${install_dir}/lib/libvorbis${CMAKE_STATIC_LIBRARY_SUFFIX}
-    DESTINATION ${POLYCODE_DEPS_CORE_PREFIX}/Lib
-    CONFIGURATIONS Release)
-
-INSTALL(FILES ${install_dir}/lib/libvorbisfile${CMAKE_STATIC_LIBRARY_SUFFIX}
-    DESTINATION ${POLYCODE_DEPS_CORE_PREFIX}/Lib
-    CONFIGURATIONS Release)
-
-# install debug shared library
-INSTALL(FILES ${install_dir}/bin/liboggd${CMAKE_SHARED_LIBRARY_SUFFIX}
-    DESTINATION ${POLYCODE_DEPS_CORE_PREFIX}/Bin
-    CONFIGURATIONS Debug)
-
-INSTALL(FILES ${install_dir}/bin/libvorbisd${CMAKE_SHARED_LIBRARY_SUFFIX}
-    DESTINATION ${POLYCODE_DEPS_CORE_PREFIX}/Bin
-    CONFIGURATIONS Debug)
-
-INSTALL(FILES ${install_dir}/bin/libvorbisfiled${CMAKE_SHARED_LIBRARY_SUFFIX}
-    DESTINATION ${POLYCODE_DEPS_CORE_PREFIX}/Bin
-    CONFIGURATIONS Debug)
-
-# install release shared library
-INSTALL(FILES ${install_dir}/bin/libogg${CMAKE_SHARED_LIBRARY_SUFFIX} 
-    DESTINATION ${POLYCODE_DEPS_CORE_PREFIX}/Bin
-    CONFIGURATIONS Release)
-
-INSTALL(FILES ${install_dir}/bin/libvorbis${CMAKE_SHARED_LIBRARY_SUFFIX} 
-    DESTINATION ${POLYCODE_DEPS_CORE_PREFIX}/Bin
-    CONFIGURATIONS Release)
-
-INSTALL(FILES ${install_dir}/bin/libvorbisfile${CMAKE_SHARED_LIBRARY_SUFFIX} 
-    DESTINATION ${POLYCODE_DEPS_CORE_PREFIX}/Bin
-    CONFIGURATIONS Release)
