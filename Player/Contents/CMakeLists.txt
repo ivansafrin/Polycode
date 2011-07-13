@@ -5,6 +5,8 @@ INCLUDE_DIRECTORIES(
     ${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/Include
 )
 
+SET(CMAKE_DEBUG_POSTFIX "_d")
+
 IF(MSVC)
     SET(polycodeplayer_SRCS
         ../Build/MSVC/PolycodePlayer/main.cpp

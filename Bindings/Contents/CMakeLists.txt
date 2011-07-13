@@ -17,6 +17,8 @@ SET(polycodeLua_HDRS
     LUA/Include/PolycodeLUA2D.h
 )
 
+SET(CMAKE_DEBUG_POSTFIX "_d")
+
 IF(POLYCODE_BUILD_SHARED)
     ADD_LIBRARY(PolycodeLua SHARED ${polycodeLua_SRCS} ${polycodeLua_HDRS})
     TARGET_LINK_LIBRARIES(PolycodeLua PolyCore ${LUA_LIBRARY})
@@ -30,14 +32,14 @@ ENDIF(POLYCODE_BUILD_STATIC)
 IF(POLYCODE_INSTALL_FRAMEWORK)
     
     # install headers
-    INSTALL(FILES ${polycodeLua_HDRS} DESTINATION Framework/Modules/Include)
+    INSTALL(FILES ${polycodeLua_HDRS} DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Modules/Include)
 
     # install libraries
     IF(POLYCODE_BUILD_SHARED)
-        INSTALL(TARGETS PolycodeLua DESTINATION Framework/Modules/Lib/${CMAKE_BUILD_TYPE})
+        INSTALL(TARGETS PolycodeLua DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Modules/Lib)
     ENDIF(POLYCODE_BUILD_SHARED)
     IF(POLYCODE_BUILD_STATIC)
-        INSTALL(TARGETS PolycodeLua_static DESTINATION Framework/Modules/Lib/${CMAKE_BUILD_TYPE})
+        INSTALL(TARGETS PolycodeLua_static DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Modules/Lib)
     ENDIF(POLYCODE_BUILD_STATIC)
     
 ENDIF(POLYCODE_INSTALL_FRAMEWORK)

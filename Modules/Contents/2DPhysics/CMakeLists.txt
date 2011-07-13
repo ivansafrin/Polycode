@@ -16,6 +16,8 @@ INCLUDE_DIRECTORIES(
     Include
 )
 
+SET(CMAKE_DEBUG_POSTFIX "_d")
+
 IF(POLYCODE_BUILD_SHARED)
     LINK_LIBRARIES(${BOX2D_LIBRARIES})
     ADD_LIBRARY(Polycode2DPhysics SHARED ${polycode2DPhysics_SRCS} ${polycode2DPhysics_HDRS})
@@ -30,14 +32,14 @@ ENDIF(POLYCODE_BUILD_STATIC)
 IF(POLYCODE_INSTALL_FRAMEWORK)
     
     # install headers
-    INSTALL(FILES ${polycode2DPhysics_HDRS} DESTINATION Framework/Modules/Include)
+    INSTALL(FILES ${polycode2DPhysics_HDRS} DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Modules/Include)
 
     # install libraries
     IF(POLYCODE_BUILD_SHARED)
-        INSTALL(TARGETS Polycode2DPhysics DESTINATION Framework/Modules/Lib/${CMAKE_BUILD_TYPE})
+        INSTALL(TARGETS Polycode2DPhysics DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Modules/Lib)
     ENDIF(POLYCODE_BUILD_SHARED)
     IF(POLYCODE_BUILD_STATIC)
-        INSTALL(TARGETS Polycode2DPhysics_static DESTINATION Framework/Modules/Lib/${CMAKE_BUILD_TYPE})
+        INSTALL(TARGETS Polycode2DPhysics_static DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Modules/Lib)
     ENDIF(POLYCODE_BUILD_STATIC)
     
 ENDIF(POLYCODE_INSTALL_FRAMEWORK)
