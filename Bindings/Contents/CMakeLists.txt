@@ -1,4 +1,5 @@
 FIND_PACKAGE(Lua51 REQUIRED)
+FIND_PACKAGE(Freetype REQUIRED)
     
 INCLUDE(PolycodeIncludes)
 

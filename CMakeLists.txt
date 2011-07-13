@@ -8,17 +8,23 @@ IF(NOT CMAKE_BUILD_TYPE)
     MESSAGE("No CMAKE_BUILD_TYPE specified, defaulting to ${CMAKE_BUILD_TYPE}") 
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
+IF(APPLE OR WIN32)
+	SET(build_player ON)
+ELSE()
+	SET(build_player OFF)
+ENDIF()
+
 # Options for what components to build
 OPTION(POLYCODE_BUILD_SHARED "Build Polycode shared libraries" ON)
 OPTION(POLYCODE_BUILD_STATIC "Build Polycode static libraries" OFF)
 OPTION(POLYCODE_BUILD_BINDINGS "Build Polycode Lua bindings" ON)
 OPTION(POLYCODE_BUILD_EXAMPLES "Build Polycode examples" ON)
 OPTION(POLYCODE_BUILD_MODULES "Build Polycode modules" ON)
-OPTION(POLYCODE_BUILD_PLAYER "Build Polycode standalone player" ON)
+OPTION(POLYCODE_BUILD_PLAYER "Build Polycode standalone player" ${build_player})
 OPTION(POLYCODE_BUILD_TOOLS "Build Polycode tools" ON)
 
 OPTION(POLYCODE_INSTALL_FRAMEWORK "Install Polycode Core, Modules and Tools" ON)
-OPTION(POLYCODE_INSTALL_PLAYER "Install Polycode Player" ON)
+OPTION(POLYCODE_INSTALL_PLAYER "Install Polycode Player" ${POLYCODE_BUILD_PLAYER})
 
 # Some non-standard CMake modules
 SET(CMAKE_MODULE_PATH ${Polycode_SOURCE_DIR}/CMake)

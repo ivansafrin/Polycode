@@ -1,3 +1,5 @@
+FIND_PACKAGE(Freetype REQUIRED)
+
 INCLUDE(PolycodeIncludes)
 
 SET(polycode2DPhysics_SRCS
