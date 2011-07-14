@@ -69,6 +69,13 @@ ELSE(VORBISFILE_FOUND)
     SET(internal_VORBISFILE ${common_deps})
 ENDIF(VORBISFILE_FOUND)
 
+FIND_PACKAGE(Lua51)
+IF(LUA51_FOUND)
+    SET(internal_LUA OFF)
+ELSE(LUA51_FOUND)
+    SET(internal_LUA ${common_deps})
+ENDIF(LUA51_FOUND)
+
 FIND_PACKAGE(Box2D)
 IF(BOX2D_FOUND)
     SET(internal_BOX2D OFF)
@@ -98,6 +105,7 @@ OPTION(POLYCODE_DEPS_FREETYPE "Download and build the Freetype2 package" ${inter
 OPTION(POLYCODE_DEPS_PNG "Download and build the PNG package" ${internal_PNG})
 OPTION(POLYCODE_DEPS_OGGVORBIS "Download and build the Ogg Vorbis packages" ${internal_VORBISFILE})
 
+OPTION(POLYCODE_DEPS_LUA51 "Download and build the Lua51 package" ${internal_LUA})
 OPTION(POLYCODE_DEPS_BOX2D "Download and build the Box2D package" ${internal_BOX2D})
 OPTION(POLYCODE_DEPS_BULLET "Download and build the Bullet package" ${internal_BULLET})
 OPTION(POLYCODE_DEPS_ASSIMP "Download and build the Assimp package" ${internal_ASSIMP})
@@ -121,6 +129,10 @@ ENDIF(POLYCODE_DEPS_FREETYPE)
 IF(POLYCODE_DEPS_OGGVORBIS)
     INCLUDE(ExternalOggVorbis)
 ENDIF(POLYCODE_DEPS_OGGVORBIS)
+
+IF(POLYCODE_DEPS_LUA51)
+    INCLUDE(ExternalLua51)
+ENDIF(POLYCODE_DEPS_LUA51)
 
 IF(POLYCODE_DEPS_BOX2D)
     INCLUDE(ExternalBox2D)
