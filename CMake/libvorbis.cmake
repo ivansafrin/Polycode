@@ -97,7 +97,7 @@ SET(vorbis_public_HDRS
     include/vorbis/vorbisenc.h
     include/vorbis/vorbisfile.h)
 
-INCLUDE_DIRECTORIES(${OGG_INCLUDE_DIR} include)
+INCLUDE_DIRECTORIES(${OGG_INCLUDE_DIR} include lib)
 
 IF(MSVC)
     ADD_DEFINITIONS(/D_UNICODE /DUNICODE)
