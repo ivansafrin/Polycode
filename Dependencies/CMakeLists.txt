@@ -18,11 +18,15 @@ IF(NOT POLYCODE_DEPS_DOWNLOAD_DIR)
     MESSAGE("No POLYCODE_DEPS_DOWNLOAD_DIR specified, to ${POLYCODE_DEPS_DOWNLOAD_DIR}") 
 ENDIF(NOT POLYCODE_DEPS_DOWNLOAD_DIR)
 
-SET(POLYCODE_DEPS_CORE_PREFIX ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies)
-SET(POLYCODE_DEPS_MODULES_PREFIX ${POLYCODE_RELEASE_DIR}/Framework/Modules/Dependencies)
-SET(POLYCODE_DEPS_TOOLS_PREFIX ${POLYCODE_RELEASE_DIR}/Framework/Tools/Dependencies)
+# Install directories
+SET(POLYCODE_DEPS_CORE_PREFIX ${POLYCODE_RELEASE_DIR}Framework/Core/Dependencies)
+SET(POLYCODE_DEPS_MODULES_PREFIX ${POLYCODE_RELEASE_DIR}Framework/Modules/Dependencies)
+SET(POLYCODE_DEPS_TOOLS_PREFIX ${POLYCODE_RELEASE_DIR}Framework/Tools/Dependencies)
 
-# Download and build all dependencies on Windows and Mac
+# Some non-standard CMake modules
+SET(CMAKE_MODULE_PATH ${PolycodeDependencies_SOURCE_DIR}/../CMake)
+
+# Download and build all dependencies on Windows and Mac, for Linux recommend using prebuilt packages
 IF(APPLE OR WIN32)
     SET(common_deps ON)
 ELSE()
@@ -30,20 +34,73 @@ ELSE()
 ENDIF()
 
 # Options for what components should be downloaded and built
-OPTION(POLYCODE_DEPS_PHYSFS "Download and build the PhysFS package" ${common_deps})
-#OPTION(OpenGL REQUIRED)
+FIND_PACKAGE(PhysFS)
+IF(PHYSFS_FOUND)
+    SET(internal_PHYSFS OFF)
+ELSE(PHYSFS_FOUND)
+    SET(internal_PHYSFS ${common_deps})
+ENDIF(PHYSFS_FOUND)
+
+FIND_PACKAGE(OpenAL)
+IF(OPENAL_FOUND)
+    SET(internal_OPENAL OFF)
+ELSE(OPENAL_FOUND)
+    SET(internal_OPENAL ${common_deps})
+ENDIF(OPENAL_FOUND)
+
+FIND_PACKAGE(Freetype)
+IF(FREETYPE_FOUND)
+    SET(internal_OPENAL OFF)
+ELSE(FREETYPE_FOUND)
+    SET(internal_OPENAL ${common_deps})
+ENDIF(FREETYPE_FOUND)
+
+FIND_PACKAGE(PNG)
+IF(PNG_FOUND)
+    SET(internal_PNG OFF)
+ELSE(PNG_FOUND)
+    SET(internal_PNG ${common_deps})
+ENDIF(PNG_FOUND)
+
+FIND_PACKAGE(VorbisFile)
+IF(VORBISFILE_FOUND)
+    SET(internal_VORBISFILE OFF)
+ELSE(VORBISFILE_FOUND)
+    SET(internal_VORBISFILE ${common_deps})
+ENDIF(VORBISFILE_FOUND)
+
+FIND_PACKAGE(Box2D)
+IF(BOX2D_FOUND)
+    SET(internal_BOX2D OFF)
+ELSE(BOX2D_FOUND)
+    SET(internal_BOX2D ON)
+ENDIF(BOX2D_FOUND)
+
+FIND_PACKAGE(Bullet)
+IF(BULLET_FOUND)
+    SET(internal_BULLET OFF)
+ELSE(BULLET_FOUND)
+    SET(internal_BULLET ON)
+ENDIF(BULLET_FOUND)
+
+FIND_PACKAGE(Assimp)
+IF(ASSIMP_FOUND)
+    SET(internal_ASSIMP OFF)
+ELSE(ASSIMP_FOUND)
+    SET(internal_ASSIMP ON)
+ENDIF(ASSIMP_FOUND)
+
 OPTION(POLYCODE_DEPS_GLEXT "Download additional OpenGL headers" ${common_deps})
-OPTION(POLYCODE_DEPS_OPENAL "Download and build the OpenAL package" ${common_deps})
-OPTION(POLYCODE_DEPS_FREETYPE "Download and build the Freetype2 package" ${common_deps})
-OPTION(POLYCODE_DEPS_PNG "Download and build the PNG package" ${common_deps})
-OPTION(POLYCODE_DEPS_OGGVORBIS "Download and build the Ogg Vorbis packages" ${common_deps})
 
-OPTION(POLYCODE_DEPS_BOX2D "Download and build the Box2D package" ON)
-OPTION(POLYCODE_DEPS_BULLET "Download and build the Bullet package" ON)
-OPTION(POLYCODE_DEPS_ASSIMP "Download and build the Assimp package" ON)
+OPTION(POLYCODE_DEPS_PHYSFS "Download and build the PhysFS package" ${internal_PHYSFS})
+OPTION(POLYCODE_DEPS_OPENAL "Download and build the OpenAL package" ${internal_OPENAL})
+OPTION(POLYCODE_DEPS_FREETYPE "Download and build the Freetype2 package" ${internal_FREETYPE})
+OPTION(POLYCODE_DEPS_PNG "Download and build the PNG package" ${internal_PNG})
+OPTION(POLYCODE_DEPS_OGGVORBIS "Download and build the Ogg Vorbis packages" ${internal_VORBISFILE})
 
-# Some non-standard CMake modules
-SET(CMAKE_MODULE_PATH ${PolycodeDependencies_SOURCE_DIR}/../CMake)
+OPTION(POLYCODE_DEPS_BOX2D "Download and build the Box2D package" ${internal_BOX2D})
+OPTION(POLYCODE_DEPS_BULLET "Download and build the Bullet package" ${internal_BULLET})
+OPTION(POLYCODE_DEPS_ASSIMP "Download and build the Assimp package" ${internal_ASSIMP})
 
 IF(POLYCODE_DEPS_PNG)
     INCLUDE(ExternalPNG)
