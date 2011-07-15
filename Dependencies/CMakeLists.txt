@@ -34,6 +34,14 @@ ELSE()
 ENDIF()
 
 # Options for what components should be downloaded and built
+FIND_PATH(GLEXT_INCLUDE_DIR GL/glext)
+FIND_PATH(WGLEXT_INCLUDE_DIR GL/wglext)
+IF(GLEXT_INCLUDE_DIR AND WGLEXT_INCLUDE_DIR)
+    SET(internal_GLEXT OFF)
+ELSE(GLEXT_INCLUDE_DIR AND WGLEXT_INCLUDE_DIR)
+    SET(internal_GLEXT ${common_deps})
+ENDIF(GLEXT_INCLUDE_DIR AND WGLEXT_INCLUDE_DIR)
+
 FIND_PACKAGE(PhysFS)
 IF(PHYSFS_FOUND)
     SET(internal_PHYSFS OFF)
@@ -50,9 +58,9 @@ ENDIF(OPENAL_FOUND)
 
 FIND_PACKAGE(Freetype)
 IF(FREETYPE_FOUND)
-    SET(internal_OPENAL OFF)
+    SET(internal_FREETYPE OFF)
 ELSE(FREETYPE_FOUND)
-    SET(internal_OPENAL ${common_deps})
+    SET(internal_FREETYPE ${common_deps})
 ENDIF(FREETYPE_FOUND)
 
 FIND_PACKAGE(PNG)
@@ -97,7 +105,7 @@ ELSE(ASSIMP_FOUND)
     SET(internal_ASSIMP ON)
 ENDIF(ASSIMP_FOUND)
 
-OPTION(POLYCODE_DEPS_GLEXT "Download additional OpenGL headers" ${common_deps})
+OPTION(POLYCODE_DEPS_GLEXT "Download additional OpenGL headers" ${internal_GLEXT})
 
 OPTION(POLYCODE_DEPS_PHYSFS "Download and build the PhysFS package" ${internal_PHYSFS})
 OPTION(POLYCODE_DEPS_OPENAL "Download and build the OpenAL package" ${internal_OPENAL})

@@ -1,3 +1,5 @@
+# CMakeLists.txt to build static libogg for Polycode
+
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
 PROJECT(libogg C)
@@ -21,13 +23,13 @@ IF(MSVC)
     LIST(APPEND libogg_SRCS win32/ogg.def)
 ENDIF(MSVC)
 
-ADD_LIBRARY(libogg_dynamic SHARED ${libogg_SRCS} ${libogg_HDRS})
-ADD_LIBRARY(libogg_static ${libogg_SRCS} ${libogg_HDRS})
+#ADD_LIBRARY(libogg_dynamic SHARED ${libogg_SRCS} ${libogg_HDRS})
+ADD_LIBRARY(libogg ${libogg_SRCS} ${libogg_HDRS})
 
-SET_TARGET_PROPERTIES(libogg_dynamic #libogg_static 
-    PROPERTIES OUTPUT_NAME libogg)
+#SET_TARGET_PROPERTIES(libogg_dynamic #libogg_static 
+#    PROPERTIES OUTPUT_NAME libogg)
 
-INSTALL(TARGETS libogg_dynamic libogg_static
+INSTALL(TARGETS libogg #libogg_dynamic
     RUNTIME DESTINATION bin
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib)

@@ -1,3 +1,4 @@
+# CMakeLists.txt to build static libvorbis and libvorbisfile for Polycode
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
 PROJECT(libvorbis C)
@@ -104,27 +105,26 @@ IF(MSVC)
     LIST(APPEND libvorbis_SRCS win32/vorbis.def)
 ENDIF(MSVC)
 
-ADD_LIBRARY(libvorbis_dynamic SHARED ${libvorbis_SRCS} ${libvorbis_HDRS} ${vorbis_public_HDRS})
-ADD_LIBRARY(libvorbis_static ${libvorbis_SRCS} ${libvorbis_HDRS} ${vorbis_public_HDRS})
-TARGET_LINK_LIBRARIES(libvorbis_dynamic ${OGG_LIBRARY})
+#ADD_LIBRARY(libvorbis_dynamic SHARED ${libvorbis_SRCS} ${libvorbis_HDRS} ${vorbis_public_HDRS})
+ADD_LIBRARY(libvorbis ${libvorbis_SRCS} ${libvorbis_HDRS} ${vorbis_public_HDRS})
+#TARGET_LINK_LIBRARIES(libvorbis_dynamic ${OGG_LIBRARY})
 
-ADD_LIBRARY(libvorbisfile_dynamic SHARED lib/vorbisfile.c include/vorbis/vorbisfile.h)
-ADD_LIBRARY(libvorbisfile_static lib/vorbisfile.c include/vorbis/vorbisfile.h)
+#ADD_LIBRARY(libvorbisfile_dynamic SHARED lib/vorbisfile.c include/vorbis/vorbisfile.h)
+ADD_LIBRARY(libvorbisfile lib/vorbisfile.c include/vorbis/vorbisfile.h)
 
-TARGET_LINK_LIBRARIES(libvorbisfile_dynamic libvorbis_dynamic ${OGG_LIBRARY})
+#TARGET_LINK_LIBRARIES(libvorbisfile_dynamic libvorbis_dynamic ${OGG_LIBRARY})
 
-SET_TARGET_PROPERTIES(libvorbis_dynamic #libvorbis_static
-    PROPERTIES OUTPUT_NAME libvorbis)
+#SET_TARGET_PROPERTIES(libvorbis_dynamic #libvorbis_static
+#    PROPERTIES OUTPUT_NAME libvorbis)
 
-SET_TARGET_PROPERTIES(libvorbisfile_dynamic #libvorbisfile_static 
-    PROPERTIES OUTPUT_NAME libvorbisfile)
+#SET_TARGET_PROPERTIES(libvorbisfile_dynamic #libvorbisfile_static 
+#    PROPERTIES OUTPUT_NAME libvorbisfile)
 
 INSTALL(TARGETS 
-    libvorbis_dynamic libvorbis_static 
-    libvorbisfile_dynamic libvorbisfile_static
+    libvorbis #libvorbis_dynamic
+    libvorbisfile #libvorbisfile_dynamic
     RUNTIME DESTINATION bin
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib)
 
 INSTALL(FILES ${vorbis_public_HDRS} DESTINATION include/vorbis)
-
