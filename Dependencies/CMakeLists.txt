@@ -34,13 +34,26 @@ ELSE()
 ENDIF()
 
 # Options for what components should be downloaded and built
-FIND_PATH(GLEXT_INCLUDE_DIR GL/glext)
-FIND_PATH(WGLEXT_INCLUDE_DIR GL/wglext)
-IF(GLEXT_INCLUDE_DIR AND WGLEXT_INCLUDE_DIR)
+
+# glext.h is sometimes missing
+FIND_PATH(GLEXT_INCLUDE_DIR GL/glext.h)
+IF(GLEXT_INCLUDE_DIR)
     SET(internal_GLEXT OFF)
-ELSE(GLEXT_INCLUDE_DIR AND WGLEXT_INCLUDE_DIR)
+ELSE(GLEXT_INCLUDE_DIR)
     SET(internal_GLEXT ${common_deps})
-ENDIF(GLEXT_INCLUDE_DIR AND WGLEXT_INCLUDE_DIR)
+ENDIF(GLEXT_INCLUDE_DIR)
+
+IF(MSVC)
+    # wglext.h is needed on windows
+    FIND_PATH(WGLEXT_INCLUDE_DIR GL/wglext.h)
+    IF(WGLEXT_INCLUDE_DIR)
+        SET(internal_WGLEXT OFF)
+    ELSE(GLEXT_INCLUDE_DIR)
+        SET(internal_WGLEXT ${common_deps})
+    ENDIF(WGLEXT_INCLUDE_DIR)
+ELSE(MSVC)
+    SET(internal_WGLEXT OFF)
+ENDIF(MSVC)
 
 FIND_PACKAGE(PhysFS)
 IF(PHYSFS_FOUND)
@@ -105,7 +118,8 @@ ELSE(ASSIMP_FOUND)
     SET(internal_ASSIMP ON)
 ENDIF(ASSIMP_FOUND)
 
-OPTION(POLYCODE_DEPS_GLEXT "Download additional OpenGL headers" ${internal_GLEXT})
+OPTION(POLYCODE_DEPS_GLEXT "Download GL/glext.h header" ${internal_GLEXT})
+OPTION(POLYCODE_DEPS_WGLEXT "Download GL/wglext.h header" ${internal_WGLEXT})
 
 OPTION(POLYCODE_DEPS_PHYSFS "Download and build the PhysFS package" ${internal_PHYSFS})
 OPTION(POLYCODE_DEPS_OPENAL "Download and build the OpenAL package" ${internal_OPENAL})
