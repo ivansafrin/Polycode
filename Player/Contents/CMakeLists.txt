@@ -40,7 +40,7 @@ ELSEIF(APPLE)
         Source/PolycodePlayer.mm
         Source/PolycodeCocoaPlayer.mm
     )
-    SEY(polycodeplayer_HDRS 
+    SET(polycodeplayer_HDRS 
         Include/PolycodePlayer.h
         Include/PolycodeCocoaPlayer.h
     )
