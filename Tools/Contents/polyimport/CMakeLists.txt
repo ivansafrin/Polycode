@@ -1,7 +1,6 @@
-FIND_PACKAGE(Assimp REQUIRED)
-
 INCLUDE(PolycodeIncludes)
 
+FIND_PACKAGE(Assimp REQUIRED)
 INCLUDE_DIRECTORIES(
     ${ASSIMP_INCLUDE_DIR} 
     Include)
@@ -10,12 +9,12 @@ SET(CMAKE_DEBUG_POSTFIX "_d")
 
 IF(POLYCODE_BUILD_SHARED)
     ADD_EXECUTABLE(polyimport Source/polyimport.cpp Include/polyimport.h)
-    TARGET_LINK_LIBRARIES(polyimport Polycore ${ASSIMP_LIBRARY_RELEASE})
+    TARGET_LINK_LIBRARIES(polyimport Polycore ${ASSIMP_LIBRARIES})
 ENDIF(POLYCODE_BUILD_SHARED)
 
 IF(POLYCODE_BUILD_STATIC)
     ADD_EXECUTABLE(polyimport_static Source/polyimport.cpp Include/polyimport.h)
-    TARGET_LINK_LIBRARIES(polyimport_static Polycore_static ${PHYSFS_LIBRARY} ${ASSIMP_LIBRARY_RELEASE})
+    TARGET_LINK_LIBRARIES(polyimport_static Polycore_static ${PHYSFS_LIBRARY} ${ASSIMP_LIBRARIES}})
 ENDIF(POLYCODE_BUILD_STATIC)
 
 IF(POLYCODE_INSTALL_FRAMEWORK)

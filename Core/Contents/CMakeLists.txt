@@ -1,17 +1,3 @@
-FIND_PACKAGE(OpenGL REQUIRED)
-FIND_PACKAGE(PNG REQUIRED)
-FIND_PACKAGE(PhysFS REQUIRED)
-FIND_PACKAGE(OpenAL REQUIRED)
-FIND_PACKAGE(Freetype REQUIRED)
-FIND_PACKAGE(Ogg REQUIRED)
-FIND_PACKAGE(Vorbis REQUIRED)
-FIND_PACKAGE(VorbisFile REQUIRED)
-
-# Use SDL on non-Apple unixes
-IF(UNIX AND NOT APPLE)
-    FIND_PACKAGE(SDL REQUIRED)
-ENDIF(UNIX AND NOT APPLE)
-
 # set up common includes
 INCLUDE(PolycodeIncludes)
 
@@ -212,8 +198,8 @@ IF(MSVC)
     SET(polycore_SRCS ${polycore_SRCS} ../Build/MSVC/Polycore/PolycodeView.cpp Source/PolyWinCore.cpp)
     SET(polycore_HDRS ${polycore_HDRS} ../Build/MSVC/Polycore/PolycodeView.h Include/PolyWinCore.h)
 ELSEIF(APPLE)
-    SET(polycore_SRCS ${polycore_SRCS} Source/PolyAGLCore.cpp Source/PolyCocoaCore.cpp Source/PolycodeView.mm)
-    SET(polycore_HDRS ${polycore_HDRS} Include/PolyAGLCore.h Include/PolyCocoaCore.h Include/PolycodeView.h)
+    SET(polycore_SRCS ${polycore_SRCS} "../Build/Mac OS X/PolycodeView.mm" Source/PolyAGLCore.cpp Source/PolyCocoaCore.cpp)
+    SET(polycore_HDRS ${polycore_HDRS} "../Build/Mac OS X/PolycodeView.h" Include/PolyAGLCore.h Include/PolyCocoaCore.h)
 ELSE(MSVC)
     SET(polycore_SRCS ${polycore_SRCS} ../Build/Linux/PolycodeView.cpp Source/PolySDLCore.cpp)
     SET(polycore_HDRS ${polycore_HDRS} ../Build/Linux/PolycodeView.h Include/PolySDLCore.h)

@@ -1,7 +1,6 @@
-FIND_PACKAGE(ZLIB)
-
 INCLUDE(PolycodeIncludes)
 
+FIND_PACKAGE(ZLIB)
 INCLUDE_DIRECTORIES(
     ${ZLIB_INCLUDE_DIR}
     ${Polycode_SOURCE_DIR}/Tools/Dependencies/unzip11 
