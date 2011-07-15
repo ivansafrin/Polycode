@@ -3,9 +3,10 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 PROJECT(Polycode)
 
 IF(NOT CMAKE_BUILD_TYPE)
-    SET(CMAKE_BUILD_TYPE "Debug")
-    #SET(CMAKE_BUILD_TYPE "Release")
-    MESSAGE("No CMAKE_BUILD_TYPE specified, defaulting to ${CMAKE_BUILD_TYPE}") 
+    SET(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING
+      "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
+      FORCE)
+    MESSAGE("No CMAKE_BUILD_TYPE specified, defaulting to ${CMAKE_BUILD_TYPE}")
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
 IF(APPLE OR WIN32)
