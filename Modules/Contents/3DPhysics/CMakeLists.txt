@@ -35,13 +35,16 @@ ENDIF(POLYCODE_BUILD_STATIC)
 
 IF(POLYCODE_INSTALL_FRAMEWORK)
     # install headers
-    INSTALL(FILES ${polycode3DPhysics_HDRS} DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Modules/Include)
+    INSTALL(FILES ${polycode3DPhysics_HDRS} 
+        DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Modules/include)
 
     # install libraries
     IF(POLYCODE_BUILD_SHARED)
-        INSTALL(TARGETS Polycode3DPhysics DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Modules/Lib)
+        INSTALL(TARGETS Polycode3DPhysics 
+            DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Modules/lib)
     ENDIF()
     IF(POLYCODE_BUILD_STATIC)
-        INSTALL(TARGETS Polycode3DPhysics_static DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Modules/Lib)
+        INSTALL(TARGETS Polycode3DPhysics_static 
+            DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Modules/lib)
     ENDIF()
 ENDIF(POLYCODE_INSTALL_FRAMEWORK)

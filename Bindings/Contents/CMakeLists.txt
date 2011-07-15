@@ -34,14 +34,18 @@ TARGET_LINK_LIBRARIES(PolycodeLua)
 IF(POLYCODE_INSTALL_FRAMEWORK)
     
     # install headers
-    INSTALL(FILES ${polycodeLua_HDRS} DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Modules/Include)
+    INSTALL(FILES ${polycodeLua_HDRS} 
+        DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Modules/include)
 
     # install libraries
     IF(POLYCODE_BUILD_SHARED)
-        INSTALL(TARGETS PolycodeLua DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Modules/Lib)
+        INSTALL(TARGETS PolycodeLua 
+            DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Modules/lib)
     ENDIF(POLYCODE_BUILD_SHARED)
+    
     IF(POLYCODE_BUILD_STATIC)
-        INSTALL(TARGETS PolycodeLua_static DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Modules/Lib)
+        INSTALL(TARGETS PolycodeLua_static 
+            DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Modules/lib)
     ENDIF(POLYCODE_BUILD_STATIC)
     
 ENDIF(POLYCODE_INSTALL_FRAMEWORK)
