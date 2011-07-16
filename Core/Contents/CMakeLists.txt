@@ -1,12 +1,11 @@
+# set up common includes
+INCLUDE(PolycodeIncludes)
+
 SET(polycore_SRCS
-    ../Build/Linux/PolycodeView.cpp
     Source/OSBasics.cpp
-#   Source/PolyAGLCore.cpp
     Source/PolyBezierCurve.cpp
     Source/PolyBone.cpp
     Source/PolyCamera.cpp
-#   Source/PolyCocoaCore.cpp
-#   Source/PolycodeView.mm
     Source/PolyColor.cpp
     Source/PolyConfig.cpp
     Source/PolyCore.cpp
@@ -21,10 +20,7 @@ SET(polycore_SRCS
     Source/PolyFixedShader.cpp
     Source/PolyFont.cpp
     Source/PolyFontManager.cpp
-#   Source/PolyGenericScene.cpp
     Source/PolyGLCubemap.cpp
-#   Source/PolyGLES1Renderer.cpp
-#   Source/PolyGLES1Texture.cpp
     Source/PolyGLRenderer.cpp
     Source/PolyGLSLProgram.cpp
     Source/PolyGLSLShader.cpp
@@ -33,7 +29,6 @@ SET(polycore_SRCS
     Source/PolyGLVertexBuffer.cpp
     Source/PolyImage.cpp
     Source/PolyInputEvent.cpp
-#    Source/PolyiPhoneCore.cpp
     Source/PolyLabel.cpp
     Source/PolyLogger.cpp
     Source/PolyMaterial.cpp
@@ -74,7 +69,6 @@ SET(polycore_SRCS
     Source/PolyScreenShape.cpp
     Source/PolyScreenSound.cpp
     Source/PolyScreenSprite.cpp
-    Source/PolySDLCore.cpp
     Source/PolyShader.cpp
     Source/PolySkeleton.cpp
     Source/PolySound.cpp
@@ -88,7 +82,6 @@ SET(polycore_SRCS
     Source/PolyVector2.cpp
     Source/PolyVector3.cpp
     Source/PolyVertex.cpp
-#   Source/PolyWinCore.cpp
     Source/tinystr.cpp
     Source/tinyxml.cpp
     Source/tinyxmlerror.cpp
@@ -96,16 +89,12 @@ SET(polycore_SRCS
 )
 
 SET(polycore_HDRS
-    ../Build/Linux/PolycodeView.h
     Include/OSBasics.h
-#   Include/PolyAGLCore.h
     Include/PolyBasics.h
     Include/PolyBezierCurve.h
     Include/PolyBone.h
     Include/PolyCamera.h
-#   Include/PolyCocoaCore.h
     Include/Polycode.h
-#   Include/PolycodeView.h
     Include/PolyColor.h
     Include/PolyConfig.h
     Include/PolyCore.h
@@ -120,10 +109,7 @@ SET(polycore_HDRS
     Include/PolyFixedShader.h
     Include/PolyFont.h
     Include/PolyFontManager.h
-    Include/PolyGenericScene.h
     Include/PolyGLCubemap.h
-#   Include/PolyGLES1Renderer.h
-#   Include/PolyGLES1Texture.h
     Include/PolyGlobals.h
     Include/PolyGLRenderer.h
     Include/PolyGLSLProgram.h
@@ -134,8 +120,6 @@ SET(polycore_HDRS
     Include/PolyImage.h
     Include/PolyInputEvent.h
     Include/PolyInputKeys.h
-#    Include/PolyiPhoneCore.h
-#    Include/Poly_iPhone.h
     Include/PolyLabel.h
     Include/PolyLogger.h
     Include/PolyMaterial.h
@@ -176,7 +160,6 @@ SET(polycore_HDRS
     Include/PolyScreenShape.h
     Include/PolyScreenSound.h
     Include/PolyScreenSprite.h
-    Include/PolySDLCore.h
     Include/PolyShader.h
     Include/PolySkeleton.h
     Include/PolySound.h
@@ -191,11 +174,73 @@ SET(polycore_HDRS
     Include/PolyVector2.h
     Include/PolyVector3.h
     Include/PolyVertex.h
-#   Include/PolyWinCore.h
     Include/tinystr.h
     Include/tinyxml.h
 )
 
-#ADD_LIBRARY(PolyCore SHARED ${polycore_SRCS} ${polycore_HDRS})
-ADD_LIBRARY(PolyCoreStatic ${polycore_SRCS} ${polycore_HDRS})
+SET(CMAKE_DEBUG_POSTFIX "_d")
 
+# TODO: iPhone
+#    Include/PolyiPhoneCore.h
+#    Include/Poly_iPhone.h
+#    Source/PolyiPhoneCore.cpp
+
+# TODO: PolyGLES1
+#   Include/PolyGLES1Renderer.h
+#   Include/PolyGLES1Texture.h
+#   Source/PolyGLES1Renderer.cpp
+#   Source/PolyGLES1Texture.cpp
+
+# platform specific
+IF(MSVC)
+    SET(polycore_SRCS ${polycore_SRCS} ../Build/MSVC/Polycore/PolycodeView.cpp Source/PolyWinCore.cpp)
+    SET(polycore_HDRS ${polycore_HDRS} ../Build/MSVC/Polycore/PolycodeView.h Include/PolyWinCore.h)
+ELSEIF(APPLE)
+    SET(polycore_SRCS ${polycore_SRCS} "../Build/Mac OS X/PolycodeView.mm" Source/PolyAGLCore.cpp Source/PolyCocoaCore.cpp)
+    SET(polycore_HDRS ${polycore_HDRS} "../Build/Mac OS X/PolycodeView.h" Include/PolyAGLCore.h Include/PolyCocoaCore.h)
+ELSE(MSVC)
+    SET(polycore_SRCS ${polycore_SRCS} ../Build/Linux/PolycodeView.cpp Source/PolySDLCore.cpp)
+    SET(polycore_HDRS ${polycore_HDRS} ../Build/Linux/PolycodeView.h Include/PolySDLCore.h)
+ENDIF(MSVC)
+
+IF(POLYCODE_BUILD_SHARED)
+    ADD_LIBRARY(Polycore SHARED ${polycore_SRCS} ${polycore_HDRS})
+    TARGET_LINK_LIBRARIES(Polycore
+        ${OPENGL_LIBRARIES}
+        ${OPENAL_LIBRARY}
+        ${PNG_LIBRARIES}
+        ${FREETYPE_LIBRARIES}
+        ${PHYSFS_LIBRARY}
+        ${OGG_LIBRARIES}
+        ${VORBIS_LIBRARIES}
+        ${VORBISFILE_LIBRARIES}
+        ${SDL_LIBRARY})
+ENDIF(POLYCODE_BUILD_SHARED)
+
+IF(POLYCODE_BUILD_STATIC)
+    ADD_LIBRARY(Polycore_static ${polycore_SRCS} ${polycore_HDRS})
+ENDIF(POLYCODE_BUILD_STATIC)
+
+IF(POLYCODE_INSTALL_FRAMEWORK)
+    # install headers
+    INSTALL(FILES ${polycore_HDRS} 
+        DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Core/include)
+
+    # install libraries
+    IF(POLYCODE_BUILD_SHARED)
+        INSTALL(TARGETS Polycore EXPORT Polycore-targets 
+            DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Core/lib)
+    ENDIF(POLYCODE_BUILD_SHARED)
+    
+    IF(POLYCODE_BUILD_STATIC)
+        INSTALL(TARGETS Polycore_static EXPORT Polycore-targets 
+            DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Core/lib)
+    ENDIF(POLYCODE_BUILD_STATIC)
+ENDIF(POLYCODE_INSTALL_FRAMEWORK)
+
+IF(POLYCODE_INSTALL_PLAYER AND POLYCODE_BUILD_SHARED)
+    # install required libs
+    INSTALL(TARGETS Polycore DESTINATION ${POLYCODE_RELEASE_DIR}/Player)
+    INSTALL(DIRECTORY ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/bin/ 
+        DESTINATION ${POLYCODE_RELEASE_DIR}/Player)
+ENDIF()

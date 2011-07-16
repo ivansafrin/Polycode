@@ -71,7 +71,7 @@ namespace Polycode {
 
 		static const int EVENT_TRIGGER = 0;
 		
-		private:
+		protected:
 			
 			int elapsed;
 			bool paused;

@@ -64,7 +64,7 @@ namespace Polycode {
 		void addParamToProgram(GLSLProgram *program,TiXmlNode *node);		
 		void recreateGLSLProgram(GLSLProgram *prog, String fileName, int type);
 		GLSLProgram *createGLSLProgram(String fileName, int type);		
-		void updateGLSLParam(Renderer *renderer, GLSLProgramParam &param, ShaderBinding *materialOptions, ShaderBinding *localOptions);		
+		void updateGLSLParam(Renderer *renderer, GLSLShader *glslShader, GLSLProgramParam &param, ShaderBinding *materialOptions, ShaderBinding *localOptions);		
 			
 		void setGLSLAreaLightPositionParameter(Renderer *renderer, GLSLProgramParam &param, int lightIndex);
 		void setGLSLAreaLightColorParameter(Renderer *renderer, GLSLProgramParam &param, int lightIndex);	

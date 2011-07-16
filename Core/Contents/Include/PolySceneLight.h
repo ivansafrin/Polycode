@@ -29,11 +29,13 @@ THE SOFTWARE.
 #include "PolyScene.h"
 #include "PolyCamera.h"
 #include "PolyMesh.h"
+//#include "PolyScenePrimitive.h"
 
 namespace Polycode {
 
 	class Scene;
 	class Camera;
+//	class ScenePrimitive;
 	
 	/**
 	* 3D light source. Lights can be area or spot lights and can be set to different colors. 
@@ -57,6 +59,21 @@ namespace Polycode {
 			* Returns the light's intensity.
 			*/
 			Number getIntensity();
+
+			/**
+			* Sets the light's intensity
+			* @param newIntensity New intensity value.
+			*/
+			void setIntensity(Number newIntensity);
+						
+			/**
+			* Sets the attenuation values for the light.
+			* @param constantAttenuation Constant falloff attenuation value	
+			* @param linearAttenuation Linear falloff attenuation value	
+			* @param quadraticAttenuation Quadratic falloff attenuation value
+			* 
+			*/
+			void setAttenuation(Number constantAttenuation, Number linearAttenuation, Number quadraticAttenuation);			
 						
 			Number getConstantAttenuation() { return constantAttenuation; }
 			Number getLinearAttenuation() { return linearAttenuation; }
@@ -81,6 +98,21 @@ namespace Polycode {
 			/**
 			* Color of the light.
 			*/ 
+			Color specularLightColor;
+		
+			/**
+			* Sets the light color.
+			* @param r Red value 0-1.
+			* @param g Green value 0-1
+			* @param b Blue value 0-1
+			* @param a Alpha value 0-1									
+			*/	
+			void setSpecularLightColor(Number r, Number g, Number b, Number a) { specularLightColor.r = r; specularLightColor.g = g; specularLightColor.b = b; specularLightColor.a = a; }
+						
+			
+			/**
+			* Color of the light.
+			*/ 
 			Color lightColor;
 		
 			/**
@@ -90,7 +122,24 @@ namespace Polycode {
 			* @param b Blue value 0-1
 			* @param a Alpha value 0-1									
 			*/	
-			void setLightColor(Number r, Number g, Number b) { lightColor.r = r; lightColor.g = g; lightColor.b = b; }
+			void setDiffuseLightColor(Number r, Number g, Number b) { lightColor.r = r; lightColor.g = g; lightColor.b = b; }
+			
+			
+			
+			/**
+			* Sets both the specular and diffust light colors. Use setDiffuseLightColor and setSpecularLightColor to set the individual light colors.
+			* @param r Red value 0-1.
+			* @param g Green value 0-1
+			* @param b Blue value 0-1
+			* @param a Alpha value 0-1									
+			*/	
+			void setLightColor(Number r, Number g, Number b, Number a=1.0) { 
+				setDiffuseLightColor(r,g,b);
+				setSpecularLightColor(r,g,b,a);
+			}
+			
+			
+						
 			
 			/**
 			* Sets the spotlight properties. These control the shape of the spotlight beam.
@@ -99,7 +148,8 @@ namespace Polycode {
 			*/
 			void setSpotlightProperties(Number spotlightCutoff, Number spotlightExponent) {
 				this->spotlightCutoff = spotlightCutoff;
-				this->spotlightExponent = spotlightExponent;				
+				Number cosVal = cos(spotlightCutoff*(PI/180.0));
+				this->spotlightExponent = cosVal - (0.02*spotlightExponent);				
 			}
 			
 			Number getSpotlightCutoff() { return spotlightCutoff; }
@@ -129,7 +179,14 @@ namespace Polycode {
 			*/
 			int getLightType() { return type; }
 		
-		private:
+			/**
+			* If set to true, draws a wireframe primitive visualizing the light.
+			*/
+			void enableDebugDraw(bool val);
+		
+			SceneEntity *lightShape;
+			
+		protected:
 		
 			Number spotlightExponent;
 			Number spotlightCutoff;

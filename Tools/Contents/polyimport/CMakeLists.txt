@@ -1,16 +1,31 @@
-LINK_LIBRARIES(
-    PolyCoreStatic
-#    ${SDL_LIBRARY}
-#    ${SDLMAIN_LIBRARY}
-#    ${OPENGL_LIBRARIES}
-#    ${OPENAL_LIBRARY}
-#    ${PNG_LIBRARIES}
-#    ${FREETYPE_LIBRARIES}
-    ${PHYSFS_LIBRARY}
-#    ${VORBISFILE_LIBRARY}
-    assimp
-)
+INCLUDE(PolycodeIncludes)
 
+FIND_PACKAGE(Assimp REQUIRED)
+INCLUDE_DIRECTORIES(
+    ${ASSIMP_INCLUDE_DIR} 
+    Include)
 
-INCLUDE_DIRECTORIES(${PolyCode_SOURCE_DIR}/Core/Contents/Include Include /usr/include/assimp)
-ADD_EXECUTABLE(polyimport Source/polyimport.cpp Include/polyimport.h)
+SET(CMAKE_DEBUG_POSTFIX "_d")
+
+IF(POLYCODE_BUILD_SHARED)
+    ADD_EXECUTABLE(polyimport Source/polyimport.cpp Include/polyimport.h)
+    TARGET_LINK_LIBRARIES(polyimport Polycore ${ASSIMP_LIBRARIES})
+ENDIF(POLYCODE_BUILD_SHARED)
+
+IF(POLYCODE_BUILD_STATIC)
+    ADD_EXECUTABLE(polyimport_static Source/polyimport.cpp Include/polyimport.h)
+    TARGET_LINK_LIBRARIES(polyimport_static Polycore_static ${PHYSFS_LIBRARY} ${ASSIMP_LIBRARIES}})
+ENDIF(POLYCODE_BUILD_STATIC)
+
+IF(POLYCODE_INSTALL_FRAMEWORK)
+
+    # install exes
+    IF(POLYCODE_BUILD_SHARED)
+        INSTALL(TARGETS polyimport DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Tools)
+    ENDIF(POLYCODE_BUILD_SHARED)
+    
+    IF(POLYCODE_BUILD_STATIC)
+        INSTALL(TARGETS polyimport_static DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Tools)
+    ENDIF(POLYCODE_BUILD_STATIC)
+
+ENDIF(POLYCODE_INSTALL_FRAMEWORK)

@@ -149,7 +149,7 @@ namespace Polycode {
 							BezierCurve *zCurve, int easeType, Number time, bool repeat=false);
 			~QuaternionTween();
 			void updateCustomTween();
-		private:
+		protected:
 			Number pathValue;
 			Tween *pathTween;
 			QuaternionCurve	*quatCurve;

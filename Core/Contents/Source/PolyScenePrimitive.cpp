@@ -24,7 +24,7 @@
 
 using namespace Polycode;
 
-ScenePrimitive::ScenePrimitive(int type, Number v1, Number v2, Number v3) : SceneMesh(Mesh::QUAD_MESH) {
+ScenePrimitive::ScenePrimitive(int type, Number v1, Number v2, Number v3,Number v4,Number v5) : SceneMesh(Mesh::QUAD_MESH) {
 
 	switch(type) {
 		case TYPE_PLANE:
@@ -33,6 +33,12 @@ ScenePrimitive::ScenePrimitive(int type, Number v1, Number v2, Number v3) : Scen
 			bBox.y = v2;
 			bBox.z = 0;
 		break;
+		case TYPE_VPLANE:
+			mesh->createVPlane(v1,v2);
+			bBox.x = v1;
+			bBox.y = v2;
+			bBox.z = 0;
+		break;		
 		case TYPE_BOX:
 			mesh->createBox(v1,v2,v3);
 			bBox.x = v1;
@@ -57,6 +63,12 @@ ScenePrimitive::ScenePrimitive(int type, Number v1, Number v2, Number v3) : Scen
 			bBox.y = v1;
 			bBox.z = v2*2;						
 		break;				
+		case TYPE_TORUS:
+			mesh->createTorus(v1,v2,v3,v4);
+			bBox.x = v1*2;
+			bBox.y = v2;
+			bBox.z = v1*2;						
+		break;						
 	}
 }
 

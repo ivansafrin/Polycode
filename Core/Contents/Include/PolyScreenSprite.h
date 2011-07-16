@@ -71,7 +71,7 @@ class _PolyExport ScreenSprite : public ScreenShape
 		void playAnimation(String name, int startFrame, bool once);
 		void Update();
 		
-	private:
+	protected:
 	
 		Number spriteWidth;
 		Number spriteHeight;

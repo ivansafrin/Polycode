@@ -147,7 +147,7 @@ int main(int argc, char **argv) {
 		installPath = installPath + cpts[i];
 		installPath += String("/");
 	}
-#else
+#elseif defined (_WINDOWS)
 	char path[2049];
 	TCHAR tpath[2049];
 	GetModuleFileName(NULL, (LPWSTR)tpath, 2048);
@@ -160,7 +160,14 @@ int main(int argc, char **argv) {
 		installPath = installPath + cpts[i];
 		installPath += String("\\");
 	}
-
+#else
+	String basePath = PHYSFS_getBaseDir();
+	vector<String> cpts = basePath.split("/");
+	String installPath = "";
+	for(int i=0; i < cpts.size() - 2; i++) {
+		installPath = installPath + cpts[i];
+		installPath += String("/");
+	}
 #endif
 
 	printf("Polycode build tool v0.1.1\n");
@@ -191,11 +198,12 @@ int main(int argc, char **argv) {
 	char dirPath[4099];
 #if defined(__APPLE__) && defined(__MACH__)
 	_getcwd(dirPath, sizeof(dirPath));
-#else	
+#elseif defined (_WINDOWS)
 	TCHAR tdirpath[4099];
 	GetCurrentDirectory(4098, (LPWSTR)tdirpath);
 	wtoc(dirPath, tdirpath, 4098);
-
+#else
+	getcwd(dirPath, sizeof(dirPath));
 #endif
 	String currentPath = String(dirPath);
 

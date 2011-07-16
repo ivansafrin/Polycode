@@ -82,7 +82,7 @@ void PhysicsScreen::PostSolve(b2Contact* contact, const b2ContactImpulse* impuls
 
 	b2Manifold *manifold = contact->GetManifold();
 	b2Vec2 nor = manifold->localNormal;
-	b2Vec2 point = manifold->localPoint;
+	b2Vec2 point = manifold->points[0].localPoint;
 	
 
 	b2WorldManifold w_manifold;

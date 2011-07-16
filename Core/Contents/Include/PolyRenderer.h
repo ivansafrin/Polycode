@@ -42,6 +42,7 @@ namespace Polycode {
 		public:
 			Vector3 position;
 			Vector3 color;
+			Color specularColor;
 			Vector3 dir;
 			Number constantAttenuation;
 			Number linearAttenuation;
@@ -52,6 +53,7 @@ namespace Polycode {
 			int type;
 			bool shadowsEnabled;
 			Matrix4 textureMatrix;
+			Texture* shadowMapTexture;
 	};
 
 	class _PolyExport LightSorter {
@@ -156,6 +158,8 @@ namespace Polycode {
 		
 		void setTextureFilteringMode(int mode);
 		
+		virtual void setClippingPlanes(Number near, Number far) = 0;
+		
 		virtual void enableAlphaTest(bool val) = 0;
 		
 		virtual void clearBuffer(bool colorBuffer, bool depthBuffer) = 0;
@@ -173,7 +177,7 @@ namespace Polycode {
 		virtual void cullFrontFaces(bool val) = 0;
 		
 		void clearLights();
-		void addLight(Vector3 position, Vector3 direction, int type, Color color, Number constantAttenuation, Number linearAttenuation, Number quadraticAttenuation, Number intensity, Number spotlightCutoff, Number spotlightExponent, bool shadowsEnabled, Matrix4 *textureMatrix);
+		void addLight(Vector3 position, Vector3 direction, int type, Color color, Color specularColor, Number constantAttenuation, Number linearAttenuation, Number quadraticAttenuation, Number intensity, Number spotlightCutoff, Number spotlightExponent, bool shadowsEnabled, Matrix4 *textureMatrix, Texture *shadowMapTexture);
 		
 		void setExposureLevel(Number level);
 		
@@ -207,8 +211,8 @@ namespace Polycode {
 		static const int TEX_FILTERING_NEAREST = 0;
 		static const int TEX_FILTERING_LINEAR = 1;
 		
-		void addShadowMap(Texture *texture);
-		vector<Texture*> getShadowMapTextures(){ return shadowMapTextures; };
+//		void addShadowMap(Texture *texture);
+//		vector<Texture*> getShadowMapTextures(){ return shadowMapTextures; };
 		
 		virtual Vector3 Unproject(Number x, Number y) = 0;
 		
@@ -233,7 +237,7 @@ namespace Polycode {
 		Texture *currentTexture;
 		Material *currentMaterial;
 		
-		vector<Texture*> shadowMapTextures;
+//		vector<Texture*> shadowMapTextures;
 		
 		Texture *currentFrameBufferTexture;
 		Texture *previousFrameBufferTexture;

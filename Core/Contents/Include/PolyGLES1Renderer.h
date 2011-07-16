@@ -128,7 +128,7 @@ namespace Polycode {
 		void clearShader();
 		void applyMaterial(Material *material,  ShaderBinding *localOptions, unsigned int shaderIndex);
 		
-	private:
+	protected:
 				
 		GLuint defaultFramebuffer, colorRenderbuffer;		
 		

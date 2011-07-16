@@ -171,7 +171,7 @@ namespace Polycode {
 			* Alpha value.
 			*/			
 			Number a;
-		private:
+		protected:
 	
 	};
 

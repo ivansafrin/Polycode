@@ -46,7 +46,7 @@ namespace Polycode {
 			Vector2(Number x, Number y);
 			virtual ~Vector2();
 					
-		private:
+		protected:
 
 	};
 }

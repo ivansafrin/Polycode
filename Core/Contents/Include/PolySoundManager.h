@@ -25,8 +25,8 @@
 #include "PolyLogger.h"
 #include "PolyGlobals.h"
 #include <stdio.h>
-#include "AL/al.h"
-#include "AL/alc.h"
+#include "al.h"
+#include "alc.h"
 #include "PolyVector3.h"
 
 namespace Polycode {
@@ -49,7 +49,7 @@ namespace Polycode {
 		void setGlobalVolume(Number globalVolume);
 		
 		
-	private:
+	protected:
 		
 		ALCdevice* device;
 		ALCcontext* context;		

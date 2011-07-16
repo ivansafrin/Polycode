@@ -11,6 +11,7 @@
 *.swp
 *.ipch
 *.sdf
+*.suo
 *.filters
 *.user
 *.tlog
@@ -28,26 +29,33 @@
 *.zip
 *.swo
 *.opensdf
+*.user.*
+*.xcuserstate
+*.xcworkspace
+*.xcuserdata
 
-Core/Build/Mac\ OS\ X/build
-IDE/Build/Mac\ OS\ X/build
-Modules/Build/Mac\ OS\ X/build
-Tools/Build/Mac\ OS\ X/build
-Player/Build/Mac\ OS\ X/build
-Bindings/Build/Mac\ OS\ X/build
-Core/Dependencies
-Modules/Dependencies
-IDE/Dependencies
-Tools/Dependencies/assimp
-Bindings/Dependencies
-IDE/Mac\ OS\ X
+/Dependencies/Build
+/Dependencies/Downloads
+/Core/Build/Mac\ OS\ X/build
+/IDE/Build/Mac\ OS\ X/build
+/Modules/Build/Mac\ OS\ X/build
+/Tools/Build/Mac\ OS\ X/build
+/Player/Build/Mac\ OS\ X/build
+/Bindings/Build/Mac\ OS\ X/build
+/Core/Dependencies
+/Modules/Dependencies
+/IDE/Dependencies
+/Tools/Dependencies/assimp
+/Bindings/Dependencies
+/IDE/Mac\ OS\ X
+/qtcreator-build
 Debug
 Release
 Documentation
-qtcreator-build
 
-Tools/Build/Linux/polybuild*
-Tools/Build/Linux/polyimport*
+
+/Tools/Build/Linux/polybuild*
+/Tools/Build/Linux/polyimport*
 
 # OS generated files #
 ######################
@@ -56,3 +64,5 @@ Tools/Build/Linux/polyimport*
 ehthumbs.db
 Icon?
 Thumbs.db
+
+Core/Build/Mac OS X/PolyCore.xcodeproj/project.xcworkspace/xcuserdata/ivansafrin.xcuserdatad/UserInterfaceState.xcuserstate

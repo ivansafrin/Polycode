@@ -12,7 +12,7 @@
 			</fp>
 		</shader>	
 		<shader type="glsl" name="DefaultShaderNoTexture" numAreaLights="4" numSpotLights="2">		
-			<vp source="DefaultShaderNoTexture.vert">
+			<vp source="DefaultShader.vert">
 				<params>			
 				</params>				
 			</vp>
@@ -20,7 +20,18 @@
 				<params>			
 				</params>				
 			</fp>
-		</shader>		
+		</shader>
+		<shader type="glsl" name="DefaultShaderShadows" numAreaLights="4" numSpotLights="2">		
+			<vp source="DefaultShaderShadows.vert">
+				<params>			
+				</params>				
+			</vp>
+			<fp source="DefaultShaderShadows.frag">
+				<params>			
+				</params>				
+			</fp>
+		</shader>
+		
 		<shader type="glsl" name="DefaultShaderVertex" numAreaLights="4" numSpotLights="2">		
 			<vp source="DefaultShaderVertex.vert">
 				<params>			
@@ -32,7 +43,7 @@
 			</fp>
 		</shader>			
 		<shader type="glsl" name="DefaultShaderVertexNoTexture" numAreaLights="4" numSpotLights="2">		
-			<vp source="DefaultShaderVertexNoTexture.vert">
+			<vp source="DefaultShaderVertex.vert">
 				<params>			
 				</params>				
 			</vp>
@@ -41,18 +52,9 @@
 				</params>				
 			</fp>
 		</shader>			
-		<shader type="glsl" name="DefaultShaderShadows" numAreaLights="4" numSpotLights="2">		
-			<vp source="DefaultShaderShadows.vert">
-				<params>			
-				</params>				
-			</vp>
-			<fp source="DefaultShaderShadows.frag">
-				<params>			
-				</params>				
-			</fp>
-		</shader>	
+		
 		<shader type="glsl" name="DefaultParticleShader" numAreaLights="4" numSpotLights="2">		
-			<vp source="DefaultParticleShader.vert">
+			<vp source="DefaultShader.vert">
 				<params>			
 				</params>				
 			</vp>
@@ -60,7 +62,7 @@
 				<params>			
 				</params>				
 			</fp>
-		</shader>	
+		</shader>															
 		<shader type="glsl" name="Unlit" numAreaLights="0" numSpotLights="0">		
 			<vp source="Unlit.vert">
 				<params>			
@@ -71,7 +73,7 @@
 				</params>				
 			</fp>
 		</shader>										
-	</shaders>
+	</shaders>	
 	<materials>
 		<material name="Default">
 			<shader name="DefaultShaderNoTexture">
