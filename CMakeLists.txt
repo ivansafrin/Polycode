@@ -45,6 +45,7 @@ MESSAGE(DEBUG "CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}")
 
 # Process subdirectories
 ADD_SUBDIRECTORY(Core/Contents)
+ADD_SUBDIRECTORY("Assets/Default asset pack")
 
 IF(POLYCODE_BUILD_BINDINGS)
     ADD_SUBDIRECTORY(Bindings/Contents)
