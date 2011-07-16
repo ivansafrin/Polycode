@@ -9,8 +9,10 @@ IF(NOT CMAKE_BUILD_TYPE)
     MESSAGE("No CMAKE_BUILD_TYPE specified, defaulting to ${CMAKE_BUILD_TYPE}") 
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
+
 IF(NOT POLYCODE_RELEASE_DIR)
-    SET(POLYCODE_RELEASE_DIR ${PolycodeDependencies_SOURCE_DIR}/../Release/${CMAKE_SYSTEM_NAME})
+    SET(POLYCODE_RELEASE_DIR ${PolycodeDependencies_SOURCE_DIR}/../Release/${CMAKE_SYSTEM_NAME}
+        CACHE PATH "Choose the root directory that the Polycode release will be installed in.")
     MESSAGE("No POLYCODE_RELEASE_DIR specified, to ${POLYCODE_RELEASE_DIR}") 
 ENDIF(NOT POLYCODE_RELEASE_DIR)
 
