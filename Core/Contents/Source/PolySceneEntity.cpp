@@ -25,6 +25,7 @@
 using namespace Polycode;
 
 SceneEntity::SceneEntity() : EventHandler(), Entity() {
+	castShadows = true;
 }
 
 SceneEntity::~SceneEntity() {

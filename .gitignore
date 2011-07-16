@@ -30,6 +30,9 @@
 *.swo
 *.opensdf
 *.user.*
+*.xcuserstate
+*.xcworkspace
+*.xcuserdata
 
 /Core/Build/Mac\ OS\ X/build
 /IDE/Build/Mac\ OS\ X/build
@@ -59,3 +62,5 @@ Documentation
 ehthumbs.db
 Icon?
 Thumbs.db
+
+Core/Build/Mac OS X/PolyCore.xcodeproj/project.xcworkspace/xcuserdata/ivansafrin.xcuserdatad/UserInterfaceState.xcuserstate

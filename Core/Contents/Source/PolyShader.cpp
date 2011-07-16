@@ -49,6 +49,13 @@ LocalShaderParam *ShaderBinding::getLocalParamByName(String name) {
 	return NULL;
 }
 
+void ShaderBinding::addLocalParam(String name, void *ptr) {
+	LocalShaderParam *newParam = new LocalShaderParam();
+	newParam->name = name;
+	newParam->data = ptr;
+	localParams.push_back(newParam);
+}
+
 void ShaderBinding::addRenderTargetBinding(RenderTargetBinding *binding) {
 	renderTargetBindings.push_back(binding);
 	if(binding->mode == RenderTargetBinding::MODE_IN) {

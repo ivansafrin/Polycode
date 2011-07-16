@@ -269,31 +269,31 @@ void Image::fastBlurHor(int blurSize) {
 		
 	for (int y = 1; y < height; y++) {
 		for (int x = 0; x < width; x++) {
-                total_r = 0;
-				total_g = 0;
-				total_b = 0;
-				total_a = 0;
-				amt = 0;
-				for (int kx = -blurSize; kx <= blurSize; kx++) {
-						if((x+kx > 0 && x+kx < width) && (x+kx+((y)*width) > 0 && x+kx+((y)*width) < width*height)) {
-							pixel = (unsigned char*)&(imageData32[(x+kx)+((y)*width)]);
-							total_r += pixel[0];
-							total_g += pixel[1];
-							total_b += pixel[2];
-							total_a += pixel[3];
-							amt++;
-						}
+			total_r = 0;
+			total_g = 0;
+			total_b = 0;
+			total_a = 0;
+			amt = 0;
+			for (int kx = -blurSize; kx <= blurSize; kx++) {
+				if((x+kx > 0 && x+kx < width) && (x+kx+((y)*width) > 0 && x+kx+((y)*width) < width*height)) {
+					pixel = (unsigned char*)&(imageData32[(x+kx)+((y)*width)]);
+					total_r += pixel[0];
+					total_g += pixel[1];
+					total_b += pixel[2];
+					total_a += pixel[3];
+					amt++;
 				}
-				
+			}
+		
 //				Logger::log("%d / %d = %d\n",total_r, amt, (total_r/amt));
+		
+		blurImage[((x+(y*width))*pixelSize)] = (total_r/amt);
+		blurImage[((x+(y*width))*pixelSize)+1] = (total_g / amt);
+		blurImage[((x+(y*width))*pixelSize)+2] = (total_b / amt);
+		blurImage[((x+(y*width))*pixelSize)+3] = (total_a / amt);
 			
-				blurImage[((x+(y*width))*pixelSize)] = (total_r/amt);
-				blurImage[((x+(y*width))*pixelSize)+1] = (total_g / amt);
-				blurImage[((x+(y*width))*pixelSize)+2] = (total_b / amt);
-				blurImage[((x+(y*width))*pixelSize)+3] = (total_a / amt);
-				
-            }
-        }
+		}
+	}
 
 	free(imageData);	
 	imageData = (char*)blurImage;
@@ -319,30 +319,30 @@ void Image::fastBlurVert(int blurSize) {
 		
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
-                total_r = 0;
-				total_g = 0;
-				total_b = 0;
-				total_a = 0;
-				amt = 0;
-				for (int ky = -blurSize; ky <= blurSize; ky++) {
-						if((y+ky > 0 && y+ky < height) && (x+((y+ky)*width) > 0 && x+((y+ky)*width) < width*height)) {
-							pixel = (unsigned char*)&(imageData32[(x)+((y+ky)*width)]);
-							total_r += pixel[0];
-							total_g += pixel[1];
-							total_b += pixel[2];
-							total_a += pixel[3];
-							amt++;
-						}
+			total_r = 0;
+			total_g = 0;
+			total_b = 0;
+			total_a = 0;
+			amt = 0;
+			for (int ky = -blurSize; ky <= blurSize; ky++) {
+				if((y+ky > 0 && y+ky < height) && (x+((y+ky)*width) > 0 && x+((y+ky)*width) < width*height)) {
+					pixel = (unsigned char*)&(imageData32[(x)+((y+ky)*width)]);
+					total_r += pixel[0];
+					total_g += pixel[1];
+					total_b += pixel[2];
+					total_a += pixel[3];
+					amt++;
 				}
+			}
 				
-//				Logger::log("%d / %d = %d\n",total_r, amt, (total_r/amt));
-				blurImage[((x+(y*width))*pixelSize)] = (total_r/amt);
-				blurImage[((x+(y*width))*pixelSize)+1] = (total_g / amt);
-				blurImage[((x+(y*width))*pixelSize)+2] = (total_b / amt);
-				blurImage[((x+(y*width))*pixelSize)+3] = (total_a / amt);
+			//Logger::log("%d / %d = %d\n",total_r, amt, (total_r/amt));
+			blurImage[((x+(y*width))*pixelSize)] = (total_r/amt);
+			blurImage[((x+(y*width))*pixelSize)+1] = (total_g / amt);
+			blurImage[((x+(y*width))*pixelSize)+2] = (total_b / amt);
+			blurImage[((x+(y*width))*pixelSize)+3] = (total_a / amt);
 				
-            }
-        }
+		}
+	}
 
 	free(imageData);	
 	imageData = (char*)blurImage;
@@ -419,24 +419,24 @@ void Image::line(int x0, int y0, int x1, int y1, Color col) {
 	int deltay = abs(y1 - y0);
 	Number error = 0;
 
-     Number deltaerr = ((Number)deltay) / ((Number)deltax);
-     int ystep;
-     int y = y0;
-     if(y0 < y1)
+	Number deltaerr = ((Number)deltay) / ((Number)deltax);
+	int ystep;
+	int y = y0;
+	if(y0 < y1)
 		ystep = 1;
 	else
 		ystep = -1;
-
-     for(int x=x0; x < x1;x++) {
-         if(steep) {
+	
+	for(int x=x0; x < x1;x++) {
+		if(steep) {
 			setPixel(y,x,col);
 		} else {
 			setPixel(x,y,col);
 		}
-         error = error + ((Number)deltaerr);
-         if(error >= 0.5) {
-             y = y + ystep;
-             error = error - 1.0;
+		error = error + ((Number)deltaerr);
+		if(error >= 0.5) {
+			y = y + ystep;
+			error = error - 1.0;
 		}
 	}
 }
@@ -547,20 +547,20 @@ bool Image::loadPNG(String fileName) {
 		Logger::log("Error allocating image memory\n");		
 		png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 		return false;
-    }
+	}
 	
 	if ((row_pointers = (png_bytepp)malloc(height*sizeof(png_bytep))) == NULL) {
 		Logger::log("Error allocating image memory\n");
-        png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
-        free(image_data);
-        image_data = NULL;
-        return false;
-    }
+		png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+		free(image_data);
+		image_data = NULL;
+		return false;
+	}
 	
-    for (i = 0;  i < height;  ++i)
-        row_pointers[height - 1 - i] = (png_byte*)image_data + i*rowbytes;
+	for (i = 0;  i < height;  ++i)
+		row_pointers[height - 1 - i] = (png_byte*)image_data + i*rowbytes;
 	
-    png_read_image(png_ptr, row_pointers);
+	png_read_image(png_ptr, row_pointers);
 	
 	free(row_pointers);
 	png_destroy_read_struct(&png_ptr, &info_ptr, NULL);

@@ -42,6 +42,7 @@ Renderer::Renderer() : currentTexture(NULL), xRes(0), yRes(0), renderMode(0), or
 	currentFrameBufferTexture = NULL;
 	previousFrameBufferTexture = NULL;
 	fov = 45.0;
+	setAmbientColor(0.0,0.0,0.0);
 	cullingFrontFaces = false;
 }
 
@@ -63,13 +64,13 @@ void Renderer::clearLights() {
 	lights.clear();
 	areaLights.clear();
 	spotLights.clear();
-	shadowMapTextures.clear();
+//	shadowMapTextures.clear();
 }
-
+/*
 void Renderer::addShadowMap(Texture *texture) {
 	shadowMapTextures.push_back(texture);
 }
-
+*/
 void Renderer::setExposureLevel(Number level) {
 	exposureLevel = level;
 }
@@ -123,6 +124,7 @@ void Renderer::addShaderModule(PolycodeShaderModule *module) {
 }
 
 void Renderer::sortLights(){
+
 	LightSorter sorter;
 	sorter.basePosition = (getModelviewMatrix()).getPosition();
 	sorter.cameraMatrix = getCameraMatrix().inverse();	
@@ -130,7 +132,7 @@ void Renderer::sortLights(){
 	sort (spotLights.begin(), spotLights.end(), sorter);	
 }
 
-void Renderer::addLight(Vector3 position, Vector3 direction, int type, Color color, Number constantAttenuation, Number linearAttenuation, Number quadraticAttenuation, Number intensity, Number spotlightCutoff, Number spotlightExponent, bool shadowsEnabled, Matrix4 *textureMatrix) {
+void Renderer::addLight(Vector3 position, Vector3 direction, int type, Color color, Color specularColor, Number constantAttenuation, Number linearAttenuation, Number quadraticAttenuation, Number intensity, Number spotlightCutoff, Number spotlightExponent, bool shadowsEnabled, Matrix4 *textureMatrix,Texture *shadowMapTexture) {
 
 	numLights++;
 	
@@ -139,6 +141,7 @@ void Renderer::addLight(Vector3 position, Vector3 direction, int type, Color col
 		info.textureMatrix = *textureMatrix;
 	}
 	
+	info.shadowMapTexture = shadowMapTexture;
 	info.shadowsEnabled = shadowsEnabled;
 	info.spotlightCutoff = spotlightCutoff;
 	info.spotlightExponent = spotlightExponent;	
@@ -150,6 +153,7 @@ void Renderer::addLight(Vector3 position, Vector3 direction, int type, Color col
 	info.quadraticAttenuation = quadraticAttenuation;
 			
 	info.color.set(color.r, color.g, color.b);
+	info.specularColor = specularColor;
 	info.position = position;
 	lights.push_back(info);
 	switch(type) {

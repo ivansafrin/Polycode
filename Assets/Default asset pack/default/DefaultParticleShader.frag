@@ -1,3 +1,8 @@
+varying vec3 normal;
+varying vec4 pos;
+varying vec4 vertexColor;
+uniform sampler2D diffuse;
+
 float calculateAttenuation(in int i, in float dist)
 {
     return(1.0 / (gl_LightSource[i].constantAttenuation +
@@ -5,99 +10,104 @@ float calculateAttenuation(in int i, in float dist)
                   gl_LightSource[i].quadraticAttenuation * dist * dist));
 }
 
-void pointLight(in int i, in vec3 N, in vec3 V, in float shininess,
-                inout vec4 ambient, inout vec4 diffuse, inout vec4 specular)
-{
-    vec3 D = gl_LightSource[i].position.xyz - V;
-    vec3 L = normalize(D);
-
-    float dist = length(D);
-    float attenuation = calculateAttenuation(i, dist);
-
-    float nDotL = 1.0; //dot(N,L);
-
-    if (nDotL > 0.0)
-    {   
-        vec3 E = normalize(-V);
-        vec3 R = reflect(-L, N);
-       
-        float pf = pow(max(dot(R,E), 0.0), shininess);
-
-        diffuse  += gl_LightSource[i].diffuse  * attenuation * nDotL;
-        specular += gl_LightSource[i].specular * attenuation * pf;
-    }
-   
-    ambient  += gl_LightSource[i].ambient * attenuation;
-}
-
-void spotLight(in int i, in vec3 N, in vec3 V, in float shininess,
-               inout vec4 ambient, inout vec4 diffuse, inout vec4 specular)
-{
-    vec3 D = gl_LightSource[i].position.xyz - V;
-    vec3 L = normalize(D);
-
-    float dist = length(D);
-    float attenuation = calculateAttenuation(i, dist);
+void pointLight(in int i, in vec3 normal, in vec4 pos, inout vec4 diffuse, inout vec4 specular) {
+	vec4 color = gl_FrontMaterial.diffuse;
+	vec4 matspec = gl_FrontMaterial.specular;
+	float shininess = gl_FrontMaterial.shininess;
+	vec4 lightspec = gl_LightSource[i].specular;
+	vec4 lpos = gl_LightSource[i].position;
+	vec4 s = pos-lpos; 
+	vec4 sn = -normalize(s);
 	
-    float nDotL = dot(N,L);	
-    if (nDotL > 0.0)
-    {   
-        float spotEffect = dot(normalize(gl_LightSource[i].spotDirection), -L);
-       
-        if (spotEffect > gl_LightSource[i].spotCosCutoff)
-        {
-            attenuation *=  pow(spotEffect, gl_LightSource[i].spotExponent);
+	vec3 light = sn.xyz;
+	vec3 n = normalize(normal);
+	vec3 r = -reflect(light, n);
+	r = normalize(r);
+	vec3 v = -pos.xyz;
+	v = normalize(v);
 
-            vec3 E = normalize(-V);
-            vec3 R = reflect(-L, N);
-       
-            float pf = pow(max(dot(R,E), 0.0), shininess);
+	float nDotL = 1.0;
+		float dist = length(s);    
+		float attenuation = calculateAttenuation(i, dist);
 
-            diffuse  += gl_LightSource[i].diffuse  * attenuation * nDotL;
-            specular += gl_LightSource[i].specular * attenuation * pf;
-        }
-    }
-   
-    ambient  += gl_LightSource[i].ambient * attenuation;
+		diffuse  += color * max(0.0, nDotL) * gl_LightSource[i].diffuse * attenuation;
+
+	  if (shininess != 0.0) {
+    	specular += lightspec * matspec * pow(max(0.0,dot(r, v)), shininess) * attenuation;
+	  }
 }
 
-void calculateLighting(in int numLights, in vec3 N, in vec3 V, in float shininess,
-                       inout vec4 ambient, inout vec4 diffuse, inout vec4 specular)
-{
-    // Just loop through each light, and if its enabled add
-    // its contributions to the color of the pixel.
-    for (int i = 0; i < numLights; i++)
-    {
-		if (gl_LightSource[i].spotCutoff == 180.0)
-                pointLight(i, N, V, shininess, ambient, diffuse, specular);
-            else
-                 spotLight(i, N, V, shininess, ambient, diffuse, specular);
 
+void spotLight(in int i, in vec3 normal, in vec4 pos, inout vec4 diffuse, inout vec4 specular) {
+	vec4 color = gl_FrontMaterial.diffuse;
+	vec4 matspec = gl_FrontMaterial.specular;
+	float shininess = gl_FrontMaterial.shininess;
+	vec4 lightspec = gl_LightSource[i].specular;
+	vec4 lpos = gl_LightSource[i].position;
+	vec4 s = pos-lpos; 
+	vec4 sn = -normalize(s);
+
+	vec3 light = sn.xyz;
+	vec3 n = normalize(normal);
+	vec3 r = -reflect(light, n);
+	r = normalize(r);
+	vec3 v = -pos.xyz;
+	v = normalize(v);
+
+	float cos_outer_cone_angle = gl_LightSource[i].spotExponent;
+	float cos_cur_angle = dot(-normalize(gl_LightSource[i].spotDirection), sn.xyz);
+	float cos_inner_cone_angle = gl_LightSource[i].spotCosCutoff;
+
+	float cos_inner_minus_outer_angle = cos_inner_cone_angle - cos_outer_cone_angle;
+	float spot = 0.0;
+	spot = clamp((cos_cur_angle - cos_outer_cone_angle) / cos_inner_minus_outer_angle, 0.0, 1.0);
+	       
+	float nDotL = 1.0;
+		float dist = length(s);    
+		float attenuation = calculateAttenuation(i, dist);
+		diffuse  += color * max(0.0, nDotL) * gl_LightSource[i].diffuse * attenuation * spot;
+
+	  if (shininess != 0.0) {
+    	specular += lightspec * matspec * pow(max(0.0,dot(r, v)), shininess) * attenuation * spot;
+	  }
+}
+
+void doLights(in int numLights, in vec3 normal, in vec4 pos, inout vec4 diffuse, inout vec4 specular) {
+	for (int i = 0; i < numLights; i++) {
+		if (gl_LightSource[i].spotCutoff == 180.0) {
+			pointLight(i, normal, pos, diffuse, specular);
+		} else {
+			spotLight(i, normal, pos, diffuse, specular);
+		}
     }
 }
 
-uniform sampler2D diffuse;
-varying vec3 normal;
-varying vec3 vertex;
-varying vec4 vertexColor;
 
 void main()
 {
-    vec3 n = normalize(normal);
-   
-    vec4 ambient_c  = vec4(0.0);
-    vec4 diffuse_c  = vec4(0.0);
-    vec4 specular_c = vec4(0.0);
-
-    calculateLighting(6, n, vertex, gl_FrontMaterial.shininess, ambient_c, diffuse_c, specular_c);
-   
-	vec4 texColor = texture2D(diffuse, gl_TexCoord[0].st);
+	vec4 diffuse_val  = vec4(0.0);
+	vec4 specular_val = vec4(0.0);
+	doLights(6, normal, pos, diffuse_val, specular_val);
+	diffuse_val.a = 1.0;
+	specular_val.a = 1.0;
+		
+	vec4 texColor = texture2D(diffuse, gl_TexCoord[0].st);		
+		
+    vec4 color = (diffuse_val  * 1.0) +
+                 (specular_val * 1.0)+
+                 gl_FrontMaterial.ambient;
+    color = clamp(color*vertexColor*texColor, 0.0, 1.0);
     
-    vec4 color = gl_FrontLightModelProduct.sceneColor  +
-                 (ambient_c  * 1.0) +
-                 (diffuse_c  * 1.0) +
-                 (specular_c * 1.0);
-	color.a = 1.0;
-    color = clamp(color*texColor*vertexColor, 0.0, 1.0);
-    gl_FragColor = color;
+    // fog
+	const float LOG2 = 1.442695;
+	float z = gl_FragCoord.z / gl_FragCoord.w;
+	float fogFactor = exp2( -gl_Fog.density * 
+				   gl_Fog.density * 
+				   z * 
+				   z * 
+				   LOG2 );
+
+	fogFactor = clamp(fogFactor, 0.0, 1.0);
+	gl_FragColor = mix(gl_Fog.color, color, fogFactor );    
+
 }

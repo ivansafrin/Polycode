@@ -233,6 +233,8 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 	vector<ShaderBinding*> newShaderBindings;
 	vector<ShaderRenderTarget*> renderTargets;	
 
+	Material *newMaterial = new Material(mname);
+
 	for (pChild3 = node->FirstChild(); pChild3 != 0; pChild3 = pChild3->NextSibling()) {
 		if(strcmp(pChild3->Value(), "rendertargets") == 0) {
 			for (pChild = pChild3->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {
@@ -271,6 +273,32 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 	}
 	
 	for (pChild3 = node->FirstChild(); pChild3 != 0; pChild3 = pChild3->NextSibling()) {
+	
+		if(strcmp(pChild3->Value(), "specularValue") == 0) {
+			newMaterial->specularValue = atof(pChild3->ToElement()->GetText());
+		}
+
+		if(strcmp(pChild3->Value(), "specularColor") == 0) {		
+			String value = pChild3->ToElement()->GetText();
+			vector<String> values = value.split(" ");
+			if(values.size() == 4) {
+				newMaterial->specularColor.setColor(atof(values[0].c_str()), atof(values[1].c_str()), atof(values[2].c_str()),atof(values[3].c_str()));
+			} else {
+				Logger::log("Error: Incorrect number of values for specularColor (%d provided)!\n", values.size());
+			}
+		}
+
+		if(strcmp(pChild3->Value(), "diffuseColor") == 0) {
+			String value = pChild3->ToElement()->GetText();
+			vector<String> values = value.split(" ");
+			if(values.size() == 4) {
+				newMaterial->diffuseColor.setColor(atof(values[0].c_str()), atof(values[1].c_str()), atof(values[2].c_str()),atof(values[3].c_str()));
+			} else {
+				Logger::log("Error: Incorrect number of values for diffuseColor (%d provided)!\n", values.size());
+			}
+
+		}
+		
 		if(strcmp(pChild3->Value(), "shader") == 0) {
 			materialShader = setShaderFromXMLNode(pChild3);
 			if(materialShader) {
@@ -350,7 +378,7 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 		}
 	}
 	
-	Material *newMaterial = new Material(mname);
+
 	for(int i=0; i< materialShaders.size(); i++) {
 		newMaterial->addShader(materialShaders[i],newShaderBindings[i]);
 	}

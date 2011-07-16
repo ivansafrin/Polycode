@@ -25,8 +25,15 @@
 #include "PolyLogger.h"
 #include "PolyGlobals.h"
 #include <stdio.h>
-#include "AL/al.h"
-#include "AL/alc.h"
+
+#if defined(__APPLE__) && defined(__MACH__)
+	#include "al.h"
+	#include "alc.h"
+#else
+	#include "AL/al.h"
+	#include "AL/alc.h"
+#endif
+
 #include "PolyVector3.h"
 
 namespace Polycode {
@@ -49,7 +56,7 @@ namespace Polycode {
 		void setGlobalVolume(Number globalVolume);
 		
 		
-	private:
+	protected:
 		
 		ALCdevice* device;
 		ALCcontext* context;		

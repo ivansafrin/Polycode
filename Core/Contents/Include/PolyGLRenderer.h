@@ -191,6 +191,8 @@ namespace Polycode {
 		void enableDepthTest(bool val);
 		void enableDepthWrite(bool val);
 				
+		void setClippingPlanes(Number near, Number far);
+				
 		void clearBuffer(bool colorBuffer, bool depthBuffer);	
 		void drawToColorBuffer(bool val);
 		

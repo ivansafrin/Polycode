@@ -52,6 +52,10 @@ namespace Polycode {
 			ShaderBinding *getShaderBinding(unsigned int index);
 			void loadMaterial(String fileName);
 			
+			Number specularValue;
+			Color specularColor;
+			Color diffuseColor;
+						
 		protected:
 		
 			vector<Shader*> materialShaders;

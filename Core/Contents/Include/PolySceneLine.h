@@ -44,7 +44,7 @@ namespace Polycode {
 			
 			void Render();
 			
-		private:		
+		protected:		
 		
 			Mesh *mesh;
 		

@@ -49,7 +49,7 @@ namespace Polycode {
 			void generatePointsFromCurves(BezierCurve *wCurve, BezierCurve *xCurve, BezierCurve *yCurve, BezierCurve *zCurve);
 			void recalcTangents(void);
 		
-		private:
+		protected:
 		
 			vector<QuatTriple> tPoints;
 			vector<Quaternion> points;			

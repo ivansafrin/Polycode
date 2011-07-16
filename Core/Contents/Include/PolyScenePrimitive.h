@@ -34,14 +34,15 @@ namespace Polycode {
 	/**
 	* 3D primitive mesh. 
 	*/
+	
 	class _PolyExport ScenePrimitive : public SceneMesh {
 		public:
 		
 			/**
 			* Create a primitive mesh of specified type and size.
-			* @param type Type of primitive to create. Current types are ScenePrimitive::TYPE_BOX, ScenePrimitive::TYPE_PLANE and ScenePrimitive::TYPE_SPHERE
+			* @param type Type of primitive to create. Current types are ScenePrimitive::TYPE_BOX, ScenePrimitive::TYPE_PLANE, ScenePrimitive::TYPE_VPLANE, ScenePrimitive::TYPE_SPHERE, ScenePrimitive::TYPE_CYLINDER, ScenePrimitive::TYPE_CONE and ScenePrimitive::TYPE_TORUS
 			*/
-			ScenePrimitive(int type, Number v1=1.0f, Number v2=1.0f, Number v3=1.0f);
+			ScenePrimitive(int type, Number v1=1.0f, Number v2=1.0f, Number v3=1.0f,Number v4=0.0f,Number v5=0.0f);
 			virtual ~ScenePrimitive();
 
 			/**
@@ -64,9 +65,17 @@ namespace Polycode {
 			* A cone.
 			*/			
 			static const int TYPE_CONE = 4;
+			/**
+			* A vertical plane.
+			*/			
+			static const int TYPE_VPLANE = 5;			
+			/**
+			* A torus.
+			*/			
+			static const int TYPE_TORUS = 6;			
 
 		
-		private:
+		protected:
 		
 	};
 	

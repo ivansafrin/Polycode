@@ -40,7 +40,9 @@ namespace Polycode {
 			
 			FT_Face getFace();
 			bool isValid();
-		private:
+			
+			bool loaded;
+		protected:
 			unsigned char *buffer;
 			bool valid;
 			FT_Face ftFace;

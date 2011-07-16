@@ -107,6 +107,8 @@ namespace Polycode {
 			unsigned int getNumOutTargetBindings();
 			RenderTargetBinding *getOutTargetBinding(unsigned int index);
 			
+			void addLocalParam(String name, void *ptr);
+			
 			Shader* shader;
 			vector<LocalShaderParam*> localParams;
 			vector<RenderTargetBinding*> renderTargetBindings;

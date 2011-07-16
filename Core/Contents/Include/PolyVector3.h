@@ -180,7 +180,7 @@ namespace Polycode {
 			*/			
 			Number z;			
 			
-		private:
+		protected:
 
 	};
 }

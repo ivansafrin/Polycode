@@ -111,7 +111,18 @@ namespace Polycode {
 			*/
 			void removePostFilter();
 			
-		private:
+			/**
+			* Returns the local shader options for the camera post processing material.
+			*/
+			vector<ShaderBinding*> getLocalShaderOptions() { return localShaderOptions; }
+			
+			/**
+			* Returns the shader material applied to the camera.
+			*/			
+			Material *getScreenShaderMaterial() { return filterShaderMaterial; }
+			
+			
+		protected:
 		
 			Number exposureLevel;
 			bool orthoMode;

@@ -123,7 +123,7 @@ namespace Polycode {
 			*/
 			void flipUVY();
 						
-		private:
+		protected:
 		
 			unsigned int vertexCount;
 			vector<Vertex*> vertices;

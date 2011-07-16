@@ -51,7 +51,7 @@ namespace Polycode {
 		
 		GLuint getTextureID();		
 			
-	private:
+	protected:
 		
 		int filteringMode;
 		GLuint textureID;

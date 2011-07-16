@@ -97,6 +97,13 @@ class _PolyExport PhysicsScreenEvent : public Event {
 		* Event sent out when a collision ends
 		*/							
 		static const int EVENT_END_SHAPE_COLLISION = 1;
+		
+		/**
+		* Event sent out when a collision begins
+		*/					
+		static const int EVENT_SOLVE_SHAPE_COLLISION = 3;
+
+		
 };		
 
 

@@ -73,7 +73,7 @@ namespace Polycode {
 		*/ 		
 		Number getImageHeight();
 		
-		private:
+		protected:
 
 		Number imageWidth;
 		Number imageHeight;

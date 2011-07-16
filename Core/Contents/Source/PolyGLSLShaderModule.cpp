@@ -206,7 +206,7 @@ void GLSLShaderModule::setGLSLSpotLightTextureMatrixParameter(Renderer *renderer
 
 
 
-void GLSLShaderModule::updateGLSLParam(Renderer *renderer, GLSLProgramParam &param, ShaderBinding *materialOptions, ShaderBinding *localOptions) {
+void GLSLShaderModule::updateGLSLParam(Renderer *renderer, GLSLShader *glslShader, GLSLProgramParam &param, ShaderBinding *materialOptions, ShaderBinding *localOptions) {
 	if(param.isAuto) {
 		switch(param.autoID) {
 			case GLSLProgramParam::POLY_MODELVIEWPROJ_MATRIX:
@@ -346,13 +346,20 @@ void GLSLShaderModule::updateGLSLParam(Renderer *renderer, GLSLProgramParam &par
 		
 		switch(param.paramType) {
 			case GLSLProgramParam::PARAM_Number:
+			{
 				fval = (Number*)paramData;
-//				cgGLSetParameter1f(param.cgParam, *fval);
+				int paramLocation = glGetUniformLocation(glslShader->shader_id, param.name.c_str());
+				glUniform1f(paramLocation, *fval);
 				break;
+			}
 			case GLSLProgramParam::PARAM_Number3:
+			{
 				Vector3 *fval3 = (Vector3*)paramData;
-//				cgGLSetParameter3f(param.cgParam, fval3->x,fval3->y,fval3->z);
-				break;
+				fval = (Number*)paramData;
+				int paramLocation = glGetUniformLocation(glslShader->shader_id, param.name.c_str());
+				glUniform3f(paramLocation, fval3->x,fval3->y,fval3->z);
+				break;				
+			}
 		}
 	}
 }
@@ -370,14 +377,18 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 	int numRendererAreaLights = renderer->getNumAreaLights();
 	int numRendererSpotLights = renderer->getNumSpotLights();
 	
-	int numTotalLights = numRendererAreaLights + numRendererSpotLights;
-	
-	
+	int numTotalLights = glslShader->numAreaLights + glslShader->numSpotLights;
+		
 	for(int i=0 ; i < numTotalLights; i++) {
 		GLfloat resetData[] = {0.0, 0.0, 0.0, 0.0};				
 		glLightfv (GL_LIGHT0+i, GL_DIFFUSE, resetData);	
+		glLightfv (GL_LIGHT0+i, GL_SPECULAR, resetData);			
 		glLightfv (GL_LIGHT0+i, GL_AMBIENT, resetData);	
-		glLightfv (GL_LIGHT0+i, GL_POSITION, resetData);			
+		glLightfv (GL_LIGHT0+i, GL_POSITION, resetData);	
+		glLightf (GL_LIGHT0+i, GL_SPOT_CUTOFF, 180);		
+		glLightf (GL_LIGHT0+i, GL_CONSTANT_ATTENUATION,1.0);			
+		glLightf (GL_LIGHT0+i, GL_LINEAR_ATTENUATION,0.0);			
+		glLightf (GL_LIGHT0+i, GL_QUADRATIC_ATTENUATION, 0.0);			
 	}
 	
 	int lightIndex = 0;
@@ -393,19 +404,17 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 			ambientVal[1] = renderer->ambientColor.g;
 			ambientVal[2] = renderer->ambientColor.b;										
 			ambientVal[3] = 1;
-		} else {
-			light.color.set(0,0,0);
-			light.intensity = 0;
-			ambientVal[0] = 0;
-			ambientVal[1] = 0;
-			ambientVal[2] = 0;
-			ambientVal[3] = 0;									
-		}		
 		
 		GLfloat data4[] = {light.color.x * light.intensity, light.color.y * light.intensity, light.color.z * light.intensity, 1.0};					
 		glLightfv (GL_LIGHT0+lightIndex, GL_DIFFUSE, data4);
 		
-		glLightfv (GL_LIGHT0+lightIndex, GL_SPECULAR, data4);		
+		data4[0] = light.specularColor.r* light.intensity;
+		data4[1] = light.specularColor.g* light.intensity;
+		data4[2] = light.specularColor.b* light.intensity;
+		data4[3] = light.specularColor.a* light.intensity;
+		glLightfv (GL_LIGHT0+lightIndex, GL_SPECULAR, data4);				
+			
+		data4[3] = 1.0;
 			
 		glLightfv (GL_LIGHT0+lightIndex, GL_AMBIENT, ambientVal);		
 		glLightf (GL_LIGHT0+lightIndex, GL_SPOT_CUTOFF, 180);
@@ -418,11 +427,13 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 		glLightf (GL_LIGHT0+lightIndex, GL_CONSTANT_ATTENUATION, light.constantAttenuation);		
 		glLightf (GL_LIGHT0+lightIndex, GL_LINEAR_ATTENUATION, light.linearAttenuation);				
 		glLightf (GL_LIGHT0+lightIndex, GL_QUADRATIC_ATTENUATION, light.quadraticAttenuation);				
+		
+		} 			
 		lightIndex++;
 	}
 
 	vector<LightInfo> spotLights = renderer->getSpotLights();
-	vector<Texture*> shadowMapTextures = renderer->getShadowMapTextures();	
+//	vector<Texture*> shadowMapTextures = renderer->getShadowMapTextures();	
 	char texName[32];
 	char matName[32];	
 	int shadowMapTextureIndex = 0;
@@ -445,20 +456,17 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 			ambientVal[1] = renderer->ambientColor.g;
 			ambientVal[2] = renderer->ambientColor.b;										
 			ambientVal[3] = 1;
-		} else {
-			light.color.set(0,0,0);
-			light.intensity = 0;
-			ambientVal[0] = 0;
-			ambientVal[1] = 0;
-			ambientVal[2] = 0;
-			ambientVal[3] = 0;									
-			light.shadowsEnabled = false;
-		}		
 		
 		GLfloat data4[] = {light.color.x * light.intensity, light.color.y * light.intensity, light.color.z * light.intensity, 1.0};					
 		glLightfv (GL_LIGHT0+lightIndex, GL_DIFFUSE, data4);
 		
+		data4[0] = light.specularColor.r* light.intensity;
+		data4[1] = light.specularColor.g* light.intensity;
+		data4[2] = light.specularColor.b* light.intensity;
+		data4[3] = light.specularColor.a* light.intensity;
 		glLightfv (GL_LIGHT0+lightIndex, GL_SPECULAR, data4);		
+			
+		data4[3] = 1.0;			
 			
 		glLightfv (GL_LIGHT0+lightIndex, GL_AMBIENT, ambientVal);		
 		glLightf (GL_LIGHT0+lightIndex, GL_SPOT_CUTOFF, light.spotlightCutoff);
@@ -480,7 +488,7 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 		glLightf (GL_LIGHT0+lightIndex, GL_QUADRATIC_ATTENUATION, light.quadraticAttenuation);				
 		
 		if(light.shadowsEnabled) {		
-			if(shadowMapTextureIndex < shadowMapTextures.size()) {
+			if(shadowMapTextureIndex < 4) {
 				switch(shadowMapTextureIndex) {
 					case 0:
 						strcpy(texName, "shadowMap0");
@@ -503,7 +511,7 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 				int texture_location = glGetUniformLocation(glslShader->shader_id, texName);
 				glUniform1i(texture_location, textureIndex);
 				glActiveTexture(GL_TEXTURE0 + textureIndex);		
-				glBindTexture(GL_TEXTURE_2D, ((OpenGLTexture*)shadowMapTextures[shadowMapTextureIndex])->getTextureID());	
+				glBindTexture(GL_TEXTURE_2D, ((OpenGLTexture*)light.shadowMapTexture)->getTextureID());	
 				textureIndex++;
 				
 //				glMatrixMode(GL_MODELVIEW);
@@ -528,7 +536,10 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 			}
 			shadowMapTextureIndex++;
 		}
-		
+	else {							
+			light.shadowsEnabled = false;
+		}		
+		} 	
 		lightIndex++;
 	}
 	glPopMatrix();
@@ -539,12 +550,12 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 	
 	for(int i=0; i < glslShader->vp->params.size(); i++) {
 		GLSLProgramParam param = glslShader->vp->params[i];
-		updateGLSLParam(renderer, param, material->getShaderBinding(shaderIndex), localOptions);
+		updateGLSLParam(renderer, glslShader, param, material->getShaderBinding(shaderIndex), localOptions);
 	}
 	
 	for(int i=0; i < glslShader->fp->params.size(); i++) {
 		GLSLProgramParam param = glslShader->fp->params[i];
-		updateGLSLParam(renderer, param, material->getShaderBinding(shaderIndex), localOptions);
+		updateGLSLParam(renderer, glslShader, param, material->getShaderBinding(shaderIndex), localOptions);
 	}	
 	
 	for(int i=0; i < cgBinding->textures.size(); i++) {

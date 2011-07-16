@@ -181,7 +181,7 @@ namespace Polycode {
 			
 			bool useVertexColor;
 				
-		private:
+		protected:
 		
 			vector <BoneAssignment*> boneAssignments;
 			Vector2 texCoord;
