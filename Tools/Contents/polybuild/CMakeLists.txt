@@ -1,4 +1,10 @@
-INCLUDE_DIRECTORIES(${PolyCode_SOURCE_DIR}/Tools/Dependencies/unzip11 Include)
+INCLUDE(PolycodeIncludes)
+
+FIND_PACKAGE(ZLIB)
+INCLUDE_DIRECTORIES(
+    ${ZLIB_INCLUDE_DIR}
+    ${Polycode_SOURCE_DIR}/Tools/Dependencies/unzip11 
+    Include)
 
 SET(minizip_SRCS 
     ../../Dependencies/unzip11/ioapi.c
@@ -8,11 +14,11 @@ SET(minizip_SRCS
 )
 
 IF(POLYCODE_BUILD_SHARED)
-    LINK_LIBRARIES(PolyCore)
+    LINK_LIBRARIES(Polycore)
     ADD_EXECUTABLE(polybuild ${minizip_SRCS} Source/polybuild.cpp Include/polybuild.h)
 ENDIF(POLYCODE_BUILD_SHARED)
 
 IF(POLYCODE_BUILD_STATIC)
-    LINK_LIBRARIES(PolyCore_static)
+    LINK_LIBRARIES(Polycore_static)
     ADD_EXECUTABLE(polybuild_static ${minizip_SRCS} Source/polybuild.cpp Include/polybuild.h)
 ENDIF(POLYCODE_BUILD_STATIC)

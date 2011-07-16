@@ -1,3 +1,6 @@
+# set up common includes
+INCLUDE(PolycodeIncludes)
+
 SET(polycore_SRCS
     Source/OSBasics.cpp
     Source/PolyBezierCurve.cpp
@@ -177,6 +180,8 @@ SET(polycore_HDRS
     Include/tinyxml.h
 )
 
+SET(CMAKE_DEBUG_POSTFIX "_d")
+
 # TODO: iPhone
 #    Include/PolyiPhoneCore.h
 #    Include/Poly_iPhone.h
@@ -193,45 +198,51 @@ IF(MSVC)
     SET(polycore_SRCS ${polycore_SRCS} ../Build/MSVC/Polycore/PolycodeView.cpp Source/PolyWinCore.cpp)
     SET(polycore_HDRS ${polycore_HDRS} ../Build/MSVC/Polycore/PolycodeView.h Include/PolyWinCore.h)
 ELSEIF(APPLE)
-    SET(polycore_SRCS ${polycore_SRCS} Source/PolyAGLCore.cpp Source/PolyCocoaCore.cpp Source/PolycodeView.mm)
-    SET(polycore_HDRS ${polycore_HDRS} Include/PolyAGLCore.h Include/PolyCocoaCore.h Include/PolycodeView.h)
+    SET(polycore_SRCS ${polycore_SRCS} "../Build/Mac OS X/PolycodeView.mm" Source/PolyAGLCore.cpp Source/PolyCocoaCore.cpp)
+    SET(polycore_HDRS ${polycore_HDRS} "../Build/Mac OS X/PolycodeView.h" Include/PolyAGLCore.h Include/PolyCocoaCore.h)
 ELSE(MSVC)
     SET(polycore_SRCS ${polycore_SRCS} ../Build/Linux/PolycodeView.cpp Source/PolySDLCore.cpp)
     SET(polycore_HDRS ${polycore_HDRS} ../Build/Linux/PolycodeView.h Include/PolySDLCore.h)
 ENDIF(MSVC)
 
 IF(POLYCODE_BUILD_SHARED)
-    ADD_LIBRARY(PolyCore SHARED ${polycore_SRCS} ${polycore_HDRS})
-    TARGET_LINK_LIBRARIES(
-        PolyCore
+    ADD_LIBRARY(Polycore SHARED ${polycore_SRCS} ${polycore_HDRS})
+    TARGET_LINK_LIBRARIES(Polycore
         ${OPENGL_LIBRARIES}
         ${OPENAL_LIBRARY}
         ${PNG_LIBRARIES}
         ${FREETYPE_LIBRARIES}
         ${PHYSFS_LIBRARY}
-        ${VORBISFILE_LIBRARY}
-    )
+        ${OGG_LIBRARIES}
+        ${VORBIS_LIBRARIES}
+        ${VORBISFILE_LIBRARIES}
+        ${SDL_LIBRARY})
 ENDIF(POLYCODE_BUILD_SHARED)
 
 IF(POLYCODE_BUILD_STATIC)
-    ADD_LIBRARY(PolyCore_static ${polycore_SRCS} ${polycore_HDRS})
+    ADD_LIBRARY(Polycore_static ${polycore_SRCS} ${polycore_HDRS})
 ENDIF(POLYCODE_BUILD_STATIC)
 
 IF(POLYCODE_INSTALL_FRAMEWORK)
     # install headers
-    INSTALL(FILES ${polycore_HDRS} DESTINATION Framework/Core/Include)
+    INSTALL(FILES ${polycore_HDRS} 
+        DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Core/include)
 
     # install libraries
     IF(POLYCODE_BUILD_SHARED)
-        INSTALL(TARGETS PolyCore EXPORT PolyCore-targets DESTINATION Framework/Core/Lib/${CMAKE_BUILD_TYPE})
+        INSTALL(TARGETS Polycore EXPORT Polycore-targets 
+            DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Core/lib)
     ENDIF(POLYCODE_BUILD_SHARED)
     
     IF(POLYCODE_BUILD_STATIC)
-        INSTALL(TARGETS PolyCore_static EXPORT PolyCore-targets DESTINATION Framework/Core/Lib/${CMAKE_BUILD_TYPE})
+        INSTALL(TARGETS Polycore_static EXPORT Polycore-targets 
+            DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Core/lib)
     ENDIF(POLYCODE_BUILD_STATIC)
-
-    # from Box2D's cmake file - not sure what it does yet
-    # install build system hooks for third-party apps
-    # INSTALL(EXPORT PolyCore-targets DESTINATION Lib/Box2D)
-    # INSTALL(FILES Box2DConfig.cmake DESTINATION Lib/Box2D)
 ENDIF(POLYCODE_INSTALL_FRAMEWORK)
+
+IF(POLYCODE_INSTALL_PLAYER AND POLYCODE_BUILD_SHARED)
+    # install required libs
+    INSTALL(TARGETS Polycore DESTINATION ${POLYCODE_RELEASE_DIR}/Player)
+    INSTALL(DIRECTORY ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/bin/ 
+        DESTINATION ${POLYCODE_RELEASE_DIR}/Player)
+ENDIF()
