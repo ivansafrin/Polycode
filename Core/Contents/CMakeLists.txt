@@ -20,7 +20,6 @@ SET(polycore_SRCS
     Source/PolyFixedShader.cpp
     Source/PolyFont.cpp
     Source/PolyFontManager.cpp
-#   Source/PolyGenericScene.cpp
     Source/PolyGLCubemap.cpp
     Source/PolyGLRenderer.cpp
     Source/PolyGLSLProgram.cpp
@@ -110,7 +109,6 @@ SET(polycore_HDRS
     Include/PolyFixedShader.h
     Include/PolyFont.h
     Include/PolyFontManager.h
-    Include/PolyGenericScene.h
     Include/PolyGLCubemap.h
     Include/PolyGlobals.h
     Include/PolyGLRenderer.h
