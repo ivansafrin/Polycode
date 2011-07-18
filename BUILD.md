@@ -18,17 +18,18 @@ recommended.
 
 Polycode depends on a number of third party packages that are not
 included in the Polycode source tree:
- * [Lua](http://www.lua.org/)
- * [Freetype](http://www.freetype.org/)
- * [zlib](http://www.zlib.net/)
- * [libpng](http://www.libpng.org/pub/png/libpng.html)
- * [PhysicsFS](http://icculus.org/physfs/)
- * [Ogg Vorbis](http://www.vorbis.com/)
- * [OpenAL](http://www.openal.org/)
- * [SDL](http://www.libsdl.org/)
- * [Box2D](http://www.box2d.org/)
- * [Bullet Physics](http://bulletphysics.org/)
- * [Assimp](http://assimp.sourceforge.net/)
+
+* [Lua](http://www.lua.org/)
+* [Freetype](http://www.freetype.org/)
+* [zlib](http://www.zlib.net/)
+* [libpng](http://www.libpng.org/pub/png/libpng.html)
+* [PhysicsFS](http://icculus.org/physfs/)
+* [Ogg Vorbis](http://www.vorbis.com/)
+* [OpenAL](http://www.openal.org/)
+* [SDL](http://www.libsdl.org/)
+* [Box2D](http://www.box2d.org/)
+* [Bullet Physics](http://bulletphysics.org/)
+* [Assimp](http://assimp.sourceforge.net/)
 
 Depending on your platform, some of these dependencies will already be
 installed on your system. For the rest, they can be automatically 
@@ -83,8 +84,8 @@ Linux users should ensure available dependencies for their platform are
 installed before running the Polycode dependency build. 
 
 On a Debian system run:
-    sudo apt-get install zlib1g-dev libpng12-dev libfreetype6-dev \
-    libphysfs-dev libogg-dev libvorbis-dev libopenal-dev libsdl1.2-dev \
+    sudo apt-get install zlib1g-dev libpng12-dev libfreetype6-dev
+    libphysfs-dev libogg-dev libvorbis-dev libopenal-dev libsdl1.2-dev
     liblua5.1-0-dev
 
 To generate and build Debug and Release builds with Unix Makefiles 
@@ -108,6 +109,22 @@ perform the following steps in the Polycode directory from a terminal:
 The Polycode CMake build will look for dependencies installed on the 
 system and by the above dependency build step.
 
+### CMake variables ###
+
+There are a number of CMake variables that can be used to control what is
+built. These can be passed into CMake on the comment line as -D<name>=<value> 
+or edited in the CMake GUI.
+
+* POLYCODE_BUILD_BINDINGS 
+* POLYCODE_BUILD_EXAMPLES
+* POLYCODE_BUILD_MODULES
+* POLYCODE_BUILD_PLAYER
+* POLYCODE_BUILD_SHARED
+* POLYCODE_BUILD_STATIC
+* POLYCODE_BUILD_TOOLS
+* POLYCODE_INSTALL_FRAMEWORK
+* POLYCODE_INSTALL_PLAYER
+ 
 ### Mac OS X and Xcode ###
 
 **Note: the Mac CMake build does not compile and link yet.**
