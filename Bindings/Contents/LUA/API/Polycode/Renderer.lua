@@ -322,6 +322,10 @@ function Renderer:setTextureFilteringMode(mode)
 	local retVal = Polycore.Renderer_setTextureFilteringMode(self.__ptr, mode)
 end
 
+function Renderer:setClippingPlanes(near, far)
+	local retVal = Polycore.Renderer_setClippingPlanes(self.__ptr, near, far)
+end
+
 function Renderer:enableAlphaTest(val)
 	local retVal = Polycore.Renderer_enableAlphaTest(self.__ptr, val)
 end
@@ -376,8 +380,8 @@ function Renderer:clearLights()
 	local retVal =  Polycore.Renderer_clearLights(self.__ptr)
 end
 
-function Renderer:addLight(position, direction, type, color, constantAttenuation, linearAttenuation, quadraticAttenuation, intensity, spotlightCutoff, spotlightExponent, shadowsEnabled, textureMatrix)
-	local retVal = Polycore.Renderer_addLight(self.__ptr, position.__ptr, direction.__ptr, type, color.__ptr, constantAttenuation, linearAttenuation, quadraticAttenuation, intensity, spotlightCutoff, spotlightExponent, shadowsEnabled, textureMatrix.__ptr)
+function Renderer:addLight(position, direction, type, color, specularColor, constantAttenuation, linearAttenuation, quadraticAttenuation, intensity, spotlightCutoff, spotlightExponent, shadowsEnabled, textureMatrix, shadowMapTexture)
+	local retVal = Polycore.Renderer_addLight(self.__ptr, position.__ptr, direction.__ptr, type, color.__ptr, specularColor.__ptr, constantAttenuation, linearAttenuation, quadraticAttenuation, intensity, spotlightCutoff, spotlightExponent, shadowsEnabled, textureMatrix.__ptr, shadowMapTexture.__ptr)
 end
 
 function Renderer:setExposureLevel(level)
@@ -428,10 +432,6 @@ function Renderer:getModelviewMatrix()
 		Polycore.__ptr_lookup[retVal].__ptr = retVal
 		return Polycore.__ptr_lookup[retVal]
 	end
-end
-
-function Renderer:addShadowMap(texture)
-	local retVal = Polycore.Renderer_addShadowMap(self.__ptr, texture.__ptr)
 end
 
 function Renderer:Unproject(x, y)
