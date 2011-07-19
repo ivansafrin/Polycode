@@ -196,8 +196,9 @@ IF(MSVC)
     SET(polycore_SRCS ${polycore_SRCS} ../Build/MSVC/Polycore/PolycodeView.cpp Source/PolyWinCore.cpp)
     SET(polycore_HDRS ${polycore_HDRS} ../Build/MSVC/Polycore/PolycodeView.h Include/PolyWinCore.h)
 ELSEIF(APPLE)
-    SET(polycore_SRCS ${polycore_SRCS} "../Build/Mac OS X/PolycodeView.mm" Source/PolyAGLCore.cpp Source/PolyCocoaCore.cpp)
-    SET(polycore_HDRS ${polycore_HDRS} "../Build/Mac OS X/PolycodeView.h" Include/PolyAGLCore.h Include/PolyCocoaCore.h)
+    SET(polycore_SRCS ${polycore_SRCS} "../Build/Mac OS X/PolycodeView.mm" Source/PolyCocoaCore.mm)
+    SET(polycore_HDRS ${polycore_HDRS} "../Build/Mac OS X/PolycodeView.h" Include/PolyCocoaCore.h)
+    SET(EXTRA_LIBS "-framework Cocoa")
 ELSE(MSVC)
     SET(polycore_SRCS ${polycore_SRCS} ../Build/Linux/PolycodeView.cpp Source/PolySDLCore.cpp)
     SET(polycore_HDRS ${polycore_HDRS} ../Build/Linux/PolycodeView.h Include/PolySDLCore.h)
@@ -214,7 +215,8 @@ IF(POLYCODE_BUILD_SHARED)
         ${OGG_LIBRARIES}
         ${VORBIS_LIBRARIES}
         ${VORBISFILE_LIBRARIES}
-        ${SDL_LIBRARY})
+        ${SDL_LIBRARY}
+        ${EXTRA_LIBS})
 ENDIF(POLYCODE_BUILD_SHARED)
 
 IF(POLYCODE_BUILD_STATIC)

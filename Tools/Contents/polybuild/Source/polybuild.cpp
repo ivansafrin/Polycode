@@ -147,7 +147,7 @@ int main(int argc, char **argv) {
 		installPath = installPath + cpts[i];
 		installPath += String("/");
 	}
-#elseif defined (_WINDOWS)
+#elif defined (_WINDOWS)
 	char path[2049];
 	TCHAR tpath[2049];
 	GetModuleFileName(NULL, (LPWSTR)tpath, 2048);
@@ -198,7 +198,7 @@ int main(int argc, char **argv) {
 	char dirPath[4099];
 #if defined(__APPLE__) && defined(__MACH__)
 	_getcwd(dirPath, sizeof(dirPath));
-#elseif defined (_WINDOWS)
+#elif defined (_WINDOWS)
 	TCHAR tdirpath[4099];
 	GetCurrentDirectory(4098, (LPWSTR)tdirpath);
 	wtoc(dirPath, tdirpath, 4098);
