@@ -10856,7 +10856,7 @@ static int Polycore_SceneLight_setLightColor(lua_State *L) {
 	if(lua_isnumber(L, 5)) {
 		a = lua_tonumber(L, 5);
 	} else {
-		a = 1 0;
+		a = 1;
 	}
 	inst->setLightColor(r, g, b, a);
 	return 0;
