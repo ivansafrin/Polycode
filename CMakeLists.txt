@@ -10,9 +10,9 @@ IF(NOT CMAKE_BUILD_TYPE)
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
 IF(APPLE OR WIN32)
-	SET(build_player ON)
+    SET(build_player OFF)
 ELSE()
-	SET(build_player OFF)
+    SET(build_player OFF)
 ENDIF()
 
 # Options for what components to build
