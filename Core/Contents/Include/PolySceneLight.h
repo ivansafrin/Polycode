@@ -183,6 +183,9 @@ namespace Polycode {
 			* If set to true, draws a wireframe primitive visualizing the light.
 			*/
 			void enableDebugDraw(bool val);
+			
+			void setLightImportance(int newImportance);
+			int getLightImportance();
 		
 			SceneEntity *lightShape;
 			
@@ -190,6 +193,8 @@ namespace Polycode {
 		
 			Number spotlightExponent;
 			Number spotlightCutoff;
+		
+			int lightImportance;
 		
 			Number constantAttenuation;
 			Number linearAttenuation;
