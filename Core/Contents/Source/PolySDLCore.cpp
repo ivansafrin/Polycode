@@ -25,7 +25,7 @@
 using namespace Polycode;
 
 long getThreadID() {
-	return (long)pthread_self();
+	return SDL_ThreadID();
 }
 
 SDLCore::SDLCore(PolycodeViewBase *view, int xRes, int yRes, bool fullScreen,int aaLevel, int frameRate) : Core(xRes, yRes, fullScreen,aaLevel, frameRate) {
@@ -41,7 +41,9 @@ SDLCore::SDLCore(PolycodeViewBase *view, int xRes, int yRes, bool fullScreen,int
 	services->setRenderer(renderer);
 
 	setVideoMode(xRes, yRes, fullScreen, aaLevel);
-	SDL_WM_SetCaption(windowTitle->c_str(), windowTitle->c_str());
+
+	if (windowTitle)
+		SDL_WM_SetCaption(windowTitle->c_str(), windowTitle->c_str());
 	
 	SDL_EnableUNICODE(1);
 	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);

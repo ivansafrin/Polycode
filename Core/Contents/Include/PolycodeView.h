@@ -23,8 +23,7 @@ THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
 #import <Cocoa/Cocoa.h>
-#include <OpenGL/gl.h>
-#include <OpenGL/OpenGL.h>
+#include "PolyGLHeaders.h"
 
 #include "PolyString.h"
 #include "Polycode.h"

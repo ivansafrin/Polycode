@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.67])
+#AC_PREREQ([2.67])
 
 AC_INIT([libPolyCore], [0.8.2], [dev@polycode.org])
 AC_CONFIG_FILES([Makefile])
@@ -16,7 +16,11 @@ AC_PROG_CXX
 
 # Checks for libraries.
 
-AC_CHECK_LIB([png15], [png_create_read_struct],[], [
+AC_CHECK_LIB(z, zlibVersion, ,
+    AC_CHECK_LIB(z, ${ZPREFIX}zlibVersion, ,
+                 AC_ERROR([zlib not installed])))
+
+AC_CHECK_LIB([png], [png_create_read_struct],[], [
 		echo "libpng is required!"
 		exit -1])
 
@@ -44,13 +48,13 @@ AC_CHECK_LIB([SDL], [SDL_Init],[], [
 		echo "SDL is required!"
 		exit -1])
 
-AC_CHECK_LIB([GL], [glBegin],[], [
-		echo "OpenGL is required!"
-		exit -1])
+#AC_CHECK_LIB([GL], [glBegin],[], [
+		#echo "OpenGL is required!"
+		#exit -1])
 
-AC_CHECK_LIB([GLU], [gluGetString],[], [
-		echo "glu is required!"
-		exit -1])
+#AC_CHECK_LIB([GLU], [gluGetString],[], [
+#		echo "glu is required!"
+		#exit -1])
 
 # Checks for header files.
 

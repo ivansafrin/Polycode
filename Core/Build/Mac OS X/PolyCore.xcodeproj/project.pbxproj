@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		44BC309E13B04905007D0955 /* PolyGLHeaders.h in Headers */ = {isa = PBXBuildFile; fileRef = 44BC309D13B04904007D0955 /* PolyGLHeaders.h */; };
 		6D8656A912AF5FCD008A486E /* PolyString.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D8656A812AF5FCD008A486E /* PolyString.h */; };
 		6D8656AB12AF5FD5008A486E /* PolyString.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D8656AA12AF5FD5008A486E /* PolyString.cpp */; };
 		6D865AC212B07363008A486E /* PolyData.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D865AC112B07363008A486E /* PolyData.h */; };
@@ -191,6 +192,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		44BC309D13B04904007D0955 /* PolyGLHeaders.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyGLHeaders.h; sourceTree = "<group>"; };
 		6D8656A812AF5FCD008A486E /* PolyString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyString.h; sourceTree = "<group>"; };
 		6D8656AA12AF5FD5008A486E /* PolyString.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyString.cpp; sourceTree = "<group>"; };
 		6D865AC112B07363008A486E /* PolyData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyData.h; sourceTree = "<group>"; };
@@ -433,6 +435,7 @@
 				6DE45C57138EF933000BDFBA /* PolyGLSLProgram.h */,
 				6DE45C58138EF933000BDFBA /* PolyGLSLShader.h */,
 				6DE45C59138EF933000BDFBA /* PolyGLSLShaderModule.h */,
+				44BC309D13B04904007D0955 /* PolyGLHeaders.h */,
 				6DD40E2A136C68B700D602D3 /* PolycodeView.h */,
 				6DFE5FC412D450C30005B100 /* PolyObject.h */,
 				6D865AC112B07363008A486E /* PolyData.h */,
@@ -731,6 +734,7 @@
 				6DE45C5C138EF933000BDFBA /* PolyGLSLShaderModule.h in Headers */,
 				6DB5B5B91394A9F0008C00CA /* PolySceneSound.h in Headers */,
 				6DB5B5BA1394A9F0008C00CA /* PolyScreenSound.h in Headers */,
+				44BC309E13B04905007D0955 /* PolyGLHeaders.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -945,6 +949,14 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					../../Dependencies/libvorbis/include,
+					../../Dependencies/libogg/include,
+					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Versions/A/Headers,
+					../../Dependencies/freetype/include,
+					../../Dependencies/libpng,
+					../../Dependencies/physfs,
+				);
 				OTHER_CFLAGS = "-DPHYSFS_SUPPORTS_ZIP";
 				PREBINDING = NO;
 				SDKROOT = macosx10.6;

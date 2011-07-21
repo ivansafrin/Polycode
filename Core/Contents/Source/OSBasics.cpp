@@ -266,7 +266,17 @@ vector<OSFileEntry> OSBasics::parseFolder(String pathString, bool showHidden) {
 	if(d) {
 		while ((dir = readdir(d)) != NULL) {
 			if(dir->d_name[0] != '.' || (dir->d_name[0] == '.'  && showHidden)) {
-				if(dir->d_type == DT_DIR) {
+				bool is_dir = false;
+#ifndef _MINGW
+				is_dir = (dir->d_type == DT_DIR);
+#else // Mingw doesn't have d_type so use stat:
+				struct stat s;
+				String fullPath = pathString + dir->d_name;
+				if (!stat(fullPath.c_str(), &s)) {
+					is_dir = (s.st_mode & S_IFDIR);
+				} 
+#endif
+				if(is_dir) {
 					returnVector.push_back(OSFileEntry(pathString, dir->d_name, OSFileEntry::TYPE_FOLDER));
 				} else {
 					returnVector.push_back(OSFileEntry(pathString, dir->d_name, OSFileEntry::TYPE_FILE));
@@ -291,7 +301,11 @@ void OSBasics::removeItem(String pathString) {
 void OSBasics::createFolder(String pathString) {
 #ifdef _WINDOWS
 #else
-	mkdir(pathString.c_str(),  S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	mkdir(pathString.c_str() // Mingw doesn't take a permissions arg:
+#ifndef _MINGW
+		, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH 
+#endif
+		);
 #endif
 }
 

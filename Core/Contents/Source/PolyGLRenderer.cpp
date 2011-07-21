@@ -72,9 +72,9 @@ OpenGLRenderer::OpenGLRenderer() : Renderer() {
 	verticesToDraw = 0;
 }
 
-void OpenGLRenderer::setClippingPlanes(Number near, Number far) {
-	nearPlane = near;
-	farPlane = far;
+void OpenGLRenderer::setClippingPlanes(Number _nearPlane, Number _farPlane) {
+	nearPlane = _nearPlane;
+	farPlane = _farPlane;
 	Resize(xRes,yRes);
 }
 

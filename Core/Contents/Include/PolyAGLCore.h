@@ -27,8 +27,7 @@
 #include "PolyRectangle.h"
 #include "PolyString.h"
 #include <vector>
-#include <OpenGL/gl.h>
-#include <OpenGL/OpenGL.h>
+#include "PolyGLHeaders.h"
 #include "PolyGLRenderer.h"
 #include <AGL/agl.h>
 #include <AGL/aglRenderers.h>

@@ -26,13 +26,13 @@
 #include "PolyGlobals.h"
 #include <stdio.h>
 
-#if defined(__APPLE__) && defined(__MACH__)
+#if (defined(__APPLE__) && defined(__MACH__) || defined(_MINGW))
 	#include "al.h"
 	#include "alc.h"
 #else
 	#include "AL/al.h"
 	#include "AL/alc.h"
-#endif
+#endif 
 
 #include "PolyVector3.h"
 

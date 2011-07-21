@@ -31,15 +31,7 @@ THE SOFTWARE.
 #include "PolyMesh.h"
 #include "PolyGLRenderer.h"
 
-#if defined(__APPLE__) && defined(__MACH__)
-#include <OpenGL/gl.h>
-#include <OpenGL/glext.h>
-#include <OpenGL/glu.h>	
-#else
-#include <GL/gl.h>	
-#include <GL/glu.h>	
-#endif
-
+#include "PolyGLHeaders.h"
 
 namespace Polycode {
 	

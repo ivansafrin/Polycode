@@ -30,16 +30,7 @@ THE SOFTWARE.
 #include <string>
 #include <vector>
 
-#if defined(__APPLE__) && defined(__MACH__)
-#include <OpenGL/gl.h>
-#include <OpenGL/glext.h>
-#include <OpenGL/glu.h>	
-#else
-#include <GL/gl.h>	
-#include <GL/glu.h>	
-#include <GL/glext.h>
-#endif
-
+#include "PolyGLHeaders.h"
 
 using std::vector;
 using std::string;

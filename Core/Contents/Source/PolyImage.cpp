@@ -21,7 +21,7 @@
 */
 
 #include "PolyImage.h"
-
+#include "png.h"
 
 using namespace Polycode;
 
