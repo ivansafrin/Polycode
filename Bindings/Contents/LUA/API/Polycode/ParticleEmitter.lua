@@ -159,6 +159,10 @@ function ParticleEmitter:enablePerlin(val)
 	local retVal = Polycore.ParticleEmitter_enablePerlin(self.__ptr, val)
 end
 
+function ParticleEmitter:setPerlinModSize(size)
+	local retVal = Polycore.ParticleEmitter_setPerlinModSize(self.__ptr, size)
+end
+
 function ParticleEmitter:setBillboardMode(mode)
 	local retVal = Polycore.ParticleEmitter_setBillboardMode(self.__ptr, mode)
 end
@@ -186,10 +190,6 @@ end
 
 function ParticleEmitter:resetParticle(particle)
 	local retVal = Polycore.ParticleEmitter_resetParticle(self.__ptr, particle.__ptr)
-end
-
-function ParticleEmitter:setPerlinModSize(size)
-	local retVal = Polycore.ParticleEmitter_setPerlinModSize(self.__ptr, size)
 end
 
 function ParticleEmitter:setParticleCount(count)

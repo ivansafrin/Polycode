@@ -20,6 +20,7 @@
  THE SOFTWARE.
 */
 
+#include "string.h"
 #include "PolyTexture.h"
 
 using namespace Polycode;

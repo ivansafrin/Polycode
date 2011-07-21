@@ -20,6 +20,7 @@
  THE SOFTWARE.
 */
 
+#include "png.h"
 #include "PolyImage.h"
 
 

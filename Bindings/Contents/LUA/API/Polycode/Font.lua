@@ -2,8 +2,20 @@ class "Font"
 
 
 
+function Font:__index__(name)
+	if name == "loaded" then
+		return Polycore.Font_get_loaded(self.__ptr)
+	end
+end
 
 
+function Font:__set_callback(name,value)
+	if name == "loaded" then
+		Polycore.Font_set_loaded(self.__ptr, value)
+		return true
+	end
+	return false
+end
 
 
 function Font:Font(...)

@@ -30,7 +30,7 @@
 	#include <windows.h>
 #else
 	#include <dirent.h> 
-	#include <sys/types.h>s
+	#include <sys/types.h>
 	#include <sys/stat.h>
 #endif
 

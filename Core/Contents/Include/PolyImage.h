@@ -23,7 +23,6 @@ THE SOFTWARE.
 #pragma once
 #include "PolyString.h"
 #include "PolyGlobals.h"
-#include "png.h"
 #include "PolyColor.h"
 #include "PolyPerlin.h"
 #include <string>

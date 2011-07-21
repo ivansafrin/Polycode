@@ -80,6 +80,14 @@ function Mesh:createPlane(w, h)
 	local retVal = Polycore.Mesh_createPlane(self.__ptr, w, h)
 end
 
+function Mesh:createVPlane(w, h)
+	local retVal = Polycore.Mesh_createVPlane(self.__ptr, w, h)
+end
+
+function Mesh:createTorus(radius, tubeRadius, rSegments, tSegments)
+	local retVal = Polycore.Mesh_createTorus(self.__ptr, radius, tubeRadius, rSegments, tSegments)
+end
+
 function Mesh:createBox(w, d, h)
 	local retVal = Polycore.Mesh_createBox(self.__ptr, w, d, h)
 end
@@ -133,8 +141,8 @@ function Mesh:getRadius()
 	return retVal
 end
 
-function Mesh:calculateNormals()
-	local retVal =  Polycore.Mesh_calculateNormals(self.__ptr)
+function Mesh:calculateNormals(smooth, smoothAngle)
+	local retVal = Polycore.Mesh_calculateNormals(self.__ptr, smooth, smoothAngle)
 end
 
 function Mesh:getMeshType()

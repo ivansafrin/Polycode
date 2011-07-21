@@ -4,8 +4,20 @@ class "SceneEntity" (Entity)
 
 
 
+function SceneEntity:__index__(name)
+	if name == "castShadows" then
+		return Polycore.SceneEntity_get_castShadows(self.__ptr)
+	end
+end
 
 
+function SceneEntity:__set_callback(name,value)
+	if name == "castShadows" then
+		Polycore.SceneEntity_set_castShadows(self.__ptr, value)
+		return true
+	end
+	return false
+end
 
 
 function SceneEntity:SceneEntity(...)

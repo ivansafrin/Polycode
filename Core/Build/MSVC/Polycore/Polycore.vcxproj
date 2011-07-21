@@ -39,13 +39,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Documents and Settings\Administrator\Desktop\Workshop\Polycode\Core\Build\MSVC\Polycore;C:\Documents and Settings\Administrator\Desktop\Workshop\Polycode\Core\Contents\Include;C:\Documents and Settings\Administrator\Desktop\Workshop\Polycode\Release\Win\Framework\Dependencies\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Documents and Settings\Administrator\Desktop\Workshop\Polycode\Release\Win\Framework\Dependencies\Lib\Debug;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)..\..\..\Contents\Include;$(ProjectDir)..\..\..\..\Release\Win\Framework\Dependencies\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)..\..\..\..\Release\Win\Framework\Dependencies\Lib\Debug;$(ProjectDir)..\..\..\..\Release\Win\Framework\Dependencies\Lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Documents and Settings\Administrator\Desktop\Workshop\Polycode\Core\Build\MSVC\Polycore;C:\Documents and Settings\Administrator\Desktop\Workshop\Polycode\Core\Contents\Include;C:\Documents and Settings\Administrator\Desktop\Workshop\Polycode\Release\Win\Framework\Dependencies\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Documents and Settings\Administrator\Desktop\Workshop\Polycode\Release\Win\Framework\Dependencies\Lib\Release;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)..\..\..\Contents\Include;$(ProjectDir)..\..\..\..\Release\Win\Framework\Dependencies\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)..\..\..\..\Release\Win\Framework\Dependencies\Lib\Release;$(ProjectDir)..\..\..\..\Release\Win\Framework\Dependencies\Lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
