@@ -36,13 +36,18 @@ IF(MSVC)
     
 ELSEIF(APPLE)
     SET(polycodeplayer_SRCS 
-        Source/PolycodePlayer.cpp
+#        Source/PolycodePlayer.cpp
         Source/PolycodePlayer.mm
         Source/PolycodeCocoaPlayer.mm
+        "../Build/Mac OS X/main.m"
+        "../Build/Mac OS X/MyDocument.m"
+        "../Build/Mac OS X/PPlayerDocumentController.m"
     )
     SET(polycodeplayer_HDRS 
         Include/PolycodePlayer.h
         Include/PolycodeCocoaPlayer.h
+        "../Build/Mac OS X/MyDocument.h"
+        "../Build/Mac OS X/PPlayerDocumentController.h"
     )
     
     INCLUDE_DIRECTORIES(Include)
@@ -54,7 +59,20 @@ ELSEIF(APPLE)
 
 #    IF(POLYCODE_BUILD_STATIC)
     ADD_EXECUTABLE(PolycodePlayer MACOSX_BUNDLE ${polycodeplayer_SRCS} ${polycodeplayer_HDRS})
-    TARGET_LINK_LIBRARIES(PolycodePlayer Polycore PolycodeLua ${LUA_LIBRARY})
+    TARGET_LINK_LIBRARIES(PolycodePlayer 
+        Polycore 
+        PolycodeLua 
+        "-framework Cocoa"
+        ${LUA_LIBRARY}
+        ${OPENGL_LIBRARIES}
+        ${OPENAL_LIBRARY}
+        ${PNG_LIBRARIES}
+        ${FREETYPE_LIBRARIES}
+        ${PHYSFS_LIBRARY}
+        ${OGG_LIBRARY}
+        ${VORBIS_LIBRARY}
+        ${VORBISFILE_LIBRARY}
+     )
 #    ENDIF(POLYCODE_BUILD_STATIC)
 
 ENDIF(MSVC)
