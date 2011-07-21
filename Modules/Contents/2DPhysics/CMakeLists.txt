@@ -20,19 +20,17 @@ SET(CMAKE_DEBUG_POSTFIX "_d")
 
 #IF(POLYCODE_BUILD_SHARED)
 ADD_LIBRARY(Polycode2DPhysics SHARED ${polycode2DPhysics_SRCS} ${polycode2DPhysics_HDRS})
-TARGET_LINK_LIBRARIES(Polycode2DPhysics ${BOX2D_LIBRARIES})
+TARGET_LINK_LIBRARIES(Polycode2DPhysics 
+    Polycore 
+    ${BOX2D_LIBRARIES}
+    ${OPENGL_LIBRARIES}
+    ${OPENAL_LIBRARY}
+    ${PNG_LIBRARIES}
+    ${FREETYPE_LIBRARIES}
+    ${PHYSFS_LIBRARY}
+    ${VORBISFILE_LIBRARY})
 IF(APPLE)
-    TARGET_LINK_LIBRARIES(
-        Polycode2DPhysics
-        Polycore
-        "-framework Cocoa"
-        ${OPENGL_LIBRARIES}
-        ${OPENAL_LIBRARY}
-        ${PNG_LIBRARIES}
-        ${FREETYPE_LIBRARIES}
-        ${PHYSFS_LIBRARY}
-        ${VORBISFILE_LIBRARY}
-    )
+    TARGET_LINK_LIBRARIES(Polycode2DPhysics "-framework Cocoa")
 ENDIF(APPLE)
 #ENDIF(POLYCODE_BUILD_SHARED)
 

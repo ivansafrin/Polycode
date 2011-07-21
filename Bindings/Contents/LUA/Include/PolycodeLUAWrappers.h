@@ -1292,10 +1292,10 @@ static int Polycore_Renderer_setClippingPlanes(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Renderer *inst = (Renderer*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TNUMBER);
-	Number near = lua_tonumber(L, 2);
+	Number near_ = lua_tonumber(L, 2);
 	luaL_checktype(L, 3, LUA_TNUMBER);
-	Number far = lua_tonumber(L, 3);
-	inst->setClippingPlanes(near, far);
+	Number far_ = lua_tonumber(L, 3);
+	inst->setClippingPlanes(near_, far_);
 	return 0;
 }
 

@@ -31,7 +31,20 @@ IF(MSVC)
 
  #   IF(POLYCODE_BUILD_STATIC)
     ADD_EXECUTABLE(PolycodePlayer WIN32 ${polycodeplayer_SRCS} ${polycodeplayer_HDRS})
-    TARGET_LINK_LIBRARIES(PolycodePlayer Polycore PolycodeLua ${LUA_LIBRARY})
+    TARGET_LINK_LIBRARIES(PolycodePlayer 
+        Polycore 
+        PolycodeLua 
+        ${LUA_LIBRARY}
+        ${OPENGL_LIBRARIES}
+        ${OPENAL_LIBRARY}
+        ${PNG_LIBRARIES}
+        ${FREETYPE_LIBRARIES}
+        ${PHYSFS_LIBRARY}
+        ${OGG_LIBRARY}
+        ${VORBIS_LIBRARY}
+        ${VORBISFILE_LIBRARY}
+     )
+
  #   ENDIF(POLYCODE_BUILD_STATIC)
     
 ELSEIF(APPLE)
