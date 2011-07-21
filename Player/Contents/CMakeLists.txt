@@ -24,15 +24,15 @@ IF(MSVC)
     
     INCLUDE_DIRECTORIES(../Build/MSVC/PolycodePlayer Include)
     
-    IF(POLYCODE_BUILD_SHARED)
-        ADD_EXECUTABLE(PolycodePlayer WIN32 ${polycodeplayer_SRCS} ${polycodeplayer_HDRS})
-        TARGET_LINK_LIBRARIES(PolycodePlayer Polycore PolycodeLua ${LUA_LIBRARY})
-    ENDIF(POLYCODE_BUILD_SHARED)
+ #   IF(POLYCODE_BUILD_SHARED)
+ #       ADD_EXECUTABLE(PolycodePlayer_dynamic WIN32 ${polycodeplayer_SRCS} ${polycodeplayer_HDRS})
+ #       TARGET_LINK_LIBRARIES(PolycodePlayer Polycore_dynamic PolycodeLua ${LUA_LIBRARY})
+ #   ENDIF(POLYCODE_BUILD_SHARED)
 
-    IF(POLYCODE_BUILD_STATIC)
-        ADD_EXECUTABLE(PolycodePlayer_static WIN32 ${polycodeplayer_SRCS} ${polycodeplayer_HDRS})
-        TARGET_LINK_LIBRARIES(PolycodePlayer_static Polycore_static PolycodeLua_static ${LUA_LIBRARY})
-    ENDIF(POLYCODE_BUILD_STATIC)
+ #   IF(POLYCODE_BUILD_STATIC)
+    ADD_EXECUTABLE(PolycodePlayer WIN32 ${polycodeplayer_SRCS} ${polycodeplayer_HDRS})
+    TARGET_LINK_LIBRARIES(PolycodePlayer Polycore PolycodeLua ${LUA_LIBRARY})
+ #   ENDIF(POLYCODE_BUILD_STATIC)
     
 ELSEIF(APPLE)
     SET(polycodeplayer_SRCS 
@@ -47,27 +47,26 @@ ELSEIF(APPLE)
     
     INCLUDE_DIRECTORIES(Include)
     
-    IF(POLYCODE_BUILD_SHARED)
-        ADD_EXECUTABLE(PolycodePlayer MACOSX_BUNDLE ${polycodeplayer_SRCS} ${polycodeplayer_HDRS})
-        TARGET_LINK_LIBRARIES(PolycodePlayer Polycore PolycodeLua ${LUA_LIBRARY})
-    ENDIF(POLYCODE_BUILD_SHARED)
+#    IF(POLYCODE_BUILD_SHARED)
+#        ADD_EXECUTABLE(PolycodePlayer MACOSX_BUNDLE ${polycodeplayer_SRCS} ${polycodeplayer_HDRS})
+#        TARGET_LINK_LIBRARIES(PolycodePlayer Polycore PolycodeLua ${LUA_LIBRARY})
+#    ENDIF(POLYCODE_BUILD_SHARED)
 
-    IF(POLYCODE_BUILD_STATIC)
-        ADD_EXECUTABLE(PolycodePlayer_static MACOSX_BUNDLE ${polycodeplayer_SRCS} ${polycodeplayer_HDRS})
-        TARGET_LINK_LIBRARIES(PolycodePlayer_static Polycore_static PolycodeLua ${LUA_LIBRARY})
-    ENDIF(POLYCODE_BUILD_STATIC)
+#    IF(POLYCODE_BUILD_STATIC)
+    ADD_EXECUTABLE(PolycodePlayer MACOSX_BUNDLE ${polycodeplayer_SRCS} ${polycodeplayer_HDRS})
+    TARGET_LINK_LIBRARIES(PolycodePlayer Polycore PolycodeLua ${LUA_LIBRARY})
+#    ENDIF(POLYCODE_BUILD_STATIC)
 
 ENDIF(MSVC)
 
 IF(POLYCODE_INSTALL_PLAYER)
-
-    IF(POLYCODE_BUILD_SHARED)
-        # install player
-        INSTALL(TARGETS PolycodePlayer 
-            DESTINATION ${POLYCODE_RELEASE_DIR}/Player)
-    ENDIF()
-    IF(POLYCODE_BUILD_STATIC)
-        INSTALL(TARGETS PolycodePlayer_static 
-            DESTINATION ${POLYCODE_RELEASE_DIR}/Player)
-    ENDIF()
+#    IF(POLYCODE_BUILD_SHARED)
+#        # install player
+#        INSTALL(TARGETS PolycodePlayer_dynamic
+#            DESTINATION ${POLYCODE_RELEASE_DIR}/Player)
+#    ENDIF()
+#    IF(POLYCODE_BUILD_STATIC)
+    INSTALL(TARGETS PolycodePlayer 
+        DESTINATION ${POLYCODE_RELEASE_DIR}/Player)
+#    ENDIF()
 ENDIF(POLYCODE_INSTALL_PLAYER)
