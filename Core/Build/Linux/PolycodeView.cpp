@@ -3,12 +3,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-PolycodeView::PolycodeView(const char *title) : PolycodeViewBase() {
-	windowTitle = title;
-	windowData = &windowTitle;
-}
+namespace Polycode {
 
-PolycodeView::~PolycodeView() {
+    PolycodeView::PolycodeView(const char *title) : PolycodeViewBase() {
+        windowTitle = title;
+        windowData = &windowTitle;
+    }
+
+    PolycodeView::~PolycodeView() {
+
+    }
 
 }
 
