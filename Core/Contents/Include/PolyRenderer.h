@@ -172,8 +172,8 @@ namespace Polycode {
 		virtual void clearBuffer(bool colorBuffer, bool depthBuffer) = 0;
 		virtual void drawToColorBuffer(bool val) = 0;
 		
-		Matrix4 getCameraMatrix();
-		void setCameraMatrix(Matrix4 matrix);
+		const Matrix4& getCameraMatrix() const;
+		void setCameraMatrix(const Matrix4& matrix);
 		void setCameraPosition(Vector3 pos);
 		
 		virtual void drawScreenQuad(Number qx, Number qy) = 0;

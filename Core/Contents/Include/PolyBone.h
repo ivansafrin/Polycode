@@ -89,60 +89,60 @@ namespace Polycode {
 			* Returns the bone matrix
 			* @return Bone matrix.
 			*/									
-			Matrix4 getBoneMatrix();
+			Matrix4 getBoneMatrix() const;
 			
 			/**
 			* Sets the bone matrix.
 			* @return Bone matrix.
 			*/												
-			void setBoneMatrix(Matrix4 matrix);
+			void setBoneMatrix(const Matrix4& matrix);
 			
 			/**
 			* Returns the rest matrix of this bone.
 			* @return Rest matrix.
 			*/															
-			Matrix4 getRestMatrix();
+			Matrix4 getRestMatrix() const;
 			
 			/**
 			* Returns the full rest matrix of this bone.
 			* @return Full rest matrix.
 			*/																		
-			Matrix4 getFullRestMatrix();
+			Matrix4 getFullRestMatrix() const;
 			
 			/**
 			* Returns the rest matrix of this bone's parent.
 			* @return Rest matrix of the bone's parent.
 			*/																					
-			Matrix4 getParentRestMatrix();
+			Matrix4 getParentRestMatrix() const;
 			
 			/**
 			* @see getBoneMatrix()
 			*/																								
-			Matrix4 getFinalMatrix();
+			Matrix4 getFinalMatrix() const;
 			
 			/**
 			* Sets the rest matrix for this bone.
 			* @param matrix New rest matrix.
 			*/
-			void setRestMatrix(Matrix4 matrix);
+			void setRestMatrix(const Matrix4& matrix);
 			
 			/**
 			* Sets the base matrix for this bone.
 			* @param matrix New base matrix.
 			*/			
-			void setBaseMatrix(Matrix4 matrix);
+			void setBaseMatrix(const Matrix4& matrix);
 			
 			/**
 			* Returns the base matrix of this bone.
 			* @return Base matrix.
 			*/			
-			Matrix4 getBaseMatrix() { return baseMatrix; }
+			const Matrix4& getBaseMatrix() const { return baseMatrix; }
 			
 			/**
 			* Returns the full base matrix of this bone.
 			* @return Full base matrix.
 			*/						
-			Matrix4 getFullBaseMatrix();
+			Matrix4 getFullBaseMatrix() const;
 		
 			/**
 			* Id of the bone.

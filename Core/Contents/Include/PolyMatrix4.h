@@ -124,6 +124,7 @@ namespace Polycode {
 			}			
 			
 			inline Number* operator [] ( int row ) { return m[row];}
+			inline const Number* operator [] ( int row ) const { return m[row];}
 			
 			inline Matrix4 operator + ( const Matrix4 &m2 ) const {
 				Matrix4 r;

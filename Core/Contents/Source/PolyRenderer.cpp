@@ -53,7 +53,7 @@ void Renderer::enableShaders(bool flag) {
 	shadersEnabled = flag;
 }
 
-void Renderer::setCameraMatrix(Matrix4 matrix) {
+void Renderer::setCameraMatrix(const Matrix4& matrix) {
 	cameraMatrix = matrix;
 }
 
@@ -168,7 +168,7 @@ void Renderer::addLight(int lightImportance, Vector3 position, Vector3 direction
 	}
 }
 
-Matrix4 Renderer::getCameraMatrix() {
+const Matrix4& Renderer::getCameraMatrix() const {
 	return cameraMatrix;
 }
 

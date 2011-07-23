@@ -1335,7 +1335,7 @@ static int Polycore_Renderer_drawToColorBuffer(lua_State *L) {
 static int Polycore_Renderer_getCameraMatrix(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Renderer *inst = (Renderer*)lua_topointer(L, 1);
-	Matrix4 *retInst = new Matrix4();
+	 Matrix4  *retInst = new  Matrix4 ();
 	*retInst = inst->getCameraMatrix();
 	lua_pushlightuserdata(L, retInst);
 	return 1;
@@ -1345,7 +1345,7 @@ static int Polycore_Renderer_setCameraMatrix(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Renderer *inst = (Renderer*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	Matrix4 matrix = *(Matrix4*)lua_topointer(L, 2);
+	const Matrix4 & matrix = *( Matrix4 *)lua_topointer(L, 2);
 	inst->setCameraMatrix(matrix);
 	return 0;
 }
@@ -3636,7 +3636,7 @@ static int Polycore_Bone_setBoneMatrix(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Bone *inst = (Bone*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	Matrix4 matrix = *(Matrix4*)lua_topointer(L, 2);
+	const Matrix4 & matrix = *( Matrix4 *)lua_topointer(L, 2);
 	inst->setBoneMatrix(matrix);
 	return 0;
 }
@@ -3681,7 +3681,7 @@ static int Polycore_Bone_setRestMatrix(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Bone *inst = (Bone*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	Matrix4 matrix = *(Matrix4*)lua_topointer(L, 2);
+	const Matrix4 & matrix = *( Matrix4 *)lua_topointer(L, 2);
 	inst->setRestMatrix(matrix);
 	return 0;
 }
@@ -3690,7 +3690,7 @@ static int Polycore_Bone_setBaseMatrix(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Bone *inst = (Bone*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	Matrix4 matrix = *(Matrix4*)lua_topointer(L, 2);
+	const Matrix4 & matrix = *( Matrix4 *)lua_topointer(L, 2);
 	inst->setBaseMatrix(matrix);
 	return 0;
 }
@@ -3698,7 +3698,7 @@ static int Polycore_Bone_setBaseMatrix(lua_State *L) {
 static int Polycore_Bone_getBaseMatrix(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Bone *inst = (Bone*)lua_topointer(L, 1);
-	Matrix4 *retInst = new Matrix4();
+	 Matrix4  *retInst = new  Matrix4 ();
 	*retInst = inst->getBaseMatrix();
 	lua_pushlightuserdata(L, retInst);
 	return 1;
@@ -5359,7 +5359,7 @@ static int Polycore_Quaternion_createFromMatrix(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Quaternion *inst = (Quaternion*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	Matrix4 matrix = *(Matrix4*)lua_topointer(L, 2);
+	const Matrix4 & matrix = *( Matrix4 *)lua_topointer(L, 2);
 	inst->createFromMatrix(matrix);
 	return 0;
 }
@@ -10777,7 +10777,7 @@ static int Polycore_SceneLight_Render(lua_State *L) {
 static int Polycore_SceneLight_getLightViewMatrix(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	SceneLight *inst = (SceneLight*)lua_topointer(L, 1);
-	Matrix4 *retInst = new Matrix4();
+	 Matrix4  *retInst = new  Matrix4 ();
 	*retInst = inst->getLightViewMatrix();
 	lua_pushlightuserdata(L, retInst);
 	return 1;

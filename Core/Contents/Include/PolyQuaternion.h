@@ -118,7 +118,7 @@ namespace Polycode {
 			 */
 		}
 		
-		void createFromMatrix(Matrix4 matrix) {
+		void createFromMatrix(const Matrix4& matrix) {
 			Number  tr, s, q[4];
 			int    i, j, k;
 			
@@ -265,7 +265,7 @@ namespace Polycode {
     }			
 			
 			void createFromAxisAngle(Number x, Number y, Number z, Number degrees);
-			Matrix4 createMatrix();
+			Matrix4 createMatrix() const;
 			
 			
 			

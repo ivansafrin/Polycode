@@ -74,7 +74,7 @@ void SceneLight::setLightImportance(int newImportance) {
 	lightImportance = newImportance;
 }
 
-int SceneLight::getLightImportance() {
+int SceneLight::getLightImportance() const {
 	return lightImportance;
 }
 
@@ -102,7 +102,7 @@ void SceneLight::enableShadows(bool val, Number resolution) {
 	}
 }
 
-bool SceneLight::areShadowsEnabled() {
+bool SceneLight::areShadowsEnabled() const {
 	return shadowsEnabled;
 }
 
@@ -141,15 +141,15 @@ void SceneLight::renderDepthMap(Scene *scene) {
 	CoreServices::getInstance()->getRenderer()->setViewportSize(CoreServices::getInstance()->getCore()->getXRes(), CoreServices::getInstance()->getCore()->getYRes(), 45.0f);
 }
 
-Matrix4 SceneLight::getLightViewMatrix() {
+const Matrix4& SceneLight::getLightViewMatrix() const {
 	return lightViewMatrix;
 }
 
-Texture *SceneLight::getZBufferTexture() {
+Texture *SceneLight::getZBufferTexture() const {
 	return zBufferTexture;
 }
 
-Number SceneLight::getIntensity() {
+Number SceneLight::getIntensity() const {
 	return intensity;
 }
 
@@ -164,6 +164,6 @@ void SceneLight::Render() {
 	*/
 }
 
-int SceneLight::getType() {
+int SceneLight::getType() const {
 	return type;
 }

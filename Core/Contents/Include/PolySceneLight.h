@@ -58,7 +58,7 @@ namespace Polycode {
 			/*
 			* Returns the light's intensity.
 			*/
-			Number getIntensity();
+			Number getIntensity() const;
 
 			/**
 			* Sets the light's intensity
@@ -75,25 +75,25 @@ namespace Polycode {
 			*/
 			void setAttenuation(Number constantAttenuation, Number linearAttenuation, Number quadraticAttenuation);			
 						
-			Number getConstantAttenuation() { return constantAttenuation; }
-			Number getLinearAttenuation() { return linearAttenuation; }
-			Number getQuadraticAttenuation() { return quadraticAttenuation; }
+			Number getConstantAttenuation() const { return constantAttenuation; }
+			Number getLinearAttenuation() const { return linearAttenuation; }
+			Number getQuadraticAttenuation() const { return quadraticAttenuation; }
 									
 			/*
 			* Returns the light's type.
 			*/			
-			int getType();
+			int getType() const;
 			
 			void renderDepthMap(Scene *scene);
 			
 			void Render();
 
-			Matrix4 getLightViewMatrix();
+			const Matrix4& getLightViewMatrix() const;
 			
 			static const int AREA_LIGHT = 0;
 			static const int SPOT_LIGHT = 1;
 			
-			Texture *getZBufferTexture();
+			Texture *getZBufferTexture() const;
 			
 			/**
 			* Color of the light.
@@ -152,8 +152,8 @@ namespace Polycode {
 				this->spotlightExponent = cosVal - (0.02*spotlightExponent);				
 			}
 			
-			Number getSpotlightCutoff() { return spotlightCutoff; }
-			Number getSpotlightExponent() { return spotlightExponent; }
+			Number getSpotlightCutoff() const { return spotlightCutoff; }
+			Number getSpotlightExponent() const { return spotlightExponent; }
 						
 			
 			/**
@@ -172,12 +172,12 @@ namespace Polycode {
 			/**
 			* Returns true if shadows are enabled.
 			*/
-			bool areShadowsEnabled();
+			bool areShadowsEnabled() const;
 		
 			/**
 			* Returns the light type.
 			*/
-			int getLightType() { return type; }
+			int getLightType() const { return type; }
 		
 			/**
 			* If set to true, draws a wireframe primitive visualizing the light.
@@ -185,7 +185,7 @@ namespace Polycode {
 			void enableDebugDraw(bool val);
 			
 			void setLightImportance(int newImportance);
-			int getLightImportance();
+			int getLightImportance() const;
 		
 			SceneEntity *lightShape;
 			

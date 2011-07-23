@@ -119,7 +119,7 @@ namespace Polycode {
 			void setParticleCount(int count);
 		
 			virtual void addParticleBody(Entity *particleBody) {}
-			virtual Matrix4 getBaseMatrix() {Matrix4 m; return m;}
+			virtual Matrix4 getBaseMatrix() const {Matrix4 m; return m;}
 		
 			/**
 			* Particle movement speed multiplier
@@ -255,7 +255,7 @@ namespace Polycode {
 		ParticleEmitter *getEmitter() { return this; }
 		
 		void addParticleBody(Entity *particleBody);
-		Matrix4 getBaseMatrix();
+		Matrix4 getBaseMatrix() const;
 		void Update();
 		
 	protected:
@@ -277,7 +277,7 @@ namespace Polycode {
 		ParticleEmitter *getEmitter() { return this; }		
 		
 		void addParticleBody(Entity *particleBody);
-		Matrix4 getBaseMatrix();
+		Matrix4 getBaseMatrix() const;
 		void Update();
 		
 	protected:

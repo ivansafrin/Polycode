@@ -42,7 +42,7 @@ void SceneParticleEmitter::addParticleBody(Entity *particleBody) {
 	particleParentScene->addEntity((SceneEntity*)particleBody);	
 }
 
-Matrix4 SceneParticleEmitter::getBaseMatrix() {
+Matrix4 SceneParticleEmitter::getBaseMatrix() const {
 	return getConcatenatedMatrix();	
 }
 
@@ -73,7 +73,7 @@ void ScreenParticleEmitter::addParticleBody(Entity *particleBody) {
 	particleParentScreen->addChild((ScreenEntity*)particleBody);
 }
 
-Matrix4 ScreenParticleEmitter::getBaseMatrix() {
+Matrix4 ScreenParticleEmitter::getBaseMatrix() const {
 	return getConcatenatedMatrix();
 }
 
