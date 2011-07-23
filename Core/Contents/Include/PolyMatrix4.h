@@ -68,7 +68,7 @@ namespace Polycode {
 			/**
 			* Construct with pointer to 16 Number values.
 			*/ 			
-			Matrix4(Number *m);
+			Matrix4(const Number *m);
 			~Matrix4();			
 			
 			union {
@@ -91,7 +91,7 @@ namespace Polycode {
 			* Rotates a vector by the matrix values.
 			* @param v2 Vector to rotate.
 			*/			
-			inline Vector3 rotateVector(const Vector3 &v2) {
+			inline Vector3 rotateVector(const Vector3 &v2) const {
 				return Vector3(v2.x*m[0][0] + v2.y*m[1][0] + v2.z*m[2][0],
 								v2.x*m[0][1] + v2.y*m[1][1] + v2.z*m[2][1],
 								v2.x*m[0][2] + v2.y*m[1][2] + v2.z*m[2][2]);
@@ -101,7 +101,7 @@ namespace Polycode {
 			* Returns the position from the matrix.
 			* @return Position.
 			*/						
-			inline Vector3 getPosition() {
+			inline Vector3 getPosition() const {
 				Vector3 pos;
 				pos.x = m[3][0];
 				pos.y = m[3][1];
@@ -211,7 +211,7 @@ namespace Polycode {
 			* @param ay Pointer to pitch angle to set.
 			* @param az Pointer to yaw angle to set.
 			*/					
-			inline void getEulerAngles(Number *ax, Number *ay, Number *az) {
+			inline void getEulerAngles(Number *ax, Number *ay, Number *az) const {
 				Number angle_x, angle_y, angle_z,tr_x,tr_y,C;
 				
 				angle_y = asin(m[0][2]);
@@ -246,12 +246,12 @@ namespace Polycode {
 			/**
 			* Returns the inverse of the matrix.
 			*/
-			Matrix4 inverse();
+			Matrix4 inverse() const;
 			
 			/**
 			* Returns the affine inverse of the matrix.
 			*/			
-			Matrix4 inverseAffine();
+			Matrix4 inverseAffine() const;
 	
 		protected:
 		

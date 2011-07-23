@@ -43,11 +43,11 @@ String::String(const wchar_t *str, size_t n) {
 	contents = wstring(str, n);
 }
 
-String::String(string str) {
+String::String(const string& str) {
 	contents.assign(str.begin(), str.end());	
 }
 
-String::String(wstring str) {
+String::String(const wstring& str) {
 	contents = str;
 }
 
@@ -55,7 +55,7 @@ String::~String() {
 	
 }
 
-size_t String::getDataSizeWithEncoding(int encoding) {
+size_t String::getDataSizeWithEncoding(int encoding) const {
 	switch(encoding) {
 		case ENCODING_UTF8: {
 			string dest;
@@ -67,7 +67,7 @@ size_t String::getDataSizeWithEncoding(int encoding) {
 	}
 }
 
-const char *String::getDataWithEncoding(int encoding) {
+const char *String::getDataWithEncoding(int encoding) const {
 	switch(encoding) {
 		case ENCODING_UTF8: {
 			string dest;
@@ -92,7 +92,7 @@ void String::setDataWithEncoding(char *data, int encoding) {
 }
 
 
-vector<String> String::split(const String &delim) {
+vector<String> String::split(const String &delim) const {
 	
 	vector<String> tokens;
 	bool trimEmpty = false;
@@ -122,7 +122,7 @@ vector<String> String::split(const String &delim) {
 	return tokens;
 }
 
-String String::replace(const String &what, const String &withWhat) {
+String String::replace(const String &what, const String &withWhat) const {
 	vector<String> arr = split(what);
 	String retString = "";
 	for(int i= 0; i < arr.size(); i++) {
@@ -134,13 +134,13 @@ String String::replace(const String &what, const String &withWhat) {
 	return retString;
 }
 
-String String::toLowerCase() {
+String String::toLowerCase() const {
 	wstring str = contents;
 	std::transform(str.begin(), str.end(), str.begin(),::tolower);	
 	return String(str);
 }
 
-String String::toUpperCase() {
+String String::toUpperCase() const {
 	wstring str = contents;
 	std::transform(str.begin(), str.end(), str.begin(),::toupper);	
 	return String(str);
@@ -154,12 +154,12 @@ String String::NumberToString(Number value) {
 }
 
 
-string String::getSTLString() {
+const string& String::getSTLString() {
 	s_contents.assign(contents.begin(),contents.end());
 	return s_contents;
 }
 
-wstring String::getSTLWString() {
+const wstring& String::getSTLWString() const {
 	return contents;
 }
 
@@ -168,7 +168,7 @@ const char *String::c_str() {
 	return s_contents.c_str();
 }
 
-const wchar_t *String::wc_str() {
+const wchar_t *String::wc_str() const {
 	return contents.c_str();
 }
 

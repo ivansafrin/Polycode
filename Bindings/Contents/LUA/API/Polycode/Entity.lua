@@ -465,7 +465,7 @@ function Entity:getChildCenter()
 end
 
 function Entity:getEntityProp(propName)
-	local retVal = Polycore.Entity_getEntityProp(self.__ptr, propName)
+	local retVal = Polycore.Entity_getEntityProp(self.__ptr, propName.__ptr)
 	return retVal
 end
 

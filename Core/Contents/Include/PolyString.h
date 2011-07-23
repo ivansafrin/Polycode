@@ -68,34 +68,34 @@ namespace Polycode {
 			/**
 			* Initializes the string from an STL string.
 			*/												
-			String(string str);
+			String(const string& str);
 			
 			/**
 			* Initializes the string from an STL wstring.
 			*/															
-			String(wstring str);
+			String(const wstring& str);
 		
-			virtual ~String();
+			~String();
 		
 			/**
 			* Return the length of the string.
 			*/														
-			size_t size() { return contents.size(); }
+			size_t size() const { return contents.size(); }
 			
 			/**
 			* Return the length of the string.
 			*/			
-			size_t length() { return contents.size(); }
+			size_t length() const { return contents.size(); }
 		
 			/**
 			* Return the string and an STL string.
 			*/		
-			string getSTLString();
+			const string& getSTLString();
 			
 			/**
 			* Return the string and an STL wstring.
 			*/			
-			wstring getSTLWString();
+			const wstring& getSTLWString() const;
 		
 			/**
 			* Returns the substring of the string.
@@ -141,20 +141,20 @@ namespace Polycode {
 			* Returns the lowercase version of the string.
 			* @return Lowercase version of the stirng.
 			*/															
-			String toLowerCase();
+			String toLowerCase() const;
 			
 			/**
 			* Returns the uppercase version of the string.
 			* @return Uppercase version of the stirng.
 			*/																		
-			String toUpperCase();
+			String toUpperCase() const;
 					
 			/**
 			* Splits the string by the specified delimeter
 			* @param delim The delimeter to split by.
 			* @return An STL vector of the split parts of the string. 
 			*/																				
-			vector<String> split(const String &delim);
+			vector<String> split(const String &delim) const;
 
 			/**
 			* Replaces parts of the string with another string.
@@ -162,7 +162,7 @@ namespace Polycode {
 			* @param withWhat What to replace them with.
 			* @return A new string with the specified matches replaced with the specified string.
 			*/																							
-			String replace(const String &what, const String &withWhat);
+			String replace(const String &what, const String &withWhat) const;
 			
 			/**
 			* Convert a Number to a String.
@@ -181,13 +181,13 @@ namespace Polycode {
 			* Pointer to wchar data.
 			* @return A pointer to wchar data.
 			*/																															
-			const wchar_t *wc_str();
+			const wchar_t *wc_str() const;
 
 			/**
 			* Pointer to wchar data.
 			* @return A pointer to wchar data.
 			*/																																	
-			const wchar_t *data(){ return contents.data(); }
+			const wchar_t *data() const { return contents.data(); }
 
 			/**
 			* Returns data with the specified encoding. Currently the only supported encoding is String::ENCODING_UTF8
@@ -195,7 +195,7 @@ namespace Polycode {
 			* @return A pointer to the data using specified encoding.
 			* @see getDataSizeWithEncoding()
 			*/																															
-			const char *getDataWithEncoding(int encoding);
+			const char *getDataWithEncoding(int encoding) const;
 			
 			/**
 			* Returns the size of the data with the specified encoding. Currently the only supported encoding is String::ENCODING_UTF8
@@ -203,7 +203,7 @@ namespace Polycode {
 			* @return The size the data would take up if returned with this encoding.
 			* @see getDataWithEncoding()
 			*/																																				
-			size_t getDataSizeWithEncoding(int encoding);
+			size_t getDataSizeWithEncoding(int encoding) const;
 					
 			
 			/**

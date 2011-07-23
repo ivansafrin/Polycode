@@ -62,7 +62,7 @@ namespace Polycode {
 			* Create from another color.
 			* @param color The color to create from.
 			*/												
-			Color(Color *color);
+			Color(const Color *color);
 			
 			/**
 			* Create from integer color.
@@ -75,7 +75,7 @@ namespace Polycode {
 			/** 
 			* Multiplies the color with another color.
 			*/
-			inline Color operator * ( const Color& v2)  {
+			inline Color operator * ( const Color& v2) const {
 				Number nr = r * v2.r;
 				Number ng = g * v2.g;
 				Number nb = b * v2.b;
@@ -133,7 +133,7 @@ namespace Polycode {
 			* Set from another color.
 			* @param color The color to set from.
 			*/															
-			void setColor(Color *color);
+			void setColor(const Color *color);
 			
 			/**
 			* Sets the color to a random color. This does not affect alpha.
@@ -144,13 +144,13 @@ namespace Polycode {
 			* Retuns the brightness of the color
 			* @return Brightness.
 			*/
-			Number getBrightness();
+			Number getBrightness() const;
 			
 			/**
 			* Returns the color as a 32-bit usigned integer.
 			* @return Color as a single 32-bit unsigned integer.
 			*/
-			unsigned int getUint();
+			unsigned int getUint() const;
 			
 			/**
 			* Red value.

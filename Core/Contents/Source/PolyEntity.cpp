@@ -53,11 +53,11 @@ Entity::Entity() {
 	hasMask = false;
 }
 
-Entity *Entity::getParentEntity() {
+Entity *Entity::getParentEntity() const {
 	return parentEntity;
 }
 
-Color Entity::getCombinedColor() {
+Color Entity::getCombinedColor() const {
 	if(parentEntity) {
 		if(parentEntity->colorAffectsChildren)
 			return color * parentEntity->getCombinedColor();
@@ -137,7 +137,7 @@ void Entity::setBlendingMode(int newBlendingMode) {
 	blendingMode = newBlendingMode;
 }
 
-Number Entity::getBBoxRadius() {
+Number Entity::getBBoxRadius() const {
 	Number compRad;
 	Number biggest = bBoxRadius;
 	for(int i=0;i<children.size();i++) {
@@ -148,7 +148,7 @@ Number Entity::getBBoxRadius() {
 	return biggest;
 }
 
-Number Entity::getCompoundBBoxRadius() {
+Number Entity::getCompoundBBoxRadius() const {
 	Number compRad;
 	Number biggest = bBoxRadius + position.distance(Vector3(0,0,0));
 	for(int i=0;i<children.size();i++) {
@@ -166,7 +166,7 @@ void Entity::setBBoxRadius(Number rad) {
 Entity::~Entity() {
 }
 
-Vector3 Entity::getChildCenter() {
+Vector3 Entity::getChildCenter() const {
 	return childCenter;
 }
 
@@ -216,7 +216,7 @@ void Entity::updateEntityMatrix() {
 	}
 }
 
-Vector3 Entity::getCompoundScale() {
+Vector3 Entity::getCompoundScale() const {
 	if(parentEntity != NULL) {
 		Vector3 parentScale = parentEntity->getCompoundScale();
 		return Vector3(scale.x * parentScale.x, scale.y * parentScale.y,scale.z * parentScale.z);
@@ -227,7 +227,7 @@ Vector3 Entity::getCompoundScale() {
 }
 
 
-Matrix4 Entity::getConcatenatedRollMatrix() {
+Matrix4 Entity::getConcatenatedRollMatrix() const {
 	Quaternion q;
 	q.createFromAxisAngle(0.0f, 0.0f, 1.0f, roll*matrixAdj);
 	Matrix4 transformMatrix = q.createMatrix();	
@@ -385,7 +385,7 @@ void Entity::setRotationQuat(Number w, Number x, Number y, Number z) {
 	matrixDirty = true;
 }
 
-Quaternion Entity::getRotationQuat() {
+Quaternion Entity::getRotationQuat() const {
 	return rotationQuat;
 }
 
@@ -401,18 +401,18 @@ void Entity::setYaw(Number yaw) {
 	matrixDirty = true;
 }
 
-Vector3 Entity::getScale() {
+Vector3 Entity::getScale() const {
 	return scale;
 }
 
-Matrix4 Entity::getConcatenatedMatrix() {
+Matrix4 Entity::getConcatenatedMatrix() const {
 	if(parentEntity != NULL) 
 		return transformMatrix * parentEntity->getConcatenatedMatrix();
 	else
 		return transformMatrix;
 }
 
-Matrix4 Entity::getTransformMatrix() {
+const Matrix4& Entity::getTransformMatrix() const {
 	return transformMatrix;
 }
 
@@ -444,7 +444,7 @@ void Entity::rebuildRotation() {
 	rotationQuat.fromAxes(pitch, yaw, roll);
 }
 
-String Entity::getEntityProp(String propName) {
+String Entity::getEntityProp(const String& propName) {
 	for(int i=0; i < entityProps.size(); i++) {
 		if(entityProps[i].propName == propName) {
 			return entityProps[i].propValue;
@@ -453,7 +453,7 @@ String Entity::getEntityProp(String propName) {
 	return "null";
 }
 
-Vector3 Entity::getCombinedPosition() {
+Vector3 Entity::getCombinedPosition() const {
 	if(parentEntity != NULL)
 		return (parentEntity->getCombinedPosition())+position;
 	else
@@ -464,23 +464,23 @@ void Entity::setParentEntity(Entity *entity) {
 	parentEntity = entity;
 }
 
-Number Entity::getPitch() {
+Number Entity::getPitch() const {
 	return pitch;
 }
 
-Number Entity::getYaw() {
+Number Entity::getYaw() const {
 	return yaw;
 }
 
-Number Entity::getRoll() {
+Number Entity::getRoll() const {
 	return roll;
 }
 
-void Entity::setTransformByMatrixPure(Matrix4 matrix) {
+void Entity::setTransformByMatrixPure(const Matrix4& matrix) {
 	transformMatrix = matrix;
 }
 
-void Entity::setTransformByMatrix(Matrix4 matrix) {
+void Entity::setTransformByMatrix(const Matrix4& matrix) {
 	setPosition(matrix.getPosition());	
 	Number x,y,z;
 	matrix.getEulerAngles(&x,&y,&z);
@@ -565,25 +565,25 @@ void Entity::setScale(Number x, Number y, Number z) {
 	matrixDirty = true;
 }
 
-Vector3 Entity::getPosition() {
+Vector3 Entity::getPosition() const {
 	return position;
 }
 
-Number Entity::getCombinedPitch() {
+Number Entity::getCombinedPitch() const {
 	if(parentEntity != NULL)
 		return parentEntity->getCombinedPitch()+pitch;
 	else
 		return pitch;
 }
 
-Number Entity::getCombinedYaw() {
+Number Entity::getCombinedYaw() const {
 	if(parentEntity != NULL)
 		return parentEntity->getCombinedYaw()+yaw;
 	else
 		return yaw;
 }
 
-Number Entity::getCombinedRoll() {
+Number Entity::getCombinedRoll() const {
 	if(parentEntity != NULL)
 		return parentEntity->getCombinedRoll()+roll;
 	else

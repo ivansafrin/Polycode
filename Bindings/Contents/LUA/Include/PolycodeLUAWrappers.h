@@ -430,7 +430,9 @@ static int Polycore_Event_setDispatcher(lua_State *L) {
 static int Polycore_Event_getEventType(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Event *inst = (Event*)lua_topointer(L, 1);
-	lua_pushstring(L, inst->getEventType().c_str());
+	 String  *retInst = new  String ();
+	*retInst = inst->getEventType();
+	lua_pushlightuserdata(L, retInst);
 	return 1;
 }
 
@@ -1840,7 +1842,7 @@ static int Polycore_Vector3_dot(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Vector3 *inst = (Vector3*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	Vector3 & u = *(Vector3 *)lua_topointer(L, 2);
+	const Vector3 & u = *( Vector3 *)lua_topointer(L, 2);
 	lua_pushnumber(L, inst->dot(u));
 	return 1;
 }
@@ -5691,7 +5693,7 @@ static int Polycore_String_length(lua_State *L) {
 static int Polycore_String_getSTLString(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	String *inst = (String*)lua_topointer(L, 1);
-	string *retInst = new string();
+	 string  *retInst = new  string ();
 	*retInst = inst->getSTLString();
 	lua_pushlightuserdata(L, retInst);
 	return 1;
@@ -5700,7 +5702,7 @@ static int Polycore_String_getSTLString(lua_State *L) {
 static int Polycore_String_getSTLWString(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	String *inst = (String*)lua_topointer(L, 1);
-	wstring *retInst = new wstring();
+	 wstring  *retInst = new  wstring ();
 	*retInst = inst->getSTLWString();
 	lua_pushlightuserdata(L, retInst);
 	return 1;
@@ -9100,7 +9102,7 @@ static int Polycore_Entity_updateEntityMatrix(lua_State *L) {
 static int Polycore_Entity_getTransformMatrix(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Entity *inst = (Entity*)lua_topointer(L, 1);
-	Matrix4 *retInst = new Matrix4();
+	 Matrix4  *retInst = new  Matrix4 ();
 	*retInst = inst->getTransformMatrix();
 	lua_pushlightuserdata(L, retInst);
 	return 1;
@@ -9128,7 +9130,7 @@ static int Polycore_Entity_setTransformByMatrix(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Entity *inst = (Entity*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	Matrix4 matrix = *(Matrix4*)lua_topointer(L, 2);
+	const Matrix4 & matrix = *( Matrix4 *)lua_topointer(L, 2);
 	inst->setTransformByMatrix(matrix);
 	return 0;
 }
@@ -9137,7 +9139,7 @@ static int Polycore_Entity_setTransformByMatrixPure(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Entity *inst = (Entity*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	Matrix4 matrix = *(Matrix4*)lua_topointer(L, 2);
+	const Matrix4 & matrix = *( Matrix4 *)lua_topointer(L, 2);
 	inst->setTransformByMatrixPure(matrix);
 	return 0;
 }
@@ -9600,8 +9602,8 @@ static int Polycore_Entity_getChildCenter(lua_State *L) {
 static int Polycore_Entity_getEntityProp(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Entity *inst = (Entity*)lua_topointer(L, 1);
-	luaL_checktype(L, 2, LUA_TSTRING);
-	String propName = String(lua_tostring(L, 2));
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	const String & propName = *( String *)lua_topointer(L, 2);
 	lua_pushstring(L, inst->getEntityProp(propName).c_str());
 	return 1;
 }

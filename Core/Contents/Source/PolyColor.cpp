@@ -32,7 +32,7 @@ Color::Color(Number r,Number g, Number b, Number a) {
 	setColor(r,g,b,a);
 }
 
-Color::Color(Color *color) {
+Color::Color(const Color *color) {
 	setColor(color->r, color->g, color->b, color->a);
 }
 
@@ -70,7 +70,7 @@ void Color::setColorHex(unsigned int hex) {
 	a = ((Number)ta)/255.0f;	
 }
 
-Number Color::getBrightness() {
+Number Color::getBrightness() const {
 	return (r+g+b) / 3.0f;
 }
 
@@ -115,7 +115,7 @@ void Color::setColorRGBA(int r, int g, int b, int a) {
 	this->a = ((Number)a)/255.0f;
 }
 
-void Color::setColor(Color *color) {
+void Color::setColor(const Color *color) {
 	this->r = color->r;
 	this->g = color->g;
 	this->b = color->b;
@@ -130,7 +130,7 @@ void Color::setColor(Number r, Number g, Number b, Number a) {
 	this->a = a;
 }
 
-unsigned int Color::getUint() {
+unsigned int Color::getUint() const {
 	
 	unsigned int ir = 255.0f*r;
 	unsigned int ig = 255.0f*g;

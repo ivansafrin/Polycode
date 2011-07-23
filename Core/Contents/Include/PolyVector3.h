@@ -49,7 +49,7 @@ namespace Polycode {
 			* Default constructor.
 			*/ 
 			Vector3();
-			virtual ~Vector3();
+			~Vector3();
 
 			/**
 			* Sets the vector from x,y,z coordinates.
@@ -79,19 +79,13 @@ namespace Polycode {
 			//@{
 			
 
-			inline Vector3& operator * (const Number val) {
-				x *= val;
-				y *= val;
-				z *= val;
-				return *this;				
+			inline Vector3 operator * (const Number val) const {
+				return Vector3(x * val, y * val, z * val);
 			}
 
-			inline Vector3& operator / (const Number val) {
+			inline Vector3 operator / (const Number val) const {
 				assert( val != 0.0 );
-				x /= val;
-				y /= val;
-				z /= val;
-				return *this;				
+				return operator*(1/val);
 			}
 
 			inline Vector3& operator = ( const Vector3& v2)  {
@@ -144,7 +138,7 @@ namespace Polycode {
 			* Returns the dot product with another vector.
 			* @return Dor product with the vector.
 			*/			
-			inline Number dot(Vector3 &u) {
+			inline Number dot(const Vector3 &u) const {
 				return x * u.x + y * u.y + z * u.z;
 			}
 

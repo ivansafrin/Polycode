@@ -295,7 +295,7 @@ void OSBasics::createFolder(String pathString) {
 #endif
 }
 
-bool OSBasics::isFolder(String pathString) {	
+bool OSBasics::isFolder(String pathString) {
 	bool retVal = false;
 #ifdef _WINDOWS
 #else
