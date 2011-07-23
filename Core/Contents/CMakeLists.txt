@@ -202,6 +202,10 @@ ELSEIF(APPLE)
 ELSE(MSVC)
     SET(polycore_SRCS ${polycore_SRCS} ../Build/Linux/PolycodeView.cpp Source/PolySDLCore.cpp)
     SET(polycore_HDRS ${polycore_HDRS} ../Build/Linux/PolycodeView.h Include/PolySDLCore.h)
+    # Needs fpic to link in shared lib on Linux
+    IF(CMAKE_COMPILER_IS_GNUCXX)
+		LIST(APPEND CMAKE_CXX_FLAGS -fPIC)
+    ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 ENDIF(MSVC)
 
 #IF(POLYCODE_BUILD_SHARED)
