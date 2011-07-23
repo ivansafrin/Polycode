@@ -1169,6 +1169,8 @@ int luaopen_Polycode(lua_State *L) {
 		{"SceneLight_areShadowsEnabled", Polycore_SceneLight_areShadowsEnabled},
 		{"SceneLight_getLightType", Polycore_SceneLight_getLightType},
 		{"SceneLight_enableDebugDraw", Polycore_SceneLight_enableDebugDraw},
+		{"SceneLight_setLightImportance", Polycore_SceneLight_setLightImportance},
+		{"SceneLight_getLightImportance", Polycore_SceneLight_getLightImportance},
 		{"delete_SceneLight", Polycore_delete_SceneLight},
 		{NULL, NULL}
 	};
