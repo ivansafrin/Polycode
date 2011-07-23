@@ -117,7 +117,7 @@ namespace Polycode {
 		void RenderDepthOnly(Camera *targetCamera);
 		
 		static String readString(OSFILE *inFile);
-		void loadScene(String fileName);
+		void loadScene(const String& fileName);
 		void generateLightmaps(Number lightMapRes, Number lightMapQuality, int numRadPasses);
 		
 		/**
@@ -128,8 +128,8 @@ namespace Polycode {
 		SceneLight *getNearestLight(Vector3 pos);
 		
 		void writeEntityMatrix(SceneEntity *entity, OSFILE *outFile);
-		void writeString(String str, OSFILE *outFile);
-		void saveScene(String fileName);
+		void writeString(const String& str, OSFILE *outFile);
+		void saveScene(const String& fileName);
 		
 		int getNumStaticGeometry();
 		SceneMesh *getStaticGeometry(int index);
@@ -139,8 +139,8 @@ namespace Polycode {
 		int getNumLights();
 		SceneLight *getLight(int index);
 		
-		SceneEntity *getCustomEntityByType(String type);
-		vector<SceneEntity*> getCustomEntitiesByType(String type);		
+		SceneEntity *getCustomEntityByType(const String& type) const;
+		vector<SceneEntity*> getCustomEntitiesByType(const String& type) const;
 		
 		static const unsigned int ENTITY_MESH = 0;
 		static const unsigned int ENTITY_LIGHT = 1;			

@@ -24,7 +24,7 @@
 
 using namespace Polycode;
 
-Skeleton::Skeleton(String fileName) : SceneEntity() {
+Skeleton::Skeleton(const String& fileName) : SceneEntity() {
 	loadSkeleton(fileName);
 	currentAnimation = NULL;
 }
@@ -36,11 +36,11 @@ Skeleton::Skeleton() {
 Skeleton::~Skeleton() {
 }
 
-int Skeleton::getNumBones() {
+int Skeleton::getNumBones() const {
 	return bones.size();
 }
 
-Bone *Skeleton::getBoneByName(String name) {
+Bone *Skeleton::getBoneByName(const String& name) const {
 	for(int i=0; i < bones.size(); i++) {
 		if(bones[i]->getName() == name)
 			return bones[i];
@@ -48,11 +48,11 @@ Bone *Skeleton::getBoneByName(String name) {
 	return NULL;
 }
 
-Bone *Skeleton::getBone(int index) {
+Bone *Skeleton::getBone(int index) const {
 	return bones[index];
 }
 
-void Skeleton::enableBoneLabels(String labelFont, Number size, Number scale, Color labelColor) {
+void Skeleton::enableBoneLabels(const String& labelFont, Number size, Number scale, Color labelColor) {
 	for(int i=0; i < bones.size(); i++) {
 		bones[i]->enableBoneLabel(labelFont, size, scale,labelColor);
 	}	
@@ -83,7 +83,7 @@ void Skeleton::playAnimationByIndex(int index) {
 	anim->Play();	
 }
 
-void Skeleton::playAnimation(String animName) {
+void Skeleton::playAnimation(const String& animName) {
 	SkeletonAnimation *anim = getAnimation(animName);
 	if(!anim)
 		return;
@@ -98,7 +98,7 @@ void Skeleton::playAnimation(String animName) {
 	anim->Play();
 }
 
-SkeletonAnimation *Skeleton::getAnimation(String name) {
+SkeletonAnimation *Skeleton::getAnimation(const String& name) const {
 	for(int i=0; i < animations.size(); i++) {
 		if(animations[i]->getName() == name)
 			return animations[i];
@@ -113,7 +113,7 @@ void Skeleton::Update() {
 	}
 }
 
-void Skeleton::loadSkeleton(String fileName) {
+void Skeleton::loadSkeleton(const String& fileName) {
 	OSFILE *inFile = OSBasics::open(fileName.c_str(), "rb");
 	if(!inFile) {
 		return;
@@ -273,7 +273,7 @@ void Skeleton::loadSkeleton(String fileName) {
 	OSBasics::close(inFile);
 }
 
-void Skeleton::addAnimation(String name, String fileName) {
+void Skeleton::addAnimation(const String& name, const String& fileName) {
 	OSFILE *inFile = OSBasics::open(fileName.c_str(), "rb");
 	if(!inFile) {
 		return;
@@ -489,7 +489,7 @@ void BoneTrack::setSpeed(Number speed) {
 }
 
 
-SkeletonAnimation::SkeletonAnimation(String name, Number duration) {
+SkeletonAnimation::SkeletonAnimation(const String& name, Number duration) {
 	this->name = name;
 	this->duration = duration;
 }
@@ -522,7 +522,7 @@ SkeletonAnimation::~SkeletonAnimation() {
 
 }
 
-String SkeletonAnimation::getName() {
+const String& SkeletonAnimation::getName() const {
 	return name;
 }
 

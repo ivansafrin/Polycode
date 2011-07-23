@@ -196,7 +196,7 @@ CoreMutex *SDLCore::createMutex() {
 	return mutex;	
 }
 
-void SDLCore::copyStringToClipboard(String str) {
+void SDLCore::copyStringToClipboard(const String& str) {
 
 }
 
@@ -204,19 +204,19 @@ String SDLCore::getClipboardString() {
 
 }
 
-void SDLCore::createFolder(String folderPath) {
+void SDLCore::createFolder(const String& folderPath) {
 
 }
 
-void SDLCore::copyDiskItem(String itemPath, String destItemPath) {
+void SDLCore::copyDiskItem(const String& itemPath, const String& destItemPath) {
 
 }
 
-void SDLCore::moveDiskItem(String itemPath, String destItemPath) {
+void SDLCore::moveDiskItem(const String& itemPath, const String& destItemPath) {
 
 }
 
-void SDLCore::removeDiskItem(String itemPath) {
+void SDLCore::removeDiskItem(const String& itemPath) {
 }
 
 String SDLCore::openFolderPicker() {

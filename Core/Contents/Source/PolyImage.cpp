@@ -31,7 +31,7 @@ void user_read_data(png_structp png_ptr, png_bytep data, png_size_t length) {
 	OSBasics::read(data, length, 1, file);
 }
 
-Image::Image(String fileName) : imageData(NULL) {
+Image::Image(const String& fileName) : imageData(NULL) {
 	setPixelType(IMAGE_RGBA);
 	loaded = false;
 	if(!loadImage(fileName)) {
@@ -57,7 +57,7 @@ void Image::setPixelType(int type) {
 	}
 }
 
-bool Image::isLoaded() {
+bool Image::isLoaded() const {
 	return loaded;
 }
 
@@ -102,11 +102,11 @@ Color Image::getPixel(int x, int y) {
 	return Color(imageData32[x+(y*width)]);
 }
 
-unsigned int Image::getWidth() {
+unsigned int Image::getWidth() const {
 	return width;
 }
 
-unsigned int Image::getHeight() {
+unsigned int Image::getHeight() const {
 	return height;
 }
 
@@ -137,7 +137,7 @@ void Image::perlinNoise(int seed, bool alpha) {
 	}
 }
 
-void Image::writeBMP(String fileName) {
+void Image::writeBMP(const String& fileName) const {
 //	SDL_Surface *image;
 //	image = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 32, 0x0000FF, 0x00FF00, 0xFF0000, 0x000000);
 //	memcpy(image->pixels,imageData,width * height * 4);
@@ -172,11 +172,11 @@ void Image::moveTo(int x, int y) {
 }
 
 
-int Image::getBrushX() {
+int Image::getBrushX() const {
 	return brushPosX;
 }
 
-int Image::getBrushY() {
+int Image::getBrushY() const {
 	return brushPosY;
 }
 
@@ -450,11 +450,11 @@ void Image::fill(Number r, Number g, Number b, Number a) {
 	}
 }
 
-bool Image::loadImage(String fileName) {
+bool Image::loadImage(const String& fileName) {
 	return loadPNG(fileName);
 }
 
-bool Image::loadPNG(String fileName) {
+bool Image::loadPNG(const String& fileName) {
 	OSFILE         *infile;
 	
 	png_structp   png_ptr;

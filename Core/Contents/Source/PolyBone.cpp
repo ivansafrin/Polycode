@@ -24,7 +24,7 @@
 
 using namespace Polycode;
 
-Bone::Bone(String boneName) : SceneEntity() {
+Bone::Bone(const String& boneName) : SceneEntity() {
 	this->boneName = boneName;
 //	boneMesh = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 0.1, 0.1, 0.1);
 	this->depthTest = false;
@@ -126,11 +126,11 @@ void Bone::setRestMatrix(Matrix4 matrix) {
 	restMatrix = matrix;
 }
 
-String Bone::getName() {
+const String& Bone::getName() const {
 	return boneName;
 }
 
-void Bone::enableBoneLabel(String fontLabel, Number size, Number scale, Color labelColor) {
+void Bone::enableBoneLabel(const String& fontLabel, Number size, Number scale, Color labelColor) {
 	SceneLabel *label = new SceneLabel(fontLabel, boneName, size, scale, Label::ANTIALIAS_FULL);
 	label->setColor(labelColor);
 	label->billboardMode = true;

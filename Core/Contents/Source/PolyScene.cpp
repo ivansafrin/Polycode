@@ -284,7 +284,7 @@ String Scene::readString(OSFILE *inFile) {
 	
 }
 
-void Scene::loadScene(String fileName) {
+void Scene::loadScene(const String& fileName) {
 	OSFILE *inFile = OSBasics::open(fileName.c_str(), "rb");
 	if(!inFile) {
 		Logger::log("Error opening scene file\n");
@@ -491,7 +491,7 @@ void Scene::loadScene(String fileName) {
 	OSBasics::close(inFile);
 }
 
-vector<SceneEntity*> Scene::getCustomEntitiesByType(String type) {
+vector<SceneEntity*> Scene::getCustomEntitiesByType(const String& type) const {
 	vector<SceneEntity*> retVector;
 	for(int i=0; i < customEntities.size(); i++) {
 		if(customEntities[i]->custEntityType == type) {
@@ -501,7 +501,7 @@ vector<SceneEntity*> Scene::getCustomEntitiesByType(String type) {
 	return retVector;	
 }
 
-SceneEntity *Scene::getCustomEntityByType(String type) {
+SceneEntity *Scene::getCustomEntityByType(const String& type) const {
 	for(int i=0; i < customEntities.size(); i++) {
 		if(customEntities[i]->custEntityType == type) {
 			return customEntities[i];
@@ -527,7 +527,7 @@ void Scene::writeEntityMatrix(SceneEntity *entity, OSFILE *outFile) {
 	
 }
 
-void Scene::saveScene(String fileName) {
+void Scene::saveScene(const String& fileName) {
 	OSFILE *outFile = OSBasics::open(fileName.c_str(), "wb");
 	if(!outFile) {
 		Logger::log("Error opening scene file for writing\n");
@@ -658,7 +658,7 @@ void Scene::saveScene(String fileName) {
 	OSBasics::close(outFile);
 }
 
-void Scene::writeString(String str, OSFILE *outFile) {
+void Scene::writeString(const String& str, OSFILE *outFile) {
 	unsigned int stLen = str.length();
 	OSBasics::write(&stLen, sizeof(unsigned int), 1, outFile);
 	OSBasics::write(str.c_str(), 1, stLen, outFile);

@@ -35,7 +35,7 @@ Data::~Data() {
 		free(data);
 }
 
-void Data::setFromString(String str, int encoding) {
+void Data::setFromString(const String& str, int encoding) {
 	if(data)
 		free(data);
 
@@ -44,7 +44,7 @@ void Data::setFromString(String str, int encoding) {
 	memcpy(data, str.getDataWithEncoding(encoding), dataSize);
 }
 
-bool Data::saveToFile(String fileName) {
+bool Data::saveToFile(const String& fileName) const {
 	
 	OSFILE *file = OSBasics::open(fileName, "wb");
 	
@@ -59,7 +59,7 @@ bool Data::saveToFile(String fileName) {
 	return true;
 }
 
-void Data::loadFromFile(String fileName) {
+void Data::loadFromFile(const String& fileName) {
 	OSFILE *file = OSBasics::open(fileName, "rb");
 	
 	OSBasics::seek(file, 0L, SEEK_END);
@@ -80,7 +80,7 @@ void Data::loadFromFile(String fileName) {
 		
 }
 
-String Data::getAsString(int encoding) {
+String Data::getAsString(int encoding) const {
 	String str;
 	
 	char *strData = (char*)malloc(dataSize+1);

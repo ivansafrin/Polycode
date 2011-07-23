@@ -57,7 +57,7 @@ namespace Polycode {
 		* Constructor.
 		* @param fileName Path to an OGG or WAV file to load.
 		*/ 
-		Sound(String fileName);
+		Sound(const String& fileName);
 		~Sound();
 		
 		/**
@@ -91,15 +91,15 @@ namespace Polycode {
 		
 		void setPositionalProperties(Number referenceDistance, Number maxDistance);
 		
-		ALuint loadWAV(String fileName);
-		ALuint loadOGG(String fileName);
+		ALuint loadWAV(const String& fileName);
+		ALuint loadOGG(const String& fileName);
 		
 		ALuint GenSource(ALuint buffer);
 		ALuint GenSource();
 	
-		void checkALError(String operation);
-		void soundError(String err);
-		void soundCheck(bool result, String err);
+		void checkALError(const String& operation);
+		void soundError(const String& err);
+		void soundCheck(bool result, const String& err);
 		static unsigned long readByte32(const unsigned char buffer[4]);		
 		static unsigned short readByte16(const unsigned char buffer[2]);
 

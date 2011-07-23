@@ -57,7 +57,7 @@ class _PolyExport GLSLProgramParam {
 	void *defaultData;
 	int paramType;
 	
-	static void *createParamData(int *retType, String type, String value);
+	static void *createParamData(int *retType, const String& type, const String& value);
 	
 	static const int POLY_MODELVIEWPROJ_MATRIX = 0;
 	static const int POLY_MODELVIEW_MATRIX = 2;
@@ -113,7 +113,7 @@ class _PolyExport GLSLProgramParam {
 			GLSLProgram(int type);
 			~GLSLProgram();
 			
-			void addParam(String name, bool isAuto, int autoID, int paramType, void *defaultData);
+			void addParam(const String& name, bool isAuto, int autoID, int paramType, void *defaultData);
 		
 			unsigned int program;
 //			GLSLparameter modelViewProjection;

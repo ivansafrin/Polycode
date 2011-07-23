@@ -44,7 +44,7 @@ void ctow(WCHAR* Dest, const char* Source)
 
 #endif
 
-OSFileEntry::OSFileEntry(String path, String name, int type) {
+OSFileEntry::OSFileEntry(const String& path, const String& name, int type) {
 	this->basePath = path;
 	this->fullPath = path + "/" + name;
 	this->name = name;
@@ -73,7 +73,7 @@ void OSFILE::debugDump() {
 	OSBasics::seek(this, tellval, SEEK_SET);
 }
 
-OSFILE *OSBasics::open(String filename, String opts) {
+OSFILE *OSBasics::open(const String& filename, const String& opts) {
 	OSFILE *retFile = NULL;
 	if(PHYSFS_exists(filename.c_str())) {
 		if(!PHYSFS_isDirectory(filename.c_str())) {
@@ -189,7 +189,7 @@ int OSBasics::seek(OSFILE * stream, long int offset, int origin ) {
 	return 0;	
 }
 
-vector<OSFileEntry> OSBasics::parsePhysFSFolder(String pathString, bool showHidden) {
+vector<OSFileEntry> OSBasics::parsePhysFSFolder(const String& pathString, bool showHidden) {
 	vector<OSFileEntry> returnVector;
 	
 	char **rc = PHYSFS_enumerateFiles(pathString.c_str());
@@ -212,7 +212,7 @@ vector<OSFileEntry> OSBasics::parsePhysFSFolder(String pathString, bool showHidd
 	return returnVector;
 }
 
-vector<OSFileEntry> OSBasics::parseFolder(String pathString, bool showHidden) {
+vector<OSFileEntry> OSBasics::parseFolder(const String& pathString, bool showHidden) {
 	vector<OSFileEntry> returnVector;
 	
 	if(pathString.size() < 128) {
@@ -281,21 +281,21 @@ vector<OSFileEntry> OSBasics::parseFolder(String pathString, bool showHidden) {
 	return returnVector;
 }
 
-void OSBasics::removeItem(String pathString) {
+void OSBasics::removeItem(const String& pathString) {
 #ifdef _WINDOWS
 #else
 	remove(pathString.c_str());
 #endif	
 }
 
-void OSBasics::createFolder(String pathString) {
+void OSBasics::createFolder(const String& pathString) {
 #ifdef _WINDOWS
 #else
 	mkdir(pathString.c_str(),  S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 #endif
 }
 
-bool OSBasics::isFolder(String pathString) {
+bool OSBasics::isFolder(const String& pathString) {
 	bool retVal = false;
 #ifdef _WINDOWS
 #else

@@ -45,7 +45,7 @@ void ScreenSoundListener::Update() {
 }
 
 
-ScreenSound::ScreenSound(String fileName, Number referenceDistance, Number maxDistance) : ScreenEntity() {
+ScreenSound::ScreenSound(const String& fileName, Number referenceDistance, Number maxDistance) : ScreenEntity() {
 	sound = new Sound(fileName);
 	sound->setIsPositional(true);
 	sound->setPositionalProperties(referenceDistance, maxDistance);	
@@ -68,6 +68,6 @@ void ScreenSound::Update() {
 	
 }
 
-Sound *ScreenSound::getSound() {
+Sound *ScreenSound::getSound() const {
 	return sound;
 }

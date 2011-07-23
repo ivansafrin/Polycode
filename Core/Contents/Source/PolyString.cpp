@@ -25,30 +25,26 @@
 using namespace Polycode;
 
 String::String() {
-	contents = L"";
-	s_contents = "";
 }
 
 String::String(const wchar_t *str) {
-	contents = wstring(str);
+	wstrToUtf8(contents, str);
 }
 
 String::String(const char *str) {
-	string sstr = string(str);
-	utf8toWStr(contents, sstr);	
-//	contents.assign(sstr.begin(), sstr.end());
+	contents = str;
 }
 
-String::String(const wchar_t *str, size_t n) {
-	contents = wstring(str, n);
+String::String(const char *str, size_t n) {
+	contents = string(str, n);
 }
 
 String::String(const string& str) {
-	contents.assign(str.begin(), str.end());	
+	contents = str;
 }
 
 String::String(const wstring& str) {
-	contents = str;
+	wstrToUtf8(contents, str);
 }
 
 String::~String() {
@@ -58,9 +54,7 @@ String::~String() {
 size_t String::getDataSizeWithEncoding(int encoding) const {
 	switch(encoding) {
 		case ENCODING_UTF8: {
-			string dest;
-			wstrToUtf8(dest, contents);
-			return dest.size();
+			return contents.size();
 		}
 		default:
 			return NULL;
@@ -70,9 +64,7 @@ size_t String::getDataSizeWithEncoding(int encoding) const {
 const char *String::getDataWithEncoding(int encoding) const {
 	switch(encoding) {
 		case ENCODING_UTF8: {
-			string dest;
-			wstrToUtf8(dest, contents);
-			return dest.data();
+			return contents.c_str();
 		}
 		break;
 		default:
@@ -83,8 +75,7 @@ const char *String::getDataWithEncoding(int encoding) const {
 void String::setDataWithEncoding(char *data, int encoding) {
 	switch(encoding) {
 		case ENCODING_UTF8: {
-			string str = string(data);
-			utf8toWStr(contents, str);
+			contents = data;
 		}
 		default:
 			break;
@@ -97,23 +88,23 @@ vector<String> String::split(const String &delim) const {
 	vector<String> tokens;
 	bool trimEmpty = false;
 	
-		std::wstring::size_type pos, lastPos = 0;
+		std::string::size_type pos, lastPos = 0;
 		while(true)
 		{
 			pos = contents.find_first_of(delim.contents, lastPos);
-			if(pos == std::wstring::npos)
+			if(pos == std::string::npos)
 			{
 				pos = contents.length();
 				
 				if(pos != lastPos || !trimEmpty)
-					tokens.push_back(vector<String>::value_type(contents.data()+lastPos, (wstring::size_type)pos-lastPos ));
+					tokens.push_back(vector<String>::value_type(contents.data()+lastPos, (string::size_type)pos-lastPos ));
 				
 				break;
 			}
 			else
 			{
 				if(pos != lastPos || !trimEmpty)
-					tokens.push_back(vector<String>::value_type(contents.data()+lastPos, (wstring::size_type)pos-lastPos ));
+					tokens.push_back(vector<String>::value_type(contents.data()+lastPos, (string::size_type)pos-lastPos ));
 			}
 			
 			lastPos = pos + 1;
@@ -135,13 +126,13 @@ String String::replace(const String &what, const String &withWhat) const {
 }
 
 String String::toLowerCase() const {
-	wstring str = contents;
+	string str = contents;
 	std::transform(str.begin(), str.end(), str.begin(),::tolower);	
 	return String(str);
 }
 
 String String::toUpperCase() const {
-	wstring str = contents;
+	string str = contents;
 	std::transform(str.begin(), str.end(), str.begin(),::toupper);	
 	return String(str);
 }
@@ -154,21 +145,12 @@ String String::NumberToString(Number value) {
 }
 
 
-const string& String::getSTLString() {
-	s_contents.assign(contents.begin(),contents.end());
-	return s_contents;
-}
-
-const wstring& String::getSTLWString() const {
+const string& String::getSTLString() const {
 	return contents;
 }
 
-const char *String::c_str() {
-	s_contents.assign(contents.begin(),contents.end());	
-	return s_contents.c_str();
-}
 
-const wchar_t *String::wc_str() const {
+const char *String::c_str() const {
 	return contents.c_str();
 }
 

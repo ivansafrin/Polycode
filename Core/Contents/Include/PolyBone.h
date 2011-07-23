@@ -42,16 +42,16 @@ namespace Polycode {
 			* Constructor.
 			* @param boneName Name of the bone.
 			*/				
-			Bone(String boneName);
+			Bone(const String& boneName);
 			~Bone();
 			
-			void enableBoneLabel(String labelFont, Number size, Number scale, Color labelColor);
+			void enableBoneLabel(const String& labelFont, Number size, Number scale, Color labelColor);
 			
 			/**
 			* Returns the name of the bone.
 			* @return Name of the bone.
 			*/
-			String getName();
+			const String& getName() const;
 			void Render();
 
 			/**

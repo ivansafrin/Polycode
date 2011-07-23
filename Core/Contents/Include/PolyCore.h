@@ -130,7 +130,7 @@ namespace Polycode {
 		* Copies the specified string to system clipboard.
 		* @param str String to copy to clipboard.
 		*/
-		virtual void copyStringToClipboard(String str) = 0;
+		virtual void copyStringToClipboard(const String& str) = 0;
 		
 		/**
 		* Returns the system clipboard as a string.
@@ -200,27 +200,27 @@ namespace Polycode {
 		* Creates a folder on disk with the specified path.
 		* @param folderPath Path to create the folder in.
 		*/																			
-		virtual void createFolder(String folderPath) = 0;
+		virtual void createFolder(const String& folderPath) = 0;
 		
 		/**
 		* Copies a disk item from one path to another
 		* @param itemPath Path to the item to copy.
 		* @param destItemPath Destination path to copy to.
 		*/																					
-		virtual void copyDiskItem(String itemPath, String destItemPath) = 0;		
+		virtual void copyDiskItem(const String& itemPath, const String& destItemPath) = 0;
 		
 		/**
 		* Moves a disk item from one path to another
 		* @param itemPath Path to the item to move.
 		* @param destItemPath Destination path to move to.
 		*/																							
-		virtual void moveDiskItem(String itemPath, String destItemPath) = 0;		
+		virtual void moveDiskItem(const String& itemPath, const String& destItemPath) = 0;
 		
 		/**
 		* Removes a disk item.
 		* @param itemPath Path to the item to remove.
 		*/																							
-		virtual void removeDiskItem(String itemPath) = 0;
+		virtual void removeDiskItem(const String& itemPath) = 0;
 
 		/**
 		* Opens a system folder picker and suspends operation.

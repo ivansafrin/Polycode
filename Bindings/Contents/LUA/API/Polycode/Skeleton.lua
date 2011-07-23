@@ -29,11 +29,11 @@ function Skeleton:Skeleton(...)
 end
 
 function Skeleton:loadSkeleton(fileName)
-	local retVal = Polycore.Skeleton_loadSkeleton(self.__ptr, fileName)
+	local retVal = Polycore.Skeleton_loadSkeleton(self.__ptr, fileName.__ptr)
 end
 
 function Skeleton:playAnimation(animName)
-	local retVal = Polycore.Skeleton_playAnimation(self.__ptr, animName)
+	local retVal = Polycore.Skeleton_playAnimation(self.__ptr, animName.__ptr)
 end
 
 function Skeleton:playAnimationByIndex(index)
@@ -41,11 +41,11 @@ function Skeleton:playAnimationByIndex(index)
 end
 
 function Skeleton:addAnimation(name, fileName)
-	local retVal = Polycore.Skeleton_addAnimation(self.__ptr, name, fileName)
+	local retVal = Polycore.Skeleton_addAnimation(self.__ptr, name.__ptr, fileName.__ptr)
 end
 
 function Skeleton:getAnimation(name)
-	local retVal = Polycore.Skeleton_getAnimation(self.__ptr, name)
+	local retVal = Polycore.Skeleton_getAnimation(self.__ptr, name.__ptr)
 	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
@@ -61,7 +61,7 @@ function Skeleton:Update()
 end
 
 function Skeleton:getBoneByName(name)
-	local retVal = Polycore.Skeleton_getBoneByName(self.__ptr, name)
+	local retVal = Polycore.Skeleton_getBoneByName(self.__ptr, name.__ptr)
 	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
@@ -77,7 +77,7 @@ function Skeleton:bonesVisible(val)
 end
 
 function Skeleton:enableBoneLabels(labelFont, size, scale, labelColor)
-	local retVal = Polycore.Skeleton_enableBoneLabels(self.__ptr, labelFont, size, scale, labelColor.__ptr)
+	local retVal = Polycore.Skeleton_enableBoneLabels(self.__ptr, labelFont.__ptr, size, scale, labelColor.__ptr)
 end
 
 function Skeleton:getNumBones()

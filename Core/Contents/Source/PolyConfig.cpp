@@ -31,7 +31,7 @@ Config::~Config() {
 	
 }
 
-void Config::loadConfig(String configNamespace, String fileName) {
+void Config::loadConfig(const String& configNamespace, const String& fileName) {
 	TiXmlDocument doc(fileName.c_str());
 	
 	Logger::log("Loading config: %s\n", fileName.c_str());
@@ -56,7 +56,7 @@ void Config::loadConfig(String configNamespace, String fileName) {
 	
 }
 
-void Config::saveConfig(String configNamespace, String fileName) {
+void Config::saveConfig(const String& configNamespace, const String& fileName) {
 
 	TiXmlDocument doc;  
 	TiXmlElement* node;  
@@ -81,7 +81,7 @@ void Config::saveConfig(String configNamespace, String fileName) {
 	doc.SaveFile(fileName.c_str());  	
 }
 
-ConfigEntry *Config::getEntry(String configNamespace, String key) {
+ConfigEntry *Config::getEntry(const String& configNamespace, const String& key) {
 	
 	for(int i=0; i < entries.size(); i++) {
 		ConfigEntry *entry = entries[i];
@@ -98,22 +98,22 @@ ConfigEntry *Config::getEntry(String configNamespace, String key) {
 	return newEntry;
 }
 
-void Config::setStringValue(String configNamespace, String key, String value) {
+void Config::setStringValue(const String& configNamespace, const String& key, const String& value) {
 	getEntry(configNamespace, key)->stringVal = value;
 	getEntry(configNamespace, key)->isString = true;	
 }
 
-void Config::setNumericValue(String configNamespace, String key, Number value) {
+void Config::setNumericValue(const String& configNamespace, const String& key, Number value) {
 	getEntry(configNamespace, key)->numVal = value;	
 	getEntry(configNamespace, key)->isString = false;		
 }
 
 
-Number Config::getNumericValue(String configNamespace, String key) {
+Number Config::getNumericValue(const String& configNamespace, const String& key) {
 	return getEntry(configNamespace, key)->numVal;
 }
 
-String Config::getStringValue(String configNamespace, String key) {
+const String& Config::getStringValue(const String& configNamespace, const String& key) {
 	return getEntry(configNamespace, key)->stringVal;	
 }
 

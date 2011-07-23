@@ -45,7 +45,7 @@ void SceneSoundListener::Update() {
 }
 
 
-SceneSound::SceneSound(String fileName, Number referenceDistance, Number maxDistance) : SceneEntity() {
+SceneSound::SceneSound(const String& fileName, Number referenceDistance, Number maxDistance) : SceneEntity() {
 	sound = new Sound(fileName);
 	sound->setIsPositional(true);
 	sound->setPositionalProperties(referenceDistance, maxDistance);

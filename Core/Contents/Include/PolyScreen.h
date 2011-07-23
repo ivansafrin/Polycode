@@ -97,7 +97,7 @@ namespace Polycode {
 		* Sets the shader material to use for post processing on this screen.
 		* @param shaderName Name of the shader material to use.
 		*/				
-		void setScreenShader(String shaderName);
+		void setScreenShader(const String& shaderName);
 		
 		/**
 		* Removes the current screen shader for this screen.

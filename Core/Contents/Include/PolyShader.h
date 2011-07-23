@@ -35,9 +35,9 @@ namespace Polycode {
 			Shader(int type);
 			virtual ~Shader();
 
-			int getType();
-			void setName(String name);
-			String getName();
+			int getType() const;
+			void setName(const String& name);
+			const String& getName() const;
 			
 			virtual ShaderBinding *createBinding() = 0;
 
@@ -87,14 +87,14 @@ namespace Polycode {
 			ShaderBinding(Shader *shader);
 			virtual ~ShaderBinding();
 			
-			virtual void clearTexture(String name){};
-			virtual void addTexture(String name, Texture *texture)  {};
-			virtual void addParam(String type, String name, String value) {};
-			virtual void addCubemap(String name, Cubemap *cubemap) {};
+			virtual void clearTexture(const String& name){};
+			virtual void addTexture(const String& name, Texture *texture)  {};
+			virtual void addParam(const String& type, const String& name, const String& value) {};
+			virtual void addCubemap(const String& name, Cubemap *cubemap) {};
 		
 			unsigned int getNumLocalParams();
 			LocalShaderParam *getLocalParam(unsigned int index);
-			LocalShaderParam *getLocalParamByName(String name);
+			LocalShaderParam *getLocalParamByName(const String& name);
 			
 			void addRenderTargetBinding(RenderTargetBinding *binding);
 
@@ -107,7 +107,7 @@ namespace Polycode {
 			unsigned int getNumOutTargetBindings();
 			RenderTargetBinding *getOutTargetBinding(unsigned int index);
 			
-			void addLocalParam(String name, void *ptr);
+			void addLocalParam(const String& name, void *ptr);
 			
 			Shader* shader;
 			vector<LocalShaderParam*> localParams;

@@ -35,11 +35,11 @@ namespace Polycode {
 	
 	class _PolyExport Font {
 		public:
-			Font(String fileName);
+			Font(const String& fileName);
 			~Font();
 			
 			FT_Face getFace();
-			bool isValid();
+			bool isValid() const;
 			
 			bool loaded;
 		protected:

@@ -78,7 +78,7 @@ namespace Polycode {
 		* @param name Lookup key for the object entry.
 		* @return The added object entry.
 		*/				
-		ObjectEntry *addChild(String name) {
+		ObjectEntry *addChild(const String& name) {
 			ObjectEntry *entry = new ObjectEntry();
 			entry->type = ObjectEntry::CONTAINER_ENTRY;			
 			entry->name = name;
@@ -93,7 +93,7 @@ namespace Polycode {
 		* @param val Number to set as value in the object entry.
 		* @return The added object entry.
 		*/						
-		ObjectEntry *addChild(String name, Number val) {
+		ObjectEntry *addChild(const String& name, Number val) {
 			ObjectEntry *entry = new ObjectEntry();
 			entry->type = ObjectEntry::FLOAT_ENTRY;			
 			entry->NumberVal = val;
@@ -110,7 +110,7 @@ namespace Polycode {
 		* @return The added object entry.
 		*/						
 
-		ObjectEntry *addChild(String name, int val) {
+		ObjectEntry *addChild(const String& name, int val) {
 			ObjectEntry *entry = new ObjectEntry();
 			entry->type = ObjectEntry::INT_ENTRY;
 			entry->intVal = val;
@@ -126,7 +126,7 @@ namespace Polycode {
 		* @param val String to set as value in the object entry.
 		* @return The added object entry.
 		*/						
-		ObjectEntry *addChild(String name, String val) {
+		ObjectEntry *addChild(const String& name, const String& val) {
 			ObjectEntry *entry = new ObjectEntry();
 			entry->type = ObjectEntry::STRING_ENTRY;
 			entry->stringVal = val;
@@ -143,7 +143,7 @@ namespace Polycode {
 		* @param val Boolean to set as value in the object entry.
 		* @return The added object entry.
 		*/								
-		ObjectEntry *addChild(String name, bool val) {
+		ObjectEntry *addChild(const String& name, bool val) {
 			ObjectEntry *entry = new ObjectEntry();
 			entry->type = ObjectEntry::BOOL_ENTRY;			
 			entry->boolVal = val;
@@ -179,7 +179,7 @@ namespace Polycode {
 		* @param key Lookup key to return value for.
 		* @return Object entry corresponding to the string value or NULL if one doesn't exist.
 		*/
-		inline ObjectEntry *operator [] ( String key) { for(int i=0; i < children.size(); i++) { if(children[i]->name == key) { return children[i]; } } return NULL; }		
+		inline ObjectEntry *operator [] ( const String& key) { for(int i=0; i < children.size(); i++) { if(children[i]->name == key) { return children[i]; } } return NULL; }
 		
 		vector<ObjectEntry*> children;		
 	};
@@ -201,13 +201,13 @@ namespace Polycode {
 		* @param fileName Path to the XML file to load.
 		* @return Returns true is succesful, false if otherwise.
 		*/		
-		bool loadFromXML(String fileName);
+		bool loadFromXML(const String& fileName);
 		
 		/**
 		* Saves the object to an XML file.
 		* @param fileName Path to the XML file to save to.
 		*/				
-		void saveToXML(String fileName);
+		void saveToXML(const String& fileName);
 		
 		void createFromXMLElement(TiXmlElement *element, ObjectEntry *entry);
 		TiXmlElement *createElementFromObjectEntry(ObjectEntry *entry);

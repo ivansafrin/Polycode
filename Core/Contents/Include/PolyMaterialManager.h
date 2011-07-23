@@ -69,7 +69,7 @@ namespace Polycode {
 			void addShaderModule(PolycodeShaderModule *module);		
 		
 			//SceneRenderTexture *createRenderTexture(Scene *targetScene, Camera *targetCamera, int renderWidth,int renderHeight);
-			Texture *getTextureByResourcePath(String resourcePath);
+			Texture *getTextureByResourcePath(const String& resourcePath) const;
 			
 			// cubemaps
 		

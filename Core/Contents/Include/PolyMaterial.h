@@ -37,20 +37,20 @@ namespace Polycode {
 	
 	class _PolyExport Material : public Resource {
 		public:
-			Material(String name);
+			Material(const String& name);
 			virtual ~Material();
 			
 			void addShader(Shader *shader,ShaderBinding *shaderBinding);
-			unsigned int getNumShaders();
+			unsigned int getNumShaders() const;
 			
 			void addShaderRenderTarget(ShaderRenderTarget *newTarget);
 			int getNumShaderRenderTargets();
 			ShaderRenderTarget *getShaderRenderTarget(unsigned int index);
 				
-			String getName();
-			Shader *getShader(unsigned int index);
-			ShaderBinding *getShaderBinding(unsigned int index);
-			void loadMaterial(String fileName);
+			const String& getName() const;
+			Shader *getShader(unsigned int index) const;
+			ShaderBinding *getShaderBinding(unsigned int index) const;
+			void loadMaterial(const String& fileName);
 			
 			Number specularValue;
 			Color specularColor;

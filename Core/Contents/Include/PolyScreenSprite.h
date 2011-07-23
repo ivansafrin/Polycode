@@ -51,7 +51,7 @@ class _PolyExport ScreenSprite : public ScreenShape
 		* @param spriteWidth Pixel width of each sprite cell.
 		* @param spriteWidth Pixel height of each sprite cell.		
 		*/
-		ScreenSprite(String fileName, Number spriteWidth, Number spriteHeight);
+		ScreenSprite(const String& fileName, Number spriteWidth, Number spriteHeight);
 		~ScreenSprite();
 		
 		/**
@@ -60,7 +60,7 @@ class _PolyExport ScreenSprite : public ScreenShape
 		* @param frames A comma separated list of frames indexes to include in the animation.
 		* @speed Speed at which to play back the animation.
 		*/
-		void addAnimation(String name, String frames, Number speed);
+		void addAnimation(const String& name, const String& frames, Number speed);
 		
 		/**
 		* Play back a previously created animation by name.
@@ -68,7 +68,7 @@ class _PolyExport ScreenSprite : public ScreenShape
 		* @param startFrame Starting frame for playback.
 		* @param once If true, only plays once, otherwise loops.
 		*/
-		void playAnimation(String name, int startFrame, bool once);
+		void playAnimation(const String& name, int startFrame, bool once);
 		void Update();
 		
 	protected:

@@ -51,7 +51,7 @@ namespace Polycode {
 			* @param size Size in pixels.
 			* @param Anti-aliasing mode.
 			*/
-			ScreenLabel(String text, int size, String fontName = "sans", int amode = 0);
+			ScreenLabel(const String& text, int size, const String& fontName = "sans", int amode = 0);
 			~ScreenLabel();		
 		
 			/**
@@ -67,15 +67,15 @@ namespace Polycode {
 			* Sets a new text to the screen label.
 			* @param newText Text to set.
 			*/
-			void setText(String newText);
+			void setText(const String& newText);
 			
 			/**
 			* Returns the label's text as a string.
 			* @return The label's text.
 			*/
-			String getText();
+			const String& getText() const;
 		
-			Label *getLabel();
+			Label *getLabel() const;
 			
 		protected:
 			

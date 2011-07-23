@@ -33,7 +33,7 @@ Object::~Object() {
 	
 }
 
-void Object::saveToXML(String fileName) {
+void Object::saveToXML(const String& fileName) {
 	TiXmlDocument doc;  	
 	TiXmlDeclaration* decl = new TiXmlDeclaration( "1.0", "", "" );  
 	doc.LinkEndChild( decl ); 
@@ -85,7 +85,7 @@ TiXmlElement *Object::createElementFromObjectEntry(ObjectEntry *entry) {
 	return newElement;
 }
 
-bool Object::loadFromXML(String fileName) {
+bool Object::loadFromXML(const String& fileName) {
 
 	TiXmlDocument doc(fileName.c_str());
 	doc.LoadFile();

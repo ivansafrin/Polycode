@@ -45,7 +45,7 @@ namespace Polycode {
 			VertexBuffer(){}
 			virtual ~VertexBuffer(){}
 		
-			int getVertexCount() { return vertexCount;}
+			int getVertexCount() const { return vertexCount;}
 		
 			int verticesPerFace;
 			int meshType;
@@ -123,7 +123,7 @@ namespace Polycode {
 			* Construct from a mesh loaded from a file.
 			* @param fileName Path to mesh file.
 			*/
-			Mesh(String fileName);
+			Mesh(const String& fileName);
 
 			~Mesh();
 			
@@ -137,13 +137,13 @@ namespace Polycode {
 			* Loads a mesh from a file.
 			* @param fileName Path to mesh file.
 			*/			
-			void loadMesh(String fileName);
+			void loadMesh(const String& fileName);
 
 			/**
 			* Saves mesh to a file.
 			* @param fileName Path to file to save to.
 			*/			
-			void saveToFile(String fileName);
+			void saveToFile(const String& fileName);
 
 			void loadFromFile(OSFILE *inFile);
 			void saveToFile(OSFILE *outFile);

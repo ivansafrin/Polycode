@@ -105,7 +105,7 @@ function MaterialManager:addShaderModule(module)
 end
 
 function MaterialManager:getTextureByResourcePath(resourcePath)
-	local retVal = Polycore.MaterialManager_getTextureByResourcePath(self.__ptr, resourcePath)
+	local retVal = Polycore.MaterialManager_getTextureByResourcePath(self.__ptr, resourcePath.__ptr)
 	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]

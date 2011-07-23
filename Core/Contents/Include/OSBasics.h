@@ -44,7 +44,7 @@ using namespace Polycode;
 class _PolyExport OSFileEntry {
 	public:
 		OSFileEntry() {};
-		OSFileEntry(String path, String name, int type);
+		OSFileEntry(const String& path, const String& name, int type);
 		
 		String name;
 		String extension;
@@ -73,18 +73,18 @@ public:
 class _PolyExport OSBasics {
 	public:
 	
-		static OSFILE *open(String filename, String opts);
+		static OSFILE *open(const String& filename, const String& opts);
 		static int close(OSFILE *file);
 		static size_t read( void * ptr, size_t size, size_t count, OSFILE * stream );	
 		static size_t write( const void * ptr, size_t size, size_t count, OSFILE * stream );
 		static int seek(OSFILE * stream, long int offset, int origin );
 		static long tell(OSFILE * stream);
 	
-		static vector<OSFileEntry> parsePhysFSFolder(String pathString, bool showHidden);
-		static vector<OSFileEntry> parseFolder(String pathString, bool showHidden);
-		static bool isFolder(String pathString);
-		static void createFolder(String pathString);
-		static void removeItem(String pathString);
+		static vector<OSFileEntry> parsePhysFSFolder(const String& pathString, bool showHidden);
+		static vector<OSFileEntry> parseFolder(const String& pathString, bool showHidden);
+		static bool isFolder(const String& pathString);
+		static void createFolder(const String& pathString);
+		static void removeItem(const String& pathString);
 		
 	private:
 	

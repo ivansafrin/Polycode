@@ -50,7 +50,7 @@ namespace Polycode {
 			* @param scale Scale to multiply pixel size by for the actual world size of the label.
 			* @param Anti-aliasing mode. Can be Label::ANTIALIAS_FULL or Label::ANTIALIAS_NONE.
 			*/			
-			SceneLabel(String fontName, String text, int size, Number scale, int amode);
+			SceneLabel(const String& fontName, const String& text, int size, Number scale, int amode);
 			~SceneLabel();			
 		
 			bool testMouseCollision(Number x, Number y);
@@ -59,7 +59,7 @@ namespace Polycode {
 			* Sets new text for the labe.
 			* @param newText New text to display.
 			*/ 
-			void setText(String newText);
+			void setText(const String& newText);
 			
 			Label *getLabel();
 			void Render();

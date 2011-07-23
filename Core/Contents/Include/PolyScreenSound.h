@@ -43,14 +43,14 @@ namespace Polycode {
 	*/	
 	class _PolyExport ScreenSound : public ScreenEntity {
 		public:
-			ScreenSound(String fileName, Number referenceDistance, Number maxDistance);
+			ScreenSound(const String& fileName, Number referenceDistance, Number maxDistance);
 			virtual ~ScreenSound();			
 			void Update();
 			
 			/**
 			* Returns the sound object associated with this positional sound.
 			*/			
-			Sound *getSound();
+			Sound *getSound() const;
 			
 		protected:
 			Sound *sound;

@@ -102,11 +102,11 @@ function SceneMesh:getMaterial()
 end
 
 function SceneMesh:loadTexture(fileName, clamp)
-	local retVal = Polycore.SceneMesh_loadTexture(self.__ptr, fileName, clamp)
+	local retVal = Polycore.SceneMesh_loadTexture(self.__ptr, fileName.__ptr, clamp)
 end
 
 function SceneMesh:loadSkeleton(fileName)
-	local retVal = Polycore.SceneMesh_loadSkeleton(self.__ptr, fileName)
+	local retVal = Polycore.SceneMesh_loadSkeleton(self.__ptr, fileName.__ptr)
 end
 
 function SceneMesh:setTexture(texture)
@@ -118,7 +118,7 @@ function SceneMesh:setMaterial(material)
 end
 
 function SceneMesh:setMaterialByName(materialName)
-	local retVal = Polycore.SceneMesh_setMaterialByName(self.__ptr, materialName)
+	local retVal = Polycore.SceneMesh_setMaterialByName(self.__ptr, materialName.__ptr)
 end
 
 function SceneMesh:setMesh(mesh)

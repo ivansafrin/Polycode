@@ -48,11 +48,11 @@ namespace Polycode {
 			virtual ~Resource();
 			
 			
-			String getResourceName();
-			int getResourceType();
-			void setResourceName(String newName);
-			void setResourcePath(String path);
-			String getResourcePath();		
+			const String& getResourceName() const;
+			int getResourceType() const;
+			void setResourceName(const String& newName);
+			void setResourcePath(const String& path);
+			const String& getResourcePath() const;
 
 			static const int RESOURCE_TEXTURE = 0;
 			static const int RESOURCE_MATERIAL = 1;

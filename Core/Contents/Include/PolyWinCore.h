@@ -153,14 +153,14 @@ namespace Polycode {
 		// NEED TO IMPLEMENT:
 
 		void setCursor(int cursorType){ }
-		void copyStringToClipboard(String str) { }
+		void copyStringToClipboard(const String& str) { }
 		String getClipboardString() { return ""; }
 
-		void createFolder(String folderPath) {}
-		void copyDiskItem(String itemPath, String destItemPath) {}
-		void moveDiskItem(String itemPath, String destItemPath) {}
+		void createFolder(const String& folderPath) {}
+		void copyDiskItem(const String& itemPath, const String& destItemPath) {}
+		void moveDiskItem(const String& itemPath, const String& destItemPath) {}
 		String openFolderPicker()  { return "";}
-		void removeDiskItem(String itemPath)  {}
+		void removeDiskItem(const String& itemPath)  {}
 		vector<string> openFilePicker(vector<CoreFileExtension> extensions, bool allowMultiple) { vector<string> ret; return ret;}
 		void resizeTo(int xRes, int yRes) { }
 		

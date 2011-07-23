@@ -104,7 +104,7 @@ namespace Polycode {
 			* Sets the post-processing shader for the camera.
 			* @param shaderName The shader name of the post-processing filter.
 			*/												
-			void setPostFilter(String shaderName);
+			void setPostFilter(const String& shaderName);
 			
 			/**
 			* Removes the currently assigned post filter.

@@ -36,8 +36,8 @@ namespace Polycode {
 		PolycodeShaderModule();
 		virtual ~PolycodeShaderModule();
 		
-		virtual bool acceptsExtension(String extension) = 0;
-		virtual Resource* createProgramFromFile(String extension, String fullPath) = 0;
+		virtual bool acceptsExtension(const String& extension) = 0;
+		virtual Resource* createProgramFromFile(const String& extension, const String& fullPath) = 0;
 		virtual String getShaderType() = 0;
 		virtual Shader *createShader(TiXmlNode *node) = 0;
 	

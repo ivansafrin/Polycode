@@ -56,9 +56,9 @@ namespace Polycode {
 			String(const wchar_t *str);
 			
 			/**
-			* Initializes the string from a pointer to wide character buffer of a certain size.
+			* Initializes the string from a pointer to regular character buffer of a certain size.
 			*/						
-			String(const wchar_t *str, size_t n);		
+			String(const char *str, size_t n);
 			
 			/**
 			* Initializes the string from a regular character buffer.
@@ -90,13 +90,8 @@ namespace Polycode {
 			/**
 			* Return the string and an STL string.
 			*/		
-			const string& getSTLString();
-			
-			/**
-			* Return the string and an STL wstring.
-			*/			
-			const wstring& getSTLWString() const;
-		
+			const string& getSTLString() const;
+					
 			/**
 			* Returns the substring of the string.
 			* @param pos Position of a character in the current string object to be used as starting character for the substring.
@@ -175,20 +170,8 @@ namespace Polycode {
 			* Pointer to char data.
 			* @return A pointer to char data.
 			*/																												
-			const char *c_str();
+			const char *c_str() const;
 			
-			/**
-			* Pointer to wchar data.
-			* @return A pointer to wchar data.
-			*/																															
-			const wchar_t *wc_str() const;
-
-			/**
-			* Pointer to wchar data.
-			* @return A pointer to wchar data.
-			*/																																	
-			const wchar_t *data() const { return contents.data(); }
-
 			/**
 			* Returns data with the specified encoding. Currently the only supported encoding is String::ENCODING_UTF8
 			* @param encoding The encoding to use.
@@ -214,15 +197,10 @@ namespace Polycode {
 			void setDataWithEncoding(char *data, int encoding);
 			
 			/**
-			* STL wstring version of the string.
-			*/																																					
-			wstring contents;	
-			
-			/**
 			* STL string version of the string.
-			*/																																								
-			string s_contents;
-			
+			*/																																					
+			string contents;
+						
 			/**
 			* UTF-8 encoding.
 			*/																																							
@@ -235,5 +213,5 @@ namespace Polycode {
 
 	static inline String operator+ (const char *str, const String &rstr) { return String(String(str).contents + rstr.contents); }
 	static inline String operator+ (const wchar_t *str, const String &rstr) { return String(String(str).contents + rstr.contents); }	
-	static inline String operator+ (const wchar_t str, const String &rstr) { wstring tmp=L" "; tmp[0] = str; return String(tmp + rstr.contents); }		
+	static inline String operator+ (const wchar_t str, const String &rstr) { wstring tmp=L" "; tmp[0] = str; return tmp.c_str() + rstr; }
 }

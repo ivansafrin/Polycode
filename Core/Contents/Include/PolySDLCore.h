@@ -58,12 +58,12 @@ namespace Polycode {
 		void lockMutex(CoreMutex *mutex);
 		void unlockMutex(CoreMutex *mutex);
 		CoreMutex *createMutex();
-		void copyStringToClipboard(String str);
+		void copyStringToClipboard(const String& str);
 		String getClipboardString();
-		void createFolder(String folderPath);
-		void copyDiskItem(String itemPath, String destItemPath);		
-		void moveDiskItem(String itemPath, String destItemPath);		
-		void removeDiskItem(String itemPath);
+		void createFolder(const String& folderPath);
+		void copyDiskItem(const String& itemPath, const String& destItemPath);
+		void moveDiskItem(const String& itemPath, const String& destItemPath);
+		void removeDiskItem(const String& itemPath);
 		String openFolderPicker();
 		vector<string> openFilePicker(vector<CoreFileExtension> extensions, bool allowMultiple);
 		void resizeTo(int xRes, int yRes);

@@ -52,14 +52,14 @@ namespace Polycode {
 		* @param fontName Name to register the font as.
 		* @param fontPath Filename of the font to load.
 		*/
-		void registerFont(String fontName, String fontPath);		
+		void registerFont(const String& fontName, const String& fontPath);
 		
 		/**
 		* Retuns a font based on the registerd font name.
 		* @param fontName Name of registered font name.
 		* @return The font instance associated with the font name or NULL if one doesn't exist.
 		*/		
-		Font *getFontByName(String fontName);		
+		Font *getFontByName(const String& fontName);
 		
 	private:
 		
