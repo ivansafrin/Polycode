@@ -12,6 +12,10 @@ SET(assimp_CMAKE_ARGS
     -DBUILD_TESTS=OFF
 )
 
+IF(APPLE)
+LIST(APPEND assimp_CMAKE_ARGS -DCMAKE_CXX_FLAGS_RELEASE="-O2")
+ENDIF(APPLE)
+
 ExternalProject_Add(assimp
     PREFIX ${assimp_PREFIX}
 
