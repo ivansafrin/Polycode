@@ -137,8 +137,9 @@ Dest[i] = (char)Source[i];
 int main(int argc, char **argv) {
 		
 #if defined(__APPLE__) && defined(__MACH__)
-	char path[2049];
-	_NSGetExecutablePath(path, 2048);
+    uint32_t bufsize = 2048;
+	char path[bufsize];
+	_NSGetExecutablePath(path, &bufsize);
 
 	String basePath = path;
 	vector<String> cpts = basePath.split("/");
@@ -147,7 +148,7 @@ int main(int argc, char **argv) {
 		installPath = installPath + cpts[i];
 		installPath += String("/");
 	}
-#elseif defined (_WINDOWS)
+#elif defined (_WINDOWS)
 	char path[2049];
 	TCHAR tpath[2049];
 	GetModuleFileName(NULL, (LPWSTR)tpath, 2048);
@@ -197,8 +198,8 @@ int main(int argc, char **argv) {
 
 	char dirPath[4099];
 #if defined(__APPLE__) && defined(__MACH__)
-	_getcwd(dirPath, sizeof(dirPath));
-#elseif defined (_WINDOWS)
+	getcwd(dirPath, sizeof(dirPath));
+#elif defined (_WINDOWS)
 	TCHAR tdirpath[4099];
 	GetCurrentDirectory(4098, (LPWSTR)tdirpath);
 	wtoc(dirPath, tdirpath, 4098);

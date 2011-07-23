@@ -7,7 +7,16 @@ class "SceneLight" (SceneEntity)
 AREA_LIGHT = 0
 SPOT_LIGHT = 1
 function SceneLight:__index__(name)
-	if name == "lightColor" then
+	if name == "specularLightColor" then
+		retVal = Polycore.SceneLight_get_specularLightColor(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Color("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "lightColor" then
 		retVal = Polycore.SceneLight_get_lightColor(self.__ptr)
 		if Polycore.__ptr_lookup[retVal] ~= nil then
 			return Polycore.__ptr_lookup[retVal]
@@ -48,6 +57,14 @@ end
 function SceneLight:getIntensity()
 	local retVal =  Polycore.SceneLight_getIntensity(self.__ptr)
 	return retVal
+end
+
+function SceneLight:setIntensity(newIntensity)
+	local retVal = Polycore.SceneLight_setIntensity(self.__ptr, newIntensity)
+end
+
+function SceneLight:setAttenuation(constantAttenuation, linearAttenuation, quadraticAttenuation)
+	local retVal = Polycore.SceneLight_setAttenuation(self.__ptr, constantAttenuation, linearAttenuation, quadraticAttenuation)
 end
 
 function SceneLight:getConstantAttenuation()
@@ -102,8 +119,16 @@ function SceneLight:getZBufferTexture()
 	end
 end
 
-function SceneLight:setLightColor(r, g, b)
-	local retVal = Polycore.SceneLight_setLightColor(self.__ptr, r, g, b)
+function SceneLight:setSpecularLightColor(r, g, b, a)
+	local retVal = Polycore.SceneLight_setSpecularLightColor(self.__ptr, r, g, b, a)
+end
+
+function SceneLight:setDiffuseLightColor(r, g, b)
+	local retVal = Polycore.SceneLight_setDiffuseLightColor(self.__ptr, r, g, b)
+end
+
+function SceneLight:setLightColor(r, g, b, a)
+	local retVal = Polycore.SceneLight_setLightColor(self.__ptr, r, g, b, a)
 end
 
 function SceneLight:setSpotlightProperties(spotlightCutoff, spotlightExponent)
@@ -135,6 +160,19 @@ end
 
 function SceneLight:getLightType()
 	local retVal =  Polycore.SceneLight_getLightType(self.__ptr)
+	return retVal
+end
+
+function SceneLight:enableDebugDraw(val)
+	local retVal = Polycore.SceneLight_enableDebugDraw(self.__ptr, val)
+end
+
+function SceneLight:setLightImportance(newImportance)
+	local retVal = Polycore.SceneLight_setLightImportance(self.__ptr, newImportance)
+end
+
+function SceneLight:getLightImportance()
+	local retVal =  Polycore.SceneLight_getLightImportance(self.__ptr)
 	return retVal
 end
 

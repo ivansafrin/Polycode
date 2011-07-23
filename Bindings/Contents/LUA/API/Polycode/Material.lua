@@ -4,8 +4,38 @@ class "Material" (Resource)
 
 
 
+function Material:__index__(name)
+	if name == "specularValue" then
+		return Polycore.Material_get_specularValue(self.__ptr)
+	elseif name == "specularColor" then
+		retVal = Polycore.Material_get_specularColor(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Color("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "diffuseColor" then
+		retVal = Polycore.Material_get_diffuseColor(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Color("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	end
+end
 
 
+function Material:__set_callback(name,value)
+	if name == "specularValue" then
+		Polycore.Material_set_specularValue(self.__ptr, value)
+		return true
+	end
+	return false
+end
 
 
 function Material:Material(...)

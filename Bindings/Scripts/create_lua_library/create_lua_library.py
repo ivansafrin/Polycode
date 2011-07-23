@@ -1,7 +1,7 @@
 import sys
 import CppHeaderParser
 import os
-
+import re
 
 def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, apiPath, apiClassPath, includePath, sourcePath):	
 	out = ""
@@ -46,7 +46,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 	files = os.listdir(inputPath)
 	for fileName in files:
 		inheritInModule = ["PhysicsSceneEntity", "CollisionScene", "CollisionSceneEntity"]
-		ignore = ["PolyGLSLProgram", "PolyGLSLShader", "PolyGLSLShaderModule", "PolyWinCore", "PolyCocoaCore", "PolyAGLCore", "PolyGLES1Renderer", "PolyGLRenderer", "tinyxml", "tinystr", "OpenGLCubemap", "PolyiPhoneCore", "PolyGLES1Texture", "PolyGLTexture", "PolyGLVertexBuffer", "PolyThreaded"]
+		ignore = ["PolyGLSLProgram", "PolyGLSLShader", "PolyGLSLShaderModule", "PolyWinCore", "PolyCocoaCore", "PolyAGLCore", "PolySDLCore", "PolyGLES1Renderer", "PolyGLRenderer", "tinyxml", "tinystr", "OpenGLCubemap", "PolyiPhoneCore", "PolyGLES1Texture", "PolyGLTexture", "PolyGLVertexBuffer", "PolyThreaded"]
 		if fileName.split(".")[1] == "h" and fileName.split(".")[0] not in ignore:
 			headerFile = "%s/%s" % (inputPath, fileName)
 			print "Parsing %s" % fileName
@@ -261,9 +261,10 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 	
 									if "defaltValue" in param:
 										if checkfunc != "lua_islightuserdata" or (checkfunc == "lua_islightuserdata" and param["defaltValue"] == "NULL"):
-											param["defaltValue"] = param["defaltValue"].replace(" 0f", ".0f")
+											#param["defaltValue"] = param["defaltValue"].replace(" 0f", ".0f")
 											param["defaltValue"] = param["defaltValue"].replace(": :", "::")
-											param["defaltValue"] = param["defaltValue"].replace("0 ", "0.")
+											#param["defaltValue"] = param["defaltValue"].replace("0 ", "0.")
+											param["defaltValue"] = re.sub(r'([0-9]+) ([0-9])+', r'\1.\2', param["defaltValue"])
 	
 											out += "\t%s %s;\n" % (param["type"], param["name"])
 											out += "\tif(%s(L, %d)) {\n" % (checkfunc, idx)

@@ -196,30 +196,36 @@ IF(MSVC)
     SET(polycore_SRCS ${polycore_SRCS} ../Build/MSVC/Polycore/PolycodeView.cpp Source/PolyWinCore.cpp)
     SET(polycore_HDRS ${polycore_HDRS} ../Build/MSVC/Polycore/PolycodeView.h Include/PolyWinCore.h)
 ELSEIF(APPLE)
-    SET(polycore_SRCS ${polycore_SRCS} "../Build/Mac OS X/PolycodeView.mm" Source/PolyAGLCore.cpp Source/PolyCocoaCore.cpp)
-    SET(polycore_HDRS ${polycore_HDRS} "../Build/Mac OS X/PolycodeView.h" Include/PolyAGLCore.h Include/PolyCocoaCore.h)
+    SET(polycore_SRCS ${polycore_SRCS} "../Build/Mac OS X/PolycodeView.mm" Source/PolyCocoaCore.mm)
+    SET(polycore_HDRS ${polycore_HDRS} "../Build/Mac OS X/PolycodeView.h" Include/PolyCocoaCore.h)
+#    SET(EXTRA_LIBS "-framework Cocoa")
 ELSE(MSVC)
     SET(polycore_SRCS ${polycore_SRCS} ../Build/Linux/PolycodeView.cpp Source/PolySDLCore.cpp)
     SET(polycore_HDRS ${polycore_HDRS} ../Build/Linux/PolycodeView.h Include/PolySDLCore.h)
+    # Needs fpic to link in shared lib on Linux
+    IF(CMAKE_COMPILER_IS_GNUCXX)
+		LIST(APPEND CMAKE_CXX_FLAGS -fPIC)
+    ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 ENDIF(MSVC)
 
-IF(POLYCODE_BUILD_SHARED)
-    ADD_LIBRARY(Polycore SHARED ${polycore_SRCS} ${polycore_HDRS})
-    TARGET_LINK_LIBRARIES(Polycore
-        ${OPENGL_LIBRARIES}
-        ${OPENAL_LIBRARY}
-        ${PNG_LIBRARIES}
-        ${FREETYPE_LIBRARIES}
-        ${PHYSFS_LIBRARY}
-        ${OGG_LIBRARIES}
-        ${VORBIS_LIBRARIES}
-        ${VORBISFILE_LIBRARIES}
-        ${SDL_LIBRARY})
-ENDIF(POLYCODE_BUILD_SHARED)
+#IF(POLYCODE_BUILD_SHARED)
+#    ADD_LIBRARY(Polycore_dynamic SHARED ${polycore_SRCS} ${polycore_HDRS})
+#    TARGET_LINK_LIBRARIES(Polycore_dynamic
+#        ${OPENGL_LIBRARIES}
+#        ${OPENAL_LIBRARY}
+#        ${PNG_LIBRARIES}
+#        ${FREETYPE_LIBRARIES}
+#        ${PHYSFS_LIBRARY}
+#        ${OGG_LIBRARIES}
+#        ${VORBIS_LIBRARIES}
+#        ${VORBISFILE_LIBRARIES}
+#        ${SDL_LIBRARY}
+#        ${EXTRA_LIBS})
+#ENDIF(POLYCODE_BUILD_SHARED)
 
-IF(POLYCODE_BUILD_STATIC)
-    ADD_LIBRARY(Polycore_static ${polycore_SRCS} ${polycore_HDRS})
-ENDIF(POLYCODE_BUILD_STATIC)
+#IF(POLYCODE_BUILD_STATIC)
+ADD_LIBRARY(Polycore ${polycore_SRCS} ${polycore_HDRS})
+#ENDIF(POLYCODE_BUILD_STATIC)
 
 IF(POLYCODE_INSTALL_FRAMEWORK)
     # install headers
@@ -227,20 +233,23 @@ IF(POLYCODE_INSTALL_FRAMEWORK)
         DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Core/include)
 
     # install libraries
-    IF(POLYCODE_BUILD_SHARED)
+#    IF(POLYCODE_BUILD_SHARED)
+#        INSTALL(TARGETS Polycore_dynamic EXPORT Polycore-targets 
+#            DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Core/lib)
+#    ENDIF(POLYCODE_BUILD_SHARED)
+    
+#    IF(POLYCODE_BUILD_STATIC)
         INSTALL(TARGETS Polycore EXPORT Polycore-targets 
             DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Core/lib)
-    ENDIF(POLYCODE_BUILD_SHARED)
-    
-    IF(POLYCODE_BUILD_STATIC)
-        INSTALL(TARGETS Polycore_static EXPORT Polycore-targets 
-            DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Core/lib)
-    ENDIF(POLYCODE_BUILD_STATIC)
+#    ENDIF(POLYCODE_BUILD_STATIC)
 ENDIF(POLYCODE_INSTALL_FRAMEWORK)
 
-IF(POLYCODE_INSTALL_PLAYER AND POLYCODE_BUILD_SHARED)
-    # install required libs
-    INSTALL(TARGETS Polycore DESTINATION ${POLYCODE_RELEASE_DIR}/Player)
+IF(POLYCODE_INSTALL_PLAYER)
+    # install core libs for player
+#    IF(POLYCODE_BUILD_SHARED)
+#        INSTALL(TARGETS Polycore_dynamic DESTINATION ${POLYCODE_RELEASE_DIR}/Player)
+#    END(POLYCODE_BUILD_SHARED)
+    
     INSTALL(DIRECTORY ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/bin/ 
         DESTINATION ${POLYCODE_RELEASE_DIR}/Player)
-ENDIF()
+ENDIF(POLYCODE_INSTALL_PLAYER)

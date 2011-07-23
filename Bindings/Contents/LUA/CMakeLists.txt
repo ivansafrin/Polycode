@@ -1,19 +1,20 @@
 INCLUDE(PolycodeIncludes)
 
 FIND_PACKAGE(Lua51 REQUIRED)
+
 INCLUDE_DIRECTORIES(
     ${LUA_INCLUDE_DIR}
-    LUA/Include
+    Include
 )
 
 SET(polycodeLua_SRCS
-    LUA/Source/PolycodeLUA.cpp
+    Source/PolycodeLUA.cpp
 )
 
 SET(polycodeLua_HDRS
-    LUA/Include/PolycodeLUAWrappers.h
-    LUA/Include/PolycodeLUA.h
-    LUA/Include/PolycodeLUA2D.h
+    Include/PolycodeLUAWrappers.h
+    Include/PolycodeLUA.h
+    Include/PolycodeLUA2D.h
 )
 
 SET(CMAKE_DEBUG_POSTFIX "_d")
@@ -24,12 +25,9 @@ SET(CMAKE_DEBUG_POSTFIX "_d")
 #ENDIF(POLYCODE_BUILD_SHARED)
 
 #IF(POLYCODE_BUILD_STATIC)
-#    ADD_LIBRARY(PolycodeLua_static ${polycodeLua_SRCS} ${polycodeLua_HDRS})
-#    TARGET_LINK_LIBRARIES(PolycodeLua_static Polycore_static)
-#ENDIF(POLYCODE_BUILD_STATIC)
-
 ADD_LIBRARY(PolycodeLua ${polycodeLua_SRCS} ${polycodeLua_HDRS})
-TARGET_LINK_LIBRARIES(PolycodeLua)
+ADD_DEPENDENCIES(PolycodeLua PolycodeLuaGenerate)
+#ENDIF(POLYCODE_BUILD_STATIC)
 
 IF(POLYCODE_INSTALL_FRAMEWORK)
     
@@ -38,14 +36,14 @@ IF(POLYCODE_INSTALL_FRAMEWORK)
         DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Modules/include)
 
     # install libraries
-    IF(POLYCODE_BUILD_SHARED)
-        INSTALL(TARGETS PolycodeLua 
-            DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Modules/lib)
-    ENDIF(POLYCODE_BUILD_SHARED)
+#    IF(POLYCODE_BUILD_SHARED)
+#        INSTALL(TARGETS PolycodeLua_dynamic
+#            DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Modules/lib)
+#    ENDIF(POLYCODE_BUILD_SHARED)
     
-    IF(POLYCODE_BUILD_STATIC)
-        INSTALL(TARGETS PolycodeLua_static 
-            DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Modules/lib)
-    ENDIF(POLYCODE_BUILD_STATIC)
+#    IF(POLYCODE_BUILD_STATIC)
+     INSTALL(TARGETS PolycodeLua 
+         DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Modules/lib)
+#    ENDIF(POLYCODE_BUILD_STATIC)
     
 ENDIF(POLYCODE_INSTALL_FRAMEWORK)

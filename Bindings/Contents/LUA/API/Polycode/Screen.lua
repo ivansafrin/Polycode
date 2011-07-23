@@ -169,6 +169,18 @@ function Screen:getRootEntity()
 	end
 end
 
+function Screen:getScreenShaderMaterial()
+	local retVal =  Polycore.Screen_getScreenShaderMaterial(self.__ptr)
+	if retVal == nil then return nil end
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = Material("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
+end
+
 
 
 function Screen:__delete()

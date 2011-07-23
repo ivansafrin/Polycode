@@ -120,6 +120,10 @@ function ShaderBinding:getOutTargetBinding(index)
 	end
 end
 
+function ShaderBinding:addLocalParam(name, ptr)
+	local retVal = Polycore.ShaderBinding_addLocalParam(self.__ptr, name, ptr.__ptr)
+end
+
 
 
 function ShaderBinding:__delete()

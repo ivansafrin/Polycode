@@ -160,9 +160,10 @@ void Scene::Render(Camera *targetCamera) {
 	CoreServices::getInstance()->getRenderer()->clearLights();
 	
 	for(int i=0; i < lights.size(); i++) {
-		
 		SceneLight *light = lights[i];
-		
+		if(!light->enabled)
+			continue;
+			
 		Vector3 direction;
 		Vector3 position;
 		matrixPtr = NULL;				
@@ -197,7 +198,7 @@ void Scene::Render(Camera *targetCamera) {
 		if(light->getParentEntity() != NULL) {
 			position = light->getParentEntity()->getConcatenatedMatrix() * position;			
 		}
-		CoreServices::getInstance()->getRenderer()->addLight(position, direction, light->getLightType(), light->lightColor, light->specularLightColor, light->getConstantAttenuation(), light->getLinearAttenuation(), light->getQuadraticAttenuation(), light->getIntensity(), light->getSpotlightCutoff(), light->getSpotlightExponent(), light->areShadowsEnabled(), matrixPtr, shadowMapTexture);
+		CoreServices::getInstance()->getRenderer()->addLight(light->getLightImportance(), position, direction, light->getLightType(), light->lightColor, light->specularLightColor, light->getConstantAttenuation(), light->getLinearAttenuation(), light->getQuadraticAttenuation(), light->getIntensity(), light->getSpotlightCutoff(), light->getSpotlightExponent(), light->areShadowsEnabled(), matrixPtr, shadowMapTexture);
 	}	
 	
 	targetCamera->doCameraTransform();

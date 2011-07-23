@@ -125,14 +125,13 @@ void Renderer::addShaderModule(PolycodeShaderModule *module) {
 
 void Renderer::sortLights(){
 
-	LightSorter sorter;
 	sorter.basePosition = (getModelviewMatrix()).getPosition();
 	sorter.cameraMatrix = getCameraMatrix().inverse();	
 	sort (areaLights.begin(), areaLights.end(), sorter);
 	sort (spotLights.begin(), spotLights.end(), sorter);	
 }
 
-void Renderer::addLight(Vector3 position, Vector3 direction, int type, Color color, Color specularColor, Number constantAttenuation, Number linearAttenuation, Number quadraticAttenuation, Number intensity, Number spotlightCutoff, Number spotlightExponent, bool shadowsEnabled, Matrix4 *textureMatrix,Texture *shadowMapTexture) {
+void Renderer::addLight(int lightImportance, Vector3 position, Vector3 direction, int type, Color color, Color specularColor, Number constantAttenuation, Number linearAttenuation, Number quadraticAttenuation, Number intensity, Number spotlightCutoff, Number spotlightExponent, bool shadowsEnabled, Matrix4 *textureMatrix,Texture *shadowMapTexture) {
 
 	numLights++;
 	
@@ -141,6 +140,7 @@ void Renderer::addLight(Vector3 position, Vector3 direction, int type, Color col
 		info.textureMatrix = *textureMatrix;
 	}
 	
+	info.lightImportance = lightImportance;
 	info.shadowMapTexture = shadowMapTexture;
 	info.shadowsEnabled = shadowsEnabled;
 	info.spotlightCutoff = spotlightCutoff;
