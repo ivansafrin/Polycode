@@ -42,11 +42,11 @@ ENDIF(APPLE)
 IF(POLYCODE_INSTALL_FRAMEWORK)
     
     # install headers
-    INSTALL(FILES ${polycode2DPhysics_HDRS} DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Modules/include)
+    INSTALL(FILES ${polycode2DPhysics_HDRS} DESTINATION Modules/include)
 
     # install libraries
 #    IF(POLYCODE_BUILD_SHARED)
-    INSTALL(TARGETS Polycode2DPhysics DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Modules/lib)
+    INSTALL(TARGETS Polycode2DPhysics DESTINATION Modules/lib)
 #    ENDIF(POLYCODE_BUILD_SHARED)
 #    IF(POLYCODE_BUILD_STATIC)
 #        INSTALL(TARGETS Polycode2DPhysics_static DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Modules/lib)

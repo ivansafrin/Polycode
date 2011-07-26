@@ -226,7 +226,7 @@ ADD_LIBRARY(Polycore ${polycore_SRCS} ${polycore_HDRS})
 IF(POLYCODE_INSTALL_FRAMEWORK)
     # install headers
     INSTALL(FILES ${polycore_HDRS} 
-        DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Core/include)
+        DESTINATION Core/include)
 
     # install libraries
 #    IF(POLYCODE_BUILD_SHARED)
@@ -236,7 +236,7 @@ IF(POLYCODE_INSTALL_FRAMEWORK)
     
 #    IF(POLYCODE_BUILD_STATIC)
         INSTALL(TARGETS Polycore EXPORT Polycore-targets 
-            DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Core/lib)
+            DESTINATION Core/lib)
 #    ENDIF(POLYCODE_BUILD_STATIC)
 ENDIF(POLYCODE_INSTALL_FRAMEWORK)
 
@@ -246,6 +246,6 @@ IF(POLYCODE_INSTALL_PLAYER)
 #        INSTALL(TARGETS Polycore_dynamic DESTINATION ${POLYCODE_RELEASE_DIR}/Player)
 #    END(POLYCODE_BUILD_SHARED)
     
-    INSTALL(DIRECTORY ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/bin/ 
-        DESTINATION ${POLYCODE_RELEASE_DIR}/Player)
+#    INSTALL(DIRECTORY ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/bin/ 
+ #       DESTINATION ${POLYCODE_RELEASE_DIR}/Player)
 ENDIF(POLYCODE_INSTALL_PLAYER)
