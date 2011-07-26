@@ -1,19 +1,20 @@
 INCLUDE(PolycodeIncludes)
 
 FIND_PACKAGE(Lua51 REQUIRED)
+
 INCLUDE_DIRECTORIES(
     ${LUA_INCLUDE_DIR}
-    LUA/Include
+    Include
 )
 
 SET(polycodeLua_SRCS
-    LUA/Source/PolycodeLUA.cpp
+    Source/PolycodeLUA.cpp
 )
 
 SET(polycodeLua_HDRS
-    LUA/Include/PolycodeLUAWrappers.h
-    LUA/Include/PolycodeLUA.h
-    LUA/Include/PolycodeLUA2D.h
+    Include/PolycodeLUAWrappers.h
+    Include/PolycodeLUA.h
+    Include/PolycodeLUA2D.h
 )
 
 SET(CMAKE_DEBUG_POSTFIX "_d")
@@ -25,6 +26,7 @@ SET(CMAKE_DEBUG_POSTFIX "_d")
 
 #IF(POLYCODE_BUILD_STATIC)
 ADD_LIBRARY(PolycodeLua ${polycodeLua_SRCS} ${polycodeLua_HDRS})
+ADD_DEPENDENCIES(PolycodeLua PolycodeLuaGenerate)
 #ENDIF(POLYCODE_BUILD_STATIC)
 
 IF(POLYCODE_INSTALL_FRAMEWORK)
