@@ -23,24 +23,23 @@ INCLUDE_DIRECTORIES(
 SET(CMAKE_DEBUG_POSTFIX "_d")
 
 #IF(POLYCODE_BUILD_SHARED)
-ADD_LIBRARY(Polycode3DPhysics SHARED ${polycode3DPhysics_SRCS} ${polycode3DPhysics_HDRS})
-TARGET_LINK_LIBRARIES(Polycode3DPhysics ${BULLET_LIBRARIES})
-IF(APPLE)
-    TARGET_LINK_LIBRARIES(Polycode3DPhysics
-        Polycore
-	    ${OPENGL_LIBRARIES}
-        ${OPENAL_LIBRARY}
-        ${PNG_LIBRARIES}
-        ${FREETYPE_LIBRARIES}
-        ${PHYSFS_LIBRARY}
-        ${VORBISFILE_LIBRARY}
-	   	"-framework Cocoa")
-ENDIF(APPLE)
+#ADD_LIBRARY(Polycode3DPhysics SHARED ${polycode3DPhysics_SRCS} ${polycode3DPhysics_HDRS})
+#TARGET_LINK_LIBRARIES(Polycode3DPhysics ${BULLET_LIBRARIES})
+#IF(APPLE)
+#    TARGET_LINK_LIBRARIES(Polycode3DPhysics
+#        Polycore
+#        ${OPENGL_LIBRARIES}
+#        ${OPENAL_LIBRARY}
+#        ${PNG_LIBRARIES}
+#        ${FREETYPE_LIBRARIES}
+#        ${PHYSFS_LIBRARY}
+#        ${VORBISFILE_LIBRARY}
+#        "-framework Cocoa")
+#ENDIF(APPLE)
 #ENDIF(POLYCODE_BUILD_SHARED)
 
 #IF(POLYCODE_BUILD_STATIC)
-#    ADD_LIBRARY(Polycode3DPhysics_static ${polycode3DPhysics_SRCS} ${polycode3DPhysics_HDRS})
-#    TARGET_LINK_LIBRARIES(Polycode3DPhysics_static Polycore_static)
+ADD_LIBRARY(Polycode3DPhysics ${polycode3DPhysics_SRCS} ${polycode3DPhysics_HDRS})
 #ENDIF(POLYCODE_BUILD_STATIC)
 
 IF(POLYCODE_INSTALL_FRAMEWORK)
