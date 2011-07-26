@@ -167,6 +167,15 @@ function SceneLight:enableDebugDraw(val)
 	local retVal = Polycore.SceneLight_enableDebugDraw(self.__ptr, val)
 end
 
+function SceneLight:setLightImportance(newImportance)
+	local retVal = Polycore.SceneLight_setLightImportance(self.__ptr, newImportance)
+end
+
+function SceneLight:getLightImportance()
+	local retVal =  Polycore.SceneLight_getLightImportance(self.__ptr)
+	return retVal
+end
+
 
 
 function SceneLight:__delete()

@@ -380,8 +380,8 @@ function Renderer:clearLights()
 	local retVal =  Polycore.Renderer_clearLights(self.__ptr)
 end
 
-function Renderer:addLight(position, direction, type, color, specularColor, constantAttenuation, linearAttenuation, quadraticAttenuation, intensity, spotlightCutoff, spotlightExponent, shadowsEnabled, textureMatrix, shadowMapTexture)
-	local retVal = Polycore.Renderer_addLight(self.__ptr, position.__ptr, direction.__ptr, type, color.__ptr, specularColor.__ptr, constantAttenuation, linearAttenuation, quadraticAttenuation, intensity, spotlightCutoff, spotlightExponent, shadowsEnabled, textureMatrix.__ptr, shadowMapTexture.__ptr)
+function Renderer:addLight(lightImportance, position, direction, type, color, specularColor, constantAttenuation, linearAttenuation, quadraticAttenuation, intensity, spotlightCutoff, spotlightExponent, shadowsEnabled, textureMatrix, shadowMapTexture)
+	local retVal = Polycore.Renderer_addLight(self.__ptr, lightImportance, position.__ptr, direction.__ptr, type, color.__ptr, specularColor.__ptr, constantAttenuation, linearAttenuation, quadraticAttenuation, intensity, spotlightCutoff, spotlightExponent, shadowsEnabled, textureMatrix.__ptr, shadowMapTexture.__ptr)
 end
 
 function Renderer:setExposureLevel(level)
