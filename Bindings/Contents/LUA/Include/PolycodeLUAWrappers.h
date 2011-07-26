@@ -1292,10 +1292,10 @@ static int Polycore_Renderer_setClippingPlanes(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Renderer *inst = (Renderer*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TNUMBER);
-	Number near_ = lua_tonumber(L, 2);
+	Number near = lua_tonumber(L, 2);
 	luaL_checktype(L, 3, LUA_TNUMBER);
-	Number far_ = lua_tonumber(L, 3);
-	inst->setClippingPlanes(near_, far_);
+	Number far = lua_tonumber(L, 3);
+	inst->setClippingPlanes(near, far);
 	return 0;
 }
 
@@ -1399,35 +1399,37 @@ static int Polycore_Renderer_clearLights(lua_State *L) {
 static int Polycore_Renderer_addLight(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Renderer *inst = (Renderer*)lua_topointer(L, 1);
-	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	Vector3 position = *(Vector3*)lua_topointer(L, 2);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	int lightImportance = lua_tointeger(L, 2);
 	luaL_checktype(L, 3, LUA_TLIGHTUSERDATA);
-	Vector3 direction = *(Vector3*)lua_topointer(L, 3);
-	luaL_checktype(L, 4, LUA_TNUMBER);
-	int type = lua_tointeger(L, 4);
-	luaL_checktype(L, 5, LUA_TLIGHTUSERDATA);
-	Color color = *(Color*)lua_topointer(L, 5);
+	Vector3 position = *(Vector3*)lua_topointer(L, 3);
+	luaL_checktype(L, 4, LUA_TLIGHTUSERDATA);
+	Vector3 direction = *(Vector3*)lua_topointer(L, 4);
+	luaL_checktype(L, 5, LUA_TNUMBER);
+	int type = lua_tointeger(L, 5);
 	luaL_checktype(L, 6, LUA_TLIGHTUSERDATA);
-	Color specularColor = *(Color*)lua_topointer(L, 6);
-	luaL_checktype(L, 7, LUA_TNUMBER);
-	Number constantAttenuation = lua_tonumber(L, 7);
+	Color color = *(Color*)lua_topointer(L, 6);
+	luaL_checktype(L, 7, LUA_TLIGHTUSERDATA);
+	Color specularColor = *(Color*)lua_topointer(L, 7);
 	luaL_checktype(L, 8, LUA_TNUMBER);
-	Number linearAttenuation = lua_tonumber(L, 8);
+	Number constantAttenuation = lua_tonumber(L, 8);
 	luaL_checktype(L, 9, LUA_TNUMBER);
-	Number quadraticAttenuation = lua_tonumber(L, 9);
+	Number linearAttenuation = lua_tonumber(L, 9);
 	luaL_checktype(L, 10, LUA_TNUMBER);
-	Number intensity = lua_tonumber(L, 10);
+	Number quadraticAttenuation = lua_tonumber(L, 10);
 	luaL_checktype(L, 11, LUA_TNUMBER);
-	Number spotlightCutoff = lua_tonumber(L, 11);
+	Number intensity = lua_tonumber(L, 11);
 	luaL_checktype(L, 12, LUA_TNUMBER);
-	Number spotlightExponent = lua_tonumber(L, 12);
-	luaL_checktype(L, 13, LUA_TBOOLEAN);
-	bool shadowsEnabled = lua_toboolean(L, 13);
-	luaL_checktype(L, 14, LUA_TLIGHTUSERDATA);
-	Matrix4 * textureMatrix = (Matrix4 *)lua_topointer(L, 14);
+	Number spotlightCutoff = lua_tonumber(L, 12);
+	luaL_checktype(L, 13, LUA_TNUMBER);
+	Number spotlightExponent = lua_tonumber(L, 13);
+	luaL_checktype(L, 14, LUA_TBOOLEAN);
+	bool shadowsEnabled = lua_toboolean(L, 14);
 	luaL_checktype(L, 15, LUA_TLIGHTUSERDATA);
-	Texture * shadowMapTexture = (Texture *)lua_topointer(L, 15);
-	inst->addLight(position, direction, type, color, specularColor, constantAttenuation, linearAttenuation, quadraticAttenuation, intensity, spotlightCutoff, spotlightExponent, shadowsEnabled, textureMatrix, shadowMapTexture);
+	Matrix4 * textureMatrix = (Matrix4 *)lua_topointer(L, 15);
+	luaL_checktype(L, 16, LUA_TLIGHTUSERDATA);
+	Texture * shadowMapTexture = (Texture *)lua_topointer(L, 16);
+	inst->addLight(lightImportance, position, direction, type, color, specularColor, constantAttenuation, linearAttenuation, quadraticAttenuation, intensity, spotlightCutoff, spotlightExponent, shadowsEnabled, textureMatrix, shadowMapTexture);
 	return 0;
 }
 
@@ -10856,7 +10858,7 @@ static int Polycore_SceneLight_setLightColor(lua_State *L) {
 	if(lua_isnumber(L, 5)) {
 		a = lua_tonumber(L, 5);
 	} else {
-		a = 1;
+		a = 1.0;
 	}
 	inst->setLightColor(r, g, b, a);
 	return 0;
@@ -10932,6 +10934,22 @@ static int Polycore_SceneLight_enableDebugDraw(lua_State *L) {
 	bool val = lua_toboolean(L, 2);
 	inst->enableDebugDraw(val);
 	return 0;
+}
+
+static int Polycore_SceneLight_setLightImportance(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	SceneLight *inst = (SceneLight*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	int newImportance = lua_tointeger(L, 2);
+	inst->setLightImportance(newImportance);
+	return 0;
+}
+
+static int Polycore_SceneLight_getLightImportance(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	SceneLight *inst = (SceneLight*)lua_topointer(L, 1);
+	lua_pushinteger(L, inst->getLightImportance());
+	return 1;
 }
 
 static int Polycore_delete_SceneLight(lua_State *L) {

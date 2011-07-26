@@ -54,13 +54,20 @@ namespace Polycode {
 			bool shadowsEnabled;
 			Matrix4 textureMatrix;
 			Texture* shadowMapTexture;
+			int lightImportance;
 	};
 
 	class _PolyExport LightSorter {
 		public:
 			Vector3 basePosition;
 			Matrix4 cameraMatrix;
-			bool operator() (LightInfo i,LightInfo j) { return ((cameraMatrix*i.position).distance(basePosition)<(cameraMatrix*j.position).distance(basePosition));}
+			bool operator() (LightInfo i,LightInfo j) {
+				if(i.lightImportance > j.lightImportance)
+					return true;
+				if(i.lightImportance == j.lightImportance)
+					return ((cameraMatrix*i.position).distance(basePosition)<(cameraMatrix*j.position).distance(basePosition));
+				return false; 
+			}
 	};
 
 	/**
@@ -177,7 +184,7 @@ namespace Polycode {
 		virtual void cullFrontFaces(bool val) = 0;
 		
 		void clearLights();
-		void addLight(Vector3 position, Vector3 direction, int type, Color color, Color specularColor, Number constantAttenuation, Number linearAttenuation, Number quadraticAttenuation, Number intensity, Number spotlightCutoff, Number spotlightExponent, bool shadowsEnabled, Matrix4 *textureMatrix, Texture *shadowMapTexture);
+		void addLight(int lightImportance, Vector3 position, Vector3 direction, int type, Color color, Color specularColor, Number constantAttenuation, Number linearAttenuation, Number quadraticAttenuation, Number intensity, Number spotlightCutoff, Number spotlightExponent, bool shadowsEnabled, Matrix4 *textureMatrix, Texture *shadowMapTexture);
 		
 		void setExposureLevel(Number level);
 		
@@ -231,6 +238,7 @@ namespace Polycode {
 		vector<LightInfo> getSpotLights() { return spotLights;	}
 		
 	protected:
+		LightSorter sorter;	
 	
 		bool cullingFrontFaces;
 				

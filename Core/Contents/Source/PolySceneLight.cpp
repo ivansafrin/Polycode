@@ -66,7 +66,18 @@ SceneLight::SceneLight(int type, Scene *parentScene, Number intensity, Number co
 	*/
 	
 	lightShape = NULL;
+	
+	lightImportance = 0;
 }
+
+void SceneLight::setLightImportance(int newImportance) {
+	lightImportance = newImportance;
+}
+
+int SceneLight::getLightImportance() {
+	return lightImportance;
+}
+
 
 void SceneLight::enableDebugDraw(bool val) {
 	if(lightShape) {

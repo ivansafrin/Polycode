@@ -12,6 +12,12 @@ SET(assimp_CMAKE_ARGS
     -DBUILD_TESTS=OFF
 )
 
+IF(APPLE)
+    # Work around a compiler crash building assimp on Mac
+    STRING(REPLACE "-O3" "-O2" assimp_CXX_FLAGS ${CMAKE_CXX_FLAGS_RELEASE})
+    LIST(APPEND assimp_CMAKE_ARGS -DCMAKE_CXX_FLAGS_RELEASE=${assimp_CXX_FLAGS})
+ENDIF(APPLE)
+
 ExternalProject_Add(assimp
     PREFIX ${assimp_PREFIX}
 

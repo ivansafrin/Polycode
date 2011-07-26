@@ -396,6 +396,14 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 	int lightIndex = 0;
 	
 	vector<LightInfo> areaLights = renderer->getAreaLights();
+	
+//	printf("Applying {\n");
+//	for(int z=0;z < areaLights.size(); z++) {
+//		LightInfo light = areaLights[z];		
+//		printf("Light: %f %f %f\n", light.position.x, light.position.y, light.position.z);
+//	}
+//	printf("}\n");
+		
 	GLfloat ambientVal[] = {1, 1, 1, 1.0};				
 	for(int i=0; i < glslShader->numAreaLights; i++) {
 		LightInfo light;
