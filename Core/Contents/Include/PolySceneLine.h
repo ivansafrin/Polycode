@@ -40,6 +40,7 @@ namespace Polycode {
 			* @param ent2 Ending entity.
 			*/
 			SceneLine(SceneEntity *ent1, SceneEntity *ent2);
+			SceneLine(Vector3 start, Vector3 end);
 			~SceneLine();
 			
 			void Render();
@@ -47,7 +48,9 @@ namespace Polycode {
 		protected:		
 		
 			Mesh *mesh;
-		
+			
+			Vector3 start;
+			Vector3 end;			
 			SceneEntity *ent1;
 			SceneEntity *ent2;
 	};

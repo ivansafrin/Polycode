@@ -19,7 +19,7 @@ INCLUDE_DIRECTORIES(
 SET(CMAKE_DEBUG_POSTFIX "_d")
 
 #IF(POLYCODE_BUILD_SHARED)
-ADD_LIBRARY(Polycode2DPhysics SHARED ${polycode2DPhysics_SRCS} ${polycode2DPhysics_HDRS})
+ADD_LIBRARY(Polycode2DPhysics ${polycode2DPhysics_SRCS} ${polycode2DPhysics_HDRS})
 TARGET_LINK_LIBRARIES(Polycode2DPhysics 
     Polycore 
     ${BOX2D_LIBRARIES}

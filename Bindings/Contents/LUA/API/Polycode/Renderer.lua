@@ -393,6 +393,18 @@ function Renderer:rayTriangleIntersect(ray_origin, ray_direction, vert0, vert1, 
 	return retVal
 end
 
+function Renderer:projectRayFrom2DCoordinate(x, y)
+	local retVal = Polycore.Renderer_projectRayFrom2DCoordinate(self.__ptr, x, y)
+	if retVal == nil then return nil end
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
+end
+
 function Renderer:enableShaders(flag)
 	local retVal = Polycore.Renderer_enableShaders(self.__ptr, flag)
 end

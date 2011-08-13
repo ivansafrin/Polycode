@@ -27,6 +27,7 @@ THE SOFTWARE.
 #include "btBulletCollisionCommon.h"
 #include "PolyCoreServices.h"
 #include "PolySceneMesh.h"
+#include "BulletCollision/CollisionDispatch/btGhostObject.h"
 
 namespace Polycode {
 
@@ -38,7 +39,7 @@ namespace Polycode {
 			/**
 			* Main constructor.
 			*/ 
-			CollisionSceneEntity(SceneEntity *entity, bool autoCollide, int type);
+			CollisionSceneEntity(SceneEntity *entity, int type);
 			~CollisionSceneEntity();
 			
 			/** @name Collision scene entity
@@ -55,17 +56,9 @@ namespace Polycode {
 			
 			virtual void Update();
 		
-			btConvexShape *getConvexShape(){ return convexShape; }
-					
-			btCollisionShape *createCollisionShape(SceneEntity *entity, int type);
-		
-			btCollisionObject *collisionObject;
-			bool gravityEnabled;
-			bool autoCollide;
-			Vector3 gravityVector;
-			Vector3 gVelocity;
-			Number gravityStrength;
-		
+			btConvexShape *getConvexShape(){ return convexShape; }					
+			btCollisionShape *createCollisionShape(SceneEntity *entity, int type);		
+			btGhostObject *collisionObject;		
 			Vector3 lastPosition;
 		
 		/**

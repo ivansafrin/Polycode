@@ -68,23 +68,6 @@ THE SOFTWARE.
 #endif
 
 
-// NETWORK STUFF
-#define MAX_PACKET_SIZE 1400
-
-// if set to 1, will create a thread for each network socket
-#define USE_THREADED_SOCKETS 0
-
-// Socket poll interval time in msecs
-#define SOCKET_POLL_INTERVAL 5
-
-
-
-#define PACKET_TYPE_USERDATA 0
-#define PACKET_TYPE_SETCLIENT_ID 1
-#define PACKET_TYPE_CLIENT_READY 2
-#define PACKET_TYPE_DISONNECT 3
-#define PACKET_TYPE_CLIENT_DATA 4
-
 
 typedef double Number;
 

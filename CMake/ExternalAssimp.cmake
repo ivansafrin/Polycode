@@ -21,6 +21,8 @@ ExternalProject_Add(assimp
 
     DOWNLOAD_DIR ${POLYCODE_DEPS_DOWNLOAD_DIR}
 
+    PATCH_COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PolycodeDependencies_SOURCE_DIR}/../CMake/assimp.cmake <SOURCE_DIR>/code/CMakeLists.txt
+
     URL http://download.sourceforge.net/assimp/assimp--2.0.863-sdk.zip
     URL_MD5 9f41662501bd9d9533c4cf03b7c25d5b
 

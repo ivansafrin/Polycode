@@ -1,0 +1,47 @@
+#include "HelloPolycodeApp.h"
+
+HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
+
+#ifdef __APPLE__
+	core = new CocoaCore(view, 640,480,false,0,90);	  
+#else
+	core = new SDLCore(view, 640,480,false,0,90);	  
+#endif
+	
+	CoreServices::getInstance()->getResourceManager()->addArchive("default.pak");
+	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);	
+
+	Scene *scene = new Scene();
+	
+	sourceEntity = new SceneEntity();
+	SceneSound *testSound = new SceneSound("test.wav", 20, 50);
+	testSound->getSound()->Play(true);
+	sourceEntity->addChild(testSound);
+	ScenePrimitive *soundShape = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 1,1,1);
+	soundShape->setMaterialByName("Default");
+	sourceEntity->addChild(soundShape);	
+	scene->addEntity(sourceEntity);
+	
+	SceneLight *light = new SceneLight(SceneLight::AREA_LIGHT, scene, 1000);
+	scene->addLight(light);
+
+	SceneSoundListener *soundListener = new SceneSoundListener();
+	scene->addEntity(soundListener);
+
+	positionValue = 0;
+	
+}
+
+HelloPolycodeApp::~HelloPolycodeApp() {
+    
+}
+
+bool HelloPolycodeApp::Update() {
+	positionValue += core->getElapsed();
+	
+	sourceEntity->setPosition((sin(positionValue) * 20), 0, cos(positionValue) * 50); 
+	sourceEntity->Roll(core->getElapsed() * 120);
+	sourceEntity->Pitch(core->getElapsed()* 120);	
+		
+    return core->Update();
+}

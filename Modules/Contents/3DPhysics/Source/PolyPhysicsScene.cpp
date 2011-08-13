@@ -65,8 +65,6 @@ void PhysicsScene::Update() {
 	
 	Number elapsed = CoreServices::getInstance()->getCore()->getElapsed();
 	physicsWorld->stepSimulation(elapsed);	
-
-	physicsWorld->debugDrawWorld();
 	CollisionScene::Update();
 	
 }
@@ -86,6 +84,7 @@ PhysicsCharacter *PhysicsScene::addCharacterChild(SceneEntity *newEntity,Number 
 	newPhysicsEntity->character->setUseGhostSweepTest(false);
 	
 	physicsChildren.push_back(newPhysicsEntity);
+	collisionChildren.push_back(newPhysicsEntity);
 	return newPhysicsEntity;
 	
 }
@@ -114,7 +113,8 @@ PhysicsVehicle *PhysicsScene::addVehicleChild(SceneEntity *newEntity, Number mas
 	newPhysicsEntity->vehicle->resetSuspension();
 
 	physicsChildren.push_back(newPhysicsEntity);
-	
+	collisionChildren.push_back(newPhysicsEntity);
+		
 	return newPhysicsEntity;
 }
 
@@ -124,6 +124,7 @@ PhysicsSceneEntity *PhysicsScene::trackPhysicsChild(SceneEntity *newEntity, int 
 	physicsWorld->addRigidBody(newPhysicsEntity->rigidBody, group, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);	
 	//	newPhysicsEntity->rigidBody->setActivationState(ISLAND_SLEEPING);	
 	physicsChildren.push_back(newPhysicsEntity);
+	collisionChildren.push_back(newPhysicsEntity);	
 	return newPhysicsEntity;	
 }
 

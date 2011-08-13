@@ -153,6 +153,12 @@ String String::NumberToString(Number value) {
 	return String(temp);
 }
 
+String String::IntToString(int value) {
+	char temp[128];
+	sprintf(temp, "%d", value);
+	return String(temp);
+}
+
 
 string String::getSTLString() {
 	s_contents.assign(contents.begin(),contents.end());

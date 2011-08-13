@@ -190,6 +190,8 @@ namespace Polycode {
 		
 		bool rayTriangleIntersect(Vector3 ray_origin, Vector3 ray_direction, Vector3 vert0, Vector3 vert1, Vector3 vert2, Vector3 *hitPoint);
 		
+		virtual Vector3 projectRayFrom2DCoordinate(Number x, Number y) = 0;
+		
 		void enableShaders(bool flag);
 
 		virtual void initOSSpecific() {};

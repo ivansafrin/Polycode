@@ -7,14 +7,9 @@
 # used in building Vorbis.
 
 SET(VORBISFILE_SEARCH_PATHS
-	~/Library/Frameworks
-	/Library/Frameworks
-    /usr/local
-	/usr
-	/sw # Fink
-	/opt/local # DarwinPorts
-	/opt/csw # Blastwave
-	/opt
+	${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/lib
+	${POLYCODE_RELEASE_DIR}/Framework/Modules/Dependencies/lib
+	${POLYCODE_RELEASE_DIR}/Framework/Tools/Dependencies/lib
 )
 
 SET(MSVC_YEAR_NAME)
@@ -44,6 +39,11 @@ FIND_PATH(VORBISFILE_INCLUDE_DIR
 FIND_LIBRARY(VORBISFILE_LIBRARY 
 	NAMES vorbisfile libvorbisfile
 	HINTS
+	NO_DEFAULT_PATH
+	NO_CMAKE_ENVIRONMENT_PATH
+	NO_CMAKE_SYSTEM_PATH
+	NO_SYSTEM_ENVIRONMENT_PATH
+	NO_CMAKE_PATH
 	$ENV{VORBISFILEDIR}
 	$ENV{VORBISFILE_PATH}
 	$ENV{VORBISDIR}
@@ -56,6 +56,11 @@ FIND_LIBRARY(VORBISFILE_LIBRARY
 FIND_LIBRARY(VORBISFILE_LIBRARY_DEBUG 
 	NAMES vorbisfiled vorbisfile_d libvorbisfiled libvorbisfile_d
 	HINTS
+	NO_DEFAULT_PATH
+	NO_CMAKE_ENVIRONMENT_PATH
+	NO_CMAKE_SYSTEM_PATH
+	NO_SYSTEM_ENVIRONMENT_PATH
+	NO_CMAKE_PATH
 	$ENV{VORBISFILEDIR}
 	$ENV{VORBISFILE_PATH}
 	$ENV{VORBISDIR}

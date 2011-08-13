@@ -30,8 +30,8 @@ ScenePrimitive::ScenePrimitive(int type, Number v1, Number v2, Number v3,Number 
 		case TYPE_PLANE:
 			mesh->createPlane(v1,v2);
 			bBox.x = v1;
-			bBox.y = v2;
-			bBox.z = 0;
+			bBox.y = 0;
+			bBox.z = v2;
 		break;
 		case TYPE_VPLANE:
 			mesh->createVPlane(v1,v2);
@@ -47,9 +47,9 @@ ScenePrimitive::ScenePrimitive(int type, Number v1, Number v2, Number v3,Number 
 		break;
 		case TYPE_SPHERE:
 			mesh->createSphere(v1,v2,v3);
-			bBox.x = v1;
-			bBox.y = v2;
-			bBox.z = v3;						
+			bBox.x = v1*2;
+			bBox.y = v1*2;
+			bBox.z = v1*2;						
 		break;
 		case TYPE_CYLINDER:
 			mesh->createCylinder(v1,v2,v3);

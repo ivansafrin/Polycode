@@ -106,17 +106,11 @@ struct CollisionResult {
 			CollisionSceneEntity *getCollisionByScreenEntity(SceneEntity *ent);
 			CollisionResult testCollision(SceneEntity *ent1, SceneEntity *ent2);
 			CollisionResult testCollisionOnCollisionChild(CollisionSceneEntity *cEnt1, CollisionSceneEntity *cEnt2);				
-			CollisionResult testCollisionOnCollisionChild_Convex(CollisionSceneEntity *cEnt1, CollisionSceneEntity *cEnt2);		
-			CollisionResult testCollisionOnCollisionChild_RayTest(CollisionSceneEntity *cEnt1, CollisionSceneEntity *cEnt2);					
-			Vector3 getCollisionNormalFromCollisionEnts(CollisionSceneEntity *cEnt1, CollisionSceneEntity *cEnt2);			
-			Vector3 getCollisionNormal(SceneEntity *ent1, SceneEntity *ent2);			
-			void applyVelocity(SceneEntity *entity, Number x, Number y, Number z);			
-			void loadCollisionChild(SceneEntity *entity, bool autoCollide=false, int type=0);
-			void enableGravity(SceneEntity *entity);			
+			CollisionResult testCollisionOnCollisionChild_Convex(CollisionSceneEntity *cEnt1, CollisionSceneEntity *cEnt2);	
 			void stopTrackingCollision(SceneEntity *entity);
 		
-			virtual CollisionSceneEntity *addCollisionChild(SceneEntity *newEntity, bool autoCollide=false, int type=0, int group=0);
-			CollisionSceneEntity *trackCollision(SceneEntity *newEntity, bool autoCollide, int type=0, int group=0);
+			virtual CollisionSceneEntity *addCollisionChild(SceneEntity *newEntity, int type=0, int group=1);
+			CollisionSceneEntity *trackCollision(SceneEntity *newEntity, int type=0, int group=1);
 			void adjustForCollision(CollisionSceneEntity *collisionEntity);
 			
 			//@}

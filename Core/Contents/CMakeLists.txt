@@ -228,6 +228,12 @@ IF(POLYCODE_INSTALL_FRAMEWORK)
     INSTALL(FILES ${polycore_HDRS} 
         DESTINATION Core/include)
 
+
+	IF(APPLE)
+	    INSTALL(FILES "PolycodeView/Mac OS X/PolycodeView.h" "PolycodeView/Mac OS X/PolycodeView.mm"
+		DESTINATION "Core/PolycodeView")
+	ENDIF(APPLE)
+
     # install libraries
 #    IF(POLYCODE_BUILD_SHARED)
 #        INSTALL(TARGETS Polycore_dynamic EXPORT Polycore-targets 

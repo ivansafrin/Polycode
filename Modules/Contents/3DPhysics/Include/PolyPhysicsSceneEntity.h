@@ -130,7 +130,12 @@ namespace Polycode {
 	
 			void setWalkDirection(Vector3 direction);
 			void jump();
-		
+			
+			void warpCharacter(Vector3 position);
+			void setJumpSpeed(Number jumpSpeed);
+			void setFallSpeed(Number fallSpeed);			
+			void setMaxJumpHeight(Number maxJumpHeight);			
+			bool onGround();
 			//@}
 			// ----------------------------------------------------------------------------------------------------------------
 		
@@ -176,7 +181,7 @@ namespace Polycode {
 			void setSteeringValue(Number value, unsigned int wheelIndex);
 			void setBrake(Number value, unsigned int wheelIndex);
 			
-			void ResetVehicle();
+			void warpVehicle(Vector3 position);
 
 			//@}
 			// ----------------------------------------------------------------------------------------------------------------

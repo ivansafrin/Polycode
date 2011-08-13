@@ -166,6 +166,8 @@ namespace Polycode {
 		void translate2D(Number x, Number y);
 		void rotate2D(Number angle);
 		void scale2D(Vector2 *scale);
+		
+		Vector3 projectRayFrom2DCoordinate(Number x, Number y);
 
 		void initOSSpecific();
 		
