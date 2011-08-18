@@ -35,6 +35,7 @@
 *.xcworkspace
 *.xcuserdata
 
+/Standalone/Build
 /Dependencies/Build
 /Dependencies/Downloads
 /Core/Build/Mac\ OS\ X/build
