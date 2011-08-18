@@ -54,6 +54,8 @@
 Debug
 Release
 /Build
+/Documentation/Doxygen/output/standalone
+Documentation/Doxygen/output/web
 
 /Tools/Build/Linux/polybuild*
 /Tools/Build/Linux/polyimport*

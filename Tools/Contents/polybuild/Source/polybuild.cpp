@@ -220,9 +220,11 @@ int main(int argc, char **argv) {
 #endif
 	}
 
+#ifdef _WINDOWS
 	finalPath = finalPath.replace(":", "");
 	finalPath = finalPath.replace("\\", "/");
 	finalPath = finalPath.substr(1, finalPath.length() - 1);
+#endif
 
 	printf("Reading config file from %s\n", finalPath.c_str());
 
