@@ -33,9 +33,12 @@ Material::~Material() {
 	
 	Logger::log("deleting material (%s)\n", name.c_str());
 	
+	// do not delete shaders here, they're shared
+/*	
 	for(int i=0; i < materialShaders.size(); i++)	{
 		delete materialShaders[i];
 	}
+	*/
 	materialShaders.clear();
 
 	for(int i=0; i < shaderBindings.size(); i++)	{

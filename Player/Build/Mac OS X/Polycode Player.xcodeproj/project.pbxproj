@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		1DDD582C0DA1D0D100B32029 /* MyDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58280DA1D0D100B32029 /* MyDocument.xib */; };
 		1DDD582D0DA1D0D100B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD582A0DA1D0D100B32029 /* MainMenu.xib */; };
+		6D1D88D613FDA926004918FC /* libPolycore_d.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D1D88D513FDA926004918FC /* libPolycore_d.a */; };
+		6D1D88DE13FDA9B0004918FC /* PolycodePlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D1D88DD13FDA9B0004918FC /* PolycodePlayer.cpp */; };
 		6D34117B12B7D6ED0034FA9B /* PPlayerDocumentController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D34117A12B7D6ED0034FA9B /* PPlayerDocumentController.m */; };
 		6D34134112B7FCD00034FA9B /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D34134012B7FCD00034FA9B /* IOKit.framework */; };
 		6D96F92E13FD968F00A26C09 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D96F92613FD968F00A26C09 /* libfreetype.a */; };
@@ -19,13 +21,11 @@
 		6D96F93313FD968F00A26C09 /* libphysfs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D96F92B13FD968F00A26C09 /* libphysfs.a */; };
 		6D96F93413FD968F00A26C09 /* libpng15.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D96F92C13FD968F00A26C09 /* libpng15.a */; };
 		6D96F93513FD968F00A26C09 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D96F92D13FD968F00A26C09 /* libz.a */; };
-		6D96F93713FD969D00A26C09 /* libPolycore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D96F93613FD969D00A26C09 /* libPolycore.a */; };
 		6D96F93A13FD96B600A26C09 /* PolycodeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6D96F93913FD96B600A26C09 /* PolycodeView.mm */; };
 		6D96F93C13FD974200A26C09 /* libPolycodeLua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D96F93B13FD974200A26C09 /* libPolycodeLua.a */; };
 		6DBAB08212B6EAAD00986D01 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DBAB07B12B6EAAD00986D01 /* OpenAL.framework */; };
 		6DBAB08312B6EAAD00986D01 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DBAB07C12B6EAAD00986D01 /* OpenGL.framework */; };
 		6DBAB0BF12B6ECCB00986D01 /* PolycodeCocoaPlayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DBAB0BE12B6ECCB00986D01 /* PolycodeCocoaPlayer.mm */; };
-		6DBAB0C412B6EE4400986D01 /* PolycodePlayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DBAB0C312B6EE4400986D01 /* PolycodePlayer.mm */; };
 		6DD40EF0137361AE00D602D3 /* app_file_icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6DD40EEE137361AE00D602D3 /* app_file_icon.icns */; };
 		6DD40EF1137361AE00D602D3 /* player_icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6DD40EEF137361AE00D602D3 /* player_icon.icns */; };
 		8D15AC2C0486D014006FF6A4 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */; };
@@ -48,6 +48,8 @@
 		2A37F4BAFDCFA73011CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = English; path = English.lproj/Credits.rtf; sourceTree = "<group>"; };
 		2A37F4C4FDCFA73011CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		6D1D88D513FDA926004918FC /* libPolycore_d.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycore_d.a; path = ../../../Release/Darwin/Framework/Core/lib/libPolycore_d.a; sourceTree = "<group>"; };
+		6D1D88DD13FDA9B0004918FC /* PolycodePlayer.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = PolycodePlayer.cpp; path = ../../Contents/Source/PolycodePlayer.cpp; sourceTree = "<group>"; };
 		6D34117912B7D6ED0034FA9B /* PPlayerDocumentController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPlayerDocumentController.h; sourceTree = "<group>"; };
 		6D34117A12B7D6ED0034FA9B /* PPlayerDocumentController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPlayerDocumentController.m; sourceTree = "<group>"; };
 		6D34134012B7FCD00034FA9B /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
@@ -59,7 +61,6 @@
 		6D96F92B13FD968F00A26C09 /* libphysfs.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libphysfs.a; path = ../../../Release/Darwin/Framework/Core/Dependencies/lib/libphysfs.a; sourceTree = "<group>"; };
 		6D96F92C13FD968F00A26C09 /* libpng15.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng15.a; path = ../../../Release/Darwin/Framework/Core/Dependencies/lib/libpng15.a; sourceTree = "<group>"; };
 		6D96F92D13FD968F00A26C09 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = ../../../Release/Darwin/Framework/Core/Dependencies/lib/libz.a; sourceTree = "<group>"; };
-		6D96F93613FD969D00A26C09 /* libPolycore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycore.a; path = ../../../Release/Darwin/Framework/Core/lib/libPolycore.a; sourceTree = "<group>"; };
 		6D96F93813FD96B600A26C09 /* PolycodeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeView.h; path = ../../../Release/Darwin/Framework/Core/PolycodeView/PolycodeView.h; sourceTree = "<group>"; };
 		6D96F93913FD96B600A26C09 /* PolycodeView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = PolycodeView.mm; path = ../../../Release/Darwin/Framework/Core/PolycodeView/PolycodeView.mm; sourceTree = "<group>"; };
 		6D96F93B13FD974200A26C09 /* libPolycodeLua.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycodeLua.a; path = ../../../Release/Darwin/Framework/Modules/lib/libPolycodeLua.a; sourceTree = "<group>"; };
@@ -68,7 +69,6 @@
 		6DBAB0BD12B6ECC400986D01 /* PolycodeCocoaPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeCocoaPlayer.h; path = ../../Contents/Include/PolycodeCocoaPlayer.h; sourceTree = SOURCE_ROOT; };
 		6DBAB0BE12B6ECCB00986D01 /* PolycodeCocoaPlayer.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; name = PolycodeCocoaPlayer.mm; path = ../../Contents/Source/PolycodeCocoaPlayer.mm; sourceTree = SOURCE_ROOT; };
 		6DBAB0C212B6EE2200986D01 /* PolycodePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodePlayer.h; path = ../../Contents/Include/PolycodePlayer.h; sourceTree = SOURCE_ROOT; };
-		6DBAB0C312B6EE4400986D01 /* PolycodePlayer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = PolycodePlayer.mm; path = ../../Contents/Source/PolycodePlayer.mm; sourceTree = SOURCE_ROOT; };
 		6DD40EEE137361AE00D602D3 /* app_file_icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = app_file_icon.icns; path = ../../../Assets/Icons/app_file_icon.icns; sourceTree = "<group>"; };
 		6DD40EEF137361AE00D602D3 /* player_icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = player_icon.icns; path = ../../../Assets/Icons/player_icon.icns; sourceTree = "<group>"; };
 		6DD40EFC137368B100D602D3 /* class.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = class.lua; sourceTree = "<group>"; };
@@ -183,8 +183,8 @@
 				6D96F93313FD968F00A26C09 /* libphysfs.a in Frameworks */,
 				6D96F93413FD968F00A26C09 /* libpng15.a in Frameworks */,
 				6D96F93513FD968F00A26C09 /* libz.a in Frameworks */,
-				6D96F93713FD969D00A26C09 /* libPolycore.a in Frameworks */,
 				6D96F93C13FD974200A26C09 /* libPolycodeLua.a in Frameworks */,
+				6D1D88D613FDA926004918FC /* libPolycore_d.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -236,9 +236,9 @@
 		2A37F4ABFDCFA73011CA2CEA /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				6D1D88DD13FDA9B0004918FC /* PolycodePlayer.cpp */,
 				6D96F93813FD96B600A26C09 /* PolycodeView.h */,
 				6D96F93913FD96B600A26C09 /* PolycodeView.mm */,
-				6DBAB0C312B6EE4400986D01 /* PolycodePlayer.mm */,
 				6DBAB0C212B6EE2200986D01 /* PolycodePlayer.h */,
 				6DBAB0BE12B6ECCB00986D01 /* PolycodeCocoaPlayer.mm */,
 				6DBAB0BD12B6ECC400986D01 /* PolycodeCocoaPlayer.h */,
@@ -276,8 +276,8 @@
 		2A37F4C3FDCFA73011CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6D1D88D513FDA926004918FC /* libPolycore_d.a */,
 				6D96F93B13FD974200A26C09 /* libPolycodeLua.a */,
-				6D96F93613FD969D00A26C09 /* libPolycore.a */,
 				6D96F92613FD968F00A26C09 /* libfreetype.a */,
 				6D96F92713FD968F00A26C09 /* liblibogg.a */,
 				6D96F92813FD968F00A26C09 /* liblibvorbis.a */,
@@ -510,9 +510,9 @@
 				8D15AC310486D014006FF6A4 /* MyDocument.m in Sources */,
 				8D15AC320486D014006FF6A4 /* main.m in Sources */,
 				6DBAB0BF12B6ECCB00986D01 /* PolycodeCocoaPlayer.mm in Sources */,
-				6DBAB0C412B6EE4400986D01 /* PolycodePlayer.mm in Sources */,
 				6D34117B12B7D6ED0034FA9B /* PPlayerDocumentController.m in Sources */,
 				6D96F93A13FD96B600A26C09 /* PolycodeView.mm in Sources */,
+				6D1D88DE13FDA9B0004918FC /* PolycodePlayer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
