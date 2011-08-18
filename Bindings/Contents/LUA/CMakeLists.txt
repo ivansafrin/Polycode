@@ -14,7 +14,6 @@ SET(polycodeLua_SRCS
 SET(polycodeLua_HDRS
     Include/PolycodeLUAWrappers.h
     Include/PolycodeLUA.h
-    Include/PolycodeLUA2D.h
 )
 
 SET(CMAKE_DEBUG_POSTFIX "_d")

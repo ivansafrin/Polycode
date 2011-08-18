@@ -21,7 +21,7 @@ ENDIF(NOT CMAKE_BUILD_TYPE)
 #OPTION(POLYCODE_BUILD_STATIC "Build Polycode static libraries" ON)
 OPTION(POLYCODE_BUILD_BINDINGS "Build Polycode Lua bindings" ON)
 OPTION(POLYCODE_BUILD_MODULES "Build Polycode modules" ON)
-OPTION(POLYCODE_BUILD_PLAYER "Build Polycode standalone player" ON)
+OPTION(POLYCODE_BUILD_PLAYER "Build Polycode standalone player" OFF)
 OPTION(POLYCODE_BUILD_TOOLS "Build Polycode tools" ON)
 OPTION(POLYCODE_BUILD_DOCS "Build Polycode documentation" ON)
 

@@ -171,7 +171,7 @@ int main(int argc, char **argv) {
 	}
 #endif
 
-	printf("Polycode build tool v0.1.1\n");
+	printf("Polycode build tool v0.8.2\n");
 
 	for(int i=0; i < argc; i++) {
 		String argString = String(argv[i]);

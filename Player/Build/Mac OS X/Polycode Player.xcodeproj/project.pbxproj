@@ -10,24 +10,24 @@
 		1DDD582C0DA1D0D100B32029 /* MyDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58280DA1D0D100B32029 /* MyDocument.xib */; };
 		1DDD582D0DA1D0D100B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD582A0DA1D0D100B32029 /* MainMenu.xib */; };
 		6D34117B12B7D6ED0034FA9B /* PPlayerDocumentController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D34117A12B7D6ED0034FA9B /* PPlayerDocumentController.m */; };
-		6D34133512B7FC760034FA9B /* libphysfs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D34133412B7FC760034FA9B /* libphysfs.a */; };
 		6D34134112B7FCD00034FA9B /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D34134012B7FCD00034FA9B /* IOKit.framework */; };
-		6D34153C12B82C7A0034FA9B /* liblua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D34153B12B82C7A0034FA9B /* liblua.a */; };
-		6DB5B578138F729E008C00CA /* libPolycodeLUA.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB5B577138F729E008C00CA /* libPolycodeLUA.a */; };
-		6DB5B57A138F72B3008C00CA /* libPolyCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB5B579138F72B3008C00CA /* libPolyCore.a */; };
-		6DBAB07E12B6EAAD00986D01 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DBAB07712B6EAAD00986D01 /* libfreetype.a */; };
-		6DBAB07F12B6EAAD00986D01 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DBAB07812B6EAAD00986D01 /* libz.a */; };
-		6DBAB08012B6EAAD00986D01 /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DBAB07912B6EAAD00986D01 /* libpng.a */; };
+		6D96F92E13FD968F00A26C09 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D96F92613FD968F00A26C09 /* libfreetype.a */; };
+		6D96F92F13FD968F00A26C09 /* liblibogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D96F92713FD968F00A26C09 /* liblibogg.a */; };
+		6D96F93013FD968F00A26C09 /* liblibvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D96F92813FD968F00A26C09 /* liblibvorbis.a */; };
+		6D96F93113FD968F00A26C09 /* liblibvorbisfile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D96F92913FD968F00A26C09 /* liblibvorbisfile.a */; };
+		6D96F93213FD968F00A26C09 /* liblua5.1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D96F92A13FD968F00A26C09 /* liblua5.1.a */; };
+		6D96F93313FD968F00A26C09 /* libphysfs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D96F92B13FD968F00A26C09 /* libphysfs.a */; };
+		6D96F93413FD968F00A26C09 /* libpng15.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D96F92C13FD968F00A26C09 /* libpng15.a */; };
+		6D96F93513FD968F00A26C09 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D96F92D13FD968F00A26C09 /* libz.a */; };
+		6D96F93713FD969D00A26C09 /* libPolycore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D96F93613FD969D00A26C09 /* libPolycore.a */; };
+		6D96F93A13FD96B600A26C09 /* PolycodeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6D96F93913FD96B600A26C09 /* PolycodeView.mm */; };
+		6D96F93C13FD974200A26C09 /* libPolycodeLua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D96F93B13FD974200A26C09 /* libPolycodeLua.a */; };
 		6DBAB08212B6EAAD00986D01 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DBAB07B12B6EAAD00986D01 /* OpenAL.framework */; };
 		6DBAB08312B6EAAD00986D01 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DBAB07C12B6EAAD00986D01 /* OpenGL.framework */; };
 		6DBAB0BF12B6ECCB00986D01 /* PolycodeCocoaPlayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DBAB0BE12B6ECCB00986D01 /* PolycodeCocoaPlayer.mm */; };
 		6DBAB0C412B6EE4400986D01 /* PolycodePlayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DBAB0C312B6EE4400986D01 /* PolycodePlayer.mm */; };
 		6DD40EF0137361AE00D602D3 /* app_file_icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6DD40EEE137361AE00D602D3 /* app_file_icon.icns */; };
 		6DD40EF1137361AE00D602D3 /* player_icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6DD40EEF137361AE00D602D3 /* player_icon.icns */; };
-		6DD40EF4137361E600D602D3 /* PolycodeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DD40EF3137361E600D602D3 /* PolycodeView.mm */; };
-		6DD40F8413736CF200D602D3 /* libogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DD40F8313736CF200D602D3 /* libogg.a */; };
-		6DD40F8613736CF900D602D3 /* libvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DD40F8513736CF900D602D3 /* libvorbis.a */; };
-		6DD40F8A13736D0C00D602D3 /* libvorbisfile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DD40F8913736D0C00D602D3 /* libvorbisfile.a */; };
 		8D15AC2C0486D014006FF6A4 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */; };
 		8D15AC2F0486D014006FF6A4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165FFE840EACC02AAC07 /* InfoPlist.strings */; };
 		8D15AC310486D014006FF6A4 /* MyDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4ACFDCFA73011CA2CEA /* MyDocument.m */; settings = {ATTRIBUTES = (); }; };
@@ -50,14 +50,19 @@
 		2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		6D34117912B7D6ED0034FA9B /* PPlayerDocumentController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPlayerDocumentController.h; sourceTree = "<group>"; };
 		6D34117A12B7D6ED0034FA9B /* PPlayerDocumentController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPlayerDocumentController.m; sourceTree = "<group>"; };
-		6D34133412B7FC760034FA9B /* libphysfs.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libphysfs.a; path = ../../../Core/Dependencies/physfs/Debug/libphysfs.a; sourceTree = SOURCE_ROOT; };
 		6D34134012B7FCD00034FA9B /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
-		6D34153B12B82C7A0034FA9B /* liblua.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblua.a; path = ../../../Core/Dependencies/lua/src/liblua.a; sourceTree = SOURCE_ROOT; };
-		6DB5B577138F729E008C00CA /* libPolycodeLUA.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycodeLUA.a; path = "../../../../../../Library/Developer/Xcode/DerivedData/Bindings-bojbiqnjfgqgjpgcdihwtncgpnvk/Build/Products/Release/libPolycodeLUA.a"; sourceTree = "<group>"; };
-		6DB5B579138F72B3008C00CA /* libPolyCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolyCore.a; path = "../../../Release/Mac OS X/Framework/Core/Lib/libPolyCore.a"; sourceTree = "<group>"; };
-		6DBAB07712B6EAAD00986D01 /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = ../../../Core/Dependencies/freetype/libfreetype.a; sourceTree = SOURCE_ROOT; };
-		6DBAB07812B6EAAD00986D01 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = ../../../Core/Dependencies/zlib/libz.a; sourceTree = SOURCE_ROOT; };
-		6DBAB07912B6EAAD00986D01 /* libpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng.a; path = ../../../Core/Dependencies/libpng/libpng.a; sourceTree = SOURCE_ROOT; };
+		6D96F92613FD968F00A26C09 /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = ../../../Release/Darwin/Framework/Core/Dependencies/lib/libfreetype.a; sourceTree = "<group>"; };
+		6D96F92713FD968F00A26C09 /* liblibogg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibogg.a; path = ../../../Release/Darwin/Framework/Core/Dependencies/lib/liblibogg.a; sourceTree = "<group>"; };
+		6D96F92813FD968F00A26C09 /* liblibvorbis.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibvorbis.a; path = ../../../Release/Darwin/Framework/Core/Dependencies/lib/liblibvorbis.a; sourceTree = "<group>"; };
+		6D96F92913FD968F00A26C09 /* liblibvorbisfile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibvorbisfile.a; path = ../../../Release/Darwin/Framework/Core/Dependencies/lib/liblibvorbisfile.a; sourceTree = "<group>"; };
+		6D96F92A13FD968F00A26C09 /* liblua5.1.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblua5.1.a; path = ../../../Release/Darwin/Framework/Core/Dependencies/lib/liblua5.1.a; sourceTree = "<group>"; };
+		6D96F92B13FD968F00A26C09 /* libphysfs.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libphysfs.a; path = ../../../Release/Darwin/Framework/Core/Dependencies/lib/libphysfs.a; sourceTree = "<group>"; };
+		6D96F92C13FD968F00A26C09 /* libpng15.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng15.a; path = ../../../Release/Darwin/Framework/Core/Dependencies/lib/libpng15.a; sourceTree = "<group>"; };
+		6D96F92D13FD968F00A26C09 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = ../../../Release/Darwin/Framework/Core/Dependencies/lib/libz.a; sourceTree = "<group>"; };
+		6D96F93613FD969D00A26C09 /* libPolycore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycore.a; path = ../../../Release/Darwin/Framework/Core/lib/libPolycore.a; sourceTree = "<group>"; };
+		6D96F93813FD96B600A26C09 /* PolycodeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeView.h; path = ../../../Release/Darwin/Framework/Core/PolycodeView/PolycodeView.h; sourceTree = "<group>"; };
+		6D96F93913FD96B600A26C09 /* PolycodeView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = PolycodeView.mm; path = ../../../Release/Darwin/Framework/Core/PolycodeView/PolycodeView.mm; sourceTree = "<group>"; };
+		6D96F93B13FD974200A26C09 /* libPolycodeLua.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycodeLua.a; path = ../../../Release/Darwin/Framework/Modules/lib/libPolycodeLua.a; sourceTree = "<group>"; };
 		6DBAB07B12B6EAAD00986D01 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		6DBAB07C12B6EAAD00986D01 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		6DBAB0BD12B6ECC400986D01 /* PolycodeCocoaPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeCocoaPlayer.h; path = ../../Contents/Include/PolycodeCocoaPlayer.h; sourceTree = SOURCE_ROOT; };
@@ -66,8 +71,6 @@
 		6DBAB0C312B6EE4400986D01 /* PolycodePlayer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = PolycodePlayer.mm; path = ../../Contents/Source/PolycodePlayer.mm; sourceTree = SOURCE_ROOT; };
 		6DD40EEE137361AE00D602D3 /* app_file_icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = app_file_icon.icns; path = ../../../Assets/Icons/app_file_icon.icns; sourceTree = "<group>"; };
 		6DD40EEF137361AE00D602D3 /* player_icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = player_icon.icns; path = ../../../Assets/Icons/player_icon.icns; sourceTree = "<group>"; };
-		6DD40EF2137361E600D602D3 /* PolycodeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeView.h; path = "../../../Release/Mac OS X/Framework/Core/PolycodeView/PolycodeView.h"; sourceTree = "<group>"; };
-		6DD40EF3137361E600D602D3 /* PolycodeView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = PolycodeView.mm; path = "../../../Release/Mac OS X/Framework/Core/PolycodeView/PolycodeView.mm"; sourceTree = "<group>"; };
 		6DD40EFC137368B100D602D3 /* class.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = class.lua; sourceTree = "<group>"; };
 		6DD40EFD137368B100D602D3 /* defaults.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = defaults.lua; sourceTree = "<group>"; };
 		6DD40EFF137368B100D602D3 /* BezierCurve.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = BezierCurve.lua; sourceTree = "<group>"; };
@@ -159,9 +162,6 @@
 		6DD40F56137368B100D602D3 /* PolycodeLUA2D.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PolycodeLUA2D.h; sourceTree = "<group>"; };
 		6DD40F57137368B100D602D3 /* PolycodeLUAWrappers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PolycodeLUAWrappers.h; sourceTree = "<group>"; };
 		6DD40F59137368B100D602D3 /* PolycodeLUA.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PolycodeLUA.cpp; sourceTree = "<group>"; };
-		6DD40F8313736CF200D602D3 /* libogg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libogg.a; path = "../../../../../../Library/Developer/Xcode/DerivedData/Ogg-hciijcupphkumzcznsrkjblfzoze/Build/Products/Debug/libogg.a"; sourceTree = "<group>"; };
-		6DD40F8513736CF900D602D3 /* libvorbis.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbis.a; path = "../../../../../../Library/Developer/Xcode/DerivedData/Vorbis-ajdgxoyxsyfhmzbffuvabiolqjkv/Build/Products/Debug/libvorbis.a"; sourceTree = "<group>"; };
-		6DD40F8913736D0C00D602D3 /* libvorbisfile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbisfile.a; path = "../../../../../../Library/Developer/Xcode/DerivedData/Vorbis-ajdgxoyxsyfhmzbffuvabiolqjkv/Build/Products/Debug/libvorbisfile.a"; sourceTree = "<group>"; };
 		8D15AC360486D014006FF6A4 /* Polycode_Player-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Polycode_Player-Info.plist"; sourceTree = "<group>"; };
 		8D15AC370486D014006FF6A4 /* Polycode Player.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Polycode Player.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -172,19 +172,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D15AC340486D014006FF6A4 /* Cocoa.framework in Frameworks */,
-				6DBAB07E12B6EAAD00986D01 /* libfreetype.a in Frameworks */,
-				6DBAB07F12B6EAAD00986D01 /* libz.a in Frameworks */,
-				6DBAB08012B6EAAD00986D01 /* libpng.a in Frameworks */,
 				6DBAB08212B6EAAD00986D01 /* OpenAL.framework in Frameworks */,
 				6DBAB08312B6EAAD00986D01 /* OpenGL.framework in Frameworks */,
-				6D34133512B7FC760034FA9B /* libphysfs.a in Frameworks */,
 				6D34134112B7FCD00034FA9B /* IOKit.framework in Frameworks */,
-				6D34153C12B82C7A0034FA9B /* liblua.a in Frameworks */,
-				6DD40F8413736CF200D602D3 /* libogg.a in Frameworks */,
-				6DD40F8613736CF900D602D3 /* libvorbis.a in Frameworks */,
-				6DD40F8A13736D0C00D602D3 /* libvorbisfile.a in Frameworks */,
-				6DB5B578138F729E008C00CA /* libPolycodeLUA.a in Frameworks */,
-				6DB5B57A138F72B3008C00CA /* libPolyCore.a in Frameworks */,
+				6D96F92E13FD968F00A26C09 /* libfreetype.a in Frameworks */,
+				6D96F92F13FD968F00A26C09 /* liblibogg.a in Frameworks */,
+				6D96F93013FD968F00A26C09 /* liblibvorbis.a in Frameworks */,
+				6D96F93113FD968F00A26C09 /* liblibvorbisfile.a in Frameworks */,
+				6D96F93213FD968F00A26C09 /* liblua5.1.a in Frameworks */,
+				6D96F93313FD968F00A26C09 /* libphysfs.a in Frameworks */,
+				6D96F93413FD968F00A26C09 /* libpng15.a in Frameworks */,
+				6D96F93513FD968F00A26C09 /* libz.a in Frameworks */,
+				6D96F93713FD969D00A26C09 /* libPolycore.a in Frameworks */,
+				6D96F93C13FD974200A26C09 /* libPolycodeLua.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -194,12 +194,7 @@
 		1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				6D34153B12B82C7A0034FA9B /* liblua.a */,
 				6D34134012B7FCD00034FA9B /* IOKit.framework */,
-				6D34133412B7FC760034FA9B /* libphysfs.a */,
-				6DBAB07712B6EAAD00986D01 /* libfreetype.a */,
-				6DBAB07812B6EAAD00986D01 /* libz.a */,
-				6DBAB07912B6EAAD00986D01 /* libpng.a */,
 				6DBAB07B12B6EAAD00986D01 /* OpenAL.framework */,
 				6DBAB07C12B6EAAD00986D01 /* OpenGL.framework */,
 				1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */,
@@ -241,8 +236,8 @@
 		2A37F4ABFDCFA73011CA2CEA /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				6DD40EF2137361E600D602D3 /* PolycodeView.h */,
-				6DD40EF3137361E600D602D3 /* PolycodeView.mm */,
+				6D96F93813FD96B600A26C09 /* PolycodeView.h */,
+				6D96F93913FD96B600A26C09 /* PolycodeView.mm */,
 				6DBAB0C312B6EE4400986D01 /* PolycodePlayer.mm */,
 				6DBAB0C212B6EE2200986D01 /* PolycodePlayer.h */,
 				6DBAB0BE12B6ECCB00986D01 /* PolycodeCocoaPlayer.mm */,
@@ -281,11 +276,16 @@
 		2A37F4C3FDCFA73011CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				6DB5B579138F72B3008C00CA /* libPolyCore.a */,
-				6DB5B577138F729E008C00CA /* libPolycodeLUA.a */,
-				6DD40F8913736D0C00D602D3 /* libvorbisfile.a */,
-				6DD40F8513736CF900D602D3 /* libvorbis.a */,
-				6DD40F8313736CF200D602D3 /* libogg.a */,
+				6D96F93B13FD974200A26C09 /* libPolycodeLua.a */,
+				6D96F93613FD969D00A26C09 /* libPolycore.a */,
+				6D96F92613FD968F00A26C09 /* libfreetype.a */,
+				6D96F92713FD968F00A26C09 /* liblibogg.a */,
+				6D96F92813FD968F00A26C09 /* liblibvorbis.a */,
+				6D96F92913FD968F00A26C09 /* liblibvorbisfile.a */,
+				6D96F92A13FD968F00A26C09 /* liblua5.1.a */,
+				6D96F92B13FD968F00A26C09 /* libphysfs.a */,
+				6D96F92C13FD968F00A26C09 /* libpng15.a */,
+				6D96F92D13FD968F00A26C09 /* libz.a */,
 				1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */,
 				1058C7A8FEA54F5311CA2CBB /* Other Frameworks */,
 			);
@@ -512,7 +512,7 @@
 				6DBAB0BF12B6ECCB00986D01 /* PolycodeCocoaPlayer.mm in Sources */,
 				6DBAB0C412B6EE4400986D01 /* PolycodePlayer.mm in Sources */,
 				6D34117B12B7D6ED0034FA9B /* PPlayerDocumentController.m in Sources */,
-				6DD40EF4137361E600D602D3 /* PolycodeView.mm in Sources */,
+				6D96F93A13FD96B600A26C09 /* PolycodeView.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -565,29 +565,21 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Polycode_Player_Prefix.pch;
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/../../../Release/Darwin/Framework/Core/include\"",
+					"\"$(SRCROOT)/../../../Release/Darwin/Framework/Core/Dependencies/include\"",
+					"\"$(SRCROOT)/../../../Release/Darwin/Framework/Core/Dependencies/include/lua5.1\"",
+					"\"$(SRCROOT)/../../../Release/Darwin/Framework/Modules/include\"",
+					"\"$(SRCROOT)/../../../Release/Darwin/Framework/Modules/Dependencies/include\"",
+					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
+				);
 				INFOPLIST_FILE = "Polycode_Player-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../../../Core/Dependencies/freetype\"",
-					"\"$(SRCROOT)/../../../Core/Dependencies/zlib\"",
-					"\"$(SRCROOT)/../../../Core/Dependencies/libpng\"",
-					"\"$(SRCROOT)/../../../Modules/Build/Mac OS X/build/Debug\"",
-					"\"$(SRCROOT)/../../../Core/Build/Mac OS X/build/Debug\"",
-					"\"$(SRCROOT)/../../../Core/Dependencies/luajit/src\"",
-					"\"$(SRCROOT)/../../../Core/Dependencies/physfs/Debug\"",
-					"\"$(SRCROOT)/../../../Core/Dependencies/lua/src\"",
-					"\"$(SRCROOT)/../../../Bindings/Build/Mac OS X/build/Debug\"",
-					"\"$(SRCROOT)/../../../Core/Dependencies/libogg\"",
-					"\"$(SRCROOT)/../../../Core/Dependencies/libvorbis\"",
-					"\"$(SRCROOT)/../../../../../../Library/Developer/Xcode/DerivedData/Bindings-bojbiqnjfgqgjpgcdihwtncgpnvk/Build/Products/Debug\"",
-					"\"$(SRCROOT)/../../../../../../Library/Developer/Xcode/DerivedData/PolyCore-ecbhldydhvplehavgvhjdlapyvwd/Build/Products/Debug\"",
-					"\"$(SRCROOT)/../../../../../../Library/Developer/Xcode/DerivedData/Ogg-dehvynarqzqpyfeqgzpikemxralf/Build/Products/Debug\"",
-					"\"$(SRCROOT)/../../../../../../Library/Developer/Xcode/DerivedData/Ogg-hciijcupphkumzcznsrkjblfzoze/Build/Products/Debug\"",
-					"\"$(SRCROOT)/../../../../../../Library/Developer/Xcode/DerivedData/Vorbis-ajdgxoyxsyfhmzbffuvabiolqjkv/Build/Products/Debug\"",
-					"\"$(SRCROOT)/../../../../../../Library/Developer/Xcode/DerivedData/Modules-epduxiffqrcazabvaazmexadjpgk/Build/Products/Debug\"",
-					"\"$(SRCROOT)/../../../../../../Library/Developer/Xcode/DerivedData/Bindings-bojbiqnjfgqgjpgcdihwtncgpnvk/Build/Products/Release\"",
-					"\"$(SRCROOT)/../../../Release/Mac OS X/Framework/Core/Lib\"",
+					"\"$(SRCROOT)/../../../Release/Darwin/Framework/Core/Dependencies/lib\"",
+					"\"$(SRCROOT)/../../../Release/Darwin/Framework/Core/lib\"",
+					"\"$(SRCROOT)/../../../Release/Darwin/Framework/Modules/lib\"",
 				);
 				PRODUCT_NAME = "Polycode Player";
 			};
@@ -602,41 +594,20 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Polycode_Player_Prefix.pch;
 				HEADER_SEARCH_PATHS = (
-					../../../Bindings/Contents/LUA/Include,
-					../../../Core/Contents/Include,
-					../../../Core/Dependencies/luajit/src,
-					../../../Core/Dependencies/libvorbis/include,
-					../../../Core/Dependencies/libogg/include,
-					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Versions/A/Headers,
-					../../../Core/Dependencies/freetype/include,
-					../../../Core/Dependencies/libpng,
-					../../../Core/Dependencies/physfs,
-					../../../Modules/Contents/GLSL/Include,
-					../../../Modules/Contents/UI/Include,
+					"\"$(SRCROOT)/../../../Release/Darwin/Framework/Core/include\"",
+					"\"$(SRCROOT)/../../../Release/Darwin/Framework/Core/Dependencies/include\"",
+					"\"$(SRCROOT)/../../../Release/Darwin/Framework/Core/Dependencies/include/lua5.1\"",
+					"\"$(SRCROOT)/../../../Release/Darwin/Framework/Modules/include\"",
+					"\"$(SRCROOT)/../../../Release/Darwin/Framework/Modules/Dependencies/include\"",
+					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
 				);
 				INFOPLIST_FILE = "Polycode_Player-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../../../Core/Dependencies/freetype\"",
-					"\"$(SRCROOT)/../../../Core/Dependencies/zlib\"",
-					"\"$(SRCROOT)/../../../Core/Dependencies/libpng\"",
-					"\"$(SRCROOT)/../../../Modules/Build/Mac OS X/build/Debug\"",
-					"\"$(SRCROOT)/../../../Core/Build/Mac OS X/build/Debug\"",
-					"\"$(SRCROOT)/../../../Core/Dependencies/luajit/src\"",
-					"\"$(SRCROOT)/../../../Core/Dependencies/physfs/Debug\"",
-					"\"$(SRCROOT)/../../../Core/Dependencies/lua/src\"",
-					"\"$(SRCROOT)/../../../Bindings/Build/Mac OS X/build/Debug\"",
-					"\"$(SRCROOT)/../../../Core/Dependencies/libogg\"",
-					"\"$(SRCROOT)/../../../Core/Dependencies/libvorbis\"",
-					"\"$(SRCROOT)/../../../../../../Library/Developer/Xcode/DerivedData/Bindings-bojbiqnjfgqgjpgcdihwtncgpnvk/Build/Products/Debug\"",
-					"\"$(SRCROOT)/../../../../../../Library/Developer/Xcode/DerivedData/PolyCore-ecbhldydhvplehavgvhjdlapyvwd/Build/Products/Debug\"",
-					"\"$(SRCROOT)/../../../../../../Library/Developer/Xcode/DerivedData/Ogg-dehvynarqzqpyfeqgzpikemxralf/Build/Products/Debug\"",
-					"\"$(SRCROOT)/../../../../../../Library/Developer/Xcode/DerivedData/Ogg-hciijcupphkumzcznsrkjblfzoze/Build/Products/Debug\"",
-					"\"$(SRCROOT)/../../../../../../Library/Developer/Xcode/DerivedData/Vorbis-ajdgxoyxsyfhmzbffuvabiolqjkv/Build/Products/Debug\"",
-					"\"$(SRCROOT)/../../../../../../Library/Developer/Xcode/DerivedData/Modules-epduxiffqrcazabvaazmexadjpgk/Build/Products/Debug\"",
-					"\"$(SRCROOT)/../../../../../../Library/Developer/Xcode/DerivedData/Bindings-bojbiqnjfgqgjpgcdihwtncgpnvk/Build/Products/Release\"",
-					"\"$(SRCROOT)/../../../Release/Mac OS X/Framework/Core/Lib\"",
+					"\"$(SRCROOT)/../../../Release/Darwin/Framework/Core/Dependencies/lib\"",
+					"\"$(SRCROOT)/../../../Release/Darwin/Framework/Core/lib\"",
+					"\"$(SRCROOT)/../../../Release/Darwin/Framework/Modules/lib\"",
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "Polycode Player";
@@ -651,19 +622,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					../../../Bindings/Contents/LUA/Include,
-					../../../Core/Contents/Include,
-					../../../Core/Dependencies/luajit/src,
-					../../../Core/Dependencies/libvorbis/include,
-					../../../Core/Dependencies/libogg/include,
-					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Versions/A/Headers,
-					../../../Core/Dependencies/freetype/include,
-					../../../Core/Dependencies/libpng,
-					../../../Core/Dependencies/physfs,
-					../../../Modules/Contents/GLSL/Include,
-					../../../Modules/Contents/UI/Include,
-				);
+				HEADER_SEARCH_PATHS = "";
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
 				SDKROOT = macosx10.6;
@@ -677,18 +636,6 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					../../../Bindings/Contents/LUA/Include,
-					../../../Core/Contents/Include,
-					../../../Core/Dependencies/luajit/src,
-					../../../Core/Dependencies/libvorbis/include,
-					../../../Core/Dependencies/libogg/include,
-					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Versions/A/Headers,
-					../../../Core/Dependencies/freetype/include,
-					../../../Core/Dependencies/libpng,
-					../../../Core/Dependencies/physfs,
-					../../../Modules/Contents/UI/Include,
-				);
 				PREBINDING = NO;
 				SDKROOT = macosx10.6;
 			};

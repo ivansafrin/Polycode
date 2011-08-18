@@ -403,7 +403,7 @@ static int Polycore_BezierCurve_getPointBetween(lua_State *L) {
 	BezierPoint * bp1 = (BezierPoint *)lua_topointer(L, 3);
 	luaL_checktype(L, 4, LUA_TLIGHTUSERDATA);
 	BezierPoint * bp2 = (BezierPoint *)lua_topointer(L, 4);
-	 Vector3 *retInst = new  Vector3();
+	Vector3 *retInst = new Vector3();
 	*retInst = inst->getPointBetween(a, bp1, bp2);
 	lua_pushlightuserdata(L, retInst);
 	return 1;
