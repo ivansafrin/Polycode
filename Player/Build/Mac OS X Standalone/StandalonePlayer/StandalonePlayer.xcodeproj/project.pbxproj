@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6D29041C13FE0C810099BF25 /* libPolycodeLua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D29041B13FE0C810099BF25 /* libPolycodeLua.a */; };
 		6D328DD813FDC65800EEF5E2 /* PolycodeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6D328DD713FDC65800EEF5E2 /* PolycodeView.mm */; };
 		6D328DDA13FDC66300EEF5E2 /* PolycodePlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D328DD913FDC66300EEF5E2 /* PolycodePlayer.cpp */; };
 		6D328DDC13FDC67400EEF5E2 /* libPolycore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D328DDB13FDC67400EEF5E2 /* libPolycore.a */; };
@@ -18,7 +19,6 @@
 		6D328DEA13FDC68400EEF5E2 /* libphysfs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D328DE213FDC68400EEF5E2 /* libphysfs.a */; };
 		6D328DEB13FDC68400EEF5E2 /* libpng15.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D328DE313FDC68400EEF5E2 /* libpng15.a */; };
 		6D328DEC13FDC68400EEF5E2 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D328DE413FDC68400EEF5E2 /* libz.a */; };
-		6D328DEE13FDC6DA00EEF5E2 /* libPolycodeLua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D328DED13FDC6DA00EEF5E2 /* libPolycodeLua.a */; };
 		6DE45BB9138DA66C000BDFBA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DE45BB8138DA66C000BDFBA /* Cocoa.framework */; };
 		6DE45BC3138DA66C000BDFBA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6DE45BC1138DA66C000BDFBA /* InfoPlist.strings */; };
 		6DE45BC6138DA66C000BDFBA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DE45BC5138DA66C000BDFBA /* main.m */; };
@@ -32,6 +32,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6D29041B13FE0C810099BF25 /* libPolycodeLua.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycodeLua.a; path = ../../../../Release/Darwin/Framework/Bindings/Lua/Core/lib/libPolycodeLua.a; sourceTree = "<group>"; };
 		6D328DD613FDC65800EEF5E2 /* PolycodeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeView.h; path = ../../../../../Release/Darwin/Framework/Core/PolycodeView/PolycodeView.h; sourceTree = "<group>"; };
 		6D328DD713FDC65800EEF5E2 /* PolycodeView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = PolycodeView.mm; path = ../../../../../Release/Darwin/Framework/Core/PolycodeView/PolycodeView.mm; sourceTree = "<group>"; };
 		6D328DD913FDC66300EEF5E2 /* PolycodePlayer.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = PolycodePlayer.cpp; path = ../../../../Contents/Source/PolycodePlayer.cpp; sourceTree = "<group>"; };
@@ -44,7 +45,6 @@
 		6D328DE213FDC68400EEF5E2 /* libphysfs.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libphysfs.a; path = ../../../../Release/Darwin/Framework/Core/Dependencies/lib/libphysfs.a; sourceTree = "<group>"; };
 		6D328DE313FDC68400EEF5E2 /* libpng15.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng15.a; path = ../../../../Release/Darwin/Framework/Core/Dependencies/lib/libpng15.a; sourceTree = "<group>"; };
 		6D328DE413FDC68400EEF5E2 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = ../../../../Release/Darwin/Framework/Core/Dependencies/lib/libz.a; sourceTree = "<group>"; };
-		6D328DED13FDC6DA00EEF5E2 /* libPolycodeLua.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycodeLua.a; path = ../../../../Release/Darwin/Framework/Modules/lib/libPolycodeLua.a; sourceTree = "<group>"; };
 		6DE45BB4138DA66C000BDFBA /* StandalonePlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StandalonePlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DE45BB8138DA66C000BDFBA /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		6DE45BBB138DA66C000BDFBA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -84,7 +84,7 @@
 				6D328DEA13FDC68400EEF5E2 /* libphysfs.a in Frameworks */,
 				6D328DEB13FDC68400EEF5E2 /* libpng15.a in Frameworks */,
 				6D328DEC13FDC68400EEF5E2 /* libz.a in Frameworks */,
-				6D328DEE13FDC6DA00EEF5E2 /* libPolycodeLua.a in Frameworks */,
+				6D29041C13FE0C810099BF25 /* libPolycodeLua.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -111,7 +111,7 @@
 		6DE45BB7138DA66C000BDFBA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				6D328DED13FDC6DA00EEF5E2 /* libPolycodeLua.a */,
+				6D29041B13FE0C810099BF25 /* libPolycodeLua.a */,
 				6D328DDD13FDC68400EEF5E2 /* libfreetype.a */,
 				6D328DDE13FDC68400EEF5E2 /* liblibogg.a */,
 				6D328DDF13FDC68400EEF5E2 /* liblibvorbis.a */,
@@ -324,6 +324,7 @@
 					"\"$(SRCROOT)/../../../../Release/Darwin/Framework/Core/include\"",
 					"\"$(SRCROOT)/../../../../Release/Darwin/Framework/Core/Dependencies/include\"",
 					"\"$(SRCROOT)/../../../../Release/Darwin/Framework/Core/Dependencies/include/lua5.1\"",
+					"\"$(SRCROOT)/../../../../Release/Darwin/Framework/Bindings/Lua/Core/include\"",
 					"\"$(SRCROOT)/../../../../Release/Darwin/Framework/Modules/include\"",
 					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
 				);
@@ -333,6 +334,7 @@
 					"\"$(SRCROOT)/../../../../Release/Darwin/Framework/Core/lib\"",
 					"\"$(SRCROOT)/../../../../Release/Darwin/Framework/Core/Dependencies/lib\"",
 					"\"$(SRCROOT)/../../../../Release/Darwin/Framework/Modules/lib\"",
+					"\"$(SRCROOT)/../../../../Release/Darwin/Framework/Bindings/Lua/Core/lib\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -352,6 +354,7 @@
 					"\"$(SRCROOT)/../../../../Release/Darwin/Framework/Core/include\"",
 					"\"$(SRCROOT)/../../../../Release/Darwin/Framework/Core/Dependencies/include\"",
 					"\"$(SRCROOT)/../../../../Release/Darwin/Framework/Core/Dependencies/include/lua5.1\"",
+					"\"$(SRCROOT)/../../../../Release/Darwin/Framework/Bindings/Lua/Core/include\"",
 					"\"$(SRCROOT)/../../../../Release/Darwin/Framework/Modules/include\"",
 					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
 				);
@@ -361,6 +364,7 @@
 					"\"$(SRCROOT)/../../../../Release/Darwin/Framework/Core/lib\"",
 					"\"$(SRCROOT)/../../../../Release/Darwin/Framework/Core/Dependencies/lib\"",
 					"\"$(SRCROOT)/../../../../Release/Darwin/Framework/Modules/lib\"",
+					"\"$(SRCROOT)/../../../../Release/Darwin/Framework/Bindings/Lua/Core/lib\"",
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -268,10 +268,6 @@ PolycodePlayer::PolycodePlayer(String fileName, bool knownArchive) : EventDispat
 
 void PolycodePlayer::loadFile(const char *fileName) {
 	
-	FILE *t = fopen("C:\\out.txt", "a");
-	fwrite(fileName, strlen(fileName), 1, t);
-	fclose(t);
-
 	String mainFile = "";
 	String basePath = fileName;
 	

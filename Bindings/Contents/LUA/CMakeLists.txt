@@ -32,8 +32,10 @@ IF(POLYCODE_INSTALL_FRAMEWORK)
     
     # install headers
     INSTALL(FILES ${polycodeLua_HDRS} 
-        DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Modules/include)
+        DESTINATION Bindings/Lua/Core/include)
 
+    INSTALL(DIRECTORY API DESTINATION Bindings/Lua/Core)
+	
     # install libraries
 #    IF(POLYCODE_BUILD_SHARED)
 #        INSTALL(TARGETS PolycodeLua_dynamic
@@ -42,7 +44,7 @@ IF(POLYCODE_INSTALL_FRAMEWORK)
     
 #    IF(POLYCODE_BUILD_STATIC)
      INSTALL(TARGETS PolycodeLua 
-         DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Modules/lib)
+         DESTINATION Bindings/Lua/Core/lib)
 #    ENDIF(POLYCODE_BUILD_STATIC)
     
 ENDIF(POLYCODE_INSTALL_FRAMEWORK)

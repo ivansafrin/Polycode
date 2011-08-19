@@ -6,6 +6,7 @@ class "PhysicsScreenEvent" (Event)
 
 EVENT_NEW_SHAPE_COLLISION = 0
 EVENT_END_SHAPE_COLLISION = 1
+EVENT_SOLVE_SHAPE_COLLISION = 3
 function PhysicsScreenEvent:__index__(name)
 	if name == "localCollisionNormal" then
 		retVal = Physics2D.PhysicsScreenEvent_get_localCollisionNormal(self.__ptr)

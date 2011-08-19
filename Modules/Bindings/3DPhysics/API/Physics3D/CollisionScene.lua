@@ -36,10 +36,6 @@ function CollisionScene:Update()
 	local retVal =  Physics3D.CollisionScene_Update(self.__ptr)
 end
 
-function CollisionScene:enableCollision(entity, val)
-	local retVal = Physics3D.CollisionScene_enableCollision(self.__ptr, entity.__ptr, val)
-end
-
 function CollisionScene:getCollisionEntityByObject(collisionObject)
 	local retVal = Physics3D.CollisionScene_getCollisionEntityByObject(self.__ptr, collisionObject.__ptr)
 	if retVal == nil then return nil end
@@ -62,6 +58,10 @@ function CollisionScene:getFirstEntityInRay(origin, dest)
 		Polycore.__ptr_lookup[retVal].__ptr = retVal
 		return Polycore.__ptr_lookup[retVal]
 	end
+end
+
+function CollisionScene:enableCollision(entity, val)
+	local retVal = Physics3D.CollisionScene_enableCollision(self.__ptr, entity.__ptr, val)
 end
 
 function CollisionScene:getCollisionByScreenEntity(ent)
@@ -112,60 +112,12 @@ function CollisionScene:testCollisionOnCollisionChild_Convex(cEnt1, cEnt2)
 	end
 end
 
-function CollisionScene:testCollisionOnCollisionChild_RayTest(cEnt1, cEnt2)
-	local retVal = Physics3D.CollisionScene_testCollisionOnCollisionChild_RayTest(self.__ptr, cEnt1.__ptr, cEnt2.__ptr)
-	if retVal == nil then return nil end
-	if Polycore.__ptr_lookup[retVal] ~= nil then
-		return Polycore.__ptr_lookup[retVal]
-	else
-		Polycore.__ptr_lookup[retVal] = CollisionResult("__skip_ptr__")
-		Polycore.__ptr_lookup[retVal].__ptr = retVal
-		return Polycore.__ptr_lookup[retVal]
-	end
-end
-
-function CollisionScene:getCollisionNormalFromCollisionEnts(cEnt1, cEnt2)
-	local retVal = Physics3D.CollisionScene_getCollisionNormalFromCollisionEnts(self.__ptr, cEnt1.__ptr, cEnt2.__ptr)
-	if retVal == nil then return nil end
-	if Polycore.__ptr_lookup[retVal] ~= nil then
-		return Polycore.__ptr_lookup[retVal]
-	else
-		Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
-		Polycore.__ptr_lookup[retVal].__ptr = retVal
-		return Polycore.__ptr_lookup[retVal]
-	end
-end
-
-function CollisionScene:getCollisionNormal(ent1, ent2)
-	local retVal = Physics3D.CollisionScene_getCollisionNormal(self.__ptr, ent1.__ptr, ent2.__ptr)
-	if retVal == nil then return nil end
-	if Polycore.__ptr_lookup[retVal] ~= nil then
-		return Polycore.__ptr_lookup[retVal]
-	else
-		Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
-		Polycore.__ptr_lookup[retVal].__ptr = retVal
-		return Polycore.__ptr_lookup[retVal]
-	end
-end
-
-function CollisionScene:applyVelocity(entity, x, y, z)
-	local retVal = Physics3D.CollisionScene_applyVelocity(self.__ptr, entity.__ptr, x, y, z)
-end
-
-function CollisionScene:loadCollisionChild(entity, autoCollide, type)
-	local retVal = Physics3D.CollisionScene_loadCollisionChild(self.__ptr, entity.__ptr, autoCollide, type)
-end
-
-function CollisionScene:enableGravity(entity)
-	local retVal = Physics3D.CollisionScene_enableGravity(self.__ptr, entity.__ptr)
-end
-
 function CollisionScene:stopTrackingCollision(entity)
 	local retVal = Physics3D.CollisionScene_stopTrackingCollision(self.__ptr, entity.__ptr)
 end
 
-function CollisionScene:addCollisionChild(newEntity, autoCollide, type, group)
-	local retVal = Physics3D.CollisionScene_addCollisionChild(self.__ptr, newEntity.__ptr, autoCollide, type, group)
+function CollisionScene:addCollisionChild(newEntity, type, group)
+	local retVal = Physics3D.CollisionScene_addCollisionChild(self.__ptr, newEntity.__ptr, type, group)
 	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
@@ -176,8 +128,8 @@ function CollisionScene:addCollisionChild(newEntity, autoCollide, type, group)
 	end
 end
 
-function CollisionScene:trackCollision(newEntity, autoCollide, type, group)
-	local retVal = Physics3D.CollisionScene_trackCollision(self.__ptr, newEntity.__ptr, autoCollide, type, group)
+function CollisionScene:trackCollision(newEntity, type, group)
+	local retVal = Physics3D.CollisionScene_trackCollision(self.__ptr, newEntity.__ptr, type, group)
 	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
