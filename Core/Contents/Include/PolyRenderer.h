@@ -144,6 +144,9 @@ namespace Polycode {
 		virtual void multModelviewMatrix(Matrix4 m) = 0;
 		virtual void setModelviewMatrix(Matrix4 m) = 0;
 		
+		void setCurrentModelMatrix(Matrix4 m) { currentModelMatrix = m; }
+		Matrix4 getCurrentModelMatrix() { return currentModelMatrix; }
+		
 		virtual void setBlendingMode(int blendingMode) = 0;	
 			
 		virtual void applyMaterial(Material *material, ShaderBinding *localOptions, unsigned int shaderIndex) = 0;
@@ -240,6 +243,7 @@ namespace Polycode {
 		vector<LightInfo> getSpotLights() { return spotLights;	}
 		
 	protected:
+		Matrix4 currentModelMatrix;
 		LightSorter sorter;	
 	
 		bool cullingFrontFaces;

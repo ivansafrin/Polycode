@@ -280,8 +280,10 @@ void Entity::transformAndRender() {
 	renderer->pushMatrix();	
 	if(ignoreParentMatrix && parentEntity) {
 		renderer->multModelviewMatrix(parentEntity->getConcatenatedMatrix().inverse());
+		renderer->setCurrentModelMatrix(parentEntity->getConcatenatedMatrix().inverse());
 	}else {
 		renderer->multModelviewMatrix(transformMatrix);
+		renderer->setCurrentModelMatrix(transformMatrix);
 	}
 	renderer->setVertexColor(color.r,color.g,color.b,color.a);
 	if(billboardMode) {

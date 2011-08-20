@@ -269,6 +269,22 @@ function Renderer:setModelviewMatrix(m)
 	local retVal = Polycore.Renderer_setModelviewMatrix(self.__ptr, m.__ptr)
 end
 
+function Renderer:setCurrentModelMatrix(m)
+	local retVal = Polycore.Renderer_setCurrentModelMatrix(self.__ptr, m.__ptr)
+end
+
+function Renderer:getCurrentModelMatrix()
+	local retVal =  Polycore.Renderer_getCurrentModelMatrix(self.__ptr)
+	if retVal == nil then return nil end
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = Matrix4("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
+end
+
 function Renderer:setBlendingMode(bl_endingMode)
 	local retVal = Polycore.Renderer_setBlendingMode(self.__ptr, bl_endingMode)
 end
