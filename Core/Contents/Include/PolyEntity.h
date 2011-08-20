@@ -529,7 +529,13 @@ namespace Polycode {
 			/**
 			* If set to false, the children of this entity will not multiply by this entity's color. Set to true by default.
 			*/ 
-			bool colorAffectsChildren;		
+			bool colorAffectsChildren;	
+
+			/**
+			* If set to false, the children will be rendered even if the entity is invisible.
+			*/ 
+			bool visibilityAffectsChildren;	
+
 			
 			/**
 			* If this flag is set to true, this entity will render only into the depth buffer. This, effectively, means that it will be invisible, but still obscuring other entities.

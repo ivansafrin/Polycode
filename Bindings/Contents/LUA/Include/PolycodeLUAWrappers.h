@@ -1903,6 +1903,13 @@ static int Polycore_Entity_get_colorAffectsChildren(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_Entity_get_visibilityAffectsChildren(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Entity *inst = (Entity*)lua_topointer(L, 1);
+	lua_pushboolean(L, inst->visibilityAffectsChildren);
+	return 1;
+}
+
 static int Polycore_Entity_get_depthOnly(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Entity *inst = (Entity*)lua_topointer(L, 1);
@@ -2024,6 +2031,14 @@ static int Polycore_Entity_set_colorAffectsChildren(lua_State *L) {
 	Entity *inst = (Entity*)lua_topointer(L, 1);
 	bool param = lua_toboolean(L, 2);
 	inst->colorAffectsChildren = param;
+	return 0;
+}
+
+static int Polycore_Entity_set_visibilityAffectsChildren(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Entity *inst = (Entity*)lua_topointer(L, 1);
+	bool param = lua_toboolean(L, 2);
+	inst->visibilityAffectsChildren = param;
 	return 0;
 }
 
