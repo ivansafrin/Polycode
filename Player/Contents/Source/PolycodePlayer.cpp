@@ -166,7 +166,7 @@ extern "C" {
 			String moduleDestPath = String(tempPath) + String("\\") + moduleName+ String(".dll");
 #else
 
-	#ifdef APPLE
+	#if defined(__APPLE__) && defined(__MACH__)
 			String moduleDestPath = String("/tmp/") + moduleName+ String(".dylib");
 	#else
 			String moduleDestPath = String("/tmp/") + moduleName+ String(".so");
@@ -177,16 +177,25 @@ extern "C" {
 			lua_pushstring(L, moduleName.c_str());		
 			lua_call(L, 1, 0);
 
+			printf("LOADING MODULE %s\n", moduleDestPath.c_str());
 			lua_getfield(L, LUA_GLOBALSINDEX, "package");
 			lua_getfield(L, -1, "loadlib");	
 			lua_pushstring(L, moduleDestPath.c_str());
 			lua_pushstring(L, moduleLoadCall.c_str());			
-			lua_call(L, 2, 1);
-			lua_setfield(L, LUA_GLOBALSINDEX, "f");			
-			
+			lua_call(L, 2, 2);
+			lua_setfield(L, LUA_GLOBALSINDEX, "err");								
+			lua_setfield(L, LUA_GLOBALSINDEX, "f");		
+
+			lua_getfield(L, LUA_GLOBALSINDEX, "print");
+			lua_getfield(L, LUA_GLOBALSINDEX, "err");						
+			lua_call(L, 1, 0);						
+
+			printf("SETTING CORE SERVICES\n");			
 			lua_getfield(L, LUA_GLOBALSINDEX, "f");
 			lua_getfield(L, LUA_GLOBALSINDEX, "__core__services__instance");						
 			lua_call(L, 1, 0);			
+			
+			printf("DONE LOADING MODULE...\n");				
 			//local f = package.loadlib("/Users/ivansafrin/Desktop/Workshop/HelloPolycodeLUA/libPolycode2DPhysicsModule.dylib", "luaopen_Physics2D")
 			//f(Polycore.CoreServices_getInstance())
 					
@@ -362,7 +371,7 @@ void PolycodePlayer::loadFile(const char *fileName) {
 			String moduleFileName = String("__lib/win/") + moduleName+ String(".dll");
 
 #else
-	#ifdef APPLE
+	#if defined(__APPLE__) && defined(__MACH__)
 				String moduleFileName = String("__lib/osx/") + moduleName+ String(".dylib");
 				String moduleDestPath = String("/tmp/") + moduleName+ String(".dylib");
 	#else
