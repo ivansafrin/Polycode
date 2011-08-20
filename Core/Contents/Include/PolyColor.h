@@ -81,7 +81,11 @@ namespace Polycode {
 				Number nb = b * v2.b;
 				Number na = a * v2.a;				
 				return Color(nr, ng, nb, na);
-			}			
+			}	
+			
+			bool operator == (const Color& c2) {
+				return (((int)255.0*r) == ((int)255.0*c2.r) && ((int)255.0*g) == ((int)255.0*c2.g) && ((int)255.0*b) == ((int)255.0*c2.b) && ((int)255.0*a) == ((int)255.0*c2.a));
+			}
 			
 			/** 
 			* Sets the color using an integer color value
