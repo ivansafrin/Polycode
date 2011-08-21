@@ -181,6 +181,15 @@ static int Physics3D_CollisionScene_trackCollision(lua_State *L) {
 	return 1;
 }
 
+static int Physics3D_CollisionScene_removeCollision(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	CollisionScene *inst = (CollisionScene*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	SceneEntity * entity = (SceneEntity *)lua_topointer(L, 2);
+	inst->removeCollision(entity);
+	return 0;
+}
+
 static int Physics3D_CollisionScene_adjustForCollision(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	CollisionScene *inst = (CollisionScene*)lua_topointer(L, 1);
@@ -301,6 +310,29 @@ static int Physics3D_PhysicsScene_Update(lua_State *L) {
 	PhysicsScene *inst = (PhysicsScene*)lua_topointer(L, 1);
 	inst->Update();
 	return 0;
+}
+
+static int Physics3D_PhysicsScene_removePhysicsChild(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsScene *inst = (PhysicsScene*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	SceneEntity * entity = (SceneEntity *)lua_topointer(L, 2);
+	inst->removePhysicsChild(entity);
+	return 0;
+}
+
+static int Physics3D_PhysicsScene_getPhysicsEntityBySceneEntity(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsScene *inst = (PhysicsScene*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	SceneEntity * entity = (SceneEntity *)lua_topointer(L, 2);
+	void *ptrRetVal = (void*)inst->getPhysicsEntityBySceneEntity(entity);
+	if(ptrRetVal == NULL) {
+		lua_pushnil(L);
+	} else {
+		lua_pushlightuserdata(L, ptrRetVal);
+	}
+	return 1;
 }
 
 static int Physics3D_PhysicsScene_addPhysicsChild(lua_State *L) {

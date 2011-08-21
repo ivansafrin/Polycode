@@ -208,6 +208,20 @@ void CollisionScene::stopTrackingCollision(SceneEntity *entity) {
 	}
 }
 
+void CollisionScene::removeCollision(SceneEntity *entity) {
+	CollisionSceneEntity *cEnt = getCollisionByScreenEntity(entity);
+	if(cEnt) {
+		world->removeCollisionObject(cEnt->collisionObject);
+		for(int i=0; i < collisionChildren.size(); i++) {
+			if(collisionChildren[i] == cEnt) {
+				collisionChildren.erase(collisionChildren.begin()+i);
+			}
+		}			
+		delete cEnt;
+	}
+
+}
+
 CollisionSceneEntity *CollisionScene::trackCollision(SceneEntity *newEntity, int type, int group) {
 	CollisionSceneEntity *newCollisionEntity = new CollisionSceneEntity(newEntity, type);
 

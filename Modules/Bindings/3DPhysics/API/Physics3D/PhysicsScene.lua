@@ -32,6 +32,22 @@ function PhysicsScene:Update()
 	local retVal =  Physics3D.PhysicsScene_Update(self.__ptr)
 end
 
+function PhysicsScene:removePhysicsChild(entity)
+	local retVal = Physics3D.PhysicsScene_removePhysicsChild(self.__ptr, entity.__ptr)
+end
+
+function PhysicsScene:getPhysicsEntityBySceneEntity(entity)
+	local retVal = Physics3D.PhysicsScene_getPhysicsEntityBySceneEntity(self.__ptr, entity.__ptr)
+	if retVal == nil then return nil end
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = PhysicsSceneEntity("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
+end
+
 function PhysicsScene:addPhysicsChild(newEntity, type, mass, friction, restitution, group)
 	local retVal = Physics3D.PhysicsScene_addPhysicsChild(self.__ptr, newEntity.__ptr, type, mass, friction, restitution, group)
 	if retVal == nil then return nil end

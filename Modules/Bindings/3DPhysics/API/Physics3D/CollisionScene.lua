@@ -140,6 +140,10 @@ function CollisionScene:trackCollision(newEntity, type, group)
 	end
 end
 
+function CollisionScene:removeCollision(entity)
+	local retVal = Physics3D.CollisionScene_removeCollision(self.__ptr, entity.__ptr)
+end
+
 function CollisionScene:adjustForCollision(collisionEntity)
 	local retVal = Physics3D.CollisionScene_adjustForCollision(self.__ptr, collisionEntity.__ptr)
 end

@@ -118,6 +118,33 @@ PhysicsVehicle *PhysicsScene::addVehicleChild(SceneEntity *newEntity, Number mas
 	return newPhysicsEntity;
 }
 
+void PhysicsScene::removePhysicsChild(SceneEntity *entity) {
+	PhysicsSceneEntity *ent = getPhysicsEntityBySceneEntity(entity);
+	if(ent) {
+		physicsWorld->removeRigidBody(ent->rigidBody);
+		for(int i=0; i < physicsChildren.size(); i++) {
+			if(physicsChildren[i] == ent) {
+				physicsChildren.erase(physicsChildren.begin()+i);
+			}
+		}
+		for(int i=0; i < collisionChildren.size(); i++) {
+			if(collisionChildren[i] == ent) {
+				collisionChildren.erase(collisionChildren.begin()+i);
+			}
+		}		
+	}
+	delete ent;
+}
+
+PhysicsSceneEntity *PhysicsScene::getPhysicsEntityBySceneEntity(SceneEntity *entity) {
+	PhysicsSceneEntity *retEntity = NULL;
+	for(int i=0; i < physicsChildren.size(); i++) {
+		if(physicsChildren[i]->getSceneEntity() == entity) {
+			retEntity = physicsChildren[i];
+		}	
+	}
+	return retEntity;
+}
 
 PhysicsSceneEntity *PhysicsScene::trackPhysicsChild(SceneEntity *newEntity, int type, Number mass, Number friction, Number restitution, int group) {
 	PhysicsSceneEntity *newPhysicsEntity = new PhysicsSceneEntity(newEntity, type, mass, friction,restitution);

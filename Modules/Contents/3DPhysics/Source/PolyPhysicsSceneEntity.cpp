@@ -140,6 +140,7 @@ void PhysicsCharacter::jump() {
 
 void PhysicsCharacter::warpCharacter(Vector3 position) {
 	character->warp(btVector3(position.x, position.y, position.z));
+	Update();
 }
 
 void PhysicsCharacter::setJumpSpeed(Number jumpSpeed) {
@@ -162,7 +163,7 @@ bool PhysicsCharacter::onGround() {
 void PhysicsCharacter::Update() {
 	btVector3 pos = ghostObject->getWorldTransform().getOrigin();
 	sceneEntity->setPosition(pos.x(), pos.y(), pos.z());
-//	sceneEntity->rebuildTransformMatrix();
+	sceneEntity->rebuildTransformMatrix();
 	sceneEntity->dirtyMatrix(true);
 }
 

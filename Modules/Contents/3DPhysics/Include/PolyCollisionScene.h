@@ -111,6 +111,7 @@ struct CollisionResult {
 		
 			virtual CollisionSceneEntity *addCollisionChild(SceneEntity *newEntity, int type=0, int group=1);
 			CollisionSceneEntity *trackCollision(SceneEntity *newEntity, int type=0, int group=1);
+			void removeCollision(SceneEntity *entity);
 			void adjustForCollision(CollisionSceneEntity *collisionEntity);
 			
 			//@}
