@@ -224,7 +224,8 @@ void PhysicsSceneEntity::Update() {
 	
 	free(mat);
 		
-	sceneEntity->setTransformByMatrixPure(m);			
+	sceneEntity->setTransformByMatrixPure(m);	
+	CollisionSceneEntity::Update();		
 }
 
 SceneEntity *PhysicsSceneEntity::getSceneEntity() {

@@ -58,7 +58,7 @@ namespace Polycode {
 		
 			btConvexShape *getConvexShape(){ return convexShape; }					
 			btCollisionShape *createCollisionShape(SceneEntity *entity, int type);		
-			btGhostObject *collisionObject;		
+			btCollisionObject *collisionObject;		
 			Vector3 lastPosition;
 		
 		/**

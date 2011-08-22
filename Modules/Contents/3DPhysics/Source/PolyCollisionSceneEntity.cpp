@@ -35,7 +35,7 @@ CollisionSceneEntity::CollisionSceneEntity(SceneEntity *entity, int type) {
 	btMatrix3x3 basisA;
 	basisA.setIdentity();
 	
-	collisionObject = new btGhostObject();
+	collisionObject = new btCollisionObject();
 	collisionObject->getWorldTransform().setBasis(basisA);
 	
 

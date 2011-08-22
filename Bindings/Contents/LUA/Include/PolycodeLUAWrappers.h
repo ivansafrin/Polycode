@@ -4775,6 +4775,13 @@ static int Polycore_SceneParticleEmitter_getEmitter(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_SceneParticleEmitter_respawnSceneParticles(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	SceneParticleEmitter *inst = (SceneParticleEmitter*)lua_topointer(L, 1);
+	inst->respawnSceneParticles();
+	return 0;
+}
+
 static int Polycore_SceneParticleEmitter_addParticleBody(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	SceneParticleEmitter *inst = (SceneParticleEmitter*)lua_topointer(L, 1);
@@ -5035,6 +5042,15 @@ static int Polycore_ParticleEmitter_enablePerlin(lua_State *L) {
 	luaL_checktype(L, 2, LUA_TBOOLEAN);
 	bool val = lua_toboolean(L, 2);
 	inst->enablePerlin(val);
+	return 0;
+}
+
+static int Polycore_ParticleEmitter_setParticleVisibility(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	ParticleEmitter *inst = (ParticleEmitter*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TBOOLEAN);
+	bool val = lua_toboolean(L, 2);
+	inst->setParticleVisibility(val);
 	return 0;
 }
 
@@ -9577,7 +9593,9 @@ static int Polycore_SkeletonAnimation_getName(lua_State *L) {
 static int Polycore_SkeletonAnimation_Play(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	SkeletonAnimation *inst = (SkeletonAnimation*)lua_topointer(L, 1);
-	inst->Play();
+	luaL_checktype(L, 2, LUA_TBOOLEAN);
+	bool once = lua_toboolean(L, 2);
+	inst->Play(once);
 	return 0;
 }
 
@@ -9701,7 +9719,13 @@ static int Polycore_BoneTrack(lua_State *L) {
 static int Polycore_BoneTrack_Play(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	BoneTrack *inst = (BoneTrack*)lua_topointer(L, 1);
-	inst->Play();
+	bool once;
+	if(lua_isboolean(L, 2)) {
+		once = lua_toboolean(L, 2);
+	} else {
+		once = false;
+	}
+	inst->Play(once);
 	return 0;
 }
 
@@ -9757,7 +9781,13 @@ static int Polycore_Skeleton_playAnimation(lua_State *L) {
 	Skeleton *inst = (Skeleton*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TSTRING);
 	String animName = String(lua_tostring(L, 2));
-	inst->playAnimation(animName);
+	bool once;
+	if(lua_isboolean(L, 3)) {
+		once = lua_toboolean(L, 3);
+	} else {
+		once = false;
+	}
+	inst->playAnimation(animName, once);
 	return 0;
 }
 
@@ -9766,7 +9796,13 @@ static int Polycore_Skeleton_playAnimationByIndex(lua_State *L) {
 	Skeleton *inst = (Skeleton*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TNUMBER);
 	int index = lua_tointeger(L, 2);
-	inst->playAnimationByIndex(index);
+	bool once;
+	if(lua_isboolean(L, 3)) {
+		once = lua_toboolean(L, 3);
+	} else {
+		once = false;
+	}
+	inst->playAnimationByIndex(index, once);
 	return 0;
 }
 

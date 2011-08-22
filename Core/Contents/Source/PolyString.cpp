@@ -149,7 +149,7 @@ String String::toUpperCase() {
 
 String String::NumberToString(Number value) {
 	char temp[128];
-	sprintf(temp, "%f", value);
+	sprintf(temp, "%.2f", value);
 	return String(temp);
 }
 

@@ -84,6 +84,10 @@ function PhysicsScene:addCharacterChild(newEntity, mass, friction, stepSize, gro
 	end
 end
 
+function PhysicsScene:removeCharacterChild(character)
+	local retVal = Physics3D.PhysicsScene_removeCharacterChild(self.__ptr, character.__ptr)
+end
+
 function PhysicsScene:addVehicleChild(newEntity, mass, friction, group)
 	local retVal = Physics3D.PhysicsScene_addVehicleChild(self.__ptr, newEntity.__ptr, mass, friction, group)
 	if retVal == nil then return nil end

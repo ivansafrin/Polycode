@@ -154,6 +154,7 @@ RayTestResult CollisionScene::getFirstEntityInRay(const Vector3 &origin,  const 
 	btCollisionWorld::ClosestRayResultCallback cb(fromVec, toVec);
 	world->rayTest (fromVec, toVec, cb);
 	
+	
 	if (cb.hasHit ()) {
 		CollisionSceneEntity *retEnt = getCollisionEntityByObject(cb.m_collisionObject);
 		if(retEnt) {
@@ -228,7 +229,7 @@ CollisionSceneEntity *CollisionScene::trackCollision(SceneEntity *newEntity, int
 //	if(type == CollisionSceneEntity::CHARACTER_CONTROLLER) {
 //		world->addCollisionObject(newCollisionEntity->collisionObject,btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);		
 //	} else {
-		newCollisionEntity->collisionObject->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
+//		newCollisionEntity->collisionObject->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
 		world->addCollisionObject(newCollisionEntity->collisionObject, group);
 //	}
 	

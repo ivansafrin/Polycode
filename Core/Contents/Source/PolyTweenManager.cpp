@@ -47,7 +47,7 @@ void TweenManager::Update() {
 				tween = tweens[i];
 				tweens.erase(tweens.begin()+i);
 				tween->doOnComplete();
-				delete tween;
+//				delete tween;
 				return;
 			}
 		}

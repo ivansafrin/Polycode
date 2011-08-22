@@ -37,6 +37,7 @@ CoreServices::setInstance(inst);
 		{"PhysicsScene_addPhysicsChild", Physics3D_PhysicsScene_addPhysicsChild},
 		{"PhysicsScene_trackPhysicsChild", Physics3D_PhysicsScene_trackPhysicsChild},
 		{"PhysicsScene_addCharacterChild", Physics3D_PhysicsScene_addCharacterChild},
+		{"PhysicsScene_removeCharacterChild", Physics3D_PhysicsScene_removeCharacterChild},
 		{"PhysicsScene_addVehicleChild", Physics3D_PhysicsScene_addVehicleChild},
 		{"delete_PhysicsScene", Physics3D_delete_PhysicsScene},
 		{"PhysicsSceneEntity_get_enabled", Physics3D_PhysicsSceneEntity_get_enabled},

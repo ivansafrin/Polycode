@@ -159,6 +159,10 @@ function ParticleEmitter:enablePerlin(val)
 	local retVal = Polycore.ParticleEmitter_enablePerlin(self.__ptr, val)
 end
 
+function ParticleEmitter:setParticleVisibility(val)
+	local retVal = Polycore.ParticleEmitter_setParticleVisibility(self.__ptr, val)
+end
+
 function ParticleEmitter:setPerlinModSize(size)
 	local retVal = Polycore.ParticleEmitter_setPerlinModSize(self.__ptr, size)
 end

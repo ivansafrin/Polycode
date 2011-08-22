@@ -44,9 +44,11 @@ void PhysicsScene::initPhysicsScene() {
 	btVector3 worldMax(100,100,100);
 	btAxisSweep3* sweepBP = new btAxisSweep3(worldMin,worldMax);	
 	
-	physicsWorld = new btDiscreteDynamicsWorld(dispatcher,sweepBP,solver,collisionConfiguration);
+	btDbvtBroadphase *broadPhase = new btDbvtBroadphase();
 	
-	physicsWorld->getSolverInfo().m_solverMode |= SOLVER_RANDMIZE_ORDER;
+	physicsWorld = new btDiscreteDynamicsWorld(dispatcher,broadPhase,solver,collisionConfiguration);
+	
+//	physicsWorld->getSolverInfo().m_solverMode |= SOLVER_RANDMIZE_ORDER;
 	physicsWorld->setGravity(btVector3(0,-10,0));
 	
 	
@@ -89,6 +91,26 @@ PhysicsCharacter *PhysicsScene::addCharacterChild(SceneEntity *newEntity,Number 
 	
 }
 
+void PhysicsScene::removeCharacterChild(PhysicsCharacter *character) {
+	physicsWorld->removeAction(character->character);
+
+	physicsWorld->removeCollisionObject(character->ghostObject);
+
+
+		for(int i=0; i < physicsChildren.size(); i++) {
+			if(physicsChildren[i] == character) {
+				physicsChildren.erase(physicsChildren.begin()+i);
+			}
+		}
+		for(int i=0; i < collisionChildren.size(); i++) {
+			if(collisionChildren[i] == character) {
+				collisionChildren.erase(collisionChildren.begin()+i);
+			}
+		}		
+	
+}
+
+
 PhysicsVehicle *PhysicsScene::addVehicleChild(SceneEntity *newEntity, Number mass, Number friction, int group) {
 	addEntity(newEntity);		
 	
@@ -122,6 +144,7 @@ void PhysicsScene::removePhysicsChild(SceneEntity *entity) {
 	PhysicsSceneEntity *ent = getPhysicsEntityBySceneEntity(entity);
 	if(ent) {
 		physicsWorld->removeRigidBody(ent->rigidBody);
+		physicsWorld->removeCollisionObject(ent->collisionObject);
 		for(int i=0; i < physicsChildren.size(); i++) {
 			if(physicsChildren[i] == ent) {
 				physicsChildren.erase(physicsChildren.begin()+i);
@@ -148,7 +171,8 @@ PhysicsSceneEntity *PhysicsScene::getPhysicsEntityBySceneEntity(SceneEntity *ent
 
 PhysicsSceneEntity *PhysicsScene::trackPhysicsChild(SceneEntity *newEntity, int type, Number mass, Number friction, Number restitution, int group) {
 	PhysicsSceneEntity *newPhysicsEntity = new PhysicsSceneEntity(newEntity, type, mass, friction,restitution);
-	physicsWorld->addRigidBody(newPhysicsEntity->rigidBody, group, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);	
+	physicsWorld->addRigidBody(newPhysicsEntity->rigidBody, group,  btBroadphaseProxy::AllFilter); //btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);	
+	world->addCollisionObject(newPhysicsEntity->collisionObject, group);	
 	//	newPhysicsEntity->rigidBody->setActivationState(ISLAND_SLEEPING);	
 	physicsChildren.push_back(newPhysicsEntity);
 	collisionChildren.push_back(newPhysicsEntity);	

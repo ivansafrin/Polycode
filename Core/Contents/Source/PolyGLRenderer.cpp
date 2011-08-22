@@ -698,6 +698,7 @@ void OpenGLRenderer::applyMaterial(Material *material,  ShaderBinding *localOpti
 		setTexture(NULL);
 		return;
 	}
+	
 
 	GLfloat data4[] = {material->diffuseColor.r, material->diffuseColor.g, material->diffuseColor.b, material->diffuseColor.a};					
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, data4);
@@ -742,6 +743,16 @@ void OpenGLRenderer::applyMaterial(Material *material,  ShaderBinding *localOpti
 }
 
 void OpenGLRenderer::clearShader() {
+
+	glDisable(GL_COLOR_MATERIAL);
+	glDisable(GL_LIGHTING);
+	glDisable(GL_FOG);
+	
+	for(int i=0; i < 4; i++)  {
+		glActiveTexture(GL_TEXTURE0+i);		
+		glDisable(GL_TEXTURE_2D);
+	}
+		
 	if(currentShaderModule) {
 		currentShaderModule->clearShader();
 		currentShaderModule = NULL;
@@ -750,6 +761,7 @@ void OpenGLRenderer::clearShader() {
 }
 
 void OpenGLRenderer::setTexture(Texture *texture) {
+
 	if(texture == NULL) {
 		glActiveTexture(GL_TEXTURE0);		
 		glDisable(GL_TEXTURE_2D);
@@ -757,9 +769,9 @@ void OpenGLRenderer::setTexture(Texture *texture) {
 	}
 	
 	if(renderMode == RENDER_MODE_NORMAL) {
-		glEnable (GL_TEXTURE_2D);
 		glActiveTexture(GL_TEXTURE0);	
-		
+		glEnable (GL_TEXTURE_2D);
+				
 		if(currentTexture != texture) {			
 			OpenGLTexture *glTexture = (OpenGLTexture*)texture;
 			glBindTexture (GL_TEXTURE_2D, glTexture->getTextureID());

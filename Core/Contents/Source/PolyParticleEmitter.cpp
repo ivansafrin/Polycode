@@ -38,6 +38,17 @@ SceneParticleEmitter::~SceneParticleEmitter() {
 	
 }
 
+void SceneParticleEmitter::respawnSceneParticles() {
+	for(int i=0; i < particles.size(); i++) {
+		Particle *particle = particles[i];
+		particleParentScene->removeEntity((SceneEntity*)particle->particleBody);
+		addParticleBody(particle->particleBody);
+		resetParticle(particle);				
+		particle->life = lifespan * ((Number)rand()/RAND_MAX);		
+	}
+	updateEmitter();
+}
+
 void SceneParticleEmitter::addParticleBody(Entity *particleBody) {
 	particleParentScene->addEntity((SceneEntity*)particleBody);	
 }
@@ -141,6 +152,11 @@ void ParticleEmitter::setRotationSpeed(Number speed) {
 	rotationSpeed = speed;
 }
 
+void ParticleEmitter::setParticleVisibility(bool val) {
+	for(int i=0;i < particles.size(); i++) {
+		particles[i]->particleBody->visible = val;
+	}
+}
 
 void ParticleEmitter::setParticleBlendingMode(int mode) {
 	for(int i=0;i < particles.size(); i++) {
@@ -233,7 +249,7 @@ bool ParticleEmitter::emitterEnabled() {
 }
 
 void ParticleEmitter::resetParticle(Particle *particle) {
-	particle->particleBody->visible = true;
+//	particle->particleBody->visible = true;
 	particle->lifespan  = lifespan;
 	Matrix4 concatMatrix = getBaseMatrix();
 	Vector3	startVector;

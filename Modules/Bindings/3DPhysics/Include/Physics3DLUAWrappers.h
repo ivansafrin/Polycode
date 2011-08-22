@@ -449,6 +449,15 @@ static int Physics3D_PhysicsScene_addCharacterChild(lua_State *L) {
 	return 1;
 }
 
+static int Physics3D_PhysicsScene_removeCharacterChild(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsScene *inst = (PhysicsScene*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	PhysicsCharacter * character = (PhysicsCharacter *)lua_topointer(L, 2);
+	inst->removeCharacterChild(character);
+	return 0;
+}
+
 static int Physics3D_PhysicsScene_addVehicleChild(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScene *inst = (PhysicsScene*)lua_topointer(L, 1);
