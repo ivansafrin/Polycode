@@ -45,7 +45,7 @@ IF(POLYCODE_INSTALL_FRAMEWORK)
 
     # install libraries
 #    IF(POLYCODE_BUILD_SHARED)
-    INSTALL(TARGETS Polycode2DPhysics DESTINATION Modules/lib)
+    INSTALL(TARGETS Polycode2DPhysics EXPORT Polycode2DPhysics-targets DESTINATION Modules/lib)
 #    ENDIF(POLYCODE_BUILD_SHARED)
 #    IF(POLYCODE_BUILD_STATIC)
 #        INSTALL(TARGETS Polycode2DPhysics_static DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Modules/lib)
