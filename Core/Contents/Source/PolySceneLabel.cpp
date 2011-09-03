@@ -30,6 +30,11 @@ SceneLabel::SceneLabel(String fontName, String text, int size, Number scale, int
 	setText(text);
 	mesh = new Mesh(Mesh::QUAD_MESH);
 	mesh->createPlane(label->getWidth()*scale,label->getHeight()*scale);
+	
+	for(int i=0; i < mesh->getPolygonCount(); i++) {
+		mesh->getPolygon(i)->flipUVY();
+	}
+	mesh->arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;
 }
 
 SceneLabel::~SceneLabel() {

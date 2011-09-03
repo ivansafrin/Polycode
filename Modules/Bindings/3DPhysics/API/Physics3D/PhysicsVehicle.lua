@@ -59,8 +59,8 @@ function PhysicsVehicle:setBrake(value, wheelIndex)
 	local retVal = Physics3D.PhysicsVehicle_setBrake(self.__ptr, value, wheelIndex)
 end
 
-function PhysicsVehicle:ResetVehicle()
-	local retVal =  Physics3D.PhysicsVehicle_ResetVehicle(self.__ptr)
+function PhysicsVehicle:warpVehicle(position)
+	local retVal = Physics3D.PhysicsVehicle_warpVehicle(self.__ptr, position.__ptr)
 end
 
 function PhysicsVehicle:Update()

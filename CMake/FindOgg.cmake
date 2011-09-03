@@ -7,14 +7,9 @@
 # used in building OGG.
 
 SET(OGG_SEARCH_PATHS
-	~/Library/Frameworks
-	/Library/Frameworks
-	/usr/local
-	/usr
-	/sw # Fink
-	/opt/local # DarwinPorts
-	/opt/csw # Blastwave
-	/opt
+	${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/lib
+	${POLYCODE_RELEASE_DIR}/Framework/Modules/Dependencies/lib
+	${POLYCODE_RELEASE_DIR}/Framework/Tools/Dependencies/lib
 )
 
 SET(MSVC_YEAR_NAME)
@@ -40,8 +35,14 @@ FIND_PATH(OGG_INCLUDE_DIR
 )
 
 FIND_LIBRARY(OGG_LIBRARY 
-	NAMES ogg libogg
+	NAMES ogg libogg liblibogg
 	HINTS
+	NO_DEFAULT_PATH
+	NO_CMAKE_ENVIRONMENT_PATH
+	NO_CMAKE_SYSTEM_PATH
+	NO_SYSTEM_ENVIRONMENT_PATH
+	NO_CMAKE_PATH
+	CMAKE_FIND_FRAMEWORK NEVER
 	$ENV{OGGDIR}
 	$ENV{OGG_PATH}
 	PATH_SUFFIXES lib lib64 win32/Dynamic_Release "Win32/${MSVC_YEAR_NAME}/x64/Release" "Win32/${MSVC_YEAR_NAME}/Win32/Release"
@@ -50,8 +51,14 @@ FIND_LIBRARY(OGG_LIBRARY
 
 # First search for d-suffixed libs
 FIND_LIBRARY(OGG_LIBRARY_DEBUG 
-	NAMES oggd ogg_d liboggd libogg_d
+	NAMES oggd ogg_d liboggd libogg_d liblibogg_d
 	HINTS
+	NO_DEFAULT_PATH
+	NO_CMAKE_ENVIRONMENT_PATH
+	NO_CMAKE_SYSTEM_PATH
+	NO_SYSTEM_ENVIRONMENT_PATH
+	NO_CMAKE_PATH
+	CMAKE_FIND_FRAMEWORK NEVER
 	$ENV{OGGDIR}
 	$ENV{OGG_PATH}
 	PATH_SUFFIXES lib lib64 win32/Dynamic_Debug "Win32/${MSVC_YEAR_NAME}/x64/Debug" "Win32/${MSVC_YEAR_NAME}/Win32/Debug"
@@ -61,8 +68,14 @@ FIND_LIBRARY(OGG_LIBRARY_DEBUG
 IF(NOT OGG_LIBRARY_DEBUG)
 	# Then search for non suffixed libs if necessary, but only in debug dirs
 	FIND_LIBRARY(OGG_LIBRARY_DEBUG 
-		NAMES ogg libogg
+		NAMES ogg libogg liblibogg
 		HINTS
+		NO_DEFAULT_PATH
+		NO_CMAKE_ENVIRONMENT_PATH
+		NO_CMAKE_SYSTEM_PATH
+		NO_SYSTEM_ENVIRONMENT_PATH
+		NO_CMAKE_PATH
+		CMAKE_FIND_FRAMEWORK NEVER
 		$ENV{OGGDIR}
 		$ENV{OGG_PATH}
 		PATH_SUFFIXES win32/Dynamic_Debug "Win32/${MSVC_YEAR_NAME}/x64/Debug" "Win32/${MSVC_YEAR_NAME}/Win32/Debug"

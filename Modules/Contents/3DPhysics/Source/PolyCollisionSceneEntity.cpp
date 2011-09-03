@@ -24,16 +24,11 @@ THE SOFTWARE.
 
 using namespace Polycode;
 
-CollisionSceneEntity::CollisionSceneEntity(SceneEntity *entity, bool autoCollide, int type) {
-	gravityEnabled = false;
-	this->autoCollide = autoCollide;
+CollisionSceneEntity::CollisionSceneEntity(SceneEntity *entity, int type) {
 	sceneEntity = entity;
-	gravityVector.y = -1.0f;
 	
 	this->type = type;
-	enabled = true;
-	
-	gravityStrength = 5.0f;
+	enabled = true;	
 	lastPosition = entity->getPosition();	
 	
 	
@@ -53,9 +48,7 @@ CollisionSceneEntity::CollisionSceneEntity(SceneEntity *entity, bool autoCollide
 //		concaveShape = dynamic_cast<btConcaveShape*>(shape);
 //	} else {
 		convexShape	= dynamic_cast<btConvexShape*>(shape);		
-//	}
-		
-	gVelocity.set(0,0,0);
+//	}		
 }
 
 btCollisionShape *CollisionSceneEntity::createCollisionShape(SceneEntity *entity, int type) {
@@ -77,11 +70,11 @@ btCollisionShape *CollisionSceneEntity::createCollisionShape(SceneEntity *entity
 		break;
 		case SHAPE_CYLINDER:
 		{
-			collisionShape = new btCylinderShape(btVector3(entity->bBox.x/2.0f, entity->bBox.y/2.0f,entity->bBox.z/2.0f));
+			collisionShape = new btCylinderShape(btVector3(entity->bBox.x/2.0, entity->bBox.y/2.0f,entity->bBox.z/2.0));
 		}
 		break;
 		case SHAPE_PLANE:
-			collisionShape = new btBoxShape(btVector3(entity->bBox.x/2.0f, entity->bBox.y/2.0f,0.1f));			
+			collisionShape = new btBoxShape(btVector3(entity->bBox.x/2.0f, 0.05,entity->bBox.z/2.0f));			
 			break;
 		case SHAPE_BOX:
 			collisionShape = new btBoxShape(btVector3(entity->bBox.x/2.0f, entity->bBox.y/2.0f,entity->bBox.z/2.0f));			
@@ -93,25 +86,13 @@ btCollisionShape *CollisionSceneEntity::createCollisionShape(SceneEntity *entity
 		{
 			SceneMesh* sceneMesh = dynamic_cast<SceneMesh*>(entity);
 			if(sceneMesh != NULL) {
-				/*
-				btTriangleMesh *btMesh = new btTriangleMesh();
-				for(int i=0; i < sceneMesh->getMesh()->getPolygonCount(); i++) {
-					Polygon *poly = sceneMesh->getMesh()->getPolygon(i);
-					btVector3 v0 = btVector3(btScalar(poly->getVertex(0)->x),btScalar(poly->getVertex(0)->y),btScalar(poly->getVertex(0)->z));
-					btVector3 v1= btVector3(btScalar(poly->getVertex(1)->x),btScalar(poly->getVertex(1)->y),btScalar(poly->getVertex(1)->z));
-					btVector3 v2= btVector3(btScalar(poly->getVertex(2)->x),btScalar(poly->getVertex(2)->y),btScalar(poly->getVertex(2)->z));					
-					btMesh->addTriangle(v2,v1,v0);
-				}
-				collisionShape = new btBvhTriangleMeshShape(btMesh, true);
-				*/
 				btConvexHullShape *hullShape = new btConvexHullShape();
 				for(int i=0; i < sceneMesh->getMesh()->getPolygonCount(); i++) {
 					Polygon *poly = sceneMesh->getMesh()->getPolygon(i);
-					for(int j=0; j < 3; j++) {					
+					for(int j=0; j < poly->getVertexCount(); j++) {					
 						hullShape->addPoint(btVector3((btScalar)poly->getVertex(j)->x, (btScalar)poly->getVertex(j)->y,(btScalar)poly->getVertex(j)->z));
 					}
-				}
-				
+				}				
 				collisionShape = hullShape;
 				
 			} else {
@@ -124,28 +105,17 @@ btCollisionShape *CollisionSceneEntity::createCollisionShape(SceneEntity *entity
 	return collisionShape; 
 }
 
-void CollisionSceneEntity::Update() {
+void CollisionSceneEntity::Update() {	
+	sceneEntity->rebuildTransformMatrix();
+
+	btScalar mat[16];		
+	Matrix4 ent_mat = sceneEntity->getConcatenatedMatrix();
 	
-//	lastPosition = *getSceneEntity()->getPosition();	
-	if(gravityEnabled) {	
-		Number elapsed = CoreServices::getInstance()->getCore()->getElapsed();
-		Vector3 elapsedGrav = gravityVector;
-		elapsedGrav * elapsed * gravityStrength;
-		gVelocity = gVelocity+(elapsedGrav);
-		sceneEntity->Translate(gVelocity.x * elapsed, gVelocity.y * elapsed,gVelocity.z * elapsed);
-		sceneEntity->rebuildTransformMatrix();
-	}
+	for(int i=0; i < 16; i++) {
+			mat[i] = ent_mat.ml[i];
+	}			
 
-	btQuaternion orn;
-//	collisionObject->getCollisionShape()->setLocalScaling
-	collisionObject->getWorldTransform().setFromOpenGLMatrix((float*)sceneEntity->getConcatenatedMatrix().ml);
-
-/*	
-	Number rads = PI/180.0f;
-	orn.setEuler(sceneEntity->getCombinedYaw()*rads,sceneEntity->getCombinedPitch()*rads,sceneEntity->getCombinedRoll()*rads);
-	collisionObject->getWorldTransform().setRotation(orn);
-	collisionObject->getWorldTransform().setOrigin(btVector3(sceneEntity->getCombinedPosition().x, sceneEntity->getCombinedPosition().y, sceneEntity->getCombinedPosition().z));
-*/	
+	collisionObject->getWorldTransform().setFromOpenGLMatrix(mat);
 }
 
 SceneEntity *CollisionSceneEntity::getSceneEntity() {

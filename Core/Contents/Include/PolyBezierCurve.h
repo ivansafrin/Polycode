@@ -164,7 +164,7 @@ namespace Polycode {
 		* @param a Normalized (0-1) position between two points
 		* @return 3d point at specified position.
 		*/																				
-		inline Vector3 getPointBetween(Number a, BezierPoint *bp1, BezierPoint *bp2);
+		Vector3 getPointBetween(Number a, BezierPoint *bp1, BezierPoint *bp2);
 			
 		/** 
 		* Rebuilds the height cache buffers for 2d height curves.

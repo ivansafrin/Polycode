@@ -77,6 +77,11 @@ namespace Polycode {
 			void enablePerlin(bool val);
 			
 			/**
+			* Sets visibility of all particles in the system
+			*/
+			void setParticleVisibility(bool val);
+			
+			/**
 			* Enables perlin noise movement size.
 			*/ 														
 			void setPerlinModSize(Number size);
@@ -254,6 +259,7 @@ namespace Polycode {
 		*/ 
 		ParticleEmitter *getEmitter() { return this; }
 		
+		void respawnSceneParticles();
 		void addParticleBody(Entity *particleBody);
 		Matrix4 getBaseMatrix();
 		void Update();

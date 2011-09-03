@@ -119,6 +119,11 @@ function String:NumberToString(value)
 	return retVal
 end
 
+function String:IntToString(value)
+	local retVal = Polycore.String_IntToString(value)
+	return retVal
+end
+
 function String:c_str()
 	local retVal =  Polycore.String_c_str(self.__ptr)
 	if retVal == nil then return nil end
