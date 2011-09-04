@@ -157,7 +157,7 @@ namespace Polycode {
 			* @param animName Name of animation to play.
 			* @param once If true, will only play the animation once.
 			*/
-			void playAnimation(String animName, bool once = false);
+			void playAnimation(const String& animName, bool once = false);
 						
 			void playAnimationByIndex(int index, bool once = false);		
 			

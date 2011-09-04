@@ -83,7 +83,7 @@ void Skeleton::playAnimationByIndex(int index, bool once) {
 	anim->Play(once);	
 }
 
-void Skeleton::playAnimation(String animName, bool once) {
+void Skeleton::playAnimation(const String& animName, bool once) {
 	SkeletonAnimation *anim = getAnimation(animName);
 	if(!anim)
 		return;
