@@ -36,6 +36,8 @@ function Entity:__index__(name)
 		return Polycore.Entity_get_blendingMode(self.__ptr)
 	elseif name == "colorAffectsChildren" then
 		return Polycore.Entity_get_colorAffectsChildren(self.__ptr)
+	elseif name == "visibilityAffectsChildren" then
+		return Polycore.Entity_get_visibilityAffectsChildren(self.__ptr)
 	elseif name == "depthOnly" then
 		return Polycore.Entity_get_depthOnly(self.__ptr)
 	elseif name == "bBox" then
@@ -91,6 +93,9 @@ function Entity:__set_callback(name,value)
 		return true
 	elseif name == "colorAffectsChildren" then
 		Polycore.Entity_set_colorAffectsChildren(self.__ptr, value)
+		return true
+	elseif name == "visibilityAffectsChildren" then
+		Polycore.Entity_set_visibilityAffectsChildren(self.__ptr, value)
 		return true
 	elseif name == "depthOnly" then
 		Polycore.Entity_set_depthOnly(self.__ptr, value)

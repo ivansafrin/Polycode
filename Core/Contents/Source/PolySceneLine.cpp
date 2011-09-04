@@ -24,6 +24,24 @@
 
 using namespace Polycode;
 
+SceneLine::SceneLine(Vector3 start, Vector3 end) : SceneEntity() {
+	this->ent1 = NULL;
+	this->ent2 = NULL;	
+	
+	this->start = start;
+	this->end = end;	
+	
+	mesh = new Mesh(Mesh::LINE_MESH);	
+	
+	Polygon *poly = new Polygon();
+	poly->addVertex(0,0,0);
+	poly->addVertex(0,0,0);	
+	mesh->addPolygon(poly);
+	
+	ignoreParentMatrix = true;
+	
+}
+
 SceneLine::SceneLine(SceneEntity *ent1, SceneEntity *ent2) : SceneEntity() {
 	this->ent1 = ent1;
 	this->ent2 = ent2;	
@@ -44,11 +62,17 @@ SceneLine::~SceneLine() {
 
 
 void SceneLine::Render() {	
-	
+
 	Vector3 v1;
-	v1 = ent1->getConcatenatedMatrix().getPosition();
-	Vector3 v2;
-	v2 = ent2->getConcatenatedMatrix().getPosition();
+	Vector3 v2;		
+
+	if(ent1 != NULL && ent2 != NULL) {
+		v1 = ent1->getConcatenatedMatrix().getPosition();
+		v2 = ent2->getConcatenatedMatrix().getPosition();
+	} else {
+		v1 = start;
+		v2 = end;
+	}
 
 	
 	mesh->getPolygon(0)->getVertex(0)->set(v1.x,v1.y,v1.z); 

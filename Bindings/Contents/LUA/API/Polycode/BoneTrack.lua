@@ -125,8 +125,8 @@ function BoneTrack:BoneTrack(...)
 	end
 end
 
-function BoneTrack:Play()
-	local retVal =  Polycore.BoneTrack_Play(self.__ptr)
+function BoneTrack:Play(once)
+	local retVal = Polycore.BoneTrack_Play(self.__ptr, once)
 end
 
 function BoneTrack:Stop()

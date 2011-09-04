@@ -141,14 +141,16 @@ void SceneMesh::renderMeshLocally() {
 				
 					Vector3 aPos = vert->restPosition;
 					Vector3 tPos;
-				
+
+					Number mult = 1;					
+/*				
 					Number mult = 0;
 					for(int b =0; b < vert->getNumBoneAssignments(); b++) {
 						BoneAssignment *bas = vert->getBoneAssignment(b);
 						mult += bas->weight;
 					}
 					mult = 1.0f/mult;
-				
+*/				
 					for(int b =0; b < vert->getNumBoneAssignments(); b++) {
 						BoneAssignment *bas = vert->getBoneAssignment(b);
 						Bone *bone = bas->bone;

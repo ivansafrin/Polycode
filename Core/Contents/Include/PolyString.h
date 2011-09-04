@@ -165,6 +165,13 @@ namespace Polycode {
 			* @return A string converted from the Number.
 			*/																										
 			static String NumberToString(Number value);
+
+			/**
+			* Convert an integer to a String.
+			* @param value Integer to convert.
+			* @return A string converted from the integer.
+			*/																												
+			static String IntToString(int value);
 		
 			/**
 			* Pointer to char data.

@@ -171,7 +171,7 @@ int main(int argc, char **argv) {
 	}
 #endif
 
-	printf("Polycode build tool v0.1.1\n");
+	printf("Polycode build tool v0.8.2\n");
 
 	for(int i=0; i < argc; i++) {
 		String argString = String(argv[i]);
@@ -220,9 +220,11 @@ int main(int argc, char **argv) {
 #endif
 	}
 
+#ifdef _WINDOWS
 	finalPath = finalPath.replace(":", "");
 	finalPath = finalPath.replace("\\", "/");
 	finalPath = finalPath.substr(1, finalPath.length() - 1);
+#endif
 
 	printf("Reading config file from %s\n", finalPath.c_str());
 

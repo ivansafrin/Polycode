@@ -166,6 +166,8 @@ int exportToFile(const char *fileName, bool swapZY) {
 
 int main(int argc, char **argv) {
 
+	printf("Polycode import tool v0.8.2\n");
+
 	if(argc != 4) {
 		printf("\n\nInvalid arguments!\n");
 		printf("usage: polyimport <source_file> <output_file> (Swap Z/Y:<true>/<false>) \n\n");

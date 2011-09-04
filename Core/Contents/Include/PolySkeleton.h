@@ -42,7 +42,7 @@ namespace Polycode {
 		public:
 			BoneTrack(Bone *bone, Number length);
 			~BoneTrack();
-			void Play();
+			void Play(bool once=false);
 			void Stop();
 			void Update();
 		
@@ -111,7 +111,7 @@ namespace Polycode {
 			/**
 			* Plays the animation.
 			*/
-			void Play();			
+			void Play(bool once);			
 			/**
 			* Stops the animation.
 			*/			
@@ -155,10 +155,11 @@ namespace Polycode {
 			/**
 			* Play back a loaded animation.
 			* @param animName Name of animation to play.
+			* @param once If true, will only play the animation once.
 			*/
-			void playAnimation(const String& animName);
+			void playAnimation(String animName, bool once = false);
 						
-			void playAnimationByIndex(int index);		
+			void playAnimationByIndex(int index, bool once = false);		
 			
 			/**
 			* Loads in a new animation from a file and adds it to the skeleton.

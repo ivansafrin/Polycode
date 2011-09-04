@@ -36,8 +36,8 @@ function SkeletonAnimation:getName()
 	end
 end
 
-function SkeletonAnimation:Play()
-	local retVal =  Polycore.SkeletonAnimation_Play(self.__ptr)
+function SkeletonAnimation:Play(once)
+	local retVal = Polycore.SkeletonAnimation_Play(self.__ptr, once)
 end
 
 function SkeletonAnimation:Stop()

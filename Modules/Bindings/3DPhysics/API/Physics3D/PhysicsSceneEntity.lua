@@ -49,6 +49,10 @@ function PhysicsSceneEntity:PhysicsSceneEntity(...)
 	end
 end
 
+function PhysicsSceneEntity:Update()
+	local retVal =  Physics3D.PhysicsSceneEntity_Update(self.__ptr)
+end
+
 function PhysicsSceneEntity:getSceneEntity()
 	local retVal =  Physics3D.PhysicsSceneEntity_getSceneEntity(self.__ptr)
 	if retVal == nil then return nil end
@@ -59,10 +63,6 @@ function PhysicsSceneEntity:getSceneEntity()
 		Polycore.__ptr_lookup[retVal].__ptr = retVal
 		return Polycore.__ptr_lookup[retVal]
 	end
-end
-
-function PhysicsSceneEntity:Update()
-	local retVal =  Physics3D.PhysicsSceneEntity_Update(self.__ptr)
 end
 
 function PhysicsSceneEntity:setFriction(friction)

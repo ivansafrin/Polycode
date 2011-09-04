@@ -3,6 +3,6 @@ IF(POLYCODE_INSTALL_FRAMEWORK)
     
     # install default.pak file
     INSTALL(FILES default.pak
-        DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Core/Assets)
+        DESTINATION Core/Assets)
     
 ENDIF(POLYCODE_INSTALL_FRAMEWORK)

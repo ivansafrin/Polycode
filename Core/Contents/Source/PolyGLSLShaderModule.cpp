@@ -556,6 +556,15 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 		
 	glEnable(GL_TEXTURE_2D);
 		
+	Matrix4 modelMatrix = renderer->getCurrentModelMatrix();
+	int mloc = glGetUniformLocation(glslShader->shader_id, "modelMatrix");				
+	GLfloat mat[16];
+	for(int z=0; z < 16; z++) {
+		mat[z] = modelMatrix.ml[z];
+	}
+	glUniformMatrix4fv(mloc, 1, false, mat);
+		
+		
 	GLSLShaderBinding *cgBinding = (GLSLShaderBinding*)material->getShaderBinding(shaderIndex);
 	
 	for(int i=0; i < glslShader->vp->params.size(); i++) {

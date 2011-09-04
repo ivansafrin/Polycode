@@ -1,10 +1,45 @@
-// @package Network
+/*
+Copyright (C) 2011 by Ivan Safrin
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
 
 #pragma once
 
 #include "PolyGlobals.h"
-#include "PolyUtil.h"
 #include "stdio.h"
+
+
+#define MAX_PACKET_SIZE 1400
+
+// if set to 1, will create a thread for each network socket
+#define USE_THREADED_SOCKETS 0
+
+// Socket poll interval time in msecs
+#define SOCKET_POLL_INTERVAL 5
+
+#define PACKET_TYPE_USERDATA 0
+#define PACKET_TYPE_SETCLIENT_ID 1
+#define PACKET_TYPE_CLIENT_READY 2
+#define PACKET_TYPE_DISONNECT 3
+#define PACKET_TYPE_CLIENT_DATA 4
+#define PACKET_TYPE_SERVER_DATA 5
 
 #if PLATFORM == PLATFORM_WINDOWS
 	#include <winsock2.h>
@@ -15,11 +50,7 @@
 	#include <fcntl.h>
 #endif
 
-#include <string>
-
 #include "PolyEventDispatcher.h"
-
-using std::string;
 
 #if PLATFORM == PLATFORM_WINDOWS
 	typedef int socklen_t;
@@ -29,7 +60,7 @@ namespace Polycode {
 		
 	class _PolyExport Address  {
 		public:
-		Address(string ipAsString, unsigned int port);
+		Address(String ipAsString, unsigned int port);
 		Address(unsigned int ip, unsigned int port);
 		Address();
 		~Address();
@@ -43,7 +74,7 @@ namespace Polycode {
 		}
 			
 		
-		void setAddress(string ipAsString, unsigned int port);
+		void setAddress(String ipAsString, unsigned int port);
 		void setAddress(unsigned int ip, unsigned int port);
 		
 		unsigned int uintAddress;
@@ -74,7 +105,7 @@ namespace Polycode {
 			int receiveData();		
 			bool sendData(const Address &address, char *data, unsigned int packetSize);
 		
-			void socketError(string error);
+			void socketError(String error);
 		
 		private:
 			

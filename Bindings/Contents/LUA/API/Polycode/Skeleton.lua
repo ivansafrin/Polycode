@@ -32,12 +32,12 @@ function Skeleton:loadSkeleton(fileName)
 	local retVal = Polycore.Skeleton_loadSkeleton(self.__ptr, fileName.__ptr)
 end
 
-function Skeleton:playAnimation(animName)
-	local retVal = Polycore.Skeleton_playAnimation(self.__ptr, animName.__ptr)
+function Skeleton:playAnimation(animName, once)
+	local retVal = Polycore.Skeleton_playAnimation(self.__ptr, animName, once)
 end
 
-function Skeleton:playAnimationByIndex(index)
-	local retVal = Polycore.Skeleton_playAnimationByIndex(self.__ptr, index)
+function Skeleton:playAnimationByIndex(index, once)
+	local retVal = Polycore.Skeleton_playAnimationByIndex(self.__ptr, index, once)
 end
 
 function Skeleton:addAnimation(name, fileName)

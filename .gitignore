@@ -35,6 +35,7 @@
 *.xcworkspace
 *.xcuserdata
 
+/Standalone/Build
 /Dependencies/Build
 /Dependencies/Downloads
 /Core/Build/Mac\ OS\ X/build
@@ -52,8 +53,16 @@
 /qtcreator-build
 Debug
 Release
-Documentation
+/Build
+/Documentation/Doxygen/output/standalone/Polycode
+/Documentation/Doxygen/output/standalone/Physics2D
+/Documentation/Doxygen/output/standalone/Physics3D
+/Documentation/Doxygen/output/standalone/Networking
 
+/Documentation/Doxygen/output/web/Polycode
+/Documentation/Doxygen/output/web/Physics2D
+/Documentation/Doxygen/output/web/Physics3D
+/Documentation/Doxygen/output/web/Networking
 
 /Tools/Build/Linux/polybuild*
 /Tools/Build/Linux/polyimport*
@@ -63,7 +72,6 @@ Documentation
 .DS_Store?
 .DS_Store
 ehthumbs.db
-Icon?
 Thumbs.db
 
 Core/Build/Mac OS X/PolyCore.xcodeproj/project.xcworkspace/xcuserdata/ivansafrin.xcuserdatad/UserInterfaceState.xcuserstate

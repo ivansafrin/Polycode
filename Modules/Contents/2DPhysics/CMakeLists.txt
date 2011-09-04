@@ -41,18 +41,17 @@ ADD_LIBRARY(Polycode2DPhysics ${polycode2DPhysics_SRCS} ${polycode2DPhysics_HDRS
 IF(POLYCODE_INSTALL_FRAMEWORK)
     
     # install headers
-    INSTALL(FILES ${polycode2DPhysics_HDRS} DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Modules/include)
+    INSTALL(FILES ${polycode2DPhysics_HDRS} DESTINATION Modules/include)
 
     # install libraries
 #    IF(POLYCODE_BUILD_SHARED)
-    INSTALL(TARGETS Polycode2DPhysics EXPORT Polycode2DPhysics-targets
-        DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Modules/lib)
+    INSTALL(TARGETS Polycode2DPhysics EXPORT Polycode2DPhysics-targets DESTINATION Modules/lib)
 #    ENDIF(POLYCODE_BUILD_SHARED)
 #    IF(POLYCODE_BUILD_STATIC)
 #        INSTALL(TARGETS Polycode2DPhysics_static DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Modules/lib)
 #    ENDIF(POLYCODE_BUILD_STATIC)
 
     INSTALL(EXPORT Polycode2DPhysics-targets DESTINATION
-        ${POLYCODE_RELEASE_DIR}/Framework/Modules/lib/Polycode2DPhysics)
+        Modules/lib/Polycode2DPhysics)
     
 ENDIF(POLYCODE_INSTALL_FRAMEWORK)
