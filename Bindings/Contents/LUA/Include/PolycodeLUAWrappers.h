@@ -3418,6 +3418,347 @@ static int Polycore_delete_SceneManager(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_SkeletonAnimation(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	const String & name = *( String *)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	Number duration = lua_tonumber(L, 2);
+	SkeletonAnimation *inst = new SkeletonAnimation(name, duration);
+	lua_pushlightuserdata(L, (void*)inst);
+	return 1;
+}
+
+static int Polycore_SkeletonAnimation_addBoneTrack(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	SkeletonAnimation *inst = (SkeletonAnimation*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	BoneTrack * boneTrack = (BoneTrack *)lua_topointer(L, 2);
+	inst->addBoneTrack(boneTrack);
+	return 0;
+}
+
+static int Polycore_SkeletonAnimation_getName(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	SkeletonAnimation *inst = (SkeletonAnimation*)lua_topointer(L, 1);
+	 String  *retInst = new  String ();
+	*retInst = inst->getName();
+	lua_pushlightuserdata(L, retInst);
+	return 1;
+}
+
+static int Polycore_SkeletonAnimation_Play(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	SkeletonAnimation *inst = (SkeletonAnimation*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TBOOLEAN);
+	bool once = lua_toboolean(L, 2);
+	inst->Play(once);
+	return 0;
+}
+
+static int Polycore_SkeletonAnimation_Stop(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	SkeletonAnimation *inst = (SkeletonAnimation*)lua_topointer(L, 1);
+	inst->Stop();
+	return 0;
+}
+
+static int Polycore_SkeletonAnimation_Update(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	SkeletonAnimation *inst = (SkeletonAnimation*)lua_topointer(L, 1);
+	inst->Update();
+	return 0;
+}
+
+static int Polycore_SkeletonAnimation_setSpeed(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	SkeletonAnimation *inst = (SkeletonAnimation*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	Number speed = lua_tonumber(L, 2);
+	inst->setSpeed(speed);
+	return 0;
+}
+
+static int Polycore_delete_SkeletonAnimation(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	SkeletonAnimation *inst = (SkeletonAnimation*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
+static int Polycore_BoneTrack_get_LocXVec(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	BoneTrack *inst = (BoneTrack*)lua_topointer(L, 1);
+	lua_pushlightuserdata(L, &inst->LocXVec);
+	return 1;
+}
+
+static int Polycore_BoneTrack_get_LocYVec(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	BoneTrack *inst = (BoneTrack*)lua_topointer(L, 1);
+	lua_pushlightuserdata(L, &inst->LocYVec);
+	return 1;
+}
+
+static int Polycore_BoneTrack_get_LocZVec(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	BoneTrack *inst = (BoneTrack*)lua_topointer(L, 1);
+	lua_pushlightuserdata(L, &inst->LocZVec);
+	return 1;
+}
+
+static int Polycore_BoneTrack_get_ScaleXVec(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	BoneTrack *inst = (BoneTrack*)lua_topointer(L, 1);
+	lua_pushlightuserdata(L, &inst->ScaleXVec);
+	return 1;
+}
+
+static int Polycore_BoneTrack_get_ScaleYVec(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	BoneTrack *inst = (BoneTrack*)lua_topointer(L, 1);
+	lua_pushlightuserdata(L, &inst->ScaleYVec);
+	return 1;
+}
+
+static int Polycore_BoneTrack_get_ScaleZVec(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	BoneTrack *inst = (BoneTrack*)lua_topointer(L, 1);
+	lua_pushlightuserdata(L, &inst->ScaleZVec);
+	return 1;
+}
+
+static int Polycore_BoneTrack_get_boneQuat(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	BoneTrack *inst = (BoneTrack*)lua_topointer(L, 1);
+	lua_pushlightuserdata(L, &inst->boneQuat);
+	return 1;
+}
+
+static int Polycore_BoneTrack_get_QuatWVec(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	BoneTrack *inst = (BoneTrack*)lua_topointer(L, 1);
+	lua_pushlightuserdata(L, &inst->QuatWVec);
+	return 1;
+}
+
+static int Polycore_BoneTrack_get_QuatXVec(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	BoneTrack *inst = (BoneTrack*)lua_topointer(L, 1);
+	lua_pushlightuserdata(L, &inst->QuatXVec);
+	return 1;
+}
+
+static int Polycore_BoneTrack_get_QuatYVec(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	BoneTrack *inst = (BoneTrack*)lua_topointer(L, 1);
+	lua_pushlightuserdata(L, &inst->QuatYVec);
+	return 1;
+}
+
+static int Polycore_BoneTrack_get_QuatZVec(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	BoneTrack *inst = (BoneTrack*)lua_topointer(L, 1);
+	lua_pushlightuserdata(L, &inst->QuatZVec);
+	return 1;
+}
+
+static int Polycore_BoneTrack(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Bone * bone = (Bone *)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	Number length = lua_tonumber(L, 2);
+	BoneTrack *inst = new BoneTrack(bone, length);
+	lua_pushlightuserdata(L, (void*)inst);
+	return 1;
+}
+
+static int Polycore_BoneTrack_Play(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	BoneTrack *inst = (BoneTrack*)lua_topointer(L, 1);
+	bool once;
+	if(lua_isboolean(L, 2)) {
+		once = lua_toboolean(L, 2);
+	} else {
+		once = false;
+	}
+	inst->Play(once);
+	return 0;
+}
+
+static int Polycore_BoneTrack_Stop(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	BoneTrack *inst = (BoneTrack*)lua_topointer(L, 1);
+	inst->Stop();
+	return 0;
+}
+
+static int Polycore_BoneTrack_Update(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	BoneTrack *inst = (BoneTrack*)lua_topointer(L, 1);
+	inst->Update();
+	return 0;
+}
+
+static int Polycore_BoneTrack_setSpeed(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	BoneTrack *inst = (BoneTrack*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	Number speed = lua_tonumber(L, 2);
+	inst->setSpeed(speed);
+	return 0;
+}
+
+static int Polycore_delete_BoneTrack(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	BoneTrack *inst = (BoneTrack*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
+static int Polycore_Skeleton(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	const String & fileName = *( String *)lua_topointer(L, 1);
+	Skeleton *inst = new Skeleton(fileName);
+	lua_pushlightuserdata(L, (void*)inst);
+	return 1;
+}
+
+static int Polycore_Skeleton_loadSkeleton(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Skeleton *inst = (Skeleton*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	const String & fileName = *( String *)lua_topointer(L, 2);
+	inst->loadSkeleton(fileName);
+	return 0;
+}
+
+static int Polycore_Skeleton_playAnimationByIndex(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Skeleton *inst = (Skeleton*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	int index = lua_tointeger(L, 2);
+	bool once;
+	if(lua_isboolean(L, 3)) {
+		once = lua_toboolean(L, 3);
+	} else {
+		once = false;
+	}
+	> > > > > > > master void *retInst = new > > > > > > > master void();
+	*retInst = inst->playAnimationByIndex(index, once);
+	lua_pushlightuserdata(L, retInst);
+	return 1;
+}
+
+static int Polycore_Skeleton_addAnimation(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Skeleton *inst = (Skeleton*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	const String & name = *( String *)lua_topointer(L, 2);
+	luaL_checktype(L, 3, LUA_TLIGHTUSERDATA);
+	const String & fileName = *( String *)lua_topointer(L, 3);
+	inst->addAnimation(name, fileName);
+	return 0;
+}
+
+static int Polycore_Skeleton_getAnimation(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Skeleton *inst = (Skeleton*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	const String & name = *( String *)lua_topointer(L, 2);
+	void *ptrRetVal = (void*)inst->getAnimation(name);
+	if(ptrRetVal == NULL) {
+		lua_pushnil(L);
+	} else {
+		lua_pushlightuserdata(L, ptrRetVal);
+	}
+	return 1;
+}
+
+static int Polycore_Skeleton_Update(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Skeleton *inst = (Skeleton*)lua_topointer(L, 1);
+	inst->Update();
+	return 0;
+}
+
+static int Polycore_Skeleton_getBoneByName(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Skeleton *inst = (Skeleton*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	const String & name = *( String *)lua_topointer(L, 2);
+	void *ptrRetVal = (void*)inst->getBoneByName(name);
+	if(ptrRetVal == NULL) {
+		lua_pushnil(L);
+	} else {
+		lua_pushlightuserdata(L, ptrRetVal);
+	}
+	return 1;
+}
+
+static int Polycore_Skeleton_bonesVisible(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Skeleton *inst = (Skeleton*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TBOOLEAN);
+	bool val = lua_toboolean(L, 2);
+	inst->bonesVisible(val);
+	return 0;
+}
+
+static int Polycore_Skeleton_enableBoneLabels(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Skeleton *inst = (Skeleton*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	const String & labelFont = *( String *)lua_topointer(L, 2);
+	luaL_checktype(L, 3, LUA_TNUMBER);
+	Number size = lua_tonumber(L, 3);
+	luaL_checktype(L, 4, LUA_TNUMBER);
+	Number scale = lua_tonumber(L, 4);
+	luaL_checktype(L, 5, LUA_TLIGHTUSERDATA);
+	Color labelColor = *(Color*)lua_topointer(L, 5);
+	inst->enableBoneLabels(labelFont, size, scale, labelColor);
+	return 0;
+}
+
+static int Polycore_Skeleton_getNumBones(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Skeleton *inst = (Skeleton*)lua_topointer(L, 1);
+	lua_pushinteger(L, inst->getNumBones());
+	return 1;
+}
+
+static int Polycore_Skeleton_getBone(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Skeleton *inst = (Skeleton*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	int index = lua_tointeger(L, 2);
+	void *ptrRetVal = (void*)inst->getBone(index);
+	if(ptrRetVal == NULL) {
+		lua_pushnil(L);
+	} else {
+		lua_pushlightuserdata(L, ptrRetVal);
+	}
+	return 1;
+}
+
+static int Polycore_Skeleton_getCurrentAnimation(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Skeleton *inst = (Skeleton*)lua_topointer(L, 1);
+	void *ptrRetVal = (void*)inst->getCurrentAnimation();
+	if(ptrRetVal == NULL) {
+		lua_pushnil(L);
+	} else {
+		lua_pushlightuserdata(L, ptrRetVal);
+	}
+	return 1;
+}
+
+static int Polycore_delete_Skeleton(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Skeleton *inst = (Skeleton*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_Matrix4(lua_State *L) {
 	Matrix4 *inst = new Matrix4();
 	lua_pushlightuserdata(L, (void*)inst);
