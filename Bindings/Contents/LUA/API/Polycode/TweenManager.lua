@@ -24,6 +24,10 @@ function TweenManager:addTween(tween)
 	local retVal = Polycore.TweenManager_addTween(self.__ptr, tween.__ptr)
 end
 
+function TweenManager:removeTween(tween)
+	local retVal = Polycore.TweenManager_removeTween(self.__ptr, tween.__ptr)
+end
+
 function TweenManager:Update()
 	local retVal =  Polycore.TweenManager_Update(self.__ptr)
 end

@@ -266,6 +266,16 @@ void Scene::addLight(SceneLight *light) {
 	addEntity(light);	
 }
 
+void Scene::removeLight(SceneLight *light) {
+	removeEntity(light);
+	for(int i=0; i < lights.size(); i++) {
+		if(lights[i] == light) {
+			lights.erase(lights.begin()+i);
+			return;
+		}		
+	}
+}
+
 SceneLight *Scene::getNearestLight(Vector3 pos) {
 	if(lights.size() > 0)
 		return lights[0];

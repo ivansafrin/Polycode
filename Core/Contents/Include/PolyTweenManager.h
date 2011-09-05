@@ -37,6 +37,7 @@ namespace Polycode {
 			TweenManager();
 			~TweenManager();
 			void addTween(Tween *tween);
+			void removeTween(Tween *tween);	
 			void Update();
 		
 		private:

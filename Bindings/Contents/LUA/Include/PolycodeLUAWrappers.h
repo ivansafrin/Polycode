@@ -1301,9 +1301,13 @@ static int Polycore_Core_setVideoModeIndex(lua_State *L) {
 	int index = lua_tointeger(L, 2);
 	luaL_checktype(L, 3, LUA_TBOOLEAN);
 	bool fullScreen = lua_toboolean(L, 3);
-	luaL_checktype(L, 4, LUA_TNUMBER);
-	int aaLevel = lua_tointeger(L, 4);
-	inst->setVideoModeIndex(index, fullScreen, aaLevel);
+	luaL_checktype(L, 4, LUA_TBOOLEAN);
+	bool vSync = lua_toboolean(L, 4);
+	luaL_checktype(L, 5, LUA_TNUMBER);
+	int aaLevel = lua_tointeger(L, 5);
+	luaL_checktype(L, 6, LUA_TNUMBER);
+	int anisotropyLevel = lua_tointeger(L, 6);
+	inst->setVideoModeIndex(index, fullScreen, vSync, aaLevel, anisotropyLevel);
 	return 0;
 }
 
@@ -1316,9 +1320,13 @@ static int Polycore_Core_setVideoMode(lua_State *L) {
 	int yRes = lua_tointeger(L, 3);
 	luaL_checktype(L, 4, LUA_TBOOLEAN);
 	bool fullScreen = lua_toboolean(L, 4);
-	luaL_checktype(L, 5, LUA_TNUMBER);
-	int aaLevel = lua_tointeger(L, 5);
-	inst->setVideoMode(xRes, yRes, fullScreen, aaLevel);
+	luaL_checktype(L, 5, LUA_TBOOLEAN);
+	bool vSync = lua_toboolean(L, 5);
+	luaL_checktype(L, 6, LUA_TNUMBER);
+	int aaLevel = lua_tointeger(L, 6);
+	luaL_checktype(L, 7, LUA_TNUMBER);
+	int anisotropyLevel = lua_tointeger(L, 7);
+	inst->setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel);
 	return 0;
 }
 
@@ -6481,6 +6489,22 @@ static int Polycore_Renderer_getYRes(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_Renderer_setAnisotropyAmount(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Renderer *inst = (Renderer*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	Number amount = lua_tonumber(L, 2);
+	inst->setAnisotropyAmount(amount);
+	return 0;
+}
+
+static int Polycore_Renderer_getAnisotropyAmount(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Renderer *inst = (Renderer*)lua_topointer(L, 1);
+	lua_pushnumber(L, inst->getAnisotropyAmount());
+	return 1;
+}
+
 static int Polycore_Renderer_cullFrontFaces(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Renderer *inst = (Renderer*)lua_topointer(L, 1);
@@ -7138,6 +7162,15 @@ static int Polycore_Scene_addLight(lua_State *L) {
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
 	SceneLight * light = (SceneLight *)lua_topointer(L, 2);
 	inst->addLight(light);
+	return 0;
+}
+
+static int Polycore_Scene_removeLight(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Scene *inst = (Scene*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	SceneLight * light = (SceneLight *)lua_topointer(L, 2);
+	inst->removeLight(light);
 	return 0;
 }
 
@@ -10770,6 +10803,15 @@ static int Polycore_TweenManager_addTween(lua_State *L) {
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
 	Tween * tween = (Tween *)lua_topointer(L, 2);
 	inst->addTween(tween);
+	return 0;
+}
+
+static int Polycore_TweenManager_removeTween(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	TweenManager *inst = (TweenManager*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	Tween * tween = (Tween *)lua_topointer(L, 2);
+	inst->removeTween(tween);
 	return 0;
 }
 

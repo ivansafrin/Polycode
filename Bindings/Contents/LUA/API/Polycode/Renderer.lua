@@ -388,6 +388,15 @@ function Renderer:getYRes()
 	return retVal
 end
 
+function Renderer:setAnisotropyAmount(amount)
+	local retVal = Polycore.Renderer_setAnisotropyAmount(self.__ptr, amount)
+end
+
+function Renderer:getAnisotropyAmount()
+	local retVal =  Polycore.Renderer_getAnisotropyAmount(self.__ptr)
+	return retVal
+end
+
 function Renderer:cullFrontFaces(val)
 	local retVal = Polycore.Renderer_cullFrontFaces(self.__ptr, val)
 end

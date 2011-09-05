@@ -64,6 +64,7 @@ void SceneMesh::setMesh(Mesh *mesh) {
 
 
 SceneMesh::~SceneMesh() {
+	delete mesh;
 }
 
 Mesh *SceneMesh::getMesh() {

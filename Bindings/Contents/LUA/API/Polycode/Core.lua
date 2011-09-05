@@ -148,12 +148,12 @@ function Core:openFolderPicker()
 	end
 end
 
-function Core:setVideoModeIndex(index, fullScreen, aaLevel)
-	local retVal = Polycore.Core_setVideoModeIndex(self.__ptr, index, fullScreen, aaLevel)
+function Core:setVideoModeIndex(index, fullScreen, vSync, aaLevel, anisotropyLevel)
+	local retVal = Polycore.Core_setVideoModeIndex(self.__ptr, index, fullScreen, vSync, aaLevel, anisotropyLevel)
 end
 
-function Core:setVideoMode(xRes, yRes, fullScreen, aaLevel)
-	local retVal = Polycore.Core_setVideoMode(self.__ptr, xRes, yRes, fullScreen, aaLevel)
+function Core:setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel)
+	local retVal = Polycore.Core_setVideoMode(self.__ptr, xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel)
 end
 
 function Core:resizeTo(xRes, yRes)
