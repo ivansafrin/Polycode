@@ -21,6 +21,9 @@ THE SOFTWARE.
 */
 
 #include "PolyPeer.h"
+#include <string.h>
+#include "PolyCore.h"
+#include "PolyTimer.h"
 
 using namespace Polycode;
 

@@ -21,21 +21,14 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
-#include <math.h>
 #include "PolyGlobals.h"
-#include "PolyVertex.h"
 #include "PolyVector3.h"
-#include "PolyVector2.h"
 #include "PolyRectangle.h"
 #include <vector>
 
-using std::vector;
-
-using std::min;
-using std::max;
-
 namespace Polycode {
+
+	class Vertex;
 
 	/**
 	* A polygon structure.
@@ -126,7 +119,7 @@ namespace Polycode {
 		protected:
 		
 			unsigned int vertexCount;
-			vector<Vertex*> vertices;
+			std::vector<Vertex*> vertices;
 			Vector3			normal;
 	};
 

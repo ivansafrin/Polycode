@@ -27,9 +27,6 @@
 #include <string>
 #include <vector>
 #include <algorithm>
-using std::vector;
-
-using namespace std;
 
 typedef std::string Str;
 typedef std::wstring WStr;
@@ -68,12 +65,12 @@ namespace Polycode {
 			/**
 			* Initializes the string from an STL string.
 			*/												
-			String(const string& str);
+			String(const std::string& str);
 			
 			/**
 			* Initializes the string from an STL wstring.
 			*/															
-			String(const wstring& str);
+			String(const std::wstring& str);
 		
 			~String();
 		
@@ -90,7 +87,7 @@ namespace Polycode {
 			/**
 			* Return the string and an STL string.
 			*/		
-			const string& getSTLString() const;
+			const std::string& getSTLString() const;
 					
 			/**
 			* Returns the substring of the string.
@@ -98,7 +95,7 @@ namespace Polycode {
 			* @param n Length of the substring.
 			* @return A string object containing a substring of the current object.
 			*/					
-			String substr(size_t pos = 0, size_t n = wstring::npos) const { return String(contents.substr(pos,n)); }
+			String substr(size_t pos = 0, size_t n = std::wstring::npos) const { return String(contents.substr(pos,n)); }
 
 			/**
 			* Find last occurrence of content in string. 
@@ -106,7 +103,7 @@ namespace Polycode {
 			* @param pos Position of the last character in the string to be taken into consideration for possible matches. The default value indicates that the entire string is searched.
 			* @return The position of the last occurrence in the string of the searched content
 			*/							
-			size_t rfind ( const String &str, size_t pos = wstring::npos ) const { return contents.rfind(str.contents, pos); }
+			size_t rfind ( const String &str, size_t pos = std::wstring::npos ) const { return contents.rfind(str.contents, pos); }
 			
 			/**
 			* Find content in string. 
@@ -122,7 +119,7 @@ namespace Polycode {
 			* @param pos Position of the last character in the string to be taken into consideration for possible matches. The default value indicates that the entire string is searched.
 			* @return The position of the last occurrence in the string of any of the characters searched for.
 			*/													
-			size_t find_last_of(const String& str, size_t pos = wstring::npos ) { return contents.find_last_of(str.contents, pos); }
+			size_t find_last_of(const String& str, size_t pos = std::wstring::npos ) { return contents.find_last_of(str.contents, pos); }
 		
 			inline String operator + (const char *str) const { return String(contents + String(str).contents); }		
 			inline String operator + (const String &str) const { return String(contents + str.contents); }		
@@ -149,7 +146,7 @@ namespace Polycode {
 			* @param delim The delimeter to split by.
 			* @return An STL vector of the split parts of the string. 
 			*/																				
-			vector<String> split(const String &delim) const;
+			std::vector<String> split(const String &delim) const;
 
 			/**
 			* Replaces parts of the string with another string.
@@ -206,7 +203,7 @@ namespace Polycode {
 			/**
 			* STL string version of the string.
 			*/																																					
-			string contents;
+			std::string contents;
 						
 			/**
 			* UTF-8 encoding.
@@ -220,5 +217,5 @@ namespace Polycode {
 
 	static inline String operator+ (const char *str, const String &rstr) { return String(String(str).contents + rstr.contents); }
 	static inline String operator+ (const wchar_t *str, const String &rstr) { return String(String(str).contents + rstr.contents); }	
-	static inline String operator+ (const wchar_t str, const String &rstr) { wstring tmp=L" "; tmp[0] = str; return tmp.c_str() + rstr; }
+	static inline String operator+ (const wchar_t str, const String &rstr) { std::wstring tmp=L" "; tmp[0] = str; return tmp.c_str() + rstr; }
 }

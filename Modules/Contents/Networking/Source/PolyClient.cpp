@@ -21,6 +21,8 @@ THE SOFTWARE.
 */
 
 #include "PolyClient.h"
+#include <string.h>
+#include "PolyTimer.h"
 
 using namespace Polycode;
 
@@ -87,7 +89,7 @@ void Client::setPersistentData(void *data, unsigned int size) {
 	dataSize = size;
 }
 
-void Client::Connect(string ipAddress, unsigned int port) {
+void Client::Connect(std::string ipAddress, unsigned int port) {
 	serverAddress.setAddress(ipAddress, port);
 	connected = true;	
 }

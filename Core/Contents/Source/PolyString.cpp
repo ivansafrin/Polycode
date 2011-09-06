@@ -23,6 +23,7 @@
 #include "PolyString.h"
 
 using namespace Polycode;
+using namespace std;
 
 String::String() {
 }

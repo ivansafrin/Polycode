@@ -21,7 +21,21 @@
 */
 
 #include "PolyResourceManager.h"
+#include "PolyCoreServices.h"
+#include "PolyCubemap.h"
+#include "PolyMaterialManager.h"
+#include "PolyModule.h"
+#include "PolyFontManager.h"
+#include "PolyLogger.h"
+#include "PolyMaterial.h"
+#include "PolyShader.h"
+#include "PolyTexture.h"
+#include "OSBasics.h"
 
+#include "physfs.h"
+#include "tinyxml.h"
+
+using std::vector;
 using namespace Polycode;
 
 ResourceManager::ResourceManager() {

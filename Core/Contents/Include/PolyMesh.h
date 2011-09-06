@@ -21,19 +21,16 @@ THE SOFTWARE.
 */
  
 #pragma once
-#include "PolyString.h"
-#include <math.h>
 #include "PolyGlobals.h"
-#include "PolyPolygon.h"
 #include "PolyVertex.h"
-#include <string>
-#include <vector>
-#include "OSBasics.h"
 
-using namespace std;
- 
+class OSFILE;
+
 namespace Polycode {
 	
+	class Polygon;
+	class String;
+
 	class _PolyExport VertexSorter {
 		public:
 			Vertex *target;
@@ -259,7 +256,7 @@ namespace Polycode {
 			*/
 			void calculateNormals(bool smooth=true, Number smoothAngle=90.0);	
 			
-			vector<Polygon*> getConnectedFaces(Vertex *v);
+			std::vector<Polygon*> getConnectedFaces(Vertex *v);
 			
 			/**
 			* Returns the mesh type.
@@ -335,6 +332,6 @@ namespace Polycode {
 		VertexBuffer *vertexBuffer;
 		bool meshHasVertexBuffer;
 		int meshType;
-		vector <Polygon*> polygons;
+		std::vector <Polygon*> polygons;
 	};
 }

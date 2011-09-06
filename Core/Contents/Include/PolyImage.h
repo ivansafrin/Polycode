@@ -21,17 +21,12 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolyColor.h"
-#include "PolyPerlin.h"
-#include <string>
-#include <math.h>
-#include "OSBasics.h"
-
-using std::string;
 
 namespace Polycode {
+
+	class String;
 
 	/**
 	* An image in memory. Basic RGB or RGBA images stored in memory. Can be loaded from PNG files, created into textures and written to file.

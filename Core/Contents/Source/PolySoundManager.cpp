@@ -21,6 +21,7 @@
 */
 
 #include "PolySoundManager.h"
+#include "PolyLogger.h"
 
 using namespace Polycode;
 
@@ -30,12 +31,12 @@ SoundManager::SoundManager() {
 
 void SoundManager::initAL() {
 	alGetError();
-	if(alcGetCurrentContext() == NULL) {
+	if(alcGetCurrentContext() == 0) {
 		Logger::log("AL already initialized\n");
 	}
 	
-	device = alcOpenDevice(NULL);
-	if(device == NULL) {
+	device = alcOpenDevice(0);
+	if(device == 0) {
 		Logger::log("InitializeAL: Cannot open preferred device\n");
 		return;
 	}
@@ -45,8 +46,8 @@ void SoundManager::initAL() {
 	//	PCCE_THROW("InitializeAL: Could not open device (alc error)");
 	}
 	
-	context = alcCreateContext(device, NULL);
-	if (context == NULL) {
+	context = alcCreateContext(device, 0);
+	if (context == 0) {
 		alcCloseDevice(device);
 	//	PCCE_THROW("InitializeAL: Could not create context");
 	}
@@ -62,7 +63,7 @@ void SoundManager::initAL() {
 	//	PCCE_THROW("InitializeAL: Could not make context current");
 	}
 	if (alcGetError(device) != ALC_NO_ERROR) {
-		alcMakeContextCurrent(NULL);
+		alcMakeContextCurrent(0);
 		alcDestroyContext(context);
 		alcCloseDevice(device);
 	//	PCCE_THROW("InitializeAL: Could not make context current (alc error)");
@@ -103,7 +104,7 @@ void SoundManager::setListenerOrientation(Vector3 orientation) {
 SoundManager::~SoundManager() {
 	alcSuspendContext(context);
 	alcDestroyContext(context);
-	if (device != NULL) {
+	if (device != 0) {
 		alcCloseDevice(device);
 	}
 }

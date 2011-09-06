@@ -24,14 +24,9 @@
 
 #include "PolyGlobals.h"
 #include "PolyCore.h"
-#include "PolyGLRenderer.h"
-#include "PolyGLSLShaderModule.h"
-#include "PolyRectangle.h"
 #include <vector>
-#include <SDL/SDL.h>
-#include <iostream>
 
-using std::vector;
+struct SDL_mutex;
 
 namespace Polycode {
 
@@ -52,7 +47,7 @@ namespace Polycode {
 		bool Update();
 		void setVideoMode(int xRes, int yRes, bool fullScreen, int aaLevel);
 		void createThread(Threaded *target);
-		vector<Rectangle> getVideoModes();
+		std::vector<Rectangle> getVideoModes();
 		
 		void setCursor(int cursorType);
 		void lockMutex(CoreMutex *mutex);
@@ -65,7 +60,7 @@ namespace Polycode {
 		void moveDiskItem(const String& itemPath, const String& destItemPath);
 		void removeDiskItem(const String& itemPath);
 		String openFolderPicker();
-		vector<string> openFilePicker(vector<CoreFileExtension> extensions, bool allowMultiple);
+		std::vector<String> openFilePicker(std::vector<CoreFileExtension> extensions, bool allowMultiple);
 		void resizeTo(int xRes, int yRes);
 
 	private:

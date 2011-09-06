@@ -21,6 +21,20 @@
 */
 
 #include "OSBasics.h"
+#ifdef _WINDOWS
+	#include <windows.h>
+#else
+	#include <dirent.h>
+	#include <sys/types.h>
+	#include <sys/stat.h>
+#endif
+
+#include <vector>
+#include <string>
+#include "physfs.h"
+
+using namespace std;
+using namespace Polycode;
 
 
 #ifdef _WINDOWS

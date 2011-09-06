@@ -21,14 +21,9 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyScreen.h"
-//#include "PolyPhysicsScreen.h"
-#include "PolyCoreServices.h"
+#include "PolyEventDispatcher.h"
 #include <vector>
-
-using std::vector;
 
 namespace Polycode {
 
@@ -54,7 +49,7 @@ namespace Polycode {
 		
 		private:
 		
-		vector <Screen*> screens;
+		std::vector <Screen*> screens;
 			
 	};
 

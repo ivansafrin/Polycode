@@ -20,6 +20,7 @@
  THE SOFTWARE.
 */
 #include "PolyEntity.h"
+#include "PolyRenderer.h"
 
 using namespace Polycode;
 

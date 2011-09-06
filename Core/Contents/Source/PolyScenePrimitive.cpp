@@ -21,6 +21,7 @@
 */
  
 #include "PolyScenePrimitive.h"
+#include "PolyMesh.h"
 
 using namespace Polycode;
 

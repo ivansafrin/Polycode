@@ -22,14 +22,13 @@ THE SOFTWARE.
 
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolyVector2.h"
-#include "PolyInputEvent.h"
-#include "PolyEventDispatcher.h"
+#include "PolyMatrix4.h"
 #include "PolyRectangle.h"
+#include "PolyInputKeys.h"
 #include "PolyEntity.h"
-
+#include "PolyEventDispatcher.h"
 
 namespace Polycode {
 

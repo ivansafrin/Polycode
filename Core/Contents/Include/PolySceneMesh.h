@@ -21,22 +21,16 @@ THE SOFTWARE.
 */
  
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyCoreServices.h"
 #include "PolySceneEntity.h"
-#include "PolyMesh.h"
-#include "PolySkeleton.h"
-#include "PolyMaterial.h"
-#include "PolyImage.h"
-#include <string>
-
-using namespace std;
 
 namespace Polycode {
 
+	class Material;
+	class Mesh;
 	class Texture;
 	class Skeleton;
+	class ShaderBinding;
 	
 	/**
 	* 3D polygonal mesh instance. The SceneMesh is the base for all polygonal 3d geometry. It can have simple textures or complex materials applied to it.

@@ -21,6 +21,8 @@
 */
 
 #include "PolyFont.h"
+#include "OSBasics.h"
+#include "PolyLogger.h"
 
 using namespace Polycode;
 

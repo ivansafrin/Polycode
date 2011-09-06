@@ -21,18 +21,16 @@
  */
 
 #pragma once
-#include "PolyString.h"
-#include "PolyLogger.h"
 #include "PolyGlobals.h"
+#include "PolyString.h"
 #include "PolyMatrix4.h"
 #include "PolyQuaternion.h"
 #include "PolyColor.h"
-#include "PolyRenderer.h"
 #include <vector>
 
-using std::vector;
-
 namespace Polycode {
+
+	class Renderer;
 
 	class _PolyExport EntityProp {
 	public:
@@ -553,7 +551,7 @@ namespace Polycode {
 				
 			Vector3 getChildCenter() const;
 							
-			vector <EntityProp> entityProps;						
+			std::vector <EntityProp> entityProps;
 			String getEntityProp(const String& propName);
 			
 			void doUpdates();				
@@ -568,7 +566,7 @@ namespace Polycode {
 			bool isMask;
 		
 		protected:
-			vector<Entity*> children;
+			std::vector<Entity*> children;
 
 			Vector3 childCenter;
 			Number bBoxRadius;		

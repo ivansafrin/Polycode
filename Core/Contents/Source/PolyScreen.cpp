@@ -21,6 +21,16 @@
 */
 
 #include "PolyScreen.h"
+#include "PolyCoreServices.h"
+#include "PolyInputEvent.h"
+#include "PolyScreenManager.h"
+#include "PolyResourceManager.h"
+#include "PolyCore.h"
+#include "PolyMaterial.h"
+#include "PolyRenderer.h"
+#include "PolyScreenEntity.h"
+#include "PolyScreenEvent.h"
+#include "PolyShader.h"
 
 using namespace Polycode;
 

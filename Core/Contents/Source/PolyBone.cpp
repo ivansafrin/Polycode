@@ -21,6 +21,11 @@
 */
 
 #include "PolyBone.h"
+#include "PolyCoreServices.h"
+#include "PolyLabel.h"
+#include "PolyMesh.h"
+#include "PolyRenderer.h"
+#include "PolySceneLabel.h"
 
 using namespace Polycode;
 

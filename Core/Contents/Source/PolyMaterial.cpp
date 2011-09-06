@@ -21,6 +21,8 @@
 */
 
 #include "PolyMaterial.h"
+#include "PolyLogger.h"
+#include "PolyShader.h"
 
 using namespace Polycode;
 

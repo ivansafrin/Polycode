@@ -22,16 +22,13 @@ THE SOFTWARE.
 
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyFont.h"
+#include "PolyString.h"
 #include <vector>
-#include <string>
-
-using std::vector;
-using std::string;
 
 namespace Polycode {
+
+	class Font;
 
 	class FontEntry {
 	public:
@@ -63,7 +60,7 @@ namespace Polycode {
 		
 	private:
 		
-		vector <FontEntry> fonts;
+		std::vector <FontEntry> fonts;
 		
 	};
 	

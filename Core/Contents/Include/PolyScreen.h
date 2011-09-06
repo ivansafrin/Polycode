@@ -22,19 +22,19 @@ THE SOFTWARE.
 
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyScreenEntity.h"
-#include "PolyRenderer.h"
-#include "PolyInputEvent.h"
-#include "PolyCoreServices.h"
+#include "PolyVector2.h"
+#include "PolyEventDispatcher.h"
 #include <vector>
-#include <algorithm>
-#include "PolyScreenEvent.h"
-
-using namespace std;
 
 namespace Polycode {
+
+	class InputEvent;
+	class Renderer;
+	class Material;
+	class Texture;
+	class ScreenEntity;
+	class ShaderBinding;
 
 	/**
 	* 2D rendering base. The Screen is the container for all 2D rendering in Polycode. Screens are automatically rendered and need only be instantiated to immediately add themselves to the rendering pipeline. Each screen has a root entity.
@@ -139,7 +139,7 @@ namespace Polycode {
 		/**
 		* Returns the local shader options for the camera post processing material.
 		*/				
-		vector<ShaderBinding*> getLocalShaderOptions() { return localShaderOptions; }
+		std::vector<ShaderBinding*> getLocalShaderOptions() { return localShaderOptions; }
 		
 		/**
 		* Returns the shader material applied to the camera.
@@ -156,12 +156,12 @@ namespace Polycode {
 		Vector2 offset;
 		Renderer *renderer;
 		ScreenEntity *focusChild;
-		vector <ScreenEntity*> children;
+		std::vector <ScreenEntity*> children;
 		
 		Material *filterShaderMaterial;			
 		Texture *originalSceneTexture;			
 		Texture *zBufferSceneTexture;						
-		vector<ShaderBinding*> localShaderOptions;
+		std::vector<ShaderBinding*> localShaderOptions;
 		bool _hasFilterShader;
 	};
 }

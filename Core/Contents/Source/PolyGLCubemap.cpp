@@ -21,6 +21,7 @@
 */
 
 #include "PolyGLCubemap.h"
+#include "PolyTexture.h"
 
 using namespace Polycode;
 

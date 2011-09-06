@@ -23,6 +23,9 @@ THE SOFTWARE.
 #define PI 3.14159265
 
 #include "PolyPhysicsScreenEntity.h"
+#include "PolyLogger.h"
+#include "PolyMesh.h"
+#include "PolyPolygon.h"
 
 using namespace Polycode;
 

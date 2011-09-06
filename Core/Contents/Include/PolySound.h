@@ -21,19 +21,11 @@
  */
 
 #pragma once
-#include <vorbis/vorbisfile.h>
-#include "PolyString.h"
-#include "PolyLogger.h"
 #include "PolyGlobals.h"
 #include "PolyVector3.h"
-#include <string>
-#include <vector>
+
 #include "al.h"
 #include "alc.h"
-#include "OSBasics.h"
-
-using std::string;
-using std::vector;
 
 #define ALNoErrorStr "No AL error occurred"
 #define ALInvalidNameStr "AL error: a bad name (ID) was passed to an OpenAL function"
@@ -47,6 +39,8 @@ using std::vector;
 
 namespace Polycode {
 	
+	class String;
+
 	/**
 	* Loads and plays a sound. This class can load and play an OGG or WAV sound file.
 	*/

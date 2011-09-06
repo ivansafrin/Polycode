@@ -22,35 +22,22 @@
 
 #pragma once
 
-#include "PolyLogger.h"
 #include "PolyGlobals.h"
 #include "PolyString.h"
 
-#ifdef _WINDOWS
-	#include <windows.h>
-#else
-	#include <dirent.h> 
-	#include <sys/types.h>
-	#include <sys/stat.h>
-#endif
-
-#include <vector>
-#include <string>
-#include "physfs.h"
-
-using namespace std;
-using namespace Polycode;
+struct PHYSFS_File;
 
 class _PolyExport OSFileEntry {
+
 	public:
 		OSFileEntry() {};
-		OSFileEntry(const String& path, const String& name, int type);
+		OSFileEntry(const Polycode::String& path, const Polycode::String& name, int type);
 		
-		String name;
-		String extension;
-		String nameWithoutExtension;
-		String basePath;
-		String fullPath;
+		Polycode::String name;
+		Polycode::String extension;
+		Polycode::String nameWithoutExtension;
+		Polycode::String basePath;
+		Polycode::String fullPath;
 		int type;
 		
 		static const int TYPE_FILE = 0;
@@ -65,7 +52,7 @@ public:
 	
 	int fileType;
 	FILE *file;	
-	PHYSFS_file *physFSFile;
+	PHYSFS_File *physFSFile;
 	static const int TYPE_FILE = 0;
 	static const int TYPE_ARCHIVE_FILE = 1;	
 };
@@ -73,18 +60,18 @@ public:
 class _PolyExport OSBasics {
 	public:
 	
-		static OSFILE *open(const String& filename, const String& opts);
+		static OSFILE *open(const Polycode::String& filename, const Polycode::String& opts);
 		static int close(OSFILE *file);
 		static size_t read( void * ptr, size_t size, size_t count, OSFILE * stream );	
 		static size_t write( const void * ptr, size_t size, size_t count, OSFILE * stream );
 		static int seek(OSFILE * stream, long int offset, int origin );
 		static long tell(OSFILE * stream);
 	
-		static vector<OSFileEntry> parsePhysFSFolder(const String& pathString, bool showHidden);
-		static vector<OSFileEntry> parseFolder(const String& pathString, bool showHidden);
-		static bool isFolder(const String& pathString);
-		static void createFolder(const String& pathString);
-		static void removeItem(const String& pathString);
+		static std::vector<OSFileEntry> parsePhysFSFolder(const Polycode::String& pathString, bool showHidden);
+		static std::vector<OSFileEntry> parseFolder(const Polycode::String& pathString, bool showHidden);
+		static bool isFolder(const Polycode::String& pathString);
+		static void createFolder(const Polycode::String& pathString);
+		static void removeItem(const Polycode::String& pathString);
 		
 	private:
 	

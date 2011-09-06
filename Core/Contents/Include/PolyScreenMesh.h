@@ -21,18 +21,14 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyCoreServices.h"
 #include "PolyScreenEntity.h"
-#include "PolyMesh.h"
-#include "PolyTexture.h"
-#include "PolyPolygon.h"
-
-#include <string>
-using std::string;
 
 namespace Polycode {
+
+	class Image;
+	class Mesh;
+	class Texture;
 
 	/**
 	* 2D Mesh. ScreenMesh is the base for most geometry-based screen entities. It's based aroudn a Mesh instance, like its 3D counterpart (SceneMesh), but currently has fewer options.

@@ -21,8 +21,20 @@
 */		
 
 #include "PolySDLCore.h"
+#include "PolyCoreServices.h"
+#include "PolyCoreInput.h"
+#include "PolyMaterialManager.h"
+#include "PolyThreaded.h"
+
+#include "PolyGLRenderer.h"
+#include "PolyGLSLShaderModule.h"
+#include "PolyRectangle.h"
+
+#include <SDL/SDL.h>
+#include <iostream>
 
 using namespace Polycode;
+using std::vector;
 
 long getThreadID() {
 	return (long)pthread_self();
@@ -223,7 +235,7 @@ String SDLCore::openFolderPicker() {
 
 }
 
-vector<string> SDLCore::openFilePicker(vector<CoreFileExtension> extensions, bool allowMultiple) {
+vector<String> SDLCore::openFilePicker(vector<CoreFileExtension> extensions, bool allowMultiple) {
 
 }
 

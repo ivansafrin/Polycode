@@ -21,17 +21,18 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyLogger.h"
 #include "PolyGlobals.h"
 #include "PolyScene.h"
-#include "PolyCollisionSceneEntity.h"
-#include "btBulletCollisionCommon.h"
 #include "PolyVector3.h"
 #include <vector>
 
-using std::vector;
+class btCollisionObject;
+class btCollisionWorld;
 
 namespace Polycode {
+
+class SceneEntity;
+class CollisionSceneEntity;
 
 /**
 * Result of a collision test.
@@ -119,7 +120,7 @@ struct CollisionResult {
 			
 		protected:
 		
-			vector<CollisionSceneEntity*> collisionChildren;
+			std::vector<CollisionSceneEntity*> collisionChildren;
 			btCollisionWorld *world;
 	};
 

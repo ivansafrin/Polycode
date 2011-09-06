@@ -21,15 +21,13 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyBezierCurve.h"
 #include "PolyQuaternion.h"
 #include <vector>
 
-using std::vector;
-
 namespace Polycode {
+
+	class BezierCurve;
 
 	class _PolyExport QuatTriple {
 		public:
@@ -51,8 +49,8 @@ namespace Polycode {
 		
 		protected:
 		
-			vector<QuatTriple> tPoints;
-			vector<Quaternion> points;			
-			vector<Quaternion> tangents;
+			std::vector<QuatTriple> tPoints;
+			std::vector<Quaternion> points;
+			std::vector<Quaternion> tangents;
 	};
 }

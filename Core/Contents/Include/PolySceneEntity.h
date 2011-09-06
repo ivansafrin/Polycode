@@ -21,18 +21,8 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
-#include "PolyLogger.h"
-#include "PolyGlobals.h"
-#include "PolyRenderer.h"
-#include "PolyVector3.h"
-#include "PolyMatrix4.h"
-#include "PolyQuaternion.h"
 #include "PolyEntity.h"
 #include "PolyEventHandler.h"
-#include <vector>
-
-using std::vector;
 
 namespace Polycode {
 

@@ -22,6 +22,28 @@ THE SOFTWARE.
 
 
 #include "PolyGLSLShaderModule.h"
+#include "PolyCoreServices.h"
+#include "PolyResourceManager.h"
+#include "PolyRenderer.h"
+#include "PolyGLSLProgram.h"
+#include "PolyGLSLShader.h"
+#include "PolyGLCubemap.h"
+#include "PolyMaterial.h"
+#include "PolyGLTexture.h"
+
+#include "tinyxml.h"
+
+#if defined(__APPLE__) && defined(__MACH__)
+#include <OpenGL/gl.h>
+#include <OpenGL/glext.h>
+#include <OpenGL/glu.h>
+#else
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <GL/glext.h>
+#endif
+
+using std::vector;
 
 using namespace Polycode;
 

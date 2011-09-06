@@ -21,18 +21,11 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
-#include "PolyLogger.h"
 #include "PolyGlobals.h"
-#include "PolyRenderer.h"
-#include "PolyThreaded.h"
-#include "PolyCoreInput.h"
-//#include "PolyGLRenderer.h"
-#include "PolyMaterialManager.h"
-#include "PolyCoreServices.h"
+#include "PolyString.h"
 #include "PolyRectangle.h"
-#include <vector>
-#include <string>
+#include "PolyVector2.h"
+#include "PolyEventDispatcher.h"
 
 #define CURSOR_ARROW 0
 #define CURSOR_TEXT 1
@@ -41,14 +34,14 @@ THE SOFTWARE.
 #define CURSOR_RESIZE_LEFT_RIGHT 4
 #define CURSOR_RESIZE_UP_DOWN 5
 
-using std::vector;
-using std::wstring;
-
 long getThreadID();
 
 namespace Polycode {
 
+	class CoreInput;
 	class CoreServices;
+	class Renderer;
+	class Threaded;
 
 	class _PolyExport CoreMutex {
 	public:
@@ -194,7 +187,7 @@ namespace Polycode {
 		* Returns the available system video modes. 
 		* @return An STL vector of video modes.
 		*/															
-		virtual vector<Rectangle> getVideoModes() = 0;
+		virtual std::vector<Rectangle> getVideoModes() = 0;
 				
 		/**
 		* Creates a folder on disk with the specified path.
@@ -234,7 +227,7 @@ namespace Polycode {
 		* @param allowMultiple If set to true, the picker can select multiple files.
 		* @return An STL vector of the selected file paths.
 		*/																							
-		virtual vector<string> openFilePicker(vector<CoreFileExtension> extensions, bool allowMultiple) = 0;
+		virtual std::vector<String> openFilePicker(std::vector<CoreFileExtension> extensions, bool allowMultiple) = 0;
 		
 		void setVideoModeIndex(int index, bool fullScreen, int aaLevel);
 		
@@ -288,7 +281,7 @@ namespace Polycode {
 		bool fullScreen;
 		int aaLevel;
 	
-		vector<Vector2>	videoModes;
+		std::vector<Vector2>	videoModes;
 		void updateCore();
 
 		int numVideoModes;

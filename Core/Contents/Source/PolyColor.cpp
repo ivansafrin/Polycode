@@ -21,6 +21,7 @@
 */
 
 #include "PolyColor.h"
+#include <stdlib.h>
 
 using namespace Polycode;
 

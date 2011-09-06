@@ -21,6 +21,21 @@
 */
 
 #include "PolyCoreServices.h"
+#include "PolyCore.h"
+#include "PolyCoreInput.h"
+#include "PolyInputEvent.h"
+#include "PolyLogger.h"
+#include "PolyModule.h"
+#include "PolyResourceManager.h"
+#include "PolyMaterialManager.h"
+#include "PolyRenderer.h"
+#include "PolyConfig.h"
+#include "PolyFontManager.h"
+#include "PolyScreenManager.h"
+#include "PolySceneManager.h"
+#include "PolyTimerManager.h"
+#include "PolyTweenManager.h"
+#include "PolySoundManager.h"
 
 using namespace Polycode;
 

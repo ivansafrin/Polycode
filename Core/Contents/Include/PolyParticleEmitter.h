@@ -21,18 +21,27 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyEntity.h"
-#include "PolyScenePrimitive.h"
-#include "PolyScreenMesh.h"
-#include "PolyCoreServices.h"
-#include "PolyParticle.h"
-#include <vector>
-
-using std::vector;
+#include "PolyString.h"
+#include "PolyVector3.h"
+#include "PolyMatrix4.h"
+#include "PolyBezierCurve.h"
+#include "PolySceneEntity.h"
+#include "PolyScreenEntity.h"
 
 namespace Polycode {
+
+	class Entity;
+	class Material;
+	class Mesh;
+	class Particle;
+	class Perlin;
+	class Scene;
+	class SceneMesh;
+	class Screen;
+	class ScreenMesh;
+	class Texture;
+	class Timer;
 
 	/** 
 	* Particle emitter base.
@@ -226,7 +235,7 @@ namespace Polycode {
 			
 			Number rotationSpeed;
 			Number numParticles;
-			vector<Particle*> particles;
+			std::vector<Particle*> particles;
 			
 			Number emitSpeed;
 			Timer *timer;

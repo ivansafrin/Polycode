@@ -23,20 +23,22 @@ THE SOFTWARE.
 #pragma once
 #include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyColor.h"
-#include "PolyPolygon.h"
-#include "PolyMesh.h"
-#include "PolyTexture.h"
-#include "PolyCubemap.h"
-#include "PolyMaterial.h"
-#include "PolyModule.h"
-#include "PolyVector3.h"
-#include "PolyQuaternion.h"
 #include "PolyMatrix4.h"
+#include "PolyVector2.h"
+#include "PolyImage.h"
 
 namespace Polycode {
 	
+	class Cubemap;
+	class Material;
+	class Mesh;
+	class PolycodeShaderBinding;
+	class PolycodeShaderModule;
+	class Polygon;
+	class RenderDataArray;
+	class ShaderBinding;
 	class Texture;
+	class VertexBuffer;
 
 	class _PolyExport LightInfo {
 		public:
@@ -239,8 +241,8 @@ namespace Polycode {
 		int getNumSpotLights() { return numSpotLights; }
 		int getNumLights() { return numLights; }
 		
-		vector<LightInfo> getAreaLights() { return areaLights; }
-		vector<LightInfo> getSpotLights() { return spotLights;	}
+		std::vector<LightInfo> getAreaLights() { return areaLights; }
+		std::vector<LightInfo> getSpotLights() { return spotLights;	}
 		
 	protected:
 		Matrix4 currentModelMatrix;
@@ -262,11 +264,11 @@ namespace Polycode {
 		Matrix4 cameraMatrix;
 	
 		PolycodeShaderModule* currentShaderModule;
-		vector <PolycodeShaderModule*> shaderModules;
+		std::vector <PolycodeShaderModule*> shaderModules;
 
-		vector<LightInfo> lights;
-		vector<LightInfo> areaLights;
-		vector<LightInfo> spotLights;		
+		std::vector<LightInfo> lights;
+		std::vector<LightInfo> areaLights;
+		std::vector<LightInfo> spotLights;
 		int numLights;
 		int numAreaLights;
 		int numSpotLights;

@@ -22,29 +22,16 @@ THE SOFTWARE.
 
 
 #pragma once
-#include "PolyString.h"
-#include "PolyLogger.h"
 #include "PolyGlobals.h"
 #include "PolyRenderer.h"
-#include "PolyTexture.h"
-#include "PolyGLTexture.h"
-#include "PolyCubemap.h"
-#include "PolyGLCubemap.h"
-#include "PolyGLVertexBuffer.h"
-#include "PolyFixedShader.h"
-#include "PolyMesh.h"
-
-#ifdef _WINDOWS
-	#include <windows.h>
-#endif
 
 #if defined(__APPLE__) && defined(__MACH__)
 #include <OpenGL/gl.h>
 #include <OpenGL/glext.h>
-#include <OpenGL/glu.h>	
+#include <OpenGL/glu.h>
 #else
-#include <GL/gl.h>	
-#include <GL/glu.h>	
+#include <GL/gl.h>
+#include <GL/glu.h>
 #include <GL/glext.h>
 
 #ifdef _WINDOWS

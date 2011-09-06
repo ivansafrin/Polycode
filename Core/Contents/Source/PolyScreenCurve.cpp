@@ -21,6 +21,9 @@
 */
 
 #include "PolyScreenCurve.h"
+#include "PolyBezierCurve.h"
+#include "PolyMesh.h"
+#include "PolyPolygon.h"
 
 using namespace Polycode;
 

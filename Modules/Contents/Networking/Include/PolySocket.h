@@ -23,6 +23,7 @@ THE SOFTWARE.
 #pragma once
 
 #include "PolyGlobals.h"
+#include "PolyEvent.h"
 #include "stdio.h"
 
 

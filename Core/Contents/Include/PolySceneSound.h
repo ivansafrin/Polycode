@@ -21,12 +21,11 @@ THE SOFTWARE.
 */
 
 #include "PolyGlobals.h"
-#include "PolySound.h"
 #include "PolySceneEntity.h"
-#include "PolyCoreServices.h"
 
 namespace Polycode {
 
+	class Sound;
 
 	/**
 	* Creates a positional 3D sound listener. There can be only one listener active at any one time.

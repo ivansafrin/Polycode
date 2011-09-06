@@ -24,17 +24,16 @@ THE SOFTWARE.
 #pragma once
 #include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyBone.h"
-#include <string>
+#include "PolyColor.h"
+#include "PolyVector3.h"
+#include "PolyQuaternion.h"
+#include "PolySceneEntity.h"
 #include <vector>
-#include "PolyBezierCurve.h"
-#include "PolyTween.h"
-
-using std::string;
-using std::vector;
 
 namespace Polycode {
 	
+	class BezierCurve;
+	class Bone;
 	class QuaternionTween;
 	class BezierPathTween;
 	
@@ -84,7 +83,7 @@ namespace Polycode {
 			bool initialized;
 		
 			Bone *targetBone;
-			vector <BezierPathTween*> pathTweens;
+			std::vector <BezierPathTween*> pathTweens;
 		
 	};
 
@@ -128,7 +127,7 @@ namespace Polycode {
 			
 			String name;
 			Number duration;
-			vector<BoneTrack*> boneTracks;
+			std::vector<BoneTrack*> boneTracks;
 	};
 
 	/**
@@ -217,8 +216,8 @@ namespace Polycode {
 			SceneEntity *bonesEntity;
 		
 			SkeletonAnimation *currentAnimation;
-			vector<Bone*> bones;
-			vector<SkeletonAnimation*> animations;
+			std::vector<Bone*> bones;
+			std::vector<SkeletonAnimation*> animations;
 	};
 
 }

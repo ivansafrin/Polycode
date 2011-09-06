@@ -21,6 +21,13 @@
 */
 
 #include "PolySkeleton.h"
+#include "PolyBezierCurve.h"
+#include "PolyBone.h"
+#include "PolyLabel.h"
+#include "PolySceneLabel.h"
+#include "PolySceneLine.h"
+#include "PolyTween.h"
+#include "OSBasics.h"
 
 using namespace Polycode;
 
@@ -138,7 +145,7 @@ void Skeleton::loadSkeleton(const String& fileName) {
 		memset(buffer, 0, 1024);
 		OSBasics::read(buffer, 1, namelen, inFile);
 		
-		Bone *newBone = new Bone(string(buffer));		
+		Bone *newBone = new Bone(String(buffer));
 		
 		OSBasics::read(&hasParent, sizeof(unsigned int), 1, inFile);
 		if(hasParent == 1) {

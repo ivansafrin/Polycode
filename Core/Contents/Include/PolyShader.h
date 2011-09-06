@@ -24,12 +24,13 @@ THE SOFTWARE.
 #include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolyResource.h"
-#include "PolyTexture.h"
-#include "PolyCubemap.h"
 
 namespace Polycode {
 
+	class Cubemap;
 	class ShaderBinding;
+	class Texture;
+
 	class _PolyExport Shader : public Resource {
 		public:
 			Shader(int type);
@@ -110,10 +111,10 @@ namespace Polycode {
 			void addLocalParam(const String& name, void *ptr);
 			
 			Shader* shader;
-			vector<LocalShaderParam*> localParams;
-			vector<RenderTargetBinding*> renderTargetBindings;
-			vector<RenderTargetBinding*> inTargetBindings;
-			vector<RenderTargetBinding*> outTargetBindings;
+			std::vector<LocalShaderParam*> localParams;
+			std::vector<RenderTargetBinding*> renderTargetBindings;
+			std::vector<RenderTargetBinding*> inTargetBindings;
+			std::vector<RenderTargetBinding*> outTargetBindings;
 	};
 
 }

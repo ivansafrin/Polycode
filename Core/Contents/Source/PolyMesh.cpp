@@ -21,6 +21,13 @@
 */
 
 #include "PolyMesh.h"
+#include "PolyLogger.h"
+#include "PolyPolygon.h"
+#include "OSBasics.h"
+
+using std::min;
+using std::max;
+using std::vector;
 
 namespace Polycode {
 

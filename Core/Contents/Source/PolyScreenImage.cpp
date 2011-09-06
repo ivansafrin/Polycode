@@ -21,6 +21,10 @@
 */
 
 #include "PolyScreenImage.h"
+#include "PolyMesh.h"
+#include "PolyPolygon.h"
+#include "PolyTexture.h"
+#include "PolyVertex.h"
 
 using namespace Polycode;
 

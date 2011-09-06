@@ -22,7 +22,6 @@
 
 #include "PolyGlobals.h"
 #include "PolyString.h"
-#include "OSBasics.h"
 
 namespace Polycode {
 

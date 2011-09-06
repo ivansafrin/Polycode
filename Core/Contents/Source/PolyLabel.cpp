@@ -21,6 +21,7 @@
 */
 
 #include "PolyLabel.h"
+#include "PolyFont.h"
 
 using namespace Polycode;
 

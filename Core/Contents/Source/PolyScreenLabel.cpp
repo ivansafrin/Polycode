@@ -21,6 +21,14 @@
 */
 
 #include "PolyScreenLabel.h"
+#include "PolyCoreServices.h"
+#include "PolyFontManager.h"
+#include "PolyFont.h"
+#include "PolyLabel.h"
+#include "PolyMaterialManager.h"
+#include "PolyMesh.h"
+#include "PolyPolygon.h"
+#include "PolyScreenImage.h"
 
 using namespace Polycode;
 

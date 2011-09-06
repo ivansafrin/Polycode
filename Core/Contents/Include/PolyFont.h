@@ -21,18 +21,14 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
-#include "PolyLogger.h"
 #include "PolyGlobals.h"
-#include <string>
 #include "ft2build.h"
 #include FT_FREETYPE_H
-#include "OSBasics.h"
-
-using namespace std;
 
 namespace Polycode {
 	
+	class String;
+
 	class _PolyExport Font {
 		public:
 			Font(const String& fileName);

@@ -21,6 +21,15 @@
 */
 
 #include "PolyParticleEmitter.h"
+#include "PolyCoreServices.h"
+#include "PolyParticle.h"
+#include "PolyPerlin.h"
+#include "PolyResource.h"
+#include "PolyScene.h"
+#include "PolyScreen.h"
+#include "PolyTimer.h"
+#include "PolyMaterialManager.h"
+#include "PolyResourceManager.h"
 
 using namespace Polycode;
 

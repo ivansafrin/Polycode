@@ -21,6 +21,12 @@
 */
 
 #include "PolySceneLight.h"
+#include "PolyCamera.h"
+#include "PolyCore.h"
+#include "PolyCoreServices.h"
+#include "PolyMesh.h"
+#include "PolyRenderer.h"
+#include "PolyScene.h"
 
 using namespace Polycode;
 

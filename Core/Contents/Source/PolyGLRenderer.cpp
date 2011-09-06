@@ -21,6 +21,22 @@
 */
 
 #include "PolyGLRenderer.h"
+#include "PolyString.h"
+#include "PolyLogger.h"
+#include "PolyTexture.h"
+#include "PolyGLTexture.h"
+#include "PolyCubemap.h"
+#include "PolyGLCubemap.h"
+#include "PolyGLVertexBuffer.h"
+#include "PolyFixedShader.h"
+#include "PolyMaterial.h"
+#include "PolyMesh.h"
+#include "PolyModule.h"
+#include "PolyPolygon.h"
+
+#ifdef _WINDOWS
+    #include <windows.h>
+#endif
 
 #ifdef _WINDOWS
 
