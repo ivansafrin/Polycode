@@ -21,18 +21,16 @@
  */
 
 #pragma once
-#include "PolyString.h"
-#include "PolyLogger.h"
 #include "PolyGlobals.h"
+#include "PolyString.h"
 #include "PolyMatrix4.h"
 #include "PolyQuaternion.h"
 #include "PolyColor.h"
-#include "PolyRenderer.h"
 #include <vector>
 
-using std::vector;
-
 namespace Polycode {
+
+	class Renderer;
 
 	class _PolyExport EntityProp {
 	public:
@@ -529,7 +527,13 @@ namespace Polycode {
 			/**
 			* If set to false, the children of this entity will not multiply by this entity's color. Set to true by default.
 			*/ 
-			bool colorAffectsChildren;		
+			bool colorAffectsChildren;	
+
+			/**
+			* If set to false, the children will be rendered even if the entity is invisible.
+			*/ 
+			bool visibilityAffectsChildren;	
+
 			
 			/**
 			* If this flag is set to true, this entity will render only into the depth buffer. This, effectively, means that it will be invisible, but still obscuring other entities.
@@ -547,7 +551,7 @@ namespace Polycode {
 				
 			Vector3 getChildCenter() const;
 							
-			vector <EntityProp> entityProps;						
+			std::vector <EntityProp> entityProps;
 			String getEntityProp(const String& propName);
 			
 			void doUpdates();				
@@ -562,7 +566,7 @@ namespace Polycode {
 			bool isMask;
 		
 		protected:
-			vector<Entity*> children;
+			std::vector<Entity*> children;
 
 			Vector3 childCenter;
 			Number bBoxRadius;		

@@ -21,6 +21,7 @@
 */
 
 #include "PolyRenderer.h"
+#include "PolyMesh.h"
 
 using namespace Polycode;
 

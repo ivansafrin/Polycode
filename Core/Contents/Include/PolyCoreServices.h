@@ -21,28 +21,17 @@ THE SOFTWARE.
 */
  
 #pragma once
-#include "PolyString.h"
-#include "PolyLogger.h"
 #include "PolyGlobals.h"
-#include "PolyRenderer.h"
-#include "PolyMaterialManager.h"
-#include "PolyScreenManager.h"
-#include "PolySceneManager.h"
-#include "PolyTimerManager.h"
-#include "PolyFontManager.h"
-#include "PolyTweenManager.h"
-#include "PolySoundManager.h"
-#include "PolyResourceManager.h"
-#include "PolyCore.h"
-#include "PolyConfig.h"
-#include "PolyModule.h"
-#include "PolyBasics.h"
-
+#include "PolyString.h"
+#include "PolyEventDispatcher.h"
 #include <map>
 
 namespace Polycode {
 
+	class PolycodeModule;
 	class Renderer;
+	class Config;
+	class FontManager;
 	class MaterialManager;
 	class SceneManager;
 	class ScreenManager;
@@ -170,7 +159,7 @@ namespace Polycode {
 			static std::map <long, CoreServices*> instanceMap;
 			static CoreMutex *renderMutex;
 		
-			vector<PolycodeModule*> modules;
+			std::vector<PolycodeModule*> modules;
 		
 			Core *core;
 			Config *config;

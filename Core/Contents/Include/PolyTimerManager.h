@@ -21,13 +21,8 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyTimer.h"
-#include "PolyCoreServices.h"
 #include <vector>
-
-using std::vector;
 
 namespace Polycode {
 
@@ -44,6 +39,6 @@ namespace Polycode {
 		
 		private:
 		
-		vector <Timer*> timers;
+		std::vector <Timer*> timers;
 	};
 }

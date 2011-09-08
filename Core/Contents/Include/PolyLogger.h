@@ -22,17 +22,6 @@ THE SOFTWARE.
 
 #pragma once
 #include "PolyGlobals.h"
-#include <stdio.h>
-#include <stdarg.h>
-#include <string>
-#include <iostream>
-
-#ifdef MSVC
-#include <windows.h>
-#endif
-
-using std::wstring;
-using std::string;
 
 namespace Polycode {
 

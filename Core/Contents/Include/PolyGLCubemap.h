@@ -22,14 +22,7 @@ THE SOFTWARE.
 
 #pragma once
 
-#ifdef _WINDOWS
-#include <windows.h>
-#endif
-
-#include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyTexture.h"
-#include "PolyGLRenderer.h"
 #include "PolyCubemap.h"
 #if defined(__APPLE__) && defined(__MACH__)
 #include <OpenGL/gl.h>
@@ -43,6 +36,8 @@ THE SOFTWARE.
 
 namespace Polycode {
 	
+	class Texture;
+
 	class _PolyExport OpenGLCubemap : public Cubemap {
 	public:
 		

@@ -28,6 +28,10 @@ function PhysicsCharacter:PhysicsCharacter(...)
 	end
 end
 
+function PhysicsCharacter:Update()
+	local retVal =  Physics3D.PhysicsCharacter_Update(self.__ptr)
+end
+
 function PhysicsCharacter:setWalkDirection(direction)
 	local retVal = Physics3D.PhysicsCharacter_setWalkDirection(self.__ptr, direction.__ptr)
 end
@@ -36,8 +40,25 @@ function PhysicsCharacter:jump()
 	local retVal =  Physics3D.PhysicsCharacter_jump(self.__ptr)
 end
 
-function PhysicsCharacter:Update()
-	local retVal =  Physics3D.PhysicsCharacter_Update(self.__ptr)
+function PhysicsCharacter:warpCharacter(position)
+	local retVal = Physics3D.PhysicsCharacter_warpCharacter(self.__ptr, position.__ptr)
+end
+
+function PhysicsCharacter:setJumpSpeed(jumpSpeed)
+	local retVal = Physics3D.PhysicsCharacter_setJumpSpeed(self.__ptr, jumpSpeed)
+end
+
+function PhysicsCharacter:setFallSpeed(fallSpeed)
+	local retVal = Physics3D.PhysicsCharacter_setFallSpeed(self.__ptr, fallSpeed)
+end
+
+function PhysicsCharacter:setMaxJumpHeight(maxJumpHeight)
+	local retVal = Physics3D.PhysicsCharacter_setMaxJumpHeight(self.__ptr, maxJumpHeight)
+end
+
+function PhysicsCharacter:onGround()
+	local retVal =  Physics3D.PhysicsCharacter_onGround(self.__ptr)
+	return retVal
 end
 
 

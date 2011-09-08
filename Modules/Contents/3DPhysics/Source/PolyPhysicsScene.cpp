@@ -21,6 +21,17 @@ THE SOFTWARE.
 */
 
 #include "PolyPhysicsScene.h"
+#include "btBulletCollisionCommon.h"
+#include "BulletCollision/CollisionDispatch/btGhostObject.h"
+#include "BulletDynamics/Character/btKinematicCharacterController.h"
+
+#include "PolyCollisionScene.h"
+#include "PolyCoreServices.h"
+#include "PolyVector3.h"
+#include "PolyPhysicsSceneEntity.h"
+#include "PolyCore.h"
+
+using namespace Polycode;
 
 PhysicsScene::PhysicsScene() : CollisionScene() {
 	initPhysicsScene();	
@@ -44,9 +55,11 @@ void PhysicsScene::initPhysicsScene() {
 	btVector3 worldMax(100,100,100);
 	btAxisSweep3* sweepBP = new btAxisSweep3(worldMin,worldMax);	
 	
-	physicsWorld = new btDiscreteDynamicsWorld(dispatcher,sweepBP,solver,collisionConfiguration);
+	btDbvtBroadphase *broadPhase = new btDbvtBroadphase();
 	
-	physicsWorld->getSolverInfo().m_solverMode |= SOLVER_RANDMIZE_ORDER;
+	physicsWorld = new btDiscreteDynamicsWorld(dispatcher,broadPhase,solver,collisionConfiguration);
+	
+//	physicsWorld->getSolverInfo().m_solverMode |= SOLVER_RANDMIZE_ORDER;
 	physicsWorld->setGravity(btVector3(0,-10,0));
 	
 	
@@ -65,8 +78,6 @@ void PhysicsScene::Update() {
 	
 	Number elapsed = CoreServices::getInstance()->getCore()->getElapsed();
 	physicsWorld->stepSimulation(elapsed);	
-
-	physicsWorld->debugDrawWorld();
 	CollisionScene::Update();
 	
 }
@@ -86,9 +97,30 @@ PhysicsCharacter *PhysicsScene::addCharacterChild(SceneEntity *newEntity,Number 
 	newPhysicsEntity->character->setUseGhostSweepTest(false);
 	
 	physicsChildren.push_back(newPhysicsEntity);
+	collisionChildren.push_back(newPhysicsEntity);
 	return newPhysicsEntity;
 	
 }
+
+void PhysicsScene::removeCharacterChild(PhysicsCharacter *character) {
+	physicsWorld->removeAction(character->character);
+
+	physicsWorld->removeCollisionObject(character->ghostObject);
+
+
+		for(int i=0; i < physicsChildren.size(); i++) {
+			if(physicsChildren[i] == character) {
+				physicsChildren.erase(physicsChildren.begin()+i);
+			}
+		}
+		for(int i=0; i < collisionChildren.size(); i++) {
+			if(collisionChildren[i] == character) {
+				collisionChildren.erase(collisionChildren.begin()+i);
+			}
+		}		
+	
+}
+
 
 PhysicsVehicle *PhysicsScene::addVehicleChild(SceneEntity *newEntity, Number mass, Number friction, int group) {
 	addEntity(newEntity);		
@@ -114,16 +146,47 @@ PhysicsVehicle *PhysicsScene::addVehicleChild(SceneEntity *newEntity, Number mas
 	newPhysicsEntity->vehicle->resetSuspension();
 
 	physicsChildren.push_back(newPhysicsEntity);
-	
+	collisionChildren.push_back(newPhysicsEntity);
+		
 	return newPhysicsEntity;
 }
 
+void PhysicsScene::removePhysicsChild(SceneEntity *entity) {
+	PhysicsSceneEntity *ent = getPhysicsEntityBySceneEntity(entity);
+	if(ent) {
+		physicsWorld->removeRigidBody(ent->rigidBody);
+		physicsWorld->removeCollisionObject(ent->collisionObject);
+		for(int i=0; i < physicsChildren.size(); i++) {
+			if(physicsChildren[i] == ent) {
+				physicsChildren.erase(physicsChildren.begin()+i);
+			}
+		}
+		for(int i=0; i < collisionChildren.size(); i++) {
+			if(collisionChildren[i] == ent) {
+				collisionChildren.erase(collisionChildren.begin()+i);
+			}
+		}		
+	}
+	delete ent;
+}
+
+PhysicsSceneEntity *PhysicsScene::getPhysicsEntityBySceneEntity(SceneEntity *entity) {
+	PhysicsSceneEntity *retEntity = NULL;
+	for(int i=0; i < physicsChildren.size(); i++) {
+		if(physicsChildren[i]->getSceneEntity() == entity) {
+			retEntity = physicsChildren[i];
+		}	
+	}
+	return retEntity;
+}
 
 PhysicsSceneEntity *PhysicsScene::trackPhysicsChild(SceneEntity *newEntity, int type, Number mass, Number friction, Number restitution, int group) {
 	PhysicsSceneEntity *newPhysicsEntity = new PhysicsSceneEntity(newEntity, type, mass, friction,restitution);
-	physicsWorld->addRigidBody(newPhysicsEntity->rigidBody, group, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);	
+	physicsWorld->addRigidBody(newPhysicsEntity->rigidBody, group,  btBroadphaseProxy::AllFilter); //btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);	
+	world->addCollisionObject(newPhysicsEntity->collisionObject, group);	
 	//	newPhysicsEntity->rigidBody->setActivationState(ISLAND_SLEEPING);	
 	physicsChildren.push_back(newPhysicsEntity);
+	collisionChildren.push_back(newPhysicsEntity);	
 	return newPhysicsEntity;	
 }
 

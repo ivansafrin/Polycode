@@ -40,6 +40,10 @@ function SceneParticleEmitter:getEmitter()
 	end
 end
 
+function SceneParticleEmitter:respawnSceneParticles()
+	local retVal =  Polycore.SceneParticleEmitter_respawnSceneParticles(self.__ptr)
+end
+
 function SceneParticleEmitter:addParticleBody(particleBody)
 	local retVal = Polycore.SceneParticleEmitter_addParticleBody(self.__ptr, particleBody.__ptr)
 end

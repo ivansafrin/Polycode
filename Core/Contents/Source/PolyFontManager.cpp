@@ -21,6 +21,7 @@
 */
 
 #include "PolyFontManager.h"
+#include "PolyFont.h"
 
 using namespace Polycode;
 

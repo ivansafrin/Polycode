@@ -1,15 +1,22 @@
 <?xml version="1.0" ?>
 <polycode>	
 	<materials>
+		<material name="TestParticle">
+			<shader name="DefaultParticleShader">
+				<textures>
+					<texture name="diffuse">particle.png</texture>
+				</textures>
+			</shader>
+		</material>	
 		<material name="CubeMaterial">
-			<shader name="DefaultShader">
+			<shader name="DefaultShaderShadows">
 				<textures>
 					<texture name="diffuse">pink_texture.png</texture>
 				</textures>
 			</shader>
 		</material>			
 		<material name="GroundMaterial">
-			<shader name="DefaultShader">
+			<shader name="DefaultShaderShadows">
 				<textures>
 					<texture name="diffuse">green_texture.png</texture>
 				</textures>

@@ -23,13 +23,10 @@
 
 #pragma once 
 
-#include "PolyLogger.h"
 #include "PolyGlobals.h"
-#include "PolyString.h"
 #include "PolyVector3.h"
 #include <vector>
 
-using std::vector;
 
 #define BUFFER_CACHE_PRECISION 100
 
@@ -164,7 +161,7 @@ namespace Polycode {
 		* @param a Normalized (0-1) position between two points
 		* @return 3d point at specified position.
 		*/																				
-		inline Vector3 getPointBetween(Number a, BezierPoint *bp1, BezierPoint *bp2);
+		Vector3 getPointBetween(Number a, BezierPoint *bp1, BezierPoint *bp2);
 			
 		/** 
 		* Rebuilds the height cache buffers for 2d height curves.
@@ -173,8 +170,8 @@ namespace Polycode {
 
 		Number heightBuffer[BUFFER_CACHE_PRECISION];
 
-		vector<BezierPoint*> controlPoints;
-		vector<Number> distances;
+		std::vector<BezierPoint*> controlPoints;
+		std::vector<Number> distances;
 		
 		
 		protected:

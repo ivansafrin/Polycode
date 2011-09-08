@@ -21,19 +21,14 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyLogger.h"
 #include "PolyGlobals.h"
-#include "PolySceneEntity.h"
 #include "PolyCollisionSceneEntity.h"
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
-#include "PolyCoreServices.h"
-#include "PolySceneMesh.h"
-#include "BulletDynamics/Character/btKinematicCharacterController.h"
-#include "BulletCollision/CollisionDispatch/btGhostObject.h"
+#include <vector>
 
-
-//class btKinematicCharacterController;
+class btKinematicCharacterController;
+class btPairCachingGhostObject;
 
 namespace Polycode {
 	
@@ -130,7 +125,12 @@ namespace Polycode {
 	
 			void setWalkDirection(Vector3 direction);
 			void jump();
-		
+			
+			void warpCharacter(Vector3 position);
+			void setJumpSpeed(Number jumpSpeed);
+			void setFallSpeed(Number fallSpeed);			
+			void setMaxJumpHeight(Number maxJumpHeight);			
+			bool onGround();
 			//@}
 			// ----------------------------------------------------------------------------------------------------------------
 		
@@ -176,7 +176,7 @@ namespace Polycode {
 			void setSteeringValue(Number value, unsigned int wheelIndex);
 			void setBrake(Number value, unsigned int wheelIndex);
 			
-			void ResetVehicle();
+			void warpVehicle(Vector3 position);
 
 			//@}
 			// ----------------------------------------------------------------------------------------------------------------
@@ -191,7 +191,7 @@ namespace Polycode {
 		btRaycastVehicle *vehicle;
 		
 		protected:
-			vector<PhysicsVehicleWheelInfo> wheels;
+			std::vector<PhysicsVehicleWheelInfo> wheels;
 
 	};
 }

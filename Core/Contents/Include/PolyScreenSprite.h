@@ -21,12 +21,9 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyCoreServices.h"
 #include "PolyScreenShape.h"
 #include <vector>
-#include <string>
 
 namespace Polycode {
 
@@ -36,7 +33,7 @@ class _PolyExport SpriteAnimation {
 		String name;
 		int numFrames;
 	
-		vector<Vector2> framesOffsets;
+		std::vector<Vector2> framesOffsets;
 };
 
 /**
@@ -84,7 +81,7 @@ class _PolyExport ScreenSprite : public ScreenShape
 		int currentFrame;
 		SpriteAnimation *currentAnimation;
 		
-		vector<SpriteAnimation*> animations;
+		std::vector<SpriteAnimation*> animations;
 };
 	
 }

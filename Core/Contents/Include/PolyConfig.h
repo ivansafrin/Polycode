@@ -21,14 +21,8 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
-#include <string>
-#include <vector>
-#include "tinyxml.h"
-
-using std::string;
-using std::vector;
+#include "PolyString.h"
 
 namespace Polycode {
 
@@ -100,7 +94,7 @@ namespace Polycode {
 		
 	private:
 		
-		vector<ConfigEntry*> entries;
+		std::vector<ConfigEntry*> entries;
 		
 	};
 }

@@ -1,13 +1,29 @@
 /*
- *  PolyPeer.cpp
- *  Poly
- *
- *  Created by Ivan Safrin on 3/6/09.
- *  Copyright 2009 __MyCompanyName__. All rights reserved.
- *
- */
+Copyright (C) 2011 by Ivan Safrin
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
 
 #include "PolyPeer.h"
+#include <string.h>
+#include "PolyCore.h"
+#include "PolyTimer.h"
 
 using namespace Polycode;
 
@@ -55,6 +71,14 @@ PeerConnection *Peer::addPeerConnection(const Address &address) {
 	return newConnection;
 }
 
+void Peer::removePeerConnection(PeerConnection* connection) {
+	for(unsigned int i=0;i<peerConnections.size();i++) {
+		if(peerConnections[i] == connection) {			
+			peerConnections.erase(peerConnections.begin()+i);
+		}
+	}
+}
+
 Packet *Peer::createPacket(const Address &target, char *data, unsigned int size, unsigned short type) {	
 	PeerConnection *connection = getPeerConnection(target);
 	if(!connection)
@@ -84,6 +108,7 @@ void Peer::sendReliableData(const Address &target, char *data, unsigned int size
 	entry.packet = packet;
 	entry.timestamp = CoreServices::getInstance()->getCore()->getTicks();
 	connection->reliablePacketQueue.push_back(entry);
+
 }
 
 void Peer::sendDataToAll(char *data, unsigned int size, unsigned short type) {
@@ -156,7 +181,7 @@ void Peer::handleEvent(Event *event) {
 	}
 }
 
-void Peer::updateThread() {
+void Peer::updateReliableDataQueue() {
 	for(int i=0; i < peerConnections.size(); i++) {
 		for(int j=0; j < peerConnections[i]->reliablePacketQueue.size(); j++) {
 			if(peerConnections[i]->reliablePacketQueue[j].timestamp < CoreServices::getInstance()->getCore()->getTicks() - 1000) {
@@ -165,7 +190,11 @@ void Peer::updateThread() {
 			}
 		}
 	}
+}
 
+void Peer::updateThread() {
+	updateReliableDataQueue();
+	
 	int received = 1;
 	while( received > 0) {
 		received = socket->receiveData();

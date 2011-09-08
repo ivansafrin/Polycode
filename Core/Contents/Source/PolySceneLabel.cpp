@@ -21,6 +21,13 @@
 */
 
 #include "PolySceneLabel.h"
+#include "PolyCoreServices.h"
+#include "PolyFontManager.h"
+#include "PolyLabel.h"
+#include "PolyMesh.h"
+#include "PolyPolygon.h"
+#include "PolyRenderer.h"
+#include "PolyMaterialManager.h"
 
 using namespace Polycode;
 
@@ -30,6 +37,11 @@ SceneLabel::SceneLabel(const String& fontName, const String& text, int size, Num
 	setText(text);
 	mesh = new Mesh(Mesh::QUAD_MESH);
 	mesh->createPlane(label->getWidth()*scale,label->getHeight()*scale);
+	
+	for(int i=0; i < mesh->getPolygonCount(); i++) {
+		mesh->getPolygon(i)->flipUVY();
+	}
+	mesh->arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;
 }
 
 SceneLabel::~SceneLabel() {

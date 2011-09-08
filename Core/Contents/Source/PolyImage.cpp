@@ -21,8 +21,12 @@
 */
 
 #include "png.h"
+#include <math.h>
 #include "PolyImage.h"
-
+#include "PolyString.h"
+#include "PolyLogger.h"
+#include "OSBasics.h"
+#include "PolyPerlin.h"
 
 using namespace Polycode;
 

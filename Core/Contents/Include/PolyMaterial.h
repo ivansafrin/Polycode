@@ -23,18 +23,16 @@ THE SOFTWARE.
 #pragma once
 #include "PolyString.h"
 #include "PolyGlobals.h"
-#include <string>
-#include <vector>
-#include "PolyTexture.h"
-#include "PolyShader.h"
 #include "PolyResource.h"
-
-
-using std::string;
-using std::vector;
+#include "PolyColor.h"
+#include <vector>
 
 namespace Polycode {
 	
+	class Shader;
+	class ShaderBinding;
+	class ShaderRenderTarget;
+
 	class _PolyExport Material : public Resource {
 		public:
 			Material(const String& name);
@@ -58,9 +56,9 @@ namespace Polycode {
 						
 		protected:
 		
-			vector<Shader*> materialShaders;
-			vector<ShaderBinding*> shaderBindings;
-			vector<ShaderRenderTarget*> renderTargets;
+			std::vector<Shader*> materialShaders;
+			std::vector<ShaderBinding*> shaderBindings;
+			std::vector<ShaderRenderTarget*> renderTargets;
 					
 			String name;
 		

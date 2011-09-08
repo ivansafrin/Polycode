@@ -23,6 +23,7 @@
 #include "PolyString.h"
 
 using namespace Polycode;
+using namespace std;
 
 String::String() {
 }
@@ -140,7 +141,13 @@ String String::toUpperCase() const {
 
 String String::NumberToString(Number value) {
 	char temp[128];
-	sprintf(temp, "%f", value);
+	sprintf(temp, "%.2f", value);
+	return String(temp);
+}
+
+String String::IntToString(int value) {
+	char temp[128];
+	sprintf(temp, "%d", value);
 	return String(temp);
 }
 

@@ -21,7 +21,6 @@
  */
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
 #include <math.h>
 

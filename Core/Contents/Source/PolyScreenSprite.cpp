@@ -21,7 +21,13 @@
 */
 
 #include "PolyScreenSprite.h"
+#include "PolyCore.h"
+#include "PolyCoreServices.h"
+#include "PolyMesh.h"
+#include "PolyPolygon.h"
+#include "PolyTexture.h"
 
+using std::vector;
 using namespace Polycode;
 
 ScreenSprite::ScreenSprite(const String& fileName, Number spriteWidth, Number spriteHeight) : ScreenShape(ScreenShape::SHAPE_RECT, spriteWidth, spriteHeight) {

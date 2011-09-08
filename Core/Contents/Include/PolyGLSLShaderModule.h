@@ -22,30 +22,14 @@ THE SOFTWARE.
 
 #pragma once
 
-#include "Polycode.h"
-#include "PolyGLSLProgram.h"
-#include "PolyGLSLShader.h"
-#include "PolyMaterial.h"
-#include "PolyGLTexture.h"
-#include <string>
-#include <vector>
-
-#if defined(__APPLE__) && defined(__MACH__)
-#include <OpenGL/gl.h>
-#include <OpenGL/glext.h>
-#include <OpenGL/glu.h>	
-#else
-#include <GL/gl.h>	
-#include <GL/glu.h>	
-#include <GL/glext.h>
-#endif
-
-
-using std::vector;
-using std::string;
+#include "PolyModule.h"
 
 namespace Polycode {
 	
+	class GLSLProgram;
+	class GLSLProgramParam;
+	class GLSLShader;
+
 	class _PolyExport GLSLShaderModule : public PolycodeShaderModule {
 		public:
 			GLSLShaderModule();
@@ -78,7 +62,7 @@ namespace Polycode {
 //		GLSLprofile vertexProfile;
 //		GLSLprofile fragmentProfile;
 		
-		vector<GLSLProgram*> programs;
+		std::vector<GLSLProgram*> programs;
 	};
 	
 }

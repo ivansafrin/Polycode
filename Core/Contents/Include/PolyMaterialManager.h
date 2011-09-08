@@ -21,25 +21,21 @@ THE SOFTWARE.
 */
  
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyCoreServices.h"
-#include "PolyTexture.h"
-#include "PolyCubemap.h"
-#include "PolyMaterial.h"
-#include "PolyShader.h"
-#include "PolyFixedShader.h"
-#include "PolyModule.h"
 #include "PolyImage.h"
-#include "tinyxml.h"
 #include <vector>
 
-using namespace std;
+class TiXmlNode;
 
 namespace Polycode {
 	
+	class Cubemap;
+	class Material;
+	class PolycodeShaderModule;
 	class Texture;
 	class SceneRenderTexture;
+	class Shader;
+	class String;
 	
 	/**
 	* Manages loading and reloading of materials, textures and shaders. This class should be only accessed from the CoreServices singleton.
@@ -58,7 +54,7 @@ namespace Polycode {
 			Texture *createTexture(int width, int height, char *imageData, bool clamp=true, int type=Image::IMAGE_RGBA);
 			Texture *createNewTexture(int width, int height, bool clamp=true, int type=Image::IMAGE_RGBA);
 			Texture *createTextureFromImage(Image *image, bool clamp=true);
-			Texture *createTextureFromFile(String fileName, bool clamp=true);
+			Texture *createTextureFromFile(const String& fileName, bool clamp=true);
 			void deleteTexture(Texture *texture);
 		
 			void reloadTextures();
@@ -82,9 +78,9 @@ namespace Polycode {
 			Shader *createShaderFromXMLNode(TiXmlNode *node);
 		
 		private:
-			vector<Texture*> textures;
-			vector<Material*> materials;
+			std::vector<Texture*> textures;
+			std::vector<Material*> materials;
 		
-			vector <PolycodeShaderModule*> shaderModules;
+			std::vector <PolycodeShaderModule*> shaderModules;
 	};
 };

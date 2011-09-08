@@ -21,6 +21,8 @@
 */
 
 #include "PolyQuaternionCurve.h"
+#include "PolyBezierCurve.h"
+#include "PolyLogger.h"
 
 using namespace Polycode;
 

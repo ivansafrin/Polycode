@@ -22,19 +22,15 @@ THE SOFTWARE.
  
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolySceneEntity.h"
-#include "PolyCoreServices.h"
-#include "PolyScene.h"
-#include "PolyCamera.h"
-#include "PolyMesh.h"
-//#include "PolyScenePrimitive.h"
 
 namespace Polycode {
 
 	class Scene;
 	class Camera;
+	class Mesh;
+	class Texture;
 //	class ScenePrimitive;
 	
 	/**

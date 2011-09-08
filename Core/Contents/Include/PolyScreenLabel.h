@@ -21,22 +21,13 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyCoreServices.h"
 #include "PolyScreenShape.h"
-#include "PolyScreenImage.h"
-#include "PolyFont.h"
-#include "PolyLabel.h"
-#include "PolyTexture.h"
-#include "PolyPolygon.h"
-#include "PolyMesh.h"
-
-#include <string>
-using std::string;
-using std::wstring;
 
 namespace Polycode {
+
+	class Label;
+	class ScreenImage;
 
 	/**
 	* 2D screen label display. Displays 2d text in a specified font.

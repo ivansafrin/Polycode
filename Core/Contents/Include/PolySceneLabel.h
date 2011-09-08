@@ -21,21 +21,15 @@ THE SOFTWARE.
 */
  
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyCoreServices.h"
-#include "PolyFont.h"
-#include "PolyLabel.h"
-#include "PolyMesh.h"
-#include "PolyTexture.h"
-#include "PolyPolygon.h"
 #include "PolySceneEntity.h"
-
-#include <string>
-using std::string;
 
 namespace Polycode {
 	
+	class Label;
+	class Mesh;
+	class Texture;
+
 	/**
 	* 3D text label. Creates a 3D text label.
 	*/

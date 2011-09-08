@@ -20,6 +20,7 @@
  THE SOFTWARE.
 */
 #include "PolyEntity.h"
+#include "PolyRenderer.h"
 
 using namespace Polycode;
 
@@ -48,6 +49,7 @@ Entity::Entity() {
 	lockMatrix = false;
 	renderWireframe  = false;
 	colorAffectsChildren = true;
+	visibilityAffectsChildren = true;
 	maskEntity = NULL;
 	isMask = false;
 	hasMask = false;
@@ -280,8 +282,10 @@ void Entity::transformAndRender() {
 	renderer->pushMatrix();	
 	if(ignoreParentMatrix && parentEntity) {
 		renderer->multModelviewMatrix(parentEntity->getConcatenatedMatrix().inverse());
+		renderer->setCurrentModelMatrix(parentEntity->getConcatenatedMatrix().inverse());
 	}else {
 		renderer->multModelviewMatrix(transformMatrix);
+		renderer->setCurrentModelMatrix(transformMatrix);
 	}
 	renderer->setVertexColor(color.r,color.g,color.b,color.a);
 	if(billboardMode) {
@@ -321,14 +325,14 @@ void Entity::transformAndRender() {
 		renderer->setRenderMode(Renderer::RENDER_MODE_NORMAL);	
 	if(visible) {
 		Render();
-	
-	
-//	renderer->pushMatrix();
-	adjustMatrixForChildren();
-	renderChildren();	
-//	renderer->popMatrix();	
-	
-	}		
+	}
+		
+	if(visible || (!visible && !visibilityAffectsChildren)) {
+		adjustMatrixForChildren();
+		renderChildren();	
+	}
+		
+				
 	renderer->setRenderMode(mode);	
 	renderer->popMatrix();
 	

@@ -21,20 +21,20 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyRenderer.h"
-#include "PolySceneEntity.h"
-#include "PolyCamera.h"
-#include "PolySceneLight.h"
-#include "PolySceneMesh.h"
+#include "PolyString.h"
+#include "PolyColor.h"
+#include "PolyVector3.h"
+#include "PolyEventDispatcher.h"
+
 #include <vector>
 
-using std::vector;
+class OSFILE;
 
 namespace Polycode {
 		
 	class Camera;
+	class SceneEntity;
 	class SceneLight;
 	class SceneMesh;
 	
@@ -140,7 +140,7 @@ namespace Polycode {
 		SceneLight *getLight(int index);
 		
 		SceneEntity *getCustomEntityByType(const String& type) const;
-		vector<SceneEntity*> getCustomEntitiesByType(const String& type) const;
+		std::vector<SceneEntity*> getCustomEntitiesByType(const String& type) const;
 		
 		static const unsigned int ENTITY_MESH = 0;
 		static const unsigned int ENTITY_LIGHT = 1;			
@@ -177,16 +177,16 @@ namespace Polycode {
 		
 		bool hasLightmaps;
 		
-		vector <SceneLight*> lights;				
-		vector <SceneMesh*> staticGeometry;
-		vector <SceneMesh*> collisionGeometry;
-		vector <SceneEntity*> customEntities;
+		std::vector <SceneLight*> lights;
+		std::vector <SceneMesh*> staticGeometry;
+		std::vector <SceneMesh*> collisionGeometry;
+		std::vector <SceneEntity*> customEntities;
 		
 		
 		bool isSceneVirtual;
 		
 		Camera *defaultCamera;
-		vector <SceneEntity*> entities;
+		std::vector <SceneEntity*> entities;
 		
 		bool lightingEnabled;
 		bool fogEnabled;

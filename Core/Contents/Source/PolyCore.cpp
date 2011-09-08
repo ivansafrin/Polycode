@@ -21,6 +21,9 @@
 */
 
 #include "PolyCore.h"
+#include "PolyCoreInput.h"
+#include "PolyCoreServices.h"
+
 #ifdef _WINDOWS
 #include <windows.h>
 
@@ -84,7 +87,7 @@ namespace Polycode {
 	}
 	
 	void Core::setVideoModeIndex(int index, bool fullScreen, int aaLevel) {
-		vector<Rectangle> resList = getVideoModes();
+		std::vector<Rectangle> resList = getVideoModes();
 		if(index >= resList.size())
 			return;
 		

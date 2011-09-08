@@ -8,6 +8,7 @@ SET(physfs_CMAKE_ARGS
     -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
     -DCMAKE_DEBUG_POSTFIX=d
     -DPHYSFS_BUILD_TEST=FALSE
+    -DPHYSFS_BUILD_SHARED=FALSE
     -DPHYSFS_BUILD_WX_TEST=FALSE
 )
 
@@ -18,6 +19,8 @@ ExternalProject_Add(physfs
 
     URL http://offload1.icculus.org:9090/physfs/downloads/physfs-2.0.2.tar.gz
     URL_MD5 4e8927c3d30279b03e2592106eb9184a
+
+    PATCH_COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PolycodeDependencies_SOURCE_DIR}/../CMake/physfs.cmake <SOURCE_DIR>/CMakeLists.txt
 
     INSTALL_DIR ${POLYCODE_DEPS_CORE_PREFIX}
     CMAKE_ARGS ${physfs_CMAKE_ARGS}

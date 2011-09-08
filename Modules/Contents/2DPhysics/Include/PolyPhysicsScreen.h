@@ -22,6 +22,8 @@ THE SOFTWARE.
 
 #pragma once
 #include "PolyGlobals.h"
+#include "PolyEvent.h"
+#include "PolyVector2.h"
 #include "PolyScreen.h"
 #include "Box2D/Box2D.h"
 //#include "PolyCoreServices.h"
@@ -352,8 +354,8 @@ protected:
 	void init(Number worldScale, Number physicsTimeStep, int physicsIterations, Vector2 physicsGravity);
 
 	Timer *updateTimer;
-	vector <PhysicsScreenEntity*> physicsChildren;
-	vector<b2Contact*> contacts;
+	std::vector <PhysicsScreenEntity*> physicsChildren;
+	std::vector<b2Contact*> contacts;
 	b2World *world;
 	Number timeStep;
 	int32 iterations;

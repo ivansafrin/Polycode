@@ -21,6 +21,10 @@
 */
 
 #include "PolyScreenMesh.h"
+#include "PolyCoreServices.h"
+#include "PolyMaterialManager.h"
+#include "PolyMesh.h"
+#include "PolyRenderer.h"
 
 using namespace Polycode;
 

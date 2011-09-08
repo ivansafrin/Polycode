@@ -1,12 +1,24 @@
 /*
- *  PolyPeer.h
- *  Poly
- *
- *  Created by Ivan Safrin on 3/6/09.
- *  Copyright 2009 __MyCompanyName__. All rights reserved.
- *
- */
-// @package Network
+Copyright (C) 2011 by Ivan Safrin
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
 
 #pragma once
 
@@ -17,10 +29,11 @@
 
 #include <vector>
 
-using std::vector;
 
 namespace Polycode {	
 	
+	class Timer;
+
 	typedef struct {
 		unsigned int headerHash;
 		unsigned int sequence;
@@ -52,8 +65,8 @@ namespace Polycode {
 		unsigned int remoteSequence;
 		unsigned int reliableID;
 		
-		vector<SentPacketEntry> reliablePacketQueue;
-		vector<unsigned short> recentReliableIDs;
+		std::vector<SentPacketEntry> reliablePacketQueue;
+		std::vector<unsigned short> recentReliableIDs;
 		Address address;
 	};
 		
@@ -80,6 +93,9 @@ namespace Polycode {
 		
 			PeerConnection *getPeerConnection(const Address &address);
 			PeerConnection *addPeerConnection(const Address &address);
+			void removePeerConnection(PeerConnection* connection);
+			
+			void updateReliableDataQueue();
 		
 			virtual void updatePeer(){}
 			void updateThread();
@@ -87,7 +103,7 @@ namespace Polycode {
 		protected:
 		
 			Timer *updateTimer;
-			vector<PeerConnection*> peerConnections;		
+			std::vector<PeerConnection*> peerConnections;
 			Socket *socket;
 	};
 

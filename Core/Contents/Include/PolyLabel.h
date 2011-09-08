@@ -23,17 +23,13 @@ THE SOFTWARE.
 #pragma once
 #include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyFont.h"
 #include "PolyImage.h"
-
-#include <string>
-using namespace std;
-
-using std::wstring;
 
 #define TAB_REPLACE "    "
 
 namespace Polycode {
+
+	class Font;
 
 	class _PolyExport Label : public Image {
 		public:

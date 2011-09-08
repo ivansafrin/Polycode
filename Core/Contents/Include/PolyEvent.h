@@ -21,12 +21,8 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
-#include "PolyLogger.h"
 #include "PolyGlobals.h"
-#include <string>
-
-using std::string;
+#include "PolyString.h"
 
 namespace Polycode {
 

@@ -1,10 +1,23 @@
 
 #include "polybuild.h"
+#include "string.h"
 #include "zip.h"
+
+#ifdef _WINDOWS
+	#include <windows.h>
+#else
+	#include <dirent.h>
+	#include <sys/types.h>
+	#include <sys/stat.h>
+#endif
+
+#include "physfs.h"
 
 #if defined(__APPLE__) && defined(__MACH__)
 #include <mach-o/dyld.h>
 #endif
+
+using std::vector;
 
 vector<BuildArg> args;
 #define MAXFILENAME (256)
@@ -171,7 +184,7 @@ int main(int argc, char **argv) {
 	}
 #endif
 
-	printf("Polycode build tool v0.1.1\n");
+	printf("Polycode build tool v0.8.2\n");
 
 	for(int i=0; i < argc; i++) {
 		String argString = String(argv[i]);
@@ -220,9 +233,11 @@ int main(int argc, char **argv) {
 #endif
 	}
 
+#ifdef _WINDOWS
 	finalPath = finalPath.replace(":", "");
 	finalPath = finalPath.replace("\\", "/");
 	finalPath = finalPath.substr(1, finalPath.length() - 1);
+#endif
 
 	printf("Reading config file from %s\n", finalPath.c_str());
 

@@ -21,6 +21,17 @@
 */
 
 #include "PolySceneMesh.h"
+#include "PolyCoreServices.h"
+#include "PolyBone.h"
+#include "PolyMaterial.h"
+#include "PolyPolygon.h"
+#include "PolyRenderer.h"
+#include "PolyMaterial.h"
+#include "PolyMesh.h"
+#include "PolyShader.h"
+#include "PolySkeleton.h"
+#include "PolyResourceManager.h"
+#include "PolyMaterialManager.h"
 
 using namespace Polycode;
 
@@ -141,14 +152,16 @@ void SceneMesh::renderMeshLocally() {
 				
 					Vector3 aPos = vert->restPosition;
 					Vector3 tPos;
-				
+
+					Number mult = 1;					
+/*				
 					Number mult = 0;
 					for(int b =0; b < vert->getNumBoneAssignments(); b++) {
 						BoneAssignment *bas = vert->getBoneAssignment(b);
 						mult += bas->weight;
 					}
 					mult = 1.0f/mult;
-				
+*/				
 					for(int b =0; b < vert->getNumBoneAssignments(); b++) {
 						BoneAssignment *bas = vert->getBoneAssignment(b);
 						Bone *bone = bas->bone;

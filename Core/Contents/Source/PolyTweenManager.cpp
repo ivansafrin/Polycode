@@ -21,6 +21,7 @@
 */
 
 #include "PolyTweenManager.h"
+#include "PolyTween.h"
 
 using namespace Polycode;
 
@@ -47,7 +48,7 @@ void TweenManager::Update() {
 				tween = tweens[i];
 				tweens.erase(tweens.begin()+i);
 				tween->doOnComplete();
-				delete tween;
+//				delete tween;
 				return;
 			}
 		}

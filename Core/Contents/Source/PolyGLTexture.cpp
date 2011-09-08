@@ -21,6 +21,7 @@
 */
 
 #include "PolyGLTexture.h"
+#include "PolyRenderer.h"
 
 using namespace Polycode;
 

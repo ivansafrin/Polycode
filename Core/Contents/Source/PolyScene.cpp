@@ -21,7 +21,20 @@
 */
 
 #include "PolyScene.h"
+#include "OSBasics.h"
+#include "PolyCamera.h"
+#include "PolyCoreServices.h"
+#include "PolyLogger.h"
+#include "PolyMaterial.h"
+#include "PolyMesh.h"
+#include "PolyRenderer.h"
+#include "PolyResource.h"
+#include "PolyResourceManager.h"
+#include "PolySceneLight.h"
+#include "PolySceneMesh.h"
+#include "PolySceneManager.h"
 
+using std::vector;
 using namespace Polycode;
 
 Scene::Scene() : EventDispatcher() {
@@ -280,8 +293,7 @@ String Scene::readString(OSFILE *inFile) {
 	OSBasics::read(&namelen, sizeof(unsigned int), 1, inFile);
 	memset(buffer, 0, 1024);
 	OSBasics::read(buffer, 1, namelen, inFile);
-	return string(buffer);
-	
+	return String(buffer);
 }
 
 void Scene::loadScene(const String& fileName) {

@@ -23,31 +23,13 @@ THE SOFTWARE.
 #pragma once
 
 #include "PolyGlobals.h"
-
-#include "PolyLogger.h"
+#include "PolyString.h"
 #include "PolyShader.h"
-#include "PolyGLSLProgram.h"
-#include "PolyTexture.h"
-#include "PolyCubemap.h"
 #include <vector>
 
-#if defined(__APPLE__) && defined(__MACH__)
-#include <OpenGL/gl.h>
-#include <OpenGL/glext.h>
-#include <OpenGL/glu.h>	
-#else
-#include <GL/gl.h>	
-#include <GL/glu.h>	
-#include <GL/glext.h>
-#ifdef _WINDOWS
-#include <GL/wglext.h>
-#endif
-#endif
-
-
-using std::vector;
-
 namespace Polycode {
+
+	class GLSLProgram;
 
 	typedef struct {
 		Texture *texture;
@@ -85,8 +67,8 @@ namespace Polycode {
 			void clearTexture(const String& name);
 			void addParam(const String& type, const String& name, const String& value);
 			
-			vector<GLSLTextureBinding> textures;
-			vector<GLSLCubemapBinding> cubemaps;		
+			std::vector<GLSLTextureBinding> textures;
+			std::vector<GLSLCubemapBinding> cubemaps;
 		
 			GLSLShader *glslShader;
 	};

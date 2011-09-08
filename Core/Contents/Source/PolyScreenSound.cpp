@@ -21,6 +21,9 @@ THE SOFTWARE.
 */
 
 #include "PolyScreenSound.h"
+#include "PolySound.h"
+#include "PolyCoreServices.h"
+#include "PolySoundManager.h"
 
 using namespace Polycode;
 

@@ -22,23 +22,14 @@ THE SOFTWARE.
  
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
 #include <vector>
-#include <string>
-#include "OSBasics.h"
-#include "PolyTexture.h"
-#include "PolyCubemap.h"
-#include "PolyResource.h"
-#include "PolyCoreServices.h"
-#include "PolyModule.h"
-#include "tinyxml.h"
-#include "physfs.h"
-
-using std::vector;
-using std::string;
 
 namespace Polycode {
+
+	class Resource;
+	class PolycodeShaderModule;
+	class String;
 
 	/**
 	* Manages loading and unloading of resources from directories and archives. Should only be accessed via the CoreServices singleton. 
@@ -86,7 +77,7 @@ namespace Polycode {
 		
 		
 		private:
-			vector <Resource*> resources;
-			vector <PolycodeShaderModule*> shaderModules;
+			std::vector <Resource*> resources;
+			std::vector <PolycodeShaderModule*> shaderModules;
 	};
 }

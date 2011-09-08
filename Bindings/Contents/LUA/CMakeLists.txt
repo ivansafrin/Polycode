@@ -14,7 +14,6 @@ SET(polycodeLua_SRCS
 SET(polycodeLua_HDRS
     Include/PolycodeLUAWrappers.h
     Include/PolycodeLUA.h
-    Include/PolycodeLUA2D.h
 )
 
 SET(CMAKE_DEBUG_POSTFIX "_d")
@@ -33,8 +32,10 @@ IF(POLYCODE_INSTALL_FRAMEWORK)
     
     # install headers
     INSTALL(FILES ${polycodeLua_HDRS} 
-        DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Modules/include)
+        DESTINATION Bindings/Lua/Core/include)
 
+    INSTALL(DIRECTORY API DESTINATION Bindings/Lua/Core)
+	
     # install libraries
 #    IF(POLYCODE_BUILD_SHARED)
 #        INSTALL(TARGETS PolycodeLua_dynamic
@@ -43,7 +44,7 @@ IF(POLYCODE_INSTALL_FRAMEWORK)
     
 #    IF(POLYCODE_BUILD_STATIC)
      INSTALL(TARGETS PolycodeLua 
-         DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Modules/lib)
+         DESTINATION Bindings/Lua/Core/lib)
 #    ENDIF(POLYCODE_BUILD_STATIC)
     
 ENDIF(POLYCODE_INSTALL_FRAMEWORK)

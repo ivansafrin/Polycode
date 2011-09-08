@@ -23,6 +23,29 @@ THE SOFTWARE.
 
 #include "PolyGLSLShader.h"
 
+#include "PolyLogger.h"
+#include "PolyShader.h"
+#include "PolyGLSLProgram.h"
+#include "PolyTexture.h"
+#include "PolyCubemap.h"
+
+
+#if defined(__APPLE__) && defined(__MACH__)
+#include <OpenGL/gl.h>
+#include <OpenGL/glext.h>
+#include <OpenGL/glu.h>
+#else
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <GL/glext.h>
+#ifdef _WINDOWS
+#include <GL/wglext.h>
+#endif
+#endif
+
+
+using std::vector;
+
 #ifdef _WINDOWS
 extern PFNGLUSEPROGRAMPROC glUseProgram;
 extern PFNGLUNIFORM1IPROC glUniform1i;

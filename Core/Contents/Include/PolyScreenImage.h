@@ -21,18 +21,8 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
-#include <math.h>
 #include "PolyGlobals.h"
 #include "PolyScreenShape.h"
-#include "PolyCoreServices.h"
-#include "PolyImage.h"
-#include "PolyMesh.h"
-#include "PolyTexture.h"
-
-#include <string>
-
-using std::string;
 
 namespace Polycode {
 

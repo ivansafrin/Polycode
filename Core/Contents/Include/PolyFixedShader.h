@@ -53,8 +53,8 @@ namespace Polycode {
 			
 		protected:
 
-			vector<Texture*> textures;
-			vector<Cubemap*> cubemaps;		
+			std::vector<Texture*> textures;
+			std::vector<Cubemap*> cubemaps;
 			FixedShader *fixedShader;
 	};
 

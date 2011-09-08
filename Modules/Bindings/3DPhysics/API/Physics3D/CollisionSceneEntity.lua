@@ -12,31 +12,7 @@ SHAPE_PLANE = 6
 SHAPE_CONE = 7
 SHAPE_CYLINDER = 8
 function CollisionSceneEntity:__index__(name)
-	if name == "gravityEnabled" then
-		return Physics3D.CollisionSceneEntity_get_gravityEnabled(self.__ptr)
-	elseif name == "autoCollide" then
-		return Physics3D.CollisionSceneEntity_get_autoCollide(self.__ptr)
-	elseif name == "gravityVector" then
-		retVal = Physics3D.CollisionSceneEntity_get_gravityVector(self.__ptr)
-		if Polycore.__ptr_lookup[retVal] ~= nil then
-			return Polycore.__ptr_lookup[retVal]
-		else
-			Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
-			Polycore.__ptr_lookup[retVal].__ptr = retVal
-			return Polycore.__ptr_lookup[retVal]
-		end
-	elseif name == "gVelocity" then
-		retVal = Physics3D.CollisionSceneEntity_get_gVelocity(self.__ptr)
-		if Polycore.__ptr_lookup[retVal] ~= nil then
-			return Polycore.__ptr_lookup[retVal]
-		else
-			Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
-			Polycore.__ptr_lookup[retVal].__ptr = retVal
-			return Polycore.__ptr_lookup[retVal]
-		end
-	elseif name == "gravityStrength" then
-		return Physics3D.CollisionSceneEntity_get_gravityStrength(self.__ptr)
-	elseif name == "lastPosition" then
+	if name == "lastPosition" then
 		retVal = Physics3D.CollisionSceneEntity_get_lastPosition(self.__ptr)
 		if Polycore.__ptr_lookup[retVal] ~= nil then
 			return Polycore.__ptr_lookup[retVal]
@@ -52,16 +28,7 @@ end
 
 
 function CollisionSceneEntity:__set_callback(name,value)
-	if name == "gravityEnabled" then
-		Physics3D.CollisionSceneEntity_set_gravityEnabled(self.__ptr, value)
-		return true
-	elseif name == "autoCollide" then
-		Physics3D.CollisionSceneEntity_set_autoCollide(self.__ptr, value)
-		return true
-	elseif name == "gravityStrength" then
-		Physics3D.CollisionSceneEntity_set_gravityStrength(self.__ptr, value)
-		return true
-	elseif name == "enabled" then
+	if name == "enabled" then
 		Physics3D.CollisionSceneEntity_set_enabled(self.__ptr, value)
 		return true
 	end
@@ -95,13 +62,13 @@ function CollisionSceneEntity:getSceneEntity()
 	end
 end
 
-function CollisionSceneEntity:Update()
-	local retVal =  Physics3D.CollisionSceneEntity_Update(self.__ptr)
-end
-
 function CollisionSceneEntity:getType()
 	local retVal =  Physics3D.CollisionSceneEntity_getType(self.__ptr)
 	return retVal
+end
+
+function CollisionSceneEntity:Update()
+	local retVal =  Physics3D.CollisionSceneEntity_Update(self.__ptr)
 end
 
 function CollisionSceneEntity:getConvexShape()

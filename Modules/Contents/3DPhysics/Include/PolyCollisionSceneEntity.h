@@ -21,14 +21,17 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyLogger.h"
 #include "PolyGlobals.h"
-#include "PolySceneEntity.h"
-#include "btBulletCollisionCommon.h"
-#include "PolyCoreServices.h"
-#include "PolySceneMesh.h"
+#include "PolyVector3.h"
+
+class btConvexShape;
+class btConcaveShape;
+class btCollisionShape;
+class btCollisionObject;
 
 namespace Polycode {
+
+	class SceneEntity;
 
 	/**
 	* A wrapped around SceneEntity that provides collision information.
@@ -38,7 +41,7 @@ namespace Polycode {
 			/**
 			* Main constructor.
 			*/ 
-			CollisionSceneEntity(SceneEntity *entity, bool autoCollide, int type);
+			CollisionSceneEntity(SceneEntity *entity, int type);
 			~CollisionSceneEntity();
 			
 			/** @name Collision scene entity
@@ -55,17 +58,9 @@ namespace Polycode {
 			
 			virtual void Update();
 		
-			btConvexShape *getConvexShape(){ return convexShape; }
-					
-			btCollisionShape *createCollisionShape(SceneEntity *entity, int type);
-		
-			btCollisionObject *collisionObject;
-			bool gravityEnabled;
-			bool autoCollide;
-			Vector3 gravityVector;
-			Vector3 gVelocity;
-			Number gravityStrength;
-		
+			btConvexShape *getConvexShape(){ return convexShape; }					
+			btCollisionShape *createCollisionShape(SceneEntity *entity, int type);		
+			btCollisionObject *collisionObject;		
 			Vector3 lastPosition;
 		
 		/**

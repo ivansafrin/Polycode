@@ -165,23 +165,37 @@ extern "C" {
 			GetLongPathNameW(_tempPath, tempPath, 4098);
 			String moduleDestPath = String(tempPath) + String("\\") + moduleName+ String(".dll");
 #else
+
+	#if defined(__APPLE__) && defined(__MACH__)
 			String moduleDestPath = String("/tmp/") + moduleName+ String(".dylib");
+	#else
+			String moduleDestPath = String("/tmp/") + moduleName+ String(".so");
+	#endif
 #endif
 			String moduleLoadCall = String("luaopen_") + moduleName;
 			lua_getfield(L, LUA_GLOBALSINDEX, "require");
 			lua_pushstring(L, moduleName.c_str());		
 			lua_call(L, 1, 0);
 
+			printf("LOADING MODULE %s\n", moduleDestPath.c_str());
 			lua_getfield(L, LUA_GLOBALSINDEX, "package");
 			lua_getfield(L, -1, "loadlib");	
 			lua_pushstring(L, moduleDestPath.c_str());
 			lua_pushstring(L, moduleLoadCall.c_str());			
-			lua_call(L, 2, 1);
-			lua_setfield(L, LUA_GLOBALSINDEX, "f");			
-			
+			lua_call(L, 2, 2);
+			lua_setfield(L, LUA_GLOBALSINDEX, "err");								
+			lua_setfield(L, LUA_GLOBALSINDEX, "f");		
+
+			lua_getfield(L, LUA_GLOBALSINDEX, "print");
+			lua_getfield(L, LUA_GLOBALSINDEX, "err");						
+			lua_call(L, 1, 0);						
+
+			printf("SETTING CORE SERVICES\n");			
 			lua_getfield(L, LUA_GLOBALSINDEX, "f");
 			lua_getfield(L, LUA_GLOBALSINDEX, "__core__services__instance");						
 			lua_call(L, 1, 0);			
+			
+			printf("DONE LOADING MODULE...\n");				
 			//local f = package.loadlib("/Users/ivansafrin/Desktop/Workshop/HelloPolycodeLUA/libPolycode2DPhysicsModule.dylib", "luaopen_Physics2D")
 			//f(Polycore.CoreServices_getInstance())
 					
@@ -268,10 +282,6 @@ PolycodePlayer::PolycodePlayer(String fileName, bool knownArchive) : EventDispat
 
 void PolycodePlayer::loadFile(const char *fileName) {
 	
-	FILE *t = fopen("C:\\out.txt", "a");
-	fwrite(fileName, strlen(fileName), 1, t);
-	fclose(t);
-
 	String mainFile = "";
 	String basePath = fileName;
 	
@@ -361,8 +371,13 @@ void PolycodePlayer::loadFile(const char *fileName) {
 			String moduleFileName = String("__lib/win/") + moduleName+ String(".dll");
 
 #else
+	#if defined(__APPLE__) && defined(__MACH__)
 				String moduleFileName = String("__lib/osx/") + moduleName+ String(".dylib");
 				String moduleDestPath = String("/tmp/") + moduleName+ String(".dylib");
+	#else
+				String moduleFileName = String("__lib/linux/") + moduleName+ String(".so");
+				String moduleDestPath = String("/tmp/") + moduleName+ String(".so");
+	#endif
 #endif				
 				OSFILE *inFile = OSBasics::open(moduleFileName, "rb");	
 				if(inFile) {

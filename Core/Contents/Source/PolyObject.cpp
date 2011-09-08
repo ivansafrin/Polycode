@@ -21,7 +21,7 @@
 */
  
 #include "PolyObject.h"
-
+#include "tinyxml.h"
 
 using namespace Polycode;
 

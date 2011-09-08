@@ -21,16 +21,14 @@
  */
 
 #pragma once
-#include "PolyLogger.h"
 #include "PolyGlobals.h"
 #include "PolyString.h"
+#include "PolyMatrix4.h"
 #include "PolySceneEntity.h"
-#include "PolyMesh.h"
-#include "PolyCoreServices.h"
-#include "PolySceneLabel.h"
-#include "PolySceneLine.h"
 
 namespace Polycode {
+
+	class Mesh;
 
 	/** 
 	* Skeleton bone. Bones are bound to vertices of a mesh and when transformed, move the bound vertices of the mesh along with them. Bones are subclassed from SceneEntity, but have their own hierarchy system.
@@ -159,7 +157,7 @@ namespace Polycode {
 			Mesh *boneMesh;
 		
 			Bone* parentBone;
-			vector<Bone*> childBones;
+			std::vector<Bone*> childBones;
 			String boneName;
 	};
 

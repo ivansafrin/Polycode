@@ -20,10 +20,11 @@
  THE SOFTWARE.
  */
 
-
+#pragma once
 #include "PolyGlobals.h"
 #include "PolyString.h"
-#include "tinyxml.h"
+
+class TiXmlElement;
 
 namespace Polycode {
 
@@ -181,7 +182,7 @@ namespace Polycode {
 		*/
 		inline ObjectEntry *operator [] ( const String& key) { for(int i=0; i < children.size(); i++) { if(children[i]->name == key) { return children[i]; } } return NULL; }
 		
-		vector<ObjectEntry*> children;		
+		std::vector<ObjectEntry*> children;
 	};
 	
 	/**

@@ -20,6 +20,7 @@
  THE SOFTWARE.
 */
 #include "PolyConfig.h"
+#include "tinyxml.h"
 
 using namespace Polycode;
 

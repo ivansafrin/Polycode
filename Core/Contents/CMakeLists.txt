@@ -193,15 +193,15 @@ SET(CMAKE_DEBUG_POSTFIX "_d")
 
 # platform specific
 IF(MSVC)
-    SET(polycore_SRCS ${polycore_SRCS} ../Build/MSVC/Polycore/PolycodeView.cpp Source/PolyWinCore.cpp)
-    SET(polycore_HDRS ${polycore_HDRS} ../Build/MSVC/Polycore/PolycodeView.h Include/PolyWinCore.h)
+    SET(polycore_SRCS ${polycore_SRCS} PolycodeView/MSVC/PolycodeView.cpp Source/PolyWinCore.cpp)
+    SET(polycore_HDRS ${polycore_HDRS} PolycodeView/MSVC/PolycodeView.h Include/PolyWinCore.h)
 ELSEIF(APPLE)
-    SET(polycore_SRCS ${polycore_SRCS} "../Build/Mac OS X/PolycodeView.mm" Source/PolyCocoaCore.mm)
-    SET(polycore_HDRS ${polycore_HDRS} "../Build/Mac OS X/PolycodeView.h" Include/PolyCocoaCore.h)
+    SET(polycore_SRCS ${polycore_SRCS} "PolycodeView/Mac OS X/PolycodeView.mm" Source/PolyCocoaCore.mm)
+    SET(polycore_HDRS ${polycore_HDRS} "PolycodeView/Mac OS X/PolycodeView.h" Include/PolyCocoaCore.h)
 #    SET(EXTRA_LIBS "-framework Cocoa")
 ELSE(MSVC)
-    SET(polycore_SRCS ${polycore_SRCS} ../Build/Linux/PolycodeView.cpp Source/PolySDLCore.cpp)
-    SET(polycore_HDRS ${polycore_HDRS} ../Build/Linux/PolycodeView.h Include/PolySDLCore.h)
+    SET(polycore_SRCS ${polycore_SRCS} PolycodeView/Linux/PolycodeView.cpp Source/PolySDLCore.cpp)
+    SET(polycore_HDRS ${polycore_HDRS} PolycodeView/Linux/PolycodeView.h Include/PolySDLCore.h)
 ENDIF(MSVC)
 
 #IF(POLYCODE_BUILD_SHARED)
@@ -226,7 +226,12 @@ ADD_LIBRARY(Polycore ${polycore_SRCS} ${polycore_HDRS})
 IF(POLYCODE_INSTALL_FRAMEWORK)
     # install headers
     INSTALL(FILES ${polycore_HDRS} 
-        DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Core/include)
+        DESTINATION Core/include)
+
+    IF(APPLE)
+        INSTALL(FILES "PolycodeView/Mac OS X/PolycodeView.h" "PolycodeView/Mac OS X/PolycodeView.mm"
+            DESTINATION "Core/PolycodeView")
+    ENDIF(APPLE)
 
     # install libraries
 #   IF(POLYCODE_BUILD_SHARED)
@@ -234,14 +239,11 @@ IF(POLYCODE_INSTALL_FRAMEWORK)
 #           DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Core/lib)
 #   ENDIF(POLYCODE_BUILD_SHARED)
     
-#   IF(POLYCODE_BUILD_STATIC)
-	INSTALL(TARGETS Polycore EXPORT Polycore-targets
-		DESTINATION ${POLYCODE_RELEASE_DIR}/Framework/Core/lib)
-#   ENDIF(POLYCODE_BUILD_STATIC)
+#    IF(POLYCODE_BUILD_STATIC)
+    INSTALL(TARGETS Polycore EXPORT Polycore-targets
+        DESTINATION Core/lib)
 
-	INSTALL(EXPORT Polycore-targets DESTINATION
-		${POLYCODE_RELEASE_DIR}/Framework/Core/lib/Polycore)
-
+#    ENDIF(POLYCODE_BUILD_STATIC)
 ENDIF(POLYCODE_INSTALL_FRAMEWORK)
 
 IF(POLYCODE_INSTALL_PLAYER)
@@ -249,9 +251,7 @@ IF(POLYCODE_INSTALL_PLAYER)
 #    IF(POLYCODE_BUILD_SHARED)
 #        INSTALL(TARGETS Polycore_dynamic DESTINATION ${POLYCODE_RELEASE_DIR}/Player)
 #    END(POLYCODE_BUILD_SHARED)
-
-    IF(MSVC)    
-        INSTALL(DIRECTORY ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/bin/ 
-            DESTINATION ${POLYCODE_RELEASE_DIR}/Player)
-    ENDIF(MSVC)
+    
+#    INSTALL(DIRECTORY ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/bin/ 
+ #       DESTINATION ${POLYCODE_RELEASE_DIR}/Player)
 ENDIF(POLYCODE_INSTALL_PLAYER)

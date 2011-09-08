@@ -22,6 +22,28 @@ THE SOFTWARE.
 
 
 #include "PolyGLSLShaderModule.h"
+#include "PolyCoreServices.h"
+#include "PolyResourceManager.h"
+#include "PolyRenderer.h"
+#include "PolyGLSLProgram.h"
+#include "PolyGLSLShader.h"
+#include "PolyGLCubemap.h"
+#include "PolyMaterial.h"
+#include "PolyGLTexture.h"
+
+#include "tinyxml.h"
+
+#if defined(__APPLE__) && defined(__MACH__)
+#include <OpenGL/gl.h>
+#include <OpenGL/glext.h>
+#include <OpenGL/glu.h>
+#else
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <GL/glext.h>
+#endif
+
+using std::vector;
 
 using namespace Polycode;
 
@@ -555,6 +577,15 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 	glPopMatrix();
 		
 	glEnable(GL_TEXTURE_2D);
+		
+	Matrix4 modelMatrix = renderer->getCurrentModelMatrix();
+	int mloc = glGetUniformLocation(glslShader->shader_id, "modelMatrix");				
+	GLfloat mat[16];
+	for(int z=0; z < 16; z++) {
+		mat[z] = modelMatrix.ml[z];
+	}
+	glUniformMatrix4fv(mloc, 1, false, mat);
+		
 		
 	GLSLShaderBinding *cgBinding = (GLSLShaderBinding*)material->getShaderBinding(shaderIndex);
 	

@@ -23,20 +23,22 @@ THE SOFTWARE.
 #pragma once
 #include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyColor.h"
-#include "PolyPolygon.h"
-#include "PolyMesh.h"
-#include "PolyTexture.h"
-#include "PolyCubemap.h"
-#include "PolyMaterial.h"
-#include "PolyModule.h"
-#include "PolyVector3.h"
-#include "PolyQuaternion.h"
 #include "PolyMatrix4.h"
+#include "PolyVector2.h"
+#include "PolyImage.h"
 
 namespace Polycode {
 	
+	class Cubemap;
+	class Material;
+	class Mesh;
+	class PolycodeShaderBinding;
+	class PolycodeShaderModule;
+	class Polygon;
+	class RenderDataArray;
+	class ShaderBinding;
 	class Texture;
+	class VertexBuffer;
 
 	class _PolyExport LightInfo {
 		public:
@@ -144,6 +146,9 @@ namespace Polycode {
 		virtual void multModelviewMatrix(Matrix4 m) = 0;
 		virtual void setModelviewMatrix(Matrix4 m) = 0;
 		
+		void setCurrentModelMatrix(Matrix4 m) { currentModelMatrix = m; }
+		Matrix4 getCurrentModelMatrix() { return currentModelMatrix; }
+		
 		virtual void setBlendingMode(int blendingMode) = 0;	
 			
 		virtual void applyMaterial(Material *material, ShaderBinding *localOptions, unsigned int shaderIndex) = 0;
@@ -190,6 +195,8 @@ namespace Polycode {
 		
 		bool rayTriangleIntersect(Vector3 ray_origin, Vector3 ray_direction, Vector3 vert0, Vector3 vert1, Vector3 vert2, Vector3 *hitPoint);
 		
+		virtual Vector3 projectRayFrom2DCoordinate(Number x, Number y) = 0;
+		
 		void enableShaders(bool flag);
 
 		virtual void initOSSpecific() {};
@@ -234,10 +241,11 @@ namespace Polycode {
 		int getNumSpotLights() { return numSpotLights; }
 		int getNumLights() { return numLights; }
 		
-		vector<LightInfo> getAreaLights() { return areaLights; }
-		vector<LightInfo> getSpotLights() { return spotLights;	}
+		std::vector<LightInfo> getAreaLights() { return areaLights; }
+		std::vector<LightInfo> getSpotLights() { return spotLights;	}
 		
 	protected:
+		Matrix4 currentModelMatrix;
 		LightSorter sorter;	
 	
 		bool cullingFrontFaces;
@@ -256,11 +264,11 @@ namespace Polycode {
 		Matrix4 cameraMatrix;
 	
 		PolycodeShaderModule* currentShaderModule;
-		vector <PolycodeShaderModule*> shaderModules;
+		std::vector <PolycodeShaderModule*> shaderModules;
 
-		vector<LightInfo> lights;
-		vector<LightInfo> areaLights;
-		vector<LightInfo> spotLights;		
+		std::vector<LightInfo> lights;
+		std::vector<LightInfo> areaLights;
+		std::vector<LightInfo> spotLights;
 		int numLights;
 		int numAreaLights;
 		int numSpotLights;

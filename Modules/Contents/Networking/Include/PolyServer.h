@@ -1,13 +1,24 @@
 /*
- *  PolyServer.h
- *  Poly
- *
- *  Created by Ivan Safrin on 3/6/09.
- *  Copyright 2009 __MyCompanyName__. All rights reserved.
- *
- */
+Copyright (C) 2011 by Ivan Safrin
 
-// @package Network
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
 
 #pragma once
 
@@ -53,6 +64,7 @@ namespace Polycode {
 		
 		static const int EVENT_CLIENT_CONNECTED = 0;
 		static const int EVENT_CLIENT_DATA = 1;
+		static const int EVENT_CLIENT_DISCONNECTED = 2;		
 	};
 
 	class _PolyExport Server : public Peer {
@@ -60,12 +72,14 @@ namespace Polycode {
 			Server(unsigned int port, unsigned int rate, ServerWorld *world);
 			~Server();
 		
+			void DisconnectClient(ServerClient *client);
 			void handleEvent(Event *event);		
 			void handlePeerConnection(PeerConnection *connection);
 			ServerClient *getConnectedClient(PeerConnection *connection);
 		
 			void sendReliableDataToClient(ServerClient *client, char *data, unsigned int size, unsigned short type);
-		
+			void sendReliableDataToAllClients(char *data, unsigned int size, unsigned short type);
+					
 			void handlePacket(Packet *packet, PeerConnection *connection);
 		
 	protected:

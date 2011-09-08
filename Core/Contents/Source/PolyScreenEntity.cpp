@@ -21,6 +21,9 @@
 */
 
 #include "PolyScreenEntity.h"
+#include "PolyInputEvent.h"
+#include "PolyRectangle.h"
+#include "PolyRenderer.h"
 
 inline double round(double x) { return floor(x + 0.5); }
 

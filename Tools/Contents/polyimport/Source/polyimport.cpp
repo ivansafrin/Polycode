@@ -1,5 +1,7 @@
 
 #include "polyimport.h"
+#include "PolyPolygon.h"
+#include "OSBasics.h"
 
 using namespace Polycode;
 
@@ -165,6 +167,8 @@ int exportToFile(const char *fileName, bool swapZY) {
 }
 
 int main(int argc, char **argv) {
+
+	printf("Polycode import tool v0.8.2\n");
 
 	if(argc != 4) {
 		printf("\n\nInvalid arguments!\n");

@@ -21,6 +21,13 @@
 */
 
 #include "PolySkeleton.h"
+#include "PolyBezierCurve.h"
+#include "PolyBone.h"
+#include "PolyLabel.h"
+#include "PolySceneLabel.h"
+#include "PolySceneLine.h"
+#include "PolyTween.h"
+#include "OSBasics.h"
 
 using namespace Polycode;
 
@@ -65,7 +72,7 @@ void Skeleton::enableBoneLabels(const String& labelFont, Number size, Number sca
 	
 }
 
-void Skeleton::playAnimationByIndex(int index) {
+void Skeleton::playAnimationByIndex(int index, bool once) {
 	if(index > animations.size()-1)
 		return;
 		
@@ -73,29 +80,29 @@ void Skeleton::playAnimationByIndex(int index) {
 	if(!anim)
 		return;
 	
-	if(anim == currentAnimation)
+	if(anim == currentAnimation && !once)
 		return;
 	
 	if(currentAnimation)
 		currentAnimation->Stop();
 	
 	currentAnimation = anim;
-	anim->Play();	
+	anim->Play(once);	
 }
 
-void Skeleton::playAnimation(const String& animName) {
+void Skeleton::playAnimation(const String& animName, bool once) {
 	SkeletonAnimation *anim = getAnimation(animName);
 	if(!anim)
 		return;
 	
-	if(anim == currentAnimation)
+	if(anim == currentAnimation && !once)
 		return;
 	
 	if(currentAnimation)
 		currentAnimation->Stop();
 		
 	currentAnimation = anim;
-	anim->Play();
+	anim->Play(once);
 }
 
 SkeletonAnimation *Skeleton::getAnimation(const String& name) const {
@@ -138,7 +145,7 @@ void Skeleton::loadSkeleton(const String& fileName) {
 		memset(buffer, 0, 1024);
 		OSBasics::read(buffer, 1, namelen, inFile);
 		
-		Bone *newBone = new Bone(string(buffer));		
+		Bone *newBone = new Bone(String(buffer));
 		
 		OSBasics::read(&hasParent, sizeof(unsigned int), 1, inFile);
 		if(hasParent == 1) {
@@ -380,7 +387,7 @@ void BoneTrack::Stop() {
 	}
 }
 
-void BoneTrack::Play() {
+void BoneTrack::Play(bool once) {
 
 	if(!initialized ) {
 	// TODO: change it so that you can set the tweens to not manually restart so you can calculate the
@@ -390,34 +397,36 @@ void BoneTrack::Play() {
 					
 	BezierPathTween *testTween;		
 	if(LocX) {
-		testTween = new BezierPathTween(&LocXVec, LocX, Tween::EASE_NONE, durTime, true);
+		testTween = new BezierPathTween(&LocXVec, LocX, Tween::EASE_NONE, durTime, !once);
 		pathTweens.push_back(testTween);
 	}
 	if(LocY) {		
-		testTween = new BezierPathTween(&LocYVec, LocY, Tween::EASE_NONE, durTime, true);
+		testTween = new BezierPathTween(&LocYVec, LocY, Tween::EASE_NONE, durTime, !once);
 		pathTweens.push_back(testTween);
 	}
 		
 	if(LocZ) {
-		testTween = new BezierPathTween(&LocZVec, LocZ, Tween::EASE_NONE, durTime, true);
+		testTween = new BezierPathTween(&LocZVec, LocZ, Tween::EASE_NONE, durTime, !once);
 		pathTweens.push_back(testTween);
 	}
-	testTween = new BezierPathTween(&ScaleXVec, scaleX, Tween::EASE_NONE, durTime, true);
+	testTween = new BezierPathTween(&ScaleXVec, scaleX, Tween::EASE_NONE, durTime, !once);
 	pathTweens.push_back(testTween);
-	testTween = new BezierPathTween(&ScaleYVec, scaleY, Tween::EASE_NONE, durTime, true);
+	testTween = new BezierPathTween(&ScaleYVec, scaleY, Tween::EASE_NONE, durTime, !once);
 	pathTweens.push_back(testTween);
-	testTween = new BezierPathTween(&ScaleZVec, scaleZ, Tween::EASE_NONE, durTime, true);
+	testTween = new BezierPathTween(&ScaleZVec, scaleZ, Tween::EASE_NONE, durTime, !once);
 	pathTweens.push_back(testTween);
 		
 		
 	if(QuatW)
-		quatTween = new QuaternionTween(&boneQuat, QuatW, QuatX, QuatY, QuatZ, Tween::EASE_NONE, durTime, true);
+		quatTween = new QuaternionTween(&boneQuat, QuatW, QuatX, QuatY, QuatZ, Tween::EASE_NONE, durTime, !once);
 
 	initialized = true;
 	} else {
 		for(int i=0; i < pathTweens.size(); i++) {
+			pathTweens[i]->Reset();
 			pathTweens[i]->Pause(false);
 		}	
+		quatTween->Reset();
 		quatTween->Pause(false);
 	}
 /*
@@ -512,9 +521,9 @@ void SkeletonAnimation::Stop() {
 	}
 }
 
-void SkeletonAnimation::Play() {
+void SkeletonAnimation::Play(bool once) {
 	for(int i=0; i < boneTracks.size(); i++) {
-		boneTracks[i]->Play();
+		boneTracks[i]->Play(once);
 	}
 }
 

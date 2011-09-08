@@ -21,6 +21,13 @@
 */
 
 #include "PolyMesh.h"
+#include "PolyLogger.h"
+#include "PolyPolygon.h"
+#include "OSBasics.h"
+
+using std::min;
+using std::max;
+using std::vector;
 
 namespace Polycode {
 
@@ -191,7 +198,17 @@ namespace Polycode {
 					vertex->addBoneAssignment(boneID, weight);
 				}
 				
-				
+				Number totalWeight = 0;				
+				for(int m=0; m < vertex->getNumBoneAssignments(); m++) {
+					BoneAssignment *ba = vertex->getBoneAssignment(m);					
+					totalWeight += ba->weight;
+				}				
+
+				for(int m=0; m < vertex->getNumBoneAssignments(); m++) {
+					BoneAssignment *ba = vertex->getBoneAssignment(m);					
+					ba->weight = ba->weight/totalWeight;
+				}				
+
 				
 				poly->addVertex(vertex);
 			}

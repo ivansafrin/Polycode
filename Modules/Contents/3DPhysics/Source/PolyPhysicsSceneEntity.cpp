@@ -21,6 +21,10 @@ THE SOFTWARE.
 */
 
 #include "PolyPhysicsSceneEntity.h"
+#include "BulletDynamics/Character/btKinematicCharacterController.h"
+#include "BulletCollision/CollisionDispatch/btGhostObject.h"
+#include "PolyMatrix4.h"
+#include "PolySceneEntity.h"
 
 using namespace Polycode;
 
@@ -28,8 +32,12 @@ PhysicsVehicle::PhysicsVehicle(SceneEntity *entity, Number mass, Number friction
 	
 }
 
-void PhysicsVehicle::ResetVehicle(){
-	vehicle->getRigidBody()->setCenterOfMassTransform(btTransform::getIdentity());
+void PhysicsVehicle::warpVehicle(Vector3 position) {
+	btTransform transform;
+	transform.setIdentity();		
+	transform.setOrigin(btVector3(position.x,position.y,position.z));	
+	
+	vehicle->getRigidBody()->setCenterOfMassTransform(transform);
 	vehicle->getRigidBody()->setLinearVelocity(btVector3(0,0,0));
 	vehicle->getRigidBody()->setAngularVelocity(btVector3(0,0,0));
 
@@ -134,10 +142,32 @@ void PhysicsCharacter::jump() {
 	character->jump();	
 }
 
+void PhysicsCharacter::warpCharacter(Vector3 position) {
+	character->warp(btVector3(position.x, position.y, position.z));
+	Update();
+}
+
+void PhysicsCharacter::setJumpSpeed(Number jumpSpeed) {
+	character->setJumpSpeed(jumpSpeed);
+}
+
+void PhysicsCharacter::setFallSpeed(Number fallSpeed) {
+	character->setFallSpeed(fallSpeed);
+}
+
+void PhysicsCharacter::setMaxJumpHeight(Number maxJumpHeight) {
+	character->setMaxJumpHeight(maxJumpHeight);
+}
+
+bool PhysicsCharacter::onGround() {
+	return character->onGround();
+}
+
+
 void PhysicsCharacter::Update() {
 	btVector3 pos = ghostObject->getWorldTransform().getOrigin();
 	sceneEntity->setPosition(pos.x(), pos.y(), pos.z());
-//	sceneEntity->rebuildTransformMatrix();
+	sceneEntity->rebuildTransformMatrix();
 	sceneEntity->dirtyMatrix(true);
 }
 
@@ -145,17 +175,26 @@ PhysicsCharacter::~PhysicsCharacter() {
 	
 }
 
-PhysicsSceneEntity::PhysicsSceneEntity(SceneEntity *entity, int type, Number mass, Number friction, Number restitution) : CollisionSceneEntity(entity, false, type) {
+PhysicsSceneEntity::PhysicsSceneEntity(SceneEntity *entity, int type, Number mass, Number friction, Number restitution) : CollisionSceneEntity(entity, type) {
 
 	this->mass = mass;
 	btVector3 localInertia(0,0,0);
 	Vector3 pos = entity->getPosition();	
 	btTransform transform;
 	transform.setIdentity();		
+	/*
 	transform.setOrigin(btVector3(pos.x,pos.y,pos.z));
 	Quaternion q = entity->getRotationQuat();
 	transform.setRotation(btQuaternion(q.x,q.y,q.z,q.w));
+	*/
+	entity->rebuildTransformMatrix();
+	Matrix4 ent_mat = entity->getConcatenatedMatrix();
 	
+	btScalar mat[16];
+	for(int i=0; i < 16; i++) {
+		mat[i] = ent_mat.ml[i];
+	}	
+	transform.setFromOpenGLMatrix(mat);
 	
 	if(mass != 0.0f) {
 		shape->calculateLocalInertia(mass,localInertia);
@@ -189,7 +228,8 @@ void PhysicsSceneEntity::Update() {
 	
 	free(mat);
 		
-	sceneEntity->setTransformByMatrixPure(m);			
+	sceneEntity->setTransformByMatrixPure(m);	
+	CollisionSceneEntity::Update();		
 }
 
 SceneEntity *PhysicsSceneEntity::getSceneEntity() {

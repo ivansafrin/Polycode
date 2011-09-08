@@ -21,7 +21,15 @@
 */
 
 #include "PolySound.h"
+#include <vorbis/vorbisfile.h>
+#include "PolyString.h"
+#include "PolyLogger.h"
 
+#include "OSBasics.h"
+#include <string>
+#include <vector>
+
+using namespace std;
 using namespace Polycode;
 
 size_t custom_readfunc(void *ptr, size_t size, size_t nmemb, void *datasource) {
