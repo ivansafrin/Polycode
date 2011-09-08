@@ -29,6 +29,9 @@ THE SOFTWARE.
 #include "PolyTexture.h"
 #include "PolyCubemap.h"
 
+#ifdef _WINDOWS
+#include <windows.h>
+#endif
 
 #if defined(__APPLE__) && defined(__MACH__)
 #include <OpenGL/gl.h>
@@ -36,7 +39,6 @@ THE SOFTWARE.
 #include <OpenGL/glu.h>
 #else
 #include <GL/gl.h>
-#include <GL/glu.h>
 #include <GL/glext.h>
 #ifdef _WINDOWS
 #include <GL/wglext.h>
