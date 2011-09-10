@@ -23,18 +23,18 @@ THE SOFTWARE.
 #pragma once
 #include "PolyGlobals.h"
 #include "PolyEvent.h"
-#include "PolyVector2.h"
 #include "PolyScreen.h"
+#include "PolyVector2.h"
 #include "Box2D/Box2D.h"
-//#include "PolyCoreServices.h"
-#include "PolyScreenLine.h"
-#include "PolyPhysicsScreenEntity.h"
-#include "PolyTimer.h"
 #include <vector>
 
 #define MAX_B2DCONTACTPOINTS 2048
 
 namespace Polycode {
+
+class ScreenEntity;
+class PhysicsScreenEntity;
+class Timer;
 
 /**
 * Event sent out by the PhysicsScreen class when collisions begin and end.
