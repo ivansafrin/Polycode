@@ -25,6 +25,10 @@ THE SOFTWARE.
 #include "PolyGlobals.h"
 #include "PolyRenderer.h"
 
+#ifdef _WINDOWS
+#include <windows.h>
+#endif
+
 #if defined(__APPLE__) && defined(__MACH__)
 #include <OpenGL/gl.h>
 #include <OpenGL/glext.h>

@@ -21,6 +21,17 @@
 */		
 
 #include "PolyWinCore.h"
+#include "PolyCoreInput.h"
+#include "PolyCoreServices.h"
+#include "PolyInputEvent.h"
+#include "PolyGLRenderer.h"
+#include "PolyGLSLShaderModule.h"
+#include "PolyLogger.h"
+#include "PolyThreaded.h"
+
+#include <GL/gl.h>
+#include <GL/glext.h>
+#include <GL/wglext.h>
 
 using namespace Polycode;
 
@@ -526,8 +537,8 @@ CoreMutex *Win32Core::createMutex() {
 	return newMutex;
 }
 		
-vector<Polycode::Rectangle> Win32Core::getVideoModes() {
-	vector<Polycode::Rectangle> retVector;
+std::vector<Polycode::Rectangle> Win32Core::getVideoModes() {
+	std::vector<Polycode::Rectangle> retVector;
 
 	return retVector;
 }

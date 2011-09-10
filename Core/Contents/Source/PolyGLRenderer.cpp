@@ -35,10 +35,6 @@
 #include "PolyPolygon.h"
 
 #ifdef _WINDOWS
-    #include <windows.h>
-#endif
-
-#ifdef _WINDOWS
 
 
 PFNGLACTIVETEXTUREPROC   glActiveTexture;
