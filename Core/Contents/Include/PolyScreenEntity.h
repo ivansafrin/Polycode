@@ -68,7 +68,7 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		* Returns current rotation.
 		* @return Current rotation value.
 		*/						
-		Number getRotation();
+		Number getRotation() const;
 			
 		bool _onMouseDown(Number x, Number y, int mouseButton, int timestamp);
 		bool _onMouseUp(Number x, Number y, int mouseButton, int timestamp);
@@ -88,7 +88,7 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		virtual void onKeyDown(PolyKEY key, wchar_t charCode){}
 		virtual void onKeyUp(PolyKEY key, wchar_t charCode){}
 		
-		bool hitTest(Number x, Number y);		
+		bool hitTest(Number x, Number y) const;
 	
 		Matrix4 buildPositionMatrix();
 		void adjustMatrixForChildren();
@@ -97,13 +97,13 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		* Returns the width of the screen entity.
 		* @return Height of the screen entity.
 		*/									
-		Number getWidth();
+		Number getWidth() const;
 		
 		/**
 		* Returns the height of the screen entity.
 		* @param w New height value.
 		*/											
-		Number getHeight();
+		Number getHeight() const;
 	
 		/**
 		* Sets the width of the screen entity.
@@ -141,12 +141,12 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		void focusChild(ScreenEntity *child);
 		void focusNextChild();
 	
-		Vector2 getPosition2D();
+		Vector2 getPosition2D() const;
 		
 		static const int POSITION_TOPLEFT = 0;
 		static const int POSITION_CENTER = 1;
 
-		bool isFocusable();
+		bool isFocusable() const;
 		
 		bool hasFocus;
 		bool blockMouseInput;

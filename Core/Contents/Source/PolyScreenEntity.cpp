@@ -30,7 +30,7 @@ inline double round(double x) { return floor(x + 0.5); }
 using namespace Polycode;
 
 ScreenEntity::ScreenEntity() : Entity(), EventDispatcher() {
-	color = new Color(1.0f,1.0f,1.0f,1.0f);
+	color = Color(1.0f,1.0f,1.0f,1.0f);
 	width = 1;
 	height = 1;
 	hitwidth = 1;
@@ -85,7 +85,7 @@ void ScreenEntity::focusNextChild() {
 	}
 }
 
-Number ScreenEntity::getRotation() {
+Number ScreenEntity::getRotation() const {
 	return this->getRoll();
 }
 
@@ -99,7 +99,7 @@ void ScreenEntity::focusChild(ScreenEntity *child) {
 	focusedChild->onGainFocus();
 }
 
-bool ScreenEntity::isFocusable() {
+bool ScreenEntity::isFocusable() const {
 	return focusable;
 }
 
@@ -133,15 +133,15 @@ void ScreenEntity::setScale(Number x, Number y) {
 	matrixDirty = true;	
 }
 
-Number ScreenEntity::getWidth() {
+Number ScreenEntity::getWidth() const {
 	return width;
 }
 
-Number ScreenEntity::getHeight() {
+Number ScreenEntity::getHeight() const {
 	return height;
 }
 
-bool ScreenEntity::hitTest(Number x, Number y) {
+bool ScreenEntity::hitTest(Number x, Number y) const {
 	bool retVal = false;
     // apply compound scale to test hit against
     Vector3 compScale = getCompoundScale();
@@ -365,7 +365,7 @@ void ScreenEntity::setRotation(Number rotation) {
 	setRoll(rotation);
 }
 
-Vector2 ScreenEntity::getPosition2D() {
+Vector2 ScreenEntity::getPosition2D() const {
 	return Vector2(position.x, position.y);
 }
 
