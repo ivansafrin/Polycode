@@ -92,11 +92,11 @@ void Screen::setScreenOffset(Number x, Number y) {
 	offset.y = y;
 }
 
-Vector2 Screen::getScreenOffset() {
+Vector2 Screen::getScreenOffset() const {
 	return offset;
 }
 
-int Screen::getHighestZIndex() {
+int Screen::getHighestZIndex() const {
 	int highestZ = 1;
 	for(int i=0; i<children.size();i++) {
 		if(children[i]->zindex > highestZ)
@@ -227,7 +227,7 @@ void Screen::drawFilter() {
 	
 }
 
-bool Screen::hasFilterShader() {
+bool Screen::hasFilterShader() const {
 	return _hasFilterShader;
 }
 
