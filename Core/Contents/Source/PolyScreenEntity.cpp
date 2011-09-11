@@ -27,7 +27,7 @@ inline double round(double x) { return floor(x + 0.5); }
 using namespace Polycode;
 
 ScreenEntity::ScreenEntity() : Entity(), EventDispatcher() {
-	color = new Color(1.0f,1.0f,1.0f,1.0f);
+	color = Color(1.0f,1.0f,1.0f,1.0f);
 	width = 1;
 	height = 1;
 	hitwidth = 1;
