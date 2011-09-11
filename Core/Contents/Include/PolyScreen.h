@@ -73,7 +73,7 @@ namespace Polycode {
 		* Returns the screen's offset.
 		* @return The screen's offset as 2d vector.
 		*/		
-		Vector2 getScreenOffset();
+		Vector2 getScreenOffset() const;
 				
 		virtual void Shutdown();
 		virtual void Update();
@@ -105,7 +105,7 @@ namespace Polycode {
 		void clearScreenShader();
 		
 		void handleEvent(Event *event);
-		int getHighestZIndex();
+		int getHighestZIndex() const;
 		
 		/**
 		* Sorts the screen's children based on their z index.
@@ -119,11 +119,11 @@ namespace Polycode {
 		/**
 		* Returns true if the screen has a shader applied to it.
 		*/				
-		bool hasFilterShader();
+		bool hasFilterShader() const;
 		void drawFilter();
 		
-		bool usesNormalizedCoordinates() { return useNormalizedCoordinates; }
-		Number getYCoordinateSize() { return yCoordinateSize; }	
+		bool usesNormalizedCoordinates() const { return useNormalizedCoordinates; }
+		Number getYCoordinateSize() const { return yCoordinateSize; }
 		
 		/**
 		* Returns the root entity. The root entity can be used to transform the entire screen and change its color.
@@ -139,12 +139,12 @@ namespace Polycode {
 		/**
 		* Returns the local shader options for the camera post processing material.
 		*/				
-		std::vector<ShaderBinding*> getLocalShaderOptions() { return localShaderOptions; }
+		const std::vector<ShaderBinding*>& getLocalShaderOptions() const { return localShaderOptions; }
 		
 		/**
 		* Returns the shader material applied to the camera.
 		*/					
-		Material *getScreenShaderMaterial() { return filterShaderMaterial; }
+		Material *getScreenShaderMaterial() const { return filterShaderMaterial; }
 		
 	protected:
 		
