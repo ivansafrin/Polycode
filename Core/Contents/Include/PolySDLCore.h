@@ -47,7 +47,7 @@ namespace Polycode {
 		void enableMouse(bool newval);
 		unsigned int getTicks();
 		bool Update();
-		void setVideoMode(int xRes, int yRes, bool fullScreen, int aaLevel);
+		void setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel);
 		void createThread(Threaded *target);
 		std::vector<Rectangle> getVideoModes();
 		

@@ -53,7 +53,7 @@ SDLCore::SDLCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool v
 	renderer = new OpenGLRenderer();
 	services->setRenderer(renderer);
 
-	setVideoMode(xRes, yRes, fullScreen, aaLevel);
+	setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel);
 	SDL_WM_SetCaption(windowTitle->c_str(), windowTitle->c_str());
 	
 	SDL_EnableUNICODE(1);
@@ -63,7 +63,7 @@ SDLCore::SDLCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool v
 	CoreServices::getInstance()->installModule(new GLSLShaderModule());	
 }
 
-void SDLCore::setVideoMode(int xRes, int yRes, bool fullScreen, int aaLevel) {	
+void SDLCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel) {
 	SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24);	
 	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1);			
 	SDL_GL_SetAttribute( SDL_GL_RED_SIZE,   8);
