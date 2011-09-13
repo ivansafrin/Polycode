@@ -112,7 +112,7 @@ namespace Polycode {
 		
 	public:
 		
-		Win32Core(PolycodeViewBase *view, int xRes, int yRes, bool fullScreen, int aaLevel,int frameRate);
+		Win32Core(PolycodeViewBase *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate);
 		~Win32Core();
 
 		void enableMouse(bool newval);
