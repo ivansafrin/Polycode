@@ -185,6 +185,10 @@ function Scene:addLight(light)
 	local retVal = Polycore.Scene_addLight(self.__ptr, light.__ptr)
 end
 
+function Scene:removeLight(light)
+	local retVal = Polycore.Scene_removeLight(self.__ptr, light.__ptr)
+end
+
 function Scene:getNearestLight(pos)
 	local retVal = Polycore.Scene_getNearestLight(self.__ptr, pos.__ptr)
 	if retVal == nil then return nil end

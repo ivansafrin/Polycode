@@ -36,6 +36,14 @@ void TweenManager::addTween(Tween *tween) {
 	tweens.push_back(tween);
 }
 
+void TweenManager::removeTween(Tween *tween) {
+	for(int i=0;i<tweens.size();i++) {
+		if(tweens[i] == tween) {
+			tweens.erase(tweens.begin()+i);
+		}
+	}
+}
+
 void TweenManager::Update() {
 	Tween *tween;
 	for(int i=0;i<tweens.size();i++) {

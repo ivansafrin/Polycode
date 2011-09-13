@@ -31,6 +31,7 @@ THE SOFTWARE.
 #include "PolyGlobals.h"
 #include "PolyTexture.h"
 #include "PolyGLRenderer.h"
+#include "PolyCoreServices.h"
 #if defined(__APPLE__) && defined(__MACH__)
 #include <OpenGL/gl.h>
 #include <OpenGL/glext.h>
