@@ -20,6 +20,7 @@
  THE SOFTWARE.
  */
 
+#pragma once
 #include "PolyGlobals.h"
 #include "PolyString.h"
 

@@ -73,7 +73,7 @@ function MaterialManager:createTextureFromImage(image, clamp)
 end
 
 function MaterialManager:createTextureFromFile(fileName, clamp)
-	local retVal = Polycore.MaterialManager_createTextureFromFile(self.__ptr, fileName, clamp)
+	local retVal = Polycore.MaterialManager_createTextureFromFile(self.__ptr, fileName.__ptr, clamp)
 	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]

@@ -9,7 +9,7 @@ function String:__index__(name)
 		if Polycore.__ptr_lookup[retVal] ~= nil then
 			return Polycore.__ptr_lookup[retVal]
 		else
-			Polycore.__ptr_lookup[retVal] = string("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal] = std::string("__skip_ptr__")
 			Polycore.__ptr_lookup[retVal].__ptr = retVal
 			return Polycore.__ptr_lookup[retVal]
 		end
@@ -44,18 +44,6 @@ end
 function String:length()
 	local retVal =  Polycore.String_length(self.__ptr)
 	return retVal
-end
-
-function String:getSTLString()
-	local retVal =  Polycore.String_getSTLString(self.__ptr)
-	if retVal == nil then return nil end
-	if Polycore.__ptr_lookup[retVal] ~= nil then
-		return Polycore.__ptr_lookup[retVal]
-	else
-		Polycore.__ptr_lookup[retVal] = string("__skip_ptr__")
-		Polycore.__ptr_lookup[retVal].__ptr = retVal
-		return Polycore.__ptr_lookup[retVal]
-	end
 end
 
 function String:substr(pos, n)

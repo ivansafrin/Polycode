@@ -1,5 +1,8 @@
 #include "Physics3DLUA.h"
 #include "Physics3DLUAWrappers.h"
+#include "PolyCoreServices.h"
+
+using namespace Polycode;
 
 int luaopen_Physics3D(lua_State *L) {
 CoreServices *inst = (CoreServices*)lua_topointer(L, 1);
@@ -48,6 +51,15 @@ CoreServices::setInstance(inst);
 		{"PhysicsSceneEntity_setFriction", Physics3D_PhysicsSceneEntity_setFriction},
 		{"PhysicsSceneEntity_getType", Physics3D_PhysicsSceneEntity_getType},
 		{"delete_PhysicsSceneEntity", Physics3D_delete_PhysicsSceneEntity},
+		{"PhysicsVehicle_get_tuning", Physics3D_PhysicsVehicle_get_tuning},
+		{"PhysicsVehicle", Physics3D_PhysicsVehicle},
+		{"PhysicsVehicle_addWheel", Physics3D_PhysicsVehicle_addWheel},
+		{"PhysicsVehicle_applyEngineForce", Physics3D_PhysicsVehicle_applyEngineForce},
+		{"PhysicsVehicle_setSteeringValue", Physics3D_PhysicsVehicle_setSteeringValue},
+		{"PhysicsVehicle_setBrake", Physics3D_PhysicsVehicle_setBrake},
+		{"PhysicsVehicle_warpVehicle", Physics3D_PhysicsVehicle_warpVehicle},
+		{"PhysicsVehicle_Update", Physics3D_PhysicsVehicle_Update},
+		{"delete_PhysicsVehicle", Physics3D_delete_PhysicsVehicle},
 		{"PhysicsCharacter", Physics3D_PhysicsCharacter},
 		{"PhysicsCharacter_Update", Physics3D_PhysicsCharacter_Update},
 		{"PhysicsCharacter_setWalkDirection", Physics3D_PhysicsCharacter_setWalkDirection},
@@ -58,15 +70,6 @@ CoreServices::setInstance(inst);
 		{"PhysicsCharacter_setMaxJumpHeight", Physics3D_PhysicsCharacter_setMaxJumpHeight},
 		{"PhysicsCharacter_onGround", Physics3D_PhysicsCharacter_onGround},
 		{"delete_PhysicsCharacter", Physics3D_delete_PhysicsCharacter},
-		{"PhysicsVehicle_get_tuning", Physics3D_PhysicsVehicle_get_tuning},
-		{"PhysicsVehicle", Physics3D_PhysicsVehicle},
-		{"PhysicsVehicle_addWheel", Physics3D_PhysicsVehicle_addWheel},
-		{"PhysicsVehicle_applyEngineForce", Physics3D_PhysicsVehicle_applyEngineForce},
-		{"PhysicsVehicle_setSteeringValue", Physics3D_PhysicsVehicle_setSteeringValue},
-		{"PhysicsVehicle_setBrake", Physics3D_PhysicsVehicle_setBrake},
-		{"PhysicsVehicle_warpVehicle", Physics3D_PhysicsVehicle_warpVehicle},
-		{"PhysicsVehicle_Update", Physics3D_PhysicsVehicle_Update},
-		{"delete_PhysicsVehicle", Physics3D_delete_PhysicsVehicle},
 		{NULL, NULL}
 	};
 	luaL_openlib(L, "Physics3D", physics3dLib, 0);

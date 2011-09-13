@@ -1,13 +1,18 @@
 #pragma once
 
-#include <Polycode2DPhysics.h>
-
 extern "C" {
 
 #include <stdio.h>
 #include "lua.h"
 #include "lualib.h"
 #include "lauxlib.h"
+} // extern "C" 
+
+#include "Polycode2DPhysics.h"
+#include "PolyPhysicsScreen.h"
+#include "PolyPhysicsScreenEntity.h"
+
+namespace Polycode {
 
 static int Physics2D_PhysicsScreen(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TNUMBER);
@@ -489,19 +494,6 @@ static int Physics2D_delete_PhysicsScreen(lua_State *L) {
 	return 0;
 }
 
-static int Physics2D_PhysicsJoint(lua_State *L) {
-	PhysicsJoint *inst = new PhysicsJoint();
-	lua_pushlightuserdata(L, (void*)inst);
-	return 1;
-}
-
-static int Physics2D_delete_PhysicsJoint(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
-	PhysicsJoint *inst = (PhysicsJoint*)lua_topointer(L, 1);
-	delete inst;
-	return 0;
-}
-
 static int Physics2D_PhysicsScreenEvent_get_localCollisionNormal(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScreenEvent *inst = (PhysicsScreenEvent*)lua_topointer(L, 1);
@@ -586,6 +578,19 @@ static int Physics2D_PhysicsScreenEvent_getSecondEntity(lua_State *L) {
 static int Physics2D_delete_PhysicsScreenEvent(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScreenEvent *inst = (PhysicsScreenEvent*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
+static int Physics2D_PhysicsJoint(lua_State *L) {
+	PhysicsJoint *inst = new PhysicsJoint();
+	lua_pushlightuserdata(L, (void*)inst);
+	return 1;
+}
+
+static int Physics2D_delete_PhysicsJoint(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsJoint *inst = (PhysicsJoint*)lua_topointer(L, 1);
 	delete inst;
 	return 0;
 }
@@ -686,4 +691,4 @@ static int Physics2D_delete_PhysicsScreenEntity(lua_State *L) {
 	return 0;
 }
 
-}
+} // namespace Polycode
