@@ -29,7 +29,7 @@ long getThreadID() {
 	return (long)pthread_self();
 }
 
-CocoaCore::CocoaCore(PolycodeView *view, int xRes, int yRes, bool fullScreen,int aaLevel, int frameRate) : Core(xRes, yRes, fullScreen,aaLevel, frameRate) {	
+CocoaCore::CocoaCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate) : Core(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate) {	
 	eventMutex = createMutex();
 	
 //	NSLog(@"BUNDLE: %@", [[NSBundle mainBundle] bundlePath]);
@@ -142,7 +142,7 @@ CocoaCore::CocoaCore(PolycodeView *view, int xRes, int yRes, bool fullScreen,int
 	renderer = new OpenGLRenderer();
 	services->setRenderer(renderer);	
 	//[view unlockContext];			
-	setVideoMode(xRes,yRes,fullScreen,aaLevel);		
+	setVideoMode(xRes,yRes,fullScreen, vSync, aaLevel, anisotropyLevel);		
 
 	CoreServices::getInstance()->installModule(new GLSLShaderModule());	
 
@@ -166,12 +166,13 @@ String CocoaCore::getClipboardString() {
 	
 }
 
-void CocoaCore::setVideoMode(int xRes, int yRes, bool fullScreen, int aaLevel) {
+void CocoaCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLeve, int anisotropyLevel) {
 	this->xRes = xRes;
 	this->yRes = yRes;
 	this->fullScreen = fullScreen;
 	this->aaLevel = aaLevel;
-	
+	renderer->setAnisotropyAmount(anisotropyLevel);
+		
 	renderer->Resize(xRes, yRes);
 //	CoreServices::getInstance()->getMaterialManager()->reloadProgramsAndTextures();	
 	dispatchEvent(new Event(), EVENT_CORE_RESIZE);	
@@ -195,7 +196,14 @@ void CocoaCore::setVideoMode(int xRes, int yRes, bool fullScreen, int aaLevel) {
 																	   nil]];
 		
 	}
-		
+	
+	GLint sync = 0;
+	if(vSync) {
+		sync =1 ;
+	} 
+	
+	[context setValues:&sync forParameter:NSOpenGLCPSwapInterval];	
+				
 	/*
 	if(aaLevel > 0) {
 		glEnable( GL_MULTISAMPLE_ARB );	

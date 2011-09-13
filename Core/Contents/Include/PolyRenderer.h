@@ -186,6 +186,9 @@ namespace Polycode {
 		int getXRes();
 		int getYRes();
 		
+		void setAnisotropyAmount(Number amount);
+		Number getAnisotropyAmount();
+		
 		virtual void cullFrontFaces(bool val) = 0;
 		
 		void clearLights();
@@ -245,6 +248,8 @@ namespace Polycode {
 		std::vector<LightInfo> getSpotLights() { return spotLights;	}
 		
 	protected:
+	
+		Number anisotropy;
 		Matrix4 currentModelMatrix;
 		LightSorter sorter;	
 	

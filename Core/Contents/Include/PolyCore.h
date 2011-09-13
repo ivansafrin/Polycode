@@ -76,7 +76,7 @@ namespace Polycode {
 		* @param aaLevel Level of anti-aliasing. Possible values are 2,4 and 6.
 		* @param frameRate Frame rate that the core will update and render at.
 		*/			
-		Core(int xRes, int yRes, bool fullScreen, int aaLevel, int frameRate);
+		Core(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate);
 		virtual ~Core();
 		
 		virtual bool Update() = 0;
@@ -229,7 +229,7 @@ namespace Polycode {
 		*/																							
 		virtual std::vector<String> openFilePicker(std::vector<CoreFileExtension> extensions, bool allowMultiple) = 0;
 		
-		void setVideoModeIndex(int index, bool fullScreen, int aaLevel);
+		void setVideoModeIndex(int index, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel);
 		
 		/**
 		* Sets a new video mode.
@@ -238,7 +238,7 @@ namespace Polycode {
 		* @param fullScreen True to launch in fullscreen, false to launch in window.
 		* @param aaLevel Level of anti-aliasing. Possible values are 2,4 and 6.
 		*/																									
-		virtual void setVideoMode(int xRes, int yRes, bool fullScreen, int aaLevel) = 0;
+		virtual void setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel) = 0;
 		
 		/**
 		* Resizes the renderer.

@@ -21,6 +21,7 @@
 */		
 
 #include "PolySDLCore.h"
+#include "PolycodeView.h"
 #include "PolyCoreServices.h"
 #include "PolyCoreInput.h"
 #include "PolyMaterialManager.h"
@@ -40,7 +41,7 @@ long getThreadID() {
 	return (long)pthread_self();
 }
 
-SDLCore::SDLCore(PolycodeViewBase *view, int xRes, int yRes, bool fullScreen,int aaLevel, int frameRate) : Core(xRes, yRes, fullScreen,aaLevel, frameRate) {
+SDLCore::SDLCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate) : Core(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate) {
 
 	String *windowTitle = (String*)view->windowData;
 

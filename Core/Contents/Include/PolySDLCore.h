@@ -30,6 +30,8 @@ struct SDL_mutex;
 
 namespace Polycode {
 
+	class PolycodeView;
+
 	class _PolyExport SDLCoreMutex : public CoreMutex {
 	public:
 		SDL_mutex *pMutex;
@@ -39,7 +41,7 @@ namespace Polycode {
 		
 	public:
 		
-		SDLCore(PolycodeViewBase *view, int xRes, int yRes, bool fullScreen, int aaLevel, int frameRate);
+		SDLCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate);
 		~SDLCore();
 
 		void enableMouse(bool newval);

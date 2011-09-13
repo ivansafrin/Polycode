@@ -1,13 +1,13 @@
 # platform specific defines and include directories for win and sdl
 IF(MSVC)
     ADD_DEFINITIONS(/D_UNICODE /DUNICODE)
-    INCLUDE_DIRECTORIES(${Polycode_SOURCE_DIR}/Core/Build/MSVC/Polycore)
+    INCLUDE_DIRECTORIES("${Polycode_SOURCE_DIR}/Core/Contents/PolycodeView/Build/MSVC/Polycore")
 ELSEIF(APPLE)
     ADD_DEFINITIONS(-DGL_GLEXT_PROTOTYPES)
-    INCLUDE_DIRECTORIES("${Polycode_SOURCE_DIR}/Core/Build/Mac OS X")
+    INCLUDE_DIRECTORIES("${Polycode_SOURCE_DIR}/Core/Contents/PolycodeView/Build/Mac OS X")
 ELSE(MSVC)
     ADD_DEFINITIONS(-DGL_GLEXT_PROTOTYPES)
-    INCLUDE_DIRECTORIES(${Polycode_SOURCE_DIR}/Core/Build/Linux)
+    INCLUDE_DIRECTORIES("${Polycode_SOURCE_DIR}/Core/Contents/PolycodeView/Linux")
 ENDIF(MSVC)
 
 FIND_PACKAGE(OpenGL REQUIRED)

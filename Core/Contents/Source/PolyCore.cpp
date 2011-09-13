@@ -31,7 +31,7 @@
 
 namespace Polycode {
 	
-	Core::Core(int xRes, int yRes, bool fullScreen, int aaLevel, int frameRate) : EventDispatcher() {
+	Core::Core(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate) : EventDispatcher() {
 		services = CoreServices::getInstance();
 		input = new CoreInput();
 		services->setCore(this);
@@ -86,12 +86,12 @@ namespace Polycode {
 		return ((Number)getTicks())/1000.0f;		
 	}
 	
-	void Core::setVideoModeIndex(int index, bool fullScreen, int aaLevel) {
+	void Core::setVideoModeIndex(int index, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel) {
 		std::vector<Rectangle> resList = getVideoModes();
 		if(index >= resList.size())
 			return;
 		
-		setVideoMode(resList[index].w, resList[index].h, fullScreen, aaLevel);
+		setVideoMode(resList[index].w, resList[index].h, fullScreen, vSync, aaLevel, anisotropyLevel);
 	}
 	
 	void Core::updateCore() {

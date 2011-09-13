@@ -26,6 +26,7 @@
 using namespace Polycode;
 
 Renderer::Renderer() : currentTexture(NULL), xRes(0), yRes(0), renderMode(0), orthoMode(false), lightingEnabled(false), clearColor(0.2f, 0.2f, 0.2f, 0.0) {
+	anisotropy = 0;
 	textureFilteringMode = TEX_FILTERING_LINEAR;
 	currentMaterial = NULL;
 	numLights = 0;
@@ -167,6 +168,14 @@ void Renderer::addLight(int lightImportance, Vector3 position, Vector3 direction
 			numSpotLights++;
 		break;			
 	}
+}
+
+Number Renderer::getAnisotropyAmount() {
+	return anisotropy;
+}
+
+void Renderer::setAnisotropyAmount(Number amount) {
+	anisotropy = amount;
 }
 
 const Matrix4& Renderer::getCameraMatrix() const {

@@ -125,6 +125,13 @@ namespace Polycode {
 		* @param light Light to add to the scene.
 		*/
 		void addLight(SceneLight *light);
+		
+		/**
+		* Removes a light from the scene.
+		* @param light Light to remove from the scene.
+		*/		
+		void removeLight(SceneLight *light);
+		
 		SceneLight *getNearestLight(Vector3 pos);
 		
 		void writeEntityMatrix(SceneEntity *entity, OSFILE *outFile);

@@ -77,7 +77,7 @@ void PhysicsScene::Update() {
 	
 	
 	Number elapsed = CoreServices::getInstance()->getCore()->getElapsed();
-	physicsWorld->stepSimulation(elapsed);	
+	physicsWorld->stepSimulation(elapsed, 7);	
 	CollisionScene::Update();
 	
 }

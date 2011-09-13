@@ -21,6 +21,7 @@
 */
 
 #include "PolyGLTexture.h"
+#include "PolyCoreServices.h"
 #include "PolyRenderer.h"
 
 using namespace Polycode;
@@ -39,6 +40,8 @@ OpenGLTexture::OpenGLTexture(unsigned int width, unsigned int height, char *text
 
 void OpenGLTexture::recreateFromImageData() {
 	
+	Number anisotropy = CoreServices::getInstance()->getRenderer()->getAnisotropyAmount();
+	
 	if(glTextureLoaded)
 		glDeleteTextures(1, &textureID);
 	
@@ -53,19 +56,26 @@ void OpenGLTexture::recreateFromImageData() {
 	}
 	switch(filteringMode) {
 		case Renderer::TEX_FILTERING_LINEAR:
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		
+			if(anisotropy > 0) {
+				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, anisotropy);
+			}
+		
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+			if(textureData) {
+				gluBuild2DMipmaps(GL_TEXTURE_2D, glTextureType, width, height, glTextureType, GL_UNSIGNED_BYTE, textureData );
+			}			
 			break;
 		case Renderer::TEX_FILTERING_NEAREST:
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);		
+			if(textureData) {
+				glTexImage2D(GL_TEXTURE_2D, 0, glTextureType, width, height, 0, glTextureType, GL_UNSIGNED_BYTE, textureData);							
+			}			
 			break;
 	}	
 	
-	if(textureData) {
-		glTexImage2D(GL_TEXTURE_2D, 0, glTextureType, width, height, 0, glTextureType, GL_UNSIGNED_BYTE, textureData);							
-//		gluBuild2DMipmaps(GL_TEXTURE_2D, 3, glTextureType, width, height, glTextureType, GL_UNSIGNED_BYTE, textureData);
-	}
 	glTextureLoaded = true;
 }
 
