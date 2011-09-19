@@ -32,22 +32,22 @@ Resource::~Resource() {
 
 }
 
-String Resource::getResourceName() {
+const String& Resource::getResourceName() const {
 	return name;
 }
 
-int Resource::getResourceType() {
+int Resource::getResourceType() const {
 	return type;
 }
 
-void Resource::setResourceName(String newName) {
+void Resource::setResourceName(const String& newName) {
 	name = newName;
 }
 
-void Resource::setResourcePath(String path) {
+void Resource::setResourcePath(const String& path) {
 	resourcePath = path;
 }
 
-String Resource::getResourcePath() {
+const String& Resource::getResourcePath() const {
 	return resourcePath;
 }

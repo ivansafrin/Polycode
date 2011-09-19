@@ -21,10 +21,21 @@
 */
 
 #include "PolySceneMesh.h"
+#include "PolyCoreServices.h"
+#include "PolyBone.h"
+#include "PolyMaterial.h"
+#include "PolyPolygon.h"
+#include "PolyRenderer.h"
+#include "PolyMaterial.h"
+#include "PolyMesh.h"
+#include "PolyShader.h"
+#include "PolySkeleton.h"
+#include "PolyResourceManager.h"
+#include "PolyMaterialManager.h"
 
 using namespace Polycode;
 
-SceneMesh::SceneMesh(String fileName) : SceneEntity(), texture(NULL), material(NULL) {
+SceneMesh::SceneMesh(const String& fileName) : SceneEntity(), texture(NULL), material(NULL) {
 	mesh = new Mesh(fileName);
 	bBoxRadius = mesh->getRadius();
 	bBox = mesh->calculateBBox();
@@ -80,7 +91,7 @@ void SceneMesh::setMaterial(Material *material) {
 	localShaderOptions = material->getShader(0)->createBinding();
 }
 
-void SceneMesh::setMaterialByName(String materialName) {
+void SceneMesh::setMaterialByName(const String& materialName) {
 	Material *material =  (Material*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_MATERIAL, materialName);
 	if(!material)
 		return;
@@ -92,7 +103,7 @@ Texture *SceneMesh::getTexture() {
 }
 
 
-void SceneMesh::loadTexture(String fileName,bool clamp) {
+void SceneMesh::loadTexture(const String& fileName, bool clamp) {
 	texture = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(fileName, clamp);
 }
 
@@ -100,7 +111,7 @@ ShaderBinding *SceneMesh::getLocalShaderOptions() {
 	return localShaderOptions;
 }
 
-void SceneMesh::loadSkeleton(String fileName) {
+void SceneMesh::loadSkeleton(const String& fileName) {
 	skeleton = new Skeleton(fileName);
 	addEntity(skeleton);
 	

@@ -23,6 +23,31 @@ THE SOFTWARE.
 
 #include "PolyGLSLShader.h"
 
+#include "PolyLogger.h"
+#include "PolyShader.h"
+#include "PolyGLSLProgram.h"
+#include "PolyTexture.h"
+#include "PolyCubemap.h"
+
+#ifdef _WINDOWS
+#include <windows.h>
+#endif
+
+#if defined(__APPLE__) && defined(__MACH__)
+#include <OpenGL/gl.h>
+#include <OpenGL/glext.h>
+#include <OpenGL/glu.h>
+#else
+#include <GL/gl.h>
+#include <GL/glext.h>
+#ifdef _WINDOWS
+#include <GL/wglext.h>
+#endif
+#endif
+
+
+using std::vector;
+
 #ifdef _WINDOWS
 extern PFNGLUSEPROGRAMPROC glUseProgram;
 extern PFNGLUNIFORM1IPROC glUniform1i;
@@ -50,7 +75,7 @@ GLSLShaderBinding::~GLSLShaderBinding() {
 }
 
 
-void GLSLShaderBinding::addTexture(String name, Texture *texture) {
+void GLSLShaderBinding::addTexture(const String& name, Texture *texture) {
 	GLSLTextureBinding binding;
 	binding.name = name;
 	binding.texture = texture;
@@ -58,7 +83,7 @@ void GLSLShaderBinding::addTexture(String name, Texture *texture) {
 	textures.push_back(binding);
 }
 
-void GLSLShaderBinding::addCubemap(String name, Cubemap *cubemap) {
+void GLSLShaderBinding::addCubemap(const String& name, Cubemap *cubemap) {
 	GLSLCubemapBinding binding;
 	binding.cubemap = cubemap;
 	binding.name = name;
@@ -66,7 +91,7 @@ void GLSLShaderBinding::addCubemap(String name, Cubemap *cubemap) {
 	cubemaps.push_back(binding);
 }
 
-void GLSLShaderBinding::clearTexture(String name) {
+void GLSLShaderBinding::clearTexture(const String& name) {
 	for(int i=0; i < textures.size(); i++) {
 		if(textures[i].name == name) {
 			textures.erase(textures.begin()+i);
@@ -76,7 +101,7 @@ void GLSLShaderBinding::clearTexture(String name) {
 }
 
 
-void GLSLShaderBinding::addParam(String type, String name, String value) {
+void GLSLShaderBinding::addParam(const String& type, const String& name, const String& value) {
 	int paramType;
 	void *defaultData = GLSLProgramParam::createParamData(&paramType, type, value);
 	LocalShaderParam *newParam = new LocalShaderParam;

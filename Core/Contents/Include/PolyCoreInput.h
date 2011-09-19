@@ -21,16 +21,16 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
-#include "PolyLogger.h"
 #include "PolyGlobals.h"
+#include "PolyString.h"
 #include "PolyVector2.h"
-#include "PolyEventDispatcher.h"
-#include "PolyInputEvent.h"
 #include "PolyInputKeys.h"
+#include "PolyEventDispatcher.h"
 
 namespace Polycode {
 	
+	class InputEvent;
+
 	/**
 	* User input event dispatcher. The Core input class is where all of the input events originate. You can add event listeners to this class to listen for user input events or poll it manually to check the state of user input.
 	*/

@@ -22,29 +22,9 @@ THE SOFTWARE.
 
 #pragma once
 
-#include "Polycode.h"
-
 #include "PolyGlobals.h"
-
-#include "PolyLogger.h"
+#include "PolyString.h"
 #include "PolyResource.h"
-#include "PolyVector3.h"
-#include <vector>
-
-
-#if defined(__APPLE__) && defined(__MACH__)
-#include <OpenGL/gl.h>
-#include <OpenGL/glext.h>
-#include <OpenGL/glu.h>	
-#else
-#include <GL/gl.h>	
-#include <GL/glu.h>	
-#include <GL/glext.h>
-#endif
-
-
-
-using std::vector;
 
 namespace Polycode {
 
@@ -57,7 +37,7 @@ class _PolyExport GLSLProgramParam {
 	void *defaultData;
 	int paramType;
 	
-	static void *createParamData(int *retType, String type, String value);
+	static void *createParamData(int *retType, const String& type, const String& value);
 	
 	static const int POLY_MODELVIEWPROJ_MATRIX = 0;
 	static const int POLY_MODELVIEW_MATRIX = 2;
@@ -113,7 +93,7 @@ class _PolyExport GLSLProgramParam {
 			GLSLProgram(int type);
 			~GLSLProgram();
 			
-			void addParam(String name, bool isAuto, int autoID, int paramType, void *defaultData);
+			void addParam(const String& name, bool isAuto, int autoID, int paramType, void *defaultData);
 		
 			unsigned int program;
 //			GLSLparameter modelViewProjection;
@@ -123,6 +103,6 @@ class _PolyExport GLSLProgramParam {
 			
 			int type;
 			
-			vector<GLSLProgramParam> params;
+			std::vector<GLSLProgramParam> params;
 	};
 }

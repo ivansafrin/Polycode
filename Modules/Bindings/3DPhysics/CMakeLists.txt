@@ -18,22 +18,7 @@ SET(polycode3DPhysics_HDRS
     Include/Physics3DLUAWrappers.h
 )
 
-ADD_LIBRARY(Physics3D SHARED ${polycode3DPhysics_SRCS} ${polycode3DPhysics_HDRS})
-TARGET_LINK_LIBRARIES(Physics3D
-    Polycore
-    Polycode3DPhysics
-    ${BULLET_LIBRARIES}
-    ${OPENGL_LIBRARIES}
-    ${OPENAL_LIBRARY}
-    ${PNG_LIBRARIES}
-    ${FREETYPE_LIBRARIES}
-    ${PHYSFS_LIBRARY}
-    ${VORBISFILE_LIBRARY}
-    ${LUA_LIBRARY})
-IF(APPLE)
-    TARGET_LINK_LIBRARIES(Physics3D "-framework Cocoa")
-    TARGET_LINK_LIBRARIES(Physics3D "-framework IOKit")
-ENDIF(APPLE)
+ADD_LIBRARY(Physics3D ${polycode3DPhysics_SRCS} ${polycode3DPhysics_HDRS})
 
 SET(CMAKE_DEBUG_POSTFIX "_d")
 

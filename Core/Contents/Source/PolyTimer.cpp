@@ -21,6 +21,9 @@
 */
 
 #include "PolyTimer.h"
+#include "PolyCoreServices.h"
+#include "PolyTimerManager.h"
+#include "PolyEvent.h"
 
 using namespace Polycode;
 

@@ -21,8 +21,11 @@ THE SOFTWARE.
 */
 
 #include "PolyServer.h"
+#include "PolyTimer.h"
+#include "PolyLogger.h"
 
 using namespace Polycode;
+using std::vector;
 
 ServerClient::ServerClient() {
 	

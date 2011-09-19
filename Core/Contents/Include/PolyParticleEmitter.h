@@ -21,25 +21,34 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyEntity.h"
-#include "PolyScenePrimitive.h"
-#include "PolyScreenMesh.h"
-#include "PolyCoreServices.h"
-#include "PolyParticle.h"
-#include <vector>
-
-using std::vector;
+#include "PolyString.h"
+#include "PolyVector3.h"
+#include "PolyMatrix4.h"
+#include "PolyBezierCurve.h"
+#include "PolySceneEntity.h"
+#include "PolyScreenEntity.h"
 
 namespace Polycode {
+
+	class Entity;
+	class Material;
+	class Mesh;
+	class Particle;
+	class Perlin;
+	class Scene;
+	class SceneMesh;
+	class Screen;
+	class ScreenMesh;
+	class Texture;
+	class Timer;
 
 	/** 
 	* Particle emitter base.
 	*/
 	class _PolyExport ParticleEmitter {
 		public:
-			ParticleEmitter(String imageFile, Mesh *particleMesh, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation);
+			ParticleEmitter(const String& imageFile, Mesh *particleMesh, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation);
 			virtual ~ParticleEmitter();
 		
 			void createParticles();
@@ -124,7 +133,7 @@ namespace Polycode {
 			void setParticleCount(int count);
 		
 			virtual void addParticleBody(Entity *particleBody) {}
-			virtual Matrix4 getBaseMatrix() {Matrix4 m; return m;}
+			virtual Matrix4 getBaseMatrix() const {Matrix4 m; return m;}
 		
 			/**
 			* Particle movement speed multiplier
@@ -226,7 +235,7 @@ namespace Polycode {
 			
 			Number rotationSpeed;
 			Number numParticles;
-			vector<Particle*> particles;
+			std::vector<Particle*> particles;
 			
 			Number emitSpeed;
 			Timer *timer;
@@ -251,7 +260,7 @@ namespace Polycode {
 		* @param particleMesh If particle type is Particle::MESH_PARTICLE, this must be set to the mesh to use for each particle
 		* @param emitter If this is specified, particles will be emitted from this meshe's vertices.
 		*/
-		SceneParticleEmitter(String materialName, Scene *particleParentScene, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Mesh *particleMesh = NULL, SceneMesh *emitter = NULL);
+		SceneParticleEmitter(const String& materialName, Scene *particleParentScene, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Mesh *particleMesh = NULL, SceneMesh *emitter = NULL);
 		~SceneParticleEmitter();		
 		
 		/**
@@ -261,7 +270,7 @@ namespace Polycode {
 		
 		void respawnSceneParticles();
 		void addParticleBody(Entity *particleBody);
-		Matrix4 getBaseMatrix();
+		Matrix4 getBaseMatrix() const;
 		void Update();
 		
 	protected:
@@ -274,7 +283,7 @@ namespace Polycode {
 	*/
 	class _PolyExport ScreenParticleEmitter : public ScreenEntity, public ParticleEmitter {
 	public:
-		ScreenParticleEmitter(String imageFile, Screen *particleParentScreen, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Mesh *particleMesh = NULL, ScreenMesh *emitter = NULL);
+		ScreenParticleEmitter(const String& imageFile, Screen *particleParentScreen, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Mesh *particleMesh = NULL, ScreenMesh *emitter = NULL);
 		~ScreenParticleEmitter();		
 		
 		/**
@@ -283,7 +292,7 @@ namespace Polycode {
 		ParticleEmitter *getEmitter() { return this; }		
 		
 		void addParticleBody(Entity *particleBody);
-		Matrix4 getBaseMatrix();
+		Matrix4 getBaseMatrix() const;
 		void Update();
 		
 	protected:

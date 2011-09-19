@@ -21,7 +21,21 @@
 */
 
 #include "PolyResourceManager.h"
+#include "PolyCoreServices.h"
+#include "PolyCubemap.h"
+#include "PolyMaterialManager.h"
+#include "PolyModule.h"
+#include "PolyFontManager.h"
+#include "PolyLogger.h"
+#include "PolyMaterial.h"
+#include "PolyShader.h"
+#include "PolyTexture.h"
+#include "OSBasics.h"
 
+#include "physfs.h"
+#include "tinyxml.h"
+
+using std::vector;
 using namespace Polycode;
 
 ResourceManager::ResourceManager() {
@@ -37,7 +51,7 @@ ResourceManager::~ResourceManager() {
 		resources.clear();
 }
 
-void ResourceManager::parseShaders(String dirPath, bool recursive) {
+void ResourceManager::parseShaders(const String& dirPath, bool recursive) {
 	vector<OSFileEntry> resourceDir;
 	resourceDir = OSBasics::parseFolder(dirPath, false);
 	
@@ -76,7 +90,7 @@ void ResourceManager::addShaderModule(PolycodeShaderModule *module) {
 	shaderModules.push_back(module);
 }
 
-void ResourceManager::parsePrograms(String dirPath, bool recursive) {
+void ResourceManager::parsePrograms(const String& dirPath, bool recursive) {
 	vector<OSFileEntry> resourceDir;
 	resourceDir = OSBasics::parseFolder(dirPath, false);
 	for(int i=0; i < resourceDir.size(); i++) {	
@@ -99,7 +113,7 @@ void ResourceManager::parsePrograms(String dirPath, bool recursive) {
 	}	
 }
 
-void ResourceManager::parseMaterials(String dirPath, bool recursive) {
+void ResourceManager::parseMaterials(const String& dirPath, bool recursive) {
 	vector<OSFileEntry> resourceDir;
 	resourceDir = OSBasics::parseFolder(dirPath, false);
 	
@@ -130,7 +144,7 @@ void ResourceManager::parseMaterials(String dirPath, bool recursive) {
 	}
 }
 
-void ResourceManager::parseCubemaps(String dirPath, bool recursive) {
+void ResourceManager::parseCubemaps(const String& dirPath, bool recursive) {
 	vector<OSFileEntry> resourceDir;
 	resourceDir = OSBasics::parseFolder(dirPath, false);
 	
@@ -167,7 +181,7 @@ void ResourceManager::addResource(Resource *resource) {
 	resources.push_back(resource);
 }
 
-void ResourceManager::parseTextures(String dirPath, bool recursive) {
+void ResourceManager::parseTextures(const String& dirPath, bool recursive) {
 	vector<OSFileEntry> resourceDir;
 	resourceDir = OSBasics::parseFolder(dirPath, false);
 	for(int i=0; i < resourceDir.size(); i++) {	
@@ -187,7 +201,7 @@ void ResourceManager::parseTextures(String dirPath, bool recursive) {
 	}
 }
 
-void ResourceManager::parseOthers(String dirPath, bool recursive) {
+void ResourceManager::parseOthers(const String& dirPath, bool recursive) {
 	vector<OSFileEntry> resourceDir;
 	resourceDir = OSBasics::parseFolder(dirPath, false);
 	for(int i=0; i < resourceDir.size(); i++) {	
@@ -204,7 +218,7 @@ void ResourceManager::parseOthers(String dirPath, bool recursive) {
 }
 
 
-void ResourceManager::addArchive(String zipPath) {
+void ResourceManager::addArchive(const String& zipPath) {
 //	if(PHYSFS_addToSearchPath(zipPath.c_str(), 1, getThreadID()) == 0) {
 	if(PHYSFS_addToSearchPath(zipPath.c_str(), 1) == 0) {	
 		Logger::log("Error adding archive to resource manager... %s\n", PHYSFS_getLastError());
@@ -213,7 +227,7 @@ void ResourceManager::addArchive(String zipPath) {
 	}
 }
 
-void ResourceManager::addDirResource(String dirPath, bool recursive) {
+void ResourceManager::addDirResource(const String& dirPath, bool recursive) {
 	parseTextures(dirPath, recursive);
 	parsePrograms(dirPath, recursive);
 	parseShaders(dirPath, recursive);
@@ -222,7 +236,7 @@ void ResourceManager::addDirResource(String dirPath, bool recursive) {
 	parseOthers(dirPath, recursive);	
 }
 
-Resource *ResourceManager::getResource(int resourceType, String resourceName) {
+Resource *ResourceManager::getResource(int resourceType, const String& resourceName) const {
 	Logger::log("requested %s\n", resourceName.c_str());
 	for(int i =0; i < resources.size(); i++) {
 //		Logger::log("is it %s?\n", resources[i]->getResourceName().c_str());		

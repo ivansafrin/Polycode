@@ -20,12 +20,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+#pragma once
 #include "PolyGlobals.h"
-#include "PolySound.h"
-#include "PolyCoreServices.h"
 #include "PolyScreenEntity.h"
 
 namespace Polycode {
+
+	class Sound;
 
 	/**
 	* Creates a positional 2D sound listener. There can be only one listener active at any one time.
@@ -43,14 +44,14 @@ namespace Polycode {
 	*/	
 	class _PolyExport ScreenSound : public ScreenEntity {
 		public:
-			ScreenSound(String fileName, Number referenceDistance, Number maxDistance);
+			ScreenSound(const String& fileName, Number referenceDistance, Number maxDistance);
 			virtual ~ScreenSound();			
 			void Update();
 			
 			/**
 			* Returns the sound object associated with this positional sound.
 			*/			
-			Sound *getSound();
+			Sound *getSound() const;
 			
 		protected:
 			Sound *sound;

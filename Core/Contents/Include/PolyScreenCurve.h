@@ -21,15 +21,12 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyCoreServices.h"
-#include "PolyScreenEntity.h"
-#include "PolyBezierCurve.h"
-#include "PolyPolygon.h"
 #include "PolyScreenShape.h"
 
 namespace Polycode {
+
+	class BezierCurve;
 
 	class _PolyExport ScreenCurve : public ScreenShape {
 		public:

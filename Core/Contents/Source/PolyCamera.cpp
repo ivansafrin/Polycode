@@ -21,6 +21,14 @@
 */
 
 #include "PolyCamera.h"
+#include "PolyCore.h"
+#include "PolyCoreServices.h"
+#include "PolyMaterial.h"
+#include "PolyRenderer.h"
+#include "PolyResource.h"
+#include "PolyResourceManager.h"
+#include "PolyScene.h"
+#include "PolyShader.h"
 
 using namespace Polycode;
 			
@@ -232,7 +240,7 @@ void Camera::setParentScene(Scene *parentScene) {
 	this->parentScene = parentScene;
 }
 
-void Camera::setPostFilter(String shaderName) {
+void Camera::setPostFilter(const String& shaderName) {
 	Material *shaderMaterial = (Material*) CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_MATERIAL, shaderName);
 	if(shaderMaterial)
 		createPostFilter(shaderMaterial);

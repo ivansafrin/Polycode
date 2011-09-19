@@ -21,19 +21,11 @@
  */
 
 #pragma once
-#include <vorbis/vorbisfile.h>
-#include "PolyString.h"
-#include "PolyLogger.h"
 #include "PolyGlobals.h"
 #include "PolyVector3.h"
-#include <string>
-#include <vector>
+
 #include "al.h"
 #include "alc.h"
-#include "OSBasics.h"
-
-using std::string;
-using std::vector;
 
 #define ALNoErrorStr "No AL error occurred"
 #define ALInvalidNameStr "AL error: a bad name (ID) was passed to an OpenAL function"
@@ -47,6 +39,8 @@ using std::vector;
 
 namespace Polycode {
 	
+	class String;
+
 	/**
 	* Loads and plays a sound. This class can load and play an OGG or WAV sound file.
 	*/
@@ -57,7 +51,7 @@ namespace Polycode {
 		* Constructor.
 		* @param fileName Path to an OGG or WAV file to load.
 		*/ 
-		Sound(String fileName);
+		Sound(const String& fileName);
 		~Sound();
 		
 		/**
@@ -91,15 +85,15 @@ namespace Polycode {
 		
 		void setPositionalProperties(Number referenceDistance, Number maxDistance);
 		
-		ALuint loadWAV(String fileName);
-		ALuint loadOGG(String fileName);
+		ALuint loadWAV(const String& fileName);
+		ALuint loadOGG(const String& fileName);
 		
 		ALuint GenSource(ALuint buffer);
 		ALuint GenSource();
 	
-		void checkALError(String operation);
-		void soundError(String err);
-		void soundCheck(bool result, String err);
+		void checkALError(const String& operation);
+		void soundError(const String& err);
+		void soundCheck(bool result, const String& err);
 		static unsigned long readByte32(const unsigned char buffer[4]);		
 		static unsigned short readByte16(const unsigned char buffer[2]);
 

@@ -9,16 +9,7 @@ function String:__index__(name)
 		if Polycore.__ptr_lookup[retVal] ~= nil then
 			return Polycore.__ptr_lookup[retVal]
 		else
-			Polycore.__ptr_lookup[retVal] = wstring("__skip_ptr__")
-			Polycore.__ptr_lookup[retVal].__ptr = retVal
-			return Polycore.__ptr_lookup[retVal]
-		end
-	elseif name == "s_contents" then
-		retVal = Polycore.String_get_s_contents(self.__ptr)
-		if Polycore.__ptr_lookup[retVal] ~= nil then
-			return Polycore.__ptr_lookup[retVal]
-		else
-			Polycore.__ptr_lookup[retVal] = string("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal] = std::string("__skip_ptr__")
 			Polycore.__ptr_lookup[retVal].__ptr = retVal
 			return Polycore.__ptr_lookup[retVal]
 		end
@@ -53,30 +44,6 @@ end
 function String:length()
 	local retVal =  Polycore.String_length(self.__ptr)
 	return retVal
-end
-
-function String:getSTLString()
-	local retVal =  Polycore.String_getSTLString(self.__ptr)
-	if retVal == nil then return nil end
-	if Polycore.__ptr_lookup[retVal] ~= nil then
-		return Polycore.__ptr_lookup[retVal]
-	else
-		Polycore.__ptr_lookup[retVal] = string("__skip_ptr__")
-		Polycore.__ptr_lookup[retVal].__ptr = retVal
-		return Polycore.__ptr_lookup[retVal]
-	end
-end
-
-function String:getSTLWString()
-	local retVal =  Polycore.String_getSTLWString(self.__ptr)
-	if retVal == nil then return nil end
-	if Polycore.__ptr_lookup[retVal] ~= nil then
-		return Polycore.__ptr_lookup[retVal]
-	else
-		Polycore.__ptr_lookup[retVal] = wstring("__skip_ptr__")
-		Polycore.__ptr_lookup[retVal].__ptr = retVal
-		return Polycore.__ptr_lookup[retVal]
-	end
 end
 
 function String:substr(pos, n)
@@ -131,30 +98,6 @@ function String:c_str()
 		return Polycore.__ptr_lookup[retVal]
 	else
 		Polycore.__ptr_lookup[retVal] = char("__skip_ptr__")
-		Polycore.__ptr_lookup[retVal].__ptr = retVal
-		return Polycore.__ptr_lookup[retVal]
-	end
-end
-
-function String:wc_str()
-	local retVal =  Polycore.String_wc_str(self.__ptr)
-	if retVal == nil then return nil end
-	if Polycore.__ptr_lookup[retVal] ~= nil then
-		return Polycore.__ptr_lookup[retVal]
-	else
-		Polycore.__ptr_lookup[retVal] = wchar_t("__skip_ptr__")
-		Polycore.__ptr_lookup[retVal].__ptr = retVal
-		return Polycore.__ptr_lookup[retVal]
-	end
-end
-
-function String:data()
-	local retVal =  Polycore.String_data(self.__ptr)
-	if retVal == nil then return nil end
-	if Polycore.__ptr_lookup[retVal] ~= nil then
-		return Polycore.__ptr_lookup[retVal]
-	else
-		Polycore.__ptr_lookup[retVal] = wchar_t("__skip_ptr__")
 		Polycore.__ptr_lookup[retVal].__ptr = retVal
 		return Polycore.__ptr_lookup[retVal]
 	end

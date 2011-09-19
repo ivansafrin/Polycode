@@ -21,22 +21,16 @@ THE SOFTWARE.
 */
  
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyCoreServices.h"
 #include "PolySceneEntity.h"
-#include "PolyMesh.h"
-#include "PolySkeleton.h"
-#include "PolyMaterial.h"
-#include "PolyImage.h"
-#include <string>
-
-using namespace std;
 
 namespace Polycode {
 
+	class Material;
+	class Mesh;
 	class Texture;
 	class Skeleton;
+	class ShaderBinding;
 	
 	/**
 	* 3D polygonal mesh instance. The SceneMesh is the base for all polygonal 3d geometry. It can have simple textures or complex materials applied to it.
@@ -48,7 +42,7 @@ namespace Polycode {
 			* Construct a scene mesh from a mesh file.
 			* @param fileName Path to mesh file to load.
 			*/
-			SceneMesh(String fileName);
+			SceneMesh(const String& fileName);
 			
 			/**
 			* Construct an empty scene mesh with the specified type.
@@ -86,13 +80,13 @@ namespace Polycode {
 			* @param fileName Filename to load the mesh from.
 			* @param clamp If true, clamps the texture to edges. See Texture for details on that.
 			*/
-			void loadTexture(String fileName, bool clamp=true);
+			void loadTexture(const String& fileName, bool clamp=true);
 			
 			/**
 			* Loads a skeleton from a file and applies it to the scene mesh.
 			* @param fileName Filename to load the skeleton from.
 			*/
-			void loadSkeleton(String fileName);
+			void loadSkeleton(const String& fileName);
 			
 			/**
 			* Sets the texture from an existing Texture instance.
@@ -110,7 +104,7 @@ namespace Polycode {
 			* Set material by name. You can create materials in material files and name them there, then use this to set a material by name to a scene mesh.
 			* @param materialName Name of material to apply.
 			*/									
-			void setMaterialByName(String materialName);
+			void setMaterialByName(const String& materialName);
 			
 			/**
 			* Set the mesh this scene mesh renders.

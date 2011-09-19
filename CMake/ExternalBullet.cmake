@@ -12,10 +12,10 @@ SET(bullet_CMAKE_ARGS
     -DBUILD_UNIT_TESTS=OFF
 )
 
-IF(CMAKE_COMPILER_IS_GNUCXX)
-    # Needs fpic to link in shared lib on Linux with GCC
-    LIST(APPEND bullet_CMAKE_ARGS -DCMAKE_CXX_FLAGS=-fPIC)
-ENDIF(CMAKE_COMPILER_IS_GNUCXX)
+#IF(CMAKE_COMPILER_IS_GNUCXX)
+#    # Needs fpic to link in shared lib on Linux with GCC
+#    LIST(APPEND bullet_CMAKE_ARGS -DCMAKE_CXX_FLAGS=-fPIC)
+#ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
 ExternalProject_Add(bullet
     PREFIX ${bullet_PREFIX}

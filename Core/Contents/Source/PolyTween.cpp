@@ -21,6 +21,13 @@
 */
 
 #include "PolyTween.h"
+#include "PolyBezierCurve.h"
+#include "PolyCoreServices.h"
+#include "PolyQuaternionCurve.h"
+#include "PolyTimer.h"
+#include "PolyTweenManager.h"
+#include "PolyTimerManager.h"
+#include "PolyEvent.h"
 
 using namespace Polycode;
 

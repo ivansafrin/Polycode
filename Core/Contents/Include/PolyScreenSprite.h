@@ -21,12 +21,9 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyCoreServices.h"
 #include "PolyScreenShape.h"
 #include <vector>
-#include <string>
 
 namespace Polycode {
 
@@ -36,7 +33,7 @@ class _PolyExport SpriteAnimation {
 		String name;
 		int numFrames;
 	
-		vector<Vector2> framesOffsets;
+		std::vector<Vector2> framesOffsets;
 };
 
 /**
@@ -51,7 +48,7 @@ class _PolyExport ScreenSprite : public ScreenShape
 		* @param spriteWidth Pixel width of each sprite cell.
 		* @param spriteWidth Pixel height of each sprite cell.		
 		*/
-		ScreenSprite(String fileName, Number spriteWidth, Number spriteHeight);
+		ScreenSprite(const String& fileName, Number spriteWidth, Number spriteHeight);
 		~ScreenSprite();
 		
 		/**
@@ -60,7 +57,7 @@ class _PolyExport ScreenSprite : public ScreenShape
 		* @param frames A comma separated list of frames indexes to include in the animation.
 		* @speed Speed at which to play back the animation.
 		*/
-		void addAnimation(String name, String frames, Number speed);
+		void addAnimation(const String& name, const String& frames, Number speed);
 		
 		/**
 		* Play back a previously created animation by name.
@@ -68,7 +65,7 @@ class _PolyExport ScreenSprite : public ScreenShape
 		* @param startFrame Starting frame for playback.
 		* @param once If true, only plays once, otherwise loops.
 		*/
-		void playAnimation(String name, int startFrame, bool once);
+		void playAnimation(const String& name, int startFrame, bool once);
 		void Update();
 		
 	protected:
@@ -84,7 +81,7 @@ class _PolyExport ScreenSprite : public ScreenShape
 		int currentFrame;
 		SpriteAnimation *currentAnimation;
 		
-		vector<SpriteAnimation*> animations;
+		std::vector<SpriteAnimation*> animations;
 };
 	
 }

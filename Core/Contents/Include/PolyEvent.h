@@ -21,12 +21,8 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
-#include "PolyLogger.h"
 #include "PolyGlobals.h"
-#include <string>
-
-using std::string;
+#include "PolyString.h"
 
 namespace Polycode {
 
@@ -53,17 +49,17 @@ namespace Polycode {
 			* Returns the event code for this event.
 			* @return Event code for the event.
 			*/ 						
-			int getEventCode();
+			int getEventCode() const;
 			
 			/**
 			* Returns the event dispatcher which originated the event.
 			* @return Event dispatcher which originated the event.
 			*/ 									
-			EventDispatcher *getDispatcher();
+			EventDispatcher *getDispatcher() const;
 			
 			void setEventCode(int eventCode);			
 			void setDispatcher(EventDispatcher *dispatcher);
-			String getEventType();
+			const String& getEventType() const;
 			
 			static const int COMPLETE_EVENT = 0;
 			static const int CHANGE_EVENT = 1;

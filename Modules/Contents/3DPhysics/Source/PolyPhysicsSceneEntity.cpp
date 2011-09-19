@@ -21,6 +21,10 @@ THE SOFTWARE.
 */
 
 #include "PolyPhysicsSceneEntity.h"
+#include "BulletDynamics/Character/btKinematicCharacterController.h"
+#include "BulletCollision/CollisionDispatch/btGhostObject.h"
+#include "PolyMatrix4.h"
+#include "PolySceneEntity.h"
 
 using namespace Polycode;
 

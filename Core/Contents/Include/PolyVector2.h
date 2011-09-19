@@ -21,7 +21,6 @@
  */
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolyVector3.h"
 
@@ -44,7 +43,7 @@ namespace Polycode {
 			* @param y Y coordinate.			
 			*/			
 			Vector2(Number x, Number y);
-			virtual ~Vector2();
+			~Vector2();
 					
 		protected:
 

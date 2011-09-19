@@ -21,10 +21,15 @@
 */
 
 #include "PolyBone.h"
+#include "PolyCoreServices.h"
+#include "PolyLabel.h"
+#include "PolyMesh.h"
+#include "PolyRenderer.h"
+#include "PolySceneLabel.h"
 
 using namespace Polycode;
 
-Bone::Bone(String boneName) : SceneEntity() {
+Bone::Bone(const String& boneName) : SceneEntity() {
 	this->boneName = boneName;
 //	boneMesh = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 0.1, 0.1, 0.1);
 	this->depthTest = false;
@@ -65,7 +70,7 @@ Bone *Bone::getChildBone(unsigned int index) {
 	return childBones[index];
 }
 
-Matrix4 Bone::getBoneMatrix() {
+Matrix4 Bone::getBoneMatrix() const {
 	if(parentBone)
 		return boneMatrix * parentBone->getBoneMatrix();
 	else {
@@ -73,7 +78,7 @@ Matrix4 Bone::getBoneMatrix() {
 	}
 }
 
-Matrix4 Bone::getFinalMatrix() {
+Matrix4 Bone::getFinalMatrix() const {
 	Matrix4 final = boneMatrix;
 
 	if(parentBone) {
@@ -83,19 +88,19 @@ Matrix4 Bone::getFinalMatrix() {
 	return final;
 }
 
-void Bone::setBoneMatrix(Matrix4 matrix) {
+void Bone::setBoneMatrix(const Matrix4& matrix) {
 	boneMatrix = matrix;
 }
 
-void Bone::setBaseMatrix(Matrix4 matrix) {
+void Bone::setBaseMatrix(const Matrix4& matrix) {
 	baseMatrix = matrix;
 }
 
-Matrix4 Bone::getRestMatrix() {
+Matrix4 Bone::getRestMatrix() const {
 	return restMatrix;
 }
 
-Matrix4 Bone::getParentRestMatrix() {
+Matrix4 Bone::getParentRestMatrix() const {
 	if(parentBone)
 		return parentBone->getFullRestMatrix();
 	else {
@@ -105,7 +110,7 @@ Matrix4 Bone::getParentRestMatrix() {
 	}
 }
 
-Matrix4 Bone::getFullBaseMatrix() {
+Matrix4 Bone::getFullBaseMatrix() const {
 	if(parentBone)
 		return baseMatrix * parentBone->getFullBaseMatrix();
 	else {
@@ -114,7 +119,7 @@ Matrix4 Bone::getFullBaseMatrix() {
 	
 }
 
-Matrix4 Bone::getFullRestMatrix() {
+Matrix4 Bone::getFullRestMatrix() const {
 	if(parentBone)
 		return restMatrix * parentBone->getFullRestMatrix();
 	else {
@@ -122,15 +127,15 @@ Matrix4 Bone::getFullRestMatrix() {
 	}
 }
 
-void Bone::setRestMatrix(Matrix4 matrix) {
+void Bone::setRestMatrix(const Matrix4& matrix) {
 	restMatrix = matrix;
 }
 
-String Bone::getName() {
+const String& Bone::getName() const {
 	return boneName;
 }
 
-void Bone::enableBoneLabel(String fontLabel, Number size, Number scale, Color labelColor) {
+void Bone::enableBoneLabel(const String& fontLabel, Number size, Number scale, Color labelColor) {
 	SceneLabel *label = new SceneLabel(fontLabel, boneName, size, scale, Label::ANTIALIAS_FULL);
 	label->setColor(labelColor);
 	label->billboardMode = true;

@@ -22,19 +22,19 @@ THE SOFTWARE.
 
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyScreenEntity.h"
-#include "PolyRenderer.h"
-#include "PolyInputEvent.h"
-#include "PolyCoreServices.h"
+#include "PolyVector2.h"
+#include "PolyEventDispatcher.h"
 #include <vector>
-#include <algorithm>
-#include "PolyScreenEvent.h"
-
-using namespace std;
 
 namespace Polycode {
+
+	class InputEvent;
+	class Renderer;
+	class Material;
+	class Texture;
+	class ScreenEntity;
+	class ShaderBinding;
 
 	/**
 	* 2D rendering base. The Screen is the container for all 2D rendering in Polycode. Screens are automatically rendered and need only be instantiated to immediately add themselves to the rendering pipeline. Each screen has a root entity.
@@ -73,7 +73,7 @@ namespace Polycode {
 		* Returns the screen's offset.
 		* @return The screen's offset as 2d vector.
 		*/		
-		Vector2 getScreenOffset();
+		Vector2 getScreenOffset() const;
 				
 		virtual void Shutdown();
 		virtual void Update();
@@ -97,7 +97,7 @@ namespace Polycode {
 		* Sets the shader material to use for post processing on this screen.
 		* @param shaderName Name of the shader material to use.
 		*/				
-		void setScreenShader(String shaderName);
+		void setScreenShader(const String& shaderName);
 		
 		/**
 		* Removes the current screen shader for this screen.
@@ -105,7 +105,7 @@ namespace Polycode {
 		void clearScreenShader();
 		
 		void handleEvent(Event *event);
-		int getHighestZIndex();
+		int getHighestZIndex() const;
 		
 		/**
 		* Sorts the screen's children based on their z index.
@@ -119,11 +119,11 @@ namespace Polycode {
 		/**
 		* Returns true if the screen has a shader applied to it.
 		*/				
-		bool hasFilterShader();
+		bool hasFilterShader() const;
 		void drawFilter();
 		
-		bool usesNormalizedCoordinates() { return useNormalizedCoordinates; }
-		Number getYCoordinateSize() { return yCoordinateSize; }	
+		bool usesNormalizedCoordinates() const { return useNormalizedCoordinates; }
+		Number getYCoordinateSize() const { return yCoordinateSize; }
 		
 		/**
 		* Returns the root entity. The root entity can be used to transform the entire screen and change its color.
@@ -139,12 +139,12 @@ namespace Polycode {
 		/**
 		* Returns the local shader options for the camera post processing material.
 		*/				
-		vector<ShaderBinding*> getLocalShaderOptions() { return localShaderOptions; }
+		const std::vector<ShaderBinding*>& getLocalShaderOptions() const { return localShaderOptions; }
 		
 		/**
 		* Returns the shader material applied to the camera.
 		*/					
-		Material *getScreenShaderMaterial() { return filterShaderMaterial; }
+		Material *getScreenShaderMaterial() const { return filterShaderMaterial; }
 		
 	protected:
 		
@@ -156,12 +156,12 @@ namespace Polycode {
 		Vector2 offset;
 		Renderer *renderer;
 		ScreenEntity *focusChild;
-		vector <ScreenEntity*> children;
+		std::vector <ScreenEntity*> children;
 		
 		Material *filterShaderMaterial;			
 		Texture *originalSceneTexture;			
 		Texture *zBufferSceneTexture;						
-		vector<ShaderBinding*> localShaderOptions;
+		std::vector<ShaderBinding*> localShaderOptions;
 		bool _hasFilterShader;
 	};
 }

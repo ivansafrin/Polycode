@@ -21,12 +21,8 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyTween.h"
 #include <vector>
-
-using std::vector;
 
 namespace Polycode {
 
@@ -41,6 +37,6 @@ namespace Polycode {
 			void Update();
 		
 		private:
-			vector <Tween*> tweens;
+			std::vector <Tween*> tweens;
 	};
 }

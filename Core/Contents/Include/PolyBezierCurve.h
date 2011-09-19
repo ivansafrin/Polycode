@@ -23,13 +23,10 @@
 
 #pragma once 
 
-#include "PolyLogger.h"
 #include "PolyGlobals.h"
-#include "PolyString.h"
 #include "PolyVector3.h"
 #include <vector>
 
-using std::vector;
 
 #define BUFFER_CACHE_PRECISION 100
 
@@ -173,8 +170,8 @@ namespace Polycode {
 
 		Number heightBuffer[BUFFER_CACHE_PRECISION];
 
-		vector<BezierPoint*> controlPoints;
-		vector<Number> distances;
+		std::vector<BezierPoint*> controlPoints;
+		std::vector<Number> distances;
 		
 		
 		protected:

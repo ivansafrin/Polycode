@@ -69,7 +69,7 @@ function ObjectEntry:ObjectEntry(...)
 end
 
 function ObjectEntry:addChild(name)
-	local retVal = Polycore.ObjectEntry_addChild(self.__ptr, name)
+	local retVal = Polycore.ObjectEntry_addChild(self.__ptr, name.__ptr)
 	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]

@@ -21,14 +21,9 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyScene.h"
-#include "PolySceneRenderTexture.h"
 
 #include <vector>
-
-using std::vector;
 
 namespace Polycode {
 	
@@ -50,8 +45,8 @@ namespace Polycode {
 		
 		void updateRenderTextures(Scene *scene);
 		
-		vector <Scene*> scenes;
-		vector <SceneRenderTexture*> renderTextures;
+		std::vector <Scene*> scenes;
+		std::vector <SceneRenderTexture*> renderTextures;
 			
 	};
 

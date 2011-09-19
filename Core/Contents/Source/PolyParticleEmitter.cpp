@@ -21,10 +21,19 @@
 */
 
 #include "PolyParticleEmitter.h"
+#include "PolyCoreServices.h"
+#include "PolyParticle.h"
+#include "PolyPerlin.h"
+#include "PolyResource.h"
+#include "PolyScene.h"
+#include "PolyScreen.h"
+#include "PolyTimer.h"
+#include "PolyMaterialManager.h"
+#include "PolyResourceManager.h"
 
 using namespace Polycode;
 
-SceneParticleEmitter::SceneParticleEmitter(String materialName, Scene *particleParentScene, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Mesh *particleMesh, SceneMesh *emitter)
+SceneParticleEmitter::SceneParticleEmitter(const String& materialName, Scene *particleParentScene, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Mesh *particleMesh, SceneMesh *emitter)
 : ParticleEmitter(materialName, particleMesh, particleType, emitterType, lifespan, numParticles,  direction, gravity, deviation),
 SceneEntity()
 {
@@ -53,7 +62,7 @@ void SceneParticleEmitter::addParticleBody(Entity *particleBody) {
 	particleParentScene->addEntity((SceneEntity*)particleBody);	
 }
 
-Matrix4 SceneParticleEmitter::getBaseMatrix() {
+Matrix4 SceneParticleEmitter::getBaseMatrix() const {
 	return getConcatenatedMatrix();	
 }
 
@@ -62,7 +71,7 @@ void SceneParticleEmitter::Update() {
 }
 
 
-ScreenParticleEmitter::ScreenParticleEmitter(String imageFile, Screen *particleParentScreen, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Mesh *particleMesh, ScreenMesh *emitter)
+ScreenParticleEmitter::ScreenParticleEmitter(const String& imageFile, Screen *particleParentScreen, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Mesh *particleMesh, ScreenMesh *emitter)
 		: ParticleEmitter(imageFile, particleMesh, particleType, emitterType, lifespan, numParticles,  direction, gravity, deviation),
 ScreenEntity()
 {
@@ -84,11 +93,11 @@ void ScreenParticleEmitter::addParticleBody(Entity *particleBody) {
 	particleParentScreen->addChild((ScreenEntity*)particleBody);
 }
 
-Matrix4 ScreenParticleEmitter::getBaseMatrix() {
+Matrix4 ScreenParticleEmitter::getBaseMatrix() const {
 	return getConcatenatedMatrix();
 }
 
-ParticleEmitter::ParticleEmitter(String imageFile, Mesh *particleMesh, int particleType, int emitterType, Number lifespan, unsigned int numParticles,  Vector3 direction, Vector3 gravity, Vector3 deviation)  {
+ParticleEmitter::ParticleEmitter(const String& imageFile, Mesh *particleMesh, int particleType, int emitterType, Number lifespan, unsigned int numParticles,  Vector3 direction, Vector3 gravity, Vector3 deviation)  {
 	
 	isScreenEmitter = false;
 	dirVector = direction;

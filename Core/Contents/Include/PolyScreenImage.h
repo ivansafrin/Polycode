@@ -21,18 +21,8 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
-#include <math.h>
 #include "PolyGlobals.h"
 #include "PolyScreenShape.h"
-#include "PolyCoreServices.h"
-#include "PolyImage.h"
-#include "PolyMesh.h"
-#include "PolyTexture.h"
-
-#include <string>
-
-using std::string;
 
 namespace Polycode {
 
@@ -45,7 +35,7 @@ namespace Polycode {
 		* Create screen image from file.
 		* @param fileName 
 		*/
-		ScreenImage(String fileName);
+		ScreenImage(const String& fileName);
 		
 		/**
 		* Create screen image from Image.
@@ -66,12 +56,12 @@ namespace Polycode {
 		/**
 		* Returns the image width.
 		*/ 
-		Number getImageWidth();
+		Number getImageWidth() const;
 		
 		/**
 		* Returns the image height.
 		*/ 		
-		Number getImageHeight();
+		Number getImageHeight() const;
 		
 		protected:
 

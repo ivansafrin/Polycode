@@ -22,6 +22,8 @@ THE SOFTWARE.
 
 
 #include "PolyPhysicsScreen.h"
+#include "PolyScreenEntity.h"
+#include "PolyPhysicsScreenEntity.h"
 
 using namespace Polycode;
 

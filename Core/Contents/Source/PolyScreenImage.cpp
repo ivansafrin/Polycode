@@ -21,10 +21,14 @@
 */
 
 #include "PolyScreenImage.h"
+#include "PolyMesh.h"
+#include "PolyPolygon.h"
+#include "PolyTexture.h"
+#include "PolyVertex.h"
 
 using namespace Polycode;
 
-ScreenImage::ScreenImage(String fileName) : ScreenShape(ScreenShape::SHAPE_RECT,1,1) {
+ScreenImage::ScreenImage(const String& fileName) : ScreenShape(ScreenShape::SHAPE_RECT,1,1) {
 	loadTexture(fileName);
 	
 	imageWidth = texture->getWidth();
@@ -95,10 +99,10 @@ void ScreenImage::setImageCoordinates(Number x, Number y, Number width, Number h
 	
 }
 
-Number ScreenImage::getImageWidth() {
+Number ScreenImage::getImageWidth() const {
 	return imageWidth;
 }
 
-Number ScreenImage::getImageHeight() {
+Number ScreenImage::getImageHeight() const {
 	return imageHeight;	
 }

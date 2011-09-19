@@ -33,12 +33,19 @@ function ScreenLabel:addDropShadow(color, size, offsetX, offsetY)
 end
 
 function ScreenLabel:setText(newText)
-	local retVal = Polycore.ScreenLabel_setText(self.__ptr, newText)
+	local retVal = Polycore.ScreenLabel_setText(self.__ptr, newText.__ptr)
 end
 
 function ScreenLabel:getText()
 	local retVal =  Polycore.ScreenLabel_getText(self.__ptr)
-	return retVal
+	if retVal == nil then return nil end
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = String("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 
 function ScreenLabel:getLabel()

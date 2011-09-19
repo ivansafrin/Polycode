@@ -21,19 +21,16 @@ THE SOFTWARE.
 */
  
 #pragma once
-#include "PolyString.h"
-#include <math.h>
 #include "PolyGlobals.h"
-#include "PolyPolygon.h"
 #include "PolyVertex.h"
-#include <string>
-#include <vector>
-#include "OSBasics.h"
 
-using namespace std;
- 
+class OSFILE;
+
 namespace Polycode {
 	
+	class Polygon;
+	class String;
+
 	class _PolyExport VertexSorter {
 		public:
 			Vertex *target;
@@ -45,7 +42,7 @@ namespace Polycode {
 			VertexBuffer(){}
 			virtual ~VertexBuffer(){}
 		
-			int getVertexCount() { return vertexCount;}
+			int getVertexCount() const { return vertexCount;}
 		
 			int verticesPerFace;
 			int meshType;
@@ -123,7 +120,7 @@ namespace Polycode {
 			* Construct from a mesh loaded from a file.
 			* @param fileName Path to mesh file.
 			*/
-			Mesh(String fileName);
+			Mesh(const String& fileName);
 
 			~Mesh();
 			
@@ -137,13 +134,13 @@ namespace Polycode {
 			* Loads a mesh from a file.
 			* @param fileName Path to mesh file.
 			*/			
-			void loadMesh(String fileName);
+			void loadMesh(const String& fileName);
 
 			/**
 			* Saves mesh to a file.
 			* @param fileName Path to file to save to.
 			*/			
-			void saveToFile(String fileName);
+			void saveToFile(const String& fileName);
 
 			void loadFromFile(OSFILE *inFile);
 			void saveToFile(OSFILE *outFile);
@@ -259,7 +256,7 @@ namespace Polycode {
 			*/
 			void calculateNormals(bool smooth=true, Number smoothAngle=90.0);	
 			
-			vector<Polygon*> getConnectedFaces(Vertex *v);
+			std::vector<Polygon*> getConnectedFaces(Vertex *v);
 			
 			/**
 			* Returns the mesh type.
@@ -335,6 +332,6 @@ namespace Polycode {
 		VertexBuffer *vertexBuffer;
 		bool meshHasVertexBuffer;
 		int meshType;
-		vector <Polygon*> polygons;
+		std::vector <Polygon*> polygons;
 	};
 }

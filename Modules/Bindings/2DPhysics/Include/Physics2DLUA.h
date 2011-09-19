@@ -1,6 +1,5 @@
 #pragma once
 #include <Polycode2DPhysics.h>
-#include "Physics2DLUAWrappers.h"
 extern "C" {
 #include <stdio.h>
 #include "lua.h"

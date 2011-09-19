@@ -22,37 +22,21 @@ THE SOFTWARE.
 
 #pragma once
 
-#include "Polycode.h"
-#include "PolyGLSLProgram.h"
-#include "PolyGLSLShader.h"
-#include "PolyMaterial.h"
-#include "PolyGLTexture.h"
-#include <string>
-#include <vector>
-
-#if defined(__APPLE__) && defined(__MACH__)
-#include <OpenGL/gl.h>
-#include <OpenGL/glext.h>
-#include <OpenGL/glu.h>	
-#else
-#include <GL/gl.h>	
-#include <GL/glu.h>	
-#include <GL/glext.h>
-#endif
-
-
-using std::vector;
-using std::string;
+#include "PolyModule.h"
 
 namespace Polycode {
 	
+	class GLSLProgram;
+	class GLSLProgramParam;
+	class GLSLShader;
+
 	class _PolyExport GLSLShaderModule : public PolycodeShaderModule {
 		public:
 			GLSLShaderModule();
 			virtual ~GLSLShaderModule();
 		
-			bool acceptsExtension(String extension);
-			Resource* createProgramFromFile(String extension, String fullPath);	
+			bool acceptsExtension(const String& extension);
+			Resource* createProgramFromFile(const String& extension, const String& fullPath);
 			void reloadPrograms();
 			String getShaderType();
 			Shader *createShader(TiXmlNode *node);
@@ -62,8 +46,8 @@ namespace Polycode {
 	protected:
 
 		void addParamToProgram(GLSLProgram *program,TiXmlNode *node);		
-		void recreateGLSLProgram(GLSLProgram *prog, String fileName, int type);
-		GLSLProgram *createGLSLProgram(String fileName, int type);		
+		void recreateGLSLProgram(GLSLProgram *prog, const String& fileName, int type);
+		GLSLProgram *createGLSLProgram(const String& fileName, int type);
 		void updateGLSLParam(Renderer *renderer, GLSLShader *glslShader, GLSLProgramParam &param, ShaderBinding *materialOptions, ShaderBinding *localOptions);		
 			
 		void setGLSLAreaLightPositionParameter(Renderer *renderer, GLSLProgramParam &param, int lightIndex);
@@ -78,7 +62,7 @@ namespace Polycode {
 //		GLSLprofile vertexProfile;
 //		GLSLprofile fragmentProfile;
 		
-		vector<GLSLProgram*> programs;
+		std::vector<GLSLProgram*> programs;
 	};
 	
 }

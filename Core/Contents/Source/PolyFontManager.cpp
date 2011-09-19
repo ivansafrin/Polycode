@@ -21,6 +21,7 @@
 */
 
 #include "PolyFontManager.h"
+#include "PolyFont.h"
 
 using namespace Polycode;
 
@@ -36,7 +37,7 @@ FontManager::~FontManager() {
 	fonts.clear();
 }
 
-void FontManager::registerFont(String fontName, String fontPath) {
+void FontManager::registerFont(const String& fontName, const String& fontPath) {
 	Font *font = new Font(fontPath);
 	if(font->loaded) {
 		FontEntry newEntry;
@@ -48,7 +49,7 @@ void FontManager::registerFont(String fontName, String fontPath) {
 	}
 }
 
-Font *FontManager::getFontByName(String fontName) {
+Font *FontManager::getFontByName(const String& fontName) {
 	for(int i=0; i < fonts.size(); i++) {
 		FontEntry entry = fonts[i];
 		if(entry.fontName == fontName)

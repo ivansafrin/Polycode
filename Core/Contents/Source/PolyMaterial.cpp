@@ -21,10 +21,12 @@
 */
 
 #include "PolyMaterial.h"
+#include "PolyLogger.h"
+#include "PolyShader.h"
 
 using namespace Polycode;
 
-Material::Material(String name) : Resource(Resource::RESOURCE_MATERIAL) {
+Material::Material(const String& name) : Resource(Resource::RESOURCE_MATERIAL) {
 	this->name = name;
 	specularValue = 75.0;
 }
@@ -58,23 +60,23 @@ void Material::addShader(Shader *shader,ShaderBinding *shaderBinding) {
 }
 
 
-unsigned int Material::getNumShaders() {
+unsigned int Material::getNumShaders() const {
 	return materialShaders.size();
 }
 
-String Material::getName() {
+const String& Material::getName() const {
 	return name;
 }
 
-Shader *Material::getShader(unsigned int index) {
+Shader *Material::getShader(unsigned int index) const {
 	return materialShaders[index];
 }
 
-ShaderBinding *Material::getShaderBinding(unsigned int index) {
+ShaderBinding *Material::getShaderBinding(unsigned int index) const {
 	return shaderBindings[index];
 }
 
-void Material::loadMaterial(String fileName) {
+void Material::loadMaterial(const String& fileName) {
 
 }
 

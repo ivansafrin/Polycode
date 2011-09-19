@@ -21,10 +21,16 @@
 */
 
 #include "PolyScreenSprite.h"
+#include "PolyCore.h"
+#include "PolyCoreServices.h"
+#include "PolyMesh.h"
+#include "PolyPolygon.h"
+#include "PolyTexture.h"
 
+using std::vector;
 using namespace Polycode;
 
-ScreenSprite::ScreenSprite(String fileName, Number spriteWidth, Number spriteHeight) : ScreenShape(ScreenShape::SHAPE_RECT, spriteWidth, spriteHeight) {
+ScreenSprite::ScreenSprite(const String& fileName, Number spriteWidth, Number spriteHeight) : ScreenShape(ScreenShape::SHAPE_RECT, spriteWidth, spriteHeight) {
 	this->spriteWidth = spriteWidth;
 	this->spriteHeight = spriteHeight;	
 	loadTexture(fileName);
@@ -40,7 +46,7 @@ ScreenSprite::~ScreenSprite() {
 	
 }
 
-void ScreenSprite::addAnimation(String name, String frames, Number speed) {
+void ScreenSprite::addAnimation(const String& name, const String& frames, Number speed) {
 	SpriteAnimation *newAnimation = new SpriteAnimation();
 	
 	vector<String> frameNumbers = frames.split(",");
@@ -65,7 +71,7 @@ void ScreenSprite::addAnimation(String name, String frames, Number speed) {
 	animations.push_back(newAnimation);
 }
 
-void ScreenSprite::playAnimation(String name, int startFrame, bool once) {
+void ScreenSprite::playAnimation(const String& name, int startFrame, bool once) {
 	for(int i=0; i < animations.size(); i++) {
 		if(animations[i]->name == name) {
 			currentAnimation = animations[i];

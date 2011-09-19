@@ -22,20 +22,16 @@
 
 
 #pragma once
-#include "PolycodeView.h"
 #include "PolyGlobals.h"
 #include "PolyCore.h"
-#include "PolyGLRenderer.h"
-#include "PolyGLSLShaderModule.h"
+#include "PolyInputKeys.h"
+#include "PolyRectangle.h"
+
 #include <windows.h>
 #include <windowsx.h>
 #include <WinUser.h>
-#include "PolyRectangle.h"
-#include <GL/wglext.h>
 
 #include <vector>
-using std::vector;
-
 
 #ifndef VK_0
 #define VK_0	'0'
@@ -116,7 +112,7 @@ namespace Polycode {
 		
 	public:
 		
-		Win32Core(PolycodeViewBase *view, int xRes, int yRes, bool fullScreen, int aaLevel,int frameRate);
+		Win32Core(PolycodeViewBase *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate);
 		~Win32Core();
 
 		void enableMouse(bool newval);
@@ -148,20 +144,20 @@ namespace Polycode {
 
 		void platformSleep(int msecs);
 
-		vector<Polycode::Rectangle> getVideoModes();
+		std::vector<Polycode::Rectangle> getVideoModes();
 
 		// NEED TO IMPLEMENT:
 
 		void setCursor(int cursorType){ }
-		void copyStringToClipboard(String str) { }
+		void copyStringToClipboard(const String& str) { }
 		String getClipboardString() { return ""; }
 
-		void createFolder(String folderPath) {}
-		void copyDiskItem(String itemPath, String destItemPath) {}
-		void moveDiskItem(String itemPath, String destItemPath) {}
+		void createFolder(const String& folderPath) {}
+		void copyDiskItem(const String& itemPath, const String& destItemPath) {}
+		void moveDiskItem(const String& itemPath, const String& destItemPath) {}
 		String openFolderPicker()  { return "";}
-		void removeDiskItem(String itemPath)  {}
-		vector<string> openFilePicker(vector<CoreFileExtension> extensions, bool allowMultiple) { vector<string> ret; return ret;}
+		void removeDiskItem(const String& itemPath)  {}
+		std::vector<String> openFilePicker(std::vector<CoreFileExtension> extensions, bool allowMultiple) { std::vector<String> ret; return ret;}
 		void resizeTo(int xRes, int yRes) { }
 		
 	private:
@@ -170,7 +166,7 @@ namespace Polycode {
 
 		CoreMutex *eventMutex;
 
-		vector<Win32Event> win32Events;
+		std::vector<Win32Event> win32Events;
 
 		void initMultisample(int numSamples);
 

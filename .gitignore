@@ -34,6 +34,7 @@
 *.xcuserstate
 *.xcworkspace
 *.xcuserdata
+*.orig
 
 /Standalone/Build
 /Dependencies/Build

@@ -1,5 +1,9 @@
 
 #include "PolycodeView.h"
+#include "PolyWinCore.h"
+#include "PolyCoreServices.h"
+#include "PolyCoreInput.h"
+#include "PolyRenderer.h"
 
 using namespace Polycode;
 

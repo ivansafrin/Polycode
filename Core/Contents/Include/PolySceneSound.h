@@ -20,13 +20,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+#pragma once
 #include "PolyGlobals.h"
-#include "PolySound.h"
 #include "PolySceneEntity.h"
-#include "PolyCoreServices.h"
 
 namespace Polycode {
 
+	class Sound;
 
 	/**
 	* Creates a positional 3D sound listener. There can be only one listener active at any one time.
@@ -44,7 +44,7 @@ namespace Polycode {
 	*/	
 	class _PolyExport SceneSound : public SceneEntity {
 		public:
-			SceneSound(String fileName, Number referenceDistance, Number maxDistance);
+			SceneSound(const String& fileName, Number referenceDistance, Number maxDistance);
 			virtual ~SceneSound();			
 			void Update();
 			

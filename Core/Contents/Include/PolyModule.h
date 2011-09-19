@@ -10,13 +10,16 @@
 #pragma once
 #include "PolyString.h"
 #include "PolyGlobals.h"
-#include "tinyxml.h"
-#include "PolyShader.h"
-#include "PolyMaterial.h"
+
+class TiXmlNode;
 
 namespace Polycode {
 	
-	class Renderer;	
+	class Material;
+	class Renderer;
+	class Shader;
+	class ShaderBinding;
+	class Resource;
 	
 	class _PolyExport PolycodeModule {
 	public:
@@ -36,8 +39,8 @@ namespace Polycode {
 		PolycodeShaderModule();
 		virtual ~PolycodeShaderModule();
 		
-		virtual bool acceptsExtension(String extension) = 0;
-		virtual Resource* createProgramFromFile(String extension, String fullPath) = 0;
+		virtual bool acceptsExtension(const String& extension) = 0;
+		virtual Resource* createProgramFromFile(const String& extension, const String& fullPath) = 0;
 		virtual String getShaderType() = 0;
 		virtual Shader *createShader(TiXmlNode *node) = 0;
 	
@@ -46,7 +49,7 @@ namespace Polycode {
 		virtual void clearShader() = 0;
 		virtual void reloadPrograms() = 0;
 	protected:
-		vector<Shader*> shaders;
+		std::vector<Shader*> shaders;
 	};
 	
 }

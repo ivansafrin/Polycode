@@ -21,18 +21,12 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyCoreServices.h"
-#include "PolyScreenEntity.h"
 #include "PolyScreenMesh.h"
-#include "PolyPolygon.h"
-#include "PolyMesh.h"
-
-#include <string>
-using std::string;
 
 namespace Polycode {
+
+	class Polygon;
 
 	/**
 	* 2D primitive. Screen shape can create 2d shapes (Currently only rectangles and circles). 

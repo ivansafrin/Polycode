@@ -148,7 +148,7 @@ CocoaCore::CocoaCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bo
 
 }
 
-void CocoaCore::copyStringToClipboard(String str) {
+void CocoaCore::copyStringToClipboard(const String& str) {
 	NSPasteboard *pb = [NSPasteboard generalPasteboard];
     NSArray *types = [NSArray arrayWithObjects:NSStringPboardType, nil];
     [pb declareTypes:types owner:glView];
@@ -156,7 +156,7 @@ void CocoaCore::copyStringToClipboard(String str) {
 	//NSString *nsstr = [NSString stringWithCharacters: (unichar*) str.c_str() length: str.length()];
 	
 	char* data = (char*)str.data();
-	unsigned size = str.size() * sizeof(wchar_t);
+	unsigned size = str.size() * sizeof(wchar);
 	
 	NSString* nsstr = [[[NSString alloc] initWithBytes:data length:size encoding:NSUTF32LittleEndianStringEncoding] autorelease];
     [pb setString: nsstr forType:NSStringPboardType];	
@@ -352,19 +352,19 @@ void CocoaCore::checkEvents() {
 	unlockMutex(eventMutex);		
 }
 
-void CocoaCore::createFolder(String folderPath) {
+void CocoaCore::createFolder(const String& folderPath) {
 	[[NSFileManager defaultManager] createDirectoryAtPath:[NSString stringWithUTF8String: folderPath.c_str()] withIntermediateDirectories:YES attributes:nil error:nil];
 }
 
-void CocoaCore::copyDiskItem(String itemPath, String destItemPath) {
+void CocoaCore::copyDiskItem(const String& itemPath, const String& destItemPath) {
 	[[NSFileManager defaultManager] copyItemAtPath: [NSString stringWithUTF8String: itemPath.c_str()] toPath: [NSString stringWithUTF8String: destItemPath.c_str()] error: nil];	
 }
 
-void CocoaCore::moveDiskItem(String itemPath, String destItemPath) {
+void CocoaCore::moveDiskItem(const String& itemPath, const String& destItemPath) {
 	[[NSFileManager defaultManager] moveItemAtPath: [NSString stringWithUTF8String: itemPath.c_str()] toPath: [NSString stringWithUTF8String: destItemPath.c_str()] error: nil];		
 }
 
-void CocoaCore::removeDiskItem(String itemPath) {
+void CocoaCore::removeDiskItem(const String& itemPath) {
 	[[NSFileManager defaultManager] removeItemAtPath: [NSString stringWithUTF8String: itemPath.c_str()] error:nil];
 }
 	

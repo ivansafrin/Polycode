@@ -21,22 +21,13 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyCoreServices.h"
 #include "PolyScreenShape.h"
-#include "PolyScreenImage.h"
-#include "PolyFont.h"
-#include "PolyLabel.h"
-#include "PolyTexture.h"
-#include "PolyPolygon.h"
-#include "PolyMesh.h"
-
-#include <string>
-using std::string;
-using std::wstring;
 
 namespace Polycode {
+
+	class Label;
+	class ScreenImage;
 
 	/**
 	* 2D screen label display. Displays 2d text in a specified font.
@@ -51,7 +42,7 @@ namespace Polycode {
 			* @param size Size in pixels.
 			* @param Anti-aliasing mode.
 			*/
-			ScreenLabel(String text, int size, String fontName = "sans", int amode = 0);
+			ScreenLabel(const String& text, int size, const String& fontName = "sans", int amode = 0);
 			~ScreenLabel();		
 		
 			/**
@@ -67,15 +58,15 @@ namespace Polycode {
 			* Sets a new text to the screen label.
 			* @param newText Text to set.
 			*/
-			void setText(String newText);
+			void setText(const String& newText);
 			
 			/**
 			* Returns the label's text as a string.
 			* @return The label's text.
 			*/
-			String getText();
+			const String& getText() const;
 		
-			Label *getLabel();
+			Label *getLabel() const;
 			
 		protected:
 			

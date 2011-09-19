@@ -21,8 +21,18 @@
 */
 
 #include "PolyMaterialManager.h"
+#include "PolyCoreServices.h"
+#include "PolyCubemap.h"
+#include "PolyMaterial.h"
+#include "PolyModule.h"
+#include "PolyRenderer.h"
+#include "PolyResourceManager.h"
+#include "PolyFixedShader.h"
+
+#include "tinyxml.h"
 
 using namespace Polycode;
+using std::vector;
 
 MaterialManager::MaterialManager() {
 	
@@ -38,7 +48,7 @@ void MaterialManager::Update(int elapsed) {
 	}
 }
 
-Texture *MaterialManager::getTextureByResourcePath(String resourcePath) {
+Texture *MaterialManager::getTextureByResourcePath(const String& resourcePath) const {
 	for(int i=0;i < textures.size(); i++) {
 		if(textures[i]->getResourcePath() == resourcePath)
 			return textures[i];
@@ -74,7 +84,7 @@ void MaterialManager::addShaderModule(PolycodeShaderModule *module) {
 	shaderModules.push_back(module);
 }
 
-Texture *MaterialManager::createTextureFromFile(String fileName, bool clamp) {
+Texture *MaterialManager::createTextureFromFile(const String& fileName, bool clamp) {
 	Texture *newTexture;
 	newTexture = getTextureByResourcePath(fileName);
 	if(newTexture) {
