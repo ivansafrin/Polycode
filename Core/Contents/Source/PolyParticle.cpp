@@ -21,10 +21,14 @@
 */
 
 #include "PolyParticle.h"
+#include "PolyMesh.h"
+#include "PolyPolygon.h"
+#include "PolySceneMesh.h"
+#include "PolyScreenShape.h"
 
 using namespace Polycode;
 
-Mesh *Particle::billboardMesh = NULL;
+Mesh *Particle::billboardMesh = 0;
 
 Particle::Particle(int particleType, bool isScreenParticle, Material *material, Texture *texture, Mesh *particleMesh) {
 	life = 0;

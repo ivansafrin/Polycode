@@ -21,6 +21,7 @@
 */
 
 #include "PolyTweenManager.h"
+#include "PolyTween.h"
 
 using namespace Polycode;
 

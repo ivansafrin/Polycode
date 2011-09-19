@@ -21,8 +21,10 @@ THE SOFTWARE.
 */
 
 #include "PolySocket.h"
+#include "PolyLogger.h"
 
 using namespace Polycode;
+using std::vector;
 
 Address::Address(String ipAsString, unsigned int port) {
 	setAddress(ipAsString, port);

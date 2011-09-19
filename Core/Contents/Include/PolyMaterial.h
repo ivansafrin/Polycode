@@ -23,34 +23,32 @@ THE SOFTWARE.
 #pragma once
 #include "PolyString.h"
 #include "PolyGlobals.h"
-#include <string>
-#include <vector>
-#include "PolyTexture.h"
-#include "PolyShader.h"
 #include "PolyResource.h"
-
-
-using std::string;
-using std::vector;
+#include "PolyColor.h"
+#include <vector>
 
 namespace Polycode {
 	
+	class Shader;
+	class ShaderBinding;
+	class ShaderRenderTarget;
+
 	class _PolyExport Material : public Resource {
 		public:
-			Material(String name);
+			Material(const String& name);
 			virtual ~Material();
 			
 			void addShader(Shader *shader,ShaderBinding *shaderBinding);
-			unsigned int getNumShaders();
+			unsigned int getNumShaders() const;
 			
 			void addShaderRenderTarget(ShaderRenderTarget *newTarget);
 			int getNumShaderRenderTargets();
 			ShaderRenderTarget *getShaderRenderTarget(unsigned int index);
 				
-			String getName();
-			Shader *getShader(unsigned int index);
-			ShaderBinding *getShaderBinding(unsigned int index);
-			void loadMaterial(String fileName);
+			const String& getName() const;
+			Shader *getShader(unsigned int index) const;
+			ShaderBinding *getShaderBinding(unsigned int index) const;
+			void loadMaterial(const String& fileName);
 			
 			Number specularValue;
 			Color specularColor;
@@ -58,9 +56,9 @@ namespace Polycode {
 						
 		protected:
 		
-			vector<Shader*> materialShaders;
-			vector<ShaderBinding*> shaderBindings;
-			vector<ShaderRenderTarget*> renderTargets;
+			std::vector<Shader*> materialShaders;
+			std::vector<ShaderBinding*> shaderBindings;
+			std::vector<ShaderRenderTarget*> renderTargets;
 					
 			String name;
 		

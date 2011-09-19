@@ -21,14 +21,27 @@
 */		
 
 #include "PolySDLCore.h"
+#include "PolycodeView.h"
+#include "PolyCoreServices.h"
+#include "PolyCoreInput.h"
+#include "PolyMaterialManager.h"
+#include "PolyThreaded.h"
+
+#include "PolyGLRenderer.h"
+#include "PolyGLSLShaderModule.h"
+#include "PolyRectangle.h"
+
+#include <SDL/SDL.h>
+#include <iostream>
 
 using namespace Polycode;
+using std::vector;
 
 long getThreadID() {
 	return (long)pthread_self();
 }
 
-SDLCore::SDLCore(PolycodeViewBase *view, int xRes, int yRes, bool fullScreen,int aaLevel, int frameRate) : Core(xRes, yRes, fullScreen,aaLevel, frameRate) {
+SDLCore::SDLCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate) : Core(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate) {
 
 	String *windowTitle = (String*)view->windowData;
 
@@ -40,7 +53,7 @@ SDLCore::SDLCore(PolycodeViewBase *view, int xRes, int yRes, bool fullScreen,int
 	renderer = new OpenGLRenderer();
 	services->setRenderer(renderer);
 
-	setVideoMode(xRes, yRes, fullScreen, aaLevel);
+	setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel);
 	SDL_WM_SetCaption(windowTitle->c_str(), windowTitle->c_str());
 	
 	SDL_EnableUNICODE(1);
@@ -50,7 +63,7 @@ SDLCore::SDLCore(PolycodeViewBase *view, int xRes, int yRes, bool fullScreen,int
 	CoreServices::getInstance()->installModule(new GLSLShaderModule());	
 }
 
-void SDLCore::setVideoMode(int xRes, int yRes, bool fullScreen, int aaLevel) {	
+void SDLCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel) {
 	SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24);	
 	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1);			
 	SDL_GL_SetAttribute( SDL_GL_RED_SIZE,   8);
@@ -196,7 +209,7 @@ CoreMutex *SDLCore::createMutex() {
 	return mutex;	
 }
 
-void SDLCore::copyStringToClipboard(String str) {
+void SDLCore::copyStringToClipboard(const String& str) {
 
 }
 
@@ -204,26 +217,26 @@ String SDLCore::getClipboardString() {
 
 }
 
-void SDLCore::createFolder(String folderPath) {
+void SDLCore::createFolder(const String& folderPath) {
 
 }
 
-void SDLCore::copyDiskItem(String itemPath, String destItemPath) {
+void SDLCore::copyDiskItem(const String& itemPath, const String& destItemPath) {
 
 }
 
-void SDLCore::moveDiskItem(String itemPath, String destItemPath) {
+void SDLCore::moveDiskItem(const String& itemPath, const String& destItemPath) {
 
 }
 
-void SDLCore::removeDiskItem(String itemPath) {
+void SDLCore::removeDiskItem(const String& itemPath) {
 }
 
 String SDLCore::openFolderPicker() {
 
 }
 
-vector<string> SDLCore::openFilePicker(vector<CoreFileExtension> extensions, bool allowMultiple) {
+vector<String> SDLCore::openFilePicker(vector<CoreFileExtension> extensions, bool allowMultiple) {
 
 }
 

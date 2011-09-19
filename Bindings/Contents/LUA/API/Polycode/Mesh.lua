@@ -43,11 +43,11 @@ function Mesh:addPolygon(newPolygon)
 end
 
 function Mesh:loadMesh(fileName)
-	local retVal = Polycore.Mesh_loadMesh(self.__ptr, fileName)
+	local retVal = Polycore.Mesh_loadMesh(self.__ptr, fileName.__ptr)
 end
 
 function Mesh:saveToFile(fileName)
-	local retVal = Polycore.Mesh_saveToFile(self.__ptr, fileName)
+	local retVal = Polycore.Mesh_saveToFile(self.__ptr, fileName.__ptr)
 end
 
 function Mesh:loadFromFile(inFile)

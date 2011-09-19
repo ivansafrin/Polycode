@@ -21,21 +21,15 @@ THE SOFTWARE.
 */
  
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyCoreServices.h"
-#include "PolyFont.h"
-#include "PolyLabel.h"
-#include "PolyMesh.h"
-#include "PolyTexture.h"
-#include "PolyPolygon.h"
 #include "PolySceneEntity.h"
-
-#include <string>
-using std::string;
 
 namespace Polycode {
 	
+	class Label;
+	class Mesh;
+	class Texture;
+
 	/**
 	* 3D text label. Creates a 3D text label.
 	*/
@@ -50,7 +44,7 @@ namespace Polycode {
 			* @param scale Scale to multiply pixel size by for the actual world size of the label.
 			* @param Anti-aliasing mode. Can be Label::ANTIALIAS_FULL or Label::ANTIALIAS_NONE.
 			*/			
-			SceneLabel(String fontName, String text, int size, Number scale, int amode);
+			SceneLabel(const String& fontName, const String& text, int size, Number scale, int amode);
 			~SceneLabel();			
 		
 			bool testMouseCollision(Number x, Number y);
@@ -59,7 +53,7 @@ namespace Polycode {
 			* Sets new text for the labe.
 			* @param newText New text to display.
 			*/ 
-			void setText(String newText);
+			void setText(const String& newText);
 			
 			Label *getLabel();
 			void Render();

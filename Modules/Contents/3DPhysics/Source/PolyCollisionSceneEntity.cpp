@@ -21,6 +21,12 @@ THE SOFTWARE.
 */
 
 #include "PolyCollisionSceneEntity.h"
+#include "PolyLogger.h"
+#include "PolyMesh.h"
+#include "PolyPolygon.h"
+#include "PolySceneEntity.h"
+#include "PolySceneMesh.h"
+#include "btBulletCollisionCommon.h"
 
 using namespace Polycode;
 

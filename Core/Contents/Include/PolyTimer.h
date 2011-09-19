@@ -22,12 +22,8 @@ THE SOFTWARE.
 
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolyEventDispatcher.h"
-#include "PolyCoreServices.h"
-
-using namespace std;
 
 namespace Polycode {
 	

@@ -23,32 +23,28 @@ THE SOFTWARE.
 #pragma once
 #include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyFont.h"
 #include "PolyImage.h"
-
-#include <string>
-using namespace std;
-
-using std::wstring;
 
 #define TAB_REPLACE "    "
 
 namespace Polycode {
 
+	class Font;
+
 	class _PolyExport Label : public Image {
 		public:
 			
-			Label(Font *font, String text, int size, int antiAliasMode);
+			Label(Font *font, const String& text, int size, int antiAliasMode);
 			~Label();
-			void setText(String text);
-			String getText();
-			int getTextWidth(Font *font, String text, int size);
-			int getTextHeight(Font *font, String text, int size);
+			void setText(const String& text);
+			const String& getText() const;
+			int getTextWidth(Font *font, const String& text, int size) const;
+			int getTextHeight(Font *font, const String& text, int size) const;
 					
-			Number getTextWidth();		
-			Number getTextHeight();
+			Number getTextWidth() const;
+			Number getTextHeight() const;
 		
-			Font *getFont();
+			Font *getFont() const;
 					
 			static const int ANTIALIAS_FULL = 0;
 			static const int ANTIALIAS_NONE = 1;

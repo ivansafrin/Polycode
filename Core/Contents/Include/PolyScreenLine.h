@@ -21,16 +21,12 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolyScreenMesh.h"
-#include "PolyCoreServices.h"
-#include "PolyMesh.h"
-
-#include <string>
-using std::string;
 
 namespace Polycode {
+
+	class Vertex;
 
 	/**
 	* A 2D line between two points or two ScreenEntity instances.

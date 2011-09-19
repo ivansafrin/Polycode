@@ -22,6 +22,23 @@ THE SOFTWARE.
 
 
 #include "PolyGLSLProgram.h"
+#include "PolyVector3.h"
+#include "PolyLogger.h"
+
+#ifdef _WINDOWS
+#include <windows.h>
+#endif
+
+#if defined(__APPLE__) && defined(__MACH__)
+#include <OpenGL/gl.h>
+#include <OpenGL/glext.h>
+#include <OpenGL/glu.h>
+#else
+#include <GL/gl.h>
+#include <GL/glext.h>
+#endif
+
+using std::vector;
 
 #ifdef _WINDOWS
 extern PFNGLUSEPROGRAMPROC glUseProgram;
@@ -49,7 +66,7 @@ GLSLProgram::~GLSLProgram() {
 	glDeleteShader(program);
 }
 
-void GLSLProgram::addParam(String name, bool isAuto, int autoID, int paramType, void *defaultData) {
+void GLSLProgram::addParam(const String& name, bool isAuto, int autoID, int paramType, void *defaultData) {
 	GLSLProgramParam newParam;
 	newParam.name = name;
 	newParam.paramType = paramType;
@@ -60,7 +77,7 @@ void GLSLProgram::addParam(String name, bool isAuto, int autoID, int paramType, 
 	params.push_back(newParam);
 }
 
-void *GLSLProgramParam::createParamData(int *retType, String type, String value) {
+void *GLSLProgramParam::createParamData(int *retType, const String& type, const String& value) {
 		void *defaultData;
 		if(type == "Number") {
 			*retType = GLSLProgramParam::PARAM_Number;

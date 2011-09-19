@@ -21,18 +21,14 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyCoreServices.h"
 #include "PolyScreenEntity.h"
-#include "PolyMesh.h"
-#include "PolyTexture.h"
-#include "PolyPolygon.h"
-
-#include <string>
-using std::string;
 
 namespace Polycode {
+
+	class Image;
+	class Mesh;
+	class Texture;
 
 	/**
 	* 2D Mesh. ScreenMesh is the base for most geometry-based screen entities. It's based aroudn a Mesh instance, like its 3D counterpart (SceneMesh), but currently has fewer options.
@@ -43,7 +39,7 @@ namespace Polycode {
 			/**
 			* Creates the screen mesh and loads a mesh from a file name.
 			*/
-			ScreenMesh(String fileName);
+			ScreenMesh(const String& fileName);
 			
 			/**
 			* Create an empty screen mesh of specified type. See Mesh for available mesh types.
@@ -57,18 +53,18 @@ namespace Polycode {
 			* Returns the mesh for this screen mesh.
 			* @return The mesh.
 			*/
-			Mesh *getMesh();
+			Mesh *getMesh() const;
 			
 			/**
 			* Returns the texture associated with the mesh.
 			*/
-			Texture *getTexture();
+			Texture *getTexture() const;
 			
 			/**
 			* Loads a texture from an image file.
 			* @param fileName Path to the image file.
 			*/
-			void loadTexture(String fileName);
+			void loadTexture(const String& fileName);
 			
 			/**
 			* Loads a texture from an image instance.

@@ -37,15 +37,15 @@ namespace Polycode {
 		
 	}
 	
-	String Event::getEventType() {
+	const String& Event::getEventType() const {
 		return eventType;
 	}
 	
-	int Event::getEventCode() {
+	int Event::getEventCode() const {
 		return eventCode;
 	}
 	
-	EventDispatcher *Event::getDispatcher() {
+	EventDispatcher *Event::getDispatcher() const {
 		return dispatcher;
 	}
 	

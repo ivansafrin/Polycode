@@ -21,6 +21,9 @@
 */
 
 #include "PolySceneRenderTexture.h"
+#include "PolyCoreServices.h"
+#include "PolyRenderer.h"
+#include "PolySceneManager.h"
 
 
 using namespace Polycode;

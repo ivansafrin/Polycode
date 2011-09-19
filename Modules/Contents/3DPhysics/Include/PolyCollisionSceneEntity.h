@@ -21,15 +21,17 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyLogger.h"
 #include "PolyGlobals.h"
-#include "PolySceneEntity.h"
-#include "btBulletCollisionCommon.h"
-#include "PolyCoreServices.h"
-#include "PolySceneMesh.h"
-#include "BulletCollision/CollisionDispatch/btGhostObject.h"
+#include "PolyVector3.h"
+
+class btConvexShape;
+class btConcaveShape;
+class btCollisionShape;
+class btCollisionObject;
 
 namespace Polycode {
+
+	class SceneEntity;
 
 	/**
 	* A wrapped around SceneEntity that provides collision information.

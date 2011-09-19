@@ -21,17 +21,12 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolyColor.h"
-#include "PolyPerlin.h"
-#include <string>
-#include <math.h>
-#include "OSBasics.h"
-
-using std::string;
 
 namespace Polycode {
+
+	class String;
 
 	/**
 	* An image in memory. Basic RGB or RGBA images stored in memory. Can be loaded from PNG files, created into textures and written to file.
@@ -43,7 +38,7 @@ namespace Polycode {
 			* Create image from file name.
 			* @param fileName Path to image file to load.
 			*/ 
-			Image(String fileName);
+			Image(const String& fileName);
 			
 			/**
 			* Create a blank image of specified size and type.
@@ -75,8 +70,8 @@ namespace Polycode {
 			* @param fileName Path to image file to load.
 			* @return True if successfully loaded, false otherwise.
 			*/ 			
-			bool loadImage(String fileName);
-			bool loadPNG(String fileName);		
+			bool loadImage(const String& fileName);
+			bool loadPNG(const String& fileName);
 			
 			/**
 			* Recreate the image as an empty image of specified size. The image type stays the same.
@@ -188,28 +183,28 @@ namespace Polycode {
 			/**
 			* Returns the x position of the brush.
 			*/
-			int getBrushX();
+			int getBrushX() const;
 			
 			/**
 			* Returns the y position of the brush.
 			*/			
-			int getBrushY();
+			int getBrushY() const;
 		
-			bool isLoaded();
+			bool isLoaded() const;
 		
-			int getType() { return imageType; }
+			int getType() const { return imageType; }
 			
-			void writeBMP(String fileName);
+			void writeBMP(const String& fileName) const;
 			
 			/**
 			* Returns the width of the image.
 			*/			
-			unsigned int getWidth();
+			unsigned int getWidth() const;
 			
 			/**
 			* Returns the height of the image.
 			*/						
-			unsigned int getHeight();
+			unsigned int getHeight() const;
 			
 			/**
 			* Returns the raw image data

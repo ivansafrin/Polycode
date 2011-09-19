@@ -47,7 +47,7 @@ THE SOFTWARE.
 #define TODEGREES 57.2957795
 #define TORADIANS 0.0174532925
 
-#ifdef _WINDOWS
+#if defined(_WINDOWS) && defined(Polycore_EXPORTS)
 	#define _PolyExport __declspec(dllexport)
 #else
 	#define _PolyExport

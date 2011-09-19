@@ -21,6 +21,9 @@
 */
 
 #include "PolyGLVertexBuffer.h"
+#include "PolyPolygon.h"
+
+#include "malloc.h"
 
 using namespace Polycode;
 

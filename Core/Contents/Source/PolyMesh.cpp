@@ -21,10 +21,17 @@
 */
 
 #include "PolyMesh.h"
+#include "PolyLogger.h"
+#include "PolyPolygon.h"
+#include "OSBasics.h"
+
+using std::min;
+using std::max;
+using std::vector;
 
 namespace Polycode {
 
-	Mesh::Mesh(String fileName) {
+	Mesh::Mesh(const String& fileName) {
 		
 		for(int i=0; i < 16; i++) {
 			arrayDirtyMap[i] = false;
@@ -214,8 +221,8 @@ namespace Polycode {
 		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;							
 	}
 	
-	void Mesh::saveToFile(String fileName) {
-		OSFILE *outFile = OSBasics::open(fileName.c_str(), "wb");
+	void Mesh::saveToFile(const String& fileName) {
+		OSFILE *outFile = OSBasics::open(fileName, "wb");
 		if(!outFile) {
 			Logger::log("Error opening mesh file for saving: %s", fileName.c_str());
 		}
@@ -224,8 +231,8 @@ namespace Polycode {
 	
 	}
 	
-	void Mesh::loadMesh(String fileName) {
-		OSFILE *inFile = OSBasics::open(fileName.c_str(), "rb");
+	void Mesh::loadMesh(const String& fileName) {
+		OSFILE *inFile = OSBasics::open(fileName, "rb");
 		if(!inFile) {
 			Logger::log("Error opening mesh file %s", fileName.c_str());
 		}

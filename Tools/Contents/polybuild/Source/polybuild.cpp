@@ -1,10 +1,23 @@
 
 #include "polybuild.h"
+#include "string.h"
 #include "zip.h"
+
+#ifdef _WINDOWS
+	#include <windows.h>
+#else
+	#include <dirent.h>
+	#include <sys/types.h>
+	#include <sys/stat.h>
+#endif
+
+#include "physfs.h"
 
 #if defined(__APPLE__) && defined(__MACH__)
 #include <mach-o/dyld.h>
 #endif
+
+using std::vector;
 
 vector<BuildArg> args;
 #define MAXFILENAME (256)

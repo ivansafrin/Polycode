@@ -54,11 +54,11 @@ Texture::Texture(unsigned int width, unsigned int height, char *textureData,bool
 	resourcePath = "";
 }
 
-int Texture::getWidth() {
+int Texture::getWidth() const {
 	return width;
 }
 
-int Texture::getHeight() {
+int Texture::getHeight() const {
 	return height;
 }
 
@@ -83,11 +83,11 @@ Texture::Texture(Image *image) : Resource(Resource::RESOURCE_TEXTURE) {
 
 }
 
-void Texture::setResourcePath(String newPath) {
+void Texture::setResourcePath(const String& newPath) {
 	resourcePath = newPath;
 }
 
-String Texture::getResourcePath() {
+const String& Texture::getResourcePath() const {
 	return resourcePath;
 }
 
@@ -97,10 +97,10 @@ void Texture::updateScroll(int elapsed) {
 	scrollOffsetY += scrollSpeedY*ef;
 }
 
-Number Texture::getScrollOffsetX() {
+Number Texture::getScrollOffsetX() const {
 	return scrollOffsetX;
 }
 
-Number Texture::getScrollOffsetY() {
+Number Texture::getScrollOffsetY() const {
 	return scrollOffsetY;
 }

@@ -34,7 +34,7 @@ function SceneLabel:testMouseCollision(x, y)
 end
 
 function SceneLabel:setText(newText)
-	local retVal = Polycore.SceneLabel_setText(self.__ptr, newText)
+	local retVal = Polycore.SceneLabel_setText(self.__ptr, newText.__ptr)
 end
 
 function SceneLabel:getLabel()

@@ -29,10 +29,11 @@ THE SOFTWARE.
 
 #include <vector>
 
-using std::vector;
 
 namespace Polycode {	
 	
+	class Timer;
+
 	typedef struct {
 		unsigned int headerHash;
 		unsigned int sequence;
@@ -64,8 +65,8 @@ namespace Polycode {
 		unsigned int remoteSequence;
 		unsigned int reliableID;
 		
-		vector<SentPacketEntry> reliablePacketQueue;
-		vector<unsigned short> recentReliableIDs;
+		std::vector<SentPacketEntry> reliablePacketQueue;
+		std::vector<unsigned short> recentReliableIDs;
 		Address address;
 	};
 		
@@ -102,7 +103,7 @@ namespace Polycode {
 		protected:
 		
 			Timer *updateTimer;
-			vector<PeerConnection*> peerConnections;		
+			std::vector<PeerConnection*> peerConnections;
 			Socket *socket;
 	};
 

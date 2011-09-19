@@ -174,7 +174,7 @@ function Scene:readString(inFile)
 end
 
 function Scene:loadScene(fileName)
-	local retVal = Polycore.Scene_loadScene(self.__ptr, fileName)
+	local retVal = Polycore.Scene_loadScene(self.__ptr, fileName.__ptr)
 end
 
 function Scene:generateLightmaps(lightMapRes, lightMapQuality, numRadPasses)
@@ -206,11 +206,11 @@ function Scene:writeEntityMatrix(entity, outFile)
 end
 
 function Scene:writeString(str, outFile)
-	local retVal = Polycore.Scene_writeString(self.__ptr, str, outFile.__ptr)
+	local retVal = Polycore.Scene_writeString(self.__ptr, str.__ptr, outFile.__ptr)
 end
 
 function Scene:saveScene(fileName)
-	local retVal = Polycore.Scene_saveScene(self.__ptr, fileName)
+	local retVal = Polycore.Scene_saveScene(self.__ptr, fileName.__ptr)
 end
 
 function Scene:getNumStaticGeometry()
@@ -252,7 +252,7 @@ function Scene:getLight(index)
 end
 
 function Scene:getCustomEntityByType(type)
-	local retVal = Polycore.Scene_getCustomEntityByType(self.__ptr, type)
+	local retVal = Polycore.Scene_getCustomEntityByType(self.__ptr, type.__ptr)
 	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]

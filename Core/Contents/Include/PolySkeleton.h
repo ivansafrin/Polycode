@@ -24,17 +24,16 @@ THE SOFTWARE.
 #pragma once
 #include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyBone.h"
-#include <string>
+#include "PolyColor.h"
+#include "PolyVector3.h"
+#include "PolyQuaternion.h"
+#include "PolySceneEntity.h"
 #include <vector>
-#include "PolyBezierCurve.h"
-#include "PolyTween.h"
-
-using std::string;
-using std::vector;
 
 namespace Polycode {
 	
+	class BezierCurve;
+	class Bone;
 	class QuaternionTween;
 	class BezierPathTween;
 	
@@ -84,7 +83,7 @@ namespace Polycode {
 			bool initialized;
 		
 			Bone *targetBone;
-			vector <BezierPathTween*> pathTweens;
+			std::vector <BezierPathTween*> pathTweens;
 		
 	};
 
@@ -94,7 +93,7 @@ namespace Polycode {
 	class _PolyExport SkeletonAnimation {
 		public:
 		
-			SkeletonAnimation(String name, Number duration);
+			SkeletonAnimation(const String& name, Number duration);
 			~SkeletonAnimation();		
 			
 			/**
@@ -106,7 +105,7 @@ namespace Polycode {
 			/**
 			* Returns the animation name.
 			*/
-			String getName();
+			const String& getName() const;
 			
 			/**
 			* Plays the animation.
@@ -128,7 +127,7 @@ namespace Polycode {
 			
 			String name;
 			Number duration;
-			vector<BoneTrack*> boneTracks;
+			std::vector<BoneTrack*> boneTracks;
 	};
 
 	/**
@@ -141,14 +140,14 @@ namespace Polycode {
 			* Construct skeleton from a skeleton file.
 			* @param fileName Skeleton file to load.
 			*/
-			Skeleton(String fileName);
+			Skeleton(const String& fileName);
 			Skeleton();
 			
 			/**
 			* Loads a new skeleton from file.
 			* @param fileName Skeleton file to load.
 			*/ 
-			void loadSkeleton(String fileName);
+			void loadSkeleton(const String& fileName);
 			
 			~Skeleton();
 		
@@ -157,7 +156,7 @@ namespace Polycode {
 			* @param animName Name of animation to play.
 			* @param once If true, will only play the animation once.
 			*/
-			void playAnimation(String animName, bool once = false);
+			void playAnimation(const String& animName, bool once = false);
 						
 			void playAnimationByIndex(int index, bool once = false);		
 			
@@ -166,20 +165,20 @@ namespace Polycode {
 			* @param name Name of the new animation.
 			* @param fileName File to load animation from.
 			*/			
-			void addAnimation(String name, String fileName);
+			void addAnimation(const String& name, const String& fileName);
 			
 			/**
 			* Returns a SkeletonAnimation by its name.
 			* @param Name of animation to return.
 			*/
-			SkeletonAnimation *getAnimation(String name);
+			SkeletonAnimation *getAnimation(const String& name) const;
 			void Update();
 			
 			/**
 			* Get bone instance by its name
 			* @param name Name of the bone.
 			*/
-			Bone *getBoneByName(String name);
+			Bone *getBoneByName(const String& name) const;
 			
 			/**
 			* Toggles bone visibility on and off.
@@ -194,31 +193,31 @@ namespace Polycode {
 			* @param scale Scale of font.
 			* @param labelColor Color of the label.
 			*/
-			void enableBoneLabels(String labelFont, Number size, Number scale, Color labelColor);
+			void enableBoneLabels(const String& labelFont, Number size, Number scale, Color labelColor);
 					
 			/**
 			* Returns the number of bones in the skeleton
 			*/
-			int getNumBones();
+			int getNumBones() const;
 			
 			/**
 			* Returns a bone at the specified index.
 			* @param index Bone index.
 			*/
-			Bone *getBone(int index);
+			Bone *getBone(int index) const;
 		
 			/**
 			* Returns the current animation.
 			*/
-			SkeletonAnimation *getCurrentAnimation() { return currentAnimation; }
+			SkeletonAnimation *getCurrentAnimation() const { return currentAnimation; }
 		
 		protected:
 		
 			SceneEntity *bonesEntity;
 		
 			SkeletonAnimation *currentAnimation;
-			vector<Bone*> bones;
-			vector<SkeletonAnimation*> animations;
+			std::vector<Bone*> bones;
+			std::vector<SkeletonAnimation*> animations;
 	};
 
 }

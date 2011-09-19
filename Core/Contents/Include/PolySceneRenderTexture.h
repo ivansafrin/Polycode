@@ -21,14 +21,13 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyScene.h"
-#include "PolyTexture.h"
 
 namespace Polycode {
+
 	class Scene;
 	class Camera;
+	class Texture;
 	
 	/**
 	* Renders scenes to texture. This class automatically renders a scene to a texture every frame that you can use to texture anything else. You can set a scene to virtual (see Scene for details) to only render a scene to a texture if you need to. This class automatically adds itself to the render cycle, so you do not need to do anything manual every frame.

@@ -21,7 +21,15 @@
 */
 
 #include "PolySound.h"
+#include <vorbis/vorbisfile.h>
+#include "PolyString.h"
+#include "PolyLogger.h"
 
+#include "OSBasics.h"
+#include <string>
+#include <vector>
+
+using namespace std;
 using namespace Polycode;
 
 size_t custom_readfunc(void *ptr, size_t size, size_t nmemb, void *datasource) {
@@ -44,7 +52,7 @@ long custom_tellfunc(void *datasource) {
 	return OSBasics::tell(file);
 }
 
-Sound::Sound(String fileName) {
+Sound::Sound(const String& fileName) {
 	String extension;
 	size_t found;
 	found=fileName.rfind(".");
@@ -70,12 +78,12 @@ Sound::~Sound() {
 	alDeleteSources(1,&soundSource);
 }
 
-void Sound::soundCheck(bool result, String err) {
+void Sound::soundCheck(bool result, const String& err) {
 	if(!result)
 		soundError(err);
 }
 
-void Sound::soundError(String err) {
+void Sound::soundError(const String& err) {
 	Logger::log("SOUND ERROR: %s\n", err.c_str());
 }
 
@@ -144,7 +152,7 @@ void Sound::setIsPositional(bool isPositional) {
 	}
 }
 
-void Sound::checkALError(String operation) {
+void Sound::checkALError(const String& operation) {
 	ALenum error = alGetError();
 	if(error != AL_NO_ERROR) {
 		switch(error) {
@@ -207,7 +215,7 @@ ALuint Sound::GenSource(ALuint buffer) {
 	return source;
 }
 
-ALuint Sound::loadOGG(String fileName) {
+ALuint Sound::loadOGG(const String& fileName) {
 	
 	vector<char> buffer;
 	
@@ -263,7 +271,7 @@ ALuint Sound::loadOGG(String fileName) {
 	return bufferID;
 }
 
-ALuint Sound::loadWAV(String fileName) {
+ALuint Sound::loadWAV(const String& fileName) {
 	long bytes;
 	vector <char> data;
 	ALenum format;

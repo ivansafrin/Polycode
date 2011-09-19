@@ -21,15 +21,15 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolySceneEntity.h"
-#include "PolyScreenShape.h"
-#include "PolyScenePrimitive.h"
-#include "PolyCoreServices.h"
-
+#include "PolyVector3.h"
 
 namespace Polycode {
+
+	class Entity;
+	class Material;
+	class Mesh;
+	class Texture;
 
 	class _PolyExport Particle {
 		public:

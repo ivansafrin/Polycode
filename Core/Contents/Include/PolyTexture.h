@@ -41,19 +41,19 @@ namespace Polycode {
 
 			virtual void recreateFromImageData() = 0;
 
-			Number getScrollOffsetX();
-			Number getScrollOffsetY();
+			Number getScrollOffsetX() const;
+			Number getScrollOffsetY() const;
 			
 			void setImageData(Image *data);
 		
 			void updateScroll(int elapsed);
-			void setResourcePath(String newPath);
-			String getResourcePath();
+			void setResourcePath(const String& newPath);
+			const String& getResourcePath() const;
 		
-			char *getTextureData() { return textureData;}
+			char *getTextureData() const { return textureData;}
 			
-			int getWidth();
-			int getHeight();
+			int getWidth() const;
+			int getHeight() const;
 		
 			bool clamp;
 		

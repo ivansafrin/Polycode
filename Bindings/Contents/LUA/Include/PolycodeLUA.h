@@ -1,6 +1,5 @@
 #pragma once
 #include <Polycode.h>
-#include "PolycodeLUAWrappers.h"
 extern "C" {
 #include <stdio.h>
 #include "lua.h"

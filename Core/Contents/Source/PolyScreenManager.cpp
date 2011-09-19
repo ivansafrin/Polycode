@@ -21,6 +21,9 @@
 */
 
 #include "PolyScreenManager.h"
+#include "PolyCoreServices.h"
+#include "PolyRenderer.h"
+#include "PolyScreen.h"
 
 using namespace Polycode;
 

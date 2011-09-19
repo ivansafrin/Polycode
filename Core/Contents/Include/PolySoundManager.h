@@ -21,13 +21,11 @@
  */
 
 #pragma once
-#include "PolyString.h"
-#include "PolyLogger.h"
 #include "PolyGlobals.h"
-#include <stdio.h>
+#include "PolyVector3.h"
+
 #include "al.h"
 #include "alc.h"
-#include "PolyVector3.h"
 
 namespace Polycode {
 	

@@ -21,20 +21,20 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyRenderer.h"
-#include "PolySceneEntity.h"
-#include "PolyCamera.h"
-#include "PolySceneLight.h"
-#include "PolySceneMesh.h"
+#include "PolyString.h"
+#include "PolyColor.h"
+#include "PolyVector3.h"
+#include "PolyEventDispatcher.h"
+
 #include <vector>
 
-using std::vector;
+class OSFILE;
 
 namespace Polycode {
 		
 	class Camera;
+	class SceneEntity;
 	class SceneLight;
 	class SceneMesh;
 	
@@ -117,7 +117,7 @@ namespace Polycode {
 		void RenderDepthOnly(Camera *targetCamera);
 		
 		static String readString(OSFILE *inFile);
-		void loadScene(String fileName);
+		void loadScene(const String& fileName);
 		void generateLightmaps(Number lightMapRes, Number lightMapQuality, int numRadPasses);
 		
 		/**
@@ -135,8 +135,8 @@ namespace Polycode {
 		SceneLight *getNearestLight(Vector3 pos);
 		
 		void writeEntityMatrix(SceneEntity *entity, OSFILE *outFile);
-		void writeString(String str, OSFILE *outFile);
-		void saveScene(String fileName);
+		void writeString(const String& str, OSFILE *outFile);
+		void saveScene(const String& fileName);
 		
 		int getNumStaticGeometry();
 		SceneMesh *getStaticGeometry(int index);
@@ -146,8 +146,8 @@ namespace Polycode {
 		int getNumLights();
 		SceneLight *getLight(int index);
 		
-		SceneEntity *getCustomEntityByType(String type);
-		vector<SceneEntity*> getCustomEntitiesByType(String type);		
+		SceneEntity *getCustomEntityByType(const String& type) const;
+		std::vector<SceneEntity*> getCustomEntitiesByType(const String& type) const;
 		
 		static const unsigned int ENTITY_MESH = 0;
 		static const unsigned int ENTITY_LIGHT = 1;			
@@ -184,16 +184,16 @@ namespace Polycode {
 		
 		bool hasLightmaps;
 		
-		vector <SceneLight*> lights;				
-		vector <SceneMesh*> staticGeometry;
-		vector <SceneMesh*> collisionGeometry;
-		vector <SceneEntity*> customEntities;
+		std::vector <SceneLight*> lights;
+		std::vector <SceneMesh*> staticGeometry;
+		std::vector <SceneMesh*> collisionGeometry;
+		std::vector <SceneEntity*> customEntities;
 		
 		
 		bool isSceneVirtual;
 		
 		Camera *defaultCamera;
-		vector <SceneEntity*> entities;
+		std::vector <SceneEntity*> entities;
 		
 		bool lightingEnabled;
 		bool fogEnabled;

@@ -68,12 +68,19 @@ function Bone:Bone(...)
 end
 
 function Bone:enableBoneLabel(labelFont, size, scale, labelColor)
-	local retVal = Polycore.Bone_enableBoneLabel(self.__ptr, labelFont, size, scale, labelColor.__ptr)
+	local retVal = Polycore.Bone_enableBoneLabel(self.__ptr, labelFont.__ptr, size, scale, labelColor.__ptr)
 end
 
 function Bone:getName()
 	local retVal =  Polycore.Bone_getName(self.__ptr)
-	return retVal
+	if retVal == nil then return nil end
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = String("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 
 function Bone:Render()

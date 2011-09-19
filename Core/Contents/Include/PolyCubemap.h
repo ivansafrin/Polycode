@@ -21,13 +21,13 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolyResource.h"
-#include "PolyTexture.h"
 
 namespace Polycode {
-	
+
+	class Texture;
+
 	class _PolyExport Cubemap : public Resource {
 		public:
 			Cubemap(Texture *t0, Texture *t1, Texture *t2, Texture *t3, Texture *t4, Texture *t5);

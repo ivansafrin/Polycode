@@ -42,7 +42,7 @@ void Quaternion::createFromAxisAngle(Number ax, Number ay, Number az, Number deg
 	z = Number(az * result);
 }
 
-Matrix4 Quaternion::createMatrix()
+Matrix4 Quaternion::createMatrix() const
 {
 	Matrix4 m;
         Number fTx  = 2.0*x;

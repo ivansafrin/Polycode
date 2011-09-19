@@ -21,18 +21,16 @@
  */
 
 #pragma once
-#include "PolyString.h"
-#include "PolyLogger.h"
 #include "PolyGlobals.h"
+#include "PolyString.h"
 #include "PolyMatrix4.h"
 #include "PolyQuaternion.h"
 #include "PolyColor.h"
-#include "PolyRenderer.h"
 #include <vector>
 
-using std::vector;
-
 namespace Polycode {
+
+	class Renderer;
 
 	class _PolyExport EntityProp {
 	public:
@@ -88,32 +86,32 @@ namespace Polycode {
 			* Returns the entity's transform matrix.
 			@return Transform matrix.
 			*/
-			Matrix4 getTransformMatrix();
+			const Matrix4& getTransformMatrix() const;
 			
 			/** 
 			* Returns the entity's matrix multiplied by its parent's concatenated matrix. This, in effect, returns the entity's actual world transformation.
 			@return Entity's concatenated matrix.
 			*/
-			Matrix4 getConcatenatedMatrix();
+			Matrix4 getConcatenatedMatrix() const;
 			
 			/** 
 			* Returns Same as getConcatenatedMatrix(), but contains only roll information for rotation. Used internally for billboards.
 			@return Entity's concatenated roll matrix.
 			@see getConcatenatedMatrix()
 			*/			
-			Matrix4 getConcatenatedRollMatrix();				
+			Matrix4 getConcatenatedRollMatrix() const;
 			
 			/**
 			* Sets all of the individual transform properties from the matrix and rebuilds the transform matrix.
 			@param matrix 4x4 transform matrix to apply.
 			*/			
-			void setTransformByMatrix(Matrix4 matrix);	
+			void setTransformByMatrix(const Matrix4& matrix);
 			
 			/**
 			* Sets the transform matrix directly, without setting all of the individual transfrom properties of the entity.
 			@param matrix 4x4 transform matrix to apply.
 			*/						
-			void setTransformByMatrixPure(Matrix4 matrix);	
+			void setTransformByMatrixPure(const Matrix4& matrix);
 			
 			/** Returns the matrix for the entity looking at a location based on a location and an up vector.
 			* @param loc Location to look at.
@@ -158,7 +156,7 @@ namespace Polycode {
 			* Returns the parent entity of the entity.
 			@return Parent entity of this entity.
 			*/
-			Entity *getParentEntity();
+			Entity *getParentEntity() const;
 				
 			//@}
 			// ----------------------------------------------------------------------------------------------------------------
@@ -173,14 +171,14 @@ namespace Polycode {
 			* Returns the entity's position.
 			@return Entity's position as a vector.
 			*/			
-			Vector3 getPosition();
+			Vector3 getPosition() const;
 			
 			/**
 			* Returns the entity's position added to the combined position of its parent. This method is here only for convenience of calculating certain properties and should not be used to get an entity's actual position in the world. To get the actual world position of the entity, use the entity's concatendated matrix.
 			@see getConcatenatedMatrix()
 			@return Entity's position as a vector.
 			*/			
-			Vector3 getCombinedPosition();			
+			Vector3 getCombinedPosition() const;
 
 			/**
 			* Sets the entity's position.
@@ -267,31 +265,31 @@ namespace Polycode {
 			* Returns the entity's scale multiplied by its parent's compound scale.
 			* @return Compound scale as vector.
 			*/			
-			Vector3 getCompoundScale();			
+			Vector3 getCompoundScale() const;
 			
 			/**
 			* Returns the entity's scale.
 			@return Entity's scale as a vector.
 			*/						
-			Vector3 getScale();		
+			Vector3 getScale() const;
 		
 			/**
 			* Returns the entity's pitch combined with the combined pitch of its parent.
 			@return Entity's combined pitch.
 			*/									
-			Number getCombinedPitch();
+			Number getCombinedPitch() const;
 			
 			/**
 			* Returns the entity's yaw combined with the combined yaw of its parent.
 			@return Entity's combined yaw.
 			*/									
-			Number getCombinedYaw();
+			Number getCombinedYaw() const;
 			
 			/**
 			* Returns the entity's roll combined with the combined roll of its parent.
 			@return Entity's combined roll.
 			*/												
-			Number getCombinedRoll();
+			Number getCombinedRoll() const;
 			
 			/**
 			* Forces the rotation quaternion to be rebuilt.
@@ -338,19 +336,19 @@ namespace Polycode {
 			* Returns the current pitch of the entity.
 			* @return Current pitch value.
 			*/																				
-			Number getPitch();
+			Number getPitch() const;
 			
 			/**
 			* Returns the current yaw of the entity.
 			* @return Current yaw value.
 			*/																							
-			Number getYaw();
+			Number getYaw() const;
 			
 			/**
 			* Returns the current roll of the entity.
 			* @return Current roll value.
 			*/																										
-			Number getRoll();
+			Number getRoll() const;
 		
 			/**
 			* Sets the rotation with quaternion value.
@@ -362,7 +360,7 @@ namespace Polycode {
 			* Returns the current rotation as a quaternion.
 			* @return Current rotation value.
 			*/																												
-			Quaternion getRotationQuat();
+			Quaternion getRotationQuat() const;
 			
 			/**
 			* Orients the entity towards the specified location with the provided up vector. The up vector determines which side of the entity will be pointing in that direction.
@@ -383,7 +381,7 @@ namespace Polycode {
 			* Returns the entity's color multiplied by its parent entity's combined color.
 			* @return Entity's combined color.
 			*/
-			Color getCombinedColor();
+			Color getCombinedColor() const;
 			
 			/**
 			* Sets the color of the entity as normalized floating point values.
@@ -429,13 +427,13 @@ namespace Polycode {
 			* Returns the bounding box radius.
 			* @return The bounding box radius.
 			*/			
-			Number getBBoxRadius();
+			Number getBBoxRadius() const;
 			
 			/**
 			* Returns the entity's bounding box radius compounded from its children's bounding box radii.
 			* @return The compound bounding box radius.
 			*/						
-			Number getCompoundBBoxRadius();
+			Number getCompoundBBoxRadius() const;
 			
 			/**
 			* Sets the bounding box radius.
@@ -551,10 +549,10 @@ namespace Polycode {
 				
 			void setBlendingMode(int newBlendingMode);
 				
-			Vector3 getChildCenter();
+			Vector3 getChildCenter() const;
 							
-			vector <EntityProp> entityProps;						
-			String getEntityProp(String propName);		
+			std::vector <EntityProp> entityProps;
+			String getEntityProp(const String& propName);
 			
 			void doUpdates();				
 			virtual Matrix4 buildPositionMatrix();
@@ -568,7 +566,7 @@ namespace Polycode {
 			bool isMask;
 		
 		protected:
-			vector<Entity*> children;
+			std::vector<Entity*> children;
 
 			Vector3 childCenter;
 			Number bBoxRadius;		

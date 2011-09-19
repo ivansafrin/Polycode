@@ -57,12 +57,19 @@ function Texture:updateScroll(elapsed)
 end
 
 function Texture:setResourcePath(newPath)
-	local retVal = Polycore.Texture_setResourcePath(self.__ptr, newPath)
+	local retVal = Polycore.Texture_setResourcePath(self.__ptr, newPath.__ptr)
 end
 
 function Texture:getResourcePath()
 	local retVal =  Polycore.Texture_getResourcePath(self.__ptr)
-	return retVal
+	if retVal == nil then return nil end
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = String("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 
 function Texture:getTextureData()

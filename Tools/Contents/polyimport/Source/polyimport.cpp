@@ -1,5 +1,7 @@
 
 #include "polyimport.h"
+#include "PolyPolygon.h"
+#include "OSBasics.h"
 
 using namespace Polycode;
 

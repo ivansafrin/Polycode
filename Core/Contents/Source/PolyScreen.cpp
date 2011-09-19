@@ -21,6 +21,16 @@
 */
 
 #include "PolyScreen.h"
+#include "PolyCoreServices.h"
+#include "PolyInputEvent.h"
+#include "PolyScreenManager.h"
+#include "PolyResourceManager.h"
+#include "PolyCore.h"
+#include "PolyMaterial.h"
+#include "PolyRenderer.h"
+#include "PolyScreenEntity.h"
+#include "PolyScreenEvent.h"
+#include "PolyShader.h"
 
 using namespace Polycode;
 
@@ -92,11 +102,11 @@ void Screen::setScreenOffset(Number x, Number y) {
 	offset.y = y;
 }
 
-Vector2 Screen::getScreenOffset() {
+Vector2 Screen::getScreenOffset() const {
 	return offset;
 }
 
-int Screen::getHighestZIndex() {
+int Screen::getHighestZIndex() const {
 	int highestZ = 1;
 	for(int i=0; i<children.size();i++) {
 		if(children[i]->zindex > highestZ)
@@ -148,7 +158,7 @@ void Screen::handleEvent(Event *event) {
 	}
 }
 
-void Screen::setScreenShader(String shaderName) {
+void Screen::setScreenShader(const String& shaderName) {
 	filterShaderMaterial = (Material*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_MATERIAL, shaderName);
 	if(!filterShaderMaterial)
 		return;
@@ -227,7 +237,7 @@ void Screen::drawFilter() {
 	
 }
 
-bool Screen::hasFilterShader() {
+bool Screen::hasFilterShader() const {
 	return _hasFilterShader;
 }
 

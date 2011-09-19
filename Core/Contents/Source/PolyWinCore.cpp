@@ -21,6 +21,17 @@
 */		
 
 #include "PolyWinCore.h"
+#include "PolyCoreInput.h"
+#include "PolyCoreServices.h"
+#include "PolyInputEvent.h"
+#include "PolyGLRenderer.h"
+#include "PolyGLSLShaderModule.h"
+#include "PolyLogger.h"
+#include "PolyThreaded.h"
+
+#include <GL/gl.h>
+#include <GL/glext.h>
+#include <GL/wglext.h>
 
 using namespace Polycode;
 
@@ -41,7 +52,8 @@ void ClientResize(HWND hWnd, int nWidth, int nHeight)
   MoveWindow(hWnd,rcWindow.left, rcWindow.top, nWidth + ptDiff.x, nHeight + ptDiff.y, TRUE);
 }
 
-Win32Core::Win32Core(PolycodeViewBase *view, int xRes, int yRes, bool fullScreen, int aaLevel,int frameRate) : Core(xRes, yRes, fullScreen,aaLevel,frameRate) {
+Win32Core::Win32Core(PolycodeViewBase *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate) 
+	: Core(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate) {
 
 	hWnd = *((HWND*)view->windowData);
 	core = this;
@@ -526,8 +538,8 @@ CoreMutex *Win32Core::createMutex() {
 	return newMutex;
 }
 		
-vector<Polycode::Rectangle> Win32Core::getVideoModes() {
-	vector<Polycode::Rectangle> retVector;
+std::vector<Polycode::Rectangle> Win32Core::getVideoModes() {
+	std::vector<Polycode::Rectangle> retVector;
 
 	return retVector;
 }

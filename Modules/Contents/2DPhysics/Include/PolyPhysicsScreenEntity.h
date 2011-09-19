@@ -22,11 +22,12 @@ THE SOFTWARE.
 
 #pragma once
 #include "PolyGlobals.h"
-#include "PolyScreenEntity.h"
-#include "PolyScreenMesh.h"
+#include "PolyVector2.h"
 #include "Box2D/Box2D.h"
 
 namespace Polycode {
+
+	class ScreenEntity;
 
 	/**
 	* A 2D Physics enabled screen entity. 

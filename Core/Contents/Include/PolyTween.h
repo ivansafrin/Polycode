@@ -21,16 +21,16 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
+#include "PolyVector3.h"
 #include "PolyEventDispatcher.h"
-#include "PolyCoreServices.h"
-#include "PolyBezierCurve.h"
-#include "PolyQuaternionCurve.h"
 
 namespace Polycode {
 	
+	class BezierCurve;
 	class Timer;
+	class Quaternion;
+	class QuaternionCurve;
 	
 	/**
 	* Tween animation class. This class lets you tween a floating point value over a period of time with different easing types.

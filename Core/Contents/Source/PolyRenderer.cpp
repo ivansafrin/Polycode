@@ -21,6 +21,7 @@
 */
 
 #include "PolyRenderer.h"
+#include "PolyMesh.h"
 
 using namespace Polycode;
 
@@ -54,7 +55,7 @@ void Renderer::enableShaders(bool flag) {
 	shadersEnabled = flag;
 }
 
-void Renderer::setCameraMatrix(Matrix4 matrix) {
+void Renderer::setCameraMatrix(const Matrix4& matrix) {
 	cameraMatrix = matrix;
 }
 
@@ -177,7 +178,7 @@ void Renderer::setAnisotropyAmount(Number amount) {
 	anisotropy = amount;
 }
 
-Matrix4 Renderer::getCameraMatrix() {
+const Matrix4& Renderer::getCameraMatrix() const {
 	return cameraMatrix;
 }
 

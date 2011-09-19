@@ -22,14 +22,15 @@
 
 
 #pragma once
-#include "PolyLogger.h"
-#include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolyCoreServices.h"
 #include "PolySceneEntity.h"
-#include "PolySceneRenderTexture.h"
 
 namespace Polycode {
+
+	class Scene;
+	class Material;
+	class ShaderBinding;
+	class Texture;
 
 	/**
 	* Camera in a 3D scene. Cameras can be added to a scene and changed between dynamically. You can also set a shader to a camera that will run as a screen shader for post-processing effects.
@@ -104,7 +105,7 @@ namespace Polycode {
 			* Sets the post-processing shader for the camera.
 			* @param shaderName The shader name of the post-processing filter.
 			*/												
-			void setPostFilter(String shaderName);
+			void setPostFilter(const String& shaderName);
 			
 			/**
 			* Removes the currently assigned post filter.
@@ -114,7 +115,7 @@ namespace Polycode {
 			/**
 			* Returns the local shader options for the camera post processing material.
 			*/
-			vector<ShaderBinding*> getLocalShaderOptions() { return localShaderOptions; }
+			std::vector<ShaderBinding*> getLocalShaderOptions() { return localShaderOptions; }
 			
 			/**
 			* Returns the shader material applied to the camera.
@@ -135,7 +136,7 @@ namespace Polycode {
 			Material *filterShaderMaterial;			
 			Texture *originalSceneTexture;			
 			Texture *zBufferSceneTexture;						
-			vector<ShaderBinding*> localShaderOptions;
+			std::vector<ShaderBinding*> localShaderOptions;
 			bool _hasFilterShader;
 	};	
 }

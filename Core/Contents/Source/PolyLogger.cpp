@@ -21,6 +21,10 @@
 */
 
 #include "PolyLogger.h"
+#include <stdio.h>
+#include <stdarg.h>
+#include <string>
+#include <iostream>
 
 using namespace Polycode;
 

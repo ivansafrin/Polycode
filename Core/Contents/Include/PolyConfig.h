@@ -21,14 +21,8 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
-#include <string>
-#include <vector>
-#include "tinyxml.h"
-
-using std::string;
-using std::vector;
+#include "PolyString.h"
 
 namespace Polycode {
 
@@ -57,16 +51,16 @@ namespace Polycode {
 		* @param configNamespace Namespace of the config to load data into.
 		* @param fileName Path to the file to load.
 		*/
-		void loadConfig(String configNamespace, String fileName);	
+		void loadConfig(const String& configNamespace, const String& fileName);
 		
 		/**
 		* Save config to a specified file from the specified namespace.
 		* @param configNamespace Namespace of the config to save data from.
 		* @param fileName Path to the file to save data to.
 		*/		
-		void saveConfig(String configNamespace, String fileName);
+		void saveConfig(const String& configNamespace, const String& fileName);
 
-		ConfigEntry *getEntry(String configNamespace, String key);
+		ConfigEntry *getEntry(const String& configNamespace, const String& key);
 
 		/**
 		* Sets a string value into the specified config namespace.
@@ -74,7 +68,7 @@ namespace Polycode {
 		* @param key String key of the value.
 		* @param value The string value to save.
 		*/
-		void setStringValue(String configNamespace, String key, String value);
+		void setStringValue(const String& configNamespace, const String& key, const String& value);
 		
 		/**
 		* Sets a numeric value into the specified config namespace.
@@ -82,25 +76,25 @@ namespace Polycode {
 		* @param key String key of the value.
 		* @param value The numeric value to save.
 		*/		
-		void setNumericValue(String configNamespace, String key, Number value);		
+		void setNumericValue(const String& configNamespace, const String& key, Number value);
 		
 		/**
 		* Returns a numeric value by a string key.
 		* @param configNamespace Namespace to get the value from.
 		* @param key String key of the value.
 		*/				
-		Number getNumericValue(String configNamespace, String key);
+		Number getNumericValue(const String& configNamespace, const String& key);
 		
 		/**
 		* Returns a string value by a string key.
 		* @param configNamespace Namespace to get the value from.
 		* @param key String key of the value.
 		*/						
-		String getStringValue(String configNamespace, String key);
+		const String& getStringValue(const String& configNamespace, const String& key);
 		
 	private:
 		
-		vector<ConfigEntry*> entries;
+		std::vector<ConfigEntry*> entries;
 		
 	};
 }

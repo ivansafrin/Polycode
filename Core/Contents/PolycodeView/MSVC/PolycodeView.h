@@ -1,8 +1,7 @@
 #pragma once
 
 #include <windows.h>
-#include <Polycode.h>
-#include <PolyWinCore.h>
+#include "PolyCore.h"
 
 using namespace Polycode;
 

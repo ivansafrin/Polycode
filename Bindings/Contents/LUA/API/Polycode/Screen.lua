@@ -113,7 +113,7 @@ function Screen:setNormalizedCoordinates(newVal, yCoordinateSize)
 end
 
 function Screen:setScreenShader(shaderName)
-	local retVal = Polycore.Screen_setScreenShader(self.__ptr, shaderName)
+	local retVal = Polycore.Screen_setScreenShader(self.__ptr, shaderName.__ptr)
 end
 
 function Screen:clearScreenShader()

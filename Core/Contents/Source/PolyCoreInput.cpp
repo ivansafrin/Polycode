@@ -21,6 +21,7 @@
 */
 
 #include "PolyCoreInput.h"
+#include "PolyInputEvent.h"
 
 namespace Polycode {
 	

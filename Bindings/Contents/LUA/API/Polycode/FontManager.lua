@@ -21,11 +21,11 @@ function FontManager:FontManager(...)
 end
 
 function FontManager:registerFont(fontName, fontPath)
-	local retVal = Polycore.FontManager_registerFont(self.__ptr, fontName, fontPath)
+	local retVal = Polycore.FontManager_registerFont(self.__ptr, fontName.__ptr, fontPath.__ptr)
 end
 
 function FontManager:getFontByName(fontName)
-	local retVal = Polycore.FontManager_getFontByName(self.__ptr, fontName)
+	local retVal = Polycore.FontManager_getFontByName(self.__ptr, fontName.__ptr)
 	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]

@@ -22,27 +22,26 @@ THE SOFTWARE.
 
 #pragma once
 
+#include "PolyGlobals.h"
+#include "PolyCubemap.h"
+
 #ifdef _WINDOWS
 #include <windows.h>
 #endif
 
-#include "PolyString.h"
-#include "PolyGlobals.h"
-#include "PolyTexture.h"
-#include "PolyGLRenderer.h"
-#include "PolyCubemap.h"
 #if defined(__APPLE__) && defined(__MACH__)
 #include <OpenGL/gl.h>
 #include <OpenGL/glext.h>
 #include <OpenGL/glu.h>	
 #else
-#include <GL/gl.h>	
-#include <GL/glu.h>	
+#include <GL/gl.h>
+#include <GL/glext.h>
 #endif
-
 
 namespace Polycode {
 	
+	class Texture;
+
 	class _PolyExport OpenGLCubemap : public Cubemap {
 	public:
 		

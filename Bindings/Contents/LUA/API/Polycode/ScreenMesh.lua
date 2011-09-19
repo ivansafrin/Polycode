@@ -57,7 +57,7 @@ function ScreenMesh:getTexture()
 end
 
 function ScreenMesh:loadTexture(fileName)
-	local retVal = Polycore.ScreenMesh_loadTexture(self.__ptr, fileName)
+	local retVal = Polycore.ScreenMesh_loadTexture(self.__ptr, fileName.__ptr)
 end
 
 function ScreenMesh:setTexture(texture)

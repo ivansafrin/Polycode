@@ -53,7 +53,7 @@ namespace Polycode {
 		~Client();
 		
 		void updatePeer();
-		void Connect(string ipAddress, unsigned int port);		
+		void Connect(std::string ipAddress, unsigned int port);
 		void Disconnect();
 		void setPersistentData(void *data, unsigned int size);
 		

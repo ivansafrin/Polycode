@@ -40,7 +40,7 @@ LocalShaderParam *ShaderBinding::getLocalParam(unsigned int index) {
 	return localParams[index];
 }
 
-LocalShaderParam *ShaderBinding::getLocalParamByName(String name) {
+LocalShaderParam *ShaderBinding::getLocalParamByName(const String& name) {
 	for(int i=0; i < localParams.size(); i++) {
 		if(localParams[i]->name == name) {
 			return localParams[i];
@@ -49,7 +49,7 @@ LocalShaderParam *ShaderBinding::getLocalParamByName(String name) {
 	return NULL;
 }
 
-void ShaderBinding::addLocalParam(String name, void *ptr) {
+void ShaderBinding::addLocalParam(const String& name, void *ptr) {
 	LocalShaderParam *newParam = new LocalShaderParam();
 	newParam->name = name;
 	newParam->data = ptr;
@@ -102,14 +102,14 @@ Shader::~Shader() {
 
 }
 
-int Shader::getType() {
+int Shader::getType() const {
 	return type;
 }
 
-void Shader::setName(String name) {
+void Shader::setName(const String& name) {
 	this->name = name;
 }
 
-String Shader::getName() {
+const String& Shader::getName() const {
 	return name;
 }

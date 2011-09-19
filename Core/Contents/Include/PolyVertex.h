@@ -21,14 +21,11 @@
 */
 
 #pragma once
-#include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolyVector3.h"
 #include "PolyVector2.h"
 #include "PolyColor.h"
 #include <vector>
-
-using std::vector;
 
 namespace Polycode {
 
@@ -183,7 +180,7 @@ namespace Polycode {
 				
 		protected:
 		
-			vector <BoneAssignment*> boneAssignments;
+			std::vector <BoneAssignment*> boneAssignments;
 			Vector2 texCoord;
 		
 	};

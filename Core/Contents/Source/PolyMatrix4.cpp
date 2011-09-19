@@ -32,11 +32,11 @@ Matrix4::~Matrix4() {
 
 }
 
-Matrix4::Matrix4(Number *m) {
+Matrix4::Matrix4(const Number *m) {
 	memcpy(ml, m, sizeof(Number)*16);
 }
 
-    Matrix4 Matrix4::inverse() 
+	Matrix4 Matrix4::inverse() const
     {
         Number m00 = m[0][0], m01 = m[0][1], m02 = m[0][2], m03 = m[0][3];
         Number m10 = m[1][0], m11 = m[1][1], m12 = m[1][2], m13 = m[1][3];
@@ -98,7 +98,7 @@ Matrix4::Matrix4(Number *m) {
             d30, d31, d32, d33);
     }
     //-----------------------------------------------------------------------
-    Matrix4 Matrix4::inverseAffine(void) 
+	Matrix4 Matrix4::inverseAffine(void) const
     {
 
         Number m10 = m[1][0], m11 = m[1][1], m12 = m[1][2];

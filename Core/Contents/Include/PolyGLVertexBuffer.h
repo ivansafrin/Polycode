@@ -22,24 +22,20 @@ THE SOFTWARE.
 
 
 #pragma once
+#include "PolyMesh.h"
 
 #ifdef _WINDOWS
 #include <windows.h>
 #endif
-#include "PolyString.h"
-#include "PolyGlobals.h"
-#include "PolyMesh.h"
-#include "PolyGLRenderer.h"
 
 #if defined(__APPLE__) && defined(__MACH__)
 #include <OpenGL/gl.h>
 #include <OpenGL/glext.h>
-#include <OpenGL/glu.h>	
+#include <OpenGL/glu.h>
 #else
-#include <GL/gl.h>	
-#include <GL/glu.h>	
+#include <GL/gl.h>
+#include <GL/glext.h>
 #endif
-
 
 namespace Polycode {
 	

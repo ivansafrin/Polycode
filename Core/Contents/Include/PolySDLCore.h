@@ -24,16 +24,13 @@
 
 #include "PolyGlobals.h"
 #include "PolyCore.h"
-#include "PolyGLRenderer.h"
-#include "PolyGLSLShaderModule.h"
-#include "PolyRectangle.h"
 #include <vector>
-#include <SDL/SDL.h>
-#include <iostream>
 
-using std::vector;
+struct SDL_mutex;
 
 namespace Polycode {
+
+	class PolycodeView;
 
 	class _PolyExport SDLCoreMutex : public CoreMutex {
 	public:
@@ -44,28 +41,28 @@ namespace Polycode {
 		
 	public:
 		
-		SDLCore(PolycodeViewBase *view, int xRes, int yRes, bool fullScreen, int aaLevel, int frameRate);
+		SDLCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate);
 		~SDLCore();
 
 		void enableMouse(bool newval);
 		unsigned int getTicks();
 		bool Update();
-		void setVideoMode(int xRes, int yRes, bool fullScreen, int aaLevel);
+		void setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel);
 		void createThread(Threaded *target);
-		vector<Rectangle> getVideoModes();
+		std::vector<Rectangle> getVideoModes();
 		
 		void setCursor(int cursorType);
 		void lockMutex(CoreMutex *mutex);
 		void unlockMutex(CoreMutex *mutex);
 		CoreMutex *createMutex();
-		void copyStringToClipboard(String str);
+		void copyStringToClipboard(const String& str);
 		String getClipboardString();
-		void createFolder(String folderPath);
-		void copyDiskItem(String itemPath, String destItemPath);		
-		void moveDiskItem(String itemPath, String destItemPath);		
-		void removeDiskItem(String itemPath);
+		void createFolder(const String& folderPath);
+		void copyDiskItem(const String& itemPath, const String& destItemPath);
+		void moveDiskItem(const String& itemPath, const String& destItemPath);
+		void removeDiskItem(const String& itemPath);
 		String openFolderPicker();
-		vector<string> openFilePicker(vector<CoreFileExtension> extensions, bool allowMultiple);
+		std::vector<String> openFilePicker(std::vector<CoreFileExtension> extensions, bool allowMultiple);
 		void resizeTo(int xRes, int yRes);
 
 	private:

@@ -22,17 +22,13 @@ THE SOFTWARE.
 
 #pragma once
 #include "PolyString.h"
-#include "PolyLogger.h"
 #include "PolyGlobals.h"
 #include "PolyEventHandler.h"
-#include "PolyEvent.h"
 #include <vector>
-
-using std::vector;
-
 
 namespace Polycode {
 
+	class Event;
 
 typedef struct {
 	EventHandler *handler;
@@ -91,7 +87,7 @@ typedef struct {
 		
 		protected:
 	
-		vector<EventEntry> handlerEntries;
+		std::vector<EventEntry> handlerEntries;
 	
 	};
 }

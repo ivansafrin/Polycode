@@ -41,7 +41,7 @@ class IAnimation {
 	public:
 		 IAnimation(){}
 
-	String name;
+	Polycode::String name;
 	unsigned int numTracks;
 	float tps;
 
@@ -74,6 +74,7 @@ class ISkeleton {
 	}
 
 	void saveToFile(const char *fileName, bool swapZY) {
+		using Polycode::String;
 		String fileNameSkel = String(fileName)+".skeleton";
 		FILE *file = fopen(fileNameSkel.c_str(), "wb");
 		unsigned int numBones = bones.size();

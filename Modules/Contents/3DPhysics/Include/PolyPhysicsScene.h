@@ -21,18 +21,18 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "btBulletCollisionCommon.h"
-#include "btBulletDynamicsCommon.h"
-#include "PolyLogger.h"
 #include "PolyGlobals.h"
 #include "PolyCollisionScene.h"
-#include "PolyVector3.h"
-#include "PolyPhysicsSceneEntity.h"
 #include <vector>
 
-using std::vector;
+class btDiscreteDynamicsWorld;
 
 namespace Polycode {
+
+	class SceneEntity;
+	class PhysicsSceneEntity;
+	class PhysicsCharacter;
+	class PhysicsVehicle;
 
 	/**
 	* A scene subclass that simulates physics for its children.
@@ -71,7 +71,7 @@ namespace Polycode {
 		void initPhysicsScene();		
 		
 		btDiscreteDynamicsWorld* physicsWorld;
-		vector<PhysicsSceneEntity*> physicsChildren;		
+		std::vector<PhysicsSceneEntity*> physicsChildren;
 		
 	};
 	

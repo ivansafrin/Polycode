@@ -28,7 +28,14 @@ end
 
 function Resource:getResourceName()
 	local retVal =  Polycore.Resource_getResourceName(self.__ptr)
-	return retVal
+	if retVal == nil then return nil end
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = String("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 
 function Resource:getResourceType()
@@ -37,16 +44,23 @@ function Resource:getResourceType()
 end
 
 function Resource:setResourceName(newName)
-	local retVal = Polycore.Resource_setResourceName(self.__ptr, newName)
+	local retVal = Polycore.Resource_setResourceName(self.__ptr, newName.__ptr)
 end
 
 function Resource:setResourcePath(path)
-	local retVal = Polycore.Resource_setResourcePath(self.__ptr, path)
+	local retVal = Polycore.Resource_setResourcePath(self.__ptr, path.__ptr)
 end
 
 function Resource:getResourcePath()
 	local retVal =  Polycore.Resource_getResourcePath(self.__ptr)
-	return retVal
+	if retVal == nil then return nil end
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = String("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 
 

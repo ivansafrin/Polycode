@@ -21,13 +21,16 @@
 */
 
 #include "PolyScreenEntity.h"
+#include "PolyInputEvent.h"
+#include "PolyRectangle.h"
+#include "PolyRenderer.h"
 
 inline double round(double x) { return floor(x + 0.5); }
 
 using namespace Polycode;
 
 ScreenEntity::ScreenEntity() : Entity(), EventDispatcher() {
-	color = new Color(1.0f,1.0f,1.0f,1.0f);
+	color = Color(1.0f,1.0f,1.0f,1.0f);
 	width = 1;
 	height = 1;
 	hitwidth = 1;
@@ -82,7 +85,7 @@ void ScreenEntity::focusNextChild() {
 	}
 }
 
-Number ScreenEntity::getRotation() {
+Number ScreenEntity::getRotation() const {
 	return this->getRoll();
 }
 
@@ -96,7 +99,7 @@ void ScreenEntity::focusChild(ScreenEntity *child) {
 	focusedChild->onGainFocus();
 }
 
-bool ScreenEntity::isFocusable() {
+bool ScreenEntity::isFocusable() const {
 	return focusable;
 }
 
@@ -130,27 +133,33 @@ void ScreenEntity::setScale(Number x, Number y) {
 	matrixDirty = true;	
 }
 
-Number ScreenEntity::getWidth() {
+Number ScreenEntity::getWidth() const {
 	return width;
 }
 
-Number ScreenEntity::getHeight() {
+Number ScreenEntity::getHeight() const {
 	return height;
 }
 
-bool ScreenEntity::hitTest(Number x, Number y) {
+bool ScreenEntity::hitTest(Number x, Number y) const {
 	bool retVal = false;
-//			Logger::log("hittest %f,%f in %f %f %f %f\n",x, y, position.x, position.y, hitwidth, hitheight);	
+    // apply compound scale to test hit against
+    Vector3 compScale = getCompoundScale();
+    Number hx = position.x * compScale.x;
+    Number hy = position.y * compScale.y;
+    Number hw = hitwidth * compScale.x;
+    Number hh = hitheight * compScale.y;
+    //        Logger::log("hittest %f,%f in %f %f %f %f\n",x, y, hx, hy, hw, hh);
 	switch(positionMode) {
 		case ScreenEntity::POSITION_TOPLEFT:
 						
-			if(x > position.x && x < (position.x + hitwidth) 
-				&& y > position.y && y < (position.y + hitheight))
+            if(x > hx && x < (hx + hw)
+                && y > hy && y < (hy + hh))
 				retVal = true;			
 		break;
 		case ScreenEntity::POSITION_CENTER:
-			if(x > (position.x - hitwidth/2.0f) && x < (position.x + hitwidth/2.0f) 
-				&& y > (position.y - hitheight/2.0f) && y < (position.y + hitheight/2.0f))
+            if(x > (hx - hw/2.0f) && x < (hx + hw/2.0f)
+                && y > (hy - hh/2.0f) && y < (hy + hh/2.0f))
 				retVal = true;	
 		break;
 	}
@@ -356,7 +365,7 @@ void ScreenEntity::setRotation(Number rotation) {
 	setRoll(rotation);
 }
 
-Vector2 ScreenEntity::getPosition2D() {
+Vector2 ScreenEntity::getPosition2D() const {
 	return Vector2(position.x, position.y);
 }
 

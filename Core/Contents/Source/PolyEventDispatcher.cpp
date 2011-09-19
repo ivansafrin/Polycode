@@ -21,6 +21,7 @@
 */
 
 #include "PolyEventDispatcher.h"
+#include "PolyEvent.h"
 
 namespace Polycode {
 	

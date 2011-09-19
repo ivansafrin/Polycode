@@ -21,7 +21,7 @@ function Data:Data(...)
 end
 
 function Data:loadFromFile(fileName)
-	local retVal = Polycore.Data_loadFromFile(self.__ptr, fileName)
+	local retVal = Polycore.Data_loadFromFile(self.__ptr, fileName.__ptr)
 end
 
 function Data:getAsString(encoding)
@@ -30,11 +30,11 @@ function Data:getAsString(encoding)
 end
 
 function Data:setFromString(str, encoding)
-	local retVal = Polycore.Data_setFromString(self.__ptr, str, encoding)
+	local retVal = Polycore.Data_setFromString(self.__ptr, str.__ptr, encoding)
 end
 
 function Data:saveToFile(fileName)
-	local retVal = Polycore.Data_saveToFile(self.__ptr, fileName)
+	local retVal = Polycore.Data_saveToFile(self.__ptr, fileName.__ptr)
 	return retVal
 end
 

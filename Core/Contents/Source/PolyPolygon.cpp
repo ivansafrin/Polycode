@@ -21,6 +21,11 @@
 */
 
 #include "PolyPolygon.h"
+#include "PolyVector2.h"
+#include "PolyVertex.h"
+
+using std::min;
+using std::max;
 
 namespace Polycode {
 

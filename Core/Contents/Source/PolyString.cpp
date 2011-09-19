@@ -23,56 +23,49 @@
 #include "PolyString.h"
 
 using namespace Polycode;
+using namespace std;
 
 String::String() {
-	contents = L"";
-	s_contents = "";
 }
 
 String::String(const wchar_t *str) {
-	contents = wstring(str);
+	wstrToUtf8(contents, str);
 }
 
 String::String(const char *str) {
-	string sstr = string(str);
-	utf8toWStr(contents, sstr);	
-//	contents.assign(sstr.begin(), sstr.end());
-}
-
-String::String(const wchar_t *str, size_t n) {
-	contents = wstring(str, n);
-}
-
-String::String(string str) {
-	contents.assign(str.begin(), str.end());	
-}
-
-String::String(wstring str) {
 	contents = str;
+}
+
+String::String(const char *str, size_t n) {
+	contents = string(str, n);
+}
+
+String::String(const string& str) {
+	contents = str;
+}
+
+String::String(const wstring& str) {
+	wstrToUtf8(contents, str);
 }
 
 String::~String() {
 	
 }
 
-size_t String::getDataSizeWithEncoding(int encoding) {
+size_t String::getDataSizeWithEncoding(int encoding) const {
 	switch(encoding) {
 		case ENCODING_UTF8: {
-			string dest;
-			wstrToUtf8(dest, contents);
-			return dest.size();
+			return contents.size();
 		}
 		default:
 			return NULL;
 	}
 }
 
-const char *String::getDataWithEncoding(int encoding) {
+const char *String::getDataWithEncoding(int encoding) const {
 	switch(encoding) {
 		case ENCODING_UTF8: {
-			string dest;
-			wstrToUtf8(dest, contents);
-			return dest.data();
+			return contents.c_str();
 		}
 		break;
 		default:
@@ -83,8 +76,7 @@ const char *String::getDataWithEncoding(int encoding) {
 void String::setDataWithEncoding(char *data, int encoding) {
 	switch(encoding) {
 		case ENCODING_UTF8: {
-			string str = string(data);
-			utf8toWStr(contents, str);
+			contents = data;
 		}
 		default:
 			break;
@@ -92,28 +84,28 @@ void String::setDataWithEncoding(char *data, int encoding) {
 }
 
 
-vector<String> String::split(const String &delim) {
+vector<String> String::split(const String &delim) const {
 	
 	vector<String> tokens;
 	bool trimEmpty = false;
 	
-		std::wstring::size_type pos, lastPos = 0;
+		std::string::size_type pos, lastPos = 0;
 		while(true)
 		{
 			pos = contents.find_first_of(delim.contents, lastPos);
-			if(pos == std::wstring::npos)
+			if(pos == std::string::npos)
 			{
 				pos = contents.length();
 				
 				if(pos != lastPos || !trimEmpty)
-					tokens.push_back(vector<String>::value_type(contents.data()+lastPos, (wstring::size_type)pos-lastPos ));
+					tokens.push_back(vector<String>::value_type(contents.data()+lastPos, (string::size_type)pos-lastPos ));
 				
 				break;
 			}
 			else
 			{
 				if(pos != lastPos || !trimEmpty)
-					tokens.push_back(vector<String>::value_type(contents.data()+lastPos, (wstring::size_type)pos-lastPos ));
+					tokens.push_back(vector<String>::value_type(contents.data()+lastPos, (string::size_type)pos-lastPos ));
 			}
 			
 			lastPos = pos + 1;
@@ -122,7 +114,7 @@ vector<String> String::split(const String &delim) {
 	return tokens;
 }
 
-String String::replace(const String &what, const String &withWhat) {
+String String::replace(const String &what, const String &withWhat) const {
 	vector<String> arr = split(what);
 	String retString = "";
 	for(int i= 0; i < arr.size(); i++) {
@@ -134,14 +126,14 @@ String String::replace(const String &what, const String &withWhat) {
 	return retString;
 }
 
-String String::toLowerCase() {
-	wstring str = contents;
+String String::toLowerCase() const {
+	string str = contents;
 	std::transform(str.begin(), str.end(), str.begin(),::tolower);	
 	return String(str);
 }
 
-String String::toUpperCase() {
-	wstring str = contents;
+String String::toUpperCase() const {
+	string str = contents;
 	std::transform(str.begin(), str.end(), str.begin(),::toupper);	
 	return String(str);
 }
@@ -160,21 +152,12 @@ String String::IntToString(int value) {
 }
 
 
-string String::getSTLString() {
-	s_contents.assign(contents.begin(),contents.end());
-	return s_contents;
-}
-
-wstring String::getSTLWString() {
+const string& String::getSTLString() const {
 	return contents;
 }
 
-const char *String::c_str() {
-	s_contents.assign(contents.begin(),contents.end());	
-	return s_contents.c_str();
-}
 
-const wchar_t *String::wc_str() {
+const char *String::c_str() const {
 	return contents.c_str();
 }
 

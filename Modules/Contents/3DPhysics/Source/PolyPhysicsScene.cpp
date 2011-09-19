@@ -21,6 +21,17 @@ THE SOFTWARE.
 */
 
 #include "PolyPhysicsScene.h"
+#include "btBulletCollisionCommon.h"
+#include "BulletCollision/CollisionDispatch/btGhostObject.h"
+#include "BulletDynamics/Character/btKinematicCharacterController.h"
+
+#include "PolyCollisionScene.h"
+#include "PolyCoreServices.h"
+#include "PolyVector3.h"
+#include "PolyPhysicsSceneEntity.h"
+#include "PolyCore.h"
+
+using namespace Polycode;
 
 PhysicsScene::PhysicsScene() : CollisionScene() {
 	initPhysicsScene();	

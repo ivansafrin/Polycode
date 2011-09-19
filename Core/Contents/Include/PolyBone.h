@@ -21,16 +21,14 @@
  */
 
 #pragma once
-#include "PolyLogger.h"
 #include "PolyGlobals.h"
 #include "PolyString.h"
+#include "PolyMatrix4.h"
 #include "PolySceneEntity.h"
-#include "PolyMesh.h"
-#include "PolyCoreServices.h"
-#include "PolySceneLabel.h"
-#include "PolySceneLine.h"
 
 namespace Polycode {
+
+	class Mesh;
 
 	/** 
 	* Skeleton bone. Bones are bound to vertices of a mesh and when transformed, move the bound vertices of the mesh along with them. Bones are subclassed from SceneEntity, but have their own hierarchy system.
@@ -42,16 +40,16 @@ namespace Polycode {
 			* Constructor.
 			* @param boneName Name of the bone.
 			*/				
-			Bone(String boneName);
+			Bone(const String& boneName);
 			~Bone();
 			
-			void enableBoneLabel(String labelFont, Number size, Number scale, Color labelColor);
+			void enableBoneLabel(const String& labelFont, Number size, Number scale, Color labelColor);
 			
 			/**
 			* Returns the name of the bone.
 			* @return Name of the bone.
 			*/
-			String getName();
+			const String& getName() const;
 			void Render();
 
 			/**
@@ -89,60 +87,60 @@ namespace Polycode {
 			* Returns the bone matrix
 			* @return Bone matrix.
 			*/									
-			Matrix4 getBoneMatrix();
+			Matrix4 getBoneMatrix() const;
 			
 			/**
 			* Sets the bone matrix.
 			* @return Bone matrix.
 			*/												
-			void setBoneMatrix(Matrix4 matrix);
+			void setBoneMatrix(const Matrix4& matrix);
 			
 			/**
 			* Returns the rest matrix of this bone.
 			* @return Rest matrix.
 			*/															
-			Matrix4 getRestMatrix();
+			Matrix4 getRestMatrix() const;
 			
 			/**
 			* Returns the full rest matrix of this bone.
 			* @return Full rest matrix.
 			*/																		
-			Matrix4 getFullRestMatrix();
+			Matrix4 getFullRestMatrix() const;
 			
 			/**
 			* Returns the rest matrix of this bone's parent.
 			* @return Rest matrix of the bone's parent.
 			*/																					
-			Matrix4 getParentRestMatrix();
+			Matrix4 getParentRestMatrix() const;
 			
 			/**
 			* @see getBoneMatrix()
 			*/																								
-			Matrix4 getFinalMatrix();
+			Matrix4 getFinalMatrix() const;
 			
 			/**
 			* Sets the rest matrix for this bone.
 			* @param matrix New rest matrix.
 			*/
-			void setRestMatrix(Matrix4 matrix);
+			void setRestMatrix(const Matrix4& matrix);
 			
 			/**
 			* Sets the base matrix for this bone.
 			* @param matrix New base matrix.
 			*/			
-			void setBaseMatrix(Matrix4 matrix);
+			void setBaseMatrix(const Matrix4& matrix);
 			
 			/**
 			* Returns the base matrix of this bone.
 			* @return Base matrix.
 			*/			
-			Matrix4 getBaseMatrix() { return baseMatrix; }
+			const Matrix4& getBaseMatrix() const { return baseMatrix; }
 			
 			/**
 			* Returns the full base matrix of this bone.
 			* @return Full base matrix.
 			*/						
-			Matrix4 getFullBaseMatrix();
+			Matrix4 getFullBaseMatrix() const;
 		
 			/**
 			* Id of the bone.
@@ -159,7 +157,7 @@ namespace Polycode {
 			Mesh *boneMesh;
 		
 			Bone* parentBone;
-			vector<Bone*> childBones;
+			std::vector<Bone*> childBones;
 			String boneName;
 	};
 

@@ -21,6 +21,8 @@
 */
 
 #include "PolySceneLine.h"
+#include "PolyRenderer.h"
+#include "PolyPolygon.h"
 
 using namespace Polycode;
 

@@ -27,9 +27,6 @@
 #include <string>
 #include <vector>
 #include <algorithm>
-using std::vector;
-
-using namespace std;
 
 typedef std::string Str;
 typedef std::wstring WStr;
@@ -56,9 +53,9 @@ namespace Polycode {
 			String(const wchar_t *str);
 			
 			/**
-			* Initializes the string from a pointer to wide character buffer of a certain size.
+			* Initializes the string from a pointer to regular character buffer of a certain size.
 			*/						
-			String(const wchar_t *str, size_t n);		
+			String(const char *str, size_t n);
 			
 			/**
 			* Initializes the string from a regular character buffer.
@@ -68,42 +65,37 @@ namespace Polycode {
 			/**
 			* Initializes the string from an STL string.
 			*/												
-			String(string str);
+			String(const std::string& str);
 			
 			/**
 			* Initializes the string from an STL wstring.
 			*/															
-			String(wstring str);
+			String(const std::wstring& str);
 		
-			virtual ~String();
+			~String();
 		
 			/**
 			* Return the length of the string.
 			*/														
-			size_t size() { return contents.size(); }
+			size_t size() const { return contents.size(); }
 			
 			/**
 			* Return the length of the string.
 			*/			
-			size_t length() { return contents.size(); }
+			size_t length() const { return contents.size(); }
 		
 			/**
 			* Return the string and an STL string.
 			*/		
-			string getSTLString();
-			
-			/**
-			* Return the string and an STL wstring.
-			*/			
-			wstring getSTLWString();
-		
+			const std::string& getSTLString() const;
+					
 			/**
 			* Returns the substring of the string.
 			* @param pos Position of a character in the current string object to be used as starting character for the substring.
 			* @param n Length of the substring.
 			* @return A string object containing a substring of the current object.
 			*/					
-			String substr(size_t pos = 0, size_t n = wstring::npos) const { return String(contents.substr(pos,n)); }
+			String substr(size_t pos = 0, size_t n = std::wstring::npos) const { return String(contents.substr(pos,n)); }
 
 			/**
 			* Find last occurrence of content in string. 
@@ -111,7 +103,7 @@ namespace Polycode {
 			* @param pos Position of the last character in the string to be taken into consideration for possible matches. The default value indicates that the entire string is searched.
 			* @return The position of the last occurrence in the string of the searched content
 			*/							
-			size_t rfind ( const String &str, size_t pos = wstring::npos ) const { return contents.rfind(str.contents, pos); }
+			size_t rfind ( const String &str, size_t pos = std::wstring::npos ) const { return contents.rfind(str.contents, pos); }
 			
 			/**
 			* Find content in string. 
@@ -127,7 +119,7 @@ namespace Polycode {
 			* @param pos Position of the last character in the string to be taken into consideration for possible matches. The default value indicates that the entire string is searched.
 			* @return The position of the last occurrence in the string of any of the characters searched for.
 			*/													
-			size_t find_last_of(const String& str, size_t pos = wstring::npos ) { return contents.find_last_of(str.contents, pos); }
+			size_t find_last_of(const String& str, size_t pos = std::wstring::npos ) { return contents.find_last_of(str.contents, pos); }
 		
 			inline String operator + (const char *str) const { return String(contents + String(str).contents); }		
 			inline String operator + (const String &str) const { return String(contents + str.contents); }		
@@ -141,20 +133,20 @@ namespace Polycode {
 			* Returns the lowercase version of the string.
 			* @return Lowercase version of the stirng.
 			*/															
-			String toLowerCase();
+			String toLowerCase() const;
 			
 			/**
 			* Returns the uppercase version of the string.
 			* @return Uppercase version of the stirng.
 			*/																		
-			String toUpperCase();
+			String toUpperCase() const;
 					
 			/**
 			* Splits the string by the specified delimeter
 			* @param delim The delimeter to split by.
 			* @return An STL vector of the split parts of the string. 
 			*/																				
-			vector<String> split(const String &delim);
+			std::vector<String> split(const String &delim) const;
 
 			/**
 			* Replaces parts of the string with another string.
@@ -162,7 +154,7 @@ namespace Polycode {
 			* @param withWhat What to replace them with.
 			* @return A new string with the specified matches replaced with the specified string.
 			*/																							
-			String replace(const String &what, const String &withWhat);
+			String replace(const String &what, const String &withWhat) const;
 			
 			/**
 			* Convert a Number to a String.
@@ -182,27 +174,15 @@ namespace Polycode {
 			* Pointer to char data.
 			* @return A pointer to char data.
 			*/																												
-			const char *c_str();
+			const char *c_str() const;
 			
-			/**
-			* Pointer to wchar data.
-			* @return A pointer to wchar data.
-			*/																															
-			const wchar_t *wc_str();
-
-			/**
-			* Pointer to wchar data.
-			* @return A pointer to wchar data.
-			*/																																	
-			const wchar_t *data(){ return contents.data(); }
-
 			/**
 			* Returns data with the specified encoding. Currently the only supported encoding is String::ENCODING_UTF8
 			* @param encoding The encoding to use.
 			* @return A pointer to the data using specified encoding.
 			* @see getDataSizeWithEncoding()
 			*/																															
-			const char *getDataWithEncoding(int encoding);
+			const char *getDataWithEncoding(int encoding) const;
 			
 			/**
 			* Returns the size of the data with the specified encoding. Currently the only supported encoding is String::ENCODING_UTF8
@@ -210,7 +190,7 @@ namespace Polycode {
 			* @return The size the data would take up if returned with this encoding.
 			* @see getDataWithEncoding()
 			*/																																				
-			size_t getDataSizeWithEncoding(int encoding);
+			size_t getDataSizeWithEncoding(int encoding) const;
 					
 			
 			/**
@@ -221,15 +201,10 @@ namespace Polycode {
 			void setDataWithEncoding(char *data, int encoding);
 			
 			/**
-			* STL wstring version of the string.
-			*/																																					
-			wstring contents;	
-			
-			/**
 			* STL string version of the string.
-			*/																																								
-			string s_contents;
-			
+			*/																																					
+			std::string contents;
+						
 			/**
 			* UTF-8 encoding.
 			*/																																							
@@ -242,5 +217,5 @@ namespace Polycode {
 
 	static inline String operator+ (const char *str, const String &rstr) { return String(String(str).contents + rstr.contents); }
 	static inline String operator+ (const wchar_t *str, const String &rstr) { return String(String(str).contents + rstr.contents); }	
-	static inline String operator+ (const wchar_t str, const String &rstr) { wstring tmp=L" "; tmp[0] = str; return String(tmp + rstr.contents); }		
+	static inline String operator+ (const wchar_t str, const String &rstr) { std::wstring tmp=L" "; tmp[0] = str; return tmp.c_str() + rstr; }
 }

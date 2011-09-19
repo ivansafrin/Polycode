@@ -22,6 +22,31 @@ THE SOFTWARE.
 
 
 #include "PolyGLSLShaderModule.h"
+#include "PolyCoreServices.h"
+#include "PolyResourceManager.h"
+#include "PolyRenderer.h"
+#include "PolyGLSLProgram.h"
+#include "PolyGLSLShader.h"
+#include "PolyGLCubemap.h"
+#include "PolyMaterial.h"
+#include "PolyGLTexture.h"
+
+#include "tinyxml.h"
+
+#ifdef _WINDOWS
+#include <windows.h>
+#endif
+
+#if defined(__APPLE__) && defined(__MACH__)
+#include <OpenGL/gl.h>
+#include <OpenGL/glext.h>
+#include <OpenGL/glu.h>
+#else
+#include <GL/gl.h>
+#include <GL/glext.h>
+#endif
+
+using std::vector;
 
 using namespace Polycode;
 
@@ -73,7 +98,7 @@ GLSLShaderModule::~GLSLShaderModule() {
 
 }
 
-bool GLSLShaderModule::acceptsExtension(String extension) {
+bool GLSLShaderModule::acceptsExtension(const String& extension) {
 	if(extension == "vert" || extension == "frag") {
 		return true;
 	} else {
@@ -780,7 +805,7 @@ void GLSLShaderModule::reloadPrograms() {
 	}	
 }
 
-void GLSLShaderModule::recreateGLSLProgram(GLSLProgram *prog, String fileName, int type) {
+void GLSLShaderModule::recreateGLSLProgram(GLSLProgram *prog, const String& fileName, int type) {
 	
 	OSFILE *file = OSBasics::open(fileName, "r");
 	OSBasics::seek(file, 0, SEEK_END);	
@@ -816,14 +841,14 @@ void GLSLShaderModule::recreateGLSLProgram(GLSLProgram *prog, String fileName, i
 	
 }
 
-GLSLProgram *GLSLShaderModule::createGLSLProgram(String fileName, int type) {
+GLSLProgram *GLSLShaderModule::createGLSLProgram(const String& fileName, int type) {
 	GLSLProgram *prog = new GLSLProgram(type);	
 	recreateGLSLProgram(prog, fileName, type);	
 	programs.push_back(prog);
 	return prog;
 }
 
-Resource* GLSLShaderModule::createProgramFromFile(String extension, String fullPath) {
+Resource* GLSLShaderModule::createProgramFromFile(const String& extension, const String& fullPath) {
 	if(extension == "vert") {
 		Logger::log("Adding GLSL vertex program %s\n", fullPath.c_str());				
 		return createGLSLProgram(fullPath, GLSLProgram::TYPE_VERT);

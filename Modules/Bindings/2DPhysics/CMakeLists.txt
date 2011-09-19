@@ -18,23 +18,7 @@ SET(polycode2DPhysics_HDRS
     Include/Physics2DLUAWrappers.h
 )
 
-ADD_LIBRARY(Physics2D SHARED ${polycode2DPhysics_SRCS} ${polycode2DPhysics_HDRS})
-TARGET_LINK_LIBRARIES(Physics2D
-    Polycore
-    Polycode2DPhysics
-    ${BOX2D_LIBRARIES}
-    ${OPENGL_LIBRARIES}
-    ${OPENAL_LIBRARY}
-    ${PNG_LIBRARIES}
-    ${FREETYPE_LIBRARIES}
-    ${PHYSFS_LIBRARY}
-    ${VORBISFILE_LIBRARY}
-    ${LUA_LIBRARY})
-IF(APPLE)
-    TARGET_LINK_LIBRARIES(Physics2D "-framework Cocoa")
-    TARGET_LINK_LIBRARIES(Physics2D "-framework IOKit")
-ENDIF(APPLE)
-
+ADD_LIBRARY(Physics2D ${polycode2DPhysics_SRCS} ${polycode2DPhysics_HDRS})
 SET(CMAKE_DEBUG_POSTFIX "_d")
 
 IF(POLYCODE_INSTALL_FRAMEWORK)

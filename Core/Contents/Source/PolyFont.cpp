@@ -21,10 +21,12 @@
 */
 
 #include "PolyFont.h"
+#include "OSBasics.h"
+#include "PolyLogger.h"
 
 using namespace Polycode;
 
-Font::Font(String fileName) {
+Font::Font(const String& fileName) {
 	FT_Library FTLibrary;
 	FT_Init_FreeType(&FTLibrary);
 	
@@ -52,7 +54,7 @@ Font::Font(String fileName) {
 	}
 }
 
-bool Font::isValid() {
+bool Font::isValid() const {
 	return valid;
 }
 

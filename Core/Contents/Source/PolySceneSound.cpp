@@ -21,6 +21,9 @@ THE SOFTWARE.
 */
 
 #include "PolySceneSound.h"
+#include "PolyCoreServices.h"
+#include "PolySound.h"
+#include "PolySoundManager.h"
 
 using namespace Polycode;
 
@@ -45,7 +48,7 @@ void SceneSoundListener::Update() {
 }
 
 
-SceneSound::SceneSound(String fileName, Number referenceDistance, Number maxDistance) : SceneEntity() {
+SceneSound::SceneSound(const String& fileName, Number referenceDistance, Number maxDistance) : SceneEntity() {
 	sound = new Sound(fileName);
 	sound->setIsPositional(true);
 	sound->setPositionalProperties(referenceDistance, maxDistance);
