@@ -28,3 +28,4 @@ THE SOFTWARE.
 #include "PolyCollisionScene.h"
 #include "PolyCollisionSceneEntity.h"
 #include "PolyPhysicsScene.h"
+#include "PolyPhysicsSceneEntity.h"

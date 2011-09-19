@@ -155,8 +155,8 @@ void CocoaCore::copyStringToClipboard(const String& str) {
 	
 	//NSString *nsstr = [NSString stringWithCharacters: (unichar*) str.c_str() length: str.length()];
 	
-	char* data = (char*)str.data();
-	unsigned size = str.size() * sizeof(wchar);
+	char* data = (char*)str.c_str();
+	unsigned size = str.size() * sizeof(char);
 	
 	NSString* nsstr = [[[NSString alloc] initWithBytes:data length:size encoding:NSUTF32LittleEndianStringEncoding] autorelease];
     [pb setString: nsstr forType:NSStringPboardType];	
@@ -385,9 +385,9 @@ String CocoaCore::openFolderPicker() {
 	}	
 }
 
-vector<string> CocoaCore::openFilePicker(vector<CoreFileExtension> extensions, bool allowMultiple) {
+vector<String> CocoaCore::openFilePicker(vector<CoreFileExtension> extensions, bool allowMultiple) {
 	
-	vector<string> retVector;
+	vector<String> retVector;
 	
 	NSOpenPanel *attachmentPanel = [NSOpenPanel openPanel];	
 	[attachmentPanel setCanChooseFiles:YES];

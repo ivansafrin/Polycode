@@ -22,10 +22,9 @@ THE SOFTWARE.
 
 #pragma once
 #include "PolyGlobals.h"
+#include "PolyEvent.h"
 
 namespace Polycode {
-
-	class Event;
 
 	/**
 	* Can handle events from EventDispatcher classes.

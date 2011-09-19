@@ -23,7 +23,11 @@
 #include "PolyGLVertexBuffer.h"
 #include "PolyPolygon.h"
 
-#include "malloc.h"
+#if defined(__APPLE__) && defined(__MACH__)
+
+#else
+	#include "malloc.h"
+#endif
 
 using namespace Polycode;
 

@@ -26,6 +26,9 @@ THE SOFTWARE.
 #include "PolyRectangle.h"
 #include "PolyVector2.h"
 #include "PolyEventDispatcher.h"
+#include "PolyCoreInput.h"
+#include "PolyCoreServices.h"
+#include "PolyThreaded.h"
 
 #define CURSOR_ARROW 0
 #define CURSOR_TEXT 1
@@ -38,10 +41,7 @@ long getThreadID();
 
 namespace Polycode {
 
-	class CoreInput;
-	class CoreServices;
 	class Renderer;
-	class Threaded;
 
 	class _PolyExport CoreMutex {
 	public:

@@ -32,8 +32,9 @@
 #include "PolyGLRenderer.h"
 #include <mach/mach_time.h>
 #include <unistd.h>
-
+#include "PolyInputEvent.h"
 #include "PolyGLSLShaderModule.h"
+
 #import <Cocoa/Cocoa.h>
 
 using std::vector;
@@ -81,7 +82,7 @@ namespace Polycode {
 		void moveDiskItem(const String& itemPath, const String& destItemPath);
 		void removeDiskItem(const String& itemPath);
 		String openFolderPicker();
-		vector<string> openFilePicker(vector<CoreFileExtension> extensions, bool allowMultiple);
+		vector<String> openFilePicker(vector<CoreFileExtension> extensions, bool allowMultiple);
 		
 		void setCursor(int cursorType);
 		
