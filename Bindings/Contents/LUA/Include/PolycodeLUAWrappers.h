@@ -4146,6 +4146,13 @@ static int Polycore_Mesh_loadMesh(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_Mesh_clearMesh(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Mesh *inst = (Mesh*)lua_topointer(L, 1);
+	inst->clearMesh();
+	return 0;
+}
+
 static int Polycore_Mesh_saveToFile(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Mesh *inst = (Mesh*)lua_topointer(L, 1);
@@ -9391,6 +9398,15 @@ static int Polycore_ScreenSprite_Update(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	ScreenSprite *inst = (ScreenSprite*)lua_topointer(L, 1);
 	inst->Update();
+	return 0;
+}
+
+static int Polycore_ScreenSprite_Pause(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	ScreenSprite *inst = (ScreenSprite*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TBOOLEAN);
+	bool val = lua_toboolean(L, 2);
+	inst->Pause(val);
 	return 0;
 }
 

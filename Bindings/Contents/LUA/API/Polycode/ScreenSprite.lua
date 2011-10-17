@@ -40,6 +40,10 @@ function ScreenSprite:Update()
 	local retVal =  Polycore.ScreenSprite_Update(self.__ptr)
 end
 
+function ScreenSprite:Pause(val)
+	local retVal = Polycore.ScreenSprite_Pause(self.__ptr, val)
+end
+
 
 
 function ScreenSprite:__delete()

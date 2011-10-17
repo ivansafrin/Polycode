@@ -46,6 +46,10 @@ function Mesh:loadMesh(fileName)
 	local retVal = Polycore.Mesh_loadMesh(self.__ptr, fileName.__ptr)
 end
 
+function Mesh:clearMesh()
+	local retVal =  Polycore.Mesh_clearMesh(self.__ptr)
+end
+
 function Mesh:saveToFile(fileName)
 	local retVal = Polycore.Mesh_saveToFile(self.__ptr, fileName.__ptr)
 end

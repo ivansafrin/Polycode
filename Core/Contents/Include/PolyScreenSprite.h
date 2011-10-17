@@ -68,7 +68,11 @@ class _PolyExport ScreenSprite : public ScreenShape
 		void playAnimation(const String& name, int startFrame, bool once);
 		void Update();
 		
+		void Pause(bool val);
+		
 	protected:
+	
+		bool paused;
 	
 		Number spriteWidth;
 		Number spriteHeight;

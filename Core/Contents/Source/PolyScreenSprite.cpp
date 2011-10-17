@@ -40,6 +40,8 @@ ScreenSprite::ScreenSprite(const String& fileName, Number spriteWidth, Number sp
 	
 	currentFrame = 0;
 	currentAnimation = NULL;
+	
+	paused = false;
 }
 
 ScreenSprite::~ScreenSprite() {
@@ -72,16 +74,23 @@ void ScreenSprite::addAnimation(const String& name, const String& frames, Number
 }
 
 void ScreenSprite::playAnimation(const String& name, int startFrame, bool once) {
+	paused = false;
 	for(int i=0; i < animations.size(); i++) {
 		if(animations[i]->name == name) {
-			currentAnimation = animations[i];
+			if(currentAnimation == animations[i])
+				return;
 			currentFrame = 0;			
+			currentAnimation = animations[i];
 			if(currentFrame < currentAnimation->numFrames)
 				currentFrame = startFrame;
 			playingOnce = once;
 			lastTick = 0;
 		}
 	}
+}
+
+void ScreenSprite::Pause(bool val) {
+	paused = val;
 }
 
 void ScreenSprite::Update() {
@@ -91,6 +100,9 @@ void ScreenSprite::Update() {
 	Number newTick = CoreServices::getInstance()->getCore()->getTicksFloat();
 	
 	Number elapsed = newTick - lastTick;
+	
+	if(paused)
+		return;
 	
 	if(elapsed > currentAnimation->speed) {
 	currentFrame++;

@@ -24,6 +24,7 @@ THE SOFTWARE.
 #include "PolyGlobals.h"
 #include "PolyString.h"
 #include "PolyEventDispatcher.h"
+#include "PolyMaterialManager.h"
 #include <map>
 
 namespace Polycode {
@@ -32,7 +33,6 @@ namespace Polycode {
 	class Renderer;
 	class Config;
 	class FontManager;
-	class MaterialManager;
 	class SceneManager;
 	class ScreenManager;
 	class TimerManager;

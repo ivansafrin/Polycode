@@ -135,6 +135,12 @@ namespace Polycode {
 			* @param fileName Path to mesh file.
 			*/			
 			void loadMesh(const String& fileName);
+			
+			/**
+			* Clears mesh data.
+			*/
+			
+			void clearMesh();
 
 			/**
 			* Saves mesh to a file.

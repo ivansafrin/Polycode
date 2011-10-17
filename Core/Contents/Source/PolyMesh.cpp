@@ -59,12 +59,17 @@ namespace Polycode {
 	
 	
 	Mesh::~Mesh() {
+		clearMesh();
+	}
+	
+	void Mesh::clearMesh() {
 		for(int i=0; i < polygons.size(); i++) {	
 			delete polygons[i];
 		}
 		polygons.clear();
 		if(vertexBuffer)
 			delete vertexBuffer;
+		vertexBuffer = NULL;
 		
 		for(int i=0; i < 16; i++) {
 			if(renderDataArrays[i]) {
@@ -72,6 +77,7 @@ namespace Polycode {
 				delete renderDataArrays[i];
 			}
 		}
+	
 	}
 	
 	VertexBuffer *Mesh::getVertexBuffer() {
