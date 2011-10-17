@@ -123,7 +123,7 @@ CocoaCore::CocoaCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bo
 	} else {
 		[view clearGLContext];
 		[view setOpenGLContext:context];	
-		[context setView: view];					
+		[context setView: (NSView*)view];					
 	}
 	
 	if(fullScreen) {
@@ -309,7 +309,7 @@ void CocoaCore::setCursor(int cursorType) {
 	}
 	[glView setCurrentCursor:newCursor];
 	[glView resetCursorRects];	
-	[[glView window] invalidateCursorRectsForView: glView];
+	[[glView window] invalidateCursorRectsForView: (NSView*)glView];
 }
 
 void CocoaCore::checkEvents() {

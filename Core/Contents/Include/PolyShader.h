@@ -67,12 +67,14 @@ namespace Polycode {
 			static const int SIZE_MODE_NORMALIZED = 1;
 	};
 	
-	typedef struct {
-		String name;
-		void *data;		
-	} LocalShaderParam;	
+	class LocalShaderParam {
+		public:	
+			String name;
+			void *data;		
+	};	
 	
-	typedef struct {
+	class RenderTargetBinding {
+		public:
 			String id;
 			String name;
 			int mode;
@@ -81,7 +83,7 @@ namespace Polycode {
 			Number height;			
 			static const int MODE_IN= 0;
 			static const int MODE_OUT = 1;
-	} RenderTargetBinding;
+	};
 
 	class _PolyExport ShaderBinding {
 		public:
