@@ -75,14 +75,6 @@ Release in Visual Studio.
 
 ### Unix Makefiles ###
 
-Linux users should ensure available dependencies for their platform are
-installed before running the Polycode dependency build. 
-
-On a Debian system run:
-    sudo apt-get install zlib1g-dev libpng12-dev libfreetype6-dev
-    libphysfs-dev libogg-dev libvorbis-dev libopenal-dev libsdl1.2-dev
-    liblua5.1-0-dev
-
 To generate and build Debug and Release builds with Unix Makefiles 
 perform the following steps in the Polycode directory from a terminal:
 
@@ -133,7 +125,8 @@ This generates a Polycode Xcode project in the Build directory.
 Build the "ALL_BUILD" target in this project in both Debug and Release
 and then build the "install" target, also in Debug and Release. This
 will install Polycode into the Release/<Platform>/Framework directory,
-which should mirror the binary download from the website.
+which should mirror the binary download from the website and contain
+templates and examples that will build out of the box.
 
 ### Windows and Visual Studio ###
 
