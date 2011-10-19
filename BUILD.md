@@ -1,13 +1,10 @@
 # Building Polycode and dependencies #
 
-Polycode comes with hand maintained XCode and Visual Studio 2010 
-projects which may be found in Build subdirectories under the Bindings,
-Core, IDE, Modules, Player and Tools directories.
-
-There is also a CMake build generator for automatically downloading and
-building required 3rd party packages and Polycode itself.
-
-This document describes the CMake build system for Polycode.
+Polycode uses a CMake build generator for automatically downloading and
+building required 3rd party packages and Polycode itself. Polycode is
+setup for preferring custom static libraries over system ones, so 
+please use the dependency build system even if you have all of the
+dependencies installed on your computer.
 
 The first dependency is CMake. It can be downloaded from 
 http://cmake.org/cmake/resources/software.html or installed using apt
@@ -31,14 +28,9 @@ included in the Polycode source tree:
 * [Bullet Physics](http://bulletphysics.org/)
 * [Assimp](http://assimp.sourceforge.net/)
 
-Depending on your platform, some of these dependencies will already be
-installed on your system. For the rest, they can be automatically 
-downloaded and compiled using the CMakeLists.txt build in the 
-Dependencies directory. 
-
-The CMake dependency build will check for the existance
-of dependencies and build anything that is not already installed on your
-system.
+The CMake dependency build system will download and install static
+version of these libraries into the Polycode source tree. It will NOT
+attempt to install any of these packages into your system.
 
 All dependenices will be installed into the Polycode source tree under
     Release/<Platform>/Framework/
@@ -172,4 +164,3 @@ perform the following steps in the Polycode directory from a terminal:
 It would be good to create a CMake build template for people to create
 new Polycode applications with.
 
-Fix Mac OS X compilation and linking.
