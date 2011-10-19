@@ -51,8 +51,11 @@ the following steps in the Polycode directory from a terminal:
     
 This generates a PolycodeDependencies Xcode project in the Build 
 directory. Building this project in Xcode will download, build and 
-install the dependencies. Note that you need to build both Debug and
-Release in Xcode.
+install the dependencies (make sure you build the ALL_BUILD target).
+Note that you need to build both Debug and
+Release in Xcode 
+
+Note: Release is "Build for Archiving" in Xcode4.
 
 ### Windows and Visual Studio ###
 
@@ -105,21 +108,18 @@ system and by the above dependency build step.
 
 There are a number of CMake variables that can be used to control what is
 built. These can be passed into CMake on the comment line as -D<name>=<value> 
-or edited in the CMake GUI.
+or edited in the CMake GUI. Things should build without setting any options,
+but not that some things (Lua bindings, for example) are disabled by default.
 
 * POLYCODE_BUILD_BINDINGS 
 * POLYCODE_BUILD_EXAMPLES
 * POLYCODE_BUILD_MODULES
 * POLYCODE_BUILD_PLAYER
-* POLYCODE_BUILD_SHARED
-* POLYCODE_BUILD_STATIC
 * POLYCODE_BUILD_TOOLS
 * POLYCODE_INSTALL_FRAMEWORK
 * POLYCODE_INSTALL_PLAYER
  
 ### Mac OS X and Xcode ###
-
-**Note: the Mac CMake build does not compile and link yet.**
 
 To generate an Xcode project for building Polycode, perform the
 following steps in the Polycode directory from a terminal:
@@ -129,6 +129,11 @@ following steps in the Polycode directory from a terminal:
     cmake -G Xcode ..
 
 This generates a Polycode Xcode project in the Build directory.
+
+Build the "ALL_BUILD" target in this project in both Debug and Release
+and then build the "install" target, also in Debug and Release. This
+will install Polycode into the Release/<Platform>/Framework directory,
+which should mirror the binary download from the website.
 
 ### Windows and Visual Studio ###
 
