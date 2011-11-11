@@ -19,17 +19,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#include "PolycodeCocoaPlayer.h"
+
+#import <Cocoa/Cocoa.h>
 
 
-CocoaPolycodePlayer::CocoaPolycodePlayer(PolycodeView *view, String fileName, bool knownArchive) : PolycodePlayer(fileName, knownArchive) {
-	this->view = view;
+@interface PPlayerDocumentController : NSDocumentController {
+
 }
 
-CocoaPolycodePlayer::~CocoaPolycodePlayer() {
-	
-}
-
-void CocoaPolycodePlayer::createCore() {
-	core =  new CocoaCore(view, xRes, yRes,  fullScreen, false, 0, aaLevel, frameRate);	
-}
+@end

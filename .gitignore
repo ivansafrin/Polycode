@@ -36,6 +36,7 @@
 *.xcuserdata
 *.orig
 
+/Player/Build
 /Standalone/Build
 /Dependencies/Build
 /Dependencies/Downloads
@@ -43,7 +44,6 @@
 /IDE/Build/Mac\ OS\ X/build
 /Modules/Build/Mac\ OS\ X/build
 /Tools/Build/Mac\ OS\ X/build
-/Player/Build/Mac\ OS\ X/build
 /Bindings/Build/Mac\ OS\ X/build
 /Core/Dependencies
 /Modules/Dependencies
