@@ -28,6 +28,7 @@ THE SOFTWARE.
 #include "Polycode.h"
 #include "PolycodeLUA.h"
 #include "PolyGLSLShaderModule.h"
+#include "OSBasics.h"
 
 extern "C" {	
 #include <stdio.h>

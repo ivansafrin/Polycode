@@ -34,8 +34,12 @@
 *.xcuserstate
 *.xcworkspace
 *.xcuserdata
+*.xcuserdatad
 *.orig
+UserInterfaceState.*
+Player/Build/Mac OS X/Polycode Player.xcodeproj/project.xcworkspace/xcuserdata/ivansafrin.xcuserdatad/UserInterfaceState.xcuserstate
 
+/Player/Build
 /Standalone/Build
 /Dependencies/Build
 /Dependencies/Downloads
@@ -43,7 +47,6 @@
 /IDE/Build/Mac\ OS\ X/build
 /Modules/Build/Mac\ OS\ X/build
 /Tools/Build/Mac\ OS\ X/build
-/Player/Build/Mac\ OS\ X/build
 /Bindings/Build/Mac\ OS\ X/build
 /Core/Dependencies
 /Modules/Dependencies
@@ -76,3 +79,7 @@ ehthumbs.db
 Thumbs.db
 
 Core/Build/Mac OS X/PolyCore.xcodeproj/project.xcworkspace/xcuserdata/ivansafrin.xcuserdatad/UserInterfaceState.xcuserstate
+
+Player/Build/Mac OS X/Polycode Player.xcodeproj/project.xcworkspace/xcuserdata/ivansafrin.xcuserdatad/UserInterfaceState.xcuserstate
+
+Player/Build/Mac OS X/Polycode Player.xcodeproj/project.xcworkspace/xcuserdata/ivansafrin.xcuserdatad/UserInterfaceState.xcuserstate

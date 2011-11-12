@@ -21,6 +21,7 @@ THE SOFTWARE.
 */
 
 #include "PolycodePlayer.h"
+#include <string>
 
 extern "C" {	
 //	extern int luaopen_Tau(lua_State* L); // declare the wrapped module
@@ -31,7 +32,7 @@ extern "C" {
 		std::string module = lua_tostring(pState, 1);
 		module += ".lua";
 		
-		string defaultPath = "API/";
+		std::string defaultPath = "API/";
 		defaultPath.append(module);
 		
 		const char* fullPath = module.c_str();		
@@ -66,9 +67,9 @@ extern "C" {
 		const char *msg = lua_tostring(L, 1);
 		PolycodeDebugEvent *event = new PolycodeDebugEvent();			
 		if(msg)
-			event->errorString = string(msg);
+			event->errorString = std::string(msg);
 		else
-			event->errorString = string("<invalid string>");
+			event->errorString = std::string("<invalid string>");
 		
 		Logger::log(">> %s\n", event->errorString.c_str());
 		PolycodePlayer *player = (PolycodePlayer*)CoreServices::getInstance()->getCore()->getUserPointer();
@@ -86,14 +87,14 @@ extern "C" {
 			Logger::log("status=%d, %s\n", status, msg);
 			lua_pop(L, 1);
 			
-			vector<String> info = String(msg).split(":");
+			std::vector<String> info = String(msg).split(":");
 			
 			PolycodeDebugEvent *event = new PolycodeDebugEvent();			
 			if(info.size() > 2) {
 				event->errorString = info[2];
 				event->lineNumber = atoi(info[1].c_str());
 			} else {
-				event->errorString = string(msg);
+				event->errorString = std::string(msg);
 				event->lineNumber = 0;
 			}
 			dispatchEvent(event, PolycodeDebugEvent::EVENT_ERROR);
@@ -314,7 +315,7 @@ void PolycodePlayer::loadFile(const char *fileName) {
 		ResourceManager *rman = CoreServices::getInstance()->getResourceManager();
 		
 		String fileDir = "";
-		vector<String> bits = String(fileName).split("/");
+		std::vector<String> bits = String(fileName).split("/");
 		for(int i=0; i <	 bits.size()-1; i++) {
 			fileDir += "/"+bits[i];
 		}
@@ -439,7 +440,7 @@ void PolycodePlayer::loadFile(const char *fileName) {
 	
 	core->setUserPointer(this);
 	//core->addEventListener(this, Core::EVENT_CORE_RESIZE);
-	core->setVideoMode(xRes, yRes, fullScreen, aaLevel);
+	core->setVideoMode(xRes, yRes, fullScreen, false, 0, aaLevel);
 		
 	CoreServices::getInstance()->getResourceManager()->addArchive("default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
