@@ -41,7 +41,7 @@ long getThreadID() {
 	return (long)pthread_self();
 }
 
-SDLCore::SDLCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate) : Core(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate) {
+SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate) : Core(_xRes, _yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate) {
 
 	String *windowTitle = (String*)view->windowData;
 
