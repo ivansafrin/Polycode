@@ -184,6 +184,10 @@ function CoreServices:getConfig()
 	end
 end
 
+function CoreServices:getScreenInfo(width, height, hz)
+	local retVal = Polycore.CoreServices_getScreenInfo(self.__ptr, width.__ptr, height.__ptr, hz.__ptr)
+end
+
 
 
 function CoreServices:__delete()

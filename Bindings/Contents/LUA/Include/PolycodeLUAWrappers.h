@@ -1770,6 +1770,19 @@ static int Polycore_CoreServices_getConfig(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_CoreServices_getScreenInfo(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	CoreServices *inst = (CoreServices*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	int * width = (int *)lua_topointer(L, 2);
+	luaL_checktype(L, 3, LUA_TLIGHTUSERDATA);
+	int * height = (int *)lua_topointer(L, 3);
+	luaL_checktype(L, 4, LUA_TLIGHTUSERDATA);
+	int * hz = (int *)lua_topointer(L, 4);
+	inst->getScreenInfo(width, height, hz);
+	return 0;
+}
+
 static int Polycore_delete_CoreServices(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	CoreServices *inst = (CoreServices*)lua_topointer(L, 1);

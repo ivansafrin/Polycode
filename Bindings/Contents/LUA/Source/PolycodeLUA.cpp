@@ -181,6 +181,7 @@ int luaopen_Polycode(lua_State *L) {
 		{"CoreServices_getSoundManager", Polycore_CoreServices_getSoundManager},
 		{"CoreServices_getFontManager", Polycore_CoreServices_getFontManager},
 		{"CoreServices_getConfig", Polycore_CoreServices_getConfig},
+		{"CoreServices_getScreenInfo", Polycore_CoreServices_getScreenInfo},
 		{"delete_CoreServices", Polycore_delete_CoreServices},
 		{"Cubemap", Polycore_Cubemap},
 		{"delete_Cubemap", Polycore_delete_Cubemap},
