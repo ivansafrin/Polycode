@@ -160,11 +160,11 @@ function Quaternion:fromAxes(az, ay, ax)
 end
 
 function Quaternion:FromAngleAxis(rfAngle, rkAxis)
-	local retVal = Polycore.Quaternion_FromAngleAxis(self.__ptr, rfAngle.__ptr, rkAxis.__ptr)
+	local retVal = Polycore.Quaternion_FromAngleAxis(self.__ptr, rfAngle, rkAxis.__ptr)
 end
 
 function Quaternion:ToAngleAxis(rfAngle, rkAxis)
-	local retVal = Polycore.Quaternion_ToAngleAxis(self.__ptr, rfAngle.__ptr, rkAxis.__ptr)
+	local retVal = Polycore.Quaternion_ToAngleAxis(self.__ptr, rfAngle, rkAxis.__ptr)
 end
 
 function Quaternion:createFromAxisAngle(x, y, z, degrees)

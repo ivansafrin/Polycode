@@ -21,15 +21,15 @@ function Config:Config(...)
 end
 
 function Config:loadConfig(configNamespace, fileName)
-	local retVal = Polycore.Config_loadConfig(self.__ptr, configNamespace.__ptr, fileName.__ptr)
+	local retVal = Polycore.Config_loadConfig(self.__ptr, configNamespace, fileName)
 end
 
 function Config:saveConfig(configNamespace, fileName)
-	local retVal = Polycore.Config_saveConfig(self.__ptr, configNamespace.__ptr, fileName.__ptr)
+	local retVal = Polycore.Config_saveConfig(self.__ptr, configNamespace, fileName)
 end
 
 function Config:getEntry(configNamespace, key)
-	local retVal = Polycore.Config_getEntry(self.__ptr, configNamespace.__ptr, key.__ptr)
+	local retVal = Polycore.Config_getEntry(self.__ptr, configNamespace, key)
 	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
@@ -41,20 +41,20 @@ function Config:getEntry(configNamespace, key)
 end
 
 function Config:setStringValue(configNamespace, key, value)
-	local retVal = Polycore.Config_setStringValue(self.__ptr, configNamespace.__ptr, key.__ptr, value.__ptr)
+	local retVal = Polycore.Config_setStringValue(self.__ptr, configNamespace, key, value)
 end
 
 function Config:setNumericValue(configNamespace, key, value)
-	local retVal = Polycore.Config_setNumericValue(self.__ptr, configNamespace.__ptr, key.__ptr, value)
+	local retVal = Polycore.Config_setNumericValue(self.__ptr, configNamespace, key, value)
 end
 
 function Config:getNumericValue(configNamespace, key)
-	local retVal = Polycore.Config_getNumericValue(self.__ptr, configNamespace.__ptr, key.__ptr)
+	local retVal = Polycore.Config_getNumericValue(self.__ptr, configNamespace, key)
 	return retVal
 end
 
 function Config:getStringValue(configNamespace, key)
-	local retVal = Polycore.Config_getStringValue(self.__ptr, configNamespace.__ptr, key.__ptr)
+	local retVal = Polycore.Config_getStringValue(self.__ptr, configNamespace, key)
 	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]

@@ -125,7 +125,7 @@ function Material:getShaderBinding(index)
 end
 
 function Material:loadMaterial(fileName)
-	local retVal = Polycore.Material_loadMaterial(self.__ptr, fileName.__ptr)
+	local retVal = Polycore.Material_loadMaterial(self.__ptr, fileName)
 end
 
 

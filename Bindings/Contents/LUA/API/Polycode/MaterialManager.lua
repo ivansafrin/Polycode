@@ -73,7 +73,7 @@ function MaterialManager:createTextureFromImage(image, clamp)
 end
 
 function MaterialManager:createTextureFromFile(fileName, clamp)
-	local retVal = Polycore.MaterialManager_createTextureFromFile(self.__ptr, fileName.__ptr, clamp)
+	local retVal = Polycore.MaterialManager_createTextureFromFile(self.__ptr, fileName, clamp)
 	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
@@ -105,7 +105,7 @@ function MaterialManager:addShaderModule(module)
 end
 
 function MaterialManager:getTextureByResourcePath(resourcePath)
-	local retVal = Polycore.MaterialManager_getTextureByResourcePath(self.__ptr, resourcePath.__ptr)
+	local retVal = Polycore.MaterialManager_getTextureByResourcePath(self.__ptr, resourcePath)
 	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]

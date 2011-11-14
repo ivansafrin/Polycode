@@ -7,7 +7,7 @@ class "OSBasics"
 
 
 function OSBasics:open(filename, opts)
-	local retVal = Polycore.OSBasics_open(filename.__ptr, opts.__ptr)
+	local retVal = Polycore.OSBasics_open(filename, opts)
 	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
@@ -44,16 +44,16 @@ function OSBasics:tell(stream)
 end
 
 function OSBasics:isFolder(pathString)
-	local retVal = Polycore.OSBasics_isFolder(pathString.__ptr)
+	local retVal = Polycore.OSBasics_isFolder(pathString)
 	return retVal
 end
 
 function OSBasics:createFolder(pathString)
-	local retVal = Polycore.OSBasics_createFolder(pathString.__ptr)
+	local retVal = Polycore.OSBasics_createFolder(pathString)
 end
 
 function OSBasics:removeItem(pathString)
-	local retVal = Polycore.OSBasics_removeItem(pathString.__ptr)
+	local retVal = Polycore.OSBasics_removeItem(pathString)
 end
 
 

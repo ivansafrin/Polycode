@@ -44,11 +44,11 @@ function Resource:getResourceType()
 end
 
 function Resource:setResourceName(newName)
-	local retVal = Polycore.Resource_setResourceName(self.__ptr, newName.__ptr)
+	local retVal = Polycore.Resource_setResourceName(self.__ptr, newName)
 end
 
 function Resource:setResourcePath(path)
-	local retVal = Polycore.Resource_setResourcePath(self.__ptr, path.__ptr)
+	local retVal = Polycore.Resource_setResourcePath(self.__ptr, path)
 end
 
 function Resource:getResourcePath()

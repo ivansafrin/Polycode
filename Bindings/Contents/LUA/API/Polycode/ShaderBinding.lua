@@ -21,19 +21,19 @@ function ShaderBinding:ShaderBinding(...)
 end
 
 function ShaderBinding:clearTexture(name)
-	local retVal = Polycore.ShaderBinding_clearTexture(self.__ptr, name.__ptr)
+	local retVal = Polycore.ShaderBinding_clearTexture(self.__ptr, name)
 end
 
 function ShaderBinding:addTexture(name, texture)
-	local retVal = Polycore.ShaderBinding_addTexture(self.__ptr, name.__ptr, texture.__ptr)
+	local retVal = Polycore.ShaderBinding_addTexture(self.__ptr, name, texture.__ptr)
 end
 
 function ShaderBinding:addParam(type, name, value)
-	local retVal = Polycore.ShaderBinding_addParam(self.__ptr, type.__ptr, name.__ptr, value.__ptr)
+	local retVal = Polycore.ShaderBinding_addParam(self.__ptr, type, name, value)
 end
 
 function ShaderBinding:addCubemap(name, cubemap)
-	local retVal = Polycore.ShaderBinding_addCubemap(self.__ptr, name.__ptr, cubemap.__ptr)
+	local retVal = Polycore.ShaderBinding_addCubemap(self.__ptr, name, cubemap.__ptr)
 end
 
 function ShaderBinding:getNumLocalParams()
@@ -54,7 +54,7 @@ function ShaderBinding:getLocalParam(index)
 end
 
 function ShaderBinding:getLocalParamByName(name)
-	local retVal = Polycore.ShaderBinding_getLocalParamByName(self.__ptr, name.__ptr)
+	local retVal = Polycore.ShaderBinding_getLocalParamByName(self.__ptr, name)
 	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
@@ -121,7 +121,7 @@ function ShaderBinding:getOutTargetBinding(index)
 end
 
 function ShaderBinding:addLocalParam(name, ptr)
-	local retVal = Polycore.ShaderBinding_addLocalParam(self.__ptr, name.__ptr, ptr.__ptr)
+	local retVal = Polycore.ShaderBinding_addLocalParam(self.__ptr, name, ptr.__ptr)
 end
 
 

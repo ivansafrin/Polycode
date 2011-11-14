@@ -29,11 +29,11 @@ function ScreenSprite:ScreenSprite(...)
 end
 
 function ScreenSprite:addAnimation(name, frames, speed)
-	local retVal = Polycore.ScreenSprite_addAnimation(self.__ptr, name.__ptr, frames.__ptr, speed)
+	local retVal = Polycore.ScreenSprite_addAnimation(self.__ptr, name, frames, speed)
 end
 
 function ScreenSprite:playAnimation(name, startFrame, once)
-	local retVal = Polycore.ScreenSprite_playAnimation(self.__ptr, name.__ptr, startFrame, once)
+	local retVal = Polycore.ScreenSprite_playAnimation(self.__ptr, name, startFrame, once)
 end
 
 function ScreenSprite:Update()

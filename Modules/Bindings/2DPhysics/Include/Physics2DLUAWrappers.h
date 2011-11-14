@@ -35,7 +35,7 @@ static int Physics2D_PhysicsScreen_addPhysicsChild(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScreen *inst = (PhysicsScreen*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	ScreenEntity * newEntity = (ScreenEntity *)lua_topointer(L, 2);
+	ScreenEntity* newEntity = (ScreenEntity*)lua_topointer(L, 2);
 	luaL_checktype(L, 3, LUA_TNUMBER);
 	int entType = lua_tointeger(L, 3);
 	luaL_checktype(L, 4, LUA_TBOOLEAN);
@@ -83,7 +83,7 @@ static int Physics2D_PhysicsScreen_removePhysicsChild(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScreen *inst = (PhysicsScreen*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	PhysicsScreenEntity * entityToRemove = (PhysicsScreenEntity *)lua_topointer(L, 2);
+	PhysicsScreenEntity* entityToRemove = (PhysicsScreenEntity*)lua_topointer(L, 2);
 	inst->removePhysicsChild(entityToRemove);
 	return 0;
 }
@@ -92,7 +92,7 @@ static int Physics2D_PhysicsScreen_addCollisionChild(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScreen *inst = (PhysicsScreen*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	ScreenEntity * newEntity = (ScreenEntity *)lua_topointer(L, 2);
+	ScreenEntity* newEntity = (ScreenEntity*)lua_topointer(L, 2);
 	luaL_checktype(L, 3, LUA_TNUMBER);
 	int entType = lua_tointeger(L, 3);
 	void *ptrRetVal = (void*)inst->addCollisionChild(newEntity, entType);
@@ -108,7 +108,7 @@ static int Physics2D_PhysicsScreen_destroyJoint(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScreen *inst = (PhysicsScreen*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	PhysicsJoint * joint = (PhysicsJoint *)lua_topointer(L, 2);
+	PhysicsJoint* joint = (PhysicsJoint*)lua_topointer(L, 2);
 	inst->destroyJoint(joint);
 	return 0;
 }
@@ -117,9 +117,9 @@ static int Physics2D_PhysicsScreen_createDistanceJoint(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScreen *inst = (PhysicsScreen*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	ScreenEntity * ent1 = (ScreenEntity *)lua_topointer(L, 2);
+	ScreenEntity* ent1 = (ScreenEntity*)lua_topointer(L, 2);
 	luaL_checktype(L, 3, LUA_TLIGHTUSERDATA);
-	ScreenEntity * ent2 = (ScreenEntity *)lua_topointer(L, 3);
+	ScreenEntity* ent2 = (ScreenEntity*)lua_topointer(L, 3);
 	luaL_checktype(L, 4, LUA_TBOOLEAN);
 	bool collideConnected = lua_toboolean(L, 4);
 	void *ptrRetVal = (void*)inst->createDistanceJoint(ent1, ent2, collideConnected);
@@ -135,9 +135,9 @@ static int Physics2D_PhysicsScreen_createPrismaticJoint(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScreen *inst = (PhysicsScreen*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	ScreenEntity * ent1 = (ScreenEntity *)lua_topointer(L, 2);
+	ScreenEntity* ent1 = (ScreenEntity*)lua_topointer(L, 2);
 	luaL_checktype(L, 3, LUA_TLIGHTUSERDATA);
-	ScreenEntity * ent2 = (ScreenEntity *)lua_topointer(L, 3);
+	ScreenEntity* ent2 = (ScreenEntity*)lua_topointer(L, 3);
 	luaL_checktype(L, 4, LUA_TLIGHTUSERDATA);
 	Vector2 worldAxis = *(Vector2*)lua_topointer(L, 4);
 	luaL_checktype(L, 5, LUA_TNUMBER);
@@ -199,9 +199,9 @@ static int Physics2D_PhysicsScreen_createRevoluteJoint(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScreen *inst = (PhysicsScreen*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	ScreenEntity * ent1 = (ScreenEntity *)lua_topointer(L, 2);
+	ScreenEntity* ent1 = (ScreenEntity*)lua_topointer(L, 2);
 	luaL_checktype(L, 3, LUA_TLIGHTUSERDATA);
-	ScreenEntity * ent2 = (ScreenEntity *)lua_topointer(L, 3);
+	ScreenEntity* ent2 = (ScreenEntity*)lua_topointer(L, 3);
 	luaL_checktype(L, 4, LUA_TNUMBER);
 	Number ax = lua_tonumber(L, 4);
 	luaL_checktype(L, 5, LUA_TNUMBER);
@@ -261,7 +261,7 @@ static int Physics2D_PhysicsScreen_applyForce(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScreen *inst = (PhysicsScreen*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	ScreenEntity * ent = (ScreenEntity *)lua_topointer(L, 2);
+	ScreenEntity* ent = (ScreenEntity*)lua_topointer(L, 2);
 	luaL_checktype(L, 3, LUA_TNUMBER);
 	Number fx = lua_tonumber(L, 3);
 	luaL_checktype(L, 4, LUA_TNUMBER);
@@ -274,7 +274,7 @@ static int Physics2D_PhysicsScreen_applyImpulse(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScreen *inst = (PhysicsScreen*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	ScreenEntity * ent = (ScreenEntity *)lua_topointer(L, 2);
+	ScreenEntity* ent = (ScreenEntity*)lua_topointer(L, 2);
 	luaL_checktype(L, 3, LUA_TNUMBER);
 	Number fx = lua_tonumber(L, 3);
 	luaL_checktype(L, 4, LUA_TNUMBER);
@@ -296,7 +296,7 @@ static int Physics2D_PhysicsScreen_setTransform(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScreen *inst = (PhysicsScreen*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	ScreenEntity * ent = (ScreenEntity *)lua_topointer(L, 2);
+	ScreenEntity* ent = (ScreenEntity*)lua_topointer(L, 2);
 	luaL_checktype(L, 3, LUA_TLIGHTUSERDATA);
 	Vector2 pos = *(Vector2*)lua_topointer(L, 3);
 	luaL_checktype(L, 4, LUA_TNUMBER);
@@ -309,7 +309,7 @@ static int Physics2D_PhysicsScreen_getPhysicsEntityByShape(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScreen *inst = (PhysicsScreen*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	b2Shape * shape = (b2Shape *)lua_topointer(L, 2);
+	b2Shape* shape = (b2Shape*)lua_topointer(L, 2);
 	void *ptrRetVal = (void*)inst->getPhysicsEntityByShape(shape);
 	if(ptrRetVal == NULL) {
 		lua_pushnil(L);
@@ -323,7 +323,7 @@ static int Physics2D_PhysicsScreen_getPhysicsEntityByFixture(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScreen *inst = (PhysicsScreen*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	b2Fixture * fixture = (b2Fixture *)lua_topointer(L, 2);
+	b2Fixture* fixture = (b2Fixture*)lua_topointer(L, 2);
 	void *ptrRetVal = (void*)inst->getPhysicsEntityByFixture(fixture);
 	if(ptrRetVal == NULL) {
 		lua_pushnil(L);
@@ -337,7 +337,7 @@ static int Physics2D_PhysicsScreen_setVelocity(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScreen *inst = (PhysicsScreen*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	ScreenEntity * ent = (ScreenEntity *)lua_topointer(L, 2);
+	ScreenEntity* ent = (ScreenEntity*)lua_topointer(L, 2);
 	luaL_checktype(L, 3, LUA_TNUMBER);
 	Number fx = lua_tonumber(L, 3);
 	luaL_checktype(L, 4, LUA_TNUMBER);
@@ -350,7 +350,7 @@ static int Physics2D_PhysicsScreen_setVelocityX(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScreen *inst = (PhysicsScreen*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	ScreenEntity * ent = (ScreenEntity *)lua_topointer(L, 2);
+	ScreenEntity* ent = (ScreenEntity*)lua_topointer(L, 2);
 	luaL_checktype(L, 3, LUA_TNUMBER);
 	Number fx = lua_tonumber(L, 3);
 	inst->setVelocityX(ent, fx);
@@ -361,7 +361,7 @@ static int Physics2D_PhysicsScreen_setVelocityY(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScreen *inst = (PhysicsScreen*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	ScreenEntity * ent = (ScreenEntity *)lua_topointer(L, 2);
+	ScreenEntity* ent = (ScreenEntity*)lua_topointer(L, 2);
 	luaL_checktype(L, 3, LUA_TNUMBER);
 	Number fy = lua_tonumber(L, 3);
 	inst->setVelocityY(ent, fy);
@@ -372,7 +372,7 @@ static int Physics2D_PhysicsScreen_setSpin(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScreen *inst = (PhysicsScreen*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	ScreenEntity * ent = (ScreenEntity *)lua_topointer(L, 2);
+	ScreenEntity* ent = (ScreenEntity*)lua_topointer(L, 2);
 	luaL_checktype(L, 3, LUA_TNUMBER);
 	Number spin = lua_tonumber(L, 3);
 	inst->setSpin(ent, spin);
@@ -383,7 +383,7 @@ static int Physics2D_PhysicsScreen_getVelocity(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScreen *inst = (PhysicsScreen*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	ScreenEntity * ent = (ScreenEntity *)lua_topointer(L, 2);
+	ScreenEntity* ent = (ScreenEntity*)lua_topointer(L, 2);
 	Vector2 *retInst = new Vector2();
 	*retInst = inst->getVelocity(ent);
 	lua_pushlightuserdata(L, retInst);
@@ -394,7 +394,7 @@ static int Physics2D_PhysicsScreen_BeginContact(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScreen *inst = (PhysicsScreen*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	b2Contact * contact = (b2Contact *)lua_topointer(L, 2);
+	b2Contact* contact = (b2Contact*)lua_topointer(L, 2);
 	inst->BeginContact(contact);
 	return 0;
 }
@@ -403,7 +403,7 @@ static int Physics2D_PhysicsScreen_EndContact(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScreen *inst = (PhysicsScreen*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	b2Contact * contact = (b2Contact *)lua_topointer(L, 2);
+	b2Contact* contact = (b2Contact*)lua_topointer(L, 2);
 	inst->EndContact(contact);
 	return 0;
 }
@@ -412,9 +412,9 @@ static int Physics2D_PhysicsScreen_PostSolve(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScreen *inst = (PhysicsScreen*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	b2Contact * contact = (b2Contact *)lua_topointer(L, 2);
+	b2Contact* contact = (b2Contact*)lua_topointer(L, 2);
 	luaL_checktype(L, 3, LUA_TLIGHTUSERDATA);
-	const b2ContactImpulse * impulse = (const b2ContactImpulse *)lua_topointer(L, 3);
+	b2ContactImpulse* impulse = (b2ContactImpulse*)lua_topointer(L, 3);
 	inst->PostSolve(contact, impulse);
 	return 0;
 }
@@ -423,7 +423,7 @@ static int Physics2D_PhysicsScreen_wakeUp(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScreen *inst = (PhysicsScreen*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	ScreenEntity * ent = (ScreenEntity *)lua_topointer(L, 2);
+	ScreenEntity* ent = (ScreenEntity*)lua_topointer(L, 2);
 	inst->wakeUp(ent);
 	return 0;
 }
@@ -448,7 +448,7 @@ static int Physics2D_PhysicsScreen_testEntityAtPosition(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScreen *inst = (PhysicsScreen*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	ScreenEntity * ent = (ScreenEntity *)lua_topointer(L, 2);
+	ScreenEntity* ent = (ScreenEntity*)lua_topointer(L, 2);
 	luaL_checktype(L, 3, LUA_TNUMBER);
 	Number x = lua_tonumber(L, 3);
 	luaL_checktype(L, 4, LUA_TNUMBER);
@@ -468,7 +468,7 @@ static int Physics2D_PhysicsScreen_getPhysicsByScreenEntity(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScreen *inst = (PhysicsScreen*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	ScreenEntity * ent = (ScreenEntity *)lua_topointer(L, 2);
+	ScreenEntity* ent = (ScreenEntity*)lua_topointer(L, 2);
 	void *ptrRetVal = (void*)inst->getPhysicsByScreenEntity(ent);
 	if(ptrRetVal == NULL) {
 		lua_pushnil(L);
@@ -482,7 +482,7 @@ static int Physics2D_PhysicsScreen_destroyMouseJoint(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScreen *inst = (PhysicsScreen*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	b2MouseJoint * mJoint = (b2MouseJoint *)lua_topointer(L, 2);
+	b2MouseJoint* mJoint = (b2MouseJoint*)lua_topointer(L, 2);
 	inst->destroyMouseJoint(mJoint);
 	return 0;
 }
@@ -612,9 +612,9 @@ static int Physics2D_PhysicsScreenEntity_set_collisionOnly(lua_State *L) {
 
 static int Physics2D_PhysicsScreenEntity(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
-	ScreenEntity * entity = (ScreenEntity *)lua_topointer(L, 1);
+	ScreenEntity* entity = (ScreenEntity*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	b2World * world = (b2World *)lua_topointer(L, 2);
+	b2World* world = (b2World*)lua_topointer(L, 2);
 	luaL_checktype(L, 3, LUA_TNUMBER);
 	Number worldScale = lua_tonumber(L, 3);
 	luaL_checktype(L, 4, LUA_TNUMBER);

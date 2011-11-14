@@ -57,7 +57,7 @@ function Sound:setPositionalProperties(referenceDistance, maxDistance)
 end
 
 function Sound:loadWAV(fileName)
-	local retVal = Polycore.Sound_loadWAV(self.__ptr, fileName.__ptr)
+	local retVal = Polycore.Sound_loadWAV(self.__ptr, fileName)
 	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
@@ -69,7 +69,7 @@ function Sound:loadWAV(fileName)
 end
 
 function Sound:loadOGG(fileName)
-	local retVal = Polycore.Sound_loadOGG(self.__ptr, fileName.__ptr)
+	local retVal = Polycore.Sound_loadOGG(self.__ptr, fileName)
 	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
@@ -93,15 +93,15 @@ function Sound:GenSource(buffer)
 end
 
 function Sound:checkALError(operation)
-	local retVal = Polycore.Sound_checkALError(self.__ptr, operation.__ptr)
+	local retVal = Polycore.Sound_checkALError(self.__ptr, operation)
 end
 
 function Sound:soundError(err)
-	local retVal = Polycore.Sound_soundError(self.__ptr, err.__ptr)
+	local retVal = Polycore.Sound_soundError(self.__ptr, err)
 end
 
 function Sound:soundCheck(result, err)
-	local retVal = Polycore.Sound_soundCheck(self.__ptr, result, err.__ptr)
+	local retVal = Polycore.Sound_soundCheck(self.__ptr, result, err)
 end
 
 

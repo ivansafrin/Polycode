@@ -47,7 +47,7 @@ function Core:createMutex()
 end
 
 function Core:copyStringToClipboard(str)
-	local retVal = Polycore.Core_copyStringToClipboard(self.__ptr, str.__ptr)
+	local retVal = Polycore.Core_copyStringToClipboard(self.__ptr, str)
 end
 
 function Core:getClipboardString()
@@ -121,19 +121,19 @@ function Core:getNumVideoModes()
 end
 
 function Core:createFolder(folderPath)
-	local retVal = Polycore.Core_createFolder(self.__ptr, folderPath.__ptr)
+	local retVal = Polycore.Core_createFolder(self.__ptr, folderPath)
 end
 
 function Core:copyDiskItem(itemPath, destItemPath)
-	local retVal = Polycore.Core_copyDiskItem(self.__ptr, itemPath.__ptr, destItemPath.__ptr)
+	local retVal = Polycore.Core_copyDiskItem(self.__ptr, itemPath, destItemPath)
 end
 
 function Core:moveDiskItem(itemPath, destItemPath)
-	local retVal = Polycore.Core_moveDiskItem(self.__ptr, itemPath.__ptr, destItemPath.__ptr)
+	local retVal = Polycore.Core_moveDiskItem(self.__ptr, itemPath, destItemPath)
 end
 
 function Core:removeDiskItem(itemPath)
-	local retVal = Polycore.Core_removeDiskItem(self.__ptr, itemPath.__ptr)
+	local retVal = Polycore.Core_removeDiskItem(self.__ptr, itemPath)
 end
 
 function Core:openFolderPicker()

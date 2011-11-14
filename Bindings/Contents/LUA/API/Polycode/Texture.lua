@@ -57,7 +57,7 @@ function Texture:updateScroll(elapsed)
 end
 
 function Texture:setResourcePath(newPath)
-	local retVal = Polycore.Texture_setResourcePath(self.__ptr, newPath.__ptr)
+	local retVal = Polycore.Texture_setResourcePath(self.__ptr, newPath)
 end
 
 function Texture:getResourcePath()

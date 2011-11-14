@@ -31,7 +31,7 @@ function Label:Label(...)
 end
 
 function Label:setText(text)
-	local retVal = Polycore.Label_setText(self.__ptr, text.__ptr)
+	local retVal = Polycore.Label_setText(self.__ptr, text)
 end
 
 function Label:getText()
@@ -47,12 +47,12 @@ function Label:getText()
 end
 
 function Label:getTextWidth(font, text, size)
-	local retVal = Polycore.Label_getTextWidth(self.__ptr, font.__ptr, text.__ptr, size)
+	local retVal = Polycore.Label_getTextWidth(self.__ptr, font.__ptr, text, size)
 	return retVal
 end
 
 function Label:getTextHeight(font, text, size)
-	local retVal = Polycore.Label_getTextHeight(self.__ptr, font.__ptr, text.__ptr, size)
+	local retVal = Polycore.Label_getTextHeight(self.__ptr, font.__ptr, text, size)
 	return retVal
 end
 

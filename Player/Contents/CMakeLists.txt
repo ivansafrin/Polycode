@@ -4,6 +4,7 @@ INCLUDE_DIRECTORIES(
     ${LUA_INCLUDE_DIR}
     ${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/Include
     Include
+    ../../Core/Contents/PolycodeView/Mac\ OS\ X/
 )
 
 SET(CMAKE_DEBUG_POSTFIX "_d")
@@ -55,12 +56,14 @@ ELSEIF(APPLE)
         Platform/Darwin/main.m
         Platform/Darwin/MyDocument.mm
         Platform/Darwin/PPlayerDocumentController.mm
+	../../Core/Contents/PolycodeView/Mac\ OS\ X/PolycodeView.mm
     )
     SET(polycodeplayer_HDRS 
         Include/PolycodePlayer.h
         Include/PolycodeCocoaPlayer.h
         Platform/Darwin/MyDocument.h
         Platform/Darwin/PPlayerDocumentController.h
+	../../Core/Contents/PolycodeView/Mac\ OS\ X/PolycodeView.h
     )
   
     SET(polycodeplayerstandalone_SRCS 
@@ -68,11 +71,13 @@ ELSEIF(APPLE)
         Source/PolycodeCocoaPlayer.mm
         Platform/Darwin/Standalone/main.m
         Platform/Darwin/Standalone/StandalonePlayerAppDelegate.mm
+	../../Core/Contents/PolycodeView/Mac\ OS\ X/PolycodeView.mm
     )
     SET(polycodeplayerstandalone_HDRS 
         Include/PolycodePlayer.h
         Include/PolycodeCocoaPlayer.h
         Platform/Darwin/Standalone/StandalonePlayerAppDelegate.h
+	../../Core/Contents/PolycodeView/Mac\ OS\ X/PolycodeView.h
     )
   
     INCLUDE_DIRECTORIES(Include)

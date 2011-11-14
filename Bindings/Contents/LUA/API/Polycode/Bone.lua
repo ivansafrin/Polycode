@@ -68,7 +68,7 @@ function Bone:Bone(...)
 end
 
 function Bone:enableBoneLabel(labelFont, size, scale, labelColor)
-	local retVal = Polycore.Bone_enableBoneLabel(self.__ptr, labelFont.__ptr, size, scale, labelColor.__ptr)
+	local retVal = Polycore.Bone_enableBoneLabel(self.__ptr, labelFont, size, scale, labelColor.__ptr)
 end
 
 function Bone:getName()

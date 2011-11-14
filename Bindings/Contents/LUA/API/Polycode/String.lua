@@ -9,7 +9,7 @@ function String:__index__(name)
 		if Polycore.__ptr_lookup[retVal] ~= nil then
 			return Polycore.__ptr_lookup[retVal]
 		else
-			Polycore.__ptr_lookup[retVal] = std::string("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal] = string("__skip_ptr__")
 			Polycore.__ptr_lookup[retVal].__ptr = retVal
 			return Polycore.__ptr_lookup[retVal]
 		end
@@ -52,17 +52,17 @@ function String:substr(pos, n)
 end
 
 function String:rfind(str, pos)
-	local retVal = Polycore.String_rfind(self.__ptr, str.__ptr, pos.__ptr)
+	local retVal = Polycore.String_rfind(self.__ptr, str, pos.__ptr)
 	return retVal
 end
 
 function String:find(str, pos)
-	local retVal = Polycore.String_find(self.__ptr, str.__ptr, pos.__ptr)
+	local retVal = Polycore.String_find(self.__ptr, str, pos.__ptr)
 	return retVal
 end
 
 function String:find_last_of(str, pos)
-	local retVal = Polycore.String_find_last_of(self.__ptr, str.__ptr, pos.__ptr)
+	local retVal = Polycore.String_find_last_of(self.__ptr, str, pos.__ptr)
 	return retVal
 end
 
@@ -77,7 +77,7 @@ function String:toUpperCase()
 end
 
 function String:replace(what, withWhat)
-	local retVal = Polycore.String_replace(self.__ptr, what.__ptr, withWhat.__ptr)
+	local retVal = Polycore.String_replace(self.__ptr, what, withWhat)
 	return retVal
 end
 

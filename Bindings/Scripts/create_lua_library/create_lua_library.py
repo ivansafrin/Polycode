@@ -93,6 +93,8 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 
 				pps = []
 				for pp in c["properties"]["public"]:
+					pp["type"] = pp["type"].replace("Polycode::", "")
+					pp["type"] = pp["type"].replace("std::", "")
 					if pp["type"].find("static ") != -1:
 						if "defaltValue" in pp:
 							lout += "%s = %s\n" % (pp["name"], pp["defaltValue"])
@@ -114,6 +116,8 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 				if len(pps) > 0:
 					lout += "function %s:__index__(name)\n" % ckey
 					for pp in pps:
+						pp["type"] = pp["type"].replace("Polycode::", "")
+						pp["type"] = pp["type"].replace("std::", "")
 						if pidx == 0:
 							lout += "\tif name == \"%s\" then\n" % (pp["name"])
 						else:
@@ -169,6 +173,8 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 				if len(pps) > 0:
 					lout += "function %s:__set_callback(name,value)\n" % ckey
 					for pp in pps:
+						pp["type"] = pp["type"].replace("Polycode::", "")
+						pp["type"] = pp["type"].replace("std::", "")
 						if pp["type"] == "Number" or  pp["type"] == "String" or pp["type"] == "int" or pp["type"] == "bool":
 							if pidx == 0:
 								lout += "\tif name == \"%s\" then\n" % (pp["name"])
@@ -233,6 +239,13 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 								continue
 							if param["type"] == "0":
 								continue
+							param["type"] = param["type"].replace("Polycode::", "")
+							param["type"] = param["type"].replace("std::", "")
+							param["type"] = param["type"].replace("const", "")
+							param["type"] = param["type"].replace("&", "")
+							param["type"] = param["type"].replace(" ", "")
+							param["type"] = param["type"].replace("long", "long ")
+							param["type"] = param["type"].replace("unsigned", "unsigned ")
 
 							param["name"] = param["name"].replace("end", "_end").replace("repeat", "_repeat")
 							if"type" in param:

@@ -29,15 +29,15 @@ function FixedShaderBinding:FixedShaderBinding(...)
 end
 
 function FixedShaderBinding:addTexture(name, texture)
-	local retVal = Polycore.FixedShaderBinding_addTexture(self.__ptr, name.__ptr, texture.__ptr)
+	local retVal = Polycore.FixedShaderBinding_addTexture(self.__ptr, name, texture.__ptr)
 end
 
 function FixedShaderBinding:addCubemap(name, cubemap)
-	local retVal = Polycore.FixedShaderBinding_addCubemap(self.__ptr, name.__ptr, cubemap.__ptr)
+	local retVal = Polycore.FixedShaderBinding_addCubemap(self.__ptr, name, cubemap.__ptr)
 end
 
 function FixedShaderBinding:addParam(type, name, value)
-	local retVal = Polycore.FixedShaderBinding_addParam(self.__ptr, type.__ptr, name.__ptr, value.__ptr)
+	local retVal = Polycore.FixedShaderBinding_addParam(self.__ptr, type, name, value)
 end
 
 function FixedShaderBinding:getDiffuseTexture()

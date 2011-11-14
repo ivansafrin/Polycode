@@ -33,7 +33,7 @@ function Shader:getType()
 end
 
 function Shader:setName(name)
-	local retVal = Polycore.Shader_setName(self.__ptr, name.__ptr)
+	local retVal = Polycore.Shader_setName(self.__ptr, name)
 end
 
 function Shader:getName()

@@ -40,7 +40,7 @@ static int Physics3D_CollisionScene_getCollisionEntityByObject(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	CollisionScene *inst = (CollisionScene*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	btCollisionObject * collisionObject = (btCollisionObject *)lua_topointer(L, 2);
+	btCollisionObject* collisionObject = (btCollisionObject*)lua_topointer(L, 2);
 	void *ptrRetVal = (void*)inst->getCollisionEntityByObject(collisionObject);
 	if(ptrRetVal == NULL) {
 		lua_pushnil(L);
@@ -54,9 +54,9 @@ static int Physics3D_CollisionScene_getFirstEntityInRay(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	CollisionScene *inst = (CollisionScene*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	const Vector3 & origin = *( Vector3 *)lua_topointer(L, 2);
+	Vector3 origin = *(Vector3*)lua_topointer(L, 2);
 	luaL_checktype(L, 3, LUA_TLIGHTUSERDATA);
-	const Vector3 & dest = *( Vector3 *)lua_topointer(L, 3);
+	Vector3 dest = *(Vector3*)lua_topointer(L, 3);
 	RayTestResult *retInst = new RayTestResult();
 	*retInst = inst->getFirstEntityInRay(origin, dest);
 	lua_pushlightuserdata(L, retInst);
@@ -67,7 +67,7 @@ static int Physics3D_CollisionScene_enableCollision(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	CollisionScene *inst = (CollisionScene*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	SceneEntity * entity = (SceneEntity *)lua_topointer(L, 2);
+	SceneEntity* entity = (SceneEntity*)lua_topointer(L, 2);
 	luaL_checktype(L, 3, LUA_TBOOLEAN);
 	bool val = lua_toboolean(L, 3);
 	inst->enableCollision(entity, val);
@@ -78,7 +78,7 @@ static int Physics3D_CollisionScene_getCollisionByScreenEntity(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	CollisionScene *inst = (CollisionScene*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	SceneEntity * ent = (SceneEntity *)lua_topointer(L, 2);
+	SceneEntity* ent = (SceneEntity*)lua_topointer(L, 2);
 	void *ptrRetVal = (void*)inst->getCollisionByScreenEntity(ent);
 	if(ptrRetVal == NULL) {
 		lua_pushnil(L);
@@ -92,9 +92,9 @@ static int Physics3D_CollisionScene_testCollision(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	CollisionScene *inst = (CollisionScene*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	SceneEntity * ent1 = (SceneEntity *)lua_topointer(L, 2);
+	SceneEntity* ent1 = (SceneEntity*)lua_topointer(L, 2);
 	luaL_checktype(L, 3, LUA_TLIGHTUSERDATA);
-	SceneEntity * ent2 = (SceneEntity *)lua_topointer(L, 3);
+	SceneEntity* ent2 = (SceneEntity*)lua_topointer(L, 3);
 	CollisionResult *retInst = new CollisionResult();
 	*retInst = inst->testCollision(ent1, ent2);
 	lua_pushlightuserdata(L, retInst);
@@ -105,9 +105,9 @@ static int Physics3D_CollisionScene_testCollisionOnCollisionChild(lua_State *L) 
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	CollisionScene *inst = (CollisionScene*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	CollisionSceneEntity * cEnt1 = (CollisionSceneEntity *)lua_topointer(L, 2);
+	CollisionSceneEntity* cEnt1 = (CollisionSceneEntity*)lua_topointer(L, 2);
 	luaL_checktype(L, 3, LUA_TLIGHTUSERDATA);
-	CollisionSceneEntity * cEnt2 = (CollisionSceneEntity *)lua_topointer(L, 3);
+	CollisionSceneEntity* cEnt2 = (CollisionSceneEntity*)lua_topointer(L, 3);
 	CollisionResult *retInst = new CollisionResult();
 	*retInst = inst->testCollisionOnCollisionChild(cEnt1, cEnt2);
 	lua_pushlightuserdata(L, retInst);
@@ -118,9 +118,9 @@ static int Physics3D_CollisionScene_testCollisionOnCollisionChild_Convex(lua_Sta
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	CollisionScene *inst = (CollisionScene*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	CollisionSceneEntity * cEnt1 = (CollisionSceneEntity *)lua_topointer(L, 2);
+	CollisionSceneEntity* cEnt1 = (CollisionSceneEntity*)lua_topointer(L, 2);
 	luaL_checktype(L, 3, LUA_TLIGHTUSERDATA);
-	CollisionSceneEntity * cEnt2 = (CollisionSceneEntity *)lua_topointer(L, 3);
+	CollisionSceneEntity* cEnt2 = (CollisionSceneEntity*)lua_topointer(L, 3);
 	CollisionResult *retInst = new CollisionResult();
 	*retInst = inst->testCollisionOnCollisionChild_Convex(cEnt1, cEnt2);
 	lua_pushlightuserdata(L, retInst);
@@ -131,7 +131,7 @@ static int Physics3D_CollisionScene_stopTrackingCollision(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	CollisionScene *inst = (CollisionScene*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	SceneEntity * entity = (SceneEntity *)lua_topointer(L, 2);
+	SceneEntity* entity = (SceneEntity*)lua_topointer(L, 2);
 	inst->stopTrackingCollision(entity);
 	return 0;
 }
@@ -140,7 +140,7 @@ static int Physics3D_CollisionScene_addCollisionChild(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	CollisionScene *inst = (CollisionScene*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	SceneEntity * newEntity = (SceneEntity *)lua_topointer(L, 2);
+	SceneEntity* newEntity = (SceneEntity*)lua_topointer(L, 2);
 	int type;
 	if(lua_isnumber(L, 3)) {
 		type = lua_tointeger(L, 3);
@@ -166,7 +166,7 @@ static int Physics3D_CollisionScene_trackCollision(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	CollisionScene *inst = (CollisionScene*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	SceneEntity * newEntity = (SceneEntity *)lua_topointer(L, 2);
+	SceneEntity* newEntity = (SceneEntity*)lua_topointer(L, 2);
 	int type;
 	if(lua_isnumber(L, 3)) {
 		type = lua_tointeger(L, 3);
@@ -192,7 +192,7 @@ static int Physics3D_CollisionScene_removeCollision(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	CollisionScene *inst = (CollisionScene*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	SceneEntity * entity = (SceneEntity *)lua_topointer(L, 2);
+	SceneEntity* entity = (SceneEntity*)lua_topointer(L, 2);
 	inst->removeCollision(entity);
 	return 0;
 }
@@ -201,7 +201,7 @@ static int Physics3D_CollisionScene_adjustForCollision(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	CollisionScene *inst = (CollisionScene*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	CollisionSceneEntity * collisionEntity = (CollisionSceneEntity *)lua_topointer(L, 2);
+	CollisionSceneEntity* collisionEntity = (CollisionSceneEntity*)lua_topointer(L, 2);
 	inst->adjustForCollision(collisionEntity);
 	return 0;
 }
@@ -237,7 +237,7 @@ static int Physics3D_CollisionSceneEntity_set_enabled(lua_State *L) {
 
 static int Physics3D_CollisionSceneEntity(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
-	SceneEntity * entity = (SceneEntity *)lua_topointer(L, 1);
+	SceneEntity* entity = (SceneEntity*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TNUMBER);
 	int type = lua_tointeger(L, 2);
 	CollisionSceneEntity *inst = new CollisionSceneEntity(entity, type);
@@ -287,7 +287,7 @@ static int Physics3D_CollisionSceneEntity_createCollisionShape(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	CollisionSceneEntity *inst = (CollisionSceneEntity*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	SceneEntity * entity = (SceneEntity *)lua_topointer(L, 2);
+	SceneEntity* entity = (SceneEntity*)lua_topointer(L, 2);
 	luaL_checktype(L, 3, LUA_TNUMBER);
 	int type = lua_tointeger(L, 3);
 	void *ptrRetVal = (void*)inst->createCollisionShape(entity, type);
@@ -323,7 +323,7 @@ static int Physics3D_PhysicsScene_removePhysicsChild(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScene *inst = (PhysicsScene*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	SceneEntity * entity = (SceneEntity *)lua_topointer(L, 2);
+	SceneEntity* entity = (SceneEntity*)lua_topointer(L, 2);
 	inst->removePhysicsChild(entity);
 	return 0;
 }
@@ -332,7 +332,7 @@ static int Physics3D_PhysicsScene_getPhysicsEntityBySceneEntity(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScene *inst = (PhysicsScene*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	SceneEntity * entity = (SceneEntity *)lua_topointer(L, 2);
+	SceneEntity* entity = (SceneEntity*)lua_topointer(L, 2);
 	void *ptrRetVal = (void*)inst->getPhysicsEntityBySceneEntity(entity);
 	if(ptrRetVal == NULL) {
 		lua_pushnil(L);
@@ -346,7 +346,7 @@ static int Physics3D_PhysicsScene_addPhysicsChild(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScene *inst = (PhysicsScene*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	SceneEntity * newEntity = (SceneEntity *)lua_topointer(L, 2);
+	SceneEntity* newEntity = (SceneEntity*)lua_topointer(L, 2);
 	int type;
 	if(lua_isnumber(L, 3)) {
 		type = lua_tointeger(L, 3);
@@ -390,7 +390,7 @@ static int Physics3D_PhysicsScene_trackPhysicsChild(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScene *inst = (PhysicsScene*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	SceneEntity * newEntity = (SceneEntity *)lua_topointer(L, 2);
+	SceneEntity* newEntity = (SceneEntity*)lua_topointer(L, 2);
 	int type;
 	if(lua_isnumber(L, 3)) {
 		type = lua_tointeger(L, 3);
@@ -434,7 +434,7 @@ static int Physics3D_PhysicsScene_addCharacterChild(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScene *inst = (PhysicsScene*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	SceneEntity * newEntity = (SceneEntity *)lua_topointer(L, 2);
+	SceneEntity* newEntity = (SceneEntity*)lua_topointer(L, 2);
 	luaL_checktype(L, 3, LUA_TNUMBER);
 	Number mass = lua_tonumber(L, 3);
 	luaL_checktype(L, 4, LUA_TNUMBER);
@@ -460,7 +460,7 @@ static int Physics3D_PhysicsScene_removeCharacterChild(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScene *inst = (PhysicsScene*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	PhysicsCharacter * character = (PhysicsCharacter *)lua_topointer(L, 2);
+	PhysicsCharacter* character = (PhysicsCharacter*)lua_topointer(L, 2);
 	inst->removeCharacterChild(character);
 	return 0;
 }
@@ -469,7 +469,7 @@ static int Physics3D_PhysicsScene_addVehicleChild(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScene *inst = (PhysicsScene*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	SceneEntity * newEntity = (SceneEntity *)lua_topointer(L, 2);
+	SceneEntity* newEntity = (SceneEntity*)lua_topointer(L, 2);
 	luaL_checktype(L, 3, LUA_TNUMBER);
 	Number mass = lua_tonumber(L, 3);
 	luaL_checktype(L, 4, LUA_TNUMBER);
@@ -513,7 +513,7 @@ static int Physics3D_PhysicsSceneEntity_set_enabled(lua_State *L) {
 
 static int Physics3D_PhysicsSceneEntity(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
-	SceneEntity * entity = (SceneEntity *)lua_topointer(L, 1);
+	SceneEntity* entity = (SceneEntity*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TNUMBER);
 	int type = lua_tointeger(L, 2);
 	luaL_checktype(L, 3, LUA_TNUMBER);
@@ -578,13 +578,13 @@ static int Physics3D_PhysicsVehicle_get_tuning(lua_State *L) {
 
 static int Physics3D_PhysicsVehicle(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
-	SceneEntity * entity = (SceneEntity *)lua_topointer(L, 1);
+	SceneEntity* entity = (SceneEntity*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TNUMBER);
 	Number mass = lua_tonumber(L, 2);
 	luaL_checktype(L, 3, LUA_TNUMBER);
 	Number friction = lua_tonumber(L, 3);
 	luaL_checktype(L, 4, LUA_TLIGHTUSERDATA);
-	btDefaultVehicleRaycaster * rayCaster = (btDefaultVehicleRaycaster *)lua_topointer(L, 4);
+	btDefaultVehicleRaycaster* rayCaster = (btDefaultVehicleRaycaster*)lua_topointer(L, 4);
 	PhysicsVehicle *inst = new PhysicsVehicle(entity, mass, friction, rayCaster);
 	lua_pushlightuserdata(L, (void*)inst);
 	return 1;
@@ -594,7 +594,7 @@ static int Physics3D_PhysicsVehicle_addWheel(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsVehicle *inst = (PhysicsVehicle*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	SceneEntity * entity = (SceneEntity *)lua_topointer(L, 2);
+	SceneEntity* entity = (SceneEntity*)lua_topointer(L, 2);
 	luaL_checktype(L, 3, LUA_TLIGHTUSERDATA);
 	Vector3 connection = *(Vector3*)lua_topointer(L, 3);
 	luaL_checktype(L, 4, LUA_TLIGHTUSERDATA);
@@ -699,7 +699,7 @@ static int Physics3D_delete_PhysicsVehicle(lua_State *L) {
 
 static int Physics3D_PhysicsCharacter(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
-	SceneEntity * entity = (SceneEntity *)lua_topointer(L, 1);
+	SceneEntity* entity = (SceneEntity*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TNUMBER);
 	Number mass = lua_tonumber(L, 2);
 	luaL_checktype(L, 3, LUA_TNUMBER);

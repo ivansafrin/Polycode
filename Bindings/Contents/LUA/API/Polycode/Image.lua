@@ -23,12 +23,12 @@ function Image:Image(...)
 end
 
 function Image:loadImage(fileName)
-	local retVal = Polycore.Image_loadImage(self.__ptr, fileName.__ptr)
+	local retVal = Polycore.Image_loadImage(self.__ptr, fileName)
 	return retVal
 end
 
 function Image:loadPNG(fileName)
-	local retVal = Polycore.Image_loadPNG(self.__ptr, fileName.__ptr)
+	local retVal = Polycore.Image_loadPNG(self.__ptr, fileName)
 	return retVal
 end
 
@@ -129,7 +129,7 @@ function Image:getType()
 end
 
 function Image:writeBMP(fileName)
-	local retVal = Polycore.Image_writeBMP(self.__ptr, fileName.__ptr)
+	local retVal = Polycore.Image_writeBMP(self.__ptr, fileName)
 end
 
 function Image:getWidth()

@@ -25,44 +25,44 @@ function ResourceManager:addResource(resource)
 end
 
 function ResourceManager:addDirResource(dirPath, recursive)
-	local retVal = Polycore.ResourceManager_addDirResource(self.__ptr, dirPath.__ptr, recursive)
+	local retVal = Polycore.ResourceManager_addDirResource(self.__ptr, dirPath, recursive)
 end
 
 function ResourceManager:addArchive(zipPath)
-	local retVal = Polycore.ResourceManager_addArchive(self.__ptr, zipPath.__ptr)
+	local retVal = Polycore.ResourceManager_addArchive(self.__ptr, zipPath)
 end
 
 function ResourceManager:readFile(fileName)
-	local retVal = Polycore.ResourceManager_readFile(self.__ptr, fileName.__ptr)
+	local retVal = Polycore.ResourceManager_readFile(self.__ptr, fileName)
 	return retVal
 end
 
 function ResourceManager:parseTextures(dirPath, recursive)
-	local retVal = Polycore.ResourceManager_parseTextures(self.__ptr, dirPath.__ptr, recursive)
+	local retVal = Polycore.ResourceManager_parseTextures(self.__ptr, dirPath, recursive)
 end
 
 function ResourceManager:parseMaterials(dirPath, recursive)
-	local retVal = Polycore.ResourceManager_parseMaterials(self.__ptr, dirPath.__ptr, recursive)
+	local retVal = Polycore.ResourceManager_parseMaterials(self.__ptr, dirPath, recursive)
 end
 
 function ResourceManager:parseShaders(dirPath, recursive)
-	local retVal = Polycore.ResourceManager_parseShaders(self.__ptr, dirPath.__ptr, recursive)
+	local retVal = Polycore.ResourceManager_parseShaders(self.__ptr, dirPath, recursive)
 end
 
 function ResourceManager:parsePrograms(dirPath, recursive)
-	local retVal = Polycore.ResourceManager_parsePrograms(self.__ptr, dirPath.__ptr, recursive)
+	local retVal = Polycore.ResourceManager_parsePrograms(self.__ptr, dirPath, recursive)
 end
 
 function ResourceManager:parseCubemaps(dirPath, recursive)
-	local retVal = Polycore.ResourceManager_parseCubemaps(self.__ptr, dirPath.__ptr, recursive)
+	local retVal = Polycore.ResourceManager_parseCubemaps(self.__ptr, dirPath, recursive)
 end
 
 function ResourceManager:parseOthers(dirPath, recursive)
-	local retVal = Polycore.ResourceManager_parseOthers(self.__ptr, dirPath.__ptr, recursive)
+	local retVal = Polycore.ResourceManager_parseOthers(self.__ptr, dirPath, recursive)
 end
 
 function ResourceManager:getResource(resourceType, resourceName)
-	local retVal = Polycore.ResourceManager_getResource(self.__ptr, resourceType, resourceName.__ptr)
+	local retVal = Polycore.ResourceManager_getResource(self.__ptr, resourceType, resourceName)
 	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
