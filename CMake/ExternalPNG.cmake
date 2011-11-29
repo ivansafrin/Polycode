@@ -31,8 +31,8 @@ EXTERNALPROJECT_ADD(libpng
     PREFIX ${libpng_PREFIX}
 
     DOWNLOAD_DIR ${POLYCODE_DEPS_DOWNLOAD_DIR}
-    URL ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng-1.5.5.tar.gz
-    URL_MD5 003bcac022125029bae4818d74c42a94
+    URL ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng-1.5.6.tar.gz
+    URL_MD5 8b0c05ed12637ee1f060ddfbbf526ea3
 
     INSTALL_DIR ${POLYCODE_DEPS_CORE_PREFIX}
     CMAKE_ARGS ${libpng_CMAKE_ARGS} -DCMAKE_PREFIX_PATH=${install_dir} # to find zlib
