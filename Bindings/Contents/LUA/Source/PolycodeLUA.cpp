@@ -748,6 +748,8 @@ int luaopen_Polycode(lua_State *L) {
 		{"Scene_addEntity", Polycore_Scene_addEntity},
 		{"Scene_removeEntity", Polycore_Scene_removeEntity},
 		{"Scene_getDefaultCamera", Polycore_Scene_getDefaultCamera},
+		{"Scene_getActiveCamera", Polycore_Scene_getActiveCamera},
+		{"Scene_setActiveCamera", Polycore_Scene_setActiveCamera},
 		{"Scene_enableLighting", Polycore_Scene_enableLighting},
 		{"Scene_enableFog", Polycore_Scene_enableFog},
 		{"Scene_setFogProperties", Polycore_Scene_setFogProperties},

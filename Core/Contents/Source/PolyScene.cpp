@@ -39,6 +39,7 @@ using namespace Polycode;
 
 Scene::Scene() : EventDispatcher() {
 	defaultCamera = new Camera(this);
+	activeCamera = defaultCamera;
 	CoreServices::getInstance()->getSceneManager()->addScene(this);
 	fogEnabled = false;
 	lightingEnabled = false;
@@ -53,6 +54,7 @@ Scene::Scene() : EventDispatcher() {
 
 Scene::Scene(bool virtualScene) {
 	defaultCamera = new Camera(this);
+	activeCamera = defaultCamera;	
 	fogEnabled = false;
 	lightingEnabled = false;
 	enabled = true;
@@ -63,7 +65,13 @@ Scene::Scene(bool virtualScene) {
 	useClearColor = false;	
 }
 
+void Scene::setActiveCamera(Camera *camera) {
+	activeCamera = camera;
+}
 
+Camera *Scene::getActiveCamera() {
+	return activeCamera;
+}
 
 void Scene::setVirtual(bool val) {
 	isSceneVirtual = val;
@@ -145,11 +153,11 @@ Camera *Scene::getDefaultCamera() {
 
 void Scene::Render(Camera *targetCamera) {
 	
-	if(!targetCamera && !defaultCamera)
+	if(!targetCamera && !activeCamera)
 		return;
 	
 	if(!targetCamera)
-		targetCamera = defaultCamera;
+		targetCamera = activeCamera;
 	
 	// prepare lights...
 	for(int i=0; i<entities.size();i++) {

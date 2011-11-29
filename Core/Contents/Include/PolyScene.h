@@ -74,6 +74,18 @@ namespace Polycode {
 		Camera *getDefaultCamera();
 		
 		/**
+		* Returns the scene's active camera.
+		* @return The scene's active camera.
+		*/						
+		Camera *getActiveCamera();
+		
+		/**
+		* Sets the scene's active camera.
+		* @param camera New camera to set as the active camera.
+		*/
+		void setActiveCamera(Camera *camera);
+		
+		/**
 		* Enables and disables lighting in the scene.
 		* @param enable If false, disables lighting in the scene, if true, enables it.		
 		*/
@@ -193,6 +205,7 @@ namespace Polycode {
 		bool isSceneVirtual;
 		
 		Camera *defaultCamera;
+		Camera *activeCamera;
 		std::vector <SceneEntity*> entities;
 		
 		bool lightingEnabled;

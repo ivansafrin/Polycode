@@ -97,6 +97,22 @@ function Scene:getDefaultCamera()
 	end
 end
 
+function Scene:getActiveCamera()
+	local retVal =  Polycore.Scene_getActiveCamera(self.__ptr)
+	if retVal == nil then return nil end
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = Camera("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
+end
+
+function Scene:setActiveCamera(camera)
+	local retVal = Polycore.Scene_setActiveCamera(self.__ptr, camera.__ptr)
+end
+
 function Scene:enableLighting(enable)
 	local retVal = Polycore.Scene_enableLighting(self.__ptr, enable)
 end

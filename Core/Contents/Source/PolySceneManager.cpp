@@ -88,8 +88,8 @@ void SceneManager::Update() {
 			CoreServices::getInstance()->getRenderer()->loadIdentity();
 			Scene *scene = scenes[i];
 			scene->Update();
-			if(scene->getDefaultCamera()->hasFilterShader()) {
-				scene->getDefaultCamera()->drawFilter();
+			if(scene->getActiveCamera()->hasFilterShader()) {
+				scene->getActiveCamera()->drawFilter();
 			} else {
 				scene->Render();
 			}

@@ -70,8 +70,8 @@ namespace Polycode {
 
 			/**
 			* A cylinder.
-			* v1 - Cylinder radius
-			* v2 - Cylinder length			
+			* v1 - Cylinder length			
+			* v2 - Cylinder radius
 			* v3 - Number of segments.
 			*/			
 			static const int TYPE_CYLINDER = 3;

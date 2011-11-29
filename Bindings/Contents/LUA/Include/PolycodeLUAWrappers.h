@@ -7096,6 +7096,27 @@ static int Polycore_Scene_getDefaultCamera(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_Scene_getActiveCamera(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Scene *inst = (Scene*)lua_topointer(L, 1);
+	void *ptrRetVal = (void*)inst->getActiveCamera();
+	if(ptrRetVal == NULL) {
+		lua_pushnil(L);
+	} else {
+		lua_pushlightuserdata(L, ptrRetVal);
+	}
+	return 1;
+}
+
+static int Polycore_Scene_setActiveCamera(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Scene *inst = (Scene*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	Camera* camera = (Camera*)lua_topointer(L, 2);
+	inst->setActiveCamera(camera);
+	return 0;
+}
+
 static int Polycore_Scene_enableLighting(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Scene *inst = (Scene*)lua_topointer(L, 1);
