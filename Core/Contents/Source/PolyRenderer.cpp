@@ -260,3 +260,23 @@ void Renderer::setTextureFilteringMode(int mode) {
 int Renderer::getRenderMode() {
 	return renderMode;
 }
+
+void Renderer::setFOV(Number fov) {
+	this->fov = fov;
+	resetViewport();
+}
+
+void Renderer::setViewportSize(int w, int h) {
+	viewportWidth = w;
+	viewportHeight = h;
+	resetViewport();
+}
+
+void Renderer::setViewportSizeAndFOV(int w, int h, Number fov) {
+	this->fov = fov;
+	viewportWidth = w;
+	viewportHeight = h;
+	resetViewport();
+}
+
+

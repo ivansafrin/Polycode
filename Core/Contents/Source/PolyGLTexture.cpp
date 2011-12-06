@@ -29,6 +29,7 @@ using namespace Polycode;
 OpenGLTexture::OpenGLTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, int filteringMode, int type) : Texture(width, height, textureData,clamp, type) {
 	this->filteringMode = filteringMode;
 	glTextureLoaded = false;
+	frameBufferID = 999999;
 	
 	glTextureType = GL_RGBA;
 	if(type == Image::IMAGE_RGB) {
@@ -98,6 +99,9 @@ void OpenGLTexture::setTextureData(char *data) {
 
 OpenGLTexture::~OpenGLTexture() {
 	glDeleteTextures(1, &textureID);
+	if(frameBufferID != 999999) {
+		glDeleteFramebuffersEXT(1, &frameBufferID);
+	}	
 }
 
 GLuint OpenGLTexture::getFrameBufferID() {

@@ -67,7 +67,7 @@ void MaterialManager::deleteTexture(Texture *texture) {
 	for(int i=0;i < textures.size(); i++) {
 		if(textures[i] == texture) {
 			textures.erase(textures.begin()+i);
-			delete texture;
+			CoreServices::getInstance()->getRenderer()->destroyTexture(texture);
 			return;
 		}
 	}

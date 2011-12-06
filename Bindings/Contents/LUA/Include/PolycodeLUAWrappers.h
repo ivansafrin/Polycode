@@ -5963,6 +5963,15 @@ static int Polycore_Renderer_createTexture(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_Renderer_destroyTexture(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Renderer *inst = (Renderer*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	Texture* texture = (Texture*)lua_topointer(L, 2);
+	inst->destroyTexture(texture);
+	return 0;
+}
+
 static int Polycore_Renderer_createRenderTextures(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Renderer *inst = (Renderer*)lua_topointer(L, 1);
@@ -6028,6 +6037,15 @@ static int Polycore_Renderer_renderZBufferToTexture(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_Renderer_setFOV(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Renderer *inst = (Renderer*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	Number fov = lua_tonumber(L, 2);
+	inst->setFOV(fov);
+	return 0;
+}
+
 static int Polycore_Renderer_setViewportSize(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Renderer *inst = (Renderer*)lua_topointer(L, 1);
@@ -6035,13 +6053,27 @@ static int Polycore_Renderer_setViewportSize(lua_State *L) {
 	int w = lua_tointeger(L, 2);
 	luaL_checktype(L, 3, LUA_TNUMBER);
 	int h = lua_tointeger(L, 3);
-	Number fov;
-	if(lua_isnumber(L, 4)) {
-		fov = lua_tonumber(L, 4);
-	} else {
-		fov = 45.0f;
-	}
-	inst->setViewportSize(w, h, fov);
+	inst->setViewportSize(w, h);
+	return 0;
+}
+
+static int Polycore_Renderer_setViewportSizeAndFOV(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Renderer *inst = (Renderer*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	int w = lua_tointeger(L, 2);
+	luaL_checktype(L, 3, LUA_TNUMBER);
+	int h = lua_tointeger(L, 3);
+	luaL_checktype(L, 4, LUA_TNUMBER);
+	Number fov = lua_tonumber(L, 4);
+	inst->setViewportSizeAndFOV(w, h, fov);
+	return 0;
+}
+
+static int Polycore_Renderer_resetViewport(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Renderer *inst = (Renderer*)lua_topointer(L, 1);
+	inst->resetViewport();
 	return 0;
 }
 
@@ -6162,15 +6194,6 @@ static int Polycore_Renderer_scale2D(lua_State *L) {
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
 	Vector2* scale = (Vector2*)lua_topointer(L, 2);
 	inst->scale2D(scale);
-	return 0;
-}
-
-static int Polycore_Renderer_setFOV(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
-	Renderer *inst = (Renderer*)lua_topointer(L, 1);
-	luaL_checktype(L, 2, LUA_TNUMBER);
-	Number fov = lua_tonumber(L, 2);
-	inst->setFOV(fov);
 	return 0;
 }
 
@@ -7875,6 +7898,15 @@ static int Polycore_SceneManager_registerRenderTexture(lua_State *L) {
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
 	SceneRenderTexture* r_enderTexture = (SceneRenderTexture*)lua_topointer(L, 2);
 	inst->registerRenderTexture(r_enderTexture);
+	return 0;
+}
+
+static int Polycore_SceneManager_unregisterRenderTexture(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	SceneManager *inst = (SceneManager*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	SceneRenderTexture* r_enderTexture = (SceneRenderTexture*)lua_topointer(L, 2);
+	inst->unregisterRenderTexture(r_enderTexture);
 	return 0;
 }
 

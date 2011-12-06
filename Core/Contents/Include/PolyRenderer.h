@@ -87,6 +87,7 @@ namespace Polycode {
 		
 		virtual Cubemap *createCubemap(Texture *t0, Texture *t1, Texture *t2, Texture *t3, Texture *t4, Texture *t5) = 0;		
 		virtual Texture *createTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, int type=Image::IMAGE_RGBA) = 0;
+		virtual void destroyTexture(Texture *texture) = 0;
 		virtual void createRenderTextures(Texture **colorBuffer, Texture **depthBuffer, int width, int height) = 0;
 		
 		virtual Texture *createFramebufferTexture(unsigned int width, unsigned int height) = 0;
@@ -95,8 +96,12 @@ namespace Polycode {
 		
 		virtual void renderToTexture(Texture *targetTexture) = 0;
 		virtual void renderZBufferToTexture(Texture *targetTexture) = 0;
-		virtual void setViewportSize(int w, int h, Number fov=45.0f) = 0;
 		
+		void setFOV(Number fov);		
+		void setViewportSize(int w, int h);
+		void setViewportSizeAndFOV(int w, int h, Number fov);
+		virtual void resetViewport() = 0;
+				
 		virtual void loadIdentity() = 0;		
 		virtual void setOrthoMode(Number xSize=0.0f, Number ySize=0.0f) = 0;
 		virtual void _setOrthoMode() = 0;
@@ -115,8 +120,7 @@ namespace Polycode {
 		virtual void translate2D(Number x, Number y) = 0;
 		virtual void rotate2D(Number angle) = 0;
 		virtual void scale2D(Vector2 *scale) = 0;
-		
-		virtual void setFOV(Number fov) = 0;		
+			
 		
 		virtual void setVertexColor(Number r, Number g, Number b, Number a) = 0;
 		
@@ -253,6 +257,9 @@ namespace Polycode {
 		Matrix4 currentModelMatrix;
 		LightSorter sorter;	
 	
+		Number viewportWidth;
+		Number viewportHeight;
+			
 		bool cullingFrontFaces;
 				
 		Texture *currentTexture;

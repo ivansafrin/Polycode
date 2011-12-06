@@ -40,6 +40,10 @@ function SceneManager:registerRenderTexture(r_enderTexture)
 	local retVal = Polycore.SceneManager_registerRenderTexture(self.__ptr, r_enderTexture.__ptr)
 end
 
+function SceneManager:unregisterRenderTexture(r_enderTexture)
+	local retVal = Polycore.SceneManager_unregisterRenderTexture(self.__ptr, r_enderTexture.__ptr)
+end
+
 
 
 function SceneManager:__delete()

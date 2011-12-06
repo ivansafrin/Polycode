@@ -63,6 +63,7 @@ namespace Polycode {
 				
 		protected:
 		
+			Texture *depthTexture;		
 			Texture *targetTexture;
 			Scene *targetScene;
 			Camera *targetCamera;

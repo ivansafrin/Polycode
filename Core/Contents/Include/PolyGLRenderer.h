@@ -118,6 +118,7 @@ namespace Polycode {
 		
 		Cubemap *createCubemap(Texture *t0, Texture *t1, Texture *t2, Texture *t3, Texture *t4, Texture *t5);
 		Texture *createTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, int type = Image::IMAGE_RGBA);
+		void destroyTexture(Texture *texture);		
 		Texture *createFramebufferTexture(unsigned int width, unsigned int height);
 		void createRenderTextures(Texture **colorBuffer, Texture **depthBuffer, int width, int height);
 		
@@ -141,7 +142,8 @@ namespace Polycode {
 		void setPerspectiveMode();
 		
 		void enableBackfaceCulling(bool val);
-		void setViewportSize(int w, int h, Number fov=45.0f);
+		
+		void resetViewport();
 		
 		void setLineSmooth(bool val);		
 		
@@ -196,7 +198,6 @@ namespace Polycode {
 		
 		bool test2DCoordinate(Number x, Number y, Polycode::Polygon *poly, const Matrix4 &matrix, bool billboardMode);
 		
-		void setFOV(Number fov);
 		
 		Vector3 Unproject(Number x, Number y);
 		

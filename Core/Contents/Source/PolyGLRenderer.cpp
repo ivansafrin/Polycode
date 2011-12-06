@@ -134,6 +134,8 @@ void OpenGLRenderer::initOSSpecific(){
 void OpenGLRenderer::Resize(int xRes, int yRes) {
 	this->xRes = xRes;
 	this->yRes = yRes;
+	viewportWidth = xRes;
+	viewportHeight = xRes;
 	glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
 	glClearDepth(1.0f);
 	
@@ -191,23 +193,14 @@ void OpenGLRenderer::setLineSmooth(bool val) {
 		glDisable(GL_LINE_SMOOTH);
 }
 
-void OpenGLRenderer::setFOV(Number fov) {
-	this->fov = fov;
+void OpenGLRenderer::resetViewport() {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(fov,(GLfloat)xRes/(GLfloat)yRes,nearPlane,farPlane);	
-	glViewport(0, 0, xRes, yRes);
-	glScissor(0, 0, xRes, yRes);
+	gluPerspective(fov,(GLfloat)viewportWidth/(GLfloat)viewportHeight,nearPlane,farPlane);	
+	glViewport(0, 0, viewportWidth, viewportHeight);
+	glScissor(0, 0, viewportWidth, viewportHeight);
 	glMatrixMode(GL_MODELVIEW);	
-}
 
-void OpenGLRenderer::setViewportSize(int w, int h, Number fov) {
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(fov,(GLfloat)w/(GLfloat)h,nearPlane,farPlane);
-	glViewport(0, 0, w, h);
-	glScissor(0, 0, w, h);
-	glMatrixMode(GL_MODELVIEW);
 }
 
 Vector3 OpenGLRenderer::Unproject(Number x, Number y) {
@@ -588,9 +581,7 @@ void OpenGLRenderer::unbindFramebuffers() {
 
 
 void OpenGLRenderer::createRenderTextures(Texture **colorBuffer, Texture **depthBuffer, int width, int height) {
-	
-	Logger::log("generating fbo textures %d %d\n", colorBuffer, depthBuffer);	
-		
+			
 	GLuint depthTexture,colorTexture;
 	GLenum status;
 	GLuint frameBufferID;
@@ -667,6 +658,11 @@ Cubemap *OpenGLRenderer::createCubemap(Texture *t0, Texture *t1, Texture *t2, Te
 Texture *OpenGLRenderer::createTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, int type) {
 	OpenGLTexture *newTexture = new OpenGLTexture(width, height, textureData, clamp, textureFilteringMode, type);	
 	return newTexture;
+}
+
+void OpenGLRenderer::destroyTexture(Texture *texture) {
+	OpenGLTexture *glTex = (OpenGLTexture*)texture;
+	delete glTex;
 }
 
 void OpenGLRenderer::clearScreen() {

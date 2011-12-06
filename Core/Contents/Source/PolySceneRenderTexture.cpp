@@ -30,8 +30,7 @@ using namespace Polycode;
 
 SceneRenderTexture::SceneRenderTexture(Scene *targetScene, Camera *targetCamera, int renderWidth,int renderHeight) {
 //	targetTexture = CoreServices::getInstance()->getMaterialManager()->createTexture(renderWidth, renderHeight, NULL,true);
-	Texture *tex;
-	CoreServices::getInstance()->getRenderer()->createRenderTextures(&targetTexture, &tex, renderWidth, renderHeight);
+	CoreServices::getInstance()->getRenderer()->createRenderTextures(&targetTexture, &depthTexture, renderWidth, renderHeight);
 	this->targetScene = targetScene;
 	this->targetCamera = targetCamera;
 	CoreServices::getInstance()->getSceneManager()->registerRenderTexture(this);
@@ -54,5 +53,7 @@ Texture *SceneRenderTexture::getTargetTexture() {
 }
 
 SceneRenderTexture::~SceneRenderTexture() {
-
+	CoreServices::getInstance()->getSceneManager()->unregisterRenderTexture(this);
+	CoreServices::getInstance()->getRenderer()->destroyTexture(targetTexture);
+	CoreServices::getInstance()->getRenderer()->destroyTexture(depthTexture);	
 }

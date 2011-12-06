@@ -54,7 +54,15 @@ void SceneManager::removeScene(Scene *scene) {
 void SceneManager::registerRenderTexture(SceneRenderTexture *renderTexture) {
 	renderTextures.push_back(renderTexture);
 }
-
+	
+void SceneManager::unregisterRenderTexture(SceneRenderTexture *renderTexture) {
+	for(int i=0;i<renderTextures.size();i++) {
+		if(renderTextures[i] == renderTexture) {
+			renderTextures.erase(renderTextures.begin()+i);
+		}
+	}	
+}
+		
 void SceneManager::addScene(Scene *newScene) {
 	scenes.push_back(newScene);
 }

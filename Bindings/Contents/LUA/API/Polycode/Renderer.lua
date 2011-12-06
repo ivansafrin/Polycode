@@ -93,6 +93,10 @@ function Renderer:createTexture(width, height, textureData, clamp, type)
 	end
 end
 
+function Renderer:destroyTexture(texture)
+	local retVal = Polycore.Renderer_destroyTexture(self.__ptr, texture.__ptr)
+end
+
 function Renderer:createRenderTextures(colorBuffer, depthBuffer, width, height)
 	local retVal = Polycore.Renderer_createRenderTextures(self.__ptr, colorBuffer.__ptr, depthBuffer.__ptr, width, height)
 end
@@ -125,8 +129,20 @@ function Renderer:renderZBufferToTexture(targetTexture)
 	local retVal = Polycore.Renderer_renderZBufferToTexture(self.__ptr, targetTexture.__ptr)
 end
 
-function Renderer:setViewportSize(w, h, fov)
-	local retVal = Polycore.Renderer_setViewportSize(self.__ptr, w, h, fov)
+function Renderer:setFOV(fov)
+	local retVal = Polycore.Renderer_setFOV(self.__ptr, fov)
+end
+
+function Renderer:setViewportSize(w, h)
+	local retVal = Polycore.Renderer_setViewportSize(self.__ptr, w, h)
+end
+
+function Renderer:setViewportSizeAndFOV(w, h, fov)
+	local retVal = Polycore.Renderer_setViewportSizeAndFOV(self.__ptr, w, h, fov)
+end
+
+function Renderer:resetViewport()
+	local retVal =  Polycore.Renderer_resetViewport(self.__ptr)
 end
 
 function Renderer:loadIdentity()
@@ -175,10 +191,6 @@ end
 
 function Renderer:scale2D(scale)
 	local retVal = Polycore.Renderer_scale2D(self.__ptr, scale.__ptr)
-end
-
-function Renderer:setFOV(fov)
-	local retVal = Polycore.Renderer_setFOV(self.__ptr, fov)
 end
 
 function Renderer:setVertexColor(r, g, b, a)
