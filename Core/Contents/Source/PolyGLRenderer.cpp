@@ -714,7 +714,7 @@ void OpenGLRenderer::applyMaterial(Material *material,  ShaderBinding *localOpti
 	data4[0] = material->specularColor.r;
 	data4[1] = material->specularColor.g;
 	data4[2] = material->specularColor.b;
-	data4[3] = material->specularColor.a;
+	data4[3] = material->specularStrength;
 				
 	glMaterialfv(GL_FRONT, GL_SPECULAR, data4);
 
@@ -823,6 +823,11 @@ void OpenGLRenderer::pushRenderDataArray(RenderDataArray *array) {
 			glBindBufferARB( GL_ARRAY_BUFFER_ARB, 0);			
 			glNormalPointer(GL_FLOAT, 0, array->arrayPtr);	
 		break;
+		case RenderDataArray::TANGENT_DATA_ARRAY:
+			glEnableVertexAttribArrayARB(6);		
+			glVertexAttribPointer(6, array->size, GL_FLOAT, 0, 0, array->arrayPtr);
+		break;
+		
 	}
 }
 
@@ -889,6 +894,22 @@ RenderDataArray *OpenGLRenderer::createRenderDataArrayForMesh(Mesh *mesh, int ar
 			}			
 		}
 		break;
+		case RenderDataArray::TANGENT_DATA_ARRAY:
+		{
+			buffer = (GLfloat*)malloc(1);	
+			
+			for(int i=0; i < mesh->getPolygonCount(); i++) {
+				for(int j=0; j < mesh->getPolygon(i)->getVertexCount(); j++) {
+					newBufferSize = bufferSize + 3;			
+					buffer = (GLfloat*)realloc(buffer, newBufferSize * sizeof(GLfloat));		
+					buffer[bufferSize+0] = mesh->getPolygon(i)->getVertex(j)->tangent.x;
+					buffer[bufferSize+1] = mesh->getPolygon(i)->getVertex(j)->tangent.y;
+					buffer[bufferSize+2] = mesh->getPolygon(i)->getVertex(j)->tangent.z;				
+					bufferSize = newBufferSize;					
+				}		   
+			}			
+		}
+		break;		
 		case RenderDataArray::TEXCOORD_DATA_ARRAY:
 		{
 			buffer = (GLfloat*)malloc(1);				
@@ -931,7 +952,10 @@ RenderDataArray *OpenGLRenderer::createRenderDataArray(int arrayType) {
 			break;			
 		case RenderDataArray::NORMAL_DATA_ARRAY:
 			newArray->size = 3;
-			break;						
+			break;	
+		case RenderDataArray::TANGENT_DATA_ARRAY:
+			newArray->size = 3;
+			break;														
 		case RenderDataArray::TEXCOORD_DATA_ARRAY:
 			newArray->size = 2;
 			break;									

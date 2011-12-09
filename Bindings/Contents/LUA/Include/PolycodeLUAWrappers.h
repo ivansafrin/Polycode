@@ -3615,6 +3615,13 @@ static int Polycore_Material_get_specularValue(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_Material_get_specularStrength(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Material *inst = (Material*)lua_topointer(L, 1);
+	lua_pushnumber(L, inst->specularStrength);
+	return 1;
+}
+
 static int Polycore_Material_get_specularColor(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Material *inst = (Material*)lua_topointer(L, 1);
@@ -3634,6 +3641,14 @@ static int Polycore_Material_set_specularValue(lua_State *L) {
 	Material *inst = (Material*)lua_topointer(L, 1);
 	Number param = lua_tonumber(L, 2);
 	inst->specularValue = param;
+	return 0;
+}
+
+static int Polycore_Material_set_specularStrength(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Material *inst = (Material*)lua_topointer(L, 1);
+	Number param = lua_tonumber(L, 2);
+	inst->specularStrength = param;
 	return 0;
 }
 
@@ -4390,6 +4405,13 @@ static int Polycore_Mesh_calculateNormals(lua_State *L) {
 		smoothAngle = 90.0;
 	}
 	inst->calculateNormals(smooth, smoothAngle);
+	return 0;
+}
+
+static int Polycore_Mesh_calculateTangents(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Mesh *inst = (Mesh*)lua_topointer(L, 1);
+	inst->calculateTangents();
 	return 0;
 }
 
@@ -5377,11 +5399,27 @@ static int Polycore_Polygon_calculateNormal(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_Polygon_calculateTangent(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Polygon *inst = (Polygon*)lua_topointer(L, 1);
+	inst->calculateTangent();
+	return 0;
+}
+
 static int Polycore_Polygon_getFaceNormal(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Polygon *inst = (Polygon*)lua_topointer(L, 1);
 	Vector3 *retInst = new Vector3();
 	*retInst = inst->getFaceNormal();
+	lua_pushlightuserdata(L, retInst);
+	return 1;
+}
+
+static int Polycore_Polygon_getFaceTangent(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Polygon *inst = (Polygon*)lua_topointer(L, 1);
+	Vector3 *retInst = new Vector3();
+	*retInst = inst->getFaceTangent();
 	lua_pushlightuserdata(L, retInst);
 	return 1;
 }
@@ -11106,10 +11144,24 @@ static int Polycore_Vertex_get_normal(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_Vertex_get_tangent(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Vertex *inst = (Vertex*)lua_topointer(L, 1);
+	lua_pushlightuserdata(L, &inst->tangent);
+	return 1;
+}
+
 static int Polycore_Vertex_get_vertexColor(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Vertex *inst = (Vertex*)lua_topointer(L, 1);
 	lua_pushlightuserdata(L, &inst->vertexColor);
+	return 1;
+}
+
+static int Polycore_Vertex_get_texCoord(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Vertex *inst = (Vertex*)lua_topointer(L, 1);
+	lua_pushlightuserdata(L, &inst->texCoord);
 	return 1;
 }
 

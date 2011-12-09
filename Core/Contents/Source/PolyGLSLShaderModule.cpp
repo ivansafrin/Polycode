@@ -628,7 +628,7 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 		glActiveTexture(GL_TEXTURE0 + textureIndex);		
 		glBindTexture(GL_TEXTURE_2D, ((OpenGLTexture*)cgBinding->textures[i].texture)->getTextureID());	
 		textureIndex++;
-	}	
+	}		
 
 	//			Logger::log("applying %s (%s %s)\n", material->getShader()->getName().c_str(), cgShader->vp->getResourceName().c_str(), cgShader->fp->getResourceName().c_str());
 

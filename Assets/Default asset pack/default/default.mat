@@ -72,7 +72,17 @@
 				<params>			
 				</params>				
 			</fp>
-		</shader>										
+		</shader>
+		<shader type="glsl" name="NorColSpec" numAreaLights="4" numSpotLights="2">		
+			<vp source="NormalShader.vert">
+				<params>			
+				</params>				
+			</vp>
+			<fp source="NorColSpec.frag">
+				<params>			
+				</params>				
+			</fp>
+		</shader>											
 	</shaders>	
 	<materials>
 		<material name="Default">

@@ -7,6 +7,8 @@ class "Material" (Resource)
 function Material:__index__(name)
 	if name == "specularValue" then
 		return Polycore.Material_get_specularValue(self.__ptr)
+	elseif name == "specularStrength" then
+		return Polycore.Material_get_specularStrength(self.__ptr)
 	elseif name == "specularColor" then
 		retVal = Polycore.Material_get_specularColor(self.__ptr)
 		if Polycore.__ptr_lookup[retVal] ~= nil then
@@ -32,6 +34,9 @@ end
 function Material:__set_callback(name,value)
 	if name == "specularValue" then
 		Polycore.Material_set_specularValue(self.__ptr, value)
+		return true
+	elseif name == "specularStrength" then
+		Polycore.Material_set_specularStrength(self.__ptr, value)
 		return true
 	end
 	return false

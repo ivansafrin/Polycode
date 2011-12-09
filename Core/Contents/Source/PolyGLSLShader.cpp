@@ -113,10 +113,13 @@ void GLSLShaderBinding::addParam(const String& type, const String& name, const S
 GLSLShader::GLSLShader(GLSLProgram *vp, GLSLProgram *fp) : Shader(Shader::MODULE_SHADER) {
 	this->vp = vp;
 	this->fp = fp;
-	
+		
 	shader_id = glCreateProgram();
     glAttachShader(shader_id, fp->program);
     glAttachShader(shader_id, vp->program);
+	
+	glBindAttribLocation(shader_id, 6, "vTangent");
+		
     glLinkProgram(shader_id);	
 }
 

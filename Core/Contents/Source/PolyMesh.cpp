@@ -221,10 +221,13 @@ namespace Polycode {
 			addPolygon(poly);
 		}
 		
+		calculateTangents();
+		
 		arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
 		arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
 		arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;
-		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;							
+		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;	
+		arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;								
 	}
 	
 	void Mesh::saveToFile(const String& fileName) {
@@ -248,7 +251,7 @@ namespace Polycode {
 		arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
 		arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;						
 		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;										
-		
+		arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;		
 	}
 	
 	void Mesh::createVPlane(Number w, Number h) { 
@@ -268,11 +271,12 @@ namespace Polycode {
 		}
 
 		calculateNormals();
+		calculateTangents();
 		arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
 		arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
 		arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;						
 		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;										
-		
+		arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;		
 	}	
 	
 	void Mesh::createPlane(Number w, Number h) { 
@@ -292,11 +296,12 @@ namespace Polycode {
 		}
 
 		calculateNormals();
+		calculateTangents();
 		arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
 		arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
 		arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;						
 		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;										
-		
+		arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;		
 	}
 
 	Vector3 Mesh::recenterMesh() {
@@ -436,11 +441,12 @@ namespace Polycode {
 		}
 
 		calculateNormals();
+		calculateTangents();
 		arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
 		arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
 		arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;						
 		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;										
-		
+		arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;		
 	}
 	
 	unsigned int Mesh::getVertexCount() {
@@ -508,11 +514,12 @@ namespace Polycode {
 		
 	
 		calculateNormals();
+		calculateTangents();
 		arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
 		arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
 		arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;						
 		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;										
-				
+		arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;				
 	}
 
 	void Mesh::createCylinder(Number height, Number radius, int numSegments) {
@@ -577,11 +584,12 @@ namespace Polycode {
 		
 		
 		calculateNormals();
+		calculateTangents();
 		arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
 		arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
 		arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;						
 		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;										
-		
+		arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;		
 	}
 	
 	void Mesh::createCone(Number height, Number radius, int numSegments) {
@@ -633,11 +641,12 @@ namespace Polycode {
 		
 		
 		calculateNormals();
+		calculateTangents();
 		arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
 		arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
 		arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;						
 		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;										
-			
+		arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;			
 	
 	}
 
@@ -693,10 +702,12 @@ namespace Polycode {
 		}
 
 		calculateNormals();
+		calculateTangents();
 		arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
 		arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
 		arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;						
-		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;										
+		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;		
+		arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;									
 	}
 	
 	void Mesh::useVertexNormals(bool val) {
@@ -723,6 +734,32 @@ namespace Polycode {
 		return retVec;
 	}
 	
+	void Mesh::calculateTangents() {
+		for(int i =0; i < polygons.size(); i++) {
+			polygons[i]->calculateTangent();
+		}		
+		/*
+		for(int i=0; i < polygons.size(); i++) {
+			for(int j=0; j < polygons[i]->getVertexCount(); j++) {		
+				Vertex *v =  polygons[i]->getVertex(j);
+
+				Vector3 tangent;		
+				vector<Polygon*> connectedFaces = getConnectedFaces(v);
+				int numConnected = connectedFaces.size();
+				if(numConnected > 2)
+					numConnected = 2;
+				for(int k=0; k < numConnected; k++) {					
+					tangent += connectedFaces[k]->getFaceTangent();
+				}						
+				tangent = tangent / numConnected;
+				tangent.Normalize();
+				v->tangent = tangent;
+			}
+		}		
+		*/
+		arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;		
+	}
+	
 	void Mesh::calculateNormals(bool smooth, Number smoothAngle) {
 		for(int i =0; i < polygons.size(); i++) {
 			polygons[i]->calculateNormal();
@@ -744,9 +781,9 @@ namespace Polycode {
 				}
 			}
 		
-		} 
+		}
 		
-		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;										
+		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;		
 	}
 	
 	int Mesh::getMeshType() {
@@ -762,7 +799,8 @@ namespace Polycode {
 		arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
 		arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
 		arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;		
-		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;								
+		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;		
+		arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;								
 	}
 	
 	

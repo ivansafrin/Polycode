@@ -51,6 +51,7 @@ namespace Polycode {
 			void loadMaterial(const String& fileName);
 			
 			Number specularValue;
+			Number specularStrength;
 			Color specularColor;
 			Color diffuseColor;
 						

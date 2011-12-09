@@ -149,6 +149,10 @@ function Mesh:calculateNormals(smooth, smoothAngle)
 	local retVal = Polycore.Mesh_calculateNormals(self.__ptr, smooth, smoothAngle)
 end
 
+function Mesh:calculateTangents()
+	local retVal =  Polycore.Mesh_calculateTangents(self.__ptr)
+end
+
 function Mesh:getMeshType()
 	local retVal =  Polycore.Mesh_getMeshType(self.__ptr)
 	return retVal

@@ -69,8 +69,24 @@ function Polygon:calculateNormal()
 	local retVal =  Polycore.Polygon_calculateNormal(self.__ptr)
 end
 
+function Polygon:calculateTangent()
+	local retVal =  Polycore.Polygon_calculateTangent(self.__ptr)
+end
+
 function Polygon:getFaceNormal()
 	local retVal =  Polycore.Polygon_getFaceNormal(self.__ptr)
+	if retVal == nil then return nil end
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
+end
+
+function Polygon:getFaceTangent()
+	local retVal =  Polycore.Polygon_getFaceTangent(self.__ptr)
 	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]

@@ -193,7 +193,8 @@ void SceneMesh::renderMeshLocally() {
 			}
 		}
 		mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
-		mesh->arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;		
+		mesh->arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;	
+		mesh->arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;				
 	}
 
 	if(mesh->useVertexColors) {
@@ -202,6 +203,7 @@ void SceneMesh::renderMeshLocally() {
 	 
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::VERTEX_DATA_ARRAY);
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::NORMAL_DATA_ARRAY);		
+	renderer->pushDataArrayForMesh(mesh, RenderDataArray::TANGENT_DATA_ARRAY);			
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::TEXCOORD_DATA_ARRAY);	
 	
 	renderer->drawArrays(mesh->getMeshType());

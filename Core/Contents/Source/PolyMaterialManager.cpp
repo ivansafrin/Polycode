@@ -288,6 +288,11 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 			newMaterial->specularValue = atof(pChild3->ToElement()->GetText());
 		}
 
+		if(strcmp(pChild3->Value(), "specularStrength") == 0) {
+			newMaterial->specularStrength = atof(pChild3->ToElement()->GetText());
+		}
+
+
 		if(strcmp(pChild3->Value(), "specularColor") == 0) {		
 			String value = pChild3->ToElement()->GetText();
 			vector<String> values = value.split(" ");

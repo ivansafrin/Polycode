@@ -170,18 +170,27 @@ namespace Polycode {
 			* Vertex normal.
 			*/
 			Vector3 normal;
+
+			/**
+			* Vertex tangent.
+			*/
+			Vector3 tangent;
 			
 			/**
 			* Vertex color.
 			*/
 			Color vertexColor;		
 			
+			/**
+			* Texture coordinates
+			*/
+			Vector2 texCoord;
+			
 			bool useVertexColor;
 				
 		protected:
 		
 			std::vector <BoneAssignment*> boneAssignments;
-			Vector2 texCoord;
 		
 	};
 }

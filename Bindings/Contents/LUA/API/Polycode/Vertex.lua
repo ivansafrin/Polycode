@@ -32,12 +32,30 @@ function Vertex:__index__(name)
 			Polycore.__ptr_lookup[retVal].__ptr = retVal
 			return Polycore.__ptr_lookup[retVal]
 		end
+	elseif name == "tangent" then
+		retVal = Polycore.Vertex_get_tangent(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Vector3("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
 	elseif name == "vertexColor" then
 		retVal = Polycore.Vertex_get_vertexColor(self.__ptr)
 		if Polycore.__ptr_lookup[retVal] ~= nil then
 			return Polycore.__ptr_lookup[retVal]
 		else
 			Polycore.__ptr_lookup[retVal] = Color("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
+	elseif name == "texCoord" then
+		retVal = Polycore.Vertex_get_texCoord(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Vector2("__skip_ptr__")
 			Polycore.__ptr_lookup[retVal].__ptr = retVal
 			return Polycore.__ptr_lookup[retVal]
 		end

@@ -91,12 +91,24 @@ namespace Polycode {
 			* Calculates the average normal for the vertices.
 			*/
 			void calculateNormal();
+
+			/**
+			* Calculates the tangent space vector for the vertices.
+			*/
+			void calculateTangent();
 			
 			/**
 			* Returns the face normal.
 			* @return Face normal.
 			*/ 
 			Vector3 getFaceNormal();
+
+			/**
+			* Returns the face tangent vector.
+			* @return Face tangent vector.
+			*/ 
+			Vector3 getFaceTangent();
+
 			
 			Rectangle getBounds2D();
 			
@@ -121,6 +133,7 @@ namespace Polycode {
 			unsigned int vertexCount;
 			std::vector<Vertex*> vertices;
 			Vector3			normal;
+			Vector3			tangent;			
 	};
 
 }

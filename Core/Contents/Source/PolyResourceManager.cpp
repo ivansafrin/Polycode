@@ -244,6 +244,9 @@ Resource *ResourceManager::getResource(int resourceType, const String& resourceN
 			return resources[i];
 		}
 	}
+	if(resourceType == Resource::RESOURCE_TEXTURE && resourceName != "default.png")
+		return getResource(Resource::RESOURCE_TEXTURE, "default.png");
+		
 	Logger::log("return NULL\n");
 	// need to add some sort of default resource for each type
 	return NULL;
