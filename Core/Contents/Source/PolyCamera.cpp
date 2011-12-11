@@ -243,7 +243,7 @@ void Camera::setParentScene(Scene *parentScene) {
 void Camera::setPostFilter(const String& shaderName) {
 	Material *shaderMaterial = (Material*) CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_MATERIAL, shaderName);
 	if(shaderMaterial)
-		createPostFilter(shaderMaterial);
+		createPostFilter(shaderMaterial);		
 }
 
 void Camera::removePostFilter() {
@@ -276,6 +276,7 @@ void Camera::createPostFilter(Material *shaderMaterial) {
 //			binding->addTexture("screenDepthBuffer", zBufferSceneTexture);
 		}
 		localShaderOptions.push_back(binding);
+		binding->addLocalParam("exposure", (void*)&exposureLevel);				
 	}
 	
 
