@@ -41,8 +41,11 @@ Player/Build/Mac OS X/Polycode Player.xcodeproj/project.xcworkspace/xcuserdata/i
 
 /Player/Build
 /Standalone/Build
+
 /Dependencies/Build
 /Dependencies/Downloads
+/Dependencies/Local/libstem_gamepad/Build
+
 /Core/Build/Mac\ OS\ X/build
 /IDE/Build/Mac\ OS\ X/build
 /Modules/Build/Mac\ OS\ X/build

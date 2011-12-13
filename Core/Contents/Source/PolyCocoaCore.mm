@@ -31,6 +31,8 @@ long getThreadID() {
 
 CocoaCore::CocoaCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate) : Core(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate) {	
 	eventMutex = createMutex();
+
+	gamepadController = new StemGamepadController(input);
 	
 //	NSLog(@"BUNDLE: %@", [[NSBundle mainBundle] bundlePath]);
 	chdir([[[[NSBundle mainBundle] bundlePath] stringByAppendingString:@"/Contents/Resources"] UTF8String]);
@@ -314,6 +316,7 @@ void CocoaCore::setCursor(int cursorType) {
 
 void CocoaCore::checkEvents() {
 	lockMutex(eventMutex);
+	gamepadController->Update();
 	CocoaEvent event;
 	for(int i=0; i < cocoaEvents.size(); i++) {
 		event = cocoaEvents[i];

@@ -33,6 +33,7 @@ namespace Polycode {
 	*/
 	class _PolyExport InputEvent : public Event {
 		public:
+			InputEvent();
 			InputEvent(Vector2 mousePosition,int timestamp);
 //			InputEvent(PolyKEY key, int timestamp);
 			InputEvent(PolyKEY key, wchar_t charCode, int timestamp);			
@@ -56,6 +57,12 @@ namespace Polycode {
 		static const int EVENT_KEYDOWN = 13;
 		static const int EVENT_KEYUP = 14;
 		
+		static const int EVENT_JOYBUTTON_DOWN = 15;		
+		static const int EVENT_JOYBUTTON_UP = 16;
+		static const int EVENT_JOYAXIS_MOVED = 17;
+		static const int EVENT_JOYDEVICE_ATTACHED = 18;
+		static const int EVENT_JOYDEVICE_DETACHED = 19;
+		
 		//@}
 		// ----------------------------------------------------------------------------------------------------------------
 		
@@ -78,6 +85,8 @@ namespace Polycode {
 		*/		
 		PolyKEY key;
 		
+		
+		
 		int keyCode() { return key; }
 		
 		/**
@@ -85,6 +94,11 @@ namespace Polycode {
 		*/				
 		wchar_t charCode;
 		int timestamp;
+		
+		unsigned int joystickDeviceID;
+		float joystickAxisValue;
+		unsigned int joystickButton;
+		unsigned int joystickAxis;
 		
 		protected:
 		

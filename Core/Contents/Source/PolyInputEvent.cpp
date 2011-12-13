@@ -24,6 +24,10 @@
 
 namespace Polycode {
 
+InputEvent::InputEvent() : Event() {
+	eventType = "InputEvent";
+}
+
 InputEvent::InputEvent(Vector2 mousePosition, int timestamp) : Event() {
 	this->mousePosition = mousePosition;
 	this->timestamp = timestamp;
@@ -34,6 +38,7 @@ InputEvent::InputEvent(PolyKEY key, wchar_t charCode, int timestamp) : Event() {
 	this->key = key;
 	this->charCode = charCode;
 	this->timestamp = timestamp;
+	eventType = "InputEvent";	
 }
 
 /*

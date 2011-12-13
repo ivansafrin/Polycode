@@ -34,6 +34,7 @@
 #include <unistd.h>
 #include "PolyInputEvent.h"
 #include "PolyGLSLShaderModule.h"
+#include "PolyStemGamepad.h"
 
 #import <Cocoa/Cocoa.h>
 
@@ -110,7 +111,7 @@ namespace Polycode {
 		
 	protected:	
 		PolycodeView *glView;
-		
+		StemGamepadController *gamepadController;
 		uint64_t initTime;		
 				
 	};
