@@ -256,7 +256,7 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 					newTarget->sizeMode = ShaderRenderTarget::SIZE_MODE_PIXELS;					
 					if(pChild->ToElement()->Attribute("width") && pChild->ToElement()->Attribute("height")) {
 						newTarget->width = atof(pChild->ToElement()->Attribute("width"));
-						newTarget->height = atof(pChild->ToElement()->Attribute("height"));
+						newTarget->height = atof(pChild->ToElement()->Attribute("height"));	
 						if(pChild->ToElement()->Attribute("sizeMode")) {
 							if(strcmp(pChild->ToElement()->Attribute("sizeMode"), "normalized") == 0) {
 								if(newTarget->width > 1.0f)

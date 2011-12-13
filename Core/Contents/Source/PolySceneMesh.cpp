@@ -89,6 +89,11 @@ void SceneMesh::setTexture(Texture *texture) {
 void SceneMesh::setMaterial(Material *material) {
 	this->material = material;
 	localShaderOptions = material->getShader(0)->createBinding();
+	if(texture) {
+		localShaderOptions->clearTexture("diffuse");
+		localShaderOptions->addTexture("diffuse", texture);
+	}
+	
 }
 
 void SceneMesh::setMaterialByName(const String& materialName) {

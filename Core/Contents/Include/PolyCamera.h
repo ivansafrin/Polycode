@@ -85,7 +85,7 @@ namespace Polycode {
 			void setLightDepthTexture(Texture *texture);			
 
 			bool hasFilterShader();
-			void drawFilter();
+			void drawFilter(Texture *targetTexture = NULL, Number targetTextureWidth = 0.0, Number targetTextureHeight = 0.0);
 			
 			/**
 			* Sets the exposure for the camera. The exposure value can be passed to a shader for HDR rendering.

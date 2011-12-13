@@ -446,6 +446,16 @@ function Renderer:enableShaders(flag)
 	local retVal = Polycore.Renderer_enableShaders(self.__ptr, flag)
 end
 
+function Renderer:getViewportWidth()
+	local retVal =  Polycore.Renderer_getViewportWidth(self.__ptr)
+	return retVal
+end
+
+function Renderer:getViewportHeight()
+	local retVal =  Polycore.Renderer_getViewportHeight(self.__ptr)
+	return retVal
+end
+
 function Renderer:initOSSpecific()
 	local retVal =  Polycore.Renderer_initOSSpecific(self.__ptr)
 end

@@ -1041,8 +1041,8 @@ void OpenGLRenderer::draw3DVertex2UV(Vertex *vertex, Vector2 *faceUV1, Vector2 *
 void OpenGLRenderer::drawScreenQuad(Number qx, Number qy) {
 	setOrthoMode();
 	
-	Number xscale = qx/((Number)getXRes()) * 2.0f;
-	Number yscale = qy/((Number)getYRes()) * 2.0f;
+	Number xscale = qx/((Number)viewportWidth) * 2.0f;
+	Number yscale = qy/((Number)viewportHeight) * 2.0f;	
 
 	glBegin(GL_QUADS);
 		glColor4f(1.0f,1.0f,1.0f,1.0f);

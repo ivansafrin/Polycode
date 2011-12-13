@@ -205,6 +205,9 @@ namespace Polycode {
 		virtual Vector3 projectRayFrom2DCoordinate(Number x, Number y) = 0;
 		
 		void enableShaders(bool flag);
+		
+		Number getViewportWidth();
+		Number getViewportHeight();			
 
 		virtual void initOSSpecific() {};
 		

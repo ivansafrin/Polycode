@@ -76,13 +76,16 @@ void SceneManager::UpdateVirtual() {
 		CoreServices::getInstance()->getRenderer()->loadIdentity();
 		if(renderTextures[i]->getTargetScene()->isVirtual())
 			renderTextures[i]->getTargetScene()->Update();
+						
+			if(renderTextures[i]->getTargetCamera()->hasFilterShader()) {
+				renderTextures[i]->getTargetCamera()->drawFilter(renderTextures[i]->getTargetTexture(), renderTextures[i]->getTargetTexture()->getWidth(), renderTextures[i]->getTargetTexture()->getHeight());
+			} else {
+				CoreServices::getInstance()->getRenderer()->bindFrameBufferTexture(renderTextures[i]->getTargetTexture());
+				renderTextures[i]->getTargetScene()->Render(renderTextures[i]->getTargetCamera());
+				CoreServices::getInstance()->getRenderer()->unbindFramebuffers();		
+			}
+
 			
-	CoreServices::getInstance()->getRenderer()->bindFrameBufferTexture(renderTextures[i]->getTargetTexture());	
-			
-			
-		renderTextures[i]->getTargetScene()->Render(renderTextures[i]->getTargetCamera());
-		//renderTextures[i]->drawScreen();
-		CoreServices::getInstance()->getRenderer()->unbindFramebuffers();		
 		CoreServices::getInstance()->getRenderer()->clearScreen();
 		CoreServices::getInstance()->getRenderer()->loadIdentity();
 	}

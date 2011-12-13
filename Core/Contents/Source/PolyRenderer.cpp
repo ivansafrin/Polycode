@@ -279,4 +279,12 @@ void Renderer::setViewportSizeAndFOV(int w, int h, Number fov) {
 	resetViewport();
 }
 
+Number Renderer::getViewportWidth() {
+	return viewportWidth;
+}
+
+Number Renderer::getViewportHeight() {
+	return viewportHeight;
+}
+
 

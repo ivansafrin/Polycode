@@ -22,18 +22,20 @@ THE SOFTWARE.
  
 #pragma once
 #include "PolyGlobals.h"
-#include "PolySceneEntity.h"
+#include "PolyScenePrimitive.h"
 
 namespace Polycode {
 	
 	class Label;
 	class Mesh;
 	class Texture;
+	class Material;
+	class ShaderBinding;
 
 	/**
 	* 3D text label. Creates a 3D text label.
 	*/
-	class _PolyExport SceneLabel : public SceneEntity {
+	class _PolyExport SceneLabel : public ScenePrimitive {
 		public:
 			
 			/**
@@ -47,8 +49,6 @@ namespace Polycode {
 			SceneLabel(const String& fontName, const String& text, int size, Number scale, int amode);
 			~SceneLabel();			
 		
-			bool testMouseCollision(Number x, Number y);
-		
 			/**
 			* Sets new text for the labe.
 			* @param newText New text to display.
@@ -56,13 +56,9 @@ namespace Polycode {
 			void setText(const String& newText);
 			
 			Label *getLabel();
-			void Render();
 			
 		protected:
 			
-			Mesh *mesh;
-			Texture *texture;		
-		
 			Number scale;
 			Label *label;
 	};

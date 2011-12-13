@@ -1,6 +1,6 @@
-require "Polycode/SceneEntity"
+require "Polycode/ScenePrimitive"
 
-class "SceneLabel" (SceneEntity)
+class "SceneLabel" (ScenePrimitive)
 
 
 
@@ -10,7 +10,7 @@ class "SceneLabel" (SceneEntity)
 
 function SceneLabel:SceneLabel(...)
 	if type(arg[1]) == "table" and count(arg) == 1 then
-		if ""..arg[1]:class() == "SceneEntity" then
+		if ""..arg[1]:class() == "ScenePrimitive" then
 			self.__ptr = arg[1].__ptr
 			return
 		end
@@ -28,11 +28,6 @@ function SceneLabel:SceneLabel(...)
 	end
 end
 
-function SceneLabel:testMouseCollision(x, y)
-	local retVal = Polycore.SceneLabel_testMouseCollision(self.__ptr, x, y)
-	return retVal
-end
-
 function SceneLabel:setText(newText)
 	local retVal = Polycore.SceneLabel_setText(self.__ptr, newText)
 end
@@ -47,10 +42,6 @@ function SceneLabel:getLabel()
 		Polycore.__ptr_lookup[retVal].__ptr = retVal
 		return Polycore.__ptr_lookup[retVal]
 	end
-end
-
-function SceneLabel:Render()
-	local retVal =  Polycore.SceneLabel_Render(self.__ptr)
 end
 
 

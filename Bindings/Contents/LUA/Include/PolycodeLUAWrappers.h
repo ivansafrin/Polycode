@@ -829,7 +829,25 @@ static int Polycore_Camera_hasFilterShader(lua_State *L) {
 static int Polycore_Camera_drawFilter(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Camera *inst = (Camera*)lua_topointer(L, 1);
-	inst->drawFilter();
+	Texture* targetTexture;
+	if(lua_islightuserdata(L, 2)) {
+		targetTexture = (Texture*)lua_topointer(L, 2);
+	} else {
+		targetTexture = NULL;
+	}
+	Number targetTextureWidth;
+	if(lua_isnumber(L, 3)) {
+		targetTextureWidth = lua_tonumber(L, 3);
+	} else {
+		targetTextureWidth = 0.0;
+	}
+	Number targetTextureHeight;
+	if(lua_isnumber(L, 4)) {
+		targetTextureHeight = lua_tonumber(L, 4);
+	} else {
+		targetTextureHeight = 0.0;
+	}
+	inst->drawFilter(targetTexture, targetTextureWidth, targetTextureHeight);
 	return 0;
 }
 
@@ -6767,6 +6785,20 @@ static int Polycore_Renderer_enableShaders(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_Renderer_getViewportWidth(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Renderer *inst = (Renderer*)lua_topointer(L, 1);
+	lua_pushnumber(L, inst->getViewportWidth());
+	return 1;
+}
+
+static int Polycore_Renderer_getViewportHeight(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Renderer *inst = (Renderer*)lua_topointer(L, 1);
+	lua_pushnumber(L, inst->getViewportHeight());
+	return 1;
+}
+
 static int Polycore_Renderer_initOSSpecific(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Renderer *inst = (Renderer*)lua_topointer(L, 1);
@@ -7542,17 +7574,6 @@ static int Polycore_SceneLabel(lua_State *L) {
 	return 1;
 }
 
-static int Polycore_SceneLabel_testMouseCollision(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
-	SceneLabel *inst = (SceneLabel*)lua_topointer(L, 1);
-	luaL_checktype(L, 2, LUA_TNUMBER);
-	Number x = lua_tonumber(L, 2);
-	luaL_checktype(L, 3, LUA_TNUMBER);
-	Number y = lua_tonumber(L, 3);
-	lua_pushboolean(L, inst->testMouseCollision(x, y));
-	return 1;
-}
-
 static int Polycore_SceneLabel_setText(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	SceneLabel *inst = (SceneLabel*)lua_topointer(L, 1);
@@ -7572,13 +7593,6 @@ static int Polycore_SceneLabel_getLabel(lua_State *L) {
 		lua_pushlightuserdata(L, ptrRetVal);
 	}
 	return 1;
-}
-
-static int Polycore_SceneLabel_Render(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
-	SceneLabel *inst = (SceneLabel*)lua_topointer(L, 1);
-	inst->Render();
-	return 0;
 }
 
 static int Polycore_delete_SceneLabel(lua_State *L) {
