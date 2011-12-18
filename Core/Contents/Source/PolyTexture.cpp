@@ -68,6 +68,19 @@ Texture::~Texture(){
 
 void Texture::setImageData(Image *data) {
 
+	switch (data->getType()) {
+		case Image::IMAGE_RGB:
+			pixelSize = 3;
+			break;
+		case Image::IMAGE_RGBA:
+			pixelSize = 4;
+			break;			
+		default:
+			pixelSize = 3;			
+			break;
+	}
+
+
 	if(this->textureData)
 		free(this->textureData);
 	this->textureData = (char*)malloc(width*height*pixelSize);

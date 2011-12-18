@@ -17,7 +17,6 @@ SET(polycore_SRCS
     Source/PolyEvent.cpp
     Source/PolyEventDispatcher.cpp
     Source/PolyEventHandler.cpp
-    Source/PolyStemGamepad.cpp
     Source/PolyFixedShader.cpp
     Source/PolyFont.cpp
     Source/PolyFontManager.cpp
@@ -107,7 +106,6 @@ SET(polycore_HDRS
     Include/PolyEventDispatcher.h
     Include/PolyEvent.h
     Include/PolyEventHandler.h
-    Include/PolyStemGamepad.h
     Include/PolyFixedShader.h
     Include/PolyFont.h
     Include/PolyFontManager.h

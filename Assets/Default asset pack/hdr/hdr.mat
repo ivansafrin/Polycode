@@ -24,6 +24,7 @@
 			<fp source="HDRProcessBloom.frag">
 				<params>
 					<param name="exposure" type="Number" default="1.0"/>
+					<param name="bloomFactor" type="Number" default="0.5"/>					
 				</params>								
 			</fp>			
 		</shader>		

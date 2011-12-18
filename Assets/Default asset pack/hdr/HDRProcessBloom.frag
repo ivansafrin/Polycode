@@ -1,11 +1,11 @@
 uniform sampler2D baseTexture;
 uniform sampler2D bloomTexture;
 uniform float exposure;
+uniform float bloomFactor;
 
 void main(void)
 {
 	float brightMax = 1.0;
-	float bloomFactor = 1.0;
 	
 	vec4 colorBloom = texture2D(bloomTexture, gl_TexCoord[0].st);
 	vec4 color = texture2D(baseTexture,gl_TexCoord[0].st);

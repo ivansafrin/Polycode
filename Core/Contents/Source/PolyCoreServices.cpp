@@ -62,22 +62,22 @@ CoreServices* CoreServices::getInstance() {
 		return overrideInstance;
 	}
 
-#ifdef _WINDOWS
+//#ifdef _WINDOWS
 		overrideInstance = new CoreServices;
 		Logger::log("Creating new core services instance...\n");
 		return overrideInstance;
-#else
-	long threadID = getThreadID(); 
-	CoreServices *instance;
-	if(instanceMap.find(threadID) == instanceMap.end()) {
-		Logger::log("Creating new core services instance...\n");
-		instance = new CoreServices;
-		instanceMap[threadID] = instance;
-	} else {
-		instance = instanceMap[threadID];
-	}
-	return instance;
-#endif
+//#else
+//	long threadID = getThreadID(); 
+//	CoreServices *instance;
+//	if(instanceMap.find(threadID) == instanceMap.end()) {
+//		Logger::log("Creating new core services instance...\n");
+//		instance = new CoreServices;
+//		instanceMap[threadID] = instance;
+//	} else {
+//		instance = instanceMap[threadID];
+//	}
+//	return instance;
+//#endif
 }
 
 MaterialManager *CoreServices::getMaterialManager() {

@@ -34,8 +34,7 @@
 #include <unistd.h>
 #include "PolyInputEvent.h"
 #include "PolyGLSLShaderModule.h"
-#include "PolyStemGamepad.h"
-
+#include <IOKit/hid/IOHIDLib.h>
 #import <Cocoa/Cocoa.h>
 
 using std::vector;
@@ -65,6 +64,36 @@ namespace Polycode {
 		static const int INPUT_EVENT = 0;
 	};
 	
+	
+	class HIDGamepadAxis {
+		public:
+		IOHIDElementCookie cookie;
+		CFIndex logicalMin;
+		CFIndex logicalMax;
+		bool hasNullState;
+		bool isHatSwitch;
+		bool isHatSwitchSecondAxis;
+	};
+
+	class HIDGamepadButton {
+		public:
+		IOHIDElementCookie cookie;
+	};	
+	
+	class GamepadDeviceEntry  {
+		public:
+			GamepadDeviceEntry() {
+				numAxes = 0;
+			}
+			vector<HIDGamepadAxis> axisElements;
+			vector<HIDGamepadButton> buttonElements;			
+			unsigned int deviceID;
+			IOHIDDeviceRef device;
+			unsigned int numAxes;
+			unsigned int numButtons;	
+			CoreInput *input;		
+	};
+	
 	class _PolyExport CocoaCore : public Core {		
 	public:
 		
@@ -90,6 +119,9 @@ namespace Polycode {
 		void copyStringToClipboard(const String& str);
 		String getClipboardString();		
 		
+		void initGamepad();
+		void shutdownGamepad();
+		
 //		static pascal OSStatus coreEventHandler (EventHandlerCallRef next, EventRef event, void *data);	
 		
 		void lockMutex(CoreMutex *mutex);
@@ -108,11 +140,14 @@ namespace Polycode {
 		vector<CocoaEvent> cocoaEvents;
 		
 		NSOpenGLContext *context;
-		
+				
+		vector<GamepadDeviceEntry*> gamepads;
+		unsigned int nextDeviceID;
+				
 	protected:	
 		PolycodeView *glView;
-		StemGamepadController *gamepadController;
 		uint64_t initTime;		
-				
+		
+		IOHIDManagerRef hidManager;
 	};
 }
