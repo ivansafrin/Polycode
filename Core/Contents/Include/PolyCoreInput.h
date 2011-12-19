@@ -44,10 +44,7 @@ namespace Polycode {
 	* User input event dispatcher. The Core input class is where all of the input events originate. You can add event listeners to this class to listen for user input events or poll it manually to check the state of user input.
 	*/
 	class _PolyExport CoreInput : public EventDispatcher {
-		
-		friend class PolyCore;
-		
-	public:
+		public:
 		
 		CoreInput();
 		~CoreInput();

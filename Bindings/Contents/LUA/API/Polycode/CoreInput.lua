@@ -65,6 +65,55 @@ function CoreInput:getMouseButtonState(mouseButton)
 	return retVal
 end
 
+function CoreInput:getNumJoysticks()
+	local retVal =  Polycore.CoreInput_getNumJoysticks(self.__ptr)
+	return retVal
+end
+
+function CoreInput:getJoystickInfoByIndex(index)
+	local retVal = Polycore.CoreInput_getJoystickInfoByIndex(self.__ptr, index)
+	if retVal == nil then return nil end
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = JoystickInfo("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
+end
+
+function CoreInput:getJoystickInfoByID(deviceID)
+	local retVal = Polycore.CoreInput_getJoystickInfoByID(self.__ptr, deviceID)
+	if retVal == nil then return nil end
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = JoystickInfo("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
+end
+
+function CoreInput:addJoystick(deviceID)
+	local retVal = Polycore.CoreInput_addJoystick(self.__ptr, deviceID)
+end
+
+function CoreInput:removeJoystick(deviceID)
+	local retVal = Polycore.CoreInput_removeJoystick(self.__ptr, deviceID)
+end
+
+function CoreInput:joystickAxisMoved(axisID, value, deviceID)
+	local retVal = Polycore.CoreInput_joystickAxisMoved(self.__ptr, axisID, value, deviceID)
+end
+
+function CoreInput:joystickButtonDown(buttonID, deviceID)
+	local retVal = Polycore.CoreInput_joystickButtonDown(self.__ptr, buttonID, deviceID)
+end
+
+function CoreInput:joystickButtonUp(buttonID, deviceID)
+	local retVal = Polycore.CoreInput_joystickButtonUp(self.__ptr, buttonID, deviceID)
+end
+
 function CoreInput:mouseWheelUp(ticks)
 	local retVal = Polycore.CoreInput_mouseWheelUp(self.__ptr, ticks)
 end

@@ -1544,6 +1544,94 @@ static int Polycore_CoreInput_getMouseButtonState(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_CoreInput_getNumJoysticks(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	CoreInput *inst = (CoreInput*)lua_topointer(L, 1);
+	lua_pushinteger(L, inst->getNumJoysticks());
+	return 1;
+}
+
+static int Polycore_CoreInput_getJoystickInfoByIndex(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	CoreInput *inst = (CoreInput*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	unsigned int index = lua_tointeger(L, 2);
+	void *ptrRetVal = (void*)inst->getJoystickInfoByIndex(index);
+	if(ptrRetVal == NULL) {
+		lua_pushnil(L);
+	} else {
+		lua_pushlightuserdata(L, ptrRetVal);
+	}
+	return 1;
+}
+
+static int Polycore_CoreInput_getJoystickInfoByID(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	CoreInput *inst = (CoreInput*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	unsigned int deviceID = lua_tointeger(L, 2);
+	void *ptrRetVal = (void*)inst->getJoystickInfoByID(deviceID);
+	if(ptrRetVal == NULL) {
+		lua_pushnil(L);
+	} else {
+		lua_pushlightuserdata(L, ptrRetVal);
+	}
+	return 1;
+}
+
+static int Polycore_CoreInput_addJoystick(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	CoreInput *inst = (CoreInput*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	unsigned int deviceID = lua_tointeger(L, 2);
+	inst->addJoystick(deviceID);
+	return 0;
+}
+
+static int Polycore_CoreInput_removeJoystick(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	CoreInput *inst = (CoreInput*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	unsigned int deviceID = lua_tointeger(L, 2);
+	inst->removeJoystick(deviceID);
+	return 0;
+}
+
+static int Polycore_CoreInput_joystickAxisMoved(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	CoreInput *inst = (CoreInput*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	unsigned int axisID = lua_tointeger(L, 2);
+	luaL_checktype(L, 3, LUA_TNUMBER);
+	float value = lua_tonumber(L, 3);
+	luaL_checktype(L, 4, LUA_TNUMBER);
+	unsigned int deviceID = lua_tointeger(L, 4);
+	inst->joystickAxisMoved(axisID, value, deviceID);
+	return 0;
+}
+
+static int Polycore_CoreInput_joystickButtonDown(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	CoreInput *inst = (CoreInput*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	unsigned int buttonID = lua_tointeger(L, 2);
+	luaL_checktype(L, 3, LUA_TNUMBER);
+	unsigned int deviceID = lua_tointeger(L, 3);
+	inst->joystickButtonDown(buttonID, deviceID);
+	return 0;
+}
+
+static int Polycore_CoreInput_joystickButtonUp(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	CoreInput *inst = (CoreInput*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	unsigned int buttonID = lua_tointeger(L, 2);
+	luaL_checktype(L, 3, LUA_TNUMBER);
+	unsigned int deviceID = lua_tointeger(L, 3);
+	inst->joystickButtonUp(buttonID, deviceID);
+	return 0;
+}
+
 static int Polycore_CoreInput_mouseWheelUp(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	CoreInput *inst = (CoreInput*)lua_topointer(L, 1);
@@ -3457,6 +3545,34 @@ static int Polycore_InputEvent_get_timestamp(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_InputEvent_get_joystickDeviceID(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	InputEvent *inst = (InputEvent*)lua_topointer(L, 1);
+	lua_pushlightuserdata(L, &inst->joystickDeviceID);
+	return 1;
+}
+
+static int Polycore_InputEvent_get_joystickAxisValue(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	InputEvent *inst = (InputEvent*)lua_topointer(L, 1);
+	lua_pushlightuserdata(L, &inst->joystickAxisValue);
+	return 1;
+}
+
+static int Polycore_InputEvent_get_joystickButton(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	InputEvent *inst = (InputEvent*)lua_topointer(L, 1);
+	lua_pushlightuserdata(L, &inst->joystickButton);
+	return 1;
+}
+
+static int Polycore_InputEvent_get_joystickAxis(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	InputEvent *inst = (InputEvent*)lua_topointer(L, 1);
+	lua_pushlightuserdata(L, &inst->joystickAxis);
+	return 1;
+}
+
 static int Polycore_InputEvent_set_mouseButton(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	InputEvent *inst = (InputEvent*)lua_topointer(L, 1);
@@ -3474,11 +3590,7 @@ static int Polycore_InputEvent_set_timestamp(lua_State *L) {
 }
 
 static int Polycore_InputEvent(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
-	Vector2 mousePosition = *(Vector2*)lua_topointer(L, 1);
-	luaL_checktype(L, 2, LUA_TNUMBER);
-	int timestamp = lua_tointeger(L, 2);
-	InputEvent *inst = new InputEvent(mousePosition, timestamp);
+	InputEvent *inst = new InputEvent();
 	lua_pushlightuserdata(L, (void*)inst);
 	return 1;
 }
