@@ -176,6 +176,7 @@ int main(int argc, char **argv) {
 		return 0;
 	}
 	
+	PHYSFS_init(argv[0]);
 	struct aiLogStream stream;
 	stream = aiGetPredefinedLogStream(aiDefaultLogStream_STDOUT,NULL);
 	aiAttachLogStream(&stream);
