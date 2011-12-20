@@ -3,6 +3,8 @@
 #include "PolyPolygon.h"
 #include "OSBasics.h"
 
+#include "physfs.h"
+
 using namespace Polycode;
 
 const struct aiScene* scene = NULL;
