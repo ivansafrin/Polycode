@@ -93,7 +93,7 @@ Texture *MaterialManager::createTextureFromFile(const String& fileName, bool cla
 	
 	Image *image = new Image(fileName);
 	if(image->isLoaded()) {
-		newTexture = createTexture(image->getWidth(), image->getHeight(), image->getPixels(), clamp);
+		newTexture = createTexture(image->getWidth(), image->getHeight(), image->getPixels(), clamp, createMipmaps);
 	} else {
 		Logger::log("Error loading image, using default texture.\n");
 		delete image;		
