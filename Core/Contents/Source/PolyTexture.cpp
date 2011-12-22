@@ -25,10 +25,11 @@
 
 using namespace Polycode;
 
-Texture::Texture(unsigned int width, unsigned int height, char *textureData,bool clamp, int type) : Resource(Resource::RESOURCE_TEXTURE) {
+Texture::Texture(unsigned int width, unsigned int height, char *textureData,bool clamp, bool createMipmaps, int type) : Resource(Resource::RESOURCE_TEXTURE) {
 	this->width = width;
 	this->height = height;
 	this->clamp = clamp;
+	this->createMipmaps = createMipmaps;
 	
 	switch (type) {
 		case Image::IMAGE_RGB:

@@ -77,7 +77,7 @@ void ScreenLabel::setText(const String& newText) {
 	if(!label->getFont()->isValid())
 		return;				
 	
-	texture = CoreServices::getInstance()->getMaterialManager()->createTextureFromImage(label);
+	texture = CoreServices::getInstance()->getMaterialManager()->createTextureFromImage(label, true, false);
 	width = label->getWidth();
 	height = label->getHeight();
 	setShapeSize(width, height);

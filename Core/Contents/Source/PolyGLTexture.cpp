@@ -26,7 +26,7 @@
 
 using namespace Polycode;
 
-OpenGLTexture::OpenGLTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, int filteringMode, int type) : Texture(width, height, textureData,clamp, type) {
+OpenGLTexture::OpenGLTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, bool createMipmaps, int filteringMode, int type) : Texture(width, height, textureData,clamp, createMipmaps, type) {
 	this->filteringMode = filteringMode;
 	glTextureLoaded = false;
 	frameBufferID = 999999;
@@ -62,11 +62,19 @@ void OpenGLTexture::recreateFromImageData() {
 				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, anisotropy);
 			}
 		
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-			if(textureData) {
-				gluBuild2DMipmaps(GL_TEXTURE_2D, glTextureType, width, height, glTextureType, GL_UNSIGNED_BYTE, textureData );
-			}			
+			if(createMipmaps) {
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+				if(textureData) {
+					gluBuild2DMipmaps(GL_TEXTURE_2D, glTextureType, width, height, glTextureType, GL_UNSIGNED_BYTE, textureData );
+				}
+			} else {
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);		
+				if(textureData) {
+					glTexImage2D(GL_TEXTURE_2D, 0, glTextureType, width, height, 0, glTextureType, GL_UNSIGNED_BYTE, textureData);							
+				}						
+			}
 			break;
 		case Renderer::TEX_FILTERING_NEAREST:
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -80,7 +88,7 @@ void OpenGLTexture::recreateFromImageData() {
 	glTextureLoaded = true;
 }
 
-OpenGLTexture::OpenGLTexture(unsigned int width, unsigned int height) : Texture(width, height, NULL ,true) {
+OpenGLTexture::OpenGLTexture(unsigned int width, unsigned int height) : Texture(width, height, NULL ,true, true) {
 
 }
 

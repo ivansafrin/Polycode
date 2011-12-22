@@ -45,7 +45,7 @@ namespace Polycode {
 	class _PolyExport OpenGLTexture : public Texture {
 		public:
 			OpenGLTexture(unsigned int width, unsigned int height);
-			OpenGLTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, int filteringMode, int type);
+			OpenGLTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, bool createMipmaps, int filteringMode, int type);
 			virtual ~OpenGLTexture();
 			
 			void recreateFromImageData();

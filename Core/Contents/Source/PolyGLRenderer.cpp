@@ -655,8 +655,8 @@ Cubemap *OpenGLRenderer::createCubemap(Texture *t0, Texture *t1, Texture *t2, Te
 	return newCubemap;
 }
 
-Texture *OpenGLRenderer::createTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, int type) {
-	OpenGLTexture *newTexture = new OpenGLTexture(width, height, textureData, clamp, textureFilteringMode, type);	
+Texture *OpenGLRenderer::createTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, bool createMipmaps, int type) {
+	OpenGLTexture *newTexture = new OpenGLTexture(width, height, textureData, clamp, createMipmaps, textureFilteringMode, type);
 	return newTexture;
 }
 
