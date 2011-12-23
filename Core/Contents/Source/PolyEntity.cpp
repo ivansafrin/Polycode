@@ -499,7 +499,7 @@ void Entity::setTransformByMatrix(const Matrix4& matrix) {
 	matrixDirty = true;
 }
 
-void Entity::setPosition(Vector3 posVec) {
+void Entity::setPosition(const Vector3 &posVec) {
 	position = posVec;
 	matrixDirty = true;
 }
@@ -519,7 +519,6 @@ void Entity::setPositionZ(Number z) {
 	matrixDirty = true;	
 }
 
-
 void Entity::setScaleX(Number x) {
 	scale.x = x;
 	matrixDirty = true;	
@@ -535,6 +534,12 @@ void Entity::setScaleZ(Number z) {
 	matrixDirty = true;		
 }
 
+void Entity::setScale(const Vector3 &v) {
+    scale.x = v.x;
+    scale.y = v.y;
+    scale.z = v.z;
+    matrixDirty = true;
+}
 
 void Entity::setPosition(Number x, Number y, Number z) {
 	position.x = x;
@@ -543,7 +548,7 @@ void Entity::setPosition(Number x, Number y, Number z) {
 	matrixDirty = true;
 }
 
-void Entity::Translate(Vector3 tVec) {
+void Entity::Translate(const Vector3 &tVec) {
 	position += tVec;
 	matrixDirty = true;
 }

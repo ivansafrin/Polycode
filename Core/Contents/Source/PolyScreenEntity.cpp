@@ -127,11 +127,24 @@ void ScreenEntity::setPosition(Number x, Number y) {
 	matrixDirty = true;
 }
 
+void ScreenEntity::setPosition(const Vector2 &v) {
+	position.x  = v.x;
+	position.y  = v.y;
+	matrixDirty = true;	
+}
+
 void ScreenEntity::setScale(Number x, Number y) {
 	scale.x = x;
 	scale.y = y;
 	matrixDirty = true;	
 }
+
+void ScreenEntity::setScale(const Vector2 &v) {
+	scale.x = v.x;
+	scale.y = v.y;
+	matrixDirty = true;	
+}
+
 
 Number ScreenEntity::getWidth() const {
 	return width;

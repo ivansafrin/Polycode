@@ -50,6 +50,13 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		* @param y Vertical position.
 		*/
 		void setPosition(Number x, Number y);
+
+		/**
+		* Set 2d position.
+		* @param v New 2D position vector.
+		*/
+		void setPosition(const Vector2 &v);
+
 		
 		/**
 		* Set 2d scale.
@@ -59,10 +66,17 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		void setScale(Number x, Number y);
 		
 		/**
+		* Set 2d scale.
+		* @param v New 2D scale vector.
+		*/
+		void setScale(const Vector2 &v);
+		
+		
+		/**
 		* Set 2d rotation.
 		* @param rotation New rotation value in degrees.
 		*/				
-		void setRotation(Number roatation);
+		void setRotation(Number rotation);
 		
 		/**
 		* Returns current rotation.

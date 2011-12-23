@@ -192,7 +192,7 @@ namespace Polycode {
 			* Sets the entity's position with a vector.
 			@param posVec New position as a vector.
 			*/								
-			void setPosition(Vector3 posVec);
+			void setPosition(const Vector3 &posVec);
 			
 			/**
 			* Returns the entity's position on the X axis.
@@ -218,7 +218,7 @@ namespace Polycode {
 			* Translates the entity relative to its current position with a vector.
 			@param tVec New position as a vector.
 			*/											
-			void Translate(Vector3 tVec);
+			void Translate(const Vector3 &tVec);
 
 			/**
 			* Returns the entity's position on the Z axis.
@@ -260,6 +260,12 @@ namespace Polycode {
 			@param z Z-axis value.						
 			*/									
 			void setScale(Number x, Number y, Number z);
+			
+			/**
+			* Sets the entity's scale.
+			@param v New scale vector.
+			*/												
+			void setScale(const Vector3 &v);
 			
 			/**
 			* Returns the entity's scale multiplied by its parent's compound scale.
