@@ -24,12 +24,29 @@
 
 using namespace Polycode;
 	
-Vector2::Vector2() : Vector3() {
+Vector2::Vector2() : x(0),y(0) {
+
+
 }
-	
-Vector2::Vector2(Number x, Number y) : Vector3(x,y,0) {
+
+void Vector2::set(Number x, Number y) {
+	this->x = x;
+	this->y = y;
 }
-	
-	
+
+Vector2::Vector2(Number x,Number y) {
+	set(x,y);
+}
+
+void Vector2::Normalize() {
+	Number tL = sqrtf( x * x + y * y);
+	if(tL > 1e-08 ) {
+		Number invTl = 1.0 / tL;
+		x *= invTl;
+		y *= invTl;
+	}
+}
+
 Vector2::~Vector2() {
+
 }
