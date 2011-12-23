@@ -55,7 +55,7 @@
 			</shader>
 		</material>	
 		<material name="HDRProcessBloom">
-			<rendertargets>
+			<rendertargets type="rgba_fp16">
 				<rendertarget id="base_target"  sizeMode="normalized" width="1.0" height="1.0"/>			
 				<rendertarget id="bloomtarget"  sizeMode="pixels" width="256" height="256"/>
 				<rendertarget id="bloomtarget2"  sizeMode="pixels" width="256" height="256"/>				

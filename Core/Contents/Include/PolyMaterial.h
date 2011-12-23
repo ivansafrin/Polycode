@@ -54,7 +54,9 @@ namespace Polycode {
 			Number specularStrength;
 			Color specularColor;
 			Color diffuseColor;
-						
+				
+			bool fp16RenderTargets;
+			
 		protected:
 		
 			std::vector<Shader*> materialShaders;

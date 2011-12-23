@@ -94,7 +94,7 @@ void SceneLight::enableDebugDraw(bool val) {
 void SceneLight::enableShadows(bool val, Number resolution) {
 	if(val) {
 		if(!zBufferTexture) {
-			CoreServices::getInstance()->getRenderer()->createRenderTextures(NULL, &zBufferTexture, resolution, resolution);
+			CoreServices::getInstance()->getRenderer()->createRenderTextures(NULL, &zBufferTexture, resolution, resolution, false);
 		}
 		if(!spotCamera) {
 			spotCamera = new Camera(parentScene);

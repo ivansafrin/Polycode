@@ -247,6 +247,13 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 
 	for (pChild3 = node->FirstChild(); pChild3 != 0; pChild3 = pChild3->NextSibling()) {
 		if(strcmp(pChild3->Value(), "rendertargets") == 0) {
+			
+			if(pChild3->ToElement()->Attribute("type")) {
+				if(strcmp(pChild3->ToElement()->Attribute("type"), "rgba_fp16") == 0) {
+					newMaterial->fp16RenderTargets = true;
+				}			
+			}
+		
 			for (pChild = pChild3->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {
 				if(strcmp(pChild->Value(), "rendertarget") == 0) {
 					ShaderRenderTarget *newTarget = new ShaderRenderTarget;
@@ -271,7 +278,7 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 					}						
 //					Texture *newTexture = CoreServices::getInstance()->getMaterialManager()->createNewTexture(newTarget->width, newTarget->height, true);
 					Texture *newTexture, *temp;
-					CoreServices::getInstance()->getRenderer()->createRenderTextures(&newTexture, &temp, (int)newTarget->width, (int)newTarget->height);
+					CoreServices::getInstance()->getRenderer()->createRenderTextures(&newTexture, &temp, (int)newTarget->width, (int)newTarget->height, newMaterial->fp16RenderTargets);
 					newTexture->setResourceName(newTarget->id);
 					//CoreServices::getInstance()->getResourceManager()->addResource(newTexture);
 					newTarget->texture = newTexture;

@@ -88,7 +88,7 @@ namespace Polycode {
 		virtual Cubemap *createCubemap(Texture *t0, Texture *t1, Texture *t2, Texture *t3, Texture *t4, Texture *t5) = 0;		
 		virtual Texture *createTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, bool createMipmaps, int type=Image::IMAGE_RGBA) = 0;
 		virtual void destroyTexture(Texture *texture) = 0;
-		virtual void createRenderTextures(Texture **colorBuffer, Texture **depthBuffer, int width, int height) = 0;
+		virtual void createRenderTextures(Texture **colorBuffer, Texture **depthBuffer, int width, int height, bool floatingPointBuffer) = 0;
 		
 		virtual Texture *createFramebufferTexture(unsigned int width, unsigned int height) = 0;
 		virtual void bindFrameBufferTexture(Texture *texture) = 0;

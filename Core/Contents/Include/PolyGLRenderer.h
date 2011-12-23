@@ -120,7 +120,7 @@ namespace Polycode {
 		Texture *createTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, bool createMipmaps, int type = Image::IMAGE_RGBA);
 		void destroyTexture(Texture *texture);		
 		Texture *createFramebufferTexture(unsigned int width, unsigned int height);
-		void createRenderTextures(Texture **colorBuffer, Texture **depthBuffer, int width, int height);
+		void createRenderTextures(Texture **colorBuffer, Texture **depthBuffer, int width, int height, bool floatingPointBuffer);
 		
 		void enableAlphaTest(bool val);
 		

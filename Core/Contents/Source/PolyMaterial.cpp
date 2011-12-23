@@ -30,6 +30,7 @@ Material::Material(const String& name) : Resource(Resource::RESOURCE_MATERIAL) {
 	this->name = name;
 	specularValue = 75.0;
 	specularStrength = 1.0;
+	fp16RenderTargets = false;
 }
 
 Material::~Material() {
