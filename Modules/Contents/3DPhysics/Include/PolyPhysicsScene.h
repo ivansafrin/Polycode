@@ -42,7 +42,7 @@ namespace Polycode {
 		/**
 		* Main constructor.
 		*/
-		PhysicsScene();
+		PhysicsScene(int maxSubSteps = 0);
 		virtual ~PhysicsScene();	
 		
 		void Update();		
@@ -68,6 +68,7 @@ namespace Polycode {
 		
 	protected:
 		
+		int maxSubSteps;
 		void initPhysicsScene();		
 		
 		btDiscreteDynamicsWorld* physicsWorld;

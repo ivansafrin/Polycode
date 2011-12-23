@@ -33,7 +33,8 @@ THE SOFTWARE.
 
 using namespace Polycode;
 
-PhysicsScene::PhysicsScene() : CollisionScene() {
+PhysicsScene::PhysicsScene(int maxSubSteps) : CollisionScene() {
+	this->maxSubSteps = maxSubSteps;
 	initPhysicsScene();	
 }
 
@@ -77,7 +78,11 @@ void PhysicsScene::Update() {
 	
 	
 	Number elapsed = CoreServices::getInstance()->getCore()->getElapsed();
-	physicsWorld->stepSimulation(elapsed, 7);	
+	if(maxSubSteps > 0) {
+		physicsWorld->stepSimulation(elapsed, maxSubSteps);	
+	} else {
+		physicsWorld->stepSimulation(elapsed);		
+	}
 	CollisionScene::Update();
 	
 }
