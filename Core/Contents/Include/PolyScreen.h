@@ -60,7 +60,7 @@ namespace Polycode {
 		* @param entityToRemove Entity to remove.
 		* @return Returns the same entity for convenience.
 		*/				
-		ScreenEntity* removeChild(ScreenEntity *entityToRemove);
+		virtual ScreenEntity* removeChild(ScreenEntity *entityToRemove);
 		
 		/**
 		* Sets the screen's offset. You can also translate the root entity to do the same thing.

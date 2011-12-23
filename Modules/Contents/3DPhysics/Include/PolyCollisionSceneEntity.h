@@ -42,7 +42,7 @@ namespace Polycode {
 			* Main constructor.
 			*/ 
 			CollisionSceneEntity(SceneEntity *entity, int type);
-			~CollisionSceneEntity();
+			virtual ~CollisionSceneEntity();
 			
 			/** @name Collision scene entity
 			*  Public methods

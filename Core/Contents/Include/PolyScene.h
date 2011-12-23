@@ -65,7 +65,7 @@ namespace Polycode {
 		* Removes a SceneEntity from the scene
 		* @param entity New entity to remove.
 		*/		
-		void removeEntity(SceneEntity *entity);
+		virtual void removeEntity(SceneEntity *entity);
 		
 		/**
 		* Returns the scene's default camera.

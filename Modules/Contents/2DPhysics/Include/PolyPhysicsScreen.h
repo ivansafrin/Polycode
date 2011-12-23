@@ -175,7 +175,11 @@ public:
 	* Removes a physics child from the screen.
 	* @param entityToRemove Entity to remove from the screen.
 	*/
-	void removePhysicsChild(PhysicsScreenEntity *entityToRemove);
+	void removePhysicsChild(ScreenEntity *entityToRemove);
+	
+	
+	ScreenEntity* removeChild(ScreenEntity *entityToRemove);
+	
 	
 	/**
 	* Begins tracking collisions for a ScreenEntity.

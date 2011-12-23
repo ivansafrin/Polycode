@@ -201,7 +201,7 @@ PhysicsSceneEntity::PhysicsSceneEntity(SceneEntity *entity, int type, Number mas
 	}	
 	
 	if(type == CHARACTER_CONTROLLER) {
-		
+		rigidBody = NULL;
 	} else {	
 		btDefaultMotionState* myMotionState = new btDefaultMotionState(transform);
 		btRigidBody::btRigidBodyConstructionInfo rbInfo(mass,myMotionState,shape,localInertia);
@@ -229,6 +229,7 @@ void PhysicsSceneEntity::Update() {
 	free(mat);
 		
 	sceneEntity->setTransformByMatrixPure(m);	
+	collisionObject->getWorldTransform().setFromOpenGLMatrix(mat);
 }
 
 SceneEntity *PhysicsSceneEntity::getSceneEntity() {

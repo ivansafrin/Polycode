@@ -47,6 +47,8 @@ namespace Polycode {
 		
 		void Update();		
 		
+		void removeEntity(SceneEntity *entity);
+		
 			/** @name Physics scene
 			*  Public methods
 			*/

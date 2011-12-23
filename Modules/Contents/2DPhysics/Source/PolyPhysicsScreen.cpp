@@ -407,14 +407,27 @@ PhysicsScreenEntity *PhysicsScreen::addPhysicsChild(ScreenEntity *newEntity, int
 	return newPhysicsEntity;
 }
 
-void PhysicsScreen::removePhysicsChild(PhysicsScreenEntity *entityToRemove) {
-	world->DestroyBody(entityToRemove->body);
-	removeChild(entityToRemove->getScreenEntity());
+void PhysicsScreen::removePhysicsChild(ScreenEntity *entityToRemove) {
+	PhysicsScreenEntity *physicsEntityToRemove = getPhysicsByScreenEntity(entityToRemove);
+	if(!physicsEntityToRemove) {
+		return;
+	}
+	world->DestroyBody(physicsEntityToRemove->body);
 	for(int i=0;i<physicsChildren.size();i++) {
-		if(physicsChildren[i] == entityToRemove) {
+		if(physicsChildren[i] == physicsEntityToRemove) {
 			physicsChildren.erase(physicsChildren.begin()+i);
 		}
 	}
+	Screen::removeChild(entityToRemove);	
+}
+
+ScreenEntity* PhysicsScreen::removeChild(ScreenEntity *entityToRemove) {
+	if(getPhysicsByScreenEntity(entityToRemove)) {
+		removePhysicsChild(entityToRemove);
+	} else {
+		Screen::removeChild(entityToRemove);	
+	}
+	return entityToRemove;
 }
 
 
