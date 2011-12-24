@@ -76,9 +76,15 @@ class _PolyExport PhysicsScreenEvent : public Event {
 		Vector2 worldCollisionNormal;
 		
 		/**
-		* Collision point
+		* Collision point in local space
 		*/			
 		Vector2 localCollisionPoint;
+
+		/**
+		* Collision point in world space
+		*/			
+		Vector2 worldCollisionPoint;
+
 			
 		/**
 		* Strength of the collision impact.

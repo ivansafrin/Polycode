@@ -68,8 +68,11 @@ void PhysicsScreen::BeginContact (b2Contact *contact) {
 	newEvent->worldCollisionNormal.x = w_nor.x;
 	newEvent->worldCollisionNormal.y = w_nor.y;	
 
-	newEvent->localCollisionPoint.x = point.x;
-	newEvent->localCollisionPoint.y = point.y;	
+	newEvent->localCollisionPoint.x = point.x * worldScale;
+	newEvent->localCollisionPoint.y = point.y * worldScale;	
+	
+	newEvent->worldCollisionPoint.x = w_manifold.points[0].x * worldScale;
+	newEvent->worldCollisionPoint.y = w_manifold.points[0].y * worldScale;
 	
 	newEvent->impactStrength = 0;
 	newEvent->frictionStrength = 0;
@@ -96,8 +99,11 @@ void PhysicsScreen::PostSolve(b2Contact* contact, const b2ContactImpulse* impuls
 	newEvent->worldCollisionNormal.x = w_nor.x;
 	newEvent->worldCollisionNormal.y = w_nor.y;	
 
-	newEvent->localCollisionPoint.x = point.x;
-	newEvent->localCollisionPoint.y = point.y;	
+	newEvent->localCollisionPoint.x = point.x * worldScale;
+	newEvent->localCollisionPoint.y = point.y * worldScale;	
+	newEvent->worldCollisionPoint.x = w_manifold.points[0].x * worldScale;
+	newEvent->worldCollisionPoint.y = w_manifold.points[0].y * worldScale;
+	
 	
 	newEvent->impactStrength = 0;
 	newEvent->frictionStrength = 0;
