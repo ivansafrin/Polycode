@@ -62,6 +62,7 @@ extern PFNGLLINKPROGRAMPROC glLinkProgram;
 extern PFNGLDETACHSHADERPROC glDetachShader;
 extern PFNGLDELETESHADERPROC glDeleteShader;
 extern PFNGLDELETEPROGRAMPROC glDeleteProgram;
+extern PFNGLBINDATTRIBLOCATIONPROC glBindAttribLocation;
 #endif
 
 using namespace Polycode;

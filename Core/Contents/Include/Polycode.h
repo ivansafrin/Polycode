@@ -88,3 +88,6 @@
 #include "PolySoundManager.h"
 #include "PolySceneSound.h"
 #include "PolyScreenSound.h"
+#ifdef _WINDOWS
+#include "PolyWinCore.h"
+#endif

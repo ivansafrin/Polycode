@@ -229,7 +229,7 @@ void PhysicsSceneEntity::Update() {
 	free(mat);
 		
 	sceneEntity->setTransformByMatrixPure(m);	
-	collisionObject->getWorldTransform().setFromOpenGLMatrix(mat);
+//	collisionObject->getWorldTransform().setFromOpenGLMatrix(mat);
 }
 
 SceneEntity *PhysicsSceneEntity::getSceneEntity() {
