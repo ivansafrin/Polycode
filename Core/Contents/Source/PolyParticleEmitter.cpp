@@ -62,7 +62,12 @@ void SceneParticleEmitter::addParticleBody(Entity *particleBody) {
 	particleParentScene->addEntity((SceneEntity*)particleBody);	
 }
 
-Matrix4 SceneParticleEmitter::getBaseMatrix() const {
+void SceneParticleEmitter::dispatchTriggerCompleteEvent() {
+	((EventDispatcher*)this)->dispatchEvent(new Event(Event::COMPLETE_EVENT), Event::COMPLETE_EVENT);
+}
+
+Matrix4 SceneParticleEmitter::getBaseMatrix() {
+	rebuildTransformMatrix();
 	return getConcatenatedMatrix();	
 }
 
@@ -82,7 +87,11 @@ ScreenEntity()
 }
 
 ScreenParticleEmitter::~ScreenParticleEmitter(){ 
-	
+	particleParentScreen->removeChild(this);
+	for(int i=0;i < particles.size(); i++) {
+		particleParentScreen->removeChild((ScreenEntity*)particles[i]->particleBody);
+		delete particles[i];
+	}
 }
 
 void ScreenParticleEmitter::Update() {
@@ -93,7 +102,12 @@ void ScreenParticleEmitter::addParticleBody(Entity *particleBody) {
 	particleParentScreen->addChild((ScreenEntity*)particleBody);
 }
 
-Matrix4 ScreenParticleEmitter::getBaseMatrix() const {
+void ScreenParticleEmitter::dispatchTriggerCompleteEvent() {
+	((EventDispatcher*)this)->dispatchEvent(new Event(Event::COMPLETE_EVENT), Event::COMPLETE_EVENT);
+}
+
+Matrix4 ScreenParticleEmitter::getBaseMatrix() {
+	rebuildTransformMatrix();
 	return getConcatenatedMatrix();
 }
 
@@ -379,6 +393,7 @@ void ParticleEmitter::updateEmitter() {
 			if(emitterType == CONTINUOUS_EMITTER) {
 				resetParticle(particle);
 			} else {
+				dispatchTriggerCompleteEvent();
 //				particle->particleBody->visible = false;
 			}
 		}

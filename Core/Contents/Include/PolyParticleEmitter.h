@@ -51,6 +51,8 @@ namespace Polycode {
 			ParticleEmitter(const String& imageFile, Mesh *particleMesh, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation);
 			virtual ~ParticleEmitter();
 		
+			virtual void dispatchTriggerCompleteEvent() = 0;
+		
 			void createParticles();
 			
 			/**
@@ -133,7 +135,7 @@ namespace Polycode {
 			void setParticleCount(int count);
 		
 			virtual void addParticleBody(Entity *particleBody) {}
-			virtual Matrix4 getBaseMatrix() const {Matrix4 m; return m;}
+			virtual Matrix4 getBaseMatrix() = 0;
 		
 			/**
 			* Particle movement speed multiplier
@@ -270,8 +272,10 @@ namespace Polycode {
 		
 		void respawnSceneParticles();
 		void addParticleBody(Entity *particleBody);
-		Matrix4 getBaseMatrix() const;
+		Matrix4 getBaseMatrix();
 		void Update();
+		
+		void dispatchTriggerCompleteEvent();
 		
 	protected:
 		SceneMesh *emitterMesh;		
@@ -291,8 +295,10 @@ namespace Polycode {
 		*/ 		
 		ParticleEmitter *getEmitter() { return this; }		
 		
+		void dispatchTriggerCompleteEvent();
+		
 		void addParticleBody(Entity *particleBody);
-		Matrix4 getBaseMatrix() const;
+		Matrix4 getBaseMatrix();
 		void Update();
 		
 	protected:
