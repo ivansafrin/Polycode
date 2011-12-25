@@ -26,6 +26,10 @@
 
 using namespace Polycode;
 
+#ifdef _WINDOWS
+extern PFNGLDELETEFRAMEBUFFERSEXTPROC glDeleteFramebuffersEXT;
+#endif
+
 OpenGLTexture::OpenGLTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, bool createMipmaps, int filteringMode, int type) : Texture(width, height, textureData,clamp, createMipmaps, type) {
 	this->filteringMode = filteringMode;
 	glTextureLoaded = false;

@@ -126,8 +126,8 @@ namespace Polycode {
 		void handleMouseDown(int mouseCode,LPARAM lParam, WPARAM wParam);
 		void handleMouseUp(int mouseCode,LPARAM lParam, WPARAM wParam);
 
-		void setVideoMode(int xRes, int yRes, bool fullScreen, int aaLevel);	
-
+		void setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel);
+		
 		void initContext(bool usePixelFormat, unsigned int pixelFormat);
 		void destroyContext();
 

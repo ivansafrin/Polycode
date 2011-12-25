@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "2DAudio", "2DAudio\2DAudio.vcxproj", "{5586530C-8D6D-4ECE-B560-9566A66E359F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "3DMeshParticles", "3DMeshParticles\3DMeshParticles.vcxproj", "{2978F8D8-10AA-4335-8FF1-C8499849C182}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "3DPhysics_Vehicle", "3DPhysics_Vehicle\3DPhysics_Vehicle.vcxproj", "{6EB61FF3-51EA-42AF-AC8C-667A5FBF517A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "3DPhysics_Basic", "3DPhysics_Basic\3DPhysics_Basic.vcxproj", "{DC249750-474E-4945-A938-2C93F98B4B92}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "3DPhysics_Contacts", "3DPhysics_Contacts\3DPhysics_Contacts.vcxproj", "{70C02441-8A71-40E3-B737-C872FFFB0183}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5586530C-8D6D-4ECE-B560-9566A66E359F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5586530C-8D6D-4ECE-B560-9566A66E359F}.Debug|Win32.Build.0 = Debug|Win32
+		{5586530C-8D6D-4ECE-B560-9566A66E359F}.Release|Win32.ActiveCfg = Release|Win32
+		{5586530C-8D6D-4ECE-B560-9566A66E359F}.Release|Win32.Build.0 = Release|Win32
+		{2978F8D8-10AA-4335-8FF1-C8499849C182}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2978F8D8-10AA-4335-8FF1-C8499849C182}.Debug|Win32.Build.0 = Debug|Win32
+		{2978F8D8-10AA-4335-8FF1-C8499849C182}.Release|Win32.ActiveCfg = Release|Win32
+		{2978F8D8-10AA-4335-8FF1-C8499849C182}.Release|Win32.Build.0 = Release|Win32
+		{6EB61FF3-51EA-42AF-AC8C-667A5FBF517A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6EB61FF3-51EA-42AF-AC8C-667A5FBF517A}.Debug|Win32.Build.0 = Debug|Win32
+		{6EB61FF3-51EA-42AF-AC8C-667A5FBF517A}.Release|Win32.ActiveCfg = Release|Win32
+		{6EB61FF3-51EA-42AF-AC8C-667A5FBF517A}.Release|Win32.Build.0 = Release|Win32
+		{DC249750-474E-4945-A938-2C93F98B4B92}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DC249750-474E-4945-A938-2C93F98B4B92}.Debug|Win32.Build.0 = Debug|Win32
+		{DC249750-474E-4945-A938-2C93F98B4B92}.Release|Win32.ActiveCfg = Release|Win32
+		{DC249750-474E-4945-A938-2C93F98B4B92}.Release|Win32.Build.0 = Release|Win32
+		{70C02441-8A71-40E3-B737-C872FFFB0183}.Debug|Win32.ActiveCfg = Debug|Win32
+		{70C02441-8A71-40E3-B737-C872FFFB0183}.Debug|Win32.Build.0 = Debug|Win32
+		{70C02441-8A71-40E3-B737-C872FFFB0183}.Release|Win32.ActiveCfg = Release|Win32
+		{70C02441-8A71-40E3-B737-C872FFFB0183}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
