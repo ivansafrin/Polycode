@@ -33,8 +33,8 @@
 
 using namespace Polycode;
 
-SceneParticleEmitter::SceneParticleEmitter(const String& materialName, Scene *particleParentScene, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Mesh *particleMesh, SceneMesh *emitter)
-: ParticleEmitter(materialName, particleMesh, particleType, emitterType, lifespan, numParticles,  direction, gravity, deviation),
+SceneParticleEmitter::SceneParticleEmitter(const String& materialName, Scene *particleParentScene, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Vector3 emitterRadius, Mesh *particleMesh, SceneMesh *emitter)
+: ParticleEmitter(materialName, particleMesh, particleType, emitterType, lifespan, numParticles,  direction, gravity, deviation, emitterRadius),
 SceneEntity()
 {
 	isScreenEmitter = false;
@@ -76,8 +76,8 @@ void SceneParticleEmitter::Update() {
 }
 
 
-ScreenParticleEmitter::ScreenParticleEmitter(const String& imageFile, Screen *particleParentScreen, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Mesh *particleMesh, ScreenMesh *emitter)
-		: ParticleEmitter(imageFile, particleMesh, particleType, emitterType, lifespan, numParticles,  direction, gravity, deviation),
+ScreenParticleEmitter::ScreenParticleEmitter(const String& imageFile, Screen *particleParentScreen, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Vector3 emitterRadius, Mesh *particleMesh, ScreenMesh *emitter)
+		: ParticleEmitter(imageFile, particleMesh, particleType, emitterType, lifespan, numParticles,  direction, gravity, deviation, emitterRadius),
 ScreenEntity()
 {
 	isScreenEmitter = true;
@@ -111,8 +111,9 @@ Matrix4 ScreenParticleEmitter::getBaseMatrix() {
 	return getConcatenatedMatrix();
 }
 
-ParticleEmitter::ParticleEmitter(const String& imageFile, Mesh *particleMesh, int particleType, int emitterType, Number lifespan, unsigned int numParticles,  Vector3 direction, Vector3 gravity, Vector3 deviation)  {
+ParticleEmitter::ParticleEmitter(const String& imageFile, Mesh *particleMesh, int particleType, int emitterType, Number lifespan, unsigned int numParticles,  Vector3 direction, Vector3 gravity, Vector3 deviation, Vector3 emitterRadius)  {
 	
+	this->emitterRadius = emitterRadius;	
 	isScreenEmitter = false;
 	dirVector = direction;
 	gravVector = gravity;
@@ -393,7 +394,7 @@ void ParticleEmitter::updateEmitter() {
 			if(emitterType == CONTINUOUS_EMITTER) {
 				resetParticle(particle);
 			} else {
-				dispatchTriggerCompleteEvent();
+			//	dispatchTriggerCompleteEvent();
 //				particle->particleBody->visible = false;
 			}
 		}

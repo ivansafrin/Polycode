@@ -57,9 +57,9 @@
 		<material name="HDRProcessBloom">
 			<rendertargets type="rgba_fp16">
 				<rendertarget id="base_target"  sizeMode="normalized" width="1.0" height="1.0"/>			
-				<rendertarget id="bloomtarget"  sizeMode="pixels" width="256" height="256"/>
-				<rendertarget id="bloomtarget2"  sizeMode="pixels" width="256" height="256"/>				
-				<rendertarget id="bloomtarget_final"  sizeMode="pixels" width="256" height="256"/>
+				<rendertarget id="bloomtarget"  sizeMode="pixels" width="512" height="512"/>
+				<rendertarget id="bloomtarget2"  sizeMode="pixels" width="512" height="512"/>				
+				<rendertarget id="bloomtarget_final"  sizeMode="pixels" width="512" height="512"/>
 			</rendertargets>
 			<shader name="PassThrough">
 				<targettextures>
