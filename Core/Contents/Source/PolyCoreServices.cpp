@@ -43,9 +43,6 @@
 #elif defined(__APPLE__) && defined(__MACH__)
 #include <ApplicationServices/ApplicationServices.h>
 #elif defined(__linux) || defined(__linux__) || defined(linux)
-#include <X11/extensions/Xrandr.h>
-#include <gdk/gdkx.h>
-#elif defined(SDL_VERSION)
 #include <SDL/SDL.h>
 #endif
 
@@ -251,24 +248,7 @@ void CoreServices::getScreenInfo(int *width, int *height, int *hz) {
 	
 #elif defined(__linux) || defined(__linux__) || defined(linux)
 	
-    // Get the current configuration.
-    XRRScreenConfiguration *config = XRRGetScreenInfo(gdk_x11_get_default_xdisplay(),
-                                                      gdk_x11_get_default_root_xwindow());
-    int size_count;
-    // Obtain the dimensions.
-    XRRScreenSize *sizes = XRRConfigSizes(config, &size_count);
-    Rotation current_rotation;
-    SizeID current_mode = XRRConfigCurrentConfiguration(config, &current_rotation);
-	
-    // Store the results.
-    if (width) *width = sizes[current_mode].width;
-    if (height) *height = sizes[current_mode].height;
-    if (hz) *hz = XRRConfigCurrentRate(config); // Warning: On some drivers (nvidia?) this can lie.
-	
-    XRRFreeScreenConfigInfo(config);
-	
-#elif defined(SDL_VERSION)
-	
+	SDL_Init(SDL_INIT_VIDEO); // Or GetVideoInfo will not work
 	const SDL_VideoInfo *video = SDL_GetVideoInfo();
 	if (width) *width = video->current_w;
 	if (height) *height = video->current_h;
