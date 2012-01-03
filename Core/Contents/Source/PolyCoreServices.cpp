@@ -226,7 +226,8 @@ ResourceManager *CoreServices::getResourceManager() {
 void CoreServices::getScreenInfo(int *width, int *height, int *hz) {
 #if defined(_WINDOWS)
 	
-	DEVMODE mode = {.dmSize = sizeof(DEVMODE), .dmDriverExtra = 0};
+	DEVMODE mode = {}; // Zero initialize
+	mode.dmSize = sizeof(DEVMODE);
 	
     EnumDisplaySettings(0, ENUM_CURRENT_SETTINGS, &mode);
 	
