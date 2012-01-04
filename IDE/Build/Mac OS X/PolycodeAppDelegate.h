@@ -47,14 +47,16 @@ public:
 @property (assign) IBOutlet NSWindow *window;
 @property (assign) IBOutlet NSMenu *projectMenu;
 
+
 - (void) showProjectMenu;
 
 // Menu accessors
 
--(void) newProject: (id) sender;
--(void) closeProject: (id) sender;
--(void) newFile: (id) sender;
--(void) openProject: (id) sender;
--(void) saveFile: (id) sender;
+-(IBAction) runProject: (id) sender;
+-(IBAction) newProject: (id) sender;
+-(IBAction) closeProject: (id) sender;
+-(IBAction) newFile: (id) sender;
+-(IBAction) openProject: (id) sender;
+-(IBAction) saveFile: (id) sender;
 
 @end

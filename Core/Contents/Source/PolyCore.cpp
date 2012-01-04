@@ -78,6 +78,10 @@ namespace Polycode {
 		running = false;
 	}
 	
+	String Core::getDefaultWorkingDirectory() {
+		return defaultWorkingDirectory;
+	}
+	
 	Number Core::getElapsed() {
 		return ((Number)elapsed)/1000.0f;
 	}

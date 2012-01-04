@@ -39,6 +39,8 @@ CocoaCore::CocoaCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bo
 //	NSLog(@"BUNDLE: %@", [[NSBundle mainBundle] bundlePath]);
 	chdir([[[[NSBundle mainBundle] bundlePath] stringByAppendingString:@"/Contents/Resources"] UTF8String]);
 	
+	defaultWorkingDirectory = String([[[[NSBundle mainBundle] bundlePath] stringByAppendingString:@"/Contents/Resources"] UTF8String]);
+	
 	NSOpenGLPixelFormatAttribute attrs[32];
 	
 	int atindx = 0;

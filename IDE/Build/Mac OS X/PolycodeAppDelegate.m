@@ -60,24 +60,38 @@
 	mustShowProjectMenu = YES;	
 }
 
+- (void)applicationWillTerminate:(NSNotification *)aNotification {
+	NSLog(@"STOPPING\n");
+	app->saveConfigFile();
+	app->core->Shutdown();
+}
 
--(void) newProject: (id) sender {
+- (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)theApplication
+{
+	return YES;
+}
+
+-(IBAction) runProject: (id) sender {
+	app->runProject();
+}
+
+-(IBAction) newProject: (id) sender {
 	app->newProject();
 }
 
--(void) newFile: (id) sender {
+-(IBAction) newFile: (id) sender {
 	app->newFile();
 }
 
--(void) openProject: (id) sender {
+-(IBAction) openProject: (id) sender {
 	app->openProject();
 }
 
--(void) closeProject: (id) sender {
+-(IBAction) closeProject: (id) sender {
 	app->closeProject();
 }
 
--(void) saveFile: (id) sender {
+-(IBAction) saveFile: (id) sender {
 	app->saveFile();
 }
 

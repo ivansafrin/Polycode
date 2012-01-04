@@ -22,27 +22,36 @@
  
 #pragma once
 
-#include "PolycodeEditor.h"
-#include <Polycode.h>
+#include "PolycodeToolLauncher.h"
 
-using namespace Polycode;
+PolycodeToolLauncher::PolycodeToolLauncher() {
 
-class PolycodeImageEditor : public PolycodeEditor {
-	public:
-	PolycodeImageEditor();
-	virtual ~PolycodeImageEditor();
-	
-	bool openFile(String filePath);
-	void Resize(int x, int y);
-	
-	protected:
-		ScreenImage *grid;
-	
-		ScreenImage *editorImage;
-};
+}
 
-class PolycodeImageEditorFactory : public PolycodeEditorFactory {
-	public:
-		PolycodeImageEditorFactory() : PolycodeEditorFactory() { extensions.push_back("png"); }
-		PolycodeEditor *createEditor() { return new PolycodeImageEditor(); }
-};
+PolycodeToolLauncher::~PolycodeToolLauncher() {
+
+}
+
+void PolycodeToolLauncher::execLocalBinCommand(String command) {
+	system(command.c_str());
+}
+
+String PolycodeToolLauncher::generateTempPath() {
+	return "/tmp/"+String::IntToString(rand() % 10000000);
+}
+
+void PolycodeToolLauncher::buildProject(PolycodeProject *project, String destinationPath) {
+	String projectBasePath = project->getRootFolder();
+	String projectPath = project->getProjectFile();
+	
+	String polycodeBasePath = CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory();
+	
+	execLocalBinCommand("cd "+projectBasePath+" && "+polycodeBasePath+"/Standalone/Bin/polybuild  --config="+projectPath+" --out="+destinationPath);
+
+}
+
+void PolycodeToolLauncher::runPolyapp(String polyappPath) {
+	String polycodeBasePath = CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory();
+
+	execLocalBinCommand("cd "+polycodeBasePath+"/Standalone/Player/PolycodePlayer.app/Contents/Resources && ../MacOS/PolycodePlayer "+polyappPath);	
+}

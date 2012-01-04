@@ -22,27 +22,16 @@
  
 #pragma once
 
-#include "PolycodeEditor.h"
-#include <Polycode.h>
+#include "PolycodeProject.h"
 
-using namespace Polycode;
+class PolycodeToolLauncher {
+	public: 
+		PolycodeToolLauncher();
+		~PolycodeToolLauncher();
+		
+		static void execLocalBinCommand(String command);		
+		static String generateTempPath();
+		static void buildProject(PolycodeProject *project, String destinationPath);
 
-class PolycodeImageEditor : public PolycodeEditor {
-	public:
-	PolycodeImageEditor();
-	virtual ~PolycodeImageEditor();
-	
-	bool openFile(String filePath);
-	void Resize(int x, int y);
-	
-	protected:
-		ScreenImage *grid;
-	
-		ScreenImage *editorImage;
-};
-
-class PolycodeImageEditorFactory : public PolycodeEditorFactory {
-	public:
-		PolycodeImageEditorFactory() : PolycodeEditorFactory() { extensions.push_back("png"); }
-		PolycodeEditor *createEditor() { return new PolycodeImageEditor(); }
-};
+		static void runPolyapp(String polyappPath);
+};	

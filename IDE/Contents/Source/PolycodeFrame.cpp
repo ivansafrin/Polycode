@@ -1,11 +1,24 @@
 /*
- *  PolycodeFrame.cpp
- *  Polycode
- *
- *  Created by Ivan Safrin on 11/29/10.
- *  Copyright 2010 Local Projects. All rights reserved.
- *
- */
+ Copyright (C) 2012 by Ivan Safrin
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
+*/
 
 #include "PolycodeFrame.h"
 
@@ -13,9 +26,25 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 
 	modalChild = NULL;
 	
+	welcomeEntity = new ScreenEntity();
+	addChild(welcomeEntity);
+	welcomeImage = new ScreenImage("welcome.png");
+	welcomeEntity->addChild(welcomeImage);
+	welcomeEntity->snapToPixels = true;
+	
+	newProjectButton = new UIButton("Create A New Project!", 220);	
+	newProjectButton->setPosition(230,80);
+	newProjectButton->addEventListener(this, UIEvent::CLICK_EVENT);
+	
+	examplesButton = new UIButton("Open An Example Project", 220);	
+	examplesButton->setPosition(460,80);
+	
+	welcomeEntity->addChild(newProjectButton);
+	welcomeEntity->addChild(examplesButton);
+	
 	editorHolder = new ScreenEntity();
 	addChild(editorHolder);
-	
+		
 	
 	projectBrowser = new PolycodeProjectBrowser();
 	addChild(projectBrowser);
@@ -25,10 +54,15 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	topBarBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	addChild(topBarBg);
 	
-	logo = new ScreenImage("Images/barlogo.png");	
+	logo = new ScreenImage("barlogo.png");	
 	addChild(logo);		
 	
-	resizer = new ScreenImage("Images/corner_resize.png");	
+	
+	playButton = new UIImageButton("play_button.png");
+	addChild(playButton);
+	playButton->setPosition(10,8);
+	
+	resizer = new ScreenImage("corner_resize.png");	
 	addChild(resizer);
 	resizer->setColor(0,0,0,0.4);
 	
@@ -94,6 +128,13 @@ void PolycodeFrame::handleEvent(Event *event) {
 		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLOSE_EVENT) {
 			hideModal();
 		}
+	} else {
+		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT && event->getDispatcher() == newProjectButton) {
+
+			newProjectWindow->ResetForm();
+			showModal(newProjectWindow);
+
+		}	
 	}
 }
 
@@ -102,10 +143,14 @@ void PolycodeFrame::Resize(int x, int y) {
 	frameSizeX = x;
 	frameSizeY = y;
 	
+	welcomeEntity->setPosition((x-welcomeImage->getWidth()) / 2,
+		(y-welcomeImage->getHeight()) / 2); 
+	
 	topBarBg->setShapeSize(x, 45);
-	logo->setPosition(x-logo->getWidth()-10, 6);	
+	logo->setPosition(x-logo->getWidth()-2, 2);	
 	resizer->setPosition(x-resizer->getWidth()-1, y-resizer->getHeight()-1);	
 	projectBrowser->Resize(200, y-45);
+	
 	modalBlocker->setShapeSize(x, y);
 	
 	editorHolder->setPosition(200, 45);

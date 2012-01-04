@@ -1,12 +1,24 @@
 /*
- *  PolycodeIDEApp.cpp
- *  Polycode
- *
- *  Created by Ivan Safrin on 11/29/10.
- *  Copyright 2010 Local Projects. All rights reserved.
- *
- */
-
+ Copyright (C) 2012 by Ivan Safrin
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
+*/
 
 #include "PolycodeIDEApp.h"
 
@@ -43,6 +55,7 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	frame->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	
 	frame->newProjectWindow->addEventListener(this, UIEvent::OK_EVENT);
+	frame->playButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
 	screen->addChild(frame);
 	
@@ -94,8 +107,19 @@ void PolycodeIDEApp::openProject() {
 	std::vector<String> paths = core->openFilePicker(extensions, false);
 	if(paths[0] != "") {
 		PolycodeProject *project = projectManager->openProject(paths[0]);
-		projectManager->setActiveProject(project);
+		if(project) {
+			projectManager->setActiveProject(project);
+		}
 	}		
+}
+
+void PolycodeIDEApp::runProject() {
+	if(projectManager->getActiveProject()) {
+		String outPath = PolycodeToolLauncher::generateTempPath() + ".polyapp";
+		PolycodeToolLauncher::buildProject(projectManager->getActiveProject(), outPath);
+		PolycodeToolLauncher::runPolyapp(outPath);
+		core->removeDiskItem(outPath);
+	}
 }
 
 void PolycodeIDEApp::saveFile() {
@@ -152,8 +176,14 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 				
 			}
 		}
-	}	
-
+	}
+	
+	if(event->getDispatcher() == frame->playButton) {	
+		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {
+			runProject();
+		}
+	}
+	
 	if(event->getDispatcher() == frame->newProjectWindow) {
 		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {
 			projectManager->createNewProject(frame->newProjectWindow->getTemplateFolder(), frame->newProjectWindow->getProjectName(), frame->newProjectWindow->getProjectLocation());
@@ -202,6 +232,15 @@ PolycodeIDEApp::~PolycodeIDEApp() {
 }
 
 bool PolycodeIDEApp::Update() {
+
+	if(projectManager->getProjectCount() > 0) {
+		frame->welcomeEntity->visible =  false;
+		frame->projectBrowser->visible =  true;		
+	} else {
+		frame->welcomeEntity->visible =  true;
+		frame->projectBrowser->visible =  false;			
+	}
+
 	return core->Update();
 }
 
