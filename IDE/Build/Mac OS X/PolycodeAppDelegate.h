@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "PolySubstanceView.h"
+#import "PolycodeView.h"
 
 #include "Polycode.h"
 #include "PolycodeIDEApp.h"
@@ -34,7 +34,7 @@ public:
 @interface PolycodeAppDelegate : NSObject <NSApplicationDelegate> {
     NSWindow *window;	
 	PolycodeIDEApp *app;
-	SubstanceView *substanceView;
+	PolycodeView *polycodeView;
 	PolycodeAppEventHandler *eventHandler;
 	NSTimer* timer;
 	
@@ -43,7 +43,7 @@ public:
 	BOOL mustShowProjectMenu;
 }
 
-@property (assign) IBOutlet SubstanceView *substanceView;
+@property (assign) IBOutlet PolycodeView *polycodeView;
 @property (assign) IBOutlet NSWindow *window;
 @property (assign) IBOutlet NSMenu *projectMenu;
 

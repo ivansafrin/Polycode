@@ -13,20 +13,22 @@
 
 using namespace Polycode;
 
-PolycodeIDEApp::PolycodeIDEApp(SubstanceView *view) : EventDispatcher() {
-	core = new CocoaCore(view, 800,600,false,0,60);	
+PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
+	core = new CocoaCore(view, 800,600,false,false, 0, 0,60);	
 	core->addEventListener(this, Core::EVENT_CORE_RESIZE);	
-	CoreServices::getInstance()->getRenderer()->setClearColor(0.4,0.4,0.4);
-		
+	CoreServices::getInstance()->getRenderer()->setClearColor(0.2,0.2,0.2);
+	
+	CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_NEAREST);
+				
+	CoreServices::getInstance()->getResourceManager()->addArchive("default.pak");
+	CoreServices::getInstance()->getResourceManager()->addDirResource("default");	
+
 	CoreServices::getInstance()->getConfig()->loadConfig("Polycode", RESOURCE_PATH"UIThemes/default/theme.xml");
 	CoreServices::getInstance()->getResourceManager()->addDirResource(RESOURCE_PATH"UIThemes/default/", false);
-	CoreServices::getInstance()->getResourceManager()->addDirResource(RESOURCE_PATH"Images/", false);
+	CoreServices::getInstance()->getResourceManager()->addDirResource(RESOURCE_PATH"Images/", false);	
 	
-//	CoreServices::getInstance()->getFontManager()->registerFont("sans", RESOURCE_PATH"Fonts/DejaVuSans.ttf");
-//	CoreServices::getInstance()->getFontManager()->registerFont("mono", RESOURCE_PATH"Fonts/DejaVuSansMono.ttf");	
-	CoreServices::getInstance()->getFontManager()->registerFont("sans",  "/System/Library/Fonts/LucidaGrande.ttc");	
-	CoreServices::getInstance()->getFontManager()->registerFont("mono", "/System/Library/Fonts/Monaco.dfont");	
-	
+	CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_LINEAR);
+		
 	printf("creating font editor\n"); 
 	
 	Screen *screen = new Screen();	
@@ -51,7 +53,7 @@ PolycodeIDEApp::PolycodeIDEApp(SubstanceView *view) : EventDispatcher() {
 	frame->getProjectBrowser()->addEventListener(this, PolycodeProjectBrowserEvent::SHOW_MENU);
 	
 	frame->Resize(core->getXRes(), core->getYRes());	
-	core->setVideoMode(1000, 600, false, 0);
+	core->setVideoMode(1000, 600, false, false, 0, 0);
 	
 	
 //	CoreServices::getInstance()->getResourceManager()->addArchive(RESOURCE_PATH"tomato.polyapp");
@@ -89,7 +91,7 @@ void PolycodeIDEApp::openProject() {
 	ext.extension = "polyproject";
 	ext.description = "Polycode Project File";
 	extensions.push_back(ext);
-	vector<string> paths = core->openFilePicker(extensions, false);
+	std::vector<String> paths = core->openFilePicker(extensions, false);
 	if(paths[0] != "") {
 		PolycodeProject *project = projectManager->openProject(paths[0]);
 		projectManager->setActiveProject(project);

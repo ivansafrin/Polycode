@@ -7,7 +7,7 @@
  *
  */
 
-#import "PolySubstanceView.h"
+#import "PolycodeView.h"
 
 #include "PolycodeGlobals.h"
 #include "PolycodeProjectManager.h"
@@ -21,17 +21,11 @@
 #include "PolycodeFontEditor.h"
 #include "PolycodeTextEditor.h"
 
-extern "C" {	
-#include <stdio.h>
-#include "lua.h"
-#include "lualib.h"
-#include "lauxlib.h"
-	
 using namespace Polycode;
 
 class PolycodeIDEApp : public EventDispatcher {
 public:
-	PolycodeIDEApp(SubstanceView *view);
+	PolycodeIDEApp(PolycodeView *view);
 	~PolycodeIDEApp();
 	
 	void handleEvent(Event *event);	
@@ -57,4 +51,3 @@ protected:
 	PolycodeProjectManager *projectManager;
 	
 };
-}

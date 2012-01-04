@@ -24,6 +24,6 @@ protected:
 	
 	PolycodeEditor *currentEditor;
 	
-	vector<PolycodeEditor*> openEditors;
-	vector<PolycodeEditorFactory*> editorFactories;	
+	std::vector<PolycodeEditor*> openEditors;
+	std::vector<PolycodeEditorFactory*> editorFactories;	
 };

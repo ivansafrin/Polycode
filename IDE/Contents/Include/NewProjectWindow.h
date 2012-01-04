@@ -4,6 +4,7 @@
 #include "PolycodeGlobals.h"
 #include "PolycodeUI.h"
 #include "Polycode.h"
+#include "OSBasics.h"
 
 using namespace Polycode;
 

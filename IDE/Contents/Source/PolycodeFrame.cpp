@@ -25,10 +25,10 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	topBarBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	addChild(topBarBg);
 	
-	logo = new ScreenImage("barlogo.png");	
+	logo = new ScreenImage("Images/barlogo.png");	
 	addChild(logo);		
 	
-	resizer = new ScreenImage("corner_resize.png");	
+	resizer = new ScreenImage("Images/corner_resize.png");	
 	addChild(resizer);
 	resizer->setColor(0,0,0,0.4);
 	

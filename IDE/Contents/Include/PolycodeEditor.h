@@ -35,6 +35,6 @@ public:
 	bool canHandleExtension(String extension);
 	
 protected:
-	vector<string> extensions;
+	std::vector<std::string> extensions;
 	
 };

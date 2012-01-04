@@ -1,14 +1,31 @@
 /*
- *  PolyUIButton.cpp
- *  Poly
- *
- *  Created by Ivan Safrin on 8/1/08.
- *  Copyright 2008 __MyCompanyName__. All rights reserved.
- *
+ Copyright (C) 2012 by Ivan Safrin
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
  */
 
 
 #include "PolyUIButton.h"
+#include "PolyConfig.h"
+#include "PolyInputEvent.h"
+#include "PolyLabel.h"
+#include "PolyCoreServices.h"
 
 using namespace Polycode;
 
@@ -44,7 +61,7 @@ UIButton::UIButton(String text, Number width, Number height) : ScreenEntity() {
 	buttonRect->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	pressedDown = false;
 	
-	buttonLabel = new ScreenLabel(fontName, text, fontSize, Label::ANTIALIAS_FULL);
+	buttonLabel = new ScreenLabel(text, fontSize, fontName, Label::ANTIALIAS_FULL);
 	addChild(buttonLabel);
 	labelXPos = floor((width-buttonLabel->getWidth())/2.0f);
 	labelYPos = floor((height-(buttonLabel->getHeight()-5))/2.0f);

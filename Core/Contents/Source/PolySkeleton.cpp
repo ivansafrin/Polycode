@@ -455,6 +455,9 @@ void BoneTrack::Play(bool once) {
 
 void BoneTrack::Update() {
 
+	if(!targetBone)
+		return;
+
 	Matrix4 newMatrix;
 	newMatrix = boneQuat.createMatrix();
 

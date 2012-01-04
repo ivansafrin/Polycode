@@ -2,7 +2,6 @@
 
 #include "NewProjectWindow.h"
 
-
 NewProjectWindow::NewProjectWindow() : UIWindow(L"Create New Project", 500, 300){
 	
 	templateFolder = "";
@@ -43,7 +42,7 @@ NewProjectWindow::NewProjectWindow() : UIWindow(L"Create New Project", 500, 300)
 		}
 	}
 	
-	ScreenLabel *label2 = new ScreenLabel(fontName, L"Project Name", fontSize, Label::ANTIALIAS_FULL);
+	ScreenLabel *label2 = new ScreenLabel(L"Project Name", fontSize, fontName, Label::ANTIALIAS_FULL);
 	addChild(label2);
 	label2->setPosition(padding+220, templateContainer->getPosition().y);		
 
@@ -51,7 +50,7 @@ NewProjectWindow::NewProjectWindow() : UIWindow(L"Create New Project", 500, 300)
 	addChild(projectNameInput);
 	projectNameInput->setPosition(label2->getPosition().x, label2->getPosition().y+label2->getHeight()+2);
 	
-	ScreenLabel *label3 = new ScreenLabel(fontName, L"Project Location", fontSize, Label::ANTIALIAS_FULL);
+	ScreenLabel *label3 = new ScreenLabel(L"Project Location", fontSize, fontName, Label::ANTIALIAS_FULL);
 	addChild(label3);
 	label3->setPosition(padding+220, templateContainer->getPosition().y+50);		
 	

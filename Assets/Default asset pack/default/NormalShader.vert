@@ -7,9 +7,9 @@ varying vec4 vertexColor;
 attribute vec3 vTangent;
 
 void main() {
-	normal = gl_NormalMatrix * gl_Normal;
-	tangent = gl_NormalMatrix * vTangent; 
-	binormal = cross(normal, tangent);
+	normal = normalize(gl_NormalMatrix * gl_Normal);
+	tangent = normalize(gl_NormalMatrix * vTangent); 
+	binormal = normalize(cross(normal, tangent));
 	gl_Position = ftransform();
 	pos = gl_ModelViewMatrix * gl_Vertex;
 	rawpos = gl_Vertex;
