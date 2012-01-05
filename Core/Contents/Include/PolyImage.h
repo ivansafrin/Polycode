@@ -74,6 +74,15 @@ namespace Polycode {
 			bool loadPNG(const String& fileName);
 			
 			/**
+			* Saves the image to a file. Currently only PNG files are supported.
+			* @param fileName Path to image file to load.	
+			* @return True if successfully loaded, false otherwise.	
+			*/
+			bool saveImage(const String &fileName);
+			bool savePNG(const String &fileName);
+			
+			
+			/**
 			* Recreate the image as an empty image of specified size. The image type stays the same.
 			* @param width Width of the image to create.
 			* @param height Height of the image to create.			

@@ -93,9 +93,8 @@ namespace Polycode {
 		virtual Texture *createFramebufferTexture(unsigned int width, unsigned int height) = 0;
 		virtual void bindFrameBufferTexture(Texture *texture) = 0;
 		virtual void unbindFramebuffers() = 0;
-		
-		virtual void renderToTexture(Texture *targetTexture) = 0;
-		virtual void renderZBufferToTexture(Texture *targetTexture) = 0;
+
+		virtual Image *renderScreenToImage() = 0;
 		
 		void setFOV(Number fov);		
 		void setViewportSize(int w, int h);

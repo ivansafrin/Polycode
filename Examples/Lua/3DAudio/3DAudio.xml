@@ -1,7 +1,0 @@
-<PolycodeProject defaultWidth="640" defaultHeight="480" antiAliasingLevel="0">
-	<backgroundColor red="0.25" green="0.25" blue="0.25" />
-	<entryPoint>3DAudio.lua</entryPoint>
-	<packedItems>
-		<item path="test.wav" type="file"/>
-        </packedItems>
-</PolycodeProject>

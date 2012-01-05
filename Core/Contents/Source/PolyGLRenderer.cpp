@@ -446,17 +446,12 @@ Matrix4 OpenGLRenderer::getModelviewMatrix() {
 	return Matrix4(m);
 }
 
-void OpenGLRenderer::renderZBufferToTexture(Texture *targetTexture) {
-//	OpenGLTexture *glTexture = (OpenGLTexture*)targetTexture;
-//	glBindTexture (GL_TEXTURE_2D, glTexture->getTextureID());
-//	glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 0, 0, targetTexture->getWidth(), targetTexture->getHeight(), 0);	
-}
-
-void OpenGLRenderer::renderToTexture(Texture *targetTexture) {
-	OpenGLTexture *glTexture = (OpenGLTexture*)targetTexture;
-	glBindTexture (GL_TEXTURE_2D, glTexture->getTextureID());
-	glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, targetTexture->getWidth(), targetTexture->getHeight(), 0);	
-
+Image *OpenGLRenderer::renderScreenToImage() {
+	char *imageBuffer = (char*)malloc(xRes * yRes * 4);
+	glReadPixels(0, 0, xRes, yRes, GL_RGBA, GL_UNSIGNED_BYTE, imageBuffer);
+	Image *retImage = new Image(imageBuffer, xRes, yRes, Image::IMAGE_RGBA);	
+	free(imageBuffer);
+	return retImage;
 }
 
 void OpenGLRenderer::setFogProperties(int fogMode, Color color, Number density, Number startDepth, Number endDepth) {

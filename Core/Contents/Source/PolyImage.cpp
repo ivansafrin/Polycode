@@ -454,6 +454,74 @@ void Image::fill(Number r, Number g, Number b, Number a) {
 	}
 }
 
+bool Image::saveImage(const String &fileName) {
+	savePNG(fileName);
+}
+
+
+
+bool Image::savePNG(const String &fileName) {
+
+	printf("Saving %dx%d image\n", width, height);
+
+   FILE *fp;
+   png_structp png_ptr;
+   png_infop info_ptr;
+   
+   fp = fopen(fileName.c_str(), "wb");
+   if (fp == NULL)
+      return false;
+
+   png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, 0, 0, 0);
+
+   if (png_ptr == NULL)
+   {
+      fclose(fp);
+      return false;
+   }
+
+   info_ptr = png_create_info_struct(png_ptr);
+   if (info_ptr == NULL)
+   {
+      fclose(fp);
+      png_destroy_write_struct(&png_ptr,  NULL);
+      return false;
+   }
+
+   if (setjmp(png_jmpbuf(png_ptr)))
+   {
+      /* If we get here, we had a problem writing the file */
+      fclose(fp);
+      png_destroy_write_struct(&png_ptr, &info_ptr);
+      return false;
+   }
+
+   png_init_io(png_ptr, fp);
+   png_set_IHDR(png_ptr, info_ptr, width, height, 8, PNG_COLOR_TYPE_RGB_ALPHA,
+      PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
+ 
+	png_write_info(png_ptr, info_ptr);
+
+   png_uint_32 k;
+   png_bytep row_pointers[height];
+
+   if (height > PNG_UINT_32_MAX/png_sizeof(png_bytep))
+     png_error (png_ptr, "Image is too tall to process in memory");
+
+   for (k = 0; k < height; k++)
+     row_pointers[height-k-1] = (png_byte*)(imageData + k*width*4);
+
+   /* One of the following output methods is REQUIRED */
+
+   png_write_image(png_ptr, row_pointers);
+
+   png_free(png_ptr, 0);
+   png_destroy_write_struct(&png_ptr, &info_ptr);
+   fclose(fp);
+   return true;
+}
+
+
 bool Image::loadImage(const String& fileName) {
 	return loadPNG(fileName);
 }

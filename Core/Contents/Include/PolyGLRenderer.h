@@ -151,9 +151,8 @@ namespace Polycode {
 		void setClearColor(Number r, Number g, Number b);
 		
 		void setTexture(Texture *texture);		
-		
-		void renderToTexture(Texture *targetTexture);		
-		void renderZBufferToTexture(Texture *targetTexture);
+
+		Image *renderScreenToImage();
 		void clearScreen();	
 		
 		void translate2D(Number x, Number y);
