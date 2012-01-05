@@ -75,10 +75,10 @@ Win32Core::Win32Core(PolycodeViewBase *view, int xRes, int yRes, bool fullScreen
 
 	setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel);
 		
-//	WSADATA WsaData;
-///	if(WSAStartup( MAKEWORD(2,2), &WsaData ) != NO_ERROR ){
-//		Logger::log("Error initializing sockets!\n");
-//	}
+	WSADATA WsaData;
+	if(WSAStartup( MAKEWORD(2,2), &WsaData ) != NO_ERROR ){
+		Logger::log("Error initializing sockets!\n");
+	}
 
 	((OpenGLRenderer*)renderer)->initOSSpecific();
 

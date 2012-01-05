@@ -27,6 +27,7 @@
 #include "PolyInputKeys.h"
 #include "PolyRectangle.h"
 
+#include <winsock2.h>
 #include <windows.h>
 #include <windowsx.h>
 #include <WinUser.h>
