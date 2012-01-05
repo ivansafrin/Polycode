@@ -32,6 +32,7 @@ long getThreadID() {
 
 CocoaCore::CocoaCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate) : Core(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate) {	
 
+	hidManager = NULL;
 	initGamepad();
 
 	eventMutex = createMutex();
