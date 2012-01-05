@@ -54,7 +54,10 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : ScreenEn
 	else
 		fontName = conf->getStringValue("Polycode", "uiTextInputFontName");
 	
-	fontSize = conf->getNumericValue("Polycode", "uiTextInputFontSize");
+	if(multiLine)
+		fontSize = conf->getNumericValue("Polycode", "uiTextInputFontSizeMultiline");	
+	else
+		fontSize = conf->getNumericValue("Polycode", "uiTextInputFontSize");
 	
 	Number rectHeight = height;
 	if(!multiLine) {
@@ -328,8 +331,12 @@ void UITextInput::restructLines() {
 void UITextInput::setText(String text) {
 	if(!multiLine) {
 		currentLine->setText(text);
+		caretPosition = text.length();
+		clearSelection();				
+		updateCaretPosition();		
 	} else {
 	}
+		
 //	this->text = text;
 //	currentLine->setText(text);	
 }

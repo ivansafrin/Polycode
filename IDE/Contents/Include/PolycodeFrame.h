@@ -25,6 +25,7 @@
 #include "PolycodeProjectBrowser.h"
 #include "PolycodeEditor.h"
 #include "NewProjectWindow.h"
+#include "ExampleBrowserWindow.h"
 #include "NewFileWindow.h"
 
 using namespace Polycode;
@@ -48,6 +49,7 @@ public:
 	PolycodeProjectBrowser *getProjectBrowser();
 	
 	NewProjectWindow *newProjectWindow;	
+	ExampleBrowserWindow *exampleBrowserWindow;
 	NewFileWindow *newFileWindow;
 	
 	ScreenEntity *welcomeEntity;	

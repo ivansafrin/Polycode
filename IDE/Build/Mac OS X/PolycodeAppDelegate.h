@@ -52,6 +52,7 @@ public:
 
 // Menu accessors
 
+-(IBAction) browseExamples: (id) sender;
 -(IBAction) runProject: (id) sender;
 -(IBAction) newProject: (id) sender;
 -(IBAction) closeProject: (id) sender;

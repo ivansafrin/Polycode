@@ -115,7 +115,7 @@ void NewProjectWindow::ResetForm() {
 		defaultTemplateTree->setSelected();
 	focusChild(projectNameInput);	
 	projectNameInput->setText(L"Untitled");
-	projectLocationInput->setText(L"~/Documents/Polycode");
+	projectLocationInput->setText(CoreServices::getInstance()->getCore()->getUserHomeDirectory()+"/Documents/Polycode");
 }
 
 void NewProjectWindow::handleEvent(Event *event) {

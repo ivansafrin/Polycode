@@ -55,6 +55,8 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	frame->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	
 	frame->newProjectWindow->addEventListener(this, UIEvent::OK_EVENT);
+	frame->exampleBrowserWindow->addEventListener(this, UIEvent::OK_EVENT);
+	
 	frame->playButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
 	screen->addChild(frame);
@@ -111,6 +113,12 @@ void PolycodeIDEApp::openProject() {
 			projectManager->setActiveProject(project);
 		}
 	}		
+}
+
+void PolycodeIDEApp::browseExamples() {
+	frame->newProjectWindow->ResetForm();
+	frame->showModal(frame->exampleBrowserWindow);
+
 }
 
 void PolycodeIDEApp::runProject() {
@@ -190,6 +198,14 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 			frame->hideModal();			
 		}
 	}
+	
+	if(event->getDispatcher() == frame->exampleBrowserWindow) {
+		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {
+			String fullPath = String(core->getDefaultWorkingDirectory()+"/"+frame->exampleBrowserWindow->getExamplePath());
+			projectManager->openProject(fullPath);
+			frame->hideModal();			
+		}
+	}	
 }
 
 void PolycodeIDEApp::saveConfigFile() {
@@ -202,14 +218,14 @@ void PolycodeIDEApp::saveConfigFile() {
 		projectEntry->addChild("name", project->getProjectName());
 		projectEntry->addChild("path", project->getProjectFile());
 	}
-	core->createFolder("/Users/ivansafrin/Library/Application Support/Polycode");
-	configFile.saveToXML("/Users/ivansafrin/Library/Application Support/Polycode/config.xml");		
+	core->createFolder(core->getUserHomeDirectory()+"/Library/Application Support/Polycode");
+	configFile.saveToXML(core->getUserHomeDirectory()+"/Library/Application Support/Polycode/config.xml");	
 }
 
 void PolycodeIDEApp::loadConfigFile() {
 
 	Object configFile;
-	configFile.loadFromXML("/Users/ivansafrin/Library/Application Support/Polycode/config.xml");		
+	configFile.loadFromXML(core->getUserHomeDirectory()+"/Library/Application Support/Polycode/config.xml");		
 	if(configFile.root["open_projects"]) {
 		ObjectEntry *projects = configFile.root["open_projects"];
 		if(projects) {
@@ -233,6 +249,10 @@ PolycodeIDEApp::~PolycodeIDEApp() {
 
 bool PolycodeIDEApp::Update() {
 
+	if(projectManager->getProjectCount() == 1) {
+		projectManager->setActiveProject(projectManager->getProjectByIndex(0));
+	}
+	
 	if(projectManager->getProjectCount() > 0) {
 		frame->welcomeEntity->visible =  false;
 		frame->projectBrowser->visible =  true;		

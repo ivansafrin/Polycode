@@ -11,6 +11,8 @@ INSTALL(FILES ../LICENSE.txt
 INSTALL(DIRECTORY ${PolycodeStandalone_SOURCE_DIR}/../Modules/Bindings/2DPhysics/API DESTINATION Modules/Physics2D)
 INSTALL(DIRECTORY ${PolycodeStandalone_SOURCE_DIR}/../Modules/Bindings/3DPhysics/API DESTINATION Modules/Physics3D)
 
+INSTALL(DIRECTORY ${PolycodeStandalone_SOURCE_DIR}/../Examples/Lua DESTINATION Examples)
+
 IF(MSVC)
 ELSEIF(APPLE)
 	INSTALL(DIRECTORY ${POLYCODE_RELEASE_DIR}/Framework/Player/PolycodePlayer.app DESTINATION Player USE_SOURCE_PERMISSIONS)

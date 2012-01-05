@@ -27,11 +27,11 @@
 class PolycodeToolLauncher {
 	public: 
 		PolycodeToolLauncher();
-		~PolycodeToolLauncher();
+		~PolycodeToolLauncher();		
 		
 		static void execLocalBinCommand(String command);		
 		static String generateTempPath();
 		static void buildProject(PolycodeProject *project, String destinationPath);
 
 		static void runPolyapp(String polyappPath);
-};	
+};

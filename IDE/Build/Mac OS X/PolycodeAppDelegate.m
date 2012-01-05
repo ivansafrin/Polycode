@@ -71,6 +71,10 @@
 	return YES;
 }
 
+-(IBAction) browseExamples: (id) sender {
+	app->browseExamples();
+}
+
 -(IBAction) runProject: (id) sender {
 	app->runProject();
 }

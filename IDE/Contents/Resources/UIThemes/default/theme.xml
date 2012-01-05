@@ -5,6 +5,7 @@
 	<uiTextInputFontNameMultiLine>mono</uiTextInputFontNameMultiLine>
 	<uiDefaultFontSize>11</uiDefaultFontSize>
 	<uiTextInputFontSize>11</uiTextInputFontSize>
+	<uiTextInputFontSizeMultiline>11</uiTextInputFontSizeMultiline>	
 	<uiTreeArrowIconImage>arrowIcon.png</uiTreeArrowIconImage>
 	<uiTreeCellHeight>20</uiTreeCellHeight>
 	<uiTreeCellPadding>4</uiTreeCellPadding>

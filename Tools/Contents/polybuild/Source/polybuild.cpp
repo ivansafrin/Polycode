@@ -149,6 +149,8 @@ Dest[i] = (char)Source[i];
 
 int main(int argc, char **argv) {
 		
+	PHYSFS_init(argv[0]);
+
 #if defined(__APPLE__) && defined(__MACH__)
     uint32_t bufsize = 2048;
 	char path[bufsize];
@@ -175,7 +177,6 @@ int main(int argc, char **argv) {
 		installPath += String("\\");
 	}
 #else
-	PHYSFS_init(argv[0]);
 	String basePath = PHYSFS_getBaseDir();
 	vector<String> cpts = basePath.split("/");
 	String installPath = "";

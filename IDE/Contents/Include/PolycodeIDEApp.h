@@ -50,6 +50,7 @@ public:
 	void loadConfigFile();
 	
 	// menu commands
+	void browseExamples();
 	void newProject();
 	void newFile();	
 	void openProject();

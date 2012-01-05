@@ -36,8 +36,9 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	newProjectButton->setPosition(230,80);
 	newProjectButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
-	examplesButton = new UIButton("Open An Example Project", 220);	
+	examplesButton = new UIButton("Browse Example Projects!", 220);	
 	examplesButton->setPosition(460,80);
+	examplesButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
 	welcomeEntity->addChild(newProjectButton);
 	welcomeEntity->addChild(examplesButton);
@@ -75,6 +76,9 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	
 	newProjectWindow = new NewProjectWindow();
 	newProjectWindow->visible = false;
+	
+	exampleBrowserWindow = new ExampleBrowserWindow();
+	exampleBrowserWindow->visible = false;
 	
 	newFileWindow = new NewFileWindow();
 	newFileWindow->visible = false;
@@ -117,10 +121,12 @@ void PolycodeFrame::showEditor(PolycodeEditor *editor) {
 
 void PolycodeFrame::hideModal() {
 	if(modalChild) {
-		modalChild->hideWindow();
-		modalBlocker->enabled = false;	 
+		removeChild(modalChild);
+		modalChild->removeEventListener(this, UIEvent::CLOSE_EVENT);	
+		modalChild->hideWindow(); 
 		modalChild = NULL;
 	}
+	modalBlocker->enabled = false;		
 }
 
 void PolycodeFrame::handleEvent(Event *event) {
@@ -135,6 +141,14 @@ void PolycodeFrame::handleEvent(Event *event) {
 			showModal(newProjectWindow);
 
 		}	
+		
+	if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT && event->getDispatcher() == examplesButton) {
+
+			newProjectWindow->ResetForm();
+			showModal(exampleBrowserWindow);
+
+		}			
+		
 	}
 }
 

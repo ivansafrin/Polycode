@@ -41,6 +41,8 @@ CocoaCore::CocoaCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bo
 	
 	defaultWorkingDirectory = String([[[[NSBundle mainBundle] bundlePath] stringByAppendingString:@"/Contents/Resources"] UTF8String]);
 	
+	userHomeDirectory = String([NSHomeDirectory() UTF8String]);
+	
 	NSOpenGLPixelFormatAttribute attrs[32];
 	
 	int atindx = 0;

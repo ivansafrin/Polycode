@@ -22,6 +22,7 @@
 		6D8A55B914B3EABB005F6411 /* main_icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6D8A55B814B3EABB005F6411 /* main_icon.icns */; };
 		6D8A55BC14B3EACB005F6411 /* PolycodeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6D8A55BB14B3EACB005F6411 /* PolycodeView.mm */; };
 		6D91B3B512AF2B1D00261ED4 /* PolycodeTextEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D91B3B412AF2B1D00261ED4 /* PolycodeTextEditor.cpp */; };
+		6DCAFD4314B519C900039F34 /* ExampleBrowserWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DCAFD4214B519C900039F34 /* ExampleBrowserWindow.cpp */; };
 		6DCE857A12AE018800566FAE /* PolycodeEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DCE857812AE018800566FAE /* PolycodeEditor.cpp */; };
 		6DCE857B12AE018800566FAE /* PolycodeEditorManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DCE857912AE018800566FAE /* PolycodeEditorManager.cpp */; };
 		6DCE85B712AE082B00566FAE /* PolycodeImageEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DCE85B612AE082B00566FAE /* PolycodeImageEditor.cpp */; };
@@ -89,6 +90,8 @@
 		6D8A55BB14B3EACB005F6411 /* PolycodeView.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; name = PolycodeView.mm; path = ../../../Release/Darwin/Framework/Core/PolycodeView/PolycodeView.mm; sourceTree = "<group>"; };
 		6D91B3B312AF2B1600261ED4 /* PolycodeTextEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolycodeTextEditor.h; sourceTree = "<group>"; };
 		6D91B3B412AF2B1D00261ED4 /* PolycodeTextEditor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolycodeTextEditor.cpp; sourceTree = "<group>"; };
+		6DCAFD4214B519C900039F34 /* ExampleBrowserWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ExampleBrowserWindow.cpp; sourceTree = "<group>"; };
+		6DCAFD4614B51A2D00039F34 /* ExampleBrowserWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExampleBrowserWindow.h; sourceTree = "<group>"; };
 		6DCE857612AE018000566FAE /* PolycodeEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolycodeEditor.h; sourceTree = "<group>"; };
 		6DCE857712AE018000566FAE /* PolycodeEditorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolycodeEditorManager.h; sourceTree = "<group>"; };
 		6DCE857812AE018800566FAE /* PolycodeEditor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolycodeEditor.cpp; sourceTree = "<group>"; };
@@ -232,6 +235,7 @@
 		6D80E91212AB53FB0037A708 /* Include */ = {
 			isa = PBXGroup;
 			children = (
+				6DCAFD4614B51A2D00039F34 /* ExampleBrowserWindow.h */,
 				6D6D3FA814B446AF00219173 /* PolycodeToolLauncher.h */,
 				6D70AB2812B29BEC00EB6D94 /* NewFileWindow.h */,
 				6D91B3B312AF2B1600261ED4 /* PolycodeTextEditor.h */,
@@ -254,6 +258,7 @@
 		6D80E91812AB53FB0037A708 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				6DCAFD4214B519C900039F34 /* ExampleBrowserWindow.cpp */,
 				6D6D3FA514B446A600219173 /* PolycodeToolLauncher.cpp */,
 				6D70AB2912B29BF200EB6D94 /* NewFileWindow.cpp */,
 				6D91B3B412AF2B1D00261ED4 /* PolycodeTextEditor.cpp */,
@@ -370,6 +375,7 @@
 				6D70AB2A12B29BF200EB6D94 /* NewFileWindow.cpp in Sources */,
 				6D8A55BC14B3EACB005F6411 /* PolycodeView.mm in Sources */,
 				6D6D3FA614B446A600219173 /* PolycodeToolLauncher.cpp in Sources */,
+				6DCAFD4314B519C900039F34 /* ExampleBrowserWindow.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

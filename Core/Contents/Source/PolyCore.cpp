@@ -78,6 +78,10 @@ namespace Polycode {
 		running = false;
 	}
 	
+	String Core::getUserHomeDirectory() {
+		return userHomeDirectory;
+	}	
+	
 	String Core::getDefaultWorkingDirectory() {
 		return defaultWorkingDirectory;
 	}

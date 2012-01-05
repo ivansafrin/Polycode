@@ -277,8 +277,14 @@ namespace Polycode {
 		*/
 		String getDefaultWorkingDirectory();
 		
+		/**
+		* Returns the default working path of the application.
+		*/
+		String getUserHomeDirectory();		
+		
 	protected:
 		
+		String userHomeDirectory;
 		String defaultWorkingDirectory;
 		
 		void *userPointer;

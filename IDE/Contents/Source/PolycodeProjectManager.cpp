@@ -36,18 +36,20 @@ PolycodeProject* PolycodeProjectManager::openProject(String path) {
 	
 	FILE *f = fopen(path.c_str(), "r");
 	if(!f) {
+		printf("WARNING: PROJECT DOESNT EXIST! (%s)\n", path.c_str());
 		return NULL;
 	}
 	fclose(f);
 	
-	vector<String> bits = path.split("/.");
+	vector<String> bits = path.split("/");
 	
 	String projectPath = "";
-	for(int i=0; i < bits.size() - 2; i++) {
+	for(int i=0; i < bits.size() - 1; i++) {
 		projectPath += "/"+bits[i];
 	}
 	
-	String projectName = bits[bits.size()-2];
+	vector<String> bits2 = bits[bits.size()-1].split(".");
+	String projectName = bits2[bits2.size()-2];
 	
 	PolycodeProject* newProject = new PolycodeProject(projectName, projectPath, path);
 	projects.push_back(newProject);
@@ -74,7 +76,17 @@ int PolycodeProjectManager::removeProject(PolycodeProject *project) {
 
 
 void PolycodeProjectManager::createNewProject(String templateFolder, String projectName, String projectLocation) {	
+
 	CoreServices::getInstance()->getCore()->createFolder(projectLocation);		
+	
+	if(OSBasics::isFolder(projectLocation+"/"+projectName)) {
+		int projectSuffix = 0;
+		do {
+			projectName = projectName + "_" + String::IntToString(projectSuffix);
+			
+		} while (OSBasics::isFolder(projectLocation+"/"+projectName));
+	}	
+	
 	CoreServices::getInstance()->getCore()->copyDiskItem(templateFolder, projectLocation+"/"+projectName);
 	CoreServices::getInstance()->getCore()->moveDiskItem(projectLocation+"/"+projectName+"/template.polyproject",  projectLocation+"/"+projectName+"/"+projectName+".polyproject");
 	openProject(projectLocation+"/"+projectName+"/"+projectName+".polyproject");	

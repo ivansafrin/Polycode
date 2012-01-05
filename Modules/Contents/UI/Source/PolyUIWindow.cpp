@@ -129,6 +129,7 @@ void UIWindow::onMouseDown(Number x, Number y) {
 
 void UIWindow::showWindow() {
 //	if(!visible) {
+		enabled = true;
 		visible = true;
 		windowTween = new Tween(&color.a, Tween::EASE_IN_QUAD, 0.0f, 1.0f, 0.01f);
 //	}
@@ -160,6 +161,7 @@ void UIWindow::handleEvent(Event *event) {
 	}
 	if(event->getDispatcher() == windowTween) {
 		visible = false;
+		enabled = false;		
 		windowTween->removeEventListener(this, Event::COMPLETE_EVENT);
 	}
 }

@@ -243,7 +243,7 @@ Matrix4 Entity::getConcatenatedRollMatrix() const {
 void Entity::setMask(Entity *mask) {	
 	mask->depthWrite = true;
 	mask->depthOnly = true;
-	mask->setPositionZ(0.999);
+	mask->setPositionZ(-1.0);
 	mask->isMask = true;
 	mask->enabled = false;
 	maskEntity = mask;
@@ -261,6 +261,9 @@ void Entity::clearMask() {
 	maskEntity->enabled = true;
 	maskEntity = NULL;	
 	hasMask = false;	
+	for(int i=0; i < children.size(); i++) {
+		children[i]->clearMask();
+	}	
 }
 
 void Entity::transformAndRender() {
@@ -274,12 +277,12 @@ void Entity::transformAndRender() {
 	if(hasMask) {
 		renderer->clearBuffer(false, true);
 		maskEntity->enabled = true;
-		maskEntity->transformAndRender();		
+		maskEntity->transformAndRender();			
 		maskEntity->enabled = false;		
 		renderer->setDepthFunction(Renderer::DEPTH_FUNCTION_GREATER);
 	}
 	
-	renderer->pushMatrix();	
+	renderer->pushMatrix();
 	if(ignoreParentMatrix && parentEntity) {
 		renderer->multModelviewMatrix(parentEntity->getConcatenatedMatrix().inverse());
 		renderer->setCurrentModelMatrix(parentEntity->getConcatenatedMatrix().inverse());
@@ -295,10 +298,10 @@ void Entity::transformAndRender() {
 		}
 	}
 
-//	if(hasMask) {
-//		renderer->enableDepthWrite(false);
-//		renderer->enableDepthTest(true);		
-//	} else {
+	if(hasMask) {
+		renderer->enableDepthWrite(false);
+		renderer->enableDepthTest(true);		
+	} else {
 	if(!depthWrite)
 		renderer->enableDepthWrite(false);
 	else
@@ -308,7 +311,7 @@ void Entity::transformAndRender() {
 		renderer->enableDepthTest(false);
 	else
 		renderer->enableDepthTest(true);
-//	}
+ 	}
 		 
 	renderer->enableAlphaTest(alphaTest);
 	
