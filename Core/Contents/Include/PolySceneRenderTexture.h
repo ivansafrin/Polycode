@@ -51,6 +51,9 @@ namespace Polycode {
 			*/
 			Texture *getTargetTexture();
 			
+			Texture *getFilterColorBufferTexture();
+			Texture *getFilterZBufferTexture();			
+
 			/**
 			* Returns the target scene.
 			*/			
@@ -62,6 +65,9 @@ namespace Polycode {
 			Camera *getTargetCamera();	
 				
 		protected:
+		
+			Texture *filterColorBufferTexture;
+			Texture *filterZBufferTexture;
 		
 			Texture *depthTexture;		
 			Texture *targetTexture;

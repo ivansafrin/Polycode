@@ -295,14 +295,40 @@ void Camera::setLightDepthTexture(Texture *texture) {
 
 }
 
-void Camera::drawFilter(Texture *targetTexture, Number targetTextureWidth, Number targetTextureHeight) {
+void Camera::drawFilter(Texture *targetTexture, Number targetTextureWidth, Number targetTextureHeight, Texture *targetColorTexture, Texture *targetZTexture) {
 
 	if(!filterShaderMaterial)
 		return;
 		
-	CoreServices::getInstance()->getRenderer()->setViewportSize(CoreServices::getInstance()->getRenderer()->getXRes(), CoreServices::getInstance()->getRenderer()->getYRes());
-	CoreServices::getInstance()->getRenderer()->bindFrameBufferTexture(originalSceneTexture);
-//	CoreServices::getInstance()->getRenderer()->bindFrameBufferTexture(zBufferSceneTexture);	
+	Texture *finalTargetColorTexture;
+	Texture *finalTargetZTexture;	
+		
+	if(targetTexture) {	
+		ShaderBinding* binding = localShaderOptions[0];
+		binding->clearTexture("screenColorBuffer");
+		binding->clearTexture("screenDepthBuffer");				
+		binding->addTexture("screenColorBuffer", targetColorTexture);
+		binding->addTexture("screenDepthBuffer", targetZTexture);
+		
+		finalTargetColorTexture = targetColorTexture;
+		finalTargetZTexture = targetZTexture;
+		
+		CoreServices::getInstance()->getRenderer()->setViewportSize(targetTextureWidth, targetTextureHeight);		
+	} else {
+	
+		ShaderBinding* binding = localShaderOptions[0];
+		binding->clearTexture("screenColorBuffer");
+		binding->clearTexture("screenDepthBuffer");				
+		binding->addTexture("screenColorBuffer", originalSceneTexture);
+		binding->addTexture("screenDepthBuffer", zBufferSceneTexture);	
+	
+		finalTargetColorTexture = originalSceneTexture;
+		finalTargetZTexture = zBufferSceneTexture;
+	
+		CoreServices::getInstance()->getRenderer()->setViewportSize(CoreServices::getInstance()->getRenderer()->getXRes(), CoreServices::getInstance()->getRenderer()->getYRes());
+	}
+	CoreServices::getInstance()->getRenderer()->bindFrameBufferTexture(finalTargetColorTexture);
+//	CoreServices::getInstance()->getRenderer()->bindFrameBufferTexture(finalTargetZTexture);	
 	parentScene->Render(this);
 	CoreServices::getInstance()->getRenderer()->unbindFramebuffers();
 

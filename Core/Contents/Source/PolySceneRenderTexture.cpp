@@ -33,6 +33,11 @@ SceneRenderTexture::SceneRenderTexture(Scene *targetScene, Camera *targetCamera,
 	CoreServices::getInstance()->getRenderer()->createRenderTextures(&targetTexture, &depthTexture, renderWidth, renderHeight, false);
 	this->targetScene = targetScene;
 	this->targetCamera = targetCamera;
+	
+	
+	CoreServices::getInstance()->getRenderer()->createRenderTextures(&filterColorBufferTexture, &filterZBufferTexture, renderWidth, renderHeight, true);
+	
+	
 	CoreServices::getInstance()->getSceneManager()->registerRenderTexture(this);
 }
 
@@ -42,6 +47,14 @@ void SceneRenderTexture::drawScreen() {
 	
 Scene *SceneRenderTexture::getTargetScene() {
 	return targetScene;
+}
+
+Texture *SceneRenderTexture::getFilterColorBufferTexture() {
+	return filterColorBufferTexture;
+}
+
+Texture *SceneRenderTexture::getFilterZBufferTexture() {
+	return filterZBufferTexture;
 }
 
 Camera *SceneRenderTexture::getTargetCamera() {
@@ -56,4 +69,6 @@ SceneRenderTexture::~SceneRenderTexture() {
 	CoreServices::getInstance()->getSceneManager()->unregisterRenderTexture(this);
 	CoreServices::getInstance()->getRenderer()->destroyTexture(targetTexture);
 	CoreServices::getInstance()->getRenderer()->destroyTexture(depthTexture);	
+	CoreServices::getInstance()->getRenderer()->destroyTexture(filterColorBufferTexture);
+	CoreServices::getInstance()->getRenderer()->destroyTexture(filterZBufferTexture);	
 }
