@@ -71,6 +71,10 @@
 	return YES;
 }
 
+-(IBAction) renameFile: (id) sender {
+	app->renameFile();
+}
+
 -(IBAction) removeFile: (id) sender {
 	app->removeFile();
 }

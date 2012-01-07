@@ -27,6 +27,7 @@
 #include "NewProjectWindow.h"
 #include "ExampleBrowserWindow.h"
 #include "NewFileWindow.h"
+#include "ToolWindows.h"
 
 using namespace Polycode;
 
@@ -51,6 +52,8 @@ public:
 	NewProjectWindow *newProjectWindow;	
 	ExampleBrowserWindow *exampleBrowserWindow;
 	NewFileWindow *newFileWindow;
+	
+	TextInputPopup *textInputPopup;
 	
 	ScreenEntity *welcomeEntity;	
 	PolycodeProjectBrowser *projectBrowser;

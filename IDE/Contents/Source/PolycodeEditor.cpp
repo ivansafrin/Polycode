@@ -38,6 +38,10 @@ bool PolycodeEditorFactory::canHandleExtension(String extension) {
 	return false;
 }
 
+void PolycodeEditor::setFilePath(String newPath) {
+	filePath = newPath;
+}
+
 PolycodeEditor::PolycodeEditor(bool _isReadOnly) : ScreenEntity() {
 	this->_isReadOnly = _isReadOnly;
 }

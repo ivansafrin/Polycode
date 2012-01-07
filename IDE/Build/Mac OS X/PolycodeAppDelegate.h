@@ -52,6 +52,7 @@ public:
 
 // Menu accessors
 
+-(IBAction) renameFile: (id) sender;
 -(IBAction) removeFile: (id) sender;
 -(IBAction) newGroup: (id) sender;
 -(IBAction) browseExamples: (id) sender;

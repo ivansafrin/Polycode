@@ -51,6 +51,7 @@ class PolycodeProjectManager {
 	
 	String activeFolder;
 	String selectedFile;
+	OSFileEntry selectedFileEntry;
 	
 protected:
 	

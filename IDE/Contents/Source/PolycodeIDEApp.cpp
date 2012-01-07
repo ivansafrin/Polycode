@@ -53,7 +53,8 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	
 	frame = new PolycodeFrame();
 	frame->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
-	
+
+	frame->textInputPopup->addEventListener(this, UIEvent::OK_EVENT);	
 	frame->newProjectWindow->addEventListener(this, UIEvent::OK_EVENT);
 	frame->exampleBrowserWindow->addEventListener(this, UIEvent::OK_EVENT);
 	
@@ -77,6 +78,13 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 //	screen->addChild(img);
 	
 	loadConfigFile();
+}
+
+void PolycodeIDEApp::renameFile() {
+	if(projectManager->selectedFile != "") {
+		frame->textInputPopup->setValue(projectManager->selectedFileEntry.name);
+		frame->showModal(frame->textInputPopup);
+	}
 }
 
 void PolycodeIDEApp::removeFile() {
@@ -181,7 +189,8 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 				projectManager->activeFolder = "";
 				projectManager->selectedFile = "";
 			} else {
-				projectManager->selectedFile = selectedData->fileEntry.fullPath;			
+				projectManager->selectedFileEntry = selectedData->fileEntry;
+				projectManager->selectedFile = selectedData->fileEntry.fullPath;
 				if(selectedData->fileEntry.type == OSFileEntry::TYPE_FILE) {
 					projectManager->activeFolder = selectedData->fileEntry.basePath;
 				} else {
@@ -225,6 +234,26 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 			runProject();
 		}
 	}
+	
+	if(event->getDispatcher() == frame->textInputPopup) {
+		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {
+			core->moveDiskItem(projectManager->selectedFileEntry.fullPath, projectManager->selectedFileEntry.basePath + "/" + frame->textInputPopup->getValue());			
+			if(projectManager->getActiveProject()) {
+				frame->getProjectBrowser()->refreshProject(projectManager->getActiveProject());
+			}
+			
+			PolycodeEditor *editor = editorManager->getEditorForPath(projectManager->selectedFileEntry.fullPath);
+			if(editor) {
+				editor->setFilePath(projectManager->selectedFileEntry.basePath + "/" + frame->textInputPopup->getValue());
+			}
+			
+			projectManager->selectedFileEntry.fullPath = projectManager->selectedFileEntry.basePath + "/" + frame->textInputPopup->getValue();
+			projectManager->selectedFileEntry.name = frame->textInputPopup->getValue();
+			
+			
+			frame->hideModal();			
+		}
+	}	
 	
 	if(event->getDispatcher() == frame->newProjectWindow) {
 		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {
