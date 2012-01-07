@@ -50,9 +50,11 @@ public:
 	void loadConfigFile();
 	
 	// menu commands
+	void removeFile();
 	void browseExamples();
 	void newProject();
 	void newFile();	
+	void newGroup();
 	void openProject();
 	void closeProject();	
 	void saveFile();

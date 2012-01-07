@@ -71,6 +71,14 @@
 	return YES;
 }
 
+-(IBAction) removeFile: (id) sender {
+	app->removeFile();
+}
+
+-(IBAction) newGroup: (id) sender {
+	app->newGroup();
+}
+
 -(IBAction) browseExamples: (id) sender {
 	app->browseExamples();
 }

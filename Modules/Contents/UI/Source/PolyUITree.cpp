@@ -31,7 +31,7 @@ using namespace Polycode;
 
 UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : ScreenEntity() {
 		
-	
+	labelText = text;
 	Config *conf = CoreServices::getInstance()->getConfig();
 	
 	handleRotation = 0;
@@ -109,6 +109,10 @@ UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : 
 	refreshTree();
 }
 
+String UITree::getLabelText() {
+	return labelText;
+}
+
 void UITree::removeTreeChild(UITree *child) {
 	for(int i=0; i < treeChildren.size(); i++) {
 		if(treeChildren[i] == child) {			
@@ -172,7 +176,6 @@ void UITree::handleEvent(Event *event) {
 			break;
 			case UITreeEvent::NEED_REFRESH_EVENT:
 				refreshTree();
-				dispatchEvent(new UITreeEvent(), UITreeEvent::NEED_REFRESH_EVENT);
 			break;
 		}
 		}
@@ -231,6 +234,7 @@ void UITree::refreshTree() {
 	hitheight = height;
 	
 	selection->visible = selected;
+	dispatchEvent(new UITreeEvent(), UITreeEvent::NEED_REFRESH_EVENT);	
 }
 
 Number UITree::getTreeHeight() {

@@ -43,6 +43,21 @@ PolycodeProjectBrowser::~PolycodeProjectBrowser() {
 	
 }
 
+void PolycodeProjectBrowser::refreshProject(PolycodeProject *project) {
+	
+	UITree *projectTree = treeContainer->getRootNode();
+	
+	for(int i=0; i < projectTree->getNumTreeChildren(); i++) {
+		UITree *projectChild = projectTree->getTreeChild(i);
+		BrowserUserData *userData = (BrowserUserData*)projectChild->getUserData();
+		if(userData->parentProject == project) {
+			parseFolderIntoNode(projectChild, project->getRootFolder(), project);		
+			return;
+		}
+	}	
+	
+}
+
 void PolycodeProjectBrowser::removeProject(PolycodeProject *project) {
 	
 	UITree *projectTree = treeContainer->getRootNode();
@@ -62,7 +77,7 @@ void PolycodeProjectBrowser::addProject(PolycodeProject *project) {
 	projectTree->toggleCollapsed();
 	
 	BrowserUserData *data = new BrowserUserData();
-	data->type = 0;
+	data->type = 3;
 	data->parentProject = project;
 	projectTree->setUserData((void*) data)	;
 	
@@ -92,26 +107,62 @@ void PolycodeProjectBrowser::handleEvent(Event *event) {
 	ScreenEntity::handleEvent(event);
 }
 
+UITree *PolycodeProjectBrowser::nodeHasName(UITree *node, String name) {
+	for(int i=0; i < node->getNumTreeChildren(); i++) {
+		UITree *projectChild = node->getTreeChild(i);
+		if(projectChild->getLabelText() == name) {
+			return projectChild;
+		}
+	}
+	return NULL;
+}
+
+bool PolycodeProjectBrowser::listHasFileEntry(vector<OSFileEntry> files, OSFileEntry fileEntry) {
+	for(int i=0; i < files.size(); i++) {
+		if(files[i].fullPath == fileEntry.fullPath && files[i].type == fileEntry.type) {
+			return true;
+		}
+	}
+	return false;
+}
+
 void PolycodeProjectBrowser::parseFolderIntoNode(UITree *node, String spath, PolycodeProject *parentProject) {
 	printf("Parsing %s\n", spath.c_str());
 	vector<OSFileEntry> files = OSBasics::parseFolder(spath, false);
+	
+	// check if files got deleted
+	for(int i=0; i < node->getNumTreeChildren(); i++) {
+		UITree *projectChild = node->getTreeChild(i);
+		if(!listHasFileEntry(files, ((BrowserUserData*)projectChild->getUserData())->fileEntry)) {
+			node->removeTreeChild(projectChild);
+		}
+	}	
+	
 	for(int i=0; i < files.size(); i++) {
 		OSFileEntry entry = files[i];
 		if(entry.type == OSFileEntry::TYPE_FOLDER) {
-			BrowserUserData *data = new BrowserUserData();
-			data->fileEntry = entry;
-			UITree *newChild = node->addTreeChild("folder.png", entry.name, (void*) data);
-			data->type = 2;	
-			data->parentProject = parentProject;
-			parseFolderIntoNode(newChild, entry.fullPath, parentProject);
+			UITree *existing = nodeHasName(node, entry.name);
+			if(!existing) {		
+				BrowserUserData *data = new BrowserUserData();
+				data->fileEntry = entry;
+				UITree *newChild = node->addTreeChild("folder.png", entry.name, (void*) data);
+				data->type = 2;	
+				data->parentProject = parentProject;
+				parseFolderIntoNode(newChild, entry.fullPath, parentProject);				
+			} else {
+				parseFolderIntoNode(existing, entry.fullPath, parentProject);							
+			}
 		} else {
-			BrowserUserData *data = new BrowserUserData();
-			data->fileEntry = entry;
-			data->type = 1;
-			data->parentProject = parentProject;			
-			UITree *newChild = node->addTreeChild("file.png", entry.name, (void*) data);			
+			if(!nodeHasName(node, entry.name)) {
+				BrowserUserData *data = new BrowserUserData();
+				data->fileEntry = entry;
+				data->type = 1;
+				data->parentProject = parentProject;			
+				UITree *newChild = node->addTreeChild("file.png", entry.name, (void*) data);
+			}
 		}
-	}	
+	}		
+	
 }
 
 void PolycodeProjectBrowser::Resize(int newWidth, int newHeight) {

@@ -59,10 +59,13 @@ namespace Polycode {
 			UITree *getTreeChild(int index) { return treeChildren[index]; }
 			void removeTreeChild(UITree *child);
 		
+			String getLabelText();
+			
 			Number handleRotation;
 		
 		private:
 		
+			String labelText;
 			void *userData;
 			Number treeWidth;
 			Number treeOffset;

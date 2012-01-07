@@ -24,6 +24,8 @@
 
 PolycodeProjectManager::PolycodeProjectManager() {
 	activeProject = NULL;
+	activeFolder = "";
+	selectedFile = "";
 }
 
 PolycodeProjectManager::~PolycodeProjectManager() {

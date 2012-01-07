@@ -210,6 +210,15 @@
 									<reference key="NSOnImage" ref="35465992"/>
 									<reference key="NSMixedImage" ref="502551668"/>
 								</object>
+								<object class="NSMenuItem" id="241372282">
+									<reference key="NSMenu" ref="720053764"/>
+									<string key="NSTitle">New Folder</string>
+									<string key="NSKeyEquiv">F</string>
+									<int key="NSKeyEquivModMask">1048576</int>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="35465992"/>
+									<reference key="NSMixedImage" ref="502551668"/>
+								</object>
 								<object class="NSMenuItem" id="425164168">
 									<reference key="NSMenu" ref="720053764"/>
 									<bool key="NSIsDisabled">YES</bool>
@@ -263,6 +272,15 @@
 									<reference key="NSMenu" ref="720053764"/>
 									<string key="NSTitle">Close Project</string>
 									<string key="NSKeyEquiv">W</string>
+									<int key="NSKeyEquivModMask">1048576</int>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="35465992"/>
+									<reference key="NSMixedImage" ref="502551668"/>
+								</object>
+								<object class="NSMenuItem" id="174789659">
+									<reference key="NSMenu" ref="720053764"/>
+									<string key="NSTitle">Remove File</string>
+									<string type="base64-UTF8" key="NSKeyEquiv">CA</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="35465992"/>
@@ -679,6 +697,14 @@
 						<reference key="NSOnImage" ref="35465992"/>
 						<reference key="NSMixedImage" ref="502551668"/>
 					</object>
+					<object class="NSMenuItem" id="7599453">
+						<reference key="NSMenu" ref="1048220208"/>
+						<string key="NSTitle">Add New Folder</string>
+						<string key="NSKeyEquiv"/>
+						<int key="NSMnemonicLoc">2147483647</int>
+						<reference key="NSOnImage" ref="35465992"/>
+						<reference key="NSMixedImage" ref="502551668"/>
+					</object>
 					<object class="NSMenuItem" id="26940596">
 						<reference key="NSMenu" ref="1048220208"/>
 						<bool key="NSIsDisabled">YES</bool>
@@ -945,14 +971,6 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
-						<string key="label">newProject:</string>
-						<reference key="source" ref="976324537"/>
-						<reference key="destination" ref="548023385"/>
-					</object>
-					<int key="connectionID">565</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
 						<string key="label">closeProject:</string>
 						<reference key="source" ref="976324537"/>
 						<reference key="destination" ref="776162233"/>
@@ -982,6 +1000,54 @@
 						<reference key="destination" ref="1071799412"/>
 					</object>
 					<int key="connectionID">572</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">newGroup:</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="241372282"/>
+					</object>
+					<int key="connectionID">574</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">removeFile:</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="174789659"/>
+					</object>
+					<int key="connectionID">576</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">removeFile:</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="901265223"/>
+					</object>
+					<int key="connectionID">577</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">newProject:</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="548023385"/>
+					</object>
+					<int key="connectionID">578</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">newFile:</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="921894302"/>
+					</object>
+					<int key="connectionID">579</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">newGroup:</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="7599453"/>
+					</object>
+					<int key="connectionID">581</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1081,6 +1147,8 @@
 							<reference ref="164447311"/>
 							<reference ref="810242391"/>
 							<reference ref="1071799412"/>
+							<reference ref="241372282"/>
+							<reference ref="174789659"/>
 						</object>
 						<reference key="parent" ref="379814623"/>
 					</object>
@@ -1470,6 +1538,7 @@
 							<reference ref="548023385"/>
 							<reference ref="901265223"/>
 							<reference ref="26940596"/>
+							<reference ref="7599453"/>
 						</object>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -1502,6 +1571,21 @@
 						<int key="objectID">571</int>
 						<reference key="object" ref="1071799412"/>
 						<reference key="parent" ref="720053764"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">573</int>
+						<reference key="object" ref="241372282"/>
+						<reference key="parent" ref="720053764"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">575</int>
+						<reference key="object" ref="174789659"/>
+						<reference key="parent" ref="720053764"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">580</int>
+						<reference key="object" ref="7599453"/>
+						<reference key="parent" ref="1048220208"/>
 					</object>
 				</object>
 			</object>
@@ -1579,7 +1663,10 @@
 					<string>57.IBPluginDependency</string>
 					<string>570.IBPluginDependency</string>
 					<string>571.IBPluginDependency</string>
+					<string>573.IBPluginDependency</string>
+					<string>575.IBPluginDependency</string>
 					<string>58.IBPluginDependency</string>
+					<string>580.IBPluginDependency</string>
 					<string>72.IBPluginDependency</string>
 					<string>73.IBPluginDependency</string>
 					<string>75.IBPluginDependency</string>
@@ -1670,6 +1757,9 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="unlocalizedProperties">
@@ -1684,7 +1774,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">572</int>
+			<int key="maxID">581</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1766,14 +1856,16 @@
 							<string>browseExamples:</string>
 							<string>closeProject:</string>
 							<string>newFile:</string>
+							<string>newGroup:</string>
 							<string>newProject:</string>
-							<string>open:</string>
 							<string>openProject:</string>
+							<string>removeFile:</string>
 							<string>runProject:</string>
 							<string>saveFile:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -1791,9 +1883,10 @@
 							<string>browseExamples:</string>
 							<string>closeProject:</string>
 							<string>newFile:</string>
+							<string>newGroup:</string>
 							<string>newProject:</string>
-							<string>open:</string>
 							<string>openProject:</string>
+							<string>removeFile:</string>
 							<string>runProject:</string>
 							<string>saveFile:</string>
 						</object>
@@ -1812,15 +1905,19 @@
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
+								<string key="name">newGroup:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
 								<string key="name">newProject:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
-								<string key="name">open:</string>
+								<string key="name">openProject:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
-								<string key="name">openProject:</string>
+								<string key="name">removeFile:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">

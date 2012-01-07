@@ -52,6 +52,8 @@ public:
 
 // Menu accessors
 
+-(IBAction) removeFile: (id) sender;
+-(IBAction) newGroup: (id) sender;
 -(IBAction) browseExamples: (id) sender;
 -(IBAction) runProject: (id) sender;
 -(IBAction) newProject: (id) sender;

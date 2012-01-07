@@ -79,6 +79,15 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	loadConfigFile();
 }
 
+void PolycodeIDEApp::removeFile() {
+	if(projectManager->selectedFile != "") {
+		core->removeDiskItem(projectManager->selectedFile);
+		if(projectManager->getActiveProject()) {
+			frame->projectBrowser->refreshProject(projectManager->getActiveProject());
+		}
+	}
+}
+
 void PolycodeIDEApp::newProject() {
 	frame->newProjectWindow->ResetForm();
 	frame->showModal(frame->newProjectWindow);
@@ -96,6 +105,15 @@ void PolycodeIDEApp::closeProject() {
 	if(projectManager->getActiveProject()) {
 		frame->getProjectBrowser()->removeProject(projectManager->getActiveProject());
 		projectManager->removeProject(projectManager->getActiveProject());
+	}
+}
+
+void PolycodeIDEApp::newGroup() {
+	if(projectManager->activeFolder != "") {
+		core->createFolder(projectManager->activeFolder+"/New Folder");
+		if(projectManager->getActiveProject()) {
+			frame->getProjectBrowser()->refreshProject(projectManager->getActiveProject());
+		}
 	}
 }
 
@@ -155,8 +173,24 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 		
 		if(event->getEventCode() == Event::CHANGE_EVENT) {
 			BrowserUserData *selectedData = frame->getProjectBrowser()->getSelectedData();
+						
+			if(selectedData->type == 3) {
+				projectManager->activeFolder = selectedData->parentProject->getRootFolder();
+				projectManager->selectedFile = "";				
+			} else if(selectedData->type == 0) {
+				projectManager->activeFolder = "";
+				projectManager->selectedFile = "";
+			} else {
+				projectManager->selectedFile = selectedData->fileEntry.fullPath;			
+				if(selectedData->fileEntry.type == OSFileEntry::TYPE_FILE) {
+					projectManager->activeFolder = selectedData->fileEntry.basePath;
+				} else {
+					projectManager->activeFolder = selectedData->fileEntry.fullPath;
+				}			
+			}
 			
 			projectManager->setActiveProject(selectedData->parentProject);
+			
 			if(selectedData->type == 0)
 				return;			
 			
