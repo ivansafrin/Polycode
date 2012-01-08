@@ -31,7 +31,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 	files = os.listdir(inputPath)
 	filteredFiles = []
 	for fileName in files:
-		ignore = ["PolyGLSLProgram", "PolyGLSLShader", "PolyGLSLShaderModule", "PolyWinCore", "PolyCocoaCore", "PolyAGLCore", "PolySDLCore", "Poly_iPhone", "PolyGLES1Renderer", "PolyGLRenderer", "tinyxml", "tinystr", "OpenGLCubemap", "PolyiPhoneCore", "PolyGLES1Texture", "PolyGLTexture", "PolyGLVertexBuffer", "PolyThreaded"]
+		ignore = ["PolyGLSLProgram", "PolyGLSLShader", "PolyGLSLShaderModule", "PolyWinCore", "PolyCocoaCore", "PolyAGLCore", "PolySDLCore", "Poly_iPhone", "PolyGLES1Renderer", "PolyGLRenderer", "tinyxml", "tinystr", "OpenGLCubemap", "PolyiPhoneCore", "PolyGLES1Texture", "PolyGLTexture", "PolyGLVertexBuffer", "PolyThreaded", "PolyGLHeaders", "GLee"]
 		if fileName.split(".")[1] == "h" and fileName.split(".")[0] not in ignore:
 			filteredFiles.append(fileName)
 			out += "#include \"%s\"\n" % (fileName)
@@ -62,7 +62,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 			f = open(headerFile)
 			contents = f.read().replace("_PolyExport", "")
 			cppHeader = CppHeaderParser.CppHeader(contents, "string")
-			ignore_classes = ["PolycodeShaderModule", "Object", "Threaded", "OpenGLCubemap"]
+			ignore_classes = ["PolycodeShaderModule", "Object", "Threaded", "OpenGLCubemap", "ParticleEmitter"]
 
 			for ckey in cppHeader.classes:
 				print ">> Parsing class %s" % ckey

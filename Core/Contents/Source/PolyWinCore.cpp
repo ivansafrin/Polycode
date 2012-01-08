@@ -20,6 +20,7 @@
  THE SOFTWARE.
 */		
 
+#include "PolyGLHeaders.h"
 #include "PolyWinCore.h"
 #include "PolyCoreInput.h"
 #include "PolyCoreServices.h"
@@ -31,7 +32,9 @@
 
 #include <GL/gl.h>
 #include <GL/glext.h>
+#ifndef _MINGW
 #include <GL/wglext.h>
+#endif
 
 using namespace Polycode;
 

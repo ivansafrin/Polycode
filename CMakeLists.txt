@@ -40,14 +40,48 @@ ENDIF(NOT POLYCODE_RELEASE_DIR)
 
 SET(CMAKE_INSTALL_PREFIX ${POLYCODE_RELEASE_DIR}/Framework/)
 
-
 # set default externals install location
 SET(CMAKE_PREFIX_PATH 
     ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies
     ${POLYCODE_RELEASE_DIR}/Framework/Modules/Dependencies
     ${POLYCODE_RELEASE_DIR}/Framework/Tools/Dependencies)
 
-MESSAGE(DEBUG "CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}")
+MESSAGE(DEBUG " CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}")
+
+# If the following large ugly mess is not present, failures can occur with -G "Unix Makefiles".
+# FIXME: cmake should be finding ALL of the following things by way of CMAKE_PREFIX_PATH
+IF (MINGW)
+LINK_DIRECTORIES(${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/lib)
+LINK_DIRECTORIES(${POLYCODE_RELEASE_DIR}/Framework/Modules/Dependencies/lib)
+SET(ZLIB_LIBRARY zlib)
+SET(ZLIB_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include)
+SET(OGG_LIBRARY libogg)
+SET(OGG_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include)
+SET(PNG_LIBRARY png)
+SET(PNG_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include)
+SET(PHYSFS_LIBRARY physfs)
+SET(PHYSFS_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include)
+SET(OPENAL_LIBRARY OpenAL32)
+SET(OPENAL_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include/AL)
+SET(FREETYPE_LIBRARY freetype)
+SET(FREETYPE_INCLUDE_DIRS ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include)
+SET(VORBIS_LIBRARY libvorbis)
+SET(VORBIS_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include)
+SET(VORBISFILE_LIBRARY libvorbisfile)
+SET(VORBISFILE_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include)
+SET(LUA_LIBRARY lua5.1)
+SET(LUA_LIBRARIES lua5.1)
+SET(LUA_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include/lua5.1)
+SET(BOX2D_RELEASE_LIBRARY Box2D)
+SET(BOX2D_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Modules/Dependencies/include)
+SET(ASSIMP_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include)
+SET(BULLET_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Modules/Dependencies/include/bullet)
+SET(LIBBULLETCOLLISION BulletCollision)
+SET(LIBBULLETDYNAMICS BulletDynamics)
+SET(LIBBULLETMATH LinearMath)
+SET(LIBBULLETMULTITHREADED BulletMultiThreaded)
+SET(LIBBULLETSOFTBODY BulletSoftBody)
+ENDIF()
 
 # Process subdirectories
 ADD_SUBDIRECTORY(Core/Contents)

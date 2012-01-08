@@ -9,7 +9,7 @@ INCLUDE_DIRECTORIES(
 
 SET(CMAKE_DEBUG_POSTFIX "_d")
 
-IF(MSVC)
+IF(MSVC OR MINGW)
     SET(polycodeplayer_SRCS
         ../Build/MSVC/PolycodePlayer/player_icon.ico
         ../Build/MSVC/PolycodePlayer/main.cpp
@@ -182,7 +182,7 @@ foreach(xib ${PolycodePlayerStandalone_XIBS})
                       COMMENT "Compiling ${Polycode_SOURCE_DIR}/Player/Contents/Platform/Darwin/Standalone/${xib}.xib")
 
 endforeach()
-ELSE(MSVC)
+ELSE(MSVC OR MINGW)
 
  SET(polycodeplayer_SRCS 
         Source/PolycodePlayer.cpp
@@ -243,7 +243,7 @@ ELSE(MSVC)
 
     
 
-ENDIF(MSVC)
+ENDIF(MSVC OR MINGW)
 
 IF(POLYCODE_INSTALL_PLAYER)
 #    IF(POLYCODE_BUILD_SHARED)
@@ -258,18 +258,18 @@ IF(POLYCODE_INSTALL_PLAYER)
     INSTALL(TARGETS StandalonePlayer 
         DESTINATION Player)
 
-IF(MSVC)
+IF(MSVC OR MINGW)
     INSTALL(FILES "${Polycode_SOURCE_DIR}/Assets/Default\ asset\ pack/default.pak" DESTINATION Player)
     INSTALL(FILES "${Polycode_SOURCE_DIR}/Assets/Default\ asset\ pack/hdr.pak" DESTINATION Player)
     INSTALL(FILES "${Polycode_SOURCE_DIR}/Assets/SamplePolyapp/main.polyapp" DESTINATION Player)
     INSTALL(FILES "${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/API/api.pak" DESTINATION Player)
 ELSEIF(APPLE)
-ELSE(MSVC)
+ELSE(MSVC OR MINGW)
     INSTALL(FILES "${Polycode_SOURCE_DIR}/Assets/Default\ asset\ pack/default.pak" DESTINATION Player)
     INSTALL(FILES "${Polycode_SOURCE_DIR}/Assets/Default\ asset\ pack/hdr.pak" DESTINATION Player)
     INSTALL(FILES "${Polycode_SOURCE_DIR}/Assets/SamplePolyapp/main.polyapp" DESTINATION Player)
     INSTALL(FILES "${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/API/api.pak" DESTINATION Player)
-ENDIF(MSVC)
+ENDIF(MSVC OR MINGW)
 
 #    ENDIF()
 ENDIF(POLYCODE_INSTALL_PLAYER)
