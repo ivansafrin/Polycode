@@ -51,6 +51,9 @@ extern PFNGLDETACHSHADERPROC glDetachShader;
 extern PFNGLDELETESHADERPROC glDeleteShader;
 extern PFNGLDELETEPROGRAMPROC glDeleteProgram;
 extern PFNGLBINDATTRIBLOCATIONPROC glBindAttribLocation;
+#ifndef _MINGW
+extern PFNGLGETUNIFORMLOCATIONARBPROC glGetUniformLocation;
+#endif
 #endif
 
 using namespace Polycode;
