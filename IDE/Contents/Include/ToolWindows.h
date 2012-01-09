@@ -19,56 +19,30 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
- 
-#import "PolycodeView.h"
+
+#pragma once
 
 #include "PolycodeGlobals.h"
-#include "PolycodeProjectManager.h"
-#include "PolycodeEditorManager.h"
-#include "Polycode.h"
-#include "PolyCocoaCore.h"
 #include "PolycodeUI.h"
-#include "PolycodeFrame.h"
-
-#include "PolycodeImageEditor.h"
-#include "PolycodeFontEditor.h"
-#include "PolycodeTextEditor.h"
-
-#include "PolycodeToolLauncher.h"
+#include "Polycode.h"
+#include "OSBasics.h"
 
 using namespace Polycode;
 
-class PolycodeIDEApp : public EventDispatcher {
-public:
-	PolycodeIDEApp(PolycodeView *view);
-	~PolycodeIDEApp();
+class TextInputPopup : public UIWindow {
+	public:
+		TextInputPopup();
+		~TextInputPopup();
+		
+		void setValue(String value);
+		String getValue();
+		void handleEvent(Event *event);
+		
+	protected:
 	
-	void handleEvent(Event *event);	
-	bool Update();
+		UITextInput *textInput;
 	
-	void saveConfigFile();
-	void loadConfigFile();
-	
-	// menu commands
-	void renameFile();
-	void removeFile();
-	void browseExamples();
-	void newProject();
-	void newFile();	
-	void newGroup();
-	void openProject();
-	void closeProject();	
-	void saveFile();
-	
-	void runProject();
-	
-	const static int EVENT_SHOW_MENU = 1;
-	
-	CocoaCore *core;	
-protected:	
-	PolycodeFrame *frame;
-	
-	PolycodeEditorManager *editorManager;
-	PolycodeProjectManager *projectManager;
+		UIButton *cancelButton;
+		UIButton *okButton;
 	
 };

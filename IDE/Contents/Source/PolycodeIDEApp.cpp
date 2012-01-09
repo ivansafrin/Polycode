@@ -53,7 +53,8 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	
 	frame = new PolycodeFrame();
 	frame->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
-	
+
+	frame->textInputPopup->addEventListener(this, UIEvent::OK_EVENT);	
 	frame->newProjectWindow->addEventListener(this, UIEvent::OK_EVENT);
 	frame->exampleBrowserWindow->addEventListener(this, UIEvent::OK_EVENT);
 	
@@ -79,6 +80,22 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	loadConfigFile();
 }
 
+void PolycodeIDEApp::renameFile() {
+	if(projectManager->selectedFile != "") {
+		frame->textInputPopup->setValue(projectManager->selectedFileEntry.name);
+		frame->showModal(frame->textInputPopup);
+	}
+}
+
+void PolycodeIDEApp::removeFile() {
+	if(projectManager->selectedFile != "") {
+		core->removeDiskItem(projectManager->selectedFile);
+		if(projectManager->getActiveProject()) {
+			frame->projectBrowser->refreshProject(projectManager->getActiveProject());
+		}
+	}
+}
+
 void PolycodeIDEApp::newProject() {
 	frame->newProjectWindow->ResetForm();
 	frame->showModal(frame->newProjectWindow);
@@ -96,6 +113,15 @@ void PolycodeIDEApp::closeProject() {
 	if(projectManager->getActiveProject()) {
 		frame->getProjectBrowser()->removeProject(projectManager->getActiveProject());
 		projectManager->removeProject(projectManager->getActiveProject());
+	}
+}
+
+void PolycodeIDEApp::newGroup() {
+	if(projectManager->activeFolder != "") {
+		core->createFolder(projectManager->activeFolder+"/New Folder");
+		if(projectManager->getActiveProject()) {
+			frame->getProjectBrowser()->refreshProject(projectManager->getActiveProject());
+		}
 	}
 }
 
@@ -155,8 +181,25 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 		
 		if(event->getEventCode() == Event::CHANGE_EVENT) {
 			BrowserUserData *selectedData = frame->getProjectBrowser()->getSelectedData();
+						
+			if(selectedData->type == 3) {
+				projectManager->activeFolder = selectedData->parentProject->getRootFolder();
+				projectManager->selectedFile = "";				
+			} else if(selectedData->type == 0) {
+				projectManager->activeFolder = "";
+				projectManager->selectedFile = "";
+			} else {
+				projectManager->selectedFileEntry = selectedData->fileEntry;
+				projectManager->selectedFile = selectedData->fileEntry.fullPath;
+				if(selectedData->fileEntry.type == OSFileEntry::TYPE_FILE) {
+					projectManager->activeFolder = selectedData->fileEntry.basePath;
+				} else {
+					projectManager->activeFolder = selectedData->fileEntry.fullPath;
+				}			
+			}
 			
 			projectManager->setActiveProject(selectedData->parentProject);
+			
 			if(selectedData->type == 0)
 				return;			
 			
@@ -191,6 +234,26 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 			runProject();
 		}
 	}
+	
+	if(event->getDispatcher() == frame->textInputPopup) {
+		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {
+			core->moveDiskItem(projectManager->selectedFileEntry.fullPath, projectManager->selectedFileEntry.basePath + "/" + frame->textInputPopup->getValue());			
+			if(projectManager->getActiveProject()) {
+				frame->getProjectBrowser()->refreshProject(projectManager->getActiveProject());
+			}
+			
+			PolycodeEditor *editor = editorManager->getEditorForPath(projectManager->selectedFileEntry.fullPath);
+			if(editor) {
+				editor->setFilePath(projectManager->selectedFileEntry.basePath + "/" + frame->textInputPopup->getValue());
+			}
+			
+			projectManager->selectedFileEntry.fullPath = projectManager->selectedFileEntry.basePath + "/" + frame->textInputPopup->getValue();
+			projectManager->selectedFileEntry.name = frame->textInputPopup->getValue();
+			
+			
+			frame->hideModal();			
+		}
+	}	
 	
 	if(event->getDispatcher() == frame->newProjectWindow) {
 		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {

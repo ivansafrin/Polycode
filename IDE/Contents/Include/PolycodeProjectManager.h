@@ -39,14 +39,22 @@ class PolycodeProjectManager {
 	void setProjectBrowser(PolycodeProjectBrowser *projectBrowser) { this->projectBrowser = projectBrowser; }
 	
 	PolycodeProject* getActiveProject() { return activeProject; }
-	void setActiveProject(PolycodeProject* project) { if(project) printf("setting active project: %s\n", project->getProjectName().c_str()); activeProject = project; }
+	void setActiveProject(PolycodeProject* project) {
+//		if(project) printf("setting active project: %s\n", project->getProjectName().c_str());
+		activeProject = project;
+	}
 	
 	int getProjectCount() { return projects.size(); }
 	PolycodeProject *getProjectByIndex(int index) { return projects[index]; }
 	
 	int removeProject(PolycodeProject *project);
 	
+	String activeFolder;
+	String selectedFile;
+	OSFileEntry selectedFileEntry;
+	
 protected:
+	
 	
 	PolycodeProject* activeProject;
 	

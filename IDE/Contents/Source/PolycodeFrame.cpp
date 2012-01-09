@@ -83,6 +83,9 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	newFileWindow = new NewFileWindow();
 	newFileWindow->visible = false;
 	
+	textInputPopup = new TextInputPopup();
+	textInputPopup->visible = false;
+	
 	currentEditor = NULL;
 	
 }

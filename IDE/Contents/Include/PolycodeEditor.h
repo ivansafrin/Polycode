@@ -36,6 +36,7 @@ public:
 	
 	virtual void saveFile(){};
 	
+	void setFilePath(String newPath);
 	String getFilePath() { return filePath; }
 	
 	bool isReadOnly() { return _isReadOnly; }
