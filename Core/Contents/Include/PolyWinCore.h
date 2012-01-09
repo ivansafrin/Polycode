@@ -32,6 +32,10 @@
 #include <windowsx.h>
 #include <WinUser.h>
 
+#include <MMSystem.h>
+#include <regstr.h>
+
+
 #include <vector>
 
 #ifndef VK_0
@@ -109,6 +113,54 @@ namespace Polycode {
 		static const int INPUT_EVENT = 0;
 	};
 	
+	
+	class HIDGamepadAxis {
+		public:
+		//IOHIDElementCookie cookie;
+		//CFIndex logicalMin;
+		//CFIndex logicalMax;
+		bool hasNullState;
+		bool isHatSwitch;
+		bool isHatSwitchSecondAxis;
+	};
+
+	class HIDGamepadButton {
+		public:
+		//IOHIDElementCookie cookie;
+		int something;
+	};	
+	
+class Gamepad_devicePrivate {
+public:
+	UINT joystickID;
+	JOYINFOEX lastState;
+	int xAxisIndex;
+	int yAxisIndex;
+	int zAxisIndex;
+	int rAxisIndex;
+	int uAxisIndex;
+	int vAxisIndex;
+	int povXAxisIndex;
+	int povYAxisIndex;
+	UINT (* axisRanges)[2];
+};
+
+
+	class GamepadDeviceEntry  {
+		public:
+			GamepadDeviceEntry() {
+				numAxes = 0;
+			}
+			std::vector<HIDGamepadAxis> axisElements;
+			std::vector<HIDGamepadButton> buttonElements;			
+			unsigned int deviceID;
+			//IOHIDDeviceRef device;
+			unsigned int numAxes;
+			unsigned int numButtons;	
+			Gamepad_devicePrivate *privateData;
+		//	CoreInput *input;		
+	};
+
 	class _PolyExport Win32Core : public Core {
 		
 	public:
@@ -120,7 +172,7 @@ namespace Polycode {
 		unsigned int getTicks();		
 		bool Update();
 
-		void handleKeyDown(LPARAM lParam, WPARAM wParam);
+		void handleKeyDown(LPARAM lParam, WPARAM wParam, wchar_t unicodeChar);
 		void handleKeyUp(LPARAM lParam, WPARAM wParam);
 		void handleMouseMove(LPARAM lParam, WPARAM wParam);
 		void handleMouseWheel(LPARAM lParam, WPARAM wParam);
@@ -147,6 +199,10 @@ namespace Polycode {
 
 		std::vector<Polycode::Rectangle> getVideoModes();
 
+		void initGamepad();
+		void shutdownGamepad();
+		void Gamepad_processEvents();
+
 		// NEED TO IMPLEMENT:
 
 		void setCursor(int cursorType){ }
@@ -161,8 +217,11 @@ namespace Polycode {
 		std::vector<String> openFilePicker(std::vector<CoreFileExtension> extensions, bool allowMultiple) { std::vector<String> ret; return ret;}
 		void resizeTo(int xRes, int yRes) { }
 		
+		std::vector<GamepadDeviceEntry*> gamepads;
+
 	private:
 
+		unsigned int nextDeviceID;
 		PolyKEY keyMap[1024];
 
 		CoreMutex *eventMutex;

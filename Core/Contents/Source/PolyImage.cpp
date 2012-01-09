@@ -455,7 +455,7 @@ void Image::fill(Number r, Number g, Number b, Number a) {
 }
 
 bool Image::saveImage(const String &fileName) {
-	savePNG(fileName);
+	return savePNG(fileName);
 }
 
 
@@ -503,7 +503,7 @@ bool Image::savePNG(const String &fileName) {
 	png_write_info(png_ptr, info_ptr);
 
    png_uint_32 k;
-   png_bytep row_pointers[height];
+   png_bytep *row_pointers = (png_bytep*) malloc(sizeof(png_bytep) * height);
 
    if (height > PNG_UINT_32_MAX/png_sizeof(png_bytep))
      png_error (png_ptr, "Image is too tall to process in memory");
@@ -515,6 +515,7 @@ bool Image::savePNG(const String &fileName) {
 
    png_write_image(png_ptr, row_pointers);
 
+   free(row_pointers);
    png_free(png_ptr, 0);
    png_destroy_write_struct(&png_ptr, &info_ptr);
    fclose(fp);

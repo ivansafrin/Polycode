@@ -25,6 +25,7 @@
 #include "PolyInputEvent.h"
 #include "PolyLabel.h"
 #include "PolyCoreServices.h"
+#include <math.h>
 
 using namespace Polycode;
 
@@ -131,13 +132,13 @@ void UIScrollContainer::setContentSize(Number newContentWidth, Number newContent
 void UIScrollContainer::handleEvent(Event *event) {
 	if(event->getDispatcher() == vScrollBar) {
 		if(event->getEventCode() == Event::CHANGE_EVENT) {
-			scrollChild->setPositionY(round(-((contentHeight-height) )*vScrollBar->getScrollValue()));
+			scrollChild->setPositionY(floor(-((contentHeight-height) )*vScrollBar->getScrollValue()));
 		}
 	}
 	
 	if(event->getDispatcher() == hScrollBar) {
 		if(event->getEventCode() == Event::CHANGE_EVENT) {
-			scrollChild->setPositionX(round(-((contentWidth-width) )*hScrollBar->getScrollValue()));
+			scrollChild->setPositionX(floor(-((contentWidth-width) )*hScrollBar->getScrollValue()));
 		}
 	}
 	
