@@ -9,13 +9,6 @@ SET(oggvorbis_CMAKE_ARGS
 	-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
 )
 
-IF (MINGW)
-	SET(oggvorbis_CMAKE_ARGS ${oggvorbis_CMAKE_ARGS}
-		-DOGG_LIBRARY=libogg
-		-DOGG_INCLUDE_DIR=${install_dir}/include
-	)
-ENDIF(MINGW)
-
 EXTERNALPROJECT_ADD(libogg
     PREFIX ${oggvorbis_PREFIX}
 
@@ -30,6 +23,13 @@ EXTERNALPROJECT_ADD(libogg
 )
 
 ExternalProject_Get_Property(libogg install_dir)
+
+IF (MINGW)
+	SET(oggvorbis_CMAKE_ARGS ${oggvorbis_CMAKE_ARGS}
+		-DOGG_LIBRARY=libogg
+		-DOGG_INCLUDE_DIR=${install_dir}/include
+	)
+ENDIF(MINGW)
 
 EXTERNALPROJECT_ADD(libvorbis
     DEPENDS libogg

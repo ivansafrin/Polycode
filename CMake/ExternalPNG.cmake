@@ -12,13 +12,6 @@ SET(libpng_CMAKE_ARGS
     -DSKIP_INSTALL_FILES=1
 )
 
-IF (MINGW)
-	SET(libpng_CMAKE_ARGS ${libpng_CMAKE_ARGS}
-		-DZLIB_LIBRARY=zlib
-		-DZLIB_INCLUDE_DIR=${install_dir}/include
-	)
-ENDIF(MINGW)
-
 EXTERNALPROJECT_ADD(zlib
     PREFIX ${libpng_PREFIX}
 
@@ -33,6 +26,13 @@ EXTERNALPROJECT_ADD(zlib
 )
 
 ExternalProject_Get_Property(zlib install_dir)
+
+IF (MINGW)
+	SET(libpng_CMAKE_ARGS ${libpng_CMAKE_ARGS}
+		-DZLIB_LIBRARY=zlib
+		-DZLIB_INCLUDE_DIR=${install_dir}/include
+	)
+ENDIF(MINGW)
 
 EXTERNALPROJECT_ADD(libpng
     DEPENDS zlib

@@ -118,7 +118,7 @@ IF (NOT MINGW)
 	set(ZLIB_SRCS ${ZLIB_SRCS}
 		win32/zlib1.rc # If present will override custom build rule below.s
 	)
-ENDIF
+ENDIF()
 
 # parse the full version number from zlib.h and include in ZLIB_FULL_VERSION
 file(READ ${CMAKE_CURRENT_SOURCE_DIR}/zlib.h _zlib_h_contents)
