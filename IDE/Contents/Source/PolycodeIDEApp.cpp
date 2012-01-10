@@ -50,7 +50,8 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	editorManager->registerEditorFactory(new PolycodeImageEditorFactory());
 	editorManager->registerEditorFactory(new PolycodeFontEditorFactory());
 	editorManager->registerEditorFactory(new PolycodeTextEditorFactory());
-	
+	editorManager->registerEditorFactory(new PolycodeProjectEditorFactory());
+		
 	frame = new PolycodeFrame();
 	frame->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 

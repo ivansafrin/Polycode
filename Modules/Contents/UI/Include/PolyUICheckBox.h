@@ -33,7 +33,7 @@ namespace Polycode {
 
 	class _PolyExport UICheckBox : public ScreenEntity {
 		public:
-			UICheckBox(Font *font, String checkImage, String caption, bool checked);
+			UICheckBox(String caption, bool checked);
 			~UICheckBox();
 		
 			void changeCheck();
@@ -43,9 +43,9 @@ namespace Polycode {
 		private:
 			bool checked;
 			ScreenLabel *captionLabel;
-			ScreenShape *buttonRect;
 			ScreenShape *shadowRect;
-			ScreenImage *buttonImage;
+			ScreenImage *buttonImageChecked;
+			ScreenImage *buttonImageUnchecked;			
 			bool pressedDown;
 	};
 }

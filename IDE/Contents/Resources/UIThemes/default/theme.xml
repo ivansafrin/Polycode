@@ -31,10 +31,8 @@
 	<uiTreeContainerSkinB>2</uiTreeContainerSkinB>
 	<uiTreeContainerSkinL>2</uiTreeContainerSkinL>
 	
-	<uiScrollDefaultSize>19</uiScrollDefaultSize>
-	
+	<uiScrollDefaultSize>19</uiScrollDefaultSize>	
 	<uiScrollPanePadding>0</uiScrollPanePadding>
-
 
 	<uiButtonSkin>button.png</uiButtonSkin>
 	<uiButtonFocusedSkin>buttonFocused.png</uiButtonFocusedSkin>
@@ -44,14 +42,12 @@
 	<uiButtonSkinB>4</uiButtonSkinB>
 	<uiButtonSkinL>4</uiButtonSkinL>
 
-
 	<uiWindowSkin>windowBg.png</uiWindowSkin>
 	<uiWindowSkinT>29</uiWindowSkinT>
 	<uiWindowSkinR>3</uiWindowSkinR>
 	<uiWindowSkinB>3</uiWindowSkinB>
 	<uiWindowSkinL>3</uiWindowSkinL>
-	<uiWindowSkinPadding>10</uiWindowSkinPadding>
-		
+	<uiWindowSkinPadding>10</uiWindowSkinPadding>		
 	<uiWindowTitleFont>sans</uiWindowTitleFont>
 	<uiWindowTitleFontSize>12</uiWindowTitleFontSize>
 	<uiWindowTitleX>5</uiWindowTitleX>	
@@ -60,7 +56,6 @@
 	<uiCloseIconX>6</uiCloseIconX>	
 	<uiCloseIconY>7</uiCloseIconY>		
 
-	
 	<uiScrollBgSkin>scrollBg.png</uiScrollBgSkin>
 	<uiScrollBgSkinPadding>2</uiScrollBgSkinPadding>
 	<uiScrollBgSkinT>2</uiScrollBgSkinT>
@@ -81,8 +76,14 @@
 	<textBgSkinL>3</textBgSkinL>
 	<textBgSkinPadding>5</textBgSkinPadding>
 	<textEditLineSpacing>4</textEditLineSpacing>
-	
-	<uiScrollHandleMinSize>30</uiScrollHandleMinSize>
-	
+		
+	<uiScrollHandleMinSize>30</uiScrollHandleMinSize>	
 	<uiTreeContainerScrollBarOffset>27</uiTreeContainerScrollBarOffset>
+	
+	<uiCheckBoxFont>sans</uiCheckBoxFont>
+	<uiCheckBoxFontSize>11</uiCheckBoxFontSize>	
+	<uiCheckBoxCheckedImage>checkbox_checked.png</uiCheckBoxCheckedImage>
+	<uiCheckBoxUncheckedImage>checkbox_unchecked.png</uiCheckBoxUncheckedImage>
+	<uiCheckBoxLabelOffsetX>10</uiCheckBoxLabelOffsetX>
+	<uiCheckBoxLabelOffsetY>3</uiCheckBoxLabelOffsetY>
 </PolyConfig>

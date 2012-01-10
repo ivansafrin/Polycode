@@ -20,56 +20,37 @@
  THE SOFTWARE.
  */
  
-#import "PolycodeView.h"
+#pragma once
 
 #include "PolycodeGlobals.h"
-#include "PolycodeProjectManager.h"
-#include "PolycodeEditorManager.h"
-#include "Polycode.h"
-#include "PolyCocoaCore.h"
 #include "PolycodeUI.h"
-#include "PolycodeFrame.h"
-
-#include "PolycodeImageEditor.h"
-#include "PolycodeFontEditor.h"
-#include "PolycodeTextEditor.h"
-#include "PolycodeProjectEditor.h"
-
-#include "PolycodeToolLauncher.h"
+#include "PolycodeEditor.h"
+#include <Polycode.h>
 
 using namespace Polycode;
 
-class PolycodeIDEApp : public EventDispatcher {
-public:
-	PolycodeIDEApp(PolycodeView *view);
-	~PolycodeIDEApp();
+class PolycodeProjectEditor : public PolycodeEditor {
+	public:
+	PolycodeProjectEditor();
+	virtual ~PolycodeProjectEditor();
 	
-	void handleEvent(Event *event);	
-	bool Update();
-	
-	void saveConfigFile();
-	void loadConfigFile();
-	
-	// menu commands
-	void renameFile();
-	void removeFile();
-	void browseExamples();
-	void newProject();
-	void newFile();	
-	void newGroup();
-	void openProject();
-	void closeProject();	
+	bool openFile(String filePath);
+	void Resize(int x, int y);
 	void saveFile();
 	
-	void runProject();
+	protected:
 	
-	const static int EVENT_SHOW_MENU = 1;
-	
-	CocoaCore *core;	
-protected:	
-	PolycodeFrame *frame;
-	
-	PolycodeEditorManager *editorManager;
-	PolycodeProjectManager *projectManager;
-	
+	UICheckBox *vSyncCheckBox;
+	UIWindow *mainSettingsWindow;	
+	UITextInput *defaultWidthInput;
+	UITextInput *defaultHeightInput;	
+	//UIHSlider *aaLevelInput;	
+//	UIComboBox *aaLevelComboBox;
+	UITextInput *entryPointInput;	
+};
+
+class PolycodeProjectEditorFactory : public PolycodeEditorFactory {
+	public:
+		PolycodeProjectEditorFactory() : PolycodeEditorFactory() { extensions.push_back("polyproject"); }
+		PolycodeEditor *createEditor() { return new PolycodeProjectEditor(); }
 };

@@ -23,7 +23,6 @@
 #include "PolycodeTextEditor.h"
 
 PolycodeTextEditor::PolycodeTextEditor() : PolycodeEditor(true){
-
 }
 
 PolycodeTextEditor::~PolycodeTextEditor() {

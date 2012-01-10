@@ -23,31 +23,45 @@
 #include "PolyUICheckBox.h"
 #include "PolyInputEvent.h"
 #include "PolyLabel.h"
+#include "PolyCoreServices.h"
+#include "PolyConfig.h"
 
 using namespace Polycode;
 
-UICheckBox::UICheckBox(Font *font, String checkImage, String caption, bool checked) : ScreenEntity() {
-	buttonImage = new ScreenImage(checkImage.c_str());
-	buttonImage->setPosition(2, 3);
+UICheckBox::UICheckBox(String caption, bool checked) : ScreenEntity() {
+
+	Config *conf = CoreServices::getInstance()->getConfig();	
+	
+	String fontName = conf->getStringValue("Polycode", "uiCheckBoxFont");
+	int fontSize = conf->getNumericValue("Polycode", "uiCheckBoxFontSize");	
+	String checkImage = conf->getStringValue("Polycode", "uiCheckBoxCheckedImage");
+	String uncheckImage = conf->getStringValue("Polycode", "uiCheckBoxUncheckedImage");
+	Number checkboxTextOffsetX = conf->getNumericValue("Polycode", "uiCheckBoxLabelOffsetX");
+	Number checkboxTextOffsetY = conf->getNumericValue("Polycode", "uiCheckBoxLabelOffsetY");
+		
 	this->checked = checked;
-	buttonImage->visible = checked;
+		
+	buttonImageChecked = new ScreenImage(checkImage);
+	buttonImageChecked->visible = checked;
+
+	buttonImageUnchecked = new ScreenImage(uncheckImage);
+	buttonImageUnchecked->visible = !checked;
 	
-	captionLabel = new ScreenLabel(caption, 11, "", Label::ANTIALIAS_FULL);
+	captionLabel = new ScreenLabel(caption, fontSize, fontName, Label::ANTIALIAS_FULL);
 	addChild(captionLabel);
-	captionLabel->setPosition(buttonImage->getWidth()+14,0);
+	captionLabel->setPosition(buttonImageChecked->getWidth() + checkboxTextOffsetX, (buttonImageChecked->getHeight()/2.0) - (captionLabel->getHeight()/2.0) + checkboxTextOffsetY);
 	
-	buttonRect = new ScreenShape(ScreenShape::SHAPE_RECT, buttonImage->getWidth()+5,buttonImage->getHeight()+5,0,0);
-	buttonRect->setColor(0.1f, 0.1f, 0.1f, 1.0f);
-	buttonRect->strokeEnabled = true;
-	buttonRect->setStrokeColor(1.0f, 1.0f, 1.0f, 0.1f);
-	addChild(buttonRect);
-	addChild(buttonImage);
+	addChild(buttonImageUnchecked);	
+	addChild(buttonImageChecked);
 	
-	buttonRect->addEventListener(this, InputEvent::EVENT_MOUSEOVER);
-	buttonRect->addEventListener(this, InputEvent::EVENT_MOUSEOUT);
-	buttonRect->addEventListener(this, InputEvent::EVENT_MOUSEUP);
-	buttonRect->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+	buttonImageUnchecked->addEventListener(this, InputEvent::EVENT_MOUSEOVER);
+	buttonImageUnchecked->addEventListener(this, InputEvent::EVENT_MOUSEOUT);
+	buttonImageUnchecked->addEventListener(this, InputEvent::EVENT_MOUSEUP);
+	buttonImageUnchecked->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	captionLabel->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+	
+	height = buttonImageUnchecked->getHeight();
+	width = buttonImageUnchecked->getWidth() + captionLabel->getWidth() + checkboxTextOffsetX;
 	
 }
 
@@ -61,12 +75,13 @@ bool UICheckBox::isChecked() {
 		
 void UICheckBox::changeCheck() {
 	checked = !checked;
-	buttonImage->visible = checked;
+	buttonImageChecked->visible = checked;
+	buttonImageUnchecked->visible = !checked;
 	dispatchEvent(new UIEvent(), UIEvent::CHANGE_EVENT);	
 }
 		
 void UICheckBox::handleEvent(Event *event) {
-	if(event->getDispatcher() == buttonRect || event->getDispatcher() == captionLabel) {
+	if(event->getDispatcher() == buttonImageUnchecked || event->getDispatcher() == captionLabel) {
 		switch(event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEDOWN:
 				changeCheck();

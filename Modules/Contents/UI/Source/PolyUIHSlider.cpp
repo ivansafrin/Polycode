@@ -25,7 +25,7 @@
 
 using namespace Polycode;
 
-UIHSlider::UIHSlider(Font *font, Number start, Number end, Number width) {
+UIHSlider::UIHSlider(Number start, Number end, Number width) {
 	bgRect = new ScreenShape(ScreenShape::SHAPE_RECT, width,8,0,0);
 	bgRect->setPosition(0,6);
 	bgRect->setColor(0.11f, 0.11f, 0.11f, 1.0f);

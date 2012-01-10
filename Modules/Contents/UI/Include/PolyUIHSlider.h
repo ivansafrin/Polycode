@@ -33,7 +33,7 @@ namespace Polycode {
 
 	class _PolyExport UIHSlider : public ScreenEntity {
 		public:
-			UIHSlider(Font *font, Number start, Number end, Number width);
+			UIHSlider(Number start, Number end, Number width);
 			~UIHSlider();		
 			void handleEvent(Event *event);
 			void Update();
