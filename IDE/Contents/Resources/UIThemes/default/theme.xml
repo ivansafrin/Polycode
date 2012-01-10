@@ -86,4 +86,25 @@
 	<uiCheckBoxUncheckedImage>checkbox_unchecked.png</uiCheckBoxUncheckedImage>
 	<uiCheckBoxLabelOffsetX>10</uiCheckBoxLabelOffsetX>
 	<uiCheckBoxLabelOffsetY>3</uiCheckBoxLabelOffsetY>
+		
+	<uiComboBoxFont>sans</uiComboBoxFont>
+	<uiComboBoxFontSize>11</uiComboBoxFontSize>
+	<uiComboBoxDropdownImage>combobox_drop.png</uiComboBoxDropdownImage>
+	<uiComboBoxBgImage>combobox_bg.png</uiComboBoxBgImage>
+	<uiComboBoxBgT>3</uiComboBoxBgT>
+	<uiComboBoxBgR>3</uiComboBoxBgR>
+	<uiComboBoxBgB>3</uiComboBoxBgB>
+	<uiComboBoxBgL>3</uiComboBoxBgL>				
+	<uiComboBoxItemsBgImage>combobox_items.png</uiComboBoxItemsBgImage>	
+	<uiComboBoxDropdownBgT>3</uiComboBoxDropdownBgT>
+	<uiComboBoxDropdownBgR>3</uiComboBoxDropdownBgR>
+	<uiComboBoxDropdownBgB>3</uiComboBoxDropdownBgB>
+	<uiComboBoxDropdownBgL>3</uiComboBoxDropdownBgL>			
+	<uiComboBoxSelectorBgImage>combobox_selector.png</uiComboBoxSelectorBgImage>	
+	<uiComboBoxSelectorBgT>3</uiComboBoxSelectorBgT>
+	<uiComboBoxSelectorBgR>3</uiComboBoxSelectorBgR>
+	<uiComboBoxSelectorBgB>3</uiComboBoxSelectorBgB>
+	<uiComboBoxSelectorBgL>3</uiComboBoxSelectorBgL>					
+	<uiComboBoxTextOffsetX>7</uiComboBoxTextOffsetX>
+	<uiComboBoxTextOffsetY>3</uiComboBoxTextOffsetY>		
 </PolyConfig>

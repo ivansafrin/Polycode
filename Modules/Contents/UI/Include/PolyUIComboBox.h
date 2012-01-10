@@ -19,39 +19,57 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
- 
+
 #pragma once
+#include "PolyGlobals.h"
+#include "PolyScreenImage.h"
+#include "PolyScreenLabel.h"
+#include "PolyScreenShape.h"
+#include "PolyScreenEntity.h"
+#include "PolyUIEvent.h"
+#include "PolyUIBox.h"
+#include "PolyFont.h"
 
-#include "PolycodeGlobals.h"
-#include "PolycodeUI.h"
-#include "PolycodeEditor.h"
-#include <Polycode.h>
+namespace Polycode {
 
-using namespace Polycode;
+	class _PolyExport UIComboBoxItem : public ScreenEntity {
+		public:
+			UIComboBoxItem(String label, Number comboWidth, Number comboHeight);
+			~UIComboBoxItem();
+			
+			String label;
+			ScreenLabel *itemLabel;
+	};
 
-class PolycodeProjectEditor : public PolycodeEditor {
-	public:
-	PolycodeProjectEditor();
-	virtual ~PolycodeProjectEditor();
-	
-	bool openFile(String filePath);
-	void Resize(int x, int y);
-	void saveFile();
-	
-	protected:
-	
-	UICheckBox *vSyncCheckBox;
-	UIWindow *mainSettingsWindow;	
-	UITextInput *defaultWidthInput;
-	UITextInput *defaultHeightInput;	
-	//UIHSlider *aaLevelInput;	
-	UIComboBox *aaLevelComboBox;
-	UIComboBox *afLevelComboBox;	
-	UITextInput *entryPointInput;	
-};
-
-class PolycodeProjectEditorFactory : public PolycodeEditorFactory {
-	public:
-		PolycodeProjectEditorFactory() : PolycodeEditorFactory() { extensions.push_back("polyproject"); }
-		PolycodeEditor *createEditor() { return new PolycodeProjectEditor(); }
-};
+	class _PolyExport UIComboBox : public ScreenEntity {
+		public:
+			UIComboBox(Number comboWidth);
+			~UIComboBox();
+			
+			void toggleDropDown();
+		
+			void updateVis();
+		
+			int addComboItem(String itemName);
+			int getSelectedIndex();
+			void handleEvent(Event *event);
+				
+		private:
+		
+			std::vector<UIComboBoxItem*> items;
+			int selectedIndex;
+			
+			ScreenLabel *selectedLabel;
+			Number comboHeight;
+			Number comboWidth;
+			
+			int selectedOffset;
+						
+			Number nextItemHeight;
+			bool isDroppedDown;
+			UIBox *dropDownBox;
+			UIBox *bgBox;
+			UIBox *selectorBox;			
+			ScreenImage *dropDownImage;
+	};
+}

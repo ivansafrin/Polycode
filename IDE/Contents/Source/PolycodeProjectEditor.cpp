@@ -54,15 +54,26 @@ PolycodeProjectEditor::PolycodeProjectEditor() : PolycodeEditor(true){
 	mainSettingsWindow->addChild(label2);
 	label2->setPosition(padding + 160, 50);		
 	
-/*
-	aaLevelComboBox = new UIComboBox(100);		
-	mainSettingsWindow->addChild(aaLevelComboBox);	
+	aaLevelComboBox = new UIComboBox(120);		
 	aaLevelComboBox->addComboItem("No AA");
 	aaLevelComboBox->addComboItem("2x MSAA");
 	aaLevelComboBox->addComboItem("4x MSAA");
 	aaLevelComboBox->addComboItem("6x MSAA");			
 	aaLevelComboBox->setPosition(label2->getPosition().x, label2->getPosition().y+label2->getHeight());
-*/
+
+	label2 = new ScreenLabel(L"Anisotropic filtering:", fontSize, fontName, Label::ANTIALIAS_FULL);
+	mainSettingsWindow->addChild(label2);
+	label2->setPosition(padding, defaultHeightInput->getPosition().y+defaultHeightInput->getHeight()+10);		
+	
+	afLevelComboBox = new UIComboBox(250);		
+	afLevelComboBox->addComboItem("No Anisotropic Filtering");
+	afLevelComboBox->addComboItem("1x Anisotropic Filtering");
+	afLevelComboBox->addComboItem("2x Anisotropic Filtering");
+	afLevelComboBox->addComboItem("4x Anisotropic Filtering");
+	afLevelComboBox->addComboItem("8x Anisotropic Filtering");
+	afLevelComboBox->addComboItem("16x Anisotropic Filtering");			
+	afLevelComboBox->setPosition(label2->getPosition().x, label2->getPosition().y+label2->getHeight());
+
 	
 //	aaLevelInput = new UIHSlider(0,6, 100);
 //	mainSettingsWindow->addChild(aaLevelInput);
@@ -70,7 +81,7 @@ PolycodeProjectEditor::PolycodeProjectEditor() : PolycodeEditor(true){
 
 
 	vSyncCheckBox = new UICheckBox("V-Sync", false);
-	vSyncCheckBox->setPosition(padding, defaultHeightInput->getPosition().y+defaultHeightInput->getHeight()+10);
+	vSyncCheckBox->setPosition(padding, afLevelComboBox->getPosition().y+afLevelComboBox->getHeight()+10);
 	mainSettingsWindow->addChild(vSyncCheckBox);
 	
 	label2 = new ScreenLabel(L"Entry point file:", fontSize, fontName, Label::ANTIALIAS_FULL);
@@ -80,8 +91,9 @@ PolycodeProjectEditor::PolycodeProjectEditor() : PolycodeEditor(true){
 	entryPointInput = new UITextInput(false, 200, 12);	
 	mainSettingsWindow->addChild(entryPointInput);
 	entryPointInput->setPosition(label2->getPosition().x, label2->getPosition().y+label2->getHeight());
-	
-	
+
+	mainSettingsWindow->addChild(afLevelComboBox);			
+	mainSettingsWindow->addChild(aaLevelComboBox);		
 }
 
 PolycodeProjectEditor::~PolycodeProjectEditor() {
