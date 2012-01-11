@@ -152,6 +152,27 @@ namespace Polycode {
 			*/
 			Number getBrightness() const;
 			
+			static void RGBtoHSV(const Number &r, const Number &g, const Number &b, Number &h, Number &s, Number &v);
+			
+			/**
+			* Returns the hue of the color's HSV component.
+			* @return HSV Hue.
+			*/
+			Number getHue() const;
+
+			/**
+			* Returns the saturation of the color's HSV component.
+			* @return HSV Saturation
+			*/
+			Number getSaturation() const;
+
+			/**
+			* Returns the value of the color's HSV component
+			* @return HSV Value
+			*/
+			Number getValue() const;
+
+			
 			/**
 			* Returns the color as a 32-bit usigned integer.
 			* @return Color as a single 32-bit unsigned integer.

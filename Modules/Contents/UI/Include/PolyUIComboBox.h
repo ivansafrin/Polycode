@@ -52,6 +52,7 @@ namespace Polycode {
 		
 			int addComboItem(String itemName);
 			int getSelectedIndex();
+			void setSelectedIndex(unsigned int newIndex);
 			void handleEvent(Event *event);
 				
 		private:

@@ -50,6 +50,9 @@ UIWindow::UIWindow(String windowName, Number width, Number height) : ScreenEntit
 	
 	padding = conf->getNumericValue("Polycode", "uiWindowSkinPadding");	
 	
+	width = width+(padding*2.0);
+	height = height+topPadding;
+	
 	windowRect = new UIBox(conf->getStringValue("Polycode", "uiWindowSkin"),
 						  st,sr,sb,sl,
 						  width, height);	

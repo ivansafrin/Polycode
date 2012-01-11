@@ -77,9 +77,9 @@ UIComboBox::UIComboBox(Number comboWidth) : ScreenEntity() {
 	nextItemHeight = 0;
 	
 	bgBox = new UIBox(bgImage, st,sr,sb,sl, comboWidth, comboHeight);	
-	
+
 	addChild(bgBox);
-	addChild(dropDownImage);	
+	addChild(dropDownImage);
 	
 	selectedLabel = new ScreenLabel("<None>", fontSize, fontName);
 	selectedLabel->setPosition(paddingX, floor(((dropDownImage->getHeight()/2.0) - selectedLabel->getHeight()/2.0) + paddingY));
@@ -149,6 +149,13 @@ void UIComboBox::updateVis() {
 
 int UIComboBox::getSelectedIndex() {
 	return selectedIndex;
+}
+
+void UIComboBox::setSelectedIndex(unsigned int newIndex) {
+	if(newIndex < items.size()) {
+		selectedIndex = newIndex;				
+		selectedLabel->setText(items[selectedIndex]->label);		
+	}
 }
 				
 void UIComboBox::handleEvent(Event *event) {

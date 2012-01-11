@@ -68,7 +68,10 @@ THE SOFTWARE.
 	#define PLATFORM PLATFORM_UNIX
 #endif
 
-
-
 typedef double Number;
+
+#define MIN(a, b)  (((a) < (b)) ? (a) : (b))
+#define MAX(a, b)  (((a) > (b)) ? (a) : (b))
+
+
 

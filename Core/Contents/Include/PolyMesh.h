@@ -23,12 +23,12 @@ THE SOFTWARE.
 #pragma once
 #include "PolyGlobals.h"
 #include "PolyVertex.h"
+#include "PolyPolygon.h"
 
 class OSFILE;
 
 namespace Polycode {
 	
-	class Polygon;
 	class String;
 
 	class _PolyExport VertexSorter {

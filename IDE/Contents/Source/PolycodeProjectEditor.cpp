@@ -32,9 +32,15 @@ PolycodeProjectEditor::PolycodeProjectEditor() : PolycodeEditor(true){
 	int fontSize = conf->getNumericValue("Polycode", "uiDefaultFontSize");	
 	Number padding = conf->getNumericValue("Polycode", "uiWindowSkinPadding");	
 		
-	ScreenLabel *label2 = new ScreenLabel(L"Width:", fontSize, fontName, Label::ANTIALIAS_FULL);
+	ScreenLabel *label2 = new ScreenLabel(L"DEFAULT VIDEO OPTIONS", fontSize+2, fontName, Label::ANTIALIAS_FULL);	
+	label2->setColor(1.0, 1.0, 1.0, 0.5);
 	mainSettingsWindow->addChild(label2);
 	label2->setPosition(padding, 50);		
+
+		
+	label2 = new ScreenLabel(L"Width:", fontSize, fontName, Label::ANTIALIAS_FULL);
+	mainSettingsWindow->addChild(label2);
+	label2->setPosition(padding, 80);		
 	
 	defaultWidthInput = new UITextInput(false, 60, 12);	
 	mainSettingsWindow->addChild(defaultWidthInput);
@@ -43,7 +49,7 @@ PolycodeProjectEditor::PolycodeProjectEditor() : PolycodeEditor(true){
 
 	label2 = new ScreenLabel(L"Height:", fontSize, fontName, Label::ANTIALIAS_FULL);
 	mainSettingsWindow->addChild(label2);
-	label2->setPosition(padding + 80, 50);		
+	label2->setPosition(padding + 80, 80);		
 	
 	defaultHeightInput = new UITextInput(false, 60, 12);	
 	mainSettingsWindow->addChild(defaultHeightInput);
@@ -52,7 +58,7 @@ PolycodeProjectEditor::PolycodeProjectEditor() : PolycodeEditor(true){
 	
 	label2 = new ScreenLabel(L"Anti-aliasing:", fontSize, fontName, Label::ANTIALIAS_FULL);
 	mainSettingsWindow->addChild(label2);
-	label2->setPosition(padding + 160, 50);		
+	label2->setPosition(padding + 160, 80);		
 	
 	aaLevelComboBox = new UIComboBox(120);		
 	aaLevelComboBox->addComboItem("No AA");
@@ -74,26 +80,45 @@ PolycodeProjectEditor::PolycodeProjectEditor() : PolycodeEditor(true){
 	afLevelComboBox->addComboItem("16x Anisotropic Filtering");			
 	afLevelComboBox->setPosition(label2->getPosition().x, label2->getPosition().y+label2->getHeight());
 
+	label2 = new ScreenLabel(L"Framerate:", fontSize, fontName, Label::ANTIALIAS_FULL);
+	mainSettingsWindow->addChild(label2);
+	label2->setPosition(padding, afLevelComboBox->getPosition().y+afLevelComboBox->getHeight()+10);		
 	
-//	aaLevelInput = new UIHSlider(0,6, 100);
-//	mainSettingsWindow->addChild(aaLevelInput);
-//	aaLevelInput->setPosition(label2->getPosition().x, label2->getPosition().y+label2->getHeight());
-
+	framerateInput = new UITextInput(false, 60, 12);	
+	mainSettingsWindow->addChild(framerateInput);
+	framerateInput->setPosition(label2->getPosition().x, label2->getPosition().y+label2->getHeight());
 
 	vSyncCheckBox = new UICheckBox("V-Sync", false);
-	vSyncCheckBox->setPosition(padding, afLevelComboBox->getPosition().y+afLevelComboBox->getHeight()+10);
+	vSyncCheckBox->setPosition(padding, framerateInput->getPosition().y+framerateInput->getHeight()+10);
 	mainSettingsWindow->addChild(vSyncCheckBox);
+	
+	label2 = new ScreenLabel(L"STARTUP OPTIONS", fontSize+2, fontName, Label::ANTIALIAS_FULL);	
+	label2->setColor(1.0, 1.0, 1.0, 0.5);
+	mainSettingsWindow->addChild(label2);
+	label2->setPosition(padding, vSyncCheckBox->getPosition().y+vSyncCheckBox->getHeight()+30);		
+	
 	
 	label2 = new ScreenLabel(L"Entry point file:", fontSize, fontName, Label::ANTIALIAS_FULL);
 	mainSettingsWindow->addChild(label2);
-	label2->setPosition(padding, vSyncCheckBox->getPosition().y+vSyncCheckBox->getHeight()+10);		
+	label2->setPosition(padding, vSyncCheckBox->getPosition().y+vSyncCheckBox->getHeight()+60);		
 	
 	entryPointInput = new UITextInput(false, 200, 12);	
 	mainSettingsWindow->addChild(entryPointInput);
 	entryPointInput->setPosition(label2->getPosition().x, label2->getPosition().y+label2->getHeight());
 
+
 	mainSettingsWindow->addChild(afLevelComboBox);			
 	mainSettingsWindow->addChild(aaLevelComboBox);		
+
+
+	label2 = new ScreenLabel(L"Background color:", fontSize, fontName, Label::ANTIALIAS_FULL);
+	mainSettingsWindow->addChild(label2);
+	label2->setPosition(padding, entryPointInput->getPosition().y+entryPointInput->getHeight()+10);		
+
+	bgColorBox = new UIColorBox(Color(1.0, 0.5, 0.0, 0.9), 30,30);
+	bgColorBox->setPosition(label2->getPosition().x, label2->getPosition().y+label2->getHeight());
+	mainSettingsWindow->addChild(bgColorBox);
+
 }
 
 PolycodeProjectEditor::~PolycodeProjectEditor() {
@@ -101,7 +126,56 @@ PolycodeProjectEditor::~PolycodeProjectEditor() {
 }
 
 bool PolycodeProjectEditor::openFile(String filePath) {
-	PolycodeEditor::openFile(filePath);
+
+	Object configFile;
+	if(!configFile.loadFromXML(filePath)) {
+		return false;
+	}
+	
+	if(configFile.root["entryPoint"]) {	
+		entryPointInput->setText(configFile.root["entryPoint"]->stringVal);
+	}
+	
+	if(configFile.root["defaultWidth"]) {	
+		defaultWidthInput->setText(configFile.root["defaultWidth"]->stringVal);
+	}
+	if(configFile.root["defaultHeight"]) {		
+		defaultHeightInput->setText(configFile.root["defaultHeight"]->stringVal);
+	}
+
+	unsigned int aaMap[7] = {0,1,1,1,2,2,3};
+	if(configFile.root["antiAliasingLevel"]) {
+		aaLevelComboBox->setSelectedIndex(aaMap[configFile.root["antiAliasingLevel"]->intVal]);
+	} else {
+		aaLevelComboBox->setSelectedIndex(0);
+	}
+
+	unsigned int afMap[17] = {0,1,2,2,3,3,3,3,4,4,4,4,4,4,4,4,5};
+	if(configFile.root["anisotropyLevel"]) {
+		afLevelComboBox->setSelectedIndex(afMap[configFile.root["anisotropyLevel"]->intVal]);
+	} else {
+		afLevelComboBox->setSelectedIndex(0);
+	}
+
+
+	if(configFile.root["frameRate"]) {
+		framerateInput->setText(configFile.root["frameRate"]->stringVal);	
+	}
+/*
+	if(configFile.root["backgroundColor"]) {
+		ObjectEntry *color = configFile.root["backgroundColor"];
+		if((*color)["red"] && (*color)["green"] && (*color)["blue"]) {
+			backgroundColorR = (*color)["red"]->NumberVal;
+			backgroundColorG = (*color)["green"]->NumberVal;
+			backgroundColorB = (*color)["blue"]->NumberVal;
+			printf("Background color: %f %f %f\n", backgroundColorR, backgroundColorG, backgroundColorB);
+
+		} else {
+			printf("backgroundColor node specified, but missing all three color attributes (red,green,blue). Ignoring.\n");
+		}
+	}*/
+	
+	PolycodeEditor::openFile(filePath);	
 	return true;
 }
 

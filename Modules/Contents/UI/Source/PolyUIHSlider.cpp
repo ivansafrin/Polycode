@@ -22,41 +22,56 @@
 
 
 #include "PolyUIHSlider.h"
+#include "PolyConfig.h"
+#include "PolyCoreServices.h"
 
 using namespace Polycode;
 
 UIHSlider::UIHSlider(Number start, Number end, Number width) {
-	bgRect = new ScreenShape(ScreenShape::SHAPE_RECT, width,8,0,0);
-	bgRect->setPosition(0,6);
-	bgRect->setColor(0.11f, 0.11f, 0.11f, 1.0f);
-//	bgRect->strokeEnabled = true;
-//	bgRect->setStrokeColor(1.0f, 1.0f, 1.0f, 0.1f);
+
+	Config *conf = CoreServices::getInstance()->getConfig();	
+	
+	String bgImage = conf->getStringValue("Polycode", "uiHSliderBg");
+	String gripImage = conf->getStringValue("Polycode", "uiHSliderGrip");	
+	Number bgHeight = conf->getNumericValue("Polycode", "uiHSliderBgHeight");
+
+	Number st = conf->getNumericValue("Polycode", "uiHSliderBgT");
+	Number sr = conf->getNumericValue("Polycode", "uiHSliderBgR");
+	Number sb = conf->getNumericValue("Polycode", "uiHSliderBgB");
+	Number sl = conf->getNumericValue("Polycode", "uiHSliderBgL");
+	
+
+	bgRect = new UIBox(bgImage, st, sr, sb, sl, width, bgHeight);
 	addChild(bgRect);
 	
-	sliderWidth = width-10;
+	sliderWidth = width;
 	
 	sliderValue = start;
 	startValue = start;
 	endValue = end;
-	
-	shadowRect = new ScreenShape(ScreenShape::SHAPE_RECT,10,18,0,0);
-	shadowRect->setColor(0.0f, 0.0f, 0.0f, 0.2f);
-	shadowRect->setPosition(2, 3);
-	addChild(shadowRect);
-	
-	gripRect = new ScreenShape(ScreenShape::SHAPE_RECT, 10,18,0,0);
-	gripRect->setColor(0.13f, 0.13f, 0.13f, 1.0f);
-	gripRect->strokeEnabled = true;
-	gripRect->lineSmooth = false;
-	gripRect->setStrokeColor(1.0f, 1.0f, 1.0f, 0.1f);
+		
+	gripRect = new ScreenImage(gripImage);
+	gripRect->setPositionMode(ScreenEntity::POSITION_CENTER);
+	gripRect->setPosition(0, floor(bgHeight/2.0));
+
+	bgHitBox = new ScreenShape(ScreenShape::SHAPE_RECT, width, gripRect->getHeight());
+	bgHitBox->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	bgHitBox->setPosition(0, gripRect->getPosition().y - (gripRect->getHeight()/2.0));
+	addChild(bgHitBox);
+	bgHitBox->setColor(1.0,0.0,0.0,0.0);
+
 	addChild(gripRect);
+
+	bgHitBox->addEventListener(this, InputEvent::EVENT_MOUSEUP);
+	bgHitBox->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);
+	bgHitBox->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+
 
 	gripRect->addEventListener(this, InputEvent::EVENT_MOUSEUP);
 	gripRect->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);
 	gripRect->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	
-	gripRect->setDragLimits(Rectangle(0,0,width-10,0));
-	shadowRect->setDragLimits(Rectangle(2,3,width-10,0));
+	gripRect->setDragLimits(Rectangle(0,floor(bgHeight/2.0),width,0));
 	
 	gripPos = 0;
 }
@@ -65,14 +80,11 @@ UIHSlider::~UIHSlider() {
 
 }
 
-ScreenShape *UIHSlider::getBgRect() {
-	return bgRect;
-}
-
 void UIHSlider::setSliderValue(Number val) {
 	if(val >= startValue && val <= endValue) {
 		gripRect->setPositionX(sliderWidth * ((val-startValue)/(endValue-startValue)));
-		shadowRect->setPositionX(gripRect->getPosition().x);
+		gripPos = gripRect->getPosition().x;
+		sliderValue = val;
 	}
 }
 
@@ -81,17 +93,32 @@ Number UIHSlider::getSliderValue() {
 }
 			
 void UIHSlider::handleEvent(Event *event) {
+
+	if(event->getDispatcher() == bgHitBox) {
+		InputEvent *inputEvent = (InputEvent*)event;	
+		switch(event->getEventCode()) {
+			case InputEvent::EVENT_MOUSEDOWN:
+				gripRect->setPositionX(inputEvent->mousePosition.x);
+				gripPos = gripRect->getPosition().x;				
+				sliderValue = startValue+((endValue - startValue) * (gripPos/sliderWidth));				
+				gripRect->startDrag(inputEvent->mousePosition.x-gripRect->getPosition().x,inputEvent->mousePosition.y-gripRect->getPosition().y);
+			break;
+			case InputEvent::EVENT_MOUSEUP:
+			case InputEvent::EVENT_MOUSEUP_OUTSIDE:
+				gripRect->stopDrag();
+			break;
+		}	
+	}
+
 	if(event->getDispatcher() == gripRect) {
 		InputEvent *inputEvent = (InputEvent*)event;
 		switch(event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEDOWN:
 				gripRect->startDrag(inputEvent->mousePosition.x-gripRect->getPosition().x,inputEvent->mousePosition.y-gripRect->getPosition().y);
-				shadowRect->startDrag(inputEvent->mousePosition.x-2-gripRect->getPosition().x,inputEvent->mousePosition.y-3-gripRect->getPosition().y);		
 			break;
 			case InputEvent::EVENT_MOUSEUP:
 			case InputEvent::EVENT_MOUSEUP_OUTSIDE:
 				gripRect->stopDrag();
-				shadowRect->stopDrag();
 			break;
 		}	
 	}

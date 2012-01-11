@@ -44,16 +44,16 @@
 
 	<uiWindowSkin>windowBg.png</uiWindowSkin>
 	<uiWindowSkinT>29</uiWindowSkinT>
-	<uiWindowSkinR>3</uiWindowSkinR>
-	<uiWindowSkinB>3</uiWindowSkinB>
-	<uiWindowSkinL>3</uiWindowSkinL>
-	<uiWindowSkinPadding>10</uiWindowSkinPadding>		
+	<uiWindowSkinR>8</uiWindowSkinR>
+	<uiWindowSkinB>8</uiWindowSkinB>
+	<uiWindowSkinL>8</uiWindowSkinL>
+	<uiWindowSkinPadding>15</uiWindowSkinPadding>		
 	<uiWindowTitleFont>sans</uiWindowTitleFont>
 	<uiWindowTitleFontSize>12</uiWindowTitleFontSize>
-	<uiWindowTitleX>5</uiWindowTitleX>	
+	<uiWindowTitleX>10</uiWindowTitleX>	
 	<uiWindowTitleY>7</uiWindowTitleY>		
 	<uiWindowCloseIcon>closeIcon.png</uiWindowCloseIcon>
-	<uiCloseIconX>6</uiCloseIconX>	
+	<uiCloseIconX>11</uiCloseIconX>	
 	<uiCloseIconY>7</uiCloseIconY>		
 
 	<uiScrollBgSkin>scrollBg.png</uiScrollBgSkin>
@@ -107,4 +107,27 @@
 	<uiComboBoxSelectorBgL>3</uiComboBoxSelectorBgL>					
 	<uiComboBoxTextOffsetX>7</uiComboBoxTextOffsetX>
 	<uiComboBoxTextOffsetY>3</uiComboBoxTextOffsetY>		
+
+	<uiColorBoxFrameImage>colorboxFrame.png</uiColorBoxFrameImage>
+	<uiColorBoxFrameImageT>3</uiColorBoxFrameImageT>
+	<uiColorBoxFrameImageR>3</uiColorBoxFrameImageR>
+	<uiColorBoxFrameImageB>3</uiColorBoxFrameImageB>
+	<uiColorBoxFrameImageL>3</uiColorBoxFrameImageL>					
+	<uiColorBoxBgImage>colorboxBg.png</uiColorBoxBgImage>
+	<uiFrameInset>1</uiFrameInset>
+
+	<uiColorPickerMainBg>colorPickerMainBg.png</uiColorPickerMainBg>
+	<uiColorPickerMainFrame>colorPickerMainFrame.png</uiColorPickerMainFrame>
+	<uiColorPickerHueFrame>colorPickerHue.png</uiColorPickerHueFrame>
+	<uiColorPickerHueSelector>colorPickerHueSelector.png</uiColorPickerHueSelector>
+	<uiColorPickerMainSelector>colorPickerTarget.png</uiColorPickerMainSelector>
+
+	<uiHSliderGrip>hsliderHandle.png</uiHSliderGrip>
+	<uiHSliderBg>hsliderBg.png</uiHSliderBg>
+	<uiHSliderBgHeight>6</uiHSliderBgHeight>
+	<uiHSliderBgT>2</uiHSliderBgT>
+	<uiHSliderBgR>2</uiHSliderBgR>
+	<uiHSliderBgB>2</uiHSliderBgB>
+	<uiHSliderBgL>2</uiHSliderBgL>
+
 </PolyConfig>

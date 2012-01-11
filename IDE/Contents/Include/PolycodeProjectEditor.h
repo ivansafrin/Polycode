@@ -44,10 +44,12 @@ class PolycodeProjectEditor : public PolycodeEditor {
 	UIWindow *mainSettingsWindow;	
 	UITextInput *defaultWidthInput;
 	UITextInput *defaultHeightInput;	
-	//UIHSlider *aaLevelInput;	
+	UITextInput *framerateInput;	
 	UIComboBox *aaLevelComboBox;
 	UIComboBox *afLevelComboBox;	
 	UITextInput *entryPointInput;	
+	UIColorBox *bgColorBox;
+	
 };
 
 class PolycodeProjectEditorFactory : public PolycodeEditorFactory {
