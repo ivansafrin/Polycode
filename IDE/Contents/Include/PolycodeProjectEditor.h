@@ -40,8 +40,14 @@ class PolycodeProjectEditor : public PolycodeEditor {
 	
 	protected:
 	
+	Object configFile;	
+	
+	std::vector<UICheckBox*> moduleCheckboxes;
+	
+	UIWindow *mainSettingsWindow;
+	UIWindow *moduleSettingsWindow;
+		
 	UICheckBox *vSyncCheckBox;
-	UIWindow *mainSettingsWindow;	
 	UITextInput *defaultWidthInput;
 	UITextInput *defaultHeightInput;	
 	UITextInput *framerateInput;	

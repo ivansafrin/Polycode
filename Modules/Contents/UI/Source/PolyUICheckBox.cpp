@@ -65,6 +65,10 @@ UICheckBox::UICheckBox(String caption, bool checked) : ScreenEntity() {
 	
 }
 
+String UICheckBox::getCaptionLabel() {
+	return captionLabel->getText();
+}
+
 UICheckBox::~UICheckBox() {
 
 }
@@ -73,6 +77,12 @@ bool UICheckBox::isChecked() {
 	return checked;
 }
 		
+void UICheckBox::setChecked(bool val) {
+	checked = val;
+	buttonImageChecked->visible = checked;
+	buttonImageUnchecked->visible = !checked;
+}
+
 void UICheckBox::changeCheck() {
 	checked = !checked;
 	buttonImageChecked->visible = checked;

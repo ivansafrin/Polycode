@@ -411,6 +411,10 @@ UIColorBox::UIColorBox(Color initialColor, Number width, Number height) : Screen
 	setBoxColor(initialColor);
 }
 
+Color UIColorBox::getSelectedColor() {
+	return colorPicker->getSelectedColor();
+}
+
 UIColorBox::~UIColorBox() {
 
 }

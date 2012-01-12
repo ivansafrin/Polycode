@@ -160,6 +160,7 @@ namespace Polycode {
 			return entry;			
 		}		
 		
+		void Clear();
 		
 		static const int FLOAT_ENTRY = 0;		
 		static const int INT_ENTRY = 1;

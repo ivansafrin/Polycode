@@ -89,6 +89,8 @@ namespace Polycode {
 			UIColorBox(Color initialColor, Number width, Number height);
 			~UIColorBox();
 			
+			Color getSelectedColor();
+			
 			void setBoxColor(Color newColor);
 			void showColorPicker();			
 			void handleEvent(Event *event);

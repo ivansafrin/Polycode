@@ -36,10 +36,12 @@ namespace Polycode {
 			UICheckBox(String caption, bool checked);
 			~UICheckBox();
 		
+			void setChecked(bool val);
 			void changeCheck();
 			bool isChecked();
 			void handleEvent(Event *event);
-				
+			String getCaptionLabel();
+			
 		private:
 			bool checked;
 			ScreenLabel *captionLabel;

@@ -21,17 +21,40 @@
  */
  
 #include "PolycodeProjectEditor.h"
+#include "OSBasics.h"
 
 PolycodeProjectEditor::PolycodeProjectEditor() : PolycodeEditor(true){
-	mainSettingsWindow = new UIWindow("Project Settings", 300, 500);
-	mainSettingsWindow->setPosition(10,10);
-	addChild(mainSettingsWindow);
-	
+
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
 	int fontSize = conf->getNumericValue("Polycode", "uiDefaultFontSize");	
 	Number padding = conf->getNumericValue("Polycode", "uiWindowSkinPadding");	
 		
+
+	moduleSettingsWindow = new UIWindow("Project Modules", 300, 200);
+	moduleSettingsWindow->setPosition(350,10);
+	addChild(moduleSettingsWindow);
+	
+	Number lastYPos = 50;
+	
+	String polycodeBasePath = CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory();
+		
+	std::vector<OSFileEntry> moduleFolders = OSBasics::parseFolder(polycodeBasePath+"/Standalone/Modules", false);
+	for(int i=0; i < moduleFolders.size(); i++) {
+		OSFileEntry entry = moduleFolders[i];
+		if(entry.type == OSFileEntry::TYPE_FOLDER) {
+			UICheckBox *moduleCheckBox = new UICheckBox(entry.name, false);
+			moduleCheckBox->setPosition(padding, lastYPos);
+			lastYPos += moduleCheckBox->getHeight() + 5;
+			moduleSettingsWindow->addChild(moduleCheckBox);
+			moduleCheckboxes.push_back(moduleCheckBox);
+		}
+	}
+
+	mainSettingsWindow = new UIWindow("Project Settings", 300, 500);
+	mainSettingsWindow->setPosition(10,10);
+	addChild(mainSettingsWindow);
+	
 	ScreenLabel *label2 = new ScreenLabel(L"DEFAULT VIDEO OPTIONS", fontSize+2, fontName, Label::ANTIALIAS_FULL);	
 	label2->setColor(1.0, 1.0, 1.0, 0.5);
 	mainSettingsWindow->addChild(label2);
@@ -127,27 +150,43 @@ PolycodeProjectEditor::~PolycodeProjectEditor() {
 
 bool PolycodeProjectEditor::openFile(String filePath) {
 
-	Object configFile;
+
 	if(!configFile.loadFromXML(filePath)) {
 		return false;
 	}
 	
 	if(configFile.root["entryPoint"]) {	
 		entryPointInput->setText(configFile.root["entryPoint"]->stringVal);
+	} else {
+		configFile.root.addChild("entryPoint", "Source/Main.lua");		
 	}
 	
 	if(configFile.root["defaultWidth"]) {	
 		defaultWidthInput->setText(configFile.root["defaultWidth"]->stringVal);
+	} else {
+		configFile.root.addChild("defaultWidth", 640);	
 	}
+	
 	if(configFile.root["defaultHeight"]) {		
 		defaultHeightInput->setText(configFile.root["defaultHeight"]->stringVal);
+	} else {
+		configFile.root.addChild("defaultHeight", 480);
 	}
+
+	if(configFile.root["vSync"]) {	
+		vSyncCheckBox->setChecked(configFile.root["vSync"]->boolVal);
+	} else {
+		configFile.root.addChild("vSync", false);
+	}
+
+	
 
 	unsigned int aaMap[7] = {0,1,1,1,2,2,3};
 	if(configFile.root["antiAliasingLevel"]) {
 		aaLevelComboBox->setSelectedIndex(aaMap[configFile.root["antiAliasingLevel"]->intVal]);
 	} else {
 		aaLevelComboBox->setSelectedIndex(0);
+		configFile.root.addChild("antiAliasingLevel", 0);
 	}
 
 	unsigned int afMap[17] = {0,1,2,2,3,3,3,3,4,4,4,4,4,4,4,4,5};
@@ -155,25 +194,41 @@ bool PolycodeProjectEditor::openFile(String filePath) {
 		afLevelComboBox->setSelectedIndex(afMap[configFile.root["anisotropyLevel"]->intVal]);
 	} else {
 		afLevelComboBox->setSelectedIndex(0);
+		configFile.root.addChild("anisotropyLevel", 0);
 	}
-
 
 	if(configFile.root["frameRate"]) {
 		framerateInput->setText(configFile.root["frameRate"]->stringVal);	
+	} else {
+		configFile.root.addChild("frameRate", 60);	
 	}
-/*
+	
+	if(configFile.root["modules"]) {
+		for(int i=0; i < configFile.root["modules"]->length; i++) {
+			ObjectEntry *module = (*configFile.root["modules"])[i];
+			for(int j=0; j < moduleCheckboxes.size(); j++) {
+				if(moduleCheckboxes[j]->getCaptionLabel() == module->stringVal) {
+					moduleCheckboxes[j]->setChecked(true);
+				}
+			}
+		}
+	}	
+
+	Number backgroundColorR, backgroundColorG, backgroundColorB;	
 	if(configFile.root["backgroundColor"]) {
 		ObjectEntry *color = configFile.root["backgroundColor"];
 		if((*color)["red"] && (*color)["green"] && (*color)["blue"]) {
 			backgroundColorR = (*color)["red"]->NumberVal;
 			backgroundColorG = (*color)["green"]->NumberVal;
 			backgroundColorB = (*color)["blue"]->NumberVal;
-			printf("Background color: %f %f %f\n", backgroundColorR, backgroundColorG, backgroundColorB);
-
+			bgColorBox->setBoxColor(Color(backgroundColorR, backgroundColorG, backgroundColorB, 1.0));	
 		} else {
-			printf("backgroundColor node specified, but missing all three color attributes (red,green,blue). Ignoring.\n");
+			ObjectEntry *color = configFile.root.addChild("backgroundColor");
+			color->addChild("red", 0.0);
+			color->addChild("green", 0.0);
+			color->addChild("blue", 0.0);						
 		}
-	}*/
+	}
 	
 	PolycodeEditor::openFile(filePath);	
 	return true;
@@ -184,4 +239,30 @@ void PolycodeProjectEditor::Resize(int x, int y) {
 
 void PolycodeProjectEditor::saveFile() {
 
+	configFile.root["frameRate"]->intVal = atoi(framerateInput->getText().c_str());
+	configFile.root["defaultWidth"]->intVal = atoi(defaultWidthInput->getText().c_str());
+	configFile.root["defaultHeight"]->intVal = atoi(defaultHeightInput->getText().c_str());	
+	configFile.root["entryPoint"]->stringVal = entryPointInput->getText();
+	
+	ObjectEntry *color = configFile.root["backgroundColor"];	
+	(*color)["red"]->NumberVal = bgColorBox->getSelectedColor().r;
+	(*color)["green"]->NumberVal = bgColorBox->getSelectedColor().g;
+	(*color)["blue"]->NumberVal = bgColorBox->getSelectedColor().b;
+
+
+	configFile.root["modules"]->Clear();
+	for(int j=0; j < moduleCheckboxes.size(); j++) {
+		if(moduleCheckboxes[j]->isChecked()) {
+			configFile.root["modules"]->addChild("module", moduleCheckboxes[j]->getCaptionLabel());
+		}
+	}
+	
+	unsigned int afMap[6] = {0,1,2,4,8,16};
+	unsigned int aaMap[4] = {0,2,4,6};
+		
+	configFile.root["antiAliasingLevel"]->intVal = aaMap[aaLevelComboBox->getSelectedIndex()];
+	configFile.root["anisotropyLevel"]->intVal = afMap[afLevelComboBox->getSelectedIndex()];
+	configFile.root["vSync"]->boolVal = vSyncCheckBox->isChecked();
+	
+	configFile.saveToXML(filePath);
 }
