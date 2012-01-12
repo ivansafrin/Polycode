@@ -63,9 +63,9 @@ void NewFileWindow::resetForm() {
 void NewFileWindow::parseTemplatesIntoTree(UITree *tree, OSFileEntry folder) {
 	vector<OSFileEntry> templates = OSBasics::parseFolder(folder.fullPath, false);
 	for(int i=0; i < templates.size(); i++) {
-		OSFileEntry entry = templates[i];
+		OSFileEntry entry = templates[i];	
 		if(entry.type != OSFileEntry::TYPE_FOLDER) {
-			UITree *newChild = tree->addTreeChild("templateIcon.png", entry.nameWithoutExtension, NULL);			
+			UITree *newChild = tree->addTreeChild("templateIcon.png", entry.nameWithoutExtension, NULL);
 			FileTemplateUserData *data = new FileTemplateUserData();
 			data->type = 1;
 			data->templateFolder = entry.fullPath;

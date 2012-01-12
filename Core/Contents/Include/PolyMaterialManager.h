@@ -51,10 +51,10 @@ namespace Polycode {
 			* Creates a new framebuffer texture.
 			*/ 
 			Texture *createFramebufferTexture(int width, int height, int type);
-			Texture *createTexture(int width, int height, char *imageData, bool clamp=true, bool createMipmaps = true, int type=Image::IMAGE_RGBA);
-			Texture *createNewTexture(int width, int height, bool clamp=true, bool createMipmaps = true, int type=Image::IMAGE_RGBA);
-			Texture *createTextureFromImage(Image *image, bool clamp=true, bool createMipmaps = true);
-			Texture *createTextureFromFile(const String& fileName, bool clamp=true, bool createMipmaps = true);
+			Texture *createTexture(int width, int height, char *imageData, bool clamp=false, bool createMipmaps = true, int type=Image::IMAGE_RGBA);
+			Texture *createNewTexture(int width, int height, bool clamp=false, bool createMipmaps = true, int type=Image::IMAGE_RGBA);
+			Texture *createTextureFromImage(Image *image, bool clamp=false, bool createMipmaps = true);
+			Texture *createTextureFromFile(const String& fileName, bool clamp=false, bool createMipmaps = true);
 			void deleteTexture(Texture *texture);
 		
 			void reloadTextures();
