@@ -110,6 +110,7 @@ SET(polycore_HDRS
     Include/PolyFont.h
     Include/PolyFontManager.h
     Include/PolyGLCubemap.h
+    Include/PolyGLHeaders.h
     Include/PolyGlobals.h
     Include/PolyGLRenderer.h
     Include/PolyGLSLProgram.h
