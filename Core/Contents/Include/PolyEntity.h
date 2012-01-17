@@ -157,6 +157,19 @@ namespace Polycode {
 			@return Parent entity of this entity.
 			*/
 			Entity *getParentEntity() const;
+			
+			/**
+			* Returns the number of child entities belonging to this entity.
+			* @return Number of child entities.
+			*/
+			unsigned int getNumChildren();
+			
+			/**
+			* Returns the child entity at specified index.
+			* @param index Index to return entity at.
+			* @return Child entity at specified index or NULL of index out of range.
+			*/			
+			Entity *getChildAtIndex(unsigned int index);
 				
 			//@}
 			// ----------------------------------------------------------------------------------------------------------------

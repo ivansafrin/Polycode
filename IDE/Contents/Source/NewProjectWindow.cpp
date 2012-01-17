@@ -22,7 +22,7 @@
 
 #include "NewProjectWindow.h"
 
-NewProjectWindow::NewProjectWindow() : UIWindow(L"Create New Project", 500, 300){
+NewProjectWindow::NewProjectWindow() : UIWindow(L"Create New Project", 480, 280){
 	
 	templateFolder = "";
 	

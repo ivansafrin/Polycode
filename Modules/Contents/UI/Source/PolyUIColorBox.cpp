@@ -434,6 +434,7 @@ void UIColorBox::handleEvent(Event *event) {
 		switch(event->getEventCode()) {
 			case Event::CHANGE_EVENT:
 				colorShape->color = colorPicker->getSelectedColor();
+				dispatchEvent(new UIEvent(), UIEvent::CHANGE_EVENT);
 			break;
 		}		
 	}

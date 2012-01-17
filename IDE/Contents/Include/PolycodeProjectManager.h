@@ -33,6 +33,8 @@ class PolycodeProjectManager {
 	public:
 		PolycodeProjectManager();
 		~PolycodeProjectManager();
+		
+	void createNewFile(String templatePath, String newFileName);
 	
 	void createNewProject(String templateFolder, String projectName, String projectLocation);
 	PolycodeProject* openProject(String path);

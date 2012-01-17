@@ -27,7 +27,7 @@ THE SOFTWARE.
 #include "stdio.h"
 
 
-#define MAX_PACKET_SIZE 1400
+#define MAX_PACKET_SIZE 400
 
 // if set to 1, will create a thread for each network socket
 #define USE_THREADED_SOCKETS 0

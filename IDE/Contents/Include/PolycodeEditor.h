@@ -23,6 +23,7 @@
 #pragma once
 
 #include "Polycode.h"
+#include "OSBasics.h"
 
 using namespace Polycode;
 
@@ -35,6 +36,8 @@ public:
 	virtual void Resize(int x, int y) = 0;
 	
 	virtual void saveFile(){};
+	
+	virtual void handleDroppedFile(OSFileEntry file, Number x, Number y) {};
 	
 	void setFilePath(String newPath);
 	String getFilePath() { return filePath; }

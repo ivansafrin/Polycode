@@ -71,6 +71,10 @@
 	return YES;
 }
 
+-(IBAction) refreshProject: (id) sender {
+	app->refreshProject();
+}	
+
 -(IBAction) renameFile: (id) sender {
 	app->renameFile();
 }

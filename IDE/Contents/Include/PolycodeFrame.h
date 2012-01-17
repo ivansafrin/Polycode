@@ -69,6 +69,10 @@ private:
 	ScreenImage *logo;	
 	ScreenImage *resizer;	
 
+	OSFileEntry draggedFile;
+	ScreenEntity *dragEntity;
+	ScreenLabel *dragLabel;
+	bool isDragging;
 	
 	ScreenImage *welcomeImage;	
 	

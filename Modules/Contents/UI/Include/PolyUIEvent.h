@@ -36,7 +36,7 @@ namespace Polycode {
 			static const int OK_EVENT = 2;
 			static const int CANCEL_EVENT = 3;
 			static const int CHANGE_EVENT = 4;
-			
+						
 		protected:
 		
 			

@@ -70,8 +70,9 @@ public:
 	
 	BrowserUserData *getSelectedData() { return selectedData; }
 	
+	UITreeContainer *treeContainer;
+			
 protected:
 	
 		BrowserUserData *selectedData;
-		UITreeContainer *treeContainer;
 };	

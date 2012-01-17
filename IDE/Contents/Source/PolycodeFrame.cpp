@@ -49,6 +49,8 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	
 	projectBrowser = new PolycodeProjectBrowser();
 	addChild(projectBrowser);
+	
+	projectBrowser->treeContainer->getRootNode()->addEventListener(this, UITreeEvent::DRAG_START_EVENT);
 		
 	topBarBg = new ScreenShape(ScreenShape::SHAPE_RECT, 2,2);
 	topBarBg->setColor(0,0,0,1);
@@ -88,6 +90,17 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	
 	currentEditor = NULL;
 	
+	isDragging  = false;
+	dragLabel = new ScreenLabel("NONE", 11, "sans");
+	dragLabel->setPosition(0,-15);
+	
+	dragEntity = new ScreenEntity();
+	dragEntity->addChild(dragLabel);
+	addChild(dragEntity);
+	dragEntity->visible = false;	
+	
+	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEUP);
+	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
 }
 
 void PolycodeFrame::showModal(UIWindow *modalChild) {
@@ -133,6 +146,45 @@ void PolycodeFrame::hideModal() {
 }
 
 void PolycodeFrame::handleEvent(Event *event) {
+	
+	if(event->getDispatcher() == CoreServices::getInstance()->getCore()->getInput()) {
+		switch(event->getEventCode()) {
+			case InputEvent::EVENT_MOUSEUP:
+				if(isDragging) {
+					if(currentEditor) {
+						InputEvent *inputEvent = (InputEvent*) event;						
+						Number posX = inputEvent->mousePosition.x - editorHolder->getPosition2D().x;
+						Number posY = inputEvent->mousePosition.y - editorHolder->getPosition2D().y;						
+						currentEditor->handleDroppedFile(draggedFile, posX, posY);
+					}
+				}
+				isDragging = false;
+				dragEntity->visible = false;
+			break;
+			case InputEvent::EVENT_MOUSEMOVE:
+				if(isDragging) {
+					dragEntity->setPosition(((InputEvent*)event)->mousePosition);
+				}
+			break;	
+		}
+	}
+
+	if(event->getDispatcher() == projectBrowser->treeContainer->getRootNode()) {
+		switch (event->getEventCode()) {
+			case UITreeEvent::DRAG_START_EVENT:
+			{
+				UITreeEvent *treeEvent = (UITreeEvent*) event;
+				BrowserUserData *data = (BrowserUserData*)treeEvent->selection->getUserData();
+				draggedFile = data->fileEntry;
+				dragLabel->setText(data->fileEntry.name);
+				dragEntity->visible = true;
+				isDragging = true;
+//				printf("START DRAG: %s\n", data->fileEntry.name.c_str());
+			}
+			break;
+		}
+	}
+
 	if(event->getDispatcher() == modalChild) {
 		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLOSE_EVENT) {
 			hideModal();

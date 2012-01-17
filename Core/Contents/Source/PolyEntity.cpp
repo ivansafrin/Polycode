@@ -115,6 +115,17 @@ void Entity::removeChild(Entity *entityToRemove) {
 	}	
 }
 
+unsigned int Entity::getNumChildren() {
+	return children.size();
+}
+
+Entity *Entity::getChildAtIndex(unsigned int index) {
+	if(index < children.size()) {
+		return children[index];
+	}
+	return NULL;
+}
+
 void Entity::addChild(Entity *newChild) {
 	addEntity(newChild);
 }

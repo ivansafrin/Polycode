@@ -297,6 +297,25 @@
 									<reference key="NSOnImage" ref="35465992"/>
 									<reference key="NSMixedImage" ref="502551668"/>
 								</object>
+								<object class="NSMenuItem" id="317190896">
+									<reference key="NSMenu" ref="720053764"/>
+									<string key="NSTitle">Refresh Project</string>
+									<string key="NSKeyEquiv">F</string>
+									<int key="NSKeyEquivModMask">1048576</int>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="35465992"/>
+									<reference key="NSMixedImage" ref="502551668"/>
+								</object>
+								<object class="NSMenuItem" id="533574374">
+									<reference key="NSMenu" ref="720053764"/>
+									<bool key="NSIsDisabled">YES</bool>
+									<bool key="NSIsSeparator">YES</bool>
+									<string key="NSTitle"/>
+									<string key="NSKeyEquiv"/>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="35465992"/>
+									<reference key="NSMixedImage" ref="502551668"/>
+								</object>
 								<object class="NSMenuItem" id="1023925487">
 									<reference key="NSMenu" ref="720053764"/>
 									<string key="NSTitle">Save File</string>
@@ -715,6 +734,14 @@
 						<reference key="NSOnImage" ref="35465992"/>
 						<reference key="NSMixedImage" ref="502551668"/>
 					</object>
+					<object class="NSMenuItem" id="556423302">
+						<reference key="NSMenu" ref="1048220208"/>
+						<string key="NSTitle">Refresh</string>
+						<string key="NSKeyEquiv"/>
+						<int key="NSMnemonicLoc">2147483647</int>
+						<reference key="NSOnImage" ref="35465992"/>
+						<reference key="NSMixedImage" ref="502551668"/>
+					</object>
 					<object class="NSMenuItem" id="49210983">
 						<reference key="NSMenu" ref="1048220208"/>
 						<string key="NSTitle">Rename</string>
@@ -1075,6 +1102,22 @@
 					</object>
 					<int key="connectionID">584</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">refreshProject:</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="556423302"/>
+					</object>
+					<int key="connectionID">586</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">refreshProject:</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="317190896"/>
+					</object>
+					<int key="connectionID">589</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -1175,6 +1218,8 @@
 							<reference ref="1071799412"/>
 							<reference ref="93992569"/>
 							<reference ref="355684970"/>
+							<reference ref="533574374"/>
+							<reference ref="317190896"/>
 						</object>
 						<reference key="parent" ref="379814623"/>
 					</object>
@@ -1567,6 +1612,7 @@
 							<reference ref="46500047"/>
 							<reference ref="49210983"/>
 							<reference ref="954168611"/>
+							<reference ref="556423302"/>
 						</object>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -1624,6 +1670,21 @@
 						<int key="objectID">583</int>
 						<reference key="object" ref="954168611"/>
 						<reference key="parent" ref="1048220208"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">585</int>
+						<reference key="object" ref="556423302"/>
+						<reference key="parent" ref="1048220208"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">587</int>
+						<reference key="object" ref="533574374"/>
+						<reference key="parent" ref="720053764"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">588</int>
+						<reference key="object" ref="317190896"/>
+						<reference key="parent" ref="720053764"/>
 					</object>
 				</object>
 			</object>
@@ -1707,6 +1768,9 @@
 					<string>580.IBPluginDependency</string>
 					<string>582.IBPluginDependency</string>
 					<string>583.IBPluginDependency</string>
+					<string>585.IBPluginDependency</string>
+					<string>587.IBPluginDependency</string>
+					<string>588.IBPluginDependency</string>
 					<string>72.IBPluginDependency</string>
 					<string>73.IBPluginDependency</string>
 					<string>75.IBPluginDependency</string>
@@ -1802,6 +1866,9 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="unlocalizedProperties">
@@ -1816,7 +1883,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">584</int>
+			<int key="maxID">589</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1901,6 +1968,7 @@
 							<string>newGroup:</string>
 							<string>newProject:</string>
 							<string>openProject:</string>
+							<string>refreshProject:</string>
 							<string>removeFile:</string>
 							<string>renameFile:</string>
 							<string>runProject:</string>
@@ -1908,6 +1976,7 @@
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -1930,6 +1999,7 @@
 							<string>newGroup:</string>
 							<string>newProject:</string>
 							<string>openProject:</string>
+							<string>refreshProject:</string>
 							<string>removeFile:</string>
 							<string>renameFile:</string>
 							<string>runProject:</string>
@@ -1959,6 +2029,10 @@
 							</object>
 							<object class="IBActionInfo">
 								<string key="name">openProject:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">refreshProject:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">

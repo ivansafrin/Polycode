@@ -19,44 +19,49 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
-
+ 
 #pragma once
 
-#include "PolycodeGlobals.h"
-#include "PolycodeUI.h"
-#include "Polycode.h"
-#include "OSBasics.h"
+#include "PolycodeEditor.h"
+#include <Polycode.h>
+#include <PolycodeUI.h>
 
 using namespace Polycode;
 
-class FileTemplateUserData  {
-public:
-	String templatePath;
-	int type;
-};
-
-class NewFileWindow : public UIWindow {
+class PolycodeScreenEditor : public PolycodeEditor {
 	public:
-		NewFileWindow();
-		~NewFileWindow();
+	PolycodeScreenEditor();
+	virtual ~PolycodeScreenEditor();
 	
-		void resetForm();
-		void parseTemplatesIntoTree(UITree *tree, OSFileEntry folder);
-
-		String getTemplatePath();
-		String getFileName();
-		
-		void handleEvent(Event *event);
+	bool openFile(String filePath);
+	void Resize(int x, int y);
+	
+	void syncTransformToSelected();
+	
+	void handleEvent(Event *event);
+	
+	void handleDroppedFile(OSFileEntry file, Number x, Number y);
 	
 	protected:
-	
-		UITextInput *fileNameInput;
-	
-		UIButton *cancelButton;
-		UIButton *okButton;
 		
-		String templatePath;
-			
-		UITreeContainer *templateContainer;	
-		UITree *defaultTemplateTree;
+		UIColorBox *entityColorBox;
+		UIWindow *entityInfoWindow;
+		
+		Vector2 dragOffset;
+		bool isDraggingEntity;
+		bool isScalingEntity;
+		
+		ScreenEntity *selectedEntity;
+		ScreenEntity *baseEntity;
+		
+		UIBox *screenTransform;
+	
+		ScreenImage *centerImage;
+		ScreenImage *grid;	
+};
+
+class PolycodeScreenEditorFactory : public PolycodeEditorFactory {
+	public:
+		PolycodeScreenEditorFactory() : PolycodeEditorFactory() { extensions.push_back("screen"); }
+		PolycodeEditor *createEditor() { return new PolycodeScreenEditor(); }
 };
