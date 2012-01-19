@@ -140,7 +140,19 @@ namespace Polycode {
 			*/
 			inline Number crossProduct( const Vector2& vec2 ) const {
 				return x * vec2.y - y * vec2.x;
-			}			
+			}
+			
+			inline Number angle(const Vector2& vec2 ) const {
+				Number dtheta,theta1,theta2;
+				theta1 = atan2(y,x);
+				theta2 = atan2(vec2.y,vec2.x);
+				dtheta = theta2 - theta1;
+				while (dtheta > PI)
+					dtheta -= PI*2.0;
+				while (dtheta < -PI)
+					dtheta += PI*2.0;
+				return(dtheta);
+			}									
 
 			/**
 			* Normalizes the vector.

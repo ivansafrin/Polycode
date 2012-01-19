@@ -105,12 +105,15 @@ UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : 
 	parent = NULL;
 	selectedNode = NULL;
 	arrowIconImage->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+	arrowIconImage->processInputEvents = true;
+	
 	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEUP);
 	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);	
 	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);		
 	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);	
 	bgBox->addEventListener(this, InputEvent::EVENT_DOUBLECLICK);	
-	
+	bgBox->processInputEvents = true;
+		
 	setPositionMode(ScreenEntity::POSITION_CENTER);
 	
 	refreshTree();

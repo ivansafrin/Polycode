@@ -84,7 +84,7 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		*/						
 		Number getRotation() const;
 			
-		bool _onMouseDown(Number x, Number y, int mouseButton, int timestamp);
+		bool _onMouseDown(Number x, Number y, int mouseButton, int timestamp, Vector2 parentAdjust = Vector2(0,0));
 		bool _onMouseUp(Number x, Number y, int mouseButton, int timestamp);
 		void _onMouseMove(Number x, Number y, int timestamp);
 		void _onMouseWheelUp(Number x, Number y, int timestamp);
@@ -115,7 +115,6 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		
 		/**
 		* Returns the height of the screen entity.
-		* @param w New height value.
 		*/											
 		Number getHeight() const;
 	
@@ -171,6 +170,7 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		*/
 		bool snapToPixels;
 
+		bool processInputEvents;
 
 	protected:
 	

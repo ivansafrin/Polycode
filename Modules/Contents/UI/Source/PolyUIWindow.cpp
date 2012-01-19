@@ -62,6 +62,7 @@ UIWindow::UIWindow(String windowName, Number width, Number height) : ScreenEntit
 	titlebarRect = new ScreenShape(ScreenShape::SHAPE_RECT, width, st);
 	titlebarRect->setColor(0,0,0,0);
 	titlebarRect->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	titlebarRect->processInputEvents = true;
 	addChild(titlebarRect);
 	
 	ScreenLabel *titleLabel = new ScreenLabel(windowName, fontSize, fontName, Label::ANTIALIAS_FULL);
@@ -73,6 +74,7 @@ UIWindow::UIWindow(String windowName, Number width, Number height) : ScreenEntit
 	closeBtn->setPosition(width-closeBtn->getWidth()-conf->getNumericValue("Polycode", "uiCloseIconX"), conf->getNumericValue("Polycode", "uiCloseIconY"));
 
 	titlebarRect->addEventListener(this, InputEvent::EVENT_MOUSEUP);
+	titlebarRect->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);	
 	titlebarRect->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	closeBtn->addEventListener(this, UIEvent::CLICK_EVENT);
 	
@@ -151,9 +153,11 @@ void UIWindow::handleEvent(Event *event) {
 		InputEvent *inputEvent = (InputEvent*)event;
 		switch(event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEUP:
+			case InputEvent::EVENT_MOUSEUP_OUTSIDE:			
 				stopDrag();
 			break;
 			case InputEvent::EVENT_MOUSEDOWN:
+				printf("DRAG OFFSET: %f, %f\n", inputEvent->mousePosition.x,inputEvent->mousePosition.y);
 				startDrag(inputEvent->mousePosition.x,inputEvent->mousePosition.y);
 			break;
 		}

@@ -60,6 +60,7 @@ PolycodeScreenEditor::PolycodeScreenEditor() : PolycodeEditor(true){
 	baseEntity->addEventListener(this, InputEvent::EVENT_MOUSEUP);
 	baseEntity->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);
 	baseEntity->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
+	baseEntity->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 					
 	screenTransform = new UIBox("screenTransform.png", 16,16,16,16, 100,100);
 	screenTransform->visible = false;
@@ -130,6 +131,10 @@ void PolycodeScreenEditor::handleEvent(Event *event) {
 	
 	if(event->getDispatcher() == baseEntity) {
 		switch (event->getEventCode()) {
+			case InputEvent::EVENT_MOUSEDOWN:
+				selectedEntity = NULL;
+				screenTransform->visible = false;
+			break;		
 			case InputEvent::EVENT_MOUSEUP:
 			case InputEvent::EVENT_MOUSEUP_OUTSIDE:			
 				isDraggingEntity = false;	
