@@ -199,6 +199,11 @@ public:
 
 		std::vector<Polycode::Rectangle> getVideoModes();
 
+		void handleAxisChange(GamepadDeviceEntry * device, int axisIndex, DWORD value);
+		void handleButtonChange(GamepadDeviceEntry * device, DWORD lastValue, DWORD value);
+		void handlePOVChange(GamepadDeviceEntry * device, DWORD lastValue, DWORD value);
+
+		void detectGamepads();
 		void initGamepad();
 		void shutdownGamepad();
 		void Gamepad_processEvents();
@@ -223,6 +228,7 @@ public:
 
 		unsigned int nextDeviceID;
 		PolyKEY keyMap[1024];
+		unsigned int lastGamepadDetect;
 
 		CoreMutex *eventMutex;
 

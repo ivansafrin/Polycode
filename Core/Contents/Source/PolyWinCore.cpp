@@ -511,8 +511,85 @@ void Win32Core::checkEvents() {
 	unlockMutex(eventMutex);		
 }
 
+void Win32Core::handleAxisChange(GamepadDeviceEntry * device, int axisIndex, DWORD value) {
+	if (axisIndex < 0 || axisIndex >= (int) device->numAxes) {
+		return;
+	}	
+	Gamepad_devicePrivate *devicePrivate = device->privateData;
+	float floatVal = (value - devicePrivate->axisRanges[axisIndex][0]) / (float) (devicePrivate->axisRanges[axisIndex][1] - devicePrivate->axisRanges[axisIndex][0]) * 2.0f - 1.0f;
+	input->joystickAxisMoved(axisIndex, floatVal, device->deviceID);	
+}
+
+void Win32Core::handleButtonChange(GamepadDeviceEntry * device, DWORD lastValue, DWORD value) {
+	Gamepad_devicePrivate *devicePrivate = device->privateData;
+	unsigned int buttonIndex;	
+	for (buttonIndex = 0; buttonIndex < device->numButtons; buttonIndex++) {
+		if ((lastValue ^ value) & (1 << buttonIndex)) {
+			if(!!(value & (1 << buttonIndex))) {
+				input->joystickButtonDown(buttonIndex, device->deviceID);
+			} else {
+				input->joystickButtonUp(buttonIndex, device->deviceID);
+			}
+		}
+	}
+}
+
+static void povToXY(DWORD pov, int * outX, int * outY) {
+	if (pov == JOY_POVCENTERED) {
+		*outX = *outY = 0;
+		
+	} else {
+		if (pov > JOY_POVFORWARD && pov < JOY_POVBACKWARD) {
+			*outX = 1;
+			
+		} else if (pov > JOY_POVBACKWARD) {
+			*outX = -1;
+			
+		} else {
+			*outX = 0;
+		}
+		
+		if (pov > JOY_POVLEFT || pov < JOY_POVRIGHT) {
+			*outY = -1;
+			
+		} else if (pov > JOY_POVRIGHT && pov < JOY_POVLEFT) {
+			*outY = 1;
+			
+		} else {
+			*outY = 0;
+		}
+	}
+}
+
+void Win32Core::handlePOVChange(GamepadDeviceEntry * device, DWORD lastValue, DWORD value) {
+	
+	Gamepad_devicePrivate *devicePrivate = device->privateData;
+	
+	int lastX, lastY, newX, newY;
+
+	if (devicePrivate->povXAxisIndex == -1 || devicePrivate->povYAxisIndex == -1) {
+		return;
+	}
+	
+	povToXY(lastValue, &lastX, &lastY);
+	povToXY(value, &newX, &newY);
+	
+	if (newX != lastX) {
+		input->joystickAxisMoved(devicePrivate->povXAxisIndex, newX, device->deviceID);
+	}
+
+	if (newY != lastY) {
+		input->joystickAxisMoved(devicePrivate->povYAxisIndex, newY, device->deviceID);
+	}
+}
+
+
 void Win32Core::Gamepad_processEvents() {
-	/*
+
+	if(getTicks() > lastGamepadDetect + 3000) {
+			detectGamepads();
+	}
+
 	unsigned int deviceIndex;
 	JOYINFOEX info;
 	MMRESULT result;
@@ -528,12 +605,8 @@ void Win32Core::Gamepad_processEvents() {
 		result = joyGetPosEx(devicePrivate->joystickID, &info);
 		if (result == JOYERR_UNPLUGGED) {
 
-			Gamepad_eventDispatcher()->dispatchEvent(Gamepad_eventDispatcher(), GAMEPAD_EVENT_DEVICE_REMOVED, device);
-			disposeDevice(device);
-			numDevices--;
-			for (; deviceIndex < numDevices; deviceIndex++) {
-				devices[deviceIndex] = devices[deviceIndex + 1];
-			}
+			input->removeJoystick(device->deviceID);
+			gamepads.erase(gamepads.begin() + deviceIndex);
 			
 		} else if (result == JOYERR_NOERROR) {
 			if (info.dwXpos != devicePrivate->lastState.dwXpos) {
@@ -563,13 +636,11 @@ void Win32Core::Gamepad_processEvents() {
 			devicePrivate->lastState = info;
 		}
 	}
-	*/
 }
 
+void Win32Core::detectGamepads() {
 
-void Win32Core::initGamepad() {
-	
-	nextDeviceID = 0;
+	lastGamepadDetect = getTicks();
 
 	unsigned int numPadsSupported;
 	unsigned int deviceIndex, deviceIndex2;
@@ -590,7 +661,7 @@ void Win32Core::initGamepad() {
 			
 			duplicate = false;
 			for (deviceIndex2 = 0; deviceIndex2 < gamepads.size(); deviceIndex2++) {
-				if (((struct Gamepad_devicePrivate *) gamepads[deviceIndex2]->privateData)->joystickID == joystickID) {
+				if (((Gamepad_devicePrivate *) gamepads[deviceIndex2]->privateData)->joystickID == joystickID) {
 					duplicate = true;
 					break;
 				}
@@ -652,9 +723,13 @@ void Win32Core::initGamepad() {
 			deviceRecord->privateData = deviceRecordPrivate;
 			
 			input->addJoystick(deviceRecord->deviceID);
-			//Gamepad_eventDispatcher()->dispatchEvent(Gamepad_eventDispatcher(), GAMEPAD_EVENT_DEVICE_ATTACHED, deviceRecord);
 		}
 	}
+}
+
+void Win32Core::initGamepad() {
+	nextDeviceID = 0;
+	detectGamepads();
 }
 
 void Win32Core::shutdownGamepad() {
