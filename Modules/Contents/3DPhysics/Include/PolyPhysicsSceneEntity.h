@@ -49,6 +49,9 @@ namespace Polycode {
 		SceneEntity *getSceneEntity();
 		void setFriction(Number friction);		
 		int getType() { return type; }	
+		
+			void setVelocity(Vector3 velocity);
+			void warpTo(Vector3 position);
 			//@}
 			// ----------------------------------------------------------------------------------------------------------------
 			

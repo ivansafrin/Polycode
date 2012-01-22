@@ -33,6 +33,26 @@ namespace Polycode {
 	class PhysicsSceneEntity;
 	class PhysicsCharacter;
 	class PhysicsVehicle;
+	
+	class _PolyExport PhysicsSceneEvent : public Event {
+		public:
+			PhysicsSceneEvent() : Event () {
+				eventType = "PhysicsSceneEvent";
+			}
+			~PhysicsSceneEvent() {
+			}
+			
+			static const int COLLISION_EVENT = 0;
+			
+			PhysicsSceneEntity *entityA;
+			PhysicsSceneEntity *entityB;
+
+			Number appliedImpulse;
+						
+			Vector3 positionOnA;
+			Vector3 positionOnB;
+			Vector3 worldNormalOnB;				
+	};
 
 	/**
 	* A scene subclass that simulates physics for its children.
@@ -49,6 +69,10 @@ namespace Polycode {
 		
 		void removeEntity(SceneEntity *entity);
 		
+		void processWorldCollisions();
+		
+		PhysicsSceneEntity *getPhysicsEntityByCollisionObject(btCollisionObject *object);
+		
 			/** @name Physics scene
 			*  Public methods
 			*/
@@ -63,7 +87,13 @@ namespace Polycode {
 		PhysicsCharacter *addCharacterChild(SceneEntity *newEntity, Number mass, Number friction, Number stepSize, int group  = 1);
 		void removeCharacterChild(PhysicsCharacter *character);
 		
+		
+		void setVelocity(SceneEntity *entity, Vector3 velocity);
+		void warpEntity(SceneEntity *entity, Vector3 position);
+		
 		PhysicsVehicle *addVehicleChild(SceneEntity *newEntity, Number mass, Number friction, int group  = 1);
+		
+		void setGravity(Vector3 gravity);
 			//@}
 			// ----------------------------------------------------------------------------------------------------------------
 

@@ -42,6 +42,11 @@ PhysicsScene::~PhysicsScene() {
 	
 }
 
+void worldTickCallback(btDynamicsWorld *world, btScalar timeStep) {
+	PhysicsScene *physicsScene = (PhysicsScene*)world->getWorldUserInfo();
+	physicsScene->processWorldCollisions();
+}
+
 void PhysicsScene::initPhysicsScene() {
 		
 	
@@ -67,6 +72,59 @@ void PhysicsScene::initPhysicsScene() {
 	sweepBP->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
 	
 	world = physicsWorld;
+	
+	physicsWorld->setInternalTickCallback(worldTickCallback, this);
+}
+
+void PhysicsScene::setGravity(Vector3 gravity) {
+	physicsWorld->setGravity(btVector3(gravity.x, gravity.y, gravity.z));
+}
+
+PhysicsSceneEntity *PhysicsScene::getPhysicsEntityByCollisionObject(btCollisionObject *object) {
+	for(int i=0; i < physicsChildren.size(); i++) {
+		PhysicsSceneEntity *entity = physicsChildren[i];
+		if(entity->rigidBody == object) {
+			return entity;
+		}
+	}
+	return  NULL;
+}
+
+void PhysicsScene::processWorldCollisions() {
+
+	int numManifolds = physicsWorld->getDispatcher()->getNumManifolds();
+	for (int i=0;i<numManifolds;i++)
+	{
+		btPersistentManifold* contactManifold =  world->getDispatcher()->getManifoldByIndexInternal(i);
+		btCollisionObject* obA = static_cast<btCollisionObject*>(contactManifold->getBody0());
+		btCollisionObject* obB = static_cast<btCollisionObject*>(contactManifold->getBody1());
+	
+		
+		int numContacts = contactManifold->getNumContacts();
+		for (int j=0;j<numContacts;j++)
+		{
+			btManifoldPoint& pt = contactManifold->getContactPoint(j);
+			if (pt.getDistance()<0.f)
+			{
+				const btVector3& ptA = pt.getPositionWorldOnA();
+				const btVector3& ptB = pt.getPositionWorldOnB();
+				const btVector3& normalOnB = pt.m_normalWorldOnB;
+				const btScalar appliedImpulse = pt.m_appliedImpulse;
+				
+				PhysicsSceneEvent *event = new PhysicsSceneEvent();
+				event->positionOnA = Vector3(ptA.x(), ptA.y(), ptA.z());
+				event->positionOnB = Vector3(ptB.x(), ptB.y(), ptB.z());
+				event->worldNormalOnB = Vector3(normalOnB.x(), normalOnB.y(), normalOnB.z());
+				event->appliedImpulse = appliedImpulse;				
+								
+				event->entityA = getPhysicsEntityByCollisionObject(obA);	
+				event->entityB = getPhysicsEntityByCollisionObject(obB);
+												
+				dispatchEvent(event, PhysicsSceneEvent::COLLISION_EVENT);
+			}
+		}
+	}
+
 }
 
 void PhysicsScene::Update() {
@@ -85,6 +143,20 @@ void PhysicsScene::Update() {
 	}
 	CollisionScene::Update();
 	
+}
+
+void PhysicsScene::setVelocity(SceneEntity *entity, Vector3 velocity) {
+	PhysicsSceneEntity *physicsEntity = getPhysicsEntityBySceneEntity(entity);
+	if(physicsEntity) {
+		physicsEntity->setVelocity(velocity);
+	}
+}
+
+void PhysicsScene::warpEntity(SceneEntity *entity, Vector3 position) {
+	PhysicsSceneEntity *physicsEntity = getPhysicsEntityBySceneEntity(entity);
+	if(physicsEntity) {
+		physicsEntity->warpTo(position);
+	}
 }
 
 PhysicsCharacter *PhysicsScene::addCharacterChild(SceneEntity *newEntity,Number mass, Number friction, Number stepSize, int group) {
@@ -205,7 +277,7 @@ PhysicsSceneEntity *PhysicsScene::trackPhysicsChild(SceneEntity *newEntity, int 
 	PhysicsSceneEntity *newPhysicsEntity = new PhysicsSceneEntity(newEntity, type, mass, friction,restitution);
 	physicsWorld->addRigidBody(newPhysicsEntity->rigidBody, group,  btBroadphaseProxy::AllFilter); //btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);	
 //	world->addCollisionObject(newPhysicsEntity->collisionObject, group);	
-	//	newPhysicsEntity->rigidBody->setActivationState(ISLAND_SLEEPING);	
+	//newPhysicsEntity->rigidBody->setActivationState(ISLAND_SLEEPING);	
 	physicsChildren.push_back(newPhysicsEntity);
 	collisionChildren.push_back(newPhysicsEntity);	
 	return newPhysicsEntity;	
