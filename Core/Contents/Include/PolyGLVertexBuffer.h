@@ -49,13 +49,15 @@ namespace Polycode {
 		GLuint getTextCoordBufferID();	
 		GLuint getNormalBufferID();
 		GLuint getColorBufferID();
-		
+		GLuint getTangentBufferID();
+				
 	protected:
 		
 		GLuint vertexBufferID;
 		GLuint texCoordBufferID;
 		GLuint normalBufferID;
-		GLuint colorBufferID;		
+		GLuint colorBufferID;	
+		GLuint tangentBufferID;				
 	};
 	
 }

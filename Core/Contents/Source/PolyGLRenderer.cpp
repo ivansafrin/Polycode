@@ -356,6 +356,11 @@ void OpenGLRenderer::drawVertexBuffer(VertexBuffer *buffer) {
 	glNormalPointer(GL_FLOAT, 0, (char *) NULL );			
 	glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getTextCoordBufferID());
 	glTexCoordPointer( 2, GL_FLOAT, 0, (char *) NULL );
+
+	glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getTangentBufferID());	
+	glEnableVertexAttribArrayARB(6);	
+	glVertexAttribPointer(6, 3, GL_FLOAT, 0, 0,  (char *)NULL);
+	
 	
 	
 	GLenum mode = GL_TRIANGLES;
