@@ -76,6 +76,12 @@ namespace Polycode {
 		* @param newPitch A Number 0-1.
 		*/		
 		void setPitch(Number newPitch);
+		
+		/**
+		* Returns true if the sound is playing.
+		* @return True if sound is playing, false if otherwise.
+		*/
+		bool isPlaying();
 				
 		void setIsPositional(bool isPositional);
 		

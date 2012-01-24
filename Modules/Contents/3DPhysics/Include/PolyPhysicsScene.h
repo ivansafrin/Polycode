@@ -89,7 +89,7 @@ namespace Polycode {
 		
 		
 		void setVelocity(SceneEntity *entity, Vector3 velocity);
-		void warpEntity(SceneEntity *entity, Vector3 position);
+		void warpEntity(SceneEntity *entity, Vector3 position, bool resetRotation = false);
 		
 		PhysicsVehicle *addVehicleChild(SceneEntity *newEntity, Number mass, Number friction, int group  = 1);
 		

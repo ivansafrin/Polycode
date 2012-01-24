@@ -152,10 +152,10 @@ void PhysicsScene::setVelocity(SceneEntity *entity, Vector3 velocity) {
 	}
 }
 
-void PhysicsScene::warpEntity(SceneEntity *entity, Vector3 position) {
+void PhysicsScene::warpEntity(SceneEntity *entity, Vector3 position, bool resetRotation) {
 	PhysicsSceneEntity *physicsEntity = getPhysicsEntityBySceneEntity(entity);
 	if(physicsEntity) {
-		physicsEntity->warpTo(position);
+		physicsEntity->warpTo(position, resetRotation);
 	}
 }
 
