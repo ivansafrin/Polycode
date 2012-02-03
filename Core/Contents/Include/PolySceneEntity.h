@@ -22,7 +22,7 @@ THE SOFTWARE.
 
 #pragma once
 #include "PolyEntity.h"
-#include "PolyEventHandler.h"
+#include "PolyEventDispatcher.h"
 
 namespace Polycode {
 
@@ -30,7 +30,7 @@ namespace Polycode {
 	* 3D base entity. SceneEntities are the base class for all 3D entities in Polycode. A thin wrapper around Entity, it inherits most of its functionality.
 	@see Entity
 	*/
-	class _PolyExport SceneEntity : public Entity, public EventHandler {
+	class _PolyExport SceneEntity : public Entity, public EventDispatcher {
 		public:
 			SceneEntity();
 			virtual ~SceneEntity();

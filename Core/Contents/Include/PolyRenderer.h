@@ -160,7 +160,7 @@ namespace Polycode {
 		virtual void setDepthFunction(int depthFunction) = 0;
 				
 		virtual void createVertexBufferForMesh(Mesh *mesh) = 0;
-		virtual void drawVertexBuffer(VertexBuffer *buffer) = 0;
+		virtual void drawVertexBuffer(VertexBuffer *buffer, bool enableColorBuffer) = 0;
 		
 		void setRenderMode(int newRenderMode);
 		int getRenderMode();

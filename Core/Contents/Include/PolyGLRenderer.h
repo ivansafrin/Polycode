@@ -125,7 +125,7 @@ namespace Polycode {
 		void enableAlphaTest(bool val);
 		
 		void createVertexBufferForMesh(Mesh *mesh);
-		void drawVertexBuffer(VertexBuffer *buffer);						
+		void drawVertexBuffer(VertexBuffer *buffer, bool enableColorBuffer);						
 		void bindFrameBufferTexture(Texture *texture);
 		void unbindFramebuffers();
 		
