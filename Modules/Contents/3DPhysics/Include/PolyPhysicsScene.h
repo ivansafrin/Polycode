@@ -36,9 +36,7 @@ namespace Polycode {
 	
 	class _PolyExport PhysicsSceneEvent : public Event {
 		public:
-			PhysicsSceneEvent() : Event () {
-				eventType = "PhysicsSceneEvent";
-			}
+			PhysicsSceneEvent();
 			~PhysicsSceneEvent() {
 			}
 			
