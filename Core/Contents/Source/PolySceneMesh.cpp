@@ -35,31 +35,28 @@
 
 using namespace Polycode;
 
-SceneMesh::SceneMesh(const String& fileName) : SceneEntity(), texture(NULL), material(NULL) {
+SceneMesh::SceneMesh(const String& fileName) : SceneEntity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
 	mesh = new Mesh(fileName);
 	bBoxRadius = mesh->getRadius();
 	bBox = mesh->calculateBBox();
-	skeleton = NULL;
 	lightmapIndex=0;
 	showVertexNormals = false;
 	useVertexBuffer = false;
 }
 
-SceneMesh::SceneMesh(Mesh *mesh) : SceneEntity(), texture(NULL), material(NULL) {
+SceneMesh::SceneMesh(Mesh *mesh) : SceneEntity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
 	this->mesh = mesh;
 	bBoxRadius = mesh->getRadius();
 	bBox = mesh->calculateBBox();
-	skeleton = NULL;
 	lightmapIndex=0;
 	showVertexNormals = false;	
 	useVertexBuffer = false;	
 }
 
-SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL) {
+SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
 	mesh = new Mesh(meshType);
 	bBoxRadius = mesh->getRadius();
 	bBox = mesh->calculateBBox();
-	skeleton = NULL;
 	lightmapIndex=0;
 	showVertexNormals = false;	
 	useVertexBuffer = false;	
@@ -73,9 +70,12 @@ void SceneMesh::setMesh(Mesh *mesh) {
 	useVertexBuffer = false;	
 }
 
-
+// Assume material is managed externally.
 SceneMesh::~SceneMesh() {
 	delete mesh;
+	delete texture;
+	delete skeleton; // Is it actually correct for a SceneMesh to take ownership of its skeleton?
+	delete localShaderOptions;
 }
 
 Mesh *SceneMesh::getMesh() {

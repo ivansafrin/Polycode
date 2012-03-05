@@ -95,11 +95,11 @@ void Scene::Update() {
 
 Scene::~Scene() {
 	Logger::log("Cleaning scene...\n");
-	for(int i=0; i < entities.size(); i++) {	
+//	for(int i=0; i < entities.size(); i++) {	
 //		delete entities[i];
-	}
-	entities.clear();	
-	CoreServices::getInstance()->getSceneManager()->removeScene(this);	
+//	}
+//	entities.clear();	
+	CoreServices::getInstance()->getSceneManager()->removeScene(this);
 //	delete defaultCamera;
 }
 
