@@ -64,7 +64,7 @@ namespace Polycode {
 		Address(String ipAsString, unsigned int port);
 		Address(unsigned int ip, unsigned int port);
 		Address();
-		~Address();
+		virtual ~Address();
 		
 		inline void operator = (const Address &add2) {
 			setAddress(add2.uintAddress, add2.port);
@@ -87,7 +87,7 @@ namespace Polycode {
 	class _PolyExport SocketEvent : public Event {
 	public:
 		SocketEvent(){}
-		~SocketEvent(){}
+		virtual ~SocketEvent(){}
 		
 		char data[MAX_PACKET_SIZE];
 		unsigned int dataSize;
@@ -101,7 +101,7 @@ namespace Polycode {
 	class _PolyExport Socket : public EventDispatcher {
 		public:
 			Socket(int port);
-			~Socket();
+			virtual ~Socket();
 
 			int receiveData();		
 			bool sendData(const Address &address, char *data, unsigned int packetSize);

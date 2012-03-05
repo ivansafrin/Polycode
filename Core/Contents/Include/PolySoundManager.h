@@ -35,7 +35,7 @@ namespace Polycode {
 	class _PolyExport SoundManager {
 	public:
 		SoundManager();
-		~SoundManager();
+		virtual ~SoundManager();
 		
 		void setListenerPosition(Vector3 position);
 		void setListenerOrientation(Vector3 orientation);	

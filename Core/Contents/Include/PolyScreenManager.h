@@ -35,7 +35,7 @@ namespace Polycode {
 	class _PolyExport ScreenManager : public EventDispatcher {
 		public:		
 		ScreenManager();
-		~ScreenManager();
+		virtual ~ScreenManager();
 		
 		/**
 		* Removes a screen from the manager, taking it out of the render loop.

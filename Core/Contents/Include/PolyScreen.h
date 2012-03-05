@@ -46,7 +46,7 @@ namespace Polycode {
 		* Default constructor.
 		*/
 		Screen();
-		~Screen();
+		virtual ~Screen();
 		
 		/**
 		* Adds a ScreenEntity to the 2d rendering pipeline.

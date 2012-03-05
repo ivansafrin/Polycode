@@ -44,7 +44,7 @@ namespace Polycode {
 		* Default constructor.
 		*/ 
 		Config();
-		~Config();		
+		virtual ~Config();		
 
 		/**
 		* Load config from a specified file into the specified namespace.

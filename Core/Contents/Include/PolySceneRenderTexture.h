@@ -42,7 +42,7 @@ namespace Polycode {
 			* @param renderHeight Vertical size of the render texture.			
 			*/
 			SceneRenderTexture(Scene *targetScene, Camera *targetCamera, int renderWidth,int renderHeight);
-			~SceneRenderTexture();
+			virtual ~SceneRenderTexture();
 			
 			void drawScreen();
 			

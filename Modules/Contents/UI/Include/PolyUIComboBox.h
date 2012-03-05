@@ -35,7 +35,7 @@ namespace Polycode {
 	class _PolyExport UIComboBoxItem : public ScreenEntity {
 		public:
 			UIComboBoxItem(String label, Number comboWidth, Number comboHeight);
-			~UIComboBoxItem();
+			virtual ~UIComboBoxItem();
 			
 			String label;
 			ScreenLabel *itemLabel;
@@ -44,7 +44,7 @@ namespace Polycode {
 	class _PolyExport UIComboBox : public ScreenEntity {
 		public:
 			UIComboBox(Number comboWidth);
-			~UIComboBox();
+			virtual ~UIComboBox();
 			
 			void toggleDropDown();
 		

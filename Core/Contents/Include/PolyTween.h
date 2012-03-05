@@ -48,7 +48,7 @@ namespace Polycode {
 		* @param repeat If true, this tween will repeat over and over.
 		*/
 		Tween(Number *target, int easeType, Number startVal, Number endVal, Number time, bool repeat=false);
-		~Tween();
+		virtual ~Tween();
 		
 		void handleEvent(Event *event);
 		Number interpolateTween();
@@ -133,7 +133,7 @@ namespace Polycode {
 			*/
 			BezierPathTween(Vector3 *target, BezierCurve *curve, int easeType, Number time, bool repeat=false);
 			
-			~BezierPathTween();
+			virtual ~BezierPathTween();
 			void updateCustomTween();
 
 		protected:
@@ -147,7 +147,7 @@ namespace Polycode {
 		public:
 			QuaternionTween(Quaternion *target, BezierCurve *wCurve, BezierCurve *xCurve, BezierCurve *yCurve,
 							BezierCurve *zCurve, int easeType, Number time, bool repeat=false);
-			~QuaternionTween();
+			virtual ~QuaternionTween();
 			void updateCustomTween();
 		protected:
 			Number pathValue;

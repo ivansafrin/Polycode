@@ -42,7 +42,7 @@ namespace Polycode {
 		* @param image Image to create from.
 		*/		
 		ScreenImage(Image *image);		
-		~ScreenImage();
+		virtual ~ScreenImage();
 		
 		/**
 		* Changes which part of the image is displayed.

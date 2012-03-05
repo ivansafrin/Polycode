@@ -38,7 +38,7 @@ namespace Polycode {
 	class _PolyExport UITree : public ScreenEntity {
 		public:
 			UITree(String icon, String text, Number treeWidth, Number treeOffset=0);
-			~UITree();
+			virtual ~UITree();
 			
 			
 			void handleEvent(Event *event);

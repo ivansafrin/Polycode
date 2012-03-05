@@ -42,7 +42,7 @@ namespace Polycode {
 	class _PolyExport FontManager {
 	public:
 		FontManager();
-		~FontManager();
+		virtual ~FontManager();
 
 		/**
 		* Loads and registers a new font for use.

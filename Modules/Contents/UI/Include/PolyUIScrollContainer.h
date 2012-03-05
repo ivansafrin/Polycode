@@ -30,7 +30,7 @@ namespace Polycode {
 	class _PolyExport UIScrollContainer : public ScreenEntity {
 	public:
 		UIScrollContainer(ScreenEntity *scrolledEntity, bool hScroll, bool vScroll, Number width, Number height);
-		~UIScrollContainer();
+		virtual ~UIScrollContainer();
 		
 		void setContentSize(Number newContentWidth, Number newContentHeight);
 		

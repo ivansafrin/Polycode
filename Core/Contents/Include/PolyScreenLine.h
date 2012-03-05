@@ -46,7 +46,7 @@ namespace Polycode {
 			* @target2 Ending target.
 			*/			
 			ScreenLine(ScreenEntity* target1, ScreenEntity* target2);
-			~ScreenLine();
+			virtual ~ScreenLine();
 			
 
 			void Update();

@@ -52,7 +52,7 @@ namespace Polycode {
 		* @param fileName Path to an OGG or WAV file to load.
 		*/ 
 		Sound(const String& fileName);
-		~Sound();
+		virtual ~Sound();
 		
 		/**
 		* Play the sound once or in a loop.

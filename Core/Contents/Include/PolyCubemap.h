@@ -31,7 +31,7 @@ namespace Polycode {
 	class _PolyExport Cubemap : public Resource {
 		public:
 			Cubemap(Texture *t0, Texture *t1, Texture *t2, Texture *t3, Texture *t4, Texture *t5);
-			~Cubemap();	
+			virtual ~Cubemap();	
 		
 		protected:		
 		

@@ -44,7 +44,7 @@ namespace Polycode {
 	class _PolyExport Entity {
 		public:
 			Entity();
-			~Entity();
+			virtual ~Entity();
 
 			/**
 			* Main render method. Override this to do your own drawing.

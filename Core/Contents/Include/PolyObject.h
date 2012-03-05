@@ -196,7 +196,7 @@ namespace Polycode {
 		* Default constructor
 		*/	
 		Object();
-		~Object();
+		virtual ~Object();
 		
 		/**
 		* Loads data from XML file into the object. 

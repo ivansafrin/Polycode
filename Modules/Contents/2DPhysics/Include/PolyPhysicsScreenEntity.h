@@ -35,7 +35,7 @@ namespace Polycode {
 	class _PolyExport PhysicsScreenEntity {
 		public:
 			PhysicsScreenEntity(ScreenEntity *entity, b2World *world, Number worldScale, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation);
-			~PhysicsScreenEntity();		
+			virtual ~PhysicsScreenEntity();		
 			
 			/**
 			* Returns the screen entity associated with this physics entity.

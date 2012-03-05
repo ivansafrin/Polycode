@@ -31,7 +31,7 @@ namespace Polycode {
 	class _PolyExport ScreenCurve : public ScreenShape {
 		public:
 			ScreenCurve(BezierCurve *curve, int numVertices);
-			~ScreenCurve();
+			virtual ~ScreenCurve();
 			
 		protected:
 		

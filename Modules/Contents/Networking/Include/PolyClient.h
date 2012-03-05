@@ -36,7 +36,7 @@ namespace Polycode {
 	class _PolyExport ClientEvent : public Event {
 	public:
 		ClientEvent(){}
-		~ClientEvent(){}
+		virtual ~ClientEvent(){}
 
 		char data[MAX_PACKET_SIZE];
 		unsigned int dataSize;
@@ -50,7 +50,7 @@ namespace Polycode {
 	class _PolyExport Client : public Peer {
 	public:
 		Client(unsigned int port, int rate);
-		~Client();
+		virtual ~Client();
 		
 		void updatePeer();
 		void Connect(std::string ipAddress, unsigned int port);

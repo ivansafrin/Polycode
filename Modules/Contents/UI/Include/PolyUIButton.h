@@ -33,7 +33,7 @@ namespace Polycode {
 	class _PolyExport UIButton : public ScreenEntity {
 		public:
 			UIButton(String text, Number width, Number height = 26);
-			~UIButton();		
+			virtual ~UIButton();		
 			void handleEvent(Event *event);
 			
 			void Update();

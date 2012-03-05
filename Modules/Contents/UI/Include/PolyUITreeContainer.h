@@ -31,7 +31,7 @@ namespace Polycode {
 	class _PolyExport UITreeContainer : public ScreenEntity {
 	public:
 		UITreeContainer(String icon, String text, Number treeWidth, Number treeHeight);
-		~UITreeContainer();
+		virtual ~UITreeContainer();
 		
 		void handleEvent(Event *event);
 		void Resize(int x, int y);
