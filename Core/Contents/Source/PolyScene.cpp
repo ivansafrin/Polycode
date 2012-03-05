@@ -44,6 +44,8 @@ Scene::Scene() : EventDispatcher() {
 	fogEnabled = false;
 	lightingEnabled = false;
 	enabled = true;
+	ownsChildren = false;
+	ownsCamera = true;
 	isSceneVirtual = false;
 	
 	hasLightmaps = false;
@@ -58,6 +60,8 @@ Scene::Scene(bool virtualScene) {
 	fogEnabled = false;
 	lightingEnabled = false;
 	enabled = true;
+	ownsChildren = false;
+	ownsCamera = true;
 	isSceneVirtual = virtualScene;
 	
 	hasLightmaps = false;
@@ -95,12 +99,14 @@ void Scene::Update() {
 
 Scene::~Scene() {
 	Logger::log("Cleaning scene...\n");
-//	for(int i=0; i < entities.size(); i++) {	
-//		delete entities[i];
-//	}
-//	entities.clear();	
+	if (ownsChildren) {
+		for(int i=0; i < entities.size(); i++) {	
+			delete entities[i];
+		}
+	}
 	CoreServices::getInstance()->getSceneManager()->removeScene(this);
-//	delete defaultCamera;
+	if (ownsCamera)
+		delete defaultCamera;
 }
 
 void Scene::enableLighting(bool enable) {

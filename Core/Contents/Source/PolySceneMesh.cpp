@@ -42,6 +42,7 @@ SceneMesh::SceneMesh(const String& fileName) : SceneEntity(), texture(NULL), mat
 	lightmapIndex=0;
 	showVertexNormals = false;
 	useVertexBuffer = false;
+	ownsSkeleton = false;
 }
 
 SceneMesh::SceneMesh(Mesh *mesh) : SceneEntity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
@@ -50,7 +51,8 @@ SceneMesh::SceneMesh(Mesh *mesh) : SceneEntity(), texture(NULL), material(NULL),
 	bBox = mesh->calculateBBox();
 	lightmapIndex=0;
 	showVertexNormals = false;	
-	useVertexBuffer = false;	
+	useVertexBuffer = false;
+	ownsSkeleton = false;
 }
 
 SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
@@ -59,7 +61,8 @@ SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL), skeleton(NUL
 	bBox = mesh->calculateBBox();
 	lightmapIndex=0;
 	showVertexNormals = false;	
-	useVertexBuffer = false;	
+	useVertexBuffer = false;
+	ownsSkeleton = false;
 }
 
 void SceneMesh::setMesh(Mesh *mesh) {
@@ -67,14 +70,16 @@ void SceneMesh::setMesh(Mesh *mesh) {
 	bBoxRadius = mesh->getRadius();
 	bBox = mesh->calculateBBox();
 	showVertexNormals = false;	
-	useVertexBuffer = false;	
+	useVertexBuffer = false;
+	ownsSkeleton = false;
 }
 
 // Assume material is managed externally.
 SceneMesh::~SceneMesh() {
 	delete mesh;
 	delete texture;
-	delete skeleton; // Is it actually correct for a SceneMesh to take ownership of its skeleton?
+	if (ownsSkeleton)
+		delete skeleton;
 	delete localShaderOptions;
 }
 
@@ -116,11 +121,13 @@ ShaderBinding *SceneMesh::getLocalShaderOptions() {
 	return localShaderOptions;
 }
 
+// TODO: What if setSkeleton or loadSkeleton gets called twice?
 void SceneMesh::loadSkeleton(const String& fileName) {
 	skeleton = new Skeleton(fileName);
 	addEntity(skeleton);
 	
 	setSkeleton(skeleton);
+	ownsSkeleton = true;
 }
 
 void SceneMesh::setSkeleton(Skeleton *skeleton) {
@@ -134,7 +141,8 @@ void SceneMesh::setSkeleton(Skeleton *skeleton) {
 				vertex->getBoneAssignment(k)->bone = skeleton->getBone(vertex->getBoneAssignment(k)->boneID);
 			}
 		}
-	}	
+	}
+	ownsSkeleton = false;
 }
 
 Material *SceneMesh::getMaterial() {

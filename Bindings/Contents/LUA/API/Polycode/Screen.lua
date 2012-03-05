@@ -7,6 +7,8 @@ class "Screen" (EventDispatcher)
 function Screen:__index__(name)
 	if name == "enabled" then
 		return Polycore.Screen_get_enabled(self.__ptr)
+	elseif name == "ownsChildren" then
+		return Polycore.Screen_get_ownsChildren(self.__ptr)
 	end
 end
 
@@ -14,6 +16,9 @@ end
 function Screen:__set_callback(name,value)
 	if name == "enabled" then
 		Polycore.Screen_set_enabled(self.__ptr, value)
+		return true
+	elseif name == "ownsChildren" then
+		Polycore.Screen_set_ownsChildren(self.__ptr, value)
 		return true
 	end
 	return false

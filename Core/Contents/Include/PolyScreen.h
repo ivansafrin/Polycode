@@ -146,6 +146,11 @@ namespace Polycode {
 		*/					
 		Material *getScreenShaderMaterial() const { return filterShaderMaterial; }
 		
+		/**
+		 * If set to true, children will be deleted when the screen is deleted. Defaults false.
+		 */
+		bool ownsChildren;
+		
 	protected:
 		
 		bool useNormalizedCoordinates;

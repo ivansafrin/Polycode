@@ -41,6 +41,10 @@ function Scene:__index__(name)
 		end
 	elseif name == "enabled" then
 		return Polycore.Scene_get_enabled(self.__ptr)
+	elseif name == "ownsChildren" then
+		return Polycore.Scene_get_ownsChildren(self.__ptr)
+	elseif name == "ownsCamera" then
+		return Polycore.Scene_get_ownsCamera(self.__ptr)
 	end
 end
 
@@ -51,6 +55,12 @@ function Scene:__set_callback(name,value)
 		return true
 	elseif name == "enabled" then
 		Polycore.Scene_set_enabled(self.__ptr, value)
+		return true
+	elseif name == "ownsChildren" then
+		Polycore.Scene_set_ownsChildren(self.__ptr, value)
+		return true
+	elseif name == "ownsCamera" then
+		Polycore.Scene_set_ownsCamera(self.__ptr, value)
 		return true
 	end
 	return false

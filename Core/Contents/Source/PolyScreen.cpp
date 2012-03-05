@@ -38,6 +38,7 @@ Screen::Screen() : EventDispatcher() {
 	offset.x = 0;
 	offset.y = 0;
 	enabled = true;
+	ownsChildren = false;
 	focusChild = NULL;
 	originalSceneTexture = NULL;
 	CoreServices::getInstance()->getScreenManager()->addScreen(this);
@@ -49,8 +50,12 @@ Screen::Screen() : EventDispatcher() {
 }
 
 Screen::~Screen() {
-	for(int i=0; i<children.size();i++) {
-		//	delete children[i];
+	if (ownsChildren) {
+		for(int i=0; i<children.size();i++) {
+			delete children[i];
+		}
+	} else {
+		delete rootEntity; // Must delete this at minimum
 	}
 	CoreServices::getInstance()->getScreenManager()->removeScreen(this);	
 }
