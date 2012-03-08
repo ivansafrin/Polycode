@@ -90,7 +90,7 @@ struct CollisionResult {
 			* Creates a collision scene.
 			*/
 			CollisionScene();
-			CollisionScene(bool virtualScene);		
+			CollisionScene(bool virtualScene, bool deferInitCollision = false);		
 			virtual ~CollisionScene();
 		
 			void initCollisionScene();
@@ -130,7 +130,7 @@ struct CollisionResult {
 			// Kept only to be deleted
 			btDefaultCollisionConfiguration *collisionConfiguration;
 			btCollisionDispatcher* dispatcher;
-			btAxisSweep3*	broadphase;
+			btAxisSweep3*	axisSweep;
 	};
 
 }

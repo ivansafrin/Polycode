@@ -33,13 +33,24 @@ THE SOFTWARE.
 
 using namespace Polycode;
 
-PhysicsScene::PhysicsScene(int maxSubSteps) : CollisionScene() {
+PhysicsScene::PhysicsScene(int maxSubSteps, bool virtualScene) : CollisionScene(virtualScene, true), physicsWorld(NULL), solver(NULL), broadphase(NULL), ghostPairCallback(NULL) {
 	this->maxSubSteps = maxSubSteps;
-	initPhysicsScene();	
+	initPhysicsScene();
 }
 
 PhysicsScene::~PhysicsScene() {
+	// These MUST be deleted first
+	for(int i=0; i < collisionChildren.size(); i++)
+		delete collisionChildren[i];
+	delete physicsWorld;
 	
+	// Prevent double free by ~CollisionScene
+	collisionChildren.clear();
+	world = NULL;
+	
+	delete solver;
+	delete broadphase;
+	delete ghostPairCallback;
 }
 
 void worldTickCallback(btDynamicsWorld *world, btScalar timeStep) {
@@ -48,28 +59,25 @@ void worldTickCallback(btDynamicsWorld *world, btScalar timeStep) {
 }
 
 void PhysicsScene::initPhysicsScene() {
-		
+	collisionConfiguration = new btDefaultCollisionConfiguration();
+
+	dispatcher = new btCollisionDispatcher(collisionConfiguration);	
 	
- btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
-//	btDbvtBroadphase* broadphase = new btDbvtBroadphase();
-	
-	btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);	
-	
-	btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver();
+	solver = new btSequentialImpulseConstraintSolver();
 	
 	btVector3 worldMin(-100,-100,-100);
 	btVector3 worldMax(100,100,100);
-	btAxisSweep3* sweepBP = new btAxisSweep3(worldMin,worldMax);	
+	axisSweep = new btAxisSweep3(worldMin,worldMax);	
 	
-	btDbvtBroadphase *broadPhase = new btDbvtBroadphase();
+	broadphase = new btDbvtBroadphase();
 	
-	physicsWorld = new btDiscreteDynamicsWorld(dispatcher,broadPhase,solver,collisionConfiguration);
+	physicsWorld = new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfiguration);
 	
 //	physicsWorld->getSolverInfo().m_solverMode |= SOLVER_RANDMIZE_ORDER;
 	physicsWorld->setGravity(btVector3(0,-10,0));
 	
-	
-	sweepBP->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
+	ghostPairCallback = new btGhostPairCallback();
+	axisSweep->getOverlappingPairCache()->setInternalGhostPairCallback(ghostPairCallback);
 	
 	world = physicsWorld;
 	

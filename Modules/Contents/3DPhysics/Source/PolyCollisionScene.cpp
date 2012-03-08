@@ -27,12 +27,13 @@ THE SOFTWARE.
 
 using namespace Polycode;
 
-CollisionScene::CollisionScene() : Scene() {
+CollisionScene::CollisionScene() : Scene(), world(NULL), axisSweep(NULL), dispatcher(NULL), collisionConfiguration(NULL) {
 	initCollisionScene();
 }
 
-CollisionScene::CollisionScene(bool virtualScene) : Scene(virtualScene) { 
-	initCollisionScene();
+CollisionScene::CollisionScene(bool virtualScene, bool deferInitCollision) : Scene(virtualScene), world(NULL), axisSweep(NULL), dispatcher(NULL), collisionConfiguration(NULL) { 
+	if (!deferInitCollision)
+		initCollisionScene();
 }
 
 void CollisionScene::initCollisionScene() {
@@ -43,8 +44,8 @@ void CollisionScene::initCollisionScene() {
 	collisionConfiguration = new btDefaultCollisionConfiguration();
 	dispatcher = new btCollisionDispatcher(collisionConfiguration);
 	//	dispatcher->setNearCallback(customNearCallback);
-	broadphase = new btAxisSweep3(worldAabbMin,worldAabbMax);
-	world = new btCollisionWorld(dispatcher,broadphase,collisionConfiguration);	
+	axisSweep = new btAxisSweep3(worldAabbMin,worldAabbMax);
+	world = new btCollisionWorld(dispatcher,axisSweep,collisionConfiguration);	
 }
 
 void CollisionScene::Update() {
@@ -199,7 +200,7 @@ CollisionScene::~CollisionScene() {
 	for(int i=0; i < collisionChildren.size(); i++)
 		delete collisionChildren[i];
 	delete world;
-	delete broadphase;
+	delete axisSweep;
 	delete dispatcher;
 	delete collisionConfiguration;
 }
