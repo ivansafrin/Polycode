@@ -1024,6 +1024,7 @@ int luaopen_Polycode(lua_State *L) {
 		{"Shader_setName", Polycore_Shader_setName},
 		{"Shader_getName", Polycore_Shader_getName},
 		{"Shader_createBinding", Polycore_Shader_createBinding},
+		{"Shader_reload", Polycore_Shader_reload},
 		{"delete_Shader", Polycore_delete_Shader},
 		{"ShaderBinding", Polycore_ShaderBinding},
 		{"ShaderBinding_clearTexture", Polycore_ShaderBinding_clearTexture},

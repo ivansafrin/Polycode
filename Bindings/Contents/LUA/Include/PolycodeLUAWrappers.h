@@ -9745,6 +9745,13 @@ static int Polycore_Shader_createBinding(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_Shader_reload(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Shader *inst = (Shader*)lua_topointer(L, 1);
+	inst->reload();
+	return 0;
+}
+
 static int Polycore_delete_Shader(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Shader *inst = (Shader*)lua_topointer(L, 1);

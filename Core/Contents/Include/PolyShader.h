@@ -41,6 +41,7 @@ namespace Polycode {
 			const String& getName() const;
 			
 			virtual ShaderBinding *createBinding() = 0;
+			virtual void reload() {}
 
 			static const int FIXED_SHADER = 0;
 			static const int MODULE_SHADER = 1;

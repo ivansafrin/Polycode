@@ -60,6 +60,10 @@ function Shader:createBinding()
 	end
 end
 
+function Shader:reload()
+	local retVal =  Polycore.Shader_reload(self.__ptr)
+end
+
 
 
 function Shader:__delete()
