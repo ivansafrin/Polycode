@@ -124,6 +124,14 @@ function ShaderBinding:addLocalParam(name, ptr)
 	local retVal = Polycore.ShaderBinding_addLocalParam(self.__ptr, name, ptr.__ptr)
 end
 
+function ShaderBinding:addLocalParamNumber(name, n)
+	local retVal = Polycore.ShaderBinding_addLocalParamNumber(self.__ptr, name, n)
+end
+
+function ShaderBinding:addLocalParamVector3(name, v)
+	local retVal = Polycore.ShaderBinding_addLocalParamVector3(self.__ptr, name, v.__ptr)
+end
+
 
 
 function ShaderBinding:__delete()
