@@ -25,6 +25,7 @@ THE SOFTWARE.
 #include "PolyGlobals.h"
 #include "PolyVector3.h"
 #include "PolyResource.h"
+#include <string.h>
 
 namespace Polycode {
 
