@@ -62,6 +62,13 @@ SceneLine::~SceneLine() {
 
 }
 
+void SceneLine::setStart(Vector3 start) {
+	this->start = start;
+}
+
+void SceneLine::setEnd(Vector3 end) {
+	this->end = end;
+}
 
 void SceneLine::Render() {	
 

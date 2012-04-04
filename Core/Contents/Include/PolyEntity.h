@@ -565,6 +565,17 @@ namespace Polycode {
 			//@}
 			// ----------------------------------------------------------------------------------------------------------------
 			
+			/**
+			* Sets user data pointer.
+			* @param userData User data pointer
+			*/
+			void setUserData(void *userData);			
+
+			/**
+			* Returns the user data pointer.
+			* @return User data pointer
+			*/			
+			void *getUserData();
 				
 			void setBlendingMode(int newBlendingMode);
 				
@@ -585,6 +596,9 @@ namespace Polycode {
 			bool isMask;
 		
 		protected:
+		
+			void *userData;
+		
 			std::vector<Entity*> children;
 
 			Vector3 childCenter;

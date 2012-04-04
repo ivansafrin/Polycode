@@ -70,6 +70,11 @@ THE SOFTWARE.
 
 typedef double Number;
 
+inline Number clampf(Number x, Number a, Number b)
+{
+    return x < a ? a : (x > b ? b : x);
+}
+
 #define MIN(a, b)  (((a) < (b)) ? (a) : (b))
 #define MAX(a, b)  (((a) > (b)) ? (a) : (b))
 
