@@ -255,10 +255,10 @@ namespace Polycode {
 	
 	void Mesh::createVPlane(Number w, Number h) { 
 		Polygon *imagePolygon = new Polygon();
-		imagePolygon->addVertex(0,h,0,0,1);	
-		imagePolygon->addVertex(w,h,0, 1, 1);			
-		imagePolygon->addVertex(w,0,0, 1, 0);		
-		imagePolygon->addVertex(0,0,0,0,0);
+		imagePolygon->addVertex(0,h,0,1,1);	
+		imagePolygon->addVertex(w,h,0, 0, 1);			
+		imagePolygon->addVertex(w,0,0, 0, 0);		
+		imagePolygon->addVertex(0,0,0,1,0);
 
 		addPolygon(imagePolygon);
 		
