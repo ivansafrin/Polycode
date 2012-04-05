@@ -6,6 +6,7 @@ SET(libpng_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/libpng)
 SET(libpng_CMAKE_ARGS
     -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR> 
     -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+    -DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}
     -DPNG_SHARED=OFF
     -DBUILD_SHARED_LIBS=FALSE
     -DSKIP_INSTALL_FILES=1
@@ -15,8 +16,8 @@ EXTERNALPROJECT_ADD(zlib
     PREFIX ${libpng_PREFIX}
 
     DOWNLOAD_DIR ${POLYCODE_DEPS_DOWNLOAD_DIR}
-    URL http://zlib.net/zlib-1.2.5.tar.gz
-    URL_MD5 c735eab2d659a96e5a594c9e8541ad63
+    URL http://zlib.net/zlib-1.2.6.tar.gz
+    URL_MD5 618e944d7c7cd6521551e30b32322f4a
 
     PATCH_COMMAND ${CMAKE_COMMAND} -E remove <SOURCE_DIR>/zconf.h
 
@@ -31,8 +32,8 @@ EXTERNALPROJECT_ADD(libpng
     PREFIX ${libpng_PREFIX}
 
     DOWNLOAD_DIR ${POLYCODE_DEPS_DOWNLOAD_DIR}
-    URL ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng-1.5.7.tar.gz
-    URL_MD5 944b56a84b65d94054cc73d7ff965de8
+    URL ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng-1.5.10.tar.gz
+    URL_MD5 9e5d864bce8f06751bbd99962ecf4aad
 
     INSTALL_DIR ${POLYCODE_DEPS_CORE_PREFIX}
     CMAKE_ARGS ${libpng_CMAKE_ARGS} -DCMAKE_PREFIX_PATH=${install_dir} # to find zlib
