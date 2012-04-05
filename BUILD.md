@@ -15,6 +15,9 @@ When Polycode and its Dependencies are built, they will be available
 in the Release/YourArchitecture folder under the main source tree in 
 a structure that should mimic the main binary release.
 
+If you wish to build a 32-bit version on a 64-bit machine in OS X, pass
+-DCMAKE_OSX_ARCHITECTURES=i386 as an argument to cmake
+
 ## Building dependencies ##
 
 Polycode depends on a number of third party packages that are not
