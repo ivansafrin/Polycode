@@ -20,7 +20,7 @@ EXTERNALPROJECT_ADD(zlib
     URL http://zlib.net/zlib-1.2.6.tar.gz
     URL_MD5 618e944d7c7cd6521551e30b32322f4a
 
-    PATCH_COMMAND ${CMAKE_COMMAND} -E remove <SOURCE_DIR>/zconf.h
+    PATCH_COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PolycodeDependencies_SOURCE_DIR}/../CMake/zlib.cmake <SOURCE_DIR>/CMakeLists.txt && ${CMAKE_COMMAND} -E remove <SOURCE_DIR>/zconf.h
 
     INSTALL_DIR ${POLYCODE_DEPS_CORE_PREFIX}
     CMAKE_ARGS ${libpng_CMAKE_ARGS}
