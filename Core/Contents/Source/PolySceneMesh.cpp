@@ -236,7 +236,7 @@ void SceneMesh::Render() {
 	}
 	
 	if(useVertexBuffer) {
-		renderer->drawVertexBuffer(mesh->getVertexBuffer());
+		renderer->drawVertexBuffer(mesh->getVertexBuffer(), mesh->useVertexColors);
 	} else {
 		renderMeshLocally();
 	}

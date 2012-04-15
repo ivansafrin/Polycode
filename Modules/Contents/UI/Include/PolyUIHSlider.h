@@ -26,6 +26,7 @@
 #include "PolyScreenShape.h"
 #include "PolyScreenEntity.h"
 #include "PolyUIEvent.h"
+#include "PolyUIBox.h"
 #include "PolyInputEvent.h"
 #include "PolyFont.h"
 
@@ -33,15 +34,13 @@ namespace Polycode {
 
 	class _PolyExport UIHSlider : public ScreenEntity {
 		public:
-			UIHSlider(Font *font, Number start, Number end, Number width);
+			UIHSlider(Number start, Number end, Number width);
 			~UIHSlider();		
 			void handleEvent(Event *event);
 			void Update();
 			
 			void setSliderValue(Number val);
-			Number getSliderValue();
-			
-			ScreenShape *getBgRect();
+			Number getSliderValue();			
 			
 		private:
 		
@@ -49,15 +48,15 @@ namespace Polycode {
 			
 			Number labelXPos;
 			Number labelYPos;
-			ScreenShape *bgRect;
-			ScreenShape *gripRect;
-			ScreenShape *shadowRect;
+			UIBox *bgRect;
+			ScreenImage *gripRect;
 			
 			Number sliderValue;
 			Number startValue;
 			Number endValue;
 			Number sliderWidth;
 			
+			ScreenShape *bgHitBox;
 			ScreenLabel *buttonLabel;
 			bool pressedDown;
 	};

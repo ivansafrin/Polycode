@@ -112,6 +112,13 @@ void Sound::Play(bool loop) {
 	alSourcePlay(soundSource);
 }
 
+bool Sound::isPlaying() {
+	ALenum state;
+	alGetSourcei(soundSource, AL_SOURCE_STATE, &state);
+	return (state == AL_PLAYING);
+}
+
+
 void Sound::setVolume(Number newVolume) {
 	alSourcef(soundSource, AL_GAIN, newVolume);
 }

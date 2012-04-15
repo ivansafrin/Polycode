@@ -27,6 +27,7 @@
 #include "NewProjectWindow.h"
 #include "ExampleBrowserWindow.h"
 #include "NewFileWindow.h"
+#include "ToolWindows.h"
 
 using namespace Polycode;
 
@@ -52,6 +53,8 @@ public:
 	ExampleBrowserWindow *exampleBrowserWindow;
 	NewFileWindow *newFileWindow;
 	
+	TextInputPopup *textInputPopup;
+	
 	ScreenEntity *welcomeEntity;	
 	PolycodeProjectBrowser *projectBrowser;
 		
@@ -66,6 +69,10 @@ private:
 	ScreenImage *logo;	
 	ScreenImage *resizer;	
 
+	OSFileEntry draggedFile;
+	ScreenEntity *dragEntity;
+	ScreenLabel *dragLabel;
+	bool isDragging;
 	
 	ScreenImage *welcomeImage;	
 	

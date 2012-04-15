@@ -22,7 +22,6 @@
 
 #include "PolyMesh.h"
 #include "PolyLogger.h"
-#include "PolyPolygon.h"
 #include "OSBasics.h"
 
 using std::min;
@@ -256,17 +255,17 @@ namespace Polycode {
 	
 	void Mesh::createVPlane(Number w, Number h) { 
 		Polygon *imagePolygon = new Polygon();
-		imagePolygon->addVertex(0,h,0,0,0);	
-		imagePolygon->addVertex(w,h,0, 1, 0);			
-		imagePolygon->addVertex(w,0,0, 1, 1);		
-		imagePolygon->addVertex(0,0,0,0,1);
+		imagePolygon->addVertex(0,h,0,1,1);	
+		imagePolygon->addVertex(w,h,0, 0, 1);			
+		imagePolygon->addVertex(w,0,0, 0, 0);		
+		imagePolygon->addVertex(0,0,0,1,0);
 
 		addPolygon(imagePolygon);
 		
 		for(int i=0; i < polygons.size(); i++) {
 			for(int j=0; j < polygons[i]->getVertexCount(); j++) {
 				polygons[i]->getVertex(j)->x = polygons[i]->getVertex(j)->x - (w/2.0f);
-				polygons[i]->getVertex(j)->z = polygons[i]->getVertex(j)->y - (h/2.0f);
+				polygons[i]->getVertex(j)->y = polygons[i]->getVertex(j)->y - (h/2.0f);
 			}
 		}
 

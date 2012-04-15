@@ -25,6 +25,14 @@
 
 using namespace Polycode;
 
+void ObjectEntry::Clear() {
+	for(int i=0; i < children.size(); i++) {
+		children[i]->Clear();
+		delete children[i];
+	}
+	children.clear();
+}
+
 Object::Object() {
 	
 }

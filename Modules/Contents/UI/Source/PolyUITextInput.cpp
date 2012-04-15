@@ -33,6 +33,8 @@ using namespace Polycode;
 UITextInput::UITextInput(bool multiLine, Number width, Number height) : ScreenEntity() {
 	this->multiLine = multiLine;
 	
+	isNumberOnly = false;
+	
 	draggingSelection = false;
 	hasSelection = false;
 	doSelectToCaret = false;
@@ -125,6 +127,10 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : ScreenEn
 	hitheight = rectHeight;
 	
 	updateCaretPosition();
+}
+
+void UITextInput::setNumberOnly(bool val) {
+	isNumberOnly = val;
 }
 
 void UITextInput::clearSelection() {
@@ -275,7 +281,7 @@ void UITextInput::deleteSelection() {
 	clearSelection();
 	caretPosition = selectionL;
 	updateCaretPosition();
-	
+	dispatchEvent(new UIEvent(), UIEvent::CHANGE_EVENT);	
 }
 
 void UITextInput::Resize(int x, int y) {
@@ -319,6 +325,7 @@ int UITextInput::insertLine(bool after) {
 		// do we even need that? I don't think so.
 	}	
 	
+	dispatchEvent(new UIEvent(), UIEvent::CHANGE_EVENT);
 	return 1;	
 }
 
@@ -728,13 +735,15 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 	
 //	if(1) {
 	if((charCode > 31 && charCode < 127) || charCode > 127) {	
-		if(hasSelection)
-			deleteSelection();
-		ctext = currentLine->getText();		
-		String text2 = ctext.substr(caretPosition, ctext.length()-caretPosition);
-		ctext = ctext.substr(0,caretPosition);
-		ctext += charCode + text2;
-		caretPosition++;
+		if(!isNumberOnly || (isNumberOnly && (charCode > 47 && charCode < 58))) {
+			if(hasSelection)
+				deleteSelection();
+			ctext = currentLine->getText();		
+			String text2 = ctext.substr(caretPosition, ctext.length()-caretPosition);
+			ctext = ctext.substr(0,caretPosition);
+			ctext += charCode + text2;
+			caretPosition++;
+		}
 	}
 	
 	if(key == KEY_TAB && multiLine) {
@@ -776,6 +785,7 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 	}
 	
 	currentLine->setText(ctext);	
+	dispatchEvent(new UIEvent(), UIEvent::CHANGE_EVENT);	
 	updateCaretPosition();
 }
 

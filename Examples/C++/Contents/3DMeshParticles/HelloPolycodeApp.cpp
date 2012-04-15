@@ -27,7 +27,8 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 	
 	SceneParticleEmitter *emitter = new SceneParticleEmitter("Default", scene,
 		Particle::MESH_PARTICLE, ParticleEmitter::CONTINUOUS_EMITTER, 4, 100,
-		Vector3(0.0,1.0,0.0), Vector3(0.0,0.0,0.0), Vector3(0.3, 0.0, 0.3), mesh);
+		Vector3(0.0,1.0,0.0), Vector3(0.0,0.0,0.0), Vector3(0.3, 0.0, 0.3),
+		Vector3(1.5,1.5,1.5), mesh);
 			
 	emitter->useScaleCurves = true;
 	emitter->scaleCurve.addControlPoint2d(0, 0.1);

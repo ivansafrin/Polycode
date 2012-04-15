@@ -31,7 +31,7 @@ using namespace Polycode;
 
 class FileTemplateUserData  {
 public:
-	String templateFolder;
+	String templatePath;
 	int type;
 };
 
@@ -43,9 +43,20 @@ class NewFileWindow : public UIWindow {
 		void resetForm();
 		void parseTemplatesIntoTree(UITree *tree, OSFileEntry folder);
 
+		String getTemplatePath();
+		String getFileName();
+		
+		void handleEvent(Event *event);
 	
 	protected:
 	
+		UITextInput *fileNameInput;
+	
+		UIButton *cancelButton;
+		UIButton *okButton;
+		
+		String templatePath;
+			
 		UITreeContainer *templateContainer;	
 		UITree *defaultTemplateTree;
 };

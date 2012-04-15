@@ -4,6 +4,8 @@ SET(polycodeUI_SRCS
     Source/PolyUIBox.cpp
     Source/PolyUIButton.cpp
     Source/PolyUICheckBox.cpp
+    Source/PolyUIComboBox.cpp
+    Source/PolyUIColorBox.cpp
     Source/PolyUIEvent.cpp
     Source/PolyUIHScrollBar.cpp
     Source/PolyUIHSlider.cpp
@@ -22,6 +24,8 @@ SET(polycodeUI_HDRS
     Include/PolyUIBox.h
     Include/PolyUIButton.h
     Include/PolyUICheckBox.h
+    Include/PolyUIComboBox.h
+    Include/PolyUIColorBox.h
     Include/PolyUIEvent.h
     Include/PolyUIHScrollBar.h
     Include/PolyUIHSlider.h

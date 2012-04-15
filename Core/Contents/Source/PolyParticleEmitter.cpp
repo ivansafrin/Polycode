@@ -278,6 +278,7 @@ void ParticleEmitter::resetParticle(Particle *particle) {
 	Matrix4 concatMatrix = getBaseMatrix();
 	Vector3	startVector;
 	
+	particle->dirVector = dirVector;
 //	if(emitterMesh) {
 //		Polygon *randPoly = emitterMesh->getMesh()->getPolygon(rand() % emitterMesh->getMesh()->getPolygonCount());		
 //		startVector = *randPoly->getVertex(rand() % 3);

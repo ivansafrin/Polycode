@@ -31,8 +31,10 @@
 #include "PolycodeFrame.h"
 
 #include "PolycodeImageEditor.h"
+#include "PolycodeScreenEditor.h"
 #include "PolycodeFontEditor.h"
 #include "PolycodeTextEditor.h"
+#include "PolycodeProjectEditor.h"
 
 #include "PolycodeToolLauncher.h"
 
@@ -50,12 +52,17 @@ public:
 	void loadConfigFile();
 	
 	// menu commands
+	void renameFile();
+	void removeFile();
 	void browseExamples();
 	void newProject();
 	void newFile();	
+	void newGroup();
 	void openProject();
 	void closeProject();	
 	void saveFile();
+	
+	void refreshProject();
 	
 	void runProject();
 	

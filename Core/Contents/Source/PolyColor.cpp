@@ -75,6 +75,58 @@ Number Color::getBrightness() const {
 	return (r+g+b) / 3.0f;
 }
 
+void Color::RGBtoHSV(const Number &r, const Number &g, const Number &b, Number &h, Number &s, Number &v) {
+
+	double min, max;
+	double delta;
+
+	min = MIN(r, g);
+	min = MIN(min, b);
+	max = MAX(r, g);
+	max = MAX(max, b);
+
+    v = max;
+
+	s = (max != 0) ? (max - min) / max : 0;
+
+	if (s == 0) {
+                h = 0;
+	} else {
+		delta = max - min;
+		if (r == max) {
+			h = (g - b) / delta;
+		} else if (g == max) {
+			h = 2 + (b - r) / delta;
+		} else if (b == max) {
+			h = 4 + (r - g) / delta;
+		}
+
+		h *= 60;
+		if(h < 0) {
+			h += 360;
+		}
+	}
+}
+
+
+Number Color::getHue() const {
+	Number h,s,v;
+	Color::RGBtoHSV(r,g,b, h,s,v);
+	return h;
+}
+
+Number Color::getSaturation() const {
+	Number h,s,v;
+	Color::RGBtoHSV(r,g,b, h,s,v);
+	return s;
+}
+
+Number Color::getValue() const {
+	Number h,s,v;
+	Color::RGBtoHSV(r,g,b, h,s,v);
+	return v;
+}
+
 void Color::setColorHSV(Number H, Number S, Number V) {
 	Number r,g,b;
     

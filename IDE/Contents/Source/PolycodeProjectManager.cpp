@@ -24,6 +24,8 @@
 
 PolycodeProjectManager::PolycodeProjectManager() {
 	activeProject = NULL;
+	activeFolder = "";
+	selectedFile = "";
 }
 
 PolycodeProjectManager::~PolycodeProjectManager() {
@@ -74,6 +76,15 @@ int PolycodeProjectManager::removeProject(PolycodeProject *project) {
 	return 1;
 }
 
+void PolycodeProjectManager::createNewFile(String templatePath, String newFileName) {
+	if(activeFolder == "")
+		return;
+	
+	std::vector<String> bits = templatePath.split(".");
+	String extension = bits[bits.size()-1];
+	
+	CoreServices::getInstance()->getCore()->copyDiskItem(templatePath, activeFolder+"/"+newFileName+"."+extension);	
+}
 
 void PolycodeProjectManager::createNewProject(String templateFolder, String projectName, String projectLocation) {	
 

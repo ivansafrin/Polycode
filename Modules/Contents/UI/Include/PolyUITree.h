@@ -40,6 +40,7 @@ namespace Polycode {
 			UITree(String icon, String text, Number treeWidth, Number treeOffset=0);
 			~UITree();
 			
+			
 			void handleEvent(Event *event);
 			void toggleCollapsed();
 			UITree *addTreeChild(String icon, String text, void *userData = NULL);
@@ -59,10 +60,16 @@ namespace Polycode {
 			UITree *getTreeChild(int index) { return treeChildren[index]; }
 			void removeTreeChild(UITree *child);
 		
+			String getLabelText();
+			
 			Number handleRotation;
 		
 		private:
 		
+			bool willDrag;
+			bool isDragging;
+		
+			String labelText;
 			void *userData;
 			Number treeWidth;
 			Number treeOffset;

@@ -62,11 +62,15 @@ namespace Polycode {
 			void selectAll();
 		
 			void Resize(int x, int y);
+			
+			void setNumberOnly(bool val);
 		
 			String getSelectionText();
 			void insertText(String text);
 		
 		protected:
+		
+			bool isNumberOnly;
 		
 			int caretSkipWordBack(int caretLine, int caretPosition);
 			int caretSkipWordForward(int caretLine, int caretPosition);

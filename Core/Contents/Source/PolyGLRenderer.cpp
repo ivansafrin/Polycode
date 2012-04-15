@@ -340,22 +340,30 @@ void OpenGLRenderer::createVertexBufferForMesh(Mesh *mesh) {
 	mesh->setVertexBuffer(buffer);
 }
 
-void OpenGLRenderer::drawVertexBuffer(VertexBuffer *buffer) {
+void OpenGLRenderer::drawVertexBuffer(VertexBuffer *buffer, bool enableColorBuffer) {
 	OpenGLVertexBuffer *glVertexBuffer = (OpenGLVertexBuffer*)buffer;
 
 	glEnableClientState(GL_VERTEX_ARRAY);		
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);	
-//	glEnableClientState(GL_COLOR_ARRAY);		
+	
+	if(enableColorBuffer)  {
+		glEnableClientState(GL_COLOR_ARRAY);				
 		
-//	glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getColorBufferID());
-//	glTexCoordPointer( 4, GL_FLOAT, 0, (char *) NULL );	
+		glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getColorBufferID());
+		glColorPointer( 4, GL_FLOAT, 0, (char *) NULL );	
+	}
 	glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getVertexBufferID());
 	glVertexPointer( 3, GL_FLOAT, 0, (char *) NULL );	
 	glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getNormalBufferID());
 	glNormalPointer(GL_FLOAT, 0, (char *) NULL );			
 	glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getTextCoordBufferID());
 	glTexCoordPointer( 2, GL_FLOAT, 0, (char *) NULL );
+
+	glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getTangentBufferID());	
+	glEnableVertexAttribArrayARB(6);	
+	glVertexAttribPointer(6, 3, GL_FLOAT, 0, 0,  (char *)NULL);
+	
 	
 	
 	GLenum mode = GL_TRIANGLES;
@@ -404,7 +412,10 @@ void OpenGLRenderer::drawVertexBuffer(VertexBuffer *buffer) {
 	glDisableClientState( GL_VERTEX_ARRAY);	
 	glDisableClientState( GL_TEXTURE_COORD_ARRAY );		
 	glDisableClientState( GL_NORMAL_ARRAY );
-//	glDisableClientState( GL_COLOR_ARRAY );	
+	
+	if(enableColorBuffer) {
+		glDisableClientState( GL_COLOR_ARRAY );	
+	}
 }
 
 void OpenGLRenderer::enableFog(bool enable) {

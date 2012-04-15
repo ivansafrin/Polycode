@@ -61,6 +61,14 @@ btCollisionShape *CollisionSceneEntity::createCollisionShape(SceneEntity *entity
 	
 	btCollisionShape *collisionShape = NULL;	
 	
+	Vector3 entityScale = entity->getScale();
+	Number largestScale = entityScale.x;
+	if(entityScale.y > largestScale)
+		largestScale = entityScale.y;
+	if(entityScale.z > largestScale)
+		largestScale = entityScale.z;
+
+	
 	switch(type) {
 		case SHAPE_CAPSULE:
 		case CHARACTER_CONTROLLER:
@@ -83,10 +91,10 @@ btCollisionShape *CollisionSceneEntity::createCollisionShape(SceneEntity *entity
 			collisionShape = new btBoxShape(btVector3(entity->bBox.x/2.0f, 0.05,entity->bBox.z/2.0f));			
 			break;
 		case SHAPE_BOX:
-			collisionShape = new btBoxShape(btVector3(entity->bBox.x/2.0f, entity->bBox.y/2.0f,entity->bBox.z/2.0f));			
+			collisionShape = new btBoxShape(btVector3(entity->bBox.x/2.0f*entityScale.x, entity->bBox.y/2.0f*entityScale.y,entity->bBox.z/2.0f*entityScale.z));			
 			break;
 		case SHAPE_SPHERE:
-			collisionShape = new btSphereShape(entity->bBox.x/2.0f);
+			collisionShape = new btSphereShape(entity->bBox.x/2.0f*largestScale);
 			break;
 		case SHAPE_MESH:
 		{

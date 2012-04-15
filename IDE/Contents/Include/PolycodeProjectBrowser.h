@@ -57,6 +57,11 @@ public:
 	void addProject(PolycodeProject *project);
 	void removeProject(PolycodeProject *project);
 	
+	UITree *nodeHasName(UITree *node, String name);
+	bool listHasFileEntry(vector<OSFileEntry> files, OSFileEntry fileEntry);
+	
+	void refreshProject(PolycodeProject *project);
+	
 	void handleEvent(Event *event);
 	
 	void parseFolderIntoNode(UITree *node, String spath, PolycodeProject *parentProject);
@@ -65,8 +70,9 @@ public:
 	
 	BrowserUserData *getSelectedData() { return selectedData; }
 	
+	UITreeContainer *treeContainer;
+			
 protected:
 	
 		BrowserUserData *selectedData;
-		UITreeContainer *treeContainer;
 };	

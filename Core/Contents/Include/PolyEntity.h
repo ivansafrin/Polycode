@@ -157,6 +157,19 @@ namespace Polycode {
 			@return Parent entity of this entity.
 			*/
 			Entity *getParentEntity() const;
+			
+			/**
+			* Returns the number of child entities belonging to this entity.
+			* @return Number of child entities.
+			*/
+			unsigned int getNumChildren();
+			
+			/**
+			* Returns the child entity at specified index.
+			* @param index Index to return entity at.
+			* @return Child entity at specified index or NULL of index out of range.
+			*/			
+			Entity *getChildAtIndex(unsigned int index);
 				
 			//@}
 			// ----------------------------------------------------------------------------------------------------------------
@@ -552,6 +565,17 @@ namespace Polycode {
 			//@}
 			// ----------------------------------------------------------------------------------------------------------------
 			
+			/**
+			* Sets user data pointer.
+			* @param userData User data pointer
+			*/
+			void setUserData(void *userData);			
+
+			/**
+			* Returns the user data pointer.
+			* @return User data pointer
+			*/			
+			void *getUserData();
 				
 			void setBlendingMode(int newBlendingMode);
 				
@@ -572,6 +596,9 @@ namespace Polycode {
 			bool isMask;
 		
 		protected:
+		
+			void *userData;
+		
 			std::vector<Entity*> children;
 
 			Vector3 childCenter;

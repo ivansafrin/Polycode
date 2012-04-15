@@ -23,6 +23,8 @@
 #include "PolyUIBox.h"
 #include "PolyUIButton.h"
 #include "PolyUICheckBox.h"
+#include "PolyUIComboBox.h"
+#include "PolyUIColorBox.h"
 #include "PolyUIEvent.h"
 #include "PolyUIHScrollBar.h"
 #include "PolyUIHSlider.h"

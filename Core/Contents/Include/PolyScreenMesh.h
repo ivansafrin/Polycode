@@ -23,11 +23,11 @@ THE SOFTWARE.
 #pragma once
 #include "PolyGlobals.h"
 #include "PolyScreenEntity.h"
+#include "PolyMesh.h"
 
 namespace Polycode {
 
 	class Image;
-	class Mesh;
 	class Texture;
 
 	/**

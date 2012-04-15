@@ -22,7 +22,8 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 	
 	SceneParticleEmitter *emitter = new SceneParticleEmitter("TestParticle", scene,
 		Particle::BILLBOARD_PARTICLE, ParticleEmitter::CONTINUOUS_EMITTER, 4, 200,
-		Vector3(0.0,1.0,0.0), Vector3(0.0,0.0,0.0), Vector3(0.3, 0.0, 0.3));		
+		Vector3(0.0,1.0,0.0), Vector3(0.0,0.0,0.0), Vector3(0.3, 0.0, 0.3),
+		Vector3(1.5,1.5,1.5));		
 
 	
 	emitter->useScaleCurves = true;

@@ -31,7 +31,11 @@ using namespace Polycode;
 
 UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : ScreenEntity() {
 		
+		
+	willDrag = false;
+	isDragging = false;
 	
+	labelText = text;
 	Config *conf = CoreServices::getInstance()->getConfig();
 	
 	handleRotation = 0;
@@ -101,12 +105,22 @@ UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : 
 	parent = NULL;
 	selectedNode = NULL;
 	arrowIconImage->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
-	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
-	bgBox->addEventListener(this, InputEvent::EVENT_DOUBLECLICK);	
+	arrowIconImage->processInputEvents = true;
 	
+	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEUP);
+	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);	
+	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);		
+	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);	
+	bgBox->addEventListener(this, InputEvent::EVENT_DOUBLECLICK);	
+	bgBox->processInputEvents = true;
+		
 	setPositionMode(ScreenEntity::POSITION_CENTER);
 	
 	refreshTree();
+}
+
+String UITree::getLabelText() {
+	return labelText;
 }
 
 void UITree::removeTreeChild(UITree *child) {
@@ -116,6 +130,7 @@ void UITree::removeTreeChild(UITree *child) {
 			child->removeEventListener(this, UITreeEvent::NEED_REFRESH_EVENT);
 			child->removeEventListener(this, UITreeEvent::SELECTED_EVENT);
 			child->removeEventListener(this, UITreeEvent::EXECUTED_EVENT);
+			child->removeEventListener(this, UITreeEvent::DRAG_START_EVENT);			
 			treeChildren.erase(treeChildren.begin()+i);			
 			delete child;
 			refreshTree();			
@@ -139,9 +154,24 @@ void UITree::handleEvent(Event *event) {
 		toggleCollapsed();
 	} else if(event->getDispatcher() == bgBox) {
 		switch(event->getEventCode()) {
-			case InputEvent::EVENT_MOUSEDOWN:
+			case InputEvent::EVENT_MOUSEUP:
 				setSelected();
+				willDrag = false;				
+				isDragging = false;				
 			break;
+			case InputEvent::EVENT_MOUSEUP_OUTSIDE:
+				willDrag = false;	
+				isDragging = false;			
+			break;			
+			case InputEvent::EVENT_MOUSEDOWN:	
+				willDrag = true;
+			break;			
+			case InputEvent::EVENT_MOUSEMOVE:
+				if(willDrag && !isDragging) {
+					isDragging = true;
+					dispatchEvent(new UITreeEvent(this), UITreeEvent::DRAG_START_EVENT);
+				}
+			break;						
 			case InputEvent::EVENT_DOUBLECLICK:
 				dispatchEvent(new UITreeEvent(this), UITreeEvent::EXECUTED_EVENT);				
 			break;
@@ -170,9 +200,11 @@ void UITree::handleEvent(Event *event) {
 			case UITreeEvent::EXECUTED_EVENT:
 					dispatchEvent(new UITreeEvent(uiTreeEvent->selection), UITreeEvent::EXECUTED_EVENT);
 			break;
+			case UITreeEvent::DRAG_START_EVENT:
+					dispatchEvent(new UITreeEvent(uiTreeEvent->selection), UITreeEvent::DRAG_START_EVENT);
+			break;			
 			case UITreeEvent::NEED_REFRESH_EVENT:
 				refreshTree();
-				dispatchEvent(new UITreeEvent(), UITreeEvent::NEED_REFRESH_EVENT);
 			break;
 		}
 		}
@@ -231,6 +263,7 @@ void UITree::refreshTree() {
 	hitheight = height;
 	
 	selection->visible = selected;
+	dispatchEvent(new UITreeEvent(), UITreeEvent::NEED_REFRESH_EVENT);	
 }
 
 Number UITree::getTreeHeight() {
@@ -283,6 +316,7 @@ UITree *UITree::addTreeChild(String icon, String text, void *userData) {
 	newTree->addEventListener(this, UITreeEvent::NEED_REFRESH_EVENT);
 	newTree->addEventListener(this, UITreeEvent::SELECTED_EVENT);
 	newTree->addEventListener(this, UITreeEvent::EXECUTED_EVENT);
+	newTree->addEventListener(this, UITreeEvent::DRAG_START_EVENT);	
 	treeChildren.push_back(newTree);
 	refreshTree();
 	return newTree;

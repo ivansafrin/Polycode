@@ -25,6 +25,7 @@
 using namespace Polycode;
 
 Entity::Entity() {
+	userData = NULL;
 	scale.set(1,1,1);
 	pitch = 0;
 	yaw = 0;
@@ -53,6 +54,14 @@ Entity::Entity() {
 	maskEntity = NULL;
 	isMask = false;
 	hasMask = false;
+}
+
+void Entity::setUserData(void *userData) {
+	this->userData = userData;
+}
+
+void *Entity::getUserData() {
+	return userData;
 }
 
 Entity *Entity::getParentEntity() const {
@@ -113,6 +122,17 @@ void Entity::removeChild(Entity *entityToRemove) {
 			children.erase(children.begin()+i);
 		}
 	}	
+}
+
+unsigned int Entity::getNumChildren() {
+	return children.size();
+}
+
+Entity *Entity::getChildAtIndex(unsigned int index) {
+	if(index < children.size()) {
+		return children[index];
+	}
+	return NULL;
 }
 
 void Entity::addChild(Entity *newChild) {

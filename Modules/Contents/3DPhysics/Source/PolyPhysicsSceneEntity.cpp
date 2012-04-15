@@ -194,7 +194,7 @@ PhysicsSceneEntity::PhysicsSceneEntity(SceneEntity *entity, int type, Number mas
 	for(int i=0; i < 16; i++) {
 		mat[i] = ent_mat.ml[i];
 	}	
-	transform.setFromOpenGLMatrix(mat);
+	transform.setFromOpenGLMatrix(mat);	
 	
 	if(mass != 0.0f) {
 		shape->calculateLocalInertia(mass,localInertia);
@@ -227,9 +227,31 @@ void PhysicsSceneEntity::Update() {
 	}
 	
 	free(mat);
-		
-	sceneEntity->setTransformByMatrixPure(m);	
+	
+	sceneEntity->setTransformByMatrixPure(m);
 //	collisionObject->getWorldTransform().setFromOpenGLMatrix(mat);
+}
+
+void PhysicsSceneEntity::setVelocity(Vector3 velocity) {
+	rigidBody->setLinearVelocity(btVector3(velocity.x, velocity.y, velocity.z));
+//	rigidBody->applyForce(btVector3(velocity.x, velocity.y, velocity.z), btVector3(0,0,0));
+}
+
+void PhysicsSceneEntity::warpTo(Vector3 position, bool resetRotation) {
+	btTransform transform;
+	transform.setIdentity();
+	
+	if(!resetRotation) {
+		Matrix4 ent_mat = sceneEntity->getConcatenatedMatrix();	
+		btScalar mat[16];
+		for(int i=0; i < 16; i++) {
+			mat[i] = ent_mat.ml[i];
+		}	
+		transform.setFromOpenGLMatrix(mat);	
+	}
+	
+	transform.setOrigin(btVector3(position.x,position.y,position.z));	
+	rigidBody->setCenterOfMassTransform(transform);
 }
 
 SceneEntity *PhysicsSceneEntity::getSceneEntity() {
