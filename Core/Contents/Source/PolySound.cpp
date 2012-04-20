@@ -73,6 +73,13 @@ Sound::Sound(const String& fileName) {
 	setIsPositional(false);
 }
 
+Sound::Sound(const char *data, int size, int channels, int freq, int bps) {
+	ALuint buffer = loadBytes(data, size, freq, channels, bps);
+	
+	soundSource = GenSource(buffer);
+	setIsPositional(false);
+}
+
 Sound::~Sound() {
 	Logger::log("destroying sound...\n");
 	alDeleteSources(1,&soundSource);
@@ -222,8 +229,24 @@ ALuint Sound::GenSource(ALuint buffer) {
 	return source;
 }
 
-ALuint Sound::loadOGG(const String& fileName) {
+ALuint Sound::loadBytes(const char *data, int size, int freq, int channels, int bps) {
+	ALuint buffer = AL_NONE;
+	ALenum format;
+	if (channels == 1)
+		format = (bps == 8) ? AL_FORMAT_MONO8 : AL_FORMAT_MONO16;
+	else
+		format = (bps == 8) ? AL_FORMAT_STEREO8 : AL_FORMAT_STEREO16;
 	
+	alGenBuffers(1, &buffer);
+	soundCheck(alGetError() == AL_NO_ERROR, "LoadBytes: Could not generate buffer");
+	soundCheck(AL_NONE != buffer, "LoadBytes: Could not generate buffer");
+	
+	alBufferData(buffer, format, data, size, freq);
+	soundCheck(alGetError() == AL_NO_ERROR, "LoadBytes: Could not load buffer data");
+	return buffer;
+}
+
+ALuint Sound::loadOGG(const String& fileName) {
 	vector<char> buffer;
 	
 	ALuint bufferID = AL_NONE; 
@@ -281,13 +304,11 @@ ALuint Sound::loadOGG(const String& fileName) {
 ALuint Sound::loadWAV(const String& fileName) {
 	long bytes;
 	vector <char> data;
-	ALenum format;
 	ALsizei freq;
 	
 	// Local resources
 	OSFILE *f = NULL;
 	char *array = NULL;
-	ALuint buffer = AL_NONE;
 	
 	alGetError();
 	
@@ -342,11 +363,6 @@ ALuint Sound::loadWAV(const String& fileName) {
 		soundCheck(OSBasics::read(buffer16,2,1,f) == 1, "LoadWav: Cannot read wav file "+ fileName );
 		unsigned short bps = readByte16(buffer16);
 		
-		if (channels == 1)
-			format = (bps == 8) ? AL_FORMAT_MONO8 : AL_FORMAT_MONO16;
-		else
-			format = (bps == 8) ? AL_FORMAT_STEREO8 : AL_FORMAT_STEREO16;
-		
 		// check 'data' sub chunk (2)
 		soundCheck(OSBasics::read(magic,4,1,f) == 1, "LoadWav: Cannot read wav file "+ fileName );
 		soundCheck(String(magic) == "data", "LoadWav: Wrong wav file format. This file is not a .wav file (no data subchunk): "+ fileName );
@@ -379,15 +395,8 @@ ALuint Sound::loadWAV(const String& fileName) {
 		
 		OSBasics::close(f);
 		f = NULL;
-		
-		alGenBuffers(1, &buffer);
-		soundCheck(alGetError() == AL_NO_ERROR, "LoadWav: Could not generate buffer");
-		soundCheck(AL_NONE != buffer, "LoadWav: Could not generate buffer");
-		
-		alBufferData(buffer, format, &data[0], data.size(), freq);
-		soundCheck(alGetError() == AL_NO_ERROR, "LoadWav: Could not load buffer data");
-		
-		return buffer;
+				
+		return loadBytes(&data[0], data.size(), freq, channels, bps);
 //		if (buffer)
 //			if (alIsBuffer(buffer) == AL_TRUE)
 //				alDeleteBuffers(1, &buffer);

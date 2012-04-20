@@ -52,6 +52,7 @@ namespace Polycode {
 		* @param fileName Path to an OGG or WAV file to load.
 		*/ 
 		Sound(const String& fileName);
+		Sound(const char *data, int size, int channels = 1, ALsizei freq = 44100, int bps = 16);
 		~Sound();
 		
 		/**
@@ -91,6 +92,7 @@ namespace Polycode {
 		
 		void setPositionalProperties(Number referenceDistance, Number maxDistance);
 		
+		ALuint loadBytes(const char *data, int size, int channels = 1, ALsizei freq = 44100, int bps = 16);
 		ALuint loadWAV(const String& fileName);
 		ALuint loadOGG(const String& fileName);
 		
