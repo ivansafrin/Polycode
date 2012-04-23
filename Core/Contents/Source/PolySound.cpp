@@ -52,7 +52,7 @@ long custom_tellfunc(void *datasource) {
 	return OSBasics::tell(file);
 }
 
-Sound::Sound(const String& fileName) {
+Sound::Sound(const String& fileName) : sampleLength(-1) {
 	String extension;
 	size_t found;
 	found=fileName.rfind(".");
@@ -73,7 +73,7 @@ Sound::Sound(const String& fileName) {
 	setIsPositional(false);
 }
 
-Sound::Sound(const char *data, int size, int channels, int freq, int bps) {
+Sound::Sound(const char *data, int size, int channels, int freq, int bps) : sampleLength(-1) {
 	ALuint buffer = loadBytes(data, size, freq, channels, bps);
 	
 	soundSource = GenSource(buffer);
@@ -147,6 +147,20 @@ void Sound::setSoundVelocity(Vector3 velocity) {
 void Sound::setSoundDirection(Vector3 direction) {
 	if(isPositional)
 		alSource3f(soundSource,AL_DIRECTION, direction.x, direction.y, direction.z);
+}
+
+void Sound::setOffset(int off) {
+	alSourcei(soundSource, AL_SAMPLE_OFFSET, off);
+}
+
+int Sound::getOffset() {
+	ALint off = -1;
+	alGetSourcei(soundSource, AL_SAMPLE_OFFSET, &off);
+	return off;
+}
+
+int Sound::getSampleLength() {
+	return sampleLength;
 }
 
 void Sound::setPositionalProperties(Number referenceDistance, Number maxDistance) { 
@@ -237,6 +251,8 @@ ALuint Sound::loadBytes(const char *data, int size, int freq, int channels, int 
 	else
 		format = (bps == 8) ? AL_FORMAT_STEREO8 : AL_FORMAT_STEREO16;
 	
+	sampleLength = bps > 8 ? size / (bps/8) : -1;
+	
 	alGenBuffers(1, &buffer);
 	soundCheck(alGetError() == AL_NO_ERROR, "LoadBytes: Could not generate buffer");
 	soundCheck(AL_NONE != buffer, "LoadBytes: Could not generate buffer");
@@ -294,7 +310,9 @@ ALuint Sound::loadOGG(const String& fileName) {
 		// Append to end of buffer
 		buffer.insert(buffer.end(), array, array + bytes);
 	} while (bytes > 0);
-	ov_clear(&oggFile);	
+	ov_clear(&oggFile);
+	
+	sampleLength = buffer.size() / sizeof(uint16_t);
 	
 	alBufferData(bufferID, format, &buffer[0], static_cast<ALsizei>(buffer.size()), freq);
 	
