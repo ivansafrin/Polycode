@@ -29,7 +29,7 @@ namespace Polycode {
 	class _PolyExport UIEvent : public Event {
 		public:
 			UIEvent();
-			~UIEvent();
+			virtual ~UIEvent();
 		
 			static const int CLICK_EVENT = 0;
 			static const int CLOSE_EVENT = 1;

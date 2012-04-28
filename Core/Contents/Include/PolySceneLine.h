@@ -41,7 +41,7 @@ namespace Polycode {
 			*/
 			SceneLine(SceneEntity *ent1, SceneEntity *ent2);
 			SceneLine(Vector3 start, Vector3 end);
-			~SceneLine();
+			virtual ~SceneLine();
 			
 			void setStart(Vector3 start);
 			void setEnd(Vector3 end);

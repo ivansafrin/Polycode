@@ -37,7 +37,7 @@ namespace Polycode {
 	class _PolyExport ResourceManager {
 		public:
 			ResourceManager();
-			~ResourceManager();
+			virtual ~ResourceManager();
 			
 			/** 
 			* Adds a new resource.

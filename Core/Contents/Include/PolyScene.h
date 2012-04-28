@@ -192,6 +192,16 @@ namespace Polycode {
 		*/
 		bool enabled;		
 		
+		/**
+		 * If set to true, children will be deleted when the screen is deleted. Defaults false.
+		 */
+		bool ownsChildren;
+		
+		/**
+		 * If set to true, camera will be deleted when the screen is deleted. Defaults true, automatically set false when a camera passed in.
+		 */
+		bool ownsCamera;
+		
 	protected:
 		
 		bool hasLightmaps;

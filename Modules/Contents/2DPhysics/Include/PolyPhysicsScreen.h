@@ -42,7 +42,7 @@ class Timer;
 class _PolyExport PhysicsScreenEvent : public Event {
 	public:	
 		PhysicsScreenEvent();
-		~PhysicsScreenEvent();
+		virtual ~PhysicsScreenEvent();
 		
 		/**
 		* First colliding entity.
@@ -137,7 +137,7 @@ struct ContactPoint
 class _PolyExport PhysicsJoint {
 public:
 	PhysicsJoint() {}
-	~PhysicsJoint() {}
+	virtual ~PhysicsJoint() {}
 	b2Joint *box2DJoint;
 	
 };
@@ -159,7 +159,7 @@ public:
 	*/
 	PhysicsScreen();
 	
-	~PhysicsScreen();
+	virtual ~PhysicsScreen();
 	
 	void Update();
 	
@@ -363,9 +363,7 @@ protected:
 	
 	void init(Number worldScale, Number physicsTimeStep, int physicsIterations, Vector2 physicsGravity);
 
-	Timer *updateTimer;
 	std::vector <PhysicsScreenEntity*> physicsChildren;
-	std::vector<b2Contact*> contacts;
 	b2World *world;
 	Number timeStep;
 	int32 iterations;

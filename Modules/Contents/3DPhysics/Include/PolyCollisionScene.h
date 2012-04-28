@@ -28,6 +28,9 @@ THE SOFTWARE.
 
 class btCollisionObject;
 class btCollisionWorld;
+class btDefaultCollisionConfiguration;
+class btCollisionDispatcher;
+class btAxisSweep3;
 
 namespace Polycode {
 
@@ -87,7 +90,7 @@ struct CollisionResult {
 			* Creates a collision scene.
 			*/
 			CollisionScene();
-			CollisionScene(bool virtualScene);		
+			CollisionScene(bool virtualScene, bool deferInitCollision = false);		
 			virtual ~CollisionScene();
 		
 			void initCollisionScene();
@@ -123,6 +126,11 @@ struct CollisionResult {
 		
 			std::vector<CollisionSceneEntity*> collisionChildren;
 			btCollisionWorld *world;
+		
+			// Kept only to be deleted
+			btDefaultCollisionConfiguration *collisionConfiguration;
+			btCollisionDispatcher* dispatcher;
+			btAxisSweep3*	axisSweep;
 	};
 
 }

@@ -57,7 +57,7 @@ namespace Polycode {
 	class _PolyExport PeerConnection {
 	public:
 		PeerConnection() { localSequence = 0; remoteSequence = 0; reliableID = 1;}
-		~PeerConnection(){}
+		virtual ~PeerConnection(){}
 		
 		void ackPackets(unsigned int ack);
 		
@@ -73,7 +73,7 @@ namespace Polycode {
 	class _PolyExport Peer : public Threaded, public EventDispatcher {
 		public:
 			Peer(unsigned int port);
-			~Peer();
+			virtual ~Peer();
 		
 			void handleEvent(Event *event);
 

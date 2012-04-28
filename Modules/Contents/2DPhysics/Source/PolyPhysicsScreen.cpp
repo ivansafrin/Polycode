@@ -376,7 +376,7 @@ ScreenEntity *PhysicsScreen::getEntityAtPosition(Number x, Number y) {
 	
 	for(int i=0;i<physicsChildren.size();i++) {
 		PhysicsScreenEntity *ent = physicsChildren[i];
-		if(ent->shape->TestPoint(ent->body->GetTransform(), mousePosition))
+		if(ent->shape && ent->shape->TestPoint(ent->body->GetTransform(), mousePosition))
 			return ent->getScreenEntity();
 	}	
 	return ret;
@@ -392,7 +392,7 @@ bool PhysicsScreen::testEntityAtPosition(ScreenEntity *ent, Number x, Number y) 
 	mousePosition.x = x/worldScale;
 	mousePosition.y = y/worldScale;
 	
-	if(pEnt->shape->TestPoint(pEnt->body->GetTransform(), mousePosition))
+	if(pEnt->shape && pEnt->shape->TestPoint(pEnt->body->GetTransform(), mousePosition))
 		return true;
 	else
 		return false;
@@ -442,10 +442,10 @@ void PhysicsScreen::Shutdown() {
 }
 
 PhysicsScreen::~PhysicsScreen() {
-	delete world;
 	for(int i=0; i<physicsChildren.size();i++) {
 			delete physicsChildren[i];
 	}
+	delete world;
 }
 
 PhysicsScreenEntity *PhysicsScreen::getPhysicsEntityByFixture(b2Fixture *fixture) {

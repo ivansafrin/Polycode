@@ -31,7 +31,7 @@ namespace Polycode {
 	class _PolyExport TweenManager {
 		public:
 			TweenManager();
-			~TweenManager();
+			virtual ~TweenManager();
 			void addTween(Tween *tween);
 			void removeTween(Tween *tween);	
 			void Update();

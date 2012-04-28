@@ -29,6 +29,7 @@ THE SOFTWARE.
 
 class btKinematicCharacterController;
 class btPairCachingGhostObject;
+class btDefaultMotionState;
 
 namespace Polycode {
 	
@@ -109,6 +110,9 @@ namespace Polycode {
 	protected:
 	
 		Number mass;
+		
+		// Kept just to be deleted
+		btDefaultMotionState* myMotionState;
 	};
 	
 	/**

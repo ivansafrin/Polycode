@@ -38,7 +38,8 @@ ScreenMesh::ScreenMesh(int meshType) : ScreenEntity(), texture(NULL) {
 
 
 ScreenMesh::~ScreenMesh() {
-
+	delete mesh;
+	// TODO: Should have ownsTexture field?
 }
 
 Mesh *ScreenMesh::getMesh() const {

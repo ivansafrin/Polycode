@@ -32,7 +32,7 @@ namespace Polycode {
 	class _PolyExport Font {
 		public:
 			Font(const String& fileName);
-			~Font();
+			virtual ~Font();
 			
 			FT_Face getFace();
 			bool isValid() const;

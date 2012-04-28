@@ -35,7 +35,7 @@ namespace Polycode {
 			* Default constructor
 			*/
 			EventHandler();
-			~EventHandler();
+			virtual ~EventHandler();
 
 		void secondaryHandler(Event *event);		
 		

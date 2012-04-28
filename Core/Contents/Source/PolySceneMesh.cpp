@@ -35,34 +35,34 @@
 
 using namespace Polycode;
 
-SceneMesh::SceneMesh(const String& fileName) : SceneEntity(), texture(NULL), material(NULL) {
+SceneMesh::SceneMesh(const String& fileName) : SceneEntity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
 	mesh = new Mesh(fileName);
 	bBoxRadius = mesh->getRadius();
 	bBox = mesh->calculateBBox();
-	skeleton = NULL;
 	lightmapIndex=0;
 	showVertexNormals = false;
 	useVertexBuffer = false;
+	ownsSkeleton = false;
 }
 
-SceneMesh::SceneMesh(Mesh *mesh) : SceneEntity(), texture(NULL), material(NULL) {
+SceneMesh::SceneMesh(Mesh *mesh) : SceneEntity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
 	this->mesh = mesh;
 	bBoxRadius = mesh->getRadius();
 	bBox = mesh->calculateBBox();
-	skeleton = NULL;
 	lightmapIndex=0;
 	showVertexNormals = false;	
-	useVertexBuffer = false;	
+	useVertexBuffer = false;
+	ownsSkeleton = false;
 }
 
-SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL) {
+SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
 	mesh = new Mesh(meshType);
 	bBoxRadius = mesh->getRadius();
 	bBox = mesh->calculateBBox();
-	skeleton = NULL;
 	lightmapIndex=0;
 	showVertexNormals = false;	
-	useVertexBuffer = false;	
+	useVertexBuffer = false;
+	ownsSkeleton = false;
 }
 
 void SceneMesh::setMesh(Mesh *mesh) {
@@ -70,12 +70,17 @@ void SceneMesh::setMesh(Mesh *mesh) {
 	bBoxRadius = mesh->getRadius();
 	bBox = mesh->calculateBBox();
 	showVertexNormals = false;	
-	useVertexBuffer = false;	
+	useVertexBuffer = false;
+	ownsSkeleton = false;
 }
 
-
+// Assume material is managed externally.
 SceneMesh::~SceneMesh() {
 	delete mesh;
+	delete texture;
+	if (ownsSkeleton)
+		delete skeleton;
+	delete localShaderOptions;
 }
 
 Mesh *SceneMesh::getMesh() {
@@ -116,11 +121,13 @@ ShaderBinding *SceneMesh::getLocalShaderOptions() {
 	return localShaderOptions;
 }
 
+// TODO: What if setSkeleton or loadSkeleton gets called twice?
 void SceneMesh::loadSkeleton(const String& fileName) {
 	skeleton = new Skeleton(fileName);
 	addEntity(skeleton);
 	
 	setSkeleton(skeleton);
+	ownsSkeleton = true;
 }
 
 void SceneMesh::setSkeleton(Skeleton *skeleton) {
@@ -134,7 +141,8 @@ void SceneMesh::setSkeleton(Skeleton *skeleton) {
 				vertex->getBoneAssignment(k)->bone = skeleton->getBone(vertex->getBoneAssignment(k)->boneID);
 			}
 		}
-	}	
+	}
+	ownsSkeleton = false;
 }
 
 Material *SceneMesh::getMaterial() {

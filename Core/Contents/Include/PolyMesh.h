@@ -129,7 +129,7 @@ namespace Polycode {
 			*/
 			Mesh(const String& fileName);
 
-			~Mesh();
+			virtual ~Mesh();
 			
 			/**
 			* Adds a polygon to the mesh.

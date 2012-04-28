@@ -47,7 +47,7 @@ namespace Polycode {
 		public:
 		
 		CoreInput();
-		~CoreInput();
+		virtual ~CoreInput();
 		
 		/**
 		* Left mouse button.

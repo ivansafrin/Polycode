@@ -31,6 +31,7 @@
 #include "PolyScreenEntity.h"
 #include "PolyScreenEvent.h"
 #include "PolyShader.h"
+#include "PolyTexture.h"
 
 using namespace Polycode;
 
@@ -38,6 +39,7 @@ Screen::Screen() : EventDispatcher() {
 	offset.x = 0;
 	offset.y = 0;
 	enabled = true;
+	ownsChildren = false;
 	focusChild = NULL;
 	originalSceneTexture = NULL;
 	CoreServices::getInstance()->getScreenManager()->addScreen(this);
@@ -49,10 +51,18 @@ Screen::Screen() : EventDispatcher() {
 }
 
 Screen::~Screen() {
-	for(int i=0; i<children.size();i++) {
-		//	delete children[i];
+	if (ownsChildren) {
+		for(int i=0; i<children.size();i++) {
+			delete children[i];
+		}
+	} else {
+		delete rootEntity; // Must delete this at minimum
 	}
 	CoreServices::getInstance()->getScreenManager()->removeScreen(this);	
+	
+	for(int i=0; i < localShaderOptions.size(); i++)
+		delete localShaderOptions[i];
+	delete originalSceneTexture;
 }
 
 void Screen::setNormalizedCoordinates(bool newVal, Number yCoordinateSize) {
@@ -164,7 +174,7 @@ void Screen::setScreenShader(const String& shaderName) {
 		return;
 	
 	if(!originalSceneTexture) {
-	CoreServices::getInstance()->getRenderer()->createRenderTextures(&originalSceneTexture, NULL, CoreServices::getInstance()->getCore()->getXRes(), CoreServices::getInstance()->getCore()->getYRes(), filterShaderMaterial->fp16RenderTargets);
+		CoreServices::getInstance()->getRenderer()->createRenderTextures(&originalSceneTexture, NULL, CoreServices::getInstance()->getCore()->getXRes(), CoreServices::getInstance()->getCore()->getYRes(), filterShaderMaterial->fp16RenderTargets);
 	}
 	
 	for(int i=0; i < filterShaderMaterial->getNumShaders(); i++) {

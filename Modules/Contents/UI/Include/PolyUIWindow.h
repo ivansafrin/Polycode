@@ -38,7 +38,7 @@ namespace Polycode {
 	class _PolyExport UIWindow : public ScreenEntity {
 		public:
 			UIWindow(String windowName, Number width, Number height);
-			~UIWindow();
+			virtual ~UIWindow();
 			
 			void showWindow();
 			void hideWindow();

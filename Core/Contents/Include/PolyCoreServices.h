@@ -147,7 +147,7 @@ namespace Polycode {
 			*/																													
 			Config *getConfig();
 		
-			~CoreServices();
+			virtual ~CoreServices();
 		
 		protected:
 		

@@ -32,7 +32,7 @@ namespace Polycode {
 		public:
 			UITreeEvent(UITree *selection);
 			UITreeEvent();
-			~UITreeEvent();
+			virtual ~UITreeEvent();
 		
 			static const int NEED_REFRESH_EVENT = 2000;
 			static const int SELECTED_EVENT = 2001;

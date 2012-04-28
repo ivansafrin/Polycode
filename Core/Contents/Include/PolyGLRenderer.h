@@ -110,7 +110,7 @@ namespace Polycode {
 	public:
 		
 		OpenGLRenderer();
-		~OpenGLRenderer();
+		virtual ~OpenGLRenderer();
 		
 		void Resize(int xRes, int yRes);
 		void BeginRender();

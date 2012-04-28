@@ -31,7 +31,7 @@ namespace Polycode {
 	class _PolyExport TimerManager {
 		public:
 		TimerManager();
-		~TimerManager();
+		virtual ~TimerManager();
 		
 		void removeTimer(Timer *timer);
 		void addTimer(Timer *timer);

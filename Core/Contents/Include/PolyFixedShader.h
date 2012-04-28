@@ -32,7 +32,7 @@ namespace Polycode {
 	class _PolyExport FixedShader : public Shader {
 		public:
 			FixedShader();
-			~FixedShader();
+			virtual ~FixedShader();
 			
 			ShaderBinding *createBinding();
 
@@ -43,7 +43,7 @@ namespace Polycode {
 	class _PolyExport FixedShaderBinding : public ShaderBinding {
 		public:
 			FixedShaderBinding(FixedShader *shader);
-			~FixedShaderBinding();
+			virtual ~FixedShaderBinding();
 			
 			void addTexture(const String& name, Texture *texture);
 			void addCubemap(const String& name, Cubemap *cubemap);

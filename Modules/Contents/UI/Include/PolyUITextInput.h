@@ -41,7 +41,7 @@ namespace Polycode {
 	class _PolyExport UITextInput : public ScreenEntity {
 		public:
 			UITextInput(bool multiLine, Number width, Number height);
-			~UITextInput();
+			virtual ~UITextInput();
 		
 			void handleEvent(Event *event);
 			void Update();

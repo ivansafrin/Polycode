@@ -92,7 +92,6 @@ namespace Polycode {
 class LuaEventHandler : public EventHandler {
 public:
 	LuaEventHandler() : EventHandler() {}
-	~LuaEventHandler();
 	void handleEvent(Event *e) {
 		lua_rawgeti( L, LUA_REGISTRYINDEX, wrapperIndex );
 		lua_getfield(L, -1, "__handleEvent");
@@ -7249,6 +7248,20 @@ static int Polycore_Scene_get_enabled(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_Scene_get_ownsChildren(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Scene *inst = (Scene*)lua_topointer(L, 1);
+	lua_pushboolean(L, inst->ownsChildren);
+	return 1;
+}
+
+static int Polycore_Scene_get_ownsCamera(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Scene *inst = (Scene*)lua_topointer(L, 1);
+	lua_pushboolean(L, inst->ownsCamera);
+	return 1;
+}
+
 static int Polycore_Scene_set_useClearColor(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Scene *inst = (Scene*)lua_topointer(L, 1);
@@ -7262,6 +7275,22 @@ static int Polycore_Scene_set_enabled(lua_State *L) {
 	Scene *inst = (Scene*)lua_topointer(L, 1);
 	bool param = lua_toboolean(L, 2);
 	inst->enabled = param;
+	return 0;
+}
+
+static int Polycore_Scene_set_ownsChildren(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Scene *inst = (Scene*)lua_topointer(L, 1);
+	bool param = lua_toboolean(L, 2);
+	inst->ownsChildren = param;
+	return 0;
+}
+
+static int Polycore_Scene_set_ownsCamera(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Scene *inst = (Scene*)lua_topointer(L, 1);
+	bool param = lua_toboolean(L, 2);
+	inst->ownsCamera = param;
 	return 0;
 }
 
@@ -8095,11 +8124,26 @@ static int Polycore_SceneMesh_get_showVertexNormals(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_SceneMesh_get_ownsSkeleton(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	SceneMesh *inst = (SceneMesh*)lua_topointer(L, 1);
+	lua_pushboolean(L, inst->ownsSkeleton);
+	return 1;
+}
+
 static int Polycore_SceneMesh_set_showVertexNormals(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	SceneMesh *inst = (SceneMesh*)lua_topointer(L, 1);
 	bool param = lua_toboolean(L, 2);
 	inst->showVertexNormals = param;
+	return 0;
+}
+
+static int Polycore_SceneMesh_set_ownsSkeleton(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	SceneMesh *inst = (SceneMesh*)lua_topointer(L, 1);
+	bool param = lua_toboolean(L, 2);
+	inst->ownsSkeleton = param;
 	return 0;
 }
 
@@ -8444,11 +8488,26 @@ static int Polycore_Screen_get_enabled(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_Screen_get_ownsChildren(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Screen *inst = (Screen*)lua_topointer(L, 1);
+	lua_pushboolean(L, inst->ownsChildren);
+	return 1;
+}
+
 static int Polycore_Screen_set_enabled(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Screen *inst = (Screen*)lua_topointer(L, 1);
 	bool param = lua_toboolean(L, 2);
 	inst->enabled = param;
+	return 0;
+}
+
+static int Polycore_Screen_set_ownsChildren(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Screen *inst = (Screen*)lua_topointer(L, 1);
+	bool param = lua_toboolean(L, 2);
+	inst->ownsChildren = param;
 	return 0;
 }
 

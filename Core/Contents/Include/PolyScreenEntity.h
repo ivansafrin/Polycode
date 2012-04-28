@@ -42,7 +42,7 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		using Entity::setScale;		
 	
 		ScreenEntity();
-		~ScreenEntity();
+		virtual ~ScreenEntity();
 		
 		/**
 		* Set 2d position.
