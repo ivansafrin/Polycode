@@ -71,7 +71,6 @@ namespace Polycode {
 		
 			b2Fixture *fixture;		
 			b2Body* body;
-			b2BodyDef *bodyDef;
 			b2Shape *shape;
 			
 			bool collisionOnly;

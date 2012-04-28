@@ -363,9 +363,7 @@ protected:
 	
 	void init(Number worldScale, Number physicsTimeStep, int physicsIterations, Vector2 physicsGravity);
 
-	Timer *updateTimer;
 	std::vector <PhysicsScreenEntity*> physicsChildren;
-	std::vector<b2Contact*> contacts;
 	b2World *world;
 	Number timeStep;
 	int32 iterations;
