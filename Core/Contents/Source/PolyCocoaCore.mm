@@ -201,8 +201,10 @@ void CocoaCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, in
 //	}
 	if(fullScreen) {	
 		CGDisplaySwitchToMode (kCGDirectMainDisplay, CGDisplayBestModeForParameters (kCGDirectMainDisplay, 32, xRes, yRes, NULL) );						
-		[glView enterFullScreenMode:[NSScreen mainScreen] withOptions:[NSDictionary dictionaryWithObjectsAndKeys:
-																	   nil]];
+//		[glView enterFullScreenMode:[NSScreen mainScreen] withOptions:[NSDictionary dictionaryWithObjectsAndKeys: nil]];
+		[glView enterFullScreenMode:[[NSScreen screens] objectAtIndex:1] withOptions:[NSDictionary dictionaryWithObjectsAndKeys: nil]];
+
+
 		
 	}
 	

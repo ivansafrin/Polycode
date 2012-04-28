@@ -41,6 +41,9 @@ void TweenManager::removeTween(Tween *tween) {
 	for(int i=0;i<tweens.size();i++) {
 		if(tweens[i] == tween) {
 			tweens.erase(tweens.begin()+i);
+			if(tween->deleteOnComplete)
+				delete tween;
+			
 		}
 	}
 }
@@ -56,7 +59,8 @@ void TweenManager::Update() {
 				tween = tweens[i];
 				tweens.erase(tweens.begin()+i);
 				tween->doOnComplete();
-//				delete tween;
+				if(tween->deleteOnComplete)
+					delete tween;
 				return;
 			}
 		}
