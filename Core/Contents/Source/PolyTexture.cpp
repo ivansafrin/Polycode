@@ -87,7 +87,9 @@ void Texture::setImageData(Image *data) {
 		break;
 	}
 
-
+	width = data->getWidth();
+	height = data->getHeight();
+	
 	if(this->textureData)
 		free(this->textureData);
 	this->textureData = (char*)malloc(width*height*pixelSize);
