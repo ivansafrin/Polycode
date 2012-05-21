@@ -31,16 +31,19 @@ Texture::Texture(unsigned int width, unsigned int height, char *textureData,bool
 	this->clamp = clamp;
 	this->createMipmaps = createMipmaps;
 	
-	switch (type) {
+	switch(type) {
 		case Image::IMAGE_RGB:
-			pixelSize = 3;
-			break;
-		case Image::IMAGE_RGBA:
-			pixelSize = 4;
-			break;			
-		default:
 			pixelSize = 3;			
 			break;
+		case Image::IMAGE_RGBA:
+			pixelSize = 4;						
+		break;
+		case Image::IMAGE_FP16:		
+			pixelSize = 16;
+		break;
+		default:
+			pixelSize = 4;								
+		break;
 	}
 	
 	this->textureData = (char*)malloc(width*height*pixelSize);
@@ -71,14 +74,17 @@ void Texture::setImageData(Image *data) {
 
 	switch (data->getType()) {
 		case Image::IMAGE_RGB:
-			pixelSize = 3;
-			break;
-		case Image::IMAGE_RGBA:
-			pixelSize = 4;
-			break;			
-		default:
 			pixelSize = 3;			
-			break;
+		break;
+		case Image::IMAGE_RGBA:
+			pixelSize = 4;						
+		break;
+		case Image::IMAGE_FP16:		
+			pixelSize = 16;
+		break;
+		default:
+			pixelSize = 4;								
+		break;
 	}
 
 

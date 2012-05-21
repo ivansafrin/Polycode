@@ -60,7 +60,10 @@ namespace Polycode {
 		private:
 			
 			bool glTextureLoaded;
-			GLuint glTextureType;
+			GLenum glTextureType;
+			GLuint glTextureFormat;
+			GLenum pixelType;
+			
 			int filteringMode;
 			GLuint textureID;
 			GLuint frameBufferID;

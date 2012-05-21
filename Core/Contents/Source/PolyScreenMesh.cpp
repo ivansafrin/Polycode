@@ -28,6 +28,10 @@
 
 using namespace Polycode;
 
+ScreenMesh::ScreenMesh(Mesh *mesh) : ScreenEntity(), texture(NULL) {
+	this->mesh = mesh;
+}
+
 ScreenMesh::ScreenMesh(const String& fileName) : ScreenEntity(), texture(NULL) {
 	mesh = new Mesh(fileName);
 }

@@ -400,7 +400,7 @@ void OpenGLRenderer::drawVertexBuffer(VertexBuffer *buffer, bool enableColorBuff
 			}
 			break;
 		case Mesh::LINE_MESH:
-			mode = GL_LINES;
+			mode = GL_LINE_STRIP;
 			break;	
 		case Mesh::POINT_MESH:
 			mode = GL_POINTS;
@@ -1025,7 +1025,7 @@ void OpenGLRenderer::drawArrays(int drawType) {
 			}
 			break;
 		case Mesh::LINE_MESH:
-			mode = GL_LINES;
+			mode = GL_LINE_STRIP;
 			break;	
 		case Mesh::POINT_MESH:
 			mode = GL_POINTS;

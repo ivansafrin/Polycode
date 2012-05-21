@@ -35,11 +35,24 @@ OpenGLTexture::OpenGLTexture(unsigned int width, unsigned int height, char *text
 	glTextureLoaded = false;
 	frameBufferID = 999999;
 	
-	glTextureType = GL_RGBA;
-	if(type == Image::IMAGE_RGB) {
-		glTextureType = GL_RGB;		
-	} 
-	
+	switch(type) {
+		case Image::IMAGE_RGB:
+			glTextureType = GL_RGB;
+			glTextureFormat = GL_RGB;				
+			pixelType = GL_UNSIGNED_BYTE;			
+		break;
+		case Image::IMAGE_FP16:
+			glTextureType = GL_RGBA;
+			glTextureFormat = GL_RGBA16F_ARB;				
+			pixelType = GL_FLOAT;
+		break;		
+		default:
+			glTextureType = GL_RGBA;
+			glTextureFormat = GL_RGBA;	
+			pixelType = GL_UNSIGNED_BYTE;	
+		break;
+	}
+		
 	recreateFromImageData();
 }
 
@@ -52,6 +65,7 @@ void OpenGLTexture::recreateFromImageData() {
 	
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_2D, textureID);
+	
 	if(clamp) {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
@@ -70,13 +84,13 @@ void OpenGLTexture::recreateFromImageData() {
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 				if(textureData) {
-					gluBuild2DMipmaps(GL_TEXTURE_2D, glTextureType, width, height, glTextureType, GL_UNSIGNED_BYTE, textureData );
+					gluBuild2DMipmaps(GL_TEXTURE_2D, glTextureFormat, width, height, glTextureType, pixelType, textureData );
 				}
 			} else {
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);		
 				if(textureData) {
-					glTexImage2D(GL_TEXTURE_2D, 0, glTextureType, width, height, 0, glTextureType, GL_UNSIGNED_BYTE, textureData);							
+					glTexImage2D(GL_TEXTURE_2D, 0, glTextureFormat, width, height, 0, glTextureType, pixelType, textureData);							
 				}						
 			}
 			break;
@@ -84,7 +98,7 @@ void OpenGLTexture::recreateFromImageData() {
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);		
 			if(textureData) {
-				glTexImage2D(GL_TEXTURE_2D, 0, glTextureType, width, height, 0, glTextureType, GL_UNSIGNED_BYTE, textureData);							
+				glTexImage2D(GL_TEXTURE_2D, 0, glTextureFormat, width, height, 0, glTextureType, pixelType, textureData);							
 			}			
 			break;
 	}	
@@ -104,7 +118,7 @@ void OpenGLTexture::setGLInfo(GLuint textureID, GLuint frameBufferID) {
 void OpenGLTexture::setTextureData(char *data) {
 	glBindTexture(GL_TEXTURE_2D, textureID);
 	glDrawBuffer(GL_AUX0);
-	glDrawPixels(width, height, glTextureType, GL_UNSIGNED_BYTE, data);
+	glDrawPixels(width, height, glTextureType, pixelType, data);
 	glReadBuffer(GL_AUX0);
 //	glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 0, 0, 128, 128, 0);
 }

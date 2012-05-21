@@ -36,6 +36,12 @@ namespace Polycode {
 	*/
 	class _PolyExport ScreenMesh : public ScreenEntity {
 		public:
+		
+			/**
+			* Creates the screen mesh from existing Mesh.
+			*/
+			ScreenMesh(Mesh *mesh);
+			
 			/**
 			* Creates the screen mesh and loads a mesh from a file name.
 			*/

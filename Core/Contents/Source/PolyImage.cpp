@@ -54,9 +54,12 @@ void Image::setPixelType(int type) {
 			break;
 		case IMAGE_RGBA:
 			pixelSize = 4;						
-			break;
-			pixelSize = 4;						
+		break;
+		case IMAGE_FP16:		
+			pixelSize = 16;
+		break;
 		default:
+			pixelSize = 4;								
 			break;
 	}
 }
@@ -98,6 +101,37 @@ Image::~Image() {
 char *Image::getPixels() {
 	return imageData;
 }
+
+char *Image::getPixelsInRect(unsigned int x, unsigned int y, unsigned int width, unsigned int height) {
+	char *retBuf = (char*) malloc(pixelSize * width * height);
+	memset(retBuf, 0, pixelSize * width * height);
+	
+	if(x < this->width-1 && y < this->height-1) {
+		
+		unsigned int xAmt;
+		unsigned int yAmt;	
+		if(x + width > this->width) {
+			xAmt = this->width - x;
+		} else {
+			xAmt = width;
+		}
+
+		if(y + height > this->height) {
+			yAmt = this->height - y;
+		} else {
+			yAmt = height;
+		}
+
+		for(int i=0; i < yAmt; i++) {
+			long srcOffset = ((pixelSize*this->width) * (y+i)) + (pixelSize*x);
+			long dstOffset = (pixelSize*xAmt) * i;
+			memcpy(retBuf + dstOffset, imageData+srcOffset, pixelSize * xAmt);
+		}	
+	}
+		
+	return retBuf;
+}
+
 
 Color Image::getPixel(int x, int y) {
 	if(x < 0 || x >= width || y < 0 || y >= height)

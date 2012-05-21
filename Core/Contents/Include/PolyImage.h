@@ -188,6 +188,15 @@ namespace Polycode {
 			void darken(Number amt, bool color, bool alpha);
 			void lighten(Number amt, bool color, bool alpha);
 			void multiply(Number amt, bool color, bool alpha);
+						
+			/**
+			* Returns an area of the image buffer. The area can go outside of image bounds, in which case the pixels not within the image are zeroed out. This method allocates new memory for the returned buffer and you must free it manually.
+			* @param x X position of the area to return.
+			* @param y Y position of the area to return.
+			* @param width Width of the area to return.
+			* @param height Height of the area to return.					
+			*/			
+			char *getPixelsInRect(unsigned int x, unsigned int y, unsigned int width, unsigned int height);
 			
 			/**
 			* Returns the x position of the brush.
@@ -223,6 +232,7 @@ namespace Polycode {
 		
 			static const int IMAGE_RGB = 0;
 			static const int IMAGE_RGBA = 1;
+			static const int IMAGE_FP16 = 2;
 		
 		protected:
 		
