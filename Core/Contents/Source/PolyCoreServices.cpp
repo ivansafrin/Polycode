@@ -98,6 +98,10 @@ Config *CoreServices::getConfig() {
 
 void CoreServices::installModule(PolycodeModule *module)  {
 	modules.push_back(module);
+	if(module->requiresUpdate()) {
+		updateModules.push_back(module);
+	}
+	
 	switch(module->getType()) {
 		case PolycodeModule::TYPE_SHADER:
 //			renderer->addShaderModule((ShaderModule*)module);
@@ -183,6 +187,11 @@ Renderer *CoreServices::getRenderer() {
 }
 
 void CoreServices::Update(int elapsed) {
+	
+	for(int i=0; i < updateModules.size(); i++) {
+		updateModules[i]->Update(elapsed);
+	}
+
 	timerManager->Update();
 	tweenManager->Update();
 	materialManager->Update(elapsed);

@@ -30,7 +30,7 @@ long getThreadID() {
 	return (long)pthread_self();
 }
 
-CocoaCore::CocoaCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate) : Core(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate) {	
+CocoaCore::CocoaCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex) : Core(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate, monitorIndex) {	
 
 	hidManager = NULL;
 	initGamepad();
@@ -200,10 +200,20 @@ void CocoaCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, in
 //		CGDisplaySwitchToMode (kCGDirectMainDisplay, CGDisplayBestModeForParameters (kCGDirectMainDisplay, 32, xRes, yRes, NULL) );						
 //	}
 	if(fullScreen) {	
-		CGDisplaySwitchToMode (kCGDirectMainDisplay, CGDisplayBestModeForParameters (kCGDirectMainDisplay, 32, xRes, yRes, NULL) );						
-//		[glView enterFullScreenMode:[NSScreen mainScreen] withOptions:[NSDictionary dictionaryWithObjectsAndKeys: nil]];
-		[glView enterFullScreenMode:[[NSScreen screens] objectAtIndex:1] withOptions:[NSDictionary dictionaryWithObjectsAndKeys: nil]];
-
+		CGDisplaySwitchToMode (kCGDirectMainDisplay, CGDisplayBestModeForParameters (kCGDirectMainDisplay, 32, xRes, yRes, NULL) );			
+		
+		if(monitorIndex > -1) {
+			if(monitorIndex > [[NSScreen screens] count]-1) {
+				Logger::log("Requested monitor index above available screens.\n");
+				monitorIndex = -1;
+			}
+		}
+		
+	    if(monitorIndex == -1) {		
+			[glView enterFullScreenMode:[NSScreen mainScreen] withOptions:[NSDictionary dictionaryWithObjectsAndKeys: nil]];
+		} else {
+			[glView enterFullScreenMode:[[NSScreen screens] objectAtIndex:1] withOptions:[NSDictionary dictionaryWithObjectsAndKeys: nil]];
+		}
 
 		
 	}

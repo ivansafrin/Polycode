@@ -30,8 +30,14 @@ namespace Polycode {
 		
 		static const int TYPE_GENERIC = 0;
 		static const int TYPE_SHADER = 0;
+		
+		virtual void Update(Number elapsed) {}
+		
+		bool requiresUpdate();
+		
 	protected:
 		int type;
+		bool _requiresUpdate;
 	};
 	
 	class _PolyExport PolycodeShaderModule : public PolycodeModule {

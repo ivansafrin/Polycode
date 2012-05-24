@@ -75,8 +75,9 @@ namespace Polycode {
 		* @param fullScreen True to launch in fullscreen, false to launch in window.
 		* @param aaLevel Level of anti-aliasing. Possible values are 2,4 and 6.
 		* @param frameRate Frame rate that the core will update and render at.
+		* @param monitorIndex If fullScreen is true, the monitor index to fullscreen to. Pass -1 to use primary monitor.
 		*/			
-		Core(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate);
+		Core(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex);
 		virtual ~Core();
 		
 		virtual bool Update() = 0;
@@ -311,7 +312,9 @@ namespace Polycode {
 		unsigned int lastSleepFrameTicks;
 		
 		int xRes;
-		int yRes;		
+		int yRes;	
+		
+		int monitorIndex;
 		
 		int frames;
 		

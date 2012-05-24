@@ -182,4 +182,23 @@ namespace Polycode {
 			dispatchEvent(evt, InputEvent::EVENT_KEYUP);
 		}
 	}
+	
+	void CoreInput::touchesBegan(std::vector<TouchInfo> touches) {
+		InputEvent *evt = new InputEvent();
+		evt->touches = touches;
+		dispatchEvent(evt, InputEvent::EVENT_TOUCHES_BEGAN);
+	}
+	
+	void CoreInput::touchesMoved(std::vector<TouchInfo> touches) {
+		InputEvent *evt = new InputEvent();
+		evt->touches = touches;
+		dispatchEvent(evt, InputEvent::EVENT_TOUCHES_MOVED);	
+	}
+	
+	void CoreInput::touchesEnded(std::vector<TouchInfo> touches) {
+		InputEvent *evt = new InputEvent();
+		evt->touches = touches;
+		dispatchEvent(evt, InputEvent::EVENT_TOUCHES_ENDED);	
+	}
+	
 }

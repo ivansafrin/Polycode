@@ -160,7 +160,8 @@ namespace Polycode {
 			static CoreMutex *renderMutex;
 		
 			std::vector<PolycodeModule*> modules;
-		
+			std::vector<PolycodeModule*> updateModules;
+					
 			Core *core;
 			Config *config;
 			MaterialManager *materialManager;
