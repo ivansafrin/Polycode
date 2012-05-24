@@ -29,7 +29,7 @@ namespace Polycode {
 		int getType() { return type; }
 		
 		static const int TYPE_GENERIC = 0;
-		static const int TYPE_SHADER = 0;
+		static const int TYPE_SHADER = 1;
 		
 		virtual void Update(Number elapsed) {}
 		

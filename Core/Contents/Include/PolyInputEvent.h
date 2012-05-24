@@ -71,7 +71,7 @@ namespace Polycode {
 		
 		static const int EVENT_TOUCHES_BEGAN = 20;
 		static const int EVENT_TOUCHES_MOVED = 21;
-		static const int EVENT_TOUCHES_ENDED =2;
+		static const int EVENT_TOUCHES_ENDED =22;
 		
 		
 		//@}
