@@ -100,21 +100,23 @@ void TUIOInputModule::refresh(TuioTime frameTime) {
 
 void TUIOInputModule::Update(Number elapsed) {
 
+	Core *core = CoreServices::getInstance()->getCore();
+
 	CoreServices::getInstance()->getCore()->lockMutex(eventMutex);
 	for(int i=0; i < events.size(); i++) {
 		for(int j=0; j < events[i].touches.size(); j++) {
-			events[i].touches[j].position.x = events[i].touches[j].position.x * CoreServices::getInstance()->getCore()->getXRes();
-			events[i].touches[j].position.y = events[i].touches[j].position.y * CoreServices::getInstance()->getCore()->getYRes();			
+			events[i].touches[j].position.x = events[i].touches[j].position.x * core->getXRes();
+			events[i].touches[j].position.y = events[i].touches[j].position.y * core->getYRes();			
 		}
 		switch(events[i].type) {
 			case InputEvent::EVENT_TOUCHES_BEGAN:
-				CoreServices::getInstance()->getCore()->getInput()->touchesBegan(events[i].touches);
+				CoreServices::getInstance()->getCore()->getInput()->touchesBegan(events[i].touches, core->getTicks());
 			break;
 			case InputEvent::EVENT_TOUCHES_MOVED:
-				CoreServices::getInstance()->getCore()->getInput()->touchesMoved(events[i].touches);
+				CoreServices::getInstance()->getCore()->getInput()->touchesMoved(events[i].touches, core->getTicks());
 			break;
 			case InputEvent::EVENT_TOUCHES_ENDED:
-				CoreServices::getInstance()->getCore()->getInput()->touchesEnded(events[i].touches);			
+				CoreServices::getInstance()->getCore()->getInput()->touchesEnded(events[i].touches, core->getTicks());			
 			break;			
 		}
 	}

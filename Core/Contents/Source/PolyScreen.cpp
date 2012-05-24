@@ -46,6 +46,7 @@ Screen::Screen() : EventDispatcher() {
 	useNormalizedCoordinates = false;
 	rootEntity = new ScreenEntity();
 	addChild(rootEntity);
+	processTouchEventsAsMouse = false;
 }
 
 Screen::~Screen() {
@@ -64,6 +65,14 @@ void Screen::handleInputEvent(InputEvent *inputEvent) {
 	
 	for(int i=children.size()-1; i >= 0; i--) {
 		switch(inputEvent->getEventCode()) {
+		
+			case InputEvent::EVENT_TOUCHES_BEGAN:
+				if(processTouchEventsAsMouse) {
+					for(int j=0; j < inputEvent->touches.size(); j++) {
+						children[i]->_onMouseDown(inputEvent->touches[j].position.x-offset.x, inputEvent->touches[j].position.y-offset.y, CoreInput::MOUSE_BUTTON1, inputEvent->timestamp);
+					}
+				}
+			break;
 			case InputEvent::EVENT_MOUSEDOWN:
 				if(children[i]->_onMouseDown(inputEvent->mousePosition.x-offset.x, inputEvent->mousePosition.y-offset.y, inputEvent->mouseButton, inputEvent->timestamp) &&
 				children[i]->blockMouseInput)

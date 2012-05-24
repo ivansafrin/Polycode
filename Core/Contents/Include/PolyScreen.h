@@ -146,6 +146,11 @@ namespace Polycode {
 		*/					
 		Material *getScreenShaderMaterial() const { return filterShaderMaterial; }
 		
+		/**
+		* If set to true, will process touch events as mouse clicks. Defaults to false.
+		*/		
+		bool processTouchEventsAsMouse;
+		
 	protected:
 		
 		bool useNormalizedCoordinates;

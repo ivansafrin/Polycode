@@ -183,21 +183,24 @@ namespace Polycode {
 		}
 	}
 	
-	void CoreInput::touchesBegan(std::vector<TouchInfo> touches) {
+	void CoreInput::touchesBegan(std::vector<TouchInfo> touches, int ticks) {
 		InputEvent *evt = new InputEvent();
 		evt->touches = touches;
+		evt->timestamp = ticks;
 		dispatchEvent(evt, InputEvent::EVENT_TOUCHES_BEGAN);
 	}
 	
-	void CoreInput::touchesMoved(std::vector<TouchInfo> touches) {
+	void CoreInput::touchesMoved(std::vector<TouchInfo> touches, int ticks) {
 		InputEvent *evt = new InputEvent();
 		evt->touches = touches;
+		evt->timestamp = ticks;		
 		dispatchEvent(evt, InputEvent::EVENT_TOUCHES_MOVED);	
 	}
 	
-	void CoreInput::touchesEnded(std::vector<TouchInfo> touches) {
+	void CoreInput::touchesEnded(std::vector<TouchInfo> touches, int ticks) {
 		InputEvent *evt = new InputEvent();
 		evt->touches = touches;
+		evt->timestamp = ticks;		
 		dispatchEvent(evt, InputEvent::EVENT_TOUCHES_ENDED);	
 	}
 	

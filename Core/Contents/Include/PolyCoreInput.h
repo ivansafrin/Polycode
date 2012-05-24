@@ -108,9 +108,9 @@ namespace Polycode {
 		void setKeyState(PolyKEY keyCode, wchar_t code, bool newState, int ticks);
 		void setDeltaPosition(int x, int y);
 		
-		void touchesBegan(std::vector<TouchInfo> touches);
-		void touchesMoved(std::vector<TouchInfo> touches);
-		void touchesEnded(std::vector<TouchInfo> touches);
+		void touchesBegan(std::vector<TouchInfo> touches, int ticks);
+		void touchesMoved(std::vector<TouchInfo> touches, int ticks);
+		void touchesEnded(std::vector<TouchInfo> touches, int ticks);
 				
 		static InputEvent *createEvent(Event *event){ return (InputEvent*)event; }
 		
