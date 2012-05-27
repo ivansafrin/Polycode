@@ -74,9 +74,12 @@ namespace Polycode {
 			if(renderDataArrays[i]) {
 				free(renderDataArrays[i]->arrayPtr);
 				delete renderDataArrays[i];
+				renderDataArrays[i] = NULL;
 			}
 		}
-	
+		
+		meshHasVertexBuffer = false;
+		useVertexColors = false;
 	}
 	
 	VertexBuffer *Mesh::getVertexBuffer() {
