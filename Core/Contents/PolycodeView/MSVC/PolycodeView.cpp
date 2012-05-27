@@ -15,6 +15,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	PAINTSTRUCT ps;
 	HDC hdc;		
 	int nWidth, nHeight;
+	bool useDefault = false;
 
 	if(!core)
 		return DefWindowProc(hWnd, message, wParam, lParam);
@@ -88,14 +89,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_CLOSE:
 		if(core)
 			core->Shutdown();
+		useDefault = true;
 	break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
 	default:
-		return DefWindowProc(hWnd, message, wParam, lParam);
+		useDefault = true;
+		break;
 	}
-	return 0;
+	
+	if (useDefault)
+		return DefWindowProc(hWnd, message, wParam, lParam);
+	else
+		return 0;
 }
 
 
