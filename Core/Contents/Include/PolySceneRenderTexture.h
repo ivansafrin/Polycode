@@ -39,9 +39,10 @@ namespace Polycode {
 			* @param targetScene Target scene to render.
 			* @param Camera to render from.
 			* @param renderWidth Horizontal size of the render texture.
-			* @param renderHeight Vertical size of the render texture.			
+			* @param renderHeight Vertical size of the render texture.
+			* @param floatingPoint Pass true if you want fp16 target renders			
 			*/
-			SceneRenderTexture(Scene *targetScene, Camera *targetCamera, int renderWidth,int renderHeight);
+			SceneRenderTexture(Scene *targetScene, Camera *targetCamera, int renderWidth,int renderHeight, bool floatingPoint = false);
 			~SceneRenderTexture();
 			
 			void drawScreen();
