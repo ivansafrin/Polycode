@@ -47,7 +47,7 @@ namespace Polycode {
 		* @param time The duration of the tween.
 		* @param repeat If true, this tween will repeat over and over.
 		*/
-		Tween(Number *target, int easeType, Number startVal, Number endVal, Number time, bool repeat=false, bool deleteOnComplete=true);
+		Tween(Number *target, int easeType, Number startVal, Number endVal, Number time, bool repeat=false, bool deleteOnComplete=false);
 		~Tween();
 		
 		void handleEvent(Event *event);
