@@ -251,6 +251,12 @@ namespace Polycode {
 		void doSleep();
 		
 		/**
+		* Launches the default browser and directs it to specified URL
+		* @param url URL to launch.
+		*/
+		virtual void openURL(String url) = 0;
+		
+		/**
 		* Returns the time elapsed since last frame.
 		* @return Time elapsed since last frame in floating point microseconds.
 		*/

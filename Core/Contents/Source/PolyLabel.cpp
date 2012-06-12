@@ -43,7 +43,7 @@ Label::~Label() {
 
 }
 
-int Label::getTextWidth(Font *font, const String& text, int size) const {
+int Label::getTextWidth(Font *font, const String& text, int size) {
 	FT_Vector delta;
 	FT_UInt previous = 0;
 	FT_UInt glyph_index;
@@ -70,15 +70,9 @@ int Label::getTextWidth(Font *font, const String& text, int size) const {
 				width += delta.x >> 6;
 			}
 			FT_Load_Glyph( font->getFace(), glyph_index, NORMAL_FT_FLAGS );
-		
-			switch(antiAliasMode) {
-				case ANTIALIAS_FULL:
-					FT_Render_Glyph(slot, FT_RENDER_MODE_LIGHT );			
-					break;
-				case ANTIALIAS_NONE:
-					FT_Render_Glyph(slot, FT_RENDER_MODE_MONO);
-					break;
-			}
+			
+			FT_Render_Glyph(slot, FT_RENDER_MODE_MONO);
+
 		width += slot->advance.x >> 6;
 		}
 	}
@@ -87,7 +81,7 @@ int Label::getTextWidth(Font *font, const String& text, int size) const {
 	return width+5;
 }
 
-int Label::getTextHeight(Font *font, const String& text, int size) const {
+int Label::getTextHeight(Font *font, const String& text, int size) {
 	
 	String actualString = text; //StringUtil::replace(text, "\t", TAB_REPLACE);
 	
@@ -101,15 +95,7 @@ int Label::getTextHeight(Font *font, const String& text, int size) const {
 	{
 		glyph_index = FT_Get_Char_Index( font->getFace(), actualString[i] );
 		FT_Load_Glyph(font->getFace(), glyph_index, NORMAL_FT_FLAGS );
-		switch(antiAliasMode) {
-			case ANTIALIAS_FULL:
-				FT_Render_Glyph(slot, FT_RENDER_MODE_LIGHT );			
-			break;
-			case ANTIALIAS_NONE:
-				FT_Render_Glyph(slot, FT_RENDER_MODE_MONO);
-			break;
-		}
-
+		FT_Render_Glyph(slot, FT_RENDER_MODE_MONO);
 		
 		if(slot->bitmap_top > height)
 			height = slot->bitmap_top;

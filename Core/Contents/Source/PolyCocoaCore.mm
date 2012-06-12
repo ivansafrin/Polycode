@@ -374,6 +374,10 @@ void CocoaCore::checkEvents() {
 	unlockMutex(eventMutex);		
 }
 
+void CocoaCore::openURL(String url) {
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:[NSString stringWithUTF8String: url.c_str()]]];
+}
+
 void CocoaCore::createFolder(const String& folderPath) {
 	[[NSFileManager defaultManager] createDirectoryAtPath:[NSString stringWithUTF8String: folderPath.c_str()] withIntermediateDirectories:YES attributes:nil error:nil];
 }

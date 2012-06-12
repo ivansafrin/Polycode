@@ -51,6 +51,15 @@ String::String(const wstring& str) {
 	wstrToUtf8(contents, str);
 }
 
+String::String(const wchar_t wchar) {
+	std::wstring srcstr;
+	srcstr = srcstr + wchar;
+	std::string newstr;
+	wstrToUtf8(newstr, srcstr);
+	contents = contents + newstr;
+}
+
+
 String::~String() {
 	
 }

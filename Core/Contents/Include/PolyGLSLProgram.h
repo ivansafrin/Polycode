@@ -83,8 +83,9 @@ class _PolyExport GLSLProgramParam {
 	
 	static const int PARAM_UNKNOWN = 0;	
 	static const int PARAM_Number = 1;
-	static const int PARAM_Number3 = 2;
-	static const int PARAM_Number4 = 3;
+	static const int PARAM_Number2 = 2;		
+	static const int PARAM_Number3 = 3;
+	static const int PARAM_Number4 = 4;
 	
 	};
 

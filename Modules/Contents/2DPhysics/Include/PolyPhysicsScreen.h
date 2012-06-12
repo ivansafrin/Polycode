@@ -344,6 +344,11 @@ public:
 	* @return If there specified entity overlaps the specified position, this returns true.
 	*/ 														
 	bool testEntityAtPosition(ScreenEntity *ent, Number x, Number y);
+
+	/**
+	* Tests collision between two entities
+	*/
+	bool testEntityCollision(ScreenEntity *ent1, ScreenEntity *ent2);
 	
 	void Shutdown();
 	

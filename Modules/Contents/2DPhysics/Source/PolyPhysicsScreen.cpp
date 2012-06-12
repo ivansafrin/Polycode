@@ -46,9 +46,9 @@ ScreenEntity *PhysicsScreenEvent::getSecondEntity() {
 
 void PhysicsScreen::BeginContact (b2Contact *contact) {
 
-	if(!contact->GetFixtureA()->IsSensor() && !contact->GetFixtureB()->IsSensor()) {
-		return;
-	}
+//	if(!contact->GetFixtureA()->IsSensor() && !contact->GetFixtureB()->IsSensor()) {
+//		return;
+//	}
 	
 	PhysicsScreenEvent *newEvent = new PhysicsScreenEvent();
 	newEvent->entity1 = getPhysicsEntityByFixture(contact->GetFixtureA())->getScreenEntity();
@@ -78,6 +78,8 @@ void PhysicsScreen::BeginContact (b2Contact *contact) {
 	newEvent->frictionStrength = 0;
 
 	dispatchEvent(newEvent, PhysicsScreenEvent::EVENT_NEW_SHAPE_COLLISION);
+	
+	contacts.push_back(contact);
 }
 
 void PhysicsScreen::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse) {
@@ -122,11 +124,34 @@ void PhysicsScreen::PostSolve(b2Contact* contact, const b2ContactImpulse* impuls
 void PhysicsScreen::EndContact (b2Contact *contact) {
 	PhysicsScreenEvent *newEvent = new PhysicsScreenEvent();
 	newEvent->entity1 = getPhysicsEntityByFixture(contact->GetFixtureA())->getScreenEntity();
-	newEvent->entity2 = getPhysicsEntityByFixture(contact->GetFixtureB())->getScreenEntity();		
-		
+	newEvent->entity2 = getPhysicsEntityByFixture(contact->GetFixtureB())->getScreenEntity();
+	
+	for(int i=0; i < contacts.size(); i++) {
+		if(contacts[i] == contact) {
+			contacts.erase(contacts.begin()+i);
+			break;
+		}
+	}
+	
 	dispatchEvent(newEvent, PhysicsScreenEvent::EVENT_END_SHAPE_COLLISION);
 }
 
+bool PhysicsScreen::testEntityCollision(ScreenEntity *ent1, ScreenEntity *ent2) {
+	PhysicsScreenEntity *pEnt1 = getPhysicsByScreenEntity(ent1);
+	PhysicsScreenEntity *pEnt2 = getPhysicsByScreenEntity(ent2);	
+	if(pEnt1 == NULL || pEnt2 == NULL)
+		return false;
+	
+	for(int i=0; i < contacts.size(); i++) {
+		ScreenEntity *cEnt1 = getPhysicsEntityByFixture(contacts[i]->GetFixtureA())->getScreenEntity();
+		ScreenEntity *cEnt2 = getPhysicsEntityByFixture(contacts[i]->GetFixtureB())->getScreenEntity();
+		
+		if((cEnt1 == ent1 && cEnt2 == ent2) || (cEnt1 == ent2 && cEnt2 == ent1)) {
+			return true;
+		}
+	}
+	return false;
+}
 
 PhysicsScreen::PhysicsScreen() : Screen() {
 	init(10.0f, 1.0f/60.0f,10,Vector2(0.0f, 10.0f));

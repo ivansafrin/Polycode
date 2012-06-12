@@ -117,6 +117,8 @@ namespace Polycode {
 		
 		void setCursor(int cursorType);
 		
+		void openURL(String url);
+		
 		void copyStringToClipboard(const String& str);
 		String getClipboardString();		
 		

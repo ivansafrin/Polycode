@@ -23,6 +23,7 @@ THE SOFTWARE.
 
 #include "PolyGLSLProgram.h"
 #include "PolyVector3.h"
+#include "PolyVector2.h"
 #include "PolyLogger.h"
 
 #ifdef _WINDOWS
@@ -84,7 +85,18 @@ void *GLSLProgramParam::createParamData(int *retType, const String& type, const 
 			Number *val = new Number();
 			*val = atof(value.c_str());
 			defaultData = (void*)val;
-			return defaultData;			
+			return defaultData;		
+		} else if(type == "Number2") {
+			*retType = GLSLProgramParam::PARAM_Number2;
+			Vector2 *val = new Vector2();
+			defaultData = (void*)val;
+			vector<String> values = value.split(" ");
+			if(values.size() == 2) {
+				val->set(atof(values[0].c_str()), atof(values[1].c_str()));
+			} else {
+				Logger::log("Error: A Number2 must have 2 values (%d provided)!\n", values.size());
+			}
+			return defaultData;				
 		} else if(type == "Number3") {
 			*retType = GLSLProgramParam::PARAM_Number3;
 			Vector3 *val = new Vector3();
