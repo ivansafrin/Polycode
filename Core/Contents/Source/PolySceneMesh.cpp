@@ -43,6 +43,8 @@ SceneMesh::SceneMesh(const String& fileName) : SceneEntity(), texture(NULL), mat
 	lightmapIndex=0;
 	showVertexNormals = false;
 	useVertexBuffer = false;
+	lineSmooth = false;
+	lineWidth = 1.0;
 }
 
 SceneMesh::SceneMesh(Mesh *mesh) : SceneEntity(), texture(NULL), material(NULL) {
@@ -52,7 +54,10 @@ SceneMesh::SceneMesh(Mesh *mesh) : SceneEntity(), texture(NULL), material(NULL) 
 	skeleton = NULL;
 	lightmapIndex=0;
 	showVertexNormals = false;	
-	useVertexBuffer = false;	
+	useVertexBuffer = false;
+	lineSmooth = false;
+	lineWidth = 1.0;
+		
 }
 
 SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL) {
@@ -63,6 +68,8 @@ SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL) {
 	lightmapIndex=0;
 	showVertexNormals = false;	
 	useVertexBuffer = false;	
+	lineSmooth = false;
+	lineWidth = 1.0;	
 }
 
 void SceneMesh::setMesh(Mesh *mesh) {
@@ -225,6 +232,9 @@ void SceneMesh::cacheToVertexBuffer(bool cache) {
 void SceneMesh::Render() {
 	
 	Renderer *renderer = CoreServices::getInstance()->getRenderer();
+	
+	renderer->setLineSize(lineWidth);
+	renderer->setLineSmooth(lineSmooth);
 	
 	if(material) {
 		renderer->applyMaterial(material, localShaderOptions,0);

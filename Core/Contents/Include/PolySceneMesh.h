@@ -134,6 +134,8 @@ namespace Polycode {
 			
 			bool showVertexNormals;
 			
+			Number lineWidth;
+			bool lineSmooth;	
 		
 		protected:
 		

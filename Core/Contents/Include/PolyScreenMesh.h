@@ -84,6 +84,14 @@ namespace Polycode {
 			*/						
 			void setTexture(Texture *texture);
 			
+			/**
+			* If this is set to true, the lines in wireframe meshes will be anti-aliased if the support is available in the renderer.
+			*/			
+			bool lineSmooth;
+			
+			Number lineWidth;
+			
+			
 		protected:
 		
 			Mesh *mesh;

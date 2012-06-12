@@ -48,6 +48,9 @@ namespace Polycode {
 						
 			void Render();
 			
+			Number lineWidth;
+			bool lineSmooth;				
+			
 		protected:		
 		
 			Mesh *mesh;
