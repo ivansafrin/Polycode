@@ -106,10 +106,11 @@ namespace Polycode {
 		int eventGroup;
 		int eventCode;		
 		int mouseX;
-		int mouseY;		
+		int mouseY;
+		std::vector<TouchInfo> touches;
 		PolyKEY keyCode;
 		wchar_t unicodeChar;		
-		char mouseButton;		
+		char mouseButton;	
 		static const int INPUT_EVENT = 0;
 	};
 	
@@ -165,7 +166,7 @@ public:
 		
 	public:
 		
-		Win32Core(PolycodeViewBase *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate);
+		Win32Core(PolycodeViewBase *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate,  int monitorIndex = -1);
 		~Win32Core();
 
 		void enableMouse(bool newval);
@@ -178,6 +179,10 @@ public:
 		void handleMouseWheel(LPARAM lParam, WPARAM wParam);
 		void handleMouseDown(int mouseCode,LPARAM lParam, WPARAM wParam);
 		void handleMouseUp(int mouseCode,LPARAM lParam, WPARAM wParam);
+
+		#ifdef WINDOWS_TOUCH_SUPPORT
+			void handleTouchEvent(LPARAM lParam, WPARAM wParam);
+		#endif
 
 		void setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel);
 		
@@ -208,8 +213,10 @@ public:
 		void shutdownGamepad();
 		void Gamepad_processEvents();
 
+
 		// NEED TO IMPLEMENT:
 
+		void openURL(String url) {}
 		void setCursor(int cursorType){ }
 		void copyStringToClipboard(const String& str) { }
 		String getClipboardString() { return ""; }

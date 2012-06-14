@@ -52,8 +52,8 @@ void ClientResize(HWND hWnd, int nWidth, int nHeight)
   MoveWindow(hWnd,rcWindow.left, rcWindow.top, nWidth + ptDiff.x, nHeight + ptDiff.y, TRUE);
 }
 
-Win32Core::Win32Core(PolycodeViewBase *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate) 
-	: Core(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate) {
+Win32Core::Win32Core(PolycodeViewBase *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate,  int monitorIndex) 
+	: Core(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate, monitorIndex) {
 
 	hWnd = *((HWND*)view->windowData);
 	core = this;
@@ -428,6 +428,62 @@ void Win32Core::handleKeyUp(LPARAM lParam, WPARAM wParam) {
 	unlockMutex(eventMutex);
 }
 
+#ifdef WINDOWS_TOUCH_SUPPORT
+
+void Win32Core::handleTouchEvent(LPARAM lParam, WPARAM wParam) {
+	lockMutex(eventMutex);
+
+	int iNumContacts = LOWORD(wParam);
+	HTOUCHINPUT hInput       = (HTOUCHINPUT)lParam;
+    TOUCHINPUT *pInputs      = new TOUCHINPUT[iNumContacts];
+       
+    if(pInputs != NULL) {
+		if(GetTouchInputInfo(hInput, iNumContacts, pInputs, sizeof(TOUCHINPUT))) {
+
+			std::vector<TouchInfo> touches;
+			for(int i = 0; i < iNumContacts; i++) {
+				TOUCHINPUT ti = pInputs[i];
+				TouchInfo touchInfo;
+				touchInfo.id = (int) ti.dwID;
+
+				POINT pt;
+				pt.x = TOUCH_COORD_TO_PIXEL(ti.x);
+				pt.y = TOUCH_COORD_TO_PIXEL(ti.y);
+				ScreenToClient(hWnd, &pt);
+				touchInfo.position.x = pt.x; 
+				touchInfo.position.y = pt.y;
+
+				touches.push_back(touchInfo);
+			}
+              for(int i = 0; i < iNumContacts; i++) {
+					TOUCHINPUT ti = pInputs[i];
+					if (ti.dwFlags & TOUCHEVENTF_UP) {
+						Win32Event newEvent;
+						newEvent.eventGroup = Win32Event::INPUT_EVENT;
+						newEvent.eventCode = InputEvent::EVENT_TOUCHES_ENDED;
+						newEvent.touches = touches;
+						win32Events.push_back(newEvent);	
+					} else if(ti.dwFlags & TOUCHEVENTF_MOVE) {
+						Win32Event newEvent;
+						newEvent.eventGroup = Win32Event::INPUT_EVENT;
+						newEvent.eventCode = InputEvent::EVENT_TOUCHES_MOVED;
+						newEvent.touches = touches;
+						win32Events.push_back(newEvent);
+					} else if(ti.dwFlags & TOUCHEVENTF_DOWN) {
+						Win32Event newEvent;
+						newEvent.eventGroup = Win32Event::INPUT_EVENT;
+						newEvent.eventCode = InputEvent::EVENT_TOUCHES_BEGAN;
+						newEvent.touches = touches;
+						win32Events.push_back(newEvent);
+					}
+			  }
+		}
+	}
+	unlockMutex(eventMutex);	
+}
+
+#endif
+
 void Win32Core::handleMouseMove(LPARAM lParam, WPARAM wParam) {
 	lockMutex(eventMutex);
 	Win32Event newEvent;
@@ -485,6 +541,15 @@ void Win32Core::checkEvents() {
 		switch(event.eventGroup) {
 			case Win32Event::INPUT_EVENT:
 				switch(event.eventCode) {
+					case InputEvent::EVENT_TOUCHES_BEGAN:
+						input->touchesBegan(event.touches, getTicks());
+					break;
+					case InputEvent::EVENT_TOUCHES_ENDED:
+						input->touchesEnded(event.touches, getTicks());
+					break;
+					case InputEvent::EVENT_TOUCHES_MOVED:
+						input->touchesMoved(event.touches, getTicks());
+					break;
 					case InputEvent::EVENT_MOUSEMOVE:
 						input->setDeltaPosition(event.mouseX - lastMouseX , event.mouseY - lastMouseY);										
 						lastMouseX = event.mouseX;
