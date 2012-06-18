@@ -96,6 +96,11 @@ namespace Polycode {
 		*/
 		void setOffset(int off);
 		
+		
+		Number getPlaybackDuration();
+		
+		Number getPlaybackTime();
+		
 		/**
 		* Returns the current sample offset (playback progress) of this sound.
 		* @return The sample offset if it is known, -1 otherwise.

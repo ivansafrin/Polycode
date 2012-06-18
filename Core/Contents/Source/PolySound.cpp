@@ -153,6 +153,33 @@ void Sound::setOffset(int off) {
 	alSourcei(soundSource, AL_SAMPLE_OFFSET, off);
 }
 
+
+Number Sound::getPlaybackTime() {
+	float result = 0.0;
+	alGetSourcef(soundSource, AL_SEC_OFFSET, &result);
+	return result;
+}
+
+Number Sound::getPlaybackDuration() {
+	ALint sizeInBytes;
+	ALint channels;
+	ALint bits;
+	ALint bufferID;
+	alGetSourcei(soundSource, AL_BUFFER, &bufferID);
+	
+	alGetBufferi(bufferID, AL_SIZE, &sizeInBytes);
+	alGetBufferi(bufferID, AL_CHANNELS, &channels);
+	alGetBufferi(bufferID, AL_BITS, &bits);
+
+	int lengthInSamples = sizeInBytes * 8 / (channels * bits);
+
+	ALint frequency;
+	alGetBufferi(bufferID, AL_FREQUENCY, &frequency);
+	Number durationInSeconds = (float)lengthInSamples / (float)frequency;
+	
+	return durationInSeconds;
+}
+		
 int Sound::getOffset() {
 	ALint off = -1;
 	alGetSourcei(soundSource, AL_SAMPLE_OFFSET, &off);
