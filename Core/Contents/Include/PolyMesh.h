@@ -221,8 +221,9 @@ namespace Polycode {
 			* @param height Height of the cylinder.
 			* @param radius Radius of the cylinder.
 			* @param numSegments Number of segments.
+			* @param capped Create the end caps.
 			*/ 								
-			void createCylinder(Number height, Number radius, int numSegments);
+			void createCylinder(Number height, Number radius, int numSegments, bool capped=true);
 
 			/**
 			* Creates a cone mesh.

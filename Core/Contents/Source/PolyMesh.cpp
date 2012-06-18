@@ -526,7 +526,7 @@ namespace Polycode {
 		arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;				
 	}
 
-	void Mesh::createCylinder(Number height, Number radius, int numSegments) {
+	void Mesh::createCylinder(Number height, Number radius, int numSegments, bool capped) {
 	
 		setMeshType(Mesh::TRI_MESH);
 		Number lastx = 0;
@@ -551,6 +551,7 @@ namespace Polycode {
 				polygon->addVertex(lastx,0,lastz,lastv,0);												
 				addPolygon(polygon);	
 				
+				if(capped) {
 				polygon = new Polygon();	
 				polygon->addVertex(lastx,height,lastz, 0.5+(lastz/radius*0.5), 0.5+(lastx/radius*0.5));			
 				polygon->addVertex(x,height,z, 0.5+(z/radius*0.5), 0.5+(x/radius*0.5));														
@@ -562,7 +563,7 @@ namespace Polycode {
 				polygon->addVertex(0,0,0,0.5,0.5);																																					
 				polygon->addVertex(x,0,z, 0.5+(z/radius*0.5), 0.5+(x/radius*0.5));								
 				addPolygon(polygon);			
-
+				}
 								
 			}
 			lastx = x;
