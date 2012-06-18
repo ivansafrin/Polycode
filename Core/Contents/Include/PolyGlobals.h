@@ -24,8 +24,6 @@ THE SOFTWARE.
 
 // Polycode CORE LIBRARY CONFIGURATION SECTION
 
-#define WINDOWS_TOUCH_SUPPORT
-
 // Compile support for lua bindings.
 //#define _COMPILE_LUA
 
