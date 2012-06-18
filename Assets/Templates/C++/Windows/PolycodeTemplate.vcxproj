@@ -59,7 +59,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;glu32.lib;Polycore_d.lib;zlibd.lib;freetype_d.lib;liboggd.lib;libvorbisd.lib;libvorbisfiled.lib;OpenAL32d.lib;kernel32.lib;physfsd.lib;libpng15_staticd.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;ws2_32.lib;opengl32.lib;glu32.lib;Polycore_d.lib;zlibd.lib;freetype_d.lib;liboggd.lib;libvorbisd.lib;libvorbisfiled.lib;OpenAL32d.lib;kernel32.lib;physfsd.lib;libpng15_staticd.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -77,7 +77,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opengl32.lib;glu32.lib;Polycore.lib;zlib.lib;freetype.lib;libogg.lib;libvorbis.lib;libvorbisfile.lib;OpenAL32.lib;kernel32.lib;physfs.lib;libpng15_static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;ws2_32.lib;opengl32.lib;glu32.lib;Polycore.lib;zlib.lib;freetype.lib;libogg.lib;libvorbis.lib;libvorbisfile.lib;OpenAL32.lib;kernel32.lib;physfs.lib;libpng15_static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
