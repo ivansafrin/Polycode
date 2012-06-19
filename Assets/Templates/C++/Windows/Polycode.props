@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <PolycodeDir>$(SolutionDir)..\..</PolycodeDir>
+    <PolycodeCoreLibsDebug>Polycore_d.lib</PolycodeCoreLibsDebug>
+    <PolycodeCoreLibsRelease>Polycore.lib</PolycodeCoreLibsRelease>
+    <PolycodeDependLibsDebug>freetype_d.lib;liboggd.lib;libpng15_staticd.lib;libvorbisd.lib;libvorbisfiled.lib;lua5.1d.lib;OpenAL32d.lib;physfsd.lib;zlibd.lib;zlibstaticd.lib</PolycodeDependLibsDebug>
+    <PolycodeDependLibsRelease>freetype.lib;libogg.lib;libpng15_static.lib;libvorbis.lib;libvorbisfile.lib;lua5.1.lib;OpenAL32.lib;physfs.lib;zlib.lib;zlibstatic.lib</PolycodeDependLibsRelease>
+    <PolycodeWinLibsDebug>opengl32.lib;glu32.lib;winmm.lib;ws2_32.lib</PolycodeWinLibsDebug>
+    <PolycodeWinLibsRelease>opengl32.lib;glu32.lib;winmm.lib;ws2_32.lib</PolycodeWinLibsRelease>
+    <PolycodeLibsDebug>$(PolycodeCoreLibsDebug);$(PolycodeDependLibsDebug);$(PolycodeWinLibsDebug)</PolycodeLibsDebug>
+    <PolycodeLibsRelease>$(PolycodeCoreLibsRelease);$(PolycodeDependLibsRelease);$(PolycodeWinLibsRelease)</PolycodeLibsRelease>
+  </PropertyGroup>
+  <PropertyGroup>
+    <IncludePath>$(PolycodeDir)\Core\include;$(PolycodeDir)\Core\Dependencies\include;$(PolycodeDir)\Core\PolycodeView;$(PolycodeDir)\Core\Dependencies\include\AL;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <LibraryPath>$(PolycodeDir)\Core\lib;$(PolycodeDir)\Core\Dependencies\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <BuildMacro Include="PolycodeDir">
+      <Value>$(PolycodeDir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="PolycodeCoreLibsDebug">
+      <Value>$(PolycodeCoreLibsDebug)</Value>
+    </BuildMacro>
+    <BuildMacro Include="PolycodeCoreLibsRelease">
+      <Value>$(PolycodeCoreLibsRelease)</Value>
+    </BuildMacro>
+    <BuildMacro Include="PolycodeDependLibsDebug">
+      <Value>$(PolycodeDependLibsDebug)</Value>
+    </BuildMacro>
+    <BuildMacro Include="PolycodeDependLibsRelease">
+      <Value>$(PolycodeDependLibsRelease)</Value>
+    </BuildMacro>
+    <BuildMacro Include="PolycodeWinLibsDebug">
+      <Value>$(PolycodeWinLibsDebug)</Value>
+    </BuildMacro>
+    <BuildMacro Include="PolycodeWinLibsRelease">
+      <Value>$(PolycodeWinLibsRelease)</Value>
+    </BuildMacro>
+    <BuildMacro Include="PolycodeLibsDebug">
+      <Value>$(PolycodeLibsDebug)</Value>
+    </BuildMacro>
+    <BuildMacro Include="PolycodeLibsRelease">
+      <Value>$(PolycodeLibsRelease)</Value>
+    </BuildMacro>
+  </ItemGroup>
+</Project>
