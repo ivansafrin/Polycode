@@ -15,8 +15,8 @@ ExternalProject_Add(openal
 
     DOWNLOAD_DIR ${POLYCODE_DEPS_DOWNLOAD_DIR}
 
-    URL http://kcat.strangesoft.net/openal-releases/openal-soft-1.13.tar.bz2
-    URL_MD5 58b7d2809790c70681b825644c5f3614
+    URL http://kcat.strangesoft.net/openal-releases/openal-soft-1.14.tar.bz2
+    URL_MD5 3d8b86c21a2f87a2a5e60f78f3b3f03d
     
     INSTALL_DIR ${POLYCODE_DEPS_CORE_PREFIX}
     CMAKE_ARGS ${openal_CMAKE_ARGS}
