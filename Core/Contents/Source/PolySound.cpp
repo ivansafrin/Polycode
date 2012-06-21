@@ -345,7 +345,7 @@ ALuint Sound::loadOGG(const String& fileName) {
 	} while (bytes > 0);
 	ov_clear(&oggFile);
 	
-	sampleLength = buffer.size() / sizeof(unsigned int);
+	sampleLength = buffer.size() / sizeof(unsigned short);
 	
 	alBufferData(bufferID, format, &buffer[0], static_cast<ALsizei>(buffer.size()), freq);
 	
