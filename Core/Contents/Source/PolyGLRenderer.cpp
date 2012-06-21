@@ -752,7 +752,7 @@ void OpenGLRenderer::applyMaterial(Material *material,  ShaderBinding *localOpti
 	glMaterialfv(GL_FRONT, GL_AMBIENT, data4);
 
 	FixedShaderBinding *fBinding;
-
+	
 	switch(material->getShader(shaderIndex)->getType()) {
 		case Shader::FIXED_SHADER:
 //			FixedShader *fShader = (FixedShader*)material->getShader();
@@ -761,13 +761,18 @@ void OpenGLRenderer::applyMaterial(Material *material,  ShaderBinding *localOpti
 //			setTexture(fShader->getDiffuseTexture());
 		break;	
 		case Shader::MODULE_SHADER:		
-			currentMaterial = material;			
-			for(int m=0; m < shaderModules.size(); m++) {
-				PolycodeShaderModule *shaderModule = shaderModules[m];	
-				if(shaderModule->hasShader(material->getShader(shaderIndex))) {
-					shaderModule->applyShaderMaterial(this, material, localOptions, shaderIndex);
-					currentShaderModule = shaderModule;
-				}
+			currentMaterial = material;
+			if(material->shaderModule == NULL) {
+				for(int m=0; m < shaderModules.size(); m++) {
+					PolycodeShaderModule *shaderModule = shaderModules[m];	
+					if(shaderModule->hasShader(material->getShader(shaderIndex))) {
+						material->shaderModule = (void*)shaderModule;
+					}
+				}	
+			} else {
+				PolycodeShaderModule *shaderModule = (PolycodeShaderModule*)material->shaderModule;
+				shaderModule->applyShaderMaterial(this, material, localOptions, shaderIndex);
+				currentShaderModule = shaderModule;
 			}
 		break;
 	}

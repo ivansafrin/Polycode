@@ -65,6 +65,9 @@ void SceneLabel::setText(const String& newText) {
 		mesh->getPolygon(i)->flipUVY();
 	}
 	
+	if(useVertexBuffer)
+		CoreServices::getInstance()->getRenderer()->createVertexBufferForMesh(mesh);
+	
 	// TODO: resize it here
 	
 	bBoxRadius = label->getWidth()*scale;

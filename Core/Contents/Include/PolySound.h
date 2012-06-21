@@ -101,6 +101,7 @@ namespace Polycode {
 		
 		Number getPlaybackTime();
 		
+		void seekTo(Number time);
 		/**
 		* Returns the current sample offset (playback progress) of this sound.
 		* @return The sample offset if it is known, -1 otherwise.

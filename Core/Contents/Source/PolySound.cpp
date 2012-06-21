@@ -186,6 +186,12 @@ int Sound::getOffset() {
 	return off;
 }
 
+void Sound::seekTo(Number time) {
+	if(time > getPlaybackDuration())
+		return;
+	alSourcef(soundSource, AL_SEC_OFFSET, time);
+}
+
 int Sound::getSampleLength() {
 	return sampleLength;
 }
