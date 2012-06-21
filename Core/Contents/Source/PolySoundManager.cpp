@@ -102,8 +102,11 @@ void SoundManager::setListenerOrientation(Vector3 orientation) {
 }
 
 SoundManager::~SoundManager() {
-	alcSuspendContext(context);
-	alcDestroyContext(context);
+	if (context != 0 ) {
+		alcSuspendContext(context);
+		alcMakeContextCurrent(0);
+		alcDestroyContext(context);
+	}
 	if (device != 0) {
 		alcCloseDevice(device);
 	}
