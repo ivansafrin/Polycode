@@ -54,6 +54,7 @@ using namespace Polycode;
 PFNGLUSEPROGRAMPROC glUseProgram;
 PFNGLUNIFORM1IPROC glUniform1i;
 PFNGLUNIFORM1FPROC glUniform1f;
+PFNGLUNIFORM2FPROC glUniform2f;
 PFNGLUNIFORM3FPROC glUniform3f;
 PFNGLGETUNIFORMLOCATIONARBPROC glGetUniformLocation;
 extern PFNGLACTIVETEXTUREPROC glActiveTexture;
@@ -77,6 +78,7 @@ GLSLShaderModule::GLSLShaderModule() : PolycodeShaderModule() {
 	glUseProgram   = (PFNGLUSEPROGRAMPROC)wglGetProcAddress("glUseProgram");
 	glUniform1i = (PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i");
 	glUniform1f = (PFNGLUNIFORM1FPROC)wglGetProcAddress("glUniform1f");	
+	glUniform2f = (PFNGLUNIFORM2FPROC)wglGetProcAddress("glUniform2f");	
 	glUniform3f = (PFNGLUNIFORM3FPROC)wglGetProcAddress("glUniform3f");
 	glGetUniformLocation = (PFNGLGETUNIFORMLOCATIONARBPROC)wglGetProcAddress("glGetUniformLocation");
 	glCreateShader = (PFNGLCREATESHADERPROC)wglGetProcAddress("glCreateShader");
