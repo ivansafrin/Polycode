@@ -32,7 +32,7 @@ EXTERNALPROJECT_ADD(libpng
     PREFIX ${libpng_PREFIX}
 
     DOWNLOAD_DIR ${POLYCODE_DEPS_DOWNLOAD_DIR}
-    URL ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng-1.5.10.tar.gz
+    URL ftp://ftp.simplesystems.org/pub/libpng/png/src/history/libpng15/libpng-1.5.10.tar.gz
     URL_MD5 9e5d864bce8f06751bbd99962ecf4aad
 
     INSTALL_DIR ${POLYCODE_DEPS_CORE_PREFIX}
