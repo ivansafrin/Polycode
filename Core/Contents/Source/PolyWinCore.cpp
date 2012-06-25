@@ -60,6 +60,7 @@ Win32Core::Win32Core(PolycodeViewBase *view, int xRes, int yRes, bool fullScreen
 
 	initKeymap();
 	initGamepad();
+	initTouch();
 
 	hDC = NULL;
 	hRC = NULL;
@@ -428,9 +429,14 @@ void Win32Core::handleKeyUp(LPARAM lParam, WPARAM wParam) {
 	unlockMutex(eventMutex);
 }
 
-#ifdef WINDOWS_TOUCH_SUPPORT
-
 void Win32Core::handleTouchEvent(LPARAM lParam, WPARAM wParam) {
+	
+	// Bail out now if multitouch is not available on this system
+	if ( hasMultiTouch == false )
+	{
+		return;
+	}
+	
 	lockMutex(eventMutex);
 
 	int iNumContacts = LOWORD(wParam);
@@ -438,7 +444,7 @@ void Win32Core::handleTouchEvent(LPARAM lParam, WPARAM wParam) {
     TOUCHINPUT *pInputs      = new TOUCHINPUT[iNumContacts];
        
     if(pInputs != NULL) {
-		if(GetTouchInputInfo(hInput, iNumContacts, pInputs, sizeof(TOUCHINPUT))) {
+		if(GetTouchInputInfoFunc(hInput, iNumContacts, pInputs, sizeof(TOUCHINPUT))) {
 
 			std::vector<TouchInfo> touches;
 			for(int i = 0; i < iNumContacts; i++) {
@@ -481,8 +487,6 @@ void Win32Core::handleTouchEvent(LPARAM lParam, WPARAM wParam) {
 	}
 	unlockMutex(eventMutex);	
 }
-
-#endif
 
 void Win32Core::handleMouseMove(LPARAM lParam, WPARAM wParam) {
 	lockMutex(eventMutex);
@@ -800,6 +804,20 @@ void Win32Core::initGamepad() {
 void Win32Core::shutdownGamepad() {
 
 }
+
+void Win32Core::initTouch() {
+	
+	// Check for windows multitouch support at runtime
+	// This could be done easily during preprocessing but would require building
+	// multiple releases of polycode for both winxp/vista and win7
+	GetTouchInputInfoFunc = (GetTouchInputInfoType) GetProcAddress(GetModuleHandle(TEXT("user32.lib")), "GetTouchInputInfo");
+	
+	// If the above multitouch functions were found, then set a flag so we don't
+	// have to check again later
+	hasMultiTouch = ( GetTouchInputInfoFunc == NULL ) ? false : true;
+	
+}
+
 
 DWORD WINAPI Win32LaunchThread(LPVOID data) {
 	Threaded *threaded = (Threaded*)data;
