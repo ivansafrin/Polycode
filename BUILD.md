@@ -48,6 +48,11 @@ may prefer to use the CMake GUI if unfamiliar with CMake.
 
 ### Mac OS X and Xcode ###
 
+NOTE: If you are using the new XCode that is downloaded from the AppStore
+and cmake complains about not finding XCode in /Developer, you have to run this
+command to update the XCode path:
+sudo /usr/bin/xcode-select -switch /Applications/Xcode.app/Contents/Developer
+
 To generate an Xcode project for building Polycode dependencies, perform
 the following steps in the Polycode directory from a terminal:
 

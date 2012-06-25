@@ -4194,14 +4194,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
 				GCC_USE_STANDARD_INCLUDE_SEARCHING = YES;
-				HEADER_SEARCH_PATHS = (
-					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
-					"\"$(SRCROOT)/../../Core/include\"",
-					"\"$(SRCROOT)/../../Core/Dependencies/include\"",
-					"\"$(SRCROOT)/../../Modules/include\"",
-					"\"$(SRCROOT)/../../Modules/Dependencies/include\"",
-					"\"$(SRCROOT)/Contents\"",
-				);
+				HEADER_SEARCH_PATHS = $inherited;
 				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4225,14 +4218,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
 				GCC_USE_STANDARD_INCLUDE_SEARCHING = YES;
-				HEADER_SEARCH_PATHS = (
-					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
-					"\"$(SRCROOT)/../../Core/include\"",
-					"\"$(SRCROOT)/../../Core/Dependencies/include\"",
-					"\"$(SRCROOT)/../../Modules/include\"",
-					"\"$(SRCROOT)/../../Modules/Dependencies/include\"",
-					"\"$(SRCROOT)/Contents\"",
-				);
+				HEADER_SEARCH_PATHS = $inherited;
 				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4256,14 +4242,7 @@
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
-				HEADER_SEARCH_PATHS = (
-					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
-					"\"$(SRCROOT)/../../Core/include\"",
-					"\"$(SRCROOT)/../../Core/Dependencies/include\"",
-					"\"$(SRCROOT)/../../Modules/include\"",
-					"\"$(SRCROOT)/../../Modules/Dependencies/include\"",
-					"\"$(SRCROOT)/Contents\"",
-				);
+				HEADER_SEARCH_PATHS = $inherited;
 				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4284,14 +4263,7 @@
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
-				HEADER_SEARCH_PATHS = (
-					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
-					"\"$(SRCROOT)/../../Core/include\"",
-					"\"$(SRCROOT)/../../Core/Dependencies/include\"",
-					"\"$(SRCROOT)/../../Modules/include\"",
-					"\"$(SRCROOT)/../../Modules/Dependencies/include\"",
-					"\"$(SRCROOT)/Contents\"",
-				);
+				HEADER_SEARCH_PATHS = $inherited;
 				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4313,14 +4285,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
 				GCC_USE_STANDARD_INCLUDE_SEARCHING = YES;
-				HEADER_SEARCH_PATHS = (
-					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
-					"\"$(SRCROOT)/../../Core/include\"",
-					"\"$(SRCROOT)/../../Core/Dependencies/include\"",
-					"\"$(SRCROOT)/../../Modules/include\"",
-					"\"$(SRCROOT)/../../Modules/Dependencies/include\"",
-					"\"$(SRCROOT)/Contents\"",
-				);
+				HEADER_SEARCH_PATHS = $inherited;
 				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4344,14 +4309,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
 				GCC_USE_STANDARD_INCLUDE_SEARCHING = YES;
-				HEADER_SEARCH_PATHS = (
-					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
-					"\"$(SRCROOT)/../../Core/include\"",
-					"\"$(SRCROOT)/../../Core/Dependencies/include\"",
-					"\"$(SRCROOT)/../../Modules/include\"",
-					"\"$(SRCROOT)/../../Modules/Dependencies/include\"",
-					"\"$(SRCROOT)/Contents\"",
-				);
+				HEADER_SEARCH_PATHS = $inherited;
 				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4376,14 +4334,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
 				GCC_USE_STANDARD_INCLUDE_SEARCHING = YES;
-				HEADER_SEARCH_PATHS = (
-					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
-					"\"$(SRCROOT)/../../Core/include\"",
-					"\"$(SRCROOT)/../../Core/Dependencies/include\"",
-					"\"$(SRCROOT)/../../Modules/include\"",
-					"\"$(SRCROOT)/../../Modules/Dependencies/include\"",
-					"\"$(SRCROOT)/Contents\"",
-				);
+				HEADER_SEARCH_PATHS = $inherited;
 				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4407,14 +4358,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
 				GCC_USE_STANDARD_INCLUDE_SEARCHING = YES;
-				HEADER_SEARCH_PATHS = (
-					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
-					"\"$(SRCROOT)/../../Core/include\"",
-					"\"$(SRCROOT)/../../Core/Dependencies/include\"",
-					"\"$(SRCROOT)/../../Modules/include\"",
-					"\"$(SRCROOT)/../../Modules/Dependencies/include\"",
-					"\"$(SRCROOT)/Contents\"",
-				);
+				HEADER_SEARCH_PATHS = $inherited;
 				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4439,14 +4383,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
 				GCC_USE_STANDARD_INCLUDE_SEARCHING = YES;
-				HEADER_SEARCH_PATHS = (
-					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
-					"\"$(SRCROOT)/../../Core/include\"",
-					"\"$(SRCROOT)/../../Core/Dependencies/include\"",
-					"\"$(SRCROOT)/../../Modules/include\"",
-					"\"$(SRCROOT)/../../Modules/Dependencies/include\"",
-					"\"$(SRCROOT)/Contents\"",
-				);
+				HEADER_SEARCH_PATHS = $inherited;
 				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4470,14 +4407,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
 				GCC_USE_STANDARD_INCLUDE_SEARCHING = YES;
-				HEADER_SEARCH_PATHS = (
-					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
-					"\"$(SRCROOT)/../../Core/include\"",
-					"\"$(SRCROOT)/../../Core/Dependencies/include\"",
-					"\"$(SRCROOT)/../../Modules/include\"",
-					"\"$(SRCROOT)/../../Modules/Dependencies/include\"",
-					"\"$(SRCROOT)/Contents\"",
-				);
+				HEADER_SEARCH_PATHS = $inherited;
 				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4808,6 +4738,7 @@
 					"\"$(SRCROOT)/../../Modules/Dependencies/include\"",
 					"\"$(SRCROOT)/../../Modules/Dependencies/include/bullet\"",
 					"\"$(SRCROOT)/Contents\"",
+					/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4842,6 +4773,7 @@
 					"\"$(SRCROOT)/../../Modules/Dependencies/include\"",
 					"\"$(SRCROOT)/../../Modules/Dependencies/include/bullet\"",
 					"\"$(SRCROOT)/Contents\"",
+					/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4865,14 +4797,7 @@
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
-				HEADER_SEARCH_PATHS = (
-					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
-					"\"$(SRCROOT)/../../Core/include\"",
-					"\"$(SRCROOT)/../../Core/Dependencies/include\"",
-					"\"$(SRCROOT)/../../Modules/include\"",
-					"\"$(SRCROOT)/../../Modules/Dependencies/include\"",
-					"\"$(SRCROOT)/Contents\"",
-				);
+				HEADER_SEARCH_PATHS = $inherited;
 				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(SRCROOT)/../../Core/lib\"",
@@ -4892,14 +4817,7 @@
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
-				HEADER_SEARCH_PATHS = (
-					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
-					"\"$(SRCROOT)/../../Core/include\"",
-					"\"$(SRCROOT)/../../Core/Dependencies/include\"",
-					"\"$(SRCROOT)/../../Modules/include\"",
-					"\"$(SRCROOT)/../../Modules/Dependencies/include\"",
-					"\"$(SRCROOT)/Contents\"",
-				);
+				HEADER_SEARCH_PATHS = $inherited;
 				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(SRCROOT)/../../Core/lib\"",
@@ -4919,14 +4837,7 @@
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
-				HEADER_SEARCH_PATHS = (
-					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
-					"\"$(SRCROOT)/../../Core/include\"",
-					"\"$(SRCROOT)/../../Core/Dependencies/include\"",
-					"\"$(SRCROOT)/../../Modules/include\"",
-					"\"$(SRCROOT)/../../Modules/Dependencies/include\"",
-					"\"$(SRCROOT)/Contents\"",
-				);
+				HEADER_SEARCH_PATHS = $inherited;
 				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4947,14 +4858,7 @@
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
-				HEADER_SEARCH_PATHS = (
-					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
-					"\"$(SRCROOT)/../../Core/include\"",
-					"\"$(SRCROOT)/../../Core/Dependencies/include\"",
-					"\"$(SRCROOT)/../../Modules/include\"",
-					"\"$(SRCROOT)/../../Modules/Dependencies/include\"",
-					"\"$(SRCROOT)/Contents\"",
-				);
+				HEADER_SEARCH_PATHS = $inherited;
 				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4975,14 +4879,7 @@
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
-				HEADER_SEARCH_PATHS = (
-					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
-					"\"$(SRCROOT)/../../Core/include\"",
-					"\"$(SRCROOT)/../../Core/Dependencies/include\"",
-					"\"$(SRCROOT)/../../Modules/include\"",
-					"\"$(SRCROOT)/../../Modules/Dependencies/include\"",
-					"\"$(SRCROOT)/Contents\"",
-				);
+				HEADER_SEARCH_PATHS = $inherited;
 				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5003,14 +4900,7 @@
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
-				HEADER_SEARCH_PATHS = (
-					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
-					"\"$(SRCROOT)/../../Core/include\"",
-					"\"$(SRCROOT)/../../Core/Dependencies/include\"",
-					"\"$(SRCROOT)/../../Modules/include\"",
-					"\"$(SRCROOT)/../../Modules/Dependencies/include\"",
-					"\"$(SRCROOT)/Contents\"",
-				);
+				HEADER_SEARCH_PATHS = $inherited;
 				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5031,14 +4921,7 @@
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
-				HEADER_SEARCH_PATHS = (
-					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
-					"\"$(SRCROOT)/../../Core/include\"",
-					"\"$(SRCROOT)/../../Core/Dependencies/include\"",
-					"\"$(SRCROOT)/../../Modules/include\"",
-					"\"$(SRCROOT)/../../Modules/Dependencies/include\"",
-					"\"$(SRCROOT)/Contents\"",
-				);
+				HEADER_SEARCH_PATHS = $inherited;
 				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5059,14 +4942,7 @@
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
-				HEADER_SEARCH_PATHS = (
-					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
-					"\"$(SRCROOT)/../../Core/include\"",
-					"\"$(SRCROOT)/../../Core/Dependencies/include\"",
-					"\"$(SRCROOT)/../../Modules/include\"",
-					"\"$(SRCROOT)/../../Modules/Dependencies/include\"",
-					"\"$(SRCROOT)/Contents\"",
-				);
+				HEADER_SEARCH_PATHS = $inherited;
 				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5087,14 +4963,7 @@
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
-				HEADER_SEARCH_PATHS = (
-					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
-					"\"$(SRCROOT)/../../Core/include\"",
-					"\"$(SRCROOT)/../../Core/Dependencies/include\"",
-					"\"$(SRCROOT)/../../Modules/include\"",
-					"\"$(SRCROOT)/../../Modules/Dependencies/include\"",
-					"\"$(SRCROOT)/Contents\"",
-				);
+				HEADER_SEARCH_PATHS = $inherited;
 				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5115,14 +4984,7 @@
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
-				HEADER_SEARCH_PATHS = (
-					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
-					"\"$(SRCROOT)/../../Core/include\"",
-					"\"$(SRCROOT)/../../Core/Dependencies/include\"",
-					"\"$(SRCROOT)/../../Modules/include\"",
-					"\"$(SRCROOT)/../../Modules/Dependencies/include\"",
-					"\"$(SRCROOT)/Contents\"",
-				);
+				HEADER_SEARCH_PATHS = $inherited;
 				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5143,14 +5005,7 @@
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
-				HEADER_SEARCH_PATHS = (
-					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
-					"\"$(SRCROOT)/../../Core/include\"",
-					"\"$(SRCROOT)/../../Core/Dependencies/include\"",
-					"\"$(SRCROOT)/../../Modules/include\"",
-					"\"$(SRCROOT)/../../Modules/Dependencies/include\"",
-					"\"$(SRCROOT)/Contents\"",
-				);
+				HEADER_SEARCH_PATHS = $inherited;
 				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5171,14 +5026,7 @@
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
-				HEADER_SEARCH_PATHS = (
-					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
-					"\"$(SRCROOT)/../../Core/include\"",
-					"\"$(SRCROOT)/../../Core/Dependencies/include\"",
-					"\"$(SRCROOT)/../../Modules/include\"",
-					"\"$(SRCROOT)/../../Modules/Dependencies/include\"",
-					"\"$(SRCROOT)/Contents\"",
-				);
+				HEADER_SEARCH_PATHS = $inherited;
 				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5199,14 +5047,7 @@
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
-				HEADER_SEARCH_PATHS = (
-					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
-					"\"$(SRCROOT)/../../Core/include\"",
-					"\"$(SRCROOT)/../../Core/Dependencies/include\"",
-					"\"$(SRCROOT)/../../Modules/include\"",
-					"\"$(SRCROOT)/../../Modules/Dependencies/include\"",
-					"\"$(SRCROOT)/Contents\"",
-				);
+				HEADER_SEARCH_PATHS = $inherited;
 				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5227,14 +5068,7 @@
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
-				HEADER_SEARCH_PATHS = (
-					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
-					"\"$(SRCROOT)/../../Core/include\"",
-					"\"$(SRCROOT)/../../Core/Dependencies/include\"",
-					"\"$(SRCROOT)/../../Modules/include\"",
-					"\"$(SRCROOT)/../../Modules/Dependencies/include\"",
-					"\"$(SRCROOT)/Contents\"",
-				);
+				HEADER_SEARCH_PATHS = $inherited;
 				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5255,14 +5089,7 @@
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
-				HEADER_SEARCH_PATHS = (
-					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
-					"\"$(SRCROOT)/../../Core/include\"",
-					"\"$(SRCROOT)/../../Core/Dependencies/include\"",
-					"\"$(SRCROOT)/../../Modules/include\"",
-					"\"$(SRCROOT)/../../Modules/Dependencies/include\"",
-					"\"$(SRCROOT)/Contents\"",
-				);
+				HEADER_SEARCH_PATHS = $inherited;
 				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5283,14 +5110,7 @@
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
-				HEADER_SEARCH_PATHS = (
-					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
-					"\"$(SRCROOT)/../../Core/include\"",
-					"\"$(SRCROOT)/../../Core/Dependencies/include\"",
-					"\"$(SRCROOT)/../../Modules/include\"",
-					"\"$(SRCROOT)/../../Modules/Dependencies/include\"",
-					"\"$(SRCROOT)/Contents\"",
-				);
+				HEADER_SEARCH_PATHS = $inherited;
 				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
