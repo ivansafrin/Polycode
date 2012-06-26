@@ -1,6 +1,0 @@
-require "Physics3D/CollisionScene"
-require "Physics3D/CollisionSceneEntity"
-require "Physics3D/PhysicsScene"
-require "Physics3D/PhysicsSceneEntity"
-require "Physics3D/PhysicsVehicle"
-require "Physics3D/PhysicsCharacter"

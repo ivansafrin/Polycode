@@ -33,6 +33,15 @@ THE SOFTWARE.
 
 using namespace Polycode;
 
+PhysicsSceneEvent::PhysicsSceneEvent() : Event () {
+	eventType = "PhysicsSceneEvent";
+}
+
+PhysicsSceneEvent::~PhysicsSceneEvent() {
+
+}
+
+
 PhysicsScene::PhysicsScene(int maxSubSteps) : CollisionScene() {
 	this->maxSubSteps = maxSubSteps;
 	initPhysicsScene();	

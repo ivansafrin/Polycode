@@ -44,6 +44,7 @@ TARGET_LINK_LIBRARIES(Physics3D
 	"-framework IOKit"
         ${OPENGL_LIBRARIES}
         ${OPENAL_LIBRARY}
+	${ZLIB_LIBRARIES}
         ${PNG_LIBRARIES}
         ${FREETYPE_LIBRARIES}
         ${PHYSFS_LIBRARY}

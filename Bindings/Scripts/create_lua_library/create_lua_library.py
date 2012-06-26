@@ -36,6 +36,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 			filteredFiles.append(fileName)
 			out += "#include \"%s\"\n" % (fileName)
 
+	out += "\nusing namespace std;\n\n"
 	out += "\nnamespace Polycode {\n\n"
 	
 	if prefix == "Polycode":

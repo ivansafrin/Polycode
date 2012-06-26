@@ -136,6 +136,7 @@ endif()
         ${LUA_LIBRARY}
         ${OPENGL_LIBRARIES}
         ${OPENAL_LIBRARY}
+	${ZLIB_LIBRARIES}
         ${PNG_LIBRARIES}
         ${FREETYPE_LIBRARIES}
         ${PHYSFS_LIBRARY}
@@ -152,6 +153,7 @@ endif()
         ${LUA_LIBRARY}
         ${OPENGL_LIBRARIES}
         ${OPENAL_LIBRARY}
+	${ZLIB_LIBRARIES}
         ${PNG_LIBRARIES}
         ${FREETYPE_LIBRARIES}
         ${PHYSFS_LIBRARY}
@@ -282,5 +284,3 @@ ELSE(MSVC)
     INSTALL(FILES "${Polycode_SOURCE_DIR}/Assets/SamplePolyapp/main.polyapp" DESTINATION Player)
     INSTALL(FILES "${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/API/api.pak" DESTINATION Player)
 ENDIF(MSVC)
-
-ENDIF(POLYCODE_INSTALL_PLAYER)
