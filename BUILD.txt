@@ -8,8 +8,7 @@ dependencies installed on your computer.
 
 The first dependency is CMake. It can be downloaded from 
 http://cmake.org/cmake/resources/software.html or installed using apt
-or rpm on most Linux distributions. CMake 2.8.4 or greater is 
-recommended.
+or rpm on most Linux distributions. CMake 2.8.8 or greater is now required.
 
 When Polycode and its Dependencies are built, they will be available
 in the Release/YourArchitecture folder under the main source tree in 
