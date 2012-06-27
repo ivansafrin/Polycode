@@ -1,9 +1,18 @@
 import sys
 import CppHeaderParser
 import os
+import errno
 import re
+  
+def mkdir_p(path): # Same effect as mkdir -p, create dir and all necessary parent dirs
+	try:
+		os.makedirs(path)
+	except OSError as e:
+		if e.errno == errno.EEXIST: # Dir already exists; not really an error
+			pass
+		else: raise
 
-def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, apiPath, apiClassPath, includePath, sourcePath):	
+def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, apiPath, apiClassPath, includePath, sourcePath):
 	out = ""
 	sout = ""
 	
@@ -447,6 +456,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 					#lout += "\tself:handleEvent(event)\n"
 					lout += "end\n"
 				lfout += "require \"%s/%s\"\n" % (prefix, ckey)
+				mkdir_p(apiClassPath)
 				fout = open("%s/%s.lua" % (apiClassPath, ckey), "w")
 				fout.write(lout)
 		except CppHeaderParser.CppParseError,  e:
@@ -473,6 +483,10 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 	shout += "int _PolyExport luaopen_%s(lua_State *L);\n" % (prefix)
 	shout += "}\n"
 	
+	mkdir_p(includePath)
+	mkdir_p(apiPath)
+	mkdir_p(sourcePath)
+
 	fout = open("%s/%sLUA.h" % (includePath, prefix), "w")
 	fout.write(shout)
 
