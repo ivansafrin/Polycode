@@ -43,7 +43,7 @@ namespace Polycode {
 			* @param floatingPoint Pass true if you want fp16 target renders			
 			*/
 			SceneRenderTexture(Scene *targetScene, Camera *targetCamera, int renderWidth,int renderHeight, bool floatingPoint = false);
-			~SceneRenderTexture();
+			virtual ~SceneRenderTexture();
 			
 			void drawScreen();
 			

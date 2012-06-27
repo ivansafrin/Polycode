@@ -34,7 +34,7 @@ namespace Polycode{
 	class _PolyExport Threaded {
 	public:
 		Threaded(){ threadRunning = true; }
-		~Threaded(){}
+		virtual ~Threaded(){}
 		
 		/**
 		* Sets the thread running flag to false.

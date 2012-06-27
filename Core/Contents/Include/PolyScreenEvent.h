@@ -31,7 +31,7 @@ namespace Polycode {
 	class _PolyExport ScreenEvent : public Event {
 		public:
 			ScreenEvent();
-			~ScreenEvent();
+			virtual ~ScreenEvent();
 		
 			static const int ENTITY_MOVE_TOP = 0;
 			static const int ENTITY_MOVE_BOTTOM = 1;

@@ -825,6 +825,7 @@ void GLSLShaderModule::recreateGLSLProgram(GLSLProgram *prog, const String& file
 	char *buffer = (char*)malloc(progsize+1);
 	memset(buffer, 0, progsize+1);
 	OSBasics::read(buffer, progsize, 1, file);
+	OSBasics::close(file);
 	
 	if(type == GLSLProgram::TYPE_VERT) {
 		prog->program =  glCreateShader(GL_VERTEX_SHADER);

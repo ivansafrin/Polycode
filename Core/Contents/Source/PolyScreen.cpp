@@ -47,11 +47,16 @@ Screen::Screen() : EventDispatcher() {
 	rootEntity = new ScreenEntity();
 	addChild(rootEntity);
 	processTouchEventsAsMouse = false;
+	ownsChildren = false;
 }
 
 Screen::~Screen() {
-	for(int i=0; i<children.size();i++) {
-		//	delete children[i];
+	if(ownsChildren) {
+		for(int i=0; i < children.size(); i++) {	
+			delete children[i];
+		}
+	} else {
+		delete rootEntity;
 	}
 	CoreServices::getInstance()->getScreenManager()->removeScreen(this);	
 }

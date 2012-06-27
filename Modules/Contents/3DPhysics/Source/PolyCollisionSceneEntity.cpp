@@ -32,6 +32,7 @@ using namespace Polycode;
 
 CollisionSceneEntity::CollisionSceneEntity(SceneEntity *entity, int type) {
 	sceneEntity = entity;
+	shape = NULL;
 	
 	this->type = type;
 	enabled = true;	
@@ -137,5 +138,6 @@ SceneEntity *CollisionSceneEntity::getSceneEntity() {
 }
 
 CollisionSceneEntity::~CollisionSceneEntity() {
-
+	delete shape;
+	delete collisionObject;
 }

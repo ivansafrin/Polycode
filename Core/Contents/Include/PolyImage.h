@@ -63,7 +63,7 @@ namespace Polycode {
 			*/ 						
 			Image(Image *copyImage);		
 			Image();			
-			~Image();
+			virtual ~Image();
 
 			/**
 			* Load an image from a file

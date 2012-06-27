@@ -21,29 +21,28 @@ THE SOFTWARE.
 */
 
 #include "PolyCollisionScene.h"
-#include "btBulletCollisionCommon.h"
 #include "PolyCollisionSceneEntity.h"
 #include "PolySceneEntity.h"
 
 using namespace Polycode;
 
-CollisionScene::CollisionScene() : Scene() {
-	initCollisionScene();
+CollisionScene::CollisionScene(Vector3 size) : Scene() {
+	initCollisionScene(size);
 }
 
-CollisionScene::CollisionScene(bool virtualScene) : Scene(virtualScene) { 
-	initCollisionScene();
+CollisionScene::CollisionScene(bool virtualScene, Vector3 size) : Scene(virtualScene) { 
+	initCollisionScene(size);
 }
 
-void CollisionScene::initCollisionScene() {
+void CollisionScene::initCollisionScene(Vector3 size) {
 	
-	btVector3	worldAabbMin(-1000,-1000,-1000);
-	btVector3	worldAabbMax(1000,1000,1000);
+	btVector3	worldAabbMin(-size.x * 0.5, -size.y * 0.5, -size.z * 0.5);
+	btVector3	worldAabbMax(size.x * 0.5, size.y * 0.5, size.z * 0.5);
 	
-	btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
-	btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
+	collisionConfiguration = new btDefaultCollisionConfiguration();
+	dispatcher = new btCollisionDispatcher(collisionConfiguration);
 	//	dispatcher->setNearCallback(customNearCallback);
-	btAxisSweep3*	broadphase = new btAxisSweep3(worldAabbMin,worldAabbMax);
+	broadphase = new btAxisSweep3(worldAabbMin,worldAabbMax);
 	world = new btCollisionWorld(dispatcher,broadphase,collisionConfiguration);	
 }
 
@@ -196,7 +195,13 @@ CollisionResult CollisionScene::testCollision(SceneEntity *ent1, SceneEntity *en
 }
 
 CollisionScene::~CollisionScene() {
-
+	for(int i=0; i < collisionChildren.size(); i++) {
+		delete collisionChildren[i];
+	}
+	delete world;
+	delete broadphase;
+	delete dispatcher;
+	delete collisionConfiguration;
 }
 
 void CollisionScene::removeCollision(SceneEntity *entity) {
@@ -205,10 +210,11 @@ void CollisionScene::removeCollision(SceneEntity *entity) {
 		world->removeCollisionObject(cEnt->collisionObject);
 		for(int i=0; i < collisionChildren.size(); i++) {
 			if(collisionChildren[i] == cEnt) {
-				collisionChildren.erase(collisionChildren.begin()+i);
+				std::vector<CollisionSceneEntity*>::iterator target = collisionChildren.begin()+i;
+				delete *target;
+				collisionChildren.erase(target);
 			}
-		}			
-		delete cEnt;
+		}
 	}
 
 }

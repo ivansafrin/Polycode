@@ -40,7 +40,7 @@ namespace Polycode {
 			* Default constructor.
 			*/
 			Polygon();
-			~Polygon();
+			virtual ~Polygon();
 			
 			/**
 			* Returns the number of vertices in the polygon.

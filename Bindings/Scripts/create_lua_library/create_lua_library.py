@@ -54,7 +54,6 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 		out += "class LuaEventHandler : public EventHandler {\n"
 		out += "public:\n"
 		out += "	LuaEventHandler() : EventHandler() {}\n"
-		out += "	~LuaEventHandler();\n"
 		out += "	void handleEvent(Event *e) {\n"
 		out += "		lua_rawgeti( L, LUA_REGISTRYINDEX, wrapperIndex );\n"
 		out += "		lua_getfield(L, -1, \"__handleEvent\");\n"

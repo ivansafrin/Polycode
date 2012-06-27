@@ -46,7 +46,7 @@ namespace Polycode {
 		* Default constructor.
 		*/
 		Screen();
-		~Screen();
+		virtual ~Screen();
 		
 		/**
 		* Adds a ScreenEntity to the 2d rendering pipeline.
@@ -150,6 +150,11 @@ namespace Polycode {
 		* If set to true, will process touch events as mouse clicks. Defaults to false.
 		*/		
 		bool processTouchEventsAsMouse;
+		
+		/**
+		* If ownsChildren is set to true, the scene will delete its children upon destruction (defaults to false).
+		*/
+		bool ownsChildren;		
 		
 	protected:
 		

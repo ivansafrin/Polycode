@@ -44,7 +44,7 @@ namespace Polycode {
 	class _PolyExport Entity {
 		public:
 			Entity();
-			~Entity();
+			virtual ~Entity();
 
 			/**
 			* Main render method. Override this to do your own drawing.
@@ -170,6 +170,11 @@ namespace Polycode {
 			* @return Child entity at specified index or NULL of index out of range.
 			*/			
 			Entity *getChildAtIndex(unsigned int index);
+			
+			/**
+			* If set to true, will automatically delete children upon destruction. (defaults to false).
+			*/ 
+			bool ownsChildren;										
 				
 			//@}
 			// ----------------------------------------------------------------------------------------------------------------
@@ -580,7 +585,7 @@ namespace Polycode {
 			void setBlendingMode(int newBlendingMode);
 				
 			Vector3 getChildCenter() const;
-							
+			
 			std::vector <EntityProp> entityProps;
 			String getEntityProp(const String& propName);
 			

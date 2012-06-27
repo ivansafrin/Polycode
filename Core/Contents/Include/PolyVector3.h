@@ -43,6 +43,12 @@ namespace Polycode {
 			* @param z Z coordinate.						
 			*/					
 			Vector3(Number x,Number y,Number z);		
+
+			/**
+			* Create from single value for all coordinates
+			* @param val Value for all coordinates
+			*/					
+			Vector3(Number val);
 			
 			/**
 			* Default constructor.

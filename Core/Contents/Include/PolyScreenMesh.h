@@ -51,7 +51,7 @@ namespace Polycode {
 			* Create an empty screen mesh of specified type. See Mesh for available mesh types.
 			*/
 			ScreenMesh(int meshType);
-			~ScreenMesh();
+			virtual ~ScreenMesh();
 			
 			void Render();
 			

@@ -105,6 +105,7 @@ CocoaCore::CocoaCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bo
 	}
 	
 	context = [[NSOpenGLContext alloc] initWithFormat: format shareContext:nil];
+	[format release];
 
 	if (context == nil) {
         NSLog(@"Failed to create open gl context");

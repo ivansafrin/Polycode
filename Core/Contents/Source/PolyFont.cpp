@@ -40,7 +40,7 @@ Font::Font(const String& fileName) {
 		buffer = (unsigned char*)malloc(progsize);
 		memset(buffer, 0, progsize);
 		OSBasics::read(buffer, progsize, 1, file);
-	
+		OSBasics::close(file);
 		valid = true;
 		if(FT_New_Memory_Face(FTLibrary, buffer, progsize, 0, &ftFace) != 0) {
 			Logger::log("Error loading font %s\n", fileName.c_str());

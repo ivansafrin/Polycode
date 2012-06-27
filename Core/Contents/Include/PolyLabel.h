@@ -35,7 +35,7 @@ namespace Polycode {
 		public:
 			
 			Label(Font *font, const String& text, int size, int antiAliasMode);
-			~Label();
+			virtual ~Label();
 			void setText(const String& text);
 			const String& getText() const;
 			

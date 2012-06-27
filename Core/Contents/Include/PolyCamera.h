@@ -43,7 +43,7 @@ namespace Polycode {
 			* @param parentScene Scene to add the camera to.
 			*/
 			Camera(Scene *parentScene);
-			~Camera();
+			virtual ~Camera();
 			
 			void buildFrustrumPlanes();
 			

@@ -24,6 +24,7 @@ THE SOFTWARE.
 #include "PolyGlobals.h"
 #include "PolyScene.h"
 #include "PolyVector3.h"
+#include "btBulletCollisionCommon.h"
 #include <vector>
 
 class btCollisionObject;
@@ -86,11 +87,11 @@ struct CollisionResult {
 			/**
 			* Creates a collision scene.
 			*/
-			CollisionScene();
-			CollisionScene(bool virtualScene);		
+			CollisionScene(Vector3 size = Vector3(2000));
+			CollisionScene(bool virtualScene, Vector3 size = Vector3(2000));		
 			virtual ~CollisionScene();
 		
-			void initCollisionScene();
+			void initCollisionScene(Vector3 size);
 		
 			virtual void Update();
 			
@@ -123,6 +124,10 @@ struct CollisionResult {
 		
 			std::vector<CollisionSceneEntity*> collisionChildren;
 			btCollisionWorld *world;
+			
+			btDefaultCollisionConfiguration *collisionConfiguration;
+			btCollisionDispatcher *dispatcher;
+			btAxisSweep3 *broadphase;
 	};
 
 }
