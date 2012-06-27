@@ -11,20 +11,26 @@ INCLUDE_DIRECTORIES(
 )
 
 SET(polycode2DPhysics_SRCS
-    Source/Physics2DLUA.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Source/Physics2DLUA.cpp
     ../../Contents/2DPhysics/Source/PolyPhysicsScreen.cpp
     ../../Contents/2DPhysics/Source/PolyPhysicsScreenEntity.cpp
 )
 
 SET(polycode2DPhysics_HDRS
-    Include/Physics2DLUA.h
-    Include/Physics2DLUAWrappers.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Include/Physics2DLUA.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Include/Physics2DLUAWrappers.h
     ../../Contents/2DPhysics/Include/Polycode2DPhysics.h
     ../../Contents/2DPhysics/Include/PolyPhysicsScreenEntity.h
-   ../../Contents/2DPhysics/Include/PolyPhysicsScreen.h
+    ../../Contents/2DPhysics/Include/PolyPhysicsScreen.h
 )
 
 ADD_LIBRARY(Physics2D SHARED ${polycode2DPhysics_SRCS} ${polycode2DPhysics_HDRS})
+
+SET_SOURCE_FILES_PROPERTIES(Source/Physics2DLUA.cpp PROPERTIES GENERATED 1)
+SET_SOURCE_FILES_PROPERTIES(Include/Physics2DLUAWrappers.h PROPERTIES GENERATED 1)
+SET_SOURCE_FILES_PROPERTIES(Include/Physics2DLUA.h PROPERTIES GENERATED 1)
+ADD_DEPENDENCIES(Physics2D PolycodeLuaGenerate)
+
 SET(CMAKE_DEBUG_POSTFIX "_d")
 
 SET_TARGET_PROPERTIES(Physics2D PROPERTIES PREFIX "")
