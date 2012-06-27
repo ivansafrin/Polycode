@@ -3,6 +3,8 @@ import CppHeaderParser
 import os
 import errno
 import re
+from zipfile import *
+import fnmatch
   
 def mkdir_p(path): # Same effect as mkdir -p, create dir and all necessary parent dirs
 	try:
@@ -499,7 +501,15 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 	fout = open("%s/%sLUA.cpp" % (sourcePath, prefix), "w")
 	fout.write(sout)
 	
+
+	pattern = '*.lua'
+	os.chdir(apiPath)
+	if libName == "Polycore":
+		with ZipFile("api.pak", 'w') as myzip:
+			for root, dirs, files in os.walk("."):
+			    for filename in fnmatch.filter(files, pattern):
+				myzip.write(os.path.join(root, filename))
 	#print cppHeader
 	
 createLUABindings(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9])
-	
+

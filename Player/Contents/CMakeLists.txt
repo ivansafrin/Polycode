@@ -171,7 +171,7 @@ endif()
 	add_custom_command (TARGET PolycodePlayer PRE_BUILD
                       COMMAND cp ${Polycode_SOURCE_DIR}/Assets/Default\ asset\ pack/default.pak ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/PolycodePlayer.app/Contents/Resources)
 	add_custom_command (TARGET PolycodePlayer PRE_BUILD
-                      COMMAND cp -R ${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/API ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/PolycodePlayer.app/Contents/Resources)
+                      COMMAND cp -R ${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/API/api.pak ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/PolycodePlayer.app/Contents/Resources)
 
 	add_custom_command (TARGET StandalonePlayer PRE_BUILD
                       COMMAND mkdir -p ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/StandalonePlayer.app/Contents/Resources)
@@ -180,7 +180,7 @@ endif()
 	add_custom_command (TARGET StandalonePlayer PRE_BUILD
                       COMMAND cp ${Polycode_SOURCE_DIR}/Assets/Default\ asset\ pack/default.pak ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/StandalonePlayer.app/Contents/Resources)
 	add_custom_command (TARGET StandalonePlayer PRE_BUILD
-                      COMMAND cp -R ${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/API ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/StandalonePlayer.app/Contents/Resources)
+                      COMMAND cp -R ${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/API/api.pak ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/StandalonePlayer.app/Contents/Resources)
 	add_custom_command (TARGET StandalonePlayer PRE_BUILD
                       COMMAND cp ${Polycode_SOURCE_DIR}/Assets/SamplePolyapp/main.polyapp ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/StandalonePlayer.app/Contents/Resources)
 

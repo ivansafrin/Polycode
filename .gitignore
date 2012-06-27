@@ -44,6 +44,7 @@ Player/Build/Mac OS X/Polycode Player.xcodeproj/project.xcworkspace/xcuserdata/i
 /Bindings/Contents/LUA/API/api.pak
 /Bindings/Contents/LUA/Include/*.h
 /Bindings/Contents/LUA/Source/*.cpp	
+/Bindings/Contents/LUA/Source
 
 /Modules/Bindings/2DPhysics/API/Physics2D/*.lua
 /Modules/Bindings/2DPhysics/API/Physics2D.lua
