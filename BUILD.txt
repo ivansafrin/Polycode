@@ -199,6 +199,8 @@ Polycode build for your system.
 
     -DPOLYCODE_BUILD_BINDINGS=ON -DPOLYCODE_BUILD_PLAYER=ON
 
+Note: You need to build the "PolycodeLua" target before you build the "install" target.
+
 After building the install build or running 'make install', perform the
 following commands in the Polycode source root:
 
