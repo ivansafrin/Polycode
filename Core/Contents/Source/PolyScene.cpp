@@ -61,6 +61,7 @@ Scene::Scene(bool virtualScene) : EventDispatcher() {
 	isSceneVirtual = virtualScene;	
 	hasLightmaps = false;
 	clearColor.setColor(0.13f,0.13f,0.13f,1.0f); 
+	ambientColor.setColor(0.0,0.0,0.0,1.0);	
 	useClearColor = false;
 	ownsChildren = false;
 	if (!isSceneVirtual) {
