@@ -30,6 +30,9 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	scene->getDefaultCamera()->lookAt(Vector3(0,0,0));
 }
 
+HelloPolycodeApp::~HelloPolycodeApp() {
+}
+
 bool HelloPolycodeApp::Update() {
     return core->Update();
 }

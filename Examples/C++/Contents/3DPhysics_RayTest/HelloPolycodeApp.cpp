@@ -44,6 +44,9 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 	lastEntity = NULL;
 }
 
+HelloPolycodeApp::~HelloPolycodeApp() {
+}
+
 void HelloPolycodeApp::handleEvent(Event *e) {
 	
 	if(e->getDispatcher() == core->getInput()) {

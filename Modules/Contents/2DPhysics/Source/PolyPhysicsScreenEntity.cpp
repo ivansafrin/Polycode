@@ -39,7 +39,9 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 	
 	screenEntity = entity;
 	
-	bodyDef = new b2BodyDef();
+	shape = NULL;
+		
+	b2BodyDef *bodyDef = new b2BodyDef();	
 	bodyDef->position.Set(screenEntity->getPosition().x/worldScale, screenEntity->getPosition().y/worldScale);
 	bodyDef->angle = screenEntity->getRotation()*(PI/180.0f);	
 	bodyDef->bullet = isSensor;	
@@ -51,6 +53,7 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 		bodyDef->type = b2_dynamicBody;	
 	}
 	body = world->CreateBody(bodyDef);
+	delete bodyDef;
 		
 	b2FixtureDef fDef;
 	fDef.friction = friction;
@@ -163,5 +166,11 @@ void PhysicsScreenEntity::Update() {
 }
 
 PhysicsScreenEntity::~PhysicsScreenEntity() {
-
+	if (body) {
+		if (fixture) {	
+			body->DestroyFixture(fixture);
+		}	
+		body->GetWorld()->DestroyBody(body);	
+	}
+	delete shape;
 }

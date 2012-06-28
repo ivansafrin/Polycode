@@ -173,9 +173,6 @@ void PhysicsScreen::init(Number worldScale, Number physicsTimeStep, int physicsI
 	world  = new b2World(gravity, doSleep);
 	
 	world->SetContactListener(this);
-
-//	updateTimer = new Timer(true, 3);
-//	updateTimer->addEventListener(this, Timer::EVENT_TRIGGER);
 }
 
 void PhysicsScreen::setGravity(Vector2 newGravity) {
@@ -401,8 +398,11 @@ ScreenEntity *PhysicsScreen::getEntityAtPosition(Number x, Number y) {
 	
 	for(int i=0;i<physicsChildren.size();i++) {
 		PhysicsScreenEntity *ent = physicsChildren[i];
-		if(ent->shape->TestPoint(ent->body->GetTransform(), mousePosition))
-			return ent->getScreenEntity();
+		if(ent->shape) {
+			if(ent->shape->TestPoint(ent->body->GetTransform(), mousePosition)) {
+				return ent->getScreenEntity();
+			}
+		}
 	}	
 	return ret;
 }
@@ -417,11 +417,13 @@ bool PhysicsScreen::testEntityAtPosition(ScreenEntity *ent, Number x, Number y) 
 	mousePosition.x = x/worldScale;
 	mousePosition.y = y/worldScale;
 	
-	if(pEnt->shape->TestPoint(pEnt->body->GetTransform(), mousePosition))
-		return true;
-	else
-		return false;
-	
+	if(pEnt->shape) {
+		if(pEnt->shape->TestPoint(pEnt->body->GetTransform(), mousePosition))
+			return true;
+		else
+			return false;
+	}
+	return false;
 }
 
 void PhysicsScreen::destroyMouseJoint(b2MouseJoint *mJoint) {
@@ -467,10 +469,10 @@ void PhysicsScreen::Shutdown() {
 }
 
 PhysicsScreen::~PhysicsScreen() {
-	delete world;
 	for(int i=0; i<physicsChildren.size();i++) {
 			delete physicsChildren[i];
 	}
+	delete world;	
 }
 
 PhysicsScreenEntity *PhysicsScreen::getPhysicsEntityByFixture(b2Fixture *fixture) {

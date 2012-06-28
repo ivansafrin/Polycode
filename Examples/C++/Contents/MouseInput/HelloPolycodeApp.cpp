@@ -21,6 +21,9 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEUP);
 }
 
+HelloPolycodeApp::~HelloPolycodeApp() {
+}
+
 void HelloPolycodeApp::handleEvent(Event *e) {
 	
 	if(e->getDispatcher() == core->getInput()) {
