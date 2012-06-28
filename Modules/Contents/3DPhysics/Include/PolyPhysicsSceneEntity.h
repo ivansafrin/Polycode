@@ -109,6 +109,8 @@ namespace Polycode {
 	protected:
 	
 		Number mass;
+		
+		btDefaultMotionState* myMotionState;		
 	};
 	
 	/**

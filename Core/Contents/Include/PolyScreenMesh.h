@@ -80,7 +80,7 @@ namespace Polycode {
 			
 			/**
 			* Applies a texture
-			* @param Texture to apply.
+			* @param texture to apply.
 			*/						
 			void setTexture(Texture *texture);
 			

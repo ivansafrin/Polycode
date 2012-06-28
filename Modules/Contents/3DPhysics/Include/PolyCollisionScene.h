@@ -87,8 +87,7 @@ struct CollisionResult {
 			/**
 			* Creates a collision scene.
 			*/
-			CollisionScene(Vector3 size = Vector3(2000));
-			CollisionScene(bool virtualScene, Vector3 size = Vector3(2000));		
+			CollisionScene(Vector3 size = Vector3(2000), bool virtualScene = false, bool deferInitCollision = false);		
 			virtual ~CollisionScene();
 		
 			void initCollisionScene(Vector3 size);
@@ -127,7 +126,7 @@ struct CollisionResult {
 			
 			btDefaultCollisionConfiguration *collisionConfiguration;
 			btCollisionDispatcher *dispatcher;
-			btAxisSweep3 *broadphase;
+			btAxisSweep3*  axisSweep;
 	};
 
 }

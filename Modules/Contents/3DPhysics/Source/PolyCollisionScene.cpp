@@ -26,12 +26,10 @@ THE SOFTWARE.
 
 using namespace Polycode;
 
-CollisionScene::CollisionScene(Vector3 size) : Scene() {
-	initCollisionScene(size);
-}
-
-CollisionScene::CollisionScene(bool virtualScene, Vector3 size) : Scene(virtualScene) { 
-	initCollisionScene(size);
+CollisionScene::CollisionScene(Vector3 size, bool virtualScene, bool deferInitCollision) : Scene(virtualScene), world(NULL), axisSweep(NULL), dispatcher(NULL), collisionConfiguration(NULL){ 
+	if(!deferInitCollision) {
+		initCollisionScene(size);
+	}
 }
 
 void CollisionScene::initCollisionScene(Vector3 size) {
@@ -42,8 +40,8 @@ void CollisionScene::initCollisionScene(Vector3 size) {
 	collisionConfiguration = new btDefaultCollisionConfiguration();
 	dispatcher = new btCollisionDispatcher(collisionConfiguration);
 	//	dispatcher->setNearCallback(customNearCallback);
-	broadphase = new btAxisSweep3(worldAabbMin,worldAabbMax);
-	world = new btCollisionWorld(dispatcher,broadphase,collisionConfiguration);	
+	axisSweep = new btAxisSweep3(worldAabbMin,worldAabbMax);
+	world = new btCollisionWorld(dispatcher,axisSweep,collisionConfiguration);	
 }
 
 void CollisionScene::Update() {
@@ -199,7 +197,7 @@ CollisionScene::~CollisionScene() {
 		delete collisionChildren[i];
 	}
 	delete world;
-	delete broadphase;
+	delete axisSweep;
 	delete dispatcher;
 	delete collisionConfiguration;
 }

@@ -40,7 +40,6 @@ using namespace Polycode;
 Scene::Scene() : EventDispatcher() {
 	defaultCamera = new Camera(this);
 	activeCamera = defaultCamera;
-	CoreServices::getInstance()->getSceneManager()->addScene(this);
 	fogEnabled = false;
 	lightingEnabled = false;
 	enabled = true;
@@ -49,7 +48,8 @@ Scene::Scene() : EventDispatcher() {
 	clearColor.setColor(0.13f,0.13f,0.13f,1.0f); 
 	ambientColor.setColor(0.0,0.0,0.0,1.0);
 	useClearColor = false;
-	ownsChildren = false;	
+	ownsChildren = false;
+	CoreServices::getInstance()->getSceneManager()->addScene(this);	
 }
 
 Scene::Scene(bool virtualScene) : EventDispatcher() {
@@ -63,6 +63,9 @@ Scene::Scene(bool virtualScene) : EventDispatcher() {
 	clearColor.setColor(0.13f,0.13f,0.13f,1.0f); 
 	useClearColor = false;
 	ownsChildren = false;
+	if (!isSceneVirtual) {
+		CoreServices::getInstance()->getSceneManager()->addScene(this);
+	}
 }
 
 void Scene::setActiveCamera(Camera *camera) {
