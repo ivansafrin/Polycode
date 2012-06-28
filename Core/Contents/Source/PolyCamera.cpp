@@ -29,6 +29,7 @@
 #include "PolyResourceManager.h"
 #include "PolyScene.h"
 #include "PolyShader.h"
+#include "PolyTexture.h"
 
 using namespace Polycode;
 			
@@ -37,13 +38,19 @@ Camera::Camera(Scene *parentScene) : SceneEntity() {
 	orthoMode = false;
 	fov = 45.0f;
 	originalSceneTexture = NULL;
+	zBufferSceneTexture = NULL;
 	exposureLevel = 1.0f;
 	_hasFilterShader = false;	
 	fovSet = false;
 }
 
-Camera::~Camera() {
+Camera::~Camera() {	
+	for(int i=0; i < localShaderOptions.size(); i++) {
+		delete localShaderOptions[i];
+	}
 
+	delete originalSceneTexture;
+	delete zBufferSceneTexture;
 }
 
 void Camera::setExposureLevel(Number level) {
@@ -266,7 +273,7 @@ void Camera::createPostFilter(Material *shaderMaterial) {
 //	zBufferSceneTexture = CoreServices::getInstance()->getMaterialManager()->createFramebufferTexture(CoreServices::getInstance()->getCore()->getXRes(), CoreServices::getInstance()->getCore()->getYRes(), 0);
 
 	if(!originalSceneTexture) {
-	CoreServices::getInstance()->getRenderer()->createRenderTextures(&originalSceneTexture, &zBufferSceneTexture, CoreServices::getInstance()->getCore()->getXRes(), CoreServices::getInstance()->getCore()->getYRes(), shaderMaterial->fp16RenderTargets);
+		CoreServices::getInstance()->getRenderer()->createRenderTextures(&originalSceneTexture, &zBufferSceneTexture, CoreServices::getInstance()->getCore()->getXRes(), CoreServices::getInstance()->getCore()->getYRes(), shaderMaterial->fp16RenderTargets);
 	}
 	
 	for(int i=0; i < shaderMaterial->getNumShaders(); i++) {

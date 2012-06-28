@@ -32,6 +32,7 @@ ScreenMesh::ScreenMesh(Mesh *mesh) : ScreenEntity(), texture(NULL) {
 	this->mesh = mesh;
 	lineSmooth = false;
 	lineWidth = 1.0;
+	ownsMesh = true;
 }
 
 ScreenMesh::ScreenMesh(const String& fileName) : ScreenEntity(), texture(NULL) {
@@ -50,7 +51,9 @@ ScreenMesh::ScreenMesh(int meshType) : ScreenEntity(), texture(NULL) {
 
 
 ScreenMesh::~ScreenMesh() {
-
+	if(ownsMesh) {
+		delete mesh;
+	}
 }
 
 Mesh *ScreenMesh::getMesh() const {

@@ -39,6 +39,7 @@ THE SOFTWARE.
 #include <GL/glu.h>
 #endif
 
+#define FRAMEBUFFER_NULL 999999
 
 namespace Polycode {
 

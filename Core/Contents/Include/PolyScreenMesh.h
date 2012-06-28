@@ -91,6 +91,10 @@ namespace Polycode {
 			
 			Number lineWidth;
 			
+			/**
+			* If true, will delete its Mesh upon destruction. (defaults to true)
+			*/ 			
+			bool ownsMesh;
 			
 		protected:
 		

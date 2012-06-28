@@ -169,8 +169,7 @@ namespace Polycode {
 		std::vector <ScreenEntity*> children;
 		
 		Material *filterShaderMaterial;			
-		Texture *originalSceneTexture;			
-		Texture *zBufferSceneTexture;						
+		Texture *originalSceneTexture;				
 		std::vector<ShaderBinding*> localShaderOptions;
 		bool _hasFilterShader;
 	};
