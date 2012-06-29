@@ -32,7 +32,7 @@ namespace Polycode {
 	class _PolyExport FixedShader : public Shader {
 		public:
 			FixedShader();
-			~FixedShader();
+			virtual ~FixedShader();
 			
 			ShaderBinding *createBinding();
 

@@ -168,6 +168,16 @@ void ParticleEmitter::createParticles() {
 	updateEmitter();	
 }
 
+void ParticleEmitter::dispatchTriggerCompleteEvent() {
+}
+
+void ParticleEmitter::addParticleBody(Entity *particleBody) {
+}
+			
+Matrix4 ParticleEmitter::getBaseMatrix() {
+	return Matrix4();
+}
+			
 void ParticleEmitter::setEmitterRadius(Vector3 rad) {
 	emitterRadius = rad;
 }

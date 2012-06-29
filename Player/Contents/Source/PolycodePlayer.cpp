@@ -61,6 +61,28 @@ extern "C" {
 		}
 		return 1;
 	}
+
+	static int customError(lua_State *L) {
+		const char *msg = lua_tostring(L, 1);
+		
+		if (msg == NULL) msg = "(error with no message)";
+		lua_pop(L, 1);
+			
+		std::vector<String> info = String(msg).split(":");
+			
+		PolycodeDebugEvent *event = new PolycodeDebugEvent();			
+		if(info.size() > 2) {
+			event->errorString = info[2];
+			event->lineNumber = atoi(info[1].c_str());
+		} else {
+			event->errorString = std::string(msg);
+			event->lineNumber = 0;
+		}
+		PolycodePlayer *player = (PolycodePlayer*)CoreServices::getInstance()->getCore()->getUserPointer();		
+		player->dispatchEvent(event, PolycodeDebugEvent::EVENT_ERROR);
+				
+		return 0;
+	}
 	
 	static int debugPrint(lua_State *L)
 	{
@@ -143,7 +165,8 @@ extern "C" {
 		// Table is still on the stack.  Get rid of it now.
 		lua_pop(L, 1);		
 		
-		lua_register(L, "debugPrint", debugPrint);			
+		lua_register(L, "debugPrint", debugPrint);	
+		lua_register(L, "__customError", customError);					
 		
 		lua_getfield(L, LUA_GLOBALSINDEX, "require");
 		lua_pushstring(L, "class");		
@@ -239,7 +262,6 @@ extern "C" {
 		lua_gettable(L, -2);
 
 */				
-		
 		//CoreServices::getInstance()->getCore()->lockMutex(CoreServices::getRenderMutex());			
 		if (report(L, luaL_loadstring(L, fullScript.c_str()) || lua_pcall(L, 0,0,0))) {
 			

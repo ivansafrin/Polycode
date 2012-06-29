@@ -35,11 +35,12 @@ namespace Polycode {
 		public:
 			
 			Label(Font *font, const String& text, int size, int antiAliasMode);
-			~Label();
+			virtual ~Label();
 			void setText(const String& text);
 			const String& getText() const;
-			int getTextWidth(Font *font, const String& text, int size) const;
-			int getTextHeight(Font *font, const String& text, int size) const;
+			
+			static int getTextWidth(Font *font, const String& text, int size);
+			static int getTextHeight(Font *font, const String& text, int size);
 					
 			Number getTextWidth() const;
 			Number getTextHeight() const;

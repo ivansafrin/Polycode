@@ -54,9 +54,12 @@ void Image::setPixelType(int type) {
 			break;
 		case IMAGE_RGBA:
 			pixelSize = 4;						
-			break;
-			pixelSize = 4;						
+		break;
+		case IMAGE_FP16:		
+			pixelSize = 16;
+		break;
 		default:
+			pixelSize = 4;								
 			break;
 	}
 }
@@ -91,13 +94,43 @@ Image::Image() {
 }
 
 Image::~Image() {
-	if(imageData != NULL)
-		free(imageData);
+	free(imageData);
 }
 
 char *Image::getPixels() {
 	return imageData;
 }
+
+char *Image::getPixelsInRect(unsigned int x, unsigned int y, unsigned int width, unsigned int height) {
+	char *retBuf = (char*) malloc(pixelSize * width * height);
+	memset(retBuf, 0, pixelSize * width * height);
+	
+	if(x < this->width-1 && y < this->height-1) {
+		
+		unsigned int xAmt;
+		unsigned int yAmt;	
+		if(x + width > this->width) {
+			xAmt = this->width - x;
+		} else {
+			xAmt = width;
+		}
+
+		if(y + height > this->height) {
+			yAmt = this->height - y;
+		} else {
+			yAmt = height;
+		}
+
+		for(int i=0; i < yAmt; i++) {
+			long srcOffset = ((pixelSize*this->width) * (y+i)) + (pixelSize*x);
+			long dstOffset = (pixelSize*xAmt) * i;
+			memcpy(retBuf + dstOffset, imageData+srcOffset, pixelSize * xAmt);
+		}	
+	}
+		
+	return retBuf;
+}
+
 
 Color Image::getPixel(int x, int y) {
 	if(x < 0 || x >= width || y < 0 || y >= height)
@@ -115,8 +148,7 @@ unsigned int Image::getHeight() const {
 }
 
 void Image::createEmpty(unsigned int width, unsigned int height) {
-	if(imageData != NULL)
-		free(imageData);
+	free(imageData);
 		
 	imageData = (char*)malloc(width*height*pixelSize);
 	this->width = width;
@@ -126,13 +158,13 @@ void Image::createEmpty(unsigned int width, unsigned int height) {
 }
 
 void Image::perlinNoise(int seed, bool alpha) {
-	Perlin *perlin = new Perlin(12,33,1,seed);
+	Perlin perlin = Perlin(12,33,1,seed);
 	unsigned int *imageData32 = (unsigned int*)imageData;
 	Color pixelColor;
 	Number noiseVal;
 	
 	for(int i=0; i < width*height;i++) {
-			noiseVal = fabs(1.0f/perlin->Get( 0.1+(0.9f/((Number)width)) * (i%width), (1.0f/((Number)height)) *   (i - (i%width))));
+			noiseVal = fabs(1.0f/perlin.Get( 0.1+(0.9f/((Number)width)) * (i%width), (1.0f/((Number)height)) *   (i - (i%width))));
 			if(alpha)
 				pixelColor.setColor(noiseVal, noiseVal, noiseVal, noiseVal);
 			else
@@ -446,8 +478,8 @@ void Image::line(int x0, int y0, int x1, int y1, Color col) {
 }
 
 void Image::fill(Number r, Number g, Number b, Number a) {
-	Color *color = new Color(r,g,b,a);
-	unsigned int val = color->getUint();
+	Color color = Color(r,g,b,a);
+	unsigned int val = color.getUint();
 	unsigned int *imageData32 = (unsigned int*) imageData;
 	for(int i=0; i< width*height; i++) {
 		imageData32[i] = val;

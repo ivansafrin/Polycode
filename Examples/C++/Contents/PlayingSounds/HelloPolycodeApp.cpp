@@ -19,6 +19,9 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	testSound = new Sound("Resources/test.wav");
 }
 
+HelloPolycodeApp::~HelloPolycodeApp() {
+}
+
 void HelloPolycodeApp::handleEvent(Event *e) {
 	
 	if(e->getDispatcher() == core->getInput()) {
@@ -30,7 +33,6 @@ void HelloPolycodeApp::handleEvent(Event *e) {
 		}
 	}	
 }
-
 
 HelloPolycodeApp::~HelloPolycodeApp() {
     

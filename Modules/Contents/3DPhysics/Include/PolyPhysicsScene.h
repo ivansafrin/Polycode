@@ -26,6 +26,9 @@ THE SOFTWARE.
 #include <vector>
 
 class btDiscreteDynamicsWorld;
+class btDbvtBroadphase;
+class btSequentialImpulseConstraintSolver;
+class btGhostPairCallback;
 
 namespace Polycode {
 
@@ -36,11 +39,8 @@ namespace Polycode {
 	
 	class _PolyExport PhysicsSceneEvent : public Event {
 		public:
-			PhysicsSceneEvent() : Event () {
-				eventType = "PhysicsSceneEvent";
-			}
-			~PhysicsSceneEvent() {
-			}
+			PhysicsSceneEvent();
+			~PhysicsSceneEvent();
 			
 			static const int COLLISION_EVENT = 0;
 			
@@ -62,7 +62,7 @@ namespace Polycode {
 		/**
 		* Main constructor.
 		*/
-		PhysicsScene(int maxSubSteps = 0);
+		PhysicsScene(int maxSubSteps = 0, Vector3 size = Vector3(200), bool virtualScene = false);
 		virtual ~PhysicsScene();	
 		
 		void Update();		
@@ -101,9 +101,13 @@ namespace Polycode {
 	protected:
 		
 		int maxSubSteps;
-		void initPhysicsScene();		
+		void initPhysicsScene(Vector3 size);		
 		
 		btDiscreteDynamicsWorld* physicsWorld;
+		btSequentialImpulseConstraintSolver *solver;		
+		btDbvtBroadphase *broadphase;
+		btGhostPairCallback *ghostPairCallback;
+		
 		std::vector<PhysicsSceneEntity*> physicsChildren;
 		
 	};

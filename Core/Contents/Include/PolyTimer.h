@@ -38,7 +38,7 @@ namespace Polycode {
 			* @param msecs Timer frequency in milliseconds.
 			*/
 			Timer(bool triggerMode, int msecs);
-			~Timer();
+			virtual ~Timer();
 
 		/** 
 		* Pauses and resumes the timer.

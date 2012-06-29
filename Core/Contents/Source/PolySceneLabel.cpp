@@ -35,10 +35,6 @@ SceneLabel::SceneLabel(const String& fontName, const String& text, int size, Num
 	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size, amode);
 	this->scale = scale;
 	setText(text);
-	
-	for(int i=0; i < mesh->getPolygonCount(); i++) {
-		mesh->getPolygon(i)->flipUVY();
-	}
 	mesh->arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;
 }
 
@@ -63,7 +59,14 @@ void SceneLabel::setText(const String& newText) {
 
 	delete mesh;
 	mesh = new Mesh(Mesh::QUAD_MESH);
-	mesh->createPlane(label->getWidth()*scale,label->getHeight()*scale);
+	mesh->createVPlane(label->getWidth()*scale,label->getHeight()*scale);
+	
+	for(int i=0; i < mesh->getPolygonCount(); i++) {
+		mesh->getPolygon(i)->flipUVY();
+	}
+	
+	if(useVertexBuffer)
+		CoreServices::getInstance()->getRenderer()->createVertexBufferForMesh(mesh);
 	
 	// TODO: resize it here
 	

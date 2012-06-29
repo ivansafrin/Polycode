@@ -8,12 +8,12 @@ INCLUDE_DIRECTORIES(
 )
 
 SET(polycodeLua_SRCS
-    Source/PolycodeLUA.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Source/PolycodeLUA.cpp
 )
 
 SET(polycodeLua_HDRS
-    Include/PolycodeLUAWrappers.h
-    Include/PolycodeLUA.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Include/PolycodeLUAWrappers.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Include/PolycodeLUA.h
 )
 
 SET(CMAKE_DEBUG_POSTFIX "_d")
@@ -25,6 +25,10 @@ SET(CMAKE_DEBUG_POSTFIX "_d")
 
 #IF(POLYCODE_BUILD_STATIC)
 ADD_LIBRARY(PolycodeLua ${polycodeLua_SRCS} ${polycodeLua_HDRS})
+
+SET_SOURCE_FILES_PROPERTIES(Source/PolycodeLUA.cpp PROPERTIES GENERATED 1) 
+SET_SOURCE_FILES_PROPERTIES(Include/PolycodeLUAWrappers.h PROPERTIES GENERATED 1)
+SET_SOURCE_FILES_PROPERTIES(Include/PolycodeLUA.h PROPERTIES GENERATED 1) 
 ADD_DEPENDENCIES(PolycodeLua PolycodeLuaGenerate)
 #ENDIF(POLYCODE_BUILD_STATIC)
 

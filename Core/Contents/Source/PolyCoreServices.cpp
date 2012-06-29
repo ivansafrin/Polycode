@@ -98,6 +98,10 @@ Config *CoreServices::getConfig() {
 
 void CoreServices::installModule(PolycodeModule *module)  {
 	modules.push_back(module);
+	if(module->requiresUpdate()) {
+		updateModules.push_back(module);
+	}
+	
 	switch(module->getType()) {
 		case PolycodeModule::TYPE_SHADER:
 //			renderer->addShaderModule((ShaderModule*)module);
@@ -120,6 +124,9 @@ CoreServices::CoreServices() : EventDispatcher() {
 	addEventListener(screenManager, InputEvent::EVENT_MOUSEWHEEL_DOWN);	
 	addEventListener(screenManager, InputEvent::EVENT_KEYDOWN);
 	addEventListener(screenManager, InputEvent::EVENT_KEYUP);	
+	addEventListener(screenManager, InputEvent::EVENT_TOUCHES_BEGAN);	
+	addEventListener(screenManager, InputEvent::EVENT_TOUCHES_ENDED);	
+	addEventListener(screenManager, InputEvent::EVENT_TOUCHES_MOVED);				
 	sceneManager = new SceneManager();
 	timerManager = new TimerManager();
 	tweenManager = new TweenManager();
@@ -150,6 +157,9 @@ void CoreServices::setCore(Core *core) {
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_UP);		
 	core->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 	core->getInput()->addEventListener(this, InputEvent::EVENT_KEYUP);
+	core->getInput()->addEventListener(this, InputEvent::EVENT_TOUCHES_BEGAN);
+	core->getInput()->addEventListener(this, InputEvent::EVENT_TOUCHES_ENDED);
+	core->getInput()->addEventListener(this, InputEvent::EVENT_TOUCHES_MOVED);		
 }
 
 void CoreServices::handleEvent(Event *event) {
@@ -159,6 +169,16 @@ void CoreServices::handleEvent(Event *event) {
 			case InputEvent::EVENT_KEYDOWN:
 			case InputEvent::EVENT_KEYUP:
 				dispatchEvent(new InputEvent(inputEvent->key, inputEvent->charCode, inputEvent->timestamp), inputEvent->getEventCode());			
+			break;
+			case InputEvent::EVENT_TOUCHES_BEGAN:
+			case InputEvent::EVENT_TOUCHES_ENDED:
+			case InputEvent::EVENT_TOUCHES_MOVED:						
+			{
+				InputEvent *event = new InputEvent();
+				event->touches = inputEvent->touches;
+				event->timestamp = inputEvent->timestamp;
+				dispatchEvent(event, inputEvent->getEventCode());
+			}
 			break;
 			default:
 				InputEvent *_inputEvent = new InputEvent(inputEvent->mousePosition, inputEvent->timestamp);
@@ -183,6 +203,11 @@ Renderer *CoreServices::getRenderer() {
 }
 
 void CoreServices::Update(int elapsed) {
+	
+	for(int i=0; i < updateModules.size(); i++) {
+		updateModules[i]->Update(elapsed);
+	}
+
 	timerManager->Update();
 	tweenManager->Update();
 	materialManager->Update(elapsed);

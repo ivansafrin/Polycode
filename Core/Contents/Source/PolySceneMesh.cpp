@@ -35,34 +35,44 @@
 
 using namespace Polycode;
 
-SceneMesh::SceneMesh(const String& fileName) : SceneEntity(), texture(NULL), material(NULL) {
+SceneMesh::SceneMesh(const String& fileName) : SceneEntity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
 	mesh = new Mesh(fileName);
 	bBoxRadius = mesh->getRadius();
 	bBox = mesh->calculateBBox();
-	skeleton = NULL;
 	lightmapIndex=0;
 	showVertexNormals = false;
 	useVertexBuffer = false;
+	lineSmooth = false;
+	ownsMesh = true;
+	ownsSkeleton = true;
+	lineWidth = 1.0;
 }
 
-SceneMesh::SceneMesh(Mesh *mesh) : SceneEntity(), texture(NULL), material(NULL) {
+SceneMesh::SceneMesh(Mesh *mesh) : SceneEntity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
 	this->mesh = mesh;
 	bBoxRadius = mesh->getRadius();
 	bBox = mesh->calculateBBox();
-	skeleton = NULL;
 	lightmapIndex=0;
 	showVertexNormals = false;	
-	useVertexBuffer = false;	
+	useVertexBuffer = false;
+	lineSmooth = false;
+	ownsMesh = true;
+	ownsSkeleton = true;	
+	lineWidth = 1.0;
+		
 }
 
-SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL) {
+SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
 	mesh = new Mesh(meshType);
 	bBoxRadius = mesh->getRadius();
 	bBox = mesh->calculateBBox();
-	skeleton = NULL;
 	lightmapIndex=0;
 	showVertexNormals = false;	
 	useVertexBuffer = false;	
+	lineSmooth = false;
+	ownsMesh = true;
+	ownsSkeleton = true;	
+	lineWidth = 1.0;	
 }
 
 void SceneMesh::setMesh(Mesh *mesh) {
@@ -75,7 +85,11 @@ void SceneMesh::setMesh(Mesh *mesh) {
 
 
 SceneMesh::~SceneMesh() {
-	delete mesh;
+	if(ownsSkeleton)
+		delete skeleton;
+	if(ownsMesh)
+		delete mesh;	
+	delete localShaderOptions;
 }
 
 Mesh *SceneMesh::getMesh() {
@@ -225,6 +239,9 @@ void SceneMesh::cacheToVertexBuffer(bool cache) {
 void SceneMesh::Render() {
 	
 	Renderer *renderer = CoreServices::getInstance()->getRenderer();
+	
+	renderer->setLineSize(lineWidth);
+	renderer->setLineSmooth(lineSmooth);
 	
 	if(material) {
 		renderer->applyMaterial(material, localShaderOptions,0);

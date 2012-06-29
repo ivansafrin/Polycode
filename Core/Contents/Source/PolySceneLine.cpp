@@ -42,6 +42,9 @@ SceneLine::SceneLine(Vector3 start, Vector3 end) : SceneEntity() {
 	
 	ignoreParentMatrix = true;
 	
+	lineWidth = 1.0;
+	lineSmooth = false;
+	
 }
 
 SceneLine::SceneLine(SceneEntity *ent1, SceneEntity *ent2) : SceneEntity() {
@@ -56,6 +59,10 @@ SceneLine::SceneLine(SceneEntity *ent1, SceneEntity *ent2) : SceneEntity() {
 	mesh->addPolygon(poly);
 	
 	ignoreParentMatrix = true;
+	
+	lineWidth = 1.0;
+	lineSmooth = false;
+	
 }
 
 SceneLine::~SceneLine() {
@@ -89,6 +96,10 @@ void SceneLine::Render() {
 	mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
 	
 	Renderer *renderer = CoreServices::getInstance()->getRenderer();
+	
+	renderer->setLineSize(lineWidth);
+	renderer->setLineSmooth(lineSmooth);
+	
 	renderer->setTexture(NULL);	
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::VERTEX_DATA_ARRAY);
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::TEXCOORD_DATA_ARRAY);	

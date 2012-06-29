@@ -46,6 +46,7 @@ using namespace Polycode;
 PFNGLUSEPROGRAMPROC glUseProgram;
 PFNGLUNIFORM1IPROC glUniform1i;
 PFNGLUNIFORM1FPROC glUniform1f;
+PFNGLUNIFORM2FPROC glUniform2f;
 PFNGLUNIFORM3FPROC glUniform3f;
 extern PFNGLACTIVETEXTUREPROC glActiveTexture;
 PFNGLCREATESHADERPROC glCreateShader;
@@ -71,6 +72,7 @@ GLSLShaderModule::GLSLShaderModule() : PolycodeShaderModule() {
 	glUseProgram   = (PFNGLUSEPROGRAMPROC)wglGetProcAddress("glUseProgram");
 	glUniform1i = (PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i");
 	glUniform1f = (PFNGLUNIFORM1FPROC)wglGetProcAddress("glUniform1f");	
+	glUniform2f = (PFNGLUNIFORM2FPROC)wglGetProcAddress("glUniform2f");	
 	glUniform3f = (PFNGLUNIFORM3FPROC)wglGetProcAddress("glUniform3f");
 	glGetUniformLocation = (PFNGLGETUNIFORMLOCATIONARBPROC)wglGetProcAddress("glGetUniformLocation");
 	glCreateShader = (PFNGLCREATESHADERPROC)wglGetProcAddress("glCreateShader");
@@ -378,10 +380,15 @@ void GLSLShaderModule::updateGLSLParam(Renderer *renderer, GLSLShader *glslShade
 				glUniform1f(paramLocation, *fval);
 				break;
 			}
+			case GLSLProgramParam::PARAM_Number2:
+			{
+				Vector2 *fval2 = (Vector2*)paramData;
+				int paramLocation = glGetUniformLocation(glslShader->shader_id, param.name.c_str());
+				glUniform2f(paramLocation, fval2->x, fval2->y);				break;				
+			}			
 			case GLSLProgramParam::PARAM_Number3:
 			{
 				Vector3 *fval3 = (Vector3*)paramData;
-				fval = (Number*)paramData;
 				int paramLocation = glGetUniformLocation(glslShader->shader_id, param.name.c_str());
 				glUniform3f(paramLocation, fval3->x,fval3->y,fval3->z);
 				break;				
@@ -394,8 +401,6 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 
 	GLSLShader *glslShader = (GLSLShader*)material->getShader(shaderIndex);
 
-	renderer->sortLights();
-
 	glPushMatrix();
 	glLoadIdentity();
 	
@@ -404,7 +409,11 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 	int numRendererSpotLights = renderer->getNumSpotLights();
 	
 	int numTotalLights = glslShader->numAreaLights + glslShader->numSpotLights;
-		
+	
+	if(numTotalLights > 0) {
+		renderer->sortLights();	
+	}
+	
 	for(int i=0 ; i < numTotalLights; i++) {
 		GLfloat resetData[] = {0.0, 0.0, 0.0, 0.0};				
 		glLightfv (GL_LIGHT0+i, GL_DIFFUSE, resetData);	
@@ -813,6 +822,7 @@ void GLSLShaderModule::recreateGLSLProgram(GLSLProgram *prog, const String& file
 	char *buffer = (char*)malloc(progsize+1);
 	memset(buffer, 0, progsize+1);
 	OSBasics::read(buffer, progsize, 1, file);
+	OSBasics::close(file);
 	
 	if(type == GLSLProgram::TYPE_VERT) {
 		prog->program =  glCreateShader(GL_VERTEX_SHADER);

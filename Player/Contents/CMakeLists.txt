@@ -136,6 +136,7 @@ endif()
         ${LUA_LIBRARY}
         ${OPENGL_LIBRARIES}
         ${OPENAL_LIBRARY}
+        ${ZLIB_LIBRARIES}
         ${PNG_LIBRARIES}
         ${FREETYPE_LIBRARIES}
         ${PHYSFS_LIBRARY}
@@ -152,6 +153,7 @@ endif()
         ${LUA_LIBRARY}
         ${OPENGL_LIBRARIES}
         ${OPENAL_LIBRARY}
+        ${ZLIB_LIBRARIES}
         ${PNG_LIBRARIES}
         ${FREETYPE_LIBRARIES}
         ${PHYSFS_LIBRARY}
@@ -169,7 +171,7 @@ endif()
 	add_custom_command (TARGET PolycodePlayer PRE_BUILD
                       COMMAND cp ${Polycode_SOURCE_DIR}/Assets/Default\ asset\ pack/default.pak ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/PolycodePlayer.app/Contents/Resources)
 	add_custom_command (TARGET PolycodePlayer PRE_BUILD
-                      COMMAND cp -R ${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/API ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/PolycodePlayer.app/Contents/Resources)
+                      COMMAND cp -R ${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/API/api.pak ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/PolycodePlayer.app/Contents/Resources)
 
 	add_custom_command (TARGET StandalonePlayer PRE_BUILD
                       COMMAND mkdir -p ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/StandalonePlayer.app/Contents/Resources)
@@ -178,7 +180,7 @@ endif()
 	add_custom_command (TARGET StandalonePlayer PRE_BUILD
                       COMMAND cp ${Polycode_SOURCE_DIR}/Assets/Default\ asset\ pack/default.pak ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/StandalonePlayer.app/Contents/Resources)
 	add_custom_command (TARGET StandalonePlayer PRE_BUILD
-                      COMMAND cp -R ${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/API ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/StandalonePlayer.app/Contents/Resources)
+                      COMMAND cp -R ${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/API/api.pak ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/StandalonePlayer.app/Contents/Resources)
 	add_custom_command (TARGET StandalonePlayer PRE_BUILD
                       COMMAND cp ${Polycode_SOURCE_DIR}/Assets/SamplePolyapp/main.polyapp ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/StandalonePlayer.app/Contents/Resources)
 
@@ -281,6 +283,4 @@ ELSE(MSVC OR MINGW)
     INSTALL(FILES "${Polycode_SOURCE_DIR}/Assets/Default\ asset\ pack/hdr.pak" DESTINATION Player)
     INSTALL(FILES "${Polycode_SOURCE_DIR}/Assets/SamplePolyapp/main.polyapp" DESTINATION Player)
     INSTALL(FILES "${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/API/api.pak" DESTINATION Player)
-ENDIF(MSVC OR MINGW)
-
-ENDIF(POLYCODE_INSTALL_PLAYER)
+ENDIF(MSVC)

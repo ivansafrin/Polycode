@@ -55,14 +55,15 @@ void ClientResize(HWND hWnd, int nWidth, int nHeight)
   MoveWindow(hWnd,rcWindow.left, rcWindow.top, nWidth + ptDiff.x, nHeight + ptDiff.y, TRUE);
 }
 
-Win32Core::Win32Core(PolycodeViewBase *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate) 
-	: Core(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate) {
+Win32Core::Win32Core(PolycodeViewBase *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate,  int monitorIndex) 
+	: Core(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate, monitorIndex) {
 
 	hWnd = *((HWND*)view->windowData);
 	core = this;
 
 	initKeymap();
 	initGamepad();
+	initTouch();
 
 	hDC = NULL;
 	hRC = NULL;
@@ -431,6 +432,65 @@ void Win32Core::handleKeyUp(LPARAM lParam, WPARAM wParam) {
 	unlockMutex(eventMutex);
 }
 
+void Win32Core::handleTouchEvent(LPARAM lParam, WPARAM wParam) {
+	
+	// Bail out now if multitouch is not available on this system
+	if ( hasMultiTouch == false )
+	{
+		return;
+	}
+	
+	lockMutex(eventMutex);
+
+	int iNumContacts = LOWORD(wParam);
+	HTOUCHINPUT hInput       = (HTOUCHINPUT)lParam;
+    TOUCHINPUT *pInputs      = new TOUCHINPUT[iNumContacts];
+       
+    if(pInputs != NULL) {
+		if(GetTouchInputInfoFunc(hInput, iNumContacts, pInputs, sizeof(TOUCHINPUT))) {
+
+			std::vector<TouchInfo> touches;
+			for(int i = 0; i < iNumContacts; i++) {
+				TOUCHINPUT ti = pInputs[i];
+				TouchInfo touchInfo;
+				touchInfo.id = (int) ti.dwID;
+
+				POINT pt;
+				pt.x = TOUCH_COORD_TO_PIXEL(ti.x);
+				pt.y = TOUCH_COORD_TO_PIXEL(ti.y);
+				ScreenToClient(hWnd, &pt);
+				touchInfo.position.x = pt.x; 
+				touchInfo.position.y = pt.y;
+
+				touches.push_back(touchInfo);
+			}
+              for(int i = 0; i < iNumContacts; i++) {
+					TOUCHINPUT ti = pInputs[i];
+					if (ti.dwFlags & TOUCHEVENTF_UP) {
+						Win32Event newEvent;
+						newEvent.eventGroup = Win32Event::INPUT_EVENT;
+						newEvent.eventCode = InputEvent::EVENT_TOUCHES_ENDED;
+						newEvent.touches = touches;
+						win32Events.push_back(newEvent);	
+					} else if(ti.dwFlags & TOUCHEVENTF_MOVE) {
+						Win32Event newEvent;
+						newEvent.eventGroup = Win32Event::INPUT_EVENT;
+						newEvent.eventCode = InputEvent::EVENT_TOUCHES_MOVED;
+						newEvent.touches = touches;
+						win32Events.push_back(newEvent);
+					} else if(ti.dwFlags & TOUCHEVENTF_DOWN) {
+						Win32Event newEvent;
+						newEvent.eventGroup = Win32Event::INPUT_EVENT;
+						newEvent.eventCode = InputEvent::EVENT_TOUCHES_BEGAN;
+						newEvent.touches = touches;
+						win32Events.push_back(newEvent);
+					}
+			  }
+		}
+	}
+	unlockMutex(eventMutex);	
+}
+
 void Win32Core::handleMouseMove(LPARAM lParam, WPARAM wParam) {
 	lockMutex(eventMutex);
 	Win32Event newEvent;
@@ -488,6 +548,15 @@ void Win32Core::checkEvents() {
 		switch(event.eventGroup) {
 			case Win32Event::INPUT_EVENT:
 				switch(event.eventCode) {
+					case InputEvent::EVENT_TOUCHES_BEGAN:
+						input->touchesBegan(event.touches, getTicks());
+					break;
+					case InputEvent::EVENT_TOUCHES_ENDED:
+						input->touchesEnded(event.touches, getTicks());
+					break;
+					case InputEvent::EVENT_TOUCHES_MOVED:
+						input->touchesMoved(event.touches, getTicks());
+					break;
 					case InputEvent::EVENT_MOUSEMOVE:
 						input->setDeltaPosition(event.mouseX - lastMouseX , event.mouseY - lastMouseY);										
 						lastMouseX = event.mouseX;
@@ -738,6 +807,20 @@ void Win32Core::initGamepad() {
 void Win32Core::shutdownGamepad() {
 
 }
+
+void Win32Core::initTouch() {
+	
+	// Check for windows multitouch support at runtime
+	// This could be done easily during preprocessing but would require building
+	// multiple releases of polycode for both winxp/vista and win7
+	GetTouchInputInfoFunc = (GetTouchInputInfoType) GetProcAddress(GetModuleHandle(TEXT("user32.lib")), "GetTouchInputInfo");
+	
+	// If the above multitouch functions were found, then set a flag so we don't
+	// have to check again later
+	hasMultiTouch = ( GetTouchInputInfoFunc == NULL ) ? false : true;
+	
+}
+
 
 DWORD WINAPI Win32LaunchThread(LPVOID data) {
 	Threaded *threaded = (Threaded*)data;

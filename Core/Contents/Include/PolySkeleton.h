@@ -149,7 +149,7 @@ namespace Polycode {
 			*/ 
 			void loadSkeleton(const String& fileName);
 			
-			~Skeleton();
+			virtual ~Skeleton();
 		
 			/**
 			* Play back a loaded animation.

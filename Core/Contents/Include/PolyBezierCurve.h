@@ -81,7 +81,7 @@ namespace Polycode {
 			* Default constructor.
 			*/
 			BezierCurve();
-			~BezierCurve();
+			virtual ~BezierCurve();
 
 		/**
 		* Returns a control point by index.

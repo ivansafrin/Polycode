@@ -190,7 +190,12 @@ namespace Polycode {
 		/**
 		* If this is set to false, the scene is not rendered or updated during the render loop.
 		*/
-		bool enabled;		
+		bool enabled;
+		
+		/**
+		* If ownsChildren is set to true, the scene will delete its children upon destruction (defaults to false).
+		*/
+		bool ownsChildren;
 		
 	protected:
 		

@@ -57,7 +57,13 @@ ScenePrimitive::ScenePrimitive(int type, Number v1, Number v2, Number v3,Number 
 			bBox.x = v2*2;
 			bBox.y = v1;
 			bBox.z = v2*2;						
-		break;		
+		break;
+		case TYPE_UNCAPPED_CYLINDER:
+			mesh->createCylinder(v1,v2,v3, false);
+			bBox.x = v2*2;
+			bBox.y = v1;
+			bBox.z = v2*2;						
+		break;						
 		case TYPE_CONE:
 			mesh->createCone(v1,v2,v3);
 			bBox.x = v2*2;

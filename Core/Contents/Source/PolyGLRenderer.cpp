@@ -400,7 +400,7 @@ void OpenGLRenderer::drawVertexBuffer(VertexBuffer *buffer, bool enableColorBuff
 			}
 			break;
 		case Mesh::LINE_MESH:
-			mode = GL_LINES;
+			mode = GL_LINE_STRIP;
 			break;	
 		case Mesh::POINT_MESH:
 			mode = GL_POINTS;
@@ -611,7 +611,7 @@ void OpenGLRenderer::createRenderTextures(Texture **colorBuffer, Texture **depth
 	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);	
 	
 	if(floatingPointBuffer) {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F_ARB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F_ARB, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
 	} else {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);	
 	}
@@ -644,7 +644,11 @@ void OpenGLRenderer::createRenderTextures(Texture **colorBuffer, Texture **depth
 	//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);	
 		glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_LUMINANCE);	
 	
-		glTexImage2D(GL_TEXTURE_2D,0,GL_DEPTH_COMPONENT,width,height,0,GL_DEPTH_COMPONENT,GL_UNSIGNED_BYTE,0);
+		if(floatingPointBuffer) {	
+			glTexImage2D(GL_TEXTURE_2D,0,GL_DEPTH_COMPONENT16,width,height,0,GL_DEPTH_COMPONENT,GL_FLOAT,0);
+		} else {
+			glTexImage2D(GL_TEXTURE_2D,0,GL_DEPTH_COMPONENT,width,height,0,GL_DEPTH_COMPONENT,GL_UNSIGNED_BYTE,0);
+		}
 	
 		glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D, depthTexture, 0);
 
@@ -748,7 +752,7 @@ void OpenGLRenderer::applyMaterial(Material *material,  ShaderBinding *localOpti
 	glMaterialfv(GL_FRONT, GL_AMBIENT, data4);
 
 	FixedShaderBinding *fBinding;
-
+	
 	switch(material->getShader(shaderIndex)->getType()) {
 		case Shader::FIXED_SHADER:
 //			FixedShader *fShader = (FixedShader*)material->getShader();
@@ -757,13 +761,18 @@ void OpenGLRenderer::applyMaterial(Material *material,  ShaderBinding *localOpti
 //			setTexture(fShader->getDiffuseTexture());
 		break;	
 		case Shader::MODULE_SHADER:		
-			currentMaterial = material;			
-			for(int m=0; m < shaderModules.size(); m++) {
-				PolycodeShaderModule *shaderModule = shaderModules[m];	
-				if(shaderModule->hasShader(material->getShader(shaderIndex))) {
-					shaderModule->applyShaderMaterial(this, material, localOptions, shaderIndex);
-					currentShaderModule = shaderModule;
-				}
+			currentMaterial = material;
+			if(material->shaderModule == NULL) {
+				for(int m=0; m < shaderModules.size(); m++) {
+					PolycodeShaderModule *shaderModule = shaderModules[m];	
+					if(shaderModule->hasShader(material->getShader(shaderIndex))) {
+						material->shaderModule = (void*)shaderModule;
+					}
+				}	
+			} else {
+				PolycodeShaderModule *shaderModule = (PolycodeShaderModule*)material->shaderModule;
+				shaderModule->applyShaderMaterial(this, material, localOptions, shaderIndex);
+				currentShaderModule = shaderModule;
 			}
 		break;
 	}
@@ -1025,7 +1034,7 @@ void OpenGLRenderer::drawArrays(int drawType) {
 			}
 			break;
 		case Mesh::LINE_MESH:
-			mode = GL_LINES;
+			mode = GL_LINE_STRIP;
 			break;	
 		case Mesh::POINT_MESH:
 			mode = GL_POINTS;
