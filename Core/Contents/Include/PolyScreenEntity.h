@@ -99,6 +99,8 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		void _onKeyDown(PolyKEY key, wchar_t charCode);	
 		void _onKeyUp(PolyKEY key, wchar_t charCode);	
 		
+		Matrix4 getScreenConcatenatedMatrix();
+		
 		virtual void onKeyDown(PolyKEY key, wchar_t charCode){}
 		virtual void onKeyUp(PolyKEY key, wchar_t charCode){}
 		
@@ -148,6 +150,8 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		*/
 		void setPositionMode(int newPositionMode);
 		
+		int getPositionMode();
+		
 		void setDragLimits(Rectangle rect);
 		void clearDragLimits();
 		
@@ -169,8 +173,9 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		* If this option is true, the screen entity's positions will be roudnded to whole pixels. This only works if the screen is using pixel coordinates.
 		*/
 		bool snapToPixels;
-
 		bool processInputEvents;
+
+		Vector2 getHitbox();
 
 	protected:
 	

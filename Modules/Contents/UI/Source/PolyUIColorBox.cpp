@@ -84,12 +84,13 @@ UIColorPicker::UIColorPicker() : UIWindow(L"Pick a color!", 300, 240) {
 	mainColorRect->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	mainColorRect->addEventListener(this, InputEvent::EVENT_MOUSEUP);
 	mainColorRect->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);
+	mainColorRect->processInputEvents = true;
 	
 	
 	hueFrame->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	hueFrame->addEventListener(this, InputEvent::EVENT_MOUSEUP);
 	hueFrame->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);
-	
+	hueFrame->processInputEvents = true;	
 	
 	ScreenLabel *label = new ScreenLabel(L"R:", fontSize, fontName);
 	label->setPosition(hueFrame->getPosition().x+hueFrame->getWidth() + 15, topPadding+padding + 3);
@@ -387,6 +388,7 @@ UIColorBox::UIColorBox(Color initialColor, Number width, Number height) : Screen
 	addChild(bgImage);
 
 	bgImage->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+	bgImage->processInputEvents = true;
 
 	colorShape = new ScreenShape(ScreenShape::SHAPE_RECT, width-(frameInset*2), height-(frameInset*2));
 	colorShape->setPositionMode(ScreenEntity::POSITION_TOPLEFT);

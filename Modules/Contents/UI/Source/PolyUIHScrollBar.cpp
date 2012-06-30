@@ -74,7 +74,7 @@ UIHScrollBar::UIHScrollBar(Number width, Number height, Number initialRatio) : S
 	handleBox->addEventListener(this, InputEvent::EVENT_MOUSEUP);
 	handleBox->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);	
 	handleBox->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);		
-	
+	handleBox->processInputEvents = true;
 	handleBox->blockMouseInput = true;
 	
 	dragRectWidth = width-(padding*2)-scrollHandleWidth;

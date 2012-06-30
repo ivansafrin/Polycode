@@ -89,6 +89,7 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : ScreenEn
 	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);		
 	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEOVER);
 	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEOUT);
+	inputRect->processInputEvents = true;
 	
 	selectorRectTop = new ScreenShape(ScreenShape::SHAPE_RECT, 1,1);
 	selectorRectTop->setPositionMode(ScreenEntity::POSITION_TOPLEFT);

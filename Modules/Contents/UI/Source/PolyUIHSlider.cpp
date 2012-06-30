@@ -65,12 +65,13 @@ UIHSlider::UIHSlider(Number start, Number end, Number width) {
 	bgHitBox->addEventListener(this, InputEvent::EVENT_MOUSEUP);
 	bgHitBox->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);
 	bgHitBox->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
-
+	bgHitBox->processInputEvents = true;
 
 	gripRect->addEventListener(this, InputEvent::EVENT_MOUSEUP);
 	gripRect->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);
 	gripRect->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
-	
+	gripRect->processInputEvents = true;
+		
 	gripRect->setDragLimits(Rectangle(0,floor(bgHeight/2.0),width,0));
 	
 	gripPos = 0;
@@ -117,7 +118,7 @@ void UIHSlider::handleEvent(Event *event) {
 				gripRect->startDrag(inputEvent->mousePosition.x-gripRect->getPosition().x,inputEvent->mousePosition.y-gripRect->getPosition().y);
 			break;
 			case InputEvent::EVENT_MOUSEUP:
-			case InputEvent::EVENT_MOUSEUP_OUTSIDE:
+			case InputEvent::EVENT_MOUSEUP_OUTSIDE:		
 				gripRect->stopDrag();
 			break;
 		}	

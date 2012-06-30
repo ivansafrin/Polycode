@@ -99,6 +99,7 @@ void PolycodeScreenEditor::handleDroppedFile(OSFileEntry file, Number x, Number 
 		baseEntity->addChild(newImage);
 		newImage->setPosition(x-baseEntity->getPosition2D().x,y-baseEntity->getPosition2D().y);
 		newEntity = newImage;
+		newImage->processInputEvents = true;
 	}
 	
 	if(newEntity) {

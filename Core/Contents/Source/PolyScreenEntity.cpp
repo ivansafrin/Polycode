@@ -231,6 +231,10 @@ void ScreenEntity::_onKeyUp(PolyKEY key, wchar_t charCode) {
 	}
 }
 
+int ScreenEntity::getPositionMode() {
+	return positionMode;
+}
+
 void ScreenEntity::setDragLimits(Polycode::Rectangle rect) {
 	if(!dragLimits)
 		dragLimits = new Polycode::Rectangle();
@@ -245,6 +249,24 @@ void ScreenEntity::clearDragLimits() {
 	dragLimits = NULL;
 }
 
+Vector2 ScreenEntity::getHitbox() {
+	return Vector2(hitwidth, hitheight);
+}
+
+Matrix4 ScreenEntity::getScreenConcatenatedMatrix() {
+	Matrix4 retMatrix = transformMatrix;
+	if(positionMode == POSITION_TOPLEFT) {
+		Vector3 pos = retMatrix.getPosition();
+		retMatrix.setPosition(pos.x + width/2.0, pos.y + height/2.0, 0);
+	}
+	
+	if(parentEntity) {
+		return retMatrix * ((ScreenEntity*)parentEntity)->getScreenConcatenatedMatrix();		
+	} else {
+		return retMatrix;	
+	}	
+}
+
 void ScreenEntity::_onMouseMove(Number x, Number y, int timestamp, Vector2 parentAdjust) {
 
 	if(isDragged) {
@@ -252,8 +274,8 @@ void ScreenEntity::_onMouseMove(Number x, Number y, int timestamp, Vector2 paren
 		Vector3 localCoordinate = Vector3(x+(parentAdjust.x*2.0),y+(parentAdjust.y*2.0),0);				
 				
 		if(parentEntity) {
-			Matrix4 inverse = parentEntity->getConcatenatedMatrix().inverse();
-			localCoordinate = inverse * localCoordinate;
+			Matrix4 inverse = ((ScreenEntity*)parentEntity)->getScreenConcatenatedMatrix().inverse();
+			localCoordinate = inverse * localCoordinate;		
 		}
 	
 		setPosition(localCoordinate.x-dragOffsetX,localCoordinate.y-dragOffsetY);
@@ -326,7 +348,7 @@ void ScreenEntity::_onMouseMove(Number x, Number y, int timestamp, Vector2 paren
 		for(int i=children.size()-1;i>=0;i--) {			
 			Vector2 adjust = parentAdjust;
 			if(positionMode == POSITION_TOPLEFT)
-				adjust += Vector2(width/2.0, height/2.0);
+			adjust += Vector2(width/2.0, height/2.0);
 			((ScreenEntity*)children[i])->_onMouseMove(x,y, timestamp, adjust);
 			if(((ScreenEntity*)children[i])->blockMouseInput && ((ScreenEntity*)children[i])->enabled) {
 				if(((ScreenEntity*)children[i])->hitTest(x,y))
