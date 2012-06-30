@@ -15,6 +15,8 @@ ExternalProject_Add(openal
     PREFIX ${openal_PREFIX}
 
     DOWNLOAD_DIR ${POLYCODE_DEPS_DOWNLOAD_DIR}
+    
+    PATCH_COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PolycodeDependencies_SOURCE_DIR}/../CMake/openal.cmake <SOURCE_DIR>/CMakeLists.txt
 
     URL http://kcat.strangesoft.net/openal-releases/openal-soft-1.14.tar.bz2
     URL_MD5 3d8b86c21a2f87a2a5e60f78f3b3f03d

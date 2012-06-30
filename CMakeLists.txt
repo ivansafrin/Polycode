@@ -49,6 +49,7 @@ SET(CMAKE_PREFIX_PATH
 MESSAGE(DEBUG " CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}")
 
 # If the following large ugly mess is not present, failures can occur with -G "Unix Makefiles".
+# Even WITH this, you may get "library not found" errors on mingw first run; if so just re-run.
 # FIXME: Shouldn't be necessary if FIND_LIBRARY were working on mingw.
 IF (MINGW)
 LINK_DIRECTORIES(${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/lib)
