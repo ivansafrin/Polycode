@@ -25,6 +25,7 @@ EXTERNALPROJECT_ADD(libogg
 
 ExternalProject_Get_Property(libogg install_dir)
 
+# Kludge: Shouldn't be necessary if FIND_LIBRARY were working on mingw.
 IF (MINGW)
 	SET(oggvorbis_CMAKE_ARGS ${oggvorbis_CMAKE_ARGS}
 		-DOGG_LIBRARY=libogg

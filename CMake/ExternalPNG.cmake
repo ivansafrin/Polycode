@@ -28,6 +28,7 @@ EXTERNALPROJECT_ADD(zlib
 
 ExternalProject_Get_Property(zlib install_dir)
 
+# Kludge: Shouldn't be necessary if FIND_LIBRARY were working on mingw.
 IF (MINGW)
 	SET(libpng_CMAKE_ARGS ${libpng_CMAKE_ARGS}
 		-DZLIB_LIBRARY=zlib

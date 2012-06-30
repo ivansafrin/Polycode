@@ -94,6 +94,10 @@
 
 #define EXTENDED_KEYMASK	(1<<24)
 
+#ifdef _MINGW
+#define NO_TOUCH_API 1
+#endif
+
 namespace Polycode {
 
 	class _PolyExport Win32Mutex : public CoreMutex {
@@ -256,12 +260,13 @@ public:
 		// Tracks whether the system supports multitouch at runtime
 		bool hasMultiTouch;
 		
+#ifndef NO_TOUCH_API
 		// Create generic reference to any multitouch functions we need, so that we
 		// can make them available at runtime if the operating system supports it
 		// while still allowing fallback for older systems
 		// See: http://msdn.microsoft.com/en-us/library/ms683212(v=vs.85).aspx
 		typedef bool (WINAPI *GetTouchInputInfoType)(HTOUCHINPUT,UINT,PTOUCHINPUT,int);
 		GetTouchInputInfoType GetTouchInputInfoFunc;
-		
+#endif	
 	};
 }

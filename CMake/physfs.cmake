@@ -250,6 +250,7 @@ ENDIF(PHYSFS_ARCHIVE_QPAK)
 IF(PHYSFS_NEED_ZLIB)
     FIND_PACKAGE(ZLIB)
 	
+	# Kludge: Shouldn't be necessary if FIND_LIBRARY were working on mingw.
 	IF(MINGW)
 		SET(ZLIB_FOUND 1)
 		SET(ZLIB_LIBRARY zlib)
