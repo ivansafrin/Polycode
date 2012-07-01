@@ -5,6 +5,10 @@ project(zlib C)
 
 set(VERSION "1.2.7")
 
+if(NOT DEFINED BUILD_SHARED_LIBS)
+    option(BUILD_SHARED_LIBS "Build a shared library form of zlib" ON)
+endif()
+
 set(INSTALL_BIN_DIR "${CMAKE_INSTALL_PREFIX}/bin" CACHE PATH "Installation directory for executables")
 set(INSTALL_LIB_DIR "${CMAKE_INSTALL_PREFIX}/lib" CACHE PATH "Installation directory for libraries")
 set(INSTALL_INC_DIR "${CMAKE_INSTALL_PREFIX}/include" CACHE PATH "Installation directory for headers")
@@ -147,12 +151,19 @@ if(MINGW)
     set(ZLIB_SRCS ${ZLIB_SRCS} ${CMAKE_CURRENT_BINARY_DIR}/zlib1rc.obj)
 endif(MINGW)
 
-add_library(zlib SHARED ${ZLIB_SRCS} ${ZLIB_PUBLIC_HDRS} ${ZLIB_PRIVATE_HDRS})
-add_library(zlibstatic STATIC ${ZLIB_SRCS} ${ZLIB_PUBLIC_HDRS} ${ZLIB_PRIVATE_HDRS})
-set_target_properties(zlib PROPERTIES DEFINE_SYMBOL ZLIB_DLL)
-set_target_properties(zlib PROPERTIES SOVERSION 1)
+if (BUILD_SHARED_LIBS)
+    add_library(zlib SHARED ${ZLIB_SRCS} ${ZLIB_PUBLIC_HDRS} ${ZLIB_PRIVATE_HDRS})
+    add_library(zlibstatic STATIC ${ZLIB_SRCS} ${ZLIB_PUBLIC_HDRS} ${ZLIB_PRIVATE_HDRS})
+    set(BUILD_TARGETS zlib zlibstatic)
+ELSE(BUILD_SHARED_LIBS)
+    add_library(zlib STATIC ${ZLIB_SRCS} ${ZLIB_PUBLIC_HDRS} ${ZLIB_PRIVATE_HDRS})
+    set(BUILD_TARGETS zlib)
+ENDIF(BUILD_SHARED_LIBS)
 
-if(NOT CYGWIN)
+set_target_properties(${BUILD_TARGETS} PROPERTIES DEFINE_SYMBOL ZLIB_DLL)
+set_target_properties(${BUILD_TARGETS} PROPERTIES SOVERSION 1)
+
+if(NOT CYGWIN AND BUILD_SHARED_LIBS)
     # This property causes shared libraries on Linux to have the full version
     # encoded into their final filename.  We disable this on Cygwin because
     # it causes cygz-${ZLIB_FULL_VERSION}.dll to be created when cygz.dll
@@ -164,16 +175,18 @@ if(NOT CYGWIN)
 endif()
 
 if(UNIX)
-    # On unix-like platforms the library is almost always called libz
-   set_target_properties(zlib zlibstatic PROPERTIES OUTPUT_NAME z)
-   set_target_properties(zlib PROPERTIES LINK_FLAGS "-Wl,${CMAKE_CURRENT_SOURCE_DIR}/zlib.map")
+     # On unix-like platforms the library is almost always called libz
+    set_target_properties(${BUILD_TARGETS} PROPERTIES OUTPUT_NAME z)
+    IF(BUILD_SHARED_LIBS)
+       set_target_properties(zlib PROPERTIES LINK_FLAGS "-Wl,${CMAKE_CURRENT_SOURCE_DIR}/zlib.map")
+    ENDIF(BUILD_SHARED_LIBS)
 elseif(BUILD_SHARED_LIBS AND WIN32)
     # Creates zlib1.dll when building shared library version
     set_target_properties(zlib PROPERTIES SUFFIX "1.dll")
 endif()
 
 if(NOT SKIP_INSTALL_LIBRARIES AND NOT SKIP_INSTALL_ALL )
-    install(TARGETS zlib zlibstatic
+    install(TARGETS ${BUILD_TARGETS}
         RUNTIME DESTINATION "${INSTALL_BIN_DIR}"
         ARCHIVE DESTINATION "${INSTALL_LIB_DIR}"
         LIBRARY DESTINATION "${INSTALL_LIB_DIR}" )
