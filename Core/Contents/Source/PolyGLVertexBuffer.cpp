@@ -20,6 +20,7 @@
  THE SOFTWARE.
 */
 
+#include "PolyGLHeaders.h"
 #include "PolyGLVertexBuffer.h"
 #include "PolyPolygon.h"
 

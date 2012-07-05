@@ -30,21 +30,13 @@ THE SOFTWARE.
 #include <windows.h>
 #endif
 
-#if defined(__APPLE__) && defined(__MACH__)
-#include <OpenGL/gl.h>
-#include <OpenGL/glext.h>
-#include <OpenGL/glu.h>
-#else
-#include <GL/gl.h>
-#include <GL/glext.h>
-#endif
+#include "PolyGLHeaders.h"
 
 using std::vector;
 
 #ifdef _WINDOWS
 extern PFNGLUSEPROGRAMPROC glUseProgram;
 extern PFNGLUNIFORM1IPROC glUniform1i;
-extern PFNGLGETUNIFORMLOCATIONARBPROC glGetUniformLocation;
 extern PFNGLACTIVETEXTUREPROC glActiveTexture;
 extern PFNGLCREATESHADERPROC glCreateShader;
 extern PFNGLSHADERSOURCEPROC glShaderSource;
@@ -55,6 +47,9 @@ extern PFNGLLINKPROGRAMPROC glLinkProgram;
 extern PFNGLDETACHSHADERPROC glDetachShader;
 extern PFNGLDELETESHADERPROC glDeleteShader;
 extern PFNGLDELETEPROGRAMPROC glDeleteProgram;
+#ifndef _MINGW
+extern PFNGLGETUNIFORMLOCATIONARBPROC glGetUniformLocation;
+#endif
 #endif
 
 using namespace Polycode;

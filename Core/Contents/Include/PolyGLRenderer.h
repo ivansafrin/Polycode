@@ -29,19 +29,7 @@ THE SOFTWARE.
 #include <windows.h>
 #endif
 
-#if defined(__APPLE__) && defined(__MACH__)
-#include <OpenGL/gl.h>
-#include <OpenGL/glext.h>
-#include <OpenGL/glu.h>
-#else
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/glext.h>
-
-#ifdef _WINDOWS
-	#include <GL/wglext.h>
-#endif
-#endif
+#include "PolyGLHeaders.h"
 /*
 #ifdef _WINDOWS 
 #define GL_EXT_framebuffer_object           1
@@ -185,7 +173,7 @@ namespace Polycode {
 		void enableDepthTest(bool val);
 		void enableDepthWrite(bool val);
 				
-		void setClippingPlanes(Number near, Number far);
+		void setClippingPlanes(Number nearPlane_, Number farPlane_);
 				
 		void clearBuffer(bool colorBuffer, bool depthBuffer);	
 		void drawToColorBuffer(bool val);

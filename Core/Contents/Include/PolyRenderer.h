@@ -173,7 +173,7 @@ namespace Polycode {
 		
 		void setTextureFilteringMode(int mode);
 		
-		virtual void setClippingPlanes(Number near, Number far) = 0;
+		virtual void setClippingPlanes(Number nearPlane_, Number farPlane_) = 0;
 		
 		virtual void enableAlphaTest(bool val) = 0;
 		

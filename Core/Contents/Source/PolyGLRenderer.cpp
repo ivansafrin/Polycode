@@ -34,7 +34,7 @@
 #include "PolyModule.h"
 #include "PolyPolygon.h"
 
-#ifdef _WINDOWS
+#if defined(_WINDOWS) && !defined(_MINGW)
 
 
 PFNGLACTIVETEXTUREPROC   glActiveTexture;

@@ -110,6 +110,7 @@ SET(polycore_HDRS
     Include/PolyFont.h
     Include/PolyFontManager.h
     Include/PolyGLCubemap.h
+    Include/PolyGLHeaders.h
     Include/PolyGlobals.h
     Include/PolyGLRenderer.h
     Include/PolyGLSLProgram.h
@@ -192,17 +193,23 @@ SET(CMAKE_DEBUG_POSTFIX "_d")
 #   Source/PolyGLES1Texture.cpp
 
 # platform specific
-IF(MSVC)
+IF (MINGW)
+	SET(polycore_SRCS ${polycore_SRCS}
+		Source/GLee.cpp
+	)
+ENDIF(MINGW)
+
+IF(MSVC OR MINGW)
     SET(polycore_SRCS ${polycore_SRCS} PolycodeView/MSVC/PolycodeView.cpp Source/PolyWinCore.cpp)
     SET(polycore_HDRS ${polycore_HDRS} PolycodeView/MSVC/PolycodeView.h Include/PolyWinCore.h)
 ELSEIF(APPLE)
     SET(polycore_SRCS ${polycore_SRCS} "PolycodeView/Mac OS X/PolycodeView.mm" Source/PolyCocoaCore.mm)
     SET(polycore_HDRS ${polycore_HDRS} "PolycodeView/Mac OS X/PolycodeView.h" Include/PolyCocoaCore.h)
 #    SET(EXTRA_LIBS "-framework Cocoa")
-ELSE(MSVC)
+ELSE(MSVC OR MINGW)
     SET(polycore_SRCS ${polycore_SRCS} PolycodeView/Linux/PolycodeView.cpp Source/PolySDLCore.cpp)
     SET(polycore_HDRS ${polycore_HDRS} PolycodeView/Linux/PolycodeView.h Include/PolySDLCore.h)
-ENDIF(MSVC)
+ENDIF(MSVC OR MINGW)
 
 #IF(POLYCODE_BUILD_SHARED)
 #    ADD_LIBRARY(Polycore_dynamic SHARED ${polycore_SRCS} ${polycore_HDRS})
@@ -228,13 +235,16 @@ IF(POLYCODE_INSTALL_FRAMEWORK)
     INSTALL(FILES ${polycore_HDRS} 
         DESTINATION Core/include)
 
-    IF(APPLE)
+	IF(MSVC OR MINGW)
+        INSTALL(FILES "PolycodeView/MSVC/PolycodeView.h" "PolycodeView/MSVC/PolycodeView.cpp"
+            DESTINATION "Core/PolycodeView")
+    ELSEIF(APPLE)
         INSTALL(FILES "PolycodeView/Mac OS X/PolycodeView.h" "PolycodeView/Mac OS X/PolycodeView.mm"
             DESTINATION "Core/PolycodeView")
-    ELSE(APPLE)
+    ELSE(MSVC OR MINGW)
         INSTALL(FILES "PolycodeView/Linux/PolycodeView.h" "PolycodeView/Linux/PolycodeView.cpp"
             DESTINATION "Core/PolycodeView")
-    ENDIF(APPLE)
+    ENDIF(MSVC OR MINGW)
 
     # install libraries
 #   IF(POLYCODE_BUILD_SHARED)

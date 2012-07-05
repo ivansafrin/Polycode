@@ -249,6 +249,13 @@ ENDIF(PHYSFS_ARCHIVE_QPAK)
 
 IF(PHYSFS_NEED_ZLIB)
     FIND_PACKAGE(ZLIB)
+	
+	# Kludge: Shouldn't be necessary if FIND_LIBRARY were working on mingw.
+	IF(MINGW)
+		SET(ZLIB_FOUND 1)
+		SET(ZLIB_LIBRARY zlib)
+		SET(ZLIB_INCLUDE_DIR ${CMAKE_INSTALL_PREFIX}/include)
+	ENDIF(MINGW)
 
     IF(ZLIB_FOUND)
         OPTION(PHYSFS_INTERNAL_ZLIB "Link own zlib instead of system library" FALSE)

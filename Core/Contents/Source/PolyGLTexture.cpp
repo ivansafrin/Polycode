@@ -20,6 +20,8 @@
  THE SOFTWARE.
 */
 
+#include "PolyGLHeaders.h"
+
 #include "PolyGLTexture.h"
 #include "PolyCoreServices.h"
 #include "PolyRenderer.h"
