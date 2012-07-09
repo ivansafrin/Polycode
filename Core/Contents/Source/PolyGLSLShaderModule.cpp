@@ -20,6 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+#include "PolyGLHeaders.h"
 
 #include "PolyGLSLShaderModule.h"
 #include "PolyCoreServices.h"
@@ -37,26 +38,16 @@ THE SOFTWARE.
 #include <windows.h>
 #endif
 
-#if defined(__APPLE__) && defined(__MACH__)
-#include <OpenGL/gl.h>
-#include <OpenGL/glext.h>
-#include <OpenGL/glu.h>
-#else
-#include <GL/gl.h>
-#include <GL/glext.h>
-#endif
-
 using std::vector;
 
 using namespace Polycode;
 
-#ifdef _WINDOWS
+#if defined(_WINDOWS) && !defined(_MINGW)
 PFNGLUSEPROGRAMPROC glUseProgram;
 PFNGLUNIFORM1IPROC glUniform1i;
 PFNGLUNIFORM1FPROC glUniform1f;
 PFNGLUNIFORM2FPROC glUniform2f;
 PFNGLUNIFORM3FPROC glUniform3f;
-PFNGLGETUNIFORMLOCATIONARBPROC glGetUniformLocation;
 extern PFNGLACTIVETEXTUREPROC glActiveTexture;
 PFNGLCREATESHADERPROC glCreateShader;
 PFNGLSHADERSOURCEPROC glShaderSource;
@@ -71,6 +62,9 @@ PFNGLDELETEPROGRAMPROC glDeleteProgram;
 PFNGLUNIFORMMATRIX4FVPROC glUniformMatrix4fv;
 PFNGLGETSHADERIVPROC glGetShaderiv;
 PFNGLGETSHADERINFOLOGPROC glGetShaderInfoLog;
+#ifndef _MINGW
+PFNGLGETUNIFORMLOCATIONARBPROC glGetUniformLocation;
+#endif
 #endif
 
 GLSLShaderModule::GLSLShaderModule() : PolycodeShaderModule() {
@@ -80,7 +74,6 @@ GLSLShaderModule::GLSLShaderModule() : PolycodeShaderModule() {
 	glUniform1f = (PFNGLUNIFORM1FPROC)wglGetProcAddress("glUniform1f");	
 	glUniform2f = (PFNGLUNIFORM2FPROC)wglGetProcAddress("glUniform2f");	
 	glUniform3f = (PFNGLUNIFORM3FPROC)wglGetProcAddress("glUniform3f");
-	glGetUniformLocation = (PFNGLGETUNIFORMLOCATIONARBPROC)wglGetProcAddress("glGetUniformLocation");
 	glCreateShader = (PFNGLCREATESHADERPROC)wglGetProcAddress("glCreateShader");
 	glShaderSource = (PFNGLSHADERSOURCEPROC)wglGetProcAddress("glShaderSource");
 	glCompileShader = (PFNGLCOMPILESHADERPROC)wglGetProcAddress("glCompileShader");
@@ -95,6 +88,9 @@ GLSLShaderModule::GLSLShaderModule() : PolycodeShaderModule() {
 	glGetShaderiv = (PFNGLGETSHADERIVPROC)wglGetProcAddress("glGetShaderiv");
 	glGetShaderInfoLog = (PFNGLGETSHADERINFOLOGPROC)wglGetProcAddress("glGetShaderInfoLog");
 
+#ifndef _MINGW
+	glGetUniformLocation = (PFNGLGETUNIFORMLOCATIONARBPROC)wglGetProcAddress("glGetUniformLocation");
+#endif
 #endif
 }
 

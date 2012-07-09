@@ -6,6 +6,7 @@ SET(libpng_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/libpng)
 SET(libpng_CMAKE_ARGS
     -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR> 
     -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+	-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
     -DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}
     -DPNG_SHARED=OFF
     -DBUILD_SHARED_LIBS=FALSE
@@ -26,6 +27,14 @@ EXTERNALPROJECT_ADD(zlib
 )
 
 ExternalProject_Get_Property(zlib install_dir)
+
+# Kludge: Shouldn't be necessary if FIND_LIBRARY were working on mingw.
+IF (MINGW)
+	SET(libpng_CMAKE_ARGS ${libpng_CMAKE_ARGS}
+		-DZLIB_LIBRARY=zlib
+		-DZLIB_INCLUDE_DIR=${install_dir}/include
+	)
+ENDIF(MINGW)
 
 EXTERNALPROJECT_ADD(libpng
     DEPENDS zlib
