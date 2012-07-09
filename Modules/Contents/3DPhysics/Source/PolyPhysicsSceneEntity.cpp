@@ -181,7 +181,7 @@ PhysicsCharacter::~PhysicsCharacter() {
 	delete ghostObject;	
 }
 
-PhysicsSceneEntity::PhysicsSceneEntity(SceneEntity *entity, int type, Number mass, Number friction, Number restitution) : CollisionSceneEntity(entity, type) {
+PhysicsSceneEntity::PhysicsSceneEntity(SceneEntity *entity, int type, Number mass, Number friction, Number restitution, bool compoundChildren) : CollisionSceneEntity(entity, type, compoundChildren) {
 
 	this->mass = mass;
 	btVector3 localInertia(0,0,0);

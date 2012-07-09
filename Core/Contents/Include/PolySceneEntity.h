@@ -48,6 +48,8 @@ namespace Polycode {
 			*/
 			bool castShadows;
 			
+			int collisionShapeType;	
+			
 		protected:
 
 	};

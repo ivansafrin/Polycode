@@ -37,7 +37,7 @@ namespace Polycode {
 	*/
 	class _PolyExport PhysicsSceneEntity : public CollisionSceneEntity {
 	public:
-		PhysicsSceneEntity(SceneEntity *entity, int type, Number mass, Number friction, Number restitution);
+		PhysicsSceneEntity(SceneEntity *entity, int type, Number mass, Number friction, Number restitution, bool compoundChildren = false);
 		virtual ~PhysicsSceneEntity();
 		virtual void Update();
 				

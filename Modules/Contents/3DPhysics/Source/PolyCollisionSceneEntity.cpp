@@ -30,7 +30,7 @@ THE SOFTWARE.
 
 using namespace Polycode;
 
-CollisionSceneEntity::CollisionSceneEntity(SceneEntity *entity, int type) {
+CollisionSceneEntity::CollisionSceneEntity(SceneEntity *entity, int type, bool compoundChildren) {
 	sceneEntity = entity;
 	shape = NULL;
 	
@@ -43,10 +43,34 @@ CollisionSceneEntity::CollisionSceneEntity(SceneEntity *entity, int type) {
 	basisA.setIdentity();
 	
 	collisionObject = new btCollisionObject();
-	collisionObject->getWorldTransform().setBasis(basisA);
+	collisionObject->getWorldTransform().setBasis(basisA);	
 	
+	if(compoundChildren) {
+		 btCompoundShape* compoundShape = new btCompoundShape();
+		 
+		 for(int i=0; i < entity->getNumChildren(); i++) {
+			SceneEntity *child = (SceneEntity*)entity->getChildAtIndex(i);
+			btCollisionShape *childShape = createCollisionShape(child, child->collisionShapeType);
+			btTransform transform;
+			
+			child->rebuildTransformMatrix();
 
-	shape = createCollisionShape(entity, type);;
+			btScalar mat[16];		
+			Matrix4 ent_mat = child->getTransformMatrix();
+	
+			for(int i=0; i < 16; i++) {
+				mat[i] = ent_mat.ml[i];
+			}			
+			
+			transform.setFromOpenGLMatrix(mat);
+			compoundShape->addChildShape(transform, childShape);			
+		 }	
+		 
+		 shape = compoundShape;
+	} else {
+		shape = createCollisionShape(entity, type);	
+	}
+	
 	if(shape) {
 		collisionObject->setCollisionShape(shape);
 	}	

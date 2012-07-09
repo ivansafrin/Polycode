@@ -29,6 +29,8 @@ class btDiscreteDynamicsWorld;
 class btDbvtBroadphase;
 class btSequentialImpulseConstraintSolver;
 class btGhostPairCallback;
+class btTypedConstraint;
+class btHingeConstraint;
 
 namespace Polycode {
 
@@ -52,6 +54,15 @@ namespace Polycode {
 			Vector3 positionOnA;
 			Vector3 positionOnB;
 			Vector3 worldNormalOnB;				
+	};
+
+	class _PolyExport PhysicsHingeConstraint  {
+		public:
+		
+			void setLimits(Number minLimit, Number maxLimit);
+			Number getAngle();
+			
+			btHingeConstraint *btConstraint;
 	};
 
 	/**
@@ -81,19 +92,24 @@ namespace Polycode {
 		void removePhysicsChild(SceneEntity *entity);
 		PhysicsSceneEntity *getPhysicsEntityBySceneEntity(SceneEntity *entity);
 		
-		PhysicsSceneEntity *addPhysicsChild(SceneEntity *newEntity, int type=0, Number mass = 0.0f, Number friction=1, Number restitution=0, int group=1);		
-		PhysicsSceneEntity *trackPhysicsChild(SceneEntity *newEntity, int type=0, Number mass = 0.0f, Number friction=1, Number restitution=0, int group=1);		
+		PhysicsSceneEntity *addPhysicsChild(SceneEntity *newEntity, int type=0, Number mass = 0.0f, Number friction=1, Number restitution=0, int group=1, bool compoundChildren = false);		
+		PhysicsSceneEntity *trackPhysicsChild(SceneEntity *newEntity, int type=0, Number mass = 0.0f, Number friction=1, Number restitution=0, int group=1, bool compoundChildren = false);		
 		
 		PhysicsCharacter *addCharacterChild(SceneEntity *newEntity, Number mass, Number friction, Number stepSize, int group  = 1);
 		void removeCharacterChild(PhysicsCharacter *character);
 		
-		
+		PhysicsHingeConstraint *createHingeConstraint(SceneEntity *entity, Vector3 pivot, Vector3 axis, Number minLimit, Number maxLimit);
+
+		PhysicsHingeConstraint *createHingeJoint(SceneEntity *entity1, SceneEntity *entity2, Vector3 pivot1, Vector3 axis1, Vector3 pivot2, Vector3 axis2, Number minLimit, Number maxLimit);
+				
 		void setVelocity(SceneEntity *entity, Vector3 velocity);
 		void warpEntity(SceneEntity *entity, Vector3 position, bool resetRotation = false);
 		
 		PhysicsVehicle *addVehicleChild(SceneEntity *newEntity, Number mass, Number friction, int group  = 1);
 		
 		void setGravity(Vector3 gravity);
+		
+		void wakeUp(SceneEntity *entity);
 			//@}
 			// ----------------------------------------------------------------------------------------------------------------
 
