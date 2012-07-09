@@ -335,6 +335,19 @@ void CocoaCore::setCursor(int cursorType) {
 	[[glView window] invalidateCursorRectsForView: (NSView*)glView];
 }
 
+void CocoaCore::warpCursor(int x, int y) {
+
+	CGSetLocalEventsSuppressionInterval(0);
+	NSArray *theScreens = [NSScreen screens];
+	for (NSScreen *theScreen in theScreens) {
+		CGPoint CenterOfWindow = CGPointMake([glView window].frame.origin.x+x, (-1)*([glView window].frame.origin.y-theScreen.frame.size.height)-yRes+y);
+		CGDisplayMoveCursorToPoint (kCGDirectMainDisplay, CenterOfWindow);		
+		break;
+	}
+	lastMouseX = x;
+	lastMouseY = y;
+}
+
 void CocoaCore::checkEvents() {
 	lockMutex(eventMutex);
 	CocoaEvent event;

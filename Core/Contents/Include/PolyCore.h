@@ -96,6 +96,13 @@ namespace Polycode {
 		virtual void setCursor(int cursorType) = 0;
 		
 		/**
+		* Warps the cursor to a specified point in the window.
+		* @param x New cursor x position 
+		* @param y New cursor y position 		
+		*/
+		virtual void warpCursor(int x, int y) {}
+		
+		/**
 		* Launches a Threaded class into its own thread. See the documentation for Threaded for information on how to crated threaded classes.
 		* @param target Target threaded class.
 		* @see Threaded
