@@ -20,6 +20,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+
+#ifdef _WINDOWS
+#include <windows.h>
+#endif
+
 #include "PolyGLHeaders.h"
 
 #include "PolyGLSLShaderModule.h"
@@ -33,10 +38,6 @@ THE SOFTWARE.
 #include "PolyGLTexture.h"
 
 #include "tinyxml.h"
-
-#ifdef _WINDOWS
-#include <windows.h>
-#endif
 
 using std::vector;
 

@@ -174,6 +174,7 @@ public:
 		~Win32Core();
 
 		void enableMouse(bool newval);
+		void warpCursor(int x, int y);
 		unsigned int getTicks();		
 		bool Update();
 

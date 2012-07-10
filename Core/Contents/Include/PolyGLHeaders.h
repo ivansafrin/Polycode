@@ -1,5 +1,9 @@
 #pragma once
 
+#if defined(_WINDOWS) && !defined(_MINGW)
+#include <windows.h>
+#endif
+
 #ifdef _MINGW 
 #include "GLee.h"
 typedef GLEEPFNGLACTIVETEXTUREPROC PFNGLACTIVETEXTUREPROC;
