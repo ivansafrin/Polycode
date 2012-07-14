@@ -92,7 +92,7 @@ class _PolyExport GLSLProgramParam {
 	class _PolyExport GLSLProgram : public Resource {
 		public:
 			GLSLProgram(int type);
-			~GLSLProgram();
+			virtual ~GLSLProgram();
 			
 			void addParam(const String& name, bool isAuto, int autoID, int paramType, void *defaultData);
 		

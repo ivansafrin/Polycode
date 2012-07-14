@@ -42,7 +42,7 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		using Entity::setScale;		
 	
 		ScreenEntity();
-		~ScreenEntity();
+		virtual ~ScreenEntity();
 		
 		/**
 		* Set 2d position.
@@ -85,10 +85,10 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		Number getRotation() const;
 			
 		bool _onMouseDown(Number x, Number y, int mouseButton, int timestamp, Vector2 parentAdjust = Vector2(0,0));
-		bool _onMouseUp(Number x, Number y, int mouseButton, int timestamp);
-		void _onMouseMove(Number x, Number y, int timestamp);
-		void _onMouseWheelUp(Number x, Number y, int timestamp);
-		void _onMouseWheelDown(Number x, Number y, int timestamp);
+		bool _onMouseUp(Number x, Number y, int mouseButton, int timestamp, Vector2 parentAdjust = Vector2(0,0));
+		void _onMouseMove(Number x, Number y, int timestamp, Vector2 parentAdjust = Vector2(0,0));
+		void _onMouseWheelUp(Number x, Number y, int timestamp, Vector2 parentAdjust = Vector2(0,0));
+		void _onMouseWheelDown(Number x, Number y, int timestamp, Vector2 parentAdjust = Vector2(0,0));
 	
 		virtual void onMouseDown(Number x, Number y){}
 		virtual void onMouseUp(Number x, Number y){}
@@ -98,6 +98,8 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 	
 		void _onKeyDown(PolyKEY key, wchar_t charCode);	
 		void _onKeyUp(PolyKEY key, wchar_t charCode);	
+		
+		Matrix4 getScreenConcatenatedMatrix();
 		
 		virtual void onKeyDown(PolyKEY key, wchar_t charCode){}
 		virtual void onKeyUp(PolyKEY key, wchar_t charCode){}
@@ -148,6 +150,8 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		*/
 		void setPositionMode(int newPositionMode);
 		
+		int getPositionMode();
+		
 		void setDragLimits(Rectangle rect);
 		void clearDragLimits();
 		
@@ -169,8 +173,9 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		* If this option is true, the screen entity's positions will be roudnded to whole pixels. This only works if the screen is using pixel coordinates.
 		*/
 		bool snapToPixels;
-
 		bool processInputEvents;
+
+		Vector2 getHitbox();
 
 	protected:
 	

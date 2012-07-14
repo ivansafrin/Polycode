@@ -130,15 +130,17 @@ OSFILE *OSBasics::open(const String& filename, const String& opts) {
 }
 
 int OSBasics::close(OSFILE *file) {
+	int result = 0;
 	switch(file->fileType) {
 		case OSFILE::TYPE_FILE:
-			return fclose(file->file);
+			result = fclose(file->file);
 			break;
 		case OSFILE::TYPE_ARCHIVE_FILE:
-			return PHYSFS_close(file->physFSFile);
+			result = PHYSFS_close(file->physFSFile);
 			break;			
 	}
-	return 0;
+	delete file;
+	return result;
 }
 
 long OSBasics::tell(OSFILE * stream) {

@@ -43,7 +43,7 @@ namespace Polycode {
 			InputEvent(Vector2 mousePosition,int timestamp);
 //			InputEvent(PolyKEY key, int timestamp);
 			InputEvent(PolyKEY key, wchar_t charCode, int timestamp);			
-			~InputEvent();
+			virtual ~InputEvent();
 		
 			// ----------------------------------------------------------------------------------------------------------------
 			/** @name Input event types.

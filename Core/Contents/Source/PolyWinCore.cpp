@@ -21,6 +21,7 @@
 */		
 
 #include "PolyWinCore.h"
+#include "PolyGLHeaders.h"
 #include "PolyCoreInput.h"
 #include "PolyCoreServices.h"
 #include "PolyInputEvent.h"
@@ -31,7 +32,9 @@
 
 #include <GL/gl.h>
 #include <GL/glext.h>
+#ifndef _MINGW
 #include <GL/wglext.h>
+#endif
 
 using namespace Polycode;
 
@@ -95,6 +98,16 @@ Win32Core::~Win32Core() {
 
 void Win32Core::enableMouse(bool newval) {
 	ShowCursor(newval);	
+}
+
+void Win32Core::warpCursor(int x, int y) {
+	POINT point;
+	point.x = x;
+	point.y = y;
+	ClientToScreen(hWnd, &point);
+	SetCursorPos(point.x,point.y);
+	lastMouseX = x;
+	lastMouseY = y;
 }
 
 unsigned int Win32Core::getTicks() {
@@ -429,6 +442,7 @@ void Win32Core::handleKeyUp(LPARAM lParam, WPARAM wParam) {
 	unlockMutex(eventMutex);
 }
 
+#ifndef NO_TOUCH_API
 void Win32Core::handleTouchEvent(LPARAM lParam, WPARAM wParam) {
 	
 	// Bail out now if multitouch is not available on this system
@@ -487,6 +501,7 @@ void Win32Core::handleTouchEvent(LPARAM lParam, WPARAM wParam) {
 	}
 	unlockMutex(eventMutex);	
 }
+#endif
 
 void Win32Core::handleMouseMove(LPARAM lParam, WPARAM wParam) {
 	lockMutex(eventMutex);
@@ -806,7 +821,9 @@ void Win32Core::shutdownGamepad() {
 }
 
 void Win32Core::initTouch() {
-	
+#ifdef NO_TOUCH_API
+	hasMultiTouch = false;
+#else
 	// Check for windows multitouch support at runtime
 	// This could be done easily during preprocessing but would require building
 	// multiple releases of polycode for both winxp/vista and win7
@@ -815,7 +832,7 @@ void Win32Core::initTouch() {
 	// If the above multitouch functions were found, then set a flag so we don't
 	// have to check again later
 	hasMultiTouch = ( GetTouchInputInfoFunc == NULL ) ? false : true;
-	
+#endif
 }
 
 

@@ -46,7 +46,7 @@ namespace Polycode {
 		* Default constructor.
 		*/
 		Screen();
-		~Screen();
+		virtual ~Screen();
 		
 		/**
 		* Adds a ScreenEntity to the 2d rendering pipeline.
@@ -151,6 +151,11 @@ namespace Polycode {
 		*/		
 		bool processTouchEventsAsMouse;
 		
+		/**
+		* If ownsChildren is set to true, the scene will delete its children upon destruction (defaults to false).
+		*/
+		bool ownsChildren;		
+		
 	protected:
 		
 		bool useNormalizedCoordinates;
@@ -164,8 +169,7 @@ namespace Polycode {
 		std::vector <ScreenEntity*> children;
 		
 		Material *filterShaderMaterial;			
-		Texture *originalSceneTexture;			
-		Texture *zBufferSceneTexture;						
+		Texture *originalSceneTexture;				
 		std::vector<ShaderBinding*> localShaderOptions;
 		bool _hasFilterShader;
 	};

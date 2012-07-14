@@ -21,6 +21,9 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	sprite->playAnimation("ExampleAnimation", 0, false);
 }
 
+HelloPolycodeApp::~HelloPolycodeApp() {
+}
+
 bool HelloPolycodeApp::Update() {
     return core->Update();
 }

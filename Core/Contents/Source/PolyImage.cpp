@@ -94,8 +94,7 @@ Image::Image() {
 }
 
 Image::~Image() {
-	if(imageData != NULL)
-		free(imageData);
+	free(imageData);
 }
 
 char *Image::getPixels() {
@@ -149,8 +148,7 @@ unsigned int Image::getHeight() const {
 }
 
 void Image::createEmpty(unsigned int width, unsigned int height) {
-	if(imageData != NULL)
-		free(imageData);
+	free(imageData);
 		
 	imageData = (char*)malloc(width*height*pixelSize);
 	this->width = width;
@@ -160,13 +158,13 @@ void Image::createEmpty(unsigned int width, unsigned int height) {
 }
 
 void Image::perlinNoise(int seed, bool alpha) {
-	Perlin *perlin = new Perlin(12,33,1,seed);
+	Perlin perlin = Perlin(12,33,1,seed);
 	unsigned int *imageData32 = (unsigned int*)imageData;
 	Color pixelColor;
 	Number noiseVal;
 	
 	for(int i=0; i < width*height;i++) {
-			noiseVal = fabs(1.0f/perlin->Get( 0.1+(0.9f/((Number)width)) * (i%width), (1.0f/((Number)height)) *   (i - (i%width))));
+			noiseVal = fabs(1.0f/perlin.Get( 0.1+(0.9f/((Number)width)) * (i%width), (1.0f/((Number)height)) *   (i - (i%width))));
 			if(alpha)
 				pixelColor.setColor(noiseVal, noiseVal, noiseVal, noiseVal);
 			else
@@ -288,6 +286,160 @@ void Image::lighten(Number amt, bool color, bool alpha) {
 				imageData[i+j] += decAmt;
 		}
 	}
+}
+
+float* Image::createKernel(float radius, float deviation) {
+	int size = 2 * (int)radius + 1;
+	float* kernel = (float*)malloc(sizeof(float) * (size+1));
+	float radiusf = fabs(radius) + 1.0f;
+
+	if(deviation == 0.0f) deviation = sqrtf(
+			-(radiusf * radiusf) / (2.0f * logf(1.0f / 255.0f))
+	);
+
+	kernel[0] = size;
+
+	float value = -radius;
+	float sum   = 0.0f;
+	int i;
+
+	for(i = 0; i < size; i++) {
+			kernel[1 + i] =
+					1.0f / (2.506628275f * deviation) *
+					expf(-((value * value) / (2.0f * (deviation * deviation))));
+
+			sum   += kernel[1 + i];
+			value += 1.0f;
+	}
+
+	for(i = 0; i < size; i++) {
+		kernel[1 + i] /= sum;
+	}
+	return kernel;
+}
+
+void Image::gaussianBlur(float radius, float deviation) {
+
+	char *newData = (char*)malloc(width*height*pixelSize);
+	
+	char *horzBlur;
+	char *vertBlur;
+
+	
+	horzBlur = (char*)malloc(sizeof(float)*pixelSize*width*height);
+	vertBlur = (char*)malloc(sizeof(float)*pixelSize*width*height);
+
+	float *kernel = createKernel(radius, deviation);
+	
+	int i, iY, iX;
+
+        // Horizontal pass.
+        for(iY = 0; iY < height; iY++) {
+                for(iX = 0; iX < width; iX++) {
+						float val[4];
+						memset(val, 0, sizeof(float) * 4);
+												
+                        int offset = ((int)kernel[0]) / -2;
+
+                        for(i = 0; i < ((int)kernel[0]); i++) {
+                                int x = iX + offset;
+
+                                if(x < 0 || x >= width) { offset++; continue; }
+
+                                float kernip1 = kernel[i + 1];
+								
+								if(imageType == IMAGE_FP16) {
+									float *dataPtr = (float*)&imageData[(width * pixelSize * iY) + (pixelSize * x)];
+									for(int c=0; c < 4; c++) {
+										val[c] += kernip1 * dataPtr[c];
+									}				
+									
+								} else {
+									char *dataPtr = &imageData[(width * pixelSize * iY) + (pixelSize * x)];
+									for(int c=0; c < pixelSize; c++) {
+										val[c] += kernip1 * ((float)dataPtr[c]);
+									}				
+								}
+								
+                                offset++;
+                        }										
+
+						if(imageType == IMAGE_FP16) {
+							int baseOffset = (width * 4 * iY) + (4 * iX);
+							for(int c=0; c < 4; c++) {
+								float *f_horzBlur = (float*)horzBlur;
+								f_horzBlur[baseOffset+c] = val[c];
+							}				
+						} else {
+							int baseOffset = (width * pixelSize * iY) + (pixelSize * iX);
+							for(int c=0; c < pixelSize; c++) {	
+								if(val[c] > 255.0) {
+									val[c] = 255.0;
+								}
+								horzBlur[baseOffset+c] = (char)val[c];
+							}				
+						}
+                }
+        }
+
+	// Vertical pass.
+        for(iY = 0; iY < height; iY++) {
+                for(iX = 0; iX < width; iX++) {
+						float val[4];	
+						memset(val, 0, sizeof(float) * 4);					
+                        int offset = ((int)kernel[0]) / -2;
+
+                        for(i = 0; i < ((int)kernel[0]); i++) {
+                                int y = iY + offset;
+
+                                if(y < 0 || y >= height) {
+                                        offset++;
+                                        continue;
+                                }
+
+                                float kernip1 = kernel[i + 1];
+								if(imageType == IMAGE_FP16) {
+									float *dataPtr = (float*)&horzBlur[(width * pixelSize * y) + (pixelSize * iX)];
+									for(int c=0; c < 4; c++) {
+										val[c] += kernip1 * dataPtr[c];
+									}				
+									
+								} else {
+									char *dataPtr = &horzBlur[(width * pixelSize * y) + (pixelSize * iX)];
+									for(int c=0; c < pixelSize; c++) {
+										val[c] += kernip1 * ((float)dataPtr[c]);
+									}				
+								}
+                                offset++;
+                        }
+						
+						if(imageType == IMAGE_FP16) {
+							int baseOffset = (width * 4 * iY) + (4 * iX);
+							for(int c=0; c < 4; c++) {
+								float *f_vertBlur = (float*)vertBlur;
+								f_vertBlur[baseOffset+c] = val[c];
+							}				
+						} else {
+							int baseOffset = (width * pixelSize * iY) + (pixelSize * iX);
+							for(int c=0; c < pixelSize; c++) {
+								if(val[c] > 255.0) {
+									val[c] = 255.0;
+								}							
+								vertBlur[baseOffset+c] = (char)val[c];
+							}				
+						}
+                }
+        }
+
+
+	memcpy(newData, vertBlur, height * width * pixelSize);
+
+	free(horzBlur);
+	free(vertBlur);
+	free(kernel);
+	
+	free(imageData);
+	imageData = newData;
 }
 
 void Image::fastBlurHor(int blurSize) {
@@ -480,8 +632,8 @@ void Image::line(int x0, int y0, int x1, int y1, Color col) {
 }
 
 void Image::fill(Number r, Number g, Number b, Number a) {
-	Color *color = new Color(r,g,b,a);
-	unsigned int val = color->getUint();
+	Color color = Color(r,g,b,a);
+	unsigned int val = color.getUint();
 	unsigned int *imageData32 = (unsigned int*) imageData;
 	for(int i=0; i< width*height; i++) {
 		imageData32[i] = val;

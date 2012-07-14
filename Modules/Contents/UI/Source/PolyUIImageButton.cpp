@@ -43,6 +43,7 @@ UIImageButton::UIImageButton(String imageName) : ScreenEntity() {
 	buttonRect->addEventListener(this, InputEvent::EVENT_MOUSEOUT);
 	buttonRect->addEventListener(this, InputEvent::EVENT_MOUSEUP);
 	buttonRect->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+	buttonRect->processInputEvents = true;
 	pressedDown = false;
 	
 	width = buttonRect->getWidth();

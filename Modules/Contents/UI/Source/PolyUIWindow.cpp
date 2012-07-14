@@ -157,7 +157,6 @@ void UIWindow::handleEvent(Event *event) {
 				stopDrag();
 			break;
 			case InputEvent::EVENT_MOUSEDOWN:
-				printf("DRAG OFFSET: %f, %f\n", inputEvent->mousePosition.x,inputEvent->mousePosition.y);
 				startDrag(inputEvent->mousePosition.x,inputEvent->mousePosition.y);
 			break;
 		}

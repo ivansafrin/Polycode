@@ -35,6 +35,9 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 	swingValue = 0;
 }
 
+HelloPolycodeApp::~HelloPolycodeApp() {
+}
+
 bool HelloPolycodeApp::Update() {
 	Number elapsed = core->getElapsed();
 	swingValue += elapsed;

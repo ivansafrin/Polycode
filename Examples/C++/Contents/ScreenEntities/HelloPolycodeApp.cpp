@@ -34,6 +34,9 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 	
 }
 
+HelloPolycodeApp::~HelloPolycodeApp() {
+}
+
 bool HelloPolycodeApp::Update() {
 	Number elapsed = core->getElapsed();
 	planetRotation += elapsed ;

@@ -58,6 +58,7 @@ UIButton::UIButton(String text, Number width, Number height) : ScreenEntity() {
 	buttonRect->addEventListener(this, InputEvent::EVENT_MOUSEOVER);
 	buttonRect->addEventListener(this, InputEvent::EVENT_MOUSEOUT);
 	buttonRect->addEventListener(this, InputEvent::EVENT_MOUSEUP);
+	buttonRect->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);	
 	buttonRect->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	pressedDown = false;
 	
@@ -70,6 +71,8 @@ UIButton::UIButton(String text, Number width, Number height) : ScreenEntity() {
 	this->width = width;
 	this->height = height;
 	focusable = true;
+	
+	buttonRect->processInputEvents = true;
 	
 }
 
@@ -97,6 +100,10 @@ void UIButton::handleEvent(Event *event) {
 				buttonRect->setPosition(0,0);				
 				pressedDown = false;
 			break;
+			case InputEvent::EVENT_MOUSEUP_OUTSIDE:
+				buttonLabel->setPosition(labelXPos,labelYPos);
+				buttonRect->setPosition(0,0);
+			break;			
 			case InputEvent::EVENT_MOUSEUP:
 				buttonLabel->setPosition(labelXPos,labelYPos);
 				buttonRect->setPosition(0,0);

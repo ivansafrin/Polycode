@@ -16,6 +16,9 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	screen->addChild(image);	
 }
 
+HelloPolycodeApp::~HelloPolycodeApp() {
+}
+
 bool HelloPolycodeApp::Update() {
     return core->Update();
 }

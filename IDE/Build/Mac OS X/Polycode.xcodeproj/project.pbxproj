@@ -435,6 +435,7 @@
 					"\"$(SRCROOT)/../../../Release/Darwin/Framework/Core/include\"",
 					"\"$(SRCROOT)/../../../Release/Darwin/Framework/Core/Dependencies/include\"",
 					"\"$(SRCROOT)/../../../Release/Darwin/Framework/Modules/include\"",
+					/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
 				);
 				INFOPLIST_FILE = "Polycode-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
@@ -472,6 +473,7 @@
 					"\"$(SRCROOT)/../../../Release/Darwin/Framework/Core/include\"",
 					"\"$(SRCROOT)/../../../Release/Darwin/Framework/Core/Dependencies/include\"",
 					"\"$(SRCROOT)/../../../Release/Darwin/Framework/Modules/include\"",
+					/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
 				);
 				INFOPLIST_FILE = "Polycode-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";

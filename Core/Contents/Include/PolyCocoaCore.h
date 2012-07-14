@@ -116,6 +116,7 @@ namespace Polycode {
 		vector<String> openFilePicker(vector<CoreFileExtension> extensions, bool allowMultiple);
 		
 		void setCursor(int cursorType);
+		void warpCursor(int x, int y);
 		
 		void openURL(String url);
 		

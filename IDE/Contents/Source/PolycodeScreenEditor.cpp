@@ -61,7 +61,8 @@ PolycodeScreenEditor::PolycodeScreenEditor() : PolycodeEditor(true){
 	baseEntity->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);
 	baseEntity->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
 	baseEntity->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
-					
+	baseEntity->processInputEvents = true;
+									
 	screenTransform = new UIBox("screenTransform.png", 16,16,16,16, 100,100);
 	screenTransform->visible = false;
 	addChild(screenTransform);
@@ -99,6 +100,7 @@ void PolycodeScreenEditor::handleDroppedFile(OSFileEntry file, Number x, Number 
 		baseEntity->addChild(newImage);
 		newImage->setPosition(x-baseEntity->getPosition2D().x,y-baseEntity->getPosition2D().y);
 		newEntity = newImage;
+		newImage->processInputEvents = true;
 	}
 	
 	if(newEntity) {
@@ -138,21 +140,23 @@ void PolycodeScreenEditor::handleEvent(Event *event) {
 			case InputEvent::EVENT_MOUSEUP:
 			case InputEvent::EVENT_MOUSEUP_OUTSIDE:			
 				isDraggingEntity = false;	
-				isScalingEntity = false;		
+				isScalingEntity = false;	
+				if(selectedEntity) 					
+					selectedEntity->stopDrag();
 			break;
 			case InputEvent::EVENT_MOUSEMOVE:
 			{
 				if(isDraggingEntity) {
-					selectedEntity->setPosition(inputEvent->mousePosition.x-baseEntity->getPosition2D().x - dragOffset.x, inputEvent->mousePosition.y-baseEntity->getPosition2D().y  - dragOffset.y);
-					syncTransformToSelected();
+					if(selectedEntity) 
+						syncTransformToSelected();
 				} else if(isScalingEntity) {
-//					Number newScale = Vector2(selectedEntity->getPosition2D().x + baseEntity->getPosition2D().x + dragOffset.x, selectedEntity->getPosition2D().y + baseEntity->getPosition2D().y + dragOffset.y).distance(inputEvent->mousePosition);
-
+/*
 					Vector2 scaleVector = Vector2(selectedEntity->getPosition2D().x + baseEntity->getPosition2D().x, selectedEntity->getPosition2D().y + baseEntity->getPosition2D().y) - inputEvent->mousePosition;
 					
 					scaleVector.x =	scaleVector.x / selectedEntity->getWidth() * 2.0;
 					scaleVector.y =	scaleVector.y / selectedEntity->getHeight() * 2.0;					
 					selectedEntity->setScale(scaleVector.x, scaleVector.y, 0);
+					*/
 					syncTransformToSelected();
 				}
 			}
@@ -164,18 +168,17 @@ void PolycodeScreenEditor::handleEvent(Event *event) {
 	for(int i=0; i < baseEntity->getNumChildren(); i++) {
 		ScreenEntity* childEntity = (ScreenEntity*) baseEntity->getChildAtIndex(i);
 		if(event->getDispatcher() == childEntity) {		
-			screenTransform->visible = true;
-			dragOffset.x = inputEvent->getMousePosition().x - childEntity->getPosition2D().x;
-			dragOffset.y = inputEvent->getMousePosition().y - childEntity->getPosition2D().y;						
+			screenTransform->visible = true;					
 			
 			selectedEntity = childEntity;
 			entityColorBox->setBoxColor(selectedEntity->color);
 			syncTransformToSelected();
 			
 			Number cornerSize = 12;
-			if(dragOffset.x < -(selectedEntity->getWidth()/2.0) + cornerSize && dragOffset.y <  -(selectedEntity->getHeight()/2.0) +  cornerSize) {
+			if(false) {
 				isScalingEntity = true;
 			} else {
+				selectedEntity->startDrag(inputEvent->getMousePosition().x, inputEvent->getMousePosition().y);
 				isDraggingEntity = true;						
 			}
 			

@@ -63,7 +63,7 @@ namespace Polycode {
 			*/ 						
 			Image(Image *copyImage);		
 			Image();			
-			~Image();
+			virtual ~Image();
 
 			/**
 			* Load an image from a file
@@ -183,6 +183,14 @@ namespace Polycode {
 			void fastBlur(int blurSize);
 			void fastBlurVert(int blurSize);
 			void fastBlurHor(int blurSize);
+			
+			/**
+			* Blurs the image using gaussian blur
+			* @param radius Radius of the blur
+			* @param deviation Standard deviation of the gaussian distribution
+			*/															
+			void gaussianBlur(float radius, float deviation);
+			float* createKernel(float radius, float deviation);
 			
 			// What are these??? I wrote them way too long ago.
 			void darken(Number amt, bool color, bool alpha);

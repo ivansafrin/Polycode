@@ -20,6 +20,8 @@
  THE SOFTWARE.
 */
 
+#include "PolyGLHeaders.h"
+
 #include "PolyGLTexture.h"
 #include "PolyCoreServices.h"
 #include "PolyRenderer.h"
@@ -33,7 +35,7 @@ extern PFNGLDELETEFRAMEBUFFERSEXTPROC glDeleteFramebuffersEXT;
 OpenGLTexture::OpenGLTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, bool createMipmaps, int filteringMode, int type) : Texture(width, height, textureData,clamp, createMipmaps, type) {
 	this->filteringMode = filteringMode;
 	glTextureLoaded = false;
-	frameBufferID = 999999;
+	frameBufferID = FRAMEBUFFER_NULL;
 	
 	switch(type) {
 		case Image::IMAGE_RGB:
@@ -125,7 +127,7 @@ void OpenGLTexture::setTextureData(char *data) {
 
 OpenGLTexture::~OpenGLTexture() {
 	glDeleteTextures(1, &textureID);
-	if(frameBufferID != 999999) {
+	if(frameBufferID != FRAMEBUFFER_NULL) {
 		glDeleteFramebuffersEXT(1, &frameBufferID);
 	}	
 }

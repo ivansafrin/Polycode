@@ -52,7 +52,9 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 	wrappersHeaderOut += "\nusing namespace std;\n\n"
 	wrappersHeaderOut += "\nnamespace Polycode {\n\n"
 	
-	# Special case: If we are building the Polycode library itself, inject the LuaEventHandler class
+	# Special case: If we are building the Polycode library itself, inject the LuaEventHandler class.
+	# Note: so that event callbacks can work, any object inheriting from EventHandler will secretly
+	# be modified to actually inherit from LuaEventHandler instead.
 	if prefix == "Polycode":
 		wrappersHeaderOut += "class LuaEventHandler : public EventHandler {\n"
 		wrappersHeaderOut += "public:\n"
@@ -62,7 +64,12 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 		wrappersHeaderOut += "		lua_getfield(L, -1, \"__handleEvent\");\n"
 		wrappersHeaderOut += "		lua_rawgeti( L, LUA_REGISTRYINDEX, wrapperIndex );\n"
 		wrappersHeaderOut += "		lua_pushlightuserdata(L, e);\n"
-		wrappersHeaderOut += "		lua_call(L, 2, 0);\n"
+		wrappersHeaderOut += "		if(lua_pcall(L, 2, 0, 0) != 0) {\n"
+		wrappersHeaderOut += "			const char *msg = lua_tostring(L, -1);\n"
+		wrappersHeaderOut += "			lua_getfield(L, LUA_GLOBALSINDEX, \"__customError\");\n"
+		wrappersHeaderOut += "			lua_pushstring(L, msg);\n"
+		wrappersHeaderOut += "			lua_call(L, 1, 0);\n"
+		wrappersHeaderOut += "		}\n"
 		wrappersHeaderOut += "	}\n"
 		wrappersHeaderOut += "	int wrapperIndex;\n"
 		wrappersHeaderOut += "	lua_State *L;\n"
@@ -364,7 +371,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 
 					# Generate C++-side method call / generate return value
 					if pm["name"] == ckey: # If constructor
-						if ckey == "EventHandler": # Special case EventHandler base class (TODO: Figure out why)
+						if ckey == "EventHandler": # See LuaEventHandler above
 							wrappersHeaderOut += "\tLuaEventHandler *inst = new LuaEventHandler();\n"
 							wrappersHeaderOut += "\tinst->wrapperIndex = luaL_ref(L, LUA_REGISTRYINDEX );\n"
 							wrappersHeaderOut += "\tinst->L = L;\n"
@@ -442,7 +449,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 						luaClassBindingOut += "\t\tend\n"
 						luaClassBindingOut += "\tend\n"
 						luaClassBindingOut += "\tif self.__ptr == nil and arg[1] ~= \"__skip_ptr__\" then\n"
-						if ckey == "EventHandler": # As above: Special case behavior for EventHandler. As above, TODO figure out why.
+						if ckey == "EventHandler": # See LuaEventHandler above
 							luaClassBindingOut += "\t\tself.__ptr = %s.%s(self)\n" % (libName, ckey)
 						else:
 							luaClassBindingOut += "\t\tself.__ptr = %s.%s(unpack(arg))\n" % (libName, ckey)
@@ -498,7 +505,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 				luaClassBindingOut += "\t__ptr_lookup.%s[self.__ptr] = nil\n" % (ckey)
 				luaClassBindingOut += "\t%s.delete_%s(self.__ptr)\n" % (libName, ckey)
 				luaClassBindingOut += "end\n"
-				if ckey == "EventHandler": # TODO Why the eventhandler special case?
+				if ckey == "EventHandler": # See LuaEventHandler above
 					luaClassBindingOut += "\n\n"
 					luaClassBindingOut += "function EventHandler:__handleEvent(event)\n"
 					luaClassBindingOut += "\tevt = Event(\"__skip_ptr__\")\n"
@@ -561,8 +568,8 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 	if libName == "Polycore":
 		with ZipFile("api.pak", 'w') as myzip:
 			for root, dirs, files in os.walk("."):
-			    for filename in fnmatch.filter(files, pattern):
-				myzip.write(os.path.join(root, filename))
+				for filename in fnmatch.filter(files, pattern):
+					myzip.write(os.path.join(root, filename))
 
 if len(sys.argv) < 10:
 	print ("Usage:\n%s [input path] [prefix] [main include] [lib small name] [lib name] [api path] [api class-path] [include path] [source path] [inherit-in-module-file path (optional)]" % (sys.argv[0]))

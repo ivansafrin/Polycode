@@ -48,6 +48,9 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 	screen->addChild(emitter);
 }
 
+HelloPolycodeApp::~HelloPolycodeApp() {
+}
+
 bool HelloPolycodeApp::Update() {
     return core->Update();
 }

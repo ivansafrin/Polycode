@@ -39,7 +39,7 @@ namespace Polycode {
 	class _PolyExport QuaternionCurve {
 		public:
 			QuaternionCurve(BezierCurve *wCurve, BezierCurve *xCurve, BezierCurve *yCurve, BezierCurve *zCurve);
-			~QuaternionCurve();
+			virtual ~QuaternionCurve();
 		
 			Quaternion interpolate(Number t, bool useShortestPath);
 			Quaternion interpolate(unsigned int fromIndex, Number t, bool useShortestPath);

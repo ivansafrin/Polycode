@@ -54,6 +54,7 @@ Entity::Entity() {
 	maskEntity = NULL;
 	isMask = false;
 	hasMask = false;
+	ownsChildren = false;
 }
 
 void Entity::setUserData(void *userData) {
@@ -186,6 +187,11 @@ void Entity::setBBoxRadius(Number rad) {
 }
 
 Entity::~Entity() {
+	if(ownsChildren) {
+		for(int i=0; i < children.size(); i++) {	
+			delete children[i];
+		}
+	}
 }
 
 Vector3 Entity::getChildCenter() const {

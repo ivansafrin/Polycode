@@ -53,7 +53,7 @@ namespace Polycode {
 		*/ 
 		Sound(const String& fileName);
 		Sound(const char *data, int size, int channels = 1, ALsizei freq = 44100, int bps = 16);
-		~Sound();
+		virtual ~Sound();
 		
 		/**
 		* Play the sound once or in a loop.

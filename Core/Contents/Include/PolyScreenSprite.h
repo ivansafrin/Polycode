@@ -49,7 +49,7 @@ class _PolyExport ScreenSprite : public ScreenShape
 		* @param spriteWidth Pixel height of each sprite cell.		
 		*/
 		ScreenSprite(const String& fileName, Number spriteWidth, Number spriteHeight);
-		~ScreenSprite();
+		virtual ~ScreenSprite();
 		
 		/**
 		* Adds a new animation to the sprite. Animations are added by specifying a list of frame indexes and then can be played back by the specified name.

@@ -24,6 +24,9 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 
 }
 
+HelloPolycodeApp::~HelloPolycodeApp() {
+}
+
 bool HelloPolycodeApp::Update() {
     return core->Update();
 }
