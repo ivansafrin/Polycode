@@ -468,8 +468,6 @@ void ScreenEntity::_onMouseWheelUp(Number x, Number y, int timestamp, Vector2 pa
 		}
 	}
 	}		
-	
-	return retVal;
 }
 
 void ScreenEntity::_onMouseWheelDown(Number x, Number y, int timestamp, Vector2 parentAdjust) {
@@ -519,7 +517,6 @@ void ScreenEntity::_onMouseWheelDown(Number x, Number y, int timestamp, Vector2 
 	}
 	}		
 	
-	return retVal;	
 }
 
 

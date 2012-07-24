@@ -20,8 +20,8 @@
  THE SOFTWARE.
 */		
 
-#include "PolyGLHeaders.h"
 #include "PolyWinCore.h"
+#include "PolyGLHeaders.h"
 #include "PolyCoreInput.h"
 #include "PolyCoreServices.h"
 #include "PolyInputEvent.h"
@@ -98,6 +98,16 @@ Win32Core::~Win32Core() {
 
 void Win32Core::enableMouse(bool newval) {
 	ShowCursor(newval);	
+}
+
+void Win32Core::warpCursor(int x, int y) {
+	POINT point;
+	point.x = x;
+	point.y = y;
+	ClientToScreen(hWnd, &point);
+	SetCursorPos(point.x,point.y);
+	lastMouseX = x;
+	lastMouseY = y;
 }
 
 unsigned int Win32Core::getTicks() {
