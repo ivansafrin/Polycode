@@ -103,7 +103,7 @@ namespace Polycode {
 				
 		virtual void loadIdentity() = 0;		
 		virtual void setOrthoMode(Number xSize=0.0f, Number ySize=0.0f) = 0;
-		virtual void _setOrthoMode() = 0;
+		virtual void _setOrthoMode(Number orthoSizeX, Number orthoSizeY) = 0;
 		virtual void setPerspectiveMode() = 0;
 		
 		virtual void setTexture(Texture *texture) = 0;		
@@ -212,7 +212,7 @@ namespace Polycode {
 		
 		void addShaderModule(PolycodeShaderModule *module);
 		
-		virtual bool test2DCoordinate(Number x, Number y, Polygon *poly, const Matrix4 &matrix, bool billboardMode) = 0;
+		virtual bool test2DCoordinateInPolygon(Number x, Number y, Polygon *poly, const Matrix4 &matrix, bool testBackfacing, bool ortho, bool billboardMode);
 		
 		virtual Matrix4 getProjectionMatrix() = 0;
 		virtual Matrix4 getModelviewMatrix() = 0;
@@ -290,6 +290,9 @@ namespace Polycode {
 		bool shadersEnabled;
 		Number fov;
 		
+		Number orthoSizeX;
+		Number orthoSizeY;
+				
 		bool lightingEnabled;
 		
 		bool orthoMode;

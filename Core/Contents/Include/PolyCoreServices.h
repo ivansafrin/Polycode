@@ -146,7 +146,9 @@ namespace Polycode {
 			* @see Config
 			*/																													
 			Config *getConfig();
-		
+			
+			bool drawScreensFirst;
+					
 			~CoreServices();
 		
 		protected:
@@ -154,6 +156,7 @@ namespace Polycode {
 			CoreServices();
 					
 		private:
+		
 		
 			static CoreServices* overrideInstance;
 			static std::map <long, CoreServices*> instanceMap;

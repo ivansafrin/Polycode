@@ -225,13 +225,13 @@ void Scene::Render(Camera *targetCamera) {
 		}
 		CoreServices::getInstance()->getRenderer()->addLight(light->getLightImportance(), position, direction, light->getLightType(), light->lightColor, light->specularLightColor, light->getConstantAttenuation(), light->getLinearAttenuation(), light->getQuadraticAttenuation(), light->getIntensity(), light->getSpotlightCutoff(), light->getSpotlightExponent(), light->areShadowsEnabled(), matrixPtr, shadowMapTexture);
 	}	
-	
+
+	if(targetCamera->getOrthoMode()) {
+		CoreServices::getInstance()->getRenderer()->_setOrthoMode(targetCamera->getOrthoSizeX(), targetCamera->getOrthoSizeY());
+	}
+		
 	targetCamera->doCameraTransform();
 	targetCamera->buildFrustrumPlanes();
-	
-	if(targetCamera->getOrthoMode()) {
-		CoreServices::getInstance()->getRenderer()->_setOrthoMode();
-	}
 	
 	CoreServices::getInstance()->getRenderer()->enableFog(fogEnabled);	
 	if(fogEnabled) {

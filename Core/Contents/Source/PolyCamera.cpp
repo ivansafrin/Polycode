@@ -85,13 +85,24 @@ bool Camera::isSphereInFrustrum(Vector3 pos, Number fRadius) {
     return true;
 }
 
-void Camera::setOrthoMode(bool mode) {
+void Camera::setOrthoMode(bool mode, Number orthoSizeX, Number orthoSizeY) {
+	this->orthoSizeX = orthoSizeX;
+	this->orthoSizeY = orthoSizeY;
 	orthoMode = mode;
 }			
 
 bool Camera::getOrthoMode() {
 	return orthoMode;
 }
+
+Number Camera::getOrthoSizeX() {
+	return orthoSizeX;
+}
+
+Number Camera::getOrthoSizeY() {
+	return orthoSizeY;
+}
+
 
 void Camera::buildFrustrumPlanes() {
 
