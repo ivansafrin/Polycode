@@ -34,7 +34,7 @@ namespace Polycode {
 	class _PolyExport Label : public Image {
 		public:
 			
-			Label(Font *font, const String& text, int size, int antiAliasMode);
+			Label(Font *font, const String& text, int size, int antiAliasMode, bool premultiplyAlpha = false);
 			virtual ~Label();
 			void setText(const String& text);
 			const String& getText() const;
@@ -51,6 +51,8 @@ namespace Polycode {
 			static const int ANTIALIAS_NONE = 1;
 			
 		protected:
+
+			bool premultiplyAlpha;
 
 			Number currentTextWidth;
 			Number currentTextHeight;
