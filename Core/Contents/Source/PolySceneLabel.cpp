@@ -31,8 +31,8 @@
 
 using namespace Polycode;
 
-SceneLabel::SceneLabel(const String& fontName, const String& text, int size, Number scale, int amode) : ScenePrimitive(ScenePrimitive::TYPE_PLANE, 1, 1) {
-	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size, amode);
+SceneLabel::SceneLabel(const String& fontName, const String& text, int size, Number scale, int amode, bool premultiplyAlpha) : ScenePrimitive(ScenePrimitive::TYPE_PLANE, 1, 1) {
+	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size, amode, premultiplyAlpha);
 	this->scale = scale;
 	setText(text);
 	mesh->arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;

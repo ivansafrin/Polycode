@@ -237,6 +237,8 @@ namespace Polycode {
 			* @return Pointer to raw image data.
 			*/						
 			char *getPixels();
+			
+			void premultiplyAlpha();
 		
 			static const int IMAGE_RGB = 0;
 			static const int IMAGE_RGBA = 1;

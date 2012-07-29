@@ -32,8 +32,8 @@
 
 using namespace Polycode;
 
-ScreenLabel::ScreenLabel(const String& text, int size, const String& fontName, int amode) : ScreenShape(ScreenShape::SHAPE_RECT,1,1) {
-	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size, amode);
+ScreenLabel::ScreenLabel(const String& text, int size, const String& fontName, int amode, bool premultiplyAlpha) : ScreenShape(ScreenShape::SHAPE_RECT,1,1) {
+	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size, amode, premultiplyAlpha);
 	dropShadowImage = NULL;
 	texture = NULL;
 	setText(text);		

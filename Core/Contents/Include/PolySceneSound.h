@@ -44,7 +44,7 @@ namespace Polycode {
 	*/	
 	class _PolyExport SceneSound : public SceneEntity {
 		public:
-			SceneSound(const String& fileName, Number referenceDistance, Number maxDistance);
+			SceneSound(const String& fileName, Number referenceDistance, Number maxDistance, bool directionalSound = false);
 			virtual ~SceneSound();			
 			void Update();
 			
@@ -54,6 +54,8 @@ namespace Polycode {
 			Sound *getSound();
 			
 		protected:
+		
+			bool directionalSound;
 			Sound *sound;
 	};
 	

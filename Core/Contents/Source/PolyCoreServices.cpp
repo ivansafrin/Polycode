@@ -64,6 +64,7 @@ CoreServices* CoreServices::getInstance() {
 
 //#ifdef _WINDOWS
 		overrideInstance = new CoreServices;
+		overrideInstance->drawScreensFirst = false;
 		Logger::log("Creating new core services instance...\n");
 		return overrideInstance;
 //#else
@@ -211,12 +212,22 @@ void CoreServices::Update(int elapsed) {
 	timerManager->Update();
 	tweenManager->Update();
 	materialManager->Update(elapsed);
-	renderer->setPerspectiveMode();
-	sceneManager->UpdateVirtual();
-	renderer->clearScreen();
-	sceneManager->Update();
-//	renderer->setOrthoMode();
-	screenManager->Update();
+		
+	if(drawScreensFirst) {
+		renderer->clearScreen();	
+		renderer->setPerspectiveMode();
+		sceneManager->UpdateVirtual();
+		renderer->clearScreen();					
+		screenManager->Update();
+		renderer->setPerspectiveMode();
+		sceneManager->Update();	
+	} else {
+		renderer->setPerspectiveMode();
+		sceneManager->UpdateVirtual();
+		renderer->clearScreen();		
+		sceneManager->Update();
+		screenManager->Update();	
+	}	
 }
 
 SoundManager *CoreServices::getSoundManager() {

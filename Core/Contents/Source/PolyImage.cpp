@@ -644,7 +644,18 @@ bool Image::saveImage(const String &fileName) {
 	return savePNG(fileName);
 }
 
-
+void Image::premultiplyAlpha() {
+	for(int x=0; x < width; x++) {
+		for(int y=0; y < height; y++) {
+			unsigned int *imageData32 = (unsigned int*)imageData;	
+			Color col =  Color(imageData32[x+(y*width)]);
+			col.r *= col.a;
+			col.g *= col.a;			
+			col.b *= col.a;						
+			imageData32[x+(y*width)] = col.getUint();
+		}
+	}
+}
 
 bool Image::savePNG(const String &fileName) {
 

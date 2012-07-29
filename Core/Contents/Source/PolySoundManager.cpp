@@ -97,8 +97,16 @@ void SoundManager::setListenerPosition(Vector3 position) {
 	alListener3f(AL_POSITION, position.x, position.y, position.z);
 }
 
-void SoundManager::setListenerOrientation(Vector3 orientation) {
-	alListener3f(AL_ORIENTATION, orientation.x, orientation.y, orientation.z);
+void SoundManager::setListenerOrientation(Vector3 orientation, Vector3 upVector) {
+	ALfloat ori[6];
+	ori[0] = orientation.x;
+	ori[1] = orientation.y;
+	ori[2] = orientation.z;
+	
+	ori[3] = upVector.x;
+	ori[4] = upVector.y;
+	ori[5] = upVector.z;	
+	alListenerfv(AL_ORIENTATION,ori);
 }
 
 SoundManager::~SoundManager() {

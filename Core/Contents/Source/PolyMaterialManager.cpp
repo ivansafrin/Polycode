@@ -35,7 +35,7 @@ using namespace Polycode;
 using std::vector;
 
 MaterialManager::MaterialManager() {
-	
+	premultiplyAlphaOnLoad = false;
 }
 
 MaterialManager::~MaterialManager() {
@@ -93,6 +93,9 @@ Texture *MaterialManager::createTextureFromFile(const String& fileName, bool cla
 	
 	Image *image = new Image(fileName);
 	if(image->isLoaded()) {
+		if(premultiplyAlphaOnLoad) {
+			image->premultiplyAlpha();
+		}
 		newTexture = createTexture(image->getWidth(), image->getHeight(), image->getPixels(), clamp, createMipmaps);
 	} else {
 		Logger::log("Error loading image, using default texture.\n");

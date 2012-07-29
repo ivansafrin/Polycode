@@ -37,18 +37,17 @@ SceneSoundListener::~SceneSoundListener() {
 void SceneSoundListener::Update() {
 	Matrix4 finalMatrix = getConcatenatedMatrix();
 	CoreServices::getInstance()->getSoundManager()->setListenerPosition(finalMatrix.getPosition());
-	
-	Vector3 direction;
-	direction.x = 0;		
-	direction.y = 0;
-	direction.z = -1;
-	direction = finalMatrix.rotateVector(direction);
-	CoreServices::getInstance()->getSoundManager()->setListenerOrientation(direction);
 
+	Vector3 upVector = Vector3(finalMatrix.ml[4], finalMatrix.ml[5], finalMatrix.ml[6]);
+	Vector3 direction = Vector3( -finalMatrix.ml[8], -finalMatrix.ml[9], -finalMatrix.ml[10]);
+	CoreServices::getInstance()->getSoundManager()->setListenerOrientation(direction, upVector);
 }
 
 
-SceneSound::SceneSound(const String& fileName, Number referenceDistance, Number maxDistance) : SceneEntity() {
+SceneSound::SceneSound(const String& fileName, Number referenceDistance, Number maxDistance, bool directionalSound) : SceneEntity() {
+
+	this->directionalSound = directionalSound;
+	
 	sound = new Sound(fileName);
 	sound->setIsPositional(true);
 	sound->setPositionalProperties(referenceDistance, maxDistance);
@@ -62,12 +61,14 @@ void SceneSound::Update() {
 	Matrix4 finalMatrix = getConcatenatedMatrix();
 	sound->setSoundPosition(finalMatrix.getPosition());
 	
-	Vector3 direction;
-	direction.x = 0;		
-	direction.y = 0;
-	direction.z = -1;
-	direction = finalMatrix.rotateVector(direction);
-	sound->setSoundDirection(direction);
+	if(directionalSound) {
+		Vector3 direction;
+		direction.x = 0;		
+		direction.y = 0;
+		direction.z = -1;
+		direction = finalMatrix.rotateVector(direction);
+		sound->setSoundDirection(direction);
+	}
 	
 }
 

@@ -265,45 +265,6 @@ Vector3 OpenGLRenderer::projectRayFrom2DCoordinate(Number x, Number y) {
 	return dirVec;
 }
 
-bool OpenGLRenderer::test2DCoordinate(Number x, Number y, Polycode::Polygon *poly, const Matrix4 &matrix, bool billboardMode) {
-	GLdouble nearPlane[3],farPlane[3];
-	
-	GLdouble mv[16];
-	Matrix4 camInverse = cameraMatrix.inverse();	
-	Matrix4 cmv;
-	cmv.identity();
-	cmv = cmv * camInverse;
-	
-	for(int i=0; i < 16; i++) {
-		mv[i] = cmv.ml[i];
-	}
-	
-	GLint vp[4];
-	glGetIntegerv( GL_VIEWPORT, vp );
-	
-	gluUnProject(x, yRes - y, 0.0, mv, sceneProjectionMatrix, vp,  &nearPlane[0], &nearPlane[1], &nearPlane[2]);
-	gluUnProject(x, yRes - y, 1.0, mv, sceneProjectionMatrix, vp,  &farPlane[0], &farPlane[1], &farPlane[2]);
-	
-	Vector3 nearVec(nearPlane[0], nearPlane[1], nearPlane[2]);
-	Vector3 farVec(farPlane[0], farPlane[1], farPlane[2]);
-		
-	Vector3 dirVec = farVec - nearVec;	
-	dirVec.Normalize();
-	
-	Vector3 hitPoint;
-	
-	Matrix4 fullMatrix = matrix;
-	
-	if(poly->getVertexCount() == 3) {
-		return rayTriangleIntersect(Vector3(0,0,0), dirVec, fullMatrix * (*poly->getVertex(0)), fullMatrix  * (*poly->getVertex(1)), fullMatrix *  (*poly->getVertex(2)), &hitPoint);
-	} else if(poly->getVertexCount() == 4) {
-		return (rayTriangleIntersect(Vector3(0,0,0), dirVec, fullMatrix * (*poly->getVertex(2)), fullMatrix  * (*poly->getVertex(1)), fullMatrix *  (*poly->getVertex(0)), &hitPoint) ||
-				rayTriangleIntersect(Vector3(0,0,0), dirVec, fullMatrix * (*poly->getVertex(0)), fullMatrix  * (*poly->getVertex(3)), fullMatrix *  (*poly->getVertex(2)), &hitPoint));
-	} else {
-		return false;
-	}
-}
-
 void OpenGLRenderer::enableDepthWrite(bool val) {
 	if(val)
 		glDepthMask(GL_TRUE);
@@ -438,6 +399,9 @@ void OpenGLRenderer::setBlendingMode(int blendingMode) {
 		case BLEND_MODE_COLOR:
 				glBlendFunc (GL_SRC_ALPHA_SATURATE, GL_ONE);
 		break;
+		case BLEND_MODE_PREMULTIPLIED:
+			glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+		break;
 		default:
 			glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		break;
@@ -490,14 +454,19 @@ void OpenGLRenderer::setFogProperties(int fogMode, Color color, Number density, 
 }
 
 
-void OpenGLRenderer::_setOrthoMode() {
+void OpenGLRenderer::_setOrthoMode(Number orthoSizeX, Number orthoSizeY) {
+	this->orthoSizeX = orthoSizeX;
+	this->orthoSizeY = orthoSizeY;
+	
 	if(!orthoMode) {
 		glMatrixMode(GL_PROJECTION);
 		glPushMatrix();
 		glLoadIdentity();
-		glOrtho(-1,1,-1,1,nearPlane,farPlane);
+		glOrtho(-orthoSizeX*0.5,orthoSizeX*0.5,-orthoSizeY*0.5,orthoSizeY*0.5,-farPlane,farPlane);
 		orthoMode = true;
 	}
+	glGetDoublev( GL_PROJECTION_MATRIX, sceneProjectionMatrixOrtho);
+		
 	glMatrixMode(GL_MODELVIEW);	
 	glLoadIdentity();	
 }
