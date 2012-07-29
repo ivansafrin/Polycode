@@ -131,8 +131,10 @@ void ResourceManager::parseMaterials(const String& dirPath, bool recursive) {
 						TiXmlNode* pChild;					
 						for (pChild = mElem->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {
 							Material *newMat = CoreServices::getInstance()->getMaterialManager()->materialFromXMLNode(pChild);
-							newMat->setResourceName(newMat->getName());
-							resources.push_back(newMat);
+							if (newMat) {
+								newMat->setResourceName(newMat->getName());
+								resources.push_back(newMat);
+							}
 						}
 					}
 				}

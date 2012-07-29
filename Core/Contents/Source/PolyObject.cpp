@@ -266,8 +266,11 @@ void Object::createFromXMLElement(TiXmlElement *element, ObjectEntry *entry) {
 		String lastName = "";
 		int count = 0;
 		for (pChild = element->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {
+			TiXmlElement *pChildElement = pChild->ToElement();
+			if (!pChildElement) continue; // Skip comment nodes
+			
 			ObjectEntry *newEntry = new ObjectEntry();
-			createFromXMLElement(pChild->ToElement(), newEntry);
+			createFromXMLElement(pChildElement, newEntry);
 			entry->children.push_back(newEntry);		
 			if(newEntry->name == lastName) { // Keys cannot repeat in a CONTAINER
 				entry->type = ObjectEntry::ARRAY_ENTRY;
