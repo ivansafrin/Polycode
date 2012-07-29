@@ -130,6 +130,8 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 				for pp in c["properties"]["public"]:
 					pp["type"] = pp["type"].replace("Polycode::", "")
 					pp["type"] = pp["type"].replace("std::", "")
+					if pp["type"].find("POLYIGNORE") != -1:
+						continue
 					if pp["type"].find("static ") != -1: # If static. FIXME: Static doesn't work?
 						if "defaltValue" in pp: # FIXME: defaltValue is misspelled.
 							luaClassBindingOut += "%s = %s\n" % (pp["name"], pp["defaltValue"])
@@ -263,7 +265,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 					# Skip argument-overloaded methods and operators.
 					# TODO: Instead of skipping arguemnt overloads, have special behavior.
 					# TODO: Instead of skipping operators, add to metatable.
-					if pm["name"] in parsed_methods or pm["name"].find("operator") > -1 or pm["name"] in ignore_methods:
+					if pm["name"] in parsed_methods or pm["name"].find("operator") > -1 or pm["rtnType"].find("POLYIGNORE") > -1 or pm["name"] in ignore_methods:
 						continue
 
 					# Skip destructors and methods which return templates.
@@ -273,6 +275,9 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 					
 					basicType = False
 					voidRet = False
+					
+					# Def: True if method takes a lua_State* as argument (i.e.: no preprocessing by us)
+					rawMethod = len(pm["parameters"]) > 0 and pm["parameters"][0].get("type","").find("lua_State") > -1
 
 					# Basic setup, C++ side: Add function to registry and start building wrapper function.
 					if pm["name"] == ckey: # It's a constructor
@@ -289,150 +294,157 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 							wrappersHeaderOut += "\t%s *inst = (%s*)lua_topointer(L, 1);\n" % (ckey, ckey)
 						idx = 2
 					
-					# Generate C++ side parameter pushing
-					paramlist = []
-					lparamlist = []
-					for param in pm["parameters"]:
-						if not param.has_key("type"):
-							continue
-						if param["type"] == "0":
-							continue
-						param["type"] = param["type"].replace("Polycode::", "")
-						param["type"] = param["type"].replace("std::", "")
-						param["type"] = param["type"].replace("const", "")
-						param["type"] = param["type"].replace("&", "")
-						param["type"] = param["type"].replace(" ", "")
-						param["type"] = param["type"].replace("long", "long ")
-						param["type"] = param["type"].replace("unsigned", "unsigned ")
+					if rawMethod:
+						wrappersHeaderOut += "\treturn inst->%s(L);\n" % (pm["name"])
+					else:	
+						# Generate C++ side parameter pushing
+						paramlist = []
+						lparamlist = []
+						for param in pm["parameters"]:
+							if not param.has_key("type"):
+								continue
+							if param["type"] == "0":
+								continue
+							param["type"] = param["type"].replace("Polycode::", "")
+							param["type"] = param["type"].replace("std::", "")
+							param["type"] = param["type"].replace("const", "")
+							param["type"] = param["type"].replace("&", "")
+							param["type"] = param["type"].replace(" ", "")
+							param["type"] = param["type"].replace("long", "long ")
+							param["type"] = param["type"].replace("unsigned", "unsigned ")
 
-						param["name"] = param["name"].replace("end", "_end").replace("repeat", "_repeat")
-						if"type" in param:
-							luatype = "LUA_TLIGHTUSERDATA"
-							checkfunc = "lua_islightuserdata"
-							if param["type"].find("*") > -1:
-								luafunc = "(%s)lua_topointer" % (param["type"].replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"))
-							elif param["type"].find("&") > -1:
-								luafunc = "*(%s*)lua_topointer" % (param["type"].replace("const", "").replace("&", "").replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"))
-							else:
-								luafunc = "*(%s*)lua_topointer" % (param["type"].replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"))
-							lend = ".__ptr"
-							if param["type"] == "int" or param["type"] == "unsigned int":
-								luafunc = "lua_tointeger"
-								luatype = "LUA_TNUMBER"
-								checkfunc = "lua_isnumber"
-								lend = ""
-							if param["type"] == "bool":
-								luafunc = "lua_toboolean"
-								luatype = "LUA_TBOOLEAN"
-								checkfunc = "lua_isboolean"
-								lend = ""
-							if param["type"] == "Number" or param["type"] == "float" or param["type"] == "double":
-								luatype = "LUA_TNUMBER"
-								luafunc = "lua_tonumber"
-								checkfunc = "lua_isnumber"
-								lend = ""
-							if param["type"] == "String":
-								luatype = "LUA_TSTRING"
-								luafunc = "lua_tostring"
-								checkfunc = "lua_isstring"
-								lend = ""
+							param["name"] = param["name"].replace("end", "_end").replace("repeat", "_repeat")
+							if"type" in param:
+								luatype = "LUA_TLIGHTUSERDATA"
+								checkfunc = "lua_islightuserdata"
+								if param["type"].find("*") > -1:
+									luafunc = "(%s)lua_topointer" % (param["type"].replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"))
+								elif param["type"].find("&") > -1:
+									luafunc = "*(%s*)lua_topointer" % (param["type"].replace("const", "").replace("&", "").replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"))
+								else:
+									luafunc = "*(%s*)lua_topointer" % (param["type"].replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"))
+								lend = ".__ptr"
+								if param["type"] == "int" or param["type"] == "unsigned int":
+									luafunc = "lua_tointeger"
+									luatype = "LUA_TNUMBER"
+									checkfunc = "lua_isnumber"
+									lend = ""
+								if param["type"] == "bool":
+									luafunc = "lua_toboolean"
+									luatype = "LUA_TBOOLEAN"
+									checkfunc = "lua_isboolean"
+									lend = ""
+								if param["type"] == "Number" or param["type"] == "float" or param["type"] == "double":
+									luatype = "LUA_TNUMBER"
+									luafunc = "lua_tonumber"
+									checkfunc = "lua_isnumber"
+									lend = ""
+								if param["type"] == "String":
+									luatype = "LUA_TSTRING"
+									luafunc = "lua_tostring"
+									checkfunc = "lua_isstring"
+									lend = ""
 
-							param["type"] = param["type"].replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle")
+								param["type"] = param["type"].replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle")
 
-							if "defaltValue" in param:
-								if checkfunc != "lua_islightuserdata" or (checkfunc == "lua_islightuserdata" and param["defaltValue"] == "NULL"):
-									#param["defaltValue"] = param["defaltValue"].replace(" 0f", ".0f")
-									param["defaltValue"] = param["defaltValue"].replace(": :", "::")
-									#param["defaltValue"] = param["defaltValue"].replace("0 ", "0.")
-									param["defaltValue"] = re.sub(r'([0-9]+) ([0-9])+', r'\1.\2', param["defaltValue"])
+								if "defaltValue" in param:
+									if checkfunc != "lua_islightuserdata" or (checkfunc == "lua_islightuserdata" and param["defaltValue"] == "NULL"):
+										#param["defaltValue"] = param["defaltValue"].replace(" 0f", ".0f")
+										param["defaltValue"] = param["defaltValue"].replace(": :", "::")
+										#param["defaltValue"] = param["defaltValue"].replace("0 ", "0.")
+										param["defaltValue"] = re.sub(r'([0-9]+) ([0-9])+', r'\1.\2', param["defaltValue"])
 
-									wrappersHeaderOut += "\t%s %s;\n" % (param["type"], param["name"])
-									wrappersHeaderOut += "\tif(%s(L, %d)) {\n" % (checkfunc, idx)
-									wrappersHeaderOut += "\t\t%s = %s(L, %d);\n" % (param["name"], luafunc, idx)
-									wrappersHeaderOut += "\t} else {\n"
-									wrappersHeaderOut += "\t\t%s = %s;\n" % (param["name"], param["defaltValue"])
-									wrappersHeaderOut += "\t}\n"
+										wrappersHeaderOut += "\t%s %s;\n" % (param["type"], param["name"])
+										wrappersHeaderOut += "\tif(%s(L, %d)) {\n" % (checkfunc, idx)
+										wrappersHeaderOut += "\t\t%s = %s(L, %d);\n" % (param["name"], luafunc, idx)
+										wrappersHeaderOut += "\t} else {\n"
+										wrappersHeaderOut += "\t\t%s = %s;\n" % (param["name"], param["defaltValue"])
+										wrappersHeaderOut += "\t}\n"
+									else:
+										wrappersHeaderOut += "\tluaL_checktype(L, %d, %s);\n" % (idx, luatype);
+										if param["type"] == "String":
+											wrappersHeaderOut += "\t%s %s = String(%s(L, %d));\n" % (param["type"], param["name"], luafunc, idx)
+										else:
+											wrappersHeaderOut += "\t%s %s = %s(L, %d);\n" % (param["type"], param["name"], luafunc, idx)
 								else:
 									wrappersHeaderOut += "\tluaL_checktype(L, %d, %s);\n" % (idx, luatype);
 									if param["type"] == "String":
 										wrappersHeaderOut += "\t%s %s = String(%s(L, %d));\n" % (param["type"], param["name"], luafunc, idx)
 									else:
 										wrappersHeaderOut += "\t%s %s = %s(L, %d);\n" % (param["type"], param["name"], luafunc, idx)
+								paramlist.append(param["name"])
+
+								lparamlist.append(param["name"]+lend)
+								idx = idx +1 # Param parse success-- mark the increased stack
+
+						# Generate C++-side method call / generate return value
+						if pm["name"] == ckey: # If constructor
+							if ckey == "EventHandler": # See LuaEventHandler above
+								wrappersHeaderOut += "\tLuaEventHandler *inst = new LuaEventHandler();\n"
+								wrappersHeaderOut += "\tinst->wrapperIndex = luaL_ref(L, LUA_REGISTRYINDEX );\n"
+								wrappersHeaderOut += "\tinst->L = L;\n"
 							else:
-								wrappersHeaderOut += "\tluaL_checktype(L, %d, %s);\n" % (idx, luatype);
-								if param["type"] == "String":
-									wrappersHeaderOut += "\t%s %s = String(%s(L, %d));\n" % (param["type"], param["name"], luafunc, idx)
-								else:
-									wrappersHeaderOut += "\t%s %s = %s(L, %d);\n" % (param["type"], param["name"], luafunc, idx)
-							paramlist.append(param["name"])
-
-							lparamlist.append(param["name"]+lend)
-							idx = idx +1 # Param parse success-- mark the increased stack
-
-					# Generate C++-side method call / generate return value
-					if pm["name"] == ckey: # If constructor
-						if ckey == "EventHandler": # See LuaEventHandler above
-							wrappersHeaderOut += "\tLuaEventHandler *inst = new LuaEventHandler();\n"
-							wrappersHeaderOut += "\tinst->wrapperIndex = luaL_ref(L, LUA_REGISTRYINDEX );\n"
-							wrappersHeaderOut += "\tinst->L = L;\n"
-						else:
-							wrappersHeaderOut += "\t%s *inst = new %s(%s);\n" % (ckey, ckey, ", ".join(paramlist))
-						wrappersHeaderOut += "\tlua_pushlightuserdata(L, (void*)inst);\n"
-						wrappersHeaderOut += "\treturn 1;\n"
-					else: #If non-constructor
-						if pm["rtnType"].find("static ") == -1: # If non-static
-							call = "inst->%s(%s)" % (pm["name"], ", ".join(paramlist))
-						else: # If static (FIXME: Why doesn't this work?)
-							call = "%s::%s(%s)" % (ckey, pm["name"], ", ".join(paramlist))
-						
-						# If void-typed:
-						if pm["rtnType"] == "void" or pm["rtnType"] == "static void" or pm["rtnType"] == "virtual void" or pm["rtnType"] == "inline void":
-							wrappersHeaderOut += "\t%s;\n" % (call)
-							basicType = True
-							voidRet = True
-							wrappersHeaderOut += "\treturn 0;\n" # 0 arguments returned
-						else: # If there is a return value:
-							# What type is the return value? Default to pointer
-							outfunc = "lua_pushlightuserdata"
-							retFunc = ""
-							basicType = False
-							if pm["rtnType"] == "Number" or  pm["rtnType"] == "inline Number":
-								outfunc = "lua_pushnumber"
-								basicType = True
-							if pm["rtnType"] == "String" or pm["rtnType"] == "static String": # TODO: Path for STL strings?
-								outfunc = "lua_pushstring"
-								basicType = True
-								retFunc = ".c_str()"
-							if pm["rtnType"] == "int" or pm["rtnType"] == "static int" or  pm["rtnType"] == "size_t" or pm["rtnType"] == "static size_t" or pm["rtnType"] == "long" or pm["rtnType"] == "unsigned int" or pm["rtnType"] == "static long":
-								outfunc = "lua_pushinteger"
-								basicType = True
-							if pm["rtnType"] == "bool" or pm["rtnType"] == "static bool" or pm["rtnType"] == "virtual bool":
-								outfunc = "lua_pushboolean"
-								basicType = True
-
-							if pm["rtnType"].find("*") > -1: # Returned var is definitely a pointer.
-								wrappersHeaderOut += "\tvoid *ptrRetVal = (void*)%s%s;\n" % (call, retFunc)
-								wrappersHeaderOut += "\tif(ptrRetVal == NULL) {\n"
-								wrappersHeaderOut += "\t\tlua_pushnil(L);\n"
-								wrappersHeaderOut += "\t} else {\n"
-								wrappersHeaderOut += "\t\t%s(L, ptrRetVal);\n" % (outfunc)
-								wrappersHeaderOut += "\t}\n"
-							elif basicType == True: # Returned var has been flagged as a recognized primitive type
-								wrappersHeaderOut += "\t%s(L, %s%s);\n" % (outfunc, call, retFunc)
-							else: # Some static object is being returned. Convert it to a pointer, then return that.
-								className = pm["rtnType"].replace("const", "").replace("&", "").replace("inline", "").replace("virtual", "").replace("static", "")
-								if className == "Polygon": # Deal with potential windows.h conflict
-									className = "Polycode::Polygon"
-								if className == "Rectangle":
-									className = "Polycode::Rectangle"
-								wrappersHeaderOut += "\t%s *retInst = new %s();\n" % (className, className)
-								wrappersHeaderOut += "\t*retInst = %s;\n" % (call)
-								wrappersHeaderOut += "\t%s(L, retInst);\n" % (outfunc)
+								wrappersHeaderOut += "\t%s *inst = new %s(%s);\n" % (ckey, ckey, ", ".join(paramlist))
+							wrappersHeaderOut += "\tlua_pushlightuserdata(L, (void*)inst);\n"
 							wrappersHeaderOut += "\treturn 1;\n"
+						else: #If non-constructor
+							if pm["rtnType"].find("static ") == -1: # If non-static
+								call = "inst->%s(%s)" % (pm["name"], ", ".join(paramlist))
+							else: # If static (FIXME: Why doesn't this work?)
+								call = "%s::%s(%s)" % (ckey, pm["name"], ", ".join(paramlist))
+							
+							# If void-typed:
+							if pm["rtnType"] == "void" or pm["rtnType"] == "static void" or pm["rtnType"] == "virtual void" or pm["rtnType"] == "inline void":
+								wrappersHeaderOut += "\t%s;\n" % (call)
+								basicType = True
+								voidRet = True
+								wrappersHeaderOut += "\treturn 0;\n" # 0 arguments returned
+							else: # If there is a return value:
+								# What type is the return value? Default to pointer
+								outfunc = "lua_pushlightuserdata"
+								retFunc = ""
+								basicType = False
+								if pm["rtnType"] == "Number" or  pm["rtnType"] == "inline Number":
+									outfunc = "lua_pushnumber"
+									basicType = True
+								if pm["rtnType"] == "String" or pm["rtnType"] == "static String": # TODO: Path for STL strings?
+									outfunc = "lua_pushstring"
+									basicType = True
+									retFunc = ".c_str()"
+								if pm["rtnType"] == "int" or pm["rtnType"] == "static int" or  pm["rtnType"] == "size_t" or pm["rtnType"] == "static size_t" or pm["rtnType"] == "long" or pm["rtnType"] == "unsigned int" or pm["rtnType"] == "static long":
+									outfunc = "lua_pushinteger"
+									basicType = True
+								if pm["rtnType"] == "bool" or pm["rtnType"] == "static bool" or pm["rtnType"] == "virtual bool":
+									outfunc = "lua_pushboolean"
+									basicType = True
+
+								if pm["rtnType"].find("*") > -1: # Returned var is definitely a pointer.
+									wrappersHeaderOut += "\tvoid *ptrRetVal = (void*)%s%s;\n" % (call, retFunc)
+									wrappersHeaderOut += "\tif(ptrRetVal == NULL) {\n"
+									wrappersHeaderOut += "\t\tlua_pushnil(L);\n"
+									wrappersHeaderOut += "\t} else {\n"
+									wrappersHeaderOut += "\t\t%s(L, ptrRetVal);\n" % (outfunc)
+									wrappersHeaderOut += "\t}\n"
+								elif basicType == True: # Returned var has been flagged as a recognized primitive type
+									wrappersHeaderOut += "\t%s(L, %s%s);\n" % (outfunc, call, retFunc)
+								else: # Some static object is being returned. Convert it to a pointer, then return that.
+									className = pm["rtnType"].replace("const", "").replace("&", "").replace("inline", "").replace("virtual", "").replace("static", "")
+									if className == "Polygon": # Deal with potential windows.h conflict
+										className = "Polycode::Polygon"
+									if className == "Rectangle":
+										className = "Polycode::Rectangle"
+									wrappersHeaderOut += "\t%s *retInst = new %s();\n" % (className, className)
+									wrappersHeaderOut += "\t*retInst = %s;\n" % (call)
+									wrappersHeaderOut += "\t%s(L, retInst);\n" % (outfunc)
+								wrappersHeaderOut += "\treturn 1;\n"
 					wrappersHeaderOut += "}\n\n" # Close out C++ generation
 
 					# Now generate the Lua side method.
-					if pm["name"] == ckey: # Constructors
+					if rawMethod:
+						luaClassBindingOut += "function %s:%s(...)\n" % (ckey, pm["name"])
+						luaClassBindingOut += "\treturn %s.%s_%s(self.__ptr, ...)\n" % (libName, ckey, pm["name"])
+						luaClassBindingOut += "end\n"
+					elif pm["name"] == ckey: # Constructors
 						luaClassBindingOut += "function %s:%s(...)\n" % (ckey, ckey)
 						if inherits:
 							luaClassBindingOut += "\tif type(arg[1]) == \"table\" and count(arg) == 1 then\n"
