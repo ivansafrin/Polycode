@@ -22,6 +22,7 @@
  
 #include "PolyObject.h"
 #include "tinyxml.h"
+#include <sstream>
 
 using namespace Polycode;
 
@@ -31,6 +32,46 @@ void ObjectEntry::Clear() {
 		delete children[i];
 	}
 	children.clear();
+}
+
+String ObjectEntry::getTypedName() const {
+	const String _name = name.size() > 0 ? name : String("nil");
+	if (type == ObjectEntry::ARRAY_ENTRY)
+		return String("polyarray:") + _name;
+	if (type == ObjectEntry::STRING_ENTRY && stringVal.size() == 0)
+		return String("polystring:") + _name;
+	
+	// TODO: In interest of consistency, make sure that STRING_ENTRYs stay STRING_ENTRYs (etc) if they're ambiguous (i.e. contain numbers)
+	
+	return _name;
+}	
+	
+void ObjectEntry::setTypedName(const String &str) {
+	size_t firstColon = str.find(":");
+	// Note: This will split up a:b:c as having type "a" and name "b:c". Is this appropriate?
+	if (firstColon == -1) {
+		name = str;
+	} else { // There was a namespace
+		name = str.substr(firstColon+1);
+		
+		String sty = str.substr(0,firstColon);
+		if (sty == "polyfloat")
+			type = ObjectEntry::FLOAT_ENTRY;
+		else if (sty == "polyint")
+			type = ObjectEntry::INT_ENTRY;
+		else if (sty == "polybool")
+			type = ObjectEntry::BOOL_ENTRY;
+		else if (sty == "polyarray")
+			type = ObjectEntry::ARRAY_ENTRY;
+		else if (sty == "polystring")
+			type = ObjectEntry::STRING_ENTRY;
+		else if (sty == "polycontainer")
+			type = ObjectEntry::CONTAINER_ENTRY;
+			
+	}
+	if (name == "nil")
+		name.contents.clear();
+	
 }
 
 Object::Object() {
@@ -54,40 +95,65 @@ void Object::saveToXML(const String& fileName) {
 
 
 TiXmlElement *Object::createElementFromObjectEntry(ObjectEntry *entry) {
-	TiXmlElement *newElement = new TiXmlElement(entry->name.c_str());  
+	TiXmlElement *newElement = new TiXmlElement(entry->getTypedName().c_str());
 	
-	for(int i=0; i < entry->children.size(); i++) {
-		ObjectEntry *childEntry = entry->children[i];
-		
-//		printf("Parsing %s (type: %d)\n", childEntry->name.c_str(), childEntry->type);
-		
-		switch(childEntry->type) {
-			case ObjectEntry::BOOL_ENTRY:
-				if(childEntry->boolVal)
-					newElement->SetAttribute(childEntry->name.c_str(), "true");
-				else
-					newElement->SetAttribute(childEntry->name.c_str(), "false");
-			break;
-			case ObjectEntry::FLOAT_ENTRY:
-				newElement->SetAttribute(childEntry->name.c_str(), String::NumberToString(childEntry->NumberVal).c_str());								
-			break;
-			case ObjectEntry::INT_ENTRY:				
-				newElement->SetAttribute(childEntry->name.c_str(), childEntry->intVal);												
-			break;
-			case ObjectEntry::STRING_ENTRY: 
-			{
-				TiXmlElement *childElement = new TiXmlElement(childEntry->name.c_str());  
-				childElement->LinkEndChild( new TiXmlText(childEntry->stringVal.c_str()));
-				newElement->LinkEndChild(childElement);								
+	switch(entry->type) {
+		case ObjectEntry::BOOL_ENTRY: {
+			newElement->LinkEndChild(new TiXmlText( entry->boolVal ? "true" : "false" ));
+		} break;
+		case ObjectEntry::FLOAT_ENTRY: case ObjectEntry::INT_ENTRY: {
+			std::ostringstream o;
+			if (entry->type == ObjectEntry::FLOAT_ENTRY)
+				o << entry->NumberVal;
+			else
+				o << entry->intVal;
+			newElement->LinkEndChild(new TiXmlText( o.str().c_str() ));
+		} break;
+		case ObjectEntry::STRING_ENTRY: {
+			newElement->LinkEndChild(new TiXmlText( entry->stringVal.c_str() ));
+		} break;
+		default: { // Some sort of container.
+			for(int i=0; i < entry->children.size(); i++) {
+				ObjectEntry *childEntry = entry->children[i];
+				bool needLinkChild = entry->type == ObjectEntry::ARRAY_ENTRY;
+				
+		//		printf("Parsing %s (type: %d)\n", childEntry->name.c_str(), childEntry->type);
+				
+				if (!needLinkChild) {
+					const String &childTypedName = childEntry->getTypedName();
+					switch(childEntry->type) {
+						case ObjectEntry::BOOL_ENTRY:
+							if(childEntry->boolVal)
+								newElement->SetAttribute(childTypedName.c_str(), "true");
+							else
+								newElement->SetAttribute(childTypedName.c_str(), "false");
+						break;
+						case ObjectEntry::FLOAT_ENTRY: {
+							std::ostringstream o; // Avoid NumberToString, it truncates
+							o << childEntry->NumberVal;
+							newElement->SetAttribute(childTypedName.c_str(), o.str().c_str());
+						} break;
+						case ObjectEntry::INT_ENTRY:				
+							newElement->SetAttribute(childTypedName.c_str(), childEntry->intVal);												
+						break;
+						case ObjectEntry::STRING_ENTRY: 
+						{
+							TiXmlElement *childElement = new TiXmlElement(childTypedName.c_str());  
+							childElement->LinkEndChild( new TiXmlText(childEntry->stringVal.c_str()));
+							newElement->LinkEndChild(childElement);								
+						} break;
+						default:
+							needLinkChild = true;
+						break;
+					}
+				}
+				
+				if (needLinkChild) {
+					TiXmlElement *childElement = createElementFromObjectEntry(childEntry);
+					newElement->LinkEndChild(childElement);
+				}
 			}
-				break;				
-			default:
-			{
-				TiXmlElement *childElement = createElementFromObjectEntry(entry->children[i]);
-				newElement->LinkEndChild(childElement);				
-			}
-			break;
-		}
+		} break;
 	}
 	
 	return newElement;
@@ -125,9 +191,8 @@ bool Object::loadFromXML(const String& fileName) {
 
 
 void Object::createFromXMLElement(TiXmlElement *element, ObjectEntry *entry) {
-	entry->name = element->Value();
 	entry->type = ObjectEntry::CONTAINER_ENTRY;
-
+	
 	int ival;
 	double dval;	
 	
@@ -139,20 +204,16 @@ void Object::createFromXMLElement(TiXmlElement *element, ObjectEntry *entry) {
 		ObjectEntry *newEntry = new ObjectEntry();
 		newEntry->type = ObjectEntry::STRING_ENTRY;		
 		newEntry->stringVal = pAttrib->Value();
-		newEntry->name = pAttrib->Name();
 		
-		if (pAttrib->QueryIntValue(&ival)==TIXML_SUCCESS) {
-			if(newEntry->stringVal.find(".") != -1 && pAttrib->QueryDoubleValue(&dval)==TIXML_SUCCESS) {
-				newEntry->NumberVal = dval;
-				newEntry->intVal = dval;				
-				newEntry->type = ObjectEntry::FLOAT_ENTRY;				
-			} else {
-				newEntry->intVal = ival;
-				newEntry->NumberVal = (Number)ival;				
-				newEntry->type = ObjectEntry::INT_ENTRY;
-			}
+		if (newEntry->stringVal.find(".") == -1 && pAttrib->QueryIntValue(&ival)==TIXML_SUCCESS) {
+			newEntry->intVal = ival;
+			newEntry->NumberVal = (Number)ival;
+			newEntry->type = ObjectEntry::INT_ENTRY;
+		} else if (pAttrib->QueryDoubleValue(&dval)==TIXML_SUCCESS) {
+			newEntry->NumberVal = dval;
+			newEntry->intVal = dval;
+			newEntry->type = ObjectEntry::FLOAT_ENTRY;
 		}
-
 		
 		if(newEntry->stringVal == "true") {
 			newEntry->boolVal = true;
@@ -162,6 +223,8 @@ void Object::createFromXMLElement(TiXmlElement *element, ObjectEntry *entry) {
 			newEntry->boolVal = false;
 			newEntry->type = ObjectEntry::BOOL_ENTRY;
 		}
+	
+		newEntry->setTypedName(pAttrib->Name()); // Set name last because we might override type
 		
 		entry->children.push_back(newEntry);
 	
@@ -174,8 +237,19 @@ void Object::createFromXMLElement(TiXmlElement *element, ObjectEntry *entry) {
 		entry->stringVal = element->GetText();
 		entry->type = ObjectEntry::STRING_ENTRY;
 		
-		entry->intVal = atoi(entry->stringVal.c_str());
-		entry->NumberVal = atof(entry->stringVal.c_str());
+		const char *rawVal = entry->stringVal.c_str();
+		char *endResult = NULL; const char *success = rawVal + entry->stringVal.size();
+		entry->intVal = strtol(rawVal, &endResult, 10);
+		if (endResult == success) { // If integer part exhausts string
+			entry->type = ObjectEntry::INT_ENTRY;
+			entry->NumberVal = entry->intVal;
+		} else {
+			entry->NumberVal = strtof(rawVal, &endResult);
+			entry->intVal = entry->NumberVal;
+			if (endResult == success) {
+				entry->type = ObjectEntry::FLOAT_ENTRY;
+			}
+		}
 		
 		if(entry->stringVal == "true") {
 			entry->boolVal = true;
@@ -185,26 +259,25 @@ void Object::createFromXMLElement(TiXmlElement *element, ObjectEntry *entry) {
 			entry->boolVal = false;
 			entry->type = ObjectEntry::BOOL_ENTRY;
 		}
-		
-		return;
-	}
-		
-	// then through the children	
-	TiXmlNode* pChild;	
+	} else {
+		// then through the children	
+		TiXmlNode* pChild;	
 
-	String lastName = "";
-	int count = 0;
-	for (pChild = element->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {
-		ObjectEntry *newEntry = new ObjectEntry();		
-		createFromXMLElement(pChild->ToElement(), newEntry);
-		entry->children.push_back(newEntry);		
-		if(entry->name == lastName) {
-			entry->type = ObjectEntry::ARRAY_ENTRY;
+		String lastName = "";
+		int count = 0;
+		for (pChild = element->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {
+			ObjectEntry *newEntry = new ObjectEntry();
+			createFromXMLElement(pChild->ToElement(), newEntry);
+			entry->children.push_back(newEntry);		
+			if(newEntry->name == lastName) { // Keys cannot repeat in a CONTAINER
+				entry->type = ObjectEntry::ARRAY_ENTRY;
+			}
+			lastName = newEntry->name;			
+			count++;
 		}
-		lastName = entry->name;			
-		count++;
+		
+		entry->length = count;
 	}
-	
-	entry->length = count;
 
+	entry->setTypedName(element->Value()); // Set name last because we might override type
 }
