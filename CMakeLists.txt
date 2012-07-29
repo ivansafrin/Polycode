@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.8)
 
 PROJECT(Polycode)
 
@@ -19,9 +19,9 @@ ENDIF(NOT CMAKE_BUILD_TYPE)
 # Options for what components to build
 #OPTION(POLYCODE_BUILD_SHARED "Build Polycode shared libraries" OFF)
 #OPTION(POLYCODE_BUILD_STATIC "Build Polycode static libraries" ON)
-OPTION(POLYCODE_BUILD_BINDINGS "Build Polycode Lua bindings" ON)
+OPTION(POLYCODE_BUILD_BINDINGS "Build Polycode Lua bindings" OFF)
 OPTION(POLYCODE_BUILD_MODULES "Build Polycode modules" ON)
-OPTION(POLYCODE_BUILD_PLAYER "Build Polycode standalone player" ON)
+OPTION(POLYCODE_BUILD_PLAYER "Build Polycode standalone player" OFF)
 OPTION(POLYCODE_BUILD_TOOLS "Build Polycode tools" ON)
 OPTION(POLYCODE_BUILD_DOCS "Build Polycode documentation" ON)
 
@@ -40,14 +40,49 @@ ENDIF(NOT POLYCODE_RELEASE_DIR)
 
 SET(CMAKE_INSTALL_PREFIX ${POLYCODE_RELEASE_DIR}/Framework/)
 
-
 # set default externals install location
 SET(CMAKE_PREFIX_PATH 
     ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies
     ${POLYCODE_RELEASE_DIR}/Framework/Modules/Dependencies
     ${POLYCODE_RELEASE_DIR}/Framework/Tools/Dependencies)
 
-MESSAGE(DEBUG "CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}")
+MESSAGE(DEBUG " CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}")
+
+# If the following large ugly mess is not present, failures can occur with -G "Unix Makefiles".
+# Even WITH this, you may get "library not found" errors on mingw first run; if so just re-run.
+# FIXME: Shouldn't be necessary if FIND_LIBRARY were working on mingw.
+IF (MINGW)
+LINK_DIRECTORIES(${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/lib)
+LINK_DIRECTORIES(${POLYCODE_RELEASE_DIR}/Framework/Modules/Dependencies/lib)
+SET(ZLIB_LIBRARY zlib)
+SET(ZLIB_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include)
+SET(OGG_LIBRARY libogg)
+SET(OGG_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include)
+SET(PNG_LIBRARY png)
+SET(PNG_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include)
+SET(PHYSFS_LIBRARY physfs)
+SET(PHYSFS_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include)
+SET(OPENAL_LIBRARY OpenAL32)
+SET(OPENAL_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include/AL)
+SET(FREETYPE_LIBRARY freetype)
+SET(FREETYPE_INCLUDE_DIRS ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include)
+SET(VORBIS_LIBRARY libvorbis)
+SET(VORBIS_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include)
+SET(VORBISFILE_LIBRARY libvorbisfile)
+SET(VORBISFILE_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include)
+SET(LUA_LIBRARY lua5.1)
+SET(LUA_LIBRARIES lua5.1)
+SET(LUA_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include/lua5.1)
+SET(BOX2D_RELEASE_LIBRARY Box2D)
+SET(BOX2D_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Modules/Dependencies/include)
+SET(ASSIMP_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include)
+SET(BULLET_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Modules/Dependencies/include/bullet)
+SET(LIBBULLETCOLLISION BulletCollision)
+SET(LIBBULLETDYNAMICS BulletDynamics)
+SET(LIBBULLETMATH LinearMath)
+SET(LIBBULLETMULTITHREADED BulletMultiThreaded)
+SET(LIBBULLETSOFTBODY BulletSoftBody)
+ENDIF()
 
 # Process subdirectories
 ADD_SUBDIRECTORY(Core/Contents)
@@ -77,12 +112,9 @@ ENDIF(POLYCODE_BUILD_TOOLS)
 INSTALL(FILES LICENSE.txt
         DESTINATION ./)
 
-# No Windows Build yet
-IF (NOT WIN32)
-    INSTALL(DIRECTORY ${Polycode_SOURCE_DIR}/Examples/C++/Build/${CMAKE_SYSTEM_NAME} DESTINATION Examples)
-    INSTALL(DIRECTORY ${Polycode_SOURCE_DIR}/Examples/C++/Contents DESTINATION Examples/${CMAKE_SYSTEM_NAME})
-    INSTALL(DIRECTORY ${Polycode_SOURCE_DIR}/Examples/C++/Resources DESTINATION Examples/${CMAKE_SYSTEM_NAME})
-ENDIF(NOT WIN32)
+INSTALL(DIRECTORY ${Polycode_SOURCE_DIR}/Examples/C++/Build/${CMAKE_SYSTEM_NAME} DESTINATION Examples)
+INSTALL(DIRECTORY ${Polycode_SOURCE_DIR}/Examples/C++/Contents DESTINATION Examples/${CMAKE_SYSTEM_NAME})
+INSTALL(DIRECTORY ${Polycode_SOURCE_DIR}/Examples/C++/Resources DESTINATION Examples/${CMAKE_SYSTEM_NAME})
 
 INSTALL(DIRECTORY ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies DESTINATION Core)
 INSTALL(DIRECTORY ${POLYCODE_RELEASE_DIR}/Framework/Modules/Dependencies DESTINATION Modules)

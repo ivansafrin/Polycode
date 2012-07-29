@@ -70,8 +70,8 @@ namespace Polycode {
 
 			/**
 			* A cylinder.
-			* v1 - Cylinder radius
-			* v2 - Cylinder length			
+			* v1 - Cylinder length			
+			* v2 - Cylinder radius
 			* v3 - Number of segments.
 			*/			
 			static const int TYPE_CYLINDER = 3;
@@ -98,7 +98,17 @@ namespace Polycode {
 			* v3 - Number of ring segments.			
 			* v4- Number of pipe segments.
 			*/			
-			static const int TYPE_TORUS = 6;			
+			static const int TYPE_TORUS = 6;	
+			
+
+			/**
+			* A cylinder.
+			* v1 - Cylinder length			
+			* v2 - Cylinder radius
+			* v3 - Number of segments.
+			*/			
+			static const int TYPE_UNCAPPED_CYLINDER = 7;
+							
 
 		
 		protected:

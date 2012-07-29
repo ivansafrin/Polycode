@@ -94,7 +94,7 @@ void SceneLight::enableDebugDraw(bool val) {
 void SceneLight::enableShadows(bool val, Number resolution) {
 	if(val) {
 		if(!zBufferTexture) {
-			CoreServices::getInstance()->getRenderer()->createRenderTextures(NULL, &zBufferTexture, resolution, resolution);
+			CoreServices::getInstance()->getRenderer()->createRenderTextures(NULL, &zBufferTexture, resolution, resolution, false);
 		}
 		if(!spotCamera) {
 			spotCamera = new Camera(parentScene);
@@ -136,7 +136,7 @@ void SceneLight::renderDepthMap(Scene *scene) {
 	CoreServices::getInstance()->getRenderer()->pushMatrix();
 	CoreServices::getInstance()->getRenderer()->loadIdentity();
 
-	CoreServices::getInstance()->getRenderer()->setViewportSize(shadowMapRes, shadowMapRes, shadowMapFOV);	
+	CoreServices::getInstance()->getRenderer()->setViewportSizeAndFOV(shadowMapRes, shadowMapRes, shadowMapFOV);	
 	CoreServices::getInstance()->getRenderer()->bindFrameBufferTexture(zBufferTexture);	
 
 	scene->RenderDepthOnly(spotCamera);
@@ -144,7 +144,7 @@ void SceneLight::renderDepthMap(Scene *scene) {
 	lightViewMatrix = CoreServices::getInstance()->getRenderer()->getModelviewMatrix() *  CoreServices::getInstance()->getRenderer()->getProjectionMatrix();
 	CoreServices::getInstance()->getRenderer()->unbindFramebuffers();
 	CoreServices::getInstance()->getRenderer()->popMatrix();
-	CoreServices::getInstance()->getRenderer()->setViewportSize(CoreServices::getInstance()->getCore()->getXRes(), CoreServices::getInstance()->getCore()->getYRes(), 45.0f);
+	CoreServices::getInstance()->getRenderer()->setViewportSizeAndFOV(CoreServices::getInstance()->getCore()->getXRes(), CoreServices::getInstance()->getCore()->getYRes(), 45.0f);
 }
 
 const Matrix4& SceneLight::getLightViewMatrix() const {

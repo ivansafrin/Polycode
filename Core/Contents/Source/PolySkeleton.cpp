@@ -375,6 +375,16 @@ BoneTrack::BoneTrack(Bone *bone, Number length) {
 }
 
 BoneTrack::~BoneTrack() {
+	delete scaleX;
+	delete scaleY;
+	delete scaleZ;
+	delete QuatW;
+	delete QuatX;
+	delete QuatY;
+	delete QuatZ;
+	delete LocX;
+	delete LocY;
+	delete LocZ;
 }
 
 
@@ -454,6 +464,9 @@ void BoneTrack::Play(bool once) {
 
 
 void BoneTrack::Update() {
+
+	if(!targetBone)
+		return;
 
 	Matrix4 newMatrix;
 	newMatrix = boneQuat.createMatrix();

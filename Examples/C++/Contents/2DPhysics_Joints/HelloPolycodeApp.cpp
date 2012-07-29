@@ -46,6 +46,9 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 	screen->addChild(line);
 }
 
+HelloPolycodeApp::~HelloPolycodeApp() {
+}
+
 bool HelloPolycodeApp::Update() {
     return core->Update();
 }

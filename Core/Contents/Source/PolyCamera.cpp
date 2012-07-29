@@ -29,6 +29,7 @@
 #include "PolyResourceManager.h"
 #include "PolyScene.h"
 #include "PolyShader.h"
+#include "PolyTexture.h"
 
 using namespace Polycode;
 			
@@ -37,13 +38,19 @@ Camera::Camera(Scene *parentScene) : SceneEntity() {
 	orthoMode = false;
 	fov = 45.0f;
 	originalSceneTexture = NULL;
+	zBufferSceneTexture = NULL;
 	exposureLevel = 1.0f;
 	_hasFilterShader = false;	
 	fovSet = false;
 }
 
-Camera::~Camera() {
+Camera::~Camera() {	
+	for(int i=0; i < localShaderOptions.size(); i++) {
+		delete localShaderOptions[i];
+	}
 
+	delete originalSceneTexture;
+	delete zBufferSceneTexture;
 }
 
 void Camera::setExposureLevel(Number level) {
@@ -78,13 +85,24 @@ bool Camera::isSphereInFrustrum(Vector3 pos, Number fRadius) {
     return true;
 }
 
-void Camera::setOrthoMode(bool mode) {
+void Camera::setOrthoMode(bool mode, Number orthoSizeX, Number orthoSizeY) {
+	this->orthoSizeX = orthoSizeX;
+	this->orthoSizeY = orthoSizeY;
 	orthoMode = mode;
 }			
 
 bool Camera::getOrthoMode() {
 	return orthoMode;
 }
+
+Number Camera::getOrthoSizeX() {
+	return orthoSizeX;
+}
+
+Number Camera::getOrthoSizeY() {
+	return orthoSizeY;
+}
+
 
 void Camera::buildFrustrumPlanes() {
 
@@ -243,7 +261,7 @@ void Camera::setParentScene(Scene *parentScene) {
 void Camera::setPostFilter(const String& shaderName) {
 	Material *shaderMaterial = (Material*) CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_MATERIAL, shaderName);
 	if(shaderMaterial)
-		createPostFilter(shaderMaterial);
+		createPostFilter(shaderMaterial);		
 }
 
 void Camera::removePostFilter() {
@@ -266,16 +284,17 @@ void Camera::createPostFilter(Material *shaderMaterial) {
 //	zBufferSceneTexture = CoreServices::getInstance()->getMaterialManager()->createFramebufferTexture(CoreServices::getInstance()->getCore()->getXRes(), CoreServices::getInstance()->getCore()->getYRes(), 0);
 
 	if(!originalSceneTexture) {
-	CoreServices::getInstance()->getRenderer()->createRenderTextures(&originalSceneTexture, &zBufferSceneTexture, CoreServices::getInstance()->getCore()->getXRes(), CoreServices::getInstance()->getCore()->getYRes());
+		CoreServices::getInstance()->getRenderer()->createRenderTextures(&originalSceneTexture, &zBufferSceneTexture, CoreServices::getInstance()->getCore()->getXRes(), CoreServices::getInstance()->getCore()->getYRes(), shaderMaterial->fp16RenderTargets);
 	}
 	
 	for(int i=0; i < shaderMaterial->getNumShaders(); i++) {
 		ShaderBinding* binding = shaderMaterial->getShader(i)->createBinding();		
 		if(i == 0) {
 			binding->addTexture("screenColorBuffer", originalSceneTexture);
-//			binding->addTexture("screenDepthBuffer", zBufferSceneTexture);
+			binding->addTexture("screenDepthBuffer", zBufferSceneTexture);
 		}
 		localShaderOptions.push_back(binding);
+		binding->addLocalParam("exposure", (void*)&exposureLevel);				
 	}
 	
 
@@ -294,14 +313,41 @@ void Camera::setLightDepthTexture(Texture *texture) {
 
 }
 
-void Camera::drawFilter() {
+void Camera::drawFilter(Texture *targetTexture, Number targetTextureWidth, Number targetTextureHeight, Texture *targetColorTexture, Texture *targetZTexture) {
 
 	if(!filterShaderMaterial)
 		return;
-
-	CoreServices::getInstance()->getRenderer()->bindFrameBufferTexture(originalSceneTexture);
-//	CoreServices::getInstance()->getRenderer()->bindFrameBufferTexture(zBufferSceneTexture);	
-	parentScene->Render();
+		
+	Texture *finalTargetColorTexture;
+	Texture *finalTargetZTexture;	
+		
+	if(targetTexture) {	
+		ShaderBinding* binding = localShaderOptions[0];
+		binding->clearTexture("screenColorBuffer");
+		binding->clearTexture("screenDepthBuffer");				
+		binding->addTexture("screenColorBuffer", targetColorTexture);
+		binding->addTexture("screenDepthBuffer", targetZTexture);
+		
+		finalTargetColorTexture = targetColorTexture;
+		finalTargetZTexture = targetZTexture;
+		
+		CoreServices::getInstance()->getRenderer()->setViewportSize(targetTextureWidth, targetTextureHeight);		
+	} else {
+	
+		ShaderBinding* binding = localShaderOptions[0];
+		binding->clearTexture("screenColorBuffer");
+		binding->clearTexture("screenDepthBuffer");				
+		binding->addTexture("screenColorBuffer", originalSceneTexture);
+		binding->addTexture("screenDepthBuffer", zBufferSceneTexture);	
+	
+		finalTargetColorTexture = originalSceneTexture;
+		finalTargetZTexture = zBufferSceneTexture;
+	
+		CoreServices::getInstance()->getRenderer()->setViewportSize(CoreServices::getInstance()->getRenderer()->getXRes(), CoreServices::getInstance()->getRenderer()->getYRes());
+	}
+	CoreServices::getInstance()->getRenderer()->bindFrameBufferTexture(finalTargetColorTexture);
+//	CoreServices::getInstance()->getRenderer()->bindFrameBufferTexture(finalTargetZTexture);	
+	parentScene->Render(this);
 	CoreServices::getInstance()->getRenderer()->unbindFramebuffers();
 
 	ShaderBinding* materialBinding;		
@@ -309,11 +355,23 @@ void Camera::drawFilter() {
 		materialBinding = filterShaderMaterial->getShaderBinding(i);
 		CoreServices::getInstance()->getRenderer()->applyMaterial(filterShaderMaterial, localShaderOptions[i], i);		
 		if(i==filterShaderMaterial->getNumShaders()-1) {
-				CoreServices::getInstance()->getRenderer()->clearScreen();
-				CoreServices::getInstance()->getRenderer()->loadIdentity();
-				CoreServices::getInstance()->getRenderer()->drawScreenQuad(CoreServices::getInstance()->getRenderer()->getXRes(), CoreServices::getInstance()->getRenderer()->getYRes());		
+				if(targetTexture) {
+					CoreServices::getInstance()->getRenderer()->setViewportSize(targetTextureWidth, targetTextureHeight);	
+					CoreServices::getInstance()->getRenderer()->bindFrameBufferTexture(targetTexture);								
+					CoreServices::getInstance()->getRenderer()->clearScreen();
+					CoreServices::getInstance()->getRenderer()->loadIdentity();
+
+					CoreServices::getInstance()->getRenderer()->drawScreenQuad(targetTextureWidth, targetTextureHeight);
+					CoreServices::getInstance()->getRenderer()->unbindFramebuffers();									
+				} else {
+					CoreServices::getInstance()->getRenderer()->setViewportSize(CoreServices::getInstance()->getRenderer()->getXRes(), CoreServices::getInstance()->getRenderer()->getYRes());
+					CoreServices::getInstance()->getRenderer()->clearScreen();
+					CoreServices::getInstance()->getRenderer()->loadIdentity();
+					CoreServices::getInstance()->getRenderer()->drawScreenQuad(CoreServices::getInstance()->getRenderer()->getXRes(), CoreServices::getInstance()->getRenderer()->getYRes());
+				}
 		} else {
 			for(int j=0; j < materialBinding->getNumOutTargetBindings(); j++) {
+				CoreServices::getInstance()->getRenderer()->setViewportSize(materialBinding->getOutTargetBinding(j)->width, materialBinding->getOutTargetBinding(j)->height);
 				CoreServices::getInstance()->getRenderer()->bindFrameBufferTexture(materialBinding->getOutTargetBinding(j)->texture);
 				CoreServices::getInstance()->getRenderer()->drawScreenQuad(materialBinding->getOutTargetBinding(j)->width, materialBinding->getOutTargetBinding(j)->height);
 				CoreServices::getInstance()->getRenderer()->unbindFramebuffers();

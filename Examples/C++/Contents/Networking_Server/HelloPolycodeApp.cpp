@@ -26,6 +26,9 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : ServerWorld(), EventHan
 	server->addEventListener(this, ServerEvent::EVENT_CLIENT_DISCONNECTED);		
 }
 
+HelloPolycodeApp::~HelloPolycodeApp() {
+}
+
 void HelloPolycodeApp::updateWorld(Number elapsed) {
 
 	

@@ -48,8 +48,10 @@ namespace Polycode {
 	*/
 	class _PolyExport ParticleEmitter {
 		public:
-			ParticleEmitter(const String& imageFile, Mesh *particleMesh, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation);
+			ParticleEmitter(const String& imageFile, Mesh *particleMesh, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Vector3 emitterRadius);
 			virtual ~ParticleEmitter();
+		
+			virtual void dispatchTriggerCompleteEvent();
 		
 			void createParticles();
 			
@@ -132,8 +134,8 @@ namespace Polycode {
 			*/ 																													
 			void setParticleCount(int count);
 		
-			virtual void addParticleBody(Entity *particleBody) {}
-			virtual Matrix4 getBaseMatrix() const {Matrix4 m; return m;}
+			virtual void addParticleBody(Entity *particleBody);
+			virtual Matrix4 getBaseMatrix();
 		
 			/**
 			* Particle movement speed multiplier
@@ -260,8 +262,8 @@ namespace Polycode {
 		* @param particleMesh If particle type is Particle::MESH_PARTICLE, this must be set to the mesh to use for each particle
 		* @param emitter If this is specified, particles will be emitted from this meshe's vertices.
 		*/
-		SceneParticleEmitter(const String& materialName, Scene *particleParentScene, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Mesh *particleMesh = NULL, SceneMesh *emitter = NULL);
-		~SceneParticleEmitter();		
+		SceneParticleEmitter(const String& materialName, Scene *particleParentScene, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Vector3 emitterRadius, Mesh *particleMesh = NULL, SceneMesh *emitter = NULL);
+		virtual ~SceneParticleEmitter();		
 		
 		/**
 		* Returns the emitter (helper method for LUA).
@@ -270,8 +272,10 @@ namespace Polycode {
 		
 		void respawnSceneParticles();
 		void addParticleBody(Entity *particleBody);
-		Matrix4 getBaseMatrix() const;
+		Matrix4 getBaseMatrix();
 		void Update();
+		
+		void dispatchTriggerCompleteEvent();
 		
 	protected:
 		SceneMesh *emitterMesh;		
@@ -283,16 +287,18 @@ namespace Polycode {
 	*/
 	class _PolyExport ScreenParticleEmitter : public ScreenEntity, public ParticleEmitter {
 	public:
-		ScreenParticleEmitter(const String& imageFile, Screen *particleParentScreen, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Mesh *particleMesh = NULL, ScreenMesh *emitter = NULL);
-		~ScreenParticleEmitter();		
+		ScreenParticleEmitter(const String& imageFile, Screen *particleParentScreen, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Vector3 emitterRadius, Mesh *particleMesh = NULL, ScreenMesh *emitter = NULL);
+		virtual ~ScreenParticleEmitter();		
 		
 		/**
 		* Returns the emitter (helper method for LUA).
 		*/ 		
 		ParticleEmitter *getEmitter() { return this; }		
 		
+		void dispatchTriggerCompleteEvent();
+		
 		void addParticleBody(Entity *particleBody);
-		Matrix4 getBaseMatrix() const;
+		Matrix4 getBaseMatrix();
 		void Update();
 		
 	protected:

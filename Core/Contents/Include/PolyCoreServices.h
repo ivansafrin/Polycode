@@ -155,6 +155,9 @@ namespace Polycode {
 			 */
 			void getScreenInfo(int *width, int *height, int *hz);
 		
+			
+			bool drawScreensFirst;
+					
 			~CoreServices();
 		
 		protected:
@@ -163,12 +166,14 @@ namespace Polycode {
 					
 		private:
 		
+		
 			static CoreServices* overrideInstance;
 			static std::map <long, CoreServices*> instanceMap;
 			static CoreMutex *renderMutex;
 		
 			std::vector<PolycodeModule*> modules;
-		
+			std::vector<PolycodeModule*> updateModules;
+					
 			Core *core;
 			Config *config;
 			MaterialManager *materialManager;

@@ -23,12 +23,12 @@ THE SOFTWARE.
 #pragma once
 #include "PolyGlobals.h"
 #include "PolyVertex.h"
+#include "PolyPolygon.h"
 
 class OSFILE;
 
 namespace Polycode {
 	
-	class Polygon;
 	class String;
 
 	class _PolyExport VertexSorter {
@@ -77,11 +77,18 @@ namespace Polycode {
 		* Vertex normal array.
 		*/				
 		static const int NORMAL_DATA_ARRAY = 2;				
-		
+
 		/**
 		* Vertex texture coordinate array.
 		*/						
 		static const int TEXCOORD_DATA_ARRAY = 3;
+		
+		/**
+		* Tangent vector array.
+		*/				
+		static const int TANGENT_DATA_ARRAY = 4;				
+		
+		
 	};
 		
 
@@ -122,7 +129,7 @@ namespace Polycode {
 			*/
 			Mesh(const String& fileName);
 
-			~Mesh();
+			virtual ~Mesh();
 			
 			/**
 			* Adds a polygon to the mesh.
@@ -214,8 +221,9 @@ namespace Polycode {
 			* @param height Height of the cylinder.
 			* @param radius Radius of the cylinder.
 			* @param numSegments Number of segments.
+			* @param capped Create the end caps.
 			*/ 								
-			void createCylinder(Number height, Number radius, int numSegments);
+			void createCylinder(Number height, Number radius, int numSegments, bool capped=true);
 
 			/**
 			* Creates a cone mesh.
@@ -256,11 +264,16 @@ namespace Polycode {
 			Number getRadius();
 			
 			/**
-			* Recalculates the mesh normals (flat normals only).
+			* Recalculates the mesh normals
 			* @param smooth If true, will use smooth normals.
 			* @param smoothAngle If smooth, this parameter sets the angle tolerance for the approximation function.
 			*/
 			void calculateNormals(bool smooth=true, Number smoothAngle=90.0);	
+
+			/**
+			* Recalculates the tangent space vector for all vertices.
+			*/ 
+			void calculateTangents();
 			
 			std::vector<Polygon*> getConnectedFaces(Vertex *v);
 			

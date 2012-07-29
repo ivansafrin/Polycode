@@ -23,6 +23,7 @@
 #pragma once
 #include "PolyString.h"
 #include "PolyGlobals.h"
+#include "PolyLogger.h"
 #include "PolyCore.h"
 #include "PolyString.h"
 #include "PolyRectangle.h"
@@ -34,7 +35,7 @@
 #include <unistd.h>
 #include "PolyInputEvent.h"
 #include "PolyGLSLShaderModule.h"
-
+#include <IOKit/hid/IOHIDLib.h>
 #import <Cocoa/Cocoa.h>
 
 using std::vector;
@@ -64,10 +65,40 @@ namespace Polycode {
 		static const int INPUT_EVENT = 0;
 	};
 	
+	
+	class HIDGamepadAxis {
+		public:
+		IOHIDElementCookie cookie;
+		CFIndex logicalMin;
+		CFIndex logicalMax;
+		bool hasNullState;
+		bool isHatSwitch;
+		bool isHatSwitchSecondAxis;
+	};
+
+	class HIDGamepadButton {
+		public:
+		IOHIDElementCookie cookie;
+	};	
+	
+	class GamepadDeviceEntry  {
+		public:
+			GamepadDeviceEntry() {
+				numAxes = 0;
+			}
+			vector<HIDGamepadAxis> axisElements;
+			vector<HIDGamepadButton> buttonElements;			
+			unsigned int deviceID;
+			IOHIDDeviceRef device;
+			unsigned int numAxes;
+			unsigned int numButtons;	
+			CoreInput *input;		
+	};
+	
 	class _PolyExport CocoaCore : public Core {		
 	public:
 		
-		CocoaCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate);
+		CocoaCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex=-1);
 		virtual ~CocoaCore();
 		
 		void enableMouse(bool newval);
@@ -85,9 +116,15 @@ namespace Polycode {
 		vector<String> openFilePicker(vector<CoreFileExtension> extensions, bool allowMultiple);
 		
 		void setCursor(int cursorType);
+		void warpCursor(int x, int y);
+		
+		void openURL(String url);
 		
 		void copyStringToClipboard(const String& str);
 		String getClipboardString();		
+		
+		void initGamepad();
+		void shutdownGamepad();
 		
 //		static pascal OSStatus coreEventHandler (EventHandlerCallRef next, EventRef event, void *data);	
 		
@@ -107,11 +144,14 @@ namespace Polycode {
 		vector<CocoaEvent> cocoaEvents;
 		
 		NSOpenGLContext *context;
-		
+				
+		vector<GamepadDeviceEntry*> gamepads;
+		unsigned int nextDeviceID;
+				
 	protected:	
 		PolycodeView *glView;
-		
 		uint64_t initTime;		
-				
+		
+		IOHIDManagerRef hidManager;
 	};
 }

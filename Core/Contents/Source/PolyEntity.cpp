@@ -25,6 +25,7 @@
 using namespace Polycode;
 
 Entity::Entity() {
+	userData = NULL;
 	scale.set(1,1,1);
 	pitch = 0;
 	yaw = 0;
@@ -53,6 +54,15 @@ Entity::Entity() {
 	maskEntity = NULL;
 	isMask = false;
 	hasMask = false;
+	ownsChildren = false;
+}
+
+void Entity::setUserData(void *userData) {
+	this->userData = userData;
+}
+
+void *Entity::getUserData() {
+	return userData;
 }
 
 Entity *Entity::getParentEntity() const {
@@ -115,6 +125,17 @@ void Entity::removeChild(Entity *entityToRemove) {
 	}	
 }
 
+unsigned int Entity::getNumChildren() {
+	return children.size();
+}
+
+Entity *Entity::getChildAtIndex(unsigned int index) {
+	if(index < children.size()) {
+		return children[index];
+	}
+	return NULL;
+}
+
 void Entity::addChild(Entity *newChild) {
 	addEntity(newChild);
 }
@@ -166,6 +187,11 @@ void Entity::setBBoxRadius(Number rad) {
 }
 
 Entity::~Entity() {
+	if(ownsChildren) {
+		for(int i=0; i < children.size(); i++) {	
+			delete children[i];
+		}
+	}
 }
 
 Vector3 Entity::getChildCenter() const {
@@ -243,7 +269,7 @@ Matrix4 Entity::getConcatenatedRollMatrix() const {
 void Entity::setMask(Entity *mask) {	
 	mask->depthWrite = true;
 	mask->depthOnly = true;
-	mask->setPositionZ(0.999);
+	mask->setPositionZ(-1.0);
 	mask->isMask = true;
 	mask->enabled = false;
 	maskEntity = mask;
@@ -261,6 +287,9 @@ void Entity::clearMask() {
 	maskEntity->enabled = true;
 	maskEntity = NULL;	
 	hasMask = false;	
+	for(int i=0; i < children.size(); i++) {
+		children[i]->clearMask();
+	}	
 }
 
 void Entity::transformAndRender() {
@@ -274,12 +303,12 @@ void Entity::transformAndRender() {
 	if(hasMask) {
 		renderer->clearBuffer(false, true);
 		maskEntity->enabled = true;
-		maskEntity->transformAndRender();		
+		maskEntity->transformAndRender();			
 		maskEntity->enabled = false;		
 		renderer->setDepthFunction(Renderer::DEPTH_FUNCTION_GREATER);
 	}
 	
-	renderer->pushMatrix();	
+	renderer->pushMatrix();
 	if(ignoreParentMatrix && parentEntity) {
 		renderer->multModelviewMatrix(parentEntity->getConcatenatedMatrix().inverse());
 		renderer->setCurrentModelMatrix(parentEntity->getConcatenatedMatrix().inverse());
@@ -295,10 +324,10 @@ void Entity::transformAndRender() {
 		}
 	}
 
-//	if(hasMask) {
-//		renderer->enableDepthWrite(false);
-//		renderer->enableDepthTest(true);		
-//	} else {
+	if(hasMask) {
+		renderer->enableDepthWrite(false);
+		renderer->enableDepthTest(true);		
+	} else {
 	if(!depthWrite)
 		renderer->enableDepthWrite(false);
 	else
@@ -308,7 +337,7 @@ void Entity::transformAndRender() {
 		renderer->enableDepthTest(false);
 	else
 		renderer->enableDepthTest(true);
-//	}
+ 	}
 		 
 	renderer->enableAlphaTest(alphaTest);
 	
@@ -499,7 +528,7 @@ void Entity::setTransformByMatrix(const Matrix4& matrix) {
 	matrixDirty = true;
 }
 
-void Entity::setPosition(Vector3 posVec) {
+void Entity::setPosition(const Vector3 &posVec) {
 	position = posVec;
 	matrixDirty = true;
 }
@@ -519,7 +548,6 @@ void Entity::setPositionZ(Number z) {
 	matrixDirty = true;	
 }
 
-
 void Entity::setScaleX(Number x) {
 	scale.x = x;
 	matrixDirty = true;	
@@ -535,6 +563,12 @@ void Entity::setScaleZ(Number z) {
 	matrixDirty = true;		
 }
 
+void Entity::setScale(const Vector3 &v) {
+    scale.x = v.x;
+    scale.y = v.y;
+    scale.z = v.z;
+    matrixDirty = true;
+}
 
 void Entity::setPosition(Number x, Number y, Number z) {
 	position.x = x;
@@ -543,7 +577,7 @@ void Entity::setPosition(Number x, Number y, Number z) {
 	matrixDirty = true;
 }
 
-void Entity::Translate(Vector3 tVec) {
+void Entity::Translate(const Vector3 &tVec) {
 	position += tVec;
 	matrixDirty = true;
 }

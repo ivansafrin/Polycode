@@ -22,18 +22,20 @@ THE SOFTWARE.
  
 #pragma once
 #include "PolyGlobals.h"
-#include "PolySceneEntity.h"
+#include "PolyScenePrimitive.h"
 
 namespace Polycode {
 	
 	class Label;
 	class Mesh;
 	class Texture;
+	class Material;
+	class ShaderBinding;
 
 	/**
 	* 3D text label. Creates a 3D text label.
 	*/
-	class _PolyExport SceneLabel : public SceneEntity {
+	class _PolyExport SceneLabel : public ScenePrimitive {
 		public:
 			
 			/**
@@ -44,10 +46,8 @@ namespace Polycode {
 			* @param scale Scale to multiply pixel size by for the actual world size of the label.
 			* @param Anti-aliasing mode. Can be Label::ANTIALIAS_FULL or Label::ANTIALIAS_NONE.
 			*/			
-			SceneLabel(const String& fontName, const String& text, int size, Number scale, int amode);
-			~SceneLabel();			
-		
-			bool testMouseCollision(Number x, Number y);
+			SceneLabel(const String& fontName, const String& text, int size, Number scale, int amode, bool premultiplyAlpha = false);
+			virtual ~SceneLabel();			
 		
 			/**
 			* Sets new text for the labe.
@@ -56,13 +56,9 @@ namespace Polycode {
 			void setText(const String& newText);
 			
 			Label *getLabel();
-			void Render();
 			
 		protected:
 			
-			Mesh *mesh;
-			Texture *texture;		
-		
 			Number scale;
 			Label *label;
 	};

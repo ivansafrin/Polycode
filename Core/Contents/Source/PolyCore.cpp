@@ -31,7 +31,7 @@
 
 namespace Polycode {
 	
-	Core::Core(int _xRes, int _yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate) : EventDispatcher() {
+	Core::Core(int _xRes, int _yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex) : EventDispatcher() {
 		services = CoreServices::getInstance();
 		input = new CoreInput();
 		services->setCore(this);
@@ -48,6 +48,8 @@ namespace Polycode {
 		}
 		mouseEnabled = true;
 		lastSleepFrameTicks = 0;
+		
+		this->monitorIndex = monitorIndex;
 		
 		refreshInterval = 1000 / frameRate;
 	}
@@ -79,6 +81,14 @@ namespace Polycode {
 	
 	void Core::Shutdown() {	
 		running = false;
+	}
+	
+	String Core::getUserHomeDirectory() {
+		return userHomeDirectory;
+	}	
+	
+	String Core::getDefaultWorkingDirectory() {
+		return defaultWorkingDirectory;
 	}
 	
 	Number Core::getElapsed() {

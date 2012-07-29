@@ -83,15 +83,16 @@ class _PolyExport GLSLProgramParam {
 	
 	static const int PARAM_UNKNOWN = 0;	
 	static const int PARAM_Number = 1;
-	static const int PARAM_Number3 = 2;
-	static const int PARAM_Number4 = 3;
+	static const int PARAM_Number2 = 2;		
+	static const int PARAM_Number3 = 3;
+	static const int PARAM_Number4 = 4;
 	
 	};
 
 	class _PolyExport GLSLProgram : public Resource {
 		public:
 			GLSLProgram(int type);
-			~GLSLProgram();
+			virtual ~GLSLProgram();
 			
 			void addParam(const String& name, bool isAuto, int autoID, int paramType, void *defaultData);
 		

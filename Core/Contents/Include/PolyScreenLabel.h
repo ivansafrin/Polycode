@@ -42,8 +42,8 @@ namespace Polycode {
 			* @param size Size in pixels.
 			* @param Anti-aliasing mode.
 			*/
-			ScreenLabel(const String& text, int size, const String& fontName = "sans", int amode = 0);
-			~ScreenLabel();		
+			ScreenLabel(const String& text, int size, const String& fontName = "sans", int amode = 0, bool premultiplyAlpha = false);
+			virtual ~ScreenLabel();		
 		
 			/**
 			* Adds a drop shadow to the label.

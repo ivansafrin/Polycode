@@ -34,7 +34,7 @@
 #include "PolyModule.h"
 #include "PolyPolygon.h"
 
-#ifdef _WINDOWS
+#if defined(_WINDOWS) && !defined(_MINGW)
 
 
 PFNGLACTIVETEXTUREPROC   glActiveTexture;
@@ -54,6 +54,10 @@ PFNGLMAPBUFFERARBPROC glMapBufferARB;
 PFNGLUNMAPBUFFERARBPROC glUnmapBufferARB;
 PFNGLGETBUFFERPARAMETERIVARBPROC glGetBufferParameterivARB;
 PFNGLGETBUFFERPOINTERVARBPROC glGetBufferPointervARB;
+
+PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer;
+PFNGLENABLEVERTEXATTRIBARRAYARBPROC glEnableVertexAttribArrayARB;
+PFNGLBINDATTRIBLOCATIONPROC glBindAttribLocation;
 
 // GL_EXT_framebuffer_object
 PFNGLISRENDERBUFFEREXTPROC glIsRenderbufferEXT;
@@ -110,6 +114,10 @@ void OpenGLRenderer::initOSSpecific(){
         glGetBufferParameterivARB = (PFNGLGETBUFFERPARAMETERIVARBPROC)wglGetProcAddress("glGetBufferParameterivARB");
         glGetBufferPointervARB = (PFNGLGETBUFFERPOINTERVARBPROC)wglGetProcAddress("glGetBufferPointervARB");
 
+		glVertexAttribPointer = (PFNGLVERTEXATTRIBPOINTERPROC)wglGetProcAddress("glVertexAttribPointer");
+		glEnableVertexAttribArrayARB = (PFNGLENABLEVERTEXATTRIBARRAYARBPROC)wglGetProcAddress("glEnableVertexAttribArrayARB");
+		glBindAttribLocation = (PFNGLBINDATTRIBLOCATIONPROC)wglGetProcAddress("glBindAttribLocation");
+
         glIsRenderbufferEXT = (PFNGLISRENDERBUFFEREXTPROC)wglGetProcAddress("glIsRenderbufferEXT");
         glBindRenderbufferEXT = (PFNGLBINDRENDERBUFFEREXTPROC)wglGetProcAddress("glBindRenderbufferEXT");
         glDeleteRenderbuffersEXT = (PFNGLDELETERENDERBUFFERSEXTPROC)wglGetProcAddress("glDeleteRenderbuffersEXT");
@@ -134,6 +142,8 @@ void OpenGLRenderer::initOSSpecific(){
 void OpenGLRenderer::Resize(int xRes, int yRes) {
 	this->xRes = xRes;
 	this->yRes = yRes;
+	viewportWidth = xRes;
+	viewportHeight = xRes;
 	glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
 	glClearDepth(1.0f);
 	
@@ -191,23 +201,14 @@ void OpenGLRenderer::setLineSmooth(bool val) {
 		glDisable(GL_LINE_SMOOTH);
 }
 
-void OpenGLRenderer::setFOV(Number fov) {
-	this->fov = fov;
+void OpenGLRenderer::resetViewport() {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(fov,(GLfloat)xRes/(GLfloat)yRes,nearPlane,farPlane);	
-	glViewport(0, 0, xRes, yRes);
-	glScissor(0, 0, xRes, yRes);
+	gluPerspective(fov,(GLfloat)viewportWidth/(GLfloat)viewportHeight,nearPlane,farPlane);	
+	glViewport(0, 0, viewportWidth, viewportHeight);
+	glScissor(0, 0, viewportWidth, viewportHeight);
 	glMatrixMode(GL_MODELVIEW);	
-}
 
-void OpenGLRenderer::setViewportSize(int w, int h, Number fov) {
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(fov,(GLfloat)w/(GLfloat)h,nearPlane,farPlane);
-	glViewport(0, 0, w, h);
-	glScissor(0, 0, w, h);
-	glMatrixMode(GL_MODELVIEW);
 }
 
 Vector3 OpenGLRenderer::Unproject(Number x, Number y) {
@@ -264,45 +265,6 @@ Vector3 OpenGLRenderer::projectRayFrom2DCoordinate(Number x, Number y) {
 	return dirVec;
 }
 
-bool OpenGLRenderer::test2DCoordinate(Number x, Number y, Polycode::Polygon *poly, const Matrix4 &matrix, bool billboardMode) {
-	GLdouble nearPlane[3],farPlane[3];
-	
-	GLdouble mv[16];
-	Matrix4 camInverse = cameraMatrix.inverse();	
-	Matrix4 cmv;
-	cmv.identity();
-	cmv = cmv * camInverse;
-	
-	for(int i=0; i < 16; i++) {
-		mv[i] = cmv.ml[i];
-	}
-	
-	GLint vp[4];
-	glGetIntegerv( GL_VIEWPORT, vp );
-	
-	gluUnProject(x, yRes - y, 0.0, mv, sceneProjectionMatrix, vp,  &nearPlane[0], &nearPlane[1], &nearPlane[2]);
-	gluUnProject(x, yRes - y, 1.0, mv, sceneProjectionMatrix, vp,  &farPlane[0], &farPlane[1], &farPlane[2]);
-	
-	Vector3 nearVec(nearPlane[0], nearPlane[1], nearPlane[2]);
-	Vector3 farVec(farPlane[0], farPlane[1], farPlane[2]);
-		
-	Vector3 dirVec = farVec - nearVec;	
-	dirVec.Normalize();
-	
-	Vector3 hitPoint;
-	
-	Matrix4 fullMatrix = matrix;
-	
-	if(poly->getVertexCount() == 3) {
-		return rayTriangleIntersect(Vector3(0,0,0), dirVec, fullMatrix * (*poly->getVertex(0)), fullMatrix  * (*poly->getVertex(1)), fullMatrix *  (*poly->getVertex(2)), &hitPoint);
-	} else if(poly->getVertexCount() == 4) {
-		return (rayTriangleIntersect(Vector3(0,0,0), dirVec, fullMatrix * (*poly->getVertex(2)), fullMatrix  * (*poly->getVertex(1)), fullMatrix *  (*poly->getVertex(0)), &hitPoint) ||
-				rayTriangleIntersect(Vector3(0,0,0), dirVec, fullMatrix * (*poly->getVertex(0)), fullMatrix  * (*poly->getVertex(3)), fullMatrix *  (*poly->getVertex(2)), &hitPoint));
-	} else {
-		return false;
-	}
-}
-
 void OpenGLRenderer::enableDepthWrite(bool val) {
 	if(val)
 		glDepthMask(GL_TRUE);
@@ -339,22 +301,30 @@ void OpenGLRenderer::createVertexBufferForMesh(Mesh *mesh) {
 	mesh->setVertexBuffer(buffer);
 }
 
-void OpenGLRenderer::drawVertexBuffer(VertexBuffer *buffer) {
+void OpenGLRenderer::drawVertexBuffer(VertexBuffer *buffer, bool enableColorBuffer) {
 	OpenGLVertexBuffer *glVertexBuffer = (OpenGLVertexBuffer*)buffer;
 
 	glEnableClientState(GL_VERTEX_ARRAY);		
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);	
-//	glEnableClientState(GL_COLOR_ARRAY);		
+	
+	if(enableColorBuffer)  {
+		glEnableClientState(GL_COLOR_ARRAY);				
 		
-//	glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getColorBufferID());
-//	glTexCoordPointer( 4, GL_FLOAT, 0, (char *) NULL );	
+		glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getColorBufferID());
+		glColorPointer( 4, GL_FLOAT, 0, (char *) NULL );	
+	}
 	glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getVertexBufferID());
 	glVertexPointer( 3, GL_FLOAT, 0, (char *) NULL );	
 	glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getNormalBufferID());
 	glNormalPointer(GL_FLOAT, 0, (char *) NULL );			
 	glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getTextCoordBufferID());
 	glTexCoordPointer( 2, GL_FLOAT, 0, (char *) NULL );
+
+	glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getTangentBufferID());	
+	glEnableVertexAttribArrayARB(6);	
+	glVertexAttribPointer(6, 3, GL_FLOAT, 0, 0,  (char *)NULL);
+	
 	
 	
 	GLenum mode = GL_TRIANGLES;
@@ -391,7 +361,7 @@ void OpenGLRenderer::drawVertexBuffer(VertexBuffer *buffer) {
 			}
 			break;
 		case Mesh::LINE_MESH:
-			mode = GL_LINES;
+			mode = GL_LINE_STRIP;
 			break;	
 		case Mesh::POINT_MESH:
 			mode = GL_POINTS;
@@ -403,7 +373,10 @@ void OpenGLRenderer::drawVertexBuffer(VertexBuffer *buffer) {
 	glDisableClientState( GL_VERTEX_ARRAY);	
 	glDisableClientState( GL_TEXTURE_COORD_ARRAY );		
 	glDisableClientState( GL_NORMAL_ARRAY );
-//	glDisableClientState( GL_COLOR_ARRAY );	
+	
+	if(enableColorBuffer) {
+		glDisableClientState( GL_COLOR_ARRAY );	
+	}
 }
 
 void OpenGLRenderer::enableFog(bool enable) {
@@ -426,6 +399,9 @@ void OpenGLRenderer::setBlendingMode(int blendingMode) {
 		case BLEND_MODE_COLOR:
 				glBlendFunc (GL_SRC_ALPHA_SATURATE, GL_ONE);
 		break;
+		case BLEND_MODE_PREMULTIPLIED:
+			glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+		break;
 		default:
 			glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		break;
@@ -445,17 +421,12 @@ Matrix4 OpenGLRenderer::getModelviewMatrix() {
 	return Matrix4(m);
 }
 
-void OpenGLRenderer::renderZBufferToTexture(Texture *targetTexture) {
-//	OpenGLTexture *glTexture = (OpenGLTexture*)targetTexture;
-//	glBindTexture (GL_TEXTURE_2D, glTexture->getTextureID());
-//	glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 0, 0, targetTexture->getWidth(), targetTexture->getHeight(), 0);	
-}
-
-void OpenGLRenderer::renderToTexture(Texture *targetTexture) {
-	OpenGLTexture *glTexture = (OpenGLTexture*)targetTexture;
-	glBindTexture (GL_TEXTURE_2D, glTexture->getTextureID());
-	glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, targetTexture->getWidth(), targetTexture->getHeight(), 0);	
-
+Image *OpenGLRenderer::renderScreenToImage() {
+	char *imageBuffer = (char*)malloc(xRes * yRes * 4);
+	glReadPixels(0, 0, xRes, yRes, GL_RGBA, GL_UNSIGNED_BYTE, imageBuffer);
+	Image *retImage = new Image(imageBuffer, xRes, yRes, Image::IMAGE_RGBA);	
+	free(imageBuffer);
+	return retImage;
 }
 
 void OpenGLRenderer::setFogProperties(int fogMode, Color color, Number density, Number startDepth, Number endDepth) {
@@ -483,14 +454,19 @@ void OpenGLRenderer::setFogProperties(int fogMode, Color color, Number density, 
 }
 
 
-void OpenGLRenderer::_setOrthoMode() {
+void OpenGLRenderer::_setOrthoMode(Number orthoSizeX, Number orthoSizeY) {
+	this->orthoSizeX = orthoSizeX;
+	this->orthoSizeY = orthoSizeY;
+	
 	if(!orthoMode) {
 		glMatrixMode(GL_PROJECTION);
 		glPushMatrix();
 		glLoadIdentity();
-		glOrtho(-1,1,-1,1,nearPlane,farPlane);
+		glOrtho(-orthoSizeX*0.5,orthoSizeX*0.5,-orthoSizeY*0.5,orthoSizeY*0.5,-farPlane,farPlane);
 		orthoMode = true;
 	}
+	glGetDoublev( GL_PROJECTION_MATRIX, sceneProjectionMatrixOrtho);
+		
 	glMatrixMode(GL_MODELVIEW);	
 	glLoadIdentity();	
 }
@@ -587,10 +563,8 @@ void OpenGLRenderer::unbindFramebuffers() {
 }
 
 
-void OpenGLRenderer::createRenderTextures(Texture **colorBuffer, Texture **depthBuffer, int width, int height) {
-	
-	Logger::log("generating fbo textures %d %d\n", colorBuffer, depthBuffer);	
-		
+void OpenGLRenderer::createRenderTextures(Texture **colorBuffer, Texture **depthBuffer, int width, int height, bool floatingPointBuffer) {
+			
 	GLuint depthTexture,colorTexture;
 	GLenum status;
 	GLuint frameBufferID;
@@ -604,8 +578,13 @@ void OpenGLRenderer::createRenderTextures(Texture **colorBuffer, Texture **depth
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);	
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-
+	
+	if(floatingPointBuffer) {
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F_ARB, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
+	} else {
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);	
+	}
+	
 	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, colorTexture, 0);
 
 	status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
@@ -634,7 +613,11 @@ void OpenGLRenderer::createRenderTextures(Texture **colorBuffer, Texture **depth
 	//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);	
 		glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_LUMINANCE);	
 	
-		glTexImage2D(GL_TEXTURE_2D,0,GL_DEPTH_COMPONENT,width,height,0,GL_DEPTH_COMPONENT,GL_UNSIGNED_BYTE,0);
+		if(floatingPointBuffer) {	
+			glTexImage2D(GL_TEXTURE_2D,0,GL_DEPTH_COMPONENT16,width,height,0,GL_DEPTH_COMPONENT,GL_FLOAT,0);
+		} else {
+			glTexImage2D(GL_TEXTURE_2D,0,GL_DEPTH_COMPONENT,width,height,0,GL_DEPTH_COMPONENT,GL_UNSIGNED_BYTE,0);
+		}
 	
 		glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D, depthTexture, 0);
 
@@ -664,9 +647,14 @@ Cubemap *OpenGLRenderer::createCubemap(Texture *t0, Texture *t1, Texture *t2, Te
 	return newCubemap;
 }
 
-Texture *OpenGLRenderer::createTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, int type) {
-	OpenGLTexture *newTexture = new OpenGLTexture(width, height, textureData, clamp, textureFilteringMode, type);	
+Texture *OpenGLRenderer::createTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, bool createMipmaps, int type) {
+	OpenGLTexture *newTexture = new OpenGLTexture(width, height, textureData, clamp, createMipmaps, textureFilteringMode, type);
 	return newTexture;
+}
+
+void OpenGLRenderer::destroyTexture(Texture *texture) {
+	OpenGLTexture *glTex = (OpenGLTexture*)texture;
+	delete glTex;
 }
 
 void OpenGLRenderer::clearScreen() {
@@ -718,7 +706,7 @@ void OpenGLRenderer::applyMaterial(Material *material,  ShaderBinding *localOpti
 	data4[0] = material->specularColor.r;
 	data4[1] = material->specularColor.g;
 	data4[2] = material->specularColor.b;
-	data4[3] = material->specularColor.a;
+	data4[3] = material->specularStrength;
 				
 	glMaterialfv(GL_FRONT, GL_SPECULAR, data4);
 
@@ -733,7 +721,7 @@ void OpenGLRenderer::applyMaterial(Material *material,  ShaderBinding *localOpti
 	glMaterialfv(GL_FRONT, GL_AMBIENT, data4);
 
 	FixedShaderBinding *fBinding;
-
+	
 	switch(material->getShader(shaderIndex)->getType()) {
 		case Shader::FIXED_SHADER:
 //			FixedShader *fShader = (FixedShader*)material->getShader();
@@ -742,13 +730,18 @@ void OpenGLRenderer::applyMaterial(Material *material,  ShaderBinding *localOpti
 //			setTexture(fShader->getDiffuseTexture());
 		break;	
 		case Shader::MODULE_SHADER:		
-			currentMaterial = material;			
-			for(int m=0; m < shaderModules.size(); m++) {
-				PolycodeShaderModule *shaderModule = shaderModules[m];	
-				if(shaderModule->hasShader(material->getShader(shaderIndex))) {
-					shaderModule->applyShaderMaterial(this, material, localOptions, shaderIndex);
-					currentShaderModule = shaderModule;
-				}
+			currentMaterial = material;
+			if(material->shaderModule == NULL) {
+				for(int m=0; m < shaderModules.size(); m++) {
+					PolycodeShaderModule *shaderModule = shaderModules[m];	
+					if(shaderModule->hasShader(material->getShader(shaderIndex))) {
+						material->shaderModule = (void*)shaderModule;
+					}
+				}	
+			} else {
+				PolycodeShaderModule *shaderModule = (PolycodeShaderModule*)material->shaderModule;
+				shaderModule->applyShaderMaterial(this, material, localOptions, shaderIndex);
+				currentShaderModule = shaderModule;
 			}
 		break;
 	}
@@ -827,6 +820,11 @@ void OpenGLRenderer::pushRenderDataArray(RenderDataArray *array) {
 			glBindBufferARB( GL_ARRAY_BUFFER_ARB, 0);			
 			glNormalPointer(GL_FLOAT, 0, array->arrayPtr);	
 		break;
+		case RenderDataArray::TANGENT_DATA_ARRAY:
+			glEnableVertexAttribArrayARB(6);		
+			glVertexAttribPointer(6, array->size, GL_FLOAT, 0, 0, array->arrayPtr);
+		break;
+		
 	}
 }
 
@@ -893,6 +891,22 @@ RenderDataArray *OpenGLRenderer::createRenderDataArrayForMesh(Mesh *mesh, int ar
 			}			
 		}
 		break;
+		case RenderDataArray::TANGENT_DATA_ARRAY:
+		{
+			buffer = (GLfloat*)malloc(1);	
+			
+			for(int i=0; i < mesh->getPolygonCount(); i++) {
+				for(int j=0; j < mesh->getPolygon(i)->getVertexCount(); j++) {
+					newBufferSize = bufferSize + 3;			
+					buffer = (GLfloat*)realloc(buffer, newBufferSize * sizeof(GLfloat));		
+					buffer[bufferSize+0] = mesh->getPolygon(i)->getVertex(j)->tangent.x;
+					buffer[bufferSize+1] = mesh->getPolygon(i)->getVertex(j)->tangent.y;
+					buffer[bufferSize+2] = mesh->getPolygon(i)->getVertex(j)->tangent.z;				
+					bufferSize = newBufferSize;					
+				}		   
+			}			
+		}
+		break;		
 		case RenderDataArray::TEXCOORD_DATA_ARRAY:
 		{
 			buffer = (GLfloat*)malloc(1);				
@@ -935,7 +949,10 @@ RenderDataArray *OpenGLRenderer::createRenderDataArray(int arrayType) {
 			break;			
 		case RenderDataArray::NORMAL_DATA_ARRAY:
 			newArray->size = 3;
-			break;						
+			break;	
+		case RenderDataArray::TANGENT_DATA_ARRAY:
+			newArray->size = 3;
+			break;														
 		case RenderDataArray::TEXCOORD_DATA_ARRAY:
 			newArray->size = 2;
 			break;									
@@ -986,7 +1003,7 @@ void OpenGLRenderer::drawArrays(int drawType) {
 			}
 			break;
 		case Mesh::LINE_MESH:
-			mode = GL_LINES;
+			mode = GL_LINE_STRIP;
 			break;	
 		case Mesh::POINT_MESH:
 			mode = GL_POINTS;
@@ -1021,8 +1038,8 @@ void OpenGLRenderer::draw3DVertex2UV(Vertex *vertex, Vector2 *faceUV1, Vector2 *
 void OpenGLRenderer::drawScreenQuad(Number qx, Number qy) {
 	setOrthoMode();
 	
-	Number xscale = qx/((Number)getXRes()) * 2.0f;
-	Number yscale = qy/((Number)getYRes()) * 2.0f;
+	Number xscale = qx/((Number)viewportWidth) * 2.0f;
+	Number yscale = qy/((Number)viewportHeight) * 2.0f;	
 
 	glBegin(GL_QUADS);
 		glColor4f(1.0f,1.0f,1.0f,1.0f);

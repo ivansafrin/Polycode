@@ -160,6 +160,7 @@ namespace Polycode {
 			return entry;			
 		}		
 		
+		void Clear();
 		
 		static const int FLOAT_ENTRY = 0;		
 		static const int INT_ENTRY = 1;
@@ -195,7 +196,7 @@ namespace Polycode {
 		* Default constructor
 		*/	
 		Object();
-		~Object();
+		virtual ~Object();
 		
 		/**
 		* Loads data from XML file into the object. 
@@ -203,6 +204,13 @@ namespace Polycode {
 		* @return Returns true is succesful, false if otherwise.
 		*/		
 		bool loadFromXML(const String& fileName);
+
+		/**
+		* Loads data from XML string into the object. 
+		* @param xmlString XML data in a string.
+		* @return Returns true is succesful, false if otherwise.
+		*/				
+		bool loadFromXMLString(const String &xmlString);
 		
 		/**
 		* Saves the object to an XML file.

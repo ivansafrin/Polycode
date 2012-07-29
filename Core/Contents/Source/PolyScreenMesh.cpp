@@ -28,17 +28,32 @@
 
 using namespace Polycode;
 
+ScreenMesh::ScreenMesh(Mesh *mesh) : ScreenEntity(), texture(NULL) {
+	this->mesh = mesh;
+	lineSmooth = false;
+	lineWidth = 1.0;
+	ownsMesh = true;
+}
+
 ScreenMesh::ScreenMesh(const String& fileName) : ScreenEntity(), texture(NULL) {
 	mesh = new Mesh(fileName);
+	lineSmooth = false;
+	lineWidth = 1.0;
+	
 }
 
 ScreenMesh::ScreenMesh(int meshType) : ScreenEntity(), texture(NULL) {
 	mesh = new Mesh(meshType);
+	lineSmooth = false;
+	lineWidth = 1.0;
+	
 }
 
 
 ScreenMesh::~ScreenMesh() {
-
+	if(ownsMesh) {
+		delete mesh;
+	}
 }
 
 Mesh *ScreenMesh::getMesh() const {
@@ -54,15 +69,19 @@ void ScreenMesh::setTexture(Texture *texture) {
 }
 
 void ScreenMesh::loadTexture(const String& fileName) {
-	texture = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(fileName);
+	texture = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(fileName, true, false);
 }
 
 void ScreenMesh::loadTexture(Image *image) {
-	texture = CoreServices::getInstance()->getMaterialManager()->createTextureFromImage(image);
+	texture = CoreServices::getInstance()->getMaterialManager()->createTextureFromImage(image, true, false);
 }
 
 void ScreenMesh::Render() {	
 	Renderer *renderer = CoreServices::getInstance()->getRenderer();
+	
+	renderer->setLineSize(lineWidth);
+	renderer->setLineSmooth(lineSmooth);
+	
 	renderer->setTexture(texture);
 	if(mesh->useVertexColors) {
 		renderer->pushDataArrayForMesh(mesh, RenderDataArray::COLOR_DATA_ARRAY);

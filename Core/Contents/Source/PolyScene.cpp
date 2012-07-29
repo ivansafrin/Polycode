@@ -39,31 +39,43 @@ using namespace Polycode;
 
 Scene::Scene() : EventDispatcher() {
 	defaultCamera = new Camera(this);
-	CoreServices::getInstance()->getSceneManager()->addScene(this);
+	activeCamera = defaultCamera;
 	fogEnabled = false;
 	lightingEnabled = false;
 	enabled = true;
 	isSceneVirtual = false;
-	
 	hasLightmaps = false;
 	clearColor.setColor(0.13f,0.13f,0.13f,1.0f); 
 	ambientColor.setColor(0.0,0.0,0.0,1.0);
-	useClearColor = false;	
+	useClearColor = false;
+	ownsChildren = false;
+	CoreServices::getInstance()->getSceneManager()->addScene(this);	
 }
 
-Scene::Scene(bool virtualScene) {
+Scene::Scene(bool virtualScene) : EventDispatcher() {
 	defaultCamera = new Camera(this);
+	activeCamera = defaultCamera;	
 	fogEnabled = false;
 	lightingEnabled = false;
 	enabled = true;
-	isSceneVirtual = virtualScene;
-	
+	isSceneVirtual = virtualScene;	
 	hasLightmaps = false;
 	clearColor.setColor(0.13f,0.13f,0.13f,1.0f); 
-	useClearColor = false;	
+	ambientColor.setColor(0.0,0.0,0.0,1.0);	
+	useClearColor = false;
+	ownsChildren = false;
+	if (!isSceneVirtual) {
+		CoreServices::getInstance()->getSceneManager()->addScene(this);
+	}
 }
 
+void Scene::setActiveCamera(Camera *camera) {
+	activeCamera = camera;
+}
 
+Camera *Scene::getActiveCamera() {
+	return activeCamera;
+}
 
 void Scene::setVirtual(bool val) {
 	isSceneVirtual = val;
@@ -86,13 +98,13 @@ void Scene::Update() {
 }
 
 Scene::~Scene() {
-	Logger::log("Cleaning scene...\n");
-	for(int i=0; i < entities.size(); i++) {	
-//		delete entities[i];
+	if(ownsChildren) {
+		for(int i=0; i < entities.size(); i++) {	
+			delete entities[i];
+		}
 	}
-	entities.clear();	
 	CoreServices::getInstance()->getSceneManager()->removeScene(this);	
-//	delete defaultCamera;
+	delete defaultCamera;
 }
 
 void Scene::enableLighting(bool enable) {
@@ -145,11 +157,11 @@ Camera *Scene::getDefaultCamera() {
 
 void Scene::Render(Camera *targetCamera) {
 	
-	if(!targetCamera && !defaultCamera)
+	if(!targetCamera && !activeCamera)
 		return;
 	
 	if(!targetCamera)
-		targetCamera = defaultCamera;
+		targetCamera = activeCamera;
 	
 	// prepare lights...
 	for(int i=0; i<entities.size();i++) {
@@ -213,13 +225,13 @@ void Scene::Render(Camera *targetCamera) {
 		}
 		CoreServices::getInstance()->getRenderer()->addLight(light->getLightImportance(), position, direction, light->getLightType(), light->lightColor, light->specularLightColor, light->getConstantAttenuation(), light->getLinearAttenuation(), light->getQuadraticAttenuation(), light->getIntensity(), light->getSpotlightCutoff(), light->getSpotlightExponent(), light->areShadowsEnabled(), matrixPtr, shadowMapTexture);
 	}	
-	
+
+	if(targetCamera->getOrthoMode()) {
+		CoreServices::getInstance()->getRenderer()->_setOrthoMode(targetCamera->getOrthoSizeX(), targetCamera->getOrthoSizeY());
+	}
+		
 	targetCamera->doCameraTransform();
 	targetCamera->buildFrustrumPlanes();
-	
-	if(targetCamera->getOrthoMode()) {
-		CoreServices::getInstance()->getRenderer()->_setOrthoMode();
-	}
 	
 	CoreServices::getInstance()->getRenderer()->enableFog(fogEnabled);	
 	if(fogEnabled) {

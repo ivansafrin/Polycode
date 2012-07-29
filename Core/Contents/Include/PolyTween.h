@@ -47,8 +47,8 @@ namespace Polycode {
 		* @param time The duration of the tween.
 		* @param repeat If true, this tween will repeat over and over.
 		*/
-		Tween(Number *target, int easeType, Number startVal, Number endVal, Number time, bool repeat=false);
-		~Tween();
+		Tween(Number *target, int easeType, Number startVal, Number endVal, Number time, bool repeat=false, bool deleteOnComplete=false);
+		virtual ~Tween();
 		
 		void handleEvent(Event *event);
 		Number interpolateTween();
@@ -95,6 +95,7 @@ namespace Polycode {
 		bool isComplete();
 		bool repeat;
 		
+		bool deleteOnComplete;
 		/*
 		* Set a speed multiplier for the tween
 		* @param speed Speed multiplier.

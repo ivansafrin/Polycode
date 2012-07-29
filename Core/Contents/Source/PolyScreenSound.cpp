@@ -37,13 +37,15 @@ ScreenSoundListener::~ScreenSoundListener() {
 void ScreenSoundListener::Update() {
 	Matrix4 finalMatrix = getConcatenatedMatrix();
 	CoreServices::getInstance()->getSoundManager()->setListenerPosition(finalMatrix.getPosition());
-	
+
+	Vector3 upVector = Vector3(0.0, 0.0, 1.0);
+		
 	Vector3 direction;
 	direction.x = 0;		
 	direction.y = 0;
 	direction.z = -1;
 	direction = finalMatrix.rotateVector(direction);
-	CoreServices::getInstance()->getSoundManager()->setListenerOrientation(direction);
+	CoreServices::getInstance()->getSoundManager()->setListenerOrientation(direction, upVector);
 
 }
 

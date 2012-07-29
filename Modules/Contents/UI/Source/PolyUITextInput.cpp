@@ -1,19 +1,39 @@
 /*
- *  PolyUITextInput.cpp
- *  Poly
- *
- *  Created by Ivan Safrin on 7/30/08.
- *  Copyright 2008 __MyCompanyName__. All rights reserved.
- *
+ Copyright (C) 2012 by Ivan Safrin
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
  */
 
 
 #include "PolyUITextInput.h"
+#include "PolyConfig.h"
+#include "PolyInputEvent.h"
+#include "PolyLabel.h"
+#include "PolyCoreServices.h"
+#include "PolyEventHandler.h"
 
 using namespace Polycode;
 
 UITextInput::UITextInput(bool multiLine, Number width, Number height) : ScreenEntity() {
 	this->multiLine = multiLine;
+	
+	isNumberOnly = false;
 	
 	draggingSelection = false;
 	hasSelection = false;
@@ -36,7 +56,10 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : ScreenEn
 	else
 		fontName = conf->getStringValue("Polycode", "uiTextInputFontName");
 	
-	fontSize = conf->getNumericValue("Polycode", "uiTextInputFontSize");
+	if(multiLine)
+		fontSize = conf->getNumericValue("Polycode", "uiTextInputFontSizeMultiline");	
+	else
+		fontSize = conf->getNumericValue("Polycode", "uiTextInputFontSize");
 	
 	Number rectHeight = height;
 	if(!multiLine) {
@@ -66,6 +89,7 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : ScreenEn
 	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);		
 	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEOVER);
 	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEOUT);
+	inputRect->processInputEvents = true;
 	
 	selectorRectTop = new ScreenShape(ScreenShape::SHAPE_RECT, 1,1);
 	selectorRectTop->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
@@ -104,6 +128,10 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : ScreenEn
 	hitheight = rectHeight;
 	
 	updateCaretPosition();
+}
+
+void UITextInput::setNumberOnly(bool val) {
+	isNumberOnly = val;
 }
 
 void UITextInput::clearSelection() {
@@ -254,7 +282,7 @@ void UITextInput::deleteSelection() {
 	clearSelection();
 	caretPosition = selectionL;
 	updateCaretPosition();
-	
+	dispatchEvent(new UIEvent(), UIEvent::CHANGE_EVENT);	
 }
 
 void UITextInput::Resize(int x, int y) {
@@ -265,7 +293,7 @@ int UITextInput::insertLine(bool after) {
 	
 	numLines++;	
 	
-	ScreenLabel *newLine = new ScreenLabel(fontName, L"", fontSize, Label::ANTIALIAS_FULL);
+	ScreenLabel *newLine = new ScreenLabel(L"", fontSize, fontName, Label::ANTIALIAS_FULL);
 	newLine->setColor(0,0,0,1);
 	lineHeight = newLine->getHeight();
 	addChild(newLine);
@@ -298,6 +326,7 @@ int UITextInput::insertLine(bool after) {
 		// do we even need that? I don't think so.
 	}	
 	
+	dispatchEvent(new UIEvent(), UIEvent::CHANGE_EVENT);
 	return 1;	
 }
 
@@ -310,8 +339,12 @@ void UITextInput::restructLines() {
 void UITextInput::setText(String text) {
 	if(!multiLine) {
 		currentLine->setText(text);
+		caretPosition = text.length();
+		clearSelection();				
+		updateCaretPosition();		
 	} else {
 	}
+		
 //	this->text = text;
 //	currentLine->setText(text);	
 }
@@ -494,7 +527,7 @@ void UITextInput::insertText(String text) {
 			lines[i]->setText(strings[i]);
 		} else {
 			numLines++;		
-			ScreenLabel *newLine = new ScreenLabel(fontName, L"", fontSize, Label::ANTIALIAS_FULL);
+			ScreenLabel *newLine = new ScreenLabel(L"", fontSize, fontName, Label::ANTIALIAS_FULL);
 			newLine->setColor(0,0,0,1);
 			addChild(newLine);			
 			lines.push_back(newLine);
@@ -526,7 +559,7 @@ String UITextInput::getSelectionText() {
 	return totalText;
 }
 
-void UITextInput::onKeyDown(TAUKey key, wchar_t charCode) {
+void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 	
 	if(!hasFocus)
 		return;
@@ -703,13 +736,15 @@ void UITextInput::onKeyDown(TAUKey key, wchar_t charCode) {
 	
 //	if(1) {
 	if((charCode > 31 && charCode < 127) || charCode > 127) {	
-		if(hasSelection)
-			deleteSelection();
-		ctext = currentLine->getText();		
-		String text2 = ctext.substr(caretPosition, ctext.length()-caretPosition);
-		ctext = ctext.substr(0,caretPosition);
-		ctext += charCode + text2;
-		caretPosition++;
+		if(!isNumberOnly || (isNumberOnly && (charCode > 47 && charCode < 58))) {
+			if(hasSelection)
+				deleteSelection();
+			ctext = currentLine->getText();		
+			String text2 = ctext.substr(caretPosition, ctext.length()-caretPosition);
+			ctext = ctext.substr(0,caretPosition);
+			ctext += charCode + text2;
+			caretPosition++;
+		}
 	}
 	
 	if(key == KEY_TAB && multiLine) {
@@ -751,6 +786,7 @@ void UITextInput::onKeyDown(TAUKey key, wchar_t charCode) {
 	}
 	
 	currentLine->setText(ctext);	
+	dispatchEvent(new UIEvent(), UIEvent::CHANGE_EVENT);	
 	updateCaretPosition();
 }
 

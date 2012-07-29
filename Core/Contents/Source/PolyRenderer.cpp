@@ -77,8 +77,77 @@ void Renderer::setExposureLevel(Number level) {
 	exposureLevel = level;
 }
 
+
+bool Renderer::test2DCoordinateInPolygon(Number x, Number y, Polycode::Polygon *poly, const Matrix4 &matrix, bool ortho, bool testBackfacing, bool billboardMode) {
+
+	Vector3 dirVec;
+	Vector3 origin;
+	
+	if(ortho) {
+		origin = Vector3(((x/(Number)xRes)*orthoSizeX) - (orthoSizeX*0.5), (((yRes-y)/(Number)yRes)*orthoSizeY) - (orthoSizeY*0.5), 0.0);
+		origin = cameraMatrix * origin;
+
+		dirVec = Vector3(0.0, 0.0, -1.0);
+		dirVec = cameraMatrix.rotateVector(dirVec);	
+	} else {
+		dirVec = projectRayFrom2DCoordinate(x, y);
+		origin = cameraMatrix.getPosition();	
+	}
+	
+	Vector3 hitPoint;
+	
+	Matrix4 fullMatrix = matrix;
+	
+	if(billboardMode) {
+		Matrix4 camInverse = cameraMatrix.inverse();
+		fullMatrix = fullMatrix * camInverse;
+		
+		fullMatrix.m[0][0] = 1;
+		fullMatrix.m[0][1] = 0;
+		fullMatrix.m[0][2] = 0;
+
+		fullMatrix.m[1][0] = 0;
+		fullMatrix.m[1][1] = 1;
+		fullMatrix.m[1][2] = 0;
+
+		fullMatrix.m[2][0] = 0;
+		fullMatrix.m[2][1] = 0;
+		fullMatrix.m[2][2] = 1;		
+		
+		origin = camInverse * origin;
+		dirVec = camInverse.rotateVector(dirVec);
+	}
+	
+	bool retStatus = false;	
+	
+	
+	if(poly->getVertexCount() == 3) {
+		retStatus = rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(0)), fullMatrix  * (*poly->getVertex(1)), fullMatrix *  (*poly->getVertex(2)), &hitPoint);
+		if(testBackfacing && !retStatus) {
+			retStatus = rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(2)), fullMatrix  * (*poly->getVertex(1)), fullMatrix *  (*poly->getVertex(0)), &hitPoint);
+		
+		}
+	} else if(poly->getVertexCount() == 4) {
+		retStatus = (rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(2)), fullMatrix  * (*poly->getVertex(1)), fullMatrix *  (*poly->getVertex(0)), &hitPoint) ||
+				rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(0)), fullMatrix  * (*poly->getVertex(3)), fullMatrix *  (*poly->getVertex(2)), &hitPoint));
+		if(testBackfacing && !retStatus) {
+			retStatus = (rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(0)), fullMatrix  * (*poly->getVertex(1)), fullMatrix *  (*poly->getVertex(2)), &hitPoint) ||
+				rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(2)), fullMatrix  * (*poly->getVertex(3)), fullMatrix *  (*poly->getVertex(0)), &hitPoint));
+		
+		}				
+	} else {
+		retStatus = false;
+	}
+	
+	return retStatus;
+}
+
 bool Renderer::rayTriangleIntersect(Vector3 ray_origin, Vector3 ray_direction, Vector3 vert0, Vector3 vert1, Vector3 vert2, Vector3 *hitPoint)
 {
+
+//	printf("TESTING RAY\nORIGIN: %f,%f,%f\nDIR: %f,%f,%f\nVERT0: %f,%f,%f\nnVERT1: %f,%f,%f\nnVERT2: %f,%f,%f\n", ray_origin.x, ray_origin.y, ray_origin.z, ray_direction.x, ray_direction.y, ray_direction.z, vert0.x, vert0.y, vert0.z, vert1.x, vert1.y, vert1.z, vert2.x, vert2.y, vert2.z);	
+
+
 	Number t,u,v;
 	t = 0; u = 0; v = 0;
 	
@@ -260,3 +329,31 @@ void Renderer::setTextureFilteringMode(int mode) {
 int Renderer::getRenderMode() {
 	return renderMode;
 }
+
+void Renderer::setFOV(Number fov) {
+	this->fov = fov;
+	resetViewport();
+}
+
+void Renderer::setViewportSize(int w, int h) {
+	viewportWidth = w;
+	viewportHeight = h;
+	resetViewport();
+}
+
+void Renderer::setViewportSizeAndFOV(int w, int h, Number fov) {
+	this->fov = fov;
+	viewportWidth = w;
+	viewportHeight = h;
+	resetViewport();
+}
+
+Number Renderer::getViewportWidth() {
+	return viewportWidth;
+}
+
+Number Renderer::getViewportHeight() {
+	return viewportHeight;
+}
+
+

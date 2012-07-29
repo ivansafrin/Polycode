@@ -27,9 +27,14 @@
 #include "PolyInputKeys.h"
 #include "PolyRectangle.h"
 
+#include <winsock2.h>
 #include <windows.h>
 #include <windowsx.h>
 #include <WinUser.h>
+
+#include <MMSystem.h>
+#include <regstr.h>
+
 
 #include <vector>
 
@@ -89,6 +94,10 @@
 
 #define EXTENDED_KEYMASK	(1<<24)
 
+#ifdef _MINGW
+#define NO_TOUCH_API 1
+#endif
+
 namespace Polycode {
 
 	class _PolyExport Win32Mutex : public CoreMutex {
@@ -101,33 +110,84 @@ namespace Polycode {
 		int eventGroup;
 		int eventCode;		
 		int mouseX;
-		int mouseY;		
+		int mouseY;
+		std::vector<TouchInfo> touches;
 		PolyKEY keyCode;
 		wchar_t unicodeChar;		
-		char mouseButton;		
+		char mouseButton;	
 		static const int INPUT_EVENT = 0;
 	};
 	
+	
+	class HIDGamepadAxis {
+		public:
+		//IOHIDElementCookie cookie;
+		//CFIndex logicalMin;
+		//CFIndex logicalMax;
+		bool hasNullState;
+		bool isHatSwitch;
+		bool isHatSwitchSecondAxis;
+	};
+
+	class HIDGamepadButton {
+		public:
+		//IOHIDElementCookie cookie;
+		int something;
+	};	
+	
+class Gamepad_devicePrivate {
+public:
+	UINT joystickID;
+	JOYINFOEX lastState;
+	int xAxisIndex;
+	int yAxisIndex;
+	int zAxisIndex;
+	int rAxisIndex;
+	int uAxisIndex;
+	int vAxisIndex;
+	int povXAxisIndex;
+	int povYAxisIndex;
+	UINT (* axisRanges)[2];
+};
+
+
+	class GamepadDeviceEntry  {
+		public:
+			GamepadDeviceEntry() {
+				numAxes = 0;
+			}
+			std::vector<HIDGamepadAxis> axisElements;
+			std::vector<HIDGamepadButton> buttonElements;			
+			unsigned int deviceID;
+			//IOHIDDeviceRef device;
+			unsigned int numAxes;
+			unsigned int numButtons;	
+			Gamepad_devicePrivate *privateData;
+		//	CoreInput *input;		
+	};
+
 	class _PolyExport Win32Core : public Core {
 		
 	public:
 		
-		Win32Core(PolycodeViewBase *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate);
+		Win32Core(PolycodeViewBase *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate,  int monitorIndex = -1);
 		~Win32Core();
 
 		void enableMouse(bool newval);
+		void warpCursor(int x, int y);
 		unsigned int getTicks();		
 		bool Update();
 
-		void handleKeyDown(LPARAM lParam, WPARAM wParam);
+		void handleKeyDown(LPARAM lParam, WPARAM wParam, wchar_t unicodeChar);
 		void handleKeyUp(LPARAM lParam, WPARAM wParam);
 		void handleMouseMove(LPARAM lParam, WPARAM wParam);
 		void handleMouseWheel(LPARAM lParam, WPARAM wParam);
 		void handleMouseDown(int mouseCode,LPARAM lParam, WPARAM wParam);
 		void handleMouseUp(int mouseCode,LPARAM lParam, WPARAM wParam);
+		void handleTouchEvent(LPARAM lParam, WPARAM wParam);
 
-		void setVideoMode(int xRes, int yRes, bool fullScreen, int aaLevel);	
-
+		void setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel);
+		
 		void initContext(bool usePixelFormat, unsigned int pixelFormat);
 		void destroyContext();
 
@@ -146,8 +206,20 @@ namespace Polycode {
 
 		std::vector<Polycode::Rectangle> getVideoModes();
 
+		void handleAxisChange(GamepadDeviceEntry * device, int axisIndex, DWORD value);
+		void handleButtonChange(GamepadDeviceEntry * device, DWORD lastValue, DWORD value);
+		void handlePOVChange(GamepadDeviceEntry * device, DWORD lastValue, DWORD value);
+
+		void detectGamepads();
+		void initGamepad();
+		void shutdownGamepad();
+		void Gamepad_processEvents();
+
+		void initTouch();
+
 		// NEED TO IMPLEMENT:
 
+		void openURL(String url) {}
 		void setCursor(int cursorType){ }
 		void copyStringToClipboard(const String& str) { }
 		String getClipboardString() { return ""; }
@@ -160,9 +232,13 @@ namespace Polycode {
 		std::vector<String> openFilePicker(std::vector<CoreFileExtension> extensions, bool allowMultiple) { std::vector<String> ret; return ret;}
 		void resizeTo(int xRes, int yRes) { }
 		
+		std::vector<GamepadDeviceEntry*> gamepads;
+
 	private:
 
+		unsigned int nextDeviceID;
 		PolyKEY keyMap[1024];
+		unsigned int lastGamepadDetect;
 
 		CoreMutex *eventMutex;
 
@@ -182,6 +258,16 @@ namespace Polycode {
 		unsigned int PixelFormat;
 		PIXELFORMATDESCRIPTOR pfd;
 		
-
+		// Tracks whether the system supports multitouch at runtime
+		bool hasMultiTouch;
+		
+#ifndef NO_TOUCH_API
+		// Create generic reference to any multitouch functions we need, so that we
+		// can make them available at runtime if the operating system supports it
+		// while still allowing fallback for older systems
+		// See: http://msdn.microsoft.com/en-us/library/ms683212(v=vs.85).aspx
+		typedef bool (WINAPI *GetTouchInputInfoType)(HTOUCHINPUT,UINT,PTOUCHINPUT,int);
+		GetTouchInputInfoType GetTouchInputInfoFunc;
+#endif	
 	};
 }

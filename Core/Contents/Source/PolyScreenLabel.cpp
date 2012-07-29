@@ -32,8 +32,9 @@
 
 using namespace Polycode;
 
-ScreenLabel::ScreenLabel(const String& text, int size, const String& fontName, int amode) : ScreenShape(ScreenShape::SHAPE_RECT,1,1) {
-	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size, amode);
+ScreenLabel::ScreenLabel(const String& text, int size, const String& fontName, int amode, bool premultiplyAlpha) : ScreenShape(ScreenShape::SHAPE_RECT,1,1) {
+	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size, amode, premultiplyAlpha);
+	dropShadowImage = NULL;
 	texture = NULL;
 	setText(text);		
 	mesh->getPolygon(0)->flipUVY();	
@@ -43,6 +44,8 @@ ScreenLabel::ScreenLabel(const String& text, int size, const String& fontName, i
 }
 
 ScreenLabel::~ScreenLabel() {
+	delete label;
+	delete dropShadowImage;
 }
 
 Label *ScreenLabel::getLabel() const {
@@ -50,9 +53,11 @@ Label *ScreenLabel::getLabel() const {
 }
 
 void ScreenLabel::addDropShadow(Color color, Number size, Number offsetX, Number offsetY) {
+	delete dropShadowImage;
 	Image *labelImage = new Image(label);
 	labelImage->fastBlur(size);
 	dropShadowImage = new ScreenImage(labelImage);	
+	delete labelImage;
 	addChild(dropShadowImage);
 	dropShadowImage->setColor(color);
 	dropShadowImage->setPositionMode(POSITION_TOPLEFT);
@@ -77,7 +82,7 @@ void ScreenLabel::setText(const String& newText) {
 	if(!label->getFont()->isValid())
 		return;				
 	
-	texture = CoreServices::getInstance()->getMaterialManager()->createTextureFromImage(label);
+	texture = CoreServices::getInstance()->getMaterialManager()->createTextureFromImage(label, true, false);
 	width = label->getWidth();
 	height = label->getHeight();
 	setShapeSize(width, height);

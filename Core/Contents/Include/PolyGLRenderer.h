@@ -29,19 +29,7 @@ THE SOFTWARE.
 #include <windows.h>
 #endif
 
-#if defined(__APPLE__) && defined(__MACH__)
-#include <OpenGL/gl.h>
-#include <OpenGL/glext.h>
-#include <OpenGL/glu.h>
-#else
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/glext.h>
-
-#ifdef _WINDOWS
-	#include <GL/wglext.h>
-#endif
-#endif
+#include "PolyGLHeaders.h"
 /*
 #ifdef _WINDOWS 
 #define GL_EXT_framebuffer_object           1
@@ -117,14 +105,15 @@ namespace Polycode {
 		void EndRender();
 		
 		Cubemap *createCubemap(Texture *t0, Texture *t1, Texture *t2, Texture *t3, Texture *t4, Texture *t5);
-		Texture *createTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, int type = Image::IMAGE_RGBA);
+		Texture *createTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, bool createMipmaps, int type = Image::IMAGE_RGBA);
+		void destroyTexture(Texture *texture);		
 		Texture *createFramebufferTexture(unsigned int width, unsigned int height);
-		void createRenderTextures(Texture **colorBuffer, Texture **depthBuffer, int width, int height);
+		void createRenderTextures(Texture **colorBuffer, Texture **depthBuffer, int width, int height, bool floatingPointBuffer);
 		
 		void enableAlphaTest(bool val);
 		
 		void createVertexBufferForMesh(Mesh *mesh);
-		void drawVertexBuffer(VertexBuffer *buffer);						
+		void drawVertexBuffer(VertexBuffer *buffer, bool enableColorBuffer);						
 		void bindFrameBufferTexture(Texture *texture);
 		void unbindFramebuffers();
 		
@@ -137,11 +126,12 @@ namespace Polycode {
 		void drawArrays(int drawType);		
 				
 		void setOrthoMode(Number xSize=0.0f, Number ySize=0.0f);
-		void _setOrthoMode();
+		void _setOrthoMode(Number orthoSizeX, Number orthoSizeY);
 		void setPerspectiveMode();
 		
 		void enableBackfaceCulling(bool val);
-		void setViewportSize(int w, int h, Number fov=45.0f);
+		
+		void resetViewport();
 		
 		void setLineSmooth(bool val);		
 		
@@ -149,9 +139,8 @@ namespace Polycode {
 		void setClearColor(Number r, Number g, Number b);
 		
 		void setTexture(Texture *texture);		
-		
-		void renderToTexture(Texture *targetTexture);		
-		void renderZBufferToTexture(Texture *targetTexture);
+
+		Image *renderScreenToImage();
 		void clearScreen();	
 		
 		void translate2D(Number x, Number y);
@@ -184,7 +173,7 @@ namespace Polycode {
 		void enableDepthTest(bool val);
 		void enableDepthWrite(bool val);
 				
-		void setClippingPlanes(Number near, Number far);
+		void setClippingPlanes(Number nearPlane_, Number farPlane_);
 				
 		void clearBuffer(bool colorBuffer, bool depthBuffer);	
 		void drawToColorBuffer(bool val);
@@ -192,11 +181,7 @@ namespace Polycode {
 		void drawScreenQuad(Number qx, Number qy);
 				
 		void pushMatrix();
-		void popMatrix();
-		
-		bool test2DCoordinate(Number x, Number y, Polycode::Polygon *poly, const Matrix4 &matrix, bool billboardMode);
-		
-		void setFOV(Number fov);
+		void popMatrix();		
 		
 		Vector3 Unproject(Number x, Number y);
 		
@@ -214,7 +199,7 @@ namespace Polycode {
 		int verticesToDraw;
 		
 		GLdouble sceneProjectionMatrix[16];
-	
+		GLdouble sceneProjectionMatrixOrtho[16];	
 		
 	};
 }

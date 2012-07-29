@@ -39,13 +39,14 @@ THE SOFTWARE.
 #include <GL/glu.h>
 #endif
 
+#define FRAMEBUFFER_NULL 999999
 
 namespace Polycode {
 
 	class _PolyExport OpenGLTexture : public Texture {
 		public:
 			OpenGLTexture(unsigned int width, unsigned int height);
-			OpenGLTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, int filteringMode, int type);
+			OpenGLTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, bool createMipmaps, int filteringMode, int type);
 			virtual ~OpenGLTexture();
 			
 			void recreateFromImageData();
@@ -60,7 +61,10 @@ namespace Polycode {
 		private:
 			
 			bool glTextureLoaded;
-			GLuint glTextureType;
+			GLenum glTextureType;
+			GLuint glTextureFormat;
+			GLenum pixelType;
+			
 			int filteringMode;
 			GLuint textureID;
 			GLuint frameBufferID;

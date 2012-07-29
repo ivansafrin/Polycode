@@ -24,6 +24,7 @@ THE SOFTWARE.
 #include "PolyGlobals.h"
 #include "PolyScene.h"
 #include "PolyVector3.h"
+#include "btBulletCollisionCommon.h"
 #include <vector>
 
 class btCollisionObject;
@@ -86,13 +87,14 @@ struct CollisionResult {
 			/**
 			* Creates a collision scene.
 			*/
-			CollisionScene();
-			CollisionScene(bool virtualScene);		
+			CollisionScene(Vector3 size = Vector3(2000), bool virtualScene = false, bool deferInitCollision = false);		
 			virtual ~CollisionScene();
 		
-			void initCollisionScene();
+			void initCollisionScene(Vector3 size);
 		
-			virtual void Update();		
+			virtual void Update();
+			
+			virtual void removeEntity(SceneEntity *entity);
 						
 			CollisionSceneEntity *getCollisionEntityByObject(btCollisionObject *collisionObject);		
 
@@ -108,7 +110,6 @@ struct CollisionResult {
 			CollisionResult testCollision(SceneEntity *ent1, SceneEntity *ent2);
 			CollisionResult testCollisionOnCollisionChild(CollisionSceneEntity *cEnt1, CollisionSceneEntity *cEnt2);				
 			CollisionResult testCollisionOnCollisionChild_Convex(CollisionSceneEntity *cEnt1, CollisionSceneEntity *cEnt2);	
-			void stopTrackingCollision(SceneEntity *entity);
 		
 			virtual CollisionSceneEntity *addCollisionChild(SceneEntity *newEntity, int type=0, int group=1);
 			CollisionSceneEntity *trackCollision(SceneEntity *newEntity, int type=0, int group=1);
@@ -122,6 +123,10 @@ struct CollisionResult {
 		
 			std::vector<CollisionSceneEntity*> collisionChildren;
 			btCollisionWorld *world;
+			
+			btDefaultCollisionConfiguration *collisionConfiguration;
+			btCollisionDispatcher *dispatcher;
+			btAxisSweep3*  axisSweep;
 	};
 
 }

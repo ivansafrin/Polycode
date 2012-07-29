@@ -1,13 +1,26 @@
 /*
- *  PolycodeIDEApp.h
- *  Polycode
- *
- *  Created by Ivan Safrin on 11/29/10.
- *  Copyright 2010 Local Projects. All rights reserved.
- *
+ Copyright (C) 2012 by Ivan Safrin
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
  */
-
-#import "PolySubstanceView.h"
+ 
+#import "PolycodeView.h"
 
 #include "PolycodeGlobals.h"
 #include "PolycodeProjectManager.h"
@@ -18,20 +31,18 @@
 #include "PolycodeFrame.h"
 
 #include "PolycodeImageEditor.h"
+#include "PolycodeScreenEditor.h"
 #include "PolycodeFontEditor.h"
 #include "PolycodeTextEditor.h"
+#include "PolycodeProjectEditor.h"
 
-extern "C" {	
-#include <stdio.h>
-#include "lua.h"
-#include "lualib.h"
-#include "lauxlib.h"
-	
+#include "PolycodeToolLauncher.h"
+
 using namespace Polycode;
 
 class PolycodeIDEApp : public EventDispatcher {
 public:
-	PolycodeIDEApp(SubstanceView *view);
+	PolycodeIDEApp(PolycodeView *view);
 	~PolycodeIDEApp();
 	
 	void handleEvent(Event *event);	
@@ -41,20 +52,27 @@ public:
 	void loadConfigFile();
 	
 	// menu commands
+	void renameFile();
+	void removeFile();
+	void browseExamples();
 	void newProject();
 	void newFile();	
+	void newGroup();
 	void openProject();
 	void closeProject();	
 	void saveFile();
 	
+	void refreshProject();
+	
+	void runProject();
+	
 	const static int EVENT_SHOW_MENU = 1;
 	
+	CocoaCore *core;	
 protected:	
 	PolycodeFrame *frame;
-	CocoaCore *core;
 	
 	PolycodeEditorManager *editorManager;
 	PolycodeProjectManager *projectManager;
 	
 };
-}

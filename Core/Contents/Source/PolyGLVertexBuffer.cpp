@@ -20,6 +20,7 @@
  THE SOFTWARE.
 */
 
+#include "PolyGLHeaders.h"
 #include "PolyGLVertexBuffer.h"
 #include "PolyPolygon.h"
 
@@ -125,6 +126,28 @@ OpenGLVertexBuffer::OpenGLVertexBuffer(Mesh *mesh) : VertexBuffer() {
 	glBufferDataARB(GL_ARRAY_BUFFER_ARB, bufferSize*sizeof(GLfloat), buffer, GL_STATIC_DRAW_ARB);	
 	free(buffer);	
 		
+		
+
+	glGenBuffersARB(1, &tangentBufferID);
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB, tangentBufferID);
+	
+	bufferSize = 0;
+	newBufferSize = 0;		
+	buffer = (GLfloat*)malloc(1);	
+	
+	for(int i=0; i < mesh->getPolygonCount(); i++) {
+		for(int j=0; j < mesh->getPolygon(i)->getVertexCount(); j++) {
+			newBufferSize = bufferSize + 3;			
+			buffer = (GLfloat*)realloc(buffer, newBufferSize * sizeof(GLfloat));		
+			buffer[bufferSize+0] = mesh->getPolygon(i)->getVertex(j)->tangent.x;
+			buffer[bufferSize+1] = mesh->getPolygon(i)->getVertex(j)->tangent.y;
+			buffer[bufferSize+2] = mesh->getPolygon(i)->getVertex(j)->tangent.z;
+			bufferSize = newBufferSize;					
+		}		   
+	}
+	
+	glBufferDataARB(GL_ARRAY_BUFFER_ARB, bufferSize*sizeof(GLfloat), buffer, GL_STATIC_DRAW_ARB);	
+	free(buffer);	
 	
 	glGenBuffersARB(1, &colorBufferID);
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB, colorBufferID);
@@ -171,4 +194,8 @@ GLuint OpenGLVertexBuffer::getTextCoordBufferID() {
 
 GLuint OpenGLVertexBuffer::getVertexBufferID() {
 	return vertexBufferID;
+}
+
+GLuint OpenGLVertexBuffer::getTangentBufferID() {
+	return tangentBufferID;
 }

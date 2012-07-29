@@ -148,6 +148,9 @@ void HelloPolycodeApp::handleEvent(Event *e) {
 	}
 }
 
+HelloPolycodeApp::~HelloPolycodeApp() {
+}
+
 bool HelloPolycodeApp::Update() {
 	Number elapsed = core->getElapsed();
 	

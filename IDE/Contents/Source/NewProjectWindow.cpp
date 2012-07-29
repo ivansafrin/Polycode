@@ -1,9 +1,28 @@
-
+/*
+ Copyright (C) 2012 by Ivan Safrin
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
+*/
 
 #include "NewProjectWindow.h"
 
-
-NewProjectWindow::NewProjectWindow() : UIWindow(L"Create New Project", 500, 300){
+NewProjectWindow::NewProjectWindow() : UIWindow(L"Create New Project", 480, 280){
 	
 	templateFolder = "";
 	
@@ -43,7 +62,7 @@ NewProjectWindow::NewProjectWindow() : UIWindow(L"Create New Project", 500, 300)
 		}
 	}
 	
-	ScreenLabel *label2 = new ScreenLabel(fontName, L"Project Name", fontSize, Label::ANTIALIAS_FULL);
+	ScreenLabel *label2 = new ScreenLabel(L"Project Name", fontSize, fontName, Label::ANTIALIAS_FULL);
 	addChild(label2);
 	label2->setPosition(padding+220, templateContainer->getPosition().y);		
 
@@ -51,7 +70,7 @@ NewProjectWindow::NewProjectWindow() : UIWindow(L"Create New Project", 500, 300)
 	addChild(projectNameInput);
 	projectNameInput->setPosition(label2->getPosition().x, label2->getPosition().y+label2->getHeight()+2);
 	
-	ScreenLabel *label3 = new ScreenLabel(fontName, L"Project Location", fontSize, Label::ANTIALIAS_FULL);
+	ScreenLabel *label3 = new ScreenLabel(L"Project Location", fontSize, fontName, Label::ANTIALIAS_FULL);
 	addChild(label3);
 	label3->setPosition(padding+220, templateContainer->getPosition().y+50);		
 	
@@ -96,7 +115,7 @@ void NewProjectWindow::ResetForm() {
 		defaultTemplateTree->setSelected();
 	focusChild(projectNameInput);	
 	projectNameInput->setText(L"Untitled");
-	projectLocationInput->setText(L"~/Documents/Polycode");
+	projectLocationInput->setText(CoreServices::getInstance()->getCore()->getUserHomeDirectory()+"/Documents/Polycode");
 }
 
 void NewProjectWindow::handleEvent(Event *event) {

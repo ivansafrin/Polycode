@@ -56,6 +56,10 @@ Vertex *Polygon::getVertex(unsigned int index) {
 	return vertices[index];
 }
 
+Vector3 Polygon::getFaceTangent() {
+	return tangent;
+}
+
 Vector3 Polygon::getFaceNormal() {
 /*
 	Vector3 fNormal;
@@ -111,6 +115,39 @@ void Polygon::calculateNormal() {
 		vertices[i]->normal.y = normal.y;
 		vertices[i]->normal.z = normal.z;		
 	}
+}
+
+void Polygon::calculateTangent() {
+	if(vertices.size() < 3)
+		return;
+		
+	
+	Vector3 side0 = *vertices[0] - *vertices[1];
+	Vector3 side1 = *vertices[2] - *vertices[0];
+	Vector3 normal = side1.crossProduct(side0);
+	normal.Normalize();
+	Number deltaV0 = vertices[0]->texCoord.y - vertices[1]->texCoord.y;
+	Number deltaV1 = vertices[2]->texCoord.y - vertices[0]->texCoord.y;
+	tangent = side0 * deltaV1 - side1 * deltaV0;	
+	tangent.Normalize();
+	
+	Number deltaU0 = vertices[0]->texCoord.x - vertices[1]->texCoord.x;
+	Number deltaU1 = vertices[2]->texCoord.x - vertices[0]->texCoord.x;
+	Vector3 binormal = side0 * deltaU1 - side1 * deltaU0;
+	binormal.Normalize();
+	Vector3 tangentCross = tangent.crossProduct(binormal);
+
+	if (tangentCross.dot(normal) < 0.0f) {
+		tangent = tangent * -1;
+	}
+
+	for(int i=0; i < vertices.size(); i++) {		
+		vertices[i]->tangent.x = tangent.x;
+		vertices[i]->tangent.y = tangent.y;
+		vertices[i]->tangent.z = tangent.z;		
+	}
+	
+	
 }
 
 Vertex *Polygon::addVertex(Number x, Number y, Number z) {

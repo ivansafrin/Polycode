@@ -40,7 +40,8 @@ namespace Polycode {
 		void UpdateVirtual();
 		void removeScene(Scene *scene);	
 		void registerRenderTexture(SceneRenderTexture *renderTexture);
-		
+		void unregisterRenderTexture(SceneRenderTexture *renderTexture);
+				
 		private:
 		
 		void updateRenderTextures(Scene *scene);

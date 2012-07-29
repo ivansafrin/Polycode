@@ -25,6 +25,14 @@
 
 using namespace Polycode;
 
+void ObjectEntry::Clear() {
+	for(int i=0; i < children.size(); i++) {
+		children[i]->Clear();
+		delete children[i];
+	}
+	children.clear();
+}
+
 Object::Object() {
 	
 }
@@ -85,6 +93,21 @@ TiXmlElement *Object::createElementFromObjectEntry(ObjectEntry *entry) {
 	return newElement;
 }
 
+bool Object::loadFromXMLString(const String &xmlString) {
+
+	TiXmlDocument doc;
+	doc.Parse((const char*)xmlString.c_str(), 0, TIXML_ENCODING_UTF8);
+
+	if(doc.Error()) {
+		Logger::log("Error loading xml string: %s\n", doc.ErrorDesc());
+		return false;
+	}
+	
+	TiXmlElement *rootElement = doc.RootElement();
+	createFromXMLElement(rootElement, &root);
+	return true;	
+}
+		
 bool Object::loadFromXML(const String& fileName) {
 
 	TiXmlDocument doc(fileName.c_str());

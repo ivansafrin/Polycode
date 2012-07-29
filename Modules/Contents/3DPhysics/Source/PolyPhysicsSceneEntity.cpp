@@ -28,7 +28,7 @@ THE SOFTWARE.
 
 using namespace Polycode;
 
-PhysicsVehicle::PhysicsVehicle(SceneEntity *entity, Number mass, Number friction,btDefaultVehicleRaycaster *rayCaster): PhysicsSceneEntity(entity, PhysicsSceneEntity::SHAPE_BOX, mass, friction, 1) {
+PhysicsVehicle::PhysicsVehicle(SceneEntity *entity, Number mass, Number friction,btDefaultVehicleRaycaster *_rayCaster): PhysicsSceneEntity(entity, PhysicsSceneEntity::SHAPE_BOX, mass, friction, 1), rayCaster(_rayCaster), vehicle(NULL) {
 	
 }
 
@@ -110,6 +110,11 @@ void PhysicsVehicle::Update() {
 }
 
 PhysicsVehicle::~PhysicsVehicle() {
+	delete rayCaster;
+	delete vehicle;
+	for(int i = 0; i < wheels.size(); i++) {
+		delete wheels[i].wheelEntity;
+	}
 }
 
 PhysicsCharacter::PhysicsCharacter(SceneEntity *entity, Number mass, Number friction, Number stepSize) : PhysicsSceneEntity(entity, PhysicsSceneEntity::CHARACTER_CONTROLLER, mass, friction, 1) {	
@@ -172,10 +177,11 @@ void PhysicsCharacter::Update() {
 }
 
 PhysicsCharacter::~PhysicsCharacter() {
-	
+	delete character;
+	delete ghostObject;	
 }
 
-PhysicsSceneEntity::PhysicsSceneEntity(SceneEntity *entity, int type, Number mass, Number friction, Number restitution) : CollisionSceneEntity(entity, type) {
+PhysicsSceneEntity::PhysicsSceneEntity(SceneEntity *entity, int type, Number mass, Number friction, Number restitution, bool compoundChildren) : CollisionSceneEntity(entity, type, compoundChildren) {
 
 	this->mass = mass;
 	btVector3 localInertia(0,0,0);
@@ -194,16 +200,17 @@ PhysicsSceneEntity::PhysicsSceneEntity(SceneEntity *entity, int type, Number mas
 	for(int i=0; i < 16; i++) {
 		mat[i] = ent_mat.ml[i];
 	}	
-	transform.setFromOpenGLMatrix(mat);
+	transform.setFromOpenGLMatrix(mat);	
 	
 	if(mass != 0.0f) {
 		shape->calculateLocalInertia(mass,localInertia);
 	}	
 	
 	if(type == CHARACTER_CONTROLLER) {
-		
+		rigidBody = NULL;
+		myMotionState = NULL;
 	} else {	
-		btDefaultMotionState* myMotionState = new btDefaultMotionState(transform);
+		myMotionState = new btDefaultMotionState(transform);
 		btRigidBody::btRigidBodyConstructionInfo rbInfo(mass,myMotionState,shape,localInertia);
 		rigidBody = new btRigidBody(rbInfo);
 //		rigidBody->setActivationState(ISLAND_SLEEPING);		
@@ -227,9 +234,31 @@ void PhysicsSceneEntity::Update() {
 	}
 	
 	free(mat);
-		
-	sceneEntity->setTransformByMatrixPure(m);	
-	CollisionSceneEntity::Update();		
+	
+	sceneEntity->setTransformByMatrixPure(m);
+//	collisionObject->getWorldTransform().setFromOpenGLMatrix(mat);
+}
+
+void PhysicsSceneEntity::setVelocity(Vector3 velocity) {
+	rigidBody->setLinearVelocity(btVector3(velocity.x, velocity.y, velocity.z));
+//	rigidBody->applyForce(btVector3(velocity.x, velocity.y, velocity.z), btVector3(0,0,0));
+}
+
+void PhysicsSceneEntity::warpTo(Vector3 position, bool resetRotation) {
+	btTransform transform;
+	transform.setIdentity();
+	
+	if(!resetRotation) {
+		Matrix4 ent_mat = sceneEntity->getConcatenatedMatrix();	
+		btScalar mat[16];
+		for(int i=0; i < 16; i++) {
+			mat[i] = ent_mat.ml[i];
+		}	
+		transform.setFromOpenGLMatrix(mat);	
+	}
+	
+	transform.setOrigin(btVector3(position.x,position.y,position.z));	
+	rigidBody->setCenterOfMassTransform(transform);
 }
 
 SceneEntity *PhysicsSceneEntity::getSceneEntity() {
@@ -237,5 +266,6 @@ SceneEntity *PhysicsSceneEntity::getSceneEntity() {
 }
 
 PhysicsSceneEntity::~PhysicsSceneEntity() {
-	
+	delete rigidBody;
+	delete myMotionState;	
 }

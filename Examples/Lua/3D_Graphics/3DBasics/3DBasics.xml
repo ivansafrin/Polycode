@@ -1,0 +1,8 @@
+<PolycodeProject defaultWidth="640" defaultHeight="480" antiAliasingLevel="0">
+	<backgroundColor red="0.25" green="0.25" blue="0.25" />
+	<entryPoint>3DBasics.lua</entryPoint>
+	<packedItems>
+		<item path="pink_texture.png" type="file"/>
+		<item path="green_texture.png" type="file"/>
+        </packedItems>
+</PolycodeProject>

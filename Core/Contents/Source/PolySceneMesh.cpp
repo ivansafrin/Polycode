@@ -35,34 +35,44 @@
 
 using namespace Polycode;
 
-SceneMesh::SceneMesh(const String& fileName) : SceneEntity(), texture(NULL), material(NULL) {
+SceneMesh::SceneMesh(const String& fileName) : SceneEntity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
 	mesh = new Mesh(fileName);
 	bBoxRadius = mesh->getRadius();
 	bBox = mesh->calculateBBox();
-	skeleton = NULL;
 	lightmapIndex=0;
 	showVertexNormals = false;
 	useVertexBuffer = false;
+	lineSmooth = false;
+	ownsMesh = true;
+	ownsSkeleton = true;
+	lineWidth = 1.0;
 }
 
-SceneMesh::SceneMesh(Mesh *mesh) : SceneEntity(), texture(NULL), material(NULL) {
+SceneMesh::SceneMesh(Mesh *mesh) : SceneEntity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
 	this->mesh = mesh;
 	bBoxRadius = mesh->getRadius();
 	bBox = mesh->calculateBBox();
-	skeleton = NULL;
 	lightmapIndex=0;
 	showVertexNormals = false;	
-	useVertexBuffer = false;	
+	useVertexBuffer = false;
+	lineSmooth = false;
+	ownsMesh = true;
+	ownsSkeleton = true;	
+	lineWidth = 1.0;
+		
 }
 
-SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL) {
+SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
 	mesh = new Mesh(meshType);
 	bBoxRadius = mesh->getRadius();
 	bBox = mesh->calculateBBox();
-	skeleton = NULL;
 	lightmapIndex=0;
 	showVertexNormals = false;	
 	useVertexBuffer = false;	
+	lineSmooth = false;
+	ownsMesh = true;
+	ownsSkeleton = true;	
+	lineWidth = 1.0;	
 }
 
 void SceneMesh::setMesh(Mesh *mesh) {
@@ -75,7 +85,11 @@ void SceneMesh::setMesh(Mesh *mesh) {
 
 
 SceneMesh::~SceneMesh() {
-	delete mesh;
+	if(ownsSkeleton)
+		delete skeleton;
+	if(ownsMesh)
+		delete mesh;	
+	delete localShaderOptions;
 }
 
 Mesh *SceneMesh::getMesh() {
@@ -89,6 +103,11 @@ void SceneMesh::setTexture(Texture *texture) {
 void SceneMesh::setMaterial(Material *material) {
 	this->material = material;
 	localShaderOptions = material->getShader(0)->createBinding();
+	if(texture) {
+		localShaderOptions->clearTexture("diffuse");
+		localShaderOptions->addTexture("diffuse", texture);
+	}
+	
 }
 
 void SceneMesh::setMaterialByName(const String& materialName) {
@@ -193,7 +212,8 @@ void SceneMesh::renderMeshLocally() {
 			}
 		}
 		mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
-		mesh->arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;		
+		mesh->arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;	
+		mesh->arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;				
 	}
 
 	if(mesh->useVertexColors) {
@@ -202,6 +222,7 @@ void SceneMesh::renderMeshLocally() {
 	 
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::VERTEX_DATA_ARRAY);
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::NORMAL_DATA_ARRAY);		
+	renderer->pushDataArrayForMesh(mesh, RenderDataArray::TANGENT_DATA_ARRAY);			
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::TEXCOORD_DATA_ARRAY);	
 	
 	renderer->drawArrays(mesh->getMeshType());
@@ -219,6 +240,9 @@ void SceneMesh::Render() {
 	
 	Renderer *renderer = CoreServices::getInstance()->getRenderer();
 	
+	renderer->setLineSize(lineWidth);
+	renderer->setLineSmooth(lineSmooth);
+	
 	if(material) {
 		renderer->applyMaterial(material, localShaderOptions,0);
 	} else {
@@ -229,7 +253,7 @@ void SceneMesh::Render() {
 	}
 	
 	if(useVertexBuffer) {
-		renderer->drawVertexBuffer(mesh->getVertexBuffer());
+		renderer->drawVertexBuffer(mesh->getVertexBuffer(), mesh->useVertexColors);
 	} else {
 		renderMeshLocally();
 	}

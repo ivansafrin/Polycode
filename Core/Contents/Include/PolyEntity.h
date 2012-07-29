@@ -44,7 +44,7 @@ namespace Polycode {
 	class _PolyExport Entity {
 		public:
 			Entity();
-			~Entity();
+			virtual ~Entity();
 
 			/**
 			* Main render method. Override this to do your own drawing.
@@ -157,6 +157,24 @@ namespace Polycode {
 			@return Parent entity of this entity.
 			*/
 			Entity *getParentEntity() const;
+			
+			/**
+			* Returns the number of child entities belonging to this entity.
+			* @return Number of child entities.
+			*/
+			unsigned int getNumChildren();
+			
+			/**
+			* Returns the child entity at specified index.
+			* @param index Index to return entity at.
+			* @return Child entity at specified index or NULL of index out of range.
+			*/			
+			Entity *getChildAtIndex(unsigned int index);
+			
+			/**
+			* If set to true, will automatically delete children upon destruction. (defaults to false).
+			*/ 
+			bool ownsChildren;										
 				
 			//@}
 			// ----------------------------------------------------------------------------------------------------------------
@@ -192,7 +210,7 @@ namespace Polycode {
 			* Sets the entity's position with a vector.
 			@param posVec New position as a vector.
 			*/								
-			void setPosition(Vector3 posVec);
+			void setPosition(const Vector3 &posVec);
 			
 			/**
 			* Returns the entity's position on the X axis.
@@ -218,7 +236,7 @@ namespace Polycode {
 			* Translates the entity relative to its current position with a vector.
 			@param tVec New position as a vector.
 			*/											
-			void Translate(Vector3 tVec);
+			void Translate(const Vector3 &tVec);
 
 			/**
 			* Returns the entity's position on the Z axis.
@@ -260,6 +278,12 @@ namespace Polycode {
 			@param z Z-axis value.						
 			*/									
 			void setScale(Number x, Number y, Number z);
+			
+			/**
+			* Sets the entity's scale.
+			@param v New scale vector.
+			*/												
+			void setScale(const Vector3 &v);
 			
 			/**
 			* Returns the entity's scale multiplied by its parent's compound scale.
@@ -546,11 +570,22 @@ namespace Polycode {
 			//@}
 			// ----------------------------------------------------------------------------------------------------------------
 			
+			/**
+			* Sets user data pointer.
+			* @param userData User data pointer
+			*/
+			void setUserData(void *userData);			
+
+			/**
+			* Returns the user data pointer.
+			* @return User data pointer
+			*/			
+			void *getUserData();
 				
 			void setBlendingMode(int newBlendingMode);
 				
 			Vector3 getChildCenter() const;
-							
+			
 			std::vector <EntityProp> entityProps;
 			String getEntityProp(const String& propName);
 			
@@ -566,6 +601,9 @@ namespace Polycode {
 			bool isMask;
 		
 		protected:
+		
+			void *userData;
+		
 			std::vector<Entity*> children;
 
 			Vector3 childCenter;

@@ -11,7 +11,7 @@
 @implementation PolycodeAppDelegate
 
 @synthesize window;
-@synthesize substanceView;
+@synthesize polycodeView;
 @synthesize projectMenu;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
@@ -22,7 +22,7 @@
 	eventHandler = new PolycodeAppEventHandler();
 	eventHandler->appDelegate = self;
 	
-	app = new PolycodeIDEApp(substanceView);
+	app = new PolycodeIDEApp(polycodeView);
 	app->addEventListener(eventHandler, PolycodeIDEApp::EVENT_SHOW_MENU);
 	
 	timer = [NSTimer timerWithTimeInterval:(1.0f/90.0f) target:self selector:@selector(animationTimer:) userInfo:nil repeats:YES];
@@ -37,7 +37,7 @@
 	}
 	
 	if(mustShowProjectMenu) {
-		NSPoint menuOrigin = NSMakePoint(substanceView.mouseX, substanceView.mouseY);
+		NSPoint menuOrigin = NSMakePoint(polycodeView.mouseX, polycodeView.mouseY);
 		
 		NSEvent *event =  [NSEvent mouseEventWithType:NSLeftMouseDown
 											 location:menuOrigin
@@ -49,7 +49,7 @@
 										   clickCount:1
 											 pressure:1];	
 		
-		[NSMenu popUpContextMenu:projectMenu withEvent:event forView:substanceView];
+		[NSMenu popUpContextMenu:projectMenu withEvent:event forView:polycodeView];
 		
 		mustShowProjectMenu = NO;
 	}
@@ -61,26 +61,57 @@
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
-	delete app;
+	NSLog(@"STOPPING\n");
+	app->saveConfigFile();
+	app->core->Shutdown();
 }
 
--(void) newProject: (id) sender {
+- (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)theApplication
+{
+	return YES;
+}
+
+-(IBAction) refreshProject: (id) sender {
+	app->refreshProject();
+}	
+
+-(IBAction) renameFile: (id) sender {
+	app->renameFile();
+}
+
+-(IBAction) removeFile: (id) sender {
+	app->removeFile();
+}
+
+-(IBAction) newGroup: (id) sender {
+	app->newGroup();
+}
+
+-(IBAction) browseExamples: (id) sender {
+	app->browseExamples();
+}
+
+-(IBAction) runProject: (id) sender {
+	app->runProject();
+}
+
+-(IBAction) newProject: (id) sender {
 	app->newProject();
 }
 
--(void) newFile: (id) sender {
+-(IBAction) newFile: (id) sender {
 	app->newFile();
 }
 
--(void) openProject: (id) sender {
+-(IBAction) openProject: (id) sender {
 	app->openProject();
 }
 
--(void) closeProject: (id) sender {
+-(IBAction) closeProject: (id) sender {
 	app->closeProject();
 }
 
--(void) saveFile: (id) sender {
+-(IBAction) saveFile: (id) sender {
 	app->saveFile();
 }
 

@@ -64,10 +64,21 @@ THE SOFTWARE.
 #elif defined(__APPLE__) && defined(__MACH__)
 	#define PLATFORM PLATFORM_MAC
 #else
+	#include <cstddef>
 	#define PLATFORM PLATFORM_UNIX
 #endif
 
-
-
 typedef double Number;
+
+#define RANDOM_NUMBER ((Number)rand()/(Number)RAND_MAX)
+
+inline Number clampf(Number x, Number a, Number b)
+{
+    return x < a ? a : (x > b ? b : x);
+}
+
+#define MIN(a, b)  (((a) < (b)) ? (a) : (b))
+#define MAX(a, b)  (((a) > (b)) ? (a) : (b))
+
+
 

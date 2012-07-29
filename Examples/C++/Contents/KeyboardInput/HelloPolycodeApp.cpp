@@ -23,6 +23,9 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	
 }
 
+HelloPolycodeApp::~HelloPolycodeApp() {
+}
+
 void HelloPolycodeApp::handleEvent(Event *e) {
 	if(e->getDispatcher() == core->getInput()) {
 		InputEvent *inputEvent = (InputEvent*)e;

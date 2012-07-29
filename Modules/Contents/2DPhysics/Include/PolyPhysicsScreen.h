@@ -76,9 +76,15 @@ class _PolyExport PhysicsScreenEvent : public Event {
 		Vector2 worldCollisionNormal;
 		
 		/**
-		* Collision point
+		* Collision point in local space
 		*/			
 		Vector2 localCollisionPoint;
+
+		/**
+		* Collision point in world space
+		*/			
+		Vector2 worldCollisionPoint;
+
 			
 		/**
 		* Strength of the collision impact.
@@ -175,7 +181,11 @@ public:
 	* Removes a physics child from the screen.
 	* @param entityToRemove Entity to remove from the screen.
 	*/
-	void removePhysicsChild(PhysicsScreenEntity *entityToRemove);
+	void removePhysicsChild(ScreenEntity *entityToRemove);
+	
+	
+	ScreenEntity* removeChild(ScreenEntity *entityToRemove);
+	
 	
 	/**
 	* Begins tracking collisions for a ScreenEntity.
@@ -334,6 +344,11 @@ public:
 	* @return If there specified entity overlaps the specified position, this returns true.
 	*/ 														
 	bool testEntityAtPosition(ScreenEntity *ent, Number x, Number y);
+
+	/**
+	* Tests collision between two entities
+	*/
+	bool testEntityCollision(ScreenEntity *ent1, ScreenEntity *ent2);
 	
 	void Shutdown();
 	
@@ -353,7 +368,6 @@ protected:
 	
 	void init(Number worldScale, Number physicsTimeStep, int physicsIterations, Vector2 physicsGravity);
 
-	Timer *updateTimer;
 	std::vector <PhysicsScreenEntity*> physicsChildren;
 	std::vector<b2Contact*> contacts;
 	b2World *world;

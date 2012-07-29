@@ -46,9 +46,9 @@ ScreenEntity *PhysicsScreenEvent::getSecondEntity() {
 
 void PhysicsScreen::BeginContact (b2Contact *contact) {
 
-	if(!contact->GetFixtureA()->IsSensor() && !contact->GetFixtureB()->IsSensor()) {
-		return;
-	}
+//	if(!contact->GetFixtureA()->IsSensor() && !contact->GetFixtureB()->IsSensor()) {
+//		return;
+//	}
 	
 	PhysicsScreenEvent *newEvent = new PhysicsScreenEvent();
 	newEvent->entity1 = getPhysicsEntityByFixture(contact->GetFixtureA())->getScreenEntity();
@@ -68,13 +68,18 @@ void PhysicsScreen::BeginContact (b2Contact *contact) {
 	newEvent->worldCollisionNormal.x = w_nor.x;
 	newEvent->worldCollisionNormal.y = w_nor.y;	
 
-	newEvent->localCollisionPoint.x = point.x;
-	newEvent->localCollisionPoint.y = point.y;	
+	newEvent->localCollisionPoint.x = point.x * worldScale;
+	newEvent->localCollisionPoint.y = point.y * worldScale;	
+	
+	newEvent->worldCollisionPoint.x = w_manifold.points[0].x * worldScale;
+	newEvent->worldCollisionPoint.y = w_manifold.points[0].y * worldScale;
 	
 	newEvent->impactStrength = 0;
 	newEvent->frictionStrength = 0;
 
 	dispatchEvent(newEvent, PhysicsScreenEvent::EVENT_NEW_SHAPE_COLLISION);
+	
+	contacts.push_back(contact);
 }
 
 void PhysicsScreen::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse) {
@@ -96,8 +101,11 @@ void PhysicsScreen::PostSolve(b2Contact* contact, const b2ContactImpulse* impuls
 	newEvent->worldCollisionNormal.x = w_nor.x;
 	newEvent->worldCollisionNormal.y = w_nor.y;	
 
-	newEvent->localCollisionPoint.x = point.x;
-	newEvent->localCollisionPoint.y = point.y;	
+	newEvent->localCollisionPoint.x = point.x * worldScale;
+	newEvent->localCollisionPoint.y = point.y * worldScale;	
+	newEvent->worldCollisionPoint.x = w_manifold.points[0].x * worldScale;
+	newEvent->worldCollisionPoint.y = w_manifold.points[0].y * worldScale;
+	
 	
 	newEvent->impactStrength = 0;
 	newEvent->frictionStrength = 0;
@@ -116,11 +124,34 @@ void PhysicsScreen::PostSolve(b2Contact* contact, const b2ContactImpulse* impuls
 void PhysicsScreen::EndContact (b2Contact *contact) {
 	PhysicsScreenEvent *newEvent = new PhysicsScreenEvent();
 	newEvent->entity1 = getPhysicsEntityByFixture(contact->GetFixtureA())->getScreenEntity();
-	newEvent->entity2 = getPhysicsEntityByFixture(contact->GetFixtureB())->getScreenEntity();		
-		
+	newEvent->entity2 = getPhysicsEntityByFixture(contact->GetFixtureB())->getScreenEntity();
+	
+	for(int i=0; i < contacts.size(); i++) {
+		if(contacts[i] == contact) {
+			contacts.erase(contacts.begin()+i);
+			break;
+		}
+	}
+	
 	dispatchEvent(newEvent, PhysicsScreenEvent::EVENT_END_SHAPE_COLLISION);
 }
 
+bool PhysicsScreen::testEntityCollision(ScreenEntity *ent1, ScreenEntity *ent2) {
+	PhysicsScreenEntity *pEnt1 = getPhysicsByScreenEntity(ent1);
+	PhysicsScreenEntity *pEnt2 = getPhysicsByScreenEntity(ent2);	
+	if(pEnt1 == NULL || pEnt2 == NULL)
+		return false;
+	
+	for(int i=0; i < contacts.size(); i++) {
+		ScreenEntity *cEnt1 = getPhysicsEntityByFixture(contacts[i]->GetFixtureA())->getScreenEntity();
+		ScreenEntity *cEnt2 = getPhysicsEntityByFixture(contacts[i]->GetFixtureB())->getScreenEntity();
+		
+		if((cEnt1 == ent1 && cEnt2 == ent2) || (cEnt1 == ent2 && cEnt2 == ent1)) {
+			return true;
+		}
+	}
+	return false;
+}
 
 PhysicsScreen::PhysicsScreen() : Screen() {
 	init(10.0f, 1.0f/60.0f,10,Vector2(0.0f, 10.0f));
@@ -142,9 +173,6 @@ void PhysicsScreen::init(Number worldScale, Number physicsTimeStep, int physicsI
 	world  = new b2World(gravity, doSleep);
 	
 	world->SetContactListener(this);
-
-//	updateTimer = new Timer(true, 3);
-//	updateTimer->addEventListener(this, Timer::EVENT_TRIGGER);
 }
 
 void PhysicsScreen::setGravity(Vector2 newGravity) {
@@ -283,7 +311,7 @@ void PhysicsScreen::setVelocityY(ScreenEntity *ent, Number fy) {
 
 PhysicsScreenEntity *PhysicsScreen::addCollisionChild(ScreenEntity *newEntity, int entType) {
 	PhysicsScreenEntity *ret;
-	ret = addPhysicsChild(newEntity, entType, false, 0,0.1,0, true);
+	ret = addPhysicsChild(newEntity, entType, false, 0,0.0,0, true);
 	ret->collisionOnly = true; 
 	return ret;
 }
@@ -370,8 +398,11 @@ ScreenEntity *PhysicsScreen::getEntityAtPosition(Number x, Number y) {
 	
 	for(int i=0;i<physicsChildren.size();i++) {
 		PhysicsScreenEntity *ent = physicsChildren[i];
-		if(ent->shape->TestPoint(ent->body->GetTransform(), mousePosition))
-			return ent->getScreenEntity();
+		if(ent->shape) {
+			if(ent->shape->TestPoint(ent->body->GetTransform(), mousePosition)) {
+				return ent->getScreenEntity();
+			}
+		}
 	}	
 	return ret;
 }
@@ -386,11 +417,13 @@ bool PhysicsScreen::testEntityAtPosition(ScreenEntity *ent, Number x, Number y) 
 	mousePosition.x = x/worldScale;
 	mousePosition.y = y/worldScale;
 	
-	if(pEnt->shape->TestPoint(pEnt->body->GetTransform(), mousePosition))
-		return true;
-	else
-		return false;
-	
+	if(pEnt->shape) {
+		if(pEnt->shape->TestPoint(pEnt->body->GetTransform(), mousePosition))
+			return true;
+		else
+			return false;
+	}
+	return false;
 }
 
 void PhysicsScreen::destroyMouseJoint(b2MouseJoint *mJoint) {
@@ -407,14 +440,27 @@ PhysicsScreenEntity *PhysicsScreen::addPhysicsChild(ScreenEntity *newEntity, int
 	return newPhysicsEntity;
 }
 
-void PhysicsScreen::removePhysicsChild(PhysicsScreenEntity *entityToRemove) {
-	world->DestroyBody(entityToRemove->body);
-	removeChild(entityToRemove->getScreenEntity());
+void PhysicsScreen::removePhysicsChild(ScreenEntity *entityToRemove) {
+	PhysicsScreenEntity *physicsEntityToRemove = getPhysicsByScreenEntity(entityToRemove);
+	if(!physicsEntityToRemove) {
+		return;
+	}
+	world->DestroyBody(physicsEntityToRemove->body);
 	for(int i=0;i<physicsChildren.size();i++) {
-		if(physicsChildren[i] == entityToRemove) {
+		if(physicsChildren[i] == physicsEntityToRemove) {
 			physicsChildren.erase(physicsChildren.begin()+i);
 		}
 	}
+	Screen::removeChild(entityToRemove);	
+}
+
+ScreenEntity* PhysicsScreen::removeChild(ScreenEntity *entityToRemove) {
+	if(getPhysicsByScreenEntity(entityToRemove)) {
+		removePhysicsChild(entityToRemove);
+	} else {
+		Screen::removeChild(entityToRemove);	
+	}
+	return entityToRemove;
 }
 
 
@@ -423,10 +469,10 @@ void PhysicsScreen::Shutdown() {
 }
 
 PhysicsScreen::~PhysicsScreen() {
-	delete world;
 	for(int i=0; i<physicsChildren.size();i++) {
 			delete physicsChildren[i];
 	}
+	delete world;	
 }
 
 PhysicsScreenEntity *PhysicsScreen::getPhysicsEntityByFixture(b2Fixture *fixture) {

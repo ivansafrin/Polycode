@@ -4,37 +4,43 @@ INCLUDE_DIRECTORIES(
     ${LUA_INCLUDE_DIR}
     ${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/Include
     Include
+    ../../Core/Contents/PolycodeView/Mac\ OS\ X/
 )
 
 SET(CMAKE_DEBUG_POSTFIX "_d")
 
-IF(MSVC)
-    SET(polycodeplayer_SRCS
-        ../Build/MSVC/PolycodePlayer/player_icon.ico
-        ../Build/MSVC/PolycodePlayer/main.cpp
-        ../Build/MSVC/PolycodePlayer/PolycodePlayerView.cpp
+IF(MSVC OR MINGW)
+
+SET(polycodeplayer_SRCS 
         Source/PolycodePlayer.cpp
         Source/PolycodeWindowsPlayer.cpp
+        Platform/Windows/main.cpp
     )
-    SET(polycodeplayer_HDRS
-        ../Build/MSVC/PolycodePlayer/resource.h
-        ../Build/MSVC/PolycodePlayer/PolycodePlayerView.h
-        Include/PolycodePlayer.h 
+
+    SET(polycodeplayer_HDRS 
+        Include/PolycodePlayer.h
         Include/PolycodeWindowsPlayer.h
     )
+  
+    SET(polycodeplayerstandalone_SRCS 
+        Source/PolycodePlayer.cpp
+        Source/PolycodeWindowsPlayer.cpp
+        Platform/Windows/Standalone/main.cpp
+    )
+    SET(polycodeplayerstandalone_HDRS 
+        Include/PolycodePlayer.h
+        Include/PolycodeWindowsPlayer.h
+    )
+ 
+    INCLUDE_DIRECTORIES(Include)
+ 
+    ADD_EXECUTABLE(PolycodePlayer ${polycodeplayer_SRCS} ${polycodeplayer_HDRS})
+    ADD_EXECUTABLE(StandalonePlayer ${polycodeplayerstandalone_SRCS} ${polycodeplayerstandalone_HDRS})
     
-    INCLUDE_DIRECTORIES(../Build/MSVC/PolycodePlayer Include)
-    
- #   IF(POLYCODE_BUILD_SHARED)
- #       ADD_EXECUTABLE(PolycodePlayer_dynamic WIN32 ${polycodeplayer_SRCS} ${polycodeplayer_HDRS})
- #       TARGET_LINK_LIBRARIES(PolycodePlayer Polycore_dynamic PolycodeLua ${LUA_LIBRARY})
- #   ENDIF(POLYCODE_BUILD_SHARED)
 
- #   IF(POLYCODE_BUILD_STATIC)
-    ADD_EXECUTABLE(PolycodePlayer WIN32 ${polycodeplayer_SRCS} ${polycodeplayer_HDRS})
     TARGET_LINK_LIBRARIES(PolycodePlayer 
-        Polycore 
         PolycodeLua 
+        Polycore 
         ${LUA_LIBRARY}
         ${OPENGL_LIBRARIES}
         ${OPENAL_LIBRARY}
@@ -44,10 +50,24 @@ IF(MSVC)
         ${OGG_LIBRARY}
         ${VORBIS_LIBRARY}
         ${VORBISFILE_LIBRARY}
+        ${SDL_LIBRARY}
      )
 
- #   ENDIF(POLYCODE_BUILD_STATIC)
-    
+    TARGET_LINK_LIBRARIES(StandalonePlayer 
+        PolycodeLua 
+        Polycore 
+        ${LUA_LIBRARY}
+        ${OPENGL_LIBRARIES}
+        ${OPENAL_LIBRARY}
+        ${PNG_LIBRARIES}
+        ${FREETYPE_LIBRARIES}
+        ${PHYSFS_LIBRARY}
+        ${OGG_LIBRARY}
+        ${VORBIS_LIBRARY}
+        ${VORBISFILE_LIBRARY}
+        ${SDL_LIBRARY}
+     )
+
 ELSEIF(APPLE)
     SET(polycodeplayer_SRCS 
         Source/PolycodePlayer.cpp
@@ -55,12 +75,14 @@ ELSEIF(APPLE)
         Platform/Darwin/main.m
         Platform/Darwin/MyDocument.mm
         Platform/Darwin/PPlayerDocumentController.mm
+	../../Core/Contents/PolycodeView/Mac\ OS\ X/PolycodeView.mm
     )
     SET(polycodeplayer_HDRS 
         Include/PolycodePlayer.h
         Include/PolycodeCocoaPlayer.h
         Platform/Darwin/MyDocument.h
         Platform/Darwin/PPlayerDocumentController.h
+	../../Core/Contents/PolycodeView/Mac\ OS\ X/PolycodeView.h
     )
   
     SET(polycodeplayerstandalone_SRCS 
@@ -68,11 +90,13 @@ ELSEIF(APPLE)
         Source/PolycodeCocoaPlayer.mm
         Platform/Darwin/Standalone/main.m
         Platform/Darwin/Standalone/StandalonePlayerAppDelegate.mm
+	../../Core/Contents/PolycodeView/Mac\ OS\ X/PolycodeView.mm
     )
     SET(polycodeplayerstandalone_HDRS 
         Include/PolycodePlayer.h
         Include/PolycodeCocoaPlayer.h
         Platform/Darwin/Standalone/StandalonePlayerAppDelegate.h
+	../../Core/Contents/PolycodeView/Mac\ OS\ X/PolycodeView.h
     )
   
     INCLUDE_DIRECTORIES(Include)
@@ -112,6 +136,7 @@ endif()
         ${LUA_LIBRARY}
         ${OPENGL_LIBRARIES}
         ${OPENAL_LIBRARY}
+        ${ZLIB_LIBRARIES}
         ${PNG_LIBRARIES}
         ${FREETYPE_LIBRARIES}
         ${PHYSFS_LIBRARY}
@@ -128,6 +153,7 @@ endif()
         ${LUA_LIBRARY}
         ${OPENGL_LIBRARIES}
         ${OPENAL_LIBRARY}
+        ${ZLIB_LIBRARIES}
         ${PNG_LIBRARIES}
         ${FREETYPE_LIBRARIES}
         ${PHYSFS_LIBRARY}
@@ -145,7 +171,7 @@ endif()
 	add_custom_command (TARGET PolycodePlayer PRE_BUILD
                       COMMAND cp ${Polycode_SOURCE_DIR}/Assets/Default\ asset\ pack/default.pak ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/PolycodePlayer.app/Contents/Resources)
 	add_custom_command (TARGET PolycodePlayer PRE_BUILD
-                      COMMAND cp -R ${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/API ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/PolycodePlayer.app/Contents/Resources)
+                      COMMAND cp -R ${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/API/api.pak ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/PolycodePlayer.app/Contents/Resources)
 
 	add_custom_command (TARGET StandalonePlayer PRE_BUILD
                       COMMAND mkdir -p ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/StandalonePlayer.app/Contents/Resources)
@@ -154,7 +180,7 @@ endif()
 	add_custom_command (TARGET StandalonePlayer PRE_BUILD
                       COMMAND cp ${Polycode_SOURCE_DIR}/Assets/Default\ asset\ pack/default.pak ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/StandalonePlayer.app/Contents/Resources)
 	add_custom_command (TARGET StandalonePlayer PRE_BUILD
-                      COMMAND cp -R ${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/API ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/StandalonePlayer.app/Contents/Resources)
+                      COMMAND cp -R ${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/API/api.pak ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/StandalonePlayer.app/Contents/Resources)
 	add_custom_command (TARGET StandalonePlayer PRE_BUILD
                       COMMAND cp ${Polycode_SOURCE_DIR}/Assets/SamplePolyapp/main.polyapp ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/StandalonePlayer.app/Contents/Resources)
 
@@ -177,21 +203,84 @@ foreach(xib ${PolycodePlayerStandalone_XIBS})
                       COMMENT "Compiling ${Polycode_SOURCE_DIR}/Player/Contents/Platform/Darwin/Standalone/${xib}.xib")
 
 endforeach()
+ELSE(MSVC OR MINGW)
 
-ENDIF(MSVC)
+ SET(polycodeplayer_SRCS 
+        Source/PolycodePlayer.cpp
+        Source/PolycodeLinuxPlayer.cpp
+        Platform/Linux/main.cpp
+    )
 
-IF(POLYCODE_INSTALL_PLAYER)
-#    IF(POLYCODE_BUILD_SHARED)
-#        # install player
-#        INSTALL(TARGETS PolycodePlayer_dynamic
-#            DESTINATION ${POLYCODE_RELEASE_DIR}/Player)
-#    ENDIF()
-#    IF(POLYCODE_BUILD_STATIC)
+    SET(polycodeplayer_HDRS 
+        Include/PolycodePlayer.h
+        Include/PolycodeLinuxPlayer.h
+    )
+  
+    SET(polycodeplayerstandalone_SRCS 
+        Source/PolycodePlayer.cpp
+        Source/PolycodeLinuxPlayer.cpp
+        Platform/Linux/Standalone/main.cpp
+    )
+    SET(polycodeplayerstandalone_HDRS 
+        Include/PolycodePlayer.h
+        Include/PolycodeLinuxPlayer.h
+    )
+ 
+    INCLUDE_DIRECTORIES(Include)
+ 
+    ADD_EXECUTABLE(PolycodePlayer ${polycodeplayer_SRCS} ${polycodeplayer_HDRS})
+    ADD_EXECUTABLE(StandalonePlayer ${polycodeplayerstandalone_SRCS} ${polycodeplayerstandalone_HDRS})
+    
+
+    TARGET_LINK_LIBRARIES(PolycodePlayer 
+        PolycodeLua 
+        Polycore 
+        ${LUA_LIBRARY}
+        ${OPENGL_LIBRARIES}
+        ${OPENAL_LIBRARY}
+        ${PNG_LIBRARIES}
+        ${FREETYPE_LIBRARIES}
+        ${PHYSFS_LIBRARY}
+        ${OGG_LIBRARY}
+        ${VORBIS_LIBRARY}
+        ${VORBISFILE_LIBRARY}
+        ${SDL_LIBRARY}
+     )
+
+    TARGET_LINK_LIBRARIES(StandalonePlayer 
+        PolycodeLua 
+        Polycore 
+        ${LUA_LIBRARY}
+        ${OPENGL_LIBRARIES}
+        ${OPENAL_LIBRARY}
+        ${PNG_LIBRARIES}
+        ${FREETYPE_LIBRARIES}
+        ${PHYSFS_LIBRARY}
+        ${OGG_LIBRARY}
+        ${VORBIS_LIBRARY}
+        ${VORBISFILE_LIBRARY}
+        ${SDL_LIBRARY}
+     )
+
+    
+
+ENDIF(MSVC OR MINGW)
+
     INSTALL(TARGETS PolycodePlayer 
         DESTINATION Player)
 
     INSTALL(TARGETS StandalonePlayer 
         DESTINATION Player)
 
-#    ENDIF()
-ENDIF(POLYCODE_INSTALL_PLAYER)
+IF(MSVC OR MINGW)
+    INSTALL(FILES "${Polycode_SOURCE_DIR}/Assets/Default\ asset\ pack/default.pak" DESTINATION Player)
+    INSTALL(FILES "${Polycode_SOURCE_DIR}/Assets/Default\ asset\ pack/hdr.pak" DESTINATION Player)
+    INSTALL(FILES "${Polycode_SOURCE_DIR}/Assets/SamplePolyapp/main.polyapp" DESTINATION Player)
+    INSTALL(FILES "${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/API/api.pak" DESTINATION Player)
+ELSEIF(APPLE)
+ELSE(MSVC OR MINGW)
+    INSTALL(FILES "${Polycode_SOURCE_DIR}/Assets/Default\ asset\ pack/default.pak" DESTINATION Player)
+    INSTALL(FILES "${Polycode_SOURCE_DIR}/Assets/Default\ asset\ pack/hdr.pak" DESTINATION Player)
+    INSTALL(FILES "${Polycode_SOURCE_DIR}/Assets/SamplePolyapp/main.polyapp" DESTINATION Player)
+    INSTALL(FILES "${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/API/api.pak" DESTINATION Player)
+ENDIF(MSVC OR MINGW)

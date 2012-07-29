@@ -65,13 +65,25 @@ namespace Polycode {
 		* Removes a SceneEntity from the scene
 		* @param entity New entity to remove.
 		*/		
-		void removeEntity(SceneEntity *entity);
+		virtual void removeEntity(SceneEntity *entity);
 		
 		/**
 		* Returns the scene's default camera.
 		* @return The scene's default camera.
 		*/				
 		Camera *getDefaultCamera();
+		
+		/**
+		* Returns the scene's active camera.
+		* @return The scene's active camera.
+		*/						
+		Camera *getActiveCamera();
+		
+		/**
+		* Sets the scene's active camera.
+		* @param camera New camera to set as the active camera.
+		*/
+		void setActiveCamera(Camera *camera);
 		
 		/**
 		* Enables and disables lighting in the scene.
@@ -178,7 +190,12 @@ namespace Polycode {
 		/**
 		* If this is set to false, the scene is not rendered or updated during the render loop.
 		*/
-		bool enabled;		
+		bool enabled;
+		
+		/**
+		* If ownsChildren is set to true, the scene will delete its children upon destruction (defaults to false).
+		*/
+		bool ownsChildren;
 		
 	protected:
 		
@@ -193,6 +210,7 @@ namespace Polycode {
 		bool isSceneVirtual;
 		
 		Camera *defaultCamera;
+		Camera *activeCamera;
 		std::vector <SceneEntity*> entities;
 		
 		bool lightingEnabled;

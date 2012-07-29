@@ -25,6 +25,16 @@
 
 namespace Polycode {
 	
+	JoystickInfo::JoystickInfo() {
+		for(int i=0; i < 32; i++) {
+			joystickAxisState[i] = 0.0;
+		}
+
+		for(int i=0; i < 64; i++) {
+			joystickButtonState[i] = false;
+		}	
+	}
+	
 	CoreInput::CoreInput() : EventDispatcher() {
 		mouseButtons[0] = false;
 		mouseButtons[1] = false;
@@ -32,11 +42,84 @@ namespace Polycode {
 		
 		for(int i=0; i < 512; i++) {
 			keyboardState[i] = 0;
-		}
+		}		
 	}
 	
 	CoreInput::~CoreInput() {
 	}
+	
+	unsigned int CoreInput::getNumJoysticks() {
+		return joysticks.size();
+	}
+	
+	JoystickInfo *CoreInput::getJoystickInfoByIndex(unsigned int index) {
+		return &joysticks[index];
+	}	
+	
+	JoystickInfo *CoreInput::getJoystickInfoByID(unsigned int deviceID) {
+		for(int i=0;i<joysticks.size();i++) {
+			if(joysticks[i].deviceID == deviceID) {
+				return &joysticks[i];
+			}
+		}
+		return NULL;
+	}
+			
+	void CoreInput::addJoystick(unsigned int deviceID) {
+		JoystickInfo joystick;
+		joystick.deviceID = deviceID;
+		joysticks.push_back(joystick);
+		InputEvent *evt = new InputEvent();
+		evt->joystickDeviceID = deviceID;
+		dispatchEvent(evt, InputEvent::EVENT_JOYDEVICE_ATTACHED);				
+	}
+	
+	void CoreInput::removeJoystick(unsigned int deviceID) {
+		for(int i=0;i<joysticks.size();i++) {
+			if(joysticks[i].deviceID == deviceID) {
+				joysticks.erase(joysticks.begin()+i);
+				InputEvent *evt = new InputEvent();
+				evt->joystickDeviceID = deviceID;
+				dispatchEvent(evt, InputEvent::EVENT_JOYDEVICE_DETACHED);
+				return;
+			}
+		}	
+	}
+	
+	void CoreInput::joystickAxisMoved(unsigned int axisID, float value, unsigned int deviceID) {
+		JoystickInfo *info = getJoystickInfoByID(deviceID);
+		if(info) {
+			info->joystickAxisState[axisID] = value;
+			InputEvent *evt = new InputEvent();
+			evt->joystickDeviceID = deviceID;
+			evt->joystickAxis = axisID;
+			evt->joystickAxisValue = value;
+			dispatchEvent(evt, InputEvent::EVENT_JOYAXIS_MOVED);
+		}	
+	}
+	
+	void CoreInput::joystickButtonDown(unsigned int buttonID, unsigned int deviceID) {
+		JoystickInfo *info = getJoystickInfoByID(deviceID);
+		if(info) {
+			info->joystickButtonState[buttonID] = true;
+			InputEvent *evt = new InputEvent();
+			evt->joystickDeviceID = deviceID;
+			evt->joystickButton = buttonID;
+			dispatchEvent(evt, InputEvent::EVENT_JOYBUTTON_DOWN);
+		}		
+	}
+	
+	void CoreInput::joystickButtonUp(unsigned int buttonID, unsigned int deviceID) {
+		JoystickInfo *info = getJoystickInfoByID(deviceID);
+		if(info) {
+			info->joystickButtonState[buttonID] = false;
+			InputEvent *evt = new InputEvent();
+			evt->joystickDeviceID = deviceID;
+			evt->joystickButton = buttonID;
+			dispatchEvent(evt, InputEvent::EVENT_JOYBUTTON_UP);
+		}	
+	}
+	
 	
 	bool CoreInput::getMouseButtonState(int mouseButton) {
 		return mouseButtons[mouseButton];
@@ -99,4 +182,26 @@ namespace Polycode {
 			dispatchEvent(evt, InputEvent::EVENT_KEYUP);
 		}
 	}
+	
+	void CoreInput::touchesBegan(std::vector<TouchInfo> touches, int ticks) {
+		InputEvent *evt = new InputEvent();
+		evt->touches = touches;
+		evt->timestamp = ticks;
+		dispatchEvent(evt, InputEvent::EVENT_TOUCHES_BEGAN);
+	}
+	
+	void CoreInput::touchesMoved(std::vector<TouchInfo> touches, int ticks) {
+		InputEvent *evt = new InputEvent();
+		evt->touches = touches;
+		evt->timestamp = ticks;		
+		dispatchEvent(evt, InputEvent::EVENT_TOUCHES_MOVED);	
+	}
+	
+	void CoreInput::touchesEnded(std::vector<TouchInfo> touches, int ticks) {
+		InputEvent *evt = new InputEvent();
+		evt->touches = touches;
+		evt->timestamp = ticks;		
+		dispatchEvent(evt, InputEvent::EVENT_TOUCHES_ENDED);	
+	}
+	
 }

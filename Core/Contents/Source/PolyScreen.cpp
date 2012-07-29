@@ -31,6 +31,7 @@
 #include "PolyScreenEntity.h"
 #include "PolyScreenEvent.h"
 #include "PolyShader.h"
+#include "PolyTexture.h"
 
 using namespace Polycode;
 
@@ -46,13 +47,24 @@ Screen::Screen() : EventDispatcher() {
 	useNormalizedCoordinates = false;
 	rootEntity = new ScreenEntity();
 	addChild(rootEntity);
+	processTouchEventsAsMouse = false;
+	ownsChildren = false;
 }
 
 Screen::~Screen() {
-	for(int i=0; i<children.size();i++) {
-		//	delete children[i];
+	if(ownsChildren) {
+		for(int i=0; i < children.size(); i++) {	
+			delete children[i];
+		}
+	} else {
+		delete rootEntity;
 	}
-	CoreServices::getInstance()->getScreenManager()->removeScreen(this);	
+	CoreServices::getInstance()->getScreenManager()->removeScreen(this);
+
+	for(int i=0; i < localShaderOptions.size(); i++) {
+		delete localShaderOptions[i];
+	}
+	delete originalSceneTexture;			
 }
 
 void Screen::setNormalizedCoordinates(bool newVal, Number yCoordinateSize) {
@@ -64,6 +76,14 @@ void Screen::handleInputEvent(InputEvent *inputEvent) {
 	
 	for(int i=children.size()-1; i >= 0; i--) {
 		switch(inputEvent->getEventCode()) {
+		
+			case InputEvent::EVENT_TOUCHES_BEGAN:
+				if(processTouchEventsAsMouse) {
+					for(int j=0; j < inputEvent->touches.size(); j++) {
+						children[i]->_onMouseDown(inputEvent->touches[j].position.x-offset.x, inputEvent->touches[j].position.y-offset.y, CoreInput::MOUSE_BUTTON1, inputEvent->timestamp);
+					}
+				}
+			break;
 			case InputEvent::EVENT_MOUSEDOWN:
 				if(children[i]->_onMouseDown(inputEvent->mousePosition.x-offset.x, inputEvent->mousePosition.y-offset.y, inputEvent->mouseButton, inputEvent->timestamp) &&
 				children[i]->blockMouseInput)
@@ -164,7 +184,7 @@ void Screen::setScreenShader(const String& shaderName) {
 		return;
 	
 	if(!originalSceneTexture) {
-	CoreServices::getInstance()->getRenderer()->createRenderTextures(&originalSceneTexture, NULL, CoreServices::getInstance()->getCore()->getXRes(), CoreServices::getInstance()->getCore()->getYRes());
+		CoreServices::getInstance()->getRenderer()->createRenderTextures(&originalSceneTexture, NULL, CoreServices::getInstance()->getCore()->getXRes(), CoreServices::getInstance()->getCore()->getYRes(), filterShaderMaterial->fp16RenderTargets);
 	}
 	
 	for(int i=0; i < filterShaderMaterial->getNumShaders(); i++) {

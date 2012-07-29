@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.8) # 2.8.5 needed for full URL support, 2.8.8 now needed for new Xcode support
 
 PROJECT(PolycodeDependencies)
 

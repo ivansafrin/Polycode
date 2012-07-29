@@ -1,0 +1,95 @@
+<?xml version="1.0" ?>
+<polycode>	
+	<shaders>
+		<shader type="glsl" name="NorColSpecHDR" numAreaLights="4" numSpotLights="2">		
+			<vp source="NormalShader.vert">
+				<params>			
+				</params>				
+			</vp>
+			<fp source="NorColSpecHDR.frag">
+				<params>			
+				</params>				
+			</fp>
+		</shader>	
+		<shader type="glsl" name="HDRProcessShader">
+			<vp source="ScreenShader.vert"/>
+			<fp source="HDRProcess.frag">
+				<params>
+					<param name="exposure" type="Number" default="1.0"/>
+				</params>								
+			</fp>
+		</shader>		
+		<shader type="glsl" name="HDRProcessShaderBloom">
+			<vp source="ScreenShader.vert"/>
+			<fp source="HDRProcessBloom.frag">
+				<params>
+					<param name="exposure" type="Number" default="1.0"/>
+					<param name="bloomFactor" type="Number" default="0.5"/>					
+				</params>								
+			</fp>			
+		</shader>		
+		<shader type="glsl" name="HDRBloomH">
+			<vp source="ScreenShader.vert"/>
+			<fp source="HDRBloomH.frag"/>
+		</shader>
+		<shader type="glsl" name="HDRBloomV">
+			<vp source="ScreenShader.vert"/>
+			<fp source="HDRBloomV.frag"/>
+		</shader>	
+		<shader type="glsl" name="PassThrough">
+			<vp source="ScreenShader.vert"/>
+			<fp source="PassThrough.frag"/>
+		</shader>	
+		<shader type="glsl" name="ExtractBloom">
+			<vp source="ScreenShader.vert"/>
+			<fp source="ExtractBloom.frag">
+				<params>
+					<param name="brightThreshold" type="Number" default="2.0"/>
+				</params>								
+			</fp>			
+		</shader>							
+	</shaders>
+	<materials>
+		<material name="HDRProcess">
+			<shader name="HDRProcessShader">
+			</shader>
+		</material>	
+		<material name="HDRProcessBloom">
+			<rendertargets type="rgba_fp16">
+				<rendertarget id="base_target"  sizeMode="normalized" width="1.0" height="1.0"/>			
+				<rendertarget id="bloomtarget"  sizeMode="pixels" width="512" height="512"/>
+				<rendertarget id="bloomtarget2"  sizeMode="pixels" width="512" height="512"/>				
+				<rendertarget id="bloomtarget_final"  sizeMode="pixels" width="512" height="512"/>
+			</rendertargets>
+			<shader name="PassThrough">
+				<targettextures>
+					<targettexture mode="out" id="base_target"/>
+				</targettextures>
+			</shader>	
+			<shader name="ExtractBloom">
+				<targettextures>			
+					<targettexture mode="out" id="bloomtarget"/>
+				</targettextures>
+			</shader>									
+			<shader name="HDRBloomH">
+				<targettextures>
+					<targettexture mode="in" name="screenTexture" id="bloomtarget"/>				
+					<targettexture mode="out" id="bloomtarget2"/>
+				</targettextures>
+			</shader>		
+			<shader name="HDRBloomV">
+				<targettextures>
+					<targettexture mode="in" name="screenTexture" id="bloomtarget2"/>
+					<targettexture mode="out" id="bloomtarget_final"/>					
+				</targettextures>													
+			</shader>
+			
+			<shader name="HDRProcessShaderBloom">
+				<targettextures>
+					<targettexture mode="in" name="baseTexture" id="base_target"/>								
+					<targettexture mode="in" name="bloomTexture" id="bloomtarget_final"/>				
+				</targettextures>													
+			</shader>			
+		</material>
+	</materials>
+</polycode>

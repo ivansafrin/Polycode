@@ -1,9 +1,20 @@
 import sys
 import CppHeaderParser
 import os
+import errno
 import re
+from zipfile import *
+import fnmatch
+  
+def mkdir_p(path): # Same effect as mkdir -p, create dir and all necessary parent dirs
+	try:
+		os.makedirs(path)
+	except OSError as e:
+		if e.errno == errno.EEXIST: # Dir already exists; not really an error
+			pass
+		else: raise
 
-def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, apiPath, apiClassPath, includePath, sourcePath):	
+def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, apiPath, apiClassPath, includePath, sourcePath):
 	out = ""
 	sout = ""
 	
@@ -31,24 +42,29 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 	files = os.listdir(inputPath)
 	filteredFiles = []
 	for fileName in files:
-		ignore = ["PolyGLSLProgram", "PolyGLSLShader", "PolyGLSLShaderModule", "PolyWinCore", "PolyCocoaCore", "PolyAGLCore", "PolySDLCore", "Poly_iPhone", "PolyGLES1Renderer", "PolyGLRenderer", "tinyxml", "tinystr", "OpenGLCubemap", "PolyiPhoneCore", "PolyGLES1Texture", "PolyGLTexture", "PolyGLVertexBuffer", "PolyThreaded"]
+		ignore = ["PolyGLSLProgram", "PolyGLSLShader", "PolyGLSLShaderModule", "PolyWinCore", "PolyCocoaCore", "PolyAGLCore", "PolySDLCore", "Poly_iPhone", "PolyGLES1Renderer", "PolyGLRenderer", "tinyxml", "tinystr", "OpenGLCubemap", "PolyiPhoneCore", "PolyGLES1Texture", "PolyGLTexture", "PolyGLVertexBuffer", "PolyThreaded", "PolyGLHeaders", "GLee"]
 		if fileName.split(".")[1] == "h" and fileName.split(".")[0] not in ignore:
 			filteredFiles.append(fileName)
 			out += "#include \"%s\"\n" % (fileName)
 
+	out += "\nusing namespace std;\n\n"
 	out += "\nnamespace Polycode {\n\n"
 	
 	if prefix == "Polycode":
 		out += "class LuaEventHandler : public EventHandler {\n"
 		out += "public:\n"
 		out += "	LuaEventHandler() : EventHandler() {}\n"
-		out += "	~LuaEventHandler();\n"
 		out += "	void handleEvent(Event *e) {\n"
 		out += "		lua_rawgeti( L, LUA_REGISTRYINDEX, wrapperIndex );\n"
 		out += "		lua_getfield(L, -1, \"__handleEvent\");\n"
 		out += "		lua_rawgeti( L, LUA_REGISTRYINDEX, wrapperIndex );\n"
 		out += "		lua_pushlightuserdata(L, e);\n"
-		out += "		lua_call(L, 2, 0);\n"
+		out += "		if(lua_pcall(L, 2, 0, 0) != 0) {\n"
+		out += "			const char *msg = lua_tostring(L, -1);\n"
+		out += "			lua_getfield(L, LUA_GLOBALSINDEX, \"__customError\");\n"
+		out += "			lua_pushstring(L, msg);\n"
+		out += "			lua_call(L, 1, 0);\n"
+		out += "		}\n"
 		out += "	}\n"
 		out += "	int wrapperIndex;\n"
 		out += "	lua_State *L;\n"
@@ -62,7 +78,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 			f = open(headerFile)
 			contents = f.read().replace("_PolyExport", "")
 			cppHeader = CppHeaderParser.CppHeader(contents, "string")
-			ignore_classes = ["PolycodeShaderModule", "Object", "Threaded", "OpenGLCubemap"]
+			ignore_classes = ["PolycodeShaderModule", "Object", "Threaded", "OpenGLCubemap", "ParticleEmitter"]
 
 			for ckey in cppHeader.classes:
 				print ">> Parsing class %s" % ckey
@@ -93,6 +109,8 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 
 				pps = []
 				for pp in c["properties"]["public"]:
+					pp["type"] = pp["type"].replace("Polycode::", "")
+					pp["type"] = pp["type"].replace("std::", "")
 					if pp["type"].find("static ") != -1:
 						if "defaltValue" in pp:
 							lout += "%s = %s\n" % (pp["name"], pp["defaltValue"])
@@ -114,6 +132,8 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 				if len(pps) > 0:
 					lout += "function %s:__index__(name)\n" % ckey
 					for pp in pps:
+						pp["type"] = pp["type"].replace("Polycode::", "")
+						pp["type"] = pp["type"].replace("std::", "")
 						if pidx == 0:
 							lout += "\tif name == \"%s\" then\n" % (pp["name"])
 						else:
@@ -169,6 +189,8 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 				if len(pps) > 0:
 					lout += "function %s:__set_callback(name,value)\n" % ckey
 					for pp in pps:
+						pp["type"] = pp["type"].replace("Polycode::", "")
+						pp["type"] = pp["type"].replace("std::", "")
 						if pp["type"] == "Number" or  pp["type"] == "String" or pp["type"] == "int" or pp["type"] == "bool":
 							if pidx == 0:
 								lout += "\tif name == \"%s\" then\n" % (pp["name"])
@@ -233,6 +255,13 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 								continue
 							if param["type"] == "0":
 								continue
+							param["type"] = param["type"].replace("Polycode::", "")
+							param["type"] = param["type"].replace("std::", "")
+							param["type"] = param["type"].replace("const", "")
+							param["type"] = param["type"].replace("&", "")
+							param["type"] = param["type"].replace(" ", "")
+							param["type"] = param["type"].replace("long", "long ")
+							param["type"] = param["type"].replace("unsigned", "unsigned ")
 
 							param["name"] = param["name"].replace("end", "_end").replace("repeat", "_repeat")
 							if"type" in param:
@@ -433,6 +462,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 					#lout += "\tself:handleEvent(event)\n"
 					lout += "end\n"
 				lfout += "require \"%s/%s\"\n" % (prefix, ckey)
+				mkdir_p(apiClassPath)
 				fout = open("%s/%s.lua" % (apiClassPath, ckey), "w")
 				fout.write(lout)
 		except CppHeaderParser.CppParseError,  e:
@@ -459,6 +489,10 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 	shout += "int _PolyExport luaopen_%s(lua_State *L);\n" % (prefix)
 	shout += "}\n"
 	
+	mkdir_p(includePath)
+	mkdir_p(apiPath)
+	mkdir_p(sourcePath)
+
 	fout = open("%s/%sLUA.h" % (includePath, prefix), "w")
 	fout.write(shout)
 
@@ -471,7 +505,15 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 	fout = open("%s/%sLUA.cpp" % (sourcePath, prefix), "w")
 	fout.write(sout)
 	
+
+	pattern = '*.lua'
+	os.chdir(apiPath)
+	if libName == "Polycore":
+		with ZipFile("api.pak", 'w') as myzip:
+			for root, dirs, files in os.walk("."):
+			    for filename in fnmatch.filter(files, pattern):
+				myzip.write(os.path.join(root, filename))
 	#print cppHeader
 	
 createLUABindings(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9])
-	
+

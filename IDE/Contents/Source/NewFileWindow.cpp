@@ -1,8 +1,35 @@
-
+/*
+ Copyright (C) 2012 by Ivan Safrin
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
+ */
+ 
 #include "NewFileWindow.h"
 
-NewFileWindow::NewFileWindow() : UIWindow(L"Create New File", 500, 300) {
+NewFileWindow::NewFileWindow() : UIWindow(L"Create New File", 480, 280) {
 	defaultTemplateTree = NULL;
+	
+	Config *conf = CoreServices::getInstance()->getConfig();	
+	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
+	int fontSize = conf->getNumericValue("Polycode", "uiDefaultFontSize");
+	
+	closeOnEscape = true;	
 	
 	templateContainer = new UITreeContainer("boxIcon.png", L"File Templates", 200, 300-topPadding-padding-padding);	
 	
@@ -29,25 +56,79 @@ NewFileWindow::NewFileWindow() : UIWindow(L"Create New File", 500, 300) {
 			parseTemplatesIntoTree(newChild, entry);
 		}
 	}	
+	
+	ScreenLabel *label2 = new ScreenLabel(L"New File Name (without extension)", fontSize, fontName, Label::ANTIALIAS_FULL);
+	addChild(label2);
+	label2->setPosition(padding+220, templateContainer->getPosition().y);			
+	
+	fileNameInput = new UITextInput(false, 500-padding-220-padding-padding, 12);	
+	addChild(fileNameInput);
+	fileNameInput->setPosition(label2->getPosition().x, label2->getPosition().y+label2->getHeight()+2);
+	
+	
+	cancelButton = new UIButton(L"Cancel", 100);
+	cancelButton->addEventListener(this, UIEvent::CLICK_EVENT);
+	addChild(cancelButton);
+	cancelButton->setPosition(500-100-padding-100-10, 265);
+			
+	okButton = new UIButton(L"Create File", 100);
+	okButton->addEventListener(this, UIEvent::CLICK_EVENT);
+	addChild(okButton);
+	okButton->setPosition(500-100-padding, 265);	
 }
 
 NewFileWindow::~NewFileWindow() {
 	
 }
 
+String NewFileWindow::getFileName() {
+	return fileNameInput->getText();
+}
+
+String NewFileWindow::getTemplatePath() {
+	return templatePath;
+}
+
 void NewFileWindow::resetForm() {
 	defaultTemplateTree->setSelected();
+	fileNameInput->setText("Untitled");
 }
+
+void NewFileWindow::handleEvent(Event *event) {
+	if(event->getEventType() == "UIEvent") {
+		if(event->getEventCode() == UIEvent::CLICK_EVENT) {
+			if(event->getDispatcher() == okButton) {
+				dispatchEvent(new UIEvent(), UIEvent::OK_EVENT);						
+			}
+			
+			if(event->getDispatcher() == cancelButton) {
+				dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);				
+			}									
+		}
+	}
+	
+	if(event->getEventType() == "UITreeEvent" && event->getEventCode() == UITreeEvent::SELECTED_EVENT) {
+		if(event->getDispatcher() == templateContainer->getRootNode()) {
+			UITreeEvent *treeEvent = (UITreeEvent*) event;
+			FileTemplateUserData *data = (FileTemplateUserData *)treeEvent->selection->getUserData();
+			if(data->type == 1)
+				templatePath = data->templatePath;
+		}
+	}
+	
+	UIWindow::handleEvent(event);	
+}
+
 
 void NewFileWindow::parseTemplatesIntoTree(UITree *tree, OSFileEntry folder) {
 	vector<OSFileEntry> templates = OSBasics::parseFolder(folder.fullPath, false);
 	for(int i=0; i < templates.size(); i++) {
-		OSFileEntry entry = templates[i];
+		OSFileEntry entry = templates[i];	
 		if(entry.type != OSFileEntry::TYPE_FOLDER) {
-			UITree *newChild = tree->addTreeChild("templateIcon.png", entry.nameWithoutExtension, NULL);			
+			UITree *newChild = tree->addTreeChild("templateIcon.png", entry.nameWithoutExtension, NULL);
 			FileTemplateUserData *data = new FileTemplateUserData();
 			data->type = 1;
-			data->templateFolder = entry.fullPath;
+			data->templatePath = entry.fullPath;
 			newChild->setUserData(data);
 			if(entry.name == "LUA Source File.lua") {
 				defaultTemplateTree = newChild;

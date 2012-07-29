@@ -30,7 +30,7 @@ namespace Polycode {
 
 	class _PolyExport Texture : public Resource {
 		public:
-		Texture(unsigned int width, unsigned int height, char *textureData,bool clamp, int type=Image::IMAGE_RGBA);
+		Texture(unsigned int width, unsigned int height, char *textureData,bool clamp, bool createMipmaps, int type=Image::IMAGE_RGBA);
 			Texture(Image *image);
 			virtual ~Texture();
 
@@ -62,6 +62,7 @@ namespace Polycode {
 			int pixelSize;
 			int filteringMode;
 		
+			bool createMipmaps;
 			int width;
 			int height;
 			String resourcePath;

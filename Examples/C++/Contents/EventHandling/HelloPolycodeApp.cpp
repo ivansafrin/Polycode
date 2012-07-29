@@ -19,6 +19,9 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	screen->addChild(image);	
 }
 
+HelloPolycodeApp::~HelloPolycodeApp() {
+}
+
 void HelloPolycodeApp::handleEvent(Event *e) {
 	if(e->getDispatcher() == rotateTimer && e->getEventCode() == Timer::EVENT_TRIGGER) {
 		image->setRotation(image->getRotation() + 90);

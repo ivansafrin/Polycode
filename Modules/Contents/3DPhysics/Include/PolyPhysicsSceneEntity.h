@@ -37,7 +37,7 @@ namespace Polycode {
 	*/
 	class _PolyExport PhysicsSceneEntity : public CollisionSceneEntity {
 	public:
-		PhysicsSceneEntity(SceneEntity *entity, int type, Number mass, Number friction, Number restitution);
+		PhysicsSceneEntity(SceneEntity *entity, int type, Number mass, Number friction, Number restitution, bool compoundChildren = false);
 		virtual ~PhysicsSceneEntity();
 		virtual void Update();
 				
@@ -49,6 +49,9 @@ namespace Polycode {
 		SceneEntity *getSceneEntity();
 		void setFriction(Number friction);		
 		int getType() { return type; }	
+		
+			void setVelocity(Vector3 velocity);
+			void warpTo(Vector3 position, bool resetRotation);
 			//@}
 			// ----------------------------------------------------------------------------------------------------------------
 			
@@ -106,6 +109,8 @@ namespace Polycode {
 	protected:
 	
 		Number mass;
+		
+		btDefaultMotionState* myMotionState;		
 	};
 	
 	/**

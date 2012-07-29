@@ -39,10 +39,32 @@
 UserInterfaceState.*
 Player/Build/Mac OS X/Polycode Player.xcodeproj/project.xcworkspace/xcuserdata/ivansafrin.xcuserdatad/UserInterfaceState.xcuserstate
 
+/Bindings/Contents/LUA/API/Polycode/*.lua
+/Bindings/Contents/LUA/API/Polycode.lua
+/Bindings/Contents/LUA/API/api.pak
+/Bindings/Contents/LUA/Include/*.h
+/Bindings/Contents/LUA/Source/*.cpp	
+/Bindings/Contents/LUA/Source
+
+/Modules/Bindings/2DPhysics/API/Physics2D/*.lua
+/Modules/Bindings/2DPhysics/API/Physics2D.lua
+/Modules/Bindings/2DPhysics/Include/*.h
+/Modules/Bindings/2DPhysics/Source/*.cpp
+
+/Modules/Bindings/3DPhysics/API/Physics3D/*.lua
+/Modules/Bindings/3DPhysics/API/Physics3D.lua
+/Modules/Bindings/3DPhysics/Include/*.h
+/Modules/Bindings/3DPhysics/Source/*.cpp
+
 /Player/Build
 /Standalone/Build
+
 /Dependencies/Build
 /Dependencies/Downloads
+/Dependencies/Local/libstem_gamepad/Build
+
+/IDE/Contents/Resources/Standalone
+
 /Core/Build/Mac\ OS\ X/build
 /IDE/Build/Mac\ OS\ X/build
 /Modules/Build/Mac\ OS\ X/build

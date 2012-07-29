@@ -86,20 +86,24 @@ namespace Polycode {
 		virtual void EndRender() = 0;
 		
 		virtual Cubemap *createCubemap(Texture *t0, Texture *t1, Texture *t2, Texture *t3, Texture *t4, Texture *t5) = 0;		
-		virtual Texture *createTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, int type=Image::IMAGE_RGBA) = 0;
-		virtual void createRenderTextures(Texture **colorBuffer, Texture **depthBuffer, int width, int height) = 0;
+		virtual Texture *createTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, bool createMipmaps, int type=Image::IMAGE_RGBA) = 0;
+		virtual void destroyTexture(Texture *texture) = 0;
+		virtual void createRenderTextures(Texture **colorBuffer, Texture **depthBuffer, int width, int height, bool floatingPointBuffer) = 0;
 		
 		virtual Texture *createFramebufferTexture(unsigned int width, unsigned int height) = 0;
 		virtual void bindFrameBufferTexture(Texture *texture) = 0;
 		virtual void unbindFramebuffers() = 0;
+
+		virtual Image *renderScreenToImage() = 0;
 		
-		virtual void renderToTexture(Texture *targetTexture) = 0;
-		virtual void renderZBufferToTexture(Texture *targetTexture) = 0;
-		virtual void setViewportSize(int w, int h, Number fov=45.0f) = 0;
-		
+		void setFOV(Number fov);		
+		void setViewportSize(int w, int h);
+		void setViewportSizeAndFOV(int w, int h, Number fov);
+		virtual void resetViewport() = 0;
+				
 		virtual void loadIdentity() = 0;		
 		virtual void setOrthoMode(Number xSize=0.0f, Number ySize=0.0f) = 0;
-		virtual void _setOrthoMode() = 0;
+		virtual void _setOrthoMode(Number orthoSizeX, Number orthoSizeY) = 0;
 		virtual void setPerspectiveMode() = 0;
 		
 		virtual void setTexture(Texture *texture) = 0;		
@@ -115,8 +119,7 @@ namespace Polycode {
 		virtual void translate2D(Number x, Number y) = 0;
 		virtual void rotate2D(Number angle) = 0;
 		virtual void scale2D(Vector2 *scale) = 0;
-		
-		virtual void setFOV(Number fov) = 0;		
+			
 		
 		virtual void setVertexColor(Number r, Number g, Number b, Number a) = 0;
 		
@@ -157,7 +160,7 @@ namespace Polycode {
 		virtual void setDepthFunction(int depthFunction) = 0;
 				
 		virtual void createVertexBufferForMesh(Mesh *mesh) = 0;
-		virtual void drawVertexBuffer(VertexBuffer *buffer) = 0;
+		virtual void drawVertexBuffer(VertexBuffer *buffer, bool enableColorBuffer) = 0;
 		
 		void setRenderMode(int newRenderMode);
 		int getRenderMode();
@@ -170,7 +173,7 @@ namespace Polycode {
 		
 		void setTextureFilteringMode(int mode);
 		
-		virtual void setClippingPlanes(Number near, Number far) = 0;
+		virtual void setClippingPlanes(Number nearPlane_, Number farPlane_) = 0;
 		
 		virtual void enableAlphaTest(bool val) = 0;
 		
@@ -201,12 +204,15 @@ namespace Polycode {
 		virtual Vector3 projectRayFrom2DCoordinate(Number x, Number y) = 0;
 		
 		void enableShaders(bool flag);
+		
+		Number getViewportWidth();
+		Number getViewportHeight();			
 
 		virtual void initOSSpecific() {};
 		
 		void addShaderModule(PolycodeShaderModule *module);
 		
-		virtual bool test2DCoordinate(Number x, Number y, Polygon *poly, const Matrix4 &matrix, bool billboardMode) = 0;
+		virtual bool test2DCoordinateInPolygon(Number x, Number y, Polygon *poly, const Matrix4 &matrix, bool testBackfacing, bool ortho, bool billboardMode);
 		
 		virtual Matrix4 getProjectionMatrix() = 0;
 		virtual Matrix4 getModelviewMatrix() = 0;
@@ -217,7 +223,8 @@ namespace Polycode {
 		static const int BLEND_MODE_NORMAL = 0;
 		static const int BLEND_MODE_LIGHTEN = 1;
 		static const int BLEND_MODE_COLOR = 2;
-		
+		static const int BLEND_MODE_PREMULTIPLIED = 3;
+				
 		static const int FOG_LINEAR = 0;
 		static const int FOG_EXP = 1;
 		static const int FOG_EXP2 = 2;
@@ -253,6 +260,9 @@ namespace Polycode {
 		Matrix4 currentModelMatrix;
 		LightSorter sorter;	
 	
+		Number viewportWidth;
+		Number viewportHeight;
+			
 		bool cullingFrontFaces;
 				
 		Texture *currentTexture;
@@ -281,6 +291,9 @@ namespace Polycode {
 		bool shadersEnabled;
 		Number fov;
 		
+		Number orthoSizeX;
+		Number orthoSizeY;
+				
 		bool lightingEnabled;
 		
 		bool orthoMode;

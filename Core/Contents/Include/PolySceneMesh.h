@@ -23,6 +23,7 @@ THE SOFTWARE.
 #pragma once
 #include "PolyGlobals.h"
 #include "PolySceneEntity.h"
+#include "PolyShader.h"
 
 namespace Polycode {
 
@@ -30,7 +31,6 @@ namespace Polycode {
 	class Mesh;
 	class Texture;
 	class Skeleton;
-	class ShaderBinding;
 	
 	/**
 	* 3D polygonal mesh instance. The SceneMesh is the base for all polygonal 3d geometry. It can have simple textures or complex materials applied to it.
@@ -133,7 +133,20 @@ namespace Polycode {
 			unsigned int lightmapIndex;
 			
 			bool showVertexNormals;
+	
+					
+			Number lineWidth;
+			bool lineSmooth;
 			
+			/**
+			* If true, will delete its Mesh upon destruction. (defaults to true)
+			*/ 
+			bool ownsMesh;
+
+			/**
+			* If true, will delete its Skeleton upon destruction. (defaults to true)
+			*/ 			
+			bool ownsSkeleton;
 		
 		protected:
 		

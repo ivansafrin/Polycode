@@ -21,6 +21,7 @@
 */		
 
 #include "PolyWinCore.h"
+#include "PolyGLHeaders.h"
 #include "PolyCoreInput.h"
 #include "PolyCoreServices.h"
 #include "PolyInputEvent.h"
@@ -31,7 +32,9 @@
 
 #include <GL/gl.h>
 #include <GL/glext.h>
+#ifndef _MINGW
 #include <GL/wglext.h>
+#endif
 
 using namespace Polycode;
 
@@ -52,12 +55,15 @@ void ClientResize(HWND hWnd, int nWidth, int nHeight)
   MoveWindow(hWnd,rcWindow.left, rcWindow.top, nWidth + ptDiff.x, nHeight + ptDiff.y, TRUE);
 }
 
-Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate) 
-	: Core(_xRes, _yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate) {
+Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate,  int monitorIndex) 
+	: Core(_xRes, _yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate, monitorIndex) {
 
 	hWnd = *((HWND*)view->windowData);
 	core = this;
+
 	initKeymap();
+	initGamepad();
+	initTouch();
 
 	hDC = NULL;
 	hRC = NULL;
@@ -73,12 +79,12 @@ Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScre
 	renderer = new OpenGLRenderer();
 	services->setRenderer(renderer);
 
-	setVideoMode(xRes, yRes, fullScreen, aaLevel);
+	setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel);
 		
-//	WSADATA WsaData;
-///	if(WSAStartup( MAKEWORD(2,2), &WsaData ) != NO_ERROR ){
-//		Logger::log("Error initializing sockets!\n");
-//	}
+	WSADATA WsaData;
+	if(WSAStartup( MAKEWORD(2,2), &WsaData ) != NO_ERROR ){
+		Logger::log("Error initializing sockets!\n");
+	}
 
 	((OpenGLRenderer*)renderer)->initOSSpecific();
 
@@ -86,11 +92,22 @@ Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScre
 }
 
 Win32Core::~Win32Core() {
+	shutdownGamepad();
 	destroyContext();
 }
 
 void Win32Core::enableMouse(bool newval) {
 	ShowCursor(newval);	
+}
+
+void Win32Core::warpCursor(int x, int y) {
+	POINT point;
+	point.x = x;
+	point.y = y;
+	ClientToScreen(hWnd, &point);
+	SetCursorPos(point.x,point.y);
+	lastMouseX = x;
+	lastMouseY = y;
 }
 
 unsigned int Win32Core::getTicks() {
@@ -102,6 +119,7 @@ bool Win32Core::Update() {
 		return false;
 
 	checkEvents();
+	Gamepad_processEvents();
 
 	renderer->BeginRender();
 	updateCore();
@@ -112,7 +130,7 @@ bool Win32Core::Update() {
 	return running;
 }
 
-void Win32Core::setVideoMode(int xRes, int yRes, bool fullScreen, int aaLevel) {
+void Win32Core::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel) {
 
 	if(fullScreen) {
 
@@ -231,7 +249,6 @@ void Win32Core::initMultisample(int numSamples) {
 		return;
 	}
 	int pixelFormat;
-	bool valid;
 	UINT numFormats;
 	float fAttributes[] = {0,0};
 
@@ -403,13 +420,13 @@ PolyKEY Win32Core::mapKey(LPARAM lParam, WPARAM wParam) {
 	return keyMap[(unsigned int)wParam];
 }
 
-void Win32Core::handleKeyDown(LPARAM lParam, WPARAM wParam) {
+void Win32Core::handleKeyDown(LPARAM lParam, WPARAM wParam, wchar_t unicodeChar) {
 	lockMutex(eventMutex);
 	Win32Event newEvent;
 	newEvent.eventGroup = Win32Event::INPUT_EVENT;
 	newEvent.eventCode = InputEvent::EVENT_KEYDOWN;
 	newEvent.keyCode = mapKey(lParam, wParam);
-	newEvent.unicodeChar = ' ';
+	newEvent.unicodeChar = unicodeChar;
 	win32Events.push_back(newEvent);
 	unlockMutex(eventMutex);
 }
@@ -420,10 +437,71 @@ void Win32Core::handleKeyUp(LPARAM lParam, WPARAM wParam) {
 	newEvent.eventGroup = Win32Event::INPUT_EVENT;
 	newEvent.eventCode = InputEvent::EVENT_KEYUP;
 	newEvent.keyCode = mapKey(lParam, wParam);
-	newEvent.unicodeChar = ' ';
+	newEvent.unicodeChar = 0;
 	win32Events.push_back(newEvent);
 	unlockMutex(eventMutex);
 }
+
+#ifndef NO_TOUCH_API
+void Win32Core::handleTouchEvent(LPARAM lParam, WPARAM wParam) {
+	
+	// Bail out now if multitouch is not available on this system
+	if ( hasMultiTouch == false )
+	{
+		return;
+	}
+	
+	lockMutex(eventMutex);
+
+	int iNumContacts = LOWORD(wParam);
+	HTOUCHINPUT hInput       = (HTOUCHINPUT)lParam;
+    TOUCHINPUT *pInputs      = new TOUCHINPUT[iNumContacts];
+       
+    if(pInputs != NULL) {
+		if(GetTouchInputInfoFunc(hInput, iNumContacts, pInputs, sizeof(TOUCHINPUT))) {
+
+			std::vector<TouchInfo> touches;
+			for(int i = 0; i < iNumContacts; i++) {
+				TOUCHINPUT ti = pInputs[i];
+				TouchInfo touchInfo;
+				touchInfo.id = (int) ti.dwID;
+
+				POINT pt;
+				pt.x = TOUCH_COORD_TO_PIXEL(ti.x);
+				pt.y = TOUCH_COORD_TO_PIXEL(ti.y);
+				ScreenToClient(hWnd, &pt);
+				touchInfo.position.x = pt.x; 
+				touchInfo.position.y = pt.y;
+
+				touches.push_back(touchInfo);
+			}
+              for(int i = 0; i < iNumContacts; i++) {
+					TOUCHINPUT ti = pInputs[i];
+					if (ti.dwFlags & TOUCHEVENTF_UP) {
+						Win32Event newEvent;
+						newEvent.eventGroup = Win32Event::INPUT_EVENT;
+						newEvent.eventCode = InputEvent::EVENT_TOUCHES_ENDED;
+						newEvent.touches = touches;
+						win32Events.push_back(newEvent);	
+					} else if(ti.dwFlags & TOUCHEVENTF_MOVE) {
+						Win32Event newEvent;
+						newEvent.eventGroup = Win32Event::INPUT_EVENT;
+						newEvent.eventCode = InputEvent::EVENT_TOUCHES_MOVED;
+						newEvent.touches = touches;
+						win32Events.push_back(newEvent);
+					} else if(ti.dwFlags & TOUCHEVENTF_DOWN) {
+						Win32Event newEvent;
+						newEvent.eventGroup = Win32Event::INPUT_EVENT;
+						newEvent.eventCode = InputEvent::EVENT_TOUCHES_BEGAN;
+						newEvent.touches = touches;
+						win32Events.push_back(newEvent);
+					}
+			  }
+		}
+	}
+	unlockMutex(eventMutex);	
+}
+#endif
 
 void Win32Core::handleMouseMove(LPARAM lParam, WPARAM wParam) {
 	lockMutex(eventMutex);
@@ -482,6 +560,15 @@ void Win32Core::checkEvents() {
 		switch(event.eventGroup) {
 			case Win32Event::INPUT_EVENT:
 				switch(event.eventCode) {
+					case InputEvent::EVENT_TOUCHES_BEGAN:
+						input->touchesBegan(event.touches, getTicks());
+					break;
+					case InputEvent::EVENT_TOUCHES_ENDED:
+						input->touchesEnded(event.touches, getTicks());
+					break;
+					case InputEvent::EVENT_TOUCHES_MOVED:
+						input->touchesMoved(event.touches, getTicks());
+					break;
 					case InputEvent::EVENT_MOUSEMOVE:
 						input->setDeltaPosition(event.mouseX - lastMouseX , event.mouseY - lastMouseY);										
 						lastMouseX = event.mouseX;
@@ -507,6 +594,247 @@ void Win32Core::checkEvents() {
 	win32Events.clear();	
 	unlockMutex(eventMutex);		
 }
+
+void Win32Core::handleAxisChange(GamepadDeviceEntry * device, int axisIndex, DWORD value) {
+	if (axisIndex < 0 || axisIndex >= (int) device->numAxes) {
+		return;
+	}	
+	Gamepad_devicePrivate *devicePrivate = device->privateData;
+	float floatVal = (value - devicePrivate->axisRanges[axisIndex][0]) / (float) (devicePrivate->axisRanges[axisIndex][1] - devicePrivate->axisRanges[axisIndex][0]) * 2.0f - 1.0f;
+	input->joystickAxisMoved(axisIndex, floatVal, device->deviceID);	
+}
+
+void Win32Core::handleButtonChange(GamepadDeviceEntry * device, DWORD lastValue, DWORD value) {
+	Gamepad_devicePrivate *devicePrivate = device->privateData;
+	unsigned int buttonIndex;	
+	for (buttonIndex = 0; buttonIndex < device->numButtons; buttonIndex++) {
+		if ((lastValue ^ value) & (1 << buttonIndex)) {
+			if(!!(value & (1 << buttonIndex))) {
+				input->joystickButtonDown(buttonIndex, device->deviceID);
+			} else {
+				input->joystickButtonUp(buttonIndex, device->deviceID);
+			}
+		}
+	}
+}
+
+static void povToXY(DWORD pov, int * outX, int * outY) {
+	if (pov == JOY_POVCENTERED) {
+		*outX = *outY = 0;
+		
+	} else {
+		if (pov > JOY_POVFORWARD && pov < JOY_POVBACKWARD) {
+			*outX = 1;
+			
+		} else if (pov > JOY_POVBACKWARD) {
+			*outX = -1;
+			
+		} else {
+			*outX = 0;
+		}
+		
+		if (pov > JOY_POVLEFT || pov < JOY_POVRIGHT) {
+			*outY = -1;
+			
+		} else if (pov > JOY_POVRIGHT && pov < JOY_POVLEFT) {
+			*outY = 1;
+			
+		} else {
+			*outY = 0;
+		}
+	}
+}
+
+void Win32Core::handlePOVChange(GamepadDeviceEntry * device, DWORD lastValue, DWORD value) {
+	
+	Gamepad_devicePrivate *devicePrivate = device->privateData;
+	
+	int lastX, lastY, newX, newY;
+
+	if (devicePrivate->povXAxisIndex == -1 || devicePrivate->povYAxisIndex == -1) {
+		return;
+	}
+	
+	povToXY(lastValue, &lastX, &lastY);
+	povToXY(value, &newX, &newY);
+	
+	if (newX != lastX) {
+		input->joystickAxisMoved(devicePrivate->povXAxisIndex, newX, device->deviceID);
+	}
+
+	if (newY != lastY) {
+		input->joystickAxisMoved(devicePrivate->povYAxisIndex, newY, device->deviceID);
+	}
+}
+
+
+void Win32Core::Gamepad_processEvents() {
+
+	if(getTicks() > lastGamepadDetect + 3000) {
+			detectGamepads();
+	}
+
+	unsigned int deviceIndex;
+	JOYINFOEX info;
+	MMRESULT result;
+	GamepadDeviceEntry * device;
+	Gamepad_devicePrivate * devicePrivate;
+	
+	for (deviceIndex = 0; deviceIndex < gamepads.size(); deviceIndex++) {
+		device = gamepads[deviceIndex];
+		devicePrivate = device->privateData;
+		
+		info.dwSize = sizeof(info);
+		info.dwFlags = JOY_RETURNALL;
+		result = joyGetPosEx(devicePrivate->joystickID, &info);
+		if (result == JOYERR_UNPLUGGED) {
+
+			input->removeJoystick(device->deviceID);
+			gamepads.erase(gamepads.begin() + deviceIndex);
+			
+		} else if (result == JOYERR_NOERROR) {
+			if (info.dwXpos != devicePrivate->lastState.dwXpos) {
+				handleAxisChange(device, devicePrivate->xAxisIndex, info.dwXpos);
+			}
+			if (info.dwYpos != devicePrivate->lastState.dwYpos) {
+				handleAxisChange(device, devicePrivate->yAxisIndex, info.dwYpos);
+			}
+			if (info.dwZpos != devicePrivate->lastState.dwZpos) {
+				handleAxisChange(device, devicePrivate->zAxisIndex, info.dwZpos);
+			}
+			if (info.dwRpos != devicePrivate->lastState.dwRpos) {
+				handleAxisChange(device, devicePrivate->rAxisIndex, info.dwRpos);
+			}
+			if (info.dwUpos != devicePrivate->lastState.dwUpos) {
+				handleAxisChange(device, devicePrivate->uAxisIndex, info.dwUpos);
+			}
+			if (info.dwVpos != devicePrivate->lastState.dwVpos) {
+				handleAxisChange(device, devicePrivate->vAxisIndex, info.dwVpos);
+			}
+			if (info.dwPOV != devicePrivate->lastState.dwPOV) {
+				handlePOVChange(device, devicePrivate->lastState.dwPOV, info.dwPOV);
+			}
+			if (info.dwButtons != devicePrivate->lastState.dwButtons) {
+				handleButtonChange(device, devicePrivate->lastState.dwButtons, info.dwButtons);
+			}
+			devicePrivate->lastState = info;
+		}
+	}
+}
+
+void Win32Core::detectGamepads() {
+
+	lastGamepadDetect = getTicks();
+
+	unsigned int numPadsSupported;
+	unsigned int deviceIndex, deviceIndex2;
+	JOYINFOEX info;
+	JOYCAPS caps;
+	bool duplicate;
+	Gamepad_devicePrivate * deviceRecordPrivate;
+	UINT joystickID;
+	int axisIndex;
+	
+	numPadsSupported = joyGetNumDevs();
+	for (deviceIndex = 0; deviceIndex < numPadsSupported; deviceIndex++) {
+		info.dwSize = sizeof(info);
+		info.dwFlags = JOY_RETURNALL;
+		joystickID = JOYSTICKID1 + deviceIndex;
+		if (joyGetPosEx(joystickID, &info) == JOYERR_NOERROR &&
+		    joyGetDevCaps(joystickID, &caps, sizeof(JOYCAPS)) == JOYERR_NOERROR) {
+			
+			duplicate = false;
+			for (deviceIndex2 = 0; deviceIndex2 < gamepads.size(); deviceIndex2++) {
+				if (((Gamepad_devicePrivate *) gamepads[deviceIndex2]->privateData)->joystickID == joystickID) {
+					duplicate = true;
+					break;
+				}
+			}
+			if (duplicate) {
+				continue;
+			}
+			
+			GamepadDeviceEntry *deviceRecord = new GamepadDeviceEntry();
+			deviceRecord->deviceID = nextDeviceID++;
+//			deviceRecord->description = getDeviceDescription(joystickID, caps);
+//			deviceRecord->vendorID = caps.wMid;
+//			deviceRecord->productID = caps.wPid;
+			deviceRecord->numAxes = caps.wNumAxes + ((caps.wCaps & JOYCAPS_HASPOV) ? 2 : 0);
+			deviceRecord->numButtons = caps.wNumButtons;
+//			deviceRecord->axisStates = calloc(sizeof(float), deviceRecord->numAxes);
+//			deviceRecord->buttonStates = calloc(sizeof(bool), deviceRecord->numButtons);
+//			deviceRecord->eventDispatcher = EventDispatcher_create(deviceRecord);
+//			devices = realloc(devices, sizeof(struct Gamepad_device *) * (numDevices + 1));
+			gamepads.push_back(deviceRecord);
+			
+			deviceRecordPrivate = new Gamepad_devicePrivate();
+			deviceRecordPrivate->joystickID = joystickID;
+			deviceRecordPrivate->lastState = info;
+			
+			deviceRecordPrivate->xAxisIndex = 0;
+			deviceRecordPrivate->yAxisIndex = 1;
+			axisIndex = 2;
+			deviceRecordPrivate->zAxisIndex = (caps.wCaps & JOYCAPS_HASZ) ? axisIndex++ : -1;
+			deviceRecordPrivate->rAxisIndex = (caps.wCaps & JOYCAPS_HASR) ? axisIndex++ : -1;
+			deviceRecordPrivate->uAxisIndex = (caps.wCaps & JOYCAPS_HASU) ? axisIndex++ : -1;
+			deviceRecordPrivate->vAxisIndex = (caps.wCaps & JOYCAPS_HASV) ? axisIndex++ : -1;
+			
+			deviceRecordPrivate->axisRanges = (UINT (*)[2]) malloc(sizeof(UINT[2]) * axisIndex);
+			deviceRecordPrivate->axisRanges[0][0] = caps.wXmin;
+			deviceRecordPrivate->axisRanges[0][1] = caps.wXmax;
+			deviceRecordPrivate->axisRanges[1][0] = caps.wYmin;
+			deviceRecordPrivate->axisRanges[1][1] = caps.wYmax;
+			if (deviceRecordPrivate->zAxisIndex != -1) {
+				deviceRecordPrivate->axisRanges[deviceRecordPrivate->zAxisIndex][0] = caps.wZmin;
+				deviceRecordPrivate->axisRanges[deviceRecordPrivate->zAxisIndex][1] = caps.wZmax;
+			}
+			if (deviceRecordPrivate->rAxisIndex != -1) {
+				deviceRecordPrivate->axisRanges[deviceRecordPrivate->rAxisIndex][0] = caps.wRmin;
+				deviceRecordPrivate->axisRanges[deviceRecordPrivate->rAxisIndex][1] = caps.wRmax;
+			}
+			if (deviceRecordPrivate->uAxisIndex != -1) {
+				deviceRecordPrivate->axisRanges[deviceRecordPrivate->uAxisIndex][0] = caps.wUmin;
+				deviceRecordPrivate->axisRanges[deviceRecordPrivate->uAxisIndex][1] = caps.wUmax;
+			}
+			if (deviceRecordPrivate->vAxisIndex != -1) {
+				deviceRecordPrivate->axisRanges[deviceRecordPrivate->vAxisIndex][0] = caps.wVmin;
+				deviceRecordPrivate->axisRanges[deviceRecordPrivate->vAxisIndex][1] = caps.wVmax;
+			}
+			
+			deviceRecordPrivate->povXAxisIndex = (caps.wCaps & JOYCAPS_HASPOV) ? axisIndex++ : -1;
+			deviceRecordPrivate->povYAxisIndex = (caps.wCaps & JOYCAPS_HASPOV) ? axisIndex++ : -1;
+			
+			deviceRecord->privateData = deviceRecordPrivate;
+			
+			input->addJoystick(deviceRecord->deviceID);
+		}
+	}
+}
+
+void Win32Core::initGamepad() {
+	nextDeviceID = 0;
+	detectGamepads();
+}
+
+void Win32Core::shutdownGamepad() {
+
+}
+
+void Win32Core::initTouch() {
+#ifdef NO_TOUCH_API
+	hasMultiTouch = false;
+#else
+	// Check for windows multitouch support at runtime
+	// This could be done easily during preprocessing but would require building
+	// multiple releases of polycode for both winxp/vista and win7
+	GetTouchInputInfoFunc = (GetTouchInputInfoType) GetProcAddress(GetModuleHandle(TEXT("user32.lib")), "GetTouchInputInfo");
+	
+	// If the above multitouch functions were found, then set a flag so we don't
+	// have to check again later
+	hasMultiTouch = ( GetTouchInputInfoFunc == NULL ) ? false : true;
+#endif
+}
+
 
 DWORD WINAPI Win32LaunchThread(LPVOID data) {
 	Threaded *threaded = (Threaded*)data;

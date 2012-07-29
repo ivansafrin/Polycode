@@ -6,6 +6,8 @@ SET(libpng_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/libpng)
 SET(libpng_CMAKE_ARGS
     -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR> 
     -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+	-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
+    -DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}
     -DPNG_SHARED=OFF
     -DBUILD_SHARED_LIBS=FALSE
     -DSKIP_INSTALL_FILES=1
@@ -15,10 +17,10 @@ EXTERNALPROJECT_ADD(zlib
     PREFIX ${libpng_PREFIX}
 
     DOWNLOAD_DIR ${POLYCODE_DEPS_DOWNLOAD_DIR}
-    URL http://zlib.net/zlib-1.2.5.tar.gz
-    URL_MD5 c735eab2d659a96e5a594c9e8541ad63
+    URL http://zlib.net/zlib-1.2.7.tar.gz
+    URL_MD5 60df6a37c56e7c1366cca812414f7b85
 
-    PATCH_COMMAND ${CMAKE_COMMAND} -E remove <SOURCE_DIR>/zconf.h
+    PATCH_COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PolycodeDependencies_SOURCE_DIR}/../CMake/zlib.cmake <SOURCE_DIR>/CMakeLists.txt && ${CMAKE_COMMAND} -E remove <SOURCE_DIR>/zconf.h
 
     INSTALL_DIR ${POLYCODE_DEPS_CORE_PREFIX}
     CMAKE_ARGS ${libpng_CMAKE_ARGS}
@@ -26,13 +28,21 @@ EXTERNALPROJECT_ADD(zlib
 
 ExternalProject_Get_Property(zlib install_dir)
 
+# Kludge: Shouldn't be necessary if FIND_LIBRARY were working on mingw.
+IF (MINGW)
+	SET(libpng_CMAKE_ARGS ${libpng_CMAKE_ARGS}
+		-DZLIB_LIBRARY=zlib
+		-DZLIB_INCLUDE_DIR=${install_dir}/include
+	)
+ENDIF(MINGW)
+
 EXTERNALPROJECT_ADD(libpng
     DEPENDS zlib
     PREFIX ${libpng_PREFIX}
 
     DOWNLOAD_DIR ${POLYCODE_DEPS_DOWNLOAD_DIR}
-    URL ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng-1.5.5.tar.gz
-    URL_MD5 003bcac022125029bae4818d74c42a94
+    URL ftp://ftp.simplesystems.org/pub/libpng/png/src/history/libpng15/libpng-1.5.10.tar.gz
+    URL_MD5 9e5d864bce8f06751bbd99962ecf4aad
 
     INSTALL_DIR ${POLYCODE_DEPS_CORE_PREFIX}
     CMAKE_ARGS ${libpng_CMAKE_ARGS} -DCMAKE_PREFIX_PATH=${install_dir} # to find zlib

@@ -35,7 +35,7 @@ using namespace Polycode;
 using std::vector;
 
 MaterialManager::MaterialManager() {
-	
+	premultiplyAlphaOnLoad = false;
 }
 
 MaterialManager::~MaterialManager() {
@@ -67,7 +67,7 @@ void MaterialManager::deleteTexture(Texture *texture) {
 	for(int i=0;i < textures.size(); i++) {
 		if(textures[i] == texture) {
 			textures.erase(textures.begin()+i);
-			delete texture;
+			CoreServices::getInstance()->getRenderer()->destroyTexture(texture);
 			return;
 		}
 	}
@@ -84,7 +84,7 @@ void MaterialManager::addShaderModule(PolycodeShaderModule *module) {
 	shaderModules.push_back(module);
 }
 
-Texture *MaterialManager::createTextureFromFile(const String& fileName, bool clamp) {
+Texture *MaterialManager::createTextureFromFile(const String& fileName, bool clamp, bool createMipmaps) {
 	Texture *newTexture;
 	newTexture = getTextureByResourcePath(fileName);
 	if(newTexture) {
@@ -93,7 +93,10 @@ Texture *MaterialManager::createTextureFromFile(const String& fileName, bool cla
 	
 	Image *image = new Image(fileName);
 	if(image->isLoaded()) {
-		newTexture = createTexture(image->getWidth(), image->getHeight(), image->getPixels(), clamp);
+		if(premultiplyAlphaOnLoad) {
+			image->premultiplyAlpha();
+		}
+		newTexture = createTexture(image->getWidth(), image->getHeight(), image->getPixels(), clamp, createMipmaps);
 	} else {
 		Logger::log("Error loading image, using default texture.\n");
 		delete image;		
@@ -114,24 +117,24 @@ Texture *MaterialManager::createFramebufferTexture(int width, int height, int ty
 	return newTexture;
 }
 
-Texture *MaterialManager::createNewTexture(int width, int height, bool clamp, int type) {
+Texture *MaterialManager::createNewTexture(int width, int height, bool clamp, bool createMipmaps, int type) {
 	Image *newImage = new Image(width, height, type);
 	newImage->fill(1,1,1,1);
-	Texture *retTexture = createTextureFromImage(newImage, clamp);
+	Texture *retTexture = createTextureFromImage(newImage, clamp, createMipmaps);
 	delete newImage;
 	return retTexture;
 	
 }
 
-Texture *MaterialManager::createTexture(int width, int height, char *imageData, bool clamp, int type) {
-	Texture *newTexture = CoreServices::getInstance()->getRenderer()->createTexture(width, height, imageData,clamp, type);
+Texture *MaterialManager::createTexture(int width, int height, char *imageData, bool clamp, bool createMipmaps, int type) {
+	Texture *newTexture = CoreServices::getInstance()->getRenderer()->createTexture(width, height, imageData,clamp, createMipmaps, type);
 	textures.push_back(newTexture);
 	return newTexture;
 }
 
-Texture *MaterialManager::createTextureFromImage(Image *image, bool clamp) {
+Texture *MaterialManager::createTextureFromImage(Image *image, bool clamp, bool createMipmaps) {
 	Texture *newTexture;
-	newTexture = createTexture(image->getWidth(), image->getHeight(), image->getPixels(),clamp, image->getType());
+	newTexture = createTexture(image->getWidth(), image->getHeight(), image->getPixels(),clamp, createMipmaps, image->getType());
 	return newTexture; 
 }
 
@@ -247,6 +250,13 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 
 	for (pChild3 = node->FirstChild(); pChild3 != 0; pChild3 = pChild3->NextSibling()) {
 		if(strcmp(pChild3->Value(), "rendertargets") == 0) {
+			
+			if(pChild3->ToElement()->Attribute("type")) {
+				if(strcmp(pChild3->ToElement()->Attribute("type"), "rgba_fp16") == 0) {
+					newMaterial->fp16RenderTargets = true;
+				}			
+			}
+		
 			for (pChild = pChild3->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {
 				if(strcmp(pChild->Value(), "rendertarget") == 0) {
 					ShaderRenderTarget *newTarget = new ShaderRenderTarget;
@@ -256,7 +266,7 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 					newTarget->sizeMode = ShaderRenderTarget::SIZE_MODE_PIXELS;					
 					if(pChild->ToElement()->Attribute("width") && pChild->ToElement()->Attribute("height")) {
 						newTarget->width = atof(pChild->ToElement()->Attribute("width"));
-						newTarget->height = atof(pChild->ToElement()->Attribute("height"));
+						newTarget->height = atof(pChild->ToElement()->Attribute("height"));	
 						if(pChild->ToElement()->Attribute("sizeMode")) {
 							if(strcmp(pChild->ToElement()->Attribute("sizeMode"), "normalized") == 0) {
 								if(newTarget->width > 1.0f)
@@ -271,7 +281,7 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 					}						
 //					Texture *newTexture = CoreServices::getInstance()->getMaterialManager()->createNewTexture(newTarget->width, newTarget->height, true);
 					Texture *newTexture, *temp;
-					CoreServices::getInstance()->getRenderer()->createRenderTextures(&newTexture, &temp, (int)newTarget->width, (int)newTarget->height);
+					CoreServices::getInstance()->getRenderer()->createRenderTextures(&newTexture, &temp, (int)newTarget->width, (int)newTarget->height, newMaterial->fp16RenderTargets);
 					newTexture->setResourceName(newTarget->id);
 					//CoreServices::getInstance()->getResourceManager()->addResource(newTexture);
 					newTarget->texture = newTexture;
@@ -287,6 +297,11 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 		if(strcmp(pChild3->Value(), "specularValue") == 0) {
 			newMaterial->specularValue = atof(pChild3->ToElement()->GetText());
 		}
+
+		if(strcmp(pChild3->Value(), "specularStrength") == 0) {
+			newMaterial->specularStrength = atof(pChild3->ToElement()->GetText());
+		}
+
 
 		if(strcmp(pChild3->Value(), "specularColor") == 0) {		
 			String value = pChild3->ToElement()->GetText();

@@ -1,20 +1,41 @@
 /*
- *  PolyUITree.cpp
- *  Poly
- *
- *  Created by Ivan Safrin on 7/28/08.
- *  Copyright 2008 __MyCompanyName__. All rights reserved.
- *
+ Copyright (C) 2012 by Ivan Safrin
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
  */
 
 
 #include "PolyUITree.h"
+#include "PolyConfig.h"
+#include "PolyInputEvent.h"
+#include "PolyLabel.h"
+#include "PolyCoreServices.h"
 
 using namespace Polycode;
 
 UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : ScreenEntity() {
 		
+		
+	willDrag = false;
+	isDragging = false;
 	
+	labelText = text;
 	Config *conf = CoreServices::getInstance()->getConfig();
 	
 	handleRotation = 0;
@@ -27,9 +48,10 @@ UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : 
 	cellHeight = conf->getNumericValue("Polycode", "uiTreeCellHeight");
 	this->size = conf->getNumericValue("Polycode", "uiDefaultFontSize");
 	this->arrowIcon = conf->getStringValue("Polycode", "uiTreeArrowIconImage");	
-	textLabel = new ScreenLabel(fontName,
+	textLabel = new ScreenLabel(
 								text,
 								size,
+								fontName,
 								Label::ANTIALIAS_FULL);
 
 /*	
@@ -83,12 +105,22 @@ UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : 
 	parent = NULL;
 	selectedNode = NULL;
 	arrowIconImage->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
-	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
-	bgBox->addEventListener(this, InputEvent::EVENT_DOUBLECLICK);	
+	arrowIconImage->processInputEvents = true;
 	
+	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEUP);
+	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);	
+	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);		
+	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);	
+	bgBox->addEventListener(this, InputEvent::EVENT_DOUBLECLICK);	
+	bgBox->processInputEvents = true;
+		
 	setPositionMode(ScreenEntity::POSITION_CENTER);
 	
 	refreshTree();
+}
+
+String UITree::getLabelText() {
+	return labelText;
 }
 
 void UITree::removeTreeChild(UITree *child) {
@@ -98,6 +130,7 @@ void UITree::removeTreeChild(UITree *child) {
 			child->removeEventListener(this, UITreeEvent::NEED_REFRESH_EVENT);
 			child->removeEventListener(this, UITreeEvent::SELECTED_EVENT);
 			child->removeEventListener(this, UITreeEvent::EXECUTED_EVENT);
+			child->removeEventListener(this, UITreeEvent::DRAG_START_EVENT);			
 			treeChildren.erase(treeChildren.begin()+i);			
 			delete child;
 			refreshTree();			
@@ -121,9 +154,24 @@ void UITree::handleEvent(Event *event) {
 		toggleCollapsed();
 	} else if(event->getDispatcher() == bgBox) {
 		switch(event->getEventCode()) {
-			case InputEvent::EVENT_MOUSEDOWN:
+			case InputEvent::EVENT_MOUSEUP:
 				setSelected();
+				willDrag = false;				
+				isDragging = false;				
 			break;
+			case InputEvent::EVENT_MOUSEUP_OUTSIDE:
+				willDrag = false;	
+				isDragging = false;			
+			break;			
+			case InputEvent::EVENT_MOUSEDOWN:	
+				willDrag = true;
+			break;			
+			case InputEvent::EVENT_MOUSEMOVE:
+				if(willDrag && !isDragging) {
+					isDragging = true;
+					dispatchEvent(new UITreeEvent(this), UITreeEvent::DRAG_START_EVENT);
+				}
+			break;						
 			case InputEvent::EVENT_DOUBLECLICK:
 				dispatchEvent(new UITreeEvent(this), UITreeEvent::EXECUTED_EVENT);				
 			break;
@@ -152,9 +200,11 @@ void UITree::handleEvent(Event *event) {
 			case UITreeEvent::EXECUTED_EVENT:
 					dispatchEvent(new UITreeEvent(uiTreeEvent->selection), UITreeEvent::EXECUTED_EVENT);
 			break;
+			case UITreeEvent::DRAG_START_EVENT:
+					dispatchEvent(new UITreeEvent(uiTreeEvent->selection), UITreeEvent::DRAG_START_EVENT);
+			break;			
 			case UITreeEvent::NEED_REFRESH_EVENT:
 				refreshTree();
-				dispatchEvent(new UITreeEvent(), UITreeEvent::NEED_REFRESH_EVENT);
 			break;
 		}
 		}
@@ -213,6 +263,7 @@ void UITree::refreshTree() {
 	hitheight = height;
 	
 	selection->visible = selected;
+	dispatchEvent(new UITreeEvent(), UITreeEvent::NEED_REFRESH_EVENT);	
 }
 
 Number UITree::getTreeHeight() {
@@ -265,6 +316,7 @@ UITree *UITree::addTreeChild(String icon, String text, void *userData) {
 	newTree->addEventListener(this, UITreeEvent::NEED_REFRESH_EVENT);
 	newTree->addEventListener(this, UITreeEvent::SELECTED_EVENT);
 	newTree->addEventListener(this, UITreeEvent::EXECUTED_EVENT);
+	newTree->addEventListener(this, UITreeEvent::DRAG_START_EVENT);	
 	treeChildren.push_back(newTree);
 	refreshTree();
 	return newTree;

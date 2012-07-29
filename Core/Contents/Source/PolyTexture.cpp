@@ -25,21 +25,25 @@
 
 using namespace Polycode;
 
-Texture::Texture(unsigned int width, unsigned int height, char *textureData,bool clamp, int type) : Resource(Resource::RESOURCE_TEXTURE) {
+Texture::Texture(unsigned int width, unsigned int height, char *textureData,bool clamp, bool createMipmaps, int type) : Resource(Resource::RESOURCE_TEXTURE) {
 	this->width = width;
 	this->height = height;
 	this->clamp = clamp;
+	this->createMipmaps = createMipmaps;
 	
-	switch (type) {
+	switch(type) {
 		case Image::IMAGE_RGB:
-			pixelSize = 3;
-			break;
-		case Image::IMAGE_RGBA:
-			pixelSize = 4;
-			break;			
-		default:
 			pixelSize = 3;			
 			break;
+		case Image::IMAGE_RGBA:
+			pixelSize = 4;						
+		break;
+		case Image::IMAGE_FP16:		
+			pixelSize = 16;
+		break;
+		default:
+			pixelSize = 4;								
+		break;
 	}
 	
 	this->textureData = (char*)malloc(width*height*pixelSize);
@@ -68,6 +72,24 @@ Texture::~Texture(){
 
 void Texture::setImageData(Image *data) {
 
+	switch (data->getType()) {
+		case Image::IMAGE_RGB:
+			pixelSize = 3;			
+		break;
+		case Image::IMAGE_RGBA:
+			pixelSize = 4;						
+		break;
+		case Image::IMAGE_FP16:		
+			pixelSize = 16;
+		break;
+		default:
+			pixelSize = 4;								
+		break;
+	}
+
+	width = data->getWidth();
+	height = data->getHeight();
+	
 	if(this->textureData)
 		free(this->textureData);
 	this->textureData = (char*)malloc(width*height*pixelSize);

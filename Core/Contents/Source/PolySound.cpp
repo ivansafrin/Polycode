@@ -52,7 +52,7 @@ long custom_tellfunc(void *datasource) {
 	return OSBasics::tell(file);
 }
 
-Sound::Sound(const String& fileName) {
+Sound::Sound(const String& fileName) : sampleLength(-1) {
 	String extension;
 	size_t found;
 	found=fileName.rfind(".");
@@ -68,6 +68,13 @@ Sound::Sound(const String& fileName) {
 	} else if(extension == "ogg" || extension == "OGG") {
 		buffer = loadOGG(fileName);			
 	}
+	
+	soundSource = GenSource(buffer);
+	setIsPositional(false);
+}
+
+Sound::Sound(const char *data, int size, int channels, int freq, int bps) : sampleLength(-1) {
+	ALuint buffer = loadBytes(data, size, freq, channels, bps);
 	
 	soundSource = GenSource(buffer);
 	setIsPositional(false);
@@ -112,6 +119,13 @@ void Sound::Play(bool loop) {
 	alSourcePlay(soundSource);
 }
 
+bool Sound::isPlaying() {
+	ALenum state;
+	alGetSourcei(soundSource, AL_SOURCE_STATE, &state);
+	return (state == AL_PLAYING);
+}
+
+
 void Sound::setVolume(Number newVolume) {
 	alSourcef(soundSource, AL_GAIN, newVolume);
 }
@@ -133,6 +147,53 @@ void Sound::setSoundVelocity(Vector3 velocity) {
 void Sound::setSoundDirection(Vector3 direction) {
 	if(isPositional)
 		alSource3f(soundSource,AL_DIRECTION, direction.x, direction.y, direction.z);
+}
+
+void Sound::setOffset(int off) {
+	alSourcei(soundSource, AL_SAMPLE_OFFSET, off);
+}
+
+
+Number Sound::getPlaybackTime() {
+	float result = 0.0;
+	alGetSourcef(soundSource, AL_SEC_OFFSET, &result);
+	return result;
+}
+
+Number Sound::getPlaybackDuration() {
+	ALint sizeInBytes;
+	ALint channels;
+	ALint bits;
+	ALint bufferID;
+	alGetSourcei(soundSource, AL_BUFFER, &bufferID);
+	
+	alGetBufferi(bufferID, AL_SIZE, &sizeInBytes);
+	alGetBufferi(bufferID, AL_CHANNELS, &channels);
+	alGetBufferi(bufferID, AL_BITS, &bits);
+
+	int lengthInSamples = sizeInBytes * 8 / (channels * bits);
+
+	ALint frequency;
+	alGetBufferi(bufferID, AL_FREQUENCY, &frequency);
+	Number durationInSeconds = (float)lengthInSamples / (float)frequency;
+	
+	return durationInSeconds;
+}
+		
+int Sound::getOffset() {
+	ALint off = -1;
+	alGetSourcei(soundSource, AL_SAMPLE_OFFSET, &off);
+	return off;
+}
+
+void Sound::seekTo(Number time) {
+	if(time > getPlaybackDuration())
+		return;
+	alSourcef(soundSource, AL_SEC_OFFSET, time);
+}
+
+int Sound::getSampleLength() {
+	return sampleLength;
 }
 
 void Sound::setPositionalProperties(Number referenceDistance, Number maxDistance) { 
@@ -215,8 +276,26 @@ ALuint Sound::GenSource(ALuint buffer) {
 	return source;
 }
 
-ALuint Sound::loadOGG(const String& fileName) {
+ALuint Sound::loadBytes(const char *data, int size, int freq, int channels, int bps) {
+	ALuint buffer = AL_NONE;
+	ALenum format;
+	if (channels == 1)
+		format = (bps == 8) ? AL_FORMAT_MONO8 : AL_FORMAT_MONO16;
+	else
+		format = (bps == 8) ? AL_FORMAT_STEREO8 : AL_FORMAT_STEREO16;
 	
+	sampleLength = bps > 8 ? size / (bps/8) : -1;
+	
+	alGenBuffers(1, &buffer);
+	soundCheck(alGetError() == AL_NO_ERROR, "LoadBytes: Could not generate buffer");
+	soundCheck(AL_NONE != buffer, "LoadBytes: Could not generate buffer");
+	
+	alBufferData(buffer, format, data, size, freq);
+	soundCheck(alGetError() == AL_NO_ERROR, "LoadBytes: Could not load buffer data");
+	return buffer;
+}
+
+ALuint Sound::loadOGG(const String& fileName) {
 	vector<char> buffer;
 	
 	ALuint bufferID = AL_NONE; 
@@ -264,7 +343,9 @@ ALuint Sound::loadOGG(const String& fileName) {
 		// Append to end of buffer
 		buffer.insert(buffer.end(), array, array + bytes);
 	} while (bytes > 0);
-	ov_clear(&oggFile);	
+	ov_clear(&oggFile);
+	
+	sampleLength = buffer.size() / sizeof(unsigned short);
 	
 	alBufferData(bufferID, format, &buffer[0], static_cast<ALsizei>(buffer.size()), freq);
 	
@@ -274,13 +355,11 @@ ALuint Sound::loadOGG(const String& fileName) {
 ALuint Sound::loadWAV(const String& fileName) {
 	long bytes;
 	vector <char> data;
-	ALenum format;
 	ALsizei freq;
 	
 	// Local resources
 	OSFILE *f = NULL;
 	char *array = NULL;
-	ALuint buffer = AL_NONE;
 	
 	alGetError();
 	
@@ -335,11 +414,6 @@ ALuint Sound::loadWAV(const String& fileName) {
 		soundCheck(OSBasics::read(buffer16,2,1,f) == 1, "LoadWav: Cannot read wav file "+ fileName );
 		unsigned short bps = readByte16(buffer16);
 		
-		if (channels == 1)
-			format = (bps == 8) ? AL_FORMAT_MONO8 : AL_FORMAT_MONO16;
-		else
-			format = (bps == 8) ? AL_FORMAT_STEREO8 : AL_FORMAT_STEREO16;
-		
 		// check 'data' sub chunk (2)
 		soundCheck(OSBasics::read(magic,4,1,f) == 1, "LoadWav: Cannot read wav file "+ fileName );
 		soundCheck(String(magic) == "data", "LoadWav: Wrong wav file format. This file is not a .wav file (no data subchunk): "+ fileName );
@@ -372,15 +446,8 @@ ALuint Sound::loadWAV(const String& fileName) {
 		
 		OSBasics::close(f);
 		f = NULL;
-		
-		alGenBuffers(1, &buffer);
-		soundCheck(alGetError() == AL_NO_ERROR, "LoadWav: Could not generate buffer");
-		soundCheck(AL_NONE != buffer, "LoadWav: Could not generate buffer");
-		
-		alBufferData(buffer, format, &data[0], data.size(), freq);
-		soundCheck(alGetError() == AL_NO_ERROR, "LoadWav: Could not load buffer data");
-		
-		return buffer;
+				
+		return loadBytes(&data[0], data.size(), freq, channels, bps);
 //		if (buffer)
 //			if (alIsBuffer(buffer) == AL_TRUE)
 //				alDeleteBuffers(1, &buffer);

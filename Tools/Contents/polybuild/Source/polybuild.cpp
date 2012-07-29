@@ -149,6 +149,8 @@ Dest[i] = (char)Source[i];
 
 int main(int argc, char **argv) {
 		
+	PHYSFS_init(argv[0]);
+
 #if defined(__APPLE__) && defined(__MACH__)
     uint32_t bufsize = 2048;
 	char path[bufsize];

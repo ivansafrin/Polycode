@@ -28,12 +28,16 @@
 
 using namespace Polycode;
 
-SceneRenderTexture::SceneRenderTexture(Scene *targetScene, Camera *targetCamera, int renderWidth,int renderHeight) {
+SceneRenderTexture::SceneRenderTexture(Scene *targetScene, Camera *targetCamera, int renderWidth,int renderHeight, bool floatingPoint) {
 //	targetTexture = CoreServices::getInstance()->getMaterialManager()->createTexture(renderWidth, renderHeight, NULL,true);
-	Texture *tex;
-	CoreServices::getInstance()->getRenderer()->createRenderTextures(&targetTexture, &tex, renderWidth, renderHeight);
+	CoreServices::getInstance()->getRenderer()->createRenderTextures(&targetTexture, &depthTexture, renderWidth, renderHeight, floatingPoint);
 	this->targetScene = targetScene;
 	this->targetCamera = targetCamera;
+	
+	
+	CoreServices::getInstance()->getRenderer()->createRenderTextures(&filterColorBufferTexture, &filterZBufferTexture, renderWidth, renderHeight, floatingPoint);
+	
+	
 	CoreServices::getInstance()->getSceneManager()->registerRenderTexture(this);
 }
 
@@ -45,6 +49,14 @@ Scene *SceneRenderTexture::getTargetScene() {
 	return targetScene;
 }
 
+Texture *SceneRenderTexture::getFilterColorBufferTexture() {
+	return filterColorBufferTexture;
+}
+
+Texture *SceneRenderTexture::getFilterZBufferTexture() {
+	return filterZBufferTexture;
+}
+
 Camera *SceneRenderTexture::getTargetCamera() {
 	return targetCamera;
 }
@@ -54,5 +66,9 @@ Texture *SceneRenderTexture::getTargetTexture() {
 }
 
 SceneRenderTexture::~SceneRenderTexture() {
-
+	CoreServices::getInstance()->getSceneManager()->unregisterRenderTexture(this);
+	CoreServices::getInstance()->getRenderer()->destroyTexture(targetTexture);
+	CoreServices::getInstance()->getRenderer()->destroyTexture(depthTexture);	
+	CoreServices::getInstance()->getRenderer()->destroyTexture(filterColorBufferTexture);
+	CoreServices::getInstance()->getRenderer()->destroyTexture(filterZBufferTexture);	
 }

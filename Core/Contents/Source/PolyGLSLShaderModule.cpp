@@ -21,6 +21,12 @@ THE SOFTWARE.
 */
 
 
+#ifdef _WINDOWS
+#include <windows.h>
+#endif
+
+#include "PolyGLHeaders.h"
+
 #include "PolyGLSLShaderModule.h"
 #include "PolyCoreServices.h"
 #include "PolyResourceManager.h"
@@ -33,29 +39,16 @@ THE SOFTWARE.
 
 #include "tinyxml.h"
 
-#ifdef _WINDOWS
-#include <windows.h>
-#endif
-
-#if defined(__APPLE__) && defined(__MACH__)
-#include <OpenGL/gl.h>
-#include <OpenGL/glext.h>
-#include <OpenGL/glu.h>
-#else
-#include <GL/gl.h>
-#include <GL/glext.h>
-#endif
-
 using std::vector;
 
 using namespace Polycode;
 
-#ifdef _WINDOWS
+#if defined(_WINDOWS) && !defined(_MINGW)
 PFNGLUSEPROGRAMPROC glUseProgram;
 PFNGLUNIFORM1IPROC glUniform1i;
 PFNGLUNIFORM1FPROC glUniform1f;
+PFNGLUNIFORM2FPROC glUniform2f;
 PFNGLUNIFORM3FPROC glUniform3f;
-PFNGLGETUNIFORMLOCATIONARBPROC glGetUniformLocation;
 extern PFNGLACTIVETEXTUREPROC glActiveTexture;
 PFNGLCREATESHADERPROC glCreateShader;
 PFNGLSHADERSOURCEPROC glShaderSource;
@@ -70,13 +63,18 @@ PFNGLDELETEPROGRAMPROC glDeleteProgram;
 PFNGLUNIFORMMATRIX4FVPROC glUniformMatrix4fv;
 PFNGLGETSHADERIVPROC glGetShaderiv;
 PFNGLGETSHADERINFOLOGPROC glGetShaderInfoLog;
+#ifndef _MINGW
+PFNGLGETUNIFORMLOCATIONARBPROC glGetUniformLocation;
+#endif
 #endif
 
 GLSLShaderModule::GLSLShaderModule() : PolycodeShaderModule() {
 #ifdef _WINDOWS
 	glUseProgram   = (PFNGLUSEPROGRAMPROC)wglGetProcAddress("glUseProgram");
 	glUniform1i = (PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i");
-	glGetUniformLocation = (PFNGLGETUNIFORMLOCATIONARBPROC)wglGetProcAddress("glGetUniformLocation");
+	glUniform1f = (PFNGLUNIFORM1FPROC)wglGetProcAddress("glUniform1f");	
+	glUniform2f = (PFNGLUNIFORM2FPROC)wglGetProcAddress("glUniform2f");	
+	glUniform3f = (PFNGLUNIFORM3FPROC)wglGetProcAddress("glUniform3f");
 	glCreateShader = (PFNGLCREATESHADERPROC)wglGetProcAddress("glCreateShader");
 	glShaderSource = (PFNGLSHADERSOURCEPROC)wglGetProcAddress("glShaderSource");
 	glCompileShader = (PFNGLCOMPILESHADERPROC)wglGetProcAddress("glCompileShader");
@@ -91,6 +89,9 @@ GLSLShaderModule::GLSLShaderModule() : PolycodeShaderModule() {
 	glGetShaderiv = (PFNGLGETSHADERIVPROC)wglGetProcAddress("glGetShaderiv");
 	glGetShaderInfoLog = (PFNGLGETSHADERINFOLOGPROC)wglGetProcAddress("glGetShaderInfoLog");
 
+#ifndef _MINGW
+	glGetUniformLocation = (PFNGLGETUNIFORMLOCATIONARBPROC)wglGetProcAddress("glGetUniformLocation");
+#endif
 #endif
 }
 
@@ -379,10 +380,15 @@ void GLSLShaderModule::updateGLSLParam(Renderer *renderer, GLSLShader *glslShade
 				glUniform1f(paramLocation, *fval);
 				break;
 			}
+			case GLSLProgramParam::PARAM_Number2:
+			{
+				Vector2 *fval2 = (Vector2*)paramData;
+				int paramLocation = glGetUniformLocation(glslShader->shader_id, param.name.c_str());
+				glUniform2f(paramLocation, fval2->x, fval2->y);				break;				
+			}			
 			case GLSLProgramParam::PARAM_Number3:
 			{
 				Vector3 *fval3 = (Vector3*)paramData;
-				fval = (Number*)paramData;
 				int paramLocation = glGetUniformLocation(glslShader->shader_id, param.name.c_str());
 				glUniform3f(paramLocation, fval3->x,fval3->y,fval3->z);
 				break;				
@@ -395,8 +401,6 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 
 	GLSLShader *glslShader = (GLSLShader*)material->getShader(shaderIndex);
 
-	renderer->sortLights();
-
 	glPushMatrix();
 	glLoadIdentity();
 	
@@ -405,7 +409,11 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 	int numRendererSpotLights = renderer->getNumSpotLights();
 	
 	int numTotalLights = glslShader->numAreaLights + glslShader->numSpotLights;
-		
+	
+	if(numTotalLights > 0) {
+		renderer->sortLights();	
+	}
+	
 	for(int i=0 ; i < numTotalLights; i++) {
 		GLfloat resetData[] = {0.0, 0.0, 0.0, 0.0};				
 		glLightfv (GL_LIGHT0+i, GL_DIFFUSE, resetData);	
@@ -628,7 +636,7 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 		glActiveTexture(GL_TEXTURE0 + textureIndex);		
 		glBindTexture(GL_TEXTURE_2D, ((OpenGLTexture*)cgBinding->textures[i].texture)->getTextureID());	
 		textureIndex++;
-	}	
+	}		
 
 	//			Logger::log("applying %s (%s %s)\n", material->getShader()->getName().c_str(), cgShader->vp->getResourceName().c_str(), cgShader->fp->getResourceName().c_str());
 
@@ -814,6 +822,7 @@ void GLSLShaderModule::recreateGLSLProgram(GLSLProgram *prog, const String& file
 	char *buffer = (char*)malloc(progsize+1);
 	memset(buffer, 0, progsize+1);
 	OSBasics::read(buffer, progsize, 1, file);
+	OSBasics::close(file);
 	
 	if(type == GLSLProgram::TYPE_VERT) {
 		prog->program =  glCreateShader(GL_VERTEX_SHADER);

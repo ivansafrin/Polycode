@@ -1,14 +1,31 @@
 /*
- *  PolyUIWindow.cpp
- *  Poly
- *
- *  Created by Ivan Safrin on 7/30/08.
- *  Copyright 2008 __MyCompanyName__. All rights reserved.
- *
+ Copyright (C) 2012 by Ivan Safrin
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
  */
 
 
 #include "PolyUIWindow.h"
+#include "PolyConfig.h"
+#include "PolyInputEvent.h"
+#include "PolyLabel.h"
+#include "PolyCoreServices.h"
 
 using namespace Polycode;
 
@@ -33,6 +50,9 @@ UIWindow::UIWindow(String windowName, Number width, Number height) : ScreenEntit
 	
 	padding = conf->getNumericValue("Polycode", "uiWindowSkinPadding");	
 	
+	width = width+(padding*2.0);
+	height = height+topPadding;
+	
 	windowRect = new UIBox(conf->getStringValue("Polycode", "uiWindowSkin"),
 						  st,sr,sb,sl,
 						  width, height);	
@@ -42,9 +62,10 @@ UIWindow::UIWindow(String windowName, Number width, Number height) : ScreenEntit
 	titlebarRect = new ScreenShape(ScreenShape::SHAPE_RECT, width, st);
 	titlebarRect->setColor(0,0,0,0);
 	titlebarRect->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	titlebarRect->processInputEvents = true;
 	addChild(titlebarRect);
 	
-	ScreenLabel *titleLabel = new ScreenLabel(fontName, windowName, fontSize, Label::ANTIALIAS_FULL);
+	ScreenLabel *titleLabel = new ScreenLabel(windowName, fontSize, fontName, Label::ANTIALIAS_FULL);
 	titleLabel->setPosition(conf->getNumericValue("Polycode", "uiWindowTitleX"),conf->getNumericValue("Polycode", "uiWindowTitleY"));
 	addChild(titleLabel);
 	
@@ -53,6 +74,7 @@ UIWindow::UIWindow(String windowName, Number width, Number height) : ScreenEntit
 	closeBtn->setPosition(width-closeBtn->getWidth()-conf->getNumericValue("Polycode", "uiCloseIconX"), conf->getNumericValue("Polycode", "uiCloseIconY"));
 
 	titlebarRect->addEventListener(this, InputEvent::EVENT_MOUSEUP);
+	titlebarRect->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);	
 	titlebarRect->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	closeBtn->addEventListener(this, UIEvent::CLICK_EVENT);
 	
@@ -76,7 +98,7 @@ UIWindow::~UIWindow() {
 
 }
 
-void UIWindow::onKeyDown(TAUKey key, wchar_t charCode) {
+void UIWindow::onKeyDown(PolyKEY key, wchar_t charCode) {
 	
 	if(key == KEY_TAB) {
 		if(hasFocus) {
@@ -112,6 +134,7 @@ void UIWindow::onMouseDown(Number x, Number y) {
 
 void UIWindow::showWindow() {
 //	if(!visible) {
+		enabled = true;
 		visible = true;
 		windowTween = new Tween(&color.a, Tween::EASE_IN_QUAD, 0.0f, 1.0f, 0.01f);
 //	}
@@ -130,6 +153,7 @@ void UIWindow::handleEvent(Event *event) {
 		InputEvent *inputEvent = (InputEvent*)event;
 		switch(event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEUP:
+			case InputEvent::EVENT_MOUSEUP_OUTSIDE:			
 				stopDrag();
 			break;
 			case InputEvent::EVENT_MOUSEDOWN:
@@ -143,6 +167,7 @@ void UIWindow::handleEvent(Event *event) {
 	}
 	if(event->getDispatcher() == windowTween) {
 		visible = false;
+		enabled = false;		
 		windowTween->removeEventListener(this, Event::COMPLETE_EVENT);
 	}
 }

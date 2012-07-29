@@ -3,6 +3,8 @@
 #include "PolyPolygon.h"
 #include "OSBasics.h"
 
+#include "physfs.h"
+
 using namespace Polycode;
 
 const struct aiScene* scene = NULL;
@@ -176,6 +178,7 @@ int main(int argc, char **argv) {
 		return 0;
 	}
 	
+	PHYSFS_init(argv[0]);
 	struct aiLogStream stream;
 	stream = aiGetPredefinedLogStream(aiDefaultLogStream_STDOUT,NULL);
 	aiAttachLogStream(&stream);

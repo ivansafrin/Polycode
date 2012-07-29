@@ -23,6 +23,8 @@
 #include "PolyScreenEntity.h"
 #include "PolyInputEvent.h"
 #include "PolyRectangle.h"
+#include "PolyPolygon.h"
+#include "PolyVertex.h"
 #include "PolyRenderer.h"
 
 inline double round(double x) { return floor(x + 0.5); }
@@ -61,6 +63,8 @@ ScreenEntity::ScreenEntity() : Entity(), EventDispatcher() {
 	
 	xmouse = 0;
 	ymouse = 0;
+	
+	processInputEvents = false;
 	
 }
 
@@ -127,11 +131,24 @@ void ScreenEntity::setPosition(Number x, Number y) {
 	matrixDirty = true;
 }
 
+void ScreenEntity::setPosition(const Vector2 &v) {
+	position.x  = v.x;
+	position.y  = v.y;
+	matrixDirty = true;	
+}
+
 void ScreenEntity::setScale(Number x, Number y) {
 	scale.x = x;
 	scale.y = y;
 	matrixDirty = true;	
 }
+
+void ScreenEntity::setScale(const Vector2 &v) {
+	scale.x = v.x;
+	scale.y = v.y;
+	matrixDirty = true;	
+}
+
 
 Number ScreenEntity::getWidth() const {
 	return width;
@@ -141,30 +158,59 @@ Number ScreenEntity::getHeight() const {
 	return height;
 }
 
-bool ScreenEntity::hitTest(Number x, Number y) const {
-	bool retVal = false;
-    // apply compound scale to test hit against
-    Vector3 compScale = getCompoundScale();
-    Number hx = position.x * compScale.x;
-    Number hy = position.y * compScale.y;
-    Number hw = hitwidth * compScale.x;
-    Number hh = hitheight * compScale.y;
-    //        Logger::log("hittest %f,%f in %f %f %f %f\n",x, y, hx, hy, hw, hh);
-	switch(positionMode) {
-		case ScreenEntity::POSITION_TOPLEFT:
-						
-            if(x > hx && x < (hx + hw)
-                && y > hy && y < (hy + hh))
-				retVal = true;			
-		break;
-		case ScreenEntity::POSITION_CENTER:
-            if(x > (hx - hw/2.0f) && x < (hx + hw/2.0f)
-                && y > (hy - hh/2.0f) && y < (hy + hh/2.0f))
-				retVal = true;	
-		break;
+bool isPointInsidePolygon2D(Polycode::Polygon *poly, const Vector2 &p) {
+	Number angle = 0.0;
+	Vector2 p1,p2;
+/*	
+	printf("PIP: %f,%f in [%f,%f], [%f,%f], [%f,%f], [%f,%f]\n", p.x, p.y, 
+		poly->getVertex(0)->x, poly->getVertex(0)->y,
+		poly->getVertex(1)->x, poly->getVertex(1)->y,
+		poly->getVertex(2)->x, poly->getVertex(2)->y,
+		poly->getVertex(3)->x, poly->getVertex(3)->y);
+*/
+	for (int i=0; i < poly->getVertexCount(); i++) {
+
+		p1.x = poly->getVertex(i)->x - p.x;
+		p1.y = poly->getVertex(i)->y - p.y;
+		p2.x = poly->getVertex((i+1)%poly->getVertexCount())->x - p.x;
+		p2.y = poly->getVertex((i+1)%poly->getVertexCount())->y - p.y;
+		
+		Vector2 vec(p1.x,p1.y);
+		angle += vec.angle(Vector2(p2.x,p2.y));
+
 	}
 
-	return retVal;
+	if (fabs(angle) < PI)
+		return false;
+	else
+		return true;
+}
+
+bool ScreenEntity::hitTest(const Number x, const Number y) const {
+
+	Vector3 v;	
+	Polygon testPoly;
+	
+	Matrix4 transformMatrix = getConcatenatedMatrix();
+	
+	v = Vector3(-hitwidth/2.0, -hitheight/2.0,0);
+	v = transformMatrix * v;	
+	testPoly.addVertex(v.x, v.y, 0.0);
+	
+	v = Vector3(hitwidth/2.0, -hitheight/2.0,0);
+	v = transformMatrix * v;	
+	testPoly.addVertex(v.x, v.y, 0.0);
+
+	v = Vector3(hitwidth/2.0, hitheight/2.0,0);
+	v = transformMatrix * v;	
+	testPoly.addVertex(v.x, v.y, 0.0);
+
+	v = Vector3(-hitwidth/2.0,hitheight/2.0,0);
+	v = transformMatrix * v;	
+	testPoly.addVertex(v.x, v.y, 0.0);
+		
+	return isPointInsidePolygon2D(&testPoly, Vector2(x,y));
+	
 }
 
 void ScreenEntity::setPositionMode(int newPositionMode) {
@@ -185,6 +231,10 @@ void ScreenEntity::_onKeyUp(PolyKEY key, wchar_t charCode) {
 	}
 }
 
+int ScreenEntity::getPositionMode() {
+	return positionMode;
+}
+
 void ScreenEntity::setDragLimits(Polycode::Rectangle rect) {
 	if(!dragLimits)
 		dragLimits = new Polycode::Rectangle();
@@ -199,10 +249,36 @@ void ScreenEntity::clearDragLimits() {
 	dragLimits = NULL;
 }
 
-void ScreenEntity::_onMouseMove(Number x, Number y, int timestamp) {
+Vector2 ScreenEntity::getHitbox() {
+	return Vector2(hitwidth, hitheight);
+}
+
+Matrix4 ScreenEntity::getScreenConcatenatedMatrix() {
+	Matrix4 retMatrix = transformMatrix;
+	if(positionMode == POSITION_TOPLEFT) {
+		Vector3 pos = retMatrix.getPosition();
+		retMatrix.setPosition(pos.x + width/2.0, pos.y + height/2.0, 0);
+	}
+	
+	if(parentEntity) {
+		return retMatrix * ((ScreenEntity*)parentEntity)->getScreenConcatenatedMatrix();		
+	} else {
+		return retMatrix;	
+	}	
+}
+
+void ScreenEntity::_onMouseMove(Number x, Number y, int timestamp, Vector2 parentAdjust) {
 
 	if(isDragged) {
-		setPosition(x-dragOffsetX,y-dragOffsetY);
+	
+		Vector3 localCoordinate = Vector3(x+(parentAdjust.x*2.0),y+(parentAdjust.y*2.0),0);				
+				
+		if(parentEntity) {
+			Matrix4 inverse = ((ScreenEntity*)parentEntity)->getScreenConcatenatedMatrix().inverse();
+			localCoordinate = inverse * localCoordinate;		
+		}
+	
+		setPosition(localCoordinate.x-dragOffsetX,localCoordinate.y-dragOffsetY);
 		if(dragLimits) {
 			if(position.x < dragLimits->x)
 				position.x = dragLimits->x;
@@ -215,126 +291,263 @@ void ScreenEntity::_onMouseMove(Number x, Number y, int timestamp) {
 		}
 	}
 	
-	xmouse = x-position.x;
-	ymouse = y-position.y;
+	
+	bool doTest = true;	
+	
+	if(hasMask) {
+		if(!((ScreenEntity*)maskEntity)->hitTest(x+parentAdjust.x,y+parentAdjust.y)) {
+			doTest = false;
+		}	
+	}
+	
+	if(doTest) {
+	if(processInputEvents && enabled) {
+	if(hitTest(x+parentAdjust.x,y+parentAdjust.y)) {
+	
+	
+		Vector3 localCoordinate = Vector3(x+(parentAdjust.x*2.0),y+(parentAdjust.y*2.0),0);		
+		Matrix4 inverse = getConcatenatedMatrix().inverse();
+		localCoordinate = inverse * localCoordinate;
+		if(positionMode == POSITION_TOPLEFT)
+			localCoordinate.x += hitwidth/2.0;
+		if(positionMode == POSITION_TOPLEFT)
+			localCoordinate.y += hitheight/2.0;
 
-	onMouseMove(x,y);
-	if(enabled) {
-		if(hitTest(x,y)) {
-			dispatchEvent(new InputEvent(Vector2(x,y), timestamp), InputEvent::EVENT_MOUSEMOVE);
-			if(!mouseOver) {
-				dispatchEvent(new InputEvent(Vector2(x,y), timestamp), InputEvent::EVENT_MOUSEOVER);
+
+		
+		onMouseMove(localCoordinate.x,localCoordinate.y);
+		xmouse = localCoordinate.x;
+		ymouse = localCoordinate.y;
+		
+		dispatchEvent(new InputEvent(Vector2(localCoordinate.x,localCoordinate.y)-parentAdjust, timestamp), InputEvent::EVENT_MOUSEMOVE);
+		
+		if(!mouseOver) {
+				dispatchEvent(new InputEvent(Vector2(localCoordinate.x,localCoordinate.y)-parentAdjust, timestamp), InputEvent::EVENT_MOUSEOVER);
 				mouseOver = true;
-			}
-		} else {
-			if(mouseOver) {
-				dispatchEvent(new InputEvent(Vector2(x,y), timestamp), InputEvent::EVENT_MOUSEOUT);
-				mouseOver = false;
-			}
 		}
+			
+	} else {
+		if(mouseOver) {
+		
+		Vector3 localCoordinate = Vector3(x+(parentAdjust.x*2.0),y+(parentAdjust.y*2.0),0);		
+		Matrix4 inverse = getConcatenatedMatrix().inverse();
+		localCoordinate = inverse * localCoordinate;
+		if(positionMode == POSITION_TOPLEFT)
+			localCoordinate.x += hitwidth/2.0;
+		if(positionMode == POSITION_TOPLEFT)
+			localCoordinate.y += hitheight/2.0;
+		
+		
+			dispatchEvent(new InputEvent(Vector2(localCoordinate.x,localCoordinate.y)-parentAdjust, timestamp), InputEvent::EVENT_MOUSEOUT);
+			mouseOver = false;
+		}		
+	}	
 	}
 	
 	if(enabled) {
-		for(int i=0;i<children.size();i++) {
-			((ScreenEntity*)children[i])->_onMouseMove(x-position.x,y-position.y, timestamp);
+		for(int i=children.size()-1;i>=0;i--) {			
+			Vector2 adjust = parentAdjust;
+			if(positionMode == POSITION_TOPLEFT)
+			adjust += Vector2(width/2.0, height/2.0);
+			((ScreenEntity*)children[i])->_onMouseMove(x,y, timestamp, adjust);
+			if(((ScreenEntity*)children[i])->blockMouseInput && ((ScreenEntity*)children[i])->enabled) {
+				if(((ScreenEntity*)children[i])->hitTest(x,y))
+				   break;
+			}
 		}
 	}
+	}		
 }
 
-bool ScreenEntity::_onMouseUp(Number x, Number y, int mouseButton, int timestamp) {
+bool ScreenEntity::_onMouseUp(Number x, Number y, int mouseButton, int timestamp, Vector2 parentAdjust) {
 	bool retVal = false;
-	if(hitTest(x,y) && enabled) {
-		onMouseUp(x,y);
-		
-		InputEvent *inputEvent = new InputEvent(Vector2(x,y), timestamp);		
-		inputEvent->mouseButton = mouseButton;		
-		dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEUP);
-		retVal = true;		
-	} else {
-		
-		InputEvent *inputEvent = new InputEvent(Vector2(x,y), timestamp);		
-		inputEvent->mouseButton = mouseButton;
-		
-		dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEUP_OUTSIDE);
+	
+	bool doTest = true;	
+	
+	if(hasMask) {
+		if(!((ScreenEntity*)maskEntity)->hitTest(x+parentAdjust.x,y+parentAdjust.y)) {
+			doTest = false;
+		}	
 	}
 	
+	if(doTest) {
+	if(processInputEvents && enabled) {
+	if(hitTest(x+parentAdjust.x,y+parentAdjust.y)) {
+		Vector3 localCoordinate = Vector3(x+(parentAdjust.x*2.0),y+(parentAdjust.y*2.0),0);
+		
+		Matrix4 inverse = getConcatenatedMatrix().inverse();
+		localCoordinate = inverse * localCoordinate;
+		if(positionMode == POSITION_TOPLEFT)
+			localCoordinate.x += hitwidth/2.0;
+		if(positionMode == POSITION_TOPLEFT)
+			localCoordinate.y += hitheight/2.0;
+
+		
+		onMouseUp(localCoordinate.x,localCoordinate.y);		
+		InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x,localCoordinate.y)-parentAdjust, timestamp);		
+		inputEvent->mouseButton = mouseButton;
+		dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEUP);
+		
+		retVal = true;
+	} else {
+		Vector3 localCoordinate = Vector3(x+(parentAdjust.x*2.0),y+(parentAdjust.y*2.0),0);
+		
+		Matrix4 inverse = getConcatenatedMatrix().inverse();
+		localCoordinate = inverse * localCoordinate;
+		if(positionMode == POSITION_TOPLEFT)
+			localCoordinate.x += hitwidth/2.0;
+		if(positionMode == POSITION_TOPLEFT)
+			localCoordinate.y += hitheight/2.0;
+
+		
+		InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x,localCoordinate.y)-parentAdjust, timestamp);		
+		inputEvent->mouseButton = mouseButton;
+		dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEUP_OUTSIDE);	
+	}
+	}
 	if(enabled) {
-		for(int i=0;i<children.size();i++) {
-			((ScreenEntity*)children[i])->_onMouseUp(x-position.x,y-position.y, mouseButton, timestamp);
+		for(int i=children.size()-1;i>=0;i--) {			
+			Vector2 adjust = parentAdjust;
+			if(positionMode == POSITION_TOPLEFT)
+				adjust += Vector2(width/2.0, height/2.0);
+			((ScreenEntity*)children[i])->_onMouseUp(x,y, mouseButton, timestamp, adjust);;
+			if(((ScreenEntity*)children[i])->blockMouseInput && ((ScreenEntity*)children[i])->enabled) {
+				if(((ScreenEntity*)children[i])->hitTest(x,y))
+				   break;
+			}
 		}
 	}
+	}		
+	
 	return retVal;
 }
 
-void ScreenEntity::_onMouseWheelUp(Number x, Number y, int timestamp) {
-	bool doTest = true;
-	
-	if(hasMask) {
-		if(!((ScreenEntity*)maskEntity)->hitTest(x-position.x,y-position.y)) {
-			doTest = false;
-		}	
-	}
-	
-	if(doTest) {
-		if(hitTest(x,y) && enabled) {
-			onMouseWheelUp(x,y);
-			dispatchEvent(new InputEvent(Vector2(x,y), timestamp), InputEvent::EVENT_MOUSEWHEEL_UP);
-		}
-		if(enabled) {
-			for(int i=children.size()-1;i>=0;i--) {				
-				((ScreenEntity*)children[i])->_onMouseWheelUp(x-position.x,y-position.y, timestamp);
-				if(((ScreenEntity*)children[i])->blockMouseInput && ((ScreenEntity*)children[i])->enabled) {
-					if(((ScreenEntity*)children[i])->hitTest(x-position.x,y-position.y))
-						break;
-				}
-			}
-		}
-	}	
-}
-
-void ScreenEntity::_onMouseWheelDown(Number x, Number y, int timestamp) {
-	bool doTest = true;
-	
-	if(hasMask) {
-		if(!((ScreenEntity*)maskEntity)->hitTest(x-position.x,y-position.y)) {
-			doTest = false;
-		}	
-	}
-	
-	if(doTest) {
-		if(hitTest(x,y) && enabled) {
-			onMouseWheelDown(x,y);
-			dispatchEvent(new InputEvent(Vector2(x,y), timestamp), InputEvent::EVENT_MOUSEWHEEL_DOWN);
-		}
-		if(enabled) {
-			for(int i=children.size()-1;i>=0;i--) {				
-				((ScreenEntity*)children[i])->_onMouseWheelDown(x-position.x,y-position.y, timestamp);
-				if(((ScreenEntity*)children[i])->blockMouseInput && ((ScreenEntity*)children[i])->enabled) {
-					if(((ScreenEntity*)children[i])->hitTest(x-position.x,y-position.y))
-						break;
-				}
-			}
-		}
-	}	
-}
-
-
-bool ScreenEntity::_onMouseDown(Number x, Number y, int mouseButton, int timestamp) {
+void ScreenEntity::_onMouseWheelUp(Number x, Number y, int timestamp, Vector2 parentAdjust) {
 	bool retVal = false;
 	
-	bool doTest = true;
+	bool doTest = true;	
 	
 	if(hasMask) {
-		if(!((ScreenEntity*)maskEntity)->hitTest(x,y)) {
+		if(!((ScreenEntity*)maskEntity)->hitTest(x+parentAdjust.x,y+parentAdjust.y)) {
 			doTest = false;
 		}	
 	}
 	
 	if(doTest) {
-	if(hitTest(x,y) && enabled) {
-		onMouseDown(x,y);
+	if(processInputEvents && enabled) {
+	if(hitTest(x+parentAdjust.x,y+parentAdjust.y)) {
+		Vector3 localCoordinate = Vector3(x+(parentAdjust.x*2.0),y+(parentAdjust.y*2.0),0);
 		
-		InputEvent *inputEvent = new InputEvent(Vector2(x,y), timestamp);		
+		Matrix4 inverse = getConcatenatedMatrix().inverse();
+		localCoordinate = inverse * localCoordinate;
+		if(positionMode == POSITION_TOPLEFT)
+			localCoordinate.x += hitwidth/2.0;
+		if(positionMode == POSITION_TOPLEFT)
+			localCoordinate.y += hitheight/2.0;
+
+		
+		onMouseWheelUp(localCoordinate.x,localCoordinate.y);
+		
+		InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x,localCoordinate.y)-parentAdjust, timestamp);		
+		dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEWHEEL_UP);
+		
+		retVal = true;
+	}
+	}
+	
+	if(enabled) {
+		for(int i=children.size()-1;i>=0;i--) {			
+			Vector2 adjust = parentAdjust;
+			if(positionMode == POSITION_TOPLEFT)
+				adjust += Vector2(width/2.0, height/2.0);
+			((ScreenEntity*)children[i])->_onMouseWheelUp(x,y, timestamp, adjust);;
+			if(((ScreenEntity*)children[i])->blockMouseInput && ((ScreenEntity*)children[i])->enabled) {
+				if(((ScreenEntity*)children[i])->hitTest(x,y))
+				   break;
+			}
+		}
+	}
+	}		
+}
+
+void ScreenEntity::_onMouseWheelDown(Number x, Number y, int timestamp, Vector2 parentAdjust) {
+	bool retVal = false;
+	
+	bool doTest = true;	
+	
+	if(hasMask) {
+		if(!((ScreenEntity*)maskEntity)->hitTest(x+parentAdjust.x,y+parentAdjust.y)) {
+			doTest = false;
+		}	
+	}
+	
+	if(doTest) {
+	if(processInputEvents && enabled) {
+	if(hitTest(x+parentAdjust.x,y+parentAdjust.y)) {
+		Vector3 localCoordinate = Vector3(x+(parentAdjust.x*2.0),y+(parentAdjust.y*2.0),0);
+		
+		Matrix4 inverse = getConcatenatedMatrix().inverse();
+		localCoordinate = inverse * localCoordinate;
+		if(positionMode == POSITION_TOPLEFT)
+			localCoordinate.x += hitwidth/2.0;
+		if(positionMode == POSITION_TOPLEFT)
+			localCoordinate.y += hitheight/2.0;
+
+		
+		onMouseWheelDown(localCoordinate.x,localCoordinate.y);
+		
+		InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x,localCoordinate.y)-parentAdjust, timestamp);		
+		dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEWHEEL_DOWN);
+		
+		retVal = true;
+	}
+	}
+	
+	if(enabled) {
+		for(int i=children.size()-1;i>=0;i--) {			
+			Vector2 adjust = parentAdjust;
+			if(positionMode == POSITION_TOPLEFT)
+				adjust += Vector2(width/2.0, height/2.0);
+			((ScreenEntity*)children[i])->_onMouseWheelDown(x,y, timestamp, adjust);;
+			if(((ScreenEntity*)children[i])->blockMouseInput && ((ScreenEntity*)children[i])->enabled) {
+				if(((ScreenEntity*)children[i])->hitTest(x,y))
+				   break;
+			}
+		}
+	}
+	}		
+	
+}
+
+
+bool ScreenEntity::_onMouseDown(Number x, Number y, int mouseButton, int timestamp, Vector2 parentAdjust) {
+	bool retVal = false;
+	
+	bool doTest = true;	
+	
+	if(hasMask) {
+		if(!((ScreenEntity*)maskEntity)->hitTest(x+parentAdjust.x,y+parentAdjust.y)) {
+			doTest = false;
+		}	
+	}
+	
+	if(doTest) {
+	if(processInputEvents && enabled) {
+	if(hitTest(x+parentAdjust.x,y+parentAdjust.y)) {
+		Vector3 localCoordinate = Vector3(x+(parentAdjust.x*2.0),y+(parentAdjust.y*2.0),0);
+		
+		Matrix4 inverse = getConcatenatedMatrix().inverse();
+		localCoordinate = inverse * localCoordinate;
+		if(positionMode == POSITION_TOPLEFT)
+			localCoordinate.x += hitwidth/2.0;
+		if(positionMode == POSITION_TOPLEFT)
+			localCoordinate.y += hitheight/2.0;
+
+		
+		onMouseDown(localCoordinate.x,localCoordinate.y);
+		
+		InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x,localCoordinate.y)-parentAdjust, timestamp);
+		
 		inputEvent->mouseButton = mouseButton;
 		dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEDOWN);
 		
@@ -346,12 +559,15 @@ bool ScreenEntity::_onMouseDown(Number x, Number y, int mouseButton, int timesta
 		lastClickTicks = timestamp;		
 		retVal = true;
 	}
+	}
 	if(enabled) {
-		for(int i=children.size()-1;i>=0;i--) {
-			
-			((ScreenEntity*)children[i])->_onMouseDown(x-position.x,y-position.y, mouseButton, timestamp);
+		for(int i=children.size()-1;i>=0;i--) {			
+			Vector2 adjust = parentAdjust;
+			if(positionMode == POSITION_TOPLEFT)
+				adjust += Vector2(width/2.0, height/2.0);
+			((ScreenEntity*)children[i])->_onMouseDown(x,y, mouseButton, timestamp, adjust);;
 			if(((ScreenEntity*)children[i])->blockMouseInput && ((ScreenEntity*)children[i])->enabled) {
-				if(((ScreenEntity*)children[i])->hitTest(x-position.x,y-position.y))
+				if(((ScreenEntity*)children[i])->hitTest(x,y))
 				   break;
 			}
 		}
@@ -373,7 +589,6 @@ Matrix4 ScreenEntity::buildPositionMatrix() {
 	Matrix4 posMatrix;
 	switch(positionMode) {
 		case POSITION_TOPLEFT:
-//			renderer->translate2D(position.x+ceil(width/2.0f)*scale->x, position.y+ceil(height/2.0f)*scale->y);
 			posMatrix.m[3][0] = (position.x+floor(width/2.0f)*scale.x)*matrixAdj;
 			posMatrix.m[3][1] = (position.y+floor(height/2.0f)*scale.y)*matrixAdj;
 			posMatrix.m[3][2] = position.z*matrixAdj;			
@@ -399,38 +614,3 @@ void ScreenEntity::adjustMatrixForChildren() {
 	if(positionMode == POSITION_TOPLEFT)
 		renderer->translate2D(-floor(width/2.0f), -floor(height/2.0f));	
 }
-
-/*
-void ScreenEntity::transformAndRender() {
-
-	Update();
-
-	if(!renderer || !visible)
-		return;
-
-	renderer->pushMatrix();
-	switch(positionMode) {
-		case POSITION_TOPLEFT:
-			renderer->translate2D(position.x+ceil(width/2.0f)*scale->x, position.y+ceil(height/2.0f)*scale->y);
-		break;
-		case POSITION_CENTER:
-			renderer->translate2D(position.x, position.y);
-		break;
-	}
-	renderer->scale2D(scale);
-	renderer->rotate2D(rotation);
-	if(parentEntity) {
-		Color combined = getCombinedColor();
-		renderer->setVertexColor(combined.r,combined.g,combined.b,combined.a);
-	} else {
-		renderer->setVertexColor(color.r,color.g,color.b,color.a);
-	}
-	
-	renderer->setBlendingMode(blendingMode);
-	Render();
-	if(positionMode == POSITION_TOPLEFT)
-		renderer->translate2D(-ceil(width/2.0f)*scale->x, -ceil(height/2.0f)*scale->y);
-	renderChildren();
-	renderer->popMatrix();
-}
-*/

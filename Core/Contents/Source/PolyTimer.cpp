@@ -35,6 +35,10 @@ Timer::Timer(bool triggerMode, int msecs) : EventDispatcher() {
 	CoreServices::getInstance()->getTimerManager()->addTimer(this);
 }
 
+void Timer::setTimerInterval(int msecs) {
+	this->msecs = msecs;
+}
+
 Timer::~Timer() {
 	CoreServices::getInstance()->getTimerManager()->removeTimer(this);
 }

@@ -67,7 +67,7 @@ namespace Polycode {
 			*/															
 			Color(unsigned int hex);
 		
-			~Color();
+			virtual ~Color();
 			
 			/** 
 			* Multiplies the color with another color.
@@ -79,6 +79,18 @@ namespace Polycode {
 				Number na = a * v2.a;				
 				return Color(nr, ng, nb, na);
 			}	
+			
+			/** 
+			* Adds the color to another color.
+			*/
+			inline Color operator + ( const Color& v2) const {
+				Number nr = r + v2.r;
+				Number ng = g + v2.g;
+				Number nb = b + v2.b;
+				Number na = a + v2.a;				
+				return Color(nr, ng, nb, na);
+			}	
+			
 			
 			bool operator == (const Color& c2) {
 				return (((int)255.0*r) == ((int)255.0*c2.r) && ((int)255.0*g) == ((int)255.0*c2.g) && ((int)255.0*b) == ((int)255.0*c2.b) && ((int)255.0*a) == ((int)255.0*c2.a));
@@ -151,6 +163,27 @@ namespace Polycode {
 			* @return Brightness.
 			*/
 			Number getBrightness() const;
+			
+			static void RGBtoHSV(const Number &r, const Number &g, const Number &b, Number &h, Number &s, Number &v);
+			
+			/**
+			* Returns the hue of the color's HSV component.
+			* @return HSV Hue.
+			*/
+			Number getHue() const;
+
+			/**
+			* Returns the saturation of the color's HSV component.
+			* @return HSV Saturation
+			*/
+			Number getSaturation() const;
+
+			/**
+			* Returns the value of the color's HSV component
+			* @return HSV Value
+			*/
+			Number getValue() const;
+
 			
 			/**
 			* Returns the color as a 32-bit usigned integer.

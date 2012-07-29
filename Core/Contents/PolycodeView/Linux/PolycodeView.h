@@ -1,6 +1,6 @@
 #pragma once
 
-#include "PolyCore.h"
+#include "PolySDLCore.h"
 
 namespace Polycode {
 

@@ -11,29 +11,56 @@ INCLUDE_DIRECTORIES(
 )
 
 SET(polycode2DPhysics_SRCS
-    Source/Physics2DLUA.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Source/Physics2DLUA.cpp
     ../../Contents/2DPhysics/Source/PolyPhysicsScreen.cpp
     ../../Contents/2DPhysics/Source/PolyPhysicsScreenEntity.cpp
 )
 
 SET(polycode2DPhysics_HDRS
-    Include/Physics2DLUA.h
-    Include/Physics2DLUAWrappers.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Include/Physics2DLUA.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Include/Physics2DLUAWrappers.h
     ../../Contents/2DPhysics/Include/Polycode2DPhysics.h
     ../../Contents/2DPhysics/Include/PolyPhysicsScreenEntity.h
-   ../../Contents/2DPhysics/Include/PolyPhysicsScreen.h
+    ../../Contents/2DPhysics/Include/PolyPhysicsScreen.h
 )
 
 ADD_LIBRARY(Physics2D SHARED ${polycode2DPhysics_SRCS} ${polycode2DPhysics_HDRS})
+
+SET_SOURCE_FILES_PROPERTIES(Source/Physics2DLUA.cpp PROPERTIES GENERATED 1)
+SET_SOURCE_FILES_PROPERTIES(Include/Physics2DLUAWrappers.h PROPERTIES GENERATED 1)
+SET_SOURCE_FILES_PROPERTIES(Include/Physics2DLUA.h PROPERTIES GENERATED 1)
+ADD_DEPENDENCIES(Physics2D PolycodeLuaGenerate)
+
 SET(CMAKE_DEBUG_POSTFIX "_d")
 
 SET_TARGET_PROPERTIES(Physics2D PROPERTIES PREFIX "")
+
+IF(APPLE)
 TARGET_LINK_LIBRARIES(Physics2D
 	Polycore
 	${LUA_LIBRARY}
 	${BOX2D_RELEASE_LIBRARY}
-        "-framework Cocoa"
-        "-framework IOKit"
+	"-framework Cocoa"
+	"-framework IOKit"
+        ${OPENGL_LIBRARIES}
+        ${OPENAL_LIBRARY}
+	${ZLIB_LIBRARIES}
+        ${PNG_LIBRARIES}
+        ${FREETYPE_LIBRARIES}
+        ${PHYSFS_LIBRARY}
+        ${OGG_LIBRARIES}
+        ${VORBIS_LIBRARIES}
+        ${VORBISFILE_LIBRARIES}
+        ${EXTRA_LIBS})
+ELSE(APPLE)
+IF (MINGW)
+	SET(MINGW_EXTRA_LIBS ${ZLIB_LIBRARY})
+ENDIF(MINGW)
+
+TARGET_LINK_LIBRARIES(Physics2D
+	Polycore
+	${LUA_LIBRARY}
+	${BOX2D_RELEASE_LIBRARY}
         ${OPENGL_LIBRARIES}
         ${OPENAL_LIBRARY}
         ${PNG_LIBRARIES}
@@ -42,7 +69,9 @@ TARGET_LINK_LIBRARIES(Physics2D
         ${OGG_LIBRARIES}
         ${VORBIS_LIBRARIES}
         ${VORBISFILE_LIBRARIES}
-        ${EXTRA_LIBS})
+        ${EXTRA_LIBS}
+        ${MINGW_EXTRA_LIBS})
+ENDIF(APPLE)
 
 IF(POLYCODE_INSTALL_FRAMEWORK)
     

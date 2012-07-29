@@ -30,8 +30,9 @@ THE SOFTWARE.
 
 using namespace Polycode;
 
-CollisionSceneEntity::CollisionSceneEntity(SceneEntity *entity, int type) {
+CollisionSceneEntity::CollisionSceneEntity(SceneEntity *entity, int type, bool compoundChildren) {
 	sceneEntity = entity;
+	shape = NULL;
 	
 	this->type = type;
 	enabled = true;	
@@ -42,10 +43,34 @@ CollisionSceneEntity::CollisionSceneEntity(SceneEntity *entity, int type) {
 	basisA.setIdentity();
 	
 	collisionObject = new btCollisionObject();
-	collisionObject->getWorldTransform().setBasis(basisA);
+	collisionObject->getWorldTransform().setBasis(basisA);	
 	
+	if(compoundChildren) {
+		 btCompoundShape* compoundShape = new btCompoundShape();
+		 
+		 for(int i=0; i < entity->getNumChildren(); i++) {
+			SceneEntity *child = (SceneEntity*)entity->getChildAtIndex(i);
+			btCollisionShape *childShape = createCollisionShape(child, child->collisionShapeType);
+			btTransform transform;
+			
+			child->rebuildTransformMatrix();
 
-	shape = createCollisionShape(entity, type);;
+			btScalar mat[16];		
+			Matrix4 ent_mat = child->getTransformMatrix();
+	
+			for(int i=0; i < 16; i++) {
+				mat[i] = ent_mat.ml[i];
+			}			
+			
+			transform.setFromOpenGLMatrix(mat);
+			compoundShape->addChildShape(transform, childShape);			
+		 }	
+		 
+		 shape = compoundShape;
+	} else {
+		shape = createCollisionShape(entity, type);	
+	}
+	
 	if(shape) {
 		collisionObject->setCollisionShape(shape);
 	}	
@@ -60,6 +85,14 @@ CollisionSceneEntity::CollisionSceneEntity(SceneEntity *entity, int type) {
 btCollisionShape *CollisionSceneEntity::createCollisionShape(SceneEntity *entity, int type) {
 	
 	btCollisionShape *collisionShape = NULL;	
+	
+	Vector3 entityScale = entity->getScale();
+	Number largestScale = entityScale.x;
+	if(entityScale.y > largestScale)
+		largestScale = entityScale.y;
+	if(entityScale.z > largestScale)
+		largestScale = entityScale.z;
+
 	
 	switch(type) {
 		case SHAPE_CAPSULE:
@@ -83,10 +116,10 @@ btCollisionShape *CollisionSceneEntity::createCollisionShape(SceneEntity *entity
 			collisionShape = new btBoxShape(btVector3(entity->bBox.x/2.0f, 0.05,entity->bBox.z/2.0f));			
 			break;
 		case SHAPE_BOX:
-			collisionShape = new btBoxShape(btVector3(entity->bBox.x/2.0f, entity->bBox.y/2.0f,entity->bBox.z/2.0f));			
+			collisionShape = new btBoxShape(btVector3(entity->bBox.x/2.0f*entityScale.x, entity->bBox.y/2.0f*entityScale.y,entity->bBox.z/2.0f*entityScale.z));			
 			break;
 		case SHAPE_SPHERE:
-			collisionShape = new btSphereShape(entity->bBox.x/2.0f);
+			collisionShape = new btSphereShape(entity->bBox.x/2.0f*largestScale);
 			break;
 		case SHAPE_MESH:
 		{
@@ -129,5 +162,6 @@ SceneEntity *CollisionSceneEntity::getSceneEntity() {
 }
 
 CollisionSceneEntity::~CollisionSceneEntity() {
-
+	delete shape;
+	delete collisionObject;
 }

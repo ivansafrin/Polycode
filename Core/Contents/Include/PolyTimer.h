@@ -38,7 +38,7 @@ namespace Polycode {
 			* @param msecs Timer frequency in milliseconds.
 			*/
 			Timer(bool triggerMode, int msecs);
-			~Timer();
+			virtual ~Timer();
 
 		/** 
 		* Pauses and resumes the timer.
@@ -64,6 +64,8 @@ namespace Polycode {
 		* Returns the time elapsed in floating point microseconds.
 		*/
 		Number getElapsedf();		
+		
+		void setTimerInterval(int msecs);
 
 		static const int EVENT_TRIGGER = 0;
 		

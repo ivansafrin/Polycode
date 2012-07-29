@@ -1,0 +1,10 @@
+<PolycodeProject defaultWidth="640" defaultHeight="480" antiAliasingLevel="0">
+	<backgroundColor red="0.25" green="0.25" blue="0.25" />
+	<entryPoint>2DPhysics_Contacts.lua</entryPoint>
+	<modules>
+		<module>Physics2D</module>
+	</modules>
+	<packedItems>
+		<item path="collision.wav" type="file"/>
+        </packedItems>
+</PolycodeProject>

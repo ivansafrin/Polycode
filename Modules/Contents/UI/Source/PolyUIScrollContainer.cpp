@@ -1,13 +1,31 @@
 /*
- *  PolyUIScrollContainer.cpp
- *  Poly
- *
- *  Created by Ivan Safrin on 3/25/10.
- *  Copyright 2010 Ivan Safrin. All rights reserved.
- *
+ Copyright (C) 2012 by Ivan Safrin
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
  */
 
 #include "PolyUIScrollContainer.h"
+#include "PolyConfig.h"
+#include "PolyInputEvent.h"
+#include "PolyLabel.h"
+#include "PolyCoreServices.h"
+#include <math.h>
 
 using namespace Polycode;
 
@@ -114,13 +132,13 @@ void UIScrollContainer::setContentSize(Number newContentWidth, Number newContent
 void UIScrollContainer::handleEvent(Event *event) {
 	if(event->getDispatcher() == vScrollBar) {
 		if(event->getEventCode() == Event::CHANGE_EVENT) {
-			scrollChild->setPositionY(round(-((contentHeight-height) )*vScrollBar->getScrollValue()));
+			scrollChild->setPositionY(floor(-((contentHeight-height) )*vScrollBar->getScrollValue()));
 		}
 	}
 	
 	if(event->getDispatcher() == hScrollBar) {
 		if(event->getEventCode() == Event::CHANGE_EVENT) {
-			scrollChild->setPositionX(round(-((contentWidth-width) )*hScrollBar->getScrollValue()));
+			scrollChild->setPositionX(floor(-((contentWidth-width) )*hScrollBar->getScrollValue()));
 		}
 	}
 	
