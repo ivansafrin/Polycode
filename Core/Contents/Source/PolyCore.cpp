@@ -31,7 +31,7 @@
 
 namespace Polycode {
 	
-	Core::Core(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate) : EventDispatcher() {
+	Core::Core(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex) : EventDispatcher() {
 		services = CoreServices::getInstance();
 		input = new CoreInput();
 		services->setCore(this);
@@ -45,6 +45,8 @@ namespace Polycode {
 		this->yRes = yRes;
 		mouseEnabled = true;
 		lastSleepFrameTicks = 0;
+		
+		this->monitorIndex = monitorIndex;
 		
 		refreshInterval = 1000 / frameRate;
 	}

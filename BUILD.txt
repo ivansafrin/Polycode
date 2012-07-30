@@ -8,12 +8,14 @@ dependencies installed on your computer.
 
 The first dependency is CMake. It can be downloaded from 
 http://cmake.org/cmake/resources/software.html or installed using apt
-or rpm on most Linux distributions. CMake 2.8.4 or greater is 
-recommended.
+or rpm on most Linux distributions. CMake 2.8.8 or greater is now required.
 
 When Polycode and its Dependencies are built, they will be available
 in the Release/YourArchitecture folder under the main source tree in 
 a structure that should mimic the main binary release.
+
+If you wish to build a 32-bit version on a 64-bit machine in OS X, pass
+-DCMAKE_OSX_ARCHITECTURES=i386 as an argument to cmake
 
 ## Building dependencies ##
 
@@ -44,6 +46,11 @@ may prefer to use the CMake GUI if unfamiliar with CMake.
 
 
 ### Mac OS X and Xcode ###
+
+NOTE: If you are using the new XCode that is downloaded from the AppStore
+and cmake complains about not finding XCode in /Developer, you have to run this
+command to update the XCode path:
+sudo /usr/bin/xcode-select -switch /Applications/Xcode.app/Contents/Developer
 
 To generate an Xcode project for building Polycode dependencies, perform
 the following steps in the Polycode directory from a terminal:
@@ -191,6 +198,8 @@ cmake command. Otherwise, the steps are exactly the same as the regular
 Polycode build for your system.
 
     -DPOLYCODE_BUILD_BINDINGS=ON -DPOLYCODE_BUILD_PLAYER=ON
+
+Note: You need to build the "PolycodeLua" target before you build the "install" target.
 
 After building the install build or running 'make install', perform the
 following commands in the Polycode source root:

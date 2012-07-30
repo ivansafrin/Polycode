@@ -133,7 +133,20 @@ namespace Polycode {
 			unsigned int lightmapIndex;
 			
 			bool showVertexNormals;
+	
+					
+			Number lineWidth;
+			bool lineSmooth;
 			
+			/**
+			* If true, will delete its Mesh upon destruction. (defaults to true)
+			*/ 
+			bool ownsMesh;
+
+			/**
+			* If true, will delete its Skeleton upon destruction. (defaults to true)
+			*/ 			
+			bool ownsSkeleton;
 		
 		protected:
 		

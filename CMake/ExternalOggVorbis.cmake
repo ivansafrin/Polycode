@@ -6,6 +6,8 @@ SET(oggvorbis_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/oggvorbis)
 SET(oggvorbis_CMAKE_ARGS
     -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR> 
     -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+	-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
+    -DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}
 )
 
 EXTERNALPROJECT_ADD(libogg
@@ -22,6 +24,14 @@ EXTERNALPROJECT_ADD(libogg
 )
 
 ExternalProject_Get_Property(libogg install_dir)
+
+# Kludge: Shouldn't be necessary if FIND_LIBRARY were working on mingw.
+IF (MINGW)
+	SET(oggvorbis_CMAKE_ARGS ${oggvorbis_CMAKE_ARGS}
+		-DOGG_LIBRARY=libogg
+		-DOGG_INCLUDE_DIR=${install_dir}/include
+	)
+ENDIF(MINGW)
 
 EXTERNALPROJECT_ADD(libvorbis
     DEPENDS libogg

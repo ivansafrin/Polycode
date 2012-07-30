@@ -43,7 +43,7 @@ namespace Polycode {
 			* @param eventCode Event code to initalize with.
 			*/ 			
 			Event(int eventCode);
-			~Event();
+			virtual ~Event();
 			
 			/**
 			* Returns the event code for this event.

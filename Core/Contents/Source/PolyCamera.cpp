@@ -29,6 +29,7 @@
 #include "PolyResourceManager.h"
 #include "PolyScene.h"
 #include "PolyShader.h"
+#include "PolyTexture.h"
 
 using namespace Polycode;
 			
@@ -37,13 +38,19 @@ Camera::Camera(Scene *parentScene) : SceneEntity() {
 	orthoMode = false;
 	fov = 45.0f;
 	originalSceneTexture = NULL;
+	zBufferSceneTexture = NULL;
 	exposureLevel = 1.0f;
 	_hasFilterShader = false;	
 	fovSet = false;
 }
 
-Camera::~Camera() {
+Camera::~Camera() {	
+	for(int i=0; i < localShaderOptions.size(); i++) {
+		delete localShaderOptions[i];
+	}
 
+	delete originalSceneTexture;
+	delete zBufferSceneTexture;
 }
 
 void Camera::setExposureLevel(Number level) {
@@ -78,13 +85,24 @@ bool Camera::isSphereInFrustrum(Vector3 pos, Number fRadius) {
     return true;
 }
 
-void Camera::setOrthoMode(bool mode) {
+void Camera::setOrthoMode(bool mode, Number orthoSizeX, Number orthoSizeY) {
+	this->orthoSizeX = orthoSizeX;
+	this->orthoSizeY = orthoSizeY;
 	orthoMode = mode;
 }			
 
 bool Camera::getOrthoMode() {
 	return orthoMode;
 }
+
+Number Camera::getOrthoSizeX() {
+	return orthoSizeX;
+}
+
+Number Camera::getOrthoSizeY() {
+	return orthoSizeY;
+}
+
 
 void Camera::buildFrustrumPlanes() {
 
@@ -266,7 +284,7 @@ void Camera::createPostFilter(Material *shaderMaterial) {
 //	zBufferSceneTexture = CoreServices::getInstance()->getMaterialManager()->createFramebufferTexture(CoreServices::getInstance()->getCore()->getXRes(), CoreServices::getInstance()->getCore()->getYRes(), 0);
 
 	if(!originalSceneTexture) {
-	CoreServices::getInstance()->getRenderer()->createRenderTextures(&originalSceneTexture, &zBufferSceneTexture, CoreServices::getInstance()->getCore()->getXRes(), CoreServices::getInstance()->getCore()->getYRes(), shaderMaterial->fp16RenderTargets);
+		CoreServices::getInstance()->getRenderer()->createRenderTextures(&originalSceneTexture, &zBufferSceneTexture, CoreServices::getInstance()->getCore()->getXRes(), CoreServices::getInstance()->getCore()->getYRes(), shaderMaterial->fp16RenderTargets);
 	}
 	
 	for(int i=0; i < shaderMaterial->getNumShaders(); i++) {

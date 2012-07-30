@@ -12,9 +12,10 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
 	
 	Screen *screen = new Screen();	
-	ScreenParticleEmitter *emitter = new ScreenParticleEmitter("Resources/particle.png", screen,
-		 Particle::BILLBOARD_PARTICLE, ParticleEmitter::CONTINUOUS_EMITTER, 4, 200,
-		Vector3(0.0,-50.0,0.0), Vector3(0.0,0.0,0.0), Vector3(20.5, 40.0, 0.0));
+	ScreenParticleEmitter *emitter = new ScreenParticleEmitter("Resources/particle.png", 
+		screen, Particle::BILLBOARD_PARTICLE, ParticleEmitter::CONTINUOUS_EMITTER, 4, 200, 
+		Vector3(0.0,-50.0,0.0), Vector3(0.0,0.0,0.0), Vector3(20.5, 40.0, 0.0), 
+		Vector3(1.5,1.5,1.5));
 	
 	emitter->useScaleCurves = true;
 	emitter->scaleCurve.addControlPoint2d(0, 0.3);
@@ -45,6 +46,9 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 
 	emitter->setPosition(640/2, 400);
 	screen->addChild(emitter);
+}
+
+HelloPolycodeApp::~HelloPolycodeApp() {
 }
 
 bool HelloPolycodeApp::Update() {

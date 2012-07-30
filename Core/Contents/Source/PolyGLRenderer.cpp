@@ -34,7 +34,7 @@
 #include "PolyModule.h"
 #include "PolyPolygon.h"
 
-#ifdef _WINDOWS
+#if defined(_WINDOWS) && !defined(_MINGW)
 
 
 PFNGLACTIVETEXTUREPROC   glActiveTexture;
@@ -265,45 +265,6 @@ Vector3 OpenGLRenderer::projectRayFrom2DCoordinate(Number x, Number y) {
 	return dirVec;
 }
 
-bool OpenGLRenderer::test2DCoordinate(Number x, Number y, Polycode::Polygon *poly, const Matrix4 &matrix, bool billboardMode) {
-	GLdouble nearPlane[3],farPlane[3];
-	
-	GLdouble mv[16];
-	Matrix4 camInverse = cameraMatrix.inverse();	
-	Matrix4 cmv;
-	cmv.identity();
-	cmv = cmv * camInverse;
-	
-	for(int i=0; i < 16; i++) {
-		mv[i] = cmv.ml[i];
-	}
-	
-	GLint vp[4];
-	glGetIntegerv( GL_VIEWPORT, vp );
-	
-	gluUnProject(x, yRes - y, 0.0, mv, sceneProjectionMatrix, vp,  &nearPlane[0], &nearPlane[1], &nearPlane[2]);
-	gluUnProject(x, yRes - y, 1.0, mv, sceneProjectionMatrix, vp,  &farPlane[0], &farPlane[1], &farPlane[2]);
-	
-	Vector3 nearVec(nearPlane[0], nearPlane[1], nearPlane[2]);
-	Vector3 farVec(farPlane[0], farPlane[1], farPlane[2]);
-		
-	Vector3 dirVec = farVec - nearVec;	
-	dirVec.Normalize();
-	
-	Vector3 hitPoint;
-	
-	Matrix4 fullMatrix = matrix;
-	
-	if(poly->getVertexCount() == 3) {
-		return rayTriangleIntersect(Vector3(0,0,0), dirVec, fullMatrix * (*poly->getVertex(0)), fullMatrix  * (*poly->getVertex(1)), fullMatrix *  (*poly->getVertex(2)), &hitPoint);
-	} else if(poly->getVertexCount() == 4) {
-		return (rayTriangleIntersect(Vector3(0,0,0), dirVec, fullMatrix * (*poly->getVertex(2)), fullMatrix  * (*poly->getVertex(1)), fullMatrix *  (*poly->getVertex(0)), &hitPoint) ||
-				rayTriangleIntersect(Vector3(0,0,0), dirVec, fullMatrix * (*poly->getVertex(0)), fullMatrix  * (*poly->getVertex(3)), fullMatrix *  (*poly->getVertex(2)), &hitPoint));
-	} else {
-		return false;
-	}
-}
-
 void OpenGLRenderer::enableDepthWrite(bool val) {
 	if(val)
 		glDepthMask(GL_TRUE);
@@ -400,7 +361,7 @@ void OpenGLRenderer::drawVertexBuffer(VertexBuffer *buffer, bool enableColorBuff
 			}
 			break;
 		case Mesh::LINE_MESH:
-			mode = GL_LINES;
+			mode = GL_LINE_STRIP;
 			break;	
 		case Mesh::POINT_MESH:
 			mode = GL_POINTS;
@@ -437,6 +398,9 @@ void OpenGLRenderer::setBlendingMode(int blendingMode) {
 		break;
 		case BLEND_MODE_COLOR:
 				glBlendFunc (GL_SRC_ALPHA_SATURATE, GL_ONE);
+		break;
+		case BLEND_MODE_PREMULTIPLIED:
+			glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 		break;
 		default:
 			glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -490,14 +454,19 @@ void OpenGLRenderer::setFogProperties(int fogMode, Color color, Number density, 
 }
 
 
-void OpenGLRenderer::_setOrthoMode() {
+void OpenGLRenderer::_setOrthoMode(Number orthoSizeX, Number orthoSizeY) {
+	this->orthoSizeX = orthoSizeX;
+	this->orthoSizeY = orthoSizeY;
+	
 	if(!orthoMode) {
 		glMatrixMode(GL_PROJECTION);
 		glPushMatrix();
 		glLoadIdentity();
-		glOrtho(-1,1,-1,1,nearPlane,farPlane);
+		glOrtho(-orthoSizeX*0.5,orthoSizeX*0.5,-orthoSizeY*0.5,orthoSizeY*0.5,-farPlane,farPlane);
 		orthoMode = true;
 	}
+	glGetDoublev( GL_PROJECTION_MATRIX, sceneProjectionMatrixOrtho);
+		
 	glMatrixMode(GL_MODELVIEW);	
 	glLoadIdentity();	
 }
@@ -611,7 +580,7 @@ void OpenGLRenderer::createRenderTextures(Texture **colorBuffer, Texture **depth
 	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);	
 	
 	if(floatingPointBuffer) {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F_ARB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F_ARB, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
 	} else {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);	
 	}
@@ -644,7 +613,11 @@ void OpenGLRenderer::createRenderTextures(Texture **colorBuffer, Texture **depth
 	//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);	
 		glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_LUMINANCE);	
 	
-		glTexImage2D(GL_TEXTURE_2D,0,GL_DEPTH_COMPONENT,width,height,0,GL_DEPTH_COMPONENT,GL_UNSIGNED_BYTE,0);
+		if(floatingPointBuffer) {	
+			glTexImage2D(GL_TEXTURE_2D,0,GL_DEPTH_COMPONENT16,width,height,0,GL_DEPTH_COMPONENT,GL_FLOAT,0);
+		} else {
+			glTexImage2D(GL_TEXTURE_2D,0,GL_DEPTH_COMPONENT,width,height,0,GL_DEPTH_COMPONENT,GL_UNSIGNED_BYTE,0);
+		}
 	
 		glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D, depthTexture, 0);
 
@@ -748,7 +721,7 @@ void OpenGLRenderer::applyMaterial(Material *material,  ShaderBinding *localOpti
 	glMaterialfv(GL_FRONT, GL_AMBIENT, data4);
 
 	FixedShaderBinding *fBinding;
-
+	
 	switch(material->getShader(shaderIndex)->getType()) {
 		case Shader::FIXED_SHADER:
 //			FixedShader *fShader = (FixedShader*)material->getShader();
@@ -757,13 +730,18 @@ void OpenGLRenderer::applyMaterial(Material *material,  ShaderBinding *localOpti
 //			setTexture(fShader->getDiffuseTexture());
 		break;	
 		case Shader::MODULE_SHADER:		
-			currentMaterial = material;			
-			for(int m=0; m < shaderModules.size(); m++) {
-				PolycodeShaderModule *shaderModule = shaderModules[m];	
-				if(shaderModule->hasShader(material->getShader(shaderIndex))) {
-					shaderModule->applyShaderMaterial(this, material, localOptions, shaderIndex);
-					currentShaderModule = shaderModule;
-				}
+			currentMaterial = material;
+			if(material->shaderModule == NULL) {
+				for(int m=0; m < shaderModules.size(); m++) {
+					PolycodeShaderModule *shaderModule = shaderModules[m];	
+					if(shaderModule->hasShader(material->getShader(shaderIndex))) {
+						material->shaderModule = (void*)shaderModule;
+					}
+				}	
+			} else {
+				PolycodeShaderModule *shaderModule = (PolycodeShaderModule*)material->shaderModule;
+				shaderModule->applyShaderMaterial(this, material, localOptions, shaderIndex);
+				currentShaderModule = shaderModule;
 			}
 		break;
 	}
@@ -1025,7 +1003,7 @@ void OpenGLRenderer::drawArrays(int drawType) {
 			}
 			break;
 		case Mesh::LINE_MESH:
-			mode = GL_LINES;
+			mode = GL_LINE_STRIP;
 			break;	
 		case Mesh::POINT_MESH:
 			mode = GL_POINTS;

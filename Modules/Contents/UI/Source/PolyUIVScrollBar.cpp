@@ -73,7 +73,7 @@ UIVScrollBar::UIVScrollBar(Number width, Number height, Number initialRatio) : S
 	handleBox->addEventListener(this, InputEvent::EVENT_MOUSEUP);
 	handleBox->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);	
 	handleBox->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);			
-	
+	handleBox->processInputEvents = true;
 	handleBox->blockMouseInput = true;
 	
 	dragRectHeight = height-(padding*2)-scrollHandleHeight;

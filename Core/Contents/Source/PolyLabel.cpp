@@ -28,10 +28,11 @@ using namespace Polycode;
 #define NORMAL_FT_FLAGS FT_LOAD_TARGET_LIGHT
 
 
-Label::Label(Font *font, const String& text, int size, int antiAliasMode) : Image() {
+Label::Label(Font *font, const String& text, int size, int antiAliasMode, bool premultiplyAlpha) : Image() {
 		setPixelType(Image::IMAGE_RGBA);
 		this->font = font;
 		this->size = size;
+		this->premultiplyAlpha = premultiplyAlpha;
 		imageData = NULL;
 		this->antiAliasMode = antiAliasMode;
 		currentTextWidth = 0;
@@ -43,7 +44,7 @@ Label::~Label() {
 
 }
 
-int Label::getTextWidth(Font *font, const String& text, int size) const {
+int Label::getTextWidth(Font *font, const String& text, int size) {
 	FT_Vector delta;
 	FT_UInt previous = 0;
 	FT_UInt glyph_index;
@@ -70,15 +71,9 @@ int Label::getTextWidth(Font *font, const String& text, int size) const {
 				width += delta.x >> 6;
 			}
 			FT_Load_Glyph( font->getFace(), glyph_index, NORMAL_FT_FLAGS );
-		
-			switch(antiAliasMode) {
-				case ANTIALIAS_FULL:
-					FT_Render_Glyph(slot, FT_RENDER_MODE_LIGHT );			
-					break;
-				case ANTIALIAS_NONE:
-					FT_Render_Glyph(slot, FT_RENDER_MODE_MONO);
-					break;
-			}
+			
+			FT_Render_Glyph(slot, FT_RENDER_MODE_MONO);
+
 		width += slot->advance.x >> 6;
 		}
 	}
@@ -87,7 +82,7 @@ int Label::getTextWidth(Font *font, const String& text, int size) const {
 	return width+5;
 }
 
-int Label::getTextHeight(Font *font, const String& text, int size) const {
+int Label::getTextHeight(Font *font, const String& text, int size) {
 	
 	String actualString = text; //StringUtil::replace(text, "\t", TAB_REPLACE);
 	
@@ -101,15 +96,7 @@ int Label::getTextHeight(Font *font, const String& text, int size) const {
 	{
 		glyph_index = FT_Get_Char_Index( font->getFace(), actualString[i] );
 		FT_Load_Glyph(font->getFace(), glyph_index, NORMAL_FT_FLAGS );
-		switch(antiAliasMode) {
-			case ANTIALIAS_FULL:
-				FT_Render_Glyph(slot, FT_RENDER_MODE_LIGHT );			
-			break;
-			case ANTIALIAS_NONE:
-				FT_Render_Glyph(slot, FT_RENDER_MODE_MONO);
-			break;
-		}
-
+		FT_Render_Glyph(slot, FT_RENDER_MODE_MONO);
 		
 		if(slot->bitmap_top > height)
 			height = slot->bitmap_top;
@@ -200,12 +187,21 @@ void Label::setText(const String& text) {
 					if(!(j%slot->bitmap.width) && j !=0)
 						lineoffset += (textWidth*4)-(slot->bitmap.width * 4);
 
-						imageData[xoff+lineoffset] = 255;
-						imageData[xoff+lineoffset+1] =  255;
-						imageData[xoff+lineoffset+2] =  255;
-						
-						if(imageData[xoff+lineoffset+3] == 0)
-							imageData[xoff+lineoffset+3] =  slot->bitmap.buffer[j];
+						int newVal = imageData[xoff+lineoffset+3] + slot->bitmap.buffer[j];
+						if(newVal > 255)
+							newVal = 255;
+						imageData[xoff+lineoffset+3] = newVal;
+													
+						if(premultiplyAlpha) {
+							imageData[xoff+lineoffset] = (int)(255.0 * ((Number)imageData[xoff+lineoffset+3])/255.0);
+							imageData[xoff+lineoffset+1] =  (int)(255.0 * ((Number)imageData[xoff+lineoffset+3])/255.0);
+							imageData[xoff+lineoffset+2] =  (int)(255.0 * ((Number)imageData[xoff+lineoffset+3])/255.0);
+						} else {
+							imageData[xoff+lineoffset] = 255;
+							imageData[xoff+lineoffset+1] =  255;
+							imageData[xoff+lineoffset+2] =  255;						
+						} 	
+							
 						xoff += 4;
 				}
 			break;

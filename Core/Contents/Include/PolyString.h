@@ -71,6 +71,8 @@ namespace Polycode {
 			* Initializes the string from an STL wstring.
 			*/															
 			String(const std::wstring& str);
+			
+			String(const wchar_t wchar);
 		
 			~String();
 		
@@ -190,8 +192,7 @@ namespace Polycode {
 			* @return The size the data would take up if returned with this encoding.
 			* @see getDataWithEncoding()
 			*/																																				
-			size_t getDataSizeWithEncoding(int encoding) const;
-					
+			size_t getDataSizeWithEncoding(int encoding) const;					
 			
 			/**
 			* Sets the data for the string using specified encoding.

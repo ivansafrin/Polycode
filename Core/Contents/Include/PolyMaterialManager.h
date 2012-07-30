@@ -77,6 +77,8 @@ namespace Polycode {
 			Shader *setShaderFromXMLNode(TiXmlNode *node);
 			Shader *createShaderFromXMLNode(TiXmlNode *node);
 		
+			bool premultiplyAlphaOnLoad;
+		
 		private:
 			std::vector<Texture*> textures;
 			std::vector<Material*> materials;

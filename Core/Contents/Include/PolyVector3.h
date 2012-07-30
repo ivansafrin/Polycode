@@ -43,6 +43,12 @@ namespace Polycode {
 			* @param z Z coordinate.						
 			*/					
 			Vector3(Number x,Number y,Number z);		
+
+			/**
+			* Create from single value for all coordinates
+			* @param val Value for all coordinates
+			*/					
+			Vector3(Number val);
 			
 			/**
 			* Default constructor.
@@ -124,6 +130,19 @@ namespace Polycode {
 			//@}
 			// ----------------------------------------------------------------------------------------------------------------
 	
+			/**
+			* Returns the angle between this and the specified vectors.
+			* @return Angle between the vectors
+			*/
+			inline Number angleBetween(const Vector3& dest) {
+				Number lenProduct = length() * dest.length();
+				if(lenProduct < 1e-6f)
+					lenProduct = 1e-6f;
+				
+				Number f = dot(dest) / lenProduct;
+				f = clampf(f, -1.0, 1.0);
+				return acosf(f);
+			}
 
 			/**
 			* Returns the vector length.

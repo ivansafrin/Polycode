@@ -30,8 +30,7 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 	screen->addChild(listenerEntity);
 
 	listenerPositionValue = 0;
-	positionValue = 0;
-	
+	positionValue = 0;	
 }
 
 HelloPolycodeApp::~HelloPolycodeApp() {

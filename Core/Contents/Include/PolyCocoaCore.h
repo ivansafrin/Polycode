@@ -23,6 +23,7 @@
 #pragma once
 #include "PolyString.h"
 #include "PolyGlobals.h"
+#include "PolyLogger.h"
 #include "PolyCore.h"
 #include "PolyString.h"
 #include "PolyRectangle.h"
@@ -97,7 +98,7 @@ namespace Polycode {
 	class _PolyExport CocoaCore : public Core {		
 	public:
 		
-		CocoaCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate);
+		CocoaCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex=-1);
 		virtual ~CocoaCore();
 		
 		void enableMouse(bool newval);
@@ -115,6 +116,9 @@ namespace Polycode {
 		vector<String> openFilePicker(vector<CoreFileExtension> extensions, bool allowMultiple);
 		
 		void setCursor(int cursorType);
+		void warpCursor(int x, int y);
+		
+		void openURL(String url);
 		
 		void copyStringToClipboard(const String& str);
 		String getClipboardString();		

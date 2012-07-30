@@ -46,8 +46,8 @@ namespace Polycode {
 			* @param scale Scale to multiply pixel size by for the actual world size of the label.
 			* @param Anti-aliasing mode. Can be Label::ANTIALIAS_FULL or Label::ANTIALIAS_NONE.
 			*/			
-			SceneLabel(const String& fontName, const String& text, int size, Number scale, int amode);
-			~SceneLabel();			
+			SceneLabel(const String& fontName, const String& text, int size, Number scale, int amode, bool premultiplyAlpha = false);
+			virtual ~SceneLabel();			
 		
 			/**
 			* Sets new text for the labe.

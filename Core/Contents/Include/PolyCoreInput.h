@@ -39,6 +39,7 @@ namespace Polycode {
 	};
 	
 	class InputEvent;
+	class TouchInfo;
 
 	/**
 	* User input event dispatcher. The Core input class is where all of the input events originate. You can add event listeners to this class to listen for user input events or poll it manually to check the state of user input.
@@ -107,8 +108,10 @@ namespace Polycode {
 		void setKeyState(PolyKEY keyCode, wchar_t code, bool newState, int ticks);
 		void setDeltaPosition(int x, int y);
 		
-		
-		
+		void touchesBegan(std::vector<TouchInfo> touches, int ticks);
+		void touchesMoved(std::vector<TouchInfo> touches, int ticks);
+		void touchesEnded(std::vector<TouchInfo> touches, int ticks);
+				
 		static InputEvent *createEvent(Event *event){ return (InputEvent*)event; }
 		
 	protected:

@@ -57,6 +57,8 @@ namespace Polycode {
 				
 			bool fp16RenderTargets;
 			
+			void *shaderModule;
+			
 		protected:
 		
 			std::vector<Shader*> materialShaders;

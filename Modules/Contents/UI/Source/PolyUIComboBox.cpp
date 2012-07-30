@@ -112,10 +112,13 @@ UIComboBox::UIComboBox(Number comboWidth) : ScreenEntity() {
 	selectedOffset = 0;
 	dropDownBox->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
 	dropDownBox->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);	
+	dropDownBox->processInputEvents = true;
 
 	dropDownImage->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);	
+	dropDownImage->processInputEvents = true;	
 	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);	
-		
+	bgBox->processInputEvents = true;	
+			
 	isDroppedDown = false;
 	updateVis();
 	
@@ -165,7 +168,10 @@ void UIComboBox::handleEvent(Event *event) {
 			case InputEvent::EVENT_MOUSEMOVE:
 			{
 				InputEvent *inputEvent = (InputEvent*) event;
-				selectedOffset = floor(inputEvent->getMousePosition().y/comboHeight)- 1;
+				selectedOffset = floor(inputEvent->getMousePosition().y/comboHeight);
+				if(selectedOffset < 0)
+					selectedOffset = 0;
+					
 				if(selectedOffset >= 0 && selectedOffset < items.size())
 					selectorBox->setPosition(0,selectedOffset*comboHeight);
 			}				

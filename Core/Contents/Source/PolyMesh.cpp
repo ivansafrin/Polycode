@@ -74,9 +74,12 @@ namespace Polycode {
 			if(renderDataArrays[i]) {
 				free(renderDataArrays[i]->arrayPtr);
 				delete renderDataArrays[i];
+				renderDataArrays[i] = NULL;
 			}
 		}
-	
+		
+		meshHasVertexBuffer = false;
+		useVertexColors = false;
 	}
 	
 	VertexBuffer *Mesh::getVertexBuffer() {
@@ -255,17 +258,19 @@ namespace Polycode {
 	
 	void Mesh::createVPlane(Number w, Number h) { 
 		Polygon *imagePolygon = new Polygon();
-		imagePolygon->addVertex(0,h,0,0,0);	
-		imagePolygon->addVertex(w,h,0, 1, 0);			
-		imagePolygon->addVertex(w,0,0, 1, 1);		
-		imagePolygon->addVertex(0,0,0,0,1);
+		
+		imagePolygon->addVertex(0,0,0,0,0);
+		imagePolygon->addVertex(w,0,0, 1, 0);		
+		imagePolygon->addVertex(w,h,0, 1, 1);									
+		imagePolygon->addVertex(0,h,0,0,1);	
+
 
 		addPolygon(imagePolygon);
 		
 		for(int i=0; i < polygons.size(); i++) {
 			for(int j=0; j < polygons[i]->getVertexCount(); j++) {
 				polygons[i]->getVertex(j)->x = polygons[i]->getVertex(j)->x - (w/2.0f);
-				polygons[i]->getVertex(j)->z = polygons[i]->getVertex(j)->y - (h/2.0f);
+				polygons[i]->getVertex(j)->y = polygons[i]->getVertex(j)->y - (h/2.0f);
 			}
 		}
 
@@ -521,7 +526,7 @@ namespace Polycode {
 		arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;				
 	}
 
-	void Mesh::createCylinder(Number height, Number radius, int numSegments) {
+	void Mesh::createCylinder(Number height, Number radius, int numSegments, bool capped) {
 	
 		setMeshType(Mesh::TRI_MESH);
 		Number lastx = 0;
@@ -546,6 +551,7 @@ namespace Polycode {
 				polygon->addVertex(lastx,0,lastz,lastv,0);												
 				addPolygon(polygon);	
 				
+				if(capped) {
 				polygon = new Polygon();	
 				polygon->addVertex(lastx,height,lastz, 0.5+(lastz/radius*0.5), 0.5+(lastx/radius*0.5));			
 				polygon->addVertex(x,height,z, 0.5+(z/radius*0.5), 0.5+(x/radius*0.5));														
@@ -557,7 +563,7 @@ namespace Polycode {
 				polygon->addVertex(0,0,0,0.5,0.5);																																					
 				polygon->addVertex(x,0,z, 0.5+(z/radius*0.5), 0.5+(x/radius*0.5));								
 				addPolygon(polygon);			
-
+				}
 								
 			}
 			lastx = x;

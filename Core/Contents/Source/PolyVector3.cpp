@@ -39,6 +39,10 @@ Vector3::Vector3(Number x,Number y,Number z) {
 	set(x,y,z);
 }
 
+Vector3::Vector3(Number val) {
+	set(val,val,val);
+}
+
 void Vector3::Normalize() {
 	Number tL = sqrtf( x * x + y * y + z * z );
 	if(tL > 1e-08 ) {

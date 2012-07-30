@@ -168,6 +168,16 @@ void ParticleEmitter::createParticles() {
 	updateEmitter();	
 }
 
+void ParticleEmitter::dispatchTriggerCompleteEvent() {
+}
+
+void ParticleEmitter::addParticleBody(Entity *particleBody) {
+}
+			
+Matrix4 ParticleEmitter::getBaseMatrix() {
+	return Matrix4();
+}
+			
 void ParticleEmitter::setEmitterRadius(Vector3 rad) {
 	emitterRadius = rad;
 }
@@ -278,6 +288,7 @@ void ParticleEmitter::resetParticle(Particle *particle) {
 	Matrix4 concatMatrix = getBaseMatrix();
 	Vector3	startVector;
 	
+	particle->dirVector = dirVector;
 //	if(emitterMesh) {
 //		Polygon *randPoly = emitterMesh->getMesh()->getPolygon(rand() % emitterMesh->getMesh()->getPolygonCount());		
 //		startVector = *randPoly->getVertex(rand() % 3);

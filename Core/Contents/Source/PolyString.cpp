@@ -29,15 +29,18 @@ String::String() {
 }
 
 String::String(const wchar_t *str) {
-	wstrToUtf8(contents, str);
+	if (str)
+		wstrToUtf8(contents, str);
 }
 
 String::String(const char *str) {
-	contents = str;
+	if (str)
+		contents = str;
 }
 
 String::String(const char *str, size_t n) {
-	contents = string(str, n);
+	if (str)
+		contents = string(str, n);
 }
 
 String::String(const string& str) {
@@ -47,6 +50,15 @@ String::String(const string& str) {
 String::String(const wstring& str) {
 	wstrToUtf8(contents, str);
 }
+
+String::String(const wchar_t wchar) {
+	std::wstring srcstr;
+	srcstr = srcstr + wchar;
+	std::string newstr;
+	wstrToUtf8(newstr, srcstr);
+	contents = contents + newstr;
+}
+
 
 String::~String() {
 	
@@ -76,7 +88,10 @@ const char *String::getDataWithEncoding(int encoding) const {
 void String::setDataWithEncoding(char *data, int encoding) {
 	switch(encoding) {
 		case ENCODING_UTF8: {
-			contents = data;
+			if (data)
+				contents = data;
+			else
+				contents = std::string();
 		}
 		default:
 			break;

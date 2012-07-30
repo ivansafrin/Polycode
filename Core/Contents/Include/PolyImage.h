@@ -63,7 +63,7 @@ namespace Polycode {
 			*/ 						
 			Image(Image *copyImage);		
 			Image();			
-			~Image();
+			virtual ~Image();
 
 			/**
 			* Load an image from a file
@@ -184,10 +184,27 @@ namespace Polycode {
 			void fastBlurVert(int blurSize);
 			void fastBlurHor(int blurSize);
 			
+			/**
+			* Blurs the image using gaussian blur
+			* @param radius Radius of the blur
+			* @param deviation Standard deviation of the gaussian distribution
+			*/															
+			void gaussianBlur(float radius, float deviation);
+			float* createKernel(float radius, float deviation);
+			
 			// What are these??? I wrote them way too long ago.
 			void darken(Number amt, bool color, bool alpha);
 			void lighten(Number amt, bool color, bool alpha);
 			void multiply(Number amt, bool color, bool alpha);
+						
+			/**
+			* Returns an area of the image buffer. The area can go outside of image bounds, in which case the pixels not within the image are zeroed out. This method allocates new memory for the returned buffer and you must free it manually.
+			* @param x X position of the area to return.
+			* @param y Y position of the area to return.
+			* @param width Width of the area to return.
+			* @param height Height of the area to return.					
+			*/			
+			char *getPixelsInRect(unsigned int x, unsigned int y, unsigned int width, unsigned int height);
 			
 			/**
 			* Returns the x position of the brush.
@@ -220,9 +237,12 @@ namespace Polycode {
 			* @return Pointer to raw image data.
 			*/						
 			char *getPixels();
+			
+			void premultiplyAlpha();
 		
 			static const int IMAGE_RGB = 0;
 			static const int IMAGE_RGBA = 1;
+			static const int IMAGE_FP16 = 2;
 		
 		protected:
 		

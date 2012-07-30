@@ -31,6 +31,7 @@ Material::Material(const String& name) : Resource(Resource::RESOURCE_MATERIAL) {
 	specularValue = 75.0;
 	specularStrength = 1.0;
 	fp16RenderTargets = false;
+	shaderModule = NULL;
 }
 
 Material::~Material() {

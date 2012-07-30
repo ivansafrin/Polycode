@@ -107,10 +107,12 @@ void ScreenSprite::Update() {
 	if(elapsed > currentAnimation->speed) {
 	currentFrame++;
 	if(currentFrame >= currentAnimation->numFrames) {
-		if(playingOnce)
-			return;
-		else
+		if(playingOnce) {
+			dispatchEvent(new Event(), Event::COMPLETE_EVENT);
+			return;			
+		} else {
 			currentFrame = 0;
+		}
 	}
 	
 	Number xOffset = currentAnimation->framesOffsets[currentFrame].x;

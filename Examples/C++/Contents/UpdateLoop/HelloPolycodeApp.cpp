@@ -16,6 +16,9 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 	screen->addChild(image);	
 }
 
+HelloPolycodeApp::~HelloPolycodeApp() {
+}
+
 bool HelloPolycodeApp::Update() {
 	Number elapsed = core->getElapsed();
 	image->setRotation(image->getRotation()+(elapsed*100));

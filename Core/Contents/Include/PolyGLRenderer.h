@@ -29,19 +29,7 @@ THE SOFTWARE.
 #include <windows.h>
 #endif
 
-#if defined(__APPLE__) && defined(__MACH__)
-#include <OpenGL/gl.h>
-#include <OpenGL/glext.h>
-#include <OpenGL/glu.h>
-#else
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/glext.h>
-
-#ifdef _WINDOWS
-	#include <GL/wglext.h>
-#endif
-#endif
+#include "PolyGLHeaders.h"
 /*
 #ifdef _WINDOWS 
 #define GL_EXT_framebuffer_object           1
@@ -138,7 +126,7 @@ namespace Polycode {
 		void drawArrays(int drawType);		
 				
 		void setOrthoMode(Number xSize=0.0f, Number ySize=0.0f);
-		void _setOrthoMode();
+		void _setOrthoMode(Number orthoSizeX, Number orthoSizeY);
 		void setPerspectiveMode();
 		
 		void enableBackfaceCulling(bool val);
@@ -185,7 +173,7 @@ namespace Polycode {
 		void enableDepthTest(bool val);
 		void enableDepthWrite(bool val);
 				
-		void setClippingPlanes(Number near, Number far);
+		void setClippingPlanes(Number nearPlane_, Number farPlane_);
 				
 		void clearBuffer(bool colorBuffer, bool depthBuffer);	
 		void drawToColorBuffer(bool val);
@@ -193,10 +181,7 @@ namespace Polycode {
 		void drawScreenQuad(Number qx, Number qy);
 				
 		void pushMatrix();
-		void popMatrix();
-		
-		bool test2DCoordinate(Number x, Number y, Polycode::Polygon *poly, const Matrix4 &matrix, bool billboardMode);
-		
+		void popMatrix();		
 		
 		Vector3 Unproject(Number x, Number y);
 		
@@ -214,7 +199,7 @@ namespace Polycode {
 		int verticesToDraw;
 		
 		GLdouble sceneProjectionMatrix[16];
-	
+		GLdouble sceneProjectionMatrixOrtho[16];	
 		
 	};
 }

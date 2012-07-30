@@ -75,8 +75,9 @@ namespace Polycode {
 		* @param fullScreen True to launch in fullscreen, false to launch in window.
 		* @param aaLevel Level of anti-aliasing. Possible values are 2,4 and 6.
 		* @param frameRate Frame rate that the core will update and render at.
+		* @param monitorIndex If fullScreen is true, the monitor index to fullscreen to. Pass -1 to use primary monitor.
 		*/			
-		Core(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate);
+		Core(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex);
 		virtual ~Core();
 		
 		virtual bool Update() = 0;
@@ -93,6 +94,13 @@ namespace Polycode {
 		* @param cursorType Type of cursor to use. Possible values are CURSOR_ARROW, CURSOR_TEXT, CURSOR_POINTER, CURSOR_CROSSHAIR, CURSOR_RESIZE_LEFT_RIGHT, CURSOR_RESIZE_UP_DOWN
 		*/
 		virtual void setCursor(int cursorType) = 0;
+		
+		/**
+		* Warps the cursor to a specified point in the window.
+		* @param x New cursor x position 
+		* @param y New cursor y position 		
+		*/
+		virtual void warpCursor(int x, int y) {}
 		
 		/**
 		* Launches a Threaded class into its own thread. See the documentation for Threaded for information on how to crated threaded classes.
@@ -250,6 +258,12 @@ namespace Polycode {
 		void doSleep();
 		
 		/**
+		* Launches the default browser and directs it to specified URL
+		* @param url URL to launch.
+		*/
+		virtual void openURL(String url) = 0;
+		
+		/**
 		* Returns the time elapsed since last frame.
 		* @return Time elapsed since last frame in floating point microseconds.
 		*/
@@ -311,7 +325,9 @@ namespace Polycode {
 		unsigned int lastSleepFrameTicks;
 		
 		int xRes;
-		int yRes;		
+		int yRes;	
+		
+		int monitorIndex;
 		
 		int frames;
 		

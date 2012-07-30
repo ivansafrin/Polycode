@@ -107,11 +107,6 @@ namespace Polycode {
 			*/
 			Color strokeColor;
 			
-			/**
-			* If this is set to true, the line will be anti-aliased if the support is available in the renderer.
-			*/			
-			bool lineSmooth;
-			
 		protected:
 		
 			Number option1;

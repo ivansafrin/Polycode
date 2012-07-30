@@ -26,10 +26,15 @@ using namespace Polycode;
 
 PolycodeModule::PolycodeModule() {
 	type = TYPE_GENERIC;
+	_requiresUpdate = false;
 }
 
 PolycodeModule::~PolycodeModule() {
 	
+}
+
+bool PolycodeModule::requiresUpdate() {
+	return _requiresUpdate;
 }
 
 PolycodeShaderModule::PolycodeShaderModule() : PolycodeModule() {

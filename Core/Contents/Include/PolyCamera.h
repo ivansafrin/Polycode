@@ -43,7 +43,7 @@ namespace Polycode {
 			* @param parentScene Scene to add the camera to.
 			*/
 			Camera(Scene *parentScene);
-			~Camera();
+			virtual ~Camera();
 			
 			void buildFrustrumPlanes();
 			
@@ -64,9 +64,12 @@ namespace Polycode {
 			*/					
 			bool canSee(SceneEntity *entity);
 			
-			void setOrthoMode(bool mode);
+			void setOrthoMode(bool mode, Number orthoSizeX = 1.0, Number orthoSizeY = 1.0);
 			bool getOrthoMode();
 			
+			Number getOrthoSizeX();
+			Number getOrthoSizeY();
+						
 			/**
 			* Sets the field of view (FOV) for the camera. The larger the field of view, the more the camera can see, the smaller it is, the more zoomed in it is.
 			* @param fov The new FOV value.
@@ -125,6 +128,9 @@ namespace Polycode {
 			
 		protected:
 		
+			Number orthoSizeX;
+			Number orthoSizeY;
+					
 			Number exposureLevel;
 			bool orthoMode;
 			Number fov;

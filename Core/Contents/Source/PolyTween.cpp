@@ -31,7 +31,8 @@
 
 using namespace Polycode;
 
-Tween::	Tween(Number *target, int easeType, Number startVal, Number endVal, Number time, bool repeat) : EventDispatcher() {
+Tween::	Tween(Number *target, int easeType, Number startVal, Number endVal, Number time, bool repeat, bool deleteOnComplete) : EventDispatcher() {
+	this->deleteOnComplete = deleteOnComplete;
 	targetVal = target;
 	this->repeat = repeat;
 	this->easeType = easeType;

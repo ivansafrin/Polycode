@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6D022DEA1598EBF30030B45F /* main_icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6D022DE91598EBF30030B45F /* main_icon.icns */; };
 		6D2800BC13760D3E00BD8D0D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D2800BB13760D3E00BD8D0D /* Cocoa.framework */; };
 		6D2800C613760D3E00BD8D0D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D2800C413760D3E00BD8D0D /* InfoPlist.strings */; };
 		6D2800C913760D3E00BD8D0D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D2800C813760D3E00BD8D0D /* main.m */; };
@@ -30,6 +31,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6D022DE91598EBF30030B45F /* main_icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = main_icon.icns; sourceTree = "<group>"; };
 		6D2800B713760D3E00BD8D0D /* PolycodeTemplate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PolycodeTemplate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D2800BB13760D3E00BD8D0D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		6D2800BE13760D3E00BD8D0D /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -145,6 +147,7 @@
 			isa = PBXGroup;
 			children = (
 				6D2800FD13760FC400BD8D0D /* default.pak */,
+				6D022DE91598EBF30030B45F /* main_icon.icns */,
 				6D2800F713760E7C00BD8D0D /* PolycodeView.h */,
 				6D2800F813760E7C00BD8D0D /* PolycodeView.mm */,
 				6D2800CD13760D3E00BD8D0D /* PolycodeTemplateAppDelegate.h */,
@@ -213,6 +216,7 @@
 				6D2800CC13760D3E00BD8D0D /* Credits.rtf in Resources */,
 				6D2800D213760D3E00BD8D0D /* MainMenu.xib in Resources */,
 				6D2800FE13760FC400BD8D0D /* default.pak in Resources */,
+				6D022DEA1598EBF30030B45F /* main_icon.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -305,6 +309,7 @@
 					"\"$(SRCROOT)/../../Core/Include\"",
 					"\"$(SRCROOT)/../../Core/Dependencies/Include\"",
 					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
+					/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
 				);
 				INFOPLIST_FILE = "PolycodeTemplate/PolycodeTemplate-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
@@ -331,6 +336,7 @@
 					"\"$(SRCROOT)/../../Core/Include\"",
 					"\"$(SRCROOT)/../../Core/Dependencies/Include\"",
 					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
+					/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
 				);
 				INFOPLIST_FILE = "PolycodeTemplate/PolycodeTemplate-Info.plist";
 				LIBRARY_SEARCH_PATHS = (

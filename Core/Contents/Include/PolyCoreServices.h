@@ -146,7 +146,9 @@ namespace Polycode {
 			* @see Config
 			*/																													
 			Config *getConfig();
-		
+			
+			bool drawScreensFirst;
+					
 			~CoreServices();
 		
 		protected:
@@ -155,12 +157,14 @@ namespace Polycode {
 					
 		private:
 		
+		
 			static CoreServices* overrideInstance;
 			static std::map <long, CoreServices*> instanceMap;
 			static CoreMutex *renderMutex;
 		
 			std::vector<PolycodeModule*> modules;
-		
+			std::vector<PolycodeModule*> updateModules;
+					
 			Core *core;
 			Config *config;
 			MaterialManager *materialManager;

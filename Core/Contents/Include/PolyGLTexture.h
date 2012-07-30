@@ -39,6 +39,7 @@ THE SOFTWARE.
 #include <GL/glu.h>
 #endif
 
+#define FRAMEBUFFER_NULL 999999
 
 namespace Polycode {
 
@@ -60,7 +61,10 @@ namespace Polycode {
 		private:
 			
 			bool glTextureLoaded;
-			GLuint glTextureType;
+			GLenum glTextureType;
+			GLuint glTextureFormat;
+			GLenum pixelType;
+			
 			int filteringMode;
 			GLuint textureID;
 			GLuint frameBufferID;

@@ -12,7 +12,7 @@ INCLUDE_DIRECTORIES(
 )
 
 SET(polycode3DPhysics_SRCS
-    Source/Physics3DLUA.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Source/Physics3DLUA.cpp
     ../../Contents/3DPhysics/Source/PolyPhysicsSceneEntity.cpp
     ../../Contents/3DPhysics/Source/PolyPhysicsScene.cpp
     ../../Contents/3DPhysics/Source/PolyCollisionSceneEntity.cpp
@@ -20,8 +20,8 @@ SET(polycode3DPhysics_SRCS
 )
 
 SET(polycode3DPhysics_HDRS
-    Include/Physics3DLUA.h
-    Include/Physics3DLUAWrappers.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Include/Physics3DLUA.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Include/Physics3DLUAWrappers.h
     ../../Contents/3DPhysics/Include/PolyPhysicsSceneEntity.h
     ../../Contents/3DPhysics/Include/Polycode3DPhysics.h
     ../../Contents/3DPhysics/Include/PolyCollisionScene.h
@@ -30,6 +30,11 @@ SET(polycode3DPhysics_HDRS
 )
 
 ADD_LIBRARY(Physics3D SHARED ${polycode3DPhysics_SRCS} ${polycode3DPhysics_HDRS})
+
+SET_SOURCE_FILES_PROPERTIES(Source/Physics3DLUA.cpp PROPERTIES GENERATED 1)
+SET_SOURCE_FILES_PROPERTIES(Include/Physics3DLUAWrappers.h PROPERTIES GENERATED 1)
+SET_SOURCE_FILES_PROPERTIES(Include/Physics3DLUA.h PROPERTIES GENERATED 1)
+ADD_DEPENDENCIES(Physics2D PolycodeLuaGenerate)
 
 SET(CMAKE_DEBUG_POSTFIX "_d")
 
@@ -44,6 +49,7 @@ TARGET_LINK_LIBRARIES(Physics3D
 	"-framework IOKit"
         ${OPENGL_LIBRARIES}
         ${OPENAL_LIBRARY}
+	${ZLIB_LIBRARIES}
         ${PNG_LIBRARIES}
         ${FREETYPE_LIBRARIES}
         ${PHYSFS_LIBRARY}
@@ -52,6 +58,10 @@ TARGET_LINK_LIBRARIES(Physics3D
         ${VORBISFILE_LIBRARIES}
         ${EXTRA_LIBS})
 ELSE(APPLE)
+IF (MINGW)
+	SET(MINGW_EXTRA_LIBS ${ZLIB_LIBRARY})
+ENDIF(MINGW)
+
 TARGET_LINK_LIBRARIES(Physics3D
 	Polycore
 	${LUA_LIBRARY}
@@ -64,8 +74,8 @@ TARGET_LINK_LIBRARIES(Physics3D
         ${OGG_LIBRARIES}
         ${VORBIS_LIBRARIES}
         ${VORBISFILE_LIBRARIES}
-        ${EXTRA_LIBS})
-
+        ${EXTRA_LIBS}
+        ${MINGW_EXTRA_LIBS})
 ENDIF(APPLE)
 
 

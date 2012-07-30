@@ -67,7 +67,7 @@ namespace Polycode {
 			*/															
 			Color(unsigned int hex);
 		
-			~Color();
+			virtual ~Color();
 			
 			/** 
 			* Multiplies the color with another color.
