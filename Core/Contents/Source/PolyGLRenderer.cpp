@@ -402,6 +402,9 @@ void OpenGLRenderer::setBlendingMode(int blendingMode) {
 		case BLEND_MODE_PREMULTIPLIED:
 			glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 		break;
+		case BLEND_MODE_MULTIPLY:
+			glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+		break;		
 		default:
 			glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		break;

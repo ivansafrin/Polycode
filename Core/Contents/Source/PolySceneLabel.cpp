@@ -61,6 +61,11 @@ void SceneLabel::setText(const String& newText) {
 	mesh = new Mesh(Mesh::QUAD_MESH);
 	mesh->createVPlane(label->getWidth()*scale,label->getHeight()*scale);
 	
+	bBox.x = label->getWidth()*scale;
+	bBox.y = label->getHeight()*scale;
+	bBox.z = 0;
+	
+	
 	for(int i=0; i < mesh->getPolygonCount(); i++) {
 		mesh->getPolygon(i)->flipUVY();
 	}
