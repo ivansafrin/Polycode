@@ -185,8 +185,11 @@ int main(int argc, char **argv) {
 
 	printf("Loading %s...\n", argv[1]);
 	scene = aiImportFile(argv[1],aiProcessPreset_TargetRealtime_Quality);
-
-	exportToFile(argv[2], strcmp(argv[3], "true") == 0);
+	if(scene) {
+		exportToFile(argv[2], strcmp(argv[3], "true") == 0);
+	} else {
+		printf("Error opening scene...\n");
+	}
 
 	aiReleaseImport(scene);
 	return 1;
