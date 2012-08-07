@@ -131,6 +131,9 @@ namespace Polycode {
 		*/		
 		ScreenEntity *getRootEntity() { return rootEntity; }
 		
+		int getNumChildren() { return children.size(); }
+		ScreenEntity *getChild(int index) { return children[index]; }
+		
 		/**
 		* If set to false, the screen will not be rendered or updated.
 		*/
