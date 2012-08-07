@@ -78,6 +78,11 @@ void MaterialManager::reloadPrograms() {
 		PolycodeShaderModule *shaderModule = shaderModules[m];
 		shaderModule->reloadPrograms();
 	}
+	vector<Resource *> shaders = CoreServices::getInstance()->getResourceManager()->getResources(Resource::RESOURCE_SHADER);
+	for(int s = 0; s < shaders.size(); s++) {
+		Shader *shader = (Shader *)shaders[s];
+		shader->reload();
+	}
 }
 
 void MaterialManager::addShaderModule(PolycodeShaderModule *module) {

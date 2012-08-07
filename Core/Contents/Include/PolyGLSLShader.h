@@ -48,13 +48,14 @@ namespace Polycode {
 			virtual ~GLSLShader();
 
 			ShaderBinding *createBinding();
-			
+			virtual void reload();
+		
 			unsigned int shader_id;		
 			GLSLProgram *vp;
 			GLSLProgram *fp;			
 			
 		protected:
-			
+			void linkProgram();
 	};
 	
 	class _PolyExport GLSLShaderBinding : public ShaderBinding {
