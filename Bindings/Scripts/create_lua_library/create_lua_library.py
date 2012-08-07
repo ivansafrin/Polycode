@@ -74,13 +74,25 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 	wrappersHeaderOut += "} // extern \"C\" \n\n"
 
 	# Get list of headers to create bindings from
-	files = os.listdir(inputPath)
+	inputPathIsDir = os.path.isdir(inputPath)
+	if inputPathIsDir:
+		files = os.listdir(inputPath)
+	else:
+		files = []
+		with open(inputPath) as f:
+			for line in f.readlines():
+				files.append(line.strip()) # Strip whitespace, path/
+		print("GLOB")
+		print(files)
 	filteredFiles = []
 	for fileName in files:
+		if inputPathIsDir:
+			fileName = "%s/%s" % (inputPath, fileName)
+		head, tail = os.path.split(fileName)
 		ignore = ["PolyGLSLProgram", "PolyGLSLShader", "PolyGLSLShaderModule", "PolyWinCore", "PolyCocoaCore", "PolyAGLCore", "PolySDLCore", "Poly_iPhone", "PolyGLES1Renderer", "PolyGLRenderer", "tinyxml", "tinystr", "OpenGLCubemap", "PolyiPhoneCore", "PolyGLES1Texture", "PolyGLTexture", "PolyGLVertexBuffer", "PolyThreaded", "PolyGLHeaders", "GLee"]
-		if fileName.split(".")[1] == "h" and fileName.split(".")[0] not in ignore:
+		if tail.split(".")[1] == "h" and tail.split(".")[0] not in ignore:
 			filteredFiles.append(fileName)
-			wrappersHeaderOut += "#include \"%s\"\n" % (fileName)
+			wrappersHeaderOut += "#include \"%s\"\n" % (tail)
 
 	wrappersHeaderOut += "\nusing namespace std;\n\n"
 	wrappersHeaderOut += "\nnamespace Polycode {\n\n"
@@ -117,15 +129,14 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 		# and should not be inherited out of Polycode/. The files should contain one class name per line,
 		# and the class name may be prefixed with a path (which will be ignored).
 		if inheritInModuleFiles:
-			for filename in inheritInModuleFiles.split(","):
-				with open(filename) as f:
+			for moduleFileName in inheritInModuleFiles.split(","):
+				with open(moduleFileName) as f:
 					for line in f.readlines():
 						inheritInModule.append(line.strip().split("/",1)[-1]) # Strip whitespace, path/
-					
-		headerFile = "%s/%s" % (inputPath, fileName) # Def: Full path to input file
+		
 		print "Parsing %s" % fileName
 		try: # One input file parse.
-			f = open(headerFile) # Def: Input file handle
+			f = open(fileName) # Def: Input file handle
 			contents = f.read().replace("_PolyExport", "") # Def: Input file contents, strip out "_PolyExport"
 			cppHeader = CppHeaderParser.CppHeader(contents, "string") # Def: Input file contents, parsed structure
 			ignore_classes = ["PolycodeShaderModule", "Object", "Threaded", "OpenGLCubemap", "ParticleEmitter"]
