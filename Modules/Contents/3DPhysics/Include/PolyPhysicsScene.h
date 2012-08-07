@@ -105,6 +105,8 @@ namespace Polycode {
 		void setVelocity(SceneEntity *entity, Vector3 velocity);
 		void warpEntity(SceneEntity *entity, Vector3 position, bool resetRotation = false);
 		
+		void applyImpulse(SceneEntity *entity, Vector3 force, Vector3 point);
+		
 		PhysicsVehicle *addVehicleChild(SceneEntity *newEntity, Number mass, Number friction, int group  = 1);
 		
 		void setGravity(Vector3 gravity);

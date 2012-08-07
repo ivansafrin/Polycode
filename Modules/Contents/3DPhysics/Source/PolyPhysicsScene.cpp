@@ -169,7 +169,16 @@ void PhysicsScene::setVelocity(SceneEntity *entity, Vector3 velocity) {
 void PhysicsScene::warpEntity(SceneEntity *entity, Vector3 position, bool resetRotation) {
 	PhysicsSceneEntity *physicsEntity = getPhysicsEntityBySceneEntity(entity);
 	if(physicsEntity) {
+		physicsEntity->rigidBody->setActivationState(DISABLE_DEACTIVATION);	
 		physicsEntity->warpTo(position, resetRotation);
+	}
+}
+
+void PhysicsScene::applyImpulse(SceneEntity *entity, Vector3 force, Vector3 point) {
+	PhysicsSceneEntity *physicsEntity = getPhysicsEntityBySceneEntity(entity);	
+	if(physicsEntity) {
+		physicsEntity->rigidBody->setActivationState(DISABLE_DEACTIVATION);		
+		physicsEntity->applyImpulse(force, point);
 	}
 }
 

@@ -52,6 +52,8 @@ namespace Polycode {
 		
 			void setVelocity(Vector3 velocity);
 			void warpTo(Vector3 position, bool resetRotation);
+			
+			void applyImpulse(Vector3 direction, Vector3 point);
 			//@}
 			// ----------------------------------------------------------------------------------------------------------------
 			
