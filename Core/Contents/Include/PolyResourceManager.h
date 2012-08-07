@@ -73,6 +73,12 @@ namespace Polycode {
 			*/
 			Resource *getResource(int resourceType, const String& resourceName) const;
 		
+			/**
+			 * Request a full set of loaded resources. You need to manually cast them to their subclasses based on their type.
+			 * @param resourceType Type of resource. See Resource for available resource types.
+			 */
+			std::vector<Resource *> getResources(int resourceType);
+		
 			void addShaderModule(PolycodeShaderModule *module);
 		
 		

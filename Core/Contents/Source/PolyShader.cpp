@@ -56,6 +56,18 @@ void ShaderBinding::addLocalParam(const String& name, void *ptr) {
 	localParams.push_back(newParam);
 }
 
+void ShaderBinding::addLocalParamNumber(const String& name, Number n) {
+	Number *value = new Number;
+	*value = n;
+	addLocalParam(name, value);
+}
+
+void ShaderBinding::addLocalParamVector3(const String& name, Vector3 v) {
+	Vector3 *value = new Vector3;
+	memcpy(value, &v, sizeof(v));
+	addLocalParam(name, value);
+}
+
 void ShaderBinding::addRenderTargetBinding(RenderTargetBinding *binding) {
 	renderTargetBindings.push_back(binding);
 	if(binding->mode == RenderTargetBinding::MODE_IN) {
