@@ -31,6 +31,7 @@ class btSequentialImpulseConstraintSolver;
 class btGhostPairCallback;
 class btTypedConstraint;
 class btHingeConstraint;
+class btGeneric6DofConstraint;
 
 namespace Polycode {
 
@@ -54,6 +55,18 @@ namespace Polycode {
 			Vector3 positionOnA;
 			Vector3 positionOnB;
 			Vector3 worldNormalOnB;				
+	};
+	
+	class _PolyExport PhysicsGenericConstraint {
+		public:
+			
+			void setLinearLowerLimit(Vector3 limit);
+			void setLinearUpperLimit(Vector3 limit);
+						
+			void setAngularLowerLimit(Vector3 limit);
+			void setAngularUpperLimit(Vector3 limit);
+					
+			btGeneric6DofConstraint *btConstraint;
 	};
 
 	class _PolyExport PhysicsHingeConstraint  {
@@ -101,6 +114,8 @@ namespace Polycode {
 		PhysicsHingeConstraint *createHingeConstraint(SceneEntity *entity, Vector3 pivot, Vector3 axis, Number minLimit, Number maxLimit);
 
 		PhysicsHingeConstraint *createHingeJoint(SceneEntity *entity1, SceneEntity *entity2, Vector3 pivot1, Vector3 axis1, Vector3 pivot2, Vector3 axis2, Number minLimit, Number maxLimit);
+		
+		PhysicsGenericConstraint *createGenericConstraint(SceneEntity *entity);
 				
 		void setVelocity(SceneEntity *entity, Vector3 velocity);
 		void warpEntity(SceneEntity *entity, Vector3 position, bool resetRotation = false);

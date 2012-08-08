@@ -59,6 +59,7 @@ namespace Polycode {
 	JoystickInfo *CoreInput::getJoystickInfoByID(unsigned int deviceID) {
 		for(int i=0;i<joysticks.size();i++) {
 			if(joysticks[i].deviceID == deviceID) {
+				joysticks[i].deviceIndex = i;
 				return &joysticks[i];
 			}
 		}
@@ -71,6 +72,7 @@ namespace Polycode {
 		joysticks.push_back(joystick);
 		InputEvent *evt = new InputEvent();
 		evt->joystickDeviceID = deviceID;
+		evt->joystickIndex = joysticks.size()-1;
 		dispatchEvent(evt, InputEvent::EVENT_JOYDEVICE_ATTACHED);				
 	}
 	
@@ -80,6 +82,7 @@ namespace Polycode {
 				joysticks.erase(joysticks.begin()+i);
 				InputEvent *evt = new InputEvent();
 				evt->joystickDeviceID = deviceID;
+				evt->joystickIndex = i;
 				dispatchEvent(evt, InputEvent::EVENT_JOYDEVICE_DETACHED);
 				return;
 			}
@@ -94,6 +97,7 @@ namespace Polycode {
 			evt->joystickDeviceID = deviceID;
 			evt->joystickAxis = axisID;
 			evt->joystickAxisValue = value;
+			evt->joystickIndex = info->deviceIndex;
 			dispatchEvent(evt, InputEvent::EVENT_JOYAXIS_MOVED);
 		}	
 	}
@@ -105,6 +109,7 @@ namespace Polycode {
 			InputEvent *evt = new InputEvent();
 			evt->joystickDeviceID = deviceID;
 			evt->joystickButton = buttonID;
+			evt->joystickIndex = info->deviceIndex;			
 			dispatchEvent(evt, InputEvent::EVENT_JOYBUTTON_DOWN);
 		}		
 	}
@@ -116,6 +121,7 @@ namespace Polycode {
 			InputEvent *evt = new InputEvent();
 			evt->joystickDeviceID = deviceID;
 			evt->joystickButton = buttonID;
+			evt->joystickIndex = info->deviceIndex;			
 			dispatchEvent(evt, InputEvent::EVENT_JOYBUTTON_UP);
 		}	
 	}

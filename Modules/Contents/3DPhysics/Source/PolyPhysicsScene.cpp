@@ -294,6 +294,44 @@ Number PhysicsHingeConstraint::getAngle() {
 	return btConstraint->getHingeAngle();
 }
 
+void PhysicsGenericConstraint::setLinearLowerLimit(Vector3 limit) {
+	btVector3 btLimit = btVector3(limit.x, limit.y, limit.z);
+	btConstraint->setLinearLowerLimit(btLimit);
+}
+
+void PhysicsGenericConstraint::setLinearUpperLimit(Vector3 limit) {
+	btVector3 btLimit = btVector3(limit.x, limit.y, limit.z);
+	btConstraint->setLinearUpperLimit(btLimit);
+}
+
+void PhysicsGenericConstraint::setAngularLowerLimit(Vector3 limit) {
+	btVector3 btLimit = btVector3(limit.x, limit.y, limit.z);
+	btConstraint->setAngularLowerLimit(btLimit);
+}
+
+void PhysicsGenericConstraint::setAngularUpperLimit(Vector3 limit) {
+	btVector3 btLimit = btVector3(limit.x, limit.y, limit.z);
+	btConstraint->setAngularUpperLimit(btLimit);
+}
+
+PhysicsGenericConstraint *PhysicsScene::createGenericConstraint(SceneEntity *entity) {
+
+	PhysicsSceneEntity *pEnt = getPhysicsEntityBySceneEntity(entity);
+	if(!pEnt) {
+		return NULL;
+	}
+	
+	PhysicsGenericConstraint *constraint = new PhysicsGenericConstraint();
+	
+	btTransform frame;
+	frame.setIdentity();
+	
+	constraint->btConstraint = new btGeneric6DofConstraint(*pEnt->rigidBody, frame, true);
+	physicsWorld->addConstraint(constraint->btConstraint);
+	
+	return constraint;
+}
+
 PhysicsHingeConstraint * PhysicsScene::createHingeConstraint(SceneEntity *entity, Vector3 pivot, Vector3 axis, Number minLimit, Number maxLimit) {
 	PhysicsSceneEntity *pEnt = getPhysicsEntityBySceneEntity(entity);
 	if(!pEnt) {
