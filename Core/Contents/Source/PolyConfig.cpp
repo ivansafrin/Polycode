@@ -48,9 +48,12 @@ void Config::loadConfig(const String& configNamespace, const String& fileName) {
 	TiXmlNode *pChild;
 	ConfigEntry *entry;
 	for(pChild = rootElement->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {
+		TiXmlElement *pChildElement = pChild->ToElement();
+		if (!pChildElement) continue; // Skip comment nodes
+		
 		entry = getEntry(configNamespace, pChild->Value());
-		entry->stringVal = pChild->ToElement()->GetText();		
-		entry->numVal = atof(pChild->ToElement()->GetText());
+		entry->stringVal = pChildElement->GetText();		
+		entry->numVal = atof(pChildElement->GetText());
 		entry->isString = true;
 		entry->configNamespace = configNamespace;
 	}

@@ -37,7 +37,7 @@ namespace Polycode {
 		/**
 		* Default constructor
 		*/
-		ObjectEntry() { type = ObjectEntry::CONTAINER_ENTRY; }
+		ObjectEntry() { type = ObjectEntry::CONTAINER_ENTRY; type = UNKNOWN_ENTRY; length = 0; }
 				
 		/**
 		* Type of entry. Possible values are (FLOAT_ENTRY, INT_ENTRY, BOOL_ENTRY, ARRAY_ENTRY, STRING_ENTRY, CONTAINER_ENTRY).
@@ -160,8 +160,12 @@ namespace Polycode {
 			return entry;			
 		}		
 		
+		String getTypedName() const;
+		void setTypedName(const String &str);
+		
 		void Clear();
 		
+		static const int UNKNOWN_ENTRY = -1;
 		static const int FLOAT_ENTRY = 0;		
 		static const int INT_ENTRY = 1;
 		static const int BOOL_ENTRY = 2;
