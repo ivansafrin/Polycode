@@ -82,8 +82,6 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 		with open(inputPath) as f:
 			for line in f.readlines():
 				files.append(line.strip()) # Strip whitespace, path/
-		print("GLOB")
-		print(files)
 	filteredFiles = []
 	for fileName in files:
 		if inputPathIsDir:
