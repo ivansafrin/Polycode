@@ -23,11 +23,13 @@ String PolycodeDownloader::getDataAsString() {
 	return ret;
 }
 		
-PolycodeDownloader::PolycodeDownloader(String url) {
-	
+PolycodeDownloader::PolycodeDownloader(String url) : Threaded() {
+	this->url = url;
 	data = (char*)malloc(0);
 	size = 0;
-	
+}
+
+void PolycodeDownloader::runThread() {
 	curl = curl_easy_init();
 		
 	curl_easy_setopt(curl, CURLOPT_URL, url.c_str());	

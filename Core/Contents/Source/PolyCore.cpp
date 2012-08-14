@@ -67,7 +67,8 @@ namespace Polycode {
 		
 		this->monitorIndex = monitorIndex;
 		
-		refreshInterval = 1000 / frameRate;
+		refreshInterval = 1000 / frameRate;		
+		threadedEventMutex = NULL;
 	}
 	
 	void Core::enableMouse(bool newval) {
@@ -123,6 +124,18 @@ namespace Polycode {
 		setVideoMode(resList[index].w, resList[index].h, fullScreen, vSync, aaLevel, anisotropyLevel);
 	}
 	
+	void Core::createThread(Threaded *target) {
+		if(!threadedEventMutex) {
+			threadedEventMutex = createMutex();
+		}
+		target->eventMutex = threadedEventMutex;
+		target->core = this;
+		
+		lockMutex(threadedEventMutex);
+		threads.push_back(target);
+		unlockMutex(threadedEventMutex);			
+	}
+			
 	void Core::updateCore() {
 		frames++;
 		frameTicks = getTicks();
@@ -139,6 +152,27 @@ namespace Polycode {
 		}
 		lastFrameTicks = frameTicks;
 		
+		if(threadedEventMutex){ 
+		lockMutex(threadedEventMutex);
+
+		std::vector<Threaded*>::iterator iter = threads.begin();
+		while (iter != threads.end()) {		
+			for(int j=0; j < (*iter)->eventQueue.size(); j++) {
+				Event *event = (*iter)->eventQueue[j];
+				(*iter)->__dispatchEvent(event, event->getEventCode());
+				if(event->deleteOnDispatch)
+					delete event;
+			}
+			(*iter)->eventQueue.clear();
+			if((*iter)->scheduledForRemoval) {
+				iter = threads.erase(iter);
+			} else {
+				++iter;
+			}
+		}
+		
+		unlockMutex(threadedEventMutex);
+		}
 	}
 	
 	void Core::doSleep() {

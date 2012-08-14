@@ -212,7 +212,7 @@ namespace Polycode {
 		
 		void addShaderModule(PolycodeShaderModule *module);
 		
-		virtual bool test2DCoordinateInPolygon(Number x, Number y, Polygon *poly, const Matrix4 &matrix, bool testBackfacing, bool ortho, bool billboardMode);
+		virtual bool test2DCoordinateInPolygon(Number x, Number y, Polygon *poly, const Matrix4 &matrix, bool testBackfacing, bool ortho, bool billboardMode, Matrix4 *adjustMatrix = NULL);
 		
 		virtual Matrix4 getProjectionMatrix() = 0;
 		virtual Matrix4 getModelviewMatrix() = 0;

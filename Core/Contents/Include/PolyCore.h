@@ -121,7 +121,7 @@ namespace Polycode {
 		* @param target Target threaded class.
 		* @see Threaded
 		*/		
-		virtual void createThread(Threaded *target) = 0;
+		virtual void createThread(Threaded *target);
 
 		/**
 		* Locks a mutex.
@@ -337,6 +337,9 @@ namespace Polycode {
 		bool mouseEnabled;
 		
 		unsigned int lastSleepFrameTicks;
+		
+		std::vector<Threaded*> threads;
+		CoreMutex *threadedEventMutex;
 		
 		int xRes;
 		int yRes;	

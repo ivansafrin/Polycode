@@ -223,6 +223,10 @@ void PhysicsSceneEntity::setFriction(Number friction) {
 		rigidBody->setFriction(friction);
 }
 
+void PhysicsSceneEntity::setMass(Number mass) {
+	rigidBody->setMassProps(mass, btVector3(0.0, 0.0, 0.0));
+}
+
 void PhysicsSceneEntity::Update() {		
 	Matrix4 m;
 		
