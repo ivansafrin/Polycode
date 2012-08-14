@@ -29,7 +29,26 @@
 
 #endif
 
+#include <time.h>
+
 namespace Polycode {
+	
+	TimeInfo::TimeInfo() {
+		time_t rawtime;
+		struct tm * timeinfo;
+		
+		time( &rawtime );
+		timeinfo = localtime ( &rawtime );
+	
+		seconds = timeinfo->tm_sec;
+		minutes = timeinfo->tm_min;
+		hours = timeinfo->tm_hour;
+		month = timeinfo->tm_mon;
+		monthDay = timeinfo->tm_mday;
+		weekDay = timeinfo->tm_wday;
+		year = timeinfo->tm_year;
+		yearDay = timeinfo->tm_yday;
+	}
 	
 	Core::Core(int _xRes, int _yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex) : EventDispatcher() {
 		services = CoreServices::getInstance();

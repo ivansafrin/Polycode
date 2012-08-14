@@ -131,8 +131,10 @@ void ResourceManager::parseMaterials(const String& dirPath, bool recursive) {
 						TiXmlNode* pChild;					
 						for (pChild = mElem->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {
 							Material *newMat = CoreServices::getInstance()->getMaterialManager()->materialFromXMLNode(pChild);
-							newMat->setResourceName(newMat->getName());
-							resources.push_back(newMat);
+							if (newMat) {
+								newMat->setResourceName(newMat->getName());
+								resources.push_back(newMat);
+							}
 						}
 					}
 				}
@@ -250,4 +252,17 @@ Resource *ResourceManager::getResource(int resourceType, const String& resourceN
 	Logger::log("return NULL\n");
 	// need to add some sort of default resource for each type
 	return NULL;
+}
+
+// Would it make more sense to pass back, like, something like an ObjectEntry here? Lua hates vectors.
+vector<Resource *> ResourceManager::getResources(int resourceType) {
+	vector<Resource *> result;
+	Logger::log("requested all of type %d\n", resourceType);
+	for(int i =0; i < resources.size(); i++) {
+		//		Logger::log("is it %s?\n", resources[i]->getResourceName().c_str());		
+		if(resources[i]->getResourceType() == resourceType) {
+			result.push_back(resources[i]);
+		}
+	}
+	return result;
 }

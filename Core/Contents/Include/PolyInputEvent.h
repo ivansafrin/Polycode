@@ -112,6 +112,7 @@ namespace Polycode {
 		float joystickAxisValue;
 		unsigned int joystickButton;
 		unsigned int joystickAxis;
+		unsigned int joystickIndex;
 		
 		protected:
 		

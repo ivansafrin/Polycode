@@ -36,6 +36,7 @@ namespace Polycode {
 			float joystickAxisState[32];
 			bool joystickButtonState[64];
 			unsigned int deviceID;		
+			unsigned int deviceIndex;
 	};
 	
 	class InputEvent;

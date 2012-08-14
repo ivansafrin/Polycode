@@ -102,17 +102,26 @@ void GLSLShaderBinding::addParam(const String& type, const String& name, const S
 	localParams.push_back(newParam);
 }
 
-GLSLShader::GLSLShader(GLSLProgram *vp, GLSLProgram *fp) : Shader(Shader::MODULE_SHADER) {
-	this->vp = vp;
-	this->fp = fp;
-		
+void GLSLShader::linkProgram() {
 	shader_id = glCreateProgram();
     glAttachShader(shader_id, fp->program);
     glAttachShader(shader_id, vp->program);
 	
 	glBindAttribLocation(shader_id, 6, "vTangent");
-		
-    glLinkProgram(shader_id);	
+	
+    glLinkProgram(shader_id);
+}
+
+GLSLShader::GLSLShader(GLSLProgram *vp, GLSLProgram *fp) : Shader(Shader::MODULE_SHADER) {
+	this->vp = vp;
+	this->fp = fp;
+	
+	linkProgram();
+}
+
+void GLSLShader::reload() {
+	glDeleteProgram(shader_id);
+	linkProgram();
 }
 
 GLSLShader::~GLSLShader() {

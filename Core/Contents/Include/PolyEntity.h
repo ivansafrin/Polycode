@@ -426,11 +426,8 @@ namespace Polycode {
 			void setColorInt(int r, int g, int b, int a);	
 			
 			/**
-			* Sets the color of the entity as 0-255 integers.
-			* @param r Red value as a 0-255 integer.
-			* @param g Green value as a 0-255 integer.
-			* @param b Blue value as a 0-255 integer.
-			* @param a Alpha value as a 0-255 integer.
+			* Sets the color of the entity.
+			* @param color Color to set the entity color to.
 			*/									
 			void setColor(Color color);
 

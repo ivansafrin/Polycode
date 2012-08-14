@@ -60,6 +60,20 @@ namespace Polycode {
 		virtual ~PolycodeViewBase(){}
 		void *windowData;
 	};
+	
+	class _PolyExport TimeInfo {
+		public:
+			TimeInfo();
+			
+			int seconds;
+			int minutes;
+			int hours;
+			int month;
+			int monthDay;
+			int weekDay;
+			int year;
+			int yearDay;
+	};	
 
 	/**
 	* The main core of the framework. The core deals with system-level functions, such as window initialization and OS interaction. Each platform has its own implementation of this base class. NOTE: SOME OF THE FUNCTIONALITY IN THE CORE IS NOT FULLY IMPLEMENTED!!

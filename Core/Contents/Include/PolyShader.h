@@ -23,7 +23,9 @@ THE SOFTWARE.
 #pragma once
 #include "PolyString.h"
 #include "PolyGlobals.h"
+#include "PolyVector3.h"
 #include "PolyResource.h"
+#include <string.h>
 
 namespace Polycode {
 
@@ -41,6 +43,7 @@ namespace Polycode {
 			const String& getName() const;
 			
 			virtual ShaderBinding *createBinding() = 0;
+			virtual void reload() {}
 
 			static const int FIXED_SHADER = 0;
 			static const int MODULE_SHADER = 1;
@@ -70,7 +73,10 @@ namespace Polycode {
 	class LocalShaderParam {
 		public:	
 			String name;
-			void *data;		
+			void *data;
+			
+			void setNumber(Number n) { memcpy(data, &n, sizeof(n)); }
+			void setVector3(Vector3 v) { memcpy(data, &v, sizeof(v)); }
 	};	
 	
 	class RenderTargetBinding {
@@ -111,7 +117,9 @@ namespace Polycode {
 			RenderTargetBinding *getOutTargetBinding(unsigned int index);
 			
 			void addLocalParam(const String& name, void *ptr);
-			
+			void addLocalParamNumber(const String& name, Number n);
+			void addLocalParamVector3(const String& name, Vector3 v);
+		
 			Shader* shader;
 			std::vector<LocalShaderParam*> localParams;
 			std::vector<RenderTargetBinding*> renderTargetBindings;

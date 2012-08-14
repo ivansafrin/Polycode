@@ -116,10 +116,15 @@ Shader *GLSLShaderModule::createShader(TiXmlNode *node) {
 	GLSLProgram *vp = NULL;
 	GLSLProgram *fp = NULL;
 	GLSLShader *retShader = NULL;
+	TiXmlElement *nodeElement = node->ToElement();
+	if (!nodeElement) return NULL; // Skip comment nodes
 	
 	for (pChild = node->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {
+		TiXmlElement *pChildElement = pChild->ToElement();
+		if (!pChildElement) continue; // Skip comment nodes
+		
 		if(strcmp(pChild->Value(), "vp") == 0) {
-			vp = (GLSLProgram*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_PROGRAM, String(pChild->ToElement()->Attribute("source")));
+			vp = (GLSLProgram*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_PROGRAM, String(pChildElement->Attribute("source")));
 			if(vp) {
 				for (pChild2 = pChild->FirstChild(); pChild2 != 0; pChild2 = pChild2->NextSibling()) {
 					if(strcmp(pChild2->Value(), "params") == 0) {
@@ -133,7 +138,7 @@ Shader *GLSLShaderModule::createShader(TiXmlNode *node) {
 			}
 		}
 		if(strcmp(pChild->Value(), "fp") == 0) {
-			fp = (GLSLProgram*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_PROGRAM, String(pChild->ToElement()->Attribute("source")));
+			fp = (GLSLProgram*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_PROGRAM, String(pChildElement->Attribute("source")));
 			if(fp) {
 				for (pChild2 = pChild->FirstChild(); pChild2 != 0; pChild2 = pChild2->NextSibling()) {
 					if(strcmp(pChild2->Value(), "params") == 0) {
@@ -150,7 +155,7 @@ Shader *GLSLShaderModule::createShader(TiXmlNode *node) {
 	}
 	if(vp != NULL && fp != NULL) {
 		GLSLShader *cgShader = new GLSLShader(vp,fp);
-		cgShader->setName(String(node->ToElement()->Attribute("name")));
+		cgShader->setName(String(nodeElement->Attribute("name")));
 		retShader = cgShader;
 		shaders.push_back((Shader*)cgShader);
 	}
@@ -710,10 +715,12 @@ void GLSLShaderModule::addParamToProgram(GLSLProgram *program,TiXmlNode *node) {
 		int autoID = 0;
 		int paramType = GLSLProgramParam::PARAM_UNKNOWN;
 		void *defaultData = NULL;
+		TiXmlElement *nodeElement = node->ToElement();
+		if (!nodeElement) return; // Skip comment nodes
 		
-		if(strcmp(node->ToElement()->Attribute("type"), "auto") == 0) {
+		if(strcmp(nodeElement->Attribute("type"), "auto") == 0) {
 			isAuto = true;
-			String pid = node->ToElement()->Attribute("id");
+			String pid = nodeElement->Attribute("id");
 			if(pid == "POLY_MODELVIEWPROJ_MATRIX")
 				autoID = GLSLProgramParam::POLY_MODELVIEWPROJ_MATRIX;
 			else if(pid == "POLY_AREA_LIGHT_POSITION_0")
@@ -800,10 +807,10 @@ void GLSLShaderModule::addParamToProgram(GLSLProgram *program,TiXmlNode *node) {
 			else
 				isAuto = false;
 		} else {
-			defaultData = GLSLProgramParam::createParamData(&paramType, node->ToElement()->Attribute("type"), node->ToElement()->Attribute("default"));
+			defaultData = GLSLProgramParam::createParamData(&paramType, nodeElement->Attribute("type"), nodeElement->Attribute("default"));
 		}
 		
-		program->addParam(node->ToElement()->Attribute("name"), isAuto, autoID, paramType, defaultData);
+		program->addParam(nodeElement->Attribute("name"), isAuto, autoID, paramType, defaultData);
 }
 
 void GLSLShaderModule::reloadPrograms() {
