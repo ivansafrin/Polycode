@@ -249,7 +249,7 @@ void Object::createFromXMLElement(TiXmlElement *element, ObjectEntry *entry) {
 			entry->NumberVal = entry->intVal;
 			entry->boolVal = entry->intVal;
 		} else {
-			entry->NumberVal = strtof(rawVal, &endResult);
+			entry->NumberVal = strtod(rawVal, &endResult);
 			entry->intVal = entry->NumberVal;
 			entry->boolVal = entry->NumberVal;
 			if (endResult == success) {
