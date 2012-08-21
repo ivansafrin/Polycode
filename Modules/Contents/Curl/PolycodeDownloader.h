@@ -14,9 +14,15 @@ class PolycodeDownloader : public Threaded {
 		
 		String getDataAsString();
 		
+		bool writeToFile(String fileName);
+		
 		char *data;
 		size_t size;
-				
+		
+		bool returned;
+		
+		void *userData;
+		
 	protected:
 		String url;		
 		CURL *curl;

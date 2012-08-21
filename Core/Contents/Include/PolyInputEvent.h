@@ -107,6 +107,7 @@ namespace Polycode {
 		int timestamp;
 		
 		std::vector<TouchInfo> touches;
+		TouchInfo touch;
 		
 		unsigned int joystickDeviceID;
 		float joystickAxisValue;

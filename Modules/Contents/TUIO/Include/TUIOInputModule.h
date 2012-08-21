@@ -18,6 +18,7 @@ class TUIOEvent {
 	public:
 		std::vector<TouchInfo> touches;		
 		unsigned int type;
+		TouchInfo touch;
 };
 
 class TUIOInputModule : public PolycodeModule, TuioListener {

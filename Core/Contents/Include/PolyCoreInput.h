@@ -109,11 +109,13 @@ namespace Polycode {
 		void setKeyState(PolyKEY keyCode, wchar_t code, bool newState, int ticks);
 		void setDeltaPosition(int x, int y);
 		
-		void touchesBegan(std::vector<TouchInfo> touches, int ticks);
-		void touchesMoved(std::vector<TouchInfo> touches, int ticks);
-		void touchesEnded(std::vector<TouchInfo> touches, int ticks);
+		void touchesBegan(TouchInfo touch, std::vector<TouchInfo> touches, int ticks);
+		void touchesMoved(TouchInfo touch, std::vector<TouchInfo> touches, int ticks);
+		void touchesEnded(TouchInfo touch, std::vector<TouchInfo> touches, int ticks);
 				
 		static InputEvent *createEvent(Event *event){ return (InputEvent*)event; }
+		
+		bool simulateTouchWithMouse;
 		
 	protected:
 		

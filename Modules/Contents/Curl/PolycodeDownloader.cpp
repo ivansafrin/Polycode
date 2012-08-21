@@ -27,6 +27,16 @@ PolycodeDownloader::PolycodeDownloader(String url) : Threaded() {
 	this->url = url;
 	data = (char*)malloc(0);
 	size = 0;
+	returned = false;
+}
+
+bool PolycodeDownloader::writeToFile(String fileName) {
+	FILE *f = fopen(fileName.c_str(), "wb");
+	if(!f)
+		return false;	
+	fwrite(data, 1, size, f);
+	fclose(f);	
+	return true;
 }
 
 void PolycodeDownloader::runThread() {
@@ -39,8 +49,10 @@ void PolycodeDownloader::runThread() {
 	CURLcode curl_res = curl_easy_perform(curl);
 	
 	curl_easy_cleanup(curl);	
-	
+
+	returned = true;	
 	dispatchEvent(new Event(Event::COMPLETE_EVENT), Event::COMPLETE_EVENT);
+
 }
 
 PolycodeDownloader::~PolycodeDownloader() {
