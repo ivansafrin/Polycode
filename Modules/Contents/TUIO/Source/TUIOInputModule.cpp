@@ -114,6 +114,7 @@ void TUIOInputModule::Update(Number elapsed) {
 
 	Core *core = CoreServices::getInstance()->getCore();
 
+	core->lockMutex(core->eventMutex);	
 	CoreServices::getInstance()->getCore()->lockMutex(eventMutex);
 	for(int i=0; i < events.size(); i++) {
 		for(int j=0; j < events[i].touches.size(); j++) {
@@ -136,5 +137,6 @@ void TUIOInputModule::Update(Number elapsed) {
 		}
 	}
 	events.clear();
+	core->unlockMutex(core->eventMutex);	
 	CoreServices::getInstance()->getCore()->unlockMutex(eventMutex);	
 }

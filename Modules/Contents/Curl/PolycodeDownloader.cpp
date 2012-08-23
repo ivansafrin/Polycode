@@ -45,6 +45,7 @@ void PolycodeDownloader::runThread() {
 	curl_easy_setopt(curl, CURLOPT_URL, url.c_str());	
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, DownloaderCallback);
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, this);
+	curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
 			
 	CURLcode curl_res = curl_easy_perform(curl);
 	

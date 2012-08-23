@@ -135,6 +135,10 @@ namespace Polycode {
 		threads.push_back(target);
 		unlockMutex(threadedEventMutex);			
 	}
+	
+	CoreMutex *Core::getEventMutex() {
+		return eventMutex;
+	}
 			
 	void Core::updateCore() {
 		frames++;
