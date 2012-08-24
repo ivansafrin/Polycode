@@ -118,6 +118,8 @@ namespace Polycode {
 		PhysicsGenericConstraint *createGenericConstraint(SceneEntity *entity);
 				
 		void setVelocity(SceneEntity *entity, Vector3 velocity);
+		void setSpin(SceneEntity *entity, Vector3 spin);
+				
 		void warpEntity(SceneEntity *entity, Vector3 position, bool resetRotation = false);
 		
 		void applyImpulse(SceneEntity *entity, Vector3 force, Vector3 point);
