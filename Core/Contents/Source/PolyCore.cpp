@@ -139,7 +139,21 @@ namespace Polycode {
 	CoreMutex *Core::getEventMutex() {
 		return eventMutex;
 	}
-			
+	
+	void Core::removeThread(Threaded *thread) {
+		if(threadedEventMutex){ 
+			lockMutex(threadedEventMutex);
+	
+			for(int i=0; i < threads.size(); i++) {
+				if(threads[i] == thread) {
+					threads.erase(threads.begin() + i);
+					return;
+				}
+			}
+			unlockMutex(threadedEventMutex);			
+		}
+	}
+							
 	void Core::updateCore() {
 		frames++;
 		frameTicks = getTicks();

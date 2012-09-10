@@ -8,7 +8,7 @@ using namespace Polycode;
 class PolycodeDownloader : public Threaded {
 	public:
 		PolycodeDownloader(String url);
-		~PolycodeDownloader();		
+		virtual ~PolycodeDownloader();		
 		
 		void runThread();
 		

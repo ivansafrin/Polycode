@@ -9,6 +9,10 @@ Threaded::Threaded() : EventDispatcher() {
 	scheduledForRemoval = false;
 }
 
+Threaded::~Threaded() {
+	core->removeThread(this);
+}
+
 void Threaded::killThread() {
 	threadRunning = false;
 }

@@ -312,6 +312,8 @@ namespace Polycode {
 		
 		CoreMutex *getEventMutex();
 		CoreMutex *eventMutex;
+		
+		void removeThread(Threaded *thread);
 				
 	protected:	
 		

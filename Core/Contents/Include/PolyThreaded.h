@@ -38,7 +38,7 @@ namespace Polycode{
 	class _PolyExport Threaded : public EventDispatcher {
 	public:
 		Threaded();
-		virtual ~Threaded(){}
+		virtual ~Threaded();
 		
 		/**
 		* Sets the thread running flag to false.
