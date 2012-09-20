@@ -35,8 +35,7 @@ ScreenEntity::ScreenEntity() : Entity(), EventDispatcher() {
 	color = Color(1.0f,1.0f,1.0f,1.0f);
 	width = 1;
 	height = 1;
-	hitwidth = 1;
-	hitheight = 1;
+	setHitbox(1, 1);
 	backfaceCulled = false;
 	positionMode = POSITION_TOPLEFT;
 	mouseOver = false;
@@ -192,25 +191,23 @@ bool ScreenEntity::hitTest(const Number x, const Number y) {
 	Polygon testPoly;
 	
 	Matrix4 transformMatrix = getConcatenatedMatrix();
-	
-	v = Vector3(-hitwidth/2.0, -hitheight/2.0,0);
-	v = transformMatrix * v;	
+	v = Vector3(hit.x, hit.y, 0);
+	v = transformMatrix * v;
 	testPoly.addVertex(v.x, v.y, 0.0);
 	
-	v = Vector3(hitwidth/2.0, -hitheight/2.0,0);
-	v = transformMatrix * v;	
+	v = Vector3(hit.x+hit.w, hit.y, 0);
+	v = transformMatrix * v;
 	testPoly.addVertex(v.x, v.y, 0.0);
 
-	v = Vector3(hitwidth/2.0, hitheight/2.0,0);
-	v = transformMatrix * v;	
+	v = Vector3(hit.x+hit.w, hit.y+hit.h, 0);
+	v = transformMatrix * v;
 	testPoly.addVertex(v.x, v.y, 0.0);
 
-	v = Vector3(-hitwidth/2.0,hitheight/2.0,0);
-	v = transformMatrix * v;	
+	v = Vector3(hit.x,hit.y+hit.h, 0);
+	v = transformMatrix * v;
 	testPoly.addVertex(v.x, v.y, 0.0);
 		
 	return isPointInsidePolygon2D(&testPoly, Vector2(x,y));
-	
 }
 
 void ScreenEntity::setPositionMode(int newPositionMode) {
@@ -249,8 +246,21 @@ void ScreenEntity::clearDragLimits() {
 	dragLimits = NULL;
 }
 
-Vector2 ScreenEntity::getHitbox() {
-	return Vector2(hitwidth, hitheight);
+Rectangle ScreenEntity::getHitbox() {
+	return hit;
+}
+
+void ScreenEntity::setHitbox(Number width, Number height) {
+	hit.w = width;
+	hit.h = height;
+	hit.x = -width/2;
+	hit.y = -height/2;
+}
+void ScreenEntity::setHitbox(Number width, Number height, Number left, Number top) {
+	hit.w = width;
+	hit.h = height;
+	hit.x = left;
+	hit.y = top;
 }
 
 Matrix4 ScreenEntity::getScreenConcatenatedMatrix() {
@@ -309,9 +319,9 @@ void ScreenEntity::_onMouseMove(Number x, Number y, int timestamp, Vector2 paren
 		Matrix4 inverse = getConcatenatedMatrix().inverse();
 		localCoordinate = inverse * localCoordinate;
 		if(positionMode == POSITION_TOPLEFT)
-			localCoordinate.x += hitwidth/2.0;
+			localCoordinate.x += hit.w/2.0;
 		if(positionMode == POSITION_TOPLEFT)
-			localCoordinate.y += hitheight/2.0;
+			localCoordinate.y += hit.h/2.0;
 
 
 		
@@ -333,9 +343,9 @@ void ScreenEntity::_onMouseMove(Number x, Number y, int timestamp, Vector2 paren
 		Matrix4 inverse = getConcatenatedMatrix().inverse();
 		localCoordinate = inverse * localCoordinate;
 		if(positionMode == POSITION_TOPLEFT)
-			localCoordinate.x += hitwidth/2.0;
+			localCoordinate.x += hit.w/2.0;
 		if(positionMode == POSITION_TOPLEFT)
-			localCoordinate.y += hitheight/2.0;
+			localCoordinate.y += hit.h/2.0;
 		
 		
 			dispatchEvent(new InputEvent(Vector2(localCoordinate.x,localCoordinate.y)-parentAdjust, timestamp), InputEvent::EVENT_MOUSEOUT);
@@ -378,9 +388,9 @@ bool ScreenEntity::_onMouseUp(Number x, Number y, int mouseButton, int timestamp
 		Matrix4 inverse = getConcatenatedMatrix().inverse();
 		localCoordinate = inverse * localCoordinate;
 		if(positionMode == POSITION_TOPLEFT)
-			localCoordinate.x += hitwidth/2.0;
+			localCoordinate.x += hit.w/2.0;
 		if(positionMode == POSITION_TOPLEFT)
-			localCoordinate.y += hitheight/2.0;
+			localCoordinate.y += hit.h/2.0;
 
 		
 		onMouseUp(localCoordinate.x,localCoordinate.y);		
@@ -395,9 +405,9 @@ bool ScreenEntity::_onMouseUp(Number x, Number y, int mouseButton, int timestamp
 		Matrix4 inverse = getConcatenatedMatrix().inverse();
 		localCoordinate = inverse * localCoordinate;
 		if(positionMode == POSITION_TOPLEFT)
-			localCoordinate.x += hitwidth/2.0;
+			localCoordinate.x += hit.w/2.0;
 		if(positionMode == POSITION_TOPLEFT)
-			localCoordinate.y += hitheight/2.0;
+			localCoordinate.y += hit.h/2.0;
 
 		
 		InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x,localCoordinate.y)-parentAdjust, timestamp);		
@@ -441,9 +451,9 @@ void ScreenEntity::_onMouseWheelUp(Number x, Number y, int timestamp, Vector2 pa
 		Matrix4 inverse = getConcatenatedMatrix().inverse();
 		localCoordinate = inverse * localCoordinate;
 		if(positionMode == POSITION_TOPLEFT)
-			localCoordinate.x += hitwidth/2.0;
+			localCoordinate.x += hit.w/2.0;
 		if(positionMode == POSITION_TOPLEFT)
-			localCoordinate.y += hitheight/2.0;
+			localCoordinate.y += hit.h/2.0;
 
 		
 		onMouseWheelUp(localCoordinate.x,localCoordinate.y);
@@ -489,9 +499,9 @@ void ScreenEntity::_onMouseWheelDown(Number x, Number y, int timestamp, Vector2 
 		Matrix4 inverse = getConcatenatedMatrix().inverse();
 		localCoordinate = inverse * localCoordinate;
 		if(positionMode == POSITION_TOPLEFT)
-			localCoordinate.x += hitwidth/2.0;
+			localCoordinate.x += hit.w/2.0;
 		if(positionMode == POSITION_TOPLEFT)
-			localCoordinate.y += hitheight/2.0;
+			localCoordinate.y += hit.h/2.0;
 
 		
 		onMouseWheelDown(localCoordinate.x,localCoordinate.y);
@@ -539,9 +549,9 @@ bool ScreenEntity::_onMouseDown(Number x, Number y, int mouseButton, int timesta
 		Matrix4 inverse = getConcatenatedMatrix().inverse();
 		localCoordinate = inverse * localCoordinate;
 		if(positionMode == POSITION_TOPLEFT)
-			localCoordinate.x += hitwidth/2.0;
+			localCoordinate.x += hit.w/2.0;
 		if(positionMode == POSITION_TOPLEFT)
-			localCoordinate.y += hitheight/2.0;
+			localCoordinate.y += hit.h/2.0;
 
 		
 		onMouseDown(localCoordinate.x,localCoordinate.y);

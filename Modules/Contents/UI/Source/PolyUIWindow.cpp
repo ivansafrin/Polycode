@@ -80,8 +80,7 @@ UIWindow::UIWindow(String windowName, Number width, Number height) : ScreenEntit
 	
 	this->width = width;
 	this->height = height;
-	this->hitwidth = width;
-	this->hitheight = height;
+	setHitbox(width, height);
 	
 	focusable = true;
 	blockMouseInput = true;
