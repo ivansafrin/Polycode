@@ -353,7 +353,7 @@ function Object:class()
 end
 
 function Object:__eq__(other)
-  return rawequal(self,other)
+  return rawequal(self,other) or (self.__ptr and other.__ptr and self.__ptr == other.__ptr)
 end
 
 function Object:__newindex__(name,value)
