@@ -65,8 +65,7 @@ void ScreenImage::setImageCoordinates(Number x, Number y, Number width, Number h
 	
 	this->width = width;
 	this->height = height;
-	hitwidth = width;
-	hitheight = height;
+	setHitbox(width, height);
 	Number whalf = floor(width/2.0f);
 	Number hhalf = floor(height/2.0f);	
 		

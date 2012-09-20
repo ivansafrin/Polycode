@@ -265,7 +265,16 @@ namespace Polycode {
 			void createFromAxisAngle(Number x, Number y, Number z, Number degrees);
 			Matrix4 createMatrix() const;
 			
-			
+			/**
+			 * Rotate a Vector3 by this Quaternion.
+			 * @param v Vector to operate on.
+			 */
+			Vector3 applyTo(Vector3 v) const
+			{
+				const Quaternion &q = *this;
+				Quaternion result = q * Quaternion(0,v.x,v.y,v.z) * q.Inverse();
+				return Vector3(result.x,result.y,result.z);
+			}
 			
 			Quaternion operator *(Quaternion q);
 			

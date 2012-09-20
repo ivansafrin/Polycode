@@ -33,6 +33,7 @@ ScreenMesh::ScreenMesh(Mesh *mesh) : ScreenEntity(), texture(NULL) {
 	lineSmooth = false;
 	lineWidth = 1.0;
 	ownsMesh = true;
+	updateHitBox();
 }
 
 ScreenMesh::ScreenMesh(const String& fileName) : ScreenEntity(), texture(NULL) {
@@ -89,4 +90,27 @@ void ScreenMesh::Render() {
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::VERTEX_DATA_ARRAY);
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::TEXCOORD_DATA_ARRAY);	
 	renderer->drawArrays(mesh->getMeshType());
+}
+
+void ScreenMesh::updateHitBox() {
+	Number xmin, ymin, xmax, ymax;
+	bool any = false;
+	for(int c = 0; c < mesh->getPolygonCount(); c++) {
+		Polygon *poly = mesh->getPolygon(c);
+		for(int d = 0; d < poly->getVertexCount(); d++) {
+			Vertex *v = poly->getVertex(d);
+			if (any) {
+				xmin = MIN(v->x, xmin);
+				ymin = MIN(v->y, ymin);
+				xmax = MAX(v->x, xmax);
+				ymax = MAX(v->y, ymax);
+			} else {
+				xmin = v->x; xmax = v->x;
+				ymin = v->y; ymax = v->y;
+				any = true;
+			}
+		}
+	}
+	
+	setHitbox(xmax-xmin, ymax-ymin, xmin, ymin);
 }
