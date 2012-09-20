@@ -438,7 +438,10 @@ Vector3 Entity::getScale() const {
 	return scale;
 }
 
-Matrix4 Entity::getConcatenatedMatrix() const {
+Matrix4 Entity::getConcatenatedMatrix() {
+	if(matrixDirty)
+		rebuildTransformMatrix();
+
 	if(parentEntity != NULL) 
 		return transformMatrix * parentEntity->getConcatenatedMatrix();
 	else

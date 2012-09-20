@@ -186,7 +186,7 @@ bool isPointInsidePolygon2D(Polycode::Polygon *poly, const Vector2 &p) {
 		return true;
 }
 
-bool ScreenEntity::hitTest(const Number x, const Number y) const {
+bool ScreenEntity::hitTest(const Number x, const Number y) {
 
 	Vector3 v;	
 	Polygon testPoly;

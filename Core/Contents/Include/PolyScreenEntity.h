@@ -104,7 +104,7 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		virtual void onKeyDown(PolyKEY key, wchar_t charCode){}
 		virtual void onKeyUp(PolyKEY key, wchar_t charCode){}
 		
-		bool hitTest(Number x, Number y) const;
+		bool hitTest(Number x, Number y);
 	
 		Matrix4 buildPositionMatrix();
 		void adjustMatrixForChildren();

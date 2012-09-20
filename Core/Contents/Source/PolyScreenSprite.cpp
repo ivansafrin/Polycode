@@ -93,6 +93,16 @@ void ScreenSprite::Pause(bool val) {
 	paused = val;
 }
 
+void ScreenSprite::showFrame(unsigned int frameIndex) {
+	if(!currentAnimation)
+		return;
+
+	if(frameIndex < currentAnimation->numFrames) {
+		currentFrame = frameIndex;
+		updateSprite();
+	}
+}
+
 void ScreenSprite::Update() {
 	if(!currentAnimation)
 		return;
@@ -115,6 +125,14 @@ void ScreenSprite::Update() {
 		}
 	}
 	
+	updateSprite();
+			
+	lastTick = newTick;
+		
+	}
+}
+
+void ScreenSprite::updateSprite() {
 	Number xOffset = currentAnimation->framesOffsets[currentFrame].x;
 	Number yOffset = 1.0f - currentAnimation->framesOffsets[currentFrame].y - spriteUVHeight;
 	
@@ -126,8 +144,5 @@ void ScreenSprite::Update() {
 	imagePolygon->getVertex(3)->setTexCoord(xOffset, yOffset);	
 		
 	mesh->arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;
-		
-	lastTick = newTick;
-		
-	}
+
 }

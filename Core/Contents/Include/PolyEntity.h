@@ -92,7 +92,7 @@ namespace Polycode {
 			* Returns the entity's matrix multiplied by its parent's concatenated matrix. This, in effect, returns the entity's actual world transformation.
 			@return Entity's concatenated matrix.
 			*/
-			Matrix4 getConcatenatedMatrix() const;
+			Matrix4 getConcatenatedMatrix();
 			
 			/** 
 			* Returns Same as getConcatenatedMatrix(), but contains only roll information for rotation. Used internally for billboards.
