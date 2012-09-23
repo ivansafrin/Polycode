@@ -316,6 +316,13 @@ PhysicsScreenEntity *PhysicsScreen::addCollisionChild(ScreenEntity *newEntity, i
 	return ret;
 }
 
+PhysicsScreenEntity *PhysicsScreen::trackCollisionChild(ScreenEntity *newEntity, int entType) {
+	PhysicsScreenEntity *ret;
+	ret = trackPhysicsChild(newEntity, entType, false, 0,0.0,0, true);
+	ret->collisionOnly = true; 
+	return ret;
+}
+
 void PhysicsScreen::setTransform(ScreenEntity *ent, Vector2 pos, Number angle) {
 	PhysicsScreenEntity *pEnt = getPhysicsByScreenEntity(ent);
 	if(pEnt == NULL)
@@ -433,12 +440,17 @@ void PhysicsScreen::destroyMouseJoint(b2MouseJoint *mJoint) {
 
 PhysicsScreenEntity *PhysicsScreen::addPhysicsChild(ScreenEntity *newEntity, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation) {
 	addChild(newEntity);
+	return trackPhysicsChild(newEntity, entType, isSensor, friction, density, restitution, isSensor, fixedRotation);
+}
+
+PhysicsScreenEntity *PhysicsScreen::trackPhysicsChild(ScreenEntity *newEntity, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation) {
 	newEntity->setPositionMode(ScreenEntity::POSITION_CENTER);
 	PhysicsScreenEntity *newPhysicsEntity = new PhysicsScreenEntity(newEntity, world, worldScale, entType, isStatic, friction, density, restitution, isSensor,fixedRotation);
 	physicsChildren.push_back(newPhysicsEntity);
 	newPhysicsEntity->body->SetAwake(true);
 	return newPhysicsEntity;
 }
+
 
 void PhysicsScreen::removePhysicsChild(ScreenEntity *entityToRemove) {
 	PhysicsScreenEntity *physicsEntityToRemove = getPhysicsByScreenEntity(entityToRemove);

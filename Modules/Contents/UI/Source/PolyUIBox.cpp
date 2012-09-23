@@ -30,8 +30,7 @@ UIBox::UIBox(String imageFile, Number t, Number r, Number b, Number l, Number bo
 	
 	width=boxWidth;
 	height = boxHeight;
-	hitwidth = boxWidth;
-	hitheight = boxHeight;
+	setHitbox(boxWidth, boxHeight);
 	
 	tlImage = new ScreenImage(imageFile);
 	tlImage->setImageCoordinates(0,0,l,t);
@@ -106,8 +105,7 @@ void UIBox::resizeBox(Number newWidth, Number newHeight) {
 	
 	width=newWidth;
 	height = newHeight;
-	hitwidth = newWidth;
-	hitheight = newHeight;
+	setHitbox(newWidth, newHeight);
 	
 	this->rebuildTransformMatrix();
 }

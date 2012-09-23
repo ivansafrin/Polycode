@@ -75,6 +75,7 @@ SET(polycore_SRCS
     Source/PolySoundManager.cpp
     Source/PolyString.cpp
     Source/PolyTexture.cpp
+    Source/PolyThreaded.cpp
     Source/PolyTimer.cpp
     Source/PolyTimerManager.cpp
     Source/PolyTween.cpp

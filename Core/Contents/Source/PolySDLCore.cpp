@@ -112,6 +112,9 @@ SDLCore::~SDLCore() {
 	SDL_Quit();
 }
 
+void SDLCore::openURL(String url) {
+}
+
 int SDLThreadFunc(void *data) {
 	Threaded *target = (Threaded*)data;
 	target->runThread();

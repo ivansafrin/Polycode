@@ -223,6 +223,10 @@ void PhysicsSceneEntity::setFriction(Number friction) {
 		rigidBody->setFriction(friction);
 }
 
+void PhysicsSceneEntity::setMass(Number mass) {
+	rigidBody->setMassProps(mass, btVector3(0.0, 0.0, 0.0));
+}
+
 void PhysicsSceneEntity::Update() {		
 	Matrix4 m;
 		
@@ -242,6 +246,11 @@ void PhysicsSceneEntity::Update() {
 void PhysicsSceneEntity::setVelocity(Vector3 velocity) {
 	rigidBody->setLinearVelocity(btVector3(velocity.x, velocity.y, velocity.z));
 //	rigidBody->applyForce(btVector3(velocity.x, velocity.y, velocity.z), btVector3(0,0,0));
+}
+
+void PhysicsSceneEntity::setSpin(Vector3 spin) {
+	btVector3 angularVel = btVector3(spin.x, spin.y, spin.z);	
+	rigidBody->setAngularVelocity(angularVel);
 }
 
 void PhysicsSceneEntity::applyImpulse(Vector3 direction, Vector3 point) {

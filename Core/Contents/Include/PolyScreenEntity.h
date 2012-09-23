@@ -104,7 +104,7 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		virtual void onKeyDown(PolyKEY key, wchar_t charCode){}
 		virtual void onKeyUp(PolyKEY key, wchar_t charCode){}
 		
-		bool hitTest(Number x, Number y) const;
+		bool hitTest(Number x, Number y);
 	
 		Matrix4 buildPositionMatrix();
 		void adjustMatrixForChildren();
@@ -124,13 +124,13 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		* Sets the width of the screen entity.
 		* @param w New height value.
 		*/									
-		void setWidth(Number w) { width = w; hitwidth = w; }
+		void setWidth(Number w) { width = w; hit.w = w; hit.x = -w/2; }
 		
 		/**
 		* Sets the height of the screen entity.
 		* @param h New height value.
 		*/									
-		void setHeight(Number h) { height = h; hitheight = h; }
+		void setHeight(Number h) { height = h; hit.h = h; hit.y = -h/2; }
 	
 		virtual void onGainFocus(){}
 		virtual void onLoseFocus(){}		
@@ -175,7 +175,9 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		bool snapToPixels;
 		bool processInputEvents;
 
-		Vector2 getHitbox();
+		Rectangle getHitbox();
+		void setHitbox(Number width, Number height);
+		void setHitbox(Number width, Number height, Number left, Number top);
 
 	protected:
 	
@@ -190,8 +192,7 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		Number width;
 		Number height;
 
-		Number hitwidth;
-		Number hitheight;
+		Rectangle hit;
 		
 		Number xmouse;
 		Number ymouse;

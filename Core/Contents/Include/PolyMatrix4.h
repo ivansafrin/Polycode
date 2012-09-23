@@ -242,7 +242,17 @@ namespace Polycode {
 				*az = fabs(angle_z);
 
 			}
-
+		
+			/**
+			 * Returns the transpose of the matrix.
+			 */
+			inline Matrix4 transpose() const {
+				return Matrix4(m[0][0], m[1][0], m[2][0], m[3][0],
+							   m[0][1], m[1][1], m[2][1], m[3][1],
+							   m[0][2], m[1][2], m[2][2], m[3][2],
+							   m[0][3], m[1][3], m[2][3], m[3][3]);
+			}
+			
 			/**
 			* Returns the inverse of the matrix.
 			*/
@@ -252,7 +262,19 @@ namespace Polycode {
 			* Returns the affine inverse of the matrix.
 			*/			
 			Matrix4 inverseAffine() const;
-	
+		
+			/**
+			* Returns the determinant of the matrix.
+			*/
+			Number determinant() const;
+		
+			/**
+			 * Returns the determinant of any general (square) matrix.
+			 * @param a A square matrix as an array of pointers to rows (or columns).
+			 * @param n The number of dimensions in matrix A.
+			 */
+			static Number generalDeterminant(Number const* const*a, int n);
+		
 		protected:
 		
 	};

@@ -78,9 +78,6 @@ namespace Polycode {
 		protected:
 		
 		Number worldScale;
-		Vector2 lastPosition;
-		Number lastRotation;
-			
 		ScreenEntity *screenEntity;
 	};
 

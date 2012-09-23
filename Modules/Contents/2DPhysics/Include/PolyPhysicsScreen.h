@@ -176,6 +176,21 @@ public:
 	* @return The physics entity wrapper.
 	*/
 	PhysicsScreenEntity *addPhysicsChild(ScreenEntity *newEntity, int entType, bool isStatic, Number friction=0.1, Number density=1, Number restitution = 0, bool isSensor = false, bool fixedRotation = false);
+
+	/**
+	* Tracks a ScreenEntity as a physics enabled child. 
+	* @param newEntity Screen entity to add.
+	* @param entType Physics entity type to add as. Possible values are PhysicsScreenEntity::ENTITY_RECT, PhysicsScreenEntity::ENTITY_CIRCLE and PhysicsScreenEntity::ENTITY_MESH. If the type is ENTITY_MESH, the ScreenEntity passed must be a ScreenMesh!
+	* @param isStatic If this parameter is true, the body is static (doesn't move on its own).
+	* @param friction Friction of the physics entity. Friction controls how entities drag along each other.
+	* @param density Density of the physics entity. Density controls how heavy the entity is.
+	* @param restitution Restitution of the physics entity. Restitution controls how bouncy the entity is.
+	* @param isSensor If this is set to true, the entity won't collide with other entities, but its collision will register.
+	* @param fixedRotation If this is set to true, the entity will always have a locked rotation.
+	* @return The physics entity wrapper.
+	*/
+	PhysicsScreenEntity *trackPhysicsChild(ScreenEntity *newEntity, int entType, bool isStatic, Number friction=0.1, Number density=1, Number restitution = 0, bool isSensor = false, bool fixedRotation = false);
+
 	
 	/**
 	* Removes a physics child from the screen.
@@ -188,12 +203,20 @@ public:
 	
 	
 	/**
-	* Begins tracking collisions for a ScreenEntity.
+	* Begins tracking collisions for a ScreenEntity and adds it to the scene.
 	* @param newEntity Entity to track collisions for.
 	* @param entType Physics shape of the entity. Possible values are PhysicsScreenEntity::ENTITY_RECT or PhysicsScreenEntity::ENTITY_CIRCLE.
 	* @param entityToRemove Entity to remove from the screen.
 	*/	
 	PhysicsScreenEntity *addCollisionChild(ScreenEntity *newEntity, int entType);
+	
+	/**
+	* Begins tracking collisions for a ScreenEntity.
+	* @param newEntity Entity to track collisions for.
+	* @param entType Physics shape of the entity. Possible values are PhysicsScreenEntity::ENTITY_RECT or PhysicsScreenEntity::ENTITY_CIRCLE.
+	* @param entityToRemove Entity to remove from the screen.
+	*/	
+	PhysicsScreenEntity *trackCollisionChild(ScreenEntity *newEntity, int entType);	
 	
 	/**
 	* Removes an existing joint.

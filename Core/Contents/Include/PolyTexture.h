@@ -56,7 +56,8 @@ namespace Polycode {
 			int getHeight() const;
 		
 			bool clamp;
-		
+			char *textureData;
+					
 		protected:
 
 			int pixelSize;
@@ -66,7 +67,6 @@ namespace Polycode {
 			int width;
 			int height;
 			String resourcePath;
-			char *textureData;
 			Number scrollOffsetX;
 			Number scrollOffsetY;
 	};

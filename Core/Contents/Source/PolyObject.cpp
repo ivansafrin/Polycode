@@ -161,6 +161,10 @@ TiXmlElement *Object::createElementFromObjectEntry(ObjectEntry *entry) {
 
 bool Object::loadFromXMLString(const String &xmlString) {
 
+	if(xmlString.length() < 2) {
+		return false;
+	}
+
 	TiXmlDocument doc;
 	doc.Parse((const char*)xmlString.c_str(), 0, TIXML_ENCODING_UTF8);
 
@@ -249,7 +253,7 @@ void Object::createFromXMLElement(TiXmlElement *element, ObjectEntry *entry) {
 			entry->NumberVal = entry->intVal;
 			entry->boolVal = entry->intVal;
 		} else {
-			entry->NumberVal = strtof(rawVal, &endResult);
+			entry->NumberVal = strtod(rawVal, &endResult);
 			entry->intVal = entry->NumberVal;
 			entry->boolVal = entry->NumberVal;
 			if (endResult == success) {

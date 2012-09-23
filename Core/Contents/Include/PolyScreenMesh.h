@@ -95,7 +95,12 @@ namespace Polycode {
 			* If true, will delete its Mesh upon destruction. (defaults to true)
 			*/ 			
 			bool ownsMesh;
-			
+		
+			/**
+			 * Updates hit.width, hit.height to coordinates of mesh.
+			 */
+			void updateHitBox();
+		
 		protected:
 		
 			Mesh *mesh;

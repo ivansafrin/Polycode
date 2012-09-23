@@ -42,7 +42,9 @@ namespace Polycode {
 		
 		for(int i=0; i < 512; i++) {
 			keyboardState[i] = 0;
-		}		
+		}
+		
+		simulateTouchWithMouse = false;
 	}
 	
 	CoreInput::~CoreInput() {
@@ -139,6 +141,20 @@ namespace Polycode {
 		else
 			dispatchEvent(evt, InputEvent::EVENT_MOUSEUP);
 		mouseButtons[mouseButton] = state;
+				
+		if(simulateTouchWithMouse && mouseButton == MOUSE_BUTTON1) {
+			TouchInfo touch;
+			touch.position = mousePosition;
+			touch.id = 0;			
+			std::vector<TouchInfo> touches;
+			touches.push_back(touch);
+			
+			if(state) {
+				touchesBegan(touch, touches, ticks);
+			} else {
+				touchesEnded(touch, touches, ticks);			
+			}
+		}
 	}
 	
 	void CoreInput::mouseWheelDown(int ticks) {
@@ -156,6 +172,16 @@ namespace Polycode {
 		mousePosition.y = y;
 		InputEvent *evt = new InputEvent(mousePosition, ticks);
 		dispatchEvent(evt, InputEvent::EVENT_MOUSEMOVE);
+		
+		if(simulateTouchWithMouse && mouseButtons[MOUSE_BUTTON1]) {
+			TouchInfo touch;
+			touch.position = mousePosition;
+			touch.id = 0;			
+			std::vector<TouchInfo> touches;
+			touches.push_back(touch);
+			
+			touchesMoved(touch, touches, ticks);
+		}		
 	}
 	
 	Vector2 CoreInput::getMouseDelta() {
@@ -189,22 +215,25 @@ namespace Polycode {
 		}
 	}
 	
-	void CoreInput::touchesBegan(std::vector<TouchInfo> touches, int ticks) {
+	void CoreInput::touchesBegan(TouchInfo touch, std::vector<TouchInfo> touches, int ticks) {
 		InputEvent *evt = new InputEvent();
+		evt->touch = touch;		
 		evt->touches = touches;
 		evt->timestamp = ticks;
 		dispatchEvent(evt, InputEvent::EVENT_TOUCHES_BEGAN);
 	}
 	
-	void CoreInput::touchesMoved(std::vector<TouchInfo> touches, int ticks) {
+	void CoreInput::touchesMoved(TouchInfo touch, std::vector<TouchInfo> touches, int ticks) {
 		InputEvent *evt = new InputEvent();
+		evt->touch = touch;
 		evt->touches = touches;
 		evt->timestamp = ticks;		
 		dispatchEvent(evt, InputEvent::EVENT_TOUCHES_MOVED);	
 	}
 	
-	void CoreInput::touchesEnded(std::vector<TouchInfo> touches, int ticks) {
+	void CoreInput::touchesEnded(TouchInfo touch, std::vector<TouchInfo> touches, int ticks) {
 		InputEvent *evt = new InputEvent();
+		evt->touch = touch;		
 		evt->touches = touches;
 		evt->timestamp = ticks;		
 		dispatchEvent(evt, InputEvent::EVENT_TOUCHES_ENDED);	

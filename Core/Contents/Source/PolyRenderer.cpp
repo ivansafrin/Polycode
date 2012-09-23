@@ -78,7 +78,7 @@ void Renderer::setExposureLevel(Number level) {
 }
 
 
-bool Renderer::test2DCoordinateInPolygon(Number x, Number y, Polycode::Polygon *poly, const Matrix4 &matrix, bool ortho, bool testBackfacing, bool billboardMode) {
+bool Renderer::test2DCoordinateInPolygon(Number x, Number y, Polycode::Polygon *poly, const Matrix4 &matrix, bool ortho, bool testBackfacing, bool billboardMode, bool reverseDirection, Matrix4 *adjustMatrix) {
 
 	Vector3 dirVec;
 	Vector3 origin;
@@ -118,23 +118,52 @@ bool Renderer::test2DCoordinateInPolygon(Number x, Number y, Polycode::Polygon *
 		dirVec = camInverse.rotateVector(dirVec);
 	}
 	
+	if(adjustMatrix) {
+			fullMatrix = (*adjustMatrix) * fullMatrix;
+	}	
+		
 	bool retStatus = false;	
 	
 	
 	if(poly->getVertexCount() == 3) {
-		retStatus = rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(0)), fullMatrix  * (*poly->getVertex(1)), fullMatrix *  (*poly->getVertex(2)), &hitPoint);
-		if(testBackfacing && !retStatus) {
+	
+		if(reverseDirection) {
+			retStatus = rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(2)), fullMatrix  * (*poly->getVertex(1)), fullMatrix *  (*poly->getVertex(0)), &hitPoint);
+			if(testBackfacing && !retStatus) {
+			retStatus = rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(0)), fullMatrix  * (*poly->getVertex(1)), fullMatrix *  (*poly->getVertex(2)), &hitPoint);
+		
+			}		
+		} else {
+			retStatus = rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(0)), fullMatrix  * (*poly->getVertex(1)), fullMatrix *  (*poly->getVertex(2)), &hitPoint);
+			if(testBackfacing && !retStatus) {
 			retStatus = rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(2)), fullMatrix  * (*poly->getVertex(1)), fullMatrix *  (*poly->getVertex(0)), &hitPoint);
 		
+			}
 		}
 	} else if(poly->getVertexCount() == 4) {
+	
+		if(reverseDirection) {
+		
+		retStatus = (rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(0)), fullMatrix  * (*poly->getVertex(1)), fullMatrix *  (*poly->getVertex(2)), &hitPoint) ||
+				rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(2)), fullMatrix  * (*poly->getVertex(3)), fullMatrix *  (*poly->getVertex(0)), &hitPoint));
+		if(testBackfacing && !retStatus) {
+			retStatus = (rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(2)), fullMatrix  * (*poly->getVertex(1)), fullMatrix *  (*poly->getVertex(0)), &hitPoint) ||
+				rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(0)), fullMatrix  * (*poly->getVertex(3)), fullMatrix *  (*poly->getVertex(2)), &hitPoint));
+		
+		}	
+		
+		
+		} else {
+		
 		retStatus = (rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(2)), fullMatrix  * (*poly->getVertex(1)), fullMatrix *  (*poly->getVertex(0)), &hitPoint) ||
 				rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(0)), fullMatrix  * (*poly->getVertex(3)), fullMatrix *  (*poly->getVertex(2)), &hitPoint));
 		if(testBackfacing && !retStatus) {
 			retStatus = (rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(0)), fullMatrix  * (*poly->getVertex(1)), fullMatrix *  (*poly->getVertex(2)), &hitPoint) ||
 				rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(2)), fullMatrix  * (*poly->getVertex(3)), fullMatrix *  (*poly->getVertex(0)), &hitPoint));
 		
-		}				
+		}	
+		
+		}			
 	} else {
 		retStatus = false;
 	}

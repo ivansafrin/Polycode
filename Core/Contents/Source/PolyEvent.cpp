@@ -26,6 +26,7 @@ namespace Polycode {
 	
 	Event::Event() {
 			eventType = "Event";
+			deleteOnDispatch = true;
 	}
 	
 	Event::Event(int eventCode) {

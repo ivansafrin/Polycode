@@ -23,22 +23,37 @@ String PolycodeDownloader::getDataAsString() {
 	return ret;
 }
 		
-PolycodeDownloader::PolycodeDownloader(String url) {
-	
+PolycodeDownloader::PolycodeDownloader(String url) : Threaded() {
+	this->url = url;
 	data = (char*)malloc(0);
 	size = 0;
-	
+	returned = false;
+}
+
+bool PolycodeDownloader::writeToFile(String fileName) {
+	FILE *f = fopen(fileName.c_str(), "wb");
+	if(!f)
+		return false;	
+	fwrite(data, 1, size, f);
+	fclose(f);	
+	return true;
+}
+
+void PolycodeDownloader::runThread() {
 	curl = curl_easy_init();
 		
 	curl_easy_setopt(curl, CURLOPT_URL, url.c_str());	
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, DownloaderCallback);
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, this);
+	curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
 			
 	CURLcode curl_res = curl_easy_perform(curl);
 	
 	curl_easy_cleanup(curl);	
-	
+
+	returned = true;	
 	dispatchEvent(new Event(Event::COMPLETE_EVENT), Event::COMPLETE_EVENT);
+
 }
 
 PolycodeDownloader::~PolycodeDownloader() {

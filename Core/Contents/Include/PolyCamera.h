@@ -125,6 +125,7 @@ namespace Polycode {
 			*/			
 			Material *getScreenShaderMaterial() { return filterShaderMaterial; }
 			
+			bool frustumCulling;
 			
 		protected:
 		

@@ -425,6 +425,7 @@ Matrix4 OpenGLRenderer::getModelviewMatrix() {
 }
 
 Image *OpenGLRenderer::renderScreenToImage() {
+	glReadBuffer(GL_FRONT);
 	char *imageBuffer = (char*)malloc(xRes * yRes * 4);
 	glReadPixels(0, 0, xRes, yRes, GL_RGBA, GL_UNSIGNED_BYTE, imageBuffer);
 	Image *retImage = new Image(imageBuffer, xRes, yRes, Image::IMAGE_RGBA);	

@@ -35,7 +35,7 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 	
 	this->worldScale = worldScale;
 	
-	Vector3 entityScale = entity->getScale();
+	Vector3 entityScale = entity->getCompoundScale();
 	
 	screenEntity = entity;
 	
@@ -109,9 +109,6 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 	
 	fixture = body->CreateFixture(&fDef);	
 	
-	lastPosition.x = screenEntity->getPosition2D().x;
-	lastPosition.y = screenEntity->getPosition2D().y;
-
 	collisionOnly = false;
 	
 }
@@ -135,34 +132,29 @@ void PhysicsScreenEntity::setTransform(Vector2 pos, Number angle) {
 }
 
 void PhysicsScreenEntity::Update() {
-	b2Vec2 position = body->GetPosition();
-	Number angle = body->GetAngle();
-
-	
 	if(collisionOnly) {
-		body->SetTransform(position, screenEntity->getRotation()*(PI/180.0f));		
-	} else {
-		screenEntity->setRotation(angle*(180.0f/PI));	
-	}
-	
-	if(collisionOnly) {
+		Matrix4 matrix = screenEntity->getConcatenatedMatrix();
 		b2Vec2 newPos;
-		newPos.x = screenEntity->getPosition2D().x/worldScale; 
-		newPos.y = screenEntity->getPosition2D().y/worldScale;				
-		body->SetTransform(newPos, screenEntity->getRotation()*(PI/180.0f));
-		position.x = screenEntity->getPosition2D().x/worldScale; 
-		position.y = screenEntity->getPosition2D().y/worldScale; 				
+		Number newRotation;
+		
+		Vector3 pos = matrix.getPosition();
+		newPos.x = pos.x/worldScale;
+		newPos.y = pos.y/worldScale;		
+
+		Number rx,ry,rz;
+
+		matrix.getEulerAngles(&rx, &ry, &rz);
+		newRotation = rz;
+
+		body->SetAwake(true);
+		body->SetTransform(newPos, newRotation * TORADIANS);
 	} else {
+		b2Vec2 position = body->GetPosition();
+		Number angle = body->GetAngle();	
+		screenEntity->setRotation(angle*(180.0f/PI));	
 		screenEntity->setPosition(position.x*worldScale, position.y*worldScale);
-	}
-	
-	screenEntity->dirtyMatrix(true);
-	screenEntity->rebuildTransformMatrix();
-	
-	lastPosition.x = position.x*worldScale;
-	lastPosition.y = position.y*worldScale;	
-	
-	lastRotation = angle * (180.0f/PI);
+		screenEntity->rebuildTransformMatrix();		
+	}	
 }
 
 PhysicsScreenEntity::~PhysicsScreenEntity() {
