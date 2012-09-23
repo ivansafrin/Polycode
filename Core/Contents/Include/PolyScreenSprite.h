@@ -59,6 +59,8 @@ class _PolyExport ScreenSprite : public ScreenShape
 		*/
 		void addAnimation(const String& name, const String& frames, Number speed);
 		
+		void showFrame(unsigned int frameIndex);
+		
 		/**
 		* Play back a previously created animation by name.
 		* @param name Name of the animation to play.
@@ -69,6 +71,8 @@ class _PolyExport ScreenSprite : public ScreenShape
 		void Update();
 		
 		void Pause(bool val);
+		
+		void updateSprite();
 		
 	protected:
 	

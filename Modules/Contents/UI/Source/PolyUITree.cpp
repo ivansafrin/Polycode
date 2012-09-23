@@ -259,8 +259,7 @@ void UITree::refreshTree() {
 	}
 	height = treeHeight + cellHeight;
 	width = treeWidth;
-	hitwidth = width;
-	hitheight = height;
+	setHitbox(width, height);
 	
 	selection->visible = selected;
 	dispatchEvent(new UITreeEvent(), UITreeEvent::NEED_REFRESH_EVENT);	

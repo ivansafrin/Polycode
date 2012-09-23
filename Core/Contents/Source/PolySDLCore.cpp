@@ -41,7 +41,7 @@ long getThreadID() {
 	return (long)pthread_self();
 }
 
-SDLCore::SDLCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate) : Core(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate) {
+SDLCore::SDLCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex) : Core(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate, monitorIndex) {
 
 	String *windowTitle = (String*)view->windowData;
 
@@ -110,6 +110,9 @@ vector<Polycode::Rectangle> SDLCore::getVideoModes() {
 
 SDLCore::~SDLCore() {
 	SDL_Quit();
+}
+
+void SDLCore::openURL(String url) {
 }
 
 int SDLThreadFunc(void *data) {

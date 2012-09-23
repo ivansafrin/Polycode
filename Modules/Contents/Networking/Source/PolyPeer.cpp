@@ -36,7 +36,11 @@ void PeerConnection::ackPackets(unsigned int ack) {
 	}
 }
 
-Peer::Peer(unsigned int port) : EventDispatcher(), Threaded() {
+#if USE_THREADED_SOCKETS == 1
+	Peer::Peer(unsigned int port) : Threaded() {
+#else
+	Peer::Peer(unsigned int port) : EventDispatcher() {
+#endif
 	socket = new Socket(port);
 	socket->addEventListener(this, SocketEvent::EVENT_DATA_RECEIVED);
 

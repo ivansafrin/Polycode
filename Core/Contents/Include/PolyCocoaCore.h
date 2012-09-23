@@ -137,9 +137,7 @@ namespace Polycode {
 		vector<Rectangle> getVideoModes();
 		
 		int lastMouseY;
-		int lastMouseX;		
-		
-		CoreMutex *eventMutex;
+		int lastMouseX;				
 		
 		vector<CocoaEvent> cocoaEvents;
 		

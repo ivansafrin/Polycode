@@ -42,8 +42,7 @@ UIScrollContainer::UIScrollContainer(ScreenEntity *scrolledEntity, bool hScroll,
 	
 	this->width = width;
 	this->height = height;
-	this->hitwidth = width;
-	this->hitheight = height;
+	setHitbox(width, height);
 	
 	Number uiScrollPanePadding = conf->getNumericValue("Polycode", "uiScrollPanePadding");			
 	
@@ -84,8 +83,7 @@ UIScrollContainer::UIScrollContainer(ScreenEntity *scrolledEntity, bool hScroll,
 void UIScrollContainer::Resize(int x, int y) {
 	width = x;
 	height = y;
-	hitwidth = width;
-	hitheight = height;
+	setHitbox(width, height);
 	
 	maskShape->setShapeSize(x, y);
 	vScrollBar->Resize(y);

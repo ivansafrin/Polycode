@@ -70,7 +70,11 @@ namespace Polycode {
 		Address address;
 	};
 		
-	class _PolyExport Peer : public Threaded, public EventDispatcher {
+#if USE_THREADED_SOCKETS == 1		
+	class _PolyExport Peer : public Threaded {
+#else
+	class _PolyExport Peer : public EventDispatcher {
+#endif
 		public:
 			Peer(unsigned int port);
 			~Peer();

@@ -262,10 +262,12 @@ CocoaCore::~CocoaCore() {
 void *ManagedThreadFunc(void *data) {
 	Threaded *target = static_cast<Threaded*>(data);
 	target->runThread();
+	target->scheduledForRemoval = true;
 	return NULL;
 }
 
 void CocoaCore::createThread(Threaded *target) {
+	Core::createThread(target);
 	pthread_t thread;
 	pthread_create( &thread, NULL, ManagedThreadFunc, (void*)target);
 }

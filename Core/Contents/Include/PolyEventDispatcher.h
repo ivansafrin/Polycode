@@ -82,8 +82,8 @@ typedef struct {
 			* @see Event
 			* @see EventHandler			
 			*/														
-			void dispatchEvent(Event *event, int eventCode);
-			void dispatchEventNoDelete(Event *event, int eventCode);
+			virtual void dispatchEvent(Event *event, int eventCode);
+			virtual void dispatchEventNoDelete(Event *event, int eventCode);
 		
 		protected:
 	

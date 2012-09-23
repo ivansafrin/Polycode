@@ -42,6 +42,7 @@ Camera::Camera(Scene *parentScene) : SceneEntity() {
 	exposureLevel = 1.0f;
 	_hasFilterShader = false;	
 	fovSet = false;
+	frustumCulling = true;
 }
 
 Camera::~Camera() {	
@@ -73,6 +74,8 @@ Number Camera::getFOV() {
 
 
 bool Camera::isSphereInFrustrum(Vector3 pos, Number fRadius) {
+	if(!frustumCulling)
+		return true;
     for( int i = 0; i < 6; ++i )
     {
         if( frustumPlanes[i][0] * pos.x +

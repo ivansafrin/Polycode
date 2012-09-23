@@ -166,6 +166,14 @@ void PhysicsScene::setVelocity(SceneEntity *entity, Vector3 velocity) {
 	}
 }
 
+void PhysicsScene::setSpin(SceneEntity *entity, Vector3 spin) {
+	PhysicsSceneEntity *physicsEntity = getPhysicsEntityBySceneEntity(entity);
+	if(physicsEntity) {
+		physicsEntity->setSpin(spin);
+	}
+}
+
+
 void PhysicsScene::warpEntity(SceneEntity *entity, Vector3 position, bool resetRotation) {
 	PhysicsSceneEntity *physicsEntity = getPhysicsEntityBySceneEntity(entity);
 	if(physicsEntity) {

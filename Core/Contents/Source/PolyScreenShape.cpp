@@ -34,9 +34,8 @@ ScreenShape::ScreenShape(int shapeType, Number option1, Number option2, Number o
 	this->shapeType = shapeType;
 	width = option1;
 	height = option2;
-
-	hitwidth = width;
-	hitheight = height;
+	
+	setHitbox(width, height);
 
 	this->option1 = option1;
 	this->option2 = option2;
@@ -93,8 +92,7 @@ void ScreenShape::setShapeSize(Number newWidth, Number newHeight) {
 	width = newWidth;
 	height = newHeight;
 	
-	hitwidth = width;
-	hitheight = height;	
+	setHitbox(width, height);
 	
 	Number whalf = floor(width/2.0f);
 	Number hhalf = floor(height/2.0f);

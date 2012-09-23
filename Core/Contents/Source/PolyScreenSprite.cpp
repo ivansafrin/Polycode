@@ -77,7 +77,7 @@ void ScreenSprite::playAnimation(const String& name, int startFrame, bool once) 
 	paused = false;
 	for(int i=0; i < animations.size(); i++) {
 		if(animations[i]->name == name) {
-			if(currentAnimation == animations[i])
+			if(currentAnimation == animations[i] && !playingOnce)
 				return;
 			currentFrame = 0;			
 			currentAnimation = animations[i];
@@ -91,6 +91,16 @@ void ScreenSprite::playAnimation(const String& name, int startFrame, bool once) 
 
 void ScreenSprite::Pause(bool val) {
 	paused = val;
+}
+
+void ScreenSprite::showFrame(unsigned int frameIndex) {
+	if(!currentAnimation)
+		return;
+
+	if(frameIndex < currentAnimation->numFrames) {
+		currentFrame = frameIndex;
+		updateSprite();
+	}
 }
 
 void ScreenSprite::Update() {
@@ -115,6 +125,14 @@ void ScreenSprite::Update() {
 		}
 	}
 	
+	updateSprite();
+			
+	lastTick = newTick;
+		
+	}
+}
+
+void ScreenSprite::updateSprite() {
 	Number xOffset = currentAnimation->framesOffsets[currentFrame].x;
 	Number yOffset = 1.0f - currentAnimation->framesOffsets[currentFrame].y - spriteUVHeight;
 	
@@ -126,8 +144,5 @@ void ScreenSprite::Update() {
 	imagePolygon->getVertex(3)->setTexCoord(xOffset, yOffset);	
 		
 	mesh->arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;
-		
-	lastTick = newTick;
-		
-	}
+
 }

@@ -121,7 +121,7 @@ namespace Polycode {
 		* @param target Target threaded class.
 		* @see Threaded
 		*/		
-		virtual void createThread(Threaded *target) = 0;
+		virtual void createThread(Threaded *target);
 
 		/**
 		* Locks a mutex.
@@ -308,9 +308,14 @@ namespace Polycode {
 		/**
 		* Returns the default working path of the application.
 		*/
-		String getUserHomeDirectory();		
+		String getUserHomeDirectory();	
 		
-	protected:
+		CoreMutex *getEventMutex();
+		CoreMutex *eventMutex;
+		
+		void removeThread(Threaded *thread);
+				
+	protected:	
 		
 		String userHomeDirectory;
 		String defaultWorkingDirectory;
@@ -337,6 +342,9 @@ namespace Polycode {
 		bool mouseEnabled;
 		
 		unsigned int lastSleepFrameTicks;
+		
+		std::vector<Threaded*> threads;
+		CoreMutex *threadedEventMutex;
 		
 		int xRes;
 		int yRes;	

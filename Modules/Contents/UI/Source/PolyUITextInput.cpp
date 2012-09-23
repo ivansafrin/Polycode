@@ -124,8 +124,7 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : ScreenEn
 	focusable = true;
 	this->width = width;
 	this->height = rectHeight;
-	hitwidth = width;
-	hitheight = rectHeight;
+	setHitbox(width, rectHeight);
 	
 	updateCaretPosition();
 }

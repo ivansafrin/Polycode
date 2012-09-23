@@ -46,6 +46,10 @@ void TUIOInputModule::addTuioCursor(TuioCursor *tcur) {
 	event.type = InputEvent::EVENT_TOUCHES_BEGAN;
 	event.touches = touches;
 	
+	event.touch.position.x = tcur->getX();
+	event.touch.position.y = tcur->getY();
+	event.touch.id = tcur->getCursorID();
+	
 	CoreServices::getInstance()->getCore()->lockMutex(eventMutex);
 	events.push_back(event);					
 	CoreServices::getInstance()->getCore()->unlockMutex(eventMutex);
@@ -68,6 +72,10 @@ void TUIOInputModule::updateTuioCursor(TuioCursor *tcur) {
 	event.type = InputEvent::EVENT_TOUCHES_MOVED;
 	event.touches = touches;
 	
+	event.touch.position.x = tcur->getX();
+	event.touch.position.y = tcur->getY();
+	event.touch.id = tcur->getCursorID();
+		
 	CoreServices::getInstance()->getCore()->lockMutex(eventMutex);
 	events.push_back(event);					
 	CoreServices::getInstance()->getCore()->unlockMutex(eventMutex);
@@ -85,10 +93,14 @@ void TUIOInputModule::removeTuioCursor(TuioCursor *tcur) {
 			touch.id= tuioCursor->getCursorID();			
 			touches.push_back(touch);
 	}
-	tuioClient->unlockCursorList();	
+	tuioClient->unlockCursorList();
 	TUIOEvent event;
 	event.type = InputEvent::EVENT_TOUCHES_ENDED;
 	event.touches = touches;
+	
+	event.touch.position.x = tcur->getX();
+	event.touch.position.y = tcur->getY();
+	event.touch.id = tcur->getCursorID();	
 	
 	CoreServices::getInstance()->getCore()->lockMutex(eventMutex);
 	events.push_back(event);					
@@ -102,24 +114,29 @@ void TUIOInputModule::Update(Number elapsed) {
 
 	Core *core = CoreServices::getInstance()->getCore();
 
+	core->lockMutex(core->eventMutex);	
 	CoreServices::getInstance()->getCore()->lockMutex(eventMutex);
 	for(int i=0; i < events.size(); i++) {
 		for(int j=0; j < events[i].touches.size(); j++) {
 			events[i].touches[j].position.x = events[i].touches[j].position.x * core->getXRes();
 			events[i].touches[j].position.y = events[i].touches[j].position.y * core->getYRes();			
 		}
+		events[i].touch.position.x = events[i].touch.position.x * core->getXRes();
+		events[i].touch.position.y = events[i].touch.position.y * core->getYRes();
+		
 		switch(events[i].type) {
 			case InputEvent::EVENT_TOUCHES_BEGAN:
-				CoreServices::getInstance()->getCore()->getInput()->touchesBegan(events[i].touches, core->getTicks());
+				CoreServices::getInstance()->getCore()->getInput()->touchesBegan(events[i].touch, events[i].touches, core->getTicks());
 			break;
 			case InputEvent::EVENT_TOUCHES_MOVED:
-				CoreServices::getInstance()->getCore()->getInput()->touchesMoved(events[i].touches, core->getTicks());
+				CoreServices::getInstance()->getCore()->getInput()->touchesMoved(events[i].touch, events[i].touches, core->getTicks());
 			break;
 			case InputEvent::EVENT_TOUCHES_ENDED:
-				CoreServices::getInstance()->getCore()->getInput()->touchesEnded(events[i].touches, core->getTicks());			
+				CoreServices::getInstance()->getCore()->getInput()->touchesEnded(events[i].touch, events[i].touches, core->getTicks());			
 			break;			
 		}
 	}
 	events.clear();
+	core->unlockMutex(core->eventMutex);	
 	CoreServices::getInstance()->getCore()->unlockMutex(eventMutex);	
 }

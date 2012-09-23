@@ -240,8 +240,6 @@ public:
 		PolyKEY keyMap[1024];
 		unsigned int lastGamepadDetect;
 
-		CoreMutex *eventMutex;
-
 		std::vector<Win32Event> win32Events;
 
 		void initMultisample(int numSamples);

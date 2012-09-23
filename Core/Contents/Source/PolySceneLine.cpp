@@ -66,7 +66,7 @@ SceneLine::SceneLine(SceneEntity *ent1, SceneEntity *ent2) : SceneEntity() {
 }
 
 SceneLine::~SceneLine() {
-
+	delete mesh;
 }
 
 void SceneLine::setStart(Vector3 start) {
