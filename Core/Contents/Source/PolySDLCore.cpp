@@ -195,6 +195,10 @@ void SDLCore::setCursor(int cursorType) {
 
 }
 
+void SDLCore::warpCursor(int x, int y) {
+	SDL_WarpMouse(x, y);
+}
+
 void SDLCore::lockMutex(CoreMutex *mutex) {
 	SDLCoreMutex *smutex = (SDLCoreMutex*)mutex;
 	SDL_mutexP(smutex->pMutex);
