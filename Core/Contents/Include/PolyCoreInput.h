@@ -29,13 +29,31 @@ THE SOFTWARE.
 
 namespace Polycode {
 	
+	/**
+	* Joystick info.
+	*/
 	class JoystickInfo {
 		public:
 			JoystickInfo();
 			
+			/**
+			* State array of the joystick axis knobs.
+			*/
 			float joystickAxisState[32];
+			
+			/**
+			* State array of the joystick buttons.
+			*/			
 			bool joystickButtonState[64];
+			
+			/**
+			* Internal device ID.
+			*/			
 			unsigned int deviceID;		
+			
+			/**
+			* Joystick index.
+			*/						
 			unsigned int deviceIndex;
 	};
 	
@@ -92,7 +110,18 @@ namespace Polycode {
 		*/								
 		bool getMouseButtonState(int mouseButton);		
 
+		/**
+		* Returns the current number of active joysticks.
+		* @return Number of active joysticks.
+		*/		
 		unsigned int getNumJoysticks();
+		
+		/**
+		* Returns joystick info for specified joystick index.
+		* @param index Joystick index. Must be less than getNumJoysticks()
+		* @return Joystick info for specified joystick.
+		* @see JoystickInfo
+		*/
 		JoystickInfo *getJoystickInfoByIndex(unsigned int index);
 
 		JoystickInfo *getJoystickInfoByID(unsigned int deviceID);
@@ -115,6 +144,9 @@ namespace Polycode {
 				
 		static InputEvent *createEvent(Event *event){ return (InputEvent*)event; }
 		
+		/**
+		* If set to true, will fire touch events on mouse input.
+		*/
 		bool simulateTouchWithMouse;
 		
 	protected:

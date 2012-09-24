@@ -146,8 +146,10 @@ namespace Polycode {
 			* @see Config
 			*/																													
 			Config *getConfig();
-		
-				
+			
+			/**
+			* If set to true, will draw Screens before Scenes (defaults to false).
+			*/	
 			bool drawScreensFirst;
 					
 			~CoreServices();

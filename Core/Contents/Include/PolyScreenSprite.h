@@ -59,6 +59,10 @@ class _PolyExport ScreenSprite : public ScreenShape
 		*/
 		void addAnimation(const String& name, const String& frames, Number speed);
 		
+		/**
+		* Shows a specific frame of the current animation.
+		* @param frameIndex Frame index of the frame to show.
+		*/
 		void showFrame(unsigned int frameIndex);
 		
 		/**
@@ -69,7 +73,11 @@ class _PolyExport ScreenSprite : public ScreenShape
 		*/
 		void playAnimation(const String& name, int startFrame, bool once);
 		void Update();
-		
+	
+		/**
+		* Pauses or unpauses the current sprite animation.
+		* @param val If true, pauses the current animation, if false, resumes playing it.
+		*/ 
 		void Pause(bool val);
 		
 		void updateSprite();

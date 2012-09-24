@@ -64,10 +64,30 @@ namespace Polycode {
 			*/					
 			bool canSee(SceneEntity *entity);
 			
+			/**
+			* Toggles orthographic projection mode for camera.
+			* @param mode If true, sets the camera into orthographic projection mode.
+			* @param orthoSizeX Width of the orthographic frustum (defaults to 1.0)
+			* @param orthoSizeY Height of the orthographic frustum (defaults to 1.0)				
+			*/			
 			void setOrthoMode(bool mode, Number orthoSizeX = 1.0, Number orthoSizeY = 1.0);
+			
+			/**
+			* Returns true if camera is in orthographic projection mode.
+			* @return True if camera is orthographic, false if otherwise.
+			*/
 			bool getOrthoMode();
 			
+			/**
+			* Returns the width of the camera's orthographic frustum.
+			* @return Width of the camera's orthographic frustum.
+			*/
 			Number getOrthoSizeX();
+			
+			/**
+			* Returns the height of the camera's orthographic frustum.
+			* @return Height of the camera's orthographic frustum.
+			*/			
 			Number getOrthoSizeY();
 						
 			/**
@@ -125,6 +145,9 @@ namespace Polycode {
 			*/			
 			Material *getScreenShaderMaterial() { return filterShaderMaterial; }
 			
+			/**
+			* Toggles the frustum culling of the camera. (Defaults to true).
+			*/
 			bool frustumCulling;
 			
 		protected:

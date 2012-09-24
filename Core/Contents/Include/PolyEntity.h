@@ -538,10 +538,8 @@ namespace Polycode {
 			bool depthTest;
 			
 			/**
-			* Blending mode for rendering this entity. Possible blending modes are:
-			*	Renderer::BLEND_MODE_NORMAL - Draw entity normally 
-			*   Renderer::BLEND_MODE_LIGHTEN - Add the entity's color on top of the background color.
-			*   Renderer::BLEND_MODE_COLOR - Only change the color of the background.
+			* @param newBlendingMode New blending mode to set. Possible values are Renderer::BLEND_MODE_NORMAL, Renderer::BLEND_MODE_LIGHTEN, Renderer::BLEND_MODE_COLOR, Renderer::BLEND_MODE_PREMULTIPLIED, Renderer::BLEND_MODE_MULTIPLY. See the Renderer class for details on individual blending modes.
+			* @see Renderer
 			*/
 			int blendingMode;	
 			
@@ -579,6 +577,11 @@ namespace Polycode {
 			*/			
 			void *getUserData();
 				
+			/**
+			* Sets the entity's blending mode.
+			* @param newBlendingMode New blending mode to set. Possible values are Renderer::BLEND_MODE_NORMAL, Renderer::BLEND_MODE_LIGHTEN, Renderer::BLEND_MODE_COLOR, Renderer::BLEND_MODE_PREMULTIPLIED, Renderer::BLEND_MODE_MULTIPLY. See the Renderer class for details on individual blending modes.
+			* @see Renderer			
+			*/
 			void setBlendingMode(int newBlendingMode);
 				
 			Vector3 getChildCenter() const;
@@ -589,8 +592,7 @@ namespace Polycode {
 			void doUpdates();				
 			virtual Matrix4 buildPositionMatrix();
 			virtual void adjustMatrixForChildren(){}
-			void setRenderer(Renderer *renderer);
-						
+			void setRenderer(Renderer *renderer);						
 			
 			
 			Vector3 bBox;			
