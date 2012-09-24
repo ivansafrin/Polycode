@@ -146,6 +146,15 @@ namespace Polycode {
 			* @see Config
 			*/																													
 			Config *getConfig();
+		
+			/**
+			 * Provides the current width, height, and refresh rate of the screen.
+			 * @param width If non-NULL, current screen width will be written here (or 0 if unknown).
+			 * @param hight If non-NULL, current screen height will be written here (or 0 if unknown).
+			 * @param hz If non-NULL, current screen refresh rate will be written here (or 0 if unknown).
+			 */
+			void getScreenInfo(int *width, int *height, int *hz);
+		
 			
 			bool drawScreensFirst;
 					

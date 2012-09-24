@@ -55,8 +55,8 @@ void ClientResize(HWND hWnd, int nWidth, int nHeight)
   MoveWindow(hWnd,rcWindow.left, rcWindow.top, nWidth + ptDiff.x, nHeight + ptDiff.y, TRUE);
 }
 
-Win32Core::Win32Core(PolycodeViewBase *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate,  int monitorIndex) 
-	: Core(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate, monitorIndex) {
+Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate,  int monitorIndex) 
+	: Core(_xRes, _yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate, monitorIndex) {
 
 	hWnd = *((HWND*)view->windowData);
 	core = this;
