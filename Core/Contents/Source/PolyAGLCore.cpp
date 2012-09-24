@@ -29,7 +29,7 @@ long getThreadID() {
 	return (long)pthread_self();
 }
 
-AGLCore::AGLCore(WindowRef window, Polycode::Rectangle *clippingArea, int xRes, int yRes, bool fullScreen,int aaLevel, int frameRate) : Core(xRes, yRes, fullScreen,aaLevel, frameRate) {
+AGLCore::AGLCore(WindowRef window, Polycode::Rectangle *clippingArea, int _xRes, int _yRes, bool fullScreen, int aaLevel, int frameRate) : Core(_xRes, _yRes, fullScreen,aaLevel, frameRate) {
 
 	eventMutex = createMutex();
 	

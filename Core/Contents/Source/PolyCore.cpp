@@ -50,7 +50,7 @@ namespace Polycode {
 		yearDay = timeinfo->tm_yday;
 	}
 	
-	Core::Core(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex) : EventDispatcher() {
+	Core::Core(int _xRes, int _yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex) : EventDispatcher() {
 		services = CoreServices::getInstance();
 		input = new CoreInput();
 		services->setCore(this);
@@ -60,8 +60,11 @@ namespace Polycode {
 		lastFrameTicks=0;
 		lastFPSTicks=0;
 		elapsed = 0;
-		this->xRes = xRes;
-		this->yRes = yRes;
+		xRes = _xRes;
+		yRes = _yRes;
+		if (fullScreen && !xRes && !yRes) {
+			CoreServices::getInstance()->getScreenInfo(&xRes, &yRes, NULL);
+		}
 		mouseEnabled = true;
 		lastSleepFrameTicks = 0;
 		

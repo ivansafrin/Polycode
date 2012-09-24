@@ -37,6 +37,15 @@
 #include "PolyTweenManager.h"
 #include "PolySoundManager.h"
 
+// For use by getScreenInfo
+#if defined(_WINDOWS)
+#include <windows.h>
+#elif defined(__APPLE__) && defined(__MACH__)
+#include <ApplicationServices/ApplicationServices.h>
+#elif defined(__linux) || defined(__linux__) || defined(linux)
+#include <SDL/SDL.h>
+#endif
+
 using namespace Polycode;
 
 std::map<long, CoreServices*> CoreServices::instanceMap;
@@ -248,4 +257,45 @@ TweenManager *CoreServices::getTweenManager() {
 
 ResourceManager *CoreServices::getResourceManager() {
 	return resourceManager;
+}
+
+void CoreServices::getScreenInfo(int *width, int *height, int *hz) {
+#if defined(_WINDOWS)
+	
+	DEVMODE mode = {}; // Zero initialize
+	mode.dmSize = sizeof(DEVMODE);
+	
+    EnumDisplaySettings(0, ENUM_CURRENT_SETTINGS, &mode);
+	
+    // Store the current display settings.
+    if (width) *width = mode.dmPelsWidth;
+    if (height) *height = mode.dmPelsHeight;
+    if (hz) *hz = mode.dmDisplayFrequency;
+	
+#elif defined(__APPLE__) && defined(__MACH__)
+	
+	CGDisplayModeRef mode = CGDisplayCopyDisplayMode(CGMainDisplayID());
+    
+    // Copy the relevant data.
+    if (width) *width = CGDisplayModeGetWidth(mode);
+    if (height) *height = CGDisplayModeGetHeight(mode);
+    if (hz) *hz = CGDisplayModeGetRefreshRate(mode);
+    
+    CGDisplayModeRelease(mode);
+	
+#elif defined(__linux) || defined(__linux__) || defined(linux)
+	
+	SDL_Init(SDL_INIT_VIDEO); // Or GetVideoInfo will not work
+	const SDL_VideoInfo *video = SDL_GetVideoInfo();
+	if (width) *width = video->current_w;
+	if (height) *height = video->current_h;
+	if (hz) *hz = 0;
+	
+#else
+	
+	if (width) *width = 0;
+	if (height) *height = 0;
+	if (hz) *hz = 0;
+	
+#endif
 }
