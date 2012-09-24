@@ -41,6 +41,10 @@ THE SOFTWARE.
 	#define NULL 0
 #endif
  
+#ifndef NULL
+	#define NULL 0
+#endif
+ 
 #define PI 3.14159265
 #define RADIANS	57.2957795
 

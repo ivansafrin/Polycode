@@ -91,7 +91,6 @@ SET(polycore_SRCS
 
 SET(polycore_HDRS
     Include/OSBasics.h
-    Include/PolyBasics.h
     Include/PolyBezierCurve.h
     Include/PolyBone.h
     Include/PolyCamera.h
