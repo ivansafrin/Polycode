@@ -63,7 +63,7 @@ namespace Polycode {
 		xRes = _xRes;
 		yRes = _yRes;
 		if (fullScreen && !xRes && !yRes) {
-			CoreServices::getInstance()->getScreenInfo(&xRes, &yRes, NULL);
+			getScreenInfo(&xRes, &yRes, NULL);
 		}
 		mouseEnabled = true;
 		lastSleepFrameTicks = 0;

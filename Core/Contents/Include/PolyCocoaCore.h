@@ -126,8 +126,6 @@ namespace Polycode {
 		void initGamepad();
 		void shutdownGamepad();
 		
-//		static pascal OSStatus coreEventHandler (EventHandlerCallRef next, EventRef event, void *data);	
-		
 		void lockMutex(CoreMutex *mutex);
 		void unlockMutex(CoreMutex *mutex);
 		CoreMutex *createMutex();		

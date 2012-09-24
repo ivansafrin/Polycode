@@ -210,7 +210,15 @@ namespace Polycode {
 		* @return An STL vector of video modes.
 		*/															
 		virtual std::vector<Rectangle> getVideoModes() = 0;
-				
+		
+		/**
+		* Provides the current width, height, and refresh rate of the screen.
+		* @param width If non-NULL, current screen width will be written here (or 0 if unknown).
+		* @param hight If non-NULL, current screen height will be written here (or 0 if unknown).
+		* @param hz If non-NULL, current screen refresh rate will be written here (or 0 if unknown).
+		*/
+		static void getScreenInfo(int *width, int *height, int *hz);
+								
 		/**
 		* Creates a folder on disk with the specified path.
 		* @param folderPath Path to create the folder in.

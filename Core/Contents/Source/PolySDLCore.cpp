@@ -41,6 +41,14 @@ long getThreadID() {
 	return (long)pthread_self();
 }
 
+void Core::getScreenInfo(int *width, int *height, int *hz) {
+	SDL_Init(SDL_INIT_VIDEO); // Or GetVideoInfo will not work
+	const SDL_VideoInfo *video = SDL_GetVideoInfo();
+	if (width) *width = video->current_w;
+	if (height) *height = video->current_h;
+	if (hz) *hz = 0;
+}
+
 SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate) : Core(_xRes, _yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate) {
 
 	String *windowTitle = (String*)view->windowData;

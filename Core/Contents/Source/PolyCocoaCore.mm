@@ -24,10 +24,23 @@
 #include <iostream>
 #include <limits.h>
 
+#include <ApplicationServices/ApplicationServices.h>
+
+
 using namespace Polycode;
 
 long getThreadID() {
 	return (long)pthread_self();
+}
+
+void Core::getScreenInfo(int *width, int *height, int *hz) {
+	CGDisplayModeRef mode = CGDisplayCopyDisplayMode(CGMainDisplayID());    
+
+    // Copy the relevant data.
+    if (width) *width = CGDisplayModeGetWidth(mode);
+    if (height) *height = CGDisplayModeGetHeight(mode);
+    if (hz) *hz = CGDisplayModeGetRefreshRate(mode);    
+    CGDisplayModeRelease(mode);
 }
 
 CocoaCore::CocoaCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex) : Core(_xRes, _yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate, monitorIndex) {	

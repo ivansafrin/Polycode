@@ -55,6 +55,18 @@ void ClientResize(HWND hWnd, int nWidth, int nHeight)
   MoveWindow(hWnd,rcWindow.left, rcWindow.top, nWidth + ptDiff.x, nHeight + ptDiff.y, TRUE);
 }
 
+void Core::getScreenInfo(int *width, int *height, int *hz) {
+	DEVMODE mode = {}; // Zero initialize
+	mode.dmSize = sizeof(DEVMODE);
+	
+    EnumDisplaySettings(0, ENUM_CURRENT_SETTINGS, &mode);
+	
+    // Store the current display settings.
+    if (width) *width = mode.dmPelsWidth;
+    if (height) *height = mode.dmPelsHeight;
+    if (hz) *hz = mode.dmDisplayFrequency;
+}
+
 Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate,  int monitorIndex) 
 	: Core(_xRes, _yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate, monitorIndex) {
 
