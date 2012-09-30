@@ -89,5 +89,11 @@
 			<shader name="DefaultShaderNoTexture">
 			</shader>
 		</material>			
+		<material name="DefaultTextured">
+			<shader name="DefaultShader">
+				<textures>
+				</textures>				
+			</shader>
+		</material>					
 	</materials>
 </polycode>

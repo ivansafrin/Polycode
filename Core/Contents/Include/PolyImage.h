@@ -81,6 +81,14 @@ namespace Polycode {
 			bool saveImage(const String &fileName);
 			bool savePNG(const String &fileName);
 			
+			/**
+			* Pastes another image into the image using a blending mode
+			* @param image Image to paste
+			* @param x X position of new image within the image 
+			* @param y Y position of new image within the image 			
+			* @param blendingMode Blending mode to use. Currently not used.
+			*/
+			void pasteImage(Image *image, int x, int y, int blendingMode = 0, Number blendAmount = 1.0, Color blendColor = Color());
 			
 			/**
 			* Recreate the image as an empty image of specified size. The image type stays the same.

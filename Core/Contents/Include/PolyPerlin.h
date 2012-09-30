@@ -44,6 +44,11 @@ public:
 	*/
 	Perlin(int octaves,Number freq,Number amp,int seed);
 
+
+	Number Get2DTiledX(Number x, Number y, Number t) {
+		return ( (t - x) * Get2D(x, y) + (x) * Get2D(x - t, y) ) / (t);
+	}	
+
 	/**
 	* Returns noise value at the specified coordinate.
 	* @param x Horizontal coordinate.
@@ -51,16 +56,30 @@ public:
 	*/ 
 
 	Number Get(Number x,Number y) {
+		return Get2D(x,y);
+	};
+	
+	Number Get2D(Number x,Number y) {
 		Number vec[2];
 		vec[0] = x;
 		vec[1] = y;
 		return perlin_noise_2D(vec);
-	};
+	};	
+
+	Number Get3D(Number x,Number y, Number z) {
+		Number vec[3];
+		vec[0] = x;
+		vec[1] = y;
+		vec[2] = z;		
+		return perlin_noise_3D(vec);
+	};	
+
 
 protected:
   void init_perlin(int n,Number p);
   Number perlin_noise_2D(Number vec[2]);
-
+  Number perlin_noise_3D(Number vec[2]);
+  
   Number noise1(Number arg);
   Number noise2(Number vec[2]);
   Number noise3(Number vec[3]);

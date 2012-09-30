@@ -79,6 +79,17 @@ namespace Polycode {
 				Number na = a * v2.a;				
 				return Color(nr, ng, nb, na);
 			}	
+
+			/** 
+			* Multiplies the color with a number
+			*/
+			inline Color operator * ( const Number val) const {
+				Number nr = r * val;
+				Number ng = g * val;
+				Number nb = b * val;
+				Number na = a * val;				
+				return Color(nr, ng, nb, na);
+			}	
 			
 			/** 
 			* Adds the color to another color.
@@ -154,6 +165,14 @@ namespace Polycode {
 			void setColor(const Color *color);
 			
 			/**
+			* Returns a new color after blending the second color with specified blending mode. 
+			* @param c2 Color to blend with
+			* @param mode Blending mode to use. Currently possible values are Color::BLEND_NORMAL, Color::BLEND_COLOR
+			* @param amount Amount to blend.
+			*/
+			Color blendColor(Color c2, int mode, Number amount, Color c3 = Color());
+			
+			/**
 			* Sets the color to a random color. This does not affect alpha.
 			*/
 			void Random();
@@ -210,6 +229,11 @@ namespace Polycode {
 			* Alpha value.
 			*/			
 			Number a;
+			
+
+			const static int BLEND_NORMAL = 0;
+			const static int BLEND_REPLACE_COLOR = 1;
+						
 		protected:
 	
 	};

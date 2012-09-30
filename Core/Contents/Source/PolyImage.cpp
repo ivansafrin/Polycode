@@ -89,6 +89,17 @@ Image::Image(char *data, int width, int height, int type) {
 	this->height = height;
 }
 
+void Image::pasteImage(Image *image, int x, int y, int blendingMode , Number blendAmount, Color blendColor ) {
+	for(int iy=0; iy<image->getHeight(); iy++) {	
+		for(int ix=0; ix<image->getWidth(); ix++) {
+			Color src = image->getPixel(ix,iy);
+			Color destColor = getPixel(x+ix, y+iy);
+			Color finalColor = destColor.blendColor(src, blendingMode, blendAmount, blendColor);
+			setPixel(x+ix, y+iy, finalColor);
+		}
+	}
+}
+
 Image::Image() {
 	imageData = NULL;
 }

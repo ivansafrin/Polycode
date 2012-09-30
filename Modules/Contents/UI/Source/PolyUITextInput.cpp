@@ -111,7 +111,7 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : ScreenEn
 		
 	insertLine(true);	
 	
-	blinkerRect = new ScreenShape(ScreenShape::SHAPE_RECT, 1, fontSize,0,0);
+	blinkerRect = new ScreenShape(ScreenShape::SHAPE_RECT, 1, fontSize+4,0,0);
 	blinkerRect->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	blinkerRect->setColor(0,0,0,1);
 	addChild(blinkerRect);
@@ -430,7 +430,7 @@ void UITextInput::dragSelectionTo(Number x, Number y) {
 int UITextInput::caretSkipWordBack(int caretLine, int caretPosition) {
 	for(int i=caretPosition; i > 0; i--) {
 		String bit = lines[caretLine]->getText().substr(i,1);
-		wchar_t chr = ((wchar_t*)bit.c_str())[0]; 
+		char chr = ((char*)bit.c_str())[0]; 		
 		if(((chr > 0 && chr < 48) || (chr > 57 && chr < 65) || (chr > 90 && chr < 97) || (chr > 122 && chr < 127)) && i < caretPosition-1) {
 			return i+1;
 		}
@@ -442,7 +442,7 @@ int UITextInput::caretSkipWordForward(int caretLine, int caretPosition) {
 	int len = lines[caretLine]->getText().length();
 	for(int i=caretPosition; i < len; i++) {
 		String bit = lines[caretLine]->getText().substr(i,1);
-		wchar_t chr = ((wchar_t*)bit.c_str())[0]; 
+		char chr = ((char*)bit.c_str())[0]; 
 		if(((chr > 0 && chr < 48) || (chr > 57 && chr < 65) || (chr > 90 && chr < 97) || (chr > 122 && chr < 127)) && i > caretPosition) {
 			return i;
 		}

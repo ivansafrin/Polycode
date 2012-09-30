@@ -59,6 +59,29 @@ void Color::setColorHexRGB(unsigned int hex) {
 	
 }
 
+Color Color::blendColor(Color c2, int mode, Number amount, Color c3) {
+	Color ret;
+	Number premul = c2.a * amount;
+	switch(mode) {
+		case Color::BLEND_NORMAL:
+			ret.r = (r * (1.0-premul)) + (c2.r * premul);
+			ret.g = (g * (1.0-premul)) + (c2.g * premul);
+			ret.b = (b * (1.0-premul)) + (c2.b * premul);
+			ret.a = a + premul;
+		break;
+		case Color::BLEND_REPLACE_COLOR:
+			ret.r = (r * (1.0-premul)) + (c3.r * premul);
+			ret.g = (g * (1.0-premul)) + (c3.g * premul);
+			ret.b = (b * (1.0-premul)) + (c3.b * premul);
+			ret.a = a + premul;
+		break;
+	}
+	
+	if(ret.a > 1.0)
+		ret.a = 1.0;	
+	return ret;
+}
+
 void Color::setColorHex(unsigned int hex) {
 	int ta = (hex >> 24) & 0xFF;
 	int tb = (hex >> 16) & 0xFF;
