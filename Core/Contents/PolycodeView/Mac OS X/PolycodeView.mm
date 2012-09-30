@@ -70,8 +70,8 @@
 	keymap[0x01] = KEY_s;
 	keymap[0x02] = KEY_d;
 	keymap[0x03] = KEY_f;
-	keymap[0x04] = KEY_g;
-	keymap[0x05] = KEY_h;
+	keymap[0x05] = KEY_g;
+	keymap[0x04] = KEY_h;
 	keymap[0x06] = KEY_z;
 	keymap[0x07] = KEY_x;
 	keymap[0x08] = KEY_c;
