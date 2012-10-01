@@ -31,89 +31,113 @@ THE SOFTWARE.
 
 using namespace Polycode;
 
-PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, Number worldScale, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation) {
-	
-	this->worldScale = worldScale;
-	
-	Vector3 entityScale = entity->getScale();
-	
+PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, Number worldScale, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation)
+{
 	screenEntity = entity;
+	lastPosition.x = screenEntity->getPosition2D().x;
+	lastPosition.y = screenEntity->getPosition2D().y;
+	lastRotation = screenEntity->getRotation();
+	Vector3 entityScale = screenEntity->getScale();
+
+	this->worldScale = worldScale;
+	collisionOnly = false;
+	fixturelist = NULL;
+
 	
-	shape = NULL;
-		
-	b2BodyDef *bodyDef = new b2BodyDef();	
-	bodyDef->position.Set(screenEntity->getPosition().x/worldScale, screenEntity->getPosition().y/worldScale);
-	bodyDef->angle = screenEntity->getRotation()*(PI/180.0f);	
-	bodyDef->bullet = isSensor;	
-	bodyDef->fixedRotation = fixedRotation;	
+	// Create body definition---------------------------------------
+	b2BodyDef bodyDef;
+	bodyDef.position.Set(screenEntity->getPosition().x/worldScale, screenEntity->getPosition().y/worldScale);
+	bodyDef.angle = screenEntity->getRotation()*(PI/180.0f);	
+	bodyDef.bullet = isSensor;	
+	bodyDef.fixedRotation = fixedRotation;	
+	if(isStatic)
+		bodyDef.type = b2_staticBody;
+	else
+		bodyDef.type = b2_dynamicBody;
+	// Create the body
+	body = world->CreateBody(&bodyDef);
 	
-	if(isStatic) {
-		bodyDef->type = b2_staticBody;		
-	} else {
-		bodyDef->type = b2_dynamicBody;	
-	}
-	body = world->CreateBody(bodyDef);
-	delete bodyDef;
-		
+	// Create fixture definition---------------------------------------------
 	b2FixtureDef fDef;
 	fDef.friction = friction;
 	fDef.restitution = restitution;
 	fDef.density = density;
 	fDef.isSensor = isSensor;
-		
-	switch(entType) {
-		case ENTITY_MESH:
-		{
-			b2PolygonShape *b2shape = new b2PolygonShape;			
-			
-			ScreenMesh* screenMesh = dynamic_cast<ScreenMesh*>(entity);
-			if(screenMesh != NULL) {
-				b2Vec2 *vertices = (b2Vec2*)malloc(sizeof(b2Vec2) * screenMesh->getMesh()->getVertexCount());
-	
-				int index = 0;
-				for(int i=0; i < screenMesh->getMesh()->getPolygonCount(); i++) {
-					Polycode::Polygon *poly = screenMesh->getMesh()->getPolygon(i);
-					for(int j = 0; j < poly->getVertexCount(); j++) {
-						vertices[index].x = poly->getVertex(j)->x/worldScale;
-						vertices[index].y = poly->getVertex(j)->y/worldScale;						
-						index++;
-					}
-				}
-				b2shape->Set(vertices, screenMesh->getMesh()->getVertexCount());	
-				free(vertices);
-			} else {
-				Logger::log("Tried to make a mesh collision object from a non-mesh\n");							
-			}
 
-			fDef.shape = b2shape;				
-			shape = b2shape;
+	// Create Shape definition (Circle or Polygon)---------------------------
+	switch(entType)
+	{
+		case ENTITY_CIRCLE:
+		{
+			b2CircleShape shape;
+			// Set fixture shape to shape definition
+			fDef.shape = &shape;
+			// Create the shape
+			shape.m_radius = screenEntity->getWidth()/(worldScale*2.0f);
+			// Create the fixture
+			fixture = body->CreateFixture(&fDef);
+			break;
 		}
-		break;
 		case ENTITY_RECT: 
 		{
-			b2PolygonShape *b2shape = new b2PolygonShape;			
-			b2shape->SetAsBox(screenEntity->getWidth()/(worldScale*2.0f) * entityScale.x, screenEntity->getHeight()/(worldScale*2.0f) * entityScale.y);
-			fDef.shape = b2shape;						
-			shape = b2shape;
+			b2PolygonShape shape;
+			// Set fixture shape to shape definition
+			fDef.shape = &shape;
+			// Create the shape
+			shape.SetAsBox(screenEntity->getWidth()/(worldScale*2.0f) * entityScale.x, screenEntity->getHeight()/(worldScale*2.0f) * entityScale.y);
+			// Create the fixture
+			fixture = body->CreateFixture(&fDef);
+			break;
 		}
-		break;			
-		case ENTITY_CIRCLE:
-		{			
-			b2CircleShape *b2shape = new b2CircleShape;
-			b2shape->m_radius = screenEntity->getWidth()/(worldScale*2.0f);
-			fDef.shape = b2shape;
-			shape = b2shape;
-		}
-		break;
-	}
-	
-	fixture = body->CreateFixture(&fDef);	
-	
-	lastPosition.x = screenEntity->getPosition2D().x;
-	lastPosition.y = screenEntity->getPosition2D().y;
+		case ENTITY_MESH:
+		{
+			b2PolygonShape shape;
+			// Set fixture shape to shape definition
+			fDef.shape = &shape;
+			// Get the screenmesh of the entity
+			ScreenMesh* screenMesh = dynamic_cast<ScreenMesh*>(entity);
+		
+			if(screenMesh != NULL)
+			{
+				// Get number of polygons
+				unsigned short polycount = screenMesh->getMesh()->getPolygonCount();
+				// Create a fixture list just for meshes (that is why it is dynamic mem)
+				fixturelist = new vector <b2Fixture*>;
+			
+				for(int i=0; i < polycount; i++)
+				{
+					// Get the vertex count of current polygon
+					unsigned short vertexcount = screenMesh->getMesh()->getPolygon(i)->getVertexCount();
+					if (vertexcount >= 3 && vertexcount <= 8)
+					{
+						// Create verticies array based on vertexcount size
+						b2Vec2* vertices = new b2Vec2[vertexcount];
+						for(int index = 0; index < vertexcount; index++)
+						{
+							vertices[index].x = screenMesh->getMesh()->getPolygon(i)->getVertex(index)->x/worldScale;
+							vertices[index].y = screenMesh->getMesh()->getPolygon(i)->getVertex(index)->y/worldScale;						
+						}
+						// Create the shape
+						shape.Set(vertices, vertexcount);
+						// Create the fixture
+						fixture = body->CreateFixture(&fDef);
+						// Save fixture to the vector
+						fixturelist->push_back(fixture);
 
-	collisionOnly = false;
-	
+						delete []vertices;
+					}
+					else
+					{
+						Logger::log("Number of vertices allowed must be between 3 and 8\n");
+					}
+				}
+			}
+			else
+			{
+				Logger::log("Tried to make a mesh collision object from a non-mesh\n");							
+			}
+		}
+	}
 }
 
 void PhysicsScreenEntity::applyTorque(Number torque) {
@@ -135,42 +159,66 @@ void PhysicsScreenEntity::setTransform(Vector2 pos, Number angle) {
 }
 
 void PhysicsScreenEntity::Update() {
-	b2Vec2 position = body->GetPosition();
+	
+	b2Vec2 position;
 	Number angle = body->GetAngle();
 
-	
 	if(collisionOnly) {
-		body->SetTransform(position, screenEntity->getRotation()*(PI/180.0f));		
-	} else {
-		screenEntity->setRotation(angle*(180.0f/PI));	
-	}
-	
-	if(collisionOnly) {
-		b2Vec2 newPos;
-		newPos.x = screenEntity->getPosition2D().x/worldScale; 
-		newPos.y = screenEntity->getPosition2D().y/worldScale;				
-		body->SetTransform(newPos, screenEntity->getRotation()*(PI/180.0f));
 		position.x = screenEntity->getPosition2D().x/worldScale; 
-		position.y = screenEntity->getPosition2D().y/worldScale; 				
+		position.y = screenEntity->getPosition2D().y/worldScale;
+		body->SetTransform(position, screenEntity->getRotation()*(PI/180.0f));
 	} else {
+		position = body->GetPosition();
 		screenEntity->setPosition(position.x*worldScale, position.y*worldScale);
+		screenEntity->setRotation(angle*(180.0f/PI));
 	}
-	
+
 	screenEntity->dirtyMatrix(true);
 	screenEntity->rebuildTransformMatrix();
-	
+
 	lastPosition.x = position.x*worldScale;
-	lastPosition.y = position.y*worldScale;	
-	
+	lastPosition.y = position.y*worldScale;
+
 	lastRotation = angle * (180.0f/PI);
 }
 
-PhysicsScreenEntity::~PhysicsScreenEntity() {
-	if (body) {
-		if (fixture) {	
-			body->DestroyFixture(fixture);
-		}	
-		body->GetWorld()->DestroyBody(body);	
+
+//Add on functions for the fixture library
+//========================================
+
+// Gets last fixture selected
+b2Fixture* PhysicsScreenEntity::getfixture()
+{
+	return fixture;
+}
+
+// Returns specific Fixture based on index starting from 0
+b2Fixture* PhysicsScreenEntity::getfixture(unsigned int index)
+{
+	if(fixturelist)
+	{
+		if (index < fixturelist->size())
+			fixture = fixturelist->at(index);	
+		else
+		{
+			Logger::log("That fixture index does not exist\n");							
+		}
+		
+		return fixture;
 	}
-	delete shape;
+	else
+		return fixture = NULL;
+	
+	
+}
+
+// Slight change to the destructor
+PhysicsScreenEntity::~PhysicsScreenEntity()
+{
+	if(body)
+		body->GetWorld()->DestroyBody(body);	// Destroy body deletes fixtures on it's own according to box2d documentation
+
+	if(fixturelist)
+		delete fixturelist;	//<--------------------I'm not really sure if this will cause a crash??? Needs testing
+												// If so try: fixturelist->clear(); instead.
 }
