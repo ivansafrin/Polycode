@@ -132,7 +132,7 @@ namespace Polycode {
 			/**
 			* @see addChild()
 			*/		
-			void addEntity(Entity *newChild);
+			virtual void addEntity(Entity *newChild);
 
 			/**
 			* Adds another entity as a child. The children inherit the parent's transforms.

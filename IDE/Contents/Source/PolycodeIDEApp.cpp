@@ -44,6 +44,7 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	printf("creating font editor\n"); 
 	
 	Screen *screen = new Screen();	
+	screen->snapToPixelsByDefault = true;
 	
 	editorManager = new PolycodeEditorManager();
 	

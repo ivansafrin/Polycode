@@ -67,6 +67,18 @@ ScreenEntity::ScreenEntity() : Entity(), EventDispatcher() {
 	
 }
 
+void ScreenEntity::addEntity(Entity *newChild) {
+	((ScreenEntity*)newChild)->setDefaultScreenOptions(snapToPixels);
+	Entity::addEntity(newChild);
+}
+		
+void ScreenEntity::setDefaultScreenOptions(bool snapToPixels) {
+	this->snapToPixels = snapToPixels;
+		for(int i=0; i < children.size(); i++) {
+			((ScreenEntity*)children[i])->setDefaultScreenOptions(snapToPixels);
+		}
+}
+
 void ScreenEntity::focusNextChild() {
 	int j = 0;
 	if(focusedChild) {
@@ -621,6 +633,11 @@ Matrix4 ScreenEntity::buildPositionMatrix() {
 }
 
 void ScreenEntity::adjustMatrixForChildren() {
-	if(positionMode == POSITION_TOPLEFT)
-		renderer->translate2D(-floor(width/2.0f), -floor(height/2.0f));	
+	if(positionMode == POSITION_TOPLEFT) {
+		if(snapToPixels) {
+			renderer->translate2D(-floor(width/2.0f), -floor(height/2.0f));			
+		} else {
+			renderer->translate2D(-width/2.0f, -height/2.0f);	
+		}
+	}
 }

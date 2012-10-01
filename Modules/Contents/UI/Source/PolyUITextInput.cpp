@@ -286,6 +286,9 @@ void UITextInput::deleteSelection() {
 
 void UITextInput::Resize(int x, int y) {
 	inputRect->resizeBox(x, y);
+	this->width = x;
+	this->height = y;	
+	setHitbox(x,y);
 }
 
 int UITextInput::insertLine(bool after) {

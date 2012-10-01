@@ -60,6 +60,12 @@ namespace Polycode {
 		* @param entity New entity to add.
 		*/
 		void addEntity(SceneEntity *entity);
+
+		/**
+		* Adds a new SceneEntity to the scene
+		* @param entity New entity to add.
+		*/
+		void addChild(SceneEntity *entity);
 		
 		/**
 		* Removes a SceneEntity from the scene

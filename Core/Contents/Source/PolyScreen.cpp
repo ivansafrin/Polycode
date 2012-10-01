@@ -49,6 +49,7 @@ Screen::Screen() : EventDispatcher() {
 	addChild(rootEntity);
 	processTouchEventsAsMouse = false;
 	ownsChildren = false;
+	snapToPixelsByDefault = false;
 }
 
 Screen::~Screen() {
@@ -261,7 +262,7 @@ bool Screen::hasFilterShader() const {
 	return _hasFilterShader;
 }
 
-ScreenEntity* Screen::addChild(ScreenEntity *newEntity) {
+ScreenEntity* Screen::addEntity(ScreenEntity *newEntity) {
 	if(!newEntity)
 		return NULL;
 	children.push_back(newEntity);
@@ -271,8 +272,14 @@ ScreenEntity* Screen::addChild(ScreenEntity *newEntity) {
 	newEntity->addEventListener(this, ScreenEvent::ENTITY_MOVE_DOWN);
 	newEntity->addEventListener(this, ScreenEvent::ENTITY_MOVE_UP);
 	newEntity->zindex = getHighestZIndex()+1;
+	newEntity->setDefaultScreenOptions(snapToPixelsByDefault);
+	
 	sortChildren();
 	return newEntity;
+}
+
+ScreenEntity* Screen::addChild(ScreenEntity *newEntity) {
+	addEntity(newEntity);
 }
 
 ScreenEntity* Screen::removeChild(ScreenEntity *entityToRemove) {

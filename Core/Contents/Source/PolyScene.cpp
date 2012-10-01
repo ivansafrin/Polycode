@@ -142,6 +142,10 @@ void Scene::addEntity(SceneEntity *entity) {
 	entities.push_back(entity);
 }
 
+void Scene::addChild(SceneEntity *entity) {
+	addEntity(entity);
+}
+
 void Scene::removeEntity(SceneEntity *entity) {
 	for(int i=0; i < entities.size(); i++) {
 		if(entities[i] == entity) {

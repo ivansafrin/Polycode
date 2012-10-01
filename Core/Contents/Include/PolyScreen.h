@@ -54,6 +54,13 @@ namespace Polycode {
 		* @return Returns the same entity for convenience.
 		*/		
 		ScreenEntity* addChild(ScreenEntity *newEntity);
+
+		/**
+		* Adds a ScreenEntity to the 2d rendering pipeline.
+		* @param newEntity Entity to add.
+		* @return Returns the same entity for convenience.
+		*/		
+		ScreenEntity* addEntity(ScreenEntity *newEntity);
 		
 		/**
 		* Removes a ScreenEntity from the screen's render list.
@@ -158,6 +165,11 @@ namespace Polycode {
 		* If ownsChildren is set to true, the scene will delete its children upon destruction (defaults to false).
 		*/
 		bool ownsChildren;		
+		
+		/**
+		* If true, children snap to pixels by default. You can still change it per entity. Defaults to false.
+		*/		
+		bool snapToPixelsByDefault;
 		
 	protected:
 		

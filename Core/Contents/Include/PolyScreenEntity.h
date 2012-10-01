@@ -44,6 +44,9 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		ScreenEntity();
 		virtual ~ScreenEntity();
 		
+		
+		void addEntity(Entity *newChild);
+		
 		/**
 		* Set 2d position.
 		* @param x Horizontal position.
@@ -154,6 +157,8 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		
 		void setDragLimits(Rectangle rect);
 		void clearDragLimits();
+		
+		void setDefaultScreenOptions(bool snapToPixels);
 		
 		void focusChild(ScreenEntity *child);
 		void focusNextChild();
