@@ -34,11 +34,8 @@ using namespace Polycode;
 PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, Number worldScale, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation)
 {
 	screenEntity = entity;
-	lastPosition.x = screenEntity->getPosition2D().x;
-	lastPosition.y = screenEntity->getPosition2D().y;
-	lastRotation = screenEntity->getRotation();
-	Vector3 entityScale = screenEntity->getScale();
 
+	Vector3 entityScale = entity->getCompoundScale();
 	this->worldScale = worldScale;
 	collisionOnly = false;
 	fixturelist = NULL;
@@ -97,11 +94,11 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 			// Get the screenmesh of the entity
 			ScreenMesh* screenMesh = dynamic_cast<ScreenMesh*>(entity);
 		
-			if(screenMesh != NULL)
+			if(screenMesh)
 			{
 				// Get number of polygons
 				unsigned short polycount = screenMesh->getMesh()->getPolygonCount();
-				// Create a fixture list just for meshes (that is why it is dynamic mem)
+				// Create a fixturelist just for meshes (that is why it is dynamic mem)
 				fixturelist = new vector <b2Fixture*>;
 			
 				for(int i=0; i < polycount; i++)
@@ -112,6 +109,7 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 					{
 						// Create verticies array based on vertexcount size
 						b2Vec2* vertices = new b2Vec2[vertexcount];
+						
 						for(int index = 0; index < vertexcount; index++)
 						{
 							vertices[index].x = screenMesh->getMesh()->getPolygon(i)->getVertex(index)->x/worldScale;
@@ -159,28 +157,31 @@ void PhysicsScreenEntity::setTransform(Vector2 pos, Number angle) {
 }
 
 void PhysicsScreenEntity::Update() {
-	
-	b2Vec2 position;
-	Number angle = body->GetAngle();
-
 	if(collisionOnly) {
-		position.x = screenEntity->getPosition2D().x/worldScale; 
-		position.y = screenEntity->getPosition2D().y/worldScale;
-		body->SetTransform(position, screenEntity->getRotation()*(PI/180.0f));
+		Matrix4 matrix = screenEntity->getConcatenatedMatrix();
+		b2Vec2 newPos;
+		Number newRotation;
+		
+		Vector3 pos = matrix.getPosition();
+		newPos.x = pos.x/worldScale;
+		newPos.y = pos.y/worldScale;		
+
+		Number rx,ry,rz;
+
+		matrix.getEulerAngles(&rx, &ry, &rz);
+		newRotation = rz;
+
+		body->SetAwake(true);
+		body->SetTransform(newPos, newRotation * TORADIANS);
 	} else {
-		position = body->GetPosition();
+		b2Vec2 position = body->GetPosition();
+		Number angle = body->GetAngle();	
+		screenEntity->setRotation(angle*(180.0f/PI));	
 		screenEntity->setPosition(position.x*worldScale, position.y*worldScale);
-		screenEntity->setRotation(angle*(180.0f/PI));
-	}
-
-	screenEntity->dirtyMatrix(true);
-	screenEntity->rebuildTransformMatrix();
-
-	lastPosition.x = position.x*worldScale;
-	lastPosition.y = position.y*worldScale;
-
-	lastRotation = angle * (180.0f/PI);
+		screenEntity->rebuildTransformMatrix();		
+	}	
 }
+
 
 
 //Add on functions for the fixture library
@@ -198,18 +199,17 @@ b2Fixture* PhysicsScreenEntity::getfixture(unsigned int index)
 	if(fixturelist)
 	{
 		if (index < fixturelist->size())
-			fixture = fixturelist->at(index);	
-		else
 		{
-			Logger::log("That fixture index does not exist\n");							
+			fixture = fixturelist->at(index);
+			return fixture;
 		}
-		
-		return fixture;
+		else
+			Logger::log("That fixture index does not exist\n");							
 	}
 	else
-		return fixture = NULL;
+		Logger::log("Fixturelist is for mesh only\n");
 	
-	
+	return fixture = NULL;	
 }
 
 // Slight change to the destructor
@@ -220,5 +220,5 @@ PhysicsScreenEntity::~PhysicsScreenEntity()
 
 	if(fixturelist)
 		delete fixturelist;	//<--------------------I'm not really sure if this will cause a crash??? Needs testing
-												// If so try: fixturelist->clear(); instead.
+												// If so try: fixturelist->clear(); instead or just leave out.
 }
