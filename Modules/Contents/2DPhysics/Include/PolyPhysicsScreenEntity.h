@@ -55,7 +55,11 @@ namespace Polycode {
 			void setTransform(Vector2 pos, Number angle);
 			
 			void Update();
+
+			b2Fixture* getfixture();			      // Gets last fixture selected
 			
+			b2Fixture* getfixture(unsigned int index);	      // Gets a specific fixture.
+
 			/**
 			* Rectangular physics entity
 			*/ 
@@ -69,10 +73,10 @@ namespace Polycode {
 			*/ 						
 			static const int ENTITY_MESH = 3;
 		
-			b2Fixture *fixture;		
 			b2Body* body;
-			b2Shape *shape;
-			
+			b2Fixture* fixture;		             // - New fixture list vector - DYNAMIC VECTOR //
+			std::vector <b2Fixture*>* fixturelist;
+
 			bool collisionOnly;
 		
 		protected:
