@@ -365,7 +365,8 @@ String UITextInput::getText() {
 		String totalText = L"";
 		for(int i=0; i < lines.size(); i++) {
 				totalText += lines[i]->getText();					
-				totalText += L"\n";
+				if(i < lines.size()-1)
+					totalText += L"\n";
 		}	
 		return totalText;
 	}
