@@ -307,6 +307,8 @@ namespace Polycode {
 		void *getUserPointer() { return userPointer; }
 		
 		static const int EVENT_CORE_RESIZE = 0;		
+		static const int EVENT_LOST_FOCUS = 1;
+		static const int EVENT_GAINED_FOCUS = 2;
 		
 		/**
 		* Returns the default working path of the application.
@@ -322,8 +324,13 @@ namespace Polycode {
 		CoreMutex *eventMutex;
 		
 		void removeThread(Threaded *thread);
+		
 				
 	protected:	
+	
+		void loseFocus();
+		void gainFocus();
+		
 		
 		String userHomeDirectory;
 		String defaultWorkingDirectory;

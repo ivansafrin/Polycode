@@ -36,15 +36,18 @@ namespace Polycode {
 	}
 	
 	CoreInput::CoreInput() : EventDispatcher() {
+		clearInput();
+		simulateTouchWithMouse = false;
+	}
+	
+	void CoreInput::clearInput() {
 		mouseButtons[0] = false;
 		mouseButtons[1] = false;
 		mouseButtons[2] = false;
 		
 		for(int i=0; i < 512; i++) {
 			keyboardState[i] = 0;
-		}
-		
-		simulateTouchWithMouse = false;
+		}			
 	}
 	
 	CoreInput::~CoreInput() {

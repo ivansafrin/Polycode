@@ -149,6 +149,8 @@ namespace Polycode {
 		*/
 		bool simulateTouchWithMouse;
 		
+		void clearInput();
+		
 	protected:
 		
 		std::vector<JoystickInfo> joysticks;

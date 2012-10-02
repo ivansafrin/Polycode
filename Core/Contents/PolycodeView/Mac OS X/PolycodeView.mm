@@ -56,16 +56,51 @@
 -(void) viewDidMoveToWindow
 {
 	[super viewDidMoveToWindow];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidResignMain:) name:NSWindowDidResignKeyNotification object:[self window]];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidResignMain:) name:NSWindowDidResignMainNotification object:[self window]];
+
+
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidBecomeMain:) name:NSWindowDidBecomeKeyNotification object:[self window]];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidBecomeMain:) name:NSWindowDidBecomeMainNotification object:[self window]];
+
+	
 	viewReady = YES;
+}
+
+- (void)windowDidResignMain:(NSNotification *)notification
+{	
+	if(core == NULL)
+		return;
+	
+	memset(modifierMap, 0, 512);
+	
+	core->lockMutex(core->eventMutex);	
+	CocoaEvent newEvent;
+	newEvent.eventGroup = CocoaEvent::FOCUS_EVENT;
+	newEvent.eventCode = Core::EVENT_LOST_FOCUS;	
+	core->cocoaEvents.push_back(newEvent);	
+	core->unlockMutex(core->eventMutex);		
+}
+
+- (void)windowDidBecomeMain:(NSNotification *)notification
+{	
+	if(core == NULL)
+		return;
+	
+	core->lockMutex(core->eventMutex);	
+	CocoaEvent newEvent;
+	newEvent.eventGroup = CocoaEvent::FOCUS_EVENT;
+	newEvent.eventCode = Core::EVENT_GAINED_FOCUS;	
+	core->cocoaEvents.push_back(newEvent);	
+	core->unlockMutex(core->eventMutex);		
 }
 
 
 - (void) initKeymap {	 
 	
-	for(int i=0; i < 512; i++) {
-		modifierMap[i] = 0;	
-	}
-	
+	memset(modifierMap, 0, 512);
+		
 	keymap[0x00] = KEY_a;
 	keymap[0x01] = KEY_s;
 	keymap[0x02] = KEY_d;
@@ -294,7 +329,6 @@
 //	core->setVideoMode(oldSize.width, oldSize.height, core->isFullscreen(), core->getAALevel());	
 }
 
-
 // INPUT
 
 - (void) otherMouseDown:(NSEvent *) event
@@ -439,6 +473,9 @@
 	
 //	NSLog(@"KEY: %x\n", [theEvent keyCode]);
 	
+	if([theEvent keyCode] == 0) {
+		return;
+	}
 	core->lockMutex(core->eventMutex);	
 	CocoaEvent newEvent;	
 	newEvent.eventGroup = CocoaEvent::INPUT_EVENT;
@@ -446,7 +483,7 @@
 	
 	if(modifierMap[[theEvent keyCode]] == 0) {
 		modifierMap[[theEvent keyCode]] = 1;
-		newEvent.eventCode = InputEvent::EVENT_KEYDOWN;		
+		newEvent.eventCode = InputEvent::EVENT_KEYDOWN;	
 	} else {
 		modifierMap[[theEvent keyCode]] = 0;
 		newEvent.eventCode = InputEvent::EVENT_KEYUP;				

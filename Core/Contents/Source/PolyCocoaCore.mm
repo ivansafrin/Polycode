@@ -397,6 +397,16 @@ void CocoaCore::checkEvents() {
 						break;						
 				}
 				break;
+				case CocoaEvent::FOCUS_EVENT:
+					switch(event.eventCode) {
+						case Core::EVENT_LOST_FOCUS:
+							loseFocus();						
+						break;
+						case Core::EVENT_GAINED_FOCUS:
+							gainFocus();
+						break;						
+					}
+				break;
 		}
 	}
 	cocoaEvents.clear();	

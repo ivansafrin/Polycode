@@ -63,6 +63,7 @@ namespace Polycode {
 		char mouseButton;
 		
 		static const int INPUT_EVENT = 0;
+		static const int FOCUS_EVENT = 1;		
 	};
 	
 	

@@ -143,6 +143,15 @@ namespace Polycode {
 		return eventMutex;
 	}
 	
+	void Core::loseFocus() {
+		input->clearInput();
+		dispatchEvent(new Event(), EVENT_LOST_FOCUS);
+	}
+	
+	void Core::gainFocus() {
+		dispatchEvent(new Event(), EVENT_GAINED_FOCUS);
+	}
+	
 	void Core::removeThread(Threaded *thread) {
 		if(threadedEventMutex){ 
 			lockMutex(threadedEventMutex);
