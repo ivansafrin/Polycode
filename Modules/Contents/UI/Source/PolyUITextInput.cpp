@@ -155,9 +155,8 @@ void UITextInput::setSelection(int lineStart, int lineEnd, int colStart, int col
 	} else {
 		selectionCaretPosition = colStart;
 	}
-
 	
-//	Logger::log("SET lineStart:%d lineEnd:%d colStart:%d colEnd:%d\n", lineStart, lineEnd, colStart, colEnd);
+	//printf("SET lineStart:%d lineEnd:%d colStart:%d colEnd:%d\n", lineStart, lineEnd, colStart, colEnd);
 	
 	if(lineStart > lineEnd) {
 		int tmp = lineStart;
@@ -177,14 +176,17 @@ void UITextInput::setSelection(int lineStart, int lineEnd, int colStart, int col
 	
 	clearSelection();
 	
+
+	
 	if(lineStart > lines.size()-1)
 		return;	
-	
+
 	ScreenLabel *topLine = lines[lineStart];	
 	
-	if(colStart+1 > topLine->getText().length())
-		return;
-	
+	if(colStart+1 > topLine->getText().length()) {
+		colStart = topLine->getText().length();
+	}
+		
 	Number fColEnd  = colEnd;
 	
 	if(colEnd > topLine->getText().length() || lineStart != lineEnd)
@@ -208,6 +210,8 @@ void UITextInput::setSelection(int lineStart, int lineEnd, int colStart, int col
 		ScreenLabel *bottomLine = lines[lineEnd];	
 		selectorRectBottom->visible = true;		
 		Number bottomSize = bottomLine->getLabel()->getTextWidth(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), bottomLine->getText().substr(0,colEnd), fontSize) - 4; 
+		if(bottomSize < 0)
+			bottomSize = this->width-padding;
 		Number bottomHeight = lineHeight+lineSpacing;
 		selectorRectBottom->setScale(bottomSize, bottomHeight);
 		selectorRectBottom->setPosition(padding + (bottomSize/2.0) + 1, padding + (lineEnd * (lineHeight+lineSpacing)) + (bottomHeight/2.0));
@@ -411,7 +415,7 @@ void UITextInput::dragSelectionTo(Number x, Number y) {
 	int lineOffset = y  / (lineHeight+lineSpacing);
 	if(lineOffset > lines.size()-1)
 		lineOffset = lines.size()-1;
-
+	
 	ScreenLabel *selectToLine = lines[lineOffset];
 	
 	int len = selectToLine->getText().length();
