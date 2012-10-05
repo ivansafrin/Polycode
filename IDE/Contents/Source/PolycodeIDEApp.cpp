@@ -338,11 +338,11 @@ bool PolycodeIDEApp::Update() {
 	}
 	
 	if(projectManager->getProjectCount() > 0) {
-		frame->welcomeEntity->visible =  false;
-		frame->projectBrowser->visible =  true;		
+		frame->welcomeEntity->enabled =  false;
+		frame->projectBrowser->enabled =  true;		
 	} else {
-		frame->welcomeEntity->visible =  true;
-		frame->projectBrowser->visible =  false;			
+		frame->welcomeEntity->enabled =  true;
+		frame->projectBrowser->enabled =  false;			
 	}
 
 	return core->Update();

@@ -87,6 +87,7 @@ namespace Polycode {
 			bool collapsing;
 			ScreenImage *arrowIconImage;
 			String arrowIcon;
+			Vector2 mouseDownPosition;
 			String fontName;
 			int size;
 			Number cellHeight;

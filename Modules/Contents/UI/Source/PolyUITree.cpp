@@ -165,9 +165,10 @@ void UITree::handleEvent(Event *event) {
 			break;			
 			case InputEvent::EVENT_MOUSEDOWN:	
 				willDrag = true;
+				mouseDownPosition = ((InputEvent*)event)->mousePosition;				
 			break;			
 			case InputEvent::EVENT_MOUSEMOVE:
-				if(willDrag && !isDragging) {
+				if(willDrag && !isDragging && ((InputEvent*)event)->mousePosition.distance(mouseDownPosition) > 5) {
 					isDragging = true;
 					dispatchEvent(new UITreeEvent(this), UITreeEvent::DRAG_START_EVENT);
 				}
