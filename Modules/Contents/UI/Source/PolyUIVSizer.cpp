@@ -29,12 +29,12 @@
 
 using namespace Polycode;
 
-UIVSizer::UIVSizer(Number width, Number height, Number topHeight) : UIElement() {
+UIVSizer::UIVSizer(Number width, Number height, Number mainHeight, bool topSizer) : UIElement() {
 
 	this->width = width;
 	this->height = height;
-	
-	this->topHeight = topHeight;
+	this->topSizer = topSizer;
+	this->mainHeight = mainHeight;
 	
 	separatorBgShape = new ScreenShape(ScreenShape::SHAPE_RECT, width,1);
 	separatorBgShape->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
@@ -80,7 +80,7 @@ void UIVSizer::handleEvent(Event *event) {
 		switch (event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEDOWN:
 				resizing = true;
-				baseTopHeight = topHeight;
+				baseMainHeight = mainHeight;
 			break;
 			case InputEvent::EVENT_MOUSEUP:
 			case InputEvent::EVENT_MOUSEUP_OUTSIDE:	
@@ -102,7 +102,11 @@ void UIVSizer::handleEvent(Event *event) {
 		switch (event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEMOVE:
 				if(resizing == true) {
-					setTopHeight(baseTopHeight + (inputEvent->mousePosition.y-baseMouseY));
+					if(topSizer) {
+						setMainHeight(baseMainHeight + (inputEvent->mousePosition.y-baseMouseY));
+					} else {
+						setMainHeight(baseMainHeight - (inputEvent->mousePosition.y-baseMouseY));		
+					}
 				} else {
 					baseMouseY = inputEvent->mousePosition.y;
 				}
@@ -118,8 +122,8 @@ void UIVSizer::Resize(Number width, Number height) {
 	updateSizer();
 }
 
-void UIVSizer::setTopHeight(Number height) {
-	topHeight = height;
+void UIVSizer::setMainHeight(Number height) {
+	mainHeight = height;
 	updateSizer();
 }
 			
@@ -136,20 +140,40 @@ void UIVSizer::addBottomChild(UIElement *element) {
 }
 
 void UIVSizer::updateSizer() {
-	if(firstElement) {
-		firstElement->setPosition(0,0);
-		firstElement->Resize(width, topHeight);
-	}
-	
-	if(secondElement) {
-		secondElement->setPosition(0,topHeight+1);
-		secondElement->Resize(width, height-topHeight-1);	
-	}
 
-	separatorBgShape->setShapeSize(width, 1);
-	separatorBgShape->setPosition(0,topHeight);
-
+	if(topSizer) {
 	
-	separatorHitShape->setShapeSize(width, 6);
-	separatorHitShape->setPosition(0, topHeight-3);
+		if(firstElement) {
+			firstElement->setPosition(0,0);
+			firstElement->Resize(width, mainHeight);
+		}
+	
+		if(secondElement) {
+			secondElement->setPosition(0,mainHeight+1);
+			secondElement->Resize(width, height-mainHeight-1);	
+		}
+
+		separatorBgShape->setShapeSize(width, 1);
+		separatorBgShape->setPosition(0,mainHeight);
+		separatorHitShape->setShapeSize(width, 6);
+		separatorHitShape->setPosition(0, mainHeight-3);
+		
+	} else {
+
+		if(firstElement) {
+			firstElement->setPosition(0,0);
+			firstElement->Resize(width, height-mainHeight);
+		}
+	
+		if(secondElement) {
+			secondElement->setPosition(0,height-mainHeight+1);
+			secondElement->Resize(width, mainHeight-1);	
+		}
+
+		separatorBgShape->setShapeSize(width, 1);
+		separatorBgShape->setPosition(0,height-mainHeight);
+		separatorHitShape->setShapeSize(width, 6);
+		separatorHitShape->setPosition(0, height-mainHeight-3);
+
+	}
 }

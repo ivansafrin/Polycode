@@ -31,12 +31,12 @@ namespace Polycode {
 	
 	class _PolyExport UIVSizer : public UIElement {
 		public:
-			UIVSizer(Number width, Number height, Number topHeight);
+			UIVSizer(Number width, Number height, Number mainHeight, bool topSizer);
 			~UIVSizer();
 			
 			void handleEvent(Event *event);
 			
-			void setTopHeight(Number height);
+			void setMainHeight(Number height);
 			
 			void addTopChild(UIElement *element);
 			void addBottomChild(UIElement *element);			
@@ -47,13 +47,15 @@ namespace Polycode {
 		protected:
 		
 			ScreenEntity *childElements;			
-			Number topHeight;
+			Number mainHeight;
+			
+			bool topSizer;
 			
 			CoreInput *coreInput;
 			
 			bool resizing;
 			Number baseMouseY;
-			Number baseTopHeight;
+			Number baseMainHeight;
 			
 			ScreenShape *separatorHitShape;
 			ScreenShape *separatorBgShape;

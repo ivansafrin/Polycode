@@ -31,12 +31,12 @@ namespace Polycode {
 	
 	class _PolyExport UIHSizer : public UIElement {
 		public:
-			UIHSizer(Number width, Number height, Number leftWidth);
+			UIHSizer(Number width, Number height, Number mainWidth, bool leftSizer);
 			~UIHSizer();
 			
 			void handleEvent(Event *event);
 			
-			void setLeftWidth(Number width);
+			void setMainWidth(Number width);
 			
 			void addLeftChild(UIElement *element);
 			void addRightChild(UIElement *element);			
@@ -47,13 +47,15 @@ namespace Polycode {
 		protected:
 		
 			ScreenEntity *childElements;			
-			Number leftWidth;
+			Number mainWidth;
 			
 			CoreInput *coreInput;
 			
 			bool resizing;
 			Number baseMouseX;
-			Number baseLeftWidth;
+			Number baseMainWidth;
+			
+			bool leftSizer;
 			
 			ScreenShape *separatorHitShape;
 			ScreenShape *separatorBgShape;

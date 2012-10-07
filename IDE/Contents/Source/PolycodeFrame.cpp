@@ -58,7 +58,7 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	welcomeEntity->addChild(newProjectButton);
 	welcomeEntity->addChild(examplesButton);
 	
-	mainSizer = new UIHSizer(100,100,200);
+	mainSizer = new UIHSizer(100,100,200,true);
 	mainSizer->setPosition(0, 45);
 	addChild(mainSizer);
 	
@@ -66,7 +66,7 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	projectBrowser = new PolycodeProjectBrowser();
 	mainSizer->addLeftChild(projectBrowser);
 
-	consoleSizer = new UIVSizer(100,100,400);
+	consoleSizer = new UIVSizer(100,100,200, false);
 	mainSizer->addRightChild(consoleSizer);	
 
 	editorHolder = new EditorHolder();

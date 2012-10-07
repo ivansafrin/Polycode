@@ -29,12 +29,12 @@
 
 using namespace Polycode;
 
-UIHSizer::UIHSizer(Number width, Number height, Number leftWidth) : UIElement() {
+UIHSizer::UIHSizer(Number width, Number height, Number mainWidth, bool leftSizer) : UIElement() {
 
 	this->width = width;
 	this->height = height;
-	
-	this->leftWidth = leftWidth;
+	this->leftSizer = leftSizer;
+	this->mainWidth = mainWidth;
 	
 	separatorBgShape = new ScreenShape(ScreenShape::SHAPE_RECT, 1,height);
 	separatorBgShape->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
@@ -80,7 +80,7 @@ void UIHSizer::handleEvent(Event *event) {
 		switch (event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEDOWN:
 				resizing = true;
-				baseLeftWidth = leftWidth;
+				baseMainWidth = mainWidth;
 			break;
 			case InputEvent::EVENT_MOUSEUP:
 			case InputEvent::EVENT_MOUSEUP_OUTSIDE:	
@@ -102,7 +102,11 @@ void UIHSizer::handleEvent(Event *event) {
 		switch (event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEMOVE:
 				if(resizing == true) {
-					setLeftWidth(baseLeftWidth + (inputEvent->mousePosition.x-baseMouseX));
+					if(leftSizer) {
+						setMainWidth(baseMainWidth + (inputEvent->mousePosition.x-baseMouseX));
+					} else {
+						setMainWidth(baseMainWidth - (inputEvent->mousePosition.x-baseMouseX));
+					}
 				} else {
 					baseMouseX = inputEvent->mousePosition.x;				
 				}
@@ -118,8 +122,8 @@ void UIHSizer::Resize(Number width, Number height) {
 	updateSizer();
 }
 
-void UIHSizer::setLeftWidth(Number width) {
-	leftWidth = width;
+void UIHSizer::setMainWidth(Number width) {
+	mainWidth = width;
 	updateSizer();
 }
 			
@@ -136,20 +140,38 @@ void UIHSizer::addRightChild(UIElement *element) {
 }
 
 void UIHSizer::updateSizer() {
-	if(firstElement) {
-		firstElement->setPosition(0,0);
-		firstElement->Resize(leftWidth, height);
-	}
-	
-	if(secondElement) {
-		secondElement->setPosition(leftWidth+1,0);
-		secondElement->Resize(width-leftWidth-1, height);	
-	}
 
-	separatorBgShape->setShapeSize(1, height);
-	separatorBgShape->setPosition(leftWidth,0);
-
+	if(leftSizer) {
 	
-	separatorHitShape->setShapeSize(6, height);
-	separatorHitShape->setPosition(leftWidth-3,0);
+		if(firstElement) {
+			firstElement->setPosition(0,0);
+			firstElement->Resize(mainWidth, height);
+		}	
+		if(secondElement) {
+			secondElement->setPosition(mainWidth+1,0);
+			secondElement->Resize(width-mainWidth-1, height);	
+		}
+
+		separatorBgShape->setShapeSize(1, height);
+		separatorBgShape->setPosition(mainWidth,0);
+		separatorHitShape->setShapeSize(6, height);
+		separatorHitShape->setPosition(mainWidth-3,0);
+		
+	} else {
+	
+		if(firstElement) {
+			firstElement->setPosition(0,0);
+			firstElement->Resize(width-mainWidth, height);
+		}	
+		if(secondElement) {
+			secondElement->setPosition(width-mainWidth+1,0);
+			secondElement->Resize(mainWidth-1, height);	
+		}
+
+		separatorBgShape->setShapeSize(1, height);
+		separatorBgShape->setPosition(width-mainWidth,0);
+		separatorHitShape->setShapeSize(6, height);
+		separatorHitShape->setPosition(width-mainWidth-3,0);
+	
+	}
 }

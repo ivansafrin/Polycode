@@ -26,7 +26,7 @@
 using namespace Polycode;
 
 PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
-	core = new CocoaCore(view, 800,600,false,false, 0, 0,60);	
+	core = new CocoaCore(view, 800,600,false,true, 0, 0,60);	
 	core->addEventListener(this, Core::EVENT_CORE_RESIZE);	
 	CoreServices::getInstance()->getRenderer()->setClearColor(0.2,0.2,0.2);
 	
