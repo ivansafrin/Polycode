@@ -72,9 +72,8 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	editorHolder = new EditorHolder();
 	consoleSizer->addTopChild(editorHolder);
 	
-	// REPLACE WITH CONSOLE CLASS
-	UITextInput *textInput = new UITextInput(true, 100, 100);
-	consoleSizer->addBottomChild(textInput);	
+	console = new PolycodeConsole();	
+	consoleSizer->addBottomChild(console);	
 	
 	
 	projectBrowser->treeContainer->getRootNode()->addEventListener(this, UITreeEvent::DRAG_START_EVENT);

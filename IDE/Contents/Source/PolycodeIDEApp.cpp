@@ -340,9 +340,11 @@ bool PolycodeIDEApp::Update() {
 	if(projectManager->getProjectCount() > 0) {
 		frame->welcomeEntity->enabled =  false;
 		frame->projectBrowser->enabled =  true;		
+		frame->mainSizer->enabled = true;
 	} else {
 		frame->welcomeEntity->enabled =  true;
 		frame->projectBrowser->enabled =  false;			
+		frame->mainSizer->enabled = false;		
 	}
 
 	return core->Update();

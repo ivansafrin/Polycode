@@ -24,6 +24,7 @@
 #include "Polycode.h"
 #include "PolycodeProjectBrowser.h"
 #include "PolycodeEditor.h"
+#include "PolycodeConsole.h"
 #include "NewProjectWindow.h"
 #include "ExampleBrowserWindow.h"
 #include "NewFileWindow.h"
@@ -70,6 +71,7 @@ public:
 	PolycodeProjectBrowser *projectBrowser;
 		
 	UIImageButton *playButton;
+	UIHSizer *mainSizer;	
 			
 private:
 	
@@ -87,6 +89,8 @@ private:
 	
 	ScreenImage *welcomeImage;	
 	
+	PolycodeConsole *console;
+	
 	EditorHolder *editorHolder;
 	
 
@@ -95,7 +99,6 @@ private:
 	ScreenShape *modalBlocker;
 	UIWindow *modalChild;		
 	
-	UIHSizer *mainSizer;
 	UIVSizer *consoleSizer;
 	
 	UIButton *newProjectButton;

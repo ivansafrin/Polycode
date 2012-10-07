@@ -351,6 +351,9 @@ void UITextInput::setText(String text) {
 		clearSelection();				
 		updateCaretPosition();		
 	} else {
+		selectAll();
+		insertText(text);
+		clearSelection();
 	}
 		
 //	this->text = text;
@@ -731,11 +734,14 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 	
 	
 	if(key == KEY_RETURN) {
-		if(hasSelection)
-			deleteSelection();		
-		if(multiLine) {
+		if(multiLine) {	
+			if(hasSelection) {
+				deleteSelection();		
+			}			
 			insertLine(true);
 			updateCaretPosition();
+		} else {
+			dispatchEvent(new Event(), Event::COMPLETE_EVENT);
 		}
 		return;
 	}	
