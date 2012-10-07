@@ -28,7 +28,7 @@
 
 using namespace Polycode;
 
-UIComboBoxItem::UIComboBoxItem(String label, Number comboWidth, Number comboHeight) : ScreenEntity() {
+UIComboBoxItem::UIComboBoxItem(String label, Number comboWidth, Number comboHeight) : UIElement() {
 	this->label = label;
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	

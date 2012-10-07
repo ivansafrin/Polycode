@@ -31,6 +31,7 @@
 #include "PolyUIWindow.h"
 #include "PolyUIHSlider.h"
 #include "PolyUIBox.h"
+#include "PolyUIElement.h"
 #include "PolyFont.h"
 
 namespace Polycode {
@@ -84,7 +85,7 @@ namespace Polycode {
 			ScreenShape *mainColorRect;
 	};
 
-	class _PolyExport UIColorBox : public ScreenEntity {
+	class _PolyExport UIColorBox : public UIElement {
 		public:
 			UIColorBox(Color initialColor, Number width, Number height);
 			~UIColorBox();

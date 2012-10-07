@@ -28,7 +28,7 @@
 
 using namespace Polycode;
 
-UICheckBox::UICheckBox(String caption, bool checked) : ScreenEntity() {
+UICheckBox::UICheckBox(String caption, bool checked) : UIElement() {
 
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	

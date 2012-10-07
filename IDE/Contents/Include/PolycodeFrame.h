@@ -31,6 +31,17 @@
 
 using namespace Polycode;
 
+class EditorHolder : public UIElement {
+	public:
+		EditorHolder();
+		~EditorHolder();
+		
+		void Resize(Number width, Number height);
+		
+		PolycodeEditor *currentEditor;
+		
+};
+
 class PolycodeFrame : public ScreenEntity {
 public:
 	
@@ -76,13 +87,16 @@ private:
 	
 	ScreenImage *welcomeImage;	
 	
-	ScreenEntity *editorHolder;
+	EditorHolder *editorHolder;
 	
-	PolycodeEditor *currentEditor;
+
 	vector<PolycodeEditor*> editors;
 	
 	ScreenShape *modalBlocker;
 	UIWindow *modalChild;		
+	
+	UIHSizer *mainSizer;
+	UIVSizer *consoleSizer;
 	
 	UIButton *newProjectButton;
 	UIButton *examplesButton;

@@ -30,7 +30,7 @@
 
 using namespace Polycode;
 
-UITextInput::UITextInput(bool multiLine, Number width, Number height) : ScreenEntity() {
+UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElement() {
 	this->multiLine = multiLine;
 	
 	isNumberOnly = false;
@@ -289,12 +289,12 @@ void UITextInput::deleteSelection() {
 	dispatchEvent(new UIEvent(), UIEvent::CHANGE_EVENT);	
 }
 
-void UITextInput::Resize(int x, int y) {
-	inputRect->resizeBox(x, y);
-	this->width = x;
-	this->height = y;	
+void UITextInput::Resize(Number width, Number height) {
+	inputRect->resizeBox(width, height);
+	this->width = width;
+	this->height = height;	
 	matrixDirty = true;	
-	setHitbox(x,y);
+	setHitbox(width,height);
 }
 
 int UITextInput::insertLine(bool after) {

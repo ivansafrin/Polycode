@@ -79,6 +79,7 @@ UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : 
 	Number sl = conf->getNumericValue("Polycode", "uiTreeCellSelectorSkinL");
 	
 	Number padding = conf->getNumericValue("Polycode", "uiTreeCellSelectorSkinPadding");	
+	this->padding = padding;
 	
 	selection = new UIBox(conf->getStringValue("Polycode", "uiTreeCellSelectorSkin"),
 						  st,sr,sb,sl,
@@ -117,6 +118,16 @@ UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : 
 	setPositionMode(ScreenEntity::POSITION_CENTER);
 	
 	refreshTree();
+}
+
+void UITree::Resize(Number width) {
+	treeWidth = width;
+	selection->resizeBox(treeWidth+(padding*2), cellHeight+(padding*2));
+	bgBox->setShapeSize(width, cellHeight);
+	
+	for(int i=0; i < treeChildren.size(); i++) {
+		treeChildren[i]->Resize(width);
+	}
 }
 
 String UITree::getLabelText() {

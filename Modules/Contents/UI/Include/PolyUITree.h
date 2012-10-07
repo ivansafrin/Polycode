@@ -55,6 +55,8 @@ namespace Polycode {
 			UITree *getSelectedNode();
 			void setIcon(String iconFile);
 			void setSelected();
+			
+			void Resize(Number width);
 		
 			int getNumTreeChildren() { return treeChildren.size(); }
 			UITree *getTreeChild(int index) { return treeChildren[index]; }
@@ -75,6 +77,7 @@ namespace Polycode {
 			Number treeOffset;
 			UITree *selectedNode;
 			UITree *parent;
+			Number padding;
 			UIBox *selection;
 		//	UIBox *bgBox;
 			ScreenShape *bgBox;

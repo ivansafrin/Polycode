@@ -29,7 +29,7 @@
 
 using namespace Polycode;
 
-UIButton::UIButton(String text, Number width, Number height) : ScreenEntity() {
+UIButton::UIButton(String text, Number width, Number height) : UIElement() {
 
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	

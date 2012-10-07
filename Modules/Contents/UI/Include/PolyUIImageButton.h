@@ -26,10 +26,11 @@
 #include "PolyScreenShape.h"
 #include "PolyScreenEntity.h"
 #include "PolyUIEvent.h"
+#include "PolyUIElement.h"
 
 namespace Polycode {
 
-	class _PolyExport UIImageButton : public ScreenEntity {
+	class _PolyExport UIImageButton : public UIElement {
 		public:
 			UIImageButton(String imageName);
 			~UIImageButton();

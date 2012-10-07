@@ -20,12 +20,12 @@
 	<uiTreeCellSelectorSkin>selector.png</uiTreeCellSelectorSkin>
 	<uiTreeCellSelectorSkinPadding>4</uiTreeCellSelectorSkinPadding>
 	<uiTreeCellSelectorSkinT>4</uiTreeCellSelectorSkinT>
-	<uiTreeCellSelectorSkinR>0</uiTreeCellSelectorSkinR>
+	<uiTreeCellSelectorSkinR>3</uiTreeCellSelectorSkinR>
 	<uiTreeCellSelectorSkinB>4</uiTreeCellSelectorSkinB>
 	<uiTreeCellSelectorSkinL>0</uiTreeCellSelectorSkinL>
 	
 	<uiTreeContainerSkin>treeBg.png</uiTreeContainerSkin>
-	<uiTreeContainerSkinPadding>2</uiTreeContainerSkinPadding>
+	<uiTreeContainerSkinPadding>0</uiTreeContainerSkinPadding>
 	<uiTreeContainerSkinT>2</uiTreeContainerSkinT>
 	<uiTreeContainerSkinR>2</uiTreeContainerSkinR>
 	<uiTreeContainerSkinB>2</uiTreeContainerSkinB>

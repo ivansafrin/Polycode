@@ -48,12 +48,12 @@ class PolycodeProjectBrowserEvent : public Event {
 		
 };
 
-class PolycodeProjectBrowser : public ScreenEntity {
+class PolycodeProjectBrowser : public UIElement {
 public:
 	PolycodeProjectBrowser();
 	~PolycodeProjectBrowser();
 	
-	void Resize(int newWidth, int newHeight);
+	void Resize(Number width, Number height);
 	void addProject(PolycodeProject *project);
 	void removeProject(PolycodeProject *project);
 	

@@ -1,7 +1,10 @@
 INCLUDE(PolycodeIncludes)
 
 SET(polycodeUI_SRCS
+    Source/PolyUIElement.cpp
     Source/PolyUIBox.cpp
+    Source/PolyUIHSizer.cpp
+    Source/PolyUIVSizer.cpp
     Source/PolyUIButton.cpp
     Source/PolyUICheckBox.cpp
     Source/PolyUIComboBox.cpp
@@ -21,6 +24,9 @@ SET(polycodeUI_SRCS
 
 SET(polycodeUI_HDRS
     Include/PolycodeUI.h
+    Include/PolyUIElement.h
+    Include/PolyUIHSizer.h
+    Include/PolyUIVSizer.h
     Include/PolyUIBox.h
     Include/PolyUIButton.h
     Include/PolyUICheckBox.h

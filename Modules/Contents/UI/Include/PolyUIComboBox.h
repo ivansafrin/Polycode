@@ -28,11 +28,12 @@
 #include "PolyScreenEntity.h"
 #include "PolyUIEvent.h"
 #include "PolyUIBox.h"
+#include "PolyUIElement.h"
 #include "PolyFont.h"
 
 namespace Polycode {
 
-	class _PolyExport UIComboBoxItem : public ScreenEntity {
+	class _PolyExport UIComboBoxItem : public UIElement {
 		public:
 			UIComboBoxItem(String label, Number comboWidth, Number comboHeight);
 			~UIComboBoxItem();

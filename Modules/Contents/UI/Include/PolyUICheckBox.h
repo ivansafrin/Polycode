@@ -28,10 +28,11 @@
 #include "PolyScreenEntity.h"
 #include "PolyUIEvent.h"
 #include "PolyFont.h"
+#include "PolyUIElement.h"
 
 namespace Polycode {
 
-	class _PolyExport UICheckBox : public ScreenEntity {
+	class _PolyExport UICheckBox : public UIElement {
 		public:
 			UICheckBox(String caption, bool checked);
 			~UICheckBox();

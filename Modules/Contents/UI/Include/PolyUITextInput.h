@@ -29,6 +29,7 @@
 #include "PolyScreenEntity.h"
 #include "PolyUIEvent.h"
 #include "PolyUIBox.h"
+#include "PolyUIElement.h"
 #include "PolyTimer.h"
 #include "PolyCoreInput.h"
 #include "PolyCore.h"
@@ -38,7 +39,7 @@ using namespace std;
 
 namespace Polycode {
 
-	class _PolyExport UITextInput : public ScreenEntity {
+	class _PolyExport UITextInput : public UIElement {
 		public:
 			UITextInput(bool multiLine, Number width, Number height);
 			~UITextInput();
@@ -61,7 +62,7 @@ namespace Polycode {
 			void deleteSelection();		
 			void selectAll();
 		
-			void Resize(int x, int y);
+			void Resize(Number width, Number height);
 			
 			void setNumberOnly(bool val);
 		

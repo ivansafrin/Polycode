@@ -21,6 +21,9 @@
  */
 
 #include "PolyUIBox.h"
+#include "PolyUIElement.h"
+#include "PolyUIHSizer.h"
+#include "PolyUIVSizer.h"
 #include "PolyUIButton.h"
 #include "PolyUICheckBox.h"
 #include "PolyUIComboBox.h"

@@ -22,6 +22,21 @@
 
 #include "PolycodeFrame.h"
 
+EditorHolder::EditorHolder() : UIElement() {
+	currentEditor = NULL;
+}
+
+EditorHolder::~EditorHolder() {
+
+}
+		
+void EditorHolder::Resize(Number width, Number height) {
+	if(currentEditor) {
+		currentEditor->Resize(width, height);
+	}
+}
+
+
 PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 
 	modalChild = NULL;
@@ -43,12 +58,24 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	welcomeEntity->addChild(newProjectButton);
 	welcomeEntity->addChild(examplesButton);
 	
-	editorHolder = new ScreenEntity();
-	addChild(editorHolder);
-		
+	mainSizer = new UIHSizer(100,100,200);
+	mainSizer->setPosition(0, 45);
+	addChild(mainSizer);
 	
+			
 	projectBrowser = new PolycodeProjectBrowser();
-	addChild(projectBrowser);
+	mainSizer->addLeftChild(projectBrowser);
+
+	consoleSizer = new UIVSizer(100,100,400);
+	mainSizer->addRightChild(consoleSizer);	
+
+	editorHolder = new EditorHolder();
+	consoleSizer->addTopChild(editorHolder);
+	
+	// REPLACE WITH CONSOLE CLASS
+	UITextInput *textInput = new UITextInput(true, 100, 100);
+	consoleSizer->addBottomChild(textInput);	
+	
 	
 	projectBrowser->treeContainer->getRootNode()->addEventListener(this, UITreeEvent::DRAG_START_EVENT);
 		
@@ -88,7 +115,6 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	textInputPopup = new TextInputPopup();
 	textInputPopup->visible = false;
 	
-	currentEditor = NULL;
 	
 	isDragging  = false;
 	dragLabel = new ScreenLabel("NONE", 11, "sans");
@@ -124,13 +150,13 @@ void PolycodeFrame::addEditor(PolycodeEditor *editor) {
 }
 
 void PolycodeFrame::showEditor(PolycodeEditor *editor) {
-	if(currentEditor) {
-		currentEditor->enabled = false;
-		currentEditor = NULL;
+	if(editorHolder->currentEditor) {
+		editorHolder->currentEditor->enabled = false;
+		editorHolder->currentEditor = NULL;
 	}
 	
-	currentEditor = editor;
-	currentEditor->enabled = true;
+	editorHolder->currentEditor = editor;
+	editorHolder->currentEditor->enabled = true;
 	
 	Resize(frameSizeX, frameSizeY);
 }
@@ -151,11 +177,11 @@ void PolycodeFrame::handleEvent(Event *event) {
 		switch(event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEUP:
 				if(isDragging) {
-					if(currentEditor) {
+					if(editorHolder->currentEditor) {
 						InputEvent *inputEvent = (InputEvent*) event;						
 						Number posX = inputEvent->mousePosition.x - editorHolder->getPosition2D().x;
 						Number posY = inputEvent->mousePosition.y - editorHolder->getPosition2D().y;						
-						currentEditor->handleDroppedFile(draggedFile, posX, posY);
+						editorHolder->currentEditor->handleDroppedFile(draggedFile, posX, posY);
 					}
 				}
 				isDragging = false;
@@ -218,15 +244,10 @@ void PolycodeFrame::Resize(int x, int y) {
 	topBarBg->setShapeSize(x, 45);
 	logo->setPosition(x-logo->getWidth()-2, 2);	
 	resizer->setPosition(x-resizer->getWidth()-1, y-resizer->getHeight()-1);	
-	projectBrowser->Resize(200, y-45);
+	mainSizer->Resize(x,y-45);	
 	
 	modalBlocker->setShapeSize(x, y);
-	
-	editorHolder->setPosition(200, 45);
-	
-	if(currentEditor) {
-		currentEditor->Resize(x-200, y-45);
-	}
+		
 	
 	if(this->modalChild) {
 		modalChild->setPosition((x-modalChild->getWidth())/2.0f, (y-modalChild->getHeight())/2.0f);

@@ -368,7 +368,7 @@ void UIColorPicker::Update() {
 	UIWindow::Update();
 }
 
-UIColorBox::UIColorBox(Color initialColor, Number width, Number height) : ScreenEntity() {
+UIColorBox::UIColorBox(Color initialColor, Number width, Number height) : UIElement() {
 
 	Config *conf = CoreServices::getInstance()->getConfig();	
 

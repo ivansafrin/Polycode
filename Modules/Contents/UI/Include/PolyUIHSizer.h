@@ -22,30 +22,44 @@
 
 #pragma once
 #include "PolyGlobals.h"
-#include "PolyScreenLabel.h"
 #include "PolyScreenShape.h"
-#include "PolyScreenEntity.h"
-#include "PolyUIEvent.h"
-#include "PolyUIBox.h"
 #include "PolyUIElement.h"
 
 namespace Polycode {
-
-	class _PolyExport UIButton : public UIElement {
+	
+	class CoreInput;
+	
+	class _PolyExport UIHSizer : public UIElement {
 		public:
-			UIButton(String text, Number width, Number height = 26);
-			~UIButton();		
+			UIHSizer(Number width, Number height, Number leftWidth);
+			~UIHSizer();
+			
 			void handleEvent(Event *event);
 			
-			void Update();
-				
-		private:
+			void setLeftWidth(Number width);
 			
-			Number labelXPos;
-			Number labelYPos;
-			UIBox *buttonRect;
-			UIBox *buttonFocusedRect;		
-			ScreenLabel *buttonLabel;
-			bool pressedDown;
+			void addLeftChild(UIElement *element);
+			void addRightChild(UIElement *element);			
+			void Resize(Number width, Number height);
+			
+			void updateSizer();
+			
+		protected:
+		
+			ScreenEntity *childElements;			
+			Number leftWidth;
+			
+			CoreInput *coreInput;
+			
+			bool resizing;
+			Number baseMouseX;
+			Number baseLeftWidth;
+			
+			ScreenShape *separatorHitShape;
+			ScreenShape *separatorBgShape;
+			
+			UIElement *firstElement;
+			UIElement *secondElement;			
 	};
+	
 }

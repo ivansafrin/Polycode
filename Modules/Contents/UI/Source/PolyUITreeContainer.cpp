@@ -28,7 +28,7 @@
 
 using namespace Polycode;
 
-UITreeContainer::UITreeContainer(String icon, String text, Number treeWidth, Number treeHeight) : ScreenEntity() {
+UITreeContainer::UITreeContainer(String icon, String text, Number treeWidth, Number treeHeight) : UIElement() {
 	
 	Config *conf = CoreServices::getInstance()->getConfig();
 	
@@ -61,14 +61,16 @@ UITreeContainer::UITreeContainer(String icon, String text, Number treeWidth, Num
 	setHitbox(width, height);
 }
 
-void UITreeContainer::Resize(int x, int y) {
-	mainContainer->Resize(x,y);
-	bgBox->resizeBox(x, y);
+void UITreeContainer::Resize(Number width, Number height) {
+	mainContainer->Resize(width,height);
+	bgBox->resizeBox(width, height);
 	mainContainer->setPositionY(0);
 
+
+	rootNode->Resize(width);
 //	width = x;
 	//	height = y;
-	setHitbox(x, y);
+	setHitbox(width, height);
 }
 
 void UITreeContainer::handleEvent(Event *event) {

@@ -22,7 +22,7 @@
 
 #include "PolycodeProjectBrowser.h"
 
-PolycodeProjectBrowser::PolycodeProjectBrowser() : ScreenEntity() {
+PolycodeProjectBrowser::PolycodeProjectBrowser() : UIElement() {
 	treeContainer = new UITreeContainer("boxIcon.png", L"Projects", 200, 555);
 	treeContainer->getRootNode()->toggleCollapsed();
 	treeContainer->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
@@ -34,7 +34,6 @@ PolycodeProjectBrowser::PolycodeProjectBrowser() : ScreenEntity() {
 	treeContainer->getRootNode()->setUserData((void*) data)	;
 	
 	addChild(treeContainer);		
-	treeContainer->setPosition(0,45);	
 	
 	selectedData = NULL;
 }
@@ -165,6 +164,6 @@ void PolycodeProjectBrowser::parseFolderIntoNode(UITree *node, String spath, Pol
 	
 }
 
-void PolycodeProjectBrowser::Resize(int newWidth, int newHeight) {
-	treeContainer->Resize(newWidth, newHeight);
+void PolycodeProjectBrowser::Resize(Number width, Number height) {
+	treeContainer->Resize(width, height);
 }
