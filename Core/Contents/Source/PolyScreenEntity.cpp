@@ -316,11 +316,11 @@ void ScreenEntity::_onMouseMove(Number x, Number y, int timestamp, Vector2 paren
 	
 	bool doTest = true;	
 	
-	if(hasMask) {
-		if(!((ScreenEntity*)maskEntity)->hitTest(x+parentAdjust.x,y+parentAdjust.y)) {
-			doTest = false;
-		}	
-	}
+//	if(hasMask) {
+//		if(!((ScreenEntity*)maskEntity)->hitTest(x+parentAdjust.x,y+parentAdjust.y)) {
+//			doTest = false;
+//		}	
+//	}
 	
 	if(doTest) {
 	if(processInputEvents && enabled) {
@@ -386,11 +386,11 @@ bool ScreenEntity::_onMouseUp(Number x, Number y, int mouseButton, int timestamp
 	
 	bool doTest = true;	
 	
-	if(hasMask) {
-		if(!((ScreenEntity*)maskEntity)->hitTest(x+parentAdjust.x,y+parentAdjust.y)) {
-			doTest = false;
-		}	
-	}
+//	if(hasMask) {
+//		if(!((ScreenEntity*)maskEntity)->hitTest(x+parentAdjust.x,y+parentAdjust.y)) {
+//			doTest = false;
+//		}	
+//	}
 	
 	if(doTest) {
 	if(processInputEvents && enabled) {
@@ -449,11 +449,11 @@ void ScreenEntity::_onMouseWheelUp(Number x, Number y, int timestamp, Vector2 pa
 	
 	bool doTest = true;	
 	
-	if(hasMask) {
-		if(!((ScreenEntity*)maskEntity)->hitTest(x+parentAdjust.x,y+parentAdjust.y)) {
-			doTest = false;
-		}	
-	}
+//	if(hasMask) {
+//		if(!((ScreenEntity*)maskEntity)->hitTest(x+parentAdjust.x,y+parentAdjust.y)) {
+//			doTest = false;
+//		}	
+//	}
 	
 	if(doTest) {
 	if(processInputEvents && enabled) {
@@ -497,11 +497,11 @@ void ScreenEntity::_onMouseWheelDown(Number x, Number y, int timestamp, Vector2 
 	
 	bool doTest = true;	
 	
-	if(hasMask) {
-		if(!((ScreenEntity*)maskEntity)->hitTest(x+parentAdjust.x,y+parentAdjust.y)) {
-			doTest = false;
-		}	
-	}
+//	if(hasMask) {
+//		if(!((ScreenEntity*)maskEntity)->hitTest(x+parentAdjust.x,y+parentAdjust.y)) {
+//			doTest = false;
+//		}	
+//	}
 	
 	if(doTest) {
 	if(processInputEvents && enabled) {
@@ -547,11 +547,11 @@ bool ScreenEntity::_onMouseDown(Number x, Number y, int mouseButton, int timesta
 	
 	bool doTest = true;	
 	
-	if(hasMask) {
-		if(!((ScreenEntity*)maskEntity)->hitTest(x+parentAdjust.x,y+parentAdjust.y)) {
-			doTest = false;
-		}	
-	}
+//	if(hasMask) {
+//		if(!((ScreenEntity*)maskEntity)->hitTest(x+parentAdjust.x,y+parentAdjust.y)) {
+//			doTest = false;
+//		}	
+//	}
 	
 	if(doTest) {
 	if(processInputEvents && enabled) {
@@ -597,6 +597,16 @@ bool ScreenEntity::_onMouseDown(Number x, Number y, int mouseButton, int timesta
 	}		
 	
 	return retVal;
+}
+
+Vector2 ScreenEntity::getScreenPosition() const {
+	Vector2 ret = getPosition2D();
+	
+	if(parentEntity) {
+		return ret + ((ScreenEntity*)parentEntity)->getScreenPosition();
+	} else {
+		return ret;
+	}
 }
 
 void ScreenEntity::setRotation(Number rotation) {

@@ -26,6 +26,7 @@
 #include "PolyMatrix4.h"
 #include "PolyQuaternion.h"
 #include "PolyColor.h"
+#include "PolyRectangle.h"
 #include <vector>
 
 namespace Polycode {
@@ -472,15 +473,6 @@ namespace Polycode {
 			*/
 			//@{			
 		
-			/**
-			* Sets another entity as a mask for this entity (This is not really working properly right now).
-			*/
-			void setMask(Entity *mask);
-			
-			/**
-			* Removes the entity's mask.
-			*/
-			void clearMask();
 		
 			/**
 			* You can set a custom string identifier for user purposes.
@@ -597,7 +589,9 @@ namespace Polycode {
 			
 			Vector3 bBox;			
 			bool ignoreParentMatrix;
-			bool isMask;
+						
+			bool enableScissor;	
+			Polycode::Rectangle scissorBox;			
 		
 		protected:
 		
@@ -610,8 +604,6 @@ namespace Polycode {
 		
 			Vector3 position;
 			Vector3 scale;		
-		
-			bool hasMask;
 		
 			bool lockMatrix;
 			bool matrixDirty;
@@ -628,8 +620,6 @@ namespace Polycode {
 			Quaternion qPitch;
 			Quaternion qRoll;			
 			Quaternion rotationQuat;	
-		
-			Entity *maskEntity;
 		
 		
 			Renderer *renderer;

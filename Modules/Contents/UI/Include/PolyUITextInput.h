@@ -34,6 +34,7 @@
 #include "PolyCoreInput.h"
 #include "PolyCore.h"
 #include <vector>
+#include "PolyUIScrollContainer.h"
 
 using namespace std;
 
@@ -109,12 +110,16 @@ namespace Polycode {
 			int caretPosition;
 			bool doSelectToCaret;
 		
+			ScreenEntity *linesContainer;
+		
 			bool multiLine;
 			Timer *blinkTimer;
 			UIBox *inputRect;
 			ScreenShape *blinkerRect;
 		
 			Number caretImagePosition;
+			
+			UIScrollContainer *scrollContainer;
 		
 			String fontName;
 			Number fontSize;

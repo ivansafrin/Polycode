@@ -110,7 +110,6 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	selectorRectBottom->visible = false;
 	addChild(selectorRectBottom);
 		
-	insertLine(true);	
 	
 	blinkerRect = new ScreenShape(ScreenShape::SHAPE_RECT, 1, fontSize+4,0,0);
 	blinkerRect->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
@@ -128,6 +127,19 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	setHitbox(width, rectHeight);
 	
 	updateCaretPosition();
+		
+	linesContainer = new ScreenEntity();
+	
+	scrollContainer = NULL;
+	
+	if(multiLine) {
+		scrollContainer = new UIScrollContainer(linesContainer, false, true, 200, 200);
+		addChild(scrollContainer);
+	} else {
+		addChild(linesContainer);
+	}
+	
+	insertLine(true);		
 }
 
 void UITextInput::setNumberOnly(bool val) {
@@ -295,6 +307,10 @@ void UITextInput::Resize(Number width, Number height) {
 	this->height = height;	
 	matrixDirty = true;	
 	setHitbox(width,height);
+
+	if(scrollContainer) {
+		scrollContainer->Resize(width, height);
+	}
 }
 
 int UITextInput::insertLine(bool after) {
@@ -304,7 +320,7 @@ int UITextInput::insertLine(bool after) {
 	ScreenLabel *newLine = new ScreenLabel(L"", fontSize, fontName, Label::ANTIALIAS_FULL);
 	newLine->setColor(0,0,0,1);
 	lineHeight = newLine->getHeight();
-	addChild(newLine);
+	linesContainer->addChild(newLine);
 	
 	if(after) {	
 		
@@ -333,7 +349,7 @@ int UITextInput::insertLine(bool after) {
 	} else {	
 		// do we even need that? I don't think so.
 	}	
-	
+		
 	dispatchEvent(new UIEvent(), UIEvent::CHANGE_EVENT);
 	return 1;	
 }
@@ -342,6 +358,11 @@ void UITextInput::restructLines() {
 	for(int i=0; i < lines.size(); i++) {
 		lines[i]->setPosition(padding,padding + (i*(lineHeight+lineSpacing)) ,0.0f);		
 	}
+	
+	if(scrollContainer) {
+		scrollContainer->setContentSize(width,  (((lines.size()) * ((lineHeight+lineSpacing)))) - padding);
+	}	
+	
 }
 
 void UITextInput::setText(String text) {
@@ -541,7 +562,7 @@ void UITextInput::insertText(String text) {
 			numLines++;		
 			ScreenLabel *newLine = new ScreenLabel(L"", fontSize, fontName, Label::ANTIALIAS_FULL);
 			newLine->setColor(0,0,0,1);
-			addChild(newLine);			
+			linesContainer->addChild(newLine);			
 			lines.push_back(newLine);
 			newLine->setText(strings[i]);
 		}

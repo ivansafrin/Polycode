@@ -26,6 +26,7 @@ THE SOFTWARE.
 #include "PolyMatrix4.h"
 #include "PolyVector2.h"
 #include "PolyImage.h"
+#include "PolyRectangle.h"
 
 namespace Polycode {
 	
@@ -188,6 +189,9 @@ namespace Polycode {
 		
 		int getXRes();
 		int getYRes();
+		
+		virtual void enableScissor(bool val) = 0;
+		virtual void setScissorBox(Polycode::Rectangle box) = 0;
 		
 		void setAnisotropyAmount(Number amount);
 		Number getAnisotropyAmount();

@@ -86,6 +86,8 @@ OpenGLRenderer::OpenGLRenderer() : Renderer() {
 	nearPlane = 0.1f;
 	farPlane = 100.0f;
 	verticesToDraw = 0;
+	
+	glDisable(GL_SCISSOR_TEST);
 }
 
 void OpenGLRenderer::setClippingPlanes(Number nearPlane_, Number farPlane_) {
@@ -377,6 +379,18 @@ void OpenGLRenderer::drawVertexBuffer(VertexBuffer *buffer, bool enableColorBuff
 	if(enableColorBuffer) {
 		glDisableClientState( GL_COLOR_ARRAY );	
 	}
+}
+
+void OpenGLRenderer::enableScissor(bool val) {
+	if(val) {
+		glEnable(GL_SCISSOR_TEST);
+	} else {
+		glDisable(GL_SCISSOR_TEST);	
+	}
+}
+
+void OpenGLRenderer::setScissorBox(Polycode::Rectangle box) {
+	glScissor(box.x, yRes-box.y-box.h, box.w, box.h);
 }
 
 void OpenGLRenderer::enableFog(bool enable) {

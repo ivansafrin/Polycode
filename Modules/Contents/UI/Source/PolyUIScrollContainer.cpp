@@ -29,7 +29,7 @@
 
 using namespace Polycode;
 
-UIScrollContainer::UIScrollContainer(ScreenEntity *scrolledEntity, bool hScroll, bool vScroll, Number width, Number height) : ScreenEntity() {
+UIScrollContainer::UIScrollContainer(ScreenEntity *scrolledEntity, bool hScroll, bool vScroll, Number width, Number height) : UIElement() {
 	
 	scrolledEntity->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	
@@ -47,17 +47,11 @@ UIScrollContainer::UIScrollContainer(ScreenEntity *scrolledEntity, bool hScroll,
 	Number uiScrollPanePadding = conf->getNumericValue("Polycode", "uiScrollPanePadding");			
 	
 	defaultScrollSize = conf->getNumericValue("Polycode", "uiScrollDefaultSize");			
-	
-	maskShape = new ScreenShape(ScreenShape::SHAPE_RECT, width, height);
-	maskShape->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
-	addChild(maskShape);
-	maskShape->setColor(1.0f,0,0,0.8f);
-	
+		
 	scrollChild = scrolledEntity;
 	addChild(scrollChild);
 	
-	scrollChild->setMask(maskShape);
-	
+	scrollChild->enableScissor = true;
 	
 	vScrollBar = new UIVScrollBar(defaultScrollSize, height, height / scrolledEntity->getHeight());
 	addChild(vScrollBar);
@@ -73,22 +67,23 @@ UIScrollContainer::UIScrollContainer(ScreenEntity *scrolledEntity, bool hScroll,
 	hScrollBar->addEventListener(this, Event::CHANGE_EVENT);
 	if(!hScroll)
 		hScrollBar->enabled = false;
-	
-	
-	
+			
 	setContentSize(scrollChild->getWidth()*scrollChild->getScale().x, scrollChild->getHeight()*scrollChild->getScale().y);
 	Resize(width, height);	
 }
 
-void UIScrollContainer::Resize(int x, int y) {
-	width = x;
-	height = y;
+void UIScrollContainer::Resize(Number width, Number height) {
+	this->width = width;
+	this->height = height;
 	setHitbox(width, height);
 	
-	maskShape->setShapeSize(x, y);
-	vScrollBar->Resize(y);
+	
+	vScrollBar->Resize(height);
 	setContentSize(contentWidth, contentHeight);
-	vScrollBar->setPositionY(0);
+	vScrollBar->setPosition(width-vScrollBar->getWidth(), 0);
+	
+	matrixDirty = true;
+	
 }
 
 void UIScrollContainer::onMouseWheelUp(Number x, Number y) {
@@ -125,6 +120,12 @@ void UIScrollContainer::setContentSize(Number newContentWidth, Number newContent
 			hScrollBar->enabled = true;		
 		}
 	}	
+}
+
+void UIScrollContainer::Update() {
+	Vector2 pos = getScreenPosition();
+	printf("POS: %f,%f\n", pos.x, pos.y);
+	scrollChild->scissorBox.setRect(pos.x,pos.y, width, height);	
 }
 
 void UIScrollContainer::handleEvent(Event *event) {

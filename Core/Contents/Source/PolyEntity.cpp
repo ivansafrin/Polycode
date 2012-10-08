@@ -51,10 +51,8 @@ Entity::Entity() {
 	renderWireframe  = false;
 	colorAffectsChildren = true;
 	visibilityAffectsChildren = true;
-	maskEntity = NULL;
-	isMask = false;
-	hasMask = false;
 	ownsChildren = false;
+	enableScissor = false;
 }
 
 void Entity::setUserData(void *userData) {
@@ -266,31 +264,6 @@ Matrix4 Entity::getConcatenatedRollMatrix() const {
 		return transformMatrix;	
 }
 
-void Entity::setMask(Entity *mask) {	
-	mask->depthWrite = true;
-	mask->depthOnly = true;
-	mask->setPositionZ(-1.0);
-	mask->isMask = true;
-	mask->enabled = false;
-	maskEntity = mask;
-	hasMask = true;
-	
-//	for(int i=0; i < children.size(); i++) {
-//		children[i]->setMask(mask);
-//	}
-}
-
-void Entity::clearMask() {
-	maskEntity->depthWrite = false;
-	maskEntity->depthOnly = false;	
-	maskEntity->setPositionZ(0);	
-	maskEntity->enabled = true;
-	maskEntity = NULL;	
-	hasMask = false;	
-	for(int i=0; i < children.size(); i++) {
-		children[i]->clearMask();
-	}	
-}
 
 void Entity::transformAndRender() {
 	if(!renderer || !enabled)
@@ -300,14 +273,11 @@ void Entity::transformAndRender() {
 		renderer->drawToColorBuffer(false);
 	}
 	
-	if(hasMask) {
-		renderer->clearBuffer(false, true);
-		maskEntity->enabled = true;
-		maskEntity->transformAndRender();			
-		maskEntity->enabled = false;		
-		renderer->setDepthFunction(Renderer::DEPTH_FUNCTION_GREATER);
+	if(enableScissor) {
+		renderer->enableScissor(true);
+		renderer->setScissorBox(scissorBox);
 	}
-	
+		
 	renderer->pushMatrix();
 	if(ignoreParentMatrix && parentEntity) {
 		renderer->multModelviewMatrix(parentEntity->getConcatenatedMatrix().inverse());
@@ -324,10 +294,6 @@ void Entity::transformAndRender() {
 		}
 	}
 
-	if(hasMask) {
-		renderer->enableDepthWrite(false);
-		renderer->enableDepthTest(true);		
-	} else {
 	if(!depthWrite)
 		renderer->enableDepthWrite(false);
 	else
@@ -337,7 +303,6 @@ void Entity::transformAndRender() {
 		renderer->enableDepthTest(false);
 	else
 		renderer->enableDepthTest(true);
- 	}
 		 
 	renderer->enableAlphaTest(alphaTest);
 	
@@ -364,22 +329,18 @@ void Entity::transformAndRender() {
 				
 	renderer->setRenderMode(mode);	
 	renderer->popMatrix();
-	
-	if(hasMask) {
-		renderer->clearBuffer(false, true);
-	}
-	
+		
 	if(!depthWrite)
 		renderer->enableDepthWrite(true);
 	
 	
-	if(hasMask) {
-		renderer->setDepthFunction(Renderer::DEPTH_FUNCTION_LEQUAL);
-	}
-	
 	if(depthOnly) {
 		renderer->drawToColorBuffer(true);
 	}	
+	
+	if(enableScissor) {
+		renderer->enableScissor(false);
+	}
 }
 
 void Entity::setRenderer(Renderer *renderer) {
@@ -392,11 +353,7 @@ void Entity::setRenderer(Renderer *renderer) {
 void Entity::addEntity(Entity *newChild) {
 	newChild->setRenderer(renderer);
 	newChild->setParentEntity(this);
-	children.push_back(newChild);
-	
-	if(hasMask) {
-		newChild->setMask(maskEntity);
-	}
+	children.push_back(newChild);	
 }
 
 

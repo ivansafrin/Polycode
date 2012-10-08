@@ -24,17 +24,20 @@
 #include "PolyGlobals.h"
 #include "PolyUIVScrollBar.h"
 #include "PolyUIHScrollBar.h"
+#include "PolyUIElement.h"
 
 namespace Polycode {
 	
-	class _PolyExport UIScrollContainer : public ScreenEntity {
+	class _PolyExport UIScrollContainer : public UIElement {
 	public:
 		UIScrollContainer(ScreenEntity *scrolledEntity, bool hScroll, bool vScroll, Number width, Number height);
 		~UIScrollContainer();
 		
 		void setContentSize(Number newContentWidth, Number newContentHeight);
 		
-		void Resize(int x, int y);
+		void Resize(Number width, Number height);
+		
+		void Update();
 		
 		void onMouseWheelDown(Number x, Number y);
 		void onMouseWheelUp(Number x, Number y);		
@@ -49,7 +52,6 @@ namespace Polycode {
 		Number contentHeight;
 		
 		ScreenEntity *scrollChild;		
-		ScreenShape *maskShape;		
 		
 		bool hasHScroll;
 		bool hasVScroll;

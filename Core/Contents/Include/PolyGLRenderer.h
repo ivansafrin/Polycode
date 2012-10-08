@@ -147,6 +147,9 @@ namespace Polycode {
 		void rotate2D(Number angle);
 		void scale2D(Vector2 *scale);
 		
+		void enableScissor(bool val);
+		void setScissorBox(Polycode::Rectangle box);		
+		
 		Vector3 projectRayFrom2DCoordinate(Number x, Number y);
 
 		void initOSSpecific();
