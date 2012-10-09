@@ -24,8 +24,8 @@ ExternalProject_Add(bullet
     
     DOWNLOAD_DIR ${POLYCODE_DEPS_DOWNLOAD_DIR}
 
-    URL http://bullet.googlecode.com/files/bullet-2.78.zip
-    URL_MD5 99d4070864c9f73521481ba9cda25038
+    URL http://bullet.googlecode.com/files/bullet-2.80-rev2531.zip
+    URL_MD5 57ddf629776bcbd79115ed05f3520ba6
 
     INSTALL_DIR ${POLYCODE_DEPS_MODULES_PREFIX} 
     CMAKE_ARGS ${bullet_CMAKE_ARGS}
