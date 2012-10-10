@@ -80,9 +80,11 @@ directory from a command prompt (for VS2010):
     cmake -G "Visual Studio 10" ..
     
 This generates a PolycodeDependencies.sln in the Build directory. 
-Building this project in Visual Studio will download, build and 
+Building the ALL_BUILD project in the solution in Visual Studio will download, build and 
 install the dependencies. Note that you need to build both Debug and
-Release in Visual Studio. 
+Release.
+
+You will also need to manually build the "glext" and "wglext" projects.
 
 ### Unix Makefiles ###
 
