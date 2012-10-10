@@ -57,12 +57,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			core->handleMouseUp(CoreInput::MOUSE_BUTTON2, lParam,wParam);
 	break;
 
-	#ifdef WINDOWS_TOUCH_SUPPORT
-		case WM_TOUCH:
-			if(core)
+	case WM_TOUCH:
+		if(core) {
+			if(core->isMultiTouchEnabled()) {
 				core->handleTouchEvent(lParam, wParam);
-		break;
-	#endif
+			}
+		}
+	break;
 
 	case WM_MBUTTONDOWN:
 		if(core)
@@ -134,11 +135,6 @@ WNDCLASSEX wcex;
 
   hwnd = CreateWindowEx(WS_EX_APPWINDOW, L"POLYCODEAPPLICATION", windowTitle, WS_OVERLAPPED|WS_SYSMENU,
       0, 0, 640, 480, NULL, NULL, hInstance, NULL);
-
-#ifdef WINDOWS_TOUCH_SUPPORT
-	RegisterTouchWindow(hwnd, 0);
-#endif
-	
 
   windowData = (void*)&hwnd;
 

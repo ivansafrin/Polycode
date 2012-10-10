@@ -188,6 +188,8 @@ public:
 		void handleMouseUp(int mouseCode,LPARAM lParam, WPARAM wParam);
 		void handleTouchEvent(LPARAM lParam, WPARAM wParam);
 
+		bool isMultiTouchEnabled() { return hasMultiTouch; }
+
 		void setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel);
 		
 		void initContext(bool usePixelFormat, unsigned int pixelFormat);

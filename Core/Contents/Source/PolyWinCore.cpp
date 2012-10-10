@@ -842,11 +842,15 @@ void Win32Core::initTouch() {
 	// Check for windows multitouch support at runtime
 	// This could be done easily during preprocessing but would require building
 	// multiple releases of polycode for both winxp/vista and win7
-	GetTouchInputInfoFunc = (GetTouchInputInfoType) GetProcAddress(GetModuleHandle(TEXT("user32.lib")), "GetTouchInputInfo");
+	GetTouchInputInfoFunc = (GetTouchInputInfoType) GetProcAddress(GetModuleHandle(TEXT("user32")), "GetTouchInputInfo");
 	
 	// If the above multitouch functions were found, then set a flag so we don't
 	// have to check again later
 	hasMultiTouch = ( GetTouchInputInfoFunc == NULL ) ? false : true;
+
+	if(hasMultiTouch) {
+			RegisterTouchWindow(hWnd, 0);
+	}
 #endif
 }
 
