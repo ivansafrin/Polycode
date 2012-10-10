@@ -25,6 +25,7 @@
 #include "PolyGlobals.h"
 #include "PolyCore.h"
 #include "PolyInputKeys.h"
+#include "PolyInputEvent.h"
 #include "PolyRectangle.h"
 
 #include <winsock2.h>
@@ -111,6 +112,7 @@ namespace Polycode {
 		int eventCode;		
 		int mouseX;
 		int mouseY;
+		TouchInfo touch;
 		std::vector<TouchInfo> touches;
 		PolyKEY keyCode;
 		wchar_t unicodeChar;		

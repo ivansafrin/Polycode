@@ -279,7 +279,7 @@ ScreenEntity* Screen::addEntity(ScreenEntity *newEntity) {
 }
 
 ScreenEntity* Screen::addChild(ScreenEntity *newEntity) {
-	addEntity(newEntity);
+	return addEntity(newEntity);
 }
 
 ScreenEntity* Screen::removeChild(ScreenEntity *entityToRemove) {

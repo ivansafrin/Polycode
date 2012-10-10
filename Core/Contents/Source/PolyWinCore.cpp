@@ -494,18 +494,21 @@ void Win32Core::handleTouchEvent(LPARAM lParam, WPARAM wParam) {
 						newEvent.eventGroup = Win32Event::INPUT_EVENT;
 						newEvent.eventCode = InputEvent::EVENT_TOUCHES_ENDED;
 						newEvent.touches = touches;
+						newEvent.touch = touches[i];
 						win32Events.push_back(newEvent);	
 					} else if(ti.dwFlags & TOUCHEVENTF_MOVE) {
 						Win32Event newEvent;
 						newEvent.eventGroup = Win32Event::INPUT_EVENT;
 						newEvent.eventCode = InputEvent::EVENT_TOUCHES_MOVED;
 						newEvent.touches = touches;
+						newEvent.touch = touches[i];
 						win32Events.push_back(newEvent);
 					} else if(ti.dwFlags & TOUCHEVENTF_DOWN) {
 						Win32Event newEvent;
 						newEvent.eventGroup = Win32Event::INPUT_EVENT;
 						newEvent.eventCode = InputEvent::EVENT_TOUCHES_BEGAN;
 						newEvent.touches = touches;
+						newEvent.touch = touches[i];
 						win32Events.push_back(newEvent);
 					}
 			  }
@@ -573,13 +576,13 @@ void Win32Core::checkEvents() {
 			case Win32Event::INPUT_EVENT:
 				switch(event.eventCode) {
 					case InputEvent::EVENT_TOUCHES_BEGAN:
-						input->touchesBegan(event.touches, getTicks());
+						input->touchesBegan(event.touch, event.touches, getTicks());
 					break;
 					case InputEvent::EVENT_TOUCHES_ENDED:
-						input->touchesEnded(event.touches, getTicks());
+						input->touchesEnded(event.touch, event.touches, getTicks());
 					break;
 					case InputEvent::EVENT_TOUCHES_MOVED:
-						input->touchesMoved(event.touches, getTicks());
+						input->touchesMoved(event.touch, event.touches, getTicks());
 					break;
 					case InputEvent::EVENT_MOUSEMOVE:
 						input->setDeltaPosition(event.mouseX - lastMouseX , event.mouseY - lastMouseY);										
