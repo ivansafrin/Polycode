@@ -84,6 +84,8 @@ UIWindow::UIWindow(String windowName, Number width, Number height) : ScreenEntit
 	
 	focusable = true;
 	blockMouseInput = true;
+	
+	processInputEvents = true;
 }
 
 void UIWindow::setWindowSize(Number w, Number h) {
@@ -112,10 +114,12 @@ void UIWindow::onKeyDown(PolyKEY key, wchar_t charCode) {
 }
 
 void UIWindow::onLoseFocus() {
+/*
 		if(focusedChild) {
 			focusedChild->hasFocus = false;
 			focusedChild->onLoseFocus();
 		}
+*/		
 }
 
 void UIWindow::onMouseDown(Number x, Number y) {

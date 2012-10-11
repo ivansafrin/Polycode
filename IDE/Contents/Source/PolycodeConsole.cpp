@@ -32,6 +32,8 @@ PolycodeConsole::PolycodeConsole() : UIElement() {
 	addChild(consoleTextInput);	
 	
 	consoleTextInput->addEventListener(this, Event::COMPLETE_EVENT);
+	
+	consoleTextInput->setColor(0.95, 1.0, 0.647, 1.0);
 
 	PolycodeConsole::setInstance(this);
 }
@@ -60,6 +62,7 @@ void PolycodeConsole::print(String msg) {
 
 void PolycodeConsole::_print(String msg) {
 	debugTextInput->setText(debugTextInput->getText()+msg);
+	debugTextInput->
 }
 
 void PolycodeConsole::Resize(Number width, Number height) {

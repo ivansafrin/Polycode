@@ -133,6 +133,8 @@ CoreServices::CoreServices() : EventDispatcher() {
 	tweenManager = new TweenManager();
 	soundManager = new SoundManager();
 	fontManager = new FontManager();
+	
+	focusedChild = NULL;
 }
 
 CoreServices::~CoreServices() {

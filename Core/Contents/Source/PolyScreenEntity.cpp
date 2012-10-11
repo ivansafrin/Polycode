@@ -26,6 +26,7 @@
 #include "PolyPolygon.h"
 #include "PolyVertex.h"
 #include "PolyRenderer.h"
+#include "PolyCoreServices.h"
 
 inline double round(double x) { return floor(x + 0.5); }
 
@@ -52,7 +53,6 @@ ScreenEntity::ScreenEntity() : Entity(), EventDispatcher() {
 	focusable = false;
 	hasFocus = false;
 	focusChildren = false;	
-	focusedChild = NULL;
 	blockMouseInput = false;
 	
 	snapToPixels = false;
@@ -81,15 +81,21 @@ void ScreenEntity::setDefaultScreenOptions(bool snapToPixels) {
 
 void ScreenEntity::focusNextChild() {
 	int j = 0;
-	if(focusedChild) {
+	bool hasFocusedChild = false;
+	if(CoreServices::getInstance()->focusedChild) {
 		for(int i=0; i < children.size(); i++) {
-			if(children[i] == focusedChild)
+			if(children[i] == CoreServices::getInstance()->focusedChild) {
 				j = i;
+				hasFocusedChild = true;
+			}
 		}
 	}
 	
+	if(!hasFocusedChild)
+		return;
+	
 	for(int i=0; i < children.size(); i++) {
-		if(((ScreenEntity*)children[j])->isFocusable() && children[j] != focusedChild) {
+		if(((ScreenEntity*)children[j])->isFocusable() && children[j] != CoreServices::getInstance()->focusedChild) {
 			focusChild(((ScreenEntity*)children[j]));
 			return;
 		}
@@ -105,13 +111,13 @@ Number ScreenEntity::getRotation() const {
 }
 
 void ScreenEntity::focusChild(ScreenEntity *child) {
-	if(focusedChild != NULL) {
-		focusedChild->onLoseFocus();
-		focusedChild->hasFocus = false;
+	if(CoreServices::getInstance()->focusedChild != NULL) {
+		((ScreenEntity*)CoreServices::getInstance()->focusedChild)->onLoseFocus();
+		((ScreenEntity*)CoreServices::getInstance()->focusedChild)->hasFocus = false;
 	}
-	focusedChild = child;
-	focusedChild->hasFocus = true;
-	focusedChild->onGainFocus();
+	CoreServices::getInstance()->focusedChild = child;
+	((ScreenEntity*)CoreServices::getInstance()->focusedChild)->hasFocus = true;
+	((ScreenEntity*)CoreServices::getInstance()->focusedChild)->onGainFocus();
 }
 
 bool ScreenEntity::isFocusable() const {
@@ -129,7 +135,9 @@ void ScreenEntity::stopDrag() {
 }
 
 ScreenEntity::~ScreenEntity() {
-
+	if(CoreServices::getInstance()->focusedChild == this) {
+		CoreServices::getInstance()->focusedChild = NULL;
+	}
 }
 
 void ScreenEntity::setBlendingMode(int newBlendingMode) {

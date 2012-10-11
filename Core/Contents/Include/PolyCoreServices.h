@@ -154,13 +154,15 @@ namespace Polycode {
 					
 			~CoreServices();
 		
+			void *focusedChild;
+			
 		protected:
 		
 			CoreServices();
 					
 		private:
 		
-		
+			
 			static CoreServices* overrideInstance;
 			static std::map <long, CoreServices*> instanceMap;
 			static CoreMutex *renderMutex;

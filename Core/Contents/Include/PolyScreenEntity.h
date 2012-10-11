@@ -207,7 +207,6 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		Rectangle *dragLimits;
 		
 		int lastClickTicks;
-		ScreenEntity *focusedChild;
 
 };
 

@@ -124,7 +124,6 @@ void UIScrollContainer::setContentSize(Number newContentWidth, Number newContent
 
 void UIScrollContainer::Update() {
 	Vector2 pos = getScreenPosition();
-	printf("POS: %f,%f\n", pos.x, pos.y);
 	scrollChild->scissorBox.setRect(pos.x,pos.y, width, height);	
 }
 
