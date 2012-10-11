@@ -180,6 +180,8 @@ public:
 		unsigned int getTicks();		
 		bool Update();
 
+		void setVSync(bool vSyncVal);
+
 		void handleKeyDown(LPARAM lParam, WPARAM wParam, wchar_t unicodeChar);
 		void handleKeyUp(LPARAM lParam, WPARAM wParam);
 		void handleMouseMove(LPARAM lParam, WPARAM wParam);

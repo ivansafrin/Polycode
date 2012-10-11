@@ -36,6 +36,9 @@
 #include <GL/wglext.h>
 #endif
 
+PFNWGLSWAPINTERVALEXTPROC       wglSwapIntervalEXT = NULL;
+PFNWGLGETSWAPINTERVALEXTPROC    wglGetSwapIntervalEXT = NULL;
+
 using namespace Polycode;
 
 long getThreadID() {
@@ -100,6 +103,11 @@ Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScre
 
 	((OpenGLRenderer*)renderer)->initOSSpecific();
 
+	wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC) wglGetProcAddress("wglSwapIntervalEXT");
+	wglGetSwapIntervalEXT = (PFNWGLGETSWAPINTERVALEXTPROC) wglGetProcAddress("wglGetSwapIntervalEXT");
+	
+	setVSync(vSync);
+
 	CoreServices::getInstance()->installModule(new GLSLShaderModule());	
 }
 
@@ -142,6 +150,16 @@ bool Win32Core::Update() {
 	return running;
 }
 
+void Win32Core::setVSync(bool vSyncVal) {
+	if(wglSwapIntervalEXT) {
+		if(vSyncVal) {
+			wglSwapIntervalEXT(1);
+		} else {
+			wglSwapIntervalEXT(0);
+		}
+	}
+}
+
 void Win32Core::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel) {
 
 	if(fullScreen) {
@@ -176,6 +194,8 @@ void Win32Core::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, in
 	if(aaLevel > 0) {
 		initMultisample(aaLevel);
 	}
+
+	setVSync(vSync);
 
 	renderer->Resize(xRes, yRes);
 }
