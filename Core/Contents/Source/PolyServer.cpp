@@ -39,7 +39,7 @@ void ServerClient::handlePacket(Packet *packet) {
 	ServerClientEvent *event = new ServerClientEvent();	
 	event->data = packet->data;
 	event->dataSize = packet->header.size;
-	event->dataType = packet->header.type;	
+	event->dataType = packet->header.type;		
 	dispatchEvent(event, ServerClientEvent::EVENT_CLIENT_DATA);	
 }
 
@@ -67,13 +67,15 @@ void Server::handleEvent(Event *event) {
 	
 	ServerClient *client;		
 	if(event->getDispatcher() == rateTimer) {
-		world->updateWorld(rateTimer->getElapsedf());		
-		for(int i=0; i < clients.size(); i++) {
-			client = clients[i];
-			unsigned int worldDataSize;
-			char *worldData;
-			world->getWorldState(client, &worldData, &worldDataSize);			
-			sendData(client->connection->address, (char*)worldData, worldDataSize, PACKET_TYPE_SERVER_DATA);			
+		if(world) {
+			world->updateWorld(rateTimer->getElapsedf());		
+			for(int i=0; i < clients.size(); i++) {
+				client = clients[i];
+				unsigned int worldDataSize;
+				char *worldData;
+				world->getWorldState(client, &worldData, &worldDataSize);			
+				sendData(client->connection->address, (char*)worldData, worldDataSize, PACKET_TYPE_SERVER_DATA);			
+			}
 		}
 	}	
 	

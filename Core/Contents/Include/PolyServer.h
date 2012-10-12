@@ -69,7 +69,7 @@ namespace Polycode {
 
 	class _PolyExport Server : public Peer {
 		public:
-			Server(unsigned int port, unsigned int rate, ServerWorld *world);
+			Server(unsigned int port, unsigned int rate, ServerWorld *world = NULL);
 			~Server();
 		
 			void DisconnectClient(ServerClient *client);

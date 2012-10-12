@@ -151,7 +151,9 @@ namespace Polycode {
 				
 	protected:	
 		PolycodeView *glView;
-		uint64_t initTime;		
+		uint64_t initTime;	
+		
+		PolycodeView *view;
 		
 		IOHIDManagerRef hidManager;
 	};

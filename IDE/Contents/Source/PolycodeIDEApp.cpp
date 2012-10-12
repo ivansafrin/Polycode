@@ -75,6 +75,8 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	frame->Resize(core->getXRes(), core->getYRes());	
 	core->setVideoMode(1000, 600, false, false, 0, 0);
 	
+	debugger = new PolycodeRemoteDebugger();
+	frame->console->setDebugger(debugger);
 	
 //	CoreServices::getInstance()->getResourceManager()->addArchive(RESOURCE_PATH"tomato.polyapp");
 	

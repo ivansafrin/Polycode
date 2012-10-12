@@ -30,7 +30,7 @@ THE SOFTWARE.
 
 class CocoaPolycodePlayer : public PolycodePlayer {
 	public:
-		CocoaPolycodePlayer(PolycodeView *view,String fileName, bool knownArchive);
+		CocoaPolycodePlayer(PolycodeView *view,String fileName, bool knownArchive, bool useDebugger=false);
 		virtual ~CocoaPolycodePlayer();
 	
 		void createCore();	

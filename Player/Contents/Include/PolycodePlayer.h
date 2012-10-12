@@ -35,12 +35,26 @@ extern "C" {
 #include "lua.h"
 #include "lualib.h"
 #include "lauxlib.h"
-// #include "lapi.h"
-	
+// #include "lapi.h"	
 
 using namespace Polycode;
 
-//class PolycodeRemoteDebuggerClient : public
+class PolycodeRemoteDebuggerClient : public EventDispatcher {
+	public:
+		PolycodeRemoteDebuggerClient();
+		~PolycodeRemoteDebuggerClient();
+		
+		void handleEvent(Event *event);
+		
+		static const int EVENT_DEBUG_ERROR = 32;
+		static const int EVENT_DEBUG_PRINT = 33;
+		static const int EVENT_DEBUG_RESIZE = 34;
+		static const int EVENT_DEBUG_REMOVE = 35;
+		
+		static const int EVENT_INJECT_CODE = 36;		
+	
+		Client *client;
+};
 
 class PolycodeDebugEvent : public Event {
 public:
@@ -63,7 +77,7 @@ class PolycodePlayer : public EventDispatcher {
 	
 public:
 	
-	PolycodePlayer(String fileName, bool knownArchive);
+	PolycodePlayer(String fileName, bool knownArchive, bool useDebugger=false);
 	virtual ~PolycodePlayer();
 	
 	void runPlayer();
@@ -93,8 +107,19 @@ public:
 	Core *core;	
 	
 protected:
+
+	Timer *debuggerTimer;
+	
+	PolycodeRemoteDebuggerClient *remoteDebuggerClient;
 	
 	lua_State *L;		
+	
+	bool useDebugger;
+	
+	String fullPath;
+	
+	bool doCodeInject;
+	String injectCodeString;
 	
 	std::vector<String> loadedModules;
 	

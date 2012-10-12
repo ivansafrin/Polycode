@@ -103,6 +103,8 @@ Packet *Peer::createPacket(const Address &target, char *data, unsigned int size,
 
 void Peer::sendReliableData(const Address &target, char *data, unsigned int size, unsigned short type) {	
 	PeerConnection *connection = getPeerConnection(target);	
+	if(!connection)
+		connection = addPeerConnection(target);	
 	Packet *packet = createPacket(target, data, size, type);
 	packet->header.reliableID = connection->reliableID;
 	connection->reliableID++;

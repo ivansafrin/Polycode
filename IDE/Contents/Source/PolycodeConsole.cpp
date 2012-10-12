@@ -21,10 +21,14 @@
 */
 
 #include "PolycodeConsole.h"
+#include "PolycodeRemoteDebugger.h"
 
 PolycodeConsole* PolycodeConsole::instance = NULL;
 
+
 PolycodeConsole::PolycodeConsole() : UIElement() {
+
+	debugger = NULL;
 	debugTextInput = new UITextInput(true, 100, 100);
 	addChild(debugTextInput);
 
@@ -42,11 +46,19 @@ PolycodeConsole::~PolycodeConsole() {
 
 }
 
+void PolycodeConsole::setDebugger(PolycodeRemoteDebugger *debugger) {
+	this->debugger = debugger;
+}
+
 void PolycodeConsole::handleEvent(Event *event) {
 	if(event->getDispatcher() == consoleTextInput) {
 		if(event->getEventCode() == Event::COMPLETE_EVENT) {
 			_print(">"+consoleTextInput->getText());
 			_print("\n");
+			if(debugger) {
+				debugger->injectCode(consoleTextInput->getText());
+			}	
+
 			consoleTextInput->setText("");
 		}
 	}

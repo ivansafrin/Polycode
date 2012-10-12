@@ -38,6 +38,8 @@
 
 #include "PolycodeToolLauncher.h"
 
+#include "PolycodeRemoteDebugger.h"
+
 using namespace Polycode;
 
 class PolycodeIDEApp : public EventDispatcher {
@@ -74,5 +76,7 @@ protected:
 	
 	PolycodeEditorManager *editorManager;
 	PolycodeProjectManager *projectManager;
+	
+	PolycodeRemoteDebugger *debugger;
 	
 };

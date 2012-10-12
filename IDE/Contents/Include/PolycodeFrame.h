@@ -72,7 +72,9 @@ public:
 		
 	UIImageButton *playButton;
 	UIHSizer *mainSizer;	
-			
+	
+	PolycodeConsole *console;
+						
 private:
 	
 	int frameSizeX;
@@ -89,7 +91,6 @@ private:
 	
 	ScreenImage *welcomeImage;	
 	
-	PolycodeConsole *console;
 	
 	EditorHolder *editorHolder;
 	

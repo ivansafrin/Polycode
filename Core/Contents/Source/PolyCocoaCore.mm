@@ -48,6 +48,8 @@ CocoaCore::CocoaCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, 
 	hidManager = NULL;
 	initGamepad();
 
+	this->view = view;
+
 	eventMutex = createMutex();
 	
 //	NSLog(@"BUNDLE: %@", [[NSBundle mainBundle] bundlePath]);
@@ -292,6 +294,7 @@ vector<Polycode::Rectangle> CocoaCore::getVideoModes() {
 
 CocoaCore::~CocoaCore() {
 	printf("Shutting down cocoa core\n");
+	[view setCore:nil];	
 	shutdownGamepad();
 	if(fullScreen) {
 		[glView exitFullScreenModeWithOptions:nil];

@@ -63,13 +63,14 @@ void Client::handlePacket(Packet *packet, PeerConnection *connection) {
 			case PACKET_TYPE_SETCLIENT_ID: {
 				clientID = (unsigned short)*packet->data;
 				ClientEvent *newEvent = new ClientEvent();
-				dispatchEvent(newEvent, ClientEvent::EVENT_CLIENT_READY);
-				sendReliableData(serverAddress, (char*)&clientID, sizeof(unsigned short), PACKET_TYPE_CLIENT_READY);
+				sendReliableData(serverAddress, (char*)&clientID, sizeof(unsigned short), PACKET_TYPE_CLIENT_READY);				
+				dispatchEvent(newEvent, ClientEvent::EVENT_CLIENT_READY);				
 			} break;
 			case PACKET_TYPE_DISONNECT:
 			{
 				ClientEvent *newEvent = new ClientEvent();
 				dispatchEvent(newEvent, ClientEvent::EVENT_SERVER_DISCONNECTED);
+				connected = false;
 			}
 			break;
 			default: {
@@ -91,7 +92,7 @@ void Client::setPersistentData(void *data, unsigned int size) {
 
 void Client::Connect(std::string ipAddress, unsigned int port) {
 	serverAddress.setAddress(ipAddress, port);
-	connected = true;	
+	connected = true;		
 }
 
 void Client::Disconnect() {

@@ -22,36 +22,36 @@
  
 #pragma once
 
-#include "PolycodeUI.h"
 #include "Polycode.h"
+#include "PolycodeConsole.h"
 
 using namespace Polycode;
 
-class PolycodeRemoteDebugger;
-
-class PolycodeConsole : public UIElement {
+class DebuggerClient { 
 	public:
-		PolycodeConsole();
-		~PolycodeConsole();
+		ServerClient *client;
+};
+
+class PolycodeRemoteDebugger : EventHandler {
+	public:
+		PolycodeRemoteDebugger();
+		~PolycodeRemoteDebugger();
 		
-		void _print(String msg);
+		void injectCode(String code);
 		
 		void handleEvent(Event *event);
-		
-		void setDebugger(PolycodeRemoteDebugger *debugger);
-		
-		static void print(String msg);
-		
-		void Resize(Number width, Number height);
-		
-		static void setInstance(PolycodeConsole *newInstance);
-		
+			
+			
+		static const int EVENT_DEBUG_ERROR = 32;
+		static const int EVENT_DEBUG_PRINT = 33;
+		static const int EVENT_DEBUG_RESIZE = 34;
+		static const int EVENT_DEBUG_REMOVE = 35;
+
+		static const int EVENT_INJECT_CODE = 36;
+			
 	protected:
-	
-		PolycodeRemoteDebugger *debugger;
 		
-		static PolycodeConsole *instance;
-		
-		UITextInput *debugTextInput;
-		UITextInput *consoleTextInput;		
+		Server *server;
+		std::vector<DebuggerClient*> debuggerClients;
+
 };

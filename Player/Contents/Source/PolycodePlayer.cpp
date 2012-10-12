@@ -23,6 +23,28 @@ THE SOFTWARE.
 #include "PolycodePlayer.h"
 #include <string>
 
+PolycodeRemoteDebuggerClient::PolycodeRemoteDebuggerClient() : EventDispatcher() {
+	client = new Client(6445, 1);
+	client->Connect("127.0.0.1", 4630);	
+}
+
+void PolycodeRemoteDebuggerClient::handleEvent(Event *event) {
+	PolycodeDebugEvent *debugEvent = (PolycodeDebugEvent*) event;
+	switch(event->getEventCode()) {
+		case PolycodeDebugEvent::EVENT_PRINT:
+			client->sendReliableDataToServer((char*)debugEvent->errorString.c_str(), debugEvent->errorString.length()+1, EVENT_DEBUG_PRINT);
+		break;
+		case PolycodeDebugEvent::EVENT_ERROR:
+			client->sendReliableDataToServer((char*)debugEvent->errorString.c_str(), debugEvent->errorString.length()+1, EVENT_DEBUG_ERROR);
+		break;		
+	}
+}
+
+PolycodeRemoteDebuggerClient::~PolycodeRemoteDebuggerClient() {
+	printf("disconnecting debugger\n");
+	client->Disconnect();
+}
+
 extern "C" {	
 //	extern int luaopen_Tau(lua_State* L); // declare the wrapped module
 		//	loadFileIntoState(L, "Polycode Player.app/Contents/Resources/API/class.lua");
@@ -290,9 +312,11 @@ PolycodeDebugEvent::~PolycodeDebugEvent() {
 }
 
 
-PolycodePlayer::PolycodePlayer(String fileName, bool knownArchive) : EventDispatcher()  {
+PolycodePlayer::PolycodePlayer(String fileName, bool knownArchive, bool useDebugger) : EventDispatcher()  {
 	L = NULL;
 
+	doCodeInject = false;
+	this->useDebugger = useDebugger;
 	fileToRun = fileName;
 	core = NULL;
 	doneLoading = false;	
@@ -301,6 +325,7 @@ PolycodePlayer::PolycodePlayer(String fileName, bool knownArchive) : EventDispat
 	yRes = 480;
 	aaLevel = 6;
 	fullScreen = false;	
+	
 }
 
 void PolycodePlayer::loadFile(const char *fileName) {
@@ -474,8 +499,6 @@ void PolycodePlayer::loadFile(const char *fileName) {
 //	CoreServices::getInstance()->getRenderer()->setClearColor(1,0,0);
 	srand(core->getTicks());
 	
-	String fullPath;
-	
 	if(loadingArchive) {
 		fullPath = mainFile;
 	} else {
@@ -485,7 +508,18 @@ void PolycodePlayer::loadFile(const char *fileName) {
 		Logger::log(fullPath.c_str());
 	}
 	
-	runFile(fullPath);
+	if(useDebugger) {
+		remoteDebuggerClient = new PolycodeRemoteDebuggerClient();
+		this->addEventListener(remoteDebuggerClient, PolycodeDebugEvent::EVENT_PRINT);
+		this->addEventListener(remoteDebuggerClient, PolycodeDebugEvent::EVENT_ERROR);		
+		remoteDebuggerClient->client->addEventListener(this, ClientEvent::EVENT_CLIENT_READY);
+		remoteDebuggerClient->client->addEventListener(this, ClientEvent::EVENT_SERVER_DATA);
+		
+		debuggerTimer = new Timer(true, 5000);
+		debuggerTimer->addEventListener(this, Timer::EVENT_TRIGGER);
+	} else{
+		runFile(fullPath);
+	}
 }
 
 void PolycodePlayer::runPlayer() {
@@ -494,6 +528,8 @@ void PolycodePlayer::runPlayer() {
 }
 
 PolycodePlayer::~PolycodePlayer() {
+	this->removeAllHandlers();
+	delete remoteDebuggerClient;
 	Logger::log("deleting core...\n");
 	delete core;
 	PolycodeDebugEvent *event = new PolycodeDebugEvent();			
@@ -502,6 +538,37 @@ PolycodePlayer::~PolycodePlayer() {
 }
 
 void PolycodePlayer::handleEvent(Event *event) {	
+
+	if(event->getDispatcher() == debuggerTimer) {
+		runFile(fullPath);
+		debuggerTimer->Pause(true);
+	}
+
+	if(event->getDispatcher() == remoteDebuggerClient->client) {
+		ClientEvent *clientEvent = (ClientEvent*) event;
+			
+		switch(event->getEventCode()) {
+			case ClientEvent::EVENT_CLIENT_READY:
+				debuggerTimer->Pause(true);			
+				runFile(fullPath);			
+			break;
+			
+			case ClientEvent::EVENT_SERVER_DATA:
+			{
+				switch(clientEvent->dataType) {
+					case PolycodeRemoteDebuggerClient::EVENT_INJECT_CODE:
+					{
+						char *code = (char*) clientEvent->data;
+						injectCodeString = String(code);
+						doCodeInject = true;
+					}
+					break;										
+				}
+			}
+			break;			
+		}
+	}
+	
 	if(event->getDispatcher() == core) {
 		switch(event->getEventCode()) {
 			case Core::EVENT_CORE_RESIZE:
@@ -517,6 +584,13 @@ void PolycodePlayer::handleEvent(Event *event) {
 
 bool PolycodePlayer::Update() {
 	if(L) {
+		
+		if(doCodeInject) {
+			printf("INJECTING CODE:[%s]\n", injectCodeString.c_str());
+			doCodeInject = false;			
+			report(L, luaL_loadstring(L, injectCodeString.c_str()) || lua_pcall(L, 0,0,0));		
+		}
+	
 		lua_getfield(L, LUA_GLOBALSINDEX, "Update");
 		lua_pushnumber(L, core->getElapsed());
 		lua_call(L, 1, 0);

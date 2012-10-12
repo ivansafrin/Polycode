@@ -46,7 +46,7 @@ THE SOFTWARE.
 {
     [super windowControllerDidLoadNib:aController];
 	
-	player =  new CocoaPolycodePlayer(mainView, [docFileName cStringUsingEncoding:NSASCIIStringEncoding], false);
+	player =  new CocoaPolycodePlayer(mainView, [docFileName cStringUsingEncoding:NSASCIIStringEncoding], false, true);
 	playerProxy = new PolycodeProxy();
 	playerProxy->playerDocument = self;
 	player->addEventListener(playerProxy, PolycodeDebugEvent::EVENT_RESIZE);

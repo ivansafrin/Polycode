@@ -360,7 +360,7 @@ void UITextInput::restructLines() {
 	}
 	
 	if(scrollContainer) {
-		scrollContainer->setContentSize(width,  (((lines.size()) * ((lineHeight+lineSpacing)))) - padding);
+		scrollContainer->setContentSize(width,  (((lines.size()+1) * ((lineHeight+lineSpacing)))) - padding);
 	}	
 	
 }

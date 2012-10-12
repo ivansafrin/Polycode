@@ -32,6 +32,7 @@
 		6DCE857B12AE018800566FAE /* PolycodeEditorManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DCE857912AE018800566FAE /* PolycodeEditorManager.cpp */; };
 		6DCE85B712AE082B00566FAE /* PolycodeImageEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DCE85B612AE082B00566FAE /* PolycodeImageEditor.cpp */; };
 		6DCE865512AE146C00566FAE /* PolycodeFontEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DCE865412AE146C00566FAE /* PolycodeFontEditor.cpp */; };
+		6DD1835D1628A4CC005A5682 /* PolycodeRemoteDebugger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DD1835C1628A4CC005A5682 /* PolycodeRemoteDebugger.cpp */; };
 		6DFBF64A12A3758400C43A7D /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DFBF64812A3758400C43A7D /* OpenAL.framework */; };
 		6DFBF64B12A3758400C43A7D /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DFBF64912A3758400C43A7D /* OpenGL.framework */; };
 		6DFE89BD14B3FC0900DA7ABD /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DFE89B614B3FC0900DA7ABD /* libfreetype.a */; };
@@ -113,6 +114,8 @@
 		6DCE85B612AE082B00566FAE /* PolycodeImageEditor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolycodeImageEditor.cpp; sourceTree = "<group>"; };
 		6DCE865312AE146600566FAE /* PolycodeFontEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolycodeFontEditor.h; sourceTree = "<group>"; };
 		6DCE865412AE146C00566FAE /* PolycodeFontEditor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolycodeFontEditor.cpp; sourceTree = "<group>"; };
+		6DD1835C1628A4CC005A5682 /* PolycodeRemoteDebugger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolycodeRemoteDebugger.cpp; sourceTree = "<group>"; };
+		6DD1835F1628A4D2005A5682 /* PolycodeRemoteDebugger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolycodeRemoteDebugger.h; sourceTree = "<group>"; };
 		6DFBF64812A3758400C43A7D /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		6DFBF64912A3758400C43A7D /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		6DFE89B614B3FC0900DA7ABD /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = ../../../Release/Darwin/Framework/Core/Dependencies/lib/libfreetype.a; sourceTree = "<group>"; };
@@ -247,6 +250,7 @@
 		6D80E91212AB53FB0037A708 /* Include */ = {
 			isa = PBXGroup;
 			children = (
+				6DD1835F1628A4D2005A5682 /* PolycodeRemoteDebugger.h */,
 				6D3DC79F16220440003ED2C9 /* PolycodeConsole.h */,
 				6D56156514C542FB00FC8BD4 /* PolycodeScreenEditor.h */,
 				6D2AC99D14B8500A00BB63DA /* PolycodeProjectEditor.h */,
@@ -274,6 +278,7 @@
 		6D80E91812AB53FB0037A708 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				6DD1835C1628A4CC005A5682 /* PolycodeRemoteDebugger.cpp */,
 				6D3DC79C1622043A003ED2C9 /* PolycodeConsole.cpp */,
 				6D56156714C5430300FC8BD4 /* PolycodeScreenEditor.cpp */,
 				6D2AC99A14B8500400BB63DA /* PolycodeProjectEditor.cpp */,
@@ -400,6 +405,7 @@
 				6D2AC99B14B8500400BB63DA /* PolycodeProjectEditor.cpp in Sources */,
 				6D56156814C5430300FC8BD4 /* PolycodeScreenEditor.cpp in Sources */,
 				6D3DC79D1622043A003ED2C9 /* PolycodeConsole.cpp in Sources */,
+				6DD1835D1628A4CC005A5682 /* PolycodeRemoteDebugger.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

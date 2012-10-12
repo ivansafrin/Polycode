@@ -22,7 +22,7 @@ THE SOFTWARE.
 #include "PolycodeCocoaPlayer.h"
 
 
-CocoaPolycodePlayer::CocoaPolycodePlayer(PolycodeView *view, String fileName, bool knownArchive) : PolycodePlayer(fileName, knownArchive) {
+CocoaPolycodePlayer::CocoaPolycodePlayer(PolycodeView *view, String fileName, bool knownArchive, bool useDebugger) : PolycodePlayer(fileName, knownArchive, useDebugger) {
 	this->view = view;
 }
 
