@@ -87,7 +87,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 		if inputPathIsDir:
 			fileName = "%s/%s" % (inputPath, fileName)
 		head, tail = os.path.split(fileName)
-		ignore = ["PolyGLSLProgram", "PolyGLSLShader", "PolyGLSLShaderModule", "PolyWinCore", "PolyCocoaCore", "PolyAGLCore", "PolySDLCore", "Poly_iPhone", "PolyGLES1Renderer", "PolyGLRenderer", "tinyxml", "tinystr", "OpenGLCubemap", "PolyiPhoneCore", "PolyGLES1Texture", "PolyGLTexture", "PolyGLVertexBuffer", "PolyThreaded", "PolyGLHeaders", "GLee"]
+		ignore = ["PolyGLSLProgram", "PolyGLSLShader", "PolyGLSLShaderModule", "PolyWinCore", "PolyCocoaCore", "PolyAGLCore", "PolySDLCore", "Poly_iPhone", "PolyGLES1Renderer", "PolyGLRenderer", "tinyxml", "tinystr", "OpenGLCubemap", "PolyiPhoneCore", "PolyGLES1Texture", "PolyGLTexture", "PolyGLVertexBuffer", "PolyThreaded", "PolyGLHeaders", "GLee", "PolyPeer", "PolySocket", "PolyClient", "PolyServer", "PolyServerWorld"]
 		if tail.split(".")[1] == "h" and tail.split(".")[0] not in ignore:
 			filteredFiles.append(fileName)
 			wrappersHeaderOut += "#include \"%s\"\n" % (tail)

@@ -87,6 +87,10 @@ SET(polycore_SRCS
     Source/tinyxml.cpp
     Source/tinyxmlerror.cpp
     Source/tinyxmlparser.cpp
+    Source/PolySocket.cpp
+    Source/PolyPeer.cpp
+    Source/PolyClient.cpp
+    Source/PolyServer.cpp
 )
 
 SET(polycore_HDRS
@@ -177,6 +181,11 @@ SET(polycore_HDRS
     Include/PolyVertex.h
     Include/tinystr.h
     Include/tinyxml.h
+    Include/PolySocket.h
+    Include/PolyPeer.h
+    Include/PolyClient.h
+    Include/PolyServer.h
+    Include/PolyServerWorld.h
 )
 
 SET(CMAKE_DEBUG_POSTFIX "_d")

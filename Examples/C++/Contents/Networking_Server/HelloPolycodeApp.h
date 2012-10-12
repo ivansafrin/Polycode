@@ -1,6 +1,5 @@
 #include <Polycode.h>
 #include "PolycodeView.h"
-#include "PolycodeNetworking.h"
 #include "NetworkingExampleGlobals.h"
 
 using namespace Polycode;
