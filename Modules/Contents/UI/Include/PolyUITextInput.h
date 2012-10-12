@@ -69,6 +69,8 @@ namespace Polycode {
 		
 			String getSelectionText();
 			void insertText(String text);
+			
+			UIScrollContainer *getScrollContainer();
 		
 		protected:
 		

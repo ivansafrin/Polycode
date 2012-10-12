@@ -35,6 +35,8 @@ namespace Polycode {
 		Number getScrollValue();
 		void handleEvent(Event *event);
 		
+		void scrollTo(Number scrollValue);
+		
 		Number minHandleSize;
 		
 		void setHandleRatio(Number newRatio);

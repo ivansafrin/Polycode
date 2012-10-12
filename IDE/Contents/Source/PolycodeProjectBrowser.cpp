@@ -27,6 +27,7 @@ PolycodeProjectBrowser::PolycodeProjectBrowser() : UIElement() {
 	treeContainer->getRootNode()->toggleCollapsed();
 	treeContainer->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
 	treeContainer->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+	treeContainer->processInputEvents = true;
 	
 	BrowserUserData *data = new BrowserUserData();
 	data->type = 0;

@@ -250,9 +250,17 @@ void PolycodeProjectEditor::saveFile() {
 	(*color)["blue"]->NumberVal = bgColorBox->getSelectedColor().b;
 
 
-	configFile.root["modules"]->Clear();
+	if(configFile.root["modules"]) {
+		configFile.root["modules"]->Clear();
+	}
+	
 	for(int j=0; j < moduleCheckboxes.size(); j++) {
 		if(moduleCheckboxes[j]->isChecked()) {
+			
+			if(!configFile.root["modules"]) {
+				configFile.root.addChild("modules");	
+			}
+		
 			configFile.root["modules"]->addChild("module", moduleCheckboxes[j]->getCaptionLabel());
 		}
 	}

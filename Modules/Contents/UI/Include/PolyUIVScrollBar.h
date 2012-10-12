@@ -37,6 +37,8 @@ namespace Polycode {
 		
 		void Resize(int newHeight);
 		
+		void scrollTo(Number scrollValue);
+		
 		void onMouseWheelDown(Number x, Number y);
 		void onMouseWheelUp(Number x, Number y);
 		

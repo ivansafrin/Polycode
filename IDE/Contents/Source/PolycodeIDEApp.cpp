@@ -162,12 +162,13 @@ void PolycodeIDEApp::runProject() {
 		String outPath = PolycodeToolLauncher::generateTempPath() + ".polyapp";
 		PolycodeToolLauncher::buildProject(projectManager->getActiveProject(), outPath);
 		PolycodeToolLauncher::runPolyapp(outPath);
-		core->removeDiskItem(outPath);
 	}
 }
 
 void PolycodeIDEApp::saveFile() {
-	editorManager->getCurrentEditor()->saveFile();
+	if(editorManager->getCurrentEditor()) {
+		editorManager->getCurrentEditor()->saveFile();
+	}
 }
 
 void PolycodeIDEApp::handleEvent(Event *event) {

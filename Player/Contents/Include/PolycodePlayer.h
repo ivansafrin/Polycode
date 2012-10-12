@@ -40,6 +40,8 @@ extern "C" {
 
 using namespace Polycode;
 
+//class PolycodeRemoteDebuggerClient : public
+
 class PolycodeDebugEvent : public Event {
 public:
 	PolycodeDebugEvent();

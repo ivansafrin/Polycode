@@ -70,6 +70,9 @@ namespace Polycode {
 		
 		this->monitorIndex = monitorIndex;
 		
+		if(frameRate == 0)
+			frameRate = 60;
+		
 		refreshInterval = 1000 / frameRate;		
 		threadedEventMutex = NULL;
 	}

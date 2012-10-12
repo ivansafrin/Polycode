@@ -23,13 +23,22 @@
 #pragma once
 
 #include "PolycodeProject.h"
+#include "PolycodeConsole.h"
+
+class PolycodeRunner : public Threaded {
+	public:
+		PolycodeRunner(String polyappPath);
+		
+		void runThread();
+		
+		String polyappPath;
+};
 
 class PolycodeToolLauncher {
 	public: 
 		PolycodeToolLauncher();
 		~PolycodeToolLauncher();		
 		
-		static void execLocalBinCommand(String command);		
 		static String generateTempPath();
 		static void buildProject(PolycodeProject *project, String destinationPath);
 

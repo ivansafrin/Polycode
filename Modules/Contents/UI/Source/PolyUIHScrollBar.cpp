@@ -112,6 +112,10 @@ Number UIHScrollBar::getScrollValue() {
 	return scrollValue;
 }
 
+void UIHScrollBar::scrollTo(Number scrollValue) {
+	handleBox->setPositionX((scrollValue * dragRectWidth) + padding);	
+}
+
 void UIHScrollBar::handleEvent(Event *event) {
 	if(event->getDispatcher() == bgBox) {
 		InputEvent *inputEvent = (InputEvent*)event;

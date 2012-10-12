@@ -105,6 +105,10 @@ void UIVScrollBar::Update() {
 	}
 }
 
+void UIVScrollBar::scrollTo(Number scrollValue) {
+	handleBox->setPositionY((scrollValue * dragRectHeight) + padding);	
+}
+
 void UIVScrollBar::setHandleRatio(Number newRatio) {
 	scrollHandleHeight = height*newRatio;	
 	

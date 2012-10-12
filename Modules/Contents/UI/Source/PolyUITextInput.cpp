@@ -592,6 +592,10 @@ String UITextInput::getSelectionText() {
 	return totalText;
 }
 
+UIScrollContainer *UITextInput::getScrollContainer() {
+	return scrollContainer;
+}
+
 void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 	
 	if(!hasFocus)

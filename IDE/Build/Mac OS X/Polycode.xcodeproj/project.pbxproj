@@ -81,7 +81,7 @@
 		6D3DC79F16220440003ED2C9 /* PolycodeConsole.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolycodeConsole.h; sourceTree = "<group>"; };
 		6D56156514C542FB00FC8BD4 /* PolycodeScreenEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolycodeScreenEditor.h; sourceTree = "<group>"; };
 		6D56156714C5430300FC8BD4 /* PolycodeScreenEditor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolycodeScreenEditor.cpp; sourceTree = "<group>"; };
-		6D6D3FA514B446A600219173 /* PolycodeToolLauncher.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolycodeToolLauncher.cpp; sourceTree = "<group>"; };
+		6D6D3FA514B446A600219173 /* PolycodeToolLauncher.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; path = PolycodeToolLauncher.cpp; sourceTree = "<group>"; };
 		6D6D3FA814B446AF00219173 /* PolycodeToolLauncher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolycodeToolLauncher.h; sourceTree = "<group>"; };
 		6D70AB2812B29BEC00EB6D94 /* NewFileWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewFileWindow.h; sourceTree = "<group>"; };
 		6D70AB2912B29BF200EB6D94 /* NewFileWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NewFileWindow.cpp; sourceTree = "<group>"; };

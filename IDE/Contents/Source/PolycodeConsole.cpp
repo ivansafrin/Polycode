@@ -62,7 +62,7 @@ void PolycodeConsole::print(String msg) {
 
 void PolycodeConsole::_print(String msg) {
 	debugTextInput->setText(debugTextInput->getText()+msg);
-	debugTextInput->
+	debugTextInput->getScrollContainer()->setScrollValue(0, 1.0);
 }
 
 void PolycodeConsole::Resize(Number width, Number height) {

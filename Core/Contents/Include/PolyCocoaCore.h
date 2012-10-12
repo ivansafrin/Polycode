@@ -116,6 +116,10 @@ namespace Polycode {
 		String openFolderPicker();
 		vector<String> openFilePicker(vector<CoreFileExtension> extensions, bool allowMultiple);
 		
+		String executeExternalCommand(String command);
+		
+		void launchApplicationWithFile(String application, String file);
+		
 		void setCursor(int cursorType);
 		void warpCursor(int x, int y);
 		

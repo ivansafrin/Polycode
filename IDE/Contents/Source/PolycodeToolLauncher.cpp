@@ -20,9 +20,25 @@
  THE SOFTWARE.
  */
  
-#pragma once
-
 #include "PolycodeToolLauncher.h"
+
+#if defined(__APPLE__) && defined(__MACH__)
+	#include "PolyCocoaCore.h"
+#endif
+
+PolycodeRunner::PolycodeRunner(String polyappPath) : Threaded() {
+	this->polyappPath = polyappPath;
+}
+
+void PolycodeRunner::runThread() {
+	String polycodeBasePath = CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory();
+
+	String command = "cd "+polycodeBasePath+"/Standalone/Player/PolycodePlayer.app/Contents/Resources && ../MacOS/PolycodePlayer "+polyappPath;
+		;		
+
+	String ret = CoreServices::getInstance()->getCore()->executeExternalCommand(command);
+		core->removeDiskItem(polyappPath);	
+}
 
 PolycodeToolLauncher::PolycodeToolLauncher() {
 
@@ -30,10 +46,6 @@ PolycodeToolLauncher::PolycodeToolLauncher() {
 
 PolycodeToolLauncher::~PolycodeToolLauncher() {
 
-}
-
-void PolycodeToolLauncher::execLocalBinCommand(String command) {
-	system(command.c_str());
 }
 
 String PolycodeToolLauncher::generateTempPath() {
@@ -46,12 +58,25 @@ void PolycodeToolLauncher::buildProject(PolycodeProject *project, String destina
 	
 	String polycodeBasePath = CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory();
 	
-	execLocalBinCommand("cd "+projectBasePath+" && "+polycodeBasePath+"/Standalone/Bin/polybuild  --config="+projectPath+" --out="+destinationPath);
+	String command = "cd "+projectBasePath+" && "+polycodeBasePath+"/Standalone/Bin/polybuild  --config="+projectPath+" --out="+destinationPath;	
+	String ret = CoreServices::getInstance()->getCore()->executeExternalCommand(command);
+	PolycodeConsole::print(ret);	
 
 }
 
-void PolycodeToolLauncher::runPolyapp(String polyappPath) {
-	String polycodeBasePath = CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory();
+void PolycodeToolLauncher::runPolyapp(String polyappPath) {		
+//	PolycodeRunner *runner = new PolycodeRunner(polyappPath);
+//	CoreServices::getInstance()->getCore()->createThread(runner);
 
-	execLocalBinCommand("cd "+polycodeBasePath+"/Standalone/Player/PolycodePlayer.app/Contents/Resources && ../MacOS/PolycodePlayer "+polyappPath);	
+#if defined(__APPLE__) && defined(__MACH__)
+	CocoaCore *cocoaCore = (CocoaCore*) CoreServices::getInstance()->getCore();
+
+	String polycodeBasePath = CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory();
+	String command = polycodeBasePath+"/Standalone/Player/PolycodePlayer.app";
+	
+	cocoaCore->launchApplicationWithFile(command, polyappPath);
+#else
+
+#endif
+
 }

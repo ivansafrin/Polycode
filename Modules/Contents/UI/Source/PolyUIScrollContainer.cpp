@@ -70,6 +70,8 @@ UIScrollContainer::UIScrollContainer(ScreenEntity *scrolledEntity, bool hScroll,
 			
 	setContentSize(scrollChild->getWidth()*scrollChild->getScale().x, scrollChild->getHeight()*scrollChild->getScale().y);
 	Resize(width, height);	
+	
+	processInputEvents = true;
 }
 
 void UIScrollContainer::Resize(Number width, Number height) {
@@ -120,6 +122,11 @@ void UIScrollContainer::setContentSize(Number newContentWidth, Number newContent
 			hScrollBar->enabled = true;		
 		}
 	}	
+}
+
+void UIScrollContainer::setScrollValue(Number xScroll, Number yScroll) {
+	hScrollBar->scrollTo(xScroll);
+	vScrollBar->scrollTo(yScroll);	
 }
 
 void UIScrollContainer::Update() {
