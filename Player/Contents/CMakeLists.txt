@@ -1,5 +1,86 @@
 INCLUDE(PolycodeIncludes)
     
+SET(CMAKE_DEBUG_POSTFIX "_d")
+
+IF(MSVC OR MINGW)
+
+INCLUDE_DIRECTORIES(
+    ${LUA_INCLUDE_DIR}
+    ${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/Include
+    Include
+    ../../Core/Contents/PolycodeView/MSVC/
+)
+
+SET(polycodeplayer_SRCS 
+        Source/PolycodePlayer.cpp
+        Source/PolycodeWindowsPlayer.cpp
+        Source/PolycodePlayerView.cpp
+        Platform/Windows/main.cpp        
+    )
+
+    SET(polycodeplayer_HDRS 
+        Include/PolycodePlayer.h
+        Include/PolycodeWindowsPlayer.h
+        Include/PolycodePlayerView.h
+    )
+  
+    SET(polycodeplayerstandalone_SRCS 
+        Source/PolycodePlayer.cpp
+        Source/PolycodeWindowsPlayer.cpp
+        Source/PolycodePlayerView.cpp
+        Platform/Windows/Standalone/main.cpp
+    )
+    SET(polycodeplayerstandalone_HDRS 
+        Include/PolycodePlayer.h
+        Include/PolycodeWindowsPlayer.h
+        Include/PolycodePlayerView.h        
+    )
+ 
+    ADD_EXECUTABLE(PolycodePlayer WIN32 ${polycodeplayer_SRCS} ${polycodeplayer_HDRS})
+    ADD_EXECUTABLE(StandalonePlayer WIN32 ${polycodeplayerstandalone_SRCS} ${polycodeplayerstandalone_HDRS})
+    
+
+    TARGET_LINK_LIBRARIES(PolycodePlayer 
+        PolycodeLua 
+        Polycore
+        ${ZLIB_LIBRARIES}
+        ${LUA_LIBRARY}
+        ${OPENGL_LIBRARIES}
+        ${OPENAL_LIBRARY}
+        ${PNG_LIBRARIES}
+        ${FREETYPE_LIBRARIES}
+        ${PHYSFS_LIBRARY}
+        ${OGG_LIBRARY}
+        ${VORBIS_LIBRARY}
+        ${VORBISFILE_LIBRARY}
+        opengl32
+        glu32
+        winmm
+        ws2_32
+     )
+
+    TARGET_LINK_LIBRARIES(StandalonePlayer 
+        PolycodeLua 
+        Polycore 
+        ${ZLIB_LIBRARIES}
+        ${LUA_LIBRARY}
+        ${OPENGL_LIBRARIES}
+        ${OPENAL_LIBRARY}
+        ${PNG_LIBRARIES}
+        ${FREETYPE_LIBRARIES}
+        ${PHYSFS_LIBRARY}
+        ${OGG_LIBRARY}
+        ${VORBIS_LIBRARY}
+        ${VORBISFILE_LIBRARY} 
+        opengl32
+        glu32
+        winmm
+        ws2_32   
+     )
+
+ELSEIF(APPLE)
+
+   
 INCLUDE_DIRECTORIES(
     ${LUA_INCLUDE_DIR}
     ${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/Include
@@ -7,68 +88,6 @@ INCLUDE_DIRECTORIES(
     ../../Core/Contents/PolycodeView/Mac\ OS\ X/
 )
 
-SET(CMAKE_DEBUG_POSTFIX "_d")
-
-IF(MSVC OR MINGW)
-
-SET(polycodeplayer_SRCS 
-        Source/PolycodePlayer.cpp
-        Source/PolycodeWindowsPlayer.cpp
-        Platform/Windows/main.cpp
-    )
-
-    SET(polycodeplayer_HDRS 
-        Include/PolycodePlayer.h
-        Include/PolycodeWindowsPlayer.h
-    )
-  
-    SET(polycodeplayerstandalone_SRCS 
-        Source/PolycodePlayer.cpp
-        Source/PolycodeWindowsPlayer.cpp
-        Platform/Windows/Standalone/main.cpp
-    )
-    SET(polycodeplayerstandalone_HDRS 
-        Include/PolycodePlayer.h
-        Include/PolycodeWindowsPlayer.h
-    )
- 
-    INCLUDE_DIRECTORIES(Include)
- 
-    ADD_EXECUTABLE(PolycodePlayer ${polycodeplayer_SRCS} ${polycodeplayer_HDRS})
-    ADD_EXECUTABLE(StandalonePlayer ${polycodeplayerstandalone_SRCS} ${polycodeplayerstandalone_HDRS})
-    
-
-    TARGET_LINK_LIBRARIES(PolycodePlayer 
-        PolycodeLua 
-        Polycore 
-        ${LUA_LIBRARY}
-        ${OPENGL_LIBRARIES}
-        ${OPENAL_LIBRARY}
-        ${PNG_LIBRARIES}
-        ${FREETYPE_LIBRARIES}
-        ${PHYSFS_LIBRARY}
-        ${OGG_LIBRARY}
-        ${VORBIS_LIBRARY}
-        ${VORBISFILE_LIBRARY}
-        ${SDL_LIBRARY}
-     )
-
-    TARGET_LINK_LIBRARIES(StandalonePlayer 
-        PolycodeLua 
-        Polycore 
-        ${LUA_LIBRARY}
-        ${OPENGL_LIBRARIES}
-        ${OPENAL_LIBRARY}
-        ${PNG_LIBRARIES}
-        ${FREETYPE_LIBRARIES}
-        ${PHYSFS_LIBRARY}
-        ${OGG_LIBRARY}
-        ${VORBIS_LIBRARY}
-        ${VORBISFILE_LIBRARY}
-        ${SDL_LIBRARY}
-     )
-
-ELSEIF(APPLE)
     SET(polycodeplayer_SRCS 
         Source/PolycodePlayer.cpp
         Source/PolycodeCocoaPlayer.mm
@@ -204,6 +223,14 @@ foreach(xib ${PolycodePlayerStandalone_XIBS})
 
 endforeach()
 ELSE(MSVC OR MINGW)
+
+   
+INCLUDE_DIRECTORIES(
+    ${LUA_INCLUDE_DIR}
+    ${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/Include
+    Include
+    ../../Core/Contents/PolycodeView/Linux/
+)
 
  SET(polycodeplayer_SRCS 
         Source/PolycodePlayer.cpp

@@ -85,6 +85,19 @@ const char *String::getDataWithEncoding(int encoding) const {
 	}
 }
 
+wchar_t *String::getWDataWithEncoding(int encoding) {
+	switch(encoding) {
+		case ENCODING_UTF8: {
+			utf8toWStr(w_contents, contents);
+			return (wchar_t *)w_contents.c_str();
+		}
+		break;
+		default:
+			return NULL;
+	}
+}
+
+
 void String::setDataWithEncoding(char *data, int encoding) {
 	switch(encoding) {
 		case ENCODING_UTF8: {

@@ -187,6 +187,15 @@ namespace Polycode {
 			const char *getDataWithEncoding(int encoding) const;
 			
 			/**
+			* Returns wide character data with the specified encoding. Currently the only supported encoding is String::ENCODING_UTF8
+			* @param encoding The encoding to use.
+			* @return A pointer to the data using specified encoding.
+			* @see getDataSizeWithEncoding()
+			*/																															
+			wchar_t *getWDataWithEncoding(int encoding);
+
+
+			/**
 			* Returns the size of the data with the specified encoding. Currently the only supported encoding is String::ENCODING_UTF8
 			* @param encoding The encoding to use.
 			* @return The size the data would take up if returned with this encoding.
@@ -201,11 +210,17 @@ namespace Polycode {
 			*/																																		
 			void setDataWithEncoding(char *data, int encoding);
 			
+
 			/**
 			* STL string version of the string.
 			*/																																					
 			std::string contents;
-						
+
+			/**
+			* STL string version of the string.
+			*/																																					
+			std::wstring w_contents;
+
 			/**
 			* UTF-8 encoding.
 			*/																																							

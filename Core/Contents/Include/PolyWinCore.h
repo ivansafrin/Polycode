@@ -225,6 +225,8 @@ public:
 
 		// NEED TO IMPLEMENT:
 
+		String executeExternalCommand(String command) { return "";}
+
 		void openURL(String url) {}
 		void setCursor(int cursorType){ }
 		void copyStringToClipboard(const String& str) { }
