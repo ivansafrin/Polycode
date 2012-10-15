@@ -56,7 +56,11 @@ void PolycodeConsole::handleEvent(Event *event) {
 			_print(">"+consoleTextInput->getText());
 			_print("\n");
 			if(debugger) {
-				debugger->injectCode(consoleTextInput->getText());
+				if(!debugger->isConnected()) {
+					_print("Unable to inject code. No debugger clients connected.\n");
+				} else {
+					debugger->injectCode(consoleTextInput->getText());
+				}
 			}	
 
 			consoleTextInput->setText("");

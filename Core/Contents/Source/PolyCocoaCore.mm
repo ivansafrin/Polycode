@@ -48,8 +48,6 @@ CocoaCore::CocoaCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, 
 	hidManager = NULL;
 	initGamepad();
 
-	this->view = view;
-
 	eventMutex = createMutex();
 	
 //	NSLog(@"BUNDLE: %@", [[NSBundle mainBundle] bundlePath]);
@@ -174,21 +172,25 @@ CocoaCore::CocoaCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, 
 }
 
 void CocoaCore::copyStringToClipboard(const String& str) {
+
 	NSPasteboard *pb = [NSPasteboard generalPasteboard];
     NSArray *types = [NSArray arrayWithObjects:NSStringPboardType, nil];
-    [pb declareTypes:types owner:glView];
+    [pb declareTypes:types owner:nil];
 	
-	//NSString *nsstr = [NSString stringWithCharacters: (unichar*) str.c_str() length: str.length()];
-	
+	NSString *nsstr = [NSString stringWithCString: str.c_str()];
+	/*
 	char* data = (char*)str.c_str();
 	unsigned size = str.size() * sizeof(char);
 	
 	NSString* nsstr = [[[NSString alloc] initWithBytes:data length:size encoding:NSUTF32LittleEndianStringEncoding] autorelease];
+	*/
     [pb setString: nsstr forType:NSStringPboardType];	
 }
 
 String CocoaCore::getClipboardString() {
-	
+	NSPasteboard *pb = [NSPasteboard generalPasteboard];		
+	NSString* retString = [pb stringForType:NSStringPboardType];
+	return [retString UTF8String];
 }
 
 void CocoaCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLeve, int anisotropyLevel) {
@@ -294,7 +296,7 @@ vector<Polycode::Rectangle> CocoaCore::getVideoModes() {
 
 CocoaCore::~CocoaCore() {
 	printf("Shutting down cocoa core\n");
-	[view setCore:nil];	
+	[glView setCore:nil];	
 	shutdownGamepad();
 	if(fullScreen) {
 		[glView exitFullScreenModeWithOptions:nil];

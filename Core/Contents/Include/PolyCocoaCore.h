@@ -153,8 +153,6 @@ namespace Polycode {
 		PolycodeView *glView;
 		uint64_t initTime;	
 		
-		PolycodeView *view;
-		
 		IOHIDManagerRef hidManager;
 	};
 }

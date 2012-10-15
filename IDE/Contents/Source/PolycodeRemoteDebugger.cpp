@@ -35,6 +35,10 @@ PolycodeRemoteDebugger::~PolycodeRemoteDebugger() {
 
 }
 
+bool PolycodeRemoteDebugger::isConnected() {
+	return (debuggerClients.size() > 0);
+}
+
 void PolycodeRemoteDebugger::injectCode(String code) {
 	server->sendReliableDataToAllClients((char*)code.c_str(), code.length()+1, EVENT_INJECT_CODE);
 }

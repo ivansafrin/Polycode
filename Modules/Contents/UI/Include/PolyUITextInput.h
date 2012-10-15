@@ -38,6 +38,8 @@
 
 using namespace std;
 
+#define MAX_TEXTINPUT_UNDO_STATES 30
+
 namespace Polycode {
 
 	class _PolyExport UITextInput : public UIElement {
@@ -63,6 +65,12 @@ namespace Polycode {
 			void deleteSelection();		
 			void selectAll();
 		
+			void Undo();
+			void Redo();
+			void Cut();
+			void Copy();
+			void Paste();
+					
 			void Resize(Number width, Number height);
 			
 			void setNumberOnly(bool val);
@@ -113,6 +121,12 @@ namespace Polycode {
 			bool doSelectToCaret;
 		
 			ScreenEntity *linesContainer;
+			
+			vector<ScreenLabel*> linesToDelete;		
+			
+			String undoStates[MAX_TEXTINPUT_UNDO_STATES];
+			int undoStateIndex;
+			int maxRedoIndex;
 		
 			bool multiLine;
 			Timer *blinkTimer;
