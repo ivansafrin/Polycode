@@ -96,7 +96,7 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	resizer->setColor(0,0,0,0.4);
 	
 	modalBlocker = new ScreenShape(ScreenShape::SHAPE_RECT, 10,10);
-	modalBlocker->setColor(0,0,0,0.5);
+	modalBlocker->setColor(0,0,0,0.4);
 	modalBlocker->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	modalBlocker->enabled = false;	
 	modalBlocker->blockMouseInput = true;

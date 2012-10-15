@@ -44,24 +44,24 @@
 
 	<uiWindowSkin>windowBg.png</uiWindowSkin>
 	<uiWindowSkinT>29</uiWindowSkinT>
-	<uiWindowSkinR>8</uiWindowSkinR>
-	<uiWindowSkinB>8</uiWindowSkinB>
-	<uiWindowSkinL>8</uiWindowSkinL>
+	<uiWindowSkinR>12</uiWindowSkinR>
+	<uiWindowSkinB>12</uiWindowSkinB>
+	<uiWindowSkinL>12</uiWindowSkinL>
 	<uiWindowSkinPadding>15</uiWindowSkinPadding>		
 	<uiWindowTitleFont>sans</uiWindowTitleFont>
 	<uiWindowTitleFontSize>12</uiWindowTitleFontSize>
-	<uiWindowTitleX>10</uiWindowTitleX>	
+	<uiWindowTitleX>15</uiWindowTitleX>	
 	<uiWindowTitleY>7</uiWindowTitleY>		
 	<uiWindowCloseIcon>closeIcon.png</uiWindowCloseIcon>
 	<uiCloseIconX>11</uiCloseIconX>	
-	<uiCloseIconY>7</uiCloseIconY>		
+	<uiCloseIconY>5</uiCloseIconY>		
 
 	<uiScrollBgSkin>scrollBg.png</uiScrollBgSkin>
-	<uiScrollBgSkinPadding>2</uiScrollBgSkinPadding>
-	<uiScrollBgSkinT>2</uiScrollBgSkinT>
-	<uiScrollBgSkinR>2</uiScrollBgSkinR>
-	<uiScrollBgSkinB>2</uiScrollBgSkinB>
-	<uiScrollBgSkinL>2</uiScrollBgSkinL>
+	<uiScrollBgSkinPadding>1</uiScrollBgSkinPadding>
+	<uiScrollBgSkinT>8</uiScrollBgSkinT>
+	<uiScrollBgSkinR>8</uiScrollBgSkinR>
+	<uiScrollBgSkinB>8</uiScrollBgSkinB>
+	<uiScrollBgSkinL>8</uiScrollBgSkinL>
 	
 	<uiScrollHandleSkin>scrollHandle.png</uiScrollHandleSkin>
 	<uiScrollHandleSkinT>6</uiScrollHandleSkinT>
@@ -84,8 +84,8 @@
 	<uiCheckBoxFontSize>11</uiCheckBoxFontSize>	
 	<uiCheckBoxCheckedImage>checkbox_checked.png</uiCheckBoxCheckedImage>
 	<uiCheckBoxUncheckedImage>checkbox_unchecked.png</uiCheckBoxUncheckedImage>
-	<uiCheckBoxLabelOffsetX>10</uiCheckBoxLabelOffsetX>
-	<uiCheckBoxLabelOffsetY>3</uiCheckBoxLabelOffsetY>
+	<uiCheckBoxLabelOffsetX>8</uiCheckBoxLabelOffsetX>
+	<uiCheckBoxLabelOffsetY>2</uiCheckBoxLabelOffsetY>
 		
 	<uiComboBoxFont>sans</uiComboBoxFont>
 	<uiComboBoxFontSize>11</uiComboBoxFontSize>
@@ -126,8 +126,8 @@
 	<uiHSliderBg>hsliderBg.png</uiHSliderBg>
 	<uiHSliderBgHeight>6</uiHSliderBgHeight>
 	<uiHSliderBgT>2</uiHSliderBgT>
-	<uiHSliderBgR>2</uiHSliderBgR>
+	<uiHSliderBgR>4</uiHSliderBgR>
 	<uiHSliderBgB>2</uiHSliderBgB>
-	<uiHSliderBgL>2</uiHSliderBgL>
+	<uiHSliderBgL>4</uiHSliderBgL>
 
 </PolyConfig>
