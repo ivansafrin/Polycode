@@ -91,10 +91,10 @@
 	<uiComboBoxFontSize>11</uiComboBoxFontSize>
 	<uiComboBoxDropdownImage>combobox_drop.png</uiComboBoxDropdownImage>
 	<uiComboBoxBgImage>combobox_bg.png</uiComboBoxBgImage>
-	<uiComboBoxBgT>3</uiComboBoxBgT>
-	<uiComboBoxBgR>3</uiComboBoxBgR>
-	<uiComboBoxBgB>3</uiComboBoxBgB>
-	<uiComboBoxBgL>3</uiComboBoxBgL>				
+	<uiComboBoxBgT>6</uiComboBoxBgT>
+	<uiComboBoxBgR>6</uiComboBoxBgR>
+	<uiComboBoxBgB>6</uiComboBoxBgB>
+	<uiComboBoxBgL>6</uiComboBoxBgL>				
 	<uiComboBoxItemsBgImage>combobox_items.png</uiComboBoxItemsBgImage>	
 	<uiComboBoxDropdownBgT>3</uiComboBoxDropdownBgT>
 	<uiComboBoxDropdownBgR>3</uiComboBoxDropdownBgR>
@@ -109,12 +109,12 @@
 	<uiComboBoxTextOffsetY>3</uiComboBoxTextOffsetY>		
 
 	<uiColorBoxFrameImage>colorboxFrame.png</uiColorBoxFrameImage>
-	<uiColorBoxFrameImageT>3</uiColorBoxFrameImageT>
-	<uiColorBoxFrameImageR>3</uiColorBoxFrameImageR>
-	<uiColorBoxFrameImageB>3</uiColorBoxFrameImageB>
-	<uiColorBoxFrameImageL>3</uiColorBoxFrameImageL>					
+	<uiColorBoxFrameImageT>7</uiColorBoxFrameImageT>
+	<uiColorBoxFrameImageR>7</uiColorBoxFrameImageR>
+	<uiColorBoxFrameImageB>7</uiColorBoxFrameImageB>
+	<uiColorBoxFrameImageL>7</uiColorBoxFrameImageL>					
 	<uiColorBoxBgImage>colorboxBg.png</uiColorBoxBgImage>
-	<uiFrameInset>1</uiFrameInset>
+	<uiColorBoxFrameInset>2</uiColorBoxFrameInset>
 
 	<uiColorPickerMainBg>colorPickerMainBg.png</uiColorPickerMainBg>
 	<uiColorPickerMainFrame>colorPickerMainFrame.png</uiColorPickerMainFrame>

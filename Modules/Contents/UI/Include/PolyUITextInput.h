@@ -80,6 +80,9 @@ namespace Polycode {
 			void Cut();
 			void Copy();
 			void Paste();
+			
+			void showLine(unsigned int lineNumber, bool top);
+
 					
 			void Resize(Number width, Number height);
 			

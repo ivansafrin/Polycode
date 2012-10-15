@@ -374,7 +374,7 @@ UIColorBox::UIColorBox(Color initialColor, Number width, Number height) : UIElem
 
 	String frameImageFile = conf->getStringValue("Polycode", "uiColorBoxFrameImage");
 	String bgImageFile = conf->getStringValue("Polycode", "uiColorBoxBgImage");
-	Number frameInset = conf->getNumericValue("Polycode", "uiFrameInset");
+	Number frameInset = conf->getNumericValue("Polycode", "uiColorBoxFrameInset");
 
 	Number st = conf->getNumericValue("Polycode", "uiColorBoxFrameImageT");
 	Number sr = conf->getNumericValue("Polycode", "uiColorBoxFrameImageR");
@@ -385,6 +385,7 @@ UIColorBox::UIColorBox(Color initialColor, Number width, Number height) : UIElem
 	bgImage = new ScreenShape(ScreenShape::SHAPE_RECT, width-(frameInset*2), height-(frameInset*2));
 	bgImage->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	bgImage->loadTexture(bgImageFile);
+	bgImage->setPosition(frameInset, frameInset);	
 	addChild(bgImage);
 
 	bgImage->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
@@ -392,6 +393,7 @@ UIColorBox::UIColorBox(Color initialColor, Number width, Number height) : UIElem
 
 	colorShape = new ScreenShape(ScreenShape::SHAPE_RECT, width-(frameInset*2), height-(frameInset*2));
 	colorShape->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	colorShape->setPosition(frameInset, frameInset);
 	addChild(colorShape);
 
 		

@@ -691,6 +691,10 @@ void UITextInput::Paste() {
 	insertText(CoreServices::getInstance()->getCore()->getClipboardString());
 }
 
+void UITextInput::showLine(unsigned int lineNumber, bool top) {
+	
+}
+
 void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 	
 	if(!hasFocus)

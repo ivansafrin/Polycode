@@ -25,6 +25,15 @@
 
 PolycodeProjectEditor::PolycodeProjectEditor() : PolycodeEditor(true){
 
+	grid = new ScreenImage("editorGrid.png");
+	
+	addChild(grid);
+	grid->snapToPixels = true;
+	
+	grid->getTexture()->clamp = false;
+	grid->getTexture()->recreateFromImageData();	
+	
+
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
 	int fontSize = conf->getNumericValue("Polycode", "uiDefaultFontSize");	
@@ -235,6 +244,7 @@ bool PolycodeProjectEditor::openFile(String filePath) {
 }
 
 void PolycodeProjectEditor::Resize(int x, int y) {
+	grid->setImageCoordinates(0,0,x,y);	
 }
 
 void PolycodeProjectEditor::saveFile() {

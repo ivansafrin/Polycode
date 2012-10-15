@@ -40,6 +40,8 @@ class PolycodeProjectEditor : public PolycodeEditor {
 	
 	protected:
 	
+	ScreenImage *grid;
+
 	Object configFile;	
 	
 	std::vector<UICheckBox*> moduleCheckboxes;
