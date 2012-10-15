@@ -42,6 +42,16 @@ using namespace std;
 
 namespace Polycode {
 
+	class UITextInputUndoState {
+		public:
+			String content;
+			unsigned int lineOffset;
+			unsigned int caretPosition;
+			bool hasSelection;			
+			int selectionLine;
+			int selectionCaretPosition;
+	};
+
 	class _PolyExport UITextInput : public UIElement {
 		public:
 			UITextInput(bool multiLine, Number width, Number height);
@@ -81,6 +91,9 @@ namespace Polycode {
 			UIScrollContainer *getScrollContainer();
 		
 		protected:
+				
+			void setUndoState(UITextInputUndoState state);
+			void saveUndoState();
 		
 			bool isNumberOnly;
 		
@@ -124,7 +137,7 @@ namespace Polycode {
 			
 			vector<ScreenLabel*> linesToDelete;		
 			
-			String undoStates[MAX_TEXTINPUT_UNDO_STATES];
+			UITextInputUndoState undoStates[MAX_TEXTINPUT_UNDO_STATES];
 			int undoStateIndex;
 			int maxRedoIndex;
 		

@@ -141,6 +141,9 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 		addChild(linesContainer);
 	}
 	
+	undoStateIndex = 0;
+	maxRedoIndex = 0;
+	
 	insertLine(true);		
 }
 
@@ -620,15 +623,59 @@ UIScrollContainer *UITextInput::getScrollContainer() {
 	return scrollContainer;
 }
 
-void UITextInput::Undo() {
+void UITextInput::saveUndoState() {
+	UITextInputUndoState newState;
+	newState.content = getText();
+	newState.caretPosition = caretPosition;
+	newState.lineOffset = lineOffset;
+	newState.hasSelection = hasSelection;
+	if(hasSelection) {
+		newState.selectionLine = selectionLine;
+		newState.selectionCaretPosition = selectionCaretPosition;
+	}
+	undoStates[undoStateIndex] = newState;
+	
+	// if we hit undo state capacity, shift the whole stack
+	if(undoStateIndex == MAX_TEXTINPUT_UNDO_STATES-1) {
+		for(int i=0; i < MAX_TEXTINPUT_UNDO_STATES-1; i++) {
+			undoStates[i] = undoStates[i+1];
+		}
+	} else {
+		undoStateIndex++;
+	}
+	
+	maxRedoIndex = undoStateIndex;
+}
 
+void UITextInput::setUndoState(UITextInputUndoState state) {
+	clearSelection();
+	setText(state.content);
+	currentLine = lines[state.lineOffset];
+	caretPosition = state.caretPosition;
+	lineOffset = state.lineOffset;
+	updateCaretPosition();
+	
+	if(state.hasSelection) {
+		setSelection(lineOffset, state.selectionLine, caretPosition, state.selectionCaretPosition);
+	}
+}
+
+void UITextInput::Undo() {
+	if(undoStateIndex > 0) {
+		undoStateIndex--;
+		setUndoState(undoStates[undoStateIndex]);
+	}
 }
 
 void UITextInput::Redo() {
-
+	if(undoStateIndex < MAX_TEXTINPUT_UNDO_STATES-1 && undoStateIndex < maxRedoIndex) {
+		undoStateIndex++;
+		setUndoState(undoStates[undoStateIndex]);
+	}
 }
 
 void UITextInput::Cut() {
+	saveUndoState();
 	Copy();
 	if(hasSelection) {
 		deleteSelection();
@@ -640,6 +687,7 @@ void UITextInput::Copy() {
 }
 
 void UITextInput::Paste() {
+	saveUndoState();
 	insertText(CoreServices::getInstance()->getCore()->getClipboardString());
 }
 
@@ -668,10 +716,18 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 	}
 	
 	if(key == KEY_z  && (input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER))) {
+		Undo();
 		return;
 	}
 
+	if(key == KEY_z  && (input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER)) && (input->getKeyState(KEY_LSHIFT) || input->getKeyState(KEY_RSHIFT))) {
+		Redo();
+		return;
+	}
+
+
 	if(key == KEY_y  && (input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER))) {
+		Redo();
 		return;
 	}
 
@@ -815,6 +871,7 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 	
 	if(key == KEY_RETURN) {
 		if(multiLine) {	
+			saveUndoState();
 			if(hasSelection) {
 				deleteSelection();		
 			}			
@@ -832,6 +889,7 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 //	if(1) {
 	if((charCode > 31 && charCode < 127) || charCode > 127) {	
 		if(!isNumberOnly || (isNumberOnly && (charCode > 47 && charCode < 58))) {
+			saveUndoState();
 			if(hasSelection)
 				deleteSelection();
 			ctext = currentLine->getText();		
@@ -843,6 +901,7 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 	}
 	
 	if(key == KEY_TAB && multiLine) {
+		saveUndoState();
 		if(hasSelection)
 			deleteSelection();		
 		ctext = currentLine->getText();				
@@ -854,11 +913,13 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 	
 	if(key == KEY_BACKSPACE) {
 		if(hasSelection) {
+			saveUndoState();
 			deleteSelection();
 			return;
 		} else {
 		ctext = currentLine->getText();					
 		if(caretPosition > 0) {
+			saveUndoState();
 			if(ctext.length() > 0) {
 				String text2 = ctext.substr(caretPosition, ctext.length()-caretPosition);
 				ctext = ctext.substr(0,caretPosition-1);
@@ -867,6 +928,7 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 			}
 		} else {
 			if(lineOffset > 0) {
+				saveUndoState();			
 				ScreenLabel *lineToRemove = currentLine;
 				lineOffset--;
 				selectLineFromOffset();
