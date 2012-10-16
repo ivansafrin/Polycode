@@ -22,20 +22,159 @@
 
 #include "PolycodeTextEditor.h"
 
+PolycodeSyntaxHighlighter::PolycodeSyntaxHighlighter(String extension) {
+
+	colorScheme[0] = Color(0.0, 0.0, 0.0, 1.0);
+	colorScheme[1] = Color(0.0, 0.53, 0.0, 1.0);
+	colorScheme[2] = Color(0.79, 0.0, 0.63, 1.0);
+	colorScheme[3] = Color(126.0/255.0, 73.0/255.0, 42.0/255.0, 1.0);
+	colorScheme[4] = Color(227.0/255.0, 11.0/255.0, 0.0/255.0, 1.0);
+	colorScheme[5] = Color(39.0/255.0, 90.0/255.0, 94.0/255.0, 1.0);	
+	colorScheme[6] = Color(56.0/255.0, 0.0/255.0, 218.0/255.0, 1.0);
+	
+//	String separators = " ;()\t\n=+-/\\'\"";	
+//	String keywords = "true,false,";
+	
+	separators = String(" ; ( ) \t \n = + - / \\ ' \"").split(" ");
+	separators.push_back(" ");
+	
+	keywords = String("true false class self break do end else elseif function if local nil not or repeat return then until while").split(" ");
+}
+
+PolycodeSyntaxHighlighter::~PolycodeSyntaxHighlighter() {
+
+}
+
+bool PolycodeSyntaxHighlighter::contains(String part, std::vector<String> list) {
+	for(int i=0; i < list.size(); i++) {
+		if(list[i] == part)
+			return true;
+	}
+	return false;
+}
+
+std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseText(String text) {
+	return parseLua(text);
+}
+	
+std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseLua(String text) {
+	std::vector<SyntaxHighlightToken> tokens;
+	
+	const int MODE_GENERAL = 0;
+	const int MODE_COMMENT = 1;
+	const int MODE_STRING = 2;
+	const int MODE_METHOD = 3;
+	const int MODE_KEYWORD = 4;
+					
+	int mode = MODE_GENERAL;
+	
+	bool isComment = false;
+	
+	String line = "";
+	
+	char lastSeparator = ' ';
+	
+	for(int i=0; i < text.length(); i++) {
+		char ch = text[i];				
+		if(contains(String(ch), separators)) {			
+
+			unsigned int type = mode;
+			unsigned int ch_type = mode;
+
+	
+			if(ch == '\"')
+				ch_type = MODE_STRING;
+	
+			if(mode != MODE_STRING && ch == '(') {
+				type = MODE_METHOD;
+			}
+
+			if(mode != MODE_STRING) {
+				if(contains(line, keywords)) {
+					type = MODE_KEYWORD;
+				}
+			}
+	
+			if(isComment) {
+				type = MODE_COMMENT;
+				ch_type = MODE_COMMENT;
+			}
+	
+			if(line != "")
+				tokens.push_back(SyntaxHighlightToken(line, type));
+			tokens.push_back(SyntaxHighlightToken(String(ch), ch_type));
+
+			if(ch == '-' && lastSeparator == '-' && mode != MODE_STRING) {
+				isComment = true;
+				tokens[tokens.size()-1].type = MODE_COMMENT;
+				tokens[tokens.size()-2].type = MODE_COMMENT;				
+			}
+			
+			if(ch == '\n' )
+				isComment = false;
+				
+
+			if(ch == '\"') {
+				if(mode == MODE_STRING) {
+					mode = MODE_GENERAL;	
+				} else {
+					mode = MODE_STRING;
+				}
+			}	
+						
+			line = "";
+			lastSeparator = ch;			
+		} else {
+			line += String(ch);
+		}
+	}
+	
+	for(int i=0; i < tokens.size(); i++) {
+		switch(tokens[i].type) {
+			case MODE_STRING:
+				tokens[i].color = colorScheme[4];			
+			break;
+			case MODE_COMMENT:
+				tokens[i].color = colorScheme[1];			
+			break;			
+			case MODE_METHOD:
+				tokens[i].color = colorScheme[3];			
+			break;			
+			case MODE_KEYWORD:
+				tokens[i].color = colorScheme[2];
+			break;												
+			default:
+				tokens[i].color = colorScheme[0];
+			break;
+		}
+//		printf("%s(%d)", tokens[i].text.c_str(), tokens[i].type);		
+	}
+	
+	return tokens;
+}
+
 PolycodeTextEditor::PolycodeTextEditor() : PolycodeEditor(true){
 }
 
 PolycodeTextEditor::~PolycodeTextEditor() {
-	
+	if(syntaxHighligher)
+		delete syntaxHighligher;
 }
 
-bool PolycodeTextEditor::openFile(String filePath) {
+bool PolycodeTextEditor::openFile(OSFileEntry filePath) {
 	
 	textInput = new UITextInput(true, 100, 100);
 	addChild(textInput);	
 	
+	syntaxHighligher = NULL;
+	
+	if(filePath.extension == "lua") {
+		syntaxHighligher = new PolycodeSyntaxHighlighter(filePath.extension);
+		textInput->setSyntaxHighlighter(syntaxHighligher);
+	}
+	
 	Data *data = new Data();
-	data->loadFromFile(filePath);	
+	data->loadFromFile(filePath.fullPath);	
 	textInput->insertText(data->getAsString(String::ENCODING_UTF8));
 	delete data;
 	

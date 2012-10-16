@@ -32,7 +32,7 @@ class PolycodeImageEditor : public PolycodeEditor {
 	PolycodeImageEditor();
 	virtual ~PolycodeImageEditor();
 	
-	bool openFile(String filePath);
+	bool openFile(OSFileEntry filePath);
 	void Resize(int x, int y);
 	
 	protected:

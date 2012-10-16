@@ -30,9 +30,9 @@ PolycodeFontEditor::~PolycodeFontEditor() {
 	
 }
 
-bool PolycodeFontEditor::openFile(String filePath) {
+bool PolycodeFontEditor::openFile(OSFileEntry filePath) {
 	
-	CoreServices::getInstance()->getFontManager()->registerFont(filePath, filePath);
+	CoreServices::getInstance()->getFontManager()->registerFont(filePath.fullPath, filePath.fullPath);
 	
 	
 	
@@ -55,19 +55,19 @@ bool PolycodeFontEditor::openFile(String filePath) {
 	anchor->addChild(bg);
 	anchor->snapToPixels = true;
 	
-	editorLabel = new ScreenLabel(L"ABCDEFGHIJKLM", 48, filePath, Label::ANTIALIAS_FULL);
+	editorLabel = new ScreenLabel(L"ABCDEFGHIJKLM", 48, filePath.fullPath, Label::ANTIALIAS_FULL);
 	anchor->addChild(editorLabel);
-	editorLabel2 = new ScreenLabel(L"NOPQRSTUVWXYZ", 48, filePath, Label::ANTIALIAS_FULL);
+	editorLabel2 = new ScreenLabel(L"NOPQRSTUVWXYZ", 48, filePath.fullPath, Label::ANTIALIAS_FULL);
 	editorLabel2->setPosition(0, 48);
 	editorLabel->setPosition((editorLabel2->getWidth()-editorLabel->getWidth())/2, 0);
 	anchor->addChild(editorLabel2);
-	editorLabel3 = new ScreenLabel(L"abcdefghijklm", 48, filePath, Label::ANTIALIAS_FULL);
+	editorLabel3 = new ScreenLabel(L"abcdefghijklm", 48, filePath.fullPath, Label::ANTIALIAS_FULL);
 	editorLabel3->setPosition((editorLabel2->getWidth()-editorLabel3->getWidth())/2, 96);	
 	anchor->addChild(editorLabel3);
-	editorLabel4 = new ScreenLabel(L"nopqrstuvwxyz", 48, filePath, Label::ANTIALIAS_FULL);
+	editorLabel4 = new ScreenLabel(L"nopqrstuvwxyz", 48, filePath.fullPath, Label::ANTIALIAS_FULL);
 	editorLabel4->setPosition((editorLabel2->getWidth()-editorLabel4->getWidth())/2, 144);		
 	anchor->addChild(editorLabel4);
-	editorLabel5 = new ScreenLabel(L"1234567890", 48, filePath, Label::ANTIALIAS_FULL);
+	editorLabel5 = new ScreenLabel(L"1234567890", 48, filePath.fullPath, Label::ANTIALIAS_FULL);
 	editorLabel5->setPosition((editorLabel2->getWidth()-editorLabel5->getWidth())/2, 192);			
 	anchor->addChild(editorLabel5);
 

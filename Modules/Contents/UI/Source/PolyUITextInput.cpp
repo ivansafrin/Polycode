@@ -142,6 +142,8 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	undoStateIndex = 0;
 	maxRedoIndex = 0;
 	
+	syntaxHighliter = NULL;
+	
 	insertLine(true);		
 }
 
@@ -301,7 +303,20 @@ void UITextInput::deleteSelection() {
 	clearSelection();
 	caretPosition = selectionL;
 	updateCaretPosition();
+	changedText();
+}
+
+void UITextInput::changedText() {
+
+	if(syntaxHighliter) {
+		std::vector<SyntaxHighlightToken> tokens = syntaxHighliter->parseText(getText());
+	}
+
 	dispatchEvent(new UIEvent(), UIEvent::CHANGE_EVENT);	
+}
+
+void UITextInput::setSyntaxHighlighter(UITextInputSyntaxHighlighter *syntaxHighliter) {
+	this->syntaxHighliter = syntaxHighliter;
 }
 
 void UITextInput::Resize(Number width, Number height) {
@@ -357,7 +372,7 @@ int UITextInput::insertLine(bool after) {
 		// do we even need that? I don't think so.
 	}	
 		
-	dispatchEvent(new UIEvent(), UIEvent::CHANGE_EVENT);
+	changedText();
 	return 1;	
 }
 
@@ -610,7 +625,7 @@ void UITextInput::insertText(String text) {
 		currentLine->setText(ctext);			
 	}
 	
-	dispatchEvent(new UIEvent(), UIEvent::CHANGE_EVENT);	
+	changedText();
 	updateCaretPosition();		
 	restructLines();	
 }
@@ -981,7 +996,7 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 	}
 	
 	currentLine->setText(ctext);	
-	dispatchEvent(new UIEvent(), UIEvent::CHANGE_EVENT);	
+	changedText();
 	updateCaretPosition();
 }
 

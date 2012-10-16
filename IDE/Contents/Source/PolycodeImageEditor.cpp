@@ -30,7 +30,7 @@ PolycodeImageEditor::~PolycodeImageEditor() {
 	
 }
 
-bool PolycodeImageEditor::openFile(String filePath) {
+bool PolycodeImageEditor::openFile(OSFileEntry filePath) {
 	
 	grid = new ScreenImage("editorGrid.png");
 	
@@ -41,7 +41,7 @@ bool PolycodeImageEditor::openFile(String filePath) {
 	grid->getTexture()->recreateFromImageData();	
 	
 	
-	editorImage = new ScreenImage(filePath);
+	editorImage = new ScreenImage(filePath.fullPath);
 	addChild(editorImage);
 	
 	PolycodeEditor::openFile(filePath);

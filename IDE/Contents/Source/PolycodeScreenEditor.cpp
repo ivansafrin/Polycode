@@ -86,7 +86,7 @@ PolycodeScreenEditor::~PolycodeScreenEditor() {
 	
 }
 
-bool PolycodeScreenEditor::openFile(String filePath) {
+bool PolycodeScreenEditor::openFile(OSFileEntry filePath) {
 	
 	PolycodeEditor::openFile(filePath);	
 	return true;

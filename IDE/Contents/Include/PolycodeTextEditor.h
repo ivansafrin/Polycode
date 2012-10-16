@@ -28,17 +28,37 @@
 
 using namespace Polycode;
 
+class PolycodeSyntaxHighlighter : public UITextInputSyntaxHighlighter {
+	public:
+		PolycodeSyntaxHighlighter(String extension);
+		~PolycodeSyntaxHighlighter();
+	
+		bool contains(String part, std::vector<String> list);
+	
+		std::vector<SyntaxHighlightToken> parseText(String text);		
+		std::vector<SyntaxHighlightToken> parseLua(String text);
+		
+		Color colorScheme[16];
+				
+		
+	protected:
+	
+		std::vector<String> separators;
+		std::vector<String> keywords;		
+};
+
 class PolycodeTextEditor : public PolycodeEditor {
 public:
 	PolycodeTextEditor();
 	virtual ~PolycodeTextEditor();
 	
-	bool openFile(String filePath);
+	bool openFile(OSFileEntry filePath);
 	void Resize(int x, int y);
 	void saveFile();
 	
 protected:
 
+	PolycodeSyntaxHighlighter *syntaxHighligher;
 	UITextInput *textInput;
 };
 

@@ -224,7 +224,7 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 			} else {
 				editor = editorManager->createEditorForExtension(selectedData->fileEntry.extension);
 				if(editor) {
-					if(editor->openFile(selectedData->fileEntry.fullPath)) {
+					if(editor->openFile(selectedData->fileEntry)) {
 						frame->addEditor(editor);					
 						frame->showEditor(editor);
 					} else {

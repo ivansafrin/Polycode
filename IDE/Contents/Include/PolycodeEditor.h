@@ -32,7 +32,7 @@ public:
 	PolycodeEditor(bool _isReadOnly);
 	virtual ~PolycodeEditor();
 	
-	virtual bool openFile(String filePath){ this->filePath = filePath; }
+	virtual bool openFile(OSFileEntry filePath){ this->filePath = filePath.fullPath; }
 	virtual void Resize(int x, int y);
 	
 	virtual void saveFile(){};

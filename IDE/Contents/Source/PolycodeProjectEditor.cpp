@@ -158,10 +158,10 @@ PolycodeProjectEditor::~PolycodeProjectEditor() {
 	
 }
 
-bool PolycodeProjectEditor::openFile(String filePath) {
+bool PolycodeProjectEditor::openFile(OSFileEntry filePath) {
 
 
-	if(!configFile.loadFromXML(filePath)) {
+	if(!configFile.loadFromXML(filePath.fullPath)) {
 		return false;
 	}
 	

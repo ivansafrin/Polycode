@@ -33,7 +33,7 @@ public:
 	PolycodeFontEditor();
 	virtual ~PolycodeFontEditor();
 	
-	bool openFile(String filePath);
+	bool openFile(OSFileEntry filePath);
 	void Resize(int x, int y);
 	
 protected:

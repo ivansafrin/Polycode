@@ -51,6 +51,19 @@ namespace Polycode {
 			int selectionLine;
 			int selectionCaretPosition;
 	};
+	
+	class _PolyExport SyntaxHighlightToken {
+		public:
+			SyntaxHighlightToken(String text, int type) { this->text = text; this->type = type; }
+			Color color;
+			String text;
+			unsigned int type;
+	};
+	
+	class _PolyExport UITextInputSyntaxHighlighter {
+		public:		
+			virtual std::vector<SyntaxHighlightToken> parseText(String text) = 0;
+	};
 
 	class _PolyExport UITextInput : public UIElement {
 		public:
@@ -66,6 +79,7 @@ namespace Polycode {
 		
 			int insertLine(bool after);
 		
+			void changedText();
 			
 			void onKeyDown(PolyKEY key, wchar_t charCode);
 		
@@ -83,6 +97,7 @@ namespace Polycode {
 			
 			void showLine(unsigned int lineNumber, bool top);
 
+			void setSyntaxHighlighter(UITextInputSyntaxHighlighter *syntaxHighliter);
 					
 			void Resize(Number width, Number height);
 			
@@ -135,6 +150,8 @@ namespace Polycode {
 		
 			int caretPosition;
 			bool doSelectToCaret;
+			
+			UITextInputSyntaxHighlighter *syntaxHighliter;
 		
 			ScreenEntity *linesContainer;
 			

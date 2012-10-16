@@ -103,7 +103,7 @@ namespace Polycode {
 			* Find last occurrence of content in string. 
 			* @param str String to be searched for in the object.
 			* @param pos Position of the last character in the string to be taken into consideration for possible matches. The default value indicates that the entire string is searched.
-			* @return The position of the last occurrence in the string of the searched content
+			* @return The position of the last occurrence in the string of the searched content or -1 if not found
 			*/							
 			size_t rfind ( const String &str, size_t pos = std::wstring::npos ) const { return contents.rfind(str.contents, pos); }
 			
@@ -111,7 +111,7 @@ namespace Polycode {
 			* Find content in string. 
 			* @param str String to be searched for in the object.
 			* @param pos Position of the first character in the string to be taken into consideration for possible matches. The default value indicates that the entire string is searched.
-			* @return The position of the first occurrence in the string of the searched content
+			* @return The position of the first occurrence in the string of the searched content or -1 if not found.
 			*/										
 			size_t find ( const String &str, size_t pos = 0 ) const { return contents.find(str.contents, pos); }
 			

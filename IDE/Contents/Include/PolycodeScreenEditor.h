@@ -33,7 +33,7 @@ class PolycodeScreenEditor : public PolycodeEditor {
 	PolycodeScreenEditor();
 	virtual ~PolycodeScreenEditor();
 	
-	bool openFile(String filePath);
+	bool openFile(OSFileEntry filePath);
 	void Resize(int x, int y);
 	
 	void syncTransformToSelected();

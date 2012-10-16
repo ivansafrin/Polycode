@@ -34,7 +34,7 @@ class PolycodeProjectEditor : public PolycodeEditor {
 	PolycodeProjectEditor();
 	virtual ~PolycodeProjectEditor();
 	
-	bool openFile(String filePath);
+	bool openFile(OSFileEntry filePath);
 	void Resize(int x, int y);
 	void saveFile();
 	
