@@ -40,16 +40,19 @@ UIHSizer::UIHSizer(Number width, Number height, Number mainWidth, bool leftSizer
 	separatorBgShape->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	separatorBgShape->setColor(0.0, 0.0, 0.0, 1.0);	
 	addChild(separatorBgShape);
+	
 
 	childElements = new ScreenEntity();
+	childElements->processInputEvents = true;
 	addChild(childElements);
 	
 	firstElement = NULL;
 	secondElement = NULL;
 	
-	separatorHitShape = new ScreenShape(ScreenShape::SHAPE_RECT, 6,height);
+	separatorHitShape = new ScreenShape(ScreenShape::SHAPE_RECT, 8,height);
 	separatorHitShape->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	separatorHitShape->setColor(1.0, 0.0, 0.0, 0.5);	
+	separatorHitShape->blockMouseInput = true;	
 	addChild(separatorHitShape);
 	
 	separatorHitShape->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
@@ -60,8 +63,7 @@ UIHSizer::UIHSizer(Number width, Number height, Number mainWidth, bool leftSizer
 	separatorHitShape->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);			
 	separatorHitShape->visible = false;
 	
-	coreInput = CoreServices::getInstance()->getCore()->getInput();
-	
+	coreInput = CoreServices::getInstance()->getCore()->getInput();	
 	coreInput->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);	
 	
 	separatorHitShape->processInputEvents = true;
@@ -156,8 +158,8 @@ void UIHSizer::updateSizer() {
 
 		separatorBgShape->setShapeSize(1, height);
 		separatorBgShape->setPosition(mainWidth,0);
-		separatorHitShape->setShapeSize(6, height);
-		separatorHitShape->setPosition(mainWidth-3,0);
+		separatorHitShape->setShapeSize(8, height);
+		separatorHitShape->setPosition(mainWidth-4,0);
 		
 	} else {
 	
@@ -172,8 +174,8 @@ void UIHSizer::updateSizer() {
 
 		separatorBgShape->setShapeSize(1, height);
 		separatorBgShape->setPosition(width-mainWidth,0);
-		separatorHitShape->setShapeSize(6, height);
-		separatorHitShape->setPosition(width-mainWidth-3,0);
+		separatorHitShape->setShapeSize(8, height);
+		separatorHitShape->setPosition(width-mainWidth-4,0);
 	
 	}
 }

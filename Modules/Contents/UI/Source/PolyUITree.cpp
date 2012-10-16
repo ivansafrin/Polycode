@@ -31,7 +31,7 @@ using namespace Polycode;
 
 UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : ScreenEntity() {
 		
-		
+	processInputEvents = true;
 	willDrag = false;
 	isDragging = false;
 	

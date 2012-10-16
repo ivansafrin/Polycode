@@ -27,12 +27,13 @@
 #include "PolyScreenEntity.h"
 #include "PolyUIEvent.h"
 #include "PolyUIBox.h"
+#include "PolyUIElement.h"
 #include "PolyInputEvent.h"
 #include "PolyFont.h"
 
 namespace Polycode {
 
-	class _PolyExport UIHSlider : public ScreenEntity {
+	class _PolyExport UIHSlider : public UIElement {
 		public:
 			UIHSlider(Number start, Number end, Number width);
 			~UIHSlider();		

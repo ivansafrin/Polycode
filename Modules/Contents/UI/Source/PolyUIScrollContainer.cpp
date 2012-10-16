@@ -57,6 +57,8 @@ UIScrollContainer::UIScrollContainer(ScreenEntity *scrolledEntity, bool hScroll,
 	addChild(vScrollBar);
 	vScrollBar->setPosition(width+uiScrollPanePadding,0);	
 	vScrollBar->addEventListener(this, Event::CHANGE_EVENT);
+	vScrollBar->blockMouseInput = true;
+	vScrollBar->processInputEvents = true;
 	
 	if(!vScroll)
 		vScrollBar->enabled = false;
@@ -100,6 +102,14 @@ void UIScrollContainer::onMouseWheelDown(Number x, Number y) {
 
 Vector2 UIScrollContainer::getContentSize() {
 	return Vector2(contentWidth, contentHeight);
+}
+
+Number UIScrollContainer::getVScrollWidth() {
+	if(vScrollBar->enabled) {
+		return vScrollBar->getWidth();
+	} else {
+		return 0;
+	}
 }
 
 void UIScrollContainer::setContentSize(Number newContentWidth, Number newContentHeight) {

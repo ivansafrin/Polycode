@@ -372,16 +372,14 @@ void ScreenEntity::_onMouseMove(Number x, Number y, int timestamp, Vector2 paren
 			mouseOver = false;
 		}		
 	}	
-	}
-	
-	if(enabled) {
+
 		for(int i=children.size()-1;i>=0;i--) {			
 			Vector2 adjust = parentAdjust;
 			if(positionMode == POSITION_TOPLEFT)
 			adjust += Vector2(width/2.0, height/2.0);
 			((ScreenEntity*)children[i])->_onMouseMove(x,y, timestamp, adjust);
 			if(((ScreenEntity*)children[i])->blockMouseInput && ((ScreenEntity*)children[i])->enabled) {
-				if(((ScreenEntity*)children[i])->hitTest(x,y))
+				if(((ScreenEntity*)children[i])->hitTest(x+adjust.x,y+adjust.y))
 				   break;
 			}
 		}
@@ -434,15 +432,14 @@ bool ScreenEntity::_onMouseUp(Number x, Number y, int mouseButton, int timestamp
 		inputEvent->mouseButton = mouseButton;
 		dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEUP_OUTSIDE);	
 	}
-	}
-	if(enabled) {
+
 		for(int i=children.size()-1;i>=0;i--) {			
 			Vector2 adjust = parentAdjust;
 			if(positionMode == POSITION_TOPLEFT)
 				adjust += Vector2(width/2.0, height/2.0);
 			((ScreenEntity*)children[i])->_onMouseUp(x,y, mouseButton, timestamp, adjust);;
 			if(((ScreenEntity*)children[i])->blockMouseInput && ((ScreenEntity*)children[i])->enabled) {
-				if(((ScreenEntity*)children[i])->hitTest(x,y))
+				if(((ScreenEntity*)children[i])->hitTest(x+adjust.x,y+adjust.y))
 				   break;
 			}
 		}
@@ -483,16 +480,14 @@ void ScreenEntity::_onMouseWheelUp(Number x, Number y, int timestamp, Vector2 pa
 		
 		retVal = true;
 	}
-	}
-	
-	if(enabled) {
+
 		for(int i=children.size()-1;i>=0;i--) {			
 			Vector2 adjust = parentAdjust;
 			if(positionMode == POSITION_TOPLEFT)
 				adjust += Vector2(width/2.0, height/2.0);
 			((ScreenEntity*)children[i])->_onMouseWheelUp(x,y, timestamp, adjust);;
 			if(((ScreenEntity*)children[i])->blockMouseInput && ((ScreenEntity*)children[i])->enabled) {
-				if(((ScreenEntity*)children[i])->hitTest(x,y))
+				if(((ScreenEntity*)children[i])->hitTest(x+adjust.x,y+adjust.y))
 				   break;
 			}
 		}
@@ -531,16 +526,14 @@ void ScreenEntity::_onMouseWheelDown(Number x, Number y, int timestamp, Vector2 
 		
 		retVal = true;
 	}
-	}
-	
-	if(enabled) {
+
 		for(int i=children.size()-1;i>=0;i--) {			
 			Vector2 adjust = parentAdjust;
 			if(positionMode == POSITION_TOPLEFT)
 				adjust += Vector2(width/2.0, height/2.0);
 			((ScreenEntity*)children[i])->_onMouseWheelDown(x,y, timestamp, adjust);;
 			if(((ScreenEntity*)children[i])->blockMouseInput && ((ScreenEntity*)children[i])->enabled) {
-				if(((ScreenEntity*)children[i])->hitTest(x,y))
+				if(((ScreenEntity*)children[i])->hitTest(x+adjust.x,y+adjust.y))
 				   break;
 			}
 		}
@@ -589,15 +582,14 @@ bool ScreenEntity::_onMouseDown(Number x, Number y, int mouseButton, int timesta
 		lastClickTicks = timestamp;		
 		retVal = true;
 	}
-	}
-	if(enabled) {
-		for(int i=children.size()-1;i>=0;i--) {			
+
+	for(int i=children.size()-1;i>=0;i--) {			
 			Vector2 adjust = parentAdjust;
 			if(positionMode == POSITION_TOPLEFT)
 				adjust += Vector2(width/2.0, height/2.0);
 			((ScreenEntity*)children[i])->_onMouseDown(x,y, mouseButton, timestamp, adjust);;
 			if(((ScreenEntity*)children[i])->blockMouseInput && ((ScreenEntity*)children[i])->enabled) {
-				if(((ScreenEntity*)children[i])->hitTest(x,y))
+				if(((ScreenEntity*)children[i])->hitTest(x+adjust.x,y+adjust.y))
 				   break;
 			}
 		}

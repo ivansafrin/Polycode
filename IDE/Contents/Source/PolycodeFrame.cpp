@@ -39,9 +39,12 @@ void EditorHolder::Resize(Number width, Number height) {
 
 PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 
+	processInputEvents = true;
+
 	modalChild = NULL;
 	
 	welcomeEntity = new ScreenEntity();
+	welcomeEntity->processInputEvents = true;
 	addChild(welcomeEntity);
 	welcomeImage = new ScreenImage("welcome.png");
 	welcomeEntity->addChild(welcomeImage);

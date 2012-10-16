@@ -46,9 +46,11 @@ namespace Polycode {
 		Vector2 getContentSize();
 		
 		void onMouseWheelDown(Number x, Number y);
-		void onMouseWheelUp(Number x, Number y);		
-		
+		void onMouseWheelUp(Number x, Number y);	
+				
 		void handleEvent(Event *event);
+		
+		Number getVScrollWidth();
 		
 	private:		
 		

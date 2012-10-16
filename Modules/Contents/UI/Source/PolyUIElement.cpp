@@ -26,6 +26,7 @@ using namespace Polycode;
 
 UIElement::UIElement() : ScreenEntity() {
 	setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	processInputEvents = true;
 }
 
 UIElement::~UIElement() {

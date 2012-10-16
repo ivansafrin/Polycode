@@ -74,7 +74,6 @@ UIVScrollBar::UIVScrollBar(Number width, Number height, Number initialRatio) : S
 	handleBox->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);	
 	handleBox->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);			
 	handleBox->processInputEvents = true;
-	handleBox->blockMouseInput = true;
 	
 	dragRectHeight = height-(padding*2)-scrollHandleHeight;
 	handleBox->setDragLimits(Rectangle(padding,padding,width-(padding*2)-(width-(padding*2)), dragRectHeight));
@@ -89,6 +88,7 @@ UIVScrollBar::UIVScrollBar(Number width, Number height, Number initialRatio) : S
 
 void UIVScrollBar::Resize(int newHeight) {
 	bgBox->resizeBox(width, newHeight);
+	setHitbox(width, newHeight);	
 	setHeight(newHeight);
 	dragRectHeight = height-(padding*2)-scrollHandleHeight;	
 	handleBox->setDragLimits(Rectangle(padding,padding,width-(padding*2)-(width-(padding*2)), dragRectHeight));	
@@ -129,6 +129,11 @@ void UIVScrollBar::setHandleRatio(Number newRatio) {
 	dragRectHeight = height-(padding*2)-scrollHandleHeight;	
 	handleBox->resizeBox(handleBox->getWidth(), scrollHandleHeight);
 	handleBox->setDragLimits(Rectangle(padding,padding,width-(padding*2)-(width-(padding*2)), dragRectHeight));	
+	
+	if(enabled && handleBox->getPosition().y > dragRectHeight) {
+		handleBox->setPositionY(dragRectHeight);
+	}
+	
 }
 
 void UIVScrollBar::onMouseWheelUp(Number x, Number y) {

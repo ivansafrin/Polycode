@@ -27,7 +27,7 @@
 
 using namespace Polycode;
 
-UIHSlider::UIHSlider(Number start, Number end, Number width) {
+UIHSlider::UIHSlider(Number start, Number end, Number width) : UIElement() {
 
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	

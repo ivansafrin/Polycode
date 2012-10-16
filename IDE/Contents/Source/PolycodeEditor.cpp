@@ -45,6 +45,7 @@ void PolycodeEditor::setFilePath(String newPath) {
 PolycodeEditor::PolycodeEditor(bool _isReadOnly) : ScreenEntity() {
 	this->_isReadOnly = _isReadOnly;
 	enableScissor = true;	
+	processInputEvents = true;
 }
 
 void PolycodeEditor::Resize(int x, int y) {

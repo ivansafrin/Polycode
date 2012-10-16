@@ -32,7 +32,7 @@ using namespace Polycode;
 
 UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElement() {
 	this->multiLine = multiLine;
-	
+	processInputEvents = true;
 	isNumberOnly = false;
 	
 	draggingSelection = false;
@@ -67,6 +67,7 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	} 
 	
 	linesContainer = new ScreenEntity();	
+	linesContainer->processInputEvents = true;
 	
 	lineSpacing = conf->getNumericValue("Polycode", "textEditLineSpacing");
 	
@@ -81,10 +82,7 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 						  st,sr,sb,sl,
 						  width+(padding*2), height+(padding*2));	
 	
-	addChild(inputRect);
-	
-
-	
+	addChild(inputRect);		
 	
 	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEUP);	
@@ -312,6 +310,10 @@ void UITextInput::Resize(Number width, Number height) {
 	this->height = height;	
 	matrixDirty = true;	
 	setHitbox(width,height);
+	
+	if(multiLine) {
+		inputRect->setHitbox(width - scrollContainer->getVScrollWidth(), height);
+	}
 
 	if(scrollContainer) {
 		scrollContainer->Resize(width, height);
@@ -366,6 +368,10 @@ void UITextInput::restructLines() {
 	
 	if(scrollContainer) {
 		scrollContainer->setContentSize(width,  (((lines.size()+1) * ((lineHeight+lineSpacing)))) - padding);
+	}	
+	
+	if(multiLine) {
+		inputRect->setHitbox(width - scrollContainer->getVScrollWidth(), height);
 	}	
 	
 }

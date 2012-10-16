@@ -70,6 +70,7 @@ UIHScrollBar::UIHScrollBar(Number width, Number height, Number initialRatio) : S
 	addChild(handleBox);
 	
 	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+	bgBox->blockMouseInput = true;
 	
 	handleBox->addEventListener(this, InputEvent::EVENT_MOUSEUP);
 	handleBox->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);	
@@ -115,6 +116,11 @@ void UIHScrollBar::setHandleRatio(Number newRatio) {
 	
 	handleBox->resizeBox(scrollHandleWidth, handleBox->getHeight());
 	handleBox->setDragLimits(Rectangle(padding,padding,dragRectWidth, height-(padding*2)-(height-(padding*2))));	
+	
+	if(enabled && handleBox->getPosition().x > dragRectWidth) {
+		handleBox->setPositionX(dragRectWidth);
+	}
+	
 }
 
 Number UIHScrollBar::getScrollValue() {
