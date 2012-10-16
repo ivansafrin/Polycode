@@ -394,6 +394,7 @@ void UITextInput::setText(String text) {
 
 void UITextInput::onLoseFocus() {
 	blinkerRect->visible  = false;
+	clearSelection();
 }
 
 String UITextInput::getText() {

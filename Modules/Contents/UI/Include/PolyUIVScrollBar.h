@@ -40,8 +40,6 @@ namespace Polycode {
 		void scrollTo(Number scrollValue);
 		void Scroll(Number amount);
 		
-		void onMouseDown(Number x, Number y) { printf("SHIT: %f,%f\n", x,y); }
-		
 		
 		void onMouseWheelDown(Number x, Number y);
 		void onMouseWheelUp(Number x, Number y);

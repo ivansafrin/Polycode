@@ -26,7 +26,7 @@
 using namespace Polycode;
 
 PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
-	core = new CocoaCore(view, 800,600,false,true, 0, 0,60);	
+	core = new CocoaCore(view, 900,700,false,true, 0, 0,60);	
 	core->addEventListener(this, Core::EVENT_CORE_RESIZE);	
 	CoreServices::getInstance()->getRenderer()->setClearColor(0.2,0.2,0.2);
 	
@@ -73,7 +73,7 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	frame->getProjectBrowser()->addEventListener(this, PolycodeProjectBrowserEvent::SHOW_MENU);
 	
 	frame->Resize(core->getXRes(), core->getYRes());	
-	core->setVideoMode(1000, 600, false, false, 0, 0);
+	core->setVideoMode(1000, 700, false, false, 0, 0);
 	
 	debugger = new PolycodeRemoteDebugger();
 	frame->console->setDebugger(debugger);

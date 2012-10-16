@@ -47,6 +47,8 @@ UIVScrollBar::UIVScrollBar(Number width, Number height, Number initialRatio) : S
 					  st,sr,sb,sl,
 					  width, height);
 	
+	bgBox->processInputEvents = true;
+	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);		
 	addChild(bgBox);
 	
 	st = conf->getNumericValue("Polycode", "uiScrollHandleSkinT");
@@ -67,13 +69,13 @@ UIVScrollBar::UIVScrollBar(Number width, Number height, Number initialRatio) : S
 					  width-(padding*2),scrollHandleHeight);
 	handleBox->setPosition(padding, padding);	
 	addChild(handleBox);
-	
-	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
-	
+		
 	handleBox->addEventListener(this, InputEvent::EVENT_MOUSEUP);
 	handleBox->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);	
-	handleBox->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);			
+	handleBox->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);	
 	handleBox->processInputEvents = true;
+	handleBox->blockMouseInput = true;
+	
 	
 	dragRectHeight = height-(padding*2)-scrollHandleHeight;
 	handleBox->setDragLimits(Rectangle(padding,padding,width-(padding*2)-(width-(padding*2)), dragRectHeight));
@@ -173,12 +175,12 @@ void UIVScrollBar::handleEvent(Event *event) {
 		switch(event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEDOWN:
 				if(inputEvent->mousePosition.y < handleBox->getPosition().y)  {
-					Number newPos = handleBox->getPosition().y - scrollHandleHeight;
+					Number newPos = handleBox->getPosition().y - scrollHandleHeight/2;
 					if(newPos < padding)
 						newPos = padding;
 					handleBox->setPositionY(newPos);
 				} else {
-					Number newPos = handleBox->getPosition().y + scrollHandleHeight;
+					Number newPos = handleBox->getPosition().y + scrollHandleHeight/2;
 					if(newPos > dragRectHeight)
 						newPos = dragRectHeight;
 					handleBox->setPositionY(newPos);					
@@ -195,7 +197,7 @@ void UIVScrollBar::handleEvent(Event *event) {
 				handleBox->stopDrag();
 				break;
 			case InputEvent::EVENT_MOUSEDOWN:
-				handleBox->startDrag(inputEvent->mousePosition.x-handleBox->getPosition().x,inputEvent->mousePosition.y-handleBox->getPosition().y);
+				handleBox->startDrag(inputEvent->mousePosition.x,inputEvent->mousePosition.y);
 				break;		
 		}
 	}

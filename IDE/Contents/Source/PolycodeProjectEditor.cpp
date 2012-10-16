@@ -77,7 +77,7 @@ PolycodeProjectEditor::PolycodeProjectEditor() : PolycodeEditor(true){
 	defaultWidthInput = new UITextInput(false, 60, 12);	
 	mainSettingsWindow->addChild(defaultWidthInput);
 	defaultWidthInput->setPosition(label2->getPosition().x, label2->getPosition().y+label2->getHeight());
-	
+	defaultWidthInput->setNumberOnly(true);
 
 	label2 = new ScreenLabel(L"Height:", fontSize, fontName, Label::ANTIALIAS_FULL);
 	mainSettingsWindow->addChild(label2);
@@ -86,7 +86,7 @@ PolycodeProjectEditor::PolycodeProjectEditor() : PolycodeEditor(true){
 	defaultHeightInput = new UITextInput(false, 60, 12);	
 	mainSettingsWindow->addChild(defaultHeightInput);
 	defaultHeightInput->setPosition(label2->getPosition().x, label2->getPosition().y+label2->getHeight());
-
+	defaultHeightInput->setNumberOnly(true);
 	
 	label2 = new ScreenLabel(L"Anti-aliasing:", fontSize, fontName, Label::ANTIALIAS_FULL);
 	mainSettingsWindow->addChild(label2);
@@ -119,6 +119,7 @@ PolycodeProjectEditor::PolycodeProjectEditor() : PolycodeEditor(true){
 	framerateInput = new UITextInput(false, 60, 12);	
 	mainSettingsWindow->addChild(framerateInput);
 	framerateInput->setPosition(label2->getPosition().x, label2->getPosition().y+label2->getHeight());
+	framerateInput->setNumberOnly(true);
 
 	vSyncCheckBox = new UICheckBox("V-Sync", false);
 	vSyncCheckBox->setPosition(padding, framerateInput->getPosition().y+framerateInput->getHeight()+10);

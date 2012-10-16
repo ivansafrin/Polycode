@@ -164,7 +164,7 @@ void UIHScrollBar::handleEvent(Event *event) {
 				handleBox->stopDrag();
 				break;
 			case InputEvent::EVENT_MOUSEDOWN:
-				handleBox->startDrag(inputEvent->mousePosition.x-handleBox->getPosition().x,inputEvent->mousePosition.y-handleBox->getPosition().y);
+				handleBox->startDrag(inputEvent->mousePosition.x,inputEvent->mousePosition.y);
 				break;		
 		}
 	}
