@@ -70,7 +70,7 @@ UIHScrollBar::UIHScrollBar(Number width, Number height, Number initialRatio) : S
 	addChild(handleBox);
 	
 	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
-	bgBox->blockMouseInput = true;
+	bgBox->processInputEvents = true;
 	
 	handleBox->addEventListener(this, InputEvent::EVENT_MOUSEUP);
 	handleBox->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);	

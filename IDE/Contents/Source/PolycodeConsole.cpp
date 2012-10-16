@@ -52,9 +52,7 @@ void PolycodeConsole::setDebugger(PolycodeRemoteDebugger *debugger) {
 
 void PolycodeConsole::handleEvent(Event *event) {
 	if(event->getDispatcher() == consoleTextInput) {
-		if(event->getEventCode() == Event::COMPLETE_EVENT) {
-			_print(">"+consoleTextInput->getText());
-			_print("\n");
+		if(event->getEventCode() == Event::COMPLETE_EVENT && event->getEventType() == "Event") {
 			if(debugger) {
 				if(!debugger->isConnected()) {
 					_print("Unable to inject code. No debugger clients connected.\n");
