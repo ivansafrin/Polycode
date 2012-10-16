@@ -469,24 +469,27 @@ void CocoaCore::removeDiskItem(const String& itemPath) {
 }
 	
 String CocoaCore::openFolderPicker() {
-	NSOpenPanel *attachmentPanel = [NSOpenPanel openPanel];	
+	unlockMutex(eventMutex);
+	NSOpenPanel *attachmentPanel = [[NSOpenPanel openPanel] retain];
 	[attachmentPanel setCanChooseFiles:NO];
 	[attachmentPanel setCanCreateDirectories: YES];
 	[attachmentPanel setCanChooseDirectories:YES];
 	
-	if ( [attachmentPanel runModalForDirectory:nil file:nil] == NSOKButton )
+	if ( [attachmentPanel runModal] == NSOKButton )
 	{
 		// files and directories selected.
 		NSArray* files = [attachmentPanel filenames];
 		NSString* fileName = [files objectAtIndex:0];
+		[attachmentPanel release];
 		return [fileName UTF8String];
 	} else {
+		[attachmentPanel release];	
 		return [@"" UTF8String];
 	}	
 }
 
 vector<String> CocoaCore::openFilePicker(vector<CoreFileExtension> extensions, bool allowMultiple) {
-	
+	unlockMutex(eventMutex);	
 	vector<String> retVector;
 	
 	NSOpenPanel *attachmentPanel = [NSOpenPanel openPanel];	

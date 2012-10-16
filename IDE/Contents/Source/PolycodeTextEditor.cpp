@@ -52,5 +52,6 @@ void PolycodeTextEditor::saveFile() {
 
 void PolycodeTextEditor::Resize(int x, int y) {
 	textInput->Resize(x,y);
+	PolycodeEditor::Resize(x,y);	
 }
 

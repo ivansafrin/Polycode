@@ -33,7 +33,7 @@ public:
 	virtual ~PolycodeEditor();
 	
 	virtual bool openFile(String filePath){ this->filePath = filePath; }
-	virtual void Resize(int x, int y) = 0;
+	virtual void Resize(int x, int y);
 	
 	virtual void saveFile(){};
 	

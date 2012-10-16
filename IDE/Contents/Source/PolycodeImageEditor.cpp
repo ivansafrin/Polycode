@@ -51,5 +51,6 @@ bool PolycodeImageEditor::openFile(String filePath) {
 void PolycodeImageEditor::Resize(int x, int y) {
 	editorImage->setPosition((x-editorImage->getWidth()) /2, (y-editorImage->getHeight()) /2);
 	grid->setImageCoordinates(0,0,x,y);	
+	PolycodeEditor::Resize(x,y);
 }
 

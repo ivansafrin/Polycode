@@ -40,8 +40,10 @@ UIButton::UIButton(String text, Number width, Number height) : UIElement() {
 	Number sr = conf->getNumericValue("Polycode", "uiButtonSkinR");
 	Number sb = conf->getNumericValue("Polycode", "uiButtonSkinB");
 	Number sl = conf->getNumericValue("Polycode", "uiButtonSkinL");
-	
-	
+
+	Number labelOffsetX = conf->getNumericValue("Polycode", "uiButtonLabelOffsetX");
+	Number labelOffsetY = conf->getNumericValue("Polycode", "uiButtonLabelOffsetY");
+		
 	buttonRect = new UIBox(conf->getStringValue("Polycode", "uiButtonSkin"),
 						   st,sr,sb,sl,
 						   width, height);	
@@ -64,8 +66,8 @@ UIButton::UIButton(String text, Number width, Number height) : UIElement() {
 	
 	buttonLabel = new ScreenLabel(text, fontSize, fontName, Label::ANTIALIAS_FULL);
 	addChild(buttonLabel);
-	labelXPos = floor((width-buttonLabel->getWidth())/2.0f);
-	labelYPos = floor((height-(buttonLabel->getHeight()-5))/2.0f);
+	labelXPos = floor((width-buttonLabel->getWidth())/2.0f) + labelOffsetX;
+	labelYPos = floor((height-(buttonLabel->getHeight()))/2.0f) + labelOffsetY;
 	buttonLabel->setPosition(labelXPos,labelYPos);
 	
 	this->width = width;

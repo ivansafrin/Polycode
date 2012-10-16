@@ -5,7 +5,7 @@
 	<uiTextInputFontNameMultiLine>mono</uiTextInputFontNameMultiLine>
 	<uiDefaultFontSize>11</uiDefaultFontSize>
 	<uiTextInputFontSize>11</uiTextInputFontSize>
-	<uiTextInputFontSizeMultiline>12</uiTextInputFontSizeMultiline>	
+	<uiTextInputFontSizeMultiline>11</uiTextInputFontSizeMultiline>	
 	<uiTreeArrowIconImage>arrowIcon.png</uiTreeArrowIconImage>
 	<uiTreeCellHeight>20</uiTreeCellHeight>
 	<uiTreeCellPadding>4</uiTreeCellPadding>
@@ -37,6 +37,8 @@
 	<uiButtonSkin>button.png</uiButtonSkin>
 	<uiButtonFocusedSkin>buttonFocused.png</uiButtonFocusedSkin>
 	<uiButtonFontSize>11</uiButtonFontSize>	
+	<uiButtonLabelOffsetX>2</uiButtonLabelOffsetX>
+	<uiButtonLabelOffsetY>1</uiButtonLabelOffsetY>	
 	<uiButtonSkinT>4</uiButtonSkinT>
 	<uiButtonSkinR>4</uiButtonSkinR>
 	<uiButtonSkinB>4</uiButtonSkinB>

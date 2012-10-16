@@ -22,7 +22,7 @@
 
 #include "ExampleBrowserWindow.h"
 
-ExampleBrowserWindow::ExampleBrowserWindow() : UIWindow(L"Example Browser", 320, 300){
+ExampleBrowserWindow::ExampleBrowserWindow() : UIWindow(L"Example Browser", 320, 400){
 	
 	templateFolder = "";
 	
@@ -34,7 +34,7 @@ ExampleBrowserWindow::ExampleBrowserWindow() : UIWindow(L"Example Browser", 320,
 	int fontSize = conf->getNumericValue("Polycode", "uiDefaultFontSize");
 	
 	
-	templateContainer = new UITreeContainer("boxIcon.png", L"Examples", 300, 300-topPadding-padding-padding- 40);	
+	templateContainer = new UITreeContainer("boxIcon.png", L"Examples", 320, 410-topPadding-padding-padding-40);	
 	
 	ExampleTemplateUserData *data = new ExampleTemplateUserData();
 	data->type = 0;
@@ -67,13 +67,13 @@ ExampleBrowserWindow::ExampleBrowserWindow() : UIWindow(L"Example Browser", 320,
 	cancelButton = new UIButton(L"Cancel", 100);
 	cancelButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(cancelButton);
-	cancelButton->setPosition(300-100-padding-80-10, 265);
+	cancelButton->setPosition(330-100-padding-80-10, 375);
 		
 	
 	okButton = new UIButton(L"Open Example", 100);
 	okButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(okButton);
-	okButton->setPosition(300-80-padding, 265);
+	okButton->setPosition(330-80-padding, 375);
 }
 
 String ExampleBrowserWindow::getExamplePath() {

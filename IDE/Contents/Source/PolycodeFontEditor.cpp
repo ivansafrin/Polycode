@@ -89,5 +89,6 @@ bool PolycodeFontEditor::openFile(String filePath) {
 void PolycodeFontEditor::Resize(int x, int y) {
 	anchor->setPosition((x-anchor->getWidth()) /2, (y-anchor->getHeight()) /2);
 	grid->setImageCoordinates(0,0,x,y);
+	PolycodeEditor::Resize(x,y);	
 }
 

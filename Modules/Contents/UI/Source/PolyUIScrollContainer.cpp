@@ -113,6 +113,7 @@ void UIScrollContainer::setContentSize(Number newContentWidth, Number newContent
 	if(hasVScroll) {
 		if((height / newContentHeight) >= 1) {
 			vScrollBar->enabled = false;
+			vScrollBar->scrollTo(0);
 		} else {
 			vScrollBar->enabled = true;		
 		}
@@ -121,6 +122,7 @@ void UIScrollContainer::setContentSize(Number newContentWidth, Number newContent
 	if(hasHScroll) {
 		if((width / newContentWidth) >= 1) {
 			hScrollBar->enabled = false;
+			hScrollBar->scrollTo(0);			
 		} else {
 			hScrollBar->enabled = true;		
 		}

@@ -57,6 +57,7 @@ UIVSizer::UIVSizer(Number width, Number height, Number mainHeight, bool topSizer
 	separatorHitShape->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);
 	separatorHitShape->addEventListener(this, InputEvent::EVENT_MOUSEOVER);	
 	separatorHitShape->addEventListener(this, InputEvent::EVENT_MOUSEOUT);		
+	separatorHitShape->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);			
 	separatorHitShape->visible = false;
 	
 	coreInput = CoreServices::getInstance()->getCore()->getInput();
@@ -88,6 +89,7 @@ void UIVSizer::handleEvent(Event *event) {
 				resizing = false;			
 			}
 			break;
+			case InputEvent::EVENT_MOUSEMOVE:			
 			case InputEvent::EVENT_MOUSEOVER:
 				CoreServices::getInstance()->getCore()->setCursor(CURSOR_RESIZE_UP_DOWN);
 			break;

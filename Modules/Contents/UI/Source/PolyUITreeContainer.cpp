@@ -59,6 +59,8 @@ UITreeContainer::UITreeContainer(String icon, String text, Number treeWidth, Num
 	width = treeWidth;
 	height = treeHeight;
 	setHitbox(width, height);
+	
+	Resize(width, height);
 }
 
 void UITreeContainer::Resize(Number width, Number height) {

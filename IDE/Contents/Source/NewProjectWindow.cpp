@@ -131,7 +131,8 @@ void NewProjectWindow::handleEvent(Event *event) {
 			
 			if(event->getDispatcher() == locationSelectButton) {
 				String pathName = CoreServices::getInstance()->getCore()->openFolderPicker();
-				projectLocationInput->setText(pathName);
+				if(pathName != "")
+					projectLocationInput->setText(pathName);
 			}			
 			
 		}

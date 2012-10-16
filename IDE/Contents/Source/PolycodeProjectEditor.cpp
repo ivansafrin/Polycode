@@ -245,6 +245,7 @@ bool PolycodeProjectEditor::openFile(String filePath) {
 
 void PolycodeProjectEditor::Resize(int x, int y) {
 	grid->setImageCoordinates(0,0,x,y);	
+	PolycodeEditor::Resize(x,y);	
 }
 
 void PolycodeProjectEditor::saveFile() {

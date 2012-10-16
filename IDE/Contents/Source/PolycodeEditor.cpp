@@ -44,6 +44,12 @@ void PolycodeEditor::setFilePath(String newPath) {
 
 PolycodeEditor::PolycodeEditor(bool _isReadOnly) : ScreenEntity() {
 	this->_isReadOnly = _isReadOnly;
+	enableScissor = true;	
+}
+
+void PolycodeEditor::Resize(int x, int y) {
+	Vector2 pos = getScreenPosition();
+	scissorBox.setRect(pos.x,pos.y, x, y);	
 }
 
 PolycodeEditor::~PolycodeEditor() {
