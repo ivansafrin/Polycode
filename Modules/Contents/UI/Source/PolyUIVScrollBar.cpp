@@ -99,14 +99,25 @@ void UIVScrollBar::Update() {
 	if(lastPositionY != handleBox->getPosition().y) {
 		lastPositionY = handleBox->getPosition().y;
 		scrollValue = (lastPositionY-padding)/dragRectHeight;
-		if(scrollValue < 0) scrollValue = 0;
-		if(scrollValue > 1) scrollValue = 1;		
+		if(scrollValue < 0){
+			scrollValue = 0;
+			handleBox->setPositionY((scrollValue * dragRectHeight) + padding);							
+		}
+		
+		if(scrollValue > 1) {
+			scrollValue = 1;
+			handleBox->setPositionY((scrollValue * dragRectHeight) + padding);				
+		}
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}
 }
 
 void UIVScrollBar::scrollTo(Number scrollValue) {
 	handleBox->setPositionY((scrollValue * dragRectHeight) + padding);	
+}
+
+void UIVScrollBar::Scroll(Number amount) {
+	handleBox->setPositionY(((scrollValue+amount) * dragRectHeight) + padding);	
 }
 
 void UIVScrollBar::setHandleRatio(Number newRatio) {

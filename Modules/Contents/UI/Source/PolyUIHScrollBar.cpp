@@ -90,8 +90,17 @@ void UIHScrollBar::Update() {
 	if(lastPositionX != handleBox->getPosition().x) {
 		lastPositionX = handleBox->getPosition().x;
 		scrollValue = (lastPositionX-padding)/dragRectWidth;
-		if(scrollValue < 0) scrollValue = 0;
-		if(scrollValue > 1) scrollValue = 1;		
+
+		if(scrollValue < 0){
+			scrollValue = 0;
+			handleBox->setPositionX((scrollValue * dragRectWidth) + padding);	
+		}
+		
+		if(scrollValue > 1) {
+			scrollValue = 1;
+			handleBox->setPositionX((scrollValue * dragRectWidth) + padding);	
+		}
+		
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}
 }
@@ -115,6 +124,11 @@ Number UIHScrollBar::getScrollValue() {
 void UIHScrollBar::scrollTo(Number scrollValue) {
 	handleBox->setPositionX((scrollValue * dragRectWidth) + padding);	
 }
+
+void UIHScrollBar::Scroll(Number amount) {
+	handleBox->setPositionX(((scrollValue+amount) * dragRectWidth) + padding);	
+}
+
 
 void UIHScrollBar::handleEvent(Event *event) {
 	if(event->getDispatcher() == bgBox) {

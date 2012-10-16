@@ -427,6 +427,17 @@ void UITextInput::updateCaretPosition() {
 		
 	}
 	
+	if(multiLine && currentLine) {	
+	
+	
+		if(linesContainer->getPosition().y + currentLine->getPosition2D().y < 0.0) {
+			scrollContainer->scrollVertical(-(lineHeight+lineSpacing+padding)/(scrollContainer->getContentSize().y));
+
+		} else if(linesContainer->getPosition().y + currentLine->getPosition2D().y > scrollContainer->getHeight()) {
+		scrollContainer->scrollVertical((lineHeight+lineSpacing+padding)/(scrollContainer->getContentSize().y));
+
+		}
+	}
 }
 
 void UITextInput::selectLineFromOffset() {
@@ -692,7 +703,6 @@ void UITextInput::Paste() {
 }
 
 void UITextInput::showLine(unsigned int lineNumber, bool top) {
-	
 }
 
 void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
@@ -825,6 +835,23 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 		}
 		return;
 	}
+	
+	if(key == KEY_PAGEUP) {
+		if(multiLine) {
+			scrollContainer->scrollVertical(-(scrollContainer->getHeight())/(scrollContainer->getContentSize().y));
+		
+		}
+		return;
+	}
+
+	if(key == KEY_PAGEDOWN) {
+		if(multiLine) {
+			scrollContainer->scrollVertical((scrollContainer->getHeight())/(scrollContainer->getContentSize().y));
+		
+		}
+		return;
+	}
+
 	
 	if(key == KEY_UP) {		
 		if(multiLine) {

@@ -60,7 +60,7 @@ PolycodeProjectEditor::PolycodeProjectEditor() : PolycodeEditor(true){
 		}
 	}
 
-	mainSettingsWindow = new UIWindow("Project Settings", 300, 500);
+	mainSettingsWindow = new UIWindow("Project Settings", 300, 420);
 	mainSettingsWindow->setPosition(10,10);
 	addChild(mainSettingsWindow);
 	

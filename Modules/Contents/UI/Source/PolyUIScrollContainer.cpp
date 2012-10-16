@@ -98,6 +98,9 @@ void UIScrollContainer::onMouseWheelDown(Number x, Number y) {
 		vScrollBar->scrollDownOneTick();
 }
 
+Vector2 UIScrollContainer::getContentSize() {
+	return Vector2(contentWidth, contentHeight);
+}
 
 void UIScrollContainer::setContentSize(Number newContentWidth, Number newContentHeight) {
 	
@@ -128,6 +131,15 @@ void UIScrollContainer::setScrollValue(Number xScroll, Number yScroll) {
 	hScrollBar->scrollTo(xScroll);
 	vScrollBar->scrollTo(yScroll);	
 }
+
+void UIScrollContainer::scrollVertical(Number amount) {
+	vScrollBar->Scroll(amount);		
+}
+
+void UIScrollContainer::scrollHorizontal(Number amount) {
+	hScrollBar->Scroll(amount);
+}
+
 
 void UIScrollContainer::Update() {
 	Vector2 pos = getScreenPosition();
