@@ -35,7 +35,7 @@ PolycodeSyntaxHighlighter::PolycodeSyntaxHighlighter(String extension) {
 //	String separators = " ;()\t\n=+-/\\'\"";	
 //	String keywords = "true,false,";
 	
-	separators = String(" ; ( ) \t \n = + - / \\ ' \"").split(" ");
+	separators = String(" ; . , : ( ) \t \n = + - / \\ ' \"").split(" ");
 	separators.push_back(" ");
 	
 	keywords = String("true false class self break do end else elseif function if local nil not or repeat return then until while").split(" ");
@@ -59,6 +59,8 @@ std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseText(String te
 	
 std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseLua(String text) {
 	std::vector<SyntaxHighlightToken> tokens;
+	
+	text = text+"\n";
 	
 	const int MODE_GENERAL = 0;
 	const int MODE_COMMENT = 1;

@@ -31,6 +31,14 @@ namespace Polycode {
 
 	class Font;
 
+	class ColorRange {
+		public:
+			ColorRange(Color color, unsigned int rangeStart, unsigned int rangeEnd);
+			Color color;
+			unsigned int rangeStart;
+			unsigned int rangeEnd;			
+	};
+
 	class _PolyExport Label : public Image {
 		public:
 			
@@ -45,13 +53,20 @@ namespace Polycode {
 			Number getTextWidth() const;
 			Number getTextHeight() const;
 		
+			void clearColors();
+			void setColorForRange(Color color, unsigned int rangeStart, unsigned int rangeEnd);
+		
+			Color getColorForIndex(unsigned int index);
+		
 			Font *getFont() const;
 					
 			static const int ANTIALIAS_FULL = 0;
 			static const int ANTIALIAS_NONE = 1;
 			
 		protected:
-
+	
+			std::vector<ColorRange> colorRanges;
+		
 			bool premultiplyAlpha;
 
 			Number currentTextWidth;

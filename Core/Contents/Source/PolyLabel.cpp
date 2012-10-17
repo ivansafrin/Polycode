@@ -27,6 +27,12 @@ using namespace Polycode;
 
 #define NORMAL_FT_FLAGS FT_LOAD_TARGET_LIGHT
 
+ColorRange::ColorRange(Color color, unsigned int rangeStart, unsigned int rangeEnd) {
+	this->color = color;
+	this->rangeStart = rangeStart;
+	this->rangeEnd = rangeEnd;	
+}
+
 
 Label::Label(Font *font, const String& text, int size, int antiAliasMode, bool premultiplyAlpha) : Image() {
 		setPixelType(Image::IMAGE_RGBA);
@@ -121,6 +127,23 @@ const String& Label::getText() const {
 	return text;
 }
 
+void Label::clearColors() {
+	colorRanges.clear();
+}
+
+void Label::setColorForRange(Color color, unsigned int rangeStart, unsigned int rangeEnd) {
+	colorRanges.push_back(ColorRange(color, rangeStart, rangeEnd));
+}
+
+Color Label::getColorForIndex(unsigned int index) {
+	for(int i=0; i < colorRanges.size(); i++) {
+		if(index >= colorRanges[i].rangeStart && index <= colorRanges[i].rangeEnd) {
+			return colorRanges[i].color;
+		}
+	}
+	return Color(1.0,1.0,1.0,1.0);
+}
+
 void Label::setText(const String& text) {
 //	Logger::logw((char*)text.c_str());
 	
@@ -177,6 +200,8 @@ void Label::setText(const String& text) {
 				FT_Render_Glyph(slot, FT_RENDER_MODE_MONO);
 			break;
 		}
+		
+		Color glyphColor = getColorForIndex(i);
 
 		int lineoffset = ((size-slot->bitmap_top) * (textWidth*4));
 		xoff = ((penX + slot->bitmap_left)*4);
@@ -190,16 +215,19 @@ void Label::setText(const String& text) {
 						int newVal = imageData[xoff+lineoffset+3] + slot->bitmap.buffer[j];
 						if(newVal > 255)
 							newVal = 255;
+							
+						newVal = (int)(((Number)newVal) * glyphColor.a);
+						
 						imageData[xoff+lineoffset+3] = newVal;
 													
 						if(premultiplyAlpha) {
-							imageData[xoff+lineoffset] = (int)(255.0 * ((Number)imageData[xoff+lineoffset+3])/255.0);
-							imageData[xoff+lineoffset+1] =  (int)(255.0 * ((Number)imageData[xoff+lineoffset+3])/255.0);
-							imageData[xoff+lineoffset+2] =  (int)(255.0 * ((Number)imageData[xoff+lineoffset+3])/255.0);
+							imageData[xoff+lineoffset] = (int)((255.0 * glyphColor.r) * ((Number)imageData[xoff+lineoffset+3])/255.0);
+							imageData[xoff+lineoffset+1] =  (int)((255.0 * glyphColor.g) * ((Number)imageData[xoff+lineoffset+3])/255.0);
+							imageData[xoff+lineoffset+2] =  (int)((255.0 * glyphColor.b) * ((Number)imageData[xoff+lineoffset+3])/255.0);
 						} else {
-							imageData[xoff+lineoffset] = 255;
-							imageData[xoff+lineoffset+1] =  255;
-							imageData[xoff+lineoffset+2] =  255;						
+							imageData[xoff+lineoffset] = (int)(255.0 * glyphColor.r);
+							imageData[xoff+lineoffset+1] =  (int)(255.0 * glyphColor.g);
+							imageData[xoff+lineoffset+2] =  (int)(255.0 * glyphColor.b);						
 						} 	
 							
 						xoff += 4;
@@ -212,9 +240,9 @@ void Label::setText(const String& text) {
 					unsigned char *bptr =  src;
 					for(int k=0; k < slot->bitmap.width ; k++){					
 						if (k%8==0){ b = (*bptr++);}
-						imageData[xoff+lineoffset] = 255;
-						imageData[xoff+lineoffset+1] =  255;
-						imageData[xoff+lineoffset+2] =  255;
+						imageData[xoff+lineoffset] = (int)(255.0 * glyphColor.r);
+						imageData[xoff+lineoffset+1] =  (int)(255.0 * glyphColor.g);
+						imageData[xoff+lineoffset+2] =  (int)(255.0 * glyphColor.b);
 						imageData[xoff+lineoffset+3] =  b&0x80 ? 255 : 0;
 						xoff += 4;
 						b <<= 1;

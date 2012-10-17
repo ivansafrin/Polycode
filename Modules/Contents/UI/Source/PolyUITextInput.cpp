@@ -310,6 +310,42 @@ void UITextInput::changedText() {
 
 	if(syntaxHighliter) {
 		std::vector<SyntaxHighlightToken> tokens = syntaxHighliter->parseText(getText());
+		
+		for(int i=0; i < lines.size(); i++) {
+			lines[i]->getLabel()->clearColors();
+		}
+		
+		int lineIndex = 0;
+		int rangeStart = 0;
+		int rangeEnd = 0;
+				
+		for(int i=0; i < tokens.size(); i++) {			
+			if(tokens[i].text == "\n") {
+				lineIndex++;
+				rangeStart = 0;
+				rangeEnd = 0;
+			} else {
+			
+				if(lineIndex < lines.size()) {
+					int textLength = tokens[i].text.length();
+					if(tokens[i].text.length() > 1) {
+						rangeEnd = rangeStart + textLength-1;
+						lines[lineIndex]->getLabel()->setColorForRange(tokens[i].color, rangeStart, rangeEnd);	
+						rangeStart = rangeStart + textLength; 
+					} else {
+						rangeEnd = rangeStart;
+						lines[lineIndex]->getLabel()->setColorForRange(tokens[i].color, rangeStart, rangeEnd);	
+						rangeStart++;
+					}				
+				}
+			}
+		}
+		
+		for(int i=0; i < lines.size(); i++) {
+			lines[i]->setText(lines[i]->getText());
+			lines[i]->setColor(1.0, 1.0, 1.0, 1.0);
+		}
+		
 	}
 
 	dispatchEvent(new UIEvent(), UIEvent::CHANGE_EVENT);	
