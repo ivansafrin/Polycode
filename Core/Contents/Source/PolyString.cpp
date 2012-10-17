@@ -111,6 +111,13 @@ void String::setDataWithEncoding(char *data, int encoding) {
 	}
 }
 
+bool String::isNumber() {
+    std::string::const_iterator it = contents.begin();
+    while (it != contents.end() && std::isdigit(*it)) ++it;
+    return !contents.empty() && it == contents.end();
+}				
+
+
 
 vector<String> String::split(const String &delim) const {
 	

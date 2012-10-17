@@ -25,17 +25,17 @@
 PolycodeSyntaxHighlighter::PolycodeSyntaxHighlighter(String extension) {
 
 	colorScheme[0] = Color(0.0, 0.0, 0.0, 1.0);
-	colorScheme[1] = Color(0.0, 0.53, 0.0, 1.0);
-	colorScheme[2] = Color(0.79, 0.0, 0.63, 1.0);
-	colorScheme[3] = Color(126.0/255.0, 73.0/255.0, 42.0/255.0, 1.0);
+	colorScheme[1] = Color(0.0/255.0, 112.0/255.0, 0.0, 1.0);
+	colorScheme[2] = Color(192.0/255.0, 45.0/255.0, 167.0/255.0, 1.0);
+	colorScheme[3] = Color(48.0/255.0, 99.0/255.0, 105.0/255.0, 1.0);
 	colorScheme[4] = Color(227.0/255.0, 11.0/255.0, 0.0/255.0, 1.0);
-	colorScheme[5] = Color(39.0/255.0, 90.0/255.0, 94.0/255.0, 1.0);	
-	colorScheme[6] = Color(56.0/255.0, 0.0/255.0, 218.0/255.0, 1.0);
+	colorScheme[5] = Color(82.0/255.0, 31.0/255.0, 140.0/255.0, 1.0);	
+	colorScheme[6] = Color(39.0/255.0, 41.0/255.0, 215.0/255.0, 1.0);
 	
 //	String separators = " ;()\t\n=+-/\\'\"";	
 //	String keywords = "true,false,";
 	
-	separators = String(" ; . , : ( ) \t \n = + - / \\ ' \"").split(" ");
+	separators = String("[ ] { } ; . , : ( ) \t \n = + - / \\ ' \"").split(" ");
 	separators.push_back(" ");
 	
 	keywords = String("true false class self break do end else elseif function if local nil not or repeat return then until while").split(" ");
@@ -67,7 +67,9 @@ std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseLua(String tex
 	const int MODE_STRING = 2;
 	const int MODE_METHOD = 3;
 	const int MODE_KEYWORD = 4;
-					
+	const int MODE_NUMBER = 5;
+	const int MODE_MEMBER = 6;
+						
 	int mode = MODE_GENERAL;
 	
 	bool isComment = false;
@@ -101,6 +103,18 @@ std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseLua(String tex
 				type = MODE_COMMENT;
 				ch_type = MODE_COMMENT;
 			}
+	
+
+			if(mode != MODE_STRING && !isComment) {
+			
+				if(line.isNumber()) {
+					type = MODE_NUMBER;
+				} else {
+					if(lastSeparator == '.' && ch != '.' && ch != ':') {
+						type = MODE_MEMBER;
+					}							
+				}
+			}	
 	
 			if(line != "")
 				tokens.push_back(SyntaxHighlightToken(line, type));
@@ -144,7 +158,13 @@ std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseLua(String tex
 			break;			
 			case MODE_KEYWORD:
 				tokens[i].color = colorScheme[2];
-			break;												
+			break;		
+			case MODE_NUMBER:
+				tokens[i].color = colorScheme[6];
+			break;		
+			case MODE_MEMBER:
+				tokens[i].color = colorScheme[5];
+			break;															
 			default:
 				tokens[i].color = colorScheme[0];
 			break;

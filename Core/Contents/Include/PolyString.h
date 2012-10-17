@@ -210,6 +210,11 @@ namespace Polycode {
 			*/																																		
 			void setDataWithEncoding(char *data, int encoding);
 			
+			/**
+			* Checks if the string is a number
+			* @return true if the string is a number
+			*/			
+			bool isNumber();
 
 			/**
 			* STL string version of the string.
