@@ -620,6 +620,7 @@ void UITextInput::removeLine(ScreenLabel *line) {
 	linesContainer->removeChild(line);
 	linesToDelete.push_back(line);
 	restructLines();
+	changedText();
 }
 
 void UITextInput::selectAll() {

@@ -35,7 +35,7 @@ PolycodeSyntaxHighlighter::PolycodeSyntaxHighlighter(String extension) {
 //	String separators = " ;()\t\n=+-/\\'\"";	
 //	String keywords = "true,false,";
 	
-	separators = String("[ ] { } ; . , : ( ) \t \n = + - / \\ ' \"").split(" ");
+	separators = String("[ [ ] { } ; . , : ( ) \t \n = + - / \\ ' \"").split(" ");
 	separators.push_back(" ");
 	
 	keywords = String("true false class self break do end else elseif function if local nil not or repeat return then until while").split(" ");
@@ -77,6 +77,7 @@ std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseLua(String tex
 	String line = "";
 	
 	char lastSeparator = ' ';
+
 	
 	for(int i=0; i < text.length(); i++) {
 		char ch = text[i];				
@@ -86,26 +87,20 @@ std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseLua(String tex
 			unsigned int ch_type = mode;
 
 	
-			if(ch == '\"')
+			if(ch == '\"' && mode != MODE_COMMENT)
 				ch_type = MODE_STRING;
 	
-			if(mode != MODE_STRING && ch == '(') {
+			if(mode != MODE_STRING && ch == '('  && mode != MODE_COMMENT) {
 				type = MODE_METHOD;
 			}
 
-			if(mode != MODE_STRING) {
+			if(mode != MODE_STRING  && mode != MODE_COMMENT) {
 				if(contains(line, keywords)) {
 					type = MODE_KEYWORD;
 				}
 			}
 	
-			if(isComment) {
-				type = MODE_COMMENT;
-				ch_type = MODE_COMMENT;
-			}
-	
-
-			if(mode != MODE_STRING && !isComment) {
+			if(mode != MODE_STRING && !isComment && mode != MODE_COMMENT) {
 			
 				if(line.isNumber()) {
 					type = MODE_NUMBER;
@@ -114,7 +109,18 @@ std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseLua(String tex
 						type = MODE_MEMBER;
 					}							
 				}
-			}	
+			}		
+	
+			if(isComment) {
+				type = MODE_COMMENT;
+				ch_type = MODE_COMMENT;
+			}
+				
+			if(mode == MODE_COMMENT) {
+				type = MODE_COMMENT;
+				ch_type = MODE_COMMENT;
+			}
+			
 	
 			if(line != "")
 				tokens.push_back(SyntaxHighlightToken(line, type));
@@ -125,12 +131,28 @@ std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseLua(String tex
 				tokens[tokens.size()-1].type = MODE_COMMENT;
 				tokens[tokens.size()-2].type = MODE_COMMENT;				
 			}
+
+			if(ch == '[' && lastSeparator == '[' && isComment && mode != MODE_STRING) {
+				unsigned int old_mode = mode;
+				mode = MODE_COMMENT;
+				
+				// ugly hack for ---[[, which is not a block comment
+				if(tokens.size() > 4) {
+					if(tokens[tokens.size()-5].text == "-") {
+						mode = old_mode;
+					}
+				}
+			}
+			
+			if(ch == ']' && lastSeparator == ']' && mode == MODE_COMMENT) {
+				mode = MODE_GENERAL;
+			}
 			
 			if(ch == '\n' )
 				isComment = false;
 				
 
-			if(ch == '\"') {
+			if(ch == '\"'  && mode != MODE_COMMENT) {
 				if(mode == MODE_STRING) {
 					mode = MODE_GENERAL;	
 				} else {
