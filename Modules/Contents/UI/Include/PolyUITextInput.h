@@ -133,6 +133,8 @@ namespace Polycode {
 			ScreenShape *selectorRectBottom;		
 			int numLines;
 			
+			bool needFullRedraw;
+			
 			Number padding;
 			Number lineSpacing;
 		
@@ -140,6 +142,8 @@ namespace Polycode {
 			int selectionBottom;
 			int selectionL;
 			int selectionR;		
+		
+			bool settingText;
 		
 			int selectionCaretPosition;
 			int selectionLine;

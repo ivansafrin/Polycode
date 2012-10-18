@@ -125,7 +125,6 @@ bool PolycodeProjectBrowser::listHasFileEntry(vector<OSFileEntry> files, OSFileE
 }
 
 void PolycodeProjectBrowser::parseFolderIntoNode(UITree *node, String spath, PolycodeProject *parentProject) {
-	printf("Parsing %s\n", spath.c_str());
 	vector<OSFileEntry> files = OSBasics::parseFolder(spath, false);
 	
 	// check if files got deleted

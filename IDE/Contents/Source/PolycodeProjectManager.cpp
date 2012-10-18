@@ -45,9 +45,11 @@ PolycodeProject* PolycodeProjectManager::openProject(String path) {
 	
 	vector<String> bits = path.split("/");
 	
-	String projectPath = "";
-	for(int i=0; i < bits.size() - 1; i++) {
-		projectPath += "/"+bits[i];
+	String projectPath = bits[0];
+	if(bits.size() > 2) {
+		for(int i=1; i < bits.size() - 1; i++) {
+			projectPath += "/"+bits[i];
+		}
 	}
 	
 	vector<String> bits2 = bits[bits.size()-1].split(".");
@@ -74,6 +76,15 @@ int PolycodeProjectManager::removeProject(PolycodeProject *project) {
 	delete project;
 	
 	return 1;
+}
+
+PolycodeProject *PolycodeProjectManager::getProjectByProjectFile(String projectFile) {
+	for(int i=0; i < projects.size(); i++) {
+		if(projects[i]->getProjectFile() == projectFile) {
+			return projects[i];
+		}
+	}
+	return NULL;
 }
 
 void PolycodeProjectManager::createNewFile(String templatePath, String newFileName) {

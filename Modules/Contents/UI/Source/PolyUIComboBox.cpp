@@ -49,7 +49,7 @@ UIComboBoxItem::~UIComboBoxItem() {
 }
 
 
-UIComboBox::UIComboBox(Number comboWidth) : ScreenEntity() {
+UIComboBox::UIComboBox(Number comboWidth) : UIElement() {
 
 	isDroppedDown = false;
 	selectedIndex = -1;

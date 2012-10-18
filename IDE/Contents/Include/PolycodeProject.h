@@ -23,19 +23,48 @@
 #pragma once
 
 #include "Polycode.h"
+#include "OSBasics.h"
 
 using namespace Polycode;
+
+class ProjectData {
+	public:
+		String entryPoint;
+		int defaultWidth;
+		int defaultHeight;
+		bool vSync;	
+		unsigned int anisotropy;	
+		unsigned int aaLevel;
+		unsigned int frameRate;
+		
+		std::vector<String> modules;
+		
+		Number backgroundColorR;
+		Number backgroundColorG;
+		Number backgroundColorB;				
+};
 
 class PolycodeProject {
 	public:
 		PolycodeProject(String name, String path, String file);
 		~PolycodeProject();	
+		
+		bool loadProjectFromFile();	
+		bool saveFile();
 	
 		String getProjectName() { return projectName; }
 		String getProjectFile() { return projectFile; }	
 		String getRootFolder() { return projectFolder; }	
 	
+		ProjectData data;
+		
 private:
+
+
+	Object configFile;
+	
+	String filPath;
+		
 	String projectFile;
 	String projectFolder;	
 	String projectName;

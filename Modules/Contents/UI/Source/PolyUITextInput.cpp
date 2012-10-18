@@ -42,8 +42,11 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	caretPosition = 0;
 	caretImagePosition = 0;
 	
+	settingText = false;
+	
 	currentLine = NULL;
 	
+	needFullRedraw = false;
 	
 	lineOffset = -1;
 	numLines = 0;
@@ -307,15 +310,37 @@ void UITextInput::deleteSelection() {
 }
 
 void UITextInput::changedText() {
-
-	if(syntaxHighliter) {
-		std::vector<SyntaxHighlightToken> tokens = syntaxHighliter->parseText(getText());
+	if(settingText)
+		return;
 		
-		for(int i=0; i < lines.size(); i++) {
+	if(syntaxHighliter && multiLine) {
+	
+		unsigned int startLine = (-linesContainer->getPosition().y) / (lineHeight+lineSpacing);				
+		unsigned int endLine = startLine + ((int)((height / (lineHeight+lineSpacing)))) + 1;					
+		
+		if(endLine > lines.size())
+			endLine = lines.size();
+	
+		if(needFullRedraw) {
+			startLine = 0;
+			endLine = lines.size();
+			needFullRedraw = false;
+		}
+	
+		String totalText = L"";
+		for(int i=startLine; i < endLine; i++) {
+				totalText += lines[i]->getText();					
+				if(i < lines.size()-1)
+					totalText += L"\n";
+		}	
+		
+		std::vector<SyntaxHighlightToken> tokens = syntaxHighliter->parseText(totalText);
+		
+		for(int i=startLine; i < endLine; i++) {
 			lines[i]->getLabel()->clearColors();
 		}
 		
-		int lineIndex = 0;
+		int lineIndex = startLine;
 		int rangeStart = 0;
 		int rangeEnd = 0;
 				
@@ -341,7 +366,7 @@ void UITextInput::changedText() {
 			}
 		}
 		
-		for(int i=0; i < lines.size(); i++) {
+		for(int i=startLine; i < endLine; i++) {
 			lines[i]->setText(lines[i]->getText());
 			lines[i]->setColor(1.0, 1.0, 1.0, 1.0);
 		}
@@ -434,6 +459,7 @@ void UITextInput::setText(String text) {
 		clearSelection();				
 		updateCaretPosition();		
 	} else {
+		needFullRedraw = true;	
 		selectAll();
 		insertText(text);
 		clearSelection();
@@ -629,6 +655,7 @@ void UITextInput::selectAll() {
 
 void UITextInput::insertText(String text) {	
 	vector<String> strings = text.split("\n");
+	settingText = true;
 
 	if(hasSelection)
 		deleteSelection();
@@ -661,6 +688,8 @@ void UITextInput::insertText(String text) {
 		caretPosition += text.length();
 		currentLine->setText(ctext);			
 	}
+	
+	settingText = false;	
 	
 	changedText();
 	updateCaretPosition();		

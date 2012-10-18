@@ -35,7 +35,7 @@ PolycodeSyntaxHighlighter::PolycodeSyntaxHighlighter(String extension) {
 //	String separators = " ;()\t\n=+-/\\'\"";	
 //	String keywords = "true,false,";
 	
-	separators = String("[ [ ] { } ; . , : ( ) \t \n = + - / \\ ' \"").split(" ");
+	separators = String("[ [ ] { } ; . , : # ( ) \t \n = + - / \\ ' \"").split(" ");
 	separators.push_back(" ");
 	
 	keywords = String("true false class self break do end else elseif function if local nil not or repeat return then until while").split(" ");
@@ -219,7 +219,7 @@ bool PolycodeTextEditor::openFile(OSFileEntry filePath) {
 	
 	Data *data = new Data();
 	data->loadFromFile(filePath.fullPath);	
-	textInput->insertText(data->getAsString(String::ENCODING_UTF8));
+	textInput->setText(data->getAsString(String::ENCODING_UTF8));
 	delete data;
 	
 	PolycodeEditor::openFile(filePath);

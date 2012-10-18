@@ -25,20 +25,24 @@
 #include "PolycodeGlobals.h"
 #include "PolycodeUI.h"
 #include "PolycodeEditor.h"
+#include "PolycodeProject.h"
+#include "PolycodeProjectManager.h"
 #include <Polycode.h>
 
 using namespace Polycode;
 
 class PolycodeProjectEditor : public PolycodeEditor {
 	public:
-	PolycodeProjectEditor();
+	PolycodeProjectEditor(PolycodeProjectManager *projectManager);
 	virtual ~PolycodeProjectEditor();
 	
 	bool openFile(OSFileEntry filePath);
 	void Resize(int x, int y);
-	void saveFile();
-	
+	void saveFile();	
+		
 	protected:
+	
+	PolycodeProjectManager *projectManager;
 	
 	ScreenImage *grid;
 
@@ -58,10 +62,16 @@ class PolycodeProjectEditor : public PolycodeEditor {
 	UITextInput *entryPointInput;	
 	UIColorBox *bgColorBox;
 	
+	
+	PolycodeProject *associatedProject;
+	
 };
 
 class PolycodeProjectEditorFactory : public PolycodeEditorFactory {
 	public:
-		PolycodeProjectEditorFactory() : PolycodeEditorFactory() { extensions.push_back("polyproject"); }
-		PolycodeEditor *createEditor() { return new PolycodeProjectEditor(); }
+		PolycodeProjectEditorFactory(PolycodeProjectManager *projectManager);
+		PolycodeEditor *createEditor();
+		
+	protected:
+		PolycodeProjectManager *projectManager;	
 };

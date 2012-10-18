@@ -49,6 +49,8 @@ class PolycodeProjectManager {
 	int getProjectCount() { return projects.size(); }
 	PolycodeProject *getProjectByIndex(int index) { return projects[index]; }
 	
+	PolycodeProject *getProjectByProjectFile(String projectFile);
+	
 	int removeProject(PolycodeProject *project);
 	
 	String activeFolder;

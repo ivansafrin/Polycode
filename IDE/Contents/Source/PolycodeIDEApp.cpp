@@ -48,12 +48,6 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	
 	editorManager = new PolycodeEditorManager();
 	
-	editorManager->registerEditorFactory(new PolycodeImageEditorFactory());
-	editorManager->registerEditorFactory(new PolycodeScreenEditorFactory());	
-	editorManager->registerEditorFactory(new PolycodeFontEditorFactory());
-	editorManager->registerEditorFactory(new PolycodeTextEditorFactory());
-	editorManager->registerEditorFactory(new PolycodeProjectEditorFactory());
-		
 	frame = new PolycodeFrame();
 	frame->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 
@@ -77,6 +71,14 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	
 	debugger = new PolycodeRemoteDebugger();
 	frame->console->setDebugger(debugger);
+	
+	editorManager->registerEditorFactory(new PolycodeImageEditorFactory());
+	editorManager->registerEditorFactory(new PolycodeScreenEditorFactory());	
+	editorManager->registerEditorFactory(new PolycodeFontEditorFactory());
+	editorManager->registerEditorFactory(new PolycodeTextEditorFactory());
+	editorManager->registerEditorFactory(new PolycodeProjectEditorFactory(projectManager));
+		
+	
 	
 //	CoreServices::getInstance()->getResourceManager()->addArchive(RESOURCE_PATH"tomato.polyapp");
 	

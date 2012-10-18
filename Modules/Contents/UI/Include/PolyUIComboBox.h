@@ -42,7 +42,7 @@ namespace Polycode {
 			ScreenLabel *itemLabel;
 	};
 
-	class _PolyExport UIComboBox : public ScreenEntity {
+	class _PolyExport UIComboBox : public UIElement {
 		public:
 			UIComboBox(Number comboWidth);
 			~UIComboBox();

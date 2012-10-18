@@ -137,6 +137,22 @@ namespace Polycode {
 			return entry;			
 		}		
 		
+		/**
+		* Adds an empty child entry with a string value.
+		* @param name Lookup key for the object entry.
+		* @param val String to set as value in the object entry.
+		* @return The added object entry.
+		*/						
+		ObjectEntry *addChild(const String& name, const char *val) {
+			ObjectEntry *entry = new ObjectEntry();
+			entry->type = ObjectEntry::STRING_ENTRY;
+			entry->stringVal = val;
+			entry->name = name;
+			children.push_back(entry);
+			length = children.size();			
+			return entry;			
+		}		
+		
 
 		/**
 		* Adds an empty child entry with a boolean value.

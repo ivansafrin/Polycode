@@ -5,7 +5,7 @@
 	<uiTextInputFontNameMultiLine>mono</uiTextInputFontNameMultiLine>
 	<uiDefaultFontSize>11</uiDefaultFontSize>
 	<uiTextInputFontSize>11</uiTextInputFontSize>
-	<uiTextInputFontSizeMultiline>11</uiTextInputFontSizeMultiline>	
+	<uiTextInputFontSizeMultiline>12</uiTextInputFontSizeMultiline>	
 	<uiTreeArrowIconImage>arrowIcon.png</uiTreeArrowIconImage>
 	<uiTreeCellHeight>20</uiTreeCellHeight>
 	<uiTreeCellPadding>4</uiTreeCellPadding>
@@ -77,7 +77,7 @@
 	<textBgSkinB>3</textBgSkinB>
 	<textBgSkinL>3</textBgSkinL>
 	<textBgSkinPadding>5</textBgSkinPadding>
-	<textEditLineSpacing>3</textEditLineSpacing>
+	<textEditLineSpacing>4</textEditLineSpacing>
 		
 	<uiScrollHandleMinSize>30</uiScrollHandleMinSize>	
 	<uiTreeContainerScrollBarOffset>27</uiTreeContainerScrollBarOffset>

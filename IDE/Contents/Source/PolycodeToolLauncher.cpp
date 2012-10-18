@@ -53,8 +53,12 @@ String PolycodeToolLauncher::generateTempPath() {
 }
 
 void PolycodeToolLauncher::buildProject(PolycodeProject *project, String destinationPath) {
+
+	project->saveFile();
+
 	String projectBasePath = project->getRootFolder();
 	String projectPath = project->getProjectFile();
+	
 	
 	String polycodeBasePath = CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory();
 	
