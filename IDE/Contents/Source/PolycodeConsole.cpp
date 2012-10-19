@@ -140,6 +140,9 @@ void BackTraceWindow::addBackTrace(String fileName, int lineNumber, PolycodeProj
 	entries.push_back(entry);
 	addChild(entry);
 	adjustEntries();	
+	if(entries.size() == 1) {
+		entry->Select();
+	}
 }
 
 BackTraceWindow::~BackTraceWindow() {
