@@ -35,7 +35,21 @@ void PolycodeRemoteDebuggerClient::handleEvent(Event *event) {
 			client->sendReliableDataToServer((char*)debugEvent->errorString.c_str(), debugEvent->errorString.length()+1, EVENT_DEBUG_PRINT);
 		break;
 		case PolycodeDebugEvent::EVENT_ERROR:
-			client->sendReliableDataToServer((char*)debugEvent->errorString.c_str(), debugEvent->errorString.length()+1, EVENT_DEBUG_ERROR);
+			RemoteErrorData data;
+			strcpy(data.errorMessage, debugEvent->errorString.c_str());
+			strcpy(data.fileName, debugEvent->fileName.c_str());
+			data.lineNumber = debugEvent->lineNumber;
+			data.backTraceSize = debugEvent->backTrace.size();
+			
+			client->sendReliableDataToServer((char*)&data, sizeof(data), EVENT_DEBUG_ERROR);
+			
+			for(int i=0; i < debugEvent->backTrace.size(); i++) {
+				RemoteBacktraceData btData;
+				strcpy(btData.fileName, debugEvent->backTrace[i].fileName.c_str());
+				btData.lineNumber = debugEvent->backTrace[i].lineNumber;
+				
+				client->sendReliableDataToServer((char*)&btData, sizeof(btData), EVENT_DEBUG_BACKTRACE_INFO);				
+			}
 		break;		
 	}
 }
@@ -46,6 +60,35 @@ PolycodeRemoteDebuggerClient::~PolycodeRemoteDebuggerClient() {
 }
 
 extern "C" {	
+
+	
+static void dumpstack (lua_State *L) {
+  int i;
+  int top=lua_gettop(L);
+  printf("dumpstack -- \n");
+  for (i=1; i<=top; i++) {
+    printf("%d\t%s\t",i,luaL_typename(L,i));
+    switch (lua_type(L, i)) {
+      case LUA_TNUMBER:
+        printf("%g\n",lua_tonumber(L,i));
+        break;
+      case LUA_TSTRING:
+        printf("%s\n",lua_tostring(L,i));
+        break;
+      case LUA_TBOOLEAN:
+        printf("%s\n", (lua_toboolean(L, i) ? "true" : "false"));
+        break;
+      case LUA_TNIL:
+        printf("%s\n", "nil");
+        break;
+      default:
+        printf("%p\n",lua_topointer(L,i));
+        break;
+    }
+  }
+  printf("dumpstack -- END\n");
+}	
+
 //	extern int luaopen_Tau(lua_State* L); // declare the wrapped module
 		//	loadFileIntoState(L, "Polycode Player.app/Contents/Resources/API/class.lua");
 	
@@ -85,22 +128,55 @@ extern "C" {
 	}
 
 	static int customError(lua_State *L) {
-		const char *msg = lua_tostring(L, 1);
 		
+		PolycodePlayer *player = (PolycodePlayer*)CoreServices::getInstance()->getCore()->getUserPointer();		
+		
+		std::vector<BackTraceEntry> backTrace;
+		lua_Debug entry;
+		int depth = 0;		
+		while (lua_getstack(L, depth, &entry)) {
+			int status = lua_getinfo(L, "Sln", &entry);
+			printf(">>>> %s(%d): %s\n", entry.short_src, entry.currentline, entry.name ? entry.name : "?");
+			std::vector<String> bits = String(entry.short_src).split("\"");
+			if(bits.size() > 1) {
+				String fileName = bits[1];
+				if(fileName != "class.lua") {
+					
+					BackTraceEntry trace;
+					trace.lineNumber = entry.currentline;
+					trace.fileName = fileName;
+					backTrace.push_back(trace);
+					
+					//backTrace += "In file: " + fileName + " on line " + String::IntToString(entry.currentline)+"\n";
+				}
+			}
+			depth++;
+		}
+		
+		if(backTrace.size() < 1)
+			return 0;
+			
+		backTrace[backTrace.size()-1].fileName = player->fullPath;
+
+		const char *msg = lua_tostring(L, -1);		
 		if (msg == NULL) msg = "(error with no message)";
 		lua_pop(L, 1);
-			
+		
+		String errorString;
 		std::vector<String> info = String(msg).split(":");
 			
-		PolycodeDebugEvent *event = new PolycodeDebugEvent();			
 		if(info.size() > 2) {
-			event->errorString = info[2];
-			event->lineNumber = atoi(info[1].c_str());
+			errorString = info[2];
 		} else {
-			event->errorString = std::string(msg);
-			event->lineNumber = 0;
+			errorString = msg;
 		}
-		PolycodePlayer *player = (PolycodePlayer*)CoreServices::getInstance()->getCore()->getUserPointer();		
+						
+		PolycodeDebugEvent *event = new PolycodeDebugEvent();			
+		event->errorString = errorString;
+		event->backTrace = backTrace;		
+		event->fileName = backTrace[0].fileName;
+		event->lineNumber = backTrace[0].lineNumber;
+
 		player->dispatchEvent(event, PolycodeDebugEvent::EVENT_ERROR);
 				
 		return 0;
@@ -121,11 +197,23 @@ extern "C" {
 		return 0;
 	}	
 	
+	
 	int PolycodePlayer::report (lua_State *L, int status) {
-		const char *msg;
+		const char *msg;			
 			
 		Logger::log("Error status: %d\n", status);
-		if (status) {
+		if (status) {		
+		
+//			dumpstack(L);
+//	traceback(L);
+
+/*		
+			lua_Debug ar;
+			if(lua_getstack(L, 1, &ar)) {
+				lua_getinfo(L, "Sl", &ar);
+				printf("NEW SHIT: source: %s, line: %d\n", ar.source, ar.currentline);
+			}
+*/		
 			msg = lua_tostring(L, -1);
 			if (msg == NULL) msg = "(error with no message)";
 			Logger::log("status=%d, %s\n", status, msg);
@@ -160,6 +248,8 @@ extern "C" {
 		 luaopen_package(L);
 		 */
 		luaL_openlibs(L);
+		
+		luaopen_debug(L);
 		
 		luaopen_Polycode(L);
 		//luaopen_Tau(L);	// load the wrappered module
@@ -265,41 +355,30 @@ extern "C" {
 			Logger::log("Error opening entrypoint file (%s)\n", fileName.c_str());
 		}
 		
-		
-		String postpend = ""; //" \nif update == nil then\nfunction update(e)\nend\nend\nwhile CORE:Update() do\nupdate(CORE:getElapsed())\nend";
-		
-		//String fullScript = prepend + prepend2 + prepend3 + fileData;// + postpend;
+				
 		String fullScript = fileData;
-		//String fullScript = fileData;// + postpend;
 		
 		doneLoading = true;
 		
 		//lua_gc(L, LUA_GCSTOP, 0);
 		
 		
-/*
-		lua_pushliteral(L, "debug");
-		lua_gettable(L, LUA_GLOBALSINDEX);
-		lua_pushliteral(L, "traceback");  // correct fn name?
-		lua_gettable(L, -2);
 
-*/				
+		lua_getfield (L, LUA_GLOBALSINDEX, "__customError");
+		int errH = lua_gettop(L);
+
 		//CoreServices::getInstance()->getCore()->lockMutex(CoreServices::getRenderMutex());			
-		if (report(L, luaL_loadstring(L, fullScript.c_str()) || lua_pcall(L, 0,0,0))) {
-			
+		if (report(L, luaL_loadstring(L, fullScript.c_str()))) {			
 			//CoreServices::getInstance()->getCore()->unlockMutex(CoreServices::getRenderMutex());			
 			Logger::log("CRASH LOADING SCRIPT FILE\n");
 //			exit(1);				
-		} else  {
-		//	CoreServices::getInstance()->getCore()->unlockMutex(CoreServices::getRenderMutex());			
-			if (report(L, luaL_loadstring(L, postpend.c_str()) || lua_pcall(L, 0,0,0))) {	
-//				exit(1);
-				Logger::log("CRASH IN SCRIPT EXECUTION FILE\n");			
-			} else  {
-
+		} else {
+		
+		
+			if (lua_pcall(L, 0,0,errH)) {
+				Logger::log("CRASH EXECUTING FILE\n");
 			}
 		}
-
 	}
 }
 

@@ -39,6 +39,18 @@ extern "C" {
 
 using namespace Polycode;
 
+typedef struct {
+	unsigned int lineNumber;
+	char errorMessage[256];	
+	char fileName[256];
+	unsigned int backTraceSize;	
+} RemoteErrorData;
+
+typedef struct {
+	unsigned int lineNumber;
+	char fileName[256];
+} RemoteBacktraceData;
+
 class PolycodeRemoteDebuggerClient : public EventDispatcher {
 	public:
 		PolycodeRemoteDebuggerClient();
@@ -51,9 +63,17 @@ class PolycodeRemoteDebuggerClient : public EventDispatcher {
 		static const int EVENT_DEBUG_RESIZE = 34;
 		static const int EVENT_DEBUG_REMOVE = 35;
 		
-		static const int EVENT_INJECT_CODE = 36;		
+		static const int EVENT_INJECT_CODE = 36;
+		
+		static const int EVENT_DEBUG_BACKTRACE_INFO = 37;
 	
 		Client *client;
+};
+
+class BackTraceEntry {
+	public:
+		String fileName;
+		unsigned int lineNumber;
 };
 
 class PolycodeDebugEvent : public Event {
@@ -63,7 +83,10 @@ public:
 
 	int lineNumber;
 	String errorString;
+	String fileName;
 	
+	std::vector<BackTraceEntry> backTrace;
+		
 	int xRes;
 	int yRes;
 	
@@ -106,6 +129,8 @@ public:
 	
 	Core *core;	
 	
+	String fullPath;
+		
 protected:
 
 	Timer *debuggerTimer;
@@ -116,7 +141,6 @@ protected:
 	
 	bool useDebugger;
 	
-	String fullPath;
 	
 	bool doCodeInject;
 	String injectCodeString;

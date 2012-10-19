@@ -103,6 +103,8 @@ namespace Polycode {
 			
 			void setNumberOnly(bool val);
 		
+			String getLineText(unsigned int index);
+		
 			String getSelectionText();
 			void insertText(String text);
 			

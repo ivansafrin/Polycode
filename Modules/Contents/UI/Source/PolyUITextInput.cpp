@@ -696,6 +696,14 @@ void UITextInput::insertText(String text) {
 	restructLines();	
 }
 
+String UITextInput::getLineText(unsigned int index) {
+	if(index < lines.size()) {
+		return lines[index]->getText();
+	} else {
+		return "";
+	}
+}
+
 String UITextInput::getSelectionText() {
 	String totalText = L"";
 	if(selectionTop == selectionBottom) {

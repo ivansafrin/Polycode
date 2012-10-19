@@ -53,6 +53,10 @@ public:
 	void saveConfigFile();
 	void loadConfigFile();
 	
+	void openFileInProject(PolycodeProject *project, String filePath);
+	
+	void openFile(OSFileEntry file);
+	
 	// menu commands
 	void renameFile();
 	void removeFile();

@@ -58,7 +58,29 @@ void ctow(WCHAR* Dest, const char* Source)
 
 #endif
 
+OSFileEntry::OSFileEntry(const Polycode::String& fullPath, int type) {
+	std::vector<String> parts = fullPath.split("/");
+	
+	if(parts.size() > 0) {
+		String path = parts[0];
+
+		if(parts.size() > 1) {		
+			for(int i=1; i < parts.size()-1; i++) {
+				path += "/" + parts[i];
+			}
+			init(path, parts[parts.size()-1], type);
+		}
+	} else {
+		init("", fullPath, type);
+	}
+	
+}
+
 OSFileEntry::OSFileEntry(const String& path, const String& name, int type) {
+	init(path, name, type);
+}
+
+void OSFileEntry::init(const Polycode::String& path, const Polycode::String& name, int type) {
 	this->basePath = path;
 	this->fullPath = path + "/" + name;
 	this->name = name;
@@ -73,7 +95,9 @@ OSFileEntry::OSFileEntry(const String& path, const String& name, int type) {
 		extension = "";
 		nameWithoutExtension = name;
 	}
+
 }
+
 
 void OSFILE::debugDump() {
 	long tellval = OSBasics::tell(this);

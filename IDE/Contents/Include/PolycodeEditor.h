@@ -44,9 +44,13 @@ public:
 	
 	bool isReadOnly() { return _isReadOnly; }
 	
+	String getEditorType() { return editorType; }
+	
 protected:
 	String filePath;
 	bool _isReadOnly;
+	
+	String editorType;
 };
 
 

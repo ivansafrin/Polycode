@@ -38,7 +38,7 @@ PolycodeSyntaxHighlighter::PolycodeSyntaxHighlighter(String extension) {
 	separators = String("[ [ ] { } ; . , : # ( ) \t \n = + - / \\ ' \"").split(" ");
 	separators.push_back(" ");
 	
-	keywords = String("true false class self break do end else elseif function if local nil not or repeat return then until while").split(" ");
+	keywords = String("require true false class self break do end else elseif function if local nil not or repeat return then until while").split(" ");
 }
 
 PolycodeSyntaxHighlighter::~PolycodeSyntaxHighlighter() {
@@ -198,6 +198,7 @@ std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseLua(String tex
 }
 
 PolycodeTextEditor::PolycodeTextEditor() : PolycodeEditor(true){
+	editorType = "PolycodeTextEditor";
 }
 
 PolycodeTextEditor::~PolycodeTextEditor() {
@@ -218,12 +219,18 @@ bool PolycodeTextEditor::openFile(OSFileEntry filePath) {
 	}
 	
 	Data *data = new Data();
-	data->loadFromFile(filePath.fullPath);	
-	textInput->setText(data->getAsString(String::ENCODING_UTF8));
+	if(data->loadFromFile(filePath.fullPath)) {
+		textInput->setText(data->getAsString(String::ENCODING_UTF8));
+	}
 	delete data;
 	
 	PolycodeEditor::openFile(filePath);
 	return true;
+}
+
+void PolycodeTextEditor::highlightLine(unsigned int lineNumber) {
+	int lineSize = textInput->getLineText(lineNumber-1).length();
+	textInput->setSelection(lineNumber-1, lineNumber-1, 0, lineSize);
 }
 
 void PolycodeTextEditor::saveFile() {

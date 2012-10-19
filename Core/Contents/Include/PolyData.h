@@ -40,8 +40,9 @@ namespace Polycode {
 		/**
 		* Loads data from a file.
 		* @param fileName Path to the file to load data from.
+		* @return True if susccessful, false if not
 		*/						
-		void loadFromFile(const String& fileName);
+		bool loadFromFile(const String& fileName);
 		
 		/**
 		* Retuns data as a string with the specified encoding.

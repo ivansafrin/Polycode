@@ -24,8 +24,21 @@
 
 #include "Polycode.h"
 #include "PolycodeConsole.h"
+#include "PolycodeProjectManager.h"
 
 using namespace Polycode;
+
+typedef struct {
+	unsigned int lineNumber;
+	char errorMessage[256];	
+	char fileName[256];
+	unsigned int backTraceSize;	
+} RemoteErrorData;
+
+typedef struct {
+	unsigned int lineNumber;
+	char fileName[256];
+} RemoteBacktraceData;
 
 class DebuggerClient { 
 	public:
@@ -34,7 +47,7 @@ class DebuggerClient {
 
 class PolycodeRemoteDebugger : EventHandler {
 	public:
-		PolycodeRemoteDebugger();
+		PolycodeRemoteDebugger(PolycodeProjectManager *projectManager);
 		~PolycodeRemoteDebugger();
 		
 		void injectCode(String code);
@@ -50,7 +63,11 @@ class PolycodeRemoteDebugger : EventHandler {
 
 		static const int EVENT_INJECT_CODE = 36;
 			
+		static const int EVENT_DEBUG_BACKTRACE_INFO = 37;
+					
 	protected:
+		
+		PolycodeProjectManager *projectManager;
 		
 		Server *server;
 		std::vector<DebuggerClient*> debuggerClients;

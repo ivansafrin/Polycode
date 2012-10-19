@@ -24,10 +24,65 @@
 
 #include "PolycodeUI.h"
 #include "Polycode.h"
+#include "PolycodeProject.h"
 
 using namespace Polycode;
 
 class PolycodeRemoteDebugger;
+
+class BackTraceEvent : public Event {
+	public:
+		BackTraceEvent() : Event() { eventType = "BackTraceEvent"; };
+		~BackTraceEvent() {}
+		
+		static const int EVENT_BACKTRACE_SELECTED = 0;
+		
+		String fileName;
+		unsigned int lineNumber;
+		PolycodeProject *project;
+};
+
+class BackTraceEntry : public UIElement {
+	public:
+		BackTraceEntry(String fileName, int lineNumber, PolycodeProject *project);
+		~BackTraceEntry();
+		
+		void Select();
+		void Deselect();
+		
+		void handleEvent(Event *event);
+		
+		void Resize(Number width, Number height);	
+	
+	protected:
+	
+		PolycodeProject *project;
+	
+		String fileName;
+		unsigned int lineNumber;
+		
+		ScreenShape *labelBg;	
+		ScreenLabel *label;
+};
+
+class BackTraceWindow : public UIElement {
+	public:
+		BackTraceWindow();
+		~BackTraceWindow();
+		
+		void handleEvent(Event *event);
+		
+		void addBackTrace(String fileName, int lineNumber, PolycodeProject *project);
+						
+		void Resize(Number width, Number height);
+		
+		void adjustEntries();
+		
+	protected:			
+		ScreenShape *labelBg;
+		std::vector<BackTraceEntry*> entries;
+		
+};
 
 class PolycodeConsole : public UIElement {
 	public:
@@ -41,12 +96,19 @@ class PolycodeConsole : public UIElement {
 		void setDebugger(PolycodeRemoteDebugger *debugger);
 		
 		static void print(String msg);
+
+		static void addBacktrace(String fileName, int lineNumber, PolycodeProject *project);
+
+		void _addBacktrace(String fileName, int lineNumber, PolycodeProject *project);
 		
 		void Resize(Number width, Number height);
 		
 		static void setInstance(PolycodeConsole *newInstance);
 		
+		BackTraceWindow *backtraceWindow;		
 	protected:
+	
+		UIHSizer *backtraceSizer;
 	
 		PolycodeRemoteDebugger *debugger;
 		

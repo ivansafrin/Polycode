@@ -79,9 +79,7 @@ NSTextStorage *textStorage = [consoleTextView textStorage];
 	[consoleTextView setInsertionPointColor: [NSColor whiteColor]];
 [textStorage beginEditing];
 
-NSMutableString *fullText = [[NSMutableString alloc] initWithString:@"Error:\""];
-[fullText appendString:error];
-[fullText appendFormat:@"\" on line %d.", lineNumber];
+NSMutableString *fullText = [[NSMutableString alloc] initWithString: error];
 NSMutableAttributedString *str = [[NSMutableAttributedString alloc ]initWithString: fullText];
 [fullText release];
 

@@ -56,6 +56,8 @@ public:
 	void Resize(int x, int y);
 	void saveFile();
 	
+	void highlightLine(unsigned int lineNumber);
+	
 protected:
 
 	PolycodeSyntaxHighlighter *syntaxHighligher;

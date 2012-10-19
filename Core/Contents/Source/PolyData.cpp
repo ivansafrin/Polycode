@@ -60,8 +60,10 @@ bool Data::saveToFile(const String& fileName) const {
 	return true;
 }
 
-void Data::loadFromFile(const String& fileName) {
+bool Data::loadFromFile(const String& fileName) {
 	OSFILE *file = OSBasics::open(fileName, "rb");
+	if(!file)
+		return false;
 	
 	OSBasics::seek(file, 0L, SEEK_END);
 	dataSize = OSBasics::tell(file);
@@ -78,7 +80,8 @@ void Data::loadFromFile(const String& fileName) {
 	
 	OSBasics::read(data, sizeof(char), dataSize, file);	
 	OSBasics::close(file);
-		
+
+	return true;
 }
 
 String Data::getAsString(int encoding) const {

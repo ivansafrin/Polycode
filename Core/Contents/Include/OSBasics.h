@@ -31,7 +31,10 @@ class _PolyExport OSFileEntry {
 
 	public:
 		OSFileEntry() {};
+		OSFileEntry(const Polycode::String& fullPath, int type);
 		OSFileEntry(const Polycode::String& path, const Polycode::String& name, int type);
+		
+		void init(const Polycode::String& path, const Polycode::String& name, int type);
 		
 		Polycode::String name;
 		Polycode::String extension;
