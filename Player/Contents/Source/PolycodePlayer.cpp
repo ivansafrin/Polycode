@@ -36,6 +36,16 @@ void PolycodeRemoteDebuggerClient::handleEvent(Event *event) {
 		break;
 		case PolycodeDebugEvent::EVENT_ERROR:
 			RemoteErrorData data;
+			
+			if(debugEvent->errorString.length() > 254) {
+				debugEvent->errorString = debugEvent->errorString.substr(0,254);
+			}
+
+			if(debugEvent->fileName.length() > 254) {
+				debugEvent->fileName = debugEvent->fileName.substr(0,254);
+			}
+
+			
 			strcpy(data.errorMessage, debugEvent->errorString.c_str());
 			strcpy(data.fileName, debugEvent->fileName.c_str());
 			data.lineNumber = debugEvent->lineNumber;
@@ -45,6 +55,12 @@ void PolycodeRemoteDebuggerClient::handleEvent(Event *event) {
 			
 			for(int i=0; i < debugEvent->backTrace.size(); i++) {
 				RemoteBacktraceData btData;
+				
+			if(debugEvent->backTrace[i].fileName.length() > 254) {
+				debugEvent->backTrace[i].fileName = debugEvent->backTrace[i].fileName.substr(0,254);
+			}
+				
+				
 				strcpy(btData.fileName, debugEvent->backTrace[i].fileName.c_str());
 				btData.lineNumber = debugEvent->backTrace[i].lineNumber;
 				
@@ -135,7 +151,7 @@ static void dumpstack (lua_State *L) {
 		lua_Debug entry;
 		int depth = 0;		
 		while (lua_getstack(L, depth, &entry)) {
-			int status = lua_getinfo(L, "Sln", &entry);
+			lua_getinfo(L, "Sln", &entry);
 			printf(">>>> %s(%d): %s\n", entry.short_src, entry.currentline, entry.name ? entry.name : "?");
 			std::vector<String> bits = String(entry.short_src).split("\"");
 			if(bits.size() > 1) {
@@ -588,6 +604,10 @@ void PolycodePlayer::loadFile(const char *fileName) {
 	}
 	
 	if(useDebugger) {
+	
+		// clear the other listeners
+		this->removeAllHandlers();
+			
 		remoteDebuggerClient = new PolycodeRemoteDebuggerClient();
 		this->addEventListener(remoteDebuggerClient, PolycodeDebugEvent::EVENT_PRINT);
 		this->addEventListener(remoteDebuggerClient, PolycodeDebugEvent::EVENT_ERROR);		

@@ -75,7 +75,8 @@ void BackTraceEntry::Deselect() {
 
 
 BackTraceEntry::~BackTraceEntry() {
-
+	delete label;
+	delete labelBg;
 }
 
 void BackTraceEntry::Resize(Number width, Number height) {
@@ -145,6 +146,16 @@ void BackTraceWindow::addBackTrace(String fileName, int lineNumber, PolycodeProj
 	}
 }
 
+void BackTraceWindow::clearBackTraces() {
+	for(int i=0; i < entries.size(); i++) {
+		removeChild(entries[i]);
+		entries[i]->removeAllHandlers();
+		delete entries[i];
+	}
+	entries.clear();
+	adjustEntries();
+}
+
 BackTraceWindow::~BackTraceWindow() {
 	
 }
@@ -212,10 +223,18 @@ void PolycodeConsole::_addBacktrace(String fileName, int lineNumber, PolycodePro
 	backtraceWindow->addBackTrace(fileName, lineNumber, project);
 }
 
+void PolycodeConsole::clearBacktraces() {
+	instance->_clearBacktraces();
+}
+
+void PolycodeConsole::_clearBacktraces() {
+	backtraceWindow->clearBackTraces();
+}
+
 
 void PolycodeConsole::_print(String msg) {
 	debugTextInput->setText(debugTextInput->getText()+msg);
-	debugTextInput->getScrollContainer()->setScrollValue(0, 1.0);
+	debugTextInput->getScrollContainer()->setScrollValue(0, 1.1);
 }
 
 void PolycodeConsole::Resize(Number width, Number height) {

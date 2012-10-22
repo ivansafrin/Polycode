@@ -322,6 +322,11 @@ namespace Polycode {
 		*/
 		String getUserHomeDirectory();	
 		
+		/**
+		* Brings the application on top (Cocoa only for now).
+		*/
+		virtual void makeApplicationMain() {}
+		
 		CoreMutex *getEventMutex();
 		CoreMutex *eventMutex;
 		

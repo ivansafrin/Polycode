@@ -119,14 +119,16 @@ NSMutableAttributedString *str = [[NSMutableAttributedString alloc ]initWithStri
 	}
 }
 
-- (void)canCloseDocumentWithDelegate:(id)delegate shouldCloseSelector:(SEL)shouldCloseSelector contextInfo:(void *)contextInfo
+
+
+- (void)close
 {
 	[timer invalidate];
 	[timer release];	
 	delete player;
 	delete playerProxy;
 	
-	[super canCloseDocumentWithDelegate:delegate shouldCloseSelector:shouldCloseSelector contextInfo:contextInfo];
+	[super close];
 
 }
 

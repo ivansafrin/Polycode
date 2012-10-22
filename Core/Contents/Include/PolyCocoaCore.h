@@ -131,6 +131,8 @@ namespace Polycode {
 		void initGamepad();
 		void shutdownGamepad();
 		
+		void makeApplicationMain();
+		
 		void lockMutex(CoreMutex *mutex);
 		void unlockMutex(CoreMutex *mutex);
 		CoreMutex *createMutex();		

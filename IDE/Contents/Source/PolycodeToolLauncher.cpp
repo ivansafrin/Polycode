@@ -54,6 +54,8 @@ String PolycodeToolLauncher::generateTempPath() {
 
 void PolycodeToolLauncher::buildProject(PolycodeProject *project, String destinationPath) {
 
+	PolycodeConsole::print("Building project: "+project->getProjectName() + "\n");	
+
 	project->saveFile();
 
 	String projectBasePath = project->getRootFolder();
@@ -64,14 +66,17 @@ void PolycodeToolLauncher::buildProject(PolycodeProject *project, String destina
 	
 	String command = "cd "+projectBasePath+" && "+polycodeBasePath+"/Standalone/Bin/polybuild  --config="+projectPath+" --out="+destinationPath;	
 	String ret = CoreServices::getInstance()->getCore()->executeExternalCommand(command);
-	PolycodeConsole::print(ret);	
+//	PolycodeConsole::print(ret);	
 
 }
 
-void PolycodeToolLauncher::runPolyapp(String polyappPath) {		
+void PolycodeToolLauncher::runPolyapp(String polyappPath) {
+
+	PolycodeConsole::clearBacktraces();
+		
 //	PolycodeRunner *runner = new PolycodeRunner(polyappPath);
 //	CoreServices::getInstance()->getCore()->createThread(runner);
-
+							
 #if defined(__APPLE__) && defined(__MACH__)
 	CocoaCore *cocoaCore = (CocoaCore*) CoreServices::getInstance()->getCore();
 
@@ -80,6 +85,8 @@ void PolycodeToolLauncher::runPolyapp(String polyappPath) {
 	
 	cocoaCore->launchApplicationWithFile(command, polyappPath);
 #else
+	PolycodeRunner *runner = new PolycodeRunner(polyappPath);
+	CoreServices::getInstance()->getCore()->createThread(runner);
 
 #endif
 

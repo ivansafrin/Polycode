@@ -67,6 +67,9 @@ void PolycodeRemoteDebugger::handleEvent(Event *event) {
 							PolycodeConsole::print("Error in file "+String(data->fileName)+" on line "+String::IntToString(data->lineNumber)+"\n");
 							PolycodeConsole::print(String(data->errorMessage)+"\n");
 							PolycodeConsole::print("Backtrace:\n");
+							
+							CoreServices::getInstance()->getCore()->makeApplicationMain();
+							
 						}
 						break;			
 						case EVENT_DEBUG_BACKTRACE_INFO:

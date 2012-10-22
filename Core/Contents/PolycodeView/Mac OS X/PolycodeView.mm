@@ -87,6 +87,8 @@
 {	
 	if(core == NULL)
 		return;
+		
+	memset(modifierMap, 0, 512);		
 	
 	core->lockMutex(core->eventMutex);	
 	CocoaEvent newEvent;

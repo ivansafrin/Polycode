@@ -73,6 +73,8 @@ class BackTraceWindow : public UIElement {
 		void handleEvent(Event *event);
 		
 		void addBackTrace(String fileName, int lineNumber, PolycodeProject *project);
+		
+		void clearBackTraces();
 						
 		void Resize(Number width, Number height);
 		
@@ -99,6 +101,9 @@ class PolycodeConsole : public UIElement {
 
 		static void addBacktrace(String fileName, int lineNumber, PolycodeProject *project);
 
+		static void clearBacktraces();
+		void _clearBacktraces();
+		
 		void _addBacktrace(String fileName, int lineNumber, PolycodeProject *project);
 		
 		void Resize(Number width, Number height);

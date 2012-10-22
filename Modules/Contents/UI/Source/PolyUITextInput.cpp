@@ -702,7 +702,7 @@ String UITextInput::getLineText(unsigned int index) {
 	} else {
 		return "";
 	}
-}
+}       
 
 String UITextInput::getSelectionText() {
 	String totalText = L"";

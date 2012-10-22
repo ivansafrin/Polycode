@@ -467,6 +467,10 @@ void CocoaCore::moveDiskItem(const String& itemPath, const String& destItemPath)
 void CocoaCore::removeDiskItem(const String& itemPath) {
 	[[NSFileManager defaultManager] removeItemAtPath: [NSString stringWithUTF8String: itemPath.c_str()] error:nil];
 }
+
+void CocoaCore::makeApplicationMain() {
+	[NSApp activateIgnoringOtherApps:YES];
+}
 	
 String CocoaCore::openFolderPicker() {
 	unlockMutex(eventMutex);
