@@ -588,31 +588,14 @@ int UITextInput::caretSkipWordForward(int caretLine, int caretPosition) {
 }
 
 void UITextInput::selectWordAtCaret() {
-	
-	int selectStart = 0;
-	int len  = currentLine->getText().length();
-	int selectEnd = len;
-	
-	for(int i=this->caretPosition; i > 0; i--) {
-		String bit = currentLine->getText().substr(i,1);
-		wchar_t chr = ((wchar_t*)bit.c_str())[0]; 
-		if( (chr > 0 && chr < 48) || (chr > 57 && chr < 65) || (chr > 90 && chr < 97) || (chr > 122 && chr < 127)) {
-			selectStart = i+1;
-			break;
-		}
-	}	
 
-	for(int i=this->caretPosition; i < len; i++) {
-		String bit = currentLine->getText().substr(i,1);
-		wchar_t chr = ((wchar_t*)bit.c_str())[0]; 
-		if( (chr > 0 && chr < 48) || (chr > 57 && chr < 65) || (chr > 90 && chr < 97) || (chr > 122 && chr < 127)) {
-			selectEnd = i;
-			break;			
-		}
-	}	
+	caretPosition = caretSkipWordBack(this->lineOffset,caretPosition);
+	clearSelection();			
+	updateCaretPosition();
 	
-	
-	setSelection(this->lineOffset, this->lineOffset, selectStart, selectEnd);
+	setSelection(this->lineOffset, this->lineOffset, this->caretPosition, caretSkipWordForward(this->lineOffset, caretPosition));					
+
+	updateCaretPosition();	
 }
 
 void UITextInput::setCaretToMouse(Number x, Number y) {
