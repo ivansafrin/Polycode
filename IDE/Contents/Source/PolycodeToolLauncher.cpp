@@ -83,7 +83,8 @@ void PolycodeToolLauncher::runPolyapp(String polyappPath) {
 	String polycodeBasePath = CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory();
 	String command = polycodeBasePath+"/Standalone/Player/PolycodePlayer.app";
 	
-	cocoaCore->launchApplicationWithFile(command, polyappPath);
+//	cocoaCore->launchApplicationWithFile(command, polyappPath);
+	cocoaCore->openFileWithApplication(polyappPath, command);
 #else
 	PolycodeRunner *runner = new PolycodeRunner(polyappPath);
 	CoreServices::getInstance()->getCore()->createThread(runner);

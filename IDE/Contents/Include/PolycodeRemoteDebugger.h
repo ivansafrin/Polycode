@@ -55,6 +55,8 @@ class PolycodeRemoteDebugger : EventHandler {
 		void handleEvent(Event *event);
 			
 		bool isConnected();
+		
+		void Disconnect();
 			
 		static const int EVENT_DEBUG_ERROR = 32;
 		static const int EVENT_DEBUG_PRINT = 33;

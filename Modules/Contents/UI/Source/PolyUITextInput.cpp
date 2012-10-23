@@ -799,6 +799,11 @@ void UITextInput::Paste() {
 }
 
 void UITextInput::showLine(unsigned int lineNumber, bool top) {
+	if(top) {
+		scrollContainer->setScrollValue(0.0, ((((lineNumber) * ((lineHeight+lineSpacing)))) + padding)/scrollContainer->getContentSize().y);
+	} else {
+		scrollContainer->setScrollValue(0.0, (((((lineNumber) * ((lineHeight+lineSpacing)))) + padding-(scrollContainer->getHeight()/2.0))/scrollContainer->getContentSize().y));	
+	}
 }
 
 void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {

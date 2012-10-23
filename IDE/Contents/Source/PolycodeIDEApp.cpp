@@ -61,7 +61,8 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	frame->exampleBrowserWindow->addEventListener(this, UIEvent::OK_EVENT);
 	
 	frame->playButton->addEventListener(this, UIEvent::CLICK_EVENT);
-	
+	frame->stopButton->addEventListener(this, UIEvent::CLICK_EVENT);
+		
 	screen->addChild(frame);
 	
 	projectManager = new PolycodeProjectManager();
@@ -165,7 +166,17 @@ void PolycodeIDEApp::browseExamples() {
 
 }
 
+void PolycodeIDEApp::stopProject() {
+	printf("Disconnecting clients...\n");
+	if(debugger->isConnected()) {
+		debugger->Disconnect();
+	}
+}
+
 void PolycodeIDEApp::runProject() {
+	printf("Running project...\n");
+	stopProject();
+
 	if(projectManager->getActiveProject()) {
 		String outPath = PolycodeToolLauncher::generateTempPath() + ".polyapp";
 		PolycodeToolLauncher::buildProject(projectManager->getActiveProject(), outPath);
@@ -296,6 +307,13 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 			runProject();
 		}
 	}
+
+	if(event->getDispatcher() == frame->stopButton) {	
+		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {
+			stopProject();
+		}
+	}
+
 	
 	if(event->getDispatcher() == frame->textInputPopup) {
 		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {
@@ -384,6 +402,21 @@ PolycodeIDEApp::~PolycodeIDEApp() {
 }
 
 bool PolycodeIDEApp::Update() {
+
+	if(debugger->isConnected()) {
+			frame->stopButton->visible = true;
+			frame->stopButton->enabled = true;			
+			
+			frame->playButton->visible = false;
+			frame->playButton->enabled = false;			
+			
+	} else {
+			frame->stopButton->visible = false;
+			frame->stopButton->enabled = false;			
+			
+			frame->playButton->visible = true;
+			frame->playButton->enabled = true;				
+	}
 
 	if(projectManager->getProjectCount() == 1) {
 		projectManager->setActiveProject(projectManager->getProjectByIndex(0));

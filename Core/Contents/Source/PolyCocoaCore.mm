@@ -252,6 +252,14 @@ void CocoaCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, in
 	*/
 }
 
+void CocoaCore::openFileWithApplication(String file, String application) {
+	NSWorkspace *workspace = [NSWorkspace sharedWorkspace];
+	NSString *filePath = [NSString stringWithCString:file.c_str()];
+	NSString *appString = [NSString stringWithCString:application.c_str()];
+		
+	[workspace openFile: filePath withApplication: appString andDeactivate: YES];
+}
+
 void CocoaCore::launchApplicationWithFile(String application, String file) {
 	NSWorkspace *workspace = [NSWorkspace sharedWorkspace];
 	NSURL *url = [NSURL fileURLWithPath: [NSString stringWithCString:application.c_str()]];

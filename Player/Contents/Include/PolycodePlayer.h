@@ -94,6 +94,7 @@ public:
 	static const int EVENT_PRINT = 1;
 	static const int EVENT_RESIZE = 2;
 	static const int EVENT_REMOVE = 3;
+	static const int EVENT_CLOSE = 4;
 };
 
 class PolycodePlayer : public EventDispatcher {
@@ -130,6 +131,8 @@ public:
 	Core *core;	
 	
 	String fullPath;
+	
+	bool useDebugger;	
 		
 protected:
 
@@ -138,8 +141,6 @@ protected:
 	PolycodeRemoteDebuggerClient *remoteDebuggerClient;
 	
 	lua_State *L;		
-	
-	bool useDebugger;
 	
 	
 	bool doCodeInject;

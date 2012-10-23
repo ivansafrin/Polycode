@@ -231,6 +231,7 @@ bool PolycodeTextEditor::openFile(OSFileEntry filePath) {
 void PolycodeTextEditor::highlightLine(unsigned int lineNumber) {
 	int lineSize = textInput->getLineText(lineNumber-1).length();
 	textInput->setSelection(lineNumber-1, lineNumber-1, 0, lineSize);
+	textInput->showLine(lineNumber, false);
 }
 
 void PolycodeTextEditor::saveFile() {

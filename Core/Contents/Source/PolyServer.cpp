@@ -104,6 +104,8 @@ void Server::handlePeerConnection(PeerConnection *connection) {
 }
 
 void Server::DisconnectClient(ServerClient *client) {
+	sendReliableDataToClient(client, NULL, 0, PACKET_TYPE_DISONNECT);
+
 	for(unsigned int i=0;i<clients.size();i++) {
 		if(clients[i] == client) {			
 			clients.erase(clients.begin()+i);
@@ -133,7 +135,6 @@ void Server::handlePacket(Packet *packet, PeerConnection *connection) {
 		break;
 		case PACKET_TYPE_DISONNECT:
 		{
-			sendReliableDataToClient(client, NULL, 0, PACKET_TYPE_DISONNECT);
 			DisconnectClient(client);
 		}
 		break;		

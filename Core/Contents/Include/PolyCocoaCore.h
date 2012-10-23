@@ -119,6 +119,7 @@ namespace Polycode {
 		String executeExternalCommand(String command);
 		
 		void launchApplicationWithFile(String application, String file);
+		void openFileWithApplication(String file, String application);
 		
 		void setCursor(int cursorType);
 		void warpCursor(int x, int y);

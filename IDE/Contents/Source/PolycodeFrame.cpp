@@ -93,6 +93,11 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	playButton = new UIImageButton("play_button.png");
 	addChild(playButton);
 	playButton->setPosition(10,8);
+
+	stopButton = new UIImageButton("stop_button.png");
+	addChild(stopButton);
+	stopButton->setPosition(10,8);
+
 	
 	resizer = new ScreenImage("corner_resize.png");	
 	addChild(resizer);

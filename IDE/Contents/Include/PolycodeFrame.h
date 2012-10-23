@@ -71,6 +71,8 @@ public:
 	PolycodeProjectBrowser *projectBrowser;
 		
 	UIImageButton *playButton;
+	UIImageButton *stopButton;
+		
 	UIHSizer *mainSizer;
 	
 	PolycodeConsole *console;

@@ -32,7 +32,9 @@ THE SOFTWARE.
 {
     self = [super init];
     if (self) {
+			playerRunning = true;
 			showingConsole = NO;
+			needsToClose = false;
     }
     return self;
 }
@@ -49,9 +51,11 @@ THE SOFTWARE.
 	player =  new CocoaPolycodePlayer(mainView, [docFileName cStringUsingEncoding:NSASCIIStringEncoding], false, true);
 	playerProxy = new PolycodeProxy();
 	playerProxy->playerDocument = self;
+	
 	player->addEventListener(playerProxy, PolycodeDebugEvent::EVENT_RESIZE);
 	player->addEventListener(playerProxy, PolycodeDebugEvent::EVENT_PRINT);		
 	player->addEventListener(playerProxy, PolycodeDebugEvent::EVENT_ERROR);			
+	player->addEventListener(playerProxy, PolycodeDebugEvent::EVENT_CLOSE);				
 	player->windowData = self;
 	
 	player->runPlayer();
@@ -59,6 +63,23 @@ THE SOFTWARE.
 	timer = [NSTimer timerWithTimeInterval:(1.0f/90.0f) target:self selector:@selector(animationTimer:) userInfo:nil repeats:YES];
 	[[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
 	[[NSRunLoop currentRunLoop] addTimer:timer forMode:NSEventTrackingRunLoopMode]; // ensure timer fires during resize		
+}
+
+- (void) destroyPlayer {
+	if(playerRunning) {
+		printf("DESTROYING PLAYER");
+		playerRunning = false;
+		[timer invalidate];
+		[timer release];	
+		delete player;
+		delete playerProxy;	
+		player = NULL;
+		playerProxy = NULL;		
+	}	
+}	
+
+- (void) needToClosePlayer {
+	needsToClose = true;
 }
 
 - (IBAction) showConsoleWindow: (id) sender 
@@ -90,8 +111,10 @@ NSMutableAttributedString *str = [[NSMutableAttributedString alloc ]initWithStri
 [textStorage endEditing];
 [str release];
 
-showingConsole = NO;
-[self showConsoleWindow:self];
+	if(!player->useDebugger) {
+		showingConsole = NO;
+		[self showConsoleWindow:self];
+	}
 
 }
 
@@ -114,8 +137,10 @@ NSMutableAttributedString *str = [[NSMutableAttributedString alloc ]initWithStri
 - (void)animationTimer:(NSTimer *)timer
 {
 
-	if(!player->Update()) {
-		[self close];
+	if(player) {
+		if(!player->Update() || needsToClose) {
+			[self close];
+		}
 	}
 }
 
@@ -123,11 +148,7 @@ NSMutableAttributedString *str = [[NSMutableAttributedString alloc ]initWithStri
 
 - (void)close
 {
-	[timer invalidate];
-	[timer release];	
-	delete player;
-	delete playerProxy;
-	
+	[self destroyPlayer];
 	[super close];
 
 }

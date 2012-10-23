@@ -45,6 +45,13 @@ void PolycodeRemoteDebugger::injectCode(String code) {
 	server->sendReliableDataToAllClients((char*)code.c_str(), code.length()+1, EVENT_INJECT_CODE);
 }
 
+void PolycodeRemoteDebugger::Disconnect() {
+	for(int i=0; i < debuggerClients.size(); i++) {
+		server->DisconnectClient(debuggerClients[i]->client);
+	}
+	debuggerClients.clear();
+}
+
 void PolycodeRemoteDebugger::handleEvent(Event *event) {
 
 	for(int i=0; i < debuggerClients.size(); i++) {

@@ -26,9 +26,20 @@ THE SOFTWARE.
 PolycodeRemoteDebuggerClient::PolycodeRemoteDebuggerClient() : EventDispatcher() {
 	client = new Client(6445, 1);
 	client->Connect("127.0.0.1", 4630);	
+	
+	client->addEventListener(this, ClientEvent::EVENT_SERVER_DISCONNECTED);
 }
 
 void PolycodeRemoteDebuggerClient::handleEvent(Event *event) {
+
+	if(event->getDispatcher() == client) {
+		switch(event->getEventCode()) {
+			case ClientEvent::EVENT_SERVER_DISCONNECTED:
+				dispatchEvent(new Event(), Event::COMPLETE_EVENT);
+			break;
+		}
+	} else {
+
 	PolycodeDebugEvent *debugEvent = (PolycodeDebugEvent*) event;
 	switch(event->getEventCode()) {
 		case PolycodeDebugEvent::EVENT_PRINT:
@@ -67,6 +78,7 @@ void PolycodeRemoteDebuggerClient::handleEvent(Event *event) {
 				client->sendReliableDataToServer((char*)&btData, sizeof(btData), EVENT_DEBUG_BACKTRACE_INFO);				
 			}
 		break;		
+	}
 	}
 }
 
@@ -605,10 +617,10 @@ void PolycodePlayer::loadFile(const char *fileName) {
 	
 	if(useDebugger) {
 	
-		// clear the other listeners
-		this->removeAllHandlers();
 			
 		remoteDebuggerClient = new PolycodeRemoteDebuggerClient();
+		remoteDebuggerClient->addEventListener(this, Event::COMPLETE_EVENT);
+		
 		this->addEventListener(remoteDebuggerClient, PolycodeDebugEvent::EVENT_PRINT);
 		this->addEventListener(remoteDebuggerClient, PolycodeDebugEvent::EVENT_ERROR);		
 		remoteDebuggerClient->client->addEventListener(this, ClientEvent::EVENT_CLIENT_READY);
@@ -641,6 +653,12 @@ void PolycodePlayer::handleEvent(Event *event) {
 	if(event->getDispatcher() == debuggerTimer) {
 		runFile(fullPath);
 		debuggerTimer->Pause(true);
+	}
+	
+	if(event->getDispatcher() == remoteDebuggerClient) {
+		if(event->getEventCode() == Event::COMPLETE_EVENT) {
+			dispatchEvent(new PolycodeDebugEvent(), PolycodeDebugEvent::EVENT_CLOSE);
+		}
 	}
 
 	if(event->getDispatcher() == remoteDebuggerClient->client) {

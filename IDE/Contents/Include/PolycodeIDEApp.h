@@ -57,6 +57,8 @@ public:
 	
 	void openFile(OSFileEntry file);
 	
+	void stopProject();
+	
 	// menu commands
 	void renameFile();
 	void removeFile();
