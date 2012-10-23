@@ -52,17 +52,8 @@ namespace Polycode {
 			* Returns the vertex at specified index.
 			* @return Vertex at specified index.
 			*/ 			
-			Vertex *getVertex(unsigned int index);
-			
-			/**
-			* Adds a new vertex with the specified position coordinates.
-			* @param x X coordinate of new vertex.
-			* @param y Y coordinate of new vertex.
-			* @param z Z coordinate of new vertex.						
-			* @return Newly added vertex.
-			*/ 
-			Vertex *addVertex(Number x, Number y, Number z);
-			
+			Vertex *getVertex(unsigned int index);			
+	
 			/**
 			* Adds a new vertex with the specified position coordinates and texture coordinates.
 			* @param x X coordinate of new vertex.
@@ -73,7 +64,16 @@ namespace Polycode {
 			* @return Newly added vertex.
 			*/ 			
 			Vertex *addVertex(Number x, Number y, Number z, Number u, Number v);
-			
+						
+			/**
+			* Adds a new vertex with the specified position coordinates.
+			* @param x X coordinate of new vertex.
+			* @param y Y coordinate of new vertex.
+			* @param z Z coordinate of new vertex.						
+			* @return Newly added vertex.
+			*/ 
+			Vertex *addVertex(Number x, Number y, Number z);
+		
 			
 			/**
 			* Adds a new vertex.

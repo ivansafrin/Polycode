@@ -443,7 +443,7 @@ void UITextInput::restructLines() {
 	}
 	
 	if(scrollContainer) {
-		scrollContainer->setContentSize(width,  (((lines.size()+1) * ((lineHeight+lineSpacing)))) - padding);
+		scrollContainer->setContentSize(width,  (((lines.size()) * ((lineHeight+lineSpacing)))) + padding);
 	}	
 	
 	if(multiLine) {
@@ -555,8 +555,11 @@ void UITextInput::dragSelectionTo(Number x, Number y) {
 	if(x > slen)
 		caretPosition = len;
 	
+	if(multiLine)
+		caretPosition++;
+		
 	if(caretPosition < 0)
-		caretPosition = 0;
+		caretPosition = 0;		
 
 	setSelection(this->lineOffset, lineOffset, this->caretPosition, caretPosition);
 }
@@ -634,6 +637,10 @@ void UITextInput::setCaretToMouse(Number x, Number y) {
 	}
 	if(x > slen)
 		caretPosition = len;
+		
+	if(multiLine)
+		caretPosition++;
+		
 	updateCaretPosition();	
 }
 
@@ -800,9 +807,9 @@ void UITextInput::Paste() {
 
 void UITextInput::showLine(unsigned int lineNumber, bool top) {
 	if(top) {
-		scrollContainer->setScrollValue(0.0, ((((lineNumber) * ((lineHeight+lineSpacing)))) + padding)/scrollContainer->getContentSize().y);
+		scrollContainer->setScrollValue(0.0, ((((lineNumber) * ((lineHeight+lineSpacing)))) + padding)/(scrollContainer->getContentSize().y-scrollContainer->getHeight()));
 	} else {
-		scrollContainer->setScrollValue(0.0, (((((lineNumber) * ((lineHeight+lineSpacing)))) + padding-(scrollContainer->getHeight()/2.0))/scrollContainer->getContentSize().y));	
+		scrollContainer->setScrollValue(0.0, (((((lineNumber) * ((lineHeight+lineSpacing)))) + padding-(scrollContainer->getHeight()/2.0))/(scrollContainer->getContentSize().y-scrollContainer->getHeight())));	
 	}
 }
 

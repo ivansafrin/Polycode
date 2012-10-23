@@ -234,7 +234,7 @@ void PolycodeConsole::_clearBacktraces() {
 
 void PolycodeConsole::_print(String msg) {
 	debugTextInput->setText(debugTextInput->getText()+msg);
-	debugTextInput->getScrollContainer()->setScrollValue(0, 1.1);
+	debugTextInput->getScrollContainer()->setScrollValue(0, 1.0);
 }
 
 void PolycodeConsole::Resize(Number width, Number height) {

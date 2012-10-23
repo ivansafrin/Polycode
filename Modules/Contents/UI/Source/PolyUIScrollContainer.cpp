@@ -161,13 +161,13 @@ void UIScrollContainer::Update() {
 void UIScrollContainer::handleEvent(Event *event) {
 	if(event->getDispatcher() == vScrollBar) {
 		if(event->getEventCode() == Event::CHANGE_EVENT) {
-			scrollChild->setPositionY(floor(-((contentHeight-height) )*vScrollBar->getScrollValue()));
+			scrollChild->setPositionY(floor(((-contentHeight+height) )*vScrollBar->getScrollValue()));
 		}
 	}
 	
 	if(event->getDispatcher() == hScrollBar) {
 		if(event->getEventCode() == Event::CHANGE_EVENT) {
-			scrollChild->setPositionX(floor(-((contentWidth-width) )*hScrollBar->getScrollValue()));
+			scrollChild->setPositionX(floor(((-contentWidth+width) )*hScrollBar->getScrollValue()));
 		}
 	}
 	
