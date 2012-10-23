@@ -133,8 +133,12 @@ public:
 	String fullPath;
 	
 	bool useDebugger;	
+	
+	bool crashed;
 		
 protected:
+
+	int errH;
 
 	Timer *debuggerTimer;
 	

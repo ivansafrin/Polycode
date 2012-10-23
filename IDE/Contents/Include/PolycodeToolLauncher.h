@@ -39,7 +39,7 @@ class PolycodeToolLauncher {
 		PolycodeToolLauncher();
 		~PolycodeToolLauncher();		
 		
-		static String generateTempPath();
+		static String generateTempPath(PolycodeProject *project);
 		static void buildProject(PolycodeProject *project, String destinationPath);
 
 		static void runPolyapp(String polyappPath);

@@ -277,6 +277,17 @@ namespace Polycode {
 		
 		void dispatchTriggerCompleteEvent();
 		
+			/**
+			* Continuous emitter setting.
+			*/ 																													
+			static const int CONTINUOUS_EMITTER = 0;
+
+			/**
+			* Triggered emitter setting.
+			*/ 																																
+			static const int TRIGGERED_EMITTER = 1;
+		
+		
 	protected:
 		SceneMesh *emitterMesh;		
 		Scene *particleParentScene;
@@ -300,6 +311,17 @@ namespace Polycode {
 		void addParticleBody(Entity *particleBody);
 		Matrix4 getBaseMatrix();
 		void Update();
+		
+			/**
+			* Continuous emitter setting.
+			*/ 																													
+			static const int CONTINUOUS_EMITTER = 0;
+
+			/**
+			* Triggered emitter setting.
+			*/ 																																
+			static const int TRIGGERED_EMITTER = 1;
+		
 		
 	protected:
 		ScreenMesh *emitterMesh;		

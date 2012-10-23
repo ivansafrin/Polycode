@@ -137,7 +137,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 			f = open(fileName) # Def: Input file handle
 			contents = f.read().replace("_PolyExport", "") # Def: Input file contents, strip out "_PolyExport"
 			cppHeader = CppHeaderParser.CppHeader(contents, "string") # Def: Input file contents, parsed structure
-			ignore_classes = ["PolycodeShaderModule", "Object", "Threaded", "OpenGLCubemap", "ParticleEmitter"]
+			ignore_classes = ["PolycodeShaderModule", "Object", "Threaded", "OpenGLCubemap"]
 
 			# Iterate, check each class in this file.
 			for ckey in cppHeader.classes: 
@@ -148,10 +148,15 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 				inherits = False
 				if len(c["inherits"]) > 0: # Does this class have parents?
 					if c["inherits"][0]["class"] not in ignore_classes:
+
 						if c["inherits"][0]["class"] in inheritInModule: # Parent class is in this module
 							luaClassBindingOut += "require \"%s/%s\"\n\n" % (prefix, c["inherits"][0]["class"])
 						else: # Parent class is in Polycore
 							luaClassBindingOut += "require \"Polycode/%s\"\n\n" % (c["inherits"][0]["class"])
+
+						if (ckey == "ScreenParticleEmitter" or ckey == "SceneParticleEmitter"):
+							luaClassBindingOut += "require \"Polycode/ParticleEmitter\"\n\n"
+
 						luaClassBindingOut += "class \"%s\" (%s)\n\n" % (ckey, c["inherits"][0]["class"])
 						inherits = True
 				if inherits == False: # Class does not have parents
@@ -326,7 +331,9 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 						if pm["rtnType"].find("static ") == -1:
 							wrappersHeaderOut += "\tluaL_checktype(L, 1, LUA_TLIGHTUSERDATA);\n"
 							wrappersHeaderOut += "\t%s *inst = (%s*)lua_topointer(L, 1);\n" % (ckey, ckey)
-						idx = 2
+							idx = 2
+						else:
+							idx = 1
 					
 					if rawMethod:
 						wrappersHeaderOut += "\treturn inst->%s(L);\n" % (pm["name"])
@@ -440,7 +447,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 									outfunc = "lua_pushstring"
 									basicType = True
 									retFunc = ".c_str()"
-								if pm["rtnType"] == "int" or pm["rtnType"] == "static int" or  pm["rtnType"] == "size_t" or pm["rtnType"] == "static size_t" or pm["rtnType"] == "long" or pm["rtnType"] == "unsigned int" or pm["rtnType"] == "static long":
+								if pm["rtnType"] == "int" or pm["rtnType"] == "unsigned int" or pm["rtnType"] == "static int" or  pm["rtnType"] == "size_t" or pm["rtnType"] == "static size_t" or pm["rtnType"] == "long" or pm["rtnType"] == "unsigned int" or pm["rtnType"] == "static long":
 									outfunc = "lua_pushinteger"
 									basicType = True
 								if pm["rtnType"] == "bool" or pm["rtnType"] == "static bool" or pm["rtnType"] == "virtual bool":
@@ -497,14 +504,15 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 						luaClassBindingOut += "\t\t__ptr_lookup.%s[self.__ptr] = self\n" % (ckey)
 						luaClassBindingOut += "\tend\n"
 						luaClassBindingOut += "end\n\n"
-					else: # Non-constructors.
-						luaClassBindingOut += "function %s:%s(%s)\n" % (ckey, pm["name"], ", ".join(paramlist))
+					else: # Non-constructors.						
 						if pm["rtnType"].find("static ") == -1: # Non-static method
+							luaClassBindingOut += "function %s:%s(%s)\n" % (ckey, pm["name"], ", ".join(paramlist))						
 							if len(lparamlist):
 								luaClassBindingOut += "\tlocal retVal = %s.%s_%s(self.__ptr, %s)\n" % (libName, ckey, pm["name"], ", ".join(lparamlist))
 							else:
 								luaClassBindingOut += "\tlocal retVal =  %s.%s_%s(self.__ptr)\n" % (libName, ckey, pm["name"])
 						else: # Static method
+							luaClassBindingOut += "function %s_%s(%s)\n" % (ckey, pm["name"], ", ".join(paramlist))
 							if len(lparamlist):
 								luaClassBindingOut += "\tlocal retVal = %s.%s_%s(%s)\n" % (libName, ckey, pm["name"], ", ".join(lparamlist))
 							else:
@@ -532,10 +540,12 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 				wrappersHeaderOut += "\treturn 0;\n"
 				wrappersHeaderOut += "}\n\n"
 
-				# Delete method (Lua side)
+				
 				luaClassBindingOut += "\n\n"
 				luaClassBindingOut += "if not __ptr_lookup then __ptr_lookup = {} end\n"
 				luaClassBindingOut += "__ptr_lookup.%s = {}\n\n" % (ckey)
+				
+				# Delete method (Lua side)
 				luaClassBindingOut += "function %s:__delete()\n" % (ckey)
 				luaClassBindingOut += "\t__ptr_lookup.%s[self.__ptr] = nil\n" % (ckey)
 				luaClassBindingOut += "\t%s.delete_%s(self.__ptr)\n" % (libName, ckey)

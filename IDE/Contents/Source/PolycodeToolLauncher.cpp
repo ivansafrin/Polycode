@@ -48,8 +48,8 @@ PolycodeToolLauncher::~PolycodeToolLauncher() {
 
 }
 
-String PolycodeToolLauncher::generateTempPath() {
-	return "/tmp/"+String::IntToString(rand() % 10000000);
+String PolycodeToolLauncher::generateTempPath(PolycodeProject *project) {
+	return "/tmp/"+project->getProjectName();
 }
 
 void PolycodeToolLauncher::buildProject(PolycodeProject *project, String destinationPath) {

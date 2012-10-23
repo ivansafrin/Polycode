@@ -157,7 +157,9 @@ static void dumpstack (lua_State *L) {
 
 	static int customError(lua_State *L) {
 		
+		
 		PolycodePlayer *player = (PolycodePlayer*)CoreServices::getInstance()->getCore()->getUserPointer();		
+		player->crashed = true;
 		
 		std::vector<BackTraceEntry> backTrace;
 		lua_Debug entry;
@@ -180,12 +182,32 @@ static void dumpstack (lua_State *L) {
 			}
 			depth++;
 		}
-		
-		if(backTrace.size() < 1)
-			return 0;
-			
-		backTrace[backTrace.size()-1].fileName = player->fullPath;
 
+		// horrible hack to determine the filenames of things
+		bool stringThatIsTheMainFileSet = false;
+		String stringThatIsTheMainFile;
+		
+		if(backTrace.size() == 0) {
+					
+					BackTraceEntry trace;
+					trace.lineNumber = 0;
+					trace.fileName = player->fullPath;
+					backTrace.push_back(trace);
+		
+		} else {
+			stringThatIsTheMainFileSet = true;
+			stringThatIsTheMainFile = backTrace[backTrace.size()-1].fileName;
+			backTrace[backTrace.size()-1].fileName = player->fullPath;
+		}
+		
+		if(stringThatIsTheMainFileSet) {
+			for(int i=0; i < backTrace.size(); i++) {
+				if(backTrace[i].fileName == stringThatIsTheMainFile) {
+					backTrace[i].fileName = player->fullPath;
+				}
+			}
+		}
+		
 		const char *msg = lua_tostring(L, -1);		
 		if (msg == NULL) msg = "(error with no message)";
 		lua_pop(L, 1);
@@ -227,21 +249,15 @@ static void dumpstack (lua_State *L) {
 	
 	
 	int PolycodePlayer::report (lua_State *L, int status) {
-		const char *msg;			
+		const char *msg;		
+		
+		PolycodePlayer *player = (PolycodePlayer*)CoreServices::getInstance()->getCore()->getUserPointer();					
 			
 		Logger::log("Error status: %d\n", status);
 		if (status) {		
 		
-//			dumpstack(L);
-//	traceback(L);
-
-/*		
-			lua_Debug ar;
-			if(lua_getstack(L, 1, &ar)) {
-				lua_getinfo(L, "Sl", &ar);
-				printf("NEW SHIT: source: %s, line: %d\n", ar.source, ar.currentline);
-			}
-*/		
+			std::vector<BackTraceEntry> backTrace;
+					
 			msg = lua_tostring(L, -1);
 			if (msg == NULL) msg = "(error with no message)";
 			Logger::log("status=%d, %s\n", status, msg);
@@ -249,14 +265,28 @@ static void dumpstack (lua_State *L) {
 			
 			std::vector<String> info = String(msg).split(":");
 			
+			BackTraceEntry trace;
+						
 			PolycodeDebugEvent *event = new PolycodeDebugEvent();			
 			if(info.size() > 2) {
 				event->errorString = info[2];
 				event->lineNumber = atoi(info[1].c_str());
+				event->fileName = player->fullPath; 
+				trace.lineNumber = event->lineNumber;
+				trace.fileName = event->fileName;
 			} else {
 				event->errorString = std::string(msg);
 				event->lineNumber = 0;
+				event->fileName = player->fullPath; 								
+				trace.fileName = event->fileName;
+				trace.lineNumber = 0;
 			}
+			
+			
+			backTrace.push_back(trace);
+			
+			event->backTrace = backTrace;
+			
 			dispatchEvent(event, PolycodeDebugEvent::EVENT_ERROR);
 			
 		}
@@ -393,7 +423,7 @@ static void dumpstack (lua_State *L) {
 		
 
 		lua_getfield (L, LUA_GLOBALSINDEX, "__customError");
-		int errH = lua_gettop(L);
+		errH = lua_gettop(L);
 
 		//CoreServices::getInstance()->getCore()->lockMutex(CoreServices::getRenderMutex());			
 		if (report(L, luaL_loadstring(L, fullScript.c_str()))) {			
@@ -422,6 +452,7 @@ PolycodeDebugEvent::~PolycodeDebugEvent() {
 PolycodePlayer::PolycodePlayer(String fileName, bool knownArchive, bool useDebugger) : EventDispatcher()  {
 	L = NULL;
 
+	crashed = false;
 	doCodeInject = false;
 	this->useDebugger = useDebugger;
 	fileToRun = fileName;
@@ -701,16 +732,19 @@ void PolycodePlayer::handleEvent(Event *event) {
 
 bool PolycodePlayer::Update() {
 	if(L) {
-		
+				
 		if(doCodeInject) {
 			printf("INJECTING CODE:[%s]\n", injectCodeString.c_str());
 			doCodeInject = false;			
-			report(L, luaL_loadstring(L, injectCodeString.c_str()) || lua_pcall(L, 0,0,0));		
+			report(L, luaL_loadstring(L, injectCodeString.c_str()));
+			lua_pcall(L, 0,0,errH);		
 		}
 	
-		lua_getfield(L, LUA_GLOBALSINDEX, "Update");
-		lua_pushnumber(L, core->getElapsed());
-		lua_call(L, 1, 0);
+		if(!crashed) {
+			lua_getfield(L, LUA_GLOBALSINDEX, "Update");
+			lua_pushnumber(L, core->getElapsed());
+			lua_pcall(L, 1,0,errH);
+		}
 	}
 	return core->Update();
 }

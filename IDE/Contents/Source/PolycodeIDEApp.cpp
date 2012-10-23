@@ -178,7 +178,7 @@ void PolycodeIDEApp::runProject() {
 	stopProject();
 
 	if(projectManager->getActiveProject()) {
-		String outPath = PolycodeToolLauncher::generateTempPath() + ".polyapp";
+		String outPath = PolycodeToolLauncher::generateTempPath(projectManager->getActiveProject()) + ".polyapp";
 		PolycodeToolLauncher::buildProject(projectManager->getActiveProject(), outPath);
 		PolycodeToolLauncher::runPolyapp(outPath);
 	} else {

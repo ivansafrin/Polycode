@@ -48,12 +48,18 @@ namespace Polycode {
 			* Construct an empty scene mesh with the specified type.
 			* @param meshType Mesh type to create. Possible values are: Mesh::QUAD_MESH, Mesh::TRI_MESH, Mesh::TRIFAN_MESH, Mesh::TRISTRIP_MESH, Mesh::LINE_MESH, Mesh::POINT_MESH.
 			*/			
-			SceneMesh(int meshType);
+			SceneMesh(int meshType);		
 			
 			/**
 			* Construct scene mesh from an existing Mesh instance.
 			*/
 			SceneMesh(Mesh *mesh);
+			
+			/**
+			* Static wrapper for Lua
+			*/
+			static SceneMesh *SceneMeshFromMesh(Mesh *mesh);
+			
 			virtual ~SceneMesh();
 			
 			void Render();
