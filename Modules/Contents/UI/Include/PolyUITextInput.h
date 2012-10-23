@@ -65,6 +65,13 @@ namespace Polycode {
 			virtual std::vector<SyntaxHighlightToken> parseText(String text) = 0;
 	};
 
+	class _PolyExport FindMatch {
+		public:
+			unsigned int lineNumber;
+			unsigned int caretStart;
+			unsigned int caretEnd;							
+	};
+
 	class _PolyExport UITextInput : public UIElement {
 		public:
 			UITextInput(bool multiLine, Number width, Number height);
@@ -95,6 +102,11 @@ namespace Polycode {
 			void Copy();
 			void Paste();
 			
+			void findString(String stringToFind);
+			void findNext();
+			void findPrevious();
+			void findCurrent();
+						
 			void showLine(unsigned int lineNumber, bool top);
 
 			void setSyntaxHighlighter(UITextInputSyntaxHighlighter *syntaxHighliter);
@@ -161,7 +173,10 @@ namespace Polycode {
 		
 			ScreenEntity *linesContainer;
 			
-			vector<ScreenLabel*> linesToDelete;		
+			vector<ScreenLabel*> linesToDelete;	
+			
+			std::vector<FindMatch> findMatches;
+			int findIndex;
 			
 			UITextInputUndoState undoStates[MAX_TEXTINPUT_UNDO_STATES];
 			int undoStateIndex;

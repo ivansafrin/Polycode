@@ -50,6 +50,8 @@ protected:
 	String filePath;
 	bool _isReadOnly;
 	
+	Vector2 editorSize;
+	
 	String editorType;
 };
 

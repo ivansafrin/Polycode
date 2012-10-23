@@ -69,6 +69,7 @@ public:
 	void openProject();
 	void closeProject();	
 	void saveFile();
+	void findText();
 	
 	void refreshProject();
 	

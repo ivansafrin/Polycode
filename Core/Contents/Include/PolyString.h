@@ -123,6 +123,17 @@ namespace Polycode {
 			*/													
 			size_t find_last_of(const String& str, size_t pos = std::wstring::npos ) { return contents.find_last_of(str.contents, pos); }
 		
+			
+			/**
+			* Find character in string from the beginning. Searches the string from the beginnign for any of the characters that are part of the passed string.
+			* @param str String containing the characters to search for.
+			* @param pos Position of the first character in the string to be taken into consideration for possible matches. The default value indicates that the entire string is searched.
+			* @return The position of the last occurrence in the string of any of the characters searched for.
+			*/			
+			size_t find_first_of(const String &str, size_t pos = 0) {
+				return contents.find_first_of(str.contents, pos); 
+			}
+		
 			inline String operator + (const char *str) const { return String(contents + String(str).contents); }		
 			inline String operator + (const String &str) const { return String(contents + str.contents); }		
 			String operator += (const String &str) { contents = contents + str.contents; return *this; }		

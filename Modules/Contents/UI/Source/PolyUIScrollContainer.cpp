@@ -140,6 +140,17 @@ void UIScrollContainer::setContentSize(Number newContentWidth, Number newContent
 }
 
 void UIScrollContainer::setScrollValue(Number xScroll, Number yScroll) {
+	if(xScroll < 0)
+		xScroll = 0;
+	if(xScroll > 1)
+		xScroll = 1;
+		
+	if(yScroll < 0)
+		yScroll = 0;
+	if(yScroll > 1)
+		yScroll = 1;
+
+		
 	hScrollBar->scrollTo(xScroll);
 	vScrollBar->scrollTo(yScroll);	
 }
@@ -162,12 +173,17 @@ void UIScrollContainer::handleEvent(Event *event) {
 	if(event->getDispatcher() == vScrollBar) {
 		if(event->getEventCode() == Event::CHANGE_EVENT) {
 			scrollChild->setPositionY(floor(((-contentHeight+height) )*vScrollBar->getScrollValue()));
+			if(scrollChild->getPosition().y > 0)
+				scrollChild->setPositionY(0);
 		}
 	}
 	
 	if(event->getDispatcher() == hScrollBar) {
 		if(event->getEventCode() == Event::CHANGE_EVENT) {
 			scrollChild->setPositionX(floor(((-contentWidth+width) )*hScrollBar->getScrollValue()));
+			if(scrollChild->getPosition().x > 0)
+				scrollChild->setPositionX(0);
+			
 		}
 	}
 	

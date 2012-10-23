@@ -28,6 +28,19 @@
 
 using namespace Polycode;
 
+class FindBar : public UIElement {
+	public:
+		FindBar();
+		~FindBar();
+		
+		void setBarWidth(int width);
+		
+		UITextInput *findInput;
+	protected:
+		ScreenShape *barBg;
+		
+};
+
 class PolycodeSyntaxHighlighter : public UITextInputSyntaxHighlighter {
 	public:
 		PolycodeSyntaxHighlighter(String extension);
@@ -56,9 +69,18 @@ public:
 	void Resize(int x, int y);
 	void saveFile();
 	
+	void handleEvent(Event *event);
+	
+	void hideFindBar();
+	void showFindBar();
+	
 	void highlightLine(unsigned int lineNumber);
 	
 protected:
+
+	FindBar *findBar;
+	
+	String lastFindString;
 
 	PolycodeSyntaxHighlighter *syntaxHighligher;
 	UITextInput *textInput;

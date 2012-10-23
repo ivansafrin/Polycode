@@ -186,6 +186,15 @@ void PolycodeIDEApp::runProject() {
 	}
 }
 
+void PolycodeIDEApp::findText() {
+	if(editorManager->getCurrentEditor()) {
+		if(editorManager->getCurrentEditor()->getEditorType() == "PolycodeTextEditor") {
+			PolycodeTextEditor *textEditor = (PolycodeTextEditor*) editorManager->getCurrentEditor();
+			textEditor->showFindBar();
+		}
+	}
+}
+
 void PolycodeIDEApp::saveFile() {
 	if(editorManager->getCurrentEditor()) {
 		editorManager->getCurrentEditor()->saveFile();

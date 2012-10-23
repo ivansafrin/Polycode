@@ -63,5 +63,6 @@ public:
 -(IBAction) newFile: (id) sender;
 -(IBAction) openProject: (id) sender;
 -(IBAction) saveFile: (id) sender;
+-(IBAction) findText: (id) sender;
 
 @end

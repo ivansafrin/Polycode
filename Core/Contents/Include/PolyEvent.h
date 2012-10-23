@@ -63,6 +63,7 @@ namespace Polycode {
 			
 			static const int COMPLETE_EVENT = 0;
 			static const int CHANGE_EVENT = 1;
+			static const int CANCEL_EVENT = 2;			
 			
 			bool deleteOnDispatch;
 						

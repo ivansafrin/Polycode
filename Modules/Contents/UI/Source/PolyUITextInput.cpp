@@ -598,6 +598,74 @@ void UITextInput::selectWordAtCaret() {
 	updateCaretPosition();	
 }
 
+void UITextInput::findString(String stringToFind) {
+	clearSelection();
+	findMatches.clear();
+	
+	for(int i=0; i < lines.size(); i++) {
+
+
+		String lineText = lines[i]->getText();
+		
+		int offset = 0;				
+		int retVal = -1;
+		do {
+			retVal = lineText.find(stringToFind, offset);
+			if(retVal != -1) {
+				FindMatch match;
+				match.lineNumber = i;
+				match.caretStart = retVal;
+				match.caretEnd = retVal + stringToFind.length();
+				findMatches.push_back(match);		
+				offset = retVal + stringToFind.length();
+			}			
+		} while(retVal != -1);
+		
+	}
+	
+	if(findMatches.size() > 0) {
+		findIndex = 0;
+		findCurrent();
+	}
+}
+
+void UITextInput::findNext() {
+	if(findMatches.size() == 0)
+		return;
+	findIndex++;
+	if(findIndex == findMatches.size()) {
+		findIndex = 0;
+	}
+	findCurrent();
+}
+
+void UITextInput::findPrevious() {
+	if(findMatches.size() == 0)
+		return;
+
+	findIndex--;
+	if(findIndex < 0) {
+		findIndex = findMatches.size()-1;
+	}
+	findCurrent();		
+}
+
+void UITextInput::findCurrent() {
+	if(findMatches.size() == 0)
+		return;
+
+	FindMatch match = findMatches[findIndex];
+
+	currentLine = lines[match.lineNumber];
+	caretPosition = match.caretStart;
+	lineOffset = match.lineNumber;
+	updateCaretPosition();
+
+	showLine(findMatches[findIndex].lineNumber, false);	
+	
+	setSelection(match.lineNumber, match.lineNumber, match.caretStart, match.caretEnd);
+}
+
 void UITextInput::setCaretToMouse(Number x, Number y) {
 	clearSelection();
 	x -= padding;
@@ -990,6 +1058,11 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 		return;
 	}
 	
+	if(key == KEY_ESCAPE) {
+		if(!multiLine) {
+			dispatchEvent(new Event(), Event::CANCEL_EVENT);		
+		}
+	}
 	
 	if(key == KEY_RETURN) {
 		if(multiLine) {	

@@ -115,4 +115,9 @@
 	app->saveFile();
 }
 
+-(IBAction) findText: (id) sender {
+	app->findText();
+}
+
+
 @end

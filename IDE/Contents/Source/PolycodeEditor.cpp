@@ -49,6 +49,7 @@ PolycodeEditor::PolycodeEditor(bool _isReadOnly) : ScreenEntity() {
 }
 
 void PolycodeEditor::Resize(int x, int y) {
+	editorSize = Vector2(x,y);
 	Vector2 pos = getScreenPosition();
 	scissorBox.setRect(pos.x,pos.y, x, y);	
 }

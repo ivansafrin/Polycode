@@ -211,6 +211,13 @@ bool PolycodeTextEditor::openFile(OSFileEntry filePath) {
 	textInput = new UITextInput(true, 100, 100);
 	addChild(textInput);	
 	
+	findBar = new FindBar();
+	findBar->visible = false;
+	addChild(findBar);
+	
+	findBar->findInput->addEventListener(this, Event::COMPLETE_EVENT);
+	findBar->findInput->addEventListener(this, Event::CANCEL_EVENT);
+		
 	syntaxHighligher = NULL;
 	
 	if(filePath.extension == "lua") {
@@ -228,6 +235,42 @@ bool PolycodeTextEditor::openFile(OSFileEntry filePath) {
 	return true;
 }
 
+void PolycodeTextEditor::handleEvent(Event *event) {
+	if(event->getDispatcher() == findBar->findInput) {
+		if(event->getEventType() == "Event") {
+		
+			if(event->getEventCode() == Event::CANCEL_EVENT) {
+				hideFindBar();
+			}
+					
+			if(event->getEventCode() == Event::COMPLETE_EVENT) {
+				if(findBar->findInput->getText() != "") {
+				if(findBar->findInput->getText() != lastFindString) {
+					lastFindString = findBar->findInput->getText();
+					textInput->findString(lastFindString);
+				} else {
+					textInput->findNext();
+				}
+				}
+			}
+			
+		}
+	}	
+	PolycodeEditor::handleEvent(event);
+}
+
+void PolycodeTextEditor::showFindBar() {
+	findBar->visible = true;
+	findBar->focusChild(findBar->findInput);
+	Resize(editorSize.x, editorSize.y);
+}
+
+void PolycodeTextEditor::hideFindBar() {
+	findBar->visible = false;
+	focusChild(textInput);
+	Resize(editorSize.x, editorSize.y);
+}
+	
 void PolycodeTextEditor::highlightLine(unsigned int lineNumber) {
 	int lineSize = textInput->getLineText(lineNumber-1).length();
 	textInput->setSelection(lineNumber-1, lineNumber-1, 0, lineSize);
@@ -242,7 +285,39 @@ void PolycodeTextEditor::saveFile() {
 }
 
 void PolycodeTextEditor::Resize(int x, int y) {
-	textInput->Resize(x,y);
-	PolycodeEditor::Resize(x,y);	
+	findBar->setBarWidth(x);	
+	
+	if(findBar->visible) {
+		textInput->Resize(x,y-findBar->getHeight());
+		textInput->setPosition(0,findBar->getHeight());
+	} else {
+		textInput->Resize(x,y);
+		textInput->setPosition(0,0);
+	}
+	PolycodeEditor::Resize(x,y);
 }
 
+FindBar::FindBar() : UIElement() {
+	barBg = new ScreenShape(ScreenShape::SHAPE_RECT, 30,30);
+	barBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	barBg->setColorInt(255, 222, 0, 255);
+	addChild(barBg);
+	this->height = 30;
+	
+	ScreenLabel *findLabel = new ScreenLabel("Find:", 16);
+	addChild(findLabel);
+	findLabel->setColor(0.0, 0.0, 0.0, 0.3);
+	findLabel->setPosition(10,4);
+	
+	findInput = new UITextInput(false, 100, 12);
+	addChild(findInput);
+	findInput->setPosition(60, 4);
+}
+
+FindBar::~FindBar(){
+
+}
+
+void FindBar::setBarWidth(int width) {
+	barBg->setShapeSize(width, 30);
+}
