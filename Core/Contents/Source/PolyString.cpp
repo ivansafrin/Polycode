@@ -150,14 +150,13 @@ vector<String> String::split(const String &delim) const {
 }
 
 String String::replace(const String &what, const String &withWhat) const {
-	vector<String> arr = split(what);
-	String retString = "";
-	for(int i= 0; i < arr.size(); i++) {
-		retString += arr[i];
-		if(i < arr.size()-1)
-			retString += withWhat;
-	}
-	
+
+	size_t pos = 0;
+	std::string retString = contents;
+	while((pos = retString.find(what.contents, pos)) != std::string::npos) {
+		retString.replace(pos, what.length(), withWhat.contents);
+		pos += withWhat.length();
+	 }
 	return retString;
 }
 

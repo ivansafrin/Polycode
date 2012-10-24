@@ -34,8 +34,14 @@ class FindBar : public UIElement {
 		~FindBar();
 		
 		void setBarWidth(int width);
+		void onKeyDown(PolyKEY key, wchar_t charCode);
 		
 		UITextInput *findInput;
+		UITextInput *replaceInput;		
+		UIImageButton *closeButton;		
+		
+		UIImageButton *replaceAllButton;
+		
 	protected:
 		ScreenShape *barBg;
 		
@@ -84,6 +90,7 @@ protected:
 
 	PolycodeSyntaxHighlighter *syntaxHighligher;
 	UITextInput *textInput;
+	
 };
 
 class PolycodeTextEditorFactory : public PolycodeEditorFactory {

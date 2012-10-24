@@ -38,7 +38,7 @@ PolycodeSyntaxHighlighter::PolycodeSyntaxHighlighter(String extension) {
 	separators = String("[ [ ] { } ; . , : # ( ) \t \n = + - / \\ ' \"").split(" ");
 	separators.push_back(" ");
 	
-	keywords = String("require true false class self break do end else elseif function if local nil not or repeat return then until while").split(" ");
+	keywords = String("and require true false class self break do end else elseif function if local nil not or repeat return then until while").split(" ");
 }
 
 PolycodeSyntaxHighlighter::~PolycodeSyntaxHighlighter() {
@@ -217,6 +217,11 @@ bool PolycodeTextEditor::openFile(OSFileEntry filePath) {
 	
 	findBar->findInput->addEventListener(this, Event::COMPLETE_EVENT);
 	findBar->findInput->addEventListener(this, Event::CANCEL_EVENT);
+	findBar->replaceInput->addEventListener(this, Event::CANCEL_EVENT);
+	findBar->replaceInput->addEventListener(this, Event::COMPLETE_EVENT);
+			
+	findBar->closeButton->addEventListener(this, UIEvent::CLICK_EVENT);
+	findBar->replaceAllButton->addEventListener(this, UIEvent::CLICK_EVENT);
 		
 	syntaxHighligher = NULL;
 	
@@ -236,6 +241,35 @@ bool PolycodeTextEditor::openFile(OSFileEntry filePath) {
 }
 
 void PolycodeTextEditor::handleEvent(Event *event) {
+
+	if(event->getDispatcher() == findBar->replaceAllButton) {
+		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {
+			textInput->replaceAll(findBar->findInput->getText(), findBar->replaceInput->getText());
+		}
+	}
+
+
+	if(event->getDispatcher() == findBar->closeButton) {
+		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {
+			hideFindBar();
+		}
+	}
+
+	if(event->getDispatcher() == findBar->replaceInput) {
+		if(event->getEventType() == "Event") {
+		
+			if(event->getEventCode() == Event::CANCEL_EVENT) {
+				hideFindBar();
+			}
+					
+			if(event->getEventCode() == Event::COMPLETE_EVENT) {
+				textInput->findString(findBar->findInput->getText(), true, findBar->replaceInput->getText());
+			}
+			
+		}
+	}	
+	
+	
 	if(event->getDispatcher() == findBar->findInput) {
 		if(event->getEventType() == "Event") {
 		
@@ -262,6 +296,7 @@ void PolycodeTextEditor::handleEvent(Event *event) {
 void PolycodeTextEditor::showFindBar() {
 	findBar->visible = true;
 	findBar->focusChild(findBar->findInput);
+	findBar->findInput->selectAll();
 	Resize(editorSize.x, editorSize.y);
 }
 
@@ -308,10 +343,38 @@ FindBar::FindBar() : UIElement() {
 	addChild(findLabel);
 	findLabel->setColor(0.0, 0.0, 0.0, 0.3);
 	findLabel->setPosition(10,4);
+
+	ScreenLabel *replaceLabel = new ScreenLabel("Replace:", 16);
+	addChild(replaceLabel);
+	replaceLabel->setColor(0.0, 0.0, 0.0, 0.3);
+	replaceLabel->setPosition(200,4);
+
+	processInputEvents = true;
 	
-	findInput = new UITextInput(false, 100, 12);
+	findInput = new UITextInput(false, 120, 12);
 	addChild(findInput);
 	findInput->setPosition(60, 4);
+
+	replaceInput = new UITextInput(false, 120, 12);
+	addChild(replaceInput);
+	replaceInput->setPosition(280, 4);
+	
+	replaceAllButton = new UIImageButton("Images/replaceAll.png");
+	addChild(replaceAllButton);
+	replaceAllButton->setPosition(420, 5);
+	
+	closeButton = new UIImageButton("Images/barClose.png");
+	addChild(closeButton);
+}
+
+void FindBar::onKeyDown(PolyKEY key, wchar_t charCode) {
+	if(key == KEY_TAB) {
+		focusNextChild();
+	}
+	
+	if(key == KEY_ESCAPE) {
+	
+	}	
 }
 
 FindBar::~FindBar(){
@@ -320,4 +383,5 @@ FindBar::~FindBar(){
 
 void FindBar::setBarWidth(int width) {
 	barBg->setShapeSize(width, 30);
+	closeButton->setPosition(width - 30, 5);
 }

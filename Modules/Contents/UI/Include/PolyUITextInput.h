@@ -102,7 +102,9 @@ namespace Polycode {
 			void Copy();
 			void Paste();
 			
-			void findString(String stringToFind);
+			void replaceAll(String what, String withWhat);
+			
+			void findString(String stringToFind, bool replace=false, String replaceString="");
 			void findNext();
 			void findPrevious();
 			void findCurrent();

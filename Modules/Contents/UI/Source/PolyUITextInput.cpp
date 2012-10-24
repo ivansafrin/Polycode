@@ -140,6 +140,7 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 		addChild(scrollContainer);
 	} else {
 		addChild(linesContainer);
+		enableScissor = true;
 	}
 	
 	undoStateIndex = 0;
@@ -163,6 +164,11 @@ void UITextInput::clearSelection() {
 
 
 void UITextInput::setSelection(int lineStart, int lineEnd, int colStart, int colEnd) {
+
+	if(lineStart == lineEnd && colStart == colEnd) {
+		clearSelection();
+		return;
+	}
 
 	if(lineStart == lineOffset) {
 		selectionLine = lineEnd;
@@ -598,7 +604,16 @@ void UITextInput::selectWordAtCaret() {
 	updateCaretPosition();	
 }
 
-void UITextInput::findString(String stringToFind) {
+void UITextInput::replaceAll(String what, String withWhat) {
+	for(int i=0; i < lines.size(); i++) {
+		lines[i]->setText(lines[i]->getText().replace(what, withWhat));
+	}
+	needFullRedraw  = true;
+	changedText();
+}
+
+void UITextInput::findString(String stringToFind, bool replace, String replaceString) {
+
 	clearSelection();
 	findMatches.clear();
 	
@@ -623,7 +638,19 @@ void UITextInput::findString(String stringToFind) {
 		
 	}
 	
+	
 	if(findMatches.size() > 0) {
+
+		if(replace) {
+			FindMatch match = findMatches[findIndex];
+			String oldText = lines[match.lineNumber]->getText();
+			String newText = oldText.substr(0,match.caretStart) + replaceString + oldText.substr(match.caretEnd);
+			
+			lines[match.lineNumber]->setText(newText);
+			findMatches[findIndex].caretEnd = findMatches[findIndex].caretStart + replaceString.length();
+			changedText();			
+		}
+	
 		findIndex = 0;
 		findCurrent();
 	}
@@ -1143,6 +1170,12 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 }
 
 void UITextInput::Update() {
+
+	if(!multiLine) {
+		Vector2 pos = getScreenPosition();
+		scissorBox.setRect(pos.x,pos.y, width, height);		
+	}
+
 	if(hasSelection) {
 		blinkerRect->visible = false;
 	}
