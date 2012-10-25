@@ -44,6 +44,20 @@ function delete(c)
 	c:__delete()
 end
 
+function onKeyDown(key)
+end
+
+function onKeyUp(key)
+end
+
+function onMouseDown(button, x,y)
+end
+
+function onMouseUp(button, x,y)
+end
+
+function onMouseMove(x,y)
+end
 
 function Update(e)
 end

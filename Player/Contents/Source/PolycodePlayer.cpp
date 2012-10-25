@@ -599,6 +599,12 @@ void PolycodePlayer::loadFile(const char *fileName) {
 	}
 	createCore();
 
+	core->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
+	core->getInput()->addEventListener(this, InputEvent::EVENT_KEYUP);
+	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
+	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEUP);
+					
 	if(nameString == "") {
 		return;
 	}
@@ -681,6 +687,7 @@ PolycodePlayer::~PolycodePlayer() {
 
 void PolycodePlayer::handleEvent(Event *event) {	
 
+
 	if(event->getDispatcher() == debuggerTimer) {
 		runFile(fullPath);
 		debuggerTimer->Pause(true);
@@ -725,6 +732,62 @@ void PolycodePlayer::handleEvent(Event *event) {
 				event->yRes = core->getYRes();				
 				dispatchEvent(event, PolycodeDebugEvent::EVENT_RESIZE);								
 			break;		
+		}
+	}
+	
+	if(event->getDispatcher() == core->getInput()) {
+		InputEvent *inputEvent = (InputEvent*) event;
+		switch(event->getEventCode()) {
+			case InputEvent::EVENT_KEYDOWN:
+			{
+				if(L && !crashed) {
+					lua_getfield(L, LUA_GLOBALSINDEX, "onKeyDown");
+					lua_pushinteger(L, inputEvent->keyCode());
+					lua_pcall(L, 1,0,errH);					
+				}
+			}
+			break;
+			case InputEvent::EVENT_KEYUP:
+			{
+				if(L && !crashed) {
+					lua_getfield(L, LUA_GLOBALSINDEX, "onKeyUp");
+					lua_pushinteger(L, inputEvent->keyCode());
+					lua_pcall(L, 1,0,errH);					
+				}
+			}
+			break;
+			case InputEvent::EVENT_MOUSEDOWN:
+			{
+				if(L && !crashed) {
+					lua_getfield(L, LUA_GLOBALSINDEX, "onMouseDown");
+					lua_pushinteger(L, inputEvent->mouseButton);
+					lua_pushnumber(L, inputEvent->mousePosition.x);
+					lua_pushnumber(L, inputEvent->mousePosition.y);					
+					lua_pcall(L, 3,0,errH);					
+				}
+			}
+			break;	
+			case InputEvent::EVENT_MOUSEUP:
+			{
+				if(L && !crashed) {
+					lua_getfield(L, LUA_GLOBALSINDEX, "onMouseUp");
+					lua_pushinteger(L, inputEvent->mouseButton);
+					lua_pushnumber(L, inputEvent->mousePosition.x);
+					lua_pushnumber(L, inputEvent->mousePosition.y);					
+					lua_pcall(L, 3,0,errH);					
+				}
+			}
+			break;	
+			case InputEvent::EVENT_MOUSEMOVE:
+			{
+				if(L && !crashed) {
+					lua_getfield(L, LUA_GLOBALSINDEX, "onMouseMove");
+					lua_pushnumber(L, inputEvent->mousePosition.x);
+					lua_pushnumber(L, inputEvent->mousePosition.y);					
+					lua_pcall(L, 2,0,errH);					
+				}
+			}
+			break;																			
 		}
 	}
 }
