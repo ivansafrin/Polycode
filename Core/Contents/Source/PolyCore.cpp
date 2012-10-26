@@ -152,6 +152,7 @@ namespace Polycode {
 	}
 	
 	void Core::gainFocus() {
+		input->clearInput();		
 		dispatchEvent(new Event(), EVENT_GAINED_FOCUS);
 	}
 	
