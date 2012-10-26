@@ -183,7 +183,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 						continue
 					if pp["type"].find("static ") != -1: # If static. FIXME: Static doesn't work?
 						if "defaltValue" in pp: # FIXME: defaltValue is misspelled.
-							luaClassBindingOut += "%s = %s\n" % (pp["name"], pp["defaltValue"])
+							luaClassBindingOut += "%s.%s = %s\n" % (ckey, pp["name"], pp["defaltValue"])
 					else: # FIXME: Nonstatic method ? variable ?? found.
 						#there are some bugs in the class parser that cause it to return junk
 						if pp["type"].find("*") == -1 and pp["type"].find("vector") == -1 and pp["name"] != "setScale" and pp["name"] != "setPosition" and pp["name"] != "BUFFER_CACHE_PRECISION" and not pp["name"].isdigit():
