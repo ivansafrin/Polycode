@@ -618,6 +618,7 @@ Vector2 ScreenEntity::getPosition2D() const {
 }
 
 Matrix4 ScreenEntity::buildPositionMatrix() {
+
 	Matrix4 posMatrix;
 	switch(positionMode) {
 		case POSITION_TOPLEFT:

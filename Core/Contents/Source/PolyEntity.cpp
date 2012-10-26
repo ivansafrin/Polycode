@@ -24,12 +24,15 @@
 
 using namespace Polycode;
 
+Rotation::Rotation() {
+	pitch = 0;
+	yaw = 0;
+	roll = 0;		
+}
+
 Entity::Entity() {
 	userData = NULL;
 	scale.set(1,1,1);
-	pitch = 0;
-	yaw = 0;
-	roll = 0;
 	renderer = NULL;
 	enabled = true;
 	depthTest = true;
@@ -234,6 +237,23 @@ void Entity::doUpdates() {
 }
 
 void Entity::updateEntityMatrix() {	
+
+	if(_position != position) {
+		_position = position;
+		matrixDirty = true;
+	}
+
+	if(_scale != scale) {
+		_scale = scale;
+		matrixDirty = true;
+	}
+
+	if(_rotation != rotation) {
+		_rotation = rotation;
+		rebuildRotation();
+		matrixDirty = true;
+	}
+
 	if(matrixDirty)
 		rebuildTransformMatrix();
 	
@@ -255,7 +275,7 @@ Vector3 Entity::getCompoundScale() const {
 
 Matrix4 Entity::getConcatenatedRollMatrix() const {
 	Quaternion q;
-	q.createFromAxisAngle(0.0f, 0.0f, 1.0f, roll*matrixAdj);
+	q.createFromAxisAngle(0.0f, 0.0f, 1.0f, _rotation.roll*matrixAdj);
 	Matrix4 transformMatrix = q.createMatrix();	
 	
 	if(parentEntity != NULL) 
@@ -379,18 +399,6 @@ Quaternion Entity::getRotationQuat() const {
 	return rotationQuat;
 }
 
-void Entity::setPitch(Number pitch) {
-	this->pitch = pitch;
-	rebuildRotation();	
-	matrixDirty = true;
-}
-
-void Entity::setYaw(Number yaw) {
-	this->yaw = yaw;
-	rebuildRotation();	
-	matrixDirty = true;
-}
-
 Vector3 Entity::getScale() const {
 	return scale;
 }
@@ -410,31 +418,38 @@ const Matrix4& Entity::getTransformMatrix() const {
 }
 
 void Entity::Pitch(Number pitch) {
-	this->pitch += pitch;
-	rebuildRotation();	
+	rotation.pitch += pitch;
 	matrixDirty = true;
 }
 
 void Entity::Yaw(Number yaw) {
-	this->yaw += yaw;
-	rebuildRotation();	
+	rotation.yaw += yaw;
 	matrixDirty = true;
 }
 
 void Entity::Roll(Number roll) {
-	this->roll += roll;
-	rebuildRotation();
+	rotation.roll += roll;
 	matrixDirty = true;
 }
 
 void Entity::setRoll(Number roll) {
-	this->roll= roll;
-	rebuildRotation();
+	rotation.roll = roll;
 	matrixDirty = true;
 }
 
+void Entity::setPitch(Number pitch) {
+	rotation.pitch = pitch;
+	matrixDirty = true;
+}
+
+void Entity::setYaw(Number yaw) {
+	rotation.yaw = yaw;
+	matrixDirty = true;
+}
+
+
 void Entity::rebuildRotation() {
-	rotationQuat.fromAxes(pitch, yaw, roll);
+	rotationQuat.fromAxes(_rotation.pitch, _rotation.yaw, _rotation.roll);
 }
 
 String Entity::getEntityProp(const String& propName) {
@@ -458,15 +473,15 @@ void Entity::setParentEntity(Entity *entity) {
 }
 
 Number Entity::getPitch() const {
-	return pitch;
+	return rotation.pitch;
 }
 
 Number Entity::getYaw() const {
-	return yaw;
+	return rotation.yaw;
 }
 
 Number Entity::getRoll() const {
-	return roll;
+	return rotation.roll;
 }
 
 void Entity::setTransformByMatrixPure(const Matrix4& matrix) {
@@ -569,22 +584,22 @@ Vector3 Entity::getPosition() const {
 
 Number Entity::getCombinedPitch() const {
 	if(parentEntity != NULL)
-		return parentEntity->getCombinedPitch()+pitch;
+		return parentEntity->getCombinedPitch()+rotation.pitch;
 	else
-		return pitch;
+		return rotation.pitch;
 }
 
 Number Entity::getCombinedYaw() const {
 	if(parentEntity != NULL)
-		return parentEntity->getCombinedYaw()+yaw;
+		return parentEntity->getCombinedYaw()+rotation.yaw;
 	else
-		return yaw;
+		return rotation.yaw;
 }
 
 Number Entity::getCombinedRoll() const {
 	if(parentEntity != NULL)
-		return parentEntity->getCombinedRoll()+roll;
+		return parentEntity->getCombinedRoll()+rotation.roll;
 	else
-		return roll;
+		return rotation.roll;
 	
 }

@@ -37,7 +37,25 @@ namespace Polycode {
 	public:
 		String propName;
 		String propValue;		
-	};	
+	};
+
+	class _PolyExport Rotation {
+		public:
+			Rotation();
+						
+			Number pitch;
+			Number yaw;			
+			Number roll;		
+			
+			inline bool operator == ( const Rotation& r2)  {
+				return (r2.pitch == pitch && r2.roll == roll && r2.yaw == yaw);
+			}		
+
+			inline bool operator != ( const Rotation& r2)  {
+				return (r2.pitch != pitch || r2.yaw != yaw || r2.roll != roll);
+			}				
+			
+	};
 
 	/**
 	* Base class for both 2D and 3D objects in Polycode. It provides position and color transformations as well as hierarchy for all Polycode objects.
@@ -593,6 +611,10 @@ namespace Polycode {
 			bool enableScissor;	
 			Polycode::Rectangle scissorBox;			
 		
+			Vector3 position;
+			Vector3 scale;		
+			Rotation rotation;
+	
 		protected:
 		
 			void *userData;
@@ -602,25 +624,21 @@ namespace Polycode {
 			Vector3 childCenter;
 			Number bBoxRadius;		
 		
-			Vector3 position;
-			Vector3 scale;		
-		
-			bool lockMatrix;
-			bool matrixDirty;
-			Matrix4 transformMatrix;
-		
-			Number matrixAdj;
-			Number pitch;
-			Number yaw;			
-			Number roll;
-		
-			Entity *parentEntity;
-		
+			Vector3 _position;
+			Vector3 _scale;		
+			Rotation _rotation;
+			
 			Quaternion qYaw;
 			Quaternion qPitch;
 			Quaternion qRoll;			
-			Quaternion rotationQuat;	
-		
+			Quaternion rotationQuat;
+			
+			
+			bool lockMatrix;
+			bool matrixDirty;
+			Matrix4 transformMatrix;		
+			Number matrixAdj;		
+			Entity *parentEntity;
 		
 			Renderer *renderer;
 	};

@@ -185,6 +185,9 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		void setHitbox(Number width, Number height);
 		void setHitbox(Number width, Number height, Number left, Number top);
 
+		Number width;
+		Number height;
+
 	protected:
 	
 		bool focusable;
@@ -195,8 +198,6 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		Number dragOffsetY;
 		
 		bool mouseOver;
-		Number width;
-		Number height;
 
 		Rectangle hit;
 		
