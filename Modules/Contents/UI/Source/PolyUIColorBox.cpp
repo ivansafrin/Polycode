@@ -141,6 +141,14 @@ UIColorPicker::UIColorPicker() : UIWindow(L"Pick a color!", 300, 240) {
 	mainSelector->setDragLimits(Polycode::Rectangle(mainColorRect->getPosition().x,mainColorRect->getPosition().y,mainColorRect->getWidth(), mainColorRect->getHeight()));
 				
 	colorAlpha = 1.0;
+	
+	visible = false;
+	enabled = false;
+	
+}
+
+void UIColorPicker::cancelColorListeners() {
+	dispatchEvent(new Event(), Event::CANCEL_EVENT);
 }
 
 void UIColorPicker::onClose() {
@@ -368,7 +376,7 @@ void UIColorPicker::Update() {
 	UIWindow::Update();
 }
 
-UIColorBox::UIColorBox(Color initialColor, Number width, Number height) : UIElement() {
+UIColorBox::UIColorBox(UIColorPicker *colorPicker, Color initialColor, Number width, Number height) : UIElement() {
 
 	Config *conf = CoreServices::getInstance()->getConfig();	
 
@@ -400,45 +408,56 @@ UIColorBox::UIColorBox(Color initialColor, Number width, Number height) : UIElem
 	frameImage = new UIBox(frameImageFile, st,sr,sb,sl, width, height);	
 	addChild(frameImage);
 	
-	colorPicker = new UIColorPicker();
-	colorPicker->setPosition(width + 20, -colorPicker->getHeight()/2.0);
+	this->colorPicker = colorPicker;	
+	colorPicker->addEventListener(this, Event::CHANGE_EVENT);	
+	colorPicker->addEventListener(this, Event::CANCEL_EVENT);
 	
-	colorPicker->addEventListener(this, Event::CHANGE_EVENT);
-	
-	addChild(colorPicker);
-	colorPicker->visible = false;
-	colorPicker->enabled = false;
-
 	this->width = width;
 	this->height = height;
 	
-	setBoxColor(initialColor);
+	selectedColor = initialColor;
+	colorShape->color = selectedColor;	
+			
+	listeningToPicker = false;
 }
 
 Color UIColorBox::getSelectedColor() {
-	return colorPicker->getSelectedColor();
+	return selectedColor;
 }
 
 UIColorBox::~UIColorBox() {
-
+	colorPicker->removeAllHandlersForListener(this);
 }
 
 void UIColorBox::setBoxColor(Color newColor) {
-	colorPicker->setPickerColor(newColor);
+	selectedColor = newColor;
+	colorShape->color = selectedColor;
+	if(listeningToPicker) {
+		colorPicker->setPickerColor(newColor);	
+	}
 }
 
 void UIColorBox::showColorPicker() {
 	colorPicker->visible = true;
 	colorPicker->enabled = true;
+	colorPicker->cancelColorListeners();
+	colorPicker->setPickerColor(selectedColor);
+	listeningToPicker = true;
 }
 		
 void UIColorBox::handleEvent(Event *event) {
 
-	if(event->getDispatcher() == colorPicker) {
+	if(event->getDispatcher() == colorPicker && event->getEventType() == "Event") {
 		switch(event->getEventCode()) {
+			case Event::CANCEL_EVENT:
+				listeningToPicker = false;
+			break;
 			case Event::CHANGE_EVENT:
-				colorShape->color = colorPicker->getSelectedColor();
-				dispatchEvent(new UIEvent(), UIEvent::CHANGE_EVENT);
+				if(listeningToPicker) {
+					selectedColor = colorPicker->getSelectedColor();
+					colorShape->color = selectedColor;
+					dispatchEvent(new UIEvent(), UIEvent::CHANGE_EVENT);
+				}
 			break;
 		}		
 	}

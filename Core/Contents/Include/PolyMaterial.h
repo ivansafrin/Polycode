@@ -50,14 +50,15 @@ namespace Polycode {
 			ShaderBinding *getShaderBinding(unsigned int index) const;
 			void loadMaterial(const String& fileName);
 			
-			Number specularValue;
-			Number specularStrength;
-			Color specularColor;
-			Color diffuseColor;
-				
+			void setName(const String &name);
+			
+			void clearShaders();
+							
 			bool fp16RenderTargets;
 			
 			void *shaderModule;
+			
+			int blendingMode;
 			
 		protected:
 		

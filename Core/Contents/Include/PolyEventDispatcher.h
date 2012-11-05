@@ -55,7 +55,7 @@ typedef struct {
 			* Removes all current event handlers from this dispatcher for a specific event listener.
 			* @param Event listener to remove handlers for.
 			*/			
-			void removeAllHandlersForListener(void *listener);
+			void removeAllHandlersForListener(EventHandler *handler);
 			
 			/**
 			* Adds an event listener for a specific event code. Once a listener is registered for a specific event code, that listener will start getting event callbacks into the handleEvent() method.

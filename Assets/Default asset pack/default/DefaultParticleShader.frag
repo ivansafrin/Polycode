@@ -3,6 +3,10 @@ varying vec4 pos;
 varying vec4 vertexColor;
 uniform sampler2D diffuse;
 
+uniform vec4 diffuse_color;
+uniform vec4 ambient_color;
+
+
 float calculateAttenuation(in int i, in float dist)
 {
     return(1.0 / (gl_LightSource[i].constantAttenuation +
@@ -10,11 +14,8 @@ float calculateAttenuation(in int i, in float dist)
                   gl_LightSource[i].quadraticAttenuation * dist * dist));
 }
 
-void pointLight(in int i, in vec3 normal, in vec4 pos, inout vec4 diffuse, inout vec4 specular) {
-	vec4 color = gl_FrontMaterial.diffuse;
-	vec4 matspec = gl_FrontMaterial.specular;
-	float shininess = gl_FrontMaterial.shininess;
-	vec4 lightspec = gl_LightSource[i].specular;
+void pointLight(in int i, in vec3 normal, in vec4 pos, inout vec4 diffuse) {
+	vec4 color = diffuse_color;
 	vec4 lpos = gl_LightSource[i].position;
 	vec4 s = pos-lpos; 
 	vec4 sn = -normalize(s);
@@ -31,18 +32,11 @@ void pointLight(in int i, in vec3 normal, in vec4 pos, inout vec4 diffuse, inout
 		float attenuation = calculateAttenuation(i, dist);
 
 		diffuse  += color * max(0.0, nDotL) * gl_LightSource[i].diffuse * attenuation;
-
-	  if (shininess != 0.0) {
-    	specular += lightspec * matspec * pow(max(0.0,dot(r, v)), shininess) * attenuation;
-	  }
 }
 
 
-void spotLight(in int i, in vec3 normal, in vec4 pos, inout vec4 diffuse, inout vec4 specular) {
-	vec4 color = gl_FrontMaterial.diffuse;
-	vec4 matspec = gl_FrontMaterial.specular;
-	float shininess = gl_FrontMaterial.shininess;
-	vec4 lightspec = gl_LightSource[i].specular;
+void spotLight(in int i, in vec3 normal, in vec4 pos, inout vec4 diffuse) {
+	vec4 color = diffuse_color;
 	vec4 lpos = gl_LightSource[i].position;
 	vec4 s = pos-lpos; 
 	vec4 sn = -normalize(s);
@@ -67,17 +61,14 @@ void spotLight(in int i, in vec3 normal, in vec4 pos, inout vec4 diffuse, inout 
 		float attenuation = calculateAttenuation(i, dist);
 		diffuse  += color * max(0.0, nDotL) * gl_LightSource[i].diffuse * attenuation * spot;
 
-	  if (shininess != 0.0) {
-    	specular += lightspec * matspec * pow(max(0.0,dot(r, v)), shininess) * attenuation * spot;
-	  }
 }
 
-void doLights(in int numLights, in vec3 normal, in vec4 pos, inout vec4 diffuse, inout vec4 specular) {
+void doLights(in int numLights, in vec3 normal, in vec4 pos, inout vec4 diffuse) {
 	for (int i = 0; i < numLights; i++) {
 		if (gl_LightSource[i].spotCutoff == 180.0) {
-			pointLight(i, normal, pos, diffuse, specular);
+			pointLight(i, normal, pos, diffuse);
 		} else {
-			spotLight(i, normal, pos, diffuse, specular);
+			spotLight(i, normal, pos, diffuse);
 		}
     }
 }
@@ -86,18 +77,14 @@ void doLights(in int numLights, in vec3 normal, in vec4 pos, inout vec4 diffuse,
 void main()
 {
 	vec4 diffuse_val  = vec4(0.0);
-	vec4 specular_val = vec4(0.0);
-	doLights(6, normal, pos, diffuse_val, specular_val);
-	diffuse_val.a = 1.0;
-	specular_val.a = 1.0;
+	doLights(6, normal, pos, diffuse_val);
 		
 	vec4 texColor = texture2D(diffuse, gl_TexCoord[0].st);		
 		
-    vec4 color = (diffuse_val  * 1.0) +
-                 (specular_val * 1.0)+
-                 gl_FrontMaterial.ambient;
+    vec4 color = diffuse_val + ambient_color;	
     color = clamp(color*vertexColor*texColor, 0.0, 1.0);
-    
+	color.a = diffuse_color.a * texColor.a;  
+
     // fog
 	const float LOG2 = 1.442695;
 	float z = gl_FragCoord.z / gl_FragCoord.w;

@@ -71,8 +71,11 @@ UIWindow::UIWindow(String windowName, Number width, Number height) : ScreenEntit
 	
 	closeBtn = new UIImageButton(conf->getStringValue("Polycode", "uiWindowCloseIcon"));
 	addChild(closeBtn);
-	closeBtn->setPosition(width-closeBtn->getWidth()-conf->getNumericValue("Polycode", "uiCloseIconX"), conf->getNumericValue("Polycode", "uiCloseIconY"));
-
+	closeIconX = conf->getNumericValue("Polycode", "uiCloseIconX");
+	closeIconY = conf->getNumericValue("Polycode", "uiCloseIconY");
+		
+	closeBtn->setPosition(width-closeBtn->getWidth()-closeIconX, closeIconY);	
+	
 	titlebarRect->addEventListener(this, InputEvent::EVENT_MOUSEUP);
 	titlebarRect->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);	
 	titlebarRect->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
@@ -89,10 +92,14 @@ UIWindow::UIWindow(String windowName, Number width, Number height) : ScreenEntit
 }
 
 void UIWindow::setWindowSize(Number w, Number h) {
-//	windowRect->setScale(w/windowRect->getWidth(), h/windowRect->getHeight());
-//	shadowRect->setScale(w/shadowRect->getWidth(), h/shadowRect->getHeight());
-//	titlebarRect->setScale((w-4)/titlebarRect->getWidth(), 1.0f);
-//	closeBtn->setPosition(w-closeBtn->getWidth()-2, 4);
+	w = w+(padding*2.0);
+	h = h+topPadding;
+
+	windowRect->resizeBox(w, h);
+	setWidth(w);
+	setHeight(h);	
+	closeBtn->setPosition(width-closeBtn->getWidth()-closeIconX, closeIconY);	
+	matrixDirty = true;
 }
 
 UIWindow::~UIWindow() {

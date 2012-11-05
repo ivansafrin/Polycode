@@ -38,6 +38,7 @@ namespace Polycode {
 			UIComboBoxItem(String label, Number comboWidth, Number comboHeight);
 			~UIComboBoxItem();
 			
+			void *data;
 			String label;
 			ScreenLabel *itemLabel;
 	};
@@ -51,11 +52,15 @@ namespace Polycode {
 		
 			void updateVis();
 		
-			int addComboItem(String itemName);
+			int addComboItem(String itemName, void *data=NULL);
 			int getSelectedIndex();
+			UIComboBoxItem *getSelectedItem();
 			void setSelectedIndex(unsigned int newIndex);
 			void handleEvent(Event *event);
-				
+			
+			unsigned int getNumItems();
+			UIComboBoxItem *getItemAtIndex(unsigned int index);
+							
 		private:
 		
 			std::vector<UIComboBoxItem*> items;

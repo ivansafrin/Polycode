@@ -1,10 +1,12 @@
 uniform sampler2D diffuse;
 varying vec4 vertexColor;
+varying vec4 specularColor;
 
 void main()
 {
 	vec4 texColor = texture2D(diffuse, gl_TexCoord[0].st);	
-    vec4 color = texColor*vertexColor;    
+    vec4 color = (texColor*vertexColor) + specularColor;    
+    color.a = vertexColor.a * texColor.a;
     
     // fog
 	const float LOG2 = 1.442695;

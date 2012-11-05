@@ -90,19 +90,20 @@ BackTraceWindow::BackTraceWindow() : UIElement() {
 	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
 	int fontSize = conf->getNumericValue("Polycode", "uiDefaultFontSize");		
 
-	labelBg = new ScreenShape(ScreenShape::SHAPE_RECT, 20,20);
+	labelBg = new ScreenShape(ScreenShape::SHAPE_RECT, 20,30);
 	labelBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	labelBg->setColor(0.0, 0.0, 0.0, 0.35);
 	addChild(labelBg);
 	
-	ScreenLabel *label = new ScreenLabel("CRASH STACK", fontSize, fontName);
+	ScreenLabel *label = new ScreenLabel("CRASH STACK", 22, "section");
+	label->color.a = 0.3;
 	addChild(label);
-	label->setPosition(5,2);
+	label->setPosition(5,0);
 	
 }	
 
 void BackTraceWindow::Resize(Number width, Number height) {
-	labelBg->setShapeSize(width, 20);
+	labelBg->setShapeSize(width, 30);
 	this->width = width;
 	this->height = height;	
 	adjustEntries();
@@ -111,7 +112,7 @@ void BackTraceWindow::Resize(Number width, Number height) {
 void BackTraceWindow::adjustEntries() {
 	for(int i=0; i < entries.size(); i++) {
 		entries[i]->Resize(width, 20);
-		entries[i]->setPosition(0, 20 + (i * 21));
+		entries[i]->setPosition(0, 30 + (i * 21));
 	}
 }
 

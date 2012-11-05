@@ -38,7 +38,7 @@ class PolycodeProjectEditor : public PolycodeEditor {
 	
 	bool openFile(OSFileEntry filePath);
 	void Resize(int x, int y);
-	void saveFile();	
+	void saveFile();
 		
 	protected:
 	
@@ -62,6 +62,7 @@ class PolycodeProjectEditor : public PolycodeEditor {
 	UITextInput *entryPointInput;	
 	UIColorBox *bgColorBox;
 	
+	UIColorPicker *colorPicker;
 	
 	PolycodeProject *associatedProject;
 	

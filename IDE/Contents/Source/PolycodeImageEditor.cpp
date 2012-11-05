@@ -32,16 +32,50 @@ PolycodeImageEditor::~PolycodeImageEditor() {
 
 bool PolycodeImageEditor::openFile(OSFileEntry filePath) {
 	
-	grid = new ScreenImage("editorGrid.png");
+	grid = new ScreenImage("Images/editorGrid.png");
 	
 	addChild(grid);
 	grid->snapToPixels = true;
 	
 	grid->getTexture()->clamp = false;
 	grid->getTexture()->recreateFromImageData();	
+		
 	
+	leftShape = new ScreenShape(ScreenShape::SHAPE_RECT, 10,10);
+	leftShape->setColor(0.0, 0.0, 0.0, 0.3);
+	leftShape->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	addChild(leftShape);
+
+	rightShape = new ScreenShape(ScreenShape::SHAPE_RECT, 10,10);
+	rightShape->setColor(0.0, 0.0, 0.0, 0.3);
+	rightShape->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	addChild(rightShape);
+
+	topShape = new ScreenShape(ScreenShape::SHAPE_RECT, 10,10);
+	topShape->setColor(0.0, 0.0, 0.0, 0.3);
+	topShape->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	addChild(topShape);
+
+	bottomShape = new ScreenShape(ScreenShape::SHAPE_RECT, 10,10);
+	bottomShape->setColor(0.0, 0.0, 0.0, 0.3);
+	bottomShape->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	addChild(bottomShape);
+		
+		
+	editorImage = new ScreenShape(ScreenShape::SHAPE_RECT, 10,10);
 	
-	editorImage = new ScreenImage(filePath.fullPath);
+	Image *image = new Image(filePath.fullPath);
+	
+	Texture *newTexture = CoreServices::getInstance()->getMaterialManager()->createTextureFromImage(image);
+	
+	editorImage->setTexture(newTexture);
+	
+	editorImage->strokeEnabled = true;
+	editorImage->setStrokeColor(1.0, 1.0, 1.0, 0.2);
+	
+	aspectRatio = ((Number)image->getWidth()) / ((Number)image->getHeight());
+	delete image;
+	
 	addChild(editorImage);
 	
 	PolycodeEditor::openFile(filePath);
@@ -49,8 +83,26 @@ bool PolycodeImageEditor::openFile(OSFileEntry filePath) {
 }
 
 void PolycodeImageEditor::Resize(int x, int y) {
-	editorImage->setPosition((x-editorImage->getWidth()) /2, (y-editorImage->getHeight()) /2);
+	editorImage->setPosition(x/2, y/2);
 	grid->setImageCoordinates(0,0,x,y);	
+	
+	if((y * 0.8) * aspectRatio > x * 0.8) {
+		editorImage->setShapeSize((x * 0.8), (x * 0.8) / aspectRatio);	
+	} else {
+		editorImage->setShapeSize((y * 0.8) * aspectRatio, (y * 0.8));
+	}
+	
+	leftShape->setShapeSize((x - editorImage->getWidth())/2.0, y);	
+	rightShape->setShapeSize((x - editorImage->getWidth())/2.0, y);	
+	rightShape->setPosition(leftShape->getWidth() + editorImage->getWidth(), 0);
+		
+	topShape->setShapeSize(editorImage->getWidth(), (y - editorImage->getHeight())/2.0);
+	topShape->setPosition(leftShape->getWidth(),0);
+
+	bottomShape->setShapeSize(editorImage->getWidth(), (y - editorImage->getHeight())/2.0);
+	bottomShape->setPosition(leftShape->getWidth(),y-bottomShape->getHeight());
+
+		
 	PolycodeEditor::Resize(x,y);
 }
 

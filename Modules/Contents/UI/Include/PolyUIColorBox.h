@@ -49,6 +49,8 @@ namespace Polycode {
 			
 			void rebuildFromTextInputs();
 			
+			void cancelColorListeners();
+			
 			void Update();			
 			void onClose();
 			
@@ -87,8 +89,8 @@ namespace Polycode {
 
 	class _PolyExport UIColorBox : public UIElement {
 		public:
-			UIColorBox(Color initialColor, Number width, Number height);
-			~UIColorBox();
+			UIColorBox(UIColorPicker *colorPicker, Color initialColor, Number width, Number height);
+			virtual ~UIColorBox();
 			
 			Color getSelectedColor();
 			
@@ -98,7 +100,10 @@ namespace Polycode {
 				
 		protected:
 		
+			bool listeningToPicker;
 			UIColorPicker *colorPicker;
+			
+			Color selectedColor;
 				
 			UIBox *frameImage;
 			ScreenShape *bgImage;

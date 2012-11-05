@@ -1,9 +1,11 @@
 
 varying vec4 vertexColor;
+varying vec4 specularColor;
 
 void main()
 {
-    vec4 color = vertexColor;
+    vec4 color = vertexColor + specularColor;
+    color.a = vertexColor.a;
     
     // fog
 	const float LOG2 = 1.442695;

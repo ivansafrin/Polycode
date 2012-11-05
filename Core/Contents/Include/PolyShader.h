@@ -32,6 +32,27 @@ namespace Polycode {
 	class Cubemap;
 	class ShaderBinding;
 	class Texture;
+	
+	class _PolyExport ProgramParam {
+		public:
+	
+	String name;
+	String typeString;
+	String valueString;
+	bool isAuto;
+	int autoID;
+	void *defaultData;
+	void *minValue;
+	void *maxValue;	
+	int paramType;
+			
+	static const int PARAM_UNKNOWN = 0;	
+	static const int PARAM_Number = 1;
+	static const int PARAM_Vector2 = 2;		
+	static const int PARAM_Vector3 = 3;
+	static const int PARAM_Color = 4;
+	
+	};	
 
 	class _PolyExport Shader : public Resource {
 		public:
@@ -50,8 +71,15 @@ namespace Polycode {
 
 			int numSpotLights;
 			int numAreaLights;
-							
+			
+			std::vector<String> expectedTextures;
+			std::vector<ProgramParam> expectedFragmentParams;
+			std::vector<ProgramParam> expectedVertexParams;
+								
+			bool screenShader;
+			
 		protected:
+		
 		
 			String name;
 			int type;
@@ -74,9 +102,6 @@ namespace Polycode {
 		public:	
 			String name;
 			void *data;
-			
-			void setNumber(Number n) { memcpy(data, &n, sizeof(n)); }
-			void setVector3(Vector3 v) { memcpy(data, &v, sizeof(v)); }
 	};	
 	
 	class RenderTargetBinding {
@@ -95,7 +120,8 @@ namespace Polycode {
 		public:
 			ShaderBinding(Shader *shader);
 			virtual ~ShaderBinding();
-			
+
+			virtual Texture *getTexture(const String& name){};
 			virtual void clearTexture(const String& name){};
 			virtual void addTexture(const String& name, Texture *texture)  {};
 			virtual void addParam(const String& type, const String& name, const String& value) {};
@@ -117,8 +143,6 @@ namespace Polycode {
 			RenderTargetBinding *getOutTargetBinding(unsigned int index);
 			
 			void addLocalParam(const String& name, void *ptr);
-			void addLocalParamNumber(const String& name, Number n);
-			void addLocalParamVector3(const String& name, Vector3 v);
 		
 			Shader* shader;
 			std::vector<LocalShaderParam*> localParams;

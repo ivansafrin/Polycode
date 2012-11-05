@@ -112,10 +112,11 @@ TiXmlElement *Object::createElementFromObjectEntry(ObjectEntry *entry) {
 		case ObjectEntry::STRING_ENTRY: {
 			newElement->LinkEndChild(new TiXmlText( entry->stringVal.c_str() ));
 		} break;
-		default: { // Some sort of container.
-			for(int i=0; i < entry->children.size(); i++) {
+	}
+
+	for(int i=0; i < entry->children.size(); i++) {
 				ObjectEntry *childEntry = entry->children[i];
-				bool needLinkChild = entry->type == ObjectEntry::ARRAY_ENTRY;
+				bool needLinkChild = (childEntry->children.size() > 0) || (entry->type == ObjectEntry::ARRAY_ENTRY);
 				
 		//		printf("Parsing %s (type: %d)\n", childEntry->name.c_str(), childEntry->type);
 				
@@ -138,9 +139,7 @@ TiXmlElement *Object::createElementFromObjectEntry(ObjectEntry *entry) {
 						break;
 						case ObjectEntry::STRING_ENTRY: 
 						{
-							TiXmlElement *childElement = new TiXmlElement(childTypedName.c_str());  
-							childElement->LinkEndChild( new TiXmlText(childEntry->stringVal.c_str()));
-							newElement->LinkEndChild(childElement);								
+							newElement->SetAttribute(childTypedName.c_str(), childEntry->stringVal.c_str());		
 						} break;
 						default:
 							needLinkChild = true;
@@ -153,10 +152,10 @@ TiXmlElement *Object::createElementFromObjectEntry(ObjectEntry *entry) {
 					newElement->LinkEndChild(childElement);
 				}
 			}
-		} break;
-	}
+
 	
 	return newElement;
+
 }
 
 bool Object::loadFromXMLString(const String &xmlString) {

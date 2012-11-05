@@ -46,7 +46,7 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	welcomeEntity = new ScreenEntity();
 	welcomeEntity->processInputEvents = true;
 	addChild(welcomeEntity);
-	welcomeImage = new ScreenImage("welcome.png");
+	welcomeImage = new ScreenImage("Images/welcome.png");
 	welcomeEntity->addChild(welcomeImage);
 	welcomeEntity->snapToPixels = true;
 	
@@ -86,20 +86,20 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	topBarBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	addChild(topBarBg);
 	
-	logo = new ScreenImage("barlogo.png");	
+	logo = new ScreenImage("Images/barlogo.png");	
 	addChild(logo);		
 	
 	
-	playButton = new UIImageButton("play_button.png");
+	playButton = new UIImageButton("Images/play_button.png");
 	addChild(playButton);
 	playButton->setPosition(10,8);
 
-	stopButton = new UIImageButton("stop_button.png");
+	stopButton = new UIImageButton("Images/stop_button.png");
 	addChild(stopButton);
 	stopButton->setPosition(10,8);
 
 	
-	resizer = new ScreenImage("corner_resize.png");	
+	resizer = new ScreenImage("Images/corner_resize.png");	
 	addChild(resizer);
 	resizer->setColor(0,0,0,0.4);
 	
@@ -186,8 +186,8 @@ void PolycodeFrame::handleEvent(Event *event) {
 				if(isDragging) {
 					if(editorHolder->currentEditor) {
 						InputEvent *inputEvent = (InputEvent*) event;						
-						Number posX = inputEvent->mousePosition.x - editorHolder->getPosition2D().x;
-						Number posY = inputEvent->mousePosition.y - editorHolder->getPosition2D().y;						
+						Number posX = inputEvent->mousePosition.x;
+						Number posY = inputEvent->mousePosition.y;			
 						editorHolder->currentEditor->handleDroppedFile(draggedFile, posX, posY);
 					}
 				}

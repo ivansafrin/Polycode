@@ -130,6 +130,11 @@ void UITree::Resize(Number width) {
 	}
 }
 
+void UITree::setLabelText(const String &text) {
+	labelText = text;
+	textLabel->setText(text);
+}
+			
 String UITree::getLabelText() {
 	return labelText;
 }

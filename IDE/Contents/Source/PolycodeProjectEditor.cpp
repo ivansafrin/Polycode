@@ -38,7 +38,7 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 
 	this->projectManager = projectManager;
 
-	grid = new ScreenImage("editorGrid.png");
+	grid = new ScreenImage("Images/editorGrid.png");
 	
 	addChild(grid);
 	grid->snapToPixels = true;
@@ -77,10 +77,10 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	mainSettingsWindow->setPosition(10,10);
 	addChild(mainSettingsWindow);
 	
-	ScreenLabel *label2 = new ScreenLabel(L"DEFAULT VIDEO OPTIONS", fontSize+2, fontName, Label::ANTIALIAS_FULL);	
-	label2->setColor(1.0, 1.0, 1.0, 0.5);
+	ScreenLabel *label2 = new ScreenLabel(L"DEFAULT VIDEO OPTIONS", 22, "section", Label::ANTIALIAS_FULL);	
+	label2->setColor(1.0, 1.0, 1.0, 0.4);
 	mainSettingsWindow->addChild(label2);
-	label2->setPosition(padding, 50);		
+	label2->setPosition(padding, 40);		
 
 		
 	label2 = new ScreenLabel(L"Width:", fontSize, fontName, Label::ANTIALIAS_FULL);
@@ -138,10 +138,10 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	vSyncCheckBox->setPosition(padding, framerateInput->getPosition().y+framerateInput->getHeight()+10);
 	mainSettingsWindow->addChild(vSyncCheckBox);
 	
-	label2 = new ScreenLabel(L"STARTUP OPTIONS", fontSize+2, fontName, Label::ANTIALIAS_FULL);	
-	label2->setColor(1.0, 1.0, 1.0, 0.5);
+	label2 = new ScreenLabel(L"STARTUP OPTIONS", 22, "section", Label::ANTIALIAS_FULL);	
+	label2->setColor(1.0, 1.0, 1.0, 0.4);
 	mainSettingsWindow->addChild(label2);
-	label2->setPosition(padding, vSyncCheckBox->getPosition().y+vSyncCheckBox->getHeight()+30);		
+	label2->setPosition(padding, vSyncCheckBox->getPosition().y+vSyncCheckBox->getHeight()+20);		
 	
 	
 	label2 = new ScreenLabel(L"Entry point file:", fontSize, fontName, Label::ANTIALIAS_FULL);
@@ -161,9 +161,15 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	mainSettingsWindow->addChild(label2);
 	label2->setPosition(padding, entryPointInput->getPosition().y+entryPointInput->getHeight()+10);		
 
-	bgColorBox = new UIColorBox(Color(1.0, 0.5, 0.0, 0.9), 30,30);
+	colorPicker = new UIColorPicker();
+	colorPicker->setPosition(200,200);
+	addChild(colorPicker);
+
+	bgColorBox = new UIColorBox(colorPicker, Color(1.0, 0.5, 0.0, 0.9), 30,30);
 	bgColorBox->setPosition(label2->getPosition().x, label2->getPosition().y+label2->getHeight());
 	mainSettingsWindow->addChild(bgColorBox);
+	
+	
 
 }
 

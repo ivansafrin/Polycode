@@ -2,6 +2,11 @@ varying vec3 normal;
 varying vec4 pos;
 varying vec4 vertexColor;
 
+uniform vec4 diffuse_color;
+uniform vec4 specular_color;
+uniform vec4 ambient_color;
+uniform float shininess;
+
 float calculateAttenuation(in int i, in float dist)
 {
     return(1.0 / (gl_LightSource[i].constantAttenuation +
@@ -10,9 +15,9 @@ float calculateAttenuation(in int i, in float dist)
 }
 
 void pointLight(in int i, in vec3 normal, in vec4 pos, inout vec4 diffuse, inout vec4 specular) {
-	vec4 color = gl_FrontMaterial.diffuse;
-	vec4 matspec = gl_FrontMaterial.specular;
-	float shininess = gl_FrontMaterial.shininess;
+	vec4 color = diffuse_color;
+	vec4 matspec = specular_color;
+	float shininess = shininess;
 	vec4 lightspec = gl_LightSource[i].specular;
 	vec4 lpos = gl_LightSource[i].position;
 	vec4 s = pos-lpos; 
@@ -40,9 +45,9 @@ void pointLight(in int i, in vec3 normal, in vec4 pos, inout vec4 diffuse, inout
 
 
 void spotLight(in int i, in vec3 normal, in vec4 pos, inout vec4 diffuse, inout vec4 specular) {
-	vec4 color = gl_FrontMaterial.diffuse;
-	vec4 matspec = gl_FrontMaterial.specular;
-	float shininess = gl_FrontMaterial.shininess;
+	vec4 color = diffuse_color;
+	vec4 matspec = specular_color;
+	float shininess = shininess;
 	vec4 lightspec = gl_LightSource[i].specular;
 	vec4 lpos = gl_LightSource[i].position;
 	vec4 s = pos-lpos; 
@@ -91,12 +96,11 @@ void main()
 	vec4 diffuse_val  = vec4(0.0);
 	vec4 specular_val = vec4(0.0);
 	doLights(6, normal, pos, diffuse_val, specular_val);
-	diffuse_val.a = 1.0;
-	specular_val.a = 1.0;
 		
     vec4 color = (diffuse_val  * 1.0) +
                  (specular_val * 1.0)+
-                 gl_FrontMaterial.ambient;
+                 ambient_color;
+	color.a = diffuse_color.a;                 
     color = clamp(color*vertexColor, 0.0, 1.0);
     
     // fog

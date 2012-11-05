@@ -66,6 +66,7 @@ namespace Polycode {
 			void addTexture(const String& name, Texture *texture);
 			void addCubemap(const String& name, Cubemap *cubemap);
 			void clearTexture(const String& name);
+			Texture *getTexture(const String& name);
 			void addParam(const String& type, const String& name, const String& value);
 			
 			std::vector<GLSLTextureBinding> textures;

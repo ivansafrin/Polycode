@@ -23,6 +23,7 @@ THE SOFTWARE.
 #pragma once
 #include "PolyGlobals.h"
 #include "PolyImage.h"
+#include "PolyObject.h"
 #include <vector>
 
 class TiXmlNode;
@@ -72,16 +73,28 @@ namespace Polycode {
 			Cubemap *cubemapFromXMLNode(TiXmlNode *node);
 		
 			// materials
-			void loadMaterialsFromFile(String fileName);
 			Material *materialFromXMLNode(TiXmlNode *node);
+			
+			Material *createMaterial(String materialName, String shaderName);
+			
 			Shader *setShaderFromXMLNode(TiXmlNode *node);
 			Shader *createShaderFromXMLNode(TiXmlNode *node);
+			
+			void registerShader(Shader *shader);
+		
+			std::vector<Material*> loadMaterialsFromFile(String fileName);
+		
+			void addMaterial(Material *material);
+		
+			unsigned int getNumShaders();
+			Shader *getShaderByIndex(unsigned int index);
 		
 			bool premultiplyAlphaOnLoad;
 		
 		private:
 			std::vector<Texture*> textures;
 			std::vector<Material*> materials;
+			std::vector<Shader*> shaders;
 		
 			std::vector <PolycodeShaderModule*> shaderModules;
 	};

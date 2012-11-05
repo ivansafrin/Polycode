@@ -38,7 +38,14 @@ class PolycodeImageEditor : public PolycodeEditor {
 	protected:
 		ScreenImage *grid;
 	
-		ScreenImage *editorImage;
+		ScreenShape *editorImage;
+		
+		ScreenShape *leftShape;		
+		ScreenShape *rightShape;		
+		ScreenShape *topShape;		
+		ScreenShape *bottomShape;								
+		
+		Number aspectRatio;
 };
 
 class PolycodeImageEditorFactory : public PolycodeEditorFactory {

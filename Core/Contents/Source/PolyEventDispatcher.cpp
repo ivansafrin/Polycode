@@ -43,13 +43,16 @@ namespace Polycode {
 		handlerEntries.clear();
 	}
 	
-	void EventDispatcher::removeAllHandlersForListener(void *listener) {
-		for(int i=0;i<handlerEntries.size();i++) {
-			if(handlerEntries[i].handler == listener) {
-				handlerEntries.erase(handlerEntries.begin()+i);
-				i--;
+	void EventDispatcher::removeAllHandlersForListener(EventHandler *handler) {
+		std::vector<EventEntry>::iterator iter = handlerEntries.begin();
+		while (iter != handlerEntries.end()) {	
+			if((*iter).handler == handler) {
+				iter = handlerEntries.erase(iter);
+			} else {	
+				++iter;						
 			}
-		}		
+		}
+		
 	}
 
 	void EventDispatcher::removeEventListener(EventHandler *handler, int eventCode) {

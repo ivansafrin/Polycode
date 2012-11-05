@@ -58,7 +58,9 @@ namespace Polycode {
 			bool closeOnEscape;
 		
 		protected:				
-
+			
+			Number closeIconX;
+			Number closeIconY;
 		
 			Font *font;
 			Tween *windowTween;

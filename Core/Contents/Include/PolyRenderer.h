@@ -25,6 +25,7 @@ THE SOFTWARE.
 #include "PolyGlobals.h"
 #include "PolyMatrix4.h"
 #include "PolyVector2.h"
+#include "PolyShader.h"
 #include "PolyImage.h"
 #include "PolyRectangle.h"
 
@@ -210,7 +211,10 @@ namespace Polycode {
 		void enableShaders(bool flag);
 		
 		Number getViewportWidth();
-		Number getViewportHeight();			
+		Number getViewportHeight();		
+		
+		void *getDataPointerForName(const String &name);
+		void setRendererShaderParams(Shader *shader, ShaderBinding *binding);
 
 		virtual void initOSSpecific() {};
 		
@@ -229,7 +233,7 @@ namespace Polycode {
 		static const int BLEND_MODE_COLOR = 2;
 		static const int BLEND_MODE_PREMULTIPLIED = 3;
 		static const int BLEND_MODE_MULTIPLY = 4;
-						
+								
 		static const int FOG_LINEAR = 0;
 		static const int FOG_EXP = 1;
 		static const int FOG_EXP2 = 2;

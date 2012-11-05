@@ -34,7 +34,7 @@ PolycodeScreenEditor::PolycodeScreenEditor() : PolycodeEditor(true){
 	selectedEntity = NULL;
 	isDraggingEntity = false; 
 	
-	grid = new ScreenImage("editorGrid.png");
+	grid = new ScreenImage("Images/editorGrid.png");
 	
 	addChild(grid);
 	grid->snapToPixels = true;
@@ -47,7 +47,7 @@ PolycodeScreenEditor::PolycodeScreenEditor() : PolycodeEditor(true){
 		
 	baseEntity->setPositionMode(ScreenEntity::POSITION_CENTER);	
 
-	centerImage = new ScreenImage("screenCenter.png");
+	centerImage = new ScreenImage("Images/screenCenter.png");
 	centerImage->setPositionMode(ScreenEntity::POSITION_CENTER);
 	addChild(centerImage);
 	
@@ -63,7 +63,7 @@ PolycodeScreenEditor::PolycodeScreenEditor() : PolycodeEditor(true){
 	baseEntity->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	baseEntity->processInputEvents = true;
 									
-	screenTransform = new UIBox("screenTransform.png", 16,16,16,16, 100,100);
+	screenTransform = new UIBox("Images/screenTransform.png", 16,16,16,16, 100,100);
 	screenTransform->visible = false;
 	addChild(screenTransform);
 		
@@ -74,11 +74,12 @@ PolycodeScreenEditor::PolycodeScreenEditor() : PolycodeEditor(true){
 	ScreenLabel *label2 = new ScreenLabel(L"Entity color:", fontSize, fontName, Label::ANTIALIAS_FULL);
 	entityInfoWindow->addChild(label2);
 	label2->setPosition(padding, entityInfoWindow->topPadding+20);
-
+/*
 	entityColorBox = new UIColorBox(Color(1.0, 1.0, 1.0, 0.0), 30,30);
 	entityColorBox->setPosition(label2->getPosition().x, label2->getPosition().y+label2->getHeight());
 	entityInfoWindow->addChild(entityColorBox);		
 	entityColorBox->addEventListener(this, UIEvent::CHANGE_EVENT);
+	*/
 	
 }
 

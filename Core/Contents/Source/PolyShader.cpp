@@ -29,7 +29,18 @@ ShaderBinding::ShaderBinding(Shader *shader) {
 }
 
 ShaderBinding::~ShaderBinding() {
-
+	for(int i=0; i < localParams.size(); i++) {
+		delete localParams[i];
+	}	
+	for(int i=0; i < renderTargetBindings.size(); i++) {
+		delete renderTargetBindings[i];
+	}	
+	for(int i=0; i < inTargetBindings.size(); i++) {
+		delete inTargetBindings[i];
+	}	
+	for(int i=0; i < outTargetBindings.size(); i++) {
+		delete outTargetBindings[i];
+	}	
 }
 
 unsigned int ShaderBinding::getNumLocalParams() {
@@ -54,18 +65,6 @@ void ShaderBinding::addLocalParam(const String& name, void *ptr) {
 	newParam->name = name;
 	newParam->data = ptr;
 	localParams.push_back(newParam);
-}
-
-void ShaderBinding::addLocalParamNumber(const String& name, Number n) {
-	Number *value = new Number;
-	*value = n;
-	addLocalParam(name, value);
-}
-
-void ShaderBinding::addLocalParamVector3(const String& name, Vector3 v) {
-	Vector3 *value = new Vector3;
-	memcpy(value, &v, sizeof(v));
-	addLocalParam(name, value);
 }
 
 void ShaderBinding::addRenderTargetBinding(RenderTargetBinding *binding) {

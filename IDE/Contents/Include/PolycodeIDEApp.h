@@ -31,6 +31,7 @@
 #include "PolycodeFrame.h"
 
 #include "PolycodeImageEditor.h"
+#include "PolycodeMaterialEditor.h"
 #include "PolycodeScreenEditor.h"
 #include "PolycodeFontEditor.h"
 #include "PolycodeTextEditor.h"

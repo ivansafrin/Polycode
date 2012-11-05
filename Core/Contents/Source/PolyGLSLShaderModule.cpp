@@ -116,6 +116,11 @@ Shader *GLSLShaderModule::createShader(TiXmlNode *node) {
 	GLSLProgram *vp = NULL;
 	GLSLProgram *fp = NULL;
 	GLSLShader *retShader = NULL;
+	
+	std::vector<String> expectedTextures;
+	std::vector<ProgramParam> expectedFragmentParams;	
+	std::vector<ProgramParam> expectedVertexParams;
+		
 	TiXmlElement *nodeElement = node->ToElement();
 	if (!nodeElement) return NULL; // Skip comment nodes
 	
@@ -130,7 +135,7 @@ Shader *GLSLShaderModule::createShader(TiXmlNode *node) {
 					if(strcmp(pChild2->Value(), "params") == 0) {
 						for (pChild3 = pChild2->FirstChild(); pChild3 != 0; pChild3 = pChild3->NextSibling()) {
 							if(strcmp(pChild3->Value(), "param") == 0) {
-								addParamToProgram(vp,pChild3); 
+								expectedVertexParams.push_back(addParamToProgram(vp,pChild3));
 							}
 						}
 					}
@@ -144,10 +149,20 @@ Shader *GLSLShaderModule::createShader(TiXmlNode *node) {
 					if(strcmp(pChild2->Value(), "params") == 0) {
 						for (pChild3 = pChild2->FirstChild(); pChild3 != 0; pChild3 = pChild3->NextSibling()) {
 							if(strcmp(pChild3->Value(), "param") == 0) {
-								addParamToProgram(fp,pChild3); 										
+								expectedFragmentParams.push_back(addParamToProgram(fp,pChild3));	
 							}
 						}
 					}
+					if(strcmp(pChild2->Value(), "textures") == 0) {
+						for (pChild3 = pChild2->FirstChild(); pChild3 != 0; pChild3 = pChild3->NextSibling()) {
+							if(strcmp(pChild3->Value(), "texture") == 0) {
+								TiXmlElement *texNodeElement = pChild3->ToElement();
+								if (texNodeElement) {
+									expectedTextures.push_back(String(texNodeElement->Attribute("name")));
+								}
+							}
+						}
+					}					
 				}
 			}
 		}
@@ -156,6 +171,9 @@ Shader *GLSLShaderModule::createShader(TiXmlNode *node) {
 	if(vp != NULL && fp != NULL) {
 		GLSLShader *cgShader = new GLSLShader(vp,fp);
 		cgShader->setName(String(nodeElement->Attribute("name")));
+		cgShader->expectedTextures = expectedTextures;
+		cgShader->expectedVertexParams = expectedVertexParams;
+		cgShader->expectedFragmentParams = expectedFragmentParams;				
 		retShader = cgShader;
 		shaders.push_back((Shader*)cgShader);
 	}
@@ -167,239 +185,49 @@ void GLSLShaderModule::clearShader() {
 	glUseProgram(0);
 }
 
-void GLSLShaderModule::setGLSLAreaLightPositionParameter(Renderer *renderer, GLSLProgramParam &param, int lightIndex) {
-	if(renderer->getNumAreaLights() > lightIndex) {
-		vector<LightInfo> areaLights = renderer->getAreaLights();			
-		Vector3 lPos(areaLights[lightIndex].position.x,areaLights[lightIndex].position.y,areaLights[lightIndex].position.z);
-		GLfloat LightPosition[] = {lPos.x, lPos.y, lPos.z, 1};		
-		
-		glLightfv (GL_LIGHT0+lightIndex, GL_POSITION, LightPosition); //change the 	
-		
-//		glLightf(GL_LIGHT0+lightIndex, GL_CONSTANT_ATTENUATION, areaLights[lightIndex].distance);
-//		glLightf(GL_LIGHT0+lightIndex, GL_LINEAR_ATTENUATION, areaLights[lightIndex].intensity);			
-//		glLightf(GL_LIGHT0+lightIndex, GL_QUADRATIC_ATTENUATION, areaLights[lightIndex].intensity);					
-	} else {
-	}	
-}
-
-void GLSLShaderModule::setGLSLSpotLightPositionParameter(Renderer *renderer, GLSLProgramParam &param, int lightIndex) {
-	if(renderer->getNumSpotLights() > lightIndex) {
-		vector<LightInfo> spotLights = renderer->getSpotLights();		
-		Vector3 lPos(spotLights[lightIndex].position.x,spotLights[lightIndex].position.y,spotLights[lightIndex].position.z);
-		lPos = renderer->getCameraMatrix().inverse() * lPos;
-//		cgGLSetParameter4f(param.cgParam, lPos.x,lPos.y,lPos.z, spotLights[lightIndex].distance);
-	} else {
-//		cgGLSetParameter4f(param.cgParam, 0,0,0,0);
-	}	
-}
-
-void GLSLShaderModule::setGLSLSpotLightDirectionParameter(Renderer *renderer, GLSLProgramParam &param, int lightIndex) {
-	if(renderer->getNumSpotLights() > lightIndex) {
-		vector<LightInfo> spotLights = renderer->getSpotLights();		
-		Vector3 lPos(spotLights[lightIndex].dir.x,spotLights[lightIndex].dir.y,spotLights[lightIndex].dir.z);
-		lPos = renderer->getCameraMatrix().inverse().rotateVector(lPos);
-//		cgGLSetParameter3f(param.cgParam, lPos.x,lPos.y,lPos.z);
-	} else {
-//		cgGLSetParameter3f(param.cgParam, 0.0f,0.0f,0.0f);
-	}				
-}
-
-void GLSLShaderModule::setGLSLAreaLightColorParameter(Renderer *renderer, GLSLProgramParam &param, int lightIndex) {
-	if(renderer->getNumAreaLights() > lightIndex) {
-		vector<LightInfo> areaLights = renderer->getAreaLights();		
-		
-		GLfloat DiffuseLight[] = {areaLights[lightIndex].color.x, areaLights[lightIndex].color.y, areaLights[lightIndex].color.z};
-		glLightfv (GL_LIGHT0+lightIndex, GL_DIFFUSE, DiffuseLight);
-		
-//		cgGLSetParameter4f(param.cgParam, areaLights[lightIndex].color.x,areaLights[lightIndex].color.y,areaLights[lightIndex].color.z, areaLights[lightIndex].intensity);
-	} else {
-//		cgGLSetParameter4f(param.cgParam, 0,0,0,0);
-	}
-}
-
-void GLSLShaderModule::setGLSLSpotLightColorParameter(Renderer *renderer, GLSLProgramParam &param, int lightIndex) {
-	if(renderer->getNumSpotLights() > lightIndex) {
-		vector<LightInfo> spotLights = renderer->getSpotLights();			
-//		cgGLSetParameter4f(param.cgParam, spotLights[lightIndex].color.x,spotLights[lightIndex].color.y,spotLights[lightIndex].color.z, spotLights[lightIndex].intensity);
-	} else {
-//		cgGLSetParameter4f(param.cgParam, 0,0,0,0);
-	}
-}
-
-void GLSLShaderModule::setGLSLSpotLightTextureMatrixParameter(Renderer *renderer, GLSLProgramParam &param, int lightIndex) {
-	if(renderer->getNumLights() > lightIndex) {
-		vector<LightInfo> spotLights = renderer->getSpotLights();			
-		glMatrixMode(GL_MODELVIEW);
-		glPushMatrix();
-		glLoadMatrixd(spotLights[lightIndex].textureMatrix.ml);				
-//		cgGLSetStateMatrixParameter(param.cgParam, GLSL_GL_MODELVIEW_MATRIX,GLSL_GL_MATRIX_IDENTITY);
-		glPopMatrix();
-	}					
-}
-
-
-
 void GLSLShaderModule::updateGLSLParam(Renderer *renderer, GLSLShader *glslShader, GLSLProgramParam &param, ShaderBinding *materialOptions, ShaderBinding *localOptions) {
-	if(param.isAuto) {
-		switch(param.autoID) {
-			case GLSLProgramParam::POLY_MODELVIEWPROJ_MATRIX:
-//				cgGLSetStateMatrixParameter(param.cgParam, GLSL_GL_MODELVIEW_PROJECTION_MATRIX,GLSL_GL_MATRIX_IDENTITY);
-				break;
-				
-			case GLSLProgramParam::POLY_SPOT_LIGHT_TEXTUREMATRIX_0:
-				setGLSLSpotLightTextureMatrixParameter(renderer, param, 0);					
-				break;
-			case GLSLProgramParam::POLY_SPOT_LIGHT_TEXTUREMATRIX_1:
-				setGLSLSpotLightTextureMatrixParameter(renderer, param, 1);					
-				break;
-			case GLSLProgramParam::POLY_SPOT_LIGHT_TEXTUREMATRIX_2:
-				setGLSLSpotLightTextureMatrixParameter(renderer, param, 2);					
-				break;
-			case GLSLProgramParam::POLY_SPOT_LIGHT_TEXTUREMATRIX_3:
-				setGLSLSpotLightTextureMatrixParameter(renderer, param, 3);					
-				break;
-				
-				
-			case GLSLProgramParam::POLY_AMBIENTCOLOR:
-//				cgGLSetParameter3f(param.cgParam, renderer->ambientColor.r,renderer->ambientColor.g,renderer->ambientColor.b);
-				break;
-			case GLSLProgramParam::POLY_CLEARCOLOR:
-//				cgGLSetParameter3f(param.cgParam, renderer->clearColor.r,renderer->clearColor.g,renderer->clearColor.b);				
-				break;				
-				
-			case GLSLProgramParam::POLY_SPOT_LIGHT_DIRECTION_0:
-				setGLSLSpotLightDirectionParameter(renderer, param, 0);
-				break;
-			case GLSLProgramParam::POLY_SPOT_LIGHT_DIRECTION_1:
-				setGLSLSpotLightDirectionParameter(renderer, param, 1);
-				break;
-			case GLSLProgramParam::POLY_SPOT_LIGHT_DIRECTION_2:
-				setGLSLSpotLightDirectionParameter(renderer, param, 2);
-				break;
-			case GLSLProgramParam::POLY_SPOT_LIGHT_DIRECTION_3:
-				setGLSLSpotLightDirectionParameter(renderer, param, 3);
-				break;
-				
-			case GLSLProgramParam::POLY_AREA_LIGHT_POSITION_0:
-				setGLSLAreaLightPositionParameter(renderer, param, 0);
-				break;
-			case GLSLProgramParam::POLY_AREA_LIGHT_POSITION_1:
-				setGLSLAreaLightPositionParameter(renderer, param, 1);
-				break;
-			case GLSLProgramParam::POLY_AREA_LIGHT_POSITION_2:
-				setGLSLAreaLightPositionParameter(renderer, param, 2);
-				break;
-			case GLSLProgramParam::POLY_AREA_LIGHT_POSITION_3:
-				setGLSLAreaLightPositionParameter(renderer, param, 3);
-				break;
-			case GLSLProgramParam::POLY_AREA_LIGHT_POSITION_4:
-				setGLSLAreaLightPositionParameter(renderer, param, 4);
-				break;
-			case GLSLProgramParam::POLY_AREA_LIGHT_POSITION_5:
-				setGLSLAreaLightPositionParameter(renderer, param, 5);
-				break;
-			case GLSLProgramParam::POLY_AREA_LIGHT_POSITION_6:
-				setGLSLAreaLightPositionParameter(renderer, param, 6);
-				break;
-			case GLSLProgramParam::POLY_AREA_LIGHT_POSITION_7:
-				setGLSLAreaLightPositionParameter(renderer, param, 7);
-				break;				
-				
-			case GLSLProgramParam::POLY_SPOT_LIGHT_POSITION_0:
-				setGLSLSpotLightPositionParameter(renderer, param, 0);
-				break;				
-			case GLSLProgramParam::POLY_SPOT_LIGHT_POSITION_1:
-				setGLSLSpotLightPositionParameter(renderer, param, 1);
-				break;				
-			case GLSLProgramParam::POLY_SPOT_LIGHT_POSITION_2:
-				setGLSLSpotLightPositionParameter(renderer, param, 2);
-				break;				
-			case GLSLProgramParam::POLY_SPOT_LIGHT_POSITION_3:
-				setGLSLSpotLightPositionParameter(renderer, param, 3);
-				break;				
-				
-			case GLSLProgramParam::POLY_AREA_LIGHT_COLOR_0:
-				setGLSLAreaLightColorParameter(renderer, param, 0);
-				break;
-			case GLSLProgramParam::POLY_AREA_LIGHT_COLOR_1:
-				setGLSLAreaLightColorParameter(renderer, param, 1);
-				break;
-			case GLSLProgramParam::POLY_AREA_LIGHT_COLOR_2:
-				setGLSLAreaLightColorParameter(renderer, param, 2);
-				break;
-			case GLSLProgramParam::POLY_AREA_LIGHT_COLOR_3:
-				setGLSLAreaLightColorParameter(renderer, param, 3);
-				break;
-			case GLSLProgramParam::POLY_AREA_LIGHT_COLOR_4:
-				setGLSLAreaLightColorParameter(renderer, param, 4);
-				break;
-			case GLSLProgramParam::POLY_AREA_LIGHT_COLOR_5:
-				setGLSLAreaLightColorParameter(renderer, param, 5);
-				break;
-			case GLSLProgramParam::POLY_AREA_LIGHT_COLOR_6:
-				setGLSLAreaLightColorParameter(renderer, param, 6);
-				break;
-			case GLSLProgramParam::POLY_AREA_LIGHT_COLOR_7:
-				setGLSLAreaLightColorParameter(renderer, param, 7);
-				break;
-				
-			case GLSLProgramParam::POLY_SPOT_LIGHT_COLOR_0:
-				setGLSLSpotLightColorParameter(renderer, param, 0);
-				break;
-			case GLSLProgramParam::POLY_SPOT_LIGHT_COLOR_1:
-				setGLSLSpotLightColorParameter(renderer, param, 1);
-				break;
-			case GLSLProgramParam::POLY_SPOT_LIGHT_COLOR_2:
-				setGLSLSpotLightColorParameter(renderer, param, 2);
-				break;
-			case GLSLProgramParam::POLY_SPOT_LIGHT_COLOR_3:
-				setGLSLSpotLightColorParameter(renderer, param, 3);
-				break;				
-				
-			case GLSLProgramParam::POLY_MODELVIEW_MATRIX: 
-//				cgGLSetStateMatrixParameter(param.cgParam, GLSL_GL_MODELVIEW_MATRIX,GLSL_GL_MATRIX_IDENTITY); }
-				break;
-			case GLSLProgramParam::POLY_MODELVIEW_INVERSE_MATRIX:
-//				cgGLSetStateMatrixParameter(param.cgParam, GLSL_GL_MODELVIEW_MATRIX,GLSL_GL_MATRIX_INVERSE_TRANSPOSE);
-				break;
-			case GLSLProgramParam::POLY_EXPOSURE_LEVEL:
-//				cgGLSetParameter1f(param.cgParam, renderer->exposureLevel);
-				break;
-		}
-	} else {
+	
 		void *paramData = param.defaultData;
 		LocalShaderParam *localParam = materialOptions->getLocalParamByName(param.name);
-		if(localParam)
+		if(localParam) {
 			paramData = localParam->data;
-		localParam = localOptions->getLocalParamByName(param.name);
-		if(localParam)
-			paramData = localParam->data;
+		}
 		
-		Number *fval;
+		localParam = localOptions->getLocalParamByName(param.name);
+		if(localParam) {
+			paramData = localParam->data;
+		}
 		
 		switch(param.paramType) {
 			case GLSLProgramParam::PARAM_Number:
 			{
+				Number *fval;			
 				fval = (Number*)paramData;
 				int paramLocation = glGetUniformLocation(glslShader->shader_id, param.name.c_str());
 				glUniform1f(paramLocation, *fval);
 				break;
 			}
-			case GLSLProgramParam::PARAM_Number2:
+			case GLSLProgramParam::PARAM_Vector2:
 			{
 				Vector2 *fval2 = (Vector2*)paramData;
 				int paramLocation = glGetUniformLocation(glslShader->shader_id, param.name.c_str());
 				glUniform2f(paramLocation, fval2->x, fval2->y);				break;				
 			}			
-			case GLSLProgramParam::PARAM_Number3:
+			case GLSLProgramParam::PARAM_Vector3:
 			{
 				Vector3 *fval3 = (Vector3*)paramData;
 				int paramLocation = glGetUniformLocation(glslShader->shader_id, param.name.c_str());
 				glUniform3f(paramLocation, fval3->x,fval3->y,fval3->z);
 				break;				
 			}
+			case GLSLProgramParam::PARAM_Color:
+			{
+				Color *col = (Color*)paramData;
+				int paramLocation = glGetUniformLocation(glslShader->shader_id, param.name.c_str());
+				glUniform4f(paramLocation, col->r, col->g, col->b, col->a);
+				break;				
+			}
 		}
-	}
 }
 
 bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *material, ShaderBinding *localOptions, unsigned int shaderIndex) {	
@@ -434,13 +262,6 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 	int lightIndex = 0;
 	
 	vector<LightInfo> areaLights = renderer->getAreaLights();
-	
-//	printf("Applying {\n");
-//	for(int z=0;z < areaLights.size(); z++) {
-//		LightInfo light = areaLights[z];		
-//		printf("Light: %f %f %f\n", light.position.x, light.position.y, light.position.z);
-//	}
-//	printf("}\n");
 		
 	GLfloat ambientVal[] = {1, 1, 1, 1.0};				
 	for(int i=0; i < glslShader->numAreaLights; i++) {
@@ -562,12 +383,7 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 				glBindTexture(GL_TEXTURE_2D, ((OpenGLTexture*)light.shadowMapTexture)->getTextureID());	
 				textureIndex++;
 				
-//				glMatrixMode(GL_MODELVIEW);
-//				glPushMatrix();
-//				glLoadMatrixd(light.textureMatrix.ml);			
-				int mloc = glGetUniformLocation(glslShader->shader_id, matName);				
-				
-				
+				int mloc = glGetUniformLocation(glslShader->shader_id, matName);
 				light.textureMatrix = light.textureMatrix;
 				
 			
@@ -577,9 +393,6 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 				}
 				glUniformMatrix4fv(mloc, 1, false, mat);
 		
-						
-	//			glPopMatrix();
-				
 					
 			}
 			shadowMapTextureIndex++;
@@ -643,174 +456,32 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 		textureIndex++;
 	}		
 
-	//			Logger::log("applying %s (%s %s)\n", material->getShader()->getName().c_str(), cgShader->vp->getResourceName().c_str(), cgShader->fp->getResourceName().c_str());
-
-	/*
-	vector<Texture*> shadowMapTextures = renderer->getShadowMapTextures();	
-	char texName[32];
-	for(int i=0; i< 4; i++) {
-		if(i < shadowMapTextures.size()) {
-			switch(i) {
-				case 0:
-					strcpy(texName, "shadowMap0");
-					break;
-				case 1:
-					strcpy(texName, "shadowMap1");
-					break;
-				case 2:
-					strcpy(texName, "shadowMap2");
-					break;
-				case 3:
-					strcpy(texName, "shadowMap3");
-					break;							
-			}
-		int texture_location = glGetUniformLocation(glslShader->shader_id, texName);
-		glUniform1i(texture_location, textureIndex);
-		glActiveTexture(GL_TEXTURE0 + textureIndex);		
-		glBindTexture(GL_TEXTURE_2D, ((OpenGLTexture*)shadowMapTextures[i])->getTextureID());	
-		textureIndex++;
-		}
-	}
-	*/
-/*	
-	cgBinding = (GLSLShaderBinding*)localOptions;
-	for(int i=0; i < cgBinding->textures.size(); i++) {
-		cgGLSetTextureParameter(cgBinding->textures[i].vpParam, ((OpenGLTexture*)cgBinding->textures[i].texture)->getTextureID());
-		cgGLEnableTextureParameter(cgBinding->textures[i].vpParam);
-	}			
-	
-	vector<Texture*> shadowMapTextures = renderer->getShadowMapTextures();
-	char texName[32];
-	for(int i=0; i< 4; i++) {
-		if(i < shadowMapTextures.size()) {
-			switch(i) {
-				case 0:
-					strcpy(texName, "shadowMap0");
-					break;
-				case 1:
-					strcpy(texName, "shadowMap1");
-					break;
-				case 2:
-					strcpy(texName, "shadowMap2");
-					break;
-				case 3:
-					strcpy(texName, "shadowMap3");
-					break;							
-			}
-			cgGLSetTextureParameter(cgGetNamedParameter(cgShader->fp->program, texName), ((OpenGLTexture*)shadowMapTextures[i])->getTextureID());
-			cgGLEnableTextureParameter(cgGetNamedParameter(cgShader->fp->program, texName));					
-		}
-	}
-	
-
-	 */
-	 
-
 		 
 	return true;
 }
 
-void GLSLShaderModule::addParamToProgram(GLSLProgram *program,TiXmlNode *node) {
+GLSLProgramParam GLSLShaderModule::addParamToProgram(GLSLProgram *program,TiXmlNode *node) {
 		bool isAuto = false;
 		int autoID = 0;
 		int paramType = GLSLProgramParam::PARAM_UNKNOWN;
 		void *defaultData = NULL;
+		void *minData = NULL;
+		void *maxData = NULL;
+		
 		TiXmlElement *nodeElement = node->ToElement();
 		if (!nodeElement) return; // Skip comment nodes
+
+		isAuto = false;
 		
-		if(strcmp(nodeElement->Attribute("type"), "auto") == 0) {
-			isAuto = true;
-			String pid = nodeElement->Attribute("id");
-			if(pid == "POLY_MODELVIEWPROJ_MATRIX")
-				autoID = GLSLProgramParam::POLY_MODELVIEWPROJ_MATRIX;
-			else if(pid == "POLY_AREA_LIGHT_POSITION_0")
-				autoID = GLSLProgramParam::POLY_AREA_LIGHT_POSITION_0;
-			else if(pid == "POLY_AREA_LIGHT_POSITION_1")
-				autoID = GLSLProgramParam::POLY_AREA_LIGHT_POSITION_1;
-			else if(pid == "POLY_AREA_LIGHT_POSITION_2")
-				autoID = GLSLProgramParam::POLY_AREA_LIGHT_POSITION_2;
-			else if(pid == "POLY_AREA_LIGHT_POSITION_3")
-				autoID = GLSLProgramParam::POLY_AREA_LIGHT_POSITION_3;
-			else if(pid == "POLY_AREA_LIGHT_POSITION_4")
-				autoID = GLSLProgramParam::POLY_AREA_LIGHT_POSITION_4;
-			else if(pid == "POLY_AREA_LIGHT_POSITION_5")
-				autoID = GLSLProgramParam::POLY_AREA_LIGHT_POSITION_5;
-			else if(pid == "POLY_AREA_LIGHT_POSITION_6")
-				autoID = GLSLProgramParam::POLY_AREA_LIGHT_POSITION_6;
-			else if(pid == "POLY_AREA_LIGHT_POSITION_7")
-				autoID = GLSLProgramParam::POLY_AREA_LIGHT_POSITION_7;
-			
-			else if(pid == "POLY_SPOT_LIGHT_POSITION_0")
-				autoID = GLSLProgramParam::POLY_SPOT_LIGHT_POSITION_0;
-			else if(pid == "POLY_SPOT_LIGHT_POSITION_1")
-				autoID = GLSLProgramParam::POLY_SPOT_LIGHT_POSITION_1;
-			else if(pid == "POLY_SPOT_LIGHT_POSITION_2")
-				autoID = GLSLProgramParam::POLY_SPOT_LIGHT_POSITION_2;
-			else if(pid == "POLY_SPOT_LIGHT_POSITION_3")
-				autoID = GLSLProgramParam::POLY_SPOT_LIGHT_POSITION_3;
-			
-			
-			else if(pid == "POLY_AREA_LIGHT_COLOR_0")
-				autoID = GLSLProgramParam::POLY_AREA_LIGHT_COLOR_0;
-			else if(pid == "POLY_AREA_LIGHT_COLOR_1")
-				autoID = GLSLProgramParam::POLY_AREA_LIGHT_COLOR_1;
-			else if(pid == "POLY_AREA_LIGHT_COLOR_2")
-				autoID = GLSLProgramParam::POLY_AREA_LIGHT_COLOR_2;
-			else if(pid == "POLY_AREA_LIGHT_COLOR_3")
-				autoID = GLSLProgramParam::POLY_AREA_LIGHT_COLOR_3;
-			else if(pid == "POLY_AREA_LIGHT_COLOR_4")
-				autoID = GLSLProgramParam::POLY_AREA_LIGHT_COLOR_4;
-			else if(pid == "POLY_AREA_LIGHT_COLOR_5")
-				autoID = GLSLProgramParam::POLY_AREA_LIGHT_COLOR_5;
-			else if(pid == "POLY_AREA_LIGHT_COLOR_6")
-				autoID = GLSLProgramParam::POLY_AREA_LIGHT_COLOR_6;
-			else if(pid == "POLY_AREA_LIGHT_COLOR_7")
-				autoID = GLSLProgramParam::POLY_AREA_LIGHT_COLOR_7;
-			
-			else if(pid == "POLY_SPOT_LIGHT_COLOR_0")
-				autoID = GLSLProgramParam::POLY_SPOT_LIGHT_COLOR_0;
-			else if(pid == "POLY_SPOT_LIGHT_COLOR_1")
-				autoID = GLSLProgramParam::POLY_SPOT_LIGHT_COLOR_1;
-			else if(pid == "POLY_SPOT_LIGHT_COLOR_2")
-				autoID = GLSLProgramParam::POLY_SPOT_LIGHT_COLOR_2;
-			else if(pid == "POLY_SPOT_LIGHT_COLOR_3")
-				autoID = GLSLProgramParam::POLY_SPOT_LIGHT_COLOR_3;
-			
-			else if(pid == "POLY_SPOT_LIGHT_DIRECTION_0")
-				autoID = GLSLProgramParam::POLY_SPOT_LIGHT_DIRECTION_0;		
-			else if(pid == "POLY_SPOT_LIGHT_DIRECTION_1")
-				autoID = GLSLProgramParam::POLY_SPOT_LIGHT_DIRECTION_1;		
-			else if(pid == "POLY_SPOT_LIGHT_DIRECTION_2")
-				autoID = GLSLProgramParam::POLY_SPOT_LIGHT_DIRECTION_2;		
-			else if(pid == "POLY_SPOT_LIGHT_DIRECTION_3")
-				autoID = GLSLProgramParam::POLY_SPOT_LIGHT_DIRECTION_3;
-			
-			else if(pid == "POLY_SPOT_LIGHT_TEXTUREMATRIX_0")
-				autoID = GLSLProgramParam::POLY_SPOT_LIGHT_TEXTUREMATRIX_0;
-			else if(pid == "POLY_SPOT_LIGHT_TEXTUREMATRIX_1")
-				autoID = GLSLProgramParam::POLY_SPOT_LIGHT_TEXTUREMATRIX_1;
-			else if(pid == "POLY_SPOT_LIGHT_TEXTUREMATRIX_2")
-				autoID = GLSLProgramParam::POLY_SPOT_LIGHT_TEXTUREMATRIX_2;
-			else if(pid == "POLY_SPOT_LIGHT_TEXTUREMATRIX_3")
-				autoID = GLSLProgramParam::POLY_SPOT_LIGHT_TEXTUREMATRIX_3;		
-			
-			else if(pid == "POLY_MODELVIEW_MATRIX")
-				autoID = GLSLProgramParam::POLY_MODELVIEW_MATRIX;
-			else if(pid == "POLY_MODELVIEW_INVERSE_MATRIX")
-				autoID = GLSLProgramParam::POLY_MODELVIEW_INVERSE_MATRIX;
-			else if(pid == "POLY_EXPOSURE_LEVEL")
-				autoID = GLSLProgramParam::POLY_EXPOSURE_LEVEL;
-			else if(pid == "POLY_CLEARCOLOR")
-				autoID = GLSLProgramParam::POLY_CLEARCOLOR;		
-			else if(pid == "POLY_AMBIENTCOLOR")
-				autoID = GLSLProgramParam::POLY_AMBIENTCOLOR;				
-			else
-				isAuto = false;
-		} else {
-			defaultData = GLSLProgramParam::createParamData(&paramType, nodeElement->Attribute("type"), nodeElement->Attribute("default"));
+		if(nodeElement->Attribute("auto")) {
+			if(strcmp(nodeElement->Attribute("auto"), "true") == 0) {
+				isAuto = true;
+			}
 		}
 		
-		program->addParam(nodeElement->Attribute("name"), isAuto, autoID, paramType, defaultData);
+		GLSLProgramParam::createParamData(&paramType, nodeElement->Attribute("type"), nodeElement->Attribute("default"), nodeElement->Attribute("min"), nodeElement->Attribute("max"), &defaultData, &minData, &maxData);
+		
+		return program->addParam(nodeElement->Attribute("name"), nodeElement->Attribute("type"), nodeElement->Attribute("default"), isAuto, autoID, paramType, defaultData, minData, maxData);
 }
 
 void GLSLShaderModule::reloadPrograms() {

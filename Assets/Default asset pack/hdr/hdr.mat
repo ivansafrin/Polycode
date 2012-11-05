@@ -7,11 +7,20 @@
 				</params>				
 			</vp>
 			<fp source="NorColSpecHDR.frag">
-				<params>			
-				</params>				
+				<params>
+					<param type="Number" name="shininess" default="50.0" min="2.0" max="100.0"/>
+					<param type="Color" name="diffuse_color" default="1.0 1.0 1.0 1.0"/>
+					<param type="Color" name="specular_color" default="1.0 1.0 1.0 1.0"/>
+					<param type="Color" name="ambient_color" auto="true"/>							
+				</params>
+				<textures>
+					<texture name="diffuse"/>
+					<texture name="normal_map"/>
+					<texture name="specular_map"/>										
+				</textures>								
 			</fp>
 		</shader>	
-		<shader type="glsl" name="HDRProcessShader">
+		<shader type="glsl" name="HDRProcessShader" screen="true">
 			<vp source="ScreenShader.vert"/>
 			<fp source="HDRProcess.frag">
 				<params>
@@ -19,7 +28,7 @@
 				</params>								
 			</fp>
 		</shader>		
-		<shader type="glsl" name="HDRProcessShaderBloom">
+		<shader type="glsl" name="HDRProcessShaderBloom" screen="true">
 			<vp source="ScreenShader.vert"/>
 			<fp source="HDRProcessBloom.frag">
 				<params>
@@ -28,19 +37,19 @@
 				</params>								
 			</fp>			
 		</shader>		
-		<shader type="glsl" name="HDRBloomH">
+		<shader type="glsl" name="HDRBloomH" screen="true">
 			<vp source="ScreenShader.vert"/>
 			<fp source="HDRBloomH.frag"/>
 		</shader>
-		<shader type="glsl" name="HDRBloomV">
+		<shader type="glsl" name="HDRBloomV" screen="true">
 			<vp source="ScreenShader.vert"/>
 			<fp source="HDRBloomV.frag"/>
 		</shader>	
-		<shader type="glsl" name="PassThrough">
+		<shader type="glsl" name="PassThrough" screen="true">
 			<vp source="ScreenShader.vert"/>
 			<fp source="PassThrough.frag"/>
 		</shader>	
-		<shader type="glsl" name="ExtractBloom">
+		<shader type="glsl" name="ExtractBloom" screen="true">
 			<vp source="ScreenShader.vert"/>
 			<fp source="ExtractBloom.frag">
 				<params>
@@ -50,11 +59,11 @@
 		</shader>							
 	</shaders>
 	<materials>
-		<material name="HDRProcess">
+		<material name="HDRProcess" screen="true">
 			<shader name="HDRProcessShader">
 			</shader>
 		</material>	
-		<material name="HDRProcessBloom">
+		<material name="HDRProcessBloom" screen="true">
 			<rendertargets type="rgba_fp16">
 				<rendertarget id="base_target"  sizeMode="normalized" width="1.0" height="1.0"/>			
 				<rendertarget id="bloomtarget"  sizeMode="pixels" width="512" height="512"/>

@@ -24,8 +24,10 @@
 
 #include "Polycode.h"
 #include "OSBasics.h"
+#include "PolycodeProject.h"
 
 using namespace Polycode;
+
 
 class PolycodeEditor : public ScreenEntity { 
 public:
@@ -46,6 +48,8 @@ public:
 	
 	String getEditorType() { return editorType; }
 	
+	PolycodeProject *parentProject;
+		
 protected:
 	String filePath;
 	bool _isReadOnly;
@@ -53,6 +57,7 @@ protected:
 	Vector2 editorSize;
 	
 	String editorType;
+	
 };
 
 

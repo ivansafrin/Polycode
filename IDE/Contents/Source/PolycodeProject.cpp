@@ -129,10 +129,15 @@ bool PolycodeProject::saveFile() {
 	configFile.root["entryPoint"]->stringVal = data.entryPoint;
 	
 	ObjectEntry *color = configFile.root["backgroundColor"];
+	
 	(*color)["red"]->NumberVal = data.backgroundColorR;
+	(*color)["red"]->type = ObjectEntry::FLOAT_ENTRY;
+	
 	(*color)["green"]->NumberVal = data.backgroundColorG;
+	(*color)["green"]->type = ObjectEntry::FLOAT_ENTRY;
+		
 	(*color)["blue"]->NumberVal = data.backgroundColorB;
-
+	(*color)["blue"]->type = ObjectEntry::FLOAT_ENTRY;
 
 	if(configFile.root["modules"]) {
 		configFile.root["modules"]->Clear();

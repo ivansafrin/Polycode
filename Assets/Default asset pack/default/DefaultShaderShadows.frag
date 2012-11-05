@@ -1,13 +1,20 @@
 varying vec3 normal;
 varying vec4 pos;
 varying vec4 vertexColor;
+varying vec4 ShadowCoord0;
+varying vec4 ShadowCoord1;
+
 uniform sampler2D diffuse;
 uniform sampler2D shadowMap0;
 uniform sampler2D shadowMap1;
-varying vec4 ShadowCoord0;
-varying vec4 ShadowCoord1;
+
 uniform mat4 shadowMatrix0;
 uniform mat4 shadowMatrix1;
+
+uniform vec4 diffuse_color;
+uniform vec4 specular_color;
+uniform vec4 ambient_color;
+uniform float shininess;
 
 
 float calculateAttenuation(in int i, in float dist)
@@ -18,9 +25,9 @@ float calculateAttenuation(in int i, in float dist)
 }
 
 void pointLight(in int i, in vec3 normal, in vec4 pos, inout vec4 diffuse, inout vec4 specular) {
-	vec4 color = gl_FrontMaterial.diffuse;
-	vec4 matspec = gl_FrontMaterial.specular;
-	float shininess = gl_FrontMaterial.shininess;
+	vec4 color = diffuse_color;
+	vec4 matspec = specular_color;
+	float shininess = shininess;
 	vec4 lightspec = gl_LightSource[i].specular;
 	vec4 lpos = gl_LightSource[i].position;
 	vec4 s = pos-lpos; 
@@ -56,9 +63,9 @@ void spotLight(in int i, in vec3 normal, in vec4 pos, inout vec4 diffuse, inout 
 	if (shadowCoordinateWdivide.x > 0.01 && shadowCoordinateWdivide.y > 0.01 && shadowCoordinateWdivide.x < 0.99 && shadowCoordinateWdivide.y < 0.99)
 		shadow = distanceFromLight < shadowCoordinateWdivide.z ? 0.0 : 1.0 ;
 	
-	vec4 color = gl_FrontMaterial.diffuse;
-	vec4 matspec = gl_FrontMaterial.specular;
-	float shininess = gl_FrontMaterial.shininess;
+	vec4 color = diffuse_color;
+	vec4 matspec = specular_color;
+	float shininess = shininess;
 	vec4 lightspec = gl_LightSource[i].specular;
 	vec4 lpos = gl_LightSource[i].position;
 	vec4 s = pos-lpos; 
@@ -115,16 +122,13 @@ void main()
 	vec4 diffuse_val  = vec4(0.0);
 	vec4 specular_val = vec4(0.0);
 	doLights(6, normal, pos, diffuse_val, specular_val);
-	diffuse_val.a = 1.0;
-	specular_val.a = 1.0;
 		
 	vec4 texColor = texture2D(diffuse, gl_TexCoord[0].st);		
 		
-    vec4 color = (diffuse_val  * 1.0) +
-                 (specular_val * 1.0)+
-                 gl_FrontMaterial.ambient;
-    color = clamp(color*vertexColor*texColor, 0.0, 1.0);
-    
+    vec4 color = diffuse_val + ambient_color;	
+    color = clamp((color*vertexColor*texColor) + specular_val, 0.0, 1.0);
+	color.a = diffuse_color.a * texColor.a;
+
     // fog
 	const float LOG2 = 1.442695;
 	float z = gl_FragCoord.z / gl_FragCoord.w;

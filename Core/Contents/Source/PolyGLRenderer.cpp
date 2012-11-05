@@ -411,14 +411,14 @@ void OpenGLRenderer::setBlendingMode(int blendingMode) {
 				glBlendFunc (GL_SRC_ALPHA, GL_ONE);
 		break;
 		case BLEND_MODE_COLOR:
-				glBlendFunc (GL_SRC_ALPHA_SATURATE, GL_ONE);
+				glBlendFunc (GL_DST_COLOR, GL_SRC_COLOR);
 		break;
 		case BLEND_MODE_PREMULTIPLIED:
 			glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 		break;
 		case BLEND_MODE_MULTIPLY:
 			glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-		break;		
+		break;
 		default:
 			glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		break;
@@ -717,27 +717,6 @@ void OpenGLRenderer::applyMaterial(Material *material,  ShaderBinding *localOpti
 		return;
 	}
 	
-
-	GLfloat data4[] = {material->diffuseColor.r, material->diffuseColor.g, material->diffuseColor.b, material->diffuseColor.a};					
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, data4);
-
-	data4[0] = material->specularColor.r;
-	data4[1] = material->specularColor.g;
-	data4[2] = material->specularColor.b;
-	data4[3] = material->specularStrength;
-				
-	glMaterialfv(GL_FRONT, GL_SPECULAR, data4);
-
-	glMaterialf(GL_FRONT, GL_SHININESS, material->specularValue);
-
-
-
-	data4[0] = ambientColor.r;
-	data4[1] = ambientColor.g;
-	data4[2] = ambientColor.b;
-	data4[3] = 1.0;
-	glMaterialfv(GL_FRONT, GL_AMBIENT, data4);
-
 	FixedShaderBinding *fBinding;
 	
 	switch(material->getShader(shaderIndex)->getType()) {
@@ -763,6 +742,8 @@ void OpenGLRenderer::applyMaterial(Material *material,  ShaderBinding *localOpti
 			}
 		break;
 	}
+	
+	setBlendingMode(material->blendingMode);
 }
 
 void OpenGLRenderer::clearShader() {

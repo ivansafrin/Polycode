@@ -45,22 +45,10 @@ namespace Polycode {
 		
 	protected:
 
-		void addParamToProgram(GLSLProgram *program,TiXmlNode *node);		
+		GLSLProgramParam addParamToProgram(GLSLProgram *program,TiXmlNode *node);		
 		void recreateGLSLProgram(GLSLProgram *prog, const String& fileName, int type);
 		GLSLProgram *createGLSLProgram(const String& fileName, int type);
-		void updateGLSLParam(Renderer *renderer, GLSLShader *glslShader, GLSLProgramParam &param, ShaderBinding *materialOptions, ShaderBinding *localOptions);		
-			
-		void setGLSLAreaLightPositionParameter(Renderer *renderer, GLSLProgramParam &param, int lightIndex);
-		void setGLSLAreaLightColorParameter(Renderer *renderer, GLSLProgramParam &param, int lightIndex);	
-		
-		void setGLSLSpotLightPositionParameter(Renderer *renderer, GLSLProgramParam &param, int lightIndex);
-		void setGLSLSpotLightDirectionParameter(Renderer *renderer, GLSLProgramParam &param, int lightIndex);
-		void setGLSLSpotLightColorParameter(Renderer *renderer, GLSLProgramParam &param, int lightIndex);	
-		void setGLSLSpotLightTextureMatrixParameter(Renderer *renderer, GLSLProgramParam &param, int lightIndex);		
-		
-//		GLSLcontext GLSLContext;
-//		GLSLprofile vertexProfile;
-//		GLSLprofile fragmentProfile;
+		void updateGLSLParam(Renderer *renderer, GLSLShader *glslShader, GLSLProgramParam &param, ShaderBinding *materialOptions, ShaderBinding *localOptions);			
 		
 		std::vector<GLSLProgram*> programs;
 	};

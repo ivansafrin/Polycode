@@ -46,6 +46,7 @@ Renderer::Renderer() : currentTexture(NULL), xRes(0), yRes(0), renderMode(0), or
 	fov = 45.0;
 	setAmbientColor(0.0,0.0,0.0);
 	cullingFrontFaces = false;
+	
 }
 
 Renderer::~Renderer() {
@@ -317,6 +318,28 @@ void Renderer::billboardMatrix() {
 	matrix.m[2][1] = 0;
 	matrix.m[2][2] = 1;
 	setModelviewMatrix(matrix);
+}
+
+void *Renderer::getDataPointerForName(const String &name) {
+	if(name == "ambient_color") {
+		return (void*)&ambientColor;
+	}
+}
+
+void Renderer::setRendererShaderParams(Shader *shader, ShaderBinding *binding) {
+	for(int i=0; i < shader->expectedFragmentParams.size(); i++) {
+		if(shader->expectedFragmentParams[i].isAuto) {
+			binding->addLocalParam(shader->expectedFragmentParams[i].name, getDataPointerForName(shader->expectedFragmentParams[i].name));
+		}
+	}
+
+	for(int i=0; i < shader->expectedVertexParams.size(); i++) {
+		if(shader->expectedVertexParams[i].isAuto) {			
+			binding->addLocalParam(shader->expectedVertexParams[i].name, getDataPointerForName(shader->expectedVertexParams[i].name));
+		}
+	}
+
+
 }
 
 void Renderer::pushDataArrayForMesh(Mesh *mesh, int arrayType) {

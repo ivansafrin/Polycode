@@ -23,21 +23,30 @@
 #include "PolyMaterial.h"
 #include "PolyLogger.h"
 #include "PolyShader.h"
+#include "PolyRenderer.h"
+#include "PolyCoreServices.h"
 
 using namespace Polycode;
 
 Material::Material(const String& name) : Resource(Resource::RESOURCE_MATERIAL) {
 	this->name = name;
-	specularValue = 75.0;
-	specularStrength = 1.0;
 	fp16RenderTargets = false;
 	shaderModule = NULL;
+	blendingMode = Renderer::BLEND_MODE_NORMAL;
 }
 
 Material::~Material() {
 	
 	Logger::log("deleting material (%s)\n", name.c_str());
 	
+	clearShaders();
+}
+
+void Material::setName(const String &name) {
+	this->name = name;
+}
+
+void Material::clearShaders() {
 	// do not delete shaders here, they're shared
 /*	
 	for(int i=0; i < materialShaders.size(); i++)	{
@@ -54,12 +63,30 @@ Material::~Material() {
 	for(int i=0; i < renderTargets.size(); i++)	{
 		delete renderTargets[i];
 	}
-	renderTargets.clear();	
+	renderTargets.clear();		
 }
-
+			
 void Material::addShader(Shader *shader,ShaderBinding *shaderBinding) {
 	materialShaders.push_back(shader);
 	shaderBindings.push_back(shaderBinding);
+	
+	for(int i=0; i < shader->expectedFragmentParams.size(); i++) {
+		if(!shaderBinding->getLocalParamByName(shader->expectedFragmentParams[i].name)) {
+		if(!shader->expectedFragmentParams[i].isAuto) {
+			shaderBinding->addParam(shader->expectedFragmentParams[i].typeString, shader->expectedFragmentParams[i].name, shader->expectedFragmentParams[i].valueString);
+		}
+		}
+	}		
+	
+	for(int i=0; i < shader->expectedVertexParams.size(); i++) {
+		if(!shaderBinding->getLocalParamByName(shader->expectedVertexParams[i].name)) {
+		if(!shader->expectedVertexParams[i].isAuto) {	
+			shaderBinding->addParam(shader->expectedVertexParams[i].typeString, shader->expectedVertexParams[i].name, shader->expectedVertexParams[i].valueString);
+		}
+		}
+	}	
+	
+	CoreServices::getInstance()->getRenderer()->setRendererShaderParams(shader, shaderBinding);	
 }
 
 
@@ -72,11 +99,19 @@ const String& Material::getName() const {
 }
 
 Shader *Material::getShader(unsigned int index) const {
-	return materialShaders[index];
+	if(index < materialShaders.size()) { 
+		return materialShaders[index];
+	} else {
+		return NULL;
+	}
 }
 
 ShaderBinding *Material::getShaderBinding(unsigned int index) const {
-	return shaderBindings[index];
+	if(index < shaderBindings.size()) {
+		return shaderBindings[index]; 
+	} else {
+		return NULL;
+	}
 }
 
 void Material::loadMaterial(const String& fileName) {

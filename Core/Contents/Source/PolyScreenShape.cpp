@@ -89,10 +89,10 @@ ScreenShape::ScreenShape(int shapeType, Number option1, Number option2, Number o
 }
 
 void ScreenShape::setShapeSize(Number newWidth, Number newHeight) {
-	width = newWidth;
-	height = newHeight;
-	
-	setHitbox(width, height);
+
+	setWidth(newWidth);
+	setHeight(newHeight);
+
 	
 	Number whalf = floor(width/2.0f);
 	Number hhalf = floor(height/2.0f);
@@ -115,6 +115,8 @@ void ScreenShape::setShapeSize(Number newWidth, Number newHeight) {
 		default:
 		break;
 	}
+	
+		
 	mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
 	rebuildTransformMatrix();
 	matrixDirty = true;
@@ -168,6 +170,7 @@ void ScreenShape::Render() {
 	ScreenMesh::Render();
 
 	if(strokeEnabled) {
+		renderer->setTexture(NULL);
 		if(lineSmooth) {
 				renderer->setLineSmooth(true);
 		}

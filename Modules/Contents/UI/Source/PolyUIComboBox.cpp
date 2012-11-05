@@ -130,14 +130,23 @@ UIComboBox::~UIComboBox() {
 
 }
 
-int UIComboBox::addComboItem(String itemName) {
+int UIComboBox::addComboItem(String itemName, void *data) {
 	UIComboBoxItem *newItem = new UIComboBoxItem(itemName, comboWidth, comboHeight);
+	newItem->data = data;
 	items.push_back(newItem);
 	dropDownBox->addChild(newItem);
 	newItem->setPosition(0,nextItemHeight);
 	nextItemHeight += comboHeight;
 	dropDownBox->resizeBox(comboWidth, nextItemHeight);
 	return items.size()-1;
+}
+
+UIComboBoxItem *UIComboBox::getSelectedItem() {
+	if(selectedIndex < items.size()) {
+		return items[selectedIndex];
+	} else {
+		return NULL;
+	}
 }
 
 void UIComboBox::toggleDropDown() {
@@ -158,7 +167,18 @@ void UIComboBox::setSelectedIndex(unsigned int newIndex) {
 	if(newIndex < items.size()) {
 		selectedIndex = newIndex;				
 		selectedLabel->setText(items[selectedIndex]->label);		
+		isDroppedDown = false;
+		updateVis();
+		dispatchEvent(new UIEvent(), UIEvent::CHANGE_EVENT);
 	}
+}
+
+unsigned int UIComboBox::getNumItems() {
+	return items.size();
+}
+
+UIComboBoxItem *UIComboBox::getItemAtIndex(unsigned int index) {
+	return items[index];
 }
 				
 void UIComboBox::handleEvent(Event *event) {
@@ -178,10 +198,7 @@ void UIComboBox::handleEvent(Event *event) {
 			break;
 			case InputEvent::EVENT_MOUSEDOWN:
 			{
-				selectedIndex = selectedOffset;				
-				selectedLabel->setText(items[selectedIndex]->label);				
-				isDroppedDown = false;
-				updateVis();				
+				setSelectedIndex(selectedOffset);
 			}
 			break;
 		}	

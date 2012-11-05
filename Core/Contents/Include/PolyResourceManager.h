@@ -53,13 +53,19 @@ namespace Polycode {
 			void addDirResource(const String& dirPath, bool recursive=true);
 			
 			/**
-			* Adds a zip as a readable source. This doesn't actually load resources from it, just mounts it as a readable source, so you can call addDirResource on the folders inside of it like you would on regular folders. Most other disk IO in the engine (loading images, etc.) will actually check mounted archive files as well.
+			* Adds a zip or folder as a readable source. This doesn't actually load resources from it, just mounts it as a readable source, so you can call addDirResource on the folders inside of it like you would on regular folders. Most other disk IO in the engine (loading images, etc.) will actually check mounted archive files as well.
 			*/
-			void addArchive(const String& zipPath);
+			void addArchive(const String& path);
+
+			/**
+			* Removes a zip or folder as a readable source.
+			*/
+			void removeArchive(const String& path);
+
 		
 			bool readFile(const String& fileName) { return false;}
 		
-			void parseTextures(const String& dirPath, bool recursive);
+			void parseTextures(const String& dirPath, bool recursive, const String& basePath);
 			void parseMaterials(const String& dirPath, bool recursive);
 			void parseShaders(const String& dirPath, bool recursive);
 			void parsePrograms(const String& dirPath, bool recursive);

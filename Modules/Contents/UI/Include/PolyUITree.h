@@ -56,6 +56,8 @@ namespace Polycode {
 			void setIcon(String iconFile);
 			void setSelected();
 			
+			void setLabelText(const String &text);
+			
 			void Resize(Number width);
 		
 			int getNumTreeChildren() { return treeChildren.size(); }

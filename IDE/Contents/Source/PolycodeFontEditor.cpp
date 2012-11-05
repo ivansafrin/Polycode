@@ -36,7 +36,7 @@ bool PolycodeFontEditor::openFile(OSFileEntry filePath) {
 	
 	
 	
-	grid = new ScreenImage("editorGrid.png");
+	grid = new ScreenImage("Images/editorGrid.png");
 	
 	addChild(grid);
 	grid->snapToPixels = true;
@@ -45,7 +45,7 @@ bool PolycodeFontEditor::openFile(OSFileEntry filePath) {
 	grid->getTexture()->recreateFromImageData();	
 	
 //	bg = new ScreenShape(ScreenShape::SHAPE_RECT, 10,10);
-	bg = new UIBox("fontBox.png", 29,9,9,9, 10,10);	
+	bg = new UIBox("Images/fontBox.png", 29,9,9,9, 10,10);	
 	bg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	bg->setPosition(-50,-50);
 	

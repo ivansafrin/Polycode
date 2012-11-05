@@ -62,27 +62,29 @@ NewProjectWindow::NewProjectWindow() : UIWindow(L"Create New Project", 480, 280)
 		}
 	}
 	
-	ScreenLabel *label2 = new ScreenLabel(L"Project Name", fontSize, fontName, Label::ANTIALIAS_FULL);
+	ScreenLabel *label2 = new ScreenLabel(L"PROJECT NAME", 22, "section", Label::ANTIALIAS_FULL);
+	label2->color.a = 0.4;
 	addChild(label2);
 	label2->setPosition(padding+220, templateContainer->getPosition().y);		
 
-	projectNameInput = new UITextInput(false, 500-padding-220-padding-padding, 12);	
+	projectNameInput = new UITextInput(false, 500-padding-210-padding-padding, 12);	
 	addChild(projectNameInput);
-	projectNameInput->setPosition(label2->getPosition().x, label2->getPosition().y+label2->getHeight()+2);
+	projectNameInput->setPosition(label2->getPosition().x, label2->getPosition().y+label2->getHeight()-6);
 	
-	ScreenLabel *label3 = new ScreenLabel(L"Project Location", fontSize, fontName, Label::ANTIALIAS_FULL);
+	ScreenLabel *label3 = new ScreenLabel(L"PROJECT LOCATION", 22, "section", Label::ANTIALIAS_FULL);
+	label3->color.a = 0.4;
 	addChild(label3);
-	label3->setPosition(padding+220, templateContainer->getPosition().y+50);		
+	label3->setPosition(padding+220, templateContainer->getPosition().y+60);		
 	
-	projectLocationInput = new UITextInput(false, 500-padding-220-padding-padding, 12);	
+	projectLocationInput = new UITextInput(false, 500-padding-210-padding-padding, 12);	
 	addChild(projectLocationInput);
-	projectLocationInput->setPosition(label3->getPosition().x, label3->getPosition().y+label3->getHeight()+2);
+	projectLocationInput->setPosition(label3->getPosition().x, label3->getPosition().y+label3->getHeight()-6);
 
 	
 	locationSelectButton = new UIButton(L"Choose...", 100);
 	locationSelectButton->addEventListener(this, UIEvent::CLICK_EVENT);	
 	addChild(locationSelectButton);
-	locationSelectButton->setPosition(500-100-padding, projectLocationInput->getPosition().y+projectLocationInput->getHeight()+5);
+	locationSelectButton->setPosition(500-103-padding, projectLocationInput->getPosition().y+projectLocationInput->getHeight()+10);
 	
 	
 	cancelButton = new UIButton(L"Cancel", 100);

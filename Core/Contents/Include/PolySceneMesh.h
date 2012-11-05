@@ -101,6 +101,11 @@ namespace Polycode {
 			void setTexture(Texture *texture);
 
 			/**
+			* Clears the currently applied material
+			*/
+			void clearMaterial();
+
+			/**
 			* Set material from existing Material instance.
 			* @param material Material to apply.
 			*/												

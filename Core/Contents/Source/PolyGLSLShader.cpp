@@ -66,7 +66,15 @@ GLSLShaderBinding::~GLSLShaderBinding() {
 	
 }
 
-
+Texture *GLSLShaderBinding::getTexture(const String& name) {
+	for(int i=0; i < textures.size(); i++) {
+		if(textures[i].name == name) {			
+			return textures[i].texture;
+		}
+	}
+	return NULL;
+}
+			
 void GLSLShaderBinding::addTexture(const String& name, Texture *texture) {
 	GLSLTextureBinding binding;
 	binding.name = name;
@@ -95,7 +103,10 @@ void GLSLShaderBinding::clearTexture(const String& name) {
 
 void GLSLShaderBinding::addParam(const String& type, const String& name, const String& value) {
 	int paramType;
-	void *defaultData = GLSLProgramParam::createParamData(&paramType, type, value);
+	void *defaultData;
+	void *minData;
+	void *maxData;		
+	GLSLProgramParam::createParamData(&paramType, type, value, "", "", &defaultData,&minData, &maxData);
 	LocalShaderParam *newParam = new LocalShaderParam;
 	newParam->data = defaultData;
 	newParam->name = name;

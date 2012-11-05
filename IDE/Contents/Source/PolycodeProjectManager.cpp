@@ -87,6 +87,18 @@ PolycodeProject *PolycodeProjectManager::getProjectByProjectFile(String projectF
 	return NULL;
 }
 
+void PolycodeProjectManager::setActiveProject(PolycodeProject* project) {
+	if(project != activeProject) {
+		
+		if(activeProject != NULL) {
+			CoreServices::getInstance()->getResourceManager()->removeArchive(activeProject->getRootFolder());		
+		}
+		
+		activeProject = project;
+		CoreServices::getInstance()->getResourceManager()->addArchive(project->getRootFolder());
+	}
+}
+
 void PolycodeProjectManager::createNewFile(String templatePath, String newFileName) {
 	if(activeFolder == "")
 		return;

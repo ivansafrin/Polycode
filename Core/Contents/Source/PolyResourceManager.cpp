@@ -74,6 +74,7 @@ void ResourceManager::parseShaders(const String& dirPath, bool recursive) {
 								Logger::log("Adding shader %s\n", newShader->getName().c_str());
 								newShader->setResourceName(newShader->getName());
 								resources.push_back(newShader);
+								 CoreServices::getInstance()->getMaterialManager()->registerShader(newShader);
 							}
 						}
 					}
@@ -119,24 +120,14 @@ void ResourceManager::parseMaterials(const String& dirPath, bool recursive) {
 	
 	for(int i=0; i < resourceDir.size(); i++) {	
 		if(resourceDir[i].type == OSFileEntry::TYPE_FILE) {
-			if(resourceDir[i].extension == "mat") {
-				Logger::log("Adding materials from %s\n", resourceDir[i].nameWithoutExtension.c_str());
-				TiXmlDocument doc(resourceDir[i].fullPath.c_str());
-				doc.LoadFile();
-				if(doc.Error()) {
-					Logger::log("XML Error: %s\n", doc.ErrorDesc());
-				} else {
-					TiXmlElement *mElem = doc.RootElement()->FirstChildElement("materials");
-					if(mElem) {
-						TiXmlNode* pChild;					
-						for (pChild = mElem->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {
-							Material *newMat = CoreServices::getInstance()->getMaterialManager()->materialFromXMLNode(pChild);
-							if (newMat) {
-								newMat->setResourceName(newMat->getName());
-								resources.push_back(newMat);
-							}
-						}
-					}
+			if(resourceDir[i].extension == "mat") {				
+				MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();			
+				std::vector<Material*> materials = materialManager->loadMaterialsFromFile(resourceDir[i].fullPath);
+
+				for(int m=0; m < materials.size(); m++) {
+					materials[m]->setResourceName(materials[m]->getName());
+					resources.push_back(materials[m]);
+					materialManager->addMaterial(materials[m]);
 				}
 			}
 		} else {
@@ -183,7 +174,7 @@ void ResourceManager::addResource(Resource *resource) {
 	resources.push_back(resource);
 }
 
-void ResourceManager::parseTextures(const String& dirPath, bool recursive) {
+void ResourceManager::parseTextures(const String& dirPath, bool recursive, const String& basePath) {
 	vector<OSFileEntry> resourceDir;
 	resourceDir = OSBasics::parseFolder(dirPath, false);
 	for(int i=0; i < resourceDir.size(); i++) {	
@@ -192,13 +183,22 @@ void ResourceManager::parseTextures(const String& dirPath, bool recursive) {
 				Logger::log("Adding texture %s\n", resourceDir[i].nameWithoutExtension.c_str());
 				Texture *t = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(resourceDir[i].fullPath);
 				if(t) {
-					t->setResourceName(resourceDir[i].name);
+					if(basePath == "") {
+						t->setResourceName(resourceDir[i].name);					
+					} else {
+						t->setResourceName(basePath+"/"+resourceDir[i].name);
+					}
 					resources.push_back(t);
 				}
 			}
 		} else {
-			if(recursive)
-				parseTextures(dirPath+"/"+resourceDir[i].name, true);
+			if(recursive) {
+				if(basePath == "") {			
+					parseTextures(dirPath+"/"+resourceDir[i].name, true, resourceDir[i].name);
+				} else {
+					parseTextures(dirPath+"/"+resourceDir[i].name, true, basePath+"/"+resourceDir[i].name);
+				}
+			}
 		}
 	}
 }
@@ -220,17 +220,21 @@ void ResourceManager::parseOthers(const String& dirPath, bool recursive) {
 }
 
 
-void ResourceManager::addArchive(const String& zipPath) {
-//	if(PHYSFS_addToSearchPath(zipPath.c_str(), 1, getThreadID()) == 0) {
-	if(PHYSFS_addToSearchPath(zipPath.c_str(), 1) == 0) {	
+void ResourceManager::addArchive(const String& path) {
+	if(PHYSFS_addToSearchPath(path.c_str(), 1) == 0) {	
 		Logger::log("Error adding archive to resource manager... %s\n", PHYSFS_getLastError());
 	} else {
-		Logger::log("Added archive: %s\n", zipPath.c_str());
+		Logger::log("Added archive: %s\n", path.c_str());
 	}
 }
 
+void ResourceManager::removeArchive(const String& path) {
+	PHYSFS_removeFromSearchPath(path.c_str());
+}
+
+
 void ResourceManager::addDirResource(const String& dirPath, bool recursive) {
-	parseTextures(dirPath, recursive);
+	parseTextures(dirPath, recursive, "");
 	parsePrograms(dirPath, recursive);
 	parseShaders(dirPath, recursive);
 	parseCubemaps(dirPath, recursive);	
@@ -246,9 +250,11 @@ Resource *ResourceManager::getResource(int resourceType, const String& resourceN
 			return resources[i];
 		}
 	}
-	if(resourceType == Resource::RESOURCE_TEXTURE && resourceName != "default.png")
-		return getResource(Resource::RESOURCE_TEXTURE, "default.png");
-		
+	
+	if(resourceType == Resource::RESOURCE_TEXTURE && resourceName != "default/default.png") {
+		Logger::log("Texture not found, using default\n");
+		return getResource(Resource::RESOURCE_TEXTURE, "default/default.png");
+	}	
 	Logger::log("return NULL\n");
 	// need to add some sort of default resource for each type
 	return NULL;
