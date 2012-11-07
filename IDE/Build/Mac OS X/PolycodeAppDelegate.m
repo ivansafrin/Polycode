@@ -95,6 +95,11 @@
 	app->runProject();
 }
 
+-(IBAction) exportProject: (id) sender {
+	app->exportProject();
+}
+
+
 -(IBAction) newProject: (id) sender {
 	app->newProject();
 }

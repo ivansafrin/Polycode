@@ -119,6 +119,9 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	newFileWindow = new NewFileWindow();
 	newFileWindow->visible = false;
 	
+	exportProjectWindow = new ExportProjectWindow();
+	exportProjectWindow->visible = false;
+	
 	textInputPopup = new TextInputPopup();
 	textInputPopup->visible = false;
 	

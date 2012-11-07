@@ -1124,6 +1124,14 @@
 					</object>
 					<int key="connectionID">590</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">exportProject:</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="656074920"/>
+					</object>
+					<int key="connectionID">591</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -1889,7 +1897,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">590</int>
+			<int key="maxID">591</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1903,6 +1911,7 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>browseExamples:</string>
 							<string>closeProject:</string>
+							<string>exportProject:</string>
 							<string>findText:</string>
 							<string>newFile:</string>
 							<string>newGroup:</string>
@@ -1916,6 +1925,7 @@
 						</object>
 						<object class="NSArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -1936,6 +1946,7 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>browseExamples:</string>
 							<string>closeProject:</string>
+							<string>exportProject:</string>
 							<string>findText:</string>
 							<string>newFile:</string>
 							<string>newGroup:</string>
@@ -1955,6 +1966,10 @@
 							</object>
 							<object class="IBActionInfo">
 								<string key="name">closeProject:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">exportProject:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">

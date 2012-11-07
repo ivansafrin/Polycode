@@ -150,7 +150,6 @@ NSMutableAttributedString *str = [[NSMutableAttributedString alloc ]initWithStri
 {
 	[self destroyPlayer];
 	[super close];
-
 }
 
 

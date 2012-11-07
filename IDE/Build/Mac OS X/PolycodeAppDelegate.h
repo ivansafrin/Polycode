@@ -58,6 +58,7 @@ public:
 -(IBAction) newGroup: (id) sender;
 -(IBAction) browseExamples: (id) sender;
 -(IBAction) runProject: (id) sender;
+-(IBAction) exportProject: (id) sender;
 -(IBAction) newProject: (id) sender;
 -(IBAction) closeProject: (id) sender;
 -(IBAction) newFile: (id) sender;

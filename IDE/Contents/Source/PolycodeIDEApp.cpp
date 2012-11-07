@@ -65,6 +65,7 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 
 	frame->textInputPopup->addEventListener(this, UIEvent::OK_EVENT);	
 	frame->newProjectWindow->addEventListener(this, UIEvent::OK_EVENT);
+	frame->exportProjectWindow->addEventListener(this, UIEvent::OK_EVENT);
 	frame->newFileWindow->addEventListener(this, UIEvent::OK_EVENT);	
 	frame->exampleBrowserWindow->addEventListener(this, UIEvent::OK_EVENT);
 	
@@ -92,13 +93,6 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	editorManager->registerEditorFactory(new PolycodeTextEditorFactory());
 	editorManager->registerEditorFactory(new PolycodeProjectEditorFactory(projectManager));
 		
-	
-	
-//	CoreServices::getInstance()->getResourceManager()->addArchive(RESOURCE_PATH"tomato.polyapp");
-	
-//	ScreenImage *img = new ScreenImage("tomato.png");
-//	screen->addChild(img);
-	
 	loadConfigFile();
 }
 
@@ -180,6 +174,13 @@ void PolycodeIDEApp::stopProject() {
 	if(debugger->isConnected()) {
 		debugger->Disconnect();
 	}
+}
+
+void PolycodeIDEApp::exportProject() {
+	if(projectManager->getActiveProject()) {
+		frame->exportProjectWindow->resetForm();
+		frame->showModal(frame->exportProjectWindow);		
+	}	
 }
 
 void PolycodeIDEApp::runProject() {
@@ -353,6 +354,14 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 			frame->hideModal();			
 		}
 	}	
+
+	if(event->getDispatcher() == frame->exportProjectWindow) {
+		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {
+			projectManager->exportProject(projectManager->getActiveProject(), frame->exportProjectWindow->projectLocationInput->getText(), frame->exportProjectWindow->macCheckBox->isChecked(), frame->exportProjectWindow->winCheckBox->isChecked(), frame->exportProjectWindow->linCheckBox->isChecked());
+			frame->hideModal();			
+		}
+	}
+
 	
 	if(event->getDispatcher() == frame->newProjectWindow) {
 		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {

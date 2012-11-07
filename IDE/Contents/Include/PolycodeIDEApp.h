@@ -71,10 +71,10 @@ public:
 	void closeProject();	
 	void saveFile();
 	void findText();
-	
-	void refreshProject();
-	
 	void runProject();
+	void exportProject();
+	
+	void refreshProject();	
 	
 	const static int EVENT_SHOW_MENU = 1;
 	

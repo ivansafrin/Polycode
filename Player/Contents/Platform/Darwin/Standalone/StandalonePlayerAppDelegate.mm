@@ -17,7 +17,7 @@
 {
 	chdir([[[[NSBundle mainBundle] bundlePath] stringByAppendingString:@"/Contents/Resources"] UTF8String]);
 
-	player =  new CocoaPolycodePlayer(mainView, "main.polyapp", false);
+	player =  new CocoaPolycodePlayer(mainView, "main.polyapp", false, false);
 	player->windowData = self;	
 	player->runPlayer();
 
@@ -27,11 +27,16 @@
 
 }
 
+- (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)theApplication
+{
+	return YES;
+}
+
 - (void)animationTimer:(NSTimer *)timer
 {
 
 	if(!player->Update()) {
-		[self close];
+		[window close];
 	}
 }
 
