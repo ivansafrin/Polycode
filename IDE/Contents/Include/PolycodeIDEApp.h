@@ -79,7 +79,9 @@ public:
 	const static int EVENT_SHOW_MENU = 1;
 	
 	CocoaCore *core;	
-protected:	
+protected:
+
+	bool willRunProject;
 	PolycodeFrame *frame;
 	
 	PolycodeEditorManager *editorManager;

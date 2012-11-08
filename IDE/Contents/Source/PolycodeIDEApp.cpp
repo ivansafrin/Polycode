@@ -49,6 +49,8 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	
 //	CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_LINEAR);
 	CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_NEAREST);
+	
+	willRunProject = false;
 
 		
 	printf("creating font editor\n"); 
@@ -324,7 +326,7 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 	
 	if(event->getDispatcher() == frame->playButton) {	
 		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {
-			runProject();
+			willRunProject = true;
 		}
 	}
 
@@ -430,6 +432,11 @@ PolycodeIDEApp::~PolycodeIDEApp() {
 }
 
 bool PolycodeIDEApp::Update() {
+
+	if(willRunProject) {
+		willRunProject = false;
+		runProject();
+	}
 
 	if(debugger->isConnected()) {
 			frame->stopButton->visible = true;
