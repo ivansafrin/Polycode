@@ -69,6 +69,8 @@ class PolycodeRemoteDebugger : EventHandler {
 					
 	protected:
 		
+		bool hasErred;
+		
 		PolycodeProjectManager *projectManager;
 		
 		Server *server;

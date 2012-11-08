@@ -30,6 +30,8 @@ PolycodeRemoteDebugger::PolycodeRemoteDebugger(PolycodeProjectManager *projectMa
 
 	server->addEventListener(this, ServerEvent::EVENT_CLIENT_CONNECTED);
 	server->addEventListener(this, ServerEvent::EVENT_CLIENT_DISCONNECTED);		
+	
+	hasErred = false;
 
 }
 
@@ -69,22 +71,29 @@ void PolycodeRemoteDebugger::handleEvent(Event *event) {
 						}
 						break;	
 						case EVENT_DEBUG_ERROR:
-						{			
-							RemoteErrorData *data = (RemoteErrorData*)clientEvent->data;			
-							PolycodeConsole::print("Error in file "+String(data->fileName)+" on line "+String::IntToString(data->lineNumber)+"\n");
-							PolycodeConsole::print(String(data->errorMessage)+"\n");
-							PolycodeConsole::print("Backtrace:\n");
+						{		
+						
+							if(!hasErred) {
+								RemoteErrorData *data = (RemoteErrorData*)clientEvent->data;			
+								PolycodeConsole::print("Error in file "+String(data->fileName)+" on line "+String::IntToString(data->lineNumber)+"\n");
+								PolycodeConsole::print(String(data->errorMessage)+"\n");
+								PolycodeConsole::print("Backtrace:\n");
 							
-							CoreServices::getInstance()->getCore()->makeApplicationMain();
+								CoreServices::getInstance()->getCore()->makeApplicationMain();
+							}
+							
+//							hasErred = true;
 							
 						}
 						break;			
 						case EVENT_DEBUG_BACKTRACE_INFO:
 						{			
+
 							RemoteBacktraceData *data = (RemoteBacktraceData*)clientEvent->data;			
 							PolycodeConsole::print("In file "+String(data->fileName)+" on line "+String::IntToString(data->lineNumber)+"\n");
 							
 							PolycodeConsole::addBacktrace(String(data->fileName), data->lineNumber, projectManager->getActiveProject());
+							
 						}
 						break;							
 										

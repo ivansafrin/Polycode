@@ -617,6 +617,8 @@ namespace Polycode {
 	
 		protected:
 		
+			void checkTransformSetters();
+		
 			void *userData;
 		
 			std::vector<Entity*> children;

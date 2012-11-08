@@ -48,6 +48,7 @@ namespace Polycode {
 			ScreenLine(ScreenEntity* target1, ScreenEntity* target2);
 			virtual ~ScreenLine();
 			
+			static ScreenLine *ScreenLineBetweenEntities(ScreenEntity* target1, ScreenEntity* target2);			
 
 			void Update();
 			void Render();

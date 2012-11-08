@@ -1,3 +1,7 @@
+function __areclassesequal(a,b)
+	return a.__ptr == b.__ptr
+end
+
 function class(name)
 	local cls = {}
 	cls.__classname = name
@@ -15,6 +19,8 @@ function class(name)
 			rawset(t,k,v)
 		end
 	end
+
+	cls.__eq = __areclassesequal
 
 	cls.__index = function(t,k)
 		local prototype = rawget(t,"__prototype")

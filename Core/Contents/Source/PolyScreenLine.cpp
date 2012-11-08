@@ -40,6 +40,11 @@ ScreenLine::ScreenLine(Vector2* start, Vector2* end) : ScreenMesh(Mesh::LINE_MES
 	mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;	
 }
 
+ScreenLine *ScreenLine::ScreenLineBetweenEntities(ScreenEntity* target1, ScreenEntity* target2) {
+	return new ScreenLine(target1, target2);
+}	
+
+
 ScreenLine::ScreenLine(ScreenEntity* target1, ScreenEntity* target2) : ScreenMesh(Mesh::LINE_MESH) {
 	initMesh();	
 	this->target1 = target1;

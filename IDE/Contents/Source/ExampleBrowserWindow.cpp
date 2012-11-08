@@ -79,7 +79,7 @@ ExampleBrowserWindow::ExampleBrowserWindow() : UIWindow(L"Example Browser", 320,
 String ExampleBrowserWindow::getExamplePath() {
 	String suffix;
 	std::vector<String> parts = templateFolder.split("/");	
-	return templateFolder+"/"+parts[parts.size()-1]+".xml";
+	return templateFolder+"/"+parts[parts.size()-1]+".polyproject";
 }
 
 

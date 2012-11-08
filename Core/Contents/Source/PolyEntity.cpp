@@ -236,8 +236,7 @@ void Entity::doUpdates() {
 	}	
 }
 
-void Entity::updateEntityMatrix() {	
-
+void Entity::checkTransformSetters() {
 	if(_position != position) {
 		_position = position;
 		matrixDirty = true;
@@ -253,6 +252,10 @@ void Entity::updateEntityMatrix() {
 		rebuildRotation();
 		matrixDirty = true;
 	}
+}
+
+void Entity::updateEntityMatrix() {	
+	checkTransformSetters();
 
 	if(matrixDirty)
 		rebuildTransformMatrix();
@@ -404,6 +407,7 @@ Vector3 Entity::getScale() const {
 }
 
 Matrix4 Entity::getConcatenatedMatrix() {
+	checkTransformSetters();
 	if(matrixDirty)
 		rebuildTransformMatrix();
 

@@ -103,16 +103,14 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 		wrappersHeaderOut += "public:\n"
 		wrappersHeaderOut += "	LuaEventHandler() : EventHandler() {}\n"
 		wrappersHeaderOut += "	void handleEvent(Event *e) {\n"
-		wrappersHeaderOut += "		lua_rawgeti( L, LUA_REGISTRYINDEX, wrapperIndex );\n"
+		wrappersHeaderOut += "		lua_getfield(L, LUA_GLOBALSINDEX, \"EventHandler\" );\n"
 		wrappersHeaderOut += "		lua_getfield(L, -1, \"__handleEvent\");\n"
 		wrappersHeaderOut += "		lua_rawgeti( L, LUA_REGISTRYINDEX, wrapperIndex );\n"
 		wrappersHeaderOut += "		lua_pushlightuserdata(L, e);\n"
-		wrappersHeaderOut += "		if(lua_pcall(L, 2, 0, 0) != 0) {\n"
-		wrappersHeaderOut += "			const char *msg = lua_tostring(L, -1);\n"
-		wrappersHeaderOut += "			lua_getfield(L, LUA_GLOBALSINDEX, \"__customError\");\n"
-		wrappersHeaderOut += "			lua_pushstring(L, msg);\n"
-		wrappersHeaderOut += "			lua_call(L, 1, 0);\n"
-		wrappersHeaderOut += "		}\n"
+#		wrappersHeaderOut += "		lua_getfield (L, LUA_GLOBALSINDEX, \"__customError\");\n"
+#		wrappersHeaderOut += "		int errH = lua_gettop(L);\n"
+#		wrappersHeaderOut += "		lua_pcall(L, 2, 0, errH);\n"
+		wrappersHeaderOut += "		lua_pcall(L, 2, 0, 0);\n"
 		wrappersHeaderOut += "	}\n"
 		wrappersHeaderOut += "	int wrapperIndex;\n"
 		wrappersHeaderOut += "	lua_State *L;\n"
@@ -497,7 +495,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 						luaClassBindingOut += "function %s:%s(...)\n" % (ckey, ckey)
 						if inherits:
 							luaClassBindingOut += "\tif type(arg[1]) == \"table\" and count(arg) == 1 then\n"
-							luaClassBindingOut += "\t\tif \"\"..arg[1]:class() == \"%s\" then\n" % (c["inherits"][0]["class"])
+							luaClassBindingOut += "\t\tif \"\"..arg[1].__classname == \"%s\" then\n" % (c["inherits"][0]["class"])
 							luaClassBindingOut += "\t\t\tself.__ptr = arg[1].__ptr\n"
 							luaClassBindingOut += "\t\t\treturn\n"
 							luaClassBindingOut += "\t\tend\n"
@@ -566,7 +564,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 				if ckey == "EventHandler": # See LuaEventHandler above
 					luaClassBindingOut += "\n\n"
 					luaClassBindingOut += "function EventHandler:__handleEvent(event)\n"
-					luaClassBindingOut += "\tevt = Event(\"__skip_ptr__\")\n"
+					luaClassBindingOut += "\tevt = _G[\"Event\"](\"__skip_ptr__\")\n"
 					luaClassBindingOut += "\tevt.__ptr = event\n"
 					luaClassBindingOut += "\tself:handleEvent(evt)\n"
 					#luaClassBindingOut += "\tself:handleEvent(event)\n"

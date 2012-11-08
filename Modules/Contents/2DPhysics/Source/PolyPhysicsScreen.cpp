@@ -440,7 +440,7 @@ void PhysicsScreen::destroyMouseJoint(b2MouseJoint *mJoint) {
 
 PhysicsScreenEntity *PhysicsScreen::addPhysicsChild(ScreenEntity *newEntity, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation) {
 	addChild(newEntity);
-	return trackPhysicsChild(newEntity, entType, isSensor, friction, density, restitution, isSensor, fixedRotation);
+	return trackPhysicsChild(newEntity, entType, isStatic, friction, density, restitution, isSensor, fixedRotation);
 }
 
 PhysicsScreenEntity *PhysicsScreen::trackPhysicsChild(ScreenEntity *newEntity, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation) {
