@@ -140,7 +140,6 @@ void main()
                  (specular_val * 1.0)+
                  (ambient_color * texColor * vertexColor);
 
-    color.a = diffuse_color.a * texColor.a;
 
     // fog
 	const float LOG2 = 1.442695;
@@ -152,6 +151,8 @@ void main()
 				   LOG2 );
 
 	fogFactor = clamp(fogFactor, 0.0, 1.0);
-	gl_FragColor = mix(gl_Fog.color, color, fogFactor );    
-	gl_FragColor.a = 1.0;
+
+	color = mix(gl_Fog.color, color, fogFactor );
+    color.a = diffuse_color.a * texColor.a;	
+	gl_FragColor = color;
 }

@@ -6,7 +6,7 @@ void main()
 {
 	vec4 texColor = texture2D(diffuse, gl_TexCoord[0].st);	
     vec4 color = (texColor*vertexColor) + specularColor;    
-    color.a = vertexColor.a * texColor.a;
+
     
     // fog
 	const float LOG2 = 1.442695;
@@ -18,6 +18,9 @@ void main()
 				   LOG2 );
 
 	fogFactor = clamp(fogFactor, 0.0, 1.0);
-	gl_FragColor = mix(gl_Fog.color, color, fogFactor );        
+	
+	color = mix(gl_Fog.color, color, fogFactor );  
+    color.a = vertexColor.a * texColor.a;	
+	gl_FragColor = color;
     
 }

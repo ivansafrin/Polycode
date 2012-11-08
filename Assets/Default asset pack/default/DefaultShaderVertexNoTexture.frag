@@ -5,7 +5,7 @@ varying vec4 specularColor;
 void main()
 {
     vec4 color = vertexColor + specularColor;
-    color.a = vertexColor.a;
+    
     
     // fog
 	const float LOG2 = 1.442695;
@@ -17,6 +17,9 @@ void main()
 				   LOG2 );
 
 	fogFactor = clamp(fogFactor, 0.0, 1.0);
-	gl_FragColor = mix(gl_Fog.color, color, fogFactor );    	 
+
+	color = mix(gl_Fog.color, color, fogFactor ); 
+	color.a = vertexColor.a;
+	gl_FragColor = color;
     
 }

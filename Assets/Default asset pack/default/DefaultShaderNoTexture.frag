@@ -100,7 +100,7 @@ void main()
     vec4 color = (diffuse_val  * 1.0) +
                  (specular_val * 1.0)+
                  ambient_color;
-	color.a = diffuse_color.a;                 
+	                 
     color = clamp(color*vertexColor, 0.0, 1.0);
     
     // fog
@@ -113,6 +113,9 @@ void main()
 				   LOG2 );
 
 	fogFactor = clamp(fogFactor, 0.0, 1.0);
-	gl_FragColor = mix(gl_Fog.color, color, fogFactor );    
+
+	color = mix(gl_Fog.color, color, fogFactor );    
+	color.a = diffuse_color.a;	
+	gl_FragColor = color;
 
 }

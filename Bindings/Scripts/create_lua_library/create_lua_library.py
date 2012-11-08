@@ -493,6 +493,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 						luaClassBindingOut += "end\n"
 					elif pm["name"] == ckey: # Constructors
 						luaClassBindingOut += "function %s:%s(...)\n" % (ckey, ckey)
+						luaClassBindingOut += "\tlocal arg = {...}\n"
 						if inherits:
 							luaClassBindingOut += "\tif type(arg[1]) == \"table\" and count(arg) == 1 then\n"
 							luaClassBindingOut += "\t\tif \"\"..arg[1].__classname == \"%s\" then\n" % (c["inherits"][0]["class"])

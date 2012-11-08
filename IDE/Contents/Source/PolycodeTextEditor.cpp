@@ -35,7 +35,7 @@ PolycodeSyntaxHighlighter::PolycodeSyntaxHighlighter(String extension) {
 //	String separators = " ;()\t\n=+-/\\'\"";	
 //	String keywords = "true,false,";
 	
-	separators = String("[ [ ] { } ; . , : # ( ) \t \n = + - / \\ ' \"").split(" ");
+	separators = String("[ * [ ] { } ; . , : # ( ) \t \n = + - / \\ ' \"").split(" ");
 	separators.push_back(" ");
 	
 	keywords = String("and require true false class self break do end else elseif function if local nil not or repeat return then until while").split(" ");
