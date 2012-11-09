@@ -14,6 +14,11 @@
 @synthesize polycodeView;
 @synthesize projectMenu;
 
+- (id) init {
+	app = NULL;
+	return [super init];
+}
+
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
 	// Insert code here to initialize your application 
 	
@@ -24,6 +29,10 @@
 	
 	app = new PolycodeIDEApp(polycodeView);
 	app->addEventListener(eventHandler, PolycodeIDEApp::EVENT_SHOW_MENU);
+	
+	if(fileToOpen != "") {
+		app->openProject(fileToOpen);
+	}
 	
 	timer = [NSTimer timerWithTimeInterval:(1.0f/90.0f) target:self selector:@selector(animationTimer:) userInfo:nil repeats:YES];
 	[[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
@@ -68,6 +77,19 @@
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)theApplication
 {
+	return YES;
+}
+
+- (BOOL)application:(NSApplication *)theApplication openFile:(NSString *)filename
+{
+	// this gets called before applicationDidFinishLaunching if 
+	// user double-clicks the file to open the app
+	
+	if(app) {
+		app->openProject([filename cStringUsingEncoding:NSUTF8StringEncoding]);
+	} else {
+		fileToOpen = [filename cStringUsingEncoding:NSUTF8StringEncoding];
+	}
 	return YES;
 }
 

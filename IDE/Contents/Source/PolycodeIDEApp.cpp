@@ -213,6 +213,10 @@ void PolycodeIDEApp::saveFile() {
 	}
 }
 
+void PolycodeIDEApp::openProject(String projectFile) {
+	projectManager->openProject(projectFile);
+}
+
 void PolycodeIDEApp::openFileInProject(PolycodeProject *project, String filePath) {
 	OSFileEntry fileEntry = OSFileEntry(project->getRootFolder()+"/"+filePath, OSFileEntry::TYPE_FILE);	
 	OSFILE *file = OSBasics::open(project->getRootFolder()+"/"+filePath,"r");

@@ -40,6 +40,7 @@ public:
 	
 	NSMenu *projectMenu;
 	
+	String fileToOpen;
 	BOOL mustShowProjectMenu;
 }
 

@@ -11,6 +11,7 @@
 		256AC3DA0F4B6AC300CF3369 /* PolycodeAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 256AC3D90F4B6AC300CF3369 /* PolycodeAppDelegate.m */; };
 		6D06CCF314BC203800E4CB4C /* libPolycore_d.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D06CCF214BC203800E4CB4C /* libPolycore_d.a */; };
 		6D06CCF514BC204200E4CB4C /* libPolycodeUI_d.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D06CCF414BC204200E4CB4C /* libPolycodeUI_d.a */; };
+		6D1CD96B164D9568006CDAB1 /* polycode_project.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6D1CD96A164D9568006CDAB1 /* polycode_project.icns */; };
 		6D2AC99B14B8500400BB63DA /* PolycodeProjectEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D2AC99A14B8500400BB63DA /* PolycodeProjectEditor.cpp */; };
 		6D34143412B816BC0034FA9B /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D34143312B816BC0034FA9B /* IOKit.framework */; };
 		6D3B6C5B14B820A900727F17 /* ToolWindows.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D3B6C5A14B820A900727F17 /* ToolWindows.cpp */; };
@@ -76,6 +77,7 @@
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		6D06CCF214BC203800E4CB4C /* libPolycore_d.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycore_d.a; path = ../../../Release/Darwin/Framework/Core/lib/libPolycore_d.a; sourceTree = "<group>"; };
 		6D06CCF414BC204200E4CB4C /* libPolycodeUI_d.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycodeUI_d.a; path = ../../../Release/Darwin/Framework/Modules/lib/libPolycodeUI_d.a; sourceTree = "<group>"; };
+		6D1CD96A164D9568006CDAB1 /* polycode_project.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = polycode_project.icns; path = ../../../Assets/Icons/polycode_project.icns; sourceTree = "<group>"; };
 		6D2AC99A14B8500400BB63DA /* PolycodeProjectEditor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolycodeProjectEditor.cpp; sourceTree = "<group>"; };
 		6D2AC99D14B8500A00BB63DA /* PolycodeProjectEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolycodeProjectEditor.h; sourceTree = "<group>"; };
 		6D34143312B816BC0034FA9B /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
@@ -237,6 +239,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				6D1CD96A164D9568006CDAB1 /* polycode_project.icns */,
 				6DFF77A9164090040040AED8 /* hdr.pak */,
 				6DFE89CB14B3FE3D00DA7ABD /* default.pak */,
 				6D8A55B814B3EABB005F6411 /* main_icon.icns */,
@@ -372,6 +375,7 @@
 				6D8A55B914B3EABB005F6411 /* main_icon.icns in Resources */,
 				6DFE89CC14B3FE3D00DA7ABD /* default.pak in Resources */,
 				6DFF77AA164090040040AED8 /* hdr.pak in Resources */,
+				6D1CD96B164D9568006CDAB1 /* polycode_project.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

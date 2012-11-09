@@ -74,6 +74,10 @@ public:
 	void runProject();
 	void exportProject();
 	
+	// system callbacks
+	
+	void openProject(String projectFile);
+	
 	void refreshProject();	
 	
 	const static int EVENT_SHOW_MENU = 1;

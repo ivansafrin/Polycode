@@ -35,6 +35,13 @@ PolycodeProjectManager::~PolycodeProjectManager() {
 
 
 PolycodeProject* PolycodeProjectManager::openProject(String path) {
+
+	for(int i=0; i < projects.size(); i++) {
+		if(projects[i]->getProjectFile() == path) {
+			return projects[i];
+		}
+	}	
+
 	printf("Opening project  %s\n", path.c_str());
 	
 	FILE *f = fopen(path.c_str(), "r");
