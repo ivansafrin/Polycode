@@ -75,7 +75,7 @@ bool Data::loadFromFile(const String& fileName) {
 	data = (char*)malloc(dataSize);
 	if(!data) {
 		OSBasics::close(file);		
-		return;
+		return false;
 	}
 	
 	OSBasics::read(data, sizeof(char), dataSize, file);	
