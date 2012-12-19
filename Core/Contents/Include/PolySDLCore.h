@@ -67,6 +67,7 @@ namespace Polycode {
 		void resizeTo(int xRes, int yRes);
 
 		void openURL(String url);
+		String executeExternalCommand(String command);
 
 	private:
 		

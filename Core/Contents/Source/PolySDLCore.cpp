@@ -49,7 +49,7 @@ void Core::getScreenInfo(int *width, int *height, int *hz) {
 	if (hz) *hz = 0;
 }
 
-SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate) : Core(_xRes, _yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate) {
+SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex) : Core(_xRes, _yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate, monitorIndex) {
 
 	String *windowTitle = (String*)view->windowData;
 
@@ -257,5 +257,25 @@ vector<String> SDLCore::openFilePicker(vector<CoreFileExtension> extensions, boo
 
 void SDLCore::resizeTo(int xRes, int yRes) {
 	renderer->Resize(xRes, yRes);
+}
+
+String SDLCore::executeExternalCommand(String command) {
+	FILE *fp = popen(command.c_str(), "r");
+	if(!fp) {
+		return "Unable to execute command";
+	}	
+	
+	int fd = fileno(fp);
+	
+	char path[1024];
+	String retString;
+	
+	while (fgets(path, sizeof(path), fp) != NULL) {
+		retString = retString + String(path);
+	}
+
+	fclose(fp);
+	pclose(fp);
+	return retString;
 }
 
