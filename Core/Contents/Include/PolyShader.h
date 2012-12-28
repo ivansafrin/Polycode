@@ -142,7 +142,7 @@ namespace Polycode {
 			unsigned int getNumOutTargetBindings();
 			RenderTargetBinding *getOutTargetBinding(unsigned int index);
 			
-			void addLocalParam(const String& name, void *ptr);
+			LocalShaderParam *addLocalParam(const String& name, void *ptr);
 		
 			Shader* shader;
 			std::vector<LocalShaderParam*> localParams;
