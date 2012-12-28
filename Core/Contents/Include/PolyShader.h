@@ -23,6 +23,8 @@ THE SOFTWARE.
 #pragma once
 #include "PolyString.h"
 #include "PolyGlobals.h"
+#include "PolyColor.h"
+#include "PolyVector2.h"
 #include "PolyVector3.h"
 #include "PolyResource.h"
 #include <string.h>
@@ -102,6 +104,16 @@ namespace Polycode {
 		public:	
 			String name;
 			void *data;
+		
+		// Convenience getters/setters for Lua users
+		Number getNumber()         { return *((Number *)data); }
+		Vector2 getVector2()       { return *((Vector2 *)data); }
+		Vector3 getVector3()       { return *((Vector3 *)data); }
+		Color getColor()           { return *((Color *)data); }
+		void setNumber(Number x)   { memcpy(data, &x, sizeof(x)); }
+		void setVector2(Vector2 x) { memcpy(data, &x, sizeof(x)); }
+		void setVector3(Vector3 x) { memcpy(data, &x, sizeof(x)); }
+		void setColor(Color x)     { memcpy(data, &x, sizeof(x)); }
 	};	
 	
 	class RenderTargetBinding {
