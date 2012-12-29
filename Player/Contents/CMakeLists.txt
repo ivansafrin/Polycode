@@ -80,7 +80,9 @@ SET(polycodeplayer_SRCS
 
 ELSEIF(APPLE)
 
-   
+# Needed for LuaJIT
+SET( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -pagezero_size 10000 -image_base 100000000" ) 
+  
 INCLUDE_DIRECTORIES(
     ${LUA_INCLUDE_DIR}
     ${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/Include

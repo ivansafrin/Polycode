@@ -48,10 +48,11 @@ UIButton::UIButton(String text, Number width, Number height) : UIElement() {
 						   st,sr,sb,sl,
 						   width, height);	
 	
+	buttonRect->blockMouseInput  = true;
 	buttonFocusedRect= new UIBox(conf->getStringValue("Polycode", "uiButtonFocusedSkin"),
 								 st,sr,sb,sl,
 								 width, height);		
-	
+	blockMouseInput = true;
 	addChild(buttonRect);
 	addChild(buttonFocusedRect);
 	
@@ -65,9 +66,10 @@ UIButton::UIButton(String text, Number width, Number height) : UIElement() {
 	pressedDown = false;
 	
 	buttonLabel = new ScreenLabel(text, fontSize, fontName, Label::ANTIALIAS_FULL);
+	buttonLabel->positionAtBaseline = false;
 	addChild(buttonLabel);
 	labelXPos = floor((width-buttonLabel->getWidth())/2.0f) + labelOffsetX;
-	labelYPos = floor((height-(buttonLabel->getHeight()))/2.0f) + labelOffsetY;
+	labelYPos = floor((height-(buttonLabel->getLabel()->getTextHeight()))/2.0f) + labelOffsetY;
 	buttonLabel->setPosition(labelXPos,labelYPos);
 	
 	this->width = width;

@@ -48,8 +48,10 @@ UICheckBox::UICheckBox(String caption, bool checked) : UIElement() {
 	buttonImageUnchecked->visible = !checked;
 	
 	captionLabel = new ScreenLabel(caption, fontSize, fontName, Label::ANTIALIAS_FULL);
+	captionLabel->positionAtBaseline = false;
+	
 	addChild(captionLabel);
-	captionLabel->setPosition(buttonImageChecked->getWidth() + checkboxTextOffsetX, (buttonImageChecked->getHeight()/2.0) - (captionLabel->getHeight()/2.0) + checkboxTextOffsetY);
+	captionLabel->setPosition(buttonImageChecked->getWidth() + checkboxTextOffsetX, (buttonImageChecked->getHeight()/2.0) - (captionLabel->getLabel()->getTextHeight()/2.0) + checkboxTextOffsetY);
 	
 	addChild(buttonImageUnchecked);	
 	addChild(buttonImageChecked);

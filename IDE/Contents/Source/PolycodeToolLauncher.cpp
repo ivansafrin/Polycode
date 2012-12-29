@@ -73,7 +73,8 @@ void PolycodeToolLauncher::buildProject(PolycodeProject *project, String destina
 void PolycodeToolLauncher::runPolyapp(String polyappPath) {
 
 	PolycodeConsole::clearBacktraces();
-		
+
+
 //	PolycodeRunner *runner = new PolycodeRunner(polyappPath);
 //	CoreServices::getInstance()->getCore()->createThread(runner);
 							

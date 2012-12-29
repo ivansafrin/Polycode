@@ -45,6 +45,8 @@ UITreeContainer::UITreeContainer(String icon, String text, Number treeWidth, Num
 						  treeWidth, treeHeight);
 	
 	addChild(bgBox);
+	bgBox->blockMouseInput = true;
+	blockMouseInput = true;
 	//bgBox->setPosition(-padding, -padding);
 	
 	scrollChild = new ScreenEntity();

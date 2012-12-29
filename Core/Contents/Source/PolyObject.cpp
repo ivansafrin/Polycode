@@ -23,6 +23,8 @@
 #include "PolyObject.h"
 #include "tinyxml.h"
 #include <sstream>
+#include <stdio.h>
+#include <string.h>
 
 using namespace Polycode;
 
@@ -293,3 +295,256 @@ void Object::createFromXMLElement(TiXmlElement *element, ObjectEntry *entry) {
 
 	entry->setTypedName(element->Value()); // Set name last because we might override type
 }
+
+
+bool Object::loadFromBinary(const String& fileName) {
+	BinaryObjectReader objectReader(fileName, this);	
+	bool success = objectReader.success;
+	return success;
+}
+
+BinaryObjectReader::BinaryObjectReader(const String& fileName, Object *object) {
+	this->object = object;
+	success = false;
+	inFile = OSBasics::open(fileName, "rb");
+	if(inFile) {
+		success = readFile();
+		OSBasics::close(inFile);
+	}
+}
+
+String BinaryObjectReader::getKeyByIndex(unsigned int index) {
+	if(index < keys.size()) {
+		return keys[index];
+	} else {
+		return "nil";
+	}
+}
+
+bool BinaryObjectReader::parseEntryFromFile(ObjectEntry *entry) {	
+	uint16_t keyIndex;
+	OSBasics::read(&keyIndex, sizeof(uint16_t), 1, inFile);	
+	entry->name = getKeyByIndex(keyIndex);
+	
+	uint8_t type;
+	OSBasics::read(&type, sizeof(uint8_t), 1, inFile);
+	entry->type = type;
+
+//	printf("Loading %s of type %u\n", entry->name.c_str(), entry->type);
+	
+	uint32_t data32;
+	switch(entry->type) {
+		case ObjectEntry::STRING_ENTRY:
+		{
+			OSBasics::read(&data32, sizeof(uint32_t), 1, inFile);
+			char *buffer = (char*) malloc(data32 + 1);
+			OSBasics::read(buffer, 1, data32, inFile);
+			buffer[data32] = '\0';
+			entry->stringVal = String(buffer);
+			free(buffer);			
+		}
+		break;
+		case ObjectEntry::FLOAT_ENTRY:
+		{
+			float val;
+			OSBasics::read(&val, sizeof(uint32_t), 1, inFile);
+			entry->intVal = val;
+			entry->NumberVal = val;			
+		}
+		break;
+		case ObjectEntry::INT_ENTRY:
+		{
+			int32_t intval;
+			OSBasics::read(&intval, sizeof(int32_t), 1, inFile);
+			entry->intVal = intval;
+			entry->NumberVal = intval;
+		}
+		break;
+		case ObjectEntry::BOOL_ENTRY:
+		{
+			OSBasics::read(&data32, sizeof(uint32_t), 1, inFile);		
+			if(data32 == 0) {
+				entry->boolVal = false;
+				entry->intVal = data32;
+				entry->NumberVal = data32;				
+			} else {
+				entry->boolVal = true;
+				entry->NumberVal = data32;
+			}
+		}
+		break;
+		default:
+			OSBasics::read(&data32, sizeof(uint32_t), 1, inFile);			
+		break;
+	}	
+
+	OSBasics::read(&data32, sizeof(uint32_t), 1, inFile);
+	
+	bool retVal = true;
+	
+//	if(data32 > 0){ 
+//		printf("Loading %u children\n", data32);
+//	}
+
+	for(int i=0; i < data32; i++) {
+		ObjectEntry *childEntry = entry->addChild("nil");
+		retVal = parseEntryFromFile(childEntry);
+	}	
+	
+	return retVal;
+}
+			
+bool BinaryObjectReader::readFile() {
+	char header[5];
+	OSBasics::read(header, 1, 4, inFile);
+	header[4] = '\0';
+//	printf("HEADER: [%s]\n", header);
+	if(String(header) != "PBOF") {
+		return false;
+	}
+	
+	uint32_t data32;
+	OSBasics::read(&data32, sizeof(uint32_t), 1, inFile);
+	
+	for(int i=0; i < data32; i++) {
+		uint16_t data16;
+		OSBasics::read(&data16, sizeof(uint16_t), 1, inFile);
+		char *buffer = (char*)malloc(data16+1);
+		OSBasics::read(buffer, 1, data16, inFile);
+		buffer[data16] = '\0';
+		keys.push_back(String(buffer));
+		free(buffer);
+	}
+	
+	OSBasics::read(&data32, sizeof(uint32_t), 1, inFile);	
+	
+	return parseEntryFromFile(&object->root);
+	
+}
+
+BinaryObjectReader::~BinaryObjectReader() {
+
+}
+
+
+void Object::saveToBinary(const String& fileName) {
+	BinaryObjectWriter objectWriter(this);
+	objectWriter.writeToFile(fileName);
+}
+
+BinaryObjectWriter::BinaryObjectWriter(Object *object) {
+	this->object = object;
+	parseKeysFromObjectEntry(&object->root);
+}
+
+unsigned int BinaryObjectWriter::addKey(const String &key) {
+	for(int i=0; i < keys.size(); i++) {
+		if(keys[i] == key)
+			return i;
+	}
+	keys.push_back(key);
+	return keys.size()-1;
+}
+
+unsigned int BinaryObjectWriter::getKeyIndex(const String &key) {
+	for(int i=0; i < keys.size(); i++) {
+		if(keys[i] == key)
+			return i;
+	}
+	return 0;
+}
+			
+void BinaryObjectWriter::parseKeysFromObjectEntry(ObjectEntry *entry) {
+	addKey(entry->name);
+	for(int i=0; i < entry->children.size(); i++) {
+		parseKeysFromObjectEntry(entry->children[i]);		
+	}
+}
+
+BinaryObjectWriter::~BinaryObjectWriter() {
+
+}
+
+void BinaryObjectWriter::writeEntryToFile(ObjectEntry *entry) {
+
+	uint16_t keyIndex = getKeyIndex(entry->name);
+	OSBasics::write(&keyIndex, sizeof(uint16_t), 1, outFile);
+
+	uint8_t type = (uint8_t)entry->type;
+	OSBasics::write(&type, sizeof(uint8_t), 1, outFile);
+	
+	uint32_t data32;
+	
+	switch(entry->type) {
+		case ObjectEntry::STRING_ENTRY:
+			data32 = entry->stringVal.length();
+			OSBasics::write(&data32, sizeof(uint32_t), 1, outFile);
+			OSBasics::write(entry->stringVal.c_str(), 1, data32, outFile);
+		break;
+		case ObjectEntry::FLOAT_ENTRY:
+		{
+			float val = (float)entry->NumberVal;
+			OSBasics::write(&val, sizeof(uint32_t), 1, outFile);		
+		}
+		break;
+		case ObjectEntry::INT_ENTRY:
+		{
+			int32_t intval = (int32_t)entry->intVal;
+			OSBasics::write(&intval, sizeof(int32_t), 1, outFile);		
+		}
+		break;
+		case ObjectEntry::BOOL_ENTRY:
+			if(entry->boolVal) {
+				data32 = 1;
+			} else {
+				data32 = 0;			
+			}
+			OSBasics::write(&data32, sizeof(uint32_t), 1, outFile);		
+		break;
+		default:
+			data32 = 0;
+			OSBasics::write(&data32, sizeof(uint32_t), 1, outFile);			
+		break;
+	}
+	
+	data32 = entry->children.size();
+	OSBasics::write(&data32, sizeof(uint32_t), 1, outFile);
+	
+	for(int i=0; i < entry->children.size(); i++) {
+		writeEntryToFile(entry->children[i]);
+	}	
+	
+	numEntriesWritten++;
+}
+			
+bool BinaryObjectWriter::writeToFile(const String& fileName) {
+	outFile = OSBasics::open(fileName, "wb");
+	
+	OSBasics::write("PBOF", 1, 4, outFile);
+
+	uint32_t data32 = keys.size();
+	OSBasics::write(&data32, sizeof(uint32_t), 1, outFile);
+
+	for(int i=0; i < keys.size(); i++) {
+		uint16_t data16 = keys[i].length();
+		OSBasics::write(&data16, sizeof(uint16_t), 1, outFile);
+		OSBasics::write(keys[i].c_str(), 1, data16, outFile);
+	}
+	
+	size_t offset = OSBasics::tell(outFile);
+
+	numEntriesWritten = 0;
+	
+	data32 = 0;
+	OSBasics::write(&data32, sizeof(uint32_t), 1, outFile);
+	
+	writeEntryToFile(&object->root);
+	
+	OSBasics::seek(outFile,  offset, SEEK_SET);
+	data32 = numEntriesWritten;
+	OSBasics::write(&data32, sizeof(uint32_t), 1, outFile);	
+	
+	OSBasics::close(outFile);
+}
+
+

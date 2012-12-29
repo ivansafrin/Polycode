@@ -31,7 +31,7 @@ THE SOFTWARE.
 
 using namespace Polycode;
 
-PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, Number worldScale, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation) {
+PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, Number worldScale, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation, short groupIndex) {
 	
 	this->worldScale = worldScale;
 	
@@ -41,8 +41,11 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 	
 	shape = NULL;
 		
-	b2BodyDef *bodyDef = new b2BodyDef();	
-	bodyDef->position.Set(screenEntity->getPosition().x/worldScale, screenEntity->getPosition().y/worldScale);
+	b2BodyDef *bodyDef = new b2BodyDef();
+	
+	Matrix4 compoundMatrix = screenEntity->getConcatenatedMatrix();	
+				
+	bodyDef->position.Set(compoundMatrix.getPosition().x/worldScale, compoundMatrix.getPosition().y/worldScale);
 	bodyDef->angle = screenEntity->getRotation()*(PI/180.0f);	
 	bodyDef->bullet = isSensor;	
 	bodyDef->fixedRotation = fixedRotation;	
@@ -60,7 +63,8 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 	fDef.restitution = restitution;
 	fDef.density = density;
 	fDef.isSensor = isSensor;
-		
+	fDef.filter.groupIndex = groupIndex;
+	
 	switch(entType) {
 		case ENTITY_MESH:
 		{
@@ -125,8 +129,38 @@ void PhysicsScreenEntity::applyForce(Vector2 force){
 ScreenEntity *PhysicsScreenEntity::getScreenEntity() {
 	return screenEntity;
 }
-			
 
+void PhysicsScreenEntity::setVelocity(Number fx, Number fy) {
+	body->SetAwake(true);
+	b2Vec2 f = body->GetLinearVelocity();
+	if(fx != 0)
+		f.x = fx;
+	if(fy != 0)
+		f.y = fy;
+	body->SetLinearVelocity(f);
+}
+
+void PhysicsScreenEntity::setVelocityX( Number fx) {
+	body->SetAwake(true);
+	b2Vec2 f = body->GetLinearVelocity();
+	f.x = fx;	
+	body->SetLinearVelocity(f);
+}
+
+void PhysicsScreenEntity::setVelocityY(Number fy) {
+	body->SetAwake(true);
+	b2Vec2 f = body->GetLinearVelocity();
+	f.y = fy;	
+	body->SetLinearVelocity(f);	
+}
+
+void PhysicsScreenEntity::applyImpulse(Number fx, Number fy) {
+	body->SetAwake(true);
+	b2Vec2 f =  b2Vec2(fx,fy);
+	b2Vec2 p = body->GetWorldPoint(b2Vec2(0.0f, 0.0f));	
+	body->ApplyLinearImpulse(f, p);	
+}
+			
 void PhysicsScreenEntity::setTransform(Vector2 pos, Number angle) {
 	body->SetTransform(b2Vec2(pos.x/worldScale, pos.y/worldScale), angle*(PI/180.0f));
 }

@@ -46,7 +46,10 @@ Renderer::Renderer() : currentTexture(NULL), xRes(0), yRes(0), renderMode(0), or
 	fov = 45.0;
 	setAmbientColor(0.0,0.0,0.0);
 	cullingFrontFaces = false;
+	scissorEnabled = false;
 	
+	
+	doClearBuffer = true;
 }
 
 Renderer::~Renderer() {
@@ -285,6 +288,22 @@ void Renderer::setCameraPosition(Vector3 pos) {
 	cameraPosition = pos;
 	pos = pos * -1;
 	this->translate3D(&pos);
+}
+
+void Renderer::enableScissor(bool val) {
+	scissorEnabled = val;
+}
+
+void Renderer::setScissorBox(Polycode::Rectangle box) {
+	scissorBox = box;
+}
+
+Polycode::Rectangle Renderer::getScissorBox() {
+	return scissorBox;
+}
+
+bool Renderer::isScissorEnabled() {
+	return scissorEnabled;
 }
 
 void Renderer::billboardMatrixWithScale(Vector3 scale) {

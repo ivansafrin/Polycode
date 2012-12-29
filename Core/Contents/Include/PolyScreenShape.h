@@ -43,6 +43,7 @@ namespace Polycode {
 			* @param option4 Reserved.
 			*/
 			ScreenShape(int shapeType, Number option1=0, Number option2=0, Number option3=0, Number option4=0);
+						
 			virtual ~ScreenShape();
 			void Render();
 
@@ -82,9 +83,14 @@ namespace Polycode {
 			* Removes the gradient from the shape.
 			*/
 			void clearGradient();
-				
+			
+			int getShapeType() const;
+			
+			void setShapeType(unsigned int type);
 
-			void setShapeSize(Number newWidth, Number newHeight);
+			void setShapeSize(Number newWidth, Number newHeight);		
+		
+			void buildShapeMesh();
 		
 			/** 
 			* Adds a point to the mesh.
@@ -92,6 +98,11 @@ namespace Polycode {
 			* @param y Vertical position of the point.
 			*/ 
 			void addShapePoint(Number x, Number y);
+			
+			/**
+			* Assignment operator
+			*/
+			void operator=(const ScreenShape& copy);
 			
 			static const int SHAPE_RECT = 1;
 			static const int SHAPE_CIRCLE = 2;
@@ -106,7 +117,12 @@ namespace Polycode {
 			* Color of the shape stroke.
 			*/
 			Color strokeColor;
-			
+
+			/**
+			* Width of the shape stroke.
+			*/			
+			Number strokeWidth;
+						
 		protected:
 		
 			Number option1;
@@ -115,7 +131,6 @@ namespace Polycode {
 			Number option4;
 									
 			Polygon *customShapePoly;
-			Number strokeWidth;
 			int shapeType;
 			
 	};

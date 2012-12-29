@@ -39,3 +39,4 @@
 #include "PolyUITreeEvent.h"
 #include "PolyUIVScrollBar.h"
 #include "PolyUIWindow.h"
+#include "PolyUIMenu.h"

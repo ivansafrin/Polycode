@@ -22,11 +22,26 @@
 
 #include "PolycodeProjectBrowser.h"
 
+extern UIGlobalMenu *globalMenu;
+
 PolycodeProjectBrowser::PolycodeProjectBrowser() : UIElement() {
+
+	headerBg = new ScreenShape(ScreenShape::SHAPE_RECT,10,10);
+	addChild(headerBg);
+	headerBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	headerBg->setColor(0.1, 0.1, 0.1, 1.0);
+	
+	ScreenLabel *label = new ScreenLabel("PROJECT BROWSER", 22, "section", Label::ANTIALIAS_FULL);
+	label->color.a = 0.4;
+	addChild(label);
+	label->setPosition(10, 0);
+
+
 	treeContainer = new UITreeContainer("boxIcon.png", L"Projects", 200, 555);
 	treeContainer->getRootNode()->toggleCollapsed();
 	treeContainer->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
 	treeContainer->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+	treeContainer->setPosition(0, 30);
 	
 	BrowserUserData *data = new BrowserUserData();
 	data->type = 0;
@@ -83,13 +98,34 @@ void PolycodeProjectBrowser::addProject(PolycodeProject *project) {
 }
 
 void PolycodeProjectBrowser::handleEvent(Event *event) {
+
+	if(event->getDispatcher() == contextMenu) {
+		UIMenuItem *item = contextMenu->getSelectedItem();
+		
+		PolycodeProjectBrowserEvent *bEvent = new PolycodeProjectBrowserEvent();			
+		bEvent->command = item->_id;
+		dispatchEvent(bEvent, PolycodeProjectBrowserEvent::HANDLE_MENU_COMMAND);
+						
+	}
 	
 	if(event->getDispatcher() == treeContainer) {
 		if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN) {			
 			InputEvent *inputEvent = (InputEvent*) event;
 			if(inputEvent->mouseButton == CoreInput::MOUSE_BUTTON2) {				
-				PolycodeProjectBrowserEvent *bEvent = new PolycodeProjectBrowserEvent();				
-				dispatchEvent(bEvent, PolycodeProjectBrowserEvent::SHOW_MENU);
+
+			contextMenu = globalMenu->showMenuAtMouse(130);
+			
+			contextMenu->addOption("Add New File", "add_new_file");
+			contextMenu->addOption("Add New Project", "add_new_project");
+			contextMenu->addOption("Add New Folder", "add_new_folder");			
+			contextMenu->addOption("----------------", "");			
+			contextMenu->addOption("Refresh", "refresh");
+			contextMenu->addOption("Rename", "rename");						
+			contextMenu->addOption("----------------", "");		
+			contextMenu->addOption("Remove", "remove");	
+			
+			contextMenu->addEventListener(this, UIEvent::OK_EVENT);
+											
 			}			
 		}
 	}
@@ -163,5 +199,6 @@ void PolycodeProjectBrowser::parseFolderIntoNode(UITree *node, String spath, Pol
 }
 
 void PolycodeProjectBrowser::Resize(Number width, Number height) {
-	treeContainer->Resize(width, height);
+	headerBg->setShapeSize(width, 30);
+	treeContainer->Resize(width, height-30);
 }

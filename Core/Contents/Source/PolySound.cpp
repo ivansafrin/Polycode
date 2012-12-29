@@ -53,24 +53,12 @@ long custom_tellfunc(void *datasource) {
 }
 
 Sound::Sound(const String& fileName) : sampleLength(-1) {
-	String extension;
-	size_t found;
-	found=fileName.rfind(".");
-	if (found!=string::npos) {
-		extension = fileName.substr(found+1);
-	} else {
-		extension = "";
-	}
-
-	ALuint buffer;
-	if(extension == "wav" || extension == "WAV") {
-		buffer = loadWAV(fileName);			
-	} else if(extension == "ogg" || extension == "OGG") {
-		buffer = loadOGG(fileName);			
-	}
-	
-	soundSource = GenSource(buffer);
+	soundLoaded = false;		
+	loadFile(fileName);
 	setIsPositional(false);
+	
+	setVolume(1.0);
+	setPitch(1.0);
 }
 
 Sound::Sound(const char *data, int size, int channels, int freq, int bps) : sampleLength(-1) {
@@ -78,6 +66,65 @@ Sound::Sound(const char *data, int size, int channels, int freq, int bps) : samp
 	
 	soundSource = GenSource(buffer);
 	setIsPositional(false);
+	soundLoaded = true;
+		
+	setVolume(1.0);
+	setPitch(1.0);
+}
+
+void Sound::loadFile(String fileName) {
+
+	if(soundLoaded) {
+		alDeleteSources(1,&soundSource);	
+	}
+
+	String actualFilename = fileName;
+	OSFILE *test = OSBasics::open(fileName, "rb");
+	if(!test) {
+		actualFilename = "default/default.wav";
+	} else {
+		OSBasics::close(test);	
+	}
+	
+	String extension;
+	size_t found;
+	found=actualFilename.rfind(".");
+	if (found!=string::npos) {
+		extension = actualFilename.substr(found+1);
+	} else {
+		extension = "";
+	}
+	
+	ALuint buffer;
+	if(extension == "wav" || extension == "WAV") {
+		buffer = loadWAV(actualFilename);			
+	} else if(extension == "ogg" || extension == "OGG") {
+		buffer = loadOGG(actualFilename);			
+	}
+	
+	this->fileName = actualFilename;
+	
+	soundSource = GenSource(buffer);	
+	
+	setVolume(volume);
+	setPitch(pitch);
+	
+	setReferenceDistance(referenceDistance);
+	setMaxDistance(maxDistance);
+	
+	soundLoaded = true;
+}
+
+String Sound::getFileName() {
+	return fileName;
+}
+
+Number Sound::getVolume() {
+	return volume;
+}
+
+Number Sound::getPitch() {
+	return pitch;
 }
 
 Sound::~Sound() {
@@ -127,10 +174,12 @@ bool Sound::isPlaying() {
 
 
 void Sound::setVolume(Number newVolume) {
+	this->volume = newVolume;
 	alSourcef(soundSource, AL_GAIN, newVolume);
 }
 
 void Sound::setPitch(Number newPitch) {
+	this->pitch = newPitch;
 	alSourcef(soundSource, AL_PITCH, newPitch);
 }
 
@@ -197,9 +246,28 @@ int Sound::getSampleLength() {
 }
 
 void Sound::setPositionalProperties(Number referenceDistance, Number maxDistance) { 
+	setReferenceDistance(referenceDistance);
+	setMaxDistance(maxDistance);
+}
+
+void Sound::setReferenceDistance(Number referenceDistance) {
+	this->referenceDistance = referenceDistance;
 	alSourcef(soundSource,AL_REFERENCE_DISTANCE, referenceDistance);
+}
+
+void Sound::setMaxDistance(Number maxDistance) {
+	this->maxDistance = maxDistance;
 	alSourcef(soundSource,AL_MAX_DISTANCE, maxDistance);	
 }
+		
+Number Sound::getReferenceDistance() {
+	return referenceDistance;
+}
+
+Number Sound::getMaxDistance() {
+	return maxDistance;
+}
+
 
 void Sound::setIsPositional(bool isPositional) {
 	this->isPositional = isPositional;

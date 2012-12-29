@@ -27,6 +27,9 @@
 using namespace Polycode;
 
 Font::Font(const String& fileName) {
+
+	this->fileName = fileName;
+
 	FT_Library FTLibrary;
 	FT_Init_FreeType(&FTLibrary);
 	
@@ -52,6 +55,18 @@ Font::Font(const String& fileName) {
 	} else {
 		Logger::log("Invalid font file specified (%s)\n", fileName.c_str());	
 	}
+}
+
+String Font::getFontPath() {
+	return  fileName;
+}
+
+void Font::setFontName(String fontName) {
+	this->fontName = fontName;
+}
+
+String Font::getFontName() {
+	return fontName;
 }
 
 bool Font::isValid() const {

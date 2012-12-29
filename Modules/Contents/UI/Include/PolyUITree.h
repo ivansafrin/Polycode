@@ -63,6 +63,7 @@ namespace Polycode {
 			int getNumTreeChildren() { return treeChildren.size(); }
 			UITree *getTreeChild(int index) { return treeChildren[index]; }
 			void removeTreeChild(UITree *child);
+			void clearTree();
 		
 			String getLabelText();
 			

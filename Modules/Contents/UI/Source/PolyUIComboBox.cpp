@@ -28,30 +28,19 @@
 
 using namespace Polycode;
 
-UIComboBoxItem::UIComboBoxItem(String label, Number comboWidth, Number comboHeight) : UIElement() {
+UIComboBoxItem::UIComboBoxItem(String label, void *data) {
 	this->label = label;
-	Config *conf = CoreServices::getInstance()->getConfig();	
-	
-	String fontName = conf->getStringValue("Polycode", "uiComboBoxFont");
-	int fontSize = conf->getNumericValue("Polycode", "uiComboBoxFontSize");	
-
-	Number paddingX = conf->getNumericValue("Polycode", "uiComboBoxTextOffsetX");	
-	Number paddingY = conf->getNumericValue("Polycode", "uiComboBoxTextOffsetY");	
-
-	itemLabel = new ScreenLabel(label, fontSize, fontName);
-	itemLabel->setPosition(paddingX, floor(((comboHeight/2.0) - itemLabel->getHeight()/2.0) + paddingY));	
-	addChild(itemLabel);
-	
+	this->data = data;
 }
 
 UIComboBoxItem::~UIComboBoxItem() {
 
 }
 
+UIComboBox::UIComboBox(UIGlobalMenu *globalMenu, Number comboWidth) : UIElement() {
 
-UIComboBox::UIComboBox(Number comboWidth) : UIElement() {
+	this->globalMenu = globalMenu;
 
-	isDroppedDown = false;
 	selectedIndex = -1;
 
 	Config *conf = CoreServices::getInstance()->getConfig();	
@@ -82,19 +71,10 @@ UIComboBox::UIComboBox(Number comboWidth) : UIElement() {
 	addChild(dropDownImage);
 	
 	selectedLabel = new ScreenLabel("<None>", fontSize, fontName);
-	selectedLabel->setPosition(paddingX, floor(((dropDownImage->getHeight()/2.0) - selectedLabel->getHeight()/2.0) + paddingY));
+	selectedLabel->positionAtBaseline = false;
+	selectedLabel->setPosition(paddingX, floor(((dropDownImage->getHeight()/2.0) - selectedLabel->getLabel()->getTextHeight()/2.0) + paddingY));
 	addChild(selectedLabel);
 	
-	String dropdownBgImage = conf->getStringValue("Polycode", "uiComboBoxItemsBgImage");	
-	
-	st = conf->getNumericValue("Polycode", "uiComboBoxDropdownBgT");
-	sr = conf->getNumericValue("Polycode", "uiComboBoxDropdownBgR");
-	sb = conf->getNumericValue("Polycode", "uiComboBoxDropdownBgB");
-	sl = conf->getNumericValue("Polycode", "uiComboBoxDropdownBgL");
-	
-	dropDownBox = new UIBox(dropdownBgImage, st,sr,sb,sl, comboWidth, comboHeight);
-	dropDownBox->setPosition(0,comboHeight);	
-	addChild(dropDownBox);
 	
 	String selectorBgImage = conf->getStringValue("Polycode", "uiComboBoxSelectorBgImage");	
 	
@@ -103,25 +83,15 @@ UIComboBox::UIComboBox(Number comboWidth) : UIElement() {
 	sb = conf->getNumericValue("Polycode", "uiComboBoxSelectorBgB");
 	sl = conf->getNumericValue("Polycode", "uiComboBoxSelectorBgL");
 	
-	dropDownBox->blockMouseInput = true;
-	
-	selectorBox = new UIBox(selectorBgImage, st,sr,sb,sl, comboWidth, comboHeight);
-	dropDownBox->addChild(selectorBox);
-	selectorBox->blockMouseInput = true;
+	dropDownMenu = NULL;
 	
 	selectedOffset = 0;
-	dropDownBox->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
-	dropDownBox->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);	
-	dropDownBox->processInputEvents = true;
 
 	dropDownImage->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);	
 	dropDownImage->processInputEvents = true;	
 	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);	
 	bgBox->processInputEvents = true;	
-			
-	isDroppedDown = false;
-	updateVis();
-	
+				
 	this->width = comboWidth;
 	this->height = comboHeight;
 }
@@ -130,14 +100,13 @@ UIComboBox::~UIComboBox() {
 
 }
 
+void UIComboBox::clearItems() {
+	items.clear();
+}
+			
 int UIComboBox::addComboItem(String itemName, void *data) {
-	UIComboBoxItem *newItem = new UIComboBoxItem(itemName, comboWidth, comboHeight);
-	newItem->data = data;
+	UIComboBoxItem *newItem = new UIComboBoxItem(itemName, data);
 	items.push_back(newItem);
-	dropDownBox->addChild(newItem);
-	newItem->setPosition(0,nextItemHeight);
-	nextItemHeight += comboHeight;
-	dropDownBox->resizeBox(comboWidth, nextItemHeight);
 	return items.size()-1;
 }
 
@@ -150,13 +119,14 @@ UIComboBoxItem *UIComboBox::getSelectedItem() {
 }
 
 void UIComboBox::toggleDropDown() {
-	isDroppedDown = !isDroppedDown;
-	updateVis();
-}
-
-void UIComboBox::updateVis() {
-	dropDownBox->visible = isDroppedDown;
-	dropDownBox->enabled = isDroppedDown;	
+	Vector2 screenPos = this->getScreenPosition();
+	dropDownMenu = globalMenu->showMenu(screenPos.x, screenPos.y - height, width);
+	
+	for(int i=0; i < items.size(); i++) {
+		dropDownMenu->addOption(items[i]->label, String::IntToString(i));
+	}
+	
+	dropDownMenu->addEventListener(this, UIEvent::OK_EVENT);
 }
 
 int UIComboBox::getSelectedIndex() {
@@ -167,8 +137,6 @@ void UIComboBox::setSelectedIndex(unsigned int newIndex) {
 	if(newIndex < items.size()) {
 		selectedIndex = newIndex;				
 		selectedLabel->setText(items[selectedIndex]->label);		
-		isDroppedDown = false;
-		updateVis();
 		dispatchEvent(new UIEvent(), UIEvent::CHANGE_EVENT);
 	}
 }
@@ -182,28 +150,11 @@ UIComboBoxItem *UIComboBox::getItemAtIndex(unsigned int index) {
 }
 				
 void UIComboBox::handleEvent(Event *event) {
-
-	if(event->getDispatcher() == dropDownBox) {
-		switch(event->getEventCode()) {
-			case InputEvent::EVENT_MOUSEMOVE:
-			{
-				InputEvent *inputEvent = (InputEvent*) event;
-				selectedOffset = floor(inputEvent->getMousePosition().y/comboHeight);
-				if(selectedOffset < 0)
-					selectedOffset = 0;
-					
-				if(selectedOffset >= 0 && selectedOffset < items.size())
-					selectorBox->setPosition(0,selectedOffset*comboHeight);
-			}				
-			break;
-			case InputEvent::EVENT_MOUSEDOWN:
-			{
-				setSelectedIndex(selectedOffset);
-			}
-			break;
-		}	
-	}
 	
+	if(event->getDispatcher() == dropDownMenu && event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {
+		setSelectedIndex(atoi(dropDownMenu->getSelectedItem()->_id.c_str()));
+	}
+
 	if(event->getDispatcher() == dropDownImage || event->getDispatcher() == bgBox) {
 		switch(event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEDOWN:

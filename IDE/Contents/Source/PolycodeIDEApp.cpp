@@ -25,8 +25,10 @@
 
 using namespace Polycode;
 
+UIGlobalMenu *globalMenu;
+
 PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
-	core = new CocoaCore(view, 900,700,false,true, 0, 0,60);	
+	core = new CocoaCore(view, 900,700,false,true, 0, 0,30);	
 	core->addEventListener(this, Core::EVENT_CORE_RESIZE);	
 	CoreServices::getInstance()->getRenderer()->setClearColor(0.2,0.2,0.2);
 	
@@ -56,7 +58,7 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	printf("creating font editor\n"); 
 	
 	Screen *screen = new Screen();	
-	screen->snapToPixelsByDefault = true;
+	screen->rootEntity.setDefaultScreenOptions(true);
 	
 	editorManager = new PolycodeEditorManager();
 	
@@ -73,14 +75,17 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	
 	frame->playButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	frame->stopButton->addEventListener(this, UIEvent::CLICK_EVENT);
-		
+
 	screen->addChild(frame);
+
 	
 	projectManager = new PolycodeProjectManager();
 	projectManager->setProjectBrowser(frame->getProjectBrowser());
 	
+	frame->projectManager = projectManager;
+	
 	frame->getProjectBrowser()->addEventListener(this, Event::CHANGE_EVENT);
-	frame->getProjectBrowser()->addEventListener(this, PolycodeProjectBrowserEvent::SHOW_MENU);
+	frame->getProjectBrowser()->addEventListener(this, PolycodeProjectBrowserEvent::HANDLE_MENU_COMMAND);
 	
 	frame->Resize(core->getXRes(), core->getYRes());	
 	core->setVideoMode(1100, 700, false, false, 0, 0);
@@ -94,7 +99,12 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	editorManager->registerEditorFactory(new PolycodeFontEditorFactory());
 	editorManager->registerEditorFactory(new PolycodeTextEditorFactory());
 	editorManager->registerEditorFactory(new PolycodeProjectEditorFactory(projectManager));
+	editorManager->registerEditorFactory(new PolycodeSpriteEditorFactory());
+
 		
+	globalMenu	= new UIGlobalMenu();
+	screen->addChild(globalMenu);	
+				
 	loadConfigFile();
 }
 
@@ -161,6 +171,8 @@ void PolycodeIDEApp::openProject() {
 		PolycodeProject *project = projectManager->openProject(paths[0]);
 		if(project) {
 			projectManager->setActiveProject(project);
+			OSFileEntry projectEntry =  OSFileEntry(project->getProjectFile(), OSFileEntry::TYPE_FILE);
+			openFile(projectEntry);			
 		}
 	}		
 }
@@ -241,7 +253,7 @@ void PolycodeIDEApp::openFile(OSFileEntry file) {
 	PolycodeEditor *editor;
 	editor = editorManager->getEditorForPath(file.fullPath);
 	if(editor) {
-		frame->showEditor(editor);				
+		frame->showEditor(editor);
 	} else {
 		editor = editorManager->createEditorForExtension(file.extension);
 		if(editor) {
@@ -292,8 +304,32 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 		
 		if(event->getEventType() == "PolycodeProjectBrowserEvent") {
 			switch(event->getEventCode()) {
-				case PolycodeProjectBrowserEvent::SHOW_MENU:
-					dispatchEvent(new Event(), EVENT_SHOW_MENU);
+				case PolycodeProjectBrowserEvent::HANDLE_MENU_COMMAND:
+					PolycodeProjectBrowserEvent *bEvent = (PolycodeProjectBrowserEvent*) event;
+					
+/*
+			contextMenu->addOption("Add New File", "add_new_file");
+			contextMenu->addOption("Add New Project", "add_new_project");
+			contextMenu->addOption("Add New Folder", "add_new_folder");			
+			contextMenu->addOption("--------", "");			
+			contextMenu->addOption("Refresh", "refresh");
+			contextMenu->addOption("Rename", "rename");						
+			contextMenu->addOption("--------", "");		
+			contextMenu->addOption("Remove", "remove");	
+*/					
+					if(bEvent->command == "add_new_file") {					
+						newFile();
+					} else if(bEvent->command == "add_new_project") {
+						newProject();
+					} else if(bEvent->command == "add_new_folder") {				
+						newGroup();
+					} else if(bEvent->command == "refresh") {
+						refreshProject();
+					} else if(bEvent->command == "rename") {
+						renameFile();
+					} else if(bEvent->command == "remove") {
+						removeFile();
+					}																				
 				break;
 			}
 		}
@@ -390,7 +426,11 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 	if(event->getDispatcher() == frame->exampleBrowserWindow) {
 		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {
 			String fullPath = String(core->getDefaultWorkingDirectory()+"/"+frame->exampleBrowserWindow->getExamplePath());
-			projectManager->openProject(fullPath);
+			PolycodeProject* project = projectManager->openProject(fullPath);
+			OSFileEntry projectEntry =  OSFileEntry(project->getProjectFile(), OSFileEntry::TYPE_FILE);
+			projectManager->setActiveProject(project);
+			openFile(projectEntry);			
+			
 			frame->hideModal();			
 		}
 	}	
@@ -420,7 +460,10 @@ void PolycodeIDEApp::loadConfigFile() {
 		for(int i=0; i < projects->length; i++) {
 			ObjectEntry *entry = (*(*projects)[i])["path"];
 			if(entry) {
-				projectManager->openProject(entry->stringVal);	
+				PolycodeProject* project = projectManager->openProject(entry->stringVal);
+				OSFileEntry projectEntry =  OSFileEntry(project->getProjectFile(), OSFileEntry::TYPE_FILE);
+				projectManager->setActiveProject(project);
+				openFile(projectEntry);
 			}
 		}
 		}

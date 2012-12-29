@@ -27,6 +27,18 @@
 
 using namespace Polycode;
 
+class ProjectFontData {
+	public:
+		ProjectFontData();
+		ProjectFontData(String fontName, String fontPath) {
+			this->fontName = fontName;		
+			this->fontPath = fontPath;
+		}
+		
+		String fontName;
+		String fontPath;
+};
+
 class ProjectData {
 	public:
 		String entryPoint;
@@ -37,7 +49,8 @@ class ProjectData {
 		unsigned int aaLevel;
 		unsigned int frameRate;
 		
-		std::vector<String> modules;
+		std::vector<String> modules;		
+		std::vector<ProjectFontData> fonts;
 		
 		Number backgroundColorR;
 		Number backgroundColorG;

@@ -384,6 +384,9 @@ void CocoaCore::setCursor(int cursorType) {
 		case CURSOR_RESIZE_UP_DOWN:
 			newCursor = [NSCursor resizeUpDownCursor];			
 		break;
+		case CURSOR_OPEN_HAND:
+			newCursor = [NSCursor openHandCursor];			
+		break;		
 		default:
 			newCursor = [NSCursor arrowCursor];			
 		break;

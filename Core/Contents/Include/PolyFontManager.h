@@ -58,6 +58,13 @@ namespace Polycode {
 		*/		
 		Font *getFontByName(const String& fontName);
 		
+		unsigned int getNumFonts() const;
+		FontEntry *getFontEntryByIndex(const unsigned int index);
+
+		FontEntry *getFontEntryByFontPath(const String &fontPath);
+		
+		void removeFontEntry(FontEntry *entry, bool deleteFont);
+		
 	private:
 		
 		std::vector <FontEntry> fonts;

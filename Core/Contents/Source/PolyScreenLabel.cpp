@@ -29,6 +29,7 @@
 #include "PolyMesh.h"
 #include "PolyPolygon.h"
 #include "PolyScreenImage.h"
+#include "PolyRenderer.h"
 
 using namespace Polycode;
 
@@ -36,11 +37,11 @@ ScreenLabel::ScreenLabel(const String& text, int size, const String& fontName, i
 	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size, amode, premultiplyAlpha);
 	dropShadowImage = NULL;
 	texture = NULL;
-	setText(text);		
-	mesh->getPolygon(0)->flipUVY();	
+	updateTexture();
 	positionMode = POSITION_TOPLEFT;	
 	dropShadowImage = NULL;
 	colorAffectsChildren = false;
+	positionAtBaseline = true;
 }
 
 ScreenLabel::~ScreenLabel() {
@@ -69,8 +70,7 @@ const String& ScreenLabel::getText() const {
 	return label->getText();
 }	
 
-void ScreenLabel::setText(const String& newText) {
-	label->setText(newText);
+void ScreenLabel::updateTexture() {
 	
 	if(texture) {
 		CoreServices::getInstance()->getMaterialManager()->deleteTexture(texture);
@@ -83,7 +83,20 @@ void ScreenLabel::setText(const String& newText) {
 		return;				
 	
 	texture = CoreServices::getInstance()->getMaterialManager()->createTextureFromImage(label, true, false);
-	width = label->getWidth();
-	height = label->getHeight();
+	setWidth(label->getWidth());
+	setHeight(label->getHeight());
 	setShapeSize(width, height);
+
+}
+
+void ScreenLabel::Render() {
+	if(positionAtBaseline) {
+		CoreServices::getInstance()->getRenderer()->translate2D(0.0, -label->getBaselineAdjust() + label->getSize());
+	}
+	ScreenShape::Render();
+}
+
+void ScreenLabel::setText(const String& newText) {
+	label->setText(newText);	
+	updateTexture();
 }

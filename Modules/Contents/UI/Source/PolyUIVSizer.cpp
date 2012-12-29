@@ -154,7 +154,7 @@ void UIVSizer::updateSizer() {
 	
 		if(secondElement) {
 			secondElement->setPosition(0,mainHeight+1);
-			secondElement->Resize(width, height-mainHeight-1);	
+			secondElement->Resize(width, height-mainHeight-1);				
 		}
 
 		separatorBgShape->setShapeSize(width, 1);
@@ -179,5 +179,6 @@ void UIVSizer::updateSizer() {
 		separatorHitShape->setShapeSize(width, 8);
 		separatorHitShape->setPosition(0, height-mainHeight-4);
 
-	}
+	}	
+
 }

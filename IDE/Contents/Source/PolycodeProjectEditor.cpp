@@ -22,7 +22,12 @@
  
 #include "PolycodeProjectEditor.h"
 #include "OSBasics.h"
+#include "PolycodeFrame.h"
 #include "PolycodeConsole.h"
+
+extern UIColorPicker *globalColorPicker;
+extern UIGlobalMenu *globalMenu;
+extern PolycodeFrame *globalFrame;
 
 PolycodeProjectEditorFactory::PolycodeProjectEditorFactory(PolycodeProjectManager *projectManager) : PolycodeEditorFactory() {
 	this->projectManager = projectManager;
@@ -34,18 +39,54 @@ PolycodeEditor *PolycodeProjectEditorFactory::createEditor() {
 	return editor;
 }
 
+ProjectFontEntry::ProjectFontEntry(String fontPath, String fontName) : UIElement() {
+	
+	this->fontPath = fontPath;
+
+	removeButton = new UIImageButton("Images/remove_icon.png");
+	removeButton->setPosition(0, 5);
+	removeButton->addEventListener(this, UIEvent::CLICK_EVENT);
+	addChild(removeButton);
+
+	fontNameInput = new UITextInput(false, 100, 23);
+	fontNameInput->setText(fontName);
+	fontNameInput->setPosition(20, 0);
+	fontNameInput->addEventListener(this, UIEvent::CHANGE_EVENT);
+	addChild(fontNameInput);
+	
+	OSFileEntry entry = OSFileEntry(fontPath, OSFileEntry::TYPE_FILE);
+	
+	fontFileLabel = new ScreenLabel(entry.name, 12);
+	fontFileLabel->color.a = 0.6;
+	addChild(fontFileLabel);
+	fontFileLabel->setPosition(130, 6);
+	
+	CoreServices::getInstance()->getFontManager()->registerFont(fontName, fontPath);
+}
+
+void ProjectFontEntry::handleEvent(Event *event) {
+	if(event->getDispatcher() == fontNameInput && event->getEventCode() == UIEvent::CHANGE_EVENT && event->getEventType() == "UIEvent") {
+		FontEntry *entry = CoreServices::getInstance()->getFontManager()->getFontEntryByFontPath(fontPath);
+		if(entry) {
+			entry->fontName = fontNameInput->getText();
+		}
+	}
+	
+	if(event->getDispatcher() == removeButton && event->getEventCode() == UIEvent::CLICK_EVENT && event->getEventType() == "UIEvent") {
+		FontEntry *entry = 	CoreServices::getInstance()->getFontManager()->getFontEntryByFontPath(fontPath);
+		CoreServices::getInstance()->getFontManager()->removeFontEntry(entry, false);
+		dispatchEvent(new Event(), Event::CHANGE_EVENT);
+	}
+}
+
+ProjectFontEntry::~ProjectFontEntry() {
+
+}
+
 PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectManager) : PolycodeEditor(true){
 
 	this->projectManager = projectManager;
 
-	grid = new ScreenImage("Images/editorGrid.png");
-	
-	addChild(grid);
-	grid->snapToPixels = true;
-	
-	grid->getTexture()->clamp = false;
-	grid->getTexture()->recreateFromImageData();	
-	
 
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
@@ -53,11 +94,31 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	Number padding = conf->getNumericValue("Polycode", "uiWindowSkinPadding");	
 		
 
-	moduleSettingsWindow = new UIWindow("Project Modules", 300, 200);
+	headerBg = new ScreenShape(ScreenShape::SHAPE_RECT,10,10);
+	addChild(headerBg);
+	headerBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	headerBg->setColor(0.1, 0.1, 0.1, 1.0);
+	
+	ScreenLabel *label = new ScreenLabel("PROJECT SETTINGS", 22, "section", Label::ANTIALIAS_FULL);
+	label->color.a = 0.4;
+	addChild(label);
+	label->setPosition(10, 0);
+
+
+
+	moduleSettingsWindow = new UIElement();
 	moduleSettingsWindow->setPosition(350,10);
 	addChild(moduleSettingsWindow);
 	
-	Number lastYPos = 50;
+	
+	Number lastYPos = 40;
+
+	label = new ScreenLabel("PROJECT MODULES", 22, "section", Label::ANTIALIAS_FULL);
+	label->color.a = 0.4;
+	moduleSettingsWindow->addChild(label);
+	label->setPosition(0, lastYPos);
+
+	lastYPos += 40;
 	
 	String polycodeBasePath = CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory();
 		
@@ -66,15 +127,32 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 		OSFileEntry entry = moduleFolders[i];
 		if(entry.type == OSFileEntry::TYPE_FOLDER) {
 			UICheckBox *moduleCheckBox = new UICheckBox(entry.name, false);
-			moduleCheckBox->setPosition(padding, lastYPos);
+			moduleCheckBox->setPosition(0, lastYPos);
 			lastYPos += moduleCheckBox->getHeight() + 5;
 			moduleSettingsWindow->addChild(moduleCheckBox);
 			moduleCheckboxes.push_back(moduleCheckBox);
 		}
 	}
+	
+	lastYPos += 20;
 
-	mainSettingsWindow = new UIWindow("Project Settings", 300, 420);
-	mainSettingsWindow->setPosition(10,10);
+	label = new ScreenLabel("PROJECT FONTS", 22, "section", Label::ANTIALIAS_FULL);
+	label->color.a = 0.4;
+	moduleSettingsWindow->addChild(label);
+	label->setPosition(0, lastYPos);
+	
+	lastYPos += 30;
+	
+	fontEntryBase = new UIElement();
+	moduleSettingsWindow->addChild(fontEntryBase);	
+	fontEntryBase->setPosition(0, lastYPos);
+			
+	addFontButton = new UIButton("Add Font", 100);
+	fontEntryBase->addChild(addFontButton);
+	addFontButton->addEventListener(this, UIEvent::CLICK_EVENT);
+
+	mainSettingsWindow = new UIElement();
+	mainSettingsWindow->setPosition(0,10);
 	addChild(mainSettingsWindow);
 	
 	ScreenLabel *label2 = new ScreenLabel(L"DEFAULT VIDEO OPTIONS", 22, "section", Label::ANTIALIAS_FULL);	
@@ -89,7 +167,7 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	
 	defaultWidthInput = new UITextInput(false, 60, 12);	
 	mainSettingsWindow->addChild(defaultWidthInput);
-	defaultWidthInput->setPosition(label2->getPosition().x, label2->getPosition().y+label2->getHeight());
+	defaultWidthInput->setPosition(label2->getPosition().x, label2->getPosition().y+18);
 	defaultWidthInput->setNumberOnly(true);
 
 	label2 = new ScreenLabel(L"Height:", fontSize, fontName, Label::ANTIALIAS_FULL);
@@ -98,40 +176,40 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	
 	defaultHeightInput = new UITextInput(false, 60, 12);	
 	mainSettingsWindow->addChild(defaultHeightInput);
-	defaultHeightInput->setPosition(label2->getPosition().x, label2->getPosition().y+label2->getHeight());
+	defaultHeightInput->setPosition(label2->getPosition().x, label2->getPosition().y+18);
 	defaultHeightInput->setNumberOnly(true);
 	
 	label2 = new ScreenLabel(L"Anti-aliasing:", fontSize, fontName, Label::ANTIALIAS_FULL);
 	mainSettingsWindow->addChild(label2);
 	label2->setPosition(padding + 160, 80);		
 	
-	aaLevelComboBox = new UIComboBox(120);		
+	aaLevelComboBox = new UIComboBox(globalMenu, 120);		
 	aaLevelComboBox->addComboItem("No AA");
 	aaLevelComboBox->addComboItem("2x MSAA");
 	aaLevelComboBox->addComboItem("4x MSAA");
 	aaLevelComboBox->addComboItem("6x MSAA");			
-	aaLevelComboBox->setPosition(label2->getPosition().x, label2->getPosition().y+label2->getHeight());
+	aaLevelComboBox->setPosition(label2->getPosition().x, label2->getPosition().y+18);
 
 	label2 = new ScreenLabel(L"Anisotropic filtering:", fontSize, fontName, Label::ANTIALIAS_FULL);
 	mainSettingsWindow->addChild(label2);
-	label2->setPosition(padding, defaultHeightInput->getPosition().y+defaultHeightInput->getHeight()+10);		
+	label2->setPosition(padding, defaultHeightInput->getPosition().y+30);		
 	
-	afLevelComboBox = new UIComboBox(250);		
+	afLevelComboBox = new UIComboBox(globalMenu, 250);		
 	afLevelComboBox->addComboItem("No Anisotropic Filtering");
 	afLevelComboBox->addComboItem("1x Anisotropic Filtering");
 	afLevelComboBox->addComboItem("2x Anisotropic Filtering");
 	afLevelComboBox->addComboItem("4x Anisotropic Filtering");
 	afLevelComboBox->addComboItem("8x Anisotropic Filtering");
 	afLevelComboBox->addComboItem("16x Anisotropic Filtering");			
-	afLevelComboBox->setPosition(label2->getPosition().x, label2->getPosition().y+label2->getHeight());
+	afLevelComboBox->setPosition(label2->getPosition().x, label2->getPosition().y+18);
 
 	label2 = new ScreenLabel(L"Framerate:", fontSize, fontName, Label::ANTIALIAS_FULL);
 	mainSettingsWindow->addChild(label2);
-	label2->setPosition(padding, afLevelComboBox->getPosition().y+afLevelComboBox->getHeight()+10);		
+	label2->setPosition(padding, afLevelComboBox->getPosition().y+30);		
 	
 	framerateInput = new UITextInput(false, 60, 12);	
 	mainSettingsWindow->addChild(framerateInput);
-	framerateInput->setPosition(label2->getPosition().x, label2->getPosition().y+label2->getHeight());
+	framerateInput->setPosition(label2->getPosition().x, label2->getPosition().y+18);
 	framerateInput->setNumberOnly(true);
 
 	vSyncCheckBox = new UICheckBox("V-Sync", false);
@@ -146,11 +224,11 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	
 	label2 = new ScreenLabel(L"Entry point file:", fontSize, fontName, Label::ANTIALIAS_FULL);
 	mainSettingsWindow->addChild(label2);
-	label2->setPosition(padding, vSyncCheckBox->getPosition().y+vSyncCheckBox->getHeight()+60);		
+	label2->setPosition(padding, vSyncCheckBox->getPosition().y+70);		
 	
 	entryPointInput = new UITextInput(false, 200, 12);	
 	mainSettingsWindow->addChild(entryPointInput);
-	entryPointInput->setPosition(label2->getPosition().x, label2->getPosition().y+label2->getHeight());
+	entryPointInput->setPosition(label2->getPosition().x, label2->getPosition().y+18);
 
 
 	mainSettingsWindow->addChild(afLevelComboBox);			
@@ -161,20 +239,74 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	mainSettingsWindow->addChild(label2);
 	label2->setPosition(padding, entryPointInput->getPosition().y+entryPointInput->getHeight()+10);		
 
-	colorPicker = new UIColorPicker();
-	colorPicker->setPosition(200,200);
-	addChild(colorPicker);
 
-	bgColorBox = new UIColorBox(colorPicker, Color(1.0, 0.5, 0.0, 0.9), 30,30);
-	bgColorBox->setPosition(label2->getPosition().x, label2->getPosition().y+label2->getHeight());
+	bgColorBox = new UIColorBox(globalColorPicker, Color(1.0, 0.5, 0.0, 0.9), 30,30);
+	bgColorBox->setPosition(label2->getPosition().x, label2->getPosition().y+18);
 	mainSettingsWindow->addChild(bgColorBox);
-	
-	
 
 }
 
 PolycodeProjectEditor::~PolycodeProjectEditor() {
 	
+}
+
+void PolycodeProjectEditor::refreshFontEntries() {
+	for(int i=0; i < fontEntries.size(); i++) {
+		fontEntries[i]->setPosition(0, 30*i);
+	}
+	addFontButton->setPosition(0, (fontEntries.size() * 30) + 10);
+}
+
+void PolycodeProjectEditor::handleEvent(Event *event) {
+	if(event->getDispatcher() == addFontButton && event->getEventCode() == UIEvent::CLICK_EVENT && event->getEventType() == "UIEvent") {
+		globalFrame->assetBrowser->addEventListener(this, UIEvent::OK_EVENT);
+		
+		std::vector<String> extensions;
+		extensions.push_back("ttf");
+		extensions.push_back("otf");		
+		globalFrame->showAssetBrowser(extensions);		
+	}
+	
+	if(event->getDispatcher() == globalFrame->assetBrowser && event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {
+		String newFontPath = globalFrame->assetBrowser->getSelectedAssetPath();
+
+		newFontPath = newFontPath.replace(parentProject->getRootFolder()+"/", "");
+
+		bool hasFont = false;
+		for(int i=0; i < fontEntries.size(); i++) {
+			if(fontEntries[i]->fontPath == newFontPath) {
+				hasFont = true;
+				break;
+			}
+		}
+		
+		if(!hasFont) {
+			ProjectFontEntry *newEntry = new ProjectFontEntry(newFontPath, "font_name");
+			newEntry->addEventListener(this, Event::CHANGE_EVENT);
+			fontEntryBase->addChild(newEntry);
+			fontEntries.push_back(newEntry);
+			refreshFontEntries();
+		}
+		
+		globalFrame->assetBrowser->removeAllHandlersForListener(this);
+		dispatchEvent(new Event(), Event::CHANGE_EVENT);		
+		globalFrame->hideModal();
+		
+	}
+	
+	bool doRefresh = false;
+	for(int i=0; i < fontEntries.size(); i++) {
+		if(event->getDispatcher() == fontEntries[i]) {
+			fontEntryBase->removeChild(fontEntries[i]);		
+			fontEntries.erase(fontEntries.begin()+i);	
+			doRefresh = true;
+			break;
+		}
+	}
+	
+	if(doRefresh) {
+		refreshFontEntries();
+	}
 }
 
 bool PolycodeProjectEditor::openFile(OSFileEntry filePath) {	
@@ -195,6 +327,16 @@ bool PolycodeProjectEditor::openFile(OSFileEntry filePath) {
 	unsigned int afMap[17] = {0,1,2,2,3,3,3,3,4,4,4,4,4,4,4,4,5};
 	afLevelComboBox->setSelectedIndex(afMap[associatedProject->data.anisotropy]);
 	framerateInput->setText(String::IntToString(associatedProject->data.frameRate));	
+
+	for(int i=0; i < associatedProject->data.fonts.size(); i++) {
+		ProjectFontData fontData = associatedProject->data.fonts[i];
+
+		ProjectFontEntry *newEntry = new ProjectFontEntry(fontData.fontPath, fontData.fontName);
+		newEntry->addEventListener(this, Event::CHANGE_EVENT);
+		fontEntryBase->addChild(newEntry);
+		fontEntries.push_back(newEntry);
+		
+	}
 	
 	for(int i=0; i < associatedProject->data.modules.size(); i++) {
 		bool hasModule = false;
@@ -212,11 +354,15 @@ bool PolycodeProjectEditor::openFile(OSFileEntry filePath) {
 	bgColorBox->setBoxColor(Color(associatedProject->data.backgroundColorR, associatedProject->data.backgroundColorG, associatedProject->data.backgroundColorB, 1.0));	
 	
 	PolycodeEditor::openFile(filePath);	
+	refreshFontEntries();	
+	
 	return true;
 }
 
 void PolycodeProjectEditor::Resize(int x, int y) {
-	grid->setImageCoordinates(0,0,x,y);	
+	
+	headerBg->setShapeSize(x, 30);
+	
 	PolycodeEditor::Resize(x,y);	
 }
 
@@ -243,6 +389,14 @@ void PolycodeProjectEditor::saveFile() {
 			associatedProject->data.modules.push_back(moduleCheckboxes[j]->getCaptionLabel());
 		}
 	}
+	
+	associatedProject->data.fonts.clear();	
+
+	for(int j=0; j < fontEntries.size(); j++) {
+		ProjectFontData fontData = ProjectFontData(fontEntries[j]->fontNameInput->getText(), fontEntries[j]->fontPath);
+		associatedProject->data.fonts.push_back(fontData);
+	}
+
 		
 	unsigned int afMap[6] = {0,1,2,4,8,16};
 	unsigned int aaMap[4] = {0,2,4,6};

@@ -65,11 +65,11 @@ NewProjectWindow::NewProjectWindow() : UIWindow(L"Create New Project", 480, 280)
 	ScreenLabel *label2 = new ScreenLabel(L"PROJECT NAME", 22, "section", Label::ANTIALIAS_FULL);
 	label2->color.a = 0.4;
 	addChild(label2);
-	label2->setPosition(padding+220, templateContainer->getPosition().y);		
+	label2->setPosition(padding+220, templateContainer->getPosition().y-5);		
 
 	projectNameInput = new UITextInput(false, 500-padding-210-padding-padding, 12);	
 	addChild(projectNameInput);
-	projectNameInput->setPosition(label2->getPosition().x, label2->getPosition().y+label2->getHeight()-6);
+	projectNameInput->setPosition(label2->getPosition().x, label2->getPosition().y + 30);
 	
 	ScreenLabel *label3 = new ScreenLabel(L"PROJECT LOCATION", 22, "section", Label::ANTIALIAS_FULL);
 	label3->color.a = 0.4;
@@ -78,7 +78,7 @@ NewProjectWindow::NewProjectWindow() : UIWindow(L"Create New Project", 480, 280)
 	
 	projectLocationInput = new UITextInput(false, 500-padding-210-padding-padding, 12);	
 	addChild(projectLocationInput);
-	projectLocationInput->setPosition(label3->getPosition().x, label3->getPosition().y+label3->getHeight()-6);
+	projectLocationInput->setPosition(label3->getPosition().x, label3->getPosition().y+30);
 
 	
 	locationSelectButton = new UIButton(L"Choose...", 100);

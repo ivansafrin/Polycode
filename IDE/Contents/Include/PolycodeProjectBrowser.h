@@ -43,8 +43,9 @@ class PolycodeProjectBrowserEvent : public Event {
 	public:
 		PolycodeProjectBrowserEvent() : Event() {eventType = "PolycodeProjectBrowserEvent";}
 		~PolycodeProjectBrowserEvent() {}
-		static const int SHOW_MENU = 0;
+		static const int HANDLE_MENU_COMMAND = 0;
 		
+		String command;
 		
 };
 
@@ -73,6 +74,10 @@ public:
 	UITreeContainer *treeContainer;
 			
 protected:
+
+		ScreenShape *headerBg;
+	
+		UIMenu *contextMenu;
 	
 		BrowserUserData *selectedData;
 };	

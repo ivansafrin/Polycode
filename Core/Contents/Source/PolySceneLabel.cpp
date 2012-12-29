@@ -66,10 +66,6 @@ void SceneLabel::setText(const String& newText) {
 	bBox.z = 0;
 	
 	
-	for(int i=0; i < mesh->getPolygonCount(); i++) {
-		mesh->getPolygon(i)->flipUVY();
-	}
-	
 	if(useVertexBuffer)
 		CoreServices::getInstance()->getRenderer()->createVertexBufferForMesh(mesh);
 	

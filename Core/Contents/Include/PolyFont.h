@@ -23,6 +23,8 @@ THE SOFTWARE.
 #pragma once
 #include "PolyGlobals.h"
 #include "ft2build.h"
+#include "PolyString.h"
+
 #include FT_FREETYPE_H
 
 namespace Polycode {
@@ -37,8 +39,16 @@ namespace Polycode {
 			FT_Face getFace();
 			bool isValid() const;
 			
+			void setFontName(String fontName);
+			String getFontName();			
+			String getFontPath();
+			
 			bool loaded;
 		protected:
+		
+			String fileName;
+			String fontName;
+		
 			unsigned char *buffer;
 			bool valid;
 			FT_Face ftFace;

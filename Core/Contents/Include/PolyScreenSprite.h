@@ -31,7 +31,15 @@ class _PolyExport SpriteAnimation {
 	public:
 		Number speed;
 		String name;
+		String frames;
 		int numFrames;
+		
+		int numFramesX;
+		int numFramesY;
+		Number spriteUVWidth;
+		Number spriteUVHeight;
+						
+		void setOffsetsFromFrameString(const String& frames);
 	
 		std::vector<Vector2> framesOffsets;
 };
@@ -42,6 +50,13 @@ class _PolyExport SpriteAnimation {
 class _PolyExport ScreenSprite : public ScreenShape 
 {
 	public:
+	
+		/**
+		* Create a sprite from a sprite file format
+		* @param fileName Sprite file to load
+		*/
+		ScreenSprite(const String& fileName);
+	
 		/**
 		* Create a sprite from a spritesheet image of specified size.
 		* @param fileName Image file to load spritesheet from.
@@ -56,8 +71,9 @@ class _PolyExport ScreenSprite : public ScreenShape
 		* @param name Name of the new animation.
 		* @param frames A comma separated list of frames indexes to include in the animation.
 		* @speed Speed at which to play back the animation.
+		* @return Returns newly added animation
 		*/
-		void addAnimation(const String& name, const String& frames, Number speed);
+		SpriteAnimation *addAnimation(const String& name, const String& frames, Number speed);
 		
 		/**
 		* Shows a specific frame of the current animation.
@@ -73,6 +89,16 @@ class _PolyExport ScreenSprite : public ScreenShape
 		*/
 		void playAnimation(const String& name, int startFrame, bool once);
 		void Update();
+		
+		void setSpriteSize(const Number spriteWidth, const Number spriteHeight);
+	
+		Vector2 getSpriteSize();
+	
+		String getFileName() const;
+	
+		void recalculateSpriteDimensions();
+	
+		bool loadFromFile(const String& fileName);
 	
 		/**
 		* Pauses or unpauses the current sprite animation.
@@ -80,10 +106,17 @@ class _PolyExport ScreenSprite : public ScreenShape
 		*/ 
 		void Pause(bool val);
 		
+		unsigned int getNumAnimations();		
+		SpriteAnimation *getAnimationAtIndex(unsigned int index);
+		
+		SpriteAnimation *getCurrentAnimation();
+		
 		void updateSprite();
 		
 	protected:
 	
+		String fileName;
+		
 		bool paused;
 	
 		Number spriteWidth;

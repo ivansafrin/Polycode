@@ -3,6 +3,7 @@ INCLUDE(PolycodeIncludes)
 SET(polycodeUI_SRCS
     Source/PolyUIElement.cpp
     Source/PolyUIBox.cpp
+    Source/PolyUIMenu.cpp
     Source/PolyUIHSizer.cpp
     Source/PolyUIVSizer.cpp
     Source/PolyUIButton.cpp
@@ -28,6 +29,7 @@ SET(polycodeUI_HDRS
     Include/PolyUIHSizer.h
     Include/PolyUIVSizer.h
     Include/PolyUIBox.h
+    Include/PolyUIMenu.h
     Include/PolyUIButton.h
     Include/PolyUICheckBox.h
     Include/PolyUIComboBox.h

@@ -31,16 +31,35 @@
 
 using namespace Polycode;
 
+class ProjectFontEntry : public UIElement {
+	public:
+		ProjectFontEntry(String fontPath, String fontName);
+		~ProjectFontEntry();
+		
+		void handleEvent(Event *event);
+		
+		UITextInput *fontNameInput;
+		ScreenLabel *fontFileLabel;
+		
+		UIImageButton *removeButton;
+		
+		String fontPath;
+};
+
 class PolycodeProjectEditor : public PolycodeEditor {
 	public:
 	PolycodeProjectEditor(PolycodeProjectManager *projectManager);
 	virtual ~PolycodeProjectEditor();
+	
+	void handleEvent(Event *event);
 	
 	bool openFile(OSFileEntry filePath);
 	void Resize(int x, int y);
 	void saveFile();
 		
 	protected:
+	
+	void refreshFontEntries();
 	
 	PolycodeProjectManager *projectManager;
 	
@@ -50,9 +69,14 @@ class PolycodeProjectEditor : public PolycodeEditor {
 	
 	std::vector<UICheckBox*> moduleCheckboxes;
 	
-	UIWindow *mainSettingsWindow;
-	UIWindow *moduleSettingsWindow;
-		
+	UIElement *mainSettingsWindow;
+	UIElement *moduleSettingsWindow;
+	
+	ScreenShape *headerBg;
+	
+	UIElement *fontEntryBase;	
+	std::vector<ProjectFontEntry*> fontEntries;
+				
 	UICheckBox *vSyncCheckBox;
 	UITextInput *defaultWidthInput;
 	UITextInput *defaultHeightInput;	
@@ -62,7 +86,7 @@ class PolycodeProjectEditor : public PolycodeEditor {
 	UITextInput *entryPointInput;	
 	UIColorBox *bgColorBox;
 	
-	UIColorPicker *colorPicker;
+	UIButton *addFontButton;
 	
 	PolycodeProject *associatedProject;
 	

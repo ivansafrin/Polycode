@@ -37,16 +37,52 @@ FontManager::~FontManager() {
 	fonts.clear();
 }
 
+unsigned int FontManager::getNumFonts() const {
+	return fonts.size();
+}
+
+FontEntry *FontManager::getFontEntryByIndex(const unsigned int index) {
+	if(index < fonts.size()) {
+		return &fonts[index];
+	} else {
+		return NULL;
+	}
+}
+
+void FontManager::removeFontEntry(FontEntry *entry, bool deleteFont) {
+	for(int i=0; i < fonts.size(); i++) {
+		FontEntry *listEntry = &fonts[i];
+		if(listEntry == entry) {
+			if(deleteFont) {
+				delete listEntry->font;
+			}		
+			fonts.erase(fonts.begin()+i);
+			return;
+		}
+	}
+}
+
 void FontManager::registerFont(const String& fontName, const String& fontPath) {
 	Font *font = new Font(fontPath);
 	if(font->loaded) {
 		FontEntry newEntry;
 		newEntry.font = font;
 		newEntry.fontName = fontName;
+		font->setFontName(fontName);
 		fonts.push_back(newEntry);
 	} else {
 		delete font;
 	}
+}
+
+FontEntry *FontManager::getFontEntryByFontPath(const String &fontPath) {
+	for(int i=0; i < fonts.size(); i++) {
+		FontEntry *entry = &fonts[i];
+		if(entry->font->getFontPath() == fontPath) {
+			return entry;
+		}
+	}
+	return NULL;
 }
 
 Font *FontManager::getFontByName(const String& fontName) {

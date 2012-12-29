@@ -22,6 +22,462 @@
 
 #include "PolycodeFrame.h"
 
+
+UIColorPicker *globalColorPicker;
+PolycodeFrame *globalFrame;
+
+extern UIGlobalMenu *globalMenu;
+
+EditPoint::EditPoint(BezierPoint *point, unsigned int type) : ScreenEntity() {
+	this->point = point;
+	this->type = type;
+	processInputEvents = true;
+	
+	draggingPoint = NULL;
+	dragging = false;
+
+	controlHandle1 = new ScreenImage("Images/bezier_handle.png");
+	controlHandle1->setPositionMode(ScreenEntity::POSITION_CENTER);
+	
+	controlHandle1->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+	controlHandle1->addEventListener(this, InputEvent::EVENT_MOUSEUP);
+	controlHandle1->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);	
+	controlHandle1->processInputEvents = true;
+	controlHandle1->setWidth(30);
+	controlHandle1->setHeight(30);
+		
+	addChild(controlHandle1);
+	
+	controlHandle2 = new ScreenImage("Images/bezier_handle.png");
+	controlHandle2->setPositionMode(ScreenEntity::POSITION_CENTER);
+	controlHandle2->processInputEvents = true;
+	
+	controlHandle2->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+	controlHandle2->addEventListener(this, InputEvent::EVENT_MOUSEUP);
+	controlHandle2->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);	
+	controlHandle2->setWidth(30);
+	controlHandle2->setHeight(30);
+	
+	addChild(controlHandle2);
+	
+	
+	pointHandle = new ScreenImage("Images/bezier_point.png");
+	pointHandle->processInputEvents = true;
+	pointHandle->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+	pointHandle->addEventListener(this, InputEvent::EVENT_MOUSEUP);
+	pointHandle->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);	
+	pointHandle->setPositionMode(ScreenEntity::POSITION_CENTER);
+	pointHandle->setWidth(30);
+	pointHandle->setHeight(30);
+
+	
+	if(type == TYPE_START_POINT) {
+		controlHandle1->visible = false;
+		controlHandle1->enabled = false;		
+		connectorLine1 = NULL;
+	} else {
+		connectorLine1 = new ScreenLine(pointHandle, controlHandle1);
+		addChild(connectorLine1);
+		connectorLine1->setColorInt(39, 212, 255, 128);
+		connectorLine1->setLineWidth(2.0);
+		connectorLine1->lineSmooth = true;
+	}
+	
+	
+	if(type == TYPE_END_POINT) {
+		controlHandle2->visible = false;
+		controlHandle2->enabled = false;		
+		connectorLine2 = NULL;
+	} else {
+		connectorLine2 = new ScreenLine(pointHandle, controlHandle2);
+		addChild(connectorLine2);
+		connectorLine2->setColorInt(39, 212, 255, 128);
+		connectorLine2->setLineWidth(2.0);
+		connectorLine2->lineSmooth = true;
+	}	
+	
+	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
+	
+	addChild(pointHandle);	
+	
+	updatePosition();
+}
+
+void EditPoint::setMode(unsigned int mode) {
+	this->mode = mode;
+}
+
+void EditPoint::updateCurvePoint() {
+
+	point->p1.x = controlHandle1->getPosition2D().x/610;
+	point->p1.y = controlHandle1->getPosition2D().y/-254;	
+
+	point->p2.x = pointHandle->getPosition2D().x/610;
+	point->p2.y = pointHandle->getPosition2D().y/-254;		
+	
+	point->p3.x = controlHandle2->getPosition2D().x/610;
+	point->p3.y = controlHandle2->getPosition2D().y/-254;	
+
+}
+
+void EditPoint::handleEvent(Event *event) {
+
+	if(event->getDispatcher() == CoreServices::getInstance()->getCore()->getInput()) {
+		switch(event->getEventCode()) {
+			case InputEvent::EVENT_MOUSEMOVE:
+				if(dragging) {
+					if(draggingPoint) {
+					
+						Vector2 newPosition = CoreServices::getInstance()->getCore()->getInput()->getMousePosition();
+						
+						Vector2 translateAmt = Vector2(basePosition.x - newPosition.x, basePosition.y - newPosition.y);
+						
+						if(type != TYPE_POINT && draggingPoint == pointHandle) {
+
+							// don't let drag start and end control points
+							translateAmt.x = 0.0;
+						} 						
+						
+						draggingPoint->setPosition(basePointPosition.x - translateAmt.x, basePointPosition.y - translateAmt.y);												
+						
+						if(draggingPoint == pointHandle) {
+							controlHandle1->setPosition(baseControl1.x - translateAmt.x, baseControl1.y - translateAmt.y);
+							controlHandle2->setPosition(baseControl2.x - translateAmt.x, baseControl2.y - translateAmt.y);																			
+						}
+						
+						limitPoint(pointHandle);
+						limitPoint(controlHandle1);
+						limitPoint(controlHandle2);
+						
+						updateCurvePoint();
+						dispatchEvent(new Event(), Event::CHANGE_EVENT);
+					}
+				}
+			break;
+		}
+	}
+
+	if(event->getDispatcher() == pointHandle || event->getDispatcher() == controlHandle1 || event->getDispatcher() == controlHandle2) {
+		switch(event->getEventCode()) {
+			case InputEvent::EVENT_MOUSEDOWN:
+				if(mode == CurveEditor::MODE_SELECT) {
+					draggingPoint = (ScreenImage*)event->getDispatcher();
+					dragging = true;
+					basePosition = CoreServices::getInstance()->getCore()->getInput()->getMousePosition(); 
+					basePointPosition = draggingPoint->getPosition2D();
+				
+					baseControl1 = controlHandle1->getPosition2D();
+					baseControl2 = controlHandle2->getPosition2D();				
+				}
+				
+				if(mode == CurveEditor::MODE_REMOVE) {
+					if(type == TYPE_POINT) {
+						dispatchEvent(new Event(), Event::CANCEL_EVENT);				
+					}
+				}
+				
+			break;
+			case InputEvent::EVENT_MOUSEUP:
+			case InputEvent::EVENT_MOUSEUP_OUTSIDE:			
+				dragging = false;				
+				draggingPoint = NULL;
+			break;
+		}
+	}
+}
+
+void EditPoint::limitPoint(ScreenImage *point) {
+		if(point->position.x < 0.0)
+			point->position.x = 0.0;
+		if(point->position.x > 610.0)
+			point->position.x = 610.0;
+
+		if(point->position.y > 0.0)
+			point->position.y = 0.0;
+		if(point->position.y < -254.0)
+			point->position.y = -254.0;
+
+}
+
+void EditPoint::updatePosition() {
+	pointHandle->setPosition(610.0*point->p2.x, -254*point->p2.y, 0.0);	
+	controlHandle1->setPosition(610.0*point->p1.x, -254*point->p1.y, 0.0);	
+	controlHandle2->setPosition(610.0*point->p3.x, -254*point->p3.y, 0.0);	
+}
+
+EditPoint::~EditPoint() {
+
+}
+
+EditCurve::EditCurve(BezierCurve *targetCurve, Color curveColor) : UIElement() {
+	
+	this->targetCurve = targetCurve;
+	
+	poly = new Polycode::Polygon();
+	
+	for(int i=0; i < CURVE_SIZE; i++) {		
+		poly->addVertex(0.0, 0.0, 0.0);
+	}
+	
+	visMesh = new ScreenMesh(Mesh::LINE_STRIP_MESH);
+	visMesh->getMesh()->addPolygon(poly);
+	
+	visMesh->lineSmooth = true;
+	visMesh->lineWidth = 2.0;
+	
+	addChild(visMesh);
+	visMesh->setPosition(0, 254);	
+	visMesh->color = curveColor;
+	
+	pointsBase = new UIElement();
+	addChild(pointsBase);
+	
+	pointToRemove = NULL;
+	
+	updateCurve();
+	updatePoints();
+	
+	Deactivate();
+}
+
+void EditCurve::updatePoints() {
+	for(int i=0; i < points.size(); i++) {
+		pointsBase->removeChild(points[i]);
+		//delete points[i];
+	}
+	
+	points.clear();
+	for(int i=0; i < targetCurve->getNumControlPoints(); i++) {
+	
+		unsigned int type = EditPoint::TYPE_POINT;
+		if(i == 0)
+			type = EditPoint::TYPE_START_POINT;
+
+		if(i == targetCurve->getNumControlPoints()-1)
+			type = EditPoint::TYPE_END_POINT;
+
+	
+		EditPoint *point = new EditPoint(targetCurve->getControlPoint(i), type);
+		point->setMode(mode);
+		point->addEventListener(this, Event::CHANGE_EVENT);
+		point->addEventListener(this, Event::CANCEL_EVENT);		
+		pointsBase->addChild(point);
+		points.push_back(point);
+		point->setPosition(0, 254);			
+	}
+}
+
+void EditCurve::setMode(unsigned int mode) {
+	this->mode = mode;
+	for(int i=0; i < points.size(); i++) {
+		points[i]->setMode(mode);
+	}
+}
+
+void EditCurve::Activate() {
+	pointsBase->visible = true;
+	pointsBase->enabled = true;
+	visMesh->color.a = 0.7;	
+}
+
+void EditCurve::Deactivate() {
+	pointsBase->visible = false;
+	pointsBase->enabled = false;
+	visMesh->color.a = 0.4;	
+}
+
+void EditCurve::Update() {
+	if(pointToRemove) {
+		targetCurve->removePoint(pointToRemove->point);
+		updatePoints();
+		updateCurve();
+		pointToRemove = NULL;
+	}
+}
+
+void EditCurve::handleEvent(Event *event) {
+	if(event->getEventCode() == Event::CHANGE_EVENT) {
+		updateCurve();
+	}
+
+	if(event->getEventCode() == Event::CANCEL_EVENT) {	
+		for(int i=0; i < points.size(); i++) {	
+			if(event->getDispatcher() == points[i]) {	
+				pointToRemove = points[i];
+				break;
+			}
+		}
+	}
+}
+
+void EditCurve::updateCurve() {
+	targetCurve->recalculateDistances();
+	targetCurve->rebuildBuffers();
+	
+	Number interval = 610.0/CURVE_SIZE;
+	Number normInterval = 1.0/CURVE_SIZE;
+	
+	interval += interval/CURVE_SIZE;
+	normInterval += normInterval/CURVE_SIZE;
+		
+	for(int i=0; i < CURVE_SIZE; i++) {
+		poly->getVertex(i)->set(targetCurve->getPointAt(normInterval * i).x * 610, targetCurve->getPointAt(normInterval * i).y * -254.0, 0.0);
+	}
+	
+	visMesh->getMesh()->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
+}
+
+EditCurve::~EditCurve() {
+
+}
+
+CurveEditor::CurveEditor() : UIWindow("", 750, 300) {
+	
+	closeOnEscape = true;
+		
+	bg = new ScreenImage("Images/curve_editor_bg.png");
+	addChild(bg);
+	bg->setPosition(160, 63);
+	bg->processInputEvents = true;
+	bg->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+	
+	selectorImage = new ScreenImage("Images/ScreenEditor/selector.png");
+	selectorImage->setColor(0.0, 0.0, 0.0, 0.3);
+	addChild(selectorImage);
+		
+	selectButton = new UIImageButton("Images/ScreenEditor/arrow.png");
+	addChild(selectButton);
+	selectButton->addEventListener(this, UIEvent::CLICK_EVENT);
+	selectButton->setPosition(170, 33);
+
+	addButton = new UIImageButton("Images/arrow_add.png");
+	addChild(addButton);
+	addButton->addEventListener(this, UIEvent::CLICK_EVENT);	
+	addButton->setPosition(170 + 32, 33);
+
+	removeButton = new UIImageButton("Images/arrow_remove.png");
+	addChild(removeButton);
+	removeButton->addEventListener(this, UIEvent::CLICK_EVENT);		
+	removeButton->setPosition(170 + 64, 33);
+	
+	selectorImage->setPosition(selectButton->getPosition().x - 4, selectButton->getPosition().y - 4);
+
+	setMode(0);
+	
+	treeContainer = new UITreeContainer("boxIcon.png", L"Curves", 145, 280);
+	treeContainer->getRootNode()->toggleCollapsed();
+	treeContainer->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
+	treeContainer->setPosition(12, 33);
+	
+	treeContainer->getRootNode()->setUserData(NULL);
+	
+	selectedCurve = NULL;
+	
+	addChild(treeContainer);	
+
+}
+
+void CurveEditor::onClose() {
+	visible = false;
+	enabled = false;
+}
+
+
+void CurveEditor::clearCurves() {
+	selectedCurve = NULL;
+	treeContainer->getRootNode()->clearTree();
+	for(int i=0; i < curves.size(); i++) {
+		removeChild(curves[i]);
+		delete curves[i];
+	}
+	
+	curves.clear();
+}
+
+void CurveEditor::addCurve(String name, BezierCurve *curve, Color curveColor) {
+
+	UITree *newNode = treeContainer->getRootNode()->addTreeChild("Images/curve_icon.png", name);
+	EditCurve *editCurve = new EditCurve(curve, curveColor);
+	addChild(editCurve);
+	editCurve->setPosition(160, 63);	
+	curves.push_back(editCurve);
+	
+	newNode->setUserData((void*) editCurve);
+	
+}
+
+void CurveEditor::setMode(unsigned int mode) {
+	this->mode = mode;
+	if(selectedCurve) {
+		selectedCurve->setMode(mode);
+	}
+}
+
+void CurveEditor::handleEvent(Event *event) {
+	
+	if(mode == MODE_ADD) {
+		if(event->getDispatcher() == bg) {
+			if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN) {
+				InputEvent *inputEvent = (InputEvent*)event;
+				if(selectedCurve) {
+					Vector2 pos = inputEvent->mousePosition;
+					pos.x = pos.x/610.0;
+					pos.y = 1.0-(pos.y/254.0);
+					
+					BezierCurve *targetCurve = selectedCurve->targetCurve;
+				
+					bool done = false;
+					for(int i=0; i < targetCurve->getNumControlPoints(); i++) {
+						if(pos.x < targetCurve->getControlPoint(i)->p2.x && !done) {
+							targetCurve->insertPoint = targetCurve->getControlPoint(i);
+							done = true;							
+						}
+					}
+				
+					targetCurve->addControlPoint2dWithHandles(pos.x-0.1, pos.y, pos.x, pos.y, pos.x + 0.1, pos.y);
+					selectedCurve->updatePoints();
+					selectedCurve->updateCurve();					
+				}
+			}
+		}
+	}
+	
+	if(event->getDispatcher() == selectButton) {
+		selectorImage->setPosition(selectButton->getPosition().x - 4, selectButton->getPosition().y - 4);
+		setMode(0);
+	}
+
+	if(event->getDispatcher() == addButton) {
+		selectorImage->setPosition(addButton->getPosition().x - 4, addButton->getPosition().y - 4);
+		setMode(1);
+	}
+
+	if(event->getDispatcher() == removeButton) {
+		selectorImage->setPosition(removeButton->getPosition().x - 4, removeButton->getPosition().y - 4);
+		setMode(2);
+	}
+	
+	if(event->getDispatcher() == treeContainer->getRootNode()) {
+		if(event->getEventCode() == UITreeEvent::SELECTED_EVENT){ 
+			EditCurve *curve = (EditCurve *)treeContainer->getRootNode()->getSelectedNode()->getUserData();
+			if(selectedCurve) {
+				selectedCurve->Deactivate();
+			}
+			selectedCurve = curve;
+			if(curve) {
+				curve->Activate();
+				curve->setMode(mode);
+			}
+		}
+	}	
+	
+	UIWindow::handleEvent(event);
+}
+
+CurveEditor::~CurveEditor() {
+
+}
+
 EditorHolder::EditorHolder() : UIElement() {
 	currentEditor = NULL;
 }
@@ -39,6 +495,7 @@ void EditorHolder::Resize(Number width, Number height) {
 
 PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 
+	globalFrame = this;
 	processInputEvents = true;
 
 	modalChild = NULL;
@@ -64,23 +521,21 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	mainSizer = new UIHSizer(100,100,200,true);
 	mainSizer->setPosition(0, 45);
 	addChild(mainSizer);
-	
-			
-	projectBrowser = new PolycodeProjectBrowser();
-	mainSizer->addLeftChild(projectBrowser);
 
 	consoleSizer = new UIVSizer(100,100,200, false);
 	mainSizer->addRightChild(consoleSizer);	
+				
+	projectBrowser = new PolycodeProjectBrowser();
+	mainSizer->addLeftChild(projectBrowser);
 
 	editorHolder = new EditorHolder();
 	consoleSizer->addTopChild(editorHolder);
 	
 	console = new PolycodeConsole();	
 	consoleSizer->addBottomChild(console);	
-	
-	
-	projectBrowser->treeContainer->getRootNode()->addEventListener(this, UITreeEvent::DRAG_START_EVENT);
 		
+	projectBrowser->treeContainer->getRootNode()->addEventListener(this, UITreeEvent::DRAG_START_EVENT);
+	
 	topBarBg = new ScreenShape(ScreenShape::SHAPE_RECT, 2,2);
 	topBarBg->setColor(0,0,0,1);
 	topBarBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
@@ -108,7 +563,11 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	modalBlocker->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	modalBlocker->enabled = false;	
 	modalBlocker->blockMouseInput = true;
+	modalBlocker->processInputEvents = true;
 	addChild(modalBlocker);
+	
+	assetBrowser = new AssetBrowser();
+	assetBrowser->visible = false;	
 	
 	newProjectWindow = new NewProjectWindow();
 	newProjectWindow->visible = false;
@@ -135,8 +594,25 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	addChild(dragEntity);
 	dragEntity->visible = false;	
 	
+		
 	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEUP);
 	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
+	
+	curveEditor = new CurveEditor();
+	addChild(curveEditor);
+	curveEditor->setPosition(200,100);
+	curveEditor->visible = false;
+	curveEditor->enabled = false;
+	
+		
+	globalColorPicker = new UIColorPicker();
+	globalColorPicker->setPosition(300,300);
+	addChild(globalColorPicker);
+}
+
+void PolycodeFrame::showCurveEditor() {
+	curveEditor->visible = true;
+	curveEditor->enabled = true;
 }
 
 void PolycodeFrame::showModal(UIWindow *modalChild) {
@@ -167,6 +643,7 @@ void PolycodeFrame::showEditor(PolycodeEditor *editor) {
 	
 	editorHolder->currentEditor = editor;
 	editorHolder->currentEditor->enabled = true;
+	editorHolder->currentEditor->Activate();
 	
 	Resize(frameSizeX, frameSizeY);
 }
@@ -179,6 +656,15 @@ void PolycodeFrame::hideModal() {
 		modalChild = NULL;
 	}
 	modalBlocker->enabled = false;		
+}
+
+void PolycodeFrame::showAssetBrowser(std::vector<String> extensions) {
+	if(!projectManager->getActiveProject()) {
+		return;
+	}
+	assetBrowser->setProject(projectManager->getActiveProject());
+	assetBrowser->setExtensions(extensions);
+	showModal(assetBrowser);
 }
 
 void PolycodeFrame::handleEvent(Event *event) {

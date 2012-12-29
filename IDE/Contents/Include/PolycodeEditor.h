@@ -37,6 +37,8 @@ public:
 	virtual bool openFile(OSFileEntry filePath){ this->filePath = filePath.fullPath; }
 	virtual void Resize(int x, int y);
 	
+	virtual void Activate() {};
+	
 	virtual void saveFile(){};
 	
 	virtual void handleDroppedFile(OSFileEntry file, Number x, Number y) {};

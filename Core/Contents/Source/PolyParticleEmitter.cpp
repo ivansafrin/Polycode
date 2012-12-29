@@ -30,16 +30,17 @@
 #include "PolyTimer.h"
 #include "PolyMaterialManager.h"
 #include "PolyResourceManager.h"
+#include "PolyScreenMesh.h"
+#include "PolyRenderer.h"
 
 using namespace Polycode;
 
-SceneParticleEmitter::SceneParticleEmitter(const String& materialName, Scene *particleParentScene, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Vector3 emitterRadius, Mesh *particleMesh, SceneMesh *emitter)
+SceneParticleEmitter::SceneParticleEmitter(const String& materialName, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Vector3 emitterRadius, Mesh *particleMesh, SceneMesh *emitter)
 : ParticleEmitter(materialName, particleMesh, particleType, emitterType, lifespan, numParticles,  direction, gravity, deviation, emitterRadius),
 SceneEntity()
 {
 	isScreenEmitter = false;
 	emitterMesh = emitter;	
-	this->particleParentScene = particleParentScene;	
 	createParticles();	
 }
 
@@ -50,7 +51,7 @@ SceneParticleEmitter::~SceneParticleEmitter() {
 void SceneParticleEmitter::respawnSceneParticles() {
 	for(int i=0; i < particles.size(); i++) {
 		Particle *particle = particles[i];
-		particleParentScene->removeEntity((SceneEntity*)particle->particleBody);
+		removeChild((SceneEntity*)particle->particleBody);
 		addParticleBody(particle->particleBody);
 		resetParticle(particle);				
 		particle->life = lifespan * ((Number)rand()/RAND_MAX);		
@@ -59,7 +60,8 @@ void SceneParticleEmitter::respawnSceneParticles() {
 }
 
 void SceneParticleEmitter::addParticleBody(Entity *particleBody) {
-	particleParentScene->addEntity((SceneEntity*)particleBody);	
+	addEntity((SceneEntity*)particleBody);	
+	particleBody->editorOnly = true;
 }
 
 void SceneParticleEmitter::dispatchTriggerCompleteEvent() {
@@ -76,20 +78,19 @@ void SceneParticleEmitter::Update() {
 }
 
 
-ScreenParticleEmitter::ScreenParticleEmitter(const String& imageFile, Screen *particleParentScreen, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Vector3 emitterRadius, Mesh *particleMesh, ScreenMesh *emitter)
+ScreenParticleEmitter::ScreenParticleEmitter(const String& imageFile, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Vector3 emitterRadius, Mesh *particleMesh, ScreenMesh *emitter)
 		: ParticleEmitter(imageFile, particleMesh, particleType, emitterType, lifespan, numParticles,  direction, gravity, deviation, emitterRadius),
 ScreenEntity()
 {
+	particleSize = 10.0; 
 	isScreenEmitter = true;
 	emitterMesh = emitter;	
-	this->particleParentScreen = particleParentScreen;	
 	createParticles();
 }
 
 ScreenParticleEmitter::~ScreenParticleEmitter(){ 
-	particleParentScreen->removeChild(this);
 	for(int i=0;i < particles.size(); i++) {
-		particleParentScreen->removeChild((ScreenEntity*)particles[i]->particleBody);
+		removeChild((ScreenEntity*)particles[i]->particleBody);
 		delete particles[i];
 	}
 }
@@ -99,7 +100,8 @@ void ScreenParticleEmitter::Update() {
 }
 
 void ScreenParticleEmitter::addParticleBody(Entity *particleBody) {
-	particleParentScreen->addChild((ScreenEntity*)particleBody);
+	addChild((ScreenEntity*)particleBody);
+	particleBody->editorOnly = true;	
 }
 
 void ScreenParticleEmitter::dispatchTriggerCompleteEvent() {
@@ -131,6 +133,26 @@ ParticleEmitter::ParticleEmitter(const String& imageFile, Mesh *particleMesh, in
 	isEmitterEnabled = true;
 	allAtOnce = false;
 	
+	blendingMode = Renderer::BLEND_MODE_NORMAL;
+	
+	particleSize = 1.0;
+	
+	scaleCurve.addControlPoint2dWithHandles(-0.1, 0.5, 0.0, 0.5, 0.1, 0.5);
+	scaleCurve.addControlPoint2dWithHandles(0.9, 0.5, 1.0, 0.5, 1.1, 0.5);	
+
+	colorCurveR.addControlPoint2dWithHandles(-0.1, 0.5, 0.0, 0.5, 0.1, 0.5);
+	colorCurveR.addControlPoint2dWithHandles(0.9, 0.5, 1.0, 0.5, 1.1, 0.5);	
+
+	colorCurveG.addControlPoint2dWithHandles(-0.1, 0.5, 0.0, 0.5, 0.1, 0.5);
+	colorCurveG.addControlPoint2dWithHandles(0.9, 0.5, 1.0, 0.5, 1.1, 0.5);	
+
+	colorCurveB.addControlPoint2dWithHandles(-0.1, 0.5, 0.0, 0.5, 0.1, 0.5);
+	colorCurveB.addControlPoint2dWithHandles(0.9, 0.5, 1.0, 0.5, 1.1, 0.5);	
+
+	colorCurveA.addControlPoint2dWithHandles(-0.1, 0.5, 0.0, 0.5, 0.1, 0.5);
+	colorCurveA.addControlPoint2dWithHandles(0.9, 0.5, 1.0, 0.5, 1.1, 0.5);	
+	
+	
 	this->particleType = particleType;
 	
 	this->numParticles = numParticles;
@@ -145,6 +167,17 @@ ParticleEmitter::ParticleEmitter(const String& imageFile, Mesh *particleMesh, in
 	useScaleCurves = false;	
 }
 
+Texture *ParticleEmitter::getParticleTexture() {
+	return particleTexture;
+}
+
+void ParticleEmitter::setParticleTexture(Texture *texture) {
+	particleTexture = texture;
+	for(int i=0; i < particles.size(); i++) {
+		((ScreenMesh*)particles[i]->particleBody)->setTexture(particleTexture);
+	}
+}
+			
 void ParticleEmitter::createParticles() {
 	
 	if(isScreenEmitter)
@@ -156,6 +189,7 @@ void ParticleEmitter::createParticles() {
 	Particle *particle;	
 	for(int i=0; i < numParticles; i++) {
 		particle = new Particle(particleType, isScreenEmitter, particleMaterial, particleTexture, pMesh);
+		particle->particleBody->ignoreParentMatrix = true;
 		particle->velVector = dirVector;
 		particle->dirVector = dirVector;
 		particle->deviation = deviation;
@@ -193,9 +227,14 @@ void ParticleEmitter::setParticleVisibility(bool val) {
 }
 
 void ParticleEmitter::setParticleBlendingMode(int mode) {
+	blendingMode = mode;
 	for(int i=0;i < particles.size(); i++) {
 		particles[i]->particleBody->setBlendingMode(mode);
 	}
+}
+
+int ParticleEmitter::getParticleBlendingMode() const {
+	return blendingMode;
 }
 
 void ParticleEmitter::setAlphaTest(bool val) {
@@ -237,6 +276,7 @@ void ParticleEmitter::setParticleCount(int count) {
 		Particle *particle;
 		for(int i=0; i  < oldSize; i++) {
 			particle = new Particle(particleType, isScreenEmitter, particleMaterial, particleTexture, pMesh);
+			particle->particleBody->ignoreParentMatrix = true;			
 			particle->velVector = dirVector;
 			particle->dirVector = dirVector;
 			particle->deviation = deviation;
@@ -253,7 +293,7 @@ void ParticleEmitter::setParticleCount(int count) {
 		else
 			particles[i]->particleBody->visible = false;
 	}
-
+	resetAll();
 }
 
 void ParticleEmitter::setPerlinModSize(Number size) {
@@ -286,6 +326,7 @@ void ParticleEmitter::resetParticle(Particle *particle) {
 //	particle->particleBody->visible = true;
 	particle->lifespan  = lifespan;
 	Matrix4 concatMatrix = getBaseMatrix();
+	
 	Vector3	startVector;
 	
 	particle->dirVector = dirVector;
@@ -296,6 +337,7 @@ void ParticleEmitter::resetParticle(Particle *particle) {
 //	} else {
 		startVector = Vector3(-(emitterRadius.x/2.0f)+emitterRadius.x*((Number)rand()/RAND_MAX),-(emitterRadius.y/2.0f)+emitterRadius.y*((Number)rand()/RAND_MAX),-(emitterRadius.z/2.0f)+emitterRadius.z*((Number)rand()/RAND_MAX));	
 //	}
+		
 	
 	particle->Reset(emitterType != TRIGGERED_EMITTER);	
 	particle->velVector = particle->dirVector;
@@ -308,15 +350,19 @@ void ParticleEmitter::resetParticle(Particle *particle) {
 	
 	particle->brightnessDeviation = 1.0f - ( (-brightnessDeviation) + ((brightnessDeviation*2) * ((Number)rand()/RAND_MAX)));
 	
-	particle->velVector = concatMatrix.rotateVector(particle->velVector);	
-	particle->particleBody->setTransformByMatrix(concatMatrix);
+//	particle->velVector = concatMatrix.rotateVector(particle->velVector);	
+	
+	particle->particleBody->setPosition(concatMatrix.getPosition());
+//	particle->particleBody->setPosition(0.0, 0.0, 0.0);
 	particle->particleBody->Translate(startVector);
 	particle->particleBody->rebuildTransformMatrix();	
 	
 	if(useScaleCurves) {
-		particle->particleBody->setScale(scaleCurve.getHeightAt(0),
-									 scaleCurve.getHeightAt(0),
-									 scaleCurve.getHeightAt(0));
+		particle->particleBody->setScale(scaleCurve.getHeightAt(0) * particleSize,
+									 scaleCurve.getHeightAt(0) * particleSize,
+									 scaleCurve.getHeightAt(0) * particleSize);
+	} else {
+		particle->particleBody->setScale(particleSize, particleSize, particleSize);
 	}
 	
 	if(useColorCurves) {
@@ -324,13 +370,22 @@ void ParticleEmitter::resetParticle(Particle *particle) {
 										   colorCurveG.getHeightAt(0),
 										   colorCurveB.getHeightAt(0),
 										   colorCurveA.getHeightAt(0));
+	} else {
+		particle->particleBody->color.setColor(1.0, 1.0, 1.0, 1.0);
 	}
 	
 			
 }
 
-void ParticleEmitter::setAllAtOnce(bool val) {
-	allAtOnce = val;
+Vector3 ScreenParticleEmitter::getParticleCompoundScale() {
+	return getCompoundScale();
+}
+
+Vector3 ParticleEmitter::getParticleCompoundScale() {
+	return Vector3();
+}
+			
+void ParticleEmitter::resetAll() {
 	for(int i=0;i < particles.size(); i++) {
 		if(allAtOnce)
 			particles[i]->life = 0;
@@ -339,6 +394,24 @@ void ParticleEmitter::setAllAtOnce(bool val) {
 	}
 }
 
+void ParticleEmitter::setAllAtOnce(bool val) {
+	allAtOnce = val;
+	resetAll();
+}
+
+unsigned int ParticleEmitter::getNumParticles() const {
+	return numParticles;
+}
+
+Particle *ParticleEmitter::getParticleAtIndex(unsigned int index) const {
+	if(index < particles.size()) {
+		return particles[index];
+	} else {
+		return NULL;
+	}
+}
+
+
 void ParticleEmitter::updateEmitter() {	
 	
 	Vector3 translationVector;
@@ -346,6 +419,8 @@ void ParticleEmitter::updateEmitter() {
 	
 	Particle *particle;
 	Number normLife;
+	
+	Vector3 compoundScale = getParticleCompoundScale();
 	
 	for(int i=0;i < numParticles; i++) {	
 		particle = particles[i];
@@ -371,7 +446,9 @@ void ParticleEmitter::updateEmitter() {
 		
 		if(rotationFollowsPath)  {
 			if(isScreenEmitter) {
-				particle->particleBody->lookAt(particle->particleBody->getPosition() + translationVector, Vector3(1,0,0));													
+				Number angle = atan2(translationVector.x, translationVector.y);
+				particle->particleBody->setRoll(360 - ((angle * TODEGREES)+180));
+			
 			} else {
 				particle->particleBody->lookAt(particle->particleBody->getPosition() + translationVector, Vector3(1,0,0));			
 			}
@@ -393,14 +470,22 @@ void ParticleEmitter::updateEmitter() {
 											   colorCurveG.getHeightAt(normLife)*particle->brightnessDeviation,
 											   colorCurveB.getHeightAt(normLife)*particle->brightnessDeviation,
 											   colorCurveA.getHeightAt(normLife)*particle->brightnessDeviation);
+		} else {
+			particle->particleBody->color.setColor(particle->brightnessDeviation,
+											   particle->brightnessDeviation,
+											   particle->brightnessDeviation,
+											   1.0);		
 		}
 	
 		if(useScaleCurves) {
-			particle->particleBody->setScale(scaleCurve.getHeightAt(normLife),
-										 scaleCurve.getHeightAt(normLife),
-										 scaleCurve.getHeightAt(normLife));
+			particle->particleBody->setScale(scaleCurve.getHeightAt(normLife) * particleSize * compoundScale.x,
+										 scaleCurve.getHeightAt(normLife) * particleSize * compoundScale.y,
+										 scaleCurve.getHeightAt(normLife) * particleSize * compoundScale.z);
 		
+		} else {
+			particle->particleBody->setScale(particleSize*compoundScale.x, particleSize*compoundScale.y, particleSize*compoundScale.z);
 		}
+		
 		if(particle->life > particle->lifespan && isEmitterEnabled) {
 			if(emitterType == CONTINUOUS_EMITTER) {
 				resetParticle(particle);

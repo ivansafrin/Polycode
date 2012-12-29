@@ -64,11 +64,11 @@ NewFileWindow::NewFileWindow() : UIWindow(L"Create New File", 480, 280) {
 	label2->setText("NEW FILE NAME (WITHOUT EXTENSION)");
 		
 	addChild(label2);
-	label2->setPosition(padding+220, templateContainer->getPosition().y);			
+	label2->setPosition(padding+220, templateContainer->getPosition().y-5);			
 	
 	fileNameInput = new UITextInput(false, 500-padding-210-padding-padding, 12);	
 	addChild(fileNameInput);
-	fileNameInput->setPosition(label2->getPosition().x, label2->getPosition().y+label2->getHeight()-6);
+	fileNameInput->setPosition(label2->getPosition().x, label2->getPosition().y+30);
 	
 	
 	cancelButton = new UIButton(L"Cancel", 100);

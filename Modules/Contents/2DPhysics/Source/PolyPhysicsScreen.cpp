@@ -274,51 +274,34 @@ void PhysicsScreen::setVelocity(ScreenEntity *ent, Number fx, Number fy) {
 	PhysicsScreenEntity *pEnt = getPhysicsByScreenEntity(ent);
 	if(pEnt == NULL)
 		return;
-	
-	pEnt->body->SetAwake(true);
-	b2Vec2 f = pEnt->body->GetLinearVelocity();
-	if(fx != 0)
-		f.x = fx;
-	if(fy != 0)
-		f.y = fy;
-	
-	pEnt->body->SetLinearVelocity(f);
+	pEnt->setVelocity(fx, fy);	
 }
 
 void PhysicsScreen::setVelocityX(ScreenEntity *ent, Number fx) {
 	PhysicsScreenEntity *pEnt = getPhysicsByScreenEntity(ent);
 	if(pEnt == NULL)
 		return;
-	
-	pEnt->body->SetAwake(true);
-	b2Vec2 f = pEnt->body->GetLinearVelocity();
-	f.x = fx;	
-	pEnt->body->SetLinearVelocity(f);
-	
+	pEnt->setVelocityX(fx);
 }
 
 void PhysicsScreen::setVelocityY(ScreenEntity *ent, Number fy) {
 	PhysicsScreenEntity *pEnt = getPhysicsByScreenEntity(ent);
 	if(pEnt == NULL)
 		return;
-	
-	pEnt->body->SetAwake(true);
-	b2Vec2 f = pEnt->body->GetLinearVelocity();
-	f.y = fy;	
-	pEnt->body->SetLinearVelocity(f);	
+	pEnt->setVelocityY(fy);
 }
 
 
-PhysicsScreenEntity *PhysicsScreen::addCollisionChild(ScreenEntity *newEntity, int entType) {
+PhysicsScreenEntity *PhysicsScreen::addCollisionChild(ScreenEntity *newEntity, int entType, short groupIndex) {
 	PhysicsScreenEntity *ret;
-	ret = addPhysicsChild(newEntity, entType, false, 0,0.0,0, true);
+	ret = addPhysicsChild(newEntity, entType, false, 0,0.0,0, true, groupIndex);
 	ret->collisionOnly = true; 
 	return ret;
 }
 
-PhysicsScreenEntity *PhysicsScreen::trackCollisionChild(ScreenEntity *newEntity, int entType) {
+PhysicsScreenEntity *PhysicsScreen::trackCollisionChild(ScreenEntity *newEntity, int entType, short groupIndex) {
 	PhysicsScreenEntity *ret;
-	ret = trackPhysicsChild(newEntity, entType, false, 0,0.0,0, true);
+	ret = trackPhysicsChild(newEntity, entType, false, 0,0.0,0, true, groupIndex);
 	ret->collisionOnly = true; 
 	return ret;
 }
@@ -346,11 +329,7 @@ void PhysicsScreen::applyImpulse(ScreenEntity *ent, Number fx, Number fy) {
 	PhysicsScreenEntity *pEnt = getPhysicsByScreenEntity(ent);
 	if(pEnt == NULL)
 		return;
-	
-	pEnt->body->SetAwake(true);
-	b2Vec2 f =  b2Vec2(fx,fy);
-	b2Vec2 p = pEnt->body->GetWorldPoint(b2Vec2(0.0f, 0.0f));	
-	pEnt->body->ApplyLinearImpulse(f, p);	
+	pEnt->applyImpulse(fx, fy);
 }
 
 
@@ -438,14 +417,14 @@ void PhysicsScreen::destroyMouseJoint(b2MouseJoint *mJoint) {
 		mJoint = NULL;
 }
 
-PhysicsScreenEntity *PhysicsScreen::addPhysicsChild(ScreenEntity *newEntity, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation) {
+PhysicsScreenEntity *PhysicsScreen::addPhysicsChild(ScreenEntity *newEntity, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation, short groupIndex) {
 	addChild(newEntity);
-	return trackPhysicsChild(newEntity, entType, isStatic, friction, density, restitution, isSensor, fixedRotation);
+	return trackPhysicsChild(newEntity, entType, isStatic, friction, density, restitution, isSensor, fixedRotation, groupIndex);
 }
 
-PhysicsScreenEntity *PhysicsScreen::trackPhysicsChild(ScreenEntity *newEntity, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation) {
+PhysicsScreenEntity *PhysicsScreen::trackPhysicsChild(ScreenEntity *newEntity, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation, short groupIndex) {
 	newEntity->setPositionMode(ScreenEntity::POSITION_CENTER);
-	PhysicsScreenEntity *newPhysicsEntity = new PhysicsScreenEntity(newEntity, world, worldScale, entType, isStatic, friction, density, restitution, isSensor,fixedRotation);
+	PhysicsScreenEntity *newPhysicsEntity = new PhysicsScreenEntity(newEntity, world, worldScale, entType, isStatic, friction, density, restitution, isSensor,fixedRotation, groupIndex);
 	physicsChildren.push_back(newPhysicsEntity);
 	newPhysicsEntity->body->SetAwake(true);
 	return newPhysicsEntity;
@@ -466,13 +445,12 @@ void PhysicsScreen::removePhysicsChild(ScreenEntity *entityToRemove) {
 	Screen::removeChild(entityToRemove);	
 }
 
-ScreenEntity* PhysicsScreen::removeChild(ScreenEntity *entityToRemove) {
+void PhysicsScreen::removeChild(ScreenEntity *entityToRemove) {
 	if(getPhysicsByScreenEntity(entityToRemove)) {
 		removePhysicsChild(entityToRemove);
 	} else {
 		Screen::removeChild(entityToRemove);	
 	}
-	return entityToRemove;
 }
 
 

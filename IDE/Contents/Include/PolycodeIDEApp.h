@@ -36,6 +36,7 @@
 #include "PolycodeFontEditor.h"
 #include "PolycodeTextEditor.h"
 #include "PolycodeProjectEditor.h"
+#include "PolycodeSpriteEditor.h"
 
 #include "PolycodeToolLauncher.h"
 
@@ -72,7 +73,7 @@ public:
 	void saveFile();
 	void findText();
 	void runProject();
-	void exportProject();
+	void exportProject();	
 	
 	// system callbacks
 	

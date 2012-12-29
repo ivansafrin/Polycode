@@ -28,30 +28,30 @@
 #include "PolyScreenEntity.h"
 #include "PolyUIEvent.h"
 #include "PolyUIBox.h"
+#include "PolyUIMenu.h"
 #include "PolyUIElement.h"
 #include "PolyFont.h"
 
 namespace Polycode {
 
-	class _PolyExport UIComboBoxItem : public UIElement {
+	class _PolyExport UIComboBoxItem {
 		public:
-			UIComboBoxItem(String label, Number comboWidth, Number comboHeight);
+			UIComboBoxItem(String label, void *data);
 			~UIComboBoxItem();
 			
 			void *data;
 			String label;
-			ScreenLabel *itemLabel;
 	};
 
 	class _PolyExport UIComboBox : public UIElement {
 		public:
-			UIComboBox(Number comboWidth);
+			UIComboBox(UIGlobalMenu *globalMenu, Number comboWidth);
 			~UIComboBox();
 			
 			void toggleDropDown();
 		
-			void updateVis();
-		
+			void clearItems();
+			
 			int addComboItem(String itemName, void *data=NULL);
 			int getSelectedIndex();
 			UIComboBoxItem *getSelectedItem();
@@ -63,6 +63,10 @@ namespace Polycode {
 							
 		private:
 		
+			UIMenu *dropDownMenu;
+		
+			UIGlobalMenu *globalMenu;
+		
 			std::vector<UIComboBoxItem*> items;
 			int selectedIndex;
 			
@@ -73,10 +77,8 @@ namespace Polycode {
 			int selectedOffset;
 						
 			Number nextItemHeight;
-			bool isDroppedDown;
-			UIBox *dropDownBox;
+
 			UIBox *bgBox;
-			UIBox *selectorBox;			
 			ScreenImage *dropDownImage;
 	};
 }

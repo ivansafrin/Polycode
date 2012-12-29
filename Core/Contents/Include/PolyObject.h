@@ -23,6 +23,7 @@
 #pragma once
 #include "PolyGlobals.h"
 #include "PolyString.h"
+#include "OSBasics.h"
 
 class TiXmlElement;
 
@@ -237,6 +238,20 @@ namespace Polycode {
 		* @param fileName Path to the XML file to save to.
 		*/				
 		void saveToXML(const String& fileName);
+
+		/**
+		* Saves the object to an optimized binary file
+		* @param fileName Path to the file to save to.
+		*/				
+		void saveToBinary(const String& fileName);
+
+		/**
+		* Loads data from a binary file into the object. 
+		* @param fileName Path to the binary file to load.
+		* @return Returns true is succesful, false if otherwise.
+		*/		
+		bool loadFromBinary(const String& fileName);
+
 		
 		void createFromXMLElement(TiXmlElement *element, ObjectEntry *entry);
 		TiXmlElement *createElementFromObjectEntry(ObjectEntry *entry);
@@ -247,5 +262,45 @@ namespace Polycode {
 		ObjectEntry root;
 		
 	};
+
+	class _PolyExport BinaryObjectReader {
+		public:
+			BinaryObjectReader(const String& fileName, Object *object);
+			~BinaryObjectReader();			
+			
+			bool success;				
+		protected:
+		
+			bool parseEntryFromFile(ObjectEntry *entry);
+			String getKeyByIndex(unsigned int index);
+			
+			bool readFile();
+					
+			OSFILE *inFile;		
+			std::vector<String> keys;
+			Object *object;		
+
+	};
+		
+	class _PolyExport BinaryObjectWriter {
+		public:
+			BinaryObjectWriter(Object *object);
+			~BinaryObjectWriter();
+			
+			void parseKeysFromObjectEntry(ObjectEntry *entry);
+			void writeEntryToFile(ObjectEntry *entry);
+			
+			unsigned int addKey(const String &key);			
+			unsigned int getKeyIndex(const String &key);
+			
+			bool writeToFile(const String& fileName);			
+			
+		protected:
+			OSFILE *outFile;
+			int numEntriesWritten;
+			std::vector<String> keys;			
+			Object *object;
+	};
+
 	
 }

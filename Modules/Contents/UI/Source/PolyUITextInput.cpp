@@ -182,7 +182,7 @@ void UITextInput::setSelection(int lineStart, int lineEnd, int colStart, int col
 		selectionCaretPosition = colStart;
 	}
 	
-	//printf("SET lineStart:%d lineEnd:%d colStart:%d colEnd:%d\n", lineStart, lineEnd, colStart, colEnd);
+//	printf("SET lineStart:%d lineEnd:%d colStart:%d colEnd:%d\n", lineStart, lineEnd, colStart, colEnd);
 	
 	if(lineStart > lineEnd) {
 		int tmp = lineStart;
@@ -200,8 +200,7 @@ void UITextInput::setSelection(int lineStart, int lineEnd, int colStart, int col
 		colEnd = tmp;
 	}
 	
-	clearSelection();
-	
+	clearSelection();	
 
 	
 	if(lineStart > lines.size()-1)
@@ -221,26 +220,26 @@ void UITextInput::setSelection(int lineStart, int lineEnd, int colStart, int col
 	Number topSize, topHeight, topX;
 	
 	selectorRectTop->visible = true;	
-	topSize = topLine->getLabel()->getTextWidth(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), topLine->getText().substr(colStart,fColEnd-colStart), fontSize) - 4; 
+	topSize = topLine->getLabel()->getTextWidthForString(topLine->getText().substr(colStart,fColEnd-colStart)) ; 
 	topHeight = lineHeight+lineSpacing;
-	if(colStart > 0) {
-		topX = topLine->getLabel()->getTextWidth(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), topLine->getText().substr(0,colStart-1), fontSize); ;
+	if(colStart >= 0) {
+		topX = topLine->getLabel()->getTextWidthForString(topLine->getText().substr(0,colStart));
 	} else {
 		topX = 0;
 	}
 
 	selectorRectTop->setScale(topSize, topHeight);
-	selectorRectTop->setPosition(topX + padding + (topSize/2.0)+ 1, padding + (lineStart * (lineHeight+lineSpacing)) + (topHeight/2.0));
+	selectorRectTop->setPosition(topX + padding + (topSize/2.0), padding + (lineStart * (lineHeight+lineSpacing)) + (topHeight/2.0));
 	
 	if(lineEnd > lineStart && lineEnd < lines.size()) {
 		ScreenLabel *bottomLine = lines[lineEnd];	
 		selectorRectBottom->visible = true;		
-		Number bottomSize = bottomLine->getLabel()->getTextWidth(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), bottomLine->getText().substr(0,colEnd), fontSize) - 4; 
+		Number bottomSize = bottomLine->getLabel()->getTextWidthForString(bottomLine->getText().substr(0,colEnd)) ; 
 		if(bottomSize < 0)
 			bottomSize = this->width-padding;
 		Number bottomHeight = lineHeight+lineSpacing;
 		selectorRectBottom->setScale(bottomSize, bottomHeight);
-		selectorRectBottom->setPosition(padding + (bottomSize/2.0) + 1, padding + (lineEnd * (lineHeight+lineSpacing)) + (bottomHeight/2.0));
+		selectorRectBottom->setPosition(padding + (bottomSize/2.0), padding + (lineEnd * (lineHeight+lineSpacing)) + (bottomHeight/2.0));
 		
 		if(lineEnd != lineStart+1) {
 			// need filler
@@ -444,8 +443,9 @@ int UITextInput::insertLine(bool after) {
 }
 
 void UITextInput::restructLines() {
+
 	for(int i=0; i < lines.size(); i++) {
-		lines[i]->setPosition(padding,padding + (i*(lineHeight+lineSpacing)) ,0.0f);		
+		lines[i]->setPosition(padding,padding + (i*(lineHeight+lineSpacing)),0.0f);		
 	}
 	
 	if(scrollContainer) {
@@ -502,12 +502,12 @@ void UITextInput::updateCaretPosition() {
 	} else if(caretPosition > currentLine->getText().length()) {
 		caretPosition = currentLine->getText().length();
 		String caretSubString = currentLine->getText().substr(0,caretPosition);
-		caretImagePosition = currentLine->getLabel()->getTextWidth(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), caretSubString, fontSize);		
-		caretImagePosition = caretImagePosition - 4.0f + padding;		
+		caretImagePosition = currentLine->getLabel()->getTextWidthForString(caretSubString);		
+		caretImagePosition = caretImagePosition + padding;		
 	} else {
 		String caretSubString = currentLine->getText().substr(0,caretPosition);
-		caretImagePosition = currentLine->getLabel()->getTextWidth(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), caretSubString, fontSize);
-		caretImagePosition = caretImagePosition - 4.0f + padding;		
+		caretImagePosition = currentLine->getLabel()->getTextWidthForString(caretSubString);
+		caretImagePosition = caretImagePosition  + padding;		
 	}
 	blinkerRect->visible  = true;
 	blinkTimer->Reset();
@@ -540,7 +540,7 @@ void UITextInput::selectLineFromOffset() {
 }
 
 void UITextInput::dragSelectionTo(Number x, Number y) {
-	x -= padding;
+	x -= padding * 2.0;
 	y -= padding;
 	int lineOffset = y  / (lineHeight+lineSpacing);
 	if(lineOffset > lines.size()-1)
@@ -550,9 +550,9 @@ void UITextInput::dragSelectionTo(Number x, Number y) {
 	
 	int len = selectToLine->getText().length();
 	Number slen;
-	int caretPosition = selectToLine->getLabel()->getTextWidth(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), selectToLine->getText().substr(0,len), fontSize);
+	int caretPosition = selectToLine->getLabel()->getTextWidthForString(selectToLine->getText().substr(0,len));
 	for(int i=0; i < len; i++) {
-		slen = selectToLine->getLabel()->getTextWidth(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), selectToLine->getText().substr(0,i), fontSize);
+		slen = selectToLine->getLabel()->getTextWidthForString(selectToLine->getText().substr(0,i));
 		if(slen > x) {
 			caretPosition = i;
 			break;
@@ -561,8 +561,8 @@ void UITextInput::dragSelectionTo(Number x, Number y) {
 	if(x > slen)
 		caretPosition = len;
 	
-	if(multiLine)
-		caretPosition++;
+//	if(multiLine)
+//		caretPosition++;
 		
 	if(caretPosition < 0)
 		caretPosition = 0;		
@@ -695,7 +695,7 @@ void UITextInput::findCurrent() {
 
 void UITextInput::setCaretToMouse(Number x, Number y) {
 	clearSelection();
-	x -= padding;
+	x -= (padding* 2.0);
 	y -= padding;
 	//if(lines.size() > 1) {
 		lineOffset = y  / (lineHeight+lineSpacing);
@@ -706,18 +706,30 @@ void UITextInput::setCaretToMouse(Number x, Number y) {
 	
 	int len = currentLine->getText().length();
 	Number slen;
-	for(int i=0; i < len; i++) {
-		slen = currentLine->getLabel()->getTextWidth(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), currentLine->getText().substr(0,i), fontSize);
-		if(slen > x) {
-			caretPosition = i;
-			break;
+	
+	int newCaretPosition = -1;
+	for(int i=1; i < len; i++) {
+		slen = currentLine->getLabel()->getTextWidthForString(currentLine->getText().substr(0,i));
+		Number slen_prev = currentLine->getLabel()->getTextWidthForString(currentLine->getText().substr(0,i-1));		
+		if(x > slen_prev && x < slen) {
+			if(x < slen_prev + ((slen - slen_prev) /2.0)) {
+				newCaretPosition = i-1;
+				break;			
+			} else {
+				newCaretPosition = i;
+				break;
+			}
 		}
 	}
+	
+	if(newCaretPosition == -1)
+		newCaretPosition = 0;
+	
 	if(x > slen)
-		caretPosition = len;
+		newCaretPosition = len;
 		
-	if(multiLine)
-		caretPosition++;
+		
+	caretPosition = newCaretPosition;	
 		
 	updateCaretPosition();	
 }
@@ -1110,7 +1122,7 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 	
 //	if(1) {
 	if((charCode > 31 && charCode < 127) || charCode > 127) {	
-		if(!isNumberOnly || (isNumberOnly && (charCode > 47 && charCode < 58))) {
+		if(!isNumberOnly || (isNumberOnly && ((charCode > 47 && charCode < 58) || (charCode == '.' || charCode == '-')))) {
 			saveUndoState();
 			if(hasSelection)
 				deleteSelection();
@@ -1179,7 +1191,7 @@ void UITextInput::Update() {
 	if(hasSelection) {
 		blinkerRect->visible = false;
 	}
-	blinkerRect->setPosition(caretImagePosition,currentLine->getPosition2D().y);
+	blinkerRect->setPosition(caretImagePosition,currentLine->getPosition2D().y - 2);
 	if(hasFocus) {
 //		inputRect->setStrokeColor(1.0f, 1.0f, 1.0f, 0.25f);	
 	} else {

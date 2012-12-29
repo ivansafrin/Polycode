@@ -82,11 +82,11 @@ void ScreenManager::Update() {
 	for(int i=0;i<screens.size();i++) {
 		if(screens[i]->enabled) {
 			if(!screens[i]->usesNormalizedCoordinates()) {
-				renderer->setOrthoMode(renderer->getXRes(), renderer->getYRes());
+				renderer->setOrthoMode(renderer->getXRes(), renderer->getYRes(), false);
 			} else {
 				Number yCoordinateSize = screens[i]->getYCoordinateSize();
 				Number ratio = ((Number)renderer->getXRes())/((Number)renderer->getYRes());
-				renderer->setOrthoMode(ratio*yCoordinateSize, yCoordinateSize);								
+				renderer->setOrthoMode(ratio*yCoordinateSize, yCoordinateSize, true);				
 			}
 		
 			if(screens[i]->hasFilterShader()) {

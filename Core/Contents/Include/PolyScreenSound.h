@@ -46,7 +46,7 @@ namespace Polycode {
 		public:
 			ScreenSound(const String& fileName, Number referenceDistance, Number maxDistance);
 			virtual ~ScreenSound();			
-			void Update();
+			void Update();			
 			
 			/**
 			* Returns the sound object associated with this positional sound.
@@ -54,6 +54,7 @@ namespace Polycode {
 			Sound *getSound() const;
 			
 		protected:
+					
 			Sound *sound;
 	};
 	

@@ -82,7 +82,7 @@ class MaterialTextureSlot : public UIElement {
 
 class MaterialPropertySlot : public UIElement {
 	public:
-		MaterialPropertySlot(UIColorPicker *colorPicker, ShaderBinding *binding, ProgramParam param);
+		MaterialPropertySlot(ShaderBinding *binding, ProgramParam param);
 		~MaterialPropertySlot();
 		
 		void handleEvent(Event *event);
@@ -104,7 +104,7 @@ class MaterialPropertySlot : public UIElement {
 
 class MaterialEditorPane : public UIWindow {
 	public:
-		MaterialEditorPane(UIColorPicker *colorPicker);
+		MaterialEditorPane();
 		~MaterialEditorPane();
 		
 		void setMaterial(Material *material);
@@ -138,7 +138,6 @@ class MaterialEditorPane : public UIWindow {
 		ScreenShape *previewShape;
 		
 		UIComboBox *shaderSelector;
-		UIColorPicker *colorPicker;		
 
 		UIComboBox *blendSelector;
 		

@@ -101,9 +101,11 @@ void PolycodeProjectManager::setActiveProject(PolycodeProject* project) {
 		if(activeProject != NULL) {
 			CoreServices::getInstance()->getResourceManager()->removeArchive(activeProject->getRootFolder());		
 		}
-		
+
 		activeProject = project;
-		CoreServices::getInstance()->getResourceManager()->addArchive(project->getRootFolder());
+		if(project){			
+			CoreServices::getInstance()->getResourceManager()->addArchive(project->getRootFolder());
+		}
 	}
 }
 

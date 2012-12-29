@@ -34,7 +34,7 @@ namespace Polycode {
 	*/	
 	class _PolyExport PhysicsScreenEntity {
 		public:
-			PhysicsScreenEntity(ScreenEntity *entity, b2World *world, Number worldScale, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation);
+			PhysicsScreenEntity(ScreenEntity *entity, b2World *world, Number worldScale, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation, short groupIndex = 0);
 			~PhysicsScreenEntity();		
 			
 			/**
@@ -56,6 +56,12 @@ namespace Polycode {
 			
 			void Update();
 			
+			void setVelocity(Number fx, Number fy);	
+			void setVelocityX( Number fx);	
+			void setVelocityY(Number fy);				
+			
+			void applyImpulse(Number fx, Number fy);
+				
 			/**
 			* Rectangular physics entity
 			*/ 

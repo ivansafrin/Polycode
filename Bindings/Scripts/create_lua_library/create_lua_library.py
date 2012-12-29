@@ -480,6 +480,8 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 										className = "Polycode::Polygon"
 									if className == "Rectangle":
 										className = "Polycode::Rectangle"
+									if className == "Polycode : : Rectangle":
+										className = "Polycode::Rectangle"
 									wrappersHeaderOut += "\t%s *retInst = new %s();\n" % (className, className)
 									wrappersHeaderOut += "\t*retInst = %s;\n" % (call)
 									wrappersHeaderOut += "\t%s(L, retInst);\n" % (outfunc)

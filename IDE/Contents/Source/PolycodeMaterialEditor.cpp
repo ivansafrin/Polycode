@@ -22,9 +22,11 @@
  
 #include "PolycodeMaterialEditor.h"
 
-MaterialEditorPane::MaterialEditorPane(UIColorPicker *colorPicker) : UIWindow("Material", 670, 250) {
+extern UIColorPicker *globalColorPicker;
+extern UIGlobalMenu *globalMenu;
 
-	this->colorPicker = colorPicker;
+MaterialEditorPane::MaterialEditorPane() : UIWindow("Material", 670, 250) {
+
 	
 	previewScene = new Scene(true);	
 	
@@ -137,11 +139,11 @@ MaterialEditorPane::MaterialEditorPane(UIColorPicker *colorPicker) : UIWindow("M
 	
 	textureSlotBase->setPosition(xPos+230, 60);
 
-	shaderSelector = new UIComboBox(210);	
+	shaderSelector = new UIComboBox(globalMenu, 210);	
 	shaderSelector->addEventListener(this, UIEvent::CHANGE_EVENT);
 
 	
-	blendSelector = new UIComboBox(210);	
+	blendSelector = new UIComboBox(globalMenu, 210);	
 	blendSelector->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
 	addChild(blendSelector);
@@ -275,7 +277,7 @@ void MaterialEditorPane::handleEvent(Event *event) {
 				
 				for(int i=0; i < selectedShader->expectedFragmentParams.size(); i++) {
 					if(!selectedShader->expectedFragmentParams[i].isAuto) {
-					MaterialPropertySlot *propertySlot = new MaterialPropertySlot(colorPicker, currentMaterial->getShaderBinding(0), selectedShader->expectedFragmentParams[i]);
+					MaterialPropertySlot *propertySlot = new MaterialPropertySlot(currentMaterial->getShaderBinding(0), selectedShader->expectedFragmentParams[i]);
 					paramsEntity->addChild(propertySlot);
 					propertySlot->setPosition(0, yOffset);
 					fragmentPropertySlots.push_back(propertySlot);					
@@ -285,7 +287,7 @@ void MaterialEditorPane::handleEvent(Event *event) {
 								
 				for(int i=0; i < selectedShader->expectedVertexParams.size(); i++) {
 					if(!selectedShader->expectedVertexParams[i].isAuto) {
-					MaterialPropertySlot *propertySlot = new MaterialPropertySlot(colorPicker, currentMaterial->getShaderBinding(0), selectedShader->expectedVertexParams[i]);
+					MaterialPropertySlot *propertySlot = new MaterialPropertySlot(currentMaterial->getShaderBinding(0), selectedShader->expectedVertexParams[i]);
 					paramsEntity->addChild(propertySlot);
 					propertySlot->setPosition(0, yOffset);
 					fragmentPropertySlots.push_back(propertySlot);					
@@ -374,7 +376,7 @@ void MaterialEditorPane::setMaterial(Material *material) {
 	nameInput->setText(currentMaterial->getName());
 }
 
-MaterialPropertySlot::MaterialPropertySlot(UIColorPicker *colorPicker, ShaderBinding *binding, ProgramParam param) : UIElement() {
+MaterialPropertySlot::MaterialPropertySlot(ShaderBinding *binding, ProgramParam param) : UIElement() {
 
 	setWidth(280);
 	setHeight(43);
@@ -438,7 +440,7 @@ MaterialPropertySlot::MaterialPropertySlot(UIColorPicker *colorPicker, ShaderBin
 		break;
 		case ProgramParam::PARAM_Color:
 			Color colorValue = ((*(Color*)binding->getLocalParamByName(param.name)->data));
-			colorBox = new UIColorBox(colorPicker, colorValue, 30, 23);
+			colorBox = new UIColorBox(globalColorPicker, colorValue, 30, 23);
 			colorBox->addEventListener(this, UIEvent::CHANGE_EVENT);			
 			colorBox->setPosition(0.0, 18);
 //			binding->addLocalParam(param.name, &colorValue);			
@@ -535,12 +537,9 @@ MaterialEditorPane::~MaterialEditorPane() {
 }
 
 MaterialMainWindow::MaterialMainWindow() : UIElement() {
-	UIColorPicker *colorPicker = new UIColorPicker();
 
-	materialPane = new MaterialEditorPane(colorPicker);
+	materialPane = new MaterialEditorPane();
 	addChild(materialPane);
-	
-	addChild(colorPicker);
 	
 	enableScissor = true;
 }

@@ -28,8 +28,8 @@
 
 using namespace Polycode;
 
+
 ScreenShape::ScreenShape(int shapeType, Number option1, Number option2, Number option3, Number option4) : ScreenMesh(Mesh::QUAD_MESH) {
-	Number DEG2RAD = 3.14159/180;
 	strokeWidth = 1.0f;
 	this->shapeType = shapeType;
 	width = option1;
@@ -43,14 +43,56 @@ ScreenShape::ScreenShape(int shapeType, Number option1, Number option2, Number o
 	this->option4 = option4;
 	lineSmooth = false;
 		
+	buildShapeMesh();
+	
+	positionMode = POSITION_CENTER;
+	strokeEnabled = false;
+}
+
+void ScreenShape::operator=(const ScreenShape& copy) {
+	strokeWidth = copy.strokeWidth;
+	shapeType = copy.getShapeType();
+	
+	width = copy.getWidth();
+	height = copy.getHeight();
+	
+	setHitbox(width, height);
+
+	this->option3 = copy.option3;
+	this->option4 = copy.option4;
+	lineSmooth = copy.lineSmooth;
+		
+	buildShapeMesh();
+	
+	strokeColor = copy.strokeColor;
+	
+	positionMode = POSITION_CENTER;
+	strokeEnabled = copy.strokeEnabled;	
+
+}
+
+void ScreenShape::buildShapeMesh() {
+
+	mesh->clearMesh();
+	
 	switch(shapeType) {
 		case SHAPE_RECT: {
 			mesh->setMeshType(Mesh::QUAD_MESH);
+			
+			Number whalf = width/2.0f;
+			Number hhalf = height/2.0f;
+			
+			if(snapToPixels) {
+				whalf = floor(whalf);
+				hhalf = floor(hhalf);				
+			}
+		
 			Polygon *poly = new Polygon();
-			poly->addVertex(-width/2.0f,-height/2.0f,0,0,1);
-			poly->addVertex(width/2.0f,-height/2.0f,0, 1, 1);
-			poly->addVertex(width/2.0f,height/2.0f,0, 1, 0);
-			poly->addVertex(-width/2.0f,height/2.0f,0,0,0);
+			
+			poly->addVertex(-whalf,-hhalf,0,0,1);
+			poly->addVertex(-whalf+width,-hhalf,0, 1, 1);
+			poly->addVertex(-whalf+width,-hhalf+height,0, 1, 0);
+			poly->addVertex(-whalf,-hhalf+height,0,0,0);
 						
 			mesh->addPolygon(poly);
 			}
@@ -63,14 +105,12 @@ ScreenShape::ScreenShape(int shapeType, Number option1, Number option2, Number o
 				step = ceil(360/option3);
 			else
 				step = 1;
-			if(shapeType == SHAPE_CIRCLE)
-				poly->addVertex(0,0,0,0.5,0.5);
-			else
-				poly->addVertex(cosf(0)*(width/2),sinf(0)*(height/2), 0, (cosf(0)*0.5) + 0.5,(sinf(0) * 0.5)+ 0.5);
+			
+			poly->addVertex(cosf(0)*(width/2),sinf(0)*(height/2), 0, (cosf(0)*0.5) + 0.5,(sinf(0) * 0.5)+ 0.5);
 			
 			for (int i=0; i < 361; i+= step) {
-				Number degInRad = i*DEG2RAD;
-				poly->addVertex(cos(degInRad)*(width/2),sin(degInRad)*(height/2), 0, (cos(degInRad) * 0.5)+ 0.5 ,(sin(degInRad) * 0.5)+ 0.5);
+				Number degInRad = i*TORADIANS;
+				poly->addVertex(cos(degInRad)*(width/2),sin(degInRad)*(height/2), 0, (cos(degInRad) * 0.5)+ 0.5 , 1.0- ((sin(degInRad) * 0.5)+ 0.5));
 			}
 			mesh->addPolygon(poly);
 			}
@@ -83,24 +123,31 @@ ScreenShape::ScreenShape(int shapeType, Number option1, Number option2, Number o
 		default:
 		break;
 	}
-	
-	positionMode = POSITION_CENTER;
-	strokeEnabled = false;
+
+	mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;	
+}
+
+int ScreenShape::getShapeType() const {
+	return shapeType;
+}
+
+void ScreenShape::setShapeType(unsigned int type) {
+	shapeType = type;
+	buildShapeMesh();
 }
 
 void ScreenShape::setShapeSize(Number newWidth, Number newHeight) {
 
 	setWidth(newWidth);
 	setHeight(newHeight);
+	
 
-	
-	Number whalf = floor(width/2.0f);
-	Number hhalf = floor(height/2.0f);
-	Polygon *polygon;
-	Vertex *vertex;
-	
-	switch(shapeType) {
-		case SHAPE_RECT: {	
+	if(shapeType == SHAPE_RECT) {
+			Number whalf = floor(width/2.0f);
+			Number hhalf = floor(height/2.0f);
+			Polygon *polygon;
+			Vertex *vertex;
+
 			polygon = mesh->getPolygon(0);	
 			vertex = polygon->getVertex(0);
 			vertex->set(-whalf,-hhalf,0);			
@@ -110,14 +157,11 @@ void ScreenShape::setShapeSize(Number newWidth, Number newHeight) {
 			vertex->set(-whalf+width,-hhalf+height,0);			
 			vertex = polygon->getVertex(3);	
 			vertex->set(-whalf,-hhalf+height,0);				
-		}			
-		break;
-		default:
-		break;
+			mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;	
+	} else {	
+		buildShapeMesh();
 	}
-	
 		
-	mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
 	rebuildTransformMatrix();
 	matrixDirty = true;
 }

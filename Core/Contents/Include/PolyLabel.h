@@ -25,11 +25,25 @@ THE SOFTWARE.
 #include "PolyGlobals.h"
 #include "PolyImage.h"
 
-#define TAB_REPLACE "    "
+#include "PolyFont.h"
+
+#include FT_GLYPH_H
+#include FT_IMAGE_H
 
 namespace Polycode {
 
-	class Font;
+	class Font;	
+	
+	class GlyphData {
+		public:
+			GlyphData();
+			~GlyphData();
+			FT_Glyph *glyphs;
+			FT_Vector *positions;	
+			FT_UInt num_glyphs;
+			
+			int trailingAdvance;
+	};
 
 	class ColorRange {
 		public:
@@ -47,8 +61,15 @@ namespace Polycode {
 			void setText(const String& text);
 			const String& getText() const;
 			
-			static int getTextWidth(Font *font, const String& text, int size);
-			static int getTextHeight(Font *font, const String& text, int size);
+			int getTextWidthForString(const String& text);
+			int getTextHeightForString(const String& text);
+
+			void computeStringBbox(GlyphData *glyphData, FT_BBox *abbox);			
+			void precacheGlyphs(String text, GlyphData *glyphData);
+			
+			void renderGlyphs(GlyphData *glyphData);
+			
+			void drawGlyphBitmap(FT_Bitmap *bitmap, unsigned int x, unsigned int y, Color glyphColor);
 					
 			Number getTextWidth() const;
 			Number getTextHeight() const;
@@ -58,19 +79,32 @@ namespace Polycode {
 		
 			Color getColorForIndex(unsigned int index);
 		
+			void setFont(Font *newFont);
 			Font *getFont() const;
+			
+			void setSize(int newSize);
+			unsigned int getSize() const;
+			
+			int getAntialiasMode() const;			
+			void setAntialiasMode(int newMode);
 					
 			static const int ANTIALIAS_FULL = 0;
 			static const int ANTIALIAS_NONE = 1;
 			
+			int getBaselineAdjust();
+			
 		protected:
+		
+			
+			GlyphData labelData;
 	
 			std::vector<ColorRange> colorRanges;
 		
+			int baseLineOffset;
+			int xAdjustOffset;
+			int baseLineAdjust;			
 			bool premultiplyAlpha;
 
-			Number currentTextWidth;
-			Number currentTextHeight;
 			int antiAliasMode;
 			int size;
 			String text;

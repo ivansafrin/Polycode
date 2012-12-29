@@ -216,17 +216,20 @@ void CoreServices::Update(int elapsed) {
 	materialManager->Update(elapsed);
 		
 	if(drawScreensFirst) {
-		renderer->clearScreen();	
+		if(renderer->doClearBuffer)
+			renderer->clearScreen();	
 		renderer->setPerspectiveMode();
 		sceneManager->UpdateVirtual();
-		renderer->clearScreen();					
+		if(renderer->doClearBuffer)		
+			renderer->clearScreen();					
 		screenManager->Update();
 		renderer->setPerspectiveMode();
 		sceneManager->Update();	
 	} else {
 		renderer->setPerspectiveMode();
 		sceneManager->UpdateVirtual();
-		renderer->clearScreen();		
+		if(renderer->doClearBuffer)		
+			renderer->clearScreen();		
 		sceneManager->Update();
 		screenManager->Update();	
 	}	

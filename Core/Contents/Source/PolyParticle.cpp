@@ -103,7 +103,7 @@ void Particle::createSceneParticle(int particleType, Material *material, Mesh *p
 
 void Particle::createScreenParticle(int particleType, Texture *texture, Mesh *particleMesh) {
 	
-	ScreenShape *primitive = new ScreenShape(ScreenShape::SHAPE_RECT, 10.0f, 10.0f);
+	ScreenShape *primitive = new ScreenShape(ScreenShape::SHAPE_RECT, 1.0, 1.0f);
 	primitive->setTexture(texture);	
 //	primitive->billboardMode = true;
 //	primitive->billboardRoll = true;

@@ -37,8 +37,8 @@
 	<uiButtonSkin>button.png</uiButtonSkin>
 	<uiButtonFocusedSkin>buttonFocused.png</uiButtonFocusedSkin>
 	<uiButtonFontSize>11</uiButtonFontSize>	
-	<uiButtonLabelOffsetX>2</uiButtonLabelOffsetX>
-	<uiButtonLabelOffsetY>1</uiButtonLabelOffsetY>	
+	<uiButtonLabelOffsetX>0</uiButtonLabelOffsetX>
+	<uiButtonLabelOffsetY>0</uiButtonLabelOffsetY>	
 	<uiButtonSkinT>4</uiButtonSkinT>
 	<uiButtonSkinR>4</uiButtonSkinR>
 	<uiButtonSkinB>4</uiButtonSkinB>
@@ -77,7 +77,7 @@
 	<textBgSkinB>3</textBgSkinB>
 	<textBgSkinL>3</textBgSkinL>
 	<textBgSkinPadding>5</textBgSkinPadding>
-	<textEditLineSpacing>4</textEditLineSpacing>
+	<textEditLineSpacing>16</textEditLineSpacing>
 		
 	<uiScrollHandleMinSize>30</uiScrollHandleMinSize>	
 	<uiTreeContainerScrollBarOffset>27</uiTreeContainerScrollBarOffset>
@@ -87,7 +87,7 @@
 	<uiCheckBoxCheckedImage>checkbox_checked.png</uiCheckBoxCheckedImage>
 	<uiCheckBoxUncheckedImage>checkbox_unchecked.png</uiCheckBoxUncheckedImage>
 	<uiCheckBoxLabelOffsetX>8</uiCheckBoxLabelOffsetX>
-	<uiCheckBoxLabelOffsetY>2</uiCheckBoxLabelOffsetY>
+	<uiCheckBoxLabelOffsetY>0</uiCheckBoxLabelOffsetY>
 		
 	<uiComboBoxFont>sans</uiComboBoxFont>
 	<uiComboBoxFontSize>11</uiComboBoxFontSize>
@@ -97,18 +97,27 @@
 	<uiComboBoxBgR>6</uiComboBoxBgR>
 	<uiComboBoxBgB>6</uiComboBoxBgB>
 	<uiComboBoxBgL>6</uiComboBoxBgL>				
-	<uiComboBoxItemsBgImage>combobox_items.png</uiComboBoxItemsBgImage>	
-	<uiComboBoxDropdownBgT>3</uiComboBoxDropdownBgT>
-	<uiComboBoxDropdownBgR>3</uiComboBoxDropdownBgR>
-	<uiComboBoxDropdownBgB>3</uiComboBoxDropdownBgB>
-	<uiComboBoxDropdownBgL>3</uiComboBoxDropdownBgL>			
-	<uiComboBoxSelectorBgImage>combobox_selector.png</uiComboBoxSelectorBgImage>	
-	<uiComboBoxSelectorBgT>3</uiComboBoxSelectorBgT>
-	<uiComboBoxSelectorBgR>3</uiComboBoxSelectorBgR>
-	<uiComboBoxSelectorBgB>3</uiComboBoxSelectorBgB>
-	<uiComboBoxSelectorBgL>3</uiComboBoxSelectorBgL>					
 	<uiComboBoxTextOffsetX>7</uiComboBoxTextOffsetX>
-	<uiComboBoxTextOffsetY>3</uiComboBoxTextOffsetY>		
+	<uiComboBoxTextOffsetY>0</uiComboBoxTextOffsetY>		
+
+
+	<uiMenuFont>sans</uiMenuFont>
+	<uiMenuFontSize>11</uiMenuFontSize>
+	<uiMenuTextOffsetX>7</uiMenuTextOffsetX>
+	<uiMenuTextOffsetY>0</uiMenuTextOffsetY>		
+	<uiMenuPaddingX>4</uiMenuPaddingX>
+	<uiMenuPaddingY>8</uiMenuPaddingY>
+	<uiMenuBgImage>menu_bg.png</uiMenuBgImage>	
+	<uiMenuBgT>8</uiMenuBgT>
+	<uiMenuBgR>8</uiMenuBgR>
+	<uiMenuBgB>13</uiMenuBgB>
+	<uiMenuBgL>8</uiMenuBgL>			
+	<uiMenuSelectorBgImage>menu_selector.png</uiMenuSelectorBgImage>	
+	<uiMenuSelectorBgT>3</uiMenuSelectorBgT>
+	<uiMenuSelectorBgR>3</uiMenuSelectorBgR>
+	<uiMenuSelectorBgB>3</uiMenuSelectorBgB>
+	<uiMenuSelectorBgL>3</uiMenuSelectorBgL>
+	
 
 	<uiColorBoxFrameImage>colorboxFrame.png</uiColorBoxFrameImage>
 	<uiColorBoxFrameImageT>7</uiColorBoxFrameImageT>

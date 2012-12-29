@@ -97,7 +97,21 @@ bool PolycodeProject::loadProjectFromFile() {
 			ObjectEntry *module = (*configFile.root["modules"])[i];
 			data.modules.push_back(module->stringVal);
 		}
-	}	
+	}
+	
+	data.fonts.clear();
+	if(configFile.root["fonts"]) {
+		for(int i=0; i < configFile.root["fonts"]->length; i++) {
+			ObjectEntry *font = (*configFile.root["fonts"])[i];
+			ObjectEntry *fontName = (*font)["name"];
+			ObjectEntry *fontPath = (*font)["path"];
+			
+			if(fontName && fontPath) {
+				ProjectFontData fontData = ProjectFontData(fontName->stringVal, fontPath->stringVal);
+				data.fonts.push_back(fontData);
+			}
+		}
+	}		
 
 	if(configFile.root["backgroundColor"]) {
 		ObjectEntry *color = configFile.root["backgroundColor"];
@@ -151,6 +165,22 @@ bool PolycodeProject::saveFile() {
 		configFile.root["modules"]->type = ObjectEntry::ARRAY_ENTRY;	
 		configFile.root["modules"]->addChild("module", data.modules[j]);
 	}
+	
+	if(configFile.root["fonts"]) {
+		configFile.root["fonts"]->Clear();
+	}
+	
+	for(int j=0; j < data.fonts.size(); j++) {
+		if(!configFile.root["fonts"]) {
+			configFile.root.addChild("fonts");	
+		}	
+		configFile.root["fonts"]->type = ObjectEntry::ARRAY_ENTRY;	
+
+		ObjectEntry *objectEntry = configFile.root["fonts"]->addChild("font");
+		objectEntry->addChild("name", data.fonts[j].fontName);
+		objectEntry->addChild("path", data.fonts[j].fontPath);			
+
+	}	
 	
 	if(configFile.root["packedItems"]) {
 		configFile.root["packedItems"]->Clear();

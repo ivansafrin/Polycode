@@ -54,11 +54,12 @@ namespace Polycode {
 			*/
 			void addDropShadow(Color color, Number size, Number offsetX, Number offsetY);
 			
+			
 			/**
 			* Sets a new text to the screen label.
 			* @param newText Text to set.
 			*/
-			void setText(const String& newText);
+			void setText(const String& newText);			
 			
 			/**
 			* Returns the label's text as a string.
@@ -68,7 +69,12 @@ namespace Polycode {
 		
 			Label *getLabel() const;
 			
+			void Render();
+			bool positionAtBaseline;
+			
 		protected:
+			
+			void updateTexture();
 			
 			Label *label;
 			ScreenImage *dropShadowImage;

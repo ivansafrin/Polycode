@@ -34,8 +34,6 @@ bool PolycodeFontEditor::openFile(OSFileEntry filePath) {
 	
 	CoreServices::getInstance()->getFontManager()->registerFont(filePath.fullPath, filePath.fullPath);
 	
-	
-	
 	grid = new ScreenImage("Images/editorGrid.png");
 	
 	addChild(grid);
@@ -83,6 +81,11 @@ bool PolycodeFontEditor::openFile(OSFileEntry filePath) {
 	anchor->setWidth(editorLabel2->getWidth());
 	
 	PolycodeEditor::openFile(filePath);
+	
+	// remove the font entry so it doesn't show up in project font lists
+	FontEntry *entry = 	CoreServices::getInstance()->getFontManager()->getFontEntryByFontPath(filePath.fullPath);
+	CoreServices::getInstance()->getFontManager()->removeFontEntry(entry, false);	
+	
 	return true;
 }
 

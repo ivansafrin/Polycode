@@ -115,9 +115,10 @@ class PolycodeConsole : public UIElement {
 	
 		UIHSizer *backtraceSizer;
 	
-		PolycodeRemoteDebugger *debugger;
-		
+		PolycodeRemoteDebugger *debugger;		
 		static PolycodeConsole *instance;
+		
+		
 		
 		UITextInput *debugTextInput;
 		UITextInput *consoleTextInput;		

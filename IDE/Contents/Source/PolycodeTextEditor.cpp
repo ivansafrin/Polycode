@@ -339,15 +339,15 @@ FindBar::FindBar() : UIElement() {
 	addChild(barBg);
 	this->height = 30;
 	
-	ScreenLabel *findLabel = new ScreenLabel("Find:", 16);
+	ScreenLabel *findLabel = new ScreenLabel("FIND", 22, "section");
 	addChild(findLabel);
 	findLabel->setColor(0.0, 0.0, 0.0, 0.3);
-	findLabel->setPosition(10,4);
+	findLabel->setPosition(10,6);
 
-	ScreenLabel *replaceLabel = new ScreenLabel("Replace:", 16);
+	ScreenLabel *replaceLabel = new ScreenLabel("REPLACE", 22, "section");
 	addChild(replaceLabel);
 	replaceLabel->setColor(0.0, 0.0, 0.0, 0.3);
-	replaceLabel->setPosition(200,4);
+	replaceLabel->setPosition(200,6);
 
 	processInputEvents = true;
 	

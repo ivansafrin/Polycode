@@ -25,6 +25,7 @@ THE SOFTWARE.
 #include "PolyGlobals.h"
 #include "PolyVector2.h"
 #include "PolyEventDispatcher.h"
+#include "PolyScreenEntity.h"
 #include <vector>
 
 namespace Polycode {
@@ -33,7 +34,6 @@ namespace Polycode {
 	class Renderer;
 	class Material;
 	class Texture;
-	class ScreenEntity;
 	class ShaderBinding;
 
 	/**
@@ -51,45 +51,31 @@ namespace Polycode {
 		/**
 		* Adds a ScreenEntity to the 2d rendering pipeline.
 		* @param newEntity Entity to add.
-		* @return Returns the same entity for convenience.
 		*/		
-		ScreenEntity* addChild(ScreenEntity *newEntity);
+		void addChild(ScreenEntity *newEntity);
 
 		/**
 		* Adds a ScreenEntity to the 2d rendering pipeline.
 		* @param newEntity Entity to add.
-		* @return Returns the same entity for convenience.
 		*/		
-		ScreenEntity* addEntity(ScreenEntity *newEntity);
+		void addEntity(ScreenEntity *newEntity);
 		
 		/**
-		* Removes a ScreenEntity from the screen's render list.
+		* Removes a ScreenEntity from the screen's root entity
 		* @param entityToRemove Entity to remove.
-		* @return Returns the same entity for convenience.
 		*/				
-		virtual ScreenEntity* removeChild(ScreenEntity *entityToRemove);
-		
+		virtual void removeChild(ScreenEntity *entityToRemove);
+				
 		/**
 		* Sets the screen's offset. You can also translate the root entity to do the same thing.
 		* @param x New x offset.
 		* @param y New y offset.		
 		*/						
 		void setScreenOffset(Number x, Number y);
-		
-		/** 
-		* Returns the screen's offset.
-		* @return The screen's offset as 2d vector.
-		*/		
-		Vector2 getScreenOffset() const;
 				
 		virtual void Shutdown();
 		virtual void Update();
-		
-		/**
-		* Returns the entity at specified point. This is a deprecated method which does not take rotation or scale into account. Please use the 2d physics and collision module for proper collision detection.
-		*/
-		ScreenEntity *getEntityAt(Number x, Number y);
-
+				
 		void Render();
 		void setRenderer(Renderer *renderer);
 
@@ -109,18 +95,8 @@ namespace Polycode {
 		/**
 		* Removes the current screen shader for this screen.
 		*/
-		void clearScreenShader();
-		
-		void handleEvent(Event *event);
-		int getHighestZIndex() const;
-		
-		/**
-		* Sorts the screen's children based on their z index.
-		*/ 
-		void sortChildren();
-		
-		static bool cmpZindex(const ScreenEntity *left, const ScreenEntity *right);
-		
+		void clearScreenShader();		
+
 		void handleInputEvent(InputEvent *inputEvent);
 		
 		/**
@@ -131,16 +107,7 @@ namespace Polycode {
 		
 		bool usesNormalizedCoordinates() const { return useNormalizedCoordinates; }
 		Number getYCoordinateSize() const { return yCoordinateSize; }
-		
-		/**
-		* Returns the root entity. The root entity can be used to transform the entire screen and change its color.
-		* @return The root entity.
-		*/		
-		ScreenEntity *getRootEntity() { return rootEntity; }
-		
-		int getNumChildren() { return children.size(); }
-		ScreenEntity *getChild(int index) { return children[index]; }
-		
+				
 		/**
 		* If set to false, the screen will not be rendered or updated.
 		*/
@@ -166,22 +133,18 @@ namespace Polycode {
 		*/
 		bool ownsChildren;		
 		
-		/**
-		* If true, children snap to pixels by default. You can still change it per entity. Defaults to false.
-		*/		
-		bool snapToPixelsByDefault;
-		
+
+		ScreenEntity rootEntity;
+				
 	protected:
+	
+		Vector2 offset;
 		
 		bool useNormalizedCoordinates;
 		Number yCoordinateSize;		
 		
-		ScreenEntity *rootEntity;
-		
-		Vector2 offset;
 		Renderer *renderer;
 		ScreenEntity *focusChild;
-		std::vector <ScreenEntity*> children;
 		
 		Material *filterShaderMaterial;			
 		Texture *originalSceneTexture;				

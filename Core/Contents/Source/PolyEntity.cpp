@@ -44,6 +44,7 @@ Entity::Entity() {
 	matrixAdj = 1.0f;
 	billboardMode = false;
 	billboardRoll = false;
+	billboardIgnoreScale = false;
 	backfaceCulled = true;
 	depthOnly = false;
 	depthWrite = true;
@@ -56,7 +57,44 @@ Entity::Entity() {
 	visibilityAffectsChildren = true;
 	ownsChildren = false;
 	enableScissor = false;
+	
+	editorOnly = false; 
 }
+
+Entity *Entity::getEntityById(String id, bool recursive) {
+	for(int i=0;i<children.size();i++) {
+		if(children[i]->id == id) {
+			return children[i];
+		} else {
+			if(recursive) {
+				Entity *ret = children[i]->getEntityById(id, recursive);
+				if(ret) {
+					return ret;
+				}
+			}
+		}
+	}
+	return NULL;
+}
+
+std::vector<Entity*> Entity::getEntitiesByTag(String tag, bool recursive) {
+
+	std::vector<Entity*> retVector;
+
+	for(int i=0;i<children.size();i++) {
+		if(children[i]->hasTag(tag)) {
+			retVector.push_back(children[i]);
+		}
+		
+		if(recursive) {
+			std::vector<Entity*> childVector = children[i]->getEntitiesByTag(tag, recursive);			
+			retVector.insert(retVector.end(), childVector.begin(), childVector.end());
+		}		
+	}
+	
+	return retVector;
+}
+
 
 void Entity::setUserData(void *userData) {
 	this->userData = userData;
@@ -296,27 +334,62 @@ void Entity::transformAndRender() {
 		renderer->drawToColorBuffer(false);
 	}
 	
+	bool isScissorEnabled;
+	Polycode::Rectangle oldScissorBox;
+	
 	if(enableScissor) {
+		isScissorEnabled = renderer->isScissorEnabled();
+		oldScissorBox = renderer->getScissorBox();
 		renderer->enableScissor(true);
-		renderer->setScissorBox(scissorBox);
+		
+		Polycode::Rectangle finalScrissorBox = scissorBox;		
+		
+		// make sure that our scissor box is constrained to the parent one if it exists
+		if(isScissorEnabled) {
+			if(finalScrissorBox.x < oldScissorBox.x)
+				finalScrissorBox.x = oldScissorBox.x;
+			if(finalScrissorBox.x > oldScissorBox.x + oldScissorBox.w)
+				finalScrissorBox.x = oldScissorBox.x + oldScissorBox.w;
+
+				
+			if(finalScrissorBox.x+finalScrissorBox.w > oldScissorBox.x + oldScissorBox.w)
+				finalScrissorBox.w = oldScissorBox.x - finalScrissorBox.x;
+
+			if(finalScrissorBox.y < oldScissorBox.y)
+				finalScrissorBox.y = oldScissorBox.y;
+			if(finalScrissorBox.y > oldScissorBox.y + oldScissorBox.h)
+				finalScrissorBox.y = oldScissorBox.y + oldScissorBox.h;
+
+			if(finalScrissorBox.y+finalScrissorBox.h > oldScissorBox.y + oldScissorBox.h)
+				finalScrissorBox.h = oldScissorBox.y - finalScrissorBox.y;
+
+		}
+		
+		renderer->setScissorBox(finalScrissorBox);
 	}
 		
 	renderer->pushMatrix();
 	if(ignoreParentMatrix && parentEntity) {
 		renderer->multModelviewMatrix(parentEntity->getConcatenatedMatrix().inverse());
-		renderer->setCurrentModelMatrix(parentEntity->getConcatenatedMatrix().inverse());
-	}else {
+//		renderer->setCurrentModelMatrix(parentEntity->getConcatenatedMatrix().inverse());
+	}
+
 		renderer->multModelviewMatrix(transformMatrix);
 		renderer->setCurrentModelMatrix(transformMatrix);
-	}
+		
 	renderer->setVertexColor(color.r,color.g,color.b,color.a);
+	
 	if(billboardMode) {
-		renderer->billboardMatrixWithScale(getCompoundScale());
+		if(billboardIgnoreScale) {
+			renderer->billboardMatrix();
+		} else {
+			renderer->billboardMatrixWithScale(getCompoundScale());
+		}
 		if(billboardRoll) {
 			renderer->multModelviewMatrix(getConcatenatedRollMatrix());
 		}
 	}
-
+	
 	if(!depthWrite)
 		renderer->enableDepthWrite(false);
 	else
@@ -362,7 +435,8 @@ void Entity::transformAndRender() {
 	}	
 	
 	if(enableScissor) {
-		renderer->enableScissor(false);
+		renderer->enableScissor(isScissorEnabled);
+		renderer->setScissorBox(oldScissorBox);
 	}
 }
 
@@ -404,6 +478,18 @@ Quaternion Entity::getRotationQuat() const {
 
 Vector3 Entity::getScale() const {
 	return scale;
+}
+
+Matrix4 Entity::getConcatenatedMatrixRelativeTo(Entity *relativeEntity) {
+	checkTransformSetters();
+	
+	if(matrixDirty)
+		rebuildTransformMatrix();
+
+	if(parentEntity != NULL && parentEntity != relativeEntity) 
+		return transformMatrix * parentEntity->getConcatenatedMatrixRelativeTo(relativeEntity);
+	else
+		return transformMatrix;
 }
 
 Matrix4 Entity::getConcatenatedMatrix() {
@@ -456,6 +542,21 @@ void Entity::rebuildRotation() {
 	rotationQuat.fromAxes(_rotation.pitch, _rotation.yaw, _rotation.roll);
 }
 
+void Entity::setEntityProp(const String& propName, const String& propValue) {
+
+	for(int i=0; i < entityProps.size(); i++) {
+		if(entityProps[i].propName == propName) {
+			entityProps[i].propValue = propValue;
+			return;
+		}
+	}		
+
+	EntityProp entityProp;
+	entityProp.propName = propName;
+	entityProp.propValue = propValue;
+	entityProps.push_back(entityProp);
+}
+
 String Entity::getEntityProp(const String& propName) {
 	for(int i=0; i < entityProps.size(); i++) {
 		if(entityProps[i].propName == propName) {
@@ -490,21 +591,6 @@ Number Entity::getRoll() const {
 
 void Entity::setTransformByMatrixPure(const Matrix4& matrix) {
 	transformMatrix = matrix;
-}
-
-void Entity::setTransformByMatrix(const Matrix4& matrix) {
-	setPosition(matrix.getPosition());	
-	Number x,y,z;
-	matrix.getEulerAngles(&x,&y,&z);
-
-	setPitch(x);
-	setYaw(y);
-	setRoll(z);
-	
-//	setYaw(-asin(matrix.m[0][2]) * TODEGREES);	
-///	setPitch(atan2(-matrix.m[0][1], matrix.m[0][0]) * TODEGREES);
-//	setRoll(atan2(-matrix.m[1][2], matrix.m[2][2]) * TODEGREES);
-	matrixDirty = true;
 }
 
 void Entity::setPosition(const Vector3 &posVec) {
@@ -604,6 +690,33 @@ Number Entity::getCombinedRoll() const {
 	if(parentEntity != NULL)
 		return parentEntity->getCombinedRoll()+rotation.roll;
 	else
-		return rotation.roll;
-	
+		return rotation.roll;	
 }
+
+unsigned int Entity::getNumTags() const {
+	return tags.size();
+}
+
+String Entity::getTagAtIndex(unsigned int index) const {
+	if(index < tags.size())
+		return tags[index];
+	return "";
+}
+
+bool Entity::hasTag(String tag) const {
+
+	for(int i=0; i < tags.size(); i++) {
+		if(tags[i] == tag)
+			return true;
+	}
+	return false;
+}
+			
+void Entity::clearTags() {
+	tags.clear();
+}
+
+void Entity::addTag(String tag) {
+	tags.push_back(tag);
+}
+

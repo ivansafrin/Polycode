@@ -26,12 +26,117 @@
 #include "PolycodeEditor.h"
 #include "PolycodeConsole.h"
 #include "NewProjectWindow.h"
+#include "TextureBrowser.h"
 #include "ExportProjectWindow.h"
 #include "ExampleBrowserWindow.h"
 #include "NewFileWindow.h"
 #include "ToolWindows.h"
+#include "PolycodeProjectManager.h"
 
 using namespace Polycode;
+
+#define CURVE_SIZE 160.0
+
+class EditPoint : public ScreenEntity {
+	public:
+		EditPoint(BezierPoint *point, unsigned int type);
+		~EditPoint();
+		
+		void handleEvent(Event *event);
+		
+		void updatePosition();
+		void updateCurvePoint();
+		
+		void setMode(unsigned int mode);
+
+		void limitPoint(ScreenImage *point);
+								
+		ScreenImage *pointHandle;
+		
+		ScreenImage *controlHandle1;
+		ScreenImage *controlHandle2;
+		
+		ScreenLine *connectorLine1;
+		ScreenLine *connectorLine2;
+				
+		static const int TYPE_START_POINT = 0;		
+		static const int TYPE_POINT = 1;
+		static const int TYPE_END_POINT = 2;				
+		
+		ScreenImage *draggingPoint;
+		bool dragging;
+		Vector2 basePosition;
+		Vector2 basePointPosition;
+		
+		Vector2 baseControl1;
+		Vector2 baseControl2;	
+		
+		unsigned int mode;
+				
+		unsigned int type;				
+		BezierPoint *point;
+};
+
+class EditCurve : public UIElement {
+	public:
+		EditCurve(BezierCurve *targetCurve, Color curveColor);
+		~EditCurve();
+		
+		void updateCurve();
+		void updatePoints();
+		
+		void setMode(unsigned int mode);
+		
+		void Activate();
+		void Deactivate();
+		
+		void Update();
+				
+		void handleEvent(Event *event);
+		
+		BezierCurve *targetCurve;
+		ScreenMesh *visMesh;
+		Polycode::Polygon *poly;	
+		
+		EditPoint *pointToRemove;
+		UIElement *pointsBase;
+		vector<EditPoint*> points;
+		
+		unsigned int mode;
+};
+
+class CurveEditor : public UIWindow {
+	public:
+		CurveEditor();
+		~CurveEditor();
+		
+		void handleEvent(Event *event);		
+		void setMode(unsigned int mode);
+		
+		void addCurve(String name, BezierCurve *curve, Color curveColor);
+
+		void onClose();
+
+		void clearCurves();
+		
+		UIImageButton *selectButton;
+		UIImageButton *addButton;
+		UIImageButton *removeButton;
+				
+		ScreenImage	*selectorImage;
+		
+		static const int MODE_SELECT = 0;		
+		static const int MODE_ADD = 1;
+		static const int MODE_REMOVE = 2;
+		
+		UITreeContainer *treeContainer;
+		
+		unsigned int mode;
+		ScreenImage *bg;
+		
+		EditCurve *selectedCurve;
+		std::vector<EditCurve*> curves;
+};
 
 class EditorHolder : public UIElement {
 	public:
@@ -60,12 +165,18 @@ public:
 	void addEditor(PolycodeEditor *editor);
 	void showEditor(PolycodeEditor *editor);
 	
+	void showAssetBrowser(std::vector<String> extensions);
+	
+	void showCurveEditor();
+	
 	PolycodeProjectBrowser *getProjectBrowser();
 	
 	NewProjectWindow *newProjectWindow;	
 	ExampleBrowserWindow *exampleBrowserWindow;
 	NewFileWindow *newFileWindow;
 	ExportProjectWindow *exportProjectWindow;
+	
+	AssetBrowser *assetBrowser;
 	
 	TextInputPopup *textInputPopup;
 	
@@ -78,7 +189,11 @@ public:
 	UIHSizer *mainSizer;
 	
 	PolycodeConsole *console;
-						
+	
+	PolycodeProjectManager *projectManager;
+		
+	CurveEditor *curveEditor;
+	
 private:
 	
 	int frameSizeX;

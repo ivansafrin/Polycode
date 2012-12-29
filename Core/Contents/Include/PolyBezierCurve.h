@@ -162,23 +162,33 @@ namespace Polycode {
 		* @return 3d point at specified position.
 		*/																				
 		Vector3 getPointBetween(Number a, BezierPoint *bp1, BezierPoint *bp2);
-			
+		
+		void clearControlPoints();
+		
 		/** 
 		* Rebuilds the height cache buffers for 2d height curves.
 		*/	
 		void rebuildBuffers();
+		
+		/**
+		* Removes (and deletes!) a gives point by pointer
+		*/
+		void removePoint(BezierPoint *point);
 
 		Number heightBuffer[BUFFER_CACHE_PRECISION];
+
+		BezierPoint *insertPoint;
 
 		std::vector<BezierPoint*> controlPoints;
 		std::vector<Number> distances;
 		
+		void recalculateDistances();		
 		
 		protected:
 		
 			bool buffersDirty;
 		
-			void recalculateDistances();
+
 	
 			
 	};

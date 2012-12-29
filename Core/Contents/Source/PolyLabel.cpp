@@ -21,11 +21,24 @@
 */
 
 #include "PolyLabel.h"
-#include "PolyFont.h"
-
+  
 using namespace Polycode;
 
-#define NORMAL_FT_FLAGS FT_LOAD_TARGET_LIGHT
+//#define NORMAL_FT_FLAGS FT_LOAD_TARGET_LIGHT
+//#define NORMAL_FT_FLAGS FT_LOAD_TARGET_LCD
+
+GlyphData::GlyphData() {
+	glyphs = NULL;
+	positions = NULL;
+	num_glyphs = 0;	
+	trailingAdvance = 0;
+}
+
+GlyphData::~GlyphData() {
+	delete glyphs;
+	delete positions;
+}
+
 
 ColorRange::ColorRange(Color color, unsigned int rangeStart, unsigned int rangeEnd) {
 	this->color = color;
@@ -36,13 +49,12 @@ ColorRange::ColorRange(Color color, unsigned int rangeStart, unsigned int rangeE
 
 Label::Label(Font *font, const String& text, int size, int antiAliasMode, bool premultiplyAlpha) : Image() {
 		setPixelType(Image::IMAGE_RGBA);
+		
 		this->font = font;
 		this->size = size;
 		this->premultiplyAlpha = premultiplyAlpha;
 		imageData = NULL;
 		this->antiAliasMode = antiAliasMode;
-		currentTextWidth = 0;
-		currentTextHeight = 0;
 		setText(text);
 }
 
@@ -50,77 +62,119 @@ Label::~Label() {
 
 }
 
-int Label::getTextWidth(Font *font, const String& text, int size) {
-	FT_Vector delta;
-	FT_UInt previous = 0;
-	FT_UInt glyph_index;
-	FT_GlyphSlot slot = font->getFace()->glyph;
-	FT_Set_Pixel_Sizes(font->getFace(), 0,  size);
-	int width = 0;
-	
-	String actualString = text; //StringUtil::replace(text, "\t", TAB_REPLACE);
-	
-	for(int i=0; i< actualString.length();i++)
-	{
-		if(actualString[i] == '\t') {
-			glyph_index = FT_Get_Char_Index( font->getFace(), ' ');			
-			FT_Load_Glyph( font->getFace(), glyph_index, NORMAL_FT_FLAGS );
-			for(int k=0 ; k < 4; k++) {
-					FT_Render_Glyph(slot, FT_RENDER_MODE_MONO);		
-					width += slot->advance.x >> 6;				
-			}
-			
-		} else {
-			glyph_index = FT_Get_Char_Index( font->getFace(), actualString[i] );
-			if(previous && glyph_index) {
-				FT_Get_Kerning(font->getFace(), previous, glyph_index, FT_KERNING_DEFAULT, &delta);
-				width += delta.x >> 6;
-			}
-			FT_Load_Glyph( font->getFace(), glyph_index, NORMAL_FT_FLAGS );
-			
-			FT_Render_Glyph(slot, FT_RENDER_MODE_MONO);
-
-		width += slot->advance.x >> 6;
-		}
-	}
-
-	// +5 pixels safety zone :)
-	return width+5;
+unsigned int Label::getSize() const {
+	return size;
 }
 
-int Label::getTextHeight(Font *font, const String& text, int size) {
+void Label::setSize(int newSize) {
+	size = newSize;
+}
+
+int Label::getAntialiasMode() const {
+	return antiAliasMode;
+}
+
+void Label::setAntialiasMode(int newMode) {
+	antiAliasMode = newMode;
+}
+
+int Label::getTextWidthForString(const String& text) {
+	if(!font)
+		return 0;
+	if(!font->isValid())
+		return 0;
 	
-	String actualString = text; //StringUtil::replace(text, "\t", TAB_REPLACE);
+	GlyphData data;
+	precacheGlyphs(text, &data);
+
+	FT_BBox bbox;
+	computeStringBbox(&data, &bbox);	
 	
-	int height = 0;
+	return (bbox.xMax -  bbox.xMin);
+
+}
+
+int Label::getTextHeightForString(const String& text) {
+	if(!font)
+		return 0;
+	if(!font->isValid())
+		return 0;
+
+	GlyphData data;
+	precacheGlyphs(text, &data);
+
+	FT_BBox bbox;
+	computeStringBbox(&data, &bbox);	
 	
-	FT_UInt glyph_index;
-	FT_GlyphSlot slot = font->getFace()->glyph;
-	FT_Set_Pixel_Sizes(font->getFace(), 0,  size);
-	
-	for(int i=0; i< actualString.length();i++)
-	{
-		glyph_index = FT_Get_Char_Index( font->getFace(), actualString[i] );
-		FT_Load_Glyph(font->getFace(), glyph_index, NORMAL_FT_FLAGS );
-		FT_Render_Glyph(slot, FT_RENDER_MODE_MONO);
-		
-		if(slot->bitmap_top > height)
-			height = slot->bitmap_top;
-	}
-		
-	return height;
+	return (bbox.yMax -  bbox.yMin);
+}
+
+void Label::computeStringBbox(GlyphData *glyphData, FT_BBox *abbox) {
+
+	FT_BBox  bbox;
+    /* initialize string bbox to "empty" values */
+    bbox.xMin = bbox.yMin =  32000;
+    bbox.xMax = bbox.yMax = -32000;
+
+    /* for each glyph image, compute its bounding box, */
+    /* translate it, and grow the string bbox          */
+    for (int n = 0; n < glyphData->num_glyphs; n++ )
+    {
+      FT_BBox  glyph_bbox;
+
+
+      FT_Glyph_Get_CBox( glyphData->glyphs[n], ft_glyph_bbox_pixels,
+                         &glyph_bbox );
+
+      glyph_bbox.xMin += glyphData->positions[n].x;
+      glyph_bbox.xMax += glyphData->positions[n].x;
+      glyph_bbox.yMin += glyphData->positions[n].y;
+      glyph_bbox.yMax += glyphData->positions[n].y;
+
+      if ( glyph_bbox.xMin < bbox.xMin )
+        bbox.xMin = glyph_bbox.xMin;
+
+      if ( glyph_bbox.yMin < bbox.yMin )
+        bbox.yMin = glyph_bbox.yMin;
+
+      if ( glyph_bbox.xMax > bbox.xMax )
+        bbox.xMax = glyph_bbox.xMax;
+
+      if ( glyph_bbox.yMax > bbox.yMax )
+        bbox.yMax = glyph_bbox.yMax;
+    }
+
+    /* check that we really grew the string bbox */
+    if ( bbox.xMin > bbox.xMax )
+    {
+      bbox.xMin = 0;
+      bbox.yMin = 0;
+      bbox.xMax = 0;
+      bbox.yMax = 0;
+    }
+
+	bbox.xMax += glyphData->trailingAdvance;
+
+    /* return string bbox */
+        *abbox = bbox;
 }
 
 Number Label::getTextWidth() const {
-	return currentTextWidth;
+	return width;
 }
 
 Number Label::getTextHeight() const {
-	return currentTextHeight;
+	return height;
 }
 
 Font *Label::getFont() const {
 	return font;
+}
+
+void Label::setFont(Font *newFont) {
+	if(!newFont)
+		return;
+	font = newFont;
 }
 
 const String& Label::getText() const {
@@ -144,82 +198,108 @@ Color Label::getColorForIndex(unsigned int index) {
 	return Color(1.0,1.0,1.0,1.0);
 }
 
-void Label::setText(const String& text) {
-//	Logger::logw((char*)text.c_str());
+void Label::precacheGlyphs(String text, GlyphData *glyphData) {
+	if(glyphData->glyphs)
+		free(glyphData->glyphs);
+	if(glyphData->positions)
+		free(glyphData->positions);
+		
+	int num_chars = text.length();
+		
+		
+	glyphData->glyphs = (FT_Glyph*) malloc(sizeof(FT_Glyph) * num_chars);
+	glyphData->positions = (FT_Vector*) malloc(sizeof(FT_Vector) * num_chars);
+	memset(glyphData->positions, 0, sizeof(FT_Vector) * num_chars);
 	
-	this->text = text;
-	
-	if(!font)
-		return;
-	
-	if(!font->isValid())
-		return;
-	
-	String actualString = text; //StringUtil::replace(text, "\t", TAB_REPLACE);
-	
-	int textWidth = getTextWidth(font, actualString, size);
-	int textHeight = size+getTextHeight(font, actualString, size);
-	currentTextHeight = 0;
-	
-	createEmpty(textWidth,textHeight);
-	
-	int penX = 0;
-	int xoff = 0;
-//	int x,y;
-	FT_Vector delta;
-	FT_UInt previous = 0;
-	FT_UInt glyph_index;
-	FT_GlyphSlot slot = font->getFace()->glyph;
-	FT_Set_Pixel_Sizes(font->getFace(), 0,  size);
+	FT_Face face = font->getFace();
+	FT_GlyphSlot  slot = face->glyph;
+	FT_UInt       glyph_index;
+	FT_Bool       use_kerning;
+	FT_UInt       previous;
 
-	// copy the freetype data into the texture
-	for(int i=0; i< actualString.length();i++)
-	{
-		if(actualString[i] == (wchar_t)'\t') {
-			glyph_index = FT_Get_Char_Index( font->getFace(), ' ');			
-			FT_Load_Glyph( font->getFace(), glyph_index, NORMAL_FT_FLAGS );
-			for(int k=0 ; k < 4; k++) {
-				FT_Render_Glyph(slot, FT_RENDER_MODE_MONO);		
-				penX += slot->advance.x >> 6;
-				currentTextWidth = penX;
-				previous = glyph_index;				
-			}
-			
-		} else {	
-		glyph_index = FT_Get_Char_Index( font->getFace(), (FT_ULong)actualString[i]);
-		if(previous && glyph_index) {
-			FT_Get_Kerning(font->getFace(), previous, glyph_index, FT_KERNING_DEFAULT, &delta);
-			penX += delta.x >> 6;
+	FT_Error error;
+
+	int pen_x = 0;
+	int pen_y = 0;
+
+	glyphData->num_glyphs  = 0;
+	use_kerning = FT_HAS_KERNING(font->getFace());
+	previous    = 0;
+	
+	FT_Set_Pixel_Sizes(face, 0,  size);
+	
+	int advanceMultiplier;
+	for(int n = 0; n < num_chars; n++ ) {
+		if(text[n] == '\t') {
+			glyph_index = FT_Get_Char_Index(face, ' ');		
+			advanceMultiplier = 4;			
+		} else {
+			glyph_index = FT_Get_Char_Index(face, (FT_ULong)text[n]);		
+			advanceMultiplier = 1;
 		}
-		FT_Load_Glyph(font->getFace(), glyph_index, NORMAL_FT_FLAGS);
+
+		
+		if(use_kerning && previous && glyph_index) {
+			FT_Vector delta;
+			FT_Get_Kerning( face, previous, glyph_index, FT_KERNING_DEFAULT, &delta);
+			pen_x += delta.x >> 6;
+		}
+
+		glyphData->positions[glyphData->num_glyphs].x = pen_x;
+		glyphData->positions[glyphData->num_glyphs].y = pen_y;
+
 		switch(antiAliasMode) {
 			case ANTIALIAS_FULL:
-				FT_Render_Glyph(slot, FT_RENDER_MODE_LIGHT );			
+				error = FT_Load_Glyph( face, glyph_index, FT_LOAD_TARGET_LIGHT);			
 			break;
-			case ANTIALIAS_NONE:
-				FT_Render_Glyph(slot, FT_RENDER_MODE_MONO);
+			default:
+				error = FT_Load_Glyph( face, glyph_index, FT_LOAD_DEFAULT);			
 			break;
 		}
 		
-		Color glyphColor = getColorForIndex(i);
-
-		int lineoffset = ((size-slot->bitmap_top) * (textWidth*4));
-		xoff = ((penX + slot->bitmap_left)*4);
+		if (error) {
+			continue;
+		}
 		
-		switch(antiAliasMode) {
-			case ANTIALIAS_FULL:
-				for(int j = 0; j < ((slot->bitmap.width * slot->bitmap.rows)); j++) {
-					if(!(j%slot->bitmap.width) && j !=0)
-						lineoffset += (textWidth*4)-(slot->bitmap.width * 4);
+		error = FT_Get_Glyph( face->glyph, &glyphData->glyphs[glyphData->num_glyphs] );
+		if ( error ) {
+			continue;
+		}
+		
+		if(n == num_chars-1 && (text[n] == ' ' || text[n] == '\t')) {
+			glyphData->trailingAdvance = (slot->advance.x >> 6) * advanceMultiplier;
+		}
 
-						int newVal = imageData[xoff+lineoffset+3] + slot->bitmap.buffer[j];
+		pen_x += (slot->advance.x >> 6) * advanceMultiplier;
+		previous = glyph_index;
+		glyphData->num_glyphs++;
+		
+	}
+}
+
+int Label::getBaselineAdjust() {
+	return baseLineAdjust;
+}
+
+void Label::drawGlyphBitmap(FT_Bitmap *bitmap, unsigned int x, unsigned int y, Color glyphColor) {
+
+	int lineoffset = (height-y) * (width*4);
+	int xoff = (x*4);
+
+	switch(antiAliasMode) {
+			case ANTIALIAS_FULL:
+				for(int j = 0; j < ((bitmap->width * bitmap->rows)); j++) {
+					if(!(j % bitmap->width) && j !=0)
+						lineoffset -= ((width*4)+(bitmap->width * 4));
+						
+						int newVal = imageData[xoff+lineoffset+3] + bitmap->buffer[j];
 						if(newVal > 255)
 							newVal = 255;
-							
-						newVal = (int)(((Number)newVal) * glyphColor.a);
-						
+
+//						newVal = (int)(((Number)newVal) * glyphColor.a);
+
 						imageData[xoff+lineoffset+3] = newVal;
-													
+
 						if(premultiplyAlpha) {
 							imageData[xoff+lineoffset] = (int)((255.0 * glyphColor.r) * ((Number)imageData[xoff+lineoffset+3])/255.0);
 							imageData[xoff+lineoffset+1] =  (int)((255.0 * glyphColor.g) * ((Number)imageData[xoff+lineoffset+3])/255.0);
@@ -227,18 +307,17 @@ void Label::setText(const String& text) {
 						} else {
 							imageData[xoff+lineoffset] = (int)(255.0 * glyphColor.r);
 							imageData[xoff+lineoffset+1] =  (int)(255.0 * glyphColor.g);
-							imageData[xoff+lineoffset+2] =  (int)(255.0 * glyphColor.b);						
-						} 	
-							
+							imageData[xoff+lineoffset+2] =  (int)(255.0 * glyphColor.b);	
+						} 
 						xoff += 4;
 				}
 			break;
 			case ANTIALIAS_NONE:
-				unsigned char *src =  slot->bitmap.buffer;
-				for(int j=0; j <slot->bitmap.rows;j++) {
+				unsigned char *src = bitmap->buffer;
+				for(int j=0; j < bitmap->rows;j++) {
 					unsigned char b;
 					unsigned char *bptr =  src;
-					for(int k=0; k < slot->bitmap.width ; k++){					
+					for(int k=0; k < bitmap->width ; k++){					
 						if (k%8==0){ b = (*bptr++);}
 						imageData[xoff+lineoffset] = (int)(255.0 * glyphColor.r);
 						imageData[xoff+lineoffset+1] =  (int)(255.0 * glyphColor.g);
@@ -247,19 +326,79 @@ void Label::setText(const String& text) {
 						xoff += 4;
 						b <<= 1;
 					}
-					lineoffset += (textWidth*4)-(slot->bitmap.width * 4);
-					src += slot->bitmap.pitch;
-				}
+					lineoffset -= ((width*4)+(bitmap->width * 4));
+					src += bitmap->pitch;
+				}			
 			break;
 		}
+	
+}
+
+void Label::renderGlyphs(GlyphData *glyphData) {
+
+	bool useColorRanges = false;
+	if(colorRanges.size() > 0) {
+		useColorRanges = true;
+	}
+	
+	Color glyphColor = Color(1.0, 1.0, 1.0, 1.0);
+
+	int start_x = 0; //( ( my_target_width  - string_width  ) / 2 ) * 64;
+	int start_y = 0; //( ( my_target_height - string_height ) / 2 ) * 64;
+	
+	FT_Error error;
+	
+	for (int n = 0; n < glyphData->num_glyphs; n++ ) {
+		FT_Glyph   image;
+		FT_Vector  pen;
 		
-		if(slot->bitmap_top > currentTextHeight)
-			currentTextHeight = slot->bitmap_top;
-		
-		penX += slot->advance.x >> 6;
-		currentTextWidth = penX;
-		previous = glyph_index;
+		image = glyphData->glyphs[n];
+
+		pen.x = (start_x + glyphData->positions[n].x) * 64;
+		pen.y = (start_y + glyphData->positions[n].y) * 64;		
+
+		if(antiAliasMode == ANTIALIAS_FULL) {
+			error = FT_Glyph_To_Bitmap( &image, FT_RENDER_MODE_LIGHT, &pen, 0 );		
+		} else {
+			error = FT_Glyph_To_Bitmap( &image, FT_RENDER_MODE_MONO, &pen, 0 );				
+		}
+				
+		if(!error ) {
+			if(useColorRanges) {
+				glyphColor = getColorForIndex(n);
+			}
+			
+			FT_BitmapGlyph  bit = (FT_BitmapGlyph)image;
+			drawGlyphBitmap(&bit->bitmap,
+					bit->left - xAdjustOffset,
+					height - bit->top + baseLineOffset, glyphColor);
+
+			FT_Done_Glyph( image );			
 		}
 	}
+}
 
+void Label::setText(const String& text) {
+
+	if(!font)
+		return;
+	if(!font->isValid())
+		return;
+
+	this->text = text;
+
+	precacheGlyphs(text, &labelData);
+
+	FT_BBox bbox;
+	computeStringBbox(&labelData, &bbox);	
+	
+	unsigned int textWidth = (bbox.xMax -  bbox.xMin)+1;
+	unsigned int textHeight = (bbox.yMax -  bbox.yMin)+1;
+	
+	baseLineOffset = bbox.yMin;
+	xAdjustOffset = bbox.xMin;
+	baseLineAdjust = bbox.yMax;
+	
+	createEmpty(textWidth,textHeight);	
+	renderGlyphs(&labelData);
 }

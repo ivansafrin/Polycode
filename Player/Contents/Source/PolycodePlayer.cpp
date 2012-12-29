@@ -299,9 +299,6 @@ static void dumpstack (lua_State *L) {
 		
 		L=lua_open();
 		
-		if(!L) {
-			printf("ASDASD");
-		}
 		/*
 		 luaopen_base(L);	// load basic libs (eg. print)
 		 luaopen_math(L);

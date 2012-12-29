@@ -28,9 +28,16 @@ THE SOFTWARE.
 #include "PolyRectangle.h"
 #include "PolyInputKeys.h"
 #include "PolyEntity.h"
+#include "PolyObject.h"
 #include "PolyEventDispatcher.h"
 
 namespace Polycode {
+
+	class _PolyExport MouseEventResult {
+		public:
+			bool hit;
+			bool blocked;
+	};
 
 /**
 * 2D Entity base. The ScreenEntity is the base class for all 2D elements in Polycode. They can be added to a screen or to other ScreenEntities and are rendered automatically. If you want to create custom screen objects, subclass this. ScreenEntity subclasses Entity, which use 3d positioning and tranformation, but provides some 2d-only versions of the transformation functions for convenience.
@@ -87,11 +94,11 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		*/						
 		Number getRotation() const;
 			
-		bool _onMouseDown(Number x, Number y, int mouseButton, int timestamp, Vector2 parentAdjust = Vector2(0,0));
-		bool _onMouseUp(Number x, Number y, int mouseButton, int timestamp, Vector2 parentAdjust = Vector2(0,0));
-		void _onMouseMove(Number x, Number y, int timestamp, Vector2 parentAdjust = Vector2(0,0));
-		void _onMouseWheelUp(Number x, Number y, int timestamp, Vector2 parentAdjust = Vector2(0,0));
-		void _onMouseWheelDown(Number x, Number y, int timestamp, Vector2 parentAdjust = Vector2(0,0));
+		MouseEventResult _onMouseDown(Number x, Number y, int mouseButton, int timestamp, Vector2 parentAdjust = Vector2(0,0));
+		MouseEventResult _onMouseUp(Number x, Number y, int mouseButton, int timestamp, Vector2 parentAdjust = Vector2(0,0));
+		MouseEventResult _onMouseMove(Number x, Number y, int timestamp, Vector2 parentAdjust = Vector2(0,0));
+		MouseEventResult _onMouseWheelUp(Number x, Number y, int timestamp, Vector2 parentAdjust = Vector2(0,0));
+		MouseEventResult _onMouseWheelDown(Number x, Number y, int timestamp, Vector2 parentAdjust = Vector2(0,0));
 	
 		virtual void onMouseDown(Number x, Number y){}
 		virtual void onMouseUp(Number x, Number y){}
@@ -139,7 +146,7 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		virtual void onLoseFocus(){}		
 		
 		void startDrag(Number xOffset, Number yOffset);
-		void stopDrag();
+		void stopDrag();		
 				
 		void setBlendingMode(int newBlendingMode);
 		
@@ -162,9 +169,16 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		
 		void focusChild(ScreenEntity *child);
 		void focusNextChild();
-	
+		
+		void moveChildUp(ScreenEntity *child);
+		void moveChildDown(ScreenEntity *child);
+		void moveChildTop(ScreenEntity *child);
+		void moveChildBottom(ScreenEntity *child);
+							
 		Vector2 getPosition2D() const;
 		Vector2 getScreenPosition() const;
+
+		Vector2 getScale2D() const;
 		
 		static const int POSITION_TOPLEFT = 0;
 		static const int POSITION_CENTER = 1;
@@ -172,8 +186,13 @@ class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
 		bool isFocusable() const;
 		
 		bool hasFocus;
-		bool blockMouseInput;
-		int zindex;	
+		
+		
+		/**
+		* If set to true, will block mouse events for underlaying entities.
+		* (NOTE: processInputEvents must be set to true)
+		*/
+		bool blockMouseInput;	
 	
 		/**
 		* If this option is true, the screen entity's positions will be roudnded to whole pixels. This only works if the screen is using pixel coordinates.

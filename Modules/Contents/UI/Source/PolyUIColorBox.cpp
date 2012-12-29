@@ -29,7 +29,7 @@
 
 using namespace Polycode;
 
-UIColorPicker::UIColorPicker() : UIWindow(L"Pick a color!", 300, 240) {
+UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	closeOnEscape = true;
 	
 //	topPadding
@@ -305,7 +305,8 @@ void UIColorPicker::handleEvent(Event *event) {
 			case InputEvent::EVENT_MOUSEDOWN:
 			{
 				InputEvent *inputEvent = (InputEvent*) event;			
-				mainSelector->setPosition(inputEvent->getMousePosition().x, inputEvent->getMousePosition().y);			
+				mainSelector->setPosition(inputEvent->getMousePosition().x, inputEvent->getMousePosition().y);
+				
 				mainSelector->startDrag(inputEvent->mousePosition.x-mainSelector->getPosition().x,inputEvent->mousePosition.y-mainSelector->getPosition().y);
 				
 				Number newV = 1.0 - ((inputEvent->getMousePosition().y-mainColorRect->getPosition().y)/((mainColorRect->getPosition().y+mainColorRect->getHeight())-mainColorRect->getPosition().y));

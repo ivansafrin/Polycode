@@ -104,7 +104,7 @@ namespace Polycode {
 		virtual void resetViewport() = 0;
 				
 		virtual void loadIdentity() = 0;		
-		virtual void setOrthoMode(Number xSize=0.0f, Number ySize=0.0f) = 0;
+		virtual void setOrthoMode(Number xSize=0.0f, Number ySize=0.0f, bool centered = false) = 0;
 		virtual void _setOrthoMode(Number orthoSizeX, Number orthoSizeY) = 0;
 		virtual void setPerspectiveMode() = 0;
 		
@@ -191,8 +191,12 @@ namespace Polycode {
 		int getXRes();
 		int getYRes();
 		
-		virtual void enableScissor(bool val) = 0;
-		virtual void setScissorBox(Polycode::Rectangle box) = 0;
+		bool isScissorEnabled();
+		
+		virtual void enableScissor(bool val);
+		virtual void setScissorBox(Polycode::Rectangle box);
+		
+		Polycode::Rectangle getScissorBox();
 		
 		void setAnisotropyAmount(Number amount);
 		Number getAnisotropyAmount();
@@ -263,7 +267,13 @@ namespace Polycode {
 		std::vector<LightInfo> getAreaLights() { return areaLights; }
 		std::vector<LightInfo> getSpotLights() { return spotLights;	}
 		
-	protected:
+		bool doClearBuffer;
+				
+	protected:	
+	
+		bool scissorEnabled;
+		
+		Polycode::Rectangle scissorBox;
 	
 		Number anisotropy;
 		Matrix4 currentModelMatrix;

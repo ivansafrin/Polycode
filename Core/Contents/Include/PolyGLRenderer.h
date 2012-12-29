@@ -1,3 +1,4 @@
+
 /*
 Copyright (C) 2011 by Ivan Safrin
 
@@ -125,7 +126,7 @@ namespace Polycode {
 		void setRenderArrayData(RenderDataArray *array, Number *arrayData);
 		void drawArrays(int drawType);		
 				
-		void setOrthoMode(Number xSize=0.0f, Number ySize=0.0f);
+		void setOrthoMode(Number xSize=0.0f, Number ySize=0.0f, bool centered = false);
 		void _setOrthoMode(Number orthoSizeX, Number orthoSizeY);
 		void setPerspectiveMode();
 		

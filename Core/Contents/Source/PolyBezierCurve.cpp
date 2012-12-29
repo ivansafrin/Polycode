@@ -38,11 +38,25 @@ BezierPoint::BezierPoint(Number p1x, Number p1y, Number p1z, Number p2x, Number 
 }
 
 BezierCurve::BezierCurve(){
+	insertPoint = NULL;
 	for(int i=0; i < BUFFER_CACHE_PRECISION; i++) {
 		heightBuffer[i] = 0;
 	}
 	
 	buffersDirty = false;	
+}
+
+void BezierCurve::clearControlPoints() {
+	insertPoint = NULL;
+	for(int i=0; i < BUFFER_CACHE_PRECISION; i++) {
+		heightBuffer[i] = 0;
+	}
+	
+	buffersDirty = true;
+	for(int i=0; i < controlPoints.size(); i++) {
+		delete controlPoints[i];
+	}
+	controlPoints.clear();
 }
 
 BezierCurve::~BezierCurve() {
@@ -51,7 +65,20 @@ BezierCurve::~BezierCurve() {
 
 void BezierCurve::addControlPoint(Number p1x, Number p1y, Number p1z, Number p2x, Number p2y, Number p2z, Number p3x, Number p3y, Number p3z) {
 	BezierPoint* newPoint = new BezierPoint(p1x, p1y, p1z, p2x, p2y, p2z, p3x, p3y, p3z);
-	controlPoints.push_back(newPoint);
+	
+	bool inserted = false;
+	for(int i=0; i < controlPoints.size(); i++) {
+		if(controlPoints[i] == insertPoint) {
+			controlPoints.insert(controlPoints.begin()+i, newPoint);
+			inserted = true;
+			break;
+		}
+	}
+	
+	if(!inserted) {
+		controlPoints.push_back(newPoint);
+	}
+	
 	distances.push_back(0);
 	recalculateDistances();
 	buffersDirty = true;	
@@ -108,7 +135,7 @@ Vector3 BezierCurve::getPointBetween(Number a, BezierPoint *bp1, BezierPoint *bp
 	
 	retVector.x = bp1->p2.x*a*a*a + bp1->p3.x*3*a*a*b + bp2->p1.x*3*a*b*b + bp2->p2.x*b*b*b;
 	retVector.y = bp1->p2.y*a*a*a + bp1->p3.y*3*a*a*b + bp2->p1.y*3*a*b*b + bp2->p2.y*b*b*b;
-	retVector.z = bp1->p2.z*a*a*a + bp1->p3.z*3*a*a*b + bp2->p1.z*3*a*b*b + bp2->p2.z*b*b*b;	
+	retVector.z = bp1->p2.z*a*a*a + bp1->p3.z*3*a*a*b + bp2->p1.z*3*a*b*b + bp2->p2.z*b*b*b;
 
 	return retVector;
 }
@@ -121,6 +148,16 @@ unsigned int BezierCurve::getNumControlPoints() {
 	return controlPoints.size();
 }
 
+void BezierCurve::removePoint(BezierPoint *point) {
+	for(int i=0; i < controlPoints.size(); i++) {
+		if(controlPoints[i] == point) {
+			delete point;
+			controlPoints.erase(controlPoints.begin() + i);
+			break;
+		}
+	}
+}
+
 Number BezierCurve::getHeightAt(Number a) {
 	if( a< 0) a = 0;
 	if(a > 1) a = 1;
@@ -128,7 +165,11 @@ Number BezierCurve::getHeightAt(Number a) {
 	if (buffersDirty) 
 		rebuildBuffers();
 	
-	int index = ((Number)(BUFFER_CACHE_PRECISION)) * a;	
+	int unsigned index = ((Number)(BUFFER_CACHE_PRECISION)) * a;	
+	
+	if(index > BUFFER_CACHE_PRECISION-1)
+		index = BUFFER_CACHE_PRECISION-1;
+	
 	return heightBuffer[index];
 	
 //	return getPointAt(a).y;
@@ -145,8 +186,7 @@ Vector3 BezierCurve::getPointAt(Number a) {
 	if(a < 0)
 		a = 0;
 	if(a > 1)
-		a = 1;
-		
+		a = 1;		
 		
 	if(controlPoints.size() < 2)
 		return Vector3(0,0,0);

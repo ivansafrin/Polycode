@@ -67,6 +67,8 @@ namespace Polycode {
 			*/ 			
 			void setParticleBlendingMode(int mode);
 			
+			int getParticleBlendingMode() const;
+			
 			/**
 			* Turns depth write on and off for particles.
 			*/ 						
@@ -122,9 +124,17 @@ namespace Polycode {
 			*/ 																													
 			void setAllAtOnce(bool val);
 			
+
+			unsigned int getNumParticles() const;
+
+			Particle *getParticleAtIndex(unsigned int index) const;
+
 			/**
 			* If emitter mode is TRIGGERED_EMITTER, calling this method will trigger particle emission.
-			*/ 																													
+			*/ 
+			
+			void resetAll();
+	
 			void Trigger();
 			
 			void resetParticle(Particle *particle);
@@ -134,6 +144,7 @@ namespace Polycode {
 			*/ 																													
 			void setParticleCount(int count);
 		
+			virtual Vector3 getParticleCompoundScale();
 			virtual void addParticleBody(Entity *particleBody);
 			virtual Matrix4 getBaseMatrix();
 		
@@ -214,14 +225,30 @@ namespace Polycode {
 			* If set to true, will use the scale curve to control particle scale. False by default.
 			*/			
 			bool useScaleCurves;
+			
+			Number particleSize;
+			
+			Texture *getParticleTexture();
+			
+			void setParticleTexture(Texture *texture);
 		
+			Vector3 emitterRadius;
+					
+			Number perlinModSize;
+
+			bool perlinEnabled;
+				
+			Number rotationSpeed;
+							
+			int emitterType;											
 		protected:
+		
+			int blendingMode;
 		
 			bool isScreenEmitter;
 			Mesh *pMesh;
 		
 			bool allAtOnce;
-			int emitterType;
 			int particleType;
 			Material *particleMaterial;
 			Texture *particleTexture;
@@ -230,12 +257,9 @@ namespace Polycode {
 		
 			bool isEmitterEnabled;
 		
-			Vector3 emitterRadius;
-			Number perlinModSize;
+						
 			Perlin *motionPerlin;
-			bool perlinEnabled;
 			
-			Number rotationSpeed;
 			Number numParticles;
 			std::vector<Particle*> particles;
 			
@@ -262,7 +286,7 @@ namespace Polycode {
 		* @param particleMesh If particle type is Particle::MESH_PARTICLE, this must be set to the mesh to use for each particle
 		* @param emitter If this is specified, particles will be emitted from this meshe's vertices.
 		*/
-		SceneParticleEmitter(const String& materialName, Scene *particleParentScene, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Vector3 emitterRadius, Mesh *particleMesh = NULL, SceneMesh *emitter = NULL);
+		SceneParticleEmitter(const String& materialName, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Vector3 emitterRadius, Mesh *particleMesh = NULL, SceneMesh *emitter = NULL);
 		virtual ~SceneParticleEmitter();		
 		
 		/**
@@ -290,7 +314,6 @@ namespace Polycode {
 		
 	protected:
 		SceneMesh *emitterMesh;		
-		Scene *particleParentScene;
 	};	
 		
 	/**
@@ -298,7 +321,7 @@ namespace Polycode {
 	*/
 	class _PolyExport ScreenParticleEmitter : public ScreenEntity, public ParticleEmitter {
 	public:
-		ScreenParticleEmitter(const String& imageFile, Screen *particleParentScreen, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Vector3 emitterRadius, Mesh *particleMesh = NULL, ScreenMesh *emitter = NULL);
+		ScreenParticleEmitter(const String& imageFile, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Vector3 emitterRadius, Mesh *particleMesh = NULL, ScreenMesh *emitter = NULL);
 		virtual ~ScreenParticleEmitter();		
 		
 		/**
@@ -312,6 +335,8 @@ namespace Polycode {
 		Matrix4 getBaseMatrix();
 		void Update();
 		
+		Vector3 getParticleCompoundScale();
+		
 			/**
 			* Continuous emitter setting.
 			*/ 																													
@@ -324,7 +349,6 @@ namespace Polycode {
 		
 		
 	protected:
-		ScreenMesh *emitterMesh;		
-		Screen *particleParentScreen;
+		ScreenMesh *emitterMesh;
 	};		
 }

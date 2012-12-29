@@ -330,6 +330,13 @@ namespace Polycode {
 			static const int POINT_MESH = 5;
 		
 			/**
+			* Line strip based mesh.
+			*/									
+			static const int LINE_STRIP_MESH = 6;
+			
+		
+		
+			/**
 			* Render array dirty map. If any of these are flagged as dirty, the renderer will rebuild them from the mesh data. See RenderDataArray for types of render arrays.
 			* @see RenderDataArray
 			*/
