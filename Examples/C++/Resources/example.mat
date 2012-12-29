@@ -4,7 +4,7 @@
 		<material name="TestParticle">
 			<shader name="DefaultParticleShader">
 				<textures>
-					<texture name="diffuse">particle.png</texture>
+					<texture name="diffuse">Resources/particle.png</texture>
 				</textures>
 			</shader>
 		</material>	

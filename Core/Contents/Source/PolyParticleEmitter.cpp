@@ -42,6 +42,7 @@ SceneEntity()
 	isScreenEmitter = false;
 	emitterMesh = emitter;	
 	createParticles();	
+	
 }
 
 SceneParticleEmitter::~SceneParticleEmitter() {
@@ -70,7 +71,7 @@ void SceneParticleEmitter::dispatchTriggerCompleteEvent() {
 
 Matrix4 SceneParticleEmitter::getBaseMatrix() {
 	rebuildTransformMatrix();
-	return getConcatenatedMatrix();	
+	return getConcatenatedMatrix();
 }
 
 void SceneParticleEmitter::Update() {
@@ -329,6 +330,8 @@ void ParticleEmitter::resetParticle(Particle *particle) {
 	
 	Vector3	startVector;
 	
+	Vector3 compoundScale = getParticleCompoundScale();
+	
 	particle->dirVector = dirVector;
 //	if(emitterMesh) {
 //		Polygon *randPoly = emitterMesh->getMesh()->getPolygon(rand() % emitterMesh->getMesh()->getPolygonCount());		
@@ -358,11 +361,11 @@ void ParticleEmitter::resetParticle(Particle *particle) {
 	particle->particleBody->rebuildTransformMatrix();	
 	
 	if(useScaleCurves) {
-		particle->particleBody->setScale(scaleCurve.getHeightAt(0) * particleSize,
-									 scaleCurve.getHeightAt(0) * particleSize,
-									 scaleCurve.getHeightAt(0) * particleSize);
+		particle->particleBody->setScale(scaleCurve.getHeightAt(0) * particleSize * compoundScale.x,
+									 scaleCurve.getHeightAt(0) * particleSize * compoundScale.y,
+									 scaleCurve.getHeightAt(0) * particleSize * compoundScale.z);
 	} else {
-		particle->particleBody->setScale(particleSize, particleSize, particleSize);
+		particle->particleBody->setScale(particleSize  * compoundScale.x, particleSize * compoundScale.y, particleSize * compoundScale.z);
 	}
 	
 	if(useColorCurves) {
@@ -380,6 +383,11 @@ void ParticleEmitter::resetParticle(Particle *particle) {
 Vector3 ScreenParticleEmitter::getParticleCompoundScale() {
 	return getCompoundScale();
 }
+
+Vector3 SceneParticleEmitter::getParticleCompoundScale() {
+	return getCompoundScale();
+}
+
 
 Vector3 ParticleEmitter::getParticleCompoundScale() {
 	return Vector3();

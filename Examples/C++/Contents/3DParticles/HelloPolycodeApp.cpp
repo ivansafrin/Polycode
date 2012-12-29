@@ -20,7 +20,7 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 	scene->getDefaultCamera()->setPosition(7,7,7);
 	scene->getDefaultCamera()->lookAt(Vector3(0,0,0));	
 	
-	SceneParticleEmitter *emitter = new SceneParticleEmitter("TestParticle", scene,
+	SceneParticleEmitter *emitter = new SceneParticleEmitter("TestParticle", 
 		Particle::BILLBOARD_PARTICLE, ParticleEmitter::CONTINUOUS_EMITTER, 4, 200,
 		Vector3(0.0,1.0,0.0), Vector3(0.0,0.0,0.0), Vector3(0.3, 0.0, 0.3),
 		Vector3(1.5,1.5,1.5));		

@@ -299,6 +299,8 @@ namespace Polycode {
 		Matrix4 getBaseMatrix();
 		void Update();
 		
+		Vector3 getParticleCompoundScale();
+		
 		void dispatchTriggerCompleteEvent();
 		
 			/**

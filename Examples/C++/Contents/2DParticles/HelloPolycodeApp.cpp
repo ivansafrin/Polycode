@@ -13,16 +13,22 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 	
 	Screen *screen = new Screen();	
 	ScreenParticleEmitter *emitter = new ScreenParticleEmitter("Resources/particle.png", 
-		screen, Particle::BILLBOARD_PARTICLE, ParticleEmitter::CONTINUOUS_EMITTER, 4, 200, 
+		Particle::BILLBOARD_PARTICLE, ParticleEmitter::CONTINUOUS_EMITTER, 4, 200, 
 		Vector3(0.0,-50.0,0.0), Vector3(0.0,0.0,0.0), Vector3(20.5, 40.0, 0.0), 
 		Vector3(1.5,1.5,1.5));
 	
 	emitter->useScaleCurves = true;
+	emitter->scaleCurve.clearControlPoints();
 	emitter->scaleCurve.addControlPoint2d(0, 0.3);
 	emitter->scaleCurve.addControlPoint2d(0.5, 1);
 	emitter->scaleCurve.addControlPoint2d(1, 0);
 	
 	emitter->useColorCurves = true;
+	emitter->colorCurveR.clearControlPoints();	
+	emitter->colorCurveG.clearControlPoints();	
+	emitter->colorCurveB.clearControlPoints();	
+	emitter->colorCurveA.clearControlPoints();	
+				
 	emitter->colorCurveR.addControlPoint2d(0, 0.3);
 	emitter->colorCurveR.addControlPoint2d(0.1, 1);	
 	emitter->colorCurveR.addControlPoint2d(0.4, 1);		
@@ -54,3 +60,4 @@ HelloPolycodeApp::~HelloPolycodeApp() {
 bool HelloPolycodeApp::Update() {
     return core->Update();
 }
+

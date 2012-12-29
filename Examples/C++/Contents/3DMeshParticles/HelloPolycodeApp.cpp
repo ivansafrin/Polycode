@@ -25,7 +25,7 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 	mesh->createTorus(0.3,0.2,10,10);
 
 	
-	SceneParticleEmitter *emitter = new SceneParticleEmitter("Default", scene,
+	SceneParticleEmitter *emitter = new SceneParticleEmitter("Default", 
 		Particle::MESH_PARTICLE, ParticleEmitter::CONTINUOUS_EMITTER, 4, 100,
 		Vector3(0.0,1.0,0.0), Vector3(0.0,0.0,0.0), Vector3(0.3, 0.0, 0.3),
 		Vector3(1.5,1.5,1.5), mesh);
