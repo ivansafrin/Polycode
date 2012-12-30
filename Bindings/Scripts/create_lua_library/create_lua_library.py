@@ -15,6 +15,20 @@ def mkdir_p(path): # Same effect as mkdir -p, create dir and all necessary paren
 			pass
 		else: raise
 
+def template_returnPtrLookupArray(prefix, className, ptr):
+	out = ""
+	out += "%sfor i=1,count(%s) do\n" % (prefix, ptr)
+	out += "%s\tif _G[\"__ptr_lookup\"][%s][%s[i]] ~= nil then\n" % (prefix, className, ptr)
+	out += "%s\t\t%s[i] = _G[\"__ptr_lookup\"][%s][%s[i]]\n" % (prefix, ptr, className, ptr)
+	out += "%s\telse\n" % (prefix)
+	out += "%s\t\t_G[\"__ptr_lookup\"][%s][%s[i]] = _G[%s](\"__skip_ptr__\")\n" % (prefix, className, ptr, className)
+	out += "%s\t\t_G[\"__ptr_lookup\"][%s][%s[i]].__ptr = %s[i]\n" % (prefix, className, ptr, ptr)
+	out += "%s\t\t%s[i] = _G[\"__ptr_lookup\"][%s][%s[i]]\n" % (prefix, ptr, className, ptr)
+	out += "%s\tend\n" % (prefix)
+	out += "%send\n" % (prefix)
+	out += "%sreturn %s\n" % (prefix,ptr)
+	return out
+
 # Note we expect className to be a valid string
 def template_returnPtrLookup(prefix, className, ptr):
 	out = ""
@@ -320,12 +334,13 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 
 					# Skip destructors and methods which return templates.
 					# TODO: Special-case certain kind of vector<>s?
-					if pm["name"] == "~"+ckey or pm["rtnType"].find("<") > -1:
+					if pm["name"] == "~"+ckey:
 						continue
 					
 					basicType = False
 					voidRet = False
-					
+					vectorReturn = False
+					vectorReturnClass = ""
 					# Def: True if method takes a lua_State* as argument (i.e.: no preprocessing by us)
 					rawMethod = len(pm["parameters"]) > 0 and pm["parameters"][0].get("type","").find("lua_State") > -1
 
@@ -439,18 +454,34 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 								call = "inst->%s(%s)" % (pm["name"], ", ".join(paramlist))
 							else: # If static (FIXME: Why doesn't this work?)
 								call = "%s::%s(%s)" % (ckey, pm["name"], ", ".join(paramlist))
-							
-							# If void-typed:
-							if pm["rtnType"] == "void" or pm["rtnType"] == "static void" or pm["rtnType"] == "virtual void" or pm["rtnType"] == "inline void":
+
+							#check if returning a template
+							if pm["rtnType"].find("<") > -1:
+								#if returning a vector, convert to lua table
+								if pm["rtnType"].find("std : : vector") > -1:
+									vectorReturnClass = pm["rtnType"].replace("std : : vector <", "").replace(">","").replace(" ", "")
+									if vectorReturnClass.find("&") == -1 and vectorReturnClass.find("*") > -1: #FIXME: return references to std::vectors and basic types
+										vectorReturn = True
+										wrappersHeaderOut += "\tstd::vector<%s> retVector = %s;\n" % (vectorReturnClass,call)
+										wrappersHeaderOut += "\tlua_newtable(L);\n"
+										wrappersHeaderOut += "\tfor(int i=0; i < retVector.size(); i++) {\n"
+										wrappersHeaderOut += "\t\tlua_pushlightuserdata(L, (void*)retVector[i]);\n"
+										wrappersHeaderOut += "\t\tlua_rawseti(L, -2, i+1);\n"
+										wrappersHeaderOut += "\t}\n"
+										wrappersHeaderOut += "\treturn 1;\n"
+							# else If void-typed:
+							elif pm["rtnType"] == "void" or pm["rtnType"] == "static void" or pm["rtnType"] == "virtual void" or pm["rtnType"] == "inline void":
 								wrappersHeaderOut += "\t%s;\n" % (call)
 								basicType = True
 								voidRet = True
+								vectorReturn = False
 								wrappersHeaderOut += "\treturn 0;\n" # 0 arguments returned
 							else: # If there is a return value:
 								# What type is the return value? Default to pointer
 								outfunc = "lua_pushlightuserdata"
 								retFunc = ""
 								basicType = False
+								vectorReturn = False
 								if pm["rtnType"] == "Number" or  pm["rtnType"] == "inline Number":
 									outfunc = "lua_pushnumber"
 									basicType = True
@@ -536,9 +567,13 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 							if basicType == True: # Yes, a primitive
 								luaClassBindingOut += "\treturn retVal\n"
 							else: # Yes, a pointer was returned
-								className = pm["rtnType"].replace("const", "").replace("&", "").replace("inline", "").replace("virtual", "").replace("static", "").replace("*","").replace(" ", "")
 								luaClassBindingOut += "\tif retVal == nil then return nil end\n"
-								luaClassBindingOut += template_returnPtrLookup("\t",template_quote(className),"retVal")
+								if vectorReturn == True:
+									className = vectorReturnClass.replace("*", "")
+									luaClassBindingOut += template_returnPtrLookupArray("\t",template_quote(className),"retVal")
+								else:
+									className = pm["rtnType"].replace("const", "").replace("&", "").replace("inline", "").replace("virtual", "").replace("static", "").replace("*","").replace(" ", "")
+									luaClassBindingOut += template_returnPtrLookup("\t",template_quote(className),"retVal")
 						luaClassBindingOut += "end\n\n" # Close out Lua generation
 
 					parsed_methods.append(pm["name"]) # Method parse success

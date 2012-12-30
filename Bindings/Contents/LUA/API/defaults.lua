@@ -1,6 +1,10 @@
 
 for k,v in pairs(math) do _G[k]=v end for k,v in pairs(table) do _G[k]=v end
-_G["count"]=_G["getn"]
+_G["count"] = function(T)
+	local _count = 0
+	for _ in pairs(T) do _count = _count + 1 end
+	return _count
+end
 
 _G["print"] = function(msg)
 	_G["debugPrint"](tostring(msg))
