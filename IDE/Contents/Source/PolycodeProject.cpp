@@ -96,6 +96,8 @@ bool PolycodeProject::loadProjectFromFile() {
 		for(int i=0; i < configFile.root["modules"]->length; i++) {
 			ObjectEntry *module = (*configFile.root["modules"])[i];
 			data.modules.push_back(module->stringVal);
+			CoreServices::getInstance()->getResourceManager()->addArchive("Standalone/Modules/"+module->stringVal+"/API");
+			
 		}
 	}
 	
@@ -160,10 +162,13 @@ bool PolycodeProject::saveFile() {
 	
 	for(int j=0; j < data.modules.size(); j++) {
 		if(!configFile.root["modules"]) {
-			configFile.root.addChild("modules");	
+			configFile.root.addChild("modules");			
 		}	
-		configFile.root["modules"]->type = ObjectEntry::ARRAY_ENTRY;	
+		configFile.root["modules"]->type = ObjectEntry::ARRAY_ENTRY;
 		configFile.root["modules"]->addChild("module", data.modules[j]);
+		
+		CoreServices::getInstance()->getResourceManager()->addArchive("Standalone/Modules/"+data.modules[j]+"/API");
+		
 	}
 	
 	if(configFile.root["fonts"]) {

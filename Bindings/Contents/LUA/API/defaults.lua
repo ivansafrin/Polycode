@@ -6,6 +6,36 @@ _G["count"] = function(T)
 	return _count
 end
 
+_G["cast"] = function (c, T)
+	if _G["__ptr_lookup"][T.__classname][c.__ptr] ~= nil then
+		return _G["__ptr_lookup"][T.__classname][c.__ptr]
+	else
+		_G["__ptr_lookup"][T.__classname][c.__ptr] = T("__skip_ptr__")
+		_G["__ptr_lookup"][T.__classname][c.__ptr].__ptr = c.__ptr
+		return _G["__ptr_lookup"][T.__classname][c.__ptr]
+	end
+
+end
+
+function __is_table_kind_of(T,c)
+        local __baseclass = T
+        while __baseclass do
+                if __baseclass.__classname == c.__classname then
+                        return true
+                end
+                __baseclass = __baseclass.__baseclass
+        end
+        return false
+end
+
+_G["safe_cast"] = function(c, T)
+	
+	if c:isKindOfClass(T) or __is_table_kind_of(T,c) then
+		return _G["cast"](c, T)
+	end
+	return nil
+end
+
 _G["print"] = function(msg)
 	_G["debugPrint"](tostring(msg))
 end

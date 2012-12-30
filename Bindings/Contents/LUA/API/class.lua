@@ -2,6 +2,21 @@ function __areclassesequal(a,b)
 	return a.__ptr == b.__ptr
 end
 
+function __is_kind_of(c,T)
+	local __baseclass = getmetatable(c)
+	while __baseclass do
+		if __baseclass.__classname == T.__classname then
+			return true
+		end
+		__baseclass = __baseclass.__baseclass
+	end
+	return false
+end
+
+function __is_class(c, T)
+	return (c.__classname == T.__classname)
+end
+
 function class(name)
 	local cls = {}
 	cls.__classname = name
@@ -21,6 +36,8 @@ function class(name)
 	end
 
 	cls.__eq = __areclassesequal
+	cls.isKindOfClass = __is_kind_of
+	cls.isClass = __is_class
 
 	cls.__index = function(t,k)
 		local prototype = rawget(t,"__prototype")

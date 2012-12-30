@@ -386,7 +386,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 								else:
 									luafunc = "*(%s*)lua_topointer" % (param["type"].replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"))
 								lend = ".__ptr"
-								if param["type"] == "int" or param["type"] == "unsigned int":
+								if param["type"] == "int" or param["type"] == "unsigned int" or param["type"] == "short":
 									luafunc = "lua_tointeger"
 									luatype = "LUA_TNUMBER"
 									checkfunc = "lua_isnumber"
@@ -489,7 +489,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 									outfunc = "lua_pushstring"
 									basicType = True
 									retFunc = ".c_str()"
-								if pm["rtnType"] == "int" or pm["rtnType"] == "unsigned int" or pm["rtnType"] == "static int" or  pm["rtnType"] == "size_t" or pm["rtnType"] == "static size_t" or pm["rtnType"] == "long" or pm["rtnType"] == "unsigned int" or pm["rtnType"] == "static long":
+								if pm["rtnType"] == "int" or pm["rtnType"] == "unsigned int" or pm["rtnType"] == "static int" or  pm["rtnType"] == "size_t" or pm["rtnType"] == "static size_t" or pm["rtnType"] == "long" or pm["rtnType"] == "unsigned int" or pm["rtnType"] == "static long" or pm["rtnType"] == "short":
 									outfunc = "lua_pushinteger"
 									basicType = True
 								if pm["rtnType"] == "bool" or pm["rtnType"] == "static bool" or pm["rtnType"] == "virtual bool":

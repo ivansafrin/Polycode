@@ -175,7 +175,7 @@ public:
 	* @param fixedRotation If this is set to true, the entity will always have a locked rotation.
 	* @return The physics entity wrapper.
 	*/
-	PhysicsScreenEntity *addPhysicsChild(ScreenEntity *newEntity, int entType, bool isStatic, Number friction=0.1, Number density=1, Number restitution = 0, bool isSensor = false, bool fixedRotation = false, short groupIndex = 0);
+	PhysicsScreenEntity *addPhysicsChild(ScreenEntity *newEntity, int entType, bool isStatic, Number friction=0.1, Number density=1, Number restitution = 0, bool isSensor = false, bool fixedRotation = false, int groupIndex = 0);
 
 	/**
 	* Tracks a ScreenEntity as a physics enabled child. 
@@ -189,7 +189,7 @@ public:
 	* @param fixedRotation If this is set to true, the entity will always have a locked rotation.
 	* @return The physics entity wrapper.
 	*/
-	PhysicsScreenEntity *trackPhysicsChild(ScreenEntity *newEntity, int entType, bool isStatic, Number friction=0.1, Number density=1, Number restitution = 0, bool isSensor = false, bool fixedRotation = false, short groupIndex = 0);
+	PhysicsScreenEntity *trackPhysicsChild(ScreenEntity *newEntity, int entType, bool isStatic, Number friction=0.1, Number density=1, Number restitution = 0, bool isSensor = false, bool fixedRotation = false, int groupIndex = 0);
 
 	
 	/**
@@ -208,7 +208,7 @@ public:
 	* @param entType Physics shape of the entity. Possible values are PhysicsScreenEntity::ENTITY_RECT or PhysicsScreenEntity::ENTITY_CIRCLE.
 	* @param entityToRemove Entity to remove from the screen.
 	*/	
-	PhysicsScreenEntity *addCollisionChild(ScreenEntity *newEntity, int entType, short groupIndex = 0);
+	PhysicsScreenEntity *addCollisionChild(ScreenEntity *newEntity, int entType, int groupIndex = 0);
 	
 	/**
 	* Begins tracking collisions for a ScreenEntity.
@@ -216,7 +216,7 @@ public:
 	* @param entType Physics shape of the entity. Possible values are PhysicsScreenEntity::ENTITY_RECT or PhysicsScreenEntity::ENTITY_CIRCLE.
 	* @param entityToRemove Entity to remove from the screen.
 	*/	
-	PhysicsScreenEntity *trackCollisionChild(ScreenEntity *newEntity, int entType, short groupIndex = 0);	
+	PhysicsScreenEntity *trackCollisionChild(ScreenEntity *newEntity, int entType, int groupIndex = 0);	
 	
 	/**
 	* Removes an existing joint.

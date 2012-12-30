@@ -292,14 +292,14 @@ void PhysicsScreen::setVelocityY(ScreenEntity *ent, Number fy) {
 }
 
 
-PhysicsScreenEntity *PhysicsScreen::addCollisionChild(ScreenEntity *newEntity, int entType, short groupIndex) {
+PhysicsScreenEntity *PhysicsScreen::addCollisionChild(ScreenEntity *newEntity, int entType, int groupIndex) {
 	PhysicsScreenEntity *ret;
 	ret = addPhysicsChild(newEntity, entType, false, 0,0.0,0, true, groupIndex);
 	ret->collisionOnly = true; 
 	return ret;
 }
 
-PhysicsScreenEntity *PhysicsScreen::trackCollisionChild(ScreenEntity *newEntity, int entType, short groupIndex) {
+PhysicsScreenEntity *PhysicsScreen::trackCollisionChild(ScreenEntity *newEntity, int entType, int groupIndex) {
 	PhysicsScreenEntity *ret;
 	ret = trackPhysicsChild(newEntity, entType, false, 0,0.0,0, true, groupIndex);
 	ret->collisionOnly = true; 
@@ -417,12 +417,12 @@ void PhysicsScreen::destroyMouseJoint(b2MouseJoint *mJoint) {
 		mJoint = NULL;
 }
 
-PhysicsScreenEntity *PhysicsScreen::addPhysicsChild(ScreenEntity *newEntity, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation, short groupIndex) {
+PhysicsScreenEntity *PhysicsScreen::addPhysicsChild(ScreenEntity *newEntity, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation, int groupIndex) {
 	addChild(newEntity);
 	return trackPhysicsChild(newEntity, entType, isStatic, friction, density, restitution, isSensor, fixedRotation, groupIndex);
 }
 
-PhysicsScreenEntity *PhysicsScreen::trackPhysicsChild(ScreenEntity *newEntity, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation, short groupIndex) {
+PhysicsScreenEntity *PhysicsScreen::trackPhysicsChild(ScreenEntity *newEntity, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation, int groupIndex) {
 	newEntity->setPositionMode(ScreenEntity::POSITION_CENTER);
 	PhysicsScreenEntity *newPhysicsEntity = new PhysicsScreenEntity(newEntity, world, worldScale, entType, isStatic, friction, density, restitution, isSensor,fixedRotation, groupIndex);
 	physicsChildren.push_back(newPhysicsEntity);
