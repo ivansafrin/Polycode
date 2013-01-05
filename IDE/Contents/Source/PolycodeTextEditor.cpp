@@ -38,7 +38,7 @@ PolycodeSyntaxHighlighter::PolycodeSyntaxHighlighter(String extension) {
 	separators = String("[ * [ ] { } ; . , : # ( ) \t \n = + - / \\ ' \"").split(" ");
 	separators.push_back(" ");
 	
-	keywords = String("and require true false class self break do end else elseif function if local nil not or repeat return then until while").split(" ");
+	keywords = String("for cast safe_cast and require true false class self break do end else elseif function if local nil not or repeat return then until while").split(" ");
 }
 
 PolycodeSyntaxHighlighter::~PolycodeSyntaxHighlighter() {
