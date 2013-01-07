@@ -38,6 +38,9 @@ namespace Polycode {
 		public:
 			GlyphData();
 			~GlyphData();
+			
+			void clearData();
+			
 			FT_Glyph *glyphs;
 			FT_Vector *positions;	
 			FT_UInt num_glyphs;

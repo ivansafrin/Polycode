@@ -35,8 +35,19 @@ GlyphData::GlyphData() {
 }
 
 GlyphData::~GlyphData() {
-	delete glyphs;
-	delete positions;
+	clearData();
+}
+
+void GlyphData::clearData() {
+	for(int i=0; i < num_glyphs; i++) {
+		FT_Done_Glyph(glyphs[i]);
+	}
+	free(glyphs);
+	free(positions);
+	glyphs = NULL;
+	positions = NULL;
+	num_glyphs = 0;	
+	trailingAdvance = 0;	
 }
 
 
@@ -199,10 +210,7 @@ Color Label::getColorForIndex(unsigned int index) {
 }
 
 void Label::precacheGlyphs(String text, GlyphData *glyphData) {
-	if(glyphData->glyphs)
-		free(glyphData->glyphs);
-	if(glyphData->positions)
-		free(glyphData->positions);
+	glyphData->clearData();
 		
 	int num_chars = text.length();
 		
@@ -372,8 +380,8 @@ void Label::renderGlyphs(GlyphData *glyphData) {
 			drawGlyphBitmap(&bit->bitmap,
 					bit->left - xAdjustOffset,
 					height - bit->top + baseLineOffset, glyphColor);
-
-			FT_Done_Glyph( image );			
+					
+			FT_Done_Glyph( image );
 		}
 	}
 }

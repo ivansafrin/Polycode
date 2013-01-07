@@ -94,7 +94,7 @@ void Texture::setImageData(Image *data) {
 		free(this->textureData);
 	this->textureData = (char*)malloc(width*height*pixelSize);
 	memcpy(this->textureData, data->getPixels(), width*height*pixelSize);
-	setTextureData(data->getPixels());
+//	setTextureData(data->getPixels());
 
 }
 
