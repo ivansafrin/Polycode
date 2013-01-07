@@ -54,18 +54,6 @@ UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : 
 								fontName,
 								Label::ANTIALIAS_FULL);
 
-/*	
-	Number st = conf->getNumericValue("Polycode", "uiTreeCellSkinT");
-	Number sr = conf->getNumericValue("Polycode", "uiTreeCellSkinR");
-	Number sb = conf->getNumericValue("Polycode", "uiTreeCellSkinB");
-	Number sl = conf->getNumericValue("Polycode", "uiTreeCellSkinL");	
-	
-	Number padding = conf->getNumericValue("Polycode", "uiTreeCellSkinPadding");	
-	
-	bgBox = new UIBox(conf->getStringValue("Polycode", "uiTreeCellSkin"),
-						  st,sr,sb,sl,
-						  treeWidth+(padding*2), cellHeight+(padding*2));	
-	*/
 	bgBox = new ScreenShape(ScreenShape::SHAPE_RECT, treeWidth, cellHeight);	
 	bgBox->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	bgBox->setPosition(-treeOffset,0);	
@@ -297,6 +285,10 @@ void UITree::toggleCollapsed() {
 
 UITree::~UITree() {
 	clearTree();
+	delete selection;
+	delete textLabel;
+	delete iconImage;
+	delete arrowIconImage;
 }
 
 void UITree::clearTree() {

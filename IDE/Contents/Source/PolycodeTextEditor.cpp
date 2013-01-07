@@ -256,7 +256,7 @@ void PolycodeTextEditor::handleEvent(Event *event) {
 	}
 
 	if(event->getDispatcher() == findBar->replaceInput) {
-		if(event->getEventType() == "Event") {
+		if(event->getEventType() == "") {
 		
 			if(event->getEventCode() == Event::CANCEL_EVENT) {
 				hideFindBar();
@@ -271,7 +271,7 @@ void PolycodeTextEditor::handleEvent(Event *event) {
 	
 	
 	if(event->getDispatcher() == findBar->findInput) {
-		if(event->getEventType() == "Event") {
+		if(event->getEventType() == "") {
 		
 			if(event->getEventCode() == Event::CANCEL_EVENT) {
 				hideFindBar();

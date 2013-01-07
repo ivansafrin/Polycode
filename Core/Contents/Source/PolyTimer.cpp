@@ -83,10 +83,7 @@ void Timer::Update(unsigned int ticks) {
 	
 	this->ticks = ticks;
 	elapsed = ticks-last;
-	
-//	if(elapsed > 10000)
-//		elapsed = 10000;
-	
+		
 	if(paused)
 		return;
 

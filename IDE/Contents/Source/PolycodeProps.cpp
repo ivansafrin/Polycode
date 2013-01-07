@@ -99,7 +99,7 @@ void PropList::Resize(Number width, Number height) {
 }
 
 void PropList::handleEvent(Event *event) {
-	if(event->getEventType() == "Event" && event->getEventCode() == Event::COMPLETE_EVENT) {
+	if(event->getEventType() == "" && event->getEventCode() == Event::COMPLETE_EVENT) {
 		Resize(width, height);
 	}	
 }
@@ -829,31 +829,31 @@ void ShapeSheet::handleEvent(Event *event) {
 		return;
 
 
-	if(event->getDispatcher() == strokeProp && event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getDispatcher() == strokeProp  && event->getEventCode() == Event::CHANGE_EVENT) {
 		lastStrokeVal = strokeProp->get();
 		shape->strokeEnabled = lastStrokeVal;
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}
 
-	if(event->getDispatcher() == shapeSize && event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getDispatcher() == shapeSize  && event->getEventCode() == Event::CHANGE_EVENT) {
 		lastShapeSize = shapeSize->get();
 		shape->setShapeSize(lastShapeSize.x, lastShapeSize.y);
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}
 
-	if(event->getDispatcher() == typeProp && event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getDispatcher() == typeProp  && event->getEventCode() == Event::CHANGE_EVENT) {
 		lastShapeType = typeProp->get();
 		shape->setShapeType(lastShapeType+1);
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}
 	
-	if(event->getDispatcher() == strokeColorProp && event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getDispatcher() == strokeColorProp  && event->getEventCode() == Event::CHANGE_EVENT) {
 		lastStrokeColor = strokeColorProp->get();
 		shape->strokeColor = lastStrokeColor;
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}
 
-	if(event->getDispatcher() == strokeSize && event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getDispatcher() == strokeSize  && event->getEventCode() == Event::CHANGE_EVENT) {
 		lastStrokeSize = strokeSize->get();
 		shape->strokeWidth = lastStrokeSize;
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
@@ -926,24 +926,24 @@ void EntitySheet::handleEvent(Event *event) {
 	if(!entity)
 		return;
 
-	if(event->getDispatcher() == blendingProp && event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getDispatcher() == blendingProp  && event->getEventCode() == Event::CHANGE_EVENT) {
 		entity->blendingMode = blendingProp->get();
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}
 
 
-	if(event->getDispatcher() == colorProp && event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getDispatcher() == colorProp  && event->getEventCode() == Event::CHANGE_EVENT) {
 		entity->color = colorProp->get();
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}
 
 		
-	if(event->getDispatcher() == idProp && event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getDispatcher() == idProp  && event->getEventCode() == Event::CHANGE_EVENT) {
 		entity->id = idProp->get();
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}
 
-	if(event->getDispatcher() == tagProp && event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getDispatcher() == tagProp  && event->getEventCode() == Event::CHANGE_EVENT) {
 		
 		entity->clearTags();
 		String cleaned =  tagProp->get().replace(" ", "");
@@ -1060,27 +1060,27 @@ void ScreenParticleSheet::handleEvent(Event *event) {
 	if(!emitter)
 		return;
 		
-	if(event->getDispatcher() == blendingProp && event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getDispatcher() == blendingProp  && event->getEventCode() == Event::CHANGE_EVENT) {
 		emitter->setParticleBlendingMode(blendingProp->get());
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}
 		
 
-	if(event->getDispatcher() == sizeProp && event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getDispatcher() == sizeProp  && event->getEventCode() == Event::CHANGE_EVENT) {
 		lastSize = Vector3(sizeProp->get().x, sizeProp->get().y, 0.0);
 		emitter->emitterRadius = lastSize;
 		emitter->resetAll();		
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}
 	
-	if(event->getDispatcher() == dirProp && event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getDispatcher() == dirProp  && event->getEventCode() == Event::CHANGE_EVENT) {
 		lastDir = Vector3(dirProp->get().x, dirProp->get().y, 0.0);
 		emitter->dirVector = lastDir;
 		emitter->resetAll();
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}
 
-	if(event->getDispatcher() == gravProp && event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getDispatcher() == gravProp  && event->getEventCode() == Event::CHANGE_EVENT) {
 		lastGrav = Vector3(gravProp->get().x, gravProp->get().y, 0.0);
 		emitter->gravVector = lastGrav;
 		emitter->resetAll();
@@ -1088,54 +1088,54 @@ void ScreenParticleSheet::handleEvent(Event *event) {
 	}
 
 
-	if(event->getDispatcher() == deviationProp && event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getDispatcher() == deviationProp  && event->getEventCode() == Event::CHANGE_EVENT) {
 		lastDeviation = Vector3(deviationProp->get().x, deviationProp->get().y, 0.0);
 		emitter->deviation = lastDeviation;
 		emitter->resetAll();		
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}
 	
-	if(event->getDispatcher() == particleScaleProp && event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getDispatcher() == particleScaleProp  && event->getEventCode() == Event::CHANGE_EVENT) {
 		lastParticleScale = particleScaleProp->get();
 		emitter->particleSize = lastParticleScale;
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}	
 
-	if(event->getDispatcher() == brightnessDeviationProp && event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getDispatcher() == brightnessDeviationProp  && event->getEventCode() == Event::CHANGE_EVENT) {
 		lastBrightnessDeviation = brightnessDeviationProp->get();
 		emitter->brightnessDeviation = lastBrightnessDeviation;
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}
 	
-	if(event->getDispatcher() == perlinModSizeProp && event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getDispatcher() == perlinModSizeProp  && event->getEventCode() == Event::CHANGE_EVENT) {
 		lastPerlinSize = perlinModSizeProp->get();
 		emitter->perlinModSize = lastPerlinSize;
 		emitter->resetAll();		
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}	
 	
-	if(event->getDispatcher() == speedModProp && event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getDispatcher() == speedModProp  && event->getEventCode() == Event::CHANGE_EVENT) {
 		lastSpeedMod = speedModProp->get();
 		emitter->particleSpeedMod = lastSpeedMod;
 		emitter->resetAll();		
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}		
 
-	if(event->getDispatcher() == perlinEnableProp && event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getDispatcher() == perlinEnableProp  && event->getEventCode() == Event::CHANGE_EVENT) {
 		lastEnableProp = perlinEnableProp->get();
 		emitter->perlinEnabled = lastEnableProp;
 		emitter->resetAll();		
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}	
 	
-	if(event->getDispatcher() == lifespanProp && event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getDispatcher() == lifespanProp  && event->getEventCode() == Event::CHANGE_EVENT) {
 		lastLifespan = lifespanProp->get();
 		emitter->lifespan = lastLifespan;
 		emitter->resetAll();
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}		
 
-	if(event->getDispatcher() == numParticlesProp && event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getDispatcher() == numParticlesProp  && event->getEventCode() == Event::CHANGE_EVENT) {
 		lastNumParticles = numParticlesProp->get();
 		emitter->setParticleCount(lastNumParticles);
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
@@ -1147,26 +1147,26 @@ void ScreenParticleSheet::handleEvent(Event *event) {
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}			
 
-	if(event->getDispatcher() == rotationSpeedProp && event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getDispatcher() == rotationSpeedProp  && event->getEventCode() == Event::CHANGE_EVENT) {
 		lastRotationSpeed = rotationSpeedProp->get();
 		emitter->rotationSpeed = lastRotationSpeed;		
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}	
 	
-	if(event->getDispatcher() == rotationFollowsPathProp && event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getDispatcher() == rotationFollowsPathProp  && event->getEventCode() == Event::CHANGE_EVENT) {
 		lastRotationFollowsPath = rotationFollowsPathProp->get();
 		emitter->rotationFollowsPath = lastRotationFollowsPath;		
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}	
 	
 	
-	if(event->getDispatcher() == useScaleCurvesProp && event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getDispatcher() == useScaleCurvesProp  && event->getEventCode() == Event::CHANGE_EVENT) {
 		lastUseScaleCurves = useScaleCurvesProp->get();
 		emitter->useScaleCurves = lastUseScaleCurves;		
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}		
 
-	if(event->getDispatcher() == useColorCurvesProp && event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getDispatcher() == useColorCurvesProp  && event->getEventCode() == Event::CHANGE_EVENT) {
 		lastUseColorCurves = useColorCurvesProp->get();
 		emitter->useColorCurves = lastUseColorCurves;		
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
@@ -1307,19 +1307,19 @@ void Transform2DSheet::handleEvent(Event *event) {
 	if(!entity)
 		return;
 
-	if(event->getDispatcher() == positionProp && event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getDispatcher() == positionProp  && event->getEventCode() == Event::CHANGE_EVENT) {
 		lastPositon = positionProp->get();
 		entity->setPosition(lastPositon);
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}
 
-	if(event->getDispatcher() == scaleProp && event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getDispatcher() == scaleProp  && event->getEventCode() == Event::CHANGE_EVENT) {
 		lastScale = scaleProp->get();
 		entity->setScale(lastScale);
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}
 
-	if(event->getDispatcher() == rotationProp && event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getDispatcher() == rotationProp  && event->getEventCode() == Event::CHANGE_EVENT) {
 		lastRotation = rotationProp->get();
 		entity->setRotation(lastRotation);
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
@@ -1654,29 +1654,29 @@ void SoundSheet::handleEvent(Event *event) {
 	if(!sound)
 		return;
 
-	if(event->getDispatcher() == referenceDistance && event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getDispatcher() == referenceDistance  && event->getEventCode() == Event::CHANGE_EVENT) {
 		lastReferenceDistance = referenceDistance->get();
 		sound->getSound()->setReferenceDistance(lastReferenceDistance);
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}
 
-	if(event->getDispatcher() == maxDistance && event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getDispatcher() == maxDistance  && event->getEventCode() == Event::CHANGE_EVENT) {
 		lastMaxDistance = maxDistance->get();
 		sound->getSound()->setMaxDistance(lastMaxDistance);
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}
 
-	if(event->getDispatcher() == volume && event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getDispatcher() == volume  && event->getEventCode() == Event::CHANGE_EVENT) {
 		lastVolume = volume->get();
 		sound->getSound()->setVolume(lastVolume);
 	}
 
-	if(event->getDispatcher() == pitch && event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getDispatcher() == pitch  && event->getEventCode() == Event::CHANGE_EVENT) {
 		lastPitch = pitch->get();
 		sound->getSound()->setPitch(lastPitch);
 	}
 
-	if(event->getDispatcher() == soundProp && event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getDispatcher() == soundProp  && event->getEventCode() == Event::CHANGE_EVENT) {
 		lastSoundPath = soundProp->get();
 		sound->getSound()->loadFile(lastSoundPath);
 	}

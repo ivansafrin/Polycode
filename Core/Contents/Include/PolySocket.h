@@ -30,6 +30,7 @@ THE SOFTWARE.
 #define MAX_PACKET_SIZE 1400
 
 // if set to 1, will create a thread for each network socket
+// DO NOT USE FOR PRODUCTION
 #define USE_THREADED_SOCKETS 0
 
 // Socket poll interval time in msecs

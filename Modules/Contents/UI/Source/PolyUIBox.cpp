@@ -111,5 +111,14 @@ void UIBox::resizeBox(Number newWidth, Number newHeight) {
 }
 
 UIBox::~UIBox() {
-	
+	delete tlImage;
+	delete trImage;		
+	delete blImage;		
+	delete brImage;					
+	delete centerImage;		
+	delete tImage;
+	delete rImage;
+	delete bImage;
+	delete lImage;		
+
 }

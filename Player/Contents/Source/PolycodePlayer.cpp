@@ -382,12 +382,13 @@ static void dumpstack (lua_State *L) {
 			lua_pushstring(L, moduleDestPath.c_str());
 			lua_pushstring(L, moduleLoadCall.c_str());			
 			lua_call(L, 2, 2);
+			
 			lua_setfield(L, LUA_GLOBALSINDEX, "err");								
 			lua_setfield(L, LUA_GLOBALSINDEX, "f");		
 
-			lua_getfield(L, LUA_GLOBALSINDEX, "print");
-			lua_getfield(L, LUA_GLOBALSINDEX, "err");						
-			lua_call(L, 1, 0);						
+//			lua_getfield(L, LUA_GLOBALSINDEX, "print");
+//			lua_getfield(L, LUA_GLOBALSINDEX, "err");						
+//			lua_call(L, 1, 0);						
 
 			printf("SETTING CORE SERVICES\n");			
 			lua_getfield(L, LUA_GLOBALSINDEX, "f");

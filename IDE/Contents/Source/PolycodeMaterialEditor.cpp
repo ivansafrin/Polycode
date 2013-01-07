@@ -753,7 +753,7 @@ void PolycodeMaterialEditor::saveFile() {
 
 void PolycodeMaterialEditor::handleEvent(Event *event) {
 
-	if(event->getDispatcher() == mainWindow->materialPane && event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getDispatcher() == mainWindow->materialPane && event->getEventType() == "" && event->getEventCode() == Event::CHANGE_EVENT) {
 		if(selectedMaterialNode && mainWindow->materialPane->currentMaterial) {
 			selectedMaterialNode->setLabelText(mainWindow->materialPane->currentMaterial->getName());
 		}
@@ -767,7 +767,7 @@ void PolycodeMaterialEditor::handleEvent(Event *event) {
 		
 
 	if(event->getDispatcher() == materialBrowser) {
-		if(event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+		if(event->getEventType() == "" && event->getEventCode() == Event::CHANGE_EVENT) {
 			if(materialBrowser->selectedData)  {
 				if(materialBrowser->selectedData->material) {
 					mainWindow->materialPane->setMaterial(materialBrowser->selectedData->material);

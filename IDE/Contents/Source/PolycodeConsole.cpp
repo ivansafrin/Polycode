@@ -193,7 +193,7 @@ void PolycodeConsole::setDebugger(PolycodeRemoteDebugger *debugger) {
 
 void PolycodeConsole::handleEvent(Event *event) {
 	if(event->getDispatcher() == consoleTextInput) {
-		if(event->getEventCode() == Event::COMPLETE_EVENT && event->getEventType() == "Event") {
+		if(event->getEventCode() == Event::COMPLETE_EVENT && event->getEventType() == "") {
 			_print(">"+consoleTextInput->getText()+"\n");
 			if(debugger) {
 				if(!debugger->isConnected()) {

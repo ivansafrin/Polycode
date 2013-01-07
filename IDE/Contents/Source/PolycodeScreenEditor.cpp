@@ -1566,7 +1566,7 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 		}
 	}
 
-	if(event->getDispatcher() == particleSheet && event->getEventType() == "Event") {	
+	if(event->getDispatcher() == particleSheet && event->getEventType() == "") {	
 		if(particleSheet->emitter) {
 		ScreenShape *refRect = (ScreenShape*) particleSheet->emitter->getEntityById("refRect", false);
 		if(refRect) {
@@ -1578,7 +1578,7 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 
 	}
 	
-	if(event->getDispatcher() == soundSheet && event->getEventType() == "Event") {	
+	if(event->getDispatcher() == soundSheet && event->getEventType() == "") {	
 		ScreenShape *refCircle = (ScreenShape*) soundSheet->sound->getEntityById("refCircle", false);
 		if(refCircle) {
 			refCircle->setShapeSize(soundSheet->sound->getSound()->getReferenceDistance(), soundSheet->sound->getSound()->getReferenceDistance());
@@ -1592,7 +1592,7 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 		
 	}
 	
-	if((event->getDispatcher() == transform2dSheet || event->getDispatcher() == labelSheet || event->getDispatcher() == imageSheet) && event->getEventType() == "Event") {
+	if((event->getDispatcher() == transform2dSheet || event->getDispatcher() == labelSheet || event->getDispatcher() == imageSheet) && event->getEventType() == "") {
 		syncTransformToSelected();
 		treeView->Refresh();		
 	}
@@ -2254,7 +2254,7 @@ void PolycodeScreenEditor::saveFile() {
 
 void PolycodeScreenEditor::handleEvent(Event *event) {
 
-	if(event->getEventType() == "Event" && event->getEventCode() == Event::CHANGE_EVENT) {
+	if(event->getEventType() == "" && event->getEventCode() == Event::CHANGE_EVENT) {
 		if(event->getDispatcher() == treeView) {			
 			editorMain->selectEntity((ScreenEntity*)treeView->selectedEntity);
 		}

@@ -25,12 +25,10 @@
 namespace Polycode {
 	
 	Event::Event() {
-			eventType = "Event";
 			deleteOnDispatch = true;
 	}
 	
-	Event::Event(int eventCode) {
-		eventType = "Event";		
+	Event::Event(int eventCode) {	
 		setEventCode(eventCode);
 	}
 	

@@ -24,7 +24,7 @@
 
 
 PolycodeRemoteDebugger::PolycodeRemoteDebugger(PolycodeProjectManager *projectManager) {
-	server = new Server(4630, 1);
+	server = new Server(4630, 100);
 	
 	this->projectManager = projectManager;
 
