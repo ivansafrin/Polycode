@@ -18,13 +18,9 @@ def mkdir_p(path): # Same effect as mkdir -p, create dir and all necessary paren
 def template_returnPtrLookupArray(prefix, className, ptr):
 	out = ""
 	out += "%sfor i=1,count(%s) do\n" % (prefix, ptr)
-	out += "%s\tif _G[\"__ptr_lookup\"][%s][%s[i]] ~= nil then\n" % (prefix, className, ptr)
-	out += "%s\t\t%s[i] = _G[\"__ptr_lookup\"][%s][%s[i]]\n" % (prefix, ptr, className, ptr)
-	out += "%s\telse\n" % (prefix)
-	out += "%s\t\t_G[\"__ptr_lookup\"][%s][%s[i]] = _G[%s](\"__skip_ptr__\")\n" % (prefix, className, ptr, className)
-	out += "%s\t\t_G[\"__ptr_lookup\"][%s][%s[i]].__ptr = %s[i]\n" % (prefix, className, ptr, ptr)
-	out += "%s\t\t%s[i] = _G[\"__ptr_lookup\"][%s][%s[i]]\n" % (prefix, ptr, className, ptr)
-	out += "%s\tend\n" % (prefix)
+	out += "%s\tlocal __c  = _G[%s](\"__skip_ptr__\")\n" % (prefix, className)
+	out += "%s\t__c.__ptr = %s[i]\n" % (prefix, ptr)
+	out += "%s\t%s[i] = __c\n" % (prefix, ptr)
 	out += "%send\n" % (prefix)
 	out += "%sreturn %s\n" % (prefix,ptr)
 	return out
@@ -32,13 +28,9 @@ def template_returnPtrLookupArray(prefix, className, ptr):
 # Note we expect className to be a valid string
 def template_returnPtrLookup(prefix, className, ptr):
 	out = ""
-	out += "%sif _G[\"__ptr_lookup\"][%s][%s] ~= nil then\n" % (prefix, className, ptr)
-	out += "%s\treturn _G[\"__ptr_lookup\"][%s][%s]\n" % (prefix, className, ptr)
-	out += "%selse\n" % (prefix)
-	out += "%s\t_G[\"__ptr_lookup\"][%s][%s] = _G[%s](\"__skip_ptr__\")\n" % (prefix, className, ptr, className)
-	out += "%s\t_G[\"__ptr_lookup\"][%s][%s].__ptr = %s\n" % (prefix, className, ptr, ptr)
-	out += "%s\treturn _G[\"__ptr_lookup\"][%s][%s]\n" % (prefix, className, ptr)
-	out += "%send\n" % (prefix)
+	out += "%slocal __c = _G[%s](\"__skip_ptr__\")\n" % (prefix, className)
+	out += "%s__c.__ptr = %s\n" % (prefix, ptr)
+	out += "%sreturn __c\n" % (prefix)
 	return out
 	
 def template_quote(str):
@@ -64,6 +56,7 @@ def typeFilter(ty):
 def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, apiPath, apiClassPath, includePath, sourcePath, inheritInModuleFiles):
 	wrappersHeaderOut = "" # Def: Global C++ *LUAWrappers.h
 	cppRegisterOut = "" # Def: Global C++ *LUA.cpp
+	cppLoaderOut = "" # Def: Global C++ *LUA.cpp
 	
 	luaIndexOut = "" # Def: Global Lua everything-gets-required-from-this-file file
 	
@@ -74,7 +67,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 	cppRegisterOut += "using namespace Polycode;\n\n"
 	cppRegisterOut += "int luaopen_%s(lua_State *L) {\n" % (prefix)
 	if prefix != "Polycode":
-		cppRegisterOut += "CoreServices *inst = (CoreServices*)lua_topointer(L, 1);\n"
+		cppRegisterOut += "CoreServices *inst = (CoreServices*) *((void**)lua_topointer(L, 1));\n"
 		cppRegisterOut += "CoreServices::setInstance(inst);\n"
 	cppRegisterOut += "\tstatic const struct luaL_reg %sLib [] = {" % (libSmallName)
 	
@@ -109,6 +102,11 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 	wrappersHeaderOut += "\nusing namespace std;\n\n"
 	wrappersHeaderOut += "\nnamespace Polycode {\n\n"
 	
+
+	# list of classes that don't get the garbage collection in their meta table
+
+	disable_gc = ["Entity", "ScreenEntity", "ScreenShape", "ScreenMesh", "ScreenLabel", "SceneLabel", "SceneMesh", "Screen", "Scene", "Texture", "Image", "Camera", "ScreenParticleEmitter", "SceneParticleEmitter", "Mesh", "Vertex", "Polygon", "Polycode::Polygon", "Material", "ScenePrimitive", "SceneLine", "SceneLight", "SceneSound", "ScreenImage", "SceneEntity"]
+
 	# Special case: If we are building the Polycode library itself, inject the LuaEventHandler class.
 	# Note: so that event callbacks can work, any object inheriting from EventHandler will secretly
 	# be modified to actually inherit from LuaEventHandler instead.
@@ -120,7 +118,8 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 		wrappersHeaderOut += "		lua_getfield(L, LUA_GLOBALSINDEX, \"EventHandler\" );\n"
 		wrappersHeaderOut += "		lua_getfield(L, -1, \"__handleEvent\");\n"
 		wrappersHeaderOut += "		lua_rawgeti( L, LUA_REGISTRYINDEX, wrapperIndex );\n"
-		wrappersHeaderOut += "		lua_pushlightuserdata(L, e);\n"
+		wrappersHeaderOut += "		void **userdataPtr = (void**)lua_newuserdata(L, sizeof(void*));\n"
+		wrappersHeaderOut += "		*userdataPtr = (void*)e;\n"
 #		wrappersHeaderOut += "		lua_getfield (L, LUA_GLOBALSINDEX, \"__customError\");\n"
 #		wrappersHeaderOut += "		int errH = lua_gettop(L);\n"
 #		wrappersHeaderOut += "		lua_pcall(L, 2, 0, errH);\n"
@@ -238,10 +237,10 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 						if not ((ckey == "ScreenParticleEmitter" or ckey == "SceneParticleEmitter") and pp["name"] == "emitter"): #SPEC
 							cppRegisterOut += "\t\t{\"%s_get_%s\", %s_%s_get_%s},\n" % (ckey, pp["name"], libName, ckey, pp["name"])
 							wrappersHeaderOut += "static int %s_%s_get_%s(lua_State *L) {\n" % (libName, ckey, pp["name"])
-							wrappersHeaderOut += "\tluaL_checktype(L, 1, LUA_TLIGHTUSERDATA);\n"
-							wrappersHeaderOut += "\t%s *inst = (%s*)lua_topointer(L, 1);\n" % (ckey, ckey)
+							wrappersHeaderOut += "\tluaL_checktype(L, 1, LUA_TUSERDATA);\n"
+							wrappersHeaderOut += "\t%s *inst = (%s*) *((void**)lua_topointer(L, 1));\n" % (ckey, ckey)
 
-							outfunc = "lua_pushlightuserdata"
+							outfunc = "this_shouldnt_happen"
 							retFunc = ""
 							if pp["type"] == "Number":
 								outfunc = "lua_pushnumber"
@@ -256,7 +255,8 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 							if pp["type"] == "Number" or  pp["type"] == "String" or pp["type"] == "int" or pp["type"] == "bool":
 								wrappersHeaderOut += "\t%s(L, inst->%s%s);\n" % (outfunc, pp["name"], retFunc)
 							else:
-								wrappersHeaderOut += "\t%s(L, &inst->%s%s);\n" % (outfunc, pp["name"], retFunc)
+								wrappersHeaderOut += "\tvoid **userdataPtr = (void**)lua_newuserdata(L, sizeof(void*));\n"
+								wrappersHeaderOut += "\t*userdataPtr = (void*)&inst->%s%s;\n" % (pp["name"], retFunc)
 							wrappersHeaderOut += "\treturn 1;\n"
 							wrappersHeaderOut += "}\n\n"
 						
@@ -290,10 +290,10 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 
 							cppRegisterOut += "\t\t{\"%s_set_%s\", %s_%s_set_%s},\n" % (ckey, pp["name"], libName, ckey, pp["name"])
 							wrappersHeaderOut += "static int %s_%s_set_%s(lua_State *L) {\n" % (libName, ckey, pp["name"])
-							wrappersHeaderOut += "\tluaL_checktype(L, 1, LUA_TLIGHTUSERDATA);\n"
-							wrappersHeaderOut += "\t%s *inst = (%s*)lua_topointer(L, 1);\n" % (ckey, ckey)
+							wrappersHeaderOut += "\tluaL_checktype(L, 1, LUA_TUSERDATA);\n"
+							wrappersHeaderOut += "\t%s *inst = (%s*) *((void**)lua_topointer(L, 1));\n" % (ckey, ckey)
 
-							outfunc = "lua_topointer"
+							outfunc = "this_shouldnt_happen"
 							if pp["type"] == "Number":
 								outfunc = "lua_tonumber"
 							if pp["type"] == "String":
@@ -355,8 +355,8 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 
 						# Skip static methods (TODO: Figure out, why is this being done here?). # FIXME
 						if pm["rtnType"].find("static ") == -1:
-							wrappersHeaderOut += "\tluaL_checktype(L, 1, LUA_TLIGHTUSERDATA);\n"
-							wrappersHeaderOut += "\t%s *inst = (%s*)lua_topointer(L, 1);\n" % (ckey, ckey)
+							wrappersHeaderOut += "\tluaL_checktype(L, 1, LUA_TUSERDATA);\n"
+							wrappersHeaderOut += "\t%s *inst = (%s*) *((void**)lua_topointer(L, 1));\n" % (ckey, ckey)
 							idx = 2
 						else:
 							idx = 1
@@ -377,40 +377,45 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 
 							param["name"] = param["name"].replace("end", "_end").replace("repeat", "_repeat")
 							if"type" in param:
-								luatype = "LUA_TLIGHTUSERDATA"
-								checkfunc = "lua_islightuserdata"
+								luatype = "LUA_TUSERDATA"
+								checkfunc = "lua_isuserdata"
 								if param["type"].find("*") > -1:
-									luafunc = "(%s)lua_topointer" % (param["type"].replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"))
+									luafunc = "(%s) *((void**)lua_topointer" % (param["type"].replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"))
 								elif param["type"].find("&") > -1:
-									luafunc = "*(%s*)lua_topointer" % (param["type"].replace("const", "").replace("&", "").replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"))
+									luafunc = "*(%s*) *((void**)lua_topointer" % (param["type"].replace("const", "").replace("&", "").replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"))
 								else:
-									luafunc = "*(%s*)lua_topointer" % (param["type"].replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"))
+									luafunc = "*(%s*) *((void**)lua_topointer" % (param["type"].replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"))
 								lend = ".__ptr"
+								luafuncsuffix = ")"
 								if param["type"] == "int" or param["type"] == "unsigned int" or param["type"] == "short":
 									luafunc = "lua_tointeger"
 									luatype = "LUA_TNUMBER"
 									checkfunc = "lua_isnumber"
+									luafuncsuffix = ""
 									lend = ""
 								if param["type"] == "bool":
 									luafunc = "lua_toboolean"
 									luatype = "LUA_TBOOLEAN"
 									checkfunc = "lua_isboolean"
+									luafuncsuffix = ""
 									lend = ""
 								if param["type"] == "Number" or param["type"] == "float" or param["type"] == "double":
 									luatype = "LUA_TNUMBER"
 									luafunc = "lua_tonumber"
 									checkfunc = "lua_isnumber"
+									luafuncsuffix = ""
 									lend = ""
 								if param["type"] == "String":
 									luatype = "LUA_TSTRING"
 									luafunc = "lua_tostring"
 									checkfunc = "lua_isstring"
+									luafuncsuffix = ""
 									lend = ""
 
 								param["type"] = param["type"].replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle")
 
 								if "defaltValue" in param:
-									if checkfunc != "lua_islightuserdata" or (checkfunc == "lua_islightuserdata" and param["defaltValue"] == "NULL"):
+									if checkfunc != "lua_isuserdata" or (checkfunc == "lua_isuserdata" and param["defaltValue"] == "NULL"):
 										#param["defaltValue"] = param["defaltValue"].replace(" 0f", ".0f")
 										param["defaltValue"] = param["defaltValue"].replace(": :", "::")
 										#param["defaltValue"] = param["defaltValue"].replace("0 ", "0.")
@@ -418,7 +423,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 
 										wrappersHeaderOut += "\t%s %s;\n" % (param["type"], param["name"])
 										wrappersHeaderOut += "\tif(%s(L, %d)) {\n" % (checkfunc, idx)
-										wrappersHeaderOut += "\t\t%s = %s(L, %d);\n" % (param["name"], luafunc, idx)
+										wrappersHeaderOut += "\t\t%s = %s(L, %d)%s;\n" % (param["name"], luafunc, idx, luafuncsuffix)
 										wrappersHeaderOut += "\t} else {\n"
 										wrappersHeaderOut += "\t\t%s = %s;\n" % (param["name"], param["defaltValue"])
 										wrappersHeaderOut += "\t}\n"
@@ -427,13 +432,13 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 										if param["type"] == "String":
 											wrappersHeaderOut += "\t%s %s = String(%s(L, %d));\n" % (param["type"], param["name"], luafunc, idx)
 										else:
-											wrappersHeaderOut += "\t%s %s = %s(L, %d);\n" % (param["type"], param["name"], luafunc, idx)
+											wrappersHeaderOut += "\t%s %s = %s(L, %d)%s;\n" % (param["type"], param["name"], luafunc, idx,luafuncsuffix)
 								else:
 									wrappersHeaderOut += "\tluaL_checktype(L, %d, %s);\n" % (idx, luatype);
 									if param["type"] == "String":
 										wrappersHeaderOut += "\t%s %s = String(%s(L, %d));\n" % (param["type"], param["name"], luafunc, idx)
 									else:
-										wrappersHeaderOut += "\t%s %s = %s(L, %d);\n" % (param["type"], param["name"], luafunc, idx)
+										wrappersHeaderOut += "\t%s %s = %s(L, %d)%s;\n" % (param["type"], param["name"], luafunc, idx, luafuncsuffix)
 								paramlist.append(param["name"])
 
 								lparamlist.append(param["name"]+lend)
@@ -447,7 +452,11 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 								wrappersHeaderOut += "\tinst->L = L;\n"
 							else:
 								wrappersHeaderOut += "\t%s *inst = new %s(%s);\n" % (ckey, ckey, ", ".join(paramlist))
-							wrappersHeaderOut += "\tlua_pushlightuserdata(L, (void*)inst);\n"
+							
+							wrappersHeaderOut += "\t%s **userdataPtr = (%s**)lua_newuserdata(L, sizeof(%s*));\n" % (ckey, ckey, ckey)
+							wrappersHeaderOut += "\t*userdataPtr = inst;\n"
+							wrappersHeaderOut += "\tluaL_getmetatable(L, \"%s.%s\");\n" % (libName, ckey)
+							wrappersHeaderOut += "\tlua_setmetatable(L, -2);\n"
 							wrappersHeaderOut += "\treturn 1;\n"
 						else: #If non-constructor
 							if pm["rtnType"].find("static ") == -1: # If non-static
@@ -465,7 +474,8 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 										wrappersHeaderOut += "\tstd::vector<%s> retVector = %s;\n" % (vectorReturnClass,call)
 										wrappersHeaderOut += "\tlua_newtable(L);\n"
 										wrappersHeaderOut += "\tfor(int i=0; i < retVector.size(); i++) {\n"
-										wrappersHeaderOut += "\t\tlua_pushlightuserdata(L, (void*)retVector[i]);\n"
+										wrappersHeaderOut += "\t\tvoid **userdataPtr = (void**)lua_newuserdata(L, sizeof(void*));\n"
+										wrappersHeaderOut += "\t\t*userdataPtr = (void*)retVector[i];\n"
 										wrappersHeaderOut += "\t\tlua_rawseti(L, -2, i+1);\n"
 										wrappersHeaderOut += "\t}\n"
 										wrappersHeaderOut += "\treturn 1;\n"
@@ -478,7 +488,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 								wrappersHeaderOut += "\treturn 0;\n" # 0 arguments returned
 							else: # If there is a return value:
 								# What type is the return value? Default to pointer
-								outfunc = "lua_pushlightuserdata"
+								outfunc = "this_shouldnt_happen"
 								retFunc = ""
 								basicType = False
 								vectorReturn = False
@@ -501,7 +511,8 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 									wrappersHeaderOut += "\tif(ptrRetVal == NULL) {\n"
 									wrappersHeaderOut += "\t\tlua_pushnil(L);\n"
 									wrappersHeaderOut += "\t} else {\n"
-									wrappersHeaderOut += "\t\t%s(L, ptrRetVal);\n" % (outfunc)
+									wrappersHeaderOut += "\t\tvoid **userdataPtr = (void**)lua_newuserdata(L, sizeof(void*));\n"
+									wrappersHeaderOut += "\t\t*userdataPtr = ptrRetVal;\n"
 									wrappersHeaderOut += "\t}\n"
 								elif basicType == True: # Returned var has been flagged as a recognized primitive type
 									wrappersHeaderOut += "\t%s(L, %s%s);\n" % (outfunc, call, retFunc)
@@ -515,7 +526,10 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 										className = "Polycode::Rectangle"
 									wrappersHeaderOut += "\t%s *retInst = new %s();\n" % (className, className)
 									wrappersHeaderOut += "\t*retInst = %s;\n" % (call)
-									wrappersHeaderOut += "\t%s(L, retInst);\n" % (outfunc)
+									wrappersHeaderOut += "\tvoid **userdataPtr = (void**)lua_newuserdata(L, sizeof(void*));\n"
+									wrappersHeaderOut += "\tluaL_getmetatable(L, \"%s.%s\");\n" % (libName, className)
+									wrappersHeaderOut += "\tlua_setmetatable(L, -2);\n"
+									wrappersHeaderOut += "\t*userdataPtr = (void*)retInst;\n"
 								wrappersHeaderOut += "\treturn 1;\n"
 					wrappersHeaderOut += "}\n\n" # Close out C++ generation
 
@@ -546,7 +560,6 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 							luaClassBindingOut += "\t\tself.__ptr = %s.%s(self)\n" % (libName, ckey)
 						else:
 							luaClassBindingOut += "\t\tself.__ptr = %s.%s(unpack(arg))\n" % (libName, ckey)
-						luaClassBindingOut += "\t\t_G[\"__ptr_lookup\"].%s[self.__ptr] = self\n" % (ckey)
 						luaClassBindingOut += "\tend\n"
 						luaClassBindingOut += "end\n\n"
 					else: # Non-constructors.						
@@ -580,23 +593,24 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 
 				# With methods out of the way, do some final cleanup:
 				
+				# user pointer metatable creation in C++
+				cppLoaderOut += "\n\tluaL_newmetatable(L, \"%s.%s\");\n" % (libName, ckey)
+				if ckey not in disable_gc:
+					cppLoaderOut += "\tlua_pushstring(L, \"__gc\");\n"
+					cppLoaderOut += "\tlua_pushcfunction(L, %s_delete_%s);\n" % (libName, ckey)
+					cppLoaderOut += "\tlua_settable(L, -3);\n"
+				
 				# Delete method (C++ side)
 				cppRegisterOut += "\t\t{\"delete_%s\", %s_delete_%s},\n" % (ckey, libName, ckey)
 				wrappersHeaderOut += "static int %s_delete_%s(lua_State *L) {\n" % (libName, ckey)
-				wrappersHeaderOut += "\tluaL_checktype(L, 1, LUA_TLIGHTUSERDATA);\n"
-				wrappersHeaderOut += "\t%s *inst = (%s*)lua_topointer(L, 1);\n" % (ckey, ckey)
+				wrappersHeaderOut += "\tluaL_checktype(L, 1, LUA_TUSERDATA);\n"
+				wrappersHeaderOut += "\t%s *inst = (%s*) *((void**)lua_topointer(L, 1));\n" % (ckey, ckey)
 				wrappersHeaderOut += "\tdelete inst;\n"
 				wrappersHeaderOut += "\treturn 0;\n"
 				wrappersHeaderOut += "}\n\n"
 
-				
-				luaClassBindingOut += "\n\n"
-				luaClassBindingOut += "if not _G[\"__ptr_lookup\"] then _G[\"__ptr_lookup\"] = {} end\n"
-				luaClassBindingOut += "_G[\"__ptr_lookup\"].%s = {}\n\n" % (ckey)
-				
 				# Delete method (Lua side)
 				luaClassBindingOut += "function %s:__delete()\n" % (ckey)
-				luaClassBindingOut += "\t_G[\"__ptr_lookup\"].%s[self.__ptr] = nil\n" % (ckey)
 				luaClassBindingOut += "\t%s.delete_%s(self.__ptr)\n" % (libName, ckey)
 				luaClassBindingOut += "end\n"
 				if ckey == "EventHandler": # See LuaEventHandler above
@@ -629,6 +643,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 	cppRegisterOut += "\t\t{NULL, NULL}\n"
 	cppRegisterOut += "\t};\n"
 	cppRegisterOut += "\tluaL_openlib(L, \"%s\", %sLib, 0);\n" % (libName, libSmallName)
+	cppRegisterOut += cppLoaderOut
 	cppRegisterOut += "\treturn 1;\n"
 	cppRegisterOut += "}"
 	

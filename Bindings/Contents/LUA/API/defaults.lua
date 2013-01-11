@@ -7,14 +7,9 @@ _G["count"] = function(T)
 end
 
 _G["cast"] = function (c, T)
-	if _G["__ptr_lookup"][T.__classname][c.__ptr] ~= nil then
-		return _G["__ptr_lookup"][T.__classname][c.__ptr]
-	else
-		_G["__ptr_lookup"][T.__classname][c.__ptr] = T("__skip_ptr__")
-		_G["__ptr_lookup"][T.__classname][c.__ptr].__ptr = c.__ptr
-		return _G["__ptr_lookup"][T.__classname][c.__ptr]
-	end
-
+	local ret = T("__skip_ptr__")
+	ret.__ptr = c.__ptr
+	return ret
 end
 
 function __is_table_kind_of(T,c)
@@ -28,8 +23,7 @@ function __is_table_kind_of(T,c)
         return false
 end
 
-_G["safe_cast"] = function(c, T)
-	
+_G["safe_cast"] = function(c, T)	
 	if c:isKindOfClass(T) or __is_table_kind_of(T,c) then
 		return _G["cast"](c, T)
 	end
@@ -41,8 +35,6 @@ _G["print"] = function(msg)
 end
 
 __core__services__instance = Polycore.CoreServices_getInstance()
-
-Polycore.__ptr_lookup = {}
 
 Services = {}
 

@@ -297,6 +297,7 @@ static void dumpstack (lua_State *L) {
 		}
 		return status;
 	}	
+
 	
 	void PolycodePlayer::runFile(String fileName) {
 		
@@ -304,20 +305,10 @@ static void dumpstack (lua_State *L) {
 		
 		L=lua_open();
 		
-		/*
-		 luaopen_base(L);	// load basic libs (eg. print)
-		 luaopen_math(L);
-		 luaopen_table(L);
-		 luaopen_package(L);
-		 */
-		luaL_openlibs(L);
-		
-		luaopen_debug(L);
-		
+		luaL_openlibs(L);		
+		luaopen_debug(L);		
 		luaopen_Polycode(L);
-		//luaopen_Tau(L);	// load the wrappered module
-		
-		
+
 		lua_getfield(L, LUA_GLOBALSINDEX, "package");	// push "package"
 		lua_getfield(L, -1, "loaders");					// push "package.loaders"
 		lua_remove(L, -2);								// remove "package"
