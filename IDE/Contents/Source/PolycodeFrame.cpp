@@ -224,7 +224,7 @@ EditCurve::EditCurve(BezierCurve *targetCurve, Color curveColor) : UIElement() {
 	
 	visMesh->lineSmooth = true;
 	visMesh->lineWidth = 2.0;
-	
+
 	addChild(visMesh);
 	visMesh->setPosition(0, 254);	
 	visMesh->color = curveColor;
@@ -584,6 +584,8 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	textInputPopup = new TextInputPopup();
 	textInputPopup->visible = false;
 	
+	yesNoPopup = new YesNoPopup();
+	yesNoPopup->visible = false;
 	
 	isDragging  = false;
 	dragLabel = new ScreenLabel("NONE", 11, "sans");

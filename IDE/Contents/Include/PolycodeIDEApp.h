@@ -64,9 +64,11 @@ public:
 	// menu commands
 	void renameFile();
 	void removeFile();
+	void doRemoveFile();
 	void browseExamples();
 	void newProject();
 	void newFile();	
+	
 	void newGroup();
 	void openProject();
 	void closeProject();	

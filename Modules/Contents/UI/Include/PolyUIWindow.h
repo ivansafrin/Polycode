@@ -48,6 +48,8 @@ namespace Polycode {
 			
 			void setWindowSize(Number w, Number h);
 			
+			void setWindowCaption(String caption);
+			
 			void onMouseDown(Number x, Number y);
 					
 			virtual void handleEvent(Event *event);
@@ -61,6 +63,8 @@ namespace Polycode {
 			
 			Number closeIconX;
 			Number closeIconY;
+			
+			ScreenLabel *titleLabel;
 		
 			Font *font;
 			Tween *windowTween;

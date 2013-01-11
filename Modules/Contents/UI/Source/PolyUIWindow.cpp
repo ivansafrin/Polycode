@@ -65,7 +65,7 @@ UIWindow::UIWindow(String windowName, Number width, Number height) : ScreenEntit
 	titlebarRect->processInputEvents = true;
 	addChild(titlebarRect);
 	
-	ScreenLabel *titleLabel = new ScreenLabel(windowName, fontSize, fontName, Label::ANTIALIAS_FULL);
+	titleLabel = new ScreenLabel(windowName, fontSize, fontName, Label::ANTIALIAS_FULL);
 	titleLabel->setPosition(conf->getNumericValue("Polycode", "uiWindowTitleX"),conf->getNumericValue("Polycode", "uiWindowTitleY"));
 	addChild(titleLabel);
 	
@@ -89,6 +89,10 @@ UIWindow::UIWindow(String windowName, Number width, Number height) : ScreenEntit
 	blockMouseInput = true;
 	
 	processInputEvents = true;
+}
+
+void UIWindow::setWindowCaption(String caption) {
+	titleLabel->setText(caption);
 }
 
 void UIWindow::setWindowSize(Number w, Number h) {

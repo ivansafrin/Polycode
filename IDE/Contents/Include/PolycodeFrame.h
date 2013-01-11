@@ -179,6 +179,7 @@ public:
 	AssetBrowser *assetBrowser;
 	
 	TextInputPopup *textInputPopup;
+	YesNoPopup *yesNoPopup;
 	
 	ScreenEntity *welcomeEntity;	
 	PolycodeProjectBrowser *projectBrowser;

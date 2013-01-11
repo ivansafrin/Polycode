@@ -68,6 +68,8 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	frame->console->backtraceWindow->addEventListener(this, BackTraceEvent::EVENT_BACKTRACE_SELECTED);
 
 	frame->textInputPopup->addEventListener(this, UIEvent::OK_EVENT);	
+	frame->yesNoPopup->addEventListener(this, UIEvent::OK_EVENT);
+	
 	frame->newProjectWindow->addEventListener(this, UIEvent::OK_EVENT);
 	frame->exportProjectWindow->addEventListener(this, UIEvent::OK_EVENT);
 	frame->newFileWindow->addEventListener(this, UIEvent::OK_EVENT);	
@@ -110,17 +112,27 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 
 void PolycodeIDEApp::renameFile() {
 	if(projectManager->selectedFile != "") {
+		frame->textInputPopup->action = "renameFile";
+		frame->textInputPopup->setCaption("Enter new filename");
 		frame->textInputPopup->setValue(projectManager->selectedFileEntry.name);
 		frame->showModal(frame->textInputPopup);
 	}
 }
 
-void PolycodeIDEApp::removeFile() {
+void PolycodeIDEApp::doRemoveFile() {
 	if(projectManager->selectedFile != "") {
 		core->removeDiskItem(projectManager->selectedFile);
 		if(projectManager->getActiveProject()) {
 			frame->projectBrowser->refreshProject(projectManager->getActiveProject());
 		}
+	}
+}
+
+void PolycodeIDEApp::removeFile() {
+	if(projectManager->selectedFile != "") {
+		frame->yesNoPopup->setCaption("Are you sure you want to remove this file?");
+		frame->yesNoPopup->action = "removeFile";
+		frame->showModal(frame->yesNoPopup);
 	}
 }
 
@@ -152,10 +164,10 @@ void PolycodeIDEApp::closeProject() {
 
 void PolycodeIDEApp::newGroup() {
 	if(projectManager->activeFolder != "") {
-		core->createFolder(projectManager->activeFolder+"/New Folder");
-		if(projectManager->getActiveProject()) {
-			frame->getProjectBrowser()->refreshProject(projectManager->getActiveProject());
-		}
+		frame->textInputPopup->action = "newGroup";
+		frame->textInputPopup->setCaption("New folder name");
+		frame->textInputPopup->setValue("New Folder");
+		frame->showModal(frame->textInputPopup);	
 	}
 }
 
@@ -376,22 +388,40 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 		}
 	}
 
+	if(event->getDispatcher() == frame->yesNoPopup) {
+		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {
+			if(frame->yesNoPopup->action == "removeFile") {
+				doRemoveFile();
+			}
+			frame->hideModal();
+			frame->yesNoPopup->action = "";
+		}
+	}
 	
 	if(event->getDispatcher() == frame->textInputPopup) {
 		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {
-			core->moveDiskItem(projectManager->selectedFileEntry.fullPath, projectManager->selectedFileEntry.basePath + "/" + frame->textInputPopup->getValue());			
-			if(projectManager->getActiveProject()) {
-				frame->getProjectBrowser()->refreshProject(projectManager->getActiveProject());
+						
+			if(frame->textInputPopup->action == "newGroup") {	
+				core->createFolder(projectManager->activeFolder+"/"+frame->textInputPopup->getValue());
+				if(projectManager->getActiveProject()) {
+					frame->getProjectBrowser()->refreshProject(projectManager->getActiveProject());
+				}			
 			}
 			
-			PolycodeEditor *editor = editorManager->getEditorForPath(projectManager->selectedFileEntry.fullPath);
-			if(editor) {
-				editor->setFilePath(projectManager->selectedFileEntry.basePath + "/" + frame->textInputPopup->getValue());
+			if(frame->textInputPopup->action == "renameFile") {		
+				core->moveDiskItem(projectManager->selectedFileEntry.fullPath, projectManager->selectedFileEntry.basePath + "/" + frame->textInputPopup->getValue());			
+				if(projectManager->getActiveProject()) {
+					frame->getProjectBrowser()->refreshProject(projectManager->getActiveProject());
+				}
+				
+				PolycodeEditor *editor = editorManager->getEditorForPath(projectManager->selectedFileEntry.fullPath);
+				if(editor) {
+					editor->setFilePath(projectManager->selectedFileEntry.basePath + "/" + frame->textInputPopup->getValue());
+				}
+				
+				projectManager->selectedFileEntry.fullPath = projectManager->selectedFileEntry.basePath + "/" + frame->textInputPopup->getValue();
+				projectManager->selectedFileEntry.name = frame->textInputPopup->getValue();				
 			}
-			
-			projectManager->selectedFileEntry.fullPath = projectManager->selectedFileEntry.basePath + "/" + frame->textInputPopup->getValue();
-			projectManager->selectedFileEntry.name = frame->textInputPopup->getValue();
-			
 			
 			frame->hideModal();			
 		}
