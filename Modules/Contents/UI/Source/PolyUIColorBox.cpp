@@ -448,7 +448,7 @@ void UIColorBox::showColorPicker() {
 		
 void UIColorBox::handleEvent(Event *event) {
 
-	if(event->getDispatcher() == colorPicker && event->getEventType() == "Event") {
+	if(event->getDispatcher() == colorPicker && event->getEventType() == "") {
 		switch(event->getEventCode()) {
 			case Event::CANCEL_EVENT:
 				listeningToPicker = false;
