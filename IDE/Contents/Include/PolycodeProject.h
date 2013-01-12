@@ -48,6 +48,7 @@ class ProjectData {
 		unsigned int anisotropy;	
 		unsigned int aaLevel;
 		unsigned int frameRate;
+		String filteringMode;
 		
 		std::vector<String> modules;		
 		std::vector<ProjectFontData> fonts;

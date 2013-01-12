@@ -83,6 +83,7 @@ class PolycodeProjectEditor : public PolycodeEditor {
 	UITextInput *framerateInput;	
 	UIComboBox *aaLevelComboBox;
 	UIComboBox *afLevelComboBox;	
+	UIComboBox *texFilteringComboBox;
 	UITextInput *entryPointInput;	
 	UIColorBox *bgColorBox;
 	

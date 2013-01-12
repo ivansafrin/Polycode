@@ -60,6 +60,14 @@ bool PolycodeProject::loadProjectFromFile() {
 		data.defaultHeight = 480;	
 		configFile.root.addChild("defaultHeight", 480);		
 	}
+	
+	if(configFile.root["textureFiltering"]) {	
+		data.filteringMode = configFile.root["textureFiltering"]->stringVal;
+	} else {
+		data.filteringMode = "linear";
+		configFile.root.addChild("textureFiltering", String("linear"));	
+	}
+	
 
 	if(configFile.root["vSync"]) {	
 		data.vSync = configFile.root["vSync"]->boolVal;
@@ -143,7 +151,10 @@ bool PolycodeProject::saveFile() {
 	configFile.root["defaultWidth"]->intVal = data.defaultWidth;
 	configFile.root["defaultHeight"]->intVal = data.defaultHeight;
 	configFile.root["entryPoint"]->stringVal = data.entryPoint;
-	configFile.root["entryPoint"]->type = ObjectEntry::STRING_ENTRY;
+	configFile.root["entryPoint"]->type = ObjectEntry::STRING_ENTRY;	
+	
+	configFile.root["textureFiltering"]->type = ObjectEntry::STRING_ENTRY;
+	configFile.root["textureFiltering"]->stringVal = data.filteringMode;
 	
 	ObjectEntry *color = configFile.root["backgroundColor"];
 	

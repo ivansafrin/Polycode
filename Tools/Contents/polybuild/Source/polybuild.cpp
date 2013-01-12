@@ -260,6 +260,7 @@ int main(int argc, char **argv) {
 	float backgroundColorR = 0.2;
 	float backgroundColorG = 0.2;
 	float backgroundColorB = 0.2;
+	String textureFiltering = "linear";
 
 	if(configFile.root["entryPoint"]) {
 		printf("Entry point: %s\n", configFile.root["entryPoint"]->stringVal.c_str());
@@ -290,6 +291,11 @@ int main(int argc, char **argv) {
 	if(configFile.root["frameRate"]) {
 		printf("Frame rate: %d\n", configFile.root["frameRate"]->intVal);
 		frameRate = configFile.root["frameRate"]->intVal;
+	}
+
+	if(configFile.root["textureFiltering"]) {
+		printf("Filtering mode: %s\n", configFile.root["textureFiltering"]->stringVal.c_str());
+		textureFiltering = configFile.root["textureFiltering"]->stringVal;
 	}
 
 	if(configFile.root["antiAliasingLevel"]) {
@@ -330,7 +336,8 @@ int main(int argc, char **argv) {
 	runInfo.root.addChild("frameRate", frameRate);
 	runInfo.root.addChild("antiAliasingLevel", antiAliasingLevel);
 	runInfo.root.addChild("fullScreen", fullScreen);
-	
+	runInfo.root.addChild("textureFiltering", String(textureFiltering));
+		
 	ObjectEntry *color = runInfo.root.addChild("backgroundColor");
 	color->addChild("red", backgroundColorR);
 	color->addChild("green", backgroundColorG);
@@ -338,6 +345,10 @@ int main(int argc, char **argv) {
 
 	addFileToZip(z, entryPoint, entryPoint, false);
 
+	if(configFile.root["fonts"]) {
+		runInfo.root.addChild(configFile.root["fonts"]);
+	}
+	
 	if(configFile.root["modules"]) {
 #ifdef _WINDOWS
 		String modulesPath = installPath + "Modules\\";

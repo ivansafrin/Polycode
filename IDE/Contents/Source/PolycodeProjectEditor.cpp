@@ -190,11 +190,21 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	aaLevelComboBox->addComboItem("6x MSAA");			
 	aaLevelComboBox->setPosition(label2->getPosition().x, label2->getPosition().y+18);
 
-	label2 = new ScreenLabel(L"Anisotropic filtering:", fontSize, fontName, Label::ANTIALIAS_FULL);
+	label2 = new ScreenLabel(L"Texture filtering mode:", fontSize, fontName, Label::ANTIALIAS_FULL);
 	mainSettingsWindow->addChild(label2);
 	label2->setPosition(padding, defaultHeightInput->getPosition().y+30);		
 	
-	afLevelComboBox = new UIComboBox(globalMenu, 250);		
+	texFilteringComboBox = new UIComboBox(globalMenu, 280);		
+	texFilteringComboBox->addComboItem("Nearest Neighbor");
+	texFilteringComboBox->addComboItem("Linear");
+	texFilteringComboBox->setPosition(label2->getPosition().x, label2->getPosition().y+18);
+	
+
+	label2 = new ScreenLabel(L"Anisotropic filtering:", fontSize, fontName, Label::ANTIALIAS_FULL);
+	mainSettingsWindow->addChild(label2);
+	label2->setPosition(padding, texFilteringComboBox->getPosition().y+30);		
+	
+	afLevelComboBox = new UIComboBox(globalMenu, 280);		
 	afLevelComboBox->addComboItem("No Anisotropic Filtering");
 	afLevelComboBox->addComboItem("1x Anisotropic Filtering");
 	afLevelComboBox->addComboItem("2x Anisotropic Filtering");
@@ -213,7 +223,7 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	framerateInput->setNumberOnly(true);
 
 	vSyncCheckBox = new UICheckBox("V-Sync", false);
-	vSyncCheckBox->setPosition(padding, framerateInput->getPosition().y+framerateInput->getHeight()+10);
+	vSyncCheckBox->setPosition(label2->getPosition().x + 80, label2->getPosition().y+18);
 	mainSettingsWindow->addChild(vSyncCheckBox);
 	
 	label2 = new ScreenLabel(L"STARTUP OPTIONS", 22, "section", Label::ANTIALIAS_FULL);	
@@ -233,7 +243,7 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 
 	mainSettingsWindow->addChild(afLevelComboBox);			
 	mainSettingsWindow->addChild(aaLevelComboBox);		
-
+	mainSettingsWindow->addChild(texFilteringComboBox);	
 
 	label2 = new ScreenLabel(L"Background color:", fontSize, fontName, Label::ANTIALIAS_FULL);
 	mainSettingsWindow->addChild(label2);
@@ -328,6 +338,12 @@ bool PolycodeProjectEditor::openFile(OSFileEntry filePath) {
 	afLevelComboBox->setSelectedIndex(afMap[associatedProject->data.anisotropy]);
 	framerateInput->setText(String::IntToString(associatedProject->data.frameRate));	
 
+	if(associatedProject->data.filteringMode == "nearest") {
+		texFilteringComboBox->setSelectedIndex(0);
+	} else {
+		texFilteringComboBox->setSelectedIndex(1);	
+	}
+
 	for(int i=0; i < associatedProject->data.fonts.size(); i++) {
 		ProjectFontData fontData = associatedProject->data.fonts[i];
 
@@ -396,11 +412,12 @@ void PolycodeProjectEditor::saveFile() {
 		ProjectFontData fontData = ProjectFontData(fontEntries[j]->fontNameInput->getText(), fontEntries[j]->fontPath);
 		associatedProject->data.fonts.push_back(fontData);
 	}
-
 		
 	unsigned int afMap[6] = {0,1,2,4,8,16};
 	unsigned int aaMap[4] = {0,2,4,6};
+	String filteringMap[2] = {"nearest", "linear"};
 		
+	associatedProject->data.filteringMode = filteringMap[texFilteringComboBox->getSelectedIndex()];				
 	associatedProject->data.aaLevel = aaMap[aaLevelComboBox->getSelectedIndex()];
 	associatedProject->data.anisotropy = afMap[afLevelComboBox->getSelectedIndex()];
 	associatedProject->data.vSync = vSyncCheckBox->isChecked();

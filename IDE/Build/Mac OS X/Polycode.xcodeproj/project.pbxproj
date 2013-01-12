@@ -408,7 +408,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R \"$PROJECT_DIR/../../Contents/Resources\" \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH\"";
+			shellScript = "cp -R \"$PROJECT_DIR/../../Contents/Resources\" \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH\"\ncp -R \"$PROJECT_DIR/../../../Release/Darwin/Standalone\" \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"\ncp -R \"$PROJECT_DIR/../../../Bindings/Contents/LUA/API/api.pak\" \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 

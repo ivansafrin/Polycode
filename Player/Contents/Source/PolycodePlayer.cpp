@@ -129,7 +129,7 @@ static void dumpstack (lua_State *L) {
 		defaultPath.append(module);
 		
 		const char* fullPath = module.c_str();		
-		Logger::log("Loading custom class: %s\n", module.c_str());
+//		Logger::log("Loading custom class: %s\n", module.c_str());
 		OSFILE *inFile = OSBasics::open(module, "r");	
 		
 		if(!inFile) {
@@ -255,7 +255,7 @@ static void dumpstack (lua_State *L) {
 		
 		PolycodePlayer *player = (PolycodePlayer*)CoreServices::getInstance()->getCore()->getUserPointer();					
 			
-		Logger::log("Error status: %d\n", status);
+//		Logger::log("Error status: %d\n", status);
 		if (status) {		
 		
 			std::vector<BackTraceEntry> backTrace;
@@ -472,6 +472,8 @@ void PolycodePlayer::loadFile(const char *fileName) {
 	Number green = 0.2f;
 	Number blue = 0.2f;
 	
+	String textureFiltering = "linear";
+	
 	frameRate = 60;
 	
 	Object configFile;
@@ -529,7 +531,12 @@ void PolycodePlayer::loadFile(const char *fileName) {
 		}		
 		if(configFile.root["fullScreen"]) {
 			fullScreen = configFile.root["fullScreen"]->boolVal;
+		}				
+		if(configFile.root["textureFiltering"]) {
+			textureFiltering = configFile.root["textureFiltering"]->stringVal;
 		}		
+	
+		
 		if(configFile.root["backgroundColor"]) {
 			ObjectEntry *color = configFile.root["backgroundColor"];
 			if((*color)["red"] && (*color)["green"] && (*color)["blue"]) {
@@ -539,6 +546,21 @@ void PolycodePlayer::loadFile(const char *fileName) {
 				
 			}			
 		}
+		
+		ObjectEntry *fonts = configFile.root["fonts"];
+		if(fonts) {
+			for(int i=0; i < fonts->length; i++) {			
+				ObjectEntry *fontName = (*(*fonts)[i])["name"];				
+				ObjectEntry *fontPath = (*(*fonts)[i])["path"];
+				
+				if(fontName && fontPath) {
+					printf("REGISTERING FONT %s %s\n", fontName->stringVal.c_str(), fontPath->stringVal.c_str());
+					CoreServices::getInstance()->getFontManager()->registerFont(fontName->stringVal, fontPath->stringVal);
+				}
+
+			}
+		}
+		
 		ObjectEntry *modules = configFile.root["modules"];			
 		if(modules) {
 			for(int i=0; i < modules->length; i++) {			
@@ -629,7 +651,13 @@ void PolycodePlayer::loadFile(const char *fileName) {
 	core->setUserPointer(this);
 	//core->addEventListener(this, Core::EVENT_CORE_RESIZE);
 	core->setVideoMode(xRes, yRes, fullScreen, false, 0, aaLevel);
-		
+	
+	if(textureFiltering == "nearest") {
+		CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_NEAREST);
+	} else {
+		CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_LINEAR);
+	}
+				
 	CoreServices::getInstance()->getResourceManager()->addArchive("default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
 

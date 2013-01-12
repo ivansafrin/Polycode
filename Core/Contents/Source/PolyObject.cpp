@@ -118,9 +118,8 @@ TiXmlElement *Object::createElementFromObjectEntry(ObjectEntry *entry) {
 
 	for(int i=0; i < entry->children.size(); i++) {
 				ObjectEntry *childEntry = entry->children[i];
-				bool needLinkChild = (childEntry->children.size() > 0) || (entry->type == ObjectEntry::ARRAY_ENTRY);
-				
-		//		printf("Parsing %s (type: %d)\n", childEntry->name.c_str(), childEntry->type);
+		
+				bool needLinkChild = (childEntry->children.size() > 0) || (entry->type == ObjectEntry::ARRAY_ENTRY);				
 				
 				if (!needLinkChild) {
 					const String &childTypedName = childEntry->getTypedName();
