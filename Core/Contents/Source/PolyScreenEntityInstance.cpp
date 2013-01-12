@@ -220,7 +220,11 @@ ScreenEntity *ScreenEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry
 	
 	entity->ownsChildren = true;
 	
-	entity->setPositionMode(ScreenEntity::POSITION_CENTER);
+	if((*entry)["positionMode"]) {
+		entity->setPositionMode((*entry)["positionMode"]->intVal);
+	} else {
+		entity->setPositionMode(ScreenEntity::POSITION_CENTER);
+	}
 	
 	entity->color.r = (*entry)["colorR"]->NumberVal;
 	entity->color.g = (*entry)["colorG"]->NumberVal;

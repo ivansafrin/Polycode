@@ -1298,8 +1298,11 @@ Transform2DSheet::Transform2DSheet() : PropSheet("2D TRANSFORM", "transform2d") 
 	rotationProp = new NumberProp("Rotation (deg)");
 	addProp(rotationProp);
 
+	topLeftProp = new BoolProp("Topleft anchor");
+	addProp(topLeftProp);
+	
 	entity = NULL;
-	propHeight = 130;
+	propHeight = 160;
 }
 
 void Transform2DSheet::handleEvent(Event *event) {
@@ -1325,6 +1328,18 @@ void Transform2DSheet::handleEvent(Event *event) {
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}
 
+	if(event->getDispatcher() == topLeftProp  && event->getEventCode() == Event::CHANGE_EVENT) {
+		if(topLeftProp->get()) {
+			lastPositionMode = ScreenEntity::POSITION_TOPLEFT;
+			entity->setPositionMode(lastPositionMode);
+		} else {
+			lastPositionMode = ScreenEntity::POSITION_CENTER;
+			entity->setPositionMode(lastPositionMode);		
+		}
+		dispatchEvent(new Event(), Event::CHANGE_EVENT);
+	}
+
+
 	PropSheet::handleEvent(event);
 }
 
@@ -1342,6 +1357,17 @@ void Transform2DSheet::Update() {
 			scaleProp->set(entity->getScale2D());
 			lastScale = entity->getScale2D();
 		}
+
+		if(entity->getPositionMode() != lastPositionMode) {
+			if(entity->getPositionMode() == ScreenEntity::POSITION_TOPLEFT) {
+				topLeftProp->set(true);
+			} else {
+				topLeftProp->set(false);			
+			}
+		
+			lastPositionMode = entity->getPositionMode();
+		}
+
 		
 		if(entity->getRotation() != lastRotation) {
 			lastRotation = entity->getRotation();

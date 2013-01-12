@@ -423,10 +423,12 @@ class Transform2DSheet : public PropSheet {
 		Vector2Prop *positionProp;
 		Vector2Prop *scaleProp;	
 		NumberProp *rotationProp;
-		
+		BoolProp *topLeftProp;
+				
 		Vector2 lastPositon;
 		Vector2 lastScale;
 		Number lastRotation;
+		int lastPositionMode;
 		
 		ScreenEntity *entity;
 };

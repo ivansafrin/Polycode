@@ -2223,6 +2223,8 @@ void PolycodeScreenEditor::saveEntityToObjectEntry(ScreenEntity *entity, ObjectE
 	
 	entry->addChild("scaleX", entity->scale.x);	
 	entry->addChild("scaleY", entity->scale.y);
+	
+	entry->addChild("positionMode", entity->getPositionMode());	
 
 	entry->addChild("rotation", entity->getRotation());	
 	
@@ -2321,7 +2323,7 @@ void PolycodeScreenEditorMain::applyEditorProperties(ScreenEntity *entity) {
 	entity->blockMouseInput = true;
 	entity->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);	
 	entity->addEventListener(this, InputEvent::EVENT_MOUSEUP);	
-	entity->setPositionMode(ScreenEntity::POSITION_CENTER);
+//	entity->setPositionMode(ScreenEntity::POSITION_CENTER);
 
 }
 		
