@@ -67,7 +67,9 @@ public:
 	void doRemoveFile();
 	void browseExamples();
 	void newProject();
-	void newFile();	
+	void newFile();
+	
+	void addFiles();
 	
 	void newGroup();
 	void openProject();

@@ -114,11 +114,14 @@ void PolycodeProjectBrowser::handleEvent(Event *event) {
 			if(inputEvent->mouseButton == CoreInput::MOUSE_BUTTON2) {				
 
 			contextMenu = globalMenu->showMenuAtMouse(130);
-			
-			contextMenu->addOption("Add New File", "add_new_file");
-			contextMenu->addOption("Add New Project", "add_new_project");
-			contextMenu->addOption("Add New Folder", "add_new_folder");			
+
+
+			contextMenu->addOption("New File", "add_new_file");
+			contextMenu->addOption("New Project", "add_new_project");
+			contextMenu->addOption("New Folder", "add_new_folder");			
 			contextMenu->addOption("----------------", "");			
+			contextMenu->addOption("Add external files", "add_files");			
+			contextMenu->addOption("----------------", "");
 			contextMenu->addOption("Refresh", "refresh");
 			contextMenu->addOption("Rename", "rename");						
 			contextMenu->addOption("----------------", "");		

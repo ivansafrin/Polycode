@@ -222,6 +222,20 @@ void PolycodeIDEApp::runProject() {
 	}
 }
 
+void PolycodeIDEApp::addFiles() {
+	if(projectManager->getActiveProject()) {	
+		vector<CoreFileExtension> extensions;		
+		std::vector<String> files = core->openFilePicker(extensions, true);				
+		
+		for(int i=0; i < files.size(); i++) {
+			OSFileEntry entry = OSFileEntry(files[i], OSFileEntry::TYPE_FILE);
+			core->copyDiskItem(files[i], projectManager->activeFolder + "/" + entry.name);
+		}
+		
+		frame->getProjectBrowser()->refreshProject(projectManager->getActiveProject());		
+	}			
+}
+
 void PolycodeIDEApp::findText() {
 	if(editorManager->getCurrentEditor()) {
 		if(editorManager->getCurrentEditor()->getEditorType() == "PolycodeTextEditor") {
@@ -319,18 +333,10 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 				case PolycodeProjectBrowserEvent::HANDLE_MENU_COMMAND:
 					PolycodeProjectBrowserEvent *bEvent = (PolycodeProjectBrowserEvent*) event;
 					
-/*
-			contextMenu->addOption("Add New File", "add_new_file");
-			contextMenu->addOption("Add New Project", "add_new_project");
-			contextMenu->addOption("Add New Folder", "add_new_folder");			
-			contextMenu->addOption("--------", "");			
-			contextMenu->addOption("Refresh", "refresh");
-			contextMenu->addOption("Rename", "rename");						
-			contextMenu->addOption("--------", "");		
-			contextMenu->addOption("Remove", "remove");	
-*/					
 					if(bEvent->command == "add_new_file") {					
 						newFile();
+					} else if(bEvent->command == "add_files") {
+						addFiles();
 					} else if(bEvent->command == "add_new_project") {
 						newProject();
 					} else if(bEvent->command == "add_new_folder") {				

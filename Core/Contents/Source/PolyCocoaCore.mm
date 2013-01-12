@@ -513,21 +513,27 @@ vector<String> CocoaCore::openFilePicker(vector<CoreFileExtension> extensions, b
 	[attachmentPanel setCanChooseDirectories:NO];
 	[attachmentPanel setAllowsMultipleSelection: allowMultiple];
 	
-	NSMutableArray *types = [[NSMutableArray alloc] init];
-	
-	for(int i=0; i < extensions.size(); i++) {	
-		CoreFileExtension extInfo = extensions[i];
-		[types addObject: [NSString stringWithUTF8String: extInfo.extension.c_str()]];
+	NSMutableArray *types = nil;
+
+	if(extensions.size() > 0) {
+		types = [[NSMutableArray alloc] init];	
+		for(int i=0; i < extensions.size(); i++) {	
+			CoreFileExtension extInfo = extensions[i];
+			[types addObject: [NSString stringWithUTF8String: extInfo.extension.c_str()]];
+		}
 	}
 	
 	if ( [attachmentPanel runModalForDirectory:nil file:nil types:types] == NSOKButton )
 	{
 		NSArray* files = [attachmentPanel filenames];
-		NSString* fileName = [files objectAtIndex:0];
-		retVector.push_back([fileName UTF8String]);
-	} else {
-		retVector.push_back("");
-	}	
+	
+		if(files) {
+			for (int i=0; i < [files count]; i++) {		
+				NSString* fileName = [files objectAtIndex:i];
+				retVector.push_back([fileName UTF8String]);
+			}
+		}
+	}
 	
 	return retVector;
 }
