@@ -802,6 +802,9 @@ String UITextInput::getLineText(unsigned int index) {
 }       
 
 String UITextInput::getSelectionText() {
+	if(!hasSelection)
+		return L"";
+		
 	String totalText = L"";
 	if(selectionTop == selectionBottom) {
 		totalText = lines[selectionTop]->getText().substr(selectionL, selectionR-selectionL);	
@@ -887,7 +890,9 @@ void UITextInput::Cut() {
 }
 
 void UITextInput::Copy() {
-	CoreServices::getInstance()->getCore()->copyStringToClipboard(getSelectionText());	
+	if(hasSelection) {
+		CoreServices::getInstance()->getCore()->copyStringToClipboard(getSelectionText());
+	}
 }
 
 void UITextInput::Paste() {
