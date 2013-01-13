@@ -42,7 +42,7 @@ namespace Polycode {
 	class Texture;
 	class VertexBuffer;
 
-	class _PolyExport LightInfo {
+	class _PolyExport LightInfo : public PolyBase {
 		public:
 			Vector3 position;
 			Vector3 color;
@@ -61,7 +61,7 @@ namespace Polycode {
 			int lightImportance;
 	};
 
-	class _PolyExport LightSorter {
+	class _PolyExport LightSorter : public PolyBase {
 		public:
 			Vector3 basePosition;
 			Matrix4 cameraMatrix;
@@ -77,7 +77,7 @@ namespace Polycode {
 	/**
 	* Main renderer. The renderer should only be accessed from the CoreServices singleton. Renderer operations should only be called from within Render methods of entities so that they can be properly managed.
 	*/
-	class _PolyExport Renderer {
+	class _PolyExport Renderer : public PolyBase {
 	public:
 		Renderer();
 		virtual ~Renderer();

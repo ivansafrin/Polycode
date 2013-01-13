@@ -36,7 +36,7 @@ namespace Polycode {
 		Quaternion q3;		
 	};	
 
-	class _PolyExport QuaternionCurve {
+	class _PolyExport QuaternionCurve : public PolyBase {
 		public:
 			QuaternionCurve(BezierCurve *wCurve, BezierCurve *xCurve, BezierCurve *yCurve, BezierCurve *zCurve);
 			virtual ~QuaternionCurve();

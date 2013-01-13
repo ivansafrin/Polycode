@@ -39,7 +39,7 @@ namespace Polycode {
 	/**
 	* Manages fonts. The font manager shoudl only be accessed via the CoreServices singleton.
 	*/
-	class _PolyExport FontManager {
+	class _PolyExport FontManager : public PolyBase {
 	public:
 		FontManager();
 		~FontManager();

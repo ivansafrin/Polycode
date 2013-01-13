@@ -118,8 +118,8 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 		wrappersHeaderOut += "		lua_getfield(L, LUA_GLOBALSINDEX, \"EventHandler\" );\n"
 		wrappersHeaderOut += "		lua_getfield(L, -1, \"__handleEvent\");\n"
 		wrappersHeaderOut += "		lua_rawgeti( L, LUA_REGISTRYINDEX, wrapperIndex );\n"
-		wrappersHeaderOut += "		void **userdataPtr = (void**)lua_newuserdata(L, sizeof(void*));\n"
-		wrappersHeaderOut += "		*userdataPtr = (void*)e;\n"
+		wrappersHeaderOut += "		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));\n"
+		wrappersHeaderOut += "		*userdataPtr = (PolyBase*)e;\n"
 #		wrappersHeaderOut += "		lua_getfield (L, LUA_GLOBALSINDEX, \"__customError\");\n"
 #		wrappersHeaderOut += "		int errH = lua_gettop(L);\n"
 #		wrappersHeaderOut += "		lua_pcall(L, 2, 0, errH);\n"
@@ -148,7 +148,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 			f = open(fileName) # Def: Input file handle
 			contents = f.read().replace("_PolyExport", "") # Def: Input file contents, strip out "_PolyExport"
 			cppHeader = CppHeaderParser.CppHeader(contents, "string") # Def: Input file contents, parsed structure
-			ignore_classes = ["PolycodeShaderModule", "Object", "Threaded", "OpenGLCubemap"]
+			ignore_classes = ["PolycodeShaderModule", "Object", "Threaded", "OpenGLCubemap", "PolyBase"]
 
 			# Iterate, check each class in this file.
 			for ckey in cppHeader.classes: 
@@ -238,7 +238,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 							cppRegisterOut += "\t\t{\"%s_get_%s\", %s_%s_get_%s},\n" % (ckey, pp["name"], libName, ckey, pp["name"])
 							wrappersHeaderOut += "static int %s_%s_get_%s(lua_State *L) {\n" % (libName, ckey, pp["name"])
 							wrappersHeaderOut += "\tluaL_checktype(L, 1, LUA_TUSERDATA);\n"
-							wrappersHeaderOut += "\t%s *inst = (%s*) *((void**)lua_touserdata(L, 1));\n" % (ckey, ckey)
+							wrappersHeaderOut += "\t%s *inst = (%s*) *((PolyBase**)lua_touserdata(L, 1));\n" % (ckey, ckey)
 
 							outfunc = "this_shouldnt_happen"
 							retFunc = ""
@@ -255,8 +255,8 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 							if pp["type"] == "Number" or  pp["type"] == "String" or pp["type"] == "int" or pp["type"] == "bool":
 								wrappersHeaderOut += "\t%s(L, inst->%s%s);\n" % (outfunc, pp["name"], retFunc)
 							else:
-								wrappersHeaderOut += "\tvoid **userdataPtr = (void**)lua_newuserdata(L, sizeof(void*));\n"
-								wrappersHeaderOut += "\t*userdataPtr = (void*)&inst->%s%s;\n" % (pp["name"], retFunc)
+								wrappersHeaderOut += "\tPolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));\n"
+								wrappersHeaderOut += "\t*userdataPtr = (PolyBase*)&inst->%s%s;\n" % (pp["name"], retFunc)
 							wrappersHeaderOut += "\treturn 1;\n"
 							wrappersHeaderOut += "}\n\n"
 						
@@ -291,7 +291,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 							cppRegisterOut += "\t\t{\"%s_set_%s\", %s_%s_set_%s},\n" % (ckey, pp["name"], libName, ckey, pp["name"])
 							wrappersHeaderOut += "static int %s_%s_set_%s(lua_State *L) {\n" % (libName, ckey, pp["name"])
 							wrappersHeaderOut += "\tluaL_checktype(L, 1, LUA_TUSERDATA);\n"
-							wrappersHeaderOut += "\t%s *inst = (%s*) *((void**)lua_touserdata(L, 1));\n" % (ckey, ckey)
+							wrappersHeaderOut += "\t%s *inst = (%s*) *((PolyBase**)lua_touserdata(L, 1));\n" % (ckey, ckey)
 
 							outfunc = "this_shouldnt_happen"
 							if pp["type"] == "Number":
@@ -356,7 +356,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 						# Skip static methods (TODO: Figure out, why is this being done here?). # FIXME
 						if pm["rtnType"].find("static ") == -1:
 							wrappersHeaderOut += "\tluaL_checktype(L, 1, LUA_TUSERDATA);\n"
-							wrappersHeaderOut += "\t%s *inst = (%s*) *((void**)lua_touserdata(L, 1));\n" % (ckey, ckey)
+							wrappersHeaderOut += "\t%s *inst = (%s*) *((PolyBase**)lua_touserdata(L, 1));\n" % (ckey, ckey)
 							idx = 2
 						else:
 							idx = 1
@@ -380,11 +380,11 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 								luatype = "LUA_TUSERDATA"
 								checkfunc = "lua_isuserdata"
 								if param["type"].find("*") > -1:
-									luafunc = "(%s) *((void**)lua_touserdata" % (param["type"].replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"))
+									luafunc = "(%s) *((PolyBase**)lua_touserdata" % (param["type"].replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"))
 								elif param["type"].find("&") > -1:
-									luafunc = "*(%s*) *((void**)lua_touserdata" % (param["type"].replace("const", "").replace("&", "").replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"))
+									luafunc = "*(%s*) *((PolyBase**)lua_touserdata" % (param["type"].replace("const", "").replace("&", "").replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"))
 								else:
-									luafunc = "*(%s*) *((void**)lua_touserdata" % (param["type"].replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"))
+									luafunc = "*(%s*) *((PolyBase**)lua_touserdata" % (param["type"].replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"))
 								lend = ".__ptr"
 								luafuncsuffix = ")"
 								if param["type"] == "int" or param["type"] == "unsigned int" or param["type"] == "short":
@@ -453,8 +453,8 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 							else:
 								wrappersHeaderOut += "\t%s *inst = new %s(%s);\n" % (ckey, ckey, ", ".join(paramlist))
 							
-							wrappersHeaderOut += "\t%s **userdataPtr = (%s**)lua_newuserdata(L, sizeof(%s*));\n" % (ckey, ckey, ckey)
-							wrappersHeaderOut += "\t*userdataPtr = inst;\n"
+							wrappersHeaderOut += "\tPolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));\n"
+							wrappersHeaderOut += "\t*userdataPtr = (PolyBase*)inst;\n"
 							wrappersHeaderOut += "\tluaL_getmetatable(L, \"%s.%s\");\n" % (libName, ckey)
 							wrappersHeaderOut += "\tlua_setmetatable(L, -2);\n"
 							wrappersHeaderOut += "\treturn 1;\n"
@@ -474,8 +474,8 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 										wrappersHeaderOut += "\tstd::vector<%s> retVector = %s;\n" % (vectorReturnClass,call)
 										wrappersHeaderOut += "\tlua_newtable(L);\n"
 										wrappersHeaderOut += "\tfor(int i=0; i < retVector.size(); i++) {\n"
-										wrappersHeaderOut += "\t\tvoid **userdataPtr = (void**)lua_newuserdata(L, sizeof(void*));\n"
-										wrappersHeaderOut += "\t\t*userdataPtr = (void*)retVector[i];\n"
+										wrappersHeaderOut += "\t\tPolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));\n"
+										wrappersHeaderOut += "\t\t*userdataPtr = (PolyBase*)retVector[i];\n"
 										wrappersHeaderOut += "\t\tlua_rawseti(L, -2, i+1);\n"
 										wrappersHeaderOut += "\t}\n"
 										wrappersHeaderOut += "\treturn 1;\n"
@@ -507,11 +507,11 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 									basicType = True
 
 								if pm["rtnType"].find("*") > -1: # Returned var is definitely a pointer.
-									wrappersHeaderOut += "\tvoid *ptrRetVal = (void*)%s%s;\n" % (call, retFunc)
+									wrappersHeaderOut += "\tPolyBase *ptrRetVal = (PolyBase*)%s%s;\n" % (call, retFunc)
 									wrappersHeaderOut += "\tif(ptrRetVal == NULL) {\n"
 									wrappersHeaderOut += "\t\tlua_pushnil(L);\n"
 									wrappersHeaderOut += "\t} else {\n"
-									wrappersHeaderOut += "\t\tvoid **userdataPtr = (void**)lua_newuserdata(L, sizeof(void*));\n"
+									wrappersHeaderOut += "\t\tPolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));\n"
 									wrappersHeaderOut += "\t\t*userdataPtr = ptrRetVal;\n"
 									wrappersHeaderOut += "\t}\n"
 								elif basicType == True: # Returned var has been flagged as a recognized primitive type
@@ -526,10 +526,10 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 										className = "Polycode::Rectangle"
 									wrappersHeaderOut += "\t%s *retInst = new %s();\n" % (className, className)
 									wrappersHeaderOut += "\t*retInst = %s;\n" % (call)
-									wrappersHeaderOut += "\tvoid **userdataPtr = (void**)lua_newuserdata(L, sizeof(void*));\n"
+									wrappersHeaderOut += "\tPolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));\n"
 									wrappersHeaderOut += "\tluaL_getmetatable(L, \"%s.%s\");\n" % (libName, className)
 									wrappersHeaderOut += "\tlua_setmetatable(L, -2);\n"
-									wrappersHeaderOut += "\t*userdataPtr = (void*)retInst;\n"
+									wrappersHeaderOut += "\t*userdataPtr = (PolyBase*)retInst;\n"
 								wrappersHeaderOut += "\treturn 1;\n"
 					wrappersHeaderOut += "}\n\n" # Close out C++ generation
 
@@ -606,7 +606,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 				cppRegisterOut += "\t\t{\"delete_%s\", %s_delete_%s},\n" % (ckey, libName, ckey)
 				wrappersHeaderOut += "static int %s_delete_%s(lua_State *L) {\n" % (libName, ckey)
 				wrappersHeaderOut += "\tluaL_checktype(L, 1, LUA_TUSERDATA);\n"
-				wrappersHeaderOut += "\t%s *inst = (%s*) *((void**)lua_touserdata(L, 1));\n" % (ckey, ckey)
+				wrappersHeaderOut += "\t%s *inst = (%s*) *((PolyBase**)lua_touserdata(L, 1));\n" % (ckey, ckey)
 				wrappersHeaderOut += "\tdelete inst;\n"
 				wrappersHeaderOut += "\treturn 0;\n"
 				wrappersHeaderOut += "}\n\n"

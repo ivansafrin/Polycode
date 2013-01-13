@@ -28,7 +28,7 @@ namespace Polycode {
 	/**
 	* Basic rectangle.
 	*/
-	class _PolyExport Rectangle {
+	class _PolyExport Rectangle : public PolyBase {
 		public:
 			/**
 			* Default constructor.

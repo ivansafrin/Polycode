@@ -32,7 +32,7 @@ namespace Polycode {
 	/**
 	* 4x4 Matrix.
 	*/
-	class _PolyExport Matrix4 {
+	class _PolyExport Matrix4 : public PolyBase {
 	
 		public:
 			Matrix4();

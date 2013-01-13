@@ -28,7 +28,7 @@ namespace Polycode {
 
 	class Tween;
 
-	class _PolyExport TweenManager {
+	class _PolyExport TweenManager : public PolyBase {
 		public:
 			TweenManager();
 			~TweenManager();

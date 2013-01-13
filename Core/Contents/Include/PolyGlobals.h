@@ -87,3 +87,5 @@ inline Number clampf(Number x, Number a, Number b)
 // Special flag read by create_lua_library parser, suppresses Lua bindings for item.
 #define POLYIGNORE
 
+class _PolyExport PolyBase {};
+

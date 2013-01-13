@@ -27,7 +27,7 @@
 
 struct PHYSFS_File;
 
-class _PolyExport OSFileEntry {
+class _PolyExport OSFileEntry : public PolyBase {
 
 	public:
 		OSFileEntry() {};
@@ -47,7 +47,7 @@ class _PolyExport OSFileEntry {
 		static const int TYPE_FOLDER = 1;
 };
 
-class _PolyExport OSFILE {
+class _PolyExport OSFILE : public PolyBase {
 public:
 	OSFILE(){}
 	
@@ -60,7 +60,7 @@ public:
 	static const int TYPE_ARCHIVE_FILE = 1;	
 };
 
-class _PolyExport OSBasics {
+class _PolyExport OSBasics : public PolyBase {
 	public:
 	
 		static OSFILE *open(const Polycode::String& filename, const Polycode::String& opts);

@@ -30,7 +30,7 @@ Rotation::Rotation() {
 	roll = 0;		
 }
 
-Entity::Entity() {
+Entity::Entity() : EventDispatcher() {
 	userData = NULL;
 	scale.set(1,1,1);
 	renderer = NULL;

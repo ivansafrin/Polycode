@@ -32,7 +32,7 @@ namespace Polycode {
 	/**
 	* Renders scenes to texture. This class automatically renders a scene to a texture every frame that you can use to texture anything else. You can set a scene to virtual (see Scene for details) to only render a scene to a texture if you need to. This class automatically adds itself to the render cycle, so you do not need to do anything manual every frame.
 	*/
-	class _PolyExport SceneRenderTexture {
+	class _PolyExport SceneRenderTexture : public PolyBase {
 		public:
 			/**
 			* Construct a new render texture with parameters.

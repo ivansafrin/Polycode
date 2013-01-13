@@ -30,7 +30,7 @@ namespace Polycode {
 	/**
 	* Rotation quaternion.
 	*/
-	class _PolyExport Quaternion {
+	class _PolyExport Quaternion : public PolyBase {
 		public:
 		
 			/**

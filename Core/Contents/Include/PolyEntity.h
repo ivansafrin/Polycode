@@ -27,6 +27,7 @@
 #include "PolyQuaternion.h"
 #include "PolyColor.h"
 #include "PolyRectangle.h"
+#include "PolyEventDispatcher.h"
 #include <vector>
 
 namespace Polycode {
@@ -60,7 +61,7 @@ namespace Polycode {
 	/**
 	* Base class for both 2D and 3D objects in Polycode. It provides position and color transformations as well as hierarchy for all Polycode objects.
 	*/
-	class _PolyExport Entity {
+	class _PolyExport Entity : public EventDispatcher {
 		public:
 			Entity();
 			virtual ~Entity();

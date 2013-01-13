@@ -31,7 +31,7 @@ namespace Polycode {
 /**
 * 2D Perlin noise.
 */ 
-class _PolyExport Perlin
+class _PolyExport Perlin : public PolyBase 
 {
 public:
 

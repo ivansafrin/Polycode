@@ -36,7 +36,7 @@ namespace Polycode {
 	* A curve point defined by 3 positions.
 	* @see BezierCurve
 	*/
-	class _PolyExport BezierPoint {
+	class _PolyExport BezierPoint : public PolyBase {
 		public:
 		
 		/**
@@ -75,7 +75,7 @@ namespace Polycode {
 		A bezier curve consists of control points, each having 3 points: one middle point and two 'handles'. The middle point is the actual position of the control point and the two side points serve as vectors defining how the curve curves towards the next control points.
 		
 	*/																																									
-	class _PolyExport BezierCurve {
+	class _PolyExport BezierCurve : public PolyBase {
 		public:
 			/** 
 			* Default constructor.

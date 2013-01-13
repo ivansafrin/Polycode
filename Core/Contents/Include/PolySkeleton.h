@@ -37,7 +37,7 @@ namespace Polycode {
 	class QuaternionTween;
 	class BezierPathTween;
 	
-	class _PolyExport BoneTrack {
+	class _PolyExport BoneTrack : public PolyBase {
 		public:
 			BoneTrack(Bone *bone, Number length);
 			~BoneTrack();
@@ -90,7 +90,7 @@ namespace Polycode {
 	/**
 	* Skeleton animation.
 	*/ 
-	class _PolyExport SkeletonAnimation {
+	class _PolyExport SkeletonAnimation : public PolyBase {
 		public:
 		
 			SkeletonAnimation(const String& name, Number duration);

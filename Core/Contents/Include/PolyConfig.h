@@ -26,7 +26,7 @@ THE SOFTWARE.
 
 namespace Polycode {
 
-	class ConfigEntry {
+	class ConfigEntry : public PolyBase {
 	public:
 		String key;
 		String configNamespace;
@@ -38,7 +38,7 @@ namespace Polycode {
 	/**
 	* Saves and loads simple config files. Config stores, loads and saves string and number values associated by string keys. You can use to easily save and load settings and preferences and other data. Configs are separated by namespaces, so you can have multiple configs with the same keys.
 	*/
-	class _PolyExport Config {
+	class _PolyExport Config : public PolyBase {
 	public:
 		/**
 		* Default constructor.

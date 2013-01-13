@@ -31,7 +31,7 @@ namespace Polycode {
 	
 	class String;
 
-	class _PolyExport Font {
+	class _PolyExport Font : public PolyBase {
 		public:
 			Font(const String& fileName);
 			virtual ~Font();

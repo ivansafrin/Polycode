@@ -30,7 +30,7 @@ namespace Polycode {
 	/**
 	* 2D Vector (convenience wrapper around Vector3). 
 	*/
-	class _PolyExport Vector2 {
+	class _PolyExport Vector2 : public PolyBase {
 		public:
 				
 			/**

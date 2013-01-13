@@ -30,7 +30,7 @@ namespace Polycode {
 	/**
 	* Base class for resources. All resources that are managed by the ResourceManager subclass this.
 	*/
-	class _PolyExport Resource {
+	class _PolyExport Resource : public PolyBase {
 		public:
 					
 			// ----------------------------------------------------------------------------------------------------------------

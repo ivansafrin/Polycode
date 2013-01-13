@@ -31,7 +31,7 @@ namespace Polycode {
 	class Mesh;
 	class Texture;
 
-	class _PolyExport Particle {
+	class _PolyExport Particle : public PolyBase {
 		public:
 			Particle(int particleType, bool isScreenParticle, Material *material, Texture *texture, Mesh *particleMesh);
 			~Particle();

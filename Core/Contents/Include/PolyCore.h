@@ -44,18 +44,18 @@ namespace Polycode {
 
 	class Renderer;
 
-	class _PolyExport CoreMutex {
+	class _PolyExport CoreMutex : public PolyBase {
 	public:
 		int mutexID;
 	};
 	
-	class _PolyExport CoreFileExtension {
+	class _PolyExport CoreFileExtension : public PolyBase {
 	public:
 		String extension;
 		String description;
 	};
 	
-	class _PolyExport PolycodeViewBase {
+	class _PolyExport PolycodeViewBase : public PolyBase {
 	public:
 		PolycodeViewBase() { windowData = NULL; }
 		virtual ~PolycodeViewBase(){}

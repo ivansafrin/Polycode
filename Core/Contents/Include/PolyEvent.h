@@ -31,7 +31,7 @@ namespace Polycode {
 	/**
 	* Event base class. Subclass this class to pass complex data through events.
 	*/
-	class _PolyExport Event {
+	class _PolyExport Event : public PolyBase {
 		public:
 			/**
 			* Default constructor.

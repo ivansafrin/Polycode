@@ -31,7 +31,7 @@ namespace Polycode {
 	/**
 	* An image in memory. Basic RGB or RGBA images stored in memory. Can be loaded from PNG files, created into textures and written to file.
 	*/
-	class _PolyExport Image {
+	class _PolyExport Image : public PolyBase {
 		public:
 		
 			/**

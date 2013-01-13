@@ -45,7 +45,7 @@ namespace Polycode {
 	/**
 	* Loads and plays a sound. This class can load and play an OGG or WAV sound file.
 	*/
-	class _PolyExport Sound {
+	class _PolyExport Sound : public PolyBase {
 	public:
 	
 		/**

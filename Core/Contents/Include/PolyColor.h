@@ -29,7 +29,7 @@ namespace Polycode {
 	/**
 	* Stores and manipulates color information. Color is always RGBA in Polycode.
 	*/						
-	class _PolyExport Color {
+	class _PolyExport Color : public PolyBase {
 		public:
 
 			/**

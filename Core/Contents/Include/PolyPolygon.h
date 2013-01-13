@@ -33,7 +33,7 @@ namespace Polycode {
 	/**
 	* A polygon structure.
 	*/ 
-	class _PolyExport Polygon {
+	class _PolyExport Polygon : public PolyBase {
 	
 		public:
 			/**

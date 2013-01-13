@@ -30,7 +30,7 @@ namespace Polycode {
 	* 3D base entity. SceneEntities are the base class for all 3D entities in Polycode. A thin wrapper around Entity, it inherits most of its functionality.
 	@see Entity
 	*/
-	class _PolyExport SceneEntity : public Entity, public EventDispatcher {
+	class _PolyExport SceneEntity : public Entity {
 		public:
 			SceneEntity();
 			virtual ~SceneEntity();

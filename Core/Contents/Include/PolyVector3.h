@@ -33,7 +33,7 @@ namespace Polycode {
 	/**
 	* 3D Vector class. 
 	*/
-	class _PolyExport Vector3 {
+	class _PolyExport Vector3 : public PolyBase {
 		public:
 		
 			/**

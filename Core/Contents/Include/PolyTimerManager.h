@@ -28,7 +28,7 @@ namespace Polycode {
 
 	class Timer;
 
-	class _PolyExport TimerManager {
+	class _PolyExport TimerManager : public PolyBase{
 		public:
 		TimerManager();
 		~TimerManager();

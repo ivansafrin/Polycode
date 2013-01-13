@@ -21,7 +21,7 @@ namespace Polycode {
 	class ShaderBinding;
 	class Resource;
 	
-	class _PolyExport PolycodeModule {
+	class _PolyExport PolycodeModule : public PolyBase {
 	public:
 		PolycodeModule();
 		virtual ~PolycodeModule();

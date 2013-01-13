@@ -41,7 +41,7 @@ namespace Polycode {
 	/**
 	* Manages loading and reloading of materials, textures and shaders. This class should be only accessed from the CoreServices singleton.
 	*/
-	class _PolyExport MaterialManager {
+	class _PolyExport MaterialManager : public PolyBase {
 		public:
 			MaterialManager();
 			~MaterialManager();

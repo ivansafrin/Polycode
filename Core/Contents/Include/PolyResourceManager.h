@@ -34,7 +34,7 @@ namespace Polycode {
 	/**
 	* Manages loading and unloading of resources from directories and archives. Should only be accessed via the CoreServices singleton. 
 	*/ 
-	class _PolyExport ResourceManager {
+	class _PolyExport ResourceManager : public PolyBase {
 		public:
 			ResourceManager();
 			~ResourceManager();

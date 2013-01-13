@@ -29,7 +29,7 @@ namespace Polycode {
 	/**
 	* Stores, saves and loads data. This class can save and load arbitrary data to and from disk and convert it to strings.
 	*/	
-	class _PolyExport Data {
+	class _PolyExport Data : public PolyBase {
 		public:
 			/**
 			* Default constructor

@@ -30,7 +30,7 @@ namespace Polycode {
 	class Scene;
 	class SceneRenderTexture;
 	
-	class _PolyExport SceneManager {
+	class _PolyExport SceneManager : public PolyBase {
 		public:
 		SceneManager();
 		~SceneManager();

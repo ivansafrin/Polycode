@@ -32,7 +32,7 @@ namespace Polycode {
 	/**
 	* Single entry in an Object. Object entries can be accessed as dictionaries or arrays.
 	*/
-	class _PolyExport ObjectEntry {
+	class _PolyExport ObjectEntry : public PolyBase {
 	public:
 		
 		/**
@@ -211,7 +211,7 @@ namespace Polycode {
 	* Basic dictionary data object. Objects can store organized data and save and load it from disk. An object contains a hierarchy of ObjectEntry classes which hold the actual data.
 	*/
 	
-	class _PolyExport Object {
+	class _PolyExport Object : public PolyBase {
 	public:
 		/**
 		* Default constructor
@@ -263,7 +263,7 @@ namespace Polycode {
 		
 	};
 
-	class _PolyExport BinaryObjectReader {
+	class _PolyExport BinaryObjectReader : public PolyBase {
 		public:
 			BinaryObjectReader(const String& fileName, Object *object);
 			~BinaryObjectReader();			
@@ -282,7 +282,7 @@ namespace Polycode {
 
 	};
 		
-	class _PolyExport BinaryObjectWriter {
+	class _PolyExport BinaryObjectWriter : public PolyBase {
 		public:
 			BinaryObjectWriter(Object *object);
 			~BinaryObjectWriter();

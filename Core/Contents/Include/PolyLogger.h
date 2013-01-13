@@ -25,7 +25,7 @@ THE SOFTWARE.
 
 namespace Polycode {
 
-	class _PolyExport Logger {
+	class _PolyExport Logger : public PolyBase {
 		public:
 			Logger(){}
 			~Logger(){}

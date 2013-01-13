@@ -42,7 +42,7 @@ namespace Polycode {
 /**
 * 2D Entity base. The ScreenEntity is the base class for all 2D elements in Polycode. They can be added to a screen or to other ScreenEntities and are rendered automatically. If you want to create custom screen objects, subclass this. ScreenEntity subclasses Entity, which use 3d positioning and tranformation, but provides some 2d-only versions of the transformation functions for convenience.
 */
-class _PolyExport ScreenEntity : public Entity, public EventDispatcher {
+class _PolyExport ScreenEntity : public Entity {
 		
 	public:
 		using Entity::setPosition;		

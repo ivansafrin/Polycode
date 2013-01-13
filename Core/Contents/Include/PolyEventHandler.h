@@ -29,7 +29,7 @@ namespace Polycode {
 	/**
 	* Can handle events from EventDispatcher classes.
 	*/
-	class _PolyExport EventHandler {
+	class _PolyExport EventHandler : public PolyBase {
 		public:
 			/**
 			* Default constructor

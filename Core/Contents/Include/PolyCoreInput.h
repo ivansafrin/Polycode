@@ -32,7 +32,7 @@ namespace Polycode {
 	/**
 	* Joystick info.
 	*/
-	class JoystickInfo {
+	class JoystickInfo : public PolyBase {
 		public:
 			JoystickInfo();
 			
