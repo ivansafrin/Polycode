@@ -48,13 +48,6 @@ extern PFNGLGETBUFFERPOINTERVARBPROC glGetBufferPointervARB;
 #endif
 
 OpenGLVertexBuffer::OpenGLVertexBuffer(Mesh *mesh) : VertexBuffer() {
-	if(mesh->getMeshType() == Mesh::QUAD_MESH) {
-		verticesPerFace = 4;		
-	} else {
-		verticesPerFace = 3;				
-	}
-	meshType = mesh->getMeshType();
-	
 	glGenBuffersARB(1, &vertexBufferID);
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB, vertexBufferID);
 	

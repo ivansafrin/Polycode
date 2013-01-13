@@ -67,7 +67,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 	cppRegisterOut += "using namespace Polycode;\n\n"
 	cppRegisterOut += "int luaopen_%s(lua_State *L) {\n" % (prefix)
 	if prefix != "Polycode":
-		cppRegisterOut += "CoreServices *inst = (CoreServices*) *((void**)lua_topointer(L, 1));\n"
+		cppRegisterOut += "CoreServices *inst = (CoreServices*) *((void**)lua_touserdata(L, 1));\n"
 		cppRegisterOut += "CoreServices::setInstance(inst);\n"
 	cppRegisterOut += "\tstatic const struct luaL_reg %sLib [] = {" % (libSmallName)
 	
@@ -238,7 +238,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 							cppRegisterOut += "\t\t{\"%s_get_%s\", %s_%s_get_%s},\n" % (ckey, pp["name"], libName, ckey, pp["name"])
 							wrappersHeaderOut += "static int %s_%s_get_%s(lua_State *L) {\n" % (libName, ckey, pp["name"])
 							wrappersHeaderOut += "\tluaL_checktype(L, 1, LUA_TUSERDATA);\n"
-							wrappersHeaderOut += "\t%s *inst = (%s*) *((void**)lua_topointer(L, 1));\n" % (ckey, ckey)
+							wrappersHeaderOut += "\t%s *inst = (%s*) *((void**)lua_touserdata(L, 1));\n" % (ckey, ckey)
 
 							outfunc = "this_shouldnt_happen"
 							retFunc = ""
@@ -291,7 +291,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 							cppRegisterOut += "\t\t{\"%s_set_%s\", %s_%s_set_%s},\n" % (ckey, pp["name"], libName, ckey, pp["name"])
 							wrappersHeaderOut += "static int %s_%s_set_%s(lua_State *L) {\n" % (libName, ckey, pp["name"])
 							wrappersHeaderOut += "\tluaL_checktype(L, 1, LUA_TUSERDATA);\n"
-							wrappersHeaderOut += "\t%s *inst = (%s*) *((void**)lua_topointer(L, 1));\n" % (ckey, ckey)
+							wrappersHeaderOut += "\t%s *inst = (%s*) *((void**)lua_touserdata(L, 1));\n" % (ckey, ckey)
 
 							outfunc = "this_shouldnt_happen"
 							if pp["type"] == "Number":
@@ -356,7 +356,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 						# Skip static methods (TODO: Figure out, why is this being done here?). # FIXME
 						if pm["rtnType"].find("static ") == -1:
 							wrappersHeaderOut += "\tluaL_checktype(L, 1, LUA_TUSERDATA);\n"
-							wrappersHeaderOut += "\t%s *inst = (%s*) *((void**)lua_topointer(L, 1));\n" % (ckey, ckey)
+							wrappersHeaderOut += "\t%s *inst = (%s*) *((void**)lua_touserdata(L, 1));\n" % (ckey, ckey)
 							idx = 2
 						else:
 							idx = 1
@@ -380,11 +380,11 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 								luatype = "LUA_TUSERDATA"
 								checkfunc = "lua_isuserdata"
 								if param["type"].find("*") > -1:
-									luafunc = "(%s) *((void**)lua_topointer" % (param["type"].replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"))
+									luafunc = "(%s) *((void**)lua_touserdata" % (param["type"].replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"))
 								elif param["type"].find("&") > -1:
-									luafunc = "*(%s*) *((void**)lua_topointer" % (param["type"].replace("const", "").replace("&", "").replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"))
+									luafunc = "*(%s*) *((void**)lua_touserdata" % (param["type"].replace("const", "").replace("&", "").replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"))
 								else:
-									luafunc = "*(%s*) *((void**)lua_topointer" % (param["type"].replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"))
+									luafunc = "*(%s*) *((void**)lua_touserdata" % (param["type"].replace("Polygon", "Polycode::Polygon").replace("Rectangle", "Polycode::Rectangle"))
 								lend = ".__ptr"
 								luafuncsuffix = ")"
 								if param["type"] == "int" or param["type"] == "unsigned int" or param["type"] == "short":
@@ -600,11 +600,13 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 					cppLoaderOut += "\tlua_pushcfunction(L, %s_delete_%s);\n" % (libName, ckey)
 					cppLoaderOut += "\tlua_settable(L, -3);\n"
 				
+	
+
 				# Delete method (C++ side)
 				cppRegisterOut += "\t\t{\"delete_%s\", %s_delete_%s},\n" % (ckey, libName, ckey)
 				wrappersHeaderOut += "static int %s_delete_%s(lua_State *L) {\n" % (libName, ckey)
 				wrappersHeaderOut += "\tluaL_checktype(L, 1, LUA_TUSERDATA);\n"
-				wrappersHeaderOut += "\t%s *inst = (%s*) *((void**)lua_topointer(L, 1));\n" % (ckey, ckey)
+				wrappersHeaderOut += "\t%s *inst = (%s*) *((void**)lua_touserdata(L, 1));\n" % (ckey, ckey)
 				wrappersHeaderOut += "\tdelete inst;\n"
 				wrappersHeaderOut += "\treturn 0;\n"
 				wrappersHeaderOut += "}\n\n"

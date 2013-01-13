@@ -38,19 +38,24 @@ namespace Polycode {
 		public:
 		
 			/**
-			* Creates the screen mesh from existing Mesh.
-			*/
-			ScreenMesh(Mesh *mesh);
-			
-			/**
 			* Creates the screen mesh and loads a mesh from a file name.
 			*/
 			ScreenMesh(const String& fileName);
-			
+		
+			/**
+			* Creates the screen mesh from existing Mesh.
+			*/
+			ScreenMesh(Mesh *mesh);
+						
 			/**
 			* Create an empty screen mesh of specified type. See Mesh for available mesh types.
 			*/
 			ScreenMesh(int meshType);
+			
+			// Static constructor wrappers for bindings
+			static ScreenMesh *ScreenMeshWithType(int meshType);
+			static ScreenMesh *ScreenMeshWithMesh(Mesh *mesh);
+						
 			virtual ~ScreenMesh();
 			
 			void Render();

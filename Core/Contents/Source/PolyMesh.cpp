@@ -715,6 +715,18 @@ namespace Polycode {
 		arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;									
 	}
 	
+	void Mesh::dirtyArray(unsigned int arrayIndex) {
+		if(arrayIndex < 16)
+			arrayDirtyMap[arrayIndex] = true;				
+	}
+	
+	void Mesh::dirtyArrays() {
+		for(int i=0; i < 16; i++) {
+			arrayDirtyMap[i] = true;
+		}
+	}
+	
+	
 	void Mesh::useVertexNormals(bool val) {
 		for(int i =0; i < polygons.size(); i++) {
 			polygons[i]->useVertexNormals = val;

@@ -50,6 +50,13 @@ ScreenMesh::ScreenMesh(int meshType) : ScreenEntity(), texture(NULL) {
 	
 }
 
+ScreenMesh *ScreenMesh::ScreenMeshWithMesh(Mesh *mesh) {
+	return new ScreenMesh(mesh);
+}
+
+ScreenMesh *ScreenMesh::ScreenMeshWithType(int meshType) {
+	return new ScreenMesh(meshType);
+}
 
 ScreenMesh::~ScreenMesh() {
 	if(ownsMesh) {

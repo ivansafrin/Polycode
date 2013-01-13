@@ -288,6 +288,9 @@ namespace Polycode {
 			*/ 
 			void setMeshType(int newType);
 
+			void dirtyArray(unsigned int arrayIndex);
+			void dirtyArrays();
+
 			/**
 			* Calculates the mesh bounding box.
 			*/
@@ -352,6 +355,7 @@ namespace Polycode {
 			* If set to true, the renderer will use the vertex colors instead of entity color transform to render this mesh.
 			*/
 			bool useVertexColors;
+			
 		
 		protected:
 					
