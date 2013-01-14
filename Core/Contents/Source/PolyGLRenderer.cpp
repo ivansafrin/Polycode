@@ -365,6 +365,9 @@ void OpenGLRenderer::drawVertexBuffer(VertexBuffer *buffer, bool enableColorBuff
 		case Mesh::LINE_STRIP_MESH:
 			mode = GL_LINE_STRIP;
 			break;	
+		case Mesh::LINE_LOOP_MESH:
+			mode = GL_LINE_LOOP;
+			break;				
 		case Mesh::LINE_MESH:
 			mode = GL_LINES;
 			break;				
@@ -1015,7 +1018,10 @@ void OpenGLRenderer::drawArrays(int drawType) {
 			break;
 		case Mesh::LINE_STRIP_MESH:
 			mode = GL_LINE_STRIP;
-			break;	
+			break;
+		case Mesh::LINE_LOOP_MESH:
+			mode = GL_LINE_LOOP;
+			break;								
 		case Mesh::LINE_MESH:
 			mode = GL_LINES;
 			break;				

@@ -337,6 +337,10 @@ namespace Polycode {
 			*/									
 			static const int LINE_STRIP_MESH = 6;
 			
+			/**
+			* Line loop based mesh.
+			*/									
+			static const int LINE_LOOP_MESH = 7;
 		
 		
 			/**
