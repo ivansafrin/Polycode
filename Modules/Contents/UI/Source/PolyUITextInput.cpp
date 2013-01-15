@@ -35,6 +35,8 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	processInputEvents = true;
 	isNumberOnly = false;
 	
+	useStrongHinting = false;
+	
 	draggingSelection = false;
 	hasSelection = false;
 	doSelectToCaret = false;
@@ -405,7 +407,12 @@ int UITextInput::insertLine(bool after) {
 	
 	numLines++;	
 	
-	ScreenLabel *newLine = new ScreenLabel(L"", fontSize, fontName, Label::ANTIALIAS_FULL);
+	int aaMode = Label::ANTIALIAS_FULL;
+	if(useStrongHinting) {
+		aaMode = Label::ANTIALIAS_STRONG;
+	}
+
+	ScreenLabel *newLine = new ScreenLabel(L"", fontSize, fontName, aaMode);
 	newLine->setColor(0,0,0,1);
 	lineHeight = newLine->getHeight();
 	linesContainer->addChild(newLine);
@@ -574,7 +581,7 @@ int UITextInput::caretSkipWordBack(int caretLine, int caretPosition) {
 	for(int i=caretPosition; i > 0; i--) {
 		String bit = lines[caretLine]->getText().substr(i,1);
 		char chr = ((char*)bit.c_str())[0]; 		
-		if(((chr > 0 && chr < 48) || (chr > 57 && chr < 65) || (chr > 90 && chr < 97) || (chr > 122 && chr < 127)) && i < caretPosition-1) {
+		if(!isNumberOrCharacter(chr) && i < caretPosition-1) {
 			return i+1;
 		}
 	}	
@@ -586,7 +593,7 @@ int UITextInput::caretSkipWordForward(int caretLine, int caretPosition) {
 	for(int i=caretPosition; i < len; i++) {
 		String bit = lines[caretLine]->getText().substr(i,1);
 		char chr = ((char*)bit.c_str())[0]; 
-		if(((chr > 0 && chr < 48) || (chr > 57 && chr < 65) || (chr > 90 && chr < 97) || (chr > 122 && chr < 127)) && i > caretPosition) {
+		if(!isNumberOrCharacter(chr) && i > caretPosition) {
 			return i;
 		}
 	}
@@ -826,6 +833,20 @@ String UITextInput::getSelectionText() {
 	return totalText;
 }
 
+void UITextInput::setSelectionColor(Color color) {
+	selectorRectTop->color = color;
+	selectorRectMiddle->color = color;
+	selectorRectBottom->color = color;
+}
+
+void UITextInput::setCursorColor(Color color) {
+	blinkerRect->color = color;
+}
+
+void UITextInput::setBackgroundColor(Color color) {
+	inputRect->color = color;
+}
+
 UIScrollContainer *UITextInput::getScrollContainer() {
 	return scrollContainer;
 }
@@ -906,6 +927,20 @@ void UITextInput::showLine(unsigned int lineNumber, bool top) {
 	} else {
 		scrollContainer->setScrollValue(0.0, (((((lineNumber) * ((lineHeight+lineSpacing)))) + padding-(scrollContainer->getHeight()/2.0))/(scrollContainer->getContentSize().y-scrollContainer->getHeight())));	
 	}
+}
+
+bool UITextInput::isNumberOrCharacter(wchar_t charCode) {
+	if(charCode > 47 && charCode < 58)
+		return true;
+
+	if(charCode > 64 && charCode < 91)
+		return true;
+
+	if(charCode > 96 && charCode < 123)
+		return true;
+
+
+	return false;
 }
 
 void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
@@ -1123,12 +1158,12 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 	}	
 	
 	String ctext = currentLine->getText();
-	
-	
-//	if(1) {
+		
 	if((charCode > 31 && charCode < 127) || charCode > 127) {	
 		if(!isNumberOnly || (isNumberOnly && ((charCode > 47 && charCode < 58) || (charCode == '.' || charCode == '-')))) {
-			saveUndoState();
+			if(!isNumberOrCharacter(charCode)) { 
+				saveUndoState();
+			}
 			if(hasSelection)
 				deleteSelection();
 			ctext = currentLine->getText();		
@@ -1196,7 +1231,7 @@ void UITextInput::Update() {
 	if(hasSelection) {
 		blinkerRect->visible = false;
 	}
-	blinkerRect->setPosition(caretImagePosition,currentLine->getPosition2D().y - 2);
+	blinkerRect->setPosition(caretImagePosition,currentLine->getPosition2D().y);
 	if(hasFocus) {
 //		inputRect->setStrokeColor(1.0f, 1.0f, 1.0f, 0.25f);	
 	} else {

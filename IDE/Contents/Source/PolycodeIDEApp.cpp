@@ -26,6 +26,7 @@
 using namespace Polycode;
 
 UIGlobalMenu *globalMenu;
+SyntaxHighlightTheme *globalSyntaxTheme;
 
 PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	core = new CocoaCore(view, 900,700,false,true, 0, 0,30);	
@@ -43,11 +44,14 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 
 	CoreServices::getInstance()->getResourceManager()->addArchive("api.pak");
 
-	CoreServices::getInstance()->getConfig()->loadConfig("Polycode", RESOURCE_PATH"UIThemes/default/theme.xml");
-	CoreServices::getInstance()->getResourceManager()->addArchive(RESOURCE_PATH"UIThemes/default/");
-	CoreServices::getInstance()->getResourceManager()->addArchive(RESOURCE_PATH"Images/");	
+	CoreServices::getInstance()->getConfig()->loadConfig("Polycode", "UIThemes/default/theme.xml");
+	CoreServices::getInstance()->getResourceManager()->addArchive("UIThemes/default/");
+	CoreServices::getInstance()->getResourceManager()->addArchive("Images/");	
 
-	CoreServices::getInstance()->getFontManager()->registerFont("section", "Fonts/LeagueGothic-Regular.otf");
+	CoreServices::getInstance()->getFontManager()->registerFont("section", "Fonts/LeagueGothic-Regular.otf");	
+
+	CoreServices::getInstance()->getFontManager()->registerFont("editor_font", "/Library/Fonts/Menlo.ttc");
+
 	
 //	CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_LINEAR);
 	CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_NEAREST);
@@ -476,6 +480,7 @@ void PolycodeIDEApp::saveConfigFile() {
 	Object configFile;
 	configFile.root.name = "config";
 	configFile.root.addChild("open_projects");
+	configFile.root.addChild("syntax_theme", globalSyntaxTheme->name);
 	for(int i=0; i < projectManager->getProjectCount(); i++) {
 		PolycodeProject *project = projectManager->getProjectByIndex(i);		
 		ObjectEntry *projectEntry = configFile.root["open_projects"]->addChild("project");
@@ -487,9 +492,19 @@ void PolycodeIDEApp::saveConfigFile() {
 }
 
 void PolycodeIDEApp::loadConfigFile() {
-
 	Object configFile;
-	configFile.loadFromXML(core->getUserHomeDirectory()+"/Library/Application Support/Polycode/config.xml");		
+	// TODO: Make a crossplatform core method to get application data path
+	configFile.loadFromXML(core->getUserHomeDirectory()+"/Library/Application Support/Polycode/config.xml");
+		
+	globalSyntaxTheme = new SyntaxHighlightTheme();
+	String themeName = "default";
+	ObjectEntry *syntaxTheme = configFile.root["syntax_theme"];
+	if(syntaxTheme) {
+		themeName = syntaxTheme->stringVal;
+	}
+	themeName = "solarized_dark";	
+	globalSyntaxTheme->loadFromFile(themeName);
+	
 	if(configFile.root["open_projects"]) {
 		ObjectEntry *projects = configFile.root["open_projects"];
 		if(projects) {

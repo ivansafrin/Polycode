@@ -22,15 +22,69 @@
 
 #include "PolycodeTextEditor.h"
 
-PolycodeSyntaxHighlighter::PolycodeSyntaxHighlighter(String extension) {
+extern SyntaxHighlightTheme *globalSyntaxTheme;
 
-	colorScheme[0] = Color(0.0, 0.0, 0.0, 1.0);
-	colorScheme[1] = Color(0.0/255.0, 112.0/255.0, 0.0, 1.0);
-	colorScheme[2] = Color(192.0/255.0, 45.0/255.0, 167.0/255.0, 1.0);
-	colorScheme[3] = Color(48.0/255.0, 99.0/255.0, 105.0/255.0, 1.0);
-	colorScheme[4] = Color(227.0/255.0, 11.0/255.0, 0.0/255.0, 1.0);
-	colorScheme[5] = Color(82.0/255.0, 31.0/255.0, 140.0/255.0, 1.0);	
-	colorScheme[6] = Color(39.0/255.0, 41.0/255.0, 215.0/255.0, 1.0);
+void SyntaxHighlightTheme::loadFromFile(String themeName) {
+	String filePath = "SyntaxThemes/"+themeName+".xml";
+	
+	this->name =themeName;
+	
+	Object themeObject;
+	if(themeObject.loadFromXML(filePath)) {
+
+		ObjectEntry *hintingEntry = themeObject.root["useStrongHinting"];
+		if(hintingEntry) {
+			useStrongHinting = hintingEntry->boolVal;
+		}
+	
+		ObjectEntry *bgColorEntry = themeObject.root["bgColor"];		
+		if(bgColorEntry) {
+			ObjectEntry *r = (*bgColorEntry)["r"];
+			ObjectEntry *g = (*bgColorEntry)["g"];
+			ObjectEntry *b = (*bgColorEntry)["b"];
+			if(r && g && b) {
+				bgColor.setColorRGB(r->intVal, g->intVal, b->intVal);
+			}		
+		}
+
+		ObjectEntry *cursorColorEntry = themeObject.root["cursorColor"];		
+		if(cursorColorEntry) {
+			ObjectEntry *r = (*cursorColorEntry)["r"];
+			ObjectEntry *g = (*cursorColorEntry)["g"];
+			ObjectEntry *b = (*cursorColorEntry)["b"];
+			if(r && g && b) {
+				cursorColor.setColorRGB(r->intVal, g->intVal, b->intVal);
+			}		
+		}
+
+		ObjectEntry *selectionColorEntry = themeObject.root["selectionColor"];		
+		if(selectionColorEntry) {
+			ObjectEntry *r = (*selectionColorEntry)["r"];
+			ObjectEntry *g = (*selectionColorEntry)["g"];
+			ObjectEntry *b = (*selectionColorEntry)["b"];
+			if(r && g && b) {
+				selectionColor.setColorRGB(r->intVal, g->intVal, b->intVal);
+			}		
+		}
+			
+		ObjectEntry *textColors = themeObject.root["textColors"];
+		if(textColors) {
+			for(int i=0; i < textColors->length && i < 8; i++) {
+				ObjectEntry *colorEntry = (*textColors)[i];
+				if(colorEntry) {
+					ObjectEntry *r = (*colorEntry)["r"];
+					ObjectEntry *g = (*colorEntry)["g"];
+					ObjectEntry *b = (*colorEntry)["b"];
+					if(r && g && b) {
+						colors[i].setColorRGB(r->intVal, g->intVal, b->intVal);
+					}
+				}				
+			}
+		}
+	}
+}
+
+PolycodeSyntaxHighlighter::PolycodeSyntaxHighlighter(String extension) {
 	
 //	String separators = " ;()\t\n=+-/\\'\"";	
 //	String keywords = "true,false,";
@@ -170,28 +224,27 @@ std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseLua(String tex
 	for(int i=0; i < tokens.size(); i++) {
 		switch(tokens[i].type) {
 			case MODE_STRING:
-				tokens[i].color = colorScheme[4];			
+				tokens[i].color = globalSyntaxTheme->colors[4];			
 			break;
 			case MODE_COMMENT:
-				tokens[i].color = colorScheme[1];			
+				tokens[i].color = globalSyntaxTheme->colors[1];			
 			break;			
 			case MODE_METHOD:
-				tokens[i].color = colorScheme[3];			
+				tokens[i].color = globalSyntaxTheme->colors[3];			
 			break;			
 			case MODE_KEYWORD:
-				tokens[i].color = colorScheme[2];
+				tokens[i].color = globalSyntaxTheme->colors[2];
 			break;		
 			case MODE_NUMBER:
-				tokens[i].color = colorScheme[6];
+				tokens[i].color = globalSyntaxTheme->colors[6];
 			break;		
 			case MODE_MEMBER:
-				tokens[i].color = colorScheme[5];
+				tokens[i].color = globalSyntaxTheme->colors[5];
 			break;															
 			default:
-				tokens[i].color = colorScheme[0];
+				tokens[i].color = globalSyntaxTheme->colors[0];
 			break;
 		}
-//		printf("%s(%d)", tokens[i].text.c_str(), tokens[i].type);		
 	}
 	
 	return tokens;
@@ -209,7 +262,11 @@ PolycodeTextEditor::~PolycodeTextEditor() {
 bool PolycodeTextEditor::openFile(OSFileEntry filePath) {
 	
 	textInput = new UITextInput(true, 100, 100);
-	addChild(textInput);	
+	addChild(textInput);
+	textInput->setBackgroundColor(globalSyntaxTheme->bgColor);
+	textInput->setCursorColor(globalSyntaxTheme->cursorColor);
+	textInput->setSelectionColor(globalSyntaxTheme->selectionColor);
+	textInput->useStrongHinting = globalSyntaxTheme->useStrongHinting;
 	
 	findBar = new FindBar();
 	findBar->visible = false;

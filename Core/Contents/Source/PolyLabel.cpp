@@ -258,6 +258,7 @@ void Label::precacheGlyphs(String text, GlyphData *glyphData) {
 
 		switch(antiAliasMode) {
 			case ANTIALIAS_FULL:
+			case ANTIALIAS_STRONG:
 				error = FT_Load_Glyph( face, glyph_index, FT_LOAD_TARGET_LIGHT);			
 			break;
 			default:
@@ -293,14 +294,20 @@ void Label::drawGlyphBitmap(FT_Bitmap *bitmap, unsigned int x, unsigned int y, C
 
 	int lineoffset = (height-y) * (width*4);
 	int xoff = (x*4);
+	
+	Number alphaMultiplier = 1.0;
+	if(antiAliasMode == ANTIALIAS_STRONG) {
+		alphaMultiplier = 1.5;
+	}
 
 	switch(antiAliasMode) {
 			case ANTIALIAS_FULL:
+			case ANTIALIAS_STRONG:			
 				for(int j = 0; j < ((bitmap->width * bitmap->rows)); j++) {
 					if(!(j % bitmap->width) && j !=0)
 						lineoffset -= ((width*4)+(bitmap->width * 4));
 						
-						int newVal = imageData[xoff+lineoffset+3] + bitmap->buffer[j];
+						int newVal = imageData[xoff+lineoffset+3] + (bitmap->buffer[j] * alphaMultiplier);
 						if(newVal > 255)
 							newVal = 255;
 
@@ -365,7 +372,7 @@ void Label::renderGlyphs(GlyphData *glyphData) {
 		pen.x = (start_x + glyphData->positions[n].x) * 64;
 		pen.y = (start_y + glyphData->positions[n].y) * 64;		
 
-		if(antiAliasMode == ANTIALIAS_FULL) {
+		if(antiAliasMode == ANTIALIAS_FULL || antiAliasMode == ANTIALIAS_STRONG) {
 			error = FT_Glyph_To_Bitmap( &image, FT_RENDER_MODE_LIGHT, &pen, 0 );		
 		} else {
 			error = FT_Glyph_To_Bitmap( &image, FT_RENDER_MODE_MONO, &pen, 0 );				

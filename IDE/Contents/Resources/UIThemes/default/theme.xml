@@ -2,10 +2,10 @@
 <PolyConfig>
 	<uiDefaultFontName>sans</uiDefaultFontName>
 	<uiTextInputFontName>sans</uiTextInputFontName>
-	<uiTextInputFontNameMultiLine>mono</uiTextInputFontNameMultiLine>
+	<uiTextInputFontNameMultiLine>editor_font</uiTextInputFontNameMultiLine>
 	<uiDefaultFontSize>11</uiDefaultFontSize>
 	<uiTextInputFontSize>11</uiTextInputFontSize>
-	<uiTextInputFontSizeMultiline>12</uiTextInputFontSizeMultiline>	
+	<uiTextInputFontSizeMultiline>11</uiTextInputFontSizeMultiline>	
 	<uiTreeArrowIconImage>arrowIcon.png</uiTreeArrowIconImage>
 	<uiTreeCellHeight>20</uiTreeCellHeight>
 	<uiTreeCellPadding>4</uiTreeCellPadding>
@@ -77,7 +77,7 @@
 	<textBgSkinB>3</textBgSkinB>
 	<textBgSkinL>3</textBgSkinL>
 	<textBgSkinPadding>5</textBgSkinPadding>
-	<textEditLineSpacing>16</textEditLineSpacing>
+	<textEditLineSpacing>12</textEditLineSpacing>
 		
 	<uiScrollHandleMinSize>30</uiScrollHandleMinSize>	
 	<uiTreeContainerScrollBarOffset>27</uiTreeContainerScrollBarOffset>

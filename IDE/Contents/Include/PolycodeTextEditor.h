@@ -28,6 +28,17 @@
 
 using namespace Polycode;
 
+class SyntaxHighlightTheme {
+	public:
+		void loadFromFile(String themeName);		
+		String name;
+		Color bgColor;
+		Color selectionColor;
+		Color cursorColor;
+		bool useStrongHinting;
+		Color colors[8];
+};
+
 class FindBar : public UIElement {
 	public:
 		FindBar();
@@ -55,10 +66,7 @@ class PolycodeSyntaxHighlighter : public UITextInputSyntaxHighlighter {
 		bool contains(String part, std::vector<String> list);
 	
 		std::vector<SyntaxHighlightToken> parseText(String text);		
-		std::vector<SyntaxHighlightToken> parseLua(String text);
-		
-		Color colorScheme[16];
-				
+		std::vector<SyntaxHighlightToken> parseLua(String text);	
 		
 	protected:
 	

@@ -256,7 +256,7 @@ void EditCurve::updatePoints() {
 		if(i == targetCurve->getNumControlPoints()-1)
 			type = EditPoint::TYPE_END_POINT;
 
-	
+
 		EditPoint *point = new EditPoint(targetCurve->getControlPoint(i), type);
 		point->setMode(mode);
 		point->addEventListener(this, Event::CHANGE_EVENT);

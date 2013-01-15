@@ -93,6 +93,7 @@ namespace Polycode {
 					
 			static const int ANTIALIAS_FULL = 0;
 			static const int ANTIALIAS_NONE = 1;
+			static const int ANTIALIAS_STRONG = 2;			
 			
 			int getBaselineAdjust();
 			

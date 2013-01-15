@@ -102,6 +102,10 @@ namespace Polycode {
 			void Copy();
 			void Paste();
 			
+			void setBackgroundColor(Color color);
+			void setSelectionColor(Color color);
+			void setCursorColor(Color color);
+						
 			void replaceAll(String what, String withWhat);
 			
 			void findString(String stringToFind, bool replace=false, String replaceString="");
@@ -113,6 +117,7 @@ namespace Polycode {
 
 			void setSyntaxHighlighter(UITextInputSyntaxHighlighter *syntaxHighliter);
 					
+			bool isNumberOrCharacter(wchar_t charCode);
 			void Resize(Number width, Number height);
 			
 			void setNumberOnly(bool val);
@@ -123,6 +128,8 @@ namespace Polycode {
 			void insertText(String text);
 			
 			UIScrollContainer *getScrollContainer();
+			
+			bool useStrongHinting;
 		
 		protected:
 				
