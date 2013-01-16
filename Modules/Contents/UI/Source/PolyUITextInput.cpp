@@ -117,7 +117,7 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	linesContainer->addChild(selectorRectBottom);
 		
 	
-	blinkerRect = new ScreenShape(ScreenShape::SHAPE_RECT, 1, fontSize+4,0,0);
+	blinkerRect = new ScreenShape(ScreenShape::SHAPE_RECT, 1, fontSize+2,0,0);
 	blinkerRect->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	blinkerRect->setColor(0,0,0,1);
 	linesContainer->addChild(blinkerRect);
@@ -225,7 +225,7 @@ void UITextInput::setSelection(int lineStart, int lineEnd, int colStart, int col
 	topSize = topLine->getLabel()->getTextWidthForString(topLine->getText().substr(colStart,fColEnd-colStart)) ; 
 	topHeight = lineHeight+lineSpacing;
 	if(colStart >= 0) {
-		topX = topLine->getLabel()->getTextWidthForString(topLine->getText().substr(0,colStart));
+		topX = topLine->getLabel()->getTextWidthForString(topLine->getText().substr(0,colStart)) + 2;
 	} else {
 		topX = 0;
 	}
@@ -1231,7 +1231,7 @@ void UITextInput::Update() {
 	if(hasSelection) {
 		blinkerRect->visible = false;
 	}
-	blinkerRect->setPosition(caretImagePosition,currentLine->getPosition2D().y);
+	blinkerRect->setPosition(caretImagePosition + 1,currentLine->getPosition2D().y+1);
 	if(hasFocus) {
 //		inputRect->setStrokeColor(1.0f, 1.0f, 1.0f, 0.25f);	
 	} else {

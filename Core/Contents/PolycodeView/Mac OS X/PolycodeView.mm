@@ -71,9 +71,7 @@
 - (void)windowDidResignMain:(NSNotification *)notification
 {	
 	if(core == NULL)
-		return;
-	
-	memset(modifierMap, 0, 512);
+		return;	
 	
 	core->lockMutex(core->eventMutex);	
 	CocoaEvent newEvent;
@@ -87,8 +85,6 @@
 {	
 	if(core == NULL)
 		return;
-		
-	memset(modifierMap, 0, 512);		
 	
 	core->lockMutex(core->eventMutex);	
 	CocoaEvent newEvent;
@@ -101,8 +97,6 @@
 
 - (void) initKeymap {	 
 	
-	memset(modifierMap, 0, 512);
-		
 	keymap[0x00] = KEY_a;
 	keymap[0x01] = KEY_s;
 	keymap[0x02] = KEY_d;
@@ -473,8 +467,6 @@
 	if(core == NULL)
 		return;
 	
-//	NSLog(@"KEY: %x\n", [theEvent keyCode]);
-	
 	if([theEvent keyCode] == 0) {
 		return;
 	}
@@ -483,12 +475,59 @@
 	newEvent.eventGroup = CocoaEvent::INPUT_EVENT;
 	newEvent.keyCode = keymap[[theEvent keyCode]];	
 	
-	if(modifierMap[[theEvent keyCode]] == 0) {
-		modifierMap[[theEvent keyCode]] = 1;
-		newEvent.eventCode = InputEvent::EVENT_KEYDOWN;	
-	} else {
-		modifierMap[[theEvent keyCode]] = 0;
-		newEvent.eventCode = InputEvent::EVENT_KEYUP;				
+	switch(newEvent.keyCode) {
+		case Polycode::KEY_LALT:
+			if (([theEvent modifierFlags] & 0x80120) == 0x80120) {
+				newEvent.eventCode = InputEvent::EVENT_KEYDOWN;
+			} else {
+				newEvent.eventCode = InputEvent::EVENT_KEYUP;			
+			}
+		break;
+		case Polycode::KEY_RALT:
+			if (([theEvent modifierFlags] & 0x80140) == 0x80140) {
+				newEvent.eventCode = InputEvent::EVENT_KEYDOWN;
+			} else {
+				newEvent.eventCode = InputEvent::EVENT_KEYUP;			
+			}
+		break;
+		case Polycode::KEY_LSHIFT:
+			if (([theEvent modifierFlags] & 0x20102) == 0x20102) {
+				newEvent.eventCode = InputEvent::EVENT_KEYDOWN;
+			} else {
+				newEvent.eventCode = InputEvent::EVENT_KEYUP;			
+			}
+		break;		
+		case Polycode::KEY_RSHIFT:
+			if (([theEvent modifierFlags] & 0x20104) == 0x20104) {
+				newEvent.eventCode = InputEvent::EVENT_KEYDOWN;
+			} else {
+				newEvent.eventCode = InputEvent::EVENT_KEYUP;			
+			}
+		break;		
+		case Polycode::KEY_LCTRL:
+			if (([theEvent modifierFlags] & 0x40101) == 0x40101) {
+				newEvent.eventCode = InputEvent::EVENT_KEYDOWN;
+			} else {
+				newEvent.eventCode = InputEvent::EVENT_KEYUP;			
+			}
+		break;		
+		case Polycode::KEY_RCTRL:
+			// no right control on my mac :)
+		break;
+		case Polycode::KEY_LSUPER:
+			if (([theEvent modifierFlags] & 0x100108) == 0x100108) {
+				newEvent.eventCode = InputEvent::EVENT_KEYDOWN;
+			} else {
+				newEvent.eventCode = InputEvent::EVENT_KEYUP;			
+			}
+		break;
+		case Polycode::KEY_RSUPER:
+			if (([theEvent modifierFlags] & 0x100110) == 0x100110) {
+				newEvent.eventCode = InputEvent::EVENT_KEYDOWN;
+			} else {
+				newEvent.eventCode = InputEvent::EVENT_KEYUP;			
+			}		
+		break;				
 	}
 	newEvent.unicodeChar = 0;
 	

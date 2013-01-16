@@ -35,9 +35,7 @@ using namespace Polycode;
 @interface PolycodeView : NSOpenGLView {
 	PolyKEY keymap[512];
 	char mouseMap[128];
-	
-	char modifierMap[512];
-	
+		
 	CocoaCore *core;
 	
 	NSLock *contextLock;	
