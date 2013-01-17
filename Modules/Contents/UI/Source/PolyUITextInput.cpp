@@ -150,6 +150,8 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	
 	syntaxHighliter = NULL;
 	
+	textColor = Color(0.0,0.0,0.0,1.0);
+	
 	insertLine(true);		
 }
 
@@ -413,7 +415,7 @@ int UITextInput::insertLine(bool after) {
 	}
 
 	ScreenLabel *newLine = new ScreenLabel(L"", fontSize, fontName, aaMode);
-	newLine->setColor(0,0,0,1);
+	newLine->color = textColor;
 	lineHeight = newLine->getHeight();
 	linesContainer->addChild(newLine);
 	
@@ -702,7 +704,7 @@ void UITextInput::findCurrent() {
 
 void UITextInput::setCaretToMouse(Number x, Number y) {
 	clearSelection();
-	x -= (padding* 2.0);
+	x -= (padding);
 	y -= padding;
 	//if(lines.size() > 1) {
 		lineOffset = y  / (lineHeight+lineSpacing);
@@ -715,10 +717,11 @@ void UITextInput::setCaretToMouse(Number x, Number y) {
 	Number slen;
 	
 	int newCaretPosition = -1;
+	
 	for(int i=1; i < len; i++) {
 		slen = currentLine->getLabel()->getTextWidthForString(currentLine->getText().substr(0,i));
 		Number slen_prev = currentLine->getLabel()->getTextWidthForString(currentLine->getText().substr(0,i-1));		
-		if(x > slen_prev && x < slen) {
+		if(x >= slen_prev && x <= slen) {
 			if(x < slen_prev + ((slen - slen_prev) /2.0)) {
 				newCaretPosition = i-1;
 				break;			
@@ -845,6 +848,13 @@ void UITextInput::setCursorColor(Color color) {
 
 void UITextInput::setBackgroundColor(Color color) {
 	inputRect->color = color;
+}
+
+void UITextInput::setTextColor(Color color) {
+	textColor = color;
+	for(int i=0; i < lines.size(); i++) {
+		lines[i]->color = textColor;
+	}
 }
 
 UIScrollContainer *UITextInput::getScrollContainer() {

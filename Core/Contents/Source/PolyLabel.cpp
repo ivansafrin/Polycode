@@ -297,7 +297,7 @@ void Label::drawGlyphBitmap(FT_Bitmap *bitmap, unsigned int x, unsigned int y, C
 	
 	Number alphaMultiplier = 1.0;
 	if(antiAliasMode == ANTIALIAS_STRONG) {
-		alphaMultiplier = 1.5;
+		alphaMultiplier = 1.2;
 	}
 
 	switch(antiAliasMode) {

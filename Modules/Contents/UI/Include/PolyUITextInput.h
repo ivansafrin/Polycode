@@ -105,7 +105,8 @@ namespace Polycode {
 			void setBackgroundColor(Color color);
 			void setSelectionColor(Color color);
 			void setCursorColor(Color color);
-						
+			void setTextColor(Color color);
+			
 			void replaceAll(String what, String withWhat);
 			
 			void findString(String stringToFind, bool replace=false, String replaceString="");
@@ -132,6 +133,8 @@ namespace Polycode {
 			bool useStrongHinting;
 		
 		protected:
+		
+			Color textColor;
 				
 			void setUndoState(UITextInputUndoState state);
 			void saveUndoState();

@@ -50,9 +50,8 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 
 	CoreServices::getInstance()->getFontManager()->registerFont("section", "Fonts/LeagueGothic-Regular.otf");	
 
-	CoreServices::getInstance()->getFontManager()->registerFont("editor_font", "/Library/Fonts/Menlo.ttc");
+	CoreServices::getInstance()->getFontManager()->registerFont("editor_font", "Fonts/Inconsolata.otf");
 
-	
 //	CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_LINEAR);
 	CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_NEAREST);
 	
@@ -112,6 +111,7 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	screen->addChild(globalMenu);	
 				
 	loadConfigFile();
+	frame->console->applyTheme();
 }
 
 void PolycodeIDEApp::renameFile() {
@@ -502,7 +502,7 @@ void PolycodeIDEApp::loadConfigFile() {
 	if(syntaxTheme) {
 		themeName = syntaxTheme->stringVal;
 	}
-	themeName = "solarized_dark";	
+	themeName = "monokai";	
 	globalSyntaxTheme->loadFromFile(themeName);
 	
 	if(configFile.root["open_projects"]) {

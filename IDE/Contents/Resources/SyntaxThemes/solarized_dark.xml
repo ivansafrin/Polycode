@@ -1,16 +1,16 @@
 <?xml version="1.0" ?>
-<syntaxTheme useStrongHinting="true">
-	<bgColor r="5" g="32" b="42"/>
+<syntaxTheme useStrongHinting="false">
+	<bgColor r="2" g="42" b="55"/>
 	<cursorColor r="130" g="144" b="144"/>
 	<selectionColor r="88" g="110" b="117"/>
 	<textColors>
-		<color r="113" g="130" b="132"/>
-		<color r="71" g="91" b="98"/>
-		<color r="193" g="33" b="114"/>
-		<color r="46" g="145" b="134"/>
-		<color r="204" g="33" b="30"/>
-		<color r="118" g="137" b="0"/>
-		<color r="86" g="90" b="190"/>
+		<color r="133" g="150" b="152"/>
+		<color r="91" g="111" b="118"/>
+		<color r="213" g="53" b="134"/>
+		<color r="66" g="165" b="154"/>
+		<color r="224" g="53" b="50"/>
+		<color r="138" g="157" b="20"/>
+		<color r="106" g="110" b="210"/>
 		<color r="0" g="0" b="0"/>		
 	</textColors>
 </syntaxTheme>

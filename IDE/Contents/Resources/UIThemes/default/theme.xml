@@ -2,13 +2,21 @@
 <PolyConfig>
 	<uiDefaultFontName>sans</uiDefaultFontName>
 	<uiTextInputFontName>sans</uiTextInputFontName>
-	<uiTextInputFontNameMultiLine>editor_font</uiTextInputFontNameMultiLine>
+	<uiTextInputFontNameMultiLine>mono</uiTextInputFontNameMultiLine>
 	<uiDefaultFontSize>11</uiDefaultFontSize>
 	<uiTextInputFontSize>11</uiTextInputFontSize>
-	<uiTextInputFontSizeMultiline>11</uiTextInputFontSizeMultiline>	
+	<uiTextInputFontSizeMultiline>13</uiTextInputFontSizeMultiline>	
 	<uiTreeArrowIconImage>arrowIcon.png</uiTreeArrowIconImage>
 	<uiTreeCellHeight>20</uiTreeCellHeight>
 	<uiTreeCellPadding>4</uiTreeCellPadding>
+	
+	<textBgSkin>textfield.png</textBgSkin>
+	<textBgSkinT>3</textBgSkinT>
+	<textBgSkinR>3</textBgSkinR>
+	<textBgSkinB>3</textBgSkinB>
+	<textBgSkinL>3</textBgSkinL>
+	<textBgSkinPadding>5</textBgSkinPadding>
+	<textEditLineSpacing>14</textEditLineSpacing>
 	
 	<uiTreeCellSkin>treeCellBg.png</uiTreeCellSkin>
 	<uiTreeCellSkinPadding>0</uiTreeCellSkinPadding>
@@ -70,14 +78,6 @@
 	<uiScrollHandleSkinR>6</uiScrollHandleSkinR>
 	<uiScrollHandleSkinB>6</uiScrollHandleSkinB>
 	<uiScrollHandleSkinL>6</uiScrollHandleSkinL>
-	
-	<textBgSkin>textfield.png</textBgSkin>
-	<textBgSkinT>3</textBgSkinT>
-	<textBgSkinR>3</textBgSkinR>
-	<textBgSkinB>3</textBgSkinB>
-	<textBgSkinL>3</textBgSkinL>
-	<textBgSkinPadding>5</textBgSkinPadding>
-	<textEditLineSpacing>12</textEditLineSpacing>
 		
 	<uiScrollHandleMinSize>30</uiScrollHandleMinSize>	
 	<uiTreeContainerScrollBarOffset>27</uiTreeContainerScrollBarOffset>

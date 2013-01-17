@@ -104,6 +104,8 @@ class PolycodeConsole : public UIElement {
 		static void clearBacktraces();
 		void _clearBacktraces();
 		
+		void applyTheme();
+		
 		void _addBacktrace(String fileName, int lineNumber, PolycodeProject *project);
 		
 		void Resize(Number width, Number height);

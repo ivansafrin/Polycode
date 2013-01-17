@@ -22,8 +22,10 @@
 
 #include "PolycodeConsole.h"
 #include "PolycodeRemoteDebugger.h"
+#include "PolycodeTextEditor.h"
 
 PolycodeConsole* PolycodeConsole::instance = NULL;
+extern SyntaxHighlightTheme *globalSyntaxTheme;
 
 BackTraceEntry::BackTraceEntry(String fileName, int lineNumber, PolycodeProject *project) : UIElement() {
 
@@ -170,6 +172,7 @@ PolycodeConsole::PolycodeConsole() : UIElement() {
 	debugTextInput = new UITextInput(true, 100, 100);
 	backtraceSizer->addLeftChild(debugTextInput);
 
+
 	backtraceWindow = new BackTraceWindow();
 	backtraceSizer->addRightChild(backtraceWindow);
 
@@ -183,8 +186,17 @@ PolycodeConsole::PolycodeConsole() : UIElement() {
 	PolycodeConsole::setInstance(this);
 }
 
+
 PolycodeConsole::~PolycodeConsole() {
 
+}
+
+void PolycodeConsole::applyTheme() {
+	debugTextInput->setBackgroundColor(globalSyntaxTheme->bgColor);
+	debugTextInput->setCursorColor(globalSyntaxTheme->cursorColor);
+	debugTextInput->setSelectionColor(globalSyntaxTheme->selectionColor);
+	debugTextInput->useStrongHinting = globalSyntaxTheme->useStrongHinting;
+	debugTextInput->setTextColor(globalSyntaxTheme->colors[0]);
 }
 
 void PolycodeConsole::setDebugger(PolycodeRemoteDebugger *debugger) {
