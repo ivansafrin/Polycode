@@ -35,6 +35,7 @@ class SyntaxHighlightTheme {
 		Color bgColor;
 		Color selectionColor;
 		Color cursorColor;
+		Color lineNumberColor;
 		bool useStrongHinting;
 		Color colors[8];
 };

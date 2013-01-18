@@ -35,11 +35,15 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	processInputEvents = true;
 	isNumberOnly = false;
 	
+	decoratorOffset = 0;
+	
 	useStrongHinting = false;
 	
 	draggingSelection = false;
 	hasSelection = false;
 	doSelectToCaret = false;
+	
+	lineNumbersEnabled = false;
 	
 	caretPosition = 0;
 	caretImagePosition = 0;
@@ -88,6 +92,22 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 						  width+(padding*2), height+(padding*2));	
 	
 	addChild(inputRect);		
+	
+	if(multiLine) {
+		lineNumberBg = new ScreenShape(ScreenShape::SHAPE_RECT, 1,1);
+		lineNumberBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+		lineNumberBg->setColor(0.0, 0.0, 0.0, 0.3);
+		addChild(lineNumberBg);
+		lineNumberBg->visible = false;
+		
+		lineNumberAnchor = new ScreenEntity();
+		linesContainer->addChild(lineNumberAnchor);
+		
+	} else {
+		lineNumberBg = NULL;
+		lineNumberAnchor = NULL;
+	}
+
 	
 	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEUP);	
@@ -144,7 +164,7 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 		addChild(linesContainer);
 		enableScissor = true;
 	}
-	
+		
 	undoStateIndex = 0;
 	maxRedoIndex = 0;
 	
@@ -233,7 +253,7 @@ void UITextInput::setSelection(int lineStart, int lineEnd, int colStart, int col
 	}
 
 	selectorRectTop->setScale(topSize, topHeight);
-	selectorRectTop->setPosition(topX + padding + (topSize/2.0), padding + (lineStart * (lineHeight+lineSpacing)) + (topHeight/2.0));
+	selectorRectTop->setPosition(decoratorOffset + topX + padding + (topSize/2.0), padding + (lineStart * (lineHeight+lineSpacing)) + (topHeight/2.0));
 	
 	if(lineEnd > lineStart && lineEnd < lines.size()) {
 		ScreenLabel *bottomLine = lines[lineEnd];	
@@ -243,7 +263,7 @@ void UITextInput::setSelection(int lineStart, int lineEnd, int colStart, int col
 			bottomSize = this->width-padding;
 		Number bottomHeight = lineHeight+lineSpacing;
 		selectorRectBottom->setScale(bottomSize, bottomHeight);
-		selectorRectBottom->setPosition(padding + (bottomSize/2.0), padding + (lineEnd * (lineHeight+lineSpacing)) + (bottomHeight/2.0));
+		selectorRectBottom->setPosition(decoratorOffset + padding + (bottomSize/2.0), padding + (lineEnd * (lineHeight+lineSpacing)) + (bottomHeight/2.0));
 		
 		if(lineEnd != lineStart+1) {
 			// need filler
@@ -254,7 +274,7 @@ void UITextInput::setSelection(int lineStart, int lineEnd, int colStart, int col
 				midHeight += lineHeight+lineSpacing;
 			}
 			selectorRectMiddle->setScale(midSize, midHeight);
-			selectorRectMiddle->setPosition(padding + (midSize/2.0), padding + ((lineStart+1) * (lineHeight+lineSpacing)) + (midHeight/2.0));										
+			selectorRectMiddle->setPosition(decoratorOffset + padding + (midSize/2.0), padding + ((lineStart+1) * (lineHeight+lineSpacing)) + (midHeight/2.0));										
 			
 		}
 		
@@ -399,6 +419,10 @@ void UITextInput::Resize(Number width, Number height) {
 	if(multiLine) {
 		inputRect->setHitbox(width - scrollContainer->getVScrollWidth(), height);
 	}
+	
+	if(multiLine && lineNumbersEnabled) {
+		lineNumberBg->setShapeSize(decoratorOffset, height);
+	}
 
 	if(scrollContainer) {
 		scrollContainer->Resize(width, height);
@@ -414,10 +438,21 @@ int UITextInput::insertLine(bool after) {
 		aaMode = Label::ANTIALIAS_STRONG;
 	}
 
+	if(multiLine) {
+		ScreenLabel *newNumberLine = new ScreenLabel(L"", fontSize, fontName, aaMode);
+		newNumberLine->color = lineNumberColor;
+		lineNumberAnchor->addChild(newNumberLine);
+		numberLines.push_back(newNumberLine);		
+		
+		if(!lineNumbersEnabled) {
+			newNumberLine->visible = false;
+		}
+	}
+	
 	ScreenLabel *newLine = new ScreenLabel(L"", fontSize, fontName, aaMode);
 	newLine->color = textColor;
 	lineHeight = newLine->getHeight();
-	linesContainer->addChild(newLine);
+	linesContainer->addChild(newLine);	
 	
 	if(after) {	
 		
@@ -442,19 +477,55 @@ int UITextInput::insertLine(bool after) {
 		lineOffset = lineOffset + 1;	
 		lines.insert(it,newLine);
 		
+		renumberLines();
 		restructLines();
 	} else {	
 		// do we even need that? I don't think so.
 	}	
-		
+	
 	changedText();
 	return 1;	
+}
+
+void UITextInput::enableLineNumbers(bool val) {
+	lineNumbersEnabled = val;
+	lineNumberBg->visible = lineNumbersEnabled;
+	restructLines();
+}
+
+void UITextInput::renumberLines() {
+	if(!multiLine)
+		return;
+		
+	decoratorOffset = 0;	
+	if(multiLine) {
+	for(int i=0; i < numberLines.size(); i++) {
+		if(lineNumbersEnabled) {
+			numberLines[i]->setText(String::IntToString(i+1));		
+			int textWidth = ceil(numberLines[i]->getLabel()->getTextWidth());			
+			numberLines[i]->setPosition(-textWidth,padding + (i*(lineHeight+lineSpacing)),0.0f);		
+			if(textWidth > decoratorOffset - 10) {
+				decoratorOffset = textWidth + 10;
+			}
+			numberLines[i]->visible = true;
+		} else {
+			numberLines[i]->visible = false;		
+		}
+	}
+	}
+	
+	lineNumberAnchor->setPositionX(padding+decoratorOffset - 10);
+	
 }
 
 void UITextInput::restructLines() {
 
 	for(int i=0; i < lines.size(); i++) {
-		lines[i]->setPosition(padding,padding + (i*(lineHeight+lineSpacing)),0.0f);		
+		lines[i]->setPosition(decoratorOffset + padding,padding + (i*(lineHeight+lineSpacing)),0.0f);			
+	}
+	
+	if(multiLine && lineNumbersEnabled) {
+		lineNumberBg->setShapeSize(decoratorOffset, height);
 	}
 	
 	if(scrollContainer) {
@@ -704,7 +775,7 @@ void UITextInput::findCurrent() {
 
 void UITextInput::setCaretToMouse(Number x, Number y) {
 	clearSelection();
-	x -= (padding);
+	x -= (padding) + decoratorOffset;
 	y -= padding;
 	//if(lines.size() > 1) {
 		lineOffset = y  / (lineHeight+lineSpacing);
@@ -752,6 +823,7 @@ void UITextInput::removeLine(ScreenLabel *line) {
 	}
 	linesContainer->removeChild(line);
 	linesToDelete.push_back(line);
+	renumberLines();
 	restructLines();
 	changedText();
 }
@@ -848,6 +920,13 @@ void UITextInput::setCursorColor(Color color) {
 
 void UITextInput::setBackgroundColor(Color color) {
 	inputRect->color = color;
+}
+
+void UITextInput::setLineNumberColor(Color color) {
+	lineNumberColor = color;
+	for(int i=0; i < numberLines.size(); i++) {
+		numberLines[i]->color = lineNumberColor;
+	}	
 }
 
 void UITextInput::setTextColor(Color color) {
@@ -1241,7 +1320,7 @@ void UITextInput::Update() {
 	if(hasSelection) {
 		blinkerRect->visible = false;
 	}
-	blinkerRect->setPosition(caretImagePosition + 1,currentLine->getPosition2D().y+1);
+	blinkerRect->setPosition(decoratorOffset + caretImagePosition + 1,currentLine->getPosition2D().y+1);
 	if(hasFocus) {
 //		inputRect->setStrokeColor(1.0f, 1.0f, 1.0f, 0.25f);	
 	} else {

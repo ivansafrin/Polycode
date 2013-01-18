@@ -3,6 +3,7 @@
 	<bgColor r="39" g="40" b="34"/>
 	<cursorColor r="255" g="255" b="255"/>
 	<selectionColor r="51" g="50" b="54"/>
+	<lineNumberColor r="70" g="60" b="50"/>
 	<textColors>
 		<color r="233" g="226" b="222"/>
 		<color r="117" g="113" b="94"/>	

@@ -102,10 +102,13 @@ namespace Polycode {
 			void Copy();
 			void Paste();
 			
+			void enableLineNumbers(bool val);
+			
 			void setBackgroundColor(Color color);
 			void setSelectionColor(Color color);
 			void setCursorColor(Color color);
 			void setTextColor(Color color);
+			void setLineNumberColor(Color color);
 			
 			void replaceAll(String what, String withWhat);
 			
@@ -134,7 +137,14 @@ namespace Polycode {
 		
 		protected:
 		
+			ScreenEntity *lineNumberAnchor;
+		
+			void renumberLines();
+		
+			bool lineNumbersEnabled;
+		
 			Color textColor;
+			Color lineNumberColor;
 				
 			void setUndoState(UITextInputUndoState state);
 			void saveUndoState();
@@ -167,7 +177,11 @@ namespace Polycode {
 			int selectionTop;
 			int selectionBottom;
 			int selectionL;
-			int selectionR;		
+			int selectionR;
+			
+			ScreenShape *lineNumberBg;
+			
+			int decoratorOffset;
 		
 			bool settingText;
 		
@@ -211,6 +225,7 @@ namespace Polycode {
 			int lineOffset;
 			ScreenLabel *currentLine;		
 			vector<ScreenLabel*> lines;
+			vector<ScreenLabel*> numberLines;			
 			
 	};
 }

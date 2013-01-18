@@ -66,6 +66,16 @@ void SyntaxHighlightTheme::loadFromFile(String themeName) {
 				selectionColor.setColorRGB(r->intVal, g->intVal, b->intVal);
 			}		
 		}
+		
+		ObjectEntry *lineNumberColorEntry = themeObject.root["lineNumberColor"];		
+		if(lineNumberColorEntry) {
+			ObjectEntry *r = (*lineNumberColorEntry)["r"];
+			ObjectEntry *g = (*lineNumberColorEntry)["g"];
+			ObjectEntry *b = (*lineNumberColorEntry)["b"];
+			if(r && g && b) {
+				lineNumberColor.setColorRGB(r->intVal, g->intVal, b->intVal);
+			}		
+		}		
 			
 		ObjectEntry *textColors = themeObject.root["textColors"];
 		if(textColors) {
@@ -267,6 +277,9 @@ bool PolycodeTextEditor::openFile(OSFileEntry filePath) {
 	textInput->setCursorColor(globalSyntaxTheme->cursorColor);
 	textInput->setSelectionColor(globalSyntaxTheme->selectionColor);
 	textInput->useStrongHinting = globalSyntaxTheme->useStrongHinting;
+	textInput->setLineNumberColor(globalSyntaxTheme->lineNumberColor);
+	textInput->enableLineNumbers(true);
+	
 	
 	findBar = new FindBar();
 	findBar->visible = false;
