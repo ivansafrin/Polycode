@@ -211,7 +211,11 @@ namespace Polycode {
 			* @param encoding The encoding to use.
 			* @return The size the data would take up if returned with this encoding.
 			* @see getDataWithEncoding()
-			*/																																				
+			*/																		
+			
+
+			void append(const char c);
+
 			size_t getDataSizeWithEncoding(int encoding) const;					
 			
 			/**

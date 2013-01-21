@@ -60,6 +60,23 @@ namespace Polycode {
 			unsigned int type;
 	};
 	
+	class _PolyExport LineColorData {
+		public:
+			LineColorData(Color color, unsigned int rangeStart, unsigned int rangeEnd) {
+				this->color = color;
+				this->rangeStart = rangeStart;
+				this->rangeEnd = rangeEnd;
+			}
+			Color color;
+			unsigned int rangeStart;
+			unsigned int rangeEnd;
+	};
+	
+	class _PolyExport LineColorInfo {
+		public:
+			std::vector<LineColorData> colors;			
+	};
+	
 	class _PolyExport UITextInputSyntaxHighlighter {
 		public:		
 			virtual std::vector<SyntaxHighlightToken> parseText(String text) = 0;
@@ -110,6 +127,8 @@ namespace Polycode {
 			void setTextColor(Color color);
 			void setLineNumberColor(Color color);
 			
+			void checkBufferLines();
+			
 			void replaceAll(String what, String withWhat);
 			
 			void findString(String stringToFind, bool replace=false, String replaceString="");
@@ -137,6 +156,10 @@ namespace Polycode {
 		
 		protected:
 		
+			void readjustBuffer();
+
+			std::vector<LineColorInfo> lineColors;
+					
 			ScreenEntity *lineNumberAnchor;
 		
 			void renumberLines();
@@ -162,7 +185,7 @@ namespace Polycode {
 			void selectWordAtCaret();
 		
 			void restructLines();
-			void removeLine(ScreenLabel *line);
+			void removeLine(unsigned int lineIndex);
 		
 			ScreenShape *selectorRectTop;
 			ScreenShape *selectorRectMiddle;
@@ -215,6 +238,9 @@ namespace Polycode {
 		
 			Number caretImagePosition;
 			
+			int currentBufferLines;
+			int neededBufferLines;
+			
 			UIScrollContainer *scrollContainer;
 		
 			String fontName;
@@ -223,8 +249,10 @@ namespace Polycode {
 			Number lineHeight;
 		
 			int lineOffset;
-			ScreenLabel *currentLine;		
-			vector<ScreenLabel*> lines;
+			
+			vector<String> lines;
+						
+			vector<ScreenLabel*> bufferLines;
 			vector<ScreenLabel*> numberLines;			
 			
 	};

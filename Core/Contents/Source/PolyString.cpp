@@ -195,6 +195,9 @@ const char *String::c_str() const {
 	return contents.c_str();
 }
 
+void String::append(const char c) {
+	contents.append(1,c);
+}
 
 void utf8toWStr(WStr& dest, const Str& src){
 	dest.clear();

@@ -35,7 +35,7 @@ namespace Polycode {
 		
 		void setContentSize(Number newContentWidth, Number newContentHeight);
 		
-		void Resize(Number width, Number height);
+		void Resize(Number width, Number height);		
 		
 		void setScrollValue(Number xScroll, Number yScroll);
 		void scrollVertical(Number amount);

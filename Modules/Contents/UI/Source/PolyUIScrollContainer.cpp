@@ -175,6 +175,7 @@ void UIScrollContainer::handleEvent(Event *event) {
 			scrollChild->setPositionY(floor(((-contentHeight+height) )*vScrollBar->getScrollValue()));
 			if(scrollChild->getPosition().y > 0)
 				scrollChild->setPositionY(0);
+				dispatchEvent(new Event(), Event::CHANGE_EVENT);
 		}
 	}
 	
@@ -183,7 +184,7 @@ void UIScrollContainer::handleEvent(Event *event) {
 			scrollChild->setPositionX(floor(((-contentWidth+width) )*hScrollBar->getScrollValue()));
 			if(scrollChild->getPosition().x > 0)
 				scrollChild->setPositionX(0);
-			
+				dispatchEvent(new Event(), Event::CHANGE_EVENT);			
 		}
 	}
 	

@@ -155,6 +155,11 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 				print ">> Parsing class %s" % ckey
 				c = cppHeader.classes[ckey] # Def: The class structure
 
+				#if 'doxygen' in c:
+				#	print("DOXYGEN START")
+				#	print(c['doxygen'])
+				#	print("DOXYGEN END")
+
 				luaClassBindingOut = "" # Def: The local lua file to generate for this class.
 				inherits = False
 				parentClass = ""

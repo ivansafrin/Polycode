@@ -99,8 +99,12 @@ PolycodeSyntaxHighlighter::PolycodeSyntaxHighlighter(String extension) {
 //	String separators = " ;()\t\n=+-/\\'\"";	
 //	String keywords = "true,false,";
 	
-	separators = String("[ * [ ] { } ; . , : # ( ) \t \n = + - / \\ ' \"").split(" ");
-	separators.push_back(" ");
+	std::vector<String>separators_s = String("[ * [ ] { } ; . , : # ( ) \t \n = + - / \\ ' \"").split(" ");
+	separators_s.push_back(" ");
+	
+	for(int i=0; i < separators_s.size(); i++) {
+		separators.push_back(separators_s[i][0]);
+	}
 	
 	keywords = String("for cast safe_cast and require true false class self break do end else elseif function if local nil not or repeat return then until while").split(" ");
 }
@@ -109,9 +113,17 @@ PolycodeSyntaxHighlighter::~PolycodeSyntaxHighlighter() {
 
 }
 
-bool PolycodeSyntaxHighlighter::contains(String part, std::vector<String> list) {
-	for(int i=0; i < list.size(); i++) {
-		if(list[i] == part)
+bool PolycodeSyntaxHighlighter::contains(String part, std::vector<String> *list) {
+	for(int i=0; i < list->size(); i++) {
+		if((*list)[i] == part)
+			return true;
+	}
+	return false;
+}
+
+bool PolycodeSyntaxHighlighter::contains_char(char part, std::vector<char> *list) {
+	for(int i=0; i < list->size(); i++) {
+		if((*list)[i] == part)
 			return true;
 	}
 	return false;
@@ -145,7 +157,7 @@ std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseLua(String tex
 	
 	for(int i=0; i < text.length(); i++) {
 		char ch = text[i];				
-		if(contains(String(ch), separators)) {			
+		if(contains_char(ch, &separators)) {			
 
 			unsigned int type = mode;
 			unsigned int ch_type = mode;
@@ -159,7 +171,7 @@ std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseLua(String tex
 			}
 
 			if(mode != MODE_STRING  && mode != MODE_COMMENT) {
-				if(contains(line, keywords)) {
+				if(contains(line, &keywords)) {
 					type = MODE_KEYWORD;
 				}
 			}
@@ -188,7 +200,7 @@ std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseLua(String tex
 	
 			if(line != "")
 				tokens.push_back(SyntaxHighlightToken(line, type));
-			tokens.push_back(SyntaxHighlightToken(String(ch), ch_type));
+			tokens.push_back(SyntaxHighlightToken(ch, ch_type));
 
 			if(ch == '-' && lastSeparator == '-' && mode != MODE_STRING) {
 				isComment = true;
@@ -227,7 +239,7 @@ std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseLua(String tex
 			line = "";
 			lastSeparator = ch;			
 		} else {
-			line += String(ch);
+			line.append(ch);
 		}
 	}
 	
