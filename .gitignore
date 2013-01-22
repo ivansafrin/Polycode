@@ -105,3 +105,5 @@ Core/Build/Mac OS X/PolyCore.xcodeproj/project.xcworkspace/xcuserdata/ivansafrin
 Player/Build/Mac OS X/Polycode Player.xcodeproj/project.xcworkspace/xcuserdata/ivansafrin.xcuserdatad/UserInterfaceState.xcuserstate
 
 Player/Build/Mac OS X/Polycode Player.xcodeproj/project.xcworkspace/xcuserdata/ivansafrin.xcuserdatad/UserInterfaceState.xcuserstate
+
+/Documentation/Lua/xml/*.xml
