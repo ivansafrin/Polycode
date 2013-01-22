@@ -369,34 +369,65 @@ void UITextInput::deleteSelection() {
 	changedText();
 }
 
-void UITextInput::changedText() {
-	if(settingText)
-		return;
+void UITextInput::applySyntaxFormatting() {
 
 	if(syntaxHighliter && multiLine) {
+	
+		int startLine = (-linesContainer->getPosition().y) / (lineHeight+lineSpacing);				
+		unsigned int endLine = startLine + ((int)((height / (lineHeight+lineSpacing)))) + 1;					
+		
+		if(startLine < 0)
+			startLine = 0;
+		
+		if(endLine > lines.size())
+			endLine = lines.size();
+	
+		if(needFullRedraw) {
+			startLine = 0;
+			endLine = lines.size();
+		}
+	
+	
 		String totalText = L"";
-		for(int i=0; i < lines.size(); i++) {
+		for(int i=startLine; i < endLine; i++) {
 			totalText += lines[i];
 			if(i < lines.size()-1)
 				totalText += L"\n";
 		}		
 		
 	std::vector<SyntaxHighlightToken> tokens = syntaxHighliter->parseText(totalText);	
-	
-	
+		
 	// DO SYNTAX HIGHLIGHTING
-	lineColors.clear();
-	for(int i=0; i < lines.size(); i++) {
-		lineColors.push_back(LineColorInfo());
+	if(needFullRedraw) {
+		lineColors.clear();
+		for(int i=0; i < lines.size(); i++) {
+			lineColors.push_back(LineColorInfo());
+		}		
+		needFullRedraw = false;
+	} else {
+		std::vector<LineColorInfo> newInfo;
+		
+		for(int i=0; i < lines.size(); i++) {
+			if((i >= startLine && i < endLine) || i >= lineColors.size()) {
+				newInfo.push_back(LineColorInfo());
+			} else {
+				newInfo.push_back(lineColors[i]);
+			}
+		}
+		
+		lineColors = newInfo;
 	}
 	
-	int lineIndex = 0;
+	int lineIndex = startLine;
 	int rangeStart = 0;
 	int rangeEnd = 0;
 		
 	for(int i=0; i < tokens.size(); i++) {	
 		if(tokens[i].text == "\n") {
 			lineIndex++;
+			if(lineIndex >= endLine) {
+				lineIndex = endLine-1;
+			}
 			rangeStart = 0;
 			rangeEnd = 0;
 		} else {			
@@ -416,66 +447,13 @@ void UITextInput::changedText() {
 	}			
 	
 	}
-/*			
-		unsigned int startLine = (-linesContainer->getPosition().y) / (lineHeight+lineSpacing);				
-		unsigned int endLine = startLine + ((int)((height / (lineHeight+lineSpacing)))) + 1;					
-		
-		if(endLine > lines.size())
-			endLine = lines.size();
-	
-		if(needFullRedraw) {
-			startLine = 0;
-			endLine = lines.size();
-			needFullRedraw = false;
-		}
-	
-		String totalText = L"";
-		for(int i=startLine; i < endLine; i++) {
-				totalText += lines[i]->getText();					
-				if(i < lines.size()-1)
-					totalText += L"\n";
-		}	
-		
-		std::vector<SyntaxHighlightToken> tokens = syntaxHighliter->parseText(totalText);
-		
-		for(int i=startLine; i < endLine; i++) {
-			lines[i]->getLabel()->clearColors();
-		}
-		
-		int lineIndex = startLine;
-		int rangeStart = 0;
-		int rangeEnd = 0;
-				
-		for(int i=0; i < tokens.size(); i++) {			
-			if(tokens[i].text == "\n") {
-				lineIndex++;
-				rangeStart = 0;
-				rangeEnd = 0;
-			} else {
-			
-				if(lineIndex < lines.size()) {
-					int textLength = tokens[i].text.length();
-					if(tokens[i].text.length() > 1) {
-						rangeEnd = rangeStart + textLength-1;
-						lines[lineIndex]->getLabel()->setColorForRange(tokens[i].color, rangeStart, rangeEnd);	
-						rangeStart = rangeStart + textLength; 
-					} else {
-						rangeEnd = rangeStart;
-						lines[lineIndex]->getLabel()->setColorForRange(tokens[i].color, rangeStart, rangeEnd);	
-						rangeStart++;
-					}				
-				}
-			}
-		}
-		
-		for(int i=startLine; i < endLine; i++) {
-			lines[i]->setText(lines[i]->getText());
-			lines[i]->setColor(1.0, 1.0, 1.0, 1.0);
-		}
-		
-	}
-*/
-	readjustBuffer();
+	readjustBuffer();	
+}
+
+void UITextInput::changedText() {
+	if(settingText)
+		return;
+	applySyntaxFormatting();
 	dispatchEvent(new UIEvent(), UIEvent::CHANGE_EVENT);	
 }
 
@@ -496,7 +474,7 @@ void UITextInput::Resize(Number width, Number height) {
 		neededBufferLines = (height / ( lineHeight+lineSpacing)) + 1;
 		checkBufferLines();
 		renumberLines();
-		readjustBuffer();
+		applySyntaxFormatting();
 		
 	}
 	
@@ -608,11 +586,11 @@ void UITextInput::setText(String text) {
 		clearSelection();				
 		updateCaretPosition();		
 	} else {
-		needFullRedraw = true;	
 		selectAll();
 		insertText(text);
 		clearSelection();
 	}
+//	needFullRedraw = true;		
 	changedText();
 }
 
@@ -1427,7 +1405,7 @@ void UITextInput::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == scrollContainer) {
 		if(event->getEventCode() == Event::CHANGE_EVENT) {
-			readjustBuffer();
+			applySyntaxFormatting();
 		}
 	}
 

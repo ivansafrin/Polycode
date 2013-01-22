@@ -104,6 +104,7 @@ namespace Polycode {
 			int insertLine(bool after);
 		
 			void changedText();
+			void applySyntaxFormatting();
 			
 			void onKeyDown(PolyKEY key, wchar_t charCode);
 		
