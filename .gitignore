@@ -107,3 +107,8 @@ Player/Build/Mac OS X/Polycode Player.xcodeproj/project.xcworkspace/xcuserdata/i
 Player/Build/Mac OS X/Polycode Player.xcodeproj/project.xcworkspace/xcuserdata/ivansafrin.xcuserdatad/UserInterfaceState.xcuserstate
 
 /Documentation/Lua/xml/*.xml
+
+/Documentation/Lua/html/*
+!/Documentation/Lua/html/css
+!/Documentation/Lua/html/images
+!/Documentation/Lua/html/js

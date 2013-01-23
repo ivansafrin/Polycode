@@ -69,6 +69,8 @@ public:
 	void newProject();
 	void newFile();
 	
+	void openDocs();
+	
 	void addFiles();
 	
 	void newGroup();

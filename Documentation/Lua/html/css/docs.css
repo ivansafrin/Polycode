@@ -1,0 +1,137 @@
+
+body, html {
+	background-color: #222222;
+	color: white;
+	font-family: Helvetica, Arial, sans;
+	margin: 0px;
+	padding: 0px;
+	font-size: 14px;
+}
+
+a {
+	color: white;
+}
+
+#global_header {
+	width: 100%;
+	height: 64px;
+	background: black url('../images/docs_header.png') no-repeat left top;
+	margin: 0px 0px 0px 0px;
+}
+
+#module_links, #class_list {
+	float: left;
+	width: 160px;
+	padding: 30px;
+	background: #141414;
+	margin: 0px 0px 0px 0px;
+}
+
+#class_list a {
+	color: #757575;
+	text-decoration: none;
+}
+
+.module_link {
+	margin: 20px 0px 0px 0px;
+	font-size: 24px;
+}
+
+.class_entry {
+	font-size: 14px;
+	margin: 3px 0px 0px 0px;
+}
+
+.class_main {
+	margin: 0px 0px 0px 220px;
+	padding: 20px;
+}
+
+.class_name {
+	font-size: 32px;
+	margin: 0px 0px 30px 0px;
+}
+
+.class_desc {
+	font-size: 18px;
+	color: #545454;
+	margin: 0px 0px 20px 0px;
+}
+
+.class_properies_list, .class_methods_list {
+	padding: 10px;
+	background-color: #1a1a1a;
+}
+
+.class_property, .class_method {
+	padding: 5px;
+	margin: 0px 0px 10px 0px;
+}
+
+.class_properies_title, .class_methods_title {
+	margin: 10px 0px 10px 0px;
+	color: #363636;
+	font-size: 24px;
+}
+
+.class_property_name {
+	color: #70bd38;
+}
+
+.class_property_type {
+	color: #925381;
+}
+
+.class_property_desc {
+	color: #545454;
+}
+
+.class_method_name {
+	color: #4e87c8;
+	font-size: 16px;
+}
+
+.class_method_type {
+	color: #925381;
+	font-size: 12px;
+}
+
+.class_method_desc {
+	color: #545454;
+}
+
+.class_method_params {
+	padding: 10px;
+}
+
+.class_method_param {
+	padding: 0px 0px 5px 10px;
+}
+
+.class_method_param_name {
+	color: #70bd38;
+}
+
+.class_method_param_type {
+	color: #925381;
+	font-size: 12px;
+}
+
+.class_method_param_desc {
+	color: #545454;
+}
+
+.class_method_params_title {
+	margin: 0px 0px 10px 0px;
+	color: #363636;
+	font-size: 16px;
+}
+
+.inline_param {
+	color: #70bd38;
+}
+
+.inline_type {
+	color: #925381;
+	font-size: 12px;
+}

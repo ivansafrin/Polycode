@@ -146,5 +146,8 @@
 	app->findText();
 }
 
+-(IBAction) openDocs: (id) sender {
+	app->openDocs();
+}
 
 @end

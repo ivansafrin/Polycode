@@ -37,7 +37,10 @@ def template_quote(str):
 	return "\"%s\"" % str;
 
 def cleanDocs(docs):
-	return docs.replace("/*", "").replace("*/", "").replace("*", "").replace("\n", "")
+	return docs.replace("/*", "").replace("*/", "").replace("*", "").replace("\n", "").replace("\r", "").replace("::", ".")
+
+def toLuaType(t):
+	return t.replace("void", "nil").replace("int", "Integer").replace("bool", "Boolean")
 
 # FIXME: Some "unsigned int *" functions are still being generated on the polycode API?
 def typeFilter(ty):
@@ -45,6 +48,8 @@ def typeFilter(ty):
 	ty = ty.replace("std::", "")
 	ty = ty.replace("const", "")
 	ty = ty.replace("inline", "")
+	ty = ty.replace("static", "")
+	ty = ty.replace("virtual", "")
 	ty = ty.replace("&", "")
 	ty = re.sub(r'^.*\sint\s*$', 'int', ty) # eg "unsigned int"
 	ty = re.sub(r'^.*\slong\s*$', 'int', ty)
@@ -87,6 +92,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 
 	luaDocOut += "<?xml version=\"1.0\" ?>\n"
 	luaDocOut += "<docs>\n"
+	luaDocOut += "<classes>\n"
 
 
 	# Get list of headers to create bindings from
@@ -103,7 +109,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 		if inputPathIsDir:
 			fileName = "%s/%s" % (inputPath, fileName)
 		head, tail = os.path.split(fileName)
-		ignore = ["PolyGLSLProgram", "PolyGLSLShader", "PolyGLSLShaderModule", "PolyWinCore", "PolyCocoaCore", "PolyAGLCore", "PolySDLCore", "Poly_iPhone", "PolyGLES1Renderer", "PolyGLRenderer", "tinyxml", "tinystr", "OpenGLCubemap", "PolyiPhoneCore", "PolyGLES1Texture", "PolyGLTexture", "PolyGLVertexBuffer", "PolyThreaded", "PolyGLHeaders", "GLee", "PolyPeer", "PolySocket", "PolyClient", "PolyServer", "PolyServerWorld"]
+		ignore = ["PolyGLSLProgram", "PolyGLSLShader", "PolyGLSLShaderModule", "PolyWinCore", "PolyCocoaCore", "PolyAGLCore", "PolySDLCore", "Poly_iPhone", "PolyGLES1Renderer", "PolyGLRenderer", "tinyxml", "tinystr", "OpenGLCubemap", "PolyiPhoneCore", "PolyGLES1Texture", "PolyGLTexture", "PolyGLVertexBuffer", "PolyThreaded", "PolyGLHeaders", "GLee", "PolyPeer", "PolySocket", "PolyClient", "PolyServer", "PolyServerWorld", "OSFILE", "OSFileEntry", "OSBasics", "PolyLogger"]
 		if tail.split(".")[1] == "h" and tail.split(".")[0] not in ignore:
 			filteredFiles.append(fileName)
 			wrappersHeaderOut += "#include \"%s\"\n" % (tail)
@@ -249,7 +255,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 							luaClassBindingOut += template_returnPtrLookup("\t\t", template_quote(pp["type"]), "retVal")
 
 						
-						luaDocOut += "\t\t\t<member name=\"%s\" type=\"%s\">\n" % (pp["name"],  typeFilter(pp["type"]))
+						luaDocOut += "\t\t\t<member name=\"%s\" type=\"%s\">\n" % (pp["name"],  toLuaType(typeFilter(pp["type"])))
 						if 'doxygen' in pp:
 							luaDocOut += "\t\t\t\t<desc><![CDATA[%s]]></desc>\n" % (cleanDocs(pp['doxygen']))
 						
@@ -364,7 +370,12 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 					if pm["name"] == "~"+ckey:
 						continue
 					
-					luaDocOut += "\t\t\t<method name=\"%s\" return_type=\"%s\">\n" % (pm["name"],  typeFilter(pm["rtnType"].replace("*", "")))
+					if pm["rtnType"].find("std : : vector") > -1:
+						vectorReturnClass = pm["rtnType"].replace("std : : vector <", "").replace(">","").replace(" ", "")
+						luaDocOut += "\t\t\t<method name=\"%s\" return_array=\"true\" return_type=\"%s\">\n" % (pm["name"],  toLuaType(typeFilter(vectorReturnClass).replace("*", "")))
+					else:
+						luaDocOut += "\t\t\t<method name=\"%s\" return_type=\"%s\">\n" % (pm["name"],  toLuaType(typeFilter(pm["rtnType"].replace("*", ""))))
+
 					docs = None
 					if 'doxygen' in pm:
 						docs = cleanDocs(pm['doxygen']).split("@return")[0].split("@param")
@@ -380,12 +391,16 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 									continue
 								if param["type"] == "0":
 									continue
-								luaDocOut += "\t\t\t\t\t<param name=\"%s\" type=\"%s\">\n" % (param["name"], typeFilter(param["type"]).replace("*",""))
+								if param["type"].find("vector<") != -1:
+									vectorClass = param["type"].replace("std::vector<", "").replace(">","").replace(" ", "")
+									luaDocOut += "\t\t\t\t\t<param name=\"%s\" param_array=\"true\" type=\"%s\">\n" % (param["name"], toLuaType(vectorClass.replace("*","")))
+								else:
+									luaDocOut += "\t\t\t\t\t<param name=\"%s\" type=\"%s\">\n" % (param["name"], toLuaType(typeFilter(param["type"]).replace("*","")))
 								if docs != None:
 									if len(docs) > paramIndex+1:
 										cdoc = docs[paramIndex+1].split()
 										cdoc.pop(0)
-										luaDocOut += "\t\t\t\t\t\t<desc><![CDATA[%s]]></desc>\n" % (" ".join(cdoc))
+										luaDocOut += "\t\t\t\t\t\t<desc><![CDATA[%s]]></desc>\n" % (" ".join(cdoc).replace("\n", ""))
 								luaDocOut += "\t\t\t\t\t</param>\n"
 								paramIndex = paramIndex + 1
 						luaDocOut += "\t\t\t\t</params>\n"
@@ -700,6 +715,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 			print e
 			sys.exit(1)
 
+	luaDocOut += "</classes>\n"
 	luaDocOut += "</docs>\n"
 
 	# Footer boilerplate for wrappersHeaderOut and cppRegisterOut.

@@ -13,6 +13,8 @@ INSTALL(DIRECTORY ${PolycodeStandalone_SOURCE_DIR}/../Modules/Bindings/3DPhysics
 
 INSTALL(DIRECTORY ${PolycodeStandalone_SOURCE_DIR}/../Examples/Lua DESTINATION Examples)
 
+INSTALL(DIRECTORY ${PolycodeStandalone_SOURCE_DIR}/../Documentation/Lua/html DESTINATION Docs)
+
 IF(MSVC OR MINGW)
 
   INSTALL(FILES ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/bin/OpenAL32.dll DESTINATION Player)

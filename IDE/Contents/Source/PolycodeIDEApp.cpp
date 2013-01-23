@@ -259,6 +259,13 @@ void PolycodeIDEApp::openProject(String projectFile) {
 	projectManager->openProject(projectFile);
 }
 
+void PolycodeIDEApp::openDocs() {
+
+	String polycodeBasePath = CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory();
+	String docsURL = "file://localhost"+polycodeBasePath+"/Standalone/Docs/html/index.html";
+	core->openURL(docsURL);
+}
+
 void PolycodeIDEApp::openFileInProject(PolycodeProject *project, String filePath) {
 	OSFileEntry fileEntry = OSFileEntry(project->getRootFolder()+"/"+filePath, OSFileEntry::TYPE_FILE);	
 	OSFILE *file = OSBasics::open(project->getRootFolder()+"/"+filePath,"r");
