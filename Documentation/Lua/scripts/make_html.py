@@ -89,10 +89,11 @@ def makePage(item, classList):
 				html += "\t\t\t\t\t\t\t\t<div class=\"class_method_param\">\n"
 				html += "\t\t\t\t\t\t\t\t\t<div class=\"class_method_param_name\">%s</div>\n" % (param.attributes["name"].value)
 				html += "\t\t\t\t\t\t\t\t\t<div class=\"class_method_param_type\">%s</div>\n" % (param.attributes["type"].value)
-				desc = subitem.getElementsByTagName('desc')
+				desc = param.getElementsByTagName('desc')
 				descText = "No description."
 				if len(desc) > 0:
-					descText = desc[0].childNodes[0].data
+					if len(desc[0].childNodes) > 0:
+						descText = desc[0].childNodes[0].data
 				html += "\t\t\t\t\t\t\t\t\t<div class=\"class_method_param_desc\">%s</div>\n" % (descText)
 				html += "\t\t\t\t\t\t\t\t</div>\n"
 

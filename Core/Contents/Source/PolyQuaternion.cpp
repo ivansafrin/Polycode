@@ -178,7 +178,7 @@ Matrix4 Quaternion::createMatrix() const
         return w*w+x*x+y*y+z*z;
     }
 
-    Number Quaternion::normalize(void)
+    Number Quaternion::normalize()
     {
         Number len = Norm();
         Number factor = 1.0f / sqrtf(len);

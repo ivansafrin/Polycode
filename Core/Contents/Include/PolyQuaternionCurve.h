@@ -45,7 +45,7 @@ namespace Polycode {
 			Quaternion interpolate(unsigned int fromIndex, Number t, bool useShortestPath);
 						
 			void generatePointsFromCurves(BezierCurve *wCurve, BezierCurve *xCurve, BezierCurve *yCurve, BezierCurve *zCurve);
-			void recalcTangents(void);
+			void recalcTangents();
 		
 		protected:
 		

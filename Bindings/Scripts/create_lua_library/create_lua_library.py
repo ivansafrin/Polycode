@@ -226,11 +226,17 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 
 				luaDocOut += "\t\t<members>\n"
 
+				numGetVars = 0
 				if len(classProperties) > 0: # If there are properties, add index lookup to the metatable
 					luaClassBindingOut += "function %s:__getvar(name)\n" % ckey
 					# Iterate over property structures, creating if/else clauses for each.
 					# TODO: Could a table be more appropriate for 
 					for pp in classProperties:
+						if pp["name"] == "" or pp["array"] == 1:
+							continue
+
+						numGetVars = numGetVars + 1
+
 						pp["type"] = typeFilter(pp["type"])
 						if pidx == 0:
 							luaClassBindingOut += "\tif name == \"%s\" then\n" % (pp["name"])
@@ -290,8 +296,8 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 						
 						# Success
 						pidx = pidx + 1
-
-					luaClassBindingOut += "\tend\n"
+					if numGetVars != 0:
+						luaClassBindingOut += "\tend\n"
 					if inherits:
 						luaClassBindingOut += "\tif %s[\"__getvar\"] ~= nil then\n" % (parentClass)
 						luaClassBindingOut += "\t\treturn %s.__getvar(self, name)\n" % (parentClass)
@@ -307,6 +313,8 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 				if len(classProperties) > 0: # If there are properties, add index setter to the metatable
 					luaClassBindingOut += "function %s:__setvar(name,value)\n" % ckey
 					for pp in classProperties:
+						if pp["name"] == "" or pp["array"] == 1:
+							continue
 						pp["type"] = typeFilter(pp["type"])
 						
 						# If type is a primitive: Create lua and C++ sides at the same time.
@@ -367,18 +375,21 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 
 					# Skip destructors and methods which return templates.
 					# TODO: Special-case certain kind of vector<>s?
-					if pm["name"] == "~"+ckey:
+					if pm["name"] == "~"+ckey or pm["name"] == "CoreServices":
 						continue
 					
-					if pm["rtnType"].find("std : : vector") > -1:
-						vectorReturnClass = pm["rtnType"].replace("std : : vector <", "").replace(">","").replace(" ", "")
+					if pm["rtnType"].find("std::vector") > -1:
+						vectorReturnClass = pm["rtnType"].replace("std::vector<", "").replace(">","").replace(" ", "")
 						luaDocOut += "\t\t\t<method name=\"%s\" return_array=\"true\" return_type=\"%s\">\n" % (pm["name"],  toLuaType(typeFilter(vectorReturnClass).replace("*", "")))
 					else:
 						luaDocOut += "\t\t\t<method name=\"%s\" return_type=\"%s\">\n" % (pm["name"],  toLuaType(typeFilter(pm["rtnType"].replace("*", ""))))
 
 					docs = None
 					if 'doxygen' in pm:
-						docs = cleanDocs(pm['doxygen']).split("@return")[0].split("@param")
+						if pm['doxygen'].find("@return") > -1:
+							docs = cleanDocs(pm['doxygen']).split("@return")[0].split("@param")
+						else:
+							docs = cleanDocs(pm['doxygen']).split("@param")
 						luaDocOut += "\t\t\t\t<desc><![CDATA[%s]]></desc>\n" % (docs[0])
 						
 					if len(pm["parameters"]) > 0:
@@ -538,8 +549,8 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 							#check if returning a template
 							if pm["rtnType"].find("<") > -1:
 								#if returning a vector, convert to lua table
-								if pm["rtnType"].find("std : : vector") > -1:
-									vectorReturnClass = pm["rtnType"].replace("std : : vector <", "").replace(">","").replace(" ", "")
+								if pm["rtnType"].find("std::vector") > -1:
+									vectorReturnClass = pm["rtnType"].replace("std::vector<", "").replace(">","").replace(" ", "")
 									if vectorReturnClass.find("&") == -1 and vectorReturnClass.find("*") > -1: #FIXME: return references to std::vectors and basic types
 										vectorReturn = True
 										wrappersHeaderOut += "\tstd::vector<%s> retVector = %s;\n" % (vectorReturnClass,call)

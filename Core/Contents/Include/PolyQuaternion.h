@@ -95,7 +95,7 @@ namespace Polycode {
 	Quaternion Log () const;
     Quaternion Exp () const;	
     Number Norm () const;
-    Number normalize(void);	
+    Number normalize();	
     Quaternion operator+ (const Quaternion& rkQ) const;
     Quaternion operator* (const Quaternion& rkQ) const;
     Quaternion operator* (Number fScalar) const;

@@ -121,7 +121,7 @@ void QuaternionCurve::generatePointsFromCurves(BezierCurve *wCurve, BezierCurve 
 
     }
 
-void QuaternionCurve::recalcTangents(void)
+void QuaternionCurve::recalcTangents()
 {
         unsigned int i, numPoints;
         bool isClosed;
