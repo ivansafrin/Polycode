@@ -10,7 +10,7 @@ globalHeaderMain += "\t\t<link rel=\"stylesheet\" type=\"text/css\" href=\"css/d
 globalHeaderMain += "\t\t<script type=\"text/javascript\" src=\"js/docs.js\"></script>"
 globalHeaderMain += "\t</head>\n"
 globalHeaderMain += "\t<body>\n"
-globalHeaderMain += "\t\t<div id=\"global_header\"></div>\n"
+globalHeaderMain += "\t\t<div id=\"global_header\"><a href=\"index.html\"><img border=\"0\" src=\"images/docs_header.png\"/></a></div>\n"
 globalHeaderMain += "\t\t<div id=\"content\">\n"
 
 globalHeader = ""
@@ -23,7 +23,7 @@ globalHeader += "\t\t<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/do
 globalHeader += "\t\t<script type=\"text/javascript\" src=\"js/docs.js\"></script>"
 globalHeader += "\t</head>\n"
 globalHeader += "\t<body>\n"
-globalHeader += "\t\t<div id=\"global_header\"></div>\n"
+globalHeader += "\t\t<div id=\"global_header\"><a href=\"../index.html\"><img border=\"0\" src=\"../images/docs_header.png\"/></a></div>\n"
 globalHeader += "\t\t<div id=\"content\">\n"
 
 

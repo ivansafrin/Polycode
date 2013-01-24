@@ -15,7 +15,7 @@ a {
 #global_header {
 	width: 100%;
 	height: 64px;
-	background: black url('../images/docs_header.png') no-repeat left top;
+	background-color: black;
 	margin: 0px 0px 0px 0px;
 }
 
