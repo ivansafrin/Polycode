@@ -37,7 +37,7 @@ def template_quote(str):
 	return "\"%s\"" % str;
 
 def cleanDocs(docs):
-	return docs.replace("/*", "").replace("*/", "").replace("*", "").replace("\n", "").replace("\r", "").replace("::", ".")
+	return docs.replace("/*", "").replace("*/", "").replace("*", "").replace("\n", "").replace("\r", "").replace("::", ".").replace("\t", "")
 
 def toLuaType(t):
 	return t.replace("void", "nil").replace("int", "Integer").replace("bool", "Boolean")
@@ -197,7 +197,13 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 					print("Warning: Lua-binding class with less than two methods")
 					continue # FIXME: Remove this, move any non-compileable classes into ignore_classes
 
-				luaDocOut += "\t<class name=\"%s\">\n" % (ckey)
+				extendString = ""
+				if len(c["inherits"]) > 0:
+					if c["inherits"][0]["class"] != "PolyBase":
+						extendString = " extends=\"%s\"" % (c["inherits"][0]["class"])
+				
+				luaDocOut += "\t<class name=\"%s\"%s>\n" % (ckey, extendString)
+
 				if 'doxygen' in c:
 					luaDocOut += "\t\t<desc><![CDATA[%s]]></desc>\n" % (cleanDocs(c['doxygen']))
 
@@ -205,6 +211,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 				ignore_methods = ["readByte32", "readByte16", "getCustomEntitiesByType", "Core", "Renderer", "Shader", "Texture", "handleEvent", "secondaryHandler", "getSTLString"]
 				luaClassBindingOut += "\n\n"
 
+				luaDocOut += "\t\t<static_members>\n"
 				classProperties = [] # Def: List of found property structures ("properties" meaning "data members")
 				for pp in c["properties"]["public"]:
 					pp["type"] = pp["type"].replace("Polycode::", "")
@@ -214,10 +221,17 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 					if pp["type"].find("static ") != -1: # If static. FIXME: Static doesn't work?
 						if "defaltValue" in pp: # FIXME: defaltValue is misspelled.
 							luaClassBindingOut += "%s.%s = %s\n" % (ckey, pp["name"], pp["defaltValue"])
+							luaDocOut += "\t\t\t<static_member name=\"%s\" type=\"%s\" value=\"%s\">\n" % (pp["name"],  toLuaType(typeFilter(pp["type"])), pp["defaltValue"])
+							if 'doxygen' in pp:
+								luaDocOut += "\t\t\t\t<desc><![CDATA[%s]]></desc>\n" % (cleanDocs(pp['doxygen']))
+							luaDocOut += "\t\t\t</static_member>\n"
 					else: # FIXME: Nonstatic method ? variable ?? found.
 						#there are some bugs in the class parser that cause it to return junk
 						if pp["type"].find("*") == -1 and pp["type"].find("vector") == -1 and pp["name"] != "setScale" and pp["name"] != "setPosition" and pp["name"] != "BUFFER_CACHE_PRECISION" and not pp["name"].isdigit():
 							classProperties.append(pp)
+
+				luaDocOut += "\t\t</static_members>\n"
+
 
 				# Iterate over properties, creating getters
 				pidx = 0 # Def: Count of properties processed so far
@@ -378,11 +392,15 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 					if pm["name"] == "~"+ckey or pm["name"] == "CoreServices":
 						continue
 					
+					staticString = ""
+					if pm["rtnType"].find("static ") != -1:
+						staticString = " static=\"true\""
+					
 					if pm["rtnType"].find("std::vector") > -1:
 						vectorReturnClass = pm["rtnType"].replace("std::vector<", "").replace(">","").replace(" ", "")
-						luaDocOut += "\t\t\t<method name=\"%s\" return_array=\"true\" return_type=\"%s\">\n" % (pm["name"],  toLuaType(typeFilter(vectorReturnClass).replace("*", "")))
+						luaDocOut += "\t\t\t<method name=\"%s\" return_array=\"true\" return_type=\"%s\"%s>\n" % (pm["name"],  toLuaType(typeFilter(vectorReturnClass).replace("*", "")), staticString)
 					else:
-						luaDocOut += "\t\t\t<method name=\"%s\" return_type=\"%s\">\n" % (pm["name"],  toLuaType(typeFilter(pm["rtnType"].replace("*", ""))))
+						luaDocOut += "\t\t\t<method name=\"%s\" return_type=\"%s\"%s>\n" % (pm["name"],  toLuaType(typeFilter(pm["rtnType"].replace("*", ""))), staticString)
 
 					docs = None
 					if 'doxygen' in pm:

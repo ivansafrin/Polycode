@@ -50,6 +50,19 @@ a {
 .class_name {
 	font-size: 32px;
 	margin: 0px 0px 30px 0px;
+	color: #b8b8b8;
+}
+
+.class_extends {
+	font-size: 24px;
+	margin: 0px 0px 30px 0px;
+	color: #4a4a4a;
+}
+
+.class_extends_class a {
+	font-size: 24px;
+	margin: 0px 0px 30px 0px;
+	color: #925381;
 }
 
 .class_desc {
@@ -58,7 +71,7 @@ a {
 	margin: 0px 0px 20px 0px;
 }
 
-.class_properies_list, .class_methods_list {
+.class_properties_list, .class_methods_list {
 	padding: 10px;
 	background-color: #1a1a1a;
 }
@@ -68,9 +81,9 @@ a {
 	margin: 0px 0px 10px 0px;
 }
 
-.class_properies_title, .class_methods_title {
+.class_properties_title, .class_methods_title {
 	margin: 10px 0px 10px 0px;
-	color: #363636;
+	color: #4a4a4a;
 	font-size: 24px;
 }
 
@@ -134,4 +147,8 @@ a {
 .inline_type {
 	color: #925381;
 	font-size: 12px;
+}
+
+.static_value {
+	color: #4a4a4a;
 }
