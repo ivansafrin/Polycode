@@ -234,6 +234,20 @@ static void dumpstack (lua_State *L) {
 		return 0;
 	}
 	
+	static int areSameCClass(lua_State *L) {
+		luaL_checktype(L, 1, LUA_TUSERDATA);
+		PolyBase *classOne = *((PolyBase**)lua_touserdata(L, 1));
+		luaL_checktype(L, 2, LUA_TUSERDATA);
+		PolyBase *classTwo = *((PolyBase**)lua_touserdata(L, 2));
+		
+		if(classOne == classTwo) {
+			lua_pushboolean(L, true);
+		} else {
+			lua_pushboolean(L, false);		
+		}		
+		return 1;
+	}
+	
 	static int debugPrint(lua_State *L)
 	{
 		const char *msg = lua_tostring(L, 1);
@@ -331,8 +345,10 @@ static void dumpstack (lua_State *L) {
 		// Table is still on the stack.  Get rid of it now.
 		lua_pop(L, 1);		
 		
-		lua_register(L, "debugPrint", debugPrint);	
+		lua_register(L, "debugPrint", debugPrint);
 		lua_register(L, "__customError", customError);					
+
+		lua_register(L, "__are_same_c_class", areSameCClass);
 		
 		lua_getfield(L, LUA_GLOBALSINDEX, "require");
 		lua_pushstring(L, "class");		

@@ -1,7 +1,3 @@
-function __areclassesequal(a,b)
-	return a.__ptr == b.__ptr
-end
-
 function __is_kind_of(c,T)
 	local __baseclass = getmetatable(c)
 	while __baseclass do
@@ -35,7 +31,6 @@ function class(name)
 		end
 	end
 
-	cls.__eq = __areclassesequal
 	cls.isKindOfClass = __is_kind_of
 	cls.isClass = __is_class
 

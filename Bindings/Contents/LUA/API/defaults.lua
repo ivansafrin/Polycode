@@ -6,6 +6,10 @@ _G["count"] = function(T)
 	return _count
 end
 
+_G["same_c_class"] = function(a,b)
+	return __are_same_c_class(a.__ptr,b.__ptr)
+end
+
 _G["cast"] = function (c, T)
 	local ret = T("__skip_ptr__")
 	ret.__ptr = c.__ptr
