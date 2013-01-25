@@ -186,7 +186,7 @@ namespace Polycode {
 			void selectWordAtCaret();
 		
 			void restructLines();
-			void removeLine(unsigned int lineIndex);
+			void removeLines(unsigned int startIndex, unsigned int endIndex);
 		
 			ScreenShape *selectorRectTop;
 			ScreenShape *selectorRectMiddle;

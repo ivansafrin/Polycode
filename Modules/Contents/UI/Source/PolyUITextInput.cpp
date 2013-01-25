@@ -336,18 +336,7 @@ void UITextInput::deleteSelection() {
 		String ctext = lines[selectionTop];
 		String newText = ctext.substr(0, selectionL);
 		lines[selectionTop] = newText;
-		
-		// if whole lines to remove, do it
-		vector<int> linesToRemove;
-		if(selectionBottom > selectionTop + 1) {
-			for(int i=selectionTop+1; i < selectionBottom; i++) {
-				linesToRemove.push_back(i);
-			}
-			for(int i=0; i < linesToRemove.size(); i++) {
-				removeLine(linesToRemove[i]);
-			}
-		}
-		
+
 		ctext = lines[selectionBottom];
 		
 		int rside = selectionR;
@@ -355,13 +344,15 @@ void UITextInput::deleteSelection() {
 			rside = ctext.length() - 1;
 		newText = ctext.substr(rside,ctext.length() - selectionR); 
 		
-				
 		lineOffset = selectionTop;
 		selectLineFromOffset();
 		caretPosition = lines[lineOffset].length();
 		updateCaretPosition();
 		lines[lineOffset] =  lines[lineOffset] + newText;
-		removeLine(selectionBottom);				
+		
+		removeLines(selectionTop+1, selectionBottom+1);
+		
+			
 	}
 	clearSelection();
 	caretPosition = selectionL;
@@ -847,8 +838,8 @@ void UITextInput::setCaretToMouse(Number x, Number y) {
 	updateCaretPosition();	
 }
 
-void UITextInput::removeLine(unsigned int lineIndex) {
-	lines.erase(lines.begin()+lineIndex);
+void UITextInput::removeLines(unsigned int startIndex, unsigned int endIndex) {
+	lines.erase(lines.begin()+startIndex, lines.begin()+endIndex);
 	renumberLines();
 	restructLines();
 	changedText();	
@@ -1325,7 +1316,7 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 				caretPosition = lines[lineOffset].length();
 				updateCaretPosition();
 				lines[lineOffset] = lines[lineOffset] + ctext;	
-				removeLine(lineOffset+1);				
+				removeLines(lineOffset+1, lineOffset+1);
 				return;
 			}
 		}
