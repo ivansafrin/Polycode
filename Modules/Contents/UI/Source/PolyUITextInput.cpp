@@ -1316,7 +1316,7 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 				caretPosition = lines[lineOffset].length();
 				updateCaretPosition();
 				lines[lineOffset] = lines[lineOffset] + ctext;	
-				removeLines(lineOffset+1, lineOffset+1);
+				removeLines(lineOffset+1, lineOffset+2);
 				return;
 			}
 		}
