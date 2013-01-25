@@ -183,6 +183,8 @@ void PolycodeIDEApp::openProject() {
 	ext.description = "Polycode Project File";
 	extensions.push_back(ext);
 	std::vector<String> paths = core->openFilePicker(extensions, false);
+	if(paths.size() == 0) 
+		return;
 	if(paths[0] != "") {
 		PolycodeProject *project = projectManager->openProject(paths[0]);
 		if(project) {

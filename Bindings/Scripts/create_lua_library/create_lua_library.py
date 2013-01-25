@@ -130,15 +130,19 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 		wrappersHeaderOut += "public:\n"
 		wrappersHeaderOut += "	LuaEventHandler() : EventHandler() {}\n"
 		wrappersHeaderOut += "	void handleEvent(Event *e) {\n"
-		wrappersHeaderOut += "		lua_getfield(L, LUA_GLOBALSINDEX, \"EventHandler\" );\n"
-		wrappersHeaderOut += "		lua_getfield(L, -1, \"__handleEvent\");\n"
+#		wrappersHeaderOut += "		lua_pop(L, 1);\n"
+#		wrappersHeaderOut += "		lua_getfield(L, LUA_GLOBALSINDEX, \"EventHandler\" );\n"
+		wrappersHeaderOut += "		lua_settop(L, 0);\n"
+		wrappersHeaderOut += "		lua_getfield (L, LUA_GLOBALSINDEX, \"__customError\");\n"
+		wrappersHeaderOut += "		int errH = lua_gettop(L);\n"
+		wrappersHeaderOut += "		lua_getfield(L, LUA_GLOBALSINDEX, \"__handleEvent\");\n"
 		wrappersHeaderOut += "		lua_rawgeti( L, LUA_REGISTRYINDEX, wrapperIndex );\n"
 		wrappersHeaderOut += "		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));\n"
 		wrappersHeaderOut += "		*userdataPtr = (PolyBase*)e;\n"
-#		wrappersHeaderOut += "		lua_getfield (L, LUA_GLOBALSINDEX, \"__customError\");\n"
-#		wrappersHeaderOut += "		int errH = lua_gettop(L);\n"
 #		wrappersHeaderOut += "		lua_pcall(L, 2, 0, errH);\n"
-		wrappersHeaderOut += "		lua_pcall(L, 2, 0, 0);\n"
+		wrappersHeaderOut += "		int stackSize = lua_gettop(L);\n"
+		wrappersHeaderOut += "		printf(\"MARCO! (stacksize: %d)\\n\", stackSize);\n"
+		wrappersHeaderOut += "		lua_pcall(L, 2, 0, errH);\n"
 		wrappersHeaderOut += "	}\n"
 		wrappersHeaderOut += "	int wrapperIndex;\n"
 		wrappersHeaderOut += "	lua_State *L;\n"
@@ -717,19 +721,6 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 				luaClassBindingOut += "function %s:__delete()\n" % (ckey)
 				luaClassBindingOut += "\t%s.delete_%s(self.__ptr)\n" % (libName, ckey)
 				luaClassBindingOut += "end\n"
-				if ckey == "EventHandler": # See LuaEventHandler above
-					luaClassBindingOut += "\n\n"
-					luaClassBindingOut += "function EventHandler:__handleEvent(event)\n"
-					luaClassBindingOut += "\tevt = _G[\"Event\"](\"__skip_ptr__\")\n"
-					luaClassBindingOut += "\tevt.__ptr = event\n"
-					luaClassBindingOut += "\tself:handleEvent(evt)\n"
-					#luaClassBindingOut += "\tself:handleEvent(event)\n"
-					luaClassBindingOut += "end\n\n"
-					
-					# Let's use this opportunity to put in some other "generated" utility functions.
-					luaClassBindingOut += "function __ptrToTable(className, ptr)\n"
-					luaClassBindingOut += template_returnPtrLookup("\t","className","ptr")
-					luaClassBindingOut += "end\n\n"
 					
 				# Add class to lua index file
 				luaIndexOut += "require \"%s/%s\"\n" % (prefix, ckey)

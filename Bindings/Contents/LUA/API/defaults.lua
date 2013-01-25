@@ -7,6 +7,8 @@ _G["count"] = function(T)
 end
 
 _G["same_c_class"] = function(a,b)
+	if a == nil or b == nil then return false end
+	if a.__ptr == nil or b.__ptr == nil then return false end
 	return __are_same_c_class(a.__ptr,b.__ptr)
 end
 
@@ -36,6 +38,12 @@ end
 
 _G["print"] = function(msg)
 	_G["debugPrint"](tostring(msg))
+end
+
+_G["__handleEvent"] = function(target, event)
+	evt = _G["Event"]("__skip_ptr__")
+	evt.__ptr = event
+	target:handleEvent(evt)
 end
 
 __core__services__instance = Polycore.CoreServices_getInstance()

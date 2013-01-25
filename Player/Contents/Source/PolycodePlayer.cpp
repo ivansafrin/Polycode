@@ -841,7 +841,7 @@ void PolycodePlayer::handleEvent(Event *event) {
 
 bool PolycodePlayer::Update() {
 	if(L) {
-				
+		lua_settop(L, 0);				
 		if(doCodeInject) {
 			printf("INJECTING CODE:[%s]\n", injectCodeString.c_str());
 			doCodeInject = false;			
