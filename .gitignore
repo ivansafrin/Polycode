@@ -57,6 +57,11 @@ Player/Build/Mac OS X/Polycode Player.xcodeproj/project.xcworkspace/xcuserdata/i
 /Modules/Bindings/3DPhysics/Include/*.h
 /Modules/Bindings/3DPhysics/Source/*.cpp
 
+/Modules/Bindings/UI/API/UI/*.lua
+/Modules/Bindings/UI/API/UI.lua
+/Modules/Bindings/UI/Include/*.h
+/Modules/Bindings/UI/Source/*.cpp
+
 /Player/Build
 /Standalone/Build
 

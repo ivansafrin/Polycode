@@ -28,6 +28,7 @@ SET(polycodeUI_SRCS
     ../../Contents/UI/Source/PolyUIVScrollBar.cpp
     ../../Contents/UI/Source/PolyUIVSizer.cpp
     ../../Contents/UI/Source/PolyUIWindow.cpp
+    ../../Contents/UI/Source/PolyUIMenu.cpp
 )
 
 SET(polycodeUI_HDRS
@@ -52,6 +53,7 @@ SET(polycodeUI_HDRS
     ../../Contents/UI/Include/PolyUIVScrollBar.h
     ../../Contents/UI/Include/PolyUIVSizer.h
     ../../Contents/UI/Include/PolyUIWindow.h
+    ../../Contents/UI/Include/PolyUIMenu.h
     ../../Contents/UI/Include/PolycodeUI.h
 )
 
