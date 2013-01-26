@@ -60,11 +60,12 @@ LocalShaderParam *ShaderBinding::getLocalParamByName(const String& name) {
 	return NULL;
 }
 
-void ShaderBinding::addLocalParam(const String& name, void *ptr) {
+LocalShaderParam *ShaderBinding::addLocalParam(const String& name, void *ptr) {
 	LocalShaderParam *newParam = new LocalShaderParam();
 	newParam->name = name;
 	newParam->data = ptr;
 	localParams.push_back(newParam);
+	return newParam;
 }
 
 void ShaderBinding::addRenderTargetBinding(RenderTargetBinding *binding) {
