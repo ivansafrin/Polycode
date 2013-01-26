@@ -726,8 +726,9 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 				luaIndexOut += "require \"%s/%s\"\n" % (prefix, ckey)
 				# Write lua file
 				mkdir_p(apiClassPath)
-				fout = open("%s/%s.lua" % (apiClassPath, ckey), "w")
-				fout.write(luaClassBindingOut)
+				if ckey != "EventDispatcher":
+					fout = open("%s/%s.lua" % (apiClassPath, ckey), "w")
+					fout.write(luaClassBindingOut)
 
 				luaDocOut += "\t</class>\n"
 	

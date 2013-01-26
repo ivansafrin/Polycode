@@ -43,7 +43,7 @@ end
 _G["__handleEvent"] = function(target, event)
 	evt = _G["Event"]("__skip_ptr__")
 	evt.__ptr = event
-	target:handleEvent(evt)
+	target.callback(target.listener, evt)
 end
 
 __core__services__instance = Polycore.CoreServices_getInstance()
