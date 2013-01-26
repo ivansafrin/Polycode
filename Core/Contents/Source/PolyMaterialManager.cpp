@@ -179,6 +179,9 @@ Shader *MaterialManager::createShaderFromXMLNode(TiXmlNode *node) {
 			}
 		}		
 	}
+	
+	if (!retShader)
+		return NULL;
 
 	int numAreaLights = 0;
 	int numSpotLights = 0;
