@@ -56,6 +56,9 @@ Services.Core.__ptr = Polycore.CoreServices_getCore(Polycore.CoreServices_getIns
 Services.Renderer = Renderer("__skip_ptr__")
 Services.Renderer.__ptr = Polycore.CoreServices_getRenderer(Polycore.CoreServices_getInstance())
 
+Services.Config = Config("__skip_ptr__")
+Services.Config.__ptr = Polycore.CoreServices_getConfig(Polycore.CoreServices_getInstance())
+
 Services.MaterialManager = MaterialManager("__skip_ptr__")
 Services.MaterialManager.__ptr = Polycore.CoreServices_getMaterialManager(Polycore.CoreServices_getInstance())
 
