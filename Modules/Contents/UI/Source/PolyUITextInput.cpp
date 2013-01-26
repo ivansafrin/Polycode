@@ -644,7 +644,7 @@ void UITextInput::selectLineFromOffset() {
 }
 
 void UITextInput::dragSelectionTo(Number x, Number y) {
-	x -= padding * 2.0;
+	x -= (padding * 2.0) + decoratorOffset;
 	y -= padding;
 	int lineOffset = y  / (lineHeight+lineSpacing);
 	if(lineOffset > lines.size()-1)
