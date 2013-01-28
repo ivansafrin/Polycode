@@ -27,6 +27,9 @@ THE SOFTWARE.
 
 #include "Polycode.h"
 #include "PolycodeLUA.h"
+#include "UILUA.h"
+#include "Physics2DLUA.h"
+#include "Physics3DLUA.h"
 #include "PolyGLSLShaderModule.h"
 #include "OSBasics.h"
 

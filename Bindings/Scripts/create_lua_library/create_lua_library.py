@@ -76,9 +76,10 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 	cppRegisterOut += "#include \"PolyCoreServices.h\"\n\n"
 	cppRegisterOut += "using namespace Polycode;\n\n"
 	cppRegisterOut += "int luaopen_%s(lua_State *L) {\n" % (prefix)
-	if prefix != "Polycode":
-		cppRegisterOut += "CoreServices *inst = (CoreServices*) *((void**)lua_touserdata(L, 1));\n"
-		cppRegisterOut += "CoreServices::setInstance(inst);\n"
+
+#	if prefix != "Polycode":
+#		cppRegisterOut += "CoreServices *inst = (CoreServices*) *((void**)lua_touserdata(L, 1));\n"
+#		cppRegisterOut += "CoreServices::setInstance(inst);\n"
 	cppRegisterOut += "\tstatic const struct luaL_reg %sLib [] = {" % (libSmallName)
 	
 	wrappersHeaderOut += "#pragma once\n\n"
@@ -787,6 +788,11 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 	os.chdir(apiPath)
 	if libName == "Polycore":
 		with ZipFile("api.pak", 'w') as myzip:
+			for root, dirs, files in os.walk("."):
+				for filename in fnmatch.filter(files, pattern):
+					myzip.write(os.path.join(root, filename))
+	else:
+		with ZipFile("%s.pak" % (libName), 'w') as myzip:
 			for root, dirs, files in os.walk("."):
 				for filename in fnmatch.filter(files, pattern):
 					myzip.write(os.path.join(root, filename))

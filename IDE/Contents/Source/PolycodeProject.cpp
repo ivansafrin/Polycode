@@ -171,6 +171,7 @@ bool PolycodeProject::saveFile() {
 		configFile.root["modules"]->Clear();
 	}
 	
+	/*
 	for(int j=0; j < data.modules.size(); j++) {
 		if(!configFile.root["modules"]) {
 			configFile.root.addChild("modules");			
@@ -181,6 +182,7 @@ bool PolycodeProject::saveFile() {
 		CoreServices::getInstance()->getResourceManager()->addArchive("Standalone/Modules/"+data.modules[j]+"/API");
 		
 	}
+	*/
 	
 	if(configFile.root["fonts"]) {
 		configFile.root["fonts"]->Clear();

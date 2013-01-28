@@ -408,7 +408,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R \"$PROJECT_DIR/../../Contents/Resources\" \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH\"\ncp -R \"$PROJECT_DIR/../../../Release/Darwin/Standalone\" \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"\ncp -R \"$PROJECT_DIR/../../../Bindings/Contents/LUA/API/api.pak\" \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+			shellScript = "cp -R \"$PROJECT_DIR/../../Contents/Resources\" \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH\"\ncp -R \"$PROJECT_DIR/../../../Release/Darwin/Standalone\" \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"\ncp -R \"$PROJECT_DIR/../../../Bindings/Contents/LUA/API/api.pak\" \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"\ncp -R \"$PROJECT_DIR/../../../Modules/Bindings/UI/API/UI.pak\" \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"\ncp -R \"$PROJECT_DIR/../../../Modules/Bindings/2DPhysics/API/Physics2D.pak\" \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"\ncp -R \"$PROJECT_DIR/../../../Modules/Bindings/3DPhysics/API/Physics3D.pak\" \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

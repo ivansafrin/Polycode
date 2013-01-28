@@ -322,7 +322,7 @@ static void dumpstack (lua_State *L) {
 		luaL_openlibs(L);		
 		luaopen_debug(L);		
 		luaopen_Polycode(L);
-
+				
 		lua_getfield(L, LUA_GLOBALSINDEX, "package");	// push "package"
 		lua_getfield(L, -1, "loaders");					// push "package.loaders"
 		lua_remove(L, -2);								// remove "package"
@@ -357,11 +357,29 @@ static void dumpstack (lua_State *L) {
 		lua_getfield(L, LUA_GLOBALSINDEX, "require");
 		lua_pushstring(L, "Polycode");		
 		lua_call(L, 1, 0);		
+
+		lua_getfield(L, LUA_GLOBALSINDEX, "require");
+		lua_pushstring(L, "Physics2D");		
+		lua_call(L, 1, 0);		
+
+		lua_getfield(L, LUA_GLOBALSINDEX, "require");
+		lua_pushstring(L, "Physics3D");		
+		lua_call(L, 1, 0);		
+
+		lua_getfield(L, LUA_GLOBALSINDEX, "require");
+		lua_pushstring(L, "UI");		
+		lua_call(L, 1, 0);		
 		
 		lua_getfield(L, LUA_GLOBALSINDEX, "require");
 		lua_pushstring(L, "defaults");		
 		lua_call(L, 1, 0);
+		
+		luaopen_Physics2D(L);
+		luaopen_Physics3D(L);
+		luaopen_UI(L);
+		
 				
+		/*		
 		for(int i=0; i < loadedModules.size(); i++) {
 			String moduleName = loadedModules[i];
 #ifdef _WINDOWS
@@ -407,7 +425,7 @@ static void dumpstack (lua_State *L) {
 			//f(Polycore.CoreServices_getInstance())
 					
 		}
-
+*/
 		String fileData = "";
 
 		OSFILE *inFile = OSBasics::open(fileName, "r");	
@@ -645,9 +663,14 @@ void PolycodePlayer::loadFile(const char *fileName) {
 	}
 	
 	Logger::log("Core created...\n");
+
+	CoreServices::getInstance()->getResourceManager()->addArchive("UIThemes.pak");
+	CoreServices::getInstance()->getConfig()->loadConfig("Polycode", "UIThemes/default/theme.xml");
 	
 	CoreServices::getInstance()->getResourceManager()->addArchive("api.pak");
-	
+	CoreServices::getInstance()->getResourceManager()->addArchive("Physics2D.pak");
+	CoreServices::getInstance()->getResourceManager()->addArchive("Physics3D.pak");
+	CoreServices::getInstance()->getResourceManager()->addArchive("UI.pak");			
 	if(configFile.root["packedItems"]) {
 		ObjectEntry *packed = configFile.root["packedItems"];
 		if(packed) {

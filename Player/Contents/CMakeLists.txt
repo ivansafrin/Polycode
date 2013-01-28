@@ -7,6 +7,9 @@ IF(MSVC OR MINGW)
 INCLUDE_DIRECTORIES(
     ${LUA_INCLUDE_DIR}
     ${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/Include
+    ${Polycode_SOURCE_DIR}/Modules/Bindings/UI/Include
+    ${Polycode_SOURCE_DIR}/Modules/Bindings/2DPhysics/Include
+    ${Polycode_SOURCE_DIR}/Modules/Bindings/3DPhysics/Include
     Include
     ../../Core/Contents/PolycodeView/MSVC/
 )
@@ -86,6 +89,17 @@ SET( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -pagezero_size 10000 -im
 INCLUDE_DIRECTORIES(
     ${LUA_INCLUDE_DIR}
     ${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/Include
+ 
+    ${Polycode_SOURCE_DIR}/Modules/Contents/UI/Include
+    ${Polycode_SOURCE_DIR}/Modules/Bindings/UI/Include
+
+    ${BOX2D_INCLUDE_DIR}
+    ${Polycode_SOURCE_DIR}/Modules/Contents/2DPhysics/Include
+    ${Polycode_SOURCE_DIR}/Modules/Bindings/2DPhysics/Include
+
+    ${BULLET_INCLUDE_DIR}
+    ${Polycode_SOURCE_DIR}/Modules/Contents/3DPhysics/Include
+    ${Polycode_SOURCE_DIR}/Modules/Bindings/3DPhysics/Include
     Include
     ../../Core/Contents/PolycodeView/Mac\ OS\ X/
 )
@@ -120,7 +134,6 @@ INCLUDE_DIRECTORIES(
 	../../Core/Contents/PolycodeView/Mac\ OS\ X/PolycodeView.h
     )
   
-    INCLUDE_DIRECTORIES(Include)
     
 #    IF(POLYCODE_BUILD_SHARED)
 #        ADD_EXECUTABLE(PolycodePlayer MACOSX_BUNDLE ${polycodeplayer_SRCS} ${polycodeplayer_HDRS})
@@ -164,6 +177,25 @@ endif()
         ${OGG_LIBRARY}
         ${VORBIS_LIBRARY}
         ${VORBISFILE_LIBRARY}
+	
+	${BOX2D_RELEASE_LIBRARY}
+        optimized ${LIBBULLETMULTITHREADED}
+        optimized ${LIBBULLETSOFTBODY} 
+        optimized ${LIBBULLETDYNAMICS} 
+        optimized ${LIBBULLETCOLLISION}
+        optimized ${LIBBULLETMATH}            
+        debug ${LIBBULLETMULTITHREADED_DEBUG}
+        debug ${LIBBULLETSOFTBODY_DEBUG} 
+        debug ${LIBBULLETDYNAMICS_DEBUG} 
+        debug ${LIBBULLETCOLLISION_DEBUG}
+        debug ${LIBBULLETMATH_DEBUG}  
+	Polycode2DPhysics
+	Polycode3DPhysics
+	PolycodeUI
+	Physics2DLua
+	Physics3DLua
+	UILua
+	
      )
 
     TARGET_LINK_LIBRARIES(StandalonePlayer 
@@ -181,6 +213,24 @@ endif()
         ${OGG_LIBRARY}
         ${VORBIS_LIBRARY}
         ${VORBISFILE_LIBRARY}
+	
+	${BOX2D_RELEASE_LIBRARY}
+        optimized ${LIBBULLETMULTITHREADED}
+        optimized ${LIBBULLETSOFTBODY} 
+        optimized ${LIBBULLETDYNAMICS} 
+        optimized ${LIBBULLETCOLLISION}
+        optimized ${LIBBULLETMATH}            
+        debug ${LIBBULLETMULTITHREADED_DEBUG}
+        debug ${LIBBULLETSOFTBODY_DEBUG} 
+        debug ${LIBBULLETDYNAMICS_DEBUG} 
+        debug ${LIBBULLETCOLLISION_DEBUG}
+        debug ${LIBBULLETMATH_DEBUG}  
+	Polycode2DPhysics
+	Polycode3DPhysics
+	PolycodeUI
+	Physics2DLua
+	Physics3DLua
+	UILua
      )
 
 	add_custom_command (TARGET PolycodePlayer PRE_BUILD
@@ -193,6 +243,14 @@ endif()
                       COMMAND cp ${Polycode_SOURCE_DIR}/Assets/Default\ asset\ pack/default.pak ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/PolycodePlayer.app/Contents/Resources)
 	add_custom_command (TARGET PolycodePlayer PRE_BUILD
                       COMMAND cp -R ${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/API/api.pak ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/PolycodePlayer.app/Contents/Resources)
+	add_custom_command (TARGET PolycodePlayer PRE_BUILD
+                      COMMAND cp -R ${Polycode_SOURCE_DIR}/Modules/Bindings/2DPhysics/API/Physics2D.pak ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/PolycodePlayer.app/Contents/Resources)
+	add_custom_command (TARGET PolycodePlayer PRE_BUILD
+                      COMMAND cp -R ${Polycode_SOURCE_DIR}/Modules/Bindings/3DPhysics/API/Physics3D.pak ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/PolycodePlayer.app/Contents/Resources)
+	add_custom_command (TARGET PolycodePlayer PRE_BUILD
+                      COMMAND cp -R ${Polycode_SOURCE_DIR}/Modules/Bindings/UI/API/UI.pak ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/PolycodePlayer.app/Contents/Resources)
+	add_custom_command (TARGET PolycodePlayer PRE_BUILD
+                      COMMAND cp -R ${Polycode_SOURCE_DIR}/Assets/UIThemes.pak ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/PolycodePlayer.app/Contents/Resources)
 
 	add_custom_command (TARGET StandalonePlayer PRE_BUILD
                       COMMAND mkdir -p ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/StandalonePlayer.app/Contents/Resources)
@@ -204,6 +262,14 @@ endif()
                       COMMAND cp -R ${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/API/api.pak ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/StandalonePlayer.app/Contents/Resources)
 	add_custom_command (TARGET StandalonePlayer PRE_BUILD
                       COMMAND cp ${Polycode_SOURCE_DIR}/Assets/SamplePolyapp/main.polyapp ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/StandalonePlayer.app/Contents/Resources)
+	add_custom_command (TARGET StandalonePlayer PRE_BUILD
+                      COMMAND cp -R ${Polycode_SOURCE_DIR}/Modules/Bindings/2DPhysics/API/Physics2D.pak ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/StandalonePlayer.app/Contents/Resources)
+	add_custom_command (TARGET StandalonePlayer PRE_BUILD
+                      COMMAND cp -R ${Polycode_SOURCE_DIR}/Modules/Bindings/3DPhysics/API/Physics3D.pak ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/StandalonePlayer.app/Contents/Resources)
+	add_custom_command (TARGET StandalonePlayer PRE_BUILD
+                      COMMAND cp -R ${Polycode_SOURCE_DIR}/Modules/Bindings/UI/API/UI.pak ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/StandalonePlayer.app/Contents/Resources)
+	add_custom_command (TARGET StandalonePlayer PRE_BUILD
+                      COMMAND cp -R ${Polycode_SOURCE_DIR}/Assets/UIThemes.pak ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/PolycodePlayer.app/Contents/Resources)
 
 
 foreach(xib ${PolycodePlayer_XIBS})
