@@ -52,7 +52,9 @@ namespace Polycode {
 		
 			void clearItems();
 			
-			int addComboItem(String itemName, void *data=NULL);
+			int addComboItem(String itemName);			
+			int addComboItem(String itemName, void *data);
+						
 			int getSelectedIndex();
 			UIComboBoxItem *getSelectedItem();
 			void setSelectedIndex(unsigned int newIndex);

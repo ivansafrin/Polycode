@@ -110,6 +110,10 @@ int UIComboBox::addComboItem(String itemName, void *data) {
 	return items.size()-1;
 }
 
+int UIComboBox::addComboItem(String itemName) {
+	return addComboItem(itemName, NULL);
+}
+
 UIComboBoxItem *UIComboBox::getSelectedItem() {
 	if(selectedIndex < items.size()) {
 		return items[selectedIndex];

@@ -39,6 +39,8 @@
 UserInterfaceState.*
 Player/Build/Mac OS X/Polycode Player.xcodeproj/project.xcworkspace/xcuserdata/ivansafrin.xcuserdatad/UserInterfaceState.xcuserstate
 
+.substance
+
 /Bindings/Contents/LUA/API/Polycode/*.lua
 !/Bindings/Contents/LUA/API/Polycode/EventDispatcher.lua
 /Bindings/Contents/LUA/API/Polycode.lua
