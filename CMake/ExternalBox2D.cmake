@@ -27,7 +27,7 @@ ExternalProject_Add(box2d
     URL_MD5 59d142cd8d4d73e8832c7b67591f590c
 
     # Box2D's source isn't in the top level directory so add a dummy file to set cmake right
-    PATCH_COMMAND cmake -E echo ADD_SUBDIRECTORY(Box2D) > <SOURCE_DIR>/CMakeLists.txt
+    PATCH_COMMAND ${CMAKE_COMMAND} -E echo ADD_SUBDIRECTORY(Box2D) > <SOURCE_DIR>/CMakeLists.txt
     
     INSTALL_DIR ${POLYCODE_DEPS_MODULES_PREFIX}
     CMAKE_ARGS ${box2d_CMAKE_ARGS}
