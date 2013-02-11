@@ -725,8 +725,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 					cppLoaderOut += "\tlua_pushstring(L, \"__gc\");\n"
 					cppLoaderOut += "\tlua_pushcfunction(L, %s_delete_%s);\n" % (libName, ckey)
 					cppLoaderOut += "\tlua_settable(L, -3);\n"
-				
-	
+				cppLoaderOut +="\tlua_pop(L, 1);\n"
 
 				# Delete method (C++ side)
 				cppRegisterOut += "\t\t{\"delete_%s\", %s_delete_%s},\n" % (ckey, libName, ckey)
