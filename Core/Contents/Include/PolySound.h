@@ -137,7 +137,7 @@ namespace Polycode {
 		ALuint GenSource(ALuint buffer);
 		ALuint GenSource();
 	
-		void checkALError(const String& operation);
+		ALenum checkALError(const String& operation);
 		void soundError(const String& err);
 		void soundCheck(bool result, const String& err);
 		static unsigned long readByte32(const unsigned char buffer[4]);		
@@ -156,6 +156,7 @@ namespace Polycode {
 		bool soundLoaded;
 	
 		bool isPositional;
+		ALuint buffer; // Kept around only for deletion purposes
 		ALuint soundSource;
 		int sampleLength;
 		

@@ -61,8 +61,8 @@ Sound::Sound(const String& fileName) : sampleLength(-1) {
 	setPitch(1.0);
 }
 
-Sound::Sound(const char *data, int size, int channels, int freq, int bps) : sampleLength(-1) {
-	ALuint buffer = loadBytes(data, size, freq, channels, bps);
+Sound::Sound(const char *data, int size, int channels, int freq, int bps) : buffer(AL_NONE), soundSource(AL_NONE), sampleLength(-1) {
+	buffer = loadBytes(data, size, freq, channels, bps);
 	
 	soundSource = GenSource(buffer);
 	setIsPositional(false);
@@ -95,7 +95,6 @@ void Sound::loadFile(String fileName) {
 		extension = "";
 	}
 	
-	ALuint buffer;
 	if(extension == "wav" || extension == "WAV") {
 		buffer = loadWAV(actualFilename);			
 	} else if(extension == "ogg" || extension == "OGG") {
@@ -130,6 +129,9 @@ Number Sound::getPitch() {
 Sound::~Sound() {
 	Logger::log("destroying sound...\n");
 	alDeleteSources(1,&soundSource);
+	checkALError("destroying sound");
+	alDeleteBuffers(1, &buffer);
+	checkALError("deleting buffer");
 }
 
 void Sound::soundCheck(bool result, const String& err) {
@@ -141,19 +143,19 @@ void Sound::soundError(const String& err) {
 	Logger::log("SOUND ERROR: %s\n", err.c_str());
 }
 
-unsigned long Sound::readByte32(const unsigned char buffer[4]) {
+unsigned long Sound::readByte32(const unsigned char data[4]) {
 #if TAU_BIG_ENDIAN
-    return (buffer[0] << 24) + (buffer[1] << 16) + (buffer[2] << 8) + buffer[3];
+    return (data[0] << 24) + (data[1] << 16) + (data[2] << 8) + data[3];
 #else
-    return (buffer[3] << 24) + (buffer[2] << 16) + (buffer[1] << 8) + buffer[0];
+    return (data[3] << 24) + (data[2] << 16) + (data[1] << 8) + data[0];
 #endif
 }
 
-unsigned short Sound::readByte16(const unsigned char buffer[2]) {
+unsigned short Sound::readByte16(const unsigned char data[2]) {
 #if TAU_BIG_ENDIAN
-    return (buffer[0] << 8) + buffer[1];
+    return (data[0] << 8) + data[1];
 #else
-    return (buffer[1] << 8) + buffer[0];
+    return (data[1] << 8) + data[0];
 #endif	
 }
 
@@ -163,7 +165,9 @@ void Sound::Play(bool loop) {
 	} else {
 		alSourcei(soundSource, AL_LOOPING, AL_TRUE);		
 	}
+	checkALError("Play: loop");
 	alSourcePlay(soundSource);
+	checkALError("Play: play");
 }
 
 bool Sound::isPlaying() {
@@ -281,7 +285,7 @@ void Sound::setIsPositional(bool isPositional) {
 	}
 }
 
-void Sound::checkALError(const String& operation) {
+ALenum Sound::checkALError(const String& operation) {
 	ALenum error = alGetError();
 	if(error != AL_NO_ERROR) {
 		switch(error) {
@@ -308,10 +312,12 @@ void Sound::checkALError(const String& operation) {
 				break;
 		}		
 	}
+	return error;
 }
 
 void Sound::Stop() {
 	alSourceStop(soundSource);
+	checkALError("Stop");
 }
 
 ALuint Sound::GenSource() {
@@ -345,7 +351,6 @@ ALuint Sound::GenSource(ALuint buffer) {
 }
 
 ALuint Sound::loadBytes(const char *data, int size, int freq, int channels, int bps) {
-	ALuint buffer = AL_NONE;
 	ALenum format;
 	if (channels == 1)
 		format = (bps == 8) ? AL_FORMAT_MONO8 : AL_FORMAT_MONO16;
@@ -353,21 +358,22 @@ ALuint Sound::loadBytes(const char *data, int size, int freq, int channels, int 
 		format = (bps == 8) ? AL_FORMAT_STEREO8 : AL_FORMAT_STEREO16;
 	
 	sampleLength = bps > 8 ? size / (bps/8) : -1;
+
+	checkALError("LoadBytes: pre-generate buffer");
 	
 	alGenBuffers(1, &buffer);
-	soundCheck(alGetError() == AL_NO_ERROR, "LoadBytes: Could not generate buffer");
-	soundCheck(AL_NONE != buffer, "LoadBytes: Could not generate buffer");
+	checkALError("LoadBytes: generate buffer");
+	soundCheck(AL_NONE != buffer, "LoadBytes: Did not generate buffer");
 	
 	alBufferData(buffer, format, data, size, freq);
-	soundCheck(alGetError() == AL_NO_ERROR, "LoadBytes: Could not load buffer data");
+	checkALError("LoadBytes: load buffer data");
 	return buffer;
 }
 
 ALuint Sound::loadOGG(const String& fileName) {
-	vector<char> buffer;
+	vector<char> data;
 	
-	ALuint bufferID = AL_NONE; 
-	alGenBuffers(1, &bufferID);
+	alGenBuffers(1, &buffer);
 	int endian = 0;             // 0 for Little-Endian, 1 for Big-Endian
 	int bitStream;
 	long bytes;
@@ -380,7 +386,7 @@ ALuint Sound::loadOGG(const String& fileName) {
 	f = OSBasics::open(fileName.c_str(), "rb");		
 	if(!f) {
 		soundError("Error loading OGG file!\n");
-		return bufferID;
+		return buffer;
 	}
 	vorbis_info *pInfo;
 	OggVorbis_File oggFile;	
@@ -409,15 +415,15 @@ ALuint Sound::loadOGG(const String& fileName) {
 		// Read up to a buffer's worth of decoded sound data
 		bytes = ov_read(&oggFile, array, BUFFER_SIZE, endian, 2, 1, &bitStream);
 		// Append to end of buffer
-		buffer.insert(buffer.end(), array, array + bytes);
+		data.insert(data.end(), array, array + bytes);
 	} while (bytes > 0);
 	ov_clear(&oggFile);
 	
-	sampleLength = buffer.size() / sizeof(unsigned short);
+	sampleLength = data.size() / sizeof(unsigned short);
 	
-	alBufferData(bufferID, format, &buffer[0], static_cast<ALsizei>(buffer.size()), freq);
+	alBufferData(buffer, format, &data[0], static_cast<ALsizei>(data.size()), freq);
 	
-	return bufferID;
+	return buffer;
 }
 
 ALuint Sound::loadWAV(const String& fileName) {
@@ -429,7 +435,7 @@ ALuint Sound::loadWAV(const String& fileName) {
 	OSFILE *f = NULL;
 	char *array = NULL;
 	
-	alGetError();
+	checkALError("loadWAV: pre-generate buffer");
 	
 		// Open for binary reading
 		f = OSBasics::open(fileName.c_str(), "rb");
@@ -439,8 +445,8 @@ ALuint Sound::loadWAV(const String& fileName) {
 		// buffers
 		char magic[5];
 		magic[4] = '\0';
-		unsigned char buffer32[4];
-		unsigned char buffer16[2];
+		unsigned char data32[4];
+		unsigned char data16[2];
 		
 		// check magic
 		soundCheck(OSBasics::read(magic,4,1,f) == 1, "LoadWav: Cannot read wav file "+ fileName );
@@ -458,36 +464,36 @@ ALuint Sound::loadWAV(const String& fileName) {
 		soundCheck(String(magic) == "fmt ", "LoadWav: Wrong wav file format. This file is not a .wav file (no 'fmt ' subchunk): "+ fileName );
 		
 		// read (1)'s size
-		soundCheck(OSBasics::read(buffer32,4,1,f) == 1, "LoadWav: Cannot read wav file "+ fileName );
-		unsigned long subChunk1Size = readByte32(buffer32);
+		soundCheck(OSBasics::read(data32,4,1,f) == 1, "LoadWav: Cannot read wav file "+ fileName );
+		unsigned long subChunk1Size = readByte32(data32);
 		soundCheck(subChunk1Size >= 16, "Wrong wav file format. This file is not a .wav file ('fmt ' chunk too small, truncated file?): "+ fileName );
 		
 		// check PCM audio format
-		soundCheck(OSBasics::read(buffer16,2,1,f) == 1, "LoadWav: Cannot read wav file "+ fileName );
-		unsigned short audioFormat = readByte16(buffer16);
+		soundCheck(OSBasics::read(data16,2,1,f) == 1, "LoadWav: Cannot read wav file "+ fileName );
+		unsigned short audioFormat = readByte16(data16);
 		soundCheck(audioFormat == 1, "LoadWav: Wrong wav file format. This file is not a .wav file (audio format is not PCM): "+ fileName );
 		
 		// read number of channels
-		soundCheck(OSBasics::read(buffer16,2,1,f) == 1, "LoadWav: Cannot read wav file "+ fileName );
-		unsigned short channels = readByte16(buffer16);
+		soundCheck(OSBasics::read(data16,2,1,f) == 1, "LoadWav: Cannot read wav file "+ fileName );
+		unsigned short channels = readByte16(data16);
 		
 		// read frequency (sample rate)
-		soundCheck(OSBasics::read(buffer32,4,1,f) == 1, "LoadWav: Cannot read wav file "+ fileName );
-		unsigned long frequency = readByte32(buffer32);
+		soundCheck(OSBasics::read(data32,4,1,f) == 1, "LoadWav: Cannot read wav file "+ fileName );
+		unsigned long frequency = readByte32(data32);
 		
 		// skip 6 bytes (Byte rate (4), Block align (2))
 		OSBasics::seek(f,6,SEEK_CUR);
 		
 		// read bits per sample
-		soundCheck(OSBasics::read(buffer16,2,1,f) == 1, "LoadWav: Cannot read wav file "+ fileName );
-		unsigned short bps = readByte16(buffer16);
+		soundCheck(OSBasics::read(data16,2,1,f) == 1, "LoadWav: Cannot read wav file "+ fileName );
+		unsigned short bps = readByte16(data16);
 		
 		// check 'data' sub chunk (2)
 		soundCheck(OSBasics::read(magic,4,1,f) == 1, "LoadWav: Cannot read wav file "+ fileName );
 		soundCheck(String(magic) == "data", "LoadWav: Wrong wav file format. This file is not a .wav file (no data subchunk): "+ fileName );
 		
-		soundCheck(OSBasics::read(buffer32,4,1,f) == 1, "LoadWav: Cannot read wav file "+ fileName );
-		unsigned long subChunk2Size = readByte32(buffer32);
+		soundCheck(OSBasics::read(data32,4,1,f) == 1, "LoadWav: Cannot read wav file "+ fileName );
+		unsigned long subChunk2Size = readByte32(data32);
 		
 		// The frequency of the sampling rate
 		freq = frequency;
