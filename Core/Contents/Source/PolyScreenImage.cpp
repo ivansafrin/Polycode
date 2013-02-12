@@ -54,6 +54,19 @@ ScreenImage::ScreenImage(Image *image) : ScreenShape(ScreenShape::SHAPE_RECT,1,1
 	positionMode = POSITION_TOPLEFT;	
 }
 
+ScreenImage::ScreenImage(Texture *texture) : ScreenShape(ScreenShape::SHAPE_RECT,1,1) {
+	setTexture(texture);
+	
+	imageWidth = texture->getWidth();
+	imageHeight = texture->getHeight();
+	
+	width = texture->getWidth();
+	height = texture->getHeight();	
+	setShapeSize(width, height);	
+	
+	positionMode = POSITION_TOPLEFT;	
+}
+
 ScreenImage::~ScreenImage() {
 
 }
