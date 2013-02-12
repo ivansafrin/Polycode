@@ -97,10 +97,11 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	headerBg = new ScreenShape(ScreenShape::SHAPE_RECT,10,10);
 	addChild(headerBg);
 	headerBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
-	headerBg->setColorInt(34, 32, 31, 255);
+	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	
 	ScreenLabel *label = new ScreenLabel("PROJECT SETTINGS", 18, "section", Label::ANTIALIAS_FULL);
-	label->color.a = 0.4;	
+	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
+	
 	addChild(label);
 	label->setPosition(10, 3);
 

@@ -2,6 +2,12 @@
 <PolyConfig>
 	<uiDefaultFontName>sans</uiDefaultFontName>
 	<uiDefaultFontColor>0xe4e0e3ab</uiDefaultFontColor>
+
+	<uiBgColor>0x322d2bff</uiBgColor>
+	<uiHeaderBgColor>0x262120ff</uiHeaderBgColor>
+	<uiSmallHeaderBgColor>0x2b2624ff</uiSmallHeaderBgColor>
+	<uiHeaderFontColor>0xe4e3e0ad</uiHeaderFontColor>
+
 	<uiTextInputFontName>sans</uiTextInputFontName>
 	<uiTextInputFontNameMultiLine>mono</uiTextInputFontNameMultiLine>
 	<uiDefaultFontSize>12</uiDefaultFontSize>

@@ -23,7 +23,8 @@
 
 #pragma once
 #include "PolyGlobals.h"
- 
+#include "PolyString.h"
+
 namespace Polycode {
 
 	/**
@@ -125,6 +126,18 @@ namespace Polycode {
 			*/						
 			void setColorHexRGB(unsigned int hex);
 		
+			/** 
+			* Sets the color using an integer color value from a string
+			* @param hex String with hex RGBA color values.
+			*/			
+			void setColorHexFromString(String hex);
+			
+			/** 
+			* Sets the color using a 24-bit RGB integer color value  from a string
+			* @param hex String with hex RGB color values.
+			*/						
+			void setColorHexRGBFromString(String hex);
+					
 			/** 
 			* Sets the color using HSV values.
 			* @param h Hue.

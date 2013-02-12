@@ -137,7 +137,6 @@ namespace Polycode {
 		void setLineSmooth(bool val);		
 		
 		void loadIdentity();
-		void setClearColor(Number r, Number g, Number b);
 		
 		void setTexture(Texture *texture);		
 

@@ -30,10 +30,8 @@ SyntaxHighlightTheme *globalSyntaxTheme;
 
 PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	core = new CocoaCore(view, 900,700,false,true, 0, 0,30);	
-	core->addEventListener(this, Core::EVENT_CORE_RESIZE);	
-//	CoreServices::getInstance()->getRenderer()->setClearColor(40.0/255.0,37.0/255.0,36.0/255.0);
-	CoreServices::getInstance()->getRenderer()->setClearColor(43.0/255.0,39.0/255.0,38.0/255.0);
-//	CoreServices::getInstance()->getRenderer()->setClearColor(228.0/255.0,227.0/255.0,224.0/255.0);
+	core->addEventListener(this, Core::EVENT_CORE_RESIZE);
+	
 	
 	CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_NEAREST);
 				
@@ -55,6 +53,7 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 
 	CoreServices::getInstance()->getFontManager()->registerFont("section", "Fonts/Roboto-Thin.ttf");
 
+	CoreServices::getInstance()->getRenderer()->clearColor.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiBgColor"));
 
 //	CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_LINEAR);
 	CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_NEAREST);

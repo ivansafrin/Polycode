@@ -552,14 +552,10 @@ void OpenGLRenderer::setPerspectiveMode() {
 void OpenGLRenderer::BeginRender() {
 	if(doClearBuffer) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
 	}
 	glLoadIdentity();
 	currentTexture = NULL;
-}
-
-void OpenGLRenderer::setClearColor(Number r, Number g, Number b) {
-	clearColor.setColor(r,g,b,1.0f);	
-	glClearColor(r,g,b,0.0f);
 }
 
 void OpenGLRenderer::translate3D(Vector3 *position) {

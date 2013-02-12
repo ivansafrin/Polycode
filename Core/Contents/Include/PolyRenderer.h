@@ -111,7 +111,7 @@ namespace Polycode {
 		virtual void setTexture(Texture *texture) = 0;		
 		virtual void enableBackfaceCulling(bool val) = 0;
 		
-		virtual void setClearColor(Number r, Number g, Number b) = 0;
+		virtual void setClearColor(Number r, Number g, Number b);
 		virtual void setClearColor(Color color);
 		
 		virtual void setAmbientColor(Number r, Number g, Number b);

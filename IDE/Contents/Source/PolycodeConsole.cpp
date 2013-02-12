@@ -94,11 +94,11 @@ BackTraceWindow::BackTraceWindow() : UIElement() {
 
 	labelBg = new ScreenShape(ScreenShape::SHAPE_RECT, 20,30);
 	labelBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
-	labelBg->setColorInt(34, 32, 31, 255);	
+	labelBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	addChild(labelBg);
 	
 	ScreenLabel *label = new ScreenLabel("CRASH STACK", 18, "section");
-	label->color.a = 0.4;
+	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	addChild(label);
 	label->setPosition(5,3);
 	

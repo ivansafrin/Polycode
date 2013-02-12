@@ -417,7 +417,7 @@ void PolycodeTextEditor::Resize(int x, int y) {
 FindBar::FindBar() : UIElement() {
 	barBg = new ScreenShape(ScreenShape::SHAPE_RECT, 30,30);
 	barBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
-	barBg->setColorInt(24, 22, 21, 255);
+	barBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	addChild(barBg);
 	this->height = 30;
 	

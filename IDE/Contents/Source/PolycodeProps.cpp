@@ -33,7 +33,8 @@ PropList::PropList(String caption) : UIElement() {
 
 	bg = new ScreenShape(ScreenShape::SHAPE_RECT, 10,10);
 	bg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
-	bg->setColor(43.0/255.0,39.0/255.0,38.0/255.0, 1.0);
+	bg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiBgColor"));
+	
 	addChild(bg);
 	bg->blockMouseInput = true;
 	bg->processInputEvents = true;
@@ -42,11 +43,12 @@ PropList::PropList(String caption) : UIElement() {
 
 	bg2 = new ScreenShape(ScreenShape::SHAPE_RECT, 10,10);
 	bg2->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
-	bg2->setColorInt(34, 32, 31, 255);
+	bg2->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
+	
 	addChild(bg2);
 
 	ScreenLabel *label = new ScreenLabel(caption, 18, "section", Label::ANTIALIAS_FULL);
-	label->color.a = 0.4;
+	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	addChild(label);
 	label->setPosition(10, 3);
 
@@ -117,7 +119,7 @@ PropSheet::PropSheet(String caption, String type) : UIElement() {
 	
 	bg = new ScreenShape(ScreenShape::SHAPE_RECT, 30,30);
 	addChild(bg);
-	bg->setColorInt(34, 32, 31, 255);
+	bg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiSmallHeaderBgColor"));
 	bg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	
 	ScreenLabel *label = new ScreenLabel(caption, 18, "section", Label::ANTIALIAS_FULL);

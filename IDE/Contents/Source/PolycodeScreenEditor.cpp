@@ -73,17 +73,17 @@ EntityTreeView::EntityTreeView(Entity *rootEntity) : UIElement() {
 	bg = new ScreenShape(ScreenShape::SHAPE_RECT,10,10);
 	addChild(bg);
 	bg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
-	bg->setColorInt(34, 32, 31, 255);
+	bg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	bg->blockMouseInput = true;
 	bg->processInputEvents = true;
 	
 	headerBg = new ScreenShape(ScreenShape::SHAPE_RECT,10,10);
 	addChild(headerBg);
 	headerBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
-	headerBg->setColorInt(34, 32, 31, 255);
+	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	
 	ScreenLabel *label = new ScreenLabel("TREE VIEW", 18, "section", Label::ANTIALIAS_FULL);
-	label->color.a = 0.4;
+	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	addChild(label);
 	label->setPosition(10, 3);
 	
@@ -435,7 +435,7 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain() {
 	viewOptions->blockMouseInput = true;
 			
 	viewOptionsBg = new ScreenShape(ScreenShape::SHAPE_RECT, 20,20);
-	viewOptionsBg->setColorInt(34, 32, 31, 255);
+	viewOptionsBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	viewOptionsBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	viewOptions->addChild(viewOptionsBg);
 	
@@ -444,7 +444,7 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain() {
 	
 
 	ScreenLabel *label = new ScreenLabel("GRID", 18, "section", Label::ANTIALIAS_FULL);
-	label->color.a = 0.4;		
+	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	viewOptions->addChild(label);
 	label->setPosition(10, 3);
 	
@@ -460,7 +460,7 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain() {
 	gridCheckBox->setPosition(115, 5);
 
 	label = new ScreenLabel("SNAP", 18, "section", Label::ANTIALIAS_FULL);
-	label->color.a = 0.4;		
+	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	viewOptions->addChild(label);
 	label->setPosition(180, 3);
 
@@ -482,14 +482,14 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain() {
 	properties->blockMouseInput = true;
 			
 	propertiesBg = new ScreenShape(ScreenShape::SHAPE_RECT, 20,20);
-	propertiesBg->setColorInt(34, 32, 31, 255);
+	propertiesBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	propertiesBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	properties->addChild(propertiesBg);
 	propertiesBg->blockMouseInput = true;
 	propertiesBg->processInputEvents = true;
 	
 	label = new ScreenLabel("SCREEN RATIO", 18, "section", Label::ANTIALIAS_FULL);
-	label->color.a = 0.4;		
+	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	properties->addChild(label);
 	label->setPosition(10, 3);
 	
@@ -500,7 +500,7 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain() {
 	scaleInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
 	label = new ScreenLabel("PREVIEW ASPECT", 18, "section", Label::ANTIALIAS_FULL);
-	label->color.a = 0.4;		
+	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	properties->addChild(label);
 	label->setPosition(230, 3);
 	
@@ -524,7 +524,7 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain() {
 	aspectComboBox->setPosition(380, 2);
 			
 	label = new ScreenLabel("ZOOM", 18, "section", Label::ANTIALIAS_FULL);
-	label->color.a = 0.4;		
+	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	properties->addChild(label);
 	label->setPosition(470, 3);
 			
@@ -560,7 +560,7 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain() {
 	
 	toolPaletteBg = new ScreenShape(ScreenShape::SHAPE_RECT, 80, 20);
 	toolPaletteBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
-	toolPaletteBg->setColorInt(34, 32, 31, 255);
+	toolPaletteBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiSmallHeaderBgColor"));
 	toolPalette->addChild(toolPaletteBg);
 	toolPaletteBg->processInputEvents = true;
 	toolPaletteBg->blockMouseInput = true;
@@ -1971,10 +1971,10 @@ void PolycodeScreenEditorMain::setMode(int newMode) {
 void PolycodeScreenEditorMain::Resize(Number width, Number height) {
 
 
-	viewOptionsBg->setShapeSize(width+1, 30);
+	viewOptionsBg->setShapeSize(ceil(width), 30);
 	viewOptions->setPosition(0, height-30);
 
-	propertiesBg->setShapeSize(width+1, 30);
+	propertiesBg->setShapeSize(ceil(width), 30);
 	
 	toolPaletteBg->setShapeSize(100,height-60);
 			
