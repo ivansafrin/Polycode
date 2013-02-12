@@ -59,7 +59,11 @@ UIWindow::UIWindow(String windowName, Number width, Number height) : ScreenEntit
 	
 	addChild(windowRect);
 	
-	titlebarRect = new ScreenShape(ScreenShape::SHAPE_RECT, width, st);
+	Number titleBarHeight = conf->getNumericValue("Polycode", "uiWindowTitleBarHeight");
+	Number titleBarOffset = conf->getNumericValue("Polycode", "uiWindowTitleBarOffset");
+		
+	titlebarRect = new ScreenShape(ScreenShape::SHAPE_RECT, width, titleBarHeight);
+	titlebarRect->setPosition(0, titleBarOffset);
 	titlebarRect->setColor(0,0,0,0);
 	titlebarRect->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	titlebarRect->processInputEvents = true;
@@ -68,7 +72,8 @@ UIWindow::UIWindow(String windowName, Number width, Number height) : ScreenEntit
 	titleLabel = new ScreenLabel(windowName, fontSize, fontName, Label::ANTIALIAS_FULL);
 	titleLabel->setPosition(conf->getNumericValue("Polycode", "uiWindowTitleX"),conf->getNumericValue("Polycode", "uiWindowTitleY"));
 	addChild(titleLabel);
-	
+	titleLabel->color.setColorHex(strtol(conf->getStringValue("Polycode", "uiWindowFontColor").c_str(), 0, 16));
+		
 	closeBtn = new UIImageButton(conf->getStringValue("Polycode", "uiWindowCloseIcon"));
 	addChild(closeBtn);
 	closeIconX = conf->getNumericValue("Polycode", "uiCloseIconX");

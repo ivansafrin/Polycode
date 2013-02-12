@@ -33,7 +33,7 @@ PropList::PropList(String caption) : UIElement() {
 
 	bg = new ScreenShape(ScreenShape::SHAPE_RECT, 10,10);
 	bg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
-	bg->setColor(0.18, 0.18, 0.18, 1.0);
+	bg->setColor(43.0/255.0,39.0/255.0,38.0/255.0, 1.0);
 	addChild(bg);
 	bg->blockMouseInput = true;
 	bg->processInputEvents = true;
@@ -42,13 +42,13 @@ PropList::PropList(String caption) : UIElement() {
 
 	bg2 = new ScreenShape(ScreenShape::SHAPE_RECT, 10,10);
 	bg2->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
-	bg2->setColor(0.1, 0.1, 0.1, 1.0);
+	bg2->setColorInt(34, 32, 31, 255);
 	addChild(bg2);
 
-	ScreenLabel *label = new ScreenLabel(caption, 22, "section", Label::ANTIALIAS_FULL);
+	ScreenLabel *label = new ScreenLabel(caption, 18, "section", Label::ANTIALIAS_FULL);
 	label->color.a = 0.4;
 	addChild(label);
-	label->setPosition(10, 0);
+	label->setPosition(10, 3);
 
 	propContents = new ScreenEntity();
 	propContents->processInputEvents = true;
@@ -117,7 +117,7 @@ PropSheet::PropSheet(String caption, String type) : UIElement() {
 	
 	bg = new ScreenShape(ScreenShape::SHAPE_RECT, 30,30);
 	addChild(bg);
-	bg->setColor(0.14, 0.14, 0.14, 1.0);
+	bg->setColorInt(34, 32, 31, 255);
 	bg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	
 	ScreenLabel *label = new ScreenLabel(caption, 18, "section", Label::ANTIALIAS_FULL);
@@ -202,7 +202,7 @@ void PropSheet::addProp(PropProp *prop) {
 }
 
 PropProp::PropProp(String caption) : UIElement() {
-	label = new ScreenLabel(caption, 11);
+	label = new ScreenLabel(caption, 12);
 	label->color.a = 0.4;
 	label->setPosition(0, 5);
 	addChild(label);
@@ -210,7 +210,7 @@ PropProp::PropProp(String caption) : UIElement() {
 	propContents = new ScreenEntity();
 	propContents->processInputEvents = true;
 	addChild(propContents);
-	propContents->setPosition(90, 0);
+	propContents->setPosition(100, 0);
 	
 	setHeight(20);
 }
@@ -231,14 +231,14 @@ Vector2Prop::Vector2Prop(String caption) : PropProp(caption) {
 	propContents->addChild(label);
 	label->setPosition(60, 6);	
 
-	positionX = new UITextInput(false, 50, 10);
+	positionX = new UITextInput(false, 50, 12);
 	positionX->addEventListener(this, UIEvent::CHANGE_EVENT);
 	positionX->setText("0");
 	positionX->setNumberOnly(true);
 	propContents->addChild(positionX);
 	positionX->setPosition(0, 0);
 
-	positionY = new UITextInput(false, 50, 10);
+	positionY = new UITextInput(false, 50, 12);
 	positionY->setText("0");
 	positionY->addEventListener(this, UIEvent::CHANGE_EVENT);	
 	positionY->setNumberOnly(true);
@@ -272,7 +272,7 @@ Vector2Prop::~Vector2Prop() {
 
 StringProp::StringProp(String caption) : PropProp(caption) {
 
-	stringEntry = new UITextInput(false, 150, 10);
+	stringEntry = new UITextInput(false, 150, 12);
 	stringEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
 	stringEntry->setText("");
 	propContents->addChild(stringEntry);
@@ -343,12 +343,12 @@ SliderProp::~SliderProp() {
 
 NumberProp::NumberProp(String caption) : PropProp(caption) {
 
-	numberEntry = new UITextInput(false, 50, 10);
+	numberEntry = new UITextInput(false, 50, 12);
 	numberEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
 	numberEntry->setText("0");
 	numberEntry->setNumberOnly(true);
 	propContents->addChild(numberEntry);
-	numberEntry->setPosition(0, 0);
+	numberEntry->setPosition(0, 2);
 
 	setHeight(30);
 

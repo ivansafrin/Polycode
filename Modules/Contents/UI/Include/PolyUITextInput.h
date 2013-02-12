@@ -236,6 +236,11 @@ namespace Polycode {
 			Timer *blinkTimer;
 			UIBox *inputRect;
 			ScreenShape *blinkerRect;
+			
+			Number st;
+			Number sr;
+			Number sb;
+			Number sl;
 		
 			Number caretImagePosition;
 			

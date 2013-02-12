@@ -66,10 +66,10 @@ UIButton::UIButton(String text, Number width, Number height) : UIElement() {
 	pressedDown = false;
 	
 	buttonLabel = new ScreenLabel(text, fontSize, fontName, Label::ANTIALIAS_FULL);
-	buttonLabel->positionAtBaseline = false;
+	buttonLabel->color.setColorHex(strtol(conf->getStringValue("Polycode", "uiButtonFontColor").c_str(), 0, 16));
 	addChild(buttonLabel);
 	labelXPos = floor((width-buttonLabel->getWidth())/2.0f) + labelOffsetX;
-	labelYPos = floor((height-(buttonLabel->getLabel()->getTextHeight()))/2.0f) + labelOffsetY;
+	labelYPos = labelOffsetY;
 	buttonLabel->setPosition(labelXPos,labelYPos);
 	
 	this->width = width;

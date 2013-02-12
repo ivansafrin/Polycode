@@ -94,13 +94,13 @@ BackTraceWindow::BackTraceWindow() : UIElement() {
 
 	labelBg = new ScreenShape(ScreenShape::SHAPE_RECT, 20,30);
 	labelBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
-	labelBg->setColor(0.1, 0.1, 0.1, 1.0);
+	labelBg->setColorInt(34, 32, 31, 255);	
 	addChild(labelBg);
 	
-	ScreenLabel *label = new ScreenLabel("CRASH STACK", 22, "section");
-	label->color.a = 0.3;
+	ScreenLabel *label = new ScreenLabel("CRASH STACK", 18, "section");
+	label->color.a = 0.4;
 	addChild(label);
-	label->setPosition(5,0);
+	label->setPosition(5,3);
 	
 }	
 

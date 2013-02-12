@@ -29,12 +29,12 @@ PolycodeProjectBrowser::PolycodeProjectBrowser() : UIElement() {
 	headerBg = new ScreenShape(ScreenShape::SHAPE_RECT,10,10);
 	addChild(headerBg);
 	headerBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
-	headerBg->setColor(0.1, 0.1, 0.1, 1.0);
+	headerBg->setColorInt(34, 32, 31, 255);
 	
-	ScreenLabel *label = new ScreenLabel("PROJECT BROWSER", 22, "section", Label::ANTIALIAS_FULL);
+	ScreenLabel *label = new ScreenLabel("PROJECT BROWSER", 18, "section", Label::ANTIALIAS_FULL);
 	label->color.a = 0.4;
 	addChild(label);
-	label->setPosition(10, 0);
+	label->setPosition(10, 3);
 
 
 	treeContainer = new UITreeContainer("boxIcon.png", L"Projects", 200, 555);

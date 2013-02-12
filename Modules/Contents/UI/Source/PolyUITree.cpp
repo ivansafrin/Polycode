@@ -53,7 +53,8 @@ UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : 
 								size,
 								fontName,
 								Label::ANTIALIAS_FULL);
-
+	textLabel->color.setColorHex(strtol(conf->getStringValue("Polycode", "uiTreeFontColor").c_str(), 0, 16));
+	
 	bgBox = new ScreenShape(ScreenShape::SHAPE_RECT, treeWidth, cellHeight);	
 	bgBox->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	bgBox->setPosition(-treeOffset,0);	

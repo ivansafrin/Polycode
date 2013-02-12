@@ -57,11 +57,11 @@ NewFileWindow::NewFileWindow() : UIWindow(L"Create New File", 480, 280) {
 		}
 	}	
 	
-	ScreenLabel *label2 = new ScreenLabel(L"NEW FILE NAME (WITHOUT EXTENSION)", 22, "section", Label::ANTIALIAS_FULL);
+	ScreenLabel *label2 = new ScreenLabel(L"NEW FILE NAME (NO EXTENSION)", 18, "section", Label::ANTIALIAS_FULL);
 	label2->color.a = 0.4;
 	label2->getLabel()->setColorForRange(Color(),0, 12);
 	label2->getLabel()->setColorForRange(Color(0.6, 0.6, 0.6, 1.0),12, 40);
-	label2->setText("NEW FILE NAME (WITHOUT EXTENSION)");
+	label2->setText("NEW FILE NAME (NO EXTENSION)");
 		
 	addChild(label2);
 	label2->setPosition(padding+220, templateContainer->getPosition().y-5);			

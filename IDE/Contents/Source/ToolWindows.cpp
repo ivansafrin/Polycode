@@ -24,7 +24,7 @@
 
 TextInputPopup::TextInputPopup() : UIWindow(L"", 300, 80) {
 	
-	textInput = new UITextInput(false, 300, 12);	
+	textInput = new UITextInput(false, 290, 12);	
 	addChild(textInput);
 	textInput->setPosition(padding, 35);
 		

@@ -562,7 +562,13 @@ void PolycodePlayer::loadFile(const char *fileName) {
 		}		
 		if(configFile.root["antiAliasingLevel"]) {
 			aaLevel = configFile.root["antiAliasingLevel"]->intVal;
+		}
+		if(configFile.root["anisotropyLevel"]) {
+			anisotropyLevel = configFile.root["anisotropyLevel"]->intVal;
 		}		
+		if(configFile.root["vSync"]) {
+			vSync = configFile.root["vSync"]->boolVal;
+		}						
 		if(configFile.root["fullScreen"]) {
 			fullScreen = configFile.root["fullScreen"]->boolVal;
 		}				
@@ -689,7 +695,7 @@ void PolycodePlayer::loadFile(const char *fileName) {
 	
 	core->setUserPointer(this);
 	//core->addEventListener(this, Core::EVENT_CORE_RESIZE);
-	core->setVideoMode(xRes, yRes, fullScreen, false, 0, aaLevel);
+	core->setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel);
 	
 	if(textureFiltering == "nearest") {
 		CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_NEAREST);
@@ -864,7 +870,7 @@ void PolycodePlayer::handleEvent(Event *event) {
 
 bool PolycodePlayer::Update() {
 	if(L) {
-		lua_settop(L, 0);				
+		lua_settop(L, 0);
 		if(doCodeInject) {
 			printf("INJECTING CODE:[%s]\n", injectCodeString.c_str());
 			doCodeInject = false;			

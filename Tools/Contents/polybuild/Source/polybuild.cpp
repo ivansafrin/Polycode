@@ -256,6 +256,8 @@ int main(int argc, char **argv) {
 	int defaultHeight;
 	int frameRate = 60;
 	int antiAliasingLevel = 0;
+	int anisotropyLevel = 0;
+	bool vSync = false;
 	bool fullScreen = false;
 	float backgroundColorR = 0.2;
 	float backgroundColorG = 0.2;
@@ -303,6 +305,20 @@ int main(int argc, char **argv) {
 		antiAliasingLevel = configFile.root["antiAliasingLevel"]->intVal;
 	}
 
+	if(configFile.root["anisotropyLevel"]) {
+		printf("Anisotropy level: %d\n", configFile.root["anisotropyLevel"]->intVal);
+		anisotropyLevel = configFile.root["anisotropyLevel"]->intVal;
+	}
+	
+	if(configFile.root["vSync"]) {
+		vSync = configFile.root["vSync"]->boolVal;
+		if(vSync) {
+			printf("V-Sync: true\n");
+		} else {
+			printf("V-Sync: false\n");
+		}
+	}	
+
 	if(configFile.root["fullScreen"]) {
 		fullScreen = configFile.root["fullScreen"]->boolVal;
 		if(fullScreen) {
@@ -335,6 +351,8 @@ int main(int argc, char **argv) {
 	runInfo.root.addChild("defaultWidth", defaultWidth);
 	runInfo.root.addChild("frameRate", frameRate);
 	runInfo.root.addChild("antiAliasingLevel", antiAliasingLevel);
+	runInfo.root.addChild("anisotropyLevel", anisotropyLevel);
+	runInfo.root.addChild("vSync", vSync);	
 	runInfo.root.addChild("fullScreen", fullScreen);
 	runInfo.root.addChild("textureFiltering", String(textureFiltering));
 		

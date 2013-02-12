@@ -78,16 +78,23 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	
 	lineSpacing = conf->getNumericValue("Polycode", "textEditLineSpacing");
 	
-	Number st = conf->getNumericValue("Polycode", "textBgSkinT");
-	Number sr = conf->getNumericValue("Polycode", "textBgSkinR");
-	Number sb = conf->getNumericValue("Polycode", "textBgSkinB");
-	Number sl = conf->getNumericValue("Polycode", "textBgSkinL");
+	st = conf->getNumericValue("Polycode", "textBgSkinT");
+	sr = conf->getNumericValue("Polycode", "textBgSkinR");
+	sb = conf->getNumericValue("Polycode", "textBgSkinB");
+	sl = conf->getNumericValue("Polycode", "textBgSkinL");
+
 	
 	padding = conf->getNumericValue("Polycode", "textBgSkinPadding");	
 	
-	inputRect = new UIBox(conf->getStringValue("Polycode", "textBgSkin"),
+	if(multiLine) {
+		inputRect = new UIBox(conf->getStringValue("Polycode", "textBgSkinMultiline"),
+						  st,sr,sb,sl,
+						  width+(padding*2), height+(padding*2));		
+	} else {
+		inputRect = new UIBox(conf->getStringValue("Polycode", "textBgSkin"),
 						  st,sr,sb,sl,
 						  width+(padding*2), height+(padding*2));	
+	}
 	
 	addChild(inputRect);		
 	
@@ -104,6 +111,7 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	} else {
 		lineNumberBg = NULL;
 		lineNumberAnchor = NULL;
+		decoratorOffset = sl/2.0;
 	}
 
 	
@@ -1332,7 +1340,7 @@ void UITextInput::Update() {
 
 	if(!multiLine) {
 		Vector2 pos = getScreenPosition();
-		scissorBox.setRect(pos.x,pos.y, width, height);		
+		scissorBox.setRect(pos.x,pos.y, width+sr+sl, height+sb+st);
 	}
 
 	if(hasSelection) {

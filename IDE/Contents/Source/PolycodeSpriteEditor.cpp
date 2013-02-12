@@ -37,19 +37,19 @@ SpriteAnimationEntry::SpriteAnimationEntry(SpriteAnimation *animation) : UIEleme
 	removeButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(removeButton);
 
-	nameInput = new UITextInput(false, 90, 23);
+	nameInput = new UITextInput(false, 82, 12);
 	nameInput->setText(animation->name);
 	nameInput->setPosition(20, 0);
 	nameInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	addChild(nameInput);
 
-	framesInput = new UITextInput(false, 150, 23);
+	framesInput = new UITextInput(false, 142, 12);
 	framesInput->setText(animation->frames);
 	framesInput->setPosition(115, 0);
 	framesInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	addChild(framesInput);
 
-	speedInput = new UITextInput(false, 50, 23);
+	speedInput = new UITextInput(false, 42, 12);
 	speedInput->setText(String::NumberToString(animation->speed));
 	speedInput->setPosition(270, 0);
 	speedInput->addEventListener(this, UIEvent::CHANGE_EVENT);
@@ -99,7 +99,7 @@ PolycodeSpriteEditor::PolycodeSpriteEditor() : PolycodeEditor(true){
 	headerBg = new ScreenShape(ScreenShape::SHAPE_RECT,10,10);
 	addChild(headerBg);
 	headerBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
-	headerBg->setColor(0.1, 0.1, 0.1, 1.0);
+	headerBg->setColorInt(34, 32, 31, 255);
 	
 
 	propList = new PropList("SPRITE EDITOR");
@@ -110,25 +110,26 @@ PolycodeSpriteEditor::PolycodeSpriteEditor() : PolycodeEditor(true){
 	propList->addPropSheet(baseProps);
 	
 	textureProp = new TextureProp("Base image");
-	textureProp->addEventListener(this, Event::CHANGE_EVENT);
 	baseProps->addProp(textureProp);
 
 	widthProp = new NumberProp("Frame width");
-	widthProp->addEventListener(this, Event::CHANGE_EVENT);	
 	widthProp->set(32);
 	baseProps->addProp(widthProp);	
 
 	heightProp = new NumberProp("Frame height");
 	heightProp->set(32);	
-	heightProp->addEventListener(this, Event::CHANGE_EVENT);		
 	baseProps->addProp(heightProp);	
 	
+	widthProp->addEventListener(this, Event::CHANGE_EVENT);	
+	textureProp->addEventListener(this, Event::CHANGE_EVENT);
+	heightProp->addEventListener(this, Event::CHANGE_EVENT);		
+			
 	baseProps->propHeight = 180;
 	
-	ScreenLabel *label = new ScreenLabel("PREVIEW", 22, "section", Label::ANTIALIAS_FULL);
+	ScreenLabel *label = new ScreenLabel("PREVIEW", 18, "section", Label::ANTIALIAS_FULL);
 	label->color.a = 0.4;
 	addChild(label);
-	label->setPosition(390, 40);
+	label->setPosition(390, 36);
 			
 				
 	PropSheet *animationProps = new PropSheet("ANIMATIONS", "");
@@ -147,7 +148,7 @@ PolycodeSpriteEditor::PolycodeSpriteEditor() : PolycodeEditor(true){
 	
 	zoomBox = new UIComboBox(globalMenu, 100);
 	addChild(zoomBox);
-	zoomBox->setPosition(480, 36);
+	zoomBox->setPosition(490, 37);
 	zoomBox->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
 	zoomBox->addComboItem("No Zoom");

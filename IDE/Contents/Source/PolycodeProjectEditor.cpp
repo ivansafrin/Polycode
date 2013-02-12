@@ -97,14 +97,12 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	headerBg = new ScreenShape(ScreenShape::SHAPE_RECT,10,10);
 	addChild(headerBg);
 	headerBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
-	headerBg->setColor(0.1, 0.1, 0.1, 1.0);
+	headerBg->setColorInt(34, 32, 31, 255);
 	
-	ScreenLabel *label = new ScreenLabel("PROJECT SETTINGS", 22, "section", Label::ANTIALIAS_FULL);
-	label->color.a = 0.4;
+	ScreenLabel *label = new ScreenLabel("PROJECT SETTINGS", 18, "section", Label::ANTIALIAS_FULL);
+	label->color.a = 0.4;	
 	addChild(label);
-	label->setPosition(10, 0);
-
-
+	label->setPosition(10, 3);
 
 	moduleSettingsWindow = new UIElement();
 	moduleSettingsWindow->setPosition(350,10);
@@ -113,7 +111,7 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	
 	Number lastYPos = 40;
 
-	label = new ScreenLabel("PROJECT MODULES", 22, "section", Label::ANTIALIAS_FULL);
+	label = new ScreenLabel("PROJECT MODULES", 18, "section", Label::ANTIALIAS_FULL);
 	label->color.a = 0.4;
 	moduleSettingsWindow->addChild(label);
 	label->setPosition(0, lastYPos);
@@ -136,7 +134,7 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	
 	lastYPos += 20;
 
-	label = new ScreenLabel("PROJECT FONTS", 22, "section", Label::ANTIALIAS_FULL);
+	label = new ScreenLabel("PROJECT FONTS", 18, "section", Label::ANTIALIAS_FULL);
 	label->color.a = 0.4;
 	moduleSettingsWindow->addChild(label);
 	label->setPosition(0, lastYPos);
@@ -155,54 +153,59 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	mainSettingsWindow->setPosition(0,10);
 	addChild(mainSettingsWindow);
 	
-	ScreenLabel *label2 = new ScreenLabel(L"DEFAULT VIDEO OPTIONS", 22, "section", Label::ANTIALIAS_FULL);	
+	ScreenLabel *label2 = new ScreenLabel(L"DEFAULT VIDEO OPTIONS", 18, "section", Label::ANTIALIAS_FULL);	
 	label2->setColor(1.0, 1.0, 1.0, 0.4);
 	mainSettingsWindow->addChild(label2);
 	label2->setPosition(padding, 40);		
 
 		
-	label2 = new ScreenLabel(L"Width:", fontSize, fontName, Label::ANTIALIAS_FULL);
+	label2 = new ScreenLabel(L"Width", fontSize, fontName, Label::ANTIALIAS_FULL);
+	label2->setColor(1.0, 1.0, 1.0, 0.5);
 	mainSettingsWindow->addChild(label2);
-	label2->setPosition(padding, 80);		
+	label2->setPosition(padding + 6, 80);		
 	
 	defaultWidthInput = new UITextInput(false, 60, 12);	
 	mainSettingsWindow->addChild(defaultWidthInput);
-	defaultWidthInput->setPosition(label2->getPosition().x, label2->getPosition().y+18);
+	defaultWidthInput->setPosition(label2->getPosition().x-6, label2->getPosition().y+18);
 	defaultWidthInput->setNumberOnly(true);
 
-	label2 = new ScreenLabel(L"Height:", fontSize, fontName, Label::ANTIALIAS_FULL);
+	label2 = new ScreenLabel(L"Height", fontSize, fontName, Label::ANTIALIAS_FULL);
+	label2->setColor(1.0, 1.0, 1.0, 0.5);
 	mainSettingsWindow->addChild(label2);
-	label2->setPosition(padding + 80, 80);		
+	label2->setPosition(padding + 80 + 6, 80);		
 	
 	defaultHeightInput = new UITextInput(false, 60, 12);	
 	mainSettingsWindow->addChild(defaultHeightInput);
-	defaultHeightInput->setPosition(label2->getPosition().x, label2->getPosition().y+18);
+	defaultHeightInput->setPosition(label2->getPosition().x-6, label2->getPosition().y+18);
 	defaultHeightInput->setNumberOnly(true);
 	
-	label2 = new ScreenLabel(L"Anti-aliasing:", fontSize, fontName, Label::ANTIALIAS_FULL);
+	label2 = new ScreenLabel(L"Anti-aliasing", fontSize, fontName, Label::ANTIALIAS_FULL);
+	label2->setColor(1.0, 1.0, 1.0, 0.5);
 	mainSettingsWindow->addChild(label2);
-	label2->setPosition(padding + 160, 80);		
+	label2->setPosition(padding + 160 + 6, 80);		
 	
 	aaLevelComboBox = new UIComboBox(globalMenu, 120);		
 	aaLevelComboBox->addComboItem("No AA");
 	aaLevelComboBox->addComboItem("2x MSAA");
 	aaLevelComboBox->addComboItem("4x MSAA");
 	aaLevelComboBox->addComboItem("6x MSAA");			
-	aaLevelComboBox->setPosition(label2->getPosition().x, label2->getPosition().y+18);
+	aaLevelComboBox->setPosition(label2->getPosition().x-6, label2->getPosition().y+18);
 
 	label2 = new ScreenLabel(L"Texture filtering mode:", fontSize, fontName, Label::ANTIALIAS_FULL);
+	label2->setColor(1.0, 1.0, 1.0, 0.5);
 	mainSettingsWindow->addChild(label2);
-	label2->setPosition(padding, defaultHeightInput->getPosition().y+30);		
+	label2->setPosition(padding + 6, defaultHeightInput->getPosition().y+30);		
 	
 	texFilteringComboBox = new UIComboBox(globalMenu, 280);		
 	texFilteringComboBox->addComboItem("Nearest Neighbor");
 	texFilteringComboBox->addComboItem("Linear");
-	texFilteringComboBox->setPosition(label2->getPosition().x, label2->getPosition().y+18);
+	texFilteringComboBox->setPosition(label2->getPosition().x - 6, label2->getPosition().y+18);
 	
 
 	label2 = new ScreenLabel(L"Anisotropic filtering:", fontSize, fontName, Label::ANTIALIAS_FULL);
+	label2->setColor(1.0, 1.0, 1.0, 0.5);	
 	mainSettingsWindow->addChild(label2);
-	label2->setPosition(padding, texFilteringComboBox->getPosition().y+30);		
+	label2->setPosition(padding + 6, texFilteringComboBox->getPosition().y+30);		
 	
 	afLevelComboBox = new UIComboBox(globalMenu, 280);		
 	afLevelComboBox->addComboItem("No Anisotropic Filtering");
@@ -211,34 +214,36 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	afLevelComboBox->addComboItem("4x Anisotropic Filtering");
 	afLevelComboBox->addComboItem("8x Anisotropic Filtering");
 	afLevelComboBox->addComboItem("16x Anisotropic Filtering");			
-	afLevelComboBox->setPosition(label2->getPosition().x, label2->getPosition().y+18);
+	afLevelComboBox->setPosition(label2->getPosition().x-6, label2->getPosition().y+18);
 
-	label2 = new ScreenLabel(L"Framerate:", fontSize, fontName, Label::ANTIALIAS_FULL);
+	label2 = new ScreenLabel(L"Framerate", fontSize, fontName, Label::ANTIALIAS_FULL);
+	label2->setColor(1.0, 1.0, 1.0, 0.5);
 	mainSettingsWindow->addChild(label2);
-	label2->setPosition(padding, afLevelComboBox->getPosition().y+30);		
+	label2->setPosition(padding + 6, afLevelComboBox->getPosition().y+30);		
 	
 	framerateInput = new UITextInput(false, 60, 12);	
 	mainSettingsWindow->addChild(framerateInput);
-	framerateInput->setPosition(label2->getPosition().x, label2->getPosition().y+18);
+	framerateInput->setPosition(label2->getPosition().x-6, label2->getPosition().y+18);
 	framerateInput->setNumberOnly(true);
 
 	vSyncCheckBox = new UICheckBox("V-Sync", false);
 	vSyncCheckBox->setPosition(label2->getPosition().x + 80, label2->getPosition().y+18);
 	mainSettingsWindow->addChild(vSyncCheckBox);
 	
-	label2 = new ScreenLabel(L"STARTUP OPTIONS", 22, "section", Label::ANTIALIAS_FULL);	
+	label2 = new ScreenLabel(L"STARTUP OPTIONS", 18, "section", Label::ANTIALIAS_FULL);	
 	label2->setColor(1.0, 1.0, 1.0, 0.4);
 	mainSettingsWindow->addChild(label2);
 	label2->setPosition(padding, vSyncCheckBox->getPosition().y+vSyncCheckBox->getHeight()+20);		
 	
 	
-	label2 = new ScreenLabel(L"Entry point file:", fontSize, fontName, Label::ANTIALIAS_FULL);
+	label2 = new ScreenLabel(L"Entry point file", fontSize, fontName, Label::ANTIALIAS_FULL);
+	label2->setColor(1.0, 1.0, 1.0, 0.5);	
 	mainSettingsWindow->addChild(label2);
-	label2->setPosition(padding, vSyncCheckBox->getPosition().y+70);		
+	label2->setPosition(padding + 6, vSyncCheckBox->getPosition().y+80);		
 	
 	entryPointInput = new UITextInput(false, 200, 12);	
 	mainSettingsWindow->addChild(entryPointInput);
-	entryPointInput->setPosition(label2->getPosition().x, label2->getPosition().y+18);
+	entryPointInput->setPosition(label2->getPosition().x - 6, label2->getPosition().y+18);
 
 
 	mainSettingsWindow->addChild(afLevelComboBox);			
@@ -246,6 +251,7 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	mainSettingsWindow->addChild(texFilteringComboBox);	
 
 	label2 = new ScreenLabel(L"Background color:", fontSize, fontName, Label::ANTIALIAS_FULL);
+	label2->setColor(1.0, 1.0, 1.0, 0.5);
 	mainSettingsWindow->addChild(label2);
 	label2->setPosition(padding, entryPointInput->getPosition().y+entryPointInput->getHeight()+10);		
 

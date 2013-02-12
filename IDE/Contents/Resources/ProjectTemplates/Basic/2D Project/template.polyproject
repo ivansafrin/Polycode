@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PolycodeProject defaultWidth="640" defaultHeight="480" antiAliasingLevel="0">
 	<backgroundColor red="0.25" green="0.25" blue="0.25" />
-	<entryPoint>Source/Main.lua</entryPoint>
+	<entryPoint>Scripts/Main.lua</entryPoint>
 	<packedItems>
 		<item path="Resources" type="folder"/>
 	</packedItems>        	

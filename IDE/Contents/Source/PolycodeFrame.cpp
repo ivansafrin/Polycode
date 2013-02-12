@@ -537,7 +537,7 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	projectBrowser->treeContainer->getRootNode()->addEventListener(this, UITreeEvent::DRAG_START_EVENT);
 	
 	topBarBg = new ScreenShape(ScreenShape::SHAPE_RECT, 2,2);
-	topBarBg->setColor(0,0,0,1);
+	topBarBg->setColorInt(21, 18, 17, 255);
 	topBarBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	addChild(topBarBg);
 	
@@ -547,11 +547,11 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	
 	playButton = new UIImageButton("Images/play_button.png");
 	addChild(playButton);
-	playButton->setPosition(10,8);
+	playButton->setPosition(10,4);
 
 	stopButton = new UIImageButton("Images/stop_button.png");
 	addChild(stopButton);
-	stopButton->setPosition(10,8);
+	stopButton->setPosition(10,4);
 
 	
 	resizer = new ScreenImage("Images/corner_resize.png");	

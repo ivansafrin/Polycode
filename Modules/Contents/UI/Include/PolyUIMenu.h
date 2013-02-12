@@ -59,6 +59,8 @@ namespace Polycode {
 			Number menuItemHeight;
 			Number menuWidth;
 			
+			Number selectorPadding;
+			
 			Number nextItemHeight;
 			
 			int selectedOffset;

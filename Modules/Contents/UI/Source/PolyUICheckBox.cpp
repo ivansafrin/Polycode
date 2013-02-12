@@ -48,13 +48,14 @@ UICheckBox::UICheckBox(String caption, bool checked) : UIElement() {
 	buttonImageUnchecked->visible = !checked;
 	
 	captionLabel = new ScreenLabel(caption, fontSize, fontName, Label::ANTIALIAS_FULL);
-	captionLabel->positionAtBaseline = false;
 	
 	addChild(captionLabel);
-	captionLabel->setPosition(buttonImageChecked->getWidth() + checkboxTextOffsetX, (buttonImageChecked->getHeight()/2.0) - (captionLabel->getLabel()->getTextHeight()/2.0) + checkboxTextOffsetY);
+	captionLabel->setPosition(buttonImageChecked->getWidth() + checkboxTextOffsetX, checkboxTextOffsetY);
 	
 	addChild(buttonImageUnchecked);	
 	addChild(buttonImageChecked);
+	
+	captionLabel->color.setColorHex(strtol(conf->getStringValue("Polycode", "uiDefaultFontColor").c_str(), 0, 16));
 	
 	buttonImageUnchecked->addEventListener(this, InputEvent::EVENT_MOUSEOVER);
 	buttonImageUnchecked->addEventListener(this, InputEvent::EVENT_MOUSEOUT);

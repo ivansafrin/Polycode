@@ -52,7 +52,7 @@ class FindBar : public UIElement {
 		UITextInput *replaceInput;		
 		UIImageButton *closeButton;		
 		
-		UIImageButton *replaceAllButton;
+		UIButton *replaceAllButton;
 		
 	protected:
 		ScreenShape *barBg;

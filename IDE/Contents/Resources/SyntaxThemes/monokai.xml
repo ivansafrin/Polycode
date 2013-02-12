@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <syntaxTheme useStrongHinting="false">
-	<bgColor r="39" g="40" b="34"/>
+	<bgColor r="34" g="32" b="31"/>
 	<cursorColor r="255" g="255" b="255"/>
 	<selectionColor r="51" g="50" b="54"/>
 	<lineNumberColor r="70" g="60" b="50"/>

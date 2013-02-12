@@ -417,19 +417,19 @@ void PolycodeTextEditor::Resize(int x, int y) {
 FindBar::FindBar() : UIElement() {
 	barBg = new ScreenShape(ScreenShape::SHAPE_RECT, 30,30);
 	barBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
-	barBg->setColorInt(255, 222, 0, 255);
+	barBg->setColorInt(24, 22, 21, 255);
 	addChild(barBg);
 	this->height = 30;
 	
-	ScreenLabel *findLabel = new ScreenLabel("FIND", 22, "section");
+	ScreenLabel *findLabel = new ScreenLabel("FIND", 18, "section");
 	addChild(findLabel);
-	findLabel->setColor(0.0, 0.0, 0.0, 0.3);
-	findLabel->setPosition(10,6);
+	findLabel->setColor(1.0, 1.0, 1.0, 0.6);
+	findLabel->setPosition(10,3);
 
-	ScreenLabel *replaceLabel = new ScreenLabel("REPLACE", 22, "section");
+	ScreenLabel *replaceLabel = new ScreenLabel("REPLACE", 18, "section");
 	addChild(replaceLabel);
-	replaceLabel->setColor(0.0, 0.0, 0.0, 0.3);
-	replaceLabel->setPosition(200,6);
+	replaceLabel->setColor(1.0, 1.0, 1.0, 0.6);
+	replaceLabel->setPosition(200,3);
 
 	processInputEvents = true;
 	
@@ -441,9 +441,9 @@ FindBar::FindBar() : UIElement() {
 	addChild(replaceInput);
 	replaceInput->setPosition(280, 4);
 	
-	replaceAllButton = new UIImageButton("Images/replaceAll.png");
+	replaceAllButton = new UIButton("Replace All", 100);
 	addChild(replaceAllButton);
-	replaceAllButton->setPosition(420, 5);
+	replaceAllButton->setPosition(420, 3);
 	
 	closeButton = new UIImageButton("Images/barClose.png");
 	addChild(closeButton);

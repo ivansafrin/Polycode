@@ -32,6 +32,16 @@ namespace Polycode {
 	class _PolyExport Color : public PolyBase {
 		public:
 
+	
+			/**
+			* Create from 0-1 floating point data.
+			* @param r Red value 0-1.
+			* @param g Green value 0-1
+			* @param b Blue value 0-1
+			* @param a Alpha value 0-1									
+			*/														
+			Color(Number r,Number g, Number b, Number a);
+			
 			/**
 			* Default constructor.
 			*/						
@@ -45,16 +55,7 @@ namespace Polycode {
 			* @param a Alpha value 0-255.									
 			*/									
 			Color(int r,int g, int b, int a);	
-			
-			/**
-			* Create from 0-1 floating point data.
-			* @param r Red value 0-1.
-			* @param g Green value 0-1
-			* @param b Blue value 0-1
-			* @param a Alpha value 0-1									
-			*/														
-			Color(Number r,Number g, Number b, Number a);
-			
+		
 			/**
 			* Create from another color.
 			* @param color The color to create from.

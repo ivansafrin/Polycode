@@ -124,6 +124,8 @@ public:
 	int xRes;
 	int yRes;
 	int aaLevel;
+	int anisotropyLevel;
+	bool vSync;
 	bool fullScreen;	
 	
 	int frameRate;

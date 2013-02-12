@@ -57,114 +57,16 @@ CocoaCore::CocoaCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, 
 	
 	userHomeDirectory = String([NSHomeDirectory() UTF8String]);
 	
-	NSOpenGLPixelFormatAttribute attrs[32];
-	
-	int atindx = 0;
-	attrs[atindx++] = NSOpenGLPFADoubleBuffer;
-	
-	attrs[atindx++] = NSOpenGLPFADepthSize;
-	attrs[atindx++] = 32;
-	
-	if(aaLevel > 0) {
-		attrs[atindx++] = NSOpenGLPFASampleBuffers;	
-		attrs[atindx++] = 1;	
-	
-		attrs[atindx++] = NSOpenGLPFASamples;	
-		attrs[atindx++] = aaLevel;	
-	
-		attrs[atindx++] = NSOpenGLPFAMultisample;	
-	}
-	
-	attrs[atindx++] = NSOpenGLPFANoRecovery;		
-
-	if(fullScreen) {
-		
-//		attrs[atindx++] = NSOpenGLPFAFullScreen;		
-//		attrs[atindx++] = NSOpenGLPFAScreenMask;	
-//		attrs[atindx++] = CGDisplayIDToOpenGLDisplayMask(kCGDirectMainDisplay);
-		
-	}
-	
-	attrs[atindx++] = NSOpenGLPFAAccelerated;			
-	
-	
-	attrs[atindx++] = nil;				
-/*	
-	NSOpenGLPixelFormatAttribute attrs[] =
-	{
-			NSOpenGLPFADoubleBuffer,	
-		NSOpenGLPFADepthSize, 16,
-//		NSOpenGLPFAFullScreen,
-//		NSOpenGLPFAScreenMask,
-//		CGDisplayIDToOpenGLDisplayMask(kCGDirectMainDisplay),
-		NSOpenGLPFASampleBuffers, 1,
-		NSOpenGLPFASamples,  aaLevel,
-		NSOpenGLPFANoRecovery,	
-//		NSOpenGLPFAWindow,
-		NSOpenGLPFAMultisample,
-//		NSOpenGLPFAAccelerated,
-//		NSOpenGLPFAAccumSize, 0,
-		nil
-	};	
-*/
-
-//	[view lockContext];
-	
-	[view setCore:this];	
-	NSOpenGLPixelFormat *format = [[NSOpenGLPixelFormat alloc] initWithAttributes:attrs];
-	
-	if(!format) {
-		NSLog(@"Error creating pixel format!\n");
-	}
-	
-	context = [[NSOpenGLContext alloc] initWithFormat: format shareContext:nil];
-	[format release];
-
-	if (context == nil) {
-        NSLog(@"Failed to create open gl context");
-	}	
-	
-	if(false) {
-
-//		[view enterFullScreenMode:[NSScreen mainScreen] withOptions:0];
-//		[view removeFromSuperview];
-//		[[view window] orderOut:nil];
-		
-//		CGDisplayCapture (kCGDirectMainDisplay ) ;			
-//		CGDisplaySwitchToMode (kCGDirectMainDisplay, CGDisplayBestModeForParameters (kCGDirectMainDisplay, 32, xRes, yRes, NULL) );				
-		
-		
-//		[context makeCurrentContext];		
-//		[context setFullScreen];
-//		[context flushBuffer];	
-//		CGDisplayCapture (kCGDirectMainDisplay ) ;		
-
-
-		
-//		[context clearDrawable];
-  //      [context release];		
-	} else {
-		[view clearGLContext];
-		[view setOpenGLContext:context];	
-		[context setView: (NSView*)view];					
-	}
-	
-	if(fullScreen) {
-	//	[view enterFullScreenMode:[NSScreen mainScreen] withOptions:0];	
-	}
-	
+	[view setCore:this];
 	
 	glView = view;
 	
+	context = nil;
+	
 	initTime = mach_absolute_time();					
-	
-//	while(![view isContextReady]) {
 		
-//	}
-	
 	renderer = new OpenGLRenderer();
-	services->setRenderer(renderer);	
-	//[view unlockContext];			
+	services->setRenderer(renderer);			
 	setVideoMode(xRes,yRes,fullScreen, vSync, aaLevel, anisotropyLevel);		
 
 	CoreServices::getInstance()->installModule(new GLSLShaderModule());	
@@ -193,11 +95,54 @@ String CocoaCore::getClipboardString() {
 	return [retString UTF8String];
 }
 
-void CocoaCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLeve, int anisotropyLevel) {
+void CocoaCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel) {
 	this->xRes = xRes;
 	this->yRes = yRes;
 	this->fullScreen = fullScreen;
 	this->aaLevel = aaLevel;
+	
+	NSOpenGLPixelFormatAttribute attrs[32];
+	
+	int atindx = 0;
+	attrs[atindx++] = NSOpenGLPFADoubleBuffer;
+	
+	attrs[atindx++] = NSOpenGLPFADepthSize;
+	attrs[atindx++] = 32;
+	
+	if(aaLevel > 0) {
+		attrs[atindx++] = NSOpenGLPFASampleBuffers;	
+		attrs[atindx++] = 1;	
+	
+		attrs[atindx++] = NSOpenGLPFASamples;	
+		attrs[atindx++] = aaLevel;	
+	
+		attrs[atindx++] = NSOpenGLPFAMultisample;	
+	}
+	
+	attrs[atindx++] = NSOpenGLPFANoRecovery;		
+	
+	attrs[atindx++] = NSOpenGLPFAAccelerated;			
+	attrs[atindx++] = nil;					
+	NSOpenGLPixelFormat *format = [[NSOpenGLPixelFormat alloc] initWithAttributes:attrs];		
+		
+	if(!format) {
+		NSLog(@"Error creating pixel format!\n");
+	}
+	
+	context = [[NSOpenGLContext alloc] initWithFormat: format shareContext:context];
+	[format release];
+
+	if (context == nil) {
+        NSLog(@"Failed to create open gl context");
+	}	
+	
+		
+	[glView clearGLContext];
+	[glView setOpenGLContext:context];	
+	[context setView: (NSView*)glView];					
+	
+		
+		
 	renderer->setAnisotropyAmount(anisotropyLevel);
 		
 	renderer->Resize(xRes, yRes);
@@ -243,13 +188,13 @@ void CocoaCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, in
 	
 	[context setValues:&sync forParameter:NSOpenGLCPSwapInterval];	
 				
-	/*
+
 	if(aaLevel > 0) {
-		glEnable( GL_MULTISAMPLE_ARB );	
+		glEnable( GL_MULTISAMPLE_ARB );
 	} else {
 		glDisable( GL_MULTISAMPLE_ARB );			
 	}
-	*/
+	
 }
 
 void CocoaCore::openFileWithApplication(String file, String application) {

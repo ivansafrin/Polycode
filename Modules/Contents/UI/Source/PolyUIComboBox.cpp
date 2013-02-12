@@ -57,11 +57,14 @@ UIComboBox::UIComboBox(UIGlobalMenu *globalMenu, Number comboWidth) : UIElement(
 	
 	Number paddingX = conf->getNumericValue("Polycode", "uiComboBoxTextOffsetX");	
 	Number paddingY = conf->getNumericValue("Polycode", "uiComboBoxTextOffsetY");	
+
+	Number dropDownX = conf->getNumericValue("Polycode", "uiComboBoxDropX");
+	Number dropDownY = conf->getNumericValue("Polycode", "uiComboBoxDropY");
 		
 	dropDownImage = new ScreenImage(dropDownImageFile);
-	dropDownImage->setPosition(comboWidth - dropDownImage->getWidth(),0);
+	dropDownImage->setPosition(comboWidth - dropDownImage->getWidth() - dropDownX,dropDownY);
 	
-	this->comboHeight = dropDownImage->getHeight();
+	this->comboHeight = conf->getNumericValue("Polycode", "uiComboBoxHeight");
 	this->comboWidth = comboWidth;
 	nextItemHeight = 0;
 	
@@ -75,6 +78,7 @@ UIComboBox::UIComboBox(UIGlobalMenu *globalMenu, Number comboWidth) : UIElement(
 	selectedLabel->setPosition(paddingX, floor(((dropDownImage->getHeight()/2.0) - selectedLabel->getLabel()->getTextHeight()/2.0) + paddingY));
 	addChild(selectedLabel);
 	
+	selectedLabel->color.setColorHex(strtol(conf->getStringValue("Polycode", "uiDefaultFontColor").c_str(), 0, 16));
 	
 	String selectorBgImage = conf->getStringValue("Polycode", "uiComboBoxSelectorBgImage");	
 	

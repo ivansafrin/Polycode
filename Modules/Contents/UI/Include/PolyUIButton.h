@@ -33,7 +33,7 @@ namespace Polycode {
 
 	class _PolyExport UIButton : public UIElement {
 		public:
-			UIButton(String text, Number width, Number height = 28);
+			UIButton(String text, Number width, Number height = 23);
 			~UIButton();		
 			void handleEvent(Event *event);
 			

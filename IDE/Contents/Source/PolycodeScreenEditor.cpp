@@ -73,19 +73,19 @@ EntityTreeView::EntityTreeView(Entity *rootEntity) : UIElement() {
 	bg = new ScreenShape(ScreenShape::SHAPE_RECT,10,10);
 	addChild(bg);
 	bg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
-	bg->setColor(0.18, 0.18, 0.18, 1.0);
+	bg->setColorInt(34, 32, 31, 255);
 	bg->blockMouseInput = true;
 	bg->processInputEvents = true;
 	
 	headerBg = new ScreenShape(ScreenShape::SHAPE_RECT,10,10);
 	addChild(headerBg);
 	headerBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
-	headerBg->setColor(0.1, 0.1, 0.1, 1.0);
+	headerBg->setColorInt(34, 32, 31, 255);
 	
-	ScreenLabel *label = new ScreenLabel("TREE VIEW", 22, "section", Label::ANTIALIAS_FULL);
+	ScreenLabel *label = new ScreenLabel("TREE VIEW", 18, "section", Label::ANTIALIAS_FULL);
 	label->color.a = 0.4;
 	addChild(label);
-	label->setPosition(10, 0);
+	label->setPosition(10, 3);
 	
 	treeContainer = new UITreeContainer("Images/entity_icon.png", L"Layers", 200, 555);
 	treeContainer->getRootNode()->toggleCollapsed();
@@ -435,7 +435,7 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain() {
 	viewOptions->blockMouseInput = true;
 			
 	viewOptionsBg = new ScreenShape(ScreenShape::SHAPE_RECT, 20,20);
-	viewOptionsBg->setColor(0.1, 0.1, 0.1, 1.0);
+	viewOptionsBg->setColorInt(34, 32, 31, 255);
 	viewOptionsBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	viewOptions->addChild(viewOptionsBg);
 	
@@ -443,36 +443,36 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain() {
 	viewOptionsBg->processInputEvents = true;
 	
 
-	ScreenLabel *label = new ScreenLabel("GRID", 22, "section", Label::ANTIALIAS_FULL);
+	ScreenLabel *label = new ScreenLabel("GRID", 18, "section", Label::ANTIALIAS_FULL);
 	label->color.a = 0.4;		
 	viewOptions->addChild(label);
-	label->setPosition(10, 0);
+	label->setPosition(10, 3);
 	
 	gridSizeInput = new UITextInput(false, 40, 12);
 	gridSizeInput->setText("16");
 	viewOptions->addChild(gridSizeInput);
-	gridSizeInput->setPosition(50, 4);
+	gridSizeInput->setPosition(60, 4);
 	gridSizeInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
 	gridCheckBox = new UICheckBox("On", true);
 	gridCheckBox->addEventListener(this, UIEvent::CHANGE_EVENT);
 	viewOptions->addChild(gridCheckBox);
-	gridCheckBox->setPosition(100, 5);
+	gridCheckBox->setPosition(115, 5);
 
-	label = new ScreenLabel("SNAP", 22, "section", Label::ANTIALIAS_FULL);
+	label = new ScreenLabel("SNAP", 18, "section", Label::ANTIALIAS_FULL);
 	label->color.a = 0.4;		
 	viewOptions->addChild(label);
-	label->setPosition(170, 0);
+	label->setPosition(180, 3);
 
 	pixelSnapBox = new UICheckBox("Pixel", true);
 	pixelSnapBox->addEventListener(this, UIEvent::CHANGE_EVENT);	
 	viewOptions->addChild(pixelSnapBox);
-	pixelSnapBox->setPosition(210, 5);
+	pixelSnapBox->setPosition(230, 5);
 
 	gridSnapBox = new UICheckBox("Grid", true);
 	gridSnapBox->addEventListener(this, UIEvent::CHANGE_EVENT);
 	viewOptions->addChild(gridSnapBox);
-	gridSnapBox->setPosition(280, 5);
+	gridSnapBox->setPosition(290, 5);
 	gridSnapBox->setChecked(false);
 	
 		
@@ -482,27 +482,27 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain() {
 	properties->blockMouseInput = true;
 			
 	propertiesBg = new ScreenShape(ScreenShape::SHAPE_RECT, 20,20);
-	propertiesBg->setColor(0.1, 0.1, 0.1, 1.0);
+	propertiesBg->setColorInt(34, 32, 31, 255);
 	propertiesBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	properties->addChild(propertiesBg);
 	propertiesBg->blockMouseInput = true;
 	propertiesBg->processInputEvents = true;
 	
-	label = new ScreenLabel("SCREEN RATIO", 22, "section", Label::ANTIALIAS_FULL);
+	label = new ScreenLabel("SCREEN RATIO", 18, "section", Label::ANTIALIAS_FULL);
 	label->color.a = 0.4;		
 	properties->addChild(label);
-	label->setPosition(10, 0);
+	label->setPosition(10, 3);
 	
 	scaleInput = new UITextInput(false, 70, 12);
 	scaleInput->setText("1.0");
 	properties->addChild(scaleInput);
-	scaleInput->setPosition(110, 4);
+	scaleInput->setPosition(140, 4);
 	scaleInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
-	label = new ScreenLabel("PREVIEW ASPECT", 22, "section", Label::ANTIALIAS_FULL);
+	label = new ScreenLabel("PREVIEW ASPECT", 18, "section", Label::ANTIALIAS_FULL);
 	label->color.a = 0.4;		
 	properties->addChild(label);
-	label->setPosition(200, 0);
+	label->setPosition(230, 3);
 	
 	aspectComboBox = new UIComboBox(globalMenu, 80);
 	aspectComboBox->addComboItem("4:3");
@@ -521,12 +521,12 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain() {
 							
 	aspectComboBox->setSelectedIndex(0);
 	properties->addChild(aspectComboBox);
-	aspectComboBox->setPosition(310, 2);
+	aspectComboBox->setPosition(380, 2);
 			
-	label = new ScreenLabel("ZOOM", 22, "section", Label::ANTIALIAS_FULL);
+	label = new ScreenLabel("ZOOM", 18, "section", Label::ANTIALIAS_FULL);
 	label->color.a = 0.4;		
 	properties->addChild(label);
-	label->setPosition(410, 0);
+	label->setPosition(470, 3);
 			
 	zoomComboBox = new UIComboBox(globalMenu, 80);
 	zoomComboBox->addComboItem("8:1");
@@ -550,7 +550,7 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain() {
 	
 	zoomComboBox->addEventListener(this, UIEvent::CHANGE_EVENT);	
 	properties->addChild(zoomComboBox);
-	zoomComboBox->setPosition(450, 2);
+	zoomComboBox->setPosition(530, 2);
 			
 	toolPalette = new ScreenEntity();
 	toolPalette->setPosition(0, 30);
@@ -560,7 +560,7 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain() {
 	
 	toolPaletteBg = new ScreenShape(ScreenShape::SHAPE_RECT, 80, 20);
 	toolPaletteBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
-	toolPaletteBg->setColor(0.16, 0.16, 0.16, 1.0);
+	toolPaletteBg->setColorInt(34, 32, 31, 255);
 	toolPalette->addChild(toolPaletteBg);
 	toolPaletteBg->processInputEvents = true;
 	toolPaletteBg->blockMouseInput = true;
@@ -1971,10 +1971,10 @@ void PolycodeScreenEditorMain::setMode(int newMode) {
 void PolycodeScreenEditorMain::Resize(Number width, Number height) {
 
 
-	viewOptionsBg->setShapeSize(width, 30);
+	viewOptionsBg->setShapeSize(width+1, 30);
 	viewOptions->setPosition(0, height-30);
 
-	propertiesBg->setShapeSize(width, 30);
+	propertiesBg->setShapeSize(width+1, 30);
 	
 	toolPaletteBg->setShapeSize(100,height-60);
 			
@@ -2006,7 +2006,7 @@ void PolycodeScreenEditorMain::handleDroppedFile(OSFileEntry file, Number x, Num
 
 PolycodeScreenEditor::PolycodeScreenEditor() : PolycodeEditor(true){
 
-	mainSizer = new UIHSizer(100,100,280,false);
+	mainSizer = new UIHSizer(100,100,300,false);
 	addChild(mainSizer);	
 
 	editorMain = new PolycodeScreenEditorMain();
