@@ -131,18 +131,11 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 		wrappersHeaderOut += "public:\n"
 		wrappersHeaderOut += "	LuaEventHandler() : EventHandler() {}\n"
 		wrappersHeaderOut += "	void handleEvent(Event *e) {\n"
-#		wrappersHeaderOut += "		lua_pop(L, 1);\n"
-#		wrappersHeaderOut += "		lua_getfield(L, LUA_GLOBALSINDEX, \"EventHandler\" );\n"
-		wrappersHeaderOut += "		lua_settop(L, 0);\n"
-		wrappersHeaderOut += "		lua_getfield (L, LUA_GLOBALSINDEX, \"__customError\");\n"
 		wrappersHeaderOut += "		int errH = lua_gettop(L);\n"
 		wrappersHeaderOut += "		lua_getfield(L, LUA_GLOBALSINDEX, \"__handleEvent\");\n"
 		wrappersHeaderOut += "		lua_rawgeti( L, LUA_REGISTRYINDEX, wrapperIndex );\n"
 		wrappersHeaderOut += "		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));\n"
 		wrappersHeaderOut += "		*userdataPtr = (PolyBase*)e;\n"
-#		wrappersHeaderOut += "		lua_pcall(L, 2, 0, errH);\n"
-		wrappersHeaderOut += "		int stackSize = lua_gettop(L);\n"
-		wrappersHeaderOut += "		printf(\"MARCO! (stacksize: %d)\\n\", stackSize);\n"
 		wrappersHeaderOut += "		lua_pcall(L, 2, 0, errH);\n"
 		wrappersHeaderOut += "	}\n"
 		wrappersHeaderOut += "	int wrapperIndex;\n"
@@ -725,8 +718,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 					cppLoaderOut += "\tlua_pushstring(L, \"__gc\");\n"
 					cppLoaderOut += "\tlua_pushcfunction(L, %s_delete_%s);\n" % (libName, ckey)
 					cppLoaderOut += "\tlua_settable(L, -3);\n"
-				
-	
+				cppLoaderOut +="\tlua_pop(L, 1);\n"
 
 				# Delete method (C++ side)
 				cppRegisterOut += "\t\t{\"delete_%s\", %s_delete_%s},\n" % (ckey, libName, ckey)
