@@ -62,7 +62,7 @@ def typeFilter(ty):
 	ty = ty.replace(" ", "") # Not very safe!
 	return ty
 
-def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, apiPath, apiClassPath, includePath, sourcePath, inheritInModuleFiles):
+def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, apiPath, apiClassPath, includePath, sourcePath, luaDocPath, inheritInModuleFiles):
 	wrappersHeaderOut = "" # Def: Global C++ *LUAWrappers.h
 	cppRegisterOut = "" # Def: Global C++ *LUA.cpp
 	cppLoaderOut = "" # Def: Global C++ *LUA.cpp
@@ -781,9 +781,11 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 	fout = open("%s/%sLUA.h" % (includePath, prefix), "w")
 	fout.write(cppRegisterHeaderOut)
 
-	luaDocPath = "../../../Documentation/Lua/xml"
-	fout = open("%s/%s.xml" % (luaDocPath, prefix), "w")
-	fout.write(luaDocOut)
+	if luaDocPath is None:
+		luaDocPath = "../../../Documentation/Lua/xml"
+	if luaDocPath != "-":
+		fout = open("%s/%s.xml" % (luaDocPath, prefix), "w")
+		fout.write(luaDocOut)
 
 	fout = open("%s/%s.lua" % (apiPath, prefix), "w")
 	fout.write(luaIndexOut)
@@ -809,7 +811,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 					myzip.write(os.path.join(root, filename))
 
 if len(sys.argv) < 10:
-	print ("Usage:\n%s [input path] [prefix] [main include] [lib small name] [lib name] [api path] [api class-path] [include path] [source path] [inherit-in-module-file path (optional)]" % (sys.argv[0]))
+	print ("Usage:\n%s [input path] [prefix] [main include] [lib small name] [lib name] [api path] [api class-path] [include path] [source path] [lua doc path (optional) (or - for omit)] [inherit-in-module-file path (optional)]" % (sys.argv[0]))
 	sys.exit(1)
 else:
-	createLUABindings(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9], sys.argv[10] if len(sys.argv)>10 else None)
+	createLUABindings(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9], sys.argv[10] if len(sys.argv)>10 else None, sys.argv[11] if len(sys.argv)>11 else None)
