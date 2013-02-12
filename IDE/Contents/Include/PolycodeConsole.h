@@ -86,6 +86,21 @@ class BackTraceWindow : public UIElement {
 		
 };
 
+
+class ConsoleWindow : public UIElement {
+	public:
+		ConsoleWindow();
+		
+		void Resize(Number width, Number height);
+		
+		UITextInput *debugTextInput;
+		UITextInput *consoleTextInput;
+		
+		UIButton *clearButton;
+		
+		ScreenShape *labelBg;
+};
+
 class PolycodeConsole : public UIElement {
 	public:
 		PolycodeConsole();
@@ -112,14 +127,14 @@ class PolycodeConsole : public UIElement {
 		
 		static void setInstance(PolycodeConsole *newInstance);
 		
-		BackTraceWindow *backtraceWindow;		
+		BackTraceWindow *backtraceWindow;	
+		ConsoleWindow  *consoleWindow;
 	protected:
 	
 		UIHSizer *backtraceSizer;
 	
 		PolycodeRemoteDebugger *debugger;		
 		static PolycodeConsole *instance;
-		
 		
 		
 		UITextInput *debugTextInput;

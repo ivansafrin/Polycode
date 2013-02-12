@@ -163,25 +163,62 @@ BackTraceWindow::~BackTraceWindow() {
 	
 }
 
+ConsoleWindow::ConsoleWindow() : UIElement() {
+
+
+	labelBg = new ScreenShape(ScreenShape::SHAPE_RECT, 20,30);
+	labelBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	labelBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
+	addChild(labelBg);
+	
+	ScreenLabel *label = new ScreenLabel("CONSOLE", 18, "section");
+	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
+	addChild(label);
+	label->setPosition(5,3);
+
+	debugTextInput = new UITextInput(true, 100, 100);
+	consoleTextInput = new UITextInput(false, 100, 100);
+	addChild(consoleTextInput);	
+	addChild(debugTextInput);	
+	
+	clearButton = new UIButton("Clear", 50);
+	addChild(clearButton);
+	
+}
+
+void ConsoleWindow::Resize(Number width, Number height) {
+
+	labelBg->setShapeSize(width, 30);
+	debugTextInput->Resize(width, height-25-30);
+	debugTextInput->setPosition(0, 30);
+
+	clearButton->setPosition(width - 60, 4);
+
+	consoleTextInput->Resize(width, 25);
+	consoleTextInput->setPosition(0, height-25);	
+}
+
 PolycodeConsole::PolycodeConsole() : UIElement() {
 
 	backtraceSizer = new UIHSizer(100,100,300,false);
 	addChild(backtraceSizer);
 	
 	debugger = NULL;
-	debugTextInput = new UITextInput(true, 100, 100);
-	backtraceSizer->addLeftChild(debugTextInput);
-
+	
+	consoleWindow = new ConsoleWindow();
+	
+	backtraceSizer->addLeftChild(consoleWindow);
 
 	backtraceWindow = new BackTraceWindow();
 	backtraceSizer->addRightChild(backtraceWindow);
 
-	consoleTextInput = new UITextInput(false, 100, 100);
-	addChild(consoleTextInput);	
+	debugTextInput = consoleWindow->debugTextInput;
+	consoleTextInput = consoleWindow->consoleTextInput;
 	
-	consoleTextInput->addEventListener(this, Event::COMPLETE_EVENT);
-	
+	consoleTextInput->addEventListener(this, Event::COMPLETE_EVENT);	
 	consoleTextInput->setColor(0.95, 1.0, 0.647, 1.0);
+	
+	consoleWindow->clearButton->addEventListener(this, UIEvent::CLICK_EVENT);
 
 	PolycodeConsole::setInstance(this);
 }
@@ -204,6 +241,12 @@ void PolycodeConsole::setDebugger(PolycodeRemoteDebugger *debugger) {
 }
 
 void PolycodeConsole::handleEvent(Event *event) {
+	if(event->getDispatcher() == consoleWindow->clearButton) {
+		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {
+			debugTextInput->setText("");
+		}
+	}
+
 	if(event->getDispatcher() == consoleTextInput) {
 		if(event->getEventCode() == Event::COMPLETE_EVENT && event->getEventType() == "") {
 			_print(">"+consoleTextInput->getText()+"\n");
@@ -252,9 +295,6 @@ void PolycodeConsole::_print(String msg) {
 }
 
 void PolycodeConsole::Resize(Number width, Number height) {
-	backtraceSizer->Resize(width, height-25);
+	backtraceSizer->Resize(width, height);
 	backtraceSizer->setPosition(0, 0);
-
-	consoleTextInput->Resize(width, 25);
-	consoleTextInput->setPosition(0, height-25);
 }
