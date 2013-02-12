@@ -42,6 +42,13 @@ namespace Polycode {
 		* @param image Image to create from.
 		*/		
 		ScreenImage(Image *image);		
+		
+		/**
+		 * Create screen image from Texture.
+		 * @param image Texture to create from.
+		 */		
+		ScreenImage(Texture *texture);		
+		
 		virtual ~ScreenImage();
 		
 		/**
