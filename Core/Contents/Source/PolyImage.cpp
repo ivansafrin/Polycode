@@ -147,7 +147,14 @@ Color Image::getPixel(int x, int y) {
 	if(x < 0 || x >= width || y < 0 || y >= height)
 		return Color(0,0,0,0);
 	unsigned int *imageData32 = (unsigned int*)imageData;	
-	return Color(imageData32[x+(y*width)]);
+
+	unsigned int hex = imageData32[x+(y*width)];
+	int ta = (hex >> 24) & 0xFF;
+	int tb = (hex >> 16) & 0xFF;
+	int tg = (hex >> 8) & 0xFF;
+	int tr = (hex ) & 0xFF;
+	
+	return Color(((Number)tr)/255.0f, ((Number)tg)/255.0f, ((Number)tb)/255.0f,((Number)ta)/255.0f);
 }
 
 unsigned int Image::getWidth() const {
