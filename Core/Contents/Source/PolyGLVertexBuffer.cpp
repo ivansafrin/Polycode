@@ -51,6 +51,8 @@ OpenGLVertexBuffer::OpenGLVertexBuffer(Mesh *mesh) : VertexBuffer() {
 	glGenBuffersARB(1, &vertexBufferID);
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB, vertexBufferID);
 	
+	meshType = mesh->getMeshType();
+	
 	long bufferSize = 0;
 	long newBufferSize = 0;		
 	GLfloat *buffer = (GLfloat*)malloc(1);	
