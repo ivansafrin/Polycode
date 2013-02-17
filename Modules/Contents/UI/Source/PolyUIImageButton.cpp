@@ -76,5 +76,6 @@ void UIImageButton::handleEvent(Event *event) {
 }
 
 UIImageButton::~UIImageButton() {
-
+	delete buttonImage;
+	delete buttonRect;
 }

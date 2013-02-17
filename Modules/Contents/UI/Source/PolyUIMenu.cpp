@@ -47,12 +47,10 @@ UIMenuItem::UIMenuItem(String label, String _id, void *data, Number comboWidth, 
 	
 	this->_id = _id;
 	this->data = data;
-
-
 }
 
 UIMenuItem::~UIMenuItem() {
-		
+	delete itemLabel;
 }
 
 UIMenu::UIMenu(Number menuWidth) : UIElement() {
@@ -178,6 +176,12 @@ void UIMenu::handleEvent(Event *event) {
 
 
 UIMenu::~UIMenu() {
+	for(int c = 0; c < items.size(); c++)
+		delete items[c];
+	
+	delete dropDownBox;
+	delete selectorBox;
+	
 	CoreServices::getInstance()->getCore()->getInput()->removeAllHandlersForListener(this);
 }
 

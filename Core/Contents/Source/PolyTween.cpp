@@ -65,7 +65,9 @@ void Tween::setSpeed(Number speed) {
 Tween::~Tween() {
 	tweenTimer->removeEventListener(this, 0);
 	delete tweenTimer;
-	CoreServices::getInstance()->getTweenManager()->removeTween(this);	
+	
+	deleteOnComplete = false; // Prevent loop when we removeTween in next line.
+	CoreServices::getInstance()->getTweenManager()->removeTween(this);
 }
 
 bool Tween::isComplete() {

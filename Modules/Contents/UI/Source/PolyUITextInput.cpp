@@ -1363,7 +1363,15 @@ void UITextInput::Update() {
 }
 
 UITextInput::~UITextInput() {
-
+	delete linesContainer;
+	delete inputRect;
+	delete lineNumberBg;
+	delete lineNumberAnchor;
+	delete selectorRectTop;
+	delete selectorRectMiddle;
+	delete selectorRectBottom;
+	delete blinkerRect;
+	delete blinkTimer;
 }
 
 void UITextInput::readjustBuffer() {
