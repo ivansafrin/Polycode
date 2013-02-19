@@ -31,7 +31,8 @@
 
 using namespace Polycode;
 
-Tween::	Tween(Number *target, int easeType, Number startVal, Number endVal, Number time, bool repeat, bool deleteOnComplete) : EventDispatcher() {
+Tween::	Tween(Number *target, int easeType, Number startVal, Number endVal, Number time, bool repeat, bool deleteOnComplete, Number waitTime) : EventDispatcher() {
+	this->waitTime = waitTime;
 	this->deleteOnComplete = deleteOnComplete;
 	targetVal = target;
 	this->repeat = repeat;
@@ -42,7 +43,8 @@ Tween::	Tween(Number *target, int easeType, Number startVal, Number endVal, Numb
 	localTargetVal = startVal;
 	this->endTime = time;
 	tweenTime = 0;
-	*targetVal = startVal;
+	if(waitTime == 0.0)
+		*targetVal = startVal;
 	tweenTimer = new Timer(true, 1);
 	tweenTimer->addEventListener(this, 0);
 	complete = false;
@@ -77,7 +79,7 @@ void Tween::doOnComplete() {
 }
 
 void Tween::handleEvent(Event *event) {
-	if(tweenTime >= endTime) {
+	if(tweenTime >= endTime+waitTime) {
 		if(repeat){
 			Reset();
 			updateCustomTween();			
@@ -88,7 +90,7 @@ void Tween::handleEvent(Event *event) {
 		return;
 	}
 	
-	if(targetVal != NULL) {
+	if(targetVal != NULL && tweenTime > waitTime) {
 		localTargetVal = interpolateTween();
 		*targetVal = localTargetVal;
 	}
@@ -102,7 +104,7 @@ void Tween::Reset() {
 }
 
 Number Tween::interpolateTween() {
-	Number t = tweenTime;
+	Number t = tweenTime-waitTime;
 	
 	switch(easeType) {
 		case EASE_IN_QUAD:
@@ -216,7 +218,7 @@ Number Tween::interpolateTween() {
 		default:
 		case EASE_NONE:
 			// return c*t/d + b;
-			return cVal*tweenTime/endTime+startVal;
+			return cVal*t/endTime+startVal;
 			break;
 	}
 }
