@@ -301,4 +301,5 @@ bool ScreenEntityInstance::loadFromFile(const String& fileName) {
 		rootEntity = loadObjectEntryIntoEntity(root);				
 		addChild(rootEntity);		
 	}
+	return true;
 }

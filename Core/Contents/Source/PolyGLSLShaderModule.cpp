@@ -49,6 +49,7 @@ PFNGLUNIFORM1IPROC glUniform1i;
 PFNGLUNIFORM1FPROC glUniform1f;
 PFNGLUNIFORM2FPROC glUniform2f;
 PFNGLUNIFORM3FPROC glUniform3f;
+PFNGLUNIFORM4FPROC glUniform4f;
 extern PFNGLACTIVETEXTUREPROC glActiveTexture;
 PFNGLCREATESHADERPROC glCreateShader;
 PFNGLSHADERSOURCEPROC glShaderSource;
@@ -75,6 +76,7 @@ GLSLShaderModule::GLSLShaderModule() : PolycodeShaderModule() {
 	glUniform1f = (PFNGLUNIFORM1FPROC)wglGetProcAddress("glUniform1f");	
 	glUniform2f = (PFNGLUNIFORM2FPROC)wglGetProcAddress("glUniform2f");	
 	glUniform3f = (PFNGLUNIFORM3FPROC)wglGetProcAddress("glUniform3f");
+	glUniform4f = (PFNGLUNIFORM4FPROC)wglGetProcAddress("glUniform4f");
 	glCreateShader = (PFNGLCREATESHADERPROC)wglGetProcAddress("glCreateShader");
 	glShaderSource = (PFNGLSHADERSOURCEPROC)wglGetProcAddress("glShaderSource");
 	glCompileShader = (PFNGLCOMPILESHADERPROC)wglGetProcAddress("glCompileShader");
@@ -469,7 +471,10 @@ GLSLProgramParam GLSLShaderModule::addParamToProgram(GLSLProgram *program,TiXmlN
 		void *maxData = NULL;
 		
 		TiXmlElement *nodeElement = node->ToElement();
-		if (!nodeElement) return; // Skip comment nodes
+		if (!nodeElement) {
+			GLSLProgramParam::createParamData(&paramType, "Number", "0.0", "0.0", "0.0", &defaultData, &minData, &maxData);		
+			return program->addParam("Unknown", "Number", nodeElement->Attribute("default"), isAuto, autoID, paramType, defaultData, minData, maxData); // Skip comment nodes
+		}
 
 		isAuto = false;
 		

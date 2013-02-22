@@ -544,6 +544,7 @@ bool BinaryObjectWriter::writeToFile(const String& fileName) {
 	OSBasics::write(&data32, sizeof(uint32_t), 1, outFile);	
 	
 	OSBasics::close(outFile);
+	return true;
 }
 
 

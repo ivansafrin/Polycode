@@ -39,6 +39,9 @@ THE SOFTWARE.
 	#pragma warning(disable:4996)
 	#pragma warning(disable:4309)
 	#define NULL 0
+
+#include <stdint.h>
+
 #endif
  
 #ifndef NULL

@@ -37,6 +37,7 @@ Camera::Camera(Scene *parentScene) : SceneEntity() {
 	setParentScene(parentScene);
 	orthoMode = false;
 	fov = 45.0f;
+	filterShaderMaterial = NULL;
 	originalSceneTexture = NULL;
 	zBufferSceneTexture = NULL;
 	exposureLevel = 1.0f;

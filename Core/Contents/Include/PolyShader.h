@@ -133,7 +133,7 @@ namespace Polycode {
 			ShaderBinding(Shader *shader);
 			virtual ~ShaderBinding();
 
-			virtual Texture *getTexture(const String& name){};
+			virtual Texture *getTexture(const String& name){ return NULL;};
 			virtual void clearTexture(const String& name){};
 			virtual void addTexture(const String& name, Texture *texture)  {};
 			virtual void addParam(const String& type, const String& name, const String& value) {};
