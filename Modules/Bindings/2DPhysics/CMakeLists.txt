@@ -35,6 +35,10 @@ IF(POLYCODE_INSTALL_FRAMEWORK)
     # install headers
     INSTALL(FILES ${polycode2DPhysics_HDRS} 
         DESTINATION Bindings/Lua/Modules/2DPhysics/include)
+	
+IF(NOT APPLE)
+    INSTALL(FILES API/Physics2D.pak DESTINATION Player)
+ENDIF(NOT APPLE)
 
 	INSTALL(DIRECTORY API DESTINATION Bindings/Lua/Modules/2DPhysics)
 	INSTALL(TARGETS Physics2DLua DESTINATION Bindings/Lua/Modules/2DPhysics/lib)

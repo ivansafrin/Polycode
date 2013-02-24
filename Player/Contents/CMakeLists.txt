@@ -296,6 +296,17 @@ ELSE(MSVC OR MINGW)
 INCLUDE_DIRECTORIES(
     ${LUA_INCLUDE_DIR}
     ${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/Include
+ 
+    ${Polycode_SOURCE_DIR}/Modules/Contents/UI/Include
+    ${Polycode_SOURCE_DIR}/Modules/Bindings/UI/Include
+
+    ${BOX2D_INCLUDE_DIR}
+    ${Polycode_SOURCE_DIR}/Modules/Contents/2DPhysics/Include
+    ${Polycode_SOURCE_DIR}/Modules/Bindings/2DPhysics/Include
+
+    ${BULLET_INCLUDE_DIR}
+    ${Polycode_SOURCE_DIR}/Modules/Contents/3DPhysics/Include
+    ${Polycode_SOURCE_DIR}/Modules/Bindings/3DPhysics/Include
     Include
     ../../Core/Contents/PolycodeView/Linux/
 )
@@ -321,40 +332,80 @@ INCLUDE_DIRECTORIES(
         Include/PolycodeLinuxPlayer.h
     )
  
-    INCLUDE_DIRECTORIES(Include)
- 
     ADD_EXECUTABLE(PolycodePlayer ${polycodeplayer_SRCS} ${polycodeplayer_HDRS})
     ADD_EXECUTABLE(StandalonePlayer ${polycodeplayerstandalone_SRCS} ${polycodeplayerstandalone_HDRS})
     
 
     TARGET_LINK_LIBRARIES(PolycodePlayer 
+	rt
+	dl
+	pthread
         PolycodeLua 
         Polycore 
         ${LUA_LIBRARY}
-        ${OPENGL_LIBRARIES}
-        ${OPENAL_LIBRARY}
-        ${PNG_LIBRARIES}
         ${FREETYPE_LIBRARIES}
-        ${PHYSFS_LIBRARY}
-        ${OGG_LIBRARY}
-        ${VORBIS_LIBRARY}
         ${VORBISFILE_LIBRARY}
+        ${VORBIS_LIBRARY}
+        ${OGG_LIBRARY}
+        ${OPENAL_LIBRARY}
+        ${PHYSFS_LIBRARY}
+        ${PNG_LIBRARIES}
+        ${ZLIB_LIBRARY}
+        ${OPENGL_LIBRARIES}
         ${SDL_LIBRARY}
+	Physics2DLua
+	Physics3DLua
+	UILua
+	Polycode2DPhysics
+	Polycode3DPhysics
+	PolycodeUI
+	${BOX2D_RELEASE_LIBRARY}
+        optimized ${LIBBULLETMULTITHREADED}
+        optimized ${LIBBULLETSOFTBODY} 
+        optimized ${LIBBULLETDYNAMICS} 
+        optimized ${LIBBULLETCOLLISION}
+        optimized ${LIBBULLETMATH}            
+        debug ${LIBBULLETMULTITHREADED_DEBUG}
+        debug ${LIBBULLETSOFTBODY_DEBUG} 
+        debug ${LIBBULLETDYNAMICS_DEBUG} 
+        debug ${LIBBULLETCOLLISION_DEBUG}
+        debug ${LIBBULLETMATH_DEBUG}  
      )
 
     TARGET_LINK_LIBRARIES(StandalonePlayer 
+	rt
+	dl
+	pthread
         PolycodeLua 
         Polycore 
         ${LUA_LIBRARY}
-        ${OPENGL_LIBRARIES}
-        ${OPENAL_LIBRARY}
-        ${PNG_LIBRARIES}
         ${FREETYPE_LIBRARIES}
-        ${PHYSFS_LIBRARY}
-        ${OGG_LIBRARY}
-        ${VORBIS_LIBRARY}
         ${VORBISFILE_LIBRARY}
+        ${VORBIS_LIBRARY}
+        ${OGG_LIBRARY}
+        ${OPENAL_LIBRARY}
+        ${PHYSFS_LIBRARY}
+        ${PNG_LIBRARIES}
+        ${ZLIB_LIBRARY}
+        ${OPENGL_LIBRARIES}
         ${SDL_LIBRARY}
+	Physics2DLua
+	Physics3DLua
+	UILua
+	Polycode2DPhysics
+	Polycode3DPhysics
+	PolycodeUI
+	${BOX2D_RELEASE_LIBRARY}
+        optimized ${LIBBULLETMULTITHREADED}
+        optimized ${LIBBULLETSOFTBODY} 
+        optimized ${LIBBULLETDYNAMICS} 
+        optimized ${LIBBULLETCOLLISION}
+        optimized ${LIBBULLETMATH}            
+        debug ${LIBBULLETMULTITHREADED_DEBUG}
+        debug ${LIBBULLETSOFTBODY_DEBUG} 
+        debug ${LIBBULLETDYNAMICS_DEBUG} 
+        debug ${LIBBULLETCOLLISION_DEBUG}
+        debug ${LIBBULLETMATH_DEBUG}  
      )
 
     

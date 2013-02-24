@@ -36,6 +36,9 @@ IF(POLYCODE_INSTALL_FRAMEWORK)
     # install headers
     INSTALL(FILES ${polycode3DPhysics_HDRS} 
         DESTINATION Bindings/Lua/Modules/3DPhysics/include)
+IF(NOT APPLE)
+    INSTALL(FILES API/Physics3D.pak DESTINATION Player)
+ENDIF(NOT APPLE)
 
     INSTALL(DIRECTORY API DESTINATION Bindings/Lua/Modules/3DPhysics)
     INSTALL(TARGETS Physics3DLua DESTINATION Bindings/Lua/Modules/3DPhysics/lib)

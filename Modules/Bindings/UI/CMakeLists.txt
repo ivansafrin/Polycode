@@ -32,6 +32,10 @@ IF(POLYCODE_INSTALL_FRAMEWORK)
     # install headers
     INSTALL(FILES ${polycodeUI_HDRS} DESTINATION Bindings/Lua/Modules/UI/include)
 
+IF(NOT APPLE)
+    INSTALL(FILES API/UI.pak DESTINATION Player)
+ENDIF(NOT APPLE)
+
     INSTALL(DIRECTORY API DESTINATION Bindings/Lua/Modules/UI)
     INSTALL(TARGETS UILua DESTINATION Bindings/Lua/Modules/UI/lib)
     
