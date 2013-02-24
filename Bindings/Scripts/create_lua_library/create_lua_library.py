@@ -1,5 +1,5 @@
 import sys
-import CppHeaderParser3
+import CppHeaderParser
 import os
 import errno
 import re
@@ -160,7 +160,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 		try: # One input file parse.
 			f = open(fileName) # Def: Input file handle
 			contents = f.read().replace("_PolyExport", "") # Def: Input file contents, strip out "_PolyExport"
-			cppHeader = CppHeaderParser3.CppHeader(contents, "string") # Def: Input file contents, parsed structure
+			cppHeader = CppHeaderParser.CppHeader(contents, "string") # Def: Input file contents, parsed structure
 			ignore_classes = ["PolycodeShaderModule", "Object", "Threaded", "OpenGLCubemap", "PolyBase"]
 
 			# Iterate, check each class in this file.
@@ -744,7 +744,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 
 				luaDocOut += "\t</class>\n"
 	
-		except CppHeaderParser3.CppParseError as e: # One input file parse; failed.
+		except CppHeaderParser.CppParseError as e: # One input file parse; failed.
 			print(e)
 			sys.exit(1)
 
