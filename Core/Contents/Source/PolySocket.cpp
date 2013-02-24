@@ -22,6 +22,7 @@ THE SOFTWARE.
 
 #include "PolySocket.h"
 #include "PolyLogger.h"
+#include <unistd.h>
 
 using namespace Polycode;
 using std::vector;

@@ -49,7 +49,7 @@ void Core::getScreenInfo(int *width, int *height, int *hz) {
 	if (hz) *hz = 0;
 }
 
-SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate) : Core(_xRes, _yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate) {
+SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex) : Core(_xRes, _yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate, monitorIndex) {
 
 	String *windowTitle = (String*)view->windowData;
 
@@ -121,6 +121,10 @@ SDLCore::~SDLCore() {
 }
 
 void SDLCore::openURL(String url) {
+}
+
+String SDLCore::executeExternalCommand(String command) {
+	
 }
 
 int SDLThreadFunc(void *data) {

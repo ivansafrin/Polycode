@@ -66,6 +66,7 @@ namespace Polycode {
 		std::vector<String> openFilePicker(std::vector<CoreFileExtension> extensions, bool allowMultiple);
 		void resizeTo(int xRes, int yRes);
 
+		String executeExternalCommand(String command);
 		void openURL(String url);
 
 	private:

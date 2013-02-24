@@ -34,10 +34,6 @@ void HelloPolycodeApp::handleEvent(Event *e) {
 	}	
 }
 
-HelloPolycodeApp::~HelloPolycodeApp() {
-    
-}
-
 bool HelloPolycodeApp::Update() {
     return core->Update();
 }

@@ -40,9 +40,9 @@ THE SOFTWARE.
 	#pragma warning(disable:4309)
 	#define NULL 0
 
-#include <stdint.h>
 
 #endif
+#include <stdint.h>
  
 #ifndef NULL
 	#define NULL 0
