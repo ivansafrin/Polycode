@@ -58,6 +58,7 @@ SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool
 	if(SDL_Init(SDL_INIT_VIDEO) < 0) {
 	}
 	
+	eventMutex = createMutex();
 	renderer = new OpenGLRenderer();
 	services->setRenderer(renderer);
 
@@ -72,6 +73,11 @@ SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool
 }
 
 void SDLCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel) {
+	this->xRes = xRes;
+	this->yRes = yRes;
+	this->fullScreen = fullScreen;
+	this->aaLevel = aaLevel;
+
 	SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24);	
 	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1);			
 	SDL_GL_SetAttribute( SDL_GL_RED_SIZE,   8);
