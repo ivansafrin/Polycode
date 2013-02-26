@@ -924,9 +924,10 @@ String UITextInput::getSelectionText() {
 	}
 	
 	if(selectionBottom > selectionTop+1) {
-		for(int i=selectionTop+1; i <= selectionBottom; i++) {
+		for(int i=selectionTop+1; i < selectionBottom; i++) {
 			totalText += lines[i];
-			totalText += L"\n";
+			if(i != selectionBottom-1)
+				totalText += L"\n";
 		}
 	}
 	
