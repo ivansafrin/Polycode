@@ -33,11 +33,15 @@ PolycodeRunner::PolycodeRunner(String polyappPath) : Threaded() {
 void PolycodeRunner::runThread() {
 	String polycodeBasePath = CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory();
 
+#if defined(__APPLE__) && defined(__MACH__)
 	String command = "cd "+polycodeBasePath+"/Standalone/Player/PolycodePlayer.app/Contents/Resources && ../MacOS/PolycodePlayer "+polyappPath;
 		;		
+#else
+	String command = "cd "+polycodeBasePath+"/Standalone/Player && ./PolycodePlayer "+polyappPath;
 
+#endif
 	String ret = CoreServices::getInstance()->getCore()->executeExternalCommand(command);
-		core->removeDiskItem(polyappPath);	
+	core->removeDiskItem(polyappPath);	
 }
 
 PolycodeToolLauncher::PolycodeToolLauncher() {

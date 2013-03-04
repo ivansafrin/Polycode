@@ -788,7 +788,7 @@ void PolycodeScreenEditorMain::syncTransformToSelected() {
 		screenTransformShape->setShapeSize(selectedEntity->getWidth(),selectedEntity->getHeight());	
 		Matrix4 final = selectedEntity->getConcatenatedMatrixRelativeTo(baseEntity);
 		screenTransform->setPosition(final.getPosition());
-		screenTransformShape->matrixDirty = false;
+		screenTransformShape->dirtyMatrix(false);
 		screenTransformShape->setTransformByMatrixPure(final);
 		
 		screenTransform->rotation.roll = selectedEntity->getCombinedRoll();

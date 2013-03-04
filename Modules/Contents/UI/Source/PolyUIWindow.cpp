@@ -142,7 +142,7 @@ void UIWindow::onMouseDown(Number x, Number y) {
 	if(hasFocus)
 		return;
 	hasFocus = true;
-	dispatchEvent(new ScreenEvent(), ScreenEvent::ENTITY_MOVE_TOP);
+	//dispatchEvent(new ScreenEvent(), ScreenEvent::ENTITY_MOVE_TOP);
 	for(int i=0; i < children.size(); i++) {
 		if(((ScreenEntity*)children[i])->isFocusable()) {
 			focusChild(((ScreenEntity*)children[i]));

@@ -136,7 +136,7 @@ void PolycodeProjectManager::createNewProject(String templateFolder, String proj
 	openProject(projectLocation+"/"+projectName+"/"+projectName+".polyproject");	
 }
 
-void PolycodeProjectManager::exportProject(PolycodeProject *project, String exportPath, bool macOS, bool windows, bool linux) {
+void PolycodeProjectManager::exportProject(PolycodeProject *project, String exportPath, bool macOS, bool windows, bool _linux) {
 
 	String polycodeBasePath = CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory();
 

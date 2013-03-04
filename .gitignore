@@ -77,6 +77,8 @@ Player/Build/Mac OS X/Polycode Player.xcodeproj/project.xcworkspace/xcuserdata/i
 
 /IDE/Contents/Resources/Standalone
 
+/IDE/Build/Linux/Build
+
 /Core/Build/Mac\ OS\ X/build
 /IDE/Build/Mac\ OS\ X/build
 /Modules/Build/Mac\ OS\ X/build

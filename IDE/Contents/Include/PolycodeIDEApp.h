@@ -26,7 +26,7 @@
 #include "PolycodeProjectManager.h"
 #include "PolycodeEditorManager.h"
 #include "Polycode.h"
-#include "PolyCocoaCore.h"
+//#include "PolyCocoaCore.h"
 #include "PolycodeUI.h"
 #include "PolycodeFrame.h"
 
@@ -89,7 +89,7 @@ public:
 	
 	const static int EVENT_SHOW_MENU = 1;
 	
-	CocoaCore *core;	
+	Core *core;	
 protected:
 
 	bool willRunProject;

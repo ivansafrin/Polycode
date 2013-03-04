@@ -79,9 +79,10 @@ directory from a command prompt (for VS2010):
     cd Build
     cmake -G "Visual Studio 10" ..
     
-This generates a PolycodeDependencies.sln in the Build directory.
-Building the ALL_BUILD project in the solution in Visual Studio will download,
-build and install the dependencies. Note that you need to build both Debug and Release.
+This generates a PolycodeDependencies.sln in the Build directory. 
+Building the ALL_BUILD project in the solution in Visual Studio will download, build and 
+install the dependencies. Note that you need to build both Debug and
+Release.
 
 You will also need to manually build the "glext" and "wglext" projects.
 
@@ -193,6 +194,10 @@ which are disabled by default. To do this, you need to add a couple
 of variables to the cmake commands above. To build the bindings, you
 need a python installation with the PLY python module. You can get
 the PLY module at http://www.dabeaz.com/ply/
+
+Note: You will need python 2 for this step. If you have python 3 installed,
+pass -DPYTHON_EXECUTABLE=/usr/bin/python2 or whatever the full path to
+the python2 executable is on your system.
 
 To enable the bindings and the player, add the following options to the
 cmake command. Otherwise, the steps are exactly the same as the regular 
