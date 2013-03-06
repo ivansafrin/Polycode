@@ -191,5 +191,6 @@ void UIScrollContainer::handleEvent(Event *event) {
 }
 
 UIScrollContainer::~UIScrollContainer() {
-	
+	delete vScrollBar;
+	delete hScrollBar;
 }

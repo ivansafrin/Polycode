@@ -55,7 +55,6 @@ namespace Polycode {
 			
 		protected:
 		
-			ScreenImage *dropDownImage;
 			Number menuItemHeight;
 			Number menuWidth;
 			

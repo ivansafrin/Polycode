@@ -95,6 +95,7 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	ScreenLabel *label = new ScreenLabel(L"R:", fontSize, fontName);
 	label->setPosition(hueFrame->getPosition().x+hueFrame->getWidth() + 15, topPadding+padding + 3);
 	addChild(label);
+	junkLabels.push_back(label);
 	
 	rTextInput = new UITextInput(false, 40, 12);
 	rTextInput->setPosition(hueFrame->getPosition().x+hueFrame->getWidth() + 30, topPadding+padding);
@@ -104,6 +105,7 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	label = new ScreenLabel(L"G:", fontSize, fontName);
 	label->setPosition(hueFrame->getPosition().x+hueFrame->getWidth() + 15, topPadding+padding + 33);
 	addChild(label);
+	junkLabels.push_back(label);
 	
 	gTextInput = new UITextInput(false, 40, 12);
 	gTextInput->setPosition(hueFrame->getPosition().x+hueFrame->getWidth() + 30, topPadding+padding + 30);
@@ -113,6 +115,7 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	label = new ScreenLabel(L"B:", fontSize, fontName);
 	label->setPosition(hueFrame->getPosition().x+hueFrame->getWidth() + 15, topPadding+padding + 63);
 	addChild(label);
+	junkLabels.push_back(label);
 	
 	bTextInput = new UITextInput(false, 40, 12);
 	bTextInput->setPosition(hueFrame->getPosition().x+hueFrame->getWidth() + 30, topPadding+padding + 60);
@@ -122,6 +125,7 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	label = new ScreenLabel(L"A:", fontSize, fontName);
 	label->setPosition(hueFrame->getPosition().x+hueFrame->getWidth() + 15, topPadding+padding + 93);
 	addChild(label);
+	junkLabels.push_back(label);
 	
 	aTextInput = new UITextInput(false, 40, 12);
 	aTextInput->setPosition(hueFrame->getPosition().x+hueFrame->getWidth() + 30, topPadding+padding + 90);
@@ -339,7 +343,20 @@ void UIColorPicker::setHue(Number hueNum) {
 }
 
 UIColorPicker::~UIColorPicker() {
-
+	delete mainBg;
+	delete mainFrame;
+	delete alphaSlider;
+	delete mainColorRect;
+	delete hueFrame;
+	delete hueSelector;
+	delete mainSelector;
+	delete rTextInput;
+	delete gTextInput;
+	delete bTextInput;
+	delete aTextInput;
+	
+	for(int c = 0; c < junkLabels.size(); c++)
+		delete junkLabels[c];
 }
 
 void UIColorPicker::Update() {
@@ -428,6 +445,10 @@ Color UIColorBox::getSelectedColor() {
 
 UIColorBox::~UIColorBox() {
 	colorPicker->removeAllHandlersForListener(this);
+	
+	delete bgImage;
+	delete colorShape;
+	delete frameImage;
 }
 
 void UIColorBox::setBoxColor(Color newColor) {

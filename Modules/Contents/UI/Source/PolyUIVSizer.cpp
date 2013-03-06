@@ -74,7 +74,14 @@ UIVSizer::UIVSizer(Number width, Number height, Number mainHeight, bool topSizer
 }
 
 UIVSizer::~UIVSizer() {
-
+	coreInput->removeAllHandlersForListener(this);
+	
+	if (ownsChildren)
+		childElements->ownsChildren = true;
+	delete childElements;
+	
+	delete separatorBgShape;
+	delete separatorHitShape;
 }
 
 void UIVSizer::handleEvent(Event *event) {

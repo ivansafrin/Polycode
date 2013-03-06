@@ -71,5 +71,8 @@ namespace Polycode {
 			UIImageButton *closeBtn;
 			UIBox *windowRect;
 			ScreenShape *titlebarRect;
+		
+			bool tweenClosing;
+			void resetTween();
 	};
 }

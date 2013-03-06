@@ -172,5 +172,6 @@ void UIHScrollBar::handleEvent(Event *event) {
 
 
 UIHScrollBar::~UIHScrollBar() {
-	
+	delete bgBox;
+	delete handleBox;
 }

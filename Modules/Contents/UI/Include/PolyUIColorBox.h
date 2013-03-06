@@ -85,6 +85,8 @@ namespace Polycode {
 			UIHSlider *alphaSlider;
 			
 			ScreenShape *mainColorRect;
+			
+			vector<ScreenLabel *> junkLabels; // Kept only to delete
 	};
 
 	class _PolyExport UIColorBox : public UIElement {
