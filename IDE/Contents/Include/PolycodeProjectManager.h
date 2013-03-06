@@ -48,7 +48,7 @@ class PolycodeProjectManager {
 	
 	PolycodeProject *getProjectByProjectFile(String projectFile);
 	
-	void exportProject(PolycodeProject *project, String exportPath, bool macOS, bool windows, bool linux);
+	void exportProject(PolycodeProject *project, String exportPath, bool macOS, bool windows, bool _linux);
 	
 	int removeProject(PolycodeProject *project);
 	

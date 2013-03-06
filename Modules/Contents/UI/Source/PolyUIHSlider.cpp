@@ -78,7 +78,9 @@ UIHSlider::UIHSlider(Number start, Number end, Number width) : UIElement() {
 }
 
 UIHSlider::~UIHSlider() {
-
+	delete bgRect;
+	delete gripRect;
+	delete bgHitBox;
 }
 
 void UIHSlider::setSliderValue(Number val) {

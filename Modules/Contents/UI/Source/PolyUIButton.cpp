@@ -91,7 +91,9 @@ void UIButton::Update() {
 }
 
 UIButton::~UIButton() {
-
+	delete buttonRect;
+	delete buttonFocusedRect;
+	delete buttonLabel;
 }
 		
 void UIButton::handleEvent(Event *event) {

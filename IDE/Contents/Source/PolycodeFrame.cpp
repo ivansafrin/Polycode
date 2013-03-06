@@ -610,6 +610,38 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	globalColorPicker = new UIColorPicker();
 	globalColorPicker->setPosition(300,300);
 	addChild(globalColorPicker);
+
+	modalRoot = new UIElement();
+	addChild(modalRoot);
+	
+	fileDialogBlocker = new ScreenShape(ScreenShape::SHAPE_RECT, 100, 100);
+	fileDialogBlocker->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	addChild(fileDialogBlocker);
+	fileDialogBlocker->setColor(0.0, 0.0, 0.0, 0.5);
+	fileDialogBlocker->processInputEvents = true;
+	fileDialogBlocker->blockMouseInput = true;
+	fileDialogBlocker->visible = false;
+	fileDialogBlocker->enabled = false;
+
+	fileBrowserRoot = new UIElement();
+	addChild(fileBrowserRoot);
+
+	fileDialog = NULL;
+}
+
+void PolycodeFrame::showFileBrowser(String baseDir, bool foldersOnly, std::vector<String> extensions, bool allowMultiple) {
+	
+	if(fileDialog)
+		delete fileDialog;
+
+	fileDialog = new UIFileDialog(baseDir, foldersOnly, extensions, allowMultiple);
+	fileDialog->addEventListener(this, UIEvent::CANCEL_EVENT);
+	fileDialog->addEventListener(this, UIEvent::OK_EVENT);
+	fileBrowserRoot->addChild(fileDialog);
+	fileDialog->setPosition(100,100);
+	
+	fileDialogBlocker->visible = true;
+	fileDialogBlocker->enabled = true;
 }
 
 void PolycodeFrame::showCurveEditor() {
@@ -621,7 +653,7 @@ void PolycodeFrame::showModal(UIWindow *modalChild) {
 	modalBlocker->enabled = true;
 	
 	this->modalChild = modalChild;
-	addChild(modalChild);
+	modalRoot->addChild(modalChild);
 	modalChild->showWindow();
 	modalChild->addEventListener(this, UIEvent::CLOSE_EVENT);
 	Resize(frameSizeX, frameSizeY);
@@ -652,7 +684,7 @@ void PolycodeFrame::showEditor(PolycodeEditor *editor) {
 
 void PolycodeFrame::hideModal() {
 	if(modalChild) {
-		removeChild(modalChild);
+		modalRoot->removeChild(modalChild);
 		modalChild->removeEventListener(this, UIEvent::CLOSE_EVENT);	
 		modalChild->hideWindow(); 
 		modalChild = NULL;
@@ -671,6 +703,12 @@ void PolycodeFrame::showAssetBrowser(std::vector<String> extensions) {
 
 void PolycodeFrame::handleEvent(Event *event) {
 	
+	if(event->getDispatcher() == fileDialog && event->getEventType() == "UIEvent") {
+		fileBrowserRoot->removeChild(fileDialog);
+		fileDialogBlocker->visible = false;
+		fileDialogBlocker->enabled = false;
+	}
+
 	if(event->getDispatcher() == CoreServices::getInstance()->getCore()->getInput()) {
 		switch(event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEUP:
@@ -745,6 +783,7 @@ void PolycodeFrame::Resize(int x, int y) {
 	mainSizer->Resize(x,y-45);	
 	
 	modalBlocker->setShapeSize(x, y);
+	fileDialogBlocker->setShapeSize(x, y);
 		
 	
 	if(this->modalChild) {

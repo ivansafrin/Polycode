@@ -30,8 +30,7 @@
 using namespace Polycode;
 
 
-UIWindow::UIWindow(String windowName, Number width, Number height) : ScreenEntity() {
-	
+UIWindow::UIWindow(String windowName, Number width, Number height) : ScreenEntity(), windowTween(NULL) {
 	closeOnEscape = false;
 	
 	snapToPixels = true;
@@ -112,11 +111,14 @@ void UIWindow::setWindowSize(Number w, Number h) {
 }
 
 UIWindow::~UIWindow() {
-
+	delete windowTween;
+	delete windowRect;
+	delete titlebarRect;
+	delete titleLabel;
+	delete closeBtn;
 }
 
 void UIWindow::onKeyDown(PolyKEY key, wchar_t charCode) {
-	
 	if(key == KEY_TAB) {
 		if(hasFocus) {
 			focusNextChild();
@@ -142,7 +144,7 @@ void UIWindow::onMouseDown(Number x, Number y) {
 	if(hasFocus)
 		return;
 	hasFocus = true;
-	dispatchEvent(new ScreenEvent(), ScreenEvent::ENTITY_MOVE_TOP);
+	//dispatchEvent(new ScreenEvent(), ScreenEvent::ENTITY_MOVE_TOP);
 	for(int i=0; i < children.size(); i++) {
 		if(((ScreenEntity*)children[i])->isFocusable()) {
 			focusChild(((ScreenEntity*)children[i]));
@@ -152,20 +154,24 @@ void UIWindow::onMouseDown(Number x, Number y) {
 }
 
 void UIWindow::showWindow() {
-//	if(!visible) {
-		enabled = true;
-		visible = true;
-		windowTween = new Tween(&color.a, Tween::EASE_IN_QUAD, 0.0f, 1.0f, 0.01f);
-//	}
+	if (windowTween)
+		delete windowTween;
+
+	enabled = true;
+	visible = true;
+	tweenClosing = false;
+	windowTween = new Tween(&color.a, Tween::EASE_IN_QUAD, 0.0f, 1.0f, 0.01f, false, true);
+	windowTween->addEventListener(this, Event::COMPLETE_EVENT);
 }
 
 void UIWindow::hideWindow() {
-//	if(visible) {
-		windowTween = new Tween(&color.a, Tween::EASE_IN_QUAD, 1.0f, 0.0f, 0.01f);
-		windowTween->addEventListener(this, Event::COMPLETE_EVENT);
-//	}
-}
+	if (windowTween)
+		delete windowTween;
 
+	tweenClosing = true;
+	windowTween = new Tween(&color.a, Tween::EASE_IN_QUAD, 1.0f, 0.0f, 0.01f, false, true);
+	windowTween->addEventListener(this, Event::COMPLETE_EVENT);
+}
 
 void UIWindow::handleEvent(Event *event) {
 	if(event->getDispatcher() == titlebarRect) {
@@ -185,8 +191,11 @@ void UIWindow::handleEvent(Event *event) {
 		dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);
 	}
 	if(event->getDispatcher() == windowTween) {
-		visible = false;
-		enabled = false;		
-		windowTween->removeEventListener(this, Event::COMPLETE_EVENT);
+		if (tweenClosing) {
+			visible = false;
+			enabled = false;
+		}
+		
+		windowTween = NULL;
 	}
 }

@@ -157,4 +157,7 @@
 	<uiHSliderBgB>5</uiHSliderBgB>
 	<uiHSliderBgL>6</uiHSliderBgL>
 
+	<uiFileBrowserFileIcon>file.png</uiFileBrowserFileIcon>
+	<uiFileBrowserFolderIcon>folder.png</uiFileBrowserFolderIcon>
+	<uiFileBrowserPlaceIcon>boxIcon.png</uiFileBrowserPlaceIcon>
 </PolyConfig>

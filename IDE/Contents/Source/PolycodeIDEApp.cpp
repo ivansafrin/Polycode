@@ -29,7 +29,7 @@ UIGlobalMenu *globalMenu;
 SyntaxHighlightTheme *globalSyntaxTheme;
 
 PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
-	core = new CocoaCore(view, 900,700,false,true, 0, 0,30);	
+	core = new SDLCore(view, 900,700,false,true, 0, 0,30, -1, true);	
 	core->addEventListener(this, Core::EVENT_CORE_RESIZE);
 	
 	
