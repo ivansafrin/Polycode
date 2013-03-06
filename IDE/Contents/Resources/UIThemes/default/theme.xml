@@ -120,20 +120,20 @@
 	<uiMenuFontSize>12</uiMenuFontSize>
 	<uiMenuTextOffsetX>10</uiMenuTextOffsetX>
 	<uiMenuTextOffsetY>-1</uiMenuTextOffsetY>		
-	<uiMenuPaddingX>7</uiMenuPaddingX>
-	<uiMenuPaddingY>20</uiMenuPaddingY>
+	<uiMenuPaddingX>3</uiMenuPaddingX>
+	<uiMenuPaddingY>10</uiMenuPaddingY>
 	<uiMenuItemHeight>22</uiMenuItemHeight>
 	<uiMenuBgImage>menu_bg.png</uiMenuBgImage>	
-	<uiMenuBgT>25</uiMenuBgT>
-	<uiMenuBgR>18</uiMenuBgR>
-	<uiMenuBgB>22</uiMenuBgB>
-	<uiMenuBgL>18</uiMenuBgL>			
+	<uiMenuBgT>4</uiMenuBgT>
+	<uiMenuBgR>6</uiMenuBgR>
+	<uiMenuBgB>9</uiMenuBgB>
+	<uiMenuBgL>6</uiMenuBgL>			
 	<uiMenuSelectorBgImage>menu_selector.png</uiMenuSelectorBgImage>	
 	<uiMenuSelectorBgT>0</uiMenuSelectorBgT>
 	<uiMenuSelectorBgR>0</uiMenuSelectorBgR>
 	<uiMenuSelectorBgB>0</uiMenuSelectorBgB>
 	<uiMenuSelectorBgL>0</uiMenuSelectorBgL>
-	<uiMenuSelectorPadding>2</uiMenuSelectorPadding>
+	<uiMenuSelectorPadding>3</uiMenuSelectorPadding>
 
 	<uiColorBoxFrameImage>colorboxFrame.png</uiColorBoxFrameImage>
 	<uiColorBoxFrameImageT>7</uiColorBoxFrameImageT>
