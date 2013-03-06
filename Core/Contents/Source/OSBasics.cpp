@@ -82,7 +82,12 @@ OSFileEntry::OSFileEntry(const String& path, const String& name, int type) {
 
 void OSFileEntry::init(const Polycode::String& path, const Polycode::String& name, int type) {
 	this->basePath = path;
-	this->fullPath = path + "/" + name;
+
+	if(path == "/") {
+		this->fullPath = "/" + name;
+	} else {
+		this->fullPath = path + "/" + name;
+	}
 	this->name = name;
 	this->type = type;
 
@@ -255,6 +260,7 @@ vector<OSFileEntry> OSBasics::parsePhysFSFolder(const String& pathString, bool s
 vector<OSFileEntry> OSBasics::parseFolder(const String& pathString, bool showHidden) {
 	vector<OSFileEntry> returnVector;
 	
+	if(pathString != "/") {
 	if(pathString.size() < 128) {
 		if(PHYSFS_exists(pathString.c_str())) {
 			if(PHYSFS_isDirectory(pathString.c_str())) {
@@ -262,7 +268,7 @@ vector<OSFileEntry> OSBasics::parseFolder(const String& pathString, bool showHid
 			}
 		}
 	}
-	
+	}
 	
 #ifdef _WINDOWS
 

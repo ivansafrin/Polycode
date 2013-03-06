@@ -40,3 +40,4 @@
 #include "PolyUIVScrollBar.h"
 #include "PolyUIWindow.h"
 #include "PolyUIMenu.h"
+#include "PolyUIFileDialog.h"

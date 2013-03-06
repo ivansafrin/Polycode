@@ -36,6 +36,8 @@
 
 #include <unistd.h>
 #include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/wait.h>
 #include <pwd.h>
 
 using namespace Polycode;
@@ -292,18 +294,37 @@ String SDLCore::getClipboardString() {
 }
 
 void SDLCore::createFolder(const String& folderPath) {
-
+	mkdir(folderPath.c_str(), 0700);
 }
 
 void SDLCore::copyDiskItem(const String& itemPath, const String& destItemPath) {
-
+    int childExitStatus;
+    pid_t pid = fork();
+    if (pid == 0) {
+        execl("/bin/cp", "/bin/cp", itemPath.c_str(), destItemPath.c_str(), (char *)0);
+    } else {
+        pid_t ws = waitpid( pid, &childExitStatus, WNOHANG);
+    }
 }
 
 void SDLCore::moveDiskItem(const String& itemPath, const String& destItemPath) {
-
+    int childExitStatus;
+    pid_t pid = fork();
+    if (pid == 0) {
+        execl("/bin/mv", "/bin/mv", itemPath.c_str(), destItemPath.c_str(), (char *)0);
+    } else {
+        pid_t ws = waitpid( pid, &childExitStatus, WNOHANG);
+    }
 }
 
 void SDLCore::removeDiskItem(const String& itemPath) {
+    int childExitStatus;
+    pid_t pid = fork();
+    if (pid == 0) {
+        execl("/bin/rm", "/bin/rm", "-rf", itemPath.c_str(), (char *)0);
+    } else {
+        pid_t ws = waitpid( pid, &childExitStatus, WNOHANG);
+    }
 }
 
 String SDLCore::openFolderPicker() {
