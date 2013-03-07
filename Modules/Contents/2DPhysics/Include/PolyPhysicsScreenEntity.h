@@ -57,7 +57,7 @@ namespace Polycode {
 			void Update();
 			
 			void setVelocity(Number fx, Number fy);	
-			void setVelocityX( Number fx);	
+			void setVelocityX(Number fx);
 			void setVelocityY(Number fy);
 			
 			void applyImpulse(Number fx, Number fy);
@@ -89,5 +89,4 @@ namespace Polycode {
 		Number worldScale;
 		ScreenEntity *screenEntity;
 	};
-
 }
