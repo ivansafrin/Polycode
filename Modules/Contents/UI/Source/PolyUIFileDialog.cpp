@@ -60,8 +60,8 @@ UIFileDialog::UIFileDialog(String baseDir, bool foldersOnly, std::vector<String>
 	this->foldersOnly = foldersOnly;
 	this->allowMultiple = allowMultiple;
 
-	ownsChildren = true;
-	
+	this->extensions = extensions;
+
 	closeOnEscape = true;
 
 	if(foldersOnly) {
@@ -115,6 +115,15 @@ UIFileDialog::UIFileDialog(String baseDir, bool foldersOnly, std::vector<String>
 	addToSidebar(CoreServices::getInstance()->getCore()->getUserHomeDirectory(), "Home");
 }
 
+bool UIFileDialog::canOpen(String extension) {
+	for(int i=0; i < extensions.size(); i++) {
+		if(extensions[i] == extension) {
+			return true;
+		}
+	}
+	return false;
+}
+
 void UIFileDialog::addToSidebar(String path, String name) {
 	OSFileEntry backEntry;
 	backEntry.type = OSFileEntry::TYPE_FOLDER;
@@ -151,6 +160,8 @@ void UIFileDialog::showFolder(String folderPath) {
 
 	if(foldersOnly) {
 		selection = folderPath;
+	} else {
+		selection = "";
 	}
 
 
@@ -182,12 +193,16 @@ void UIFileDialog::showFolder(String folderPath) {
 	int i;
 	for(i=0; i < _entries.size(); i++) {
 		bool canSelect = false;
+
+		if(_entries[i].type == OSFileEntry::TYPE_FOLDER) {
+			canSelect = true;
+		}
+
 		if(foldersOnly) {
-			if(_entries[i].type == OSFileEntry::TYPE_FOLDER) {
+		} else {
+			if(canOpen(_entries[i].extension)) {
 				canSelect = true;
 			}
-		} else {
-
 		}
 		UIFileDialogEntry *newEntry = new UIFileDialogEntry(_entries[i], canSelect);
 		entryHolder->addChild(newEntry);
@@ -243,7 +258,9 @@ void UIFileDialog::handleEvent(Event *event) {
 							currentEntry->Deselect();
 						entries[i]->Select();
 						currentEntry = entries[i];
-						if(foldersOnly) {
+
+						if((foldersOnly &&  entries[i]->fileEntry.type == OSFileEntry::TYPE_FOLDER) 
+							|| (!foldersOnly &&  entries[i]->fileEntry.type == OSFileEntry::TYPE_FILE)) {
 							selection = entries[i]->fileEntry.fullPath;
 						}
 					}
@@ -284,12 +301,18 @@ void UIFileDialog::handleEvent(Event *event) {
 }
 
 UIFileDialog::~UIFileDialog() {
-
+	delete okButton;
+	delete cancelButton;
+	delete newFolderButton;
+	delete scrollContainer;
+	delete createFolderWindow;
+	delete entryHolder;
+	for(int i=0; i < sideBarEntries.size(); i++) {
+		delete sideBarEntries[i];
+	}
 }
 
 CreateFolderWindow::CreateFolderWindow() : UIWindow("New folder name", 290, 80) {
-	ownsChildren = true;
-	
 	closeBtn->visible = false;
 	closeBtn->enabled = false;
 
@@ -307,5 +330,7 @@ CreateFolderWindow::CreateFolderWindow() : UIWindow("New folder name", 290, 80) 
 }
 
 CreateFolderWindow::~CreateFolderWindow() {
-	
+	delete cancelButton;
+	delete okButton;
+	delete nameInput;
 }

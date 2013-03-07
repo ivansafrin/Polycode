@@ -99,5 +99,7 @@ protected:
 	PolycodeProjectManager *projectManager;
 	
 	PolycodeRemoteDebugger *debugger;
+
+	UIMenuBar *menuBar;
 	
 };

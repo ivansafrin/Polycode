@@ -108,7 +108,6 @@ UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : 
 	setPositionMode(ScreenEntity::POSITION_CENTER);
 	
 	refreshTree();
-	ownsChildren = true;
 }
 
 void UITree::Resize(Number width) {

@@ -22,6 +22,7 @@ SET(polycodeUI_SRCS
     Source/PolyUIVScrollBar.cpp
     Source/PolyUIWindow.cpp
     Source/PolyUIFileDialog.cpp
+    Source/PolyUIMenuBar.cpp
 )
 
 SET(polycodeUI_HDRS
@@ -47,6 +48,7 @@ SET(polycodeUI_HDRS
     Include/PolyUIVScrollBar.h
     Include/PolyUIWindow.h
     Include/PolyUIFileDialog.h
+    Include/PolyUIMenuBar.h
 )
 
 INCLUDE_DIRECTORIES(

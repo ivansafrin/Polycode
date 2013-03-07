@@ -99,6 +99,7 @@ UIMenu::UIMenu(Number menuWidth) : UIElement() {
 	dropDownBox->processInputEvents = true;
 	
 	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);			
+	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEUP);			
 
 	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);			
 
@@ -141,7 +142,7 @@ void UIMenu::handleEvent(Event *event) {
 				dispatchEvent(new UIEvent(), UIEvent::CANCEL_EVENT);							
 			}
 		}
-		if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN && !ignoreMouse) {
+		if((event->getEventCode() == InputEvent::EVENT_MOUSEDOWN || event->getEventCode() == InputEvent::EVENT_MOUSEUP) && !ignoreMouse) {
 			if(selectorBox->visible) {
 				dispatchEvent(new UIEvent(), UIEvent::OK_EVENT);
 			} else {

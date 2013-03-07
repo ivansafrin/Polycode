@@ -96,7 +96,7 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	frame->getProjectBrowser()->addEventListener(this, PolycodeProjectBrowserEvent::HANDLE_MENU_COMMAND);
 	
 	frame->Resize(core->getXRes(), core->getYRes());	
-	core->setVideoMode(1100, 700, false, false, 0, 0);
+
 	
 	debugger = new PolycodeRemoteDebugger(projectManager);
 	frame->console->setDebugger(debugger);
@@ -115,6 +115,46 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 				
 	loadConfigFile();
 	frame->console->applyTheme();
+
+#ifdef USE_POLYCODEUI_MENUBAR
+	menuBar = new UIMenuBar(100, globalMenu);
+
+	UIMenuBarEntry *fileEntry = menuBar->addMenuBarEntry("File");
+	fileEntry->addItem("New File", "new_file");
+	fileEntry->addItem("New Project", "new_project");
+	fileEntry->addItem("New Folder", "new_folder");
+	fileEntry->addItem("Open Project", "open_project");
+	fileEntry->addItem("Close Project", "close_project");
+	fileEntry->addItem("Remove File", "remove_file");
+	fileEntry->addItem("Refresh Project", "refresh_project");
+	fileEntry->addItem("Save File", "save_file");
+	fileEntry->addItem("Browse Examples", "browse_examples");
+	fileEntry->addItem("Quit", "quit");
+
+	UIMenuBarEntry *editEntry = menuBar->addMenuBarEntry("Edit");
+	editEntry->addItem("Undo", "undo");
+	editEntry->addItem("Redo", "redo");
+	editEntry->addItem("Cut", "cut");
+	editEntry->addItem("Copy", "copy");
+
+	UIMenuBarEntry *projectEntry = menuBar->addMenuBarEntry("Project");
+	projectEntry->addItem("Run Project", "run_project");
+	projectEntry->addItem("Publish Project", "export_project");
+
+	UIMenuBarEntry *helpEntry = menuBar->addMenuBarEntry("Help");
+	helpEntry->addItem("API Reference", "show_api");
+
+
+	menuBar->addEventListener(this, UIEvent::OK_EVENT);
+
+	screen->addChild(menuBar);
+	frame->position.y = 25;
+#else
+	menuBar = NULL;
+#endif
+	core->setVideoMode(1100, 700, false, false, 0, 0);
+
+
 }
 
 void PolycodeIDEApp::renameFile() {
@@ -180,6 +220,12 @@ void PolycodeIDEApp::newGroup() {
 
 void PolycodeIDEApp::openProject() {
 	
+#ifdef USE_POLYCODEUI_FILE_DIALOGS
+	std::vector<String> exts;
+	exts.push_back("polyproject");
+	frame->showFileBrowser(CoreServices::getInstance()->getCore()->getUserHomeDirectory(),  false, exts, false);
+	frame->fileDialog->addEventListener(this, UIEvent::OK_EVENT);
+#else
 	vector<CoreFileExtension> extensions;
 	CoreFileExtension ext;
 	ext.extension = "polyproject";
@@ -195,7 +241,8 @@ void PolycodeIDEApp::openProject() {
 			OSFileEntry projectEntry =  OSFileEntry(project->getProjectFile(), OSFileEntry::TYPE_FILE);
 			openFile(projectEntry);			
 		}
-	}		
+	}
+#endif
 }
 
 void PolycodeIDEApp::browseExamples() {
@@ -267,8 +314,14 @@ void PolycodeIDEApp::openProject(String projectFile) {
 void PolycodeIDEApp::openDocs() {
 
 	String polycodeBasePath = CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory();
+#if defined(__APPLE__) && defined(__MACH__)
 	String docsURL = "file://localhost"+polycodeBasePath+"/Standalone/Docs/html/index.html";
 	core->openURL(docsURL);
+#else
+	String docsURL = polycodeBasePath+"/Standalone/Docs/html/index.html";
+	printf("Opening %s\n", docsURL.c_str());
+	core->openURL(docsURL);
+#endif
 }
 
 void PolycodeIDEApp::openFileInProject(PolycodeProject *project, String filePath) {
@@ -318,6 +371,53 @@ void PolycodeIDEApp::openFile(OSFileEntry file) {
 
 void PolycodeIDEApp::handleEvent(Event *event) {
 
+	if(event->getDispatcher() == frame->fileDialog) {
+		if(event->getEventCode() == UIEvent::OK_EVENT && event->getEventType() == "UIEvent") {
+			String path = frame->fileDialog->getSelection();
+			if(path != "") {
+				PolycodeProject *project = projectManager->openProject(path);
+				if(project) {
+					projectManager->setActiveProject(project);
+					OSFileEntry projectEntry =  OSFileEntry(project->getProjectFile(), OSFileEntry::TYPE_FILE);
+					openFile(projectEntry);			
+				}
+				
+			}
+		}
+	}
+
+	if(event->getDispatcher() == menuBar) {
+		String action = menuBar->getSelectedItem();
+	
+		if(action == "new_file") {
+			newFile();
+		} else if(action == "new_project") {
+			newProject();
+		} else if(action == "new_folder") {
+			newGroup();
+		} else if(action == "open_project") {
+			openProject();
+		} else if(action == "close_project") {
+			closeProject();
+		} else if(action == "remove_file") {
+			removeFile();
+		} else if(action == "refresh_project") {
+			refreshProject();
+		} else if(action == "save_file") {
+			saveFile();
+		} else if(action == "browse_examples") {
+			browseExamples();
+		} else if(action == "quit") {
+			core->Shutdown();
+		} else if(action == "run_project") {
+			runProject();
+		} else if(action == "export_project") {
+			exportProject();
+		} else if(action == "show_api") {
+			openDocs();
+		}
+	}
+
 	if(event->getDispatcher() == frame->console->backtraceWindow) {
 		if(event->getEventType() == "BackTraceEvent" && event->getEventCode() == BackTraceEvent::EVENT_BACKTRACE_SELECTED) {
 			BackTraceEvent *btEvent = (BackTraceEvent*) event;
@@ -338,6 +438,9 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 		switch(event->getEventCode()) {
 			case Core::EVENT_CORE_RESIZE:
 				frame->Resize(core->getXRes(), core->getYRes());
+				if(menuBar) {
+					menuBar->Resize(core->getXRes(), 25);
+				}
 			break;
 		}
 	}
@@ -499,15 +602,25 @@ void PolycodeIDEApp::saveConfigFile() {
 		projectEntry->addChild("name", project->getProjectName());
 		projectEntry->addChild("path", project->getProjectFile());
 	}
+
+#if defined(__APPLE__) && defined(__MACH__)
 	core->createFolder(core->getUserHomeDirectory()+"/Library/Application Support/Polycode");
 	configFile.saveToXML(core->getUserHomeDirectory()+"/Library/Application Support/Polycode/config.xml");	
+#else
+	core->createFolder(core->getUserHomeDirectory()+"/.polycode");
+	configFile.saveToXML(core->getUserHomeDirectory()+"/.polycode/config.xml");	
+
+#endif
 }
 
 void PolycodeIDEApp::loadConfigFile() {
 	Object configFile;
 	// TODO: Make a crossplatform core method to get application data path
+#if defined(__APPLE__) && defined(__MACH__)
 	configFile.loadFromXML(core->getUserHomeDirectory()+"/Library/Application Support/Polycode/config.xml");
-		
+#else
+	configFile.loadFromXML(core->getUserHomeDirectory()+"/.polycode/config.xml");
+#endif	
 	globalSyntaxTheme = new SyntaxHighlightTheme();
 	String themeName = "default";
 	ObjectEntry *syntaxTheme = configFile.root["syntax_theme"];

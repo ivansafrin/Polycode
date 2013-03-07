@@ -151,6 +151,13 @@ SDLCore::~SDLCore() {
 }
 
 void SDLCore::openURL(String url) {
+    int childExitStatus;
+    pid_t pid = fork();
+    if (pid == 0) {
+	execl("/usr/bin/xdg-open", "/usr/bin/xdg-open", url.c_str(), (char *)0);
+    } else {
+        pid_t ws = waitpid( pid, &childExitStatus, WNOHANG);
+    }
 }
 
 String SDLCore::executeExternalCommand(String command) {
@@ -301,9 +308,9 @@ void SDLCore::copyDiskItem(const String& itemPath, const String& destItemPath) {
     int childExitStatus;
     pid_t pid = fork();
     if (pid == 0) {
-        execl("/bin/cp", "/bin/cp", itemPath.c_str(), destItemPath.c_str(), (char *)0);
+        execl("/bin/cp", "/bin/cp", "-R", itemPath.c_str(), destItemPath.c_str(), (char *)0);
     } else {
-        pid_t ws = waitpid( pid, &childExitStatus, WNOHANG);
+        pid_t ws = waitpid( pid, &childExitStatus, 0);
     }
 }
 
@@ -313,7 +320,7 @@ void SDLCore::moveDiskItem(const String& itemPath, const String& destItemPath) {
     if (pid == 0) {
         execl("/bin/mv", "/bin/mv", itemPath.c_str(), destItemPath.c_str(), (char *)0);
     } else {
-        pid_t ws = waitpid( pid, &childExitStatus, WNOHANG);
+        pid_t ws = waitpid( pid, &childExitStatus, 0);
     }
 }
 
@@ -323,7 +330,7 @@ void SDLCore::removeDiskItem(const String& itemPath) {
     if (pid == 0) {
         execl("/bin/rm", "/bin/rm", "-rf", itemPath.c_str(), (char *)0);
     } else {
-        pid_t ws = waitpid( pid, &childExitStatus, WNOHANG);
+        pid_t ws = waitpid( pid, &childExitStatus, 0);
     }
 }
 

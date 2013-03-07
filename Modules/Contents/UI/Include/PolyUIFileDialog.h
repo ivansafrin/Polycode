@@ -67,6 +67,8 @@ namespace Polycode {
 			void clearEntries();
 			void showFolder(String folderPath);
 	
+			bool canOpen(String extension);
+
 			void addToSidebar(String path, String name);
 
 			void Update();
@@ -94,6 +96,7 @@ namespace Polycode {
 
 			UIScrollContainer *scrollContainer;
 
+			std::vector<String> extensions;
 			std::vector<UIFileDialogEntry*> entries;
 			std::vector<UIFileDialogEntry*> sideBarEntries;
 			UIElement *entryHolder;		
