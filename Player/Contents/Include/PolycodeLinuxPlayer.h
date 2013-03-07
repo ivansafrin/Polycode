@@ -28,7 +28,7 @@ THE SOFTWARE.
 
 class PolycodeLinuxPlayer : public PolycodePlayer {
 	public:
-		PolycodeLinuxPlayer(PolycodeView *view,String fileName, bool knownArchive);
+		PolycodeLinuxPlayer(PolycodeView *view,String fileName, bool knownArchive, bool useDebugger=false);
 		virtual ~PolycodeLinuxPlayer();
 	
 		void createCore();	

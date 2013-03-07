@@ -26,7 +26,6 @@ THE SOFTWARE.
 PolycodeRemoteDebuggerClient::PolycodeRemoteDebuggerClient() : EventDispatcher() {
 	client = new Client(6445, 1);
 	client->Connect("127.0.0.1", 4630);	
-	
 	client->addEventListener(this, ClientEvent::EVENT_SERVER_DISCONNECTED);
 }
 

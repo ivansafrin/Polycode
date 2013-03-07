@@ -22,7 +22,7 @@ THE SOFTWARE.
 #include "PolycodeLinuxPlayer.h"
 
 
-PolycodeLinuxPlayer::PolycodeLinuxPlayer(PolycodeView *view, String fileName, bool knownArchive) : PolycodePlayer(fileName, knownArchive) {
+PolycodeLinuxPlayer::PolycodeLinuxPlayer(PolycodeView *view, String fileName, bool knownArchive, bool useDebugger) : PolycodePlayer(fileName, knownArchive, useDebugger) {
 	this->view = view;
 }
 

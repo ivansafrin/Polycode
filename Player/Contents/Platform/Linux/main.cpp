@@ -8,7 +8,7 @@ int main(int argc, char *argv[]) {
 		printf("Filename required!\n");
 		return 1;
 	}
-	PolycodeLinuxPlayer *player = new PolycodeLinuxPlayer(view, argv[1], false);
+	PolycodeLinuxPlayer *player = new PolycodeLinuxPlayer(view, argv[1], false, true);
 	player->runPlayer();
 	while(player->Update()) {}
 	return 0;
