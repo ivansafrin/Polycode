@@ -246,13 +246,33 @@ bool SDLCore::Update() {
 					} else if(event.button.button == SDL_BUTTON_WHEELDOWN) {
 						input->mouseWheelDown(getTicks());
 					} else {
-						input->setMouseButtonState(CoreInput::MOUSE_BUTTON1, true, getTicks());
+						switch(event.button.button) {
+							case SDL_BUTTON_LEFT:
+								input->setMouseButtonState(CoreInput::MOUSE_BUTTON1, true, getTicks());
+							break;
+							case SDL_BUTTON_RIGHT:
+								input->setMouseButtonState(CoreInput::MOUSE_BUTTON2, true, getTicks());
+							break;
+							case SDL_BUTTON_MIDDLE:
+								input->setMouseButtonState(CoreInput::MOUSE_BUTTON3, true, getTicks());
+							break;
+						}
 					}
 				break;
 				case SDL_MOUSEBUTTONUP:
 					if(event.button.button == SDL_BUTTON_WHEELUP || event.button.button == SDL_BUTTON_WHEELDOWN) {						
 					} else {
-						input->setMouseButtonState(CoreInput::MOUSE_BUTTON1, false, getTicks());
+						switch(event.button.button) {
+							case SDL_BUTTON_LEFT:
+								input->setMouseButtonState(CoreInput::MOUSE_BUTTON1, false, getTicks());
+							break;
+							case SDL_BUTTON_RIGHT:
+								input->setMouseButtonState(CoreInput::MOUSE_BUTTON2, false, getTicks());
+							break;
+							case SDL_BUTTON_MIDDLE:
+								input->setMouseButtonState(CoreInput::MOUSE_BUTTON3, false, getTicks());
+							break;
+						}
 					}
 				break;
 				case SDL_MOUSEMOTION:
