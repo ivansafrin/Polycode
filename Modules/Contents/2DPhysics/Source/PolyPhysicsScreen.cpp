@@ -384,9 +384,11 @@ ScreenEntity *PhysicsScreen::getEntityAtPosition(Number x, Number y) {
 	
 	for(int i=0;i<physicsChildren.size();i++) {
 		PhysicsScreenEntity *ent = physicsChildren[i];
-		if(ent->shape) {
-			if(ent->shape->TestPoint(ent->body->GetTransform(), mousePosition)) {
-				return ent->getScreenEntity();
+		if(ent->fixture) {
+			for (b2Fixture* f = ent->body->GetFixtureList(); f; f = f->GetNext()) {		// This has been changed to accept multiple fixtures
+				if(f->TestPoint(mousePosition)) {										// Fixtures have a Testpoint function that requires just a b2Vec
+					return ent->getScreenEntity();
+				}
 			}
 		}
 	}	
@@ -403,11 +405,13 @@ bool PhysicsScreen::testEntityAtPosition(ScreenEntity *ent, Number x, Number y) 
 	mousePosition.x = x/worldScale;
 	mousePosition.y = y/worldScale;
 	
-	if(pEnt->shape) {
-		if(pEnt->shape->TestPoint(pEnt->body->GetTransform(), mousePosition))
-			return true;
-		else
-			return false;
+	if(pEnt->fixture) {
+		for (b2Fixture* f = pEnt->body->GetFixtureList(); f; f = f->GetNext()) {	// This has been changed to accept multiple fixtures
+			if(f->TestPoint(mousePosition))											// Fixtures have a Testpoint function that requires just a b2Vec
+				return true;
+			else
+				return false;
+		}
 	}
 	return false;
 }
@@ -465,18 +469,22 @@ PhysicsScreen::~PhysicsScreen() {
 	delete world;	
 }
 
-PhysicsScreenEntity *PhysicsScreen::getPhysicsEntityByFixture(b2Fixture *fixture) {
-	for(int i=0; i < physicsChildren.size(); i++) {
-		if(physicsChildren[i]->fixture == fixture)
-			return physicsChildren[i];
+PhysicsScreenEntity *PhysicsScreen::getPhysicsEntityByFixture(b2Fixture *fixture) {			// I have made changes so it will search through body fixturelists
+	for(int i=0; i < physicsChildren.size(); i++) {											
+		for (b2Fixture* f = physicsChildren[i]->body->GetFixtureList(); f; f = f->GetNext()) {
+			if(f == fixture)
+				return physicsChildren[i];
+		}
 	}
 	return NULL;	
 }
 
-PhysicsScreenEntity *PhysicsScreen::getPhysicsEntityByShape(b2Shape *shape) {
+PhysicsScreenEntity *PhysicsScreen::getPhysicsEntityByShape(b2Shape *shape) {				// I have made changes so it will search through body fixturelists
 	for(int i=0; i < physicsChildren.size(); i++) {
-		if(physicsChildren[i]->shape == shape)
-			return physicsChildren[i];
+		for (b2Fixture *f = physicsChildren[i]->body->GetFixtureList(); f; f = f->GetNext()) {
+			if(f->GetShape() == shape)
+				return physicsChildren[i];
+		}
 	}
 	return NULL;
 }
