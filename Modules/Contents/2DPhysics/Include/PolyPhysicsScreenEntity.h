@@ -58,16 +58,10 @@ namespace Polycode {
 			
 			void setVelocity(Number fx, Number fy);	
 			void setVelocityX( Number fx);	
-			void setVelocityY(Number fy);
+			void setVelocityY(Number fy);				
 			
 			void applyImpulse(Number fx, Number fy);
-
-
-			b2Fixture* getFixture();						// Gets the last fixture selected (automatically set on creation)			
-			b2Fixture* getFixture(unsigned short index);	// Gets a specific fixture if there is more than one
-			
-															// You do not need a shape pointer
-
+				
 			/**
 			* Rectangular physics entity
 			*/ 
@@ -81,9 +75,10 @@ namespace Polycode {
 			*/ 						
 			static const int ENTITY_MESH = 3;
 		
-			b2Body *body;
-			b2Fixture *fixture;
-
+			b2Fixture *fixture;		
+			b2Body* body;
+			b2Shape *shape;
+			
 			bool collisionOnly;
 		
 		protected:

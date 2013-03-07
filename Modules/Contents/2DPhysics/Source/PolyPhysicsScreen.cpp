@@ -274,51 +274,34 @@ void PhysicsScreen::setVelocity(ScreenEntity *ent, Number fx, Number fy) {
 	PhysicsScreenEntity *pEnt = getPhysicsByScreenEntity(ent);
 	if(pEnt == NULL)
 		return;
-	
-	pEnt->body->SetAwake(true);
-	b2Vec2 f = pEnt->body->GetLinearVelocity();
-	if(fx != 0)
-		f.x = fx;
-	if(fy != 0)
-		f.y = fy;
-	
-	pEnt->body->SetLinearVelocity(f);
+	pEnt->setVelocity(fx, fy);	
 }
 
 void PhysicsScreen::setVelocityX(ScreenEntity *ent, Number fx) {
 	PhysicsScreenEntity *pEnt = getPhysicsByScreenEntity(ent);
 	if(pEnt == NULL)
 		return;
-	
-	pEnt->body->SetAwake(true);
-	b2Vec2 f = pEnt->body->GetLinearVelocity();
-	f.x = fx;	
-	pEnt->body->SetLinearVelocity(f);
-	
+	pEnt->setVelocityX(fx);
 }
 
 void PhysicsScreen::setVelocityY(ScreenEntity *ent, Number fy) {
 	PhysicsScreenEntity *pEnt = getPhysicsByScreenEntity(ent);
 	if(pEnt == NULL)
 		return;
-	
-	pEnt->body->SetAwake(true);
-	b2Vec2 f = pEnt->body->GetLinearVelocity();
-	f.y = fy;	
-	pEnt->body->SetLinearVelocity(f);	
+	pEnt->setVelocityY(fy);
 }
 
 
-PhysicsScreenEntity *PhysicsScreen::addCollisionChild(ScreenEntity *newEntity, int entType) {
+PhysicsScreenEntity *PhysicsScreen::addCollisionChild(ScreenEntity *newEntity, int entType, int groupIndex) {
 	PhysicsScreenEntity *ret;
-	ret = addPhysicsChild(newEntity, entType, false, 0,0.0,0, true);
+	ret = addPhysicsChild(newEntity, entType, false, 0,0.0,0, true, groupIndex);
 	ret->collisionOnly = true; 
 	return ret;
 }
 
-PhysicsScreenEntity *PhysicsScreen::trackCollisionChild(ScreenEntity *newEntity, int entType) {
+PhysicsScreenEntity *PhysicsScreen::trackCollisionChild(ScreenEntity *newEntity, int entType, int groupIndex) {
 	PhysicsScreenEntity *ret;
-	ret = trackPhysicsChild(newEntity, entType, false, 0,0.0,0, true);
+	ret = trackPhysicsChild(newEntity, entType, false, 0,0.0,0, true, groupIndex);
 	ret->collisionOnly = true; 
 	return ret;
 }
@@ -346,11 +329,7 @@ void PhysicsScreen::applyImpulse(ScreenEntity *ent, Number fx, Number fy) {
 	PhysicsScreenEntity *pEnt = getPhysicsByScreenEntity(ent);
 	if(pEnt == NULL)
 		return;
-	
-	pEnt->body->SetAwake(true);
-	b2Vec2 f =  b2Vec2(fx,fy);
-	b2Vec2 p = pEnt->body->GetWorldPoint(b2Vec2(0.0f, 0.0f));	
-	pEnt->body->ApplyLinearImpulse(f, p);	
+	pEnt->applyImpulse(fx, fy);
 }
 
 
@@ -405,11 +384,9 @@ ScreenEntity *PhysicsScreen::getEntityAtPosition(Number x, Number y) {
 	
 	for(int i=0;i<physicsChildren.size();i++) {
 		PhysicsScreenEntity *ent = physicsChildren[i];
-		if(ent->fixture) {
-			for (b2Fixture* f = ent->body->GetFixtureList(); f; f = f->GetNext()) {		// This has been changed to accept multiple fixtures
-				if(f->TestPoint(mousePosition)) {										// Fixtures have a Testpoint function that requires just a b2Vec
-					return ent->getScreenEntity();
-				}
+		if(ent->shape) {
+			if(ent->shape->TestPoint(ent->body->GetTransform(), mousePosition)) {
+				return ent->getScreenEntity();
 			}
 		}
 	}	
@@ -426,13 +403,11 @@ bool PhysicsScreen::testEntityAtPosition(ScreenEntity *ent, Number x, Number y) 
 	mousePosition.x = x/worldScale;
 	mousePosition.y = y/worldScale;
 	
-	if(pEnt->fixture) {
-		for (b2Fixture* f = pEnt->body->GetFixtureList(); f; f = f->GetNext()) {	// This has been changed to accept multiple fixtures
-			if(f->TestPoint(mousePosition))											// Fixtures have a Testpoint function that requires just a b2Vec
-				return true;
-			else
-				return false;
-		}
+	if(pEnt->shape) {
+		if(pEnt->shape->TestPoint(pEnt->body->GetTransform(), mousePosition))
+			return true;
+		else
+			return false;
 	}
 	return false;
 }
@@ -442,14 +417,14 @@ void PhysicsScreen::destroyMouseJoint(b2MouseJoint *mJoint) {
 		mJoint = NULL;
 }
 
-PhysicsScreenEntity *PhysicsScreen::addPhysicsChild(ScreenEntity *newEntity, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation) {
+PhysicsScreenEntity *PhysicsScreen::addPhysicsChild(ScreenEntity *newEntity, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation, int groupIndex) {
 	addChild(newEntity);
-	return trackPhysicsChild(newEntity, entType, isSensor, friction, density, restitution, isSensor, fixedRotation);
+	return trackPhysicsChild(newEntity, entType, isStatic, friction, density, restitution, isSensor, fixedRotation, groupIndex);
 }
 
-PhysicsScreenEntity *PhysicsScreen::trackPhysicsChild(ScreenEntity *newEntity, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation) {
+PhysicsScreenEntity *PhysicsScreen::trackPhysicsChild(ScreenEntity *newEntity, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation, int groupIndex) {
 	newEntity->setPositionMode(ScreenEntity::POSITION_CENTER);
-	PhysicsScreenEntity *newPhysicsEntity = new PhysicsScreenEntity(newEntity, world, worldScale, entType, isStatic, friction, density, restitution, isSensor,fixedRotation);
+	PhysicsScreenEntity *newPhysicsEntity = new PhysicsScreenEntity(newEntity, world, worldScale, entType, isStatic, friction, density, restitution, isSensor,fixedRotation, groupIndex);
 	physicsChildren.push_back(newPhysicsEntity);
 	newPhysicsEntity->body->SetAwake(true);
 	return newPhysicsEntity;
@@ -470,13 +445,12 @@ void PhysicsScreen::removePhysicsChild(ScreenEntity *entityToRemove) {
 	Screen::removeChild(entityToRemove);	
 }
 
-ScreenEntity* PhysicsScreen::removeChild(ScreenEntity *entityToRemove) {
+void PhysicsScreen::removeChild(ScreenEntity *entityToRemove) {
 	if(getPhysicsByScreenEntity(entityToRemove)) {
 		removePhysicsChild(entityToRemove);
 	} else {
 		Screen::removeChild(entityToRemove);	
 	}
-	return entityToRemove;
 }
 
 
@@ -490,27 +464,23 @@ PhysicsScreen::~PhysicsScreen() {
 	}
 	delete world;	
 }
-																							
-PhysicsScreenEntity *PhysicsScreen::getPhysicsEntityByFixture(b2Fixture *fixture) {			// I have made changes so it will search through body fixturelists
-	for(int i=0; i < physicsChildren.size(); i++) {											
-		for (b2Fixture* f = physicsChildren[i]->body->GetFixtureList(); f; f = f->GetNext()) {
-			if(f == fixture)
-				return physicsChildren[i];
-		}
+
+PhysicsScreenEntity *PhysicsScreen::getPhysicsEntityByFixture(b2Fixture *fixture) {
+	for(int i=0; i < physicsChildren.size(); i++) {
+		if(physicsChildren[i]->fixture == fixture)
+			return physicsChildren[i];
 	}
 	return NULL;	
 }
 
-PhysicsScreenEntity *PhysicsScreen::getPhysicsEntityByShape(b2Shape *shape) {				// I have made changes so it will search through body fixturelists
+PhysicsScreenEntity *PhysicsScreen::getPhysicsEntityByShape(b2Shape *shape) {
 	for(int i=0; i < physicsChildren.size(); i++) {
-		for (b2Fixture *f = physicsChildren[i]->body->GetFixtureList(); f; f = f->GetNext()) {
-			if(f->GetShape() == shape)
-				return physicsChildren[i];
-		}
+		if(physicsChildren[i]->shape == shape)
+			return physicsChildren[i];
 	}
 	return NULL;
 }
-
+	
 void PhysicsScreen::handleEvent(Event *event) {	
 	Screen::handleEvent(event);
 }
