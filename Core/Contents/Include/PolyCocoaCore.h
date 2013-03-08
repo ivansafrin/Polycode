@@ -38,6 +38,8 @@
 #include <IOKit/hid/IOHIDLib.h>
 #import <Cocoa/Cocoa.h>
 
+#define POLYCODE_CORE CocoaCore
+
 using std::vector;
 
 @class PolycodeView;

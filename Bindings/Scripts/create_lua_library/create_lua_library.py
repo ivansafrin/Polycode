@@ -596,6 +596,9 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 										wrappersHeaderOut += "\t\tlua_rawseti(L, -2, i+1);\n"
 										wrappersHeaderOut += "\t}\n"
 										wrappersHeaderOut += "\treturn 1;\n"
+									else:
+										wrappersHeaderOut += "\treturn 0;\n"
+										
 							# else If void-typed:
 							elif pm["rtnType"] == "void" or pm["rtnType"] == "static void" or pm["rtnType"] == "virtual void" or pm["rtnType"] == "inline void":
 								wrappersHeaderOut += "\t%s;\n" % (call)

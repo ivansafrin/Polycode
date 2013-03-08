@@ -26,6 +26,8 @@
 #include "PolyCore.h"
 #include <vector>
 
+#define POLYCODE_CORE SDLCore
+
 struct SDL_mutex;
 
 namespace Polycode {
