@@ -551,8 +551,8 @@ void OpenGLRenderer::setPerspectiveMode() {
 
 void OpenGLRenderer::BeginRender() {
 	if(doClearBuffer) {
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 	glLoadIdentity();
 	currentTexture = NULL;
