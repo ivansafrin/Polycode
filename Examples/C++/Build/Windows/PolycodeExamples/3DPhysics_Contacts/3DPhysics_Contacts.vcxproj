@@ -18,9 +18,9 @@
     <ClInclude Include="..\..\Contents\3DPhysics_Contacts\HelloPolycodeApp.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{70C02441-8A71-40E3-B737-C872FFFB0183}</ProjectGuid>
+    <ProjectGuid>{EBC95D30-8B44-4F1C-ABE8-18E3B7E611E4}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>My2DAudio</RootNamespace>
+    <RootNamespace>My3DPhysics_Contacts</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -46,12 +46,12 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)..\..\..\Core\include;$(SolutionDir)..\..\..\Core\Dependencies\include;$(SolutionDir)..\..\..\Modules\include;$(SolutionDir)..\..\..\Modules\Dependencies\include\bullet;$(SolutionDir)..\..\..\Core\PolycodeView;$(SolutionDir)..\..\..\Core\Dependencies\include\AL;$(SolutionDir)..\Contents\3DPhysics_Contacts;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)..\..\..\Core\include;$(SolutionDir)..\..\..\Core\Dependencies\include;$(SolutionDir)..\..\..\Core\PolycodeView;$(SolutionDir)..\..\..\Core\Dependencies\include\AL;$(SolutionDir)..\Contents\3DPhysics_Contacts;$(SolutionDir)..\..\..\Modules\include;$(SolutionDir)..\..\..\Modules\Dependencies\include\bullet;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)..\..\..\Core\lib;$(SolutionDir)..\..\..\Core\Dependencies\lib;$(SolutionDir)..\..\..\Modules\lib;$(SolutionDir)..\..\..\Modules\Dependencies\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)..\..\..\Core\include;$(SolutionDir)..\..\..\Core\Dependencies\include;$(SolutionDir)..\..\..\Modules\include;$(SolutionDir)..\..\..\Modules\Dependencies\include\bullet;$(SolutionDir)..\..\..\Core\PolycodeView;$(SolutionDir)..\..\..\Core\Dependencies\include\AL;$(SolutionDir)..\Contents\3DPhysics_Contacts;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)..\..\..\Core\include;$(SolutionDir)..\..\..\Core\Dependencies\include;$(SolutionDir)..\..\..\Core\PolycodeView;$(SolutionDir)..\..\..\Core\Dependencies\include\AL;$(SolutionDir)..\Contents\3DPhysics_Contacts;$(SolutionDir)..\..\..\Modules\include;$(SolutionDir)..\..\..\Modules\Dependencies\include\bullet;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)..\..\..\Core\lib;$(SolutionDir)..\..\..\Core\Dependencies\lib;$(SolutionDir)..\..\..\Modules\lib;$(SolutionDir)..\..\..\Modules\Dependencies\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -65,8 +65,11 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Polycode3DPhysics_d.lib;LinearMath_d.lib;BulletCollision_d.lib;BulletDynamics_d.lib;opengl32.lib;glu32.lib;Polycore_d.lib;zlibd.lib;freetype_d.lib;liboggd.lib;libvorbisd.lib;libvorbisfiled.lib;OpenAL32d.lib;kernel32.lib;physfsd.lib;libpng15_staticd.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Polycode3DPhysics_d.lib;BulletDynamics_d.lib;BulletCollision_d.lib;LinearMath_d.lib;winmm.lib;ws2_32.lib;opengl32.lib;glu32.lib;Polycore_d.lib;zlibd.lib;freetype_d.lib;liboggd.lib;libvorbisd.lib;libvorbisfiled.lib;OpenAL32d.lib;kernel32.lib;physfsd.lib;libpng15_staticd.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy ..\..\..\..\Core\Dependencies\bin\OpenAL32d.dll ..\..</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -83,8 +86,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>Polycode3DPhysics.lib;LinearMath.lib;BulletCollision.lib;BulletDynamics.lib;opengl32.lib;glu32.lib;Polycore.lib;zlib.lib;freetype.lib;libogg.lib;libvorbis.lib;libvorbisfile.lib;OpenAL32.lib;kernel32.lib;physfs.lib;libpng15_static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Polycode3DPhysics.lib;BulletDynamics.lib;BulletCollision.lib;LinearMath.lib;winmm.lib;ws2_32.lib;opengl32.lib;glu32.lib;Polycore.lib;zlib.lib;freetype.lib;libogg.lib;libvorbis.lib;libvorbisfile.lib;OpenAL32.lib;kernel32.lib;physfs.lib;libpng15_static.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy ..\..\..\..\Core\Dependencies\bin\OpenAL32.dll ..\..</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

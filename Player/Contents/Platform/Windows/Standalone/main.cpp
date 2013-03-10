@@ -91,7 +91,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	player->addEventListener(view, PolycodeDebugEvent::EVENT_ERROR);
 	player->addEventListener(view, PolycodeDebugEvent::EVENT_PRINT);
 
-	OpenConsole();
+	//OpenConsole();
 
 	player->runPlayer();
 
