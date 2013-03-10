@@ -19,8 +19,8 @@ ExternalProject_Add(physfs
 
     DOWNLOAD_DIR ${POLYCODE_DEPS_DOWNLOAD_DIR}
 
-    URL http://offload1.icculus.org:9090/physfs/downloads/physfs-2.0.2.tar.gz
-    URL_MD5 4e8927c3d30279b03e2592106eb9184a
+    URL http://icculus.org/physfs/downloads/physfs-2.0.3.tar.bz2
+    URL_MD5 c2c727a8a8deb623b521b52d0080f613
 
     PATCH_COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PolycodeDependencies_SOURCE_DIR}/../CMake/physfs.cmake <SOURCE_DIR>/CMakeLists.txt
 
