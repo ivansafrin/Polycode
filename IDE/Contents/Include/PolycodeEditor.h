@@ -34,7 +34,7 @@ public:
 	PolycodeEditor(bool _isReadOnly);
 	virtual ~PolycodeEditor();
 	
-	virtual bool openFile(OSFileEntry filePath){ this->filePath = filePath.fullPath; }
+	virtual bool openFile(OSFileEntry filePath){ this->filePath = filePath.fullPath; return true;}
 	virtual void Resize(int x, int y);
 	
 	virtual void Activate() {};

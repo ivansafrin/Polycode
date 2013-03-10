@@ -225,6 +225,8 @@ public:
 
 		void initTouch();
 
+		void handleViewResize(int width, int height);
+
 		// NEED TO IMPLEMENT:
 
 		String executeExternalCommand(String command) { return "";}
@@ -244,6 +246,8 @@ public:
 		
 		std::vector<GamepadDeviceEntry*> gamepads;
 
+		HWND hWnd;
+
 	private:
 
 		unsigned int nextDeviceID;
@@ -254,7 +258,6 @@ public:
 
 		void initMultisample(int numSamples);
 
-		HWND hWnd;
 
 		int lastMouseX;
 		int lastMouseY;

@@ -30,6 +30,12 @@
 #include "PolyLogger.h"
 #include "PolyThreaded.h"
 
+#include <direct.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+#include <Shlobj.h>
+
 #include <GL/gl.h>
 #include <GL/glext.h>
 #ifndef _MINGW
@@ -76,6 +82,16 @@ Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScre
 	hWnd = *((HWND*)view->windowData);
 	core = this;
 
+	char *buffer = _getcwd(NULL, 0);
+	defaultWorkingDirectory = String(buffer);
+	free(buffer);
+
+	WCHAR path[MAX_PATH];
+	if (SUCCEEDED(SHGetFolderPathW(NULL, CSIDL_PROFILE, NULL, 0, path))) {
+		userHomeDirectory = String(path);
+	}
+
+
 	initKeymap();
 	initGamepad();
 	initTouch();
@@ -83,6 +99,8 @@ Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScre
 	hDC = NULL;
 	hRC = NULL;
 	PixelFormat = 0;
+
+	this->aaLevel = 999;
 	
 	lastMouseX = -1;
 	lastMouseY = -1;
@@ -162,6 +180,12 @@ void Win32Core::setVSync(bool vSyncVal) {
 
 void Win32Core::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel) {
 
+	bool resetContext = false;
+
+	if(aaLevel != this->aaLevel) {
+		resetContext = true;
+	}
+
 	this->xRes = xRes;
 	this->yRes = yRes;
 	this->fullScreen = fullScreen;
@@ -183,9 +207,6 @@ void Win32Core::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, in
 
 		SetWindowPos(hWnd, NULL, 0, 0, xRes, yRes, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
 	} else {
-		if(isFullScreen) {
-			ChangeDisplaySettings(NULL,0);		
-		}
 	//	SetWindowLong(hWnd, GWL_STYLE, WS_OVERLAPPED|WS_SYSMENU);
 	//	ShowWindow(hWnd, SW_SHOW);
 		ClientResize(hWnd, xRes, yRes);
@@ -194,16 +215,20 @@ void Win32Core::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, in
 
 	isFullScreen = fullScreen;
 
-	initContext(false, 0);
+	if(resetContext) {
+		initContext(false, 0);
 
-	if(aaLevel > 0) {
-		initMultisample(aaLevel);
+		if(aaLevel > 0) {
+			initMultisample(aaLevel);
+		}
 	}
 
 	setVSync(vSync);
 
 	renderer->setAnisotropyAmount(anisotropyLevel);
 	renderer->Resize(xRes, yRes);
+
+	core->dispatchEvent(new Event(), Core::EVENT_CORE_RESIZE);
 }
 
 void Win32Core::initContext(bool usePixelFormat, unsigned int pixelFormat) {
@@ -437,6 +462,13 @@ void Win32Core::initKeymap() {
 	keyMap[VK_APPS] = KEY_MENU;
 	
 
+}
+
+void Win32Core::handleViewResize(int width, int height) {
+	this->xRes = width;
+	this->yRes = height;
+	renderer->Resize(width, height);
+	dispatchEvent(new Event(), EVENT_CORE_RESIZE);
 }
 
 PolyKEY Win32Core::mapKey(LPARAM lParam, WPARAM wParam) {

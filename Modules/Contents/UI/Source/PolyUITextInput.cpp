@@ -661,7 +661,7 @@ void UITextInput::dragSelectionTo(Number x, Number y) {
 	String selectToLine = lines[lineOffset];
 	
 	int len = selectToLine.length();
-	Number slen;
+	Number slen = 0;
 	int caretPosition = bufferLines[0]->getLabel()->getTextWidthForString(selectToLine.substr(0,len));
 	for(int i=0; i < len; i++) {
 		slen = bufferLines[0]->getLabel()->getTextWidthForString(selectToLine.substr(0,i));
@@ -816,7 +816,7 @@ void UITextInput::setCaretToMouse(Number x, Number y) {
 	//}
 	
 	int len = lines[lineOffset].length();
-	Number slen;
+	Number slen= 0;
 	
 	int newCaretPosition = -1;
 	

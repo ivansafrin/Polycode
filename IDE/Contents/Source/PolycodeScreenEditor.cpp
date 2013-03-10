@@ -742,7 +742,7 @@ void PolycodeScreenEditorMain::setGrid(int gridSize) {
 
 	this->gridSize = gridSize;
 
-	Polygon *gridPoly = new Polygon();
+	Polycode::Polygon *gridPoly = new Polycode::Polygon();
 	int gridLen = 300;
 	
 	for(int x=0; x < gridLen+1; x++) {

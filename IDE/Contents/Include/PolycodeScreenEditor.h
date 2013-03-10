@@ -29,6 +29,10 @@
 
 using namespace Polycode;
 
+#ifdef _WINDOWS
+#define round (int)
+#endif
+
 class EntityBrowserData  {
 	public:
 		Entity *entity;

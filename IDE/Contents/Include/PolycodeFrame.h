@@ -156,6 +156,8 @@ public:
 	~PolycodeFrame();
 	
 	void Resize(int x, int y);
+
+	void Update();
 	
 	void showModal(UIWindow *modalChild);
 	void hideModal();
@@ -206,6 +208,8 @@ private:
 	int frameSizeX;
 	int frameSizeY;
 	
+	bool willHideModal;
+
 	ScreenShape *fileDialogBlocker;
 
 	ScreenShape *topBarBg;

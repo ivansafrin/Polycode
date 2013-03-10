@@ -19,8 +19,12 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
- 
+
+#if defined(__APPLE__) && defined(__MACH__)
 #import "PolycodeView.h"
+#else
+#include "PolycodeView.h"
+#endif
 
 #include "PolycodeGlobals.h"
 #include "PolycodeProjectManager.h"

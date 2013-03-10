@@ -25,8 +25,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_SIZE:
 		nWidth = LOWORD(lParam); 
 		nHeight = HIWORD(lParam);
-		if(core)
-			core->getServices()->getRenderer()->Resize(nWidth, nHeight);
+		if(core) {
+			core->handleViewResize(nWidth, nHeight);
+		}
 	break;
 
 	case WM_MOUSEMOVE:
@@ -114,7 +115,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 }
 
 
-PolycodeView::PolycodeView(HINSTANCE hInstance, int nCmdShow, LPCTSTR windowTitle) : PolycodeViewBase() {
+PolycodeView::PolycodeView(HINSTANCE hInstance, int nCmdShow, LPCTSTR windowTitle, bool resizable) : PolycodeViewBase() {
 
 WNDCLASSEX wcex;
 
@@ -133,8 +134,11 @@ WNDCLASSEX wcex;
 
 	RegisterClassEx(&wcex);
 
-  hwnd = CreateWindowEx(WS_EX_APPWINDOW, L"POLYCODEAPPLICATION", windowTitle, WS_OVERLAPPED|WS_SYSMENU,
-      0, 0, 640, 480, NULL, NULL, hInstance, NULL);
+	if(resizable) {
+		hwnd = CreateWindowEx(WS_EX_APPWINDOW, L"POLYCODEAPPLICATION", windowTitle, WS_OVERLAPPEDWINDOW|WS_SYSMENU, 0, 0, 640, 480, NULL, NULL, hInstance, NULL);
+	} else {
+		hwnd = CreateWindowEx(WS_EX_APPWINDOW, L"POLYCODEAPPLICATION", windowTitle, WS_OVERLAPPED|WS_SYSMENU, 0, 0, 640, 480, NULL, NULL, hInstance, NULL);
+	}
 
   windowData = (void*)&hwnd;
 

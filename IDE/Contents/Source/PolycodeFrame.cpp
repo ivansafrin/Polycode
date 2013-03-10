@@ -362,6 +362,8 @@ CurveEditor::CurveEditor() : UIWindow("", 750, 300) {
 	
 	selectorImage->setPosition(selectButton->getPosition().x - 4, selectButton->getPosition().y - 4);
 
+	selectedCurve = NULL;
+
 	setMode(0);
 	
 	treeContainer = new UITreeContainer("boxIcon.png", L"Curves", 145, 280);
@@ -370,8 +372,7 @@ CurveEditor::CurveEditor() : UIWindow("", 750, 300) {
 	treeContainer->setPosition(12, 33);
 	
 	treeContainer->getRootNode()->setUserData(NULL);
-	
-	selectedCurve = NULL;
+
 	
 	addChild(treeContainer);	
 
@@ -497,6 +498,7 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 
 	globalFrame = this;
 	processInputEvents = true;
+	willHideModal = false;
 
 	modalChild = NULL;
 	
@@ -692,6 +694,13 @@ void PolycodeFrame::hideModal() {
 	modalBlocker->enabled = false;		
 }
 
+void PolycodeFrame::Update() {
+	if(willHideModal) {
+		hideModal();
+		willHideModal = false;
+	}
+}
+
 void PolycodeFrame::showAssetBrowser(std::vector<String> extensions) {
 	if(!projectManager->getActiveProject()) {
 		return;
@@ -749,7 +758,7 @@ void PolycodeFrame::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == modalChild) {
 		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLOSE_EVENT) {
-			hideModal();
+			willHideModal = true;
 		}
 	} else {
 		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT && event->getDispatcher() == newProjectButton) {
