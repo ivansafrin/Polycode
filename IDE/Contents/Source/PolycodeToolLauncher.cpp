@@ -34,7 +34,9 @@ void PolycodeRunner::runThread() {
 	String polycodeBasePath = CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory();
 
 #if defined(__APPLE__) && defined(__MACH__)
-	String command = "cd "+polycodeBasePath+"/Standalone/Player/PolycodePlayer.app/Contents/Resources && ../MacOS/PolycodePlayer "+polyappPath;	
+	String command = "../MacOS/PolycodePlayer";	
+	String inFolder = polycodeBasePath+"/Standalone/Player/PolycodePlayer.app/Contents/Resources";
+	String args = polyappPath;
 #elif defined _WINDOWS
 	String command = polycodeBasePath+"/Standalone/Player/PolycodePlayer.exe";
 	String args = polyappPath;
@@ -42,6 +44,7 @@ void PolycodeRunner::runThread() {
 #else
 	String command = "cd "+polycodeBasePath+"/Standalone/Player && ./PolycodePlayer "+polyappPath;
 #endif
+
 	String ret = CoreServices::getInstance()->getCore()->executeExternalCommand(command, args, inFolder);
 	CoreServices::getInstance()->getCore()->removeDiskItem(polyappPath);	
 }
@@ -84,9 +87,11 @@ void PolycodeToolLauncher::buildProject(PolycodeProject *project, String destina
 	String args =  "--config=\""+projectPath+"\" --out=\""+destinationPath+"\"";
 	String ret = CoreServices::getInstance()->getCore()->executeExternalCommand(command, args, targetFolder);
 #else
-	String command = "cd "+projectBasePath+" && "+polycodeBasePath+"/Standalone/Bin/polybuild  --config="+projectPath+" --out="+destinationPath;	
-	String ret = CoreServices::getInstance()->getCore()->executeExternalCommand(command);
-//	PolycodeConsole::print(ret);	
+	String command = polycodeBasePath+"/Standalone/Bin/polybuild";
+	String inFolder = projectBasePath; 
+	String args = "--config="+projectPath+" --out="+destinationPath;
+	String ret = CoreServices::getInstance()->getCore()->executeExternalCommand(command, args, inFolder);
+//	PolycodeConsole::print(ret);
 #endif
 
 }

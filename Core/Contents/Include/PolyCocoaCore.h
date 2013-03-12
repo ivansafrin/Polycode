@@ -118,7 +118,7 @@ namespace Polycode {
 		String openFolderPicker();
 		vector<String> openFilePicker(vector<CoreFileExtension> extensions, bool allowMultiple);
 		
-		String executeExternalCommand(String command, String inDirectory="");
+		String executeExternalCommand(String command, String args, String inDirectory="");
 		
 		void launchApplicationWithFile(String application, String file);
 		void openFileWithApplication(String file, String application);
