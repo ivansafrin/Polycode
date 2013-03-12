@@ -60,11 +60,11 @@ void Color::setColorHexRGB(unsigned int hex) {
 }
 
 void Color::setColorHexFromString(String hex) {
-	setColorHex(strtol(hex.c_str(), 0, 16));
+	setColorHex(strtoul(hex.c_str(), 0, 16));
 }
 
 void Color::setColorHexRGBFromString(String hex) {
-	setColorHexRGB(strtol(hex.c_str(), 0, 16));
+	setColorHexRGB(strtoul(hex.c_str(), 0, 16));
 }
 
 Color Color::blendColor(Color c2, int mode, Number amount, Color c3) {

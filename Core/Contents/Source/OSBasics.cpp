@@ -280,7 +280,17 @@ vector<OSFileEntry> OSBasics::parseFolder(const String& pathString, bool showHid
 	WCHAR tmp[4096];
 	memset(tmp, 0, sizeof(WCHAR)*4096);
 	ctow(tmp, pathString.c_str());
+
+
+	DWORD dwAttrib = GetFileAttributes(tmp);
+  if(! (dwAttrib != INVALID_FILE_ATTRIBUTES && 
+         (dwAttrib & FILE_ATTRIBUTE_DIRECTORY))) {
+		return returnVector;
+  }
+
+
 	SetCurrentDirectory(tmp);
+
 
 	HANDLE hFind = FindFirstFile((LPCWSTR)"*", &findFileData);
 	if(hFind  == INVALID_HANDLE_VALUE) {

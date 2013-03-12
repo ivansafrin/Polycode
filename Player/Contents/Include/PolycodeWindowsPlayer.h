@@ -22,19 +22,19 @@ THE SOFTWARE.
 
 #pragma once
 
-#include "PolycodePlayerView.h"
+#include "PolycodeView.h"
 
 #include "PolycodePlayer.h"
 #include "PolyWinCore.h"
 
 class PolycodeWindowsPlayer : public PolycodePlayer {
 	public:
-		PolycodeWindowsPlayer(PolycodePlayerView *view,String fileName, bool knownArchive);
+		PolycodeWindowsPlayer(PolycodeView *view,String fileName, bool knownArchive, bool useDebugger);
 		virtual ~PolycodeWindowsPlayer();
 	
 		void createCore();	
 	
 	protected:
 
-		PolycodePlayerView *view;	
+		PolycodeView *view;	
 };

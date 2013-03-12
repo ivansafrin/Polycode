@@ -7,7 +7,7 @@ using namespace Polycode;
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	PolycodeView *view = new PolycodeView(hInstance, nCmdShow, L"Polycode", true);
+	PolycodeView *view = new PolycodeView(hInstance, nCmdShow, L"Polycode", true, true);
 	PolycodeIDEApp *app = new PolycodeIDEApp(view);
 
 	MSG Msg;
@@ -17,5 +17,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 			DispatchMessage(&Msg);
 		}
 	} while(app->Update());
+
+	app->saveConfigFile();
 	return Msg.wParam;
 }

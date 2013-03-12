@@ -4,10 +4,43 @@
 #include "PolyCoreServices.h"
 #include "PolyCoreInput.h"
 #include "PolyRenderer.h"
+#include <io.h>
+#include <fcntl.h>
 
 using namespace Polycode;
 
 Win32Core *core = NULL;
+
+
+static void OpenConsole()
+{
+    int outHandle, errHandle, inHandle;
+    FILE *outFile, *errFile, *inFile;
+    AllocConsole();
+    CONSOLE_SCREEN_BUFFER_INFO coninfo;
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &coninfo);
+    coninfo.dwSize.Y = 9999;
+    SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), coninfo.dwSize);
+
+    outHandle = _open_osfhandle((long)GetStdHandle(STD_OUTPUT_HANDLE), _O_TEXT);
+    errHandle = _open_osfhandle((long)GetStdHandle(STD_ERROR_HANDLE),_O_TEXT);
+    inHandle = _open_osfhandle((long)GetStdHandle(STD_INPUT_HANDLE),_O_TEXT );
+
+    outFile = _fdopen(outHandle, "w" );
+    errFile = _fdopen(errHandle, "w");
+    inFile =  _fdopen(inHandle, "r");
+
+    *stdout = *outFile;
+    *stderr = *errFile;
+    *stdin = *inFile;
+
+    setvbuf( stdout, NULL, _IONBF, 0 );
+    setvbuf( stderr, NULL, _IONBF, 0 );
+    setvbuf( stdin, NULL, _IONBF, 0 );
+
+    std::ios::sync_with_stdio();
+
+}
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -115,7 +148,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 }
 
 
-PolycodeView::PolycodeView(HINSTANCE hInstance, int nCmdShow, LPCTSTR windowTitle, bool resizable) : PolycodeViewBase() {
+PolycodeView::PolycodeView(HINSTANCE hInstance, int nCmdShow, LPCTSTR windowTitle, bool resizable, bool showDebugConsole) : PolycodeViewBase() {
 
 WNDCLASSEX wcex;
 
@@ -144,6 +177,10 @@ WNDCLASSEX wcex;
 
    ShowWindow(hwnd, nCmdShow);
    UpdateWindow(hwnd);
+
+   if(showDebugConsole) {
+		OpenConsole();
+   }
 
 }
 

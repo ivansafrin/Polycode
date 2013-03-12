@@ -215,7 +215,7 @@ void CocoaCore::launchApplicationWithFile(String application, String file) {
 //Handle error
 }
 
-String CocoaCore::executeExternalCommand(String command) {
+String CocoaCore::executeExternalCommand(String command,  String inDirectory) {
 	FILE *fp = popen(command.c_str(), "r");
 	if(!fp) {
 		return "Unable to execute command";

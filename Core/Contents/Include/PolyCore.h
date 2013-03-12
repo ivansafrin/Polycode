@@ -311,7 +311,7 @@ namespace Polycode {
 		static const int EVENT_LOST_FOCUS = 1;
 		static const int EVENT_GAINED_FOCUS = 2;
 		
-		virtual String executeExternalCommand(String command) = 0;
+		virtual String executeExternalCommand(String command, String args, String inDirectory) = 0;
 		
 		/**
 		* Returns the default working path of the application.

@@ -25,26 +25,22 @@ INCLUDE_DIRECTORIES(
 SET(polycodeplayer_SRCS 
         Source/PolycodePlayer.cpp
         Source/PolycodeWindowsPlayer.cpp
-        Source/PolycodePlayerView.cpp
         Platform/Windows/main.cpp        
     )
 
     SET(polycodeplayer_HDRS 
         Include/PolycodePlayer.h
         Include/PolycodeWindowsPlayer.h
-        Include/PolycodePlayerView.h
     )
   
     SET(polycodeplayerstandalone_SRCS 
         Source/PolycodePlayer.cpp
         Source/PolycodeWindowsPlayer.cpp
-        Source/PolycodePlayerView.cpp
         Platform/Windows/Standalone/main.cpp
     )
     SET(polycodeplayerstandalone_HDRS 
         Include/PolycodePlayer.h
-        Include/PolycodeWindowsPlayer.h
-        Include/PolycodePlayerView.h        
+        Include/PolycodeWindowsPlayer.h   
     )
  
     ADD_EXECUTABLE(PolycodePlayer WIN32 ${polycodeplayer_SRCS} ${polycodeplayer_HDRS})

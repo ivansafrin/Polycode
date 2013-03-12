@@ -71,7 +71,7 @@ UIWindow::UIWindow(String windowName, Number width, Number height) : ScreenEntit
 	titleLabel = new ScreenLabel(windowName, fontSize, fontName, Label::ANTIALIAS_FULL);
 	titleLabel->setPosition(conf->getNumericValue("Polycode", "uiWindowTitleX"),conf->getNumericValue("Polycode", "uiWindowTitleY"));
 	addChild(titleLabel);
-	titleLabel->color.setColorHex(strtol(conf->getStringValue("Polycode", "uiWindowFontColor").c_str(), 0, 16));
+	titleLabel->color.setColorHexFromString(conf->getStringValue("Polycode", "uiWindowFontColor"));
 		
 	closeBtn = new UIImageButton(conf->getStringValue("Polycode", "uiWindowCloseIcon"));
 	addChild(closeBtn);

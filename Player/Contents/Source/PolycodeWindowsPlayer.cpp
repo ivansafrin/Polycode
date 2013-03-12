@@ -22,7 +22,7 @@ THE SOFTWARE.
 #include "PolycodeWindowsPlayer.h"
 
 
-PolycodeWindowsPlayer::PolycodeWindowsPlayer(PolycodePlayerView *view, String fileName, bool knownArchive) : PolycodePlayer(fileName, knownArchive) {
+PolycodeWindowsPlayer::PolycodeWindowsPlayer(PolycodeView *view, String fileName, bool knownArchive, bool useDebugger) : PolycodePlayer(fileName, knownArchive, useDebugger) {
 	this->view = view;
 }
 

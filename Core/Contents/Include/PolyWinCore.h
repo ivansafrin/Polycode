@@ -226,22 +226,25 @@ public:
 		void initTouch();
 
 		void handleViewResize(int width, int height);
+		
+		String executeExternalCommand(String command,  String args, String inDirectory);
+		std::vector<String> openFilePicker(std::vector<CoreFileExtension> extensions, bool allowMultiple);
+		void createFolder(const String& folderPath);
+		void openURL(String url);
 
 		// NEED TO IMPLEMENT:
 
-		String executeExternalCommand(String command) { return "";}
 
-		void openURL(String url) {}
 		void setCursor(int cursorType){ }
 		void copyStringToClipboard(const String& str) { }
 		String getClipboardString() { return ""; }
 
-		void createFolder(const String& folderPath) {}
+
 		void copyDiskItem(const String& itemPath, const String& destItemPath) {}
 		void moveDiskItem(const String& itemPath, const String& destItemPath) {}
 		String openFolderPicker()  { return "";}
 		void removeDiskItem(const String& itemPath)  {}
-		std::vector<String> openFilePicker(std::vector<CoreFileExtension> extensions, bool allowMultiple) { std::vector<String> ret; return ret;}
+		
 		void resizeTo(int xRes, int yRes) { }
 		
 		std::vector<GamepadDeviceEntry*> gamepads;

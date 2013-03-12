@@ -1,7 +1,7 @@
 
 #include "PolycodeWindowsPlayer.h"
 #include <Polycode.h>
-#include "PolycodePlayerView.h"
+#include "PolycodeView.h"
 #include "windows.h"
 #include "resource.h"
 
@@ -20,47 +20,20 @@ Dest[i] = (char)Source[i];
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
+
+	int nArgs;
+	LPWSTR *szArglist =  CommandLineToArgvW(GetCommandLineW(), &nArgs);
 	
-	String args = String(GetCommandLineW());
-	String fileName;
-	for(int i=0; i < args.length(); i++) {
-		if(args[i] != '\"')
-			fileName += args.substr(i, 1);
-		if(args[i] == '\"' && i != args.length()-1)
-			fileName = "";
+	String fileName = "";
+	if(nArgs > 1) {
+		fileName = String(szArglist[1]);
 	}
 
-	if(fileName == " ")
-		fileName = "";
+	PolycodeView *view = new PolycodeView(hInstance, nCmdShow, L"Polycode Player", false, false);
+	PolycodeWindowsPlayer *player = new PolycodeWindowsPlayer(view, fileName.c_str(), false, true);
 
-	if(fileName.length() > 1)  {
-		fileName = fileName.replace(":", "");
-		fileName = fileName.replace("\\", "/");
-		fileName = fileName.substr(1, fileName.length() - 1);
-
-	}
-
-	char path[2049];
-	TCHAR tpath[2049];
-	GetModuleFileName(NULL, (LPWSTR)tpath, 2048);
-	wtoc(path, tpath, 2048);
-	
-	String basePath = path;
-	vector<String> cpts = basePath.split("\\");
-	String installPath = "";
-	for(int i=0; i < cpts.size() - 1; i++) {
-		installPath = installPath + cpts[i];
-		installPath += String("\\");
-	}
-	
-	SetCurrentDirectory(installPath.getWDataWithEncoding(String::ENCODING_UTF8));
-
-
-	PolycodePlayerView *view = new PolycodePlayerView(false, hInstance, nCmdShow, L"Polycode Player");
-	PolycodeWindowsPlayer *player = new PolycodeWindowsPlayer(view, fileName.c_str(), false);
-
-	player->addEventListener(view, PolycodeDebugEvent::EVENT_ERROR);
-	player->addEventListener(view, PolycodeDebugEvent::EVENT_PRINT);
+//	player->addEventListener(view, PolycodeDebugEvent::EVENT_ERROR);
+//	player->addEventListener(view, PolycodeDebugEvent::EVENT_PRINT);
 
 
 	player->runPlayer();

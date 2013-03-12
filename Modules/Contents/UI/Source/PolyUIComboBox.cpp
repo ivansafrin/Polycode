@@ -78,7 +78,7 @@ UIComboBox::UIComboBox(UIGlobalMenu *globalMenu, Number comboWidth) : UIElement(
 	selectedLabel->setPosition(paddingX, floor(((dropDownImage->getHeight()/2.0) - selectedLabel->getLabel()->getTextHeight()/2.0) + paddingY));
 	addChild(selectedLabel);
 	
-	selectedLabel->color.setColorHex(strtol(conf->getStringValue("Polycode", "uiDefaultFontColor").c_str(), 0, 16));
+	selectedLabel->color.setColorHexFromString(conf->getStringValue("Polycode", "uiDefaultFontColor"));
 	
 	String selectorBgImage = conf->getStringValue("Polycode", "uiComboBoxSelectorBgImage");	
 	
