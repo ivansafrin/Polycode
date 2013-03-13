@@ -103,6 +103,7 @@ UIMenu::UIMenu(Number menuWidth) : UIElement() {
 
 	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);			
 
+	initialMouse = CoreServices::getInstance()->getCore()->getInput()->getMousePosition();
 	
 	this->width = menuWidth;
 	this->height = menuItemHeight;
@@ -136,13 +137,15 @@ void UIMenu::Update() {
 void UIMenu::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == CoreServices::getInstance()->getCore()->getInput()) {
+	
+		InputEvent *inputEvent = (InputEvent*) event;	
+		
 		if(event->getEventCode() == InputEvent::EVENT_KEYDOWN) {
-			InputEvent *inputEvent = (InputEvent*) event;
 			if(inputEvent->key == KEY_ESCAPE) {
 				dispatchEvent(new UIEvent(), UIEvent::CANCEL_EVENT);							
 			}
 		}
-		if((event->getEventCode() == InputEvent::EVENT_MOUSEDOWN || event->getEventCode() == InputEvent::EVENT_MOUSEUP) && !ignoreMouse) {
+		if((event->getEventCode() == InputEvent::EVENT_MOUSEDOWN || (event->getEventCode() == InputEvent::EVENT_MOUSEUP && initialMouse != inputEvent->getMousePosition())) && !ignoreMouse) {
 			if(selectorBox->visible) {
 				dispatchEvent(new UIEvent(), UIEvent::OK_EVENT);
 			} else {

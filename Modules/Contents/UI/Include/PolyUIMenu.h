@@ -55,6 +55,8 @@ namespace Polycode {
 			
 		protected:
 		
+			Vector2 initialMouse;
+		
 			Number menuItemHeight;
 			Number menuWidth;
 			
