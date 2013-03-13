@@ -1615,6 +1615,9 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 						if(selectedEntity->hasFocus) {
 							selectedEntity->ownsChildren = true;
 							selectedEntity->getParentEntity()->removeChild(selectedEntity);
+							if(selectedEntity == currentLayer) {
+								currentLayer = NULL;
+							}							
 							delete selectedEntity;
 							selectEntity(NULL);							
 							

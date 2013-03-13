@@ -72,6 +72,7 @@ public:
 	void browseExamples();
 	void newProject();
 	void newFile();
+	void showAbout();
 	
 	void openDocs();
 	

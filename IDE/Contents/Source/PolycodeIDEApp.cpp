@@ -152,7 +152,7 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 #else
 	menuBar = NULL;
 #endif
-	core->setVideoMode(1100, 700, false, false, 0, 0);
+	core->setVideoMode(1100, 700, false, true, 0, 0);
 
 
 }
@@ -164,6 +164,10 @@ void PolycodeIDEApp::renameFile() {
 		frame->textInputPopup->setValue(projectManager->selectedFileEntry.name);
 		frame->showModal(frame->textInputPopup);
 	}
+}
+
+void PolycodeIDEApp::showAbout() {
+	frame->showModal(frame->aboutWindow);
 }
 
 void PolycodeIDEApp::doRemoveFile() {

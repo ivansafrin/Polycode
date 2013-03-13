@@ -48,7 +48,7 @@ ProjectFontEntry::ProjectFontEntry(String fontPath, String fontName) : UIElement
 	removeButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(removeButton);
 
-	fontNameInput = new UITextInput(false, 100, 23);
+	fontNameInput = new UITextInput(false, 100, 13);
 	fontNameInput->setText(fontName);
 	fontNameInput->setPosition(20, 0);
 	fontNameInput->addEventListener(this, UIEvent::CHANGE_EVENT);
@@ -59,7 +59,7 @@ ProjectFontEntry::ProjectFontEntry(String fontPath, String fontName) : UIElement
 	fontFileLabel = new ScreenLabel(entry.name, 12);
 	fontFileLabel->color.a = 0.6;
 	addChild(fontFileLabel);
-	fontFileLabel->setPosition(130, 6);
+	fontFileLabel->setPosition(140, 3);
 	
 	CoreServices::getInstance()->getFontManager()->registerFont(fontName, fontPath);
 }

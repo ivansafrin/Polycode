@@ -589,6 +589,22 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	yesNoPopup = new YesNoPopup();
 	yesNoPopup->visible = false;
 	
+	aboutWindow = new UIWindow("", 800, 440);
+	aboutWindow->closeOnEscape = true;
+	ScreenImage *aboutImage = new ScreenImage("Images/about.png");
+	aboutWindow->addChild(aboutImage);
+	aboutImage->setPosition(20, 40);
+	aboutWindow->visible = false;
+	aboutOKButton = new UIButton("OK", 100);
+	aboutWindow->addChild(aboutOKButton);
+	aboutOKButton->setPosition(700, 420);
+	aboutOKButton->addEventListener(this, UIEvent::CLICK_EVENT);
+	
+	ScreenLabel *versionLabel = new ScreenLabel("version 0.8.2", 12, "mono");
+	aboutWindow->addChild(versionLabel);
+	versionLabel->setPosition(20, 430);
+	versionLabel->color.a = 0.4;
+	
 	isDragging  = false;
 	dragLabel = new ScreenLabel("NONE", 11, "sans");
 	dragLabel->setPosition(0,-15);
@@ -711,6 +727,10 @@ void PolycodeFrame::showAssetBrowser(std::vector<String> extensions) {
 }
 
 void PolycodeFrame::handleEvent(Event *event) {
+	
+	if(event->getDispatcher() == aboutOKButton && event->getEventType() == "UIEvent") {
+		hideModal();
+	}
 	
 	if(event->getDispatcher() == fileDialog && event->getEventType() == "UIEvent") {
 		fileBrowserRoot->removeChild(fileDialog);

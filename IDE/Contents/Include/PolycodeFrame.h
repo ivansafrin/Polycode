@@ -202,7 +202,9 @@ public:
 	UIElement *modalRoot;
 	UIElement *fileBrowserRoot;
 	UIFileDialog *fileDialog;
-
+	
+	UIWindow *aboutWindow;
+	UIButton *aboutOKButton;
 private:
 	
 	int frameSizeX;

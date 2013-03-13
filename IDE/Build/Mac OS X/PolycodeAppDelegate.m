@@ -150,4 +150,8 @@
 	app->openDocs();
 }
 
+-(IBAction) showAbout: (id) sender {
+	app->showAbout();
+}
+
 @end
