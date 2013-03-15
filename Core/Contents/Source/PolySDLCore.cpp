@@ -160,8 +160,14 @@ void SDLCore::openURL(String url) {
     }
 }
 
-String SDLCore::executeExternalCommand(String command,  String inDirectory) {
-	FILE *fp = popen(command.c_str(), "r");
+String SDLCore::executeExternalCommand(String command, String args, String inDirectory) {
+	String finalCommand = command + " " + args;
+
+	if(inDirectory != "") {
+		finalCommand = "cd " + inDirectory + " && " + finalCommand;
+	}
+
+	FILE *fp = popen(finalCommand.c_str(), "r");
 	if(!fp) {
 		return "Unable to execute command";
 	}	
