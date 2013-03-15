@@ -153,6 +153,8 @@ namespace Polycode {
 				
 		vector<GamepadDeviceEntry*> gamepads;
 		unsigned int nextDeviceID;
+		
+		bool checkSpecialKeyEvents(PolyKEY key);		
 				
 	protected:	
 		PolycodeView *glView;

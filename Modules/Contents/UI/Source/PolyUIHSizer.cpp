@@ -100,10 +100,10 @@ void UIHSizer::handleEvent(Event *event) {
 			break;
 			case InputEvent::EVENT_MOUSEMOVE:			
 			case InputEvent::EVENT_MOUSEOVER:
-				CoreServices::getInstance()->getCore()->setCursor(CURSOR_RESIZE_LEFT_RIGHT);
+				CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_RESIZE_LEFT_RIGHT);
 			break;
 			case InputEvent::EVENT_MOUSEOUT:
-				CoreServices::getInstance()->getCore()->setCursor(CURSOR_ARROW);
+				CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_ARROW);
 			break;							
 		}
 	}

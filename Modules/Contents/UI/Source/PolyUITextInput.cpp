@@ -184,6 +184,14 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	checkBufferLines();
 	
 	insertLine(true);
+	
+	core = CoreServices::getInstance()->getCore();
+	core->addEventListener(this, Core::EVENT_COPY);
+	core->addEventListener(this, Core::EVENT_PASTE);
+	core->addEventListener(this, Core::EVENT_CUT);
+	core->addEventListener(this, Core::EVENT_UNDO);
+	core->addEventListener(this, Core::EVENT_REDO);
+	core->addEventListener(this, Core::EVENT_SELECT_ALL);	
 }
 
 void UITextInput::checkBufferLines() {
@@ -1068,43 +1076,6 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 //	Logger::log("UCHAR: %d\n", charCode);	
 	
 	CoreInput *input = CoreServices::getInstance()->getCore()->getInput();	
-
-	if(key == KEY_a && (input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER))) {
-		selectAll();
-		return;
-	}
-
-	if(key == KEY_c && (input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER))) {
-		Copy();
-		return;
-	}
-
-	if(key == KEY_x && (input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER))) {
-		Cut();
-		return;
-	}
-	
-	if(key == KEY_z  && (input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER))) {
-		Undo();
-		return;
-	}
-
-	if(key == KEY_z  && (input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER)) && (input->getKeyState(KEY_LSHIFT) || input->getKeyState(KEY_RSHIFT))) {
-		Redo();
-		return;
-	}
-
-
-	if(key == KEY_y  && (input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER))) {
-		Redo();
-		return;
-	}
-
-	if(key == KEY_v && (input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER))) {
-		Paste();
-		return;
-	}	
-	
 	
 	if(key == KEY_LEFT) {
 		if(input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER)) {
@@ -1364,6 +1335,7 @@ void UITextInput::Update() {
 }
 
 UITextInput::~UITextInput() {
+	core->removeAllHandlersForListener(this);
 	delete linesContainer;
 	delete inputRect;
 	delete lineNumberBg;
@@ -1411,6 +1383,30 @@ void UITextInput::readjustBuffer() {
 		
 void UITextInput::handleEvent(Event *event) {
 
+	if(event->getDispatcher() == core) {
+		switch(event->getEventCode()) {
+			case Core::EVENT_UNDO:
+				Undo();
+			break;
+			case Core::EVENT_REDO:
+				Redo();
+			break;
+			case Core::EVENT_COPY:
+				Copy();
+			break;
+			case Core::EVENT_CUT:
+				Cut();
+			break;
+			case Core::EVENT_PASTE:
+				Paste();
+			break;
+			case Core::EVENT_SELECT_ALL:
+				selectAll();
+			break;
+			
+		}
+	}
+
 	if(event->getDispatcher() == scrollContainer) {
 		if(event->getEventCode() == Event::CHANGE_EVENT) {
 			applySyntaxFormatting();
@@ -1435,16 +1431,16 @@ void UITextInput::handleEvent(Event *event) {
 				selectWordAtCaret();
 			break;
 			case InputEvent::EVENT_MOUSEMOVE:
-				CoreServices::getInstance()->getCore()->setCursor(CURSOR_TEXT);			
+				CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_TEXT);			
 				if(draggingSelection) {
 					dragSelectionTo(((InputEvent*)event)->mousePosition.x, ((InputEvent*)event)->mousePosition.y - linesContainer->getPosition().y);		
 				}
 			break;
 			case InputEvent::EVENT_MOUSEOVER:
-				CoreServices::getInstance()->getCore()->setCursor(CURSOR_TEXT);
+				CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_TEXT);
 			break;
 			case InputEvent::EVENT_MOUSEOUT:
-				CoreServices::getInstance()->getCore()->setCursor(CURSOR_ARROW);
+				CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_ARROW);
 			break;				
 		}
 	}

@@ -259,7 +259,9 @@ namespace Polycode {
 			vector<String> lines;
 						
 			vector<ScreenLabel*> bufferLines;
-			vector<ScreenLabel*> numberLines;			
+			vector<ScreenLabel*> numberLines;
+			
+			Core *core;
 			
 	};
 }

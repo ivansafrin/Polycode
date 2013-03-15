@@ -862,7 +862,7 @@ void PolycodeScreenEditorMain::syncTransformToSelected() {
 void PolycodeScreenEditorMain::updateCursor() {
 	switch(mode) {
 		case MODE_SELECT:
-			CoreServices::getInstance()->getCore()->setCursor(CURSOR_ARROW);
+			CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_ARROW);
 		break;
 		case MODE_IMAGE:
 		case MODE_TEXT:		
@@ -873,16 +873,16 @@ void PolycodeScreenEditorMain::updateCursor() {
 		case MODE_LINK:
 		case MODE_SPRITE:	
 		case MODE_PARTICLES:				
-			CoreServices::getInstance()->getCore()->setCursor(CURSOR_CROSSHAIR);
+			CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_CROSSHAIR);
 		break;
 		case MODE_ZOOM:
-			CoreServices::getInstance()->getCore()->setCursor(CURSOR_CROSSHAIR);		
+			CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_CROSSHAIR);		
 		break;
 		case MODE_PAN:
-			CoreServices::getInstance()->getCore()->setCursor(CURSOR_OPEN_HAND);		
+			CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_OPEN_HAND);		
 		break;
 		default:
-			CoreServices::getInstance()->getCore()->setCursor(CURSOR_ARROW);		
+			CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_ARROW);		
 		break;
 	}
 }
@@ -1827,7 +1827,7 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 				handleMouseUp(inputEvent->mousePosition);
 			break;
 			case InputEvent::EVENT_MOUSEOUT:
-				CoreServices::getInstance()->getCore()->setCursor(CURSOR_ARROW);
+				CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_ARROW);
 			break;
 			case InputEvent::EVENT_MOUSEMOVE:
 			{
