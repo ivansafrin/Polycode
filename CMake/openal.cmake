@@ -57,7 +57,7 @@ OPTION(WERROR  "Treat compile warnings as errors"      OFF)
 
 OPTION(UTILS  "Build and install utility programs"  ON)
 
-OPTION(EXAMPLES  "Build and install example programs"  ON)
+OPTION(EXAMPLES  "Build and install example programs"  OFF)
 
 OPTION(ALSOFT_CONFIG "Install alsoft.conf configuration file" OFF)
 
