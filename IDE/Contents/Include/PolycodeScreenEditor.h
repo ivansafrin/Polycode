@@ -103,6 +103,7 @@ class PolycodeScreenEditorMain : public UIElement {
 		ScreenEntity *addNewLayer(String layerName);	
 		void updateCursor();		
 		void selectEntity(ScreenEntity *entity);		
+		void resetSelectedEntityTransforms();
 		void setMode(int newMode);	
 		void handleEvent(Event *event);	
 		void resizePreviewScreen();		

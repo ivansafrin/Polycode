@@ -1414,10 +1414,18 @@ bool PolycodeScreenEditorMain::hasSelected(ScreenEntity *entity) {
 	return false;
 }
 
+void PolycodeScreenEditorMain::resetSelectedEntityTransforms() {
+	baseEntityPositions.clear();
+	for(int i=0; i < selectedEntities.size(); i++) {
+		baseEntityPositions.push_back(selectedEntities[i]->getPosition2D());	
+	}
+}
+
 void PolycodeScreenEditorMain::selectEntity(ScreenEntity *entity) {
 
 	if(entity != NULL) {
 		if(hasSelected(entity)) {
+			resetSelectedEntityTransforms();
 			return;
 		}
 	}	
@@ -1449,13 +1457,10 @@ void PolycodeScreenEditorMain::selectEntity(ScreenEntity *entity) {
 	if(!multiSelect) {
 		selectedEntities.clear();
 	}
-	
-	if(selectedEntities.size() == 0) {
-		baseEntityPositions.clear();
-	}
-	
+		
 	selectedEntities.push_back(entity);
-	baseEntityPositions.push_back(entity->getPosition2D());	
+	
+	resetSelectedEntityTransforms();
 		
 	currentLayer->focusChild(entity);
 	
