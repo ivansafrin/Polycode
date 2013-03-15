@@ -378,13 +378,14 @@ bool CocoaCore::checkSpecialKeyEvents(PolyKEY key) {
 		return true;
 	}
 	
-	if(key == KEY_z  && (input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER))) {
-		dispatchEvent(new Event(), Core::EVENT_UNDO);
-		return true;
-	}
 	
 	if(key == KEY_z  && (input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER)) && (input->getKeyState(KEY_LSHIFT) || input->getKeyState(KEY_RSHIFT))) {
 		dispatchEvent(new Event(), Core::EVENT_REDO);
+		return true;
+	}
+		
+	if(key == KEY_z  && (input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER))) {
+		dispatchEvent(new Event(), Core::EVENT_UNDO);
 		return true;
 	}
 	

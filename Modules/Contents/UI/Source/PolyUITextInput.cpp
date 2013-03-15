@@ -622,6 +622,10 @@ String UITextInput::getText() {
 }
 
 void UITextInput::updateCaretPosition() {
+
+	if(lineOffset > lines.size()-1)
+		lineOffset = lines.size()-1;
+
 	caretImagePosition = padding;
 	if(caretPosition == 0) {
 		caretImagePosition = padding;
@@ -1011,6 +1015,8 @@ void UITextInput::setUndoState(UITextInputUndoState state) {
 	if(state.hasSelection) {
 		setSelection(lineOffset, state.selectionLine, caretPosition, state.selectionCaretPosition);
 	}
+	
+	showLine(state.lineOffset, false);
 }
 
 void UITextInput::Undo() {
@@ -1383,7 +1389,7 @@ void UITextInput::readjustBuffer() {
 		
 void UITextInput::handleEvent(Event *event) {
 
-	if(event->getDispatcher() == core) {
+	if(event->getDispatcher() == core && hasFocus) {
 		switch(event->getEventCode()) {
 			case Core::EVENT_UNDO:
 				Undo();
