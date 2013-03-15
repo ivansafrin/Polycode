@@ -1759,7 +1759,10 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 		if(event->getDispatcher() == moveUpButton) {
 			if(selectedEntity) {
 				if(selectedEntity->getParentEntity()) {
-					((ScreenEntity*)selectedEntity->getParentEntity())->moveChildUp(selectedEntity);
+					for(int i=0; i < selectedEntities.size(); i++) {
+						((ScreenEntity*)selectedEntities[i]->getParentEntity())->moveChildUp(selectedEntities[i]);
+					}
+
 				}
 			}	
 		}
@@ -1767,7 +1770,10 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 		if(event->getDispatcher() == moveDownButton) {
 			if(selectedEntity) {
 				if(selectedEntity->getParentEntity()) {
-					((ScreenEntity*)selectedEntity->getParentEntity())->moveChildDown(selectedEntity);
+					for(int i=0; i < selectedEntities.size(); i++) {
+						((ScreenEntity*)selectedEntities[i]->getParentEntity())->moveChildDown(selectedEntities[i]);
+					}
+
 				}
 			}	
 		}
@@ -1775,7 +1781,9 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 		if(event->getDispatcher() == moveTopButton) {
 			if(selectedEntity) {
 				if(selectedEntity->getParentEntity()) {
-					((ScreenEntity*)selectedEntity->getParentEntity())->moveChildTop(selectedEntity);
+					for(int i=0; i < selectedEntities.size(); i++) {
+						((ScreenEntity*)selectedEntities[i]->getParentEntity())->moveChildTop(selectedEntities[i]);
+					}
 				}
 			}	
 		}
@@ -1783,7 +1791,9 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 		if(event->getDispatcher() == moveBottomButton) {
 			if(selectedEntity) {
 				if(selectedEntity->getParentEntity()) {
-					((ScreenEntity*)selectedEntity->getParentEntity())->moveChildBottom(selectedEntity);
+					for(int i=0; i < selectedEntities.size(); i++) {
+						((ScreenEntity*)selectedEntities[i]->getParentEntity())->moveChildBottom(selectedEntities[i]);
+					}
 				}
 			}	
 		}
