@@ -7,5 +7,6 @@ int main(int argc, char *argv[]) {
 	PolycodeLinuxPlayer *player = new PolycodeLinuxPlayer(view, "main.polyapp", false);
 	player->runPlayer();
 	while(player->Update()) {}
+	delete player;
 	return 0;
 }

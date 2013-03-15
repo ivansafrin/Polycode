@@ -143,6 +143,7 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 
 	UIMenuBarEntry *helpEntry = menuBar->addMenuBarEntry("Help");
 	helpEntry->addItem("API Reference", "show_api");
+	helpEntry->addItem("About Polycode", "show_about");
 
 
 	menuBar->addEventListener(this, UIEvent::OK_EVENT);
@@ -421,6 +422,8 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 			exportProject();
 		} else if(action == "show_api") {
 			openDocs();
+		} else if(action == "show_about") {
+			showAbout();
 		}
 	}
 

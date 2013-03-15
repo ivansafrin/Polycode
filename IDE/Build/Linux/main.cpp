@@ -3,7 +3,7 @@
 #include "PolycodeIDEApp.h"
 
 int main(int argc, char *argv[]) {
-	PolycodeView *view = new PolycodeView("Hello Polycode!");
+	PolycodeView *view = new PolycodeView("Polycode", true);
 	PolycodeIDEApp *app = new PolycodeIDEApp(view);
 	while(app->Update()) {}
 	app->saveConfigFile();

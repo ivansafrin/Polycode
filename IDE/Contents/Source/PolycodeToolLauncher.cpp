@@ -42,7 +42,9 @@ void PolycodeRunner::runThread() {
 	String args = polyappPath;
 	String inFolder = polycodeBasePath+"/Standalone/Player";
 #else
-	String command = "cd "+polycodeBasePath+"/Standalone/Player && ./PolycodePlayer "+polyappPath;
+	String command = "./PolycodePlayer";	
+	String inFolder = polycodeBasePath+"/Standalone/Player";
+	String args = polyappPath;
 #endif
 
 	String ret = CoreServices::getInstance()->getCore()->executeExternalCommand(command, args, inFolder);

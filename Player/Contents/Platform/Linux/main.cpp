@@ -11,5 +11,6 @@ int main(int argc, char *argv[]) {
 	PolycodeLinuxPlayer *player = new PolycodeLinuxPlayer(view, argv[1], false, true);
 	player->runPlayer();
 	while(player->Update()) {}
+	delete player;
 	return 0;
 }
