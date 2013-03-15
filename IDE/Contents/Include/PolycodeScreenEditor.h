@@ -118,6 +118,8 @@ class PolycodeScreenEditorMain : public UIElement {
 		void createParticleRef(ScreenParticleEmitter *target);
 		void createSoundRef(ScreenSound *target);
 		void createEntityRef(ScreenEntity *entity);
+		
+		void getCenterAndSizeForSelected(Vector2 *center, Number *width, Number *height);
 	
 		void handleMouseDown(Vector2 position);
 		void handleMouseMove(Vector2 position);
@@ -216,6 +218,10 @@ class PolycodeScreenEditorMain : public UIElement {
 		
 		Vector2 mouseBase;
 		std::vector<Vector2> baseEntityPositions;
+		std::vector<Vector2> baseEntityScales;
+		std::vector<Number> baseRotateAngles;
+		Vector2 groupCenterPoint;
+		Number groupRoll;
 		Number baseAngle;
 	
 		ScreenShape *placingShape;	
