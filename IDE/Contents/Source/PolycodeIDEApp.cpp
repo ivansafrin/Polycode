@@ -318,7 +318,7 @@ void PolycodeIDEApp::openProject(String projectFile) {
 }
 
 void PolycodeIDEApp::openDocs() {
-
+	
 	String polycodeBasePath = CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory();
 #if defined(__APPLE__) && defined(__MACH__)
 	String docsURL = "file://localhost"+polycodeBasePath+"/Standalone/Docs/html/index.html";
@@ -643,9 +643,11 @@ void PolycodeIDEApp::loadConfigFile() {
 			ObjectEntry *entry = (*(*projects)[i])["path"];
 			if(entry) {
 				PolycodeProject* project = projectManager->openProject(entry->stringVal);
-				OSFileEntry projectEntry =  OSFileEntry(project->getProjectFile(), OSFileEntry::TYPE_FILE);
-				projectManager->setActiveProject(project);
-				openFile(projectEntry);
+				if(project) {
+					OSFileEntry projectEntry =  OSFileEntry(project->getProjectFile(), OSFileEntry::TYPE_FILE);
+					projectManager->setActiveProject(project);
+					openFile(projectEntry);
+				}
 			}
 		}
 		}

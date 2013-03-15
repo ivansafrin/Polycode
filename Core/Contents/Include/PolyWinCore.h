@@ -231,20 +231,16 @@ public:
 		std::vector<String> openFilePicker(std::vector<CoreFileExtension> extensions, bool allowMultiple);
 		void createFolder(const String& folderPath);
 		void openURL(String url);
+		String openFolderPicker();
+		void copyDiskItem(const String& itemPath, const String& destItemPath);
+		void moveDiskItem(const String& itemPath, const String& destItemPath);
+		void removeDiskItem(const String& itemPath);
 
-		// NEED TO IMPLEMENT:
+		void setCursor(int cursorType);
 
+		void copyStringToClipboard(const String& str);
+		String getClipboardString();
 
-		void setCursor(int cursorType){ }
-		void copyStringToClipboard(const String& str) { }
-		String getClipboardString() { return ""; }
-
-
-		void copyDiskItem(const String& itemPath, const String& destItemPath) {}
-		void moveDiskItem(const String& itemPath, const String& destItemPath) {}
-		String openFolderPicker()  { return "";}
-		void removeDiskItem(const String& itemPath)  {}
-		
 		void resizeTo(int xRes, int yRes) { }
 		
 		std::vector<GamepadDeviceEntry*> gamepads;

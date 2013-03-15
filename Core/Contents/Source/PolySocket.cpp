@@ -131,7 +131,7 @@ int Socket::receiveData() {
 	
 	if ( received_bytes <= 0 ) {
 		delete event;
-		return received_bytes;
+		return received_bytes; 
 	}
 	
 	event->dataSize = received_bytes;
