@@ -1,8 +1,39 @@
 
 #include "PolyUIMenuBar.h"
 #include "PolyLabel.h"
+#include <PolyCoreServices.h>
+#include <PolyCore.h>
 
 using namespace Polycode;
+
+UIMenuBarEntryItem::UIMenuBarEntryItem(String name, String code, PolyKEY shortCut1, PolyKEY shortCut2) {
+	this->name = name;
+	this->code = code;
+	this->shortCut1 = shortCut1;
+	this->shortCut2 = shortCut2;
+}
+
+bool UIMenuBarEntryItem::checkShortCut(PolyKEY shortCut) {
+	if(shortCut1 == KEY_UNKNOWN && shortCut2 == KEY_UNKNOWN)
+		return false;
+
+	if(CoreServices::getInstance()->getCore()->getInput()->getKeyState(KEY_RCTRL) || CoreServices::getInstance()->getCore()->getInput()->getKeyState(KEY_LCTRL)) {
+		if(shortCut1 != KEY_UNKNOWN && shortCut2 != KEY_UNKNOWN) {
+			if(shortCut == shortCut1 && CoreServices::getInstance()->getCore()->getInput()->getKeyState(shortCut2)) {
+				return true;
+			}
+			if(shortCut == shortCut2 && CoreServices::getInstance()->getCore()->getInput()->getKeyState(shortCut1)) {
+				return true;
+			}
+		} else {
+			if(shortCut == shortCut1) {
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
 
 UIMenuBarEntry::UIMenuBarEntry(String name): UIElement() {
 	
@@ -25,8 +56,8 @@ void UIMenuBarEntry::Deselect() {
 	bg->color.setColorHex(0xce5a1600);
 }
 
-void UIMenuBarEntry::addItem(String name, String code) {
-	items.push_back(UIMenuBarEntryItem(name,code));
+void UIMenuBarEntry::addItem(String name, String code, PolyKEY shortCut1, PolyKEY shortCut2) {
+	items.push_back(UIMenuBarEntryItem(name,code, shortCut1, shortCut2));
 }
 
 UIMenuBarEntry::~UIMenuBarEntry() {
@@ -48,6 +79,8 @@ UIMenuBar::UIMenuBar(int width, UIGlobalMenu *globalMenu) : UIElement() {
 	dropMenu = NULL;
 
 	holdingMouse = false;
+
+	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 }
 
 UIMenuBarEntry *UIMenuBar::addMenuBarEntry(String name) {
@@ -87,6 +120,23 @@ String UIMenuBar::getSelectedItem() {
 }
 
 void UIMenuBar::handleEvent(Event *event) {
+
+	if(event->getDispatcher() == CoreServices::getInstance()->getCore()->getInput()) {
+		InputEvent *inputEvent = (InputEvent*) event;
+		if(event->getEventCode() == InputEvent::EVENT_KEYDOWN) {
+			for(int i=0; i < entries.size(); i++) {
+				UIMenuBarEntry *entry = entries[i];
+				for(int j=0; j < entry->items.size(); j++) {
+					if(entry->items[j].checkShortCut(inputEvent->key)) {
+						selectedItem = entry->items[j].code;
+						dispatchEvent(new UIEvent(), UIEvent::OK_EVENT);
+						break;
+					}
+				}
+			}
+		}
+	}
+
 	if(event->getDispatcher() == dropMenu) {
 		if(event->getEventCode() == UIEvent::OK_EVENT) {
 			selectedItem = dropMenu->getSelectedItem()->_id;

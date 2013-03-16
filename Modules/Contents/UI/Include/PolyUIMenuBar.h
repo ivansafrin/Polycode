@@ -35,16 +35,22 @@ namespace Polycode {
 
 	class UIMenuBarEntryItem {
 		public:
-			UIMenuBarEntryItem(String name, String code) { this->name = name; this->code = code; }
+			UIMenuBarEntryItem(String name, String code, PolyKEY shortCut1, PolyKEY shortCut2);
 			String name;	
 			String code;
+
+			bool checkShortCut(PolyKEY shortCut);
+
+			PolyKEY shortCut1;
+			PolyKEY shortCut2;
+
 	};
 
 	class _PolyExport UIMenuBarEntry : public UIElement {
 		public:
 			UIMenuBarEntry(String name);
 			~UIMenuBarEntry();		
-			void addItem(String name, String code);
+			void addItem(String name, String code, PolyKEY shortCut1 = KEY_UNKNOWN, PolyKEY shortCut2 = KEY_UNKNOWN);
 
 			void Select();
 			void Deselect();

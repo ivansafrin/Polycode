@@ -162,5 +162,14 @@ void PolycodeProjectManager::exportProject(PolycodeProject *project, String expo
 		CoreServices::getInstance()->getCore()->copyDiskItem(polyappPath, appPath+"/Contents/Resources/main.polyapp");
 		
 	}
+
+	if(linux) {
+		PolycodeConsole::print("Exporting Linux version to "+exportPath+"/Linux \n");
+		CoreServices::getInstance()->getCore()->copyDiskItem(publishPath+"/Linux", exportPath);
+		CoreServices::getInstance()->getCore()->copyDiskItem(publishPath+"/Linux", exportPath);
+		CoreServices::getInstance()->getCore()->moveDiskItem(exportPath+"/Linux/StandalonePlayer", exportPath+"/Linux/"+project->getProjectName());
+		CoreServices::getInstance()->getCore()->removeDiskItem(exportPath+"/Linux/main.polyapp");
+		CoreServices::getInstance()->getCore()->copyDiskItem(polyappPath, exportPath+"/Linux/main.polyapp");
+	}
 }
 
