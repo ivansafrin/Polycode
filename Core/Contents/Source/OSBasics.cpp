@@ -23,6 +23,7 @@
 #include "OSBasics.h"
 #ifdef _WINDOWS
 	#include <windows.h>
+	#include <Shellapi.h>
 #else
 	#include <dirent.h>
 	#include <sys/types.h>
@@ -82,7 +83,12 @@ OSFileEntry::OSFileEntry(const String& path, const String& name, int type) {
 
 void OSFileEntry::init(const Polycode::String& path, const Polycode::String& name, int type) {
 	this->basePath = path;
-	this->fullPath = path + "/" + name;
+
+	if(path == "/") {
+		this->fullPath = "/" + name;
+	} else {
+		this->fullPath = path + "/" + name;
+	}
 	this->name = name;
 	this->type = type;
 
@@ -255,6 +261,7 @@ vector<OSFileEntry> OSBasics::parsePhysFSFolder(const String& pathString, bool s
 vector<OSFileEntry> OSBasics::parseFolder(const String& pathString, bool showHidden) {
 	vector<OSFileEntry> returnVector;
 	
+	if(pathString != "/") {
 	if(pathString.size() < 128) {
 		if(PHYSFS_exists(pathString.c_str())) {
 			if(PHYSFS_isDirectory(pathString.c_str())) {
@@ -262,7 +269,7 @@ vector<OSFileEntry> OSBasics::parseFolder(const String& pathString, bool showHid
 			}
 		}
 	}
-	
+	}
 	
 #ifdef _WINDOWS
 
@@ -274,7 +281,17 @@ vector<OSFileEntry> OSBasics::parseFolder(const String& pathString, bool showHid
 	WCHAR tmp[4096];
 	memset(tmp, 0, sizeof(WCHAR)*4096);
 	ctow(tmp, pathString.c_str());
+
+
+	DWORD dwAttrib = GetFileAttributes(tmp);
+  if(! (dwAttrib != INVALID_FILE_ATTRIBUTES && 
+         (dwAttrib & FILE_ATTRIBUTE_DIRECTORY))) {
+		return returnVector;
+  }
+
+
 	SetCurrentDirectory(tmp);
+
 
 	HANDLE hFind = FindFirstFile((LPCWSTR)"*", &findFileData);
 	if(hFind  == INVALID_HANDLE_VALUE) {
@@ -323,6 +340,8 @@ vector<OSFileEntry> OSBasics::parseFolder(const String& pathString, bool showHid
 
 void OSBasics::removeItem(const String& pathString) {
 #ifdef _WINDOWS
+	 String _tmp = pathString.replace("/", "\\");
+	 DeleteFile(_tmp.getWDataWithEncoding(String::ENCODING_UTF8));
 #else
 	remove(pathString.c_str());
 #endif	
@@ -330,6 +349,8 @@ void OSBasics::removeItem(const String& pathString) {
 
 void OSBasics::createFolder(const String& pathString) {
 #ifdef _WINDOWS
+	String path = pathString;
+	CreateDirectory(path.getWDataWithEncoding(String::ENCODING_UTF8), NULL);		
 #else
 	mkdir(pathString.c_str(),  S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 #endif
@@ -338,6 +359,10 @@ void OSBasics::createFolder(const String& pathString) {
 bool OSBasics::isFolder(const String& pathString) {
 	bool retVal = false;
 #ifdef _WINDOWS
+	String path = pathString;
+	DWORD dwAttrib = GetFileAttributes(path.getWDataWithEncoding(String::ENCODING_UTF8));
+  return (dwAttrib != INVALID_FILE_ATTRIBUTES && 
+         (dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
 #else
 	DIR           *d;
 	

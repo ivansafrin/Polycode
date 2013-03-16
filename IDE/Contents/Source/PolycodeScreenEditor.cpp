@@ -742,7 +742,7 @@ void PolycodeScreenEditorMain::setGrid(int gridSize) {
 
 	this->gridSize = gridSize;
 
-	Polygon *gridPoly = new Polygon();
+	Polycode::Polygon *gridPoly = new Polycode::Polygon();
 	int gridLen = 300;
 	
 	for(int x=0; x < gridLen+1; x++) {
@@ -788,12 +788,36 @@ void PolycodeScreenEditorMain::syncTransformToSelected() {
 		screenTransformShape->setShapeSize(selectedEntity->getWidth(),selectedEntity->getHeight());	
 		Matrix4 final = selectedEntity->getConcatenatedMatrixRelativeTo(baseEntity);
 		screenTransform->setPosition(final.getPosition());
-		screenTransformShape->matrixDirty = false;
+		screenTransformShape->dirtyMatrix(false);
 		screenTransformShape->setTransformByMatrixPure(final);
 		
 		screenTransform->rotation.roll = selectedEntity->getCombinedRoll();
 	} else {
+			
+		Vector2 center;
+		Number width;
+		Number height;
+		getCenterAndSizeForSelected(&center, &width, &height);
+		
+		screenTransform->setPosition(center.x, center.y);
+		screenTransformShape->setShapeSize(width, height);
+		screenTransformShape->setPosition(center);
+		
+		screenTransform->rotation.roll = groupRoll * TODEGREES;
+
+//		screenTransformShape->setShapeSize(selectedEntity->getWidth(),selectedEntity->getHeight());	
+//		Matrix4 final = selectedEntity->getConcatenatedMatrixRelativeTo(baseEntity);
+//		screenTransform->setPosition(final.getPosition());			
+//		screenTransformShape->matrixDirty = false;
+//		screenTransformShape->setTransformByMatrixPure(final);		
+		
+	}
 	
+	screenTransform->rebuildTransformMatrix();
+	
+}
+
+void PolycodeScreenEditorMain::getCenterAndSizeForSelected(Vector2 *center, Number *width, Number *height) {
 		// Calculate corners transformed into base entity space and get center and 
 		// transformed bounding vertices
 		
@@ -838,31 +862,20 @@ void PolycodeScreenEditorMain::syncTransformToSelected() {
 			}						
 		}						
 		
-		Number width = fabs(max.x - min.x);
-		Number height = fabs(max.y - min.y);
-				
-		Vector3 center = Vector3(min.x + (width/2.0), min.y + (height/2.0), 0.0);
-						
-		screenTransform->setPosition(center);
-		screenTransformShape->setShapeSize(width, height);
-		screenTransformShape->setPosition(center);
-					
-//		screenTransformShape->setShapeSize(selectedEntity->getWidth(),selectedEntity->getHeight());	
-//		Matrix4 final = selectedEntity->getConcatenatedMatrixRelativeTo(baseEntity);
-//		screenTransform->setPosition(final.getPosition());			
-//		screenTransformShape->matrixDirty = false;
-//		screenTransformShape->setTransformByMatrixPure(final);		
+		*width = fabs(max.x - min.x);
+		*height = fabs(max.y - min.y);
+
+		center->x = min.x + (*width/2.0);
+		center->y = min.y + (*height/2.0);
+
 		
-	}
-	
-	screenTransform->rebuildTransformMatrix();
-	
 }
+
 
 void PolycodeScreenEditorMain::updateCursor() {
 	switch(mode) {
 		case MODE_SELECT:
-			CoreServices::getInstance()->getCore()->setCursor(CURSOR_ARROW);
+			CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_ARROW);
 		break;
 		case MODE_IMAGE:
 		case MODE_TEXT:		
@@ -873,16 +886,16 @@ void PolycodeScreenEditorMain::updateCursor() {
 		case MODE_LINK:
 		case MODE_SPRITE:	
 		case MODE_PARTICLES:				
-			CoreServices::getInstance()->getCore()->setCursor(CURSOR_CROSSHAIR);
+			CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_CROSSHAIR);
 		break;
 		case MODE_ZOOM:
-			CoreServices::getInstance()->getCore()->setCursor(CURSOR_CROSSHAIR);		
+			CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_CROSSHAIR);		
 		break;
 		case MODE_PAN:
-			CoreServices::getInstance()->getCore()->setCursor(CURSOR_OPEN_HAND);		
+			CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_OPEN_HAND);		
 		break;
 		default:
-			CoreServices::getInstance()->getCore()->setCursor(CURSOR_ARROW);		
+			CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_ARROW);		
 		break;
 	}
 }
@@ -961,35 +974,69 @@ void PolycodeScreenEditorMain::handleMouseMove(Vector2 position) {
 				Vector2 diff = CoreServices::getInstance()->getCore()->getInput()->getMousePosition() - screenTransform->getScreenPosition();
 				diff.Normalize();
 				Number newAngle = atan2(diff.x, diff.y);				
-				selectedEntity->setRotation(baseRotateAngle - (TODEGREES * (newAngle-baseAngle)));
+			
+				if(selectedEntities.size() == 1) {
+					selectedEntities[0]->setRotation(baseRotateAngles[0] - (TODEGREES * (newAngle-baseAngle)));
+				} else {
+				
+					groupRoll = -(newAngle-baseAngle);
+					
+					for(int i=0; i < selectedEntities.size(); i++) {
+						Vector3 v3Center = Vector3(groupCenterPoint.x,groupCenterPoint.y,0.0);
+						
+						Vector3 v3CenterRelative = selectedEntities[i]->getParentEntity()->getConcatenatedMatrixRelativeTo(baseEntity).inverse() * v3Center;	
+						
+						selectedEntities[i]->setRotation(baseRotateAngles[i] - (TODEGREES * (newAngle-baseAngle)));						
+						
+						Number s = sin(newAngle-baseAngle);
+						Number c = cos(newAngle-baseAngle);
+
+						Vector2 p = baseEntityPositions[i];
+						p.x -= v3CenterRelative.x;
+						p.y -= v3CenterRelative.y;
+
+						Number xnew = p.x * c + p.y * s;
+						Number ynew = -p.x * s + p.y * c;
+
+						p.x = xnew + v3CenterRelative.x;
+						p.y = ynew + v3CenterRelative.y;																
+						
+						selectedEntities[i]->setPosition(p.x, p.y);
+					}
+				
+				}
 				syncTransformToSelected();			
 			} else if(scalingY) {				
 				
 				
 				Vector2 trans = CoreServices::getInstance()->getCore()->getInput()->getMousePosition() - mouseBase;
-			
-				Vector3 trans3 = Vector3(trans.x, trans.y, 0.0);
+				for(int i=0; i < selectedEntities.size(); i++) {			
+							
+					Vector3 trans3 = Vector3(trans.x, trans.y, 0.0);
 				
-				Quaternion q;								
-				q.fromAxes(0.0, 0.0, -selectedEntity->getCombinedRoll());
-				trans3 = q.applyTo(trans3);
+					Quaternion q;								
+					q.fromAxes(0.0, 0.0, -selectedEntities[i]->getCombinedRoll());
+					trans3 = q.applyTo(trans3);
 								
-				Number scaleMod = 0.04;								
-				selectedEntity->setScaleY(baseScale.y - (trans3.y * scaleMod));				
+					Number scaleMod = 0.04;								
+					selectedEntities[i]->setScaleY(baseEntityScales[i].y - (trans3.y * scaleMod));
+				}
 				syncTransformToSelected();	
 				
 			} else if(scalingX) {				
 				
 				Vector2 trans = CoreServices::getInstance()->getCore()->getInput()->getMousePosition() - mouseBase;
 			
-				Vector3 trans3 = Vector3(trans.x, trans.y, 0.0);
-				Quaternion q;
+				for(int i=0; i < selectedEntities.size(); i++) {			
+					Vector3 trans3 = Vector3(trans.x, trans.y, 0.0);
+					Quaternion q;
 				
-				q.fromAxes(0.0, 0.0, -selectedEntity->getCombinedRoll());
-				trans3 = q.applyTo(trans3);
+					q.fromAxes(0.0, 0.0, -selectedEntities[i]->getCombinedRoll());
+					trans3 = q.applyTo(trans3);
 								
-				Number scaleMod = 0.04;								
-				selectedEntity->setScaleX(baseScale.x + (trans3.x * scaleMod));				
+					Number scaleMod = 0.04;								
+					selectedEntities[i]->setScaleX(baseEntityScales[i].x + (trans3.x * scaleMod));				
+				}
 				syncTransformToSelected();	
 				
 			}  else if(moving) {
@@ -1414,10 +1461,29 @@ bool PolycodeScreenEditorMain::hasSelected(ScreenEntity *entity) {
 	return false;
 }
 
+void PolycodeScreenEditorMain::resetSelectedEntityTransforms() {
+	baseEntityPositions.clear();
+	baseEntityScales.clear();
+	baseRotateAngles.clear();
+	
+	for(int i=0; i < selectedEntities.size(); i++) {
+		baseEntityPositions.push_back(selectedEntities[i]->getPosition2D());	
+		baseEntityScales.push_back(selectedEntities[i]->getScale2D());
+		baseRotateAngles.push_back(selectedEntities[i]->getRotation());
+	}
+	
+	Number width;
+	Number height;
+	getCenterAndSizeForSelected(&groupCenterPoint, &width, &height);					
+	
+	groupRoll = 0;
+}
+
 void PolycodeScreenEditorMain::selectEntity(ScreenEntity *entity) {
 
 	if(entity != NULL) {
 		if(hasSelected(entity)) {
+			resetSelectedEntityTransforms();
 			return;
 		}
 	}	
@@ -1449,13 +1515,10 @@ void PolycodeScreenEditorMain::selectEntity(ScreenEntity *entity) {
 	if(!multiSelect) {
 		selectedEntities.clear();
 	}
-	
-	if(selectedEntities.size() == 0) {
-		baseEntityPositions.clear();
-	}
-	
+		
 	selectedEntities.push_back(entity);
-	baseEntityPositions.push_back(entity->getPosition2D());	
+	
+	resetSelectedEntityTransforms();
 		
 	currentLayer->focusChild(entity);
 	
@@ -1615,6 +1678,9 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 						if(selectedEntity->hasFocus) {
 							selectedEntity->ownsChildren = true;
 							selectedEntity->getParentEntity()->removeChild(selectedEntity);
+							if(selectedEntity == currentLayer) {
+								currentLayer = NULL;
+							}							
 							delete selectedEntity;
 							selectEntity(NULL);							
 							
@@ -1662,7 +1728,7 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 	if(event->getDispatcher() == transformScalerY) {
 		if(selectedEntity) {
 			scalingY = true;
-			baseScale = selectedEntity->getScale();
+			resetSelectedEntityTransforms();
 			mouseBase = CoreServices::getInstance()->getCore()->getInput()->getMousePosition();			
 		}
 	}
@@ -1670,7 +1736,7 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 	if(event->getDispatcher() == transformScalerX) {
 		if(selectedEntity) {
 			scalingX = true;
-			baseScale = selectedEntity->getScale();
+			resetSelectedEntityTransforms();
 			mouseBase = CoreServices::getInstance()->getCore()->getInput()->getMousePosition();			
 		}
 	}
@@ -1678,11 +1744,12 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 	if(event->getDispatcher() == transformRotator) {
 		if(selectedEntity) {
 			rotating = true;
-			baseRotateAngle = selectedEntity->getRotation();
+			resetSelectedEntityTransforms();
 			mouseBase = CoreServices::getInstance()->getCore()->getInput()->getMousePosition();
 			
 			Vector2 diff = mouseBase - screenTransform->getScreenPosition();
 			baseAngle = atan2(diff.x, diff.y);
+			groupRoll = -baseAngle;
 		}
 	}
 	
@@ -1692,7 +1759,10 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 		if(event->getDispatcher() == moveUpButton) {
 			if(selectedEntity) {
 				if(selectedEntity->getParentEntity()) {
-					((ScreenEntity*)selectedEntity->getParentEntity())->moveChildUp(selectedEntity);
+					for(int i=0; i < selectedEntities.size(); i++) {
+						((ScreenEntity*)selectedEntities[i]->getParentEntity())->moveChildUp(selectedEntities[i]);
+					}
+
 				}
 			}	
 		}
@@ -1700,7 +1770,10 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 		if(event->getDispatcher() == moveDownButton) {
 			if(selectedEntity) {
 				if(selectedEntity->getParentEntity()) {
-					((ScreenEntity*)selectedEntity->getParentEntity())->moveChildDown(selectedEntity);
+					for(int i=0; i < selectedEntities.size(); i++) {
+						((ScreenEntity*)selectedEntities[i]->getParentEntity())->moveChildDown(selectedEntities[i]);
+					}
+
 				}
 			}	
 		}
@@ -1708,7 +1781,9 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 		if(event->getDispatcher() == moveTopButton) {
 			if(selectedEntity) {
 				if(selectedEntity->getParentEntity()) {
-					((ScreenEntity*)selectedEntity->getParentEntity())->moveChildTop(selectedEntity);
+					for(int i=0; i < selectedEntities.size(); i++) {
+						((ScreenEntity*)selectedEntities[i]->getParentEntity())->moveChildTop(selectedEntities[i]);
+					}
 				}
 			}	
 		}
@@ -1716,7 +1791,9 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 		if(event->getDispatcher() == moveBottomButton) {
 			if(selectedEntity) {
 				if(selectedEntity->getParentEntity()) {
-					((ScreenEntity*)selectedEntity->getParentEntity())->moveChildBottom(selectedEntity);
+					for(int i=0; i < selectedEntities.size(); i++) {
+						((ScreenEntity*)selectedEntities[i]->getParentEntity())->moveChildBottom(selectedEntities[i]);
+					}
 				}
 			}	
 		}
@@ -1824,7 +1901,7 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 				handleMouseUp(inputEvent->mousePosition);
 			break;
 			case InputEvent::EVENT_MOUSEOUT:
-				CoreServices::getInstance()->getCore()->setCursor(CURSOR_ARROW);
+				CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_ARROW);
 			break;
 			case InputEvent::EVENT_MOUSEMOVE:
 			{

@@ -26,7 +26,6 @@ THE SOFTWARE.
 PolycodeRemoteDebuggerClient::PolycodeRemoteDebuggerClient() : EventDispatcher() {
 	client = new Client(6445, 1);
 	client->Connect("127.0.0.1", 4630);	
-	
 	client->addEventListener(this, ClientEvent::EVENT_SERVER_DISCONNECTED);
 }
 
@@ -482,6 +481,7 @@ PolycodeDebugEvent::~PolycodeDebugEvent() {
 
 PolycodePlayer::PolycodePlayer(String fileName, bool knownArchive, bool useDebugger) : EventDispatcher()  {
 	L = NULL;
+	remoteDebuggerClient = NULL;
 
 	crashed = false;
 	doCodeInject = false;
@@ -670,7 +670,7 @@ void PolycodePlayer::loadFile(const char *fileName) {
 	
 	Logger::log("Core created...\n");
 
-	CoreServices::getInstance()->getResourceManager()->addArchive("UIThemes.pak");
+	CoreServices::getInstance()->getResourceManager()->addArchive("UIThemes.zip");
 	CoreServices::getInstance()->getConfig()->loadConfig("Polycode", "UIThemes/default/theme.xml");
 	
 	CoreServices::getInstance()->getResourceManager()->addArchive("api.pak");
@@ -721,9 +721,7 @@ void PolycodePlayer::loadFile(const char *fileName) {
 		fullPath += mainFile;	
 		Logger::log(fullPath.c_str());
 	}
-	
-	remoteDebuggerClient = NULL;
-	
+
 	if(useDebugger) {
 	
 			
@@ -870,7 +868,6 @@ void PolycodePlayer::handleEvent(Event *event) {
 
 bool PolycodePlayer::Update() {
 	if(L) {
-		lua_settop(L, 0);
 		if(doCodeInject) {
 			printf("INJECTING CODE:[%s]\n", injectCodeString.c_str());
 			doCodeInject = false;			

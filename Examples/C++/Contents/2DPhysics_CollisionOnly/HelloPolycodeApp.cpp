@@ -2,12 +2,8 @@
 
 HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 
-#ifdef __APPLE__
-	core = new CocoaCore(view, 640,480,false,false,0,0,90);	  
-#else
-	core = new SDLCore(view, 640,480,false,false,0,0,90);	  
-#endif
-	
+	core = new POLYCODE_CORE(view, 640,480,false,false,0,0,90);
+
 	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);	
 

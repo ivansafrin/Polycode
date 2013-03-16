@@ -128,6 +128,9 @@ vector<String> String::split(const String &delim) const {
 	vector<String> tokens;
 	bool trimEmpty = false;
 	
+	if(contents == "")
+		return tokens;
+
 		std::string::size_type pos, lastPos = 0;
 		while(true)
 		{

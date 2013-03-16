@@ -64,7 +64,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	PolycodeWindowsPlayer *player = new PolycodeWindowsPlayer(view, "main.polyapp", false);
 #else
 	PolycodePlayerView *view = new PolycodePlayerView(false, hInstance, nCmdShow, L"Polycode Player");
-	PolycodeWindowsPlayer *player = new PolycodeWindowsPlayer(view, fileName.c_str(), false);
+	PolycodeWindowsPlayer *player = new PolycodeWindowsPlayer(view, fileName.c_str(), false, true);
 #endif
 	player->addEventListener(view, PolycodeDebugEvent::EVENT_ERROR);
 	player->addEventListener(view, PolycodeDebugEvent::EVENT_PRINT);

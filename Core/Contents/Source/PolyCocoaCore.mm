@@ -215,8 +215,14 @@ void CocoaCore::launchApplicationWithFile(String application, String file) {
 //Handle error
 }
 
-String CocoaCore::executeExternalCommand(String command) {
-	FILE *fp = popen(command.c_str(), "r");
+String CocoaCore::executeExternalCommand(String command,  String args, String inDirectory) {
+
+	String finalCommand = command+" "+args;
+	if(inDirectory != "") {
+		finalCommand = "cd "+inDirectory+" && "+finalCommand;
+	}
+	
+	FILE *fp = popen(finalCommand.c_str(), "r");
 	if(!fp) {
 		return "Unable to execute command";
 	}	
@@ -354,6 +360,43 @@ void CocoaCore::warpCursor(int x, int y) {
 	lastMouseY = y;
 }
 
+
+bool CocoaCore::checkSpecialKeyEvents(PolyKEY key) {
+	
+	if(key == KEY_a && (input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER))) {
+		dispatchEvent(new Event(), Core::EVENT_SELECT_ALL);
+		return true;
+	}
+	
+	if(key == KEY_c && (input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER))) {
+		dispatchEvent(new Event(), Core::EVENT_COPY);
+		return true;
+	}
+	
+	if(key == KEY_x && (input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER))) {
+		dispatchEvent(new Event(), Core::EVENT_CUT);
+		return true;
+	}
+	
+	
+	if(key == KEY_z  && (input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER)) && (input->getKeyState(KEY_LSHIFT) || input->getKeyState(KEY_RSHIFT))) {
+		dispatchEvent(new Event(), Core::EVENT_REDO);
+		return true;
+	}
+		
+	if(key == KEY_z  && (input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER))) {
+		dispatchEvent(new Event(), Core::EVENT_UNDO);
+		return true;
+	}
+	
+	if(key == KEY_v && (input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER))) {
+		dispatchEvent(new Event(), Core::EVENT_PASTE);
+		return true;
+	}
+	return false;
+}
+
+
 void CocoaCore::checkEvents() {
 	lockMutex(eventMutex);
 	CocoaEvent event;
@@ -381,7 +424,8 @@ void CocoaCore::checkEvents() {
 						input->setMouseButtonState(event.mouseButton, false, getTicks());
 						break;
 					case InputEvent::EVENT_KEYDOWN:
-						input->setKeyState(event.keyCode, event.unicodeChar, true, getTicks());
+						if(!checkSpecialKeyEvents(event.keyCode))
+							input->setKeyState(event.keyCode, event.unicodeChar, true, getTicks());
 						break;
 					case InputEvent::EVENT_KEYUP:
 						input->setKeyState(event.keyCode, event.unicodeChar, false, getTicks());

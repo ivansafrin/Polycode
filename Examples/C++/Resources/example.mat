@@ -11,14 +11,14 @@
 		<material name="CubeMaterial">
 			<shader name="DefaultShaderShadows">
 				<textures>
-					<texture name="diffuse">pink_texture.png</texture>
+					<texture name="diffuse">Resources/pink_texture.png</texture>
 				</textures>
 			</shader>
 		</material>			
 		<material name="GroundMaterial">
 			<shader name="DefaultShaderShadows">
 				<textures>
-					<texture name="diffuse">green_texture.png</texture>
+					<texture name="diffuse">Resources/green_texture.png</texture>
 				</textures>
 			</shader>
 		</material>					

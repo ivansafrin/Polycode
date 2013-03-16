@@ -29,6 +29,10 @@
 
 using namespace Polycode;
 
+#ifdef _WINDOWS
+#define round (int)
+#endif
+
 class EntityBrowserData  {
 	public:
 		Entity *entity;
@@ -99,6 +103,7 @@ class PolycodeScreenEditorMain : public UIElement {
 		ScreenEntity *addNewLayer(String layerName);	
 		void updateCursor();		
 		void selectEntity(ScreenEntity *entity);		
+		void resetSelectedEntityTransforms();
 		void setMode(int newMode);	
 		void handleEvent(Event *event);	
 		void resizePreviewScreen();		
@@ -113,6 +118,8 @@ class PolycodeScreenEditorMain : public UIElement {
 		void createParticleRef(ScreenParticleEmitter *target);
 		void createSoundRef(ScreenSound *target);
 		void createEntityRef(ScreenEntity *entity);
+		
+		void getCenterAndSizeForSelected(Vector2 *center, Number *width, Number *height);
 	
 		void handleMouseDown(Vector2 position);
 		void handleMouseMove(Vector2 position);
@@ -211,6 +218,10 @@ class PolycodeScreenEditorMain : public UIElement {
 		
 		Vector2 mouseBase;
 		std::vector<Vector2> baseEntityPositions;
+		std::vector<Vector2> baseEntityScales;
+		std::vector<Number> baseRotateAngles;
+		Vector2 groupCenterPoint;
+		Number groupRoll;
 		Number baseAngle;
 	
 		ScreenShape *placingShape;	

@@ -22,7 +22,10 @@ THE SOFTWARE.
 
 #include "PolySocket.h"
 #include "PolyLogger.h"
-#include <unistd.h>
+
+#ifndef _WINDOWS
+	#include <unistd.h>
+#endif
 
 using namespace Polycode;
 using std::vector;
@@ -128,7 +131,7 @@ int Socket::receiveData() {
 	
 	if ( received_bytes <= 0 ) {
 		delete event;
-		return received_bytes;
+		return received_bytes; 
 	}
 	
 	event->dataSize = received_bytes;

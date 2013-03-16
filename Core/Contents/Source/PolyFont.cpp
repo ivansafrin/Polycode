@@ -50,7 +50,9 @@ Font::Font(const String& fileName) {
 			valid = false;
 		}
 	
-		FT_Select_Charmap(ftFace, FT_ENCODING_UNICODE);	
+		if(FT_Select_Charmap(ftFace, ft_encoding_unicode) != 0) {
+			printf("Warning font does not support unicode (%s)\n", fileName.c_str());
+		}
 		loaded = true;
 	} else {
 		Logger::log("Invalid font file specified (%s)\n", fileName.c_str());	

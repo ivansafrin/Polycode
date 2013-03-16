@@ -74,7 +74,14 @@ UIVSizer::UIVSizer(Number width, Number height, Number mainHeight, bool topSizer
 }
 
 UIVSizer::~UIVSizer() {
-
+	coreInput->removeAllHandlersForListener(this);
+	
+	if (ownsChildren)
+		childElements->ownsChildren = true;
+	delete childElements;
+	
+	delete separatorBgShape;
+	delete separatorHitShape;
 }
 
 void UIVSizer::handleEvent(Event *event) {
@@ -93,10 +100,10 @@ void UIVSizer::handleEvent(Event *event) {
 			break;
 			case InputEvent::EVENT_MOUSEMOVE:			
 			case InputEvent::EVENT_MOUSEOVER:
-				CoreServices::getInstance()->getCore()->setCursor(CURSOR_RESIZE_UP_DOWN);
+				CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_RESIZE_UP_DOWN);
 			break;
 			case InputEvent::EVENT_MOUSEOUT:
-				CoreServices::getInstance()->getCore()->setCursor(CURSOR_ARROW);
+				CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_ARROW);
 			break;							
 		}
 	}

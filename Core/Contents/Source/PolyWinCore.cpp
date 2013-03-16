@@ -30,6 +30,14 @@
 #include "PolyLogger.h"
 #include "PolyThreaded.h"
 
+#include <direct.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+#include <Shlobj.h>
+#include <Shellapi.h>
+#include <Commdlg.h>
+
 #include <GL/gl.h>
 #include <GL/glext.h>
 #ifndef _MINGW
@@ -76,6 +84,16 @@ Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScre
 	hWnd = *((HWND*)view->windowData);
 	core = this;
 
+	char *buffer = _getcwd(NULL, 0);
+	defaultWorkingDirectory = String(buffer);
+	free(buffer);
+
+	WCHAR path[MAX_PATH];
+	if (SUCCEEDED(SHGetFolderPathW(NULL, CSIDL_PROFILE, NULL, 0, path))) {
+		userHomeDirectory = String(path);
+	}
+
+
 	initKeymap();
 	initGamepad();
 	initTouch();
@@ -83,6 +101,8 @@ Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScre
 	hDC = NULL;
 	hRC = NULL;
 	PixelFormat = 0;
+
+	this->aaLevel = 999;
 	
 	lastMouseX = -1;
 	lastMouseY = -1;
@@ -162,6 +182,12 @@ void Win32Core::setVSync(bool vSyncVal) {
 
 void Win32Core::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel) {
 
+	bool resetContext = false;
+
+	if(aaLevel != this->aaLevel) {
+		resetContext = true;
+	}
+
 	this->xRes = xRes;
 	this->yRes = yRes;
 	this->fullScreen = fullScreen;
@@ -183,9 +209,6 @@ void Win32Core::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, in
 
 		SetWindowPos(hWnd, NULL, 0, 0, xRes, yRes, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
 	} else {
-		if(isFullScreen) {
-			ChangeDisplaySettings(NULL,0);		
-		}
 	//	SetWindowLong(hWnd, GWL_STYLE, WS_OVERLAPPED|WS_SYSMENU);
 	//	ShowWindow(hWnd, SW_SHOW);
 		ClientResize(hWnd, xRes, yRes);
@@ -194,16 +217,20 @@ void Win32Core::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, in
 
 	isFullScreen = fullScreen;
 
-	initContext(false, 0);
+	if(resetContext) {
+		initContext(false, 0);
 
-	if(aaLevel > 0) {
-		initMultisample(aaLevel);
+		if(aaLevel > 0) {
+			initMultisample(aaLevel);
+		}
 	}
 
 	setVSync(vSync);
 
 	renderer->setAnisotropyAmount(anisotropyLevel);
 	renderer->Resize(xRes, yRes);
+
+	core->dispatchEvent(new Event(), Core::EVENT_CORE_RESIZE);
 }
 
 void Win32Core::initContext(bool usePixelFormat, unsigned int pixelFormat) {
@@ -437,6 +464,13 @@ void Win32Core::initKeymap() {
 	keyMap[VK_APPS] = KEY_MENU;
 	
 
+}
+
+void Win32Core::handleViewResize(int width, int height) {
+	this->xRes = width;
+	this->yRes = height;
+	renderer->Resize(width, height);
+	dispatchEvent(new Event(), EVENT_CORE_RESIZE);
 }
 
 PolyKEY Win32Core::mapKey(LPARAM lParam, WPARAM wParam) {
@@ -917,3 +951,279 @@ std::vector<Polycode::Rectangle> Win32Core::getVideoModes() {
 	return retVector;
 }
 	
+
+String Win32Core::executeExternalCommand(String command,  String args, String inDirectory) {
+	String execInDirectory = inDirectory;
+	if(inDirectory == "") {
+		execInDirectory = defaultWorkingDirectory;
+	}
+
+	SHELLEXECUTEINFO lpExecInfo;
+      lpExecInfo.cbSize  = sizeof(SHELLEXECUTEINFO);
+      lpExecInfo.lpFile = command.getWDataWithEncoding(String::ENCODING_UTF8);
+	lpExecInfo.fMask=SEE_MASK_DOENVSUBST|SEE_MASK_NOCLOSEPROCESS ;     
+      lpExecInfo.hwnd = NULL;  
+      lpExecInfo.lpVerb = L"open"; // to open  program
+      lpExecInfo.lpParameters =  args.getWDataWithEncoding(String::ENCODING_UTF8); //  file name as an argument
+      lpExecInfo.lpDirectory = execInDirectory.getWDataWithEncoding(String::ENCODING_UTF8);   
+      lpExecInfo.nShow = SW_SHOW ;  // show command prompt with normal window size 
+      lpExecInfo.hInstApp = (HINSTANCE) SE_ERR_DDEFAIL ;   //WINSHELLAPI BOOL WINAPI result;
+      ShellExecuteEx(&lpExecInfo);
+    
+ 
+      //wait until a file is finished printing
+      if(lpExecInfo.hProcess !=NULL)
+      {
+        ::WaitForSingleObject(lpExecInfo.hProcess, INFINITE);
+        ::CloseHandle(lpExecInfo.hProcess);
+      }
+
+	  return "";
+}
+
+String Win32Core::openFolderPicker()  {
+	TCHAR szDir[2048];
+	BROWSEINFO bInfo;
+	bInfo.hwndOwner = hWnd;
+	bInfo.pidlRoot = NULL; 
+	bInfo.pszDisplayName = szDir;
+	bInfo.lpszTitle = L"Choose a folder";
+	bInfo.ulFlags = BIF_USENEWUI;
+	bInfo.lpfn = NULL;
+	bInfo.lParam = 0;
+	bInfo.iImage = -1;
+
+	LPITEMIDLIST lpItem = SHBrowseForFolder( &bInfo);
+	if( lpItem != NULL ) {
+		SHGetPathFromIDList(lpItem, szDir );
+		return String(szDir);
+	}
+	return "";
+}
+
+std::vector<String> Win32Core::openFilePicker(std::vector<CoreFileExtension> extensions, bool allowMultiple) {
+	OPENFILENAME ofn;
+	wchar_t fBuffer[2048];
+
+	wchar_t filterString[2048];
+
+	ZeroMemory(&ofn, sizeof(OPENFILENAME));
+
+	ofn.lStructSize = sizeof ( ofn );
+	ofn.hwndOwner = hWnd ;
+	ofn.lpstrFile = fBuffer;
+	ofn.lpstrFile[0] = '\0';
+	ofn.nMaxFile = sizeof( fBuffer );
+
+	if(extensions.size() > 0) {
+		int offset = 0;
+		for(int i =0; i < extensions.size(); i++) {
+		//	filterString += extensions[i].description+"\0*."+extensions[i].extension+"\0";
+			memcpy(filterString+offset, extensions[i].description.getWDataWithEncoding(String::ENCODING_UTF8), extensions[i].description.length() * sizeof(wchar_t));
+			offset += extensions[i].description.length();
+			filterString[offset] = '\0';
+			offset++;
+			filterString[offset] = '*';
+			offset++;
+			filterString[offset] = '.';
+			offset++;
+			memcpy(filterString+offset, extensions[i].extension.getWDataWithEncoding(String::ENCODING_UTF8), extensions[i].extension.length() * sizeof(wchar_t));
+			offset += extensions[i].extension.length();
+			filterString[offset] = '\0';
+			offset++;
+		}
+		filterString[offset] = '\0';
+		ofn.lpstrFilter = filterString;
+
+		ofn.nFilterIndex = 1;
+	} else {
+		ofn.lpstrFilter = NULL;
+	}
+
+	ofn.lpstrFileTitle = NULL;
+	ofn.nMaxFileTitle = 0;
+	ofn.lpstrInitialDir=NULL;
+
+	if(allowMultiple) {
+		ofn.Flags = OFN_PATHMUSTEXIST|OFN_FILEMUSTEXIST|OFN_EXPLORER;
+	} else {
+		ofn.Flags = OFN_PATHMUSTEXIST|OFN_FILEMUSTEXIST|OFN_ALLOWMULTISELECT|OFN_EXPLORER;
+	}
+
+	std::vector<String> retVec;
+
+	if(GetOpenFileName(&ofn)) {
+		if(allowMultiple) {
+
+		} else {
+			retVec.push_back(String(fBuffer));
+		}
+	}
+
+	SetCurrentDirectory(defaultWorkingDirectory.getWDataWithEncoding(String::ENCODING_UTF8));
+
+
+	for(int i=0; i < retVec.size(); i++) {
+		retVec[i] = retVec[i].replace("\\", "/");
+	}
+	return retVec;
+}
+
+void Win32Core::createFolder(const String& folderPath) {
+	String path = folderPath;
+	CreateDirectory(path.getWDataWithEncoding(String::ENCODING_UTF8), NULL);		
+}
+
+void Win32Core::openURL(String url) {
+	ShellExecute(NULL, L"open", url.getWDataWithEncoding(String::ENCODING_UTF8), NULL, NULL, SW_SHOWNORMAL);
+}
+
+String error_to_string(const DWORD a_error_code)
+{
+    // Get the last windows error message.
+    wchar_t msg_buf[1025] = { 0 };
+
+    // Get the error message for our os code.
+    if (FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, 
+                      0,
+                      a_error_code,
+                      0,
+                      msg_buf,
+                      sizeof(msg_buf) - 1,
+                      0))
+    {
+     
+
+
+        return String(msg_buf);
+    }
+
+    return String("Failed to get error message");
+}
+						
+void Win32Core::copyDiskItem(const String& itemPath, const String& destItemPath) {
+	SHFILEOPSTRUCT op;
+	ZeroMemory(&op, sizeof(SHFILEOPSTRUCT));
+
+	String fromPath = itemPath.replace("/", "\\");
+	String toPath =destItemPath.replace("/", "\\");
+
+	fromPath.append('\0');
+	toPath.append('\0');
+
+	printf("Copying %s to %s\n", fromPath.c_str(), toPath.c_str());
+
+	op.hwnd = hWnd;
+	op.wFunc = FO_COPY;
+	op.pFrom = fromPath.getWDataWithEncoding(String::ENCODING_UTF8);
+	op.pTo = toPath.getWDataWithEncoding(String::ENCODING_UTF8);
+	op.fFlags = FOF_NOCONFIRMATION | FOF_SILENT | FOF_NOERRORUI | FOF_NOCONFIRMMKDIR;
+
+	int ret = SHFileOperation(&op);
+	if(ret != 0) {
+		String err = error_to_string(ret);
+		printf("COPY ERROR: %s\n", err.c_str());
+	}
+}
+
+void Win32Core::moveDiskItem(const String& itemPath, const String& destItemPath) {
+	SHFILEOPSTRUCT op;
+	ZeroMemory(&op, sizeof(SHFILEOPSTRUCT));
+
+	String fromPath = itemPath.replace("/", "\\");
+	String toPath =destItemPath.replace("/", "\\");
+
+	fromPath.append('\0');
+	toPath.append('\0');
+
+	printf("Moving %s to %s\n", fromPath.c_str(), toPath.c_str());
+
+	op.hwnd = hWnd;
+	op.wFunc = FO_MOVE;
+	op.pFrom = fromPath.getWDataWithEncoding(String::ENCODING_UTF8);
+	op.pTo = toPath.getWDataWithEncoding(String::ENCODING_UTF8);
+	op.fFlags = FOF_NOCONFIRMATION | FOF_SILENT | FOF_NOERRORUI | FOF_NOCONFIRMMKDIR;
+
+	int ret = SHFileOperation(&op);
+	if(ret != 0) {
+		String err = error_to_string(ret);
+		printf("MOVE ERROR: %s\n", err.c_str());
+	}
+}
+
+void Win32Core::removeDiskItem(const String& itemPath) {
+	SHFILEOPSTRUCT op;
+	ZeroMemory(&op, sizeof(SHFILEOPSTRUCT));
+
+	String fromPath = itemPath.replace("/", "\\");
+	fromPath.append('\0');
+
+	op.hwnd = hWnd;
+	op.wFunc = FO_DELETE;
+	op.pFrom = fromPath.getWDataWithEncoding(String::ENCODING_UTF8);
+	op.fFlags = FOF_NOCONFIRMATION | FOF_SILENT | FOF_NOERRORUI | FOF_NOCONFIRMMKDIR;
+
+	int ret = SHFileOperation(&op);
+	if(ret != 0) {
+		String err = error_to_string(ret);
+		printf("COPY ERROR: %s\n", err.c_str());
+	}
+}
+
+void Win32Core::setCursor(int cursorType) {
+
+	HCURSOR cursor;
+	switch(cursorType) {
+		case CURSOR_ARROW:
+			cursor = LoadCursor(NULL, IDC_ARROW);
+		break;
+		case CURSOR_TEXT:
+			cursor = LoadCursor(NULL, IDC_IBEAM);
+		break;
+		case CURSOR_POINTER:
+			cursor = LoadCursor(NULL, IDC_HAND);
+		break;
+		case CURSOR_CROSSHAIR:
+			cursor = LoadCursor(NULL, IDC_CROSS);
+		break;
+		case CURSOR_RESIZE_LEFT_RIGHT:
+			cursor = LoadCursor(NULL, IDC_SIZEWE);
+		break;
+		case CURSOR_RESIZE_UP_DOWN:
+			cursor = LoadCursor(NULL, IDC_SIZENS);
+		break;
+		case CURSOR_OPEN_HAND:
+			cursor = LoadCursor(NULL, IDC_SIZEALL);
+		break;
+		default:
+			cursor = LoadCursor(NULL, IDC_ARROW);
+		break;
+	}
+
+	SetCursor(cursor);
+	SetClassLong(hWnd, GCL_HCURSOR, (DWORD)cursor);
+}
+
+void  Win32Core::copyStringToClipboard(const String& str) {
+	String _tmp = str;
+	std::wstring wstr = _tmp.getWDataWithEncoding(String::ENCODING_UTF8);
+
+	const size_t len = ((wstr.size()+1) * sizeof(wchar_t));
+	HGLOBAL hMem =  GlobalAlloc(GMEM_MOVEABLE, len);
+	memcpy(GlobalLock(hMem), (char*)wstr.c_str(), len);
+	GlobalUnlock(hMem);
+	OpenClipboard(0);
+	EmptyClipboard();
+	SetClipboardData(CF_UNICODETEXT, hMem);
+	CloseClipboard();
+}
+
+String Win32Core::getClipboardString() {
+	OpenClipboard(0);
+	HANDLE clip0 = GetClipboardData(CF_UNICODETEXT); 
+	HANDLE h= GlobalLock(clip0); 
+	wchar_t* c = (wchar_t*) clip0;
+	String retString = String(c);
+	GlobalUnlock(clip0);
+	return retString;
+}

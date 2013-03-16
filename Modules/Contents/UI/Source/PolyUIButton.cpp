@@ -66,7 +66,7 @@ UIButton::UIButton(String text, Number width, Number height) : UIElement() {
 	pressedDown = false;
 	
 	buttonLabel = new ScreenLabel(text, fontSize, fontName, Label::ANTIALIAS_FULL);
-	buttonLabel->color.setColorHex(strtol(conf->getStringValue("Polycode", "uiButtonFontColor").c_str(), 0, 16));
+	buttonLabel->color.setColorHexFromString(conf->getStringValue("Polycode", "uiButtonFontColor"));
 	addChild(buttonLabel);
 	labelXPos = floor((width-buttonLabel->getWidth())/2.0f) + labelOffsetX;
 	labelYPos = labelOffsetY;
@@ -91,7 +91,9 @@ void UIButton::Update() {
 }
 
 UIButton::~UIButton() {
-
+	delete buttonRect;
+	delete buttonFocusedRect;
+	delete buttonLabel;
 }
 		
 void UIButton::handleEvent(Event *event) {

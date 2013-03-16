@@ -131,12 +131,12 @@ void PolycodeProjectManager::createNewProject(String templateFolder, String proj
 		} while (OSBasics::isFolder(projectLocation+"/"+projectName));
 	}	
 	
-	CoreServices::getInstance()->getCore()->copyDiskItem(templateFolder, projectLocation+"/"+projectName);
+	CoreServices::getInstance()->getCore()->copyDiskItem(CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory()+"/"+templateFolder, projectLocation+"/"+projectName);
 	CoreServices::getInstance()->getCore()->moveDiskItem(projectLocation+"/"+projectName+"/template.polyproject",  projectLocation+"/"+projectName+"/"+projectName+".polyproject");
 	openProject(projectLocation+"/"+projectName+"/"+projectName+".polyproject");	
 }
 
-void PolycodeProjectManager::exportProject(PolycodeProject *project, String exportPath, bool macOS, bool windows, bool linux) {
+void PolycodeProjectManager::exportProject(PolycodeProject *project, String exportPath, bool macOS, bool windows, bool _linux) {
 
 	String polycodeBasePath = CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory();
 

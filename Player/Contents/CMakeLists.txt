@@ -7,8 +7,16 @@ IF(MSVC OR MINGW)
 INCLUDE_DIRECTORIES(
     ${LUA_INCLUDE_DIR}
     ${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/Include
+ 
+    ${Polycode_SOURCE_DIR}/Modules/Contents/UI/Include
     ${Polycode_SOURCE_DIR}/Modules/Bindings/UI/Include
+
+    ${BOX2D_INCLUDE_DIR}
+    ${Polycode_SOURCE_DIR}/Modules/Contents/2DPhysics/Include
     ${Polycode_SOURCE_DIR}/Modules/Bindings/2DPhysics/Include
+
+    ${BULLET_INCLUDE_DIR}
+    ${Polycode_SOURCE_DIR}/Modules/Contents/3DPhysics/Include
     ${Polycode_SOURCE_DIR}/Modules/Bindings/3DPhysics/Include
     Include
     ../../Core/Contents/PolycodeView/MSVC/
@@ -17,26 +25,22 @@ INCLUDE_DIRECTORIES(
 SET(polycodeplayer_SRCS 
         Source/PolycodePlayer.cpp
         Source/PolycodeWindowsPlayer.cpp
-        Source/PolycodePlayerView.cpp
         Platform/Windows/main.cpp        
     )
 
     SET(polycodeplayer_HDRS 
         Include/PolycodePlayer.h
         Include/PolycodeWindowsPlayer.h
-        Include/PolycodePlayerView.h
     )
   
     SET(polycodeplayerstandalone_SRCS 
         Source/PolycodePlayer.cpp
         Source/PolycodeWindowsPlayer.cpp
-        Source/PolycodePlayerView.cpp
         Platform/Windows/Standalone/main.cpp
     )
     SET(polycodeplayerstandalone_HDRS 
         Include/PolycodePlayer.h
-        Include/PolycodeWindowsPlayer.h
-        Include/PolycodePlayerView.h        
+        Include/PolycodeWindowsPlayer.h   
     )
  
     ADD_EXECUTABLE(PolycodePlayer WIN32 ${polycodeplayer_SRCS} ${polycodeplayer_HDRS})
@@ -60,6 +64,24 @@ SET(polycodeplayer_SRCS
         glu32
         winmm
         ws2_32
+    Physics2DLua
+    Physics3DLua
+    UILua
+    Polycode2DPhysics
+    Polycode3DPhysics
+    PolycodeUI
+    optimized ${BOX2D_RELEASE_LIBRARY}
+    debug ${BOX2D_DEBUG_LIBRARY}
+        optimized ${LIBBULLETMULTITHREADED}
+        optimized ${LIBBULLETSOFTBODY} 
+        optimized ${LIBBULLETDYNAMICS} 
+        optimized ${LIBBULLETCOLLISION}
+        optimized ${LIBBULLETMATH}            
+        debug ${LIBBULLETMULTITHREADED_DEBUG}
+        debug ${LIBBULLETSOFTBODY_DEBUG} 
+        debug ${LIBBULLETDYNAMICS_DEBUG} 
+        debug ${LIBBULLETCOLLISION_DEBUG}
+        debug ${LIBBULLETMATH_DEBUG}  
      )
 
     TARGET_LINK_LIBRARIES(StandalonePlayer 
@@ -78,7 +100,25 @@ SET(polycodeplayer_SRCS
         opengl32
         glu32
         winmm
-        ws2_32   
+        ws2_32 
+    Physics2DLua
+    Physics3DLua
+    UILua
+    Polycode2DPhysics
+    Polycode3DPhysics
+    PolycodeUI
+    optimized ${BOX2D_RELEASE_LIBRARY}
+    debug ${BOX2D_DEBUG_LIBRARY}
+        optimized ${LIBBULLETMULTITHREADED}
+        optimized ${LIBBULLETSOFTBODY} 
+        optimized ${LIBBULLETDYNAMICS} 
+        optimized ${LIBBULLETCOLLISION}
+        optimized ${LIBBULLETMATH}            
+        debug ${LIBBULLETMULTITHREADED_DEBUG}
+        debug ${LIBBULLETSOFTBODY_DEBUG} 
+        debug ${LIBBULLETDYNAMICS_DEBUG} 
+        debug ${LIBBULLETCOLLISION_DEBUG}
+        debug ${LIBBULLETMATH_DEBUG} 
      )
 
 ELSEIF(APPLE)
@@ -423,6 +463,7 @@ IF(MSVC OR MINGW)
     INSTALL(FILES "${Polycode_SOURCE_DIR}/Assets/Default\ asset\ pack/hdr.pak" DESTINATION Player)
     INSTALL(FILES "${Polycode_SOURCE_DIR}/Assets/SamplePolyapp/main.polyapp" DESTINATION Player)
     INSTALL(FILES "${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/API/api.pak" DESTINATION Player)
+    INSTALL(FILES ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/bin/OpenAL32.dll DESTINATION Player)
 ELSEIF(APPLE)
 ELSE(MSVC OR MINGW)
     INSTALL(FILES "${Polycode_SOURCE_DIR}/Assets/Default\ asset\ pack/default.pak" DESTINATION Player)

@@ -47,12 +47,10 @@ UIMenuItem::UIMenuItem(String label, String _id, void *data, Number comboWidth, 
 	
 	this->_id = _id;
 	this->data = data;
-
-
 }
 
 UIMenuItem::~UIMenuItem() {
-		
+	delete itemLabel;
 }
 
 UIMenu::UIMenu(Number menuWidth) : UIElement() {
@@ -101,9 +99,11 @@ UIMenu::UIMenu(Number menuWidth) : UIElement() {
 	dropDownBox->processInputEvents = true;
 	
 	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);			
+	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEUP);			
 
 	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);			
 
+	initialMouse = CoreServices::getInstance()->getCore()->getInput()->getMousePosition();
 	
 	this->width = menuWidth;
 	this->height = menuItemHeight;
@@ -137,13 +137,15 @@ void UIMenu::Update() {
 void UIMenu::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == CoreServices::getInstance()->getCore()->getInput()) {
+	
+		InputEvent *inputEvent = (InputEvent*) event;	
+		
 		if(event->getEventCode() == InputEvent::EVENT_KEYDOWN) {
-			InputEvent *inputEvent = (InputEvent*) event;
 			if(inputEvent->key == KEY_ESCAPE) {
 				dispatchEvent(new UIEvent(), UIEvent::CANCEL_EVENT);							
 			}
 		}
-		if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN && !ignoreMouse) {
+		if((event->getEventCode() == InputEvent::EVENT_MOUSEDOWN || (event->getEventCode() == InputEvent::EVENT_MOUSEUP && initialMouse != inputEvent->getMousePosition())) && !ignoreMouse) {
 			if(selectorBox->visible) {
 				dispatchEvent(new UIEvent(), UIEvent::OK_EVENT);
 			} else {
@@ -178,6 +180,12 @@ void UIMenu::handleEvent(Event *event) {
 
 
 UIMenu::~UIMenu() {
+	for(int c = 0; c < items.size(); c++)
+		delete items[c];
+	
+	delete dropDownBox;
+	delete selectorBox;
+	
 	CoreServices::getInstance()->getCore()->getInput()->removeAllHandlersForListener(this);
 }
 

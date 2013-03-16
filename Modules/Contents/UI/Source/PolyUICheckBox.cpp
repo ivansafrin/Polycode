@@ -38,9 +38,9 @@ UICheckBox::UICheckBox(String caption, bool checked) : UIElement() {
 	String uncheckImage = conf->getStringValue("Polycode", "uiCheckBoxUncheckedImage");
 	Number checkboxTextOffsetX = conf->getNumericValue("Polycode", "uiCheckBoxLabelOffsetX");
 	Number checkboxTextOffsetY = conf->getNumericValue("Polycode", "uiCheckBoxLabelOffsetY");
-		
+	
 	this->checked = checked;
-		
+	
 	buttonImageChecked = new ScreenImage(checkImage);
 	buttonImageChecked->visible = checked;
 
@@ -55,7 +55,7 @@ UICheckBox::UICheckBox(String caption, bool checked) : UIElement() {
 	addChild(buttonImageUnchecked);	
 	addChild(buttonImageChecked);
 	
-	captionLabel->color.setColorHex(strtol(conf->getStringValue("Polycode", "uiDefaultFontColor").c_str(), 0, 16));
+	captionLabel->color.setColorHexFromString(conf->getStringValue("Polycode", "uiDefaultFontColor"));
 	
 	buttonImageUnchecked->addEventListener(this, InputEvent::EVENT_MOUSEOVER);
 	buttonImageUnchecked->addEventListener(this, InputEvent::EVENT_MOUSEOUT);
@@ -67,7 +67,6 @@ UICheckBox::UICheckBox(String caption, bool checked) : UIElement() {
 	
 	height = buttonImageUnchecked->getHeight();
 	width = buttonImageUnchecked->getWidth() + captionLabel->getWidth() + checkboxTextOffsetX;
-	
 }
 
 String UICheckBox::getCaptionLabel() {
@@ -75,7 +74,9 @@ String UICheckBox::getCaptionLabel() {
 }
 
 UICheckBox::~UICheckBox() {
-
+	delete buttonImageChecked;
+	delete buttonImageUnchecked;
+	delete captionLabel;
 }
 
 bool UICheckBox::isChecked() {

@@ -2,9 +2,10 @@
 
 namespace Polycode {
 
-    PolycodeView::PolycodeView(const char *title) : PolycodeViewBase() {
+    PolycodeView::PolycodeView(const char *title, bool resizable) : PolycodeViewBase() {
         windowTitle = title;
         windowData = &windowTitle;
+	this->resizable = resizable;
     }
 
     PolycodeView::~PolycodeView() {

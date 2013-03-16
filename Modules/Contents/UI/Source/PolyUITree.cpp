@@ -53,7 +53,7 @@ UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : 
 								size,
 								fontName,
 								Label::ANTIALIAS_FULL);
-	textLabel->color.setColorHex(strtol(conf->getStringValue("Polycode", "uiTreeFontColor").c_str(), 0, 16));
+	textLabel->color.setColorHexFromString(conf->getStringValue("Polycode", "uiTreeFontColor"));
 	
 	bgBox = new ScreenShape(ScreenShape::SHAPE_RECT, treeWidth, cellHeight);	
 	bgBox->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
@@ -108,7 +108,6 @@ UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : 
 	setPositionMode(ScreenEntity::POSITION_CENTER);
 	
 	refreshTree();
-	ownsChildren = true;
 }
 
 void UITree::Resize(Number width) {
@@ -249,14 +248,14 @@ void UITree::clearSelection(UITree *selectedNode) {
 
 void UITree::refreshTree() {
 	if(collapsed) {
-		new Tween(&handleRotation, Tween::EASE_IN_QUAD, handleRotation, 0, 0.2f);
+		new Tween(&handleRotation, Tween::EASE_IN_QUAD, handleRotation, 0, 0.2f, false, true);
 		for(int i=0; i < treeChildren.size(); i++) {
 			treeChildren[i]->visible = false;
 			treeChildren[i]->enabled = false;			
 		}
 		treeHeight = 0;
 	} else {
-		new Tween(&handleRotation, Tween::EASE_IN_QUAD, handleRotation, 90, 0.2f);
+		new Tween(&handleRotation, Tween::EASE_IN_QUAD, handleRotation, 90, 0.2f, false, true);
 		int offset = cellHeight;
 		for(int i=0; i < treeChildren.size(); i++) {
 			treeChildren[i]->visible = true;
@@ -286,6 +285,12 @@ void UITree::toggleCollapsed() {
 
 UITree::~UITree() {
 	clearTree();
+	
+	delete textLabel;
+	delete bgBox;
+	delete selection;
+	delete arrowIconImage;
+	delete iconImage;
 }
 
 void UITree::clearTree() {

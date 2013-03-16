@@ -195,6 +195,10 @@ of variables to the cmake commands above. To build the bindings, you
 need a python installation with the PLY python module. You can get
 the PLY module at http://www.dabeaz.com/ply/
 
+Note: You will need python 2 for this step. If you have python 3 installed,
+pass -DPYTHON_EXECUTABLE=/usr/bin/python2 or whatever the full path to
+the python2 executable is on your system.
+
 To enable the bindings and the player, add the following options to the
 cmake command. Otherwise, the steps are exactly the same as the regular 
 Polycode build for your system.

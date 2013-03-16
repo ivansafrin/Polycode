@@ -211,8 +211,10 @@ Color Label::getColorForIndex(unsigned int index) {
 
 void Label::precacheGlyphs(String text, GlyphData *glyphData) {
 	glyphData->clearData();
+	
+	std::wstring wstr = std::wstring(text.getWDataWithEncoding(String::ENCODING_UTF8));
 		
-	int num_chars = text.length();
+	int num_chars = wstr.length();
 		
 		
 	glyphData->glyphs = (FT_Glyph*) malloc(sizeof(FT_Glyph) * num_chars);
@@ -238,11 +240,11 @@ void Label::precacheGlyphs(String text, GlyphData *glyphData) {
 	
 	int advanceMultiplier;
 	for(int n = 0; n < num_chars; n++ ) {
-		if(text[n] == '\t') {
+		if(wstr[n] == '\t') {
 			glyph_index = FT_Get_Char_Index(face, ' ');		
 			advanceMultiplier = 4;			
 		} else {
-			glyph_index = FT_Get_Char_Index(face, (FT_ULong)text[n]);		
+			glyph_index = FT_Get_Char_Index(face, (FT_ULong)wstr[n]);
 			advanceMultiplier = 1;
 		}
 
@@ -275,7 +277,7 @@ void Label::precacheGlyphs(String text, GlyphData *glyphData) {
 			continue;
 		}
 		
-		if(n == num_chars-1 && (text[n] == ' ' || text[n] == '\t')) {
+		if(n == num_chars-1 && (wstr[n] == ' ' || wstr[n] == '\t')) {
 			glyphData->trailingAdvance = (slot->advance.x >> 6) * advanceMultiplier;
 		}
 

@@ -205,5 +205,6 @@ void UIVScrollBar::handleEvent(Event *event) {
 	
 
 UIVScrollBar::~UIVScrollBar() {
-	
+	delete bgBox;
+	delete handleBox;
 }

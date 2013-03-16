@@ -19,14 +19,18 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
- 
+
+#if defined(__APPLE__) && defined(__MACH__)
 #import "PolycodeView.h"
+#else
+#include "PolycodeView.h"
+#endif
 
 #include "PolycodeGlobals.h"
 #include "PolycodeProjectManager.h"
 #include "PolycodeEditorManager.h"
 #include "Polycode.h"
-#include "PolyCocoaCore.h"
+//#include "PolyCocoaCore.h"
 #include "PolycodeUI.h"
 #include "PolycodeFrame.h"
 
@@ -68,6 +72,7 @@ public:
 	void browseExamples();
 	void newProject();
 	void newFile();
+	void showAbout();
 	
 	void openDocs();
 	
@@ -89,7 +94,7 @@ public:
 	
 	const static int EVENT_SHOW_MENU = 1;
 	
-	CocoaCore *core;	
+	Core *core;	
 protected:
 
 	bool willRunProject;
@@ -99,5 +104,7 @@ protected:
 	PolycodeProjectManager *projectManager;
 	
 	PolycodeRemoteDebugger *debugger;
+
+	UIMenuBar *menuBar;
 	
 };
