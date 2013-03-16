@@ -96,6 +96,49 @@ ScreenParticleEmitter::~ScreenParticleEmitter(){
 	}
 }
 
+Entity *ScreenParticleEmitter::Clone(bool deepClone, bool ignoreEditorOnly) {
+	ScreenParticleEmitter *newEmitter = new ScreenParticleEmitter("default.png", Particle::BILLBOARD_PARTICLE, ParticleEmitter::CONTINUOUS_EMITTER, 2.0, 0, Vector3(0.0, -40.0, 0.0), Vector3(0.0, 0.0, 0.0), Vector3(0.0, 0.0, 0.0), Vector3(10.0, 10.0, 0.0));
+	applyClone(newEmitter, deepClone, ignoreEditorOnly);
+	return newEmitter;
+}
+
+void ScreenParticleEmitter::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) {
+	ScreenParticleEmitter *_clone = (ScreenParticleEmitter*) clone;
+
+	_clone->emitterRadius = this->emitterRadius;
+	_clone->dirVector = this->dirVector;
+	_clone->gravVector = this->gravVector;
+	_clone->deviation = this->deviation;
+				
+	_clone->brightnessDeviation = this->brightnessDeviation;
+	_clone->particleSize = this->particleSize;
+	_clone->perlinModSize = this->perlinModSize;
+	_clone->perlinEnabled = this->perlinEnabled;
+	_clone->particleSpeedMod = this->particleSpeedMod;
+				
+	_clone->rotationSpeed = this->rotationSpeed;
+	_clone->lifespan = this->lifespan;
+	_clone->particleSpeedMod = this->particleSpeedMod;
+	_clone->setParticleCount(this->getNumParticles());						
+
+	_clone->rotationFollowsPath = this->rotationFollowsPath;
+	_clone->useScaleCurves = this->useScaleCurves;
+	_clone->scaleCurve = this->scaleCurve;
+
+	_clone->useColorCurves = this->useColorCurves;
+				
+	_clone->colorCurveR = this->colorCurveR;
+	_clone->colorCurveG = this->colorCurveG;
+	_clone->colorCurveB = this->colorCurveB;
+	_clone->colorCurveA = this->colorCurveA;																
+	_clone->setParticleBlendingMode(this->getParticleBlendingMode());
+	_clone->setParticleTexture(this->getParticleTexture());
+	_clone->setWidth(_clone->emitterRadius.x);
+	_clone->setHeight(_clone->emitterRadius.y);			
+	
+	ScreenEntity::applyClone(clone, false, ignoreEditorOnly);
+}
+
 void ScreenParticleEmitter::Update() {
 	updateEmitter();
 }

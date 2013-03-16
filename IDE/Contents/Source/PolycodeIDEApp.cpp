@@ -27,11 +27,14 @@ using namespace Polycode;
 
 UIGlobalMenu *globalMenu;
 SyntaxHighlightTheme *globalSyntaxTheme;
+PolycodeClipboard *globalClipboard;
+
 
 PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	core = new POLYCODE_CORE(view, 900,700,false,true, 0, 0,30, -1);	
 	core->addEventListener(this, Core::EVENT_CORE_RESIZE);
 	
+	globalClipboard = new PolycodeClipboard();
 	
 	CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_NEAREST);
 				
@@ -446,9 +449,11 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 	if(event->getDispatcher() == core) {
 		switch(event->getEventCode()) {
 			case Core::EVENT_CORE_RESIZE:
-				frame->Resize(core->getXRes(), core->getYRes());
 				if(menuBar) {
+					frame->Resize(core->getXRes(), core->getYRes()-25);
 					menuBar->Resize(core->getXRes(), 25);
+				} else {
+					frame->Resize(core->getXRes(), core->getYRes());
 				}
 			break;
 		}

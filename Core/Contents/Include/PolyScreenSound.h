@@ -46,6 +46,10 @@ namespace Polycode {
 		public:
 			ScreenSound(const String& fileName, Number referenceDistance, Number maxDistance);
 			virtual ~ScreenSound();			
+
+			virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly);
+			virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly);
+
 			void Update();			
 			
 			/**

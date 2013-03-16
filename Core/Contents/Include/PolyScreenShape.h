@@ -43,7 +43,10 @@ namespace Polycode {
 			* @param option4 Reserved.
 			*/
 			ScreenShape(int shapeType, Number option1=0, Number option2=0, Number option3=0, Number option4=0);
-						
+		
+			virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly);
+			virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly);
+				
 			virtual ~ScreenShape();
 			void Render();
 

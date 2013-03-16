@@ -77,6 +77,54 @@ Entity *Entity::getEntityById(String id, bool recursive) {
 	return NULL;
 }
 
+Entity *Entity::Clone(bool deepClone, bool ignoreEditorOnly) {
+	Entity *newEntity = new Entity();
+	applyClone(newEntity, deepClone, ignoreEditorOnly);
+	return newEntity;
+}
+
+void Entity::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) {
+	clone->ownsChildren = ownsChildren;
+	clone->position = position;
+	clone->rotation = rotation;
+	clone->scale = scale;
+	clone->color = color;
+	clone->custEntityType = custEntityType;
+	clone->billboardMode = billboardMode;	
+	clone->billboardRoll = billboardRoll;
+	clone->alphaTest = alphaTest;
+	clone->backfaceCulled = backfaceCulled;
+	clone->renderWireframe = renderWireframe;
+	clone->depthWrite = depthWrite;
+	clone->depthTest = depthTest;
+	clone->blendingMode = blendingMode;
+	clone->colorAffectsChildren;
+	clone->visibilityAffectsChildren = visibilityAffectsChildren;
+	clone->depthOnly = depthOnly;
+	clone->setUserData(getUserData());
+	clone->entityProps = entityProps;
+	clone->bBox = bBox;
+	clone->ignoreParentMatrix = ignoreParentMatrix;
+	clone->enableScissor = enableScissor;
+	clone->scissorBox = scissorBox;
+	clone->editorOnly = editorOnly;	
+	clone->id = id;
+	for(int i=0; i < tags.size(); i++) {	
+		clone->addTag(tags[i]);
+	}
+	clone->setRenderer(renderer);
+
+	if(deepClone) {
+		for(int i=0; i < children.size(); i++) {
+			if(children[i]->editorOnly && ignoreEditorOnly) {
+			} else {
+				Entity *childClone = children[i]->Clone(deepClone, ignoreEditorOnly);
+				clone->addChild(childClone);
+			}
+		}
+	}
+}
+
 std::vector<Entity*> Entity::getEntitiesByTag(String tag, bool recursive) {
 
 	std::vector<Entity*> retVector;

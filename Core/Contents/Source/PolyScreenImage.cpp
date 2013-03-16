@@ -71,6 +71,16 @@ ScreenImage::~ScreenImage() {
 
 }
 
+Entity *ScreenImage::Clone(bool deepClone, bool ignoreEditorOnly) {
+	ScreenImage *newImage = new ScreenImage(getTexture()->getResourcePath());
+	applyClone(newImage, deepClone, ignoreEditorOnly);
+	return newImage;
+}
+
+void ScreenImage::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) {
+	ScreenShape::applyClone(clone, deepClone, ignoreEditorOnly);
+}
+
 void ScreenImage::setImageCoordinates(Number x, Number y, Number width, Number height) {
 	Vertex *vertex;
 	Number pixelSizeX = 1/imageWidth;

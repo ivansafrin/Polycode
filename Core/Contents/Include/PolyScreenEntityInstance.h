@@ -39,8 +39,13 @@ namespace Polycode {
 class ScreenEntityInstance : public ScreenEntity {
 	public:
 		ScreenEntityInstance(const String& fileName);
+		ScreenEntityInstance();
+
 		~ScreenEntityInstance();
-		
+	
+		virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly);
+		virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly);
+
 		void parseObjectIntoCurve(ObjectEntry *entry, BezierCurve *curve);
 		void applyScreenShape(ObjectEntry *entry, ScreenShape *shape);
 		ScreenEntity *loadObjectEntryIntoEntity(ObjectEntry *entry);
@@ -50,9 +55,11 @@ class ScreenEntityInstance : public ScreenEntity {
 		
 		String getFileName() const;
 		
-	protected:
-		ScreenEntity *rootEntity;		
+		bool cloneUsingReload;
+
 		String fileName;
+
+		ScreenEntity *rootEntity;		
 };
 
 }

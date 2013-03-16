@@ -257,6 +257,8 @@ void EntityTreeView::Resize(Number width, Number height) {
 
 PolycodeScreenEditorMain::PolycodeScreenEditorMain() {
 
+	firstMove = false;
+
 	multiSelect = false;
 	currentLayer = NULL;
 	treeView = NULL;
@@ -1893,11 +1895,13 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 	if(event->getDispatcher() == baseEntity) {
 		switch (event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEDOWN:
+				firstMove = true;
 				handleMouseDown(inputEvent->mousePosition);
 				focusChild(baseEntity);
 			break;		
 			case InputEvent::EVENT_MOUSEUP:
 			case InputEvent::EVENT_MOUSEUP_OUTSIDE:			
+				firstMove = false;
 				handleMouseUp(inputEvent->mousePosition);
 			break;
 			case InputEvent::EVENT_MOUSEOUT:
@@ -1905,6 +1909,18 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 			break;
 			case InputEvent::EVENT_MOUSEMOVE:
 			{
+				if(firstMove) {
+					Core *core = CoreServices::getInstance()->getCore();
+					if(core->getInput()->getKeyState(KEY_RCTRL) || core->getInput()->getKeyState(KEY_LCTRL)) {
+						void *data;
+						String type = Copy(&data);
+						if(data) {
+							Paste(data, type);
+							destroyClipboardData(data, type);
+						}
+					}
+					firstMove = false;
+				}
 				updateCursor();
 				handleMouseMove(inputEvent->mousePosition);
 			}
@@ -2108,6 +2124,68 @@ PolycodeScreenEditor::PolycodeScreenEditor() : PolycodeEditor(true){
 	propSizer->sizer->blockMouseInput = true;
 
 	treeView->Refresh();
+}
+
+String PolycodeScreenEditor::Copy(void **data) {
+	return editorMain->Copy(data);
+}
+
+void PolycodeScreenEditor::Paste(void *data, String clipboardType) {
+	editorMain->Paste(data, clipboardType);
+}
+
+void PolycodeScreenEditor::destroyClipboardData(void *data, String type) {
+	editorMain->destroyClipboardData(data, type);
+}
+
+String PolycodeScreenEditorMain::Copy(void **data) {
+	if(selectedEntities.size() > 0) {
+		ScreenEntityClipboardData *newData = new ScreenEntityClipboardData();
+		for(int i=0; i < selectedEntities.size(); i++) {
+			ScreenEntity *clone = (ScreenEntity*)selectedEntities[i]->Clone(true, true);
+			newData->entities.push_back(clone);
+		}
+		*data = (void*) newData;
+	}
+	return "ScreenEntity";
+}
+
+void PolycodeScreenEditorMain::Paste(void *data, String clipboardType) {
+	if(!data)
+		return;
+	if(clipboardType == "ScreenEntity") {
+		selectEntity(NULL);
+		multiSelect = true;
+		ScreenEntityClipboardData *newData = (ScreenEntityClipboardData*) data;
+		if(currentLayer) {
+			for(int i=0; i < newData->entities.size(); i++) {
+				ScreenEntity *entity = (ScreenEntity*) newData->entities[i]->Clone(true, true);
+				entity->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+				entity->addEventListener(this, InputEvent::EVENT_MOUSEUP);
+				if(selectedEntity && selectedEntity != currentLayer) {
+					selectedEntity->getParentEntity()->addChild(entity);
+				} else {
+					currentLayer->addChild(entity);
+				}
+				applyEditorProperties(entity);
+				selectEntity(entity);
+			}
+		}
+		multiSelect = false;
+	}
+	if(treeView) {
+		treeView->Refresh();		
+	}											
+}
+
+void PolycodeScreenEditorMain::destroyClipboardData(void *data, String type) {
+	if(type == "ScreenEntity") {
+		ScreenEntityClipboardData *oldData = (ScreenEntityClipboardData*) data;
+		for(int i=0; i < oldData->entities.size(); i++) {
+			delete oldData->entities[i];
+		}
+		delete oldData;
+	}
 }
 
 void PolycodeScreenEditor::Activate() {
@@ -2361,7 +2439,7 @@ void PolycodeScreenEditor::handleEvent(Event *event) {
 		}
 
 	}
-
+	PolycodeEditor::handleEvent(event);
 }
 
 PolycodeScreenEditor::~PolycodeScreenEditor() {
@@ -2375,6 +2453,7 @@ void PolycodeScreenEditorMain::applyEditorProperties(ScreenEntity *entity) {
 	}
 
 	if(dynamic_cast<ScreenEntityInstance*>(entity)) {
+		(((ScreenEntityInstance*)entity))->cloneUsingReload = true;
 		applyEditorOnly(((ScreenEntityInstance*)entity)->getRootEntity());
 		entity->setWidth(50);
 		entity->setHeight(50);		

@@ -45,6 +45,7 @@
 #include "PolycodeToolLauncher.h"
 
 #include "PolycodeRemoteDebugger.h"
+#include "PolycodeClipboard.h"
 
 using namespace Polycode;
 
