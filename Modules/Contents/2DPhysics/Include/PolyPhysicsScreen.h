@@ -373,13 +373,6 @@ public:
 	* @return If there specified entity overlaps the specified position, this returns true.
 	*/ 														
 	bool testEntityAtPosition(ScreenEntity *ent, Number x, Number y);
-
-    /*
-     * Adds entity to group to be deleted after the next physics step. Box2d bodies cannot be deleted during a physics step, so this must be used if you wish to remove
-     * objects during physics event callbacks
-     * @param child Entity to remove
-     */
-    void deleteChildNextStep(ScreenEntity *child);
     
 	/**
 	* Tests collision between two entities

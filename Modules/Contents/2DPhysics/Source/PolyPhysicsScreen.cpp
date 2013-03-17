@@ -46,7 +46,7 @@ ScreenEntity *PhysicsScreenEvent::getSecondEntity() {
 void PhysicsScreen::PreSolve(b2Contact* contact, const b2Manifold* oldManifold)
 {
     if(((PhysicsScreenEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->collisionOnly ||
-       ((PhysicsScreenEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->collisionOnly) {
+       ((PhysicsScreenEntity*)contact->GetFixtureB()->GetBody()->GetUserData())->collisionOnly) {
         contact->SetEnabled(false);
     }    
 }
@@ -61,7 +61,7 @@ void PhysicsScreen::BeginContact (b2Contact *contact) {
 	newEvent->entity2 = (ScreenEntity*)contact->GetFixtureB()->GetUserData();			
 
     if(((PhysicsScreenEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->collisionOnly ||
-        ((PhysicsScreenEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->collisionOnly) {
+        ((PhysicsScreenEntity*)contact->GetFixtureB()->GetBody()->GetUserData())->collisionOnly) {
         contact->SetEnabled(false);
     }
        
