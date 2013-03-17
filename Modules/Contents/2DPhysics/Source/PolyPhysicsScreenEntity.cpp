@@ -1,4 +1,4 @@
-/*
+ /*
 Copyright (C) 2011 by Ivan Safrin
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -37,8 +37,13 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 	
 	Vector3 entityScale = entity->getCompoundScale();
 	
+    Vector3 entityAngle;
+    
 	screenEntity = entity;
-	
+
+    entity->ignoreParentMatrix = true;
+    entity->scale = entityScale;
+    
 	shape = NULL;
 		
 	b2BodyDef *bodyDef = new b2BodyDef();
@@ -46,7 +51,7 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 	Matrix4 compoundMatrix = screenEntity->getConcatenatedMatrix();	
 				
 	bodyDef->position.Set(compoundMatrix.getPosition().x/worldScale, compoundMatrix.getPosition().y/worldScale);
-	bodyDef->angle = screenEntity->getRotation()*(PI/180.0f);	
+	bodyDef->angle = screenEntity->getCombinedRoll()*(PI/180.0f);	
 	bodyDef->bullet = isSensor;	
 	bodyDef->fixedRotation = fixedRotation;	
 	
@@ -64,7 +69,9 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 	fDef.density = density;
 	fDef.isSensor = isSensor;
 	fDef.filter.groupIndex = groupIndex;
-	
+    
+	fDef.userData = screenEntity;
+
 	switch(entType) {
 		case ENTITY_MESH:
 		{
@@ -100,9 +107,18 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 			fDef.shape = b2shape;						
 			shape = b2shape;
 		}
-		break;			
+		break;
+        case ENTITY_EDGE: 
+        {
+            b2PolygonShape *b2shape = new b2PolygonShape;	
+            b2shape->SetAsEdge(b2Vec2(-screenEntity->getWidth()/(worldScale*2.0f),-screenEntity->getHeight()/(2.0*worldScale)),
+                               b2Vec2(screenEntity->getWidth()/(worldScale*2.0f),-screenEntity->getHeight()/(2.0*worldScale)));
+            fDef.shape = b2shape;						
+            shape = b2shape;                                                                
+        }
+        break;
 		case ENTITY_CIRCLE:
-		{			
+		{		
 			b2CircleShape *b2shape = new b2CircleShape;
 			b2shape->m_radius = screenEntity->getWidth()/(worldScale*2.0f);
 			fDef.shape = b2shape;
@@ -113,6 +129,8 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 	
 	fixture = body->CreateFixture(&fDef);	
 	
+    body->SetUserData(this);
+    
 	collisionOnly = false;
 	
 }
@@ -154,6 +172,61 @@ void PhysicsScreenEntity::setVelocityY(Number fy) {
 	body->SetLinearVelocity(f);	
 }
 
+
+void PhysicsScreenEntity::setCollisionCategory(int categoryBits) {
+        b2Filter filter=fixture->GetFilterData();
+        filter.categoryBits = categoryBits;
+        fixture->SetFilterData(filter);
+}
+
+void PhysicsScreenEntity::setCollisionMask(int maskBits) {
+        b2Filter filter=fixture->GetFilterData();
+        filter.maskBits = maskBits;
+        fixture->SetFilterData(filter);
+}
+
+void PhysicsScreenEntity::setCollisionGroupIndex(int group) {
+    b2Filter filter=fixture->GetFilterData();
+    filter.groupIndex = group;
+    fixture->SetFilterData(filter);    
+}
+
+void PhysicsScreenEntity::setLinearDamping(Number damping) {
+    body->SetLinearDamping(damping);
+}
+
+void PhysicsScreenEntity::setAngularDamping(Number damping) {
+    body->SetAngularDamping(damping);
+}
+
+void PhysicsScreenEntity::setFriction(Number friction) {
+    if(fixture) {
+        fixture->SetFriction(friction);
+    }
+}
+
+void PhysicsScreenEntity::setDensity(Number density){
+    if(fixture) {
+        fixture->SetDensity(density);
+    }
+}
+
+Number PhysicsScreenEntity::getLinearDamping() {
+    return body->GetLinearDamping();
+}
+
+Number PhysicsScreenEntity::getAngularDamping() {
+    return body->GetAngularDamping();
+}
+
+Number PhysicsScreenEntity::getFriction() {
+    return fixture->GetFriction();
+}
+
+Number PhysicsScreenEntity::getDensity() {
+    return fixture->GetDensity();
+}
+
 void PhysicsScreenEntity::applyImpulse(Number fx, Number fy) {
 	body->SetAwake(true);
 	b2Vec2 f =  b2Vec2(fx,fy);
@@ -163,6 +236,7 @@ void PhysicsScreenEntity::applyImpulse(Number fx, Number fy) {
 			
 void PhysicsScreenEntity::setTransform(Vector2 pos, Number angle) {
 	body->SetTransform(b2Vec2(pos.x/worldScale, pos.y/worldScale), angle*(PI/180.0f));
+    screenEntity->setPosition(pos);
 }
 
 void PhysicsScreenEntity::Update() {
