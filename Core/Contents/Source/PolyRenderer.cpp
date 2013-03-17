@@ -385,12 +385,12 @@ void Renderer::setAmbientColor(Number r, Number g, Number b) {
 	ambientColor.setColor(r,g,b,1.0f);
 }
 
-void Renderer::setClearColor(Number r, Number g, Number b) {
-	clearColor.setColor(r,g,b,1.0f);	
+void Renderer::setClearColor(Number r, Number g, Number b, Number a) {
+	clearColor.setColor(r,g,b,a);	
 }
 
 void Renderer::setClearColor(Color color) {
-	setClearColor(color.r, color.g, color.b);
+	setClearColor(color.r, color.g, color.b, color.a);
 }
 
 void Renderer::setRenderMode(int newRenderMode) {
