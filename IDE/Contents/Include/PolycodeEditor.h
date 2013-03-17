@@ -44,7 +44,7 @@ public:
 	
 	virtual void saveFile(){};
 	
-	virtual String Copy(void **data) {}
+	virtual String Copy(void **data) { return ""; }
 	virtual void Paste(void *data, String clipboardType) {}
 
 	virtual void handleDroppedFile(OSFileEntry file, Number x, Number y) {};

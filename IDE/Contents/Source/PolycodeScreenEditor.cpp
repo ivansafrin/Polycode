@@ -1911,7 +1911,12 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 			{
 				if(firstMove) {
 					Core *core = CoreServices::getInstance()->getCore();
+
+#if (defined(__APPLE__) && defined(__MACH__)) || (defined(_WINDOWS))
+					if(core->getInput()->getKeyState(KEY_RCTRL) || core->getInput()->getKeyState(KEY_RCTRL)) {
+#else
 					if(core->getInput()->getKeyState(KEY_RCTRL) || core->getInput()->getKeyState(KEY_LCTRL)) {
+#endif
 						void *data;
 						String type = Copy(&data);
 						if(data) {
