@@ -53,6 +53,18 @@ Label *ScreenLabel::getLabel() const {
 	return label;
 }
 
+Entity *ScreenLabel::Clone(bool deepClone, bool ignoreEditorOnly) {
+	ScreenLabel *newLabel = new ScreenLabel(getText(), label->getSize(), label->getFont()->getFontName(), label->getAntialiasMode());
+	applyClone(newLabel, deepClone, ignoreEditorOnly);
+	return newLabel;
+}
+
+void ScreenLabel::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) {
+	ScreenShape::applyClone(clone, deepClone, ignoreEditorOnly);
+	ScreenLabel *_clone = (ScreenLabel*) clone;
+	_clone->positionAtBaseline = positionAtBaseline;
+}
+
 void ScreenLabel::addDropShadow(Color color, Number size, Number offsetX, Number offsetY) {
 	delete dropShadowImage;
 	Image *labelImage = new Image(label);

@@ -29,10 +29,39 @@ ScreenEntityInstance::ScreenEntityInstance(const String& fileName) : ScreenEntit
 	rootEntity = NULL;
 	setPositionMode(ScreenEntity::POSITION_CENTER);
 	loadFromFile(fileName);
+	cloneUsingReload = false;
+}
+
+ScreenEntityInstance::ScreenEntityInstance() {
+	rootEntity = NULL;
+	cloneUsingReload = true;
 }
 
 ScreenEntityInstance::~ScreenEntityInstance() {
+}
 
+Entity *ScreenEntityInstance::Clone(bool deepClone, bool ignoreEditorOnly) {
+	ScreenEntityInstance *newEntity;
+	if(cloneUsingReload) {
+		newEntity = new ScreenEntityInstance(fileName);
+	} else {
+		newEntity = new ScreenEntityInstance();
+	}
+	applyClone(newEntity, deepClone, ignoreEditorOnly);
+	return newEntity;
+}
+
+void ScreenEntityInstance::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) {
+	if(cloneUsingReload) {
+		ScreenEntity::applyClone(clone, false, ignoreEditorOnly);
+	} else {
+		ScreenEntity::applyClone(clone, deepClone, ignoreEditorOnly);
+		ScreenEntityInstance *_clone = (ScreenEntityInstance*) clone;
+		_clone->fileName = fileName;
+		if(_clone->getNumChildren() > 0) {
+			_clone->rootEntity = (ScreenEntity*)_clone->getChildAtIndex(0);
+		}
+	}
 }
 
 void ScreenEntityInstance::applyScreenShape(ObjectEntry *entry, ScreenShape *shape) {

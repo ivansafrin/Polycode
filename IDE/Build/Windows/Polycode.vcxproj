@@ -15,6 +15,7 @@
     <ClCompile Include="..\..\Contents\Source\ExportProjectWindow.cpp" />
     <ClCompile Include="..\..\Contents\Source\NewFileWindow.cpp" />
     <ClCompile Include="..\..\Contents\Source\NewProjectWindow.cpp" />
+    <ClCompile Include="..\..\Contents\Source\PolycodeClipboard.cpp" />
     <ClCompile Include="..\..\Contents\Source\PolycodeConsole.cpp" />
     <ClCompile Include="..\..\Contents\Source\PolycodeEditor.cpp" />
     <ClCompile Include="..\..\Contents\Source\PolycodeEditorManager.cpp" />
@@ -42,6 +43,7 @@
     <ClInclude Include="..\..\Contents\Include\ExportProjectWindow.h" />
     <ClInclude Include="..\..\Contents\Include\NewFileWindow.h" />
     <ClInclude Include="..\..\Contents\Include\NewProjectWindow.h" />
+    <ClInclude Include="..\..\Contents\Include\PolycodeClipboard.h" />
     <ClInclude Include="..\..\Contents\Include\PolycodeConsole.h" />
     <ClInclude Include="..\..\Contents\Include\PolycodeEditor.h" />
     <ClInclude Include="..\..\Contents\Include\PolycodeEditorManager.h" />

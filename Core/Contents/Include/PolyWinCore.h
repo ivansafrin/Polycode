@@ -249,6 +249,8 @@ public:
 
 	private:
 
+		bool checkSpecialKeyEvents(PolyKEY key);
+
 		unsigned int nextDeviceID;
 		PolyKEY keyMap[1024];
 		unsigned int lastGamepadDetect;

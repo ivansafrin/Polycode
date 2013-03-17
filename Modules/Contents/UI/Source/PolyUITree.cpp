@@ -248,14 +248,14 @@ void UITree::clearSelection(UITree *selectedNode) {
 
 void UITree::refreshTree() {
 	if(collapsed) {
-		new Tween(&handleRotation, Tween::EASE_IN_QUAD, handleRotation, 0, 0.2f, false, true);
+		handleRotation = 0;
 		for(int i=0; i < treeChildren.size(); i++) {
 			treeChildren[i]->visible = false;
 			treeChildren[i]->enabled = false;			
 		}
 		treeHeight = 0;
 	} else {
-		new Tween(&handleRotation, Tween::EASE_IN_QUAD, handleRotation, 90, 0.2f, false, true);
+		handleRotation = 90;
 		int offset = cellHeight;
 		for(int i=0; i < treeChildren.size(); i++) {
 			treeChildren[i]->visible = true;

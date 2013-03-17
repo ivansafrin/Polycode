@@ -51,7 +51,9 @@ class _PolyExport ScreenEntity : public Entity {
 		ScreenEntity();
 		virtual ~ScreenEntity();
 		
-		
+		virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly);
+		virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly);
+
 		void addEntity(Entity *newChild);
 		
 		/**

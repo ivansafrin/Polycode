@@ -84,6 +84,9 @@
     <ClCompile Include="main.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Contents\Source\PolycodeClipboard.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Contents\Include\ExampleBrowserWindow.h">
@@ -159,6 +162,9 @@
       <Filter>Include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Contents\Include\ToolWindows.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Contents\Include\PolycodeClipboard.h">
       <Filter>Include</Filter>
     </ClInclude>
   </ItemGroup>

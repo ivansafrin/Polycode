@@ -67,6 +67,27 @@ ScreenEntity::ScreenEntity() : Entity() {
 	
 }
 
+Entity *ScreenEntity::Clone(bool deepClone, bool ignoreEditorOnly) {
+	ScreenEntity *newEntity = new ScreenEntity();
+	applyClone(newEntity, deepClone, ignoreEditorOnly);
+	return newEntity;
+}
+
+void ScreenEntity::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) {
+	Entity::applyClone(clone, deepClone, ignoreEditorOnly);
+
+	ScreenEntity *_clone = (ScreenEntity*) clone;
+	_clone->width = width;
+	_clone->height = height;
+	_clone->setHitbox(hit.x, hit.y, hit.w, hit.h);
+	_clone->positionMode = positionMode;
+	_clone->focusable = focusable;
+	_clone->blockMouseInput = blockMouseInput;
+	_clone->snapToPixels = snapToPixels;
+	_clone->processInputEvents = processInputEvents;
+	
+}
+
 void ScreenEntity::addEntity(Entity *newChild) {
 	((ScreenEntity*)newChild)->setDefaultScreenOptions(snapToPixels);
 	Entity::addEntity(newChild);

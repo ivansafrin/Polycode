@@ -27,11 +27,14 @@ using namespace Polycode;
 
 UIGlobalMenu *globalMenu;
 SyntaxHighlightTheme *globalSyntaxTheme;
+PolycodeClipboard *globalClipboard;
+
 
 PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	core = new POLYCODE_CORE(view, 900,700,false,true, 0, 0,30, -1);	
 	core->addEventListener(this, Core::EVENT_CORE_RESIZE);
 	
+	globalClipboard = new PolycodeClipboard();
 	
 	CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_NEAREST);
 				
@@ -120,15 +123,15 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	menuBar = new UIMenuBar(100, globalMenu);
 
 	UIMenuBarEntry *fileEntry = menuBar->addMenuBarEntry("File");
-	fileEntry->addItem("New File", "new_file");
-	fileEntry->addItem("New Project", "new_project");
-	fileEntry->addItem("New Folder", "new_folder");
-	fileEntry->addItem("Open Project", "open_project");
-	fileEntry->addItem("Close Project", "close_project");
+	fileEntry->addItem("New File", "new_file", KEY_n);
+	fileEntry->addItem("New Project", "new_project", KEY_LSHIFT, KEY_n);
+	fileEntry->addItem("New Folder", "new_folder", KEY_LSHIFT, KEY_f);
+	fileEntry->addItem("Open Project", "open_project", KEY_LSHIFT, KEY_o);
+	fileEntry->addItem("Close Project", "close_project", KEY_LSHIFT, KEY_w);
 	fileEntry->addItem("Remove File", "remove_file");
 	fileEntry->addItem("Refresh Project", "refresh_project");
-	fileEntry->addItem("Save File", "save_file");
-	fileEntry->addItem("Browse Examples", "browse_examples");
+	fileEntry->addItem("Save File", "save_file", KEY_s);
+	fileEntry->addItem("Browse Examples", "browse_examples", KEY_LSHIFT, KEY_e);
 	fileEntry->addItem("Quit", "quit");
 
 	UIMenuBarEntry *editEntry = menuBar->addMenuBarEntry("Edit");
@@ -138,7 +141,7 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	editEntry->addItem("Copy", "copy");
 
 	UIMenuBarEntry *projectEntry = menuBar->addMenuBarEntry("Project");
-	projectEntry->addItem("Run Project", "run_project");
+	projectEntry->addItem("Run Project", "run_project", KEY_r);
 	projectEntry->addItem("Publish Project", "export_project");
 
 	UIMenuBarEntry *helpEntry = menuBar->addMenuBarEntry("Help");
@@ -446,9 +449,11 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 	if(event->getDispatcher() == core) {
 		switch(event->getEventCode()) {
 			case Core::EVENT_CORE_RESIZE:
-				frame->Resize(core->getXRes(), core->getYRes());
 				if(menuBar) {
+					frame->Resize(core->getXRes(), core->getYRes()-25);
 					menuBar->Resize(core->getXRes(), 25);
+				} else {
+					frame->Resize(core->getXRes(), core->getYRes());
 				}
 			break;
 		}

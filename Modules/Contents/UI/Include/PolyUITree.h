@@ -70,7 +70,7 @@ namespace Polycode {
 			Number handleRotation;
 		
 		private:
-		
+
 			bool willDrag;
 			bool isDragging;
 		

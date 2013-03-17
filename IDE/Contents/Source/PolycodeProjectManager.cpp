@@ -136,7 +136,7 @@ void PolycodeProjectManager::createNewProject(String templateFolder, String proj
 	openProject(projectLocation+"/"+projectName+"/"+projectName+".polyproject");	
 }
 
-void PolycodeProjectManager::exportProject(PolycodeProject *project, String exportPath, bool macOS, bool windows, bool _linux) {
+void PolycodeProjectManager::exportProject(PolycodeProject *project, String exportPath, bool macOS, bool windows, bool linux) {
 
 	String polycodeBasePath = CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory();
 
@@ -161,6 +161,22 @@ void PolycodeProjectManager::exportProject(PolycodeProject *project, String expo
 		CoreServices::getInstance()->getCore()->removeDiskItem(appPath+"/Contents/Resources/main.polyapp");
 		CoreServices::getInstance()->getCore()->copyDiskItem(polyappPath, appPath+"/Contents/Resources/main.polyapp");
 		
+	}
+
+	if(windows) {
+		PolycodeConsole::print("Exporting Windows version to "+exportPath+"/Win \n");
+		CoreServices::getInstance()->getCore()->copyDiskItem(publishPath+"/Win", exportPath+"/Win");
+		CoreServices::getInstance()->getCore()->moveDiskItem(exportPath+"/Win/StandalonePlayer.exe", exportPath+"/Win/"+project->getProjectName()+".exe");
+		CoreServices::getInstance()->getCore()->removeDiskItem(exportPath+"/Win/main.polyapp");
+		CoreServices::getInstance()->getCore()->copyDiskItem(polyappPath, exportPath+"/Win/main.polyapp");
+	}
+
+	if(linux) {
+		PolycodeConsole::print("Exporting Linux version to "+exportPath+"/Linux \n");
+		CoreServices::getInstance()->getCore()->copyDiskItem(publishPath+"/Linux", exportPath+"/Linux");
+		CoreServices::getInstance()->getCore()->moveDiskItem(exportPath+"/Linux/StandalonePlayer", exportPath+"/Linux/"+project->getProjectName());
+		CoreServices::getInstance()->getCore()->removeDiskItem(exportPath+"/Linux/main.polyapp");
+		CoreServices::getInstance()->getCore()->copyDiskItem(polyappPath, exportPath+"/Linux/main.polyapp");
 	}
 }
 

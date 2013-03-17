@@ -49,8 +49,12 @@ namespace Polycode {
 		 */		
 		ScreenImage(Texture *texture);		
 		
+
 		virtual ~ScreenImage();
 		
+		virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly);
+		virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly);
+
 		/**
 		* Changes which part of the image is displayed.
 		* @param x X position of the display rectangle.

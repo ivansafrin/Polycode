@@ -79,6 +79,20 @@ namespace Polycode {
 
 			void renderChildren();					
 		
+			
+			/**
+ 			* Clones the entity, return an exact copy. This method must be implemented in an Entity subclass for you to be able to clone it.
+ 			* @param deepClone If true, perform a deep clone, cloning all the children.
+ 			* @param ignoreEditorOnly If true, ignore all child entities where editorOnly is set to true (will still clone the entity you call Clone() on even if its editorOnly flag is set to true.
+ 			* @return The clone of the entity.
+ 			*/
+			virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly);
+
+			/**
+ 			* This method must be implemented by all subvlasses implementing Clone.
+ 			*/
+			virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly);
+		
 		
 			// ----------------------------------------------------------------------------------------------------------------
 			/** @name Matrix operations.
