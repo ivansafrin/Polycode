@@ -627,6 +627,41 @@ void Win32Core::handleMouseUp(int mouseCode,LPARAM lParam, WPARAM wParam) {
 	unlockMutex(eventMutex);
 }
 
+bool Win32Core::checkSpecialKeyEvents(PolyKEY key) {
+	
+	if(key == KEY_a && (input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL))) {
+		dispatchEvent(new Event(), Core::EVENT_SELECT_ALL);
+		return true;
+	}
+	
+	if(key == KEY_c && (input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL))) {
+		dispatchEvent(new Event(), Core::EVENT_COPY);
+		return true;
+	}
+	
+	if(key == KEY_x && (input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL))) {
+		dispatchEvent(new Event(), Core::EVENT_CUT);
+		return true;
+	}
+	
+	
+	if(key == KEY_y && (input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL))) {
+		dispatchEvent(new Event(), Core::EVENT_REDO);
+		return true;
+	}
+		
+	if(key == KEY_z  && (input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL))) {
+		dispatchEvent(new Event(), Core::EVENT_UNDO);
+		return true;
+	}
+	
+	if(key == KEY_v && (input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL))) {
+		dispatchEvent(new Event(), Core::EVENT_PASTE);
+		return true;
+	}
+	return false;
+}
+
 void Win32Core::checkEvents() {
 	lockMutex(eventMutex);
 	Win32Event event;
@@ -657,7 +692,9 @@ void Win32Core::checkEvents() {
 							input->setMouseButtonState(event.mouseButton, false, getTicks());
 					break;
 					case InputEvent::EVENT_KEYDOWN:
-						input->setKeyState(event.keyCode, (char)event.unicodeChar, true, getTicks());
+						if(!checkSpecialKeyEvents((event.keyCode))) {
+							input->setKeyState(event.keyCode, (char)event.unicodeChar, true, getTicks());
+						}
 					break;
 					case InputEvent::EVENT_KEYUP:
 						input->setKeyState(event.keyCode, (char)event.unicodeChar, false, getTicks());

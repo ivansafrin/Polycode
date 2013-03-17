@@ -1664,6 +1664,7 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 	
 	if(event->getDispatcher() == CoreServices::getInstance()->getCore()->getInput()) {
 		if(event->getEventCode() == InputEvent::EVENT_KEYDOWN) {
+			printf("KEY: %d\n", inputEvent->key);
 			switch(inputEvent->key) {
 				case Polycode::KEY_ESCAPE:
 					if(selectedEntity) {
@@ -1911,12 +1912,7 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 			{
 				if(firstMove) {
 					Core *core = CoreServices::getInstance()->getCore();
-
-#if (defined(__APPLE__) && defined(__MACH__)) || (defined(_WINDOWS))
-					if(core->getInput()->getKeyState(KEY_RCTRL) || core->getInput()->getKeyState(KEY_RCTRL)) {
-#else
-					if(core->getInput()->getKeyState(KEY_RCTRL) || core->getInput()->getKeyState(KEY_LCTRL)) {
-#endif
+					if(core->getInput()->getKeyState(COPYMOD_1) || core->getInput()->getKeyState(COPYMOD_2)) {
 						void *data;
 						String type = Copy(&data);
 						if(data) {
