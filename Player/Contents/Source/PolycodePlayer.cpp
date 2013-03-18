@@ -670,7 +670,7 @@ void PolycodePlayer::loadFile(const char *fileName) {
 	
 	Logger::log("Core created...\n");
 
-	CoreServices::getInstance()->getResourceManager()->addArchive("UIThemes.zip");
+	CoreServices::getInstance()->getResourceManager()->addArchive("UIThemes.pak");
 	CoreServices::getInstance()->getConfig()->loadConfig("Polycode", "UIThemes/default/theme.xml");
 	
 	CoreServices::getInstance()->getResourceManager()->addArchive("api.pak");
