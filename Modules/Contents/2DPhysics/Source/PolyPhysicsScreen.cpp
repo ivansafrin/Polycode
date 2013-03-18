@@ -102,7 +102,7 @@ void PhysicsScreen::PostSolve(b2Contact* contact, const b2ContactImpulse* impuls
 
     
     if(((PhysicsScreenEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->collisionOnly ||
-       ((PhysicsScreenEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->collisionOnly) {
+       ((PhysicsScreenEntity*)contact->GetFixtureB()->GetBody()->GetUserData())->collisionOnly) {
         contact->SetEnabled(false);
     }
 
