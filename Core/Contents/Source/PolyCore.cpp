@@ -187,7 +187,7 @@ namespace Polycode {
 		if(elapsed > 1000)
 			elapsed = 1000;
 			
-		services->Update(elapsed);
+		services->Update(elapsed, !paused);
 		
 		if(frameTicks-lastFPSTicks >= 1000) {
 			fps = frames;

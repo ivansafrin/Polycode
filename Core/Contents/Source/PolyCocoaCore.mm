@@ -538,7 +538,11 @@ bool CocoaCore::Update() {
 	
 	if(!paused) {	
 		renderer->BeginRender();
-		updateCore();
+	}
+	
+	updateCore();
+		
+	if(!paused) {		
 		renderer->EndRender();
 		[context flushBuffer];
 	}

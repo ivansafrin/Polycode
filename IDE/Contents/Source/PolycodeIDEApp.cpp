@@ -160,7 +160,8 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 #endif
 	core->setVideoMode(1100, 700, false, true, 0, 0);
 
-
+	needsRedraw = false;
+	lastConnected = false;
 }
 
 void PolycodeIDEApp::renameFile() {
@@ -679,12 +680,17 @@ bool PolycodeIDEApp::Update() {
 		runProject();
 	}
 
+	if(lastConnected != debugger->isConnected()) {
+		needsRedraw = true;
+		lastConnected = debugger->isConnected();
+	}
+
 	if(debugger->isConnected()) {
 			frame->stopButton->visible = true;
 			frame->stopButton->enabled = true;			
 			
 			frame->playButton->visible = false;
-			frame->playButton->enabled = false;			
+			frame->playButton->enabled = false;						
 			
 	} else {
 			frame->stopButton->visible = false;
@@ -693,6 +699,7 @@ bool PolycodeIDEApp::Update() {
 			frame->playButton->visible = true;
 			frame->playButton->enabled = true;				
 	}
+	
 
 	if(projectManager->getProjectCount() == 1) {
 		projectManager->setActiveProject(projectManager->getProjectByIndex(0));
@@ -708,6 +715,16 @@ bool PolycodeIDEApp::Update() {
 		frame->mainSizer->enabled = false;		
 	}
 
-	return core->Update();
+	// ugly hack to update the screen when debugger connects
+	bool oldPaused = core->paused;
+	if(needsRedraw) {
+		core->paused = false;
+	}
+	bool retStat = core->Update();
+	if(oldPaused == true && needsRedraw) {
+		core->paused = true;
+		needsRedraw = false;
+	}
+	return retStat;
 }
 
