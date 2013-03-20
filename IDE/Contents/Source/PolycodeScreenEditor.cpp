@@ -1663,8 +1663,9 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 		
 	}
 
-	if(event->getDispatcher() == entityPropSheet) {
+	if(event->getDispatcher() == entityPropSheet && event->getEventType() == "") {
 			entityProps->updateSize();
+			entityProps->scrollContainer->setScrollValue(0.0, 1.0);
 	}
 	
 	if((event->getDispatcher() == transform2dSheet || event->getDispatcher() == labelSheet || event->getDispatcher() == imageSheet) && event->getEventType() == "") {

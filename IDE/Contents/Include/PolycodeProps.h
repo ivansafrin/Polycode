@@ -276,6 +276,8 @@ class EntityPropSheet : public PropSheet {
 		Entity *entity;
 		Entity *lastEntity;
 		
+		int lastNumProps;
+		
 		int removeIndex;
 		
 };

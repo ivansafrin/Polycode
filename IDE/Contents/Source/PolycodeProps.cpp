@@ -961,6 +961,8 @@ EntityPropSheet::EntityPropSheet() : PropSheet("CUSTOM PROPERTIES", "entityProps
 	entity = NULL;
 	lastEntity = NULL;
 	
+	lastNumProps = 0;
+	
 	removeIndex = -1;
 }
 
@@ -1010,8 +1012,16 @@ void EntityPropSheet::refreshProps() {
 		propHeight += 35;
 	}
 	
+	
 	addButton->setPosition(15, propHeight-40);	
-	dispatchEvent(new Event(), Event::CHANGE_EVENT);
+	
+	
+	if(lastNumProps != entity->entityProps.size()) {
+		dispatchEvent(new Event(), Event::CHANGE_EVENT);
+	}
+	
+	lastNumProps = entity->entityProps.size();
+		
 	Resize(width, height);	
 }
 

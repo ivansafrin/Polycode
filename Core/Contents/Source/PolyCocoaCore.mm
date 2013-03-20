@@ -412,6 +412,8 @@ void CocoaCore::checkEvents() {
 						input->setMousePosition(event.mouseX, event.mouseY, getTicks());						
 						break;
 					case InputEvent::EVENT_MOUSEDOWN:
+						input->mousePosition.x = event.mouseX;
+						input->mousePosition.y = event.mouseY;
 						input->setMouseButtonState(event.mouseButton, true, getTicks());						
 						break;
 					case InputEvent::EVENT_MOUSEWHEEL_UP:
