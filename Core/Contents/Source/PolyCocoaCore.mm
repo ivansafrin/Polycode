@@ -532,13 +532,17 @@ vector<String> CocoaCore::openFilePicker(vector<CoreFileExtension> extensions, b
 bool CocoaCore::Update() {
 	if(!running)
 		return false;
-		
+	
 	lockMutex(CoreServices::getRenderMutex());	
 	checkEvents();
-	renderer->BeginRender();
-	updateCore();
-	renderer->EndRender();
-	[context flushBuffer];
+	
+	if(!paused) {	
+		renderer->BeginRender();
+		updateCore();
+		renderer->EndRender();
+		[context flushBuffer];
+	}
+	
 	unlockMutex(CoreServices::getRenderMutex());	
 	doSleep();	
 	return running;

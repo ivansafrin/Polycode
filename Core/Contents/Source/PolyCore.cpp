@@ -63,6 +63,8 @@ namespace Polycode {
 		elapsed = 0;
 		xRes = _xRes;
 		yRes = _yRes;
+		paused = false;
+		pauseOnLoseFocus = false;
 		if (fullScreen && !xRes && !yRes) {
 			getScreenInfo(&xRes, &yRes, NULL);
 		}
@@ -148,11 +150,17 @@ namespace Polycode {
 	}
 	
 	void Core::loseFocus() {
+		if(pauseOnLoseFocus) {
+			paused = true;
+		}
 		input->clearInput();
 		dispatchEvent(new Event(), EVENT_LOST_FOCUS);
 	}
 	
 	void Core::gainFocus() {
+		if(pauseOnLoseFocus) {
+			paused = false;
+		}	
 		input->clearInput();		
 		dispatchEvent(new Event(), EVENT_GAINED_FOCUS);
 	}
@@ -178,8 +186,9 @@ namespace Polycode {
 		
 		if(elapsed > 1000)
 			elapsed = 1000;
+			
 		services->Update(elapsed);
-
+		
 		if(frameTicks-lastFPSTicks >= 1000) {
 			fps = frames;
 			frames = 0;

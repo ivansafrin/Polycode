@@ -32,6 +32,8 @@ PolycodeClipboard *globalClipboard;
 
 PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	core = new POLYCODE_CORE(view, 900,700,false,true, 0, 0,30, -1);	
+	core->pauseOnLoseFocus = true;
+	
 	core->addEventListener(this, Core::EVENT_CORE_RESIZE);
 	
 	globalClipboard = new PolycodeClipboard();

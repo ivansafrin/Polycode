@@ -340,6 +340,8 @@ namespace Polycode {
 		static const int CURSOR_RESIZE_UP_DOWN = 5;
 		static const int CURSOR_OPEN_HAND = 6;		
 		
+		bool paused;
+		bool pauseOnLoseFocus;
 				
 	protected:	
 	
