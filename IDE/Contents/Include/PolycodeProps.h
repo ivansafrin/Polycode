@@ -75,6 +75,21 @@ class NumberProp : public PropProp {
 		UITextInput *numberEntry;
 };
 
+
+class CustomProp : public PropProp {
+	public:
+		CustomProp(String key, String value);
+		~CustomProp();
+		void handleEvent(Event *event);
+		void set(String key, String val);
+		String getValue();
+		String getKey();
+				
+		UITextInput *keyEntry;
+		UITextInput *valueEntry;
+		UIImageButton *removeButton;
+};
+
 class StringProp : public PropProp {
 	public:
 		StringProp(String caption);
@@ -247,6 +262,22 @@ class EntitySheet : public PropSheet {
 		StringProp *tagProp;
 		ColorProp *colorProp;
 		ComboProp *blendingProp;
+};
+
+class EntityPropSheet : public PropSheet {
+	public:
+		EntityPropSheet();		
+		void handleEvent(Event *event);
+		void Update();
+		void refreshProps();
+				
+		UIButton *addButton;
+		
+		Entity *entity;
+		Entity *lastEntity;
+		
+		int removeIndex;
+		
 };
 
 class ShapeSheet : public PropSheet {
@@ -439,6 +470,7 @@ class PropList : public UIElement {
 		~PropList();
 		
 		void updateProps();
+		void updateSize();
 		
 		void addPropSheet(PropSheet *sheet);
 		void handleEvent(Event *event);

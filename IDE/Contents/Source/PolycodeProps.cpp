@@ -68,7 +68,10 @@ void PropList::updateProps() {
 	for(int i=0; i < props.size(); i++) {
 		props[i]->Update();
 	}
-	
+	updateSize();
+}
+
+void PropList::updateSize() {
 	Resize(width, height);
 	scrollContainer->setScrollValue(0, 0);	
 }
@@ -271,6 +274,58 @@ Vector2 Vector2Prop::get() {
 Vector2Prop::~Vector2Prop() {
 
 }
+
+CustomProp::CustomProp(String key, String value) : PropProp("") {
+	keyEntry = new UITextInput(false, 120, 12);
+	keyEntry->setText(key);
+	keyEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
+	propContents->addChild(keyEntry);
+	keyEntry->setPosition(-90, 0);
+
+	valueEntry = new UITextInput(false, 120, 12);
+	valueEntry->setText(value);	
+	valueEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
+	propContents->addChild(valueEntry);
+	valueEntry->setPosition(45, 0);
+	
+	removeButton = new UIImageButton("Images/remove_icon.png");
+	removeButton->addEventListener(this, UIEvent::CLICK_EVENT);	
+	propContents->addChild(removeButton);
+	removeButton->setPosition(-110, 6);
+	
+	setHeight(30);
+
+}
+
+CustomProp::~CustomProp() {
+
+}
+
+void CustomProp::handleEvent(Event *event) {
+
+	if(event->getEventType() == "UIEvent") {
+	
+		if(event->getDispatcher() == keyEntry || event->getDispatcher() == valueEntry) {
+			dispatchEvent(new Event(), Event::CHANGE_EVENT);		
+		}	
+	
+		if(event->getDispatcher() == removeButton) {
+			dispatchEvent(new Event(), Event::CANCEL_EVENT);
+		}
+	}
+}
+
+void CustomProp::set(String key, String val) {
+}
+
+String CustomProp::getValue() {
+	return valueEntry->getText();
+}
+
+String CustomProp::getKey() {
+	return keyEntry->getText();
+}
+
 
 StringProp::StringProp(String caption) : PropProp(caption) {
 
@@ -893,6 +948,94 @@ void ShapeSheet::Update() {
 		enabled = false;
 	}
 }
+
+EntityPropSheet::EntityPropSheet() : PropSheet("CUSTOM PROPERTIES", "entityProps"){
+
+	propHeight = 75;
+	
+	addButton = new UIButton("Add Property", 150);
+	addButton->addEventListener(this, UIEvent::CLICK_EVENT);
+	addChild(addButton);
+	addButton->setPosition(15, 35);
+	
+	entity = NULL;
+	lastEntity = NULL;
+	
+	removeIndex = -1;
+}
+
+void EntityPropSheet::handleEvent(Event *event) {
+	if(!entity)
+		return;
+		
+	if(event->getDispatcher() == addButton && event->getEventType() == "UIEvent") {
+		entity->entityProps.push_back(EntityProp());
+		refreshProps();
+	}
+	
+	for(int i=0; i < props.size(); i++) {
+		if(event->getDispatcher() == props[i] && event->getEventType() == "") {
+			switch(event->getEventCode()) {						
+				case Event::CANCEL_EVENT:
+					removeIndex = i;
+				break;
+				case Event::CHANGE_EVENT:
+					if(i < entity->entityProps.size()) {
+						entity->entityProps[i].propName = ((CustomProp*)props[i])->getKey();
+						entity->entityProps[i].propValue = ((CustomProp*)props[i])->getValue();			
+					}
+				break;				
+			}
+		}
+	}
+
+}
+
+void EntityPropSheet::refreshProps() {
+
+	for(int i=0; i < props.size(); i++) {
+		contents->removeChild(props[i]);
+		props[i]->removeAllHandlersForListener(this);
+		delete props[i];
+	}
+	props.clear();
+	propHeight = 75;
+	
+	for(int i=0; i < entity->entityProps.size(); i++) {			
+		EntityProp prop = entity->entityProps[i];
+		CustomProp *newProp = new CustomProp(prop.propName, prop.propValue);
+		newProp->addEventListener(this, Event::CANCEL_EVENT);
+		newProp->addEventListener(this, Event::CHANGE_EVENT);		
+		addProp(newProp);
+		propHeight += 35;
+	}
+	
+	addButton->setPosition(15, propHeight-40);	
+	dispatchEvent(new Event(), Event::CHANGE_EVENT);
+	Resize(width, height);	
+}
+
+void EntityPropSheet::Update() {
+	if(entity) {
+	
+		if(removeIndex != -1) {
+			if(removeIndex < entity->entityProps.size()) {
+				entity->entityProps.erase(entity->entityProps.begin() + removeIndex);
+			}
+			removeIndex = -1;
+			refreshProps();
+		}
+	
+		enabled = true;		
+		if(entity != lastEntity) {
+			refreshProps();
+			lastEntity = entity;
+		}
+	} else {
+		enabled = false;		
+	}
+}
+
 
 EntitySheet::EntitySheet() : PropSheet("ENTITY", "entity"){
 	idProp = new StringProp("ID");
