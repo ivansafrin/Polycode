@@ -29,7 +29,7 @@
 
 using namespace Polycode;
 
-class PolycodeProjectManager {
+class PolycodeProjectManager : public EventDispatcher {
 	public:
 		PolycodeProjectManager();
 		~PolycodeProjectManager();

@@ -32,10 +32,12 @@ PolycodeClipboard *globalClipboard;
 
 PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	core = new POLYCODE_CORE(view, 900,700,false,true, 0, 0,30, -1);	
-	core->pauseOnLoseFocus = true;
+//	core->pauseOnLoseFocus = true;
 	
 	core->addEventListener(this, Core::EVENT_CORE_RESIZE);
-	
+	core->addEventListener(this, Core::EVENT_LOST_FOCUS);
+	core->addEventListener(this, Core::EVENT_GAINED_FOCUS);
+			
 	globalClipboard = new PolycodeClipboard();
 	
 	CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_NEAREST);
@@ -65,6 +67,7 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	
 	willRunProject = false;
 
+	globalMenu	= new UIGlobalMenu();
 		
 	printf("creating font editor\n"); 
 	
@@ -75,6 +78,9 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	
 	frame = new PolycodeFrame();
 	frame->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+
+	frame->editorManager = editorManager;
+	editorManager->addEventListener(frame, Event::CHANGE_EVENT);
 
 	frame->console->backtraceWindow->addEventListener(this, BackTraceEvent::EVENT_BACKTRACE_SELECTED);
 
@@ -96,6 +102,8 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	projectManager->setProjectBrowser(frame->getProjectBrowser());
 	
 	frame->projectManager = projectManager;
+
+	projectManager->addEventListener(frame, Event::CHANGE_EVENT);
 	
 	frame->getProjectBrowser()->addEventListener(this, Event::CHANGE_EVENT);
 	frame->getProjectBrowser()->addEventListener(this, PolycodeProjectBrowserEvent::HANDLE_MENU_COMMAND);
@@ -115,7 +123,6 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	editorManager->registerEditorFactory(new PolycodeSpriteEditorFactory());
 
 		
-	globalMenu	= new UIGlobalMenu();
 	screen->addChild(globalMenu);	
 				
 	loadConfigFile();
@@ -451,6 +458,12 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == core) {
 		switch(event->getEventCode()) {
+			case Core::EVENT_LOST_FOCUS:
+				core->setFramerate(1);
+			break;		
+			case Core::EVENT_GAINED_FOCUS:
+				core->setFramerate(30);			
+			break;					
 			case Core::EVENT_CORE_RESIZE:
 				if(menuBar) {
 					frame->Resize(core->getXRes(), core->getYRes()-25);
@@ -715,16 +728,7 @@ bool PolycodeIDEApp::Update() {
 		frame->mainSizer->enabled = false;		
 	}
 
-	// ugly hack to update the screen when debugger connects
-	bool oldPaused = core->paused;
-	if(needsRedraw) {
-		core->paused = false;
-	}
-	bool retStat = core->Update();
-	if(oldPaused == true && needsRedraw) {
-		core->paused = true;
-		needsRedraw = false;
-	}
-	return retStat;
+
+	return core->Update();
 }
 

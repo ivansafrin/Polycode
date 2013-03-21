@@ -23,7 +23,7 @@
 #include "PolycodeEditorManager.h"
 
 
-PolycodeEditorManager::PolycodeEditorManager() {
+PolycodeEditorManager::PolycodeEditorManager()  : EventDispatcher() {
 	currentEditor = NULL;
 }
 
@@ -42,6 +42,14 @@ PolycodeEditor *PolycodeEditorManager::createEditorForExtension(String extension
 	}
 	return NULL;
 }
+
+void PolycodeEditorManager::setCurrentEditor(PolycodeEditor *editor, bool sendChangeEvent) {
+	currentEditor = editor;
+	if(sendChangeEvent){
+		dispatchEvent(new Event(), Event::CHANGE_EVENT);
+	}
+}
+
 
 PolycodeEditor *PolycodeEditorManager::getEditorForPath(String path) {
 	for(int i=0; i < openEditors.size();i++) {

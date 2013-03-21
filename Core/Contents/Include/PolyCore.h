@@ -241,7 +241,11 @@ namespace Polycode {
 		/**
 		* Opens a system folder picker and suspends operation.
 		* @return The selected path returned from the picker.
-		*/																					
+		*/		
+		
+
+		void setFramerate(int frameRate);
+
 		virtual String openFolderPicker() = 0;
 		
 		/**

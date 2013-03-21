@@ -80,6 +80,10 @@ namespace Polycode {
 		threadedEventMutex = NULL;
 	}
 	
+	void Core::setFramerate(int frameRate) {
+		refreshInterval = 1000 / frameRate;
+	}
+	
 	void Core::enableMouse(bool newval) {
 		mouseEnabled = newval;
 	}

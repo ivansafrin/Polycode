@@ -23,7 +23,7 @@
 #include "PolycodeProjectManager.h"
 #include "PolycodeToolLauncher.h"
 
-PolycodeProjectManager::PolycodeProjectManager() {
+PolycodeProjectManager::PolycodeProjectManager() : EventDispatcher() {
 	activeProject = NULL;
 	activeFolder = "";
 	selectedFile = "";
@@ -106,6 +106,7 @@ void PolycodeProjectManager::setActiveProject(PolycodeProject* project) {
 		if(project){			
 			CoreServices::getInstance()->getResourceManager()->addArchive(project->getRootFolder());
 		}
+		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}
 }
 

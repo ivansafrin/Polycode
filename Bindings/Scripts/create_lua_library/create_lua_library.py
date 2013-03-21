@@ -131,6 +131,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 		wrappersHeaderOut += "public:\n"
 		wrappersHeaderOut += "	LuaEventHandler() : EventHandler() {}\n"
 		wrappersHeaderOut += "	void handleEvent(Event *e) {\n"
+		wrappersHeaderOut += "		lua_getfield (L, LUA_GLOBALSINDEX, \"__customError\");\n"
 		wrappersHeaderOut += "		int errH = lua_gettop(L);\n"
 		wrappersHeaderOut += "		lua_getfield(L, LUA_GLOBALSINDEX, \"__handleEvent\");\n"
 		wrappersHeaderOut += "		lua_rawgeti( L, LUA_REGISTRYINDEX, wrapperIndex );\n"

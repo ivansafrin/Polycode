@@ -32,6 +32,7 @@
 #include "NewFileWindow.h"
 #include "ToolWindows.h"
 #include "PolycodeProjectManager.h"
+#include "PolycodeEditorManager.h"
 
 using namespace Polycode;
 
@@ -187,6 +188,7 @@ public:
 	
 	ScreenEntity *welcomeEntity;	
 	PolycodeProjectBrowser *projectBrowser;
+	PolycodeEditorManager *editorManager;
 		
 	UIImageButton *playButton;
 	UIImageButton *stopButton;
@@ -222,6 +224,9 @@ private:
 	ScreenEntity *dragEntity;
 	ScreenLabel *dragLabel;
 	bool isDragging;
+	
+	ScreenLabel *currentProjectTitle;
+	UIComboBox *currentFileSelector;
 	
 	ScreenImage *welcomeImage;	
 	
