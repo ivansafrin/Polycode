@@ -34,8 +34,11 @@ namespace Polycode {
 	*/	
 	class _PolyExport PhysicsScreenEntity {
 		public:
+        
+            PhysicsScreenEntity() { collisionOnly = false; }
+        
 			PhysicsScreenEntity(ScreenEntity *entity, b2World *world, Number worldScale, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation, int groupIndex = 0);
-			~PhysicsScreenEntity();		
+			virtual ~PhysicsScreenEntity();		
 			
 			/**
 			* Returns the screen entity associated with this physics entity.
@@ -54,18 +57,49 @@ namespace Polycode {
 		
 			void setTransform(Vector2 pos, Number angle);
 			
-			void Update();
+			virtual void Update();
 			
 			void setVelocity(Number fx, Number fy);	
-			void setVelocityX(Number fx);
-			void setVelocityY(Number fy);
-			
+			void setVelocityX( Number fx);	
+			void setVelocityY(Number fy);				
+        
 			void applyImpulse(Number fx, Number fy);
-
-
-			b2Fixture* getFixture();						// Gets the last fixture selected (automatically set on creation)			
-			b2Fixture* getFixture(unsigned short index);	// Gets a specific fixture if there is more than one
 			
+            /**
+             * Sets the damping of the physics entity
+             */
+        
+            void setLinearDamping(Number damping);
+            void setAngularDamping(Number damping);
+            void setFriction(Number friction);
+        
+            /**
+             * Returns damping information
+             */ 
+        
+            Number getLinearDamping();
+            Number getAngularDamping();
+            Number getFriction();
+
+            /**
+             * Sets physics entity density
+             */
+        
+            void setDensity(Number density);
+            Number getDensity();
+        
+            /**
+             * Sets collision filtering
+             * Collision category specifies which bits on a 16 bit field the physics entity belongs to. default is 1 (or "0000000000000001")
+             * Collision mask specifies which bits the physics entity will collide with. default 65535 (or 0xFFFF, or "1111111111111111", or everything)
+             * If a physics entity's mask bits don't line up with any of an overlapping entity's category bits, their collisions will be skipped
+             */
+            
+            void setCollisionCategory(int categoryBits);
+            void setCollisionMask(int maskBits);
+        
+            void setCollisionGroupIndex(int group);
+            
 			/**
 			* Rectangular physics entity
 			*/ 
@@ -78,15 +112,18 @@ namespace Polycode {
 			* Mesh entity.
 			*/ 						
 			static const int ENTITY_MESH = 3;
-		
-			b2Body *body;
-			b2Fixture *fixture;								// You do not need a shape pointer
+        
+            static const int ENTITY_EDGE = 4;
 
+			b2Body *body;			
+			b2Fixture *fixture;		
+			
 			bool collisionOnly;
-		
+
 		protected:
-		
-		Number worldScale;
-		ScreenEntity *screenEntity;
+        
+		Number worldScale;        
+        ScreenEntity *screenEntity;   		
 	};
+
 }

@@ -35,6 +35,8 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 	
 	screenEntity = entity;
 
+	entity->ignoreParentMatrix = true;
+	entity->scale = entityScale;
 	Vector3 entityScale = entity->getCompoundScale();
 	this->worldScale = worldScale;
 	collisionOnly = false;
@@ -53,6 +55,7 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 
 		// Create the body
 	body = world->CreateBody(&bodyDef);
+	body->SetUserData(this);
 	
 	// Create fixture definition---------------------------------------------
 	b2FixtureDef fDef;
@@ -61,6 +64,7 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 	fDef.density = density;
 	fDef.isSensor = isSensor;
 	fDef.filter.groupIndex = groupIndex;
+	fDef.userData = screenEntity;
 
 	// Create Shape definition (Circle/Rectangle/Polygon)---------------------------
 	switch(entType) {
@@ -84,6 +88,15 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 			fixture = body->CreateFixture(&fDef);
 			break;
 		}
+		case ENTITY_EDGE: {
+			b2PolygonShape Shape;	
+			Shape.SetAsEdge(b2Vec2(-screenEntity->getWidth()/(worldScale*2.0f),-screenEntity->getHeight()/(2.0*worldScale)),
+							b2Vec2(screenEntity->getWidth()/(worldScale*2.0f),-screenEntity->getHeight()/(2.0*worldScale)));
+			fDef.shape = &Shape;
+			fixture = body->CreateFixture(&fDef);
+			break;
+        }
+        break;
 		case ENTITY_MESH: {
 			b2PolygonShape Shape;
 			// Set fixture shape to shape definition
@@ -145,28 +158,84 @@ void PhysicsScreenEntity::setVelocity(Number fx, Number fy) {
 }
 
 void PhysicsScreenEntity::setVelocityX( Number fx) {
-	body->SetAwake(true);	
+	body->SetAwake(true);
 	b2Vec2 f = body->GetLinearVelocity();
-	f.x = fx;
+	f.x = fx;	
 	body->SetLinearVelocity(f);
 }
 
 void PhysicsScreenEntity::setVelocityY(Number fy) {
 	body->SetAwake(true);
 	b2Vec2 f = body->GetLinearVelocity();
-	f.y = fy;
-	body->SetLinearVelocity(f);
+	f.y = fy;	
+	body->SetLinearVelocity(f);	
 }
 
-void PhysicsScreenEntity::applyImpulse(Number fx, Number fy) {	
+
+void PhysicsScreenEntity::setCollisionCategory(int categoryBits) {
+        b2Filter filter=fixture->GetFilterData();
+        filter.categoryBits = categoryBits;
+        fixture->SetFilterData(filter);
+}
+
+void PhysicsScreenEntity::setCollisionMask(int maskBits) {
+        b2Filter filter=fixture->GetFilterData();
+        filter.maskBits = maskBits;
+        fixture->SetFilterData(filter);
+}
+
+void PhysicsScreenEntity::setCollisionGroupIndex(int group) {
+    b2Filter filter=fixture->GetFilterData();
+    filter.groupIndex = group;
+    fixture->SetFilterData(filter);    
+}
+
+void PhysicsScreenEntity::setLinearDamping(Number damping) {
+    body->SetLinearDamping(damping);
+}
+
+void PhysicsScreenEntity::setAngularDamping(Number damping) {
+    body->SetAngularDamping(damping);
+}
+
+void PhysicsScreenEntity::setFriction(Number friction) {
+    if(fixture) {
+        fixture->SetFriction(friction);
+    }
+}
+
+void PhysicsScreenEntity::setDensity(Number density){
+    if(fixture) {
+        fixture->SetDensity(density);
+    }
+}
+
+Number PhysicsScreenEntity::getLinearDamping() {
+    return body->GetLinearDamping();
+}
+
+Number PhysicsScreenEntity::getAngularDamping() {
+    return body->GetAngularDamping();
+}
+
+Number PhysicsScreenEntity::getFriction() {
+    return fixture->GetFriction();
+}
+
+Number PhysicsScreenEntity::getDensity() {
+    return fixture->GetDensity();
+}
+
+void PhysicsScreenEntity::applyImpulse(Number fx, Number fy) {
 	body->SetAwake(true);
 	b2Vec2 f =  b2Vec2(fx,fy);
-	b2Vec2 p = body->GetWorldPoint(b2Vec2(0.0f, 0.0f));
-	body->ApplyLinearImpulse(f, p);
+	b2Vec2 p = body->GetWorldPoint(b2Vec2(0.0f, 0.0f));	
+	body->ApplyLinearImpulse(f, p);	
 }
-
+			
 void PhysicsScreenEntity::setTransform(Vector2 pos, Number angle) {
 	body->SetTransform(b2Vec2(pos.x/worldScale, pos.y/worldScale), angle*(PI/180.0f));
+    screenEntity->setPosition(pos);
 }
 
 void PhysicsScreenEntity::Update() {
@@ -194,8 +263,6 @@ void PhysicsScreenEntity::Update() {
 		screenEntity->rebuildTransformMatrix();		
 	}	
 }
-
-
 
 
 
