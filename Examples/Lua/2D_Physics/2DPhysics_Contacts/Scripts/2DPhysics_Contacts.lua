@@ -1,20 +1,5 @@
-class "ImpactNoise" (EventHandler)
 
-function ImpactNoise:ImpactNoise()
-        self.collisionSound = Sound("Resources/collision.wav")
-        EventHandler.EventHandler(self)
-end
-
-function ImpactNoise:handleEvent(e)
-        if e:getDispatcher() == screen then
-                local pe = PhysicsScreenEvent(e)
-                if e:getEventCode() == PhysicsScreenEvent.EVENT_NEW_SHAPE_COLLISION then
-                        if pe.impactStrength > 5 then
-                                self.collisionSound:Play()
-                        end
-                end
-        end
-end
+-- makes a sound when a collision impact stronger than 5 happens
 
 screen = PhysicsScreen(10, 60)
 shape = ScreenShape(ScreenShape.SHAPE_RECT, 600,30)
@@ -29,7 +14,13 @@ for i=0,50 do
         screen:addPhysicsChild(shape, PhysicsScreenEntity.ENTITY_RECT, false)
 end
 
+collisionSound = Sound("Resources/collision.wav")
 
-noiseMaker = ImpactNoise()
+function onCollision(t, event)
+	physicsEvent = safe_cast(event, PhysicsScreenEvent)
+	if physicsEvent.impactStrength > 5 then
+			collisionSound:Play()
+		end
+end
 
-screen:addEventListener(noiseMaker, PhysicsScreenEvent.EVENT_NEW_SHAPE_COLLISION)
+screen:addEventListener(test, onCollision, PhysicsScreenEvent.EVENT_NEW_SHAPE_COLLISION)

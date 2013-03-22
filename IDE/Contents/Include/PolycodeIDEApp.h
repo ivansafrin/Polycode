@@ -93,6 +93,9 @@ public:
 	
 	void refreshProject();	
 	
+	bool needsRedraw;
+	bool lastConnected;
+	
 	const static int EVENT_SHOW_MENU = 1;
 	
 	Core *core;	

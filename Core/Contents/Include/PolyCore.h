@@ -241,7 +241,11 @@ namespace Polycode {
 		/**
 		* Opens a system folder picker and suspends operation.
 		* @return The selected path returned from the picker.
-		*/																					
+		*/		
+		
+
+		void setFramerate(int frameRate);
+
 		virtual String openFolderPicker() = 0;
 		
 		/**
@@ -340,6 +344,8 @@ namespace Polycode {
 		static const int CURSOR_RESIZE_UP_DOWN = 5;
 		static const int CURSOR_OPEN_HAND = 6;		
 		
+		bool paused;
+		bool pauseOnLoseFocus;
 				
 	protected:	
 	

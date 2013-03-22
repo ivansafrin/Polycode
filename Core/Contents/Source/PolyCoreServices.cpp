@@ -205,16 +205,19 @@ Renderer *CoreServices::getRenderer() {
 	return renderer;
 }
 
-void CoreServices::Update(int elapsed) {
+void CoreServices::Update(int elapsed, bool updateRenderer) {
 	
 	for(int i=0; i < updateModules.size(); i++) {
 		updateModules[i]->Update(elapsed);
 	}
 
 	timerManager->Update();
+	
 	tweenManager->Update();
-	materialManager->Update(elapsed);
+	
+	if(updateRenderer) {
 		
+	materialManager->Update(elapsed);	
 	if(drawScreensFirst) {
 		if(renderer->doClearBuffer)
 			renderer->clearScreen();	
@@ -232,6 +235,8 @@ void CoreServices::Update(int elapsed) {
 			renderer->clearScreen();		
 		sceneManager->Update();
 		screenManager->Update();	
+	}
+	
 	}	
 }
 

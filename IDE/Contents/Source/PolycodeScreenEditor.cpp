@@ -725,6 +725,10 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain() {
 	entitySheet = new EntitySheet();
 	entityProps->addPropSheet(entitySheet);
 	
+	entityPropSheet = new EntityPropSheet();
+	entityPropSheet->addEventListener(this, Event::CHANGE_EVENT);	
+	entityProps->addPropSheet(entityPropSheet);	
+	
 	selectEntity(NULL);	
 	
 	entityProps->updateProps();		
@@ -1499,6 +1503,7 @@ void PolycodeScreenEditorMain::selectEntity(ScreenEntity *entity) {
 	instanceSheet->instance = NULL;
 	particleSheet->emitter = NULL;
 	spriteSheet->sprite = NULL;
+	entityPropSheet->entity = NULL;
 				
 	if(!entity) {
 		selectedEntity = NULL;
@@ -1529,7 +1534,8 @@ void PolycodeScreenEditorMain::selectEntity(ScreenEntity *entity) {
 	}
 	
 	if(entity->getEntityProp("editor_type") != "root") {
-		entitySheet->entity = entity;	
+		entitySheet->entity = entity;
+		entityPropSheet->entity = entity;
 	}
 
 	if(dynamic_cast<ScreenParticleEmitter*>(entity)) {
@@ -1656,6 +1662,11 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 
 		
 	}
+
+	if(event->getDispatcher() == entityPropSheet && event->getEventType() == "") {
+			entityProps->updateSize();
+			entityProps->scrollContainer->setScrollValue(0.0, 1.0);
+	}
 	
 	if((event->getDispatcher() == transform2dSheet || event->getDispatcher() == labelSheet || event->getDispatcher() == imageSheet) && event->getEventType() == "") {
 		syncTransformToSelected();
@@ -1664,7 +1675,6 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 	
 	if(event->getDispatcher() == CoreServices::getInstance()->getCore()->getInput()) {
 		if(event->getEventCode() == InputEvent::EVENT_KEYDOWN) {
-			printf("KEY: %d\n", inputEvent->key);
 			switch(inputEvent->key) {
 				case Polycode::KEY_ESCAPE:
 					if(selectedEntity) {

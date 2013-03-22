@@ -172,6 +172,7 @@ class PolycodeScreenEditorMain : public UIElement {
 		ScreenImageSheet *imageSheet;
 		ScreenLabelSheet *labelSheet;
 		SoundSheet *soundSheet;
+		EntityPropSheet *entityPropSheet;
 		ScreenEntityInstanceSheet *instanceSheet;
 		ScreenSpriteSheet *spriteSheet;
 		ScreenParticleSheet *particleSheet;
