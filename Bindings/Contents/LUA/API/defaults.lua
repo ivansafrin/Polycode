@@ -53,6 +53,8 @@ Services = {}
 Services.Core = Core("__skip_ptr__")
 Services.Core.__ptr = Polycore.CoreServices_getCore(Polycore.CoreServices_getInstance())
 
+Services.Input = Services.Core:getInput()
+
 Services.Renderer = Renderer("__skip_ptr__")
 Services.Renderer.__ptr = Polycore.CoreServices_getRenderer(Polycore.CoreServices_getInstance())
 

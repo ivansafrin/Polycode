@@ -260,7 +260,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 						# Generate Lua side of binding:
 
 						# If type is a primitive such as Number/String/int/bool
-						if pp["type"] == "Number" or  pp["type"] == "String" or pp["type"] == "int" or pp["type"] == "bool":
+						if pp["type"] == "PolyKEY" or pp["type"] == "Number" or  pp["type"] == "String" or pp["type"] == "int" or pp["type"] == "bool":
 							luaClassBindingOut += "\t\treturn %s.%s_get_%s(self.__ptr)\n" % (libName, ckey, pp["name"])
 							
 						# If type is a particle emitter, specifically #SPEC
@@ -295,12 +295,12 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 							if pp["type"] == "String":
 								outfunc = "lua_pushstring"
 								retFunc = ".c_str()"
-							if pp["type"] == "int":
+							if pp["type"] == "int" or pp["type"] == "PolyKEY":
 								outfunc = "lua_pushinteger"
 							if pp["type"] == "bool":
 								outfunc = "lua_pushboolean"
 
-							if pp["type"] == "Number" or  pp["type"] == "String" or pp["type"] == "int" or pp["type"] == "bool":
+							if pp["type"] == "Number" or  pp["type"] == "String" or pp["type"] == "int" or pp["type"] == "bool" or pp["type"] == "PolyKEY":
 								wrappersHeaderOut += "\t%s(L, inst->%s%s);\n" % (outfunc, pp["name"], retFunc)
 							else:
 								wrappersHeaderOut += "\tPolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));\n"
@@ -332,7 +332,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 						pp["type"] = typeFilter(pp["type"])
 						
 						# If type is a primitive: Create lua and C++ sides at the same time.
-						if pp["type"] == "Number" or  pp["type"] == "String" or pp["type"] == "int" or pp["type"] == "bool":
+						if pp["type"] == "Number" or  pp["type"] == "String" or pp["type"] == "int" or pp["type"] == "bool" or pp["type"] == "PolyKEY":
 							if pidx == 0:
 								luaClassBindingOut += "\tif name == \"%s\" then\n" % (pp["name"])
 							else:
@@ -352,6 +352,8 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 								outfunc = "lua_tostring"
 							if pp["type"] == "int":
 								outfunc = "lua_tointeger"
+							if pp["type"] == "PolyKEY":
+								outfunc = "(PolyKEY)lua_tointeger"
 							if pp["type"] == "bool":
 								outfunc = "lua_toboolean"
 
@@ -512,6 +514,12 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 									checkfunc = "lua_isnumber"
 									luafuncsuffix = ""
 									lend = ""
+								if param["type"] == "PolyKEY":
+									luafunc = "(PolyKEY)lua_tointeger"
+									luatype = "LUA_TNUMBER"
+									checkfunc = "lua_isnumber"
+									luafuncsuffix = ""
+									lend = ""
 								if param["type"] == "bool":
 									luafunc = "lua_toboolean"
 									luatype = "LUA_TBOOLEAN"
@@ -621,7 +629,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 									outfunc = "lua_pushstring"
 									basicType = True
 									retFunc = ".c_str()"
-								if pm["rtnType"] == "int" or pm["rtnType"] == "unsigned int" or pm["rtnType"] == "static int" or  pm["rtnType"] == "size_t" or pm["rtnType"] == "static size_t" or pm["rtnType"] == "long" or pm["rtnType"] == "unsigned int" or pm["rtnType"] == "static long" or pm["rtnType"] == "short":
+								if pm["rtnType"] == "int" or pm["rtnType"] == "unsigned int" or pm["rtnType"] == "static int" or  pm["rtnType"] == "size_t" or pm["rtnType"] == "static size_t" or pm["rtnType"] == "long" or pm["rtnType"] == "unsigned int" or pm["rtnType"] == "static long" or pm["rtnType"] == "short" or pm["rtnType"] == "PolyKEY":
 									outfunc = "lua_pushinteger"
 									basicType = True
 								if pm["rtnType"] == "bool" or pm["rtnType"] == "static bool" or pm["rtnType"] == "virtual bool":

@@ -330,7 +330,7 @@ bool PolycodeTextEditor::openFile(OSFileEntry filePath) {
 
 void PolycodeTextEditor::handleEvent(Event *event) {
 
-	if(event->getDispatcher() == textInput) {
+	if(event->getDispatcher() == textInput && event->getEventType() == "UIEvent") {
 		if(!isLoading) {
 			setHasChanges(true);
 		}
