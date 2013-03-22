@@ -85,8 +85,13 @@ class _PolyExport PhysicsScreenEvent : public Event {
 		*/			
 		Vector2 worldCollisionPoint;
 
-			
-		/**
+		/*
+         * Raw Box2d Contact
+         */
+    
+        b2Contact *contact;
+	
+        /**
 		* Strength of the collision impact.
 		*/
 		Number impactStrength;	
@@ -152,7 +157,7 @@ public:
 	/**
 	* Creates a new physics screen.
 	*/ 
-	PhysicsScreen(Number worldScale, Number freq);
+	PhysicsScreen(Number worldScale, Number freq, int velIterations=10, int posIterations=10);
 	
 	/**
 	* Default constructor.
@@ -173,10 +178,11 @@ public:
 	* @param restitution Restitution of the physics entity. Restitution controls how bouncy the entity is.
 	* @param isSensor If this is set to true, the entity won't collide with other entities, but its collision will register.
 	* @param fixedRotation If this is set to true, the entity will always have a locked rotation.
-	* @return The physics entity wrapper.
+    * @param groupIndex is the physiscs shape's collision group. A negative number means objects of that group won't collide with eachother
+    * @return The physics entity wrapper.
 	*/
 	PhysicsScreenEntity *addPhysicsChild(ScreenEntity *newEntity, int entType, bool isStatic, Number friction=0.1, Number density=1, Number restitution = 0, bool isSensor = false, bool fixedRotation = false, int groupIndex = 0);
-
+    
 	/**
 	* Tracks a ScreenEntity as a physics enabled child. 
 	* @param newEntity Screen entity to add.
@@ -187,11 +193,11 @@ public:
 	* @param restitution Restitution of the physics entity. Restitution controls how bouncy the entity is.
 	* @param isSensor If this is set to true, the entity won't collide with other entities, but its collision will register.
 	* @param fixedRotation If this is set to true, the entity will always have a locked rotation.
+    * @param groupIndex is the physiscs shape's collision group. A negative number means objects of that group won't collide with eachother
 	* @return The physics entity wrapper.
 	*/
 	PhysicsScreenEntity *trackPhysicsChild(ScreenEntity *newEntity, int entType, bool isStatic, Number friction=0.1, Number density=1, Number restitution = 0, bool isSensor = false, bool fixedRotation = false, int groupIndex = 0);
-
-	
+    
 	/**
 	* Removes a physics child from the screen.
 	* @param entityToRemove Entity to remove from the screen.
@@ -201,14 +207,13 @@ public:
 	
 	void removeChild(ScreenEntity *entityToRemove);
 	
-	
 	/**
 	* Begins tracking collisions for a ScreenEntity and adds it to the scene.
 	* @param newEntity Entity to track collisions for.
 	* @param entType Physics shape of the entity. Possible values are PhysicsScreenEntity::ENTITY_RECT or PhysicsScreenEntity::ENTITY_CIRCLE.
 	* @param entityToRemove Entity to remove from the screen.
 	*/	
-	PhysicsScreenEntity *addCollisionChild(ScreenEntity *newEntity, int entType, int groupIndex = 0);
+	PhysicsScreenEntity *addCollisionChild(ScreenEntity *newEntity, int entType, int groupIndex = 0, bool sensorOnly = true);
 	
 	/**
 	* Begins tracking collisions for a ScreenEntity.
@@ -341,6 +346,7 @@ public:
 			
 	void BeginContact (b2Contact *contact);
 	void EndContact (b2Contact *contact);	
+    void PreSolve(b2Contact* contact, const b2Manifold* oldManifold);    
 	void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse);
 
 	/**
@@ -367,7 +373,7 @@ public:
 	* @return If there specified entity overlaps the specified position, this returns true.
 	*/ 														
 	bool testEntityAtPosition(ScreenEntity *ent, Number x, Number y);
-
+    
 	/**
 	* Tests collision between two entities
 	*/
@@ -384,18 +390,19 @@ public:
 	void destroyMouseJoint(b2MouseJoint *mJoint);
 
 
+    
 protected:
 	
+    Number worldScale;
+    
+    std::vector <PhysicsScreenEntity*> physicsChildren;		
 	
-	Number worldScale;
-	
-	void init(Number worldScale, Number physicsTimeStep, int physicsIterations, Vector2 physicsGravity);
+	void init(Number worldScale, Number physicsTimeStep, int velIterations, int posIterations, Vector2 physicsGravity);
 
-	std::vector <PhysicsScreenEntity*> physicsChildren;
 	std::vector<b2Contact*> contacts;
-	b2World *world;
+    b2World *world;    
 	Number timeStep;
-	int32 iterations;
+	int32 velocityIterations, positionIterations;
 };
 
 
