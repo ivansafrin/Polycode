@@ -34,6 +34,8 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	core = new POLYCODE_CORE(view, 900,700,false,true, 0, 0,30, -1);	
 //	core->pauseOnLoseFocus = true;
 	
+	runNextFrame = false;
+	
 	core->addEventListener(this, Core::EVENT_CORE_RESIZE);
 	core->addEventListener(this, Core::EVENT_LOST_FOCUS);
 	core->addEventListener(this, Core::EVENT_GAINED_FOCUS);
@@ -86,6 +88,7 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 
 	frame->textInputPopup->addEventListener(this, UIEvent::OK_EVENT);	
 	frame->yesNoPopup->addEventListener(this, UIEvent::OK_EVENT);
+	frame->yesNoPopup->addEventListener(this, UIEvent::CANCEL_EVENT);
 	
 	frame->newProjectWindow->addEventListener(this, UIEvent::OK_EVENT);
 	frame->exportProjectWindow->addEventListener(this, UIEvent::OK_EVENT);
@@ -285,16 +288,26 @@ void PolycodeIDEApp::exportProject() {
 	}	
 }
 
-void PolycodeIDEApp::runProject() {
+void PolycodeIDEApp::doRunProject() {
 	printf("Running project...\n");
 	stopProject();
 
+	String outPath = PolycodeToolLauncher::generateTempPath(projectManager->getActiveProject()) + ".polyapp";
+	PolycodeToolLauncher::buildProject(projectManager->getActiveProject(), outPath);
+	PolycodeToolLauncher::runPolyapp(outPath);
+}
+
+void PolycodeIDEApp::runProject() {
 	if(projectManager->getActiveProject()) {
-		String outPath = PolycodeToolLauncher::generateTempPath(projectManager->getActiveProject()) + ".polyapp";
-		PolycodeToolLauncher::buildProject(projectManager->getActiveProject(), outPath);
-		PolycodeToolLauncher::runPolyapp(outPath);
+		if(editorManager->hasUnsavedFilesForProject(projectManager->getActiveProject())) {
+			frame->yesNoPopup->setCaption("This project has unsaved files. Save before building?");
+			frame->yesNoPopup->action = "saveAndRun";
+			frame->showModal(frame->yesNoPopup);		
+		} else {
+			doRunProject();	
+		}
 	} else {
-		PolycodeConsole::print("No active project!\n");
+		PolycodeConsole::print("No active project!\n");	
 	}
 }
 
@@ -544,10 +557,26 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 	}
 
 	if(event->getDispatcher() == frame->yesNoPopup) {
+
+		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CANCEL_EVENT) {
+			if(frame->yesNoPopup->action == "saveAndRun") {
+				runNextFrame = true;			
+			}
+			
+			frame->hideModal();
+			frame->yesNoPopup->action = "";		
+		}
+	
 		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {
 			if(frame->yesNoPopup->action == "removeFile") {
 				doRemoveFile();
 			}
+			
+			if(frame->yesNoPopup->action == "saveAndRun") {
+				editorManager->saveAll();
+				runNextFrame = true;
+			}
+			
 			frame->hideModal();
 			frame->yesNoPopup->action = "";
 		}
@@ -691,6 +720,11 @@ bool PolycodeIDEApp::Update() {
 	if(willRunProject) {
 		willRunProject = false;
 		runProject();
+	}
+
+	if(runNextFrame) {
+		runNextFrame = false;
+		doRunProject();
 	}
 
 	if(lastConnected != debugger->isConnected()) {

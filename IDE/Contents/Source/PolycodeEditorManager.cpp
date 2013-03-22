@@ -37,10 +37,40 @@ PolycodeEditor *PolycodeEditorManager::createEditorForExtension(String extension
 		if(factory->canHandleExtension(extension)) {
 			PolycodeEditor *editor = factory->createEditor();
 			openEditors.push_back(editor);
+			editor->addEventListener(this, Event::CHANGE_EVENT);
 			return editor;
 		}
 	}
 	return NULL;
+}
+
+bool PolycodeEditorManager::hasUnsavedFiles() {
+	for(int i=0; i < openEditors.size();i++) {
+		PolycodeEditor *editor = openEditors[i];
+		if(editor->hasChanges())
+			return true;
+	}
+	return false;
+}
+
+void PolycodeEditorManager::saveAll() {
+	for(int i=0; i < openEditors.size();i++) {
+		PolycodeEditor *editor = openEditors[i];
+		editor->saveFile();
+	}
+}
+
+bool PolycodeEditorManager::hasUnsavedFilesForProject(PolycodeProject *project) {
+	for(int i=0; i < openEditors.size();i++) {
+		PolycodeEditor *editor = openEditors[i];
+		if(editor->hasChanges() && editor->parentProject == project)
+			return true;
+	}
+	return false;
+}
+
+void PolycodeEditorManager::handleEvent(Event *event) {
+	dispatchEvent(new Event(), Event::CHANGE_EVENT);
 }
 
 void PolycodeEditorManager::setCurrentEditor(PolycodeEditor *editor, bool sendChangeEvent) {

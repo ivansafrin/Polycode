@@ -1252,6 +1252,8 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 	}	
 	
 	String ctext = lines[lineOffset];
+	
+	bool _changedText = false;
 		
 	if((charCode > 31 && charCode < 127) || charCode > 127) {	
 		if(!isNumberOnly || (isNumberOnly && ((charCode > 47 && charCode < 58) || (charCode == '.' || charCode == '-')))) {
@@ -1265,6 +1267,7 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 			ctext = ctext.substr(0,caretPosition);
 			ctext += charCode + text2;
 			caretPosition++;
+			_changedText = true;
 		}
 	}
 	
@@ -1276,7 +1279,8 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 		String text2 = ctext.substr(caretPosition, ctext.length()-caretPosition);
 		ctext = ctext.substr(0,caretPosition);
 		ctext += (wchar_t)'\t' + text2;
-		caretPosition++;		
+		caretPosition++;
+		_changedText = true;		
 	}
 	
 	if(key == KEY_BACKSPACE) {
@@ -1293,6 +1297,7 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 				ctext = ctext.substr(0,caretPosition-1);
 				ctext += text2;
 				caretPosition--;
+				_changedText = true;				
 			}
 		} else {
 			if(lineOffset > 0) {
@@ -1310,7 +1315,10 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 	}
 	
 	lines[lineOffset] = ctext;
-	changedText();
+	
+	if(_changedText) {
+		changedText();
+	}
 	updateCaretPosition();
 }
 

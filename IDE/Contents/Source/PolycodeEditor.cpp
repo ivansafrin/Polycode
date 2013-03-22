@@ -48,11 +48,19 @@ PolycodeEditor::PolycodeEditor(bool _isReadOnly) : ScreenEntity(), ClipboardProv
 	this->_isReadOnly = _isReadOnly;
 	enableScissor = true;	
 	processInputEvents = true;
+	_hasChanges = false;
 
 	Core *core = CoreServices::getInstance()->getCore();
 	
 	core->addEventListener(this, Core::EVENT_COPY);
 	core->addEventListener(this, Core::EVENT_PASTE);
+}
+
+void PolycodeEditor::setHasChanges(bool newVal) {
+	if(_hasChanges != newVal) {
+		_hasChanges = newVal;	
+		dispatchEvent(new Event(), Event::CHANGE_EVENT);
+	}
 }
 
 void PolycodeEditor::handleEvent(Event *event) {

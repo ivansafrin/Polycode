@@ -36,8 +36,15 @@ class PolycodeEditorManager : public EventDispatcher {
 		PolycodeEditor *createEditorForExtension(String extension);
 		void registerEditorFactory(PolycodeEditorFactory *editorFactory);
 	
+		void handleEvent(Event *event);
+	
 		void setCurrentEditor(PolycodeEditor *editor, bool sendChangeEvent = true);
 		PolycodeEditor *getCurrentEditor() { return currentEditor; }
+		
+		void saveAll();
+		
+		bool hasUnsavedFiles();
+		bool hasUnsavedFilesForProject(PolycodeProject *project);
 		
 	//	int close
 	std::vector<PolycodeEditor*> openEditors;

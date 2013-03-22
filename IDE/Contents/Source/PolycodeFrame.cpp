@@ -685,6 +685,10 @@ void PolycodeFrame::showModal(UIWindow *modalChild) {
 	modalChild->showWindow();
 	modalChild->addEventListener(this, UIEvent::CLOSE_EVENT);
 	Resize(frameSizeX, frameSizeY);
+	
+	if(modalChild == yesNoPopup) {
+		yesNoPopup->focusChild(yesNoPopup->okButton);
+	}
 }
 
 PolycodeProjectBrowser *PolycodeFrame::getProjectBrowser() {
@@ -749,7 +753,13 @@ void PolycodeFrame::handleEvent(Event *event) {
 		
 		for(int i=0; i < editorManager->openEditors.size(); i++) {
 			OSFileEntry entry(editorManager->openEditors[i]->getFilePath(), OSFileEntry::TYPE_FILE);
-			currentFileSelector->addComboItem(entry.name);
+			
+			if(editorManager->openEditors[i]->hasChanges()) {
+				currentFileSelector->addComboItem("* " +entry.name);			
+			} else {
+				currentFileSelector->addComboItem(entry.name);
+			}
+			
 			if(editorManager->getCurrentEditor() == editorManager->openEditors[i]) {
 				currentFileSelector->setSelectedIndex(i);
 			}

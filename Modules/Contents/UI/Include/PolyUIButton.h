@@ -28,6 +28,7 @@
 #include "PolyUIEvent.h"
 #include "PolyUIBox.h"
 #include "PolyUIElement.h"
+#include "PolyCoreInput.h"
 
 namespace Polycode {
 
@@ -40,6 +41,8 @@ namespace Polycode {
 			void Update();
 				
 		private:
+		
+			CoreInput *coreInput;
 			
 			Number labelXPos;
 			Number labelYPos;

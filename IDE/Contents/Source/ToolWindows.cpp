@@ -114,7 +114,8 @@ void YesNoPopup::handleEvent(Event *event) {
 			}
 			
 			if(event->getDispatcher() == cancelButton) {
-				dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);				
+				dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);
+				dispatchEvent(new UIEvent(), UIEvent::CANCEL_EVENT);				
 			}									
 		}
 	}

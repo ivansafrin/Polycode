@@ -283,6 +283,9 @@ PolycodeTextEditor::~PolycodeTextEditor() {
 
 bool PolycodeTextEditor::openFile(OSFileEntry filePath) {
 	
+	
+	isLoading = true;
+	
 	textInput = new UITextInput(true, 100, 100);
 	addChild(textInput);
 	textInput->setBackgroundColor(globalSyntaxTheme->bgColor);
@@ -292,6 +295,7 @@ bool PolycodeTextEditor::openFile(OSFileEntry filePath) {
 	textInput->setLineNumberColor(globalSyntaxTheme->lineNumberColor);
 	textInput->enableLineNumbers(true);
 	
+	textInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
 	findBar = new FindBar();
 	findBar->visible = false;
@@ -319,10 +323,18 @@ bool PolycodeTextEditor::openFile(OSFileEntry filePath) {
 	delete data;
 	
 	PolycodeEditor::openFile(filePath);
+	
+	isLoading = false;	
 	return true;
 }
 
 void PolycodeTextEditor::handleEvent(Event *event) {
+
+	if(event->getDispatcher() == textInput) {
+		if(!isLoading) {
+			setHasChanges(true);
+		}
+	}
 
 	if(event->getDispatcher() == findBar->replaceAllButton) {
 		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {
@@ -399,6 +411,7 @@ void PolycodeTextEditor::saveFile() {
 	data->setFromString(textInput->getText(), String::ENCODING_UTF8);
 	data->saveToFile(filePath);
 	delete data;
+	setHasChanges(false);
 }
 
 void PolycodeTextEditor::Resize(int x, int y) {
