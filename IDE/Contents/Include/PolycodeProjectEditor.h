@@ -59,6 +59,8 @@ class PolycodeProjectEditor : public PolycodeEditor {
 		
 	protected:
 	
+	bool isLoading;
+	
 	void refreshFontEntries();
 	
 	PolycodeProjectManager *projectManager;
