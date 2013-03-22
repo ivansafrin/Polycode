@@ -99,6 +99,9 @@ namespace Polycode {
             void setCollisionMask(int maskBits);
         
             void setCollisionGroupIndex(int group);
+			
+			b2Fixture* getFixture();			// Gets the last fixture selected (automatically set on creation)			
+			b2Fixture* getFixture(unsigned short index);	// Gets a specific fixture if there is more than one
             
 			/**
 			* Rectangular physics entity

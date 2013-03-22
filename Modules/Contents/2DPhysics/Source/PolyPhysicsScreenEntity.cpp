@@ -35,16 +35,17 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 	
 	screenEntity = entity;
 
+	Vector3 entityScale = entity->getCompoundScale();
+	Matrix4 compoundMatrix = screenEntity->getConcatenatedMatrix();
 	entity->ignoreParentMatrix = true;
 	entity->scale = entityScale;
-	Vector3 entityScale = entity->getCompoundScale();
 	this->worldScale = worldScale;
 	collisionOnly = false;
 
 	
 	// Create body definition---------------------------------------
 	b2BodyDef bodyDef;
-	bodyDef.position.Set(screenEntity->getPosition2D().x/worldScale, screenEntity->getPosition2D().y/worldScale);
+	bodyDef.position.Set(compoundMatrix.getPosition().x/worldScale, compoundMatrix.getPosition().y/worldScale);
 	bodyDef.angle = screenEntity->getRotation()*(PI/180.0f);	
 	bodyDef.bullet = isSensor;	
 	bodyDef.fixedRotation = fixedRotation;	
