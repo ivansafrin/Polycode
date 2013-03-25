@@ -265,18 +265,6 @@ void PhysicsScreenEntity::Update() {
 	}	
 }
 
-
-
-//==============================================
-//Add on functions to access the fixture library
-//==============================================
-
-
-// Gets the last fixture selected
-b2Fixture* PhysicsScreenEntity::getFixture() { return fixture; }
-
-
-// Returns specific fixture based on index starting from 0
 b2Fixture* PhysicsScreenEntity::getFixture(unsigned short index) {
 	if(fixture)	{
 		short i = 0;
@@ -296,14 +284,12 @@ b2Fixture* PhysicsScreenEntity::getFixture(unsigned short index) {
 	return fixture = NULL;	
 }
 
+b2Fixture* PhysicsScreenEntity::getFixture() { return fixture; }
 
 
 // I believe that at runtime you are not supposed to edit Shapes; However you still can
 // by getting a fixture(above) and then adding "->GetShape()" on the end to get the fixtures shape
 
-
-
-// Slight change to the destructor
 PhysicsScreenEntity::~PhysicsScreenEntity()
 {
 	if(body)

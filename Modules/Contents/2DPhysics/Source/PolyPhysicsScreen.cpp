@@ -409,8 +409,8 @@ ScreenEntity *PhysicsScreen::getEntityAtPosition(Number x, Number y) {
 	for(int i=0;i<physicsChildren.size();i++) {
 		PhysicsScreenEntity *ent = physicsChildren[i];
 		if(ent->fixture) {
-			for (b2Fixture* f = ent->body->GetFixtureList(); f; f = f->GetNext()) {		// This has been changed to accept multiple fixtures
-				if(f->TestPoint(mousePosition)) {										// Fixtures have a Testpoint function that requires just a b2Vec
+			for (b2Fixture* f = ent->body->GetFixtureList(); f; f = f->GetNext()) {
+				if(f->TestPoint(mousePosition)) {
 					return ent->getScreenEntity();
 				}
 			}
@@ -430,8 +430,8 @@ bool PhysicsScreen::testEntityAtPosition(ScreenEntity *ent, Number x, Number y) 
 	mousePosition.y = y/worldScale;
 	
 	if(pEnt->fixture) {
-		for (b2Fixture* f = pEnt->body->GetFixtureList(); f; f = f->GetNext()) {	// This has been changed to accept multiple fixtures
-			if(f->TestPoint(mousePosition))											// Fixtures have a Testpoint function that requires just a b2Vec
+		for (b2Fixture* f = pEnt->body->GetFixtureList(); f; f = f->GetNext()) {
+			if(f->TestPoint(mousePosition))
 				return true;
 			else
 				return false;
@@ -493,7 +493,7 @@ PhysicsScreen::~PhysicsScreen() {
 	delete world;	
 }
 
-PhysicsScreenEntity *PhysicsScreen::getPhysicsEntityByFixture(b2Fixture *fixture) {			// I have made changes so it will search through body fixturelists
+PhysicsScreenEntity *PhysicsScreen::getPhysicsEntityByFixture(b2Fixture *fixture) {
 	for(int i=0; i < physicsChildren.size(); i++) {											
 		for (b2Fixture* f = physicsChildren[i]->body->GetFixtureList(); f; f = f->GetNext()) {
 			if(f == fixture)
@@ -503,7 +503,7 @@ PhysicsScreenEntity *PhysicsScreen::getPhysicsEntityByFixture(b2Fixture *fixture
 	return NULL;	
 }
 
-PhysicsScreenEntity *PhysicsScreen::getPhysicsEntityByShape(b2Shape *shape) {				// I have made changes so it will search through body fixturelists
+PhysicsScreenEntity *PhysicsScreen::getPhysicsEntityByShape(b2Shape *shape) {
 	for(int i=0; i < physicsChildren.size(); i++) {
 		for (b2Fixture *f = physicsChildren[i]->body->GetFixtureList(); f; f = f->GetNext()) {
 			if(f->GetShape() == shape)

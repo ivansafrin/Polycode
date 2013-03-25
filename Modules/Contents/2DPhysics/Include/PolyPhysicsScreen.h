@@ -85,7 +85,7 @@ class _PolyExport PhysicsScreenEvent : public Event {
 		*/			
 		Vector2 worldCollisionPoint;
 
-		/*
+		/**
          * Raw Box2d Contact
          */
     
