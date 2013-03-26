@@ -48,7 +48,7 @@ class PolycodeProjectManager : public EventDispatcher {
 	
 	PolycodeProject *getProjectByProjectFile(String projectFile);
 	
-	void exportProject(PolycodeProject *project, String exportPath, bool macOS, bool windows, bool _linux);
+	void exportProject(PolycodeProject *project, String exportPath, bool macOS, bool windows, bool linux_);
 	
 	int removeProject(PolycodeProject *project);
 	
