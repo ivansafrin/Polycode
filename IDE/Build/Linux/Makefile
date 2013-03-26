@@ -5,16 +5,18 @@ LDFLAGS_DEBUG=-lrt -ldl -lpthread ../../../Release/Linux/Framework/Core/lib/libP
 SRCS=../../Contents/Source/ExampleBrowserWindow.cpp ../../Contents/Source/PolycodeEditorManager.cpp  ../../Contents/Source/PolycodeProject.cpp        ../../Contents/Source/PolycodeScreenEditor.cpp ../../Contents/Source/ExportProjectWindow.cpp  ../../Contents/Source/PolycodeFontEditor.cpp     ../../Contents/Source/PolycodeProjectBrowser.cpp ../../Contents/Source/PolycodeSpriteEditor.cpp ../../Contents/Source/NewFileWindow.cpp        ../../Contents/Source/PolycodeFrame.cpp          ../../Contents/Source/PolycodeProjectEditor.cpp  ../../Contents/Source/PolycodeTextEditor.cpp ../../Contents/Source/NewProjectWindow.cpp     ../../Contents/Source/PolycodeIDEApp.cpp         ../../Contents/Source/PolycodeProjectManager.cpp ../../Contents/Source/PolycodeToolLauncher.cpp ../../Contents/Source/PolycodeConsole.cpp      ../../Contents/Source/PolycodeImageEditor.cpp    ../../Contents/Source/PolycodeProps.cpp          ../../Contents/Source/TextureBrowser.cpp ../../Contents/Source/PolycodeEditor.cpp       ../../Contents/Source/PolycodeMaterialEditor.cpp ../../Contents/Source/PolycodeRemoteDebugger.cpp ../../Contents/Source/ToolWindows.cpp ../../Contents/Source/PolycodeClipboard.cpp
 
 default:
+	mkdir -p ./Build
 	$(CC) $(CFLAGS) -O2 main.cpp $(SRCS) -o ./Build/Polycode $(LDFLAGS)
 	cp -R ../../Contents/Resources/* Build/
 	cp ../../../Release/Linux/Framework/Core/Assets/default.pak Build/
 	cp -R ../../../Release/Linux/Standalone Build
 debug:
+	mkdir -p ./Build
 	$(CC) $(CFLAGS) -g main.cpp $(SRCS) -o ./Build/Polycode $(LDFLAGS_DEBUG)
 	cp -R ../../Contents/Resources/* Build/
 	cp ../../../Release/Linux/Framework/Core/Assets/default.pak Build/
 	cp -R ../../../Release/Linux/Standalone Build
 
 clean:
-	rm ./Build/Polycode
+	rm -rf ./Build
 	
