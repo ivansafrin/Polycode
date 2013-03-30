@@ -289,9 +289,6 @@ ALenum Sound::checkALError(const String& operation) {
 	ALenum error = alGetError();
 	if(error != AL_NO_ERROR) {
 		switch(error) {
-			case AL_NO_ERROR:
-				soundError(operation + ": " +ALNoErrorStr);
-				break;
 			case AL_INVALID_NAME:
 				soundError(operation +": " + ALInvalidNameStr);
 				break;
