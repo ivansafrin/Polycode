@@ -441,6 +441,7 @@ ALuint Sound::loadWAV(const String& fileName) {
 		f = OSBasics::open(fileName.c_str(), "rb");
 		if (!f)
 			soundError("LoadWav: Could not load wav from " + fileName);
+			return buffer;
 		
 		// buffers
 		char magic[5];
