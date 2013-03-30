@@ -69,26 +69,78 @@ namespace Polycode {
 		std::vector<unsigned short> recentReliableIDs;
 		Address address;
 	};
-		
+
+	/** 
+	* A network actor that can send and receive data.
+	*
+	* Peers are comparable to UDP sockets, but with extended functionality
+	* to optionally allow for some of TCP's features(ordering, reliability).
+	*
+	* WARNING: Reliability(packets being resent on loss) is currently not
+	* implemented, but is planned.
+	*
+	* @see PeerConnection
+	*/
 #if USE_THREADED_SOCKETS == 1		
 	class _PolyExport Peer : public Threaded {
 #else
 	class _PolyExport Peer : public EventDispatcher {
 #endif
 		public:
+			/**
+			* Create a peer. The peer will immediately start listening on the given 
+			* port and accept incoming packets.
+			*
+			* @param port The UDP port to listen for packets. Can not be omitted,
+			*             this will be the actual port this peer will use to send
+			*             and receive packets.
+			*/
 			Peer(unsigned int port);
 			~Peer();
-		
+
 			void handleEvent(Event *event);
 
 			virtual void handlePacket(Packet *packet, PeerConnection *connection){};
 			virtual void handlePeerConnection(PeerConnection *connection){};
 		
 			Packet *createPacket(const Address &target, char *data, unsigned int size, unsigned short type);
-
+			
+			/**
+			* Send raw binary data to the target address.
+			*
+			* @param target The network address to send the data to.
+			* @param data The binary data to send as a C byte array. Length must be supplied by size parameter.
+			* @param size The size in bytes of the sent binary data.
+			* @param type A number representing the packet type, used to define the purpose of the packet.
+			*/
 			void sendData(const Address &target, char *data, unsigned int size, unsigned short type);
+
+			/**
+			* Send raw binary data to the target address, making sure it arrives in the right order.
+			*
+			* @param target The network address to send the data to.
+			* @param data The binary data to send as a C byte array. Length must be supplied by size parameter.
+			* @param size The size in bytes of the sent binary data.
+			* @param type A number representing the packet type, used to define the purpose of the packet.
+			*/
 			void sendReliableData(const Address &target, char *data, unsigned int size, unsigned short type);
+
+			/**
+			* Broadcast raw binary data to all connected peers, making sure it arrives in the right order.
+			*
+			* @param data The binary data to send as a C byte array. Length must be supplied by size parameter.
+			* @param size The size in bytes of the sent binary data.
+			* @param type A number representing the packet type, used to define the purpose of the packet.
+			*/
 			void sendReliableDataToAll(char *data, unsigned int size, unsigned short type);
+
+			/**
+			* Broadcast raw binary data to all connected peers.
+			*
+			* @param data The binary data to send as a C byte array. Length must be supplied by size parameter.
+			* @param size The size in bytes of the sent binary data.
+			* @param type A number representing the packet type, used to define the purpose of the packet.
+			*/
 			void sendDataToAll(char *data, unsigned int size, unsigned short type);		
 		
 			void sendPacket(const Address &target, Packet *packet);
