@@ -54,7 +54,7 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 	else
 		bodyDef.type = b2_dynamicBody;
 
-		// Create the body
+	// Create the body
 	body = world->CreateBody(&bodyDef);
 	body->SetUserData(this);
 	
@@ -65,15 +65,13 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 	fDef.density = density;
 	fDef.isSensor = isSensor;
 	fDef.filter.groupIndex = groupIndex;
-	fDef.userData = screenEntity;
 
 	// Create Shape definition (Circle/Rectangle/Polygon)---------------------------
 	switch(entType) {
 		case ENTITY_CIRCLE: {
 			b2CircleShape Shape;
-			// Set fixture shape to shape definition
 			fDef.shape = &Shape;
-			// Create the shape
+			// Set the shape
 			Shape.m_radius = screenEntity->getWidth()/(worldScale*2.0f);
 			// Create the fixture
 			fixture = body->CreateFixture(&fDef);
@@ -81,9 +79,8 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 		}
 		case ENTITY_RECT: {
 			b2PolygonShape Shape;
-			// Set fixture shape to shape definition
 			fDef.shape = &Shape;
-			// Create the shape
+			// Set the shape
 			Shape.SetAsBox(screenEntity->getWidth()/(worldScale*2.0f) * entityScale.x, screenEntity->getHeight()/(worldScale*2.0f) * entityScale.y);
 			// Create the fixture
 			fixture = body->CreateFixture(&fDef);
@@ -100,31 +97,23 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
         break;
 		case ENTITY_MESH: {
 			b2PolygonShape Shape;
-			// Set fixture shape to shape definition
 			fDef.shape = &Shape;
-			// Get the screenmesh of the entity
 			ScreenMesh* screenMesh = dynamic_cast<ScreenMesh*>(entity);
 		
 			if(screenMesh) {
 				for(short i=0, polycount=screenMesh->getMesh()->getPolygonCount(); i < polycount; i++) {
-					// Get the next polygon
 					Polygon* poly = screenMesh->getMesh()->getPolygon(i);
-					// Get the vertex count of current polygon
 					unsigned short vertexcount = poly->getVertexCount();
-
 					if (vertexcount >= 3 && vertexcount <= 8) {
-						// Create new vertices array based on vertexcount
 						b2Vec2* vertices = new b2Vec2[vertexcount];
-						// and copy from the screenmesh
 						for(short index=0; index < vertexcount; index++) {
 							vertices[index].x = poly->getVertex(index)->x/worldScale;
 							vertices[index].y = poly->getVertex(index)->y/worldScale;						
 						}
-						// Create the shape
+						// Set the shape
 						Shape.Set(vertices, vertexcount);
 						// Create the fixture
 						fixture = body->CreateFixture(&fDef);
-
 						delete []vertices;
 					}
 					else { Logger::log("Between 3 and 8 vertices allowed per polygon\n"); }
@@ -205,7 +194,7 @@ void PhysicsScreenEntity::setFriction(Number friction) {
     }
 }
 
-void PhysicsScreenEntity::setDensity(Number density){
+void PhysicsScreenEntity::setDensity(Number density) {
     if(fixture) {
         fixture->SetDensity(density);
     }
@@ -290,8 +279,7 @@ b2Fixture* PhysicsScreenEntity::getFixture() { return fixture; }
 // I believe that at runtime you are not supposed to edit Shapes; However you still can
 // by getting a fixture(above) and then adding "->GetShape()" on the end to get the fixtures shape
 
-PhysicsScreenEntity::~PhysicsScreenEntity()
-{
+PhysicsScreenEntity::~PhysicsScreenEntity() {
 	if(body)
 		body->GetWorld()->DestroyBody(body);	// DestroyBody deletes fixtures and shapes automaticaly according to box2d documentation
 }
