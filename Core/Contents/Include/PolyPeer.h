@@ -108,7 +108,7 @@ namespace Polycode {
 			/**
 			* Send raw binary data to the target address.
 			*
-			* @param target The network address to send the data to.
+			* @param target The network Address to send the data to.
 			* @param data The binary data to send as a C byte array. Length must be supplied by size parameter.
 			* @param size The size in bytes of the sent binary data.
 			* @param type A number representing the packet type, used to define the purpose of the packet.

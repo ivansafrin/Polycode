@@ -38,8 +38,7 @@ Address::Address(unsigned int ip, unsigned int port) {
 	setAddress(ip, port);
 }
 
-Address::Address() {
-	
+Address::Address()  : uintAddress(0), port(0) {
 }
 
 void Address::setAddress(unsigned int ip, unsigned int port) {
