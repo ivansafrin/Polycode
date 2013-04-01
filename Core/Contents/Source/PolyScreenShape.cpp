@@ -128,11 +128,6 @@ void ScreenShape::buildShapeMesh() {
 			mesh->addPolygon(poly);
 			}
 		break;
-		case SHAPE_CUSTOM:
-			mesh->setMeshType(Mesh::TRIFAN_MESH);
-			customShapePoly = new Polygon();
-			mesh->addPolygon(customShapePoly);
-		break;	
 		default:
 		break;
 	}
@@ -177,10 +172,6 @@ void ScreenShape::setShapeSize(Number newWidth, Number newHeight) {
 		
 	rebuildTransformMatrix();
 	matrixDirty = true;
-}
-
-void ScreenShape::addShapePoint(Number x, Number y) {
-	customShapePoly->addVertex(x,y,0,0,0);
 }
 
 void ScreenShape::setGradient(Number r1, Number g1, Number b1, Number a1, Number r2, Number g2, Number b2, Number a2) {

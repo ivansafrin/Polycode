@@ -36,7 +36,7 @@ namespace Polycode {
 			
 			/**
 			* Create a new shape of specified type and size/options.
-			* @param shapeType Type of shape to create. Currently the only options are ScreenShape::SHAPE_RECT and ScreenShape::SHAPE_CIRCLE. Pass ScreenShape::SHAPE_CUSTOM if you want to create a custom shape (@see addShapePoint())
+			* @param shapeType Type of shape to create. Currently the only options are ScreenShape::SHAPE_RECT and ScreenShape::SHAPE_CIRCLE.
 			* @param option1 Width option.
 			* @param option2 Height option.
 			* @param option3 Number of vertices for the the circle (defaults to 360). Unused for rectangle.
@@ -94,13 +94,6 @@ namespace Polycode {
 			void setShapeSize(Number newWidth, Number newHeight);		
 		
 			void buildShapeMesh();
-		
-			/** 
-			* Adds a point to the mesh.
-			* @param x Horizontal position of the point.
-			* @param y Vertical position of the point.
-			*/ 
-			void addShapePoint(Number x, Number y);
 			
 			/**
 			* Assignment operator
@@ -133,7 +126,6 @@ namespace Polycode {
 			Number option3;
 			Number option4;
 									
-			Polygon *customShapePoly;
 			int shapeType;
 			
 	};
