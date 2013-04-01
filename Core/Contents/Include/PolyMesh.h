@@ -318,11 +318,6 @@ namespace Polycode {
 			static const int TRIFAN_MESH = 2;
 
 			/**
-			* Triangle strip based mesh.
-			*/									
-			static const int TRISTRIP_MESH = 3;
-			
-			/**
 			* Line based mesh.
 			*/									
 			static const int LINE_MESH = 4;
