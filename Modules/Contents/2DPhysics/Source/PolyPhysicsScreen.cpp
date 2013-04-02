@@ -57,8 +57,8 @@ void PhysicsScreen::BeginContact (b2Contact *contact) {
 //		return;
 //	}
 	PhysicsScreenEvent *newEvent = new PhysicsScreenEvent();
-	newEvent->entity1 = (ScreenEntity*)contact->GetFixtureA()->GetUserData();
-	newEvent->entity2 = (ScreenEntity*)contact->GetFixtureB()->GetUserData();			
+	newEvent->entity1 = ((PhysicsScreenEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->getScreenEntity();
+	newEvent->entity2 = ((PhysicsScreenEntity*)contact->GetFixtureB()->GetBody()->GetUserData())->getScreenEntity();
 
     if(((PhysicsScreenEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->collisionOnly ||
         ((PhysicsScreenEntity*)contact->GetFixtureB()->GetBody()->GetUserData())->collisionOnly) {
@@ -97,8 +97,8 @@ void PhysicsScreen::BeginContact (b2Contact *contact) {
 
 void PhysicsScreen::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse) {
 	PhysicsScreenEvent *newEvent = new PhysicsScreenEvent();
-	newEvent->entity1 = (ScreenEntity*)contact->GetFixtureA()->GetUserData();
-	newEvent->entity2 = (ScreenEntity*)contact->GetFixtureB()->GetUserData();		
+	newEvent->entity1 = ((PhysicsScreenEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->getScreenEntity();
+	newEvent->entity2 = ((PhysicsScreenEntity*)contact->GetFixtureB()->GetBody()->GetUserData())->getScreenEntity();
 
     
     if(((PhysicsScreenEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->collisionOnly ||
@@ -143,8 +143,8 @@ void PhysicsScreen::PostSolve(b2Contact* contact, const b2ContactImpulse* impuls
 
 void PhysicsScreen::EndContact (b2Contact *contact) {
 	PhysicsScreenEvent *newEvent = new PhysicsScreenEvent();
-	newEvent->entity1 = (ScreenEntity*)contact->GetFixtureA()->GetUserData();
-	newEvent->entity2 = (ScreenEntity*)contact->GetFixtureB()->GetUserData();	
+	newEvent->entity1 = ((PhysicsScreenEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->getScreenEntity();
+	newEvent->entity2 = ((PhysicsScreenEntity*)contact->GetFixtureB()->GetBody()->GetUserData())->getScreenEntity();
     newEvent->contact = contact;
     
 	for(int i=0; i < contacts.size(); i++) {

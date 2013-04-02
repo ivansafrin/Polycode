@@ -53,6 +53,7 @@ def typeFilter(ty):
 	ty = ty.replace("&", "")
 	ty = re.sub(r'^.*\sint\s*$', 'int', ty) # eg "unsigned int"
 	ty = re.sub(r'^.*\slong\s*$', 'int', ty)
+	ty = re.sub(r'^.*\sshort\s*$', 'int', ty)
 	ty = re.sub(r'^.*\sfloat\s*$', 'Number', ty)
 	ty = re.sub(r'^.*\sdouble\s*$', 'Number', ty) # eg "long double"
 	ty = ty.replace("unsigned", "int")
