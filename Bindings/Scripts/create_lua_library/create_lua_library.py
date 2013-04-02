@@ -737,14 +737,15 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 				cppRegisterOut += "\t\t{\"delete_%s\", %s_delete_%s},\n" % (ckey, libName, ckey)
 				wrappersHeaderOut += "static int %s_delete_%s(lua_State *L) {\n" % (libName, ckey)
 				wrappersHeaderOut += "\tluaL_checktype(L, 1, LUA_TUSERDATA);\n"
-				wrappersHeaderOut += "\t%s *inst = (%s*) *((PolyBase**)lua_touserdata(L, 1));\n" % (ckey, ckey)
-				wrappersHeaderOut += "\tdelete inst;\n"
+				wrappersHeaderOut += "\tPolyBase **inst = (PolyBase**)lua_touserdata(L, 1);\n"
+				wrappersHeaderOut += "\tdelete ((%s*) *inst);\n" % (ckey)
+				wrappersHeaderOut += "\t*inst = NULL;\n"
 				wrappersHeaderOut += "\treturn 0;\n"
 				wrappersHeaderOut += "}\n\n"
 
 				# Delete method (Lua side)
 				luaClassBindingOut += "function %s:__delete()\n" % (ckey)
-				luaClassBindingOut += "\t%s.delete_%s(self.__ptr)\n" % (libName, ckey)
+				luaClassBindingOut += "\tif self then %s.delete_%s(self.__ptr) end\n" % (libName, ckey)
 				luaClassBindingOut += "end\n"
 					
 				# Add class to lua index file
