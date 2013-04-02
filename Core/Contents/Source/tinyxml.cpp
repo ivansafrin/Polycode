@@ -34,7 +34,7 @@ distribution.
 // This document has been altered from the original in the following ways:
 // * It opens files through the Polycode OSFile abstraction rather than directly.
 // * It now uses Windows linebreaks consistently regardless of platform.
-#define NEWLINE "\r\n"
+#define NEWLINE "\n"
 
 bool TiXmlBase::condenseWhiteSpace = true;
 
