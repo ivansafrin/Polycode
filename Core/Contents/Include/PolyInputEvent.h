@@ -50,28 +50,29 @@ namespace Polycode {
 			*  Possible input event types dispatched by CoreInput.
 			*/
 			//@{
-		static const int EVENT_MOUSEDOWN = 0;
-		static const int EVENT_MOUSEUP = 1;
-		static const int EVENT_MOUSEMOVE = 2;
-		static const int EVENT_MOUSEOVER = 3;
-		static const int EVENT_MOUSEOUT = 4;
-		static const int EVENT_DOUBLECLICK = 5;
-		static const int EVENT_MOUSEUP_OUTSIDE = 6;
-		static const int EVENT_MOUSEWHEEL_UP = 7;
-		static const int EVENT_MOUSEWHEEL_DOWN = 8;
+		static const int EVENTBASE_INPUTEVENT = 0x400;
+		static const int EVENT_MOUSEDOWN = EVENTBASE_INPUTEVENT+0;
+		static const int EVENT_MOUSEUP = EVENTBASE_INPUTEVENT+1;
+		static const int EVENT_MOUSEMOVE = EVENTBASE_INPUTEVENT+2;
+		static const int EVENT_MOUSEOVER = EVENTBASE_INPUTEVENT+3;
+		static const int EVENT_MOUSEOUT = EVENTBASE_INPUTEVENT+4;
+		static const int EVENT_DOUBLECLICK = EVENTBASE_INPUTEVENT+5;
+		static const int EVENT_MOUSEUP_OUTSIDE = EVENTBASE_INPUTEVENT+6;
+		static const int EVENT_MOUSEWHEEL_UP = EVENTBASE_INPUTEVENT+7;
+		static const int EVENT_MOUSEWHEEL_DOWN = EVENTBASE_INPUTEVENT+8;
 		
-		static const int EVENT_KEYDOWN = 13;
-		static const int EVENT_KEYUP = 14;
+		static const int EVENT_KEYDOWN = EVENTBASE_INPUTEVENT+13;
+		static const int EVENT_KEYUP = EVENTBASE_INPUTEVENT+14;
 		
-		static const int EVENT_JOYBUTTON_DOWN = 15;		
-		static const int EVENT_JOYBUTTON_UP = 16;
-		static const int EVENT_JOYAXIS_MOVED = 17;
-		static const int EVENT_JOYDEVICE_ATTACHED = 18;
-		static const int EVENT_JOYDEVICE_DETACHED = 19;
+		static const int EVENT_JOYBUTTON_DOWN = EVENTBASE_INPUTEVENT+15;
+		static const int EVENT_JOYBUTTON_UP = EVENTBASE_INPUTEVENT+16;
+		static const int EVENT_JOYAXIS_MOVED = EVENTBASE_INPUTEVENT+17;
+		static const int EVENT_JOYDEVICE_ATTACHED = EVENTBASE_INPUTEVENT+18;
+		static const int EVENT_JOYDEVICE_DETACHED = EVENTBASE_INPUTEVENT+19;
 		
-		static const int EVENT_TOUCHES_BEGAN = 20;
-		static const int EVENT_TOUCHES_MOVED = 21;
-		static const int EVENT_TOUCHES_ENDED =22;
+		static const int EVENT_TOUCHES_BEGAN = EVENTBASE_INPUTEVENT+20;
+		static const int EVENT_TOUCHES_MOVED = EVENTBASE_INPUTEVENT+21;
+		static const int EVENT_TOUCHES_ENDED = EVENTBASE_INPUTEVENT+22;
 		
 		
 		//@}

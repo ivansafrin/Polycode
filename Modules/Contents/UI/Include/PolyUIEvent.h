@@ -31,11 +31,12 @@ namespace Polycode {
 			UIEvent();
 			~UIEvent();
 		
-			static const int CLICK_EVENT = 0;
-			static const int CLOSE_EVENT = 1;
-			static const int OK_EVENT = 2;
-			static const int CANCEL_EVENT = 3;
-			static const int CHANGE_EVENT = 4;
+			static const int EVENTBASE_UIEVENT = 0xA00;
+			static const int CLICK_EVENT = EVENTBASE_UIEVENT+0;
+			static const int CLOSE_EVENT = EVENTBASE_UIEVENT+1;
+			static const int OK_EVENT = EVENTBASE_UIEVENT+2;
+			static const int CANCEL_EVENT = EVENTBASE_UIEVENT+3;
+			static const int CHANGE_EVENT = EVENTBASE_UIEVENT+4;
 						
 		protected:
 		
