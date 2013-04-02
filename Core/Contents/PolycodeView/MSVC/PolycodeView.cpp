@@ -6,6 +6,7 @@
 #include "PolyRenderer.h"
 #include <io.h>
 #include <fcntl.h>
+#include <ios>
 
 using namespace Polycode;
 
@@ -91,6 +92,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			core->handleMouseUp(CoreInput::MOUSE_BUTTON2, lParam,wParam);
 	break;
 
+#ifndef NO_TOUCH_API
 	case WM_TOUCH:
 		if(core) {
 			if(core->isMultiTouchEnabled()) {
@@ -98,6 +100,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 		}
 	break;
+#endif
 
 	case WM_MBUTTONDOWN:
 		if(core)
