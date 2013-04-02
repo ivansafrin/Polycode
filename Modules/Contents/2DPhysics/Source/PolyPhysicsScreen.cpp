@@ -294,7 +294,7 @@ void PhysicsScreen::setVelocityY(ScreenEntity *ent, Number fy) {
 
 PhysicsScreenEntity *PhysicsScreen::addCollisionChild(ScreenEntity *newEntity, int entType, int groupIndex) {
 	PhysicsScreenEntity *ret;
-	ret = addPhysicsChild(newEntity, entType, false, 0,0.0,0, true, groupIndex);
+    ret = addPhysicsChild(newEntity, entType, false, 0,0,0, true, false, groupIndex);
 	ret->collisionOnly = true; 
 	return ret;
 }
