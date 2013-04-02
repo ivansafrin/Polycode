@@ -66,6 +66,10 @@ void PolycodeEditor::setHasChanges(bool newVal) {
 void PolycodeEditor::handleEvent(Event *event) {
 	if(event->getDispatcher() == CoreServices::getInstance()->getCore()) {
 		switch(event->getEventCode()) {
+
+			// Only copypaste of more complex IDE entities is handled here.
+			// Pure text copy/paste is handled in:
+			// Modules/Contents/UI/Source/PolyUITextInput.cpp
 			case Core::EVENT_COPY:
 			{
 				void *data = NULL;
