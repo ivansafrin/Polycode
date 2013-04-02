@@ -71,10 +71,10 @@ namespace Polycode {
 	* A network server, accepting incoming connections and keeping track of connected clients.
 	*
 	* As the Peer class already provides all connectivity functionality required, the Server class
-	* merely provides another abstraction layer to treat game clients separately from mere connections.
+	* merely provides another abstraction layer to treat clients separately from mere connections.
 	*
 	* The Server will process incoming packets N times per second, where N is an argument to the constructor.
-	* This means you can coordinate the server's reaction time to your game's internal timer.
+	* This means you can coordinate the server's reaction time to your program's internal timer.
 	*/
 	class _PolyExport Server : public Peer {
 		public:
@@ -82,8 +82,7 @@ namespace Polycode {
 			* Constructor.
 			* @param port The port to listen for client connections on.
 			* @param rate How many times per second this instance should check for new incoming packets.
-			* @param world A singleton which manages the "world" of the gameserver this network server is
-			*        attached to.
+			* @param world A singleton which manages the "world" this network server is attached to.
 			*/
 			Server(unsigned int port, unsigned int rate, ServerWorld *world = NULL);
 			~Server();
