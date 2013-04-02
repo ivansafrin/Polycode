@@ -41,7 +41,8 @@ namespace Polycode {
 		unsigned int dataSize;
 		unsigned short dataType;
 		
-		static const int EVENT_CLIENT_DATA = 0;
+		static const int EVENTBASE_SERVERCLIENTEVENT = 0x780;
+		static const int EVENT_CLIENT_DATA = EVENTBASE_SERVERCLIENTEVENT+0;
 	};
 	
 	class _PolyExport ServerClient : public EventDispatcher {
@@ -62,9 +63,11 @@ namespace Polycode {
 		
 		ServerClient *client;
 		
-		static const int EVENT_CLIENT_CONNECTED = 0;
-		static const int EVENT_CLIENT_DATA = 1;
-		static const int EVENT_CLIENT_DISCONNECTED = 2;		
+		static const int EVENTBASE_SERVEREVENT = 0x700;
+		static const int EVENT_CLIENT_CONNECTED = EVENTBASE_SERVEREVENT+0;
+		static const int EVENT_CLIENT_DATA = EVENTBASE_SERVEREVENT+1;
+		static const int EVENT_CLIENT_DISCONNECTED = EVENTBASE_SERVEREVENT+2;
+		// Notice also the SERVERCLIENTEVENT above, which starts with 0x780.
 	};
 
 	class _PolyExport Server : public Peer {

@@ -241,12 +241,10 @@ namespace Polycode {
 		/**
 		* Opens a system folder picker and suspends operation.
 		* @return The selected path returned from the picker.
-		*/		
-		
+		*/
+		virtual String openFolderPicker() = 0;
 
 		void setFramerate(int frameRate);
-
-		virtual String openFolderPicker() = 0;
 		
 		/**
 		* Opens a system file picker for the specified extensions.
@@ -303,16 +301,17 @@ namespace Polycode {
 		void setUserPointer(void *ptr) { userPointer = ptr; }
 		void *getUserPointer() { return userPointer; }
 		
-		static const int EVENT_CORE_RESIZE = 0;		
-		static const int EVENT_LOST_FOCUS = 1;
-		static const int EVENT_GAINED_FOCUS = 2;
+		static const int EVENTBASE_CORE = 0x200;
+		static const int EVENT_CORE_RESIZE = EVENTBASE_CORE+0;
+		static const int EVENT_LOST_FOCUS = EVENTBASE_CORE+1;
+		static const int EVENT_GAINED_FOCUS = EVENTBASE_CORE+2;
 
-		static const int EVENT_UNDO = 3;
-		static const int EVENT_REDO = 4;
-		static const int EVENT_COPY = 5;
-		static const int EVENT_CUT = 6;
-		static const int EVENT_SELECT_ALL = 7;
-		static const int EVENT_PASTE = 8;
+		static const int EVENT_UNDO = EVENTBASE_CORE+3;
+		static const int EVENT_REDO = EVENTBASE_CORE+4;
+		static const int EVENT_COPY = EVENTBASE_CORE+5;
+		static const int EVENT_CUT = EVENTBASE_CORE+6;
+		static const int EVENT_SELECT_ALL = EVENTBASE_CORE+7;
+		static const int EVENT_PASTE = EVENTBASE_CORE+8;
 		
 		virtual String executeExternalCommand(String command, String args, String inDirectory) = 0;
 		

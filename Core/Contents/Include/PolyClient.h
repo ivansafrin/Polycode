@@ -41,10 +41,11 @@ namespace Polycode {
 		char data[MAX_PACKET_SIZE];
 		unsigned int dataSize;
 		unsigned short dataType;
-				
-		static const int EVENT_SERVER_DATA = 0;
-		static const int EVENT_CLIENT_READY = 1;		
-		static const int EVENT_SERVER_DISCONNECTED = 2;			
+		
+		static const int EVENTBASE_CLIENTEVENT = 0x600;
+		static const int EVENT_SERVER_DATA = EVENTBASE_CLIENTEVENT+0;
+		static const int EVENT_CLIENT_READY = EVENTBASE_CLIENTEVENT+1;
+		static const int EVENT_SERVER_DISCONNECTED = EVENTBASE_CLIENTEVENT+2;
 	};		
 	
 	class _PolyExport Client : public Peer {

@@ -49,7 +49,8 @@ namespace Polycode {
 		
 		char mouseButton;
 		
-		static const int INPUT_EVENT = 0;
+		static const int EVENTBASE_PLATFORMEVENT = 0x300;
+		static const int INPUT_EVENT = EVENTBASE_PLATFORMEVENT+0;
 	};
 	
 	class _PolyExport IPhoneCore : public Core {

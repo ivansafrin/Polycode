@@ -61,10 +61,29 @@ namespace Polycode {
 			void setDispatcher(EventDispatcher *dispatcher);
 			const String& getEventType() const;
 			
-			static const int COMPLETE_EVENT = 0;
-			static const int CHANGE_EVENT = 1;
-			static const int CANCEL_EVENT = 2;			
+			// In order to prevent "namespace" collisions between events of different types, all event integers must be unique.
+			// This is managed by arbitrarily assigning each class a "base" constant, and adding it to all its event type constants.
+			// Bases for all Polycode classes are documented below, third party event types should be EVENTBASE_NONPOLYCODE or over.
+			// Note that collisions are usually safe as long as collisions do not occur between a class and its subclass.
+			// Event		0x100
+			// Core			0x200
+			// PlatformCore 0x300 (e.g. CocoaCore, WinCore etc)
+			// InputEvent	0x400
+			// SocketEvent	0x500
+			// ClientEvent	0x600
+			// ServerEvent	0x700
+			// PhysicsScreenEvent	0x800
+			// PhysicsSceneEvent	0x900
+			// UIEvent		0xA00
+			// UITreeEvent	0xB00
+		
+			static const int EVENTBASE_EVENT = 0x100;
+			static const int COMPLETE_EVENT = EVENTBASE_EVENT+0;
+			static const int CHANGE_EVENT = EVENTBASE_EVENT+1;
+			static const int CANCEL_EVENT = EVENTBASE_EVENT+2;
 			
+			static const int EVENTBASE_NONPOLYCODE = 0x10000;
+		
 			bool deleteOnDispatch;
 						
 		protected:

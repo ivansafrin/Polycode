@@ -45,7 +45,8 @@ namespace Polycode {
 			PhysicsSceneEvent();
 			~PhysicsSceneEvent();
 			
-			static const int COLLISION_EVENT = 0;
+			static const int EVENTBASE_PHYSICSSCENEEVENT = 0x900;
+			static const int COLLISION_EVENT = EVENTBASE_PHYSICSSCENEEVENT+0;
 			
 			PhysicsSceneEntity *entityA;
 			PhysicsSceneEntity *entityB;
