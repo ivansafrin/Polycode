@@ -31,6 +31,10 @@ distribution.
 
 #include "tinyxml.h"
 
+// This document has been altered from the original in the following ways:
+// * It opens files through the Polycode OSFile abstraction rather than directly.
+// * It now uses Windows linebreaks consistently regardless of platform.
+#define NEWLINE "\r\n"
 
 bool TiXmlBase::condenseWhiteSpace = true;
 
@@ -800,11 +804,11 @@ void TiXmlElement::Print( FILE* cfile, int depth ) const
 		{
 			if ( !node->ToText() )
 			{
-				fprintf( cfile, "\n" );
+				fprintf( cfile, NEWLINE );
 			}
 			node->Print( cfile, depth+1 );
 		}
-		fprintf( cfile, "\n" );
+		fprintf( cfile, NEWLINE );
 		for( i=0; i<depth; ++i ) {
 			fprintf( cfile, "    " );
 		}
@@ -1083,7 +1087,7 @@ bool TiXmlDocument::LoadFile( OSFILE* file, TiXmlEncoding encoding )
 bool TiXmlDocument::SaveFile( const char * filename ) const
 {
 	// The old c stuff lives on...
-	OSFILE* fp = TiXmlFOpen( filename, "w" );
+	OSFILE* fp = TiXmlFOpen( filename, "wb" );
 	if ( fp )
 	{
 		bool result = SaveFile( fp->file );
@@ -1147,7 +1151,7 @@ void TiXmlDocument::Print( FILE* cfile, int depth ) const
 	for ( const TiXmlNode* node=FirstChild(); node; node=node->NextSibling() )
 	{
 		node->Print( cfile, depth );
-		fprintf( cfile, "\n" );
+		fprintf( cfile, NEWLINE );
 	}
 }
 
@@ -1333,11 +1337,11 @@ void TiXmlText::Print( FILE* cfile, int depth ) const
 	if ( cdata )
 	{
 		int i;
-		fprintf( cfile, "\n" );
+		fprintf( cfile, NEWLINE );
 		for ( i=0; i<depth; i++ ) {
 			fprintf( cfile, "    " );
 		}
-		fprintf( cfile, "<![CDATA[%s]]>\n", value.c_str() );	// unformatted output
+		fprintf( cfile, "<![CDATA[%s]]>" NEWLINE, value.c_str() );	// unformatted output
 	}
 	else
 	{
