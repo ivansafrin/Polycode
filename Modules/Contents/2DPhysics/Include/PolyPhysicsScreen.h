@@ -95,21 +95,23 @@ class _PolyExport PhysicsScreenEvent : public Event {
 		* Friction strength of the impact
 		*/		
 		Number frictionStrength;	
-							
+			
+		static const int EVENTBASE_PHYSICSSCREENEVENT = 0x800;
+	
 		/**
 		* Event sent out when a collision begins
 		*/					
-		static const int EVENT_NEW_SHAPE_COLLISION = 0;
+		static const int EVENT_NEW_SHAPE_COLLISION = EVENTBASE_PHYSICSSCREENEVENT+0;
 		
 		/**
 		* Event sent out when a collision ends
 		*/							
-		static const int EVENT_END_SHAPE_COLLISION = 1;
+		static const int EVENT_END_SHAPE_COLLISION = EVENTBASE_PHYSICSSCREENEVENT+1;
 		
 		/**
 		* Event sent out when a collision begins
 		*/					
-		static const int EVENT_SOLVE_SHAPE_COLLISION = 3;
+		static const int EVENT_SOLVE_SHAPE_COLLISION = EVENTBASE_PHYSICSSCREENEVENT+3;
 
 		
 };		

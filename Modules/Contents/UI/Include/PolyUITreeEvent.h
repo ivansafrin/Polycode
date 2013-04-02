@@ -34,10 +34,11 @@ namespace Polycode {
 			UITreeEvent();
 			~UITreeEvent();
 		
-			static const int NEED_REFRESH_EVENT = 2000;
-			static const int SELECTED_EVENT = 2001;
-			static const int EXECUTED_EVENT = 2002;
-			static const int DRAG_START_EVENT = 2003;
+			static const int EVENTBASE_UITREEEVENT = 0xB00;
+			static const int NEED_REFRESH_EVENT = EVENTBASE_UITREEEVENT+0;
+			static const int SELECTED_EVENT = EVENTBASE_UITREEEVENT+1;
+			static const int EXECUTED_EVENT = EVENTBASE_UITREEEVENT+2;
+			static const int DRAG_START_EVENT = EVENTBASE_UITREEEVENT+3;
 			
 			UITree *selection;
 

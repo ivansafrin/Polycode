@@ -220,7 +220,15 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 						continue
 					if pp["type"].find("static ") != -1: # If static. FIXME: Static doesn't work?
 						if "defaltValue" in pp: # FIXME: defaltValue is misspelled.
-							luaClassBindingOut += "%s.%s = %s\n" % (ckey, pp["name"], pp["defaltValue"])
+							defaltValue = pp["defaltValue"]
+							
+							# The "Default Value" is more or less a literal C++ string. This causes a problem:
+							# Frequently we say static const int A = 1; static const int B = A + 1.
+							# Put in a one-off hack to ensure namespacing works in this special case.
+							if re.match(r'\s*[a-zA-Z_][a-zA-Z0-9_]*\s*\+', defaltValue):
+								defaltValue = "%s.%s" % (ckey, defaltValue)
+							
+							luaClassBindingOut += "%s.%s = %s\n" % (ckey, pp["name"], defaltValue)
 							luaDocOut += "\t\t\t<static_member name=\"%s\" type=\"%s\" value=\"%s\">\n" % (pp["name"],  toLuaType(typeFilter(pp["type"])), pp["defaltValue"])
 							if 'doxygen' in pp:
 								luaDocOut += "\t\t\t\t<desc><![CDATA[%s]]></desc>\n" % (cleanDocs(pp['doxygen']))
