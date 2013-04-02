@@ -38,14 +38,10 @@
 #include <Shellapi.h>
 #include <Commdlg.h>
 
-#include <GL/gl.h>
-#include <GL/glext.h>
-#ifndef _MINGW
-#include <GL/wglext.h>
-#endif
-
+#if !defined(_MINGW)
 PFNWGLSWAPINTERVALEXTPROC       wglSwapIntervalEXT = NULL;
 PFNWGLGETSWAPINTERVALEXTPROC    wglGetSwapIntervalEXT = NULL;
+#endif
 
 using namespace Polycode;
 
