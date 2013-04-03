@@ -1234,7 +1234,7 @@ void Win32Core::setCursor(int cursorType) {
 	}
 
 	SetCursor(cursor);
-	SetClassLong(hWnd, GCL_HCURSOR, (DWORD)cursor);
+	SetClassLongPtr(hWnd, GCLP_HCURSOR, (DWORD)cursor);
 }
 
 void  Win32Core::copyStringToClipboard(const String& str) {
