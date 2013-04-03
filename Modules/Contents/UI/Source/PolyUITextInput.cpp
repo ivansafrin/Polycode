@@ -37,6 +37,7 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	
 	decoratorOffset = 0;
 	lineOffset = -1;
+	lastSingleCharUndoState = 0;
 	
 	useStrongHinting = false;
 	
@@ -1071,14 +1072,14 @@ bool UITextInput::isNumberOrCharacter(wchar_t charCode) {
 }
 
 void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
-	
+
 	if(!hasFocus)
 		return;
-		
+
 //	Logger::log("UCHAR: %d\n", charCode);	
-	
+
 	CoreInput *input = CoreServices::getInstance()->getCore()->getInput();	
-	
+
 	if(key == KEY_LEFT) {
 		if(input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER)) {
 			if(input->getKeyState(KEY_LSHIFT) || input->getKeyState(KEY_RSHIFT)) {
@@ -1255,6 +1256,13 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 		if(!isNumberOnly || (isNumberOnly && ((charCode > 47 && charCode < 58) || (charCode == '.' || charCode == '-')))) {
 			if(!isNumberOrCharacter(charCode)) { 
 				saveUndoState();
+			} else {
+				// Save undo states, but make sure not to save too many while typing fast.
+				unsigned int currentTick = CoreServices::getInstance()->getCore()->getTicks();
+				if(currentTick > lastSingleCharUndoState + singleCharUndoStateDelay) {
+					lastSingleCharUndoState = currentTick;
+					saveUndoState();
+				}
 			}
 			if(hasSelection)
 				deleteSelection();

@@ -236,6 +236,13 @@ namespace Polycode {
 			Timer *blinkTimer;
 			UIBox *inputRect;
 			ScreenShape *blinkerRect;
+
+			// Keeps track of when a state was last saved for a single character.
+			// Used to avoid one undo state per character when typing fast.
+			unsigned int lastSingleCharUndoState;
+			// Number of ticks that should pass between saving undo states for
+			// a single entered character.
+			static const unsigned int singleCharUndoStateDelay = 100;
 			
 			Number st;
 			Number sr;
