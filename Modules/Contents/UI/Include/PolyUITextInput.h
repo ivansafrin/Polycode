@@ -231,6 +231,7 @@ namespace Polycode {
 			UITextInputUndoState undoStates[MAX_TEXTINPUT_UNDO_STATES];
 			int undoStateIndex;
 			int maxRedoIndex;
+			bool isTypingWord;
 		
 			bool multiLine;
 			Timer *blinkTimer;
