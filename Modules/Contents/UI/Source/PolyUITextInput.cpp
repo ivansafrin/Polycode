@@ -52,6 +52,8 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	settingText = false;	
 	
 	needFullRedraw = false;
+
+	isTypingWord = false;
 	
 	numLines = 0;
 	
@@ -998,6 +1000,10 @@ void UITextInput::saveUndoState() {
 	}
 	
 	maxRedoIndex = undoStateIndex;
+	// By default, reset the isTypingWord status.
+	// If we are typing a word after all, the caller
+	// will immediately reset it to 1.
+	isTypingWord = 0;
 }
 
 void UITextInput::setUndoState(UITextInputUndoState state) {
@@ -1255,6 +1261,9 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 		if(!isNumberOnly || (isNumberOnly && ((charCode > 47 && charCode < 58) || (charCode == '.' || charCode == '-')))) {
 			if(!isNumberOrCharacter(charCode)) { 
 				saveUndoState();
+			} else if (!isTypingWord) {
+				saveUndoState();
+				isTypingWord = 1;
 			}
 			if(hasSelection)
 				deleteSelection();
