@@ -308,15 +308,13 @@ void UIColorPicker::handleEvent(Event *event) {
 		switch(event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEDOWN:
 			{
-				InputEvent *inputEvent = (InputEvent*) event;			
+				InputEvent *inputEvent = (InputEvent*) event;
 				mainSelector->setPosition(inputEvent->getMousePosition().x, inputEvent->getMousePosition().y);
-				
 				mainSelector->startDrag(inputEvent->mousePosition.x-mainSelector->getPosition().x,inputEvent->mousePosition.y-mainSelector->getPosition().y);
 				
-				Number newV = 1.0 - ((inputEvent->getMousePosition().y-mainColorRect->getPosition().y)/((mainColorRect->getPosition().y+mainColorRect->getHeight())-mainColorRect->getPosition().y));
+				Number newV = 1.0 - inputEvent->getMousePosition().y / mainColorRect->getHeight();
+				Number newS = inputEvent->getMousePosition().x / mainColorRect->getWidth();
 
-				Number newS = ((inputEvent->getMousePosition().x-mainColorRect->getPosition().x)/((mainColorRect->getPosition().x+mainColorRect->getWidth())-mainColorRect->getPosition().x));
-					
 				setSaturationAndValue(newS, newV);
 			}
 			break;
@@ -367,12 +365,11 @@ void UIColorPicker::Update() {
 		Number newPosX = lastMainSelectorPosition.x;
 		Number newPosY = lastMainSelectorPosition.y;		
 		
-		Number newV = 1.0 - ((newPosY-mainColorRect->getPosition().y)/((mainColorRect->getPosition().y+mainColorRect->getHeight())-mainColorRect->getPosition().y));
+		Number newV = 1.0 - (newPosY - mainColorRect->getPosition().y) / mainColorRect->getHeight();
 
-		Number newS = ((newPosX-mainColorRect->getPosition().x)/((mainColorRect->getPosition().x+mainColorRect->getWidth())-mainColorRect->getPosition().x));
+		Number newS = (newPosX - mainColorRect->getPosition().x) / mainColorRect->getWidth();
 					
 		setSaturationAndValue(newS, newV);		
-
 	}
 	
 	if(hueSelector->getPosition().y != lastHueSelectorPosition) {
