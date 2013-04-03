@@ -205,78 +205,6 @@ void Skeleton::loadSkeleton(const String& fileName) {
 		}
 	//	bones[i]->visible = false;			
 	}
-	/*
-	unsigned int numAnimations, activeBones,boneIndex,numPoints,numCurves, curveType;
-	OSBasics::read(&numAnimations, sizeof(unsigned int), 1, inFile);
-	//Logger::log("numAnimations: %d\n", numAnimations);
-	for(int i=0; i < numAnimations; i++) {
-		OSBasics::read(&namelen, sizeof(unsigned int), 1, inFile);
-		memset(buffer, 0, 1024);
-		OSBasics::read(buffer, 1, namelen, inFile);
-		float length;
-		OSBasics::read(&length, 1, sizeof(float), inFile);
-		SkeletonAnimation *newAnimation = new SkeletonAnimation(buffer, length);
-		
-		OSBasics::read(&activeBones, sizeof(unsigned int), 1, inFile);
-
-	//	Logger::log("activeBones: %d\n", activeBones);		
-		for(int j=0; j < activeBones; j++) {
-			OSBasics::read(&boneIndex, sizeof(unsigned int), 1, inFile);
-			BoneTrack *newTrack = new BoneTrack(bones[boneIndex], length);
-			
-			BezierCurve *curve;
-			float vec1[2]; //,vec2[2],vec3[2];
-
-			OSBasics::read(&numCurves, sizeof(unsigned int), 1, inFile);
-//			Logger::log("numCurves: %d\n", numCurves);					
-			for(int l=0; l < numCurves; l++) {
-				curve = new BezierCurve();
-				OSBasics::read(&curveType, sizeof(unsigned int), 1, inFile);
-				OSBasics::read(&numPoints, sizeof(unsigned int), 1, inFile);
-				for(int k=0; k < numPoints; k++) {					
-					OSBasics::read(vec1, sizeof(float), 2, inFile);					
-					curve->addControlPoint2d(vec1[1], vec1[0]);
-//					curve->addControlPoint(vec1[1]-10, vec1[0], 0, vec1[1], vec1[0], 0, vec1[1]+10, vec1[0], 0);
-				}
-				switch(curveType) {
-					case 0:
-						newTrack->scaleX = curve;
-					break;
-					case 1:
-						newTrack->scaleY = curve;
-					break;
-					case 2:
-						newTrack->scaleZ = curve;					
-					break;
-					case 3:
-						newTrack->QuatW = curve;					
-					break;
-					case 4:
-						newTrack->QuatX = curve;					
-					break;
-					case 5:
-						newTrack->QuatY = curve;					
-					break;
-					case 6:
-						newTrack->QuatZ = curve;					
-					break;
-					case 7:;
-						newTrack->LocX = curve;					
-					break;
-					case 8:
-						newTrack->LocY = curve;					
-					break;
-					case 9:
-						newTrack->LocZ = curve;					
-					break;
-				}
-			}
-			
-			newAnimation->addBoneTrack(newTrack);
-		}
-		animations.push_back(newAnimation);
-	}
-	*/
 	OSBasics::close(inFile);
 }
 
@@ -439,27 +367,6 @@ void BoneTrack::Play(bool once) {
 		quatTween->Reset();
 		quatTween->Pause(false);
 	}
-/*
-	if(QuatW) {
-		testTween = new BezierPathTween(&QuatWVec, QuatW, Tween::EASE_NONE, durTime, true);
-		pathTweens.push_back(testTween);
-	}
-	
-	if(QuatX) {
-		testTween = new BezierPathTween(&QuatXVec, QuatX, Tween::EASE_NONE, durTime, true);
-		pathTweens.push_back(testTween);
-	}
-	
-	if(QuatY) {
-		testTween = new BezierPathTween(&QuatYVec, QuatY, Tween::EASE_NONE, durTime, true);
-		pathTweens.push_back(testTween);
-	}
-	
-	if(QuatZ) {
-		testTween = new BezierPathTween(&QuatZVec, QuatZ, Tween::EASE_NONE, durTime, true);
-		pathTweens.push_back(testTween);
-	}
-*/
 }
 
 
@@ -473,9 +380,9 @@ void BoneTrack::Update() {
 
 	
 	Matrix4 scaleMatrix;
-	scaleMatrix.m[0][0] *= 1; //ScaleXVec.y;
-	scaleMatrix.m[1][1] *= 1; //ScaleYVec.y;
-	scaleMatrix.m[2][2] *= 1; //ScaleZVec.y;
+	scaleMatrix.m[0][0] *= ScaleXVec.y;
+	scaleMatrix.m[1][1] *= ScaleYVec.y;
+	scaleMatrix.m[2][2] *= ScaleZVec.y;
 	
 
 	Matrix4 posMatrix;

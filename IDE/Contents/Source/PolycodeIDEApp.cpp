@@ -472,7 +472,7 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 	if(event->getDispatcher() == core) {
 		switch(event->getEventCode()) {
 			case Core::EVENT_LOST_FOCUS:
-				core->setFramerate(1);
+				core->setFramerate(3);
 			break;		
 			case Core::EVENT_GAINED_FOCUS:
 				core->setFramerate(30);			
