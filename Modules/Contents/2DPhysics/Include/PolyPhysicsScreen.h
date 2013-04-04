@@ -333,11 +333,11 @@ public:
 	void setVelocityY(ScreenEntity *ent, Number fy);	
 	
 	/**
-	* Sets the spin of an entity
+	* Sets the angular velocity of an entity
 	* @param ent Entity to apply spin to.
 	* @param spin Spin value.
 	*/ 								
-	void setSpin(ScreenEntity *ent, Number spin);
+	void setAngularVelocity(ScreenEntity *ent, Number spin);
 
 	/**
 	* Returns the velocity of an entity.

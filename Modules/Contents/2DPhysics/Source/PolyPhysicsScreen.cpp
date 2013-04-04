@@ -286,7 +286,7 @@ Vector2 PhysicsScreen::getVelocity(ScreenEntity *ent) {
 	return Vector2(vec.x, vec.y);
 }
 
-void PhysicsScreen::setSpin(ScreenEntity *ent, Number spin) {
+void PhysicsScreen::setAngularVelocity(ScreenEntity *ent, Number spin) {
 	PhysicsScreenEntity *pEnt = getPhysicsByScreenEntity(ent);
 	if(pEnt == NULL)
 		return;
