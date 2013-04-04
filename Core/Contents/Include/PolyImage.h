@@ -46,7 +46,7 @@ namespace Polycode {
 			* @param height Height of the image to create.			
 			* @param type Type of image to create. Can be IMAGE_RGBA or IMAGE_RGB.
 			*/ 			
-			Image(int width, int height, int type = IMAGE_RGBA);
+			Image(int width, int height, int type = Image::IMAGE_RGBA);
 			
 			/**
 			* Create an image of specified size and type and set its contents from the specified buffer.
@@ -55,7 +55,15 @@ namespace Polycode {
 			* @param height Height of the image to create.			
 			* @param type Type of image to create. Can be IMAGE_RGBA or IMAGE_RGB.
 			*/ 						
-			Image(char *data, int width, int height, int type = IMAGE_RGBA);
+			Image(char *data, int width, int height, int type = Image::IMAGE_RGBA);
+			
+			/**
+			* Create a blank image of specified size and type.
+			* @param width Width of the image to create.
+			* @param height Height of the image to create.			
+			* @param type Type of image to create. Can be IMAGE_RGBA or IMAGE_RGB.
+			*/ 			
+			static Image *BlankImage(int width, int height, int type = Image::IMAGE_RGBA);
 			
 			/**
 			* Create an image from another image.

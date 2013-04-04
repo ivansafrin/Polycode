@@ -31,6 +31,10 @@
 
 using namespace Polycode;
 
+Skeleton *Skeleton::BlankSkeleton() {
+	return new Skeleton();
+}
+
 Skeleton::Skeleton(const String& fileName) : SceneEntity() {
 	loadSkeleton(fileName);
 	currentAnimation = NULL;

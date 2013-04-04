@@ -141,7 +141,16 @@ namespace Polycode {
 			* @param fileName Skeleton file to load.
 			*/
 			Skeleton(const String& fileName);
+
+			/**
+			* Construct a blank skeleton.
+			*/			
 			Skeleton();
+
+			/**
+			* Construct a blank skeleton.
+			*/			
+			static Skeleton *BlankSkeleton();
 			
 			/**
 			* Loads a new skeleton from file.

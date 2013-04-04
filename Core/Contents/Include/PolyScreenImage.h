@@ -45,11 +45,22 @@ namespace Polycode {
 		
 		/**
 		 * Create screen image from Texture.
-		 * @param image Texture to create from.
+		 * @param texture Texture to create from.
 		 */		
 		ScreenImage(Texture *texture);		
 		
-
+		/**
+		* Create screen image from Image.
+		* @param image Image to create from.
+		*/				
+		static ScreenImage* ScreenImageWithImage(Image *image);
+		
+		/**
+		 * Create screen image from Texture.
+		 * @param texture Texture to create from.
+		 */				
+		static ScreenImage* ScreenImageWithTexture(Texture *texture);
+		
 		virtual ~ScreenImage();
 		
 		virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly);

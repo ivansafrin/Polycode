@@ -30,6 +30,10 @@
 using std::vector;
 using namespace Polycode;
 
+ScreenSprite* ScreenSprite::ScreenSpriteFromImageFile(const String& fileName, Number spriteWidth, Number spriteHeight) {
+	return new ScreenSprite(fileName, spriteWidth, spriteHeight);
+}
+
 ScreenSprite::ScreenSprite(const String& fileName) : ScreenShape(ScreenShape::SHAPE_RECT, 1, 1) {
 
 	currentFrame = 0;

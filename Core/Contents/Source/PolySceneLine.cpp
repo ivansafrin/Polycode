@@ -65,6 +65,10 @@ SceneLine::SceneLine(SceneEntity *ent1, SceneEntity *ent2) : SceneEntity() {
 	
 }
 
+SceneLine *SceneLine::SceneLineWithPositions(Vector3 start, Vector3 end) {
+	return new SceneLine(start, end);
+}
+
 SceneLine::~SceneLine() {
 	delete mesh;
 }

@@ -40,6 +40,8 @@ class ScreenEntityInstance : public ScreenEntity {
 	public:
 		ScreenEntityInstance(const String& fileName);
 		ScreenEntityInstance();
+		
+		static ScreenEntityInstance *BlankScreenEntityInstance();
 
 		~ScreenEntityInstance();
 	

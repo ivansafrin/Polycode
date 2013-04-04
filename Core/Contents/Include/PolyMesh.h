@@ -129,6 +129,12 @@ namespace Polycode {
 			*/
 			Mesh(const String& fileName);
 
+			/**
+			* Construct from a mesh loaded from a file.
+			* @param fileName Path to mesh file.
+			*/			
+			static Mesh *MeshFromFileName(String& fileName);
+
 			virtual ~Mesh();
 			
 			/**
