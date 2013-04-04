@@ -171,7 +171,7 @@ public:
 	void Update();
 	
 	/**
-	* Adds a ScreenEntity as a physics enabled child. 
+	* Adds a ScreenEntity as a physics enabled child. Once an entity is added as a physics child, its transforms are set by the physics engine and you are not able to position it manually. Use addCollisionChild/trackCollisionChild to track collisions of entities that you can position manually.
 	* @param newEntity Screen entity to add.
 	* @param entType Physics entity type to add as. Possible values are PhysicsScreenEntity::ENTITY_RECT, PhysicsScreenEntity::ENTITY_CIRCLE and PhysicsScreenEntity::ENTITY_MESH. If the type is ENTITY_MESH, the ScreenEntity passed must be a ScreenMesh!
 	* @param isStatic If this parameter is true, the body is static (doesn't move on its own).
@@ -186,7 +186,7 @@ public:
 	PhysicsScreenEntity *addPhysicsChild(ScreenEntity *newEntity, int entType, bool isStatic, Number friction=0.1, Number density=1, Number restitution = 0, bool isSensor = false, bool fixedRotation = false, int groupIndex = 0);
     
 	/**
-	* Tracks a ScreenEntity as a physics enabled child. 
+	* Tracks a ScreenEntity as a physics enabled child. Once an entity is added as a physics child, its transforms are set by the physics engine and you are not able to position it manually. Use addCollisionChild/trackCollisionChild to track collisions of entities that you can position manually.
 	* @param newEntity Screen entity to add.
 	* @param entType Physics entity type to add as. Possible values are PhysicsScreenEntity::ENTITY_RECT, PhysicsScreenEntity::ENTITY_CIRCLE and PhysicsScreenEntity::ENTITY_MESH. If the type is ENTITY_MESH, the ScreenEntity passed must be a ScreenMesh!
 	* @param isStatic If this parameter is true, the body is static (doesn't move on its own).
