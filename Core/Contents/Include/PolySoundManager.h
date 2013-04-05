@@ -24,8 +24,13 @@
 #include "PolyGlobals.h"
 #include "PolyVector3.h"
 
-#include "al.h"
-#include "alc.h"
+#if defined(__APPLE__) && defined(__MACH__)
+    #include <OpenAL/al.h>
+    #include <OpenAL/alc.h>
+#else
+    #include "al.h"
+    #include "alc.h"
+#endif
 
 namespace Polycode {
 	
