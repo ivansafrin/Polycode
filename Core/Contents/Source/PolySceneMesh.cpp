@@ -39,6 +39,10 @@ SceneMesh *SceneMesh::SceneMeshFromMesh(Mesh *mesh) {
 	return new SceneMesh(mesh);
 }
 
+SceneMesh *SceneMesh::SceneMeshWithType(int meshType) {
+	return new SceneMesh(meshType);
+}
+
 SceneMesh::SceneMesh(const String& fileName) : SceneEntity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
 	mesh = new Mesh(fileName);
 	bBoxRadius = mesh->getRadius();

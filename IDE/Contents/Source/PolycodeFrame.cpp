@@ -768,7 +768,9 @@ void PolycodeFrame::handleEvent(Event *event) {
 	}
 	
 	if(event->getDispatcher() == projectManager) {
-		currentProjectTitle->setText(projectManager->getActiveProject()->getProjectName());
+        if(projectManager->getActiveProject()) {
+            currentProjectTitle->setText(projectManager->getActiveProject()->getProjectName());
+        }
 	}
 	
 	if(event->getDispatcher() == aboutOKButton && event->getEventType() == "UIEvent") {

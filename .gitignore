@@ -14,7 +14,6 @@
 *.sdf
 *.suo
 *.filters
-*.user
 *.tlog
 *.obj
 *.res

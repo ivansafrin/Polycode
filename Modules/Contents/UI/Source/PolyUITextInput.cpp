@@ -52,6 +52,8 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	settingText = false;	
 	
 	needFullRedraw = false;
+
+	isTypingWord = false;
 	
 	numLines = 0;
 	
@@ -927,24 +929,20 @@ String UITextInput::getSelectionText() {
 		return L"";
 		
 	String totalText = L"";
-	if(selectionTop == selectionBottom) {
-		totalText = lines[selectionTop].substr(selectionL, selectionR-selectionL);	
-		return totalText;
-	} else {
-		totalText += lines[selectionTop].substr(selectionL, lines[selectionTop].length()-selectionL);
-		totalText += L"\n";		
+
+	// Set up iteration cursors
+	int currentLine = selectionTop;
+	int currentLeft = selectionL;
+
+	// Iterate over the inner lines(we'll be appending \n to these)
+	while(currentLine < selectionBottom) {
+		totalText += lines[currentLine].substr(currentLeft, lines[currentLine].length()-currentLeft) + '\n';
+		currentLine++;
+		currentLeft = 0;
 	}
-	
-	if(selectionBottom > selectionTop+1) {
-		for(int i=selectionTop+1; i < selectionBottom; i++) {
-			totalText += lines[i];
-			if(i != selectionBottom-1)
-				totalText += L"\n";
-		}
-	}
-	
-	totalText += lines[selectionBottom].substr(0, selectionL);
-	
+	// Add the selection in the last line(no \n needed)
+	totalText += lines[currentLine].substr(currentLeft, selectionR-currentLeft);
+
 	return totalText;
 }
 
@@ -1002,6 +1000,10 @@ void UITextInput::saveUndoState() {
 	}
 	
 	maxRedoIndex = undoStateIndex;
+	// By default, reset the isTypingWord status.
+	// If we are typing a word after all, the caller
+	// will immediately reset it to 1.
+	isTypingWord = 0;
 }
 
 void UITextInput::setUndoState(UITextInputUndoState state) {
@@ -1259,6 +1261,9 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 		if(!isNumberOnly || (isNumberOnly && ((charCode > 47 && charCode < 58) || (charCode == '.' || charCode == '-')))) {
 			if(!isNumberOrCharacter(charCode)) { 
 				saveUndoState();
+			} else if (!isTypingWord) {
+				saveUndoState();
+				isTypingWord = 1;
 			}
 			if(hasSelection)
 				deleteSelection();

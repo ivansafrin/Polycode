@@ -53,6 +53,7 @@ def typeFilter(ty):
 	ty = ty.replace("&", "")
 	ty = re.sub(r'^.*\sint\s*$', 'int', ty) # eg "unsigned int"
 	ty = re.sub(r'^.*\slong\s*$', 'int', ty)
+	ty = re.sub(r'^.*\sshort\s*$', 'int', ty)
 	ty = re.sub(r'^.*\sfloat\s*$', 'Number', ty)
 	ty = re.sub(r'^.*\sdouble\s*$', 'Number', ty) # eg "long double"
 	ty = ty.replace("unsigned", "int")
@@ -220,7 +221,15 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 						continue
 					if pp["type"].find("static ") != -1: # If static. FIXME: Static doesn't work?
 						if "defaltValue" in pp: # FIXME: defaltValue is misspelled.
-							luaClassBindingOut += "%s.%s = %s\n" % (ckey, pp["name"], pp["defaltValue"])
+							defaltValue = pp["defaltValue"]
+							
+							# The "Default Value" is more or less a literal C++ string. This causes a problem:
+							# Frequently we say static const int A = 1; static const int B = A + 1.
+							# Put in a one-off hack to ensure namespacing works in this special case.
+							if re.match(r'\s*[a-zA-Z_][a-zA-Z0-9_]*\s*\+', defaltValue):
+								defaltValue = "%s.%s" % (ckey, defaltValue)
+							
+							luaClassBindingOut += "%s.%s = %s\n" % (ckey, pp["name"], defaltValue)
 							luaDocOut += "\t\t\t<static_member name=\"%s\" type=\"%s\" value=\"%s\">\n" % (pp["name"],  toLuaType(typeFilter(pp["type"])), pp["defaltValue"])
 							if 'doxygen' in pp:
 								luaDocOut += "\t\t\t\t<desc><![CDATA[%s]]></desc>\n" % (cleanDocs(pp['doxygen']))
@@ -737,14 +746,15 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 				cppRegisterOut += "\t\t{\"delete_%s\", %s_delete_%s},\n" % (ckey, libName, ckey)
 				wrappersHeaderOut += "static int %s_delete_%s(lua_State *L) {\n" % (libName, ckey)
 				wrappersHeaderOut += "\tluaL_checktype(L, 1, LUA_TUSERDATA);\n"
-				wrappersHeaderOut += "\t%s *inst = (%s*) *((PolyBase**)lua_touserdata(L, 1));\n" % (ckey, ckey)
-				wrappersHeaderOut += "\tdelete inst;\n"
+				wrappersHeaderOut += "\tPolyBase **inst = (PolyBase**)lua_touserdata(L, 1);\n"
+				wrappersHeaderOut += "\tdelete ((%s*) *inst);\n" % (ckey)
+				wrappersHeaderOut += "\t*inst = NULL;\n"
 				wrappersHeaderOut += "\treturn 0;\n"
 				wrappersHeaderOut += "}\n\n"
 
 				# Delete method (Lua side)
 				luaClassBindingOut += "function %s:__delete()\n" % (ckey)
-				luaClassBindingOut += "\t%s.delete_%s(self.__ptr)\n" % (libName, ckey)
+				luaClassBindingOut += "\tif self then %s.delete_%s(self.__ptr) end\n" % (libName, ckey)
 				luaClassBindingOut += "end\n"
 					
 				# Add class to lua index file

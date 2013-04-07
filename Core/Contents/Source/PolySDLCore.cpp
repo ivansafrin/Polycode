@@ -272,6 +272,15 @@ bool SDLCore::Update() {
 					renderer->Resize(xRes, yRes);	
 					dispatchEvent(new Event(), EVENT_CORE_RESIZE);	
 				break;
+				case SDL_ACTIVEEVENT:
+					if(event.active.state == SDL_APPINPUTFOCUS) {
+						if(event.active.gain == 1) {
+							gainFocus();
+						} else {
+							loseFocus();
+						}
+					}
+				break;
 				case SDL_JOYBUTTONDOWN:
 //					input->setKeyState((PolyKEY)(event.key.keysym.sym), true);
 				break;

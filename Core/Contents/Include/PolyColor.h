@@ -69,6 +69,21 @@ namespace Polycode {
 			*/															
 			Color(unsigned int hex);
 		
+			/**
+			* Create from 0-255 integer data.
+			* @param r Red value 0-255.
+			* @param g Green value 0-255.
+			* @param b Blue value 0-255.
+			* @param a Alpha value 0-255.									
+			*/		
+			static Color ColorWithInts(int r,int g, int b, int a);
+			
+			/**
+			* Create from integer color.
+			* @param hex Integer color value.
+			*/			
+			static Color ColorWithHex(unsigned int hex);
+		
 			virtual ~Color();
 			
 			/** 

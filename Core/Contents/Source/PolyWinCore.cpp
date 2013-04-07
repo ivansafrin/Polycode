@@ -38,14 +38,10 @@
 #include <Shellapi.h>
 #include <Commdlg.h>
 
-#include <GL/gl.h>
-#include <GL/glext.h>
-#ifndef _MINGW
-#include <GL/wglext.h>
-#endif
-
+#if !defined(_MINGW)
 PFNWGLSWAPINTERVALEXTPROC       wglSwapIntervalEXT = NULL;
 PFNWGLGETSWAPINTERVALEXTPROC    wglGetSwapIntervalEXT = NULL;
+#endif
 
 using namespace Polycode;
 
@@ -1238,7 +1234,7 @@ void Win32Core::setCursor(int cursorType) {
 	}
 
 	SetCursor(cursor);
-	SetClassLong(hWnd, GCL_HCURSOR, (DWORD)cursor);
+	SetClassLongPtr(hWnd, GCLP_HCURSOR, (DWORD)cursor);
 }
 
 void  Win32Core::copyStringToClipboard(const String& str) {

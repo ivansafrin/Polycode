@@ -113,6 +113,10 @@ void CoreServices::installModule(PolycodeModule *module)  {
 	}
 }
 
+void CoreServices::setupBasicListeners() {
+	this->setCore(this->core);	
+}
+
 CoreServices::CoreServices() : EventDispatcher() {
 	resourceManager = new ResourceManager();	
 	config = new Config();
@@ -122,12 +126,12 @@ CoreServices::CoreServices() : EventDispatcher() {
 	addEventListener(screenManager, InputEvent::EVENT_MOUSEMOVE);
 	addEventListener(screenManager, InputEvent::EVENT_MOUSEUP);
 	addEventListener(screenManager, InputEvent::EVENT_MOUSEWHEEL_UP);
-	addEventListener(screenManager, InputEvent::EVENT_MOUSEWHEEL_DOWN);	
+	addEventListener(screenManager, InputEvent::EVENT_MOUSEWHEEL_DOWN);
 	addEventListener(screenManager, InputEvent::EVENT_KEYDOWN);
-	addEventListener(screenManager, InputEvent::EVENT_KEYUP);	
-	addEventListener(screenManager, InputEvent::EVENT_TOUCHES_BEGAN);	
-	addEventListener(screenManager, InputEvent::EVENT_TOUCHES_ENDED);	
-	addEventListener(screenManager, InputEvent::EVENT_TOUCHES_MOVED);				
+	addEventListener(screenManager, InputEvent::EVENT_KEYUP);
+	addEventListener(screenManager, InputEvent::EVENT_TOUCHES_BEGAN);
+	addEventListener(screenManager, InputEvent::EVENT_TOUCHES_ENDED);
+	addEventListener(screenManager, InputEvent::EVENT_TOUCHES_MOVED);
 	sceneManager = new SceneManager();
 	timerManager = new TimerManager();
 	tweenManager = new TweenManager();
