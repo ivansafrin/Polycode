@@ -174,6 +174,10 @@ SpriteAnimation *ScreenSprite::getCurrentAnimation() {
 	return currentAnimation;
 }
 
+unsigned int ScreenSprite::getCurrentAnimationFrame() { 
+   return currentFrame; 
+}
+
 void SpriteAnimation::setOffsetsFromFrameString(const String& frames) {
 	framesOffsets.clear();
 	vector<String> frameNumbers = frames.split(",");
