@@ -178,6 +178,14 @@ unsigned int ScreenSprite::getCurrentAnimationFrame() {
    return currentFrame; 
 }
 
+bool ScreenSprite::isCurrentAnimationFinished() {
+    if(currentAnimation) {
+        if(currentFrame >= currentAnimation->numFrames)
+            return true;
+    }
+    return false;
+}
+
 void SpriteAnimation::setOffsetsFromFrameString(const String& frames) {
 	framesOffsets.clear();
 	vector<String> frameNumbers = frames.split(",");
