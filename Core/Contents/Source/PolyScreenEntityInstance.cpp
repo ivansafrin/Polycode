@@ -25,6 +25,10 @@
 
 using namespace Polycode;
 
+ScreenEntityInstance *ScreenEntityInstance::BlankScreenEntityInstance() {
+	return new ScreenEntityInstance();
+}
+
 ScreenEntityInstance::ScreenEntityInstance(const String& fileName) : ScreenEntity() {
 	rootEntity = NULL;
 	setPositionMode(ScreenEntity::POSITION_CENTER);

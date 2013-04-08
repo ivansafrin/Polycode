@@ -52,8 +52,14 @@ namespace Polycode {
 			*/
 			ScreenMesh(int meshType);
 			
-			// Static constructor wrappers for bindings
+			/**
+			* Create an empty screen mesh of specified type. See Mesh for available mesh types.
+			*/
 			static ScreenMesh *ScreenMeshWithType(int meshType);
+			
+			/**
+			* Creates the screen mesh from existing Mesh.
+			*/			
 			static ScreenMesh *ScreenMeshWithMesh(Mesh *mesh);
 						
 			virtual ~ScreenMesh();

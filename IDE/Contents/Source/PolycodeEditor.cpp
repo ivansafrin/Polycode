@@ -48,6 +48,7 @@ PolycodeEditor::PolycodeEditor(bool _isReadOnly) : ScreenEntity(), ClipboardProv
 	this->_isReadOnly = _isReadOnly;
 	enableScissor = true;	
 	processInputEvents = true;
+	_hasChanges = false;
 
 	Core *core = CoreServices::getInstance()->getCore();
 	
@@ -55,9 +56,20 @@ PolycodeEditor::PolycodeEditor(bool _isReadOnly) : ScreenEntity(), ClipboardProv
 	core->addEventListener(this, Core::EVENT_PASTE);
 }
 
+void PolycodeEditor::setHasChanges(bool newVal) {
+	if(_hasChanges != newVal) {
+		_hasChanges = newVal;	
+		dispatchEvent(new Event(), Event::CHANGE_EVENT);
+	}
+}
+
 void PolycodeEditor::handleEvent(Event *event) {
 	if(event->getDispatcher() == CoreServices::getInstance()->getCore()) {
 		switch(event->getEventCode()) {
+
+			// Only copypaste of more complex IDE entities is handled here.
+			// Pure text copy/paste is handled in:
+			// Modules/Contents/UI/Source/PolyUITextInput.cpp
 			case Core::EVENT_COPY:
 			{
 				void *data = NULL;

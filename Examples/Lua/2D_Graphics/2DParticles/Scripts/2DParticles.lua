@@ -2,7 +2,7 @@
 
 screen = Screen()
 
-emitter = ScreenParticleEmitter("Resources/particle.png", screen, Particle.BILLBOARD_PARTICLE,
+emitter = ScreenParticleEmitter("Resources/particle.png", Particle.BILLBOARD_PARTICLE,
 	ParticleEmitter.CONTINUOUS_EMITTER, 4, 200, Vector3(0.0,-50.0,0.0), Vector3(0.0,0.0,0.0),
 	Vector3(20.5, 40.0, 0.0), Vector3(0.0,0.0,0.0))
 

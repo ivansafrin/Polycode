@@ -26,6 +26,7 @@
 #include "PolyInputEvent.h"
 #include "PolyLabel.h"
 #include "PolyCoreServices.h"
+#include "PolyCore.h"
 
 using namespace Polycode;
 
@@ -63,6 +64,10 @@ UIButton::UIButton(String text, Number width, Number height) : UIElement() {
 	buttonRect->addEventListener(this, InputEvent::EVENT_MOUSEUP);
 	buttonRect->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);	
 	buttonRect->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+	
+	coreInput = CoreServices::getInstance()->getCore()->getInput();
+	coreInput->addEventListener(this, InputEvent::EVENT_KEYDOWN);
+		
 	pressedDown = false;
 	
 	buttonLabel = new ScreenLabel(text, fontSize, fontName, Label::ANTIALIAS_FULL);
@@ -97,6 +102,17 @@ UIButton::~UIButton() {
 }
 		
 void UIButton::handleEvent(Event *event) {
+
+	if(event->getDispatcher() == coreInput) {
+		switch(event->getEventCode()) {
+			case InputEvent::EVENT_KEYDOWN:
+				if(hasFocus) {
+					dispatchEvent(new UIEvent(), UIEvent::CLICK_EVENT);					
+				}
+			break;
+		}
+	}
+	
 	if(event->getDispatcher() == buttonRect) {
 		switch(event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEOVER:

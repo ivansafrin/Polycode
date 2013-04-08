@@ -58,8 +58,6 @@ class YesNoPopup : public UIWindow {
 		void handleEvent(Event *event);
 		
 		String action;
-		
-	protected:
 	
 		ScreenLabel *captionLabel;
 	

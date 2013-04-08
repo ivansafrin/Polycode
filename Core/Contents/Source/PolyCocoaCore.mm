@@ -412,6 +412,8 @@ void CocoaCore::checkEvents() {
 						input->setMousePosition(event.mouseX, event.mouseY, getTicks());						
 						break;
 					case InputEvent::EVENT_MOUSEDOWN:
+						input->mousePosition.x = event.mouseX;
+						input->mousePosition.y = event.mouseY;
 						input->setMouseButtonState(event.mouseButton, true, getTicks());						
 						break;
 					case InputEvent::EVENT_MOUSEWHEEL_UP:
@@ -530,13 +532,21 @@ vector<String> CocoaCore::openFilePicker(vector<CoreFileExtension> extensions, b
 bool CocoaCore::Update() {
 	if(!running)
 		return false;
-		
+	
 	lockMutex(CoreServices::getRenderMutex());	
 	checkEvents();
-	renderer->BeginRender();
+	
+	if(!paused) {	
+		renderer->BeginRender();
+	}
+	
 	updateCore();
-	renderer->EndRender();
-	[context flushBuffer];
+		
+	if(!paused) {		
+		renderer->EndRender();
+		[context flushBuffer];
+	}
+	
 	unlockMutex(CoreServices::getRenderMutex());	
 	doSleep();	
 	return running;

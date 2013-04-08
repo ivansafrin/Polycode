@@ -441,7 +441,7 @@ MouseEventResult ScreenEntity::_onMouseMove(Number x, Number y, int timestamp, V
 		for(int i=children.size()-1;i>=0;i--) {			
 			Vector2 adjust = parentAdjust;
 			if(positionMode == POSITION_TOPLEFT)
-				adjust += Vector2(width/2.0, height/2.0);
+				adjust += Vector2(floor(width/2.0), floor(height/2.0));
 			
 			MouseEventResult childRes = ((ScreenEntity*)children[i])->_onMouseMove(x,y, timestamp, adjust);
 			if(childRes.hit)
@@ -503,7 +503,7 @@ MouseEventResult ScreenEntity::_onMouseUp(Number x, Number y, int mouseButton, i
 		for(int i=children.size()-1;i>=0;i--) {			
 			Vector2 adjust = parentAdjust;
 			if(positionMode == POSITION_TOPLEFT)
-				adjust += Vector2(width/2.0, height/2.0);			
+				adjust += Vector2(floor(width/2.0), floor(height/2.0));
 			MouseEventResult childRes = ((ScreenEntity*)children[i])->_onMouseUp(x,y, mouseButton, timestamp, adjust);
 			if(childRes.hit)
 				ret.hit = true;
@@ -551,7 +551,7 @@ MouseEventResult ScreenEntity::_onMouseWheelUp(Number x, Number y, int timestamp
 		for(int i=children.size()-1;i>=0;i--) {			
 			Vector2 adjust = parentAdjust;
 			if(positionMode == POSITION_TOPLEFT)
-				adjust += Vector2(width/2.0, height/2.0);		
+				adjust += Vector2(floor(width/2.0), floor(height/2.0));
 			MouseEventResult childRes = ((ScreenEntity*)children[i])->_onMouseWheelUp(x,y, timestamp, adjust);
 			if(childRes.hit)
 				ret.hit = true;
@@ -595,7 +595,7 @@ MouseEventResult ScreenEntity::_onMouseWheelDown(Number x, Number y, int timesta
 		for(int i=children.size()-1;i>=0;i--) {			
 			Vector2 adjust = parentAdjust;
 			if(positionMode == POSITION_TOPLEFT)
-				adjust += Vector2(width/2.0, height/2.0);
+				adjust += Vector2(floor(width/2.0), floor(height/2.0));
 			
 			MouseEventResult childRes = ((ScreenEntity*)children[i])->_onMouseWheelDown(x,y, timestamp, adjust);
 			if(childRes.hit)
@@ -651,7 +651,7 @@ MouseEventResult ScreenEntity::_onMouseDown(Number x, Number y, int mouseButton,
 	for(int i=children.size()-1;i>=0;i--) {			
 			Vector2 adjust = parentAdjust;
 			if(positionMode == POSITION_TOPLEFT)
-				adjust += Vector2(width/2.0, height/2.0);
+				adjust += Vector2(floor(width/2.0), floor(height/2.0));
 			MouseEventResult childRes = ((ScreenEntity*)children[i])->_onMouseDown(x,y, mouseButton, timestamp, adjust);
 			if(childRes.hit)
 				ret.hit = true;

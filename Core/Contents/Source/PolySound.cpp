@@ -289,9 +289,6 @@ ALenum Sound::checkALError(const String& operation) {
 	ALenum error = alGetError();
 	if(error != AL_NO_ERROR) {
 		switch(error) {
-			case AL_NO_ERROR:
-				soundError(operation + ": " +ALNoErrorStr);
-				break;
 			case AL_INVALID_NAME:
 				soundError(operation +": " + ALInvalidNameStr);
 				break;
@@ -439,8 +436,10 @@ ALuint Sound::loadWAV(const String& fileName) {
 	
 		// Open for binary reading
 		f = OSBasics::open(fileName.c_str(), "rb");
-		if (!f)
+		if (!f) {
 			soundError("LoadWav: Could not load wav from " + fileName);
+			return buffer;
+		}
 		
 		// buffers
 		char magic[5];

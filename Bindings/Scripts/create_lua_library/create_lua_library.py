@@ -53,6 +53,7 @@ def typeFilter(ty):
 	ty = ty.replace("&", "")
 	ty = re.sub(r'^.*\sint\s*$', 'int', ty) # eg "unsigned int"
 	ty = re.sub(r'^.*\slong\s*$', 'int', ty)
+	ty = re.sub(r'^.*\sshort\s*$', 'int', ty)
 	ty = re.sub(r'^.*\sfloat\s*$', 'Number', ty)
 	ty = re.sub(r'^.*\sdouble\s*$', 'Number', ty) # eg "long double"
 	ty = ty.replace("unsigned", "int")
@@ -131,12 +132,14 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 		wrappersHeaderOut += "public:\n"
 		wrappersHeaderOut += "	LuaEventHandler() : EventHandler() {}\n"
 		wrappersHeaderOut += "	void handleEvent(Event *e) {\n"
+		wrappersHeaderOut += "		lua_getfield (L, LUA_GLOBALSINDEX, \"__customError\");\n"
 		wrappersHeaderOut += "		int errH = lua_gettop(L);\n"
 		wrappersHeaderOut += "		lua_getfield(L, LUA_GLOBALSINDEX, \"__handleEvent\");\n"
 		wrappersHeaderOut += "		lua_rawgeti( L, LUA_REGISTRYINDEX, wrapperIndex );\n"
 		wrappersHeaderOut += "		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));\n"
 		wrappersHeaderOut += "		*userdataPtr = (PolyBase*)e;\n"
 		wrappersHeaderOut += "		lua_pcall(L, 2, 0, errH);\n"
+		wrappersHeaderOut += "		lua_settop(L, 0);\n"
 		wrappersHeaderOut += "	}\n"
 		wrappersHeaderOut += "	int wrapperIndex;\n"
 		wrappersHeaderOut += "	lua_State *L;\n"
@@ -218,7 +221,15 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 						continue
 					if pp["type"].find("static ") != -1: # If static. FIXME: Static doesn't work?
 						if "defaltValue" in pp: # FIXME: defaltValue is misspelled.
-							luaClassBindingOut += "%s.%s = %s\n" % (ckey, pp["name"], pp["defaltValue"])
+							defaltValue = pp["defaltValue"]
+							
+							# The "Default Value" is more or less a literal C++ string. This causes a problem:
+							# Frequently we say static const int A = 1; static const int B = A + 1.
+							# Put in a one-off hack to ensure namespacing works in this special case.
+							if re.match(r'\s*[a-zA-Z_][a-zA-Z0-9_]*\s*\+', defaltValue):
+								defaltValue = "%s.%s" % (ckey, defaltValue)
+							
+							luaClassBindingOut += "%s.%s = %s\n" % (ckey, pp["name"], defaltValue)
 							luaDocOut += "\t\t\t<static_member name=\"%s\" type=\"%s\" value=\"%s\">\n" % (pp["name"],  toLuaType(typeFilter(pp["type"])), pp["defaltValue"])
 							if 'doxygen' in pp:
 								luaDocOut += "\t\t\t\t<desc><![CDATA[%s]]></desc>\n" % (cleanDocs(pp['doxygen']))
@@ -258,7 +269,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 						# Generate Lua side of binding:
 
 						# If type is a primitive such as Number/String/int/bool
-						if pp["type"] == "Number" or  pp["type"] == "String" or pp["type"] == "int" or pp["type"] == "bool":
+						if pp["type"] == "PolyKEY" or pp["type"] == "Number" or  pp["type"] == "String" or pp["type"] == "int" or pp["type"] == "bool":
 							luaClassBindingOut += "\t\treturn %s.%s_get_%s(self.__ptr)\n" % (libName, ckey, pp["name"])
 							
 						# If type is a particle emitter, specifically #SPEC
@@ -293,12 +304,12 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 							if pp["type"] == "String":
 								outfunc = "lua_pushstring"
 								retFunc = ".c_str()"
-							if pp["type"] == "int":
+							if pp["type"] == "int" or pp["type"] == "PolyKEY":
 								outfunc = "lua_pushinteger"
 							if pp["type"] == "bool":
 								outfunc = "lua_pushboolean"
 
-							if pp["type"] == "Number" or  pp["type"] == "String" or pp["type"] == "int" or pp["type"] == "bool":
+							if pp["type"] == "Number" or  pp["type"] == "String" or pp["type"] == "int" or pp["type"] == "bool" or pp["type"] == "PolyKEY":
 								wrappersHeaderOut += "\t%s(L, inst->%s%s);\n" % (outfunc, pp["name"], retFunc)
 							else:
 								wrappersHeaderOut += "\tPolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));\n"
@@ -330,7 +341,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 						pp["type"] = typeFilter(pp["type"])
 						
 						# If type is a primitive: Create lua and C++ sides at the same time.
-						if pp["type"] == "Number" or  pp["type"] == "String" or pp["type"] == "int" or pp["type"] == "bool":
+						if pp["type"] == "Number" or  pp["type"] == "String" or pp["type"] == "int" or pp["type"] == "bool" or pp["type"] == "PolyKEY":
 							if pidx == 0:
 								luaClassBindingOut += "\tif name == \"%s\" then\n" % (pp["name"])
 							else:
@@ -350,6 +361,8 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 								outfunc = "lua_tostring"
 							if pp["type"] == "int":
 								outfunc = "lua_tointeger"
+							if pp["type"] == "PolyKEY":
+								outfunc = "(PolyKEY)lua_tointeger"
 							if pp["type"] == "bool":
 								outfunc = "lua_toboolean"
 
@@ -510,6 +523,12 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 									checkfunc = "lua_isnumber"
 									luafuncsuffix = ""
 									lend = ""
+								if param["type"] == "PolyKEY":
+									luafunc = "(PolyKEY)lua_tointeger"
+									luatype = "LUA_TNUMBER"
+									checkfunc = "lua_isnumber"
+									luafuncsuffix = ""
+									lend = ""
 								if param["type"] == "bool":
 									luafunc = "lua_toboolean"
 									luatype = "LUA_TBOOLEAN"
@@ -619,7 +638,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 									outfunc = "lua_pushstring"
 									basicType = True
 									retFunc = ".c_str()"
-								if pm["rtnType"] == "int" or pm["rtnType"] == "unsigned int" or pm["rtnType"] == "static int" or  pm["rtnType"] == "size_t" or pm["rtnType"] == "static size_t" or pm["rtnType"] == "long" or pm["rtnType"] == "unsigned int" or pm["rtnType"] == "static long" or pm["rtnType"] == "short":
+								if pm["rtnType"] == "int" or pm["rtnType"] == "unsigned int" or pm["rtnType"] == "static int" or  pm["rtnType"] == "size_t" or pm["rtnType"] == "static size_t" or pm["rtnType"] == "long" or pm["rtnType"] == "unsigned int" or pm["rtnType"] == "static long" or pm["rtnType"] == "short" or pm["rtnType"] == "PolyKEY":
 									outfunc = "lua_pushinteger"
 									basicType = True
 								if pm["rtnType"] == "bool" or pm["rtnType"] == "static bool" or pm["rtnType"] == "virtual bool":
@@ -727,14 +746,15 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 				cppRegisterOut += "\t\t{\"delete_%s\", %s_delete_%s},\n" % (ckey, libName, ckey)
 				wrappersHeaderOut += "static int %s_delete_%s(lua_State *L) {\n" % (libName, ckey)
 				wrappersHeaderOut += "\tluaL_checktype(L, 1, LUA_TUSERDATA);\n"
-				wrappersHeaderOut += "\t%s *inst = (%s*) *((PolyBase**)lua_touserdata(L, 1));\n" % (ckey, ckey)
-				wrappersHeaderOut += "\tdelete inst;\n"
+				wrappersHeaderOut += "\tPolyBase **inst = (PolyBase**)lua_touserdata(L, 1);\n"
+				wrappersHeaderOut += "\tdelete ((%s*) *inst);\n" % (ckey)
+				wrappersHeaderOut += "\t*inst = NULL;\n"
 				wrappersHeaderOut += "\treturn 0;\n"
 				wrappersHeaderOut += "}\n\n"
 
 				# Delete method (Lua side)
 				luaClassBindingOut += "function %s:__delete()\n" % (ckey)
-				luaClassBindingOut += "\t%s.delete_%s(self.__ptr)\n" % (libName, ckey)
+				luaClassBindingOut += "\tif self then %s.delete_%s(self.__ptr) end\n" % (libName, ckey)
 				luaClassBindingOut += "end\n"
 					
 				# Add class to lua index file

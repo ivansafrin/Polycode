@@ -79,12 +79,13 @@ public:
 	
 	void addFiles();
 	
-	void newGroup();
+	void newGroup();	
 	void openProject();
 	void closeProject();	
 	void saveFile();
 	void findText();
 	void runProject();
+	void doRunProject();
 	void exportProject();	
 	
 	// system callbacks
@@ -93,10 +94,15 @@ public:
 	
 	void refreshProject();	
 	
+	bool needsRedraw;
+	bool lastConnected;
+	
 	const static int EVENT_SHOW_MENU = 1;
 	
 	Core *core;	
 protected:
+
+	bool runNextFrame;
 
 	bool willRunProject;
 	PolycodeFrame *frame;

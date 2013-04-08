@@ -119,7 +119,8 @@ namespace Polycode {
 		PolyKEY keyCode;
 		wchar_t unicodeChar;		
 		char mouseButton;	
-		static const int INPUT_EVENT = 0;
+		static const int EVENTBASE_PLATFORMEVENT = 0x300;
+		static const int INPUT_EVENT = EVENTBASE_PLATFORMEVENT+0;
 	};
 	
 	
@@ -248,6 +249,8 @@ public:
 		HWND hWnd;
 
 	private:
+
+		bool checkSpecialKeyEvents(PolyKEY key);
 
 		unsigned int nextDeviceID;
 		PolyKEY keyMap[1024];

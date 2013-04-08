@@ -46,7 +46,7 @@ ScreenEntity *PhysicsScreenEvent::getSecondEntity() {
 void PhysicsScreen::PreSolve(b2Contact* contact, const b2Manifold* oldManifold)
 {
     if(((PhysicsScreenEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->collisionOnly ||
-       ((PhysicsScreenEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->collisionOnly) {
+       ((PhysicsScreenEntity*)contact->GetFixtureB()->GetBody()->GetUserData())->collisionOnly) {
         contact->SetEnabled(false);
     }    
 }
@@ -57,11 +57,11 @@ void PhysicsScreen::BeginContact (b2Contact *contact) {
 //		return;
 //	}
 	PhysicsScreenEvent *newEvent = new PhysicsScreenEvent();
-	newEvent->entity1 = (ScreenEntity*)contact->GetFixtureA()->GetUserData();
-	newEvent->entity2 = (ScreenEntity*)contact->GetFixtureB()->GetUserData();			
+	newEvent->entity1 = ((PhysicsScreenEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->getScreenEntity();
+	newEvent->entity2 = ((PhysicsScreenEntity*)contact->GetFixtureB()->GetBody()->GetUserData())->getScreenEntity();
 
     if(((PhysicsScreenEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->collisionOnly ||
-        ((PhysicsScreenEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->collisionOnly) {
+        ((PhysicsScreenEntity*)contact->GetFixtureB()->GetBody()->GetUserData())->collisionOnly) {
         contact->SetEnabled(false);
     }
        
@@ -97,12 +97,12 @@ void PhysicsScreen::BeginContact (b2Contact *contact) {
 
 void PhysicsScreen::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse) {
 	PhysicsScreenEvent *newEvent = new PhysicsScreenEvent();
-	newEvent->entity1 = (ScreenEntity*)contact->GetFixtureA()->GetUserData();
-	newEvent->entity2 = (ScreenEntity*)contact->GetFixtureB()->GetUserData();		
+	newEvent->entity1 = ((PhysicsScreenEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->getScreenEntity();
+	newEvent->entity2 = ((PhysicsScreenEntity*)contact->GetFixtureB()->GetBody()->GetUserData())->getScreenEntity();
 
     
     if(((PhysicsScreenEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->collisionOnly ||
-       ((PhysicsScreenEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->collisionOnly) {
+       ((PhysicsScreenEntity*)contact->GetFixtureB()->GetBody()->GetUserData())->collisionOnly) {
         contact->SetEnabled(false);
     }
 
@@ -143,8 +143,8 @@ void PhysicsScreen::PostSolve(b2Contact* contact, const b2ContactImpulse* impuls
 
 void PhysicsScreen::EndContact (b2Contact *contact) {
 	PhysicsScreenEvent *newEvent = new PhysicsScreenEvent();
-	newEvent->entity1 = (ScreenEntity*)contact->GetFixtureA()->GetUserData();
-	newEvent->entity2 = (ScreenEntity*)contact->GetFixtureB()->GetUserData();	
+	newEvent->entity1 = ((PhysicsScreenEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->getScreenEntity();
+	newEvent->entity2 = ((PhysicsScreenEntity*)contact->GetFixtureB()->GetBody()->GetUserData())->getScreenEntity();
     newEvent->contact = contact;
     
 	for(int i=0; i < contacts.size(); i++) {
@@ -286,7 +286,7 @@ Vector2 PhysicsScreen::getVelocity(ScreenEntity *ent) {
 	return Vector2(vec.x, vec.y);
 }
 
-void PhysicsScreen::setSpin(ScreenEntity *ent, Number spin) {
+void PhysicsScreen::setAngularVelocity(ScreenEntity *ent, Number spin) {
 	PhysicsScreenEntity *pEnt = getPhysicsByScreenEntity(ent);
 	if(pEnt == NULL)
 		return;
@@ -408,9 +408,11 @@ ScreenEntity *PhysicsScreen::getEntityAtPosition(Number x, Number y) {
 	
 	for(int i=0;i<physicsChildren.size();i++) {
 		PhysicsScreenEntity *ent = physicsChildren[i];
-		if(ent->shape) {
-			if(ent->shape->TestPoint(ent->body->GetTransform(), mousePosition)) {
-				return ent->getScreenEntity();
+		if(ent->fixture) {
+			for (b2Fixture* f = ent->body->GetFixtureList(); f; f = f->GetNext()) {
+				if(f->TestPoint(mousePosition)) {
+					return ent->getScreenEntity();
+				}
 			}
 		}
 	}	
@@ -427,11 +429,13 @@ bool PhysicsScreen::testEntityAtPosition(ScreenEntity *ent, Number x, Number y) 
 	mousePosition.x = x/worldScale;
 	mousePosition.y = y/worldScale;
 	
-	if(pEnt->shape) {
-		if(pEnt->shape->TestPoint(pEnt->body->GetTransform(), mousePosition))
-			return true;
-		else
-			return false;
+	if(pEnt->fixture) {
+		for (b2Fixture* f = pEnt->body->GetFixtureList(); f; f = f->GetNext()) {
+			if(f->TestPoint(mousePosition))
+				return true;
+			else
+				return false;
+		}
 	}
 	return false;
 }
@@ -490,17 +494,21 @@ PhysicsScreen::~PhysicsScreen() {
 }
 
 PhysicsScreenEntity *PhysicsScreen::getPhysicsEntityByFixture(b2Fixture *fixture) {
-	for(int i=0; i < physicsChildren.size(); i++) {
-		if(physicsChildren[i]->fixture == fixture)
-			return physicsChildren[i];
+	for(int i=0; i < physicsChildren.size(); i++) {											
+		for (b2Fixture* f = physicsChildren[i]->body->GetFixtureList(); f; f = f->GetNext()) {
+			if(f == fixture)
+				return physicsChildren[i];
+		}
 	}
 	return NULL;	
 }
 
 PhysicsScreenEntity *PhysicsScreen::getPhysicsEntityByShape(b2Shape *shape) {
 	for(int i=0; i < physicsChildren.size(); i++) {
-		if(physicsChildren[i]->shape == shape)
-			return physicsChildren[i];
+		for (b2Fixture *f = physicsChildren[i]->body->GetFixtureList(); f; f = f->GetNext()) {
+			if(f->GetShape() == shape)
+				return physicsChildren[i];
+		}
 	}
 	return NULL;
 }

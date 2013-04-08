@@ -64,6 +64,15 @@ class _PolyExport ScreenSprite : public ScreenShape
 		* @param spriteWidth Pixel height of each sprite cell.		
 		*/
 		ScreenSprite(const String& fileName, Number spriteWidth, Number spriteHeight);
+		
+		/**
+		* Create a sprite from a spritesheet image of specified size.
+		* @param fileName Image file to load spritesheet from.
+		* @param spriteWidth Pixel width of each sprite cell.
+		* @param spriteWidth Pixel height of each sprite cell.		
+		*/		
+		static ScreenSprite* ScreenSpriteFromImageFile(const String& fileName, Number spriteWidth, Number spriteHeight);
+		
 		virtual ~ScreenSprite();
 		
 		virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly);

@@ -51,6 +51,11 @@ namespace Polycode {
 			void setStart(Vector2 point);
 			void setEnd(Vector2 point);
 						
+			/**
+			* Create a line between two entities. It's automatically updated every frame to follow the entities.
+			* @target1 Starting target.
+			* @target2 Ending target.
+			*/							
 			static ScreenLine *ScreenLineBetweenEntities(ScreenEntity* target1, ScreenEntity* target2);			
 
 			void Update();

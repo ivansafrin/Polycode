@@ -183,6 +183,14 @@ void BezierCurve::rebuildBuffers() {
 }
 
 Vector3 BezierCurve::getPointAt(Number a) {
+	if(controlPoints.size() == 0) {
+		return Vector3();
+	}
+	
+	if(controlPoints.size() == 1) {
+		return controlPoints[0]->p2;
+	}
+	
 	if(a < 0)
 		a = 0;
 	if(a > 1)

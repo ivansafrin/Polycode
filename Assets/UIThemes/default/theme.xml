@@ -67,13 +67,13 @@
 	<uiWindowSkinB>17</uiWindowSkinB>
 	<uiWindowSkinL>17</uiWindowSkinL>
 	<uiWindowSkinPadding>15</uiWindowSkinPadding>		
-	<uiWindowTitleFont>mono</uiWindowTitleFont>
+	<uiWindowTitleFont>sans</uiWindowTitleFont>
 	<uiWindowFontColor>0xe4e0e3c8</uiWindowFontColor>	
 	<uiWindowTitleFontSize>14</uiWindowTitleFontSize>
 	<uiWindowTitleX>15</uiWindowTitleX>	
-	<uiWindowTitleY>10</uiWindowTitleY>	
+	<uiWindowTitleY>10</uiWindowTitleY>
 	<uiWindowTitleBarHeight>25</uiWindowTitleBarHeight>
-	<uiWindowTitleBarOffset>5</uiWindowTitleBarOffset>	
+	<uiWindowTitleBarOffset>5</uiWindowTitleBarOffset>
 	<uiWindowCloseIcon>UIThemes/default/closeIcon.png</uiWindowCloseIcon>
 	<uiCloseIconX>11</uiCloseIconX>	
 	<uiCloseIconY>11</uiCloseIconY>		
@@ -120,20 +120,20 @@
 	<uiMenuFontSize>12</uiMenuFontSize>
 	<uiMenuTextOffsetX>10</uiMenuTextOffsetX>
 	<uiMenuTextOffsetY>-1</uiMenuTextOffsetY>		
-	<uiMenuPaddingX>7</uiMenuPaddingX>
-	<uiMenuPaddingY>20</uiMenuPaddingY>
+	<uiMenuPaddingX>3</uiMenuPaddingX>
+	<uiMenuPaddingY>10</uiMenuPaddingY>
 	<uiMenuItemHeight>22</uiMenuItemHeight>
 	<uiMenuBgImage>UIThemes/default/menu_bg.png</uiMenuBgImage>	
-	<uiMenuBgT>25</uiMenuBgT>
-	<uiMenuBgR>18</uiMenuBgR>
-	<uiMenuBgB>22</uiMenuBgB>
-	<uiMenuBgL>18</uiMenuBgL>			
+	<uiMenuBgT>4</uiMenuBgT>
+	<uiMenuBgR>6</uiMenuBgR>
+	<uiMenuBgB>9</uiMenuBgB>
+	<uiMenuBgL>6</uiMenuBgL>			
 	<uiMenuSelectorBgImage>UIThemes/default/menu_selector.png</uiMenuSelectorBgImage>	
 	<uiMenuSelectorBgT>0</uiMenuSelectorBgT>
 	<uiMenuSelectorBgR>0</uiMenuSelectorBgR>
 	<uiMenuSelectorBgB>0</uiMenuSelectorBgB>
 	<uiMenuSelectorBgL>0</uiMenuSelectorBgL>
-	<uiMenuSelectorPadding>2</uiMenuSelectorPadding>
+	<uiMenuSelectorPadding>3</uiMenuSelectorPadding>
 
 	<uiColorBoxFrameImage>UIThemes/default/colorboxFrame.png</uiColorBoxFrameImage>
 	<uiColorBoxFrameImageT>7</uiColorBoxFrameImageT>
@@ -157,4 +157,7 @@
 	<uiHSliderBgB>5</uiHSliderBgB>
 	<uiHSliderBgL>6</uiHSliderBgL>
 
+	<uiFileBrowserFileIcon>UIThemes/default/file.png</uiFileBrowserFileIcon>
+	<uiFileBrowserFolderIcon>UIThemes/default/folder.png</uiFileBrowserFolderIcon>
+	<uiFileBrowserPlaceIcon>UIThemes/default/boxIcon.png</uiFileBrowserPlaceIcon>
 </PolyConfig>

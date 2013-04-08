@@ -85,7 +85,7 @@ class _PolyExport PhysicsScreenEvent : public Event {
 		*/			
 		Vector2 worldCollisionPoint;
 
-		/*
+		/**
          * Raw Box2d Contact
          */
     
@@ -100,21 +100,23 @@ class _PolyExport PhysicsScreenEvent : public Event {
 		* Friction strength of the impact
 		*/		
 		Number frictionStrength;	
-							
+			
+		static const int EVENTBASE_PHYSICSSCREENEVENT = 0x800;
+	
 		/**
 		* Event sent out when a collision begins
 		*/					
-		static const int EVENT_NEW_SHAPE_COLLISION = 0;
+		static const int EVENT_NEW_SHAPE_COLLISION = EVENTBASE_PHYSICSSCREENEVENT+0;
 		
 		/**
 		* Event sent out when a collision ends
 		*/							
-		static const int EVENT_END_SHAPE_COLLISION = 1;
+		static const int EVENT_END_SHAPE_COLLISION = EVENTBASE_PHYSICSSCREENEVENT+1;
 		
 		/**
 		* Event sent out when a collision begins
 		*/					
-		static const int EVENT_SOLVE_SHAPE_COLLISION = 3;
+		static const int EVENT_SOLVE_SHAPE_COLLISION = EVENTBASE_PHYSICSSCREENEVENT+3;
 
 		
 };		
@@ -169,7 +171,7 @@ public:
 	void Update();
 	
 	/**
-	* Adds a ScreenEntity as a physics enabled child. 
+	* Adds a ScreenEntity as a physics enabled child. Once an entity is added as a physics child, its transforms are set by the physics engine and you are not able to position it manually. Use addCollisionChild/trackCollisionChild to track collisions of entities that you can position manually.
 	* @param newEntity Screen entity to add.
 	* @param entType Physics entity type to add as. Possible values are PhysicsScreenEntity::ENTITY_RECT, PhysicsScreenEntity::ENTITY_CIRCLE and PhysicsScreenEntity::ENTITY_MESH. If the type is ENTITY_MESH, the ScreenEntity passed must be a ScreenMesh!
 	* @param isStatic If this parameter is true, the body is static (doesn't move on its own).
@@ -184,7 +186,7 @@ public:
 	PhysicsScreenEntity *addPhysicsChild(ScreenEntity *newEntity, int entType, bool isStatic, Number friction=0.1, Number density=1, Number restitution = 0, bool isSensor = false, bool fixedRotation = false, int groupIndex = 0);
     
 	/**
-	* Tracks a ScreenEntity as a physics enabled child. 
+	* Tracks a ScreenEntity as a physics enabled child. Once an entity is added as a physics child, its transforms are set by the physics engine and you are not able to position it manually. Use addCollisionChild/trackCollisionChild to track collisions of entities that you can position manually.
 	* @param newEntity Screen entity to add.
 	* @param entType Physics entity type to add as. Possible values are PhysicsScreenEntity::ENTITY_RECT, PhysicsScreenEntity::ENTITY_CIRCLE and PhysicsScreenEntity::ENTITY_MESH. If the type is ENTITY_MESH, the ScreenEntity passed must be a ScreenMesh!
 	* @param isStatic If this parameter is true, the body is static (doesn't move on its own).
@@ -331,11 +333,11 @@ public:
 	void setVelocityY(ScreenEntity *ent, Number fy);	
 	
 	/**
-	* Sets the spin of an entity
+	* Sets the angular velocity of an entity
 	* @param ent Entity to apply spin to.
 	* @param spin Spin value.
 	*/ 								
-	void setSpin(ScreenEntity *ent, Number spin);
+	void setAngularVelocity(ScreenEntity *ent, Number spin);
 
 	/**
 	* Returns the velocity of an entity.
@@ -373,13 +375,6 @@ public:
 	* @return If there specified entity overlaps the specified position, this returns true.
 	*/ 														
 	bool testEntityAtPosition(ScreenEntity *ent, Number x, Number y);
-
-    /*
-     * Adds entity to group to be deleted after the next physics step. Box2d bodies cannot be deleted during a physics step, so this must be used if you wish to remove
-     * objects during physics event callbacks
-     * @param child Entity to remove
-     */
-    void deleteChildNextStep(ScreenEntity *child);
     
 	/**
 	* Tests collision between two entities

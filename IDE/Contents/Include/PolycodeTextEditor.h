@@ -95,7 +95,7 @@ public:
 protected:
 
 	FindBar *findBar;
-	
+	bool isLoading;
 	String lastFindString;
 
 	PolycodeSyntaxHighlighter *syntaxHighligher;

@@ -46,6 +46,11 @@ Image::Image(const String& fileName) : imageData(NULL) {
 	}
 }
 
+Image *Image::BlankImage(int width, int height, int type) {
+		return new Image(width, height, type);
+}
+
+
 void Image::setPixelType(int type) {
 	imageType = type;
 	switch(imageType) {

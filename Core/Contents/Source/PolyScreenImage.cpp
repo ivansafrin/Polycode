@@ -28,6 +28,14 @@
 
 using namespace Polycode;
 
+ScreenImage* ScreenImage::ScreenImageWithImage(Image *image) {
+	return new ScreenImage(image);
+}
+
+ScreenImage* ScreenImage::ScreenImageWithTexture(Texture *texture) {
+	return new ScreenImage(texture);	
+}
+
 ScreenImage::ScreenImage(const String& fileName) : ScreenShape(ScreenShape::SHAPE_RECT,1,1) {
 	loadTexture(fileName);
 	

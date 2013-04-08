@@ -378,7 +378,6 @@ INCLUDE_DIRECTORIES(
 
     TARGET_LINK_LIBRARIES(PolycodePlayer 
 	rt
-	dl
 	pthread
         PolycodeLua 
         Polycore 
@@ -393,6 +392,7 @@ INCLUDE_DIRECTORIES(
         ${ZLIB_LIBRARY}
         ${OPENGL_LIBRARIES}
         ${SDL_LIBRARY}
+	dl
 	Physics2DLua
 	Physics3DLua
 	UILua
@@ -414,7 +414,6 @@ INCLUDE_DIRECTORIES(
 
     TARGET_LINK_LIBRARIES(StandalonePlayer 
 	rt
-	dl
 	pthread
         PolycodeLua 
         Polycore 
@@ -429,6 +428,7 @@ INCLUDE_DIRECTORIES(
         ${ZLIB_LIBRARY}
         ${OPENGL_LIBRARIES}
         ${SDL_LIBRARY}
+	dl
 	Physics2DLua
 	Physics3DLua
 	UILua

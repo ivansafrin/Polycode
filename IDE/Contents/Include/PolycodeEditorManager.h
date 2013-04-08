@@ -27,7 +27,7 @@
 
 using namespace Polycode;
 
-class PolycodeEditorManager { 
+class PolycodeEditorManager : public EventDispatcher { 
 	public:
 		PolycodeEditorManager();
 		~PolycodeEditorManager();
@@ -36,15 +36,22 @@ class PolycodeEditorManager {
 		PolycodeEditor *createEditorForExtension(String extension);
 		void registerEditorFactory(PolycodeEditorFactory *editorFactory);
 	
-		void setCurrentEditor(PolycodeEditor *editor) { currentEditor = editor; }
+		void handleEvent(Event *event);
+	
+		void setCurrentEditor(PolycodeEditor *editor, bool sendChangeEvent = true);
 		PolycodeEditor *getCurrentEditor() { return currentEditor; }
 		
+		void saveAll();
+		
+		bool hasUnsavedFiles();
+		bool hasUnsavedFilesForProject(PolycodeProject *project);
+		
 	//	int close
-	
+	std::vector<PolycodeEditor*> openEditors;
+		
 protected:
 	
 	PolycodeEditor *currentEditor;
 	
-	std::vector<PolycodeEditor*> openEditors;
 	std::vector<PolycodeEditorFactory*> editorFactories;	
 };

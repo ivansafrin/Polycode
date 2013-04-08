@@ -56,11 +56,15 @@ public:
 	
 	String getEditorType() { return editorType; }
 	
+	bool hasChanges() { return _hasChanges;}
+	
+	void setHasChanges(bool newVal);
+	
 	PolycodeProject *parentProject;
 		
 protected:
 
-	
+	bool _hasChanges;
 
 	String filePath;
 	bool _isReadOnly;

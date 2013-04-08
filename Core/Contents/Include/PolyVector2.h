@@ -127,7 +127,7 @@ namespace Polycode {
 			
 			/**
 			* Returns the dot product with another vector.
-			* @return Dor product with the vector.
+			* @return Dot product with the vector.
 			*/			
 			inline Number dot(const Vector2 &u) const {
 				return x * u.x + y * u.y;

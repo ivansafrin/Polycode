@@ -127,7 +127,7 @@ void PolycodeRemoteDebugger::handleEvent(Event *event) {
 				newClient->client = serverEvent->client;
 				newClient->client->addEventListener(this, ServerClientEvent::EVENT_CLIENT_DATA);
 				PolycodeConsole::print("Remote debugger client connected...\n");printf("CLIENT CONNECTED\n");		
-				debuggerClients.push_back(newClient);		
+				debuggerClients.push_back(newClient);				
 			}
 			break;
 		}

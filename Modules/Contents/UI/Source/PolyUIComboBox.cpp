@@ -133,7 +133,7 @@ UIComboBoxItem *UIComboBox::getSelectedItem() {
 
 void UIComboBox::toggleDropDown() {
 	Vector2 screenPos = this->getScreenPosition();
-	dropDownMenu = globalMenu->showMenu(screenPos.x, screenPos.y - height, width);
+	dropDownMenu = globalMenu->showMenu(screenPos.x, screenPos.y, width);
 	
 	for(int i=0; i < items.size(); i++) {
 		dropDownMenu->addOption(items[i]->label, String::IntToString(i));

@@ -29,7 +29,7 @@
 
 using namespace Polycode;
 
-class PolycodeProjectManager {
+class PolycodeProjectManager : public EventDispatcher {
 	public:
 		PolycodeProjectManager();
 		~PolycodeProjectManager();
@@ -48,7 +48,7 @@ class PolycodeProjectManager {
 	
 	PolycodeProject *getProjectByProjectFile(String projectFile);
 	
-	void exportProject(PolycodeProject *project, String exportPath, bool macOS, bool windows, bool _linux);
+	void exportProject(PolycodeProject *project, String exportPath, bool macOS, bool windows, bool linux_);
 	
 	int removeProject(PolycodeProject *project);
 	

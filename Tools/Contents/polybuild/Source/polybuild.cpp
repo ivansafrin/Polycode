@@ -5,6 +5,7 @@
 
 #ifdef _WINDOWS
 	#include <windows.h>
+	#include <direct.h>
 #else
 	#include <dirent.h>
 	#include <sys/types.h>
@@ -425,7 +426,13 @@ int main(int argc, char **argv) {
 	
 	zipClose(z, "");	
 
+#ifdef _WINDOWS
+	char *buffer = _getcwd(NULL, 0);
+	String workingDir = String(buffer);
+	free(buffer);
+	OSBasics::removeItem(workingDir+"/runinfo_tmp_zzzz.polyrun");
+#else
 	OSBasics::removeItem("runinfo_tmp_zzzz.polyrun");
-
+#endif
 	return 0;
 }

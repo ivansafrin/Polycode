@@ -56,6 +56,9 @@ namespace Polycode {
 		useVertexColors = false;				
 	}
 	
+	Mesh *Mesh::MeshFromFileName(String& fileName) {
+		return new Mesh(fileName);
+	}
 	
 	Mesh::~Mesh() {
 		clearMesh();

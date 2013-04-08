@@ -25,7 +25,7 @@ screen:addChild(window)
 -- and listen to its click event
 -- **********************************************************************
 
-button = UIButton("Rotate me", 100, 30)
+button = UIButton("Rotate me", 100, 24)
 window:addChild(button)
 button.position.x = 20
 button.position.y = 40
@@ -40,7 +40,7 @@ button:addEventListener(nil, onRotateButton, UIEvent.CLICK_EVENT)
 -- UITextInput is a text input field
 -- **********************************************************************
 
-input = UITextInput(false, 100, 24)
+input = UITextInput(false, 100, 16)
 input:setText("DEMO")
 window:addChild(input)
 input.position.x = 140

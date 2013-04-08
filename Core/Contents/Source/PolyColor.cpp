@@ -45,6 +45,15 @@ Color::Color(unsigned int hex) {
 	setColorHex(hex);
 }
 
+Color Color::ColorWithInts(int r,int g, int b, int a) {
+	return Color(r,g,b,a);
+}
+
+Color Color::ColorWithHex(unsigned int hex) {
+	return Color(hex);
+}
+
+
 void Color::setColorHexRGB(unsigned int hex) {
 
 //	int tr = (hex >> 24) & 0xFF;

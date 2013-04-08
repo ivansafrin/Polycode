@@ -58,7 +58,6 @@ SET(polycore_SRCS
     Source/PolySceneRenderTexture.cpp
     Source/PolySceneSound.cpp
     Source/PolyScreen.cpp
-    Source/PolyScreenCurve.cpp
     Source/PolyScreenEntity.cpp
     Source/PolyScreenEvent.cpp
     Source/PolyScreenImage.cpp
@@ -154,7 +153,6 @@ SET(polycore_HDRS
     Include/PolyScenePrimitive.h
     Include/PolySceneRenderTexture.h
     Include/PolySceneSound.h
-    Include/PolyScreenCurve.h
     Include/PolyScreenEntity.h
     Include/PolyScreenEvent.h
     Include/PolyScreen.h

@@ -142,31 +142,32 @@ void Screen::drawFilter() {
 	if(!filterShaderMaterial)
 		return;
 	
-	CoreServices::getInstance()->getRenderer()->bindFrameBufferTexture(originalSceneTexture);
+	Renderer *renderer = CoreServices::getInstance()->getRenderer();
+	
+	renderer->bindFrameBufferTexture(originalSceneTexture);
 	
 	Render();
-	CoreServices::getInstance()->getRenderer()->unbindFramebuffers();
+	renderer->unbindFramebuffers();
 	
 	ShaderBinding* materialBinding;		
 	for(int i=0; i < filterShaderMaterial->getNumShaders(); i++) {
 		materialBinding = filterShaderMaterial->getShaderBinding(i);
-		CoreServices::getInstance()->getRenderer()->applyMaterial(filterShaderMaterial, localShaderOptions[i], i);	
+		renderer->applyMaterial(filterShaderMaterial, localShaderOptions[i], i);	
 			
 		if(i==filterShaderMaterial->getNumShaders()-1) {
-			CoreServices::getInstance()->getRenderer()->loadIdentity();
-			CoreServices::getInstance()->getRenderer()->drawScreenQuad(CoreServices::getInstance()->getRenderer()->getXRes(), CoreServices::getInstance()->getRenderer()->getYRes());		
+			renderer->loadIdentity();
+			renderer->drawScreenQuad(renderer->getXRes(), renderer->getYRes());		
 		} else {
 			for(int j=0; j < materialBinding->getNumOutTargetBindings(); j++) {
-				CoreServices::getInstance()->getRenderer()->bindFrameBufferTexture(materialBinding->getOutTargetBinding(j)->texture);
+				renderer->bindFrameBufferTexture(materialBinding->getOutTargetBinding(j)->texture);
 				
-				CoreServices::getInstance()->getRenderer()->drawScreenQuad(materialBinding->getOutTargetBinding(j)->width, materialBinding->getOutTargetBinding(j)->height);
-				CoreServices::getInstance()->getRenderer()->unbindFramebuffers();
+				renderer->drawScreenQuad(materialBinding->getOutTargetBinding(j)->width, materialBinding->getOutTargetBinding(j)->height);
+				renderer->unbindFramebuffers();
 			}						
 		}
-		CoreServices::getInstance()->getRenderer()->clearShader();
-		CoreServices::getInstance()->getRenderer()->loadIdentity();
-		
-		CoreServices::getInstance()->getRenderer()->setOrthoMode();
+		renderer->clearShader();
+		renderer->loadIdentity();		
+		renderer->setOrthoMode();
 	}
 	
 }

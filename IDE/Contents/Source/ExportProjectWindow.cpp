@@ -31,7 +31,7 @@ ExportProjectWindow::ExportProjectWindow() : UIWindow(L"Publish Project", 400, 3
 	label->color.a = 0.4;	
 	label->setPosition(padding, 50);
 
-	projectLocationInput = new UITextInput(false, 430-(padding*2.0), 12);	
+	projectLocationInput = new UITextInput(false, 420-(padding*2.0), 12);	
 	addChild(projectLocationInput);
 	projectLocationInput->setPosition(padding, 80);
 
@@ -55,7 +55,7 @@ ExportProjectWindow::ExportProjectWindow() : UIWindow(L"Publish Project", 400, 3
 	addChild(winCheckBox);
 	winCheckBox->setPosition(padding, 205);
 
-	linCheckBox = new UICheckBox("Linux (Intel 64-bit)", false);
+	linCheckBox = new UICheckBox("Linux (Intel 32-bit)", false);
 	addChild(linCheckBox);
 	linCheckBox->setPosition(padding, 225);
 

@@ -129,6 +129,12 @@ namespace Polycode {
 			*/
 			Mesh(const String& fileName);
 
+			/**
+			* Construct from a mesh loaded from a file.
+			* @param fileName Path to mesh file.
+			*/			
+			static Mesh *MeshFromFileName(String& fileName);
+
 			virtual ~Mesh();
 			
 			/**
@@ -317,11 +323,6 @@ namespace Polycode {
 			*/						
 			static const int TRIFAN_MESH = 2;
 
-			/**
-			* Triangle strip based mesh.
-			*/									
-			static const int TRISTRIP_MESH = 3;
-			
 			/**
 			* Line based mesh.
 			*/									
