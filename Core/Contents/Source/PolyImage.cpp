@@ -668,14 +668,35 @@ bool Image::saveImage(const String &fileName) {
 }
 
 void Image::premultiplyAlpha() {
+	unsigned int *imageData32 = (unsigned int*)imageData;
+			
 	for(int x=0; x < width; x++) {
 		for(int y=0; y < height; y++) {
-			unsigned int *imageData32 = (unsigned int*)imageData;	
-			Color col =  Color(imageData32[x+(y*width)]);
-			col.r *= col.a;
-			col.g *= col.a;			
-			col.b *= col.a;						
-			imageData32[x+(y*width)] = col.getUint();
+			
+			unsigned int hex = imageData32[x+(y*width)];
+			
+			int ta = (hex >> 24) & 0xFF;
+			int tb = (hex >> 16) & 0xFF;
+			int tg = (hex >> 8) & 0xFF;
+			int tr = (hex ) & 0xFF;
+	
+			Number r = ((Number)tr)/255.0f;
+			Number g = ((Number)tg)/255.0f;
+			Number b = ((Number)tb)/255.0f;
+			Number a = ((Number)ta)/255.0f;	
+
+			r *= a;
+			g *= a;
+			b *= a;
+						
+			unsigned int ir = 255.0f*r;
+			unsigned int ig = 255.0f*g;
+			unsigned int ib = 255.0f*b;
+			unsigned int ia = 255.0f*a;
+									
+			unsigned int newVal = ((ia & 0xFF) << 24) | ((ib & 0xFF) << 16) | ((ig & 0xFF) << 8) | (ir & 0xFF);
+						
+			imageData32[x+(y*width)] = newVal;
 		}
 	}
 }

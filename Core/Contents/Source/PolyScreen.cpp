@@ -47,7 +47,7 @@ Screen::Screen() : EventDispatcher() {
 	ownsChildren = false;
 
 	rootEntity.processInputEvents = true;
-
+	rootEntity.setPositionMode(ScreenEntity::POSITION_CENTER);
 	rootEntity.setRenderer(renderer);
 	rootEntity.setDefaultScreenOptions(false);		
 }
