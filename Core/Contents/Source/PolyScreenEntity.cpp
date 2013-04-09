@@ -35,8 +35,8 @@ using namespace Polycode;
 
 ScreenEntity::ScreenEntity() : Entity() {
 	color = Color(1.0f,1.0f,1.0f,1.0f);
-	width = 1;
-	height = 1;
+	width = 0;
+	height = 0;
 	setHitbox(1, 1);
 	backfaceCulled = false;
 	positionMode = POSITION_TOPLEFT;

@@ -268,6 +268,8 @@ namespace Polycode {
 		std::vector<LightInfo> getSpotLights() { return spotLights;	}
 		
 		bool doClearBuffer;
+		
+		bool blendNormalAsPremultiplied;
 				
 	protected:	
 	

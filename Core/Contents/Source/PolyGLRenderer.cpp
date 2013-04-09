@@ -413,7 +413,11 @@ void OpenGLRenderer::enableFog(bool enable) {
 void OpenGLRenderer::setBlendingMode(int blendingMode) {
 	switch(blendingMode) {
 		case BLEND_MODE_NORMAL:
+			if(blendNormalAsPremultiplied) {
+				glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);			
+			} else{
 				glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			}
 		break;
 		case BLEND_MODE_LIGHTEN:
 				glBlendFunc (GL_SRC_ALPHA, GL_ONE);
