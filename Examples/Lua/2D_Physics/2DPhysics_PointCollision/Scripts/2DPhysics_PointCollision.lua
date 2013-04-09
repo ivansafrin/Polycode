@@ -1,4 +1,4 @@
-screen = PhysicsScreen(10, 60)
+screen = PhysicsScreen(0.5, 60)
 lastEntity = nil
 
 for i=0,50 do

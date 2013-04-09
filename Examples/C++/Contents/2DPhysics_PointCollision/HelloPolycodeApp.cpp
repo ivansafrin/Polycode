@@ -7,7 +7,7 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);	
 
-	screen = new PhysicsScreen(10, 50);
+	screen = new PhysicsScreen(0.5, 50);
 	lastEntity = NULL;
 	
 	for(int i=0; i < 50; i++) {
