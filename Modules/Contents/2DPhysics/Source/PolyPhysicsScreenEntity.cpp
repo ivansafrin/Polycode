@@ -230,21 +230,11 @@ void PhysicsScreenEntity::setTransform(Vector2 pos, Number angle) {
 
 void PhysicsScreenEntity::Update() {
 	if(collisionOnly) {
-		Matrix4 matrix = screenEntity->getConcatenatedMatrix();
 		b2Vec2 newPos;
-		Number newRotation;
-		
-		Vector3 pos = matrix.getPosition();
-		newPos.x = pos.x/worldScale;
-		newPos.y = pos.y/worldScale;		
-
-		Number rx,ry,rz;
-
-		matrix.getEulerAngles(&rx, &ry, &rz);
-		newRotation = rz;
-
+		newPos.x = screenEntity->position.x/worldScale;;
+		newPos.y = screenEntity->position.y/worldScale;;
 		body->SetAwake(true);
-		body->SetTransform(newPos, newRotation * TORADIANS);
+		body->SetTransform(newPos, screenEntity->rotation.roll * TORADIANS);
 	} else {
 		b2Vec2 position = body->GetPosition();
 		Number angle = body->GetAngle();	
