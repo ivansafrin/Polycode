@@ -792,7 +792,7 @@ bool Image::loadPNG(const String& fileName) {
 	
 	OSBasics::read(sig, 1, 8, infile);
 	
-	if (!png_check_sig((unsigned char *) sig, 8)) {
+	if (png_sig_cmp((unsigned char *) sig, 0, 8)) {
 		Logger::log("Error reading png signature\n");
 		OSBasics::close(infile);
 		return false;
