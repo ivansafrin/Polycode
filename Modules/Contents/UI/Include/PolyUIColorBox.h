@@ -42,7 +42,7 @@ namespace Polycode {
 			UIColorPicker();
 			~UIColorPicker();
 			
-			void updateSelectedColor(bool updateTextFields=true);
+			void updateSelectedColor(bool updateTextFields=true, bool updateHue = true, bool updateSV=true);
 			void setHue(Number hueNum);			
 			void handleEvent(Event *event);
 			void setSaturationAndValue(Number S, Number V);
@@ -62,6 +62,8 @@ namespace Polycode {
 		
 			Vector2 lastMainSelectorPosition;
 			Number lastHueSelectorPosition;
+			
+			bool suppressTextChangeEvent;
 		
 			Color selectedColor;
 		
@@ -101,6 +103,7 @@ namespace Polycode {
 			void handleEvent(Event *event);
 				
 		protected:
+		
 		
 			bool listeningToPicker;
 			UIColorPicker *colorPicker;
