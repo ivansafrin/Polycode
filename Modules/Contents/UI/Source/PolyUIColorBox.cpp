@@ -299,8 +299,8 @@ void UIColorPicker::handleEvent(Event *event) {
 			case InputEvent::EVENT_MOUSEDOWN:
 			{
 				InputEvent *inputEvent = (InputEvent*) event;
-				hueSelector->setPositionY(inputEvent->getMousePosition().y);
-				hueSelector->startDrag(inputEvent->mousePosition.x-hueSelector->getPosition().x,inputEvent->mousePosition.y-hueSelector->getPosition().y);		
+				hueSelector->setPositionY(inputEvent->getMousePosition().y+hueFrame->position.y);
+				hueSelector->startDrag(inputEvent->mousePosition.x-hueSelector->getPosition().x,inputEvent->mousePosition.y-hueSelector->getPosition().y+hueFrame->position.y);		
 				Number newHue = 360.0 - (((inputEvent->getMousePosition().y-hueFrame->getPosition().y)/((hueFrame->getPosition().y+hueFrame->getHeight())-hueFrame->getPosition().y)) * 360.0f);
 				setHue(newHue);
 						
