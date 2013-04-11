@@ -96,6 +96,7 @@ void UIButton::Update() {
 }
 
 UIButton::~UIButton() {
+	coreInput->removeAllHandlersForListener(this);
 	delete buttonRect;
 	delete buttonFocusedRect;
 	delete buttonLabel;

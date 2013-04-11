@@ -37,6 +37,8 @@ class PolycodeEditorManager : public EventDispatcher {
 		void registerEditorFactory(PolycodeEditorFactory *editorFactory);
 	
 		void handleEvent(Event *event);
+		
+		void destroyEditor(PolycodeEditor* editor);
 	
 		void setCurrentEditor(PolycodeEditor *editor, bool sendChangeEvent = true);
 		PolycodeEditor *getCurrentEditor() { return currentEditor; }

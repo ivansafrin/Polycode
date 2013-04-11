@@ -111,6 +111,7 @@ UIComboBox::~UIComboBox() {
 
 void UIComboBox::clearItems() {
 	items.clear();
+	selectedLabel->setText("<None>");
 }
 			
 int UIComboBox::addComboItem(String itemName, void *data) {

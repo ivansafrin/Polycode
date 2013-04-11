@@ -44,6 +44,17 @@ PolycodeEditor *PolycodeEditorManager::createEditorForExtension(String extension
 	return NULL;
 }
 
+void PolycodeEditorManager::destroyEditor(PolycodeEditor* editor) {
+	for(int i=0; i < openEditors.size();i++) {
+		if(openEditors[i] == editor) {
+			openEditors.erase(openEditors.begin()+i);
+			delete editor;
+			dispatchEvent(new Event(), Event::CHANGE_EVENT);			
+			return;
+		}
+	}
+}
+
 bool PolycodeEditorManager::hasUnsavedFiles() {
 	for(int i=0; i < openEditors.size();i++) {
 		PolycodeEditor *editor = openEditors[i];

@@ -81,12 +81,15 @@ public:
 	
 	void newGroup();	
 	void openProject();
-	void closeProject();	
+	void closeProject();
+	void closeFile();
 	void saveFile();
 	void findText();
 	void runProject();
 	void doRunProject();
 	void exportProject();	
+	
+	void removeEditor(PolycodeEditor *editor);
 	
 	// system callbacks
 	

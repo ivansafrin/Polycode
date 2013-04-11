@@ -77,6 +77,8 @@ class PolycodeSpriteEditor : public PolycodeEditor {
 	NumberProp *widthProp;
 	NumberProp *heightProp;	
 	
+	bool initialLoad;
+	
 	ScreenSprite *previewSprite;
 };
 

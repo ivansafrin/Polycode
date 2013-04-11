@@ -223,6 +223,22 @@ void PolycodeIDEApp::refreshProject() {
 	}
 }
 
+void PolycodeIDEApp::removeEditor(PolycodeEditor *editor) {
+	frame->removeEditor(editor);
+	editorManager->destroyEditor(editor);
+	if(editorManager->openEditors.size() > 0) {
+		editorManager->setCurrentEditor(editorManager->openEditors[0]);
+		frame->showEditor(editorManager->openEditors[0]);
+	}
+}
+
+void PolycodeIDEApp::closeFile() {
+	PolycodeEditor *editor = editorManager->getCurrentEditor();
+	if(editor) {
+		removeEditor(editor);
+	}
+}
+
 void PolycodeIDEApp::closeProject() {
 	if(projectManager->getActiveProject()) {
 		frame->getProjectBrowser()->removeProject(projectManager->getActiveProject());

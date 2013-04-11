@@ -138,6 +138,10 @@
 	app->closeProject();
 }
 
+-(IBAction) closeFile: (id) sender {
+	app->closeFile();
+}
+
 -(IBAction) saveFile: (id) sender {
 	app->saveFile();
 }

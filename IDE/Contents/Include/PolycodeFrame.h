@@ -168,6 +168,8 @@ public:
 	void handleEvent(Event *event);
 	
 	void addEditor(PolycodeEditor *editor);
+	void removeEditor(PolycodeEditor *editor);
+		
 	void showEditor(PolycodeEditor *editor);
 	
 	void showAssetBrowser(std::vector<String> extensions);

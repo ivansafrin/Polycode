@@ -92,7 +92,11 @@ void SpriteAnimationEntry::handleEvent(Event *event) {
 }
 
 SpriteAnimationEntry::~SpriteAnimationEntry() {
-
+	delete nameInput;
+	delete framesInput;
+	delete speedInput;
+	delete removeButton;
+	delete playButton;
 }
 
 PolycodeSpriteEditor::PolycodeSpriteEditor() : PolycodeEditor(true){
@@ -101,6 +105,7 @@ PolycodeSpriteEditor::PolycodeSpriteEditor() : PolycodeEditor(true){
 	headerBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	
+	initialLoad = false;
 
 	propList = new PropList("SPRITE EDITOR");
 	addChild(propList);
@@ -117,7 +122,7 @@ PolycodeSpriteEditor::PolycodeSpriteEditor() : PolycodeEditor(true){
 	baseProps->addProp(widthProp);	
 
 	heightProp = new NumberProp("Frame height");
-	heightProp->set(32);	
+	heightProp->set(32);
 	baseProps->addProp(heightProp);	
 	
 	widthProp->addEventListener(this, Event::CHANGE_EVENT);	
@@ -144,7 +149,7 @@ PolycodeSpriteEditor::PolycodeSpriteEditor() : PolycodeEditor(true){
 	animationsAnchor->addChild(addAnimationButton);
 	addAnimationButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
-	propList->updateProps();	
+	propList->updateProps();
 	
 	zoomBox = new UIComboBox(globalMenu, 100);
 	addChild(zoomBox);
@@ -188,6 +193,8 @@ void PolycodeSpriteEditor::handleEvent(Event *event) {
 		}
 	}
 	
+	if(!initialLoad) {
+	
 	if(event->getDispatcher() == textureProp) {
 		previewSprite->setTexture(textureProp->get());
 		previewSprite->recalculateSpriteDimensions();
@@ -203,6 +210,8 @@ void PolycodeSpriteEditor::handleEvent(Event *event) {
 		previewSprite->setSpriteSize(widthProp->get(), heightProp->get());
 		previewSprite->setShapeSize(widthProp->get(), heightProp->get());
 		previewSprite->recalculateSpriteDimensions();		
+	}
+	
 	}
 
 	if(event->getDispatcher() == addAnimationButton) {
@@ -236,11 +245,25 @@ void PolycodeSpriteEditor::handleEvent(Event *event) {
 }
 
 PolycodeSpriteEditor::~PolycodeSpriteEditor() {
+	for(int i=0; i < animationEntries.size(); i++) {
+		delete animationEntries[i];
+	}
 	
+	delete animationsAnchor;
+	delete addAnimationButton;
+	delete propList;
+	delete headerBg;
+	delete zoomBox;
+	delete textureProp;
+	delete widthProp;
+	delete heightProp;
+	delete previewSprite;
 }
 
 bool PolycodeSpriteEditor::openFile(OSFileEntry filePath) {
 					
+	initialLoad = true;
+	
 	previewSprite = new ScreenSprite(filePath.fullPath);
 	addChild(previewSprite);
 	previewSprite->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
@@ -268,6 +291,8 @@ bool PolycodeSpriteEditor::openFile(OSFileEntry filePath) {
 	refreshAnimationEntries();	
 				
 	PolycodeEditor::openFile(filePath);
+	
+	initialLoad = false;
 	return true;
 }
 
@@ -296,6 +321,7 @@ void PolycodeSpriteEditor::saveFile() {
 void PolycodeSpriteEditor::Resize(int x, int y) {
 	headerBg->setShapeSize(x, 30);
 	propList->Resize(370, y);
-	PolycodeEditor::Resize(x,y);
+	propList->updateProps();	
+	PolycodeEditor::Resize(x,y);	
 }
 

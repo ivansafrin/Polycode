@@ -62,6 +62,7 @@ public:
 -(IBAction) exportProject: (id) sender;
 -(IBAction) newProject: (id) sender;
 -(IBAction) closeProject: (id) sender;
+-(IBAction) closeFile: (id) sender;
 -(IBAction) newFile: (id) sender;
 -(IBAction) openProject: (id) sender;
 -(IBAction) saveFile: (id) sender;
