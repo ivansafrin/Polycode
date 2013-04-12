@@ -224,12 +224,19 @@ void PolycodeIDEApp::refreshProject() {
 }
 
 void PolycodeIDEApp::removeEditor(PolycodeEditor *editor) {
-	frame->removeEditor(editor);
-	editorManager->destroyEditor(editor);
-	if(editorManager->openEditors.size() > 0) {
-		editorManager->setCurrentEditor(editorManager->openEditors[0]);
-		frame->showEditor(editorManager->openEditors[0]);
-	}
+	if(!editor)
+		return;
+		
+//	if(editor->hasChanges()) {
+//		printf("HAS CHANGES!\n");
+//	} else {	
+		frame->removeEditor(editor);
+		editorManager->destroyEditor(editor);
+		if(editorManager->openEditors.size() > 0) {
+			editorManager->setCurrentEditor(editorManager->openEditors[0]);
+			frame->showEditor(editorManager->openEditors[0]);
+		}
+//	}
 }
 
 void PolycodeIDEApp::closeFile() {

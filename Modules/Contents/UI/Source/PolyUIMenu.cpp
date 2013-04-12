@@ -181,13 +181,10 @@ void UIMenu::handleEvent(Event *event) {
 
 UIMenu::~UIMenu() {
 	CoreServices::getInstance()->getCore()->getInput()->removeAllHandlersForListener(this);
-	
-	for(int c = 0; c < items.size(); c++)
-		delete items[c];
-	
-	if(!ownsChildren) {
+
+	dropDownBox->ownsChildren = true;
+	if(!ownsChildren) {	
 		delete dropDownBox;
-		delete selectorBox;
 	}
 	
 	CoreServices::getInstance()->getCore()->getInput()->removeAllHandlersForListener(this);
@@ -215,7 +212,7 @@ UIGlobalMenu::UIGlobalMenu() : ScreenEntity() {
 }
 
 UIGlobalMenu::~UIGlobalMenu() {
-
+	
 }
 
 void UIGlobalMenu::hideMenu() {
