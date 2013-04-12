@@ -279,8 +279,8 @@ PolycodeTextEditor::PolycodeTextEditor() : PolycodeEditor(true){
 PolycodeTextEditor::~PolycodeTextEditor() {
 	delete textInput;
 	delete findBar;
-	if(syntaxHighligher)
-		delete syntaxHighligher;
+	if(syntaxHighlighter)
+		delete syntaxHighlighter;
 }
 
 bool PolycodeTextEditor::openFile(OSFileEntry filePath) {
@@ -311,11 +311,11 @@ bool PolycodeTextEditor::openFile(OSFileEntry filePath) {
 	findBar->closeButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	findBar->replaceAllButton->addEventListener(this, UIEvent::CLICK_EVENT);
 		
-	syntaxHighligher = NULL;
+	syntaxHighlighter = NULL;
 	
 	if(filePath.extension == "lua") {
-		syntaxHighligher = new PolycodeSyntaxHighlighter(filePath.extension);
-		textInput->setSyntaxHighlighter(syntaxHighligher);
+		syntaxHighlighter = new PolycodeSyntaxHighlighter(filePath.extension);
+		textInput->setSyntaxHighlighter(syntaxHighlighter);
 	}
 	
 	Data *data = new Data();

@@ -98,7 +98,7 @@ protected:
 	bool isLoading;
 	String lastFindString;
 
-	PolycodeSyntaxHighlighter *syntaxHighligher;
+	PolycodeSyntaxHighlighter *syntaxHighlighter;
 	UITextInput *textInput;
 	
 };
