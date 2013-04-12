@@ -627,7 +627,7 @@ void UITextInput::updateCaretPosition() {
 
 	if(lineOffset > lines.size()-1)
 		lineOffset = lines.size()-1;
-
+    
 	caretImagePosition = padding;
 	if(caretPosition == 0) {
 		caretImagePosition = padding;
@@ -648,17 +648,15 @@ void UITextInput::updateCaretPosition() {
 		doSelectToCaret = false;
 		
 	}
-/*	
-	if(multiLine) {	
-		if(linesContainer->getPosition().y + currentLine->getPosition2D().y < 0.0) {
+
+	/*if (multiLine) {
+		if(linesContainer->getPosition().y + lineOffset*(lineHeight+lineSpacing+padding) < 0.0) {
 			scrollContainer->scrollVertical(-(lineHeight+lineSpacing+padding)/(scrollContainer->getContentSize().y));
-
-		} else if(linesContainer->getPosition().y + currentLine->getPosition2D().y > scrollContainer->getHeight()) {
+        } else if(linesContainer->getPosition().y + lineOffset*(lineHeight+lineSpacing+padding) > scrollContainer->getHeight()) {
 		scrollContainer->scrollVertical((lineHeight+lineSpacing+padding)/(scrollContainer->getContentSize().y));
-
 		}
-	}
-	*/
+	}*/
+	
 }
 
 void UITextInput::selectLineFromOffset() {
@@ -1058,7 +1056,7 @@ void UITextInput::showLine(unsigned int lineNumber, bool top) {
 	if(top) {
 		scrollContainer->setScrollValue(0.0, ((((lineNumber) * ((lineHeight+lineSpacing)))) + padding)/(scrollContainer->getContentSize().y-scrollContainer->getHeight()));
 	} else {
-		scrollContainer->setScrollValue(0.0, (((((lineNumber) * ((lineHeight+lineSpacing)))) + padding-(scrollContainer->getHeight()/2.0))/(scrollContainer->getContentSize().y-scrollContainer->getHeight())));	
+		scrollContainer->setScrollValue(0.0, (((((lineNumber) * ((lineHeight+lineSpacing)))) + padding-(scrollContainer->getHeight()/2.0))/(scrollContainer->getContentSize().y-scrollContainer->getHeight())));
 	}
 }
 
@@ -1205,6 +1203,9 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 					updateCaretPosition();							
 				}
 			}
+            if(linesContainer->getPosition().y + (lineOffset*(lineHeight+lineSpacing)+padding) < 0.0) {
+                scrollContainer->setScrollValue(0.0, ((((lineOffset) * ((lineHeight+lineSpacing)))) + padding)/(scrollContainer->getContentSize().y-scrollContainer->getHeight()));
+            }
 		}
 		blinkerRect->visible  = true;
 		return;
@@ -1228,8 +1229,12 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 					updateCaretPosition();										
 				}
 			}
-		}
-		blinkerRect->visible  = true;		
+
+            if(linesContainer->getPosition().y + (lineOffset*(lineHeight+lineSpacing)+padding) > scrollContainer->getHeight()-lineHeight-lineSpacing) {
+                scrollContainer->setScrollValue(0.0, (((((lineOffset) * ((lineHeight+lineSpacing)))) + padding-(scrollContainer->getHeight()-lineHeight-lineSpacing))/(scrollContainer->getContentSize().y-scrollContainer->getHeight())));
+            }
+		}        
+		blinkerRect->visible  = true;
 		return;
 	}
 	
@@ -1247,6 +1252,9 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 			}			
 			insertLine(true);
 			updateCaretPosition();
+            if(linesContainer->getPosition().y + (lineOffset*(lineHeight+lineSpacing)+padding) > scrollContainer->getHeight()-lineHeight-lineSpacing) {
+                scrollContainer->setScrollValue(0.0, (((((lineOffset) * ((lineHeight+lineSpacing)))) + padding-(scrollContainer->getHeight()-lineHeight-lineSpacing))/(scrollContainer->getContentSize().y-scrollContainer->getHeight())));
+            }
 		} else {
 			dispatchEvent(new Event(), Event::COMPLETE_EVENT);
 		}

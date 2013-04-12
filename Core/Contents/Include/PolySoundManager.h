@@ -24,8 +24,8 @@
 #include "PolyGlobals.h"
 #include "PolyVector3.h"
 
-#include "al.h"
-#include "alc.h"
+#include "OpenAL/al.h"
+#include "OpenAL/alc.h"
 
 namespace Polycode {
 	
