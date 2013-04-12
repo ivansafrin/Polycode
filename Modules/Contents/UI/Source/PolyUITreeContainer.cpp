@@ -91,8 +91,10 @@ UITree *UITreeContainer::getRootNode() {
 }
 
 UITreeContainer::~UITreeContainer() {
-	delete bgBox;
-	delete scrollChild;
-	delete rootNode;
-	delete mainContainer;
+	if(!ownsChildren) {
+		delete bgBox;
+		delete scrollChild;
+		delete rootNode;
+		delete mainContainer;
+	}
 }

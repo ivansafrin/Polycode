@@ -27,7 +27,14 @@ PolycodeFontEditor::PolycodeFontEditor() : PolycodeEditor(true){
 }
 
 PolycodeFontEditor::~PolycodeFontEditor() {
-	
+	delete grid;
+	delete bg;
+	delete anchor;
+	delete editorLabel;
+	delete editorLabel2;
+	delete editorLabel3;
+	delete editorLabel4;
+	delete editorLabel5;				
 }
 
 bool PolycodeFontEditor::openFile(OSFileEntry filePath) {

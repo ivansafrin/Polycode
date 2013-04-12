@@ -77,7 +77,7 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	
 	linesContainer = new ScreenEntity();	
 	linesContainer->processInputEvents = true;
-	
+	linesContainer->ownsChildren = true;
 	lineSpacing = conf->getNumericValue("Polycode", "textEditLineSpacing");
 	
 	st = conf->getNumericValue("Polycode", "textBgSkinT");
@@ -1355,15 +1355,14 @@ void UITextInput::Update() {
 
 UITextInput::~UITextInput() {
 	core->removeAllHandlersForListener(this);
-	delete linesContainer;
-	delete inputRect;
-	delete lineNumberBg;
-	delete lineNumberAnchor;
-	delete selectorRectTop;
-	delete selectorRectMiddle;
-	delete selectorRectBottom;
-	delete blinkerRect;
 	delete blinkTimer;
+
+	linesContainer->ownsChildren = true;
+	if(!ownsChildren) {
+		delete linesContainer;
+		delete inputRect;
+		delete lineNumberBg;
+	}
 }
 
 void UITextInput::readjustBuffer() {

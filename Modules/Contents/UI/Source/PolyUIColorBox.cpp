@@ -456,9 +456,11 @@ Color UIColorBox::getSelectedColor() {
 UIColorBox::~UIColorBox() {
 	colorPicker->removeAllHandlersForListener(this);
 	
-	delete bgImage;
-	delete colorShape;
-	delete frameImage;
+	if(!ownsChildren) {
+		delete bgImage;
+		delete colorShape;
+		delete frameImage;
+	}
 }
 
 void UIColorBox::setBoxColor(Color newColor) {

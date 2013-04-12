@@ -205,7 +205,9 @@ namespace Polycode {
 			* If set to true, will automatically delete children upon destruction. (defaults to false).
 			*/ 
 			bool ownsChildren;										
+			
 				
+			void setOwnsChildrenRecursive(bool val);
 			//@}
 			// ----------------------------------------------------------------------------------------------------------------
 				

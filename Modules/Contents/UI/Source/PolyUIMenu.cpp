@@ -180,11 +180,15 @@ void UIMenu::handleEvent(Event *event) {
 
 
 UIMenu::~UIMenu() {
+	CoreServices::getInstance()->getCore()->getInput()->removeAllHandlersForListener(this);
+	
 	for(int c = 0; c < items.size(); c++)
 		delete items[c];
 	
-	delete dropDownBox;
-	delete selectorBox;
+	if(!ownsChildren) {
+		delete dropDownBox;
+		delete selectorBox;
+	}
 	
 	CoreServices::getInstance()->getCore()->getInput()->removeAllHandlersForListener(this);
 }

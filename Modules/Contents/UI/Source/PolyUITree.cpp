@@ -286,11 +286,13 @@ void UITree::toggleCollapsed() {
 UITree::~UITree() {
 	clearTree();
 	
-	delete textLabel;
-	delete bgBox;
-	delete selection;
-	delete arrowIconImage;
-	delete iconImage;
+	if(!ownsChildren) {
+		delete textLabel;
+		delete bgBox;
+		delete selection;
+		delete arrowIconImage;
+		delete iconImage;
+	}
 }
 
 void UITree::clearTree() {

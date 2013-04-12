@@ -127,7 +127,6 @@ Number Sound::getPitch() {
 }
 
 Sound::~Sound() {
-	Logger::log("destroying sound...\n");
 	alDeleteSources(1,&soundSource);
 	checkALError("destroying sound");
 	alDeleteBuffers(1, &buffer);

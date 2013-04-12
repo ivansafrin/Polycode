@@ -245,9 +245,6 @@ class PolycodeScreenEditorMain : public UIElement {
 		ScreenShape *placingShape;	
 		Vector2 placingAnchor;
 		
-		UIColorBox *entityColorBox;
-		UIWindow *entityInfoWindow;
-		
 		ScreenShape *screenPreviewShape;
 		
 		Vector2 dragOffset;
@@ -282,8 +279,6 @@ class PolycodeScreenEditorMain : public UIElement {
 		
 		ScreenEntity *toolPalette;
 		ScreenShape *toolPaletteBg;
-		
-		UIButton *resetZoom;
 		
 		UIImageButton *arrowToolButton;
 		UIImageButton *shapeToolButton;

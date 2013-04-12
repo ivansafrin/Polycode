@@ -416,21 +416,6 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain() {
 	
 	CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_NEAREST);
 	
-	entityInfoWindow = new UIWindow("Selected entity", 140, 100);
-	addChild(entityInfoWindow);	
-	entityInfoWindow->setPosition(15,15);
-	entityInfoWindow->enabled = false;
-	
-	ScreenLabel *label2 = new ScreenLabel(L"Entity color:", fontSize, fontName, Label::ANTIALIAS_FULL);
-	entityInfoWindow->addChild(label2);
-	label2->setPosition(padding, entityInfoWindow->topPadding+20);
-/*
-	entityColorBox = new UIColorBox(Color(1.0, 1.0, 1.0, 0.0), 30,30);
-	entityColorBox->setPosition(label2->getPosition().x, label2->getPosition().y+label2->getHeight());
-	entityInfoWindow->addChild(entityColorBox);		
-	entityColorBox->addEventListener(this, UIEvent::CHANGE_EVENT);
-	*/
-
 	viewOptions = new ScreenEntity();
 	addChild(viewOptions);
 	viewOptions->processInputEvents = true;
@@ -778,6 +763,8 @@ void PolycodeScreenEditorMain::setGrid(int gridSize) {
 
 PolycodeScreenEditorMain::~PolycodeScreenEditorMain() {
 
+	CoreServices::getInstance()->getCore()->getInput()->removeAllHandlersForListener(this);
+	setOwnsChildrenRecursive(true);
 }
 
 
@@ -1884,18 +1871,7 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 			setMode(MODE_ENTITY);
 		}
 	}
-	
-	if(event->getDispatcher() == entityColorBox  && event->getEventType() == "UIEvent") {
-		switch (event->getEventCode()) {
-			case UIEvent::CHANGE_EVENT:
-				if(selectedEntity) {
-					selectedEntity->setColor(entityColorBox->getSelectedColor());
-				}
-			break;
-		}
-		return;
-	}
-	
+		
 	if(currentLayer) {
 		for(int i=0; i < currentLayer->getNumChildren(); i++) {
 			ScreenEntity* childEntity = (ScreenEntity*) currentLayer->getChildAtIndex(i);
@@ -2454,7 +2430,10 @@ void PolycodeScreenEditor::handleEvent(Event *event) {
 }
 
 PolycodeScreenEditor::~PolycodeScreenEditor() {
-	
+	delete mainSizer;
+	delete propSizer;
+	delete treeView;
+	delete editorMain;
 }
 
 void PolycodeScreenEditorMain::applyEditorProperties(ScreenEntity *entity) {

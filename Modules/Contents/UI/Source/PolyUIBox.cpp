@@ -85,7 +85,9 @@ UIBox::UIBox(String imageFile, Number t, Number r, Number b, Number l, Number bo
 	this->t = t;
 	this->r = r;
 	this->b = b;
-	this->l = l;	
+	this->l = l;
+	
+	ownsChildren = true;	
 }
 
 void UIBox::resizeBox(Number newWidth, Number newHeight) {
@@ -111,14 +113,15 @@ void UIBox::resizeBox(Number newWidth, Number newHeight) {
 }
 
 UIBox::~UIBox() {
-	delete tlImage;
-	delete trImage;		
-	delete blImage;		
-	delete brImage;					
-	delete centerImage;		
-	delete tImage;
-	delete rImage;
-	delete bImage;
-	delete lImage;		
-
+	if(!ownsChildren) {
+		delete tlImage;
+		delete trImage;		
+		delete blImage;		
+		delete brImage;					
+		delete centerImage;		
+		delete tImage;
+		delete rImage;
+		delete bImage;
+		delete lImage;		
+	}
 }

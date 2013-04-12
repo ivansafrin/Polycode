@@ -27,7 +27,12 @@ PolycodeImageEditor::PolycodeImageEditor() : PolycodeEditor(true){
 }
 
 PolycodeImageEditor::~PolycodeImageEditor() {
-	
+	delete grid;
+	delete editorImage;
+	delete leftShape;
+	delete rightShape;
+	delete topShape;
+	delete bottomShape;
 }
 
 bool PolycodeImageEditor::openFile(OSFileEntry filePath) {

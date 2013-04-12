@@ -78,10 +78,12 @@ UIVSizer::~UIVSizer() {
 	
 	if (ownsChildren)
 		childElements->ownsChildren = true;
-	delete childElements;
-	
-	delete separatorBgShape;
-	delete separatorHitShape;
+		
+	if(!ownsChildren) {
+		delete childElements;	
+		delete separatorBgShape;
+		delete separatorHitShape;
+	}
 }
 
 void UIVSizer::handleEvent(Event *event) {

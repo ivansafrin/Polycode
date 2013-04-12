@@ -125,6 +125,13 @@ void Entity::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) {
 	}
 }
 
+void Entity::setOwnsChildrenRecursive(bool val) {
+	ownsChildren = val;
+	for(int i=0; i < children.size(); i++) {
+		children[i]->setOwnsChildrenRecursive(val);
+	}
+}
+
 std::vector<Entity*> Entity::getEntitiesByTag(String tag, bool recursive) {
 
 	std::vector<Entity*> retVector;

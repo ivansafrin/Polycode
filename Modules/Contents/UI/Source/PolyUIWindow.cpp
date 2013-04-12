@@ -111,11 +111,13 @@ void UIWindow::setWindowSize(Number w, Number h) {
 }
 
 UIWindow::~UIWindow() {
-	delete windowTween;
-	delete windowRect;
-	delete titlebarRect;
-	delete titleLabel;
-	delete closeBtn;
+	if(!ownsChildren) {
+		delete windowTween;
+		delete windowRect;
+		delete titlebarRect;
+		delete titleLabel;
+		delete closeBtn;
+	}
 }
 
 void UIWindow::onKeyDown(PolyKEY key, wchar_t charCode) {
