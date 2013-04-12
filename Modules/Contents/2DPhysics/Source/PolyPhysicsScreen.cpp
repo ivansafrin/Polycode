@@ -138,7 +138,7 @@ void PhysicsScreen::PostSolve(b2Contact* contact, const b2ContactImpulse* impuls
 			newEvent->frictionStrength = impulse->tangentImpulses[i];		
 	}
 
-	dispatchEvent(newEvent, PhysicsScreenEvent::EVENT_NEW_SHAPE_COLLISION);
+	dispatchEvent(newEvent, PhysicsScreenEvent::EVENT_SOLVE_SHAPE_COLLISION);
 }
 
 void PhysicsScreen::EndContact (b2Contact *contact) {

@@ -597,6 +597,7 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 						editor->saveFile();
 						closeFile();
 					}
+					frame->yesNoCancelPopup->action = "";
 					frame->hideModal();					
 				}
 				break;
@@ -607,6 +608,7 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 						editor->setHasChanges(false);
 						closeFile();
 					}
+					frame->yesNoCancelPopup->action = "";					
 					frame->hideModal();
 				}
 				break;

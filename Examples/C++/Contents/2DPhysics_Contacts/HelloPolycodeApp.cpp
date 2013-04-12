@@ -20,13 +20,13 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 		screen->addPhysicsChild(shape, PhysicsScreenEntity::ENTITY_RECT, false);		
 	}
 	collisionSound = new Sound("Resources/hit.wav");
-	screen->addEventListener(this, PhysicsScreenEvent::EVENT_NEW_SHAPE_COLLISION);
+	screen->addEventListener(this, PhysicsScreenEvent::EVENT_SOLVE_SHAPE_COLLISION);
 }
 
 void HelloPolycodeApp::handleEvent(Event *e) {
 	if(e->getDispatcher() == screen) {
 		switch(e->getEventCode()) {
-			case PhysicsScreenEvent::EVENT_NEW_SHAPE_COLLISION:
+			case PhysicsScreenEvent::EVENT_SOLVE_SHAPE_COLLISION:
 				PhysicsScreenEvent *pe = (PhysicsScreenEvent*)e;
 				if(pe->impactStrength > 5)
 					collisionSound->Play();

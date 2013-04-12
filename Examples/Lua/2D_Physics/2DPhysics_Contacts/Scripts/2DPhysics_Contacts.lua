@@ -16,11 +16,11 @@ end
 
 collisionSound = Sound("Resources/collision.wav")
 
-function onCollision(t, event)
+function onSolveCollision(t, event)
 	physicsEvent = safe_cast(event, PhysicsScreenEvent)
 	if physicsEvent.impactStrength > 5 then
 			collisionSound:Play()
 		end
 end
 
-screen:addEventListener(test, onCollision, PhysicsScreenEvent.EVENT_NEW_SHAPE_COLLISION)
+screen:addEventListener(test, onSolveCollision, PhysicsScreenEvent.EVENT_SOLVE_SHAPE_COLLISION)
