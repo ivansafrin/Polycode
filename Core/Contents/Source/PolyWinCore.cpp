@@ -491,6 +491,7 @@ PolyKEY Win32Core::mapKey(LPARAM lParam, WPARAM wParam) {
 					} else {
 						wParam = VK_RSHIFT;
 					}
+					break;
 			}
 
 	return keyMap[(unsigned int)wParam];
