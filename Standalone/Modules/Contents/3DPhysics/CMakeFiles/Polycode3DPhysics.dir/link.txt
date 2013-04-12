@@ -1,0 +1,2 @@
+/usr/bin/ar cr libPolycode3DPhysics.a  CMakeFiles/Polycode3DPhysics.dir/Source/PolyPhysicsSceneEntity.cpp.o CMakeFiles/Polycode3DPhysics.dir/Source/PolyPhysicsScene.cpp.o CMakeFiles/Polycode3DPhysics.dir/Source/PolyCollisionSceneEntity.cpp.o CMakeFiles/Polycode3DPhysics.dir/Source/PolyCollisionScene.cpp.o
+/usr/bin/ranlib libPolycode3DPhysics.a
