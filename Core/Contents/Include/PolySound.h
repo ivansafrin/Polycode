@@ -25,8 +25,8 @@
 #include "PolyVector3.h"
 #include "PolyString.h"
 
-#include "al.h"
-#include "alc.h"
+#include "OpenAL/al.h"
+#include "OpenAL/alc.h"
 
 #define ALNoErrorStr "No AL error occurred"
 #define ALInvalidNameStr "AL error: a bad name (ID) was passed to an OpenAL function"
