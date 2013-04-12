@@ -87,8 +87,13 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	frame->console->backtraceWindow->addEventListener(this, BackTraceEvent::EVENT_BACKTRACE_SELECTED);
 
 	frame->textInputPopup->addEventListener(this, UIEvent::OK_EVENT);	
+
 	frame->yesNoPopup->addEventListener(this, UIEvent::OK_EVENT);
 	frame->yesNoPopup->addEventListener(this, UIEvent::CANCEL_EVENT);
+
+	frame->yesNoCancelPopup->addEventListener(this, UIEvent::YES_EVENT);
+	frame->yesNoCancelPopup->addEventListener(this, UIEvent::NO_EVENT);
+
 	
 	frame->newProjectWindow->addEventListener(this, UIEvent::OK_EVENT);
 	frame->exportProjectWindow->addEventListener(this, UIEvent::OK_EVENT);
@@ -227,16 +232,19 @@ void PolycodeIDEApp::removeEditor(PolycodeEditor *editor) {
 	if(!editor)
 		return;
 		
-//	if(editor->hasChanges()) {
-//		printf("HAS CHANGES!\n");
-//	} else {	
+	if(editor->hasChanges()) {
+		OSFileEntry entry(editor->getFilePath(), OSFileEntry::TYPE_FILE);	
+		frame->yesNoCancelPopup->setCaption("The file \""+entry.name+"\" has unsaved changes. Save before closing?");
+		frame->yesNoCancelPopup->action = "closeFile";
+		frame->showModal(frame->yesNoCancelPopup);		
+	} else {	
 		frame->removeEditor(editor);
 		editorManager->destroyEditor(editor);
 		if(editorManager->openEditors.size() > 0) {
 			editorManager->setCurrentEditor(editorManager->openEditors[0]);
 			frame->showEditor(editorManager->openEditors[0]);
 		}
-//	}
+	}
 }
 
 void PolycodeIDEApp::closeFile() {
@@ -579,8 +587,34 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 		}
 	}
 
-	if(event->getDispatcher() == frame->yesNoPopup) {
-
+	if(event->getDispatcher() == frame->yesNoCancelPopup) {
+		if(frame->yesNoCancelPopup->action == "closeFile") {
+			switch(event->getEventCode()) {
+				case UIEvent::YES_EVENT:
+				{
+					PolycodeEditor *editor = editorManager->getCurrentEditor();
+					if(editor) {
+						editor->saveFile();
+						closeFile();
+					}
+					frame->hideModal();					
+				}
+				break;
+				case UIEvent::NO_EVENT:
+				{
+					PolycodeEditor *editor = editorManager->getCurrentEditor();
+					if(editor) {
+						editor->setHasChanges(false);
+						closeFile();
+					}
+					frame->hideModal();
+				}
+				break;
+				case UIEvent::CANCEL_EVENT:
+				break;
+			}
+		}			
+	} else if(event->getDispatcher() == frame->yesNoPopup) {
 		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CANCEL_EVENT) {
 			if(frame->yesNoPopup->action == "saveAndRun") {
 				runNextFrame = true;			

@@ -65,3 +65,21 @@ class YesNoPopup : public UIWindow {
 		UIButton *cancelButton;
 		UIButton *okButton;	
 };
+
+class YesNoCancelPopup : public UIWindow {
+	public:
+		YesNoCancelPopup();
+		~YesNoCancelPopup();
+		
+		void setCaption(String caption);
+		void handleEvent(Event *event);
+		
+		String action;
+	
+		ScreenLabel *captionLabel;
+	
+		ScreenEntity *buttonAnchor;
+		UIButton *cancelButton;
+		UIButton *noButton;		
+		UIButton *okButton;
+};

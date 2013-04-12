@@ -126,3 +126,65 @@ void YesNoPopup::handleEvent(Event *event) {
 YesNoPopup::~YesNoPopup() {
 	
 }
+
+YesNoCancelPopup::YesNoCancelPopup() : UIWindow(L"", 300, 80) {
+	
+	captionLabel = new ScreenLabel("This is a caption", 12);	
+	addChild(captionLabel);
+	captionLabel->setPosition(padding, 35);
+		
+	buttonAnchor = new ScreenEntity();
+	buttonAnchor->processInputEvents = true;
+	addChild(buttonAnchor);
+	
+	noButton = new UIButton(L"No", 100);
+	noButton->addEventListener(this, UIEvent::CLICK_EVENT);
+	buttonAnchor->addChild(noButton);
+	noButton->setPosition(0, 60);		
+	
+	okButton = new UIButton(L"Yes", 100);
+	okButton->addEventListener(this, UIEvent::CLICK_EVENT);
+	buttonAnchor->addChild(okButton);
+	okButton->setPosition(120, 60);
+	
+	cancelButton = new UIButton(L"Cancel", 100);
+	cancelButton->addEventListener(this, UIEvent::CLICK_EVENT);
+	buttonAnchor->addChild(cancelButton);
+	cancelButton->setPosition(240, 60);		
+
+	closeOnEscape = true;
+
+}
+
+void YesNoCancelPopup::setCaption(String caption) {
+	captionLabel->setText(caption);
+	setWindowSize(captionLabel->getWidth() + 50, 80);
+	captionLabel->setPosition(padding + (captionLabel->getWidth() + 50 - captionLabel->getWidth()) / 2.0, 35);
+	buttonAnchor->setPosition(padding + ((captionLabel->getWidth() + 50 - 360) / 2.0), 0);
+}
+
+void YesNoCancelPopup::handleEvent(Event *event) {
+	if(event->getEventType() == "UIEvent") {
+		if(event->getEventCode() == UIEvent::CLICK_EVENT) {
+			if(event->getDispatcher() == okButton) {
+				dispatchEvent(new UIEvent(), UIEvent::YES_EVENT);						
+			}
+			
+			if(event->getDispatcher() == noButton) {
+				dispatchEvent(new UIEvent(), UIEvent::NO_EVENT);
+			}									
+			
+			if(event->getDispatcher() == cancelButton) {
+				dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);
+				dispatchEvent(new UIEvent(), UIEvent::CANCEL_EVENT);				
+			}									
+			
+		}
+	}
+	UIWindow::handleEvent(event);	
+}
+
+
+YesNoCancelPopup::~YesNoCancelPopup() {
+	
+}

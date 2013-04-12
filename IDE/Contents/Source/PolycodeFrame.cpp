@@ -601,6 +601,10 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	yesNoPopup = new YesNoPopup();
 	yesNoPopup->visible = false;
 	
+	yesNoCancelPopup = new YesNoCancelPopup();
+	yesNoCancelPopup->visible = false;
+	
+	
 	aboutWindow = new UIWindow("", 800, 440);
 	aboutWindow->closeOnEscape = true;
 	ScreenImage *aboutImage = new ScreenImage("Images/about.png");

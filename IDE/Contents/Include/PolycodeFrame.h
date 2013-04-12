@@ -187,6 +187,7 @@ public:
 	
 	TextInputPopup *textInputPopup;
 	YesNoPopup *yesNoPopup;
+	YesNoCancelPopup *yesNoCancelPopup;
 	
 	ScreenEntity *welcomeEntity;	
 	PolycodeProjectBrowser *projectBrowser;
