@@ -1,7 +1,0 @@
-/Users/kristian/Dropbox/github/Polycode/Standalone/Modules/Contents/2DPhysics/CMakeFiles/Polycode2DPhysics.dir
-/Users/kristian/Dropbox/github/Polycode/Standalone/Modules/Contents/3DPhysics/CMakeFiles/Polycode3DPhysics.dir
-/Users/kristian/Dropbox/github/Polycode/Standalone/Modules/Contents/TUIO/CMakeFiles/PolycodeTUIO.dir
-/Users/kristian/Dropbox/github/Polycode/Standalone/Modules/Contents/UI/CMakeFiles/PolycodeUI.dir
-/Users/kristian/Dropbox/github/Polycode/Standalone/Core/Contents/CMakeFiles/Polycore.dir
-/Users/kristian/Dropbox/github/Polycode/Standalone/Tools/Contents/polybuild/CMakeFiles/polybuild.dir
-/Users/kristian/Dropbox/github/Polycode/Standalone/Tools/Contents/polyimport/CMakeFiles/polyimport.dir

@@ -1,2 +1,0 @@
-/usr/bin/ar cr libPolycode2DPhysics.a  CMakeFiles/Polycode2DPhysics.dir/Source/PolyPhysicsScreen.cpp.o CMakeFiles/Polycode2DPhysics.dir/Source/PolyPhysicsScreenEntity.cpp.o
-/usr/bin/ranlib libPolycode2DPhysics.a
