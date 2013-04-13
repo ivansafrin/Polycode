@@ -47,6 +47,7 @@ uLong filetime(
     uLong *dt)
 {
   int ret=0;
+  struct stat s;
   struct tm* filedate;
   time_t tm_t=0;
 
