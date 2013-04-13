@@ -210,7 +210,7 @@ void utf8toWStr(WStr& dest, const Str& src){
 	dest.clear();
 	wchar_t w = 0;
 	int bytes = 0;
-	wchar_t err = L'�';
+	wchar_t err = L'\uFFFD';
 	for (size_t i = 0; i < src.size(); i++){
 		unsigned char c = (unsigned char)src[i];
 		if (c <= 0x7f){//first byte
@@ -267,6 +267,7 @@ void wstrToUtf8(Str& dest, const WStr& src){
 			dest.push_back(0x80| (w & 0x3f));
 		}
 		else if (w <= 0x10ffff){
+			// FIXME: wchar_t is 16 bits on some platforms, should convert from UTF16 to UTF8
 			dest.push_back(0xf0 | ((w >> 18)& 0x07));
 			dest.push_back(0x80| ((w >> 12) & 0x3f));
 			dest.push_back(0x80| ((w >> 6) & 0x3f));

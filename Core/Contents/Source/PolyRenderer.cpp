@@ -343,6 +343,7 @@ void *Renderer::getDataPointerForName(const String &name) {
 	if(name == "ambient_color") {
 		return (void*)&ambientColor;
 	}
+	return NULL;
 }
 
 void Renderer::setRendererShaderParams(Shader *shader, ShaderBinding *binding) {

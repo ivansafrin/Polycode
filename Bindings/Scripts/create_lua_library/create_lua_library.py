@@ -355,6 +355,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 							wrappersHeaderOut += "\t%s *inst = (%s*) *((PolyBase**)lua_touserdata(L, 1));\n" % (ckey, ckey)
 
 							outfunc = "this_shouldnt_happen"
+							outfuncsuffix = ""
 							if pp["type"] == "Number":
 								outfunc = "lua_tonumber"
 							if pp["type"] == "String":
@@ -365,8 +366,9 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 								outfunc = "(PolyKEY)lua_tointeger"
 							if pp["type"] == "bool":
 								outfunc = "lua_toboolean"
+								outfuncsuffix = " != 0"
 
-							wrappersHeaderOut += "\t%s param = %s(L, 2);\n" % (pp["type"], outfunc)
+							wrappersHeaderOut += "\t%s param = %s(L, 2)%s;\n" % (pp["type"], outfunc, outfuncsuffix)
 							wrappersHeaderOut += "\tinst->%s = param;\n" % (pp["name"])
 
 							wrappersHeaderOut += "\treturn 0;\n"
@@ -533,7 +535,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 									luafunc = "lua_toboolean"
 									luatype = "LUA_TBOOLEAN"
 									checkfunc = "lua_isboolean"
-									luafuncsuffix = ""
+									luafuncsuffix = " != 0"
 									lend = ""
 								if param["type"] == "Number" or param["type"] == "float" or param["type"] == "double":
 									luatype = "LUA_TNUMBER"
