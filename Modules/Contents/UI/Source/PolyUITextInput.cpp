@@ -1056,7 +1056,7 @@ void UITextInput::Paste() {
 
 void UITextInput::showLine(unsigned int lineNumber, bool top) {
 	// If there's no scroll container, no need to adjust the line.
-	if(!multiline) {
+	if(!multiLine) {
 		return;
 	}
 
