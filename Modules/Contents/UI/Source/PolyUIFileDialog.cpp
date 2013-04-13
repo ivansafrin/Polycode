@@ -92,7 +92,9 @@ UIFileDialog::UIFileDialog(String baseDir, bool foldersOnly, std::vector<String>
 
 	entryHolder = new UIElement();
 	entryHolder->ownsChildren = true;
-
+	entryHolder->setWidth(1);
+	entryHolder->setHeight(1);
+	
 	scrollContainer = new UIScrollContainer(entryHolder, false, true, 500-140, 320);
 	addChild(scrollContainer);
 
