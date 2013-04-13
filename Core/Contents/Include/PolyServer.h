@@ -76,16 +76,15 @@ namespace Polycode {
 	* As the Peer class already provides all connectivity functionality required, the Server class
 	* merely provides another abstraction layer to treat clients separately from mere connections.
 	*
-	* The Server will process incoming packets N times per second, where N is an argument to the constructor.
-	* This means you can coordinate the server's reaction time to your program's internal timer.
+	* The Server will send the data provided by the ServerWorld class to all clients at defined rate and dispatch events when clients connect, disconnect and send data.
 	*/
 	class _PolyExport Server : public Peer {
 		public:
 			/**
 			* Constructor.
-			* @param port The port to listen for client connections on.
-			* @param rate How many times per second this instance should check for new incoming packets.
-			* @param world A singleton which manages the "world" this network server is attached to.
+			* @param port The local port to listen for client connections on.
+			* @param rate How many times per second to send out server data to clients.
+			* @param world An instance of the server data provider. @see ServerWorld
 			*/
 			Server(unsigned int port, unsigned int rate, ServerWorld *world = NULL);
 			~Server();
@@ -93,17 +92,13 @@ namespace Polycode {
 			void handlePacket(Packet *packet, PeerConnection *connection);
 			void handleEvent(Event *event);	
 			void handlePeerConnection(PeerConnection *connection);
-
-			/**
-			* Callback handler invoked when a client disconnects.
-			* @param client The client that disconnected.
-			*/
 			void DisconnectClient(ServerClient *client);
 
 			/**
 			* Get a connected client from its associated peer connection, if any.
 			* @param connection The PeerConnection through which we're communicating 
 			*                   with the client to obtain.
+			* @return The connected client or NULL if doesn't exist.
 			*/
 			ServerClient *getConnectedClient(PeerConnection *connection);
 		

@@ -69,7 +69,7 @@ namespace Polycode {
 		/**
 		* Constructor.
 		* @param ipAsString An IP address represented as string,
-		*                   for example "197.0.0.1"
+		*                   for example "127.0.0.1"
 		* @param port The UDP/TCP port of the address, given in
 		*             host byte order.
 		*/
