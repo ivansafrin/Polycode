@@ -316,6 +316,8 @@ bool PolycodeTextEditor::openFile(OSFileEntry filePath) {
 	if(filePath.extension == "lua") {
 		syntaxHighligher = new PolycodeSyntaxHighlighter(filePath.extension);
 		textInput->setSyntaxHighlighter(syntaxHighligher);
+	} else {
+		textInput->setTextColor(globalSyntaxTheme->colors[0]);		
 	}
 	
 	Data *data = new Data();
