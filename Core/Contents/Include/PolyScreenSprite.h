@@ -122,6 +122,8 @@ class _PolyExport ScreenSprite : public ScreenShape
 		SpriteAnimation *getAnimationAtIndex(unsigned int index);
 		
 		SpriteAnimation *getCurrentAnimation();
+		unsigned int getCurrentAnimationFrame();
+		bool isCurrentAnimationFinished();
 		
 		void updateSprite();
 		
