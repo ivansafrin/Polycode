@@ -1111,17 +1111,28 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 				updateCaretPosition();			
 			}
 		} else {
-			if(caretPosition > 0) {
+			if(caretPosition > 0 || lineOffset > 0) {
 				if(input->getKeyState(KEY_LSHIFT) || input->getKeyState(KEY_RSHIFT)) {
+					// Holding down shift allows you to select with the arrow keys.
 					if(hasSelection) {
 						if(selectionCaretPosition > 0)
-							setSelection(this->lineOffset, selectionLine, this->caretPosition, selectionCaretPosition-1);
+							setSelection(lineOffset, selectionLine, this->caretPosition, selectionCaretPosition-1);
 					} else {
-						setSelection(this->lineOffset, this->lineOffset, this->caretPosition, caretPosition-1);					
-					}					
-				} else {									
-					caretPosition--;
-					clearSelection();					
+						setSelection(lineOffset, lineOffset, caretPosition, caretPosition-1);
+					}
+				} else {
+					int newLineStart = lineOffset;
+					int newCaretPosition = caretPosition;
+					if(newCaretPosition > 0) {
+						newCaretPosition--;
+					} else if(newLineStart > 0) {
+						newLineStart--;
+						newCaretPosition = lines[newLineStart].length();
+					}
+
+					clearSelection();
+					caretPosition = newCaretPosition;
+					lineOffset = newLineStart;
 					updateCaretPosition();
 				}
 			}
@@ -1130,8 +1141,8 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 	}
 	
 	if(key == KEY_RIGHT) {
-		if(caretPosition < lines[lineOffset].length()) {			
-			if(input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER)) {
+		if(input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER)) {
+			if(caretPosition < lines[lineOffset].length()) {
 				if(input->getKeyState(KEY_LSHIFT) || input->getKeyState(KEY_RSHIFT)) {
 					if(hasSelection) {
 						setSelection(this->lineOffset, selectionLine, this->caretPosition, lines[selectionLine].length());					
@@ -1141,8 +1152,10 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 				} else {
 					caretPosition = lines[lineOffset].length();
 					clearSelection();
-				}				
-			} else if (input->getKeyState(KEY_LALT) || input->getKeyState(KEY_RALT)) {
+				}
+			}
+		} else if (input->getKeyState(KEY_LALT) || input->getKeyState(KEY_RALT)) {
+			if(caretPosition < lines[lineOffset].length()) {
 				if(input->getKeyState(KEY_LSHIFT) || input->getKeyState(KEY_RSHIFT)) {
 					if(hasSelection) {
 						setSelection(this->lineOffset, selectionLine, this->caretPosition, caretSkipWordForward(selectionLine, selectionCaretPosition));
@@ -1152,20 +1165,33 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 				} else {				
 					caretPosition = caretSkipWordForward(this->lineOffset,caretPosition);
 					clearSelection();					
-				}				
-			} else {
+				}
+			}
+		} else {
+			if(caretPosition < lines[lineOffset].length() || lineOffset + 1 < lines.size()) {
 				if(input->getKeyState(KEY_LSHIFT) || input->getKeyState(KEY_RSHIFT)) {
+					// Holding down shift allows you to select with the arrow keys.
 					if(hasSelection) {
 						setSelection(this->lineOffset, selectionLine, this->caretPosition, selectionCaretPosition+1);
 					} else {
-						setSelection(this->lineOffset, this->lineOffset, this->caretPosition, caretPosition+1);					
-					}					
-				} else {									
-					caretPosition++;
-					clearSelection();					
-				}				
+						setSelection(this->lineOffset, this->lineOffset, this->caretPosition, caretPosition+1);
+					}
+				} else {
+					clearSelection();
+
+					int newLineEnd = lineOffset;
+					int newCaretPosition = caretPosition;
+					if(newCaretPosition < lines[lineOffset].length()) {
+						newCaretPosition++;
+					} else if(newLineEnd + 1 < lines.size()) {
+						newLineEnd++;
+						newCaretPosition = 0;
+					}
+					caretPosition = newCaretPosition;
+					lineOffset = newLineEnd;
+				}
+				updateCaretPosition();
 			}
-			updateCaretPosition();			
 		}
 		return;
 	}
