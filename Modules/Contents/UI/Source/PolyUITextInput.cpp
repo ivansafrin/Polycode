@@ -1253,6 +1253,9 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 			}			
 			insertLine(true);
 			updateCaretPosition();
+            if(linesContainer->getPosition().y + (lineOffset*(lineHeight+lineSpacing)+padding) > scrollContainer->getHeight()-lineHeight-lineSpacing) {
+                scrollContainer->setScrollValue(0.0, (((((lineOffset) * ((lineHeight+lineSpacing)))) + padding-(scrollContainer->getHeight()-lineHeight-lineSpacing))/(scrollContainer->getContentSize().y-scrollContainer->getHeight())));
+            }
 		} else {
 			dispatchEvent(new Event(), Event::COMPLETE_EVENT);
 		}
