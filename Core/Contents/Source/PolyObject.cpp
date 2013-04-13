@@ -251,11 +251,11 @@ void Object::createFromXMLElement(TiXmlElement *element, ObjectEntry *entry) {
 		if (endResult == success) { // If integer part exhausts string
 			entry->type = ObjectEntry::INT_ENTRY;
 			entry->NumberVal = entry->intVal;
-			entry->boolVal = entry->intVal;
+			entry->boolVal = entry->intVal != 0;
 		} else {
 			entry->NumberVal = strtod(rawVal, &endResult);
 			entry->intVal = entry->NumberVal;
-			entry->boolVal = entry->NumberVal;
+			entry->boolVal = entry->NumberVal != 0.0;
 			if (endResult == success) {
 				entry->type = ObjectEntry::FLOAT_ENTRY;
 			}

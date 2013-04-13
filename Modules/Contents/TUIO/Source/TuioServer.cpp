@@ -184,7 +184,7 @@ void TuioServer::initialize(const char *host, int port, int size) {
 		oscPacket = new osc::OutboundPacketStream(oscBuffer,size);
 		fullBuffer = new char[size];
 		fullPacket = new osc::OutboundPacketStream(fullBuffer,size);
-	} catch (std::exception &e) { 
+	} catch (std::exception&) {
 		std::cout << "could not create socket" << std::endl;
 		socket = NULL;
 	}

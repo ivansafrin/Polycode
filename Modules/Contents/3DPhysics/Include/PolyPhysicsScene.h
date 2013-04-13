@@ -26,7 +26,7 @@ THE SOFTWARE.
 #include <vector>
 
 class btDiscreteDynamicsWorld;
-class btDbvtBroadphase;
+struct btDbvtBroadphase;
 class btSequentialImpulseConstraintSolver;
 class btGhostPairCallback;
 class btTypedConstraint;

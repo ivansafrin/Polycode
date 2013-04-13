@@ -326,7 +326,7 @@ PhysicsScreenEntity *PhysicsScreen::addCollisionChild(ScreenEntity *newEntity, i
 
 PhysicsScreenEntity *PhysicsScreen::trackCollisionChild(ScreenEntity *newEntity, int entType, int groupIndex) {
 	PhysicsScreenEntity *ret;
-	ret = trackPhysicsChild(newEntity, entType, false, 0,0.0,0, true, groupIndex);
+	ret = trackPhysicsChild(newEntity, entType, false, 0,0.0,0, true, false, groupIndex);
 	ret->collisionOnly = true; 
 	return ret;
 }
