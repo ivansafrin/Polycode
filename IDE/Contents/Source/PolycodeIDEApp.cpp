@@ -173,8 +173,6 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 #else
 	menuBar = NULL;
 #endif
-	core->setVideoMode(1100, 700, false, true, 0, 0);
-
 	needsRedraw = false;
 	lastConnected = false;
 }
