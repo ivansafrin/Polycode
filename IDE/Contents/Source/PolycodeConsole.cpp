@@ -215,8 +215,12 @@ PolycodeConsole::PolycodeConsole() : UIElement() {
 	debugTextInput = consoleWindow->debugTextInput;
 	consoleTextInput = consoleWindow->consoleTextInput;
 	
-	consoleTextInput->addEventListener(this, Event::COMPLETE_EVENT);	
+	consoleTextInput->addEventListener(this, Event::COMPLETE_EVENT);
+	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 	consoleTextInput->setColor(0.95, 1.0, 0.647, 1.0);
+
+	consoleHistoryPosition = 0;
+	consoleHistoryMaxSize = 15;
 	
 	consoleWindow->clearButton->addEventListener(this, UIEvent::CLICK_EVENT);
 
@@ -248,7 +252,7 @@ void PolycodeConsole::handleEvent(Event *event) {
 	}
 
 	if(event->getDispatcher() == consoleTextInput) {
-		if(event->getEventCode() == Event::COMPLETE_EVENT && event->getEventType() == "") {
+		if(event->getEventCode() == Event::COMPLETE_EVENT && event->getEventType() == "" && consoleTextInput->getText() != "") {
 			_print(">"+consoleTextInput->getText()+"\n");
 			if(debugger) {
 				if(!debugger->isConnected()) {
@@ -256,9 +260,37 @@ void PolycodeConsole::handleEvent(Event *event) {
 				} else {
 					debugger->injectCode(consoleTextInput->getText());
 				}
-			}	
+			}
+			
+			consoleHistory.push_back(consoleTextInput->getText());
+			if (consoleHistory.size() > consoleHistoryMaxSize) { consoleHistory.erase(consoleHistory.begin()); }
+			consoleHistoryPosition = consoleHistory.size();
 			
 			consoleTextInput->setText("");
+		}
+	}
+
+	if (event->getDispatcher() == CoreServices::getInstance()->getCore()->getInput()) {
+		if (consoleTextInput->hasFocus && event->getEventCode() == InputEvent::EVENT_KEYDOWN) {
+			InputEvent *inputEvent = (InputEvent*)event;
+			if (inputEvent->keyCode() == KEY_UP) { 
+				consoleHistoryPosition--;
+				if (consoleHistoryPosition >= 0) {
+					consoleTextInput->setText(consoleHistory.at(consoleHistoryPosition));
+				} else {
+					consoleHistoryPosition = -1;
+					consoleTextInput->setText("");
+				}
+			}
+			if (inputEvent->keyCode() == KEY_DOWN) { 
+				consoleHistoryPosition++;
+				if (consoleHistoryPosition < consoleHistory.size()) {
+					consoleTextInput->setText(consoleHistory.at(consoleHistoryPosition));
+				} else {
+					consoleHistoryPosition = consoleHistory.size();
+					consoleTextInput->setText("");
+				}
+			}
 		}
 	}
 }
