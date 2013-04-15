@@ -63,6 +63,8 @@ namespace Polycode {
 		
 		void loadFile(String fileName);
 		
+		void reloadProperties();
+		
 		/**
 		* Play the sound once or in a loop.
 		* @param once If this is true, play it once, otherwise, loop.

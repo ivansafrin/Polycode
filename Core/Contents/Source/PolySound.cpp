@@ -28,6 +28,9 @@
 #include "OSBasics.h"
 #include <string>
 #include <vector>
+#include <limits>
+
+#define MAX_FLOAT (std::numeric_limits<double>::infinity())
 
 using namespace std;
 using namespace Polycode;
@@ -52,24 +55,29 @@ long custom_tellfunc(void *datasource) {
 	return OSBasics::tell(file);
 }
 
-Sound::Sound(const String& fileName) : sampleLength(-1) {
-	soundLoaded = false;		
-	loadFile(fileName);
+Sound::Sound(const String& fileName) : sampleLength(-1), volume(1),pitch(1),referenceDistance(1),maxDistance(MAX_FLOAT) {
+	checkALError("Construct: Loose error before construction");
+	soundLoaded = false;	
+
+	loadFile(fileName);	
+	
 	setIsPositional(false);
 	
-	setVolume(1.0);
-	setPitch(1.0);
+	checkALError("Construct from file: Finished");
 }
 
-Sound::Sound(const char *data, int size, int channels, int freq, int bps) : buffer(AL_NONE), soundSource(AL_NONE), sampleLength(-1) {
+Sound::Sound(const char *data, int size, int channels, int freq, int bps) : buffer(AL_NONE), soundSource(AL_NONE), sampleLength(-1), volume(1),pitch(1),referenceDistance(1),maxDistance(MAX_FLOAT) {
+	checkALError("Construct: Loose error before construction");
 	buffer = loadBytes(data, size, freq, channels, bps);
 	
 	soundSource = GenSource(buffer);
+	
 	setIsPositional(false);
+	reloadProperties();
+	
 	soundLoaded = true;
-		
-	setVolume(1.0);
-	setPitch(1.0);
+	
+	checkALError("Construct from data: Finished");
 }
 
 void Sound::loadFile(String fileName) {
@@ -105,13 +113,19 @@ void Sound::loadFile(String fileName) {
 	
 	soundSource = GenSource(buffer);	
 	
+	reloadProperties();
+	
+	soundLoaded = true;
+	
+	checkALError("Sound load: complete");
+}
+
+void Sound::reloadProperties() { // Re-set stored properties into sound source.
 	setVolume(volume);
 	setPitch(pitch);
 	
 	setReferenceDistance(referenceDistance);
 	setMaxDistance(maxDistance);
-	
-	soundLoaded = true;
 }
 
 String Sound::getFileName() {
@@ -128,9 +142,9 @@ Number Sound::getPitch() {
 
 Sound::~Sound() {
 	alDeleteSources(1,&soundSource);
-	checkALError("destroying sound");
+	checkALError("Destroying sound");
 	alDeleteBuffers(1, &buffer);
-	checkALError("deleting buffer");
+	checkALError("Deleting buffer");
 }
 
 void Sound::soundCheck(bool result, const String& err) {
@@ -179,26 +193,31 @@ bool Sound::isPlaying() {
 void Sound::setVolume(Number newVolume) {
 	this->volume = newVolume;
 	alSourcef(soundSource, AL_GAIN, newVolume);
+	checkALError("Set volume");
 }
 
 void Sound::setPitch(Number newPitch) {
 	this->pitch = newPitch;
 	alSourcef(soundSource, AL_PITCH, newPitch);
+	checkALError("Set pitch");
 }
 
 void Sound::setSoundPosition(Vector3 position) {
 	if(isPositional)
 		alSource3f(soundSource,AL_POSITION, position.x, position.y, position.z);
+	checkALError("Set sound position");
 }
 
 void Sound::setSoundVelocity(Vector3 velocity) {
 	if(isPositional)
 		alSource3f(soundSource,AL_VELOCITY, velocity.x, velocity.y, velocity.z);
+	checkALError("Set sound velocity");
 }
 
 void Sound::setSoundDirection(Vector3 direction) {
 	if(isPositional)
 		alSource3f(soundSource,AL_DIRECTION, direction.x, direction.y, direction.z);
+	checkALError("Set sound direction");
 }
 
 void Sound::setOffset(int off) {
@@ -242,6 +261,7 @@ void Sound::seekTo(Number time) {
 	if(time > getPlaybackDuration())
 		return;
 	alSourcef(soundSource, AL_SEC_OFFSET, time);
+	checkALError("Seek");
 }
 
 int Sound::getSampleLength() {
@@ -255,12 +275,14 @@ void Sound::setPositionalProperties(Number referenceDistance, Number maxDistance
 
 void Sound::setReferenceDistance(Number referenceDistance) {
 	this->referenceDistance = referenceDistance;
-	alSourcef(soundSource,AL_REFERENCE_DISTANCE, referenceDistance);
+	alSourcef(soundSource, AL_REFERENCE_DISTANCE, referenceDistance);
+	checkALError("Set reference distance");
 }
 
 void Sound::setMaxDistance(Number maxDistance) {
 	this->maxDistance = maxDistance;
 	alSourcef(soundSource,AL_MAX_DISTANCE, maxDistance);	
+	checkALError("Set max distance");
 }
 		
 Number Sound::getReferenceDistance() {
@@ -282,6 +304,7 @@ void Sound::setIsPositional(bool isPositional) {
 		alSource3f(soundSource,AL_VELOCITY, 0,0,0);
 		alSource3f(soundSource,AL_DIRECTION, 0,0,0);				
 	}
+	checkALError("Set is-positional");
 }
 
 ALenum Sound::checkALError(const String& operation) {
