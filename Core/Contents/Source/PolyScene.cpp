@@ -237,7 +237,7 @@ void Scene::Render(Camera *targetCamera) {
 	}
 		
 	targetCamera->doCameraTransform();
-	targetCamera->buildFrustrumPlanes();
+	targetCamera->buildFrustumPlanes();
 	
 	CoreServices::getInstance()->getRenderer()->enableFog(fogEnabled);	
 	if(fogEnabled) {
@@ -249,7 +249,7 @@ void Scene::Render(Camera *targetCamera) {
 	
 	for(int i=0; i<entities.size();i++) {
 		if(entities[i]->getBBoxRadius() > 0) {
-			if(targetCamera->isSphereInFrustrum((entities[i]->getPosition()), entities[i]->getBBoxRadius()))
+			if(targetCamera->isSphereInFrustum((entities[i]->getPosition()), entities[i]->getBBoxRadius()))
 				entities[i]->transformAndRender();
 		} else {
 			entities[i]->transformAndRender();		
@@ -274,14 +274,14 @@ void Scene::RenderDepthOnly(Camera *targetCamera) {
 */	
 	targetCamera->rebuildTransformMatrix();	
 	targetCamera->doCameraTransform();	
-	targetCamera->buildFrustrumPlanes();
+	targetCamera->buildFrustumPlanes();
 	
 	CoreServices::getInstance()->getRenderer()->setTexture(NULL);
 	CoreServices::getInstance()->getRenderer()->enableShaders(false);
 	for(int i=0; i<entities.size();i++) {
 		if(entities[i]->castShadows) {
 		if(entities[i]->getBBoxRadius() > 0) {
-			if(targetCamera->isSphereInFrustrum((entities[i]->getPosition()), entities[i]->getBBoxRadius()))
+			if(targetCamera->isSphereInFrustum((entities[i]->getPosition()), entities[i]->getBBoxRadius()))
 				entities[i]->transformAndRender();
 		} else {
 			entities[i]->transformAndRender();		

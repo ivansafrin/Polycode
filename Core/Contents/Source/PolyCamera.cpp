@@ -74,7 +74,7 @@ Number Camera::getFOV() {
 }
 
 
-bool Camera::isSphereInFrustrum(Vector3 pos, Number fRadius) {
+bool Camera::isSphereInFrustum(Vector3 pos, Number fRadius) {
 	if(!frustumCulling)
 		return true;
     for( int i = 0; i < 6; ++i )
@@ -108,7 +108,7 @@ Number Camera::getOrthoSizeY() {
 }
 
 
-void Camera::buildFrustrumPlanes() {
+void Camera::buildFrustumPlanes() {
 
 	Matrix4 p; 
 	Matrix4 mv;
@@ -255,7 +255,7 @@ void Camera::buildFrustrumPlanes() {
 }
 
 bool Camera::canSee(SceneEntity *entity) {
-	return isSphereInFrustrum(entity->getPosition(), entity->getBBoxRadius());
+	return isSphereInFrustum(entity->getPosition(), entity->getBBoxRadius());
 }
 
 void Camera::setParentScene(Scene *parentScene) {

@@ -45,22 +45,22 @@ namespace Polycode {
 			Camera(Scene *parentScene);
 			virtual ~Camera();
 			
-			void buildFrustrumPlanes();
+			void buildFrustumPlanes();
 			
 			/**
 			* Checks if the camera can see a sphere.
 			* @param pos Position of the sphere to check.
 			* @param fRadius Radius of the sphere.
-			* @return Returns true if the sphere is within the camera's frustrum, or false if it isn't.
+			* @return Returns true if the sphere is within the camera's frustum, or false if it isn't.
 			* @see canSee()
 			*/								
-			bool isSphereInFrustrum(Vector3 pos, Number fRadius);
+			bool isSphereInFrustum(Vector3 pos, Number fRadius);
 		
 			/**
 			* Checks if the camera can see an entity based on its bounding radius.
 			* @param entity Entity to check.
-			* @return Returns true if the entity's bounding radius is within the camera's frustrum, or false if it isn't.
-			* @see isSphereInFrustrum()
+			* @return Returns true if the entity's bounding radius is within the camera's frustum, or false if it isn't.
+			* @see isSphereInFrustum()
 			*/					
 			bool canSee(SceneEntity *entity);
 			
