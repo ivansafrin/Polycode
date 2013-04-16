@@ -245,14 +245,19 @@ bool SDLCore::checkSpecialKeyEvents(PolyKEY key) {
 	return false;
 }
 
+void SDLCore::Render() {
+	renderer->BeginRender();
+	services->Render();
+	renderer->EndRender();
+	SDL_GL_SwapBuffers();
+}
+
 bool SDLCore::Update() {
 	if(!running)
 		return false;
+	doSleep();	
 	
-	renderer->BeginRender();
 	updateCore();
-	renderer->EndRender();
-	SDL_GL_SwapBuffers();
 	
 	SDL_Event event;
 	while ( SDL_PollEvent(&event) ) {
@@ -335,7 +340,6 @@ bool SDLCore::Update() {
 					break;
 			}
 		}
-	doSleep();	
 	return running;
 }
 
