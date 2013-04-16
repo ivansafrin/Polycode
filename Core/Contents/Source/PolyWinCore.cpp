@@ -150,19 +150,20 @@ unsigned int Win32Core::getTicks() {
 	return GetTickCount();
 }
 
+void Win32Core::Render() {
+	renderer->BeginRender();
+	services->Render();
+	renderer->EndRender();
+	SwapBuffers(hDC);
+}
+
 bool Win32Core::Update() {
 	if(!running)
 		return false;
-
+	doSleep();
 	checkEvents();
 	Gamepad_processEvents();
-
-	renderer->BeginRender();
 	updateCore();
-	renderer->EndRender();
-	
-	SwapBuffers(hDC);
-	doSleep();
 	return running;
 }
 
