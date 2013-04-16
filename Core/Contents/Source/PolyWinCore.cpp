@@ -478,7 +478,7 @@ PolyKEY Win32Core::mapKey(LPARAM lParam, WPARAM wParam) {
 					else
 						wParam = VK_LCONTROL;
 					break;
-				case 33:
+				case VK_MENU:
 					if ( lParam&EXTENDED_KEYMASK )
 						wParam = VK_RMENU;
 					else
