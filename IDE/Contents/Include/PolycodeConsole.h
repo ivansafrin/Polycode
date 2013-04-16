@@ -129,14 +129,19 @@ class PolycodeConsole : public UIElement {
 		
 		BackTraceWindow *backtraceWindow;	
 		ConsoleWindow  *consoleWindow;
+
 	protected:
-	
 		UIHSizer *backtraceSizer;
 	
 		PolycodeRemoteDebugger *debugger;		
 		static PolycodeConsole *instance;
 		
-		
 		UITextInput *debugTextInput;
-		UITextInput *consoleTextInput;		
+		UITextInput *consoleTextInput;
+
+	private:
+		std::vector<String> consoleHistory;
+		int consoleHistoryPosition;
+		int consoleHistoryMaxSize;
+
 };
