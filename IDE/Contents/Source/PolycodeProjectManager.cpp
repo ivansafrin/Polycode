@@ -78,7 +78,7 @@ int PolycodeProjectManager::removeProject(PolycodeProject *project) {
 	}	
 	
 	if(activeProject == project) {
-		activeProject = NULL;
+		this->setActiveProject(NULL);
 	}
 	
 	delete project;

@@ -788,6 +788,8 @@ void PolycodeFrame::handleEvent(Event *event) {
 	if(event->getDispatcher() == projectManager) {
         if(projectManager->getActiveProject()) {
             currentProjectTitle->setText(projectManager->getActiveProject()->getProjectName());
+        } else {
+        	if (projectManager->getProjectCount() == 0) { currentProjectTitle->setText(""); }
         }
 	}
 	
