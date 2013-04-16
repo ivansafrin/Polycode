@@ -33,5 +33,5 @@ bool HelloPolycodeApp::Update() {
 		entity->setColor(1.0, 0.0, 0.0, 1.0);
 		lastEntity = entity;
 	}
-    return core->Update();
+    return core->updateAndRender();
 }

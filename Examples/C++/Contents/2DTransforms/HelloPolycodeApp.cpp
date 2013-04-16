@@ -22,5 +22,5 @@ HelloPolycodeApp::~HelloPolycodeApp() {
 }
 
 bool HelloPolycodeApp::Update() {
-    return core->Update();
+    return core->updateAndRender();
 }

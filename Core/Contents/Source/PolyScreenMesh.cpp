@@ -77,11 +77,11 @@ void ScreenMesh::setTexture(Texture *texture) {
 }
 
 void ScreenMesh::loadTexture(const String& fileName) {
-	texture = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(fileName, true, false);
+	texture = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(fileName, false, true);
 }
 
 void ScreenMesh::loadTexture(Image *image) {
-	texture = CoreServices::getInstance()->getMaterialManager()->createTextureFromImage(image, true, false);
+	texture = CoreServices::getInstance()->getMaterialManager()->createTextureFromImage(image, false, true);
 }
 
 void ScreenMesh::Render() {	

@@ -209,39 +209,36 @@ Renderer *CoreServices::getRenderer() {
 	return renderer;
 }
 
-void CoreServices::Update(int elapsed, bool updateRenderer) {
+void CoreServices::Render() {
+	if(renderer->doClearBuffer)		
+		renderer->clearScreen();
+
+	renderer->setPerspectiveMode();
+	sceneManager->renderVirtual();
+	if(renderer->doClearBuffer)
+		renderer->clearScreen();					
+
+	if(drawScreensFirst) {
+		screenManager->Render();
+		renderer->setPerspectiveMode();
+		sceneManager->Render();	
+	} else {
+		sceneManager->Render();
+		screenManager->Render();	
+	}
+}
+
+void CoreServices::Update(int elapsed) {
 	
 	for(int i=0; i < updateModules.size(); i++) {
 		updateModules[i]->Update(elapsed);
 	}
 
-	timerManager->Update();
-	
-	tweenManager->Update();
-	
-	if(updateRenderer) {
-		
-	materialManager->Update(elapsed);	
-	if(drawScreensFirst) {
-		if(renderer->doClearBuffer)
-			renderer->clearScreen();	
-		renderer->setPerspectiveMode();
-		sceneManager->UpdateVirtual();
-		if(renderer->doClearBuffer)		
-			renderer->clearScreen();					
-		screenManager->Update();
-		renderer->setPerspectiveMode();
-		sceneManager->Update();	
-	} else {
-		renderer->setPerspectiveMode();
-		sceneManager->UpdateVirtual();
-		if(renderer->doClearBuffer)		
-			renderer->clearScreen();		
-		sceneManager->Update();
-		screenManager->Update();	
-	}
-	
-	}	
+	timerManager->Update();	
+	tweenManager->Update();	
+	materialManager->Update(elapsed);		
+	sceneManager->Update();
+	screenManager->Update();	
 }
 
 SoundManager *CoreServices::getSoundManager() {

@@ -198,15 +198,12 @@ void Screen::Shutdown() {
 }
 
 void Screen::Update() {
-
+	rootEntity.doUpdates();
 }
 
 void Screen::Render() {
-	Update();
 	renderer->loadIdentity();
 	renderer->translate2D(offset.x, offset.y);
-
-	rootEntity.doUpdates();
 	rootEntity.updateEntityMatrix();
 	rootEntity.transformAndRender();	
 }

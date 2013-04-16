@@ -265,7 +265,7 @@ namespace Polycode {
 				
 				*ax = -fabs(angle_x);
 				*ay = fabs(angle_y);
-				*az = fabs(angle_z);
+				*az = -fabs(angle_z);
 
 			}
 		

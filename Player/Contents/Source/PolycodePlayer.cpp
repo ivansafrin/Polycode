@@ -882,6 +882,7 @@ void PolycodePlayer::handleEvent(Event *event) {
 
 
 bool PolycodePlayer::Update() {
+	bool retVal = core->Update();
 	if(L) {
 		lua_getfield (L, LUA_GLOBALSINDEX, "__customError");
 		errH = lua_gettop(L);	
@@ -899,5 +900,6 @@ bool PolycodePlayer::Update() {
 		}
 		lua_settop(L, 0);
 	}
-	return core->Update();
+	core->Render();
+	return retVal;
 }

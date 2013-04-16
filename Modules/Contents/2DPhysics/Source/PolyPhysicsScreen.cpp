@@ -24,6 +24,8 @@ THE SOFTWARE.
 #include "PolyPhysicsScreen.h"
 #include "PolyScreenEntity.h"
 #include "PolyPhysicsScreenEntity.h"
+#include "PolyCoreServices.h"
+#include "PolyCore.h"
 
 using namespace Polycode;
 
@@ -157,6 +159,21 @@ void PhysicsScreen::EndContact (b2Contact *contact) {
 	dispatchEvent(newEvent, PhysicsScreenEvent::EVENT_END_SHAPE_COLLISION);
 }
 
+bool PhysicsScreen::isEntityColliding(ScreenEntity *ent1) {
+	PhysicsScreenEntity *pEnt1 = getPhysicsByScreenEntity(ent1);
+	if(pEnt1 == NULL)
+		return false;
+
+	for(int i=0; i < contacts.size(); i++) {
+		ScreenEntity *cEnt1 = ((PhysicsScreenEntity*)contacts[i]->GetFixtureA()->GetBody()->GetUserData())->getScreenEntity();
+		ScreenEntity *cEnt2 = ((PhysicsScreenEntity*)contacts[i]->GetFixtureB()->GetBody()->GetUserData())->getScreenEntity();
+		if(cEnt1 == ent1 || cEnt2 == ent1) {
+			return true;
+		}
+	}
+	return false;
+}
+
 bool PhysicsScreen::testEntityCollision(ScreenEntity *ent1, ScreenEntity *ent2) {
 	PhysicsScreenEntity *pEnt1 = getPhysicsByScreenEntity(ent1);
 	PhysicsScreenEntity *pEnt2 = getPhysicsByScreenEntity(ent2);	
@@ -164,8 +181,8 @@ bool PhysicsScreen::testEntityCollision(ScreenEntity *ent1, ScreenEntity *ent2) 
 		return false;
 	
 	for(int i=0; i < contacts.size(); i++) {
-		ScreenEntity *cEnt1 = (ScreenEntity*)contacts[i]->GetFixtureA()->GetUserData();
-		ScreenEntity *cEnt2 = (ScreenEntity*)contacts[i]->GetFixtureB()->GetUserData();
+		ScreenEntity *cEnt1 = ((PhysicsScreenEntity*)contacts[i]->GetFixtureA()->GetBody()->GetUserData())->getScreenEntity();
+		ScreenEntity *cEnt2 = ((PhysicsScreenEntity*)contacts[i]->GetFixtureB()->GetBody()->GetUserData())->getScreenEntity();
 		
 	        
 		if((cEnt1 == ent1 && cEnt2 == ent2) || (cEnt1 == ent2 && cEnt2 == ent1)) {
@@ -185,6 +202,7 @@ PhysicsScreen::PhysicsScreen(Number worldScale, Number freq, int velIterations, 
 
 void PhysicsScreen::init(Number worldScale, Number physicsTimeStep, int velIterations, int posIterations, Vector2 physicsGravity) {
 	
+	cyclesLeftOver = 0.0;
 	this->worldScale = worldScale;
 	
 	timeStep = physicsTimeStep;
@@ -519,9 +537,15 @@ void PhysicsScreen::handleEvent(Event *event) {
 
 void PhysicsScreen::Update() {
     
-	for(int i=0; i<physicsChildren.size();i++) {
-		physicsChildren[i]->Update();
+	Number elapsed = CoreServices::getInstance()->getCore()->getElapsed() + cyclesLeftOver;
+	
+	while(elapsed > timeStep) {
+		elapsed -= timeStep;
+		for(int i=0; i<physicsChildren.size();i++) {
+			physicsChildren[i]->Update();
+		}
+		world->Step(timeStep, velocityIterations,positionIterations);
 	}
-    
-	world->Step(timeStep, velocityIterations,positionIterations);	
+	cyclesLeftOver = elapsed;
+	Screen::Update();
 }

@@ -89,6 +89,9 @@ namespace Polycode {
 		
 		virtual bool Update() = 0;
 
+		virtual void Render() = 0;
+		
+		bool updateAndRender();
 		
 		/**
 		* Show or hide cursor.

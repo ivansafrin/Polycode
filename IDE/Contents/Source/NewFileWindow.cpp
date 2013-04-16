@@ -22,7 +22,7 @@
  
 #include "NewFileWindow.h"
 
-NewFileWindow::NewFileWindow() : UIWindow(L"Create New File", 480, 280) {
+NewFileWindow::NewFileWindow() : UIWindow(L"Create New File", 580, 280) {
 	defaultTemplateTree = NULL;
 	
 	Config *conf = CoreServices::getInstance()->getConfig();	
@@ -31,7 +31,7 @@ NewFileWindow::NewFileWindow() : UIWindow(L"Create New File", 480, 280) {
 	
 	closeOnEscape = true;	
 	
-	templateContainer = new UITreeContainer("boxIcon.png", L"File Templates", 200, 300-topPadding-padding-padding);	
+	templateContainer = new UITreeContainer("boxIcon.png", L"File Templates", 250, 300-topPadding-padding-padding);	
 	
 	FileTemplateUserData *data = new FileTemplateUserData();
 	data->type = 0;
@@ -64,9 +64,9 @@ NewFileWindow::NewFileWindow() : UIWindow(L"Create New File", 480, 280) {
 	label2->setText("NEW FILE NAME (NO EXTENSION)");
 		
 	addChild(label2);
-	label2->setPosition(padding+220, templateContainer->getPosition().y-5);			
+	label2->setPosition(padding+270, templateContainer->getPosition().y-5);			
 	
-	fileNameInput = new UITextInput(false, 500-padding-210-padding-padding, 12);	
+	fileNameInput = new UITextInput(false, 550-padding-210-padding-padding, 12);	
 	addChild(fileNameInput);
 	fileNameInput->setPosition(label2->getPosition().x, label2->getPosition().y+30);
 	
@@ -74,12 +74,12 @@ NewFileWindow::NewFileWindow() : UIWindow(L"Create New File", 480, 280) {
 	cancelButton = new UIButton(L"Cancel", 100);
 	cancelButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(cancelButton);
-	cancelButton->setPosition(500-100-padding-100-10, 265);
+	cancelButton->setPosition(600-100-padding-100-10, 265);
 			
 	okButton = new UIButton(L"Create File", 100);
 	okButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(okButton);
-	okButton->setPosition(500-100-padding, 265);	
+	okButton->setPosition(600-100-padding, 265);	
 }
 
 NewFileWindow::~NewFileWindow() {

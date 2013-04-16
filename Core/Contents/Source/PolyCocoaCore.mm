@@ -529,28 +529,34 @@ vector<String> CocoaCore::openFilePicker(vector<CoreFileExtension> extensions, b
 	return retVector;
 }
 
-bool CocoaCore::Update() {
-	if(!running)
-		return false;
-	
+void CocoaCore::Render() {
 	lockMutex(CoreServices::getRenderMutex());	
 	checkEvents();
 	
 	if(!paused) {	
 		renderer->BeginRender();
 	}
-	
-	updateCore();
-		
+
+	services->Render();
+
 	if(!paused) {		
 		renderer->EndRender();
 		[context flushBuffer];
 	}
 	
-	unlockMutex(CoreServices::getRenderMutex());	
-	doSleep();	
+	unlockMutex(CoreServices::getRenderMutex());
+}
+
+bool CocoaCore::Update() {
+	if(!running)
+		return false;
+	doSleep();
+		
+	updateCore();		
 	return running;
 }
+
+
 
 static void hatValueToXY(CFIndex value, CFIndex range, int * outX, int * outY) {
 	if (value == range) {

@@ -822,6 +822,6 @@ bool PolycodeIDEApp::Update() {
 	}
 
 
-	return core->Update();
+	return core->updateAndRender();
 }
 

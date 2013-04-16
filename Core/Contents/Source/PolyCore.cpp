@@ -182,6 +182,12 @@ namespace Polycode {
 			unlockMutex(threadedEventMutex);			
 		}
 	}
+	
+	bool Core::updateAndRender() {
+		bool ret = Update();
+		Render();
+		return ret;
+	}
 							
 	void Core::updateCore() {
 		frames++;
@@ -191,7 +197,7 @@ namespace Polycode {
 		if(elapsed > 1000)
 			elapsed = 1000;
 			
-		services->Update(elapsed, !paused);
+		services->Update(elapsed);
 		
 		if(frameTicks-lastFPSTicks >= 1000) {
 			fps = frames;

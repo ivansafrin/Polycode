@@ -44,6 +44,7 @@ namespace Polycode {
 		void removeScreen(Screen *screen);
 		void addScreen(Screen* screen);
 		void Update();
+		void Render();
 		
 		void handleEvent(Event *event);
 		

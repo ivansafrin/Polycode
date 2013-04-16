@@ -94,7 +94,10 @@ bool Scene::isEnabled() {
 }
 
 void Scene::Update() {
-
+	for(int i=0; i<entities.size();i++) {
+		entities[i]->doUpdates();		
+		entities[i]->updateEntityMatrix();
+	}
 }
 
 Scene::~Scene() {
@@ -169,7 +172,6 @@ void Scene::Render(Camera *targetCamera) {
 	
 	// prepare lights...
 	for(int i=0; i<entities.size();i++) {
-		entities[i]->doUpdates();		
 		entities[i]->updateEntityMatrix();
 	}	
 	

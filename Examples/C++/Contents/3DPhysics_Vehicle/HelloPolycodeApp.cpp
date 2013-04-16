@@ -171,5 +171,5 @@ bool HelloPolycodeApp::Update() {
 	} else {
 		testBox->setColor(0.0,1.0,1.0,0.5);	
 	}
-    return core->Update();
+    return core->updateAndRender();
 }

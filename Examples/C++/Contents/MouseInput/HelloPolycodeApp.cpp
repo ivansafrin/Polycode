@@ -41,5 +41,5 @@ void HelloPolycodeApp::handleEvent(Event *e) {
 }
 
 bool HelloPolycodeApp::Update() {
-    return core->Update();
+    return core->updateAndRender();
 }

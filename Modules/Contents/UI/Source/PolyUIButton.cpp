@@ -110,7 +110,9 @@ void UIButton::handleEvent(Event *event) {
 		switch(event->getEventCode()) {
 			case InputEvent::EVENT_KEYDOWN:
 				if(hasFocus) {
-					dispatchEvent(new UIEvent(), UIEvent::CLICK_EVENT);					
+					if(((InputEvent*)event)->key == KEY_RETURN || ((InputEvent*)event)->key == KEY_SPACE) {
+						dispatchEvent(new UIEvent(), UIEvent::CLICK_EVENT);
+					}
 				}
 			break;
 		}

@@ -18,5 +18,5 @@ HelloPolycodeApp::~HelloPolycodeApp() {
 bool HelloPolycodeApp::Update() {
 	Number elapsed = core->getElapsed();
 	image->setRotation(image->getRotation()+(elapsed*100));
-    return core->Update();
+    return core->updateAndRender();
 }

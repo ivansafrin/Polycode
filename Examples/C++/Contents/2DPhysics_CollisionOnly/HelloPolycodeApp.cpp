@@ -51,5 +51,5 @@ bool HelloPolycodeApp::Update() {
 	Vector2 mouse = core->getInput()->getMousePosition();
 	checkShape->setPosition(mouse.x, mouse.y);
 	checkShape->setRotation(checkShape->getRotation() + (core->getElapsed() * 100));
-    return core->Update();
+    return core->updateAndRender();
 }

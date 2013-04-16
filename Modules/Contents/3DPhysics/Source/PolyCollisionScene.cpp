@@ -56,7 +56,8 @@ void CollisionScene::Update() {
 	for(int i=0; i < collisionChildren.size(); i++) {
 		if(collisionChildren[i]->enabled)		
 			collisionChildren[i]->lastPosition = collisionChildren[i]->getSceneEntity()->getPosition();
-	}	
+	}
+	Scene::Update();	
 }
 
 void CollisionScene::enableCollision(SceneEntity *entity, bool val) {

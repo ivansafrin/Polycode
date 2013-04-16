@@ -381,6 +381,8 @@ public:
 	*/
 	bool testEntityCollision(ScreenEntity *ent1, ScreenEntity *ent2);
 	
+	bool isEntityColliding(ScreenEntity *ent1);
+	
 	void Shutdown();
 	
 	/**
@@ -394,6 +396,8 @@ public:
 
     
 protected:
+
+	Number cyclesLeftOver;
 	
     Number worldScale;
     

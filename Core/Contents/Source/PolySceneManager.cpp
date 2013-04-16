@@ -70,7 +70,7 @@ void SceneManager::addScene(Scene *newScene) {
 void SceneManager::updateRenderTextures(Scene *scene) {
 }
 
-void SceneManager::UpdateVirtual() {
+void SceneManager::renderVirtual() {
 	for(int i=0;i<renderTextures.size();i++) {
 		CoreServices::getInstance()->getRenderer()->setViewportSize(renderTextures[i]->getTargetTexture()->getWidth(), renderTextures[i]->getTargetTexture()->getHeight());
 		CoreServices::getInstance()->getRenderer()->loadIdentity();
@@ -93,17 +93,24 @@ void SceneManager::UpdateVirtual() {
 
 }
 
-void SceneManager::Update() {
+void SceneManager::Render() {
 	for(int i=0;i<scenes.size();i++) {
 		if(scenes[i]->isEnabled() && !scenes[i]->isVirtual()) {
 			CoreServices::getInstance()->getRenderer()->loadIdentity();
 			Scene *scene = scenes[i];
-			scene->Update();
 			if(scene->getActiveCamera()->hasFilterShader()) {
 				scene->getActiveCamera()->drawFilter();
 			} else {
 				scene->Render();
 			}
+		}
+	}
+}
+
+void SceneManager::Update() {
+	for(int i=0;i<scenes.size();i++) {
+		if(scenes[i]->isEnabled()) {
+			scenes[i]->Update();
 		}
 	}
 }

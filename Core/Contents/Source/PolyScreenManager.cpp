@@ -57,27 +57,7 @@ void ScreenManager::handleEvent(Event *event) {
 //	}
 }
 
-/*
-Screen *ScreenManager::createScreen(int screenType) {
-
-	Screen *screen;
-	switch(screenType) {
-		case REGULAR_SCREEN:
-			screen = new Screen();
-		break;
-		case PHYSICS_SCREEN:
-			screen = new PhysicsScreen();
-		break;
-	}
-	
-	screen->setRenderer(CoreServices::getInstance()->getRenderer());
-	screens.push_back(screen);
-	return screen;
-}
-*/
-
-void ScreenManager::Update() {
-
+void ScreenManager::Render() {
 	Renderer *renderer = CoreServices::getInstance()->getRenderer();
 	for(int i=0;i<screens.size();i++) {
 		if(screens[i]->enabled) {
@@ -94,6 +74,14 @@ void ScreenManager::Update() {
 			} else {
 				screens[i]->Render();
 			}
+		}
+	}
+}
+
+void ScreenManager::Update() {
+	for(int i=0;i<screens.size();i++) {
+		if(screens[i]->enabled) {
+			screens[i]->Update();
 		}
 	}
 }
