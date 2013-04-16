@@ -485,13 +485,9 @@ PolyKEY Win32Core::mapKey(LPARAM lParam, WPARAM wParam) {
 						wParam = VK_LMENU;
 					break;
 				case VK_SHIFT:
-					// We can't tell if it's LSHIFT or RSHIFT,
-					// so use GetKeyState to tell which it is.
-					if( GetKeyState(VK_LSHIFT) ) {
-						wParam = VK_LSHIFT;
-					} else {
-						wParam = VK_RSHIFT;
-					}
+					// Use MapVirtualKey to determine whether it's LSHIFT or RSHIFT by scancode.
+					UINT scancode = (lParam & 0x00ff0000) >> 16;
+					wParam = MapVirtualKey(scancode, MAPVK_VSC_TO_VK_EX);
 					break;
 			}
 
