@@ -337,7 +337,7 @@ void PhysicsScreen::setVelocityY(ScreenEntity *ent, Number fy) {
 PhysicsScreenEntity *PhysicsScreen::addCollisionChild(ScreenEntity *newEntity, int entType, int groupIndex, bool sensorOnly) {
 	PhysicsScreenEntity *ret;
 	ret = addPhysicsChild(newEntity, entType, false, 0,0,0, sensorOnly, false, groupIndex);
-    
+	newEntity->ignoreParentMatrix = false;    
 	ret->collisionOnly = true; 
 	return ret;
 }
@@ -345,7 +345,8 @@ PhysicsScreenEntity *PhysicsScreen::addCollisionChild(ScreenEntity *newEntity, i
 PhysicsScreenEntity *PhysicsScreen::trackCollisionChild(ScreenEntity *newEntity, int entType, int groupIndex) {
 	PhysicsScreenEntity *ret;
 	ret = trackPhysicsChild(newEntity, entType, false, 0,0.0,0, true, false, groupIndex);
-	ret->collisionOnly = true; 
+	ret->collisionOnly = true;
+	newEntity->ignoreParentMatrix = false;
 	return ret;
 }
 

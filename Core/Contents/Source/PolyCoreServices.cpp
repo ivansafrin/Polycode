@@ -219,11 +219,13 @@ void CoreServices::Render() {
 		renderer->clearScreen();					
 
 	if(drawScreensFirst) {
+		renderer->clearLights();	
 		screenManager->Render();
 		renderer->setPerspectiveMode();
 		sceneManager->Render();	
 	} else {
 		sceneManager->Render();
+		renderer->clearLights();		
 		screenManager->Render();	
 	}
 }

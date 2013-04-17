@@ -87,7 +87,7 @@ EntityTreeView::EntityTreeView(Entity *rootEntity) : UIElement() {
 	addChild(label);
 	label->setPosition(10, 3);
 	
-	treeContainer = new UITreeContainer("Images/entity_icon.png", L"Layers", 200, 555);
+	treeContainer = new UITreeContainer("Images/entity_icon.png", L"Root", 200, 555);
 	treeContainer->getRootNode()->toggleCollapsed();
 	treeContainer->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
 	treeContainer->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
@@ -1523,6 +1523,8 @@ void PolycodeScreenEditorMain::selectEntity(ScreenEntity *entity) {
 	if(entity->getEntityProp("editor_type") != "root") {
 		entitySheet->entity = entity;
 		entityPropSheet->entity = entity;
+	} else {
+		entitySheet->entity = entity;	
 	}
 
 	if(dynamic_cast<ScreenParticleEmitter*>(entity)) {
