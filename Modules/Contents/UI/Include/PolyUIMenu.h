@@ -27,30 +27,78 @@
 
 namespace Polycode {
 
-
+	/**
+	 * An single selectable entry in an UIMenu
+	 */
 	class _PolyExport UIMenuItem : public UIElement {
 		public:
 			UIMenuItem(String label, String _id, void *data, Number comboWidth, Number comboHeight);
 			~UIMenuItem();
 			
+			/**
+			 * The user-data associated with this entry, as set in UIMenu::addOption()
+			 */
 			void *data;
+
+			/**
+			 * The display text of this entry, as set in UIMenu::addOption()
+			 */
 			String label;
+
+			/**
+			 * The internal ID of this entry, as set in UIMenu::addOption()
+			 *
+			 * Use this instead of label to identify an option, as the label
+			 * may be changed by e.g. translations.
+			 */
 			String _id;
+
+		protected:
 			ScreenLabel *itemLabel;
+			friend class UIMenu;
 	};
 
+	/** 
+	 * A dropdown menu.
+	 *
+	 * Displays a vertical list of text entries that can be clicked.
+	 * When clicked, an UIEvent::OK_EVENT event will be dispatched. 
+	 * You can then retrieve the selected entry with getSelectedItem()
+	 */
 	class _PolyExport UIMenu : public UIElement {
 		public:
+			/**
+			 * Create an empty dropdown menu with the given width.
+			 * 
+			 * Use addOption() to populate the menu.
+			 */
 			UIMenu(Number menuWidth);
 			~UIMenu();
 			
+			/**
+			 * Add a selectable entry to the dropdown.
+			 *
+			 * @param label The text string that will be displayed to the user for this entry.
+			 * @param _id The internal ID of this entry.
+			 * @param data A pointer to arbitrary user-data associated with this menu entry.
+			 *
+			 * @see UIMenuItem
+			 */
 			UIMenuItem *addOption(String label, String _id, void *data = NULL);
+
+			/**
+			 * Returns the currently selected item.
+			 *
+			 * This can be used both for retrieving the currently selected item while the menu
+			 * is open, as well as retrieving the last selected item after an UIEvent::OK_EVENT
+			 * was dispatched.
+			 */
+			UIMenuItem *getSelectedItem();
+
 			void Resize(Number width, Number height);
 
 			void Update();
 			
-			UIMenuItem *getSelectedItem();
-
 			void handleEvent(Event *event);
 			
 		protected:
