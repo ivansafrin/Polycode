@@ -52,6 +52,8 @@ namespace Polycode {
 			UIMenuItem *getSelectedItem();
 
 			void handleEvent(Event *event);
+
+			void fitToScreenVertical();
 			
 		protected:
 		

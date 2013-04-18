@@ -126,7 +126,9 @@ void PolycodeProjectBrowser::handleEvent(Event *event) {
 			contextMenu->addOption("Refresh", "refresh");
 			contextMenu->addOption("Rename", "rename");						
 			contextMenu->addOption("----------------", "");		
-			contextMenu->addOption("Remove", "remove");	
+			contextMenu->addOption("Remove", "remove");
+
+			contextMenu->fitToScreenVertical();
 			
 			contextMenu->addEventListener(this, UIEvent::OK_EVENT);
 											
