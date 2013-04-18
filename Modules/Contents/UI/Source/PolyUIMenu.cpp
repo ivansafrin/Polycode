@@ -133,6 +133,20 @@ UIMenuItem *UIMenu::getSelectedItem() {
 void UIMenu::Update() {
 	ignoreMouse = false;
 }
+
+void UIMenu::fitToScreenVertical() {
+	// Make sure the entity doesn't go past the bottom of the screen.
+	if(dropDownBox->getHeight() < CoreServices::getInstance()->getCore()->getYRes()) {
+		// If the entity is as high as the screen, no point trying to fit it in vertically.
+		Vector2 screenPos = this->getScreenPosition();
+		Number exceedScreenBottom = screenPos.y + dropDownBox->getHeight() - CoreServices::getInstance()->getCore()->getYRes();
+		if(exceedScreenBottom > 0) {
+			this->setPosition(this->getPosition().x, this->getPosition().y - exceedScreenBottom);
+		} else if(screenPos.y < 0) {
+			this->setPosition(this->getPosition().x, 0);
+		}
+	}
+}
 				
 void UIMenu::handleEvent(Event *event) {
 
@@ -257,6 +271,7 @@ UIMenu *UIGlobalMenu::showMenu(Number x, Number y, Number width) {
 		
 	addChild(currentMenu);
 	currentMenu->setPosition(x,y);
+
 	return currentMenu;
 	
 }
