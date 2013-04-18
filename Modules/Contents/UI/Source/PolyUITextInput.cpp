@@ -1157,6 +1157,7 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 				} else {
 					caretPosition = lines[lineOffset].length();
 					clearSelection();
+					updateCaretPosition();					
 				}
 			}
 		} else if (input->getKeyState(KEY_LALT) || input->getKeyState(KEY_RALT)) {
@@ -1169,7 +1170,8 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 					}
 				} else {				
 					caretPosition = caretSkipWordForward(this->lineOffset,caretPosition);
-					clearSelection();					
+					clearSelection();
+					updateCaretPosition();										
 				}
 			}
 		} else {
