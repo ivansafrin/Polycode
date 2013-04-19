@@ -46,6 +46,11 @@ Label *SceneLabel::getLabel() {
 }
 
 void SceneLabel::setText(const String& newText) {
+	
+	if(newText == label->getText() && !label->colorsChanged()) {
+		return;
+	}
+
 	if(texture)
 		CoreServices::getInstance()->getMaterialManager()->deleteTexture(texture);
 		
