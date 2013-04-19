@@ -94,7 +94,41 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 			fixture = body->CreateFixture(&fDef);
 			break;
         }
-        break;
+		case ENTITY_CAPSULE: {
+		
+			Number rectSize = (screenEntity->getHeight()/(worldScale*2.0f) * entityScale.y) - (screenEntity->getWidth()/(worldScale*2.0f * entityScale.y));
+					
+			b2CircleShape Shape;
+			fDef.shape = &Shape;
+			Shape.m_radius = screenEntity->getWidth()/(worldScale*2.0f);			
+			Shape.m_p.y = rectSize;
+			fixture = body->CreateFixture(&fDef);
+			Shape.m_p.y = -rectSize;
+			fixture = body->CreateFixture(&fDef);
+			
+			b2PolygonShape Shape2;
+			fDef.shape = &Shape2;
+			Shape2.SetAsBox(screenEntity->getWidth()/(worldScale*2.0f) * entityScale.x, rectSize);
+			fixture = body->CreateFixture(&fDef);
+			break;						
+		}
+		break;
+		case ENTITY_TRIPLE_CIRCLE: {
+		
+			Number rectSize = (screenEntity->getHeight()/(worldScale*2.0f) * entityScale.y) - (screenEntity->getWidth()/(worldScale*2.0f * entityScale.y));
+					
+			b2CircleShape Shape;
+			fDef.shape = &Shape;
+			Shape.m_radius = screenEntity->getWidth()/(worldScale*2.0f);			
+			Shape.m_p.y = rectSize;
+			fixture = body->CreateFixture(&fDef);
+			Shape.m_p.y = -rectSize;
+			fixture = body->CreateFixture(&fDef);
+			Shape.m_p.y = 0;
+			fixture = body->CreateFixture(&fDef);
+			break;						
+		}
+		break;	
 		case ENTITY_MESH: {
 			b2PolygonShape Shape;
 			fDef.shape = &Shape;

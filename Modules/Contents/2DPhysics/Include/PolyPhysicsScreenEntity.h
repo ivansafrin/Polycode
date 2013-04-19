@@ -129,6 +129,15 @@ namespace Polycode {
 			* Edge phyiscs Entity
 			*/ 
             static const int ENTITY_EDGE = 4;
+			/**
+			* Capsule entity. 
+			*/ 
+            static const int ENTITY_CAPSULE = 5;
+
+			/**
+			* Three vertical circles.
+			*/ 
+            static const int ENTITY_TRIPLE_CIRCLE = 6;
 
 
 			b2Body *body;			
