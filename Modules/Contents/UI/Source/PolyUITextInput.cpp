@@ -1123,9 +1123,7 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 						if(selectionCaretPosition > 0)
 							setSelection(lineOffset, selectionLine, this->caretPosition, selectionCaretPosition-1);
 					} else {
-						if (caretPosition > 0) {
-							setSelection(lineOffset, lineOffset, caretPosition, caretPosition-1);
-						}
+						setSelection(lineOffset, lineOffset, caretPosition, max(caretPosition-1, 0));
 					}
 				} else {
 					int newLineStart = lineOffset;
