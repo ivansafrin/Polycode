@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<PolycodeProject defaultWidth="1280" defaultHeight="720" antiAliasingLevel="0" entryPoint="Scripts/Main.lua" textureFiltering="linear" vSync="true" anisotropyLevel="0" frameRate="60">
+    <backgroundColor red="0.224599" green="0.224599" blue="0.224599" />
+    <polyarray:packedItems>
+        <item type="folder" path="Resources" />
+        <item type="folder" path="Scripts" />
+    </polyarray:packedItems>
+    <polyarray:fonts>
+        <font name="Sniglet" path="Resources/fonts/Sniglet Regular.otf" />
+    </polyarray:fonts>
+</PolycodeProject>

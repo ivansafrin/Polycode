@@ -1,0 +1,7 @@
+<?xml version="1.0" ?>
+<sprite>
+    <image frameWidth="69" frameHeight="32" fileName="Resources/images/enemies/fly.png" />
+    <animations>
+        <animation name="fly" frames="0,1" speed="0.05" />
+    </animations>
+</sprite>
