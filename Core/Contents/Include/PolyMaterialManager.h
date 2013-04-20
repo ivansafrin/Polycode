@@ -90,7 +90,9 @@ namespace Polycode {
 			Shader *getShaderByIndex(unsigned int index);
 		
 			bool premultiplyAlphaOnLoad;
-		
+			bool clampDefault;
+			bool mipmapsDefault;
+			
 		private:
 			std::vector<Texture*> textures;
 			std::vector<Material*> materials;

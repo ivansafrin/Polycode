@@ -175,13 +175,14 @@ void ResourceManager::addResource(Resource *resource) {
 }
 
 void ResourceManager::parseTextures(const String& dirPath, bool recursive, const String& basePath) {
+	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
 	vector<OSFileEntry> resourceDir;
 	resourceDir = OSBasics::parseFolder(dirPath, false);
 	for(int i=0; i < resourceDir.size(); i++) {	
 		if(resourceDir[i].type == OSFileEntry::TYPE_FILE) {
 			if(resourceDir[i].extension == "png") {
 				Logger::log("Adding texture %s\n", resourceDir[i].nameWithoutExtension.c_str());
-				Texture *t = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(resourceDir[i].fullPath);
+				Texture *t = materialManager->createTextureFromFile(resourceDir[i].fullPath, materialManager->clampDefault, materialManager->mipmapsDefault);
 				if(t) {
 					if(basePath == "") {
 						t->setResourceName(resourceDir[i].name);					

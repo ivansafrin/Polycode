@@ -36,6 +36,8 @@ using std::vector;
 
 MaterialManager::MaterialManager() {
 	premultiplyAlphaOnLoad = false;
+	clampDefault = false;
+	mipmapsDefault = true;
 }
 
 MaterialManager::~MaterialManager() {

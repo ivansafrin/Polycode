@@ -78,11 +78,13 @@ void ScreenMesh::setTexture(Texture *texture) {
 }
 
 void ScreenMesh::loadTexture(const String& fileName) {
-	texture = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(fileName, false, false);
+	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
+	texture = materialManager->createTextureFromFile(fileName, materialManager->clampDefault, materialManager->mipmapsDefault);
 }
 
 void ScreenMesh::loadTexture(Image *image) {
-	texture = CoreServices::getInstance()->getMaterialManager()->createTextureFromImage(image, false, false);
+	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
+	texture = materialManager->createTextureFromImage(image, materialManager->clampDefault, materialManager->mipmapsDefault);
 }
 
 void ScreenMesh::clearMaterial() {

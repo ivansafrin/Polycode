@@ -51,11 +51,13 @@ void SceneLabel::setText(const String& newText) {
 		return;
 	}
 
+	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
+	
 	if(texture)
-		CoreServices::getInstance()->getMaterialManager()->deleteTexture(texture);
+		materialManager->deleteTexture(texture);
 		
 	label->setText(newText);	
-	texture = CoreServices::getInstance()->getMaterialManager()->createTextureFromImage(label);
+	texture = materialManager->createTextureFromImage(label, materialManager->clampDefault, materialManager->mipmapsDefault);
 
 	if(material) {
 		localShaderOptions->clearTexture("diffuse");
