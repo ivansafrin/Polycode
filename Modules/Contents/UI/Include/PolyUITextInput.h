@@ -89,66 +89,222 @@ namespace Polycode {
 			unsigned int caretEnd;							
 	};
 
+	/**
+	 * A text input element. Can be single- or multiline.
+	 */
 	class _PolyExport UITextInput : public UIElement {
 		public:
+			/**
+			 * Create a new text input element.
+			 * @param multiLine Whether the text field should consist of a single line,
+			 *                  or of a multiline text editor with vertical scroll bar.
+			 * @param width The width of the element.
+			 * @param height The height of the element.
+			 */
 			UITextInput(bool multiLine, Number width, Number height);
 			~UITextInput();
 		
 			void handleEvent(Event *event);
 			void Update();
 			
+			/**
+			 * Set the text contents of the input.
+			 *
+			 * If the input is single-line, insert the complete text into
+			 * the line, without taking linebreaks into account.
+			 *
+			 * If the input is multi-line, each line is inserted separately
+			 * into the text field
+			 *
+			 * @param text The new text contents.
+			 */
 			void setText(String text);
+
+			/**
+			 * Returns the text contents of this element.
+			 *
+			 * For single-line, returns the contents of the first line.
+			 * For multi-line, returns a string containing each line in
+			 * the text field, separated by '\n'.
+			 */
 			String getText();
 			void onLoseFocus();
 		
-			int insertLine(bool after);
-		
+			/**
+			 * Insert an empty line after the currently selected line.
+			 *
+			 * @param after Unused. This must be true.
+			 */
+			int insertLine(bool after = true);
+
 			void changedText();
 			void applySyntaxFormatting();
 			
 			void onKeyDown(PolyKEY key, wchar_t charCode);
 		
+			/**
+			 * Clear the current selection.
+			 */
 			void clearSelection();
+
+			/**
+			 * Set the current selection.
+			 *
+			 * If (lineStart, colStart) is further "right" or "down" than (lineEnd, colEnd),
+			 * the two will automatically be swapped. It's thus enough to specify the two "edges"
+			 * of the selection, without knowing which comes first.
+			 *
+			 * @param lineStart The line position of one edge of the selection.
+			 * @param colStart The column position of one edge of the selection.
+			 * @param lineEnd The line position of the other edge of the selection.
+			 * @param colEnd The column position of the other edge of the selection.
+			 */
 			void setSelection(int lineStart, int lineEnd, int colStart, int colEnd);
-				
-			void deleteSelection();		
+
+			/**
+			 * Remove the currently selected text from the text contents.
+			 */
+			void deleteSelection();
+
+			/**
+			 * Select the entire text contents.
+			 */
 			void selectAll();
 		
+			/**
+			 * Reset the text contents and selection/caret to
+			 * the last undo state.
+			 */
 			void Undo();
+
+			/**
+			 * Reset the text contents and selection/caret to
+			 * the next undo state.
+			 */
 			void Redo();
+
+			/**
+			 * Remove the current selection and copy it to the clipboard.
+			 */
 			void Cut();
+
+			/**
+			 * Copy the current selection to the clipboard.
+			 */
 			void Copy();
+
+			/**
+			 * Replace the current selection with the contents of the clipboard.
+			 */
 			void Paste();
 			
+			/**
+			 * Toggle line number display for each line.
+			 * @param val true to enable, false to disable.
+			 */
 			void enableLineNumbers(bool val);
 			
+			/**
+			 * Set the color of the text field background.
+			 */
 			void setBackgroundColor(Color color);
+
+			/**
+			 * Set the background color for selected text.
+			 */
 			void setSelectionColor(Color color);
+
+			/**
+			 * Set the color of the cursor.
+			 */
 			void setCursorColor(Color color);
+
+			/**
+			 * Set the foreground color of displayed text.
+			 */
 			void setTextColor(Color color);
+
+			/**
+			 * Set the foreground color of line numbers.
+			 */
 			void setLineNumberColor(Color color);
 			
 			void checkBufferLines();
 			
+			/**
+			 * Find and replace in the text contents.
+			 *
+			 * @param what The string to find.
+			 * @param withWhat The string to replace each occurrence with.
+			 */
 			void replaceAll(String what, String withWhat);
 			
+			/**
+			 * Find and optionally replace a string.
+			 *
+			 * Sets the current selection to the first result. All results will be stored as instances of FindMatch
+			 * in this->findMatches, and can later be retrieved with findNext(), findPrevious() and findCurrent().
+			 *
+			 * @param stringToFind The string to find occurrences of.
+			 * @param replace Whether to replace occurrences with something.
+			 * @param replaceString The string to replace occurrences with, only used if replace=true
+			 */
 			void findString(String stringToFind, bool replace=false, String replaceString="");
+
+			/**
+			 * Set the current find result to the next one in the result list and select it
+			 * in the text field.
+			 */
 			void findNext();
+
+			/**
+			 * Set the current find result to the previous one in the result list and select it
+			 * in the text field.
+			 */
 			void findPrevious();
+
+			/**
+			 * Set the selection to the current result in the result list.
+			 */
 			void findCurrent();
-						
+			
 			void showLine(unsigned int lineNumber, bool top);
 
-			void setSyntaxHighlighter(UITextInputSyntaxHighlighter *syntaxHighliter);
+			/**
+			 * Set the syntax highlighter to use for formatting text.
+			 *
+			 * @param syntaxHighlighter The syntax highlighter instance to use.
+			 */
+			void setSyntaxHighlighter(UITextInputSyntaxHighlighter *syntaxHighlighter);
 					
 			bool isNumberOrCharacter(wchar_t charCode);
 			void Resize(Number width, Number height);
 			
+			/**
+			 * Toggles whether this input accepts only numbers.
+			 *
+			 * @param val true to only accept numbers, false otherwise.
+			 */
 			void setNumberOnly(bool val);
 		
+			/**
+			 * Return the contents of a line.
+			 *
+			 * @param index The index of the line to get the contents of.
+			 *              First line has index 0.
+			 */
 			String getLineText(unsigned int index);
-		
+			
+			/**
+			 * Return the currently selected text.
+			 */
 			String getSelectionText();
+
+			/**
+			 * Replace the current selection with the given text.
+			 *
+			 * @param text The string to insert.
+			 */
 			void insertText(String text);
 			
 			UIScrollContainer *getScrollContainer();
