@@ -92,7 +92,8 @@ void PhysicsScreen::BeginContact (b2Contact *contact) {
 
     newEvent->contact = contact;
     
-	dispatchEvent(newEvent, PhysicsScreenEvent::EVENT_NEW_SHAPE_COLLISION);
+	newEvent->setEventCode(PhysicsScreenEvent::EVENT_NEW_SHAPE_COLLISION);
+	eventsToDispatch.push_back(newEvent);
 	
 	contacts.push_back(contact);
 }
@@ -140,7 +141,9 @@ void PhysicsScreen::PostSolve(b2Contact* contact, const b2ContactImpulse* impuls
 			newEvent->frictionStrength = impulse->tangentImpulses[i];		
 	}
 
-	dispatchEvent(newEvent, PhysicsScreenEvent::EVENT_SOLVE_SHAPE_COLLISION);
+	newEvent->setEventCode(PhysicsScreenEvent::EVENT_SOLVE_SHAPE_COLLISION);
+	eventsToDispatch.push_back(newEvent);
+
 }
 
 void PhysicsScreen::EndContact (b2Contact *contact) {
@@ -155,8 +158,9 @@ void PhysicsScreen::EndContact (b2Contact *contact) {
 			break;
 		}
 	}
-	
-	dispatchEvent(newEvent, PhysicsScreenEvent::EVENT_END_SHAPE_COLLISION);
+	newEvent->setEventCode(PhysicsScreenEvent::EVENT_END_SHAPE_COLLISION);
+	eventsToDispatch.push_back(newEvent);
+
 }
 
 bool PhysicsScreen::isEntityColliding(ScreenEntity *ent1) {
@@ -478,18 +482,26 @@ PhysicsScreenEntity *PhysicsScreen::trackPhysicsChild(ScreenEntity *newEntity, i
 	return newPhysicsEntity;
 }
 
-void PhysicsScreen::removePhysicsChild(ScreenEntity *entityToRemove) {
-	PhysicsScreenEntity *physicsEntityToRemove = getPhysicsByScreenEntity(entityToRemove);
+void PhysicsScreen::stopTrackingChild(ScreenEntity *entity) {
+	PhysicsScreenEntity *physicsEntityToRemove = getPhysicsByScreenEntity(entity);
 	if(!physicsEntityToRemove) {
 		return;
 	}
+	
 	world->DestroyBody(physicsEntityToRemove->body);
-    physicsEntityToRemove->body = NULL;
+	physicsEntityToRemove->body = NULL;	
+				
 	for(int i=0;i<physicsChildren.size();i++) {
 		if(physicsChildren[i] == physicsEntityToRemove) {
 			physicsChildren.erase(physicsChildren.begin()+i);
 		}
 	}
+	
+	delete physicsEntityToRemove;
+}
+
+void PhysicsScreen::removePhysicsChild(ScreenEntity *entityToRemove) {
+	stopTrackingChild(entityToRemove);
 	Screen::removeChild(entityToRemove);	
 }
 
@@ -547,6 +559,12 @@ void PhysicsScreen::Update() {
 		}
 		world->Step(timeStep, velocityIterations,positionIterations);
 	}
+	
+	for(int i=0; i < eventsToDispatch.size(); i++) {
+		dispatchEvent(eventsToDispatch[i], eventsToDispatch[i]->getEventCode());
+	}
+	eventsToDispatch.clear();
+	
 	cyclesLeftOver = elapsed;
 	Screen::Update();
 }

@@ -200,6 +200,13 @@ public:
 	*/
 	PhysicsScreenEntity *trackPhysicsChild(ScreenEntity *newEntity, int entType, bool isStatic, Number friction=0.1, Number density=1, Number restitution = 0, bool isSensor = false, bool fixedRotation = false, int groupIndex = 0);
     
+	
+	/**
+	* Stops physics tracking for this entity but does not remove from screen.
+	* @param entity Entity to stop tracking for.
+	*/
+	void stopTrackingChild(ScreenEntity *entity);
+		
 	/**
 	* Removes a physics child from the screen.
 	* @param entityToRemove Entity to remove from the screen.
@@ -401,8 +408,9 @@ protected:
 	
     Number worldScale;
     
-    std::vector <PhysicsScreenEntity*> physicsChildren;		
-	
+    std::vector <PhysicsScreenEntity*> physicsChildren;
+	std::vector<PhysicsScreenEvent*> eventsToDispatch;
+			
 	void init(Number worldScale, Number physicsTimeStep, int velIterations, int posIterations, Vector2 physicsGravity);
 
 	std::vector<b2Contact*> contacts;

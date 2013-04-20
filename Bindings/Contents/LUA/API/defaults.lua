@@ -89,6 +89,19 @@ function delete(c)
 	c:__delete()
 end
 
+__safe_delete_list = {}
+
+function __process_safe_delete()
+	for i=1,count(__safe_delete_list) do
+		__safe_delete_list[i]:__delete()
+	end
+	__safe_delete_list = {}
+end
+
+function safe_delete(c)
+	__safe_delete_list[count(__safe_delete_list)+1] = c
+end
+
 function onKeyDown(key)
 end
 

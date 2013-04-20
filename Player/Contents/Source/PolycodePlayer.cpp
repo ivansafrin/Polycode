@@ -891,9 +891,12 @@ bool PolycodePlayer::Update() {
 			doCodeInject = false;			
 			report(L, luaL_loadstring(L, injectCodeString.c_str()));
 			lua_pcall(L, 0,0,errH);		
-		}
-	
+		}	
 		if(!crashed) {
+		
+			lua_getfield(L, LUA_GLOBALSINDEX, "__process_safe_delete");
+			lua_pcall(L, 0,0,errH);	
+		
 			lua_getfield(L, LUA_GLOBALSINDEX, "Update");
 			lua_pushnumber(L, core->getElapsed());
 			lua_pcall(L, 1,0,errH);

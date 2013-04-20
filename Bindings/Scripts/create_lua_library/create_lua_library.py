@@ -122,7 +122,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 
 	# list of classes that don't get the garbage collection in their meta table
 
-	disable_gc = ["Entity", "ScreenEntity", "ScreenShape", "ScreenMesh", "ScreenLabel", "SceneLabel", "SceneMesh", "Screen", "Scene", "Texture", "Image", "Camera", "ScreenParticleEmitter", "SceneParticleEmitter", "Mesh", "Vertex", "Polygon", "Polycode::Polygon", "Material", "ScenePrimitive", "SceneLine", "SceneLight", "SceneSound", "ScreenImage", "SceneEntity"]
+	disable_gc = ["Entity", "ScreenEntity", "ScreenShape", "ScreenMesh", "ScreenLabel", "SceneLabel", "SceneMesh", "Screen", "Scene", "Texture", "Image", "Camera", "ScreenParticleEmitter", "SceneParticleEmitter", "Mesh", "Vertex", "Polygon", "Polycode::Polygon", "Material", "ScenePrimitive", "SceneLine", "SceneLight", "SceneSound", "ScreenImage", "SceneEntity", "ScreenEntityInstance"]
 
 	# Special case: If we are building the Polycode library itself, inject the LuaEventHandler class.
 	# Note: so that event callbacks can work, any object inheriting from EventHandler will secretly
