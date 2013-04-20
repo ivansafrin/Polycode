@@ -190,6 +190,9 @@ class _PolyExport ScreenEntity : public Entity {
 		bool hasFocus;
 		
 		
+		ScreenEntity *getScreenEntityById(String id, bool recursive);
+		std::vector<ScreenEntity*> getScreenEntitiesByTag(String tag, bool recursive);
+		
 		/**
 		* If set to true, will block mouse events for underlaying entities.
 		* (NOTE: processInputEvents must be set to true)

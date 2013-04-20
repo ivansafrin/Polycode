@@ -722,3 +722,17 @@ void ScreenEntity::adjustMatrixForChildren() {
 		}
 	}
 }
+
+ScreenEntity *ScreenEntity::getScreenEntityById(String id, bool recursive) {
+	return (ScreenEntity*)getEntityById(id, recursive);
+}
+
+std::vector<ScreenEntity*> ScreenEntity::getScreenEntitiesByTag(String tag, bool recursive) {
+	std::vector<Entity*> entities = getEntitiesByTag(tag, recursive);
+	std::vector<ScreenEntity*> retEntities;
+	for(int i=0; i < entities.size(); i++) {
+		retEntities.push_back((ScreenEntity*)entities[i]);
+	}
+	return retEntities;
+}
+
