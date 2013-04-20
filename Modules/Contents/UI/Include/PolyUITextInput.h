@@ -131,7 +131,8 @@ namespace Polycode {
 			void onLoseFocus();
 		
 			/**
-			 * Insert an empty line after the currently selected line.
+			 * Insert a linebreak after the cursor and move
+			 * the cursor to the new line.
 			 *
 			 * @param after Unused. This must be true.
 			 */
