@@ -28,6 +28,7 @@
 	#include <dirent.h>
 	#include <sys/types.h>
 	#include <sys/stat.h>
+	#include <unistd.h>
 #endif
 
 #include <vector>
@@ -256,6 +257,23 @@ vector<OSFileEntry> OSBasics::parsePhysFSFolder(const String& pathString, bool s
 	}
 	PHYSFS_freeList(rc);	
 	return returnVector;
+}
+
+bool OSBasics::fileExists(const Polycode::String& pathString) {
+	if(PHYSFS_exists(pathString.c_str())) {
+		return true;
+	}
+
+#ifdef _WINDOWS
+	WCHAR tmp[4096];
+	memset(tmp, 0, sizeof(WCHAR)*4096);
+	ctow(tmp, pathString.c_str());
+
+	DWORD dwAttrib = GetFileAttributes(tmp);
+    return (dwAttrib != 0xFFFFFFFF);
+#else
+	return (access(pathString.c_str(), F_OK) != -1);
+#endif
 }
 
 vector<OSFileEntry> OSBasics::parseFolder(const String& pathString, bool showHidden) {
