@@ -35,6 +35,7 @@
 *.xcuserdata
 *.xcuserdatad
 *.orig
+*.tag
 UserInterfaceState.*
 Player/Build/Mac OS X/Polycode Player.xcodeproj/project.xcworkspace/xcuserdata/ivansafrin.xcuserdatad/UserInterfaceState.xcuserstate
 
