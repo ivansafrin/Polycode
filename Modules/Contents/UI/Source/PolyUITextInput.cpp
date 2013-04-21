@@ -512,13 +512,12 @@ int UITextInput::insertLine(bool after) {
 		}		
 		
 		vector<String>::iterator it;
-		it = lines.begin();
-		
-		for(int i=0; i < lineOffset+1; i++) {
-			it++;
-		}
-		
 		lineOffset = lineOffset + 1;
+		if(lineOffset >= lines.size()) {
+			it = lines.end();
+		} else {
+			it = lines.begin() + lineOffset;
+		}
 		lines.insert(it,newText);
 		
 		renumberLines();
