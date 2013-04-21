@@ -856,7 +856,7 @@ void UITextInput::setCaretToMouse(Number x, Number y) {
 		
 	caretPosition = newCaretPosition;	
 		
-	updateCaretPosition();	
+	updateCaretPosition();
 }
 
 void UITextInput::removeLines(unsigned int startIndex, unsigned int endIndex) {
@@ -1039,13 +1039,24 @@ void UITextInput::Cut() {
 	Copy();
 	if(hasSelection) {
 		deleteSelection();
-	}	
+	} else if (getLineText(lineOffset) != "") {
+        if (!multiLine) { setText(""); }
+        else {
+            removeLines(lineOffset, lineOffset+1);
+            caretPosition = 0;
+            updateCaretPosition();
+        }
+    }
 }
 
 void UITextInput::Copy() {
 	if(hasSelection) {
 		CoreServices::getInstance()->getCore()->copyStringToClipboard(getSelectionText());
-	}
+	} else {
+        if (getLineText(lineOffset) != "") {
+            CoreServices::getInstance()->getCore()->copyStringToClipboard(getLineText(lineOffset));
+        }
+    }
 }
 
 void UITextInput::Paste() {
