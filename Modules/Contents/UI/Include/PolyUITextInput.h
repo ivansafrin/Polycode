@@ -154,6 +154,10 @@ namespace Polycode {
 			UIScrollContainer *getScrollContainer();
 			
 			bool useStrongHinting;
+        
+            void shiftText(bool left=false);
+            void convertIndentToTabs();
+            void convertIndentToSpaces();
 		
 		protected:
 		
@@ -263,6 +267,9 @@ namespace Polycode {
 			vector<ScreenLabel*> numberLines;
 			
 			Core *core;
+        
+			enum indentTypes { INDENT_SPACE, INDENT_TAB } indentType;
+			int indentSpacing;
 			
 	};
 }
