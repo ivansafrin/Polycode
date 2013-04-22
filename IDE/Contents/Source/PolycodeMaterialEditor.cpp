@@ -26,6 +26,8 @@ extern UIColorPicker *globalColorPicker;
 extern UIGlobalMenu *globalMenu;
 
 MaterialEditorPane::MaterialEditorPane() : UIElement() {	
+
+	changingMaterial = false;
 	
 	headerBg = new ScreenShape(ScreenShape::SHAPE_RECT,10,10);
 	addChild(headerBg);
@@ -61,13 +63,16 @@ MaterialEditorPane::MaterialEditorPane() : UIElement() {
 	
 	shaderTextureSheet = new ShaderTexturesSheet();
 	propList->addPropSheet(shaderTextureSheet);			
+	shaderTextureSheet->addEventListener(this, Event::CHANGE_EVENT);
 	
 	vertexOptionsSheet = new ShaderOptionsSheet("VERTEX SHADER OPTIONS", "vertex_options", false);
 	propList->addPropSheet(vertexOptionsSheet);
-
+	vertexOptionsSheet->addEventListener(this, Event::CHANGE_EVENT);
+	
 	fragmentOptionsSheet = new ShaderOptionsSheet("FRAGMENT SHADER OPTIONS", "fragment_options", true);
 	propList->addPropSheet(fragmentOptionsSheet);
-	
+	fragmentOptionsSheet->addEventListener(this, Event::CHANGE_EVENT);
+		
 	propList->updateProps();
 						
 	// TODO: Move the preview widget to its own class
@@ -195,11 +200,21 @@ void MaterialEditorPane::showPrimitive(unsigned int index) {
 
 void MaterialEditorPane::handleEvent(Event *event) {
 
-	if(event->getDispatcher() == blendModeProp) {
+	if(event->getDispatcher() == shaderTextureSheet || event->getDispatcher() == vertexOptionsSheet || event->getDispatcher() == fragmentOptionsSheet) {
+		if(!changingMaterial) {
+			dispatchEvent(new Event(), Event::CHANGE_EVENT);
+		}		
+		
+	} else if(event->getDispatcher() == blendModeProp) {
 		currentMaterial->blendingMode = blendModeProp->get();
+		if(!changingMaterial) {
+			dispatchEvent(new Event(), Event::CHANGE_EVENT);
+		}
 	} else if(event->getDispatcher() == nameProp) {
 		currentMaterial->setName(nameProp->get());
-		dispatchEvent(new Event(), Event::CHANGE_EVENT);
+		if(!changingMaterial) {
+			dispatchEvent(new Event(), Event::CHANGE_EVENT);
+		}
 	} else if(event->getDispatcher() == shaderProp) {
 		Shader *selectedShader = (Shader*)shaderProp->comboEntry->getSelectedItem()->data;
 		if(selectedShader) {			
@@ -216,6 +231,10 @@ void MaterialEditorPane::handleEvent(Event *event) {
 			vertexOptionsSheet->setShader(selectedShader, currentMaterial);
 			fragmentOptionsSheet->setShader(selectedShader, currentMaterial);						
 		}
+		
+		if(!changingMaterial) {
+			dispatchEvent(new Event(), Event::CHANGE_EVENT);
+		}		
 	}
 	
 	for(int i=0; i < shapeSwitches.size(); i++) {
@@ -228,6 +247,7 @@ void MaterialEditorPane::handleEvent(Event *event) {
 }
 
 void MaterialEditorPane::setMaterial(Material *material) {
+	changingMaterial = true;
 	currentMaterial = material;
 	previewPrimitive->setMaterial(material);		
 	
@@ -253,6 +273,7 @@ void MaterialEditorPane::setMaterial(Material *material) {
 	nameProp->set(currentMaterial->getName());
 	
 	enabled = true;
+	changingMaterial = false;
 					
 }
 
@@ -365,6 +386,8 @@ bool PolycodeMaterialEditor::openFile(OSFileEntry filePath) {
 	
 	materialBrowser->newMaterialButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
+	mainWindow->materialPane->addEventListener(this, Event::CHANGE_EVENT);
+	
 	PolycodeEditor::openFile(filePath);
 	return true;
 }
@@ -459,7 +482,7 @@ void PolycodeMaterialEditor::saveFile() {
 	}
 	
 	fileData.saveToXML(filePath);
-
+	setHasChanges(false);
 }
 
 void PolycodeMaterialEditor::handleEvent(Event *event) {
@@ -468,12 +491,14 @@ void PolycodeMaterialEditor::handleEvent(Event *event) {
 		if(selectedMaterialNode && mainWindow->materialPane->currentMaterial) {
 			selectedMaterialNode->setLabelText(mainWindow->materialPane->currentMaterial->getName());
 		}
+		setHasChanges(true);
 	}
 		
 	if(event->getDispatcher() == materialBrowser->newMaterialButton && event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {
 		Material *newMaterial = CoreServices::getInstance()->getMaterialManager()->createMaterial("Untitled", "DefaultShader");
 			materialBrowser->addMaterial(newMaterial)->setSelected();
 			materials.push_back(newMaterial);
+			setHasChanges(true);			
 	}	
 		
 

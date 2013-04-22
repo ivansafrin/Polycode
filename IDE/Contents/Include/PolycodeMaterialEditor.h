@@ -82,6 +82,8 @@ class MaterialEditorPane : public UIElement {
 		Material *currentMaterial;			
 	protected:
 	
+		bool changingMaterial;
+	
 		ScreenShape *headerBg;			
 		ScenePrimitive *previewPrimitive;
 		

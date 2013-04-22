@@ -1069,6 +1069,7 @@ void ShaderOptionsSheet::handleEvent(Event *event) {
 					(*(Color*)binding->getLocalParamByName(props[i]->label->getText())->data) = ((ColorProp*)props[i])->get();
 				
 				}
+				dispatchEvent(new Event(), Event::CHANGE_EVENT);				
 				return;
 			}
 		}
@@ -1107,7 +1108,7 @@ void ShaderOptionsSheet::setOptionsFromParams(std::vector<ProgramParam> &params)
 						
 						Number numberValue = (*(Number*)binding->getLocalParamByName(params[i].name)->data);
 						sliderProp->set(numberValue);
-						propHeight += 30;						
+						propHeight += 30;
 					}
 					break;					
 					case ProgramParam::PARAM_Color:
@@ -1120,7 +1121,7 @@ void ShaderOptionsSheet::setOptionsFromParams(std::vector<ProgramParam> &params)
 						Color colorValue = (*(Color*)binding->getLocalParamByName(params[i].name)->data);
 						colorProp->set(colorValue);
 						
-						propHeight += 40;						
+						propHeight += 40;												
 					}
 					break;
 					
@@ -1166,6 +1167,7 @@ void ShaderTexturesSheet::handleEvent(Event *event) {
 			if(event->getDispatcher() == textureProps[i]) {
 				binding->clearTexture(textureProps[i]->label->getText());
 				binding->addTexture(textureProps[i]->label->getText(), textureProps[i]->get());
+				dispatchEvent(new Event(), Event::CHANGE_EVENT);
 			}
 		}	
 	}
