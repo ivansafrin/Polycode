@@ -69,8 +69,14 @@ class PolycodeSyntaxHighlighter : public UITextInputSyntaxHighlighter {
 			
 		std::vector<SyntaxHighlightToken> parseText(String text);		
 		std::vector<SyntaxHighlightToken> parseLua(String text);	
-		
+		std::vector<SyntaxHighlightToken> parseGLSL(String text);
+			
+		static const int MODE_LUA = 0;
+		static const int MODE_GLSL = 1;
+						
 	protected:
+	
+		int mode;
 	
 		std::vector<char> separators;
 		std::vector<String> keywords;		
