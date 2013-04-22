@@ -770,8 +770,8 @@ void PolycodeMaterialEditor::handleEvent(Event *event) {
 		if(event->getEventType() == "" && event->getEventCode() == Event::CHANGE_EVENT) {
 			if(materialBrowser->selectedData)  {
 				if(materialBrowser->selectedData->material) {
+					selectedMaterialNode = materialBrowser->selectedNode;				
 					mainWindow->materialPane->setMaterial(materialBrowser->selectedData->material);
-					selectedMaterialNode = materialBrowser->selectedNode;
 				}
 			}			
 		}
