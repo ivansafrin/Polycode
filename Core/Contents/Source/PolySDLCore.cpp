@@ -261,14 +261,13 @@ bool SDLCore::Update() {
 					running = false;
 				break;
 				case SDL_VIDEORESIZE:
-	if(resizableWindow) {
-		unsetenv("SDL_VIDEO_CENTERED");
-	} else {
-		setenv("SDL_VIDEO_CENTERED", "1", 1);
-	}
+					if(resizableWindow) {
+						unsetenv("SDL_VIDEO_CENTERED");
+					} else {
+						setenv("SDL_VIDEO_CENTERED", "1", 1);
+					}
 					this->xRes = event.resize.w;
 					this->yRes = event.resize.h;
-					SDL_SetVideoMode(xRes, yRes, 0, flags);
 					renderer->Resize(xRes, yRes);	
 					dispatchEvent(new Event(), EVENT_CORE_RESIZE);	
 				break;
