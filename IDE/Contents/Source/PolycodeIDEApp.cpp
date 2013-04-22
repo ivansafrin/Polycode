@@ -228,15 +228,16 @@ void PolycodeIDEApp::refreshProject() {
 	}
 }
 
-void PolycodeIDEApp::removeEditor(PolycodeEditor *editor) {
+bool PolycodeIDEApp::removeEditor(PolycodeEditor *editor) {
 	if(!editor)
-		return;
+		return false;
 		
 	if(editor->hasChanges()) {
 		OSFileEntry entry(editor->getFilePath(), OSFileEntry::TYPE_FILE);	
 		frame->yesNoCancelPopup->setCaption("The file \""+entry.name+"\" has unsaved changes. Save before closing?");
 		frame->yesNoCancelPopup->action = "closeFile";
-		frame->showModal(frame->yesNoCancelPopup);		
+		frame->showModal(frame->yesNoCancelPopup);
+		return true;
 	} else {	
 		frame->removeEditor(editor);
 		editorManager->destroyEditor(editor);
@@ -256,7 +257,23 @@ void PolycodeIDEApp::closeFile() {
 
 void PolycodeIDEApp::closeProject() {
 	if(projectManager->getActiveProject()) {
-		frame->getProjectBrowser()->removeProject(projectManager->getActiveProject());
+		
+		bool hasEditors;		
+		do {
+			hasEditors = false;
+			for(int i=0; i < editorManager->openEditors.size(); i++) {
+				if(editorManager->openEditors[i]->parentProject == projectManager->getActiveProject()) {
+					if(removeEditor(editorManager->openEditors[i])) {
+						
+						return;
+					}
+					hasEditors = true;
+					break;
+				}
+			}
+		} while(hasEditors);
+		
+		frame->getProjectBrowser()->removeProject(projectManager->getActiveProject());		
 		projectManager->removeProject(projectManager->getActiveProject());
 	}
 }
