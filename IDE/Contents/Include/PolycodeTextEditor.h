@@ -105,6 +105,12 @@ protected:
 
 class PolycodeTextEditorFactory : public PolycodeEditorFactory {
 public:
-	PolycodeTextEditorFactory() : PolycodeEditorFactory() { extensions.push_back("lua"); extensions.push_back("txt"); extensions.push_back("xml");}
+	PolycodeTextEditorFactory() : PolycodeEditorFactory() {
+		extensions.push_back("lua");
+		extensions.push_back("txt");
+		extensions.push_back("xml");
+		extensions.push_back("vert");
+		extensions.push_back("frag");				
+	}
 	PolycodeEditor *createEditor() { return new PolycodeTextEditor(); }
 };
