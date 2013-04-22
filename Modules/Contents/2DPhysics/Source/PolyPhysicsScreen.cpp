@@ -558,13 +558,12 @@ void PhysicsScreen::Update() {
 			physicsChildren[i]->Update();
 		}
 		world->Step(timeStep, velocityIterations,positionIterations);
+		
+		for(int i=0; i < eventsToDispatch.size(); i++) {
+			dispatchEvent(eventsToDispatch[i], eventsToDispatch[i]->getEventCode());
+		}
+		eventsToDispatch.clear();
 	}
-	
-	for(int i=0; i < eventsToDispatch.size(); i++) {
-		dispatchEvent(eventsToDispatch[i], eventsToDispatch[i]->getEventCode());
-	}
-	eventsToDispatch.clear();
-	
 	cyclesLeftOver = elapsed;
 	Screen::Update();
 }
