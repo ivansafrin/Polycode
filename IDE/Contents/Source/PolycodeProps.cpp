@@ -672,7 +672,13 @@ TextureProp::TextureProp(String caption) : PropProp(caption, "Texture"){
 	propContents->addChild(changeButton);
 	changeButton->setPosition(60, 5);
 	changeButton->addEventListener(this, UIEvent::CLICK_EVENT);
-	setHeight(60);
+	
+	textureLabel = new ScreenLabel("", 12, "sans");
+	propContents->addChild(textureLabel);
+	textureLabel->setPosition(60, 32);
+	textureLabel->color.a = 0.4;
+		
+	setHeight(60);	
 }
 
 TextureProp::~TextureProp() {
@@ -684,8 +690,11 @@ void TextureProp::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == globalFrame->assetBrowser && event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {
 		String texturePath = globalFrame->assetBrowser->getSelectedAssetPath();
-		
+				
 		previewShape->loadTexture(texturePath);
+		
+		OSFileEntry entry = OSFileEntry(texturePath, OSFileEntry::TYPE_FILE);		
+		textureLabel->setText(entry.name);		
 		
 		globalFrame->assetBrowser->removeAllHandlersForListener(this);
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
@@ -705,6 +714,10 @@ void TextureProp::handleEvent(Event *event) {
 
 void TextureProp::set(Texture *texture) {
 	previewShape->setTexture(texture);
+	
+	OSFileEntry entry = OSFileEntry(texture->getResourcePath(), OSFileEntry::TYPE_FILE);		
+	textureLabel->setText(entry.name);		
+	
 }
 
 Texture* TextureProp::get() {

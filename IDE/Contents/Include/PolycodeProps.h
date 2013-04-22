@@ -190,6 +190,7 @@ class TextureProp : public PropProp {
 				
 		ScreenShape *previewShape;
 		UIButton *changeButton;
+		ScreenLabel *textureLabel;
 };
 
 class ScreenSpriteProp : public PropProp {
