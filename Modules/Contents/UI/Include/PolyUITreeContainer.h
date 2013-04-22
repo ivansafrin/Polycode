@@ -39,6 +39,13 @@ namespace Polycode {
 		
 		UITree *getRootNode();
 		ScreenEntity *scrollChild;
+		
+		void onKeyDown(PolyKEY key, wchar_t charCode);
+		void onGainFocus();
+		
+	protected:
+		bool keyNavigable;
+		
 	private:
 		
 		UIScrollContainer *mainContainer;
@@ -46,6 +53,9 @@ namespace Polycode {
 		
 		UITree *rootNode;
 		UIBox *bgBox;
+		
+		UITree *findLastOpenNode(UITree *tree);
+		UITree *findNextParentSibling(UITree *tree);
 	};
 
 }
