@@ -25,12 +25,56 @@
 extern UIColorPicker *globalColorPicker;
 extern UIGlobalMenu *globalMenu;
 
-MaterialEditorPane::MaterialEditorPane() : UIWindow("Material", 670, 250) {
+MaterialEditorPane::MaterialEditorPane() : UIElement() {	
+	
+	headerBg = new ScreenShape(ScreenShape::SHAPE_RECT,10,10);
+	addChild(headerBg);
+	headerBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));	
+	
+	propList = new PropList("MATERIAL EDITOR");
+	addChild(propList);
+	propList->setPosition(0, 0);
 
+	PropSheet *baseProps = new PropSheet("MATERIAL SETTINGS", "");
+	propList->addPropSheet(baseProps);
+	
+	nameProp = new StringProp("Name");
+	baseProps->addProp(nameProp);	
+	nameProp->addEventListener(this, Event::CHANGE_EVENT);
+		
+	shaderProp = new ComboProp("Shader");
+	baseProps->addProp(shaderProp);
+	shaderProp->addEventListener(this, Event::CHANGE_EVENT);
+	
+	blendModeProp = new ComboProp("Blend mode");
+	baseProps->addProp(blendModeProp);
+	blendModeProp->addEventListener(this, Event::CHANGE_EVENT);
+		
+	blendModeProp->comboEntry->addComboItem("Normal");
+	blendModeProp->comboEntry->addComboItem("Lighten");
+	blendModeProp->comboEntry->addComboItem("Color");
+	blendModeProp->comboEntry->addComboItem("Premultiplied");
+	blendModeProp->comboEntry->addComboItem("Multiply");	
+	
+	baseProps->propHeight = 130;	
+	
+	shaderTextureSheet = new ShaderTexturesSheet();
+	propList->addPropSheet(shaderTextureSheet);			
+	
+	vertexOptionsSheet = new ShaderOptionsSheet("VERTEX SHADER OPTIONS", "vertex_options", false);
+	propList->addPropSheet(vertexOptionsSheet);
+
+	fragmentOptionsSheet = new ShaderOptionsSheet("FRAGMENT SHADER OPTIONS", "fragment_options", true);
+	propList->addPropSheet(fragmentOptionsSheet);
+	
+	propList->updateProps();
+						
+	// TODO: Move the preview widget to its own class
 	
 	previewScene = new Scene(true);	
 	
-	renderTexture = new SceneRenderTexture(previewScene, previewScene->getDefaultCamera(), 256, 256);
+	renderTexture = new SceneRenderTexture(previewScene, previewScene->getDefaultCamera(), 512, 512);
 	
 	ScenePrimitive *previewBg = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 15.0, 15.0, 15.0);
 	previewBg->Yaw(45.0);
@@ -77,98 +121,27 @@ MaterialEditorPane::MaterialEditorPane() : UIWindow("Material", 670, 250) {
 	previewScene->getDefaultCamera()->setPosition(0,7,9);
 	previewScene->getDefaultCamera()->lookAt(Vector3());
 	
-	previewShape = new ScreenShape(ScreenShape::SHAPE_RECT, 128, 128);
+	previewBase = new ScreenEntity();
+	previewBase->processInputEvents = true;
+	previewBase->setPosition(400, 0);
+	addChild(previewBase);
+	
+	previewShape = new ScreenShape(ScreenShape::SHAPE_RECT, 256, 256);
 	previewShape->setPositionMode(ScreenEntity::POSITION_TOPLEFT);	
 	previewShape->setTexture(renderTexture->getTargetTexture());
 	previewShape->setPosition(20,40);
 	previewShape->strokeEnabled = true;
 	previewShape->strokeColor = Color(1.0, 1.0, 1.0, 0.2);
 	previewShape->setStrokeWidth(1.0);
-	addChild(previewShape);
+	previewBase->addChild(previewShape);
 	
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
 	int fontSize = conf->getNumericValue("Polycode", "uiDefaultFontSize");	
 	Number padding = conf->getNumericValue("Polycode", "uiWindowSkinPadding");	
 	
-	Number xPos = 165;
-	
-	ScreenLabel *label = new ScreenLabel("SHADER", 22, "section", Label::ANTIALIAS_FULL);
-	label->color.a = 0.4;
-	addChild(label);
-	label->setPosition(xPos,90);
-
-	label = new ScreenLabel("BLEND MODE", 22, "section", Label::ANTIALIAS_FULL);
-	label->color.a = 0.4;
-	addChild(label);
-	label->setPosition(xPos,150);
-
-
-	label = new ScreenLabel("NAME", 22, "section", Label::ANTIALIAS_FULL);
-	label->color.a = 0.4;		
-	addChild(label);
-	label->setPosition(xPos,30);
-
-	nameInput = new UITextInput(false, 210, 30);
-	nameInput->addEventListener(this, UIEvent::CHANGE_EVENT);
-	addChild(nameInput);
-	nameInput->setPosition(xPos, 60);
-	
-	Number yPos = 145;
-	
-	
-	yPos += 50;
-	label = new ScreenLabel("TEXTURES", 22, "section", Label::ANTIALIAS_FULL);
-	addChild(label);
-	label->color.a = 0.4;	
-	label->setPosition(xPos+230, 30);
-	label->getLabel()->setColorForRange(Color(), 0, 8);
-	label->getLabel()->setColorForRange(Color(0.5,0.5,0.5,1.0), 8, 35);
-	label->setText("TEXTURES (DRAG FROM PROJECT TO SET)");
-
-	paramsEntity = new UIElement();
-	addChild(paramsEntity);
-
-	label = new ScreenLabel("SHADER PROPERTIES", 22, "section", Label::ANTIALIAS_FULL);
-	label->color.a = 0.4;
-	paramsEntity->addChild(label);
-	paramsEntity->setPositionX(xPos+230);
-
-	textureSlotBase = new ScreenEntity();
-	addChild(textureSlotBase);
-	
-	textureSlotBase->setPosition(xPos+230, 60);
-
-	shaderSelector = new UIComboBox(globalMenu, 210);	
-	shaderSelector->addEventListener(this, UIEvent::CHANGE_EVENT);
-
-	
-	blendSelector = new UIComboBox(globalMenu, 210);	
-	blendSelector->addEventListener(this, UIEvent::CHANGE_EVENT);
-	
-	addChild(blendSelector);
-	blendSelector->setPosition(xPos, 180);
-		
-	blendSelector->addComboItem("Normal");
-	blendSelector->addComboItem("Lighten");
-	blendSelector->addComboItem("Color");
-	blendSelector->addComboItem("Premultiplied");
-	blendSelector->addComboItem("Multiply");
-	
-//	blendSelector->setSelectedIndex(0);
-							
-	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
-	for(int i=0; i < materialManager->getNumShaders(); i++) {
-		if(!materialManager->getShaderByIndex(i)->screenShader) {
-			shaderSelector->addComboItem(materialManager->getShaderByIndex(i)->getName(), (void*)materialManager->getShaderByIndex(i));
-		}
-	}
-	
-	shaderSelector->setPosition(xPos, 120);
-	addChild(shaderSelector);
-	
 	shapeSelector = new ScreenImage("Images/small_selector.png");
-	addChild(shapeSelector);
+	previewBase->addChild(shapeSelector);
 	shapeSelector->color.a = 0.4;
 	
 	shapeSwitches.push_back(new UIImageButton("Images/torus_icon.png"));
@@ -177,16 +150,35 @@ MaterialEditorPane::MaterialEditorPane() : UIWindow("Material", 670, 250) {
 	shapeSwitches.push_back(new UIImageButton("Images/plane_icon.png"));
 
 	for(int i=0; i < shapeSwitches.size(); i++) {
-		addChild(shapeSwitches[i]);
-		shapeSwitches[i]->setPosition(40 + (25 * i), 180);
+		previewBase->addChild(shapeSwitches[i]);
+		shapeSwitches[i]->setPosition(105 + (25 * i), 300);
 		shapeSwitches[i]->addEventListener(this, UIEvent::CLICK_EVENT);
 	}
 				
-	currentMaterial = NULL;
-	
+	currentMaterial = NULL;	
 	showPrimitive(0);
 	
+	reloadShaders();
+	
 	enabled = false;
+}
+
+void MaterialEditorPane::reloadShaders() {
+
+	shaderProp->comboEntry->clearItems();
+
+	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
+	for(int i=0; i < materialManager->getNumShaders(); i++) {
+		if(!materialManager->getShaderByIndex(i)->screenShader) {
+			shaderProp->comboEntry->addComboItem(materialManager->getShaderByIndex(i)->getName(), (void*)materialManager->getShaderByIndex(i));
+		}
+	}	
+}
+
+void MaterialEditorPane::Resize(Number width, Number height) {
+	headerBg->setShapeSize(width, 30);	
+	propList->Resize(370, height);
+	propList->updateProps();
 }
 
 void MaterialEditorPane::showPrimitive(unsigned int index) {
@@ -194,7 +186,7 @@ void MaterialEditorPane::showPrimitive(unsigned int index) {
 		shapePrimitives[i]->visible = false;	
 	}
 	shapePrimitives[index]->visible = true;	
-	shapeSelector->setPosition(38 + (25 * index), 178);
+	shapeSelector->setPosition(105 - 2 + (25 * index), 298);
 	if(currentMaterial) {
 		shapePrimitives[index]->setMaterial(currentMaterial);
 	}
@@ -202,6 +194,29 @@ void MaterialEditorPane::showPrimitive(unsigned int index) {
 }
 
 void MaterialEditorPane::handleEvent(Event *event) {
+
+	if(event->getDispatcher() == blendModeProp) {
+		currentMaterial->blendingMode = blendModeProp->get();
+	} else if(event->getDispatcher() == nameProp) {
+		currentMaterial->setName(nameProp->get());
+		dispatchEvent(new Event(), Event::CHANGE_EVENT);
+	} else if(event->getDispatcher() == shaderProp) {
+		Shader *selectedShader = (Shader*)shaderProp->comboEntry->getSelectedItem()->data;
+		if(selectedShader) {			
+			if(currentMaterial->getShader(0) != selectedShader) {
+				currentMaterial->clearShaders();
+				previewPrimitive->clearMaterial();
+				
+				ShaderBinding *newShaderBinding = selectedShader->createBinding();				
+				currentMaterial->addShader(selectedShader, newShaderBinding);
+				previewPrimitive->setMaterial(currentMaterial);					
+			}
+			
+			shaderTextureSheet->setShader(selectedShader, currentMaterial);
+			vertexOptionsSheet->setShader(selectedShader, currentMaterial);
+			fragmentOptionsSheet->setShader(selectedShader, currentMaterial);						
+		}
+	}
 	
 	for(int i=0; i < shapeSwitches.size(); i++) {
 		if(event->getDispatcher() == shapeSwitches[i]) {
@@ -210,326 +225,35 @@ void MaterialEditorPane::handleEvent(Event *event) {
 			}
 		}
 	}
-	
-	if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CHANGE_EVENT && currentMaterial) {		
-	
-		if(event->getDispatcher() == nameInput) {
-			currentMaterial->setName(nameInput->getText());
-			dispatchEvent(new Event(), Event::CHANGE_EVENT);
-		}
-	
-		if(event->getDispatcher() ==blendSelector) {			
-			currentMaterial->blendingMode = blendSelector->getSelectedIndex();
-		}
-		if(event->getDispatcher() == shaderSelector) {
-			Shader *selectedShader = (Shader*)shaderSelector->getSelectedItem()->data;
-			
-			clearAll();
-			if(selectedShader) {	
-				for(int i=0; i < selectedShader->expectedTextures.size(); i++) {
-					MaterialTextureSlot *textureSlot = new MaterialTextureSlot(selectedShader->expectedTextures[i]);
-					textureSlotBase->addChild(textureSlot);
-					textureSlot->setPosition(0, (40*i));
-					textureSlots.push_back(textureSlot);
-					
-					if(currentMaterial->getShaderBinding(0)) {
-						Texture *currentTexture = currentMaterial->getShaderBinding(0)->getTexture(selectedShader->expectedTextures[i]);
-						if(currentTexture) {
-							textureSlot->imageShape->setTexture(currentTexture);
-							std::vector<String> parts = currentTexture->getResourcePath().split("/");
-							if(parts.size() > 1) {
-								textureSlot->textureFileName->setText(parts[parts.size()-1]);
-							} else {
-								textureSlot->textureFileName->setText(currentTexture->getResourcePath());			
-							}
-						}
-					}
-				}
-
-			}
-			
-			paramsEntity->setPositionY(70 + (selectedShader->expectedTextures.size()*40));
-
-			bool replacingShader = false;
-			if(currentMaterial->getShader(0) != selectedShader) {
-				currentMaterial->clearShaders();
-				previewPrimitive->clearMaterial();
-				replacingShader = true;
-			}
-			
-			if(selectedShader) {
-				if(replacingShader) {			
-					ShaderBinding *newShaderBinding = selectedShader->createBinding();				
-					currentMaterial->addShader(selectedShader, newShaderBinding);
-					previewPrimitive->setMaterial(currentMaterial);	
-				}
-				
-				for(int i=0; i < textureSlots.size(); i++) {
-					if(textureSlots[i]->textureFileName->getText() != "None") {
-						currentMaterial->getShaderBinding(0)->clearTexture(textureSlots[i]->textureString);			
-						currentMaterial->getShaderBinding(0)->addTexture(textureSlots[i]->textureString, textureSlots[i]->imageShape->getTexture());
-					}
-				}								
-					
-				if(currentMaterial->getShaderBinding(0)) {
-				
-				int yOffset = 30;
-				
-				for(int i=0; i < selectedShader->expectedFragmentParams.size(); i++) {
-					if(!selectedShader->expectedFragmentParams[i].isAuto) {
-					MaterialPropertySlot *propertySlot = new MaterialPropertySlot(currentMaterial->getShaderBinding(0), selectedShader->expectedFragmentParams[i]);
-					paramsEntity->addChild(propertySlot);
-					propertySlot->setPosition(0, yOffset);
-					fragmentPropertySlots.push_back(propertySlot);					
-					yOffset += 45;
-				}
-				}
-								
-				for(int i=0; i < selectedShader->expectedVertexParams.size(); i++) {
-					if(!selectedShader->expectedVertexParams[i].isAuto) {
-					MaterialPropertySlot *propertySlot = new MaterialPropertySlot(currentMaterial->getShaderBinding(0), selectedShader->expectedVertexParams[i]);
-					paramsEntity->addChild(propertySlot);
-					propertySlot->setPosition(0, yOffset);
-					fragmentPropertySlots.push_back(propertySlot);					
-					yOffset += 45;					
-				}
-				}
-								
-
-				}
-			}
-			
-			int winHeight = (fragmentPropertySlots.size() * 45) + (textureSlots.size() * 40) + 100;
-
-			if(winHeight < 250)
-				winHeight = 250;
-	
-			setWindowSize(670, winHeight);			
-		}			
-	}
-	
-	
-	UIWindow::handleEvent(event);
-}
-
-void MaterialEditorPane::clearAll() {
-	for(int i=0; i < textureSlots.size(); i++) {
-		textureSlotBase->removeChild(textureSlots[i]);
-		delete textureSlots[i];
-	}
-	textureSlots.clear();
-	
-	for(int i=0; i < fragmentPropertySlots.size(); i++) {
-		paramsEntity->removeChild(fragmentPropertySlots[i]);
-		delete fragmentPropertySlots[i];
-	}
-	fragmentPropertySlots.clear();									
-}
-
-void MaterialEditorPane::handleDroppedFile(OSFileEntry file, Number x, Number y) {
-	Vector2 screenPos = textureSlotBase->getScreenPosition();
-	
-	x = x - screenPos.x;
-	y = y - screenPos.y;
-		
-	for(int i=0; i < textureSlots.size(); i++) {
-		if(x > textureSlots[i]->getPosition().x && x < textureSlots[i]->getPosition().x + textureSlots[i]->getWidth() && 
-		y > textureSlots[i]->getPosition().y && y < textureSlots[i]->getPosition().y + textureSlots[i]->getHeight()) {
-			Texture *newTexture = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(file.fullPath);
-			textureSlots[i]->imageShape->setTexture(newTexture);
-			textureSlots[i]->textureFileName->setText(file.name);
-			currentMaterial->getShaderBinding(0)->clearTexture(textureSlots[i]->textureString);			
-			currentMaterial->getShaderBinding(0)->addTexture(textureSlots[i]->textureString, newTexture);
-			
-		}
-	}	
 }
 
 void MaterialEditorPane::setMaterial(Material *material) {
 	currentMaterial = material;
-	previewPrimitive->setMaterial(material);
-		
-	clearAll();	
+	previewPrimitive->setMaterial(material);		
 	
-	if(!currentMaterial) // ???
-		return;		
+	if(!currentMaterial)
+		return;
 	
-	enabled = true;
+	blendModeProp->set(currentMaterial->blendingMode);
 	
-	blendSelector->setSelectedIndex(currentMaterial->blendingMode);
-					
-	if(currentMaterial->getShader(0)) {		
-	
-	for(int i=0; i < shaderSelector->getNumItems(); i++) {
-		Shader *shader = (Shader*)shaderSelector->getItemAtIndex(i)->data;
+	if(currentMaterial->getShader(0)) {	
+	for(int i=0; i < shaderProp->comboEntry->getNumItems(); i++) {
+		Shader *shader = (Shader*)shaderProp->comboEntry->getItemAtIndex(i)->data;
 		if(shader) {
 			if(currentMaterial->getShader(0)->getName() == shader->getName()) {
-				shaderSelector->setSelectedIndex(i);
+				shaderProp->set(i);
 				break;
 			}
 		}
 	}
 	} else {
-		shaderSelector->setSelectedIndex(0);	
-	}
+		shaderProp->set(0);
+	}	
 	
-	nameInput->setText(currentMaterial->getName());
-}
-
-MaterialPropertySlot::MaterialPropertySlot(ShaderBinding *binding, ProgramParam param) : UIElement() {
-
-	setWidth(280);
-	setHeight(43);
-
-	this->param = param;
-	this->binding = binding;
+	nameProp->set(currentMaterial->getName());
 	
-	std::vector<String> stringParts = param.name.split("_");
-	
-	if(stringParts.size() > 0) {
-		for(int i=0; i < stringParts.size(); i++) {
-			finalName += stringParts[i].substr(0,1).toUpperCase() + stringParts[i].substr(1) + " ";	
-		}
-	} else {
-		finalName = param.name.substr(0,1).toUpperCase() + param.name.substr(1);
-	}
-	
-	Config *conf = CoreServices::getInstance()->getConfig();	
-	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
-	int fontSize = conf->getNumericValue("Polycode", "uiDefaultFontSize");	
-	Number padding = conf->getNumericValue("Polycode", "uiWindowSkinPadding");		
-
-	propertyName = new ScreenLabel(finalName, fontSize, fontName, Label::ANTIALIAS_FULL);
-	propertyName->setColor(1.0, 1.0, 1.0, 0.7);		
-	addChild(propertyName);
-	
-	numberSlider = NULL;	
-	colorBox = NULL;
-	
-	minLabel = NULL;
-	maxLabel = NULL;
-	
-	switch(param.paramType) {
-		case ProgramParam::PARAM_Number:
-		{
-			
-			Number minVal = (*(Number*)param.minValue);
-			minLabel = new ScreenLabel(String::NumberToString(minVal), fontSize, fontName, Label::ANTIALIAS_FULL);
-			minLabel->setColor(1.0, 1.0, 1.0, 0.3);		
-			addChild(minLabel);			
-			minLabel->setPosition(0.0, 18);
-
-			Number maxVal = (*(Number*)param.maxValue);
-			maxLabel = new ScreenLabel(String::NumberToString(maxVal), fontSize, fontName, Label::ANTIALIAS_FULL);
-			maxLabel->setColor(1.0, 1.0, 1.0, 0.3);		
-			addChild(maxLabel);			
-			maxLabel->setPosition(240, 18);
-
-			numberSlider = new UIHSlider(minVal, maxVal, 180);
-			addChild(numberSlider);
-			numberSlider->setPosition(50, 23);
-			numberSlider->addEventListener(this, UIEvent::CHANGE_EVENT);
-//			binding->addLocalParam(param.name, &numberValue);
-
-			Number numberValue = (*(Number*)binding->getLocalParamByName(param.name)->data);
-			numberSlider->setSliderValue(numberValue);
+	enabled = true;
 					
-			propertyName->setText(finalName+"("+String::NumberToString(numberValue)+")");
-
-		}
-		break;
-		case ProgramParam::PARAM_Color:
-			Color colorValue = ((*(Color*)binding->getLocalParamByName(param.name)->data));
-			colorBox = new UIColorBox(globalColorPicker, colorValue, 30, 23);
-			colorBox->addEventListener(this, UIEvent::CHANGE_EVENT);			
-			colorBox->setPosition(0.0, 18);
-//			binding->addLocalParam(param.name, &colorValue);			
-			addChild(colorBox);
-		break;
-	}
-}
-
-void MaterialPropertySlot::handleEvent(Event *event) {
-	if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CHANGE_EVENT) {
-		if(event->getDispatcher() == numberSlider) {
-			propertyName->setText(finalName+"("+String::NumberToString(numberSlider->getSliderValue())+")");
-			(*(Number*)binding->getLocalParamByName(param.name)->data) = numberSlider->getSliderValue();
-		}
-		
-		if(event->getDispatcher() == colorBox) {
-			(*(Color*)binding->getLocalParamByName(param.name)->data) = colorBox->getSelectedColor();
-		}
-	}
-}
-
-MaterialPropertySlot::~MaterialPropertySlot() {
-	
-	delete propertyName;
-	
-	if(minLabel)
-		delete minLabel;
-	if(maxLabel)
-		delete maxLabel;
-
-	if(colorBox) {
-		delete colorBox;
-	}
-	
-	if(numberSlider)
-		delete numberSlider;
-}
-
-MaterialTextureSlot::MaterialTextureSlot(String textureNameString) : UIElement() {
-
-	setWidth(280);
-	setHeight(38);
-	
-	textureString = textureNameString;
-	
-	bgShape  = new ScreenShape(ScreenShape::SHAPE_RECT, 280,38);
-	bgShape->setColor(0.0, 0.0, 0.0, 0.4);
-	bgShape->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
-	addChild(bgShape);
-
-	imageShape = new ScreenShape(ScreenShape::SHAPE_RECT, 32,32);
-	imageShape->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
-	imageShape->setPosition(3,3);
-	addChild(imageShape);
-	
-	Config *conf = CoreServices::getInstance()->getConfig();	
-	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
-	int fontSize = conf->getNumericValue("Polycode", "uiDefaultFontSize");	
-	Number padding = conf->getNumericValue("Polycode", "uiWindowSkinPadding");	
-	
-	std::vector<String> stringParts = textureNameString.split("_");
-	
-	String finalName;
-	if(stringParts.size() > 0) {
-		for(int i=0; i < stringParts.size(); i++) {
-			finalName += stringParts[i].substr(0,1).toUpperCase() + stringParts[i].substr(1) + " ";	
-		}
-	} else {
-		finalName = textureNameString.substr(0,1).toUpperCase() + textureNameString.substr(1);
-	}
-	
-	textureName = new ScreenLabel(finalName, fontSize, fontName, Label::ANTIALIAS_FULL);
-	textureName->setPosition(40, 3);
-	textureName->setColor(1.0, 1.0, 1.0, 0.5);		
-	addChild(textureName);
-
-	textureFileName = new ScreenLabel("None", fontSize, fontName, Label::ANTIALIAS_FULL);
-	textureFileName->setPosition(40, 20);
-	textureFileName->setColor(1.0, 1.0, 1.0, 0.8);		
-	addChild(textureFileName);
-
-}
-
-MaterialTextureSlot::~MaterialTextureSlot() {
-	delete bgShape;
-	delete imageShape;
-		
-	delete textureName;
-	delete textureFileName;		
 }
 
 MaterialEditorPane::~MaterialEditorPane() {
@@ -540,15 +264,13 @@ MaterialMainWindow::MaterialMainWindow() : UIElement() {
 
 	materialPane = new MaterialEditorPane();
 	addChild(materialPane);
-	
 	enableScissor = true;
 }
 	
-void MaterialMainWindow::Resize(Number width, Number height) {
-	materialPane->setPosition((width-materialPane->getWidth())/2.0, (height-materialPane->getHeight())/2.0);
-	
+void MaterialMainWindow::Resize(Number width, Number height) {	
 	Vector2 pos = getScreenPosition();	
 	scissorBox.setRect(pos.x,pos.y,width, height);
+	materialPane->Resize(width, height);
 }
 
 MaterialBrowser::MaterialBrowser() : UIElement() {
@@ -568,7 +290,8 @@ MaterialBrowser::MaterialBrowser() : UIElement() {
 	headerBg = new ScreenShape(ScreenShape::SHAPE_RECT,10,10);
 	addChild(headerBg);
 	headerBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
-	headerBg->setColor(0.1, 0.1, 0.1, 1.0);
+	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));	
+
 	
 	newMaterialButton = new UIImageButton("Images/new_material.png");
 	addChild(newMaterialButton);
@@ -605,10 +328,9 @@ MaterialBrowser::~MaterialBrowser() {
 }
 
 void MaterialBrowser::Resize(Number width, Number height) {
-	treeContainer->Resize(width, height-32);
-	treeContainer->setPosition(0, 32);
-	
-	headerBg->setShapeSize(width, 32);	
+	treeContainer->Resize(width, height-30);
+	treeContainer->setPosition(0, 30);	
+	headerBg->setShapeSize(width, 30);	
 }
 
 PolycodeMaterialEditor::PolycodeMaterialEditor() : PolycodeEditor(true){
@@ -621,14 +343,7 @@ PolycodeMaterialEditor::~PolycodeMaterialEditor() {
 
 bool PolycodeMaterialEditor::openFile(OSFileEntry filePath) {
 	
-	
-	grid = new ScreenImage("Images/editorGrid.png");
-	
-	addChild(grid);
-	grid->snapToPixels = true;	
-	grid->getTexture()->clamp = false;
-	grid->getTexture()->recreateFromImageData();	
-	
+		
 	mainSizer = new UIHSizer(100,100,200,false);
 	addChild(mainSizer);	
 	
@@ -652,10 +367,6 @@ bool PolycodeMaterialEditor::openFile(OSFileEntry filePath) {
 	
 	PolycodeEditor::openFile(filePath);
 	return true;
-}
-
-void PolycodeMaterialEditor::handleDroppedFile(OSFileEntry file, Number x, Number y) {		
-	mainWindow->materialPane->handleDroppedFile(file, x,y);
 }
 
 String PolycodeMaterialEditor::createStringValue(unsigned int type, void *value) {
@@ -779,7 +490,6 @@ void PolycodeMaterialEditor::handleEvent(Event *event) {
 }
 
 void PolycodeMaterialEditor::Resize(int x, int y) {
-	grid->setImageCoordinates(0,0,x,y);	
 	mainSizer->Resize(x,y);
 	PolycodeEditor::Resize(x,y);
 }

@@ -206,7 +206,9 @@ void PropSheet::addProp(PropProp *prop) {
 	Resize(width, height);
 }
 
-PropProp::PropProp(String caption) : UIElement() {
+PropProp::PropProp(String caption, String type) : UIElement() {
+
+	propType = type;
 	label = new ScreenLabel(caption, 12);
 	label->color.a = 0.4;
 	label->setPosition(0, 5);
@@ -224,7 +226,7 @@ PropProp::~PropProp() {
 
 }
 
-Vector2Prop::Vector2Prop(String caption) : PropProp(caption) {
+Vector2Prop::Vector2Prop(String caption) : PropProp(caption, "Vector2") {
 
 	ScreenLabel *label = new ScreenLabel("X:", 11);
 	label->color.a = 0.4;
@@ -275,7 +277,7 @@ Vector2Prop::~Vector2Prop() {
 
 }
 
-CustomProp::CustomProp(String key, String value) : PropProp("") {
+CustomProp::CustomProp(String key, String value) : PropProp("", "Custom") {
 	keyEntry = new UITextInput(false, 120, 12);
 	keyEntry->setText(key);
 	keyEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
@@ -327,7 +329,7 @@ String CustomProp::getKey() {
 }
 
 
-StringProp::StringProp(String caption) : PropProp(caption) {
+StringProp::StringProp(String caption) : PropProp(caption, "String") {
 
 	stringEntry = new UITextInput(false, 150, 12);
 	stringEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
@@ -359,7 +361,7 @@ StringProp::~StringProp() {
 
 }
 
-SliderProp::SliderProp(String caption, Number min, Number max) : PropProp(caption) {
+SliderProp::SliderProp(String caption, Number min, Number max) : PropProp(caption, "Slider") {
 
 	slider = new UIHSlider(min, max, 100);
 	slider->addEventListener(this, UIEvent::CHANGE_EVENT);
@@ -398,7 +400,7 @@ SliderProp::~SliderProp() {
 
 }
 
-NumberProp::NumberProp(String caption) : PropProp(caption) {
+NumberProp::NumberProp(String caption) : PropProp(caption, "Number") {
 
 	numberEntry = new UITextInput(false, 50, 12);
 	numberEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
@@ -432,7 +434,7 @@ NumberProp::~NumberProp() {
 
 }
 
-ColorProp::ColorProp(String caption) : PropProp(caption) {
+ColorProp::ColorProp(String caption) : PropProp(caption, "Color") {
 
 	colorEntry = new UIColorBox(globalColorPicker, Color(), 45, 25);
 	colorEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
@@ -463,7 +465,7 @@ ColorProp::~ColorProp() {
 
 }
 
-ComboProp::ComboProp(String caption) : PropProp(caption) {
+ComboProp::ComboProp(String caption) : PropProp(caption, "Combo") {
 
 	comboEntry = new UIComboBox(globalMenu, 150);
 	comboEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
@@ -494,7 +496,7 @@ ComboProp::~ComboProp() {
 
 }
 
-BoolProp::BoolProp(String caption) : PropProp(caption) {
+BoolProp::BoolProp(String caption) : PropProp(caption, "Bool") {
 
 	checkEntry = new UICheckBox("", false);
 	checkEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
@@ -526,7 +528,7 @@ BoolProp::~BoolProp() {
 }
 
 
-SoundProp::SoundProp(String caption) : PropProp(caption){
+SoundProp::SoundProp(String caption) : PropProp(caption, "Sound"){
 
 	soundFile = new ScreenLabel("", 11);
 	soundFile->setPosition(0, 5);
@@ -599,7 +601,7 @@ String SoundProp::get() {
 	return "";
 }
 
-BezierRGBACurveProp::BezierRGBACurveProp(String caption) : PropProp(caption) {
+BezierRGBACurveProp::BezierRGBACurveProp(String caption) : PropProp(caption, "BezierRGBA") {
 
 
 	changeButton = new UIButton("Edit", 120);
@@ -632,7 +634,7 @@ void BezierRGBACurveProp::handleEvent(Event *event) {
 	}
 }
 
-BezierCurveProp::BezierCurveProp(String caption, String curveName) : PropProp(caption) {
+BezierCurveProp::BezierCurveProp(String caption, String curveName) : PropProp(caption, "BezierCurve") {
 
 	this->curveName = curveName;
 
@@ -660,7 +662,7 @@ void BezierCurveProp::handleEvent(Event *event) {
 	}
 }
 
-TextureProp::TextureProp(String caption) : PropProp(caption){
+TextureProp::TextureProp(String caption) : PropProp(caption, "Texture"){
 	previewShape = new ScreenShape(ScreenShape::SHAPE_RECT, 48, 48);
 	previewShape->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	previewShape->setPosition(2, 1);
@@ -708,7 +710,7 @@ void TextureProp::set(Texture *texture) {
 Texture* TextureProp::get() {
 	return previewShape->getTexture();
 }
-ScreenSpriteProp::ScreenSpriteProp(String caption) : PropProp(caption){
+ScreenSpriteProp::ScreenSpriteProp(String caption) : PropProp(caption, "ScreenSprite"){
 
 		previewSprite = new ScreenSprite("default/default.sprite");
 		previewSprite->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
@@ -780,7 +782,7 @@ String ScreenSpriteProp::get() {
 	return previewSprite->getFileName();
 }
 
-ScreenEntityInstanceProp::ScreenEntityInstanceProp(String caption) : PropProp(caption){
+ScreenEntityInstanceProp::ScreenEntityInstanceProp(String caption) : PropProp(caption, "ScreenEntityInstance"){
 	previewInstance = new ScreenEntityInstance("default/default.entity2d");
 	previewInstance->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	previewInstance->setPosition(2, 1);
@@ -1046,6 +1048,176 @@ void EntityPropSheet::Update() {
 	}
 }
 
+ShaderOptionsSheet::ShaderOptionsSheet(String title, String name, bool fragmentParams) : PropSheet(title, name){
+	shader = NULL;
+	this->fragmentParams = fragmentParams;
+	propHeight = 40;
+}
+
+ShaderOptionsSheet::~ShaderOptionsSheet() {
+
+}
+
+void ShaderOptionsSheet::handleEvent(Event *event) {
+
+	if(event->getEventCode() == Event::CHANGE_EVENT) {
+		for(int i=0 ; i < props.size(); i++) {
+			if(event->getDispatcher() == props[i]) {
+				if(props[i]->propType == "Slider") {
+					(*(Number*)binding->getLocalParamByName(props[i]->label->getText())->data) = ((SliderProp*)props[i])->get();
+				} else if(props[i]->propType == "Color") {
+					(*(Color*)binding->getLocalParamByName(props[i]->label->getText())->data) = ((ColorProp*)props[i])->get();
+				
+				}
+				return;
+			}
+		}
+	}
+
+	PropSheet::handleEvent(event);
+}
+
+void ShaderOptionsSheet::Update() {
+
+}
+
+void ShaderOptionsSheet::clearShader() {
+	for(int i=0; i < props.size(); i++) {
+		contents->removeChild(props[i]);
+		props[i]->removeAllHandlersForListener(this);
+		delete props[i];
+	}
+	props.clear();
+	propHeight = 30;
+}
+
+void ShaderOptionsSheet::setOptionsFromParams(std::vector<ProgramParam> &params) {
+
+	for(int i=0; i < params.size(); i++) {
+			if(!params[i].isAuto) {
+				switch (params[i].paramType) {
+				
+					case ProgramParam::PARAM_Number:
+					{
+						String paramName = params[i].name;
+						Number paramMin = (*(Number*) params[i].minValue);
+						Number paramMax = (*(Number*) params[i].maxValue);						
+						SliderProp *sliderProp = new SliderProp(paramName, paramMin, paramMax);
+						addProp(sliderProp);
+						
+						Number numberValue = (*(Number*)binding->getLocalParamByName(params[i].name)->data);
+						sliderProp->set(numberValue);
+						propHeight += 30;						
+					}
+					break;					
+					case ProgramParam::PARAM_Color:
+					{
+						String paramName = params[i].name;
+						
+						ColorProp *colorProp = new ColorProp(paramName);
+						addProp(colorProp);
+						
+						Color colorValue = (*(Color*)binding->getLocalParamByName(params[i].name)->data);
+						colorProp->set(colorValue);
+						
+						propHeight += 40;						
+					}
+					break;
+					
+				}				
+														
+			}
+		}	
+}
+
+void ShaderOptionsSheet::setShader(Shader *shader, Material *material) {
+	clearShader();
+	this->shader = shader;
+	this->material = material;
+	
+	if(!shader || !material)
+		return;
+		
+	binding = material->getShaderBinding(0);
+	
+	if(fragmentParams) {	
+		setOptionsFromParams(shader->expectedFragmentParams);
+	} else {
+		setOptionsFromParams(shader->expectedVertexParams);
+	}
+	
+	dispatchEvent(new Event(), Event::COMPLETE_EVENT);	
+	Resize(width, height);
+}
+
+ShaderTexturesSheet::ShaderTexturesSheet() : PropSheet("SHADER TEXTURES", "shader_textures"){
+	shader = NULL;
+	propHeight = 40;
+}
+
+ShaderTexturesSheet::~ShaderTexturesSheet() {
+
+}
+
+void ShaderTexturesSheet::handleEvent(Event *event) {
+
+	if(event->getEventCode() == Event::CHANGE_EVENT) {
+		for(int i=0; i < textureProps.size(); i++) {
+			if(event->getDispatcher() == textureProps[i]) {
+				binding->clearTexture(textureProps[i]->label->getText());
+				binding->addTexture(textureProps[i]->label->getText(), textureProps[i]->get());
+			}
+		}	
+	}
+	PropSheet::handleEvent(event);
+}
+
+void ShaderTexturesSheet::Update() {
+
+}
+
+void ShaderTexturesSheet::clearShader() {
+	for(int i=0; i < props.size(); i++) {
+		contents->removeChild(props[i]);
+		props[i]->removeAllHandlersForListener(this);
+		delete props[i];
+	}
+	props.clear();
+	textureProps.clear();
+	
+	propHeight = 30;
+}
+
+void ShaderTexturesSheet::setShader(Shader *shader, Material *material) {
+	clearShader();
+	this->shader = shader;
+	this->material = material;
+	
+	if(!shader || !material)
+		return;
+		
+	binding = material->getShaderBinding(0);	
+	
+	for(int i=0; i < shader->expectedTextures.size(); i++) {
+		TextureProp *textureProp = new TextureProp(shader->expectedTextures[i]);
+		
+		if(material) {
+			if(material->getShaderBinding(0)) {
+				Texture *currentTexture = material->getShaderBinding(0)->getTexture(shader->expectedTextures[i]);
+				if(currentTexture) {
+					textureProp->set(currentTexture);
+				}
+			}
+		}
+		
+		addProp(textureProp);
+		textureProps.push_back(textureProp);
+		propHeight += 65;
+	}
+
+	dispatchEvent(new Event(), Event::COMPLETE_EVENT);	
+	Resize(width, height);
+}
 
 EntitySheet::EntitySheet() : PropSheet("ENTITY", "entity"){
 	idProp = new StringProp("ID");

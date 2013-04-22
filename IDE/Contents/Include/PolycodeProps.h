@@ -32,9 +32,10 @@ using namespace Polycode;
 
 class PropProp : public UIElement {
 	public:
-		PropProp(String caption);
+		PropProp(String caption, String type);
 		~PropProp();
-		
+	
+		String propType;
 		ScreenLabel *label;
 		ScreenEntity *propContents;
 };
@@ -245,6 +246,46 @@ class PropSheet : public UIElement {
 		bool collapsed;
 		
 		std::vector<PropProp*> props;
+};
+
+class ShaderOptionsSheet : public PropSheet {
+	public:
+		ShaderOptionsSheet(String title, String name, bool fragmentParams);
+		~ShaderOptionsSheet();
+		
+		void handleEvent(Event *event);
+		void Update();
+		
+		void clearShader();
+		void setOptionsFromParams(std::vector<ProgramParam> &params);
+		void setShader(Shader *shader, Material *material);
+				
+	private:
+		bool fragmentParams;
+		Shader *shader;
+		Material *material;
+		ShaderBinding *binding;
+		
+};
+
+
+class ShaderTexturesSheet : public PropSheet {
+	public:
+		ShaderTexturesSheet();
+		~ShaderTexturesSheet();
+		
+		void handleEvent(Event *event);
+		void Update();
+		
+		void clearShader();
+		void setShader(Shader *shader, Material *material);
+				
+	private:
+		Shader *shader;
+		Material *material;
+		ShaderBinding *binding;
+						
+		std::vector<TextureProp*> textureProps;
 };
 
 class EntitySheet : public PropSheet {

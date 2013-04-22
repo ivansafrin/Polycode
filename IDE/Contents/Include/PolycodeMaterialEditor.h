@@ -25,6 +25,7 @@
 #include "PolycodeEditor.h"
 #include <Polycode.h>
 #include "PolycodeUI.h"
+#include "PolycodeProps.h"
 
 using namespace Polycode;
 
@@ -54,11 +55,10 @@ class MaterialBrowser : public UIElement {
 		UIImageButton *newMaterialButton;
 		
 		UITree *selectedNode;
-												
+														
 	protected:
 	
 		ScreenShape *headerBg;
-	
 		UITree *shadersNode;
 		UITree *materialsNode;
 		UITree *cubemapsNode;			
@@ -66,70 +66,24 @@ class MaterialBrowser : public UIElement {
 		UITreeContainer *treeContainer;	
 };
 
-class MaterialTextureSlot : public UIElement {
-	public:
-		MaterialTextureSlot(String textureNameString);
-		~MaterialTextureSlot();
-		
-		ScreenShape *bgShape;
-		ScreenShape *imageShape;
-		
-		ScreenLabel *textureName;
-		ScreenLabel *textureFileName;	
-		
-		String textureString;
-};
 
-class MaterialPropertySlot : public UIElement {
-	public:
-		MaterialPropertySlot(ShaderBinding *binding, ProgramParam param);
-		~MaterialPropertySlot();
-		
-		void handleEvent(Event *event);
-		
-		ScreenLabel *propertyName;	
-		
-		ScreenLabel *minLabel;
-		ScreenLabel *maxLabel;
-							
-		UIHSlider *numberSlider;
-		UIColorBox *colorBox;
-					
-		ShaderBinding *binding;		
-		ProgramParam param;
-		
-		String finalName;
-		
-};
-
-class MaterialEditorPane : public UIWindow {
+class MaterialEditorPane : public UIElement {
 	public:
 		MaterialEditorPane();
 		~MaterialEditorPane();
 		
-		void setMaterial(Material *material);
-		
-		void clearAll();
-		
+		void setMaterial(Material *material);		
 		void handleEvent(Event *event);
 		
-		void handleDroppedFile(OSFileEntry file, Number x, Number y);	
-		
+		void reloadShaders();
+		void Resize(Number width, Number height);		
 		void showPrimitive(unsigned int index);
 		
-		Material *currentMaterial;
-				
+		Material *currentMaterial;			
 	protected:
 	
-	
-		std::vector<MaterialTextureSlot*> textureSlots;
-		std::vector<MaterialPropertySlot*> fragmentPropertySlots;
-	
-		ScreenEntity *textureSlotBase;
-	
+		ScreenShape *headerBg;			
 		ScenePrimitive *previewPrimitive;
-		
-		UIElement *paramsEntity;
 		
 		Scene *previewScene;
 		SceneLight *mainLight;
@@ -137,16 +91,20 @@ class MaterialEditorPane : public UIWindow {
 		SceneRenderTexture *renderTexture;
 		ScreenShape *previewShape;
 		
-		UIComboBox *shaderSelector;
-
-		UIComboBox *blendSelector;
-		
-		UITextInput *nameInput;
-		
 		std::vector<UIImageButton*> shapeSwitches;
 		std::vector<ScenePrimitive*> shapePrimitives;
 		ScreenImage *shapeSelector;
 		
+		ScreenEntity *previewBase;		
+		PropList *propList;
+		
+		StringProp *nameProp;
+		ComboProp *blendModeProp;
+		ComboProp *shaderProp;
+		
+		ShaderTexturesSheet *shaderTextureSheet;
+		ShaderOptionsSheet *vertexOptionsSheet;	
+		ShaderOptionsSheet *fragmentOptionsSheet;
 };
 
 class MaterialMainWindow : public UIElement {
@@ -168,7 +126,6 @@ class PolycodeMaterialEditor : public PolycodeEditor {
 	bool openFile(OSFileEntry filePath);
 	void Resize(int x, int y);
 	
-	void handleDroppedFile(OSFileEntry file, Number x, Number y);
 	
 	void handleEvent(Event *event);	
 	void saveFile();
@@ -176,7 +133,6 @@ class PolycodeMaterialEditor : public PolycodeEditor {
 	String createStringValue(unsigned int type, void *value);
 	
 	protected:
-		ScreenImage *grid;	
 		ScreenImage *editorImage;
 		
 		MaterialBrowser *materialBrowser;
