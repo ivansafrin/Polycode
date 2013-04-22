@@ -64,7 +64,7 @@ void PolycodeEditor::setHasChanges(bool newVal) {
 }
 
 void PolycodeEditor::handleEvent(Event *event) {
-	if(event->getDispatcher() == CoreServices::getInstance()->getCore()) {
+	if(event->getDispatcher() == CoreServices::getInstance()->getCore() && enabled) {
 		switch(event->getEventCode()) {
 
 			// Only copypaste of more complex IDE entities is handled here.
