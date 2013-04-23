@@ -145,6 +145,7 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	fileEntry->addItem("New Folder", "new_folder", KEY_LSHIFT, KEY_f);
 	fileEntry->addItem("Open Project", "open_project", KEY_LSHIFT, KEY_o);
 	fileEntry->addItem("Close Project", "close_project", KEY_LSHIFT, KEY_w);
+	fileEntry->addItem("Close File", "close_file", KEY_w);
 	fileEntry->addItem("Remove File", "remove_file");
 	fileEntry->addItem("Refresh Project", "refresh_project");
 	fileEntry->addItem("Save File", "save_file", KEY_s);
@@ -246,6 +247,7 @@ bool PolycodeIDEApp::removeEditor(PolycodeEditor *editor) {
 			frame->showEditor(editorManager->openEditors[0]);
 		}
 	}
+	return false;
 }
 
 void PolycodeIDEApp::closeFile() {
@@ -480,6 +482,8 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 			openProject();
 		} else if(action == "close_project") {
 			closeProject();
+		} else if(action == "close_file") {
+			closeFile();
 		} else if(action == "remove_file") {
 			removeFile();
 		} else if(action == "refresh_project") {

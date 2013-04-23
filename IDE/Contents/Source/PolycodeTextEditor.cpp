@@ -477,7 +477,7 @@ bool PolycodeTextEditor::openFile(OSFileEntry filePath) {
 	
 	Data *data = new Data();
 	if(data->loadFromFile(filePath.fullPath)) {
-		textInput->setText(data->getAsString(String::ENCODING_UTF8));
+		textInput->setText(data->getAsString(String::ENCODING_UTF8).replace("\r\n", "\n"));
 	}
 	delete data;
 	
