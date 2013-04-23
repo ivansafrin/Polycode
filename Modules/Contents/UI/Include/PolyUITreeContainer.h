@@ -53,9 +53,9 @@ namespace Polycode {
 		
 		UITree *rootNode;
 		UIBox *bgBox;
-		
-		UITree *findLastOpenNode(UITree *tree);
-		UITree *findNextParentSibling(UITree *tree);
 	};
-
 }
+
+//helper functions for key navigation
+Polycode::UITree *findLastOpenNode(Polycode::UITree *tree);
+Polycode::UITree *findNextParentSibling(Polycode::UITree *tree);

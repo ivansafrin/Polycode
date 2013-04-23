@@ -193,10 +193,10 @@ void UITreeContainer::onKeyDown(PolyKEY key, wchar_t charCode) {
 	}
 }
 
-// PRIVATE RECURSIVE FUNCTIONS
+// RECURSIVE HELPER FUNCTIONS
 
 // used in KEY_UP tree nav
-UITree *UITreeContainer::findLastOpenNode(UITree *tree) {
+UITree *findLastOpenNode(UITree *tree) {
 	if (!tree->hasTreeChildren() || tree->isCollapsed())
 		return tree;
 	UITree *t = tree->getTreeChild(tree->getNumTreeChildren()-1);
@@ -206,7 +206,7 @@ UITree *UITreeContainer::findLastOpenNode(UITree *tree) {
 		return findLastOpenNode(t);
 }
 // used in KEY_DOWN tree nav
-UITree *UITreeContainer::findNextParentSibling(UITree *parent) {
+UITree *findNextParentSibling(UITree *parent) {
 	UITree *sibling = parent->getNextSibling();
 	if (sibling)
 		return sibling;
