@@ -20,6 +20,7 @@ namespace Polycode {
 	class Shader;
 	class ShaderBinding;
 	class Resource;
+	class ShaderProgram;
 	
 	class _PolyExport PolycodeModule : public PolyBase {
 	public:
@@ -46,7 +47,7 @@ namespace Polycode {
 		virtual ~PolycodeShaderModule();
 		
 		virtual bool acceptsExtension(const String& extension) = 0;
-		virtual Resource* createProgramFromFile(const String& extension, const String& fullPath) = 0;
+		virtual ShaderProgram* createProgramFromFile(const String& extension, const String& fullPath) = 0;
 		virtual String getShaderType() = 0;
 		virtual Shader *createShader(TiXmlNode *node) = 0;
 	

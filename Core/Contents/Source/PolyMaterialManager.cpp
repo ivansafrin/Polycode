@@ -80,6 +80,19 @@ void MaterialManager::reloadPrograms() {
 	}
 }
 
+ShaderProgram *MaterialManager::createProgramFromFile(String programPath) {
+	OSFileEntry entry(programPath, OSFileEntry::TYPE_FILE);
+	
+	for(int m=0; m < shaderModules.size(); m++) {
+		PolycodeShaderModule *shaderModule = shaderModules[m];
+		if(shaderModule->acceptsExtension(entry.extension)) {
+			ShaderProgram *newProgram = shaderModule->createProgramFromFile(entry.extension, entry.fullPath);
+			return newProgram;
+		}
+	}
+	return NULL;
+}
+
 void MaterialManager::addShaderModule(PolycodeShaderModule *module) {
 	shaderModules.push_back(module);
 }
@@ -148,10 +161,6 @@ void MaterialManager::reloadTextures() {
 		Texture *texture = textures[i];
 		texture->recreateFromImageData();
 	}
-}
-
-void MaterialManager::registerShader(Shader *shader) {
-	shaders.push_back(shader);
 }
 
 unsigned int MaterialManager::getNumShaders() {
@@ -268,6 +277,34 @@ Cubemap *MaterialManager::cubemapFromXMLNode(TiXmlNode *node) {
 
 void MaterialManager::addMaterial(Material *material) {
 	materials.push_back(material);
+}
+
+void MaterialManager::addShader(Shader *shader) {
+	shaders.push_back(shader);
+}
+
+std::vector<Shader*> MaterialManager::loadShadersFromFile(String fileName) {
+	std::vector<Shader*> retVector;
+	
+	TiXmlDocument doc(fileName.c_str());
+	doc.LoadFile();
+	
+	if(doc.Error()) {
+		Logger::log("XML Error: %s\n", doc.ErrorDesc());
+	} else {
+		TiXmlElement *mElem = doc.RootElement()->FirstChildElement("shaders");
+		if(mElem) {
+			TiXmlNode* pChild;					
+			for (pChild = mElem->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {	
+				Shader *newShader = createShaderFromXMLNode(pChild);
+				if(newShader != NULL) {
+					Logger::log("Adding shader %s\n", newShader->getName().c_str());
+					retVector.push_back(newShader);
+				}
+			}
+		}
+	}
+	return retVector;
 }
 
 std::vector<Material*> MaterialManager::loadMaterialsFromFile(String fileName) {

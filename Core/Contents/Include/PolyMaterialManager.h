@@ -37,6 +37,7 @@ namespace Polycode {
 	class SceneRenderTexture;
 	class Shader;
 	class String;
+	class ShaderProgram;
 	
 	/**
 	* Manages loading and reloading of materials, textures and shaders. This class should be only accessed from the CoreServices singleton.
@@ -68,6 +69,8 @@ namespace Polycode {
 			//SceneRenderTexture *createRenderTexture(Scene *targetScene, Camera *targetCamera, int renderWidth,int renderHeight);
 			Texture *getTextureByResourcePath(const String& resourcePath) const;
 			
+			ShaderProgram *createProgramFromFile(String programPath);
+			
 			// cubemaps
 		
 			Cubemap *cubemapFromXMLNode(TiXmlNode *node);
@@ -79,12 +82,12 @@ namespace Polycode {
 			
 			Shader *setShaderFromXMLNode(TiXmlNode *node);
 			Shader *createShaderFromXMLNode(TiXmlNode *node);
-			
-			void registerShader(Shader *shader);
 		
 			std::vector<Material*> loadMaterialsFromFile(String fileName);
-		
+			std::vector<Shader*> loadShadersFromFile(String fileName);		
+			
 			void addMaterial(Material *material);
+			void addShader(Shader *shader);
 		
 			unsigned int getNumShaders();
 			Shader *getShaderByIndex(unsigned int index);

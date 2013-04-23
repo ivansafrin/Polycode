@@ -100,6 +100,8 @@ void NewFileWindow::resetForm() {
 }
 
 void NewFileWindow::handleEvent(Event *event) {
+
+	if(enabled) {
 	if(event->getEventType() == "UIEvent") {
 		if(event->getEventCode() == UIEvent::CLICK_EVENT) {
 			if(event->getDispatcher() == okButton) {
@@ -110,6 +112,7 @@ void NewFileWindow::handleEvent(Event *event) {
 				dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);				
 			}									
 		}
+	}
 	}
 	
 	if(event->getEventType() == "UITreeEvent" && event->getEventCode() == UITreeEvent::SELECTED_EVENT) {

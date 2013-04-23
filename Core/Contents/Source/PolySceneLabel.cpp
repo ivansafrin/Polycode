@@ -47,7 +47,7 @@ Label *SceneLabel::getLabel() {
 
 void SceneLabel::setText(const String& newText) {
 	
-	if(newText == label->getText() && !label->colorsChanged()) {
+	if(newText == label->getText() && !label->optionsChanged()) {
 		return;
 	}
 

@@ -21,9 +21,215 @@
  */
  
 #include "PolycodeMaterialEditor.h"
+#include "PolycodeFrame.h"
 
 extern UIColorPicker *globalColorPicker;
 extern UIGlobalMenu *globalMenu;
+extern PolycodeFrame *globalFrame;
+
+ShaderEditorPane::ShaderEditorPane() : UIElement() {	
+
+	changingShader = false;
+	currentShader = NULL;
+
+	headerBg = new ScreenShape(ScreenShape::SHAPE_RECT,10,10);
+	addChild(headerBg);
+	headerBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));	
+	
+	propList = new PropList("SHADER EDITOR");
+	addChild(propList);
+	propList->setPosition(0, 0);
+	
+	PropSheet *baseProps = new PropSheet("SHADER SETTINGS", "");
+	propList->addPropSheet(baseProps);
+	
+	nameProp = new StringProp("Name");
+	baseProps->addProp(nameProp);	
+	nameProp->addEventListener(this, Event::CHANGE_EVENT);	
+	
+	screenShaderProp = new BoolProp("Screen shader");
+	baseProps->addProp(screenShaderProp);	
+	screenShaderProp->addEventListener(this, Event::CHANGE_EVENT);	
+	
+	
+	vertexProgramProp = new ComboProp("Vertex prog.");
+	baseProps->addProp(vertexProgramProp);	
+	vertexProgramProp->addEventListener(this, Event::CHANGE_EVENT);	
+
+	fragmentProgramProp = new ComboProp("Fragment prog.");
+	baseProps->addProp(fragmentProgramProp);	
+	fragmentProgramProp->addEventListener(this, Event::CHANGE_EVENT);	
+	
+	areaLightsProp = new NumberProp("Num area lights");
+	baseProps->addProp(areaLightsProp);	
+	areaLightsProp->addEventListener(this, Event::CHANGE_EVENT);
+
+	spotLightsProp = new NumberProp("Num spotlights");
+	baseProps->addProp(spotLightsProp);	
+	spotLightsProp->addEventListener(this, Event::CHANGE_EVENT);
+
+	baseProps->propHeight = 220;
+	
+	PropSheet *vertexProps = new PropSheet("VERTEX PROGRAM OPTIONS", "");
+	propList->addPropSheet(vertexProps);
+
+	PropSheet *fragmentProps = new PropSheet("FRAGMENT PROGRAM OPTIONS", "");
+	propList->addPropSheet(fragmentProps);
+
+
+	propList->updateProps();
+	
+	enabled = false;
+}
+
+ShaderEditorPane::~ShaderEditorPane() {
+
+}
+
+void ShaderEditorPane::handleEvent(Event *event) {
+	if(!changingShader) {
+	
+		if(event->getDispatcher() == nameProp) {
+			currentShader->setName(nameProp->get());
+			dispatchEvent(new Event(), Event::CHANGE_EVENT);			
+		}
+	
+		if(event->getDispatcher() == screenShaderProp) {
+			currentShader->screenShader = screenShaderProp->get();
+			dispatchEvent(new Event(), Event::CHANGE_EVENT);			
+		}
+				
+		if(event->getDispatcher() == areaLightsProp) {
+			currentShader->numAreaLights = floor(areaLightsProp->get());
+			dispatchEvent(new Event(), Event::CHANGE_EVENT);
+		}
+
+		if(event->getDispatcher() == spotLightsProp) {
+			currentShader->numSpotLights = floor(spotLightsProp->get());
+			dispatchEvent(new Event(), Event::CHANGE_EVENT);
+		}		
+		
+		if(event->getDispatcher() == vertexProgramProp) {
+			ShaderProgram* vpProgram = (ShaderProgram*)vertexProgramProp->comboEntry->getSelectedItem()->data;
+			if(vpProgram) {			
+				currentShader->setVertexProgram(vpProgram);
+				dispatchEvent(new Event(), Event::CHANGE_EVENT);
+			} else {
+				globalFrame->assetBrowser->addEventListener(this, UIEvent::OK_EVENT);
+				std::vector<String> extensions;
+				extensions.push_back("vert");
+				choosingVertexProgram = true;
+				globalFrame->showAssetBrowser(extensions);				
+			}
+		}		
+
+		if(event->getDispatcher() == fragmentProgramProp) {
+			ShaderProgram* fpProgram = (ShaderProgram*)fragmentProgramProp->comboEntry->getSelectedItem()->data;
+			if(fpProgram) {			
+				currentShader->setFragmentProgram(fpProgram);
+				dispatchEvent(new Event(), Event::CHANGE_EVENT);
+			} else {
+				globalFrame->assetBrowser->addEventListener(this, UIEvent::OK_EVENT);
+				std::vector<String> extensions;
+				extensions.push_back("frag");
+				choosingVertexProgram = false;
+				globalFrame->showAssetBrowser(extensions);			
+			}
+		}
+	}
+	
+	if(event->getDispatcher() == globalFrame->assetBrowser && event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {
+		String newFontPath = globalFrame->assetBrowser->getSelectedAssetPath();
+		newFontPath = newFontPath.replace(parentProject->getRootFolder()+"/", "");		
+		globalFrame->assetBrowser->removeAllHandlersForListener(this);
+		
+
+		OSFileEntry entry(newFontPath, OSFileEntry::TYPE_FILE);
+		ShaderProgram *newProgram = CoreServices::getInstance()->getMaterialManager()->createProgramFromFile(newFontPath);
+		if(newProgram) {
+			newProgram->setResourceName(entry.name);
+			newProgram->setResourcePath(newFontPath);
+			CoreServices::getInstance()->getResourceManager()->addResource(newProgram);
+		}
+
+		if(choosingVertexProgram) {
+			currentShader->setVertexProgram(newProgram);			
+		} else {
+			currentShader->setFragmentProgram(newProgram);		
+		}
+		
+		dispatchEvent(new Event(), Event::CHANGE_EVENT);		
+		globalFrame->hideModal();
+		
+		reloadPrograms();
+	}	
+}
+
+void ShaderEditorPane::reloadPrograms() {
+	vertexProgramProp->comboEntry->clearItems();
+	fragmentProgramProp->comboEntry->clearItems();
+		
+	vertexProgramProp->comboEntry->addComboItem("Custom...", NULL);
+	fragmentProgramProp->comboEntry->addComboItem("Custom...", NULL);	
+		
+	std::vector<Resource*> programs = CoreServices::getInstance()->getResourceManager()->getResources(Resource::RESOURCE_PROGRAM);
+	
+	for(int i=0; i < programs.size(); i++) {
+		ShaderProgram* program = (ShaderProgram*) programs[i];
+		if(program->type == ShaderProgram::TYPE_VERT) {
+			vertexProgramProp->comboEntry->addComboItem(program->getResourceName(), (void*)program);
+			if(program == currentShader->vp) {
+				vertexProgramProp->comboEntry->setSelectedIndex(vertexProgramProp->comboEntry->getNumItems()-1);
+			}
+		} else if(program->type == ShaderProgram::TYPE_FRAG) {
+			fragmentProgramProp->comboEntry->addComboItem(program->getResourceName(), (void*)program);		
+			if(program == currentShader->fp) {
+				fragmentProgramProp->comboEntry->setSelectedIndex(fragmentProgramProp->comboEntry->getNumItems()-1);
+			}			
+		}
+	}	
+}
+
+void ShaderEditorPane::setShader(Shader *shader) {
+	changingShader = true;
+	
+	currentShader = shader;
+	
+	reloadPrograms();
+		
+	nameProp->set(shader->getName());
+	
+	for(int i=0; i < vertexProgramProp->comboEntry->getNumItems(); i++) {
+		ShaderProgram* program = (ShaderProgram*) vertexProgramProp->comboEntry->getItemAtIndex(i)->data;
+		if(program == shader->vp) {
+			vertexProgramProp->comboEntry->setSelectedIndex(i);
+		}
+	}
+
+	for(int i=0; i < fragmentProgramProp->comboEntry->getNumItems(); i++) {
+		ShaderProgram* program = (ShaderProgram*) fragmentProgramProp->comboEntry->getItemAtIndex(i)->data;
+		if(program == shader->fp) {
+			fragmentProgramProp->comboEntry->setSelectedIndex(i);
+		}
+	}
+	
+	screenShaderProp->set(shader->screenShader);
+	
+	areaLightsProp->set(shader->numAreaLights);
+	spotLightsProp->set(shader->numSpotLights);
+	
+	enabled = true;
+	
+	changingShader = false;	
+}
+
+void ShaderEditorPane::Resize(Number width, Number height) {
+	headerBg->setShapeSize(width, 30);	
+	propList->Resize(370, height);
+	propList->updateProps();
+}
+
 
 MaterialEditorPane::MaterialEditorPane() : UIElement() {	
 
@@ -251,6 +457,8 @@ void MaterialEditorPane::setMaterial(Material *material) {
 	currentMaterial = material;
 	previewPrimitive->setMaterial(material);		
 	
+	reloadShaders();
+	
 	if(!currentMaterial)
 		return;
 	
@@ -284,7 +492,10 @@ MaterialEditorPane::~MaterialEditorPane() {
 MaterialMainWindow::MaterialMainWindow() : UIElement() {
 
 	materialPane = new MaterialEditorPane();
+	shaderPane = new ShaderEditorPane();
+		
 	addChild(materialPane);
+	addChild(shaderPane);	
 	enableScissor = true;
 }
 	
@@ -292,6 +503,7 @@ void MaterialMainWindow::Resize(Number width, Number height) {
 	Vector2 pos = getScreenPosition();	
 	scissorBox.setRect(pos.x,pos.y,width, height);
 	materialPane->Resize(width, height);
+	shaderPane->Resize(width, height);
 }
 
 MaterialBrowser::MaterialBrowser() : UIElement() {
@@ -300,8 +512,8 @@ MaterialBrowser::MaterialBrowser() : UIElement() {
 	treeContainer->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
 	treeContainer->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 		
-	shadersNode = treeContainer->getRootNode()->addTreeChild("folder.png", "Shaders", NULL);
-	materialsNode = treeContainer->getRootNode()->addTreeChild("folder.png", "Materials", NULL);
+	shadersNode = treeContainer->getRootNode()->addTreeChild("Images/shader_icon.png", "Shaders", NULL);
+	materialsNode = treeContainer->getRootNode()->addTreeChild("Images/material_icon.png", "Materials", NULL);
 	cubemapsNode = treeContainer->getRootNode()->addTreeChild("folder.png", "Cubemaps", NULL);
 	cubemapsNode = treeContainer->getRootNode()->addTreeChild("folder.png", "Post Effects", NULL);
 				
@@ -313,10 +525,13 @@ MaterialBrowser::MaterialBrowser() : UIElement() {
 	headerBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));	
 
+	newShaderButton = new UIImageButton("Images/new_shader.png");
+	addChild(newShaderButton);
+	newShaderButton->setPosition(5,4);
 	
 	newMaterialButton = new UIImageButton("Images/new_material.png");
 	addChild(newMaterialButton);
-	newMaterialButton->setPosition(5,5);
+	newMaterialButton->setPosition(28,4);
 	
 	selectedNode = NULL;
 
@@ -343,6 +558,13 @@ UITree *MaterialBrowser::addMaterial(Material *material) {
 	data->material = material;
 	return materialsNode->addTreeChild("material_icon.png", material->getName(), (void*)data);
 }
+
+UITree *MaterialBrowser::addShader(Shader *shader) {
+	MaterialBrowserData *data = new MaterialBrowserData();
+	data->shader = shader;
+	return shadersNode->addTreeChild("shader_icon.png", shader->getName(), (void*)data);
+}
+
 
 MaterialBrowser::~MaterialBrowser() {
 
@@ -373,8 +595,14 @@ bool PolycodeMaterialEditor::openFile(OSFileEntry filePath) {
 	
 	materialBrowser->addEventListener(this, Event::CHANGE_EVENT);
 	
-	materials = CoreServices::getInstance()->getMaterialManager()->loadMaterialsFromFile(filePath.fullPath);
 	
+	shaders = CoreServices::getInstance()->getMaterialManager()->loadShadersFromFile(filePath.fullPath);
+	for(int i=0; i < shaders.size(); i++) {
+		materialBrowser->addShader(shaders[i]);
+		CoreServices::getInstance()->getMaterialManager()->addShader(shaders[i]);
+	}	
+	
+	materials = CoreServices::getInstance()->getMaterialManager()->loadMaterialsFromFile(filePath.fullPath);	
 	for(int i=0; i < materials.size(); i++) {
 		materialBrowser->addMaterial(materials[i]);
 	}
@@ -383,6 +611,9 @@ bool PolycodeMaterialEditor::openFile(OSFileEntry filePath) {
 	mainSizer->addLeftChild(mainWindow);
 	
 	mainWindow->materialPane->addEventListener(this, Event::CHANGE_EVENT);
+	mainWindow->shaderPane->addEventListener(this, Event::CHANGE_EVENT);
+	
+	mainWindow->shaderPane->parentProject = parentProject;
 	
 	materialBrowser->newMaterialButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
@@ -493,6 +724,14 @@ void PolycodeMaterialEditor::handleEvent(Event *event) {
 		}
 		setHasChanges(true);
 	}
+
+	if(event->getDispatcher() == mainWindow->shaderPane && event->getEventType() == "" && event->getEventCode() == Event::CHANGE_EVENT) {
+		if(selectedMaterialNode && mainWindow->shaderPane->currentShader) {
+			selectedMaterialNode->setLabelText(mainWindow->shaderPane->currentShader->getName());
+		}
+		setHasChanges(true);
+	}
+
 		
 	if(event->getDispatcher() == materialBrowser->newMaterialButton && event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {
 		Material *newMaterial = CoreServices::getInstance()->getMaterialManager()->createMaterial("Untitled", "DefaultShader");
@@ -505,9 +744,15 @@ void PolycodeMaterialEditor::handleEvent(Event *event) {
 	if(event->getDispatcher() == materialBrowser) {
 		if(event->getEventType() == "" && event->getEventCode() == Event::CHANGE_EVENT) {
 			if(materialBrowser->selectedData)  {
+				mainWindow->materialPane->enabled = false;
+				mainWindow->shaderPane->enabled = false;
+								
 				if(materialBrowser->selectedData->material) {
 					selectedMaterialNode = materialBrowser->selectedNode;				
-					mainWindow->materialPane->setMaterial(materialBrowser->selectedData->material);
+					mainWindow->materialPane->setMaterial(materialBrowser->selectedData->material);					
+				} else if(materialBrowser->selectedData->shader) {
+					selectedMaterialNode = materialBrowser->selectedNode;				
+					mainWindow->shaderPane->setShader(materialBrowser->selectedData->shader);
 				}
 			}			
 		}

@@ -58,26 +58,13 @@ void ResourceManager::parseShaders(const String& dirPath, bool recursive) {
 	for(int i=0; i < resourceDir.size(); i++) {	
 		if(resourceDir[i].type == OSFileEntry::TYPE_FILE) {
 			if(resourceDir[i].extension == "mat") {
-				Logger::log("Adding shaders from %s\n", resourceDir[i].nameWithoutExtension.c_str());
-				TiXmlDocument doc(resourceDir[i].fullPath.c_str());
-				doc.LoadFile();
-				if(doc.Error()) {
-					Logger::log("XML Error: %s\n", doc.ErrorDesc());
-				} else {
-					TiXmlElement *mElem = doc.RootElement()->FirstChildElement("shaders");
-					
-					if(mElem) {
-						TiXmlNode* pChild;					
-						for (pChild = mElem->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {						
-							Shader *newShader = CoreServices::getInstance()->getMaterialManager()->createShaderFromXMLNode(pChild);
-							if(newShader != NULL) {
-								Logger::log("Adding shader %s\n", newShader->getName().c_str());
-								newShader->setResourceName(newShader->getName());
-								resources.push_back(newShader);
-								 CoreServices::getInstance()->getMaterialManager()->registerShader(newShader);
-							}
-						}
-					}
+				MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
+				std::vector<Shader*> shaders = materialManager->loadShadersFromFile(resourceDir[i].fullPath);
+				
+				for(int s=0; s < shaders.size(); s++) {
+					shaders[s]->setResourceName(shaders[s]->getName());
+					resources.push_back(shaders[s]);
+					materialManager->addShader(shaders[s]);
 				}
 			}
 		} else {
@@ -96,17 +83,14 @@ void ResourceManager::parsePrograms(const String& dirPath, bool recursive) {
 	resourceDir = OSBasics::parseFolder(dirPath, false);
 	for(int i=0; i < resourceDir.size(); i++) {	
 		if(resourceDir[i].type == OSFileEntry::TYPE_FILE) {
-			for(int m=0; m < shaderModules.size(); m++) {
-				PolycodeShaderModule *shaderModule = shaderModules[m];
-				if(shaderModule->acceptsExtension(resourceDir[i].extension)) {
-					Resource *newProgram = shaderModule->createProgramFromFile(resourceDir[i].extension, resourceDir[i].fullPath);
-					if(newProgram) {
-						newProgram->setResourceName(resourceDir[i].name);
-						newProgram->setResourcePath(resourceDir[i].fullPath);				
-						resources.push_back(newProgram);					
-					}
-				}
-			}
+			MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
+			
+			ShaderProgram *newProgram = materialManager->createProgramFromFile(resourceDir[i].fullPath);
+			if(newProgram) {
+				newProgram->setResourceName(resourceDir[i].name);
+				newProgram->setResourcePath(resourceDir[i].fullPath);
+				resources.push_back(newProgram);					
+			}			
 		} else {
 			if(recursive)
 				parsePrograms(dirPath+"/"+resourceDir[i].name, true);
@@ -261,12 +245,9 @@ Resource *ResourceManager::getResource(int resourceType, const String& resourceN
 	return NULL;
 }
 
-// Would it make more sense to pass back, like, something like an ObjectEntry here? Lua hates vectors.
-vector<Resource *> ResourceManager::getResources(int resourceType) {
-	vector<Resource *> result;
-	Logger::log("requested all of type %d\n", resourceType);
+std::vector<Resource*> ResourceManager::getResources(int resourceType) {
+	std::vector<Resource*> result;
 	for(int i =0; i < resources.size(); i++) {
-		//		Logger::log("is it %s?\n", resources[i]->getResourceName().c_str());		
 		if(resources[i]->getResourceType() == resourceType) {
 			result.push_back(resources[i]);
 		}

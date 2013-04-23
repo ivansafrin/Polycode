@@ -93,7 +93,7 @@ void ScreenLabel::Render() {
 }
 
 void ScreenLabel::setText(const String& newText) {
-	if(newText != label->getText() || label->colorsChanged()) {
+	if(newText != label->getText() || label->optionsChanged()) {
 		label->setText(newText);	
 		updateTexture();
 	}

@@ -49,13 +49,14 @@ namespace Polycode {
 
 			ShaderBinding *createBinding();
 			virtual void reload();
-		
-			unsigned int shader_id;		
-			GLSLProgram *vp;
-			GLSLProgram *fp;			
 			
-		protected:
-			void linkProgram();
+			void setVertexProgram(ShaderProgram *vp);
+			void setFragmentProgram(ShaderProgram *fp);			
+				
+			unsigned int shader_id;		
+			
+			void linkProgram();			
+			void unlinkProgram();
 	};
 	
 	class _PolyExport GLSLShaderBinding : public ShaderBinding {

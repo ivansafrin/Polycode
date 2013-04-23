@@ -34,8 +34,10 @@ class MaterialBrowserData  {
 public:
 	MaterialBrowserData() {
 		material = NULL;
+		shader = NULL;
 	}
 	Material *material;
+	Shader *shader;
 	String name;
 };
 
@@ -48,10 +50,13 @@ class MaterialBrowser : public UIElement {
 		void Resize(Number width, Number height);
 		
 		UITree * addMaterial(Material *material);
+		UITree * addShader(Shader *shader);
+				
 		void handleEvent(Event *event);
 		
 		MaterialBrowserData *selectedData;
-				
+
+		UIImageButton *newShaderButton;				
 		UIImageButton *newMaterialButton;
 		
 		UITree *selectedNode;
@@ -66,6 +71,40 @@ class MaterialBrowser : public UIElement {
 		UITreeContainer *treeContainer;	
 };
 
+class ShaderEditorPane : public UIElement {
+	public:
+		ShaderEditorPane();
+		~ShaderEditorPane();
+		void Resize(Number width, Number height);
+		void setShader(Shader *shader);
+		
+		void handleEvent(Event *event);
+		
+		void reloadPrograms();
+
+		Shader *currentShader;
+		PolycodeProject *parentProject;
+			
+	protected:
+	
+		
+		bool changingShader;
+
+		bool choosingVertexProgram;
+	
+		PropList *propList;
+		ScreenShape *headerBg;
+		
+		ComboProp *vertexProgramProp;
+		ComboProp *fragmentProgramProp;
+		
+		StringProp *nameProp;
+		BoolProp *screenShaderProp;
+		
+		
+		NumberProp *areaLightsProp;
+		NumberProp *spotLightsProp;		
+};
 
 class MaterialEditorPane : public UIElement {
 	public:
@@ -76,7 +115,7 @@ class MaterialEditorPane : public UIElement {
 		void handleEvent(Event *event);
 		
 		void reloadShaders();
-		void Resize(Number width, Number height);		
+		void Resize(Number width, Number height);	
 		void showPrimitive(unsigned int index);
 		
 		Material *currentMaterial;			
@@ -116,7 +155,9 @@ class MaterialMainWindow : public UIElement {
 	
 	void Resize(Number width, Number height);
 	
-	MaterialEditorPane *materialPane;	
+	MaterialEditorPane *materialPane;
+	ShaderEditorPane *shaderPane;	
+	
 	UIColorPicker *colorPicker;
 };
 
@@ -142,7 +183,8 @@ class PolycodeMaterialEditor : public PolycodeEditor {
 		
 		MaterialMainWindow *mainWindow;
 		std::vector<Material*> materials;
-		
+		std::vector<Shader*> shaders;
+				
 		UITree *selectedMaterialNode;
 };
 

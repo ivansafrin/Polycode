@@ -29,26 +29,12 @@ THE SOFTWARE.
 
 namespace Polycode {
 
-class _PolyExport GLSLProgramParam : public ProgramParam {
-	public:		
-		static void createParamData(int *retType, const String& type, const String& value, const String& min, const String& max, void **valueRes, void **minRes, void **maxRes);	
-	};
-
-	class _PolyExport GLSLProgram : public Resource {
+	class _PolyExport GLSLProgram : public ShaderProgram {
 		public:
 			GLSLProgram(int type);
 			virtual ~GLSLProgram();
 			
-			GLSLProgramParam addParam(const String& name, const String& typeString, const String& valueString, bool isAuto, int autoID, int paramType, void *defaultData, void *minData, void *maxData);
-		
 			unsigned int program;
-//			GLSLparameter modelViewProjection;
 	
-			static const int TYPE_VERT = 0;
-			static const int TYPE_FRAG = 1;		
-			
-			int type;
-			
-			std::vector<GLSLProgramParam> params;
 	};
 }

@@ -219,7 +219,7 @@ String CocoaCore::executeExternalCommand(String command,  String args, String in
 
 	String finalCommand = command+" "+args;
 	if(inDirectory != "") {
-		finalCommand = "cd "+inDirectory+" && "+finalCommand;
+		finalCommand = "cd \""+inDirectory+"\" && "+finalCommand;
 	}
 	
 	FILE *fp = popen(finalCommand.c_str(), "r");

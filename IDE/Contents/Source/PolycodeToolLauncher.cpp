@@ -91,9 +91,9 @@ void PolycodeToolLauncher::buildProject(PolycodeProject *project, String destina
 #else
 	String command = polycodeBasePath+"/Standalone/Bin/polybuild";
 	String inFolder = projectBasePath; 
-	String args = "--config="+projectPath+" --out="+destinationPath;
+	String args = "--config=\""+projectPath+"\" --out="+destinationPath;
 	String ret = CoreServices::getInstance()->getCore()->executeExternalCommand(command, args, inFolder);
-//	PolycodeConsole::print(ret);
+	PolycodeConsole::print(ret);
 #endif
 
 }

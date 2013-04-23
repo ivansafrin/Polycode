@@ -91,7 +91,7 @@ namespace Polycode {
 			int getAntialiasMode() const;			
 			void setAntialiasMode(int newMode);
 			
-			bool colorsChanged();
+			bool optionsChanged();
 					
 			static const int ANTIALIAS_FULL = 0;
 			static const int ANTIALIAS_NONE = 1;
@@ -101,7 +101,7 @@ namespace Polycode {
 			
 		protected:
 		
-			bool _colorsChanged;
+			bool _optionsChanged;
 			GlyphData labelData;
 	
 			std::vector<ColorRange> colorRanges;

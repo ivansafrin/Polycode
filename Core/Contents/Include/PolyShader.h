@@ -54,7 +54,26 @@ namespace Polycode {
 	static const int PARAM_Vector3 = 3;
 	static const int PARAM_Color = 4;
 	
+	static void createParamData(int *retType, const String& type, const String& value, const String& min, const String& max, void **valueRes, void **minRes, void **maxRes);	
+	
+	
 	};	
+
+	class _PolyExport ShaderProgram : public Resource {
+		public:
+			ShaderProgram(int type);
+			virtual ~ShaderProgram();
+			
+			static const int TYPE_VERT = 0;
+			static const int TYPE_FRAG = 1;		
+			
+			int type;
+			
+			std::vector<ProgramParam> params;
+			
+			ProgramParam addParam(const String& name, const String& typeString, const String& valueString, bool isAuto, int autoID, int paramType, void *defaultData, void *minData, void *maxData);
+					
+	};
 
 	class _PolyExport Shader : public Resource {
 		public:
@@ -67,7 +86,10 @@ namespace Polycode {
 			
 			virtual ShaderBinding *createBinding() = 0;
 			virtual void reload() {}
-
+			
+			virtual void setVertexProgram(ShaderProgram *vp) {}
+			virtual void setFragmentProgram(ShaderProgram *fp) {}
+			
 			static const int FIXED_SHADER = 0;
 			static const int MODULE_SHADER = 1;
 
@@ -79,6 +101,9 @@ namespace Polycode {
 			std::vector<ProgramParam> expectedVertexParams;
 								
 			bool screenShader;
+			
+			ShaderProgram *vp;
+			ShaderProgram *fp;			
 			
 		protected:
 		

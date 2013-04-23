@@ -185,7 +185,7 @@ void GLSLShaderModule::clearShader() {
 	glUseProgram(0);
 }
 
-void GLSLShaderModule::updateGLSLParam(Renderer *renderer, GLSLShader *glslShader, GLSLProgramParam &param, ShaderBinding *materialOptions, ShaderBinding *localOptions) {
+void GLSLShaderModule::updateGLSLParam(Renderer *renderer, GLSLShader *glslShader, ProgramParam &param, ShaderBinding *materialOptions, ShaderBinding *localOptions) {
 	
 		void *paramData = param.defaultData;
 		LocalShaderParam *localParam = materialOptions->getLocalParamByName(param.name);
@@ -199,7 +199,7 @@ void GLSLShaderModule::updateGLSLParam(Renderer *renderer, GLSLShader *glslShade
 		}
 		
 		switch(param.paramType) {
-			case GLSLProgramParam::PARAM_Number:
+			case ProgramParam::PARAM_Number:
 			{
 				Number *fval;			
 				fval = (Number*)paramData;
@@ -207,20 +207,20 @@ void GLSLShaderModule::updateGLSLParam(Renderer *renderer, GLSLShader *glslShade
 				glUniform1f(paramLocation, *fval);
 				break;
 			}
-			case GLSLProgramParam::PARAM_Vector2:
+			case ProgramParam::PARAM_Vector2:
 			{
 				Vector2 *fval2 = (Vector2*)paramData;
 				int paramLocation = glGetUniformLocation(glslShader->shader_id, param.name.c_str());
 				glUniform2f(paramLocation, fval2->x, fval2->y);				break;				
 			}			
-			case GLSLProgramParam::PARAM_Vector3:
+			case ProgramParam::PARAM_Vector3:
 			{
 				Vector3 *fval3 = (Vector3*)paramData;
 				int paramLocation = glGetUniformLocation(glslShader->shader_id, param.name.c_str());
 				glUniform3f(paramLocation, fval3->x,fval3->y,fval3->z);
 				break;				
 			}
-			case GLSLProgramParam::PARAM_Color:
+			case ProgramParam::PARAM_Color:
 			{
 				Color *col = (Color*)paramData;
 				int paramLocation = glGetUniformLocation(glslShader->shader_id, param.name.c_str());
@@ -419,12 +419,12 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 	GLSLShaderBinding *cgBinding = (GLSLShaderBinding*)material->getShaderBinding(shaderIndex);
 	
 	for(int i=0; i < glslShader->vp->params.size(); i++) {
-		GLSLProgramParam param = glslShader->vp->params[i];
+		ProgramParam param = glslShader->vp->params[i];
 		updateGLSLParam(renderer, glslShader, param, material->getShaderBinding(shaderIndex), localOptions);
 	}
 	
 	for(int i=0; i < glslShader->fp->params.size(); i++) {
-		GLSLProgramParam param = glslShader->fp->params[i];
+		ProgramParam param = glslShader->fp->params[i];
 		updateGLSLParam(renderer, glslShader, param, material->getShaderBinding(shaderIndex), localOptions);
 	}	
 	
@@ -460,17 +460,17 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 	return true;
 }
 
-GLSLProgramParam GLSLShaderModule::addParamToProgram(GLSLProgram *program,TiXmlNode *node) {
+ProgramParam GLSLShaderModule::addParamToProgram(GLSLProgram *program,TiXmlNode *node) {
 		bool isAuto = false;
 		int autoID = 0;
-		int paramType = GLSLProgramParam::PARAM_UNKNOWN;
+		int paramType = ProgramParam::PARAM_UNKNOWN;
 		void *defaultData = NULL;
 		void *minData = NULL;
 		void *maxData = NULL;
 		
 		TiXmlElement *nodeElement = node->ToElement();
 		if (!nodeElement) {
-			GLSLProgramParam::createParamData(&paramType, "Number", "0.0", "0.0", "0.0", &defaultData, &minData, &maxData);		
+			ProgramParam::createParamData(&paramType, "Number", "0.0", "0.0", "0.0", &defaultData, &minData, &maxData);		
 			return program->addParam("Unknown", "Number", nodeElement->Attribute("default"), isAuto, autoID, paramType, defaultData, minData, maxData); // Skip comment nodes
 		}
 
@@ -482,7 +482,7 @@ GLSLProgramParam GLSLShaderModule::addParamToProgram(GLSLProgram *program,TiXmlN
 			}
 		}
 		
-		GLSLProgramParam::createParamData(&paramType, nodeElement->Attribute("type"), nodeElement->Attribute("default"), nodeElement->Attribute("min"), nodeElement->Attribute("max"), &defaultData, &minData, &maxData);
+		ProgramParam::createParamData(&paramType, nodeElement->Attribute("type"), nodeElement->Attribute("default"), nodeElement->Attribute("min"), nodeElement->Attribute("max"), &defaultData, &minData, &maxData);
 		
 		return program->addParam(nodeElement->Attribute("name"), nodeElement->Attribute("type"), nodeElement->Attribute("default"), isAuto, autoID, paramType, defaultData, minData, maxData);
 }
@@ -538,7 +538,7 @@ GLSLProgram *GLSLShaderModule::createGLSLProgram(const String& fileName, int typ
 	return prog;
 }
 
-Resource* GLSLShaderModule::createProgramFromFile(const String& extension, const String& fullPath) {
+ShaderProgram* GLSLShaderModule::createProgramFromFile(const String& extension, const String& fullPath) {
 	if(extension == "vert") {
 		Logger::log("Adding GLSL vertex program %s\n", fullPath.c_str());				
 		return createGLSLProgram(fullPath, GLSLProgram::TYPE_VERT);

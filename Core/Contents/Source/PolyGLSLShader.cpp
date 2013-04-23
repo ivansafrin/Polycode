@@ -106,7 +106,7 @@ void GLSLShaderBinding::addParam(const String& type, const String& name, const S
 	void *defaultData;
 	void *minData;
 	void *maxData;		
-	GLSLProgramParam::createParamData(&paramType, type, value, "", "", &defaultData,&minData, &maxData);
+	ProgramParam::createParamData(&paramType, type, value, "", "", &defaultData,&minData, &maxData);
 	LocalShaderParam *newParam = new LocalShaderParam;
 	newParam->data = defaultData;
 	newParam->name = name;
@@ -115,13 +115,30 @@ void GLSLShaderBinding::addParam(const String& type, const String& name, const S
 
 void GLSLShader::linkProgram() {
 	shader_id = glCreateProgram();
-    glAttachShader(shader_id, fp->program);
-    glAttachShader(shader_id, vp->program);
-	
-	glBindAttribLocation(shader_id, 6, "vTangent");
-	
+    glAttachShader(shader_id, ((GLSLProgram*)fp)->program);
+    glAttachShader(shader_id, ((GLSLProgram*)vp)->program);	
+	glBindAttribLocation(shader_id, 6, "vTangent");	
     glLinkProgram(shader_id);
 }
+
+void GLSLShader::unlinkProgram() {
+	glDetachShader(shader_id, ((GLSLProgram*)fp)->program);
+    glDetachShader(shader_id, ((GLSLProgram*)vp)->program);
+	glDeleteProgram(shader_id);	
+}
+
+void GLSLShader::setVertexProgram(ShaderProgram *vp) {
+	unlinkProgram();
+	this->vp = vp;
+	linkProgram();
+}
+
+void GLSLShader::setFragmentProgram(ShaderProgram *fp) {
+	unlinkProgram();
+	this->fp = fp;
+	linkProgram();
+}
+
 
 GLSLShader::GLSLShader(GLSLProgram *vp, GLSLProgram *fp) : Shader(Shader::MODULE_SHADER) {
 	this->vp = vp;
@@ -136,9 +153,7 @@ void GLSLShader::reload() {
 }
 
 GLSLShader::~GLSLShader() {
-	glDetachShader(shader_id, fp->program);
-    glDetachShader(shader_id, vp->program);
-	glDeleteProgram(shader_id);	
+	unlinkProgram();
 }
 
 ShaderBinding *GLSLShader::createBinding() {

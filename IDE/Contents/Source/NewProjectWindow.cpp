@@ -131,6 +131,8 @@ void NewProjectWindow::handleEvent(Event *event) {
 				projectLocationInput->setText(pathName);
 
 		}
+		
+		if(enabled) {						
 
 		if(event->getEventCode() == UIEvent::CLICK_EVENT) {
 			if(event->getDispatcher() == okButton) {
@@ -153,6 +155,8 @@ void NewProjectWindow::handleEvent(Event *event) {
 #endif
 			}			
 			
+		}
+		
 		}
 	}
 	
