@@ -55,7 +55,3 @@ namespace Polycode {
 		UIBox *bgBox;
 	};
 }
-
-//helper functions for key navigation
-Polycode::UITree *findLastOpenNode(Polycode::UITree *tree);
-Polycode::UITree *findNextParentSibling(Polycode::UITree *tree);
