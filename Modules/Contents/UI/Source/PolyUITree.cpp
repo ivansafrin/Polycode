@@ -347,7 +347,6 @@ UITree *UITree::getParent() {
 
 UITree *UITree::getPrevSibling() {
 	UITree *sibling = NULL;
-	UITree *parent = getParent();
 	if (!parent)
 		return sibling;
 	for (int i=0; i < parent->getNumTreeChildren(); i++) {
@@ -359,7 +358,6 @@ UITree *UITree::getPrevSibling() {
 
 UITree *UITree::getNextSibling() {
 	UITree *sibling = NULL;
-	UITree *parent = getParent();
 	if (!parent)
 		return sibling;
 	for (int i=0; i < parent->getNumTreeChildren(); i++) {
