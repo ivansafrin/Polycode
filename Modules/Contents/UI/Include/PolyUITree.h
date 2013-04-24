@@ -68,6 +68,11 @@ namespace Polycode {
 			String getLabelText();
 			
 			Number handleRotation;
+
+			UITree *getParent();
+			bool hasTreeChildren() { return (getNumTreeChildren()); }
+			UITree *getPrevSibling();
+			UITree *getNextSibling();
 		
 		private:
 
