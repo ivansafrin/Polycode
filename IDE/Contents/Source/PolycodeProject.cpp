@@ -40,61 +40,45 @@ bool PolycodeProject::loadProjectFromFile() {
 		return false;
 	}
 	
-	if(configFile.root["entryPoint"]) {	
-		data.entryPoint = configFile.root["entryPoint"]->stringVal;
-	} else {
+	if(!configFile.root.readString("entryPoint", &(data.entryPoint))) {
 		data.entryPoint = "Source/Main.lua";
 		configFile.root.addChild("entryPoint", "Source/Main.lua");
 	}
 	
-	if(configFile.root["defaultWidth"]) {	
-		data.defaultWidth = configFile.root["defaultWidth"]->intVal;
-	} else {
+	if(!configFile.root.readInt("defaultWidth", &(data.defaultWidth))) {
 		data.defaultWidth = 640;	
 		configFile.root.addChild("defaultWidth", 640);			
 	}
 	
-	if(configFile.root["defaultHeight"]) {	
-		data.defaultHeight = configFile.root["defaultHeight"]->intVal;
-	} else {
+	if(!configFile.root.readInt("defaultHeight", &(data.defaultHeight))) {
 		data.defaultHeight = 480;	
 		configFile.root.addChild("defaultHeight", 480);		
 	}
 	
-	if(configFile.root["textureFiltering"]) {	
-		data.filteringMode = configFile.root["textureFiltering"]->stringVal;
-	} else {
+	if(!configFile.root.readString("textureFiltering", &(data.filteringMode))) {
 		data.filteringMode = "linear";
 		configFile.root.addChild("textureFiltering", String("linear"));	
 	}
 	
 
-	if(configFile.root["vSync"]) {	
-		data.vSync = configFile.root["vSync"]->boolVal;
-	} else {
+	if(!configFile.root.readBool("vSync", &(data.vSync))) {
 		data.vSync = false;
 		configFile.root.addChild("vSync", false);		
 	}
 
 
-	if(configFile.root["antiAliasingLevel"]) {
-		data.aaLevel = configFile.root["antiAliasingLevel"]->intVal;
-	} else {
+	if(!configFile.root.readInt("antiAliasingLevel", &(data.aaLevel))) {
 		data.aaLevel = 0;
 		configFile.root.addChild("antiAliasingLevel", 0);		
 	}
 
 
-	if(configFile.root["anisotropyLevel"]) {
-		data.anisotropy = configFile.root["anisotropyLevel"]->intVal;
-	} else {
+	if(!configFile.root.readInt("anisotropyLevel", &(data.anisotropy))) {
 		data.anisotropy = 0;
 		configFile.root.addChild("anisotropyLevel", 0);		
 	}
 
-	if(configFile.root["frameRate"]) {
-		data.frameRate = configFile.root["frameRate"]->intVal;	
-	} else {
+	if(!configFile.root.readInt("frameRate", &(data.frameRate))) {
 		data.frameRate = 60;
 		configFile.root.addChild("frameRate", 60);
 	}
@@ -103,6 +87,9 @@ bool PolycodeProject::loadProjectFromFile() {
 	if(configFile.root["modules"]) {
 		for(int i=0; i < configFile.root["modules"]->length; i++) {
 			ObjectEntry *module = (*configFile.root["modules"])[i];
+
+			if(module->type != ObjectEntry::STRING_ENTRY) continue;
+			
 			data.modules.push_back(module->stringVal);
 			CoreServices::getInstance()->getResourceManager()->addArchive("Standalone/Modules/"+module->stringVal+"/API");
 			
@@ -113,11 +100,10 @@ bool PolycodeProject::loadProjectFromFile() {
 	if(configFile.root["fonts"]) {
 		for(int i=0; i < configFile.root["fonts"]->length; i++) {
 			ObjectEntry *font = (*configFile.root["fonts"])[i];
-			ObjectEntry *fontName = (*font)["name"];
-			ObjectEntry *fontPath = (*font)["path"];
 			
-			if(fontName && fontPath) {
-				ProjectFontData fontData = ProjectFontData(fontName->stringVal, fontPath->stringVal);
+			String fontName, fontPath;
+			if(font->readString("name", &fontName) && font->readString("path", &fontPath)) {
+				ProjectFontData fontData = ProjectFontData(fontName, fontPath);
 				data.fonts.push_back(fontData);
 			}
 		}
@@ -125,16 +111,18 @@ bool PolycodeProject::loadProjectFromFile() {
 
 	if(configFile.root["backgroundColor"]) {
 		ObjectEntry *color = configFile.root["backgroundColor"];
-		if((*color)["red"] && (*color)["green"] && (*color)["blue"]) {
-			data.backgroundColorR = (*color)["red"]->NumberVal;
-			data.backgroundColorG = (*color)["green"]->NumberVal;
-			data.backgroundColorB = (*color)["blue"]->NumberVal;
-		} else {
+		
+		bool haveAllColors = 1;
+		haveAllColors &= color->readNumber("red", &(data.backgroundColorR));
+		haveAllColors &= color->readNumber("green", &(data.backgroundColorG));
+		haveAllColors &= color->readNumber("blue", &(data.backgroundColorB));
+
+		if(!haveAllColors) {
 			data.backgroundColorR = 0.0;
 			data.backgroundColorG = 0.0;
 			data.backgroundColorB = 0.0;
 			
-			ObjectEntry *color = configFile.root.addChild("backgroundColor");			
+			if(!color) color = configFile.root.addChild("backgroundColor");			
 			color->addChild("red", 0.0);
 			color->addChild("green", 0.0);
 			color->addChild("blue", 0.0);						

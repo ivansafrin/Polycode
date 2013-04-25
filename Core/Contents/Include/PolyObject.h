@@ -99,6 +99,35 @@ namespace Polycode {
 		}
 
 		/**
+		 * Tries to write the int value of this[key] to out.
+		 * @param out A pointer to the value to write the int value to.
+		 * @return true if this[key] is an integer, false otherwise.
+		 */
+		bool readInt(String key, int *out) {
+			ObjectEntry *child = this->operator[](key);
+
+			if(!child) {
+				return false;
+			}
+
+			if(child->type == INT_ENTRY) {
+				*out = child->intVal;
+				return true;
+			}
+
+			return false;
+		}
+
+		/**
+		 * Tries to write the int value of this[key] to out.
+		 * @param out A pointer to the value to write the int value to.
+		 * @return true if this[key] is an integer, false otherwise.
+		 */
+		bool readInt(String key, unsigned *out) {
+			return readInt(key, (int*) out);
+		}
+
+		/**
 		 * Tries to write the String value of this[key] to out.
 		 * @param out A pointer to the value to write the String value to.
 		 * @return true if this[key] is a String, false otherwise.
