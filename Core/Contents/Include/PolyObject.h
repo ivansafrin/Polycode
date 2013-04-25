@@ -38,7 +38,7 @@ namespace Polycode {
 		/**
 		* Default constructor
 		*/
-		ObjectEntry() { type = ObjectEntry::CONTAINER_ENTRY; type = UNKNOWN_ENTRY; length = 0; }
+		ObjectEntry() { type = UNKNOWN_ENTRY; length = 0; }
 				
 		/**
 		* Type of entry. Possible values are (FLOAT_ENTRY, INT_ENTRY, BOOL_ENTRY, ARRAY_ENTRY, STRING_ENTRY, CONTAINER_ENTRY).
@@ -74,6 +74,69 @@ namespace Polycode {
 		* Length of this object entry if its type is ARRAY_ENTRY.
 		*/										
 		int length;
+
+		/**
+		 * Tries to write the Number value of this[key] to out.
+		 * @param out A pointer to the value to write the number value to.
+		 * @return true if this[key] is a number, false otherwise.
+		 */
+		bool readNumberAttribute(String key, Number *out) {
+			ObjectEntry *child = this->operator[](key);
+
+			if(!child) {
+				return false;
+			}
+
+			if(child->type == FLOAT_ENTRY) {
+				*out = child->NumberVal;
+				return true;
+			} else if(child->type == INT_ENTRY) {
+				*out = (Number) child->intVal;
+				return true;
+			}
+
+			return false;
+		}
+
+		/**
+		 * Tries to write the String value of this[key] to out.
+		 * @param out A pointer to the value to write the String value to.
+		 * @return true if this[key] is a String, false otherwise.
+		 */
+		bool readString(String key, String *out) {
+			ObjectEntry *child = this->operator[](key);
+
+			if(!child) {
+				return false;
+			}
+
+			if(child->type == STRING_ENTRY) {
+				*out = child->stringVal;
+				return true;
+			}
+
+			return false;
+		}
+
+		/**
+		 * Tries to write the boolean value of this[key] to out.
+		 * @param out A pointer to the value to write the boolean value to.
+		 * @return true if this[key] is a bool, false otherwise.
+		 */
+		bool readBool(String key, bool *out) {
+			ObjectEntry *child = this->operator[](key);
+
+			if(!child) {
+				return false;
+			}
+
+			if(child->type == BOOL_ENTRY) {
+				*out = child->boolVal;
+				return true;
+			}
+
+			return false;
+		}
 		
 		/**
 		* Adds an empty child entry.
