@@ -80,7 +80,7 @@ namespace Polycode {
 		 * @param out A pointer to the value to write the number value to.
 		 * @return true if this[key] is a number, false otherwise.
 		 */
-		bool readNumberAttribute(String key, Number *out) {
+		bool readNumber(String key, Number *out) {
 			ObjectEntry *child = this->operator[](key);
 
 			if(!child) {
