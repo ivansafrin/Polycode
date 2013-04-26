@@ -47,6 +47,20 @@ bool PolycodeProject::loadProjectFromFile() {
 		configFile.root.addChild("entryPoint", "Source/Main.lua");
 	}
 	
+	if(configFile.root["customPlayerPath"]) {	
+		data.customPlayerPath = configFile.root["customPlayerPath"]->stringVal;
+	} else {
+		data.customPlayerPath = "";
+		configFile.root.addChild("customPlayerPath", "");
+	}
+    
+	if(configFile.root["customResourceCopyPath"]) {	
+		data.customResourceCopyPath = configFile.root["customResourceCopyPath"]->stringVal;
+	} else {
+		data.customResourceCopyPath = "";
+		configFile.root.addChild("customResourceCopyPath", "");
+	}
+    
 	if(configFile.root["defaultWidth"]) {	
 		data.defaultWidth = configFile.root["defaultWidth"]->intVal;
 	} else {
@@ -156,6 +170,12 @@ bool PolycodeProject::saveFile() {
 	configFile.root["textureFiltering"]->type = ObjectEntry::STRING_ENTRY;
 	configFile.root["textureFiltering"]->stringVal = data.filteringMode;
 	
+	configFile.root["customPlayerPath"]->stringVal = data.customPlayerPath;
+	configFile.root["customPlayerPath"]->type = ObjectEntry::STRING_ENTRY;	
+	configFile.root["customResourceCopyPath"]->stringVal = data.customResourceCopyPath;
+	configFile.root["customResourceCopyPath"]->type = ObjectEntry::STRING_ENTRY;	
+ 
+    
 	ObjectEntry *color = configFile.root["backgroundColor"];
 	
 	(*color)["red"]->NumberVal = data.backgroundColorR;

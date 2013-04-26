@@ -89,6 +89,9 @@ class PolycodeProjectEditor : public PolycodeEditor {
 	UITextInput *entryPointInput;	
 	UIColorBox *bgColorBox;
 	
+	UITextInput *customPlayerPathInput;
+    UITextInput *copyResourcesPathInput;
+    
 	UIButton *addFontButton;
 	
 	PolycodeProject *associatedProject;

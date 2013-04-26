@@ -89,11 +89,22 @@ void PolycodeToolLauncher::buildProject(PolycodeProject *project, String destina
 	String args =  "--config=\""+projectPath+"\" --out=\""+destinationPath+"\"";
 	String ret = CoreServices::getInstance()->getCore()->executeExternalCommand(command, args, targetFolder);
 #else
-	String command = polycodeBasePath+"/Standalone/Bin/polybuild";
-	String inFolder = projectBasePath; 
-	String args = "--config=\""+projectPath+"\" --out="+destinationPath;
-	String ret = CoreServices::getInstance()->getCore()->executeExternalCommand(command, args, inFolder);
-	PolycodeConsole::print(ret);
+	// Copy Resources to Custom location if defined    
+    if(project->data.customResourceCopyPath != "")
+    {
+        String command = "rsync";
+        String inFolder = projectBasePath; 
+        String args = "-r * \"../builds/doomlaser videogame draft.app/Contents/Resources/\"";
+        String ret = CoreServices::getInstance()->getCore()->executeExternalCommand(command, args, inFolder);  
+    }
+    else
+    {    
+        String command = polycodeBasePath+"/Standalone/Bin/polybuild";
+        String inFolder = projectBasePath; 
+        String args = "--config=\""+projectPath+"\" --out="+destinationPath;
+        String ret = CoreServices::getInstance()->getCore()->executeExternalCommand(command, args, inFolder);
+        PolycodeConsole::print(ret);
+    }
 #endif
 
 }

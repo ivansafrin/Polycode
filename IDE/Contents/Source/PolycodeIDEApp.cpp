@@ -344,7 +344,20 @@ void PolycodeIDEApp::doRunProject() {
 
 	String outPath = PolycodeToolLauncher::generateTempPath(projectManager->getActiveProject()) + ".polyapp";
 	PolycodeToolLauncher::buildProject(projectManager->getActiveProject(), outPath);
-	PolycodeToolLauncher::runPolyapp(outPath);
+    if(projectManager->getActiveProject()->data.customPlayerPath != "") {
+#ifdef _WINDOWS
+        // need windows solution
+#else
+        // Custom Poly Player
+        String command = "open";
+        String inFolder = projectManager->getActiveProject()->getRootFolder();
+        String args = projectManager->getActiveProject()->data.customPlayerPath;
+        String ret = CoreServices::getInstance()->getCore()->executeExternalCommand(command, args, inFolder);  
+#endif        
+    } else {
+        PolycodeToolLauncher::runPolyapp(outPath);  
+    }
+        
 }
 
 void PolycodeIDEApp::runProject() {

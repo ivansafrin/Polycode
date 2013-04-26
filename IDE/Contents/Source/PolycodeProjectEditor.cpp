@@ -273,6 +273,23 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	entryPointInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	bgColorBox->addEventListener(this, UIEvent::CHANGE_EVENT);
 
+	customPlayerPathInput = new UITextInput(false, 450, 12);
+    mainSettingsWindow->addChild(customPlayerPathInput);    
+    customPlayerPathInput->setPosition(label2->getPosition().x, bgColorBox->getPosition().y+80);
+	label2 = new ScreenLabel(L"Custom Player Path", fontSize, fontName, Label::ANTIALIAS_FULL);
+	label2->setColor(1.0, 1.0, 1.0, 0.5);
+	mainSettingsWindow->addChild(label2);
+	label2->setPosition(padding, customPlayerPathInput->getPosition().y-18);
+    
+    
+    copyResourcesPathInput = new UITextInput(false, 450, 12);;
+    mainSettingsWindow->addChild(copyResourcesPathInput);    
+    copyResourcesPathInput->setPosition(label2->getPosition().x, customPlayerPathInput->getPosition().y+50);
+	label2 = new ScreenLabel(L"Custom Copy Resources Path", fontSize, fontName, Label::ANTIALIAS_FULL);
+	label2->setColor(1.0, 1.0, 1.0, 0.5);
+	mainSettingsWindow->addChild(label2);
+	label2->setPosition(padding, copyResourcesPathInput->getPosition().y-18);
+    
 	isLoading = false;
 }
 
@@ -327,6 +344,7 @@ void PolycodeProjectEditor::handleEvent(Event *event) {
 			fontEntries.push_back(newEntry);
 			refreshFontEntries();
 		}
+        
 		
 		globalFrame->assetBrowser->removeAllHandlersForListener(this);
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);		
@@ -361,6 +379,10 @@ bool PolycodeProjectEditor::openFile(OSFileEntry filePath) {
 	defaultHeightInput->setText(String::IntToString(associatedProject->data.defaultHeight));
 	vSyncCheckBox->setChecked(associatedProject->data.vSync);
 	
+
+    customPlayerPathInput->setText(associatedProject->data.customPlayerPath);
+    copyResourcesPathInput->setText(associatedProject->data.customResourceCopyPath);    
+    
 	unsigned int aaMap[7] = {0,1,1,1,2,2,3};
 	aaLevelComboBox->setSelectedIndex(aaMap[associatedProject->data.aaLevel]);
 
@@ -373,6 +395,7 @@ bool PolycodeProjectEditor::openFile(OSFileEntry filePath) {
 	} else {
 		texFilteringComboBox->setSelectedIndex(1);	
 	}
+    
 
 	for(int i=0; i < associatedProject->data.fonts.size(); i++) {
 		ProjectFontData fontData = associatedProject->data.fonts[i];
@@ -422,6 +445,9 @@ void PolycodeProjectEditor::saveFile() {
 	associatedProject->data.frameRate = atoi(framerateInput->getText().c_str());
 	associatedProject->data.defaultWidth = atoi(defaultWidthInput->getText().c_str());
 	associatedProject->data.defaultHeight = atoi(defaultHeightInput->getText().c_str());	
+    
+	associatedProject->data.customPlayerPath = customPlayerPathInput->getText();
+    associatedProject->data.customResourceCopyPath = copyResourcesPathInput->getText();    
 	associatedProject->data.entryPoint = entryPointInput->getText();
 	
 	associatedProject->data.backgroundColorR = bgColorBox->getSelectedColor().r;

@@ -42,6 +42,9 @@ class ProjectFontData {
 class ProjectData {
 	public:
 		String entryPoint;
+        String customPlayerPath;
+        String customResourceCopyPath;
+    
 		int defaultWidth;
 		int defaultHeight;
 		bool vSync;	
