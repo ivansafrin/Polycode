@@ -674,12 +674,8 @@ namespace Polycode {
 			Vector3 _position;
 			Vector3 _scale;		
 			Rotation _rotation;
-			
-			Quaternion qYaw;
-			Quaternion qPitch;
-			Quaternion qRoll;			
+	
 			Quaternion rotationQuat;
-			
 			
 			bool lockMatrix;
 			bool matrixDirty;
