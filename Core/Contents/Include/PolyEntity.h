@@ -660,7 +660,7 @@ namespace Polycode {
 			//@}		
 		protected:
 		
-			std::vector<String> tags;
+			std::vector<String> *tags;
 		
 			void checkTransformSetters();
 		

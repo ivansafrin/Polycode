@@ -59,6 +59,8 @@ Entity::Entity() : EventDispatcher() {
 	enableScissor = false;
 	
 	editorOnly = false; 
+
+	tags = NULL;
 }
 
 Entity *Entity::getEntityById(String id, bool recursive) {
@@ -109,8 +111,13 @@ void Entity::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) {
 	clone->scissorBox = scissorBox;
 	clone->editorOnly = editorOnly;	
 	clone->id = id;
-	for(int i=0; i < tags.size(); i++) {	
-		clone->addTag(tags[i]);
+	if(tags == NULL) {
+		clone->tags = NULL;
+	} else {
+		clone->tags = new std::vector<String>();
+		for(int i=0; i < tags->size(); i++) {	
+			clone->addTag((*tags)[i]);
+		}
 	}
 	clone->setRenderer(renderer);
 
@@ -286,6 +293,7 @@ Entity::~Entity() {
 			delete children[i];
 		}
 	}
+	if(tags) delete tags;
 }
 
 Vector3 Entity::getChildCenter() const {
@@ -749,29 +757,33 @@ Number Entity::getCombinedRoll() const {
 }
 
 unsigned int Entity::getNumTags() const {
-	return tags.size();
+	if(!tags) return 0;
+	return tags->size();
 }
 
 String Entity::getTagAtIndex(unsigned int index) const {
-	if(index < tags.size())
-		return tags[index];
+	if(!tags) return "";
+	if(index < tags->size())
+		return (*tags)[index];
 	return "";
 }
 
 bool Entity::hasTag(String tag) const {
-
-	for(int i=0; i < tags.size(); i++) {
-		if(tags[i] == tag)
+	if(!tags) return false;
+	for(int i=0; i < tags->size(); i++) {
+		if((*tags)[i] == tag)
 			return true;
 	}
 	return false;
 }
 			
 void Entity::clearTags() {
-	tags.clear();
+	if(!tags) return;
+	tags->clear();
 }
 
 void Entity::addTag(String tag) {
-	tags.push_back(tag);
+	if(!tags) tags = new std::vector<String>();
+	tags->push_back(tag);
 }
 
