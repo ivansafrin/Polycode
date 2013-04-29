@@ -132,6 +132,8 @@ void ScreenMesh::setMaterialByName(const String& materialName) {
 void ScreenMesh::Render() {	
 	Renderer *renderer = CoreServices::getInstance()->getRenderer();
 	
+	renderer->clearShader();
+	
 	renderer->setLineSize(lineWidth);
 	renderer->setLineSmooth(lineSmooth);
 	
