@@ -29,6 +29,7 @@ THE SOFTWARE.
 
 #include "PolyGLSLShaderModule.h"
 #include "PolyCoreServices.h"
+#include "PolyCore.h"
 #include "PolyResourceManager.h"
 #include "PolyRenderer.h"
 #include "PolyGLSLProgram.h"
@@ -523,6 +524,7 @@ void GLSLShaderModule::recreateGLSLProgram(GLSLProgram *prog, const String& file
         log = (GLchar*)malloc(length);
         glGetShaderInfoLog(prog->program, length, &length, log);
 		printf("GLSL ERROR: %s\n", log);
+		CoreServices::getInstance()->getLogger()->logBroadcast("GLSL ERROR:" + String(log));
         free(log);
     }		
 		

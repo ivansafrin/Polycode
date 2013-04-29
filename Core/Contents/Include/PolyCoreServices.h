@@ -41,6 +41,7 @@ namespace Polycode {
 	class SoundManager;
 	class Core;
 	class CoreMutex;
+	class Logger;
 	
 	/**
 	* Global services singleton. CoreServices instantiates and provides global Singleton access to all of the main manager classes in Polycode as well as the Renderer and Config classes.
@@ -147,10 +148,16 @@ namespace Polycode {
 			FontManager *getFontManager();
 
 			/**
+			* Returns the logger. It can log messages and broadcast them to listeners.
+			*/
+			Logger *getLogger();
+
+			/**
 			* Returns the config. The config loads and saves data to disk.
 			* @return Config manager.
 			* @see Config
-			*/																													
+			*/														
+						
 			Config *getConfig();
 			
 			/**
@@ -181,6 +188,7 @@ namespace Polycode {
 			MaterialManager *materialManager;
 			ScreenManager *screenManager;		
 			SceneManager *sceneManager;
+			Logger *logger;
 			TimerManager *timerManager;
 			TweenManager *tweenManager;
 			ResourceManager *resourceManager;

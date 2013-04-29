@@ -223,6 +223,7 @@ PolycodeConsole::PolycodeConsole() : UIElement() {
 	consoleHistoryMaxSize = 15;
 	
 	consoleWindow->clearButton->addEventListener(this, UIEvent::CLICK_EVENT);
+	CoreServices::getInstance()->getLogger()->addEventListener(this, Event::NOTIFY_EVENT);
 
 	PolycodeConsole::setInstance(this);
 }
@@ -245,7 +246,13 @@ void PolycodeConsole::setDebugger(PolycodeRemoteDebugger *debugger) {
 }
 
 void PolycodeConsole::handleEvent(Event *event) {
-	if(event->getDispatcher() == consoleWindow->clearButton) {
+
+	if(event->getDispatcher() == CoreServices::getInstance()->getLogger()) {
+		if(event->getEventCode() == Event::NOTIFY_EVENT) {
+			LoggerEvent *loggerEvent = (LoggerEvent*)event;
+			_print(loggerEvent->message);
+		}
+	} else if(event->getDispatcher() == consoleWindow->clearButton) {
 		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {
 			debugTextInput->setText("");
 		}

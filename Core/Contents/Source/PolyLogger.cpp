@@ -28,13 +28,34 @@
 
 using namespace Polycode;
 
+LoggerEvent::LoggerEvent(String message) : Event() {
+	this->message = message;
+}
+
+LoggerEvent::~LoggerEvent() {
+
+}
+
+
+Logger::Logger() : EventDispatcher() {
+
+}
+
+Logger::~Logger() {
+
+}
+
+void Logger::logBroadcast(String message) {
+	dispatchEvent(new LoggerEvent(message), Event::NOTIFY_EVENT);
+	Logger::log(message.c_str());
+}
+
 void Logger::logw(const char *str) {
 	std::wcout << str << std::endl;
 }
 
 void Logger::log(const char *format, ...) {
 	va_list args;
-
 	va_start(args, format);
 	vfprintf(stderr, format, args);
 	va_end(args);

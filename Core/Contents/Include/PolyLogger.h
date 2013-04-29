@@ -22,13 +22,25 @@ THE SOFTWARE.
 
 #pragma once
 #include "PolyGlobals.h"
+#include "PolyEventDispatcher.h"
 
 namespace Polycode {
 
-	class _PolyExport Logger : public PolyBase {
+	class _PolyExport LoggerEvent : public Event {
 		public:
-			Logger(){}
-			~Logger(){}
+			LoggerEvent(String message);
+			virtual ~LoggerEvent();
+			
+			String message;
+			
+	};
+
+	class _PolyExport Logger : public EventDispatcher {
+		public:
+			Logger();
+			virtual ~Logger();
+
+			void logBroadcast(String message);
 
 			static void log(const char *format, ...);
 			static void logw(const char *str);
