@@ -31,10 +31,13 @@ namespace Polycode {
 
 	class _PolyExport GLSLProgram : public ShaderProgram {
 		public:
-			GLSLProgram(int type);
+			GLSLProgram(String fileName, int type);
 			virtual ~GLSLProgram();
 			
+			void reloadProgram();
+			
 			unsigned int program;
+			String fileName;
 	
 	};
 }

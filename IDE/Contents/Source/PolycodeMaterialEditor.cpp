@@ -140,16 +140,16 @@ void ShaderEditorPane::handleEvent(Event *event) {
 	}
 	
 	if(event->getDispatcher() == globalFrame->assetBrowser && event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {
-		String newFontPath = globalFrame->assetBrowser->getSelectedAssetPath();
-		newFontPath = newFontPath.replace(parentProject->getRootFolder()+"/", "");		
+		String newProgramPath = globalFrame->assetBrowser->getFullSelectedAssetPath();
 		globalFrame->assetBrowser->removeAllHandlersForListener(this);
 		
 
-		OSFileEntry entry(newFontPath, OSFileEntry::TYPE_FILE);
-		ShaderProgram *newProgram = CoreServices::getInstance()->getMaterialManager()->createProgramFromFile(newFontPath);
+		OSFileEntry entry(newProgramPath, OSFileEntry::TYPE_FILE);
+		ShaderProgram *newProgram = CoreServices::getInstance()->getMaterialManager()->createProgramFromFile(newProgramPath);
+		newProgram->reloadOnFileModify = true;
 		if(newProgram) {
 			newProgram->setResourceName(entry.name);
-			newProgram->setResourcePath(newFontPath);
+			newProgram->setResourcePath(newProgramPath);
 			CoreServices::getInstance()->getResourceManager()->addResource(newProgram);
 		}
 

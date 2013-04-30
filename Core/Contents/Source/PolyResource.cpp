@@ -26,6 +26,8 @@ using namespace Polycode;
 
 Resource::Resource(int type) {
 	this->type = type;
+	reloadOnFileModify = false;
+	resourceFileTime = 0;
 }
 
 Resource::~Resource() {

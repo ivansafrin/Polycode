@@ -356,6 +356,20 @@ vector<OSFileEntry> OSBasics::parseFolder(const String& pathString, bool showHid
 	return returnVector;
 }
 
+time_t OSBasics::getFileTime(const Polycode::String& pathString) {
+#ifdef _WINDOWS
+
+#else
+	struct stat statbuf;
+	int retVal = stat(pathString.c_str(), &statbuf);
+	if (retVal == 0) {
+		return statbuf.st_mtime;
+	} else {
+		return 0;
+	}
+#endif
+}
+
 void OSBasics::removeItem(const String& pathString) {
 #ifdef _WINDOWS
 	 String _tmp = pathString.replace("/", "\\");

@@ -242,6 +242,10 @@ String AssetBrowser::getTemplatePath() {
 	return templatePath;
 }
 
+String AssetBrowser::getFullSelectedAssetPath() {
+	return assetList->selectedPath;
+}
+
 String AssetBrowser::getSelectedAssetPath() {
 	return assetList->selectedPath.replace(currentProject->getRootFolder()+"/", "");
 }

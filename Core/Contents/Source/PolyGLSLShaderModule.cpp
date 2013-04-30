@@ -491,51 +491,12 @@ ProgramParam GLSLShaderModule::addParamToProgram(GLSLProgram *program,TiXmlNode 
 void GLSLShaderModule::reloadPrograms() {
 	for(int i=0; i < programs.size(); i++) {
 		GLSLProgram *program = programs[i];
-		recreateGLSLProgram(program, program->getResourcePath(), program->type);	
+		program->reloadProgram();	
 	}	
 }
 
-void GLSLShaderModule::recreateGLSLProgram(GLSLProgram *prog, const String& fileName, int type) {
-	
-	OSFILE *file = OSBasics::open(fileName, "r");
-	OSBasics::seek(file, 0, SEEK_END);	
-	long progsize = OSBasics::tell(file);
-	OSBasics::seek(file, 0, SEEK_SET);
-	char *buffer = (char*)malloc(progsize+1);
-	memset(buffer, 0, progsize+1);
-	OSBasics::read(buffer, progsize, 1, file);
-	OSBasics::close(file);
-	
-	if(type == GLSLProgram::TYPE_VERT) {
-		prog->program =  glCreateShader(GL_VERTEX_SHADER);
-	} else {
-		prog->program =  glCreateShader(GL_FRAGMENT_SHADER);
-	}
-	
-	glShaderSource(prog->program, 1, (const GLchar**)&buffer, 0);
-	glCompileShader(prog->program);	
-	
-	GLint compiled = true;
-    glGetShaderiv(prog->program, GL_COMPILE_STATUS, &compiled);
-    if(!compiled) {
-        GLint length;
-        GLchar* log;
-        glGetShaderiv(prog->program, GL_INFO_LOG_LENGTH, &length);
-        log = (GLchar*)malloc(length);
-        glGetShaderInfoLog(prog->program, length, &length, log);
-		printf("GLSL ERROR: %s\n", log);
-		CoreServices::getInstance()->getLogger()->logBroadcast("GLSL ERROR:" + String(log));
-        free(log);
-    }		
-		
-	
-	free(buffer);		
-	
-}
-
 GLSLProgram *GLSLShaderModule::createGLSLProgram(const String& fileName, int type) {
-	GLSLProgram *prog = new GLSLProgram(type);	
-	recreateGLSLProgram(prog, fileName, type);	
+	GLSLProgram *prog = new GLSLProgram(fileName, type);	
 	programs.push_back(prog);
 	return prog;
 }

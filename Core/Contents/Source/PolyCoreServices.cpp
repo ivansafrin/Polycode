@@ -240,7 +240,7 @@ void CoreServices::Update(int elapsed) {
 	for(int i=0; i < updateModules.size(); i++) {
 		updateModules[i]->Update(elapsed);
 	}
-
+	resourceManager->Update(elapsed);
 	timerManager->Update();	
 	tweenManager->Update();	
 	materialManager->Update(elapsed);		

@@ -25,6 +25,8 @@ THE SOFTWARE.
 #include "PolyGlobals.h"
 #include <vector>
 
+#define RESOURCE_CHECK_INTERVAL	2000
+
 namespace Polycode {
 
 	class Resource;
@@ -87,8 +89,15 @@ namespace Polycode {
 		
 			void addShaderModule(PolycodeShaderModule *module);
 		
+			void checkForChangedFiles();
+		
+			void Update(int elapsed);
+			
+			bool reloadResourcesOnModify;
 		
 		private:
+			int ticksSinceCheck;
+		
 			std::vector <Resource*> resources;
 			std::vector <PolycodeShaderModule*> shaderModules;
 	};

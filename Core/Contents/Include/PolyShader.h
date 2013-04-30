@@ -64,10 +64,14 @@ namespace Polycode {
 			ShaderProgram(int type);
 			virtual ~ShaderProgram();
 			
+			virtual void reloadProgram() {}
+			
 			static const int TYPE_VERT = 0;
 			static const int TYPE_FRAG = 1;		
 			
 			int type;
+			
+			void reloadResource();
 			
 			std::vector<ProgramParam> params;
 			

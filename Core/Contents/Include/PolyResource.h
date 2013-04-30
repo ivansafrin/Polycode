@@ -42,6 +42,7 @@ namespace Polycode {
 			Resource(int type);
 			virtual ~Resource();
 			
+			virtual void reloadResource() {}
 			
 			const String& getResourceName() const;
 			int getResourceType() const;
@@ -56,9 +57,13 @@ namespace Polycode {
 			static const int RESOURCE_MESH = 5;
 			static const int RESOURCE_CUBEMAP = 6;				
 			
+			bool reloadOnFileModify;
+			time_t resourceFileTime;
+						
 			//@}
 			
 		protected:
+
 			
 			int type;
 			String resourcePath;
