@@ -37,6 +37,8 @@ namespace Polycode {
 			Number scrollSpeedX;
 			Number scrollSpeedY;
 			
+			void reloadResource();			
+			
 			virtual void setTextureData(char *data) = 0;
 
 			virtual void recreateFromImageData() = 0;
@@ -46,10 +48,7 @@ namespace Polycode {
 			
 			void setImageData(Image *data);
 		
-			void updateScroll(int elapsed);
-			void setResourcePath(const String& newPath);
-			const String& getResourcePath() const;
-		
+			void updateScroll(int elapsed);		
 			char *getTextureData() const { return textureData;}
 			
 			int getWidth() const;
@@ -66,7 +65,6 @@ namespace Polycode {
 			bool createMipmaps;
 			int width;
 			int height;
-			String resourcePath;
 			Number scrollOffsetX;
 			Number scrollOffsetY;
 	};

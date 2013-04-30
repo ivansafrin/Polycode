@@ -172,9 +172,11 @@ void ResourceManager::parseTextures(const String& dirPath, bool recursive, const
 				Texture *t = materialManager->createTextureFromFile(resourceDir[i].fullPath, materialManager->clampDefault, materialManager->mipmapsDefault);
 				if(t) {
 					if(basePath == "") {
-						t->setResourceName(resourceDir[i].name);					
+						t->setResourceName(resourceDir[i].name);
+						t->setResourcePath(resourceDir[i].fullPath);
 					} else {
 						t->setResourceName(basePath+"/"+resourceDir[i].name);
+						t->setResourcePath(resourceDir[i].fullPath);						
 					}
 					addResource(t);
 				}
@@ -252,6 +254,7 @@ void ResourceManager::checkForChangedFiles() {
 	for(int i=0; i < resources.size(); i++) {
 		if(resources[i]->reloadOnFileModify == true) {
 			time_t newFileTime = OSBasics::getFileTime(resources[i]->getResourcePath());
+//			printf("%s\n%lld %lld\n", resources[i]->getResourcePath().c_str(), newFileTime, resources[i]->resourceFileTime);
 			if(newFileTime != resources[i]->resourceFileTime) {
 				resources[i]->reloadResource();
 				resources[i]->resourceFileTime = newFileTime;

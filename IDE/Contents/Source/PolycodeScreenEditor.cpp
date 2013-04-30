@@ -1196,6 +1196,7 @@ void PolycodeScreenEditorMain::handleMouseDown(Vector2 position) {
 				placingImage->addEventListener(this, InputEvent::EVENT_MOUSEUP);
 				placingImage->id = "ScreenImage."+String::IntToString(placementCount);
 				placingImage->blockMouseInput = true;
+				placingImage->getTexture()->reloadOnFileModify = true;
 				currentLayer->addChild(placingImage);
 				placementCount++;
 					
@@ -1288,6 +1289,7 @@ void PolycodeScreenEditorMain::handleMouseDown(Vector2 position) {
 				currentLayer->addChild(placingSprite);
 				placingSprite->id = "ScreenSprite."+String::IntToString(placementCount);
 				placingSprite->blockMouseInput = true;
+				placingSprite->getTexture()->reloadOnFileModify = true;
 				
 				if(previewSprite->getCurrentAnimation()) {
 						placingSprite->playAnimation(previewSprite->getCurrentAnimation()->name, 0, false);
@@ -2452,7 +2454,6 @@ void PolycodeScreenEditorMain::applyEditorProperties(ScreenEntity *entity) {
 	} else if(dynamic_cast<ScreenShape*>(entity)) {
 	
 	} else if(dynamic_cast<ScreenImage*>(entity)) {
-
 	} else if(dynamic_cast<ScreenLabel*>(entity)) {
 
 	} else if(dynamic_cast<ScreenSound*>(entity)) {
@@ -2464,6 +2465,13 @@ void PolycodeScreenEditorMain::applyEditorProperties(ScreenEntity *entity) {
 			entity->setWidth(50);
 			entity->setHeight(50);						
 			createEntityRef(entity);
+		}
+	}
+	
+	if(dynamic_cast<ScreenMesh*>(entity)) {	
+		Texture *texture = ((ScreenMesh*)entity)->getTexture();
+		if(texture) {
+			texture->reloadOnFileModify = true;
 		}
 	}
 	

@@ -55,7 +55,13 @@ Texture::Texture(unsigned int width, unsigned int height, char *textureData,bool
 	scrollSpeedY = 0;
 	scrollOffsetX = 0;
 	scrollOffsetY = 0;
-	resourcePath = "";
+}
+
+void Texture::reloadResource() {
+	Image *image = new Image(getResourcePath());
+	setImageData(image);
+	recreateFromImageData();
+	delete image;
 }
 
 int Texture::getWidth() const {
@@ -103,14 +109,6 @@ Texture::Texture(Image *image) : Resource(Resource::RESOURCE_TEXTURE) {
 	this->textureData = (char*)malloc(image->getWidth()*image->getHeight()*pixelSize);
 	memcpy(this->textureData, image->getPixels(), image->getWidth()*image->getHeight()*pixelSize);	
 
-}
-
-void Texture::setResourcePath(const String& newPath) {
-	resourcePath = newPath;
-}
-
-const String& Texture::getResourcePath() const {
-	return resourcePath;
 }
 
 void Texture::updateScroll(int elapsed) {

@@ -1747,6 +1747,7 @@ void ScreenImageSheet::handleEvent(Event *event) {
 		Texture *selectedTexture = texture->previewShape->getTexture();
 		
 		image->setTexture(selectedTexture);
+		selectedTexture->reloadOnFileModify = true;
 		image->setShapeSize(selectedTexture->getWidth(), selectedTexture->getHeight());
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}

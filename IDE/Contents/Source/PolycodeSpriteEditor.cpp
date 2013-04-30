@@ -198,6 +198,7 @@ void PolycodeSpriteEditor::handleEvent(Event *event) {
 	if(event->getDispatcher() == textureProp) {
 		previewSprite->setTexture(textureProp->get());
 		previewSprite->recalculateSpriteDimensions();
+		previewSprite->getTexture()->reloadOnFileModify = true;
 	}
 
 	if(event->getDispatcher() == widthProp) {
@@ -268,7 +269,8 @@ bool PolycodeSpriteEditor::openFile(OSFileEntry filePath) {
 	addChild(previewSprite);
 	previewSprite->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	previewSprite->setPosition(400, 80);				
-	zoomBox->setSelectedIndex(0);		
+	zoomBox->setSelectedIndex(0);
+	previewSprite->getTexture()->reloadOnFileModify = true;	
 	
 	for(int i=0;i < previewSprite->getNumAnimations(); i++) {
 		SpriteAnimation *animation = previewSprite->getAnimationAtIndex(i);

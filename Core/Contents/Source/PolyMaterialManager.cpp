@@ -110,6 +110,8 @@ Texture *MaterialManager::createTextureFromFile(const String& fileName, bool cla
 			image->premultiplyAlpha();
 		}
 		newTexture = createTexture(image->getWidth(), image->getHeight(), image->getPixels(), clamp, createMipmaps);
+		newTexture->setResourcePath(fileName);
+		CoreServices::getInstance()->getResourceManager()->addResource(newTexture);		
 	} else {
 		Logger::log("Error loading image, using default texture.\n");
 		delete image;		
@@ -118,10 +120,6 @@ Texture *MaterialManager::createTextureFromFile(const String& fileName, bool cla
 	}
 		
 	delete image;
-
-//	vector<String> bits = fileName.split("/");
-	
-	newTexture->setResourcePath(fileName);
 	return newTexture;
 }
 

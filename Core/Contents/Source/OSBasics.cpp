@@ -357,11 +357,19 @@ vector<OSFileEntry> OSBasics::parseFolder(const String& pathString, bool showHid
 }
 
 time_t OSBasics::getFileTime(const Polycode::String& pathString) {
+
+	String realString;
+	if(PHYSFS_exists(pathString.c_str())) {
+		realString = String(PHYSFS_getRealDir(pathString.c_str())) + "/" + pathString;
+	} else {
+		realString = pathString;
+	}
+
 #ifdef _WINDOWS
 
 #else
 	struct stat statbuf;
-	int retVal = stat(pathString.c_str(), &statbuf);
+	int retVal = stat(realString.c_str(), &statbuf);
 	if (retVal == 0) {
 		return statbuf.st_mtime;
 	} else {
