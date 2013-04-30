@@ -178,7 +178,7 @@ namespace Polycode {
 
 
 			static Quaternion Squad(Number fT, const Quaternion& rkP, const Quaternion& rkA, const Quaternion& rkB, const Quaternion& rkQ, bool shortestPath);
-			Quaternion Inverse () const;
+			Quaternion Inverse() const;
 			
 			Quaternion operator- () const
 			{
@@ -228,7 +228,7 @@ namespace Polycode {
 			}
 			
 					
-			void FromAngleAxis (const Number& rfAngle,
+			void fromAngleAxis(const Number& rfAngle,
 				const Vector3& rkAxis)
 			{
 				Number fHalfAngle ( 0.5*rfAngle );
@@ -239,7 +239,7 @@ namespace Polycode {
 				z = fSin*rkAxis.z;
 			}
 
-			void ToEulerAngles (Vector3& eulerAngles) {
+			void toEulerAngles (Vector3& eulerAngles) {
 				// See http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
 				// q0 = w, q1 = x, q2 = y, q3 = z
 				eulerAngles.x = atan2( 2 * ( w * x + y * z), 1 - 2 * (x * x + y * y) );
@@ -248,7 +248,7 @@ namespace Polycode {
 			}
 
 			//-----------------------------------------------------------------------
-			void ToAngleAxis (Number& rfAngle, Vector3& rkAxis) 
+			void toAngleAxis (Number& rfAngle, Vector3& rkAxis) 
 			{
 				// The quaternion representing the rotation is
 				//   q = cos(A/2)+sin(A/2)*(x*i+y*j+z*k)
