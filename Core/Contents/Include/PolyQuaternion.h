@@ -100,7 +100,6 @@ namespace Polycode {
 			Quaternion operator* (const Quaternion& rkQ) const;
 			Quaternion operator* (Number fScalar) const;
 
-			#ifdef 0
 			// TODO: implement
 			inline void lookAt(const Vector3 &D, const Vector3 &upVector) {
 				/*
@@ -117,7 +116,6 @@ namespace Polycode {
 				set( y.z - z.y , z.x - x.z, x.y - y.x, tr + 1.0f ); 
 				 */
 			}
-			#endif
 			
 			void createFromMatrix(const Matrix4& matrix) {
 				Number  tr, s, q[4];
