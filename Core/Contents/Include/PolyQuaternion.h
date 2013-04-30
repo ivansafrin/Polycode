@@ -194,7 +194,7 @@ namespace Polycode {
 				this->z = z;												
 			}
 			
-			Quaternion inverse() {
+			Quaternion Inverse() {
 				Number fNorm = w*w+x*x+y*y+z*z;
 				Number fInvNorm = 1.0/fNorm;
 				return Quaternion(w*fInvNorm,-x*fInvNorm,-y*fInvNorm,-z*fInvNorm);

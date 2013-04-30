@@ -145,7 +145,7 @@ void GLSLShaderModule::setGLSLSpotLightPositionParameter(Renderer *renderer, GLS
 	if(renderer->getNumSpotLights() > lightIndex) {
 		vector<LightInfo> spotLights = renderer->getSpotLights();		
 		Vector3 lPos(spotLights[lightIndex].position.x,spotLights[lightIndex].position.y,spotLights[lightIndex].position.z);
-		lPos = renderer->getCameraMatrix().inverse() * lPos;
+		lPos = renderer->getCameraMatrix().Inverse() * lPos;
 //		cgGLSetParameter4f(param.cgParam, lPos.x,lPos.y,lPos.z, spotLights[lightIndex].distance);
 	} else {
 //		cgGLSetParameter4f(param.cgParam, 0,0,0,0);
@@ -156,7 +156,7 @@ void GLSLShaderModule::setGLSLSpotLightDirectionParameter(Renderer *renderer, GL
 	if(renderer->getNumSpotLights() > lightIndex) {
 		vector<LightInfo> spotLights = renderer->getSpotLights();		
 		Vector3 lPos(spotLights[lightIndex].dir.x,spotLights[lightIndex].dir.y,spotLights[lightIndex].dir.z);
-		lPos = renderer->getCameraMatrix().inverse().rotateVector(lPos);
+		lPos = renderer->getCameraMatrix().Inverse().rotateVector(lPos);
 //		cgGLSetParameter3f(param.cgParam, lPos.x,lPos.y,lPos.z);
 	} else {
 //		cgGLSetParameter3f(param.cgParam, 0.0f,0.0f,0.0f);

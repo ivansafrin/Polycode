@@ -433,8 +433,8 @@ void Entity::transformAndRender() {
 		
 	renderer->pushMatrix();
 	if(ignoreParentMatrix && parentEntity) {
-		renderer->multModelviewMatrix(parentEntity->getConcatenatedMatrix().inverse());
-//		renderer->setCurrentModelMatrix(parentEntity->getConcatenatedMatrix().inverse());
+		renderer->multModelviewMatrix(parentEntity->getConcatenatedMatrix().Inverse());
+//		renderer->setCurrentModelMatrix(parentEntity->getConcatenatedMatrix().Inverse());
 	}
 
 		renderer->multModelviewMatrix(transformMatrix);
