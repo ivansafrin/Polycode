@@ -133,7 +133,17 @@ Win32Core::~Win32Core() {
 }
 
 void Win32Core::enableMouse(bool newval) {
-	ShowCursor(newval);	
+	ShowCursor(newval);
+
+	Core::enableMouse(newval);
+}
+
+void Win32Core::captureMouse(bool newval) {
+	// Capture the mouse in the window holding
+	// our polycode screen.
+	SetCapture(hWnd);
+
+	Core::captureMouse(newval);
 }
 
 void Win32Core::warpCursor(int x, int y) {

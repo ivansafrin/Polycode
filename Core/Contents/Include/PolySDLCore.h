@@ -47,6 +47,7 @@ namespace Polycode {
 		~SDLCore();
 
 		void enableMouse(bool newval);
+		void captureMouse(bool);
 		unsigned int getTicks();
 		bool Update();
 		void Render();
