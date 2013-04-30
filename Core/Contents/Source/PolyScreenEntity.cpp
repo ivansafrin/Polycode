@@ -201,6 +201,7 @@ ScreenEntity::~ScreenEntity() {
 	if(CoreServices::getInstance()->focusedChild == this) {
 		CoreServices::getInstance()->focusedChild = NULL;
 	}
+	if(dragLimits) delete dragLimits;
 }
 
 void ScreenEntity::setBlendingMode(int newBlendingMode) {
