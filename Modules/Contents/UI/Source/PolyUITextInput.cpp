@@ -30,7 +30,7 @@
 
 using namespace Polycode;
 
-UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElement() {
+UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElement(width, height) {
 	this->multiLine = multiLine;
 	processInputEvents = true;
 	isNumberOnly = false;
@@ -74,7 +74,7 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	if(!multiLine) {
 		rectHeight = fontSize+12;
 	} 
-	
+
 	linesContainer = new ScreenEntity();	
 	linesContainer->processInputEvents = true;
 	linesContainer->ownsChildren = true;
@@ -86,8 +86,13 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	sl = conf->getNumericValue("Polycode", "textBgSkinL");
 
 	
-	padding = conf->getNumericValue("Polycode", "textBgSkinPadding");	
+	padding = conf->getNumericValue("Polycode", "textBgSkinPadding");
 	
+	textContainer = new UIElement();
+	textContainer->ownsChildren = true;
+	textContainer->enableScissor = true;
+
+	linesContainer->addChild(textContainer);	
 	if(multiLine) {
 		inputRect = new UIBox(conf->getStringValue("Polycode", "textBgSkinMultiline"),
 						  st,sr,sb,sl,
@@ -116,6 +121,10 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 		decoratorOffset = sl/2.0;
 	}
 
+	textContainer->setWidth(this->getWidth() - textContainer->getPosition2D().x - padding);
+	textContainer->setHeight(this->getHeight() - textContainer->getPosition2D().y - padding);
+	textContainer->setPosition(padding + decoratorOffset, padding);
+	textContainer->scissorBox.setRect(textContainer->getScreenPosition().x, textContainer->getScreenPosition().y, 100, 100);
 	
 	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEUP);	
@@ -171,7 +180,6 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 		addChild(scrollContainer);
 	} else {
 		addChild(linesContainer);
-		enableScissor = true;
 	}
 		
 	undoStateIndex = 0;
@@ -194,7 +202,6 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	core->addEventListener(this, Core::EVENT_UNDO);
 	core->addEventListener(this, Core::EVENT_REDO);
 	core->addEventListener(this, Core::EVENT_SELECT_ALL);
-	
 	indentSpacing = 4;
 	indentType = INDENT_TAB;
 }
@@ -224,7 +231,7 @@ void UITextInput::checkBufferLines() {
 		ScreenLabel *newLine = new ScreenLabel(L"", fontSize, fontName, aaMode);
 		newLine->color = textColor;
 		lineHeight = newLine->getHeight();
-		linesContainer->addChild(newLine);
+		textContainer->addChild(newLine);
 		bufferLines.push_back(newLine);
 	}
 	
@@ -568,12 +575,17 @@ void UITextInput::renumberLines() {
 	}
 	
 	lineNumberAnchor->setPositionX(padding+decoratorOffset - 10);
+
+	// Update the position and width of the text accordingly.
+	textContainer->setPosition(decoratorOffset + padding, padding);
+	textContainer->setWidth(this->getWidth() - textContainer->getPosition2D().x - padding);
+	textContainer->scissorBox.setRect(textContainer->getPosition2D().x, textContainer->getPosition2D().y, textContainer->getWidth(), textContainer->getHeight());
 }
 
 void UITextInput::restructLines() {
 
 	for(int i=0; i < bufferLines.size(); i++) {
-		bufferLines[i]->setPosition(decoratorOffset + padding,padding + (i*(lineHeight+lineSpacing)),0.0f);
+		bufferLines[i]->setPosition(0, (i*(lineHeight+lineSpacing)),0.0f);
 	}
 	
 	if(multiLine && lineNumbersEnabled) {
@@ -1402,11 +1414,6 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 
 void UITextInput::Update() {
 
-	if(!multiLine) {
-		Vector2 pos = getScreenPosition();
-		scissorBox.setRect(pos.x,pos.y, width+sr+sl, height+sb+st);
-	}
-
 	if(hasSelection) {
 		blinkerRect->visible = false;
 	}
@@ -1458,7 +1465,7 @@ void UITextInput::readjustBuffer() {
 		} else {
 			bufferLines[i]->setText("");
 		}
-		bufferLines[i]->setPosition(decoratorOffset + padding,padding + bufferLineOffset + (i*(lineHeight+lineSpacing)),0.0f);	
+		bufferLines[i]->setPosition(0, (i*(lineHeight+lineSpacing)),0.0f);	
 	}
 	
 	for(int i=0; i < numberLines.size(); i++) {

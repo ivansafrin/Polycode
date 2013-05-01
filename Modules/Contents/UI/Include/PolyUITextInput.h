@@ -383,6 +383,9 @@ namespace Polycode {
 			UITextInputSyntaxHighlighter *syntaxHighliter;
 		
 			ScreenEntity *linesContainer;
+
+			// container for the actual text contents
+			UIElement *textContainer; 
 			
 			vector<ScreenLabel*> linesToDelete;	
 			
