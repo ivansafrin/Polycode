@@ -467,6 +467,15 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain() {
 	gridSnapBox->setPosition(290, 5);
 	gridSnapBox->setChecked(false);
 	
+	label = new ScreenLabel("SHOW", 18, "section", Label::ANTIALIAS_FULL);
+	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
+	viewOptions->addChild(label);
+	label->setPosition(360, 3);
+	
+	showRefsBox = new UICheckBox("Refs", true);
+	showRefsBox->addEventListener(this, UIEvent::CHANGE_EVENT);
+	viewOptions->addChild(showRefsBox);
+	showRefsBox->setPosition(420, 5);	
 		
 	properties = new ScreenEntity();
 	addChild(properties);
@@ -1394,6 +1403,7 @@ void PolycodeScreenEditorMain::createEntityRef(ScreenEntity *entity) {
 	markerImage->editorOnly = true;
 	markerImage->billboardMode = true;
 	markerImage->billboardIgnoreScale = true;
+	markerImage->addTag("editorRef");
 	
 	ScreenEntityNameDisplay *nameDisplay = new ScreenEntityNameDisplay(entity);
 	entity->addChild(nameDisplay);
@@ -1405,6 +1415,7 @@ void PolycodeScreenEditorMain::createEntityRef(ScreenEntity *entity) {
 void PolycodeScreenEditorMain::createParticleRef(ScreenParticleEmitter *target) {
 
 	ScreenImage *markerImage = new ScreenImage("Images/particle_system_icon_editor.png");
+	markerImage->addTag("editorRef");
 	markerImage->setColor(0.0, 1.0, 1.0, 1.0);
 	target->addChild(markerImage);
 	markerImage->setPositionMode(ScreenEntity::POSITION_CENTER);
@@ -1416,6 +1427,7 @@ void PolycodeScreenEditorMain::createParticleRef(ScreenParticleEmitter *target) 
 	
 	refRect->strokeEnabled = true;
 	refRect->strokeWidth = 1.0;
+	refRect->addTag("editorRef");
 	refRect->id = "refRect";
 	refRect->setStrokeColor(1.0, 1.0, 0.0, 0.5);
 	refRect->setColor(0.0, 0.0, 0.0, 0.0);
@@ -1431,7 +1443,8 @@ void PolycodeScreenEditorMain::createSoundRef(ScreenSound *target) {
 	markerImage->editorOnly = true;
 	markerImage->billboardMode = true;
 	markerImage->billboardIgnoreScale = true;
-	
+	markerImage->addTag("editorRef");
+		
 	ScreenShape *refCircle = new ScreenShape(ScreenShape::SHAPE_CIRCLE, target->getSound()->getReferenceDistance(), target->getSound()->getReferenceDistance(), 16);
 	refCircle->strokeEnabled = true;
 	refCircle->strokeWidth = 1.0;
@@ -1440,11 +1453,13 @@ void PolycodeScreenEditorMain::createSoundRef(ScreenSound *target) {
 	refCircle->setColor(0.0, 0.0, 0.0, 0.0);
 	target->addChild(refCircle);
 	refCircle->editorOnly = true;				
-	
+	refCircle->addTag("editorRef");
+		
 	ScreenShape *maxCircle = new ScreenShape(ScreenShape::SHAPE_CIRCLE, target->getSound()->getMaxDistance(), target->getSound()->getMaxDistance(), 16);
 	maxCircle->strokeEnabled = true;
 	maxCircle->strokeWidth = 1.0;
 	maxCircle->id = "maxCircle";				
+	maxCircle->addTag("editorRef");	
 	maxCircle->setStrokeColor(0.0, 1.0, 1.0, 0.5);
 	maxCircle->setColor(0.0, 0.0, 0.0, 0.0);
 	target->addChild(maxCircle);
@@ -1589,7 +1604,23 @@ void PolycodeScreenEditorMain::resizePreviewScreen() {
 	Number scaleVal = 1.0/atof(scaleInput->getText().c_str());		
 	screenPreviewShape->setShapeSize(1.0/scaleVal * previewAspectRatio * objectBaseEntity->getScale().x, 1.0/scaleVal * objectBaseEntity->getScale().x);
 }
+
+void PolycodeScreenEditorMain::setRefVisibility(bool val) {
+		setEntityRefVisibility(objectBaseEntity, val);
+}
+
+void PolycodeScreenEditorMain::setEntityRefVisibility(ScreenEntity *entity, bool val) {
+	if(entity->editorOnly == true) {
+		if(entity->hasTag("editorRef")) {
+			entity->visible = val;
+		}
+	}
 	
+	for(int i=0; i < entity->getNumChildren(); i++) {
+		setEntityRefVisibility((ScreenEntity*)entity->getChildAtIndex(i), val);
+	}
+}
+
 void PolycodeScreenEditorMain::handleEvent(Event *event) {
 	InputEvent *inputEvent = (InputEvent*) event;
 	
@@ -1605,36 +1636,25 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 		if(event->getDispatcher() == pixelSnapBox) {
 			layerBaseEntity->setDefaultScreenOptions(pixelSnapBox->isChecked());
 			screenTransform->setDefaultScreenOptions(pixelSnapBox->isChecked());
-		}
-
-	
-		if(event->getDispatcher() == gridSnapBox) {
+		} else if(event->getDispatcher() == gridSnapBox) {
 			gridSnap = gridSnapBox->isChecked();
-		}
-	
-		if(event->getDispatcher() == gridSizeInput) {
+		} else if(event->getDispatcher() == gridSizeInput) {
 			setGrid(atoi(gridSizeInput->getText().c_str()));
-		}
-	
-		if(event->getDispatcher() == gridCheckBox) {
+		} else if(event->getDispatcher() == gridCheckBox) {
 			grid->visible = gridCheckBox->isChecked();
-		}
-	
-		if(event->getDispatcher() == scaleInput) {
+		} else if(event->getDispatcher() == scaleInput) {
 			resizePreviewScreen();
-		}
-
-		if(event->getDispatcher() == zoomComboBox) {
+		} else if(event->getDispatcher() == zoomComboBox) {
 			if(zoomComboBox->getSelectedIndex() != 7) {
 				Number newScale = zooms[zoomComboBox->getSelectedIndex()];
 				objectBaseEntity->setScale(newScale, newScale);
 				resizePreviewScreen();
 				syncTransformToSelected();				
 			}
-		}
-
-		if(event->getDispatcher() == aspectComboBox) {
+		}else if(event->getDispatcher() == aspectComboBox) {
 			resizePreviewScreen();
+		} else if(event->getDispatcher() == showRefsBox) {
+			setRefVisibility(showRefsBox->isChecked());
 		}
 	}
 
