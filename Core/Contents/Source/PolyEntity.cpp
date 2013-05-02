@@ -222,6 +222,7 @@ void Entity::removeChild(Entity *entityToRemove) {
 	for(int i=0;i<children.size();i++) {
 		if(children[i] == entityToRemove) {
 			children.erase(children.begin()+i);
+			return;
 		}
 	}	
 }

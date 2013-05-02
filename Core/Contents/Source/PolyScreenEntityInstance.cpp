@@ -22,8 +22,27 @@
 
 #include "PolyScreenEntityInstance.h"
 #include "PolyLogger.h"
+#include "PolyCoreServices.h"
+#include "PolyResourceManager.h"
 
 using namespace Polycode;
+
+ScreenEntityInstanceResourceEntry::ScreenEntityInstanceResourceEntry(ScreenEntityInstance *instance)  : Resource(Resource::RESOURCE_SCREEN_ENTITY_INSTANCE) {
+	this->instance = instance;
+}
+
+ScreenEntityInstanceResourceEntry::~ScreenEntityInstanceResourceEntry() {
+
+}
+
+ScreenEntityInstance *ScreenEntityInstanceResourceEntry::getInstance() {
+	return instance;
+}
+
+void ScreenEntityInstanceResourceEntry::reloadResource() {
+	instance->reloadEntityInstance();
+	Resource::reloadResource();
+}
 
 ScreenEntityInstance *ScreenEntityInstance::BlankScreenEntityInstance() {
 	return new ScreenEntityInstance();
@@ -33,15 +52,32 @@ ScreenEntityInstance::ScreenEntityInstance(const String& fileName) : ScreenEntit
 	rootEntity = NULL;
 	setPositionMode(ScreenEntity::POSITION_CENTER);
 	loadFromFile(fileName);
+	resourceEntry = new ScreenEntityInstanceResourceEntry(this);	
+	resourceEntry->setResourceName(fileName);
+	resourceEntry->setResourcePath(fileName);
 	cloneUsingReload = false;
+	ownsChildren = true;	
 }
 
-ScreenEntityInstance::ScreenEntityInstance() {
+ScreenEntityInstance::ScreenEntityInstance() : ScreenEntity() {
 	rootEntity = NULL;
 	cloneUsingReload = true;
+	ownsChildren = true;
+	resourceEntry = new ScreenEntityInstanceResourceEntry(this);
 }
 
-ScreenEntityInstance::~ScreenEntityInstance() {
+ScreenEntityInstance::~ScreenEntityInstance() {	
+	CoreServices::getInstance()->getResourceManager()->removeResource(resourceEntry);
+	delete resourceEntry;
+}
+
+void ScreenEntityInstance::reloadEntityInstance() {
+	rootEntity->setOwnsChildrenRecursive(true);
+	loadFromFile(fileName);
+}
+
+ScreenEntityInstanceResourceEntry *ScreenEntityInstance::getResourceEntry() {
+	return resourceEntry;
 }
 
 Entity *ScreenEntityInstance::Clone(bool deepClone, bool ignoreEditorOnly) {
@@ -331,7 +367,8 @@ bool ScreenEntityInstance::loadFromFile(const String& fileName) {
 	ObjectEntry *root = loadObject.root["root"];
 	
 	if(root) {
-		rootEntity = loadObjectEntryIntoEntity(root);				
+		rootEntity = loadObjectEntryIntoEntity(root);
+		rootEntity->ownsChildren = true;
 		addChild(rootEntity);		
 	}
 	return true;

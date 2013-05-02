@@ -46,6 +46,12 @@ namespace Polycode {
 			* @param resource Resource to add.
 			*/ 
 			void addResource(Resource *resource);
+
+			/** 
+			* Removes a resource.
+			* @param resource Resource to resource.
+			*/ 
+			void removeResource(Resource *resource);
 			
 			/**
 			* Loads resources from a directory.

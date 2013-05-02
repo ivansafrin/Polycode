@@ -339,6 +339,11 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain() {
 	previewInstance->setPositionMode(ScreenEntity::POSITION_CENTER);
 	placingPreviewEntity->addChild(previewInstance);
 	previewInstance->setColor(1.0, 1.0, 1.0, 0.5);
+	previewInstance->getResourceEntry()->reloadOnFileModify = true;
+	previewInstance->getResourceEntry()->addEventListener(this, Event::RESOURCE_RELOAD_EVENT);
+	
+	CoreServices::getInstance()->getResourceManager()->addResource(previewInstance->getResourceEntry());
+	
 
 	grid = false;
 	setGrid(16);
@@ -762,7 +767,6 @@ void PolycodeScreenEditorMain::setGrid(int gridSize) {
 }
 
 PolycodeScreenEditorMain::~PolycodeScreenEditorMain() {
-
 	CoreServices::getInstance()->getCore()->getInput()->removeAllHandlersForListener(this);
 	setOwnsChildrenRecursive(true);
 }
@@ -1589,7 +1593,13 @@ void PolycodeScreenEditorMain::resizePreviewScreen() {
 void PolycodeScreenEditorMain::handleEvent(Event *event) {
 	InputEvent *inputEvent = (InputEvent*) event;
 	
-	if(event->getEventCode() == UIEvent::CHANGE_EVENT && event->getEventType() == "UIEvent") {
+	if(event->getEventCode() == Event::RESOURCE_RELOAD_EVENT && event->getEventType() == "") {
+			ScreenEntityInstanceResourceEntry *entry = dynamic_cast<ScreenEntityInstanceResourceEntry*>(event->getDispatcher());
+			if(entry) {
+				applyEditorProperties(entry->getInstance()->getRootEntity());
+				applyEditorOnly(entry->getInstance()->getRootEntity());				
+			}
+	} else if(event->getEventCode() == UIEvent::CHANGE_EVENT && event->getEventType() == "UIEvent") {
 
 
 		if(event->getDispatcher() == pixelSnapBox) {
@@ -2447,8 +2457,13 @@ void PolycodeScreenEditorMain::applyEditorProperties(ScreenEntity *entity) {
 	}
 
 	if(dynamic_cast<ScreenEntityInstance*>(entity)) {
-		(((ScreenEntityInstance*)entity))->cloneUsingReload = true;
-		applyEditorOnly(((ScreenEntityInstance*)entity)->getRootEntity());
+		ScreenEntityInstance *instance = (((ScreenEntityInstance*)entity));
+		instance->cloneUsingReload = true;
+		applyEditorOnly(instance->getRootEntity());
+		instance->getResourceEntry()->reloadOnFileModify = true;
+		instance->getResourceEntry()->addEventListener(this, Event::RESOURCE_RELOAD_EVENT);
+		CoreServices::getInstance()->getResourceManager()->addResource(instance->getResourceEntry());
+		
 		entity->setWidth(50);
 		entity->setHeight(50);		
 	} else if(dynamic_cast<ScreenShape*>(entity)) {

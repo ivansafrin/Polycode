@@ -161,6 +161,16 @@ void ResourceManager::addResource(Resource *resource) {
 	resource->resourceFileTime = OSBasics::getFileTime(resource->getResourcePath());
 }
 
+void ResourceManager::removeResource(Resource *resource) {
+	for(int i=0;i<resources.size();i++) {
+		if(resources[i] == resource) {
+			resources.erase(resources.begin()+i);
+			return;
+		}
+	}	
+}
+
+
 void ResourceManager::parseTextures(const String& dirPath, bool recursive, const String& basePath) {
 	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
 	vector<OSFileEntry> resourceDir;

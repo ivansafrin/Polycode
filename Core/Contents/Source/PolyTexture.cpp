@@ -62,6 +62,7 @@ void Texture::reloadResource() {
 	setImageData(image);
 	recreateFromImageData();
 	delete image;
+	Resource::reloadResource();	
 }
 
 int Texture::getWidth() const {

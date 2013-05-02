@@ -24,13 +24,14 @@ THE SOFTWARE.
 #pragma once
 #include "PolyString.h"
 #include "PolyGlobals.h"
+#include "PolyEventDispatcher.h"
 
 namespace Polycode {
 
 	/**
 	* Base class for resources. All resources that are managed by the ResourceManager subclass this.
 	*/
-	class _PolyExport Resource : public PolyBase {
+	class _PolyExport Resource : public EventDispatcher {
 		public:
 					
 			// ----------------------------------------------------------------------------------------------------------------
@@ -42,7 +43,7 @@ namespace Polycode {
 			Resource(int type);
 			virtual ~Resource();
 			
-			virtual void reloadResource() {}
+			virtual void reloadResource();
 			
 			const String& getResourceName() const;
 			int getResourceType() const;
@@ -55,7 +56,9 @@ namespace Polycode {
 			static const int RESOURCE_SHADER = 2;
 			static const int RESOURCE_PROGRAM = 3;
 			static const int RESOURCE_MESH = 5;
-			static const int RESOURCE_CUBEMAP = 6;				
+			static const int RESOURCE_CUBEMAP = 6;
+			static const int RESOURCE_SCREEN_SPRITE = 7;	
+			static const int RESOURCE_SCREEN_ENTITY_INSTANCE = 8;
 			
 			bool reloadOnFileModify;
 			time_t resourceFileTime;

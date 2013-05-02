@@ -32,9 +32,12 @@ THE SOFTWARE.
 #include "PolyScreenSprite.h"
 #include "PolyParticleEmitter.h"
 #include "PolyParticle.h"
+#include "PolyResource.h"
 #include "PolySound.h"
 
 namespace Polycode {
+
+class ScreenEntityInstanceResourceEntry;
 
 class ScreenEntityInstance : public ScreenEntity {
 	public:
@@ -43,10 +46,12 @@ class ScreenEntityInstance : public ScreenEntity {
 		
 		static ScreenEntityInstance *BlankScreenEntityInstance();
 
-		~ScreenEntityInstance();
+		virtual ~ScreenEntityInstance();
 	
 		virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly);
 		virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly);
+		
+		void reloadEntityInstance();
 
 		void parseObjectIntoCurve(ObjectEntry *entry, BezierCurve *curve);
 		void applyScreenShape(ObjectEntry *entry, ScreenShape *shape);
@@ -55,13 +60,33 @@ class ScreenEntityInstance : public ScreenEntity {
 		
 		ScreenEntity *getRootEntity();
 		
+		ScreenEntityInstanceResourceEntry *getResourceEntry();
+		
 		String getFileName() const;
 		
 		bool cloneUsingReload;
 
 		String fileName;
 
-		ScreenEntity *rootEntity;		
+		ScreenEntity *rootEntity;
+		
+	protected:
+		
+		ScreenEntityInstanceResourceEntry *resourceEntry;
+		
 };
+
+class ScreenEntityInstanceResourceEntry : public Resource {
+	public:
+		ScreenEntityInstanceResourceEntry(ScreenEntityInstance *instance);
+		virtual ~ScreenEntityInstanceResourceEntry();
+		
+		ScreenEntityInstance *getInstance();
+		void reloadResource();
+		
+	protected:
+		ScreenEntityInstance* instance;
+};
+
 
 }
