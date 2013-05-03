@@ -201,6 +201,7 @@ ScreenEntity::~ScreenEntity() {
 	if(CoreServices::getInstance()->focusedChild == this) {
 		CoreServices::getInstance()->focusedChild = NULL;
 	}
+	if(dragLimits) delete dragLimits;
 }
 
 void ScreenEntity::setBlendingMode(int newBlendingMode) {
@@ -368,7 +369,7 @@ MouseEventResult ScreenEntity::_onMouseMove(Number x, Number y, int timestamp, V
 		Vector3 localCoordinate = Vector3(x+(parentAdjust.x*2.0),y+(parentAdjust.y*2.0),0);				
 				
 		if(parentEntity) {
-			Matrix4 inverse = ((ScreenEntity*)parentEntity)->getScreenConcatenatedMatrix().inverse();
+			Matrix4 inverse = ((ScreenEntity*)parentEntity)->getScreenConcatenatedMatrix().Inverse();
 			localCoordinate = inverse * localCoordinate;		
 		}
 	
@@ -396,7 +397,7 @@ MouseEventResult ScreenEntity::_onMouseMove(Number x, Number y, int timestamp, V
 	
 	
 		Vector3 localCoordinate = Vector3(x+(parentAdjust.x*2.0),y+(parentAdjust.y*2.0),0);		
-		Matrix4 inverse = getConcatenatedMatrix().inverse();
+		Matrix4 inverse = getConcatenatedMatrix().Inverse();
 		localCoordinate = inverse * localCoordinate;
 		if(positionMode == POSITION_TOPLEFT)
 			localCoordinate.x += hit.w/2.0;
@@ -425,7 +426,7 @@ MouseEventResult ScreenEntity::_onMouseMove(Number x, Number y, int timestamp, V
 		if(mouseOver) {
 		
 		Vector3 localCoordinate = Vector3(x+(parentAdjust.x*2.0),y+(parentAdjust.y*2.0),0);		
-		Matrix4 inverse = getConcatenatedMatrix().inverse();
+		Matrix4 inverse = getConcatenatedMatrix().Inverse();
 		localCoordinate = inverse * localCoordinate;
 		if(positionMode == POSITION_TOPLEFT)
 			localCoordinate.x += hit.w/2.0;
@@ -466,7 +467,7 @@ MouseEventResult ScreenEntity::_onMouseUp(Number x, Number y, int mouseButton, i
 	if(hitTest(x+parentAdjust.x,y+parentAdjust.y)) {
 		Vector3 localCoordinate = Vector3(x+(parentAdjust.x*2.0),y+(parentAdjust.y*2.0),0);
 		
-		Matrix4 inverse = getConcatenatedMatrix().inverse();
+		Matrix4 inverse = getConcatenatedMatrix().Inverse();
 		localCoordinate = inverse * localCoordinate;
 		if(positionMode == POSITION_TOPLEFT)
 			localCoordinate.x += hit.w/2.0;
@@ -487,7 +488,7 @@ MouseEventResult ScreenEntity::_onMouseUp(Number x, Number y, int mouseButton, i
 	} else {
 		Vector3 localCoordinate = Vector3(x+(parentAdjust.x*2.0),y+(parentAdjust.y*2.0),0);
 		
-		Matrix4 inverse = getConcatenatedMatrix().inverse();
+		Matrix4 inverse = getConcatenatedMatrix().Inverse();
 		localCoordinate = inverse * localCoordinate;
 		if(positionMode == POSITION_TOPLEFT)
 			localCoordinate.x += hit.w/2.0;
@@ -528,7 +529,7 @@ MouseEventResult ScreenEntity::_onMouseWheelUp(Number x, Number y, int timestamp
 	if(hitTest(x+parentAdjust.x,y+parentAdjust.y)) {
 		Vector3 localCoordinate = Vector3(x+(parentAdjust.x*2.0),y+(parentAdjust.y*2.0),0);
 		
-		Matrix4 inverse = getConcatenatedMatrix().inverse();
+		Matrix4 inverse = getConcatenatedMatrix().Inverse();
 		localCoordinate = inverse * localCoordinate;
 		if(positionMode == POSITION_TOPLEFT)
 			localCoordinate.x += hit.w/2.0;
@@ -573,7 +574,7 @@ MouseEventResult ScreenEntity::_onMouseWheelDown(Number x, Number y, int timesta
 	if(hitTest(x+parentAdjust.x,y+parentAdjust.y)) {
 		Vector3 localCoordinate = Vector3(x+(parentAdjust.x*2.0),y+(parentAdjust.y*2.0),0);
 		
-		Matrix4 inverse = getConcatenatedMatrix().inverse();
+		Matrix4 inverse = getConcatenatedMatrix().Inverse();
 		localCoordinate = inverse * localCoordinate;
 		if(positionMode == POSITION_TOPLEFT)
 			localCoordinate.x += hit.w/2.0;
@@ -621,7 +622,7 @@ MouseEventResult ScreenEntity::_onMouseDown(Number x, Number y, int mouseButton,
 	if(hitTest(x+parentAdjust.x,y+parentAdjust.y)) {
 		Vector3 localCoordinate = Vector3(x+(parentAdjust.x*2.0),y+(parentAdjust.y*2.0),0);
 		
-		Matrix4 inverse = getConcatenatedMatrix().inverse();
+		Matrix4 inverse = getConcatenatedMatrix().Inverse();
 		localCoordinate = inverse * localCoordinate;
 		if(positionMode == POSITION_TOPLEFT)
 			localCoordinate.x += hit.w/2.0;

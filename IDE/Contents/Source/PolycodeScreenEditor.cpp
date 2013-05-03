@@ -1033,7 +1033,7 @@ void PolycodeScreenEditorMain::handleMouseMove(Vector2 position) {
 					for(int i=0; i < selectedEntities.size(); i++) {
 						Vector3 v3Center = Vector3(groupCenterPoint.x,groupCenterPoint.y,0.0);
 						
-						Vector3 v3CenterRelative = selectedEntities[i]->getParentEntity()->getConcatenatedMatrixRelativeTo(baseEntity).inverse() * v3Center;	
+						Vector3 v3CenterRelative = selectedEntities[i]->getParentEntity()->getConcatenatedMatrixRelativeTo(baseEntity).Inverse() * v3Center;	
 						
 						selectedEntities[i]->setRotation(baseRotateAngles[i] - (TODEGREES * (newAngle-baseAngle)));						
 						
@@ -1096,9 +1096,9 @@ void PolycodeScreenEditorMain::handleMouseMove(Vector2 position) {
 					Vector3 trans3 = Vector3(trans.x, trans.y, 0.0);
 				
 					Vector3 trans3_a = baseEntity->getConcatenatedMatrix() * trans3;				
-					Vector3 trans3_b = selectedEntities[i]->getParentEntity()->getConcatenatedMatrix().inverse() * trans3_a;
+					Vector3 trans3_b = selectedEntities[i]->getParentEntity()->getConcatenatedMatrix().Inverse() * trans3_a;
 				
-					trans3_b = trans3_b - selectedEntities[i]->getParentEntity()->getConcatenatedMatrixRelativeTo(baseEntity).inverse().getPosition();
+					trans3_b = trans3_b - selectedEntities[i]->getParentEntity()->getConcatenatedMatrixRelativeTo(baseEntity).Inverse().getPosition();
 					
 				
 					Vector2 newPosition = Vector2(baseEntityPositions[i].x + trans3_b.x, baseEntityPositions[i].y + trans3_b.y);

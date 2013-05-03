@@ -243,7 +243,7 @@ Vector3 OpenGLRenderer::projectRayFrom2DCoordinate(Number x, Number y) {
 	GLdouble nearPlane[3],farPlane[3];
 	
 	GLdouble mv[16];
-	Matrix4 camInverse = cameraMatrix.inverse();	
+	Matrix4 camInverse = cameraMatrix.Inverse();	
 	Matrix4 cmv;
 	cmv.identity();
 	cmv = cmv * camInverse;

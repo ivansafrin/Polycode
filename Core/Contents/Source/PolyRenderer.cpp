@@ -103,7 +103,7 @@ bool Renderer::test2DCoordinateInPolygon(Number x, Number y, Polycode::Polygon *
 	Matrix4 fullMatrix = matrix;
 	
 	if(billboardMode) {
-		Matrix4 camInverse = cameraMatrix.inverse();
+		Matrix4 camInverse = cameraMatrix.Inverse();
 		fullMatrix = fullMatrix * camInverse;
 		
 		fullMatrix.m[0][0] = 1;
@@ -230,7 +230,7 @@ void Renderer::addShaderModule(PolycodeShaderModule *module) {
 void Renderer::sortLights(){
 
 	sorter.basePosition = (getModelviewMatrix()).getPosition();
-	sorter.cameraMatrix = getCameraMatrix().inverse();	
+	sorter.cameraMatrix = getCameraMatrix().Inverse();	
 	sort (areaLights.begin(), areaLights.end(), sorter);
 	sort (spotLights.begin(), spotLights.end(), sorter);	
 }
