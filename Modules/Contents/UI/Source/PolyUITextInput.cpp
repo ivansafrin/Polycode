@@ -92,7 +92,7 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	textContainer->ownsChildren = true;
 	textContainer->enableScissor = true;
 
-	linesContainer->addChild(textContainer);	
+	linesContainer->addChild(textContainer);
 	if(multiLine) {
 		inputRect = new UIBox(conf->getStringValue("Polycode", "textBgSkinMultiline"),
 						  st,sr,sb,sl,
@@ -122,9 +122,8 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	}
 
 	textContainer->setWidth(this->getWidth() - textContainer->getPosition2D().x - padding);
-	textContainer->setHeight(this->getHeight() - textContainer->getPosition2D().y - padding);
+	textContainer->setHeight(this->getHeight() - textContainer->getPosition2D().y);
 	textContainer->setPosition(padding + decoratorOffset, padding);
-	textContainer->scissorBox.setRect(textContainer->getScreenPosition().x, textContainer->getScreenPosition().y, 100, 100);
 	
 	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEUP);	
@@ -1431,6 +1430,8 @@ void UITextInput::Update() {
 		delete linesToDelete[i];
 	}
 	linesToDelete.clear();
+
+	textContainer->scissorBox.setRect(textContainer->getScreenPosition().x, textContainer->getScreenPosition().y, textContainer->getWidth(), textContainer->getHeight());
 }
 
 UITextInput::~UITextInput() {
