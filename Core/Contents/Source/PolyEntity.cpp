@@ -417,7 +417,7 @@ void Entity::transformAndRender() {
 
 				
 			if(finalScrissorBox.x+finalScrissorBox.w > oldScissorBox.x + oldScissorBox.w)
-				finalScrissorBox.w = oldScissorBox.x - finalScrissorBox.x;
+				finalScrissorBox.w = oldScissorBox.x + oldScissorBox.w - finalScrissorBox.x;
 
 			if(finalScrissorBox.y < oldScissorBox.y)
 				finalScrissorBox.y = oldScissorBox.y;
@@ -425,7 +425,7 @@ void Entity::transformAndRender() {
 				finalScrissorBox.y = oldScissorBox.y + oldScissorBox.h;
 
 			if(finalScrissorBox.y+finalScrissorBox.h > oldScissorBox.y + oldScissorBox.h)
-				finalScrissorBox.h = oldScissorBox.y - finalScrissorBox.y;
+				finalScrissorBox.h = oldScissorBox.y + oldScissorBox.h - finalScrissorBox.y;
 
 		}
 		
