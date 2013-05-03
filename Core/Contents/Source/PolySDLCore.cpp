@@ -210,6 +210,15 @@ void SDLCore::enableMouse(bool newval) {
 	Core::enableMouse(newval);
 }
 
+void SDLCore::captureMouse(bool newval) {
+	if(newval) {
+		SDL_WM_GrabInput(SDL_GRAB_ON);
+	} else {
+		SDL_WM_GrabInput(SDL_GRAB_OFF);
+	}
+	Core::captureMouse(newval);
+}
+
 bool SDLCore::checkSpecialKeyEvents(PolyKEY key) {
 	
 	if(key == KEY_a && (input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL))) {
