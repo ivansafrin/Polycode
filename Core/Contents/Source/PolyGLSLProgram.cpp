@@ -28,6 +28,7 @@ THE SOFTWARE.
 #include "PolyLogger.h"
 #include "PolyCoreServices.h"
 #include "PolyLogger.h"
+#include "PolyGLHeaders.h"
 
 #ifdef _WINDOWS
 #include <windows.h>
