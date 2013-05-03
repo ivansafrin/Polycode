@@ -193,7 +193,10 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	core->addEventListener(this, Core::EVENT_CUT);
 	core->addEventListener(this, Core::EVENT_UNDO);
 	core->addEventListener(this, Core::EVENT_REDO);
-	core->addEventListener(this, Core::EVENT_SELECT_ALL);	
+	core->addEventListener(this, Core::EVENT_SELECT_ALL);
+	
+	indentSpacing = 4;
+	indentType = INDENT_TAB;
 }
 
 void UITextInput::checkBufferLines() {
@@ -1098,7 +1101,7 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 		
 //	Logger::log("UCHAR: %d\n", charCode);	
 	
-	CoreInput *input = CoreServices::getInstance()->getCore()->getInput();	
+	CoreInput *input = CoreServices::getInstance()->getCore()->getInput();
 	
 	if(key == KEY_LEFT) {
 		if(input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER)) {
@@ -1309,22 +1312,35 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 	
 	bool _changedText = false;
 		
-	if((charCode > 31 && charCode < 127) || charCode > 127) {	
-		if(!isNumberOnly || (isNumberOnly && ((charCode > 47 && charCode < 58) || (charCode == '.' || charCode == '-')))) {
-			if(!isNumberOrCharacter(charCode)) { 
-				saveUndoState();
-			} else if (!isTypingWord) {
-				saveUndoState();
-				isTypingWord = 1;
+	if((charCode > 31 && charCode < 127) || charCode > 127) {
+		
+		// indent/shift text
+		if (multiLine && (key == KEY_LEFTBRACKET || key == KEY_RIGHTBRACKET) &&
+			(input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER) ||
+				input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL))) {
+					shiftText( (key == KEY_RIGHTBRACKET) ? false : true );
+					return;
+		}
+		
+		else {
+		
+			if(!isNumberOnly || (isNumberOnly && ((charCode > 47 && charCode < 58) || (charCode == '.' || charCode == '-')))) {
+				if(!isNumberOrCharacter(charCode)) { 
+					saveUndoState();
+				} else if (!isTypingWord) {
+					saveUndoState();
+					isTypingWord = 1;
+				}
+				if(hasSelection)
+					deleteSelection();
+				ctext = lines[lineOffset];
+				String text2 = ctext.substr(caretPosition, ctext.length()-caretPosition);
+				ctext = ctext.substr(0,caretPosition);
+				ctext += charCode + text2;
+				caretPosition++;
+				_changedText = true;
 			}
-			if(hasSelection)
-				deleteSelection();
-			ctext = lines[lineOffset];
-			String text2 = ctext.substr(caretPosition, ctext.length()-caretPosition);
-			ctext = ctext.substr(0,caretPosition);
-			ctext += charCode + text2;
-			caretPosition++;
-			_changedText = true;
+			
 		}
 	}
 	
@@ -1531,4 +1547,75 @@ void UITextInput::handleEvent(Event *event) {
 		}
 	}
 	
+}
+
+void UITextInput::shiftText(bool left) {
+	if (multiLine && (hasSelection || lines[lineOffset] != "")) {
+		saveUndoState();
+		
+		String t = (wchar_t)'\t';
+		
+		if (hasSelection) {
+			for (int i = selectionTop; i <= selectionBottom; i++) {
+				if (i == selectionBottom && selectionCaretPosition <= 0)
+					// at least one character of bottom line needs to be selected before indenting, so...
+					break;
+				if (indentType == INDENT_TAB) {
+					if (left) {
+						if (lines[i].substr(0,1) == t) {
+							lines[i] = lines[i].substr(1, lines[i].length()-1);
+							caretPosition--;
+						}
+					} else {
+						lines[i] = t + lines[i];
+						caretPosition++;
+					}
+				} else if (indentType == INDENT_SPACE) {
+					if (left) {
+						// TODO
+					} else {
+						// TODO
+					}
+				}
+			}
+		}
+		else {
+			if (indentType == INDENT_TAB) {
+				if (left) {
+					if (lines[lineOffset].substr(0,1) == t) {
+						lines[lineOffset] = lines[lineOffset].substr(1, lines[lineOffset].length()-1);
+						caretPosition--;
+					}
+				} else {
+					lines[lineOffset] = t + lines[lineOffset];
+					caretPosition++;
+				}
+			} else if (indentType == INDENT_SPACE) {
+				if (left) {
+					// TODO
+				} else {
+					// TODO
+				}
+			}
+		}
+		
+		changedText();
+		updateCaretPosition();
+	}
+}
+
+void UITextInput::convertIndentToSpaces() {
+	if (indentType == INDENT_TAB) {
+		indentType = INDENT_SPACE;
+		
+		//TODO
+	}
+}
+
+void UITextInput::convertIndentToTabs() {
+	if (indentType == INDENT_SPACE) {
+		indentType = INDENT_TAB;
+		
+		//TODO
+	}
 }
