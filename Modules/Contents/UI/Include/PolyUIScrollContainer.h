@@ -104,8 +104,11 @@ namespace Polycode {
         */
 		Number getVScrollWidth();
 
-	private:
-
+		UIVScrollBar *getVScrollBar() { return vScrollBar; }
+		UIHScrollBar *getHScrollBar() { return hScrollBar; }
+		
+	private:		
+		
 		Number defaultScrollSize;
 
 		Number contentWidth;

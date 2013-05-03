@@ -39,6 +39,24 @@ namespace Polycode {
 		
 		UITree *getRootNode();
 		ScreenEntity *scrollChild;
+		
+		void onKeyDown(PolyKEY key, wchar_t charCode);
+		void onGainFocus();
+		
+		/**
+		 * Scrolls the container to show a specified node.
+		 * @param node The tree node to scroll to or show.
+		 * @param showAtTop If true, show the node at the top of the container. If false, show it at the bottom.
+		 * @param select If true (default), select the node. If false, don't.
+		 */
+		void scrollToNode(UITree *node, bool showAtTop, bool select=true);
+		
+	protected:
+		bool keyNavigable;
+		
+		UITree *findLastOpenNode(UITree *tree);
+		UITree *findNextParentSibling(UITree *parent);
+		
 	private:
 		
 		UIScrollContainer *mainContainer;
@@ -47,5 +65,4 @@ namespace Polycode {
 		UITree *rootNode;
 		UIBox *bgBox;
 	};
-
 }
