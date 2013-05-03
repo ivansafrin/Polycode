@@ -68,7 +68,7 @@ namespace Polycode {
 		if (fullScreen && !xRes && !yRes) {
 			getScreenInfo(&xRes, &yRes, NULL);
 		}
-		mouseEnabled = true;
+		mouseEnabled = true; mouseCaptured = false;
 		lastSleepFrameTicks = 0;
 		
 		this->monitorIndex = monitorIndex;
@@ -86,6 +86,10 @@ namespace Polycode {
 	
 	void Core::enableMouse(bool newval) {
 		mouseEnabled = newval;
+	}
+
+	void Core::captureMouse(bool newval) {
+		mouseCaptured = newval;
 	}
 	
 	int Core::getNumVideoModes() {
