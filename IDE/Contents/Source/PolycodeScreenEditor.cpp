@@ -967,34 +967,14 @@ void PolycodeScreenEditorMain::handleMouseMove(Vector2 position) {
 					
 				objectBaseEntity->setScale(newScale, newScale);					
 				
-				Vector2 screenPosition = getScreenPosition();
 				Vector2 centerPosition = Vector2(getWidth()/2.0, getHeight()/2.0);
-
-				Number centeringSpeed = 1.0;
-
-				Number scaleDiff = 0.0;
-				if(newScale < baseZoomScale) {
-					scaleDiff = (((centeringSpeed*baseZoomScale)/(1.0 * newScale * (1.0/baseZoomScale)))-(centeringSpeed*baseZoomScale));	
-				} else {
-					scaleDiff = (((centeringSpeed*baseZoomScale)/(baseZoomScale/newScale))-(centeringSpeed*baseZoomScale));					
-				}
 				
-				if(scaleDiff < 0.0)
-					scaleDiff = 0.0;
-				if(scaleDiff > 1.0)
-					scaleDiff = 1.0;
-				
-
 				Vector2 finalPosition = Vector2(				
 					((centerPosition.x)) - (zoomBasePosition.x / baseZoomScale * newScale),
 					((centerPosition.y)) - (zoomBasePosition.y / baseZoomScale * newScale)
 				);				
 
-				Vector2 startPosition = Vector2(((mousePosition.x - screenPosition.x)) - (zoomBasePosition.x / baseZoomScale * newScale), ((mousePosition.y - screenPosition.y)) - (zoomBasePosition.y / baseZoomScale * newScale));
-				
-				Vector2 finalPosition2 = (finalPosition * scaleDiff) + (startPosition * (1.0-scaleDiff));
-				
-				baseEntity->setPosition(finalPosition2);
+				baseEntity->setPosition(finalPosition);
 				
 				resizePreviewScreen();
 				syncTransformToSelected();
@@ -1210,7 +1190,10 @@ void PolycodeScreenEditorMain::handleMouseDown(Vector2 position) {
 			zooming = true;
 			baseZoomScale = objectBaseEntity->getScale().x;
 			basePanPosition = baseEntity->getPosition2D();
-			zoomBasePosition = position;		
+			Vector2 centerPosition = Vector2(getWidth()/2.0, getHeight()/2.0);
+			zoomBasePosition.x = (centerPosition.x - baseEntity->position.x);
+			zoomBasePosition.y = (centerPosition.y - baseEntity->position.y);
+			
 		}
 		break;
 		case MODE_TEXT:
