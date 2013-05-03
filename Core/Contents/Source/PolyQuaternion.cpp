@@ -178,7 +178,7 @@ Matrix4 Quaternion::createMatrix() const
         return w*w+x*x+y*y+z*z;
     }
 
-    Number Quaternion::normalize()
+    Number Quaternion::Normalize()
     {
         Number len = Norm();
         Number factor = 1.0f / sqrtf(len);
@@ -222,7 +222,7 @@ Matrix4 Quaternion::createMatrix() const
             //    have method to fix this case, so just use linear interpolation here.
             Quaternion t = (1.0f - fT) * rkP + fT * rkT;
             // taking the complement requires renormalisation
-            t.normalize();
+            t.Normalize();
             return t;
         }
     }

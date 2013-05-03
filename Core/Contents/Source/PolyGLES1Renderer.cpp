@@ -132,7 +132,7 @@ bool OpenGLES1Renderer::test2DCoordinate(Number x, Number y, Poly::Polygon *poly
 	GLfloat nearPlane[3],farPlane[3];
 	
 	GLfloat mv[16];
-	Matrix4 camInverse = cameraMatrix.inverse();	
+	Matrix4 camInverse = cameraMatrix.Inverse();	
 	Matrix4 cmv;
 	cmv.identity();
 	cmv = cmv * camInverse;

@@ -269,7 +269,7 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 		LightInfo light;
 		if(i < numRendererAreaLights) {
 			light = areaLights[i];
-			light.position = renderer->getCameraMatrix().inverse() * light.position;
+			light.position = renderer->getCameraMatrix().Inverse() * light.position;
 			ambientVal[0] = renderer->ambientColor.r;
 			ambientVal[1] = renderer->ambientColor.g;
 			ambientVal[2] = renderer->ambientColor.b;										
@@ -319,8 +319,8 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 			light = spotLights[i];
 			pos = light.position;
 			dir = light.dir;						
-			pos = renderer->getCameraMatrix().inverse() * pos;
-			dir = renderer->getCameraMatrix().inverse().rotateVector(dir);
+			pos = renderer->getCameraMatrix().Inverse() * pos;
+			dir = renderer->getCameraMatrix().Inverse().rotateVector(dir);
 			
 			ambientVal[0] = renderer->ambientColor.r;
 			ambientVal[1] = renderer->ambientColor.g;

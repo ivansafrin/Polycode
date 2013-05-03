@@ -399,6 +399,6 @@ void Camera::doCameraTransform() {
 
 	Matrix4 camMatrix = getConcatenatedMatrix();
 	CoreServices::getInstance()->getRenderer()->setCameraMatrix(camMatrix);	
-	camMatrix = camMatrix.inverse();
+	camMatrix = camMatrix.Inverse();
 	CoreServices::getInstance()->getRenderer()->multModelviewMatrix(camMatrix);		
 }
