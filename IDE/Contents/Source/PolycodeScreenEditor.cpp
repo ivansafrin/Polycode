@@ -920,6 +920,36 @@ void PolycodeScreenEditorMain::handleMouseUp(Vector2 position) {
 		break;
 		case MODE_ZOOM:
 		{
+			if(!zoomingMoved) {
+			
+				Number zoomChange = 2.0;
+				
+				if(CoreServices::getInstance()->getCore()->getInput()->getKeyState(KEY_LALT) ||
+					CoreServices::getInstance()->getCore()->getInput()->getKeyState(KEY_RALT)) {
+					zoomChange = 1.0/zoomChange;
+				} 
+	
+			
+				Number newScale = baseZoomScale * zoomChange;
+				if(newScale < 0.1) 
+					newScale = 0.1;
+					
+				objectBaseEntity->setScale(newScale, newScale);					
+								
+				Vector2 centerPosition = Vector2(getWidth()/2.0, getHeight()/2.0);
+				
+				Vector2 finalPosition = Vector2(				
+					((centerPosition.x)) - (zoomBaseMousePosition.x / baseZoomScale * newScale),
+					((centerPosition.y)) - (zoomBaseMousePosition.y / baseZoomScale * newScale)
+				);				
+
+				baseEntity->setPosition(finalPosition);				
+				resizePreviewScreen();
+				syncTransformToSelected();
+								
+				// set zoom selection box to Free zoom
+				zoomComboBox->setSelectedIndex(7);				
+			}
 			zooming = false;
 		}
 		break;
@@ -979,7 +1009,9 @@ void PolycodeScreenEditorMain::handleMouseMove(Vector2 position) {
 				resizePreviewScreen();
 				syncTransformToSelected();
 				
+				// set zoom selection box to Free zoom
 				zoomComboBox->setSelectedIndex(7);
+				zoomingMoved = true;
 			}
 		}
 		break;
@@ -1193,7 +1225,8 @@ void PolycodeScreenEditorMain::handleMouseDown(Vector2 position) {
 			Vector2 centerPosition = Vector2(getWidth()/2.0, getHeight()/2.0);
 			zoomBasePosition.x = (centerPosition.x - baseEntity->position.x);
 			zoomBasePosition.y = (centerPosition.y - baseEntity->position.y);
-			
+			zoomingMoved = false;
+			zoomBaseMousePosition = position;
 		}
 		break;
 		case MODE_TEXT:
@@ -1664,6 +1697,7 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 			if(zoomComboBox->getSelectedIndex() != 7) {
 				Number newScale = zooms[zoomComboBox->getSelectedIndex()];
 				objectBaseEntity->setScale(newScale, newScale);
+				baseEntity->setPosition(getWidth()/2.0, getHeight()/2.0);
 				resizePreviewScreen();
 				syncTransformToSelected();				
 			}
@@ -1948,7 +1982,7 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 			{
 				if(firstMove) {
 					Core *core = CoreServices::getInstance()->getCore();
-					if(core->getInput()->getKeyState(COPYMOD_1) || core->getInput()->getKeyState(COPYMOD_2)) {
+					if((core->getInput()->getKeyState(COPYMOD_1) || core->getInput()->getKeyState(COPYMOD_2)) && selectedEntities.size() > 0) {
 						void *data;
 						String type = Copy(&data);
 						if(data) {

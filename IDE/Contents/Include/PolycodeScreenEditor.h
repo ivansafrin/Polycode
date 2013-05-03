@@ -219,6 +219,7 @@ class PolycodeScreenEditorMain : public UIElement {
 		bool rotating;
 		bool panning;
 		bool zooming;
+		bool zoomingMoved;
 		
 		bool parenting;
 		ScreenEntity *parentingChild;
@@ -229,7 +230,8 @@ class PolycodeScreenEditorMain : public UIElement {
 		
 		Vector2 basePanPosition;
 		Vector2 zoomBasePosition;
-		
+		Vector2 zoomBaseMousePosition;
+				
 		Number baseZoomScale;
 		
 		Number baseRotateAngle;
