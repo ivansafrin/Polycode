@@ -265,7 +265,7 @@ void ResourceManager::checkForChangedFiles() {
 		if(resources[i]->reloadOnFileModify == true) {
 			time_t newFileTime = OSBasics::getFileTime(resources[i]->getResourcePath());
 //			printf("%s\n%lld %lld\n", resources[i]->getResourcePath().c_str(), newFileTime, resources[i]->resourceFileTime);
-			if(newFileTime != resources[i]->resourceFileTime) {
+			if((newFileTime != resources[i]->resourceFileTime) && newFileTime != 0) {
 				resources[i]->reloadResource();
 				resources[i]->resourceFileTime = newFileTime;
 			}
