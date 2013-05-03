@@ -75,7 +75,15 @@ namespace Polycode {
 	};
 
 	/**
-	* Main renderer. The renderer should only be accessed from the CoreServices singleton. Renderer operations should only be called from within Render methods of entities so that they can be properly managed.
+	* Provides low-level settings for the main renderer.
+	*
+	* The methods and settings in this class are closely related to OpenGL.
+	* If you have trouble understanding anything in this class, it is thus suggested to brush up on your OpenGL knowledge.
+	*
+	* The renderer should only be accessed from the CoreServices singleton. Renderer operations should only be called from within Render methods of entities so that they can be properly managed.
+	*
+	* @see http://www.glprogramming.com/red/
+	* @see http://nehe.gamedev.net/tutorial/lessons_01__05/22004/
 	*/
 	class _PolyExport Renderer : public PolyBase {
 	public:
@@ -175,8 +183,30 @@ namespace Polycode {
 		
 		void setTextureFilteringMode(int mode);
 		
-		virtual void setClippingPlanes(Number nearPlane_, Number farPlane_) = 0;
+		/**
+		 * Set the near and far clipping planes for the visible frustum.
+		 *
+		 * Please check the supplied external links for more information
+		 * about the problems of a high farPlane/nearPlane setting.
+		 *
+		 * @param nearPlane The new near clipping plane.
+		 * @param farPlane The new far clipping plane.
+		 *
+		 * @see http://en.wikipedia.org/wiki/Viewing_frustum
+		 * @see http://www.opengl.org/sdk/docs/man2/xhtml/glFrustum.xml
+		 */
+		virtual void setClippingPlanes(Number nearPlane, Number farPlane) = 0;
 		
+		/**
+		 * Enable/disable alpha tests.
+		 *
+		 * If alpha tests are enabled, drawn pixels of textures will
+		 * be "mixed" with framebuffer pixels based on the drawn pixel's
+		 * alpha value. If alpha tests are disabled, they will be drawn
+		 * as solid color.
+		 *
+		 * @param val Whether to enable or disable alpha tests.
+		 */
 		virtual void enableAlphaTest(bool val) = 0;
 		
 		virtual void clearBuffer(bool colorBuffer, bool depthBuffer) = 0;
