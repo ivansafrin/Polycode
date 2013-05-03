@@ -228,6 +228,7 @@ class PolycodeScreenEditorMain : public UIElement {
 		int lastMode;
 		
 		Vector2 basePanPosition;
+		Vector2 zoomBasePosition;
 		
 		Number baseZoomScale;
 		

@@ -959,12 +959,18 @@ void PolycodeScreenEditorMain::handleMouseMove(Vector2 position) {
 		case MODE_ZOOM:
 		{
 			if(zooming) {
-				Vector2 offset = position-mouseBase;
+				Vector2 mousePosition = CoreServices::getInstance()->getCore()->getInput()->getMousePosition();
+				Vector2 offset = mousePosition-mouseBase;
 				Number newScale = baseZoomScale + (offset.x * 0.01);
 				if(newScale < 0.1) 
 					newScale = 0.1;
 					
-				objectBaseEntity->setScale(newScale, newScale);
+				objectBaseEntity->setScale(newScale, newScale);					
+				
+				Vector2 screenPosition = getScreenPosition();
+
+				baseEntity->setPosition(((mousePosition.x - screenPosition.x)) - (zoomBasePosition.x / baseZoomScale * newScale), ((mousePosition.y - screenPosition.y)) - (zoomBasePosition.y / baseZoomScale * newScale));
+								
 				resizePreviewScreen();
 				syncTransformToSelected();
 				
@@ -1175,9 +1181,11 @@ void PolycodeScreenEditorMain::handleMouseDown(Vector2 position) {
 		break;
 		case MODE_ZOOM:
 		{
-			mouseBase = position;
+			mouseBase = CoreServices::getInstance()->getCore()->getInput()->getMousePosition();
 			zooming = true;
 			baseZoomScale = objectBaseEntity->getScale().x;
+			basePanPosition = baseEntity->getPosition2D();
+			zoomBasePosition = position;		
 		}
 		break;
 		case MODE_TEXT:
