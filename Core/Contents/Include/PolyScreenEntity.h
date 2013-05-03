@@ -40,14 +40,16 @@ namespace Polycode {
 	};
 
 /**
-* 2D Entity base. The ScreenEntity is the base class for all 2D elements in Polycode. They can be added to a screen or to other ScreenEntities and are rendered automatically. If you want to create custom screen objects, subclass this. ScreenEntity subclasses Entity, which use 3d positioning and tranformation, but provides some 2d-only versions of the transformation functions for convenience.
+* 2D Entity base.
+*
+* The ScreenEntity is the base class for all 2D elements in Polycode. They can be added to a screen or to other ScreenEntities and are rendered automatically. If you want to create custom screen objects, subclass this. ScreenEntity subclasses Entity, which use 3d positioning and tranformation, but provides some 2d-only versions of the transformation functions for convenience.
 */
 class _PolyExport ScreenEntity : public Entity {
 		
 	public:
 		using Entity::setPosition;		
 		using Entity::setScale;		
-	
+
 		ScreenEntity();
 		virtual ~ScreenEntity();
 		
@@ -155,42 +157,131 @@ class _PolyExport ScreenEntity : public Entity {
 		/** 
 		* Changes the positioning mode of the screen entity.		
 		
-		If the positioning mode is ScreenEntity::POSITION_TOPLEFT, the entity is translated by half its width and half its height when it's rendered, making all other transformations relative to its top-left cornder.instead of the center.		
+		If the positioning mode is ScreenEntity::POSITION_TOPLEFT, the entity is translated by half its width and half its height when it's rendered, making all other transformations relative to its top-left corner instead of the center.		
 		If the mode is ScreenEntity::POSITION_CENTER, the entity is rendered as is.
 		Set to POSITION_CENTER by default.
 		@param newPositionMode The new positioning mode.
 		*/
 		void setPositionMode(int newPositionMode);
-		
+
+		/**
+		 * Get the position mode.
+		 * @see setPositionMode()
+		 */
 		int getPositionMode();
-		
+
+		/**
+		 * Set a rectangle to which dragging will be restricted.
+		 *
+		 * Dragging the item past the given rectangle will snap it
+		 * back to the edge of the rectangle.
+		 *
+		 * @param rect The rectangle to restrict dragging to. Uses the
+		 *              same positioning mode as `this->position`.
+		 */
 		void setDragLimits(Rectangle rect);
+
+		/**
+		 * Disable restricting where `this` can be dragged.
+		 * @see setDragLimits()
+		 */
 		void clearDragLimits();
-		
+
+		/**
+		 * Set options for `this` and all children recursively.
+		 *
+		 * @param snapToPixels Whether to snap entity positions to pixels before rendering.
+		 */
 		void setDefaultScreenOptions(bool snapToPixels);
-		
+
+		/*
+		 * Make `child` take focus, which will cause certain events
+		 * to be sent to it.
+		 *
+		 * Note that this is a global setting. Only one Entity per
+		 * running instance can take focus.
+		 */
 		void focusChild(ScreenEntity *child);
-		void focusNextChild();
 		
+		/*
+		 * Make the next child in `this->children`, after the currently
+		 * focused child entity take focus.
+		 *
+		 * Does nothing if no child of `this` has focus.
+		 */
+		void focusNextChild();
+
+		/**
+		 * @name Child position operations.
+		 * 
+		 * Move a child in the list of children. Affects display
+		 * order of entities(entities further down in the list will
+		 * appear on top).
+		 */
+		//@{	
 		void moveChildUp(ScreenEntity *child);
 		void moveChildDown(ScreenEntity *child);
 		void moveChildTop(ScreenEntity *child);
 		void moveChildBottom(ScreenEntity *child);
-							
+		//}@
+
+		/**
+		 * Same semantics as getPosition(), but returns only the x and y coordinates.
+		 * 
+		 * @see getPosition()
+		 * @see getScreenPosition()
+		 */
 		Vector2 getPosition2D() const;
+		
+		/**
+		 * Get the position of ScreenEntity in relation to the top-left
+		 * corner of the Polycode screen it's on.
+		 *
+		 * This is unlike getPosition(), which will return the position
+		 * of an Entity in relation to its parent Entity.
+		 *
+		 * @see getPosition()
+		 */
 		Vector2 getScreenPosition() const;
 
+		/**
+		 * Same semantics as getScale(), but returns only the x and y scale.
+		 *
+		 * @see getScale()
+		 */
 		Vector2 getScale2D() const;
-		
+
+		/**
+		 * Positioning mode in which you specify an entity's topleft corner
+		 * as coordinate for placement.
+		 */
 		static const int POSITION_TOPLEFT = 0;
+
+		/**
+		 * Positioning mode in which you specify an entity's center as
+		 * coordinate for placement.
+		 */
 		static const int POSITION_CENTER = 1;
 
 		bool isFocusable() const;
 		
 		bool hasFocus;
 		
-		
+		/**
+		 * Does the same as getEntityByID, but casts to ScreenEntity.
+		 *
+		 * Note: Make sure only entities of type ScreenEntity have the tag you're
+		 *       querying, or otherwise you will be treating an Entity as ScreenEntity.
+		 */
 		ScreenEntity *getScreenEntityById(String id, bool recursive);
+
+
+		/**
+		 * Does the same as getEntitiesByID, but casts each result to ScreenEntity.
+		 *
+		 * Note: Make sure only entities of type ScreenEntity have the tag you're
+		 *       querying, or otherwise you will be treating an Entity as ScreenEntity.
+		 */
 		std::vector<ScreenEntity*> getScreenEntitiesByTag(String tag, bool recursive);
 		
 		/**
@@ -205,8 +296,31 @@ class _PolyExport ScreenEntity : public Entity {
 		bool snapToPixels;
 		bool processInputEvents;
 
+		/**
+		 * Get the hitbox of this ScreenEntity.
+		 * @see setHitBox()
+		 */
 		Rectangle getHitbox();
+
+
 		void setHitbox(Number width, Number height);
+
+		/**
+		 * Set the hitbox of this ScreenEntity.
+		 *
+		 * The hitbox determines the "physical" dimensions of the entity.
+		 * 
+		 * For instance, when it is checked whether you clicked an entity,
+		 * it is checked whether the mouse was pointing inside the hitbox.
+		 *
+		 * The hitbox is measured from the entity's center, so a hitbox covering
+		 * a square would be `(-square.w/2, -square.h/2, square.w, square.h)`
+		 *
+		 * @param left The left of the hitbox, as measured from the entity's center.
+		 * @param top The top of the hitbox, as measured from the entity's center.
+		 * @param width The width of the hitbox.
+		 * @param height The height of the hitbox.
+		 */
 		void setHitbox(Number width, Number height, Number left, Number top);
 
 		Number width;
