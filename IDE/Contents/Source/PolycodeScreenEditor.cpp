@@ -961,16 +961,41 @@ void PolycodeScreenEditorMain::handleMouseMove(Vector2 position) {
 			if(zooming) {
 				Vector2 mousePosition = CoreServices::getInstance()->getCore()->getInput()->getMousePosition();
 				Vector2 offset = mousePosition-mouseBase;
-				Number newScale = baseZoomScale + (offset.x * 0.01);
+				Number newScale = baseZoomScale + ((offset.x-offset.y) * 0.002);
 				if(newScale < 0.1) 
 					newScale = 0.1;
 					
 				objectBaseEntity->setScale(newScale, newScale);					
 				
 				Vector2 screenPosition = getScreenPosition();
+				Vector2 centerPosition = Vector2(getWidth()/2.0, getHeight()/2.0);
 
-				baseEntity->setPosition(((mousePosition.x - screenPosition.x)) - (zoomBasePosition.x / baseZoomScale * newScale), ((mousePosition.y - screenPosition.y)) - (zoomBasePosition.y / baseZoomScale * newScale));
-								
+				Number centeringSpeed = 1.0;
+
+				Number scaleDiff = 0.0;
+				if(newScale < baseZoomScale) {
+					scaleDiff = (((centeringSpeed*baseZoomScale)/(1.0 * newScale * (1.0/baseZoomScale)))-(centeringSpeed*baseZoomScale));	
+				} else {
+					scaleDiff = (((centeringSpeed*baseZoomScale)/(baseZoomScale/newScale))-(centeringSpeed*baseZoomScale));					
+				}
+				
+				if(scaleDiff < 0.0)
+					scaleDiff = 0.0;
+				if(scaleDiff > 1.0)
+					scaleDiff = 1.0;
+				
+
+				Vector2 finalPosition = Vector2(				
+					((centerPosition.x)) - (zoomBasePosition.x / baseZoomScale * newScale),
+					((centerPosition.y)) - (zoomBasePosition.y / baseZoomScale * newScale)
+				);				
+
+				Vector2 startPosition = Vector2(((mousePosition.x - screenPosition.x)) - (zoomBasePosition.x / baseZoomScale * newScale), ((mousePosition.y - screenPosition.y)) - (zoomBasePosition.y / baseZoomScale * newScale));
+				
+				Vector2 finalPosition2 = (finalPosition * scaleDiff) + (startPosition * (1.0-scaleDiff));
+				
+				baseEntity->setPosition(finalPosition2);
+				
 				resizePreviewScreen();
 				syncTransformToSelected();
 				
@@ -2105,6 +2130,7 @@ void PolycodeScreenEditorMain::Resize(Number width, Number height) {
 		firstResize = false;
 	}
 	
+	UIElement::Resize(width, height);
 }
 
 void PolycodeScreenEditorMain::handleDroppedFile(OSFileEntry file, Number x, Number y) {
