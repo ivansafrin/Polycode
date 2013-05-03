@@ -31,6 +31,11 @@ THE SOFTWARE.
 
 #ifdef _WINDOWS
 #include <windows.h>
+
+// Some shader functions that aren't defined in glext/wglext
+extern PFNGLGETSHADERIVPROC glGetShaderiv;
+extern PFNGLGETSHADERINFOLOGPROC glGetShaderInfoLog;
+
 #endif
 
 #include "PolyGLHeaders.h"
