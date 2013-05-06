@@ -218,9 +218,20 @@ namespace Polycode {
 			* @param x X position of the area to return.
 			* @param y Y position of the area to return.
 			* @param width Width of the area to return.
-			* @param height Height of the area to return.					
+			* @param height Height of the area to return.
+			* @return Raw image data, in the format specified by the constructor.
 			*/			
 			char *getPixelsInRect(unsigned int x, unsigned int y, unsigned int width, unsigned int height);
+
+			/**
+			* Returns a copy of the specified subRect part of the image.
+			*
+			* @param subRect The part of the image to copy. (0, 0) refers to the top left of the image.
+			* @return A pointer to an Image object allocated with new. You have to manually delete this
+			*         object using free.
+			*/
+			Image *getImagePart(PolyRectangle subRect);
+			
 			
 			/**
 			* Returns the x position of the brush.
@@ -250,7 +261,7 @@ namespace Polycode {
 			
 			/**
 			* Returns the raw image data
-			* @return Pointer to raw image data.
+			* @return Pointer to raw image data, in the format specified by the constructor.
 			*/						
 			char *getPixels();
 			

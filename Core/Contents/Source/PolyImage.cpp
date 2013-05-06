@@ -147,6 +147,11 @@ char *Image::getPixelsInRect(unsigned int x, unsigned int y, unsigned int width,
 	return retBuf;
 }
 
+Image *Image::getImagePart(PolyRectangle subRect) {
+	char *newData = getPixelsInRect( (int) subRect.x, (int) subRect.y, (int) subRect.w, (int) subRect.h);
+	return new Image(newData, subRect.w, subRect.h, this->imageType);
+}
+
 
 Color Image::getPixel(int x, int y) {
 	if(x < 0 || x >= width || y < 0 || y >= height)
