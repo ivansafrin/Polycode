@@ -174,7 +174,7 @@ void Image::createEmpty(int width, int height) {
 	this->width = width;
 	this->height = height;
 	
-	fill(0,0,0,0);
+	fill(Color(0,0,0,0));
 }
 
 void Image::perlinNoise(int seed, bool alpha) {
@@ -653,8 +653,7 @@ void Image::drawLine(int x0, int y0, int x1, int y1, Color col) {
 	}
 }
 
-void Image::fill(Number r, Number g, Number b, Number a) {
-	Color color = Color(r,g,b,a);
+void Image::fill(Color color) {
 	unsigned int val = color.getUint();
 	unsigned int *imageData32 = (unsigned int*) imageData;
 	for(int i=0; i< width*height; i++) {

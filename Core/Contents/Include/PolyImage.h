@@ -105,15 +105,12 @@ namespace Polycode {
 			* @param height Height of the image to create.			
 			*/ 						
 			void createEmpty(int width, int height);
-			
+
 			/**
 			* Fills the image with the specified color values.
-			* @param r Red value 0-1.
-			* @param g Green value 0-1
-			* @param b Blue value 0-1
-			* @param a Alpha value 0-1									
+			* @param color The color to fill it with.
 			*/ 									
-			void fill(Number r, Number g, Number b, Number a);
+			void fill(Color color);
 			
 			/**
 			* Sets a pixel at specified coordinates to specified color.
