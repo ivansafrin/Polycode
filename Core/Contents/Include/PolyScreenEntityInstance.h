@@ -53,12 +53,13 @@ class ScreenEntityInstance : public ScreenEntity {
 		
 		void reloadEntityInstance();
 
+		void clearInstance();
+
 		void parseObjectIntoCurve(ObjectEntry *entry, BezierCurve *curve);
 		void applyScreenShape(ObjectEntry *entry, ScreenShape *shape);
-		ScreenEntity *loadObjectEntryIntoEntity(ObjectEntry *entry);
+		ScreenEntity *loadObjectEntryIntoEntity(ObjectEntry *entry, ScreenEntity *targetEntity = NULL);
 		bool loadFromFile(const String& fileName);
 		
-		ScreenEntity *getRootEntity();
 		
 		ScreenEntityInstanceResourceEntry *getResourceEntry();
 		
@@ -67,8 +68,6 @@ class ScreenEntityInstance : public ScreenEntity {
 		bool cloneUsingReload;
 
 		String fileName;
-
-		ScreenEntity *rootEntity;
 		
 	protected:
 		

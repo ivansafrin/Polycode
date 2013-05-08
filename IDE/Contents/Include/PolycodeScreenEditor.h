@@ -59,6 +59,8 @@ class EntityTreeView : public UIElement {
 		
 		void syncNodeToEntity(UITree *node, Entity *entity);
 		
+		void setRootEntity(ScreenEntity *entity);
+		
 		void Refresh();
 
 		Entity *selectedEntity;
@@ -67,10 +69,11 @@ class EntityTreeView : public UIElement {
 		UIImageButton *newLayerButton;
 		UIImageButton *targetLayerButton;
 		
-		Entity *rootEntity;
 						
 	protected:	
 	
+		Entity *rootEntity;
+			
 		bool dontSendSelectionEvent;
 	
 		UITreeContainer *treeContainer;
@@ -122,6 +125,7 @@ class PolycodeScreenEditorMain : public UIElement {
 		bool hasSelected(ScreenEntity *entity);
 	
 		void applyEditorOnly(ScreenEntity *entity);
+		void applyEditorOnlyChildren(ScreenEntity *entity);
 		void applyEditorProperties(ScreenEntity *entity);
 			
 		void processEventForEntity(ScreenEntity *childEntity, InputEvent *inputEvent);
@@ -252,7 +256,8 @@ class PolycodeScreenEditorMain : public UIElement {
 		Vector2 placingAnchor;
 		
 		ScreenShape *screenPreviewShape;
-		
+		ScreenShape *sizePreviewShape;
+				
 		Vector2 dragOffset;
 		bool isDraggingEntity;
 		bool isScalingEntity;

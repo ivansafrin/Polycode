@@ -137,8 +137,10 @@ void ScreenEntity::focusChild(ScreenEntity *child) {
 		((ScreenEntity*)CoreServices::getInstance()->focusedChild)->hasFocus = false;
 	}
 	CoreServices::getInstance()->focusedChild = child;
-	((ScreenEntity*)CoreServices::getInstance()->focusedChild)->hasFocus = true;
-	((ScreenEntity*)CoreServices::getInstance()->focusedChild)->onGainFocus();
+	if(child) {	
+		((ScreenEntity*)CoreServices::getInstance()->focusedChild)->hasFocus = true;
+		((ScreenEntity*)CoreServices::getInstance()->focusedChild)->onGainFocus();
+	}
 }
 
 void ScreenEntity::moveChildUp(ScreenEntity *child) {

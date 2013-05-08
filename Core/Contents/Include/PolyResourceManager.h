@@ -53,6 +53,12 @@ namespace Polycode {
 			*/ 
 			void removeResource(Resource *resource);
 			
+			
+			/**
+			* Returns true if the following resource has been adde to the resource manager.
+			* @param resource Resource to check.
+			*/
+			bool hasResource(Resource *resource);
 			/**
 			* Loads resources from a directory.
 			* @param dirPath Path to directory to load resources from.

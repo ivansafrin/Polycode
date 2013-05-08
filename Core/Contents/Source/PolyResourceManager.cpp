@@ -156,6 +156,15 @@ void ResourceManager::parseCubemaps(const String& dirPath, bool recursive) {
 	}	
 }
 
+bool ResourceManager::hasResource(Resource *resource) {
+	for(int i=0; i < resources.size(); i++) {
+		if(resources[i] == resource) {
+			return true;
+		}
+	}
+	return false;
+}
+
 void ResourceManager::addResource(Resource *resource) {
 	resources.push_back(resource);
 	resource->resourceFileTime = OSBasics::getFileTime(resource->getResourcePath());

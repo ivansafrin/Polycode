@@ -785,6 +785,8 @@ void Entity::clearTags() {
 
 void Entity::addTag(String tag) {
 	if(!tags) tags = new std::vector<String>();
-	tags->push_back(tag);
+	if(!hasTag(tag)) {
+		tags->push_back(tag);
+	}
 }
 
