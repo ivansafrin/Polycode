@@ -21,6 +21,8 @@
 */
 
 #include "PolyResource.h"
+#include "PolyCoreServices.h"
+#include "PolyResourceManager.h"
 
 using namespace Polycode;
 
@@ -31,7 +33,7 @@ Resource::Resource(int type) : EventDispatcher() {
 }
 
 Resource::~Resource() {
-
+	CoreServices::getInstance()->getResourceManager()->removeResource(this);
 }
 
 void Resource::reloadResource() {
