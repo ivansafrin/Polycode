@@ -12,5 +12,5 @@ PolycodeTemplateApp::~PolycodeTemplateApp() {
 }
 
 bool PolycodeTemplateApp::Update() {
-	return core->Update();
+	return core->updateAndRender();
 }
