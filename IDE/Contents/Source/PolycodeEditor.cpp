@@ -97,7 +97,8 @@ void PolycodeEditor::Resize(int x, int y) {
 }
 
 PolycodeEditor::~PolycodeEditor() {
-	
+	Core *core = CoreServices::getInstance()->getCore();
+	core->removeAllHandlersForListener(this);
 }
 
 
