@@ -145,6 +145,8 @@ class PolycodeScreenEditorMain : public UIElement {
 		
 		void setGrid(int gridSize);
 		
+		void adjustForSnap(Vector2 *position);
+		
 		String Copy(void **data);
 		void Paste(void *data, String clipboardType);
 		void destroyClipboardData(void *data, String type);
@@ -183,6 +185,7 @@ class PolycodeScreenEditorMain : public UIElement {
 		ScreenEntityInstanceSheet *instanceSheet;
 		ScreenSpriteSheet *spriteSheet;
 		ScreenParticleSheet *particleSheet;
+		ScreenEntitySheet *screenEntitySheet;
 		
 		EntityTreeView *treeView;
 		
@@ -194,6 +197,8 @@ class PolycodeScreenEditorMain : public UIElement {
 	
 		int gridSize;
 		bool gridSnap;
+		
+		bool pixelSnap;
 	
 		ScreenShape *previewShape;
 		ScreenImage *previewImage;

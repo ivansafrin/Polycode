@@ -1236,6 +1236,50 @@ void ShaderTexturesSheet::setShader(Shader *shader, Material *material) {
 	Resize(width, height);
 }
 
+ScreenEntitySheet::ScreenEntitySheet() : PropSheet("SCREEN ENTITY", "screen_entity") {
+
+	widthProp = new NumberProp("Width");
+	addProp(widthProp);
+	
+	heightProp = new NumberProp("Height");
+	addProp(heightProp);
+	
+	propHeight = 100;
+	entity = NULL;
+	lastEntity = NULL;
+}
+
+ScreenEntitySheet::~ScreenEntitySheet() {
+
+}
+		
+void ScreenEntitySheet::handleEvent(Event *event) {
+	if(entity) {
+		if(event->getDispatcher() == widthProp) {
+			entity->setWidth(widthProp->get());
+			dispatchEvent(new Event(), Event::CHANGE_EVENT);		
+		} else 	if(event->getDispatcher() == heightProp) {
+			entity->setHeight(heightProp->get());
+			dispatchEvent(new Event(), Event::CHANGE_EVENT);		
+		}
+
+	}
+	PropSheet::handleEvent(event);	
+}
+
+void ScreenEntitySheet::Update() {
+	if(entity) {
+		enabled = true;
+		if(entity != lastEntity) {
+			widthProp->set(entity->getWidth());
+			heightProp->set(entity->getHeight());
+			lastEntity = entity;
+		}
+	} else {
+		enabled = false;
+	}
+}
+
 EntitySheet::EntitySheet() : PropSheet("ENTITY", "entity"){
 	idProp = new StringProp("ID");
 	addProp(idProp);

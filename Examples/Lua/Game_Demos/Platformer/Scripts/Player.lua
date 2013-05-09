@@ -4,8 +4,6 @@ class "Player"
 function Player:Player(screen, playerEntity)
 	self.screen = screen
 	self.playerEntity = playerEntity
-	playerEntity.width = 50
-	playerEntity.height = 90
 	self.playerPhysics = screen:trackPhysicsChild(playerEntity, PhysicsScreenEntity.ENTITY_TRIPLE_CIRCLE, false, 0.0, 1, 0, false, true, -1)
 	self.playerSprite = safe_cast(playerEntity:getEntityById("playerSprite", true), ScreenSprite)
 	self.groundSensor = safe_cast(playerEntity:getEntityById("groundSensor", true), ScreenShape)

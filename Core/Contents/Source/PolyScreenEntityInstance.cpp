@@ -293,6 +293,17 @@ ScreenEntity *ScreenEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry
 		entity->setPositionMode(ScreenEntity::POSITION_CENTER);
 	}
 
+	Number _width, _height;
+	
+	if(entry->readNumber("width", &_width)) {
+		entity->setWidth(_width);	
+	}
+	
+	if(entry->readNumber("height", &_height)) {
+		entity->setHeight(_height);	
+	}
+
+
 	if(!targetEntity) {	
 		entity->color.r = (*entry)["colorR"]->NumberVal;
 		entity->color.g = (*entry)["colorG"]->NumberVal;
@@ -308,9 +319,13 @@ ScreenEntity *ScreenEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry
 		entity->position.y = (*entry)["posY"]->NumberVal;
 
 		entity->setRotation((*entry)["rotation"]->NumberVal);
+	} else {
+	
 	}
 	
-	entity->id = (*entry)["id"]->stringVal;
+	if((*entry)["id"]->stringVal != "") {
+		entity->id = (*entry)["id"]->stringVal;
+	}
 	
 	String tagString = (*entry)["tags"]->stringVal; 
 	

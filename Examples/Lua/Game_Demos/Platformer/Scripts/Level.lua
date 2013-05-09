@@ -43,15 +43,11 @@ function Level:initLevel()
 
 	self.coins = self.level:getScreenEntitiesByTag("coin", true)
 	for i=1,count(self.coins) do
-		self.coins[i].width = 20
-		self.coins[i].height = 20
 		self.screen:trackCollisionChild(self.coins[i], PhysicsScreenEntity.ENTITY_CIRCLE)
 	end
 
 	self.buttons = self.level:getScreenEntitiesByTag("button", true)
 	for i=1,count(self.buttons) do
-		self.buttons[i].width = 40
-		self.buttons[i].height = 95
 		self.screen:trackPhysicsChild(self.buttons[i], PhysicsScreenEntity.ENTITY_RECT , true, 2.0, 1, 0, false, false)
 	end
 

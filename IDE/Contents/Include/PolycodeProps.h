@@ -412,6 +412,20 @@ class ScreenEntityInstanceSheet : public PropSheet {
 		ScreenEntityInstanceProp *instanceProp;
 };
 
+class ScreenEntitySheet : public PropSheet {
+	public:
+		ScreenEntitySheet();
+		~ScreenEntitySheet();
+		
+		void handleEvent(Event *event);
+		void Update();
+		
+		NumberProp *widthProp;
+		NumberProp *heightProp;
+		
+		ScreenEntity *entity;
+		ScreenEntity *lastEntity;
+};
 
 class SoundSheet : public PropSheet {
 	public:
