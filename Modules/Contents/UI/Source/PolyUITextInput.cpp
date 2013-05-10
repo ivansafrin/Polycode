@@ -666,7 +666,7 @@ void UITextInput::updateCaretPosition() {
 		// Make sure the new caret position is visible.
 
 		// Try scrolling left.
-		while(caretImagePosition < horizontalPixelScroll) {
+		while(caretImagePosition <= horizontalPixelScroll && horizontalCharacterScroll > 0) {
 			horizontalCharacterScroll--;
 
 			// Update pixel scroll from new character scroll.
