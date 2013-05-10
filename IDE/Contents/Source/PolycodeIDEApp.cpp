@@ -201,6 +201,10 @@ void PolycodeIDEApp::doRemoveFile() {
 		if(projectManager->getActiveProject()) {
 			frame->projectBrowser->refreshProject(projectManager->getActiveProject());
 		}
+		// have to set changes to false to avoid problems with saving and modal dialogs in removeEditor()
+		// besides, we're removing the file, so saving is not necessary
+		editorManager->getCurrentEditor()->setHasChanges(false);
+		closeFile(); //remove editor and remove from file selector combobox
 	}
 }
 
