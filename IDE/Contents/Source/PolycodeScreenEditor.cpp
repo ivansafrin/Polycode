@@ -1103,24 +1103,20 @@ void PolycodeScreenEditorMain::handleMouseMove(Vector2 position) {
 				syncTransformToSelected();			
 			} 
 			else if(scalingY && scalingX) {
-				Vector2 trans = CoreServices::getInstance()->getCore()->getInput()->getMousePosition() - mouseBase;
-				for(int i=0; i < selectedEntities.size(); i++) {			
-							
-					Vector3 trans3 = Vector3(trans.x, trans.y, 0.0);
-				
-					Quaternion q;								
-					q.fromAxes(0.0, 0.0, -selectedEntities[i]->getCombinedRoll());
-					trans3 = q.applyTo(trans3);
+				Vector2 newMousePosition = CoreServices::getInstance()->getCore()->getInput()->getMousePosition();
+				Vector2 trans = newMousePosition - mouseBase;
 								
+				for(int i=0; i < selectedEntities.size(); i++) {			
+				
+					Number baseDist = mouseBase.distance(selectedEntities[i]->getScreenPosition());
+					Number newDist = newMousePosition.distance(selectedEntities[i]->getScreenPosition());
+																					
 					Number scaleMod = 0.04;
 					
-					Number newScale = trans3.length() ;
-					if(trans3.x < 0 && trans.y > 0) {
-						newScale = newScale * -1;
-					}
+					Number newScale = newDist - baseDist;
 					
-					Number newScaleX = (baseEntityScales[i].y + (newScale * scaleMod));
-					Number newScaleY = (baseEntityScales[i].x + (newScale * scaleMod));
+					Number newScaleX = (baseEntityScales[i].x + (newScale * scaleMod));
+					Number newScaleY = (baseEntityScales[i].y + (newScale * scaleMod));
 					
 					selectedEntities[i]->setScale(newScaleX, newScaleY);
 				}
