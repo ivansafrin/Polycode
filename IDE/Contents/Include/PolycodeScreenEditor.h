@@ -147,6 +147,9 @@ class PolycodeScreenEditorMain : public UIElement {
 		
 		void adjustForSnap(Vector2 *position);
 		
+		void setCurrentLayer(ScreenEntity *newLayer);
+		ScreenEntity *getCurrentLayer();
+		
 		String Copy(void **data);
 		void Paste(void *data, String clipboardType);
 		void destroyClipboardData(void *data, String type);
@@ -165,8 +168,6 @@ class PolycodeScreenEditorMain : public UIElement {
 		static const int MODE_PARTICLES = 11;
 																
 		std::vector<ScreenEntity*> layers;
-		
-		ScreenEntity *currentLayer;
 		
 		PropList *entityProps;
 		
@@ -194,6 +195,7 @@ class PolycodeScreenEditorMain : public UIElement {
 		bool multiSelect;
 	protected:
 	
+		ScreenEntity *currentLayer;	
 	
 		int gridSize;
 		bool gridSnap;

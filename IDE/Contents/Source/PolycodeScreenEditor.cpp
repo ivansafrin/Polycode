@@ -274,6 +274,8 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain() {
 	treeView = NULL;
 	placementCount = 0;
 	
+	currentLayer = NULL;
+	
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
 	int fontSize = conf->getNumericValue("Polycode", "uiDefaultFontSize");	
@@ -310,7 +312,7 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain() {
 	layerBaseEntity->processInputEvents = true;
 	objectBaseEntity->addChild(layerBaseEntity);
 	
-	currentLayer = layerBaseEntity;
+	setCurrentLayer(layerBaseEntity);
 
 	placingPreviewEntity = new ScreenEntity();
 	objectBaseEntity->addChild(placingPreviewEntity);
@@ -1816,8 +1818,8 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 							}
 							
 							if(selectedEntity == currentLayer) {
-								currentLayer = NULL;
-								currentLayer = layers[0];
+								setCurrentLayer(NULL);
+								setCurrentLayer(layers[0]);
 								treeView->targetLayer = currentLayer;
 							}							
 							delete selectedEntity;
@@ -2118,13 +2120,10 @@ void PolycodeScreenEditorMain::processEventForEntity(ScreenEntity *childEntity, 
 ScreenEntity *PolycodeScreenEditorMain::addNewLayer(String layerName) {
 	ScreenEntity *newLayer = new ScreenEntity();
 	newLayer->id = layerName;
-	newLayer->processInputEvents = true;
 	layerBaseEntity->addChild(newLayer);
-	currentLayer = newLayer;
-	treeView->targetLayer = newLayer;
-	
-	newLayer->setEntityProp("editor_type", "layer");
-	
+	setCurrentLayer(newLayer);
+	treeView->targetLayer = newLayer;	
+	newLayer->setEntityProp("editor_type", "layer");	
 	selectEntity(currentLayer);	
 	layers.push_back(newLayer);
 	treeView->Refresh();	
@@ -2191,6 +2190,20 @@ void PolycodeScreenEditorMain::setMode(int newMode) {
 
 	}
 
+}
+
+ScreenEntity *PolycodeScreenEditorMain::getCurrentLayer() {
+	return currentLayer;
+}
+
+void PolycodeScreenEditorMain::setCurrentLayer(ScreenEntity *newLayer) {
+	if(currentLayer) {
+		currentLayer->processInputEvents = false;
+	}
+	currentLayer = newLayer;
+	if(currentLayer) {
+		currentLayer->processInputEvents = true;
+	}
 }
 
 void PolycodeScreenEditorMain::Resize(Number width, Number height) {
@@ -2565,8 +2578,8 @@ void PolycodeScreenEditor::handleEvent(Event *event) {
 		if(event->getDispatcher() == treeView->targetLayerButton) {
 			if(treeView->selectedEntity->getEntityProp("editor_type") == "layer") {
 				printf("setting new layer\n");
-				editorMain->currentLayer = (ScreenEntity*)treeView->selectedEntity;
-				treeView->targetLayer = editorMain->currentLayer;
+				editorMain->setCurrentLayer((ScreenEntity*)treeView->selectedEntity);
+				treeView->targetLayer = editorMain->getCurrentLayer();
 				treeView->Refresh();				
 			} else {
 				PolycodeConsole::print("Select a layer to set as default layer.\n");
@@ -2627,7 +2640,9 @@ void PolycodeScreenEditorMain::applyEditorProperties(ScreenEntity *entity) {
 		}
 	}
 	
-	entity->processInputEvents = true;
+	if(entity->getEntityProp("editor_type") != "layer") {
+		entity->processInputEvents = true;
+	}
 	entity->blockMouseInput = true;
 	entity->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);	
 	entity->addEventListener(this, InputEvent::EVENT_MOUSEUP);	
@@ -2648,8 +2663,8 @@ bool PolycodeScreenEditor::openFile(OSFileEntry filePath) {
 	if(editorMain->layerBaseEntity->getNumChildren() == 0) {
 		ScreenEntity *newLayer = editorMain->addNewLayer("default_layer");
 	} else {
-		editorMain->currentLayer = (ScreenEntity*)editorMain->layerBaseEntity->getChildAtIndex(0);
-		treeView->targetLayer = editorMain->currentLayer;
+		editorMain->setCurrentLayer((ScreenEntity*)editorMain->layerBaseEntity->getChildAtIndex(0));
+		treeView->targetLayer = editorMain->getCurrentLayer();
 		
 		for(int i=0; i < editorMain->layerBaseEntity->getNumChildren(); i++) {
 			editorMain->layers.push_back((ScreenEntity*)editorMain->layerBaseEntity->getChildAtIndex(i));
