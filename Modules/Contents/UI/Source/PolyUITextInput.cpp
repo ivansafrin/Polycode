@@ -713,9 +713,9 @@ void UITextInput::dragSelectionTo(Number x, Number y) {
 	
 	int len = selectToLine.length();
 	Number slen = 0;
-	int caretPosition = bufferLines[0]->getLabel()->getTextWidthForString(selectToLine.substr(0,len));
+	int caretPosition = bufferLines[0]->getLabel()->getTextWidthForString(selectToLine.substr(0,len)) - horizontalPixelScroll;
 	for(int i=0; i < len; i++) {
-		slen = bufferLines[0]->getLabel()->getTextWidthForString(selectToLine.substr(0,i));
+		slen = bufferLines[0]->getLabel()->getTextWidthForString(selectToLine.substr(0,i)) - horizontalPixelScroll;
 		if(slen > x) {
 			caretPosition = i;
 			break;
@@ -872,8 +872,8 @@ void UITextInput::setCaretToMouse(Number x, Number y) {
 	int newCaretPosition = -1;
 	
 	for(int i=1; i < len; i++) {
-		slen = bufferLines[0]->getLabel()->getTextWidthForString(lines[lineOffset].substr(0,i));
-		Number slen_prev = bufferLines[0]->getLabel()->getTextWidthForString(lines[lineOffset].substr(0,i-1));		
+		slen = bufferLines[0]->getLabel()->getTextWidthForString(lines[lineOffset].substr(0,i)) - horizontalPixelScroll;
+		Number slen_prev = bufferLines[0]->getLabel()->getTextWidthForString(lines[lineOffset].substr(0,i-1)) - horizontalPixelScroll;		
 		if(x >= slen_prev && x <= slen) {
 			if(x < slen_prev + ((slen - slen_prev) /2.0)) {
 				newCaretPosition = i-1;
@@ -1490,7 +1490,7 @@ void UITextInput::readjustBuffer() {
 		} else {
 			bufferLines[i]->setText("");
 		}
-		bufferLines[i]->setPosition(0, (i*(lineHeight+lineSpacing)),0.0f);	
+		bufferLines[i]->setPosition(-horizontalPixelScroll, (i*(lineHeight+lineSpacing)),0.0f);	
 	}
 	
 	for(int i=0; i < numberLines.size(); i++) {
