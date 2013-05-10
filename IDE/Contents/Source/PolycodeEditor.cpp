@@ -49,11 +49,15 @@ PolycodeEditor::PolycodeEditor(bool _isReadOnly) : ScreenEntity(), ClipboardProv
 	enableScissor = true;	
 	processInputEvents = true;
 	_hasChanges = false;
-
+	
+	currentUndoPosition = 0;
+	
 	Core *core = CoreServices::getInstance()->getCore();
 	
 	core->addEventListener(this, Core::EVENT_COPY);
 	core->addEventListener(this, Core::EVENT_PASTE);
+	core->addEventListener(this, Core::EVENT_UNDO);	
+	core->addEventListener(this, Core::EVENT_REDO);	
 }
 
 void PolycodeEditor::setHasChanges(bool newVal) {
@@ -86,8 +90,45 @@ void PolycodeEditor::handleEvent(Event *event) {
 				}
 			}
 			break;
+			case Core::EVENT_UNDO:
+			{
+				if(editorActions.size() > 0) {
+				doAction(editorActions[currentUndoPosition].actionName, editorActions[currentUndoPosition].beforeData);
+				currentUndoPosition--;
+				if(currentUndoPosition < 0) {
+					currentUndoPosition = 0;
+				}
+				}				
+			}
+			break;
+			case Core::EVENT_REDO:
+			{
+				if(editorActions.size() > 0) {			
+				currentUndoPosition++;
+				if(currentUndoPosition > editorActions.size()-1) {
+					currentUndoPosition = editorActions.size()-1;
+				} else {
+					doAction(editorActions[currentUndoPosition].actionName, editorActions[currentUndoPosition].afterData);
+				}
+				}
+			}
+			break;			
 		}
 	}
+}
+
+void PolycodeEditor::didAction(String actionName, PolycodeEditorActionData *beforeData, PolycodeEditorActionData *afterData) {
+	PolycodeEditorAction newAction;
+	newAction.actionName = actionName;
+	newAction.beforeData = beforeData;
+	newAction.afterData = afterData;	
+	editorActions.push_back(newAction);
+	
+	if(editorActions.size() > MAX_EDITOR_UNDO_ACTIONS) {
+		editorActions.erase(editorActions.begin());
+	}
+	
+	currentUndoPosition = editorActions.size()-1;	
 }
 
 void PolycodeEditor::Resize(int x, int y) {
