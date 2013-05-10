@@ -27,6 +27,7 @@
 #include "PolyLogger.h"
 #include "OSBasics.h"
 #include "PolyPerlin.h"
+#include <algorithm>
 
 using namespace Polycode;
 
@@ -117,38 +118,34 @@ char *Image::getPixels() {
 	return imageData;
 }
 
-char *Image::getPixelsInRect(unsigned int x, unsigned int y, unsigned int width, unsigned int height) {
+char *Image::getPixelsInRect(int x, int y, int width, int height) {
+	transformCoordinates(&x, &y, &width, &height);
 	char *retBuf = (char*) malloc(pixelSize * width * height);
 	memset(retBuf, 0, pixelSize * width * height);
 	
 	if(x < this->width-1 && y < this->height-1) {
-		
-		unsigned int xAmt;
-		unsigned int yAmt;	
-		if(x + width > this->width) {
-			xAmt = this->width - x;
-		} else {
-			xAmt = width;
-		}
 
-		if(y + height > this->height) {
-			yAmt = this->height - y;
-		} else {
-			yAmt = height;
-		}
+		width = std::min(width, this->width - x);
+		height = std::min(height, this->height - y);
 
-		for(int i=0; i < yAmt; i++) {
+		for(int i=0; i < height; i++) {
 			long srcOffset = ((pixelSize*this->width) * (y+i)) + (pixelSize*x);
-			long dstOffset = (pixelSize*xAmt) * i;
-			memcpy(retBuf + dstOffset, imageData+srcOffset, pixelSize * xAmt);
+			long dstOffset = (pixelSize*width) * i;
+			memcpy(retBuf + dstOffset, imageData+srcOffset, pixelSize * width);
 		}	
 	}
 		
 	return retBuf;
 }
 
+Image *Image::getImagePart(Rectangle subRect) {
+	char *newData = getPixelsInRect( (int) subRect.x, (int) subRect.y, (int) subRect.w, (int) subRect.h);
+	return new Image(newData, subRect.w, subRect.h, this->imageType);
+}
+
 
 Color Image::getPixel(int x, int y) {
+	transformCoordinates(&x, &y);
 	if(x < 0 || x >= width || y < 0 || y >= height)
 		return Color(0,0,0,0);
 	unsigned int *imageData32 = (unsigned int*)imageData;	
@@ -162,22 +159,22 @@ Color Image::getPixel(int x, int y) {
 	return Color(((Number)tr)/255.0f, ((Number)tg)/255.0f, ((Number)tb)/255.0f,((Number)ta)/255.0f);
 }
 
-unsigned int Image::getWidth() const {
+int Image::getWidth() const {
 	return width;
 }
 
-unsigned int Image::getHeight() const {
+int Image::getHeight() const {
 	return height;
 }
 
-void Image::createEmpty(unsigned int width, unsigned int height) {
+void Image::createEmpty(int width, int height) {
 	free(imageData);
 		
 	imageData = (char*)malloc(width*height*pixelSize);
 	this->width = width;
 	this->height = height;
 	
-	fill(0,0,0,0);
+	fill(Color(0,0,0,0));
 }
 
 void Image::perlinNoise(int seed, bool alpha) {
@@ -203,7 +200,7 @@ void Image::writeBMP(const String& fileName) const {
 //	SDL_SaveBMP(image, fileName.c_str());
 }
 
-void Image::drawRect(int x, int y, int w, int h, Color col) {
+void Image::fillRect(int x, int y, int w, int h, Color col) {
 	for(int i=0; i < w; i++) {
 		for(int j=0; j < h; j++) {
 			setPixel(x+i,y+j,col);
@@ -212,6 +209,7 @@ void Image::drawRect(int x, int y, int w, int h, Color col) {
 }
 
 void Image::setPixel(int x, int y, Color col) {
+	transformCoordinates(&x, &y);
 	if(x < 0 || x >= width || y < 0 || y >= height)
 		return;
 
@@ -220,12 +218,12 @@ void Image::setPixel(int x, int y, Color col) {
 }
 
 
-void Image::move(int x, int y) {
+void Image::moveBrush(int x, int y) {
 	brushPosX += x;
-	brushPosY += y;
+	brushPosY -= y;
 }
 
-void Image::moveTo(int x, int y) {
+void Image::moveBrushTo(int x, int y) {
 	brushPosX = x;
 	brushPosY = y;
 }
@@ -239,11 +237,12 @@ int Image::getBrushY() const {
 	return brushPosY;
 }
 
-void Image::lineTo(int x, int y, Color col) {
-	line(brushPosX, brushPosY, brushPosX+x, brushPosY+y, col);
+void Image::drawLineTo(int x, int y, Color col) {
+	drawLine(brushPosX, brushPosY, brushPosX+x, brushPosY+y, col);
 }
 
 void Image::setPixel(int x, int y, Number r, Number g, Number b, Number a) {
+	transformCoordinates(&x, &y);
 	if(x < 0 || x > width || y < 0 || y > height)
 		return;
 
@@ -617,7 +616,7 @@ void Image::swap(int *v1, int *v2) {
 	*v2 = tv;
 }
 
-void Image::line(int x0, int y0, int x1, int y1, Color col) {
+void Image::drawLine(int x0, int y0, int x1, int y1, Color col) {
 	bool steep = abs(y1 - y0) > abs(x1 - x0);
 	if(steep) {
 		swap(&x0, &y0);
@@ -654,8 +653,7 @@ void Image::line(int x0, int y0, int x1, int y1, Color col) {
 	}
 }
 
-void Image::fill(Number r, Number g, Number b, Number a) {
-	Color color = Color(r,g,b,a);
+void Image::fill(Color color) {
 	unsigned int val = color.getUint();
 	unsigned int *imageData32 = (unsigned int*) imageData;
 	for(int i=0; i< width*height; i++) {
@@ -882,4 +880,12 @@ bool Image::loadPNG(const String& fileName) {
 	
 	imageData = image_data;
 	return true;
+}
+
+void Image::transformCoordinates(int *x, int *y) {
+	*y = this->height - *y - 1;
+}
+
+void Image::transformCoordinates(int *x, int *y, int *w, int *h) {
+	*y = this->height - *h - *y - 1;
 }

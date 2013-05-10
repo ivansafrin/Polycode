@@ -130,7 +130,7 @@ Texture *MaterialManager::createFramebufferTexture(int width, int height, int ty
 
 Texture *MaterialManager::createNewTexture(int width, int height, bool clamp, bool createMipmaps, int type) {
 	Image *newImage = new Image(width, height, type);
-	newImage->fill(1,1,1,1);
+	newImage->fill(Color(1,1,1,1));
 	Texture *retTexture = createTextureFromImage(newImage, clamp, createMipmaps);
 	delete newImage;
 	return retTexture;
