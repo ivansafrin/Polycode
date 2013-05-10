@@ -836,8 +836,7 @@ void PolycodeScreenEditorMain::syncTransformToSelected() {
 		Matrix4 final = selectedEntity->getConcatenatedMatrixRelativeTo(baseEntity);
 		screenTransform->setPosition(final.getPosition());
 		screenTransformShape->dirtyMatrix(false);
-		screenTransformShape->setTransformByMatrixPure(final);
-		
+		screenTransformShape->setTransformByMatrixPure(final);		
 		screenTransform->rotation.roll = selectedEntity->getCombinedRoll();
 	} else {
 			
@@ -851,13 +850,6 @@ void PolycodeScreenEditorMain::syncTransformToSelected() {
 		screenTransformShape->setPosition(center);
 		
 		screenTransform->rotation.roll = groupRoll * TODEGREES;
-
-//		screenTransformShape->setShapeSize(selectedEntity->getWidth(),selectedEntity->getHeight());	
-//		Matrix4 final = selectedEntity->getConcatenatedMatrixRelativeTo(baseEntity);
-//		screenTransform->setPosition(final.getPosition());			
-//		screenTransformShape->matrixDirty = false;
-//		screenTransformShape->setTransformByMatrixPure(final);		
-		
 	}
 	
 	screenTransform->rebuildTransformMatrix();
@@ -1080,7 +1072,7 @@ void PolycodeScreenEditorMain::handleMouseMove(Vector2 position) {
 		
 			if(rotating) {
 			
-				Vector2 diff = CoreServices::getInstance()->getCore()->getInput()->getMousePosition() - screenTransform->getScreenPosition();
+				Vector2 diff = CoreServices::getInstance()->getCore()->getInput()->getMousePosition() - baseScaleScreenPosition;
 				diff.Normalize();
 				Number newAngle = atan2(diff.x, diff.y);				
 			
@@ -1124,10 +1116,22 @@ void PolycodeScreenEditorMain::handleMouseMove(Vector2 position) {
 				Number newDist = newMousePosition.distance(baseScaleScreenPosition);	
 				Number scaleMod = 0.04;
 				Number newScale = newDist - baseDist;
-								
+
+				printf("baseDist: %f newDist: %f newScale: %f\n", baseDist, newDist, newScale);
+
 				for(int i=0; i < selectedEntities.size(); i++) {												
-					Number newScaleX = (baseEntityScales[i].x + (newScale * scaleMod));
-					Number newScaleY = (baseEntityScales[i].y + (newScale * scaleMod));
+					Number newScaleX, newScaleY;
+					if(baseEntityScales[i].x < 0.0) {
+						newScaleX = (baseEntityScales[i].x - (newScale * scaleMod));					
+					} else {
+						newScaleX = (baseEntityScales[i].x + (newScale * scaleMod));					
+					}
+					
+					if(baseEntityScales[i].y < 0.0) {
+						newScaleY = (baseEntityScales[i].y - (newScale * scaleMod));					
+					} else {
+						newScaleY = (baseEntityScales[i].y + (newScale * scaleMod));					
+					}					
 					
 					selectedEntities[i]->setScale(newScaleX, newScaleY);
 				}
@@ -1142,8 +1146,14 @@ void PolycodeScreenEditorMain::handleMouseMove(Vector2 position) {
 					q.fromAxes(0.0, 0.0, -selectedEntities[i]->getCombinedRoll());
 					trans3 = q.applyTo(trans3);
 								
-					Number scaleMod = 0.04;								
-					selectedEntities[i]->setScaleY(baseEntityScales[i].y - (trans3.y * scaleMod));
+					Number scaleMod = 0.04;
+					
+					if(baseEntityScales[i].y < 0.0) {
+						selectedEntities[i]->setScaleY(baseEntityScales[i].y + (trans3.y * scaleMod));
+					} else {
+						selectedEntities[i]->setScaleY(baseEntityScales[i].y - (trans3.y * scaleMod));	
+					}					
+																	
 				}
 				syncTransformToSelected();					
 			} else if(scalingX) {				
@@ -1157,8 +1167,13 @@ void PolycodeScreenEditorMain::handleMouseMove(Vector2 position) {
 					q.fromAxes(0.0, 0.0, -selectedEntities[i]->getCombinedRoll());
 					trans3 = q.applyTo(trans3);
 								
-					Number scaleMod = 0.04;								
-					selectedEntities[i]->setScaleX(baseEntityScales[i].x + (trans3.x * scaleMod));				
+					Number scaleMod = 0.04;
+					
+					if(baseEntityScales[i].x < 0.0) {			
+						selectedEntities[i]->setScaleX(baseEntityScales[i].x - (trans3.x * scaleMod));		
+					} else {
+						selectedEntities[i]->setScaleX(baseEntityScales[i].x + (trans3.x * scaleMod));							
+					}
 				}
 				syncTransformToSelected();	
 				
@@ -1887,7 +1902,7 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 			scalingX = true;			
 			resetSelectedEntityTransforms();
 			mouseBase = CoreServices::getInstance()->getCore()->getInput()->getMousePosition();			
-			baseScaleScreenPosition = screenTransformShape->getScreenPosition();
+			baseScaleScreenPosition = screenTransform->getScreenPosition();
 		}	
 	} else if(event->getDispatcher() == transformScalerY) {
 		if(selectedEntities.size() > 0) {
@@ -1905,6 +1920,7 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 	
 	if(event->getDispatcher() == transformRotator) {
 		if(selectedEntities.size() > 0) {
+			baseScaleScreenPosition = screenTransform->getScreenPosition();		
 			rotating = true;
 			resetSelectedEntityTransforms();
 			mouseBase = CoreServices::getInstance()->getCore()->getInput()->getMousePosition();
