@@ -48,6 +48,9 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	
 	caretPosition = 0;
 	caretImagePosition = 0;
+
+	horizontalPixelScroll = 0;
+	horizontalCharacterScroll = 0;
 	
 	settingText = false;	
 	
@@ -114,7 +117,6 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 		
 		lineNumberAnchor = new ScreenEntity();
 		linesContainer->addChild(lineNumberAnchor);
-		
 	} else {
 		lineNumberBg = NULL;
 		lineNumberAnchor = NULL;
@@ -138,27 +140,27 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	selectorRectTop->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	selectorRectTop->setColor(181.0f/255.0f, 213.0f/255.0f, 255.0f/255.0f, 1);
 	selectorRectTop->visible = false;
-	linesContainer->addChild(selectorRectTop);
+	textContainer->addChild(selectorRectTop);
 
 	selectorRectMiddle = new ScreenShape(ScreenShape::SHAPE_RECT, 1,1);
 	selectorRectMiddle->setPositionMode(ScreenEntity::POSITION_TOPLEFT);	
 	selectorRectMiddle->setColor(181.0f/255.0f, 213.0f/255.0f, 255.0f/255.0f, 1);
 	selectorRectMiddle->visible = false;
-	linesContainer->addChild(selectorRectMiddle);
+	textContainer->addChild(selectorRectMiddle);
 
 	selectorRectBottom = new ScreenShape(ScreenShape::SHAPE_RECT, 1,1);
 	selectorRectBottom->setPositionMode(ScreenEntity::POSITION_TOPLEFT);	
 	selectorRectBottom->setColor(181.0f/255.0f, 213.0f/255.0f, 255.0f/255.0f, 1);
 	selectorRectBottom->visible = false;
-	linesContainer->addChild(selectorRectBottom);
+	textContainer->addChild(selectorRectBottom);
 		
 	
 	blinkerRect = new ScreenShape(ScreenShape::SHAPE_RECT, 1, fontSize+2,0,0);
 	blinkerRect->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	blinkerRect->setColor(0,0,0,1);
-	linesContainer->addChild(blinkerRect);
+	textContainer->addChild(blinkerRect);
 	blinkerRect->visible = false;
-	blinkerRect->setPosition(0,3);
+	blinkerRect->setPosition(-horizontalPixelScroll,3);
 	
 	blinkTimer = new Timer(true, 500);
 	blinkTimer->addEventListener(this, Timer::EVENT_TRIGGER);
@@ -168,11 +170,7 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	this->height = rectHeight;
 	setHitbox(width, rectHeight);
 	
-	updateCaretPosition();
-		
-	
 	scrollContainer = NULL;
-	
 	if(multiLine) {
 		scrollContainer = new UIScrollContainer(linesContainer, false, true, 200, 200);
 		scrollContainer->addEventListener(this, Event::CHANGE_EVENT);
@@ -187,12 +185,13 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	syntaxHighliter = NULL;
 	
 	textColor = Color(0.0,0.0,0.0,1.0);
-	
+
 	currentBufferLines = 0;
 	neededBufferLines = 1;
 	checkBufferLines();
-	
+
 	insertLine(true);
+	updateCaretPosition();
 	
 	core = CoreServices::getInstance()->getCore();
 	core->addEventListener(this, Core::EVENT_COPY);
@@ -315,7 +314,7 @@ void UITextInput::setSelection(int lineStart, int lineEnd, int colStart, int col
 	}
 
 	selectorRectTop->setScale(topSize, topHeight);
-	selectorRectTop->setPosition(decoratorOffset + topX + padding + (topSize/2.0), padding + (lineStart * (lineHeight+lineSpacing)) + (topHeight/2.0));
+	selectorRectTop->setPosition(topX + (topSize/2.0) - horizontalPixelScroll, lineStart * (lineHeight+lineSpacing) + (topHeight/2.0));
 	
 	if(lineEnd > lineStart && lineEnd < lines.size()) {
 		String bottomLine = lines[lineEnd];
@@ -325,7 +324,7 @@ void UITextInput::setSelection(int lineStart, int lineEnd, int colStart, int col
 			bottomSize = this->width-padding;
 		Number bottomHeight = lineHeight+lineSpacing;
 		selectorRectBottom->setScale(bottomSize, bottomHeight);
-		selectorRectBottom->setPosition(decoratorOffset + padding + (bottomSize/2.0), padding + (lineEnd * (lineHeight+lineSpacing)) + (bottomHeight/2.0));
+		selectorRectBottom->setPosition(bottomSize/2.0 - horizontalPixelScroll, lineEnd * (lineHeight+lineSpacing) + (bottomHeight/2.0));
 		
 		if(lineEnd != lineStart+1) {
 			// need filler
@@ -336,7 +335,7 @@ void UITextInput::setSelection(int lineStart, int lineEnd, int colStart, int col
 				midHeight += lineHeight+lineSpacing;
 			}
 			selectorRectMiddle->setScale(midSize, midHeight);
-			selectorRectMiddle->setPosition(decoratorOffset + padding + (midSize/2.0), padding + ((lineStart+1) * (lineHeight+lineSpacing)) + (midHeight/2.0));										
+			selectorRectMiddle->setPosition(midSize/2.0 - horizontalPixelScroll, ((lineStart+1) * (lineHeight+lineSpacing)) + (midHeight/2.0));										
 			
 		}
 		
@@ -578,6 +577,7 @@ void UITextInput::renumberLines() {
 	// Update the position and width of the text accordingly.
 	textContainer->setPosition(decoratorOffset + padding, padding);
 	textContainer->setWidth(this->getWidth() - textContainer->getPosition2D().x - padding);
+	textContainer->setHeight(this->getHeight() - textContainer->getPosition2D().y - padding);
 	textContainer->scissorBox.setRect(textContainer->getPosition2D().x, textContainer->getPosition2D().y, textContainer->getWidth(), textContainer->getHeight());
 }
 
@@ -637,29 +637,53 @@ String UITextInput::getText() {
 }
 
 void UITextInput::updateCaretPosition() {
+	// If this assertion fails, you likely called the function in the wrong
+	// place in the constructor.
+	assert(bufferLines.size() && lines.size());
 
 	if(lineOffset > lines.size()-1)
 		lineOffset = lines.size()-1;
 
-	caretImagePosition = padding;
+	caretImagePosition = 0;
 	if(caretPosition == 0) {
-		caretImagePosition = padding;
+		caretImagePosition = 0;
 	} else if(caretPosition > lines[lineOffset].length()) {
 		caretPosition = lines[lineOffset].length();
 		String caretSubString = lines[lineOffset].substr(0,caretPosition);
-		caretImagePosition = bufferLines[0]->getLabel()->getTextWidthForString(caretSubString);		
-		caretImagePosition = caretImagePosition + padding;		
+		caretImagePosition = bufferLines[0]->getLabel()->getTextWidthForString(caretSubString);
 	} else {
 		String caretSubString = lines[lineOffset].substr(0,caretPosition);
 		caretImagePosition = bufferLines[0]->getLabel()->getTextWidthForString(caretSubString);
-		caretImagePosition = caretImagePosition  + padding;		
 	}
 	blinkerRect->visible  = true;
 	blinkTimer->Reset();
 	
 	if(doSelectToCaret) {
 		doSelectToCaret = false;
-		
+	}
+
+	if(!multiLine) {
+		// Make sure the new caret position is visible.
+
+		// Try scrolling left.
+		while(caretImagePosition < horizontalPixelScroll) {
+			horizontalCharacterScroll--;
+
+			// Update pixel scroll from new character scroll.
+			String subString = lines[0].substr(0,horizontalCharacterScroll);
+			horizontalPixelScroll = bufferLines[0]->getLabel()->getTextWidthForString(subString);
+		}
+
+		// Try scrolling right.
+		while(caretImagePosition + blinkerRect->getWidth() > horizontalPixelScroll + textContainer->getWidth()) {
+			horizontalCharacterScroll++;
+
+			// Update pixel scroll from new character scroll.
+			String subString = lines[0].substr(0,horizontalCharacterScroll);
+			horizontalPixelScroll = bufferLines[0]->getLabel()->getTextWidthForString(subString);
+		}
+
+		bufferLines[0]->setPosition(-horizontalPixelScroll, 0);
 	}
 /*	
 	if(multiLine) {	
@@ -1417,7 +1441,7 @@ void UITextInput::Update() {
 		blinkerRect->visible = false;
 	}
 
-	blinkerRect->setPosition(decoratorOffset + caretImagePosition + 1, padding + (lineOffset * ( lineHeight+lineSpacing)));
+	blinkerRect->setPosition(caretImagePosition + 1 -horizontalPixelScroll, (lineOffset * ( lineHeight+lineSpacing)));
 
 	if(hasFocus) {
 //		inputRect->setStrokeColor(1.0f, 1.0f, 1.0f, 0.25f);	

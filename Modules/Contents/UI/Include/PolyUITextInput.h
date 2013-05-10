@@ -372,6 +372,16 @@ namespace Polycode {
 		
 			int selectionCaretPosition;
 			int selectionLine;
+
+			// Used only by single-line text input, so
+			// that you can edit text longer than the width
+			// of the line.
+			// TODO/considerations: Use this to scroll a single
+			// line in multi-line mode?
+			int horizontalPixelScroll;
+			// By how many characters have we scrolled right?
+			int horizontalCharacterScroll;
+
 		
 			bool draggingSelection;
 			bool hasSelection; 
