@@ -255,6 +255,7 @@ class PolycodeScreenEditorMain : public UIElement {
 		Vector2 basePanPosition;
 		Vector2 zoomBasePosition;
 		Vector2 zoomBaseMousePosition;
+		Vector2 baseScaleScreenPosition;
 				
 		Number baseZoomScale;
 		

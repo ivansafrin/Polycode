@@ -1120,15 +1120,12 @@ void PolycodeScreenEditorMain::handleMouseMove(Vector2 position) {
 				Vector2 newMousePosition = CoreServices::getInstance()->getCore()->getInput()->getMousePosition();
 				Vector2 trans = newMousePosition - mouseBase;
 								
-				for(int i=0; i < selectedEntities.size(); i++) {			
-				
-					Number baseDist = mouseBase.distance(screenTransformShape->getScreenPosition());
-					Number newDist = newMousePosition.distance(screenTransformShape->getScreenPosition());
-																					
-					Number scaleMod = 0.04;
-					
-					Number newScale = newDist - baseDist;
-					
+				Number baseDist = mouseBase.distance(baseScaleScreenPosition);
+				Number newDist = newMousePosition.distance(baseScaleScreenPosition);	
+				Number scaleMod = 0.04;
+				Number newScale = newDist - baseDist;
+								
+				for(int i=0; i < selectedEntities.size(); i++) {												
 					Number newScaleX = (baseEntityScales[i].x + (newScale * scaleMod));
 					Number newScaleY = (baseEntityScales[i].y + (newScale * scaleMod));
 					
@@ -1890,6 +1887,7 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 			scalingX = true;			
 			resetSelectedEntityTransforms();
 			mouseBase = CoreServices::getInstance()->getCore()->getInput()->getMousePosition();			
+			baseScaleScreenPosition = screenTransformShape->getScreenPosition();
 		}	
 	} else if(event->getDispatcher() == transformScalerY) {
 		if(selectedEntities.size() > 0) {
