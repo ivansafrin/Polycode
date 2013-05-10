@@ -53,6 +53,7 @@ public:
 
 // Menu accessors
 
+-(IBAction) toggleConsole: (id) sender;
 -(IBAction) refreshProject: (id) sender;
 -(IBAction) renameFile: (id) sender;
 -(IBAction) removeFile: (id) sender;
@@ -69,4 +70,5 @@ public:
 -(IBAction) findText: (id) sender;
 -(IBAction) openDocs: (id) sender;
 -(IBAction) showAbout: (id) sender;
+
 @end

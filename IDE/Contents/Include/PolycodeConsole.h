@@ -96,7 +96,8 @@ class ConsoleWindow : public UIElement {
 		UITextInput *debugTextInput;
 		UITextInput *consoleTextInput;
 		
-		UIButton *clearButton;
+		UIImageButton *clearButton;
+		UIImageButton *hideConsoleButton;
 		
 		ScreenShape *labelBg;
 };
@@ -118,6 +119,7 @@ class PolycodeConsole : public UIElement {
 
 		static void clearBacktraces();
 		void _clearBacktraces();
+		
 		
 		void applyTheme();
 		

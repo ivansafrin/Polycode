@@ -135,6 +135,10 @@ void UIVSizer::Resize(Number width, Number height) {
 	updateSizer();
 }
 
+Number UIVSizer::getMainHeight() {
+	return mainHeight;
+}
+
 void UIVSizer::setMainHeight(Number height) {
 	mainHeight = height;
 	updateSizer();

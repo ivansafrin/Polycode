@@ -499,7 +499,7 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	globalFrame = this;
 	processInputEvents = true;
 	willHideModal = false;
-
+	showingConsole = true;
 	modalChild = NULL;
 	
 	welcomeEntity = new ScreenEntity();
@@ -523,6 +523,8 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	mainSizer = new UIHSizer(100,100,200,true);
 	mainSizer->setPosition(0, 45);
 	addChild(mainSizer);
+
+	consoleSize = 200;
 
 	consoleSizer = new UIVSizer(100,100,200, false);
 	mainSizer->addRightChild(consoleSizer);	
@@ -741,6 +743,30 @@ void PolycodeFrame::hideModal() {
 		modalChild = NULL;
 	}
 	modalBlocker->enabled = false;		
+}
+
+void PolycodeFrame::showConsole() {
+	if(!showingConsole)
+		toggleConsole();
+}
+
+void PolycodeFrame::hideConsole() {
+	if(showingConsole)
+		toggleConsole();
+}
+
+void PolycodeFrame::toggleConsole() {
+	if(showingConsole) {
+		consoleSize = consoleSizer->getMainHeight();
+		consoleSizer->setMainHeight(0);
+		console->visible = false;
+		console->enabled = false;
+	} else {
+		consoleSizer->setMainHeight(consoleSize);	
+		console->visible = true;
+		console->enabled = true;		
+	}
+	showingConsole = !showingConsole;
 }
 
 void PolycodeFrame::Update() {

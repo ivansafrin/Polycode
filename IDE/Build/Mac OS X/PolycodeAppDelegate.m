@@ -158,4 +158,8 @@
 	app->showAbout();
 }
 
+-(IBAction) toggleConsole: (id) sender {
+	app->toggleConsole();
+}
+
 @end

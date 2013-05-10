@@ -133,6 +133,10 @@ void UIHSizer::Resize(Number width, Number height) {
 	updateSizer();
 }
 
+Number UIHSizer::getMainWidth() {
+	return mainWidth;
+}
+
 void UIHSizer::setMainWidth(Number width) {
 	mainWidth = width;
 	updateSizer();

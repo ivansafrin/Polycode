@@ -87,7 +87,8 @@ public:
 	void findText();
 	void runProject();
 	void doRunProject();
-	void exportProject();	
+	void exportProject();
+	void toggleConsole();
 	
 	bool removeEditor(PolycodeEditor *editor);
 	

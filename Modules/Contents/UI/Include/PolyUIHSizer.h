@@ -37,6 +37,7 @@ namespace Polycode {
 			void handleEvent(Event *event);
 			
 			void setMainWidth(Number width);
+			Number getMainWidth();
 			
 			void addLeftChild(UIElement *element);
 			void addRightChild(UIElement *element);			

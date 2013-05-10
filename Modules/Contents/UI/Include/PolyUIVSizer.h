@@ -37,6 +37,7 @@ namespace Polycode {
 			void handleEvent(Event *event);
 			
 			void setMainHeight(Number height);
+			Number getMainHeight();
 			
 			void addTopChild(UIElement *element);
 			void addBottomChild(UIElement *element);			

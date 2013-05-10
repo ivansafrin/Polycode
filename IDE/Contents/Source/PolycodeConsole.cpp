@@ -23,9 +23,11 @@
 #include "PolycodeConsole.h"
 #include "PolycodeRemoteDebugger.h"
 #include "PolycodeTextEditor.h"
+#include "PolycodeFrame.h"
 
 PolycodeConsole* PolycodeConsole::instance = NULL;
 extern SyntaxHighlightTheme *globalSyntaxTheme;
+extern PolycodeFrame *globalFrame;
 
 BackTraceEntry::BackTraceEntry(String fileName, int lineNumber, PolycodeProject *project) : UIElement() {
 
@@ -174,15 +176,19 @@ ConsoleWindow::ConsoleWindow() : UIElement() {
 	ScreenLabel *label = new ScreenLabel("CONSOLE", 18, "section");
 	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	addChild(label);
-	label->setPosition(5,3);
+	label->setPosition(35,3);
 
 	debugTextInput = new UITextInput(true, 100, 100);
 	consoleTextInput = new UITextInput(false, 100, 100);
 	addChild(consoleTextInput);	
 	addChild(debugTextInput);	
 	
-	clearButton = new UIButton("Clear", 50);
+	clearButton = new UIImageButton("Images/clear_buffer_icon.png");
 	addChild(clearButton);
+	
+	hideConsoleButton = new UIImageButton("Images/console_hide_button.png");
+	addChild(hideConsoleButton);
+	hideConsoleButton->setPosition(7,5);
 	
 }
 
@@ -192,7 +198,7 @@ void ConsoleWindow::Resize(Number width, Number height) {
 	debugTextInput->Resize(width, height-25-30);
 	debugTextInput->setPosition(0, 30);
 
-	clearButton->setPosition(width - 60, 4);
+	clearButton->setPosition(width - 22, 6);
 
 	consoleTextInput->Resize(width, 25);
 	consoleTextInput->setPosition(0, height-25);	
@@ -223,6 +229,8 @@ PolycodeConsole::PolycodeConsole() : UIElement() {
 	consoleHistoryMaxSize = 15;
 	
 	consoleWindow->clearButton->addEventListener(this, UIEvent::CLICK_EVENT);
+	consoleWindow->hideConsoleButton->addEventListener(this, UIEvent::CLICK_EVENT);
+	
 	CoreServices::getInstance()->getLogger()->addEventListener(this, Event::NOTIFY_EVENT);
 
 	PolycodeConsole::setInstance(this);
@@ -256,6 +264,8 @@ void PolycodeConsole::handleEvent(Event *event) {
 		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {
 			debugTextInput->setText("");
 		}
+	} else if(event->getDispatcher() == consoleWindow->hideConsoleButton) {
+		globalFrame->hideConsole();
 	}
 
 	if(event->getDispatcher() == consoleTextInput) {

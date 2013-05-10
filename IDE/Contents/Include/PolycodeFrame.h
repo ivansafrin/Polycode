@@ -174,6 +174,10 @@ public:
 	
 	void showAssetBrowser(std::vector<String> extensions);
 	
+	void toggleConsole();
+	void showConsole();
+	void hideConsole();
+	
 	void showCurveEditor();
 	
 	PolycodeProjectBrowser *getProjectBrowser();
@@ -216,6 +220,9 @@ private:
 	int frameSizeY;
 	
 	bool willHideModal;
+	
+	bool showingConsole;
+	Number consoleSize;
 
 	ScreenShape *fileDialogBlocker;
 

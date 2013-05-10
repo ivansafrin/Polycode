@@ -160,6 +160,9 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	editEntry->addItem("Cut", "cut");
 	editEntry->addItem("Copy", "copy");
 
+	UIMenuBarEntry *viewEntry = menuBar->addMenuBarEntry("View");
+	viewEntry->addItem("Toggle Console", "toggle_console", KEY_LSHIFT, KEY_c);
+
 	UIMenuBarEntry *projectEntry = menuBar->addMenuBarEntry("Project");
 	projectEntry->addItem("Run Project", "run_project", KEY_r);
 	projectEntry->addItem("Publish Project", "export_project");
@@ -193,6 +196,10 @@ void PolycodeIDEApp::renameFile() {
 
 void PolycodeIDEApp::showAbout() {
 	frame->showModal(frame->aboutWindow);
+}
+
+void PolycodeIDEApp::toggleConsole() {
+	frame->toggleConsole();
 }
 
 void PolycodeIDEApp::doRemoveFile() {
@@ -343,6 +350,8 @@ void PolycodeIDEApp::exportProject() {
 void PolycodeIDEApp::doRunProject() {
 	printf("Running project...\n");
 	stopProject();
+
+	frame->showConsole();
 
 	String outPath = PolycodeToolLauncher::generateTempPath(projectManager->getActiveProject()) + ".polyapp";
 	PolycodeToolLauncher::buildProject(projectManager->getActiveProject(), outPath);
@@ -504,6 +513,8 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 			openDocs();
 		} else if(action == "show_about") {
 			showAbout();
+		} else if(action == "toggle_console") {
+			toggleConsole();
 		}
 	}
 
