@@ -401,7 +401,7 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain() {
 	screenTransform->visible = false;
 	screenTransform->processInputEvents = true;
 	
-//	CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_LINEAR);
+	CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_LINEAR);
 	
 	ScreenImage *base = new ScreenImage("Images/ScreenEditor/transform_base.png");
 	base->setPositionMode(ScreenEntity::POSITION_CENTER);
@@ -423,6 +423,7 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain() {
 	transformScalerY->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	transformScalerY->processInputEvents = true;
 	transformScalerY->blockMouseInput = true;
+	transformScalerY->setScale(0.7, 0.7);
 	
 	transformScalerX = new ScreenImage("Images/ScreenEditor/transform_scaler.png");
 	transformScalerX->setColor(1.0, 0.5, 0.0, 0.7);
@@ -433,6 +434,18 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain() {
 	transformScalerX->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	transformScalerX->processInputEvents = true;
 	transformScalerX->blockMouseInput = true;
+	transformScalerX->setScale(0.7, 0.7);
+		
+	transformScalerXY = new ScreenImage("Images/ScreenEditor/transform_scaler.png");
+	transformScalerXY->setColor(1.0, 1.0, 1.0, 0.7);
+	transformScalerXY->setPositionMode(ScreenEntity::POSITION_CENTER);
+	transformScalerXY->setRotation(-45);
+	transformScalerXY->setPosition(40, -40);
+	screenTransform->addChild(transformScalerXY);
+	transformScalerXY->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+	transformScalerXY->processInputEvents = true;
+	transformScalerXY->blockMouseInput = true;
+	
 	
 	
 	CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_NEAREST);
@@ -1088,9 +1101,31 @@ void PolycodeScreenEditorMain::handleMouseMove(Vector2 position) {
 				
 				}
 				syncTransformToSelected();			
-			} else if(scalingY) {				
+			} 
+			else if(scalingY && scalingX) {
+				Vector2 trans = CoreServices::getInstance()->getCore()->getInput()->getMousePosition() - mouseBase;
+				for(int i=0; i < selectedEntities.size(); i++) {			
+							
+					Vector3 trans3 = Vector3(trans.x, trans.y, 0.0);
 				
-				
+					Quaternion q;								
+					q.fromAxes(0.0, 0.0, -selectedEntities[i]->getCombinedRoll());
+					trans3 = q.applyTo(trans3);
+								
+					Number scaleMod = 0.04;
+					
+					Number newScale = trans3.length() ;
+					if(trans3.x < 0 && trans.y > 0) {
+						newScale = newScale * -1;
+					}
+					
+					Number newScaleX = (baseEntityScales[i].y + (newScale * scaleMod));
+					Number newScaleY = (baseEntityScales[i].x + (newScale * scaleMod));
+					
+					selectedEntities[i]->setScale(newScaleX, newScaleY);
+				}
+				syncTransformToSelected();					
+			} else if(scalingY) {												
 				Vector2 trans = CoreServices::getInstance()->getCore()->getInput()->getMousePosition() - mouseBase;
 				for(int i=0; i < selectedEntities.size(); i++) {			
 							
@@ -1103,8 +1138,7 @@ void PolycodeScreenEditorMain::handleMouseMove(Vector2 position) {
 					Number scaleMod = 0.04;								
 					selectedEntities[i]->setScaleY(baseEntityScales[i].y - (trans3.y * scaleMod));
 				}
-				syncTransformToSelected();	
-				
+				syncTransformToSelected();					
 			} else if(scalingX) {				
 				
 				Vector2 trans = CoreServices::getInstance()->getCore()->getInput()->getMousePosition() - mouseBase;
@@ -1835,15 +1869,20 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 		
 	}
 
-	if(event->getDispatcher() == transformScalerY) {
+	if(event->getDispatcher() == transformScalerXY) {
+		if(selectedEntity) {
+			scalingY = true;
+			scalingX = true;			
+			resetSelectedEntityTransforms();
+			mouseBase = CoreServices::getInstance()->getCore()->getInput()->getMousePosition();			
+		}	
+	} else if(event->getDispatcher() == transformScalerY) {
 		if(selectedEntity) {
 			scalingY = true;
 			resetSelectedEntityTransforms();
 			mouseBase = CoreServices::getInstance()->getCore()->getInput()->getMousePosition();			
 		}
-	}
-
-	if(event->getDispatcher() == transformScalerX) {
+	} else if(event->getDispatcher() == transformScalerX) {
 		if(selectedEntity) {
 			scalingX = true;
 			resetSelectedEntityTransforms();

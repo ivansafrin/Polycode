@@ -276,7 +276,8 @@ class PolycodeScreenEditorMain : public UIElement {
 
 		ScreenImage *transformScalerY;
 		ScreenImage *transformScalerX;		
-					
+		ScreenImage *transformScalerXY;
+							
 		ScreenImage *centerImage;
 		
 		ScreenEntity *properties;
