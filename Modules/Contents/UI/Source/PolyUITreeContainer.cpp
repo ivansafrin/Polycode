@@ -68,6 +68,7 @@ UITreeContainer::UITreeContainer(String icon, String text, Number treeWidth, Num
 
 	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 	this->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+	this->addEventListener(this, InputEvent::EVENT_MOUSEOVER);
 	focusable = true;
 	keyNavigable = true;
 }
@@ -94,6 +95,8 @@ void UITreeContainer::handleEvent(Event *event) {
 		if (event->getEventCode() == InputEvent::EVENT_MOUSEDOWN) {
 			if (parentEntity && isFocusable())
 				((ScreenEntity*)parentEntity)->focusChild(this);
+		} else if (event->getEventCode() == InputEvent::EVENT_MOUSEOVER) {
+			CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_ARROW);
 		}
 	}
 

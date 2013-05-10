@@ -90,10 +90,10 @@ end
 
 function Level:onNewCollision(event)
 	physicsEvent = safe_cast(event, PhysicsScreenEvent)
-	local collidedEntity =  physicsEvent:getSecondEntity()
-	local firstEntity = physicsEvent:getFirstEntity()
+	local collidedEntity =  physicsEvent.entity2
+	local firstEntity = physicsEvent.entity1
 
-	if same_c_class(firstEntity, self.player.groundSensor) then
+	if firstEntity == self.player.groundSensor then
 		if collidedEntity:hasTag("button") then
 			local buttonUp = collidedEntity:getEntityById("button_up", true)
 			local buttonDown = collidedEntity:getEntityById("button_down", true)
@@ -109,7 +109,7 @@ function Level:onNewCollision(event)
 		end
 	end
 
-	if same_c_class(firstEntity, self.player.playerEntity) then
+	if firstEntity == self.player.playerEntity then
 		if collidedEntity:hasTag("coin") and collidedEntity.visible == true then
 			collidedEntity.visible = false
 			self.player.numCoins = self.player.numCoins + 1

@@ -45,10 +45,10 @@ function onCollision(t, event)
 	physicsEvent = cast(event, PhysicsScreenEvent)
 
 	-- check if the colliding entity is the ball
-	if same_c_class(physicsEvent:getFirstEntity(), ball) then
+	if physicsEvent.entity1 == ball then
 
 		-- if colliding with player 1 or player 2 paddle
-		if same_c_class(physicsEvent:getSecondEntity(), p1) or  same_c_class(physicsEvent:getSecondEntity(), p2) then
+		if physicsEvent.entity2 == p1 or physicsEvent.entity2 == p2 then
 
 			-- reverse the horizontal direction
 			ballDirection.x = ballDirection.x * -1 
@@ -120,5 +120,4 @@ function Update(elapsed)
 		p1Score = p1Score + 1
 		p1scoreLabel:setText(""..p1Score)
 	end
-
 end

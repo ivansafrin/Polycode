@@ -89,7 +89,7 @@ class _PolyExport PhysicsScreenEvent : public Event {
          * Raw Box2d Contact
          */
     
-        b2Contact *contact;
+        b2Contact POLYIGNORE *contact;
 	
         /**
 		* Strength of the collision impact.

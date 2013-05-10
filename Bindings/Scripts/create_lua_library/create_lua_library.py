@@ -18,7 +18,7 @@ def mkdir_p(path): # Same effect as mkdir -p, create dir and all necessary paren
 def template_returnPtrLookupArray(prefix, className, ptr):
 	out = ""
 	out += "%sfor i=1,count(%s) do\n" % (prefix, ptr)
-	out += "%s\tlocal __c  = _G[%s](\"__skip_ptr__\")\n" % (prefix, className)
+	out += "%s\tlocal __c  = _G[%s](\"__skip_ptr__\")\n" % (prefix, className.replace("*", ""))
 	out += "%s\t__c.__ptr = %s[i]\n" % (prefix, ptr)
 	out += "%s\t%s[i] = __c\n" % (prefix, ptr)
 	out += "%send\n" % (prefix)
@@ -28,7 +28,7 @@ def template_returnPtrLookupArray(prefix, className, ptr):
 # Note we expect className to be a valid string
 def template_returnPtrLookup(prefix, className, ptr):
 	out = ""
-	out += "%slocal __c = _G[%s](\"__skip_ptr__\")\n" % (prefix, className)
+	out += "%slocal __c = _G[%s](\"__skip_ptr__\")\n" % (prefix, className.replace("*", ""))
 	out += "%s__c.__ptr = %s\n" % (prefix, ptr)
 	out += "%sreturn __c\n" % (prefix)
 	return out
@@ -40,7 +40,7 @@ def cleanDocs(docs):
 	return docs.replace("/*", "").replace("*/", "").replace("*", "").replace("\n", "").replace("\r", "").replace("::", ".").replace("\t", "")
 
 def toLuaType(t):
-	return t.replace("void", "nil").replace("int", "Integer").replace("bool", "Boolean")
+	return t.replace("void", "nil").replace("int", "Integer").replace("bool", "Boolean").replace("*", "")
 
 # FIXME: Some "unsigned int *" functions are still being generated on the polycode API?
 def typeFilter(ty):
@@ -236,7 +236,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 							luaDocOut += "\t\t\t</static_member>\n"
 					else: # FIXME: Nonstatic method ? variable ?? found.
 						#there are some bugs in the class parser that cause it to return junk
-						if pp["type"].find("*") == -1 and pp["type"].find("vector") == -1 and pp["name"] != "setScale" and pp["name"] != "setPosition" and pp["name"] != "BUFFER_CACHE_PRECISION" and not pp["name"].isdigit():
+						if pp["type"].find("vector") == -1 and pp["name"] != "setScale" and pp["name"] != "setPosition" and pp["name"] != "BUFFER_CACHE_PRECISION" and not pp["name"].isdigit():
 							classProperties.append(pp)
 
 				luaDocOut += "\t\t</static_members>\n"
@@ -312,8 +312,12 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 							if pp["type"] == "Number" or  pp["type"] == "String" or pp["type"] == "int" or pp["type"] == "bool" or pp["type"] == "PolyKEY":
 								wrappersHeaderOut += "\t%s(L, inst->%s%s);\n" % (outfunc, pp["name"], retFunc)
 							else:
-								wrappersHeaderOut += "\tPolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));\n"
-								wrappersHeaderOut += "\t*userdataPtr = (PolyBase*)&inst->%s%s;\n" % (pp["name"], retFunc)
+								if pp["type"].find("*") != -1:
+									wrappersHeaderOut += "\tPolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));\n"
+									wrappersHeaderOut += "\t*userdataPtr = (PolyBase*)inst->%s%s;\n" % (pp["name"], retFunc)
+								else:
+									wrappersHeaderOut += "\tPolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));\n"
+									wrappersHeaderOut += "\t*userdataPtr = (PolyBase*)&inst->%s%s;\n" % (pp["name"], retFunc)
 							wrappersHeaderOut += "\treturn 1;\n"
 							wrappersHeaderOut += "}\n\n"
 						

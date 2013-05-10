@@ -13,10 +13,16 @@ function __is_class(c, T)
 	return (c.__classname == T.__classname)
 end
 
+function __are_tables_same_c_class(a,b)
+	return __are_same_c_class(a.__ptr,b.__ptr)
+end
+
 function class(name)
 	local cls = {}
 	cls.__classname = name
 	
+	cls.__eq = __are_tables_same_c_class
+
 	cls.__tostring = function(c)
 		return "Class of type "..c.__classname
 	end

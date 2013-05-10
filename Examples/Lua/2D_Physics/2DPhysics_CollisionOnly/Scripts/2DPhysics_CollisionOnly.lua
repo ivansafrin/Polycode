@@ -13,7 +13,7 @@ end
 
 function onNewCollision(t, event)
 	physicsEvent = safe_cast(event, PhysicsScreenEvent)
-	if same_c_class(physicsEvent:getFirstEntity(),checkShape) or same_c_class(physicsEvent:getSecondEntity(),checkShape) then
+	if physicsEvent.entity1 == checkShape then
 		physicsEvent:getFirstEntity():setColor(1.0, 0.0, 0.0, 1.0)
 		physicsEvent:getSecondEntity():setColor(1.0, 0.0, 0.0, 1.0)
 	end

@@ -26,6 +26,7 @@
 #include "PolyInputEvent.h"
 #include "PolyLabel.h"
 #include "PolyCoreServices.h"
+#include "PolyCore.h"
 
 using namespace Polycode;
 
@@ -48,7 +49,8 @@ UIVScrollBar::UIVScrollBar(Number width, Number height, Number initialRatio) : S
 					  width, height);
 	
 	bgBox->processInputEvents = true;
-	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);		
+	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);	
+	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEOVER);
 	addChild(bgBox);
 	
 	st = conf->getNumericValue("Polycode", "uiScrollHandleSkinT");
@@ -73,6 +75,7 @@ UIVScrollBar::UIVScrollBar(Number width, Number height, Number initialRatio) : S
 	handleBox->addEventListener(this, InputEvent::EVENT_MOUSEUP);
 	handleBox->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);	
 	handleBox->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);	
+	handleBox->addEventListener(this, InputEvent::EVENT_MOUSEOVER);
 	handleBox->processInputEvents = true;
 	handleBox->blockMouseInput = true;
 	
@@ -173,6 +176,9 @@ void UIVScrollBar::handleEvent(Event *event) {
 	if(event->getDispatcher() == bgBox) {
 		InputEvent *inputEvent = (InputEvent*)event;
 		switch(event->getEventCode()) {
+			case InputEvent::EVENT_MOUSEOVER:
+				CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_ARROW);
+			break;
 			case InputEvent::EVENT_MOUSEDOWN:
 				if(inputEvent->mousePosition.y < handleBox->getPosition().y)  {
 					Number newPos = handleBox->getPosition().y - scrollHandleHeight/2;
@@ -192,6 +198,9 @@ void UIVScrollBar::handleEvent(Event *event) {
 	if(event->getDispatcher() == handleBox) {
 		InputEvent *inputEvent = (InputEvent*)event;
 		switch(event->getEventCode()) {
+			case InputEvent::EVENT_MOUSEOVER:
+				CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_ARROW);
+			break;		
 			case InputEvent::EVENT_MOUSEUP:
 			case InputEvent::EVENT_MOUSEUP_OUTSIDE:				
 				handleBox->stopDrag();
