@@ -49,13 +49,33 @@ class EntityBrowserData  {
 		Entity *entity;
 };
 
-class PolycodeScreenEditorActionData : PolycodeEditorActionData {
+class PolycodeScreenEditorActionDataEntry {
 	public:
-		PolycodeScreenEditorActionData() {}
-		PolycodeScreenEditorActionData(Vector3 vec3);
+		PolycodeScreenEditorActionDataEntry(){
+			entity = NULL;
+			parentEntity = NULL;
+		}
+		PolycodeScreenEditorActionDataEntry(Vector3 vec3, Number number);	
+		PolycodeScreenEditorActionDataEntry(Vector3 vec3);
+		PolycodeScreenEditorActionDataEntry(Number number);
+		PolycodeScreenEditorActionDataEntry(ScreenEntity *entity);
+		PolycodeScreenEditorActionDataEntry(ScreenEntity *entity, ScreenEntity *parentEntity);
+		Vector3 vec3;
+		Number number;
+		ScreenEntity *entity;
+		ScreenEntity *parentEntity;		
+};
+
+class PolycodeScreenEditorActionData : public PolycodeEditorActionData {
+	public:
+		PolycodeScreenEditorActionData() {
+			reverse = true;
+		}
 		virtual ~PolycodeScreenEditorActionData(){}
 		
-		Vector3 vec3;
+		std::vector<PolycodeScreenEditorActionDataEntry> entries;
+		PolycodeScreenEditorActionDataEntry entry;
+		bool reverse;
 };
 
 class EntityTreeView : public UIElement {
@@ -118,14 +138,14 @@ class ScreenEntityNameDisplay : public ScreenEntity {
 class PolycodeScreenEditorMain : public UIElement {
 	public:
 		
-		PolycodeScreenEditorMain();
+		PolycodeScreenEditorMain(PolycodeEditor *editor);
 		virtual ~PolycodeScreenEditorMain();	
 			
 		void Resize(Number width, Number height);	
 		void syncTransformToSelected();	
 		ScreenEntity *addNewLayer(String layerName);	
 		void updateCursor();		
-		void selectEntity(ScreenEntity *entity);		
+		void selectEntity(ScreenEntity *entity, bool doAction = true);
 		void resetSelectedEntityTransforms();
 		void setMode(int newMode);	
 		void handleEvent(Event *event);	
@@ -145,6 +165,8 @@ class PolycodeScreenEditorMain : public UIElement {
 		void createSoundRef(ScreenSound *target);
 		void createEntityRef(ScreenEntity *entity);
 		
+		void doAction(String actionName, PolycodeEditorActionData *data);
+		
 		void setRefVisibility(bool val);
 		void setEntityRefVisibility(ScreenEntity *entity, bool val);
 		
@@ -158,7 +180,7 @@ class PolycodeScreenEditorMain : public UIElement {
 		
 		void adjustForSnap(Vector2 *position);
 		
-		void setCurrentLayer(ScreenEntity *newLayer);
+		void setCurrentLayer(ScreenEntity *newLayer, bool doAction = true);
 		ScreenEntity *getCurrentLayer();
 		
 		String Copy(void **data);
@@ -208,6 +230,7 @@ class PolycodeScreenEditorMain : public UIElement {
 		PolycodeEditor *editor;		
 	protected:
 	
+		PolycodeScreenEditorActionData *beforeData;
 		ScreenEntity *currentLayer;	
 	
 		int gridSize;

@@ -117,7 +117,20 @@ void PolycodeEditor::handleEvent(Event *event) {
 	}
 }
 
-void PolycodeEditor::didAction(String actionName, PolycodeEditorActionData *beforeData, PolycodeEditorActionData *afterData) {
+void PolycodeEditor::didAction(String actionName, PolycodeEditorActionData *beforeData, PolycodeEditorActionData *afterData, bool setFileChanged) {
+
+	if(setFileChanged) {
+		setHasChanges(true);
+	}
+	
+	// if the undo position is not at the end, remove the states after it
+	if(currentUndoPosition < editorActions.size()-1 && editorActions.size() > 0) {
+		for(int i=currentUndoPosition+1; i < editorActions.size(); i++) {
+			editorActions[i].deleteData();		
+		}
+		editorActions.erase(editorActions.begin()+currentUndoPosition+1, editorActions.end());
+	}
+
 	PolycodeEditorAction newAction;
 	newAction.actionName = actionName;
 	newAction.beforeData = beforeData;
@@ -125,6 +138,7 @@ void PolycodeEditor::didAction(String actionName, PolycodeEditorActionData *befo
 	editorActions.push_back(newAction);
 	
 	if(editorActions.size() > MAX_EDITOR_UNDO_ACTIONS) {
+		editorActions[0].deleteData();
 		editorActions.erase(editorActions.begin());
 	}
 	

@@ -592,7 +592,7 @@ void UITextInput::restructLines() {
 	}
 	
 	if(scrollContainer) {
-		scrollContainer->setContentSize(width,  (((lines.size()) * ((lineHeight+lineSpacing)))) + padding);
+		scrollContainer->setContentSize(width,  (((lines.size()+1) * ((lineHeight+lineSpacing)))) + padding);
 	}	
 	
 	if(multiLine) {
@@ -1490,7 +1490,7 @@ void UITextInput::readjustBuffer() {
 		} else {
 			bufferLines[i]->setText("");
 		}
-		bufferLines[i]->setPosition(-horizontalPixelScroll, (i*(lineHeight+lineSpacing)),0.0f);	
+		bufferLines[i]->setPosition(-horizontalPixelScroll, bufferLineOffset + (i*(lineHeight+lineSpacing)),0.0f);	
 	}
 	
 	for(int i=0; i < numberLines.size(); i++) {
