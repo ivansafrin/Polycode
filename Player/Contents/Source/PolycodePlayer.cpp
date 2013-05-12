@@ -129,6 +129,7 @@ static void dumpstack (lua_State *L) {
 		
 		const char* fullPath = module.c_str();		
 //		Logger::log("Loading custom class: %s\n", module.c_str());
+
 		OSFILE *inFile = OSBasics::open(module, "r");	
 		
 		if(!inFile) {
@@ -177,7 +178,7 @@ static void dumpstack (lua_State *L) {
 					trace.fileName = fileName;
 					backTrace.push_back(trace);
 					
-					printf(">>>> In file: %s on line %d\n", fileName.c_str(), trace.lineNumber);
+					//printf(">>>> In file: %s on line %d\n", fileName.c_str(), trace.lineNumber);
 					//backTrace += "In file: " + fileName + " on line " + String::IntToString(entry.currentline)+"\n";
 				}
 			}
@@ -213,6 +214,8 @@ static void dumpstack (lua_State *L) {
 		if (msg == NULL) msg = "(error with no message)";
 		lua_pop(L, 1);
 		
+		printf("\n%s\n", msg);
+		
 		String errorString;
 		std::vector<String> info = String(msg).split(":");
 			
@@ -228,6 +231,17 @@ static void dumpstack (lua_State *L) {
 		event->fileName = backTrace[0].fileName;
 		event->lineNumber = backTrace[0].lineNumber;
 
+		printf("\n---------------------\n");
+		printf("Error: %s\n", errorString.c_str());
+		printf("In file: %s\n", backTrace[0].fileName.c_str());
+		printf("On line: %d\n", backTrace[0].lineNumber);
+		printf("---------------------\n");
+		printf("Backtrace\n");
+		for(int i=0; i < backTrace.size(); i++) {
+			printf("* %s on line %d", backTrace[i].fileName.c_str(), backTrace[i].lineNumber);
+		}
+		printf("\n---------------------\n");
+				
 		player->dispatchEvent(event, PolycodeDebugEvent::EVENT_ERROR);
 				
 		return 0;
