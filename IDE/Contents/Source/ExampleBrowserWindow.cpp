@@ -91,7 +91,9 @@ void ExampleBrowserWindow::ResetForm() {
 void ExampleBrowserWindow::handleEvent(Event *event) {
 	if(event->getEventType() == "UIEvent") {
 		if(event->getEventCode() == UIEvent::CLICK_EVENT) {
-			if(event->getDispatcher() == okButton) {
+			UITree *node = templateContainer->getRootNode()->getSelectedNode();
+			ExampleTemplateUserData *data = (ExampleTemplateUserData*)node->getUserData();
+			if(event->getDispatcher() == okButton && data->type == 1) {
 				dispatchEvent(new UIEvent(), UIEvent::OK_EVENT);						
 			}
 			
