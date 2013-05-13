@@ -2216,6 +2216,11 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 						}
 					}
 					firstMove = false;
+					beforeData = new PolycodeScreenEditorActionData();						
+					for(int i=0; i < selectedEntities.size(); i++) {
+						beforeData->entries.push_back(PolycodeScreenEditorActionDataEntry(selectedEntities[i]->position));
+					}									
+					
 				}
 				updateCursor();
 				handleMouseMove(inputEvent->mousePosition);
