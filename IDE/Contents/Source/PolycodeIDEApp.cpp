@@ -268,25 +268,36 @@ void PolycodeIDEApp::closeFile() {
 
 void PolycodeIDEApp::closeProject() {
 	if(projectManager->getActiveProject()) {
-		
-		bool hasEditors;		
-		do {
-			hasEditors = false;
-			for(int i=0; i < editorManager->openEditors.size(); i++) {
-				if(editorManager->openEditors[i]->parentProject == projectManager->getActiveProject()) {
-					if(removeEditor(editorManager->openEditors[i])) {
-						
-						return;
-					}
-					hasEditors = true;
-					break;
-				}
-			}
-		} while(hasEditors);
-		
-		frame->getProjectBrowser()->removeProject(projectManager->getActiveProject());		
-		projectManager->removeProject(projectManager->getActiveProject());
+		if (editorManager->hasUnsavedFilesForProject(projectManager->getActiveProject())) {
+			String name = projectManager->getActiveProject()->getProjectName();
+			frame->yesNoCancelPopup->setCaption("Project '" + name + "' has unsaved changes. Save all?");
+			frame->yesNoCancelPopup->action = "closeProject";
+			frame->showModal(frame->yesNoCancelPopup);
+		} else
+			cleanupProjectOnClose(false);
+	} else
+		PolycodeConsole::print("There are no active projects to close.");
+}
+
+// private function that removes editors and projects on project close
+void PolycodeIDEApp::cleanupProjectOnClose(bool save) {
+	PolycodeEditor *editor;
+	int i = 0;
+	while (i < editorManager->openEditors.size()) {
+		editor = editorManager->openEditors[i];
+		if(editor->parentProject == projectManager->getActiveProject()) {
+			if (save && editor->hasChanges())
+				editor->saveFile();
+			else
+				editor->setHasChanges(false);
+			
+			removeEditor(editor);
+			i--; // adjust for reduction in openEditors.size()
+		}
+		i++;
 	}
+	frame->getProjectBrowser()->removeProject(projectManager->getActiveProject());
+	projectManager->removeProject(projectManager->getActiveProject());
 }
 
 void PolycodeIDEApp::newGroup() {
@@ -649,7 +660,22 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 				case UIEvent::CANCEL_EVENT:
 				break;
 			}
-		}			
+		}
+		
+		if (frame->yesNoCancelPopup->action == "closeProject") {
+			switch (event->getEventCode()) {
+				case UIEvent::YES_EVENT:
+					cleanupProjectOnClose(true);
+					break;
+				case UIEvent::NO_EVENT:
+					cleanupProjectOnClose(false);
+					break;
+				case UIEvent::CANCEL_EVENT:
+					break;
+			}
+			frame->yesNoCancelPopup->action = "";
+			frame->hideModal();
+		}
 	} else if(event->getDispatcher() == frame->yesNoPopup) {
 		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CANCEL_EVENT) {
 			if(frame->yesNoPopup->action == "saveAndRun") {
