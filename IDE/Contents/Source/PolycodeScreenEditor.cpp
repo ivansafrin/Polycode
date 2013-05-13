@@ -1684,6 +1684,8 @@ void PolycodeScreenEditorMain::resetSelectedEntityTransforms() {
 
 void PolycodeScreenEditorMain::selectEntity(ScreenEntity *entity, bool doAction) {
 
+	((ScreenEntity*)baseEntity->getParentEntity())->focusChild(baseEntity);
+
 	if(entity != NULL) {
 		if(hasSelected(entity)) {
 			resetSelectedEntityTransforms();
@@ -1737,9 +1739,6 @@ void PolycodeScreenEditorMain::selectEntity(ScreenEntity *entity, bool doAction)
 	
 	ScreenEntity *parent = NULL;
 	parent = (ScreenEntity*)entity->getParentEntity();
-	if(parent) {
-		parent->focusChild(entity);
-	}
 	
 	if(entity->getEntityProp("editor_type") != "layer" && entity != layerBaseEntity) {	
 		transform2dSheet->entity = entity;
@@ -1867,6 +1866,10 @@ void PolycodeScreenEditorMain::deleteEntity(ScreenEntity *entity) {
 }
 
 void PolycodeScreenEditorMain::handleEvent(Event *event) {
+
+	if(!editor->enabled)
+		return;
+		
 	InputEvent *inputEvent = (InputEvent*) event;
 	
 	if(event->getEventCode() == Event::RESOURCE_RELOAD_EVENT && event->getEventType() == "") {
@@ -1954,7 +1957,7 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 				break;
 				case Polycode::KEY_BACKSPACE:
 				{
-					if(selectedEntities.size() > 0) {
+					if(selectedEntities.size() > 0 && baseEntity->hasFocus) {
 							
 						PolycodeScreenEditorActionData *oldData = new PolycodeScreenEditorActionData();
 						PolycodeScreenEditorActionData *data = new PolycodeScreenEditorActionData();
