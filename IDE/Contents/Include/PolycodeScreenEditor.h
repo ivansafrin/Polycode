@@ -59,7 +59,6 @@ class PolycodeScreenEditorActionDataEntry {
 		PolycodeScreenEditorActionDataEntry(Vector3 vec3);
 		PolycodeScreenEditorActionDataEntry(Number number);
 		PolycodeScreenEditorActionDataEntry(ScreenEntity *entity);
-		PolycodeScreenEditorActionDataEntry(ScreenEntity *entity, ScreenEntity *parentEntity);
 		Vector3 vec3;
 		Number number;
 		ScreenEntity *entity;

@@ -303,13 +303,13 @@ ScreenEntity *ScreenEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry
 		entity->setHeight(_height);	
 	}
 
+	entity->color.r = (*entry)["colorR"]->NumberVal;
+	entity->color.g = (*entry)["colorG"]->NumberVal;
+	entity->color.b = (*entry)["colorB"]->NumberVal;
+	entity->color.a = (*entry)["colorA"]->NumberVal;
+
 
 	if(!targetEntity) {	
-		entity->color.r = (*entry)["colorR"]->NumberVal;
-		entity->color.g = (*entry)["colorG"]->NumberVal;
-		entity->color.b = (*entry)["colorB"]->NumberVal;
-		entity->color.a = (*entry)["colorA"]->NumberVal;
-
 		entity->blendingMode = (*entry)["blendMode"]->intVal;
 
 		entity->scale.x = (*entry)["scaleX"]->NumberVal;

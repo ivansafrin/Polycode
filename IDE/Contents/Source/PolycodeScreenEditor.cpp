@@ -873,6 +873,23 @@ void PolycodeScreenEditorMain::doAction(String actionName, PolycodeEditorActionD
 			}					
 			selectEntity(NULL, false);
 		}
+	} else if(actionName == "paste") {
+		if(screenData->reverse) {
+			for(int i=0; i < screenData->entries.size(); i++) {
+				deleteEntity(screenData->entries[i].entity);
+			}		
+		} else {
+			bool oldMultiSelect = multiSelect;
+			multiSelect = true;
+			for(int i=0; i < screenData->entries.size(); i++) {
+				screenData->entries[i].parentEntity->addChild(screenData->entries[i].entity);
+				selectEntity(screenData->entries[i].entity, false);
+			}
+			multiSelect = oldMultiSelect;			
+			if(treeView) {
+				treeView->Refresh();		
+			}			
+		}
 	}
 }
 
@@ -2465,6 +2482,11 @@ void PolycodeScreenEditorMain::Paste(void *data, String clipboardType) {
 		multiSelect = true;
 		ScreenEntityClipboardData *newData = (ScreenEntityClipboardData*) data;
 		if(currentLayer) {
+		
+			PolycodeScreenEditorActionData *beforeData = new PolycodeScreenEditorActionData();
+			PolycodeScreenEditorActionData *data = new PolycodeScreenEditorActionData();
+			data->reverse = false;
+	
 			for(int i=0; i < newData->entities.size(); i++) {
 				ScreenEntity *entity = (ScreenEntity*) newData->entities[i]->Clone(true, true);
 				entity->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
@@ -2482,8 +2504,14 @@ void PolycodeScreenEditorMain::Paste(void *data, String clipboardType) {
 					currentLayer->addChild(entity);
 				}
 				applyEditorProperties(entity);
-				selectEntity(entity);
+				selectEntity(entity, false);
+
+				beforeData->entries.push_back(PolycodeScreenEditorActionDataEntry(entity));				
+				data->entries.push_back(PolycodeScreenEditorActionDataEntry(entity));
+				
 			}
+			
+			editor->didAction("paste", beforeData, data);			
 		}
 		multiSelect = false;
 	}
