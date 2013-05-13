@@ -461,6 +461,7 @@ class ScreenParticleSheet : public PropSheet {
 
 		TextureProp *textureProp;
 		ComboProp *blendingProp;
+		BoolProp *ignoreParentMatrixProp;
 		NumberProp *numParticlesProp;
 		NumberProp *lifespanProp;
 		NumberProp *particleScaleProp;		
@@ -492,6 +493,7 @@ class ScreenParticleSheet : public PropSheet {
 		bool lastEnableProp;
 		Number lastPerlinSize;
 		Number lastSpeedMod;
+		bool lastIgnoreParentMatrix;
 		bool lastRotationFollowsPath;
 		bool lastUseScaleCurves;
 		bool lastUseColorCurves;		

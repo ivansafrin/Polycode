@@ -192,6 +192,11 @@ ScreenEntity *ScreenEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry
 				placingEmitter->rotationFollowsPath = (*emitterEntry)["rotationFollowsPath"]->boolVal;
 				placingEmitter->useScaleCurves = (*emitterEntry)["useScaleCurves"]->boolVal;
 				placingEmitter->useColorCurves = (*emitterEntry)["useColorCurves"]->boolVal;
+				
+				bool boolVal;
+				if(emitterEntry->readBool("ignoreParentMatrix", &boolVal)) {
+					placingEmitter->setIgnoreParentMatrix(boolVal);
+				}
 									
 				placingEmitter->setParticleBlendingMode((*emitterEntry)["particleBlendMode"]->intVal);			
 				

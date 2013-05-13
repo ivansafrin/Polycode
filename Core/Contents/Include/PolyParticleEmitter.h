@@ -240,8 +240,14 @@ namespace Polycode {
 				
 			Number rotationSpeed;
 							
-			int emitterType;											
+			int emitterType;
+			
+			bool getIgnoreParentMatrix();			
+			void setIgnoreParentMatrix(bool val);
+											
 		protected:
+		
+			bool ignoreParentMatrix;
 		
 			int blendingMode;
 		

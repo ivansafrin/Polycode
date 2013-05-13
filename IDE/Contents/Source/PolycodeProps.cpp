@@ -1388,6 +1388,9 @@ ScreenParticleSheet::ScreenParticleSheet() : PropSheet("PARTICLE EMITTER", "Scre
 	blendingProp->comboEntry->addComboItem("Premultiplied");
 	blendingProp->comboEntry->addComboItem("Multiply");
 
+	ignoreParentMatrixProp = new BoolProp("No parent matrix");
+	addProp(ignoreParentMatrixProp);
+	
 	numParticlesProp = new NumberProp("Num particles");
 	addProp(numParticlesProp);
 		
@@ -1440,7 +1443,7 @@ ScreenParticleSheet::ScreenParticleSheet() : PropSheet("PARTICLE EMITTER", "Scre
 	addProp(colorCurveProp);
 	
 	emitter = NULL;
-	propHeight = 650;
+	propHeight = 680;
 }
 
 void ScreenParticleSheet::handleEvent(Event *event) {
@@ -1546,7 +1549,12 @@ void ScreenParticleSheet::handleEvent(Event *event) {
 		emitter->rotationFollowsPath = lastRotationFollowsPath;		
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}	
-	
+
+	if(event->getDispatcher() == ignoreParentMatrixProp  && event->getEventCode() == Event::CHANGE_EVENT) {
+		lastIgnoreParentMatrix = ignoreParentMatrixProp->get();
+		emitter->setIgnoreParentMatrix(lastIgnoreParentMatrix);		
+		dispatchEvent(new Event(), Event::CHANGE_EVENT);
+	}	
 	
 	if(event->getDispatcher() == useScaleCurvesProp  && event->getEventCode() == Event::CHANGE_EVENT) {
 		lastUseScaleCurves = useScaleCurvesProp->get();
@@ -1587,6 +1595,11 @@ void ScreenParticleSheet::Update() {
 		if(emitter->deviation != lastDeviation) {
 			deviationProp->set(Vector2(emitter->emitterRadius.x, emitter->emitterRadius.y));
 			lastSize = emitter->emitterRadius;
+		}
+
+		if(emitter->getIgnoreParentMatrix() != lastIgnoreParentMatrix) {
+			ignoreParentMatrixProp->set(emitter->getIgnoreParentMatrix());
+			lastIgnoreParentMatrix = emitter->getIgnoreParentMatrix();
 		}
 				
 		if(emitter->brightnessDeviation != lastBrightnessDeviation) {

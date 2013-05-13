@@ -2638,7 +2638,9 @@ void PolycodeScreenEditor::saveEntityToObjectEntry(ScreenEntity *entity, ObjectE
 		emitterEntry->addChild("particleCount", (int)emitter->getNumParticles());
 
 		emitterEntry->addChild("useScaleCurves", emitter->useScaleCurves);
-		emitterEntry->addChild("useColorCurves", emitter->useColorCurves);		
+		emitterEntry->addChild("useColorCurves", emitter->useColorCurves);
+
+		emitterEntry->addChild("ignoreParentMatrix", emitter->getIgnoreParentMatrix());
 
 		saveCurveToObject(emitterEntry->addChild("scaleCurve"), &emitter->scaleCurve);
 
