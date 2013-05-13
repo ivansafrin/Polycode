@@ -1208,8 +1208,6 @@ void PolycodeScreenEditorMain::handleMouseMove(Vector2 position) {
 				Number scaleMod = 0.04;
 				Number newScale = newDist - baseDist;
 
-				printf("baseDist: %f newDist: %f newScale: %f\n", baseDist, newDist, newScale);
-
 				for(int i=0; i < selectedEntities.size(); i++) {												
 					Number newScaleX, newScaleY;
 					if(baseEntityScales[i].x < 0.0) {
@@ -2044,9 +2042,7 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 			}						
 			mouseBase = CoreServices::getInstance()->getCore()->getInput()->getMousePosition();			
 		}
-	}
-	
-	if(event->getDispatcher() == transformRotator) {
+	} else if(event->getDispatcher() == transformRotator) {
 		if(selectedEntities.size() > 0) {
 			baseScaleScreenPosition = screenTransform->getScreenPosition();		
 			rotating = true;
@@ -2214,13 +2210,12 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 							Paste(data, type);
 							destroyClipboardData(data, type);
 						}
+						beforeData = new PolycodeScreenEditorActionData();						
+						for(int i=0; i < selectedEntities.size(); i++) {
+							beforeData->entries.push_back(PolycodeScreenEditorActionDataEntry(selectedEntities[i]->position));
+						}															
 					}
-					firstMove = false;
-					beforeData = new PolycodeScreenEditorActionData();						
-					for(int i=0; i < selectedEntities.size(); i++) {
-						beforeData->entries.push_back(PolycodeScreenEditorActionDataEntry(selectedEntities[i]->position));
-					}									
-					
+					firstMove = false;					
 				}
 				updateCursor();
 				handleMouseMove(inputEvent->mousePosition);

@@ -118,7 +118,7 @@ void PolycodeEditor::handleEvent(Event *event) {
 }
 
 void PolycodeEditor::didAction(String actionName, PolycodeEditorActionData *beforeData, PolycodeEditorActionData *afterData, bool setFileChanged) {
-
+	
 	if(setFileChanged) {
 		setHasChanges(true);
 	}
