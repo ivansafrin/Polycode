@@ -71,6 +71,13 @@ void PolycodeEditorManager::saveAll() {
 	}
 }
 
+void PolycodeEditorManager::saveFilesForProject(PolycodeProject *project) {
+	for(int i=0; i < openEditors.size(); i++) {
+		if(openEditors[i]->hasChanges() && openEditors[i]->parentProject == project)
+			openEditors[i]->saveFile();
+	}
+}
+
 bool PolycodeEditorManager::hasUnsavedFilesForProject(PolycodeProject *project) {
 	for(int i=0; i < openEditors.size();i++) {
 		PolycodeEditor *editor = openEditors[i];
