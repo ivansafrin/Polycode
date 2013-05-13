@@ -118,4 +118,6 @@ protected:
 
 	UIMenuBar *menuBar;
 	
+private:
+	void cleanupProjectOnClose(bool save);
 };
