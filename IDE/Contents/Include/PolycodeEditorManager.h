@@ -47,6 +47,7 @@ class PolycodeEditorManager : public EventDispatcher {
 		
 		bool hasUnsavedFiles();
 		bool hasUnsavedFilesForProject(PolycodeProject *project);
+		void saveFilesForProject(PolycodeProject *project);
 		
 	//	int close
 	std::vector<PolycodeEditor*> openEditors;

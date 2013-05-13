@@ -666,7 +666,7 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 			}
 			
 			if(frame->yesNoPopup->action == "saveAndRun") {
-				editorManager->saveAll();
+				editorManager->saveFilesForProject(projectManager->getActiveProject());
 				runNextFrame = true;
 			}
 			
