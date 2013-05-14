@@ -406,11 +406,13 @@ int main(int argc, char **argv) {
 			for(int i=0; i < packed->length; i++) {
 				ObjectEntry *entryPath = (*(*packed)[i])["path"];
 				ObjectEntry *entryType = (*(*packed)[i])["type"];
+				ObjectEntry *entryOut = (*(*packed)[i])["out"];
 				if(entryPath && entryType) {
+					if (!entryOut) entryOut = entryPath;
 					if(entryType->stringVal == "folder") {
-						addFolderToZip(z, entryPath->stringVal, entryPath->stringVal, false);
+						addFolderToZip(z, entryPath->stringVal, entryOut->stringVal, false);
 					} else {
-						addFileToZip(z, entryPath->stringVal, entryPath->stringVal, false);
+						addFileToZip(z, entryPath->stringVal, entryOut->stringVal, false);
 					}
 				}
 			}
