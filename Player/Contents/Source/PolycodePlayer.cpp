@@ -146,7 +146,7 @@ static void dumpstack (lua_State *L) {
 	
 			PolycodePlayer *player = (PolycodePlayer*)CoreServices::getInstance()->getCore()->getUserPointer();	
 			player->report(pState, luaL_loadbuffer(pState, (const char*)buffer, progsize, fullPath));		
-			//free(buffer);
+			free(buffer);
 			OSBasics::close(inFile);	
 		} else {
 			std::string err = "\n\tError - Could could not find ";
