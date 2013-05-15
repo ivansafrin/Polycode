@@ -691,9 +691,7 @@ static void onDeviceMatched(void * context, IOReturn result, void * sender, IOHI
 CFArrayRef elements;
 	CFIndex elementIndex;
 	IOHIDElementRef element;
-	CFStringRef cfProductName;
 	IOHIDElementType type;
-	char * description;
 	
 	GamepadDeviceEntry *entry = new GamepadDeviceEntry();
 	entry->device = device;
@@ -752,7 +750,6 @@ static void onDeviceRemoved(void * context, IOReturn result, void * sender, IOHI
 
 void CocoaCore::shutdownGamepad() {
 	if (hidManager != NULL) {
-		unsigned int deviceIndex;
 		
 		IOHIDManagerRegisterDeviceMatchingCallback(hidManager, NULL, NULL);
 		IOHIDManagerRegisterDeviceRemovalCallback(hidManager, NULL, NULL);		

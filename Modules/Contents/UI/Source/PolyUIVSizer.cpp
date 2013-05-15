@@ -88,7 +88,6 @@ UIVSizer::~UIVSizer() {
 
 void UIVSizer::handleEvent(Event *event) {
 	if(event->getDispatcher() == separatorHitShape) {
-		InputEvent *inputEvent = (InputEvent*)event;
 		switch (event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEDOWN:
 				resizing = true;

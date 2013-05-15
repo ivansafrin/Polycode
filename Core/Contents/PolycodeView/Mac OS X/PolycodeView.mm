@@ -569,7 +569,6 @@
 		return;
 	
 	core->lockMutex(core->eventMutex);	
-	NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:self];	
 	CocoaEvent newEvent;
 	newEvent.eventGroup = CocoaEvent::INPUT_EVENT;
 	newEvent.eventCode = InputEvent::EVENT_KEYUP;

@@ -228,7 +228,6 @@ void Perlin::init(void)
 Number Perlin::perlin_noise_2D(Number vec[2])
 {
   int terms    = mOctaves;
-	Number freq   = mFrequency;
 	Number result = 0.0f;
   Number amp = mAmplitude;
 
@@ -250,7 +249,6 @@ Number Perlin::perlin_noise_2D(Number vec[2])
 Number Perlin::perlin_noise_3D(Number vec[3])
 {
   int terms    = mOctaves;
-	Number freq   = mFrequency;
 	Number result = 0.0f;
   Number amp = mAmplitude;
 
