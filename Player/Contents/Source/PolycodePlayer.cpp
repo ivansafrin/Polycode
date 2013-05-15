@@ -122,6 +122,7 @@ static void dumpstack (lua_State *L) {
 	int MyLoader(lua_State* pState)
 	{		
 		std::string module = lua_tostring(pState, 1);
+
 		module += ".lua";
 		
 		std::string defaultPath = "API/";
@@ -439,48 +440,22 @@ static void dumpstack (lua_State *L) {
 					
 		}
 */
-		String fileData = "";
 
-		OSFILE *inFile = OSBasics::open(fileName, "r");	
-		if(inFile) {
-			Logger::log("Opened entrypoint file...");
-			OSBasics::seek(inFile, 0, SEEK_END);	
-			long progsize = OSBasics::tell(inFile);
-			OSBasics::seek(inFile, 0, SEEK_SET);
-			char *buffer = (char*)malloc(progsize+1);
-			memset(buffer, 0, progsize+1);
-			OSBasics::read(buffer, progsize, 1, inFile);
-			fileData = String(buffer);		
-			free(buffer);
-			OSBasics::close(inFile);	
-		} else {
-			Logger::log("Error opening entrypoint file (%s)\n", fileName.c_str());
-		}
-		
-				
-		String fullScript = fileData;
-		
 		doneLoading = true;
 		
-		//lua_gc(L, LUA_GCSTOP, 0);
-		
-		
-
 		lua_getfield (L, LUA_GLOBALSINDEX, "__customError");
 		errH = lua_gettop(L);
 
-		//CoreServices::getInstance()->getCore()->lockMutex(CoreServices::getRenderMutex());			
-		if (report(L, luaL_loadstring(L, fullScript.c_str()))) {			
-			//CoreServices::getInstance()->getCore()->unlockMutex(CoreServices::getRenderMutex());			
-			Logger::log("CRASH LOADING SCRIPT FILE\n");
-//			exit(1);				
-		} else {
+		// MyLoader appends '.lua' so strip it if already present
+		int pos = fileName.rfind(".lua");
+		String stripped = (pos == fileName.length() - 4) ? fileName.substr(0, pos) : fileName;
 		
-		
-			if (lua_pcall(L, 0,0,errH)) {
-				Logger::log("CRASH EXECUTING FILE\n");
-			}
+		lua_getfield(L, LUA_GLOBALSINDEX, "require");
+		lua_pushstring(L, stripped.c_str());		
+		if (lua_pcall(L, 1,0,errH)) {
+			Logger::log("CRASH EXECUTING FILE\n");
 		}
+
 	}
 }
 
