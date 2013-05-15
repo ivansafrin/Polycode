@@ -295,7 +295,7 @@ b2Fixture* PhysicsScreenEntity::getFixture(unsigned short index) {
 	if(fixture)	{
 		short i = 0;
 		for (b2Fixture* f = body->GetFixtureList(); f; f = f->GetNext()) {
-			if (i = index) {
+			if (i == index) {
 				fixture = f;
 				return fixture;
 			}
