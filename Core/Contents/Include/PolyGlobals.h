@@ -84,8 +84,12 @@ inline Number clampf(Number x, Number a, Number b)
     return x < a ? a : (x > b ? b : x);
 }
 
-#define MIN(a, b)  (((a) < (b)) ? (a) : (b))
-#define MAX(a, b)  (((a) > (b)) ? (a) : (b))
+#ifndef MIN
+	#define MIN(a, b)  (((a) < (b)) ? (a) : (b))
+#endif
+#ifndef MAX
+	#define MAX(a, b)  (((a) > (b)) ? (a) : (b))
+#endif
 
 // Special flag read by create_lua_library parser, suppresses Lua bindings for item.
 #define POLYIGNORE
