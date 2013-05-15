@@ -29,7 +29,7 @@
 
 using namespace Polycode;
 
-ScreenMesh::ScreenMesh(Mesh *mesh) : ScreenEntity(), texture(NULL), material(NULL) {
+ScreenMesh::ScreenMesh(Mesh *mesh) : ScreenEntity(), material(NULL), texture(NULL) {
 	this->mesh = mesh;
 	lineSmooth = false;
 	lineWidth = 1.0;
@@ -37,14 +37,14 @@ ScreenMesh::ScreenMesh(Mesh *mesh) : ScreenEntity(), texture(NULL), material(NUL
 	updateHitBox();
 }
 
-ScreenMesh::ScreenMesh(const String& fileName) : ScreenEntity(), texture(NULL), material(NULL) {
+ScreenMesh::ScreenMesh(const String& fileName) : ScreenEntity(), material(NULL), texture(NULL) {
 	mesh = new Mesh(fileName);
 	lineSmooth = false;
 	lineWidth = 1.0;
 	
 }
 
-ScreenMesh::ScreenMesh(int meshType) : ScreenEntity(), texture(NULL), material(NULL){
+ScreenMesh::ScreenMesh(int meshType) : ScreenEntity(), material(NULL), texture(NULL) {
 	mesh = new Mesh(meshType);
 	lineSmooth = false;
 	lineWidth = 1.0;
