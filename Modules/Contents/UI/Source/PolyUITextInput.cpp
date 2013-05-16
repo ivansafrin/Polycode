@@ -129,6 +129,8 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	
 	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEUP);	
+	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_DOWN);
+	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_UP);	
 	inputRect->addEventListener(this, InputEvent::EVENT_DOUBLECLICK);		
 	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);		
 	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEOVER);
@@ -1105,7 +1107,8 @@ void UITextInput::Copy() {
 
 void UITextInput::Paste() {
 	saveUndoState();
-	insertText(CoreServices::getInstance()->getCore()->getClipboardString());
+	String clip = CoreServices::getInstance()->getCore()->getClipboardString().replace("\r\n", "\n");
+	insertText(clip);
 }
 
 void UITextInput::showLine(unsigned int lineNumber, bool top) {
@@ -1556,6 +1559,12 @@ void UITextInput::handleEvent(Event *event) {
 			break;
 			case InputEvent::EVENT_MOUSEUP:
 				draggingSelection = false;
+			break;
+			case InputEvent::EVENT_MOUSEWHEEL_UP:
+				scrollContainer->onMouseWheelUp(0, 0);
+			break;
+			case InputEvent::EVENT_MOUSEWHEEL_DOWN:
+				scrollContainer->onMouseWheelDown(0, 0);
 			break;
 			case InputEvent::EVENT_DOUBLECLICK:
 				selectWordAtCaret();
