@@ -183,6 +183,8 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 
 	needsRedraw = false;
 	lastConnected = false;
+	
+	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 }
 
 void PolycodeIDEApp::renameFile() {
@@ -591,7 +593,8 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 		}
 		
 		if(event->getEventCode() == Event::CHANGE_EVENT) {
-			BrowserUserData *selectedData = frame->getProjectBrowser()->getSelectedData();
+			PolycodeProjectBrowser *pb = frame->getProjectBrowser();
+			BrowserUserData *selectedData = pb->getSelectedData();
 						
 			if(selectedData->type == 3) {
 				projectManager->activeFolder = selectedData->parentProject->getRootFolder();
@@ -614,7 +617,8 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 			if(selectedData->type == 0)
 				return;			
 			
-			if(selectedData) {
+			// don't open the editor if the selection was made by UITreeContainer arrow-key navigation
+			if (selectedData && pb->treeContainer->getRootNode()->getSelectedNode()->isSelectedByKey() == false) {
 				openFile(selectedData->fileEntry);
 			}
 		}
@@ -766,7 +770,19 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 			
 			frame->hideModal();			
 		}
-	}	
+	}
+	
+	// open an editor/file if project browser has focus and user hits enter or right-arrow key
+	if (event->getDispatcher() == CoreServices::getInstance()->getCore()->getInput()) {
+		if (event->getEventCode() == InputEvent::EVENT_KEYDOWN && frame->getProjectBrowser()->treeContainer->hasFocus) {
+			InputEvent *inEvent = (InputEvent*)event;
+			if (inEvent->keyCode() == KEY_RETURN || inEvent->keyCode() == KEY_RIGHT) {
+				BrowserUserData *selectedData = frame->getProjectBrowser()->getSelectedData();
+				if (selectedData)
+					openFile(selectedData->fileEntry);
+			}
+		}
+	}
 }
 
 void PolycodeIDEApp::saveConfigFile() {
