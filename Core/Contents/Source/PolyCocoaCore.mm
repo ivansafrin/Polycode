@@ -515,7 +515,8 @@ vector<String> CocoaCore::openFilePicker(vector<CoreFileExtension> extensions, b
 		}
 	}
 	
-	if ( [attachmentPanel runModalForDirectory:nil file:nil types:types] == NSOKButton )
+	[attachmentPanel setAllowedFileTypes:types];
+	if ( [attachmentPanel runModal] == NSOKButton )
 	{
 		NSArray* files = [attachmentPanel URLs];
 	
