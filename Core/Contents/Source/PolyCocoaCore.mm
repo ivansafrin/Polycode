@@ -587,6 +587,8 @@ static void hatValueToXY(CFIndex value, CFIndex range, int * outX, int * outY) {
 }
 
 
+// Marked as unused to avoid a warning, assuming that this is useful for debugging.
+__attribute__((unused))
 static int IOHIDDeviceGetIntProperty(IOHIDDeviceRef deviceRef, CFStringRef key) {
 	CFTypeRef typeRef;
 	int value;
