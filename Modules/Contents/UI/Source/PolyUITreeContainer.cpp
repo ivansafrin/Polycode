@@ -167,9 +167,9 @@ void UITreeContainer::onKeyDown(PolyKEY key, wchar_t charCode) {
 					for (int i=0; i < parent->getNumTreeChildren(); i++) {
 						if (parent->getTreeChild(i) == currentSelection) {
 							if (i == 0)
-								parent->setSelected();
+								parent->setSelected(true);
 							else
-								findLastOpenNode((parent->getTreeChild(i-1)))->setSelected();
+								findLastOpenNode((parent->getTreeChild(i-1)))->setSelected(true);
 							scrollDir = UP;
 							break;
 						}
@@ -185,7 +185,7 @@ void UITreeContainer::onKeyDown(PolyKEY key, wchar_t charCode) {
 					parent = getRootNode();
 
 				if (currentSelection->hasTreeChildren() && !currentSelection->isCollapsed()) {
-					currentSelection->getTreeChild(0)->setSelected();
+					currentSelection->getTreeChild(0)->setSelected(true);
 					scrollDir = DOWN;
 				}
 				else {
@@ -194,9 +194,9 @@ void UITreeContainer::onKeyDown(PolyKEY key, wchar_t charCode) {
 							if (i == parent->getNumTreeChildren()-1) {
 								UITree *psib = findNextParentSibling(parent);
 								if (psib)
-									psib->setSelected();
+									psib->setSelected(true);
 							} else {
-								parent->getTreeChild(i+1)->setSelected();
+								parent->getTreeChild(i+1)->setSelected(true);
 							}
 							scrollDir = DOWN;
 							break;
@@ -209,7 +209,7 @@ void UITreeContainer::onKeyDown(PolyKEY key, wchar_t charCode) {
 				if (currentSelection->hasTreeChildren() && !currentSelection->isCollapsed())
 					currentSelection->toggleCollapsed();
 				else if (parent) {
-					parent->setSelected();
+					parent->setSelected(true);
 					scrollDir = UP;
 				}
 			}
@@ -218,15 +218,11 @@ void UITreeContainer::onKeyDown(PolyKEY key, wchar_t charCode) {
 				if (currentSelection->hasTreeChildren()) {
 					if (currentSelection->isCollapsed())
 						currentSelection->toggleCollapsed();
-					else {
-						currentSelection->getTreeChild(0)->setSelected();
-						scrollDir = DOWN;
-					}
 				}
 			}
 			
 			if (scrollDir != NONE)
-				scrollToNode(getRootNode()->getSelectedNode(), (scrollDir == UP) ? true : false, false);
+				scrollToNode(getRootNode()->getSelectedNode(), (scrollDir == UP) ? true : false);
 		}
 		//
 		// END KEYBOARD NAV STUFF
@@ -234,16 +230,13 @@ void UITreeContainer::onKeyDown(PolyKEY key, wchar_t charCode) {
 	}
 }
 
-void UITreeContainer::scrollToNode(UITree *node, bool showAtTop, bool select) {
+void UITreeContainer::scrollToNode(UITree *node, bool showAtTop) {
 	
 	Number nodeY = node->getScreenPosition().y - getRootNode()->getScreenPosition().y;
 	Number contentHeight = mainContainer->getContentSize().y;
 	Number scrollHeight = contentHeight - mainContainer->getHeight();
 	Number viewTop = (contentHeight - mainContainer->getHeight()) * mainContainer->getVScrollBar()->getScrollValue();
 	Number viewBottom = viewTop + mainContainer->getHeight();
-	
-	if (select)
-		node->setSelected();
 	
 	if (nodeY < viewTop || nodeY+node->getCellHeight() > viewBottom) {
 		if (showAtTop)

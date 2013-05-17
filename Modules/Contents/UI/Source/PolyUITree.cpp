@@ -145,7 +145,8 @@ void UITree::removeTreeChild(UITree *child) {
 	}
 }
 
-void UITree::setSelected() {
+void UITree::setSelected(bool byKey) {
+	selectedByKey = byKey;
 	selected = true;
 	refreshTree();
 	if(parent == NULL) {

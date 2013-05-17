@@ -47,9 +47,8 @@ namespace Polycode {
 		 * Scrolls the container to show a specified node.
 		 * @param node The tree node to scroll to or show.
 		 * @param showAtTop If true, show the node at the top of the container. If false, show it at the bottom.
-		 * @param select If true (default), select the node. If false, don't.
 		 */
-		void scrollToNode(UITree *node, bool showAtTop, bool select=true);
+		void scrollToNode(UITree *node, bool showAtTop);
 		
 	protected:
 		bool keyNavigable;
