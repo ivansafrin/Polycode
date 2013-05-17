@@ -21,6 +21,7 @@
 */
 
 #include "PolyCocoaCore.h"
+#import "PolycodeView.h"
 #include <iostream>
 #include <limits.h>
 
