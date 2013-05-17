@@ -529,8 +529,8 @@ SliderProp::SliderProp(String caption, Number min, Number max) : PropProp(captio
 }
 
 void SliderProp::setPropWidth(Number width) {
-	slider->Resize(width - propContents->position.x - PROP_PADDING - 40, slider->getHeight());
-	valueLabel->setPosition(width - propContents->position.x - PROP_PADDING - 40, 5);	
+	slider->Resize(width - propContents->position.x - PROP_PADDING - 50, slider->getHeight());
+	valueLabel->setPosition(width - propContents->position.x - PROP_PADDING - 30, 5);	
 }
 
 void SliderProp::handleEvent(Event *event) {
