@@ -30,6 +30,7 @@
 
 using namespace Polycode;
 
+#define PROP_PADDING	40
 
 class PolycodeEditorPropActionData;
 
@@ -39,6 +40,8 @@ class PropProp : public UIElement {
 		~PropProp();
 
 		virtual void setPropData(PolycodeEditorPropActionData* data) {}
+		
+		virtual void setPropWidth(Number width) {}
 		
 		String propType;
 		ScreenLabel *label;
@@ -57,12 +60,17 @@ class Vector2Prop : public PropProp {
 		Vector2 get();
 		
 		void setPropData(PolycodeEditorPropActionData* data);
+		
+		void setPropWidth(Number width);		
 				
 		UITextInput *positionX;
 		UITextInput *positionY;	
 		
 		Vector2 lastData;
-		Vector2 currentData;		
+		Vector2 currentData;	
+		
+		ScreenLabel *labelX;
+		ScreenLabel *labelY;		
 };
 
 class SliderProp : public PropProp {
@@ -73,6 +81,7 @@ class SliderProp : public PropProp {
 		void set(Number number);
 		Number get();
 		
+		void setPropWidth(Number width);		
 		void setPropData(PolycodeEditorPropActionData* data);		
 				
 		UIHSlider *slider;
@@ -90,6 +99,8 @@ class NumberProp : public PropProp {
 		void handleEvent(Event *event);
 		void set(Number number);
 		Number get();
+		
+		void setPropWidth(Number width);
 		
 		void setPropData(PolycodeEditorPropActionData* data);
 				
@@ -121,6 +132,8 @@ class StringProp : public PropProp {
 		void handleEvent(Event *event);
 		void set(String str);
 		String get();
+
+		void setPropWidth(Number width);
 
 		void setPropData(PolycodeEditorPropActionData* data);
 				
@@ -154,7 +167,9 @@ class ComboProp : public PropProp {
 		void handleEvent(Event *event);
 		
 		void setPropData(PolycodeEditorPropActionData* data);
-			
+
+		void setPropWidth(Number width);
+
 		void set(unsigned int index);
 		unsigned int get();
 				

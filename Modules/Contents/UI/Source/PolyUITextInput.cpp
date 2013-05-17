@@ -487,6 +487,10 @@ void UITextInput::Resize(Number width, Number height) {
 	matrixDirty = true;	
 	setHitbox(width,height);
 	
+	textContainer->setWidth(this->getWidth() - textContainer->getPosition2D().x - padding);
+	textContainer->setHeight(this->getHeight() - textContainer->getPosition2D().y);
+	textContainer->setPosition(padding + decoratorOffset, padding);		
+	
 	if(multiLine) {
 		inputRect->setHitbox(width - scrollContainer->getVScrollWidth(), height);
 		
@@ -580,7 +584,7 @@ void UITextInput::renumberLines() {
 	textContainer->setPosition(decoratorOffset + padding, padding);
 	textContainer->setWidth(this->getWidth() - textContainer->getPosition2D().x - padding);
 	textContainer->setHeight(this->getHeight() - textContainer->getPosition2D().y - padding);
-	textContainer->scissorBox.setRect(textContainer->getPosition2D().x, textContainer->getPosition2D().y, textContainer->getWidth(), textContainer->getHeight());
+	textContainer->scissorBox.setRect(textContainer->getPosition2D().x, textContainer->getPosition2D().y, textContainer->getWidth(), textContainer->getHeight()+padding);
 }
 
 void UITextInput::restructLines() {
@@ -1457,7 +1461,7 @@ void UITextInput::Update() {
 	}
 	linesToDelete.clear();
 
-	textContainer->scissorBox.setRect(textContainer->getScreenPosition().x, textContainer->getScreenPosition().y, textContainer->getWidth(), textContainer->getHeight());
+	textContainer->scissorBox.setRect(textContainer->getScreenPosition().x, textContainer->getScreenPosition().y, textContainer->getWidth(), textContainer->getHeight() + padding);
 }
 
 UITextInput::~UITextInput() {

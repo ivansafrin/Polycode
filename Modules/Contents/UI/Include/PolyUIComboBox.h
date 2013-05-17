@@ -60,6 +60,8 @@ namespace Polycode {
 			void setSelectedIndex(unsigned int newIndex);
 			void handleEvent(Event *event);
 			
+			void Resize(Number width, Number height);
+			
 			unsigned int getNumItems();
 			UIComboBoxItem *getItemAtIndex(unsigned int index);
 							
@@ -75,7 +77,9 @@ namespace Polycode {
 			ScreenLabel *selectedLabel;
 			Number comboHeight;
 			Number comboWidth;
-			
+			Number dropDownX;
+			Number dropDownY;
+						
 			int selectedOffset;
 						
 			Number nextItemHeight;

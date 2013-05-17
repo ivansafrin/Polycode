@@ -2526,7 +2526,7 @@ void PolycodeScreenEditorMain::handleDroppedFile(OSFileEntry file, Number x, Num
 
 PolycodeScreenEditor::PolycodeScreenEditor() : PolycodeEditor(true){
 
-	mainSizer = new UIHSizer(100,100,300,false);
+	mainSizer = new UIHSizer(100,100,340,false);
 	addChild(mainSizer);	
 
 	editorMain = new PolycodeScreenEditorMain(this);

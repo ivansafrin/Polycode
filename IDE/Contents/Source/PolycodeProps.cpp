@@ -164,7 +164,7 @@ void PropList::updateSize() {
 void PropList::Resize(Number width, Number height) {
 	setWidth(width);
 	setHeight(height);
-	
+		
 	scrollContainer->Resize(width, height-30);
 	
 	bg->setShapeSize(width, height);
@@ -288,6 +288,7 @@ void PropSheet::Resize(Number width, Number height) {
 	
 	for(int i=0; i < props.size(); i++) {
 		props[i]->setPosition(0, yOffset);
+		props[i]->setPropWidth(width);
 		yOffset += props[i]->getHeight();
 	}
 }
@@ -329,15 +330,15 @@ PropProp::~PropProp() {
 
 Vector2Prop::Vector2Prop(String caption) : PropProp(caption, "Vector2") {
 
-	ScreenLabel *label = new ScreenLabel("X:", 11);
-	label->color.a = 0.4;
-	propContents->addChild(label);
-	label->setPosition(-20, 6);	
+	labelX = new ScreenLabel("X:", 11);
+	labelX->color.a = 0.4;
+	propContents->addChild(labelX);
+	labelX->setPosition(-20, 6);	
 
-	label = new ScreenLabel("Y:", 11);
-	label->color.a = 0.4;
-	propContents->addChild(label);
-	label->setPosition(60, 6);	
+	labelY = new ScreenLabel("Y:", 11);
+	labelY->color.a = 0.4;
+	propContents->addChild(labelY);
+	labelY->setPosition(60, 6);	
 	
 	positionX = NULL;
 	positionY = NULL;
@@ -357,6 +358,18 @@ Vector2Prop::Vector2Prop(String caption) : PropProp(caption, "Vector2") {
 	positionY->setPosition(80, 0);
 
 	setHeight(30);
+
+}
+
+void Vector2Prop::setPropWidth(Number width) {
+	labelX->setPosition(0, 6);
+	labelY->setPosition(((width-propContents->position.x-PROP_PADDING)/2.0), 6);	
+	
+	positionX->position.x = labelX->position.x + 20;
+	positionX->Resize(floor(((width-propContents->position.x-PROP_PADDING)/2.0)-25), positionX->getHeight());
+
+	positionY->position.x = labelY->position.x + 20;
+	positionY->Resize(floor(((width-propContents->position.x-PROP_PADDING)/2.0)-25), positionY->getHeight());
 
 }
 
@@ -462,7 +475,10 @@ StringProp::StringProp(String caption) : PropProp(caption, "String") {
 	propContents->addChild(stringEntry);
 	stringEntry->setPosition(0, 0);
 	setHeight(30);
+}
 
+void StringProp::setPropWidth(Number width) {
+	stringEntry->Resize(width - propContents->position.x - PROP_PADDING, stringEntry->getHeight());
 }
 
 void StringProp::handleEvent(Event *event) {
@@ -508,10 +524,13 @@ SliderProp::SliderProp(String caption, Number min, Number max) : PropProp(captio
 	valueLabel = new ScreenLabel("0.0", 10);
 	propContents->addChild(valueLabel);
 	valueLabel->setPosition(120, 5);
-	valueLabel->color.a = 0.5;
-	
+	valueLabel->color.a = 0.6;
 	setHeight(30);
+}
 
+void SliderProp::setPropWidth(Number width) {
+	slider->Resize(width - propContents->position.x - PROP_PADDING - 40, slider->getHeight());
+	valueLabel->setPosition(width - propContents->position.x - PROP_PADDING - 40, 5);	
 }
 
 void SliderProp::handleEvent(Event *event) {
@@ -564,6 +583,10 @@ NumberProp::NumberProp(String caption) : PropProp(caption, "Number") {
 
 	setHeight(30);
 
+}
+
+void NumberProp::setPropWidth(Number width) {
+	numberEntry->Resize(width - propContents->position.x - PROP_PADDING, numberEntry->getHeight());
 }
 
 void NumberProp::setPropData(PolycodeEditorPropActionData* data) {
@@ -653,7 +676,10 @@ ComboProp::ComboProp(String caption) : PropProp(caption, "Combo") {
 	propContents->addChild(comboEntry);
 	comboEntry->setPosition(-3, 0);
 	setHeight(30);
+}
 
+void ComboProp::setPropWidth(Number width) {
+	comboEntry->Resize(width - propContents->position.x - PROP_PADDING, comboEntry->getHeight());
 }
 
 void ComboProp::setPropData(PolycodeEditorPropActionData* data) {
