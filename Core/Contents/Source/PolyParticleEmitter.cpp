@@ -167,7 +167,7 @@ ParticleEmitter::ParticleEmitter(const String& imageFile, Mesh *particleMesh, in
 	gravVector = gravity;
 	ignoreParentMatrix = false;
 	this->emitterType = emitterType;
-	this->emitSpeed = emitSpeed;
+	// TODO: initialize emitSpeed
 	this->deviation = deviation;
 	pMesh = particleMesh;
 	rotationFollowsPath = false;
