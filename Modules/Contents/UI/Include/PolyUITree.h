@@ -54,7 +54,7 @@ namespace Polycode {
 			void setUserData(void *data);
 			UITree *getSelectedNode();
 			void setIcon(String iconFile);
-			void setSelected();
+			void setSelected(bool byKey=false);
 			
 			void setLabelText(const String &text);
 			
@@ -74,6 +74,8 @@ namespace Polycode {
 			UITree *getPrevSibling();
 			UITree *getNextSibling();
 			Number getCellHeight() { return cellHeight; }
+
+			bool isSelectedByKey() { return selectedByKey; }
 		
 		private:
 
@@ -104,5 +106,7 @@ namespace Polycode {
 			int size;
 			Number cellHeight;
 			Number cellPadding;
+
+			bool selectedByKey;
 	};
 }
