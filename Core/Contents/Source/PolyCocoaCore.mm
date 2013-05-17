@@ -486,10 +486,9 @@ String CocoaCore::openFolderPicker() {
 	if ( [attachmentPanel runModal] == NSOKButton )
 	{
 		// files and directories selected.
-		NSArray* files = [attachmentPanel filenames];
-		NSString* fileName = [files objectAtIndex:0];
+		NSURL* url = [attachmentPanel URL];
 		[attachmentPanel release];
-		return [fileName UTF8String];
+		return [[url path] UTF8String];
 	} else {
 		[attachmentPanel release];	
 		return [@"" UTF8String];
@@ -518,11 +517,12 @@ vector<String> CocoaCore::openFilePicker(vector<CoreFileExtension> extensions, b
 	
 	if ( [attachmentPanel runModalForDirectory:nil file:nil types:types] == NSOKButton )
 	{
-		NSArray* files = [attachmentPanel filenames];
+		NSArray* files = [attachmentPanel URLs];
 	
 		if(files) {
 			for (int i=0; i < [files count]; i++) {		
-				NSString* fileName = [files objectAtIndex:i];
+				NSURL* url = [files objectAtIndex:i];
+				NSString* fileName = [url path];
 				retVector.push_back([fileName UTF8String]);
 			}
 		}
