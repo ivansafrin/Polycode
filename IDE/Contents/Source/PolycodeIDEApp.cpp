@@ -267,6 +267,8 @@ bool PolycodeIDEApp::removeEditor(PolycodeEditor *editor) {
 		if(editorManager->openEditors.size() > 0) {
 			editorManager->setCurrentEditor(editorManager->openEditors[0]);
 			frame->showEditor(editorManager->openEditors[0]);
+		} else {
+			editorManager->setCurrentEditor(NULL);
 		}
 	}
 	return false;
