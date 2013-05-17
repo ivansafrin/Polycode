@@ -98,6 +98,8 @@ public:
 	
 	void refreshProject();	
 	
+	bool quitApp();
+	
 	bool needsRedraw;
 	bool lastConnected;
 	
@@ -106,6 +108,7 @@ public:
 	Core *core;	
 protected:
 
+	bool quittingApp;
 	bool runNextFrame;
 
 	bool willRunProject;

@@ -184,6 +184,8 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	needsRedraw = false;
 	lastConnected = false;
 	
+	quittingApp = false;
+	
 	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 }
 
@@ -384,6 +386,35 @@ void PolycodeIDEApp::doRunProject() {
 	String outPath = PolycodeToolLauncher::generateTempPath(projectManager->getActiveProject()) + ".polyapp";
 	PolycodeToolLauncher::buildProject(projectManager->getActiveProject(), outPath);
 	PolycodeToolLauncher::runPolyapp(outPath);
+}
+
+bool PolycodeIDEApp::quitApp() {	
+
+	quittingApp = true;
+	
+	while(editorManager->getCurrentEditor()) {
+		PolycodeEditor *editor = editorManager->getCurrentEditor();
+		
+		if(editor->hasChanges()) {
+			OSFileEntry entry(editor->getFilePath(), OSFileEntry::TYPE_FILE);	
+			frame->yesNoCancelPopup->setCaption("The file \""+entry.name+"\" has unsaved changes. Save before quitting?");
+			frame->yesNoCancelPopup->action = "closeQuitFile";
+			frame->showModal(frame->yesNoCancelPopup);
+			return false;
+		} else {	
+			frame->removeEditor(editor);
+			editorManager->destroyEditor(editor);
+			if(editorManager->openEditors.size() > 0) {
+				editorManager->setCurrentEditor(editorManager->openEditors[0]);
+				frame->showEditor(editorManager->openEditors[0]);
+			} else{
+				editorManager->setCurrentEditor(NULL);
+			}
+		}
+		
+	}
+	
+	return true;
 }
 
 void PolycodeIDEApp::runProject() {
@@ -679,9 +710,41 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 				case UIEvent::CANCEL_EVENT:
 				break;
 			}
-		}
-		
-		if (frame->yesNoCancelPopup->action == "closeProject") {
+		} else if(frame->yesNoCancelPopup->action == "closeQuitFile") {
+			switch(event->getEventCode()) {
+				case UIEvent::YES_EVENT:
+				{
+					PolycodeEditor *editor = editorManager->getCurrentEditor();
+					if(editor) {
+						editor->saveFile();
+						closeFile();
+					}
+					frame->yesNoCancelPopup->action = "";
+					frame->hideModal();
+					if(quitApp()) {
+						core->Shutdown();
+					}
+				}
+				break;
+				case UIEvent::NO_EVENT:
+				{
+					PolycodeEditor *editor = editorManager->getCurrentEditor();
+					if(editor) {
+						editor->setHasChanges(false);
+						closeFile();
+					}
+					frame->yesNoCancelPopup->action = "";					
+					frame->hideModal();
+					if(quitApp()) {
+						core->Shutdown();
+					}					
+				}
+				break;
+				case UIEvent::CANCEL_EVENT:
+					quittingApp = false;
+				break;
+			}					
+		} else if (frame->yesNoCancelPopup->action == "closeProject") {
 			switch (event->getEventCode()) {
 				case UIEvent::YES_EVENT:
 					cleanupProjectOnClose(true);
