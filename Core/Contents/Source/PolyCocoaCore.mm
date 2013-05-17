@@ -229,8 +229,6 @@ String CocoaCore::executeExternalCommand(String command,  String args, String in
 		return "Unable to execute command";
 	}	
 	
-	int fd = fileno(fp);
-	
 	char path[1024];
 	String retString;
 	
