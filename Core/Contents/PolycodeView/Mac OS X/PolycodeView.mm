@@ -527,7 +527,10 @@
 			} else {
 				newEvent.eventCode = InputEvent::EVENT_KEYUP;			
 			}		
-		break;				
+		break;
+		default:
+			// Don't care otherwise
+			break;
 	}
 	newEvent.unicodeChar = 0;
 	
