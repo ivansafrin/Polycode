@@ -80,7 +80,7 @@ void CocoaCore::copyStringToClipboard(const String& str) {
     NSArray *types = [NSArray arrayWithObjects:NSStringPboardType, nil];
     [pb declareTypes:types owner:nil];
 	
-	NSString *nsstr = [NSString stringWithCString: str.c_str()];
+	NSString *nsstr = [NSString stringWithCString: str.c_str() encoding:NSUTF8StringEncoding];
 	/*
 	char* data = (char*)str.c_str();
 	unsigned size = str.size() * sizeof(char);
@@ -200,18 +200,18 @@ void CocoaCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, in
 
 void CocoaCore::openFileWithApplication(String file, String application) {
 	NSWorkspace *workspace = [NSWorkspace sharedWorkspace];
-	NSString *filePath = [NSString stringWithCString:file.c_str()];
-	NSString *appString = [NSString stringWithCString:application.c_str()];
+	NSString *filePath = [NSString stringWithCString:file.c_str() encoding:NSUTF8StringEncoding];
+	NSString *appString = [NSString stringWithCString:application.c_str() encoding:NSUTF8StringEncoding];
 		
 	[workspace openFile: filePath withApplication: appString andDeactivate: YES];
 }
 
 void CocoaCore::launchApplicationWithFile(String application, String file) {
 	NSWorkspace *workspace = [NSWorkspace sharedWorkspace];
-	NSURL *url = [NSURL fileURLWithPath: [NSString stringWithCString:application.c_str()]];
+	NSURL *url = [NSURL fileURLWithPath: [NSString stringWithCString:application.c_str() encoding:NSUTF8StringEncoding]];
 
 	NSError *error = nil;
-	NSArray *arguments = [NSArray arrayWithObjects: [NSString stringWithCString:file.c_str()], nil];
+	NSArray *arguments = [NSArray arrayWithObjects: [NSString stringWithCString:file.c_str() encoding:NSUTF8StringEncoding], nil];
 	[workspace launchApplicationAtURL:url options:0 configuration:[NSDictionary dictionaryWithObject:arguments forKey:NSWorkspaceLaunchConfigurationArguments] error:&error];
 //Handle error
 }
