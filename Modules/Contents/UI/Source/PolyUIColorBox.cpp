@@ -301,15 +301,13 @@ void UIColorPicker::handleEvent(Event *event) {
 				InputEvent *inputEvent = (InputEvent*) event;
 				hueSelector->setPositionY(inputEvent->getMousePosition().y+hueFrame->position.y);
 				hueSelector->startDrag(inputEvent->mousePosition.x-hueSelector->getPosition().x,inputEvent->mousePosition.y-hueSelector->getPosition().y+hueFrame->position.y);		
-				Number newHue = 360.0 - (((inputEvent->getMousePosition().y-hueFrame->getPosition().y)/((hueFrame->getPosition().y+hueFrame->getHeight())-hueFrame->getPosition().y)) * 360.0f);
-				setHue(newHue);
-						
 			}
 			break;
 			case InputEvent::EVENT_MOUSEUP:
 			case InputEvent::EVENT_MOUSEUP_OUTSIDE:			
 			{
 				hueSelector->stopDrag();
+				updateColorFromHueSelector();	
 			}
 			break;	
 		}
@@ -324,17 +322,13 @@ void UIColorPicker::handleEvent(Event *event) {
 				InputEvent *inputEvent = (InputEvent*) event;
 				mainSelector->setPosition(inputEvent->getMousePosition().x+mainColorRect->position.x, inputEvent->getMousePosition().y+mainColorRect->position.y);
 				mainSelector->startDrag(inputEvent->mousePosition.x-mainSelector->getPosition().x+mainColorRect->position.x,inputEvent->mousePosition.y-mainSelector->getPosition().y+mainColorRect->position.y);
-				
-				Number newV = 1.0 - inputEvent->getMousePosition().y / mainColorRect->getHeight();
-				Number newS = inputEvent->getMousePosition().x / mainColorRect->getWidth();
-
-				setSaturationAndValue(newS, newV);
 			}
 			break;
 			case InputEvent::EVENT_MOUSEUP:
 			case InputEvent::EVENT_MOUSEUP_OUTSIDE:			
 			{
 				mainSelector->stopDrag();			
+				updateColorFromMainSelector();
 			}
 			break;	
 		}
@@ -370,8 +364,7 @@ UIColorPicker::~UIColorPicker() {
 		delete junkLabels[c];
 }
 
-void UIColorPicker::Update() {
-
+void UIColorPicker::updateColorFromMainSelector() {
 	if(mainSelector->getPosition2D() != lastMainSelectorPosition) {
 		lastMainSelectorPosition = mainSelector->getPosition2D();
 		
@@ -384,7 +377,9 @@ void UIColorPicker::Update() {
 					
 		setSaturationAndValue(newS, newV);	
 	}
-	
+}
+
+void UIColorPicker::updateColorFromHueSelector() {
 	if(hueSelector->getPosition().y != lastHueSelectorPosition) {
 		lastHueSelectorPosition = hueSelector->getPosition().y;
 		
@@ -399,8 +394,10 @@ void UIColorPicker::Update() {
 					
 		Number newHue = 360.0 - (((newPosY-hueFrame->getPosition().y)/((hueFrame->getPosition().y+hueFrame->getHeight())-hueFrame->getPosition().y)) * 360.0f);
 		setHue(newHue);
-	}	
+	}
+}
 
+void UIColorPicker::Update() {	
 	UIWindow::Update();
 }
 

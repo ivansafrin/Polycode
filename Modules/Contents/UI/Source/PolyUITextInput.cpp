@@ -467,11 +467,13 @@ void UITextInput::applySyntaxFormatting() {
 	readjustBuffer();	
 }
 
-void UITextInput::changedText() {
+void UITextInput::changedText(bool sendChangeEvent) {
 	if(settingText)
 		return;
 	applySyntaxFormatting();
-	dispatchEvent(new UIEvent(), UIEvent::CHANGE_EVENT);	
+	if(sendChangeEvent) {
+		dispatchEvent(new UIEvent(), UIEvent::CHANGE_EVENT);	
+	}
 }
 
 void UITextInput::setSyntaxHighlighter(UITextInputSyntaxHighlighter *syntaxHighliter) {
@@ -601,7 +603,7 @@ void UITextInput::restructLines() {
 	
 }
 
-void UITextInput::setText(String text) {
+void UITextInput::setText(String text, bool sendChangeEvent) {
 	if(!multiLine) {
 		lines[lineOffset] = text;
 		caretPosition = text.length();
@@ -613,7 +615,7 @@ void UITextInput::setText(String text) {
 		clearSelection();
 	}
 //	needFullRedraw = true;		
-	changedText();
+	changedText(sendChangeEvent);
 }
 
 void UITextInput::onLoseFocus() {

@@ -47,6 +47,8 @@ namespace Polycode {
 		
 			Number gripPos;
 			
+			bool dragging;
+			
 			Number labelXPos;
 			Number labelYPos;
 			UIBox *bgRect;

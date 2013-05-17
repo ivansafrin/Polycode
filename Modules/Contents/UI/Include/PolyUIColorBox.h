@@ -47,6 +47,8 @@ namespace Polycode {
 			void handleEvent(Event *event);
 			void setSaturationAndValue(Number S, Number V);
 			
+			void updateColorFromMainSelector();
+			void updateColorFromHueSelector();
 			void rebuildFromTextInputs();
 			
 			void cancelColorListeners();

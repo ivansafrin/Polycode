@@ -738,45 +738,56 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain(PolycodeEditor *editor) {
 	
 	particleSheet = new ScreenParticleSheet();
 	particleSheet->addEventListener(this, Event::CHANGE_EVENT);	
+	particleSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);		
 	entityProps->addPropSheet(particleSheet);
 
 	spriteSheet = new ScreenSpriteSheet();
-	spriteSheet->addEventListener(this, Event::CHANGE_EVENT);	
+	spriteSheet->addEventListener(this, Event::CHANGE_EVENT);
+	spriteSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);	
 	entityProps->addPropSheet(spriteSheet);
 	
 	instanceSheet = new ScreenEntityInstanceSheet();
 	instanceSheet->addEventListener(this, Event::CHANGE_EVENT);	
+	instanceSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
 	entityProps->addPropSheet(instanceSheet);
 
 	labelSheet = new ScreenLabelSheet();
 	labelSheet->addEventListener(this, Event::CHANGE_EVENT);	
+	labelSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);	
 	entityProps->addPropSheet(labelSheet);
 
 	soundSheet = new SoundSheet();
 	entityProps->addPropSheet(soundSheet);
 	soundSheet->addEventListener(this, Event::CHANGE_EVENT);
-
+	soundSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
+	
 	imageSheet = new ScreenImageSheet();
 	entityProps->addPropSheet(imageSheet);
 	imageSheet->addEventListener(this, Event::CHANGE_EVENT);	
-
+	imageSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
+	
 	shapeSheet = new ShapeSheet();
 	shapeSheet->addEventListener(this, Event::CHANGE_EVENT);
+	shapeSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
 	entityProps->addPropSheet(shapeSheet);
 
 	transform2dSheet = new Transform2DSheet();
 	transform2dSheet->addEventListener(this, Event::CHANGE_EVENT);
+	transform2dSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);	
 	entityProps->addPropSheet(transform2dSheet);
 	
 	screenEntitySheet = new ScreenEntitySheet();
 	entityProps->addPropSheet(screenEntitySheet);
 	screenEntitySheet->addEventListener(this, Event::CHANGE_EVENT);	
-			
+	screenEntitySheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
+				
 	entitySheet = new EntitySheet();
 	entityProps->addPropSheet(entitySheet);
+	entitySheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
 	
 	entityPropSheet = new EntityPropSheet();
 	entityPropSheet->addEventListener(this, Event::CHANGE_EVENT);	
+	entityPropSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
 	entityProps->addPropSheet(entityPropSheet);	
 	
 	entityProps->updateProps();		
@@ -835,15 +846,18 @@ void PolycodeScreenEditorMain::doAction(String actionName, PolycodeEditorActionD
 		for(int i=0; i < selectedEntities.size(); i++) {
 			selectedEntities[i]->position = screenData->entries[i].vec3;
 		}
+		syncTransformToSelected();
 	} else if(actionName == "scale") {
 		for(int i=0; i < selectedEntities.size(); i++) {
 			selectedEntities[i]->scale = screenData->entries[i].vec3;
 		}	
+		syncTransformToSelected();		
 	} else if(actionName == "rotate") {
 		for(int i=0; i < selectedEntities.size(); i++) {
 			selectedEntities[i]->position = screenData->entries[i].vec3;		
 			selectedEntities[i]->setRotation(screenData->entries[i].number);
-		}		
+		}
+		syncTransformToSelected();			
 	} else if(actionName == "select") {
 			selectEntity(NULL, false);	
 			if(data) {
@@ -854,6 +868,7 @@ void PolycodeScreenEditorMain::doAction(String actionName, PolycodeEditorActionD
 				}					
 				multiSelect = oldMultiSelect;				
 			}
+		syncTransformToSelected();			
 	} else if(actionName == "set_current_layer") {
 		if(screenData->entry.entity) {
 			setCurrentLayer(screenData->entry.entity, false);
@@ -886,10 +901,24 @@ void PolycodeScreenEditorMain::doAction(String actionName, PolycodeEditorActionD
 				selectEntity(screenData->entries[i].entity, false);
 			}
 			multiSelect = oldMultiSelect;			
-			if(treeView) {
-				treeView->Refresh();		
-			}			
 		}
+		if(treeView) {
+			treeView->Refresh();		
+		}					
+	} else if(actionName == "create_entity") {	
+		if(screenData->reverse) {
+			deleteEntity(screenData->entry.entity);
+		} else {
+			screenData->entry.parentEntity->addChild(screenData->entry.entity);			
+		}
+		
+		if(treeView) {
+			treeView->Refresh();		
+		}			
+					
+	} else if(actionName == "prop_change") {
+		PolycodeEditorPropActionData *propData = (PolycodeEditorPropActionData*) data;
+		propData->sheet->applyPropActionData(propData);
 	}
 }
 
@@ -1388,7 +1417,14 @@ void PolycodeScreenEditorMain::handleMouseDown(Vector2 position) {
 				
 				if(treeView) {
 					treeView->Refresh();		
-				}				
+				}
+				
+				PolycodeScreenEditorActionData *beforeData = new PolycodeScreenEditorActionData();
+				PolycodeScreenEditorActionData *data = new PolycodeScreenEditorActionData();
+				data->reverse = false;
+				data->entry = PolycodeScreenEditorActionDataEntry(placingLabel);
+				beforeData->entry = PolycodeScreenEditorActionDataEntry(placingLabel);
+				editor->didAction("create_entity", beforeData, data);
 		}
 		break;		
 		case MODE_IMAGE:
@@ -1407,7 +1443,15 @@ void PolycodeScreenEditorMain::handleMouseDown(Vector2 position) {
 					
 				if(treeView) {
 					treeView->Refresh();		
-				}											
+				}	
+				
+				PolycodeScreenEditorActionData *beforeData = new PolycodeScreenEditorActionData();
+				PolycodeScreenEditorActionData *data = new PolycodeScreenEditorActionData();
+				data->reverse = false;
+				data->entry = PolycodeScreenEditorActionDataEntry(placingImage);
+				beforeData->entry = PolycodeScreenEditorActionDataEntry(placingImage);
+				editor->didAction("create_entity", beforeData, data);
+											
 		}
 		break;		
 		case MODE_SHAPE:
@@ -1426,7 +1470,15 @@ void PolycodeScreenEditorMain::handleMouseDown(Vector2 position) {
 
 				if(treeView) {
 					treeView->Refresh();		
-				}											
+				}
+				
+				PolycodeScreenEditorActionData *beforeData = new PolycodeScreenEditorActionData();
+				PolycodeScreenEditorActionData *data = new PolycodeScreenEditorActionData();
+				data->reverse = false;
+				data->entry = PolycodeScreenEditorActionDataEntry(placingShape);
+				beforeData->entry = PolycodeScreenEditorActionDataEntry(placingShape);				
+				editor->didAction("create_entity", beforeData, data);
+															
 		}
 		break;
 		case MODE_PARTICLES:
@@ -1481,7 +1533,15 @@ void PolycodeScreenEditorMain::handleMouseDown(Vector2 position) {
 				
 				if(treeView) {
 					treeView->Refresh();		
-				}											
+				}
+				
+				PolycodeScreenEditorActionData *beforeData = new PolycodeScreenEditorActionData();
+				PolycodeScreenEditorActionData *data = new PolycodeScreenEditorActionData();
+				data->reverse = false;
+				data->entry = PolycodeScreenEditorActionDataEntry(placingEmitter);
+				beforeData->entry = PolycodeScreenEditorActionDataEntry(placingEmitter);				
+				editor->didAction("create_entity", beforeData, data);
+																										
 		}
 		break;			
 		case MODE_SPRITE:
@@ -1505,7 +1565,15 @@ void PolycodeScreenEditorMain::handleMouseDown(Vector2 position) {
 
 				if(treeView) {
 					treeView->Refresh();		
-				}											
+				}
+				
+				PolycodeScreenEditorActionData *beforeData = new PolycodeScreenEditorActionData();
+				PolycodeScreenEditorActionData *data = new PolycodeScreenEditorActionData();
+				data->reverse = false;
+				data->entry = PolycodeScreenEditorActionDataEntry(placingSprite);
+				beforeData->entry = PolycodeScreenEditorActionDataEntry(placingSprite);				
+				editor->didAction("create_entity", beforeData, data);
+																										
 		}
 		break;		
 		case MODE_LINK:
@@ -1524,7 +1592,15 @@ void PolycodeScreenEditorMain::handleMouseDown(Vector2 position) {
 
 				if(treeView) {
 					treeView->Refresh();		
-				}											
+				}
+
+				PolycodeScreenEditorActionData *beforeData = new PolycodeScreenEditorActionData();
+				PolycodeScreenEditorActionData *data = new PolycodeScreenEditorActionData();
+				data->reverse = false;
+				data->entry = PolycodeScreenEditorActionDataEntry(placingInstance);
+				beforeData->entry = PolycodeScreenEditorActionDataEntry(placingInstance);				
+				editor->didAction("create_entity", beforeData, data);
+															
 		}
 		break;		
 		case MODE_ENTITY:
@@ -1546,7 +1622,16 @@ void PolycodeScreenEditorMain::handleMouseDown(Vector2 position) {
 
 				if(treeView) {
 					treeView->Refresh();		
-				}								
+				}
+
+				PolycodeScreenEditorActionData *beforeData = new PolycodeScreenEditorActionData();
+				PolycodeScreenEditorActionData *data = new PolycodeScreenEditorActionData();
+				data->reverse = false;
+				data->entry = PolycodeScreenEditorActionDataEntry(placingEntity);
+				beforeData->entry = PolycodeScreenEditorActionDataEntry(placingEntity);				
+				editor->didAction("create_entity", beforeData, data);
+				
+								
 		}
 		break;
 		case MODE_SOUND:
@@ -1571,7 +1656,16 @@ void PolycodeScreenEditorMain::handleMouseDown(Vector2 position) {
 			
 				if(treeView) {
 					treeView->Refresh();		
-				}								
+				}
+
+				PolycodeScreenEditorActionData *beforeData = new PolycodeScreenEditorActionData();
+				PolycodeScreenEditorActionData *data = new PolycodeScreenEditorActionData();
+				data->reverse = false;
+				data->entry = PolycodeScreenEditorActionDataEntry(placingSound);
+				beforeData->entry = PolycodeScreenEditorActionDataEntry(placingSound);				
+				editor->didAction("create_entity", beforeData, data);
+				
+																				
 		}
 		break;		
 	}
@@ -1936,6 +2030,11 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 	if(event->getDispatcher() == entityPropSheet && event->getEventType() == "") {
 			entityProps->updateSize();
 			entityProps->scrollContainer->setScrollValue(0.0, 1.0);
+	}
+	
+	if(event->getEventCode() == PropEvent::EVENT_PROP_CHANGE) {
+		PropEvent *propEvent  = (PropEvent*) event;
+		editor->didAction("prop_change", propEvent->beforeData, propEvent->afterData);
 	}
 	
 	if((event->getDispatcher() == transform2dSheet || event->getDispatcher() == labelSheet || event->getDispatcher() == imageSheet || event->getDispatcher() == shapeSheet || event->getDispatcher() == screenEntitySheet) && event->getEventType() == "") {
@@ -2314,7 +2413,7 @@ void PolycodeScreenEditorMain::setMode(int newMode) {
 	parentingLine->visible = false;
 	parenting = false;
 	
-	selectEntity(NULL);
+	selectEntity(NULL, false);
 	
 	switch(mode) {
 		case MODE_SHAPE:

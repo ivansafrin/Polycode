@@ -1,4 +1,4 @@
-/*
+ /*
  Copyright (C) 2012 by Ivan Safrin
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -117,8 +117,9 @@ namespace Polycode {
 			 * into the text field
 			 *
 			 * @param text The new text contents.
+			 * @param sendChangeEvent If true (default), will send out an Event::CHANGE_EVENT 
 			 */
-			void setText(String text);
+			void setText(String text, bool sendChangeEvent = true);
 
 			/**
 			 * Returns the text contents of this element.
@@ -138,7 +139,7 @@ namespace Polycode {
 			 */
 			int insertLine(bool after = true);
 
-			void changedText();
+			void changedText(bool sendChangeEvent = true);
 			void applySyntaxFormatting();
 			
 			void onKeyDown(PolyKEY key, wchar_t charCode);

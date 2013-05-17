@@ -118,6 +118,8 @@ void PolycodeEditor::handleEvent(Event *event) {
 }
 
 void PolycodeEditor::didAction(String actionName, PolycodeEditorActionData *beforeData, PolycodeEditorActionData *afterData, bool setFileChanged) {
+
+//	printf("DID ACTION: %s\n", actionName.c_str());
 	
 	if(setFileChanged) {
 		setHasChanges(true);
