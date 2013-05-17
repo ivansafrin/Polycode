@@ -485,7 +485,7 @@ void StringProp::setPropData(PolycodeEditorPropActionData* data) {
 
 void StringProp::set(String str) {
 	suppressChangeEvent = true;
-	stringEntry->setText(str, false);
+	stringEntry->setText(str);
 	suppressChangeEvent = false;	
 }
 
@@ -587,7 +587,7 @@ void NumberProp::handleEvent(Event *event) {
 
 void NumberProp::set(Number number) {
 	suppressChangeEvent = true;
-	numberEntry->setText(String::NumberToString(number), false);
+	numberEntry->setText(String::NumberToString(number));
 	suppressChangeEvent = false;	
 }
 
