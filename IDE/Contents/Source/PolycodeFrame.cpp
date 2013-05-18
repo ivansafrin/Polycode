@@ -590,6 +590,9 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	
 	exampleBrowserWindow = new ExampleBrowserWindow();
 	exampleBrowserWindow->visible = false;
+
+    settingsWindow = new SettingsWindow();
+    settingsWindow->visible = false;
 	
 	newFileWindow = new NewFileWindow();
 	newFileWindow->visible = false;

@@ -89,6 +89,7 @@ public:
 	void doRunProject();
 	void exportProject();
 	void toggleConsole();
+    void showSettings();
 	
 	bool removeEditor(PolycodeEditor *editor);
 	

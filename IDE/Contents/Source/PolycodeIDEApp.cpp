@@ -203,6 +203,10 @@ void PolycodeIDEApp::showAbout() {
 	frame->showModal(frame->aboutWindow);
 }
 
+void PolycodeIDEApp::showSettings() {
+    frame->showModal(frame->settingsWindow);
+}
+
 void PolycodeIDEApp::toggleConsole() {
 	frame->toggleConsole();
 }
@@ -575,7 +579,9 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 			showAbout();
 		} else if(action == "toggle_console") {
 			toggleConsole();
-		}
+		} else if(action == "settings") {
+            showSettings();
+        }
 	}
 
 	if(event->getDispatcher() == frame->console->backtraceWindow) {
