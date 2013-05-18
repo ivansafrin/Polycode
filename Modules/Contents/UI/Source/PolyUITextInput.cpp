@@ -123,8 +123,8 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 		decoratorOffset = sl/2.0;
 	}
 
-	textContainer->setWidth(this->getWidth() - textContainer->getPosition2D().x - padding);
-	textContainer->setHeight(this->getHeight() - textContainer->getPosition2D().y);
+	textContainer->setWidth(fabs(this->getWidth() - textContainer->getPosition2D().x - padding));
+	textContainer->setHeight(fabs(this->getHeight() - textContainer->getPosition2D().y));
 	textContainer->setPosition(padding + decoratorOffset, padding);
 	
 	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
@@ -487,8 +487,8 @@ void UITextInput::Resize(Number width, Number height) {
 	matrixDirty = true;	
 	setHitbox(width,height);
 	
-	textContainer->setWidth(this->getWidth() - textContainer->getPosition2D().x - padding);
-	textContainer->setHeight(this->getHeight() - textContainer->getPosition2D().y);
+	textContainer->setWidth(fabs(this->getWidth() - textContainer->getPosition2D().x - padding));
+	textContainer->setHeight(fabs(this->getHeight() - textContainer->getPosition2D().y));
 	textContainer->setPosition(padding + decoratorOffset, padding);		
 	
 	if(multiLine) {
@@ -582,8 +582,8 @@ void UITextInput::renumberLines() {
 
 	// Update the position and width of the text accordingly.
 	textContainer->setPosition(decoratorOffset + padding, padding);
-	textContainer->setWidth(this->getWidth() - textContainer->getPosition2D().x - padding);
-	textContainer->setHeight(this->getHeight() - textContainer->getPosition2D().y - padding);
+	textContainer->setWidth(fabs(this->getWidth() - textContainer->getPosition2D().x - padding));
+	textContainer->setHeight(fabs(this->getHeight() - textContainer->getPosition2D().y - padding));
 	textContainer->scissorBox.setRect(textContainer->getPosition2D().x, textContainer->getPosition2D().y, textContainer->getWidth(), textContainer->getHeight()+padding);
 }
 
