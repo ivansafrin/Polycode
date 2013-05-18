@@ -448,7 +448,8 @@ static void dumpstack (lua_State *L) {
 
 		// MyLoader appends '.lua' so strip it if already present
 		int pos = fileName.rfind(".lua");
-		String stripped = (pos == fileName.length() - 4) ? fileName.substr(0, pos) : fileName;
+		String stripped = fileName;
+		if (pos > -1 && pos == fileName.length() - 4) stripped = fileName.substr(0, pos);
 		
 		lua_getfield(L, LUA_GLOBALSINDEX, "require");
 		lua_pushstring(L, stripped.c_str());		
