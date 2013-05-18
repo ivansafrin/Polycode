@@ -33,6 +33,8 @@ SettingsWindow::SettingsWindow() : UIWindow(L"Settings", 400, 500) {
 }
 
 void SettingsWindow::handleEvent(Event *event) {
+
+    UIWindow::handleEvent(event);
 }
 
 SettingsWindow::~SettingsWindow() {
