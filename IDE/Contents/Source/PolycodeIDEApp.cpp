@@ -159,6 +159,7 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	editEntry->addItem("Redo", "redo");
 	editEntry->addItem("Cut", "cut");
 	editEntry->addItem("Copy", "copy");
+    editEntry->addItem("Settings", "settings");
 
 	UIMenuBarEntry *viewEntry = menuBar->addMenuBarEntry("View");
 	viewEntry->addItem("Toggle Console", "toggle_console", KEY_LSHIFT, KEY_c);
