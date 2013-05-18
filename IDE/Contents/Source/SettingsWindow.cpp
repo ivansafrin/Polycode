@@ -34,20 +34,26 @@ SettingsWindow::SettingsWindow() : UIWindow(L"Settings", SETTINGS_WINDOW_WIDTH, 
     useExternalTextEditorBox->setPosition(padding, 85);
 
     #define BUTTON_WIDTH 80
-    #define TEXTINPUT_BUTTON_PADDING 10
+    #define BUTTON_PADDING 10
     #define EDITOR_BROWSE_POS 110
     #define TEXTBOX_HEIGHT 12
 
-    externalTextEditorCommand = new UITextInput(false, SETTINGS_WINDOW_WIDTH - (padding*2 + BUTTON_WIDTH + TEXTINPUT_BUTTON_PADDING/2), TEXTBOX_HEIGHT);
+    externalTextEditorCommand = new UITextInput(false, SETTINGS_WINDOW_WIDTH - (padding*2 + BUTTON_WIDTH + BUTTON_PADDING/2), TEXTBOX_HEIGHT);
     addChild(externalTextEditorCommand);
     externalTextEditorCommand->setPosition(padding, EDITOR_BROWSE_POS);
 
     browseButton = new UIButton("Browse...", BUTTON_WIDTH);
     addChild(browseButton);
     browseButton->setPosition(SETTINGS_WINDOW_WIDTH - (2*padding + BUTTON_WIDTH/2), EDITOR_BROWSE_POS);
+    
 
+    cancelButton = new UIButton("Cancel", BUTTON_WIDTH);
+    addChild(cancelButton);
+    cancelButton->setPosition(SETTINGS_WINDOW_WIDTH - (2*padding + BUTTON_WIDTH*1.5 + BUTTON_PADDING), SETTINGS_WINDOW_HEIGHT - padding);
 
-    // Add OK and Cancel button
+    okButton = new UIButton("OK", BUTTON_WIDTH);
+    addChild(okButton);
+    okButton->setPosition(SETTINGS_WINDOW_WIDTH - (2*padding + BUTTON_WIDTH/2), SETTINGS_WINDOW_HEIGHT - padding);
 }
 
 void SettingsWindow::handleEvent(Event *event) {

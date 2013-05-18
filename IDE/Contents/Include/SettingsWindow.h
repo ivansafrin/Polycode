@@ -43,7 +43,6 @@ class SettingsWindow : public UIWindow {
         UICheckBox *useExternalTextEditorBox;
         UITextInput *externalTextEditorCommand;
         UIButton *browseButton;
-        UITextInput *commandLineParameters;
 
         UIButton *cancelButton;
         UIButton *okButton;
