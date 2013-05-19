@@ -90,7 +90,7 @@ public:
 	void exportProject();
 	void toggleConsole();
 	
-	bool removeEditor(PolycodeEditor *editor);
+	void removeEditor(PolycodeEditor *editor);
 	
 	// system callbacks
 	
@@ -103,7 +103,12 @@ public:
 	
 	const static int EVENT_SHOW_MENU = 1;
 	
-	Core *core;	
+	Core *core;
+	
+	void saveFiles(std::vector<PolycodeEditor*> editors);
+	void closeFiles(std::vector<PolycodeEditor*> editors, String saveMsg="");
+	bool filesHaveChanges(std::vector<PolycodeEditor*> editors);
+	
 protected:
 
 	bool runNextFrame;
@@ -119,5 +124,9 @@ protected:
 	UIMenuBar *menuBar;
 	
 private:
-	void cleanupProjectOnClose(bool save);
+	void doCloseProject();
+	void doCloseFiles(std::vector<PolycodeEditor*> editors);
+	
+	// used in saving/closing files via popup dialog prompts
+	std::vector<PolycodeEditor*> tempEditorStore;
 };
