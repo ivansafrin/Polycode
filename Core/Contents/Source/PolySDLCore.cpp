@@ -425,7 +425,7 @@ String SDLCore::openFolderPicker() {
 }
 
 vector<String> SDLCore::openFilePicker(vector<CoreFileExtension> extensions, bool allowMultiple) {
-	vector<String> r = vector<String>();
+	vector<String> r;
 	return r;
 }
 
