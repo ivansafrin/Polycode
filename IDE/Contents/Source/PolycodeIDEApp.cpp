@@ -951,6 +951,29 @@ void PolycodeIDEApp::loadConfigFile() {
     		}
 		}
 	}
+    
+    Config *config = CoreServices::getInstance()->getConfig();
+
+    if(configFile.root["settings"]) {
+        ObjectEntry *settings = configFile.root["settings"];
+        ObjectEntry *textEditor = (*settings)["text_editor"];
+        if(textEditor) {
+            if((*textEditor)["use_external"]) {
+                config->setStringValue("Polycode", "useExternalTextEditor", (*textEditor)["use_external"]->stringVal);
+            } else {
+                config->setStringValue("Polycode", "useExternalTextEditor", "false");
+            }
+
+            if((*textEditor)["command"]) {
+                config->setStringValue("Polycode", "externalTextEditorCommand", (*textEditor)["command"]->stringVal);
+            } else {
+                config->setStringValue("Polycode", "externalTextEditorCommand", "");
+            }
+        }
+    } else {
+        config->setStringValue("Polycode","useExternalTextEditor", "false");
+        config->setStringValue("Polycode", "externalTextEditorCommand", "");
+    }
 }
 
 
