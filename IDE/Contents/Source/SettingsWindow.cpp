@@ -60,7 +60,6 @@ SettingsWindow::SettingsWindow() : UIWindow(L"Settings", SETTINGS_WINDOW_WIDTH, 
 }
 
 void SettingsWindow::handleEvent(Event *event) {
-
     if(event->getEventType() == "UIEvent") {
         if(event->getEventCode() == UIEvent::CLICK_EVENT) {
             if(event->getDispatcher() == okButton) {

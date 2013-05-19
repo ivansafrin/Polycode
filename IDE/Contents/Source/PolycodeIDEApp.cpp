@@ -101,6 +101,7 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	frame->exportProjectWindow->addEventListener(this, UIEvent::OK_EVENT);
 	frame->newFileWindow->addEventListener(this, UIEvent::OK_EVENT);	
 	frame->exampleBrowserWindow->addEventListener(this, UIEvent::OK_EVENT);
+    frame->settingsWindow->addEventListener(this, UIEvent::OK_EVENT);
 	
 	frame->playButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	frame->stopButton->addEventListener(this, UIEvent::CLICK_EVENT);
@@ -818,6 +819,12 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 			frame->hideModal();			
 		}
 	}	
+
+    if(event->getDispatcher() == frame->settingsWindow) {
+        if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {
+            printf("Event handled!\n");
+        }
+    }
 
 	if(event->getDispatcher() == frame->exportProjectWindow) {
 		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {
