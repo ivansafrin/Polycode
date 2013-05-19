@@ -917,3 +917,16 @@ PolycodeFrame::~PolycodeFrame() {
 	
 }
 
+void PolycodeFrame::showNextEditor() {
+	if (currentFileSelector->getSelectedIndex() == currentFileSelector->getNumItems()-1)
+		currentFileSelector->setSelectedIndex(0);
+	else
+		currentFileSelector->setSelectedIndex(currentFileSelector->getSelectedIndex()+1);
+}
+void PolycodeFrame::showPreviousEditor() {
+	if (currentFileSelector->getSelectedIndex() == 0)
+		currentFileSelector->setSelectedIndex(currentFileSelector->getNumItems()-1);
+	else
+		currentFileSelector->setSelectedIndex(currentFileSelector->getSelectedIndex()-1);
+}
+

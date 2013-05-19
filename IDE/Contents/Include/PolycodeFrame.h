@@ -214,6 +214,8 @@ public:
 	
 	UIWindow *aboutWindow;
 	UIButton *aboutOKButton;
+	void showNextEditor();
+	void showPreviousEditor();
 private:
 	
 	int frameSizeX;
