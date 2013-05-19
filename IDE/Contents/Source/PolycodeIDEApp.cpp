@@ -507,7 +507,16 @@ void PolycodeIDEApp::openFileInProject(PolycodeProject *project, String filePath
 void PolycodeIDEApp::openFile(OSFileEntry file) {
 	PolycodeEditor *editor;
 	editor = editorManager->getEditorForPath(file.fullPath);
+
 	if(editor) {
+        CoreServices *core = CoreServices::getInstance();
+        Config *config = core->getConfig();
+        bool useExternalTextEditor = (config->getStringValue("Polycode", "useExternalTextEditor") == "true") && (config->getStringValue("Polycode", "externalTextEditorCommand") != "");
+        if(editor->getEditorType() == "PolycodeTextEditor" && useExternalTextEditor) {
+            core->getCore()->executeExternalCommand(config->getStringValue("Polycode", "externalTextEditorCommand"), file.fullPath, projectManager->getActiveProject()->getRootFolder());
+            return;
+        }
+
 		frame->showEditor(editor);
 	} else {
 		editor = editorManager->createEditorForExtension(file.extension);
