@@ -823,6 +823,7 @@ void PolycodeIDEApp::handleEvent(Event *event) {
     if(event->getDispatcher() == frame->settingsWindow) {
         if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {
             printf("Event handled!\n");
+            frame->hideModal();
         }
     }
 
