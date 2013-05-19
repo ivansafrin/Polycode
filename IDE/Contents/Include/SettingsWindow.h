@@ -34,17 +34,17 @@ using namespace Polycode;
 
 
 class SettingsWindow : public UIWindow {
-    public:
-        SettingsWindow();
-        ~SettingsWindow();
+	public:
+		SettingsWindow();
+		~SettingsWindow();
 
-        void handleEvent(Event *event);
-        void updateUI();
+		void handleEvent(Event *event);
+		void updateUI();
 
-        UICheckBox *useExternalTextEditorBox;
-        UITextInput *externalTextEditorCommand;
-        UIButton *browseButton;
+		UICheckBox *useExternalTextEditorBox;
+		UITextInput *externalTextEditorCommand;
+		UIButton *browseButton;
 
-        UIButton *cancelButton;
-        UIButton *okButton;
+		UIButton *cancelButton;
+		UIButton *okButton;
 };

@@ -20,81 +20,81 @@
 
 SettingsWindow::SettingsWindow() : UIWindow(L"Settings", SETTINGS_WINDOW_WIDTH, SETTINGS_WINDOW_HEIGHT) {
 
-    closeOnEscape = true;
+	closeOnEscape = true;
 
 
-    ScreenLabel *label = new ScreenLabel("MISC", 22, "section", Label::ANTIALIAS_FULL);
-    addChild(label);
-    label->color.a = 0.4;
-    label->setPosition(padding, 50);
+	ScreenLabel *label = new ScreenLabel("MISC", 22, "section", Label::ANTIALIAS_FULL);
+	addChild(label);
+	label->color.a = 0.4;
+	label->setPosition(padding, 50);
 
 
-    useExternalTextEditorBox = new UICheckBox("Use external text editor?", false);
-    addChild(useExternalTextEditorBox); 
-    useExternalTextEditorBox->setPosition(padding, 85);
+	useExternalTextEditorBox = new UICheckBox("Use external text editor?", false);
+	addChild(useExternalTextEditorBox); 
+	useExternalTextEditorBox->setPosition(padding, 85);
 
-    #define BUTTON_WIDTH 80
-    #define BUTTON_PADDING 10
-    #define EDITOR_BROWSE_POS 110
-    #define TEXTBOX_HEIGHT 12
+	#define BUTTON_WIDTH 80
+	#define BUTTON_PADDING 10
+	#define EDITOR_BROWSE_POS 110
+	#define TEXTBOX_HEIGHT 12
 
-    externalTextEditorCommand = new UITextInput(false, SETTINGS_WINDOW_WIDTH - (padding*2 + BUTTON_WIDTH + BUTTON_PADDING/2), TEXTBOX_HEIGHT);
-    addChild(externalTextEditorCommand);
-    externalTextEditorCommand->setPosition(padding, EDITOR_BROWSE_POS);
+	externalTextEditorCommand = new UITextInput(false, SETTINGS_WINDOW_WIDTH - (padding*2 + BUTTON_WIDTH + BUTTON_PADDING/2), TEXTBOX_HEIGHT);
+	addChild(externalTextEditorCommand);
+	externalTextEditorCommand->setPosition(padding, EDITOR_BROWSE_POS);
 
-    browseButton = new UIButton("Browse...", BUTTON_WIDTH);
-    browseButton->addEventListener(this, UIEvent::CLICK_EVENT);
-    addChild(browseButton);
-    browseButton->setPosition(SETTINGS_WINDOW_WIDTH - (2*padding + BUTTON_WIDTH/2), EDITOR_BROWSE_POS);
-    
+	browseButton = new UIButton("Browse...", BUTTON_WIDTH);
+	browseButton->addEventListener(this, UIEvent::CLICK_EVENT);
+	addChild(browseButton);
+	browseButton->setPosition(SETTINGS_WINDOW_WIDTH - (2*padding + BUTTON_WIDTH/2), EDITOR_BROWSE_POS);
+	
 
-    cancelButton = new UIButton("Cancel", BUTTON_WIDTH);
-    cancelButton->addEventListener(this, UIEvent::CLICK_EVENT);
-    addChild(cancelButton);
-    cancelButton->setPosition(SETTINGS_WINDOW_WIDTH - (2*padding + BUTTON_WIDTH*1.5 + BUTTON_PADDING), SETTINGS_WINDOW_HEIGHT - padding);
+	cancelButton = new UIButton("Cancel", BUTTON_WIDTH);
+	cancelButton->addEventListener(this, UIEvent::CLICK_EVENT);
+	addChild(cancelButton);
+	cancelButton->setPosition(SETTINGS_WINDOW_WIDTH - (2*padding + BUTTON_WIDTH*1.5 + BUTTON_PADDING), SETTINGS_WINDOW_HEIGHT - padding);
 
-    okButton = new UIButton("OK", BUTTON_WIDTH);
-    okButton->addEventListener(this, UIEvent::CLICK_EVENT);
-    addChild(okButton);
-    okButton->setPosition(SETTINGS_WINDOW_WIDTH - (2*padding + BUTTON_WIDTH/2), SETTINGS_WINDOW_HEIGHT - padding);
+	okButton = new UIButton("OK", BUTTON_WIDTH);
+	okButton->addEventListener(this, UIEvent::CLICK_EVENT);
+	addChild(okButton);
+	okButton->setPosition(SETTINGS_WINDOW_WIDTH - (2*padding + BUTTON_WIDTH/2), SETTINGS_WINDOW_HEIGHT - padding);
 }
 
 void SettingsWindow::handleEvent(Event *event) {
-    if(event->getEventType() == "UIEvent") {
-        if(event->getEventCode() == UIEvent::CLICK_EVENT) {
-            if(event->getDispatcher() == okButton) {
-                dispatchEvent(new UIEvent(), UIEvent::OK_EVENT);
-            }
+	if(event->getEventType() == "UIEvent") {
+		if(event->getEventCode() == UIEvent::CLICK_EVENT) {
+			if(event->getDispatcher() == okButton) {
+				dispatchEvent(new UIEvent(), UIEvent::OK_EVENT);
+			}
 
-            if(event->getDispatcher() == cancelButton) {
-                dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);
-            }
+			if(event->getDispatcher() == cancelButton) {
+				dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);
+			}
 
-            if(event->getDispatcher() == browseButton) {
-                vector<CoreFileExtension> extensions;
-                CoreFileExtension ext;
-                ext.extension = "";
-                ext.description = "executable";
-                extensions.push_back(ext);
+			if(event->getDispatcher() == browseButton) {
+				vector<CoreFileExtension> extensions;
+				CoreFileExtension ext;
+				ext.extension = "";
+				ext.description = "executable";
+				extensions.push_back(ext);
 
-                std::vector<String> pathName = CoreServices::getInstance()->getCore()->openFilePicker(extensions, false);
+				std::vector<String> pathName = CoreServices::getInstance()->getCore()->openFilePicker(extensions, false);
 
-                if(pathName[0] != "") {
-                    externalTextEditorCommand->setText(pathName[0]);
-                }
-            }
-        }
-    }
+				if(pathName[0] != "") {
+					externalTextEditorCommand->setText(pathName[0]);
+				}
+			}
+		}
+	}
 
-    UIWindow::handleEvent(event); 
+	UIWindow::handleEvent(event); 
 } 
 
 void SettingsWindow::updateUI() {
-    Config *config = CoreServices::getInstance()->getConfig();
-    
-    useExternalTextEditorBox->setChecked(config->getStringValue("Polycode", "useExternalTextEditor") == "true");
-    externalTextEditorCommand->setText(config->getStringValue("Polycode", "externalTextEditorCommand"));
+	Config *config = CoreServices::getInstance()->getConfig();
+	
+	useExternalTextEditorBox->setChecked(config->getStringValue("Polycode", "useExternalTextEditor") == "true");
+	externalTextEditorCommand->setText(config->getStringValue("Polycode", "externalTextEditorCommand"));
 }
-    
+	
 SettingsWindow::~SettingsWindow() {
 }

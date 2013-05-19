@@ -187,7 +187,7 @@ public:
 	ExampleBrowserWindow *exampleBrowserWindow;
 	NewFileWindow *newFileWindow;
 	ExportProjectWindow *exportProjectWindow;
-    SettingsWindow *settingsWindow;
+	SettingsWindow *settingsWindow;
 	
 	AssetBrowser *assetBrowser;
 	
