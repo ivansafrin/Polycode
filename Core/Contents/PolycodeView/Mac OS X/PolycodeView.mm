@@ -552,7 +552,7 @@
 	newEvent.keyCode = keymap[[theEvent keyCode]];	
 	
 	NSString *chars = [theEvent characters];
-	unsigned int numChars = [chars length];
+	NSUInteger numChars = [chars length];
 	
 //	NSLog(@"CHARS: %@", [chars characterAtIndex:0]);
 	if(numChars > 0) {
@@ -578,7 +578,7 @@
 	newEvent.keyCode = keymap[[theEvent keyCode]];
 	
 	NSString *chars = [theEvent characters];
-	unsigned int numChars = [chars length];
+	NSUInteger numChars = [chars length];
 	
 	if(numChars > 0)
 		newEvent.unicodeChar = [chars characterAtIndex:0];

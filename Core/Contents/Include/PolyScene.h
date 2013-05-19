@@ -120,7 +120,7 @@ namespace Polycode {
 		bool isEnabled();		
 		void setEnabled(bool enabled);
 		
-		int getNumEntities() { return entities.size(); }
+		int getNumEntities() { return (int)entities.size(); }
 		SceneEntity *getEntity(int index) { return entities[index]; }
 		
 		/**
