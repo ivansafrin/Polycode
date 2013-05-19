@@ -30,6 +30,44 @@
 
 using namespace Polycode;
 
+static bool DisplayModeIs32Bit(CGDisplayModeRef displayMode)
+{
+	bool is32Bit = false;
+	CFStringRef pixelEncoding = CGDisplayModeCopyPixelEncoding(displayMode);
+    if(CFStringCompare(pixelEncoding, CFSTR(IO32BitDirectPixels), 0) == kCFCompareEqualTo)
+        is32Bit = true;
+    CFRelease(pixelEncoding);
+
+	return is32Bit;
+}
+
+static CGDisplayModeRef GetBestDisplayModeForParameters(size_t bitsPerPixel, size_t xRes, size_t yRes)
+{
+	CGDisplayModeRef bestDisplayMode = CGDisplayCopyDisplayMode(CGMainDisplayID());
+	size_t bestWidth = CGDisplayModeGetWidth(bestDisplayMode);
+	size_t bestHeight = CGDisplayModeGetHeight(bestDisplayMode);
+	NSArray* displayModes = (NSArray*)CGDisplayCopyAllDisplayModes(CGMainDisplayID(), NULL);
+	for(NSUInteger i = 0; i < [displayModes count]; ++i)
+	{
+		CGDisplayModeRef candidate = (CGDisplayModeRef)[displayModes objectAtIndex:i];
+		size_t candidateWidth  = CGDisplayModeGetWidth(candidate);
+		size_t candidateHeight = CGDisplayModeGetHeight(candidate);
+		if(!DisplayModeIs32Bit(candidate))
+			continue;
+		if(candidateWidth >= xRes && candidateWidth < bestWidth
+		   && candidateHeight >= yRes && candidateHeight < bestHeight)
+		{
+			CGDisplayModeRelease(bestDisplayMode);
+			bestDisplayMode = candidate;
+			bestWidth = candidateWidth;
+			bestHeight = candidateHeight;
+			CGDisplayModeRetain(bestDisplayMode);
+		}
+	}
+	[displayModes release];
+	return bestDisplayMode;
+}
+
 long getThreadID() {
 	return (long)pthread_self();
 }
@@ -163,8 +201,18 @@ void CocoaCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, in
 //	} else {
 //		CGDisplaySwitchToMode (kCGDirectMainDisplay, CGDisplayBestModeForParameters (kCGDirectMainDisplay, 32, xRes, yRes, NULL) );						
 //	}
-	if(fullScreen) {	
-		CGDisplaySwitchToMode (kCGDirectMainDisplay, CGDisplayBestModeForParameters (kCGDirectMainDisplay, 32, xRes, yRes, NULL) );			
+	if(fullScreen) {
+#		if __MAC_OS_X_VERSION_MIN_REQUIRED < 1060
+		{
+			CGDisplaySwitchToMode (kCGDirectMainDisplay, CGDisplayBestModeForParameters (kCGDirectMainDisplay, 32, xRes, yRes, NULL) );
+		}
+#		else
+		{
+			CGDisplayModeRef bestDisplayMode = GetBestDisplayModeForParameters(32, xRes, yRes);
+			CGDisplaySetDisplayMode(CGMainDisplayID(), bestDisplayMode, NULL);
+			CGDisplayModeRelease(bestDisplayMode);
+		}
+#		endif
 		
 		if(monitorIndex > -1) {
 			if(monitorIndex > [[NSScreen screens] count]-1) {
