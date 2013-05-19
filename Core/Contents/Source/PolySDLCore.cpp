@@ -420,11 +420,13 @@ void SDLCore::removeDiskItem(const String& itemPath) {
 }
 
 String SDLCore::openFolderPicker() {
-
+	String r = "";
+	return r;
 }
 
 vector<String> SDLCore::openFilePicker(vector<CoreFileExtension> extensions, bool allowMultiple) {
-
+	vector<String> r = vector<String>();
+	return r;
 }
 
 void SDLCore::resizeTo(int xRes, int yRes) {
