@@ -117,6 +117,15 @@ end
 function onMouseMove(x,y)
 end
 
+function onJoystickButtonDown(id, button)
+end
+
+function onJoystickButtonUp(id, button)
+end
+
+function onJoystickAxisMoved(id, axis, value)
+end
+
 function Update(e)
 end
 
