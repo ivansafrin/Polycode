@@ -635,6 +635,7 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 		
 	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEUP);
 	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
+	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 	
 	curveEditor = new CurveEditor();
 	addChild(curveEditor);
@@ -663,6 +664,8 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	addChild(fileBrowserRoot);
 
 	fileDialog = NULL;
+	
+	displayFilePathInSelector = false;
 }
 
 void PolycodeFrame::showFileBrowser(String baseDir, bool foldersOnly, std::vector<String> extensions, bool allowMultiple) {
@@ -793,22 +796,8 @@ void PolycodeFrame::handleEvent(Event *event) {
 		showEditor(editor);
 	}
 	
-	if(event->getDispatcher() == editorManager) {	
-		currentFileSelector->clearItems();
-		
-		for(int i=0; i < editorManager->openEditors.size(); i++) {
-			OSFileEntry entry(editorManager->openEditors[i]->getFilePath(), OSFileEntry::TYPE_FILE);
-			
-			if(editorManager->openEditors[i]->hasChanges()) {
-				currentFileSelector->addComboItem("* " +entry.name);			
-			} else {
-				currentFileSelector->addComboItem(entry.name);
-			}
-			
-			if(editorManager->getCurrentEditor() == editorManager->openEditors[i]) {
-				currentFileSelector->setSelectedIndex(i);
-			}			
-		}
+	if(event->getDispatcher() == editorManager) {
+		updateFileSelector();
 	}
 	
 	if(event->getDispatcher() == projectManager) {
@@ -847,7 +836,32 @@ void PolycodeFrame::handleEvent(Event *event) {
 				if(isDragging) {
 					dragEntity->setPosition(((InputEvent*)event)->mousePosition);
 				}
-			break;	
+			break;
+			// TODO: add in key combos to switch editors in reverse order
+			case InputEvent::EVENT_KEYDOWN:
+				CoreInput *input = CoreServices::getInstance()->getCore()->getInput();
+				
+				if (input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER)) {
+					InputEvent *inEv = (InputEvent*)event;
+					// commenting this out for now until issue with KEY_BACKQUOTE is figured out
+					/*if (inEv->getKey() == KEY_BACKQUOTE) {
+						showNextEditor();
+					}*/
+					if (inEv->getKey() == KEY_SLASH) {
+						displayFilePathInSelector = (displayFilePathInSelector ? false : true);
+						updateFileSelector();
+					}
+				} else if (input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL)) {
+					InputEvent *inEv = (InputEvent*)event;
+					if (inEv->getKey() == KEY_TAB) {
+						showNextEditor();
+					} else if (inEv->getKey() == KEY_SLASH) {
+						displayFilePathInSelector = (displayFilePathInSelector ? false : true);
+						updateFileSelector();
+					}
+				}
+			break;
+				
 		}
 	}
 
@@ -930,3 +944,31 @@ void PolycodeFrame::showPreviousEditor() {
 		currentFileSelector->setSelectedIndex(currentFileSelector->getSelectedIndex()-1);
 }
 
+void PolycodeFrame::updateFileSelector() {
+	currentFileSelector->clearItems();
+	
+	for(int i=0; i < editorManager->openEditors.size(); i++) {
+		OSFileEntry entry(editorManager->openEditors[i]->getFilePath(), OSFileEntry::TYPE_FILE);
+		
+		String projName = editorManager->openEditors[i]->parentProject->getProjectName();
+		String rootFolder = editorManager->openEditors[i]->parentProject->getRootFolder();
+		String filePath = editorManager->openEditors[i]->getFilePath();
+		String fullEntry = projName + filePath.substr(rootFolder.size(), filePath.size()-1);
+		
+		if(editorManager->openEditors[i]->hasChanges()) {
+			if (displayFilePathInSelector)
+				currentFileSelector->addComboItem("* "+fullEntry);
+			else
+				currentFileSelector->addComboItem("* "+entry.name);
+		} else {
+			if (displayFilePathInSelector)
+				currentFileSelector->addComboItem(fullEntry);
+			else
+				currentFileSelector->addComboItem(entry.name);
+		}
+		
+		if(editorManager->getCurrentEditor() == editorManager->openEditors[i]) {
+			currentFileSelector->setSelectedIndex(i);
+		}
+	}
+}

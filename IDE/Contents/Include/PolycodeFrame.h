@@ -214,8 +214,10 @@ public:
 	
 	UIWindow *aboutWindow;
 	UIButton *aboutOKButton;
+	void updateFileSelector();
 	void showNextEditor();
 	void showPreviousEditor();
+	
 private:
 	
 	int frameSizeX;
