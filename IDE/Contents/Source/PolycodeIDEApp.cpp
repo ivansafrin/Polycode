@@ -102,6 +102,7 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	frame->newFileWindow->addEventListener(this, UIEvent::OK_EVENT);	
 	frame->exampleBrowserWindow->addEventListener(this, UIEvent::OK_EVENT);
     frame->settingsWindow->addEventListener(this, UIEvent::OK_EVENT);
+    frame->settingsWindow->addEventListener(this, UIEvent::CLOSE_EVENT);
 	
 	frame->playButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	frame->stopButton->addEventListener(this, UIEvent::CLICK_EVENT);
@@ -937,17 +938,17 @@ void PolycodeIDEApp::loadConfigFile() {
 	if(configFile.root["open_projects"]) {
 		ObjectEntry *projects = configFile.root["open_projects"];
 		if(projects) {
-		for(int i=0; i < projects->length; i++) {
-			ObjectEntry *entry = (*(*projects)[i])["path"];
-			if(entry) {
-				PolycodeProject* project = projectManager->openProject(entry->stringVal);
-				if(project) {
-					OSFileEntry projectEntry =  OSFileEntry(project->getProjectFile(), OSFileEntry::TYPE_FILE);
-					projectManager->setActiveProject(project);
-					openFile(projectEntry);
-				}
-			}
-		}
+		    for(int i=0; i < projects->length; i++) {
+			    ObjectEntry *entry = (*(*projects)[i])["path"];
+    			if(entry) {
+    				PolycodeProject* project = projectManager->openProject(entry->stringVal);
+    				if(project) {
+    					OSFileEntry projectEntry =  OSFileEntry(project->getProjectFile(), OSFileEntry::TYPE_FILE);
+    					projectManager->setActiveProject(project);
+    					openFile(projectEntry);
+    				}
+    			}
+    		}
 		}
 	}
 }
