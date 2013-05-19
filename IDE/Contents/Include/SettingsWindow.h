@@ -39,6 +39,7 @@ class SettingsWindow : public UIWindow {
         ~SettingsWindow();
 
         void handleEvent(Event *event);
+        void updateUI();
 
         UICheckBox *useExternalTextEditorBox;
         UITextInput *externalTextEditorCommand;

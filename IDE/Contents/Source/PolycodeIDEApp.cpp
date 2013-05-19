@@ -833,8 +833,7 @@ void PolycodeIDEApp::handleEvent(Event *event) {
                 frame->hideModal();
             }
             if(event->getEventCode() == UIEvent::CLOSE_EVENT) {
-                settingsWindow->useExternalTextEditorBox->setChecked(config->getStringValue("Polycode", "useExternalTextEditor") == "true");
-                settingsWindow->externalTextEditorCommand->setText(config->getStringValue("Polycode", "externalTextEditorCommand"));
+                settingsWindow->updateUI();
             }
         }
     }
@@ -974,6 +973,7 @@ void PolycodeIDEApp::loadConfigFile() {
         config->setStringValue("Polycode","useExternalTextEditor", "false");
         config->setStringValue("Polycode", "externalTextEditorCommand", "");
     }
+    frame->settingsWindow->updateUI();
 }
 
 

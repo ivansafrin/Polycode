@@ -19,8 +19,7 @@
 #include "SettingsWindow.h"
 
 SettingsWindow::SettingsWindow() : UIWindow(L"Settings", SETTINGS_WINDOW_WIDTH, SETTINGS_WINDOW_HEIGHT) {
-    Config *config = CoreServices::getInstance()->getConfig();
-    
+
     closeOnEscape = true;
 
 
@@ -30,7 +29,7 @@ SettingsWindow::SettingsWindow() : UIWindow(L"Settings", SETTINGS_WINDOW_WIDTH, 
     label->setPosition(padding, 50);
 
 
-    useExternalTextEditorBox = new UICheckBox("Use external text editor?", config->getStringValue("Polycode", "useExternalTextEditor") == "true");
+    useExternalTextEditorBox = new UICheckBox("Use external text editor?", false);
     addChild(useExternalTextEditorBox); 
     useExternalTextEditorBox->setPosition(padding, 85);
 
@@ -41,7 +40,6 @@ SettingsWindow::SettingsWindow() : UIWindow(L"Settings", SETTINGS_WINDOW_WIDTH, 
 
     externalTextEditorCommand = new UITextInput(false, SETTINGS_WINDOW_WIDTH - (padding*2 + BUTTON_WIDTH + BUTTON_PADDING/2), TEXTBOX_HEIGHT);
     addChild(externalTextEditorCommand);
-    externalTextEditorCommand->setText(config->getStringValue("Polycode", "externalTextEditorCommand"));
     externalTextEditorCommand->setPosition(padding, EDITOR_BROWSE_POS);
 
     browseButton = new UIButton("Browse...", BUTTON_WIDTH);
@@ -90,6 +88,13 @@ void SettingsWindow::handleEvent(Event *event) {
 
     UIWindow::handleEvent(event); 
 } 
+
+void SettingsWindow::updateUI() {
+    Config *config = CoreServices::getInstance()->getConfig();
+    
+    useExternalTextEditorBox->setChecked(config->getStringValue("Polycode", "useExternalTextEditor") == "true");
+    externalTextEditorCommand->setText(config->getStringValue("Polycode", "externalTextEditorCommand"));
+}
     
 SettingsWindow::~SettingsWindow() {
 }
