@@ -821,9 +821,20 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 	}	
 
     if(event->getDispatcher() == frame->settingsWindow) {
-        if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {
-            printf("Event handled!\n");
-            frame->hideModal();
+        if(event->getEventType() == "UIEvent") {
+            Config *config = CoreServices::getInstance()->getConfig();
+            SettingsWindow *settingsWindow = frame->settingsWindow;
+
+            if(event->getEventCode() == UIEvent::OK_EVENT) {
+                config->setStringValue("Polycode", "useExternalTextEditor", settingsWindow->useExternalTextEditorBox->isChecked() ? "true" : "false");
+                config->setStringValue("Polycode", "externalTextEditorCommand", settingsWindow->externalTextEditorCommand->getText());
+            
+                frame->hideModal();
+            }
+            if(event->getEventCode() == UIEvent::CLOSE_EVENT) {
+                settingsWindow->useExternalTextEditorBox->setChecked(config->getStringValue("Polycode", "useExternalTextEditor") == "true");
+                settingsWindow->externalTextEditorCommand->setText(config->getStringValue("Polycode", "externalTextEditorCommand"));
+            }
         }
     }
 
@@ -879,6 +890,7 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 }
 
 void PolycodeIDEApp::saveConfigFile() {
+    Config *config = CoreServices::getInstance()->getConfig();
 	Object configFile;
 	configFile.root.name = "config";
 	configFile.root.addChild("open_projects");
@@ -889,6 +901,11 @@ void PolycodeIDEApp::saveConfigFile() {
 		projectEntry->addChild("name", project->getProjectName());
 		projectEntry->addChild("path", project->getProjectFile());
 	}
+
+    configFile.root.addChild("settings");
+    ObjectEntry *textEditorEntry = configFile.root["settings"]->addChild("text_editor");
+    textEditorEntry->addChild("use_external", config->getStringValue("Polycode", "useExternalTextEditor"));
+    textEditorEntry->addChild("command", config->getStringValue("Polycode", "externalTextEditorCommand"));
 
 #if defined(__APPLE__) && defined(__MACH__)
 	core->createFolder(core->getUserHomeDirectory()+"/Library/Application Support/Polycode");
