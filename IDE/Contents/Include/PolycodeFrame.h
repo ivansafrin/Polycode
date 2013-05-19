@@ -214,6 +214,9 @@ public:
 	
 	UIWindow *aboutWindow;
 	UIButton *aboutOKButton;
+	
+	UIImageButton *closeFileButton;
+	
 	void updateFileSelector();
 	void showNextEditor();
 	void showPreviousEditor();
@@ -258,4 +261,6 @@ private:
 	UIButton *newProjectButton;
 	UIButton *examplesButton;
 	
+	bool displayFilePathInSelector;
+
 };

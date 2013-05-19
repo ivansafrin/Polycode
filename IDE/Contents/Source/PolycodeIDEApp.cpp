@@ -183,6 +183,8 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 
 	needsRedraw = false;
 	lastConnected = false;
+	
+	frame->closeFileButton->addEventListener(this, UIEvent::CLICK_EVENT);
 }
 
 void PolycodeIDEApp::renameFile() {
@@ -812,7 +814,17 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 			
 			frame->hideModal();			
 		}
-	}	
+	}
+	
+	// close files and editors after the close file button is pressed
+	if (event->getDispatcher() == frame->closeFileButton) {
+		if (event->getEventCode() == UIEvent::CLICK_EVENT) {
+			if (core->getInput()->getKeyState(KEY_RSHIFT) || core->getInput()->getKeyState(KEY_LSHIFT))
+				closeFiles(editorManager->openEditors);
+			else
+				closeFile();
+		}
+	}
 }
 
 void PolycodeIDEApp::saveConfigFile() {

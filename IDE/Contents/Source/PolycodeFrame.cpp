@@ -566,9 +566,10 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 
 	currentFileSelector = new UIComboBox(globalMenu, 300);
 	currentFileSelector->addEventListener(this, UIEvent::CHANGE_EVENT);
-	
 	addChild(currentFileSelector);
 
+	closeFileButton = new UIImageButton("Images/remove_icon.png");
+	addChild(closeFileButton);
 	
 	resizer = new ScreenImage("Images/corner_resize.png");	
 	addChild(resizer);
@@ -920,7 +921,7 @@ void PolycodeFrame::Resize(int x, int y) {
 	fileDialogBlocker->setShapeSize(x, y);
 		
 	currentFileSelector->setPosition(x-350, 11);
-	
+	closeFileButton->setPosition(currentFileSelector->getPosition().x-20, currentFileSelector->getPosition().y+6);
 	
 	if(this->modalChild) {
 		modalChild->setPosition((x-modalChild->getWidth())/2.0f, (y-modalChild->getHeight())/2.0f);
