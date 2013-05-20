@@ -564,7 +564,7 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	currentProjectTitle->color.a = 0.4;
 	currentProjectTitle->setPosition(70, 0);
 
-	currentFileSelector = new UIComboBox(globalMenu, 300);
+	currentFileSelector = new UIComboBox(globalMenu, 350);
 	currentFileSelector->addEventListener(this, UIEvent::CHANGE_EVENT);
 	addChild(currentFileSelector);
 
@@ -920,7 +920,7 @@ void PolycodeFrame::Resize(int x, int y) {
 	modalBlocker->setShapeSize(x, y);
 	fileDialogBlocker->setShapeSize(x, y);
 		
-	currentFileSelector->setPosition(x-350, 11);
+	currentFileSelector->setPosition(x-400, 11);
 	closeFileButton->setPosition(currentFileSelector->getPosition().x-20, currentFileSelector->getPosition().y+6);
 	
 	if(this->modalChild) {
