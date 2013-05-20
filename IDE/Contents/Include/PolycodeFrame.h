@@ -33,6 +33,7 @@
 #include "ToolWindows.h"
 #include "PolycodeProjectManager.h"
 #include "PolycodeEditorManager.h"
+#include "SettingsWindow.h"
 
 using namespace Polycode;
 
@@ -186,6 +187,7 @@ public:
 	ExampleBrowserWindow *exampleBrowserWindow;
 	NewFileWindow *newFileWindow;
 	ExportProjectWindow *exportProjectWindow;
+	SettingsWindow *settingsWindow;
 	
 	AssetBrowser *assetBrowser;
 	
