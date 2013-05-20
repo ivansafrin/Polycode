@@ -34,6 +34,7 @@
     <ClCompile Include="..\..\Contents\Source\PolycodeSpriteEditor.cpp" />
     <ClCompile Include="..\..\Contents\Source\PolycodeTextEditor.cpp" />
     <ClCompile Include="..\..\Contents\Source\PolycodeToolLauncher.cpp" />
+    <ClCompile Include="..\..\Contents\Source\SettingsWindow.cpp" />
     <ClCompile Include="..\..\Contents\Source\TextureBrowser.cpp" />
     <ClCompile Include="..\..\Contents\Source\ToolWindows.cpp" />
     <ClCompile Include="main.cpp" />
@@ -63,6 +64,7 @@
     <ClInclude Include="..\..\Contents\Include\PolycodeSpriteEditor.h" />
     <ClInclude Include="..\..\Contents\Include\PolycodeTextEditor.h" />
     <ClInclude Include="..\..\Contents\Include\PolycodeToolLauncher.h" />
+    <ClInclude Include="..\..\Contents\Include\SettingsWindow.h" />
     <ClInclude Include="..\..\Contents\Include\TextureBrowser.h" />
     <ClInclude Include="..\..\Contents\Include\ToolWindows.h" />
   </ItemGroup>
