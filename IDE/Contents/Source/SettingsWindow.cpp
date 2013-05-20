@@ -18,6 +18,9 @@
 
 #include "SettingsWindow.h"
 
+#include "PolycodeFrame.h"
+extern PolycodeFrame *globalFrame;
+
 SettingsWindow::SettingsWindow() : UIWindow(L"Settings", SETTINGS_WINDOW_WIDTH, SETTINGS_WINDOW_HEIGHT) {
 
 	closeOnEscape = true;
@@ -71,16 +74,38 @@ void SettingsWindow::handleEvent(Event *event) {
 			}
 
 			if(event->getDispatcher() == browseButton) {
+#ifdef USE_POLYCODEUI_FILE_DIALOGS
+				std::vector<String> extensions;
+				extensions.push_back("");
+				globalFrame->showFileBrowser(CoreServices::getInstance()->getCore()->getUserHomeDirectory(), false, extensions, false);
+				globalFrame->fileDialog->addEventListener(this, UIEvent::OK_EVENT);
+				printf("You see me poopin\n");
+#else
 				vector<CoreFileExtension> extensions;
 				CoreFileExtension ext;
+#ifdef _WINDOWS
+				ext.extension = "exe"
+#else
 				ext.extension = "";
+#endif
 				ext.description = "executable";
 				extensions.push_back(ext);
+				std::vector<String> path = CoreServices::getInstance()->getCore()->openFilePicker(extensions, false);
 
-				std::vector<String> pathName = CoreServices::getInstance()->getCore()->openFilePicker(extensions, false);
+				if(path.size == 0) {
+					return;
+				}
 
-				if(pathName[0] != "") {
-					externalTextEditorCommand->setText(pathName[0]);
+				if(path[0] != "") {
+					externalTextEditorCommand->setText(path[0]);
+				}
+#endif	
+			}
+			if(event->getDispatcher() == globalFrame->fileDialog && event->getEventCode() == UIEvent::OK_EVENT) {
+				printf("Yes?! Yes this is Dialog! HAI\n");
+				String path = globalFrame->fileDialog->getSelection();
+				if (path != "") {
+					externalTextEditorCommand->setText(path);
 				}
 			}
 		}
