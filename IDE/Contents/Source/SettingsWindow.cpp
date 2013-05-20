@@ -83,7 +83,7 @@ void SettingsWindow::handleEvent(Event *event) {
 				vector<CoreFileExtension> extensions;
 				CoreFileExtension ext;
 #ifdef _WINDOWS
-				ext.extension = "exe"
+				ext.extension = "exe";
 #elif defined(__APPLE__) && defined(__MACH__)
 				ext.extension = "app";
 #else
