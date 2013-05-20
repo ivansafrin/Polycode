@@ -26,6 +26,21 @@
 	#include "PolyCocoaCore.h"
 #endif
 
+GenericRunner::GenericRunner(String app, String file, String inFolder) : Threaded() {
+	this->app = app;
+	this->file = file;
+	this->inFolder = inFolder;
+}
+
+void GenericRunner::runThread() {
+#if defined(__APPLE__) && defined(__MACH__)
+	CocoaCore *cocoaCore = (CocoaCore*) CoreServices::getInstance()->getCore();
+	cocoaCore->openFileWithApplication(file, app);
+#else
+	String ret = CoreServices::getInstance()->getCore()->executeExternalCommand(app, file, inFolder);	
+#endif
+}
+
 PolycodeRunner::PolycodeRunner(String polyappPath) : Threaded() {
 	this->polyappPath = polyappPath;
 }
@@ -98,13 +113,14 @@ void PolycodeToolLauncher::buildProject(PolycodeProject *project, String destina
 
 }
 
+void PolycodeToolLauncher::openExternalEditor(String app, String file, String inFolder) {
+	GenericRunner *runner = new GenericRunner(app, file, inFolder);
+	CoreServices::getInstance()->getCore()->createThread(runner);
+}
+
 void PolycodeToolLauncher::runPolyapp(String polyappPath) {
 
 	PolycodeConsole::clearBacktraces();
-
-
-//	PolycodeRunner *runner = new PolycodeRunner(polyappPath);
-//	CoreServices::getInstance()->getCore()->createThread(runner);
 							
 #if defined(__APPLE__) && defined(__MACH__)
 	CocoaCore *cocoaCore = (CocoaCore*) CoreServices::getInstance()->getCore();
@@ -112,7 +128,6 @@ void PolycodeToolLauncher::runPolyapp(String polyappPath) {
 	String polycodeBasePath = CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory();
 	String command = polycodeBasePath+"/Standalone/Player/PolycodePlayer.app"; 
 	
-//	cocoaCore->launchApplicationWithFile(command, polyappPath);
 	cocoaCore->openFileWithApplication(polyappPath, command);
 #else
 	PolycodeRunner *runner = new PolycodeRunner(polyappPath);

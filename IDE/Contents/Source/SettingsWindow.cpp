@@ -32,7 +32,7 @@ SettingsWindow::SettingsWindow() : UIWindow(L"Settings", SETTINGS_WINDOW_WIDTH, 
 	label->setPosition(padding, 50);
 
 
-	useExternalTextEditorBox = new UICheckBox("Use external text editor?", false);
+	useExternalTextEditorBox = new UICheckBox("Use external text editor", false);
 	addChild(useExternalTextEditorBox); 
 	useExternalTextEditorBox->setPosition(padding, 85);
 
@@ -84,6 +84,8 @@ void SettingsWindow::handleEvent(Event *event) {
 				CoreFileExtension ext;
 #ifdef _WINDOWS
 				ext.extension = "exe"
+#elif defined(__APPLE__) && defined(__MACH__)
+				ext.extension = "app";
 #else
 				ext.extension = "";
 #endif
@@ -91,7 +93,7 @@ void SettingsWindow::handleEvent(Event *event) {
 				extensions.push_back(ext);
 				std::vector<String> path = CoreServices::getInstance()->getCore()->openFilePicker(extensions, false);
 
-				if(path.size == 0) {
+				if(path.size() == 0) {
 					return;
 				}
 

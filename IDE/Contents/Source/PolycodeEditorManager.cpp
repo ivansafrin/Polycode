@@ -31,6 +31,16 @@ PolycodeEditorManager::~PolycodeEditorManager() {
 	
 }
 
+PolycodeEditorFactory *PolycodeEditorManager::getEditorFactoryForExtension(String extension) {
+	for(int i=0;i < editorFactories.size(); i++) {
+		PolycodeEditorFactory *factory = editorFactories[i];
+		if(factory->canHandleExtension(extension)) {
+			return factory;
+		}
+	}
+	return NULL;
+}
+
 PolycodeEditor *PolycodeEditorManager::createEditorForExtension(String extension) {
 	for(int i=0;i < editorFactories.size(); i++) {
 		PolycodeEditorFactory *factory = editorFactories[i];

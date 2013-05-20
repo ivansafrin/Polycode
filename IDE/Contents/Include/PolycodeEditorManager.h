@@ -35,6 +35,8 @@ class PolycodeEditorManager : public EventDispatcher {
 		PolycodeEditor *getEditorForPath(String path);
 		PolycodeEditor *createEditorForExtension(String extension);
 		void registerEditorFactory(PolycodeEditorFactory *editorFactory);
+		
+		PolycodeEditorFactory *getEditorFactoryForExtension(String extension);
 	
 		void handleEvent(Event *event);
 		

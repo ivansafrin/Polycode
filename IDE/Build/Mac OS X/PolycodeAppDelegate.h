@@ -70,5 +70,5 @@ public:
 -(IBAction) findText: (id) sender;
 -(IBAction) openDocs: (id) sender;
 -(IBAction) showAbout: (id) sender;
-
+-(IBAction) showSettings: (id) sender;
 @end

@@ -217,10 +217,11 @@ void CocoaCore::launchApplicationWithFile(String application, String file) {
 
 String CocoaCore::executeExternalCommand(String command,  String args, String inDirectory) {
 
-	String finalCommand = command+" "+args;
+	String finalCommand = "\""+command+"\"1 "+args;
 	if(inDirectory != "") {
 		finalCommand = "cd \""+inDirectory+"\" && "+finalCommand;
 	}
+	
 	
 	FILE *fp = popen(finalCommand.c_str(), "r");
 	if(!fp) {

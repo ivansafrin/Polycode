@@ -11,6 +11,7 @@
 		256AC3DA0F4B6AC300CF3369 /* PolycodeAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 256AC3D90F4B6AC300CF3369 /* PolycodeAppDelegate.m */; };
 		6D06CCF314BC203800E4CB4C /* libPolycore_d.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D06CCF214BC203800E4CB4C /* libPolycore_d.a */; };
 		6D06CCF514BC204200E4CB4C /* libPolycodeUI_d.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D06CCF414BC204200E4CB4C /* libPolycodeUI_d.a */; };
+		6D128ABD174A9940007B0375 /* SettingsWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D128ABC174A9940007B0375 /* SettingsWindow.cpp */; };
 		6D1CD96B164D9568006CDAB1 /* polycode_project.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6D1CD96A164D9568006CDAB1 /* polycode_project.icns */; };
 		6D2AC99B14B8500400BB63DA /* PolycodeProjectEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D2AC99A14B8500400BB63DA /* PolycodeProjectEditor.cpp */; };
 		6D34143412B816BC0034FA9B /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D34143312B816BC0034FA9B /* IOKit.framework */; };
@@ -81,6 +82,8 @@
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		6D06CCF214BC203800E4CB4C /* libPolycore_d.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycore_d.a; path = ../../../Release/Darwin/Framework/Core/lib/libPolycore_d.a; sourceTree = "<group>"; };
 		6D06CCF414BC204200E4CB4C /* libPolycodeUI_d.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycodeUI_d.a; path = ../../../Release/Darwin/Framework/Modules/lib/libPolycodeUI_d.a; sourceTree = "<group>"; };
+		6D128ABA174A9936007B0375 /* SettingsWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsWindow.h; sourceTree = "<group>"; };
+		6D128ABC174A9940007B0375 /* SettingsWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SettingsWindow.cpp; sourceTree = "<group>"; };
 		6D1CD96A164D9568006CDAB1 /* polycode_project.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = polycode_project.icns; path = ../../../Assets/Icons/polycode_project.icns; sourceTree = "<group>"; };
 		6D2AC99A14B8500400BB63DA /* PolycodeProjectEditor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolycodeProjectEditor.cpp; sourceTree = "<group>"; };
 		6D2AC99D14B8500A00BB63DA /* PolycodeProjectEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolycodeProjectEditor.h; sourceTree = "<group>"; };
@@ -298,6 +301,7 @@
 				6D80E91312AB53FB0037A708 /* PolycodeFrame.h */,
 				6D80E91412AB53FB0037A708 /* PolycodeIDEApp.h */,
 				6D80E91512AB53FB0037A708 /* PolycodeProject.h */,
+				6D128ABA174A9936007B0375 /* SettingsWindow.h */,
 				6D80E91612AB53FB0037A708 /* PolycodeProjectBrowser.h */,
 				6D80E91712AB53FB0037A708 /* PolycodeProjectManager.h */,
 			);
@@ -308,6 +312,7 @@
 		6D80E91812AB53FB0037A708 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				6D128ABC174A9940007B0375 /* SettingsWindow.cpp */,
 				6D8A845C16F593D000F3BA08 /* PolycodeClipboard.cpp */,
 				6DC67A531656F693004FD1EF /* TextureBrowser.cpp */,
 				6D79732D167F0D4600646407 /* PolycodeSpriteEditor.cpp */,
@@ -450,6 +455,7 @@
 				6D79732E167F0D4600646407 /* PolycodeSpriteEditor.cpp in Sources */,
 				6D797333167F0EB100646407 /* PolycodeProps.cpp in Sources */,
 				6D8A845D16F593D000F3BA08 /* PolycodeClipboard.cpp in Sources */,
+				6D128ABD174A9940007B0375 /* SettingsWindow.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

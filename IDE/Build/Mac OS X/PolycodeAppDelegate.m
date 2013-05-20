@@ -170,4 +170,8 @@
 	app->toggleConsole();
 }
 
+-(IBAction) showSettings: (id) sender {
+	app->showSettings();
+}
+
 @end
