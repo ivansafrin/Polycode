@@ -79,7 +79,6 @@ void SettingsWindow::handleEvent(Event *event) {
 				extensions.push_back("");
 				globalFrame->showFileBrowser(CoreServices::getInstance()->getCore()->getUserHomeDirectory(), false, extensions, false);
 				globalFrame->fileDialog->addEventListener(this, UIEvent::OK_EVENT);
-				printf("You see me poopin\n");
 #else
 				vector<CoreFileExtension> extensions;
 				CoreFileExtension ext;
@@ -101,8 +100,8 @@ void SettingsWindow::handleEvent(Event *event) {
 				}
 #endif	
 			}
+			// FIXME: Event never comes here even though we are listening to it.
 			if(event->getDispatcher() == globalFrame->fileDialog && event->getEventCode() == UIEvent::OK_EVENT) {
-				printf("Yes?! Yes this is Dialog! HAI\n");
 				String path = globalFrame->fileDialog->getSelection();
 				if (path != "") {
 					externalTextEditorCommand->setText(path);
