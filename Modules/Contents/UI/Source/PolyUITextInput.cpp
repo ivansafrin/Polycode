@@ -1347,7 +1347,20 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 			dispatchEvent(new Event(), Event::COMPLETE_EVENT);
 		}
 		return;
-	}	
+	}
+
+	// indent/shift text
+	if (multiLine && (key == KEY_LEFTBRACKET || key == KEY_RIGHTBRACKET) &&
+		(input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER) ||
+			input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL))) {
+				shiftText( (key == KEY_RIGHTBRACKET) ? false : true );
+				return;
+	}
+
+	// at this point, return if certain modifier keys are held down so as not to potentially add any unwanted text
+	if (input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER) || input->getKeyState(KEY_LCTRL) ||
+		input->getKeyState(KEY_RCTRL) || input->getKeyState(KEY_LALT) || input->getKeyState(KEY_RALT))
+			return;
 	
 	String ctext = lines[lineOffset];
 	
@@ -1355,33 +1368,21 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 		
 	if((charCode > 31 && charCode < 127) || charCode > 127) {
 		
-		// indent/shift text
-		if (multiLine && (key == KEY_LEFTBRACKET || key == KEY_RIGHTBRACKET) &&
-			(input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER) ||
-				input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL))) {
-					shiftText( (key == KEY_RIGHTBRACKET) ? false : true );
-					return;
-		}
-		
-		else {
-		
-			if(!isNumberOnly || (isNumberOnly && ((charCode > 47 && charCode < 58) || (charCode == '.' || charCode == '-')))) {
-				if(!isNumberOrCharacter(charCode)) { 
-					saveUndoState();
-				} else if (!isTypingWord) {
-					saveUndoState();
-					isTypingWord = 1;
-				}
-				if(hasSelection)
-					deleteSelection();
-				ctext = lines[lineOffset];
-				String text2 = ctext.substr(caretPosition, ctext.length()-caretPosition);
-				ctext = ctext.substr(0,caretPosition);
-				ctext += charCode + text2;
-				caretPosition++;
-				_changedText = true;
+		if(!isNumberOnly || (isNumberOnly && ((charCode > 47 && charCode < 58) || (charCode == '.' || charCode == '-')))) {
+			if(!isNumberOrCharacter(charCode)) { 
+				saveUndoState();
+			} else if (!isTypingWord) {
+				saveUndoState();
+				isTypingWord = 1;
 			}
-			
+			if(hasSelection)
+				deleteSelection();
+			ctext = lines[lineOffset];
+			String text2 = ctext.substr(caretPosition, ctext.length()-caretPosition);
+			ctext = ctext.substr(0,caretPosition);
+			ctext += charCode + text2;
+			caretPosition++;
+			_changedText = true;
 		}
 	}
 	

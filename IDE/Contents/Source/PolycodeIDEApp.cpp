@@ -184,6 +184,8 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	needsRedraw = false;
 	lastConnected = false;
 	
+	frame->closeFileButton->addEventListener(this, UIEvent::CLICK_EVENT);
+	
 	quittingApp = false;
 	
 	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
@@ -255,66 +257,78 @@ void PolycodeIDEApp::refreshProject() {
 	}
 }
 
-bool PolycodeIDEApp::removeEditor(PolycodeEditor *editor) {
-	if(!editor)
-		return false;
-		
-	if(editor->hasChanges()) {
-		OSFileEntry entry(editor->getFilePath(), OSFileEntry::TYPE_FILE);	
-		frame->yesNoCancelPopup->setCaption("The file \""+entry.name+"\" has unsaved changes. Save before closing?");
-		frame->yesNoCancelPopup->action = "closeFile";
-		frame->showModal(frame->yesNoCancelPopup);
-		return true;
-	} else {	
-		frame->removeEditor(editor);
-		editorManager->destroyEditor(editor);
-		if(editorManager->openEditors.size() > 0) {
-			editorManager->setCurrentEditor(editorManager->openEditors[0]);
-			frame->showEditor(editorManager->openEditors[0]);
-		} else {
-			editorManager->setCurrentEditor(NULL);
-		}
+// check if associated file has changes before invoking this
+void PolycodeIDEApp::removeEditor(PolycodeEditor *editor) {
+	if (!editor)
+		return;
+	
+	frame->removeEditor(editor);
+	editorManager->destroyEditor(editor);
+	if(editorManager->openEditors.size() > 0) {
+		editorManager->setCurrentEditor(editorManager->openEditors[0]);
+		frame->showEditor(editorManager->openEditors[0]);
+	} else {
+		editorManager->setCurrentEditor(NULL);
 	}
-	return false;
 }
 
 void PolycodeIDEApp::closeFile() {
+	// this will save the file if it has changes and/or close it (in closeFiles())
 	PolycodeEditor *editor = editorManager->getCurrentEditor();
-	if(editor) {
-		removeEditor(editor);
+	if (editor) {
+		std::vector<PolycodeEditor*> editorToSave;
+		editorToSave.push_back(editor);
+		OSFileEntry entry(editor->getFilePath(), OSFileEntry::TYPE_FILE);
+		closeFiles(editorToSave, "'"+entry.name+"' has unsaved changes. Save?");
+	}
+}
+
+void PolycodeIDEApp::closeFiles(std::vector<PolycodeEditor*> editors, String saveMsg) {
+	if (filesHaveChanges(editors)) {
+		if (saveMsg == "")
+			saveMsg = "File(s) have unsaved changes. Save all?";
+		tempEditorStore = editors;
+		frame->yesNoCancelPopup->setCaption(saveMsg);
+		frame->yesNoCancelPopup->action = "closeFiles";
+		frame->showModal(frame->yesNoCancelPopup);
+	} else
+		doCloseFiles(editors);
+}
+
+void PolycodeIDEApp::doCloseFiles(std::vector<PolycodeEditor*> editors) {
+	for (int i=0; i < editors.size(); i++) {
+		if (editors[i])
+			removeEditor(editors[i]);
 	}
 }
 
 void PolycodeIDEApp::closeProject() {
 	if(projectManager->getActiveProject()) {
-		if (editorManager->hasUnsavedFilesForProject(projectManager->getActiveProject())) {
+		std::vector<PolycodeEditor*> editors;
+		PolycodeEditor *editor;
+		bool hasChanges = false;
+		for (int i=0; i < editorManager->openEditors.size(); i++) {
+			editor = editorManager->openEditors[i];
+			if (editor->hasChanges())
+				hasChanges = true;
+			if (editor->parentProject == projectManager->getActiveProject())
+				editors.push_back(editor);
+		}
+		tempEditorStore = editors; // current project files
+		if (hasChanges) {
 			String name = projectManager->getActiveProject()->getProjectName();
 			frame->yesNoCancelPopup->setCaption("Project '" + name + "' has unsaved changes. Save all?");
 			frame->yesNoCancelPopup->action = "closeProject";
 			frame->showModal(frame->yesNoCancelPopup);
 		} else
-			cleanupProjectOnClose(false);
+			doCloseProject();
 	} else
-		PolycodeConsole::print("There are no active projects to close.");
+		PolycodeConsole::print("There are no active projects to close.\n");
 }
 
-// private function that removes editors and projects on project close
-void PolycodeIDEApp::cleanupProjectOnClose(bool save) {
-	PolycodeEditor *editor;
-	int i = 0;
-	while (i < editorManager->openEditors.size()) {
-		editor = editorManager->openEditors[i];
-		if(editor->parentProject == projectManager->getActiveProject()) {
-			if (save && editor->hasChanges())
-				editor->saveFile();
-			else
-				editor->setHasChanges(false);
-			
-			removeEditor(editor);
-			i--; // adjust for reduction in openEditors.size()
-		}
-		i++;
-	}
+// private helper function that removes editors and project on project close.
+void PolycodeIDEApp::doCloseProject() {
+	doCloseFiles(tempEditorStore);
 	frame->getProjectBrowser()->removeProject(projectManager->getActiveProject());
 	projectManager->removeProject(projectManager->getActiveProject());
 }
@@ -458,6 +472,21 @@ void PolycodeIDEApp::saveFile() {
 	if(editorManager->getCurrentEditor()) {
 		editorManager->getCurrentEditor()->saveFile();
 	}
+}
+
+void PolycodeIDEApp::saveFiles(std::vector<PolycodeEditor*> editors) {
+	for (int i=0; i < editors.size(); i++) {
+		if (editors[i]->hasChanges())
+			editors[i]->saveFile();
+	}
+}
+
+bool PolycodeIDEApp::filesHaveChanges(std::vector<PolycodeEditor*> editors) {
+	for (int i=0; i < editors.size(); i++) {
+		if (editors[i]->hasChanges())
+			return true;
+	}
+	return false;
 }
 
 void PolycodeIDEApp::openProject(String projectFile) {
@@ -747,10 +776,27 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 		} else if (frame->yesNoCancelPopup->action == "closeProject") {
 			switch (event->getEventCode()) {
 				case UIEvent::YES_EVENT:
-					cleanupProjectOnClose(true);
+					saveFiles(tempEditorStore);
+					doCloseProject();
 					break;
 				case UIEvent::NO_EVENT:
-					cleanupProjectOnClose(false);
+					doCloseProject();
+					break;
+				case UIEvent::CANCEL_EVENT:
+					break;
+			}
+			frame->yesNoCancelPopup->action = "";
+			frame->hideModal();
+		}
+		
+		else if (frame->yesNoCancelPopup->action == "closeFiles") {
+			switch (event->getEventCode()) {
+				case UIEvent::YES_EVENT:
+					saveFiles(tempEditorStore);
+					doCloseFiles(tempEditorStore);
+					break;
+				case UIEvent::NO_EVENT:
+					doCloseFiles(tempEditorStore);
 					break;
 				case UIEvent::CANCEL_EVENT:
 					break;
@@ -847,6 +893,16 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 			openFile(projectEntry);			
 			
 			frame->hideModal();			
+		}
+	}
+	
+	// close files and editors after the close file button is pressed
+	if (event->getDispatcher() == frame->closeFileButton) {
+		if (event->getEventCode() == UIEvent::CLICK_EVENT) {
+			if (core->getInput()->getKeyState(KEY_RSHIFT) || core->getInput()->getKeyState(KEY_LSHIFT))
+				closeFiles(editorManager->openEditors);
+			else
+				closeFile();
 		}
 	}
 	

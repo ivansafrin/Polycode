@@ -214,6 +214,13 @@ public:
 	
 	UIWindow *aboutWindow;
 	UIButton *aboutOKButton;
+	
+	UIImageButton *closeFileButton;
+	
+	void updateFileSelector();
+	void showNextEditor();
+	void showPreviousEditor();
+	
 private:
 	
 	int frameSizeX;
@@ -254,4 +261,6 @@ private:
 	UIButton *newProjectButton;
 	UIButton *examplesButton;
 	
+	bool displayFilePathInSelector;
+
 };
