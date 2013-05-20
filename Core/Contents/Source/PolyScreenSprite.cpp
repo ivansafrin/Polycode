@@ -148,7 +148,13 @@ void ScreenSprite::recalculateSpriteDimensions() {
 	
 	for(int i =0 ; i < animations.size(); i++) {
 		animations[i]->numFramesX = texture->getWidth() / spriteWidth;	
+		if(animations[i]->numFramesX < 1) {
+			animations[i]->numFramesX = 1;
+		}
 		animations[i]->numFramesY = texture->getHeight() / spriteHeight;
+		if(animations[i]->numFramesY < 1) {
+			animations[i]->numFramesY = 1;
+		}		
 		animations[i]->spriteUVWidth = spriteUVWidth;
 		animations[i]->spriteUVHeight = spriteUVHeight;	
 		animations[i]->setOffsetsFromFrameString(animations[i]->frames);
@@ -211,7 +217,13 @@ SpriteAnimation *ScreenSprite::addAnimation(const String& name, const String& fr
 	
 	
 	newAnimation->numFramesX = texture->getWidth() / spriteWidth;	
+	if(newAnimation->numFramesX < 1) {
+		newAnimation->numFramesX = 1;
+	}
 	newAnimation->numFramesY = texture->getHeight() / spriteHeight;
+	if(newAnimation->numFramesY < 1) {
+		newAnimation->numFramesY = 1;
+	}	
 	newAnimation->spriteUVWidth = spriteUVWidth;
 	newAnimation->spriteUVHeight = spriteUVHeight;
 	

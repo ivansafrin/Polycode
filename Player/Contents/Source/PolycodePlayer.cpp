@@ -677,6 +677,9 @@ void PolycodePlayer::loadFile(const char *fileName) {
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEUP);
+	core->getInput()->addEventListener(this, InputEvent::EVENT_JOYBUTTON_DOWN);
+	core->getInput()->addEventListener(this, InputEvent::EVENT_JOYBUTTON_UP);
+	core->getInput()->addEventListener(this, InputEvent::EVENT_JOYAXIS_MOVED);
 					
 	if(nameString == "") {
 		return;
@@ -887,6 +890,46 @@ void PolycodePlayer::handleEvent(Event *event) {
 					lua_pushnumber(L, inputEvent->mousePosition.y);	
 					lua_pcall(L, 2,0,errH);					
 					lua_settop(L, 0);					
+				}
+			}
+			break;																			
+			case InputEvent::EVENT_JOYBUTTON_DOWN:
+			{
+				if(L && !crashed) {
+					lua_getfield (L, LUA_GLOBALSINDEX, "__customError");
+					errH = lua_gettop(L);									
+					lua_getfield(L, LUA_GLOBALSINDEX, "onJoystickButtonDown");
+					lua_pushnumber(L, inputEvent->joystickIndex);
+					lua_pushnumber(L, inputEvent->joystickButton);
+					lua_pcall(L, 2,0,errH);	
+					lua_settop(L, 0);					
+				}
+			}
+			break;																			
+			case InputEvent::EVENT_JOYBUTTON_UP:
+			{
+				if(L && !crashed) {
+					lua_getfield (L, LUA_GLOBALSINDEX, "__customError");
+					errH = lua_gettop(L);									
+					lua_getfield(L, LUA_GLOBALSINDEX, "onJoystickButtonUp");
+					lua_pushnumber(L, inputEvent->joystickIndex);
+					lua_pushnumber(L, inputEvent->joystickButton);
+					lua_pcall(L, 2,0,errH);	
+					lua_settop(L, 0);
+				}
+			}
+			break;																			
+			case InputEvent::EVENT_JOYAXIS_MOVED:
+			{
+				if(L && !crashed) {
+					lua_getfield (L, LUA_GLOBALSINDEX, "__customError");
+					errH = lua_gettop(L);									
+					lua_getfield(L, LUA_GLOBALSINDEX, "onJoystickAxisMoved");
+					lua_pushnumber(L, inputEvent->joystickIndex);
+					lua_pushnumber(L, inputEvent->joystickAxis);
+					lua_pushnumber(L, inputEvent->joystickAxisValue);
+					lua_pcall(L, 3,0,errH);	
+					lua_settop(L, 0);
 				}
 			}
 			break;																			

@@ -226,7 +226,8 @@ class PolycodeScreenEditorMain : public UIElement {
 		ScreenEntity *placingPreviewEntity;												
 		bool multiSelect;
 		
-		PolycodeEditor *editor;		
+		PolycodeEditor *editor;	
+		ScreenEntity *baseEntity;			
 	protected:
 	
 		PolycodeScreenEditorActionData *beforeData;
@@ -305,7 +306,6 @@ class PolycodeScreenEditorMain : public UIElement {
 		bool isDraggingEntity;
 		bool isScalingEntity;
 		
-		ScreenEntity *baseEntity;
 
 		
 		ScreenEntity *screenTransform;

@@ -40,6 +40,8 @@ namespace Polycode {
 			void handleEvent(Event *event);
 			void Update();
 			
+			void Resize(Number width, Number height);
+			
 			void setSliderValue(Number val);
 			Number getSliderValue();			
 			
@@ -48,6 +50,8 @@ namespace Polycode {
 			Number gripPos;
 			
 			bool dragging;
+			
+			Number bgHeight;
 			
 			Number labelXPos;
 			Number labelYPos;

@@ -2526,7 +2526,7 @@ void PolycodeScreenEditorMain::handleDroppedFile(OSFileEntry file, Number x, Num
 
 PolycodeScreenEditor::PolycodeScreenEditor() : PolycodeEditor(true){
 
-	mainSizer = new UIHSizer(100,100,300,false);
+	mainSizer = new UIHSizer(100,100,340,false);
 	addChild(mainSizer);	
 
 	editorMain = new PolycodeScreenEditorMain(this);
@@ -2553,11 +2553,17 @@ PolycodeScreenEditor::PolycodeScreenEditor() : PolycodeEditor(true){
 }
 
 String PolycodeScreenEditor::Copy(void **data) {
-	return editorMain->Copy(data);
+	if(editorMain->baseEntity->hasFocus) {
+		return editorMain->Copy(data);
+	} else {
+		return "";
+	}
 }
 
 void PolycodeScreenEditor::Paste(void *data, String clipboardType) {
-	editorMain->Paste(data, clipboardType);
+	if(editorMain->baseEntity->hasFocus) {
+		editorMain->Paste(data, clipboardType);
+	}
 }
 
 void PolycodeScreenEditor::destroyClipboardData(void *data, String type) {

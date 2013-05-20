@@ -42,7 +42,7 @@
 - (void)animationTimer:(NSTimer *)timer
 {
 	if(!app->Update()) {
-		[[NSApplication sharedApplication] stop:self];
+		[[NSApplication sharedApplication] terminate:self];
 	}
 	
 	if(mustShowProjectMenu) {
@@ -70,9 +70,17 @@
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
-	NSLog(@"STOPPING\n");
-	app->saveConfigFile();
-	app->core->Shutdown();
+}
+
+- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)theApplication
+{
+	bool retVal = app->quitApp();
+	if(retVal) {
+		app->saveConfigFile();
+		app->core->Shutdown();
+		printf("STOPPING\n");
+	}
+	return retVal;
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)theApplication

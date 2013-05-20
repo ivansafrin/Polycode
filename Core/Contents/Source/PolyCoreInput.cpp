@@ -61,6 +61,24 @@ namespace Polycode {
 		return &joysticks[index];
 	}	
 	
+	bool CoreInput::getJoystickButtonState(int joystickIndex, int button) {
+		JoystickInfo *info = getJoystickInfoByIndex(joystickIndex);
+		if(info) {
+			return info->joystickButtonState[button];
+		} else {
+			return false;
+		}
+	}
+	
+	Number CoreInput::getJoystickAxisValue(int joystickIndex, int axis) {
+		JoystickInfo *info = getJoystickInfoByIndex(joystickIndex);
+		if(info) {
+			return info->joystickAxisState[axis];
+		} else {
+			return 0.0;
+		}	
+	}
+	
 	JoystickInfo *CoreInput::getJoystickInfoByID(unsigned int deviceID) {
 		for(int i=0;i<joysticks.size();i++) {
 			if(joysticks[i].deviceID == deviceID) {

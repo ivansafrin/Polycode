@@ -75,7 +75,7 @@ SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool
 		setenv("SDL_VIDEO_CENTERED", "1", 1);
 	}
 
-	if(SDL_Init(SDL_INIT_VIDEO) < 0) {
+	if(SDL_Init(SDL_INIT_VIDEO|SDL_INIT_JOYSTICK) < 0) {
 	}
 	
 	eventMutex = createMutex();
@@ -88,6 +88,15 @@ SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool
 	SDL_EnableUNICODE(1);
 	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 	
+	SDL_JoystickEventState(SDL_ENABLE);
+	
+	int numJoysticks = SDL_NumJoysticks();
+	
+	for(int i=0; i < numJoysticks; i++) {
+		SDL_JoystickOpen(i);
+		input->addJoystick(i);
+	}
+
 	((OpenGLRenderer*)renderer)->initOSSpecific();
 	CoreServices::getInstance()->installModule(new GLSLShaderModule());	
 }
@@ -113,8 +122,6 @@ void SDLCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int 
 		SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, 0);
 	}
 	
-	SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 0);
-	
 	flags = SDL_OPENGL;
 
 	if(fullScreen) {
@@ -124,6 +131,16 @@ void SDLCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int 
 	if(resizableWindow) {
 		flags |= SDL_RESIZABLE;
 	}
+
+	if(vSync) {
+		flags |= SDL_DOUBLEBUF;
+		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+		SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
+	} else {
+		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 0);
+		SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 0);
+	}
+
 	SDL_SetVideoMode(xRes, yRes, 0, flags);
 	
 	renderer->Resize(xRes, yRes);
@@ -295,8 +312,14 @@ bool SDLCore::Update() {
 						}
 					}
 				break;
+				case SDL_JOYAXISMOTION:
+					input->joystickAxisMoved(event.jaxis.axis, ((Number)event.jaxis.value)/32767.0, event.jaxis.which);
+				break;
 				case SDL_JOYBUTTONDOWN:
-//					input->setKeyState((PolyKEY)(event.key.keysym.sym), true);
+					input->joystickButtonDown(event.jbutton.button, event.jbutton.which);
+				break;
+				case SDL_JOYBUTTONUP:
+					input->joystickButtonUp(event.jbutton.button, event.jbutton.which);
 				break;
 				case SDL_KEYDOWN:
 					if(!checkSpecialKeyEvents((PolyKEY)(event.key.keysym.sym))) {

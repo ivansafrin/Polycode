@@ -33,7 +33,7 @@ UIHSlider::UIHSlider(Number start, Number end, Number width) : UIElement() {
 	
 	String bgImage = conf->getStringValue("Polycode", "uiHSliderBg");
 	String gripImage = conf->getStringValue("Polycode", "uiHSliderGrip");	
-	Number bgHeight = conf->getNumericValue("Polycode", "uiHSliderBgHeight");
+	bgHeight = conf->getNumericValue("Polycode", "uiHSliderBgHeight");
 
 	Number st = conf->getNumericValue("Polycode", "uiHSliderBgT");
 	Number sr = conf->getNumericValue("Polycode", "uiHSliderBgR");
@@ -96,6 +96,17 @@ void UIHSlider::setSliderValue(Number val) {
 
 Number UIHSlider::getSliderValue() {
 	return sliderValue;
+}
+
+void UIHSlider::Resize(Number width, Number height) {
+	bgRect->resizeBox(width, bgHeight);
+	this->width = width;
+	this->height = height;	
+	matrixDirty = true;	
+	setHitbox(width,height);
+	sliderWidth = width;
+	gripRect->setDragLimits(Rectangle(0,floor(bgHeight/2.0),width,0));	
+	setSliderValue(sliderValue);
 }
 			
 void UIHSlider::handleEvent(Event *event) {
