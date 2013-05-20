@@ -71,10 +71,10 @@ PolycodeEditorPropActionData *PropDataVector2(Vector2 val) {
 
 PolycodeEditorPropActionData *PropDataEntity(Entity *entity) {
 	PolycodeEditorPropActionData *data = new PolycodeEditorPropActionData();
-	data->entity = *entity;
-	data->entity.ownsChildren = false;
-	for(int i=0; i < data->entity.getNumChildren(); i++) {
-		data->entity.removeChild(data->entity.getChildAtIndex(i));
+	data->entity = entity->Clone(false, true);
+	data->entity->ownsChildren = false;
+	for(int i=0; i < data->entity->getNumChildren(); i++) {
+		data->entity->removeChild(data->entity->getChildAtIndex(i));
 	}
 	return data;
 }
@@ -208,6 +208,8 @@ PropSheet::PropSheet(String caption, String type) : UIElement() {
 	this->caption = caption;
 	this->type = type;
 	
+	customUndoHandler = false;
+	
 	bg = new ScreenShape(ScreenShape::SHAPE_RECT, 30,30);
 	addChild(bg);
 	bg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiSmallHeaderBgColor"));
@@ -267,11 +269,13 @@ void PropSheet::handleEvent(Event *event) {
 		}
 	}
 	
+	if(!customUndoHandler) {
 	if(event->getEventCode() == PropEvent::EVENT_PROP_CHANGE ) {
 		PropEvent *propEvent = (PropEvent*) event;
 		PropEvent *newEvent = new PropEvent(propEvent->prop, this, propEvent->beforeData, propEvent->afterData);		
 		dispatchEvent(newEvent, PropEvent::EVENT_PROP_CHANGE);
-	}	
+	}
+	}
 }
 
 PropSheet::~PropSheet() {
@@ -1214,6 +1218,8 @@ EntityPropSheet::EntityPropSheet() : PropSheet("CUSTOM PROPERTIES", "entityProps
 	addChild(addButton);
 	addButton->setPosition(15, 35);
 	
+	customUndoHandler = true;
+	
 	entity = NULL;
 	lastEntity = NULL;
 	
@@ -1227,8 +1233,8 @@ void EntityPropSheet::applyPropActionData(PolycodeEditorPropActionData *data) {
 		return;
 		
 	entity->entityProps.clear();
-	for(int i=0; i < data->entity.entityProps.size(); i++) {
-			entity->entityProps.push_back(data->entity.entityProps[i]);
+	for(int i=0; i < data->entity->entityProps.size(); i++) {
+			entity->entityProps.push_back(data->entity->entityProps[i]);
 	}
 	
 	refreshProps();

@@ -258,8 +258,15 @@ void PhysicsScreenEntity::applyImpulse(Number fx, Number fy) {
 }
 			
 void PhysicsScreenEntity::setTransform(Vector2 pos, Number angle) {
+	if(screenEntity->getParentEntity()) {
+		Matrix4 matrix = screenEntity->getParentEntity()->getConcatenatedMatrix();
+		Vector3 parentPos = matrix.getPosition();		
+		pos.x = parentPos.x + pos.x;
+		pos.y = parentPos.y + pos.y;		
+	}
+
 	body->SetTransform(b2Vec2(pos.x/worldScale, pos.y/worldScale), angle*(PI/180.0f));
-    screenEntity->setPosition(pos);
+	Update();
 }
 
 void PhysicsScreenEntity::Update() {

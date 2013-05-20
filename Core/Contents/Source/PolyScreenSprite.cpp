@@ -239,7 +239,7 @@ void ScreenSprite::playAnimation(const String& name, int startFrame, bool once) 
 	paused = false;
 	for(int i=0; i < animations.size(); i++) {
 		if(animations[i]->name == name) {
-			if(currentAnimation == animations[i] && !playingOnce)
+			if(currentAnimation == animations[i] && !playingOnce && !once)
 				return;
 			currentFrame = 0;			
 			currentAnimation = animations[i];

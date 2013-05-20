@@ -326,6 +326,8 @@ class PropSheet : public UIElement {
 		
 		bool collapsed;
 		
+		bool customUndoHandler;
+		
 		std::vector<PropProp*> props;
 };
 
@@ -631,8 +633,10 @@ class PropList : public UIElement {
 
 class PolycodeEditorPropActionData : public PolycodeEditorActionData {
 	public:
-		PolycodeEditorPropActionData(){}
-		virtual ~PolycodeEditorPropActionData(){}
+		PolycodeEditorPropActionData(){ entity = NULL; }
+		virtual ~PolycodeEditorPropActionData(){
+			delete entity;
+		}
 		
 		bool boolVal;
 		String stringVal;
@@ -642,7 +646,7 @@ class PolycodeEditorPropActionData : public PolycodeEditorActionData {
 		Vector3 vector3Val;
 		Vector2 vector2Val;
 		
-		Entity entity;
+		Entity *entity;
 		
 		PropSheet *sheet;
 		PropProp *prop;
