@@ -101,6 +101,8 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	frame->exportProjectWindow->addEventListener(this, UIEvent::OK_EVENT);
 	frame->newFileWindow->addEventListener(this, UIEvent::OK_EVENT);	
 	frame->exampleBrowserWindow->addEventListener(this, UIEvent::OK_EVENT);
+	frame->settingsWindow->addEventListener(this, UIEvent::OK_EVENT);
+	frame->settingsWindow->addEventListener(this, UIEvent::CLOSE_EVENT);
 	
 	frame->playButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	frame->stopButton->addEventListener(this, UIEvent::CLICK_EVENT);
@@ -159,6 +161,7 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	editEntry->addItem("Redo", "redo");
 	editEntry->addItem("Cut", "cut");
 	editEntry->addItem("Copy", "copy");
+	editEntry->addItem("Settings", "settings");
 
 	UIMenuBarEntry *viewEntry = menuBar->addMenuBarEntry("View");
 	viewEntry->addItem("Toggle Console", "toggle_console", KEY_LSHIFT, KEY_c);
@@ -200,6 +203,10 @@ void PolycodeIDEApp::renameFile() {
 
 void PolycodeIDEApp::showAbout() {
 	frame->showModal(frame->aboutWindow);
+}
+
+void PolycodeIDEApp::showSettings() {
+	frame->showModal(frame->settingsWindow);
 }
 
 void PolycodeIDEApp::toggleConsole() {
@@ -333,7 +340,7 @@ void PolycodeIDEApp::openProject() {
 #ifdef USE_POLYCODEUI_FILE_DIALOGS
 	std::vector<String> exts;
 	exts.push_back("polyproject");
-	frame->showFileBrowser(CoreServices::getInstance()->getCore()->getUserHomeDirectory(),  false, exts, false);
+	frame->showFileBrowser(CoreServices::getInstance()->getCore()->getUserHomeDirectory(),	false, exts, false);
 	frame->fileDialog->addEventListener(this, UIEvent::OK_EVENT);
 #else
 	vector<CoreFileExtension> extensions;
@@ -350,7 +357,7 @@ void PolycodeIDEApp::openProject() {
 		PolycodeProject *project = projectManager->openProject(paths[0]);
 		if(project) {
 			projectManager->setActiveProject(project);
-			OSFileEntry projectEntry =  OSFileEntry(project->getProjectFile(), OSFileEntry::TYPE_FILE);
+			OSFileEntry projectEntry =	OSFileEntry(project->getProjectFile(), OSFileEntry::TYPE_FILE);
 			openFile(projectEntry);			
 		}
 	}
@@ -500,7 +507,16 @@ void PolycodeIDEApp::openFileInProject(PolycodeProject *project, String filePath
 void PolycodeIDEApp::openFile(OSFileEntry file) {
 	PolycodeEditor *editor;
 	editor = editorManager->getEditorForPath(file.fullPath);
+
 	if(editor) {
+		CoreServices *core = CoreServices::getInstance();
+		Config *config = core->getConfig();
+		bool useExternalTextEditor = (config->getStringValue("Polycode", "useExternalTextEditor") == "true") && (config->getStringValue("Polycode", "externalTextEditorCommand") != "");
+		if(editor->getEditorType() == "PolycodeTextEditor" && useExternalTextEditor) {
+			core->getCore()->executeExternalCommand(config->getStringValue("Polycode", "externalTextEditorCommand"), file.fullPath, projectManager->getActiveProject()->getRootFolder());
+			return;
+		}
+
 		frame->showEditor(editor);
 	} else {
 		editor = editorManager->createEditorForExtension(file.extension);
@@ -531,7 +547,7 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 				PolycodeProject *project = projectManager->openProject(path);
 				if(project) {
 					projectManager->setActiveProject(project);
-					OSFileEntry projectEntry =  OSFileEntry(project->getProjectFile(), OSFileEntry::TYPE_FILE);
+					OSFileEntry projectEntry =	OSFileEntry(project->getProjectFile(), OSFileEntry::TYPE_FILE);
 					openFile(projectEntry);			
 				}
 				
@@ -574,6 +590,8 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 			showAbout();
 		} else if(action == "toggle_console") {
 			toggleConsole();
+		} else if(action == "settings") {
+			showSettings();
 		}
 	}
 
@@ -812,6 +830,23 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 		}
 	}	
 
+	if(event->getDispatcher() == frame->settingsWindow) {
+		if(event->getEventType() == "UIEvent") {
+			Config *config = CoreServices::getInstance()->getConfig();
+			SettingsWindow *settingsWindow = frame->settingsWindow;
+
+			if(event->getEventCode() == UIEvent::OK_EVENT) {
+				config->setStringValue("Polycode", "useExternalTextEditor", settingsWindow->useExternalTextEditorBox->isChecked() ? "true" : "false");
+				config->setStringValue("Polycode", "externalTextEditorCommand", settingsWindow->externalTextEditorCommand->getText());
+			
+				frame->hideModal();
+			}
+			if(event->getEventCode() == UIEvent::CLOSE_EVENT) {
+				settingsWindow->updateUI();
+			}
+		}
+	}
+
 	if(event->getDispatcher() == frame->exportProjectWindow) {
 		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {
 			projectManager->exportProject(projectManager->getActiveProject(), frame->exportProjectWindow->projectLocationInput->getText(), frame->exportProjectWindow->macCheckBox->isChecked(), frame->exportProjectWindow->winCheckBox->isChecked(), frame->exportProjectWindow->linCheckBox->isChecked());
@@ -842,7 +877,7 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {
 			String fullPath = String(core->getDefaultWorkingDirectory()+"/"+frame->exampleBrowserWindow->getExamplePath());
 			PolycodeProject* project = projectManager->openProject(fullPath);
-			OSFileEntry projectEntry =  OSFileEntry(project->getProjectFile(), OSFileEntry::TYPE_FILE);
+			OSFileEntry projectEntry =	OSFileEntry(project->getProjectFile(), OSFileEntry::TYPE_FILE);
 			projectManager->setActiveProject(project);
 			openFile(projectEntry);			
 			
@@ -864,6 +899,7 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 }
 
 void PolycodeIDEApp::saveConfigFile() {
+	Config *config = CoreServices::getInstance()->getConfig();
 	Object configFile;
 	configFile.root.name = "config";
 	configFile.root.addChild("open_projects");
@@ -874,6 +910,11 @@ void PolycodeIDEApp::saveConfigFile() {
 		projectEntry->addChild("name", project->getProjectName());
 		projectEntry->addChild("path", project->getProjectFile());
 	}
+
+	configFile.root.addChild("settings");
+	ObjectEntry *textEditorEntry = configFile.root["settings"]->addChild("text_editor");
+	textEditorEntry->addChild("use_external", config->getStringValue("Polycode", "useExternalTextEditor"));
+	textEditorEntry->addChild("command", config->getStringValue("Polycode", "externalTextEditorCommand"));
 
 #if defined(__APPLE__) && defined(__MACH__)
 	core->createFolder(core->getUserHomeDirectory()+"/Library/Application Support/Polycode");
@@ -905,19 +946,43 @@ void PolycodeIDEApp::loadConfigFile() {
 	if(configFile.root["open_projects"]) {
 		ObjectEntry *projects = configFile.root["open_projects"];
 		if(projects) {
-		for(int i=0; i < projects->length; i++) {
-			ObjectEntry *entry = (*(*projects)[i])["path"];
-			if(entry) {
-				PolycodeProject* project = projectManager->openProject(entry->stringVal);
-				if(project) {
-					OSFileEntry projectEntry =  OSFileEntry(project->getProjectFile(), OSFileEntry::TYPE_FILE);
-					projectManager->setActiveProject(project);
-					openFile(projectEntry);
+			for(int i=0; i < projects->length; i++) {
+				ObjectEntry *entry = (*(*projects)[i])["path"];
+				if(entry) {
+					PolycodeProject* project = projectManager->openProject(entry->stringVal);
+					if(project) {
+						OSFileEntry projectEntry =	OSFileEntry(project->getProjectFile(), OSFileEntry::TYPE_FILE);
+						projectManager->setActiveProject(project);
+						openFile(projectEntry);
+					}
 				}
 			}
 		}
-		}
 	}
+	
+	Config *config = CoreServices::getInstance()->getConfig();
+
+	if(configFile.root["settings"]) {
+		ObjectEntry *settings = configFile.root["settings"];
+		ObjectEntry *textEditor = (*settings)["text_editor"];
+		if(textEditor) {
+			if((*textEditor)["use_external"]) {
+				config->setStringValue("Polycode", "useExternalTextEditor", (*textEditor)["use_external"]->stringVal);
+			} else {
+				config->setStringValue("Polycode", "useExternalTextEditor", "false");
+			}
+
+			if((*textEditor)["command"]) {
+				config->setStringValue("Polycode", "externalTextEditorCommand", (*textEditor)["command"]->stringVal);
+			} else {
+				config->setStringValue("Polycode", "externalTextEditorCommand", "");
+			}
+		}
+	} else {
+		config->setStringValue("Polycode","useExternalTextEditor", "false");
+		config->setStringValue("Polycode", "externalTextEditorCommand", "");
+	}
+	frame->settingsWindow->updateUI();
 }
 
 
