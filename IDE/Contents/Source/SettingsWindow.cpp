@@ -100,12 +100,12 @@ void SettingsWindow::handleEvent(Event *event) {
 				}
 #endif	
 			}
-			// FIXME: Event never comes here even though we are listening to it.
-			if(event->getDispatcher() == globalFrame->fileDialog && event->getEventCode() == UIEvent::OK_EVENT) {
-				String path = globalFrame->fileDialog->getSelection();
-				if (path != "") {
-					externalTextEditorCommand->setText(path);
-				}
+		}
+
+		if(event->getDispatcher() == globalFrame->fileDialog && event->getEventCode() == UIEvent::OK_EVENT) {
+			String path = globalFrame->fileDialog->getSelection();
+			if (path != "") {
+				externalTextEditorCommand->setText(path);
 			}
 		}
 	}
