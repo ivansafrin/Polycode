@@ -208,6 +208,8 @@ IF (MINGW)
 	)
 ENDIF(MINGW)
 
+INCLUDE(FindPkgConfig)
+
 IF(MSVC OR MINGW)
     SET(polycore_SRCS ${polycore_SRCS} PolycodeView/MSVC/PolycodeView.cpp Source/PolyWinCore.cpp)
     SET(polycore_HDRS ${polycore_HDRS} PolycodeView/MSVC/PolycodeView.h Include/PolyWinCore.h)
@@ -238,6 +240,23 @@ ENDIF(MSVC OR MINGW)
 #IF(POLYCODE_BUILD_STATIC)
 ADD_LIBRARY(Polycore ${polycore_SRCS} ${polycore_HDRS})
 #ENDIF(POLYCODE_BUILD_STATIC)
+
+# On linux, check for x11
+IF("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+  # TODO: Allow to set X11 path manually instead of using pkg-config
+  IF(NOT ${PKG_CONFIG_FOUND})
+    message( FATAL_ERROR "You seem to be using Linux, but pkg-config is not installed. Please install pkg-config." )
+  endif()
+  PKG_CHECK_MODULES(X11 x11)
+  IF(${X11_FOUND})
+    LINK_DIRECTORIES(${X11_LIBRARY_DIRS})
+    INCLUDE_DIRECTORIES(${X11_INCLUDE_DIRS})
+    TARGET_LINK_LIBRARIES(Polycore ${X11_LIBRARIES})
+    SET_TARGET_PROPERTIES(Polycore PROPERTIES COMPILE_FLAGS "-DUSE_X11")
+  ELSE()
+    message( FATAL_ERROR "You seem to be using Linux, but X11 is not installed. Please install X11." )
+  ENDIF()
+ENDIF()
 
 IF(POLYCODE_INSTALL_FRAMEWORK)
     # install headers
