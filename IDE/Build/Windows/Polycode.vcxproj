@@ -117,6 +117,7 @@
       <AllowIsolation>false</AllowIsolation>
       <EnableUAC>false</EnableUAC>
       <UACExecutionLevel>HighestAvailable</UACExecutionLevel>
+      <AdditionalOptions>/FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
