@@ -217,7 +217,7 @@ void CocoaCore::launchApplicationWithFile(String application, String file) {
 
 String CocoaCore::executeExternalCommand(String command,  String args, String inDirectory) {
 
-	String finalCommand = "\""+command+"\"1 "+args;
+	String finalCommand = "\""+command+"\" "+args;
 	if(inDirectory != "") {
 		finalCommand = "cd \""+inDirectory+"\" && "+finalCommand;
 	}
