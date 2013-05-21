@@ -705,7 +705,7 @@ void UITextInput::updateCaretPosition() {
 }
 
 void UITextInput::selectLineFromOffset() {
-	lineOffset = lineOffset;
+	// TODO: remove or fill out body
 }
 
 void UITextInput::dragSelectionTo(Number x, Number y) {

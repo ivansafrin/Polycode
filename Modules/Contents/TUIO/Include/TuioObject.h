@@ -109,6 +109,8 @@ namespace TUIO {
 		 */
 		~TuioObject() {};
 		
+		using TuioContainer::update;
+
 		/**
 		 * Takes a TuioTime argument and assigns it along with the provided 
 		 * X and Y coordinate, angle, X and Y velocity, motion acceleration,

@@ -37,7 +37,6 @@ UITreeContainer::UITreeContainer(String icon, String text, Number treeWidth, Num
 	Number sr = conf->getNumericValue("Polycode", "uiTreeContainerSkinR");
 	Number sb = conf->getNumericValue("Polycode", "uiTreeContainerSkinB");
 	Number sl = conf->getNumericValue("Polycode", "uiTreeContainerSkinL");	
-	Number padding = conf->getNumericValue("Polycode", "uiTreeContainerSkinPadding");	
 	
 //	Number scrollBarOffset = conf->getNumericValue("Polycode", "uiTreeContainerScrollBarOffset");	
 	

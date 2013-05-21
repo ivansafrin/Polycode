@@ -59,7 +59,6 @@ namespace Polycode {
 	private:
 		
 		UIScrollContainer *mainContainer;
-		ScreenShape *maskShape;
 		
 		UITree *rootNode;
 		UIBox *bgBox;

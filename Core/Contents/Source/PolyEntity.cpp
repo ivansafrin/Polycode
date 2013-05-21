@@ -100,7 +100,7 @@ void Entity::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) {
 	clone->depthWrite = depthWrite;
 	clone->depthTest = depthTest;
 	clone->blendingMode = blendingMode;
-	clone->colorAffectsChildren;
+	clone->colorAffectsChildren = colorAffectsChildren;
 	clone->visibilityAffectsChildren = visibilityAffectsChildren;
 	clone->depthOnly = depthOnly;
 	clone->setUserData(getUserData());

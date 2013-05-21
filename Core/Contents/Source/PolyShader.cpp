@@ -82,7 +82,7 @@ void ProgramParam::createParamData(int *retType, const String& type, const Strin
 			if(values.size() == 2) {
 				val->set(atof(values[0].c_str()), atof(values[1].c_str()));
 			} else {
-				printf("Error: A Vector2 must have 2 values (%d provided)!\n", values.size());
+				printf("Error: A Vector2 must have 2 values (%d provided)!\n", (int)values.size());
 			}
 			return;				
 		} else if(type == "Vector3") {
@@ -93,7 +93,7 @@ void ProgramParam::createParamData(int *retType, const String& type, const Strin
 			if(values.size() == 3) {
 				val->set(atof(values[0].c_str()), atof(values[1].c_str()), atof(values[2].c_str()));
 			} else {
-				printf("Error: A Vector3 must have 3 values (%d provided)!\n", values.size());
+				printf("Error: A Vector3 must have 3 values (%d provided)!\n", (int)values.size());
 			}
 			return;
 		} else if(type == "Color") {
@@ -104,7 +104,7 @@ void ProgramParam::createParamData(int *retType, const String& type, const Strin
 			if(values.size() == 4) {
 				val->setColor(atof(values[0].c_str()), atof(values[1].c_str()), atof(values[2].c_str()), atof(values[3].c_str()));
 			} else {
-				printf("Error: A Color must have 4 values (%d provided)!\n", values.size());
+				printf("Error: A Color must have 4 values (%d provided)!\n", (int)values.size());
 			}
 			return;			
 		} else {

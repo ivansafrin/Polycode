@@ -98,7 +98,6 @@ namespace Polycode {
 			Number treeHeight;
 			vector<UITree*> treeChildren;
 			bool collapsed;
-			bool collapsing;
 			ScreenImage *arrowIconImage;
 			String arrowIcon;
 			Vector2 mouseDownPosition;

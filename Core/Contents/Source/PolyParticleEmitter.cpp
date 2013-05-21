@@ -36,8 +36,8 @@
 using namespace Polycode;
 
 SceneParticleEmitter::SceneParticleEmitter(const String& materialName, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Vector3 emitterRadius, Mesh *particleMesh, SceneMesh *emitter)
-: ParticleEmitter(materialName, particleMesh, particleType, emitterType, lifespan, numParticles,  direction, gravity, deviation, emitterRadius),
-SceneEntity()
+: SceneEntity(),
+ParticleEmitter(materialName, particleMesh, particleType, emitterType, lifespan, numParticles,  direction, gravity, deviation, emitterRadius)
 {
 	isScreenEmitter = false;
 	emitterMesh = emitter;	
@@ -80,8 +80,8 @@ void SceneParticleEmitter::Update() {
 
 
 ScreenParticleEmitter::ScreenParticleEmitter(const String& imageFile, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Vector3 emitterRadius, Mesh *particleMesh, ScreenMesh *emitter)
-		: ParticleEmitter(imageFile, particleMesh, particleType, emitterType, lifespan, numParticles,  direction, gravity, deviation, emitterRadius),
-ScreenEntity()
+		: ScreenEntity(),
+ParticleEmitter(imageFile, particleMesh, particleType, emitterType, lifespan, numParticles,  direction, gravity, deviation, emitterRadius)
 {
 	particleSize = 10.0; 
 	isScreenEmitter = true;
@@ -167,7 +167,7 @@ ParticleEmitter::ParticleEmitter(const String& imageFile, Mesh *particleMesh, in
 	gravVector = gravity;
 	ignoreParentMatrix = false;
 	this->emitterType = emitterType;
-	this->emitSpeed = emitSpeed;
+	// TODO: initialize emitSpeed
 	this->deviation = deviation;
 	pMesh = particleMesh;
 	rotationFollowsPath = false;
