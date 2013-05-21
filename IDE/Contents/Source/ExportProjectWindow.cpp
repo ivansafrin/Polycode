@@ -21,6 +21,9 @@
  */
  
 #include "ExportProjectWindow.h"
+#include "PolycodeFrame.h"
+
+extern PolycodeFrame *globalFrame;
 
 ExportProjectWindow::ExportProjectWindow() : UIWindow(L"Publish Project", 400, 300) {
 
@@ -89,8 +92,16 @@ void ExportProjectWindow::resetForm() {
 }
 
 void ExportProjectWindow::handleEvent(Event *event) {
-
 	if(event->getEventType() == "UIEvent") {
+		if(event->getEventCode() == UIEvent::OK_EVENT && event->getDispatcher() == globalFrame->fileDialog) {
+			String pathName = globalFrame->fileDialog->getSelection();
+			if(pathName != "")
+				projectLocationInput->setText(pathName);
+
+		}
+		
+		if(enabled) {						
+
 		if(event->getEventCode() == UIEvent::CLICK_EVENT) {
 			if(event->getDispatcher() == okButton) {
 				dispatchEvent(new UIEvent(), UIEvent::OK_EVENT);						
@@ -101,14 +112,21 @@ void ExportProjectWindow::handleEvent(Event *event) {
 			}			
 			
 			if(event->getDispatcher() == locationSelectButton) {
+#ifdef USE_POLYCODEUI_FILE_DIALOGS
+				std::vector<String> exts;
+				globalFrame->showFileBrowser(CoreServices::getInstance()->getCore()->getUserHomeDirectory(),  true, exts, false);
+				globalFrame->fileDialog->addEventListener(this, UIEvent::OK_EVENT);
+#else
 				String pathName = CoreServices::getInstance()->getCore()->openFolderPicker();
 				if(pathName != "")
 					projectLocationInput->setText(pathName);
+#endif
 			}			
 			
 		}
+		
+		}
 	}
-	
 	
 	UIWindow::handleEvent(event);	
 }
