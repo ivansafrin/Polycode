@@ -53,8 +53,6 @@ namespace Polycode {
 			
 			Number bgHeight;
 			
-			Number labelXPos;
-			Number labelYPos;
 			UIBox *bgRect;
 			ScreenImage *gripRect;
 			
@@ -64,7 +62,5 @@ namespace Polycode {
 			Number sliderWidth;
 			
 			ScreenShape *bgHitBox;
-			ScreenLabel *buttonLabel;
-			bool pressedDown;
 	};
 }

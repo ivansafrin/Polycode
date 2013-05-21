@@ -21,6 +21,7 @@
 */
 
 #include "PolyCocoaCore.h"
+#import "PolycodeView.h"
 #include <iostream>
 #include <limits.h>
 
@@ -28,6 +29,44 @@
 
 
 using namespace Polycode;
+
+static bool DisplayModeIs32Bit(CGDisplayModeRef displayMode)
+{
+	bool is32Bit = false;
+	CFStringRef pixelEncoding = CGDisplayModeCopyPixelEncoding(displayMode);
+    if(CFStringCompare(pixelEncoding, CFSTR(IO32BitDirectPixels), 0) == kCFCompareEqualTo)
+        is32Bit = true;
+    CFRelease(pixelEncoding);
+
+	return is32Bit;
+}
+
+static CGDisplayModeRef GetBestDisplayModeForParameters(size_t bitsPerPixel, size_t xRes, size_t yRes)
+{
+	CGDisplayModeRef bestDisplayMode = CGDisplayCopyDisplayMode(CGMainDisplayID());
+	size_t bestWidth = CGDisplayModeGetWidth(bestDisplayMode);
+	size_t bestHeight = CGDisplayModeGetHeight(bestDisplayMode);
+	NSArray* displayModes = (NSArray*)CGDisplayCopyAllDisplayModes(CGMainDisplayID(), NULL);
+	for(NSUInteger i = 0; i < [displayModes count]; ++i)
+	{
+		CGDisplayModeRef candidate = (CGDisplayModeRef)[displayModes objectAtIndex:i];
+		size_t candidateWidth  = CGDisplayModeGetWidth(candidate);
+		size_t candidateHeight = CGDisplayModeGetHeight(candidate);
+		if(!DisplayModeIs32Bit(candidate))
+			continue;
+		if(candidateWidth >= xRes && candidateWidth < bestWidth
+		   && candidateHeight >= yRes && candidateHeight < bestHeight)
+		{
+			CGDisplayModeRelease(bestDisplayMode);
+			bestDisplayMode = candidate;
+			bestWidth = candidateWidth;
+			bestHeight = candidateHeight;
+			CGDisplayModeRetain(bestDisplayMode);
+		}
+	}
+	[displayModes release];
+	return bestDisplayMode;
+}
 
 long getThreadID() {
 	return (long)pthread_self();
@@ -79,7 +118,7 @@ void CocoaCore::copyStringToClipboard(const String& str) {
     NSArray *types = [NSArray arrayWithObjects:NSStringPboardType, nil];
     [pb declareTypes:types owner:nil];
 	
-	NSString *nsstr = [NSString stringWithCString: str.c_str()];
+	NSString *nsstr = [NSString stringWithCString: str.c_str() encoding:NSUTF8StringEncoding];
 	/*
 	char* data = (char*)str.c_str();
 	unsigned size = str.size() * sizeof(char);
@@ -162,8 +201,18 @@ void CocoaCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, in
 //	} else {
 //		CGDisplaySwitchToMode (kCGDirectMainDisplay, CGDisplayBestModeForParameters (kCGDirectMainDisplay, 32, xRes, yRes, NULL) );						
 //	}
-	if(fullScreen) {	
-		CGDisplaySwitchToMode (kCGDirectMainDisplay, CGDisplayBestModeForParameters (kCGDirectMainDisplay, 32, xRes, yRes, NULL) );			
+	if(fullScreen) {
+#		if __MAC_OS_X_VERSION_MIN_REQUIRED < 1060
+		{
+			CGDisplaySwitchToMode (kCGDirectMainDisplay, CGDisplayBestModeForParameters (kCGDirectMainDisplay, 32, xRes, yRes, NULL) );
+		}
+#		else
+		{
+			CGDisplayModeRef bestDisplayMode = GetBestDisplayModeForParameters(32, xRes, yRes);
+			CGDisplaySetDisplayMode(CGMainDisplayID(), bestDisplayMode, NULL);
+			CGDisplayModeRelease(bestDisplayMode);
+		}
+#		endif
 		
 		if(monitorIndex > -1) {
 			if(monitorIndex > [[NSScreen screens] count]-1) {
@@ -199,18 +248,18 @@ void CocoaCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, in
 
 void CocoaCore::openFileWithApplication(String file, String application) {
 	NSWorkspace *workspace = [NSWorkspace sharedWorkspace];
-	NSString *filePath = [NSString stringWithCString:file.c_str()];
-	NSString *appString = [NSString stringWithCString:application.c_str()];
+	NSString *filePath = [NSString stringWithCString:file.c_str() encoding:NSUTF8StringEncoding];
+	NSString *appString = [NSString stringWithCString:application.c_str() encoding:NSUTF8StringEncoding];
 		
 	[workspace openFile: filePath withApplication: appString andDeactivate: YES];
 }
 
 void CocoaCore::launchApplicationWithFile(String application, String file) {
 	NSWorkspace *workspace = [NSWorkspace sharedWorkspace];
-	NSURL *url = [NSURL fileURLWithPath: [NSString stringWithCString:application.c_str()]];
+	NSURL *url = [NSURL fileURLWithPath: [NSString stringWithCString:application.c_str() encoding:NSUTF8StringEncoding]];
 
 	NSError *error = nil;
-	NSArray *arguments = [NSArray arrayWithObjects: [NSString stringWithCString:file.c_str()], nil];
+	NSArray *arguments = [NSArray arrayWithObjects: [NSString stringWithCString:file.c_str() encoding:NSUTF8StringEncoding], nil];
 	[workspace launchApplicationAtURL:url options:0 configuration:[NSDictionary dictionaryWithObject:arguments forKey:NSWorkspaceLaunchConfigurationArguments] error:&error];
 //Handle error
 }
@@ -227,8 +276,6 @@ String CocoaCore::executeExternalCommand(String command,  String args, String in
 	if(!fp) {
 		return "Unable to execute command";
 	}	
-	
-	int fd = fileno(fp);
 	
 	char path[1024];
 	String retString;
@@ -485,10 +532,9 @@ String CocoaCore::openFolderPicker() {
 	if ( [attachmentPanel runModal] == NSOKButton )
 	{
 		// files and directories selected.
-		NSArray* files = [attachmentPanel filenames];
-		NSString* fileName = [files objectAtIndex:0];
+		NSURL* url = [attachmentPanel URL];
 		[attachmentPanel release];
-		return [fileName UTF8String];
+		return [[url path] UTF8String];
 	} else {
 		[attachmentPanel release];	
 		return [@"" UTF8String];
@@ -515,13 +561,15 @@ vector<String> CocoaCore::openFilePicker(vector<CoreFileExtension> extensions, b
 		}
 	}
 	
-	if ( [attachmentPanel runModalForDirectory:nil file:nil types:types] == NSOKButton )
+	[attachmentPanel setAllowedFileTypes:types];
+	if ( [attachmentPanel runModal] == NSOKButton )
 	{
-		NSArray* files = [attachmentPanel filenames];
+		NSArray* files = [attachmentPanel URLs];
 	
 		if(files) {
 			for (int i=0; i < [files count]; i++) {		
-				NSString* fileName = [files objectAtIndex:i];
+				NSURL* url = [files objectAtIndex:i];
+				NSString* fileName = [url path];
 				retVector.push_back([fileName UTF8String]);
 			}
 		}
@@ -587,6 +635,8 @@ static void hatValueToXY(CFIndex value, CFIndex range, int * outX, int * outY) {
 }
 
 
+// Marked as unused to avoid a warning, assuming that this is useful for debugging.
+__attribute__((unused))
 static int IOHIDDeviceGetIntProperty(IOHIDDeviceRef deviceRef, CFStringRef key) {
 	CFTypeRef typeRef;
 	int value;
@@ -691,9 +741,7 @@ static void onDeviceMatched(void * context, IOReturn result, void * sender, IOHI
 CFArrayRef elements;
 	CFIndex elementIndex;
 	IOHIDElementRef element;
-	CFStringRef cfProductName;
 	IOHIDElementType type;
-	char * description;
 	
 	GamepadDeviceEntry *entry = new GamepadDeviceEntry();
 	entry->device = device;
@@ -752,7 +800,6 @@ static void onDeviceRemoved(void * context, IOReturn result, void * sender, IOHI
 
 void CocoaCore::shutdownGamepad() {
 	if (hidManager != NULL) {
-		unsigned int deviceIndex;
 		
 		IOHIDManagerRegisterDeviceMatchingCallback(hidManager, NULL, NULL);
 		IOHIDManagerRegisterDeviceRemovalCallback(hidManager, NULL, NULL);		

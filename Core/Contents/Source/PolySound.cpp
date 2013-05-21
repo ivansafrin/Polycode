@@ -21,7 +21,9 @@
 */
 
 #include "PolySound.h"
+#define OV_EXCLUDE_STATIC_CALLBACKS
 #include <vorbis/vorbisfile.h>
+#undef OV_EXCLUDE_STATIC_CALLBACKS
 #include "PolyString.h"
 #include "PolyLogger.h"
 
@@ -55,7 +57,7 @@ long custom_tellfunc(void *datasource) {
 	return OSBasics::tell(file);
 }
 
-Sound::Sound(const String& fileName) : sampleLength(-1), volume(1),pitch(1),referenceDistance(1),maxDistance(MAX_FLOAT) {
+Sound::Sound(const String& fileName) :  referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1), sampleLength(-1) {
 	checkALError("Construct: Loose error before construction");
 	soundLoaded = false;	
 
@@ -66,7 +68,7 @@ Sound::Sound(const String& fileName) : sampleLength(-1), volume(1),pitch(1),refe
 	checkALError("Construct from file: Finished");
 }
 
-Sound::Sound(const char *data, int size, int channels, int freq, int bps) : buffer(AL_NONE), soundSource(AL_NONE), sampleLength(-1), volume(1),pitch(1),referenceDistance(1),maxDistance(MAX_FLOAT) {
+Sound::Sound(const char *data, int size, int channels, int freq, int bps) : referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1), buffer(AL_NONE), soundSource(AL_NONE), sampleLength(-1) {
 	checkALError("Construct: Loose error before construction");
 	buffer = loadBytes(data, size, freq, channels, bps);
 	

@@ -142,7 +142,7 @@ namespace Polycode {
 		void setNumber(Number x)   { memcpy(data, &x, sizeof(x)); }
 		void setVector2(Vector2 x) { memcpy(data, &x, sizeof(x)); }
 		void setVector3(Vector3 x) { memcpy(data, &x, sizeof(x)); }
-		void setColor(Color x)     { memcpy(data, &x, sizeof(x)); }
+		void setColor(Color x)     { static_cast<Color*>(data)->setColor(&x); }
 	};	
 	
 	class RenderTargetBinding : public PolyBase {

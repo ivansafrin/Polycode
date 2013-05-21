@@ -26,7 +26,7 @@ THE SOFTWARE.
 
 using namespace Polycode;
 
-CollisionScene::CollisionScene(Vector3 size, bool virtualScene, bool deferInitCollision) : Scene(virtualScene), world(NULL), axisSweep(NULL), dispatcher(NULL), collisionConfiguration(NULL){ 
+CollisionScene::CollisionScene(Vector3 size, bool virtualScene, bool deferInitCollision) : Scene(virtualScene), world(NULL), collisionConfiguration(NULL), dispatcher(NULL), axisSweep(NULL) {
 	if(!deferInitCollision) {
 		initCollisionScene(size);
 	}

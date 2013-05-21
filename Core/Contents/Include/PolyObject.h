@@ -177,7 +177,7 @@ namespace Polycode {
 			entry->type = ObjectEntry::CONTAINER_ENTRY;			
 			entry->name = name;
 			children.push_back(entry);
-			length = children.size();
+			length = (int)children.size();
 			return entry;
 		}
 		
@@ -193,7 +193,7 @@ namespace Polycode {
 			entry->NumberVal = val;
 			entry->name = name;
 			children.push_back(entry);
-			length = children.size();			
+			length = (int)children.size();
 			return entry;			
 		}
 
@@ -210,7 +210,7 @@ namespace Polycode {
 			entry->intVal = val;
 			entry->name = name;
 			children.push_back(entry);	
-			length = children.size();			
+			length = (int)children.size();
 			return entry;			
 		}
 		
@@ -226,7 +226,7 @@ namespace Polycode {
 			entry->stringVal = val;
 			entry->name = name;
 			children.push_back(entry);
-			length = children.size();			
+			length = (int)children.size();
 			return entry;			
 		}		
 		
@@ -242,7 +242,7 @@ namespace Polycode {
 			entry->stringVal = val;
 			entry->name = name;
 			children.push_back(entry);
-			length = children.size();			
+			length = (int)children.size();
 			return entry;			
 		}		
 		
@@ -259,13 +259,13 @@ namespace Polycode {
 			entry->boolVal = val;
 			entry->name = name;
 			children.push_back(entry);
-			length = children.size();			
+			length = (int)children.size();
 			return entry;			
 		}
 		
 		ObjectEntry *addChild(ObjectEntry *entry) {
 			children.push_back(entry);
-			length = children.size();			
+			length = (int)children.size();
 			return entry;			
 		}		
 		
