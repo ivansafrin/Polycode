@@ -39,6 +39,8 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 	Matrix4 compoundMatrix = screenEntity->getConcatenatedMatrix();
 	entity->ignoreParentMatrix = true;
 	entity->scale = entityScale;
+	entityScale.x = fabs(entityScale.x);
+	entityScale.y = fabs(entityScale.y);
 	this->worldScale = worldScale;
 	collisionOnly = false;
 
