@@ -358,8 +358,6 @@ int main(int argc, char **argv) {
 	color->addChild("green", backgroundColorG);
 	color->addChild("blue", backgroundColorB);
 
-	addFileToZip(z, entryPoint, entryPoint, false);
-
 	if(configFile.root["fonts"]) {
 		runInfo.root.addChild(configFile.root["fonts"]);
 	}
