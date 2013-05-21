@@ -470,12 +470,14 @@ void MaterialEditorPane::setMaterial(Material *material) {
 		if(shader) {
 			if(currentMaterial->getShader(0)->getName() == shader->getName()) {
 				shaderProp->set(i);
+				shaderProp->dispatchEvent(new Event(), Event::CHANGE_EVENT);
 				break;
 			}
 		}
 	}
 	} else {
 		shaderProp->set(0);
+		shaderProp->dispatchEvent(new Event(), Event::CHANGE_EVENT);		
 	}	
 	
 	nameProp->set(currentMaterial->getName());

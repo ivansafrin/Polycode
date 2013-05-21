@@ -131,7 +131,7 @@ void SDLCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int 
 	if(resizableWindow) {
 		flags |= SDL_RESIZABLE;
 	}
-
+/*
 	if(vSync) {
 		flags |= SDL_DOUBLEBUF;
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
@@ -140,7 +140,7 @@ void SDLCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int 
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 0);
 		SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 0);
 	}
-
+*/
 	SDL_SetVideoMode(xRes, yRes, 0, flags);
 	
 	renderer->Resize(xRes, yRes);

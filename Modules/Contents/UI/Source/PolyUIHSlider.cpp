@@ -107,6 +107,7 @@ void UIHSlider::Resize(Number width, Number height) {
 	sliderWidth = width;
 	gripRect->setDragLimits(Rectangle(0,floor(bgHeight/2.0),width,0));	
 	setSliderValue(sliderValue);
+	bgHitBox->setShapeSize(width,  gripRect->getHeight());
 }
 			
 void UIHSlider::handleEvent(Event *event) {
