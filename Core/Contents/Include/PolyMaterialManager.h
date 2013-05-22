@@ -82,6 +82,7 @@ namespace Polycode {
 			
 			Shader *setShaderFromXMLNode(TiXmlNode *node);
 			Shader *createShaderFromXMLNode(TiXmlNode *node);
+			Shader *createShader(String shaderType, String name, String vpName, String fpName, bool screenShader);
 		
 			std::vector<Material*> loadMaterialsFromFile(String fileName);
 			std::vector<Shader*> loadShadersFromFile(String fileName);		

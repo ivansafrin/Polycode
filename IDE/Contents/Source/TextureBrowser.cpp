@@ -52,6 +52,8 @@ AssetEntry::AssetEntry(String assetPath, String assetName, String extension) : U
 		imageShape->loadTexture("Images/sprite_thumb.png");		
 	} else if(extension == "ttf" || extension == "otf") {
 		imageShape->loadTexture("Images/font_icon.png");
+	} else if(extension == "vert" || extension == "frag") {
+		imageShape->loadTexture("Images/shader_thumb.png");
 	}
 
 	

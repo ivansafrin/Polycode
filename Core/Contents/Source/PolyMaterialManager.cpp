@@ -172,6 +172,25 @@ Shader *MaterialManager::getShaderByIndex(unsigned int index) {
 		return NULL;
 }
 
+Shader *MaterialManager::createShader(String shaderType, String name, String vpName, String fpName, bool screenShader) {
+	Shader *retShader = NULL;
+	
+	for(int m=0; m < shaderModules.size(); m++) {
+		PolycodeShaderModule *shaderModule = shaderModules[m];
+		if(shaderModule->getShaderType() == shaderType) {
+			retShader = shaderModule->createShader(name, vpName, fpName);
+		}
+	}
+	
+	if(retShader) {
+		retShader->screenShader = screenShader;
+		retShader->numAreaLights = 0;
+		retShader->numSpotLights = 0;
+	}
+	
+	return retShader;
+}
+
 Shader *MaterialManager::createShaderFromXMLNode(TiXmlNode *node) {
 	TiXmlElement *nodeElement = node->ToElement();
 	if (!nodeElement) return NULL; // Skip comment nodes
@@ -180,7 +199,6 @@ Shader *MaterialManager::createShaderFromXMLNode(TiXmlNode *node) {
 	
 	if(nodeElement->Attribute("type")) {
 		String shaderType = nodeElement->Attribute("type");
-//		Logger::log("Attempting to create %s shader\n", shaderType.c_str());
 		for(int m=0; m < shaderModules.size(); m++) {
 			PolycodeShaderModule *shaderModule = shaderModules[m];
 			if(shaderModule->getShaderType() == shaderType) {

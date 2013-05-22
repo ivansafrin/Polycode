@@ -41,6 +41,7 @@ namespace Polycode {
 			void reloadPrograms();
 			String getShaderType();
 			Shader *createShader(TiXmlNode *node);
+			Shader *createShader(String name, String vpName, String fpName);
 			bool applyShaderMaterial(Renderer *renderer, Material *material, ShaderBinding *localOptions, unsigned int shaderIndex);	
 			void clearShader();
 		

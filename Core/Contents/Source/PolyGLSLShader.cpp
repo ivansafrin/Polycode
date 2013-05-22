@@ -119,12 +119,31 @@ void GLSLShader::linkProgram() {
     glAttachShader(shader_id, ((GLSLProgram*)vp)->program);	
 	glBindAttribLocation(shader_id, 6, "vTangent");	
     glLinkProgram(shader_id);
+	if(vp) {
+		vp->addEventListener(this, Event::RESOURCE_RELOAD_EVENT);
+	}
+	if(fp) {
+		fp->addEventListener(this, Event::RESOURCE_RELOAD_EVENT);
+	}	
 }
 
 void GLSLShader::unlinkProgram() {
+	if(vp) {
+		vp->removeAllHandlersForListener(this);
+	}
+	if(fp) {
+		fp->removeAllHandlersForListener(this);
+	}
 	glDetachShader(shader_id, ((GLSLProgram*)fp)->program);
     glDetachShader(shader_id, ((GLSLProgram*)vp)->program);
 	glDeleteProgram(shader_id);	
+}
+
+void GLSLShader::handleEvent(Event *event) {
+	if(event->getEventCode() == Event::RESOURCE_RELOAD_EVENT && (event->getDispatcher() == vp || event->getDispatcher() == fp)) {
+		unlinkProgram();
+		linkProgram();
+	}
 }
 
 void GLSLShader::setVertexProgram(ShaderProgram *vp) {

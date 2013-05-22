@@ -50,6 +50,8 @@ namespace Polycode {
 			ShaderBinding *createBinding();
 			virtual void reload();
 			
+			void handleEvent(Event *event);
+			
 			void setVertexProgram(ShaderProgram *vp);
 			void setFragmentProgram(ShaderProgram *fp);			
 				

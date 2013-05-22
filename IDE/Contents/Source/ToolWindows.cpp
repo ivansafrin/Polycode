@@ -101,9 +101,13 @@ YesNoPopup::YesNoPopup() : UIWindow(L"", 300, 80) {
 
 void YesNoPopup::setCaption(String caption) {
 	captionLabel->setText(caption);
-	setWindowSize(captionLabel->getWidth() + 50, 80);
-	captionLabel->setPosition(padding + (captionLabel->getWidth() + 50 - captionLabel->getWidth()) / 2.0, 35);
-	buttonAnchor->setPosition(padding + ((captionLabel->getWidth() + 50 - 220) / 2.0), 0);
+	
+	Number windowSize = captionLabel->getWidth() + 50;
+	if(windowSize < 400)
+		windowSize = 400;
+	setWindowSize(windowSize, 80);
+	captionLabel->setPosition(padding + (windowSize - captionLabel->getWidth()) / 2.0, 35);
+	buttonAnchor->setPosition(padding + ((windowSize - 220) / 2.0), 0);
 }
 
 void YesNoPopup::handleEvent(Event *event) {
@@ -158,9 +162,12 @@ YesNoCancelPopup::YesNoCancelPopup() : UIWindow(L"", 300, 80) {
 
 void YesNoCancelPopup::setCaption(String caption) {
 	captionLabel->setText(caption);
-	setWindowSize(captionLabel->getWidth() + 50, 80);
-	captionLabel->setPosition(padding + (captionLabel->getWidth() + 50 - captionLabel->getWidth()) / 2.0, 35);
-	buttonAnchor->setPosition(padding + ((captionLabel->getWidth() + 50 - 360) / 2.0), 0);
+	Number windowSize = captionLabel->getWidth() + 50;
+	if(windowSize < 400)
+		windowSize = 400;	
+	setWindowSize(windowSize, 80);
+	captionLabel->setPosition(padding + (windowSize - captionLabel->getWidth()) / 2.0, 35);
+	buttonAnchor->setPosition(padding + ((windowSize - 360) / 2.0), 0);
 }
 
 void YesNoCancelPopup::handleEvent(Event *event) {

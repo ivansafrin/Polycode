@@ -618,7 +618,8 @@ bool PolycodeMaterialEditor::openFile(OSFileEntry filePath) {
 	mainWindow->shaderPane->parentProject = parentProject;
 	
 	materialBrowser->newMaterialButton->addEventListener(this, UIEvent::CLICK_EVENT);
-	
+	materialBrowser->newShaderButton->addEventListener(this, UIEvent::CLICK_EVENT);
+		
 	mainWindow->materialPane->addEventListener(this, Event::CHANGE_EVENT);
 	
 	PolycodeEditor::openFile(filePath);
@@ -740,6 +741,18 @@ void PolycodeMaterialEditor::handleEvent(Event *event) {
 			materialBrowser->addMaterial(newMaterial)->setSelected();
 			materials.push_back(newMaterial);
 			setHasChanges(true);			
+	}	
+
+	if(event->getDispatcher() == materialBrowser->newShaderButton && event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {
+			Shader *newShader = CoreServices::getInstance()->getMaterialManager()->createShader("glsl", "Untitled", "Unlit.vert", "Unlit.frag", false);
+			if(newShader) {
+				materialBrowser->addShader(newShader);
+				shaders.push_back(newShader);
+				CoreServices::getInstance()->getMaterialManager()->addShader(newShader);
+				setHasChanges(true);	
+			} else {
+				printf("Error creating shader!\n");
+			}
 	}	
 		
 

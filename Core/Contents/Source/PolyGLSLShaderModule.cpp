@@ -112,6 +112,32 @@ String GLSLShaderModule::getShaderType() {
 	return "glsl";
 }
 
+Shader *GLSLShaderModule::createShader(String name, String vpName, String fpName) {
+
+	GLSLShader *retShader = NULL;
+
+	GLSLProgram *vp = NULL;
+	GLSLProgram *fp = NULL;
+		
+	std::vector<String> expectedTextures;
+	std::vector<ProgramParam> expectedFragmentParams;	
+	std::vector<ProgramParam> expectedVertexParams;
+
+	vp = (GLSLProgram*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_PROGRAM, vpName);
+	fp = (GLSLProgram*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_PROGRAM, fpName);
+		
+	if(vp != NULL && fp != NULL) {
+		GLSLShader *shader = new GLSLShader(vp,fp);
+		shader->setName(name);
+		shader->expectedTextures = expectedTextures;
+		shader->expectedVertexParams = expectedVertexParams;
+		shader->expectedFragmentParams = expectedFragmentParams;				
+		retShader = shader;
+		shaders.push_back((Shader*)shader);
+	}
+	return retShader;
+}
+
 Shader *GLSLShaderModule::createShader(TiXmlNode *node) {
 	TiXmlNode* pChild, *pChild2, *pChild3;	
 	GLSLProgram *vp = NULL;
