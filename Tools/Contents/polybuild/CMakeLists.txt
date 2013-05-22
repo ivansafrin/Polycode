@@ -21,9 +21,9 @@ SET(minizip_SRCS
 #IF(POLYCODE_BUILD_STATIC)
 ADD_EXECUTABLE(polybuild ${minizip_SRCS} Source/polybuild.cpp Include/polybuild.h)
 IF(APPLE)
-	TARGET_LINK_LIBRARIES(polybuild Polycore ${PHYSFS_LIBRARY} ${ZLIB_LIBRARIES} "-framework IOKit" "-framework Cocoa")
+	TARGET_LINK_LIBRARIES(polybuild Polycore ${LUA_LIBRARIES} ${PHYSFS_LIBRARY} ${ZLIB_LIBRARIES} "-framework IOKit" "-framework Cocoa")
 ELSE()
-	TARGET_LINK_LIBRARIES(polybuild Polycore ${PHYSFS_LIBRARY} ${ZLIB_LIBRARIES})
+	TARGET_LINK_LIBRARIES(polybuild Polycore ${LUA_LIBRARIES} ${PHYSFS_LIBRARY} ${ZLIB_LIBRARIES})
 ENDIF(APPLE)
 #ENDIF(POLYCODE_BUILD_STATIC)
 

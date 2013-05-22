@@ -140,6 +140,26 @@ void addFolderToZip(zipFile z, String folderPath, String parentFolder, bool sile
 	}
 }
 
+extern "C" int MyWriter(lua_State *L, const void *p, size_t sz, void *ud) {
+	int wr = fwrite(p, sz, 1, static_cast<FILE *>(ud));
+	// Non 0 means an error and stops lua_dump from calling the writer again.
+	return (wr != 1) && (sz != 0) ? 1 : 0;
+}
+
+int compileLuaScript(const char *source, const char *out) {
+	FILE *file = fopen(out, "wb");
+	if (!file) return 1;
+	lua_State *L = lua_open();
+	int err = 1;
+	if (L && 0 == luaL_loadfile(L, source)) {
+		err = lua_dump(L, MyWriter, file);
+	}
+	if (L) lua_close(L);
+	fclose(file);
+
+	return err;
+}
+
 #ifdef _WINDOWS
 void wtoc(char* Dest, TCHAR* Source, int SourceSize)
 {
@@ -371,7 +391,9 @@ int main(int argc, char **argv) {
   						const char *ostr = outPath->stringVal.c_str();
   						printf("Compiling script %s as %s\n", istr, ostr);
   						
-  						printf("Error compiling script. Ignoring.\n");
+  						if(compileLuaScript(istr, ostr) != 0) {
+  							printf("Error compiling script. Ignoring.\n");
+  						}
   						
   					} else {
   						printf("compileScript action specified, but requires source and out attributes. Ignoring.\n");
