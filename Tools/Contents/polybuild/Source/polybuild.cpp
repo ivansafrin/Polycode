@@ -358,6 +358,29 @@ int main(int argc, char **argv) {
 	color->addChild("green", backgroundColorG);
 	color->addChild("blue", backgroundColorB);
 
+	if(configFile.root["prebuildActions"]) {
+		ObjectEntry *prebuild = configFile.root["prebuildActions"];
+  		if (prebuild) {
+  			for(int i=0; i < prebuild->length; i++) {
+  				ObjectEntry *action = (*(*prebuild)[i])["action"];
+  				if (action && action->stringVal == "compileScript") {
+  					ObjectEntry *sourcePath = (*(*prebuild)[i])["source"];
+  					ObjectEntry *outPath = (*(*prebuild)[i])["out"];
+  					if (sourcePath && outPath) {
+  						const char *istr = sourcePath->stringVal.c_str();
+  						const char *ostr = outPath->stringVal.c_str();
+  						printf("Compiling script %s as %s\n", istr, ostr);
+  						
+  						printf("Error compiling script. Ignoring.\n");
+  						
+  					} else {
+  						printf("compileScript action specified, but requires source and out attributes. Ignoring.\n");
+  					}
+  				}
+  			}
+  		}
+  	}
+
 	if(configFile.root["fonts"]) {
 		runInfo.root.addChild(configFile.root["fonts"]);
 	}
