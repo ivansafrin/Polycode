@@ -146,12 +146,13 @@ extern "C" int MyWriter(lua_State *L, const void *p, size_t sz, void *ud) {
 	return (wr != 1) && (sz != 0) ? 1 : 0;
 }
 
-int compileLuaScript(const char *source, const char *out) {
-	FILE *file = fopen(out, "wb");
+// Returns 0 on success.
+int compileLuaScript(String sourcePath, String outPath) {
+	FILE *file = fopen(outPath.c_str(), "wb");
 	if (!file) return 1;
 	lua_State *L = lua_open();
 	int err = 1;
-	if (L && 0 == luaL_loadfile(L, source)) {
+	if (L && 0 == luaL_loadfile(L, sourcePath.c_str())) {
 		err = lua_dump(L, MyWriter, file);
 	}
 	if (L) lua_close(L);
@@ -387,11 +388,9 @@ int main(int argc, char **argv) {
   					ObjectEntry *sourcePath = (*(*prebuild)[i])["source"];
   					ObjectEntry *outPath = (*(*prebuild)[i])["out"];
   					if (sourcePath && outPath) {
-  						const char *istr = sourcePath->stringVal.c_str();
-  						const char *ostr = outPath->stringVal.c_str();
-  						printf("Compiling script %s as %s\n", istr, ostr);
+  						printf("Compiling script %s as %s\n", sourcePath->stringVal.c_str(), outPath->stringVal.c_str());
   						
-  						if(compileLuaScript(istr, ostr) != 0) {
+  						if(compileLuaScript(sourcePath->stringVal, outPath->stringVal) != 0) {
   							printf("Error compiling script. Ignoring.\n");
   						}
   						
