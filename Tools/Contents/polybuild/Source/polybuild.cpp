@@ -149,13 +149,13 @@ extern "C" int MyWriter(lua_State *L, const void *p, size_t sz, void *ud) {
 // Returns 0 on success.
 int compileLuaScript(String sourcePath, String outPath) {
 	FILE *file = fopen(outPath.c_str(), "wb");
-	if (!file) return 1;
+	if(!file) return 1;
 	lua_State *L = lua_open();
 	int err = 1;
-	if (L && 0 == luaL_loadfile(L, sourcePath.c_str())) {
+	if(L && 0 == luaL_loadfile(L, sourcePath.c_str())) {
 		err = lua_dump(L, MyWriter, file);
 	}
-	if (L) lua_close(L);
+	if(L) lua_close(L);
 	fclose(file);
 
 	return err;
@@ -381,13 +381,13 @@ int main(int argc, char **argv) {
 
 	if(configFile.root["prebuildActions"]) {
 		ObjectEntry *prebuild = configFile.root["prebuildActions"];
-  		if (prebuild) {
+  		if(prebuild) {
   			for(int i=0; i < prebuild->length; i++) {
   				ObjectEntry *action = (*(*prebuild)[i])["action"];
-  				if (action && action->stringVal == "compileScript") {
+  				if(action && action->stringVal == "compileScript") {
   					ObjectEntry *sourcePath = (*(*prebuild)[i])["source"];
   					ObjectEntry *outPath = (*(*prebuild)[i])["out"];
-  					if (sourcePath && outPath) {
+  					if(sourcePath && outPath) {
   						printf("Compiling script %s as %s\n", sourcePath->stringVal.c_str(), outPath->stringVal.c_str());
   						
   						if(compileLuaScript(sourcePath->stringVal, outPath->stringVal) != 0) {
