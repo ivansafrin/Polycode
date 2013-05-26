@@ -41,6 +41,8 @@ using std::vector;
 extern PFNGLUSEPROGRAMPROC glUseProgram;
 extern PFNGLUNIFORM1IPROC glUniform1i;
 extern PFNGLACTIVETEXTUREPROC glActiveTexture;
+extern PFNGLGETPROGRAMIVPROC glGetProgramiv;
+extern PFNGLGETACTIVEUNIFORMPROC glGetActiveUniform;
 extern PFNGLCREATESHADERPROC glCreateShader;
 extern PFNGLSHADERSOURCEPROC glShaderSource;
 extern PFNGLCOMPILESHADERPROC glCompileShader;

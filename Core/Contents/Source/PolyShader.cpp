@@ -127,6 +127,7 @@ LocalShaderParam * ShaderBinding::addParam(int type, const String& name) {
 	newParam->data = defaultData;
 	newParam->name = name;
 	localParams.push_back(newParam);
+	return newParam;
 }
 
 void ShaderBinding::addRenderTargetBinding(RenderTargetBinding *binding) {
