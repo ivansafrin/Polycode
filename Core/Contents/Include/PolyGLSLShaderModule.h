@@ -46,8 +46,7 @@ namespace Polycode {
 			void clearShader();
 		
 	protected:
-
-		ProgramParam addParamToProgram(GLSLProgram *program,TiXmlNode *node);		
+		
 		GLSLProgram *createGLSLProgram(const String& fileName, int type);
 		void updateGLSLParam(Renderer *renderer, GLSLShader *glslShader, ProgramParam &param, ShaderBinding *materialOptions, ShaderBinding *localOptions);			
 		

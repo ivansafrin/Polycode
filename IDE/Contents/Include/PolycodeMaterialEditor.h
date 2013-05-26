@@ -144,8 +144,7 @@ class MaterialEditorPane : public UIElement {
 		ComboProp *shaderProp;
 		
 		ShaderTexturesSheet *shaderTextureSheet;
-		ShaderOptionsSheet *vertexOptionsSheet;	
-		ShaderOptionsSheet *fragmentOptionsSheet;
+		ShaderOptionsSheet *shaderOptionsSheet;	
 };
 
 class MaterialMainWindow : public UIElement {

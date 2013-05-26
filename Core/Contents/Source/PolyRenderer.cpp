@@ -347,19 +347,9 @@ void *Renderer::getDataPointerForName(const String &name) {
 }
 
 void Renderer::setRendererShaderParams(Shader *shader, ShaderBinding *binding) {
-	for(int i=0; i < shader->expectedFragmentParams.size(); i++) {
-		if(shader->expectedFragmentParams[i].isAuto) {
-			binding->addLocalParam(shader->expectedFragmentParams[i].name, getDataPointerForName(shader->expectedFragmentParams[i].name));
-		}
+	for(int i=0; i < shader->expectedParams.size(); i++) {
+		binding->addLocalParam(shader->expectedParams[i].name, getDataPointerForName(shader->expectedParams[i].name));
 	}
-
-	for(int i=0; i < shader->expectedVertexParams.size(); i++) {
-		if(shader->expectedVertexParams[i].isAuto) {			
-			binding->addLocalParam(shader->expectedVertexParams[i].name, getDataPointerForName(shader->expectedVertexParams[i].name));
-		}
-	}
-
-
 }
 
 void Renderer::pushDataArrayForMesh(Mesh *mesh, int arrayType) {

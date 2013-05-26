@@ -47,9 +47,25 @@ ResourceManager::ResourceManager() {
 ResourceManager::~ResourceManager() {
 		printf("Shutting down resource manager...\n");
 		PHYSFS_deinit();
+		
 		for(int i=0; i < resources.size(); i++)	{
-			delete resources[i];
+			if(resources[i]->getResourceType() == Resource::RESOURCE_MATERIAL) {
+				delete resources[i];
+			}
 		}
+		
+		for(int i=0; i < resources.size(); i++)	{
+			if(resources[i]->getResourceType() == Resource::RESOURCE_SHADER) {
+				delete resources[i];
+			}
+		}
+
+		for(int i=0; i < resources.size(); i++)	{
+			if(resources[i]->getResourceType() == Resource::RESOURCE_PROGRAM) {
+				delete resources[i];
+			}
+		}
+		
 		resources.clear();
 }
 

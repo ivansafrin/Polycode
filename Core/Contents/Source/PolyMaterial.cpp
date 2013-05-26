@@ -70,21 +70,11 @@ void Material::addShader(Shader *shader,ShaderBinding *shaderBinding) {
 	materialShaders.push_back(shader);
 	shaderBindings.push_back(shaderBinding);
 	
-	for(int i=0; i < shader->expectedFragmentParams.size(); i++) {
-		if(!shaderBinding->getLocalParamByName(shader->expectedFragmentParams[i].name)) {
-		if(!shader->expectedFragmentParams[i].isAuto) {
-			shaderBinding->addParam(shader->expectedFragmentParams[i].typeString, shader->expectedFragmentParams[i].name, shader->expectedFragmentParams[i].valueString);
+	for(int i=0; i < shader->expectedParams.size(); i++) {
+		if(!shaderBinding->getLocalParamByName(shader->expectedParams[i].name)) {
+			shaderBinding->addParam(shader->expectedParams[i].type, shader->expectedParams[i].name);
 		}
-		}
-	}		
-	
-	for(int i=0; i < shader->expectedVertexParams.size(); i++) {
-		if(!shaderBinding->getLocalParamByName(shader->expectedVertexParams[i].name)) {
-		if(!shader->expectedVertexParams[i].isAuto) {	
-			shaderBinding->addParam(shader->expectedVertexParams[i].typeString, shader->expectedVertexParams[i].name, shader->expectedVertexParams[i].valueString);
-		}
-		}
-	}	
+	}
 	
 	CoreServices::getInstance()->getRenderer()->setRendererShaderParams(shader, shaderBinding);	
 }

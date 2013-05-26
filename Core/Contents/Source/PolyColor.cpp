@@ -92,6 +92,19 @@ Color Color::blendColor(Color c2, int mode, Number amount, Color c3) {
 			ret.b = (b * (1.0-premul)) + (c3.b * premul);
 			ret.a = a + premul;
 		break;
+		case Color::BLEND_ADDITIVE:
+			ret.r = r + (c2.r);
+			ret.g = g + (c2.g);
+			ret.b = b + (c2.b);
+			ret.a = a + premul;
+			if(ret.r > 1.0)
+				ret.r = 1.0;
+			if(ret.g > 1.0)
+				ret.g = 1.0;
+			if(ret.b > 1.0)
+				ret.b = 1.0;
+
+		break;		
 	}
 	
 	if(ret.a > 1.0)

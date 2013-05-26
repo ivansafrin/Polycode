@@ -45,11 +45,6 @@ Texture *FixedShaderBinding::getDiffuseTexture() {
 	return textures[0];
 }
 
-void FixedShaderBinding::addParam(const String& type, const String& name, const String& value) {
-
-}
-
-
 FixedShader::FixedShader() : Shader(Shader::FIXED_SHADER) {
 }
 

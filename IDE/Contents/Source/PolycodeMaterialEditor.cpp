@@ -270,14 +270,10 @@ MaterialEditorPane::MaterialEditorPane() : UIElement() {
 	shaderTextureSheet = new ShaderTexturesSheet();
 	propList->addPropSheet(shaderTextureSheet);			
 	shaderTextureSheet->addEventListener(this, Event::CHANGE_EVENT);
-	
-	vertexOptionsSheet = new ShaderOptionsSheet("VERTEX SHADER OPTIONS", "vertex_options", false);
-	propList->addPropSheet(vertexOptionsSheet);
-	vertexOptionsSheet->addEventListener(this, Event::CHANGE_EVENT);
-	
-	fragmentOptionsSheet = new ShaderOptionsSheet("FRAGMENT SHADER OPTIONS", "fragment_options", true);
-	propList->addPropSheet(fragmentOptionsSheet);
-	fragmentOptionsSheet->addEventListener(this, Event::CHANGE_EVENT);
+		
+	shaderOptionsSheet = new ShaderOptionsSheet("SHADER OPTIONS", "shader_options", true);
+	propList->addPropSheet(shaderOptionsSheet);
+	shaderOptionsSheet->addEventListener(this, Event::CHANGE_EVENT);
 		
 	propList->updateProps();
 						
@@ -406,7 +402,7 @@ void MaterialEditorPane::showPrimitive(unsigned int index) {
 
 void MaterialEditorPane::handleEvent(Event *event) {
 
-	if(event->getDispatcher() == shaderTextureSheet || event->getDispatcher() == vertexOptionsSheet || event->getDispatcher() == fragmentOptionsSheet) {
+	if(event->getDispatcher() == shaderTextureSheet || event->getDispatcher() == shaderOptionsSheet) {
 		if(!changingMaterial) {
 			dispatchEvent(new Event(), Event::CHANGE_EVENT);
 		}		
@@ -434,8 +430,7 @@ void MaterialEditorPane::handleEvent(Event *event) {
 			}
 			
 			shaderTextureSheet->setShader(selectedShader, currentMaterial);
-			vertexOptionsSheet->setShader(selectedShader, currentMaterial);
-			fragmentOptionsSheet->setShader(selectedShader, currentMaterial);						
+			shaderOptionsSheet->setShader(selectedShader, currentMaterial);
 		}
 		
 		if(!changingMaterial) {
@@ -630,22 +625,22 @@ String PolycodeMaterialEditor::createStringValue(unsigned int type, void *value)
 	String retString;
 	
 	switch(type) {
-		case ProgramParam::PARAM_Number:
+		case ProgramParam::PARAM_NUMBER:
 			retString = String::NumberToString(*((Number*)value));
 		break;
-		case ProgramParam::PARAM_Color:
+		case ProgramParam::PARAM_COLOR:
 		{
 			Color color = *((Color*)value);
 			retString = String::NumberToString(color.r) + " " + String::NumberToString(color.g) + " " + String::NumberToString(color.b) + " " + String::NumberToString(color.a);
 		}
 		break;
-		case ProgramParam::PARAM_Vector2:
+		case ProgramParam::PARAM_VECTOR2:
 		{
 			Vector2 vec = *((Vector2*)value);
 			retString = String::NumberToString(vec.x) + " " + String::NumberToString(vec.y);
 		}
 		break;
-		case ProgramParam::PARAM_Vector3:
+		case ProgramParam::PARAM_VECTOR3:
 		{
 			Vector3 vec = *((Vector3*)value);
 			retString = String::NumberToString(vec.x) + " " + String::NumberToString(vec.y) + " " + String::NumberToString(vec.z);
@@ -690,28 +685,17 @@ void PolycodeMaterialEditor::saveFile() {
 			}
 		}
 
-		if(shader->expectedFragmentParams.size() > 0 || shader->expectedVertexParams.size() > 0) {
+		if(shader->expectedParams.size() > 0 || shader->expectedParams.size() > 0) {
 			ObjectEntry *paramsEntry = shaderEntry->addChild("params");
 			
-			for(int j=0; j < shader->expectedFragmentParams.size(); j++) {
-				if(shaderBinding->getLocalParamByName(shader->expectedFragmentParams[j].name) && !shader->expectedFragmentParams[j].isAuto) {
-				ObjectEntry *paramEntry = paramsEntry->addChild("param");
-				paramEntry->addChild("name", shader->expectedFragmentParams[j].name);
-				paramEntry->addChild("type", shader->expectedFragmentParams[j].typeString);
-				paramEntry->addChild("value", createStringValue(shader->expectedFragmentParams[j].paramType, shaderBinding->getLocalParamByName(shader->expectedFragmentParams[j].name)->data));
+			for(int j=0; j < shader->expectedParams.size(); j++) {
+				if(shaderBinding->getLocalParamByName(shader->expectedParams[j].name)) {
+					ObjectEntry *paramEntry = paramsEntry->addChild("param");
+					paramEntry->addChild("name", shader->expectedParams[j].name);
+					paramEntry->addChild("value", createStringValue(shader->expectedParams[j].type, shaderBinding->getLocalParamByName(shader->expectedParams[j].name)->data));
 				}
 			}
-
-			for(int j=0; j < shader->expectedVertexParams.size(); j++) {
-				if(shaderBinding->getLocalParamByName(shader->expectedVertexParams[j].name) && !shader->expectedVertexParams[j].isAuto) {
-				ObjectEntry *paramEntry = paramsEntry->addChild("param");
-				paramEntry->addChild("name", shader->expectedVertexParams[j].name);
-				paramEntry->addChild("type", shader->expectedVertexParams[j].typeString);
-				paramEntry->addChild("value", createStringValue(shader->expectedVertexParams[j].paramType, shaderBinding->getLocalParamByName(shader->expectedVertexParams[j].name)->data));
-				}
-			}
-			}
-			
+		}
 		}
 	}
 	

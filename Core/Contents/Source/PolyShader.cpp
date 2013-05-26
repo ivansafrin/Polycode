@@ -21,8 +21,47 @@
 */
 
 #include "PolyShader.h"
+#include "PolyMatrix4.h"
 
 using namespace Polycode;
+
+void *ProgramParam::createParamData(int type) {
+	switch (type) {
+		case PARAM_NUMBER:
+		{
+			Number *val = new Number();
+			return (void*)val;
+		}
+		break;
+		case PARAM_VECTOR2:
+		{
+			Vector2 *val = new Vector2();
+			return (void*)val;
+		}
+		break;
+		case PARAM_VECTOR3:
+		{
+			Vector3 *val = new Vector3();
+			return (void*)val;
+		}
+		break;		
+		case PARAM_COLOR:
+		{
+			Color *val = new Color();
+			return (void*)val;
+		}
+		break;		
+		case PARAM_MATRIX:
+		{
+			Matrix4 *val = new Matrix4();
+			return (void*)val;
+		}
+		break;		
+		default:		
+			return NULL;
+		break;
+	}
+}
 
 ShaderProgram::ShaderProgram(int type) : Resource(Resource::RESOURCE_PROGRAM) {
 	this->type = type;
@@ -35,82 +74,6 @@ ShaderProgram::~ShaderProgram() {
 void ShaderProgram::reloadResource() {
 	reloadProgram();
 	Resource::reloadResource();	
-}
-
-ProgramParam ShaderProgram::addParam(const String& name, const String& typeString, const String& valueString, bool isAuto, int autoID, int paramType, void *defaultData, void *minData, void *maxData) {
-	ProgramParam newParam;
-	newParam.name = name;
-	newParam.typeString = typeString;
-	newParam.valueString = valueString;	
-	newParam.paramType = paramType;
-	newParam.defaultData = defaultData;
-	newParam.minValue = minData;
-	newParam.maxValue = maxData;
-	newParam.isAuto = isAuto;
-	newParam.autoID = autoID;
-
-	params.push_back(newParam);
-	return newParam;
-}
-
-void ProgramParam::createParamData(int *retType, const String& type, const String& value, const String& min, const String& max, void **valueRes, void **minRes, void **maxRes) {
-		
-		(*valueRes) = NULL;
-		(*minRes) = NULL;
-		(*maxRes) = NULL;
-						
-		if(type == "Number") {
-			*retType = ProgramParam::PARAM_Number;
-			Number *val = new Number();
-			*val = atof(value.c_str());
-			(*valueRes) = (void*)val;
-			
-			val = new Number();
-			*val = atof(min.c_str());
-			(*minRes) = (void*)val;
-
-			val = new Number();
-			*val = atof(max.c_str());
-			(*maxRes) = (void*)val;			
-			
-			return;		
-		} else if(type == "Vector2") {
-			*retType = ProgramParam::PARAM_Vector2;
-			Vector2 *val = new Vector2();
-			(*valueRes) = (void*)val;
-			std::vector<String> values = value.split(" ");
-			if(values.size() == 2) {
-				val->set(atof(values[0].c_str()), atof(values[1].c_str()));
-			} else {
-				printf("Error: A Vector2 must have 2 values (%d provided)!\n", (int)values.size());
-			}
-			return;				
-		} else if(type == "Vector3") {
-			*retType = ProgramParam::PARAM_Vector3;
-			Vector3 *val = new Vector3();
-			(*valueRes) = (void*)val;
-			std::vector<String> values = value.split(" ");
-			if(values.size() == 3) {
-				val->set(atof(values[0].c_str()), atof(values[1].c_str()), atof(values[2].c_str()));
-			} else {
-				printf("Error: A Vector3 must have 3 values (%d provided)!\n", (int)values.size());
-			}
-			return;
-		} else if(type == "Color") {
-			*retType = ProgramParam::PARAM_Color;
-			Color *val = new Color();
-			(*valueRes) = (void*)val;
-			std::vector<String> values = value.split(" ");
-			if(values.size() == 4) {
-				val->setColor(atof(values[0].c_str()), atof(values[1].c_str()), atof(values[2].c_str()), atof(values[3].c_str()));
-			} else {
-				printf("Error: A Color must have 4 values (%d provided)!\n", (int)values.size());
-			}
-			return;			
-		} else {
-			*retType = ProgramParam::PARAM_UNKNOWN;
-			(*valueRes) =  NULL;
-		}
 }
 
 
@@ -158,6 +121,14 @@ LocalShaderParam *ShaderBinding::addLocalParam(const String& name, void *ptr) {
 	return newParam;
 }
 
+LocalShaderParam * ShaderBinding::addParam(int type, const String& name) {
+	void *defaultData = ProgramParam::createParamData(type);
+	LocalShaderParam *newParam = new LocalShaderParam();
+	newParam->data = defaultData;
+	newParam->name = name;
+	localParams.push_back(newParam);
+}
+
 void ShaderBinding::addRenderTargetBinding(RenderTargetBinding *binding) {
 	renderTargetBindings.push_back(binding);
 	if(binding->mode == RenderTargetBinding::MODE_IN) {
@@ -200,6 +171,15 @@ Shader::Shader(int type) : Resource(Resource::RESOURCE_SHADER) {
 	this->type = type;
 	vp = NULL;
 	fp = NULL;
+}
+
+int Shader::getExpectedParamType(String name) {
+	for(int i=0; i < expectedParams.size(); i++) {
+		if(expectedParams[i].name == name) {
+			return expectedParams[i].type;
+		}
+	}
+	return ProgramParam::PARAM_UNKNOWN;
 }
 
 Shader::~Shader() {

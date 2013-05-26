@@ -1351,8 +1351,8 @@ void ShaderOptionsSheet::handleEvent(Event *event) {
 	if(event->getEventCode() == Event::CHANGE_EVENT) {
 		for(int i=0 ; i < props.size(); i++) {
 			if(event->getDispatcher() == props[i]) {
-				if(props[i]->propType == "Slider") {
-					(*(Number*)binding->getLocalParamByName(props[i]->label->getText())->data) = ((SliderProp*)props[i])->get();
+				if(props[i]->propType == "Number") {
+					(*(Number*)binding->getLocalParamByName(props[i]->label->getText())->data) = ((NumberProp*)props[i])->get();
 				} else if(props[i]->propType == "Color") {
 					(*(Color*)binding->getLocalParamByName(props[i]->label->getText())->data) = ((ColorProp*)props[i])->get();
 				
@@ -1383,23 +1383,20 @@ void ShaderOptionsSheet::clearShader() {
 void ShaderOptionsSheet::setOptionsFromParams(std::vector<ProgramParam> &params) {
 
 	for(int i=0; i < params.size(); i++) {
-			if(!params[i].isAuto) {
-				switch (params[i].paramType) {
+				switch (params[i].type) {
 				
-					case ProgramParam::PARAM_Number:
+					case ProgramParam::PARAM_NUMBER:
 					{
 						String paramName = params[i].name;
-						Number paramMin = (*(Number*) params[i].minValue);
-						Number paramMax = (*(Number*) params[i].maxValue);						
-						SliderProp *sliderProp = new SliderProp(paramName, paramMin, paramMax);
-						addProp(sliderProp);
-						
+						NumberProp *numberProp = new NumberProp(paramName);
+						addProp(numberProp);
+												
 						Number numberValue = (*(Number*)binding->getLocalParamByName(params[i].name)->data);
-						sliderProp->set(numberValue);
+						numberProp->set(numberValue);
 						propHeight += 30;
 					}
 					break;					
-					case ProgramParam::PARAM_Color:
+					case ProgramParam::PARAM_COLOR:
 					{
 						String paramName = params[i].name;
 						
@@ -1414,8 +1411,6 @@ void ShaderOptionsSheet::setOptionsFromParams(std::vector<ProgramParam> &params)
 					break;
 					
 				}				
-														
-			}
 		}	
 }
 
@@ -1429,11 +1424,7 @@ void ShaderOptionsSheet::setShader(Shader *shader, Material *material) {
 		
 	binding = material->getShaderBinding(0);
 	
-	if(fragmentParams) {	
-		setOptionsFromParams(shader->expectedFragmentParams);
-	} else {
-		setOptionsFromParams(shader->expectedVertexParams);
-	}
+	setOptionsFromParams(shader->expectedParams);
 	
 	dispatchEvent(new Event(), Event::COMPLETE_EVENT);	
 	Resize(width, height);

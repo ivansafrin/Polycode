@@ -39,24 +39,16 @@ namespace Polycode {
 		public:
 	
 	String name;
-	String typeString;
-	String valueString;
-	bool isAuto;
-	int autoID;
-	void *defaultData;
-	void *minValue;
-	void *maxValue;	
-	int paramType;
-			
+	int type;
+
+	static void *createParamData(int type);
+	
 	static const int PARAM_UNKNOWN = 0;	
-	static const int PARAM_Number = 1;
-	static const int PARAM_Vector2 = 2;		
-	static const int PARAM_Vector3 = 3;
-	static const int PARAM_Color = 4;
-	
-	static void createParamData(int *retType, const String& type, const String& value, const String& min, const String& max, void **valueRes, void **minRes, void **maxRes);	
-	
-	
+	static const int PARAM_NUMBER = 1;
+	static const int PARAM_VECTOR2 = 2;		
+	static const int PARAM_VECTOR3 = 3;
+	static const int PARAM_COLOR = 4;
+	static const int PARAM_MATRIX = 5;
 	};	
 
 	class _PolyExport ShaderProgram : public Resource {
@@ -73,10 +65,6 @@ namespace Polycode {
 			
 			void reloadResource();
 			
-			std::vector<ProgramParam> params;
-			
-			ProgramParam addParam(const String& name, const String& typeString, const String& valueString, bool isAuto, int autoID, int paramType, void *defaultData, void *minData, void *maxData);
-					
 	};
 
 	class _PolyExport Shader : public Resource {
@@ -89,7 +77,9 @@ namespace Polycode {
 			const String& getName() const;
 			
 			virtual ShaderBinding *createBinding() = 0;
-			virtual void reload() {}
+			virtual void reload() {}								
+			
+			int getExpectedParamType(String name);
 			
 			virtual void setVertexProgram(ShaderProgram *vp) {}
 			virtual void setFragmentProgram(ShaderProgram *fp) {}
@@ -101,8 +91,8 @@ namespace Polycode {
 			int numAreaLights;
 			
 			std::vector<String> expectedTextures;
-			std::vector<ProgramParam> expectedFragmentParams;
-			std::vector<ProgramParam> expectedVertexParams;
+			std::vector<String> expectedCubemaps;			
+			std::vector<ProgramParam> expectedParams;
 								
 			bool screenShader;
 			
@@ -165,7 +155,7 @@ namespace Polycode {
 			virtual Texture *getTexture(const String& name){ return NULL;};
 			virtual void clearTexture(const String& name){};
 			virtual void addTexture(const String& name, Texture *texture)  {};
-			virtual void addParam(const String& type, const String& name, const String& value) {};
+			LocalShaderParam *addParam(int type, const String& name);
 			virtual void addCubemap(const String& name, Cubemap *cubemap) {};
 		
 			unsigned int getNumLocalParams();

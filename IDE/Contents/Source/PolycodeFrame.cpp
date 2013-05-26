@@ -801,7 +801,7 @@ void PolycodeFrame::handleEvent(Event *event) {
 	}
 	
 	if(event->getDispatcher() == editorManager) {
-		updateFileSelector();
+	//	updateFileSelector();
 	}
 	
 	if(event->getDispatcher() == projectManager) {

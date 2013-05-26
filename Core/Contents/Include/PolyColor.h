@@ -262,7 +262,8 @@ namespace Polycode {
 
 			const static int BLEND_NORMAL = 0;
 			const static int BLEND_REPLACE_COLOR = 1;
-						
+			const static int BLEND_ADDITIVE = 2;
+									
 		protected:
 	
 	};
