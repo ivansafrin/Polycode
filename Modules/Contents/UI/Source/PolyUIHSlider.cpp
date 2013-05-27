@@ -94,6 +94,13 @@ void UIHSlider::setSliderValue(Number val) {
 	}
 }
 
+bool UIHSlider::isContinuous() {
+	return continuous;
+}
+void UIHSlider::setContinuous(bool _continuous) {
+	continuous = _continuous;
+}
+
 Number UIHSlider::getSliderValue() {
 	return sliderValue;
 }
@@ -157,5 +164,8 @@ void UIHSlider::Update() {
 	if(gripRect->getPosition().x != gripPos) {
 		gripPos = gripRect->getPosition().x;
 		sliderValue = startValue+((endValue - startValue) * (gripPos/sliderWidth));
+		if (continuous) {
+			dispatchEvent(new UIEvent(), UIEvent::CHANGE_EVENT);
+		}
 	}
 }
