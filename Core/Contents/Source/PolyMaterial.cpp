@@ -53,6 +53,10 @@ void Material::clearShaders() {
 		delete materialShaders[i];
 	}
 	*/
+	
+	for(int i=0; i < materialShaders.size(); i++)	{
+		materialShaders[i]->removeAllHandlersForListener(this);
+	}	
 	materialShaders.clear();
 
 	for(int i=0; i < shaderBindings.size(); i++)	{
@@ -65,18 +69,30 @@ void Material::clearShaders() {
 	}
 	renderTargets.clear();		
 }
+
+void Material::handleEvent(Event *event) {
+	std::vector<Shader*> _materialShaders = materialShaders;
+	clearShaders();
+	for(int i=0; i < _materialShaders.size(); i++)	{
+		ShaderBinding *newShaderBinding = _materialShaders[i]->createBinding();				
+		addShader(_materialShaders[i], newShaderBinding);
+	}	
+	dispatchEvent(new Event(), Event::RESOURCE_RELOAD_EVENT);	
+}
 			
 void Material::addShader(Shader *shader,ShaderBinding *shaderBinding) {
 	materialShaders.push_back(shader);
 	shaderBindings.push_back(shaderBinding);
 	
+	shader->addEventListener(this, Event::RESOURCE_RELOAD_EVENT);
+	
+	CoreServices::getInstance()->getRenderer()->setRendererShaderParams(shader, shaderBinding);	
+	
 	for(int i=0; i < shader->expectedParams.size(); i++) {
 		if(!shaderBinding->getLocalParamByName(shader->expectedParams[i].name)) {
 			shaderBinding->addParam(shader->expectedParams[i].type, shader->expectedParams[i].name);
 		}
-	}
-	
-	CoreServices::getInstance()->getRenderer()->setRendererShaderParams(shader, shaderBinding);	
+	}	
 }
 
 

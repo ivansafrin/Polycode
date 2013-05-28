@@ -451,9 +451,13 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 
 							if(strcmp(pChild2->Value(), "param") == 0){
 								String pname =  pChild2Element->Attribute("name");
+								
+								if(!CoreServices::getInstance()->getRenderer()->getDataPointerForName(pname)) {								
 								String pvalue =  pChild2Element->Attribute("value");																
 								int type = materialShader->getExpectedParamType(pname);								
 								LocalShaderParam *param = newShaderBinding->addParam(type, pname);
+								
+								
 								if(param) {
 									switch(type) {
 										case ProgramParam::PARAM_NUMBER:
@@ -491,6 +495,7 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 											}
 										}										
 										break;										
+									}
 									}
 								}
 							}						

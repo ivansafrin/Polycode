@@ -333,7 +333,7 @@ class PropSheet : public UIElement {
 
 class ShaderOptionsSheet : public PropSheet {
 	public:
-		ShaderOptionsSheet(String title, String name, bool fragmentParams);
+		ShaderOptionsSheet(String title, String name);
 		~ShaderOptionsSheet();
 		
 		void handleEvent(Event *event);
@@ -344,7 +344,6 @@ class ShaderOptionsSheet : public PropSheet {
 		void setShader(Shader *shader, Material *material);
 				
 	private:
-		bool fragmentParams;
 		Shader *shader;
 		Material *material;
 		ShaderBinding *binding;

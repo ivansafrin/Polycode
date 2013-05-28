@@ -154,7 +154,6 @@ int GLSLShader::getPolycodeParamType(int glType) {
 }
 
 void GLSLShader::linkProgram() {
-
 	expectedParams.clear();
 	expectedTextures.clear();
 	expectedCubemaps.clear();
@@ -185,6 +184,7 @@ void GLSLShader::linkProgram() {
 		switch(type) {
 			case GL_SAMPLER_2D:
 				expectedTextures.push_back(String(name));
+				printf("expectedTextures: %s\n", name);
 			break;
 			case GL_SAMPLER_CUBE:
 				expectedCubemaps.push_back(String(name));
@@ -198,6 +198,8 @@ void GLSLShader::linkProgram() {
 		}
 		}
 	}	
+	
+	dispatchEvent(new Event(), Event::RESOURCE_RELOAD_EVENT);
 }
 
 void GLSLShader::unlinkProgram() {

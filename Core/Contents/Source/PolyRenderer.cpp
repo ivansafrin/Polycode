@@ -348,7 +348,10 @@ void *Renderer::getDataPointerForName(const String &name) {
 
 void Renderer::setRendererShaderParams(Shader *shader, ShaderBinding *binding) {
 	for(int i=0; i < shader->expectedParams.size(); i++) {
-		binding->addLocalParam(shader->expectedParams[i].name, getDataPointerForName(shader->expectedParams[i].name));
+		void *dataPtr = getDataPointerForName(shader->expectedParams[i].name);
+		if(dataPtr) {
+			binding->addLocalParam(shader->expectedParams[i].name, dataPtr);
+		}
 	}
 }
 

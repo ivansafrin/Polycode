@@ -44,7 +44,9 @@ namespace Polycode {
 			void addShaderRenderTarget(ShaderRenderTarget *newTarget);
 			int getNumShaderRenderTargets();
 			ShaderRenderTarget *getShaderRenderTarget(unsigned int index);
-				
+			
+			void handleEvent(Event *event);
+						
 			const String& getName() const;
 			Shader *getShader(unsigned int index) const;
 			ShaderBinding *getShaderBinding(unsigned int index) const;

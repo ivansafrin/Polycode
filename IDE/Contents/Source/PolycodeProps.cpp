@@ -1336,9 +1336,8 @@ void EntityPropSheet::Update() {
 	}
 }
 
-ShaderOptionsSheet::ShaderOptionsSheet(String title, String name, bool fragmentParams) : PropSheet(title, name){
+ShaderOptionsSheet::ShaderOptionsSheet(String title, String name) : PropSheet(title, name){
 	shader = NULL;
-	this->fragmentParams = fragmentParams;
 	propHeight = 40;
 }
 
@@ -1383,6 +1382,7 @@ void ShaderOptionsSheet::clearShader() {
 void ShaderOptionsSheet::setOptionsFromParams(std::vector<ProgramParam> &params) {
 
 	for(int i=0; i < params.size(); i++) {
+		if(!CoreServices::getInstance()->getRenderer()->getDataPointerForName(params[i].name)) {			
 				switch (params[i].type) {
 				
 					case ProgramParam::PARAM_NUMBER:
@@ -1410,7 +1410,8 @@ void ShaderOptionsSheet::setOptionsFromParams(std::vector<ProgramParam> &params)
 					}
 					break;
 					
-				}				
+				}	
+			}
 		}	
 }
 

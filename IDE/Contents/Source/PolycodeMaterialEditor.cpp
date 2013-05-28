@@ -271,7 +271,7 @@ MaterialEditorPane::MaterialEditorPane() : UIElement() {
 	propList->addPropSheet(shaderTextureSheet);			
 	shaderTextureSheet->addEventListener(this, Event::CHANGE_EVENT);
 		
-	shaderOptionsSheet = new ShaderOptionsSheet("SHADER OPTIONS", "shader_options", true);
+	shaderOptionsSheet = new ShaderOptionsSheet("SHADER OPTIONS", "shader_options");
 	propList->addPropSheet(shaderOptionsSheet);
 	shaderOptionsSheet->addEventListener(this, Event::CHANGE_EVENT);
 		
@@ -286,7 +286,12 @@ MaterialEditorPane::MaterialEditorPane() : UIElement() {
 	ScenePrimitive *previewBg = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 15.0, 15.0, 15.0);
 	previewBg->Yaw(45.0);
 	previewBg->backfaceCulled = false;
-	previewBg->loadTexture("Images/material_grid.png");
+	
+	Material *bgMaterial = CoreServices::getInstance()->getMaterialManager()->createMaterial("MaterialEditorBg", "Unlit");
+	
+	previewBg->setMaterial(bgMaterial);
+	Texture *tex = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile("Images/material_grid.png");
+	previewBg->getLocalShaderOptions()->addTexture("diffuse", tex);
 	previewScene->addChild(previewBg);
 	
 	previewScene->clearColor.setColor(0.1, 0.1, 0.1, 0.0);	
@@ -402,6 +407,11 @@ void MaterialEditorPane::showPrimitive(unsigned int index) {
 
 void MaterialEditorPane::handleEvent(Event *event) {
 
+	if(event->getDispatcher() == currentMaterial) {
+		shaderTextureSheet->setShader(currentMaterial->getShader(0), currentMaterial);
+		shaderOptionsSheet->setShader(currentMaterial->getShader(0), currentMaterial);		
+	}
+
 	if(event->getDispatcher() == shaderTextureSheet || event->getDispatcher() == shaderOptionsSheet) {
 		if(!changingMaterial) {
 			dispatchEvent(new Event(), Event::CHANGE_EVENT);
@@ -449,8 +459,15 @@ void MaterialEditorPane::handleEvent(Event *event) {
 
 void MaterialEditorPane::setMaterial(Material *material) {
 	changingMaterial = true;
+	
+	if(currentMaterial) {
+		currentMaterial->removeAllHandlersForListener(this);
+	}
+	
 	currentMaterial = material;
 	previewPrimitive->setMaterial(material);		
+	
+	material->addEventListener(this, Event::RESOURCE_RELOAD_EVENT);
 	
 	reloadShaders();
 	
