@@ -68,10 +68,12 @@ namespace Polycode {
 			GLSLShaderBinding(GLSLShader *shader);
 			virtual ~GLSLShaderBinding();
 			
+			void clearCubemap(const String& name);
 			void addTexture(const String& name, Texture *texture);
 			void addCubemap(const String& name, Cubemap *cubemap);
 			void clearTexture(const String& name);
 			Texture *getTexture(const String& name);
+			Cubemap *getCubemap(const String& name);
 			
 			std::vector<GLSLTextureBinding> textures;
 			std::vector<GLSLCubemapBinding> cubemaps;

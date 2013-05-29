@@ -110,6 +110,16 @@
 				</textures>
 			</fp>
 		</shader>
+		<shader type="glsl" name="LightCube" numAreaLights="0" numSpotLights="0">		
+			<vp source="DefaultShader.vert">
+				<params>			
+				</params>				
+			</vp>
+			<fp source="LightCube.frag">
+				<params>			
+				</params>
+			</fp>
+		</shader>		
 		<shader type="glsl" name="NorColSpec" numAreaLights="4" numSpotLights="2">		
 			<vp source="NormalShader.vert">
 				<params>			

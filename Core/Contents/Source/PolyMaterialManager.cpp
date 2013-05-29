@@ -271,21 +271,20 @@ Cubemap *MaterialManager::cubemapFromXMLNode(TiXmlNode *node) {
 	Cubemap *newCubemap = NULL;
 	
 	String name = nodeElement->Attribute("name");
-	String mapString = nodeElement->GetText();
-	
-	vector<String> maps = mapString.split(",");	
-	if(maps.size() != 6) {
-		Logger::log("Error: A cubemap must contain 6 images \n");
-		return NULL;
-	}
-	
+	String xPos = nodeElement->Attribute("xPos");
+	String xNeg = nodeElement->Attribute("xNeg");
+	String yPos = nodeElement->Attribute("yPos");
+	String yNeg = nodeElement->Attribute("yNeg");
+	String zPos = nodeElement->Attribute("zPos");				
+	String zNeg = nodeElement->Attribute("zNeg");
+		
 	newCubemap = CoreServices::getInstance()->getRenderer()->createCubemap(
-							 (Texture*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_TEXTURE, maps[0]),
-							 (Texture*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_TEXTURE, maps[1]),
-							 (Texture*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_TEXTURE, maps[2]),
-							 (Texture*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_TEXTURE, maps[3]),
-							 (Texture*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_TEXTURE, maps[4]),
-							 (Texture*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_TEXTURE, maps[5])
+		CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(xPos),
+		CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(xNeg),
+		CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(yPos),
+		CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(yNeg),
+		CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(zPos),
+		CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(zNeg)
 	);
 	newCubemap->setResourceName(name);
 	return newCubemap;
@@ -320,6 +319,30 @@ std::vector<Shader*> MaterialManager::loadShadersFromFile(String fileName) {
 			}
 		}
 	}
+	return retVector;
+}
+
+std::vector<Cubemap*> MaterialManager::loadCubemapsFromFile(String fileName) {
+	std::vector<Cubemap*> retVector;
+	
+	TiXmlDocument doc(fileName.c_str());
+	doc.LoadFile();
+	
+	if(doc.Error()) {
+		Logger::log("XML Error: %s\n", doc.ErrorDesc());
+	} else {
+		TiXmlElement *mElem = doc.RootElement()->FirstChildElement("cubemaps");
+		if(mElem) {
+			TiXmlNode* pChild;					
+			for (pChild = mElem->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {
+				Cubemap *newCubemap = cubemapFromXMLNode(pChild);
+				if (newCubemap) {
+					retVector.push_back(newCubemap);
+				}
+			}
+		}
+	}
+	
 	return retVector;
 }
 

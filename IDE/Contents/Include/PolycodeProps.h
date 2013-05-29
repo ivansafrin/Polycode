@@ -350,7 +350,6 @@ class ShaderOptionsSheet : public PropSheet {
 		
 };
 
-
 class ShaderTexturesSheet : public PropSheet {
 	public:
 		ShaderTexturesSheet();
@@ -368,6 +367,7 @@ class ShaderTexturesSheet : public PropSheet {
 		ShaderBinding *binding;
 						
 		std::vector<TextureProp*> textureProps;
+		std::vector<ComboProp*> cubemapProps;		
 };
 
 class EntitySheet : public PropSheet {

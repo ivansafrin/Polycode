@@ -22,10 +22,142 @@
  
 #include "PolycodeMaterialEditor.h"
 #include "PolycodeFrame.h"
+#include "PolyCubemap.h"
 
 extern UIColorPicker *globalColorPicker;
 extern UIGlobalMenu *globalMenu;
 extern PolycodeFrame *globalFrame;
+
+CubemapEditorPane::CubemapEditorPane() : UIElement() {
+	currentCubemap = NULL;
+
+	headerBg = new ScreenShape(ScreenShape::SHAPE_RECT,10,10);
+	addChild(headerBg);
+	headerBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));	
+	
+	propList = new PropList("CUBEMAP EDITOR");
+	addChild(propList);
+	propList->setPosition(0, 0);
+
+	PropSheet *baseProps1 = new PropSheet("CUBEMAP OPTIONS", "");
+	propList->addPropSheet(baseProps1);
+
+	nameProp = new StringProp("Name");
+	baseProps1->addProp(nameProp);
+	
+	baseProps1->propHeight = 70;
+	
+	PropSheet *baseProps = new PropSheet("CUBEMAP TEXTURES", "");
+	propList->addPropSheet(baseProps);
+
+	xPosTexture = new TextureProp("X+");
+	baseProps->addProp(xPosTexture);
+	xNegTexture = new TextureProp("X-");
+	baseProps->addProp(xNegTexture);	
+	yPosTexture = new TextureProp("Y+");
+	baseProps->addProp(yPosTexture);		
+	yNegTexture = new TextureProp("Y-");
+	baseProps->addProp(yNegTexture);
+	zPosTexture = new TextureProp("Z+");
+	baseProps->addProp(zPosTexture);
+	zNegTexture = new TextureProp("Z-");
+	baseProps->addProp(zNegTexture);
+
+	nameProp->addEventListener(this, Event::CHANGE_EVENT);	
+	yPosTexture->addEventListener(this, Event::CHANGE_EVENT);
+	yNegTexture->addEventListener(this, Event::CHANGE_EVENT);
+	xPosTexture->addEventListener(this, Event::CHANGE_EVENT);
+	xNegTexture->addEventListener(this, Event::CHANGE_EVENT);
+	zPosTexture->addEventListener(this, Event::CHANGE_EVENT);
+	zNegTexture->addEventListener(this, Event::CHANGE_EVENT);						
+	
+	baseProps->propHeight = 220;
+	propList->updateProps();
+	
+	cubemapPreview = new MaterialPreviewBox();
+	addChild(cubemapPreview);
+	cubemapPreview->setPosition(400, 0);
+	
+	Material *previewMaterial = CoreServices::getInstance()->getMaterialManager()->createMaterial("CubemapPreview", "LightCube");
+	cubemapPreview->setMaterial(previewMaterial);
+	enabled = false;
+	
+}
+
+void CubemapEditorPane::setCubemap(Cubemap *cubemap) {
+	enabled = true;
+	currentCubemap = cubemap;
+	
+	nameProp->set(cubemap->getResourceName());
+	
+	cubemapPreview->previewPrimitive->getLocalShaderOptions()->clearCubemap("lightCube");
+	cubemapPreview->previewPrimitive->getLocalShaderOptions()->addCubemap("lightCube", cubemap);	
+	
+	yPosTexture->set(cubemap->getTexture(Cubemap::CUBEMAP_YPOS));
+	yNegTexture->set(cubemap->getTexture(Cubemap::CUBEMAP_YNEG));
+	xPosTexture->set(cubemap->getTexture(Cubemap::CUBEMAP_XPOS));
+	xNegTexture->set(cubemap->getTexture(Cubemap::CUBEMAP_XNEG));
+	zPosTexture->set(cubemap->getTexture(Cubemap::CUBEMAP_ZPOS));
+	zNegTexture->set(cubemap->getTexture(Cubemap::CUBEMAP_ZNEG));				
+	
+}
+
+void CubemapEditorPane::handleEvent(Event *event) {
+
+	if(event->getDispatcher() == nameProp) {
+		currentCubemap->setResourceName(nameProp->get());
+		dispatchEvent(new Event(), Event::CHANGE_EVENT);					
+	}
+
+	if(event->getDispatcher() == yPosTexture) {
+		currentCubemap->setTexture(yPosTexture->get(), Cubemap::CUBEMAP_YPOS);
+		currentCubemap->recreateFromTextures();
+		dispatchEvent(new Event(), Event::CHANGE_EVENT);			
+	}	
+	
+	if(event->getDispatcher() == yNegTexture) {
+		currentCubemap->setTexture(yNegTexture->get(), Cubemap::CUBEMAP_YNEG);
+		currentCubemap->recreateFromTextures();
+		dispatchEvent(new Event(), Event::CHANGE_EVENT);			
+	}	
+
+	if(event->getDispatcher() == xPosTexture) {
+		currentCubemap->setTexture(xPosTexture->get(), Cubemap::CUBEMAP_XPOS);
+		currentCubemap->recreateFromTextures();
+		dispatchEvent(new Event(), Event::CHANGE_EVENT);			
+	}	
+
+	if(event->getDispatcher() == xNegTexture) {
+		currentCubemap->setTexture(xNegTexture->get(), Cubemap::CUBEMAP_XNEG);
+		currentCubemap->recreateFromTextures();
+		dispatchEvent(new Event(), Event::CHANGE_EVENT);			
+	}	
+
+	if(event->getDispatcher() == zPosTexture) {
+		currentCubemap->setTexture(zPosTexture->get(), Cubemap::CUBEMAP_ZPOS);
+		currentCubemap->recreateFromTextures();
+		dispatchEvent(new Event(), Event::CHANGE_EVENT);			
+	}	
+
+	if(event->getDispatcher() == zNegTexture) {
+		currentCubemap->setTexture(zNegTexture->get(), Cubemap::CUBEMAP_ZNEG);
+		currentCubemap->recreateFromTextures();
+		dispatchEvent(new Event(), Event::CHANGE_EVENT);			
+	}	
+	
+}
+
+CubemapEditorPane::~CubemapEditorPane() {
+
+}
+
+void CubemapEditorPane::Resize(Number width, Number height) {
+	headerBg->setShapeSize(width, 30);	
+	propList->Resize(370, height);
+	propList->updateProps();
+}
+
 
 ShaderEditorPane::ShaderEditorPane() : UIElement() {	
 
@@ -230,55 +362,8 @@ void ShaderEditorPane::Resize(Number width, Number height) {
 	propList->updateProps();
 }
 
-
-MaterialEditorPane::MaterialEditorPane() : UIElement() {	
-
-	changingMaterial = false;
-	
-	headerBg = new ScreenShape(ScreenShape::SHAPE_RECT,10,10);
-	addChild(headerBg);
-	headerBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
-	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));	
-	
-	propList = new PropList("MATERIAL EDITOR");
-	addChild(propList);
-	propList->setPosition(0, 0);
-
-	PropSheet *baseProps = new PropSheet("MATERIAL SETTINGS", "");
-	propList->addPropSheet(baseProps);
-	
-	nameProp = new StringProp("Name");
-	baseProps->addProp(nameProp);	
-	nameProp->addEventListener(this, Event::CHANGE_EVENT);
-		
-	shaderProp = new ComboProp("Shader");
-	baseProps->addProp(shaderProp);
-	shaderProp->addEventListener(this, Event::CHANGE_EVENT);
-	
-	blendModeProp = new ComboProp("Blend mode");
-	baseProps->addProp(blendModeProp);
-	blendModeProp->addEventListener(this, Event::CHANGE_EVENT);
-		
-	blendModeProp->comboEntry->addComboItem("Normal");
-	blendModeProp->comboEntry->addComboItem("Lighten");
-	blendModeProp->comboEntry->addComboItem("Color");
-	blendModeProp->comboEntry->addComboItem("Premultiplied");
-	blendModeProp->comboEntry->addComboItem("Multiply");	
-	
-	baseProps->propHeight = 130;	
-	
-	shaderTextureSheet = new ShaderTexturesSheet();
-	propList->addPropSheet(shaderTextureSheet);			
-	shaderTextureSheet->addEventListener(this, Event::CHANGE_EVENT);
-		
-	shaderOptionsSheet = new ShaderOptionsSheet("SHADER OPTIONS", "shader_options");
-	propList->addPropSheet(shaderOptionsSheet);
-	shaderOptionsSheet->addEventListener(this, Event::CHANGE_EVENT);
-		
-	propList->updateProps();
-						
-	// TODO: Move the preview widget to its own class
-	
+MaterialPreviewBox::MaterialPreviewBox() : UIElement() {
+	currentMaterial = NULL;
 	previewScene = new Scene(true);	
 	
 	renderTexture = new SceneRenderTexture(previewScene, previewScene->getDefaultCamera(), 512, 512);
@@ -335,7 +420,7 @@ MaterialEditorPane::MaterialEditorPane() : UIElement() {
 	
 	previewBase = new ScreenEntity();
 	previewBase->processInputEvents = true;
-	previewBase->setPosition(400, 0);
+	previewBase->setPosition(0, 0);
 	addChild(previewBase);
 	
 	previewShape = new ScreenShape(ScreenShape::SHAPE_RECT, 256, 256);
@@ -346,11 +431,6 @@ MaterialEditorPane::MaterialEditorPane() : UIElement() {
 	previewShape->strokeColor = Color(1.0, 1.0, 1.0, 0.2);
 	previewShape->setStrokeWidth(1.0);
 	previewBase->addChild(previewShape);
-	
-	Config *conf = CoreServices::getInstance()->getConfig();	
-	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
-	int fontSize = conf->getNumericValue("Polycode", "uiDefaultFontSize");	
-	Number padding = conf->getNumericValue("Polycode", "uiWindowSkinPadding");	
 	
 	shapeSelector = new ScreenImage("Images/small_selector.png");
 	previewBase->addChild(shapeSelector);
@@ -366,9 +446,102 @@ MaterialEditorPane::MaterialEditorPane() : UIElement() {
 		shapeSwitches[i]->setPosition(105 + (25 * i), 300);
 		shapeSwitches[i]->addEventListener(this, UIEvent::CLICK_EVENT);
 	}
+
+	showPrimitive(0);
+}
+
+void MaterialPreviewBox::clearMaterial() {
+	previewPrimitive->clearMaterial();
+}
+
+MaterialPreviewBox::~MaterialPreviewBox() {
+
+}
+
+void MaterialPreviewBox::setMaterial(Material *material) {
+	currentMaterial = material;
+	previewPrimitive->setMaterial(material);	
+	
+}
+
+void MaterialPreviewBox::showPrimitive(unsigned int index) {
+	for(int i=0; i < shapePrimitives.size(); i++) {
+		shapePrimitives[i]->visible = false;	
+	}
+	shapePrimitives[index]->visible = true;	
+	shapeSelector->setPosition(105 - 2 + (25 * index), 298);
+	if(currentMaterial) {
+		shapePrimitives[index]->setMaterial(currentMaterial);
+	}
+	previewPrimitive = shapePrimitives[index];
+
+}
+
+void MaterialPreviewBox::handleEvent(Event *event) {
+	for(int i=0; i < shapeSwitches.size(); i++) {
+		if(event->getDispatcher() == shapeSwitches[i]) {
+			if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {
+				showPrimitive(i);
+			}
+		}
+	}
+}
+
+MaterialEditorPane::MaterialEditorPane() : UIElement() {	
+
+	changingMaterial = false;
+	
+	headerBg = new ScreenShape(ScreenShape::SHAPE_RECT,10,10);
+	addChild(headerBg);
+	headerBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));	
+	
+	propList = new PropList("MATERIAL EDITOR");
+	addChild(propList);
+	propList->setPosition(0, 0);
+
+	PropSheet *baseProps = new PropSheet("MATERIAL SETTINGS", "");
+	propList->addPropSheet(baseProps);
+	
+	nameProp = new StringProp("Name");
+	baseProps->addProp(nameProp);	
+	nameProp->addEventListener(this, Event::CHANGE_EVENT);
+		
+	shaderProp = new ComboProp("Shader");
+	baseProps->addProp(shaderProp);
+	shaderProp->addEventListener(this, Event::CHANGE_EVENT);
+	
+	blendModeProp = new ComboProp("Blend mode");
+	baseProps->addProp(blendModeProp);
+	blendModeProp->addEventListener(this, Event::CHANGE_EVENT);
+		
+	blendModeProp->comboEntry->addComboItem("Normal");
+	blendModeProp->comboEntry->addComboItem("Lighten");
+	blendModeProp->comboEntry->addComboItem("Color");
+	blendModeProp->comboEntry->addComboItem("Premultiplied");
+	blendModeProp->comboEntry->addComboItem("Multiply");	
+	
+	baseProps->propHeight = 130;	
+	
+	shaderTextureSheet = new ShaderTexturesSheet();
+	propList->addPropSheet(shaderTextureSheet);			
+	shaderTextureSheet->addEventListener(this, Event::CHANGE_EVENT);
+		
+	shaderOptionsSheet = new ShaderOptionsSheet("SHADER OPTIONS", "shader_options");
+	propList->addPropSheet(shaderOptionsSheet);
+	shaderOptionsSheet->addEventListener(this, Event::CHANGE_EVENT);
+		
+	propList->updateProps();
+							
+	
+	materialPreview = new MaterialPreviewBox();
+	addChild(materialPreview);
+	materialPreview->setPosition(400, 0);
+	
+	Config *conf = CoreServices::getInstance()->getConfig();	
+	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");	
 				
 	currentMaterial = NULL;	
-	showPrimitive(0);
 	
 	reloadShaders();
 	
@@ -391,18 +564,6 @@ void MaterialEditorPane::Resize(Number width, Number height) {
 	headerBg->setShapeSize(width, 30);	
 	propList->Resize(370, height);
 	propList->updateProps();
-}
-
-void MaterialEditorPane::showPrimitive(unsigned int index) {
-	for(int i=0; i < shapePrimitives.size(); i++) {
-		shapePrimitives[i]->visible = false;	
-	}
-	shapePrimitives[index]->visible = true;	
-	shapeSelector->setPosition(105 - 2 + (25 * index), 298);
-	if(currentMaterial) {
-		shapePrimitives[index]->setMaterial(currentMaterial);
-	}
-	previewPrimitive = shapePrimitives[index];
 }
 
 void MaterialEditorPane::handleEvent(Event *event) {
@@ -432,11 +593,11 @@ void MaterialEditorPane::handleEvent(Event *event) {
 		if(selectedShader) {			
 			if(currentMaterial->getShader(0) != selectedShader) {
 				currentMaterial->clearShaders();
-				previewPrimitive->clearMaterial();
+				materialPreview->clearMaterial();
 				
 				ShaderBinding *newShaderBinding = selectedShader->createBinding();				
 				currentMaterial->addShader(selectedShader, newShaderBinding);
-				previewPrimitive->setMaterial(currentMaterial);					
+				materialPreview->setMaterial(currentMaterial);					
 			}
 			
 			shaderTextureSheet->setShader(selectedShader, currentMaterial);
@@ -446,14 +607,6 @@ void MaterialEditorPane::handleEvent(Event *event) {
 		if(!changingMaterial) {
 			dispatchEvent(new Event(), Event::CHANGE_EVENT);
 		}		
-	}
-	
-	for(int i=0; i < shapeSwitches.size(); i++) {
-		if(event->getDispatcher() == shapeSwitches[i]) {
-			if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {
-				showPrimitive(i);
-			}
-		}
 	}
 }
 
@@ -465,7 +618,7 @@ void MaterialEditorPane::setMaterial(Material *material) {
 	}
 	
 	currentMaterial = material;
-	previewPrimitive->setMaterial(material);		
+	materialPreview->setMaterial(material);		
 	
 	material->addEventListener(this, Event::RESOURCE_RELOAD_EVENT);
 	
@@ -507,9 +660,11 @@ MaterialMainWindow::MaterialMainWindow() : UIElement() {
 
 	materialPane = new MaterialEditorPane();
 	shaderPane = new ShaderEditorPane();
+	cubemapPane = new CubemapEditorPane();
 		
 	addChild(materialPane);
 	addChild(shaderPane);	
+	addChild(cubemapPane);
 	enableScissor = true;
 }
 	
@@ -518,6 +673,7 @@ void MaterialMainWindow::Resize(Number width, Number height) {
 	scissorBox.setRect(pos.x,pos.y,width, height);
 	materialPane->Resize(width, height);
 	shaderPane->Resize(width, height);
+	cubemapPane->Resize(width, height);	
 }
 
 MaterialBrowser::MaterialBrowser() : UIElement() {
@@ -528,8 +684,8 @@ MaterialBrowser::MaterialBrowser() : UIElement() {
 		
 	shadersNode = treeContainer->getRootNode()->addTreeChild("Images/shader_icon.png", "Shaders", NULL);
 	materialsNode = treeContainer->getRootNode()->addTreeChild("Images/material_icon.png", "Materials", NULL);
-	cubemapsNode = treeContainer->getRootNode()->addTreeChild("folder.png", "Cubemaps", NULL);
-	cubemapsNode = treeContainer->getRootNode()->addTreeChild("folder.png", "Post Effects", NULL);
+	cubemapsNode = treeContainer->getRootNode()->addTreeChild("Images/cubemap_icon.png", "Cubemaps", NULL);
+	postEffectsNode = treeContainer->getRootNode()->addTreeChild("folder.png", "Post Effects", NULL);
 				
 	addChild(treeContainer);		
 	selectedData = NULL;
@@ -545,7 +701,11 @@ MaterialBrowser::MaterialBrowser() : UIElement() {
 	
 	newMaterialButton = new UIImageButton("Images/new_material.png");
 	addChild(newMaterialButton);
-	newMaterialButton->setPosition(28,4);
+	newMaterialButton->setPosition(32,4);
+
+	newCubemapButton = new UIImageButton("Images/new_cubemap.png");
+	addChild(newCubemapButton);
+	newCubemapButton->setPosition(59,4);
 	
 	selectedNode = NULL;
 
@@ -579,6 +739,11 @@ UITree *MaterialBrowser::addShader(Shader *shader) {
 	return shadersNode->addTreeChild("shader_icon.png", shader->getName(), (void*)data);
 }
 
+UITree *MaterialBrowser::addCubemap(Cubemap *cubemap) {
+	MaterialBrowserData *data = new MaterialBrowserData();
+	data->cubemap = cubemap;
+	return cubemapsNode->addTreeChild("cubemap_icon.png", cubemap->getResourceName(), (void*)data);	
+}
 
 MaterialBrowser::~MaterialBrowser() {
 
@@ -615,6 +780,13 @@ bool PolycodeMaterialEditor::openFile(OSFileEntry filePath) {
 		materialBrowser->addShader(shaders[i]);
 		CoreServices::getInstance()->getMaterialManager()->addShader(shaders[i]);
 	}	
+
+	cubemaps = CoreServices::getInstance()->getMaterialManager()->loadCubemapsFromFile(filePath.fullPath);
+	for(int i=0; i < cubemaps.size(); i++) {
+		materialBrowser->addCubemap(cubemaps[i]);
+		CoreServices::getInstance()->getResourceManager()->addResource(cubemaps[i]);
+	}	
+
 	
 	materials = CoreServices::getInstance()->getMaterialManager()->loadMaterialsFromFile(filePath.fullPath);	
 	for(int i=0; i < materials.size(); i++) {
@@ -626,12 +798,14 @@ bool PolycodeMaterialEditor::openFile(OSFileEntry filePath) {
 	
 	mainWindow->materialPane->addEventListener(this, Event::CHANGE_EVENT);
 	mainWindow->shaderPane->addEventListener(this, Event::CHANGE_EVENT);
-	
+	mainWindow->cubemapPane->addEventListener(this, Event::CHANGE_EVENT);
+		
 	mainWindow->shaderPane->parentProject = parentProject;
 	
 	materialBrowser->newMaterialButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	materialBrowser->newShaderButton->addEventListener(this, UIEvent::CLICK_EVENT);
-		
+	materialBrowser->newCubemapButton->addEventListener(this, UIEvent::CLICK_EVENT);
+			
 	mainWindow->materialPane->addEventListener(this, Event::CHANGE_EVENT);
 	
 	PolycodeEditor::openFile(filePath);
@@ -672,6 +846,20 @@ void PolycodeMaterialEditor::saveFile() {
 
 	Object fileData;
 	fileData.root.name = "polycode_material_library";
+
+	ObjectEntry *cubemapsEntry = fileData.root.addChild("cubemaps");
+	
+	for(int i=0; i < cubemaps.size(); i++) {
+		ObjectEntry *cubemapEntry = cubemapsEntry->addChild("cubemap");
+		cubemapEntry->addChild("name", cubemaps[i]->getResourceName());
+		
+		cubemapEntry->addChild("xPos", cubemaps[i]->getTexture(Cubemap::CUBEMAP_XPOS)->getResourcePath());
+		cubemapEntry->addChild("xNeg", cubemaps[i]->getTexture(Cubemap::CUBEMAP_XNEG)->getResourcePath());
+		cubemapEntry->addChild("yPos", cubemaps[i]->getTexture(Cubemap::CUBEMAP_YPOS)->getResourcePath());
+		cubemapEntry->addChild("yNeg", cubemaps[i]->getTexture(Cubemap::CUBEMAP_YNEG)->getResourcePath());
+		cubemapEntry->addChild("zPos", cubemaps[i]->getTexture(Cubemap::CUBEMAP_ZPOS)->getResourcePath());
+		cubemapEntry->addChild("zNeg", cubemaps[i]->getTexture(Cubemap::CUBEMAP_ZNEG)->getResourcePath());										
+	}
 	
 	ObjectEntry *materialsEntry = fileData.root.addChild("materials");
 	
@@ -736,6 +924,13 @@ void PolycodeMaterialEditor::handleEvent(Event *event) {
 		setHasChanges(true);
 	}
 
+	if(event->getDispatcher() == mainWindow->cubemapPane && event->getEventType() == "" && event->getEventCode() == Event::CHANGE_EVENT) {
+		if(selectedMaterialNode && mainWindow->cubemapPane->currentCubemap) {
+			selectedMaterialNode->setLabelText(mainWindow->cubemapPane->currentCubemap->getResourceName());
+		}
+		setHasChanges(true);
+	}
+
 		
 	if(event->getDispatcher() == materialBrowser->newMaterialButton && event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {
 		Material *newMaterial = CoreServices::getInstance()->getMaterialManager()->createMaterial("Untitled", "DefaultShader");
@@ -755,6 +950,21 @@ void PolycodeMaterialEditor::handleEvent(Event *event) {
 				printf("Error creating shader!\n");
 			}
 	}	
+
+	if(event->getDispatcher() == materialBrowser->newCubemapButton && event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {	
+		Cubemap *cubemap = CoreServices::getInstance()->getRenderer()->createCubemap(
+							 (Texture*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_TEXTURE, "default.png"),
+							 (Texture*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_TEXTURE, "default.png"),
+							 (Texture*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_TEXTURE, "default.png"),
+							 (Texture*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_TEXTURE, "default.png"),
+							 (Texture*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_TEXTURE, "default.png"),
+							 (Texture*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_TEXTURE, "default.png"));
+		cubemap->setResourceName("Cubemap"+String::IntToString(cubemaps.size()));
+		cubemaps.push_back(cubemap);
+		materialBrowser->addCubemap(cubemap);
+		setHasChanges(true);
+		CoreServices::getInstance()->getResourceManager()->addResource(cubemap);
+	}	
 		
 
 	if(event->getDispatcher() == materialBrowser) {
@@ -762,14 +972,19 @@ void PolycodeMaterialEditor::handleEvent(Event *event) {
 			if(materialBrowser->selectedData)  {
 				mainWindow->materialPane->enabled = false;
 				mainWindow->shaderPane->enabled = false;
-								
+				mainWindow->cubemapPane->enabled = false;
+												
 				if(materialBrowser->selectedData->material) {
 					selectedMaterialNode = materialBrowser->selectedNode;				
 					mainWindow->materialPane->setMaterial(materialBrowser->selectedData->material);					
 				} else if(materialBrowser->selectedData->shader) {
 					selectedMaterialNode = materialBrowser->selectedNode;				
 					mainWindow->shaderPane->setShader(materialBrowser->selectedData->shader);
+				} else if(materialBrowser->selectedData->cubemap) {
+					selectedMaterialNode = materialBrowser->selectedNode;				
+					mainWindow->cubemapPane->setCubemap(materialBrowser->selectedData->cubemap);
 				}
+
 			}			
 		}
 	}

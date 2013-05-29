@@ -146,24 +146,12 @@ void ResourceManager::parseCubemaps(const String& dirPath, bool recursive) {
 	for(int i=0; i < resourceDir.size(); i++) {	
 		if(resourceDir[i].type == OSFileEntry::TYPE_FILE) {
 			if(resourceDir[i].extension == "mat") {
-				Logger::log("Adding cubemaps from %s\n", resourceDir[i].nameWithoutExtension.c_str());
-				TiXmlDocument doc(resourceDir[i].fullPath.c_str());
-				doc.LoadFile();
-				if(doc.Error()) {
-					Logger::log("XML Error: %s\n", doc.ErrorDesc());
-				} else {
-					TiXmlElement *mElem = doc.RootElement()->FirstChildElement("cubemaps");
-					
-					if(mElem) {
-						TiXmlNode* pChild;					
-						for (pChild = mElem->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {
-							Cubemap *newMat = CoreServices::getInstance()->getMaterialManager()->cubemapFromXMLNode(pChild);
-							//						newMat->setResourceName(newMat->getName());
-							if(newMat)
-								addResource(newMat);
-						}
-					}
-				}
+			
+				MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();			
+				std::vector<Cubemap*> cubemaps = materialManager->loadCubemapsFromFile(resourceDir[i].fullPath);			
+				for(int c=0; c < cubemaps.size(); c++) {
+					addResource(cubemaps[c]);
+				}			
 			}
 		} else {
 			if(recursive)

@@ -22,6 +22,7 @@
  
 #include "PolycodeProps.h"
 #include "PolycodeFrame.h"
+#include "PolyCubemap.h"
 
 extern UIColorPicker *globalColorPicker;
 extern PolycodeFrame *globalFrame;
@@ -1450,6 +1451,16 @@ void ShaderTexturesSheet::handleEvent(Event *event) {
 				dispatchEvent(new Event(), Event::CHANGE_EVENT);
 			}
 		}	
+		
+		for(int i=0; i < cubemapProps.size(); i++) {
+			if(event->getDispatcher() == cubemapProps[i]) {
+				binding->clearCubemap(cubemapProps[i]->label->getText());
+				Cubemap *cubemap = (Cubemap*)cubemapProps[i]->comboEntry->getSelectedItem()->data;
+				binding->addCubemap(cubemapProps[i]->label->getText(), cubemap);
+				dispatchEvent(new Event(), Event::CHANGE_EVENT);
+			}
+		}	
+		
 	}
 	PropSheet::handleEvent(event);
 }
@@ -1464,7 +1475,9 @@ void ShaderTexturesSheet::clearShader() {
 		props[i]->removeAllHandlersForListener(this);
 		delete props[i];
 	}
+	
 	props.clear();
+	cubemapProps.clear();
 	textureProps.clear();
 	
 	propHeight = 30;
@@ -1479,6 +1492,30 @@ void ShaderTexturesSheet::setShader(Shader *shader, Material *material) {
 		return;
 		
 	binding = material->getShaderBinding(0);	
+
+	for(int i=0; i < shader->expectedCubemaps.size(); i++) {
+		ComboProp *comboProp = new ComboProp(shader->expectedCubemaps[i]);
+		
+		std::vector<Resource*> cubemaps = CoreServices::getInstance()->getResourceManager()->getResources(Resource::RESOURCE_CUBEMAP);
+		
+		for(int j=0; j < cubemaps.size(); j++) {
+			comboProp->comboEntry->addComboItem(cubemaps[j]->getResourceName(), (void*) cubemaps[j]);
+			if(material) {
+				if(material->getShaderBinding(0)) {
+					Cubemap *currentCubemap = material->getShaderBinding(0)->getCubemap(shader->expectedCubemaps[i]);
+					if(currentCubemap) {
+						if(currentCubemap->getResourceName() == cubemaps[j]->getResourceName()) {
+							comboProp->set(j);
+						}
+					}
+				}
+			}
+		}
+				
+		addProp(comboProp);
+		cubemapProps.push_back(comboProp);
+		propHeight += 45;
+	}
 	
 	for(int i=0; i < shader->expectedTextures.size(); i++) {
 		TextureProp *textureProp = new TextureProp(shader->expectedTextures[i]);

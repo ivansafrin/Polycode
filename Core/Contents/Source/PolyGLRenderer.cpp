@@ -773,7 +773,7 @@ void OpenGLRenderer::clearShader() {
 	glDisable(GL_FOG);
 	
 	for(int i=0; i < 4; i++)  {
-		glActiveTexture(GL_TEXTURE0+i);
+		glActiveTexture(GL_TEXTURE0+i);		
 		glDisable(GL_TEXTURE_2D);
 	}
 		

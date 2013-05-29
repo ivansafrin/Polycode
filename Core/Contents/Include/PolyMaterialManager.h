@@ -86,7 +86,8 @@ namespace Polycode {
 		
 			std::vector<Material*> loadMaterialsFromFile(String fileName);
 			std::vector<Shader*> loadShadersFromFile(String fileName);		
-			
+			std::vector<Cubemap*> loadCubemapsFromFile(String fileName);	
+						
 			void addMaterial(Material *material);
 			void addShader(Shader *shader);
 		

@@ -153,7 +153,9 @@ namespace Polycode {
 			virtual ~ShaderBinding();
 
 			virtual Texture *getTexture(const String& name){ return NULL;};
+			virtual Cubemap *getCubemap(const String& name){ return NULL;};			
 			virtual void clearTexture(const String& name){};
+			virtual void clearCubemap(const String& name){};
 			virtual void addTexture(const String& name, Texture *texture)  {};
 			LocalShaderParam *addParam(int type, const String& name);
 			virtual void addCubemap(const String& name, Cubemap *cubemap) {};

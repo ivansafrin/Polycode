@@ -68,6 +68,15 @@ GLSLShaderBinding::~GLSLShaderBinding() {
 	
 }
 
+Cubemap *GLSLShaderBinding::getCubemap(const String& name) {
+	for(int i=0; i < cubemaps.size(); i++) {
+		if(cubemaps[i].name == name) {			
+			return cubemaps[i].cubemap;
+		}
+	}
+	return NULL;
+}
+
 Texture *GLSLShaderBinding::getTexture(const String& name) {
 	for(int i=0; i < textures.size(); i++) {
 		if(textures[i].name == name) {			
@@ -89,6 +98,15 @@ void GLSLShaderBinding::addCubemap(const String& name, Cubemap *cubemap) {
 	binding.cubemap = cubemap;
 	binding.name = name;
 	cubemaps.push_back(binding);
+}
+
+void GLSLShaderBinding::clearCubemap(const String& name) {
+	for(int i=0; i < cubemaps.size(); i++) {
+		if(cubemaps[i].name == name) {
+			cubemaps.erase(cubemaps.begin()+i);
+			return;
+		}
+	}
 }
 
 void GLSLShaderBinding::clearTexture(const String& name) {
