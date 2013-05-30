@@ -119,8 +119,8 @@ Shader *GLSLShaderModule::createShader(String name, String vpName, String fpName
 	GLSLProgram *vp = NULL;
 	GLSLProgram *fp = NULL;
 
-	vp = (GLSLProgram*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_PROGRAM, vpName);
-	fp = (GLSLProgram*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_PROGRAM, fpName);
+	vp = (GLSLProgram*)CoreServices::getInstance()->getResourceManager()->getResourceByPath(vpName);
+	fp = (GLSLProgram*)CoreServices::getInstance()->getResourceManager()->getResourceByPath(fpName);
 		
 	if(vp != NULL && fp != NULL) {
 		GLSLShader *shader = new GLSLShader(vp,fp);
@@ -145,10 +145,30 @@ Shader *GLSLShaderModule::createShader(TiXmlNode *node) {
 		if (!pChildElement) continue; // Skip comment nodes
 		
 		if(strcmp(pChild->Value(), "vp") == 0) {
-			vp = (GLSLProgram*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_PROGRAM, String(pChildElement->Attribute("source")));
+			String vpFileName = String(pChildElement->Attribute("source"));
+			vp = (GLSLProgram*)CoreServices::getInstance()->getResourceManager()->getResourceByPath(vpFileName);
+			if(!vp) {
+				vp = (GLSLProgram*)CoreServices::getInstance()->getMaterialManager()->createProgramFromFile(vpFileName);
+				if(vp) {
+					vp->setResourcePath(vpFileName);
+					OSFileEntry entry = OSFileEntry(vpFileName, OSFileEntry::TYPE_FILE);
+					vp->setResourceName(entry.name);
+					CoreServices::getInstance()->getResourceManager()->addResource(vp);
+				}
+			}
 		}
 		if(strcmp(pChild->Value(), "fp") == 0) {
-			fp = (GLSLProgram*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_PROGRAM, String(pChildElement->Attribute("source")));
+			String fpFileName = String(pChildElement->Attribute("source"));		
+			fp = (GLSLProgram*)CoreServices::getInstance()->getResourceManager()->getResourceByPath(fpFileName);
+			if(!fp) {
+				fp = (GLSLProgram*)CoreServices::getInstance()->getMaterialManager()->createProgramFromFile(fpFileName);
+				if(fp) {
+					fp->setResourcePath(fpFileName);
+					OSFileEntry entry = OSFileEntry(fpFileName, OSFileEntry::TYPE_FILE);					
+					fp->setResourceName(entry.name);
+					CoreServices::getInstance()->getResourceManager()->addResource(fp);				
+				}
+			}			
 		}
 		
 	}

@@ -80,7 +80,6 @@ void ResourceManager::parseShaders(const String& dirPath, bool recursive) {
 				std::vector<Shader*> shaders = materialManager->loadShadersFromFile(resourceDir[i].fullPath);
 				
 				for(int s=0; s < shaders.size(); s++) {
-					shaders[s]->setResourceName(shaders[s]->getName());
 					addResource(shaders[s]);
 					materialManager->addShader(shaders[s]);
 				}
@@ -255,10 +254,20 @@ void ResourceManager::addDirResource(const String& dirPath, bool recursive) {
 	parseOthers(dirPath, recursive);	
 }
 
+Resource *ResourceManager::getResourceByPath(const String& resourcePath) const {
+	Logger::log("requested %s\n", resourcePath.c_str());
+	for(int i =0; i < resources.size(); i++) {
+		if(resources[i]->getResourcePath() == resourcePath) {
+			return resources[i];
+		}
+	}
+	Logger::log("return NULL\n");	
+	return NULL;
+}
+
 Resource *ResourceManager::getResource(int resourceType, const String& resourceName) const {
 	Logger::log("requested %s\n", resourceName.c_str());
 	for(int i =0; i < resources.size(); i++) {
-//		Logger::log("is it %s?\n", resources[i]->getResourceName().c_str());		
 		if(resources[i]->getResourceName() == resourceName && resources[i]->getResourceType() == resourceType) {
 			return resources[i];
 		}

@@ -2,60 +2,32 @@
 <polycode>	
 	<shaders>
 		<shader type="glsl" name="NorColSpecHDR" numAreaLights="4" numSpotLights="2">		
-			<vp source="NormalShader.vert">
-				<params>			
-				</params>				
-			</vp>
-			<fp source="NorColSpecHDR.frag">
-				<params>
-					<param type="Number" name="shininess" default="50.0" min="2.0" max="100.0"/>
-					<param type="Color" name="diffuse_color" default="1.0 1.0 1.0 1.0"/>
-					<param type="Color" name="specular_color" default="1.0 1.0 1.0 1.0"/>
-					<param type="Color" name="ambient_color" auto="true"/>							
-				</params>
-				<textures>
-					<texture name="diffuse"/>
-					<texture name="normal_map"/>
-					<texture name="specular_map"/>										
-				</textures>								
-			</fp>
+			<vp source="default/NormalShader.vert"/>
+			<fp source="hdr/NorColSpecHDR.frag"/>
 		</shader>	
 		<shader type="glsl" name="HDRProcessShader" screen="true">
-			<vp source="ScreenShader.vert"/>
-			<fp source="HDRProcess.frag">
-				<params>
-					<param name="exposure" type="Number" default="1.0"/>
-				</params>								
-			</fp>
+			<vp source="default/ScreenShader.vert"/>
+			<fp source="hdr/HDRProcess.frag"/>
 		</shader>		
 		<shader type="glsl" name="HDRProcessShaderBloom" screen="true">
-			<vp source="ScreenShader.vert"/>
-			<fp source="HDRProcessBloom.frag">
-				<params>
-					<param name="exposure" type="Number" default="1.0"/>
-					<param name="bloomFactor" type="Number" default="0.5"/>					
-				</params>								
-			</fp>			
+			<vp source="default/ScreenShader.vert"/>
+			<fp source="hdr/HDRProcessBloom.frag"/>
 		</shader>		
 		<shader type="glsl" name="HDRBloomH" screen="true">
-			<vp source="ScreenShader.vert"/>
-			<fp source="HDRBloomH.frag"/>
+			<vp source="default/ScreenShader.vert"/>
+			<fp source="hdr/HDRBloomH.frag"/>
 		</shader>
 		<shader type="glsl" name="HDRBloomV" screen="true">
-			<vp source="ScreenShader.vert"/>
-			<fp source="HDRBloomV.frag"/>
+			<vp source="default/ScreenShader.vert"/>
+			<fp source="hdr/HDRBloomV.frag"/>
 		</shader>	
 		<shader type="glsl" name="PassThrough" screen="true">
-			<vp source="ScreenShader.vert"/>
-			<fp source="PassThrough.frag"/>
+			<vp source="default/ScreenShader.vert"/>
+			<fp source="default/PassThrough.frag"/>
 		</shader>	
 		<shader type="glsl" name="ExtractBloom" screen="true">
-			<vp source="ScreenShader.vert"/>
-			<fp source="ExtractBloom.frag">
-				<params>
-					<param name="brightThreshold" type="Number" default="2.0"/>
-				</params>								
-			</fp>			
+			<vp source="default/ScreenShader.vert"/>
+			<fp source="hdr/ExtractBloom.frag"/>
 		</shader>							
 	</shaders>
 	<materials>

@@ -87,6 +87,9 @@ ShaderProgram *MaterialManager::createProgramFromFile(String programPath) {
 		PolycodeShaderModule *shaderModule = shaderModules[m];
 		if(shaderModule->acceptsExtension(entry.extension)) {
 			ShaderProgram *newProgram = shaderModule->createProgramFromFile(entry.extension, entry.fullPath);
+			if(newProgram) {
+				newProgram->setResourcePath(programPath);
+			}
 			return newProgram;
 		}
 	}
@@ -314,6 +317,7 @@ std::vector<Shader*> MaterialManager::loadShadersFromFile(String fileName) {
 				Shader *newShader = createShaderFromXMLNode(pChild);
 				if(newShader != NULL) {
 					Logger::log("Adding shader %s\n", newShader->getName().c_str());
+					newShader->setResourceName(newShader->getName());
 					retVector.push_back(newShader);
 				}
 			}

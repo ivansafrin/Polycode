@@ -92,6 +92,9 @@ namespace Polycode {
 			* @param resourceName Name of the resource to request.
 			*/
 			Resource *getResource(int resourceType, const String& resourceName) const;
+
+			Resource *getResourceByPath(const String& resourcePath) const;
+
 		
 			/**
 			 * Request a full set of loaded resources. You need to manually cast them to their subclasses based on their type.

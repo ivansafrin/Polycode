@@ -2,142 +2,40 @@
 <polycode>	
 	<shaders>		
 		<shader type="glsl" name="DefaultShader" numAreaLights="4" numSpotLights="2">		
-			<vp source="DefaultShader.vert">
-				<params>			
-				</params>				
-			</vp>
-			<fp source="DefaultShader.frag">
-				<params>
-					<param type="Number" name="shininess" default="50.0" min="2.0" max="100.0"/>
-					<param type="Color" name="diffuse_color" default="1.0 1.0 1.0 1.0"/>
-					<param type="Color" name="specular_color" default="1.0 1.0 1.0 1.0"/>
-					<param type="Color" name="ambient_color" auto="true"/>			
-				</params>
-				<textures>
-					<texture name="diffuse"/>
-				</textures>
-			</fp>
+			<vp source="default/DefaultShader.vert"/>
+			<fp source="default/DefaultShader.frag"/>
 		</shader>	
 		<shader type="glsl" name="DefaultShaderNoTexture" numAreaLights="4" numSpotLights="2">	
-			<vp source="DefaultShader.vert">
-				<params>
-				</params>				
-			</vp>
-			<fp source="DefaultShaderNoTexture.frag">
-				<params>
-					<param type="Number" name="shininess" default="50.0" min="2.0" max="100.0"/>
-					<param type="Color" name="diffuse_color" default="1.0 1.0 1.0 1.0"/>
-					<param type="Color" name="specular_color" default="1.0 1.0 1.0 1.0"/>
-					<param type="Color" name="ambient_color" auto="true"/>								
-				</params>				
-			</fp>
+			<vp source="default/DefaultShader.vert"/>
+			<fp source="default/DefaultShaderNoTexture.frag"/>
 		</shader>
 		<shader type="glsl" name="DefaultShaderShadows" numAreaLights="4" numSpotLights="2">		
-			<vp source="DefaultShaderShadows.vert">
-				<params>			
-				</params>				
-			</vp>
-			<fp source="DefaultShaderShadows.frag">
-				<params>
-					<param type="Number" name="shininess" default="50.0" min="2.0" max="100.0"/>
-					<param type="Color" name="diffuse_color" default="1.0 1.0 1.0 1.0"/>
-					<param type="Color" name="specular_color" default="1.0 1.0 1.0 1.0"/>
-					<param type="Color" name="ambient_color" auto="true"/>							
-				</params>
-				<textures>
-					<texture name="diffuse"/>
-				</textures>				
-			</fp>
-		</shader>
-		
+			<vp source="default/DefaultShaderShadows.vert"/>
+			<fp source="default/DefaultShaderShadows.frag"/>
+		</shader>		
 		<shader type="glsl" name="DefaultShaderVertex" numAreaLights="4" numSpotLights="2">		
-			<vp source="DefaultShaderVertex.vert">
-				<params>
-					<param type="Number" name="shininess" default="50.0" min="2.0" max="100.0"/>
-					<param type="Color" name="diffuse_color" default="1.0 1.0 1.0 1.0"/>
-					<param type="Color" name="specular_color" default="1.0 1.0 1.0 1.0"/>
-					<param type="Color" name="ambient_color" auto="true"/>				
-				</params>				
-			</vp>
-			<fp source="DefaultShaderVertex.frag">
-				<params>
-				</params>
-				<textures>
-					<texture name="diffuse"/>
-				</textures>
-			</fp>
+			<vp source="default/DefaultShaderVertex.vert"/>
+			<fp source="default/DefaultShaderVertex.frag"/>
 		</shader>			
 		<shader type="glsl" name="DefaultShaderVertexNoTexture" numAreaLights="4" numSpotLights="2">		
-			<vp source="DefaultShaderVertex.vert">
-				<params>
-					<param type="Number" name="shininess" default="50.0" min="2.0" max="100.0"/>
-					<param type="Color" name="diffuse_color" default="1.0 1.0 1.0 1.0"/>
-					<param type="Color" name="specular_color" default="1.0 1.0 1.0 1.0"/>
-					<param type="Color" name="ambient_color" auto="true"/>											
-				</params>				
-			</vp>
-			<fp source="DefaultShaderVertexNoTexture.frag">
-				<params>
-				</params>
-			</fp>
-		</shader>			
-		
+			<vp source="default/DefaultShaderVertex.vert"/>
+			<fp source="default/DefaultShaderVertexNoTexture.frag"/>
+		</shader>
 		<shader type="glsl" name="DefaultParticleShader" numAreaLights="4" numSpotLights="2">		
-			<vp source="DefaultShader.vert">
-				<params>			
-				</params>				
-			</vp>
-			<fp source="DefaultParticleShader.frag">
-				<params>
-					<param type="Color" name="diffuse_color" default="1.0 1.0 1.0 1.0"/>
-					<param type="Color" name="ambient_color" auto="true"/>			
-				</params>
-				<textures>
-					<texture name="diffuse"/>
-				</textures>
-			</fp>
+			<vp source="default/DefaultShader.vert"/>
+			<fp source="default/DefaultParticleShader.frag"/>
 		</shader>															
 		<shader type="glsl" name="Unlit" numAreaLights="0" numSpotLights="0">		
-			<vp source="Unlit.vert">
-				<params>			
-				</params>				
-			</vp>
-			<fp source="Unlit.frag">
-				<params>			
-				</params>
-				<textures>
-					<texture name="diffuse"/>
-				</textures>
-			</fp>
+			<vp source="default/Unlit.vert"/>
+			<fp source="default/Unlit.frag"/>
 		</shader>
 		<shader type="glsl" name="LightCube" numAreaLights="0" numSpotLights="0">		
-			<vp source="DefaultShader.vert">
-				<params>			
-				</params>				
-			</vp>
-			<fp source="LightCube.frag">
-				<params>			
-				</params>
-			</fp>
+			<vp source="default/DefaultShader.vert"/>
+			<fp source="default/LightCube.frag"/>
 		</shader>		
 		<shader type="glsl" name="NorColSpec" numAreaLights="4" numSpotLights="2">		
-			<vp source="NormalShader.vert">
-				<params>			
-				</params>				
-			</vp>
-			<fp source="NorColSpec.frag">
-				<params>
-					<param type="Number" name="shininess" default="50.0" min="2.0" max="100.0"/>
-					<param type="Color" name="diffuse_color" default="1.0 1.0 1.0 1.0"/>
-					<param type="Color" name="specular_color" default="1.0 1.0 1.0 1.0"/>
-					<param type="Color" name="ambient_color" auto="true"/>							
-				</params>
-				<textures>
-					<texture name="diffuse"/>
-					<texture name="normal_map"/>
-					<texture name="specular_map"/>										
-				</textures>
-			</fp>
+			<vp source="default/NormalShader.vert"/>
+			<fp source="default/NorColSpec.frag"/>
 		</shader>											
 	</shaders>	
 	<materials>

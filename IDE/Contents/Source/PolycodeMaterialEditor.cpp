@@ -203,13 +203,6 @@ ShaderEditorPane::ShaderEditorPane() : UIElement() {
 
 	baseProps->propHeight = 220;
 	
-	PropSheet *vertexProps = new PropSheet("VERTEX PROGRAM OPTIONS", "");
-	propList->addPropSheet(vertexProps);
-
-	PropSheet *fragmentProps = new PropSheet("FRAGMENT PROGRAM OPTIONS", "");
-	propList->addPropSheet(fragmentProps);
-
-
 	propList->updateProps();
 	
 	enabled = false;
@@ -376,7 +369,9 @@ MaterialPreviewBox::MaterialPreviewBox() : UIElement() {
 	
 	previewBg->setMaterial(bgMaterial);
 	Texture *tex = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile("Images/material_grid.png");
+	if(previewBg->getLocalShaderOptions()) {
 	previewBg->getLocalShaderOptions()->addTexture("diffuse", tex);
+	}
 	previewScene->addChild(previewBg);
 	
 	previewScene->clearColor.setColor(0.1, 0.1, 0.1, 0.0);	
@@ -777,8 +772,9 @@ bool PolycodeMaterialEditor::openFile(OSFileEntry filePath) {
 	
 	shaders = CoreServices::getInstance()->getMaterialManager()->loadShadersFromFile(filePath.fullPath);
 	for(int i=0; i < shaders.size(); i++) {
-		materialBrowser->addShader(shaders[i]);
+		materialBrowser->addShader(shaders[i]);		
 		CoreServices::getInstance()->getMaterialManager()->addShader(shaders[i]);
+		CoreServices::getInstance()->getResourceManager()->addResource(shaders[i]);
 	}	
 
 	cubemaps = CoreServices::getInstance()->getMaterialManager()->loadCubemapsFromFile(filePath.fullPath);
@@ -847,6 +843,26 @@ void PolycodeMaterialEditor::saveFile() {
 	Object fileData;
 	fileData.root.name = "polycode_material_library";
 
+	ObjectEntry *shadersEntry = fileData.root.addChild("shaders");
+	for(int i=0; i < shaders.size(); i++) {
+		ObjectEntry *shaderEntry = shadersEntry->addChild("shader");
+		shaderEntry->addChild("type", String("glsl"));
+		shaderEntry->addChild("name", shaders[i]->getName());
+		shaderEntry->addChild("numAreaLights", shaders[i]->numAreaLights);
+		shaderEntry->addChild("numSpotLights", shaders[i]->numSpotLights);
+		shaderEntry->addChild("screen", shaders[i]->screenShader);
+
+		ObjectEntry *vpEntry = shaderEntry->addChild("vp");
+		String sourcePath = shaders[i]->vp->getResourcePath();
+		sourcePath = sourcePath.replace(parentProject->getRootFolder()+"/", "");
+		vpEntry->addChild("source", sourcePath);
+				
+		ObjectEntry *fpEntry = shaderEntry->addChild("fp");
+		sourcePath = shaders[i]->fp->getResourcePath();
+		sourcePath = sourcePath.replace(parentProject->getRootFolder()+"/", "");		
+		fpEntry->addChild("source", sourcePath);
+	}
+
 	ObjectEntry *cubemapsEntry = fileData.root.addChild("cubemaps");
 	
 	for(int i=0; i < cubemaps.size(); i++) {
@@ -879,16 +895,26 @@ void PolycodeMaterialEditor::saveFile() {
 		ObjectEntry *texturesEntry = shaderEntry->addChild("textures");
 		
 		ShaderBinding *shaderBinding = material->getShaderBinding(0);
+		
 		for(int j=0; j < shader->expectedTextures.size(); j++) {
 			Texture *texture = shaderBinding->getTexture(shader->expectedTextures[j]);
 			if(texture) {
 				String texturePath = texture->getResourcePath();
-				texturePath = texturePath.replace(parentProject->getRootFolder()+"/", "");
-				
+				texturePath = texturePath.replace(parentProject->getRootFolder()+"/", "");				
 				ObjectEntry *textureEntry = texturesEntry->addChild("texture", texturePath);
 				textureEntry->addChild("name", shader->expectedTextures[j]);
 			}
 		}
+
+		for(int j=0; j < shader->expectedCubemaps.size(); j++) {
+			Cubemap *cubemap = shaderBinding->getCubemap(shader->expectedCubemaps[j]);
+			if(cubemap) {
+				String cubemapName = cubemap->getResourceName();
+				ObjectEntry *cubemapEntry = texturesEntry->addChild("cubemap", cubemapName);
+				cubemapEntry->addChild("name", shader->expectedCubemaps[j]);
+			}
+		}
+
 
 		if(shader->expectedParams.size() > 0 || shader->expectedParams.size() > 0) {
 			ObjectEntry *paramsEntry = shaderEntry->addChild("params");
