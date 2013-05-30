@@ -140,6 +140,27 @@ void addFolderToZip(zipFile z, String folderPath, String parentFolder, bool sile
 	}
 }
 
+extern "C" int MyWriter(lua_State *L, const void *p, size_t sz, void *ud) {
+	int wr = fwrite(p, sz, 1, static_cast<FILE *>(ud));
+	// Non 0 means an error and stops lua_dump from calling the writer again.
+	return (wr != 1) && (sz != 0) ? 1 : 0;
+}
+
+// Returns 0 on success.
+int compileLuaScript(String sourcePath, String outPath) {
+	FILE *file = fopen(outPath.c_str(), "wb");
+	if(!file) return 1;
+	lua_State *L = lua_open();
+	int err = 1;
+	if(L && 0 == luaL_loadfile(L, sourcePath.c_str())) {
+		err = lua_dump(L, MyWriter, file);
+	}
+	if(L) lua_close(L);
+	fclose(file);
+
+	return err;
+}
+
 #ifdef _WINDOWS
 void wtoc(char* Dest, TCHAR* Source, int SourceSize)
 {
@@ -357,6 +378,29 @@ int main(int argc, char **argv) {
 	color->addChild("red", backgroundColorR);
 	color->addChild("green", backgroundColorG);
 	color->addChild("blue", backgroundColorB);
+
+	if(configFile.root["prebuildActions"]) {
+		ObjectEntry *prebuild = configFile.root["prebuildActions"];
+  		if(prebuild) {
+  			for(int i=0; i < prebuild->length; i++) {
+  				ObjectEntry *action = (*(*prebuild)[i])["action"];
+  				if(action && action->stringVal == "compileScript") {
+  					ObjectEntry *sourcePath = (*(*prebuild)[i])["source"];
+  					ObjectEntry *outPath = (*(*prebuild)[i])["out"];
+  					if(sourcePath && outPath) {
+  						printf("Compiling script %s as %s\n", sourcePath->stringVal.c_str(), outPath->stringVal.c_str());
+  						
+  						if(compileLuaScript(sourcePath->stringVal, outPath->stringVal) != 0) {
+  							printf("Error compiling script. Ignoring.\n");
+  						}
+  						
+  					} else {
+  						printf("compileScript action specified, but requires source and out attributes. Ignoring.\n");
+  					}
+  				}
+  			}
+  		}
+  	}
 
 	if(configFile.root["fonts"]) {
 		runInfo.root.addChild(configFile.root["fonts"]);
