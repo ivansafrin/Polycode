@@ -89,9 +89,9 @@ uLong filetime(
 }
 
 extern "C" int MyWriter(lua_State *L, const void *p, size_t sz, void *ud) {
-	zipWriteInFileInZip(static_cast<zipFile>(ud), p, sz);
+	int err = zipWriteInFileInZip(static_cast<zipFile>(ud), p, sz);
 	// Non 0 means an error and stops lua_dump from calling the writer again.
-	return 0;
+	return (err != ZIP_OK) && (sz != 0) ? 1 : 0;
 }
 
 void addFileToZip(zipFile z, String filePath, String pathInZip, bool silent) {
@@ -120,7 +120,7 @@ void addFileToZip(zipFile z, String filePath, String pathInZip, bool silent) {
 		}
 		if(L) lua_close(L);
 		if(err) {
-			printf("Error compiling script. Ignoring.");
+			printf("Error compiling script. Ignoring.\n");
 		}
 	} else {
 		FILE *f = fopen(filePath.c_str(), "rb");
