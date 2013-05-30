@@ -88,6 +88,12 @@ uLong filetime(
   return ret;
 }
 
+extern "C" int MyWriter(lua_State *L, const void *p, size_t sz, void *ud) {
+	zipWriteInFileInZip(static_cast<zipFile>(ud), p, sz);
+	// Non 0 means an error and stops lua_dump from calling the writer again.
+	return 0;
+}
+
 void addFileToZip(zipFile z, String filePath, String pathInZip, bool silent) {
 			if(!silent)
 				printf("Packaging %s as %s\n", filePath.c_str(), pathInZip.c_str());
@@ -102,15 +108,31 @@ void addFileToZip(zipFile z, String filePath, String pathInZip, bool silent) {
 	
 			zipOpenNewFileInZip(z, pathInZip.c_str(), &zi, NULL, 0, NULL, 0, NULL, Z_DEFLATED, 2);
 
-			FILE *f = fopen(filePath.c_str(), "rb");
-			fseek(f, 0, SEEK_END);
-			long fileSize = ftell(f);
-			fseek(f, 0, SEEK_SET);
-			char *buf = (char*) malloc(fileSize);
-			fread(buf, fileSize, 1, f);
-			zipWriteInFileInZip(z, buf, fileSize);
-			free(buf);
-			fclose(f);
+			// Are we dealing with a script file?
+			int pos = filePath.rfind(".lua");
+			bool isScript = (pos > -1 && pos == filePath.length() - 4) ? true : false;
+			
+			if(isScript && getArg("--compileScripts")=="true") {
+				lua_State *L = lua_open();
+				int err = 1;
+				if(L && 0 == luaL_loadfile(L, filePath.c_str())) {
+					err = lua_dump(L, MyWriter, z);
+				}
+				if(L) lua_close(L);
+				if(err) {
+					printf("Error compiling script. Ignoring.");
+				}
+			} else {
+				FILE *f = fopen(filePath.c_str(), "rb");
+				fseek(f, 0, SEEK_END);
+				long fileSize = ftell(f);
+				fseek(f, 0, SEEK_SET);
+				char *buf = (char*) malloc(fileSize);
+				fread(buf, fileSize, 1, f);
+				zipWriteInFileInZip(z, buf, fileSize);
+				free(buf);
+				fclose(f);
+			}
 
 			zipCloseFileInZip(z);
 
