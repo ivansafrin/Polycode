@@ -11,8 +11,7 @@
 #include <io.h>
 #endif
 
-extern "C" {	
-#include <stdio.h>
+extern "C" {
 #include "lua.h"
 #include "lualib.h"
 #include "lauxlib.h"
