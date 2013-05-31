@@ -86,7 +86,7 @@ String PolycodeToolLauncher::generateTempPath(PolycodeProject *project) {
 #endif
 }
 
-void PolycodeToolLauncher::buildProject(PolycodeProject *project, String destinationPath) {
+void PolycodeToolLauncher::buildProject(PolycodeProject *project, String destinationPath, bool compileScripts) {
 
 	PolycodeConsole::print("Building project: "+project->getProjectName() + "\n");	
 
@@ -101,12 +101,12 @@ void PolycodeToolLauncher::buildProject(PolycodeProject *project, String destina
 #ifdef _WINDOWS
 	String targetFolder = projectBasePath;
 	String command = "\""+polycodeBasePath+"/Standalone/Bin/polybuild.exe\"";
-	String args =  "--config=\""+projectPath+"\" --out=\""+destinationPath+"\"";
+	String args =  "--config=\""+projectPath+"\" --out=\""+destinationPath+"\" --compileScripts=\""+((compileScripts)?"true":"false")+"\"";
 	String ret = CoreServices::getInstance()->getCore()->executeExternalCommand(command, args, targetFolder);
 #else
 	String command = polycodeBasePath+"/Standalone/Bin/polybuild";
 	String inFolder = projectBasePath; 
-	String args = "--config=\""+projectPath+"\" --out="+destinationPath;
+	String args = "--config=\""+projectPath+"\" --out=\""+destinationPath+"\" --compileScripts=\""+((compileScripts)?"true":"false")+"\"";
 	String ret = CoreServices::getInstance()->getCore()->executeExternalCommand(command, args, inFolder);
 //	PolycodeConsole::print(ret);
 #endif

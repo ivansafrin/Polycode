@@ -137,14 +137,14 @@ void PolycodeProjectManager::createNewProject(String templateFolder, String proj
 	openProject(projectLocation+"/"+projectName+"/"+projectName+".polyproject");	
 }
 
-void PolycodeProjectManager::exportProject(PolycodeProject *project, String exportPath, bool macOS, bool windows, bool linux_) {
+void PolycodeProjectManager::exportProject(PolycodeProject *project, String exportPath, bool macOS, bool windows, bool linux_, bool compileScripts) {
 
 	String polycodeBasePath = CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory();
 
 	String publishPath = polycodeBasePath+"/Standalone/Publish";
 	
 	String polyappPath = PolycodeToolLauncher::generateTempPath(project) + ".polyapp";
-	PolycodeToolLauncher::buildProject(project, polyappPath);	
+	PolycodeToolLauncher::buildProject(project, polyappPath, compileScripts);	
 	
 	if(macOS) {
 		PolycodeConsole::print("Exporting Mac version to "+exportPath+"/Mac \n");
