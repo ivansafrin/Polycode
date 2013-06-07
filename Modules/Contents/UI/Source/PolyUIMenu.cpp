@@ -200,8 +200,6 @@ UIMenu::~UIMenu() {
 	if(!ownsChildren) {	
 		delete dropDownBox;
 	}
-	
-	CoreServices::getInstance()->getCore()->getInput()->removeAllHandlersForListener(this);
 }
 
 UIMenuItem *UIMenu::addOption(String label, String _id, void *data) {
