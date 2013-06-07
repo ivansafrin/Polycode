@@ -23,11 +23,11 @@
 #pragma once
 #include "PolyGlobals.h"
 #include "PolyScreenImage.h"
-#include "PolyScreenEntity.h"
+#include "PolyUIElement.h"
 
 namespace Polycode {
 	
-	class _PolyExport UIBox : public ScreenEntity {
+	class _PolyExport UIBox : public UIElement {
 	public:
 		UIBox(String imageFile, Number t, Number r, Number b, Number l, Number boxWidth, Number boxHeight);
 		~UIBox();
