@@ -116,7 +116,7 @@ ELSE(MSVC OR MINGW)
 	ADD_CUSTOM_COMMAND(TARGET PolycodeIDE POST_BUILD 
 		COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/Resources/ ${CMAKE_BINARY_DIR}
 		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/../../Release/Linux/Framework/Core/Assets/default.pak ${CMAKE_BINARY_DIR}
-		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/../../Release/Linux/Standalone ${CMAKE_BINARY_DIR}
+		COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/../../Release/Linux/Standalone ${CMAKE_BINARY_DIR}/Standalone
 	)
 
 ENDIF(MSVC OR MINGW)
