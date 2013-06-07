@@ -297,6 +297,11 @@ bool ScreenEntity::hitTest(const Number x, const Number y) {
 	return isPointInsidePolygon2D(&testPoly, Vector2(x,y));
 }
 
+bool ScreenEntity::hitTest(Vector2 v)
+{
+	return hitTest(v.x, v.y);
+}
+
 void ScreenEntity::setPositionMode(int newPositionMode) {
 	positionMode = newPositionMode;
 }

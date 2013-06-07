@@ -119,6 +119,7 @@ class _PolyExport ScreenEntity : public Entity {
 		virtual void onKeyUp(PolyKEY key, wchar_t charCode){}
 		
 		bool hitTest(Number x, Number y);
+		bool hitTest(Vector2 v);
 	
 		Matrix4 buildPositionMatrix();
 		void adjustMatrixForChildren();
