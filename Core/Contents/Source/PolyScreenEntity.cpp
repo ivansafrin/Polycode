@@ -276,22 +276,32 @@ bool ScreenEntity::hitTest(const Number x, const Number y) {
 
 	Vector3 v;	
 	Polygon testPoly;
+
+	// matrix will give the center of the entity
+	Matrix4 screenMatrix = getScreenConcatenatedMatrix();
+	if(positionMode == POSITION_TOPLEFT) {
+		// Translate hitbox so it matches the visible object bounds
+		// This is a bit of a hack because ScreenEntities are expected
+		// to rotate about their center and not their center point.
+		Matrix4 retMatrix;
+		retMatrix.setPosition(width/2.0, height/2.0, 0.0);
+		screenMatrix = screenMatrix * retMatrix;
+	}
 	
-	Matrix4 transformMatrix = getConcatenatedMatrix();
 	v = Vector3(hit.x, hit.y, 0);
-	v = transformMatrix * v;
+	v = screenMatrix * v;
 	testPoly.addVertex(v.x, v.y, 0.0);
 	
 	v = Vector3(hit.x+hit.w, hit.y, 0);
-	v = transformMatrix * v;
+	v = screenMatrix * v;
 	testPoly.addVertex(v.x, v.y, 0.0);
 
 	v = Vector3(hit.x+hit.w, hit.y+hit.h, 0);
-	v = transformMatrix * v;
+	v = screenMatrix * v;
 	testPoly.addVertex(v.x, v.y, 0.0);
 
 	v = Vector3(hit.x,hit.y+hit.h, 0);
-	v = transformMatrix * v;
+	v = screenMatrix * v;
 	testPoly.addVertex(v.x, v.y, 0.0);
 		
 	return isPointInsidePolygon2D(&testPoly, Vector2(x,y));
@@ -362,21 +372,20 @@ bool ScreenEntity::isDragged() {
 Matrix4 ScreenEntity::getScreenConcatenatedMatrix() {
 	Matrix4 retMatrix = transformMatrix;
 	if(positionMode == POSITION_TOPLEFT) {
-		Vector3 pos = retMatrix.getPosition();
-		retMatrix.setPosition(pos.x + width/2.0, pos.y + height/2.0, 0);
+		retMatrix.setPosition(position.x, position.y, position.z);
 	}
 	
 	if(parentEntity) {
-		return retMatrix * ((ScreenEntity*)parentEntity)->getScreenConcatenatedMatrix();		
+		return retMatrix * ((ScreenEntity*)parentEntity)->getScreenConcatenatedMatrix();
 	} else {
-		return retMatrix;	
-	}	
+		return retMatrix;
+	}
 }
 
-MouseEventResult ScreenEntity::_onMouseMove(Number x, Number y, int timestamp, Vector2 parentAdjust) {
+MouseEventResult ScreenEntity::_onMouseMove(Number x, Number y, int timestamp) {
 
 	if(dragged) {
-		Vector3 localCoordinate = Vector3(x+(parentAdjust.x*2.0),y+(parentAdjust.y*2.0),0);				
+		Vector3 localCoordinate = Vector3(x,y,0);
 				
 		if(parentEntity) {
 			Matrix4 inverse = ((ScreenEntity*)parentEntity)->getScreenConcatenatedMatrix().Inverse();
@@ -395,35 +404,26 @@ MouseEventResult ScreenEntity::_onMouseMove(Number x, Number y, int timestamp, V
 				position.y = dragLimits->y + dragLimits->h;
 		}
 	}
-	
 
 	MouseEventResult ret;
 	ret.hit = false;
 	ret.blocked = false;
 
-
 	if(processInputEvents && enabled) {
-	if(hitTest(x+parentAdjust.x,y+parentAdjust.y)) {
-	
-	
-		Vector3 localCoordinate = Vector3(x+(parentAdjust.x*2.0),y+(parentAdjust.y*2.0),0);		
-		Matrix4 inverse = getConcatenatedMatrix().Inverse();
+	if(hitTest(x,y)) {
+
+		Vector3 localCoordinate = Vector3(x,y,0);
+		Matrix4 inverse = getScreenConcatenatedMatrix().Inverse();
 		localCoordinate = inverse * localCoordinate;
-		if(positionMode == POSITION_TOPLEFT)
-			localCoordinate.x += hit.w/2.0;
-		if(positionMode == POSITION_TOPLEFT)
-			localCoordinate.y += hit.h/2.0;
-
-
 		
 		onMouseMove(localCoordinate.x,localCoordinate.y);
 		xmouse = localCoordinate.x;
 		ymouse = localCoordinate.y;
 		
-		dispatchEvent(new InputEvent(Vector2(localCoordinate.x,localCoordinate.y)-parentAdjust, timestamp), InputEvent::EVENT_MOUSEMOVE);
+		dispatchEvent(new InputEvent(Vector2(localCoordinate.x,localCoordinate.y), timestamp), InputEvent::EVENT_MOUSEMOVE);
 		
 		if(!mouseOver) {
-				dispatchEvent(new InputEvent(Vector2(localCoordinate.x,localCoordinate.y)-parentAdjust, timestamp), InputEvent::EVENT_MOUSEOVER);
+				dispatchEvent(new InputEvent(Vector2(localCoordinate.x,localCoordinate.y), timestamp), InputEvent::EVENT_MOUSEOVER);
 				mouseOver = true;
 		}
 		ret.hit = true;
@@ -435,93 +435,70 @@ MouseEventResult ScreenEntity::_onMouseMove(Number x, Number y, int timestamp, V
 	} else {
 		if(mouseOver) {
 		
-		Vector3 localCoordinate = Vector3(x+(parentAdjust.x*2.0),y+(parentAdjust.y*2.0),0);		
-		Matrix4 inverse = getConcatenatedMatrix().Inverse();
+		Vector3 localCoordinate = Vector3(x,y,0);
+		Matrix4 inverse = getScreenConcatenatedMatrix().Inverse();
 		localCoordinate = inverse * localCoordinate;
-		if(positionMode == POSITION_TOPLEFT)
-			localCoordinate.x += hit.w/2.0;
-		if(positionMode == POSITION_TOPLEFT)
-			localCoordinate.y += hit.h/2.0;
 		
-		
-			dispatchEvent(new InputEvent(Vector2(localCoordinate.x,localCoordinate.y)-parentAdjust, timestamp), InputEvent::EVENT_MOUSEOUT);
+			dispatchEvent(new InputEvent(Vector2(localCoordinate.x,localCoordinate.y), timestamp), InputEvent::EVENT_MOUSEOUT);
 			mouseOver = false;
 		}		
 	}	
 
-		for(int i=children.size()-1;i>=0;i--) {			
-			Vector2 adjust = parentAdjust;
-			if(positionMode == POSITION_TOPLEFT)
-				adjust += Vector2(floor(width/2.0), floor(height/2.0));
-			
-			MouseEventResult childRes = ((ScreenEntity*)children[i])->_onMouseMove(x,y, timestamp, adjust);
+		for(int i=children.size()-1;i>=0;i--) {
+			MouseEventResult childRes = ((ScreenEntity*)children[i])->_onMouseMove(x,y, timestamp);
 			if(childRes.hit)
 				ret.hit = true;
-			if(childRes.blocked)
+			if(childRes.blocked) {
 				ret.blocked = true;
-			if(childRes.blocked)
 				break;
+			}
 		}
 	}
 	
 	return ret;
 }
 
-MouseEventResult ScreenEntity::_onMouseUp(Number x, Number y, int mouseButton, int timestamp, Vector2 parentAdjust) {
+MouseEventResult ScreenEntity::_onMouseUp(Number x, Number y, int mouseButton, int timestamp) {
 	MouseEventResult ret;
 	ret.hit = false;
 	ret.blocked = false;
-
 	
 	if(processInputEvents && enabled) {
-	if(hitTest(x+parentAdjust.x,y+parentAdjust.y)) {
-		Vector3 localCoordinate = Vector3(x+(parentAdjust.x*2.0),y+(parentAdjust.y*2.0),0);
-		
-		Matrix4 inverse = getConcatenatedMatrix().Inverse();
-		localCoordinate = inverse * localCoordinate;
-		if(positionMode == POSITION_TOPLEFT)
-			localCoordinate.x += hit.w/2.0;
-		if(positionMode == POSITION_TOPLEFT)
-			localCoordinate.y += hit.h/2.0;
+	if(hitTest(x,y)) {
+		Vector3 localCoordinate = Vector3(x,y,0);
 
-		
+		Matrix4 inverse = getScreenConcatenatedMatrix().Inverse();
+		localCoordinate = inverse * localCoordinate;
+
 		onMouseUp(localCoordinate.x,localCoordinate.y);		
-		InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x,localCoordinate.y)-parentAdjust, timestamp);		
+		InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x,localCoordinate.y), timestamp);
 		inputEvent->mouseButton = mouseButton;
 		dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEUP);
-		
+
 		ret.hit = true;
 		if(blockMouseInput) {
 			ret.blocked = true;
 		}
 
 	} else {
-		Vector3 localCoordinate = Vector3(x+(parentAdjust.x*2.0),y+(parentAdjust.y*2.0),0);
+		Vector3 localCoordinate = Vector3(x,y,0);
 		
-		Matrix4 inverse = getConcatenatedMatrix().Inverse();
+		Matrix4 inverse = getScreenConcatenatedMatrix().Inverse();
 		localCoordinate = inverse * localCoordinate;
-		if(positionMode == POSITION_TOPLEFT)
-			localCoordinate.x += hit.w/2.0;
-		if(positionMode == POSITION_TOPLEFT)
-			localCoordinate.y += hit.h/2.0;
-
 		
-		InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x,localCoordinate.y)-parentAdjust, timestamp);		
+		InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x,localCoordinate.y), timestamp);
 		inputEvent->mouseButton = mouseButton;
 		dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEUP_OUTSIDE);	
 	}
 
 		for(int i=children.size()-1;i>=0;i--) {			
-			Vector2 adjust = parentAdjust;
-			if(positionMode == POSITION_TOPLEFT)
-				adjust += Vector2(floor(width/2.0), floor(height/2.0));
-			MouseEventResult childRes = ((ScreenEntity*)children[i])->_onMouseUp(x,y, mouseButton, timestamp, adjust);
+			MouseEventResult childRes = ((ScreenEntity*)children[i])->_onMouseUp(x,y, mouseButton, timestamp);
 			if(childRes.hit)
 				ret.hit = true;
-			if(childRes.blocked)
+			if(childRes.blocked) {
 				ret.blocked = true;
-			if(childRes.blocked)
 				break;
+			}
 			
 		}
 	}
@@ -529,29 +506,24 @@ MouseEventResult ScreenEntity::_onMouseUp(Number x, Number y, int mouseButton, i
 	return ret;
 }
 
-MouseEventResult ScreenEntity::_onMouseWheelUp(Number x, Number y, int timestamp, Vector2 parentAdjust) {
+MouseEventResult ScreenEntity::_onMouseWheelUp(Number x, Number y, int timestamp) {
 
 	MouseEventResult ret;
 	ret.hit = false;
 	ret.blocked = false;
 	
 	if(processInputEvents && enabled) {
-	if(hitTest(x+parentAdjust.x,y+parentAdjust.y)) {
-		Vector3 localCoordinate = Vector3(x+(parentAdjust.x*2.0),y+(parentAdjust.y*2.0),0);
+	if(hitTest(x,y)) {
+		Vector3 localCoordinate = Vector3(x,y,0);
 		
-		Matrix4 inverse = getConcatenatedMatrix().Inverse();
+		Matrix4 inverse = getScreenConcatenatedMatrix().Inverse();
 		localCoordinate = inverse * localCoordinate;
-		if(positionMode == POSITION_TOPLEFT)
-			localCoordinate.x += hit.w/2.0;
-		if(positionMode == POSITION_TOPLEFT)
-			localCoordinate.y += hit.h/2.0;
 
-		
 		onMouseWheelUp(localCoordinate.x,localCoordinate.y);
-		
-		InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x,localCoordinate.y)-parentAdjust, timestamp);		
+
+		InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x,localCoordinate.y), timestamp);
 		dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEWHEEL_UP);
-		
+
 		ret.hit = true;
 		if(blockMouseInput) {
 			ret.blocked = true;
@@ -560,41 +532,33 @@ MouseEventResult ScreenEntity::_onMouseWheelUp(Number x, Number y, int timestamp
 	}
 
 		for(int i=children.size()-1;i>=0;i--) {			
-			Vector2 adjust = parentAdjust;
-			if(positionMode == POSITION_TOPLEFT)
-				adjust += Vector2(floor(width/2.0), floor(height/2.0));
-			MouseEventResult childRes = ((ScreenEntity*)children[i])->_onMouseWheelUp(x,y, timestamp, adjust);
+			MouseEventResult childRes = ((ScreenEntity*)children[i])->_onMouseWheelUp(x,y, timestamp);
 			if(childRes.hit)
 				ret.hit = true;
-			if(childRes.blocked)
+			if(childRes.blocked) {
 				ret.blocked = true;
-			if(childRes.blocked)
 				break;
+			}
 		}
 	}
 	return ret;	
 }
 
-MouseEventResult ScreenEntity::_onMouseWheelDown(Number x, Number y, int timestamp, Vector2 parentAdjust) {
+MouseEventResult ScreenEntity::_onMouseWheelDown(Number x, Number y, int timestamp) {
 	MouseEventResult ret;
 	ret.hit = false;
 	ret.blocked = false;
 	
 	if(processInputEvents && enabled) {
-	if(hitTest(x+parentAdjust.x,y+parentAdjust.y)) {
-		Vector3 localCoordinate = Vector3(x+(parentAdjust.x*2.0),y+(parentAdjust.y*2.0),0);
+	if(hitTest(x,y)) {
+		Vector3 localCoordinate = Vector3(x,y,0);
 		
-		Matrix4 inverse = getConcatenatedMatrix().Inverse();
+		Matrix4 inverse = getScreenConcatenatedMatrix().Inverse();
 		localCoordinate = inverse * localCoordinate;
-		if(positionMode == POSITION_TOPLEFT)
-			localCoordinate.x += hit.w/2.0;
-		if(positionMode == POSITION_TOPLEFT)
-			localCoordinate.y += hit.h/2.0;
-
 		
 		onMouseWheelDown(localCoordinate.x,localCoordinate.y);
 		
-		InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x,localCoordinate.y)-parentAdjust, timestamp);		
+		InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x,localCoordinate.y), timestamp);
 		dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEWHEEL_DOWN);
 		
 		ret.hit = true;
@@ -603,18 +567,14 @@ MouseEventResult ScreenEntity::_onMouseWheelDown(Number x, Number y, int timesta
 		}
 	}
 
-		for(int i=children.size()-1;i>=0;i--) {			
-			Vector2 adjust = parentAdjust;
-			if(positionMode == POSITION_TOPLEFT)
-				adjust += Vector2(floor(width/2.0), floor(height/2.0));
-			
-			MouseEventResult childRes = ((ScreenEntity*)children[i])->_onMouseWheelDown(x,y, timestamp, adjust);
+		for(int i=children.size()-1;i>=0;i--) {
+			MouseEventResult childRes = ((ScreenEntity*)children[i])->_onMouseWheelDown(x,y, timestamp);
 			if(childRes.hit)
 				ret.hit = true;
-			if(childRes.blocked)
+			if(childRes.blocked) {
 				ret.blocked = true;
-			if(childRes.blocked)
 				break;
+			}
 			
 		}
 	}
@@ -622,60 +582,52 @@ MouseEventResult ScreenEntity::_onMouseWheelDown(Number x, Number y, int timesta
 	return ret;
 }
 
-
-MouseEventResult ScreenEntity::_onMouseDown(Number x, Number y, int mouseButton, int timestamp, Vector2 parentAdjust) {
+MouseEventResult ScreenEntity::_onMouseDown(Number x, Number y, int mouseButton, int timestamp) {
 	MouseEventResult ret;
 	ret.hit = false;
 	ret.blocked = false;
-			
+
 	if(processInputEvents && enabled) {
-	if(hitTest(x+parentAdjust.x,y+parentAdjust.y)) {
-		Vector3 localCoordinate = Vector3(x+(parentAdjust.x*2.0),y+(parentAdjust.y*2.0),0);
-		
-		Matrix4 inverse = getConcatenatedMatrix().Inverse();
-		localCoordinate = inverse * localCoordinate;
-		if(positionMode == POSITION_TOPLEFT)
-			localCoordinate.x += hit.w/2.0;
-		if(positionMode == POSITION_TOPLEFT)
-			localCoordinate.y += hit.h/2.0;
+		if(hitTest(x,y)) {
+			Vector3 localCoordinate = Vector3(x,y,0);
 
-		
-		onMouseDown(localCoordinate.x,localCoordinate.y);
-		
-		InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x,localCoordinate.y)-parentAdjust, timestamp);
-		
-		inputEvent->mouseButton = mouseButton;
-		dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEDOWN);
-		
-		if(timestamp - lastClickTicks < 400) {
-			InputEvent *inputEvent = new InputEvent(Vector2(x,y), timestamp);
-			inputEvent->mouseButton = mouseButton;			
-			dispatchEvent(inputEvent, InputEvent::EVENT_DOUBLECLICK);
-		}
-		lastClickTicks = timestamp;		
-		ret.hit = true;
-		if(blockMouseInput) {
-			ret.blocked = true;
-		}
-	}
+			Matrix4 inverse = getScreenConcatenatedMatrix().Inverse();
+			localCoordinate = inverse * localCoordinate;
 
-	for(int i=children.size()-1;i>=0;i--) {			
-			Vector2 adjust = parentAdjust;
-			if(positionMode == POSITION_TOPLEFT)
-				adjust += Vector2(floor(width/2.0), floor(height/2.0));
-			MouseEventResult childRes = ((ScreenEntity*)children[i])->_onMouseDown(x,y, mouseButton, timestamp, adjust);
+			onMouseDown(localCoordinate.x,localCoordinate.y);
+
+			InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x,localCoordinate.y), timestamp);
+
+			inputEvent->mouseButton = mouseButton;
+			dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEDOWN);
+
+			if(timestamp - lastClickTicks < 400) {
+				InputEvent *inputEvent = new InputEvent(Vector2(x,y), timestamp);
+				inputEvent->mouseButton = mouseButton;
+				dispatchEvent(inputEvent, InputEvent::EVENT_DOUBLECLICK);
+			}
+			lastClickTicks = timestamp;
+			ret.hit = true;
+			if(blockMouseInput) {
+				ret.blocked = true;
+			}
+		}
+
+		for(int i=children.size()-1;i>=0;i--) {
+			MouseEventResult childRes = ((ScreenEntity*)children[i])->_onMouseDown(x,y, mouseButton, timestamp);
 			if(childRes.hit)
 				ret.hit = true;
-			if(childRes.blocked)
+			if(childRes.blocked) {
 				ret.blocked = true;
-			if(childRes.blocked)
 				break;
+			}
 		}
-	}		
+	}
 	
 	return ret;
 }
 
+// TODO: use screen transform
 Vector2 ScreenEntity::getScreenPosition() const {
 	Vector2 ret = getPosition2D();
 	
@@ -712,7 +664,7 @@ Matrix4 ScreenEntity::buildPositionMatrix() {
 			posMatrix.m[3][1] = position.y*matrixAdj;
 			posMatrix.m[3][2] = position.z*matrixAdj;
 		break;
-	}	
+	}
 	
 	
 	if(snapToPixels) {

@@ -98,11 +98,11 @@ class _PolyExport ScreenEntity : public Entity {
 		*/						
 		Number getRotation() const;
 			
-		MouseEventResult _onMouseDown(Number x, Number y, int mouseButton, int timestamp, Vector2 parentAdjust = Vector2(0,0));
-		MouseEventResult _onMouseUp(Number x, Number y, int mouseButton, int timestamp, Vector2 parentAdjust = Vector2(0,0));
-		MouseEventResult _onMouseMove(Number x, Number y, int timestamp, Vector2 parentAdjust = Vector2(0,0));
-		MouseEventResult _onMouseWheelUp(Number x, Number y, int timestamp, Vector2 parentAdjust = Vector2(0,0));
-		MouseEventResult _onMouseWheelDown(Number x, Number y, int timestamp, Vector2 parentAdjust = Vector2(0,0));
+		MouseEventResult _onMouseDown(Number x, Number y, int mouseButton, int timestamp);
+		MouseEventResult _onMouseUp(Number x, Number y, int mouseButton, int timestamp);
+		MouseEventResult _onMouseMove(Number x, Number y, int timestamp);
+		MouseEventResult _onMouseWheelUp(Number x, Number y, int timestamp);
+		MouseEventResult _onMouseWheelDown(Number x, Number y, int timestamp);
 	
 		virtual void onMouseDown(Number x, Number y){}
 		virtual void onMouseUp(Number x, Number y){}
