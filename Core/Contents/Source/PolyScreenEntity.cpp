@@ -37,7 +37,7 @@ ScreenEntity::ScreenEntity() : Entity() {
 	color = Color(1.0f,1.0f,1.0f,1.0f);
 	width = 0;
 	height = 0;
-	setHitbox(1, 1);
+	setHitbox(0, 0);
 	backfaceCulled = false;
 	positionMode = POSITION_TOPLEFT;
 	mouseOver = false;
