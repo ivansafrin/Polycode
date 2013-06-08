@@ -51,7 +51,7 @@ UIScrollContainer::UIScrollContainer(ScreenEntity *scrolledEntity, bool hScroll,
 	scrollChild = scrolledEntity;
 	addChild(scrollChild);
 	
-	scrollChild->enableScissor = true;
+	enableScissor = true;
 	
 	vScrollBar = new UIVScrollBar(defaultScrollSize, height, height / scrolledEntity->getHeight());
 	addChild(vScrollBar);
@@ -166,7 +166,7 @@ void UIScrollContainer::scrollHorizontal(Number amount) {
 
 void UIScrollContainer::Update() {
 	Vector2 pos = getScreenPosition();
-	scrollChild->scissorBox.setRect(pos.x,pos.y, width, height);	
+	scissorBox.setRect(pos.x, pos.y, width, height);
 }
 
 void UIScrollContainer::handleEvent(Event *event) {

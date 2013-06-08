@@ -93,7 +93,6 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	
 	textContainer = new UIElement();
 	textContainer->ownsChildren = true;
-	textContainer->enableScissor = true;
 
 	linesContainer->addChild(textContainer);
 	if(multiLine) {
@@ -177,6 +176,7 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 		addChild(scrollContainer);
 	} else {
 		addChild(linesContainer);
+		textContainer->enableScissor = true;
 	}
 		
 	undoStateIndex = 0;

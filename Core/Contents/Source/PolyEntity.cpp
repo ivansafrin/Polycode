@@ -405,31 +405,15 @@ void Entity::transformAndRender() {
 		isScissorEnabled = renderer->isScissorEnabled();
 		oldScissorBox = renderer->getScissorBox();
 		renderer->enableScissor(true);
-		
-		Polycode::Rectangle finalScrissorBox = scissorBox;		
-		
+
+		Rectangle finalScissorBox = scissorBox;
+
 		// make sure that our scissor box is constrained to the parent one if it exists
 		if(isScissorEnabled) {
-			if(finalScrissorBox.x < oldScissorBox.x)
-				finalScrissorBox.x = oldScissorBox.x;
-			if(finalScrissorBox.x > oldScissorBox.x + oldScissorBox.w)
-				finalScrissorBox.x = oldScissorBox.x + oldScissorBox.w;
-
-				
-			if(finalScrissorBox.x+finalScrissorBox.w > oldScissorBox.x + oldScissorBox.w)
-				finalScrissorBox.w = oldScissorBox.x + oldScissorBox.w - finalScrissorBox.x;
-
-			if(finalScrissorBox.y < oldScissorBox.y)
-				finalScrissorBox.y = oldScissorBox.y;
-			if(finalScrissorBox.y > oldScissorBox.y + oldScissorBox.h)
-				finalScrissorBox.y = oldScissorBox.y + oldScissorBox.h;
-
-			if(finalScrissorBox.y+finalScrissorBox.h > oldScissorBox.y + oldScissorBox.h)
-				finalScrissorBox.h = oldScissorBox.y + oldScissorBox.h - finalScrissorBox.y;
-
+			finalScissorBox = finalScissorBox.Clipped(renderer->getScissorBox());
 		}
-		
-		renderer->setScissorBox(finalScrissorBox);
+
+		renderer->setScissorBox(finalScissorBox);
 	}
 		
 	renderer->pushMatrix();

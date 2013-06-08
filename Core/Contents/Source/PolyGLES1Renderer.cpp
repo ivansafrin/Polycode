@@ -47,7 +47,7 @@ void OpenGLES1Renderer::Resize(int xRes, int yRes) {
     glLoadIdentity();
 	gluPerspective(fov,(GLfloat)xRes/(GLfloat)yRes,nearPlane,farPlane);
 	glViewport(0, 0, xRes, yRes);
-	glScissor(0, 0, xRes, yRes);
+	setScissorBox(0, 0, xRex, yRes);
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLineWidth(1);

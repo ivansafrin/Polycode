@@ -160,7 +160,7 @@ void OpenGLRenderer::Resize(int xRes, int yRes) {
     glLoadIdentity();
 	gluPerspective(fov,(GLfloat)xRes/(GLfloat)yRes,nearPlane,farPlane);
 	glViewport(0, 0, xRes, yRes);
-	glScissor(0, 0, xRes, yRes);
+	setScissorBox(Rectangle(0, 0, xRes, yRes));
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLineWidth(1);
@@ -180,7 +180,7 @@ void OpenGLRenderer::Resize(int xRes, int yRes) {
 	GLint numBuffers;
 	glGetIntegerv(GL_MAX_DRAW_BUFFERS, &numBuffers);
 //	Logger::log("MAX_DRAW_BUFFERS: %d \n", numBuffers);
-	
+
 }
 
 void OpenGLRenderer::setDepthFunction(int depthFunction) {
