@@ -56,8 +56,10 @@ namespace Polycode {
 			void Update();			
 			void onClose();
 			
-			void setPickerColor(Color newColor);
+			bool isContinuous();
+			void setContinuous(bool _continuous);
 			
+			void setPickerColor(Color newColor);
 			Color getSelectedColor();
 			
 		protected:
@@ -66,6 +68,7 @@ namespace Polycode {
 			Number lastHueSelectorPosition;
 			
 			bool suppressTextChangeEvent;
+			bool continuous;
 		
 			Color selectedColor;
 		

@@ -42,6 +42,9 @@ namespace Polycode {
 			
 			void Resize(Number width, Number height);
 			
+			bool isContinuous();
+			void setContinuous(bool _continuous);
+			
 			void setSliderValue(Number val);
 			Number getSliderValue();			
 			
@@ -50,6 +53,7 @@ namespace Polycode {
 			Number gripPos;
 			
 			bool dragging;
+			bool continuous;
 			
 			Number bgHeight;
 			
