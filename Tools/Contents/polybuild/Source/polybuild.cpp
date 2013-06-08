@@ -88,32 +88,53 @@ uLong filetime(
   return ret;
 }
 
+extern "C" int MyWriter(lua_State *L, const void *p, size_t sz, void *ud) {
+	int err = zipWriteInFileInZip(static_cast<zipFile>(ud), p, sz);
+	// Non 0 means an error and stops lua_dump from calling the writer again.
+	return (err != ZIP_OK) && (sz != 0) ? 1 : 0;
+}
+
 void addFileToZip(zipFile z, String filePath, String pathInZip, bool silent) {
-			if(!silent)
-				printf("Packaging %s as %s\n", filePath.c_str(), pathInZip.c_str());
+	if(!silent)
+		printf("Packaging %s as %s\n", filePath.c_str(), pathInZip.c_str());
 
-                	zip_fileinfo zi;
-                	zi.tmz_date.tm_sec = zi.tmz_date.tm_min = zi.tmz_date.tm_hour =
-			zi.tmz_date.tm_mday = zi.tmz_date.tm_mon = zi.tmz_date.tm_year = 0;
-			 zi.dosDate = 0;
-              	 	 zi.internal_fa = 0;
-             		   zi.external_fa = 0;
-             		   filetime(filePath.c_str(),&zi.tmz_date,&zi.dosDate);
-	
-			zipOpenNewFileInZip(z, pathInZip.c_str(), &zi, NULL, 0, NULL, 0, NULL, Z_DEFLATED, 2);
+	zip_fileinfo zi;
+	zi.tmz_date.tm_sec = zi.tmz_date.tm_min = zi.tmz_date.tm_hour = 
+		zi.tmz_date.tm_mday = zi.tmz_date.tm_mon = zi.tmz_date.tm_year = 0;
+	zi.dosDate = 0;
+	zi.internal_fa = 0;
+	zi.external_fa = 0;
+	filetime(filePath.c_str(),&zi.tmz_date,&zi.dosDate);
 
-			FILE *f = fopen(filePath.c_str(), "rb");
-			fseek(f, 0, SEEK_END);
-			long fileSize = ftell(f);
-			fseek(f, 0, SEEK_SET);
-			char *buf = (char*) malloc(fileSize);
-			fread(buf, fileSize, 1, f);
-			zipWriteInFileInZip(z, buf, fileSize);
-			free(buf);
-			fclose(f);
+	zipOpenNewFileInZip(z, pathInZip.c_str(), &zi, NULL, 0, NULL, 0, NULL, Z_DEFLATED, 2);
 
-			zipCloseFileInZip(z);
+	// Are we dealing with a script file?
+	int pos = filePath.rfind(".lua");
+	bool isScript = (pos > -1 && pos == filePath.length() - 4) ? true : false;
 
+	if(isScript && getArg("--compileScripts") == "true") {
+		lua_State *L = lua_open();
+		int err = 1;
+		if(L && 0 == luaL_loadfile(L, filePath.c_str())) {
+			err = lua_dump(L, MyWriter, z);
+		}
+		if(L) lua_close(L);
+		if(err) {
+			printf("Error compiling script. Ignoring.\n");
+		}
+	} else {
+		FILE *f = fopen(filePath.c_str(), "rb");
+		fseek(f, 0, SEEK_END);
+		long fileSize = ftell(f);
+		fseek(f, 0, SEEK_SET);
+		char *buf = (char*) malloc(fileSize);
+		fread(buf, fileSize, 1, f);
+		zipWriteInFileInZip(z, buf, fileSize);
+		free(buf);
+		fclose(f);
+	}
+
+	zipCloseFileInZip(z);
 }
 
 void addFolderToZip(zipFile z, String folderPath, String parentFolder, bool silent) {

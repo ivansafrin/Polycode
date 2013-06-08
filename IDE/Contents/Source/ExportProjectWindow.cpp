@@ -25,7 +25,7 @@
 
 extern PolycodeFrame *globalFrame;
 
-ExportProjectWindow::ExportProjectWindow() : UIWindow(L"Publish Project", 400, 300) {
+ExportProjectWindow::ExportProjectWindow() : UIWindow(L"Publish Project", 400, 360) {
 
 	closeOnEscape = true;
 
@@ -62,17 +62,25 @@ ExportProjectWindow::ExportProjectWindow() : UIWindow(L"Publish Project", 400, 3
 	addChild(linCheckBox);
 	linCheckBox->setPosition(padding, 225);
 
+	label = new ScreenLabel("OPTIONS", 22, "section", Label::ANTIALIAS_FULL);
+	addChild(label);
+	label->color.a = 0.4;	
+	label->setPosition(padding, 260);
+
+	compileCheckBox = new UICheckBox("Compile Scripts (experimental)", false);
+	addChild(compileCheckBox);
+	compileCheckBox->setPosition(padding, 295);
 
 	cancelButton = new UIButton(L"Cancel", 100);
 	cancelButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(cancelButton);
-	cancelButton->setPosition(400-75-padding-100-10, 300-15);
+	cancelButton->setPosition(400-75-padding-100-10, 360-15);
 		
 	
 	okButton = new UIButton(L"Publish", 100);
 	okButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(okButton);
-	okButton->setPosition(400-75-padding, 300-15);
+	okButton->setPosition(400-75-padding, 360-15);
 	
 	projectLocationInput->setText(CoreServices::getInstance()->getCore()->getUserHomeDirectory()+"/Documents/Polycode");
 	
