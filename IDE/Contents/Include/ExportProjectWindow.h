@@ -47,5 +47,6 @@ class ExportProjectWindow : public UIWindow {
 		
 		UICheckBox *macCheckBox;
 		UICheckBox *winCheckBox;
-		UICheckBox *linCheckBox;		
+		UICheckBox *linCheckBox;
+		UICheckBox *compileCheckBox;
 };

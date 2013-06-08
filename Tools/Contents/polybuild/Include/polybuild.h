@@ -11,6 +11,12 @@
 #include <io.h>
 #endif
 
+extern "C" {
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
+}
+
 using namespace Polycode;
 
 class BuildArg {
