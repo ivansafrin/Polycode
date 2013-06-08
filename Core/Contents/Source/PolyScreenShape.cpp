@@ -45,7 +45,7 @@ ScreenShape::ScreenShape(int shapeType, Number option1, Number option2, Number o
 		
 	buildShapeMesh();
 	
-	positionMode = POSITION_CENTER;
+	setPositionMode(POSITION_CENTER);
 	strokeEnabled = false;
 }
 
@@ -66,7 +66,7 @@ void ScreenShape::operator=(const ScreenShape& copy) {
 	
 	strokeColor = copy.strokeColor;
 	
-	positionMode = POSITION_CENTER;
+	setPositionMode(POSITION_CENTER);
 	strokeEnabled = copy.strokeEnabled;	
 
 }

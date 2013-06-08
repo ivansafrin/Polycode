@@ -37,7 +37,7 @@ ScreenLabel::ScreenLabel(const String& text, int size, const String& fontName, i
 	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size, amode, premultiplyAlpha);
 	texture = NULL;
 	updateTexture();
-	positionMode = POSITION_TOPLEFT;
+	setPositionMode(POSITION_TOPLEFT);
 	colorAffectsChildren = false;
 	positionAtBaseline = true;
 }
