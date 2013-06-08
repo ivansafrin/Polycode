@@ -29,6 +29,8 @@ using namespace Polycode;
 
 UIHSlider::UIHSlider(Number start, Number end, Number width) : UIElement() {
 
+	continuous = false;
+	
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	
 	String bgImage = conf->getStringValue("Polycode", "uiHSliderBg");

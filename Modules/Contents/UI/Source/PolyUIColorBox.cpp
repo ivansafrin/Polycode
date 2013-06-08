@@ -32,6 +32,8 @@ using namespace Polycode;
 UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	closeOnEscape = true;
 	
+	continuous = false;
+		
 //	topPadding
 	Config *conf = CoreServices::getInstance()->getConfig();	
 		
