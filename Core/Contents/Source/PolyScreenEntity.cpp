@@ -41,7 +41,7 @@ ScreenEntity::ScreenEntity() : Entity() {
 	backfaceCulled = false;
 	positionMode = POSITION_TOPLEFT;
 	mouseOver = false;
-	isDragged = false;
+	dragged = false;
 
 	dragOffsetX = 0;
 	dragOffsetY = 0;
@@ -190,13 +190,13 @@ bool ScreenEntity::isFocusable() const {
 }
 
 void ScreenEntity::startDrag(Number xOffset, Number yOffset) {
-	isDragged = true;
+	dragged = true;
 	dragOffsetX = xOffset;
 	dragOffsetY = yOffset;
 }
 
 void ScreenEntity::stopDrag() {
-	isDragged = false;
+	dragged = false;
 }
 
 ScreenEntity::~ScreenEntity() {
@@ -350,6 +350,10 @@ void ScreenEntity::setHitbox(Number width, Number height, Number left, Number to
 	hit.y = top;
 }
 
+bool ScreenEntity::isDragged() {
+	return dragged;
+}
+
 Matrix4 ScreenEntity::getScreenConcatenatedMatrix() {
 	Matrix4 retMatrix = transformMatrix;
 	if(positionMode == POSITION_TOPLEFT) {
@@ -366,8 +370,7 @@ Matrix4 ScreenEntity::getScreenConcatenatedMatrix() {
 
 MouseEventResult ScreenEntity::_onMouseMove(Number x, Number y, int timestamp, Vector2 parentAdjust) {
 
-	if(isDragged) {
-	
+	if(dragged) {
 		Vector3 localCoordinate = Vector3(x+(parentAdjust.x*2.0),y+(parentAdjust.y*2.0),0);				
 				
 		if(parentEntity) {

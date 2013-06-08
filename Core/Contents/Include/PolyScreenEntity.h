@@ -275,7 +275,6 @@ class _PolyExport ScreenEntity : public Entity {
 		 */
 		ScreenEntity *getScreenEntityById(String id, bool recursive);
 
-
 		/**
 		 * Does the same as getEntitiesByID, but casts each result to ScreenEntity.
 		 *
@@ -325,13 +324,18 @@ class _PolyExport ScreenEntity : public Entity {
 
 		Number width;
 		Number height;
+		
+		/**
+		 * Get the drag status (true if currently being dragged) of the entity.
+		 */
+		bool isDragged();
 
 	protected:
 	
 		bool focusable;
 		bool focusChildren;
 		
-		bool isDragged;
+		bool dragged;
 		Number dragOffsetX;
 		Number dragOffsetY;
 		

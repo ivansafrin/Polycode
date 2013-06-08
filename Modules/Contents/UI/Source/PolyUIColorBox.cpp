@@ -200,6 +200,14 @@ void UIColorPicker::rebuildFromTextInputs() {
 
 }
 
+bool UIColorPicker::isContinuous() {
+	return continuous;
+}
+void UIColorPicker::setContinuous(bool _continuous) {
+	continuous = _continuous;
+	alphaSlider->setContinuous(continuous);
+}
+
 void UIColorPicker::setPickerColor(Color newColor) {
 	currentS = newColor.getSaturation();
 	currentV = newColor.getValue();
@@ -398,6 +406,14 @@ void UIColorPicker::updateColorFromHueSelector() {
 }
 
 void UIColorPicker::Update() {	
+	if (continuous) {
+		if (mainSelector->isDragged())
+			updateColorFromMainSelector();
+		
+		if (hueSelector->isDragged())
+			updateColorFromHueSelector();
+	}
+	
 	UIWindow::Update();
 }
 
