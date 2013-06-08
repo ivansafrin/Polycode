@@ -801,7 +801,7 @@ void PolycodeFrame::handleEvent(Event *event) {
 	}
 	
 	if(event->getDispatcher() == editorManager) {
-	//	updateFileSelector();
+		updateFileSelector();
 	}
 	
 	if(event->getDispatcher() == projectManager) {
@@ -957,8 +957,11 @@ void PolycodeFrame::updateFileSelector() {
 		String projName = editorManager->openEditors[i]->parentProject->getProjectName();
 		String rootFolder = editorManager->openEditors[i]->parentProject->getRootFolder();
 		String filePath = editorManager->openEditors[i]->getFilePath();
-		String fullEntry = projName + filePath.substr(rootFolder.size(), filePath.size()-1);
 		
+		String fullEntry = filePath;
+		if(filePath.find(rootFolder) != -1) {
+			fullEntry = projName + filePath.substr(rootFolder.size(), filePath.size()-1);
+		}
 		if(editorManager->openEditors[i]->hasChanges()) {
 			if (displayFilePathInSelector)
 				currentFileSelector->addComboItem("* "+fullEntry);
