@@ -248,11 +248,13 @@ void PropSheet::setCollapsed(bool val) {
 		if(collapsed) {
 			collapseButton->enabled = false;
 			expandButton->enabled = true;	
-			contents->enabled = false;		
+			contents->enabled = false;	
+			contents->visible = false;	
 		} else {
 			collapseButton->enabled = true;
 			expandButton->enabled = false;				
 			contents->enabled = true;			
+			contents->visible = true;			
 		}
 	}
 	dispatchEvent(new Event(), Event::COMPLETE_EVENT);	
@@ -402,8 +404,8 @@ void Vector2Prop::setPropData(PolycodeEditorPropActionData* data) {
 
 void Vector2Prop::set(Vector2 position) {
 	suppressChangeEvent = true;
-	positionX->setText(String::NumberToString(position.x));
-	positionY->setText(String::NumberToString(position.y));
+	positionX->setText(String::NumberToString(position.x, 5));
+	positionY->setText(String::NumberToString(position.y, 5));
 	suppressChangeEvent = false;	
 }
 
@@ -483,7 +485,9 @@ StringProp::StringProp(String caption) : PropProp(caption, "String") {
 }
 
 void StringProp::setPropWidth(Number width) {
-	stringEntry->Resize(width - propContents->position.x - PROP_PADDING, stringEntry->getHeight());
+	stringEntry->Resize(floor((width - PROP_PADDING) * 0.5), stringEntry->getHeight());	
+	stringEntry->setPosition(width-105-PROP_PADDING-stringEntry->getWidth(), 2);
+	
 }
 
 void StringProp::handleEvent(Event *event) {
@@ -591,7 +595,8 @@ NumberProp::NumberProp(String caption) : PropProp(caption, "Number") {
 }
 
 void NumberProp::setPropWidth(Number width) {
-	numberEntry->Resize(width - propContents->position.x - PROP_PADDING, numberEntry->getHeight());
+	numberEntry->Resize(floor((width - PROP_PADDING) * 0.5), numberEntry->getHeight());	
+	numberEntry->setPosition(width-105-PROP_PADDING-numberEntry->getWidth(), 2);
 }
 
 void NumberProp::setPropData(PolycodeEditorPropActionData* data) {
@@ -615,7 +620,7 @@ void NumberProp::handleEvent(Event *event) {
 
 void NumberProp::set(Number number) {
 	suppressChangeEvent = true;
-	numberEntry->setText(String::NumberToString(number));
+	numberEntry->setText(String::NumberToString(number), 5);
 	suppressChangeEvent = false;	
 }
 
@@ -919,10 +924,15 @@ TextureProp::TextureProp(String caption) : PropProp(caption, "Texture"){
 	
 	textureLabel = new ScreenLabel("", 12, "sans");
 	propContents->addChild(textureLabel);
-	textureLabel->setPosition(60, 32);
-	textureLabel->color.a = 0.4;
+	textureLabel->setPosition(-100, 32);
+	textureLabel->color.a = 0.3;
 		
 	setHeight(60);	
+}
+
+void TextureProp::setPropWidth(Number width) {
+	changeButton->setPosition(width-changeButton->getWidth()-PROP_PADDING-100, 5);
+	previewShape->setPosition(changeButton->getPosition().x-48-10, 1);	
 }
 
 TextureProp::~TextureProp() {
@@ -1210,13 +1220,590 @@ void ShapeSheet::Update() {
 	}
 }
 
+ShaderPassProp::ShaderPassProp(Material *material, int shaderIndex) : PropProp("", "ShaderPassProp") {
+	this->material = material;
+	this->shader = material->getShader(shaderIndex);
+	this->shaderIndex = shaderIndex;
+	
+	removeButton = new UIImageButton("Images/remove_icon.png");
+	removeButton->addEventListener(this, UIEvent::CLICK_EVENT);	
+	propContents->addChild(removeButton);
+	removeButton->setPosition(-110, 6);
+	
+	shaderComboBox = new UIComboBox(globalMenu, 100);
+	shaderComboBox->addEventListener(this, UIEvent::CHANGE_EVENT);
+	propContents->addChild(shaderComboBox);
+	
+	int index = 0;
+	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
+	for(int i=0; i < materialManager->getNumShaders(); i++) {
+		if(materialManager->getShaderByIndex(i)->screenShader) {
+			shaderComboBox->addComboItem(materialManager->getShaderByIndex(i)->getName(), (void*)materialManager->getShaderByIndex(i));			
+			if(shader == materialManager->getShaderByIndex(i)) {
+				shaderComboBox->setSelectedIndex(index);
+			}
+			index++;
+		}
+	}	
+	
+	
+	editButton = new UIButton("Options", 30);
+	editButton->addEventListener(this, UIEvent::CLICK_EVENT);
+	propContents->addChild(editButton);
+	setHeight(30);
+}
+
+ShaderPassProp::~ShaderPassProp() {
+
+}
+		
+void ShaderPassProp::handleEvent(Event *event) {
+	if(event->getDispatcher() == removeButton && event->getEventCode() == UIEvent::CLICK_EVENT) {
+		dispatchEvent(new Event(), Event::REMOVE_EVENT);
+	} else if(event->getDispatcher() == editButton && event->getEventCode() == UIEvent::CLICK_EVENT) {
+		dispatchEvent(new Event(), Event::SELECT_EVENT);		
+	} else if(event->getDispatcher() == shaderComboBox) {
+		Shader *selectedShader = (Shader*)shaderComboBox->getSelectedItem()->data;
+		if(selectedShader) {
+			if(material->getShader(shaderIndex) != selectedShader) {
+				material->removeShader(shaderIndex);				
+				ShaderBinding *newShaderBinding = selectedShader->createBinding();				
+				material->addShaderAtIndex(selectedShader, newShaderBinding, shaderIndex);
+				dispatchEvent(new Event(), Event::CHANGE_EVENT);
+			}
+		}
+	}
+}
+
+void ShaderPassProp::setPropWidth(Number width) {
+	Number adjustedWidth = width-PROP_PADDING-5;
+	shaderComboBox->setPosition(-90, 0);
+	shaderComboBox->Resize(floor(adjustedWidth * 0.75), shaderComboBox->getHeight());
+
+	editButton->setPosition(-90 + shaderComboBox->getWidth() + 5, 0);
+	editButton->Resize(floor(adjustedWidth * 0.25), editButton->getHeight());
+}
+
+TargetBindingProp::TargetBindingProp(Shader *shader, Material *material, ShaderBinding *binding, RenderTargetBinding *targetBinding) : PropProp("", "TargetBindingProp") {
+	this->targetBinding = targetBinding;
+	this->material = material;
+	this->shader = shader;
+	this->binding = binding;
+		
+	removeButton = new UIImageButton("Images/remove_icon.png");
+	removeButton->addEventListener(this, UIEvent::CLICK_EVENT);	
+	propContents->addChild(removeButton);
+	removeButton->setPosition(-110, 6);
+
+	typeComboBox = new UIComboBox(globalMenu, 100);
+	typeComboBox->addComboItem("IN");		
+	typeComboBox->addComboItem("OUT");
+	typeComboBox->addComboItem("COLOR");
+	typeComboBox->addComboItem("DEPTH");		
+	typeComboBox->setSelectedIndex(targetBinding->mode);
+	typeComboBox->addEventListener(this, UIEvent::CHANGE_EVENT);
+	propContents->addChild(typeComboBox);
+
+	targetComboBox = new UIComboBox(globalMenu, 100);	
+	for(int i=0; i < material->getNumShaderRenderTargets(); i++) {
+		ShaderRenderTarget *target = material->getShaderRenderTarget(i);		
+		targetComboBox->addComboItem(target->id, (void*) target);
+		if(targetBinding->texture == target->texture) {
+			targetComboBox->setSelectedIndex(i);
+		}
+	}
+	targetComboBox->addEventListener(this, UIEvent::CHANGE_EVENT);
+	propContents->addChild(targetComboBox);
+	
+	textureComboBox = new UIComboBox(globalMenu, 100);	
+	for(int i=0; i < shader->expectedTextures.size(); i++) {
+		textureComboBox->addComboItem(shader->expectedTextures[i]);
+		if(shader->expectedTextures[i] == targetBinding->name) {
+			textureComboBox->setSelectedIndex(i);
+		}
+	}
+		
+	textureComboBox->addEventListener(this, UIEvent::CHANGE_EVENT);
+	propContents->addChild(textureComboBox);
+	
+	setHeight(30);
+	
+	if(typeComboBox->getSelectedIndex() == 1) {
+		textureComboBox->enabled = false;
+		textureComboBox->visible = false;			
+	} else {
+		textureComboBox->enabled = true;
+		textureComboBox->visible = true;		
+	}		
+
+	if(typeComboBox->getSelectedIndex() == 2 || typeComboBox->getSelectedIndex() == 3) {
+		targetComboBox->enabled = false;
+		targetComboBox->visible = false;
+	} else {
+		targetComboBox->enabled = true;
+		targetComboBox->visible = true;
+	}		
+	
+}
+
+TargetBindingProp::~TargetBindingProp() {
+
+}
+
+void TargetBindingProp::handleEvent(Event *event) {
+	if(event->getDispatcher() == removeButton && event->getEventCode() == UIEvent::CLICK_EVENT) {
+		dispatchEvent(new Event(), Event::REMOVE_EVENT);
+	} else if(event->getDispatcher() == typeComboBox && event->getEventCode() == UIEvent::CHANGE_EVENT) {
+		binding->clearTexture(targetBinding->name);	
+		
+		if(typeComboBox->getSelectedIndex() == 1) {
+			textureComboBox->enabled = false;
+			textureComboBox->visible = false;
+		} else {
+			textureComboBox->enabled = true;
+			textureComboBox->visible = true;
+			binding->addTexture(targetBinding->name, targetBinding->texture);	
+		}		
+		
+		if(typeComboBox->getSelectedIndex() == 2 || typeComboBox->getSelectedIndex() == 3) {
+			targetComboBox->enabled = false;
+			targetComboBox->visible = false;
+		} else {
+			targetComboBox->enabled = true;
+			targetComboBox->visible = true;
+		}	
+		
+		binding->removeRenderTargetBinding(targetBinding);		
+		targetBinding->mode = typeComboBox->getSelectedIndex();		
+		
+		binding->addRenderTargetBinding(targetBinding);		
+		
+		dispatchEvent(new Event(), Event::CHANGE_EVENT);
+	} else if(event->getDispatcher() == targetComboBox && event->getEventCode() == UIEvent::CHANGE_EVENT) {
+		ShaderRenderTarget *target = (ShaderRenderTarget*)targetComboBox->getSelectedItem()->data;		
+		targetBinding->texture = target->texture;
+		targetBinding->id  = target->id;
+		targetBinding->width = target->width;
+		targetBinding->height = target->height;
+		
+		binding->removeRenderTargetBinding(targetBinding);		
+		binding->addRenderTargetBinding(targetBinding);		
+
+		binding->clearTexture(targetBinding->name);
+		if(targetBinding->mode == RenderTargetBinding::MODE_IN) {
+			binding->addTexture(targetBinding->name, targetBinding->texture);		
+		}
+		dispatchEvent(new Event(), Event::CHANGE_EVENT);		
+	} else if(event->getDispatcher() == textureComboBox && event->getEventCode() == UIEvent::CHANGE_EVENT) {
+		targetBinding->name = textureComboBox->getSelectedItem()->label;
+		
+		binding->removeRenderTargetBinding(targetBinding);		
+		binding->addRenderTargetBinding(targetBinding);		
+
+		binding->clearTexture(targetBinding->name);
+		binding->addTexture(targetBinding->name, targetBinding->texture);
+		dispatchEvent(new Event(), Event::CHANGE_EVENT);
+	}
+}
+
+void TargetBindingProp::setPropWidth(Number width) {
+	Number size = width-PROP_PADDING-85-15;
+	
+	typeComboBox->setPosition(-90, 0);
+	typeComboBox->Resize(80, typeComboBox->getHeight());
+
+	targetComboBox->setPosition(-90 + 85, 0);
+	targetComboBox->Resize(floor(size*0.5), targetComboBox->getHeight());
+
+	textureComboBox->setPosition(-90 + 85 + targetComboBox->getWidth() + 5, 0);
+	textureComboBox->Resize(floor(size*0.5), textureComboBox->getHeight());
+
+}
+
+RenderTargetProp::RenderTargetProp(ShaderRenderTarget *renderTarget, Material *material) : PropProp("", "RenderTargetProp") {
+
+	this->material = material;
+	this->renderTarget = renderTarget;
+
+	removeButton = new UIImageButton("Images/remove_icon.png");
+	removeButton->addEventListener(this, UIEvent::CLICK_EVENT);	
+	propContents->addChild(removeButton);
+	removeButton->setPosition(-110, 6);
+	
+	nameInput = new UITextInput(false, 20, 12);
+	nameInput->addEventListener(this, UIEvent::CHANGE_EVENT);
+	propContents->addChild(nameInput);
+	nameInput->setText(renderTarget->id);
+	nameInput->setCaretPosition(0);
+	
+	widthInput = new UITextInput(false, 20, 12);
+	widthInput->setNumberOnly(true);
+	widthInput->setText(String::NumberToString(renderTarget->width));
+	propContents->addChild(widthInput);
+	widthInput->setCaretPosition(0);
+	widthInput->addEventListener(this, UIEvent::CHANGE_EVENT);
+		
+	heightInput = new UITextInput(false, 20, 12);
+	heightInput->setNumberOnly(true);
+	heightInput->setText(String::NumberToString(renderTarget->height));	
+	propContents->addChild(heightInput);
+	heightInput->setCaretPosition(0);
+	heightInput->addEventListener(this, UIEvent::CHANGE_EVENT);
+			
+	typeComboBox = new UIComboBox(globalMenu, 100);
+	typeComboBox->addComboItem("Pixels");		
+	typeComboBox->addComboItem("Norm.");
+	typeComboBox->setSelectedIndex(renderTarget->sizeMode);	
+	typeComboBox->addEventListener(this, UIEvent::CHANGE_EVENT);
+	propContents->addChild(typeComboBox);
+	
+	setHeight(30);
+}
+
+void RenderTargetProp::setPropWidth(Number width) {
+	Number quarter = floor((width-PROP_PADDING- (5*3)) * 0.25);
+	nameInput->setPosition(-90, 0);
+	nameInput->Resize(floor(quarter * 1.8), nameInput->getHeight());
+
+	widthInput->setPosition(-90 + 5 + (quarter * 1.8), 0);
+	widthInput->Resize(floor(quarter*0.6), widthInput->getHeight());
+
+	heightInput->setPosition(-90 + 10 + (quarter * 2.4), 0);
+	heightInput->Resize(floor(quarter*0.6), heightInput->getHeight());	
+	
+	typeComboBox->setPosition(-90 + 15 + (quarter*3), 0);
+	typeComboBox->Resize(floor(quarter), typeComboBox->getHeight());
+}
+
+RenderTargetProp::~RenderTargetProp() {
+
+}
+
+void RenderTargetProp::recreateRenderTarget() {
+	material->recreateRenderTarget(renderTarget);
+}
+
+void RenderTargetProp::handleEvent(Event *event) {
+	if(event->getEventType() == "UIEvent") {
+
+		if(event->getDispatcher() == nameInput) {
+			renderTarget->id = nameInput->getText();
+		}
+	
+		if(event->getDispatcher() == typeComboBox) {
+			renderTarget->sizeMode = typeComboBox->getSelectedIndex();
+			recreateRenderTarget();
+		}
+
+		if(event->getDispatcher() == typeComboBox) {
+			renderTarget->sizeMode = typeComboBox->getSelectedIndex();
+			recreateRenderTarget();
+		}
+
+		if(event->getDispatcher() == widthInput) {
+			renderTarget->width =  atof(widthInput->getText().c_str());
+			recreateRenderTarget();
+		}
+
+		if(event->getDispatcher() == heightInput) {
+			renderTarget->height =  atof(heightInput->getText().c_str());
+			recreateRenderTarget();
+		}
+
+		
+		if(event->getDispatcher() == removeButton) {
+			dispatchEvent(new Event(), Event::CANCEL_EVENT);
+		}
+	}
+	
+	PropProp::handleEvent(event);
+}
+
+ShaderPassesSheet::ShaderPassesSheet() : PropSheet("SHADER PASSES", "shaderPasses") {
+	propHeight = 70;
+	addButton = new UIButton("Add Shader Pass", 150);
+	addButton->addEventListener(this, UIEvent::CLICK_EVENT);
+	contents->addChild(addButton);
+	addButton->setPosition(15, 35);
+	
+	customUndoHandler = true;
+	material = NULL;
+	binding = NULL;
+	selectedProp = NULL;
+	
+	removeIndex = -1;
+}
+
+ShaderPassesSheet::~ShaderPassesSheet() {
+
+}
+
+void ShaderPassesSheet::setMaterial(Material *material) {
+	this->material = material;
+	refreshPasses();
+}
+
+void ShaderPassesSheet::refreshPasses() {
+
+	for(int i=0; i < props.size(); i++) {
+		contents->removeChild(props[i]);
+		props[i]->removeAllHandlersForListener(this);
+		delete props[i];
+	}
+	props.clear();
+	propHeight = 0;
+
+	if(!material) {
+		return;
+	}
+
+	for(int i=0; i < material->getNumShaders(); i++) {
+		ShaderPassProp *passProp = new ShaderPassProp(material, i);
+		passProp->addEventListener(this, Event::REMOVE_EVENT);
+		passProp->addEventListener(this, Event::CHANGE_EVENT);		
+		passProp->addEventListener(this, Event::SELECT_EVENT);
+		addProp(passProp);
+		propHeight += 30;	
+	}
+	
+	addButton->setPosition(15, propHeight);	
+	propHeight += 70;	
+
+	dispatchEvent(new Event(), Event::COMPLETE_EVENT);		
+	Resize(width, height);	
+	
+}
+
+void ShaderPassesSheet::Update() {
+	if(removeIndex != -1) {
+		material->removeShader(removeIndex);
+		refreshPasses();
+		removeIndex = -1;			
+	}
+}
+
+void ShaderPassesSheet::handleEvent(Event *event) {
+
+	if(event->getDispatcher() == addButton) {
+	
+		Shader *defaultShader = (Shader*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_SHADER, "PassThrough");
+		if(defaultShader) {	
+			ShaderBinding *newShaderBinding = defaultShader->createBinding();		
+			material->addShader(defaultShader, newShaderBinding);
+		}
+		refreshPasses();
+		dispatchEvent(new Event(), Event::CHANGE_EVENT);		
+	} else {
+		for(int i=0; i < props.size(); i++) {	
+			if(event->getDispatcher() == props[i]) {
+				if(event->getEventCode() == Event::CHANGE_EVENT) {
+					dispatchEvent(new Event(), Event::CHANGE_EVENT);
+					selectedProp = (ShaderPassProp*)props[i];
+					dispatchEvent(new Event(), Event::SELECT_EVENT);					
+				} else if(event->getEventCode() == Event::SELECT_EVENT) {
+					selectedProp = (ShaderPassProp*)props[i];
+					dispatchEvent(new Event(), Event::SELECT_EVENT);				
+				} else if(event->getEventCode() == Event::REMOVE_EVENT) {
+					removeIndex = i;
+					dispatchEvent(new Event(), Event::REMOVE_EVENT);					
+				}
+			}
+		}
+	}
+
+	PropSheet::handleEvent(event);
+}
+
+TargetBindingsSheet::TargetBindingsSheet() : PropSheet("TEXTURE BINDINGS", "targetBindings") {
+	propHeight = 70;
+	addButton = new UIButton("Add Render Target", 150);
+	addButton->addEventListener(this, UIEvent::CLICK_EVENT);
+	contents->addChild(addButton);
+	addButton->setPosition(15, 35);	
+	customUndoHandler = true;	
+	material = NULL;
+	binding = NULL;	
+	bindingToRemove = NULL;
+}
+
+TargetBindingsSheet::~TargetBindingsSheet() {
+
+}
+
+void TargetBindingsSheet::setShader(Shader *shader, Material *material, ShaderBinding *binding) {
+	this->shader = shader;
+	this->material = material;		
+	this->binding = binding;
+	
+	refreshTargets();
+}
+
+void TargetBindingsSheet::Update() {
+	if(bindingToRemove) {
+		binding->removeRenderTargetBinding(bindingToRemove);
+		bindingToRemove = NULL;
+		refreshTargets();
+	}
+}
+
+void TargetBindingsSheet::refreshTargets() {
+	for(int i=0; i < props.size(); i++) {
+		contents->removeChild(props[i]);
+		props[i]->removeAllHandlersForListener(this);
+		delete props[i];
+	}
+	props.clear();
+	propHeight = 0;
+
+	if(!material) {
+		return;
+	}
+	
+	for(int i=0; i < binding->getNumRenderTargetBindings(); i++) {
+		RenderTargetBinding *targetBinding = binding->getRenderTargetBinding(i);
+		TargetBindingProp *bindingProp = new TargetBindingProp(shader, material, binding, targetBinding);
+		bindingProp->addEventListener(this, Event::REMOVE_EVENT);	
+		addProp(bindingProp);
+		propHeight += 30;		
+		
+	}
+				
+	addButton->setPosition(15, propHeight);	
+	propHeight += 70;	
+
+	dispatchEvent(new Event(), Event::COMPLETE_EVENT);		
+	Resize(width, height);	
+}
+
+void TargetBindingsSheet::handleEvent(Event *event) {
+
+	if(event->getDispatcher() == addButton) {
+		RenderTargetBinding* newBinding = new RenderTargetBinding();
+		newBinding->mode = RenderTargetBinding::MODE_COLOR;
+		newBinding->texture = NULL;		
+		binding->addRenderTargetBinding(newBinding);				
+		refreshTargets();			
+		dispatchEvent(new Event(), Event::CHANGE_EVENT);
+	}
+	
+	for(int i=0; i < props.size(); i++) {
+		if(event->getDispatcher() == props[i]) {
+			switch(event->getEventCode()) {						
+				case Event::REMOVE_EVENT:
+					bindingToRemove = ((TargetBindingProp*)props[i])->targetBinding;
+				break;
+				case Event::CHANGE_EVENT:
+					dispatchEvent(new Event(), Event::CHANGE_EVENT);
+				break;				
+			}
+		}
+	}
+	
+	
+	PropSheet::handleEvent(event);
+}
+
+
+RenderTargetsSheet::RenderTargetsSheet() : PropSheet("RENDER TARGETS", "renderTargets") {
+	propHeight = 70;
+	addButton = new UIButton("Add Render Target", 150);
+	addButton->addEventListener(this, UIEvent::CLICK_EVENT);
+	contents->addChild(addButton);
+	addButton->setPosition(15, 35);
+	
+	customUndoHandler = true;	
+	material = NULL;
+	binding = NULL;
+	
+	removeIndex = -1;	
+}
+
+RenderTargetsSheet::~RenderTargetsSheet() {
+
+}
+
+void RenderTargetsSheet::refreshTargets() {
+	for(int i=0; i < props.size(); i++) {
+		contents->removeChild(props[i]);
+		props[i]->removeAllHandlersForListener(this);
+		delete props[i];
+	}
+	props.clear();
+	propHeight = 0;
+
+	if(!material) {
+		return;
+	}
+	
+	for(int i=0; i < material->getNumShaderRenderTargets(); i++) {
+		ShaderRenderTarget *renderTarget  = material->getShaderRenderTarget(i);
+		RenderTargetProp *targetProp = new RenderTargetProp(renderTarget, material);		
+		targetProp->addEventListener(this, Event::CANCEL_EVENT);	
+		addProp(targetProp);
+		propHeight += 30;		
+	}
+	
+	addButton->setPosition(15, propHeight);	
+	propHeight += 70;	
+
+	dispatchEvent(new Event(), Event::COMPLETE_EVENT);		
+	Resize(width, height);	
+}
+
+void RenderTargetsSheet::Update() {
+	if(material != lastMaterial) {
+		lastMaterial = material;
+		refreshTargets();
+	}
+	
+	if(removeIndex != -1) {		
+		material->removeShaderRenderTarget(removeIndex);
+		removeIndex = -1;
+		refreshTargets();
+	}
+	
+}
+
+void RenderTargetsSheet::handleEvent(Event *event) {
+	if(!material)
+		return;
+
+	if(event->getDispatcher() == addButton) {
+		ShaderRenderTarget* newRenderTarget = new ShaderRenderTarget();
+		newRenderTarget->id = "render_target";
+		newRenderTarget->width = 1.0;
+		newRenderTarget->height = 1.0;
+		newRenderTarget->normalizedWidth = normTextureWidth;
+		newRenderTarget->normalizedHeight = normTextureHeight;		
+		newRenderTarget->sizeMode = ShaderRenderTarget::SIZE_MODE_NORMALIZED;		
+		material->addShaderRenderTarget(newRenderTarget);
+		refreshTargets();
+	}
+	
+	for(int i=0; i < props.size(); i++) {
+		if(event->getDispatcher() == props[i] && event->getEventType() == "") {
+			switch(event->getEventCode()) {						
+				case Event::CANCEL_EVENT:
+					removeIndex = i;
+				break;
+				case Event::CHANGE_EVENT:
+				break;				
+			}
+		}
+	}
+	
+	
+	PropSheet::handleEvent(event);
+}
+
+
 EntityPropSheet::EntityPropSheet() : PropSheet("CUSTOM PROPERTIES", "entityProps"){
 
 	propHeight = 75;
 	
 	addButton = new UIButton("Add Property", 150);
 	addButton->addEventListener(this, UIEvent::CLICK_EVENT);
-	addChild(addButton);
+	contents->addChild(addButton);
 	addButton->setPosition(15, 35);
 	
 	customUndoHandler = true;
@@ -1286,7 +1873,7 @@ void EntityPropSheet::refreshProps() {
 		delete props[i];
 	}
 	props.clear();
-	propHeight = 75;
+	propHeight = 0;
 	
 	for(int i=0; i < entity->entityProps.size(); i++) {			
 		EntityProp prop = entity->entityProps[i];
@@ -1294,15 +1881,15 @@ void EntityPropSheet::refreshProps() {
 		newProp->addEventListener(this, Event::CANCEL_EVENT);
 		newProp->addEventListener(this, Event::CHANGE_EVENT);		
 		addProp(newProp);
-		propHeight += 35;
+		propHeight += 30;
 	}
 	
 	
-	addButton->setPosition(15, propHeight-40);	
-	
+	addButton->setPosition(15, propHeight);	
+	propHeight += 70;	
 	
 	if(lastNumProps != entity->entityProps.size()) {
-		dispatchEvent(new Event(), Event::CHANGE_EVENT);
+		dispatchEvent(new Event(), Event::COMPLETE_EVENT);
 	}
 	
 	lastNumProps = entity->entityProps.size();
@@ -1337,7 +1924,7 @@ void EntityPropSheet::Update() {
 	}
 }
 
-ShaderOptionsSheet::ShaderOptionsSheet(String title, String name) : PropSheet(title, name){
+ShaderOptionsSheet::ShaderOptionsSheet() : PropSheet("SHADER OPTIONS", "shader_options"){
 	shader = NULL;
 	propHeight = 40;
 }
@@ -1355,6 +1942,9 @@ void ShaderOptionsSheet::handleEvent(Event *event) {
 					(*(Number*)binding->getLocalParamByName(props[i]->label->getText())->data) = ((NumberProp*)props[i])->get();
 				} else if(props[i]->propType == "Color") {
 					(*(Color*)binding->getLocalParamByName(props[i]->label->getText())->data) = ((ColorProp*)props[i])->get();
+				
+				} else if(props[i]->propType == "Vector2") {
+					(*(Vector2*)binding->getLocalParamByName(props[i]->label->getText())->data) = ((Vector2Prop*)props[i])->get();
 				
 				}
 				dispatchEvent(new Event(), Event::CHANGE_EVENT);				
@@ -1410,13 +2000,23 @@ void ShaderOptionsSheet::setOptionsFromParams(std::vector<ProgramParam> &params)
 						propHeight += 40;												
 					}
 					break;
-					
+					case ProgramParam::PARAM_VECTOR2:
+					{
+						String paramName = params[i].name;						
+						Vector2Prop *vec2Prop = new Vector2Prop(paramName);;
+						addProp(vec2Prop);
+						
+						Vector2 vec2val = (*(Vector2*)binding->getLocalParamByName(params[i].name)->data);
+						vec2Prop->set(vec2val);
+						propHeight += 30;
+					}
+					break;
 				}	
 			}
 		}	
 }
 
-void ShaderOptionsSheet::setShader(Shader *shader, Material *material) {
+void ShaderOptionsSheet::setShader(Shader *shader, Material *material, ShaderBinding *binding) {
 	clearShader();
 	this->shader = shader;
 	this->material = material;
@@ -1424,7 +2024,7 @@ void ShaderOptionsSheet::setShader(Shader *shader, Material *material) {
 	if(!shader || !material)
 		return;
 		
-	binding = material->getShaderBinding(0);
+	this->binding = binding;
 	
 	setOptionsFromParams(shader->expectedParams);
 	
@@ -1483,7 +2083,7 @@ void ShaderTexturesSheet::clearShader() {
 	propHeight = 30;
 }
 
-void ShaderTexturesSheet::setShader(Shader *shader, Material *material) {
+void ShaderTexturesSheet::setShader(Shader *shader, Material *material, ShaderBinding *binding) {
 	clearShader();
 	this->shader = shader;
 	this->material = material;
@@ -1491,7 +2091,7 @@ void ShaderTexturesSheet::setShader(Shader *shader, Material *material) {
 	if(!shader || !material)
 		return;
 		
-	binding = material->getShaderBinding(0);	
+	this->binding = binding;
 
 	for(int i=0; i < shader->expectedCubemaps.size(); i++) {
 		ComboProp *comboProp = new ComboProp(shader->expectedCubemaps[i]);

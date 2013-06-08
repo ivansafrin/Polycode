@@ -108,13 +108,17 @@ namespace Polycode {
 	
 	class _PolyExport ShaderRenderTarget : public PolyBase {
 		public:
+			ShaderRenderTarget();
+			
 			String id;
 			Number width;
 			Number height;
 			int sizeMode;
-			bool hasSize;
 			Texture *texture;
 			
+			Number normalizedWidth;
+			Number normalizedHeight;
+						
 			static const int SIZE_MODE_PIXELS = 0;
 			static const int SIZE_MODE_NORMALIZED = 1;
 	};
@@ -145,6 +149,8 @@ namespace Polycode {
 			Number height;			
 			static const int MODE_IN= 0;
 			static const int MODE_OUT = 1;
+			static const int MODE_COLOR = 2;
+			static const int MODE_DEPTH = 3;			
 	};
 
 	class _PolyExport ShaderBinding : public PolyBase {
@@ -165,12 +171,19 @@ namespace Polycode {
 			LocalShaderParam *getLocalParamByName(const String& name);
 			
 			void addRenderTargetBinding(RenderTargetBinding *binding);
+			void removeRenderTargetBinding(RenderTargetBinding *binding);
 
 			unsigned int getNumRenderTargetBindings();
 			RenderTargetBinding *getRenderTargetBinding(unsigned int index);
 
 			unsigned int getNumInTargetBindings();
 			RenderTargetBinding *getInTargetBinding(unsigned int index);
+
+			unsigned int getNumColorTargetBindings();
+			RenderTargetBinding *getColorTargetBinding(unsigned int index);
+
+			unsigned int getNumDepthTargetBindings();
+			RenderTargetBinding *getDepthTargetBinding(unsigned int index);
 
 			unsigned int getNumOutTargetBindings();
 			RenderTargetBinding *getOutTargetBinding(unsigned int index);
@@ -182,6 +195,8 @@ namespace Polycode {
 			std::vector<RenderTargetBinding*> renderTargetBindings;
 			std::vector<RenderTargetBinding*> inTargetBindings;
 			std::vector<RenderTargetBinding*> outTargetBindings;
+			std::vector<RenderTargetBinding*> colorTargetBindings;
+			std::vector<RenderTargetBinding*> depthTargetBindings;			
 	};
 
 }

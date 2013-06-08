@@ -130,6 +130,7 @@ void UIHSizer::Resize(Number width, Number height) {
 	this->height = height;
 	matrixDirty = true;
 	updateSizer();
+	UIElement::Resize(width, height);	
 }
 
 Number UIHSizer::getMainWidth() {

@@ -607,6 +607,13 @@ void UITextInput::restructLines() {
 	
 }
 
+void UITextInput::setCaretPosition(int position) {
+	if(position >= 0 && position < lines[lineOffset].length()) {
+		caretPosition = position;
+		updateCaretPosition();		
+	}
+}
+
 void UITextInput::setText(String text, bool sendChangeEvent) {
 	if(!multiLine) {
 		lines[lineOffset] = text;

@@ -180,9 +180,10 @@ String String::toUpperCase() const {
 }
 
 
-String String::NumberToString(Number value) {
+String String::NumberToString(Number value, int precision) {
 	char temp[128];
-	sprintf(temp, "%.2f", value);
+	String precisionStr = String("%.")+IntToString(precision)+String("f");
+	sprintf(temp, precisionStr.c_str(), value);
 	return String(temp);
 }
 

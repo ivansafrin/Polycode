@@ -116,6 +116,7 @@ namespace Polycode {
 		void createVertexBufferForMesh(Mesh *mesh);
 		void drawVertexBuffer(VertexBuffer *buffer, bool enableColorBuffer);						
 		void bindFrameBufferTexture(Texture *texture);
+		void bindFrameBufferTextureDepth(Texture *texture);		
 		void unbindFramebuffers();
 		
 		void cullFrontFaces(bool val);

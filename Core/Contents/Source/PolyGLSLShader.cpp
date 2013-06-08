@@ -198,7 +198,7 @@ void GLSLShader::linkProgram() {
 		name[name_len] = 0;
 		GLuint location = glGetUniformLocation( shader_id, name );
 		
-		if(String(name).find("gl_") == -1) {
+		if(!(String(name).find("gl_") == 0)) {
 		switch(type) {
 			case GL_SAMPLER_2D:
 				expectedTextures.push_back(String(name));

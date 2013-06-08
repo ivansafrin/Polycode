@@ -35,8 +35,11 @@ public:
 	MaterialBrowserData() {
 		material = NULL;
 		shader = NULL;
+		cubemap = NULL;
+		postMaterial = NULL;
 	}
 	Material *material;
+	Material *postMaterial;
 	Shader *shader;
 	Cubemap *cubemap;
 	String name;
@@ -65,8 +68,37 @@ class MaterialPreviewBox : public UIElement {
 		
 		ScreenEntity *previewBase;		
 		ScenePrimitive *previewPrimitive;	
-		Material *currentMaterial;			
+		Material *currentMaterial;					
+};
+
+class PostPreviewBox : public UIElement {
+	public:
+		PostPreviewBox();
+		~PostPreviewBox();
+		void setMaterial(Material *material);
+		void clearMaterial();		
+		void handleEvent(Event *event);
+		void Resize(Number width, Number height);
+		void Update();	
+			
+		Scene *previewScene;
+		SceneRenderTexture *renderTexture;
+		ScreenShape *previewShape;				
+		ScreenEntity *previewBase;		
+		ScenePrimitive *previewPrimitive;	
+		Material *currentMaterial;	
+		ScreenShape *headerBg;
+				
+		Number spinValue;
 		
+		UICheckBox *rotateCheckBox;
+		UICheckBox *hdrCheckBox;		
+		UITextInput *cameraExposureInput;
+		UITextInput *lightStrength;
+				
+		SceneLight	*mainLight;
+		SceneLight	*secondLight;
+
 };
 
 
@@ -80,7 +112,10 @@ class MaterialBrowser : public UIElement {
 		UITree *addMaterial(Material *material);
 		UITree *addShader(Shader *shader);
 		UITree *addCubemap(Cubemap *cubemap);
-						
+		UITree *addPostMaterial(Material *material);
+		
+		void removeSelected();
+		
 		void handleEvent(Event *event);
 		
 		MaterialBrowserData *selectedData;
@@ -88,7 +123,10 @@ class MaterialBrowser : public UIElement {
 		UIImageButton *newShaderButton;	
 		UIImageButton *newMaterialButton;
 		UIImageButton *newCubemapButton;
-				
+		UIImageButton *newPostButton;
+		
+		UIImageButton *removeButton;
+								
 		UITree *selectedNode;
 														
 	protected:
@@ -128,6 +166,46 @@ class CubemapEditorPane : public UIElement {
 		MaterialPreviewBox *cubemapPreview;
 };
 
+class PostEditorPane : public UIElement {
+	public:
+		PostEditorPane();
+		~PostEditorPane();
+		void Resize(Number width, Number height);
+		void setMaterial(Material *material);
+		void handleEvent(Event *event);
+		Material *currentMaterial;	
+		
+		void adjustPreview();
+		
+		protected:
+		
+		ScreenShape *headerBgBottom;
+
+		PropList *propList;				
+		PropSheet *baseProps;
+		ShaderPassesSheet *passProps;
+		RenderTargetsSheet *targetsProps;
+	
+		PropList *optionsPropList;
+		
+		TargetBindingsSheet *targetBindingProps;
+		ShaderTexturesSheet *shaderTextureSheet;
+		ShaderOptionsSheet *shaderOptionsSheet;			
+			
+		UIVSizer *mainSizer;
+		UIElement *topElement;
+		UIElement *bottomElement;
+						
+		StringProp *nameProp;
+		BoolProp *fp16Prop;
+		
+		PostPreviewBox *postPreview;
+		
+		Screen *previewScreen;
+		
+					
+};
+
 class ShaderEditorPane : public UIElement {
 	public:
 		ShaderEditorPane();
@@ -157,7 +235,7 @@ class ShaderEditorPane : public UIElement {
 		
 		StringProp *nameProp;
 		BoolProp *screenShaderProp;
-		
+	
 		
 		NumberProp *areaLightsProp;
 		NumberProp *spotLightsProp;		
@@ -202,6 +280,7 @@ class MaterialMainWindow : public UIElement {
 	MaterialEditorPane *materialPane;
 	ShaderEditorPane *shaderPane;	
 	CubemapEditorPane *cubemapPane;	
+	PostEditorPane *postPane;	
 		
 	UIColorPicker *colorPicker;
 };
@@ -217,6 +296,7 @@ class PolycodeMaterialEditor : public PolycodeEditor {
 	
 	void handleEvent(Event *event);	
 	void saveFile();
+	void saveMaterials(ObjectEntry *materialsEntry, std::vector<Material*> materials);
 	
 	String createStringValue(unsigned int type, void *value);
 	
@@ -230,7 +310,8 @@ class PolycodeMaterialEditor : public PolycodeEditor {
 		std::vector<Material*> materials;
 		std::vector<Shader*> shaders;
 		std::vector<Cubemap*> cubemaps;
-						
+		std::vector<Material*> postMaterials;
+								
 		UITree *selectedMaterialNode;
 };
 

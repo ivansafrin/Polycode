@@ -579,27 +579,27 @@ void OpenGLRenderer::scale3D(Vector3 *scale) {
 	glScalef(scale->x, scale->y, scale->z);
 }
 
-void OpenGLRenderer::bindFrameBufferTexture(Texture *texture) {
-	if(currentFrameBufferTexture) {
-		previousFrameBufferTexture = currentFrameBufferTexture;
-	}
+void OpenGLRenderer::bindFrameBufferTextureDepth(Texture *texture) {
+	if(!texture)
+		return;
 	OpenGLTexture *glTexture = (OpenGLTexture*)texture;
+	glBindFramebufferEXT(GL_RENDERBUFFER_EXT, glTexture->getFrameBufferID());
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
+}
 
+
+void OpenGLRenderer::bindFrameBufferTexture(Texture *texture) {
+	if(!texture)
+		return;
+	OpenGLTexture *glTexture = (OpenGLTexture*)texture;
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, glTexture->getFrameBufferID());
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	currentFrameBufferTexture = texture;
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
 }
 
 void OpenGLRenderer::unbindFramebuffers() {
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);	
-	currentFrameBufferTexture = NULL;
-	if(previousFrameBufferTexture) {
-		bindFrameBufferTexture(previousFrameBufferTexture);
-		previousFrameBufferTexture = NULL;
-	}
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+	glBindFramebufferEXT(GL_RENDERBUFFER_EXT, 0);
 }
-
 
 void OpenGLRenderer::createRenderTextures(Texture **colorBuffer, Texture **depthBuffer, int width, int height, bool floatingPointBuffer) {
 			
@@ -627,7 +627,7 @@ void OpenGLRenderer::createRenderTextures(Texture **colorBuffer, Texture **depth
 
 	status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
 	if(status == GL_FRAMEBUFFER_COMPLETE_EXT) {
-		Logger::log("color fbo generation successful\n");
+//		Logger::log("color fbo generation successful\n");
 	} else {
 		Logger::log("color fbo generation failed\n");	
 	}
@@ -662,7 +662,7 @@ void OpenGLRenderer::createRenderTextures(Texture **colorBuffer, Texture **depth
 		status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
 
 		if(status == GL_FRAMEBUFFER_COMPLETE_EXT) {
-			Logger::log("depth fbo generation successful\n");
+//			Logger::log("depth fbo generation successful\n");
 		} else {
 			Logger::log("depth fbo generation failed\n");	
 		}

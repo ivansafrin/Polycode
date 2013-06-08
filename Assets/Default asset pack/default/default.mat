@@ -36,7 +36,11 @@
 		<shader type="glsl" name="NorColSpec" numAreaLights="4" numSpotLights="2">		
 			<vp source="default/NormalShader.vert"/>
 			<fp source="default/NorColSpec.frag"/>
-		</shader>											
+		</shader>
+		<shader type="glsl" name="PassThrough" screen="true">
+			<vp source="default/ScreenShader.vert"/>
+			<fp source="default/PassThrough.frag"/>
+		</shader>	
 	</shaders>	
 	<materials>
 		<material name="Default">

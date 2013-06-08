@@ -50,7 +50,7 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default");	
 
 	CoreServices::getInstance()->getResourceManager()->addArchive("hdr.pak");
-	CoreServices::getInstance()->getResourceManager()->addDirResource("hdr");	
+	CoreServices::getInstance()->getResourceManager()->addDirResource("hdr");
 
 
 	CoreServices::getInstance()->getResourceManager()->addArchive("api.pak");

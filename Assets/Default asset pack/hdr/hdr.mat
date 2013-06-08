@@ -4,7 +4,11 @@
 		<shader type="glsl" name="NorColSpecHDR" numAreaLights="4" numSpotLights="2">		
 			<vp source="default/NormalShader.vert"/>
 			<fp source="hdr/NorColSpecHDR.frag"/>
-		</shader>	
+		</shader>
+		<shader type="glsl" name="DefaultShaderNoTextureHDR" numAreaLights="4" numSpotLights="2">	
+			<vp source="default/DefaultShader.vert"/>
+			<fp source="hdr/DefaultShaderNoTextureHDR.frag"/>
+		</shader>		
 		<shader type="glsl" name="HDRProcessShader" screen="true">
 			<vp source="default/ScreenShader.vert"/>
 			<fp source="hdr/HDRProcess.frag"/>
@@ -21,16 +25,16 @@
 			<vp source="default/ScreenShader.vert"/>
 			<fp source="hdr/HDRBloomV.frag"/>
 		</shader>	
-		<shader type="glsl" name="PassThrough" screen="true">
-			<vp source="default/ScreenShader.vert"/>
-			<fp source="default/PassThrough.frag"/>
-		</shader>	
 		<shader type="glsl" name="ExtractBloom" screen="true">
 			<vp source="default/ScreenShader.vert"/>
 			<fp source="hdr/ExtractBloom.frag"/>
 		</shader>							
 	</shaders>
 	<materials>
+		<material name="DefaultHDR" screen="true">
+			<shader name="DefaultShaderNoTextureHDR">
+			</shader>
+		</material>				
 		<material name="HDRProcess" screen="true">
 			<shader name="HDRProcessShader">
 			</shader>

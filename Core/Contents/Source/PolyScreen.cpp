@@ -118,13 +118,9 @@ void Screen::setScreenShader(const String& shaderName) {
 	}
 	
 	for(int i=0; i < filterShaderMaterial->getNumShaders(); i++) {
-		ShaderBinding* binding = filterShaderMaterial->getShader(i)->createBinding();		
-		if( i == 0) 
-			binding->addTexture("screenColorBuffer", originalSceneTexture);
-			
+		ShaderBinding* binding = filterShaderMaterial->getShader(i)->createBinding();	
 		localShaderOptions.push_back(binding);
-	}
-		
+	}	
 	_hasFilterShader = true;
 	
 }
@@ -152,6 +148,13 @@ void Screen::drawFilter() {
 	ShaderBinding* materialBinding;		
 	for(int i=0; i < filterShaderMaterial->getNumShaders(); i++) {
 		materialBinding = filterShaderMaterial->getShaderBinding(i);
+		
+		for(int j=0; j < materialBinding->getNumColorTargetBindings(); j++) {
+			RenderTargetBinding *colorBinding = materialBinding->getColorTargetBinding(j);
+			materialBinding->clearTexture(colorBinding->name);
+			materialBinding->addTexture(colorBinding->name, originalSceneTexture);
+		}
+		
 		renderer->applyMaterial(filterShaderMaterial, localShaderOptions[i], i);	
 			
 		if(i==filterShaderMaterial->getNumShaders()-1) {

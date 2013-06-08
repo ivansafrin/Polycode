@@ -262,10 +262,10 @@ void Camera::setParentScene(Scene *parentScene) {
 	this->parentScene = parentScene;
 }
 
-void Camera::setPostFilter(const String& shaderName) {
-	Material *shaderMaterial = (Material*) CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_MATERIAL, shaderName);
+void Camera::setPostFilterByName(const String& materialName) {
+	Material *shaderMaterial = (Material*) CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_MATERIAL, materialName);
 	if(shaderMaterial)
-		createPostFilter(shaderMaterial);		
+		setPostFilter(shaderMaterial);		
 }
 
 void Camera::removePostFilter() {
@@ -275,32 +275,22 @@ void Camera::removePostFilter() {
 	}
 }
 
-void Camera::createPostFilter(Material *shaderMaterial) {
+void Camera::setPostFilter(Material *shaderMaterial) {
 	if(!shaderMaterial)
 		return;
 	if(shaderMaterial->getNumShaders() == 0)
 		return;
 		
 	this->filterShaderMaterial = shaderMaterial;
-	
-	// TODO: make it save the textures to resource manager and check if they there
-//	originalSceneTexture = CoreServices::getInstance()->getMaterialManager()->createNewTexture(CoreServices::getInstance()->getCore()->getXRes(), CoreServices::getInstance()->getCore()->getYRes());
-//	zBufferSceneTexture = CoreServices::getInstance()->getMaterialManager()->createFramebufferTexture(CoreServices::getInstance()->getCore()->getXRes(), CoreServices::getInstance()->getCore()->getYRes(), 0);
-
 	if(!originalSceneTexture) {
 		CoreServices::getInstance()->getRenderer()->createRenderTextures(&originalSceneTexture, &zBufferSceneTexture, CoreServices::getInstance()->getCore()->getXRes(), CoreServices::getInstance()->getCore()->getYRes(), shaderMaterial->fp16RenderTargets);
 	}
 	
 	for(int i=0; i < shaderMaterial->getNumShaders(); i++) {
 		ShaderBinding* binding = shaderMaterial->getShader(i)->createBinding();		
-		if(i == 0) {
-			binding->addTexture("screenColorBuffer", originalSceneTexture);
-			binding->addTexture("screenDepthBuffer", zBufferSceneTexture);
-		}
 		localShaderOptions.push_back(binding);
 		binding->addLocalParam("exposure", (void*)&exposureLevel);				
 	}
-	
 
 	_hasFilterShader = true;
 }
@@ -326,37 +316,36 @@ void Camera::drawFilter(Texture *targetTexture, Number targetTextureWidth, Numbe
 	Texture *finalTargetZTexture;	
 		
 	if(targetTexture) {	
-		ShaderBinding* binding = localShaderOptions[0];
-		binding->clearTexture("screenColorBuffer");
-		binding->clearTexture("screenDepthBuffer");				
-		binding->addTexture("screenColorBuffer", targetColorTexture);
-		binding->addTexture("screenDepthBuffer", targetZTexture);
-		
 		finalTargetColorTexture = targetColorTexture;
-		finalTargetZTexture = targetZTexture;
-		
+		finalTargetZTexture = targetZTexture;		
 		CoreServices::getInstance()->getRenderer()->setViewportSize(targetTextureWidth, targetTextureHeight);		
 	} else {
-	
-		ShaderBinding* binding = localShaderOptions[0];
-		binding->clearTexture("screenColorBuffer");
-		binding->clearTexture("screenDepthBuffer");				
-		binding->addTexture("screenColorBuffer", originalSceneTexture);
-		binding->addTexture("screenDepthBuffer", zBufferSceneTexture);	
-	
 		finalTargetColorTexture = originalSceneTexture;
-		finalTargetZTexture = zBufferSceneTexture;
-	
+		finalTargetZTexture = zBufferSceneTexture;	
 		CoreServices::getInstance()->getRenderer()->setViewportSize(CoreServices::getInstance()->getRenderer()->getXRes(), CoreServices::getInstance()->getRenderer()->getYRes());
 	}
 	CoreServices::getInstance()->getRenderer()->bindFrameBufferTexture(finalTargetColorTexture);
-//	CoreServices::getInstance()->getRenderer()->bindFrameBufferTexture(finalTargetZTexture);	
+	CoreServices::getInstance()->getRenderer()->bindFrameBufferTextureDepth(finalTargetZTexture);
 	parentScene->Render(this);
 	CoreServices::getInstance()->getRenderer()->unbindFramebuffers();
+
 
 	ShaderBinding* materialBinding;		
 	for(int i=0; i < filterShaderMaterial->getNumShaders(); i++) {
 		materialBinding = filterShaderMaterial->getShaderBinding(i);
+		
+		for(int j=0; j < materialBinding->getNumColorTargetBindings(); j++) {
+			RenderTargetBinding *colorBinding = materialBinding->getColorTargetBinding(j);
+			materialBinding->clearTexture(colorBinding->name);
+			materialBinding->addTexture(colorBinding->name, finalTargetColorTexture);
+		}
+
+		for(int j=0; j < materialBinding->getNumDepthTargetBindings(); j++) {
+			RenderTargetBinding *depthBinding = materialBinding->getDepthTargetBinding(j);
+			materialBinding->clearTexture(depthBinding->name);
+			materialBinding->addTexture(depthBinding->name, finalTargetZTexture);
+		}
+		
 		CoreServices::getInstance()->getRenderer()->applyMaterial(filterShaderMaterial, localShaderOptions[i], i);		
 		if(i==filterShaderMaterial->getNumShaders()-1) {
 				if(targetTexture) {

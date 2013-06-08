@@ -398,10 +398,15 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 	
 	vector<Shader*> materialShaders;
 	vector<ShaderBinding*> newShaderBindings;
-	vector<ShaderRenderTarget*> renderTargets;	
+	vector<ShaderRenderTarget*> renderTargets;
 
 	Material *newMaterial = new Material(mname);
 	
+	if(nodeElement->Attribute("screen")) {
+		if(String(nodeElement->Attribute("screen")) == "true") {
+			newMaterial->screenMaterial = true;
+		}
+	}	
 	
 	if(nodeElement->Attribute("blendingMode")) {
 		newMaterial->blendingMode = atoi(nodeElement->Attribute("blendingMode"));
@@ -434,24 +439,19 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 						newTarget->height = atof(pChildElement->Attribute("height"));	
 						if(pChildElement->Attribute("sizeMode")) {
 							if(strcmp(pChildElement->Attribute("sizeMode"), "normalized") == 0) {
+								newTarget->sizeMode = ShaderRenderTarget::SIZE_MODE_NORMALIZED;	
 								if(newTarget->width > 1.0f)
 									newTarget->width = 1.0f;
 								if(newTarget->height > 1.0f)
 									newTarget->height = 1.0f;
-									
-								newTarget->width = ((Number)CoreServices::getInstance()->getRenderer()->getXRes()) * newTarget->width;
-								newTarget->height = ((Number)CoreServices::getInstance()->getRenderer()->getYRes()) * newTarget->height;
 							}						
 						}
-					}						
-//					Texture *newTexture = CoreServices::getInstance()->getMaterialManager()->createNewTexture(newTarget->width, newTarget->height, true);
-					Texture *newTexture, *temp;
-					CoreServices::getInstance()->getRenderer()->createRenderTextures(&newTexture, &temp, (int)newTarget->width, (int)newTarget->height, newMaterial->fp16RenderTargets);
-					newTexture->setResourceName(newTarget->id);
-					//CoreServices::getInstance()->getResourceManager()->addResource(newTexture);
-					newTarget->texture = newTexture;
+					}
+					
+					newTarget->normalizedWidth = -1;
+					newTarget->normalizedHeight = -1;					
+					newMaterial->recreateRenderTarget(newTarget);					
 					renderTargets.push_back(newTarget);
-
 				}
 			}
 		}	
@@ -544,14 +544,16 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 								}
 								String mode = pChild2Element->Attribute("mode");
 								if(strcmp(mode.c_str(), "in") == 0) {
-									newBinding->mode = RenderTargetBinding::MODE_IN;
+									newBinding->mode = RenderTargetBinding::MODE_IN;			
+								} else if(strcmp(mode.c_str(), "color") == 0) {
+									newBinding->mode = RenderTargetBinding::MODE_COLOR;
+								} else if(strcmp(mode.c_str(), "depth") == 0) {
+									newBinding->mode = RenderTargetBinding::MODE_DEPTH;
 								} else {
 									newBinding->mode = RenderTargetBinding::MODE_OUT;								
 								}
 																
 								newShaderBinding->addRenderTargetBinding(newBinding);
-								//Texture *texture =  (Texture*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_TEXTURE, newBinding->id);
-//								newBinding->texture = texture;
 								
 								for(int l=0; l < renderTargets.size(); l++) {
 									if(renderTargets[l]->id == newBinding->id) {

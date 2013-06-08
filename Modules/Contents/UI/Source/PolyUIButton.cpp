@@ -42,8 +42,8 @@ UIButton::UIButton(String text, Number width, Number height) : UIElement() {
 	Number sb = conf->getNumericValue("Polycode", "uiButtonSkinB");
 	Number sl = conf->getNumericValue("Polycode", "uiButtonSkinL");
 
-	Number labelOffsetX = conf->getNumericValue("Polycode", "uiButtonLabelOffsetX");
-	Number labelOffsetY = conf->getNumericValue("Polycode", "uiButtonLabelOffsetY");
+	labelOffsetX = conf->getNumericValue("Polycode", "uiButtonLabelOffsetX");
+	labelOffsetY = conf->getNumericValue("Polycode", "uiButtonLabelOffsetY");
 		
 	buttonRect = new UIBox(conf->getStringValue("Polycode", "uiButtonSkin"),
 						   st,sr,sb,sl,
@@ -83,6 +83,21 @@ UIButton::UIButton(String text, Number width, Number height) : UIElement() {
 	
 	buttonRect->processInputEvents = true;
 	
+}
+
+void UIButton::Resize(Number width, Number height) {
+	buttonRect->resizeBox(width, height);
+	buttonFocusedRect->resizeBox(width, height);
+	this->width = width;
+	this->height = height;	
+	matrixDirty = true;	
+	setHitbox(width,height);	
+	
+	labelXPos = floor((width-buttonLabel->getWidth())/2.0f) + labelOffsetX;
+	labelYPos = labelOffsetY;
+	buttonLabel->setPosition(labelXPos,labelYPos);
+	
+	UIElement::Resize(width, height);
 }
 
 void UIButton::Update() {

@@ -42,4 +42,5 @@ UIElement::~UIElement() {
 void UIElement::Resize(Number width, Number height) {
 	setWidth(width);
 	setHeight(height);
+	dirtyMatrix(true);	
 }

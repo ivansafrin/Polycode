@@ -25,6 +25,10 @@
 
 using namespace Polycode;
 
+ShaderRenderTarget::ShaderRenderTarget() : PolyBase() {
+	texture = NULL;
+}
+
 void *ProgramParam::createParamData(int type) {
 	switch (type) {
 		case PARAM_NUMBER:
@@ -132,13 +136,56 @@ LocalShaderParam * ShaderBinding::addParam(int type, const String& name) {
 
 void ShaderBinding::addRenderTargetBinding(RenderTargetBinding *binding) {
 	renderTargetBindings.push_back(binding);
-	if(binding->mode == RenderTargetBinding::MODE_IN) {
-		inTargetBindings.push_back(binding);
-		printf("Adding in target binding [%s] [%s]\n", binding->id.c_str(), binding->name.c_str());
-	} else {
-		outTargetBindings.push_back(binding);	
-		printf("Adding out target binding [%s]\n", binding->id.c_str());		
+	switch (binding->mode) {
+		case RenderTargetBinding::MODE_IN:
+			inTargetBindings.push_back(binding);		
+		break;
+		case RenderTargetBinding::MODE_OUT:
+			outTargetBindings.push_back(binding);		
+		break;
+		case RenderTargetBinding::MODE_COLOR:
+			colorTargetBindings.push_back(binding);		
+		break;
+		case RenderTargetBinding::MODE_DEPTH:
+			depthTargetBindings.push_back(binding);		
+		break;				
 	}
+}
+
+void ShaderBinding::removeRenderTargetBinding(RenderTargetBinding *binding) {
+	for(int i=0; i < renderTargetBindings.size(); i++) {
+		if(renderTargetBindings[i] == binding) {
+			renderTargetBindings.erase(renderTargetBindings.begin() + i);
+		}
+	}
+	
+	for(int i=0; i < inTargetBindings.size(); i++) {
+		if(inTargetBindings[i] == binding) {
+			inTargetBindings.erase(inTargetBindings.begin() + i);
+			return;
+		}
+	}
+	for(int i=0; i < outTargetBindings.size(); i++) {
+		if(outTargetBindings[i] == binding) {
+			outTargetBindings.erase(outTargetBindings.begin() + i);
+			return;
+		}
+	}
+	
+	for(int i=0; i < colorTargetBindings.size(); i++) {
+		if(colorTargetBindings[i] == binding) {
+			colorTargetBindings.erase(colorTargetBindings.begin() + i);
+			return;
+		}
+	}
+
+	for(int i=0; i < depthTargetBindings.size(); i++) {
+		if(depthTargetBindings[i] == binding) {
+			depthTargetBindings.erase(depthTargetBindings.begin() + i);
+			return;
+		}
+	}
+	
 }
 
 unsigned int ShaderBinding::getNumRenderTargetBindings() {
@@ -163,6 +210,22 @@ unsigned int ShaderBinding::getNumOutTargetBindings() {
 
 RenderTargetBinding *ShaderBinding::getOutTargetBinding(unsigned int index) {
 	return outTargetBindings[index];
+}
+
+unsigned int ShaderBinding::getNumColorTargetBindings() {
+	return colorTargetBindings.size();
+}
+
+RenderTargetBinding *ShaderBinding::getColorTargetBinding(unsigned int index) {
+	return colorTargetBindings[index];
+}
+
+unsigned int ShaderBinding::getNumDepthTargetBindings() {
+	return depthTargetBindings.size();
+}
+
+RenderTargetBinding *ShaderBinding::getDepthTargetBinding(unsigned int index) {
+	return depthTargetBindings[index];
 }
 
 

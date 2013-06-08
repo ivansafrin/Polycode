@@ -32,8 +32,6 @@ Renderer::Renderer() : clearColor(0.2f, 0.2f, 0.2f, 0.0), currentTexture(NULL), 
 	numLights = 0;
 	exposureLevel = 1;
 	shadersEnabled = true;
-	currentFrameBufferTexture = NULL;
-	previousFrameBufferTexture = NULL;
 	currentMaterial = NULL;
 	numLights = 0;
 	numAreaLights = 0;
@@ -41,8 +39,6 @@ Renderer::Renderer() : clearColor(0.2f, 0.2f, 0.2f, 0.0), currentTexture(NULL), 
 	exposureLevel = 1;
 	shadersEnabled = true;
 	currentShaderModule = NULL;
-	currentFrameBufferTexture = NULL;
-	previousFrameBufferTexture = NULL;
 	fov = 45.0;
 	setAmbientColor(0.0,0.0,0.0);
 	cullingFrontFaces = false;

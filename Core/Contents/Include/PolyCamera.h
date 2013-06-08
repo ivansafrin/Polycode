@@ -121,14 +121,18 @@ namespace Polycode {
 			* @return Current exposure value.
 			*/									
 			Number getExposureLevel();
-			
-			void createPostFilter(Material *shaderMaterial);
-			
+
 			/**
 			* Sets the post-processing shader for the camera.
-			* @param shaderName The shader name of the post-processing filter.
+			* @param shaderMaterial Post processing shader material.
+			*/
+			void setPostFilter(Material *shaderMaterial);
+			
+			/**
+			* Sets the post-processing shader for the camera by name. The material needs have been added as a resource.
+			* @param materialName The material name of the post-processing filter.
 			*/												
-			void setPostFilter(const String& shaderName);
+			void setPostFilterByName(const String& shaderName);
 			
 			/**
 			* Removes the currently assigned post filter.

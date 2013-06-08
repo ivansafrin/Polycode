@@ -102,6 +102,7 @@ namespace Polycode {
 		
 		virtual Texture *createFramebufferTexture(unsigned int width, unsigned int height) = 0;
 		virtual void bindFrameBufferTexture(Texture *texture) = 0;
+		virtual void bindFrameBufferTextureDepth(Texture *texture) = 0;
 		virtual void unbindFramebuffers() = 0;
 
 		virtual Image *renderScreenToImage() = 0;
@@ -319,11 +320,6 @@ namespace Polycode {
 		Texture *currentTexture;
 		Material *currentMaterial;
 		
-//		vector<Texture*> shadowMapTextures;
-		
-		Texture *currentFrameBufferTexture;
-		Texture *previousFrameBufferTexture;
-			
 		int textureFilteringMode;
 		int renderMode;
 		

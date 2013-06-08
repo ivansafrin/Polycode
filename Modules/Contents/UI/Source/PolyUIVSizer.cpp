@@ -26,6 +26,7 @@
 #include "PolyInputEvent.h"
 #include "PolyCoreServices.h"
 #include "PolyCore.h"
+#include "PolyUIEvent.h"
 
 using namespace Polycode;
 
@@ -132,6 +133,7 @@ void UIVSizer::Resize(Number width, Number height) {
 	this->height = height;
 	matrixDirty = true;
 	updateSizer();
+	UIElement::Resize(width, height);
 }
 
 Number UIVSizer::getMainHeight() {
@@ -141,6 +143,7 @@ Number UIVSizer::getMainHeight() {
 void UIVSizer::setMainHeight(Number height) {
 	mainHeight = height;
 	updateSizer();
+	dispatchEvent(new UIEvent(), UIEvent::CHANGE_EVENT);
 }
 			
 void UIVSizer::addTopChild(UIElement *element) {

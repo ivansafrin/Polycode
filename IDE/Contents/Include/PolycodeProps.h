@@ -110,6 +110,64 @@ class NumberProp : public PropProp {
 		Number currentValue;
 };
 
+class TargetBindingProp : public PropProp {
+	public:
+
+		TargetBindingProp(Shader *shader, Material *material, ShaderBinding *binding, RenderTargetBinding *targetBinding);
+		~TargetBindingProp();
+
+		void handleEvent(Event *event);	
+		void setPropWidth(Number width);
+						
+		RenderTargetBinding *targetBinding;
+		Material *material;
+		Shader *shader;
+		ShaderBinding *binding;
+		
+		UIComboBox *typeComboBox;
+		UIComboBox *targetComboBox;
+		UIComboBox *textureComboBox;		
+		UIImageButton *removeButton;					
+	
+};
+
+class RenderTargetProp : public PropProp {
+	public:
+		RenderTargetProp(ShaderRenderTarget *renderTarget, Material *material);
+		~RenderTargetProp();
+
+		void handleEvent(Event *event);	
+		void setPropWidth(Number width);
+		
+		void recreateRenderTarget();
+		
+		Material *material;
+		ShaderRenderTarget *renderTarget;
+		
+		UITextInput *nameInput;		
+		UIComboBox *typeComboBox;		
+		UITextInput *widthInput;
+		UITextInput *heightInput;		
+		UIImageButton *removeButton;					
+};
+
+class ShaderPassProp : public PropProp {
+	public:
+		ShaderPassProp(Material *material, int shaderIndex);
+		~ShaderPassProp();
+		
+		void handleEvent(Event *event);	
+		void setPropWidth(Number width);
+		
+		Material *material;
+		Shader *shader;		
+		int shaderIndex;
+		UIComboBox *shaderComboBox;		
+		UIImageButton *removeButton;
+		
+		UIButton *editButton;
+		
+};
 
 class CustomProp : public PropProp {
 	public:
@@ -247,7 +305,8 @@ class TextureProp : public PropProp {
 		TextureProp(String caption);
 		~TextureProp();
 		void handleEvent(Event *event);	
-		
+		void setPropWidth(Number width);
+				
 		void set(Texture *texture);
 		Texture* get();
 		
@@ -333,7 +392,7 @@ class PropSheet : public UIElement {
 
 class ShaderOptionsSheet : public PropSheet {
 	public:
-		ShaderOptionsSheet(String title, String name);
+		ShaderOptionsSheet();
 		~ShaderOptionsSheet();
 		
 		void handleEvent(Event *event);
@@ -341,7 +400,7 @@ class ShaderOptionsSheet : public PropSheet {
 		
 		void clearShader();
 		void setOptionsFromParams(std::vector<ProgramParam> &params);
-		void setShader(Shader *shader, Material *material);
+		void setShader(Shader *shader, Material *material, ShaderBinding *binding);
 				
 	private:
 		Shader *shader;
@@ -359,7 +418,7 @@ class ShaderTexturesSheet : public PropSheet {
 		void Update();
 		
 		void clearShader();
-		void setShader(Shader *shader, Material *material);
+		void setShader(Shader *shader, Material *material, ShaderBinding *binding);
 				
 	private:
 		Shader *shader;
@@ -385,6 +444,67 @@ class EntitySheet : public PropSheet {
 		StringProp *tagProp;
 		ColorProp *colorProp;
 		ComboProp *blendingProp;
+};
+
+class ShaderPassesSheet : public PropSheet {
+	public:
+		ShaderPassesSheet();
+		~ShaderPassesSheet();
+		void handleEvent(Event *event);			
+		void refreshPasses();
+		
+		void Update();
+		
+		void setMaterial(Material *material);
+
+		ShaderBinding *binding;
+		Material *material;
+
+		ShaderPassProp *selectedProp;
+
+		UIButton *addButton;		
+		int removeIndex;		
+};
+
+class TargetBindingsSheet : public PropSheet {
+	public:
+		TargetBindingsSheet();
+		~TargetBindingsSheet();
+		void handleEvent(Event *event);				
+		void setShader(Shader *shader, Material *material, ShaderBinding *binding);
+		
+		void Update();
+		
+		void refreshTargets();
+		
+		ShaderBinding *binding;
+		Material *material;
+		Shader *shader;
+		int shaderIndex;
+		
+		UIButton *addButton;		
+		RenderTargetBinding *bindingToRemove;
+
+};
+
+class RenderTargetsSheet : public PropSheet {
+	public:
+		RenderTargetsSheet();
+		~RenderTargetsSheet();
+		void Update();
+		void handleEvent(Event *event);		
+		
+		void refreshTargets();
+		
+		ShaderBinding *binding;
+		Material *material;
+		Material *lastMaterial;
+		
+		Number normTextureWidth;
+		Number normTextureHeight;
+		
+		UIButton *addButton;		
+		int removeIndex;
 };
 
 class EntityPropSheet : public PropSheet {

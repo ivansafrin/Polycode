@@ -309,6 +309,8 @@ namespace Polycode {
 			 */
 			void insertText(String text);
 			
+			void setCaretPosition(int position);
+			
 			UIScrollContainer *getScrollContainer();
 			
 			bool useStrongHinting;
