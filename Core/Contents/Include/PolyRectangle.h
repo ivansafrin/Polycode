@@ -46,6 +46,34 @@ namespace Polycode {
 			void setRect(Number x, Number y, Number w, Number h);
 
 			/**
+			* Return a Rectangle formed by clipping this rectangle to the
+			* bounds of the passed rectangle.
+			*/
+			Rectangle Clipped(const Rectangle& rect) const;
+
+			/**
+			* Return the minimum X coordinate (the left edge).
+			*/
+			Number minX() const { return x; }
+
+			/**
+			* Return the maximum X coordinate (the right edge).
+			*/
+			Number maxX() const { return x + w; }
+
+			/**
+			 * Return the minimum Y coordinate (the top edge in a Y-down coordinate
+			 * system).
+			 */
+			Number minY() const { return y; }
+
+			/**
+			* Return the maximum Y coordinate (the bottom edge in a Y-down coordinate
+			* system).
+			*/
+			Number maxY() const { return y + h; }
+
+			/**
 			* X position
 			*/									
 			Number x;
