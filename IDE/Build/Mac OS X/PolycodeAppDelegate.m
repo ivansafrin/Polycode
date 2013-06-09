@@ -8,6 +8,14 @@
 
 #import "PolycodeAppDelegate.h"
 
+void PolycodeAppEventHandler::handleEvent(Event *evt) {
+	switch(evt->getEventCode()) {
+		case PolycodeIDEApp::EVENT_SHOW_MENU:
+			[appDelegate showProjectMenu];
+			break;
+	}
+}
+
 @implementation PolycodeAppDelegate
 
 @synthesize window;
