@@ -272,7 +272,7 @@ bool isPointInsidePolygon2D(Polycode::Polygon *poly, const Vector2 &p) {
 }
 
 
-bool ScreenEntity::hitTest(const Number x, const Number y) {
+bool ScreenEntity::hitTest(const Number x, const Number y) const {
 
 	Vector3 v;	
 	Polygon testPoly;
@@ -307,7 +307,7 @@ bool ScreenEntity::hitTest(const Number x, const Number y) {
 	return isPointInsidePolygon2D(&testPoly, Vector2(x,y));
 }
 
-bool ScreenEntity::hitTest(Vector2 v)
+bool ScreenEntity::hitTest(Vector2 v) const
 {
 	return hitTest(v.x, v.y);
 }
@@ -369,7 +369,7 @@ bool ScreenEntity::isDragged() {
 	return dragged;
 }
 
-Matrix4 ScreenEntity::getScreenConcatenatedMatrix() {
+Matrix4 ScreenEntity::getScreenConcatenatedMatrix() const {
 	Matrix4 retMatrix = transformMatrix;
 	if(positionMode == POSITION_TOPLEFT) {
 		retMatrix.setPosition(position.x, position.y, position.z);

@@ -113,13 +113,13 @@ class _PolyExport ScreenEntity : public Entity {
 		void _onKeyDown(PolyKEY key, wchar_t charCode);	
 		void _onKeyUp(PolyKEY key, wchar_t charCode);	
 		
-		Matrix4 getScreenConcatenatedMatrix();
+		Matrix4 getScreenConcatenatedMatrix() const;
 		
 		virtual void onKeyDown(PolyKEY key, wchar_t charCode){}
 		virtual void onKeyUp(PolyKEY key, wchar_t charCode){}
 		
-		bool hitTest(Number x, Number y);
-		bool hitTest(Vector2 v);
+		bool hitTest(Number x, Number y) const;
+		bool hitTest(Vector2 v) const;
 	
 		Matrix4 buildPositionMatrix();
 		void adjustMatrixForChildren();
