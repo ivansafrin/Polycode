@@ -86,35 +86,7 @@ PolycodeRemoteDebuggerClient::~PolycodeRemoteDebuggerClient() {
 	client->Disconnect();
 }
 
-extern "C" {	
-
-	
-static void dumpstack (lua_State *L) {
-  int i;
-  int top=lua_gettop(L);
-  printf("dumpstack -- \n");
-  for (i=1; i<=top; i++) {
-    printf("%d\t%s\t",i,luaL_typename(L,i));
-    switch (lua_type(L, i)) {
-      case LUA_TNUMBER:
-        printf("%g\n",lua_tonumber(L,i));
-        break;
-      case LUA_TSTRING:
-        printf("%s\n",lua_tostring(L,i));
-        break;
-      case LUA_TBOOLEAN:
-        printf("%s\n", (lua_toboolean(L, i) ? "true" : "false"));
-        break;
-      case LUA_TNIL:
-        printf("%s\n", "nil");
-        break;
-      default:
-        printf("%p\n",lua_topointer(L,i));
-        break;
-    }
-  }
-  printf("dumpstack -- END\n");
-}	
+extern "C" {
 
 //	extern int luaopen_Tau(lua_State* L); // declare the wrapped module
 		//	loadFileIntoState(L, "Polycode Player.app/Contents/Resources/API/class.lua");
