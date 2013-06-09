@@ -215,9 +215,6 @@ bool PolycodeProject::saveFile() {
 	}
 
 	
-	unsigned int afMap[6] = {0,1,2,4,8,16};
-	unsigned int aaMap[4] = {0,2,4,6};
-		
 	configFile.root["antiAliasingLevel"]->intVal = data.aaLevel;
 	configFile.root["anisotropyLevel"]->intVal = data.anisotropy;
 	configFile.root["vSync"]->boolVal = data.vSync;

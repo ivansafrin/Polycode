@@ -197,7 +197,7 @@ void PolycodeProjectBrowser::parseFolderIntoNode(UITree *node, String spath, Pol
 				data->fileEntry = entry;
 				data->type = 1;
 				data->parentProject = parentProject;			
-				UITree *newChild = node->addTreeChild("file.png", entry.name, (void*) data);
+				node->addTreeChild("file.png", entry.name, (void*) data);
 			}
 		}
 	}		

@@ -296,8 +296,6 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain(PolycodeEditor *editor) {
 	
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
-	int fontSize = conf->getNumericValue("Polycode", "uiDefaultFontSize");	
-	Number padding = conf->getNumericValue("Polycode", "uiWindowSkinPadding");	
 
 	isScalingEntity = false;	
 	isDraggingEntity = false; 
@@ -2818,10 +2816,6 @@ void PolycodeScreenEditor::saveEntityToObjectEntry(ScreenEntity *entity, ObjectE
 
 	}
 
-	if(dynamic_cast<ScreenSound*>(entity)) {
-		ScreenSound *sound = ((ScreenSound*) entity);
-	}
-	
 	if(!(*(entry))["type"])
 		entry->addChild("type", "ScreenEntity");
 	
@@ -2890,7 +2884,7 @@ void PolycodeScreenEditor::handleEvent(Event *event) {
 
 	if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {
 		if(event->getDispatcher() == treeView->newLayerButton) {
-			ScreenEntity *newLayer = editorMain->addNewLayer("new_layer");
+			editorMain->addNewLayer("new_layer");
 		}
 
 		if(event->getDispatcher() == treeView->targetLayerButton) {
@@ -2979,7 +2973,7 @@ bool PolycodeScreenEditor::openFile(OSFileEntry filePath) {
 	editorMain->applyEditorProperties(editorMain->layerBaseEntity);
 
 	if(editorMain->layerBaseEntity->getNumChildren() == 0) {
-		ScreenEntity *newLayer = editorMain->addNewLayer("default_layer");
+		editorMain->addNewLayer("default_layer");
 	} else {
 		editorMain->setCurrentLayer((ScreenEntity*)editorMain->layerBaseEntity->getChildAtIndex(0), false);
 		treeView->targetLayer = editorMain->getCurrentLayer();

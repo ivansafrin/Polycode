@@ -34,7 +34,6 @@ NewProjectWindow::NewProjectWindow() : UIWindow(L"Create New Project", 480, 280)
 	
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
-	int fontSize = conf->getNumericValue("Polycode", "uiDefaultFontSize");
 	
 	
 	templateContainer = new UITreeContainer("boxIcon.png", L"Templates", 200, 300-topPadding-padding-padding);	

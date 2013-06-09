@@ -59,7 +59,6 @@ void PolycodeRemoteDebugger::handleEvent(Event *event) {
 	for(int i=0; i < debuggerClients.size(); i++) {
 		if(event->getDispatcher() == debuggerClients[i]->client) {		
 			ServerClientEvent *clientEvent = (ServerClientEvent*) event;
-			DebuggerClient *client = debuggerClients[i];
 			switch(clientEvent->getEventCode()) {
 				case ServerClientEvent::EVENT_CLIENT_DATA:				
 					switch(clientEvent->dataType) {			

@@ -92,7 +92,6 @@ BackTraceWindow::BackTraceWindow() : UIElement() {
 
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
-	int fontSize = conf->getNumericValue("Polycode", "uiDefaultFontSize");		
 
 	labelBg = new ScreenShape(ScreenShape::SHAPE_RECT, 20,30);
 	labelBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
