@@ -79,13 +79,13 @@ ScreenImage::~ScreenImage() {
 
 }
 
-Entity *ScreenImage::Clone(bool deepClone, bool ignoreEditorOnly) {
+Entity *ScreenImage::Clone(bool deepClone, bool ignoreEditorOnly) const {
 	ScreenImage *newImage = new ScreenImage(getTexture()->getResourcePath());
 	applyClone(newImage, deepClone, ignoreEditorOnly);
 	return newImage;
 }
 
-void ScreenImage::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) {
+void ScreenImage::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
 	ScreenShape::applyClone(clone, deepClone, ignoreEditorOnly);
 }
 

@@ -67,13 +67,13 @@ ScreenEntity::ScreenEntity() : Entity() {
 	
 }
 
-Entity *ScreenEntity::Clone(bool deepClone, bool ignoreEditorOnly) {
+Entity *ScreenEntity::Clone(bool deepClone, bool ignoreEditorOnly) const {
 	ScreenEntity *newEntity = new ScreenEntity();
 	applyClone(newEntity, deepClone, ignoreEditorOnly);
 	return newEntity;
 }
 
-void ScreenEntity::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) {
+void ScreenEntity::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
 	Entity::applyClone(clone, deepClone, ignoreEditorOnly);
 
 	ScreenEntity *_clone = (ScreenEntity*) clone;
@@ -330,7 +330,7 @@ void ScreenEntity::_onKeyUp(PolyKEY key, wchar_t charCode) {
 	}
 }
 
-int ScreenEntity::getPositionMode() {
+int ScreenEntity::getPositionMode() const {
 	return positionMode;
 }
 
@@ -348,7 +348,7 @@ void ScreenEntity::clearDragLimits() {
 	dragLimits = NULL;
 }
 
-Rectangle ScreenEntity::getHitbox() {
+Rectangle ScreenEntity::getHitbox() const {
 	return hit;
 }
 
@@ -685,11 +685,11 @@ void ScreenEntity::adjustMatrixForChildren() {
 	}
 }
 
-ScreenEntity *ScreenEntity::getScreenEntityById(String id, bool recursive) {
+ScreenEntity *ScreenEntity::getScreenEntityById(String id, bool recursive) const {
 	return (ScreenEntity*)getEntityById(id, recursive);
 }
 
-std::vector<ScreenEntity*> ScreenEntity::getScreenEntitiesByTag(String tag, bool recursive) {
+std::vector<ScreenEntity*> ScreenEntity::getScreenEntitiesByTag(String tag, bool recursive) const {
 	std::vector<Entity*> entities = getEntitiesByTag(tag, recursive);
 	std::vector<ScreenEntity*> retEntities;
 	for(int i=0; i < entities.size(); i++) {

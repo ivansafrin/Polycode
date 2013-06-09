@@ -63,7 +63,7 @@ Entity::Entity() : EventDispatcher() {
 	tags = NULL;
 }
 
-Entity *Entity::getEntityById(String id, bool recursive) {
+Entity *Entity::getEntityById(String id, bool recursive) const {
 	for(int i=0;i<children.size();i++) {
 		if(children[i]->id == id) {
 			return children[i];
@@ -79,13 +79,13 @@ Entity *Entity::getEntityById(String id, bool recursive) {
 	return NULL;
 }
 
-Entity *Entity::Clone(bool deepClone, bool ignoreEditorOnly) {
+Entity *Entity::Clone(bool deepClone, bool ignoreEditorOnly) const {
 	Entity *newEntity = new Entity();
 	applyClone(newEntity, deepClone, ignoreEditorOnly);
 	return newEntity;
 }
 
-void Entity::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) {
+void Entity::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
 	clone->ownsChildren = ownsChildren;
 	clone->position = position;
 	clone->rotation = rotation;
@@ -139,7 +139,7 @@ void Entity::setOwnsChildrenRecursive(bool val) {
 	}
 }
 
-std::vector<Entity*> Entity::getEntitiesByTag(String tag, bool recursive) {
+std::vector<Entity*> Entity::getEntitiesByTag(String tag, bool recursive) const {
 
 	std::vector<Entity*> retVector;
 
@@ -162,7 +162,7 @@ void Entity::setUserData(void *userData) {
 	this->userData = userData;
 }
 
-void *Entity::getUserData() {
+void *Entity::getUserData() const {
 	return userData;
 }
 

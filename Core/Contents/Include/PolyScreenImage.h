@@ -63,8 +63,8 @@ namespace Polycode {
 		
 		virtual ~ScreenImage();
 		
-		virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly);
-		virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly);
+		virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
+		virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
 
 		/**
 		* Changes which part of the image is displayed.

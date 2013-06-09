@@ -53,8 +53,8 @@ class _PolyExport ScreenEntity : public Entity {
 		ScreenEntity();
 		virtual ~ScreenEntity();
 		
-		virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly);
-		virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly);
+		virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
+		virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
 
 		void addEntity(Entity *newChild);
 		
@@ -169,7 +169,7 @@ class _PolyExport ScreenEntity : public Entity {
 		 * Get the position mode.
 		 * @see setPositionMode()
 		 */
-		int getPositionMode();
+		int getPositionMode() const;
 
 		/**
 		 * Set a rectangle to which dragging will be restricted.
@@ -274,7 +274,7 @@ class _PolyExport ScreenEntity : public Entity {
 		 * Note: Make sure only entities of type ScreenEntity have the tag you're
 		 *       querying, or otherwise you will be treating an Entity as ScreenEntity.
 		 */
-		ScreenEntity *getScreenEntityById(String id, bool recursive);
+		ScreenEntity *getScreenEntityById(String id, bool recursive) const;
 
 		/**
 		 * Does the same as getEntitiesByID, but casts each result to ScreenEntity.
@@ -282,7 +282,7 @@ class _PolyExport ScreenEntity : public Entity {
 		 * Note: Make sure only entities of type ScreenEntity have the tag you're
 		 *       querying, or otherwise you will be treating an Entity as ScreenEntity.
 		 */
-		std::vector<ScreenEntity*> getScreenEntitiesByTag(String tag, bool recursive);
+		std::vector<ScreenEntity*> getScreenEntitiesByTag(String tag, bool recursive) const;
 		
 		/**
 		* If set to true, will block mouse events for underlaying entities.
@@ -300,7 +300,7 @@ class _PolyExport ScreenEntity : public Entity {
 		 * Get the hitbox of this ScreenEntity.
 		 * @see setHitBox()
 		 */
-		Rectangle getHitbox();
+		Rectangle getHitbox() const;
 
 
 		void setHitbox(Number width, Number height);
