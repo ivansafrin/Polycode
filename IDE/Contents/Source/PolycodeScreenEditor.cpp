@@ -2086,6 +2086,9 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 				case Polycode::KEY_LSHIFT:
 					multiSelect = true;
 				break;
+				default:
+					// We don't care about the other keys
+				break;
 			}
 		}
 		
@@ -2103,7 +2106,10 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 				case Polycode::KEY_RSHIFT:
 				case Polycode::KEY_LSHIFT:
 					multiSelect = false;
-				break;				
+				break;
+				default:
+					// We don't care about the other keys
+				break;
 			}
 		}
 	
