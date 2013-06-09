@@ -410,39 +410,38 @@ MouseEventResult ScreenEntity::_onMouseMove(Number x, Number y, int timestamp) {
 	ret.blocked = false;
 
 	if(processInputEvents && enabled) {
-	if(hitTest(x,y)) {
+		if(hitTest(x,y)) {
 
-		Vector3 localCoordinate = Vector3(x,y,0);
-		Matrix4 inverse = getScreenConcatenatedMatrix().Inverse();
-		localCoordinate = inverse * localCoordinate;
-		
-		onMouseMove(localCoordinate.x,localCoordinate.y);
-		xmouse = localCoordinate.x;
-		ymouse = localCoordinate.y;
-		
-		dispatchEvent(new InputEvent(Vector2(localCoordinate.x,localCoordinate.y), timestamp), InputEvent::EVENT_MOUSEMOVE);
-		
-		if(!mouseOver) {
-				dispatchEvent(new InputEvent(Vector2(localCoordinate.x,localCoordinate.y), timestamp), InputEvent::EVENT_MOUSEOVER);
-				mouseOver = true;
-		}
-		ret.hit = true;
-		if(blockMouseInput) {
-			ret.blocked = true;
-		}
+			Vector3 localCoordinate = Vector3(x,y,0);
+			Matrix4 inverse = getScreenConcatenatedMatrix().Inverse();
+			localCoordinate = inverse * localCoordinate;
 
-		
-	} else {
-		if(mouseOver) {
-		
-		Vector3 localCoordinate = Vector3(x,y,0);
-		Matrix4 inverse = getScreenConcatenatedMatrix().Inverse();
-		localCoordinate = inverse * localCoordinate;
-		
-			dispatchEvent(new InputEvent(Vector2(localCoordinate.x,localCoordinate.y), timestamp), InputEvent::EVENT_MOUSEOUT);
-			mouseOver = false;
-		}		
-	}	
+			onMouseMove(localCoordinate.x,localCoordinate.y);
+			xmouse = localCoordinate.x;
+			ymouse = localCoordinate.y;
+
+			dispatchEvent(new InputEvent(Vector2(localCoordinate.x,localCoordinate.y), timestamp), InputEvent::EVENT_MOUSEMOVE);
+
+			if(!mouseOver) {
+					dispatchEvent(new InputEvent(Vector2(localCoordinate.x,localCoordinate.y), timestamp), InputEvent::EVENT_MOUSEOVER);
+					mouseOver = true;
+			}
+			ret.hit = true;
+			if(blockMouseInput) {
+				ret.blocked = true;
+			}
+
+		} else {
+			if(mouseOver) {
+
+				Vector3 localCoordinate = Vector3(x,y,0);
+				Matrix4 inverse = getScreenConcatenatedMatrix().Inverse();
+				localCoordinate = inverse * localCoordinate;
+
+				dispatchEvent(new InputEvent(Vector2(localCoordinate.x,localCoordinate.y), timestamp), InputEvent::EVENT_MOUSEOUT);
+				mouseOver = false;
+			}
+		}
 
 		for(int i=children.size()-1;i>=0;i--) {
 			MouseEventResult childRes = ((ScreenEntity*)children[i])->_onMouseMove(x,y, timestamp);
@@ -464,34 +463,34 @@ MouseEventResult ScreenEntity::_onMouseUp(Number x, Number y, int mouseButton, i
 	ret.blocked = false;
 	
 	if(processInputEvents && enabled) {
-	if(hitTest(x,y)) {
-		Vector3 localCoordinate = Vector3(x,y,0);
+		if(hitTest(x,y)) {
+			Vector3 localCoordinate = Vector3(x,y,0);
 
-		Matrix4 inverse = getScreenConcatenatedMatrix().Inverse();
-		localCoordinate = inverse * localCoordinate;
+			Matrix4 inverse = getScreenConcatenatedMatrix().Inverse();
+			localCoordinate = inverse * localCoordinate;
 
-		onMouseUp(localCoordinate.x,localCoordinate.y);		
-		InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x,localCoordinate.y), timestamp);
-		inputEvent->mouseButton = mouseButton;
-		dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEUP);
+			onMouseUp(localCoordinate.x,localCoordinate.y);
+			InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x,localCoordinate.y), timestamp);
+			inputEvent->mouseButton = mouseButton;
+			dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEUP);
 
-		ret.hit = true;
-		if(blockMouseInput) {
-			ret.blocked = true;
+			ret.hit = true;
+			if(blockMouseInput) {
+				ret.blocked = true;
+			}
+
+		} else {
+			Vector3 localCoordinate = Vector3(x,y,0);
+
+			Matrix4 inverse = getScreenConcatenatedMatrix().Inverse();
+			localCoordinate = inverse * localCoordinate;
+
+			InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x,localCoordinate.y), timestamp);
+			inputEvent->mouseButton = mouseButton;
+			dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEUP_OUTSIDE);
 		}
 
-	} else {
-		Vector3 localCoordinate = Vector3(x,y,0);
-		
-		Matrix4 inverse = getScreenConcatenatedMatrix().Inverse();
-		localCoordinate = inverse * localCoordinate;
-		
-		InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x,localCoordinate.y), timestamp);
-		inputEvent->mouseButton = mouseButton;
-		dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEUP_OUTSIDE);	
-	}
-
-		for(int i=children.size()-1;i>=0;i--) {			
+		for(int i=children.size()-1;i>=0;i--) {
 			MouseEventResult childRes = ((ScreenEntity*)children[i])->_onMouseUp(x,y, mouseButton, timestamp);
 			if(childRes.hit)
 				ret.hit = true;
@@ -513,25 +512,25 @@ MouseEventResult ScreenEntity::_onMouseWheelUp(Number x, Number y, int timestamp
 	ret.blocked = false;
 	
 	if(processInputEvents && enabled) {
-	if(hitTest(x,y)) {
-		Vector3 localCoordinate = Vector3(x,y,0);
-		
-		Matrix4 inverse = getScreenConcatenatedMatrix().Inverse();
-		localCoordinate = inverse * localCoordinate;
+		if(hitTest(x,y)) {
+			Vector3 localCoordinate = Vector3(x,y,0);
 
-		onMouseWheelUp(localCoordinate.x,localCoordinate.y);
+			Matrix4 inverse = getScreenConcatenatedMatrix().Inverse();
+			localCoordinate = inverse * localCoordinate;
 
-		InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x,localCoordinate.y), timestamp);
-		dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEWHEEL_UP);
+			onMouseWheelUp(localCoordinate.x,localCoordinate.y);
 
-		ret.hit = true;
-		if(blockMouseInput) {
-			ret.blocked = true;
+			InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x,localCoordinate.y), timestamp);
+			dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEWHEEL_UP);
+
+			ret.hit = true;
+			if(blockMouseInput) {
+				ret.blocked = true;
+			}
+
 		}
 
-	}
-
-		for(int i=children.size()-1;i>=0;i--) {			
+		for(int i=children.size()-1;i>=0;i--) {
 			MouseEventResult childRes = ((ScreenEntity*)children[i])->_onMouseWheelUp(x,y, timestamp);
 			if(childRes.hit)
 				ret.hit = true;
@@ -550,22 +549,22 @@ MouseEventResult ScreenEntity::_onMouseWheelDown(Number x, Number y, int timesta
 	ret.blocked = false;
 	
 	if(processInputEvents && enabled) {
-	if(hitTest(x,y)) {
-		Vector3 localCoordinate = Vector3(x,y,0);
-		
-		Matrix4 inverse = getScreenConcatenatedMatrix().Inverse();
-		localCoordinate = inverse * localCoordinate;
-		
-		onMouseWheelDown(localCoordinate.x,localCoordinate.y);
-		
-		InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x,localCoordinate.y), timestamp);
-		dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEWHEEL_DOWN);
-		
-		ret.hit = true;
-		if(blockMouseInput) {
-			ret.blocked = true;
+		if(hitTest(x,y)) {
+			Vector3 localCoordinate = Vector3(x,y,0);
+
+			Matrix4 inverse = getScreenConcatenatedMatrix().Inverse();
+			localCoordinate = inverse * localCoordinate;
+
+			onMouseWheelDown(localCoordinate.x,localCoordinate.y);
+
+			InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x,localCoordinate.y), timestamp);
+			dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEWHEEL_DOWN);
+
+			ret.hit = true;
+			if(blockMouseInput) {
+				ret.blocked = true;
+			}
 		}
-	}
 
 		for(int i=children.size()-1;i>=0;i--) {
 			MouseEventResult childRes = ((ScreenEntity*)children[i])->_onMouseWheelDown(x,y, timestamp);
