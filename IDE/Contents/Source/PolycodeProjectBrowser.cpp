@@ -102,7 +102,7 @@ void PolycodeProjectBrowser::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == contextMenu) {
 		UIMenuItem *item = contextMenu->getSelectedItem();
-		
+
 		PolycodeProjectBrowserEvent *bEvent = new PolycodeProjectBrowserEvent();			
 		bEvent->command = item->_id;
 		dispatchEvent(bEvent, PolycodeProjectBrowserEvent::HANDLE_MENU_COMMAND);
@@ -119,13 +119,13 @@ void PolycodeProjectBrowser::handleEvent(Event *event) {
 
 			contextMenu->addOption("New File", "add_new_file");
 			contextMenu->addOption("New Project", "add_new_project");
-			contextMenu->addOption("New Folder", "add_new_folder");			
-			contextMenu->addOption("----------------", "");			
+			contextMenu->addOption("New Folder", "add_new_folder");
+			contextMenu->addDivider();
 			contextMenu->addOption("Add external files", "add_files");			
-			contextMenu->addOption("----------------", "");
+			contextMenu->addDivider();
 			contextMenu->addOption("Refresh", "refresh");
 			contextMenu->addOption("Rename", "rename");						
-			contextMenu->addOption("----------------", "");		
+			contextMenu->addDivider();
 			contextMenu->addOption("Remove", "remove");
 
 			contextMenu->fitToScreenVertical();
