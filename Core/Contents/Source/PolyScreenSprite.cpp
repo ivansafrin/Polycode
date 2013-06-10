@@ -43,7 +43,7 @@ ScreenSprite::ScreenSprite(const String& fileName) : ScreenShape(ScreenShape::SH
 	loadFromFile(fileName);
 }
 
-Entity *ScreenSprite::Clone(bool deepClone, bool ignoreEditorOnly) {
+Entity *ScreenSprite::Clone(bool deepClone, bool ignoreEditorOnly) const {
 	ScreenSprite *newSprite = new ScreenSprite(getTexture()->getResourcePath(), spriteWidth, spriteHeight);
 	for(int i=0; i < animations.size(); i++) {
 		newSprite->addAnimation(animations[i]->name, animations[i]->frames, animations[i]->speed);
@@ -55,7 +55,7 @@ Entity *ScreenSprite::Clone(bool deepClone, bool ignoreEditorOnly) {
 	return newSprite;
 }
 
-void ScreenSprite::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) {
+void ScreenSprite::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
 	ScreenShape::applyClone(clone, deepClone, ignoreEditorOnly);
 	
 }

@@ -88,7 +88,9 @@ PolycodeRemoteDebuggerClient::~PolycodeRemoteDebuggerClient() {
 
 extern "C" {	
 
-	
+// Marking as unused to silence a warning.
+// Not deleted assuming that it's useful when debugging (perhaps calling from a debugger)
+POLY_UNUSED
 static void dumpstack (lua_State *L) {
   int i;
   int top=lua_gettop(L);

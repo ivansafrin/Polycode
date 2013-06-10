@@ -23,10 +23,11 @@
 #pragma once
 #include "PolyGlobals.h"
 #include "PolyUIBox.h"
+#include "PolyUIElement.h"
 
 namespace Polycode {
 	
-	class _PolyExport UIHScrollBar : public ScreenEntity {
+	class _PolyExport UIHScrollBar : public UIElement {
 	public:
 		UIHScrollBar(Number width, Number height, Number initialRatio);
 		~UIHScrollBar();

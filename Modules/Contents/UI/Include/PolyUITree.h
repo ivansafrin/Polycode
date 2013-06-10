@@ -22,6 +22,7 @@
 
 #pragma once
 #include "PolyGlobals.h"
+#include "PolyUIElement.h"
 #include "PolyScreenLabel.h"
 #include "PolyScreenImage.h"
 #include "PolyScreenShape.h"
@@ -35,8 +36,10 @@ using std::vector;
 
 namespace Polycode {
 
-	class _PolyExport UITree : public ScreenEntity {
+	class _PolyExport UITree : public UIElement {
 		public:
+			using UIElement::Resize;
+
 			UITree(String icon, String text, Number treeWidth, Number treeOffset=0);
 			~UITree();
 			

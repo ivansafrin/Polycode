@@ -77,7 +77,7 @@ ScreenEntityInstanceResourceEntry *ScreenEntityInstance::getResourceEntry() {
 	return resourceEntry;
 }
 
-Entity *ScreenEntityInstance::Clone(bool deepClone, bool ignoreEditorOnly) {
+Entity *ScreenEntityInstance::Clone(bool deepClone, bool ignoreEditorOnly) const {
 	ScreenEntityInstance *newEntity;
 	if(cloneUsingReload) {
 		newEntity = new ScreenEntityInstance(fileName);
@@ -88,7 +88,7 @@ Entity *ScreenEntityInstance::Clone(bool deepClone, bool ignoreEditorOnly) {
 	return newEntity;
 }
 
-void ScreenEntityInstance::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) {
+void ScreenEntityInstance::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
 	if(cloneUsingReload) {
 		ScreenEntity::applyClone(clone, false, ignoreEditorOnly);
 	} else {

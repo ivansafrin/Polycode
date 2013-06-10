@@ -75,8 +75,8 @@ class _PolyExport ScreenSprite : public ScreenShape
 		
 		virtual ~ScreenSprite();
 		
-		virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly);
-		virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly);
+		virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
+		virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
 
 		/**
 		* Adds a new animation to the sprite. Animations are added by specifying a list of frame indexes and then can be played back by the specified name.

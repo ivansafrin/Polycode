@@ -46,7 +46,7 @@ ScreenImage::ScreenImage(const String& fileName) : ScreenShape(ScreenShape::SHAP
 	height = texture->getHeight();	
 	setShapeSize(width, height);	
 	
-	positionMode = POSITION_TOPLEFT;
+	setPositionMode(POSITION_TOPLEFT);
 }
 
 ScreenImage::ScreenImage(Image *image) : ScreenShape(ScreenShape::SHAPE_RECT,1,1) {
@@ -59,7 +59,7 @@ ScreenImage::ScreenImage(Image *image) : ScreenShape(ScreenShape::SHAPE_RECT,1,1
 	height = texture->getHeight();	
 	setShapeSize(width, height);	
 	
-	positionMode = POSITION_TOPLEFT;	
+	setPositionMode(POSITION_TOPLEFT);	
 }
 
 ScreenImage::ScreenImage(Texture *texture) : ScreenShape(ScreenShape::SHAPE_RECT,1,1) {
@@ -72,20 +72,20 @@ ScreenImage::ScreenImage(Texture *texture) : ScreenShape(ScreenShape::SHAPE_RECT
 	height = texture->getHeight();	
 	setShapeSize(width, height);	
 	
-	positionMode = POSITION_TOPLEFT;	
+	setPositionMode(POSITION_TOPLEFT);
 }
 
 ScreenImage::~ScreenImage() {
 
 }
 
-Entity *ScreenImage::Clone(bool deepClone, bool ignoreEditorOnly) {
+Entity *ScreenImage::Clone(bool deepClone, bool ignoreEditorOnly) const {
 	ScreenImage *newImage = new ScreenImage(getTexture()->getResourcePath());
 	applyClone(newImage, deepClone, ignoreEditorOnly);
 	return newImage;
 }
 
-void ScreenImage::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) {
+void ScreenImage::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
 	ScreenShape::applyClone(clone, deepClone, ignoreEditorOnly);
 }
 

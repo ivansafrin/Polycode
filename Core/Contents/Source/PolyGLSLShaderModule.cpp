@@ -132,7 +132,7 @@ Shader *GLSLShaderModule::createShader(String name, String vpName, String fpName
 }
 
 Shader *GLSLShaderModule::createShader(TiXmlNode *node) {
-	TiXmlNode* pChild, *pChild2, *pChild3;	
+	TiXmlNode* pChild;
 	GLSLProgram *vp = NULL;
 	GLSLProgram *fp = NULL;
 	GLSLShader *retShader = NULL;

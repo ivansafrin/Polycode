@@ -39,6 +39,9 @@ THE SOFTWARE.
 	#pragma warning(disable:4996)
 	#pragma warning(disable:4309)
 	#define NULL 0
+	// Prevent windows.h includes from generating min/max macros that
+	// clash with the templates in <algorithm>
+	#define NOMINMAX
 
 
 #endif
@@ -73,6 +76,12 @@ THE SOFTWARE.
 #else
 	#include <cstddef>
 	#define PLATFORM PLATFORM_UNIX
+#endif
+
+#if PLATFORM == PLATFORM_MAC
+#	define POLY_UNUSED __attribute__((unused))
+#else
+#	define POLY_UNUSED
 #endif
 
 typedef double Number;
