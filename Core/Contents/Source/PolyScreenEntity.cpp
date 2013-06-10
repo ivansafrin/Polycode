@@ -626,15 +626,10 @@ MouseEventResult ScreenEntity::_onMouseDown(Number x, Number y, int mouseButton,
 	return ret;
 }
 
-// TODO: use screen transform
 Vector2 ScreenEntity::getScreenPosition() const {
-	Vector2 ret = getPosition2D();
-	
-	if(parentEntity) {
-		return ret + ((ScreenEntity*)parentEntity)->getScreenPosition();
-	} else {
-		return ret;
-	}
+	Matrix4 screenTransform = getScreenConcatenatedMatrix();
+	Vector3 screenPosition = screenTransform.getPosition();
+	return Vector2(screenPosition.x, screenPosition.y);
 }
 
 void ScreenEntity::setRotation(Number rotation) {
