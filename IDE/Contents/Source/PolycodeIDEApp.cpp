@@ -995,12 +995,11 @@ void PolycodeIDEApp::loadConfigFile() {
 	configFile.loadFromXML(core->getUserHomeDirectory()+"/.polycode/config.xml");
 #endif	
 	globalSyntaxTheme = new SyntaxHighlightTheme();
-	String themeName = "default";
+	String themeName = "monokai";
 	ObjectEntry *syntaxTheme = configFile.root["syntax_theme"];
 	if(syntaxTheme) {
 		themeName = syntaxTheme->stringVal;
 	}
-	themeName = "monokai";	
 	globalSyntaxTheme->loadFromFile(themeName);
 	
 	if(configFile.root["open_projects"]) {

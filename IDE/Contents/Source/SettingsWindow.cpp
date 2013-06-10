@@ -17,20 +17,21 @@
  */
 
 #include "SettingsWindow.h"
-
 #include "PolycodeFrame.h"
+#include "PolycodeTextEditor.h"
+
 extern PolycodeFrame *globalFrame;
+extern UIGlobalMenu *globalMenu;
+extern SyntaxHighlightTheme *globalSyntaxTheme;
 
 SettingsWindow::SettingsWindow() : UIWindow(L"Settings", SETTINGS_WINDOW_WIDTH, SETTINGS_WINDOW_HEIGHT) {
 
 	closeOnEscape = true;
 
-
-	ScreenLabel *label = new ScreenLabel("MISC", 22, "section", Label::ANTIALIAS_FULL);
+	ScreenLabel *label = new ScreenLabel("TEXT EDITING", 22, "section", Label::ANTIALIAS_FULL);
 	addChild(label);
 	label->color.a = 0.4;
 	label->setPosition(padding, 50);
-
 
 	useExternalTextEditorBox = new UICheckBox("Use external text editor", false);
 	addChild(useExternalTextEditorBox); 
@@ -44,6 +45,25 @@ SettingsWindow::SettingsWindow() : UIWindow(L"Settings", SETTINGS_WINDOW_WIDTH, 
 	externalTextEditorCommand = new UITextInput(false, SETTINGS_WINDOW_WIDTH - (padding*2 + BUTTON_WIDTH + BUTTON_PADDING/2), TEXTBOX_HEIGHT);
 	addChild(externalTextEditorCommand);
 	externalTextEditorCommand->setPosition(padding, EDITOR_BROWSE_POS);
+	
+	
+	label = new ScreenLabel("Syntax highlighting theme", 12);
+	addChild(label);
+	label->color.a = 0.6;
+	label->setPosition(padding, EDITOR_BROWSE_POS + 35);
+	
+	syntaxThemeBox = new UIComboBox(globalMenu, 300);
+	addChild(syntaxThemeBox);
+	syntaxThemeBox->setPosition(padding, EDITOR_BROWSE_POS + 55);
+	syntaxThemeBox->addEventListener(this, UIEvent::CHANGE_EVENT);
+	
+	std::vector<OSFileEntry> themes = OSBasics::parseFolder(CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory() + "/SyntaxThemes", false);
+	
+	for(int i=0; i < themes.size(); i++) {
+		if(themes[i].extension == "xml") {
+			syntaxThemeBox->addComboItem(themes[i].nameWithoutExtension);
+		}
+	}
 
 	browseButton = new UIButton("Browse...", BUTTON_WIDTH);
 	browseButton->addEventListener(this, UIEvent::CLICK_EVENT);
@@ -64,7 +84,13 @@ SettingsWindow::SettingsWindow() : UIWindow(L"Settings", SETTINGS_WINDOW_WIDTH, 
 
 void SettingsWindow::handleEvent(Event *event) {
 	if(event->getEventType() == "UIEvent") {
-		if(event->getEventCode() == UIEvent::CLICK_EVENT) {
+		if(event->getEventCode() == UIEvent::CHANGE_EVENT) {
+			if(event->getDispatcher() == syntaxThemeBox) {
+				if(syntaxThemeBox->getSelectedItem()->label != globalSyntaxTheme->name) {
+					globalSyntaxTheme->loadFromFile(syntaxThemeBox->getSelectedItem()->label);
+				}
+			}
+		} else if(event->getEventCode() == UIEvent::CLICK_EVENT) {
 			if(event->getDispatcher() == okButton) {
 				dispatchEvent(new UIEvent(), UIEvent::OK_EVENT);
 			}
@@ -120,6 +146,13 @@ void SettingsWindow::updateUI() {
 	
 	useExternalTextEditorBox->setChecked(config->getStringValue("Polycode", "useExternalTextEditor") == "true");
 	externalTextEditorCommand->setText(config->getStringValue("Polycode", "externalTextEditorCommand"));
+	
+	for(int i=0; i < syntaxThemeBox->getNumItems(); i++) {
+		if(globalSyntaxTheme->name == syntaxThemeBox->getItemAtIndex(i)->label) {
+			syntaxThemeBox->setSelectedIndex(i);
+		} 
+	}
+	
 }
 	
 SettingsWindow::~SettingsWindow() {
