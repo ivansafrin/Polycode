@@ -14,21 +14,17 @@
 
 using namespace Polycode;
 
+@class PolycodeAppDelegate;
+
 class PolycodeAppEventHandler : public EventHandler {
 	
 public:
 	PolycodeAppEventHandler() {}
 	~PolycodeAppEventHandler() {}
 	
-	void handleEvent(Event *evt) {
-		switch(evt->getEventCode()) {
-			case PolycodeIDEApp::EVENT_SHOW_MENU:
-				[appDelegate showProjectMenu];
-			break;
-		}
-	}
-	
-	id appDelegate;
+	void handleEvent(Event *evt);
+
+	PolycodeAppDelegate* appDelegate;
 };
 
 @interface PolycodeAppDelegate : NSObject <NSApplicationDelegate> {

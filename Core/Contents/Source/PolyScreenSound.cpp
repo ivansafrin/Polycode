@@ -50,13 +50,13 @@ void ScreenSoundListener::Update() {
 
 }
 
-Entity *ScreenSound::Clone(bool deepClone, bool ignoreEditorOnly) {
+Entity *ScreenSound::Clone(bool deepClone, bool ignoreEditorOnly) const {
 	ScreenSound *newSound = new ScreenSound(sound->getFileName(), sound->getReferenceDistance(), sound->getMaxDistance());
 	applyClone(newSound, deepClone, ignoreEditorOnly);
 	return newSound;
 }
 
-void ScreenSound::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) {
+void ScreenSound::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
 	ScreenEntity::applyClone(clone, deepClone, ignoreEditorOnly);
 }
 

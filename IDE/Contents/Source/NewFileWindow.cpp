@@ -27,7 +27,6 @@ NewFileWindow::NewFileWindow() : UIWindow(L"Create New File", 580, 280) {
 	
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
-	int fontSize = conf->getNumericValue("Polycode", "uiDefaultFontSize");
 	
 	closeOnEscape = true;	
 	

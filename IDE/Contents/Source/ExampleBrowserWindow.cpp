@@ -31,7 +31,6 @@ ExampleBrowserWindow::ExampleBrowserWindow() : UIWindow(L"Example Browser", 320,
 	
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
-	int fontSize = conf->getNumericValue("Polycode", "uiDefaultFontSize");
 	
 	
 	templateContainer = new UITreeContainer("boxIcon.png", L"Examples", 320, 410-topPadding-padding-padding-40);	

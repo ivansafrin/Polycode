@@ -230,7 +230,6 @@ std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseGLSL(String te
 			}
 
 			if(ch == '*' && lastSeparator == '/' && mode != MODE_STRING) {
-				unsigned int old_mode = mode;
 				tokens[tokens.size()-1].type = MODE_COMMENT;
 				tokens[tokens.size()-2].type = MODE_COMMENT;				
 				mode = MODE_COMMENT;				

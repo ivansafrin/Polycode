@@ -60,7 +60,7 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	
 	numLines = 0;
 	
-	this->positionMode = ScreenEntity::POSITION_TOPLEFT;
+	setPositionMode(POSITION_TOPLEFT);
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	
 	if(multiLine)

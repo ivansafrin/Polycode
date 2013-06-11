@@ -21,6 +21,7 @@
 */
 
 #include "PolyRectangle.h"
+#include <algorithm> // for min/max
 
 using namespace Polycode;
 
@@ -29,4 +30,17 @@ void Rectangle::setRect(Number x, Number y, Number w, Number h) {
 	this->y = y;
 	this->w = w;
 	this->h = h;		
+}
+
+Rectangle Rectangle::Clipped(const Rectangle& rect) const
+{
+	Rectangle result;
+
+	result.x = std::min(std::max(x, rect.x), maxX());
+	result.w = std::max(std::min(maxX(), rect.maxX()), result.x) - result.x;
+
+	result.y = std::min(std::max(y, rect.y), maxY());
+	result.h = std::max(std::min(maxY(), rect.maxY()), result.y) - result.y;
+
+	return result;
 }

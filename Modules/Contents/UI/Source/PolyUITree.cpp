@@ -29,7 +29,7 @@
 
 using namespace Polycode;
 
-UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : ScreenEntity() {
+UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : UIElement() {
 		
 	processInputEvents = true;
 	willDrag = false;

@@ -39,6 +39,9 @@ THE SOFTWARE.
 	#pragma warning(disable:4996)
 	#pragma warning(disable:4309)
 	#define NULL 0
+	// Prevent windows.h includes from generating min/max macros that
+	// clash with the templates in <algorithm>
+	#define NOMINMAX
 
 
 #endif
