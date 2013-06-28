@@ -78,6 +78,11 @@ void GLSLProgram::reloadProgram() {
 		glDeleteShader(program);
 		
 	OSFILE *file = OSBasics::open(fileName, "r");
+	if (!file) {
+		Logger::log("Error: shader file %s not found\n", fileName.c_str());
+		program = -1;
+		return;
+	}
 	OSBasics::seek(file, 0, SEEK_END);	
 	long progsize = OSBasics::tell(file);
 	OSBasics::seek(file, 0, SEEK_SET);
