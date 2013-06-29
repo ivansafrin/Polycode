@@ -32,16 +32,16 @@ class SpriteAnimationEntry : public UIElement {
 	public:
 		SpriteAnimationEntry(SpriteAnimation *animation);
 		~SpriteAnimationEntry();
-		
+
 		void handleEvent(Event *event);
-		
+
 		UITextInput *nameInput;
 		UITextInput *framesInput;
 		UITextInput *speedInput;
-						
+
 		UIImageButton *removeButton;
-		UIImageButton *playButton;	
-		
+		UIImageButton *playButton;
+
 		SpriteAnimation *animation;
 };
 
@@ -49,36 +49,36 @@ class PolycodeSpriteEditor : public PolycodeEditor {
 	public:
 	PolycodeSpriteEditor();
 	virtual ~PolycodeSpriteEditor();
-	
+
 	void handleEvent(Event *event);
-	
+
 	bool openFile(OSFileEntry filePath);
 	void Resize(int x, int y);
-	
+
 	void saveFile();
-			
+
 	protected:
-	
+
 	void refreshAnimationEntries();
-	
+
 	std::vector<SpriteAnimationEntry*> animationEntries;
-	
+
 	UIElement *animationsAnchor;
-	
+
 	UIButton *addAnimationButton;
-	
+
 	PropList *propList;
-	
+
 	ScreenShape *headerBg;	
-	
+
 	UIComboBox *zoomBox;
-	
+
 	TextureProp *textureProp;
 	NumberProp *widthProp;
 	NumberProp *heightProp;	
-	
+
 	bool initialLoad;
-	
+
 	ScreenSprite *previewSprite;
 };
 

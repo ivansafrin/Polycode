@@ -28,17 +28,17 @@ THE SOFTWARE.
 
 namespace Polycode {
 
-	class _PolyExport ScreenEvent : public Event {
-		public:
-			ScreenEvent();
-			virtual ~ScreenEvent();
-		
-			static const int ENTITY_MOVE_TOP = 0;
-			static const int ENTITY_MOVE_BOTTOM = 1;
-			static const int ENTITY_MOVE_UP = 2;
-			static const int ENTITY_MOVE_DOWN = 3;
-			
-		protected:		
-			
-	};
+class _PolyExport ScreenEvent : public Event {
+	public:
+		ScreenEvent();
+		virtual ~ScreenEvent();
+
+		static const int ENTITY_MOVE_TOP = 0;
+		static const int ENTITY_MOVE_BOTTOM = 1;
+		static const int ENTITY_MOVE_UP = 2;
+		static const int ENTITY_MOVE_DOWN = 3;
+
+	protected:
+
+};
 }

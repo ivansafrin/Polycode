@@ -33,11 +33,11 @@ Mesh *Particle::billboardMesh = 0;
 Particle::Particle(int particleType, bool isScreenParticle, Material *material, Texture *texture, Mesh *particleMesh) {
 	life = 0;
 	if(isScreenParticle) {
-		createScreenParticle(particleType, texture, particleMesh);		
+		createScreenParticle(particleType, texture, particleMesh);
 	} else {
 		createSceneParticle(particleType, material, particleMesh);
 	}
-	
+
 	Reset(true);
 }
 
@@ -47,28 +47,28 @@ void Particle::createSceneParticle(int particleType, Material *material, Mesh *p
 		{
 			if(!billboardMesh) {
 				billboardMesh = new Mesh(Mesh::QUAD_MESH);
-				
+
 				Polygon *imagePolygon = new Polygon();
-				imagePolygon->addVertex(0,1,0,0,0);	
-				imagePolygon->addVertex(1,1,0, 1, 0);			
-				imagePolygon->addVertex(1,0,0, 1, 1);		
+				imagePolygon->addVertex(0,1,0,0,0);
+				imagePolygon->addVertex(1,1,0, 1, 0);
+				imagePolygon->addVertex(1,0,0, 1, 1);
 				imagePolygon->addVertex(0,0,0,0,1);
 
 				billboardMesh->addPolygon(imagePolygon);
-		
-		for(int i=0; i < billboardMesh->getPolygonCount(); i++) {
-			for(int j=0; j < billboardMesh->getPolygon(i)->getVertexCount(); j++) {
-				billboardMesh->getPolygon(i)->getVertex(j)->x = billboardMesh->getPolygon(i)->getVertex(j)->x - (1.0/2.0f);
-				billboardMesh->getPolygon(i)->getVertex(j)->z = billboardMesh->getPolygon(i)->getVertex(j)->z - (1.0/2.0f);
-			}
-		}
 
-		billboardMesh->calculateNormals();
-		billboardMesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
-		billboardMesh->arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
-		billboardMesh->arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;						
-		billboardMesh->arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;					
-				
+				for(int i=0; i < billboardMesh->getPolygonCount(); i++) {
+					for(int j=0; j < billboardMesh->getPolygon(i)->getVertexCount(); j++) {
+						billboardMesh->getPolygon(i)->getVertex(j)->x = billboardMesh->getPolygon(i)->getVertex(j)->x - (1.0/2.0f);
+						billboardMesh->getPolygon(i)->getVertex(j)->z = billboardMesh->getPolygon(i)->getVertex(j)->z - (1.0/2.0f);
+					}
+				}
+
+				billboardMesh->calculateNormals();
+				billboardMesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
+				billboardMesh->arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;
+				billboardMesh->arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;
+				billboardMesh->arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;
+
 			} 
 			SceneMesh *primitive = new SceneMesh(billboardMesh);
 			
@@ -79,9 +79,9 @@ void Particle::createSceneParticle(int particleType, Material *material, Mesh *p
 //			primitive->depthTest = false;
 			primitive->depthWrite = false;
 			primitive->backfaceCulled = false;
-			particleBody = primitive;			
+			particleBody = primitive;
 		}
-			break;
+		break;
 		case MESH_PARTICLE: 
 		{
 			SceneMesh *primitive = new SceneMesh(particleMesh);
@@ -92,8 +92,8 @@ void Particle::createSceneParticle(int particleType, Material *material, Mesh *p
 			//			primitive->billboardRoll = true;
 			//primitive->depthTest = false;
 			//			primitive->backfaceCulled = false;
-			particleBody = primitive;						
-		}			
+			particleBody = primitive;
+		}
 		break;
 		default:
 			assert(0);
@@ -102,49 +102,46 @@ void Particle::createSceneParticle(int particleType, Material *material, Mesh *p
 }
 
 void Particle::createScreenParticle(int particleType, Texture *texture, Mesh *particleMesh) {
-	
+
 	ScreenShape *primitive = new ScreenShape(ScreenShape::SHAPE_RECT, 1.0, 1.0f);
 	primitive->setTexture(texture);	
 //	primitive->billboardMode = true;
 //	primitive->billboardRoll = true;
-	
-	particleBody = primitive;			
+
+	particleBody = primitive;
 	return;
-	
+
 	switch(particleType) {
 		case BILLBOARD_PARTICLE:
 		{
 			ScreenShape *primitive = new ScreenShape(ScreenShape::SHAPE_RECT, 1.0f, 1.0f);
 //			primitive->setTexture(texture->get)
-			particleBody = primitive;			
+			particleBody = primitive;
 		}
-			break;
+		break;
 		case MESH_PARTICLE: 
 		{
 //			ScreenMesh *primitive = new ScreenMesh(particleMesh);
 //			primitive->cacheToVertexBuffer(true);
 //			primitive->setMaterial(texture);
-//			particleBody = primitive;						
-		}			
-			break;
-	}	
+//			particleBody = primitive;
+		}
+		break;
+	}
 }
 
 
-void Particle::Reset(bool continuious) {
-	if(continuious) {
-		if(life > lifespan)
-			life = 0 + (life - lifespan);
-		else
-			life = 0;
+void Particle::Reset(bool continuous) {
+	if(continuous && life > lifespan) {
+		life = life - lifespan;
 	} else {
-			life = 0;		
+		life = 0;
 	}
 
 	perlinPosX = (Number)rand()/RAND_MAX;
 	perlinPosY = (Number)rand()/RAND_MAX;
 	perlinPosZ = (Number)rand()/RAND_MAX;
-	
+
 }
 
 Particle::~Particle() {

@@ -31,27 +31,27 @@ THE SOFTWARE.
 #include <OpenGLES/ES1/glext.h>
 
 namespace Polycode {
-	
-	class _PolyExport OpenGLES1Texture : public Texture {
+
+class _PolyExport OpenGLES1Texture : public Texture {
 	public:
 		OpenGLES1Texture(unsigned int width, unsigned int height);
 		OpenGLES1Texture(unsigned int width, unsigned int height, char *textureData, bool clamp, int filteringMode);
 		virtual ~OpenGLES1Texture();
-		
+
 		void recreateFromImageData();
-		
+
 		GLuint getTextureID();
 		GLuint getFrameBufferID();
-		
+
 		void setGLInfo(GLuint textureID, GLuint frameBufferID);
-		
+
 		void setTextureData(char *data);
-		
+
 	private:
-		
+
 		int filteringMode;
 		GLuint textureID;
 		GLuint frameBufferID;
-	};
-	
+};
+
 }

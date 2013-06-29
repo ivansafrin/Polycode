@@ -31,7 +31,7 @@
 
 using namespace Polycode;
 
-Tween::	Tween(Number *target, int easeType, Number startVal, Number endVal, Number time, bool repeat, bool deleteOnComplete, Number waitTime) : EventDispatcher() {
+Tween::Tween(Number *target, int easeType, Number startVal, Number endVal, Number time, bool repeat, bool deleteOnComplete, Number waitTime) : EventDispatcher() {
 	this->waitTime = waitTime;
 	this->deleteOnComplete = deleteOnComplete;
 	targetVal = target;
@@ -58,7 +58,7 @@ void Tween::Pause(bool pauseVal) {
 }
 
 void Tween::setSpeed(Number speed) {
-	if(speed <= 0 )		
+	if(speed <= 0 )
 		endTime = 0;
 	else
 		endTime = actEndTime / speed;
@@ -67,7 +67,7 @@ void Tween::setSpeed(Number speed) {
 Tween::~Tween() {
 	tweenTimer->removeEventListener(this, 0);
 	delete tweenTimer;
-	
+
 	deleteOnComplete = false; // Prevent loop when we removeTween in next line.
 	CoreServices::getInstance()->getTweenManager()->removeTween(this);
 }
@@ -84,14 +84,14 @@ void Tween::handleEvent(Event *event) {
 	if(tweenTime >= endTime+waitTime) {
 		if(repeat){
 			Reset();
-			updateCustomTween();			
+			updateCustomTween();
 		} else {
-			*targetVal = endVal;			
+			*targetVal = endVal;
 			complete = true;
 		}
 		return;
 	}
-	
+
 	if(targetVal != NULL && tweenTime > waitTime) {
 		localTargetVal = interpolateTween();
 		*targetVal = localTargetVal;
@@ -107,88 +107,93 @@ void Tween::Reset() {
 
 Number Tween::interpolateTween() {
 	Number t = tweenTime-waitTime;
-	
+
 	switch(easeType) {
 		case EASE_IN_QUAD:
 			t /= endTime;
 			return cVal*t*t + startVal;
-			break;
+		break;
 		case EASE_OUT_QUAD:
 			t /= endTime;
 			return -cVal * t*(t-2.0f) + startVal;
-			break;
+		break;
 		case EASE_INOUT_QUAD:
 			t /= endTime/2.0f;
-			if (t < 1.0f) return cVal/2.0f*t*t + startVal;
+			if (t < 1.0f) 
+				return cVal/2.0f*t*t + startVal;
 			t--;
 			return -cVal/2.0f * (t*(t-2.0f) - 1.0f) + startVal;
-			break;
+		break;
 		case EASE_IN_CUBIC:
 			t /= endTime;
 			return cVal*t*t*t + startVal;
-			break;
+		break;
 		case EASE_OUT_CUBIC:
 			t /= endTime;
 			t--;
 			return cVal*(t*t*t + 1.0f) + startVal;
-			break;
+		break;
 		case EASE_INOUT_CUBIC:
 			t /= endTime/2.0f;
-			if (t < 1.0f) return cVal/2.0f*t*t*t + startVal;
+			if (t < 1.0f) 
+				return cVal/2.0f*t*t*t + startVal;
 			t -= 2.0f;
 			return cVal/2.0f*(t*t*t + 2.0f) + startVal;
-			break;
+		break;
 		case EASE_IN_QUART:
 			t /= endTime;
 			return cVal*t*t*t*t + startVal;
-			break;
+		break;
 		case EASE_OUT_QUART:
 			t /= endTime;
 			t--;
 			return -cVal * (t*t*t*t - 1.0f) + startVal;
-			break;
+		break;
 		case EASE_INOUT_QUART:
 			t /= endTime/2.0f;
-			if (t < 1.0f) return cVal/2.0f*t*t*t*t + startVal;
+			if (t < 1.0f) 
+				return cVal/2.0f*t*t*t*t + startVal;
 			t -= 2.0f;
 			return -cVal/2.0f * (t*t*t*t - 2.0f) + startVal;
-			break;
+		break;
 		case EASE_IN_QUINT:
 			t /= endTime;
 			return cVal*t*t*t*t*t + startVal;
-			break;
+		break;
 		case EASE_OUT_QUINT:
 			t /= endTime;
 			t--;
 			return cVal*(t*t*t*t*t + 1.0f) + startVal;
-			break;
+		break;
 		case EASE_INOUT_QUINT:
 			t /= endTime/2.0f;
-			if (t < 1.0f) return cVal/2.0f*t*t*t*t*t + startVal;
+			if (t < 1.0f) 
+				return cVal/2.0f*t*t*t*t*t + startVal;
 			t -= 2.0f;
 			return cVal/2.0f*(t*t*t*t*t + 2.0f) + startVal;
-			break;
+		break;
 		case EASE_IN_SINE:
 			return -cVal * cos(t/endTime * (PI/2.0f)) + cVal + startVal;
-			break;
+		break;
 		case EASE_OUT_SINE:
 			return cVal * sin(t/endTime * (PI/2.0f)) + startVal;
-			break;
+		break;
 		case EASE_INOUT_SINE:
 			return -cVal/2.0f * (cos(PI*t/endTime) - 1.0f) + startVal;
-			break;
+		break;
 		case EASE_IN_EXPO:
 			return cVal * powf( 2.0f, 10.0f * (t/endTime - 1.0f) ) + startVal;
-			break;
+		break;
 		case EASE_OUT_EXPO:
 			return cVal * ( -powf( 2.0f, -10.0f * t/endTime ) + 1.0f ) + startVal;
-			break;
+		break;
 		case EASE_INOUT_EXPO:
 			t /= endTime/2.0f;
-			if (t < 1.0f) return cVal/2.0f * powf( 2.0f, 10.0f * (t - 1.0f) ) + startVal;
+			if (t < 1.0f) 
+				return cVal/2.0f * powf( 2.0f, 10.0f * (t - 1.0f) ) + startVal;
 			t--;
 			return cVal/2.0f * ( -powf( 2.0f, -10.0f * t) + 2.0f ) + startVal;
-			break;
+		break;
 		case EASE_IN_CIRC:
 			t /= endTime;
 			return -cVal * (sqrt(1.0f - t*t) - 1.0f) + startVal;
@@ -197,13 +202,14 @@ Number Tween::interpolateTween() {
 			t /= endTime;
 			t--;
 			return cVal * sqrt(1.0f - t*t) + startVal;
-			break;
+		break;
 		case EASE_INOUT_CIRC:
 			t /= endTime/2.0f;
-			if (t < 1.0f) return -cVal/2.0f * (sqrt(1.0f - t*t) - 1.0f) + startVal;
+			if (t < 1.0f)
+				return -cVal/2.0f * (sqrt(1.0f - t*t) - 1.0f) + startVal;
 			t -= 2.0f;
 			return cVal/2.0f * (sqrt(1.0f - t*t) + 1.0f) + startVal;
-			break;
+		break;
 		case EASE_OUT_BOUNCE:
 		case EASE_INOUT_BOUNCE:
 		case EASE_IN_BOUNCE:
@@ -216,12 +222,12 @@ Number Tween::interpolateTween() {
 			} else {
 				return cVal*(7.5625*(t-=(2.625/2.75))*t + .984375) + startVal;
 			}
-			break;	
+		break;
 		default:
 		case EASE_NONE:
 			// return c*t/d + b;
 			return cVal*t/endTime+startVal;
-			break;
+		break;
 	}
 }
 
@@ -240,10 +246,10 @@ BezierPathTween::~BezierPathTween() {
 }
 
 QuaternionTween::QuaternionTween(Quaternion *target, BezierCurve *wCurve, BezierCurve *xCurve, BezierCurve *yCurve, BezierCurve *zCurve, int easeType, Number time, bool repeat) : Tween(&pathValue, easeType, 0.0f, 1.0f, time, repeat) {
-	this->quatCurve = new QuaternionCurve(wCurve, xCurve, yCurve, zCurve);		
+	this->quatCurve = new QuaternionCurve(wCurve, xCurve, yCurve, zCurve);
 	this->target = target;
 	pathValue = 0;
-						
+
 }
 
 QuaternionTween::~QuaternionTween() {

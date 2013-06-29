@@ -62,11 +62,11 @@ void ctow(WCHAR* Dest, const char* Source)
 
 OSFileEntry::OSFileEntry(const Polycode::String& fullPath, int type) {
 	std::vector<String> parts = fullPath.split("/");
-	
+
 	if(parts.size() > 0) {
 		String path = parts[0];
 
-		if(parts.size() > 1) {		
+		if(parts.size() > 1) {
 			for(int i=1; i < parts.size()-1; i++) {
 				path += "/" + parts[i];
 			}
@@ -75,7 +75,7 @@ OSFileEntry::OSFileEntry(const Polycode::String& fullPath, int type) {
 	} else {
 		init("", fullPath, type);
 	}
-	
+
 }
 
 OSFileEntry::OSFileEntry(const String& path, const String& name, int type) {
@@ -109,12 +109,12 @@ void OSFileEntry::init(const Polycode::String& path, const Polycode::String& nam
 void OSFILE::debugDump() {
 	long tellval = OSBasics::tell(this);
 	OSBasics::seek(this, 0, SEEK_SET);
-	
+
 	char buffer;
 	while(OSBasics::read(&buffer, 1, 1, this)) {
 		printf("%c", buffer);
 	}
-	
+
 	OSBasics::seek(this, tellval, SEEK_SET);
 }
 
@@ -125,22 +125,22 @@ OSFILE *OSBasics::open(const String& filename, const String& opts) {
 			retFile = new OSFILE;
 			retFile->fileType = OSFILE::TYPE_ARCHIVE_FILE;
 			if(opts.find("a") !=string::npos) {
-				retFile->physFSFile = PHYSFS_openAppend(filename.c_str());				
+				retFile->physFSFile = PHYSFS_openAppend(filename.c_str());
 				if(!retFile->physFSFile){
 					printf("Error opening file from archive (%s)\n", filename.c_str());
-					return NULL;		
+					return NULL;
 				}
 			} else if(opts.find("w") !=string::npos) {
-				retFile->physFSFile = PHYSFS_openWrite(filename.c_str());				
+				retFile->physFSFile = PHYSFS_openWrite(filename.c_str());
 				if(!retFile->physFSFile){
 					printf("Error opening file from archive (%s)\n", filename.c_str());
-					return NULL;		
+					return NULL;
 				}
 			} else {
-				retFile->physFSFile = PHYSFS_openRead(filename.c_str());				
+				retFile->physFSFile = PHYSFS_openRead(filename.c_str());
 				if(!retFile->physFSFile){
 					printf("Error opening file from archive (%s)\n", filename.c_str());
-					return NULL;		
+					return NULL;
 				}
 			}
 			return retFile;
@@ -148,15 +148,15 @@ OSFILE *OSBasics::open(const String& filename, const String& opts) {
 	} else {
 //		Logger::log("File doesn't exist in archive (%s)\n", filename.c_str());
 	}
-	
+
 	FILE *file = fopen(filename.c_str(), opts.c_str());
 	if(file) {
 		retFile = new OSFILE;
 		retFile->fileType = OSFILE::TYPE_FILE;
-		retFile->file = file;		
+		retFile->file = file;
 		return retFile;
 	}
-	
+
 	return NULL;
 }
 
@@ -168,7 +168,7 @@ int OSBasics::close(OSFILE *file) {
 			break;
 		case OSFILE::TYPE_ARCHIVE_FILE:
 			result = PHYSFS_close(file->physFSFile);
-			break;			
+			break;
 	}
 	delete file;
 	return result;
@@ -181,7 +181,7 @@ long OSBasics::tell(OSFILE * stream) {
 			break;
 		case OSFILE::TYPE_ARCHIVE_FILE:
 			return PHYSFS_tell(stream->physFSFile);
-			break;			
+			break;
 	}
 	return 0;
 }
@@ -193,7 +193,7 @@ size_t OSBasics::read( void * ptr, size_t size, size_t count, OSFILE * stream ) 
 		break;
 		case OSFILE::TYPE_ARCHIVE_FILE:
 			return PHYSFS_read(stream->physFSFile, ptr, size, count);
-		break;			
+		break;
 	}
 	return 0;
 }
@@ -205,7 +205,7 @@ size_t OSBasics::write( const void * ptr, size_t size, size_t count, OSFILE * st
 			break;
 		case OSFILE::TYPE_ARCHIVE_FILE:
 			PHYSFS_write(stream->physFSFile, ptr, size, count);
-		break;			
+		break;
 	}
 	return 0;
 }
@@ -221,8 +221,8 @@ int OSBasics::seek(OSFILE * stream, long int offset, int origin ) {
 					return PHYSFS_seek(stream->physFSFile, offset);
 				break;
 				case SEEK_CUR: {
-					PHYSFS_sint64 curoffset = PHYSFS_tell(stream->physFSFile);					
-					return PHYSFS_seek(stream->physFSFile, curoffset+offset);				
+					PHYSFS_sint64 curoffset = PHYSFS_tell(stream->physFSFile);
+					return PHYSFS_seek(stream->physFSFile, curoffset+offset);
 				}
 				break;
 				case SEEK_END: {
@@ -231,17 +231,17 @@ int OSBasics::seek(OSFILE * stream, long int offset, int origin ) {
 				}
 				break;
 			}
-			break;			
+			break;
 	}
-	return 0;	
+	return 0;
 }
 
 vector<OSFileEntry> OSBasics::parsePhysFSFolder(const String& pathString, bool showHidden) {
 	vector<OSFileEntry> returnVector;
-	
+
 	char **rc = PHYSFS_enumerateFiles(pathString.c_str());
 	char **i;
-	
+
 	String fullPath;
 	String fname;
 	for (i = rc; *i != NULL; i++) {
@@ -251,11 +251,11 @@ vector<OSFileEntry> OSBasics::parsePhysFSFolder(const String& pathString, bool s
 			if(PHYSFS_isDirectory(fullPath.c_str())) {
 				returnVector.push_back(OSFileEntry(pathString, fname, OSFileEntry::TYPE_FOLDER));
 			} else { 
-				returnVector.push_back(OSFileEntry(pathString, fname, OSFileEntry::TYPE_FILE));		
+				returnVector.push_back(OSFileEntry(pathString, fname, OSFileEntry::TYPE_FILE));
 			}
 		}
 	}
-	PHYSFS_freeList(rc);	
+	PHYSFS_freeList(rc);
 	return returnVector;
 }
 
@@ -278,15 +278,9 @@ bool OSBasics::fileExists(const Polycode::String& pathString) {
 
 vector<OSFileEntry> OSBasics::parseFolder(const String& pathString, bool showHidden) {
 	vector<OSFileEntry> returnVector;
-	
-	if(pathString != "/") {
-	if(pathString.size() < 128) {
-		if(PHYSFS_exists(pathString.c_str())) {
-			if(PHYSFS_isDirectory(pathString.c_str())) {
-				return parsePhysFSFolder(pathString, showHidden);
-			}
-		}
-	}
+
+	if(pathString != "/" && pathString.size() < 128 && PHYSFS_exists(pathString.c_str()) && PHYSFS_isDirectory(pathString.c_str())) {
+		return parsePhysFSFolder(pathString, showHidden);
 	}
 	
 #ifdef _WINDOWS
@@ -302,10 +296,9 @@ vector<OSFileEntry> OSBasics::parseFolder(const String& pathString, bool showHid
 
 
 	DWORD dwAttrib = GetFileAttributes(tmp);
-  if(! (dwAttrib != INVALID_FILE_ATTRIBUTES && 
-         (dwAttrib & FILE_ATTRIBUTE_DIRECTORY))) {
+	if(! (dwAttrib != INVALID_FILE_ATTRIBUTES && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY))) {
 		return returnVector;
-  }
+	}
 
 
 	SetCurrentDirectory(tmp);
@@ -318,11 +311,11 @@ vector<OSFileEntry> OSBasics::parseFolder(const String& pathString, bool showHid
 	}
 
 	char fileName[260];
-	do {		
+	do {
 		memset(fileName, 0, 260);
 		wtoc(fileName, findFileData.cFileName);
 		String fname = string(fileName);
-		
+
 		if((fname.c_str()[0] != '.' || (fname.c_str()[0] == '.'  && showHidden)) && fname != "..") {
 			if( findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) {
 				returnVector.push_back(OSFileEntry(pathString, fname, OSFileEntry::TYPE_FOLDER));
@@ -330,13 +323,13 @@ vector<OSFileEntry> OSBasics::parseFolder(const String& pathString, bool showHid
 				returnVector.push_back(OSFileEntry(pathString, fname, OSFileEntry::TYPE_FILE));
 			}
 		}
-    } while(FindNextFile(hFind, &findFileData));	
+	} while(FindNextFile(hFind, &findFileData));
 	FindClose(hFind);
 	SetCurrentDirectory(curDir);
 #else
 	DIR           *d;
 	struct dirent *dir;
-	
+
 	d = opendir(pathString.c_str());
 	if(d) {
 		while ((dir = readdir(d)) != NULL) {
@@ -350,9 +343,9 @@ vector<OSFileEntry> OSBasics::parseFolder(const String& pathString, bool showHid
 		}
 		closedir(d);
 	}
-	
+
 #endif
-		
+
 	return returnVector;
 }
 
@@ -371,7 +364,7 @@ time_t OSBasics::getFileTime(const Polycode::String& pathString) {
 	ctow(tmp, pathString.c_str());
 	HANDLE hFile = CreateFile(tmp, GENERIC_READ, FILE_SHARE_WRITE | FILE_SHARE_READ | FILE_SHARE_DELETE,
 								NULL, OPEN_EXISTING, 0, NULL);
-								
+
 	if(hFile == INVALID_HANDLE_VALUE) {
 		return 0;
 	}
@@ -399,17 +392,17 @@ time_t OSBasics::getFileTime(const Polycode::String& pathString) {
 
 void OSBasics::removeItem(const String& pathString) {
 #ifdef _WINDOWS
-	 String _tmp = pathString.replace("/", "\\");
-	 DeleteFile(_tmp.getWDataWithEncoding(String::ENCODING_UTF8));
+	String _tmp = pathString.replace("/", "\\");
+	DeleteFile(_tmp.getWDataWithEncoding(String::ENCODING_UTF8));
 #else
 	remove(pathString.c_str());
-#endif	
+#endif
 }
 
 void OSBasics::createFolder(const String& pathString) {
 #ifdef _WINDOWS
 	String path = pathString;
-	CreateDirectory(path.getWDataWithEncoding(String::ENCODING_UTF8), NULL);		
+	CreateDirectory(path.getWDataWithEncoding(String::ENCODING_UTF8), NULL);
 #else
 	mkdir(pathString.c_str(),  S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 #endif
@@ -420,16 +413,15 @@ bool OSBasics::isFolder(const String& pathString) {
 #ifdef _WINDOWS
 	String path = pathString;
 	DWORD dwAttrib = GetFileAttributes(path.getWDataWithEncoding(String::ENCODING_UTF8));
-  return (dwAttrib != INVALID_FILE_ATTRIBUTES && 
-         (dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
+	return (dwAttrib != INVALID_FILE_ATTRIBUTES && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
 #else
 	DIR           *d;
-	
+
 	d = opendir(pathString.c_str());
 	if(d) {
 		retVal = true;
 		closedir(d);
 	}
-#endif
 	return retVal;
+#endif
 }

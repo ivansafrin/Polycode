@@ -53,19 +53,19 @@ class PolycodeIDEApp : public EventDispatcher {
 public:
 	PolycodeIDEApp(PolycodeView *view);
 	~PolycodeIDEApp();
-	
+
 	void handleEvent(Event *event);	
 	bool Update();
-	
+
 	void saveConfigFile();
 	void loadConfigFile();
-	
+
 	void openFileInProject(PolycodeProject *project, String filePath);
-	
+
 	void openFile(OSFileEntry file);
-	
+
 	void stopProject();
-	
+
 	// menu commands
 	void renameFile();
 	void removeFile();
@@ -74,12 +74,12 @@ public:
 	void newProject();
 	void newFile();
 	void showAbout();
-	
+
 	void openDocs();
-	
+
 	void addFiles();
-	
-	void newGroup();	
+
+	void newGroup();
 	void openProject();
 	void closeProject();
 	void closeFile();
@@ -90,28 +90,28 @@ public:
 	void exportProject();
 	void toggleConsole();
 	void showSettings();
-	
+
 	void removeEditor(PolycodeEditor *editor);
-	
+
 	// system callbacks
-	
+
 	void openProject(String projectFile);
-	
+
 	void refreshProject();	
-	
+
 	bool quitApp();
-	
+
 	bool needsRedraw;
 	bool lastConnected;
-	
+
 	const static int EVENT_SHOW_MENU = 1;
-	
+
 	Core *core;
-	
+
 	void saveFiles(std::vector<PolycodeEditor*> editors);
 	void closeFiles(std::vector<PolycodeEditor*> editors, String saveMsg="");
 	bool filesHaveChanges(std::vector<PolycodeEditor*> editors);
-	
+
 protected:
 
 	bool quittingApp;
@@ -119,18 +119,18 @@ protected:
 
 	bool willRunProject;
 	PolycodeFrame *frame;
-	
+
 	PolycodeEditorManager *editorManager;
 	PolycodeProjectManager *projectManager;
-	
+
 	PolycodeRemoteDebugger *debugger;
 
 	UIMenuBar *menuBar;
-	
+
 private:
 	void doCloseProject();
 	void doCloseFiles(std::vector<PolycodeEditor*> editors);
-	
+
 	// used in saving/closing files via popup dialog prompts
 	std::vector<PolycodeEditor*> tempEditorStore;
 };

@@ -49,7 +49,7 @@ Screen::Screen() : EventDispatcher() {
 	rootEntity.processInputEvents = true;
 	rootEntity.setPositionMode(ScreenEntity::POSITION_CENTER);
 	rootEntity.setRenderer(renderer);
-	rootEntity.setDefaultScreenOptions(false);		
+	rootEntity.setDefaultScreenOptions(false);
 }
 
 Screen::~Screen() {
@@ -58,7 +58,7 @@ Screen::~Screen() {
 	for(int i=0; i < localShaderOptions.size(); i++) {
 		delete localShaderOptions[i];
 	}
-	delete originalSceneTexture;			
+	delete originalSceneTexture;
 }
 
 void Screen::setNormalizedCoordinates(bool newVal, Number yCoordinateSize) {
@@ -67,38 +67,38 @@ void Screen::setNormalizedCoordinates(bool newVal, Number yCoordinateSize) {
 }
 
 void Screen::handleInputEvent(InputEvent *inputEvent) {
+
+	switch(inputEvent->getEventCode()) {
 	
-		switch(inputEvent->getEventCode()) {
-		
-			case InputEvent::EVENT_TOUCHES_BEGAN:
-				if(processTouchEventsAsMouse) {
-					for(int j=0; j < inputEvent->touches.size(); j++) {
-						rootEntity._onMouseDown(inputEvent->touches[j].position.x, inputEvent->touches[j].position.y, CoreInput::MOUSE_BUTTON1, inputEvent->timestamp);
-					}
+		case InputEvent::EVENT_TOUCHES_BEGAN:
+			if(processTouchEventsAsMouse) {
+				for(int j=0; j < inputEvent->touches.size(); j++) {
+					rootEntity._onMouseDown(inputEvent->touches[j].position.x, inputEvent->touches[j].position.y, CoreInput::MOUSE_BUTTON1, inputEvent->timestamp);
 				}
-			break;
-			case InputEvent::EVENT_MOUSEDOWN:
-				rootEntity._onMouseDown(inputEvent->mousePosition.x, inputEvent->mousePosition.y, inputEvent->mouseButton, inputEvent->timestamp);
-			break;
-			case InputEvent::EVENT_MOUSEMOVE:
-				rootEntity._onMouseMove(inputEvent->mousePosition.x, inputEvent->mousePosition.y, inputEvent->timestamp);
-			break;
-			case InputEvent::EVENT_MOUSEUP:
-				rootEntity._onMouseUp(inputEvent->mousePosition.x, inputEvent->mousePosition.y, inputEvent->mouseButton, inputEvent->timestamp);
-			break;
-			case InputEvent::EVENT_MOUSEWHEEL_UP:
-				rootEntity._onMouseWheelUp(inputEvent->mousePosition.x, inputEvent->mousePosition.y, inputEvent->timestamp);
-			break;
-			case InputEvent::EVENT_MOUSEWHEEL_DOWN:
-				rootEntity._onMouseWheelDown(inputEvent->mousePosition.x, inputEvent->mousePosition.y,inputEvent->timestamp);	
-			break;				
-			case InputEvent::EVENT_KEYDOWN:
-				rootEntity._onKeyDown(inputEvent->key, inputEvent->charCode);
-			break;
-			case InputEvent::EVENT_KEYUP:
-				rootEntity._onKeyUp(inputEvent->key, inputEvent->charCode);
-			break;			
-		}
+			}
+		break;
+		case InputEvent::EVENT_MOUSEDOWN:
+			rootEntity._onMouseDown(inputEvent->mousePosition.x, inputEvent->mousePosition.y, inputEvent->mouseButton, inputEvent->timestamp);
+		break;
+		case InputEvent::EVENT_MOUSEMOVE:
+			rootEntity._onMouseMove(inputEvent->mousePosition.x, inputEvent->mousePosition.y, inputEvent->timestamp);
+		break;
+		case InputEvent::EVENT_MOUSEUP:
+			rootEntity._onMouseUp(inputEvent->mousePosition.x, inputEvent->mousePosition.y, inputEvent->mouseButton, inputEvent->timestamp);
+		break;
+		case InputEvent::EVENT_MOUSEWHEEL_UP:
+			rootEntity._onMouseWheelUp(inputEvent->mousePosition.x, inputEvent->mousePosition.y, inputEvent->timestamp);
+		break;
+		case InputEvent::EVENT_MOUSEWHEEL_DOWN:
+			rootEntity._onMouseWheelDown(inputEvent->mousePosition.x, inputEvent->mousePosition.y,inputEvent->timestamp);
+		break;
+		case InputEvent::EVENT_KEYDOWN:
+			rootEntity._onKeyDown(inputEvent->key, inputEvent->charCode);
+		break;
+		case InputEvent::EVENT_KEYUP:
+			rootEntity._onKeyUp(inputEvent->key, inputEvent->charCode);
+		break;
+	}
 }
 
 void Screen::setRenderer(Renderer *renderer) {
@@ -107,22 +107,19 @@ void Screen::setRenderer(Renderer *renderer) {
 
 void Screen::setScreenShader(const String& shaderName) {
 	filterShaderMaterial = (Material*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_MATERIAL, shaderName);
-	if(!filterShaderMaterial)
+	if(!filterShaderMaterial || filterShaderMaterial->getNumShaders() == 0)
 		return;
-		
-	if(filterShaderMaterial->getNumShaders() == 0)
-		return;
-	
+
 	if(!originalSceneTexture) {
 		CoreServices::getInstance()->getRenderer()->createRenderTextures(&originalSceneTexture, NULL, CoreServices::getInstance()->getCore()->getXRes(), CoreServices::getInstance()->getCore()->getYRes(), filterShaderMaterial->fp16RenderTargets);
 	}
 	
 	for(int i=0; i < filterShaderMaterial->getNumShaders(); i++) {
-		ShaderBinding* binding = filterShaderMaterial->getShader(i)->createBinding();	
+		ShaderBinding* binding = filterShaderMaterial->getShader(i)->createBinding();
 		localShaderOptions.push_back(binding);
-	}	
+	}
 	_hasFilterShader = true;
-	
+
 }
 
 void Screen::clearScreenShader() {
@@ -134,50 +131,50 @@ void Screen::clearScreenShader() {
 
 
 void Screen::drawFilter() {
-	
+
 	if(!filterShaderMaterial)
 		return;
-	
+
 	Renderer *renderer = CoreServices::getInstance()->getRenderer();
-	
+
 	renderer->bindFrameBufferTexture(originalSceneTexture);
-	
+
 	Render();
 	renderer->unbindFramebuffers();
-	
-	ShaderBinding* materialBinding;		
+
+	ShaderBinding* materialBinding;
 	for(int i=0; i < filterShaderMaterial->getNumShaders(); i++) {
 		materialBinding = filterShaderMaterial->getShaderBinding(i);
-		
+
 		for(int j=0; j < materialBinding->getNumColorTargetBindings(); j++) {
 			RenderTargetBinding *colorBinding = materialBinding->getColorTargetBinding(j);
 			materialBinding->clearTexture(colorBinding->name);
 			materialBinding->addTexture(colorBinding->name, originalSceneTexture);
 		}
-		
-		renderer->applyMaterial(filterShaderMaterial, localShaderOptions[i], i);	
-			
+
+		renderer->applyMaterial(filterShaderMaterial, localShaderOptions[i], i);
+
 		if(i==filterShaderMaterial->getNumShaders()-1) {
 			renderer->loadIdentity();
-			renderer->drawScreenQuad(renderer->getXRes(), renderer->getYRes());		
+			renderer->drawScreenQuad(renderer->getXRes(), renderer->getYRes());
 		} else {
 			for(int j=0; j < materialBinding->getNumOutTargetBindings(); j++) {
 				renderer->bindFrameBufferTexture(materialBinding->getOutTargetBinding(j)->texture);
-				
+
 				renderer->drawScreenQuad(materialBinding->getOutTargetBinding(j)->width, materialBinding->getOutTargetBinding(j)->height);
 				renderer->unbindFramebuffers();
-			}						
+			}
 		}
 		renderer->clearShader();
-		renderer->loadIdentity();		
+		renderer->loadIdentity();
 		renderer->setOrthoMode();
 	}
-	
+
 }
 
 void Screen::setScreenOffset(Number x, Number y) {
 	offset.x = x;
-	offset.y = y;	
+	offset.y = y;
 }
 
 bool Screen::hasFilterShader() const {
@@ -197,7 +194,7 @@ void Screen::removeChild(ScreenEntity *entityToRemove) {
 }
 
 void Screen::Shutdown() {
-	
+
 }
 
 void Screen::Update() {
@@ -208,5 +205,5 @@ void Screen::Render() {
 	renderer->loadIdentity();
 	renderer->translate2D(offset.x, offset.y);
 	rootEntity.updateEntityMatrix();
-	rootEntity.transformAndRender();	
+	rootEntity.transformAndRender();
 }

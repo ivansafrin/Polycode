@@ -45,125 +45,125 @@ using std::vector;
 @class PolycodeView;
 
 namespace Polycode {
-	
-	class _PolyExport PosixMutex : public CoreMutex {
+
+class _PolyExport PosixMutex : public CoreMutex {
 	public:
 		pthread_mutex_t pMutex;
-	};
-	
-	class CocoaEvent {
+};
+
+class CocoaEvent {
 	public:
 		int eventGroup;
 		int eventCode;
-		
+
 		int mouseX;
 		int mouseY;
-		
+
 		PolyKEY keyCode;
 		wchar_t unicodeChar;
-		
+
 		char mouseButton;
-		
+
 		static const int EVENTBASE_PLATFORMEVENT = 0x300;
 		static const int INPUT_EVENT = EVENTBASE_PLATFORMEVENT+0;
 		static const int FOCUS_EVENT = EVENTBASE_PLATFORMEVENT+1;
-	};
-	
-	
-	class HIDGamepadAxis {
-		public:
+};
+
+
+class HIDGamepadAxis {
+	public:
 		IOHIDElementCookie cookie;
 		CFIndex logicalMin;
 		CFIndex logicalMax;
 		bool hasNullState;
 		bool isHatSwitch;
 		bool isHatSwitchSecondAxis;
-	};
+};
 
-	class HIDGamepadButton {
-		public:
-		IOHIDElementCookie cookie;
-	};	
-	
-	class GamepadDeviceEntry  {
-		public:
-			GamepadDeviceEntry() {
-				numAxes = 0;
-			}
-			vector<HIDGamepadAxis> axisElements;
-			vector<HIDGamepadButton> buttonElements;			
-			unsigned int deviceID;
-			IOHIDDeviceRef device;
-			unsigned int numAxes;
-			unsigned int numButtons;	
-			CoreInput *input;		
-	};
-	
-	class _PolyExport CocoaCore : public Core {		
+class HIDGamepadButton {
 	public:
-		
+		IOHIDElementCookie cookie;
+};
+
+class GamepadDeviceEntry  {
+	public:
+		GamepadDeviceEntry() {
+			numAxes = 0;
+		}
+		vector<HIDGamepadAxis> axisElements;
+		vector<HIDGamepadButton> buttonElements;
+		unsigned int deviceID;
+		IOHIDDeviceRef device;
+		unsigned int numAxes;
+		unsigned int numButtons;
+		CoreInput *input;
+};
+
+class _PolyExport CocoaCore : public Core {
+	public:
+
 		CocoaCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex=-1);
 		virtual ~CocoaCore();
-		
+
 		void enableMouse(bool newval);
-		unsigned int getTicks();		
+		unsigned int getTicks();
 		bool Update();
-		
+
 		void Render();
-								
-		void setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel);		
+
+		void setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel);
 		void resizeTo(int xRes, int yRes);
-		void createThread(Threaded *target);		
-		
+		void createThread(Threaded *target);
+
 		void createFolder(const String& folderPath);
 		void copyDiskItem(const String& itemPath, const String& destItemPath);
 		void moveDiskItem(const String& itemPath, const String& destItemPath);
 		void removeDiskItem(const String& itemPath);
 		String openFolderPicker();
 		vector<String> openFilePicker(vector<CoreFileExtension> extensions, bool allowMultiple);
-		
+
 		String executeExternalCommand(String command, String args, String inDirectory="");
-		
+
 		void launchApplicationWithFile(String application, String file);
 		void openFileWithApplication(String file, String application);
-		
+
 		void setCursor(int cursorType);
 		void warpCursor(int x, int y);
-		
+
 		void openURL(String url);
-		
+
 		void copyStringToClipboard(const String& str);
-		String getClipboardString();		
-		
+		String getClipboardString();
+
 		void initGamepad();
 		void shutdownGamepad();
-		
+
 		void makeApplicationMain();
-		
+
 		void lockMutex(CoreMutex *mutex);
 		void unlockMutex(CoreMutex *mutex);
-		CoreMutex *createMutex();		
-		
+		CoreMutex *createMutex();
+
 		void checkEvents();
-		
+
 		vector<Rectangle> getVideoModes();
-		
+
 		int lastMouseY;
-		int lastMouseX;				
-		
+		int lastMouseX;
+
 		vector<CocoaEvent> cocoaEvents;
-		
+
 		NSOpenGLContext *context;
-				
+
 		vector<GamepadDeviceEntry*> gamepads;
 		unsigned int nextDeviceID;
-		
-		bool checkSpecialKeyEvents(PolyKEY key);		
-				
-	protected:	
+
+		bool checkSpecialKeyEvents(PolyKEY key);
+
+	protected:
 		PolycodeView *glView;
-		uint64_t initTime;	
-		
+		uint64_t initTime;
+
 		IOHIDManagerRef hidManager;
-	};
+};
 }

@@ -52,9 +52,8 @@ Number Perlin::noise1(Number arg)
 
 	vec[0] = arg;
 
-	if (mStart)
-  {
-    srand(mSeed);
+	if (mStart) {
+		srand(mSeed);
 		mStart = false;
 		init();
 	}
@@ -75,9 +74,8 @@ Number Perlin::noise2(Number vec[2])
 	Number rx0, rx1, ry0, ry1, *q, sx, sy, a, b, t, u, v;
 	int i, j;
 
-	if (mStart)
-  {
-    srand(mSeed);
+	if (mStart) {
+		srand(mSeed);
 		mStart = false;
 		init();
 	}
@@ -96,7 +94,7 @@ Number Perlin::noise2(Number vec[2])
 	sx = s_curve(rx0);
 	sy = s_curve(ry0);
 
-  #define at2(rx,ry) ( rx * q[0] + ry * q[1] )
+#define at2(rx,ry) ( rx * q[0] + ry * q[1] )
 
 	q = g2[b00];
 	u = at2(rx0,ry0);
@@ -110,6 +108,8 @@ Number Perlin::noise2(Number vec[2])
 	v = at2(rx1,ry1);
 	b = lerp(sx, u, v);
 
+#undef at2
+
 	return lerp(sy, a, b);
 }
 
@@ -119,9 +119,8 @@ Number Perlin::noise3(Number vec[3])
 	Number rx0, rx1, ry0, ry1, rz0, rz1, *q, sy, sz, a, b, c, d, t, u, v;
 	int i, j;
 
-	if (mStart)
-  {
-    srand(mSeed);
+	if (mStart) {
+		srand(mSeed);
 		mStart = false;
 		init();
 	}
@@ -142,7 +141,7 @@ Number Perlin::noise3(Number vec[3])
 	sy = s_curve(ry0);
 	sz = s_curve(rz0);
 
-  #define at3(rx,ry,rz) ( rx * q[0] + ry * q[1] + rz * q[2] )
+#define at3(rx,ry,rz) ( rx * q[0] + ry * q[1] + rz * q[2] )
 
 	q = g3[ b00 + bz0 ] ; u = at3(rx0,ry0,rz0);
 	q = g3[ b10 + bz0 ] ; v = at3(rx1,ry0,rz0);
@@ -162,6 +161,8 @@ Number Perlin::noise3(Number vec[3])
 	q = g3[ b11 + bz1 ] ; v = at3(rx1,ry1,rz1);
 	b = lerp(t, u, v);
 
+#undef at3
+
 	d = lerp(sy, a, b);
 
 	return lerp(sz, c, d);
@@ -172,7 +173,7 @@ void Perlin::normalize2(Number v[2])
 	Number s;
 
 	s = (Number)sqrt(v[0] * v[0] + v[1] * v[1]);
-  s = 1.0f/s;
+	s = 1.0f/s;
 	v[0] = v[0] * s;
 	v[1] = v[1] * s;
 }
@@ -182,7 +183,7 @@ void Perlin::normalize3(Number v[3])
 	Number s;
 
 	s = (Number)sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
-  s = 1.0f/s;
+	s = 1.0f/s;
 
 	v[0] = v[0] * s;
 	v[1] = v[1] * s;
@@ -193,8 +194,7 @@ void Perlin::init(void)
 {
 	int i, j, k;
 
-	for (i = 0 ; i < B ; i++)
-  {
+	for (i = 0 ; i < B ; i++) {
 		p[i] = i;
 		g1[i] = (Number)((rand() % (B + B)) - B) / B;
 		for (j = 0 ; j < 2 ; j++)
@@ -205,15 +205,13 @@ void Perlin::init(void)
 		normalize3(g3[i]);
 	}
 
-	while (--i)
-  {
+	while (--i) {
 		k = p[i];
 		p[i] = p[j = rand() % B];
 		p[j] = k;
 	}
 
-	for (i = 0 ; i < B + 2 ; i++)
-  {
+	for (i = 0 ; i < B + 2 ; i++) {
 		p[B + i] = p[i];
 		g1[B + i] = g1[i];
 		for (j = 0 ; j < 2 ; j++)
@@ -227,19 +225,18 @@ void Perlin::init(void)
 
 Number Perlin::perlin_noise_2D(Number vec[2])
 {
-  int terms    = mOctaves;
+	int terms    = mOctaves;
 	Number result = 0.0f;
-  Number amp = mAmplitude;
+	Number amp = mAmplitude;
 
-  vec[0]*=mFrequency;
-  vec[1]*=mFrequency;
+	vec[0]*=mFrequency;
+	vec[1]*=mFrequency;
 
-	for( int i=0; i<terms; i++ )
-	{
+	for( int i=0; i<terms; i++ ) {
 		result += noise2(vec)*amp;
 		vec[0] *= 2.0f;
 		vec[1] *= 2.0f;
-    amp*=0.5f;
+		amp*=0.5f;
 	}
 
 
@@ -248,20 +245,19 @@ Number Perlin::perlin_noise_2D(Number vec[2])
 
 Number Perlin::perlin_noise_3D(Number vec[3])
 {
-  int terms    = mOctaves;
+	int terms    = mOctaves;
 	Number result = 0.0f;
-  Number amp = mAmplitude;
+	Number amp = mAmplitude;
 
-  vec[0]*=mFrequency;
-  vec[1]*=mFrequency;
-  vec[2]*=mFrequency;
-  
-	for( int i=0; i<terms; i++ )
-	{
+	vec[0]*=mFrequency;
+	vec[1]*=mFrequency;
+	vec[2]*=mFrequency;
+
+	for( int i=0; i<terms; i++ ) {
 		result += noise3(vec)*amp;
 		vec[0] *= 2.0f;
 		vec[1] *= 2.0f;
-		vec[2] *= 2.0f;		
+		vec[2] *= 2.0f;
 		amp*=0.5f;
 	}
 
@@ -273,9 +269,9 @@ Number Perlin::perlin_noise_3D(Number vec[3])
 
 Perlin::Perlin(int octaves,Number freq,Number amp,int seed)
 {
-  mOctaves = octaves;
-  mFrequency = freq;
-  mAmplitude = amp;
-  mSeed = seed;
-  mStart = true;
+	mOctaves = octaves;
+	mFrequency = freq;
+	mAmplitude = amp;
+	mSeed = seed;
+	mStart = true;
 }

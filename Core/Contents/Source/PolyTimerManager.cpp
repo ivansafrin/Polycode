@@ -40,11 +40,11 @@ void TimerManager::removeTimer(Timer *timer) {
 		if(timers[i] == timer) {
 			timers.erase(timers.begin()+i);
 		}
-	}	
+	}
 }
 
 void TimerManager::addTimer(Timer *timer) {
-	timers.push_back(timer);		
+	timers.push_back(timer);
 }
 
 void TimerManager::Update() {

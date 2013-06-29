@@ -32,12 +32,12 @@ Font::Font(const String& fileName) {
 
 	FT_Library FTLibrary;
 	FT_Init_FreeType(&FTLibrary);
-	
+
 	loaded = false;
 	buffer = NULL;
 	OSFILE *file = OSBasics::open(fileName, "rb");
 	if(file) {
-		OSBasics::seek(file, 0, SEEK_END);	
+		OSBasics::seek(file, 0, SEEK_END);
 		long progsize = OSBasics::tell(file);
 		OSBasics::seek(file, 0, SEEK_SET);
 		buffer = (unsigned char*)malloc(progsize);
@@ -49,13 +49,13 @@ Font::Font(const String& fileName) {
 			Logger::log("Error loading font %s\n", fileName.c_str());
 			valid = false;
 		}
-	
+
 		if(FT_Select_Charmap(ftFace, ft_encoding_unicode) != 0) {
 			printf("Warning font does not support unicode (%s)\n", fileName.c_str());
 		}
 		loaded = true;
 	} else {
-		Logger::log("Invalid font file specified (%s)\n", fileName.c_str());	
+		Logger::log("Invalid font file specified (%s)\n", fileName.c_str());
 	}
 }
 

@@ -36,7 +36,7 @@ BackTraceEntry::BackTraceEntry(String fileName, int lineNumber, PolycodeProject 
 	this->fileName = fileName;
 	this->lineNumber = lineNumber;
 
-	Config *conf = CoreServices::getInstance()->getConfig();	
+	Config *conf = CoreServices::getInstance()->getConfig();
 	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
 	int fontSize = conf->getNumericValue("Polycode", "uiDefaultFontSize");	
 
@@ -44,21 +44,19 @@ BackTraceEntry::BackTraceEntry(String fileName, int lineNumber, PolycodeProject 
 	labelBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	labelBg->setColor(0.0, 0.0, 0.0, 0.15);
 	labelBg->processInputEvents = true;
-	addChild(labelBg);	
-	
+	addChild(labelBg);
+
 	labelBg->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
-	
+
 	label = new ScreenLabel(fileName+" on line "+String::IntToString(lineNumber), fontSize, fontName);
 	addChild(label);
 	label->setPosition(5,2);
-	
+
 }
 
 void BackTraceEntry::handleEvent(Event *event) {
-	if(event->getDispatcher() == labelBg) {
-		if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN) {
-			Select();
-		}
+	if(event->getDispatcher() == labelBg && event->getEventCode() == InputEvent::EVENT_MOUSEDOWN) {
+		Select();
 	}
 }
 
@@ -66,10 +64,10 @@ void BackTraceEntry::Select() {
 	BackTraceEvent *event = new BackTraceEvent();
 	event->fileName = fileName;
 	event->lineNumber = lineNumber;
-	event->project = project;		
-	
+	event->project = project;
+
 	dispatchEvent(event, BackTraceEvent::EVENT_BACKTRACE_SELECTED);
-		
+
 	labelBg->setColor(0.0, 0.0, 1.0, 0.35);
 }
 
@@ -90,21 +88,21 @@ void BackTraceEntry::Resize(Number width, Number height) {
 
 BackTraceWindow::BackTraceWindow() : UIElement() {
 
-	Config *conf = CoreServices::getInstance()->getConfig();	
+	Config *conf = CoreServices::getInstance()->getConfig();
 	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
-	int fontSize = conf->getNumericValue("Polycode", "uiDefaultFontSize");		
+	int fontSize = conf->getNumericValue("Polycode", "uiDefaultFontSize");
 
 	labelBg = new ScreenShape(ScreenShape::SHAPE_RECT, 20,30);
 	labelBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	labelBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	addChild(labelBg);
-	
+
 	ScreenLabel *label = new ScreenLabel("CRASH STACK", 18, "section");
 	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	addChild(label);
 	label->setPosition(5,3);
-	
-}	
+
+}
 
 void BackTraceWindow::Resize(Number width, Number height) {
 	labelBg->setShapeSize(width, 30);
@@ -122,20 +120,18 @@ void BackTraceWindow::adjustEntries() {
 
 void BackTraceWindow::handleEvent(Event *event) {
 	for(int i=0; i < entries.size(); i++) {
-		if(event->getDispatcher() == entries[i]) {
-			if(event->getEventCode() == BackTraceEvent::EVENT_BACKTRACE_SELECTED && event->getEventType() == "BackTraceEvent") {
-				for(int j=0; j < entries.size(); j++) {
-					entries[j]->Deselect();
-				}
-				BackTraceEvent *btEvent = (BackTraceEvent*) event;
-												
-				BackTraceEvent *_event = new BackTraceEvent();
-				_event->fileName = btEvent->fileName;
-				_event->lineNumber = btEvent->lineNumber;
-				_event->project = btEvent->project;		
-				
-				dispatchEvent(_event, BackTraceEvent::EVENT_BACKTRACE_SELECTED);
+		if(event->getDispatcher() == entries[i] && event->getEventCode() == BackTraceEvent::EVENT_BACKTRACE_SELECTED && event->getEventType() == "BackTraceEvent") {
+			for(int j=0; j < entries.size(); j++) {
+				entries[j]->Deselect();
 			}
+			BackTraceEvent *btEvent = (BackTraceEvent*) event;
+
+			BackTraceEvent *_event = new BackTraceEvent();
+			_event->fileName = btEvent->fileName;
+			_event->lineNumber = btEvent->lineNumber;
+			_event->project = btEvent->project;
+
+			dispatchEvent(_event, BackTraceEvent::EVENT_BACKTRACE_SELECTED);
 		}
 	}
 }
@@ -145,7 +141,7 @@ void BackTraceWindow::addBackTrace(String fileName, int lineNumber, PolycodeProj
 	entry->addEventListener(this, BackTraceEvent::EVENT_BACKTRACE_SELECTED);
 	entries.push_back(entry);
 	addChild(entry);
-	adjustEntries();	
+	adjustEntries();
 	if(entries.size() == 1) {
 		entry->Select();
 	}
@@ -162,7 +158,7 @@ void BackTraceWindow::clearBackTraces() {
 }
 
 BackTraceWindow::~BackTraceWindow() {
-	
+
 }
 
 ConsoleWindow::ConsoleWindow() : UIElement() {
@@ -172,7 +168,7 @@ ConsoleWindow::ConsoleWindow() : UIElement() {
 	labelBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	labelBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	addChild(labelBg);
-	
+
 	ScreenLabel *label = new ScreenLabel("CONSOLE", 18, "section");
 	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	addChild(label);
@@ -180,16 +176,16 @@ ConsoleWindow::ConsoleWindow() : UIElement() {
 
 	debugTextInput = new UITextInput(true, 100, 100);
 	consoleTextInput = new UITextInput(false, 100, 100);
-	addChild(consoleTextInput);	
-	addChild(debugTextInput);	
-	
+	addChild(consoleTextInput);
+	addChild(debugTextInput);
+
 	clearButton = new UIImageButton("Images/clear_buffer_icon.png");
 	addChild(clearButton);
-	
+
 	hideConsoleButton = new UIImageButton("Images/console_hide_button.png");
 	addChild(hideConsoleButton);
 	hideConsoleButton->setPosition(7,5);
-	
+
 }
 
 void ConsoleWindow::Resize(Number width, Number height) {
@@ -208,11 +204,11 @@ PolycodeConsole::PolycodeConsole() : UIElement() {
 
 	backtraceSizer = new UIHSizer(100,100,300,false);
 	addChild(backtraceSizer);
-	
+
 	debugger = NULL;
-	
+
 	consoleWindow = new ConsoleWindow();
-	
+
 	backtraceSizer->addLeftChild(consoleWindow);
 
 	backtraceWindow = new BackTraceWindow();
@@ -220,17 +216,17 @@ PolycodeConsole::PolycodeConsole() : UIElement() {
 
 	debugTextInput = consoleWindow->debugTextInput;
 	consoleTextInput = consoleWindow->consoleTextInput;
-	
+
 	consoleTextInput->addEventListener(this, Event::COMPLETE_EVENT);
 	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 	consoleTextInput->setColor(0.95, 1.0, 0.647, 1.0);
 
 	consoleHistoryPosition = 0;
 	consoleHistoryMaxSize = 15;
-	
+
 	consoleWindow->clearButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	consoleWindow->hideConsoleButton->addEventListener(this, UIEvent::CLICK_EVENT);
-	
+
 	CoreServices::getInstance()->getLogger()->addEventListener(this, Event::NOTIFY_EVENT);
 
 	PolycodeConsole::setInstance(this);
@@ -278,11 +274,13 @@ void PolycodeConsole::handleEvent(Event *event) {
 					debugger->injectCode(consoleTextInput->getText());
 				}
 			}
-			
+
 			consoleHistory.push_back(consoleTextInput->getText());
-			if (consoleHistory.size() > consoleHistoryMaxSize) { consoleHistory.erase(consoleHistory.begin()); }
+			if (consoleHistory.size() > consoleHistoryMaxSize) {
+				consoleHistory.erase(consoleHistory.begin()); 
+			}
 			consoleHistoryPosition = consoleHistory.size();
-			
+
 			consoleTextInput->setText("");
 		}
 	}
@@ -337,7 +335,7 @@ void PolycodeConsole::_clearBacktraces() {
 }
 
 
-void PolycodeConsole::_print(String msg) {	
+void PolycodeConsole::_print(String msg) {
 	debugTextInput->setText(debugTextInput->getText()+msg);
 	debugTextInput->getScrollContainer()->setScrollValue(0, 1.0);
 	printf("%s", msg.c_str());

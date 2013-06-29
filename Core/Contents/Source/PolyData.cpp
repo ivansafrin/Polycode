@@ -46,17 +46,17 @@ void Data::setFromString(const String& str, int encoding) {
 }
 
 bool Data::saveToFile(const String& fileName) const {
-	
+
 	OSFILE *file = OSBasics::open(fileName, "wb");
-	
+
 	if(!file) {
-		OSBasics::close(file);		
+		OSBasics::close(file);
 		return false;
 	}
-	
-	OSBasics::write(data, sizeof(char), dataSize, file);	
-	OSBasics::close(file);	
-	
+
+	OSBasics::write(data, sizeof(char), dataSize, file);
+	OSBasics::close(file);
+
 	return true;
 }
 
@@ -64,21 +64,21 @@ bool Data::loadFromFile(const String& fileName) {
 	OSFILE *file = OSBasics::open(fileName, "rb");
 	if(!file)
 		return false;
-	
+
 	OSBasics::seek(file, 0L, SEEK_END);
 	dataSize = OSBasics::tell(file);
 	OSBasics::seek(file, 0L, SEEK_SET);
-	
+
 	if(data)
 		free(data);
-	
+
 	data = (char*)malloc(dataSize);
 	if(!data) {
-		OSBasics::close(file);		
+		OSBasics::close(file);
 		return false;
 	}
-	
-	OSBasics::read(data, sizeof(char), dataSize, file);	
+
+	OSBasics::read(data, sizeof(char), dataSize, file);
 	OSBasics::close(file);
 
 	return true;
@@ -86,7 +86,7 @@ bool Data::loadFromFile(const String& fileName) {
 
 String Data::getAsString(int encoding) const {
 	String str;
-	
+
 	char *strData = (char*)malloc(dataSize+1);
 	memcpy(strData, data, dataSize);
 	memset(strData+dataSize, 0, 1);

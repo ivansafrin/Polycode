@@ -26,18 +26,18 @@ THE SOFTWARE.
 #include "PolyEventDispatcher.h"
 
 namespace Polycode {
-	
-	class BezierCurve;
-	class Timer;
-	class Quaternion;
-	class QuaternionCurve;
-	
-	/**
-	* Tween animation class. This class lets you tween a floating point value over a period of time with different easing types.
-	*/	
-	class _PolyExport Tween : public EventDispatcher {
+
+class BezierCurve;
+class Timer;
+class Quaternion;
+class QuaternionCurve;
+
+/**
+* Tween animation class. This class lets you tween a floating point value over a period of time with different easing types.
+*/
+class _PolyExport Tween : public EventDispatcher {
 	public:
-		
+
 		/**
 		* Constructor.
 		* @param target Pointer to the Number to tween
@@ -49,12 +49,12 @@ namespace Polycode {
 		*/
 		Tween(Number *target, int easeType, Number startVal, Number endVal, Number time, bool repeat=false, bool deleteOnComplete=false, Number waitTime = 0.0);
 		virtual ~Tween();
-		
+
 		void handleEvent(Event *event);
 		Number interpolateTween();
 		virtual void updateCustomTween() {}
 		void doOnComplete();
-		
+
 		/**
 		* Pauses and resumes the tween.
 		* @param pauseVal If true, pauses the tweem, if false, resumes it.
@@ -63,9 +63,9 @@ namespace Polycode {
 
 		/**
 		* Resets the tween to starting position.
-		*/		
+		*/
 		void Reset();
-		
+
 		static const int EASE_NONE = 0;
 		static const int EASE_IN_QUAD = 1;
 		static const int EASE_OUT_QUAD = 2;
@@ -90,21 +90,21 @@ namespace Polycode {
 		static const int EASE_INOUT_CIRC= 21;
 		static const int EASE_IN_BOUNCE= 22;
 		static const int EASE_OUT_BOUNCE = 23;
-		static const int EASE_INOUT_BOUNCE = 24;	
-		
+		static const int EASE_INOUT_BOUNCE = 24;
+
 		bool isComplete();
 		bool repeat;
-		
+
 		bool deleteOnComplete;
 		/*
 		* Set a speed multiplier for the tween
 		* @param speed Speed multiplier.
 		*/
 		void setSpeed(Number speed);
-		
+
 
 	protected:
-	
+
 		Number waitTime;
 		int easeType;
 		bool complete;
@@ -117,44 +117,44 @@ namespace Polycode {
 		Number localTargetVal;
 		Number tweenTime;
 		Timer *tweenTimer;
-	};
-	
-	/**
-	* Tweens a position along a bezier path. This class automatically animates a 3d position over a 3d bezier curve. You can use it for 2d curves as well, of course, just ignore the z!
-	*/
-	class _PolyExport BezierPathTween : public Tween {
-		public:
-			/**
-			* Constructor.
-			* @param target Target vector to animate.
-			* @param curve The curve to animate along.
-			* @param easeType Easing type (@see Tween)
-			* @param time The duration of the tween.
-			* @param repeat If true, this tween will repeat over and over.
-			*/
-			BezierPathTween(Vector3 *target, BezierCurve *curve, int easeType, Number time, bool repeat=false);
-			
-			~BezierPathTween();
-			void updateCustomTween();
+};
 
-		protected:
-			Number pathValue;
-			Tween *pathTween;
-			BezierCurve *curve;
-			Vector3 *target;
-	};
-	
-	class _PolyExport QuaternionTween : public Tween {
-		public:
-			QuaternionTween(Quaternion *target, BezierCurve *wCurve, BezierCurve *xCurve, BezierCurve *yCurve,
-							BezierCurve *zCurve, int easeType, Number time, bool repeat=false);
-			~QuaternionTween();
-			void updateCustomTween();
-		protected:
-			Number pathValue;
-			Tween *pathTween;
-			QuaternionCurve	*quatCurve;
-			Quaternion *target;			
-	};
-	
+/**
+* Tweens a position along a bezier path. This class automatically animates a 3d position over a 3d bezier curve. You can use it for 2d curves as well, of course, just ignore the z!
+*/
+class _PolyExport BezierPathTween : public Tween {
+	public:
+		/**
+		* Constructor.
+		* @param target Target vector to animate.
+		* @param curve The curve to animate along.
+		* @param easeType Easing type (@see Tween)
+		* @param time The duration of the tween.
+		* @param repeat If true, this tween will repeat over and over.
+		*/
+		BezierPathTween(Vector3 *target, BezierCurve *curve, int easeType, Number time, bool repeat=false);
+
+		~BezierPathTween();
+		void updateCustomTween();
+
+	protected:
+		Number pathValue;
+		Tween *pathTween;
+		BezierCurve *curve;
+		Vector3 *target;
+};
+
+class _PolyExport QuaternionTween : public Tween {
+	public:
+		QuaternionTween(Quaternion *target, BezierCurve *wCurve, BezierCurve *xCurve, BezierCurve *yCurve,
+						BezierCurve *zCurve, int easeType, Number time, bool repeat=false);
+		~QuaternionTween();
+		void updateCustomTween();
+	protected:
+		Number pathValue;
+		Tween *pathTween;
+		QuaternionCurve *quatCurve;
+		Quaternion *target;
+};
+
 }

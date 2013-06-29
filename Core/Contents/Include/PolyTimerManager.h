@@ -26,19 +26,19 @@ THE SOFTWARE.
 
 namespace Polycode {
 
-	class Timer;
+class Timer;
 
-	class _PolyExport TimerManager : public PolyBase{
-		public:
+class _PolyExport TimerManager : public PolyBase{
+	public:
 		TimerManager();
 		~TimerManager();
-		
+
 		void removeTimer(Timer *timer);
 		void addTimer(Timer *timer);
 		void Update();
-		
-		private:
-		
+
+	private:
+
 		std::vector <Timer*> timers;
-	};
+};
 }

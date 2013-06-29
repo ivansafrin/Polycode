@@ -39,27 +39,27 @@ class NewProjectWindow : public UIWindow {
 	public:
 	NewProjectWindow();
 	~NewProjectWindow();
-	
+
 	void parseTemplatesIntoTree(UITree *tree, OSFileEntry folder);
 
 	String getTemplateFolder();
 	String getProjectName();
 	String getProjectLocation();
-	
+
 	void handleEvent(Event *event);
 	void ResetForm();
-	
+
 	protected:
-	
+
 		UITree *defaultTemplateTree;
-	
+
 		UITextInput *projectLocationInput;
 		UITextInput *projectNameInput;
-	
+
 		UIButton *cancelButton;
 		UIButton *okButton;
 		UIButton *locationSelectButton;	
 		UITreeContainer *templateContainer;
-	
+
 		String templateFolder;
 };

@@ -44,40 +44,40 @@ class PolycodeProjectBrowserEvent : public Event {
 		PolycodeProjectBrowserEvent() : Event() {eventType = "PolycodeProjectBrowserEvent";}
 		~PolycodeProjectBrowserEvent() {}
 		static const int HANDLE_MENU_COMMAND = 0;
-		
+
 		String command;
-		
+
 };
 
 class PolycodeProjectBrowser : public UIElement {
 public:
 	PolycodeProjectBrowser();
 	~PolycodeProjectBrowser();
-	
+
 	void Resize(Number width, Number height);
 	void addProject(PolycodeProject *project);
 	void removeProject(PolycodeProject *project);
-	
+
 	UITree *nodeHasName(UITree *node, String name);
 	bool listHasFileEntry(vector<OSFileEntry> files, OSFileEntry fileEntry);
-	
+
 	void refreshProject(PolycodeProject *project);
-	
+
 	void handleEvent(Event *event);
-	
+
 	void parseFolderIntoNode(UITree *node, String spath, PolycodeProject *parentProject);
-	
-	
-	
+
+
+
 	BrowserUserData *getSelectedData() { return selectedData; }
-	
+
 	UITreeContainer *treeContainer;
-			
+
 protected:
 
 		ScreenShape *headerBg;
-	
+
 		UIMenu *contextMenu;
-	
+
 		BrowserUserData *selectedData;
-};	
+};

@@ -26,42 +26,42 @@ THE SOFTWARE.
 
 namespace Polycode{
 
-	class Core;
-	class CoreMutex;
-	
-	/**
-	* An easy way to create threaded processes. If you subclass this class, you can implement the updateThread method, which will be called in its own thread repeatedly until threadRunning is false once the thread is created. If you only need to run through something once, make sure to set threadRunning to avoid it being called again. 
-	
-		To create the thread, pass your Threaded subclass to createThread method of Core.
-		@see Core
-	*/
-	class _PolyExport Threaded : public EventDispatcher {
+class Core;
+class CoreMutex;
+
+/**
+* An easy way to create threaded processes. If you subclass this class, you can implement the updateThread method, which will be called in its own thread repeatedly until threadRunning is false once the thread is created. If you only need to run through something once, make sure to set threadRunning to avoid it being called again. 
+
+	To create the thread, pass your Threaded subclass to createThread method of Core.
+	@see Core
+*/
+class _PolyExport Threaded : public EventDispatcher {
 	public:
 		Threaded();
 		virtual ~Threaded();
-		
+
 		/**
 		* Sets the thread running flag to false.
 		*/ 
-		virtual void killThread();	
+		virtual void killThread();
 		virtual void runThread();
-		
+
 		/**
 		* Implement this method with your own code.
 		*/
 		virtual void updateThread() {};
-		
-		void dispatchEvent(Event *event, int eventCode);		
+
+		void dispatchEvent(Event *event, int eventCode);
 		void dispatchEventNoDelete(Event *event, int eventCode);
-		
+
 		bool threadRunning;
-		
+
 		Core *core;
-		
+
 		bool scheduledForRemoval;
-		
-		CoreMutex *eventMutex;		
+
+		CoreMutex *eventMutex;
 		std::vector<Event*> eventQueue;
-	};
-	
+};
+
 }

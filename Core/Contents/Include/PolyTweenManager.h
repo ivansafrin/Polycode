@@ -26,17 +26,17 @@ THE SOFTWARE.
 
 namespace Polycode {
 
-	class Tween;
+class Tween;
 
-	class _PolyExport TweenManager : public PolyBase {
-		public:
-			TweenManager();
-			~TweenManager();
-			void addTween(Tween *tween);
-			void removeTween(Tween *tween);	
-			void Update();
-		
-		private:
-			std::vector <Tween*> tweens;
-	};
+class _PolyExport TweenManager : public PolyBase {
+	public:
+		TweenManager();
+		~TweenManager();
+		void addTween(Tween *tween);
+		void removeTween(Tween *tween);
+		void Update();
+
+	private:
+		std::vector <Tween*> tweens;
+};
 }

@@ -24,153 +24,154 @@
 #include "PolyGlobals.h"
 #include <math.h>
 #include <assert.h>
-	
+
 namespace Polycode {
-	
-	/**
-	* 2D Vector (convenience wrapper around Vector3). 
-	*/
-	class _PolyExport Vector2 : public PolyBase {
-		public:
-				
-			/**
-			* Create from x,y,z coordinates.
-			* @param x X coordinate.
-			* @param y Y coordinate.									
-			*/					
-			Vector2(Number x,Number y);		
-			
-			/**
-			* Default constructor.
-			*/ 
-			Vector2();
-			~Vector2();
 
-			/**
-			* Sets the vector from x,y,z coordinates.
-			* @param x X coordinate.
-			* @param y Y coordinate.												
-			*/
-			void set(Number x, Number y);
+/**
+* 2D Vector (convenience wrapper around Vector3). 
+*/
+class _PolyExport Vector2 : public PolyBase {
+	public:
 
-			inline Vector2 operator - ( const Vector2& v2 ) const {
-				return Vector2(x - v2.x, y - v2.y);
-			}
+		/**
+		* Create from x,y,z coordinates.
+		* @param x X coordinate.
+		* @param y Y coordinate.
+		*/
+		Vector2(Number x,Number y);
 
-			/**
-			* Returns the distance from this vector to another one.
-			* @param vec2 Second vector.
-			* @return Distance to the other vector.
-			*/
-			inline Number distance(const Vector2& vec2) const {
-				return (*this - vec2).length();
-			}
-			
-			// ----------------------------------------------------------------------------------------------------------------
-			/** @name Operators
-			*  Available vector operators.
-			*/
-			//@{
-			
+		/**
+		* Default constructor.
+		*/ 
+		Vector2();
+		~Vector2();
 
-			inline Vector2 operator * (const Number val) const {
-				return Vector2(x * val, y * val);
-			}
+		/**
+		* Sets the vector from x,y,z coordinates.
+		* @param x X coordinate.
+		* @param y Y coordinate.
+		*/
+		void set(Number x, Number y);
 
-			inline Vector2 operator / (const Number val) const {
-				assert( val != 0.0 );
-				return operator*(1/val);
-			}
+		inline Vector2 operator - ( const Vector2& v2 ) const {
+			return Vector2(x - v2.x, y - v2.y);
+		}
 
-			inline Vector2& operator = ( const Vector2& v2)  {
-				x = v2.x;
-				y = v2.y;
-				return *this;
-			}
+		/**
+		* Returns the distance from this vector to another one.
+		* @param vec2 Second vector.
+		* @return Distance to the other vector.
+		*/
+		inline Number distance(const Vector2& vec2) const {
+			return (*this - vec2).length();
+		}
 
-			inline Vector2& operator += ( const Vector2& v2)  {
-				x += v2.x;
-				y += v2.y;
-				return *this;
-			}
-
-			inline Vector2& operator -= ( const Vector2& v2)  {
-				x -= v2.x;
-				y -= v2.y;
-				return *this;
-			}
-	
-			inline Vector2 operator + ( const Vector2& v2 ) const {
-				return Vector2(x + v2.x, y + v2.y);
-			}		
+		// ----------------------------------------------------------------------------------------------------------------
+		/** @name Operators
+		*  Available vector operators.
+		*/
+		//@{
 
 
-			inline bool operator == ( const Vector2& v2)  {
-				return (v2.x == x && v2.y == y);
-			}		
+		inline Vector2 operator * (const Number val) const {
+			return Vector2(x * val, y * val);
+		}
 
-			inline bool operator != ( const Vector2& v2)  {
-				return (v2.x != x || v2.y != y);
-			}				
-		
-			//@}
-			// ----------------------------------------------------------------------------------------------------------------
-	
+		inline Vector2 operator / (const Number val) const {
+			assert( val != 0.0 );
+			return operator*(1/val);
+		}
 
-			/**
-			* Returns the vector length.
-			* @return Length of the vector.
-			*/
-			inline Number length () const {
-				return sqrtf( x * x + y * y);
-			}
-			
-			/**
-			* Returns the dot product with another vector.
-			* @return Dot product with the vector.
-			*/			
-			inline Number dot(const Vector2 &u) const {
-				return x * u.x + y * u.y;
-			}
+		inline Vector2& operator = ( const Vector2& v2)  {
+			x = v2.x;
+			y = v2.y;
+			return *this;
+		}
 
-			/**
-			* Returns the cross product with another vector.
-			* @param vec2 Second vector.
-			* @return Cross product with the vector.
-			*/
-			inline Number crossProduct( const Vector2& vec2 ) const {
-				return x * vec2.y - y * vec2.x;
-			}
-			
-			inline Number angle(const Vector2& vec2 ) const {
-				Number dtheta,theta1,theta2;
-				theta1 = atan2(y,x);
-				theta2 = atan2(vec2.y,vec2.x);
-				dtheta = theta2 - theta1;
-				while (dtheta > PI)
-					dtheta -= PI*2.0;
-				while (dtheta < -PI)
-					dtheta += PI*2.0;
-				return(dtheta);
-			}									
+		inline Vector2& operator += ( const Vector2& v2)  {
+			x += v2.x;
+			y += v2.y;
+			return *this;
+		}
 
-			/**
-			* Normalizes the vector.
-			*/
-			void Normalize();
-		
-			/**
-			* X coordinate.
-			*/
-			Number x;
-			
-			/**
-			* Y coordinate.
-			*/			
-			Number y;
-			
-					
-		protected:
+		inline Vector2& operator -= ( const Vector2& v2)  {
+			x -= v2.x;
+			y -= v2.y;
+			return *this;
+		}
 
-	};
+		inline Vector2 operator + ( const Vector2& v2 ) const {
+			return Vector2(x + v2.x, y + v2.y);
+		}
+
+
+		inline bool operator == ( const Vector2& v2)  {
+			return (v2.x == x && v2.y == y);
+		}
+
+		inline bool operator != ( const Vector2& v2)  {
+			return (v2.x != x || v2.y != y);
+		}
+
+		//@}
+		// ----------------------------------------------------------------------------------------------------------------
+
+
+		/**
+		* Returns the vector length.
+		* @return Length of the vector.
+		*/
+		inline Number length () const {
+			return sqrtf( x * x + y * y);
+		}
+
+		/**
+		* Returns the dot product with another vector.
+		* @return Dot product with the vector.
+		*/
+		inline Number dot(const Vector2 &u) const {
+			return x * u.x + y * u.y;
+		}
+
+		/**
+		* Returns the cross product with another vector.
+		* @param vec2 Second vector.
+		* @return Cross product with the vector.
+		*/
+		inline Number crossProduct( const Vector2& vec2 ) const {
+			return x * vec2.y - y * vec2.x;
+		}
+
+		inline Number angle(const Vector2& vec2 ) const {
+			Number dtheta,theta1,theta2;
+			theta1 = atan2(y,x);
+			theta2 = atan2(vec2.y,vec2.x);
+			dtheta = theta2 - theta1;
+			while (dtheta > PI)
+				dtheta -= PI*2.0;
+			while (dtheta < -PI)
+				dtheta += PI*2.0;
+			return(dtheta);
+		}
+
+		/**
+		* Normalizes the vector.
+		*/
+		void Normalize();
+
+		/**
+		* X coordinate.
+		*/
+		Number x;
+
+		/**
+		* Y coordinate.
+		*/
+		Number y;
+
+
+	protected:
+
+};
+
 }

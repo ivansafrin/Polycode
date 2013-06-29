@@ -28,28 +28,28 @@ THE SOFTWARE.
 
 namespace Polycode {
 
-	class TouchInfo { 
-		public:			
-			int id;
-			Vector2 position;
-	};	
+class TouchInfo { 
+	public:
+		int id;
+		Vector2 position;
+};
 
-	/**
-	* Event dispatched by CoreInput. This event is dispatched by CoreInput when input happens.
-	*/
-	class _PolyExport InputEvent : public Event {
-		public:
-			InputEvent();
-			InputEvent(Vector2 mousePosition,int timestamp);
+/**
+* Event dispatched by CoreInput. This event is dispatched by CoreInput when input happens.
+*/
+class _PolyExport InputEvent : public Event {
+	public:
+		InputEvent();
+		InputEvent(Vector2 mousePosition,int timestamp);
 //			InputEvent(PolyKEY key, int timestamp);
-			InputEvent(PolyKEY key, wchar_t charCode, int timestamp);			
-			virtual ~InputEvent();
-		
-			// ----------------------------------------------------------------------------------------------------------------
-			/** @name Input event types.
-			*  Possible input event types dispatched by CoreInput.
-			*/
-			//@{
+		InputEvent(PolyKEY key, wchar_t charCode, int timestamp);
+		virtual ~InputEvent();
+
+		// ----------------------------------------------------------------------------------------------------------------
+		/** @name Input event types.
+		*  Possible input event types dispatched by CoreInput.
+		*/
+		//@{
 		static const int EVENTBASE_INPUTEVENT = 0x400;
 		static const int EVENT_MOUSEDOWN = EVENTBASE_INPUTEVENT+0;
 		static const int EVENT_MOUSEUP = EVENTBASE_INPUTEVENT+1;
@@ -73,51 +73,51 @@ namespace Polycode {
 		static const int EVENT_TOUCHES_BEGAN = EVENTBASE_INPUTEVENT+20;
 		static const int EVENT_TOUCHES_MOVED = EVENTBASE_INPUTEVENT+21;
 		static const int EVENT_TOUCHES_ENDED = EVENTBASE_INPUTEVENT+22;
-		
-		
+
+
 		//@}
 		// ----------------------------------------------------------------------------------------------------------------
-		
+
 		/**
 		* If this is a mouse click event, the mouse button that's pressed.
 		*/
 		int mouseButton;
-		
+
 		/**
 		* If this is a mouse event, the mouse position.
 		*/
 		Vector2 mousePosition;
-		
+
 		Vector2 getMousePosition() { return mousePosition; }
 		PolyKEY getKey() { return key; }
 		int getMouseButton() { return mouseButton; }
-						
+
 		/**
 		* If this is a key event, the key code that's coming down or up.
-		*/		
+		*/
 		PolyKEY key;
-		
-		
-		
+
+
+
 		int keyCode() { return key; }
-		
+
 		/**
 		* If this is a key press event, this will contain the unicode character that's being typed.
-		*/				
+		*/
 		wchar_t charCode;
 		int timestamp;
-		
+
 		std::vector<TouchInfo> touches;
 		TouchInfo touch;
-		
+
 		unsigned int joystickDeviceID;
 		float joystickAxisValue;
 		unsigned int joystickButton;
 		unsigned int joystickAxis;
 		unsigned int joystickIndex;
-		
-		protected:
-		
-			
-	};
+
+	protected:
+
+};
+
 }

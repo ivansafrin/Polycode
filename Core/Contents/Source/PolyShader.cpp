@@ -48,20 +48,20 @@ void *ProgramParam::createParamData(int type) {
 			Vector3 *val = new Vector3();
 			return (void*)val;
 		}
-		break;		
+		break;
 		case PARAM_COLOR:
 		{
 			Color *val = new Color();
 			return (void*)val;
 		}
-		break;		
+		break;
 		case PARAM_MATRIX:
 		{
 			Matrix4 *val = new Matrix4();
 			return (void*)val;
 		}
-		break;		
-		default:		
+		break;
+		default:
 			return NULL;
 		break;
 	}
@@ -77,7 +77,7 @@ ShaderProgram::~ShaderProgram() {
 
 void ShaderProgram::reloadResource() {
 	reloadProgram();
-	Resource::reloadResource();	
+	Resource::reloadResource();
 }
 
 
@@ -88,16 +88,16 @@ ShaderBinding::ShaderBinding(Shader *shader) {
 ShaderBinding::~ShaderBinding() {
 	for(int i=0; i < localParams.size(); i++) {
 		delete localParams[i];
-	}	
+	}
 	for(int i=0; i < renderTargetBindings.size(); i++) {
 		delete renderTargetBindings[i];
-	}	
+	}
 	for(int i=0; i < inTargetBindings.size(); i++) {
 		delete inTargetBindings[i];
-	}	
+	}
 	for(int i=0; i < outTargetBindings.size(); i++) {
 		delete outTargetBindings[i];
-	}	
+	}
 }
 
 unsigned int ShaderBinding::getNumLocalParams() {
@@ -138,17 +138,17 @@ void ShaderBinding::addRenderTargetBinding(RenderTargetBinding *binding) {
 	renderTargetBindings.push_back(binding);
 	switch (binding->mode) {
 		case RenderTargetBinding::MODE_IN:
-			inTargetBindings.push_back(binding);		
+			inTargetBindings.push_back(binding);
 		break;
 		case RenderTargetBinding::MODE_OUT:
-			outTargetBindings.push_back(binding);		
+			outTargetBindings.push_back(binding);
 		break;
 		case RenderTargetBinding::MODE_COLOR:
-			colorTargetBindings.push_back(binding);		
+			colorTargetBindings.push_back(binding);
 		break;
 		case RenderTargetBinding::MODE_DEPTH:
-			depthTargetBindings.push_back(binding);		
-		break;				
+			depthTargetBindings.push_back(binding);
+		break;
 	}
 }
 
@@ -158,7 +158,7 @@ void ShaderBinding::removeRenderTargetBinding(RenderTargetBinding *binding) {
 			renderTargetBindings.erase(renderTargetBindings.begin() + i);
 		}
 	}
-	
+
 	for(int i=0; i < inTargetBindings.size(); i++) {
 		if(inTargetBindings[i] == binding) {
 			inTargetBindings.erase(inTargetBindings.begin() + i);
@@ -171,7 +171,7 @@ void ShaderBinding::removeRenderTargetBinding(RenderTargetBinding *binding) {
 			return;
 		}
 	}
-	
+
 	for(int i=0; i < colorTargetBindings.size(); i++) {
 		if(colorTargetBindings[i] == binding) {
 			colorTargetBindings.erase(colorTargetBindings.begin() + i);
@@ -185,7 +185,7 @@ void ShaderBinding::removeRenderTargetBinding(RenderTargetBinding *binding) {
 			return;
 		}
 	}
-	
+
 }
 
 unsigned int ShaderBinding::getNumRenderTargetBindings() {

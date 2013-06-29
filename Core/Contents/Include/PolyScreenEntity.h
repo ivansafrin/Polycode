@@ -33,11 +33,11 @@ THE SOFTWARE.
 
 namespace Polycode {
 
-	class _PolyExport MouseEventResult {
-		public:
-			bool hit;
-			bool blocked;
-	};
+class _PolyExport MouseEventResult {
+	public:
+		bool hit;
+		bool blocked;
+};
 
 /**
 * 2D Entity base.
@@ -45,19 +45,19 @@ namespace Polycode {
 * The ScreenEntity is the base class for all 2D elements in Polycode. They can be added to a screen or to other ScreenEntities and are rendered automatically. If you want to create custom screen objects, subclass this. ScreenEntity subclasses Entity, which use 3d positioning and tranformation, but provides some 2d-only versions of the transformation functions for convenience.
 */
 class _PolyExport ScreenEntity : public Entity {
-		
+
 	public:
-		using Entity::setPosition;		
-		using Entity::setScale;		
+		using Entity::setPosition;
+		using Entity::setScale;
 
 		ScreenEntity();
 		virtual ~ScreenEntity();
-		
+
 		virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly);
 		virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly);
 
 		void addEntity(Entity *newChild);
-		
+
 		/**
 		* Set 2d position.
 		* @param x Horizontal position.
@@ -71,93 +71,93 @@ class _PolyExport ScreenEntity : public Entity {
 		*/
 		void setPosition(const Vector2 &v);
 
-		
+
 		/**
 		* Set 2d scale.
 		* @param x Horizontal scale.
 		* @param y Vertical scale.
-		*/		
+		*/
 		void setScale(Number x, Number y);
-		
+
 		/**
 		* Set 2d scale.
 		* @param v New 2D scale vector.
 		*/
 		void setScale(const Vector2 &v);
-		
-		
+
+
 		/**
 		* Set 2d rotation.
 		* @param rotation New rotation value in degrees.
-		*/				
+		*/
 		void setRotation(Number rotation);
-		
+
 		/**
 		* Returns current rotation.
 		* @return Current rotation value.
-		*/						
+		*/
 		Number getRotation() const;
-			
+
 		MouseEventResult _onMouseDown(Number x, Number y, int mouseButton, int timestamp, Vector2 parentAdjust = Vector2(0,0));
 		MouseEventResult _onMouseUp(Number x, Number y, int mouseButton, int timestamp, Vector2 parentAdjust = Vector2(0,0));
 		MouseEventResult _onMouseMove(Number x, Number y, int timestamp, Vector2 parentAdjust = Vector2(0,0));
 		MouseEventResult _onMouseWheelUp(Number x, Number y, int timestamp, Vector2 parentAdjust = Vector2(0,0));
 		MouseEventResult _onMouseWheelDown(Number x, Number y, int timestamp, Vector2 parentAdjust = Vector2(0,0));
-	
+
 		virtual void onMouseDown(Number x, Number y){}
 		virtual void onMouseUp(Number x, Number y){}
 		virtual	void onMouseMove(Number x, Number y){}
 		virtual void onMouseWheelUp(Number x, Number y) {}
 		virtual void onMouseWheelDown(Number x, Number y) {}
-	
-		void _onKeyDown(PolyKEY key, wchar_t charCode);	
-		void _onKeyUp(PolyKEY key, wchar_t charCode);	
-		
+
+		void _onKeyDown(PolyKEY key, wchar_t charCode);
+		void _onKeyUp(PolyKEY key, wchar_t charCode);
+
 		Matrix4 getScreenConcatenatedMatrix();
-		
+
 		virtual void onKeyDown(PolyKEY key, wchar_t charCode){}
 		virtual void onKeyUp(PolyKEY key, wchar_t charCode){}
-		
+
 		bool hitTest(Number x, Number y);
-	
+
 		Matrix4 buildPositionMatrix();
 		void adjustMatrixForChildren();
-		
+
 		/**
 		* Returns the width of the screen entity.
 		* @return Height of the screen entity.
-		*/									
+		*/
 		Number getWidth() const;
-		
+
 		/**
 		* Returns the height of the screen entity.
-		*/											
+		*/
 		Number getHeight() const;
-	
+
 		/**
 		* Sets the width of the screen entity.
 		* @param w New height value.
-		*/									
+		*/
 		void setWidth(Number w) { width = w; hit.w = w; hit.x = -w/2; }
-		
+
 		/**
 		* Sets the height of the screen entity.
 		* @param h New height value.
-		*/									
+		*/
 		void setHeight(Number h) { height = h; hit.h = h; hit.y = -h/2; }
-	
+
 		virtual void onGainFocus(){}
-		virtual void onLoseFocus(){}		
-		
+		virtual void onLoseFocus(){}
+
 		void startDrag(Number xOffset, Number yOffset);
-		void stopDrag();		
-				
+		void stopDrag();
+
 		void setBlendingMode(int newBlendingMode);
-		
+
 		/** 
-		* Changes the positioning mode of the screen entity.		
-		
-		If the positioning mode is ScreenEntity::POSITION_TOPLEFT, the entity is translated by half its width and half its height when it's rendered, making all other transformations relative to its top-left corner instead of the center.		
+		* Changes the positioning mode of the screen entity.
+
+		If the positioning mode is ScreenEntity::POSITION_TOPLEFT, the entity is translated by half its width and half its height when it's rendered, making all other transformations relative to its top-left corner instead of the center.
 		If the mode is ScreenEntity::POSITION_CENTER, the entity is rendered as is.
 		Set to POSITION_CENTER by default.
 		@param newPositionMode The new positioning mode.
@@ -202,7 +202,7 @@ class _PolyExport ScreenEntity : public Entity {
 		 * running instance can take focus.
 		 */
 		void focusChild(ScreenEntity *child);
-		
+
 		/*
 		 * Make the next child in `this->children`, after the currently
 		 * focused child entity take focus.
@@ -218,7 +218,7 @@ class _PolyExport ScreenEntity : public Entity {
 		 * order of entities(entities further down in the list will
 		 * appear on top).
 		 */
-		//@{	
+		//@{
 		void moveChildUp(ScreenEntity *child);
 		void moveChildDown(ScreenEntity *child);
 		void moveChildTop(ScreenEntity *child);
@@ -232,7 +232,7 @@ class _PolyExport ScreenEntity : public Entity {
 		 * @see getScreenPosition()
 		 */
 		Vector2 getPosition2D() const;
-		
+
 		/**
 		 * Get the position of ScreenEntity in relation to the top-left
 		 * corner of the Polycode screen it's on.
@@ -264,9 +264,9 @@ class _PolyExport ScreenEntity : public Entity {
 		static const int POSITION_CENTER = 1;
 
 		bool isFocusable() const;
-		
+
 		bool hasFocus;
-		
+
 		/**
 		 * Does the same as getEntityByID, but casts to ScreenEntity.
 		 *
@@ -282,13 +282,13 @@ class _PolyExport ScreenEntity : public Entity {
 		 *       querying, or otherwise you will be treating an Entity as ScreenEntity.
 		 */
 		std::vector<ScreenEntity*> getScreenEntitiesByTag(String tag, bool recursive);
-		
+
 		/**
 		* If set to true, will block mouse events for underlaying entities.
 		* (NOTE: processInputEvents must be set to true)
 		*/
-		bool blockMouseInput;	
-	
+		bool blockMouseInput;
+
 		/**
 		* If this option is true, the screen entity's positions will be roudnded to whole pixels. This only works if the screen is using pixel coordinates.
 		*/
@@ -324,31 +324,31 @@ class _PolyExport ScreenEntity : public Entity {
 
 		Number width;
 		Number height;
-		
+
 		/**
 		 * Get the drag status (true if currently being dragged) of the entity.
 		 */
 		bool isDragged();
 
 	protected:
-	
+
 		bool focusable;
 		bool focusChildren;
-		
+
 		bool dragged;
 		Number dragOffsetX;
 		Number dragOffsetY;
-		
+
 		bool mouseOver;
 
 		Rectangle hit;
-		
+
 		Number xmouse;
 		Number ymouse;
-		
-		int positionMode;		
+
+		int positionMode;
 		Rectangle *dragLimits;
-		
+
 		int lastClickTicks;
 
 };

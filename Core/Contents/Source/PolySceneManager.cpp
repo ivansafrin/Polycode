@@ -54,15 +54,15 @@ void SceneManager::removeScene(Scene *scene) {
 void SceneManager::registerRenderTexture(SceneRenderTexture *renderTexture) {
 	renderTextures.push_back(renderTexture);
 }
-	
+
 void SceneManager::unregisterRenderTexture(SceneRenderTexture *renderTexture) {
 	for(int i=0;i<renderTextures.size();i++) {
 		if(renderTextures[i] == renderTexture) {
 			renderTextures.erase(renderTextures.begin()+i);
 		}
-	}	
+	}
 }
-		
+
 void SceneManager::addScene(Scene *newScene) {
 	scenes.push_back(newScene);
 }
@@ -76,16 +76,16 @@ void SceneManager::renderVirtual() {
 		CoreServices::getInstance()->getRenderer()->loadIdentity();
 		if(renderTextures[i]->getTargetScene()->isVirtual())
 			renderTextures[i]->getTargetScene()->Update();
-						
+
 			if(renderTextures[i]->getTargetCamera()->hasFilterShader()) {
 				renderTextures[i]->getTargetCamera()->drawFilter(renderTextures[i]->getTargetTexture(), renderTextures[i]->getTargetTexture()->getWidth(), renderTextures[i]->getTargetTexture()->getHeight(), renderTextures[i]->getFilterColorBufferTexture(), renderTextures[i]->getFilterZBufferTexture());
 			} else {
 				CoreServices::getInstance()->getRenderer()->bindFrameBufferTexture(renderTextures[i]->getTargetTexture());
 				renderTextures[i]->getTargetScene()->Render(renderTextures[i]->getTargetCamera());
-				CoreServices::getInstance()->getRenderer()->unbindFramebuffers();		
+				CoreServices::getInstance()->getRenderer()->unbindFramebuffers();
 			}
 
-			
+
 		CoreServices::getInstance()->getRenderer()->clearScreen();
 		CoreServices::getInstance()->getRenderer()->loadIdentity();
 	}

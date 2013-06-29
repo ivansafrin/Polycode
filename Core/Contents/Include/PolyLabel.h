@@ -19,7 +19,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
- 
+
 #pragma once
 #include "PolyString.h"
 #include "PolyGlobals.h"
@@ -32,89 +32,89 @@ THE SOFTWARE.
 
 namespace Polycode {
 
-	class Font;	
-	
-	class GlyphData {
-		public:
-			GlyphData();
-			~GlyphData();
-			
-			void clearData();
-			
-			FT_Glyph *glyphs;
-			FT_Vector *positions;	
-			FT_UInt num_glyphs;
-			
-			int trailingAdvance;
-	};
+class Font;
 
-	class ColorRange {
-		public:
-			ColorRange(Color color, unsigned int rangeStart, unsigned int rangeEnd);
-			Color color;
-			unsigned int rangeStart;
-			unsigned int rangeEnd;			
-	};
+class GlyphData {
+	public:
+		GlyphData();
+		~GlyphData();
 
-	class _PolyExport Label : public Image {
-		public:
-			
-			Label(Font *font, const String& text, int size, int antiAliasMode, bool premultiplyAlpha = false);
-			virtual ~Label();
-			void setText(const String& text);
-			const String& getText() const;
-			
-			int getTextWidthForString(const String& text);
-			int getTextHeightForString(const String& text);
+		void clearData();
 
-			void computeStringBbox(GlyphData *glyphData, FT_BBox *abbox);			
-			void precacheGlyphs(String text, GlyphData *glyphData);
-			
-			void renderGlyphs(GlyphData *glyphData);
-			
-			void drawGlyphBitmap(FT_Bitmap *bitmap, unsigned int x, unsigned int y, Color glyphColor);
-					
-			Number getTextWidth() const;
-			Number getTextHeight() const;
-		
-			void clearColors();
-			void setColorForRange(Color color, unsigned int rangeStart, unsigned int rangeEnd);
-		
-			Color getColorForIndex(unsigned int index);
-		
-			void setFont(Font *newFont);
-			Font *getFont() const;
-			
-			void setSize(int newSize);
-			unsigned int getSize() const;
-			
-			int getAntialiasMode() const;			
-			void setAntialiasMode(int newMode);
-			
-			bool optionsChanged();
-					
-			static const int ANTIALIAS_FULL = 0;
-			static const int ANTIALIAS_NONE = 1;
-			static const int ANTIALIAS_STRONG = 2;			
-			
-			int getBaselineAdjust();
-			
-		protected:
-		
-			bool _optionsChanged;
-			GlyphData labelData;
-	
-			std::vector<ColorRange> colorRanges;
-		
-			int baseLineOffset;
-			int xAdjustOffset;
-			int baseLineAdjust;			
-			bool premultiplyAlpha;
+		FT_Glyph *glyphs;
+		FT_Vector *positions;
+		FT_UInt num_glyphs;
 
-			int antiAliasMode;
-			int size;
-			String text;
-			Font *font;
-	};
+		int trailingAdvance;
+};
+
+class ColorRange {
+	public:
+		ColorRange(Color color, unsigned int rangeStart, unsigned int rangeEnd);
+		Color color;
+		unsigned int rangeStart;
+		unsigned int rangeEnd;
+};
+
+class _PolyExport Label : public Image {
+	public:
+
+		Label(Font *font, const String& text, int size, int antiAliasMode, bool premultiplyAlpha = false);
+		virtual ~Label();
+		void setText(const String& text);
+		const String& getText() const;
+
+		int getTextWidthForString(const String& text);
+		int getTextHeightForString(const String& text);
+
+		void computeStringBbox(GlyphData *glyphData, FT_BBox *abbox);
+		void precacheGlyphs(String text, GlyphData *glyphData);
+
+		void renderGlyphs(GlyphData *glyphData);
+
+		void drawGlyphBitmap(FT_Bitmap *bitmap, unsigned int x, unsigned int y, Color glyphColor);
+
+		Number getTextWidth() const;
+		Number getTextHeight() const;
+
+		void clearColors();
+		void setColorForRange(Color color, unsigned int rangeStart, unsigned int rangeEnd);
+
+		Color getColorForIndex(unsigned int index);
+
+		void setFont(Font *newFont);
+		Font *getFont() const;
+
+		void setSize(int newSize);
+		unsigned int getSize() const;
+
+		int getAntialiasMode() const;
+		void setAntialiasMode(int newMode);
+
+		bool optionsChanged();
+
+		static const int ANTIALIAS_FULL = 0;
+		static const int ANTIALIAS_NONE = 1;
+		static const int ANTIALIAS_STRONG = 2;
+
+		int getBaselineAdjust();
+
+	protected:
+
+		bool _optionsChanged;
+		GlyphData labelData;
+
+		std::vector<ColorRange> colorRanges;
+
+		int baseLineOffset;
+		int xAdjustOffset;
+		int baseLineAdjust;
+		bool premultiplyAlpha;
+
+		int antiAliasMode;
+		int size;
+		String text;
+		Font *font;
+};
 
 }

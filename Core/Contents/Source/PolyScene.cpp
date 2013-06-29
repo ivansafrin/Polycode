@@ -54,11 +54,11 @@ Scene::Scene() : EventDispatcher() {
 
 Scene::Scene(bool virtualScene) : EventDispatcher() {
 	defaultCamera = new Camera(this);
-	activeCamera = defaultCamera;	
+	activeCamera = defaultCamera;
 	fogEnabled = false;
 	lightingEnabled = false;
 	enabled = true;
-	isSceneVirtual = virtualScene;	
+	isSceneVirtual = virtualScene;
 	hasLightmaps = false;
 	clearColor.setColor(0.13f,0.13f,0.13f,1.0f); 
 	ambientColor.setColor(0.0,0.0,0.0,1.0);	
@@ -95,18 +95,18 @@ bool Scene::isEnabled() {
 
 void Scene::Update() {
 	for(int i=0; i<entities.size();i++) {
-		entities[i]->doUpdates();		
+		entities[i]->doUpdates();
 		entities[i]->updateEntityMatrix();
 	}
 }
 
 Scene::~Scene() {
 	if(ownsChildren) {
-		for(int i=0; i < entities.size(); i++) {	
+		for(int i=0; i < entities.size(); i++) {
 			delete entities[i];
 		}
 	}
-	CoreServices::getInstance()->getSceneManager()->removeScene(this);	
+	CoreServices::getInstance()->getSceneManager()->removeScene(this);
 	delete defaultCamera;
 }
 
@@ -119,7 +119,7 @@ void Scene::enableLighting(bool enable) {
 
 void Scene::enableFog(bool enable) {
 	fogEnabled = enable;
-	
+
 }
 
 void Scene::setFogProperties(int fogMode, Color color, Number density, Number startDepth, Number endDepth) {
@@ -128,7 +128,7 @@ void Scene::setFogProperties(int fogMode, Color color, Number density, Number st
 	fogDensity = density;
 	fogStartDepth = startDepth;
 	fogEndDepth = endDepth;
-	
+
 }
 
 SceneEntity *Scene::getEntityAtScreenPosition(Number x, Number y) {
@@ -154,7 +154,7 @@ void Scene::removeEntity(SceneEntity *entity) {
 		if(entities[i] == entity) {
 			entities.erase(entities.begin()+i);
 			return;
-		}		
+		}
 	}
 }
 
@@ -163,138 +163,136 @@ Camera *Scene::getDefaultCamera() {
 }
 
 void Scene::Render(Camera *targetCamera) {
-	
+
 	if(!targetCamera && !activeCamera)
 		return;
-	
+
 	if(!targetCamera)
 		targetCamera = activeCamera;
-	
+
 	// prepare lights...
 	for(int i=0; i<entities.size();i++) {
 		entities[i]->updateEntityMatrix();
-	}	
-	
+	}
+
 	//make these the closest
-	
+
 	Matrix4 textureMatrix;
 	Matrix4 *matrixPtr;
-	
-	
+
+
 	targetCamera->rebuildTransformMatrix();
-		
+
 	if(useClearColor)
-		CoreServices::getInstance()->getRenderer()->setClearColor(clearColor.r,clearColor.g,clearColor.b);	
-	
-	CoreServices::getInstance()->getRenderer()->setAmbientColor(ambientColor.r,ambientColor.g,ambientColor.b);		
-	
+		CoreServices::getInstance()->getRenderer()->setClearColor(clearColor.r,clearColor.g,clearColor.b);
+
+	CoreServices::getInstance()->getRenderer()->setAmbientColor(ambientColor.r,ambientColor.g,ambientColor.b);
+
 	CoreServices::getInstance()->getRenderer()->clearLights();
-	
+
 	for(int i=0; i < lights.size(); i++) {
 		SceneLight *light = lights[i];
 		if(!light->enabled)
 			continue;
-			
+
 		Vector3 direction;
 		Vector3 position;
-		matrixPtr = NULL;				
-		direction.x = 0;		
+		matrixPtr = NULL;
+		direction.x = 0;
 		direction.y = 0;
 		direction.z = -1;
-		
-		
+
+
 		direction = light->getConcatenatedMatrix().rotateVector(direction);
 		direction.Normalize();
-		
+
 		Texture *shadowMapTexture = NULL;
-		if(light->areShadowsEnabled()) {
-			if(light->getType() == SceneLight::SPOT_LIGHT) {
-//				textureMatrix.identity();
-				
-				Matrix4 matTexAdj(0.5f,	0.0f,	0.0f,	0.0f,
-								  0.0f,	0.5f,	0.0f,	0.0f,
-								  0.0f,	0.0f,	0.5f,	0.0f,
-								  0.5f,	0.5f,	0.5f,	1.0f );
-				
-								
-				light->renderDepthMap(this);
-				textureMatrix = light->getLightViewMatrix() * matTexAdj;				
-				matrixPtr = &textureMatrix;				
-			//	CoreServices::getInstance()->getRenderer()->addShadowMap(light->getZBufferTexture());
-				shadowMapTexture = light->getZBufferTexture();
-			}
+		if(light->areShadowsEnabled() && light->getType() == SceneLight::SPOT_LIGHT) {
+//			textureMatrix.identity();
+			
+			Matrix4 matTexAdj(0.5f, 0.0f, 0.0f, 0.0f,
+							  0.0f, 0.5f, 0.0f, 0.0f,
+							  0.0f, 0.0f, 0.5f, 0.0f,
+							  0.5f, 0.5f, 0.5f, 1.0f );
+
+
+			light->renderDepthMap(this);
+			textureMatrix = light->getLightViewMatrix() * matTexAdj;
+			matrixPtr = &textureMatrix;
+		//	CoreServices::getInstance()->getRenderer()->addShadowMap(light->getZBufferTexture());
+			shadowMapTexture = light->getZBufferTexture();
 		}
-		
+
 		position = light->getPosition();
 		if(light->getParentEntity() != NULL) {
-			position = light->getParentEntity()->getConcatenatedMatrix() * position;			
+			position = light->getParentEntity()->getConcatenatedMatrix() * position;
 		}
 		CoreServices::getInstance()->getRenderer()->addLight(light->getLightImportance(), position, direction, light->getLightType(), light->lightColor, light->specularLightColor, light->getConstantAttenuation(), light->getLinearAttenuation(), light->getQuadraticAttenuation(), light->getIntensity(), light->getSpotlightCutoff(), light->getSpotlightExponent(), light->areShadowsEnabled(), matrixPtr, shadowMapTexture);
-	}	
+	}
 
 	if(targetCamera->getOrthoMode()) {
 		CoreServices::getInstance()->getRenderer()->_setOrthoMode(targetCamera->getOrthoSizeX(), targetCamera->getOrthoSizeY());
 	}
-		
+
 	targetCamera->doCameraTransform();
 	targetCamera->buildFrustumPlanes();
-	
-	CoreServices::getInstance()->getRenderer()->enableFog(fogEnabled);	
+
+	CoreServices::getInstance()->getRenderer()->enableFog(fogEnabled);
 	if(fogEnabled) {
 		CoreServices::getInstance()->getRenderer()->setFogProperties(fogMode, fogColor, fogDensity, fogStartDepth, fogEndDepth);
 	} else {
-		CoreServices::getInstance()->getRenderer()->setFogProperties(fogMode, fogColor, 0.0, fogStartDepth, fogEndDepth);	
+		CoreServices::getInstance()->getRenderer()->setFogProperties(fogMode, fogColor, 0.0, fogStartDepth, fogEndDepth);
 	}
-	
-	
+
+
 	for(int i=0; i<entities.size();i++) {
 		if(entities[i]->getBBoxRadius() > 0) {
 			if(targetCamera->isSphereInFrustum((entities[i]->getPosition()), entities[i]->getBBoxRadius()))
 				entities[i]->transformAndRender();
 		} else {
-			entities[i]->transformAndRender();		
+			entities[i]->transformAndRender();
 		}
 	}
-	
+
 	if(targetCamera->getOrthoMode()) {
 		CoreServices::getInstance()->getRenderer()->setPerspectiveMode();
 	}
-	
+
 }
 
 
 void Scene::RenderDepthOnly(Camera *targetCamera) {
-	
+
 	CoreServices::getInstance()->getRenderer()->cullFrontFaces(true);
 /*	
 	for(int i=0; i<entities.size();i++) {
-		entities[i]->doUpdates();		
+		entities[i]->doUpdates();
 		entities[i]->updateEntityMatrix();
 	}
 */	
-	targetCamera->rebuildTransformMatrix();	
-	targetCamera->doCameraTransform();	
+	targetCamera->rebuildTransformMatrix();
+	targetCamera->doCameraTransform();
 	targetCamera->buildFrustumPlanes();
-	
+
 	CoreServices::getInstance()->getRenderer()->setTexture(NULL);
 	CoreServices::getInstance()->getRenderer()->enableShaders(false);
 	for(int i=0; i<entities.size();i++) {
 		if(entities[i]->castShadows) {
-		if(entities[i]->getBBoxRadius() > 0) {
-			if(targetCamera->isSphereInFrustum((entities[i]->getPosition()), entities[i]->getBBoxRadius()))
+			if(entities[i]->getBBoxRadius() > 0) {
+				if(targetCamera->isSphereInFrustum((entities[i]->getPosition()), entities[i]->getBBoxRadius()))
+					entities[i]->transformAndRender();
+			} else {
 				entities[i]->transformAndRender();
-		} else {
-			entities[i]->transformAndRender();		
+			}
 		}
-		}
-	}	
+	}
 	CoreServices::getInstance()->getRenderer()->enableShaders(true);
-	CoreServices::getInstance()->getRenderer()->cullFrontFaces(false);	
+	CoreServices::getInstance()->getRenderer()->cullFrontFaces(false);
 }
 
 void Scene::addLight(SceneLight *light) {
 	lights.push_back(light);
-	addEntity(light);	
+	addEntity(light);
 }
 
 void Scene::removeLight(SceneLight *light) {
@@ -303,7 +301,7 @@ void Scene::removeLight(SceneLight *light) {
 		if(lights[i] == light) {
 			lights.erase(lights.begin()+i);
 			return;
-		}		
+		}
 	}
 }
 

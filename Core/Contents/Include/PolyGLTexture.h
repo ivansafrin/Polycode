@@ -20,7 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
- 
+
 #pragma once
 #include "PolyGlobals.h"
 #include "PolyTexture.h"
@@ -43,31 +43,31 @@ THE SOFTWARE.
 
 namespace Polycode {
 
-	class _PolyExport OpenGLTexture : public Texture {
-		public:
-			OpenGLTexture(unsigned int width, unsigned int height);
-			OpenGLTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, bool createMipmaps, int filteringMode, int type);
-			virtual ~OpenGLTexture();
-			
-			void recreateFromImageData();
+class _PolyExport OpenGLTexture : public Texture {
+	public:
+		OpenGLTexture(unsigned int width, unsigned int height);
+		OpenGLTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, bool createMipmaps, int filteringMode, int type);
+		virtual ~OpenGLTexture();
 
-			GLuint getTextureID();
-			GLuint getFrameBufferID();
-			
-			void setGLInfo(GLuint textureID, GLuint frameBufferID);
-			
-			void setTextureData(char *data);
-			
-		private:
-			
-			bool glTextureLoaded;
-			GLenum glTextureType;
-			GLuint glTextureFormat;
-			GLenum pixelType;
-			
-			int filteringMode;
-			GLuint textureID;
-			GLuint frameBufferID;
-	};
+		void recreateFromImageData();
+
+		GLuint getTextureID();
+		GLuint getFrameBufferID();
+
+		void setGLInfo(GLuint textureID, GLuint frameBufferID);
+
+		void setTextureData(char *data);
+
+	private:
+
+		bool glTextureLoaded;
+		GLenum glTextureType;
+		GLuint glTextureFormat;
+		GLenum pixelType;
+
+		int filteringMode;
+		GLuint textureID;
+		GLuint frameBufferID;
+};
 
 }

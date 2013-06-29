@@ -32,17 +32,17 @@ struct SDL_mutex;
 
 namespace Polycode {
 
-	class PolycodeView;
+class PolycodeView;
 
-	class _PolyExport SDLCoreMutex : public CoreMutex {
+class _PolyExport SDLCoreMutex : public CoreMutex {
 	public:
 		SDL_mutex *pMutex;
-	};
+};
 
-	class _PolyExport SDLCore : public Core {
-		
+class _PolyExport SDLCore : public Core {
+
 	public:
-		
+
 		SDLCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex=-1);
 		~SDLCore();
 
@@ -54,7 +54,7 @@ namespace Polycode {
 		void setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel);
 		void createThread(Threaded *target);
 		std::vector<Rectangle> getVideoModes();
-		
+
 		void setCursor(int cursorType);
 		void warpCursor(int x, int y);
 		void lockMutex(CoreMutex *mutex);
@@ -79,6 +79,7 @@ namespace Polycode {
 
 		uint32_t flags;
 		bool resizableWindow;
-		
-	};
+
+};
+
 }

@@ -39,24 +39,24 @@ class NewFileWindow : public UIWindow {
 	public:
 		NewFileWindow();
 		~NewFileWindow();
-	
+
 		void resetForm();
 		void parseTemplatesIntoTree(UITree *tree, OSFileEntry folder);
 
 		String getTemplatePath();
 		String getFileName();
-		
+
 		void handleEvent(Event *event);
-	
+
 	protected:
-	
+
 		UITextInput *fileNameInput;
-	
+
 		UIButton *cancelButton;
 		UIButton *okButton;
-		
+
 		String templatePath;
-			
-		UITreeContainer *templateContainer;	
+
+		UITreeContainer *templateContainer;
 		UITree *defaultTemplateTree;
 };

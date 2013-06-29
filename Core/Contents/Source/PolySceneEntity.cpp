@@ -29,6 +29,6 @@ SceneEntity::SceneEntity() : Entity() {
 }
 
 SceneEntity::~SceneEntity() {
-	
+
 }
 

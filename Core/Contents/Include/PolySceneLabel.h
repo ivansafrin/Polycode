@@ -19,47 +19,48 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
- 
+
 #pragma once
 #include "PolyGlobals.h"
 #include "PolyScenePrimitive.h"
 
 namespace Polycode {
-	
-	class Label;
-	class Mesh;
-	class Texture;
-	class Material;
-	class ShaderBinding;
 
-	/**
-	* 3D text label. Creates a 3D text label.
-	*/
-	class _PolyExport SceneLabel : public ScenePrimitive {
-		public:
-			
-			/**
-			* Constructor.
-			* @param fontName Name of a registered font to use. @see FontManager for info on how to register fonts.
-			* @param text Text to display.
-			* @param size Size in pixels.
-			* @param scale Scale to multiply pixel size by for the actual world size of the label.
-			* @param Anti-aliasing mode. Can be Label::ANTIALIAS_FULL or Label::ANTIALIAS_NONE.
-			*/			
-			SceneLabel(const String& fontName, const String& text, int size, Number scale, int amode, bool premultiplyAlpha = false);
-			virtual ~SceneLabel();			
-		
-			/**
-			* Sets new text for the labe.
-			* @param newText New text to display.
-			*/ 
-			void setText(const String& newText);
-			
-			Label *getLabel();
-			
-		protected:
-			
-			Number scale;
-			Label *label;
-	};
+class Label;
+class Mesh;
+class Texture;
+class Material;
+class ShaderBinding;
+
+/**
+* 3D text label. Creates a 3D text label.
+*/
+class _PolyExport SceneLabel : public ScenePrimitive {
+	public:
+
+		/**
+		* Constructor.
+		* @param fontName Name of a registered font to use. @see FontManager for info on how to register fonts.
+		* @param text Text to display.
+		* @param size Size in pixels.
+		* @param scale Scale to multiply pixel size by for the actual world size of the label.
+		* @param Anti-aliasing mode. Can be Label::ANTIALIAS_FULL or Label::ANTIALIAS_NONE.
+		*/
+		SceneLabel(const String& fontName, const String& text, int size, Number scale, int amode, bool premultiplyAlpha = false);
+		virtual ~SceneLabel();
+
+		/**
+		* Sets new text for the labe.
+		* @param newText New text to display.
+		*/ 
+		void setText(const String& newText);
+
+		Label *getLabel();
+
+	protected:
+
+		Number scale;
+		Label *label;
+};
+
 }

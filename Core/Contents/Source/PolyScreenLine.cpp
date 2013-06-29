@@ -31,7 +31,7 @@ using namespace Polycode;
 ScreenLine::ScreenLine(Vector2 start, Vector2 end) : ScreenMesh(Mesh::LINE_MESH) {
 	target1 = NULL;
 	initMesh();
-		
+
 	startVertex->x = start.x;
 	startVertex->y = start.y;
 	endVertex->x = end.x;
@@ -42,11 +42,11 @@ ScreenLine::ScreenLine(Vector2 start, Vector2 end) : ScreenMesh(Mesh::LINE_MESH)
 
 ScreenLine *ScreenLine::ScreenLineBetweenEntities(ScreenEntity* target1, ScreenEntity* target2) {
 	return new ScreenLine(target1, target2);
-}	
+}
 
 
 ScreenLine::ScreenLine(ScreenEntity* target1, ScreenEntity* target2) : ScreenMesh(Mesh::LINE_MESH) {
-	initMesh();	
+	initMesh();
 	this->target1 = target1;
 	this->target2 = target2;
 	lineWidth = 1.0f;
@@ -62,7 +62,7 @@ void ScreenLine::setStart(Vector2 point) {
 void ScreenLine::setEnd(Vector2 point) {
 	endVertex->x = point.x;
 	endVertex->y = point.y;
-	mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;	
+	mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
 }
 
 void ScreenLine::initMesh() {
@@ -70,9 +70,9 @@ void ScreenLine::initMesh() {
 	startVertex = poly->addVertex(0, 0, 0, 0,0);
 	endVertex = poly->addVertex(0,0,0,1,0);	
 	mesh->addPolygon(poly);
-	mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;			
-	mesh->arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;			
-	mesh->arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;				
+	mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
+	mesh->arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;
+	mesh->arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;
 }
 
 ScreenLine::~ScreenLine() {
@@ -89,12 +89,12 @@ void ScreenLine::Update() {
 		return;
 	Vector3 pos1 = target1->getPosition();
 	Vector3 pos2 = target2->getPosition();
-	
+
 	setPosition(pos1.x, pos1.y);
 	endVertex->x = pos2.x-pos1.x;
 	endVertex->y = pos2.y-pos1.y;
 
-	mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;				
+	mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
 }
 
 
@@ -104,14 +104,14 @@ void ScreenLine::Render() {
 	if(lineSmooth) {
 		renderer->setLineSmooth(true);
 	}
-	
+
 	renderer->setTexture(texture);
 	if(mesh->useVertexColors) {
 		renderer->pushDataArrayForMesh(mesh, RenderDataArray::COLOR_DATA_ARRAY);
 	}
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::VERTEX_DATA_ARRAY);
-	renderer->pushDataArrayForMesh(mesh, RenderDataArray::TEXCOORD_DATA_ARRAY);	
+	renderer->pushDataArrayForMesh(mesh, RenderDataArray::TEXCOORD_DATA_ARRAY);
 	renderer->drawArrays(mesh->getMeshType());
-	
-	renderer->setLineSmooth(false);	
+
+	renderer->setLineSmooth(false);
 }

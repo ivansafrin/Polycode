@@ -30,16 +30,16 @@ THE SOFTWARE.
 
 namespace Polycode {
 
-	class InputEvent;
-	class Renderer;
-	class Material;
-	class Texture;
-	class ShaderBinding;
+class InputEvent;
+class Renderer;
+class Material;
+class Texture;
+class ShaderBinding;
 
-	/**
-	* 2D rendering base. The Screen is the container for all 2D rendering in Polycode. Screens are automatically rendered and need only be instantiated to immediately add themselves to the rendering pipeline. Each screen has a root entity.
-	*/	
-	class _PolyExport Screen : public EventDispatcher {
+/**
+* 2D rendering base. The Screen is the container for all 2D rendering in Polycode. Screens are automatically rendered and need only be instantiated to immediately add themselves to the rendering pipeline. Each screen has a root entity.
+*/	
+class _PolyExport Screen : public EventDispatcher {
 	public:
 		
 		/**
@@ -47,35 +47,35 @@ namespace Polycode {
 		*/
 		Screen();
 		virtual ~Screen();
-		
+
 		/**
 		* Adds a ScreenEntity to the 2d rendering pipeline.
 		* @param newEntity Entity to add.
-		*/		
+		*/
 		void addChild(ScreenEntity *newEntity);
 
 		/**
 		* Adds a ScreenEntity to the 2d rendering pipeline.
 		* @param newEntity Entity to add.
-		*/		
+		*/
 		void addEntity(ScreenEntity *newEntity);
-		
+
 		/**
 		* Removes a ScreenEntity from the screen's root entity
 		* @param entityToRemove Entity to remove.
-		*/				
+		*/
 		virtual void removeChild(ScreenEntity *entityToRemove);
-				
+
 		/**
 		* Sets the screen's offset. You can also translate the root entity to do the same thing.
 		* @param x New x offset.
-		* @param y New y offset.		
-		*/						
+		* @param y New y offset.
+		*/
 		void setScreenOffset(Number x, Number y);
-				
+
 		virtual void Shutdown();
 		virtual void Update();
-				
+
 		void Render();
 		void setRenderer(Renderer *renderer);
 
@@ -83,72 +83,73 @@ namespace Polycode {
 		* Changes the screen's coordinate system. By default, screens' dimensions are in pixels. To accommodate changing resolutions without changing the dimensions of a screen's content, you can call this method to make it use normalized coordinates.
 		* @param newVal If true, the screen will use normalized coordinates, if false, it will use pixel coordinates.
 		* @param yCoordinateSize The normalized size of the screen vertically. The horizontal size will be calculated based on the resolution.
-		*/		
+		*/
 		void setNormalizedCoordinates(bool newVal, Number yCoordinateSize = 1.0f);
-		
+
 		/**
 		* Sets the shader material to use for post processing on this screen.
 		* @param shaderName Name of the shader material to use.
-		*/				
+		*/
 		void setScreenShader(const String& shaderName);
-		
+
 		/**
 		* Removes the current screen shader for this screen.
 		*/
-		void clearScreenShader();		
+		void clearScreenShader();
 
 		void handleInputEvent(InputEvent *inputEvent);
-		
+
 		/**
 		* Returns true if the screen has a shader applied to it.
-		*/				
+		*/
 		bool hasFilterShader() const;
 		void drawFilter();
-		
+
 		bool usesNormalizedCoordinates() const { return useNormalizedCoordinates; }
 		Number getYCoordinateSize() const { return yCoordinateSize; }
-				
+
 		/**
 		* If set to false, the screen will not be rendered or updated.
 		*/
 		bool enabled;
-		
+
 		/**
 		* Returns the local shader options for the camera post processing material.
-		*/				
+		*/
 		const std::vector<ShaderBinding*>& getLocalShaderOptions() const { return localShaderOptions; }
-		
+
 		/**
 		* Returns the shader material applied to the camera.
-		*/					
+		*/
 		Material *getScreenShaderMaterial() const { return filterShaderMaterial; }
-		
+
 		/**
 		* If set to true, will process touch events as mouse clicks. Defaults to false.
-		*/		
+		*/
 		bool processTouchEventsAsMouse;
-		
+
 		/**
 		* If ownsChildren is set to true, the scene will delete its children upon destruction (defaults to false).
 		*/
-		bool ownsChildren;		
-		
+		bool ownsChildren;
+
 
 		ScreenEntity rootEntity;
-				
+
 	protected:
-	
+
 		Vector2 offset;
-		
+
 		bool useNormalizedCoordinates;
-		Number yCoordinateSize;		
-		
+		Number yCoordinateSize;
+
 		Renderer *renderer;
 		ScreenEntity *focusChild;
-		
-		Material *filterShaderMaterial;			
-		Texture *originalSceneTexture;				
+
+		Material *filterShaderMaterial;
+		Texture *originalSceneTexture;
 		std::vector<ShaderBinding*> localShaderOptions;
 		bool _hasFilterShader;
-	};
+};
+
 }

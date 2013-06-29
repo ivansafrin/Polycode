@@ -35,14 +35,14 @@ class ProjectFontEntry : public UIElement {
 	public:
 		ProjectFontEntry(String fontPath, String fontName);
 		~ProjectFontEntry();
-		
+
 		void handleEvent(Event *event);
-		
+
 		UITextInput *fontNameInput;
 		ScreenLabel *fontFileLabel;
-		
+
 		UIImageButton *removeButton;
-		
+
 		String fontPath;
 };
 
@@ -50,56 +50,56 @@ class PolycodeProjectEditor : public PolycodeEditor {
 	public:
 	PolycodeProjectEditor(PolycodeProjectManager *projectManager);
 	virtual ~PolycodeProjectEditor();
-	
+
 	void handleEvent(Event *event);
-	
+
 	bool openFile(OSFileEntry filePath);
 	void Resize(int x, int y);
 	void saveFile();
-		
+
 	protected:
-	
+
 	bool isLoading;
-	
+
 	void refreshFontEntries();
-	
+
 	PolycodeProjectManager *projectManager;
-	
+
 	ScreenImage *grid;
 
-	Object configFile;	
-	
+	Object configFile;
+
 	std::vector<UICheckBox*> moduleCheckboxes;
-	
+
 	UIElement *mainSettingsWindow;
 	UIElement *moduleSettingsWindow;
-	
+
 	ScreenShape *headerBg;
-	
-	UIElement *fontEntryBase;	
+
+	UIElement *fontEntryBase;
 	std::vector<ProjectFontEntry*> fontEntries;
-				
+
 	UICheckBox *vSyncCheckBox;
 	UITextInput *defaultWidthInput;
-	UITextInput *defaultHeightInput;	
-	UITextInput *framerateInput;	
+	UITextInput *defaultHeightInput;
+	UITextInput *framerateInput;
 	UIComboBox *aaLevelComboBox;
-	UIComboBox *afLevelComboBox;	
+	UIComboBox *afLevelComboBox;
 	UIComboBox *texFilteringComboBox;
-	UITextInput *entryPointInput;	
+	UITextInput *entryPointInput;
 	UIColorBox *bgColorBox;
-	
+
 	UIButton *addFontButton;
-	
+
 	PolycodeProject *associatedProject;
-	
+
 };
 
 class PolycodeProjectEditorFactory : public PolycodeEditorFactory {
 	public:
 		PolycodeProjectEditorFactory(PolycodeProjectManager *projectManager);
 		PolycodeEditor *createEditor();
-		
+
 	protected:
 		PolycodeProjectManager *projectManager;	
 };

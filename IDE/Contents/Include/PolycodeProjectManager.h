@@ -33,35 +33,35 @@ class PolycodeProjectManager : public EventDispatcher {
 	public:
 		PolycodeProjectManager();
 		~PolycodeProjectManager();
-		
+
 	void createNewFile(String templatePath, String newFileName);
-	
+
 	void createNewProject(String templateFolder, String projectName, String projectLocation);
 	PolycodeProject* openProject(String path);
 	void setProjectBrowser(PolycodeProjectBrowser *projectBrowser) { this->projectBrowser = projectBrowser; }
-	
+
 	PolycodeProject* getActiveProject() { return activeProject; }
 	void setActiveProject(PolycodeProject* project);
-	
+
 	int getProjectCount() { return projects.size(); }
 	PolycodeProject *getProjectByIndex(int index) { return projects[index]; }
-	
+
 	PolycodeProject *getProjectByProjectFile(String projectFile);
-	
+
 	void exportProject(PolycodeProject *project, String exportPath, bool macOS, bool windows, bool linux_, bool compileScripts);
-	
+
 	int removeProject(PolycodeProject *project);
-	
+
 	String activeFolder;
 	String selectedFile;
 	OSFileEntry selectedFileEntry;
-	
+
 protected:
-	
-	
+
+
 	PolycodeProject* activeProject;
-	
+
 	PolycodeProjectBrowser *projectBrowser;
 	vector<PolycodeProject*> projects;
-	
-};	
+
+};

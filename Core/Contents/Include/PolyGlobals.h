@@ -43,11 +43,11 @@ THE SOFTWARE.
 
 #endif
 #include <stdint.h>
- 
+
 #ifndef NULL
 	#define NULL 0
 #endif
- 
+
 #define PI 3.14159265
 #define RADIANS	57.2957795
 
@@ -79,9 +79,8 @@ typedef double Number;
 
 #define RANDOM_NUMBER ((Number)rand()/(Number)RAND_MAX)
 
-inline Number clampf(Number x, Number a, Number b)
-{
-    return x < a ? a : (x > b ? b : x);
+inline Number clampf(Number x, Number a, Number b) {
+	return x < a ? a : (x > b ? b : x);
 }
 
 #ifndef MIN

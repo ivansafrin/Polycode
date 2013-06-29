@@ -29,50 +29,50 @@ THE SOFTWARE.
 
 namespace Polycode {
 
-	/**
-	* 3D line class. Can connect two SceneEntity classes with a line.
-	*/ 
-	class _PolyExport SceneLine : public SceneEntity {
-		public:
-			/**
-			* Constructs the line with two taraget entities.
-			* @param ent1 Starting entity.
-			* @param ent2 Ending entity.
-			*/
-			SceneLine(SceneEntity *ent1, SceneEntity *ent2);
-			
-			/**
-			* Constructs the line with two taraget positions.
-			* @param start Starting position.
-			* @param end Ending position.
-			*/			
-			SceneLine(Vector3 start, Vector3 end);
+/**
+* 3D line class. Can connect two SceneEntity classes with a line.
+*/ 
+class _PolyExport SceneLine : public SceneEntity {
+	public:
+		/**
+		* Constructs the line with two taraget entities.
+		* @param ent1 Starting entity.
+		* @param ent2 Ending entity.
+		*/
+		SceneLine(SceneEntity *ent1, SceneEntity *ent2);
 
-			/**
-			* Constructs the line with two taraget positions.
-			* @param start Starting position.
-			* @param end Ending position.
-			*/						
-			static SceneLine *SceneLineWithPositions(Vector3 start, Vector3 end);			
-			
-			virtual ~SceneLine();
-			
-			void setStart(Vector3 start);
-			void setEnd(Vector3 end);
-						
-			void Render();
-			
-			Number lineWidth;
-			bool lineSmooth;				
-			
-		protected:		
-		
-			Mesh *mesh;
-			
-			Vector3 start;
-			Vector3 end;			
-			SceneEntity *ent1;
-			SceneEntity *ent2;
-	};
+		/**
+		* Constructs the line with two taraget positions.
+		* @param start Starting position.
+		* @param end Ending position.
+		*/
+		SceneLine(Vector3 start, Vector3 end);
+
+		/**
+		* Constructs the line with two taraget positions.
+		* @param start Starting position.
+		* @param end Ending position.
+		*/
+		static SceneLine *SceneLineWithPositions(Vector3 start, Vector3 end);
+
+		virtual ~SceneLine();
+
+		void setStart(Vector3 start);
+		void setEnd(Vector3 end);
+
+		void Render();
+
+		Number lineWidth;
+		bool lineSmooth;
+
+	protected:
+
+		Mesh *mesh;
+
+		Vector3 start;
+		Vector3 end;
+		SceneEntity *ent1;
+		SceneEntity *ent2;
+};
 
 }

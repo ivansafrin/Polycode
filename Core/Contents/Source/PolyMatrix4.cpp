@@ -194,35 +194,35 @@ Number Matrix4::determinant() const {
 //==============================================================================
 Number Matrix4::generalDeterminant(Number const* const*a,int n)
 {
-    int i,j,j1,j2;                    // general loop and matrix subscripts
-    Number det = 0;                   // init determinant
-    Number **m = NULL;                // pointer to pointers to implement 2d
+	int i,j,j1,j2;                    // general loop and matrix subscripts
+	Number det = 0;                   // init determinant
+	Number **m = NULL;                // pointer to pointers to implement 2d
 	// square array
-	
-    if (n < 1)    {   }                // error condition, should never get here
-	
-    else if (n == 1) {                 // should not get here
-        det = a[0][0];
+
+	if (n < 1) {   }                // error condition, should never get here
+
+	else if (n == 1) {                 // should not get here
+		det = a[0][0];
 	}
-	
-    else if (n == 2)  {                // basic 2X2 sub-matrix determinate
+
+	else if (n == 2)  {                // basic 2X2 sub-matrix determinate
 		// definition. When n==2, this ends the
-        det = a[0][0] * a[1][1] - a[1][0] * a[0][1];// the recursion series
+		det = a[0][0] * a[1][1] - a[1][0] * a[0][1];// the recursion series
 	}
-	
-	
+
+
 	// recursion continues, solve next sub-matrix
-    else {                             // solve the next minor by building a
+	else {                             // solve the next minor by building a
 		// sub matrix
-        det = 0;                      // initialize determinant of sub-matrix
-		
+		det = 0;                      // initialize determinant of sub-matrix
+
 		// for each column in sub-matrix
-        for (j1 = 0; j1 < n; j1++) {
+		for (j1 = 0; j1 < n; j1++) {
 			// get space for the pointer list
-            m = new Number*[n-1];
+			m = new Number*[n-1];
 			
-            for (i = 0; i < n-1; i++)
-                m[i] = new Number[n-1];
+			for (i = 0; i < n-1; i++)
+				m[i] = new Number[n-1];
 			//     i[0][1][2][3]  first malloc
 			//  m -> +  +  +  +   space for 4 pointers
 			//       |  |  |  |          j  second malloc
@@ -233,30 +233,31 @@ Number Matrix4::generalDeterminant(Number const* const*a,int n)
 			//
 			//                   a[1][2]
 			// build sub-matrix with minor elements excluded
-            for (i = 1; i < n; i++) {
-                j2 = 0;               // start at first sum-matrix column position
+			for (i = 1; i < n; i++) {
+				j2 = 0;               // start at first sum-matrix column position
 				// loop to copy source matrix less one column
-                for (j = 0; j < n; j++) {
-                    if (j == j1) continue; // don't copy the minor column element
-					
-                    m[i-1][j2] = a[i][j];   // copy source element into new sub-matrix
+				for (j = 0; j < n; j++) {
+					if (j == j1) continue; // don't copy the minor column element
+
+					m[i-1][j2] = a[i][j];   // copy source element into new sub-matrix
 					// i-1 because new sub-matrix is one row
 					// (and column) smaller with excluded minors
-                    j2++;                  // move to next sub-matrix column position
+					j2++;                  // move to next sub-matrix column position
 				}
 			}
-			
-            det += pow(-1.0,1.0 + j1 + 1.0) * a[0][j1] * generalDeterminant(m,n-1);
+
+			det += pow(-1.0,1.0 + j1 + 1.0) * a[0][j1] * generalDeterminant(m,n-1);
 			// sum x raised to y power
 			// recursively get determinant of next
 			// sub-matrix which is now one
 			// row & column smaller
-			
-            for (i = 0 ; i < n-1 ; i++) delete[] m[i];// free the storage allocated to
+
+			for (i = 0 ; i < n-1 ; i++) 
+				delete[] m[i];// free the storage allocated to
 			// to this minor's set of pointers
-            delete[] m;                       // free the storage for the original
+			delete[] m;                       // free the storage for the original
 			// pointer to pointer
-        }
-    }
-    return(det) ;
+		}
+	}
+	return(det) ;
 }

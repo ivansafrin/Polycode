@@ -34,7 +34,7 @@ ScreenShape::ScreenShape(int shapeType, Number option1, Number option2, Number o
 	this->shapeType = shapeType;
 	width = option1;
 	height = option2;
-	
+
 	setHitbox(width, height);
 
 	this->option1 = option1;
@@ -42,9 +42,9 @@ ScreenShape::ScreenShape(int shapeType, Number option1, Number option2, Number o
 	this->option3 = option3;
 	this->option4 = option4;
 	lineSmooth = false;
-		
+
 	buildShapeMesh();
-	
+
 	positionMode = POSITION_CENTER;
 	strokeEnabled = false;
 }
@@ -52,22 +52,22 @@ ScreenShape::ScreenShape(int shapeType, Number option1, Number option2, Number o
 void ScreenShape::operator=(const ScreenShape& copy) {
 	strokeWidth = copy.strokeWidth;
 	shapeType = copy.getShapeType();
-	
+
 	width = copy.getWidth();
 	height = copy.getHeight();
-	
+
 	setHitbox(width, height);
 
 	this->option3 = copy.option3;
 	this->option4 = copy.option4;
 	lineSmooth = copy.lineSmooth;
-		
+
 	buildShapeMesh();
-	
+
 	strokeColor = copy.strokeColor;
-	
+
 	positionMode = POSITION_CENTER;
-	strokeEnabled = copy.strokeEnabled;	
+	strokeEnabled = copy.strokeEnabled;
 
 }
 
@@ -87,30 +87,32 @@ void ScreenShape::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnl
 void ScreenShape::buildShapeMesh() {
 
 	mesh->clearMesh();
-	
+
 	switch(shapeType) {
-		case SHAPE_RECT: {
+		case SHAPE_RECT: 
+		{
 			mesh->setMeshType(Mesh::QUAD_MESH);
-			
+
 			Number whalf = width/2.0f;
 			Number hhalf = height/2.0f;
 			
 			if(snapToPixels) {
 				whalf = floor(whalf);
-				hhalf = floor(hhalf);				
+				hhalf = floor(hhalf);
 			}
-		
+
 			Polygon *poly = new Polygon();
-			
+
 			poly->addVertex(-whalf,-hhalf,0,0,1);
 			poly->addVertex(-whalf+width,-hhalf,0, 1, 1);
 			poly->addVertex(-whalf+width,-hhalf+height,0, 1, 0);
 			poly->addVertex(-whalf,-hhalf+height,0,0,0);
-						
+
 			mesh->addPolygon(poly);
-			}
+		}
 		break;
-		case SHAPE_CIRCLE: {
+		case SHAPE_CIRCLE: 
+		{
 			mesh->setMeshType(Mesh::TRIFAN_MESH);
 			Polygon *poly = new Polygon();
 			int step;
@@ -118,21 +120,21 @@ void ScreenShape::buildShapeMesh() {
 				step = ceil(360/option3);
 			else
 				step = 1;
-			
+
 			poly->addVertex(cosf(0)*(width/2),sinf(0)*(height/2), 0, (cosf(0)*0.5) + 0.5,(sinf(0) * 0.5)+ 0.5);
-			
+
 			for (int i=0; i < 361; i+= step) {
 				Number degInRad = i*TORADIANS;
 				poly->addVertex(cos(degInRad)*(width/2),sin(degInRad)*(height/2), 0, (cos(degInRad) * 0.5)+ 0.5 , 1.0- ((sin(degInRad) * 0.5)+ 0.5));
 			}
 			mesh->addPolygon(poly);
-			}
+		}
 		break;
 		default:
 		break;
 	}
 
-	mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;	
+	mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
 }
 
 int ScreenShape::getShapeType() const {
@@ -148,28 +150,27 @@ void ScreenShape::setShapeSize(Number newWidth, Number newHeight) {
 
 	setWidth(newWidth);
 	setHeight(newHeight);
-	
 
 	if(shapeType == SHAPE_RECT) {
-			Number whalf = floor(width/2.0f);
-			Number hhalf = floor(height/2.0f);
-			Polygon *polygon;
-			Vertex *vertex;
+		Number whalf = floor(width/2.0f);
+		Number hhalf = floor(height/2.0f);
+		Polygon *polygon;
+		Vertex *vertex;
 
-			polygon = mesh->getPolygon(0);	
-			vertex = polygon->getVertex(0);
-			vertex->set(-whalf,-hhalf,0);			
-			vertex = polygon->getVertex(1);
-			vertex->set(-whalf+width,-hhalf,0);			
-			vertex = polygon->getVertex(2);
-			vertex->set(-whalf+width,-hhalf+height,0);			
-			vertex = polygon->getVertex(3);	
-			vertex->set(-whalf,-hhalf+height,0);				
-			mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;	
-	} else {	
+		polygon = mesh->getPolygon(0);
+		vertex = polygon->getVertex(0);
+		vertex->set(-whalf,-hhalf,0);
+		vertex = polygon->getVertex(1);
+		vertex->set(-whalf+width,-hhalf,0);
+		vertex = polygon->getVertex(2);
+		vertex->set(-whalf+width,-hhalf+height,0);
+		vertex = polygon->getVertex(3);
+		vertex->set(-whalf,-hhalf+height,0);
+		mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;	
+	} else {
 		buildShapeMesh();
 	}
-		
+
 	rebuildTransformMatrix();
 	matrixDirty = true;
 }
@@ -180,15 +181,15 @@ void ScreenShape::setGradient(Number r1, Number g1, Number b1, Number a1, Number
 	for(int i=0; i < mesh->getPolygon(0)->getVertexCount(); i++) {
 		mesh->getPolygon(0)->getVertex(i)->useVertexColor = true;
 	}
-	
+
 	switch(shapeType) {
 		case SHAPE_RECT:
-				mesh->getPolygon(0)->getVertex(0)->vertexColor.setColor(r1,g1,b1,a1);
-				mesh->getPolygon(0)->getVertex(1)->vertexColor.setColor(r1,g1,b1,a1);
-				mesh->getPolygon(0)->getVertex(2)->vertexColor.setColor(r2,g2,b2,a2);
-				mesh->getPolygon(0)->getVertex(3)->vertexColor.setColor(r2,g2,b2,a2);
+			mesh->getPolygon(0)->getVertex(0)->vertexColor.setColor(r1,g1,b1,a1);
+			mesh->getPolygon(0)->getVertex(1)->vertexColor.setColor(r1,g1,b1,a1);
+			mesh->getPolygon(0)->getVertex(2)->vertexColor.setColor(r2,g2,b2,a2);
+			mesh->getPolygon(0)->getVertex(3)->vertexColor.setColor(r2,g2,b2,a2);
 		break;
-		case SHAPE_CIRCLE:	
+		case SHAPE_CIRCLE:
 			mesh->getPolygon(0)->getVertex(0)->vertexColor.setColor(r1,g1,b1,a1);
 			for(int i=1; i < mesh->getPolygon(0)->getVertexCount(); i++) {
 				mesh->getPolygon(0)->getVertex(i)->vertexColor.setColor(r2,g2,b2,a2);
@@ -222,7 +223,7 @@ void ScreenShape::Render() {
 		if(lineSmooth) {
 				renderer->setLineSmooth(true);
 		}
-		
+
 		renderer->setLineSize(strokeWidth);
 		renderer->setVertexColor(strokeColor.r,strokeColor.g,strokeColor.b,strokeColor.a);
 		int rmode = renderer->getRenderMode();
@@ -230,9 +231,9 @@ void ScreenShape::Render() {
 
 //		renderer->pushDataArrayForMesh(mesh, RenderDataArray::COLOR_DATA_ARRAY);
 		renderer->pushDataArrayForMesh(mesh, RenderDataArray::VERTEX_DATA_ARRAY);
-//		renderer->pushDataArrayForMesh(mesh, RenderDataArray::TEXCOORD_DATA_ARRAY);	
-		renderer->drawArrays(mesh->getMeshType());		
-		
+//		renderer->pushDataArrayForMesh(mesh, RenderDataArray::TEXCOORD_DATA_ARRAY);
+		renderer->drawArrays(mesh->getMeshType());
+
 		renderer->setRenderMode(rmode);
 		renderer->setLineSize(1.0f);
 		renderer->setLineSmooth(false);

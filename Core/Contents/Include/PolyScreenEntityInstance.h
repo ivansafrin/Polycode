@@ -43,14 +43,14 @@ class ScreenEntityInstance : public ScreenEntity {
 	public:
 		ScreenEntityInstance(const String& fileName);
 		ScreenEntityInstance();
-		
+
 		static ScreenEntityInstance *BlankScreenEntityInstance();
 
 		virtual ~ScreenEntityInstance();
-	
+
 		virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly);
 		virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly);
-		
+
 		void reloadEntityInstance();
 
 		void clearInstance();
@@ -59,33 +59,32 @@ class ScreenEntityInstance : public ScreenEntity {
 		void applyScreenShape(ObjectEntry *entry, ScreenShape *shape);
 		ScreenEntity *loadObjectEntryIntoEntity(ObjectEntry *entry, ScreenEntity *targetEntity = NULL);
 		bool loadFromFile(const String& fileName);
-		
-		
+
+
 		ScreenEntityInstanceResourceEntry *getResourceEntry();
-		
+
 		String getFileName() const;
-		
+
 		bool cloneUsingReload;
 
 		String fileName;
-		
+
 	protected:
-		
+
 		ScreenEntityInstanceResourceEntry *resourceEntry;
-		
+
 };
 
 class ScreenEntityInstanceResourceEntry : public Resource {
 	public:
 		ScreenEntityInstanceResourceEntry(ScreenEntityInstance *instance);
 		virtual ~ScreenEntityInstanceResourceEntry();
-		
+
 		ScreenEntityInstance *getInstance();
 		void reloadResource();
-		
+
 	protected:
 		ScreenEntityInstance* instance;
 };
-
 
 }

@@ -26,32 +26,32 @@ THE SOFTWARE.
 #include <vector>
 
 namespace Polycode {
-	
-	class Scene;
-	class SceneRenderTexture;
-	
-	class _PolyExport SceneManager : public PolyBase {
-		public:
+
+class Scene;
+class SceneRenderTexture;
+
+class _PolyExport SceneManager : public PolyBase {
+	public:
 		SceneManager();
 		~SceneManager();
-		
+
 		void addScene(Scene *newScene);
 		void Update();
 		void Render();
-		
+
 		void renderVirtual();
-				
-		void removeScene(Scene *scene);	
+
+		void removeScene(Scene *scene);
 		void registerRenderTexture(SceneRenderTexture *renderTexture);
 		void unregisterRenderTexture(SceneRenderTexture *renderTexture);
-				
-		private:
-		
+
+	private:
+
 		void updateRenderTextures(Scene *scene);
-		
+
 		std::vector <Scene*> scenes;
 		std::vector <SceneRenderTexture*> renderTextures;
-			
-	};
+
+};
 
 }

@@ -25,7 +25,7 @@
 using namespace Polycode;
 
 Vertex::Vertex() : Vector3(0,0,0) {
-	texCoord = Vector2(0,0);	
+	texCoord = Vector2(0,0);
 	normal = Vector3(0,0,0);
 	useVertexColor = false;
 }
@@ -41,7 +41,7 @@ Vertex::Vertex(Number pos_x, Number pos_y, Number pos_z, Number nor_x, Number no
 	normal = Vector3(nor_x, nor_y, nor_z);
 	texCoord = Vector2(u,v);
 	useVertexColor = false;
-	restPosition.set(pos_x, pos_y, pos_z);	
+	restPosition.set(pos_x, pos_y, pos_z);
 }
 
 Vertex::Vertex(Number x, Number y, Number z) : Vector3(x,y,z) {
@@ -50,7 +50,7 @@ Vertex::Vertex(Number x, Number y, Number z) : Vector3(x,y,z) {
 }
 
 Vertex::Vertex(Number x, Number y, Number z, Number u, Number v) : Vector3(x,y,z) {
-	texCoord = Vector2(u,v);	
+	texCoord = Vector2(u,v);
 	useVertexColor = false;
 	restPosition.set(x, y, z);
 }
@@ -62,7 +62,7 @@ void Vertex::addBoneAssignment(unsigned int boneID, Number boneWeight) {
 		boneWeight = 1;
 	if(boneWeight < 0)
 		boneWeight = 0;
-		
+
 	newBas->weight = boneWeight;
 	boneAssignments.push_back(newBas);
 }
@@ -70,7 +70,7 @@ void Vertex::addBoneAssignment(unsigned int boneID, Number boneWeight) {
 void Vertex::setNormal(Number x, Number y, Number z) {
 	normal.x = x;
 	normal.y = y;
-	normal.z = z;	
+	normal.z = z;
 }
 
 void Vertex::normalizeWeights() {
@@ -78,14 +78,14 @@ void Vertex::normalizeWeights() {
 //	if(boneAssignments.size() == 1)
 //		if(boneAssignments[0]->weight < 1)
 //			return;
-			
+
 	for(int i =0 ;i < boneAssignments.size(); i++) {
 		allWeights += boneAssignments[i]->weight;
 	}
-	
+
 	for(int i =0 ;i < boneAssignments.size(); i++) {
 		boneAssignments[i]->weight *= 1.0f/allWeights;
-	}	
+	}
 }
 
 int Vertex::getNumBoneAssignments() {

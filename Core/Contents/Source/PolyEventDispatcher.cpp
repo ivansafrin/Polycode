@@ -24,14 +24,15 @@
 #include "PolyEvent.h"
 
 namespace Polycode {
-	
+
 	EventDispatcher::EventDispatcher() : EventHandler() {
+
 	}
-	
+
 	EventDispatcher::~EventDispatcher() {
-		
+
 	}
-	
+
 	void EventDispatcher::addEventListener(EventHandler *handler, int eventCode) {
 		EventEntry newEntry;
 		newEntry.handler = handler;
@@ -42,14 +43,14 @@ namespace Polycode {
 	void EventDispatcher::removeAllHandlers() {
 		handlerEntries.clear();
 	}
-	
+
 	void EventDispatcher::removeAllHandlersForListener(EventHandler *handler) {
 		std::vector<EventEntry>::iterator iter = handlerEntries.begin();
 		while (iter != handlerEntries.end()) {	
 			if((*iter).handler == handler) {
 				iter = handlerEntries.erase(iter);
-			} else {	
-				++iter;						
+			} else {
+				++iter;
 			}
 		}
 		
@@ -62,7 +63,7 @@ namespace Polycode {
 			}
 		}
 	}
-	
+
 	void EventDispatcher::__dispatchEvent(Event *event, int eventCode) {
 		//		event->setDispatcher(dynamic_cast<void*>(this));
 		event->setDispatcher(this);
@@ -76,9 +77,9 @@ namespace Polycode {
 				handlerEntries[i].handler->secondaryHandler(event);
 			}
 		}
-		
+
 	}
-	
+
 	void EventDispatcher::dispatchEventNoDelete(Event *event, int eventCode) {
 		__dispatchEvent(event,eventCode);
 	}

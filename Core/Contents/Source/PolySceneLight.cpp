@@ -36,10 +36,10 @@ SceneLight::SceneLight(int type, Scene *parentScene, Number intensity, Number co
 	this->constantAttenuation = constantAttenuation;
 	this->linearAttenuation = linearAttenuation;
 	this->quadraticAttenuation = quadraticAttenuation;
-	
+
 	spotlightCutoff = 40;
 	spotlightExponent = 10;
-		
+
 	this->depthWrite = false;
 	lightMesh = new Mesh(Mesh::QUAD_MESH);
 	lightMesh->createBox(0.1,0.1,0.1);
@@ -52,7 +52,7 @@ SceneLight::SceneLight(int type, Scene *parentScene, Number intensity, Number co
 	shadowsEnabled = false;
 	lightColor.setColor(1.0f,1.0f,1.0f,1.0f);
 	setSpotlightProperties(40,0.1);
-	
+
 	/*
 	if(type == SceneLight::SPOT_LIGHT) {
 		lightShape = new ScenePrimitive(ScenePrimitive::TYPE_CONE, 3, 1.0, 8);
@@ -70,9 +70,9 @@ SceneLight::SceneLight(int type, Scene *parentScene, Number intensity, Number co
 	lightShape->castShadows = false;
 	lightShape->visible = false;
 	*/
-	
+
 	lightShape = NULL;
-	
+
 	lightImportance = 0;
 }
 
@@ -86,9 +86,8 @@ int SceneLight::getLightImportance() const {
 
 
 void SceneLight::enableDebugDraw(bool val) {
-	if(lightShape) {
+	if(lightShape) 
 		lightShape->visible = val;
-	}
 }
 
 void SceneLight::enableShadows(bool val, Number resolution) {
@@ -116,7 +115,7 @@ void SceneLight::setAttenuation(Number constantAttenuation, Number linearAttenua
 	this->constantAttenuation = constantAttenuation;
 	this->linearAttenuation = linearAttenuation;
 	this->quadraticAttenuation = quadraticAttenuation;
-}			
+}
 
 
 void SceneLight::setIntensity(Number newIntensity) {
@@ -136,11 +135,11 @@ void SceneLight::renderDepthMap(Scene *scene) {
 	CoreServices::getInstance()->getRenderer()->pushMatrix();
 	CoreServices::getInstance()->getRenderer()->loadIdentity();
 
-	CoreServices::getInstance()->getRenderer()->setViewportSizeAndFOV(shadowMapRes, shadowMapRes, shadowMapFOV);	
-	CoreServices::getInstance()->getRenderer()->bindFrameBufferTexture(zBufferTexture);	
+	CoreServices::getInstance()->getRenderer()->setViewportSizeAndFOV(shadowMapRes, shadowMapRes, shadowMapFOV);
+	CoreServices::getInstance()->getRenderer()->bindFrameBufferTexture(zBufferTexture);
 
 	scene->RenderDepthOnly(spotCamera);
-		
+
 	lightViewMatrix = CoreServices::getInstance()->getRenderer()->getModelviewMatrix() *  CoreServices::getInstance()->getRenderer()->getProjectionMatrix();
 	CoreServices::getInstance()->getRenderer()->unbindFramebuffers();
 	CoreServices::getInstance()->getRenderer()->popMatrix();

@@ -43,7 +43,7 @@ void TweenManager::removeTween(Tween *tween) {
 			tweens.erase(tweens.begin()+i);
 			if(tween->deleteOnComplete)
 				delete tween;
-			
+
 		}
 	}
 }

@@ -25,55 +25,55 @@ THE SOFTWARE.
 
 namespace Polycode {
 
-	class Scene;
-	class Camera;
-	class Texture;
-	
-	/**
-	* Renders scenes to texture. This class automatically renders a scene to a texture every frame that you can use to texture anything else. You can set a scene to virtual (see Scene for details) to only render a scene to a texture if you need to. This class automatically adds itself to the render cycle, so you do not need to do anything manual every frame.
-	*/
-	class _PolyExport SceneRenderTexture : public PolyBase {
-		public:
-			/**
-			* Construct a new render texture with parameters.
-			* @param targetScene Target scene to render.
-			* @param Camera to render from.
-			* @param renderWidth Horizontal size of the render texture.
-			* @param renderHeight Vertical size of the render texture.
-			* @param floatingPoint Pass true if you want fp16 target renders			
-			*/
-			SceneRenderTexture(Scene *targetScene, Camera *targetCamera, int renderWidth,int renderHeight, bool floatingPoint = false);
-			virtual ~SceneRenderTexture();
-						
-			/**
-			* Returns the actual render texture.
-			*/
-			Texture *getTargetTexture();
-			
-			Texture *getFilterColorBufferTexture();
-			Texture *getFilterZBufferTexture();			
+class Scene;
+class Camera;
+class Texture;
 
-			void resizeRenderTexture(int newWidth, int newHeight);
-			/**
-			* Returns the target scene.
-			*/			
-			Scene *getTargetScene();
-			
-			/**
-			* Returns the target camera.
-			*/						
-			Camera *getTargetCamera();	
-				
-		protected:
-		
-			Texture *filterColorBufferTexture;
-			Texture *filterZBufferTexture;
-		
-			bool floatingPoint;
-		
-			Texture *depthTexture;		
-			Texture *targetTexture;
-			Scene *targetScene;
-			Camera *targetCamera;
-	};
+/**
+* Renders scenes to texture. This class automatically renders a scene to a texture every frame that you can use to texture anything else. You can set a scene to virtual (see Scene for details) to only render a scene to a texture if you need to. This class automatically adds itself to the render cycle, so you do not need to do anything manual every frame.
+*/
+class _PolyExport SceneRenderTexture : public PolyBase {
+	public:
+		/**
+		* Construct a new render texture with parameters.
+		* @param targetScene Target scene to render.
+		* @param Camera to render from.
+		* @param renderWidth Horizontal size of the render texture.
+		* @param renderHeight Vertical size of the render texture.
+		* @param floatingPoint Pass true if you want fp16 target renders
+		*/
+		SceneRenderTexture(Scene *targetScene, Camera *targetCamera, int renderWidth,int renderHeight, bool floatingPoint = false);
+		virtual ~SceneRenderTexture();
+
+		/**
+		* Returns the actual render texture.
+		*/
+		Texture *getTargetTexture();
+
+		Texture *getFilterColorBufferTexture();
+		Texture *getFilterZBufferTexture();
+
+		void resizeRenderTexture(int newWidth, int newHeight);
+		/**
+		* Returns the target scene.
+		*/
+		Scene *getTargetScene();
+
+		/**
+		* Returns the target camera.
+		*/
+		Camera *getTargetCamera();
+
+	protected:
+
+		Texture *filterColorBufferTexture;
+		Texture *filterZBufferTexture;
+
+		bool floatingPoint;
+
+		Texture *depthTexture;
+		Texture *targetTexture;
+		Scene *targetScene;
+		Camera *targetCamera;
+};
 }

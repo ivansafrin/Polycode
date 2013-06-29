@@ -28,55 +28,56 @@ THE SOFTWARE.
 #include <vector>
 
 namespace Polycode {
-	
-	class Shader;
-	class ShaderBinding;
-	class ShaderRenderTarget;
 
-	class _PolyExport Material : public Resource {
-		public:
-			Material(const String& name);
-			virtual ~Material();
-			
-			void addShader(Shader *shader,ShaderBinding *shaderBinding);
-			void addShaderAtIndex(Shader *shader,ShaderBinding *shaderBinding, int shaderIndex);			
-			unsigned int getNumShaders() const;
-			
-			void removeShader(int shaderIndex);
-			
-			void addShaderRenderTarget(ShaderRenderTarget *newTarget);
-			int getNumShaderRenderTargets();
-			ShaderRenderTarget *getShaderRenderTarget(unsigned int index);
-			void removeShaderRenderTarget(int index);
-			void recreateRenderTarget(ShaderRenderTarget *renderTarget);	
-			void recreateRenderTargets();
-			
-			void handleEvent(Event *event);
-						
-			const String& getName() const;
-			Shader *getShader(unsigned int index) const;
-			ShaderBinding *getShaderBinding(unsigned int index) const;
-			void loadMaterial(const String& fileName);
-			
-			void setName(const String &name);
-			
-			void clearShaders();
-							
-			bool fp16RenderTargets;
-			
-			void *shaderModule;
-			
-			int blendingMode;
-			
-			bool screenMaterial;
-			
-		protected:
-		
-			std::vector<Shader*> materialShaders;
-			std::vector<ShaderBinding*> shaderBindings;
-			std::vector<ShaderRenderTarget*> renderTargets;
-					
-			String name;
-		
-	};
+class Shader;
+class ShaderBinding;
+class ShaderRenderTarget;
+
+class _PolyExport Material : public Resource {
+	public:
+		Material(const String& name);
+		virtual ~Material();
+
+		void addShader(Shader *shader,ShaderBinding *shaderBinding);
+		void addShaderAtIndex(Shader *shader,ShaderBinding *shaderBinding, int shaderIndex);
+		unsigned int getNumShaders() const;
+
+		void removeShader(int shaderIndex);
+
+		void addShaderRenderTarget(ShaderRenderTarget *newTarget);
+		int getNumShaderRenderTargets();
+		ShaderRenderTarget *getShaderRenderTarget(unsigned int index);
+		void removeShaderRenderTarget(int index);
+		void recreateRenderTarget(ShaderRenderTarget *renderTarget);
+		void recreateRenderTargets();
+
+		void handleEvent(Event *event);
+
+		const String& getName() const;
+		Shader *getShader(unsigned int index) const;
+		ShaderBinding *getShaderBinding(unsigned int index) const;
+		void loadMaterial(const String& fileName);
+
+		void setName(const String &name);
+
+		void clearShaders();
+
+		bool fp16RenderTargets;
+
+		void *shaderModule;
+
+		int blendingMode;
+
+		bool screenMaterial;
+
+	protected:
+
+		std::vector<Shader*> materialShaders;
+		std::vector<ShaderBinding*> shaderBindings;
+		std::vector<ShaderRenderTarget*> renderTargets;
+
+		String name;
+
+};
+
 }

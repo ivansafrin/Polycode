@@ -26,37 +26,37 @@ THE SOFTWARE.
 
 namespace Polycode {
 
-	class Sound;
+class Sound;
 
-	/**
-	* Creates a positional 3D sound listener. There can be only one listener active at any one time.
- 	*/	
-	class _PolyExport SceneSoundListener : public SceneEntity {
-		public:
-			SceneSoundListener();
-			virtual ~SceneSoundListener();			
-			void Update();
-	};
+/**
+* Creates a positional 3D sound listener. There can be only one listener active at any one time.
+*/	
+class _PolyExport SceneSoundListener : public SceneEntity {
+	public:
+		SceneSoundListener();
+		virtual ~SceneSoundListener();
+		void Update();
+};
 
 
-	/**
-	* Creates a positional 3D sound.
-	*/	
-	class _PolyExport SceneSound : public SceneEntity {
-		public:
-			SceneSound(const String& fileName, Number referenceDistance, Number maxDistance, bool directionalSound = false);
-			virtual ~SceneSound();			
-			void Update();
-			
-			/**
-			* Returns the sound object associated with this positional sound.
-			*/
-			Sound *getSound();
-			
-		protected:
-		
-			bool directionalSound;
-			Sound *sound;
-	};
-	
+/**
+* Creates a positional 3D sound.
+*/	
+class _PolyExport SceneSound : public SceneEntity {
+	public:
+		SceneSound(const String& fileName, Number referenceDistance, Number maxDistance, bool directionalSound = false);
+		virtual ~SceneSound();
+		void Update();
+
+		/**
+		* Returns the sound object associated with this positional sound.
+		*/
+		Sound *getSound();
+
+	protected:
+
+		bool directionalSound;
+		Sound *sound;
+};
+
 }

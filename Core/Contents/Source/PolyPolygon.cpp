@@ -30,17 +30,17 @@ using std::max;
 namespace Polycode {
 
 Polygon::Polygon()  : useVertexNormals(false), vertexCount(0) {
-	useVertexNormals = true;	
+	useVertexNormals = true;
 }
 
 Polygon::~Polygon() {
-	
-	for(int i=0; i < vertices.size(); i++) {	
+
+	for(int i=0; i < vertices.size(); i++) {
 		delete vertices[i];
 	}
 	vertices.clear();
 }
-	
+
 void Polygon::flipUVY() {
 	for(int i=0; i < vertices.size(); i++) {
 		Vector2 coord = vertices[i]->getTexCoord();
@@ -66,7 +66,7 @@ Vector3 Polygon::getFaceNormal() {
 	fNormal.x = (vertices[2]->z-vertices[1]->z)*(vertices[2]->y-vertices[1]->y)-(vertices[0]->y-vertices[1]->y)*(vertices[2]->z-vertices[1]->z);
 	fNormal.y = (vertices[0]->x-vertices[1]->x)*(vertices[2]->z-vertices[1]->z)-(vertices[0]->z-vertices[1]->z)*(vertices[2]->x-vertices[1]->x);
 	fNormal.z = (vertices[0]->y-vertices[1]->y)*(vertices[2]->x-vertices[1]->x)-(vertices[0]->x-vertices[1]->x)*(vertices[2]->y-vertices[1]->y);
-	fNormal.Normalize();	
+	fNormal.Normalize();
 	return fNormal;
 	*/
 	return normal;
@@ -77,17 +77,17 @@ Rectangle Polygon::getBounds2D() {
 	retBox.x = 1000000000;
 	retBox.y = 1000000000;
 	for(int i=0; i < vertices.size(); i++) {
-			retBox.x = min(retBox.x,vertices[i]->x);
-			retBox.y = min(retBox.y,vertices[i]->y);
+		retBox.x = min(retBox.x,vertices[i]->x);
+		retBox.y = min(retBox.y,vertices[i]->y);
 	}
 	for(int i=0; i < vertices.size(); i++) {
-			retBox.w = max(retBox.w, vertices[i]->x - retBox.x);
-			retBox.h = max(retBox.h, vertices[i]->y - retBox.y);
+		retBox.w = max(retBox.w, vertices[i]->x - retBox.x);
+		retBox.h = max(retBox.h, vertices[i]->y - retBox.y);
 	}
-	
+
 	return retBox;
 }
-	
+
 void Polygon::removeVertex(int index) {
 	Vertex *vert = vertices[index];
 	vertices.erase(vertices.begin() + index);
@@ -96,7 +96,7 @@ void Polygon::removeVertex(int index) {
 
 void Polygon::setNormal(Vector3 normal) {
 	this->normal = normal;
-}	
+}
 
 void Polygon::calculateNormal() {
 	if(vertices.size() < 3)
@@ -107,21 +107,21 @@ void Polygon::calculateNormal() {
 //	normal->z = (vertices[0]->y-vertices[1]->y)*(vertices[2]->x-vertices[1]->x)-(vertices[0]->x-vertices[1]->x)*(vertices[2]->y-vertices[1]->y);
 
 	normal = (*vertices[0] - *vertices[1]).crossProduct((*vertices[1] - *vertices[2]));
-	
+
 	normal.Normalize();
-	
+
 	for(int i=0; i < vertices.size(); i++) {
 		vertices[i]->normal.x = normal.x;
 		vertices[i]->normal.y = normal.y;
-		vertices[i]->normal.z = normal.z;		
+		vertices[i]->normal.z = normal.z;
 	}
 }
 
 void Polygon::calculateTangent() {
 	if(vertices.size() < 3)
 		return;
-		
-	
+
+
 	Vector3 side0 = *vertices[0] - *vertices[1];
 	Vector3 side1 = *vertices[2] - *vertices[0];
 	Vector3 normal = side1.crossProduct(side0);
@@ -130,7 +130,7 @@ void Polygon::calculateTangent() {
 	Number deltaV1 = vertices[2]->texCoord.y - vertices[0]->texCoord.y;
 	tangent = side0 * deltaV1 - side1 * deltaV0;	
 	tangent.Normalize();
-	
+
 	Number deltaU0 = vertices[0]->texCoord.x - vertices[1]->texCoord.x;
 	Number deltaU1 = vertices[2]->texCoord.x - vertices[0]->texCoord.x;
 	Vector3 binormal = side0 * deltaU1 - side1 * deltaU0;
@@ -141,13 +141,13 @@ void Polygon::calculateTangent() {
 		tangent = tangent * -1;
 	}
 
-	for(int i=0; i < vertices.size(); i++) {		
+	for(int i=0; i < vertices.size(); i++) {
 		vertices[i]->tangent.x = tangent.x;
 		vertices[i]->tangent.y = tangent.y;
-		vertices[i]->tangent.z = tangent.z;		
+		vertices[i]->tangent.z = tangent.z;
 	}
-	
-	
+
+
 }
 
 Vertex *Polygon::addVertex(Number x, Number y, Number z) {

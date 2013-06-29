@@ -43,39 +43,39 @@ class EditPoint : public ScreenEntity {
 	public:
 		EditPoint(BezierPoint *point, unsigned int type);
 		~EditPoint();
-		
+
 		void handleEvent(Event *event);
-		
+
 		void updatePosition();
 		void updateCurvePoint();
-		
+
 		void setMode(unsigned int mode);
 
 		void limitPoint(ScreenImage *point);
-								
+
 		ScreenImage *pointHandle;
-		
+
 		ScreenImage *controlHandle1;
 		ScreenImage *controlHandle2;
-		
+
 		ScreenLine *connectorLine1;
 		ScreenLine *connectorLine2;
-				
-		static const int TYPE_START_POINT = 0;		
+
+		static const int TYPE_START_POINT = 0;
 		static const int TYPE_POINT = 1;
-		static const int TYPE_END_POINT = 2;				
-		
+		static const int TYPE_END_POINT = 2;
+
 		ScreenImage *draggingPoint;
 		bool dragging;
 		Vector2 basePosition;
 		Vector2 basePointPosition;
-		
+
 		Vector2 baseControl1;
-		Vector2 baseControl2;	
-		
+		Vector2 baseControl2;
+
 		unsigned int mode;
-				
-		unsigned int type;				
+
+		unsigned int type;
 		BezierPoint *point;
 };
 
@@ -83,27 +83,27 @@ class EditCurve : public UIElement {
 	public:
 		EditCurve(BezierCurve *targetCurve, Color curveColor);
 		~EditCurve();
-		
+
 		void updateCurve();
 		void updatePoints();
-		
+
 		void setMode(unsigned int mode);
-		
+
 		void Activate();
 		void Deactivate();
-		
+
 		void Update();
-				
+
 		void handleEvent(Event *event);
-		
+
 		BezierCurve *targetCurve;
 		ScreenMesh *visMesh;
-		Polycode::Polygon *poly;	
-		
+		Polycode::Polygon *poly;
+
 		EditPoint *pointToRemove;
 		UIElement *pointsBase;
 		vector<EditPoint*> points;
-		
+
 		unsigned int mode;
 };
 
@@ -111,31 +111,31 @@ class CurveEditor : public UIWindow {
 	public:
 		CurveEditor();
 		~CurveEditor();
-		
-		void handleEvent(Event *event);		
+
+		void handleEvent(Event *event);
 		void setMode(unsigned int mode);
-		
+
 		void addCurve(String name, BezierCurve *curve, Color curveColor);
 
 		void onClose();
 
 		void clearCurves();
-		
+
 		UIImageButton *selectButton;
 		UIImageButton *addButton;
 		UIImageButton *removeButton;
-				
+
 		ScreenImage	*selectorImage;
-		
-		static const int MODE_SELECT = 0;		
+
+		static const int MODE_SELECT = 0;
 		static const int MODE_ADD = 1;
 		static const int MODE_REMOVE = 2;
-		
+
 		UITreeContainer *treeContainer;
-		
+
 		unsigned int mode;
 		ScreenImage *bg;
-		
+
 		EditCurve *selectedCurve;
 		std::vector<EditCurve*> curves;
 };
@@ -144,125 +144,125 @@ class EditorHolder : public UIElement {
 	public:
 		EditorHolder();
 		~EditorHolder();
-		
+
 		void Resize(Number width, Number height);
-		
+
 		PolycodeEditor *currentEditor;
-		
+
 };
 
 class PolycodeFrame : public ScreenEntity {
 public:
-	
+
 	PolycodeFrame();
 	~PolycodeFrame();
-	
+
 	void Resize(int x, int y);
 
 	void Update();
-	
+
 	void showModal(UIWindow *modalChild);
 	void hideModal();
-	
+
 	void showFileBrowser(String baseDir, bool foldersOnly, std::vector<String> extensions, bool allowMultiple);
 
 	void handleEvent(Event *event);
-	
+
 	void addEditor(PolycodeEditor *editor);
 	void removeEditor(PolycodeEditor *editor);
-		
+
 	void showEditor(PolycodeEditor *editor);
-	
+
 	void showAssetBrowser(std::vector<String> extensions);
-	
+
 	void toggleConsole();
 	void showConsole();
 	void hideConsole();
-	
+
 	void showCurveEditor();
-	
+
 	PolycodeProjectBrowser *getProjectBrowser();
-	
-	NewProjectWindow *newProjectWindow;	
+
+	NewProjectWindow *newProjectWindow;
 	ExampleBrowserWindow *exampleBrowserWindow;
 	NewFileWindow *newFileWindow;
 	ExportProjectWindow *exportProjectWindow;
 	SettingsWindow *settingsWindow;
-	
+
 	AssetBrowser *assetBrowser;
-	
+
 	TextInputPopup *textInputPopup;
 	YesNoPopup *yesNoPopup;
 	YesNoCancelPopup *yesNoCancelPopup;
-	
-	ScreenEntity *welcomeEntity;	
+
+	ScreenEntity *welcomeEntity;
 	PolycodeProjectBrowser *projectBrowser;
 	PolycodeEditorManager *editorManager;
-		
+
 	UIImageButton *playButton;
 	UIImageButton *stopButton;
-		
+
 	UIHSizer *mainSizer;
-	
+
 	PolycodeConsole *console;
-	
+
 	PolycodeProjectManager *projectManager;
-		
+
 	CurveEditor *curveEditor;
-	
+
 	UIElement *modalRoot;
 	UIElement *fileBrowserRoot;
 	UIFileDialog *fileDialog;
-	
+
 	UIWindow *aboutWindow;
 	UIButton *aboutOKButton;
-	
+
 	UIImageButton *closeFileButton;
-	
+
 	void updateFileSelector();
 	void showNextEditor();
 	void showPreviousEditor();
-	
+
 private:
-	
+
 	int frameSizeX;
 	int frameSizeY;
-	
+
 	bool willHideModal;
-	
+
 	bool showingConsole;
 	Number consoleSize;
 
 	ScreenShape *fileDialogBlocker;
 
 	ScreenShape *topBarBg;
-	ScreenImage *logo;	
-	ScreenImage *resizer;	
+	ScreenImage *logo;
+	ScreenImage *resizer;
 
 	OSFileEntry draggedFile;
 	ScreenEntity *dragEntity;
 	ScreenLabel *dragLabel;
 	bool isDragging;
-	
+
 	ScreenLabel *currentProjectTitle;
 	UIComboBox *currentFileSelector;
-	
-	ScreenImage *welcomeImage;	
-	
-	
+
+	ScreenImage *welcomeImage;
+
+
 	EditorHolder *editorHolder;
-	
+
 
 	vector<PolycodeEditor*> editors;
-	
+
 	ScreenShape *modalBlocker;
-	UIWindow *modalChild;		
-	
+	UIWindow *modalChild;
+
 	UIVSizer *consoleSizer;
-	
+
 	UIButton *newProjectButton;
 	UIButton *examplesButton;
-	
+
 	bool displayFilePathInSelector;
 
 };

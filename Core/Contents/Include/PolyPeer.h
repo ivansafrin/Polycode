@@ -30,31 +30,31 @@ THE SOFTWARE.
 #include <vector>
 
 
-namespace Polycode {	
-	
-	class Timer;
+namespace Polycode {
 
-	typedef struct {
-		unsigned int headerHash;
-		unsigned int sequence;
-		unsigned int ack;
-		unsigned short reliableID;
-		unsigned int ackBitfield;
-		unsigned short size;
-		unsigned short type;
-	} PacketHeader;
-	
-	typedef struct {
-		PacketHeader header;
-		char data[MAX_PACKET_SIZE];
-	} Packet;
-	
-	typedef struct {
-		Packet *packet;
-		unsigned int timestamp;
-	} SentPacketEntry; 
-	
-	class _PolyExport PeerConnection {
+class Timer;
+
+typedef struct {
+	unsigned int headerHash;
+	unsigned int sequence;
+	unsigned int ack;
+	unsigned short reliableID;
+	unsigned int ackBitfield;
+	unsigned short size;
+	unsigned short type;
+} PacketHeader;
+
+typedef struct {
+	PacketHeader header;
+	char data[MAX_PACKET_SIZE];
+} Packet;
+
+typedef struct {
+	Packet *packet;
+	unsigned int timestamp;
+} SentPacketEntry; 
+
+class _PolyExport PeerConnection {
 	public:
 		PeerConnection() { localSequence = 0; remoteSequence = 0; reliableID = 1;}
 		~PeerConnection(){}
@@ -68,99 +68,103 @@ namespace Polycode {
 		std::vector<SentPacketEntry> reliablePacketQueue;
 		std::vector<unsigned short> recentReliableIDs;
 		Address address;
-	};
+};
 
-	/** 
-	* A network actor that can send and receive data.
-	*
-	* Peers are comparable to UDP sockets, but with extended functionality
-	* to optionally allow for some of TCP's features(ordering, reliability).
-	*
-	* WARNING: Reliability(packets being resent on loss) is currently not
-	* implemented, but is planned.
-	*
-	* @see PeerConnection
-	*/
-#if USE_THREADED_SOCKETS == 1		
-	class _PolyExport Peer : public Threaded {
+/** 
+* A network actor that can send and receive data.
+*
+* Peers are comparable to UDP sockets, but with extended functionality
+* to optionally allow for some of TCP's features(ordering, reliability).
+*
+* WARNING: Reliability(packets being resent on loss) is currently not
+* implemented, but is planned.
+*
+* @see PeerConnection
+*/
+#if USE_THREADED_SOCKETS == 1
+
+class _PolyExport Peer : public Threaded {
+
 #else
-	class _PolyExport Peer : public EventDispatcher {
+
+class _PolyExport Peer : public EventDispatcher {
+
 #endif
-		public:
-			/**
-			* Create a peer. The peer will immediately start listening on the given 
-			* port and accept incoming packets.
-			*
-			* @param port The UDP port to listen for packets. Can not be omitted,
-			*             this will be the actual port this peer will use to send
-			*             and receive packets.
-			*/
-			Peer(unsigned int port);
-			~Peer();
+	public:
+		/**
+		* Create a peer. The peer will immediately start listening on the given 
+		* port and accept incoming packets.
+		*
+		* @param port The UDP port to listen for packets. Can not be omitted,
+		*             this will be the actual port this peer will use to send
+		*             and receive packets.
+		*/
+		Peer(unsigned int port);
+		~Peer();
 
-			void handleEvent(Event *event);
+		void handleEvent(Event *event);
 
-			virtual void handlePacket(Packet *packet, PeerConnection *connection){};
-			virtual void handlePeerConnection(PeerConnection *connection){};
-		
-			Packet *createPacket(const Address &target, char *data, unsigned int size, unsigned short type);
-			
-			/**
-			* Send raw binary data to the target address.
-			*
-			* @param target The network Address to send the data to.
-			* @param data The binary data to send as a C byte array. Length must be supplied by size parameter.
-			* @param size The size in bytes of the sent binary data.
-			* @param type A number representing the packet type, used to define the purpose of the packet.
-			*/
-			void sendData(const Address &target, char *data, unsigned int size, unsigned short type);
+		virtual void handlePacket(Packet *packet, PeerConnection *connection){};
+		virtual void handlePeerConnection(PeerConnection *connection){};
 
-			/**
-			* Send raw binary data to the target address, making sure it arrives in the right order.
-			*
-			* @param target The network address to send the data to.
-			* @param data The binary data to send as a C byte array. Length must be supplied by size parameter.
-			* @param size The size in bytes of the sent binary data.
-			* @param type A number representing the packet type, used to define the purpose of the packet.
-			*/
-			void sendReliableData(const Address &target, char *data, unsigned int size, unsigned short type);
+		Packet *createPacket(const Address &target, char *data, unsigned int size, unsigned short type);
 
-			/**
-			* Broadcast raw binary data to all connected peers, making sure it arrives in the right order.
-			*
-			* @param data The binary data to send as a C byte array. Length must be supplied by size parameter.
-			* @param size The size in bytes of the sent binary data.
-			* @param type A number representing the packet type, used to define the purpose of the packet.
-			*/
-			void sendReliableDataToAll(char *data, unsigned int size, unsigned short type);
+		/**
+		* Send raw binary data to the target address.
+		*
+		* @param target The network Address to send the data to.
+		* @param data The binary data to send as a C byte array. Length must be supplied by size parameter.
+		* @param size The size in bytes of the sent binary data.
+		* @param type A number representing the packet type, used to define the purpose of the packet.
+		*/
+		void sendData(const Address &target, char *data, unsigned int size, unsigned short type);
 
-			/**
-			* Broadcast raw binary data to all connected peers.
-			*
-			* @param data The binary data to send as a C byte array. Length must be supplied by size parameter.
-			* @param size The size in bytes of the sent binary data.
-			* @param type A number representing the packet type, used to define the purpose of the packet.
-			*/
-			void sendDataToAll(char *data, unsigned int size, unsigned short type);		
-		
-			void sendPacket(const Address &target, Packet *packet);
-		
-			bool checkPacketAcks(PeerConnection *connection, Packet *packet);
-		
-			PeerConnection *getPeerConnection(const Address &address);
-			PeerConnection *addPeerConnection(const Address &address);
-			void removePeerConnection(PeerConnection* connection);
-			
-			void updateReliableDataQueue();
-		
-			virtual void updatePeer(){}
-			void updateThread();
-		
-		protected:
-		
-			Timer *updateTimer;
-			std::vector<PeerConnection*> peerConnections;
-			Socket *socket;
-	};
+		/**
+		* Send raw binary data to the target address, making sure it arrives in the right order.
+		*
+		* @param target The network address to send the data to.
+		* @param data The binary data to send as a C byte array. Length must be supplied by size parameter.
+		* @param size The size in bytes of the sent binary data.
+		* @param type A number representing the packet type, used to define the purpose of the packet.
+		*/
+		void sendReliableData(const Address &target, char *data, unsigned int size, unsigned short type);
+
+		/**
+		* Broadcast raw binary data to all connected peers, making sure it arrives in the right order.
+		*
+		* @param data The binary data to send as a C byte array. Length must be supplied by size parameter.
+		* @param size The size in bytes of the sent binary data.
+		* @param type A number representing the packet type, used to define the purpose of the packet.
+		*/
+		void sendReliableDataToAll(char *data, unsigned int size, unsigned short type);
+
+		/**
+		* Broadcast raw binary data to all connected peers.
+		*
+		* @param data The binary data to send as a C byte array. Length must be supplied by size parameter.
+		* @param size The size in bytes of the sent binary data.
+		* @param type A number representing the packet type, used to define the purpose of the packet.
+		*/
+		void sendDataToAll(char *data, unsigned int size, unsigned short type);
+
+		void sendPacket(const Address &target, Packet *packet);
+
+		bool checkPacketAcks(PeerConnection *connection, Packet *packet);
+
+		PeerConnection *getPeerConnection(const Address &address);
+		PeerConnection *addPeerConnection(const Address &address);
+		void removePeerConnection(PeerConnection* connection);
+
+		void updateReliableDataQueue();
+
+		virtual void updatePeer(){}
+		void updateThread();
+
+	protected:
+
+		Timer *updateTimer;
+		std::vector<PeerConnection*> peerConnections;
+		Socket *socket;
+};
 
 }

@@ -33,70 +33,70 @@ namespace Polycode {
 */ 
 class _PolyExport Perlin : public PolyBase 
 {
-public:
+	public:
 
-	/**
-	* Constructs perlin noise.
-	* @param octaves Number of noise octaves.
-	* @param freq Noise frequency.
-	* @param amp Noise amplitude.
-	* @param seed Noise seed.
-	*/
-	Perlin(int octaves,Number freq,Number amp,int seed);
-
-
-	Number Get2DTiledX(Number x, Number y, Number t) {
-		return ( (t - x) * Get2D(x, y) + (x) * Get2D(x - t, y) ) / (t);
-	}	
-
-	/**
-	* Returns noise value at the specified coordinate.
-	* @param x Horizontal coordinate.
-	* @param y Vertical coordinate.	
-	*/ 
-
-	Number Get(Number x,Number y) {
-		return Get2D(x,y);
-	};
-	
-	Number Get2D(Number x,Number y) {
-		Number vec[2];
-		vec[0] = x;
-		vec[1] = y;
-		return perlin_noise_2D(vec);
-	};	
-
-	Number Get3D(Number x,Number y, Number z) {
-		Number vec[3];
-		vec[0] = x;
-		vec[1] = y;
-		vec[2] = z;		
-		return perlin_noise_3D(vec);
-	};	
+		/**
+		* Constructs perlin noise.
+		* @param octaves Number of noise octaves.
+		* @param freq Noise frequency.
+		* @param amp Noise amplitude.
+		* @param seed Noise seed.
+		*/
+		Perlin(int octaves,Number freq,Number amp,int seed);
 
 
-protected:
-  void init_perlin(int n,Number p);
-  Number perlin_noise_2D(Number vec[2]);
-  Number perlin_noise_3D(Number vec[2]);
-  
-  Number noise1(Number arg);
-  Number noise2(Number vec[2]);
-  Number noise3(Number vec[3]);
-  void normalize2(Number v[2]);
-  void normalize3(Number v[3]);
-  void init(void);
+		Number Get2DTiledX(Number x, Number y, Number t) {
+			return ( (t - x) * Get2D(x, y) + (x) * Get2D(x - t, y) ) / (t);
+		}
 
-  int   mOctaves;
-  Number mFrequency;
-  Number mAmplitude;
-  int   mSeed;
+		/**
+		* Returns noise value at the specified coordinate.
+		* @param x Horizontal coordinate.
+		* @param y Vertical coordinate.	
+		*/ 
 
-  int p[SAMPLE_SIZE + SAMPLE_SIZE + 2];
-  Number g3[SAMPLE_SIZE + SAMPLE_SIZE + 2][3];
-  Number g2[SAMPLE_SIZE + SAMPLE_SIZE + 2][2];
-  Number g1[SAMPLE_SIZE + SAMPLE_SIZE + 2];
-  bool  mStart;
+		Number Get(Number x,Number y) {
+			return Get2D(x,y);
+		};
+
+		Number Get2D(Number x,Number y) {
+			Number vec[2];
+			vec[0] = x;
+			vec[1] = y;
+			return perlin_noise_2D(vec);
+		};
+
+		Number Get3D(Number x,Number y, Number z) {
+			Number vec[3];
+			vec[0] = x;
+			vec[1] = y;
+			vec[2] = z;
+			return perlin_noise_3D(vec);
+		};
+
+
+	protected:
+		void init_perlin(int n,Number p);
+		Number perlin_noise_2D(Number vec[2]);
+		Number perlin_noise_3D(Number vec[2]);
+		
+		Number noise1(Number arg);
+		Number noise2(Number vec[2]);
+		Number noise3(Number vec[3]);
+		void normalize2(Number v[2]);
+		void normalize3(Number v[3]);
+		void init(void);
+
+		int   mOctaves;
+		Number mFrequency;
+		Number mAmplitude;
+		int   mSeed;
+
+		int p[SAMPLE_SIZE + SAMPLE_SIZE + 2];
+		Number g3[SAMPLE_SIZE + SAMPLE_SIZE + 2][3];
+		Number g2[SAMPLE_SIZE + SAMPLE_SIZE + 2][2];
+		Number g1[SAMPLE_SIZE + SAMPLE_SIZE + 2];
+		bool  mStart;
 
 };
 

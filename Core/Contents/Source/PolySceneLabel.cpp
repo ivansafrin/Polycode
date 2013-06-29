@@ -46,22 +46,22 @@ Label *SceneLabel::getLabel() {
 }
 
 void SceneLabel::setText(const String& newText) {
-	
+
 	if(newText == label->getText() && !label->optionsChanged()) {
 		return;
 	}
 
 	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
-	
+
 	if(texture)
 		materialManager->deleteTexture(texture);
-		
-	label->setText(newText);	
+
+	label->setText(newText);
 	texture = materialManager->createTextureFromImage(label, materialManager->clampDefault, materialManager->mipmapsDefault);
 
 	if(material) {
 		localShaderOptions->clearTexture("diffuse");
-		localShaderOptions->addTexture("diffuse", texture);	
+		localShaderOptions->addTexture("diffuse", texture);
 	}
 
 	delete mesh;
@@ -71,12 +71,12 @@ void SceneLabel::setText(const String& newText) {
 	bBox.x = label->getWidth()*scale;
 	bBox.y = label->getHeight()*scale;
 	bBox.z = 0;
-	
-	
+
+
 	if(useVertexBuffer)
 		CoreServices::getInstance()->getRenderer()->createVertexBufferForMesh(mesh);
-	
+
 	// TODO: resize it here
-	
+
 	bBoxRadius = label->getWidth()*scale;
 }

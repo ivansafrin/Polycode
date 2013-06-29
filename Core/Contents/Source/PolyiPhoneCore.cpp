@@ -29,15 +29,15 @@ long getThreadID() {
 }
 
 IPhoneCore::IPhoneCore(int frameRate) : Core(480, 320, true, 0, frameRate) {
-	
+
 }
 
 IPhoneCore::~IPhoneCore() {
-	
+
 }
 
 void IPhoneCore::enableMouse(bool newval) {
-	
+
 }
 
 unsigned int IPhoneCore::getTicks() {
@@ -49,7 +49,7 @@ bool IPhoneCore::Update() {
 }
 
 void IPhoneCore::setVideoMode(int xRes, int yRes, bool fullScreen, int aaLevel) {
-	
+
 }
 
 void *PosixThreadFunc(void *data) {
@@ -65,7 +65,7 @@ void IPhoneCore::createThread(Threaded *target) {
 
 void IPhoneCore::lockMutex(CoreMutex *mutex) {
 	PosixMutex *m = (PosixMutex*) mutex;
-	pthread_mutex_lock(&m->pMutex);	
+	pthread_mutex_lock(&m->pMutex);
 }
 
 void IPhoneCore::unlockMutex(CoreMutex *mutex) {
@@ -74,17 +74,17 @@ void IPhoneCore::unlockMutex(CoreMutex *mutex) {
 }
 
 CoreMutex *IPhoneCore::createMutex() {
-	PosixMutex *mutex = new PosixMutex();	
+	PosixMutex *mutex = new PosixMutex();
 	pthread_mutex_init(&mutex->pMutex, NULL);
 	return mutex;
 }
 
 void IPhoneCore::checkEvents() {
-	
+
 }
 
 vector<Rectangle> IPhoneCore::getVideoModes() {
 	vector<Rectangle> modes;
-	
+
 	return modes;
 }

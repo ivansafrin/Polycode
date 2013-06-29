@@ -29,15 +29,15 @@ THE SOFTWARE.
 
 namespace Polycode {
 
-	class _PolyExport GLSLProgram : public ShaderProgram {
-		public:
-			GLSLProgram(String fileName, int type);
-			virtual ~GLSLProgram();
-			
-			void reloadProgram();
-			
-			unsigned int program;
-			String fileName;
-	
-	};
+class _PolyExport GLSLProgram : public ShaderProgram {
+	public:
+		GLSLProgram(String fileName, int type);
+		virtual ~GLSLProgram();
+
+		void reloadProgram();
+
+		unsigned int program;
+		String fileName;
+
+};
 }

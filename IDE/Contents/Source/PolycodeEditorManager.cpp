@@ -28,7 +28,7 @@ PolycodeEditorManager::PolycodeEditorManager()  : EventDispatcher() {
 }
 
 PolycodeEditorManager::~PolycodeEditorManager() {
-	
+
 }
 
 PolycodeEditorFactory *PolycodeEditorManager::getEditorFactoryForExtension(String extension) {
@@ -59,7 +59,7 @@ void PolycodeEditorManager::destroyEditor(PolycodeEditor* editor) {
 		if(openEditors[i] == editor) {
 			openEditors.erase(openEditors.begin()+i);
 			delete editor;
-			dispatchEvent(new Event(), Event::CHANGE_EVENT);			
+			dispatchEvent(new Event(), Event::CHANGE_EVENT);
 			return;
 		}
 	}

@@ -31,23 +31,23 @@ ExportProjectWindow::ExportProjectWindow() : UIWindow(L"Publish Project", 400, 3
 
 	ScreenLabel *label = new ScreenLabel("LOCATION", 22, "section", Label::ANTIALIAS_FULL);
 	addChild(label);
-	label->color.a = 0.4;	
+	label->color.a = 0.4;
 	label->setPosition(padding, 50);
 
-	projectLocationInput = new UITextInput(false, 420-(padding*2.0), 12);	
+	projectLocationInput = new UITextInput(false, 420-(padding*2.0), 12);
 	addChild(projectLocationInput);
 	projectLocationInput->setPosition(padding, 80);
 
-	
+
 	locationSelectButton = new UIButton(L"Choose...", 100);
-	locationSelectButton->addEventListener(this, UIEvent::CLICK_EVENT);	
+	locationSelectButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(locationSelectButton);
 	locationSelectButton->setPosition(padding, projectLocationInput->getPosition().y+projectLocationInput->getHeight()+5);
 
 
 	label = new ScreenLabel("PLATFORMS", 22, "section", Label::ANTIALIAS_FULL);
 	addChild(label);
-	label->color.a = 0.4;	
+	label->color.a = 0.4;
 	label->setPosition(padding, 150);
 
 	macCheckBox = new UICheckBox("MacOS X (Intel 64-bit)", false);
@@ -64,7 +64,7 @@ ExportProjectWindow::ExportProjectWindow() : UIWindow(L"Publish Project", 400, 3
 
 	label = new ScreenLabel("OPTIONS", 22, "section", Label::ANTIALIAS_FULL);
 	addChild(label);
-	label->color.a = 0.4;	
+	label->color.a = 0.4;
 	label->setPosition(padding, 260);
 
 	compileCheckBox = new UICheckBox("Compile Scripts (experimental)", false);
@@ -75,19 +75,19 @@ ExportProjectWindow::ExportProjectWindow() : UIWindow(L"Publish Project", 400, 3
 	cancelButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(cancelButton);
 	cancelButton->setPosition(400-75-padding-100-10, 360-15);
-		
-	
+
+
 	okButton = new UIButton(L"Publish", 100);
 	okButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(okButton);
 	okButton->setPosition(400-75-padding, 360-15);
-	
+
 	projectLocationInput->setText(CoreServices::getInstance()->getCore()->getUserHomeDirectory()+"/Documents/Polycode");
-	
+
 }
 
 ExportProjectWindow::~ExportProjectWindow() {
-	
+
 }
 
 void ExportProjectWindow::resetForm() {
@@ -107,18 +107,18 @@ void ExportProjectWindow::handleEvent(Event *event) {
 				projectLocationInput->setText(pathName);
 
 		}
-		
-		if(enabled) {						
+
+		if(enabled) {
 
 		if(event->getEventCode() == UIEvent::CLICK_EVENT) {
 			if(event->getDispatcher() == okButton) {
-				dispatchEvent(new UIEvent(), UIEvent::OK_EVENT);						
+				dispatchEvent(new UIEvent(), UIEvent::OK_EVENT);
 			}
-			
+
 			if(event->getDispatcher() == cancelButton) {
-				dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);				
-			}			
-			
+				dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);
+			}
+
 			if(event->getDispatcher() == locationSelectButton) {
 #ifdef USE_POLYCODEUI_FILE_DIALOGS
 				std::vector<String> exts;
@@ -129,12 +129,12 @@ void ExportProjectWindow::handleEvent(Event *event) {
 				if(pathName != "")
 					projectLocationInput->setText(pathName);
 #endif
-			}			
-			
+			}
+
 		}
-		
+
 		}
 	}
-	
-	UIWindow::handleEvent(event);	
+
+	UIWindow::handleEvent(event);
 }

@@ -28,5 +28,5 @@ void Rectangle::setRect(Number x, Number y, Number w, Number h) {
 	this->x = x;
 	this->y = y;
 	this->w = w;
-	this->h = h;		
+	this->h = h;
 }

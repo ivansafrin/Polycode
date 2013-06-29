@@ -30,27 +30,27 @@ Texture::Texture(unsigned int width, unsigned int height, char *textureData,bool
 	this->height = height;
 	this->clamp = clamp;
 	this->createMipmaps = createMipmaps;
-	
+
 	switch(type) {
 		case Image::IMAGE_RGB:
-			pixelSize = 3;			
-			break;
-		case Image::IMAGE_RGBA:
-			pixelSize = 4;						
+			pixelSize = 3;
 		break;
-		case Image::IMAGE_FP16:		
+		case Image::IMAGE_RGBA:
+			pixelSize = 4;
+		break;
+		case Image::IMAGE_FP16:
 			pixelSize = 16;
 		break;
 		default:
-			pixelSize = 4;								
+			pixelSize = 4;
 		break;
 	}
-	
+
 	this->textureData = (char*)malloc(width*height*pixelSize);
 	if(textureData)
-		memcpy(this->textureData, textureData, width*height*pixelSize);	
+		memcpy(this->textureData, textureData, width*height*pixelSize);
 	else
-		memset(this->textureData, 0, width*height*pixelSize);	
+		memset(this->textureData, 0, width*height*pixelSize);
 	scrollSpeedX = 0;
 	scrollSpeedY = 0;
 	scrollOffsetX = 0;
@@ -62,7 +62,7 @@ void Texture::reloadResource() {
 	setImageData(image);
 	recreateFromImageData();
 	delete image;
-	Resource::reloadResource();	
+	Resource::reloadResource();
 }
 
 int Texture::getWidth() const {
@@ -81,22 +81,22 @@ void Texture::setImageData(Image *data) {
 
 	switch (data->getType()) {
 		case Image::IMAGE_RGB:
-			pixelSize = 3;			
+			pixelSize = 3;
 		break;
 		case Image::IMAGE_RGBA:
-			pixelSize = 4;						
+			pixelSize = 4;
 		break;
-		case Image::IMAGE_FP16:		
+		case Image::IMAGE_FP16:
 			pixelSize = 16;
 		break;
 		default:
-			pixelSize = 4;								
+			pixelSize = 4;
 		break;
 	}
 
 	width = data->getWidth();
 	height = data->getHeight();
-	
+
 	if(this->textureData)
 		free(this->textureData);
 	this->textureData = (char*)malloc(width*height*pixelSize);

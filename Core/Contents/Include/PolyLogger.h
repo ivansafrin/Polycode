@@ -26,23 +26,24 @@ THE SOFTWARE.
 
 namespace Polycode {
 
-	class _PolyExport LoggerEvent : public Event {
-		public:
-			LoggerEvent(String message);
-			virtual ~LoggerEvent();
-			
-			String message;
-			
-	};
+class _PolyExport LoggerEvent : public Event {
+	public:
+		LoggerEvent(String message);
+		virtual ~LoggerEvent();
 
-	class _PolyExport Logger : public EventDispatcher {
-		public:
-			Logger();
-			virtual ~Logger();
+		String message;
 
-			void logBroadcast(String message);
+};
 
-			static void log(const char *format, ...);
-			static void logw(const char *str);
-	};
+class _PolyExport Logger : public EventDispatcher {
+	public:
+		Logger();
+		virtual ~Logger();
+
+		void logBroadcast(String message);
+
+		static void log(const char *format, ...);
+		static void logw(const char *str);
+};
+
 }

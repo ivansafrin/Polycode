@@ -28,25 +28,25 @@ using namespace Polycode;
 using std::vector;
 
 ServerClient::ServerClient() {
-	
+
 }
 
 ServerClient::~ServerClient() {
-	
+
 }
 
 void ServerClient::handlePacket(Packet *packet) {
-	ServerClientEvent *event = new ServerClientEvent();	
+	ServerClientEvent *event = new ServerClientEvent();
 	event->data = packet->data;
 	event->dataSize = packet->header.size;
-	event->dataType = packet->header.type;		
-	dispatchEvent(event, ServerClientEvent::EVENT_CLIENT_DATA);	
+	event->dataType = packet->header.type;
+	dispatchEvent(event, ServerClientEvent::EVENT_CLIENT_DATA);
 }
 
 Server::Server(unsigned int port,  unsigned int rate, ServerWorld *world) : Peer(port) {
 	this->world = world;
 	rateTimer = new Timer(true, 1000/rate);
-	rateTimer->addEventListener(this, Timer::EVENT_TRIGGER);	
+	rateTimer->addEventListener(this, Timer::EVENT_TRIGGER);
 }
 
 Server::~Server() {
@@ -64,21 +64,19 @@ ServerClient *Server::getConnectedClient(PeerConnection *connection) {
 }
 
 void Server::handleEvent(Event *event) {
-	
-	ServerClient *client;		
-	if(event->getDispatcher() == rateTimer) {
-		if(world) {
-			world->updateWorld(rateTimer->getElapsedf());		
-			for(int i=0; i < clients.size(); i++) {
-				client = clients[i];
-				unsigned int worldDataSize;
-				char *worldData;
-				world->getWorldState(client, &worldData, &worldDataSize);			
-				sendData(client->connection->address, (char*)worldData, worldDataSize, PACKET_TYPE_SERVER_DATA);			
-			}
+
+	ServerClient *client;
+	if(event->getDispatcher() == rateTimer && world) {
+		world->updateWorld(rateTimer->getElapsedf());
+		for(int i=0; i < clients.size(); i++) {
+			client = clients[i];
+			unsigned int worldDataSize;
+			char *worldData;
+			world->getWorldState(client, &worldData, &worldDataSize);
+			sendData(client->connection->address, (char*)worldData, worldDataSize, PACKET_TYPE_SERVER_DATA);
 		}
-	}	
-	
+	}
+
 	Peer::handleEvent(event);
 }
 
@@ -89,14 +87,14 @@ void Server::sendReliableDataToAllClients(char *data, unsigned int size, unsigne
 }
 
 void Server::sendReliableDataToClient(ServerClient *client, char *data, unsigned int size, unsigned short type) {
-	sendReliableData(client->connection->address, data, size, type);	
+	sendReliableData(client->connection->address, data, size, type);
 }
 
 void Server::handlePeerConnection(PeerConnection *connection) {
 	ServerClient *newClient = new ServerClient();
 	newClient->connection = connection;
 	newClient->clientID = clients.size();
-	clients.push_back(newClient);	
+	clients.push_back(newClient);
 
 	unsigned short clientID = newClient->clientID;
 	sendReliableData(newClient->connection->address, (char*)&clientID, sizeof(unsigned short), PACKET_TYPE_SETCLIENT_ID);
@@ -107,7 +105,7 @@ void Server::DisconnectClient(ServerClient *client) {
 	sendReliableDataToClient(client, NULL, 0, PACKET_TYPE_DISONNECT);
 
 	for(unsigned int i=0;i<clients.size();i++) {
-		if(clients[i] == client) {			
+		if(clients[i] == client) {
 			clients.erase(clients.begin()+i);
 		}
 	}
@@ -130,14 +128,14 @@ void Server::handlePacket(Packet *packet, PeerConnection *connection) {
 		{
 			ServerEvent *event = new ServerEvent();
 			event->client = client;
-			dispatchEvent(event, ServerEvent::EVENT_CLIENT_CONNECTED);					
+			dispatchEvent(event, ServerEvent::EVENT_CLIENT_CONNECTED);
 		}
 		break;
 		case PACKET_TYPE_DISONNECT:
 		{
 			DisconnectClient(client);
 		}
-		break;		
+		break;
 		default:
 			client->handlePacket(packet);
 		break;

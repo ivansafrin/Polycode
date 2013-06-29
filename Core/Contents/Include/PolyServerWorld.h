@@ -28,12 +28,12 @@ THE SOFTWARE.
 namespace Polycode {
 
 class ServerClient;
-	
+
 class _PolyExport ServerWorld {
 	public:
 		ServerWorld() {}
 		~ServerWorld() {};
-	
+
 		virtual void updateWorld(Number elapsed) = 0;
 		virtual void getWorldState(ServerClient *client, char **worldData,unsigned int *worldDataSize) = 0;
 };

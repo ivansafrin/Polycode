@@ -76,36 +76,36 @@ GLSLProgram::~GLSLProgram() {
 void GLSLProgram::reloadProgram() {
 	if(program != -1)
 		glDeleteShader(program);
-		
+
 	OSFILE *file = OSBasics::open(fileName, "r");
-	OSBasics::seek(file, 0, SEEK_END);	
+	OSBasics::seek(file, 0, SEEK_END);
 	long progsize = OSBasics::tell(file);
 	OSBasics::seek(file, 0, SEEK_SET);
 	char *buffer = (char*)malloc(progsize+1);
 	memset(buffer, 0, progsize+1);
 	OSBasics::read(buffer, progsize, 1, file);
 	OSBasics::close(file);
-	
+
 	if(type == GLSLProgram::TYPE_VERT) {
 		program =  glCreateShader(GL_VERTEX_SHADER);
 	} else {
 		program =  glCreateShader(GL_FRAGMENT_SHADER);
 	}
-	
+
 	glShaderSource(program, 1, (const GLchar**)&buffer, 0);
-	glCompileShader(program);	
-	
+	glCompileShader(program);
+
 	GLint compiled = true;
-    glGetShaderiv(program, GL_COMPILE_STATUS, &compiled);
-    if(!compiled) {
-        GLint length;
-        GLchar* log;
-        glGetShaderiv(program, GL_INFO_LOG_LENGTH, &length);
-        log = (GLchar*)malloc(length);
-        glGetShaderInfoLog(program, length, &length, log);
+	glGetShaderiv(program, GL_COMPILE_STATUS, &compiled);
+	if(!compiled) {
+		GLint length;
+		GLchar* log;
+		glGetShaderiv(program, GL_INFO_LOG_LENGTH, &length);
+		log = (GLchar*)malloc(length);
+		glGetShaderInfoLog(program, length, &length, log);
 		printf("GLSL ERROR: %s\n", log);
 		CoreServices::getInstance()->getLogger()->logBroadcast("GLSL ERROR:" + String(log));
-        free(log);
-    }	
+		free(log);
+	}
 	free(buffer);
 }

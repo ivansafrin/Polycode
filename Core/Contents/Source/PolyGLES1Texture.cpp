@@ -37,7 +37,7 @@ void OpenGLES1Texture::recreateFromImageData() {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	} else {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);	
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	}
 	switch(filteringMode) {
 		case Renderer::TEX_FILTERING_LINEAR:
@@ -46,16 +46,16 @@ void OpenGLES1Texture::recreateFromImageData() {
 			break;
 		case Renderer::TEX_FILTERING_NEAREST:
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);		
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 			break;
-	}	
-	
+	}
+
 	if(textureData)
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData);	
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData);
 }
 
 OpenGLES1Texture::OpenGLES1Texture(unsigned int width, unsigned int height) : Texture(width, height, NULL ,true) {
-	
+
 }
 
 void OpenGLES1Texture::setGLInfo(GLuint textureID, GLuint frameBufferID) {

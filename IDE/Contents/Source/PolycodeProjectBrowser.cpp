@@ -30,10 +30,10 @@ PolycodeProjectBrowser::PolycodeProjectBrowser() : UIElement() {
 	addChild(headerBg);
 	headerBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
-	
+
 	ScreenLabel *label = new ScreenLabel("PROJECT BROWSER", 18, "section", Label::ANTIALIAS_FULL);
 	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
-	
+
 	addChild(label);
 	label->setPosition(10, 3);
 
@@ -43,39 +43,39 @@ PolycodeProjectBrowser::PolycodeProjectBrowser() : UIElement() {
 	treeContainer->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
 	treeContainer->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	treeContainer->setPosition(0, 30);
-	
+
 	BrowserUserData *data = new BrowserUserData();
 	data->type = 0;
 	data->parentProject = NULL;
 	treeContainer->getRootNode()->setUserData((void*) data)	;
-	
-	addChild(treeContainer);		
+
+	addChild(treeContainer);
 	selectedData = NULL;
 }
 
 PolycodeProjectBrowser::~PolycodeProjectBrowser() {
-	
+
 }
 
 void PolycodeProjectBrowser::refreshProject(PolycodeProject *project) {
-	
+
 	UITree *projectTree = treeContainer->getRootNode();
-	
+
 	for(int i=0; i < projectTree->getNumTreeChildren(); i++) {
 		UITree *projectChild = projectTree->getTreeChild(i);
 		BrowserUserData *userData = (BrowserUserData*)projectChild->getUserData();
 		if(userData->parentProject == project) {
-			parseFolderIntoNode(projectChild, project->getRootFolder(), project);		
+			parseFolderIntoNode(projectChild, project->getRootFolder(), project);
 			return;
 		}
-	}	
-	
+	}
+
 }
 
 void PolycodeProjectBrowser::removeProject(PolycodeProject *project) {
-	
+
 	UITree *projectTree = treeContainer->getRootNode();
-	
+
 	for(int i=0; i < projectTree->getNumTreeChildren(); i++) {
 		UITree *projectChild = projectTree->getTreeChild(i);
 		BrowserUserData *userData = (BrowserUserData*)projectChild->getUserData();
@@ -89,53 +89,52 @@ void PolycodeProjectBrowser::removeProject(PolycodeProject *project) {
 void PolycodeProjectBrowser::addProject(PolycodeProject *project) {
 	UITree *projectTree = treeContainer->getRootNode()->addTreeChild("projectIcon.png", project->getProjectName(), (void*) project);
 	projectTree->toggleCollapsed();
-	
+
 	BrowserUserData *data = new BrowserUserData();
 	data->type = 3;
 	data->parentProject = project;
 	projectTree->setUserData((void*) data)	;
-	
-	parseFolderIntoNode(projectTree, project->getRootFolder(), project);	
+
+	parseFolderIntoNode(projectTree, project->getRootFolder(), project);
 }
 
 void PolycodeProjectBrowser::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == contextMenu) {
 		UIMenuItem *item = contextMenu->getSelectedItem();
-		
-		PolycodeProjectBrowserEvent *bEvent = new PolycodeProjectBrowserEvent();			
+
+		PolycodeProjectBrowserEvent *bEvent = new PolycodeProjectBrowserEvent();
 		bEvent->command = item->_id;
 		dispatchEvent(bEvent, PolycodeProjectBrowserEvent::HANDLE_MENU_COMMAND);
-						
+
 	}
-	
-	if(event->getDispatcher() == treeContainer) {
-		if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN) {			
-			InputEvent *inputEvent = (InputEvent*) event;
-			if(inputEvent->mouseButton == CoreInput::MOUSE_BUTTON2) {				
+
+	if(event->getDispatcher() == treeContainer && event->getEventCode() == InputEvent::EVENT_MOUSEDOWN) {
+		InputEvent *inputEvent = (InputEvent*) event;
+		if(inputEvent->mouseButton == CoreInput::MOUSE_BUTTON2) {
 
 			contextMenu = globalMenu->showMenuAtMouse(130);
 
 
 			contextMenu->addOption("New File", "add_new_file");
 			contextMenu->addOption("New Project", "add_new_project");
-			contextMenu->addOption("New Folder", "add_new_folder");			
-			contextMenu->addOption("----------------", "");			
-			contextMenu->addOption("Add external files", "add_files");			
+			contextMenu->addOption("New Folder", "add_new_folder");
+			contextMenu->addOption("----------------", "");
+			contextMenu->addOption("Add external files", "add_files");
 			contextMenu->addOption("----------------", "");
 			contextMenu->addOption("Refresh", "refresh");
-			contextMenu->addOption("Rename", "rename");						
-			contextMenu->addOption("----------------", "");		
+			contextMenu->addOption("Rename", "rename");
+			contextMenu->addOption("----------------", "");
 			contextMenu->addOption("Remove", "remove");
 
 			contextMenu->fitToScreenVertical();
-			
+
 			contextMenu->addEventListener(this, UIEvent::OK_EVENT);
-											
-			}			
+
 		}
+
 	}
-	
+
 	if(event->getDispatcher() == treeContainer->getRootNode()) {
 		if(event->getEventCode() == UITreeEvent::SELECTED_EVENT){ 
 			BrowserUserData *data = (BrowserUserData *)treeContainer->getRootNode()->getSelectedNode()->getUserData();
@@ -143,7 +142,7 @@ void PolycodeProjectBrowser::handleEvent(Event *event) {
 			dispatchEvent(new Event(), Event::CHANGE_EVENT);
 		}
 	}
-	
+
 	ScreenEntity::handleEvent(event);
 }
 
@@ -168,40 +167,38 @@ bool PolycodeProjectBrowser::listHasFileEntry(vector<OSFileEntry> files, OSFileE
 
 void PolycodeProjectBrowser::parseFolderIntoNode(UITree *node, String spath, PolycodeProject *parentProject) {
 	vector<OSFileEntry> files = OSBasics::parseFolder(spath, false);
-	
+
 	// check if files got deleted
 	for(int i=0; i < node->getNumTreeChildren(); i++) {
 		UITree *projectChild = node->getTreeChild(i);
 		if(!listHasFileEntry(files, ((BrowserUserData*)projectChild->getUserData())->fileEntry)) {
 			node->removeTreeChild(projectChild);
 		}
-	}	
-	
+	}
+
 	for(int i=0; i < files.size(); i++) {
 		OSFileEntry entry = files[i];
 		if(entry.type == OSFileEntry::TYPE_FOLDER) {
 			UITree *existing = nodeHasName(node, entry.name);
-			if(!existing) {		
+			if(!existing) {
 				BrowserUserData *data = new BrowserUserData();
 				data->fileEntry = entry;
 				UITree *newChild = node->addTreeChild("folder.png", entry.name, (void*) data);
 				data->type = 2;	
 				data->parentProject = parentProject;
-				parseFolderIntoNode(newChild, entry.fullPath, parentProject);				
+				parseFolderIntoNode(newChild, entry.fullPath, parentProject);
 			} else {
-				parseFolderIntoNode(existing, entry.fullPath, parentProject);							
+				parseFolderIntoNode(existing, entry.fullPath, parentProject);
 			}
-		} else {
-			if(!nodeHasName(node, entry.name)) {
-				BrowserUserData *data = new BrowserUserData();
-				data->fileEntry = entry;
-				data->type = 1;
-				data->parentProject = parentProject;			
-				UITree *newChild = node->addTreeChild("file.png", entry.name, (void*) data);
-			}
+		} else if(!nodeHasName(node, entry.name)) {
+			BrowserUserData *data = new BrowserUserData();
+			data->fileEntry = entry;
+			data->type = 1;
+			data->parentProject = parentProject;
+			UITree *newChild = node->addTreeChild("file.png", entry.name, (void*) data);
 		}
-	}		
-	
+	}
+
 }
 
 void PolycodeProjectBrowser::Resize(Number width, Number height) {

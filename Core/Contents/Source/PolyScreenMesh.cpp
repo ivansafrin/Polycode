@@ -41,14 +41,14 @@ ScreenMesh::ScreenMesh(const String& fileName) : ScreenEntity(), material(NULL),
 	mesh = new Mesh(fileName);
 	lineSmooth = false;
 	lineWidth = 1.0;
-	
+
 }
 
 ScreenMesh::ScreenMesh(int meshType) : ScreenEntity(), material(NULL), texture(NULL) {
 	mesh = new Mesh(meshType);
 	lineSmooth = false;
 	lineWidth = 1.0;
-	
+
 }
 
 ScreenMesh *ScreenMesh::ScreenMeshWithMesh(Mesh *mesh) {
@@ -98,20 +98,17 @@ void ScreenMesh::setMaterial(Material *material) {
 
 	if(this->material)
 		clearMaterial();
-	
-	if(!material)
+
+	if(!material || material->getNumShaders() == 0)
 		return;
-		
-	if(material->getNumShaders() == 0)
-			return;
-		
+
 	this->material = material;
 	localShaderOptions = material->getShader(0)->createBinding();
 	if(texture) {
 		localShaderOptions->clearTexture("diffuse");
 		localShaderOptions->addTexture("diffuse", texture);
 	}
-	
+
 }
 
 Material *ScreenMesh::getMaterial() {
@@ -129,25 +126,25 @@ void ScreenMesh::setMaterialByName(const String& materialName) {
 	setMaterial(material);
 }
 
-void ScreenMesh::Render() {	
+void ScreenMesh::Render() {
 	Renderer *renderer = CoreServices::getInstance()->getRenderer();
-	
+
 	renderer->clearShader();
-	
+
 	renderer->setLineSize(lineWidth);
 	renderer->setLineSmooth(lineSmooth);
-	
+
 	if(material) {
 		renderer->applyMaterial(material, localShaderOptions,0);
 	} else {
 		renderer->setTexture(texture);
 	}
-	
+
 	if(mesh->useVertexColors) {
 		renderer->pushDataArrayForMesh(mesh, RenderDataArray::COLOR_DATA_ARRAY);
 	}
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::VERTEX_DATA_ARRAY);
-	renderer->pushDataArrayForMesh(mesh, RenderDataArray::TEXCOORD_DATA_ARRAY);	
+	renderer->pushDataArrayForMesh(mesh, RenderDataArray::TEXCOORD_DATA_ARRAY);
 	renderer->drawArrays(mesh->getMeshType());
 }
 
@@ -170,6 +167,6 @@ void ScreenMesh::updateHitBox() {
 			}
 		}
 	}
-	
+
 	setHitbox(xmax-xmin, ymax-ymin, xmin, ymin);
 }

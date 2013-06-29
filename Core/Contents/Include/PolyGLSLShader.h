@@ -29,55 +29,56 @@ THE SOFTWARE.
 
 namespace Polycode {
 
-	class GLSLProgram;
+class GLSLProgram;
 
-	typedef struct {
-		Texture *texture;
-		String name;
-	} GLSLTextureBinding;
+typedef struct {
+	Texture *texture;
+	String name;
+} GLSLTextureBinding;
 
-	typedef struct {
-		Cubemap *cubemap;
-		String name;
-	} GLSLCubemapBinding;
-	
-	
-	class _PolyExport GLSLShader : public Shader {
-		public:
-			GLSLShader(GLSLProgram *vp, GLSLProgram *fp);
-			virtual ~GLSLShader();
+typedef struct {
+	Cubemap *cubemap;
+	String name;
+} GLSLCubemapBinding;
 
-			ShaderBinding *createBinding();
-			virtual void reload();
-			
-			void handleEvent(Event *event);
-			
-			static int getPolycodeParamType(int glType);
-			
-			void setVertexProgram(ShaderProgram *vp);
-			void setFragmentProgram(ShaderProgram *fp);			
-				
-			unsigned int shader_id;		
-			
-			void linkProgram();			
-			void unlinkProgram();
-	};
-	
-	class _PolyExport GLSLShaderBinding : public ShaderBinding {
-		public:
-			GLSLShaderBinding(GLSLShader *shader);
-			virtual ~GLSLShaderBinding();
-			
-			void clearCubemap(const String& name);
-			void addTexture(const String& name, Texture *texture);
-			void addCubemap(const String& name, Cubemap *cubemap);
-			void clearTexture(const String& name);
-			Texture *getTexture(const String& name);
-			Cubemap *getCubemap(const String& name);
-			
-			std::vector<GLSLTextureBinding> textures;
-			std::vector<GLSLCubemapBinding> cubemaps;
-		
-			GLSLShader *glslShader;
-	};
+
+class _PolyExport GLSLShader : public Shader {
+	public:
+		GLSLShader(GLSLProgram *vp, GLSLProgram *fp);
+		virtual ~GLSLShader();
+
+		ShaderBinding *createBinding();
+		virtual void reload();
+
+		void handleEvent(Event *event);
+
+		static int getPolycodeParamType(int glType);
+
+		void setVertexProgram(ShaderProgram *vp);
+		void setFragmentProgram(ShaderProgram *fp);
+
+		unsigned int shader_id;
+
+		void linkProgram();
+		void unlinkProgram();
+};
+
+class _PolyExport GLSLShaderBinding : public ShaderBinding {
+	public:
+		GLSLShaderBinding(GLSLShader *shader);
+		virtual ~GLSLShaderBinding();
+
+		void clearCubemap(const String& name);
+		void addTexture(const String& name, Texture *texture);
+		void addCubemap(const String& name, Cubemap *cubemap);
+		void clearTexture(const String& name);
+		Texture *getTexture(const String& name);
+		Cubemap *getCubemap(const String& name);
+
+		std::vector<GLSLTextureBinding> textures;
+		std::vector<GLSLCubemapBinding> cubemaps;
+
+		GLSLShader *glslShader;
+};
+
 }

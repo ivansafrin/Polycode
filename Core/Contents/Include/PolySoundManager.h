@@ -25,36 +25,36 @@
 #include "PolyVector3.h"
 
 #if defined(__APPLE__) && defined(__MACH__)
-    #include <OpenAL/al.h>
-    #include <OpenAL/alc.h>
+	#include <OpenAL/al.h>
+	#include <OpenAL/alc.h>
 #else
-    #include "al.h"
-    #include "alc.h"
+	#include "al.h"
+	#include "alc.h"
 #endif
 
 namespace Polycode {
-	
-	/**
-	* Controls global sound settings.
-	*/
-	class _PolyExport SoundManager : public PolyBase{
+
+/**
+* Controls global sound settings.
+*/
+class _PolyExport SoundManager : public PolyBase{
 	public:
 		SoundManager();
 		~SoundManager();
-		
+
 		void setListenerPosition(Vector3 position);
-		void setListenerOrientation(Vector3 orientation, Vector3 upVector);	
+		void setListenerOrientation(Vector3 orientation, Vector3 upVector);
 		void initAL();
-		
+
 		/**
 		* Sets the global sound volume.
 		*/ 
 		void setGlobalVolume(Number globalVolume);
-		
-		
+
+
 	protected:
-		
+
 		ALCdevice* device;
-		ALCcontext* context;		
-	};
+		ALCcontext* context;
+};
 }

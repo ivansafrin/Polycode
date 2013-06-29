@@ -30,59 +30,59 @@ THE SOFTWARE.
 using std::vector;
 
 namespace Polycode {
-	
-	class _PolyExport PosixMutex : public CoreMutex {
+
+class _PolyExport PosixMutex : public CoreMutex {
 	public:
 		pthread_mutex_t pMutex;
-	};
-	
-	class iPhoneEvent {
+};
+
+class iPhoneEvent {
 	public:
 		int eventGroup;
 		int eventCode;
-		
+
 		int mouseX;
 		int mouseY;
-		
+
 		PolyKEY keyCode;
 		wchar_t unicodeChar;
-		
+
 		char mouseButton;
-		
+
 		static const int EVENTBASE_PLATFORMEVENT = 0x300;
 		static const int INPUT_EVENT = EVENTBASE_PLATFORMEVENT+0;
-	};
-	
-	class _PolyExport IPhoneCore : public Core {
-		
+};
+
+class _PolyExport IPhoneCore : public Core {
+
 	public:
-		
+
 		IPhoneCore(int frameRate);
 		virtual ~IPhoneCore();
-		
+
 		void enableMouse(bool newval);
-		unsigned int getTicks();		
-		bool Update();		
-		void setVideoMode(int xRes, int yRes, bool fullScreen, int aaLevel);		
-		void createThread(Threaded *target);				
-		
+		unsigned int getTicks();
+		bool Update();
+		void setVideoMode(int xRes, int yRes, bool fullScreen, int aaLevel);
+		void createThread(Threaded *target);
+
 		void lockMutex(CoreMutex *mutex);
 		void unlockMutex(CoreMutex *mutex);
-		CoreMutex *createMutex();		
-		
+		CoreMutex *createMutex();
+
 		void checkEvents();
-		
+
 		vector<Rectangle> getVideoModes();
-		
+
 		int lastMouseY;
-		int lastMouseX;		
-		
+		int lastMouseX;
+
 		CoreMutex *eventMutex;
-		
+
 		vector<iPhoneEvent> osxEvents;
-		
+
 	private:
-		
-		
-	};
+
+
+};
 }

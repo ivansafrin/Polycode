@@ -94,117 +94,118 @@ THE SOFTWARE.
 */
 
 namespace Polycode {
-	class _PolyExport OpenGLRenderer : public Renderer {
-		
+
+class _PolyExport OpenGLRenderer : public Renderer {
+
 	public:
-		
+
 		OpenGLRenderer();
 		~OpenGLRenderer();
-		
+
 		void Resize(int xRes, int yRes);
 		void BeginRender();
 		void EndRender();
-		
+
 		Cubemap *createCubemap(Texture *t0, Texture *t1, Texture *t2, Texture *t3, Texture *t4, Texture *t5);
 		Texture *createTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, bool createMipmaps, int type = Image::IMAGE_RGBA);
-		void destroyTexture(Texture *texture);		
+		void destroyTexture(Texture *texture);
 		Texture *createFramebufferTexture(unsigned int width, unsigned int height);
 		void createRenderTextures(Texture **colorBuffer, Texture **depthBuffer, int width, int height, bool floatingPointBuffer);
-		
+
 		void enableAlphaTest(bool val);
-		
+
 		void createVertexBufferForMesh(Mesh *mesh);
-		void drawVertexBuffer(VertexBuffer *buffer, bool enableColorBuffer);						
+		void drawVertexBuffer(VertexBuffer *buffer, bool enableColorBuffer);
 		void bindFrameBufferTexture(Texture *texture);
-		void bindFrameBufferTextureDepth(Texture *texture);		
+		void bindFrameBufferTextureDepth(Texture *texture);
 		void unbindFramebuffers();
 		
 		void cullFrontFaces(bool val);
-				
+
 		void pushRenderDataArray(RenderDataArray *array);
 		RenderDataArray *createRenderDataArrayForMesh(Mesh *mesh, int arrayType);
 		RenderDataArray *createRenderDataArray(int arrayType);
 		void setRenderArrayData(RenderDataArray *array, Number *arrayData);
-		void drawArrays(int drawType);		
-				
+		void drawArrays(int drawType);
+
 		void setOrthoMode(Number xSize=0.0f, Number ySize=0.0f, bool centered = false);
 		void _setOrthoMode(Number orthoSizeX, Number orthoSizeY);
 		void setPerspectiveMode();
-		
+
 		void enableBackfaceCulling(bool val);
-		
+
 		void resetViewport();
-		
-		void setLineSmooth(bool val);		
-		
+
+		void setLineSmooth(bool val);
+
 		void loadIdentity();
-		
-		void setTexture(Texture *texture);		
+
+		void setTexture(Texture *texture);
 
 		Image *renderScreenToImage();
-		void clearScreen();	
-		
+		void clearScreen();
+
 		void translate2D(Number x, Number y);
 		void rotate2D(Number angle);
 		void scale2D(Vector2 *scale);
-		
+
 		void enableScissor(bool val);
-		void setScissorBox(Polycode::Rectangle box);		
-		
+		void setScissorBox(Polycode::Rectangle box);
+
 		Vector3 projectRayFrom2DCoordinate(Number x, Number y);
 
 		void initOSSpecific();
-		
+
 		void setLineSize(Number lineSize);
-		
+
 		void setVertexColor(Number r, Number g, Number b, Number a);
-		
+
 		void setBlendingMode(int blendingMode);
-		
-		void enableLighting(bool enable);	
+
+		void enableLighting(bool enable);
 		void enableFog(bool enable);
-		void setFogProperties(int fogMode, Color color, Number density, Number startDepth, Number endDepth);		
-				
+		void setFogProperties(int fogMode, Color color, Number density, Number startDepth, Number endDepth);
+
 		void translate3D(Vector3 *position);
 		void translate3D(Number x, Number y, Number z);
 		void scale3D(Vector3 *scale);
-		
+
 		Matrix4 getProjectionMatrix();
-		Matrix4 getModelviewMatrix();		
-		void setModelviewMatrix(Matrix4 m);	
+		Matrix4 getModelviewMatrix();
+		void setModelviewMatrix(Matrix4 m);
 		void multModelviewMatrix(Matrix4 m);
-		
+
 		void enableDepthTest(bool val);
 		void enableDepthWrite(bool val);
-				
+
 		void setClippingPlanes(Number nearPlane_, Number farPlane_);
-				
-		void clearBuffer(bool colorBuffer, bool depthBuffer);	
+
+		void clearBuffer(bool colorBuffer, bool depthBuffer);
 		void drawToColorBuffer(bool val);
-		
+
 		void drawScreenQuad(Number qx, Number qy);
-				
+
 		void pushMatrix();
-		void popMatrix();		
-		
+		void popMatrix();
+
 		Vector3 Unproject(Number x, Number y);
-		
+
 		void setDepthFunction(int depthFunction);
-						
+
 		void clearShader();
 		void applyMaterial(Material *material,  ShaderBinding *localOptions, unsigned int shaderIndex);
-		
+
 	protected:
 
-		
 		Number nearPlane;
 		Number farPlane;
-		
+
 		int verticesToDraw;
-		
+
 		GLdouble sceneProjectionMatrix[16];
-		GLdouble sceneProjectionMatrixOrtho[16];	
-		
-	};
+		GLdouble sceneProjectionMatrixOrtho[16];
+
+};
+
 }
 

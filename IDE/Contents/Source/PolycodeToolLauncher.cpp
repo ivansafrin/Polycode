@@ -37,7 +37,7 @@ void GenericRunner::runThread() {
 	CocoaCore *cocoaCore = (CocoaCore*) CoreServices::getInstance()->getCore();
 	cocoaCore->openFileWithApplication(file, app);
 #else
-	String ret = CoreServices::getInstance()->getCore()->executeExternalCommand(app, file, inFolder);	
+	String ret = CoreServices::getInstance()->getCore()->executeExternalCommand(app, file, inFolder);
 #endif
 }
 
@@ -49,7 +49,7 @@ void PolycodeRunner::runThread() {
 	String polycodeBasePath = CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory();
 
 #if defined(__APPLE__) && defined(__MACH__)
-	String command = "../MacOS/PolycodePlayer";	
+	String command = "../MacOS/PolycodePlayer";
 	String inFolder = polycodeBasePath+"/Standalone/Player/PolycodePlayer.app/Contents/Resources";
 	String args = polyappPath;
 #elif defined _WINDOWS
@@ -94,10 +94,10 @@ void PolycodeToolLauncher::buildProject(PolycodeProject *project, String destina
 
 	String projectBasePath = project->getRootFolder();
 	String projectPath = project->getProjectFile();
-	
-	
+
+
 	String polycodeBasePath = CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory();
-	
+
 #ifdef _WINDOWS
 	String targetFolder = projectBasePath;
 	String command = "\""+polycodeBasePath+"/Standalone/Bin/polybuild.exe\"";
@@ -121,13 +121,13 @@ void PolycodeToolLauncher::openExternalEditor(String app, String file, String in
 void PolycodeToolLauncher::runPolyapp(String polyappPath) {
 
 	PolycodeConsole::clearBacktraces();
-							
+
 #if defined(__APPLE__) && defined(__MACH__)
 	CocoaCore *cocoaCore = (CocoaCore*) CoreServices::getInstance()->getCore();
 
 	String polycodeBasePath = CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory();
 	String command = polycodeBasePath+"/Standalone/Player/PolycodePlayer.app"; 
-	
+
 	cocoaCore->openFileWithApplication(polyappPath, command);
 #else
 	PolycodeRunner *runner = new PolycodeRunner(polyappPath);

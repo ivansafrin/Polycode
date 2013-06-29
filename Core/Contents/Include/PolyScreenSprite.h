@@ -33,14 +33,14 @@ class _PolyExport SpriteAnimation {
 		String name;
 		String frames;
 		int numFrames;
-		
+
 		int numFramesX;
 		int numFramesY;
 		Number spriteUVWidth;
 		Number spriteUVHeight;
-						
+
 		void setOffsetsFromFrameString(const String& frames);
-	
+
 		std::vector<Vector2> framesOffsets;
 };
 
@@ -50,31 +50,31 @@ class _PolyExport SpriteAnimation {
 class _PolyExport ScreenSprite : public ScreenShape 
 {
 	public:
-	
+
 		/**
 		* Create a sprite from a sprite file format
 		* @param fileName Sprite file to load
 		*/
 		ScreenSprite(const String& fileName);
-	
+
 		/**
 		* Create a sprite from a spritesheet image of specified size.
 		* @param fileName Image file to load spritesheet from.
 		* @param spriteWidth Pixel width of each sprite cell.
-		* @param spriteWidth Pixel height of each sprite cell.		
+		* @param spriteWidth Pixel height of each sprite cell.
 		*/
 		ScreenSprite(const String& fileName, Number spriteWidth, Number spriteHeight);
-		
+
 		/**
 		* Create a sprite from a spritesheet image of specified size.
 		* @param fileName Image file to load spritesheet from.
 		* @param spriteWidth Pixel width of each sprite cell.
-		* @param spriteWidth Pixel height of each sprite cell.		
-		*/		
+		* @param spriteWidth Pixel height of each sprite cell.
+		*/
 		static ScreenSprite* ScreenSpriteFromImageFile(const String& fileName, Number spriteWidth, Number spriteHeight);
-		
+
 		virtual ~ScreenSprite();
-		
+
 		virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly);
 		virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly);
 
@@ -86,13 +86,13 @@ class _PolyExport ScreenSprite : public ScreenShape
 		* @return Returns newly added animation
 		*/
 		SpriteAnimation *addAnimation(const String& name, const String& frames, Number speed);
-		
+
 		/**
 		* Shows a specific frame of the current animation.
 		* @param frameIndex Frame index of the frame to show.
 		*/
 		void showFrame(unsigned int frameIndex);
-		
+
 		/**
 		* Play back a previously created animation by name.
 		* @param name Name of the animation to play.
@@ -101,50 +101,50 @@ class _PolyExport ScreenSprite : public ScreenShape
 		*/
 		void playAnimation(const String& name, int startFrame, bool once);
 		void Update();
-		
+
 		void setSpriteSize(const Number spriteWidth, const Number spriteHeight);
-	
+
 		Vector2 getSpriteSize();
-	
+
 		String getFileName() const;
-	
+
 		void recalculateSpriteDimensions();
-	
+
 		bool loadFromFile(const String& fileName);
-	
+
 		/**
 		* Pauses or unpauses the current sprite animation.
 		* @param val If true, pauses the current animation, if false, resumes playing it.
 		*/ 
 		void Pause(bool val);
-		
-		unsigned int getNumAnimations();		
+
+		unsigned int getNumAnimations();
 		SpriteAnimation *getAnimationAtIndex(unsigned int index);
-		
+
 		SpriteAnimation *getCurrentAnimation();
 		unsigned int getCurrentAnimationFrame();
 		bool isCurrentAnimationFinished();
-		
+
 		void updateSprite();
-		
+
 	protected:
-	
+
 		String fileName;
-		
+
 		bool paused;
-	
+
 		Number spriteWidth;
 		Number spriteHeight;
-			
+
 		bool playingOnce;
 		Number lastTick;
-		
+
 		Number spriteUVWidth;
 		Number spriteUVHeight;
 		int currentFrame;
 		SpriteAnimation *currentAnimation;
-		
+
 		std::vector<SpriteAnimation*> animations;
 };
-	
+
 }

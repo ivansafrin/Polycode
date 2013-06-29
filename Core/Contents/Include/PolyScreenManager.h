@@ -27,16 +27,16 @@ THE SOFTWARE.
 
 namespace Polycode {
 
-	class Screen;
+class Screen;
 
-	/**
-	* 2D Screen manager. Must be accessed via CoreServices. Screens are automatically added to the manager when they are created, so there is no need to manually add them.
-	*/ 
-	class _PolyExport ScreenManager : public EventDispatcher {
-		public:		
+/**
+* 2D Screen manager. Must be accessed via CoreServices. Screens are automatically added to the manager when they are created, so there is no need to manually add them.
+*/ 
+class _PolyExport ScreenManager : public EventDispatcher {
+	public:
 		ScreenManager();
 		~ScreenManager();
-		
+
 		/**
 		* Removes a screen from the manager, taking it out of the render loop.
 		* @param screen Screen to remove. 
@@ -45,13 +45,13 @@ namespace Polycode {
 		void addScreen(Screen* screen);
 		void Update();
 		void Render();
-		
+
 		void handleEvent(Event *event);
-		
-		private:
-		
+
+	private:
+
 		std::vector <Screen*> screens;
-			
-	};
+
+};
 
 }

@@ -41,60 +41,60 @@ class PolycodeEditorAction  {
 	public:
 		PolycodeEditorAction(){}
 		~PolycodeEditorAction() {}
-		
+
 		void deleteData() {
 			delete beforeData;
-			delete afterData;		
+			delete afterData;
 		}
-		
+
 		String actionName;
 		PolycodeEditorActionData *beforeData;
-		PolycodeEditorActionData *afterData;		
+		PolycodeEditorActionData *afterData;
 };
 
 class PolycodeEditor : public ScreenEntity, public ClipboardProvider { 
 public:
 	PolycodeEditor(bool _isReadOnly);
 	virtual ~PolycodeEditor();
-	
+
 	virtual bool openFile(OSFileEntry filePath){ this->filePath = filePath.fullPath; return true;}
 	virtual void Resize(int x, int y);
-	
+
 	virtual void handleEvent(Event *event);
 
-	virtual void Activate() {};	
+	virtual void Activate() {};
 	virtual void saveFile(){};
-	
+
 	void didAction(String actionName, PolycodeEditorActionData *beforeData, PolycodeEditorActionData *afterData, bool setFileChanged = true);
 	virtual void doAction(String actionName, PolycodeEditorActionData *data) {}
-	
+
 	virtual String Copy(void **data) { return ""; }
 	virtual void Paste(void *data, String clipboardType) {}
 
 	virtual void handleDroppedFile(OSFileEntry file, Number x, Number y) {};
-	
+
 	void setFilePath(String newPath);
 	String getFilePath() { return filePath; }
-	
+
 	bool isReadOnly() { return _isReadOnly; }
-	
+
 	String getEditorType() { return editorType; }
-	
+
 	bool hasChanges() { return _hasChanges;}
-	
+
 	void setHasChanges(bool newVal);
-	
+
 	PolycodeProject *parentProject;
-		
+
 protected:
 
 	bool _hasChanges;
 
 	String filePath;
 	bool _isReadOnly;
-	
+
 	Vector2 editorSize;
-	
+
 	String editorType;
 
 	std::vector<PolycodeEditorAction> editorActions;
@@ -108,10 +108,10 @@ public:
 	virtual ~PolycodeEditorFactory();
 
 	virtual PolycodeEditor *createEditor() = 0;
-	
+
 	bool canHandleExtension(String extension);
-	
+
 protected:
 	std::vector<std::string> extensions;
-	
+
 };

@@ -29,32 +29,32 @@ THE SOFTWARE.
 
 namespace Polycode {
 
-	class _PolyExport FixedShader : public Shader {
-		public:
-			FixedShader();
-			virtual ~FixedShader();
-			
-			ShaderBinding *createBinding();
+class _PolyExport FixedShader : public Shader {
+	public:
+		FixedShader();
+		virtual ~FixedShader();
 
-		protected:
-			
-	};
+		ShaderBinding *createBinding();
 
-	class _PolyExport FixedShaderBinding : public ShaderBinding {
-		public:
-			FixedShaderBinding(FixedShader *shader);
-			~FixedShaderBinding();
-			
-			void addTexture(const String& name, Texture *texture);
-			void addCubemap(const String& name, Cubemap *cubemap);
-			
-			Texture *getDiffuseTexture();
-			
-		protected:
+	protected:
 
-			std::vector<Texture*> textures;
-			std::vector<Cubemap*> cubemaps;
-			FixedShader *fixedShader;
-	};
+};
+
+class _PolyExport FixedShaderBinding : public ShaderBinding {
+	public:
+		FixedShaderBinding(FixedShader *shader);
+		~FixedShaderBinding();
+
+		void addTexture(const String& name, Texture *texture);
+		void addCubemap(const String& name, Cubemap *cubemap);
+
+		Texture *getDiffuseTexture();
+
+	protected:
+
+		std::vector<Texture*> textures;
+		std::vector<Cubemap*> cubemaps;
+		FixedShader *fixedShader;
+};
 
 }

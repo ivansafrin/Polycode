@@ -33,53 +33,53 @@ class TextInputPopup : public UIWindow {
 	public:
 		TextInputPopup();
 		~TextInputPopup();
-		
+
 		void setCaption(String caption);
 		void setValue(String value);
 		String getValue();
 		void handleEvent(Event *event);
-		
+
 		String action;
-				
+
 	protected:
-	
+
 		UITextInput *textInput;
-	
+
 		UIButton *cancelButton;
-		UIButton *okButton;	
+		UIButton *okButton;
 };
 
 class YesNoPopup : public UIWindow {
 	public:
 		YesNoPopup();
 		~YesNoPopup();
-		
+
 		void setCaption(String caption);
 		void handleEvent(Event *event);
-		
+
 		String action;
-	
+
 		ScreenLabel *captionLabel;
-	
+
 		ScreenEntity *buttonAnchor;
 		UIButton *cancelButton;
-		UIButton *okButton;	
+		UIButton *okButton;
 };
 
 class YesNoCancelPopup : public UIWindow {
 	public:
 		YesNoCancelPopup();
 		~YesNoCancelPopup();
-		
+
 		void setCaption(String caption);
 		void handleEvent(Event *event);
-		
+
 		String action;
-	
+
 		ScreenLabel *captionLabel;
-	
+
 		ScreenEntity *buttonAnchor;
 		UIButton *cancelButton;
-		UIButton *noButton;		
+		UIButton *noButton;
 		UIButton *okButton;
 };

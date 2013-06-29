@@ -25,43 +25,44 @@ THE SOFTWARE.
 
 namespace Polycode {
 
-	/**
-	* Basic rectangle.
-	*/
-	class _PolyExport Rectangle : public PolyBase {
-		public:
-			/**
-			* Default constructor.
-			*/
-			Rectangle(){x=0;y=0;w=0;h=0;}
-			
-			/**
-			* Constructor with values.
-			*/			
-			Rectangle(Number px, Number py, Number pw, Number ph){x=px;y=py;w=pw;h=ph;}
-			
-			/**
-			* Set rectangle values.
-			*/						
-			void setRect(Number x, Number y, Number w, Number h);
+/**
+* Basic rectangle.
+*/
+class _PolyExport Rectangle : public PolyBase {
+	public:
+		/**
+		* Default constructor.
+		*/
+		Rectangle(){x=0;y=0;w=0;h=0;}
 
-			/**
-			* X position
-			*/									
-			Number x;
-			/**
-			* Y position
-			*/												
-			Number y;
-		
-			/**
-			* Width
-			*/													
-			Number w;
-			
-			/**
-			* Height
-			*/																
-			Number h;
-	};
+		/**
+		* Constructor with values.
+		*/
+		Rectangle(Number px, Number py, Number pw, Number ph){x=px;y=py;w=pw;h=ph;}
+
+		/**
+		* Set rectangle values.
+		*/
+		void setRect(Number x, Number y, Number w, Number h);
+
+		/**
+		* X position
+		*/
+		Number x;
+		/**
+		* Y position
+		*/
+		Number y;
+
+		/**
+		* Width
+		*/
+		Number w;
+
+		/**
+		* Height
+		*/
+		Number h;
+};
+
 }

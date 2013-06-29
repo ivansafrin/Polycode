@@ -31,32 +31,32 @@ class PolycodeEditorManager : public EventDispatcher {
 	public:
 		PolycodeEditorManager();
 		~PolycodeEditorManager();
-	
+
 		PolycodeEditor *getEditorForPath(String path);
 		PolycodeEditor *createEditorForExtension(String extension);
 		void registerEditorFactory(PolycodeEditorFactory *editorFactory);
-		
+
 		PolycodeEditorFactory *getEditorFactoryForExtension(String extension);
-	
+
 		void handleEvent(Event *event);
-		
+
 		void destroyEditor(PolycodeEditor* editor);
-	
+
 		void setCurrentEditor(PolycodeEditor *editor, bool sendChangeEvent = true);
 		PolycodeEditor *getCurrentEditor() { return currentEditor; }
-		
+
 		void saveAll();
-		
+
 		bool hasUnsavedFiles();
 		bool hasUnsavedFilesForProject(PolycodeProject *project);
 		void saveFilesForProject(PolycodeProject *project);
-		
+
 	//	int close
 	std::vector<PolycodeEditor*> openEditors;
-		
+
 protected:
-	
+
 	PolycodeEditor *currentEditor;
-	
+
 	std::vector<PolycodeEditorFactory*> editorFactories;	
 };

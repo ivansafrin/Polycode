@@ -26,35 +26,36 @@ THE SOFTWARE.
 
 namespace Polycode {
 
-	class Entity;
-	class Material;
-	class Mesh;
-	class Texture;
+class Entity;
+class Material;
+class Mesh;
+class Texture;
 
-	class _PolyExport Particle : public PolyBase {
-		public:
-			Particle(int particleType, bool isScreenParticle, Material *material, Texture *texture, Mesh *particleMesh);
-			~Particle();
-			void Reset(bool continuious);
-			
-			void createSceneParticle(int particleType, Material *material, Mesh *particleMesh);
-			void createScreenParticle(int particleType, Texture *texture, Mesh *particleMesh);
-		
-			Entity *particleBody;						
-			
-			Vector3 velVector;
-			Vector3 dirVector;	
-			Vector3 deviation;		
-			Number life;
-			Number lifespan;
-			Number brightnessDeviation;
-			Number perlinPosX;
-			Number perlinPosY;
-			Number perlinPosZ;
-			
-			static Mesh* billboardMesh;
-			
-			static const int BILLBOARD_PARTICLE = 0;
-			static const int MESH_PARTICLE = 1;
-	};
+class _PolyExport Particle : public PolyBase {
+	public:
+		Particle(int particleType, bool isScreenParticle, Material *material, Texture *texture, Mesh *particleMesh);
+		~Particle();
+		void Reset(bool continuous);
+
+		void createSceneParticle(int particleType, Material *material, Mesh *particleMesh);
+		void createScreenParticle(int particleType, Texture *texture, Mesh *particleMesh);
+
+		Entity *particleBody;
+
+		Vector3 velVector;
+		Vector3 dirVector;
+		Vector3 deviation;
+		Number life;
+		Number lifespan;
+		Number brightnessDeviation;
+		Number perlinPosX;
+		Number perlinPosY;
+		Number perlinPosZ;
+
+		static Mesh* billboardMesh;
+
+		static const int BILLBOARD_PARTICLE = 0;
+		static const int MESH_PARTICLE = 1;
+};
+
 }

@@ -39,20 +39,20 @@ class ExampleBrowserWindow : public UIWindow {
 	public:
 	ExampleBrowserWindow();
 	~ExampleBrowserWindow();
-	
+
 	void parseTemplatesIntoTree(UITree *tree, OSFileEntry folder);
 
 	String getExamplePath();
-	
+
 	void handleEvent(Event *event);
 	void ResetForm();
-	
+
 	protected:
-	
-		UITree *defaultTemplateTree;	
+
+		UITree *defaultTemplateTree;
 		UIButton *cancelButton;
 		UIButton *okButton;
 		UITreeContainer *templateContainer;
-	
+
 		String templateFolder;
 };

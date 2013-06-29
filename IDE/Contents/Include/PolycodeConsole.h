@@ -34,9 +34,9 @@ class BackTraceEvent : public Event {
 	public:
 		BackTraceEvent() : Event() { eventType = "BackTraceEvent"; };
 		~BackTraceEvent() {}
-		
+
 		static const int EVENT_BACKTRACE_SELECTED = 0;
-		
+
 		String fileName;
 		unsigned int lineNumber;
 		PolycodeProject *project;
@@ -46,22 +46,22 @@ class BackTraceEntry : public UIElement {
 	public:
 		BackTraceEntry(String fileName, int lineNumber, PolycodeProject *project);
 		~BackTraceEntry();
-		
+
 		void Select();
 		void Deselect();
-		
+
 		void handleEvent(Event *event);
-		
-		void Resize(Number width, Number height);	
-	
+
+		void Resize(Number width, Number height);
+
 	protected:
-	
+
 		PolycodeProject *project;
-	
+
 		String fileName;
 		unsigned int lineNumber;
-		
-		ScreenShape *labelBg;	
+
+		ScreenShape *labelBg;
 		ScreenLabel *label;
 };
 
@@ -69,36 +69,36 @@ class BackTraceWindow : public UIElement {
 	public:
 		BackTraceWindow();
 		~BackTraceWindow();
-		
+
 		void handleEvent(Event *event);
-		
+
 		void addBackTrace(String fileName, int lineNumber, PolycodeProject *project);
-		
+
 		void clearBackTraces();
-						
+
 		void Resize(Number width, Number height);
-		
+
 		void adjustEntries();
-		
-	protected:			
+
+	protected:
 		ScreenShape *labelBg;
 		std::vector<BackTraceEntry*> entries;
-		
+
 };
 
 
 class ConsoleWindow : public UIElement {
 	public:
 		ConsoleWindow();
-		
+
 		void Resize(Number width, Number height);
-		
+
 		UITextInput *debugTextInput;
 		UITextInput *consoleTextInput;
-		
+
 		UIImageButton *clearButton;
 		UIImageButton *hideConsoleButton;
-		
+
 		ScreenShape *labelBg;
 };
 
@@ -106,38 +106,38 @@ class PolycodeConsole : public UIElement {
 	public:
 		PolycodeConsole();
 		~PolycodeConsole();
-		
+
 		void _print(String msg);
-		
+
 		void handleEvent(Event *event);
-		
+
 		void setDebugger(PolycodeRemoteDebugger *debugger);
-		
+
 		static void print(String msg);
 
 		static void addBacktrace(String fileName, int lineNumber, PolycodeProject *project);
 
 		static void clearBacktraces();
 		void _clearBacktraces();
-		
-		
+
+
 		void applyTheme();
-		
+
 		void _addBacktrace(String fileName, int lineNumber, PolycodeProject *project);
-		
+
 		void Resize(Number width, Number height);
-		
+
 		static void setInstance(PolycodeConsole *newInstance);
-		
-		BackTraceWindow *backtraceWindow;	
+
+		BackTraceWindow *backtraceWindow;
 		ConsoleWindow  *consoleWindow;
 
 	protected:
 		UIHSizer *backtraceSizer;
-	
-		PolycodeRemoteDebugger *debugger;		
+
+		PolycodeRemoteDebugger *debugger;
 		static PolycodeConsole *instance;
-		
+
 		UITextInput *debugTextInput;
 		UITextInput *consoleTextInput;
 

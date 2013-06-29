@@ -25,12 +25,12 @@
 
 PolycodeRemoteDebugger::PolycodeRemoteDebugger(PolycodeProjectManager *projectManager) {
 	server = new Server(4630, 100);
-	
+
 	this->projectManager = projectManager;
 
 	server->addEventListener(this, ServerEvent::EVENT_CLIENT_CONNECTED);
-	server->addEventListener(this, ServerEvent::EVENT_CLIENT_DISCONNECTED);		
-	
+	server->addEventListener(this, ServerEvent::EVENT_CLIENT_DISCONNECTED);
+
 	hasErred = false;
 
 }
@@ -57,46 +57,46 @@ void PolycodeRemoteDebugger::Disconnect() {
 void PolycodeRemoteDebugger::handleEvent(Event *event) {
 
 	for(int i=0; i < debuggerClients.size(); i++) {
-		if(event->getDispatcher() == debuggerClients[i]->client) {		
+		if(event->getDispatcher() == debuggerClients[i]->client) {
 			ServerClientEvent *clientEvent = (ServerClientEvent*) event;
 			DebuggerClient *client = debuggerClients[i];
 			switch(clientEvent->getEventCode()) {
-				case ServerClientEvent::EVENT_CLIENT_DATA:				
-					switch(clientEvent->dataType) {			
+				case ServerClientEvent::EVENT_CLIENT_DATA:
+					switch(clientEvent->dataType) {
 						case EVENT_DEBUG_PRINT:
 						{
 							String printStr = String(clientEvent->data);
-							PolycodeConsole::print(printStr);		
+							PolycodeConsole::print(printStr);
 							PolycodeConsole::print("\n");
 						}
 						break;	
 						case EVENT_DEBUG_ERROR:
-						{		
-						
+						{
+
 							if(!hasErred) {
-								RemoteErrorData *data = (RemoteErrorData*)clientEvent->data;			
+								RemoteErrorData *data = (RemoteErrorData*)clientEvent->data;
 								PolycodeConsole::print("Error in file "+String(data->fileName)+" on line "+String::IntToString(data->lineNumber)+"\n");
 								PolycodeConsole::print(String(data->errorMessage)+"\n");
 								PolycodeConsole::print("Backtrace:\n");
-							
+
 								CoreServices::getInstance()->getCore()->makeApplicationMain();
 							}
-							
-//							hasErred = true;
-							
-						}
-						break;			
-						case EVENT_DEBUG_BACKTRACE_INFO:
-						{			
 
-							RemoteBacktraceData *data = (RemoteBacktraceData*)clientEvent->data;			
-							PolycodeConsole::print("In file "+String(data->fileName)+" on line "+String::IntToString(data->lineNumber)+"\n");
-							
-							PolycodeConsole::addBacktrace(String(data->fileName), data->lineNumber, projectManager->getActiveProject());
-							
+//							hasErred = true;
+
 						}
-						break;							
-										
+						break;
+						case EVENT_DEBUG_BACKTRACE_INFO:
+						{
+
+							RemoteBacktraceData *data = (RemoteBacktraceData*)clientEvent->data;
+							PolycodeConsole::print("In file "+String(data->fileName)+" on line "+String::IntToString(data->lineNumber)+"\n");
+
+							PolycodeConsole::addBacktrace(String(data->fileName), data->lineNumber, projectManager->getActiveProject());
+
+						}
+						break;
+
 					}
 				break;
 			}
@@ -107,31 +107,31 @@ void PolycodeRemoteDebugger::handleEvent(Event *event) {
 	if(event->getDispatcher() == server) {
 		ServerEvent *serverEvent = (ServerEvent*) event;
 		switch(serverEvent->getEventCode()) {
-		
-			case ServerEvent::EVENT_CLIENT_DISCONNECTED:		
+
+			case ServerEvent::EVENT_CLIENT_DISCONNECTED:
 			{
 				for(int i=0;i<debuggerClients.size();i++) {
-					if(debuggerClients[i]->client == serverEvent->client) {		
+					if(debuggerClients[i]->client == serverEvent->client) {
 						DebuggerClient *client = debuggerClients[i];
-						debuggerClients.erase(debuggerClients.begin()+i);	
+						debuggerClients.erase(debuggerClients.begin()+i);
 						delete client;
-						PolycodeConsole::print("Remote debugger client disconnected...\n");						
+						PolycodeConsole::print("Remote debugger client disconnected...\n");
 					}
 				}
-			}	
+			}
 			break;
-			
+
 			case ServerEvent::EVENT_CLIENT_CONNECTED:
 			{
 				DebuggerClient *newClient = new DebuggerClient();
 				newClient->client = serverEvent->client;
 				newClient->client->addEventListener(this, ServerClientEvent::EVENT_CLIENT_DATA);
-				PolycodeConsole::print("Remote debugger client connected...\n");printf("CLIENT CONNECTED\n");		
-				debuggerClients.push_back(newClient);				
+				PolycodeConsole::print("Remote debugger client connected...\n");printf("CLIENT CONNECTED\n");
+				debuggerClients.push_back(newClient);
 			}
 			break;
 		}
-		
+
 	}
 
 }

@@ -63,10 +63,10 @@ CoreServices* CoreServices::getInstance() {
 	}
 
 //#ifdef _WINDOWS
-		overrideInstance = new CoreServices;
-		overrideInstance->drawScreensFirst = false;
-		Logger::log("Creating new core services instance...\n");
-		return overrideInstance;
+	overrideInstance = new CoreServices;
+	overrideInstance->drawScreensFirst = false;
+	Logger::log("Creating new core services instance...\n");
+	return overrideInstance;
 //#else
 //	long threadID = getThreadID(); 
 //	CoreServices *instance;
@@ -106,7 +106,7 @@ void CoreServices::installModule(PolycodeModule *module)  {
 	if(module->requiresUpdate()) {
 		updateModules.push_back(module);
 	}
-	
+
 	switch(module->getType()) {
 		case PolycodeModule::TYPE_SHADER:
 //			renderer->addShaderModule((ShaderModule*)module);
@@ -118,12 +118,12 @@ void CoreServices::installModule(PolycodeModule *module)  {
 }
 
 void CoreServices::setupBasicListeners() {
-	this->setCore(this->core);	
+	this->setCore(this->core);
 }
 
 CoreServices::CoreServices() : EventDispatcher() {
 	logger = new Logger();
-	resourceManager = new ResourceManager();	
+	resourceManager = new ResourceManager();
 	config = new Config();
 	materialManager = new MaterialManager();
 	screenManager = new ScreenManager();
@@ -142,7 +142,7 @@ CoreServices::CoreServices() : EventDispatcher() {
 	tweenManager = new TweenManager();
 	soundManager = new SoundManager();
 	fontManager = new FontManager();
-	
+
 	focusedChild = NULL;
 }
 
@@ -157,7 +157,7 @@ CoreServices::~CoreServices() {
 	delete fontManager;
 	instanceMap.clear();
 	overrideInstance = NULL;
-	
+
 }
 
 void CoreServices::setCore(Core *core) {
@@ -165,13 +165,13 @@ void CoreServices::setCore(Core *core) {
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEUP);
-	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_DOWN);	
-	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_UP);		
+	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_DOWN);
+	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_UP);
 	core->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 	core->getInput()->addEventListener(this, InputEvent::EVENT_KEYUP);
 	core->getInput()->addEventListener(this, InputEvent::EVENT_TOUCHES_BEGAN);
 	core->getInput()->addEventListener(this, InputEvent::EVENT_TOUCHES_ENDED);
-	core->getInput()->addEventListener(this, InputEvent::EVENT_TOUCHES_MOVED);		
+	core->getInput()->addEventListener(this, InputEvent::EVENT_TOUCHES_MOVED);
 }
 
 void CoreServices::handleEvent(Event *event) {
@@ -180,11 +180,11 @@ void CoreServices::handleEvent(Event *event) {
 		switch(event->getEventCode()) {
 			case InputEvent::EVENT_KEYDOWN:
 			case InputEvent::EVENT_KEYUP:
-				dispatchEvent(new InputEvent(inputEvent->key, inputEvent->charCode, inputEvent->timestamp), inputEvent->getEventCode());			
+				dispatchEvent(new InputEvent(inputEvent->key, inputEvent->charCode, inputEvent->timestamp), inputEvent->getEventCode());
 			break;
 			case InputEvent::EVENT_TOUCHES_BEGAN:
 			case InputEvent::EVENT_TOUCHES_ENDED:
-			case InputEvent::EVENT_TOUCHES_MOVED:						
+			case InputEvent::EVENT_TOUCHES_MOVED:
 			{
 				InputEvent *event = new InputEvent();
 				event->touches = inputEvent->touches;
@@ -195,7 +195,7 @@ void CoreServices::handleEvent(Event *event) {
 			default:
 				InputEvent *_inputEvent = new InputEvent(inputEvent->mousePosition, inputEvent->timestamp);
 				_inputEvent->mouseButton = inputEvent->mouseButton;
-				dispatchEvent(_inputEvent, inputEvent->getEventCode());			
+				dispatchEvent(_inputEvent, inputEvent->getEventCode());
 			break;
 		}
 	}
@@ -215,23 +215,23 @@ Renderer *CoreServices::getRenderer() {
 }
 
 void CoreServices::Render() {
-	if(renderer->doClearBuffer)		
+	if(renderer->doClearBuffer)
 		renderer->clearScreen();
 
 	renderer->setPerspectiveMode();
 	sceneManager->renderVirtual();
 	if(renderer->doClearBuffer)
-		renderer->clearScreen();					
+		renderer->clearScreen();
 
 	if(drawScreensFirst) {
-		renderer->clearLights();	
+		renderer->clearLights();
 		screenManager->Render();
 		renderer->setPerspectiveMode();
-		sceneManager->Render();	
+		sceneManager->Render();
 	} else {
 		sceneManager->Render();
-		renderer->clearLights();		
-		screenManager->Render();	
+		renderer->clearLights();
+		screenManager->Render();
 	}
 }
 
@@ -241,11 +241,11 @@ void CoreServices::Update(int elapsed) {
 		updateModules[i]->Update(elapsed);
 	}
 	resourceManager->Update(elapsed);
-	timerManager->Update();	
-	tweenManager->Update();	
-	materialManager->Update(elapsed);		
+	timerManager->Update();
+	tweenManager->Update();
+	materialManager->Update(elapsed);
 	sceneManager->Update();
-	screenManager->Update();	
+	screenManager->Update();
 }
 
 SoundManager *CoreServices::getSoundManager() {

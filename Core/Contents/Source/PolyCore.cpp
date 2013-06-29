@@ -33,14 +33,14 @@
 #include <time.h>
 
 namespace Polycode {
-	
+
 	TimeInfo::TimeInfo() {
 		time_t rawtime;
 		struct tm * timeinfo;
-		
+
 		time( &rawtime );
 		timeinfo = localtime ( &rawtime );
-	
+
 		seconds = timeinfo->tm_sec;
 		minutes = timeinfo->tm_min;
 		hours = timeinfo->tm_hour;
@@ -50,7 +50,7 @@ namespace Polycode {
 		year = timeinfo->tm_year;
 		yearDay = timeinfo->tm_yday;
 	}
-	
+
 	Core::Core(int _xRes, int _yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex) : EventDispatcher() {
 		services = CoreServices::getInstance();
 		input = new CoreInput();
@@ -70,20 +70,20 @@ namespace Polycode {
 		}
 		mouseEnabled = true; mouseCaptured = false;
 		lastSleepFrameTicks = 0;
-		
+
 		this->monitorIndex = monitorIndex;
-		
+
 		if(frameRate == 0)
 			frameRate = 60;
-		
-		refreshInterval = 1000 / frameRate;		
+
+		refreshInterval = 1000 / frameRate;
 		threadedEventMutex = NULL;
 	}
-	
+
 	void Core::setFramerate(int frameRate) {
 		refreshInterval = 1000 / frameRate;
 	}
-	
+
 	void Core::enableMouse(bool newval) {
 		mouseEnabled = newval;
 	}
@@ -91,11 +91,11 @@ namespace Polycode {
 	void Core::captureMouse(bool newval) {
 		mouseCaptured = newval;
 	}
-	
+
 	int Core::getNumVideoModes() {
 		return numVideoModes;
 	}
-	
+
 	Number Core::getXRes() {
 		return xRes;
 	}
@@ -103,60 +103,60 @@ namespace Polycode {
 	Number Core::getYRes() {
 		return yRes;
 	}
-	
+
 	CoreInput *Core::getInput() {
 		return input;
-	}	
-	
+	}
+
 	Core::~Core() {
 		printf("Shutting down core");
 		delete services;
 	}
-	
-	void Core::Shutdown() {	
+
+	void Core::Shutdown() {
 		running = false;
 	}
-	
+
 	String Core::getUserHomeDirectory() {
 		return userHomeDirectory;
-	}	
-	
+	}
+
 	String Core::getDefaultWorkingDirectory() {
 		return defaultWorkingDirectory;
 	}
-	
+
 	Number Core::getElapsed() {
 		return ((Number)elapsed)/1000.0f;
 	}
-	
+
 	Number Core::getTicksFloat() {
-		return ((Number)getTicks())/1000.0f;		
+		return ((Number)getTicks())/1000.0f;
 	}
-	
+
 	void Core::setVideoModeIndex(int index, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel) {
 		std::vector<Rectangle> resList = getVideoModes();
 		if(index >= resList.size())
 			return;
-		
+
 		setVideoMode(resList[index].w, resList[index].h, fullScreen, vSync, aaLevel, anisotropyLevel);
 	}
-	
+
 	void Core::createThread(Threaded *target) {
 		if(!threadedEventMutex) {
 			threadedEventMutex = createMutex();
 		}
 		target->eventMutex = threadedEventMutex;
 		target->core = this;
-		
+
 		lockMutex(threadedEventMutex);
 		threads.push_back(target);
-		unlockMutex(threadedEventMutex);			
+		unlockMutex(threadedEventMutex);
 	}
-	
+
 	CoreMutex *Core::getEventMutex() {
 		return eventMutex;
 	}
-	
+
 	void Core::loseFocus() {
 		if(pauseOnLoseFocus) {
 			paused = true;
@@ -164,57 +164,57 @@ namespace Polycode {
 		input->clearInput();
 		dispatchEvent(new Event(), EVENT_LOST_FOCUS);
 	}
-	
+
 	void Core::gainFocus() {
 		if(pauseOnLoseFocus) {
 			paused = false;
-		}	
-		input->clearInput();		
+		}
+		input->clearInput();
 		dispatchEvent(new Event(), EVENT_GAINED_FOCUS);
 	}
-	
+
 	void Core::removeThread(Threaded *thread) {
 		if(threadedEventMutex){ 
 			lockMutex(threadedEventMutex);
-	
+
 			for(int i=0; i < threads.size(); i++) {
 				if(threads[i] == thread) {
 					threads.erase(threads.begin() + i);
 					return;
 				}
 			}
-			unlockMutex(threadedEventMutex);			
+			unlockMutex(threadedEventMutex);
 		}
 	}
-	
+
 	bool Core::updateAndRender() {
 		bool ret = Update();
 		Render();
 		return ret;
 	}
-							
+
 	void Core::updateCore() {
 		frames++;
 		frameTicks = getTicks();
 		elapsed = frameTicks - lastFrameTicks;
-		
+
 		if(elapsed > 1000)
 			elapsed = 1000;
-			
+
 		services->Update(elapsed);
-		
+
 		if(frameTicks-lastFPSTicks >= 1000) {
 			fps = frames;
 			frames = 0;
 			lastFPSTicks = frameTicks;
 		}
 		lastFrameTicks = frameTicks;
-		
+
 		if(threadedEventMutex){ 
 		lockMutex(threadedEventMutex);
 
 		std::vector<Threaded*>::iterator iter = threads.begin();
-		while (iter != threads.end()) {		
+		while (iter != threads.end()) {
 			for(int j=0; j < (*iter)->eventQueue.size(); j++) {
 				Event *event = (*iter)->eventQueue[j];
 				(*iter)->__dispatchEvent(event, event->getEventCode());
@@ -228,30 +228,30 @@ namespace Polycode {
 				++iter;
 			}
 		}
-		
+
 		unlockMutex(threadedEventMutex);
 		}
 	}
-	
+
 	void Core::doSleep() {
 		unsigned int ticks = getTicks();
 		unsigned int ticksSinceLastFrame = ticks - lastSleepFrameTicks;
 		if(ticksSinceLastFrame <= refreshInterval)
 #ifdef _WINDOWS
-		Sleep((refreshInterval - ticksSinceLastFrame));
+			Sleep((refreshInterval - ticksSinceLastFrame));
 #else
 			usleep((refreshInterval - ticksSinceLastFrame) * 1000);
 #endif
 		lastSleepFrameTicks = ticks;
 	}
-	
-	
+
+
 	Number Core::getFPS() {
 		return fps;
 	}
-	
+
 	CoreServices *Core::getServices() {
 		return services;
 	}
-	
+
 }

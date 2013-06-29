@@ -26,56 +26,57 @@ THE SOFTWARE.
 #include "PolyEventDispatcher.h"
 
 namespace Polycode {
-	
-	/** 
-	* A timer that dispatches trigger events.
-	*/ 
-	class _PolyExport Timer : public EventDispatcher {
-		public:
-			/**
-			* Creates a new timer. 
-			* @param triggerMode If true, will dispatch an event at the specified frequency, otherwise it will simply count time. You normally want this to be true.
-			* @param msecs Timer frequency in milliseconds.
-			*/
-			Timer(bool triggerMode, int msecs);
-			virtual ~Timer();
+
+/** 
+* A timer that dispatches trigger events.
+*/ 
+class _PolyExport Timer : public EventDispatcher {
+	public:
+		/**
+		* Creates a new timer. 
+		* @param triggerMode If true, will dispatch an event at the specified frequency, otherwise it will simply count time. You normally want this to be true.
+		* @param msecs Timer frequency in milliseconds.
+		*/
+		Timer(bool triggerMode, int msecs);
+		virtual ~Timer();
 
 		/** 
 		* Pauses and resumes the timer.
 		* @param paused If true, pauses the timer, otherwise resumes it.
 		*/ 
 		void Pause(bool paused);
-		
+
 		/**
 		* Returns true if the timer is paused.
 		*/
 		bool isPaused();
-		
+
 		unsigned int getTicks();
 		void Update(unsigned int ticks);
-		
+
 		/**
 		* Resets the timer.
 		*/ 
 		void Reset();
 		bool hasElapsed();
-		
+
 		/**
 		* Returns the time elapsed in floating point microseconds.
 		*/
-		Number getElapsedf();		
-		
+		Number getElapsedf();
+
 		void setTimerInterval(int msecs);
 
 		static const int EVENT_TRIGGER = 0;
-		
-		protected:
-			
-			int elapsed;
-			bool paused;
-			unsigned int msecs;
-			bool triggerMode;
-			unsigned int last;
-			unsigned int ticks;
-	};
+
+	protected:
+
+		int elapsed;
+		bool paused;
+		unsigned int msecs;
+		bool triggerMode;
+		unsigned int last;
+		unsigned int ticks;
+};
+
 }

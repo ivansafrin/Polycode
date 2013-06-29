@@ -29,47 +29,47 @@ ExampleBrowserWindow::ExampleBrowserWindow() : UIWindow(L"Example Browser", 320,
 	closeOnEscape = true;
 	defaultTemplateTree = NULL;
 	
-	Config *conf = CoreServices::getInstance()->getConfig();	
+	Config *conf = CoreServices::getInstance()->getConfig();
 	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
 	int fontSize = conf->getNumericValue("Polycode", "uiDefaultFontSize");
-	
-	
-	templateContainer = new UITreeContainer("boxIcon.png", L"Examples", 320, 410-topPadding-padding-padding-40);	
+
+
+	templateContainer = new UITreeContainer("boxIcon.png", L"Examples", 320, 410-topPadding-padding-padding-40);
 	
 	ExampleTemplateUserData *data = new ExampleTemplateUserData();
 	data->type = 0;
-	templateContainer->getRootNode()->setUserData(data);			
-	
-	
-	addChild(templateContainer);		
-	templateContainer->setPosition(padding,topPadding+padding);	
+	templateContainer->getRootNode()->setUserData(data);
+
+
+	addChild(templateContainer);
+	templateContainer->setPosition(padding,topPadding+padding);
 	templateContainer->getRootNode()->toggleCollapsed();
-	
+
 	templateContainer->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
-	
+
 	vector<OSFileEntry> templates = OSBasics::parseFolder(RESOURCE_PATH"Standalone/Examples/Lua", false);
 	for(int i=0; i < templates.size(); i++) {
 		OSFileEntry entry = templates[i];
 		if(entry.type == OSFileEntry::TYPE_FOLDER) {
-			UITree *newChild = templateContainer->getRootNode()->addTreeChild("folder.png", entry.name, NULL);			
+			UITree *newChild = templateContainer->getRootNode()->addTreeChild("folder.png", entry.name, NULL);
 			ExampleTemplateUserData *data = new ExampleTemplateUserData();
 			data->type = 0;
-			newChild->setUserData(data);			
+			newChild->setUserData(data);
 			if(i == 0) {
 				newChild->toggleCollapsed();
 			}
 			parseTemplatesIntoTree(newChild, entry);
 		}
 	}
-	
-	
-	
+
+
+
 	cancelButton = new UIButton(L"Cancel", 100);
 	cancelButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(cancelButton);
 	cancelButton->setPosition(330-100-padding-80-10, 375);
-		
-	
+
+
 	okButton = new UIButton(L"Open Example", 100);
 	okButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(okButton);
@@ -94,15 +94,15 @@ void ExampleBrowserWindow::handleEvent(Event *event) {
 			UITree *node = templateContainer->getRootNode()->getSelectedNode();
 			ExampleTemplateUserData *data = (ExampleTemplateUserData*)node->getUserData();
 			if(event->getDispatcher() == okButton && data->type == 1) {
-				dispatchEvent(new UIEvent(), UIEvent::OK_EVENT);						
+				dispatchEvent(new UIEvent(), UIEvent::OK_EVENT);
 			}
-			
+
 			if(event->getDispatcher() == cancelButton) {
-				dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);				
-			}									
+				dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);
+			}
 		}
 	}
-	
+
 	if(event->getEventType() == "UITreeEvent" && event->getEventCode() == UITreeEvent::SELECTED_EVENT) {
 		if(event->getDispatcher() == templateContainer->getRootNode()) {
 			UITreeEvent *treeEvent = (UITreeEvent*) event;
@@ -111,8 +111,8 @@ void ExampleBrowserWindow::handleEvent(Event *event) {
 				templateFolder = data->templateFolder;
 		}
 	}
-	
-	UIWindow::handleEvent(event);	
+
+	UIWindow::handleEvent(event);
 }
 
 void ExampleBrowserWindow::parseTemplatesIntoTree(UITree *tree, OSFileEntry folder) {
@@ -120,7 +120,7 @@ void ExampleBrowserWindow::parseTemplatesIntoTree(UITree *tree, OSFileEntry fold
 	for(int i=0; i < templates.size(); i++) {
 		OSFileEntry entry = templates[i];
 		if(entry.type == OSFileEntry::TYPE_FOLDER) {
-			UITree *newChild = tree->addTreeChild("templateIcon.png", entry.name, NULL);			
+			UITree *newChild = tree->addTreeChild("templateIcon.png", entry.name, NULL);
 			ExampleTemplateUserData *data = new ExampleTemplateUserData();
 			data->type = 1;
 			data->templateFolder = entry.fullPath;
@@ -130,12 +130,12 @@ void ExampleBrowserWindow::parseTemplatesIntoTree(UITree *tree, OSFileEntry fold
 				newChild->setSelected();
 			}
 		}
-	}	
+	}
 }
 
 
 
 ExampleBrowserWindow::~ExampleBrowserWindow() {
-	
+
 }
 

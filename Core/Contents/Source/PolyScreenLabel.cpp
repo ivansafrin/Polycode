@@ -64,20 +64,18 @@ void ScreenLabel::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnl
 
 const String& ScreenLabel::getText() const {
 	return label->getText();
-}	
+}
 
 void ScreenLabel::updateTexture() {
-	
+
 	if(texture) {
 		CoreServices::getInstance()->getMaterialManager()->deleteTexture(texture);
 	}
-	
+
 	texture = NULL;
-	if(!label->getFont())
+	if(!label->getFont() || !label->getFont()->isValid())
 		return;
-	if(!label->getFont()->isValid())
-		return;				
-	
+
 	texture = CoreServices::getInstance()->getMaterialManager()->createTextureFromImage(label, true, false);
 	setWidth(label->getWidth());
 	setHeight(label->getHeight());
@@ -94,7 +92,7 @@ void ScreenLabel::Render() {
 
 void ScreenLabel::setText(const String& newText) {
 	if(newText != label->getText() || label->optionsChanged()) {
-		label->setText(newText);	
+		label->setText(newText);
 		updateTexture();
 	}
 }

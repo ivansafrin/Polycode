@@ -31,21 +31,21 @@
 using namespace Polycode;
 
 class FolderUserData  {
-public:
-	String folderPath;
-	int type;
+	public:
+		String folderPath;
+		int type;
 };
 
 class AssetEntry : public UIElement {
 	public:
 		AssetEntry(String assetPath, String assetName, String extension);
 		~AssetEntry();
-		
+
 		ScreenShape *imageShape;
 		ScreenLabel *nameLabel;
-		
+
 		String assetPath;
-		
+
 		ScreenShape *selectShape;
 };
 
@@ -53,24 +53,24 @@ class AssetList : public UIElement {
 	public:
 		AssetList();
 		~AssetList();
-		
+
 		void handleEvent(Event *event);
-		
+
 		bool hasExtension(String extension);
-		
+
 		void showFolder(String folderPath);
 		String selectedPath;
-		
+
 		void setExtensions(std::vector<String> extensions);
-		
+
 	protected:
-	
+
 		String currentFolderPath;
 		ScreenShape *bgShape;
-	
-		AssetEntry *currentEntry;		
+
+		AssetEntry *currentEntry;
 		std::vector<AssetEntry*> assetEntries;
-		
+
 		std::vector<String> extensions;
 };
 
@@ -78,33 +78,33 @@ class AssetBrowser : public UIWindow {
 	public:
 		AssetBrowser();
 		~AssetBrowser();
-	
+
 		String getSelectedAssetPath();
 		String getFullSelectedAssetPath();
-			
+
 		void parseFolderIntoTree(UITree *tree, OSFileEntry folder);
 
 		String getTemplatePath();
 		String getFileName();
-		
+
 		void setExtensions(std::vector<String> extensions);
-		
+
 		void setProject(PolycodeProject *project);
-		
+
 		void handleEvent(Event *event);
-	
+
 	protected:
-	
+
 		AssetList *assetList;
 		UIScrollContainer *listContainer;
-	
+
 		PolycodeProject *currentProject;
-	
+
 		UIButton *cancelButton;
 		UIButton *okButton;
-		
+
 		String templatePath;
-			
-		UITreeContainer *templateContainer;	
+
+		UITreeContainer *templateContainer;
 		UITree *defaultTemplateTree;
 };

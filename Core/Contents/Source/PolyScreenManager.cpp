@@ -66,9 +66,9 @@ void ScreenManager::Render() {
 			} else {
 				Number yCoordinateSize = screens[i]->getYCoordinateSize();
 				Number ratio = ((Number)renderer->getXRes())/((Number)renderer->getYRes());
-				renderer->setOrthoMode(ratio*yCoordinateSize, yCoordinateSize, true);				
+				renderer->setOrthoMode(ratio*yCoordinateSize, yCoordinateSize, true);
 			}
-		
+
 			if(screens[i]->hasFilterShader()) {
 				screens[i]->drawFilter();
 			} else {

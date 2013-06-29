@@ -77,39 +77,39 @@ PeerConnection *Peer::addPeerConnection(const Address &address) {
 
 void Peer::removePeerConnection(PeerConnection* connection) {
 	for(unsigned int i=0;i<peerConnections.size();i++) {
-		if(peerConnections[i] == connection) {			
+		if(peerConnections[i] == connection) {
 			peerConnections.erase(peerConnections.begin()+i);
 		}
 	}
 }
 
-Packet *Peer::createPacket(const Address &target, char *data, unsigned int size, unsigned short type) {	
+Packet *Peer::createPacket(const Address &target, char *data, unsigned int size, unsigned short type) {
 	PeerConnection *connection = getPeerConnection(target);
 	if(!connection)
 		connection = addPeerConnection(target);
 	Packet *packet = new Packet();
 	packet->header.sequence = connection->localSequence;
 	packet->header.headerHash = 20;
-	packet->header.reliableID = 0;	
+	packet->header.reliableID = 0;
 	packet->header.ack = connection->remoteSequence;
 	packet->header.ackBitfield = 0;
-	packet->header.size = size;	
+	packet->header.size = size;
 	packet->header.type = type;
 	if(size > 0)
-		memcpy(packet->data, data, size);	
-	connection->localSequence++;	
-	return packet;	
+		memcpy(packet->data, data, size);
+	connection->localSequence++;
+	return packet;
 }
 
-void Peer::sendReliableData(const Address &target, char *data, unsigned int size, unsigned short type) {	
-	PeerConnection *connection = getPeerConnection(target);	
+void Peer::sendReliableData(const Address &target, char *data, unsigned int size, unsigned short type) {
+	PeerConnection *connection = getPeerConnection(target);
 	if(!connection)
-		connection = addPeerConnection(target);	
+		connection = addPeerConnection(target);
 	Packet *packet = createPacket(target, data, size, type);
 	packet->header.reliableID = connection->reliableID;
 	connection->reliableID++;
-	sendPacket(target, packet);	
-	
+	sendPacket(target, packet);
+
 	SentPacketEntry entry;
 	entry.packet = packet;
 	entry.timestamp = CoreServices::getInstance()->getCore()->getTicks();
@@ -120,7 +120,7 @@ void Peer::sendReliableData(const Address &target, char *data, unsigned int size
 void Peer::sendDataToAll(char *data, unsigned int size, unsigned short type) {
 	for(int i=0; i < peerConnections.size(); i++) {
 		sendData(peerConnections[i]->address, data, size, type);
-	}	
+	}
 }
 
 void Peer::sendReliableDataToAll(char *data, unsigned int size, unsigned short type) {
@@ -137,7 +137,7 @@ void Peer::sendData(const Address &target, char *data, unsigned int size, unsign
 
 void Peer::sendPacket(const Address &target, Packet *packet) {
 	unsigned int packetSize = packet->header.size + sizeof(packet->header);	
-	socket->sendData(target, (char*)packet, packetSize);	
+	socket->sendData(target, (char*)packet, packetSize);
 }
 
 bool Peer::checkPacketAcks(PeerConnection *connection, Packet *packet) {
@@ -146,27 +146,27 @@ bool Peer::checkPacketAcks(PeerConnection *connection, Packet *packet) {
 		connection->remoteSequence = packet->header.sequence;
 	else // ignore old packets
 		retVal = false;
-	
-	// if this is a reliable packet, check if it was recently received	
+
+	// if this is a reliable packet, check if it was recently received
 	if(packet->header.reliableID != 0) {
 		retVal = true;
 		for(int i=0; i < connection->recentReliableIDs.size(); i++) {
 			if(connection->recentReliableIDs[i] == packet->header.reliableID)
 				retVal = false;
 		}
-		
+
 		// if still good, push the id into recent reliable acks
 		if(retVal) {
 			connection->recentReliableIDs.push_back(packet->header.reliableID);
 			if(connection->recentReliableIDs.size() > 50)
 				connection->recentReliableIDs.erase(connection->recentReliableIDs.begin());
-		}		
+		}
 	}
-	
+
 	for(int i=0; i < peerConnections.size(); i++) {
 		peerConnections[i]->ackPackets(packet->header.ack);
 	}
-	
+
 	return retVal;
 }
 
@@ -177,7 +177,7 @@ void Peer::handleEvent(Event *event) {
 			case SocketEvent::EVENT_DATA_RECEIVED:
 				PeerConnection *connection = getPeerConnection(socketEvent->fromAddress);
 				if(!connection)
-					connection = addPeerConnection(socketEvent->fromAddress);				
+					connection = addPeerConnection(socketEvent->fromAddress);
 				if(checkPacketAcks(connection, (Packet*)socketEvent->data))
 					handlePacket((Packet*)socketEvent->data, connection);
 			break;
@@ -200,7 +200,7 @@ void Peer::updateReliableDataQueue() {
 
 void Peer::updateThread() {
 	updateReliableDataQueue();
-	
+
 	int received = 1;
 	while( received > 0) {
 		received = socket->receiveData();

@@ -38,26 +38,26 @@ THE SOFTWARE.
 #endif
 
 namespace Polycode {
-	
-	class _PolyExport OpenGLVertexBuffer : public VertexBuffer {
+
+class _PolyExport OpenGLVertexBuffer : public VertexBuffer {
 	public:
-		
+
 		OpenGLVertexBuffer(Mesh *mesh);
 		virtual ~OpenGLVertexBuffer();
-		
-		GLuint getVertexBufferID();		
-		GLuint getTextCoordBufferID();	
+
+		GLuint getVertexBufferID();
+		GLuint getTextCoordBufferID();
 		GLuint getNormalBufferID();
 		GLuint getColorBufferID();
 		GLuint getTangentBufferID();
-				
+
 	protected:
-		
+
 		GLuint vertexBufferID;
 		GLuint texCoordBufferID;
 		GLuint normalBufferID;
-		GLuint colorBufferID;	
-		GLuint tangentBufferID;				
-	};
-	
+		GLuint colorBufferID;
+		GLuint tangentBufferID;
+};
+
 }

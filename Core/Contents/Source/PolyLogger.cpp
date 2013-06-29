@@ -62,7 +62,7 @@ void Logger::log(const char *format, ...) {
 
 #ifdef MSVC
 #ifdef _DEBUG
-	
+
 	char buffer[4096];
 	va_start(args, format);
 	vsprintf(buffer, format, args);

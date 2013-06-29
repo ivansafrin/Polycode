@@ -18,7 +18,7 @@
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
-*/		
+*/
 
 #include "PolyWinCore.h"
 #include "PolyGLHeaders.h"
@@ -53,25 +53,28 @@ extern Win32Core *core;
 
 void ClientResize(HWND hWnd, int nWidth, int nHeight)
 {
-  RECT rcClient, rcWindow;
-  POINT ptDiff;
-  GetClientRect(hWnd, &rcClient);
-  GetWindowRect(hWnd, &rcWindow);
-  ptDiff.x = (rcWindow.right - rcWindow.left) - rcClient.right;
-  ptDiff.y = (rcWindow.bottom - rcWindow.top) - rcClient.bottom;
-  MoveWindow(hWnd,rcWindow.left, rcWindow.top, nWidth + ptDiff.x, nHeight + ptDiff.y, TRUE);
+	RECT rcClient, rcWindow;
+	POINT ptDiff;
+	GetClientRect(hWnd, &rcClient);
+	GetWindowRect(hWnd, &rcWindow);
+	ptDiff.x = (rcWindow.right - rcWindow.left) - rcClient.right;
+	ptDiff.y = (rcWindow.bottom - rcWindow.top) - rcClient.bottom;
+	MoveWindow(hWnd,rcWindow.left, rcWindow.top, nWidth + ptDiff.x, nHeight + ptDiff.y, TRUE);
 }
 
 void Core::getScreenInfo(int *width, int *height, int *hz) {
 	DEVMODE mode = {}; // Zero initialize
 	mode.dmSize = sizeof(DEVMODE);
-	
-    EnumDisplaySettings(0, ENUM_CURRENT_SETTINGS, &mode);
-	
-    // Store the current display settings.
-    if (width) *width = mode.dmPelsWidth;
-    if (height) *height = mode.dmPelsHeight;
-    if (hz) *hz = mode.dmDisplayFrequency;
+
+	EnumDisplaySettings(0, ENUM_CURRENT_SETTINGS, &mode);
+
+	// Store the current display settings.
+	if (width) 
+		*width = mode.dmPelsWidth;
+	if (height) 
+		*height = mode.dmPelsHeight;
+	if (hz) 
+		*hz = mode.dmDisplayFrequency;
 }
 
 Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate,  int monitorIndex) 
@@ -111,7 +114,7 @@ Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScre
 	services->setRenderer(renderer);
 
 	setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel);
-		
+
 	WSADATA WsaData;
 	if(WSAStartup( MAKEWORD(2,2), &WsaData ) != NO_ERROR ){
 		Logger::log("Error initializing sockets!\n");
@@ -121,10 +124,10 @@ Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScre
 
 	wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC) wglGetProcAddress("wglSwapIntervalEXT");
 	wglGetSwapIntervalEXT = (PFNWGLGETSWAPINTERVALEXTPROC) wglGetProcAddress("wglGetSwapIntervalEXT");
-	
+
 	setVSync(vSync);
 
-	CoreServices::getInstance()->installModule(new GLSLShaderModule());	
+	CoreServices::getInstance()->installModule(new GLSLShaderModule());
 }
 
 Win32Core::~Win32Core() {
@@ -244,54 +247,45 @@ void Win32Core::initContext(bool usePixelFormat, unsigned int pixelFormat) {
 
 	destroyContext();
 
-   memset(&pfd, 0, sizeof(PIXELFORMATDESCRIPTOR)) ;
-   pfd.nSize      = sizeof(PIXELFORMATDESCRIPTOR); 
-   pfd.nVersion   = 1 ; 
-   pfd.dwFlags    = PFD_DOUBLEBUFFER |
-                    PFD_SUPPORT_OPENGL |
-                    PFD_DRAW_TO_WINDOW ;
-   pfd.iPixelType = PFD_TYPE_RGBA ;
-   pfd.cColorBits = 24;
-   pfd.cDepthBits = 16;
-   pfd.cAccumBlueBits = 8;	
-   pfd.cAccumRedBits = 8;	
-   pfd.cAccumGreenBits = 8;
-   pfd.cAccumAlphaBits = 8;
-   pfd.cAccumBits = 24;
-   pfd.iLayerType = PFD_MAIN_PLANE ;
+	memset(&pfd, 0, sizeof(PIXELFORMATDESCRIPTOR)) ;
+	pfd.nSize      = sizeof(PIXELFORMATDESCRIPTOR); 
+	pfd.nVersion   = 1 ; 
+	pfd.dwFlags    = PFD_DOUBLEBUFFER | PFD_SUPPORT_OPENGL | PFD_DRAW_TO_WINDOW ;
+	pfd.iPixelType = PFD_TYPE_RGBA ;
+	pfd.cColorBits = 24;
+	pfd.cDepthBits = 16;
+	pfd.cAccumBlueBits = 8;	
+	pfd.cAccumRedBits = 8;	
+	pfd.cAccumGreenBits = 8;
+	pfd.cAccumAlphaBits = 8;
+	pfd.cAccumBits = 24;
+	pfd.iLayerType = PFD_MAIN_PLANE ;
 
 
-	if (!(hDC=GetDC(hWnd)))							// Did We Get A Device Context?
-	{
+	if (!(hDC=GetDC(hWnd))) {						// Did We Get A Device Context?
 		Logger::log("Can't Create A GL Device Context.\n");
 		return;							// Return FALSE
 	}
 
 	if(usePixelFormat) {
 		PixelFormat = pixelFormat;
-	} else {
-		if (!(PixelFormat=ChoosePixelFormat(hDC,&pfd)))				// Did Windows Find A Matching Pixel Format?
-		{
-			Logger::log("Can't Find A Suitable PixelFormat.\n");
-			return;							// Return FALSE
-		}
+	} else if (!(PixelFormat=ChoosePixelFormat(hDC,&pfd))) {				// Did Windows Find A Matching Pixel Format?
+		Logger::log("Can't Find A Suitable PixelFormat.\n");
+		return;							// Return FALSE
 	}
 
 	Logger::log("Setting format: %d\n", PixelFormat);
-	if(!SetPixelFormat(hDC,PixelFormat,&pfd))				// Are We Able To Set The Pixel Format?
-	{
+	if(!SetPixelFormat(hDC,PixelFormat,&pfd)) {				// Are We Able To Set The Pixel Format?
 		Logger::log("Can't Set The PixelFormat: %d.\n", PixelFormat);
 		return;							// Return FALSE
 	}
 
-	if (!(hRC=wglCreateContext(hDC)))					// Are We Able To Get A Rendering Context?
-	{
+	if (!(hRC=wglCreateContext(hDC))) {					// Are We Able To Get A Rendering Context?
 		Logger::log("Can't Create A GL Rendering Context.\n");
 		return;							// Return FALSE
 	}
 
-	if(!wglMakeCurrent(hDC,hRC))						// Try To Activate The Rendering Context
-	{
+	if(!wglMakeCurrent(hDC,hRC)) {						// Try To Activate The Rendering Context
 		Logger::log("Can't Activate The GL Rendering Context.\n");
 		return;							// Return FALSE
 	}
@@ -338,18 +332,18 @@ void Win32Core::initMultisample(int numSamples) {
 		WGL_SAMPLES_ARB, numSamples ,
 		0,0};
 
-		if(!wglChoosePixelFormatARB(hDC,iAttributes,fAttributes,1,&pixelFormat,&numFormats)) {
-			Logger::log("Invalid pixel format chosen\n");
-			return;
-		}
-		
+	if(!wglChoosePixelFormatARB(hDC,iAttributes,fAttributes,1,&pixelFormat,&numFormats)) {
+		Logger::log("Invalid pixel format chosen\n");
+		return;
+	}
+	
 	//	initContext(true, pixelFormat);
 
-		glEnable(GL_MULTISAMPLE_ARB);
+	glEnable(GL_MULTISAMPLE_ARB);
 }
 
 void Win32Core::initKeymap() {
-	
+
 	for (int i=0; i<1024; ++i )
 		keyMap[i] = KEY_UNKNOWN;
 
@@ -469,7 +463,7 @@ void Win32Core::initKeymap() {
 	keyMap[VK_SNAPSHOT] = KEY_PRINT;
 	keyMap[VK_CANCEL] = KEY_BREAK;
 	keyMap[VK_APPS] = KEY_MENU;
-	
+
 
 }
 
@@ -482,24 +476,24 @@ void Win32Core::handleViewResize(int width, int height) {
 
 PolyKEY Win32Core::mapKey(LPARAM lParam, WPARAM wParam) {
 		switch (wParam) {
-				case VK_CONTROL:
-					if ( lParam&EXTENDED_KEYMASK )
-						wParam = VK_RCONTROL;
-					else
-						wParam = VK_LCONTROL;
-					break;
-				case VK_MENU:
-					if ( lParam&EXTENDED_KEYMASK )
-						wParam = VK_RMENU;
-					else
-						wParam = VK_LMENU;
-					break;
-				case VK_SHIFT:
-					// Use MapVirtualKey to determine whether it's LSHIFT or RSHIFT by scancode.
-					UINT scancode = (lParam & 0x00ff0000) >> 16;
-					wParam = MapVirtualKey(scancode, MAPVK_VSC_TO_VK_EX);
-					break;
-			}
+			case VK_CONTROL:
+				if ( lParam&EXTENDED_KEYMASK )
+					wParam = VK_RCONTROL;
+				else
+					wParam = VK_LCONTROL;
+			break;
+			case VK_MENU:
+				if ( lParam&EXTENDED_KEYMASK )
+					wParam = VK_RMENU;
+				else
+					wParam = VK_LMENU;
+			break;
+			case VK_SHIFT:
+				// Use MapVirtualKey to determine whether it's LSHIFT or RSHIFT by scancode.
+				UINT scancode = (lParam & 0x00ff0000) >> 16;
+				wParam = MapVirtualKey(scancode, MAPVK_VSC_TO_VK_EX);
+			break;
+		}
 
 	return keyMap[(unsigned int)wParam];
 }
@@ -530,8 +524,7 @@ void Win32Core::handleKeyUp(LPARAM lParam, WPARAM wParam) {
 void Win32Core::handleTouchEvent(LPARAM lParam, WPARAM wParam) {
 	
 	// Bail out now if multitouch is not available on this system
-	if ( hasMultiTouch == false )
-	{
+	if ( hasMultiTouch == false ) {
 		return;
 	}
 	
@@ -539,54 +532,52 @@ void Win32Core::handleTouchEvent(LPARAM lParam, WPARAM wParam) {
 
 	int iNumContacts = LOWORD(wParam);
 	HTOUCHINPUT hInput       = (HTOUCHINPUT)lParam;
-    TOUCHINPUT *pInputs      = new TOUCHINPUT[iNumContacts];
-       
-    if(pInputs != NULL) {
-		if(GetTouchInputInfoFunc(hInput, iNumContacts, pInputs, sizeof(TOUCHINPUT))) {
+	TOUCHINPUT *pInputs      = new TOUCHINPUT[iNumContacts];
 
-			std::vector<TouchInfo> touches;
-			for(int i = 0; i < iNumContacts; i++) {
-				TOUCHINPUT ti = pInputs[i];
-				TouchInfo touchInfo;
-				touchInfo.id = (int) ti.dwID;
+	if(pInputs != NULL && GetTouchInputInfoFunc(hInput, iNumContacts, pInputs, sizeof(TOUCHINPUT))) {
 
-				POINT pt;
-				pt.x = TOUCH_COORD_TO_PIXEL(ti.x);
-				pt.y = TOUCH_COORD_TO_PIXEL(ti.y);
-				ScreenToClient(hWnd, &pt);
-				touchInfo.position.x = pt.x; 
-				touchInfo.position.y = pt.y;
+		std::vector<TouchInfo> touches;
+		for(int i = 0; i < iNumContacts; i++) {
+			TOUCHINPUT ti = pInputs[i];
+			TouchInfo touchInfo;
+			touchInfo.id = (int) ti.dwID;
 
-				touches.push_back(touchInfo);
+			POINT pt;
+			pt.x = TOUCH_COORD_TO_PIXEL(ti.x);
+			pt.y = TOUCH_COORD_TO_PIXEL(ti.y);
+			ScreenToClient(hWnd, &pt);
+			touchInfo.position.x = pt.x; 
+			touchInfo.position.y = pt.y;
+
+			touches.push_back(touchInfo);
+		}
+		for(int i = 0; i < iNumContacts; i++) {
+			TOUCHINPUT ti = pInputs[i];
+			if (ti.dwFlags & TOUCHEVENTF_UP) {
+				Win32Event newEvent;
+				newEvent.eventGroup = Win32Event::INPUT_EVENT;
+				newEvent.eventCode = InputEvent::EVENT_TOUCHES_ENDED;
+				newEvent.touches = touches;
+				newEvent.touch = touches[i];
+				win32Events.push_back(newEvent);
+			} else if(ti.dwFlags & TOUCHEVENTF_MOVE) {
+				Win32Event newEvent;
+				newEvent.eventGroup = Win32Event::INPUT_EVENT;
+				newEvent.eventCode = InputEvent::EVENT_TOUCHES_MOVED;
+				newEvent.touches = touches;
+				newEvent.touch = touches[i];
+				win32Events.push_back(newEvent);
+			} else if(ti.dwFlags & TOUCHEVENTF_DOWN) {
+				Win32Event newEvent;
+				newEvent.eventGroup = Win32Event::INPUT_EVENT;
+				newEvent.eventCode = InputEvent::EVENT_TOUCHES_BEGAN;
+				newEvent.touches = touches;
+				newEvent.touch = touches[i];
+				win32Events.push_back(newEvent);
 			}
-              for(int i = 0; i < iNumContacts; i++) {
-					TOUCHINPUT ti = pInputs[i];
-					if (ti.dwFlags & TOUCHEVENTF_UP) {
-						Win32Event newEvent;
-						newEvent.eventGroup = Win32Event::INPUT_EVENT;
-						newEvent.eventCode = InputEvent::EVENT_TOUCHES_ENDED;
-						newEvent.touches = touches;
-						newEvent.touch = touches[i];
-						win32Events.push_back(newEvent);	
-					} else if(ti.dwFlags & TOUCHEVENTF_MOVE) {
-						Win32Event newEvent;
-						newEvent.eventGroup = Win32Event::INPUT_EVENT;
-						newEvent.eventCode = InputEvent::EVENT_TOUCHES_MOVED;
-						newEvent.touches = touches;
-						newEvent.touch = touches[i];
-						win32Events.push_back(newEvent);
-					} else if(ti.dwFlags & TOUCHEVENTF_DOWN) {
-						Win32Event newEvent;
-						newEvent.eventGroup = Win32Event::INPUT_EVENT;
-						newEvent.eventCode = InputEvent::EVENT_TOUCHES_BEGAN;
-						newEvent.touches = touches;
-						newEvent.touch = touches[i];
-						win32Events.push_back(newEvent);
-					}
-			  }
 		}
 	}
-	unlockMutex(eventMutex);	
+	unlockMutex(eventMutex);
 }
 #endif
 
@@ -640,33 +631,33 @@ void Win32Core::handleMouseUp(int mouseCode,LPARAM lParam, WPARAM wParam) {
 }
 
 bool Win32Core::checkSpecialKeyEvents(PolyKEY key) {
-	
+
 	if(key == KEY_a && (input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL))) {
 		dispatchEvent(new Event(), Core::EVENT_SELECT_ALL);
 		return true;
 	}
-	
+
 	if(key == KEY_c && (input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL))) {
 		dispatchEvent(new Event(), Core::EVENT_COPY);
 		return true;
 	}
-	
+
 	if(key == KEY_x && (input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL))) {
 		dispatchEvent(new Event(), Core::EVENT_CUT);
 		return true;
 	}
-	
-	
+
+
 	if(key == KEY_y && (input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL))) {
 		dispatchEvent(new Event(), Core::EVENT_REDO);
 		return true;
 	}
-		
+	
 	if(key == KEY_z  && (input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL))) {
 		dispatchEvent(new Event(), Core::EVENT_UNDO);
 		return true;
 	}
-	
+
 	if(key == KEY_v && (input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL))) {
 		dispatchEvent(new Event(), Core::EVENT_PASTE);
 		return true;
@@ -692,16 +683,16 @@ void Win32Core::checkEvents() {
 						input->touchesMoved(event.touch, event.touches, getTicks());
 					break;
 					case InputEvent::EVENT_MOUSEMOVE:
-						input->setDeltaPosition(event.mouseX - lastMouseX , event.mouseY - lastMouseY);										
+						input->setDeltaPosition(event.mouseX - lastMouseX , event.mouseY - lastMouseY);
 						lastMouseX = event.mouseX;
 						lastMouseY = event.mouseY;
-						input->setMousePosition(event.mouseX, event.mouseY, getTicks());						
+						input->setMousePosition(event.mouseX, event.mouseY, getTicks());
 					break;
 					case InputEvent::EVENT_MOUSEDOWN:
-							input->setMouseButtonState(event.mouseButton, true, getTicks());						
+						input->setMouseButtonState(event.mouseButton, true, getTicks());
 					break;
 					case InputEvent::EVENT_MOUSEUP:
-							input->setMouseButtonState(event.mouseButton, false, getTicks());
+						input->setMouseButtonState(event.mouseButton, false, getTicks());
 					break;
 					case InputEvent::EVENT_KEYDOWN:
 						if(!checkSpecialKeyEvents((event.keyCode))) {
@@ -710,27 +701,27 @@ void Win32Core::checkEvents() {
 					break;
 					case InputEvent::EVENT_KEYUP:
 						input->setKeyState(event.keyCode, (char)event.unicodeChar, false, getTicks());
-					break;						
+					break;
 				}
-			break;
+				break;
 		}
 	}
-	win32Events.clear();	
-	unlockMutex(eventMutex);		
+	win32Events.clear();
+	unlockMutex(eventMutex);
 }
 
 void Win32Core::handleAxisChange(GamepadDeviceEntry * device, int axisIndex, DWORD value) {
 	if (axisIndex < 0 || axisIndex >= (int) device->numAxes) {
 		return;
-	}	
+	}
 	Gamepad_devicePrivate *devicePrivate = device->privateData;
 	float floatVal = (value - devicePrivate->axisRanges[axisIndex][0]) / (float) (devicePrivate->axisRanges[axisIndex][1] - devicePrivate->axisRanges[axisIndex][0]) * 2.0f - 1.0f;
-	input->joystickAxisMoved(axisIndex, floatVal, device->deviceID);	
+	input->joystickAxisMoved(axisIndex, floatVal, device->deviceID);
 }
 
 void Win32Core::handleButtonChange(GamepadDeviceEntry * device, DWORD lastValue, DWORD value) {
 	Gamepad_devicePrivate *devicePrivate = device->privateData;
-	unsigned int buttonIndex;	
+	unsigned int buttonIndex;
 	for (buttonIndex = 0; buttonIndex < device->numButtons; buttonIndex++) {
 		if ((lastValue ^ value) & (1 << buttonIndex)) {
 			if(!!(value & (1 << buttonIndex))) {
@@ -745,24 +736,24 @@ void Win32Core::handleButtonChange(GamepadDeviceEntry * device, DWORD lastValue,
 static void povToXY(DWORD pov, int * outX, int * outY) {
 	if (pov == JOY_POVCENTERED) {
 		*outX = *outY = 0;
-		
+
 	} else {
 		if (pov > JOY_POVFORWARD && pov < JOY_POVBACKWARD) {
 			*outX = 1;
-			
+
 		} else if (pov > JOY_POVBACKWARD) {
 			*outX = -1;
-			
+
 		} else {
 			*outX = 0;
 		}
-		
+
 		if (pov > JOY_POVLEFT || pov < JOY_POVRIGHT) {
 			*outY = -1;
 			
 		} else if (pov > JOY_POVRIGHT && pov < JOY_POVLEFT) {
 			*outY = 1;
-			
+
 		} else {
 			*outY = 0;
 		}
@@ -770,18 +761,18 @@ static void povToXY(DWORD pov, int * outX, int * outY) {
 }
 
 void Win32Core::handlePOVChange(GamepadDeviceEntry * device, DWORD lastValue, DWORD value) {
-	
+
 	Gamepad_devicePrivate *devicePrivate = device->privateData;
-	
+
 	int lastX, lastY, newX, newY;
 
 	if (devicePrivate->povXAxisIndex == -1 || devicePrivate->povYAxisIndex == -1) {
 		return;
 	}
-	
+
 	povToXY(lastValue, &lastX, &lastY);
 	povToXY(value, &newX, &newY);
-	
+
 	if (newX != lastX) {
 		input->joystickAxisMoved(devicePrivate->povXAxisIndex, newX, device->deviceID);
 	}
@@ -795,7 +786,7 @@ void Win32Core::handlePOVChange(GamepadDeviceEntry * device, DWORD lastValue, DW
 void Win32Core::Gamepad_processEvents() {
 
 	if(getTicks() > lastGamepadDetect + 3000) {
-			detectGamepads();
+		detectGamepads();
 	}
 
 	unsigned int deviceIndex;
@@ -803,11 +794,11 @@ void Win32Core::Gamepad_processEvents() {
 	MMRESULT result;
 	GamepadDeviceEntry * device;
 	Gamepad_devicePrivate * devicePrivate;
-	
+
 	for (deviceIndex = 0; deviceIndex < gamepads.size(); deviceIndex++) {
 		device = gamepads[deviceIndex];
 		devicePrivate = device->privateData;
-		
+
 		info.dwSize = sizeof(info);
 		info.dwFlags = JOY_RETURNALL;
 		result = joyGetPosEx(devicePrivate->joystickID, &info);
@@ -815,7 +806,7 @@ void Win32Core::Gamepad_processEvents() {
 
 			input->removeJoystick(device->deviceID);
 			gamepads.erase(gamepads.begin() + deviceIndex);
-			
+
 		} else if (result == JOYERR_NOERROR) {
 			if (info.dwXpos != devicePrivate->lastState.dwXpos) {
 				handleAxisChange(device, devicePrivate->xAxisIndex, info.dwXpos);
@@ -858,7 +849,7 @@ void Win32Core::detectGamepads() {
 	Gamepad_devicePrivate * deviceRecordPrivate;
 	UINT joystickID;
 	int axisIndex;
-	
+
 	numPadsSupported = joyGetNumDevs();
 	for (deviceIndex = 0; deviceIndex < numPadsSupported; deviceIndex++) {
 		info.dwSize = sizeof(info);
@@ -866,7 +857,7 @@ void Win32Core::detectGamepads() {
 		joystickID = JOYSTICKID1 + deviceIndex;
 		if (joyGetPosEx(joystickID, &info) == JOYERR_NOERROR &&
 		    joyGetDevCaps(joystickID, &caps, sizeof(JOYCAPS)) == JOYERR_NOERROR) {
-			
+
 			duplicate = false;
 			for (deviceIndex2 = 0; deviceIndex2 < gamepads.size(); deviceIndex2++) {
 				if (((Gamepad_devicePrivate *) gamepads[deviceIndex2]->privateData)->joystickID == joystickID) {
@@ -877,7 +868,7 @@ void Win32Core::detectGamepads() {
 			if (duplicate) {
 				continue;
 			}
-			
+
 			GamepadDeviceEntry *deviceRecord = new GamepadDeviceEntry();
 			deviceRecord->deviceID = nextDeviceID++;
 //			deviceRecord->description = getDeviceDescription(joystickID, caps);
@@ -890,11 +881,11 @@ void Win32Core::detectGamepads() {
 //			deviceRecord->eventDispatcher = EventDispatcher_create(deviceRecord);
 //			devices = realloc(devices, sizeof(struct Gamepad_device *) * (numDevices + 1));
 			gamepads.push_back(deviceRecord);
-			
+
 			deviceRecordPrivate = new Gamepad_devicePrivate();
 			deviceRecordPrivate->joystickID = joystickID;
 			deviceRecordPrivate->lastState = info;
-			
+
 			deviceRecordPrivate->xAxisIndex = 0;
 			deviceRecordPrivate->yAxisIndex = 1;
 			axisIndex = 2;
@@ -902,7 +893,7 @@ void Win32Core::detectGamepads() {
 			deviceRecordPrivate->rAxisIndex = (caps.wCaps & JOYCAPS_HASR) ? axisIndex++ : -1;
 			deviceRecordPrivate->uAxisIndex = (caps.wCaps & JOYCAPS_HASU) ? axisIndex++ : -1;
 			deviceRecordPrivate->vAxisIndex = (caps.wCaps & JOYCAPS_HASV) ? axisIndex++ : -1;
-			
+
 			deviceRecordPrivate->axisRanges = (UINT (*)[2]) malloc(sizeof(UINT[2]) * axisIndex);
 			deviceRecordPrivate->axisRanges[0][0] = caps.wXmin;
 			deviceRecordPrivate->axisRanges[0][1] = caps.wXmax;
@@ -924,12 +915,12 @@ void Win32Core::detectGamepads() {
 				deviceRecordPrivate->axisRanges[deviceRecordPrivate->vAxisIndex][0] = caps.wVmin;
 				deviceRecordPrivate->axisRanges[deviceRecordPrivate->vAxisIndex][1] = caps.wVmax;
 			}
-			
+
 			deviceRecordPrivate->povXAxisIndex = (caps.wCaps & JOYCAPS_HASPOV) ? axisIndex++ : -1;
 			deviceRecordPrivate->povYAxisIndex = (caps.wCaps & JOYCAPS_HASPOV) ? axisIndex++ : -1;
-			
+
 			deviceRecord->privateData = deviceRecordPrivate;
-			
+
 			input->addJoystick(deviceRecord->deviceID);
 		}
 	}
@@ -952,13 +943,13 @@ void Win32Core::initTouch() {
 	// This could be done easily during preprocessing but would require building
 	// multiple releases of polycode for both winxp/vista and win7
 	GetTouchInputInfoFunc = (GetTouchInputInfoType) GetProcAddress(GetModuleHandle(TEXT("user32")), "GetTouchInputInfo");
-	
+
 	// If the above multitouch functions were found, then set a flag so we don't
 	// have to check again later
 	hasMultiTouch = ( GetTouchInputInfoFunc == NULL ) ? false : true;
 
 	if(hasMultiTouch) {
-			RegisterTouchWindow(hWnd, 0);
+		RegisterTouchWindow(hWnd, 0);
 	}
 #endif
 }
@@ -993,13 +984,13 @@ CoreMutex *Win32Core::createMutex() {
 	newMutex->winMutex = CreateMutex(  NULL, FALSE, NULL);   
 	return newMutex;
 }
-		
+
 std::vector<Polycode::Rectangle> Win32Core::getVideoModes() {
 	std::vector<Polycode::Rectangle> retVector;
 
 	return retVector;
 }
-	
+
 
 String Win32Core::executeExternalCommand(String command,  String args, String inDirectory) {
 	String execInDirectory = inDirectory;
@@ -1008,26 +999,25 @@ String Win32Core::executeExternalCommand(String command,  String args, String in
 	}
 
 	SHELLEXECUTEINFO lpExecInfo;
-      lpExecInfo.cbSize  = sizeof(SHELLEXECUTEINFO);
-      lpExecInfo.lpFile = command.getWDataWithEncoding(String::ENCODING_UTF8);
+	lpExecInfo.cbSize  = sizeof(SHELLEXECUTEINFO);
+	lpExecInfo.lpFile = command.getWDataWithEncoding(String::ENCODING_UTF8);
 	lpExecInfo.fMask=SEE_MASK_DOENVSUBST|SEE_MASK_NOCLOSEPROCESS ;     
-      lpExecInfo.hwnd = NULL;  
-      lpExecInfo.lpVerb = L"open"; // to open  program
-      lpExecInfo.lpParameters =  args.getWDataWithEncoding(String::ENCODING_UTF8); //  file name as an argument
-      lpExecInfo.lpDirectory = execInDirectory.getWDataWithEncoding(String::ENCODING_UTF8);   
-      lpExecInfo.nShow = SW_SHOW ;  // show command prompt with normal window size 
-      lpExecInfo.hInstApp = (HINSTANCE) SE_ERR_DDEFAIL ;   //WINSHELLAPI BOOL WINAPI result;
-      ShellExecuteEx(&lpExecInfo);
-    
- 
-      //wait until a file is finished printing
-      if(lpExecInfo.hProcess !=NULL)
-      {
-        ::WaitForSingleObject(lpExecInfo.hProcess, INFINITE);
-        ::CloseHandle(lpExecInfo.hProcess);
-      }
+	lpExecInfo.hwnd = NULL;  
+	lpExecInfo.lpVerb = L"open"; // to open  program
+	lpExecInfo.lpParameters =  args.getWDataWithEncoding(String::ENCODING_UTF8); //  file name as an argument
+	lpExecInfo.lpDirectory = execInDirectory.getWDataWithEncoding(String::ENCODING_UTF8);   
+	lpExecInfo.nShow = SW_SHOW ;  // show command prompt with normal window size 
+	lpExecInfo.hInstApp = (HINSTANCE) SE_ERR_DDEFAIL ;   //WINSHELLAPI BOOL WINAPI result;
+	ShellExecuteEx(&lpExecInfo);
 
-	  return "";
+
+	//wait until a file is finished printing
+	if(lpExecInfo.hProcess !=NULL) {
+		::WaitForSingleObject(lpExecInfo.hProcess, INFINITE);
+		::CloseHandle(lpExecInfo.hProcess);
+	}
+
+	return "";
 }
 
 String Win32Core::openFolderPicker()  {
@@ -1101,12 +1091,8 @@ std::vector<String> Win32Core::openFilePicker(std::vector<CoreFileExtension> ext
 
 	std::vector<String> retVec;
 
-	if(GetOpenFileName(&ofn)) {
-		if(allowMultiple) {
-
-		} else {
-			retVec.push_back(String(fBuffer));
-		}
+	if(GetOpenFileName(&ofn) && !allowMultiple) {
+		retVec.push_back(String(fBuffer));
 	}
 
 	SetCurrentDirectory(defaultWorkingDirectory.getWDataWithEncoding(String::ENCODING_UTF8));
@@ -1120,7 +1106,7 @@ std::vector<String> Win32Core::openFilePicker(std::vector<CoreFileExtension> ext
 
 void Win32Core::createFolder(const String& folderPath) {
 	String path = folderPath;
-	CreateDirectory(path.getWDataWithEncoding(String::ENCODING_UTF8), NULL);		
+	CreateDirectory(path.getWDataWithEncoding(String::ENCODING_UTF8), NULL);
 }
 
 void Win32Core::openURL(String url) {
@@ -1129,27 +1115,19 @@ void Win32Core::openURL(String url) {
 
 String error_to_string(const DWORD a_error_code)
 {
-    // Get the last windows error message.
-    wchar_t msg_buf[1025] = { 0 };
+	// Get the last windows error message.
+	wchar_t msg_buf[1025] = { 0 };
 
-    // Get the error message for our os code.
-    if (FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, 
-                      0,
-                      a_error_code,
-                      0,
-                      msg_buf,
-                      sizeof(msg_buf) - 1,
-                      0))
-    {
-     
+	// Get the error message for our os code.
+	if (FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, 
+			0, a_error_code, 0,
+			msg_buf, sizeof(msg_buf) - 1, 0)) {
+		return String(msg_buf);
+	}
 
-
-        return String(msg_buf);
-    }
-
-    return String("Failed to get error message");
+	return String("Failed to get error message");
 }
-						
+
 void Win32Core::copyDiskItem(const String& itemPath, const String& destItemPath) {
 	SHFILEOPSTRUCT op;
 	ZeroMemory(&op, sizeof(SHFILEOPSTRUCT));

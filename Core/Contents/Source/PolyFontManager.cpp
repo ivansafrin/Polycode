@@ -26,7 +26,7 @@
 using namespace Polycode;
 
 FontManager::FontManager() {
-	
+
 }
 
 FontManager::~FontManager() {
@@ -55,7 +55,7 @@ void FontManager::removeFontEntry(FontEntry *entry, bool deleteFont) {
 		if(listEntry == entry) {
 			if(deleteFont) {
 				delete listEntry->font;
-			}		
+			}
 			fonts.erase(fonts.begin()+i);
 			return;
 		}
@@ -91,11 +91,11 @@ Font *FontManager::getFontByName(const String& fontName) {
 		if(entry.fontName == fontName)
 			return entry.font;
 	}
-	
+
 	if(fonts.size() > 0) {
 		FontEntry entry = fonts[0];
-		return entry.font;		
+		return entry.font;
 	}
-	
+
 	return NULL;
 }

@@ -26,48 +26,48 @@ THE SOFTWARE.
 
 namespace Polycode {
 
-	class Label;
-	class ScreenImage;
+class Label;
+class ScreenImage;
 
-	/**
-	* 2D screen label display. Displays 2d text in a specified font.
-	*/ 
-	class _PolyExport ScreenLabel : public ScreenShape {
-		public:
-			
-			/**
-			* Constructor.
-			* @param fontName Name of a registered font to use. @see FontManager for info on how to register fonts.
-			* @param text Text to display.
-			* @param size Size in pixels.
-			* @param Anti-aliasing mode.
-			*/
-			ScreenLabel(const String& text, int size, const String& fontName = "sans", int amode = 0, bool premultiplyAlpha = false);
-			virtual ~ScreenLabel();		
-		
-			virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly);
-			virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly);
-					
-			/**
-			* Sets a new text to the screen label.
-			* @param newText Text to set.
-			*/
-			void setText(const String& newText);			
-			
-			/**
-			* Returns the label's text as a string.
-			* @return The label's text.
-			*/
-			const String& getText() const;
-		
-			Label *getLabel() const;
-			
-			void Render();
-			bool positionAtBaseline;
-			
-		protected:
-			
-			void updateTexture();			
-			Label *label;
-	};
+/**
+* 2D screen label display. Displays 2d text in a specified font.
+*/ 
+class _PolyExport ScreenLabel : public ScreenShape {
+	public:
+
+		/**
+		* Constructor.
+		* @param fontName Name of a registered font to use. @see FontManager for info on how to register fonts.
+		* @param text Text to display.
+		* @param size Size in pixels.
+		* @param Anti-aliasing mode.
+		*/
+		ScreenLabel(const String& text, int size, const String& fontName = "sans", int amode = 0, bool premultiplyAlpha = false);
+		virtual ~ScreenLabel();
+
+		virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly);
+		virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly);
+
+		/**
+		* Sets a new text to the screen label.
+		* @param newText Text to set.
+		*/
+		void setText(const String& newText);
+
+		/**
+		* Returns the label's text as a string.
+		* @return The label's text.
+		*/
+		const String& getText() const;
+
+		Label *getLabel() const;
+
+		void Render();
+		bool positionAtBaseline;
+
+	protected:
+
+		void updateTexture();
+		Label *label;
+};
 }

@@ -28,12 +28,12 @@ THE SOFTWARE.
 #include "PolyEvent.h"
 
 namespace Polycode {
-	
-	typedef struct {
-		char dummy;
-	} DummyData;
-	
-	class _PolyExport ClientEvent : public Event {
+
+typedef struct {
+	char dummy;
+} DummyData;
+
+class _PolyExport ClientEvent : public Event {
 	public:
 		ClientEvent(){}
 		~ClientEvent(){}
@@ -41,38 +41,38 @@ namespace Polycode {
 		char data[MAX_PACKET_SIZE];
 		unsigned int dataSize;
 		unsigned short dataType;
-		
+
 		static const int EVENTBASE_CLIENTEVENT = 0x600;
 		static const int EVENT_SERVER_DATA = EVENTBASE_CLIENTEVENT+0;
 		static const int EVENT_CLIENT_READY = EVENTBASE_CLIENTEVENT+1;
 		static const int EVENT_SERVER_DISCONNECTED = EVENTBASE_CLIENTEVENT+2;
-	};		
-	
-	class _PolyExport Client : public Peer {
+};
+
+class _PolyExport Client : public Peer {
 	public:
 		Client(unsigned int port, int rate);
 		~Client();
-		
+
 		void updatePeer();
 		void Connect(std::string ipAddress, unsigned int port);
 		void Disconnect();
 		void setPersistentData(void *data, unsigned int size);
-		
+
 		unsigned int getClientID();
-		
+
 		void sendReliableDataToServer(char *data, unsigned int size, unsigned short type);
-		
+
 		void handlePacket(Packet *packet, PeerConnection *connection);
-		
+
 		void handleEvent(Event *event);
 	private:
-		
+
 		int clientID;
-		
+
 		void *data;
 		unsigned int dataSize;
 		Timer *rateTimer;
 		Address serverAddress;
 		bool connected;
-	};
+};
 }

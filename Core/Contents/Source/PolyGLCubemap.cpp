@@ -26,7 +26,7 @@
 using namespace Polycode;
 
 OpenGLCubemap::OpenGLCubemap(Texture *t0, Texture *t1, Texture *t2, Texture *t3, Texture *t4, Texture *t5) : Cubemap(t0,t1,t2,t3,t4,t5) {
-	
+
 	glCubemapLoaded = false;
 
 	recreateFromTextures();
@@ -39,21 +39,21 @@ void OpenGLCubemap::recreateFromTextures() {
 	}
 
 	glGenTextures(1, &textureID);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);	
-	
-	
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);	
+	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	
+
 	Texture *tex;
-	
+
 	tex = getTexture(Cubemap::CUBEMAP_XPOS);
 	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, tex->getWidth(), tex->getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, tex->getTextureData());
 
-	tex = getTexture(Cubemap::CUBEMAP_XNEG);	
+	tex = getTexture(Cubemap::CUBEMAP_XNEG);
 	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA, tex->getWidth(), tex->getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, tex->getTextureData());
 
 	tex = getTexture(Cubemap::CUBEMAP_YPOS);
@@ -67,8 +67,8 @@ void OpenGLCubemap::recreateFromTextures() {
 
 	tex = getTexture(Cubemap::CUBEMAP_ZNEG);
 	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA, tex->getWidth(), tex->getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, tex->getTextureData());
-	
-		
+
+
 	glCubemapLoaded = true;
 }
 

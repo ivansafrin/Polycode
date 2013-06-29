@@ -48,7 +48,7 @@ Image::Image(const String& fileName) : imageData(NULL) {
 }
 
 Image *Image::BlankImage(int width, int height, int type) {
-		return new Image(width, height, type);
+	return new Image(width, height, type);
 }
 
 
@@ -56,17 +56,17 @@ void Image::setPixelType(int type) {
 	imageType = type;
 	switch(imageType) {
 		case IMAGE_RGB:
-			pixelSize = 3;			
-			break;
-		case IMAGE_RGBA:
-			pixelSize = 4;						
+			pixelSize = 3;
 		break;
-		case IMAGE_FP16:		
+		case IMAGE_RGBA:
+			pixelSize = 4;
+		break;
+		case IMAGE_FP16:
 			pixelSize = 16;
 		break;
 		default:
-			pixelSize = 4;								
-			break;
+			pixelSize = 4;
+		break;
 	}
 }
 
@@ -82,13 +82,13 @@ Image::Image(int width, int height, int type) : imageData(NULL) {
 Image::Image(Image *copyImage) {
 	setPixelType(copyImage->getType());
 	width = copyImage->getWidth();
-	height = copyImage->getHeight();		
+	height = copyImage->getHeight();
 	imageData = (char*)malloc(width*height*pixelSize);
 	memcpy(imageData, copyImage->getPixels(), width*height*pixelSize);
 }
 
 Image::Image(char *data, int width, int height, int type) {
-	setPixelType(type);	
+	setPixelType(type);
 	imageData = (char*)malloc(width*height*pixelSize);
 	memcpy(imageData, data, width*height*pixelSize);
 	this->width = width;
@@ -96,7 +96,7 @@ Image::Image(char *data, int width, int height, int type) {
 }
 
 void Image::pasteImage(Image *image, int x, int y, int blendingMode , Number blendAmount, Color blendColor ) {
-	for(int iy=0; iy<image->getHeight(); iy++) {	
+	for(int iy=0; iy<image->getHeight(); iy++) {
 		for(int ix=0; ix<image->getWidth(); ix++) {
 			Color src = image->getPixel(ix,iy);
 			Color destColor = getPixel(x+ix, y+iy);
@@ -122,7 +122,7 @@ char *Image::getPixelsInRect(int x, int y, int width, int height) {
 	transformCoordinates(&x, &y, &width, &height);
 	char *retBuf = (char*) malloc(pixelSize * width * height);
 	memset(retBuf, 0, pixelSize * width * height);
-	
+
 	if(x < this->width-1 && y < this->height-1) {
 
 		width = std::min(width, this->width - x);
@@ -132,9 +132,9 @@ char *Image::getPixelsInRect(int x, int y, int width, int height) {
 			long srcOffset = ((pixelSize*this->width) * (y+i)) + (pixelSize*x);
 			long dstOffset = (pixelSize*width) * i;
 			memcpy(retBuf + dstOffset, imageData+srcOffset, pixelSize * width);
-		}	
+		}
 	}
-		
+
 	return retBuf;
 }
 
@@ -155,7 +155,7 @@ Color Image::getPixel(int x, int y) {
 	int tb = (hex >> 16) & 0xFF;
 	int tg = (hex >> 8) & 0xFF;
 	int tr = (hex ) & 0xFF;
-	
+
 	return Color(((Number)tr)/255.0f, ((Number)tg)/255.0f, ((Number)tb)/255.0f,((Number)ta)/255.0f);
 }
 
@@ -169,11 +169,11 @@ int Image::getHeight() const {
 
 void Image::createEmpty(int width, int height) {
 	free(imageData);
-		
+
 	imageData = (char*)malloc(width*height*pixelSize);
 	this->width = width;
 	this->height = height;
-	
+
 	fill(Color(0,0,0,0));
 }
 
@@ -182,7 +182,7 @@ void Image::perlinNoise(int seed, bool alpha) {
 	unsigned int *imageData32 = (unsigned int*)imageData;
 	Color pixelColor;
 	Number noiseVal;
-	
+
 	for(int i=0; i < width*height;i++) {
 			noiseVal = fabs(1.0f/perlin.Get( 0.1+(0.9f/((Number)width)) * (i%width), (1.0f/((Number)height)) *   (i - (i%width))));
 			if(alpha)
@@ -259,7 +259,7 @@ void Image::multiply(Number amt, bool color, bool alpha) {
 		startIndex = 3;
 	if(!alpha)
 		endIndex = 2;
-		
+
 	for (int i = 0; i < height*width*pixelSize; i+=pixelSize) {
 		for(int j = startIndex; j < endIndex+1;j++) {
 			if(((Number)imageData[i+j]) * amt< 0)
@@ -280,7 +280,7 @@ void Image::darken(Number amt, bool color, bool alpha) {
 		startIndex = 3;
 	if(!alpha)
 		endIndex = 2;
-		
+
 	for (int i = 0; i < height*width*pixelSize; i+=pixelSize) {
 		for(int j = startIndex; j < endIndex+1;j++) {
 			if(imageData[i+j]-decAmt < 0)
@@ -299,7 +299,7 @@ void Image::lighten(Number amt, bool color, bool alpha) {
 		startIndex = 3;
 	if(!alpha)
 		endIndex = 2;
-		
+
 	for (int i = 0; i < height*width*pixelSize; i+=pixelSize) {
 		for(int j = startIndex; j < endIndex+1;j++) {
 			if(imageData[i+j]+decAmt > 255)
@@ -343,115 +343,118 @@ float* Image::createKernel(float radius, float deviation) {
 void Image::gaussianBlur(float radius, float deviation) {
 
 	char *newData = (char*)malloc(width*height*pixelSize);
-	
+
 	char *horzBlur;
 	char *vertBlur;
 
-	
+
 	horzBlur = (char*)malloc(sizeof(float)*pixelSize*width*height);
 	vertBlur = (char*)malloc(sizeof(float)*pixelSize*width*height);
 
 	float *kernel = createKernel(radius, deviation);
-	
+
 	int i, iY, iX;
 
-        // Horizontal pass.
-        for(iY = 0; iY < height; iY++) {
-                for(iX = 0; iX < width; iX++) {
-						float val[4];
-						memset(val, 0, sizeof(float) * 4);
-												
-                        int offset = ((int)kernel[0]) / -2;
+	// Horizontal pass.
+	for(iY = 0; iY < height; iY++) {
+		for(iX = 0; iX < width; iX++) {
+			float val[4];
+			memset(val, 0, sizeof(float) * 4);
 
-                        for(i = 0; i < ((int)kernel[0]); i++) {
-                                int x = iX + offset;
+			int offset = ((int)kernel[0]) / -2;
 
-                                if(x < 0 || x >= width) { offset++; continue; }
+			for(i = 0; i < ((int)kernel[0]); i++) {
+				int x = iX + offset;
 
-                                float kernip1 = kernel[i + 1];
-								
-								if(imageType == IMAGE_FP16) {
-									float *dataPtr = (float*)&imageData[(width * pixelSize * iY) + (pixelSize * x)];
-									for(int c=0; c < 4; c++) {
-										val[c] += kernip1 * dataPtr[c];
-									}				
-									
-								} else {
-									char *dataPtr = &imageData[(width * pixelSize * iY) + (pixelSize * x)];
-									for(int c=0; c < pixelSize; c++) {
-										val[c] += kernip1 * ((float)dataPtr[c]);
-									}				
-								}
-								
-                                offset++;
-                        }										
+				if(x < 0 || x >= width) {
+					offset++; 
+					continue;
+				}
 
-						if(imageType == IMAGE_FP16) {
-							int baseOffset = (width * 4 * iY) + (4 * iX);
-							for(int c=0; c < 4; c++) {
-								float *f_horzBlur = (float*)horzBlur;
-								f_horzBlur[baseOffset+c] = val[c];
-							}				
-						} else {
-							int baseOffset = (width * pixelSize * iY) + (pixelSize * iX);
-							for(int c=0; c < pixelSize; c++) {	
-								if(val[c] > 255.0) {
-									val[c] = 255.0;
-								}
-								horzBlur[baseOffset+c] = (char)val[c];
-							}				
-						}
-                }
-        }
+				float kernip1 = kernel[i + 1];
+
+				if(imageType == IMAGE_FP16) {
+					float *dataPtr = (float*)&imageData[(width * pixelSize * iY) + (pixelSize * x)];
+					for(int c=0; c < 4; c++) {
+						val[c] += kernip1 * dataPtr[c];
+					}
+
+				} else {
+					char *dataPtr = &imageData[(width * pixelSize * iY) + (pixelSize * x)];
+					for(int c=0; c < pixelSize; c++) {
+						val[c] += kernip1 * ((float)dataPtr[c]);
+					}
+				}
+
+				offset++;
+			}
+
+			if(imageType == IMAGE_FP16) {
+				int baseOffset = (width * 4 * iY) + (4 * iX);
+				for(int c=0; c < 4; c++) {
+					float *f_horzBlur = (float*)horzBlur;
+					f_horzBlur[baseOffset+c] = val[c];
+				}
+			} else {
+				int baseOffset = (width * pixelSize * iY) + (pixelSize * iX);
+				for(int c=0; c < pixelSize; c++) {
+					if(val[c] > 255.0) {
+						val[c] = 255.0;
+					}
+					horzBlur[baseOffset+c] = (char)val[c];
+				}
+			}
+		}
+	}
 
 	// Vertical pass.
-        for(iY = 0; iY < height; iY++) {
-                for(iX = 0; iX < width; iX++) {
-						float val[4];	
-						memset(val, 0, sizeof(float) * 4);					
-                        int offset = ((int)kernel[0]) / -2;
+	for(iY = 0; iY < height; iY++) {
+		for(iX = 0; iX < width; iX++) {
+			float val[4];
+			memset(val, 0, sizeof(float) * 4);
+			int offset = ((int)kernel[0]) / -2;
 
-                        for(i = 0; i < ((int)kernel[0]); i++) {
-                                int y = iY + offset;
+			for(i = 0; i < ((int)kernel[0]); i++) {
+				int y = iY + offset;
 
-                                if(y < 0 || y >= height) {
-                                        offset++;
-                                        continue;
-                                }
+				if(y < 0 || y >= height) {
+					offset++;
+					continue;
+				}
 
-                                float kernip1 = kernel[i + 1];
-								if(imageType == IMAGE_FP16) {
-									float *dataPtr = (float*)&horzBlur[(width * pixelSize * y) + (pixelSize * iX)];
-									for(int c=0; c < 4; c++) {
-										val[c] += kernip1 * dataPtr[c];
-									}				
-									
-								} else {
-									char *dataPtr = &horzBlur[(width * pixelSize * y) + (pixelSize * iX)];
-									for(int c=0; c < pixelSize; c++) {
-										val[c] += kernip1 * ((float)dataPtr[c]);
-									}				
-								}
-                                offset++;
-                        }
-						
-						if(imageType == IMAGE_FP16) {
-							int baseOffset = (width * 4 * iY) + (4 * iX);
-							for(int c=0; c < 4; c++) {
-								float *f_vertBlur = (float*)vertBlur;
-								f_vertBlur[baseOffset+c] = val[c];
-							}				
-						} else {
-							int baseOffset = (width * pixelSize * iY) + (pixelSize * iX);
-							for(int c=0; c < pixelSize; c++) {
-								if(val[c] > 255.0) {
-									val[c] = 255.0;
-								}							
-								vertBlur[baseOffset+c] = (char)val[c];
-							}				
-						}
-                }
-        }
+				float kernip1 = kernel[i + 1];
+				if(imageType == IMAGE_FP16) {
+					float *dataPtr = (float*)&horzBlur[(width * pixelSize * y) + (pixelSize * iX)];
+					for(int c=0; c < 4; c++) {
+						val[c] += kernip1 * dataPtr[c];
+					}
+
+				} else {
+					char *dataPtr = &horzBlur[(width * pixelSize * y) + (pixelSize * iX)];
+					for(int c=0; c < pixelSize; c++) {
+						val[c] += kernip1 * ((float)dataPtr[c]);
+					}
+				}
+				offset++;
+			}
+
+			if(imageType == IMAGE_FP16) {
+				int baseOffset = (width * 4 * iY) + (4 * iX);
+				for(int c=0; c < 4; c++) {
+					float *f_vertBlur = (float*)vertBlur;
+					f_vertBlur[baseOffset+c] = val[c];
+				}
+			} else {
+				int baseOffset = (width * pixelSize * iY) + (pixelSize * iX);
+				for(int c=0; c < pixelSize; c++) {
+					if(val[c] > 255.0) {
+						val[c] = 255.0;
+					}
+					vertBlur[baseOffset+c] = (char)val[c];
+				}
+			}
+		}
+	}
 
 
 	memcpy(newData, vertBlur, height * width * pixelSize);
@@ -459,7 +462,7 @@ void Image::gaussianBlur(float radius, float deviation) {
 	free(horzBlur);
 	free(vertBlur);
 	free(kernel);
-	
+
 	free(imageData);
 	imageData = newData;
 }
@@ -467,18 +470,18 @@ void Image::gaussianBlur(float radius, float deviation) {
 void Image::fastBlurHor(int blurSize) {
 	if(blurSize == 0)
 		return;
-		
+
 	unsigned char *blurImage = (unsigned char*)malloc(width*height*pixelSize);
 
 	int total_r;
 	int total_g;
 	int total_b;
-	int total_a;	
-	
+	int total_a;
+
 	unsigned int *imageData32 = (unsigned int*)imageData;
 	unsigned char *pixel;
-	int amt;	
-		
+	int amt;
+
 	for (int y = 1; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			total_r = 0;
@@ -496,18 +499,18 @@ void Image::fastBlurHor(int blurSize) {
 					amt++;
 				}
 			}
-		
+
 //				Logger::log("%d / %d = %d\n",total_r, amt, (total_r/amt));
-		
+
 		blurImage[((x+(y*width))*pixelSize)] = (total_r/amt);
 		blurImage[((x+(y*width))*pixelSize)+1] = (total_g / amt);
 		blurImage[((x+(y*width))*pixelSize)+2] = (total_b / amt);
 		blurImage[((x+(y*width))*pixelSize)+3] = (total_a / amt);
-			
+
 		}
 	}
 
-	free(imageData);	
+	free(imageData);
 	imageData = (char*)blurImage;
 //	free(imageData32);
 }
@@ -523,12 +526,12 @@ void Image::fastBlurVert(int blurSize) {
 	int total_r;
 	int total_g;
 	int total_b;
-	int total_a;	
-	
+	int total_a;
+
 	unsigned int *imageData32 = (unsigned int*)imageData;
 	unsigned char *pixel;
-	int amt;	
-		
+	int amt;
+
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			total_r = 0;
@@ -546,17 +549,17 @@ void Image::fastBlurVert(int blurSize) {
 					amt++;
 				}
 			}
-				
+
 			//Logger::log("%d / %d = %d\n",total_r, amt, (total_r/amt));
 			blurImage[((x+(y*width))*pixelSize)] = (total_r/amt);
 			blurImage[((x+(y*width))*pixelSize)+1] = (total_g / amt);
 			blurImage[((x+(y*width))*pixelSize)+2] = (total_b / amt);
 			blurImage[((x+(y*width))*pixelSize)+3] = (total_a / amt);
-				
+
 		}
 	}
 
-	free(imageData);	
+	free(imageData);
 	imageData = (char*)blurImage;
 //	free(imageData32);
 }
@@ -570,12 +573,12 @@ void Image::fastBlur(int blurSize) {
 	int total_r;
 	int total_g;
 	int total_b;
-	int total_a;	
-	
+	int total_a;
+
 	unsigned int *imageData32 = (unsigned int*)imageData;
 	unsigned char *pixel;
-	int amt;	
-		
+	int amt;
+
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
                 total_r = 0;
@@ -626,7 +629,7 @@ void Image::drawLine(int x0, int y0, int x1, int y1, Color col) {
 		swap(&x0, &x1);
 		swap(&y0, &y1);
 	}
-	
+
 	int deltax = x1 - x0;
 	int deltay = abs(y1 - y0);
 	Number error = 0;
@@ -638,7 +641,7 @@ void Image::drawLine(int x0, int y0, int x1, int y1, Color col) {
 		ystep = 1;
 	else
 		ystep = -1;
-	
+
 	for(int x=x0; x < x1;x++) {
 		if(steep) {
 			setPixel(y,x,col);
@@ -667,17 +670,17 @@ bool Image::saveImage(const String &fileName) {
 
 void Image::premultiplyAlpha() {
 	unsigned int *imageData32 = (unsigned int*)imageData;
-			
+
 	for(int x=0; x < width; x++) {
 		for(int y=0; y < height; y++) {
-			
+
 			unsigned int hex = imageData32[x+(y*width)];
-			
+
 			int ta = (hex >> 24) & 0xFF;
 			int tb = (hex >> 16) & 0xFF;
 			int tg = (hex >> 8) & 0xFF;
 			int tr = (hex ) & 0xFF;
-	
+
 			Number r = ((Number)tr)/255.0f;
 			Number g = ((Number)tg)/255.0f;
 			Number b = ((Number)tb)/255.0f;
@@ -686,14 +689,14 @@ void Image::premultiplyAlpha() {
 			r *= a;
 			g *= a;
 			b *= a;
-						
+
 			unsigned int ir = 255.0f*r;
 			unsigned int ig = 255.0f*g;
 			unsigned int ib = 255.0f*b;
 			unsigned int ia = 255.0f*a;
-									
+
 			unsigned int newVal = ((ia & 0xFF) << 24) | ((ib & 0xFF) << 16) | ((ig & 0xFF) << 8) | (ir & 0xFF);
-						
+
 			imageData32[x+(y*width)] = newVal;
 		}
 	}
@@ -703,62 +706,59 @@ bool Image::savePNG(const String &fileName) {
 
 	printf("Saving %dx%d image\n", width, height);
 
-   FILE *fp;
-   png_structp png_ptr;
-   png_infop info_ptr;
-   
-   fp = fopen(fileName.c_str(), "wb");
-   if (fp == NULL)
-      return false;
+	FILE *fp;
+	png_structp png_ptr;
+	png_infop info_ptr;
 
-   png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, 0, 0, 0);
+	fp = fopen(fileName.c_str(), "wb");
+	if (fp == NULL)
+		return false;
 
-   if (png_ptr == NULL)
-   {
-      fclose(fp);
-      return false;
-   }
+	png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, 0, 0, 0);
 
-   info_ptr = png_create_info_struct(png_ptr);
-   if (info_ptr == NULL)
-   {
-      fclose(fp);
-      png_destroy_write_struct(&png_ptr,  NULL);
-      return false;
-   }
+	if (png_ptr == NULL) {
+		fclose(fp);
+		return false;
+	}
 
-   if (setjmp(png_jmpbuf(png_ptr)))
-   {
-      /* If we get here, we had a problem writing the file */
-      fclose(fp);
-      png_destroy_write_struct(&png_ptr, &info_ptr);
-      return false;
-   }
+	info_ptr = png_create_info_struct(png_ptr);
+	if (info_ptr == NULL) {
+		fclose(fp);
+		png_destroy_write_struct(&png_ptr,  NULL);
+		return false;
+	}
 
-   png_init_io(png_ptr, fp);
-   png_set_IHDR(png_ptr, info_ptr, width, height, 8, PNG_COLOR_TYPE_RGB_ALPHA,
-      PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
- 
+	if (setjmp(png_jmpbuf(png_ptr))) {
+		/* If we get here, we had a problem writing the file */
+		fclose(fp);
+		png_destroy_write_struct(&png_ptr, &info_ptr);
+		return false;
+	}
+
+	png_init_io(png_ptr, fp);
+	png_set_IHDR(png_ptr, info_ptr, width, height, 8, PNG_COLOR_TYPE_RGB_ALPHA,
+		PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
+
 	png_write_info(png_ptr, info_ptr);
 
-   png_uint_32 k;
-   png_bytep *row_pointers = (png_bytep*) malloc(sizeof(png_bytep) * height);
+	png_uint_32 k;
+	png_bytep *row_pointers = (png_bytep*) malloc(sizeof(png_bytep) * height);
 
-   if (height > PNG_UINT_32_MAX/png_sizeof(png_bytep))
-     png_error (png_ptr, "Image is too tall to process in memory");
+	if (height > PNG_UINT_32_MAX/png_sizeof(png_bytep))
+		png_error (png_ptr, "Image is too tall to process in memory");
 
-   for (k = 0; k < height; k++)
-     row_pointers[height-k-1] = (png_byte*)(imageData + k*width*4);
+	for (k = 0; k < height; k++)
+		row_pointers[height-k-1] = (png_byte*)(imageData + k*width*4);
 
-   /* One of the following output methods is REQUIRED */
+	/* One of the following output methods is REQUIRED */
 
-   png_write_image(png_ptr, row_pointers);
+	png_write_image(png_ptr, row_pointers);
 
-   free(row_pointers);
-   png_free(png_ptr, 0);
-   png_destroy_write_struct(&png_ptr, &info_ptr);
-   fclose(fp);
-   return true;
+	free(row_pointers);
+	png_free(png_ptr, 0);
+	png_destroy_write_struct(&png_ptr, &info_ptr);
+	fclose(fp);
+	return true;
 }
 
 
@@ -768,7 +768,7 @@ bool Image::loadImage(const String& fileName) {
 
 bool Image::loadPNG(const String& fileName) {
 	OSFILE         *infile;
-	
+
 	png_structp   png_ptr;
 	png_infop     info_ptr;
 	char         *image_data;
@@ -781,15 +781,15 @@ bool Image::loadPNG(const String& fileName) {
 	image_data = NULL;
 	int i;
 	png_bytepp row_pointers = NULL;
-	
+
 	infile = OSBasics::open(fileName.c_str(), "rb");
 	if (!infile) {
-		Logger::log("Error opening png file\n");	
+		Logger::log("Error opening png file\n");
 		return false;
 	}
-	
+
 	OSBasics::read(sig, 1, 8, infile);
-	
+
 	if (!png_check_sig((unsigned char *) sig, 8)) {
 		Logger::log("Error reading png signature\n");
 		OSBasics::close(infile);
@@ -802,15 +802,15 @@ bool Image::loadPNG(const String& fileName) {
 		OSBasics::close(infile);
 		return false;    /* out of memory */
 	}
-	
+
 	info_ptr = png_create_info_struct(png_ptr);
 	if (!info_ptr) {
-		Logger::log("Error creating info struct\n");		
+		Logger::log("Error creating info struct\n");
 		png_destroy_read_struct(&png_ptr, (png_infopp) NULL, (png_infopp) NULL);
 		OSBasics::close(infile);
 		return false;    /* out of memory */
 	}
-	
+
 	if (setjmp(png_jmpbuf(png_ptr))) {
 		Logger::log("Error setting jump thingie\n");
 		png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
@@ -820,14 +820,14 @@ bool Image::loadPNG(const String& fileName) {
 
 	//png_init_io(png_ptr, infile);
 	png_set_read_fn(png_ptr, (png_voidp)infile, user_read_data);
-	
+
 	png_set_sig_bytes(png_ptr, 8);
 	png_read_info(png_ptr, info_ptr);
 	png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, 
-				 &color_type, NULL, NULL, NULL);
+				&color_type, NULL, NULL, NULL);
 	this->width = width;
 	this->height = height;
-	
+
 	/* Set up some transforms. */
 	if (color_type & PNG_COLOR_MASK_ALPHA) {
 		//  png_set_strip_alpha(png_ptr);
@@ -842,25 +842,25 @@ bool Image::loadPNG(const String& fileName) {
 	if (color_type == PNG_COLOR_TYPE_PALETTE) {
 		png_set_palette_to_rgb(png_ptr);
 	}
-	
-	
+
+
 	if (color_type == PNG_COLOR_TYPE_RGB || color_type == PNG_COLOR_TYPE_RGB_ALPHA) {
 		png_set_add_alpha(png_ptr, 0xffffff, PNG_FILLER_AFTER);
-	}	
-	
+	}
+
 	/* Update the png info struct.*/
 	png_read_update_info(png_ptr, info_ptr);
-	
+
 	/* Rowsize in bytes. */
 	rowbytes = png_get_rowbytes(png_ptr, info_ptr);
-	
+
 	/* Allocate the image_data buffer. */
 	if ((image_data = (char *) malloc(rowbytes * height))==NULL) {
-		Logger::log("Error allocating image memory\n");		
+		Logger::log("Error allocating image memory\n");
 		png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 		return false;
 	}
-	
+
 	if ((row_pointers = (png_bytepp)malloc(height*sizeof(png_bytep))) == NULL) {
 		Logger::log("Error allocating image memory\n");
 		png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
@@ -868,16 +868,16 @@ bool Image::loadPNG(const String& fileName) {
 		image_data = NULL;
 		return false;
 	}
-	
+
 	for (i = 0;  i < height;  ++i)
 		row_pointers[height - 1 - i] = (png_byte*)image_data + i*rowbytes;
-	
+
 	png_read_image(png_ptr, row_pointers);
-	
+
 	free(row_pointers);
 	png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 	OSBasics::close(infile);
-	
+
 	imageData = image_data;
 	return true;
 }

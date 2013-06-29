@@ -37,7 +37,7 @@ ScreenSprite* ScreenSprite::ScreenSpriteFromImageFile(const String& fileName, Nu
 ScreenSprite::ScreenSprite(const String& fileName) : ScreenShape(ScreenShape::SHAPE_RECT, 1, 1) {
 
 	currentFrame = 0;
-	currentAnimation = NULL;	
+	currentAnimation = NULL;
 	paused = false;
 
 	loadFromFile(fileName);
@@ -57,24 +57,24 @@ Entity *ScreenSprite::Clone(bool deepClone, bool ignoreEditorOnly) {
 
 void ScreenSprite::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) {
 	ScreenShape::applyClone(clone, deepClone, ignoreEditorOnly);
-	
+
 }
 
 bool ScreenSprite::loadFromFile(const String& fileName) {
 	Object loadObject;
-	
+
 	animations.clear();
-	
+
 	if(!loadObject.loadFromXML(fileName)) {
 		return false;
 	}
-	
+
 	this->fileName = fileName;
-	
+
 	ObjectEntry *image = loadObject.root["image"];
 	if(image) {
 		ObjectEntry *frameWidth = (*image)["frameWidth"];
-		ObjectEntry *frameHeight = (*image)["frameHeight"];	
+		ObjectEntry *frameHeight = (*image)["frameHeight"];
 		ObjectEntry *fileName = (*image)["fileName"];
 		
 		if(fileName) {
@@ -86,17 +86,17 @@ bool ScreenSprite::loadFromFile(const String& fileName) {
 			setSpriteSize(frameWidth->NumberVal, frameHeight->NumberVal);
 		}
 	}
-	
+
 	ObjectEntry *animationsEntry = loadObject.root["animations"];
-	
+
 	if(animationsEntry) {
 		for(int i=0; i < animationsEntry->length; i++) {
 			ObjectEntry *animation = (*animationsEntry)[i];
 			if(animation) {
 				ObjectEntry *name = (*animation)["name"];
-				ObjectEntry *frames = (*animation)["frames"];	
+				ObjectEntry *frames = (*animation)["frames"];
 				ObjectEntry *speed = (*animation)["speed"];
-				
+
 				if(name && frames && speed) {
 					addAnimation(name->stringVal, frames->stringVal, speed->NumberVal);
 				} else {
@@ -105,7 +105,7 @@ bool ScreenSprite::loadFromFile(const String& fileName) {
 			}
 		}
 	}
-	
+
 	recalculateSpriteDimensions();
 
 	return true;
@@ -126,26 +126,26 @@ SpriteAnimation *ScreenSprite::getAnimationAtIndex(unsigned int index) {
 
 ScreenSprite::ScreenSprite(const String& fileName, Number spriteWidth, Number spriteHeight) : ScreenShape(ScreenShape::SHAPE_RECT, spriteWidth, spriteHeight) {
 	this->spriteWidth = spriteWidth;
-	this->spriteHeight = spriteHeight;	
+	this->spriteHeight = spriteHeight;
 	loadTexture(fileName);
-		
+
 	recalculateSpriteDimensions();
 	currentFrame = 0;
-	currentAnimation = NULL;	
+	currentAnimation = NULL;
 	paused = false;
 }
 
 ScreenSprite::~ScreenSprite() {
-	
+
 }
 
 void ScreenSprite::recalculateSpriteDimensions() {
 	if(!texture)
 		return;
-		
+
 	spriteUVWidth = 1.0f / ((Number) texture->getWidth() / spriteWidth);
 	spriteUVHeight = 1.0f / ((Number) texture->getHeight() / spriteHeight);
-	
+
 	for(int i =0 ; i < animations.size(); i++) {
 		animations[i]->numFramesX = texture->getWidth() / spriteWidth;	
 		if(animations[i]->numFramesX < 1) {
@@ -154,7 +154,7 @@ void ScreenSprite::recalculateSpriteDimensions() {
 		animations[i]->numFramesY = texture->getHeight() / spriteHeight;
 		if(animations[i]->numFramesY < 1) {
 			animations[i]->numFramesY = 1;
-		}		
+		}
 		animations[i]->spriteUVWidth = spriteUVWidth;
 		animations[i]->spriteUVHeight = spriteUVHeight;	
 		animations[i]->setOffsetsFromFrameString(animations[i]->frames);
@@ -171,9 +171,9 @@ String ScreenSprite::getFileName() const {
 
 void ScreenSprite::setSpriteSize(const Number spriteWidth, const Number spriteHeight) {
 	this->spriteWidth = spriteWidth;
-	this->spriteHeight = spriteHeight;	
-	
-	recalculateSpriteDimensions();	
+	this->spriteHeight = spriteHeight;
+
+	recalculateSpriteDimensions();
 }
 
 SpriteAnimation *ScreenSprite::getCurrentAnimation() {
@@ -181,32 +181,32 @@ SpriteAnimation *ScreenSprite::getCurrentAnimation() {
 }
 
 unsigned int ScreenSprite::getCurrentAnimationFrame() { 
-   return currentFrame; 
+	return currentFrame; 
 }
 
 bool ScreenSprite::isCurrentAnimationFinished() {
-    if(currentAnimation) {
-        if(currentFrame >= currentAnimation->numFrames)
-            return true;
-    }
-    return false;
+	if(currentAnimation) {
+	if(currentFrame >= currentAnimation->numFrames)
+		return true;
+	}
+	return false;
 }
 
 void SpriteAnimation::setOffsetsFromFrameString(const String& frames) {
 	framesOffsets.clear();
 	vector<String> frameNumbers = frames.split(",");
-	
+
 	int frameNumber;
 	int frameX;
 	int frameY;
-	
+
 	for(int i=0; i < frameNumbers.size(); i++) {
 		frameNumber = atoi(frameNumbers[i].c_str());
 		frameX = frameNumber % numFramesX;
 		frameY = frameNumber/numFramesX;
-		framesOffsets.push_back(Vector2(spriteUVWidth * frameX, spriteUVHeight * frameY));		
+		framesOffsets.push_back(Vector2(spriteUVWidth * frameX, spriteUVHeight * frameY));
 	}
-	
+
 	this->frames = frames;
 	numFrames = frameNumbers.size();
 
@@ -214,8 +214,7 @@ void SpriteAnimation::setOffsetsFromFrameString(const String& frames) {
 
 SpriteAnimation *ScreenSprite::addAnimation(const String& name, const String& frames, Number speed) {
 	SpriteAnimation *newAnimation = new SpriteAnimation();	
-	
-	
+
 	newAnimation->numFramesX = texture->getWidth() / spriteWidth;	
 	if(newAnimation->numFramesX < 1) {
 		newAnimation->numFramesX = 1;
@@ -223,12 +222,12 @@ SpriteAnimation *ScreenSprite::addAnimation(const String& name, const String& fr
 	newAnimation->numFramesY = texture->getHeight() / spriteHeight;
 	if(newAnimation->numFramesY < 1) {
 		newAnimation->numFramesY = 1;
-	}	
+	}
 	newAnimation->spriteUVWidth = spriteUVWidth;
 	newAnimation->spriteUVHeight = spriteUVHeight;
-	
+
 	newAnimation->setOffsetsFromFrameString(frames);
-			
+
 	newAnimation->speed = speed;
 	newAnimation->name = name;
 	animations.push_back(newAnimation);
@@ -241,14 +240,12 @@ void ScreenSprite::playAnimation(const String& name, int startFrame, bool once) 
 		if(animations[i]->name == name) {
 			if(currentAnimation == animations[i] && !playingOnce && !once)
 				return;
-			currentFrame = 0;			
+			currentFrame = 0;
 			currentAnimation = animations[i];
 			if(startFrame == -1) {
 				currentFrame = rand() % currentAnimation->numFrames;
-			} else {
-				if(startFrame < currentAnimation->numFrames) {
-					currentFrame = startFrame;
-				}
+			} else if(startFrame < currentAnimation->numFrames) {
+				currentFrame = startFrame;
 			}
 			playingOnce = once;
 			lastTick = 0;
@@ -273,43 +270,43 @@ void ScreenSprite::showFrame(unsigned int frameIndex) {
 void ScreenSprite::Update() {
 	if(!currentAnimation)
 		return;
-	
+
 	Number newTick = CoreServices::getInstance()->getCore()->getTicksFloat();
-	
+
 	Number elapsed = newTick - lastTick;
-	
+
 	if(paused)
 		return;
-	
+
 	if(elapsed > currentAnimation->speed) {
-	currentFrame++;
-	if(currentFrame >= currentAnimation->numFrames) {
-		if(playingOnce) {
-			dispatchEvent(new Event(), Event::COMPLETE_EVENT);
-			return;			
-		} else {
-			currentFrame = 0;
+		currentFrame++;
+		if(currentFrame >= currentAnimation->numFrames) {
+			if(playingOnce) {
+				dispatchEvent(new Event(), Event::COMPLETE_EVENT);
+				return;
+			} else {
+				currentFrame = 0;
+			}
 		}
-	}
-	
-	updateSprite();
-			
-	lastTick = newTick;
-		
+
+		updateSprite();
+
+		lastTick = newTick;
+
 	}
 }
 
 void ScreenSprite::updateSprite() {
 	Number xOffset = currentAnimation->framesOffsets[currentFrame].x;
 	Number yOffset = 1.0f - currentAnimation->framesOffsets[currentFrame].y - spriteUVHeight;
-	
+
 	Polygon *imagePolygon = mesh->getPolygon(0);
-		
-	imagePolygon->getVertex(0)->setTexCoord(xOffset, yOffset+spriteUVHeight);	
+
+	imagePolygon->getVertex(0)->setTexCoord(xOffset, yOffset+spriteUVHeight);
 	imagePolygon->getVertex(1)->setTexCoord(xOffset+spriteUVWidth, yOffset+spriteUVHeight);
 	imagePolygon->getVertex(2)->setTexCoord(xOffset+spriteUVWidth, yOffset);
-	imagePolygon->getVertex(3)->setTexCoord(xOffset, yOffset);	
-		
+	imagePolygon->getVertex(3)->setTexCoord(xOffset, yOffset);
+
 	mesh->arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;
 
 }

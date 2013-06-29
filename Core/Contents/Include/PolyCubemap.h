@@ -26,29 +26,29 @@ THE SOFTWARE.
 
 namespace Polycode {
 
-	class Texture;
+class Texture;
 
-	class _PolyExport Cubemap : public Resource {
-		public:
-			Cubemap(Texture *t0, Texture *t1, Texture *t2, Texture *t3, Texture *t4, Texture *t5);
-			
-			Texture *getTexture(int index);			
-			void setTexture(Texture *texture, int index);
-			
-			virtual void recreateFromTextures(){}
-			
-			virtual ~Cubemap();	
-			
-			static const int CUBEMAP_XPOS = 0;
-			static const int CUBEMAP_XNEG = 1;
-			static const int CUBEMAP_YPOS = 2;
-			static const int CUBEMAP_YNEG = 3;			
-			static const int CUBEMAP_ZPOS = 4;
-			static const int CUBEMAP_ZNEG = 5;
-																	
-		protected:
-		
-			std::vector<Texture*> textures;
-		
-	};
+class _PolyExport Cubemap : public Resource {
+	public:
+		Cubemap(Texture *t0, Texture *t1, Texture *t2, Texture *t3, Texture *t4, Texture *t5);
+
+		Texture *getTexture(int index);
+		void setTexture(Texture *texture, int index);
+
+		virtual void recreateFromTextures(){}
+
+		virtual ~Cubemap();
+
+		static const int CUBEMAP_XPOS = 0;
+		static const int CUBEMAP_XNEG = 1;
+		static const int CUBEMAP_YPOS = 2;
+		static const int CUBEMAP_YNEG = 3;
+		static const int CUBEMAP_ZPOS = 4;
+		static const int CUBEMAP_ZNEG = 5;
+
+	protected:
+
+		std::vector<Texture*> textures;
+
+};
 }

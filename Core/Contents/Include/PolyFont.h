@@ -28,29 +28,29 @@ THE SOFTWARE.
 #include FT_FREETYPE_H
 
 namespace Polycode {
-	
-	class String;
 
-	class _PolyExport Font : public PolyBase {
-		public:
-			Font(const String& fileName);
-			virtual ~Font();
-			
-			FT_Face getFace();
-			bool isValid() const;
-			
-			void setFontName(String fontName);
-			String getFontName();			
-			String getFontPath();
-			
-			bool loaded;
-		protected:
-		
-			String fileName;
-			String fontName;
-		
-			unsigned char *buffer;
-			bool valid;
-			FT_Face ftFace;
-	};
+class String;
+
+class _PolyExport Font : public PolyBase {
+	public:
+		Font(const String& fileName);
+		virtual ~Font();
+
+		FT_Face getFace();
+		bool isValid() const;
+
+		void setFontName(String fontName);
+		String getFontName();
+		String getFontPath();
+
+		bool loaded;
+	protected:
+
+		String fileName;
+		String fontName;
+
+		unsigned char *buffer;
+		bool valid;
+		FT_Face ftFace;
+};
 }

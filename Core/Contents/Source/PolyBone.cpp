@@ -36,10 +36,10 @@ Bone::Bone(const String& boneName) : SceneEntity() {
 	parentBone = NULL;
 	boneMatrix.identity();
 //	addChild(boneMesh);
-	
+
 	boneMesh = new Mesh(Mesh::QUAD_MESH);
 	boneMesh->createBox(0.2,0.2,0.2);
-	
+
 }
 
 
@@ -66,7 +66,7 @@ int Bone::getNumChildBones() {
 Bone *Bone::getChildBone(unsigned int index) {
 	if(index > childBones.size()-1)
 		index = childBones.size()-1;
-		
+
 	return childBones[index];
 }
 
@@ -84,7 +84,7 @@ Matrix4 Bone::getFinalMatrix() const {
 	if(parentBone) {
 		final = final * parentBone->getFinalMatrix();
 	} 
-	
+
 	return final;
 }
 
@@ -145,11 +145,11 @@ void Bone::enableBoneLabel(const String& fontLabel, Number size, Number scale, C
 
 void Bone::Render() {
 
-	CoreServices::getInstance()->getRenderer()->setTexture(NULL);	
+	CoreServices::getInstance()->getRenderer()->setTexture(NULL);
 //	renderer->pushDataArrayForMesh(boneMesh, RenderDataArray::COLOR_DATA_ARRAY);
 	renderer->pushDataArrayForMesh(boneMesh, RenderDataArray::VERTEX_DATA_ARRAY);
-	renderer->pushDataArrayForMesh(boneMesh, RenderDataArray::TEXCOORD_DATA_ARRAY);	
-	renderer->pushDataArrayForMesh(boneMesh, RenderDataArray::NORMAL_DATA_ARRAY);		
-	renderer->drawArrays(boneMesh->getMeshType());	
+	renderer->pushDataArrayForMesh(boneMesh, RenderDataArray::TEXCOORD_DATA_ARRAY);
+	renderer->pushDataArrayForMesh(boneMesh, RenderDataArray::NORMAL_DATA_ARRAY);
+	renderer->drawArrays(boneMesh->getMeshType());
 
 }

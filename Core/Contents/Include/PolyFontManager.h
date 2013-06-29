@@ -28,18 +28,18 @@ THE SOFTWARE.
 
 namespace Polycode {
 
-	class Font;
+class Font;
 
-	class FontEntry {
+class FontEntry {
 	public:
 		String fontName;
 		Font *font;
-	};
-	
-	/**
-	* Manages fonts. The font manager shoudl only be accessed via the CoreServices singleton.
-	*/
-	class _PolyExport FontManager : public PolyBase {
+};
+
+/**
+* Manages fonts. The font manager shoudl only be accessed via the CoreServices singleton.
+*/
+class _PolyExport FontManager : public PolyBase {
 	public:
 		FontManager();
 		~FontManager();
@@ -50,25 +50,25 @@ namespace Polycode {
 		* @param fontPath Filename of the font to load.
 		*/
 		void registerFont(const String& fontName, const String& fontPath);
-		
+
 		/**
 		* Retuns a font based on the registerd font name.
 		* @param fontName Name of registered font name.
 		* @return The font instance associated with the font name or NULL if one doesn't exist.
-		*/		
+		*/
 		Font *getFontByName(const String& fontName);
-		
+
 		unsigned int getNumFonts() const;
 		FontEntry *getFontEntryByIndex(const unsigned int index);
 
 		FontEntry *getFontEntryByFontPath(const String &fontPath);
-		
+
 		void removeFontEntry(FontEntry *entry, bool deleteFont);
-		
+
 	private:
-		
+
 		std::vector <FontEntry> fonts;
-		
-	};
-	
+
+};
+
 }

@@ -60,12 +60,12 @@ void Color::setColorHexRGB(unsigned int hex) {
 	int tr = (hex >> 16) & 0xFF;
 	int tg = (hex >> 8) & 0xFF;
 	int tb = (hex ) & 0xFF;
-	
+
 	r = ((Number)tr)/255.0f;
 	g = ((Number)tg)/255.0f;
 	b = ((Number)tb)/255.0f;
-//	a = ((Number)ta)/255.0f;	
-	
+//	a = ((Number)ta)/255.0f;
+
 }
 
 void Color::setColorHexFromString(String hex) {
@@ -104,11 +104,11 @@ Color Color::blendColor(Color c2, int mode, Number amount, Color c3) {
 			if(ret.b > 1.0)
 				ret.b = 1.0;
 
-		break;		
+		break;
 	}
-	
+
 	if(ret.a > 1.0)
-		ret.a = 1.0;	
+		ret.a = 1.0;
 	return ret;
 }
 
@@ -117,11 +117,11 @@ void Color::setColorHex(unsigned int hex) {
 	int tg = (hex >> 16) & 0xFF;
 	int tb = (hex >> 8) & 0xFF;
 	int ta = (hex ) & 0xFF;
-	
+
 	r = ((Number)tr)/255.0f;
 	g = ((Number)tg)/255.0f;
 	b = ((Number)tb)/255.0f;
-	a = ((Number)ta)/255.0f;	
+	a = ((Number)ta)/255.0f;
 }
 
 Number Color::getBrightness() const {
@@ -138,12 +138,12 @@ void Color::RGBtoHSV(const Number &r, const Number &g, const Number &b, Number &
 	max = MAX(r, g);
 	max = MAX(max, b);
 
-    v = max;
+	v = max;
 
 	s = (max != 0) ? (max - min) / max : 0;
 
 	if (s == 0) {
-                h = 0;
+		h = 0;
 	} else {
 		delta = max - min;
 		if (r == max) {
@@ -182,24 +182,24 @@ Number Color::getValue() const {
 
 void Color::setColorHSV(Number H, Number S, Number V) {
 	Number r,g,b;
-    
+
 	if (S == 0) {
-        r = g = b = V;
-    } else {
-        int i = (int)(H/60.0f);
-        Number f = (H/60.0f) - (Number)i;
-        Number p = V*(1.0f-S);
-        Number q = V*(1.0f-S*f);
-        Number t = V*(1.0f-(1.0f-f)*S);
-        switch (i) {
-            case 0: r = V;   g = t;  b = p;  break;
-            case 1: r = q;  g = V;   b = p;  break;
-            case 2: r = p;  g = V;   b = t;  break;
-            case 3: r = p;  g = q;  b = V;   break;
-            case 4: r = t;  g = p;  b = V;   break;
-            case 5: r = V;   g = p;  b = q;  break;
-        }
-    }
+		r = g = b = V;
+	} else {
+		int i = (int)(H/60.0f);
+		Number f = (H/60.0f) - (Number)i;
+		Number p = V*(1.0f-S);
+		Number q = V*(1.0f-S*f);
+		Number t = V*(1.0f-(1.0f-f)*S);
+		switch (i) {
+			case 0: r = V; g = t; b = p; break;
+			case 1: r = q; g = V; b = p; break;
+			case 2: r = p; g = V; b = t; break;
+			case 3: r = p; g = q; b = V; break;
+			case 4: r = t; g = p; b = V; break;
+			case 5: r = V; g = p; b = q; break;
+		}
+	}
 
 	setColor(r, g, b, a);
 }
@@ -213,7 +213,7 @@ void Color::setColorRGB(int r, int g, int b) {
 	this->g = ((Number)g)/255.0f;
 	this->b = ((Number)b)/255.0f;
 }
-	
+
 void Color::setColorRGBA(int r, int g, int b, int a) {
 	this->r = ((Number)r)/255.0f;
 	this->g = ((Number)g)/255.0f;
@@ -237,12 +237,12 @@ void Color::setColor(Number r, Number g, Number b, Number a) {
 }
 
 unsigned int Color::getUint() const {
-	
+
 	unsigned int ir = 255.0f*r;
 	unsigned int ig = 255.0f*g;
 	unsigned int ib = 255.0f*b;
 	unsigned int ia = 255.0f*a;
-		
+
 	unsigned int val = ((ia & 0xFF) << 24) | ((ib & 0xFF) << 16) | ((ig & 0xFF) << 8) | (ir & 0xFF);
 	return val;
 }

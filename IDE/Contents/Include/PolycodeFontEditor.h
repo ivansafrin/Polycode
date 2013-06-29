@@ -32,22 +32,22 @@ class PolycodeFontEditor : public PolycodeEditor {
 public:
 	PolycodeFontEditor();
 	virtual ~PolycodeFontEditor();
-	
+
 	bool openFile(OSFileEntry filePath);
 	void Resize(int x, int y);
-	
+
 protected:
-	
+
 	ScreenImage *grid;
-	
+
 	UIBox *bg;
-	
+
 	ScreenEntity *anchor;
 	ScreenLabel *editorLabel;
 	ScreenLabel *editorLabel2;
 	ScreenLabel *editorLabel3;
 	ScreenLabel *editorLabel4;
-	ScreenLabel *editorLabel5;	
+	ScreenLabel *editorLabel5;
 };
 
 class PolycodeFontEditorFactory : public PolycodeEditorFactory {

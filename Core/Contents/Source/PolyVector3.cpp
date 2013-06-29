@@ -32,7 +32,7 @@ Vector3::Vector3() : x(0),y(0),z(0){
 void Vector3::set(Number x, Number y, Number z) {
 	this->x = x;
 	this->y = y;
-	this->z = z;	
+	this->z = z;
 }
 
 Vector3::Vector3(Number x,Number y,Number z) {

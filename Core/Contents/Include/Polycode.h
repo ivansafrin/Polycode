@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
- 
+
 #pragma once
 
 #include "PolyString.h"

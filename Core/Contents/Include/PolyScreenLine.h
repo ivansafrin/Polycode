@@ -26,58 +26,59 @@ THE SOFTWARE.
 
 namespace Polycode {
 
-	class Vertex;
+class Vertex;
 
-	/**
-	* A 2D line between two points or two ScreenEntity instances.
-	*/ 
-	class _PolyExport ScreenLine : public ScreenMesh {
-		public:
-			/**
-			* Create a line between two points.
-			* @start Starting point.
-			* @end Enfing point.	
-			*/
-			ScreenLine(Vector2 start, Vector2 end);
-			
-			/**
-			* Create a line between two entities. It's automatically updated every frame to follow the entities.
-			* @target1 Starting target.
-			* @target2 Ending target.
-			*/			
-			ScreenLine(ScreenEntity* target1, ScreenEntity* target2);
-			virtual ~ScreenLine();
-			
-			void setStart(Vector2 point);
-			void setEnd(Vector2 point);
-						
-			/**
-			* Create a line between two entities. It's automatically updated every frame to follow the entities.
-			* @target1 Starting target.
-			* @target2 Ending target.
-			*/							
-			static ScreenLine *ScreenLineBetweenEntities(ScreenEntity* target1, ScreenEntity* target2);			
+/**
+* A 2D line between two points or two ScreenEntity instances.
+*/ 
+class _PolyExport ScreenLine : public ScreenMesh {
+	public:
+		/**
+		* Create a line between two points.
+		* @start Starting point.
+		* @end Enfing point.
+		*/
+		ScreenLine(Vector2 start, Vector2 end);
 
-			void Update();
-			void Render();
-			
-			/**
-			* Sets the line width.
-			* @param width New line width.
-			*/
-			void setLineWidth(Number width);
-			
-		protected:
-		
-			void initMesh();
-		
-			Number lineWidth;
-			
-			Vertex *startVertex;
-			Vertex *endVertex;
-		
-			ScreenEntity *target1;
-			ScreenEntity *target2;
-			
-	};
+		/**
+		* Create a line between two entities. It's automatically updated every frame to follow the entities.
+		* @target1 Starting target.
+		* @target2 Ending target.
+		*/
+		ScreenLine(ScreenEntity* target1, ScreenEntity* target2);
+		virtual ~ScreenLine();
+
+		void setStart(Vector2 point);
+		void setEnd(Vector2 point);
+
+		/**
+		* Create a line between two entities. It's automatically updated every frame to follow the entities.
+		* @target1 Starting target.
+		* @target2 Ending target.
+		*/
+		static ScreenLine *ScreenLineBetweenEntities(ScreenEntity* target1, ScreenEntity* target2);
+
+		void Update();
+		void Render();
+
+		/**
+		* Sets the line width.
+		* @param width New line width.
+		*/
+		void setLineWidth(Number width);
+
+	protected:
+
+		void initMesh();
+
+		Number lineWidth;
+
+		Vertex *startVertex;
+		Vertex *endVertex;
+
+		ScreenEntity *target1;
+		ScreenEntity *target2;
+
+};
+
 }

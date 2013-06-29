@@ -34,18 +34,18 @@ void SoundManager::initAL() {
 	if(alcGetCurrentContext() == 0) {
 		Logger::log("AL already initialized\n");
 	}
-	
+
 	device = alcOpenDevice(0);
 	if(device == 0) {
 		Logger::log("InitializeAL: Cannot open preferred device\n");
 		return;
 	}
-	
+
 	if (alcGetError(device) != ALC_NO_ERROR) {
 		alcCloseDevice(device);
 	//	PCCE_THROW("InitializeAL: Could not open device (alc error)");
 	}
-	
+
 	context = alcCreateContext(device, 0);
 	if (context == 0) {
 		alcCloseDevice(device);
@@ -56,7 +56,7 @@ void SoundManager::initAL() {
 		alcCloseDevice(device);
 	//	PCCE_THROW("InitializeAL: Could not open device (alc error)");
 	}
-	
+
 	if (alcMakeContextCurrent(context) != ALC_TRUE) {
 		alcDestroyContext(context);
 		alcCloseDevice(device);
@@ -68,13 +68,13 @@ void SoundManager::initAL() {
 		alcCloseDevice(device);
 	//	PCCE_THROW("InitializeAL: Could not make context current (alc error)");
 	}
-	
+
 	alGetError();
-	
+
 	ALfloat listenerPos[] = { 0.0, 0.0, 0.0 };
-	ALfloat listenerVel[] = { 0.0, 0.0, 0.0 };	
+	ALfloat listenerVel[] = { 0.0, 0.0, 0.0 };
 	ALfloat listenerOri[] = { 0.0, 0.0, -1.0,  0.0, 1.0, 0.0 };
-	
+
 	alListenerfv(AL_POSITION, listenerPos);
 	alListenerfv(AL_VELOCITY, listenerVel);
 	alListenerfv(AL_ORIENTATION, listenerOri);
@@ -82,10 +82,10 @@ void SoundManager::initAL() {
 //		ShutdownAL();
 //		PCCE_THROW("InitializeAL: Could not set listener position");
 	}
-	
+
 	alDistanceModel(AL_LINEAR_DISTANCE_CLAMPED);
 //	alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
-	
+
 	Logger::log("OpenAL initialized...\n");
 }
 
@@ -102,10 +102,10 @@ void SoundManager::setListenerOrientation(Vector3 orientation, Vector3 upVector)
 	ori[0] = orientation.x;
 	ori[1] = orientation.y;
 	ori[2] = orientation.z;
-	
+
 	ori[3] = upVector.x;
 	ori[4] = upVector.y;
-	ori[5] = upVector.z;	
+	ori[5] = upVector.z;
 	alListenerfv(AL_ORIENTATION,ori);
 }
 

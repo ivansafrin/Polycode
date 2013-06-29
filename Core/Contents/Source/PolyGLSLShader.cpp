@@ -65,12 +65,12 @@ GLSLShaderBinding::GLSLShaderBinding(GLSLShader *shader) : ShaderBinding(shader)
 }
 
 GLSLShaderBinding::~GLSLShaderBinding() {
-	
+
 }
 
 Cubemap *GLSLShaderBinding::getCubemap(const String& name) {
 	for(int i=0; i < cubemaps.size(); i++) {
-		if(cubemaps[i].name == name) {			
+		if(cubemaps[i].name == name) {
 			return cubemaps[i].cubemap;
 		}
 	}
@@ -79,13 +79,13 @@ Cubemap *GLSLShaderBinding::getCubemap(const String& name) {
 
 Texture *GLSLShaderBinding::getTexture(const String& name) {
 	for(int i=0; i < textures.size(); i++) {
-		if(textures[i].name == name) {			
+		if(textures[i].name == name) {
 			return textures[i].texture;
 		}
 	}
 	return NULL;
 }
-			
+
 void GLSLShaderBinding::addTexture(const String& name, Texture *texture) {
 	GLSLTextureBinding binding;
 	binding.name = name;
@@ -127,7 +127,7 @@ int GLSLShader::getPolycodeParamType(int glType) {
 			return ProgramParam::PARAM_VECTOR2;
 		break;
 		case GL_FLOAT_VEC3:
-			return ProgramParam::PARAM_VECTOR3;		
+			return ProgramParam::PARAM_VECTOR3;
 		break;
 		case GL_FLOAT_VEC4:
 			return ProgramParam::PARAM_COLOR;
@@ -139,19 +139,19 @@ int GLSLShader::getPolycodeParamType(int glType) {
 			return ProgramParam::PARAM_VECTOR2;
 		break;
 		case GL_INT_VEC3:
-			return ProgramParam::PARAM_VECTOR3;		
+			return ProgramParam::PARAM_VECTOR3;
 		break;
 		case GL_INT_VEC4:
-			return ProgramParam::PARAM_COLOR;		
+			return ProgramParam::PARAM_COLOR;
 		break;
 		case GL_BOOL:
 			return ProgramParam::PARAM_NUMBER;
 		break;
 		case GL_BOOL_VEC2:
-			return ProgramParam::PARAM_VECTOR2;		
+			return ProgramParam::PARAM_VECTOR2;
 		break;
 		case GL_BOOL_VEC3:
-			return ProgramParam::PARAM_VECTOR3;		
+			return ProgramParam::PARAM_VECTOR3;
 		break;
 		case GL_BOOL_VEC4:
 			return ProgramParam::PARAM_COLOR;
@@ -160,10 +160,10 @@ int GLSLShader::getPolycodeParamType(int glType) {
 			return ProgramParam::PARAM_MATRIX;
 		break;
 		case GL_FLOAT_MAT3:
-			return ProgramParam::PARAM_MATRIX;		
+			return ProgramParam::PARAM_MATRIX;
 		break;
 		case GL_FLOAT_MAT4:
-			return ProgramParam::PARAM_MATRIX;		
+			return ProgramParam::PARAM_MATRIX;
 		break;
 		default:
 			return ProgramParam::PARAM_UNKNOWN;
@@ -177,17 +177,17 @@ void GLSLShader::linkProgram() {
 	expectedCubemaps.clear();
 
 	shader_id = glCreateProgram();
-    glAttachShader(shader_id, ((GLSLProgram*)fp)->program);
-    glAttachShader(shader_id, ((GLSLProgram*)vp)->program);	
-	glBindAttribLocation(shader_id, 6, "vTangent");	
-    glLinkProgram(shader_id);
+	glAttachShader(shader_id, ((GLSLProgram*)fp)->program);
+	glAttachShader(shader_id, ((GLSLProgram*)vp)->program);
+	glBindAttribLocation(shader_id, 6, "vTangent");
+	glLinkProgram(shader_id);
 	if(vp) {
 		vp->addEventListener(this, Event::RESOURCE_RELOAD_EVENT);
 	}
 	if(fp) {
 		fp->addEventListener(this, Event::RESOURCE_RELOAD_EVENT);
 	}
-	
+
 	int total = -1;
 	glGetProgramiv( shader_id, GL_ACTIVE_UNIFORMS, &total ); 
 	for(int i=0; i < total; i++)  {
@@ -197,7 +197,7 @@ void GLSLShader::linkProgram() {
 		glGetActiveUniform(shader_id, GLuint(i), sizeof(name)-1, &name_len, &num, &type, name );
 		name[name_len] = 0;
 		GLuint location = glGetUniformLocation( shader_id, name );
-		
+
 		if(!(String(name).find("gl_") == 0)) {
 		switch(type) {
 			case GL_SAMPLER_2D:
@@ -206,7 +206,7 @@ void GLSLShader::linkProgram() {
 			break;
 			case GL_SAMPLER_CUBE:
 				expectedCubemaps.push_back(String(name));
-			break;			
+			break;
 			default:
 				ProgramParam param;
 				param.name = String(name);
@@ -215,8 +215,8 @@ void GLSLShader::linkProgram() {
 			break;
 		}
 		}
-	}	
-	
+	}
+
 	dispatchEvent(new Event(), Event::RESOURCE_RELOAD_EVENT);
 }
 
@@ -228,8 +228,8 @@ void GLSLShader::unlinkProgram() {
 		fp->removeAllHandlersForListener(this);
 	}
 	glDetachShader(shader_id, ((GLSLProgram*)fp)->program);
-    glDetachShader(shader_id, ((GLSLProgram*)vp)->program);
-	glDeleteProgram(shader_id);	
+	glDetachShader(shader_id, ((GLSLProgram*)vp)->program);
+	glDeleteProgram(shader_id);
 }
 
 void GLSLShader::handleEvent(Event *event) {
@@ -255,7 +255,7 @@ void GLSLShader::setFragmentProgram(ShaderProgram *fp) {
 GLSLShader::GLSLShader(GLSLProgram *vp, GLSLProgram *fp) : Shader(Shader::MODULE_SHADER) {
 	this->vp = vp;
 	this->fp = fp;
-	
+
 	linkProgram();
 }
 

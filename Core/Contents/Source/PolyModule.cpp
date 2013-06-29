@@ -30,7 +30,7 @@ PolycodeModule::PolycodeModule() {
 }
 
 PolycodeModule::~PolycodeModule() {
-	
+
 }
 
 bool PolycodeModule::requiresUpdate() {

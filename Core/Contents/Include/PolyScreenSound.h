@@ -26,40 +26,40 @@ THE SOFTWARE.
 
 namespace Polycode {
 
-	class Sound;
+class Sound;
 
-	/**
-	* Creates a positional 2D sound listener. There can be only one listener active at any one time.
- 	*/	
-	class _PolyExport ScreenSoundListener : public ScreenEntity {
-		public:
-			ScreenSoundListener();
-			virtual ~ScreenSoundListener();			
-			void Update();
-	};
+/**
+* Creates a positional 2D sound listener. There can be only one listener active at any one time.
+*/
+class _PolyExport ScreenSoundListener : public ScreenEntity {
+	public:
+		ScreenSoundListener();
+		virtual ~ScreenSoundListener();
+		void Update();
+};
 
 
-	/**
-	* Creates a positional 2D sound.
-	*/	
-	class _PolyExport ScreenSound : public ScreenEntity {
-		public:
-			ScreenSound(const String& fileName, Number referenceDistance, Number maxDistance);
-			virtual ~ScreenSound();			
+/**
+* Creates a positional 2D sound.
+*/
+class _PolyExport ScreenSound : public ScreenEntity {
+	public:
+		ScreenSound(const String& fileName, Number referenceDistance, Number maxDistance);
+		virtual ~ScreenSound();
 
-			virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly);
-			virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly);
+		virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly);
+		virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly);
 
-			void Update();			
-			
-			/**
-			* Returns the sound object associated with this positional sound.
-			*/			
-			Sound *getSound() const;
-			
-		protected:
-					
-			Sound *sound;
-	};
-	
+		void Update();
+
+		/**
+		* Returns the sound object associated with this positional sound.
+		*/
+		Sound *getSound() const;
+
+	protected:
+
+		Sound *sound;
+};
+
 }

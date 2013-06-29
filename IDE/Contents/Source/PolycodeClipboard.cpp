@@ -36,7 +36,7 @@ void PolycodeClipboard::setData(void *data, String type, ClipboardProvider *prov
 		this->data = NULL;
 		currentProvider = NULL;
 	}
-	
+
 	this->data = data;
 	this->type = type;
 	currentProvider = provider;

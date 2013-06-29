@@ -26,43 +26,43 @@ THE SOFTWARE.
 
 namespace Polycode {
 
-	/**
-	* 2D screen image display. This ScreenEntity can load and display and image.
-	*/
-	class _PolyExport ScreenImage : public ScreenShape {
-		public:
+/**
+* 2D screen image display. This ScreenEntity can load and display and image.
+*/
+class _PolyExport ScreenImage : public ScreenShape {
+	public:
 		/**
 		* Create screen image from file.
 		* @param fileName 
 		*/
 		ScreenImage(const String& fileName);
-		
+
 		/**
 		* Create screen image from Image.
 		* @param image Image to create from.
-		*/		
-		ScreenImage(Image *image);		
-		
+		*/
+		ScreenImage(Image *image);
+
 		/**
 		 * Create screen image from Texture.
 		 * @param texture Texture to create from.
-		 */		
-		ScreenImage(Texture *texture);		
-		
+		 */
+		ScreenImage(Texture *texture);
+
 		/**
 		* Create screen image from Image.
 		* @param image Image to create from.
-		*/				
+		*/
 		static ScreenImage* ScreenImageWithImage(Image *image);
-		
+
 		/**
 		 * Create screen image from Texture.
 		 * @param texture Texture to create from.
-		 */				
+		 */
 		static ScreenImage* ScreenImageWithTexture(Texture *texture);
-		
+
 		virtual ~ScreenImage();
-		
+
 		virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly);
 		virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly);
 
@@ -72,24 +72,24 @@ namespace Polycode {
 		* @param y Y position of the display rectangle.
 		* @param width Width of the display rectangle.
 		* @param height Height of the display rectangle.
-		*/				
+		*/
 		void setImageCoordinates(Number x, Number y, Number width, Number height);
-		
+
 		/**
 		* Returns the image width.
 		*/ 
 		Number getImageWidth() const;
-		
+
 		/**
 		* Returns the image height.
-		*/ 		
+		*/
 		Number getImageHeight() const;
-		
-		protected:
+
+	protected:
 
 		Number imageWidth;
 		Number imageHeight;
-		
-	};
+
+};
 
 }

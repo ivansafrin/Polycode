@@ -61,14 +61,13 @@ String::String(const wchar_t wchar) {
 
 
 String::~String() {
-	
+
 }
 
 size_t String::getDataSizeWithEncoding(int encoding) const {
 	switch(encoding) {
-		case ENCODING_UTF8: {
+		case ENCODING_UTF8: 
 			return contents.size();
-		}
 		default:
 			return NULL;
 	}
@@ -76,10 +75,8 @@ size_t String::getDataSizeWithEncoding(int encoding) const {
 
 const char *String::getDataWithEncoding(int encoding) const {
 	switch(encoding) {
-		case ENCODING_UTF8: {
+		case ENCODING_UTF8:
 			return contents.c_str();
-		}
-		break;
 		default:
 			return NULL;
 	}
@@ -87,11 +84,9 @@ const char *String::getDataWithEncoding(int encoding) const {
 
 wchar_t *String::getWDataWithEncoding(int encoding) {
 	switch(encoding) {
-		case ENCODING_UTF8: {
+		case ENCODING_UTF8: 
 			utf8toWStr(w_contents, contents);
 			return (wchar_t *)w_contents.c_str();
-		}
-		break;
 		default:
 			return NULL;
 	}
@@ -100,7 +95,8 @@ wchar_t *String::getWDataWithEncoding(int encoding) {
 
 void String::setDataWithEncoding(char *data, int encoding) {
 	switch(encoding) {
-		case ENCODING_UTF8: {
+		case ENCODING_UTF8: 
+		{
 			if (data)
 				contents = data;
 			else
@@ -115,44 +111,39 @@ bool String::isNumber() {
 #ifdef _WINDOWS
 	return false;
 #else
-    std::string::const_iterator it = contents.begin();
-    while (it != contents.end() && std::isdigit(*it)) ++it;
-    return !contents.empty() && it == contents.end();
+	std::string::const_iterator it = contents.begin();
+	while (it != contents.end() && std::isdigit(*it)) 
+		++it;
+	return !contents.empty() && it == contents.end();
 #endif
-}				
-
+}
 
 
 vector<String> String::split(const String &delim) const {
-	
+
 	vector<String> tokens;
 	bool trimEmpty = false;
-	
+
 	if(contents == "")
 		return tokens;
 
-		std::string::size_type pos, lastPos = 0;
-		while(true)
-		{
-			pos = contents.find_first_of(delim.contents, lastPos);
-			if(pos == std::string::npos)
-			{
-				pos = contents.length();
-				
-				if(pos != lastPos || !trimEmpty)
-					tokens.push_back(vector<String>::value_type(contents.data()+lastPos, (string::size_type)pos-lastPos ));
-				
-				break;
-			}
-			else
-			{
-				if(pos != lastPos || !trimEmpty)
-					tokens.push_back(vector<String>::value_type(contents.data()+lastPos, (string::size_type)pos-lastPos ));
-			}
-			
-			lastPos = pos + 1;
-		}	
-	
+	std::string::size_type pos, lastPos = 0;
+	while(true) {
+		pos = contents.find_first_of(delim.contents, lastPos);
+		if(pos == std::string::npos) {
+			pos = contents.length();
+
+			if(pos != lastPos || !trimEmpty)
+				tokens.push_back(vector<String>::value_type(contents.data()+lastPos, (string::size_type)pos-lastPos ));
+
+			break;
+		} else if(pos != lastPos || !trimEmpty) {
+			tokens.push_back(vector<String>::value_type(contents.data()+lastPos, (string::size_type)pos-lastPos ));
+		}
+
+		lastPos = pos + 1;
+	}
+
 	return tokens;
 }
 
@@ -163,7 +154,7 @@ String String::replace(const String &what, const String &withWhat) const {
 	while((pos = retString.find(what.contents, pos)) != std::string::npos) {
 		retString.replace(pos, what.length(), withWhat.contents);
 		pos += withWhat.length();
-	 }
+	}
 	return retString;
 }
 
@@ -220,30 +211,25 @@ void utf8toWStr(WStr& dest, const Str& src){
 				bytes = 0;
 			}
 			dest.push_back((wchar_t)c);
-		}
-		else if (c <= 0xbf){//second/third/etc byte
+		} else if (c <= 0xbf){//second/third/etc byte
 			if (bytes){
 				w = ((w << 6)|(c & 0x3f));
 				bytes--;
 				if (bytes == 0)
 					dest.push_back(w);
-			}
-			else
+			} else {
 				dest.push_back(err);
-		}
-		else if (c <= 0xdf){//2byte sequence start
+			}
+		} else if (c <= 0xdf){//2byte sequence start
 			bytes = 1;
 			w = c & 0x1f;
-		}
-		else if (c <= 0xef){//3byte sequence start
+		} else if (c <= 0xef){//3byte sequence start
 			bytes = 2;
 			w = c & 0x0f;
-		}
-		else if (c <= 0xf7){//3byte sequence start
+		} else if (c <= 0xf7){//3byte sequence start
 			bytes = 3;
 			w = c & 0x07;
-		}
-		else{
+		} else {
 			dest.push_back(err);
 			bytes = 0;
 		}
@@ -261,20 +247,18 @@ void wstrToUtf8(Str& dest, const WStr& src){
 		else if (w <= 0x7ff){
 			dest.push_back(0xc0 | ((w >> 6)& 0x1f));
 			dest.push_back(0x80| (w & 0x3f));
-		}
-		else if (w <= 0xffff){
+		} else if (w <= 0xffff){
 			dest.push_back(0xe0 | ((w >> 12)& 0x0f));
 			dest.push_back(0x80| ((w >> 6) & 0x3f));
 			dest.push_back(0x80| (w & 0x3f));
-		}
-		else if (w <= 0x10ffff){
+		} else if (w <= 0x10ffff){
 			// FIXME: wchar_t is 16 bits on some platforms, should convert from UTF16 to UTF8
 			dest.push_back(0xf0 | ((w >> 18)& 0x07));
 			dest.push_back(0x80| ((w >> 12) & 0x3f));
 			dest.push_back(0x80| ((w >> 6) & 0x3f));
 			dest.push_back(0x80| (w & 0x3f));
-		}
-		else
+		} else {
 			dest.push_back('?');
+		}
 	}
 }

@@ -26,9 +26,9 @@ extern SyntaxHighlightTheme *globalSyntaxTheme;
 
 void SyntaxHighlightTheme::loadFromFile(String themeName) {
 	String filePath = "SyntaxThemes/"+themeName+".xml";
-	
+
 	this->name =themeName;
-	
+
 	Object themeObject;
 	if(themeObject.loadFromXML(filePath)) {
 
@@ -36,47 +36,47 @@ void SyntaxHighlightTheme::loadFromFile(String themeName) {
 		if(hintingEntry) {
 			useStrongHinting = hintingEntry->boolVal;
 		}
-	
-		ObjectEntry *bgColorEntry = themeObject.root["bgColor"];		
+
+		ObjectEntry *bgColorEntry = themeObject.root["bgColor"];
 		if(bgColorEntry) {
 			ObjectEntry *r = (*bgColorEntry)["r"];
 			ObjectEntry *g = (*bgColorEntry)["g"];
 			ObjectEntry *b = (*bgColorEntry)["b"];
 			if(r && g && b) {
 				bgColor.setColorRGB(r->intVal, g->intVal, b->intVal);
-			}		
+			}
 		}
 
-		ObjectEntry *cursorColorEntry = themeObject.root["cursorColor"];		
+		ObjectEntry *cursorColorEntry = themeObject.root["cursorColor"];
 		if(cursorColorEntry) {
 			ObjectEntry *r = (*cursorColorEntry)["r"];
 			ObjectEntry *g = (*cursorColorEntry)["g"];
 			ObjectEntry *b = (*cursorColorEntry)["b"];
 			if(r && g && b) {
 				cursorColor.setColorRGB(r->intVal, g->intVal, b->intVal);
-			}		
+			}
 		}
 
-		ObjectEntry *selectionColorEntry = themeObject.root["selectionColor"];		
+		ObjectEntry *selectionColorEntry = themeObject.root["selectionColor"];
 		if(selectionColorEntry) {
 			ObjectEntry *r = (*selectionColorEntry)["r"];
 			ObjectEntry *g = (*selectionColorEntry)["g"];
 			ObjectEntry *b = (*selectionColorEntry)["b"];
 			if(r && g && b) {
 				selectionColor.setColorRGB(r->intVal, g->intVal, b->intVal);
-			}		
+			}
 		}
-		
-		ObjectEntry *lineNumberColorEntry = themeObject.root["lineNumberColor"];		
+
+		ObjectEntry *lineNumberColorEntry = themeObject.root["lineNumberColor"];
 		if(lineNumberColorEntry) {
 			ObjectEntry *r = (*lineNumberColorEntry)["r"];
 			ObjectEntry *g = (*lineNumberColorEntry)["g"];
 			ObjectEntry *b = (*lineNumberColorEntry)["b"];
 			if(r && g && b) {
 				lineNumberColor.setColorRGB(r->intVal, g->intVal, b->intVal);
-			}		
-		}		
-			
+			}
+		}
+
 		ObjectEntry *textColors = themeObject.root["textColors"];
 		if(textColors) {
 			for(int i=0; i < textColors->length && i < 8; i++) {
@@ -88,41 +88,41 @@ void SyntaxHighlightTheme::loadFromFile(String themeName) {
 					if(r && g && b) {
 						colors[i].setColorRGB(r->intVal, g->intVal, b->intVal);
 					}
-				}				
+				}
 			}
 		}
 	}
 }
 
 PolycodeSyntaxHighlighter::PolycodeSyntaxHighlighter(String extension) {
-	
+
 
 	if(extension == "lua") {
 		mode = MODE_LUA;
 
 		std::vector<String>separators_s = String("[ * [ ] { } ; . , : # ( ) \t \n = + - / \\ ' \"").split(" ");
 		separators_s.push_back(" ");
-	
+
 		for(int i=0; i < separators_s.size(); i++) {
 			separators.push_back(separators_s[i][0]);
 		}
-	
+
 		keywords = String("for cast safe_cast and require true false class self break do end else elseif function if local nil not or repeat return then until while").split(" ");
-		
+
 	} else if(extension == "vert" || extension == "frag") {
 		mode = MODE_GLSL;
-		
+
 		std::vector<String>separators_s = String("[ * [ ] { } ; . , : ( ) \t \n = + - / \\ ' \"").split(" ");
 		separators_s.push_back(" ");
-	
+
 		for(int i=0; i < separators_s.size(); i++) {
 			separators.push_back(separators_s[i][0]);
 		}
-	
+
 		keywords = String("for cast and true falsebreak do end else if notreturn then until while uniform varying sampler2D sampler3D vec2 vec3 vec4 float in inout void mat2 mat3 mat4 bool int #define #ifdef #elif #else #endif").split(" ");
-		
+
 	}
-	
+
 }
 
 PolycodeSyntaxHighlighter::~PolycodeSyntaxHighlighter() {
@@ -153,12 +153,12 @@ std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseText(String te
 	}
 }
 
-	
+
 std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseGLSL(String text) {
 	std::vector<SyntaxHighlightToken> tokens;
-	
+
 	text = text+"\n";
-	
+
 	const int MODE_GENERAL = 0;
 	const int MODE_COMMENT = 1;
 	const int MODE_STRING = 2;
@@ -166,59 +166,55 @@ std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseGLSL(String te
 	const int MODE_KEYWORD = 4;
 	const int MODE_NUMBER = 5;
 	const int MODE_MEMBER = 6;
-						
+
 	int mode = MODE_GENERAL;
-	
+
 	bool isComment = false;
-	
+
 	String line = "";
-	
+
 	char lastSeparator = ' ';
 
-	
+
 	for(int i=0; i < text.length(); i++) {
-		char ch = text[i];				
-		if(contains_char(ch, &separators)) {			
+		char ch = text[i];
+		if(contains_char(ch, &separators)) {
 
 			unsigned int type = mode;
 			unsigned int ch_type = mode;
 
-	
+
 			if(ch == '\"' && mode != MODE_COMMENT)
 				ch_type = MODE_STRING;
-	
+
 			if(mode != MODE_STRING && ch == '('  && mode != MODE_COMMENT) {
 				type = MODE_METHOD;
 			}
 
-			if(mode != MODE_STRING  && mode != MODE_COMMENT) {
-				if(contains(line, &keywords)) {
-					type = MODE_KEYWORD;
-				}
+			if(mode != MODE_STRING  && mode != MODE_COMMENT && contains(line, &keywords)) {
+				type = MODE_KEYWORD;
 			}
-	
+
 			if(mode != MODE_STRING && !isComment && mode != MODE_COMMENT) {
-			
+
 				if(line.isNumber()) {
 					type = MODE_NUMBER;
-				} else {
-					if(lastSeparator == '.' && ch != '.' && ch != ':') {
-						type = MODE_MEMBER;
-					}							
+				} else if(lastSeparator == '.' && ch != '.' && ch != ':') {
+					type = MODE_MEMBER;
 				}
-			}		
-	
+			}
+
 			if(isComment) {
 				type = MODE_COMMENT;
 				ch_type = MODE_COMMENT;
 			}
-				
+			
 			if(mode == MODE_COMMENT) {
 				type = MODE_COMMENT;
 				ch_type = MODE_COMMENT;
 			}
-			
-	
+
+
 			if(line != "")
 				tokens.push_back(SyntaxHighlightToken(line, type));
 			tokens.push_back(SyntaxHighlightToken(ch, ch_type));
@@ -226,73 +222,73 @@ std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseGLSL(String te
 			if(ch == '/' && lastSeparator == '/' && mode != MODE_STRING) {
 				isComment = true;
 				tokens[tokens.size()-1].type = MODE_COMMENT;
-				tokens[tokens.size()-2].type = MODE_COMMENT;				
+				tokens[tokens.size()-2].type = MODE_COMMENT;
 			}
 
 			if(ch == '*' && lastSeparator == '/' && mode != MODE_STRING) {
 				unsigned int old_mode = mode;
 				tokens[tokens.size()-1].type = MODE_COMMENT;
-				tokens[tokens.size()-2].type = MODE_COMMENT;				
-				mode = MODE_COMMENT;				
+				tokens[tokens.size()-2].type = MODE_COMMENT;
+				mode = MODE_COMMENT;
 			}
-			
+
 			if(ch == '/' && lastSeparator == '*' && mode == MODE_COMMENT) {
 				mode = MODE_GENERAL;
 			}
-			
+
 			if(ch == '\n' )
 				isComment = false;
-				
+
 
 			if(ch == '\"'  && mode != MODE_COMMENT) {
 				if(mode == MODE_STRING) {
-					mode = MODE_GENERAL;	
+					mode = MODE_GENERAL;
 				} else {
 					mode = MODE_STRING;
 				}
-			}	
-						
+			}
+
 			line = "";
-			lastSeparator = ch;			
+			lastSeparator = ch;
 		} else {
 			line.append(ch);
 		}
 	}
-	
+
 	for(int i=0; i < tokens.size(); i++) {
 		switch(tokens[i].type) {
 			case MODE_STRING:
-				tokens[i].color = globalSyntaxTheme->colors[4];			
+				tokens[i].color = globalSyntaxTheme->colors[4];
 			break;
 			case MODE_COMMENT:
-				tokens[i].color = globalSyntaxTheme->colors[1];			
-			break;			
+				tokens[i].color = globalSyntaxTheme->colors[1];
+			break;
 			case MODE_METHOD:
-				tokens[i].color = globalSyntaxTheme->colors[3];			
-			break;			
+				tokens[i].color = globalSyntaxTheme->colors[3];
+			break;
 			case MODE_KEYWORD:
 				tokens[i].color = globalSyntaxTheme->colors[2];
-			break;		
+			break;
 			case MODE_NUMBER:
 				tokens[i].color = globalSyntaxTheme->colors[6];
-			break;		
+			break;
 			case MODE_MEMBER:
 				tokens[i].color = globalSyntaxTheme->colors[5];
-			break;															
+			break;
 			default:
 				tokens[i].color = globalSyntaxTheme->colors[0];
 			break;
 		}
 	}
-	
+
 	return tokens;
 }
-	
+
 std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseLua(String text) {
 	std::vector<SyntaxHighlightToken> tokens;
-	
+
 	text = text+"\n";
-	
+
 	const int MODE_GENERAL = 0;
 	const int MODE_COMMENT = 1;
 	const int MODE_STRING = 2;
@@ -300,59 +296,57 @@ std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseLua(String tex
 	const int MODE_KEYWORD = 4;
 	const int MODE_NUMBER = 5;
 	const int MODE_MEMBER = 6;
-						
+
 	int mode = MODE_GENERAL;
-	
+
 	bool isComment = false;
-	
+
 	String line = "";
-	
+
 	char lastSeparator = ' ';
 
-	
+
 	for(int i=0; i < text.length(); i++) {
-		char ch = text[i];				
-		if(contains_char(ch, &separators)) {			
+		char ch = text[i];
+		if(contains_char(ch, &separators)) {
 
 			unsigned int type = mode;
 			unsigned int ch_type = mode;
 
-	
+
 			if(ch == '\"' && mode != MODE_COMMENT)
 				ch_type = MODE_STRING;
-	
+
 			if(mode != MODE_STRING && ch == '('  && mode != MODE_COMMENT) {
 				type = MODE_METHOD;
 			}
 
-			if(mode != MODE_STRING  && mode != MODE_COMMENT) {
-				if(contains(line, &keywords)) {
-					type = MODE_KEYWORD;
-				}
+			if(mode != MODE_STRING  && mode != MODE_COMMENT && contains(line, &keywords)) {
+				type = MODE_KEYWORD;
 			}
-	
+
 			if(mode != MODE_STRING && !isComment && mode != MODE_COMMENT) {
-			
+
 				if(line.isNumber()) {
 					type = MODE_NUMBER;
 				} else {
 					if(lastSeparator == '.' && ch != '.' && ch != ':') {
 						type = MODE_MEMBER;
-					}							
+					}
 				}
-			}		
-	
+			}
+
 			if(isComment) {
 				type = MODE_COMMENT;
 				ch_type = MODE_COMMENT;
 			}
-				
+
 			if(mode == MODE_COMMENT) {
 				type = MODE_COMMENT;
 				ch_type = MODE_COMMENT;
 			}
-			
-	
+
+
 			if(line != "")
 				tokens.push_back(SyntaxHighlightToken(line, type));
 			tokens.push_back(SyntaxHighlightToken(ch, ch_type));
@@ -360,70 +354,68 @@ std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseLua(String tex
 			if(ch == '-' && lastSeparator == '-' && mode != MODE_STRING) {
 				isComment = true;
 				tokens[tokens.size()-1].type = MODE_COMMENT;
-				tokens[tokens.size()-2].type = MODE_COMMENT;				
+				tokens[tokens.size()-2].type = MODE_COMMENT;
 			}
 
 			if(ch == '[' && lastSeparator == '[' && isComment && mode != MODE_STRING) {
 				unsigned int old_mode = mode;
 				mode = MODE_COMMENT;
-				
+
 				// ugly hack for ---[[, which is not a block comment
-				if(tokens.size() > 4) {
-					if(tokens[tokens.size()-5].text == "-") {
-						mode = old_mode;
-					}
+				if(tokens.size() > 4 && tokens[tokens.size()-5].text == "-") {
+					mode = old_mode;
 				}
 			}
-			
+
 			if(ch == ']' && lastSeparator == ']' && mode == MODE_COMMENT) {
 				mode = MODE_GENERAL;
 			}
-			
+
 			if(ch == '\n' )
 				isComment = false;
-				
+
 
 			if(ch == '\"'  && mode != MODE_COMMENT) {
 				if(mode == MODE_STRING) {
-					mode = MODE_GENERAL;	
+					mode = MODE_GENERAL;
 				} else {
 					mode = MODE_STRING;
 				}
-			}	
-						
+			}
+
 			line = "";
-			lastSeparator = ch;			
+			lastSeparator = ch;
 		} else {
 			line.append(ch);
 		}
 	}
-	
+
 	for(int i=0; i < tokens.size(); i++) {
 		switch(tokens[i].type) {
 			case MODE_STRING:
-				tokens[i].color = globalSyntaxTheme->colors[4];			
+				tokens[i].color = globalSyntaxTheme->colors[4];
 			break;
 			case MODE_COMMENT:
-				tokens[i].color = globalSyntaxTheme->colors[1];			
-			break;			
+				tokens[i].color = globalSyntaxTheme->colors[1];
+			break;
 			case MODE_METHOD:
-				tokens[i].color = globalSyntaxTheme->colors[3];			
-			break;			
+				tokens[i].color = globalSyntaxTheme->colors[3];
+			break;
 			case MODE_KEYWORD:
 				tokens[i].color = globalSyntaxTheme->colors[2];
-			break;		
+			break;
 			case MODE_NUMBER:
 				tokens[i].color = globalSyntaxTheme->colors[6];
-			break;		
+			break;
 			case MODE_MEMBER:
 				tokens[i].color = globalSyntaxTheme->colors[5];
-			break;															
+			break;
 			default:
 				tokens[i].color = globalSyntaxTheme->colors[0];
 			break;
 		}
 	}
-	
+
 	return tokens;
 }
 
@@ -439,10 +431,10 @@ PolycodeTextEditor::~PolycodeTextEditor() {
 }
 
 bool PolycodeTextEditor::openFile(OSFileEntry filePath) {
-	
-	
+
+
 	isLoading = true;
-	
+
 	textInput = new UITextInput(true, 100, 100);
 	addChild(textInput);
 	textInput->setBackgroundColor(globalSyntaxTheme->bgColor);
@@ -451,98 +443,86 @@ bool PolycodeTextEditor::openFile(OSFileEntry filePath) {
 	textInput->useStrongHinting = globalSyntaxTheme->useStrongHinting;
 	textInput->setLineNumberColor(globalSyntaxTheme->lineNumberColor);
 	textInput->enableLineNumbers(true);
-	
+
 	textInput->addEventListener(this, UIEvent::CHANGE_EVENT);
-	
+
 	findBar = new FindBar();
 	findBar->visible = false;
 	addChild(findBar);
-	
+
 	findBar->findInput->addEventListener(this, Event::COMPLETE_EVENT);
 	findBar->findInput->addEventListener(this, Event::CANCEL_EVENT);
 	findBar->replaceInput->addEventListener(this, Event::CANCEL_EVENT);
 	findBar->replaceInput->addEventListener(this, Event::COMPLETE_EVENT);
-			
+
 	findBar->closeButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	findBar->replaceAllButton->addEventListener(this, UIEvent::CLICK_EVENT);
-		
+
 	syntaxHighligher = NULL;
-	
+
 	if(filePath.extension == "lua" || filePath.extension == "vert" || filePath.extension == "frag") {
 		syntaxHighligher = new PolycodeSyntaxHighlighter(filePath.extension);
 		textInput->setSyntaxHighlighter(syntaxHighligher);
 	} else {
-		textInput->setTextColor(globalSyntaxTheme->colors[0]);		
+		textInput->setTextColor(globalSyntaxTheme->colors[0]);
 	}
-	
+
 	Data *data = new Data();
 	if(data->loadFromFile(filePath.fullPath)) {
 		textInput->setText(data->getAsString(String::ENCODING_UTF8).replace("\r\n", "\n"));
 	}
 	delete data;
-	
+
 	PolycodeEditor::openFile(filePath);
-	
-	isLoading = false;	
+
+	isLoading = false;
 	return true;
 }
 
 void PolycodeTextEditor::handleEvent(Event *event) {
 
-	if(event->getDispatcher() == textInput && event->getEventType() == "UIEvent") {
-		if(!isLoading) {
-			setHasChanges(true);
-		}
+	if(event->getDispatcher() == textInput && event->getEventType() == "UIEvent" && !isLoading) {
+		setHasChanges(true);
 	}
 
-	if(event->getDispatcher() == findBar->replaceAllButton) {
-		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {
-			textInput->replaceAll(findBar->findInput->getText(), findBar->replaceInput->getText());
-		}
+	if(event->getDispatcher() == findBar->replaceAllButton && event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {
+		textInput->replaceAll(findBar->findInput->getText(), findBar->replaceInput->getText());
 	}
 
 
-	if(event->getDispatcher() == findBar->closeButton) {
-		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {
+	if(event->getDispatcher() == findBar->closeButton && event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {
+			hideFindBar();
+	}
+
+	if(event->getDispatcher() == findBar->replaceInput && event->getEventType() == "") {
+		if(event->getEventCode() == Event::CANCEL_EVENT) {
 			hideFindBar();
 		}
+
+		if(event->getEventCode() == Event::COMPLETE_EVENT) {
+			textInput->findString(findBar->findInput->getText(), true, findBar->replaceInput->getText());
+		}
+
 	}
 
-	if(event->getDispatcher() == findBar->replaceInput) {
-		if(event->getEventType() == "") {
-		
-			if(event->getEventCode() == Event::CANCEL_EVENT) {
-				hideFindBar();
-			}
-					
-			if(event->getEventCode() == Event::COMPLETE_EVENT) {
-				textInput->findString(findBar->findInput->getText(), true, findBar->replaceInput->getText());
-			}
-			
+
+	if(event->getDispatcher() == findBar->findInput && event->getEventType() == "") {
+		if(event->getEventCode() == Event::CANCEL_EVENT) {
+			hideFindBar();
 		}
-	}	
-	
-	
-	if(event->getDispatcher() == findBar->findInput) {
-		if(event->getEventType() == "") {
-		
-			if(event->getEventCode() == Event::CANCEL_EVENT) {
-				hideFindBar();
-			}
-					
-			if(event->getEventCode() == Event::COMPLETE_EVENT) {
-				if(findBar->findInput->getText() != "") {
+
+		if(event->getEventCode() == Event::COMPLETE_EVENT) {
+			if(findBar->findInput->getText() != "") {
 				if(findBar->findInput->getText() != lastFindString) {
 					lastFindString = findBar->findInput->getText();
 					textInput->findString(lastFindString);
 				} else {
 					textInput->findNext();
 				}
-				}
 			}
-			
 		}
-	}	
+
+	}
 	PolycodeEditor::handleEvent(event);
 }
 
@@ -558,7 +538,7 @@ void PolycodeTextEditor::hideFindBar() {
 	focusChild(textInput);
 	Resize(editorSize.x, editorSize.y);
 }
-	
+
 void PolycodeTextEditor::highlightLine(unsigned int lineNumber) {
 	int lineSize = textInput->getLineText(lineNumber-1).length();
 	textInput->setSelection(lineNumber-1, lineNumber-1, 0, lineSize);
@@ -574,8 +554,8 @@ void PolycodeTextEditor::saveFile() {
 }
 
 void PolycodeTextEditor::Resize(int x, int y) {
-	findBar->setBarWidth(x);	
-	
+	findBar->setBarWidth(x);
+
 	if(findBar->visible) {
 		textInput->Resize(x,y-findBar->getHeight());
 		textInput->setPosition(0,findBar->getHeight());
@@ -592,7 +572,7 @@ FindBar::FindBar() : UIElement() {
 	barBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	addChild(barBg);
 	this->height = 30;
-	
+
 	ScreenLabel *findLabel = new ScreenLabel("FIND", 18, "section");
 	addChild(findLabel);
 	findLabel->setColor(1.0, 1.0, 1.0, 0.6);
@@ -604,7 +584,7 @@ FindBar::FindBar() : UIElement() {
 	replaceLabel->setPosition(200,3);
 
 	processInputEvents = true;
-	
+
 	findInput = new UITextInput(false, 120, 12);
 	addChild(findInput);
 	findInput->setPosition(60, 4);
@@ -612,11 +592,11 @@ FindBar::FindBar() : UIElement() {
 	replaceInput = new UITextInput(false, 120, 12);
 	addChild(replaceInput);
 	replaceInput->setPosition(280, 4);
-	
+
 	replaceAllButton = new UIButton("Replace All", 100);
 	addChild(replaceAllButton);
 	replaceAllButton->setPosition(420, 3);
-	
+
 	closeButton = new UIImageButton("Images/barClose.png");
 	addChild(closeButton);
 }
@@ -625,10 +605,10 @@ void FindBar::onKeyDown(PolyKEY key, wchar_t charCode) {
 	if(key == KEY_TAB) {
 		focusNextChild();
 	}
-	
+
 	if(key == KEY_ESCAPE) {
-	
-	}	
+
+	}
 }
 
 FindBar::~FindBar(){

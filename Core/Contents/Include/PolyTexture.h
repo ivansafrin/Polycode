@@ -28,44 +28,45 @@
 
 namespace Polycode {
 
-	class _PolyExport Texture : public Resource {
-		public:
-		Texture(unsigned int width, unsigned int height, char *textureData,bool clamp, bool createMipmaps, int type=Image::IMAGE_RGBA);
-			Texture(Image *image);
-			virtual ~Texture();
+class _PolyExport Texture : public Resource {
+	public:
+	Texture(unsigned int width, unsigned int height, char *textureData,bool clamp, bool createMipmaps, int type=Image::IMAGE_RGBA);
+		Texture(Image *image);
+		virtual ~Texture();
 
-			Number scrollSpeedX;
-			Number scrollSpeedY;
-			
-			void reloadResource();			
-			
-			virtual void setTextureData(char *data) = 0;
+		Number scrollSpeedX;
+		Number scrollSpeedY;
 
-			virtual void recreateFromImageData() = 0;
+		void reloadResource();
 
-			Number getScrollOffsetX() const;
-			Number getScrollOffsetY() const;
-			
-			void setImageData(Image *data);
-		
-			void updateScroll(int elapsed);		
-			char *getTextureData() const { return textureData;}
-			
-			int getWidth() const;
-			int getHeight() const;
-		
-			bool clamp;
-			char *textureData;
-					
-		protected:
+		virtual void setTextureData(char *data) = 0;
 
-			int pixelSize;
-			int filteringMode;
-		
-			bool createMipmaps;
-			int width;
-			int height;
-			Number scrollOffsetX;
-			Number scrollOffsetY;
-	};
+		virtual void recreateFromImageData() = 0;
+
+		Number getScrollOffsetX() const;
+		Number getScrollOffsetY() const;
+
+		void setImageData(Image *data);
+
+		void updateScroll(int elapsed);
+		char *getTextureData() const { return textureData;}
+
+		int getWidth() const;
+		int getHeight() const;
+
+		bool clamp;
+		char *textureData;
+
+	protected:
+
+		int pixelSize;
+		int filteringMode;
+
+		bool createMipmaps;
+		int width;
+		int height;
+		Number scrollOffsetX;
+		Number scrollOffsetY;
+};
+
 }

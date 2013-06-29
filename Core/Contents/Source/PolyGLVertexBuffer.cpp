@@ -50,122 +50,122 @@ extern PFNGLGETBUFFERPOINTERVARBPROC glGetBufferPointervARB;
 OpenGLVertexBuffer::OpenGLVertexBuffer(Mesh *mesh) : VertexBuffer() {
 	glGenBuffersARB(1, &vertexBufferID);
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB, vertexBufferID);
-	
+
 	meshType = mesh->getMeshType();
-	
+
 	long bufferSize = 0;
-	long newBufferSize = 0;		
+	long newBufferSize = 0;
 	GLfloat *buffer = (GLfloat*)malloc(1);	
-	
+
 	vertexCount = 0;
 	for(int i=0; i < mesh->getPolygonCount(); i++) {
 		for(int j=0; j < mesh->getPolygon(i)->getVertexCount(); j++) {
-			vertexCount++;			
+			vertexCount++;
 			newBufferSize = bufferSize + 3;
-			buffer = (GLfloat*)realloc(buffer, newBufferSize * sizeof(GLfloat));			
+			buffer = (GLfloat*)realloc(buffer, newBufferSize * sizeof(GLfloat));
 			buffer[bufferSize+0] = mesh->getPolygon(i)->getVertex(j)->x;
 			buffer[bufferSize+1] = mesh->getPolygon(i)->getVertex(j)->y;
-			buffer[bufferSize+2] = mesh->getPolygon(i)->getVertex(j)->z;			
-			bufferSize = newBufferSize;	
-		}		   
+			buffer[bufferSize+2] = mesh->getPolygon(i)->getVertex(j)->z;
+			bufferSize = newBufferSize;
+		}
 	}
 	glBufferDataARB(GL_ARRAY_BUFFER_ARB, bufferSize*sizeof(GLfloat), buffer, GL_STATIC_DRAW_ARB);	
 	free(buffer);
-	
+
 
 	glGenBuffersARB(1, &texCoordBufferID);
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB, texCoordBufferID);
-	
-	bufferSize = 0;	
-	newBufferSize = 0;		
-	buffer = (GLfloat*)malloc(1);	
-	
+
+	bufferSize = 0;
+	newBufferSize = 0;
+	buffer = (GLfloat*)malloc(1);
+
 	for(int i=0; i < mesh->getPolygonCount(); i++) {
 		for(int j=0; j < mesh->getPolygon(i)->getVertexCount(); j++) {
-			newBufferSize = bufferSize + 2;			
-			buffer = (GLfloat*)realloc(buffer, newBufferSize * sizeof(GLfloat));		
+			newBufferSize = bufferSize + 2;
+			buffer = (GLfloat*)realloc(buffer, newBufferSize * sizeof(GLfloat));
 			buffer[bufferSize+0] = mesh->getPolygon(i)->getVertex(j)->getTexCoord().x;
 			buffer[bufferSize+1] = mesh->getPolygon(i)->getVertex(j)->getTexCoord().y;
-			bufferSize = newBufferSize;					
-		}		   
+			bufferSize = newBufferSize;
+		}
 	}
-	
+
 	glBufferDataARB(GL_ARRAY_BUFFER_ARB, bufferSize*sizeof(GLfloat), buffer, GL_STATIC_DRAW_ARB);	
 	free(buffer);
-	
-	
+
+
 	glGenBuffersARB(1, &normalBufferID);
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB, normalBufferID);
-	
+
 	bufferSize = 0;
-	newBufferSize = 0;		
-	buffer = (GLfloat*)malloc(1);	
-	
+	newBufferSize = 0;
+	buffer = (GLfloat*)malloc(1);
+
 	for(int i=0; i < mesh->getPolygonCount(); i++) {
 		for(int j=0; j < mesh->getPolygon(i)->getVertexCount(); j++) {
-			newBufferSize = bufferSize + 3;			
-			buffer = (GLfloat*)realloc(buffer, newBufferSize * sizeof(GLfloat));		
+			newBufferSize = bufferSize + 3;
+			buffer = (GLfloat*)realloc(buffer, newBufferSize * sizeof(GLfloat));
 			if(mesh->getPolygon(i)->useVertexNormals) {
 				buffer[bufferSize+0] = mesh->getPolygon(i)->getVertex(j)->normal.x;
 				buffer[bufferSize+1] = mesh->getPolygon(i)->getVertex(j)->normal.y;
-				buffer[bufferSize+2] = mesh->getPolygon(i)->getVertex(j)->normal.z;				
+				buffer[bufferSize+2] = mesh->getPolygon(i)->getVertex(j)->normal.z;
 			} else {
 				buffer[bufferSize+0] = mesh->getPolygon(i)->getFaceNormal().x;
 				buffer[bufferSize+1] = mesh->getPolygon(i)->getFaceNormal().y;
 				buffer[bufferSize+2] = mesh->getPolygon(i)->getFaceNormal().z;
 			}
-			bufferSize = newBufferSize;					
-		}		   
+			bufferSize = newBufferSize;
+		}
 	}
-	
-	glBufferDataARB(GL_ARRAY_BUFFER_ARB, bufferSize*sizeof(GLfloat), buffer, GL_STATIC_DRAW_ARB);	
-	free(buffer);	
-		
-		
+
+	glBufferDataARB(GL_ARRAY_BUFFER_ARB, bufferSize*sizeof(GLfloat), buffer, GL_STATIC_DRAW_ARB);
+	free(buffer);
+
+
 
 	glGenBuffersARB(1, &tangentBufferID);
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB, tangentBufferID);
-	
+
 	bufferSize = 0;
-	newBufferSize = 0;		
-	buffer = (GLfloat*)malloc(1);	
-	
+	newBufferSize = 0;
+	buffer = (GLfloat*)malloc(1);
+
 	for(int i=0; i < mesh->getPolygonCount(); i++) {
 		for(int j=0; j < mesh->getPolygon(i)->getVertexCount(); j++) {
-			newBufferSize = bufferSize + 3;			
-			buffer = (GLfloat*)realloc(buffer, newBufferSize * sizeof(GLfloat));		
+			newBufferSize = bufferSize + 3;
+			buffer = (GLfloat*)realloc(buffer, newBufferSize * sizeof(GLfloat));
 			buffer[bufferSize+0] = mesh->getPolygon(i)->getVertex(j)->tangent.x;
 			buffer[bufferSize+1] = mesh->getPolygon(i)->getVertex(j)->tangent.y;
 			buffer[bufferSize+2] = mesh->getPolygon(i)->getVertex(j)->tangent.z;
-			bufferSize = newBufferSize;					
-		}		   
+			bufferSize = newBufferSize;
+		}
 	}
-	
+
 	glBufferDataARB(GL_ARRAY_BUFFER_ARB, bufferSize*sizeof(GLfloat), buffer, GL_STATIC_DRAW_ARB);	
-	free(buffer);	
-	
+	free(buffer);
+
 	glGenBuffersARB(1, &colorBufferID);
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB, colorBufferID);
-	
+
 	bufferSize = 0;
-	newBufferSize = 0;		
-	buffer = (GLfloat*)malloc(1);	
-	
+	newBufferSize = 0;
+	buffer = (GLfloat*)malloc(1);
+
 	for(int i=0; i < mesh->getPolygonCount(); i++) {
 		for(int j=0; j < mesh->getPolygon(i)->getVertexCount(); j++) {
-			newBufferSize = bufferSize + 4;			
+			newBufferSize = bufferSize + 4;
 			buffer = (GLfloat*)realloc(buffer, newBufferSize * sizeof(GLfloat));
 			buffer[bufferSize+0] = mesh->getPolygon(i)->getVertex(j)->vertexColor.r;
 			buffer[bufferSize+1] = mesh->getPolygon(i)->getVertex(j)->vertexColor.g;
 			buffer[bufferSize+2] = mesh->getPolygon(i)->getVertex(j)->vertexColor.b;
-			buffer[bufferSize+3] = mesh->getPolygon(i)->getVertex(j)->vertexColor.a;			
-			bufferSize = newBufferSize;					
-		}		   
+			buffer[bufferSize+3] = mesh->getPolygon(i)->getVertex(j)->vertexColor.a;
+			bufferSize = newBufferSize;
+		}
 	}
-	
-	glBufferDataARB(GL_ARRAY_BUFFER_ARB, bufferSize*sizeof(GLfloat), buffer, GL_STATIC_DRAW_ARB);	
-	free(buffer);	
-	
+
+	glBufferDataARB(GL_ARRAY_BUFFER_ARB, bufferSize*sizeof(GLfloat), buffer, GL_STATIC_DRAW_ARB);
+	free(buffer);
+
 }
 
 OpenGLVertexBuffer::~OpenGLVertexBuffer() {

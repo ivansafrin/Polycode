@@ -30,7 +30,7 @@ using namespace Polycode;
 
 class SyntaxHighlightTheme {
 	public:
-		void loadFromFile(String themeName);		
+		void loadFromFile(String themeName);
 		String name;
 		Color bgColor;
 		Color selectionColor;
@@ -44,79 +44,79 @@ class FindBar : public UIElement {
 	public:
 		FindBar();
 		~FindBar();
-		
+
 		void setBarWidth(int width);
 		void onKeyDown(PolyKEY key, wchar_t charCode);
-		
+
 		UITextInput *findInput;
-		UITextInput *replaceInput;		
-		UIImageButton *closeButton;		
-		
+		UITextInput *replaceInput;
+		UIImageButton *closeButton;
+
 		UIButton *replaceAllButton;
-		
+
 	protected:
 		ScreenShape *barBg;
-		
+
 };
 
 class PolycodeSyntaxHighlighter : public UITextInputSyntaxHighlighter {
 	public:
 		PolycodeSyntaxHighlighter(String extension);
 		~PolycodeSyntaxHighlighter();
-	
+
 		bool contains(String part, std::vector<String> *list);
 		bool contains_char(char part, std::vector<char> *list);
-			
-		std::vector<SyntaxHighlightToken> parseText(String text);		
-		std::vector<SyntaxHighlightToken> parseLua(String text);	
+
+		std::vector<SyntaxHighlightToken> parseText(String text);
+		std::vector<SyntaxHighlightToken> parseLua(String text);
 		std::vector<SyntaxHighlightToken> parseGLSL(String text);
-			
+
 		static const int MODE_LUA = 0;
 		static const int MODE_GLSL = 1;
-						
+
 	protected:
-	
+
 		int mode;
-	
+
 		std::vector<char> separators;
-		std::vector<String> keywords;		
+		std::vector<String> keywords;
 };
 
 class PolycodeTextEditor : public PolycodeEditor {
-public:
-	PolycodeTextEditor();
-	virtual ~PolycodeTextEditor();
-	
-	bool openFile(OSFileEntry filePath);
-	void Resize(int x, int y);
-	void saveFile();
-	
-	void handleEvent(Event *event);
-	
-	void hideFindBar();
-	void showFindBar();
-	
-	void highlightLine(unsigned int lineNumber);
-	
-protected:
+	public:
+		PolycodeTextEditor();
+		virtual ~PolycodeTextEditor();
 
-	FindBar *findBar;
-	bool isLoading;
-	String lastFindString;
+		bool openFile(OSFileEntry filePath);
+		void Resize(int x, int y);
+		void saveFile();
 
-	PolycodeSyntaxHighlighter *syntaxHighligher;
-	UITextInput *textInput;
-	
+		void handleEvent(Event *event);
+
+		void hideFindBar();
+		void showFindBar();
+
+		void highlightLine(unsigned int lineNumber);
+
+	protected:
+
+		FindBar *findBar;
+		bool isLoading;
+		String lastFindString;
+
+		PolycodeSyntaxHighlighter *syntaxHighligher;
+		UITextInput *textInput;
+
 };
 
 class PolycodeTextEditorFactory : public PolycodeEditorFactory {
-public:
-	PolycodeTextEditorFactory() : PolycodeEditorFactory() {
-		extensions.push_back("lua");
-		extensions.push_back("txt");
-		extensions.push_back("xml");
-		extensions.push_back("vert");
-		extensions.push_back("frag");				
-	}
-	PolycodeEditor *createEditor() { return new PolycodeTextEditor(); }
+	public:
+		PolycodeTextEditorFactory() : PolycodeEditorFactory() {
+			extensions.push_back("lua");
+			extensions.push_back("txt");
+			extensions.push_back("xml");
+			extensions.push_back("vert");
+			extensions.push_back("frag");
+		}
+		PolycodeEditor *createEditor() { return new PolycodeTextEditor(); }
 };

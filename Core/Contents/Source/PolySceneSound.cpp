@@ -47,7 +47,7 @@ void SceneSoundListener::Update() {
 SceneSound::SceneSound(const String& fileName, Number referenceDistance, Number maxDistance, bool directionalSound) : SceneEntity() {
 
 	this->directionalSound = directionalSound;
-	
+
 	sound = new Sound(fileName);
 	sound->setIsPositional(true);
 	sound->setPositionalProperties(referenceDistance, maxDistance);
@@ -60,16 +60,16 @@ SceneSound::~SceneSound() {
 void SceneSound::Update() {
 	Matrix4 finalMatrix = getConcatenatedMatrix();
 	sound->setSoundPosition(finalMatrix.getPosition());
-	
+
 	if(directionalSound) {
 		Vector3 direction;
-		direction.x = 0;		
+		direction.x = 0;
 		direction.y = 0;
 		direction.z = -1;
 		direction = finalMatrix.rotateVector(direction);
 		sound->setSoundDirection(direction);
 	}
-	
+
 }
 
 Sound *SceneSound::getSound() {

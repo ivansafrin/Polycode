@@ -61,13 +61,13 @@ SceneMesh::SceneMesh(Mesh *mesh) : SceneEntity(), texture(NULL), material(NULL),
 	bBoxRadius = mesh->getRadius();
 	bBox = mesh->calculateBBox();
 	lightmapIndex=0;
-	showVertexNormals = false;	
+	showVertexNormals = false;
 	useVertexBuffer = false;
 	lineSmooth = false;
 	ownsMesh = true;
-	ownsSkeleton = true;	
+	ownsSkeleton = true;
 	lineWidth = 1.0;
-		
+
 }
 
 SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
@@ -75,20 +75,20 @@ SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL), skeleton(NUL
 	bBoxRadius = mesh->getRadius();
 	bBox = mesh->calculateBBox();
 	lightmapIndex=0;
-	showVertexNormals = false;	
-	useVertexBuffer = false;	
+	showVertexNormals = false;
+	useVertexBuffer = false;
 	lineSmooth = false;
 	ownsMesh = true;
-	ownsSkeleton = true;	
-	lineWidth = 1.0;	
+	ownsSkeleton = true;
+	lineWidth = 1.0;
 }
 
 void SceneMesh::setMesh(Mesh *mesh) {
 	this->mesh = mesh;
 	bBoxRadius = mesh->getRadius();
 	bBox = mesh->calculateBBox();
-	showVertexNormals = false;	
-	useVertexBuffer = false;	
+	showVertexNormals = false;
+	useVertexBuffer = false;
 }
 
 
@@ -96,7 +96,7 @@ SceneMesh::~SceneMesh() {
 	if(ownsSkeleton)
 		delete skeleton;
 	if(ownsMesh)
-		delete mesh;	
+		delete mesh;
 	delete localShaderOptions;
 }
 
@@ -119,20 +119,20 @@ void SceneMesh::setMaterial(Material *material) {
 
 	if(this->material)
 		clearMaterial();
-	
+
 	if(!material)
 		return;
-		
+
 	if(material->getNumShaders() == 0)
-			return;
-		
+		return;
+	
 	this->material = material;
 	localShaderOptions = material->getShader(0)->createBinding();
 	if(texture) {
 		localShaderOptions->clearTexture("diffuse");
 		localShaderOptions->addTexture("diffuse", texture);
 	}
-	
+
 }
 
 void SceneMesh::setMaterialByName(const String& materialName) {
@@ -159,7 +159,7 @@ ShaderBinding *SceneMesh::getLocalShaderOptions() {
 void SceneMesh::loadSkeleton(const String& fileName) {
 	skeleton = new Skeleton(fileName);
 	addEntity(skeleton);
-	
+
 	setSkeleton(skeleton);
 }
 
@@ -174,7 +174,7 @@ void SceneMesh::setSkeleton(Skeleton *skeleton) {
 				vertex->getBoneAssignment(k)->bone = skeleton->getBone(vertex->getBoneAssignment(k)->boneID);
 			}
 		}
-	}	
+	}
 }
 
 Material *SceneMesh::getMaterial() {
@@ -187,35 +187,35 @@ Skeleton *SceneMesh::getSkeleton() {
 
 void SceneMesh::renderMeshLocally() {
 	Renderer *renderer = CoreServices::getInstance()->getRenderer();
-	
-	if(skeleton) {	
+
+	if(skeleton) {
 		for(int i=0; i < mesh->getPolygonCount(); i++) {
-			Polygon *polygon = mesh->getPolygon(i);			
-			unsigned int vCount = polygon->getVertexCount();			
+			Polygon *polygon = mesh->getPolygon(i);
+			unsigned int vCount = polygon->getVertexCount();
 			for(int j=0; j < vCount; j++) {
 				Vertex *vert = polygon->getVertex(j);
 				Vector3 norm;
-				
+
 					Vector3 aPos = vert->restPosition;
 					Vector3 tPos;
 
-					Number mult = 1;					
-/*				
+					Number mult = 1;
+/*
 					Number mult = 0;
 					for(int b =0; b < vert->getNumBoneAssignments(); b++) {
 						BoneAssignment *bas = vert->getBoneAssignment(b);
 						mult += bas->weight;
 					}
 					mult = 1.0f/mult;
-*/				
+*/
 					for(int b =0; b < vert->getNumBoneAssignments(); b++) {
 						BoneAssignment *bas = vert->getBoneAssignment(b);
 						Bone *bone = bas->bone;
-						if(bone) {
-							
+						if(!bone) {
+
 							Matrix4 restMatrix = bone->getRestMatrix();
 							Matrix4 finalMatrix = bone->getFinalMatrix();
-							
+
 							Vector3 vec = restMatrix * aPos;
 							tPos += finalMatrix * vec * (bas->weight*mult);
 							
@@ -225,32 +225,32 @@ void SceneMesh::renderMeshLocally() {
 							
 							norm += nvec * (bas->weight*mult);
 						}
-					}					
-					
-				
+					}
+
+
 					vert->x = tPos.x;
 					vert->y = tPos.y;
-					vert->z = tPos.z;				
-				
+					vert->z = tPos.z;
+
 					norm.Normalize();
 					vert->setNormal(norm.x, norm.y, norm.z);
-				
+
 			}
 		}
-		mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
-		mesh->arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;	
-		mesh->arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;				
+		mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
+		mesh->arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;
+		mesh->arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;
 	}
 
 	if(mesh->useVertexColors) {
 		renderer->pushDataArrayForMesh(mesh, RenderDataArray::COLOR_DATA_ARRAY);
 	}
-	 
+
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::VERTEX_DATA_ARRAY);
-	renderer->pushDataArrayForMesh(mesh, RenderDataArray::NORMAL_DATA_ARRAY);		
-	renderer->pushDataArrayForMesh(mesh, RenderDataArray::TANGENT_DATA_ARRAY);			
-	renderer->pushDataArrayForMesh(mesh, RenderDataArray::TEXCOORD_DATA_ARRAY);	
-	
+	renderer->pushDataArrayForMesh(mesh, RenderDataArray::NORMAL_DATA_ARRAY);
+	renderer->pushDataArrayForMesh(mesh, RenderDataArray::TANGENT_DATA_ARRAY);
+	renderer->pushDataArrayForMesh(mesh, RenderDataArray::TEXCOORD_DATA_ARRAY);
+
 	renderer->drawArrays(mesh->getMeshType());
 }
 
@@ -263,42 +263,41 @@ void SceneMesh::cacheToVertexBuffer(bool cache) {
 }
 
 void SceneMesh::Render() {
-	
+
 	Renderer *renderer = CoreServices::getInstance()->getRenderer();
-	
+
 	renderer->setLineSize(lineWidth);
 	renderer->setLineSmooth(lineSmooth);
-	
+
 	if(material) {
 		renderer->applyMaterial(material, localShaderOptions,0);
+	} else if(texture) {
+		renderer->setTexture(texture);
 	} else {
-		if(texture)
-			renderer->setTexture(texture);
-		else
-			renderer->setTexture(NULL);
+		renderer->setTexture(NULL);
 	}
-	
+
 	if(useVertexBuffer) {
 		renderer->drawVertexBuffer(mesh->getVertexBuffer(), mesh->useVertexColors);
 	} else {
 		renderMeshLocally();
 	}
-	
+
 	if(material) 
 		renderer->clearShader();
-	
-	if(showVertexNormals) {	
+
+	if(showVertexNormals) {
 		renderer->setTexture(NULL);
 		/*
 		for(int i=0; i < mesh->getPolygonCount(); i++) {
-			Polygon *polygon = mesh->getPolygon(i);			
+			Polygon *polygon = mesh->getPolygon(i);
 			unsigned int vCount = polygon->getVertexCount();
 			for(int j=0; j < vCount; j++) {
 				Vertex *vert = polygon->getVertex(j);
-				Vector3 norm = *vert->normal;				
-				CoreServices::getInstance()->getRenderer()->draw3DLine(*vert, norm, 0.4f, Color(0.0f,0.7f,1.0f,0.5f));				
+				Vector3 norm = *vert->normal;
+				CoreServices::getInstance()->getRenderer()->draw3DLine(*vert, norm, 0.4f, Color(0.0f,0.7f,1.0f,0.5f));
 			}
 		}
 		 */
-	}	
+	}
 }

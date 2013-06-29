@@ -34,17 +34,17 @@ class ExportProjectWindow : public UIWindow {
 	public:
 		ExportProjectWindow();
 		~ExportProjectWindow();
-	
+
 		void resetForm();
-	
+
 		void handleEvent(Event *event);
-	
+
 		UITextInput *projectLocationInput;
 		UIButton *locationSelectButton;
-		
+
 		UIButton *okButton;
 		UIButton *cancelButton;
-		
+
 		UICheckBox *macCheckBox;
 		UICheckBox *winCheckBox;
 		UICheckBox *linCheckBox;

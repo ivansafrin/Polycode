@@ -41,7 +41,7 @@ MaterialManager::MaterialManager() {
 }
 
 MaterialManager::~MaterialManager() {
-	
+
 }
 
 void MaterialManager::Update(int elapsed) {
@@ -82,7 +82,7 @@ void MaterialManager::reloadPrograms() {
 
 ShaderProgram *MaterialManager::createProgramFromFile(String programPath) {
 	OSFileEntry entry(programPath, OSFileEntry::TYPE_FILE);
-	
+
 	for(int m=0; m < shaderModules.size(); m++) {
 		PolycodeShaderModule *shaderModule = shaderModules[m];
 		if(shaderModule->acceptsExtension(entry.extension)) {
@@ -106,7 +106,7 @@ Texture *MaterialManager::createTextureFromFile(const String& fileName, bool cla
 	if(newTexture) {
 		return newTexture;
 	}
-	
+
 	Image *image = new Image(fileName);
 	if(image->isLoaded()) {
 		if(premultiplyAlphaOnLoad) {
@@ -114,14 +114,14 @@ Texture *MaterialManager::createTextureFromFile(const String& fileName, bool cla
 		}
 		newTexture = createTexture(image->getWidth(), image->getHeight(), image->getPixels(), clamp, createMipmaps);
 		newTexture->setResourcePath(fileName);
-		CoreServices::getInstance()->getResourceManager()->addResource(newTexture);		
+		CoreServices::getInstance()->getResourceManager()->addResource(newTexture);
 	} else {
 		Logger::log("Error loading image, using default texture.\n");
-		delete image;		
+		delete image;
 		newTexture = getTextureByResourcePath("default/default.png");
 		return newTexture;
 	}
-		
+
 	delete image;
 	return newTexture;
 }
@@ -137,7 +137,7 @@ Texture *MaterialManager::createNewTexture(int width, int height, bool clamp, bo
 	Texture *retTexture = createTextureFromImage(newImage, clamp, createMipmaps);
 	delete newImage;
 	return retTexture;
-	
+
 }
 
 Texture *MaterialManager::createTexture(int width, int height, char *imageData, bool clamp, bool createMipmaps, int type) {
@@ -177,29 +177,30 @@ Shader *MaterialManager::getShaderByIndex(unsigned int index) {
 
 Shader *MaterialManager::createShader(String shaderType, String name, String vpName, String fpName, bool screenShader) {
 	Shader *retShader = NULL;
-	
+
 	for(int m=0; m < shaderModules.size(); m++) {
 		PolycodeShaderModule *shaderModule = shaderModules[m];
 		if(shaderModule->getShaderType() == shaderType) {
 			retShader = shaderModule->createShader(name, vpName, fpName);
 		}
 	}
-	
+
 	if(retShader) {
 		retShader->screenShader = screenShader;
 		retShader->numAreaLights = 0;
 		retShader->numSpotLights = 0;
 	}
-	
+
 	return retShader;
 }
 
 Shader *MaterialManager::createShaderFromXMLNode(TiXmlNode *node) {
 	TiXmlElement *nodeElement = node->ToElement();
-	if (!nodeElement) return NULL; // Skip comment nodes
-	
+	if (!nodeElement) 
+		return NULL; // Skip comment nodes
+
 	Shader *retShader = NULL;
-	
+
 	if(nodeElement->Attribute("type")) {
 		String shaderType = nodeElement->Attribute("type");
 		for(int m=0; m < shaderModules.size(); m++) {
@@ -207,47 +208,46 @@ Shader *MaterialManager::createShaderFromXMLNode(TiXmlNode *node) {
 			if(shaderModule->getShaderType() == shaderType) {
 				retShader = shaderModule->createShader(node);
 			}
-		}		
+		}
 	}
-	
+
 	if (!retShader)
 		return NULL;
 
 	int numAreaLights = 0;
 	int numSpotLights = 0;
-		
+
 	if(nodeElement->Attribute("numAreaLights")) {
 		numAreaLights = atoi(nodeElement->Attribute("numAreaLights"));
 	}
 	if(nodeElement->Attribute("numSpotLights")) {
 		numSpotLights = atoi(nodeElement->Attribute("numSpotLights"));
 	}
-	
+
 	retShader->screenShader = false;
-	
-	if(nodeElement->Attribute("screen")) {
-		if(String(nodeElement->Attribute("screen")) == "true") {
-			retShader->screenShader = true;
-		}
+
+	if(nodeElement->Attribute("screen") && String(nodeElement->Attribute("screen")) == "true") {
+		retShader->screenShader = true;
 	}
 	
 	if(retShader) {
 		retShader->numAreaLights = numAreaLights;
-		retShader->numSpotLights = numSpotLights;		
-	}	
-	
+		retShader->numSpotLights = numSpotLights;
+	}
+
 	return retShader;
 }
 
 Shader *MaterialManager::setShaderFromXMLNode(TiXmlNode *node) {
 	TiXmlElement *nodeElement = node->ToElement();
-	if (!nodeElement) return NULL; // Skip comment nodes
-	
+	if (!nodeElement)
+		return NULL; // Skip comment nodes
+
 	Shader *retShader = NULL;
 	if(nodeElement->Attribute("type")) {
 		String shaderType = nodeElement->Attribute("type");
 		if(shaderType == "fixed") {
-			FixedShader *fShader =  new FixedShader();		
+			FixedShader *fShader =  new FixedShader();
 			retShader = fShader;
 		}
 	} else {
@@ -269,18 +269,19 @@ Shader *MaterialManager::setShaderFromXMLNode(TiXmlNode *node) {
 
 Cubemap *MaterialManager::cubemapFromXMLNode(TiXmlNode *node) {
 	TiXmlElement *nodeElement = node->ToElement();
-	if (!nodeElement) return NULL; // Skip comment nodes
-	
+	if (!nodeElement) 
+		return NULL; // Skip comment nodes
+
 	Cubemap *newCubemap = NULL;
-	
+
 	String name = nodeElement->Attribute("name");
 	String xPos = nodeElement->Attribute("xPos");
 	String xNeg = nodeElement->Attribute("xNeg");
 	String yPos = nodeElement->Attribute("yPos");
 	String yNeg = nodeElement->Attribute("yNeg");
-	String zPos = nodeElement->Attribute("zPos");				
+	String zPos = nodeElement->Attribute("zPos");
 	String zNeg = nodeElement->Attribute("zNeg");
-		
+
 	newCubemap = CoreServices::getInstance()->getRenderer()->createCubemap(
 		CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(xPos),
 		CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(xNeg),
@@ -303,17 +304,17 @@ void MaterialManager::addShader(Shader *shader) {
 
 std::vector<Shader*> MaterialManager::loadShadersFromFile(String fileName) {
 	std::vector<Shader*> retVector;
-	
+
 	TiXmlDocument doc(fileName.c_str());
 	doc.LoadFile();
-	
+
 	if(doc.Error()) {
 		Logger::log("XML Error: %s\n", doc.ErrorDesc());
 	} else {
 		TiXmlElement *mElem = doc.RootElement()->FirstChildElement("shaders");
 		if(mElem) {
-			TiXmlNode* pChild;					
-			for (pChild = mElem->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {	
+			TiXmlNode* pChild;
+			for (pChild = mElem->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {
 				Shader *newShader = createShaderFromXMLNode(pChild);
 				if(newShader != NULL) {
 					Logger::log("Adding shader %s\n", newShader->getName().c_str());
@@ -328,16 +329,16 @@ std::vector<Shader*> MaterialManager::loadShadersFromFile(String fileName) {
 
 std::vector<Cubemap*> MaterialManager::loadCubemapsFromFile(String fileName) {
 	std::vector<Cubemap*> retVector;
-	
+
 	TiXmlDocument doc(fileName.c_str());
 	doc.LoadFile();
-	
+
 	if(doc.Error()) {
 		Logger::log("XML Error: %s\n", doc.ErrorDesc());
 	} else {
 		TiXmlElement *mElem = doc.RootElement()->FirstChildElement("cubemaps");
 		if(mElem) {
-			TiXmlNode* pChild;					
+			TiXmlNode* pChild;
 			for (pChild = mElem->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {
 				Cubemap *newCubemap = cubemapFromXMLNode(pChild);
 				if (newCubemap) {
@@ -346,22 +347,22 @@ std::vector<Cubemap*> MaterialManager::loadCubemapsFromFile(String fileName) {
 			}
 		}
 	}
-	
+
 	return retVector;
 }
 
 std::vector<Material*> MaterialManager::loadMaterialsFromFile(String fileName) {
 	std::vector<Material*> retVector;
-	
+
 	TiXmlDocument doc(fileName.c_str());
 	doc.LoadFile();
-	
+
 	if(doc.Error()) {
 		Logger::log("XML Error: %s\n", doc.ErrorDesc());
 	} else {
 		TiXmlElement *mElem = doc.RootElement()->FirstChildElement("materials");
 		if(mElem) {
-			TiXmlNode* pChild;					
+			TiXmlNode* pChild;
 			for (pChild = mElem->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {
 				Material *newMat = materialFromXMLNode(pChild);
 				if (newMat) {
@@ -370,97 +371,95 @@ std::vector<Material*> MaterialManager::loadMaterialsFromFile(String fileName) {
 			}
 		}
 	}
-	
+
 	return retVector;
 }
 
 Material *MaterialManager::createMaterial(String materialName, String shaderName) {
 	Material *newMaterial = new Material(materialName);
-	
+
 	Shader *retShader = (Shader*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_SHADER, shaderName);
-	
+
 	if(retShader) {
 		ShaderBinding *newShaderBinding = retShader->createBinding();
 		newMaterial->addShader(retShader, newShaderBinding);
 	}
-	
+
 	return newMaterial;
 }
 
 Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 	TiXmlElement *nodeElement = node->ToElement();
-	if (!nodeElement) return NULL; // Skip comment nodes
+	if (!nodeElement) 
+		return NULL; // Skip comment nodes
 
 	String mname = nodeElement->Attribute("name");
 	TiXmlNode* pChild, *pChild2,*pChild3;
 	Shader *materialShader;
 	ShaderBinding *newShaderBinding;
-	
+
 	vector<Shader*> materialShaders;
 	vector<ShaderBinding*> newShaderBindings;
 	vector<ShaderRenderTarget*> renderTargets;
 
 	Material *newMaterial = new Material(mname);
-	
-	if(nodeElement->Attribute("screen")) {
-		if(String(nodeElement->Attribute("screen")) == "true") {
-			newMaterial->screenMaterial = true;
-		}
-	}	
-	
+
+	if(nodeElement->Attribute("screen") && String(nodeElement->Attribute("screen")) == "true") {
+		newMaterial->screenMaterial = true;
+	}
+
 	if(nodeElement->Attribute("blendingMode")) {
 		newMaterial->blendingMode = atoi(nodeElement->Attribute("blendingMode"));
 	}
 
 	for (pChild3 = node->FirstChild(); pChild3 != 0; pChild3 = pChild3->NextSibling()) {
 		TiXmlElement *pChild3Element = pChild3->ToElement();
-		if (!pChild3Element) continue; // Skip comment nodes
+		if (!pChild3Element)
+			continue; // Skip comment nodes
 
 		if(strcmp(pChild3->Value(), "rendertargets") == 0) {
 			
-			if(pChild3Element->Attribute("type")) {
-				if(strcmp(pChild3Element->Attribute("type"), "rgba_fp16") == 0) {
-					newMaterial->fp16RenderTargets = true;
-				}			
+			if(pChild3Element->Attribute("type") && strcmp(pChild3Element->Attribute("type"), "rgba_fp16") == 0) {
+				newMaterial->fp16RenderTargets = true;
 			}
-		
+
 			for (pChild = pChild3->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {
 				TiXmlElement *pChildElement = pChild->ToElement();
-				if (!pChildElement) continue; // Skip comment nodes
+				if (!pChildElement)
+					continue; // Skip comment nodes
 
 				if(strcmp(pChild->Value(), "rendertarget") == 0) {
 					ShaderRenderTarget *newTarget = new ShaderRenderTarget;
 					newTarget->id = pChildElement->Attribute("id");
 					newTarget->width = CoreServices::getInstance()->getRenderer()->getXRes();
 					newTarget->height = CoreServices::getInstance()->getRenderer()->getYRes();
-					newTarget->sizeMode = ShaderRenderTarget::SIZE_MODE_PIXELS;					
+					newTarget->sizeMode = ShaderRenderTarget::SIZE_MODE_PIXELS;
 					if(pChildElement->Attribute("width") && pChildElement->Attribute("height")) {
 						newTarget->width = atof(pChildElement->Attribute("width"));
-						newTarget->height = atof(pChildElement->Attribute("height"));	
-						if(pChildElement->Attribute("sizeMode")) {
-							if(strcmp(pChildElement->Attribute("sizeMode"), "normalized") == 0) {
-								newTarget->sizeMode = ShaderRenderTarget::SIZE_MODE_NORMALIZED;	
-								if(newTarget->width > 1.0f)
-									newTarget->width = 1.0f;
-								if(newTarget->height > 1.0f)
-									newTarget->height = 1.0f;
-							}						
+						newTarget->height = atof(pChildElement->Attribute("height"));
+						if(pChildElement->Attribute("sizeMode") && strcmp(pChildElement->Attribute("sizeMode"), "normalized") == 0) {
+							newTarget->sizeMode = ShaderRenderTarget::SIZE_MODE_NORMALIZED;	
+							if(newTarget->width > 1.0f)
+								newTarget->width = 1.0f;
+							if(newTarget->height > 1.0f)
+								newTarget->height = 1.0f;
 						}
 					}
-					
+
 					newTarget->normalizedWidth = -1;
-					newTarget->normalizedHeight = -1;					
-					newMaterial->recreateRenderTarget(newTarget);					
+					newTarget->normalizedHeight = -1;
+					newMaterial->recreateRenderTarget(newTarget);
 					renderTargets.push_back(newTarget);
 				}
 			}
-		}	
+		}
 	}
-	
+
 	for (pChild3 = node->FirstChild(); pChild3 != 0; pChild3 = pChild3->NextSibling()) {
 		TiXmlElement *pChild3Element = pChild3->ToElement();
-		if (!pChild3Element) continue; // Skip comment nodes
-		
+		if (!pChild3Element) 
+			continue; // Skip comment nodes
+
 		if(strcmp(pChild3->Value(), "shader") == 0) {
 			materialShader = setShaderFromXMLNode(pChild3);
 			if(materialShader) {
@@ -469,69 +468,72 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 				newShaderBindings.push_back(newShaderBinding);
 				for (pChild = pChild3->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {
 					TiXmlElement *pChildElement = pChild->ToElement();
-					if (!pChildElement) continue; // Skip comment nodes
+					if (!pChildElement)
+						continue; // Skip comment nodes
 
 					if(strcmp(pChild->Value(), "params") == 0) {
 						for (pChild2 = pChild->FirstChild(); pChild2 != 0; pChild2 = pChild2->NextSibling()) {
 							TiXmlElement *pChild2Element = pChild2->ToElement();
-							if (!pChild2Element) continue; // Skip comment nodes
+							if (!pChild2Element) 
+								continue; // Skip comment nodes
 
 							if(strcmp(pChild2->Value(), "param") == 0){
 								String pname =  pChild2Element->Attribute("name");
-								
-								if(!CoreServices::getInstance()->getRenderer()->getDataPointerForName(pname)) {								
-								String pvalue =  pChild2Element->Attribute("value");																
-								int type = materialShader->getExpectedParamType(pname);								
-								LocalShaderParam *param = newShaderBinding->addParam(type, pname);
-								
-								
-								if(param) {
-									switch(type) {
-										case ProgramParam::PARAM_NUMBER:
-										{
-											param->setNumber(atof(pvalue.c_str()));
+
+								if(!CoreServices::getInstance()->getRenderer()->getDataPointerForName(pname)) {
+									String pvalue =  pChild2Element->Attribute("value");
+									int type = materialShader->getExpectedParamType(pname);
+									LocalShaderParam *param = newShaderBinding->addParam(type, pname);
+
+
+									if(param) {
+										switch(type) {
+											case ProgramParam::PARAM_NUMBER:
+											{
+												param->setNumber(atof(pvalue.c_str()));
+											}
+											break;
+											case ProgramParam::PARAM_VECTOR2:
+											{
+												std::vector<String> values = pvalue.split(" ");
+												if(values.size() == 2) {
+													param->setVector2(Vector2(atof(values[0].c_str()), atof(values[1].c_str())));
+												} else {
+													printf("Material parameter error: A Vector2 must have 2 values (%d provided)!\n", (int)values.size());
+												}
+											}
+											break;
+											case ProgramParam::PARAM_VECTOR3:
+											{
+												std::vector<String> values = pvalue.split(" ");
+												if(values.size() == 3) {
+													param->setVector3(Vector3(atof(values[0].c_str()), atof(values[1].c_str()), atof(values[2].c_str())));
+												} else {
+													printf("Material parameter error: A Vector3 must have 3 values (%d provided)!\n", (int)values.size());
+												}
+											}
+											break;
+											case ProgramParam::PARAM_COLOR:
+											{
+												std::vector<String> values = pvalue.split(" ");
+												if(values.size() == 4) {
+													param->setColor(Color(atof(values[0].c_str()), atof(values[1].c_str()), atof(values[2].c_str()), atof(values[3].c_str())));
+												} else {
+													printf("Material parameter error: A Vector3 must have 3 values (%d provided)!\n", (int)values.size());
+												}
+											}
+											break;
 										}
-										break;
-										case ProgramParam::PARAM_VECTOR2:
-										{
-											std::vector<String> values = pvalue.split(" ");
-											if(values.size() == 2) {
-												param->setVector2(Vector2(atof(values[0].c_str()), atof(values[1].c_str())));
-											} else {
-												printf("Material parameter error: A Vector2 must have 2 values (%d provided)!\n", (int)values.size());
-											}
-										}											
-										break;
-										case ProgramParam::PARAM_VECTOR3:
-										{
-											std::vector<String> values = pvalue.split(" ");
-											if(values.size() == 3) {
-												param->setVector3(Vector3(atof(values[0].c_str()), atof(values[1].c_str()), atof(values[2].c_str())));
-											} else {
-												printf("Material parameter error: A Vector3 must have 3 values (%d provided)!\n", (int)values.size());
-											}
-										}										
-										break;
-										case ProgramParam::PARAM_COLOR:
-										{
-											std::vector<String> values = pvalue.split(" ");
-											if(values.size() == 4) {
-												param->setColor(Color(atof(values[0].c_str()), atof(values[1].c_str()), atof(values[2].c_str()), atof(values[3].c_str())));
-											} else {
-												printf("Material parameter error: A Vector3 must have 3 values (%d provided)!\n", (int)values.size());
-											}
-										}										
-										break;										
-									}
 									}
 								}
-							}						
+							}
 						}
 					}
 					if(strcmp(pChild->Value(), "targettextures") == 0) {
 						for (pChild2 = pChild->FirstChild(); pChild2 != 0; pChild2 = pChild2->NextSibling()) {
 							TiXmlElement *pChild2Element = pChild2->ToElement();
-							if (!pChild2Element) continue; // Skip comment nodes
+							if (!pChild2Element) 
+								continue; // Skip comment nodes
 
 							if(strcmp(pChild2->Value(), "targettexture") == 0){
 							
@@ -544,17 +546,17 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 								}
 								String mode = pChild2Element->Attribute("mode");
 								if(strcmp(mode.c_str(), "in") == 0) {
-									newBinding->mode = RenderTargetBinding::MODE_IN;			
+									newBinding->mode = RenderTargetBinding::MODE_IN;
 								} else if(strcmp(mode.c_str(), "color") == 0) {
 									newBinding->mode = RenderTargetBinding::MODE_COLOR;
 								} else if(strcmp(mode.c_str(), "depth") == 0) {
 									newBinding->mode = RenderTargetBinding::MODE_DEPTH;
 								} else {
-									newBinding->mode = RenderTargetBinding::MODE_OUT;								
+									newBinding->mode = RenderTargetBinding::MODE_OUT;
 								}
-																
+
 								newShaderBinding->addRenderTargetBinding(newBinding);
-								
+
 								for(int l=0; l < renderTargets.size(); l++) {
 									if(renderTargets[l]->id == newBinding->id) {
 										printf("Assigning texture to %s\n", newBinding->id.c_str());
@@ -563,17 +565,18 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 										newBinding->height = renderTargets[l]->height;
 									}
 								}
-								
+
 								if(newBinding->mode == RenderTargetBinding::MODE_IN) {
 									newShaderBinding->addTexture(newBinding->name, newBinding->texture);
 								}
-							}						
+							}
 						}
-					}					
+					}
 					if(strcmp(pChild->Value(), "textures") == 0) {
 						for (pChild2 = pChild->FirstChild(); pChild2 != 0; pChild2 = pChild2->NextSibling()) {
 							TiXmlElement *pChild2Element = pChild2->ToElement();
-							if (!pChild2Element) continue; // Skip comment nodes
+							if (!pChild2Element) 
+								continue; // Skip comment nodes
 
 							if(strcmp(pChild2->Value(), "texture") == 0){
 								String tname = "";
@@ -584,7 +587,7 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 								newShaderBinding->addTexture(tname,texture);
 //								newShaderBinding->addTexture(tname, (Texture*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_TEXTURE, pChild2Element->GetText()));
 							}
-							
+
 							if(strcmp(pChild2->Value(), "cubemap") == 0){
 								String tname = "";
 								if(pChild2Element->Attribute("name")) {
@@ -592,14 +595,14 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 								}
 								newShaderBinding->addCubemap(tname, (Cubemap*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_CUBEMAP, pChild2Element->GetText()));
 							}
-							
+
 						}
 					}
 				}
 			}
 		}
 	}
-	
+
 
 	for(int i=0; i< materialShaders.size(); i++) {
 		newMaterial->addShader(materialShaders[i],newShaderBindings[i]);
@@ -607,6 +610,6 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 	for(int i=0; i< renderTargets.size(); i++) {
 		newMaterial->addShaderRenderTarget(renderTargets[i]);
 	}
-	
+
 	return newMaterial;
 }

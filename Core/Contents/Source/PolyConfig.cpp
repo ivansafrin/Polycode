@@ -25,68 +25,68 @@
 using namespace Polycode;
 
 Config::Config() {
-	
+
 }
 
 Config::~Config() {
-	
+
 }
 
 void Config::loadConfig(const String& configNamespace, const String& fileName) {
 	TiXmlDocument doc(fileName.c_str());
-	
+
 	Logger::log("Loading config: %s\n", fileName.c_str());
-	
+
 	if(!doc.LoadFile()) {
 		Logger::log("Error loading config file...\n");
 		Logger::log("Error: %s\n", doc.ErrorDesc());
 		return;
 	}
-	
+
 	TiXmlElement *rootElement = doc.RootElement();
-	
+
 	TiXmlNode *pChild;
 	ConfigEntry *entry;
 	for(pChild = rootElement->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {
 		TiXmlElement *pChildElement = pChild->ToElement();
 		if (!pChildElement) continue; // Skip comment nodes
-		
+
 		entry = getEntry(configNamespace, pChild->Value());
-		entry->stringVal = pChildElement->GetText();		
+		entry->stringVal = pChildElement->GetText();
 		entry->numVal = atof(pChildElement->GetText());
 		entry->isString = true;
 		entry->configNamespace = configNamespace;
 	}
-	
+
 }
 
 void Config::saveConfig(const String& configNamespace, const String& fileName) {
 
 	TiXmlDocument doc;  
 	TiXmlElement* node;  
-	
- 	TiXmlDeclaration* decl = new TiXmlDeclaration( "1.0", "", "" );  
+
+	TiXmlDeclaration* decl = new TiXmlDeclaration( "1.0", "", "" );  
 	doc.LinkEndChild( decl );  
 
 	TiXmlElement * root = new TiXmlElement( "PolyConfig" );  
 	doc.LinkEndChild( root );  
-		
-	
+
+
 	for(int i=0; i < entries.size(); i++) {
 		if(entries[i]->configNamespace == configNamespace) {
 			node = new TiXmlElement(entries[i]->key.c_str());  
 			if(entries[i]->isString)
 				node->LinkEndChild( new	TiXmlText(entries[i]->stringVal.c_str()));  
 			else
-				node->LinkEndChild( new	TiXmlText(String::NumberToString(entries[i]->numVal).c_str()));  						
-			root->LinkEndChild( node);		
+				node->LinkEndChild( new	TiXmlText(String::NumberToString(entries[i]->numVal).c_str()));
+			root->LinkEndChild( node);
 		}
 	}
-	doc.SaveFile(fileName.c_str());  	
+	doc.SaveFile(fileName.c_str());
 }
 
 ConfigEntry *Config::getEntry(const String& configNamespace, const String& key) {
-	
+
 	for(int i=0; i < entries.size(); i++) {
 		ConfigEntry *entry = entries[i];
 		if(entry->key == key && entry->configNamespace == configNamespace) {
@@ -104,12 +104,12 @@ ConfigEntry *Config::getEntry(const String& configNamespace, const String& key) 
 
 void Config::setStringValue(const String& configNamespace, const String& key, const String& value) {
 	getEntry(configNamespace, key)->stringVal = value;
-	getEntry(configNamespace, key)->isString = true;	
+	getEntry(configNamespace, key)->isString = true;
 }
 
 void Config::setNumericValue(const String& configNamespace, const String& key, Number value) {
-	getEntry(configNamespace, key)->numVal = value;	
-	getEntry(configNamespace, key)->isString = false;		
+	getEntry(configNamespace, key)->numVal = value;
+	getEntry(configNamespace, key)->isString = false;
 }
 
 
@@ -118,7 +118,7 @@ Number Config::getNumericValue(const String& configNamespace, const String& key)
 }
 
 const String& Config::getStringValue(const String& configNamespace, const String& key) {
-	return getEntry(configNamespace, key)->stringVal;	
+	return getEntry(configNamespace, key)->stringVal;
 }
 
 

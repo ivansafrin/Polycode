@@ -26,56 +26,56 @@
 
 namespace Polycode {
 
+/**
+* Stores, saves and loads data. This class can save and load arbitrary data to and from disk and convert it to strings.
+*/
+class _PolyExport Data : public PolyBase {
+	public:
+		/**
+		* Default constructor
+		*/
+		Data();
+		~Data();
+
 	/**
-	* Stores, saves and loads data. This class can save and load arbitrary data to and from disk and convert it to strings.
-	*/	
-	class _PolyExport Data : public PolyBase {
-		public:
-			/**
-			* Default constructor
-			*/
-			Data();
-			~Data();
-		
-		/**
-		* Loads data from a file.
-		* @param fileName Path to the file to load data from.
-		* @return True if susccessful, false if not
-		*/						
-		bool loadFromFile(const String& fileName);
-		
-		/**
-		* Retuns data as a string with the specified encoding.
-		* @param encoding The encoding to use. Currently only supports String::ENCODING_UTF8
-		* @return String of the specified encoding.
-		*/						
-		String getAsString(int encoding) const;
+	* Loads data from a file.
+	* @param fileName Path to the file to load data from.
+	* @return True if susccessful, false if not
+	*/
+	bool loadFromFile(const String& fileName);
 
-		/**
-		* Sets the data from a string with the specified encoding.
-		* @param str The string to create the data from.
-		* @param encoding The encoding to use. Currently only supports String::ENCODING_UTF8
-		*/								
-		void setFromString(const String& str, int encoding);
-		
-		/**
-		* Saves the data to a file.
-		* @param fileName Path to the file to save data to.
-		* @return Returns true if successful or false if otherwise.
-		*/								
-		bool saveToFile(const String& fileName) const;
-		
-		/**
-		* Returns pointer to the data.
-		* @return Pointer to the data buffer.
-		*/										
-		char *getData() const { return data; }
-				
-		protected:
+	/**
+	* Retuns data as a string with the specified encoding.
+	* @param encoding The encoding to use. Currently only supports String::ENCODING_UTF8
+	* @return String of the specified encoding.
+	*/
+	String getAsString(int encoding) const;
 
-			long dataSize;
-			char *data;
-		
-	};
+	/**
+	* Sets the data from a string with the specified encoding.
+	* @param str The string to create the data from.
+	* @param encoding The encoding to use. Currently only supports String::ENCODING_UTF8
+	*/
+	void setFromString(const String& str, int encoding);
+
+	/**
+	* Saves the data to a file.
+	* @param fileName Path to the file to save data to.
+	* @return Returns true if successful or false if otherwise.
+	*/
+	bool saveToFile(const String& fileName) const;
+
+	/**
+	* Returns pointer to the data.
+	* @return Pointer to the data buffer.
+	*/
+	char *getData() const { return data; }
+
+	protected:
+
+		long dataSize;
+		char *data;
+
+};
 
 }

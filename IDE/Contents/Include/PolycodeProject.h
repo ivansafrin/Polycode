@@ -31,10 +31,10 @@ class ProjectFontData {
 	public:
 		ProjectFontData();
 		ProjectFontData(String fontName, String fontPath) {
-			this->fontName = fontName;		
+			this->fontName = fontName;
 			this->fontPath = fontPath;
 		}
-		
+
 		String fontName;
 		String fontPath;
 };
@@ -44,42 +44,42 @@ class ProjectData {
 		String entryPoint;
 		int defaultWidth;
 		int defaultHeight;
-		bool vSync;	
-		unsigned int anisotropy;	
+		bool vSync;
+		unsigned int anisotropy;
 		unsigned int aaLevel;
 		unsigned int frameRate;
 		String filteringMode;
-		
-		std::vector<String> modules;		
+
+		std::vector<String> modules;
 		std::vector<ProjectFontData> fonts;
-		
+
 		Number backgroundColorR;
 		Number backgroundColorG;
-		Number backgroundColorB;				
+		Number backgroundColorB;
 };
 
 class PolycodeProject {
 	public:
 		PolycodeProject(String name, String path, String file);
-		~PolycodeProject();	
-		
-		bool loadProjectFromFile();	
+		~PolycodeProject();
+
+		bool loadProjectFromFile();
 		bool saveFile();
-	
+
 		String getProjectName() { return projectName; }
-		String getProjectFile() { return projectFile; }	
-		String getRootFolder() { return projectFolder; }	
-	
+		String getProjectFile() { return projectFile; }
+		String getRootFolder() { return projectFolder; }
+
 		ProjectData data;
-		
+
 private:
 
 
 	Object configFile;
-	
+
 	String filPath;
-		
+
 	String projectFile;
-	String projectFolder;	
+	String projectFolder;
 	String projectName;
 };

@@ -23,35 +23,35 @@
 #include "PolyEvent.h"
 
 namespace Polycode {
-	
+
 	Event::Event() {
 			deleteOnDispatch = true;
 	}
-	
-	Event::Event(int eventCode) {	
+
+	Event::Event(int eventCode) {
 		setEventCode(eventCode);
 	}
-	
+
 	Event::~Event() {
-		
+
 	}
 	
 	const String& Event::getEventType() const {
 		return eventType;
 	}
-	
+
 	int Event::getEventCode() const {
 		return eventCode;
 	}
-	
+
 	EventDispatcher *Event::getDispatcher() const {
 		return dispatcher;
 	}
-	
+
 	void Event::setDispatcher(EventDispatcher *dispatcher) {
 		this->dispatcher = dispatcher;
 	}
-	
+
 	void Event::setEventCode(int eventCode) {
 		this->eventCode = eventCode;
 	}

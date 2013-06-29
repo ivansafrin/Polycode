@@ -31,20 +31,20 @@ class PolycodeImageEditor : public PolycodeEditor {
 	public:
 	PolycodeImageEditor();
 	virtual ~PolycodeImageEditor();
-	
+
 	bool openFile(OSFileEntry filePath);
 	void Resize(int x, int y);
-	
+
 	protected:
 		ScreenImage *grid;
-	
+
 		ScreenShape *editorImage;
-		
-		ScreenShape *leftShape;		
-		ScreenShape *rightShape;		
-		ScreenShape *topShape;		
-		ScreenShape *bottomShape;								
-		
+
+		ScreenShape *leftShape;
+		ScreenShape *rightShape;
+		ScreenShape *topShape;
+		ScreenShape *bottomShape;
+
 		Number aspectRatio;
 };
 

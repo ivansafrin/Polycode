@@ -42,15 +42,15 @@ void SceneRenderTexture::resizeRenderTexture(int newWidth, int newHeight) {
 
 	if(newWidth > 0 && newHeight > 0) {
 		CoreServices::getInstance()->getRenderer()->destroyTexture(targetTexture);
-		CoreServices::getInstance()->getRenderer()->destroyTexture(depthTexture);	
+		CoreServices::getInstance()->getRenderer()->destroyTexture(depthTexture);
 		CoreServices::getInstance()->getRenderer()->destroyTexture(filterColorBufferTexture);
-		CoreServices::getInstance()->getRenderer()->destroyTexture(filterZBufferTexture);	
+		CoreServices::getInstance()->getRenderer()->destroyTexture(filterZBufferTexture);
 
 		CoreServices::getInstance()->getRenderer()->createRenderTextures(&targetTexture, &depthTexture, newWidth, newHeight, floatingPoint);
 		CoreServices::getInstance()->getRenderer()->createRenderTextures(&filterColorBufferTexture, &filterZBufferTexture, newWidth, newHeight, floatingPoint);
 	}
 }
-	
+
 Scene *SceneRenderTexture::getTargetScene() {
 	return targetScene;
 }
@@ -74,7 +74,7 @@ Texture *SceneRenderTexture::getTargetTexture() {
 SceneRenderTexture::~SceneRenderTexture() {
 	CoreServices::getInstance()->getSceneManager()->unregisterRenderTexture(this);
 	CoreServices::getInstance()->getRenderer()->destroyTexture(targetTexture);
-	CoreServices::getInstance()->getRenderer()->destroyTexture(depthTexture);	
+	CoreServices::getInstance()->getRenderer()->destroyTexture(depthTexture);
 	CoreServices::getInstance()->getRenderer()->destroyTexture(filterColorBufferTexture);
-	CoreServices::getInstance()->getRenderer()->destroyTexture(filterZBufferTexture);	
+	CoreServices::getInstance()->getRenderer()->destroyTexture(filterZBufferTexture);
 }

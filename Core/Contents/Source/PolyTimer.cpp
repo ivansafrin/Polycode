@@ -46,7 +46,7 @@ Timer::~Timer() {
 void Timer::Reset() {
 	ticks = 0;
 	last = 0;
-	elapsed = 0;	
+	elapsed = 0;
 }
 
 unsigned int Timer::getTicks() {
@@ -83,15 +83,12 @@ void Timer::Update(unsigned int ticks) {
 	
 	this->ticks = ticks;
 	elapsed = ticks-last;
-		
+
 	if(paused)
 		return;
 
-	if(triggerMode) {
-		if(elapsed > msecs) {
-			last = ticks;
-			this->dispatchEvent(new Event(), EVENT_TRIGGER); 
-		} else {
-		}
+	if(triggerMode && elapsed > msecs) {
+		last = ticks;
+		this->dispatchEvent(new Event(), EVENT_TRIGGER); 
 	}
 }

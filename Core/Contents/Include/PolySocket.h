@@ -60,11 +60,11 @@ THE SOFTWARE.
 
 namespace Polycode {
 
-	/**
-	* A typical network address, defined by IP and port.
-	*/
-	class _PolyExport Address  {
-		public:
+/**
+* A typical network address, defined by IP and port.
+*/
+class _PolyExport Address  {
+	public:
 
 		/**
 		* Constructor.
@@ -91,7 +91,7 @@ namespace Polycode {
 		*/
 		Address();
 		~Address();
-		
+
 		/**
 		* Copy the address IP and port from add2 into this.
 		* @param add2 The address to copy into this.
@@ -99,14 +99,14 @@ namespace Polycode {
 		inline void operator = (const Address &add2) {
 			setAddress(add2.uintAddress, add2.port);
 		}
-		
+
 		/**
 		* @return 1 if the address IP and port match, 0 otherwise.
 		*/
 		inline bool operator == ( const Address& add2)  {
 			return (uintAddress == add2.uintAddress && port == add2.port);
 		}
-			
+
 		/**
 		* Update the address IP and port.
 		* @param ipAsString An IP address represented as string,
@@ -131,7 +131,7 @@ namespace Polycode {
 		//       order, so I'm unsure in which byte order the IP/port should
 		//       be returned.
 
-		protected:
+	protected:
 		unsigned int uintAddress;
 		unsigned int port;
 
@@ -140,37 +140,37 @@ namespace Polycode {
 		// This class already uses socket API structs internally,
 		// so it's no far stretch to make it tied to the Socket class.
 		friend class Socket;
-	};
-	
-	
-	class _PolyExport SocketEvent : public Event {
+};
+
+
+class _PolyExport SocketEvent : public Event {
 	public:
 		SocketEvent(){}
 		~SocketEvent(){}
-		
+
 		char data[MAX_PACKET_SIZE];
 		unsigned int dataSize;
 		Address fromAddress;
-		
+
 		static const int EVENTBASE_SOCKETEVENT = 0x500;
 		static const int EVENT_ERROR = EVENTBASE_SOCKETEVENT+0;
 		static const int EVENT_DATA_RECEIVED = EVENTBASE_SOCKETEVENT+1;
-	};
-	
-	
-	class _PolyExport Socket : public EventDispatcher {
-		public:
-			Socket(int port);
-			~Socket();
+};
 
-			int receiveData();		
-			bool sendData(const Address &address, char *data, unsigned int packetSize);
-		
-			void socketError(String error);
-		
-		private:
-			
-			
-			int sockId;
-	};
+
+class _PolyExport Socket : public EventDispatcher {
+	public:
+		Socket(int port);
+		~Socket();
+
+		int receiveData();
+		bool sendData(const Address &address, char *data, unsigned int packetSize);
+
+		void socketError(String error);
+
+	private:
+
+
+		int sockId;
+};
 }

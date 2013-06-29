@@ -35,7 +35,7 @@ Renderer::Renderer() : clearColor(0.2f, 0.2f, 0.2f, 0.0), currentTexture(NULL), 
 	currentMaterial = NULL;
 	numLights = 0;
 	numAreaLights = 0;
-	numSpotLights = 0;	
+	numSpotLights = 0;
 	exposureLevel = 1;
 	shadersEnabled = true;
 	currentShaderModule = NULL;
@@ -44,7 +44,7 @@ Renderer::Renderer() : clearColor(0.2f, 0.2f, 0.2f, 0.0), currentTexture(NULL), 
 	cullingFrontFaces = false;
 	scissorEnabled = false;
 	blendNormalAsPremultiplied = false;
-	
+
 	doClearBuffer = true;
 }
 
@@ -62,7 +62,7 @@ void Renderer::setCameraMatrix(const Matrix4& matrix) {
 void Renderer::clearLights() {
 	numLights = 0;
 	numAreaLights = 0;
-	numSpotLights = 0;	
+	numSpotLights = 0;
 	lights.clear();
 	areaLights.clear();
 	spotLights.clear();
@@ -82,26 +82,26 @@ bool Renderer::test2DCoordinateInPolygon(Number x, Number y, Polycode::Polygon *
 
 	Vector3 dirVec;
 	Vector3 origin;
-	
+
 	if(ortho) {
 		origin = Vector3(((x/(Number)xRes)*orthoSizeX) - (orthoSizeX*0.5), (((yRes-y)/(Number)yRes)*orthoSizeY) - (orthoSizeY*0.5), 0.0);
 		origin = cameraMatrix * origin;
 
 		dirVec = Vector3(0.0, 0.0, -1.0);
-		dirVec = cameraMatrix.rotateVector(dirVec);	
+		dirVec = cameraMatrix.rotateVector(dirVec);
 	} else {
 		dirVec = projectRayFrom2DCoordinate(x, y);
-		origin = cameraMatrix.getPosition();	
+		origin = cameraMatrix.getPosition();
 	}
-	
+
 	Vector3 hitPoint;
-	
+
 	Matrix4 fullMatrix = matrix;
-	
+
 	if(billboardMode) {
 		Matrix4 camInverse = cameraMatrix.Inverse();
 		fullMatrix = fullMatrix * camInverse;
-		
+
 		fullMatrix.m[0][0] = 1;
 		fullMatrix.m[0][1] = 0;
 		fullMatrix.m[0][2] = 0;
@@ -112,62 +112,53 @@ bool Renderer::test2DCoordinateInPolygon(Number x, Number y, Polycode::Polygon *
 
 		fullMatrix.m[2][0] = 0;
 		fullMatrix.m[2][1] = 0;
-		fullMatrix.m[2][2] = 1;		
-		
+		fullMatrix.m[2][2] = 1;
+
 		origin = camInverse * origin;
 		dirVec = camInverse.rotateVector(dirVec);
 	}
-	
+
 	if(adjustMatrix) {
-			fullMatrix = (*adjustMatrix) * fullMatrix;
-	}	
-		
+		fullMatrix = (*adjustMatrix) * fullMatrix;
+	}
+
 	bool retStatus = false;	
-	
-	
+
+
 	if(poly->getVertexCount() == 3) {
-	
+
 		if(reverseDirection) {
 			retStatus = rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(2)), fullMatrix  * (*poly->getVertex(1)), fullMatrix *  (*poly->getVertex(0)), &hitPoint);
-			if(testBackfacing && !retStatus) {
-			retStatus = rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(0)), fullMatrix  * (*poly->getVertex(1)), fullMatrix *  (*poly->getVertex(2)), &hitPoint);
-		
-			}		
+			if(testBackfacing && !retStatus) 
+				retStatus = rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(0)), fullMatrix  * (*poly->getVertex(1)), fullMatrix *  (*poly->getVertex(2)), &hitPoint);
+
 		} else {
 			retStatus = rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(0)), fullMatrix  * (*poly->getVertex(1)), fullMatrix *  (*poly->getVertex(2)), &hitPoint);
-			if(testBackfacing && !retStatus) {
-			retStatus = rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(2)), fullMatrix  * (*poly->getVertex(1)), fullMatrix *  (*poly->getVertex(0)), &hitPoint);
-		
-			}
+			if(testBackfacing && !retStatus) 
+				retStatus = rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(2)), fullMatrix  * (*poly->getVertex(1)), fullMatrix *  (*poly->getVertex(0)), &hitPoint);
 		}
 	} else if(poly->getVertexCount() == 4) {
-	
+
 		if(reverseDirection) {
-		
-		retStatus = (rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(0)), fullMatrix  * (*poly->getVertex(1)), fullMatrix *  (*poly->getVertex(2)), &hitPoint) ||
-				rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(2)), fullMatrix  * (*poly->getVertex(3)), fullMatrix *  (*poly->getVertex(0)), &hitPoint));
-		if(testBackfacing && !retStatus) {
-			retStatus = (rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(2)), fullMatrix  * (*poly->getVertex(1)), fullMatrix *  (*poly->getVertex(0)), &hitPoint) ||
-				rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(0)), fullMatrix  * (*poly->getVertex(3)), fullMatrix *  (*poly->getVertex(2)), &hitPoint));
-		
-		}	
-		
-		
-		} else {
-		
-		retStatus = (rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(2)), fullMatrix  * (*poly->getVertex(1)), fullMatrix *  (*poly->getVertex(0)), &hitPoint) ||
-				rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(0)), fullMatrix  * (*poly->getVertex(3)), fullMatrix *  (*poly->getVertex(2)), &hitPoint));
-		if(testBackfacing && !retStatus) {
+
 			retStatus = (rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(0)), fullMatrix  * (*poly->getVertex(1)), fullMatrix *  (*poly->getVertex(2)), &hitPoint) ||
-				rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(2)), fullMatrix  * (*poly->getVertex(3)), fullMatrix *  (*poly->getVertex(0)), &hitPoint));
-		
-		}	
-		
-		}			
+					rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(2)), fullMatrix  * (*poly->getVertex(3)), fullMatrix *  (*poly->getVertex(0)), &hitPoint));
+			if(testBackfacing && !retStatus)
+				retStatus = (rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(2)), fullMatrix  * (*poly->getVertex(1)), fullMatrix *  (*poly->getVertex(0)), &hitPoint) ||
+					rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(0)), fullMatrix  * (*poly->getVertex(3)), fullMatrix *  (*poly->getVertex(2)), &hitPoint));
+		} else {
+
+			retStatus = (rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(2)), fullMatrix  * (*poly->getVertex(1)), fullMatrix *  (*poly->getVertex(0)), &hitPoint) ||
+					rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(0)), fullMatrix  * (*poly->getVertex(3)), fullMatrix *  (*poly->getVertex(2)), &hitPoint));
+			if(testBackfacing && !retStatus) 
+				retStatus = (rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(0)), fullMatrix  * (*poly->getVertex(1)), fullMatrix *  (*poly->getVertex(2)), &hitPoint) ||
+					rayTriangleIntersect(origin, dirVec, fullMatrix * (*poly->getVertex(2)), fullMatrix  * (*poly->getVertex(3)), fullMatrix *  (*poly->getVertex(0)), &hitPoint));
+
+		}
 	} else {
 		retStatus = false;
 	}
-	
+
 	return retStatus;
 }
 
@@ -192,31 +183,31 @@ bool Renderer::rayTriangleIntersect(Vector3 ray_origin, Vector3 ray_direction, V
 	
 	if (det > -0.00001f)
 		return false;
-	
+
 	inv_det = 1.0f / det;
-	
+
 	tvec = ray_origin - vert0;
-	
+
 	u = tvec.dot(pvec) * inv_det;
 	if (u < -0.001f || u > 1.001f)
 		return false;
-	
+
 	qvec = tvec.crossProduct(edge1);
-	
+
 	v = ray_direction.dot(qvec) * inv_det;
 	if (v < -0.001f || u + v > 1.001f)
 		return false;
-	
+
 	t = edge2.dot(qvec) * inv_det;
-	
+
 	if (t <= 0)
 		return false;
-	
+
 	hitPoint->x = ray_origin.x+t*ray_direction.x;
 	hitPoint->y = ray_origin.y+t*ray_direction.y;
-	hitPoint->z = ray_origin.z+t*ray_direction.z;	
-	
-	return true;	
+	hitPoint->z = ray_origin.z+t*ray_direction.z;
+
+	return true;
 }
 
 void Renderer::addShaderModule(PolycodeShaderModule *module) {
@@ -226,32 +217,32 @@ void Renderer::addShaderModule(PolycodeShaderModule *module) {
 void Renderer::sortLights(){
 
 	sorter.basePosition = (getModelviewMatrix()).getPosition();
-	sorter.cameraMatrix = getCameraMatrix().Inverse();	
+	sorter.cameraMatrix = getCameraMatrix().Inverse();
 	sort (areaLights.begin(), areaLights.end(), sorter);
-	sort (spotLights.begin(), spotLights.end(), sorter);	
+	sort (spotLights.begin(), spotLights.end(), sorter);
 }
 
 void Renderer::addLight(int lightImportance, Vector3 position, Vector3 direction, int type, Color color, Color specularColor, Number constantAttenuation, Number linearAttenuation, Number quadraticAttenuation, Number intensity, Number spotlightCutoff, Number spotlightExponent, bool shadowsEnabled, Matrix4 *textureMatrix,Texture *shadowMapTexture) {
 
 	numLights++;
-	
+
 	LightInfo info;
 	if(textureMatrix != NULL) {
 		info.textureMatrix = *textureMatrix;
 	}
-	
+
 	info.lightImportance = lightImportance;
 	info.shadowMapTexture = shadowMapTexture;
 	info.shadowsEnabled = shadowsEnabled;
 	info.spotlightCutoff = spotlightCutoff;
-	info.spotlightExponent = spotlightExponent;	
+	info.spotlightExponent = spotlightExponent;
 	info.intensity = intensity;
 	info.type = type;
 	info.dir = direction;
 	info.constantAttenuation = constantAttenuation;
 	info.linearAttenuation = linearAttenuation;
 	info.quadraticAttenuation = quadraticAttenuation;
-			
+
 	info.color.set(color.r, color.g, color.b);
 	info.specularColor = specularColor;
 	info.position = position;
@@ -262,9 +253,9 @@ void Renderer::addLight(int lightImportance, Vector3 position, Vector3 direction
 			numAreaLights++;
 		break;
 		case 1: //spot light
-			spotLights.push_back(info);			
+			spotLights.push_back(info);
 			numSpotLights++;
-		break;			
+		break;
 	}
 }
 
@@ -315,7 +306,7 @@ void Renderer::billboardMatrixWithScale(Vector3 scale) {
 	matrix.m[2][0] = 0;
 	matrix.m[2][1] = 0;
 	matrix.m[2][2] = 1.0f*scale.z;
-	
+
 	setModelviewMatrix(matrix);
 }
 
@@ -376,7 +367,7 @@ void Renderer::setAmbientColor(Number r, Number g, Number b) {
 }
 
 void Renderer::setClearColor(Number r, Number g, Number b, Number a) {
-	clearColor.setColor(r,g,b,a);	
+	clearColor.setColor(r,g,b,a);
 }
 
 void Renderer::setClearColor(Color color) {

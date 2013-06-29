@@ -25,17 +25,17 @@
 extern PolycodeClipboard *globalClipboard;
 
 PolycodeEditorFactory::PolycodeEditorFactory() {
-	
+
 }
 
 PolycodeEditorFactory::~PolycodeEditorFactory() {
-	
+
 }
 
 bool PolycodeEditorFactory::canHandleExtension(String extension) {
 	for(int i=0; i < extensions.size(); i++) {
 		if(extension == extensions[i])
-		   return true;
+			return true;
 	}
 	return false;
 }
@@ -46,14 +46,14 @@ void PolycodeEditor::setFilePath(String newPath) {
 
 PolycodeEditor::PolycodeEditor(bool _isReadOnly) : ScreenEntity(), ClipboardProvider() {
 	this->_isReadOnly = _isReadOnly;
-	enableScissor = true;	
+	enableScissor = true;
 	processInputEvents = true;
 	_hasChanges = false;
-	
+
 	currentUndoPosition = 0;
-	
+
 	Core *core = CoreServices::getInstance()->getCore();
-	
+
 	core->addEventListener(this, Core::EVENT_COPY);
 	core->addEventListener(this, Core::EVENT_PASTE);
 	core->addEventListener(this, Core::EVENT_UNDO);	
@@ -93,26 +93,26 @@ void PolycodeEditor::handleEvent(Event *event) {
 			case Core::EVENT_UNDO:
 			{
 				if(editorActions.size() > 0) {
-				doAction(editorActions[currentUndoPosition].actionName, editorActions[currentUndoPosition].beforeData);
-				currentUndoPosition--;
-				if(currentUndoPosition < 0) {
-					currentUndoPosition = 0;
+					doAction(editorActions[currentUndoPosition].actionName, editorActions[currentUndoPosition].beforeData);
+					currentUndoPosition--;
+					if(currentUndoPosition < 0) {
+						currentUndoPosition = 0;
+					}
 				}
-				}				
 			}
 			break;
 			case Core::EVENT_REDO:
 			{
-				if(editorActions.size() > 0) {			
-				currentUndoPosition++;
-				if(currentUndoPosition > editorActions.size()-1) {
-					currentUndoPosition = editorActions.size()-1;
-				} else {
-					doAction(editorActions[currentUndoPosition].actionName, editorActions[currentUndoPosition].afterData);
-				}
+				if(editorActions.size() > 0) {
+					currentUndoPosition++;
+					if(currentUndoPosition > editorActions.size()-1) {
+						currentUndoPosition = editorActions.size()-1;
+					} else {
+						doAction(editorActions[currentUndoPosition].actionName, editorActions[currentUndoPosition].afterData);
+					}
 				}
 			}
-			break;			
+			break;
 		}
 	}
 }
@@ -120,15 +120,15 @@ void PolycodeEditor::handleEvent(Event *event) {
 void PolycodeEditor::didAction(String actionName, PolycodeEditorActionData *beforeData, PolycodeEditorActionData *afterData, bool setFileChanged) {
 
 //	printf("DID ACTION: %s\n", actionName.c_str());
-	
+
 	if(setFileChanged) {
 		setHasChanges(true);
 	}
-	
+
 	// if the undo position is not at the end, remove the states after it
 	if(currentUndoPosition < editorActions.size()-1 && editorActions.size() > 0) {
 		for(int i=currentUndoPosition+1; i < editorActions.size(); i++) {
-			editorActions[i].deleteData();		
+			editorActions[i].deleteData();
 		}
 		editorActions.erase(editorActions.begin()+currentUndoPosition+1, editorActions.end());
 	}
@@ -136,21 +136,21 @@ void PolycodeEditor::didAction(String actionName, PolycodeEditorActionData *befo
 	PolycodeEditorAction newAction;
 	newAction.actionName = actionName;
 	newAction.beforeData = beforeData;
-	newAction.afterData = afterData;	
+	newAction.afterData = afterData;
 	editorActions.push_back(newAction);
-	
+
 	if(editorActions.size() > MAX_EDITOR_UNDO_ACTIONS) {
 		editorActions[0].deleteData();
 		editorActions.erase(editorActions.begin());
 	}
-	
-	currentUndoPosition = editorActions.size()-1;	
+
+	currentUndoPosition = editorActions.size()-1;
 }
 
 void PolycodeEditor::Resize(int x, int y) {
 	editorSize = Vector2(x,y);
 	Vector2 pos = getScreenPosition();
-	scissorBox.setRect(pos.x,pos.y, x, y);	
+	scissorBox.setRect(pos.x,pos.y, x, y);
 }
 
 PolycodeEditor::~PolycodeEditor() {
