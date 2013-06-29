@@ -101,6 +101,11 @@ void MaterialManager::addShaderModule(PolycodeShaderModule *module) {
 }
 
 Texture *MaterialManager::createTextureFromFile(const String& fileName, bool clamp, bool createMipmaps) {
+	if(fileName.size() == 0) {
+		Logger::log("empty texture filename\n");
+		return NULL;
+	}
+
 	Texture *newTexture;
 	newTexture = getTextureByResourcePath(fileName);
 	if(newTexture) {
@@ -116,7 +121,7 @@ Texture *MaterialManager::createTextureFromFile(const String& fileName, bool cla
 		newTexture->setResourcePath(fileName);
 		CoreServices::getInstance()->getResourceManager()->addResource(newTexture);		
 	} else {
-		Logger::log("Error loading image, using default texture.\n");
+		Logger::log("Error loading image (\"%s\"), using default texture.\n", fileName.c_str());
 		delete image;		
 		newTexture = getTextureByResourcePath("default/default.png");
 		return newTexture;
