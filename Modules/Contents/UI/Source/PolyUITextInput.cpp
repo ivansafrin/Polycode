@@ -172,7 +172,7 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	
 	scrollContainer = NULL;
 	if(multiLine) {
-		scrollContainer = new UIScrollContainer(linesContainer, false, true, 200, 200);
+		scrollContainer = new UIScrollContainer(linesContainer, false, true, width, height);
 		scrollContainer->addEventListener(this, Event::CHANGE_EVENT);
 		addChild(scrollContainer);
 	} else {
