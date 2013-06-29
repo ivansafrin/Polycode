@@ -117,7 +117,7 @@ SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool
 	//  clipboard events and respond to them)
 	init_scrap();
 
-	((OpenGLRenderer*)renderer)->initOSSpecific();
+	((OpenGLRenderer*)renderer)->init();
 	CoreServices::getInstance()->installModule(new GLSLShaderModule());	
 }
 

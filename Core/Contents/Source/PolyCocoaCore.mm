@@ -103,10 +103,11 @@ CocoaCore::CocoaCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, 
 	context = nil;
 	
 	initTime = mach_absolute_time();					
-		
+
 	renderer = new OpenGLRenderer();
 	services->setRenderer(renderer);			
-	setVideoMode(xRes,yRes,fullScreen, vSync, aaLevel, anisotropyLevel);		
+	setVideoMode(xRes,yRes,fullScreen, vSync, aaLevel, anisotropyLevel);
+	renderer->Init();
 
 	CoreServices::getInstance()->installModule(new GLSLShaderModule());	
 
