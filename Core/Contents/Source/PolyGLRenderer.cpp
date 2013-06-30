@@ -497,7 +497,6 @@ void OpenGLRenderer::_setOrthoMode(Number orthoSizeX, Number orthoSizeY) {
 	
 	if(!orthoMode) {
 		glMatrixMode(GL_PROJECTION);
-		glPushMatrix();
 		glLoadIdentity();
 		glOrtho(-orthoSizeX*0.5,orthoSizeX*0.5,-orthoSizeY*0.5,orthoSizeY*0.5,-farPlane,farPlane);
 		orthoMode = true;
@@ -520,7 +519,6 @@ void OpenGLRenderer::setOrthoMode(Number xSize, Number ySize, bool centered) {
 	glDisable(GL_LIGHTING);
 	glMatrixMode(GL_PROJECTION);
 	glDisable(GL_CULL_FACE);
-	glPushMatrix();
 	glLoadIdentity();
 		
 	if(centered) {
@@ -548,7 +546,6 @@ void OpenGLRenderer::setPerspectiveMode() {
 		glEnable (GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 		glMatrixMode( GL_PROJECTION );
-		glPopMatrix();
 		glMatrixMode( GL_MODELVIEW );
 		orthoMode = false;
 	}
@@ -583,7 +580,7 @@ void OpenGLRenderer::bindFrameBufferTextureDepth(Texture *texture) {
 	if(!texture)
 		return;
 	OpenGLTexture *glTexture = (OpenGLTexture*)texture;
-	glBindFramebufferEXT(GL_RENDERBUFFER_EXT, glTexture->getFrameBufferID());
+	glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, glTexture->getFrameBufferID());
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
 }
 
@@ -598,7 +595,7 @@ void OpenGLRenderer::bindFrameBufferTexture(Texture *texture) {
 
 void OpenGLRenderer::unbindFramebuffers() {
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-	glBindFramebufferEXT(GL_RENDERBUFFER_EXT, 0);
+	glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
 }
 
 void OpenGLRenderer::createRenderTextures(Texture **colorBuffer, Texture **depthBuffer, int width, int height, bool floatingPointBuffer) {
