@@ -73,6 +73,9 @@ namespace Polycode {
 			*/
 			Number maxY() const { return y + h; }
 
+			bool operator==(const Rectangle& rect) const;
+			bool operator!=(const Rectangle& rect) const { return !(*this == rect); }
+
 			/**
 			* X position
 			*/									

@@ -44,3 +44,11 @@ Rectangle Rectangle::Clipped(const Rectangle& rect) const
 
 	return result;
 }
+
+bool Rectangle::operator==(const Rectangle& rect) const
+{
+	if( x == rect.x && y == rect.y && w == rect.w && h == rect.h)
+		return true;
+
+	return false;
+}
