@@ -100,6 +100,8 @@ namespace Polycode {
 		
 		OpenGLRenderer();
 		~OpenGLRenderer();
+
+		bool Init();
 		
 		void Resize(int xRes, int yRes);
 		void BeginRender();
@@ -152,8 +154,6 @@ namespace Polycode {
 		void setScissorBox(Polycode::Rectangle box);		
 		
 		Vector3 projectRayFrom2DCoordinate(Number x, Number y);
-
-		void initOSSpecific();
 		
 		void setLineSize(Number lineSize);
 		
@@ -195,7 +195,7 @@ namespace Polycode {
 		void applyMaterial(Material *material,  ShaderBinding *localOptions, unsigned int shaderIndex);
 		
 	protected:
-
+		void initOSSpecific();
 		
 		Number nearPlane;
 		Number farPlane;

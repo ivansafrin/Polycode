@@ -121,7 +121,7 @@ Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScre
 		Logger::log("Error initializing sockets!\n");
 	}
 
-	((OpenGLRenderer*)renderer)->initOSSpecific();
+	((OpenGLRenderer*)renderer)->init();
 
 	wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC) wglGetProcAddress("wglSwapIntervalEXT");
 	wglGetSwapIntervalEXT = (PFNWGLGETSWAPINTERVALEXTPROC) wglGetProcAddress("wglGetSwapIntervalEXT");

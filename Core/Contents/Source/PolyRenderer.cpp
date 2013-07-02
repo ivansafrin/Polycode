@@ -51,6 +51,12 @@ Renderer::Renderer() : clearColor(0.2f, 0.2f, 0.2f, 0.0), currentTexture(NULL), 
 Renderer::~Renderer() {
 }
 
+bool Renderer::Init() {
+	initOSSpecific();
+
+	return true;
+}
+
 void Renderer::enableShaders(bool flag) {
 	shadersEnabled = flag;
 }

@@ -89,14 +89,22 @@ OpenGLRenderer::OpenGLRenderer() : Renderer() {
 	nearPlane = 0.1f;
 	farPlane = 100.0f;
 	verticesToDraw = 0;
-	
-	glDisable(GL_SCISSOR_TEST);
+
 }
 
 void OpenGLRenderer::setClippingPlanes(Number nearPlane_, Number farPlane_) {
 	nearPlane = nearPlane_;
 	farPlane = farPlane_;
 	Resize(xRes,yRes);
+}
+
+bool OpenGLRenderer::Init() {
+	if(!Renderer::Init())
+		return false;
+
+	glDisable(GL_SCISSOR_TEST);
+
+	return true;
 }
 
 void OpenGLRenderer::initOSSpecific(){

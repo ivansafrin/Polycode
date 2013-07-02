@@ -90,6 +90,8 @@ namespace Polycode {
 		Renderer();
 		virtual ~Renderer();
 		
+		virtual bool Init();
+
 		virtual void Resize(int xRes, int yRes) = 0;
 		
 		virtual void BeginRender() = 0;
@@ -250,8 +252,6 @@ namespace Polycode {
 		
 		void *getDataPointerForName(const String &name);
 		void setRendererShaderParams(Shader *shader, ShaderBinding *binding);
-
-		virtual void initOSSpecific() {};
 		
 		void addShaderModule(PolycodeShaderModule *module);
 		
@@ -302,7 +302,8 @@ namespace Polycode {
 		
 		bool blendNormalAsPremultiplied;
 				
-	protected:	
+	protected:
+		virtual void initOSSpecific() {};
 	
 		bool scissorEnabled;
 		
