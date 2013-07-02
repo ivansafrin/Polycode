@@ -84,7 +84,7 @@ void OpenGLTexture::recreateFromImageData() {
 			}
 		
 			if(createMipmaps) {
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 				if(textureData) {
 					gluBuild2DMipmaps(GL_TEXTURE_2D, glTextureFormat, width, height, glTextureType, pixelType, textureData );
