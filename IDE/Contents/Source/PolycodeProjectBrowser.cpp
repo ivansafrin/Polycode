@@ -41,6 +41,7 @@ PolycodeProjectBrowser::PolycodeProjectBrowser() : UIElement() {
 	treeContainer = new UITreeContainer("boxIcon.png", L"Projects", 200, 555);
 	treeContainer->getRootNode()->toggleCollapsed();
 	treeContainer->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
+	treeContainer->getRootNode()->addEventListener(this, UITreeEvent::EXECUTED_EVENT);
 	treeContainer->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	treeContainer->setPosition(0, 30);
 	
@@ -140,6 +141,14 @@ void PolycodeProjectBrowser::handleEvent(Event *event) {
 		if(event->getEventCode() == UITreeEvent::SELECTED_EVENT){ 
 			BrowserUserData *data = (BrowserUserData *)treeContainer->getRootNode()->getSelectedNode()->getUserData();
 			selectedData =  data;
+			// XXX - Maybe we need to dispatch a different event
+			// here if we want to signal the event listeners that a
+			// selected item has changed. We can't use CHANGE_EVENT
+			// though because it's used to open the actual files and
+			// is executed twice if MOUSEUP+MOUSEDOWN
+			//dispatchEvent(new Event(), Event::CHANGE_EVENT);
+		}
+		if(event->getEventCode() == UITreeEvent::EXECUTED_EVENT) {
 			dispatchEvent(new Event(), Event::CHANGE_EVENT);
 		}
 	}
