@@ -174,6 +174,7 @@ bool Win32Core::Update() {
 	checkEvents();
 	Gamepad_processEvents();
 	updateCore();
+	input->setDeltaPosition(0, 0); //Stops delta from remaining after the mouse stops
 	return running;
 }
 
