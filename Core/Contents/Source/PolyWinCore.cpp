@@ -703,6 +703,12 @@ void Win32Core::checkEvents() {
 					case InputEvent::EVENT_MOUSEUP:
 							input->setMouseButtonState(event.mouseButton, false, getTicks());
 					break;
+					case InputEvent::EVENT_MOUSEWHEEL_UP:
+						input->mouseWheelUp(getTicks());
+					break;
+					case InputEvent::EVENT_MOUSEWHEEL_DOWN:
+						input->mouseWheelDown(getTicks());						
+					break;	
 					case InputEvent::EVENT_KEYDOWN:
 						if(!checkSpecialKeyEvents((event.keyCode))) {
 							input->setKeyState(event.keyCode, (char)event.unicodeChar, true, getTicks());
