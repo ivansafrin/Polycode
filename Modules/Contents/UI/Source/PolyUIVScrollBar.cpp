@@ -30,7 +30,7 @@
 
 using namespace Polycode;
 
-UIVScrollBar::UIVScrollBar(Number width, Number height, Number initialRatio) : ScreenEntity() {
+UIVScrollBar::UIVScrollBar(Number width, Number height, Number initialRatio) : UIElement() {
 
 	scrollValue = 0;
 	

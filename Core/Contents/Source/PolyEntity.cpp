@@ -63,7 +63,7 @@ Entity::Entity() : EventDispatcher() {
 	tags = NULL;
 }
 
-Entity *Entity::getEntityById(String id, bool recursive) {
+Entity *Entity::getEntityById(String id, bool recursive) const {
 	for(int i=0;i<children.size();i++) {
 		if(children[i]->id == id) {
 			return children[i];
@@ -79,13 +79,13 @@ Entity *Entity::getEntityById(String id, bool recursive) {
 	return NULL;
 }
 
-Entity *Entity::Clone(bool deepClone, bool ignoreEditorOnly) {
+Entity *Entity::Clone(bool deepClone, bool ignoreEditorOnly) const {
 	Entity *newEntity = new Entity();
 	applyClone(newEntity, deepClone, ignoreEditorOnly);
 	return newEntity;
 }
 
-void Entity::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) {
+void Entity::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
 	clone->ownsChildren = ownsChildren;
 	clone->position = position;
 	clone->rotation = rotation;
@@ -139,7 +139,7 @@ void Entity::setOwnsChildrenRecursive(bool val) {
 	}
 }
 
-std::vector<Entity*> Entity::getEntitiesByTag(String tag, bool recursive) {
+std::vector<Entity*> Entity::getEntitiesByTag(String tag, bool recursive) const {
 
 	std::vector<Entity*> retVector;
 
@@ -162,7 +162,7 @@ void Entity::setUserData(void *userData) {
 	this->userData = userData;
 }
 
-void *Entity::getUserData() {
+void *Entity::getUserData() const {
 	return userData;
 }
 
@@ -405,31 +405,15 @@ void Entity::transformAndRender() {
 		isScissorEnabled = renderer->isScissorEnabled();
 		oldScissorBox = renderer->getScissorBox();
 		renderer->enableScissor(true);
-		
-		Polycode::Rectangle finalScrissorBox = scissorBox;		
-		
+
+		Rectangle finalScissorBox = scissorBox;
+
 		// make sure that our scissor box is constrained to the parent one if it exists
 		if(isScissorEnabled) {
-			if(finalScrissorBox.x < oldScissorBox.x)
-				finalScrissorBox.x = oldScissorBox.x;
-			if(finalScrissorBox.x > oldScissorBox.x + oldScissorBox.w)
-				finalScrissorBox.x = oldScissorBox.x + oldScissorBox.w;
-
-				
-			if(finalScrissorBox.x+finalScrissorBox.w > oldScissorBox.x + oldScissorBox.w)
-				finalScrissorBox.w = oldScissorBox.x + oldScissorBox.w - finalScrissorBox.x;
-
-			if(finalScrissorBox.y < oldScissorBox.y)
-				finalScrissorBox.y = oldScissorBox.y;
-			if(finalScrissorBox.y > oldScissorBox.y + oldScissorBox.h)
-				finalScrissorBox.y = oldScissorBox.y + oldScissorBox.h;
-
-			if(finalScrissorBox.y+finalScrissorBox.h > oldScissorBox.y + oldScissorBox.h)
-				finalScrissorBox.h = oldScissorBox.y + oldScissorBox.h - finalScrissorBox.y;
-
+			finalScissorBox = finalScissorBox.Clipped(renderer->getScissorBox());
 		}
-		
-		renderer->setScissorBox(finalScrissorBox);
+
+		renderer->setScissorBox(finalScissorBox);
 	}
 		
 	renderer->pushMatrix();

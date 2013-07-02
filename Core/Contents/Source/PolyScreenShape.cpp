@@ -45,7 +45,7 @@ ScreenShape::ScreenShape(int shapeType, Number option1, Number option2, Number o
 		
 	buildShapeMesh();
 	
-	positionMode = POSITION_CENTER;
+	setPositionMode(POSITION_CENTER);
 	strokeEnabled = false;
 }
 
@@ -66,19 +66,19 @@ void ScreenShape::operator=(const ScreenShape& copy) {
 	
 	strokeColor = copy.strokeColor;
 	
-	positionMode = POSITION_CENTER;
+	setPositionMode(POSITION_CENTER);
 	strokeEnabled = copy.strokeEnabled;	
 
 }
 
-Entity *ScreenShape::Clone(bool deepClone, bool ignoreEditorOnly) {
+Entity *ScreenShape::Clone(bool deepClone, bool ignoreEditorOnly) const {
 	ScreenShape *newEntity = new ScreenShape(ScreenShape::SHAPE_RECT, 1,1);
 	applyClone(newEntity, deepClone, ignoreEditorOnly);
 	return newEntity;
 
 }
 
-void ScreenShape::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) {
+void ScreenShape::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
 	ScreenEntity::applyClone(clone, deepClone, ignoreEditorOnly);
 	ScreenShape *_clone = (ScreenShape*) clone;
 	*_clone = *this;

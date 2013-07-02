@@ -26,6 +26,7 @@
 #include "PolyUIBox.h"
 
 namespace Polycode {
+	class ScreenLine;
 
 	/**
 	 * An single selectable entry in an UIMenu
@@ -34,6 +35,8 @@ namespace Polycode {
 		public:
 			UIMenuItem(String label, String _id, void *data, Number comboWidth, Number comboHeight);
 			~UIMenuItem();
+
+			virtual bool isSelectable();
 			
 			/**
 			 * The user-data associated with this entry, as set in UIMenu::addOption()
@@ -54,8 +57,20 @@ namespace Polycode {
 			String _id;
 
 		protected:
+			UIMenuItem();
+
 			ScreenLabel *itemLabel;
 			friend class UIMenu;
+	};
+
+	class _PolyExport UIMenuDivider : public UIMenuItem {
+	public:
+		UIMenuDivider(Number comboWidth, Number comboHeight);
+		~UIMenuDivider();
+		bool isSelectable();
+
+	protected:
+		ScreenLine* line;
 	};
 
 	/** 
@@ -85,6 +100,13 @@ namespace Polycode {
 			 * @see UIMenuItem
 			 */
 			UIMenuItem *addOption(String label, String _id, void *data = NULL);
+
+			/**
+			 * Add a non-selectable entry to the dropdown
+			 * used to separate sections of the menu
+			 *
+			 */
+			UIMenuItem *addDivider();
 
 			/**
 			 * Returns the currently selected item.

@@ -196,7 +196,6 @@ void GLSLShader::linkProgram() {
 		char name[128];
 		glGetActiveUniform(shader_id, GLuint(i), sizeof(name)-1, &name_len, &num, &type, name );
 		name[name_len] = 0;
-		GLuint location = glGetUniformLocation( shader_id, name );
 		
 		if(!(String(name).find("gl_") == 0)) {
 		switch(type) {

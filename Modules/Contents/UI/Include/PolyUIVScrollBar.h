@@ -22,12 +22,15 @@
 
 #pragma once
 #include "PolyGlobals.h"
+#include "PolyUIElement.h"
 #include "PolyUIBox.h"
 
 namespace Polycode {
 	
-	class _PolyExport UIVScrollBar : public ScreenEntity {
+	class _PolyExport UIVScrollBar : public UIElement {
 	public:
+		using UIElement::Resize;
+
 		UIVScrollBar(Number width, Number height, Number initialRatio);
 		~UIVScrollBar();
 		

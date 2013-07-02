@@ -37,7 +37,7 @@ ScreenLabel::ScreenLabel(const String& text, int size, const String& fontName, i
 	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size, amode, premultiplyAlpha);
 	texture = NULL;
 	updateTexture();
-	positionMode = POSITION_TOPLEFT;
+	setPositionMode(POSITION_TOPLEFT);
 	colorAffectsChildren = false;
 	positionAtBaseline = true;
 }
@@ -50,13 +50,13 @@ Label *ScreenLabel::getLabel() const {
 	return label;
 }
 
-Entity *ScreenLabel::Clone(bool deepClone, bool ignoreEditorOnly) {
+Entity *ScreenLabel::Clone(bool deepClone, bool ignoreEditorOnly) const {
 	ScreenLabel *newLabel = new ScreenLabel(getText(), label->getSize(), label->getFont()->getFontName(), label->getAntialiasMode());
 	applyClone(newLabel, deepClone, ignoreEditorOnly);
 	return newLabel;
 }
 
-void ScreenLabel::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) {
+void ScreenLabel::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
 	ScreenShape::applyClone(clone, deepClone, ignoreEditorOnly);
 	ScreenLabel *_clone = (ScreenLabel*) clone;
 	_clone->positionAtBaseline = positionAtBaseline;
