@@ -23,7 +23,7 @@
 #include "OSBasics.h"
 #ifdef _WINDOWS
 	#include <windows.h>
-	#include <Shellapi.h>
+	#include <shellapi.h>
 #else
 	#include <dirent.h>
 	#include <sys/types.h>

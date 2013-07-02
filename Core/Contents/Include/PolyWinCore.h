@@ -31,9 +31,9 @@
 #include <winsock2.h>
 #include <windows.h>
 #include <windowsx.h>
-#include <WinUser.h>
+#include <winuser.h>
 
-#include <MMSystem.h>
+#include <mmsystem.h>
 #include <regstr.h>
 
 
