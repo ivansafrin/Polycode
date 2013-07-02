@@ -96,13 +96,13 @@ ScreenParticleEmitter::~ScreenParticleEmitter(){
 	}
 }
 
-Entity *ScreenParticleEmitter::Clone(bool deepClone, bool ignoreEditorOnly) {
+Entity *ScreenParticleEmitter::Clone(bool deepClone, bool ignoreEditorOnly) const {
 	ScreenParticleEmitter *newEmitter = new ScreenParticleEmitter("default.png", Particle::BILLBOARD_PARTICLE, ParticleEmitter::CONTINUOUS_EMITTER, 2.0, 0, Vector3(0.0, -40.0, 0.0), Vector3(0.0, 0.0, 0.0), Vector3(0.0, 0.0, 0.0), Vector3(10.0, 10.0, 0.0));
 	applyClone(newEmitter, deepClone, ignoreEditorOnly);
 	return newEmitter;
 }
 
-void ScreenParticleEmitter::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) {
+void ScreenParticleEmitter::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
 	ScreenParticleEmitter *_clone = (ScreenParticleEmitter*) clone;
 
 	_clone->emitterRadius = this->emitterRadius;
@@ -214,7 +214,7 @@ ParticleEmitter::ParticleEmitter(const String& imageFile, Mesh *particleMesh, in
 	useScaleCurves = false;	
 }
 
-bool ParticleEmitter::getIgnoreParentMatrix() {
+bool ParticleEmitter::getIgnoreParentMatrix() const {
 	return ignoreParentMatrix;
 }
 
@@ -226,7 +226,7 @@ void ParticleEmitter::setIgnoreParentMatrix(bool val) {
 }
 
 
-Texture *ParticleEmitter::getParticleTexture() {
+Texture *ParticleEmitter::getParticleTexture() const {
 	return particleTexture;
 }
 

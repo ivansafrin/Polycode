@@ -48,8 +48,8 @@ class ScreenEntityInstance : public ScreenEntity {
 
 		virtual ~ScreenEntityInstance();
 	
-		virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly);
-		virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly);
+		virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
+		virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
 		
 		void reloadEntityInstance();
 

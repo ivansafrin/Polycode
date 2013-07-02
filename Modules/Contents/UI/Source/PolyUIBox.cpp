@@ -24,7 +24,7 @@
 
 using namespace Polycode;
 
-UIBox::UIBox(String imageFile, Number t, Number r, Number b, Number l, Number boxWidth, Number boxHeight) : ScreenEntity() {
+UIBox::UIBox(String imageFile, Number t, Number r, Number b, Number l, Number boxWidth, Number boxHeight) : UIElement() {
 	
 	setPositionMode(ScreenEntity::POSITION_TOPLEFT);	
 	

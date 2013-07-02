@@ -228,7 +228,7 @@ namespace Polycode {
 			
 			Number particleSize;
 			
-			Texture *getParticleTexture();
+			Texture *getParticleTexture() const;
 			
 			void setParticleTexture(Texture *texture);
 		
@@ -242,7 +242,7 @@ namespace Polycode {
 							
 			int emitterType;
 			
-			bool getIgnoreParentMatrix();			
+			bool getIgnoreParentMatrix() const;
 			void setIgnoreParentMatrix(bool val);
 											
 		protected:
@@ -332,8 +332,8 @@ namespace Polycode {
 		ScreenParticleEmitter(const String& imageFile, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Vector3 emitterRadius, Mesh *particleMesh = NULL, ScreenMesh *emitter = NULL);
 		virtual ~ScreenParticleEmitter();		
 		
-		virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly);
-		virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly);
+		virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
+		virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
 		
 		/**
 		* Returns the emitter (helper method for LUA).
