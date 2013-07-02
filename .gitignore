@@ -130,6 +130,7 @@ Player/Build/Mac OS X/Polycode Player.xcodeproj/project.xcworkspace/xcuserdata/i
 
 /Documentation/Lua/xml/*.xml
 
+/Documentation/Lua/site_html
 /Documentation/Lua/html/*
 !/Documentation/Lua/html/css
 !/Documentation/Lua/html/images
