@@ -34,11 +34,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <Shlobj.h>
-#include <Shellapi.h>
-#include <Commdlg.h>
+#include <shlobj.h>
+#include <shellapi.h>
+#include <commdlg.h>
 
-#if !defined(_MINGW)
+#if defined(_MINGW)
+#ifndef MAPVK_VSC_TO_VK_EX
+#define MAPVK_VSC_TO_VK_EX 3
+#endif
+#else
 PFNWGLSWAPINTERVALEXTPROC       wglSwapIntervalEXT = NULL;
 PFNWGLGETSWAPINTERVALEXTPROC    wglGetSwapIntervalEXT = NULL;
 #endif
