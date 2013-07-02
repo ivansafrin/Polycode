@@ -549,8 +549,10 @@ PostPreviewBox::PostPreviewBox() : UIElement() {
 	previewPrimitive->setMaterialByName("DefaultHDR");
 	previewPrimitive->setColorInt(198, 192, 166, 255);	
 	
-	previewPrimitive->getMaterial()->getShaderBinding(0)->getLocalParamByName("shininess")->setNumber(90);
-
+	if(previewPrimitive->getMaterial()) {
+		previewPrimitive->getMaterial()->getShaderBinding(0)->getLocalParamByName("shininess")->setNumber(90);
+	}
+	
 	previewPrimitive = new ScenePrimitive(ScenePrimitive::TYPE_TORUS, 0.9, 0.45, 26, 16);
 	previewScene->addChild(previewPrimitive);
 	previewPrimitive->setMaterialByName("DefaultHDR");

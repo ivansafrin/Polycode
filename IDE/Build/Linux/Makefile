@@ -9,12 +9,14 @@ default:
 	$(CC) $(CFLAGS) -O2 main.cpp $(SRCS) -o ./Build/Polycode $(LDFLAGS)
 	cp -R ../../Contents/Resources/* Build/
 	cp ../../../Release/Linux/Framework/Core/Assets/default.pak Build/
+	cp ../../../Release/Linux/Framework/Core/Assets/hdr.pak Build/
 	cp -R ../../../Release/Linux/Standalone Build
 debug:
 	mkdir -p ./Build
 	$(CC) $(CFLAGS) -g main.cpp $(SRCS) -o ./Build/Polycode $(LDFLAGS_DEBUG)
 	cp -R ../../Contents/Resources/* Build/
 	cp ../../../Release/Linux/Framework/Core/Assets/default.pak Build/
+	cp ../../../Release/Linux/Framework/Core/Assets/hdr.pak Build/
 	cp -R ../../../Release/Linux/Standalone Build
 
 clean:
