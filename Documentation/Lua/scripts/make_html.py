@@ -7,6 +7,7 @@ globalHeaderMain += "<html>\n"
 globalHeaderMain += "\t<head>\n"
 globalHeaderMain += "\t\t<title>Polycode Documentation</title>\n"
 globalHeaderMain += "\t\t<link rel=\"stylesheet\" type=\"text/css\" href=\"css/docs.css\" />\n"
+globalHeaderMain += "\t\t<link href='http://fonts.googleapis.com/css?family=Roboto:400,300' rel='stylesheet' type='text/css'>\n"
 globalHeaderMain += "\t\t<script type=\"text/javascript\" src=\"js/docs.js\"></script>"
 globalHeaderMain += "\t</head>\n"
 globalHeaderMain += "\t<body>\n"
@@ -32,6 +33,20 @@ globalFooter += "\t</body>\n"
 globalFooter += "\t</html>\n"
 
 def createMethods(className, item, static):
+
+	numStatic = 0
+	numRegular = 0
+	for subitem in item.getElementsByTagName('method'):
+		if subitem.hasAttribute("static") == True:
+			numStatic = numStatic + 1
+		else:
+			numRegular = numRegular + 1
+
+	if static == True and numStatic == 0:
+		return ""
+	if static == False and numRegular == 0:
+		return ""
+
 	html = ""
 	html += "\t\t\t\t\t<div class=\"class_methods\">\n"
 	if static == True:
@@ -108,37 +123,39 @@ def makePage(item, classList, classListPlain, moduleName):
 		descText = desc[0].childNodes[0].data
 	html += "\t\t\t\t\t<div class=\"class_desc\">%s</div>\n" % descText
 
-	html += "\t\t\t\t\t<div class=\"class_properties\">\n"
-	html += "\t\t\t\t\t\t<div class=\"class_properties_title\">Static Properties</div>\n"
-	html += "\t\t\t\t\t\t<div class=\"class_properties_list\">\n"
-	for subitem in item.getElementsByTagName('static_member'):
-		html += "\t\t\t\t\t\t\t<div class=\"class_property\">\n"
-		html += "\t\t\t\t\t\t\t\t<div class=\"class_property_name\">%s.%s <span class=\"static_value\">= %s</span></div>\n" % (item.attributes["name"].value, subitem.attributes["name"].value, subitem.attributes["value"].value)
-		html += "\t\t\t\t\t\t\t\t<div class=\"class_property_type\">%s</div>\n" % (subitem.attributes["type"].value)
-		desc = subitem.getElementsByTagName('desc')
-		descText = "No description."
-		if len(desc) > 0:
-			descText = desc[0].childNodes[0].data
-		html += "\t\t\t\t\t\t\t\t<div class=\"class_property_desc\">%s</div>\n" % (descText)
-		html += "\t\t\t\t\t\t\t</div>\n"
-	html += "\t\t\t\t\t\t</div>\n"
-	html += "\t\t\t\t\t</div>\n"
+	if len(item.getElementsByTagName('static_member')) > 0:
+		html += "\t\t\t\t\t<div class=\"class_properties\">\n"
+		html += "\t\t\t\t\t\t<div class=\"class_properties_title\">Static Properties</div>\n"
+		html += "\t\t\t\t\t\t<div class=\"class_properties_list\">\n"
+		for subitem in item.getElementsByTagName('static_member'):
+			html += "\t\t\t\t\t\t\t<div class=\"class_property\">\n"
+			html += "\t\t\t\t\t\t\t\t<div class=\"class_property_name\">%s.%s <span class=\"static_value\">= %s</span></div>\n" % (item.attributes["name"].value, subitem.attributes["name"].value, subitem.attributes["value"].value)
+			html += "\t\t\t\t\t\t\t\t<div class=\"class_property_type\">%s</div>\n" % (subitem.attributes["type"].value)
+			desc = subitem.getElementsByTagName('desc')
+			descText = "No description."
+			if len(desc) > 0:
+				descText = desc[0].childNodes[0].data
+			html += "\t\t\t\t\t\t\t\t<div class=\"class_property_desc\">%s</div>\n" % (descText)
+			html += "\t\t\t\t\t\t\t</div>\n"
+		html += "\t\t\t\t\t\t</div>\n"
+		html += "\t\t\t\t\t</div>\n"
 
-	html += "\t\t\t\t\t<div class=\"class_properties\">\n"
-	html += "\t\t\t\t\t\t<div class=\"class_properties_title\">Properties</div>\n"
-	html += "\t\t\t\t\t\t<div class=\"class_properties_list\">\n"
-	for subitem in item.getElementsByTagName('member'):
-		html += "\t\t\t\t\t\t\t<div class=\"class_property\">\n"
-		html += "\t\t\t\t\t\t\t\t<div class=\"class_property_name\">%s</div>\n" % (subitem.attributes["name"].value)
-		html += "\t\t\t\t\t\t\t\t<div class=\"class_property_type\">%s</div>\n" % (subitem.attributes["type"].value)
-		desc = subitem.getElementsByTagName('desc')
-		descText = "No description."
-		if len(desc) > 0:
-			descText = desc[0].childNodes[0].data
-		html += "\t\t\t\t\t\t\t\t<div class=\"class_property_desc\">%s</div>\n" % (descText)
-		html += "\t\t\t\t\t\t\t</div>\n"
-	html += "\t\t\t\t\t\t</div>\n"
-	html += "\t\t\t\t\t</div>\n"
+	if len(item.getElementsByTagName('member')) > 0:
+		html += "\t\t\t\t\t<div class=\"class_properties\">\n"
+		html += "\t\t\t\t\t\t<div class=\"class_properties_title\">Properties</div>\n"
+		html += "\t\t\t\t\t\t<div class=\"class_properties_list\">\n"
+		for subitem in item.getElementsByTagName('member'):
+			html += "\t\t\t\t\t\t\t<div class=\"class_property\">\n"
+			html += "\t\t\t\t\t\t\t\t<div class=\"class_property_name\">%s</div>\n" % (subitem.attributes["name"].value)
+			html += "\t\t\t\t\t\t\t\t<div class=\"class_property_type\">%s</div>\n" % (subitem.attributes["type"].value)
+			desc = subitem.getElementsByTagName('desc')
+			descText = "No description."
+			if len(desc) > 0:
+				descText = desc[0].childNodes[0].data
+			html += "\t\t\t\t\t\t\t\t<div class=\"class_property_desc\">%s</div>\n" % (descText)
+			html += "\t\t\t\t\t\t\t</div>\n"
+		html += "\t\t\t\t\t\t</div>\n"
+		html += "\t\t\t\t\t</div>\n"
 
 	html += createMethods(item.attributes["name"].value, item, True)
 	html += createMethods(item.attributes["name"].value, item, False)
