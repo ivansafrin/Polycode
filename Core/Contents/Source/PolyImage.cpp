@@ -784,35 +784,35 @@ bool Image::loadPNG(const String& fileName) {
 	
 	infile = OSBasics::open(fileName.c_str(), "rb");
 	if (!infile) {
-		Logger::log("Error opening png file\n");	
+		Logger::log("Error opening png file (\"%s\")\n", fileName.c_str());
 		return false;
 	}
 	
 	OSBasics::read(sig, 1, 8, infile);
 	
 	if (!png_check_sig((unsigned char *) sig, 8)) {
-		Logger::log("Error reading png signature\n");
+		Logger::log("Error reading png signature (\"%s\")\n", fileName.c_str());
 		OSBasics::close(infile);
 		return false;
 	}
 
 	png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 	if (!png_ptr) {
-		Logger::log("Error creating png struct\n");
+		Logger::log("Error creating png struct (\"%s\")\n", fileName.c_str());
 		OSBasics::close(infile);
 		return false;    /* out of memory */
 	}
 	
 	info_ptr = png_create_info_struct(png_ptr);
 	if (!info_ptr) {
-		Logger::log("Error creating info struct\n");		
+		Logger::log("Error creating info struct (\"%s\")\n", fileName.c_str());
 		png_destroy_read_struct(&png_ptr, (png_infopp) NULL, (png_infopp) NULL);
 		OSBasics::close(infile);
 		return false;    /* out of memory */
 	}
 	
 	if (setjmp(png_jmpbuf(png_ptr))) {
-		Logger::log("Error setting jump thingie\n");
+		Logger::log("Error setting jump thingie (\"%s\")\n", fileName.c_str());
 		png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 		OSBasics::close(infile);
 		return false;
@@ -856,13 +856,13 @@ bool Image::loadPNG(const String& fileName) {
 	
 	/* Allocate the image_data buffer. */
 	if ((image_data = (char *) malloc(rowbytes * height))==NULL) {
-		Logger::log("Error allocating image memory\n");		
+		Logger::log("Error allocating image memory (\"%s\")\n", fileName.c_str());
 		png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 		return false;
 	}
 	
 	if ((row_pointers = (png_bytepp)malloc(height*sizeof(png_bytep))) == NULL) {
-		Logger::log("Error allocating image memory\n");
+		Logger::log("Error allocating image memory (\"%s\")\n", fileName.c_str());
 		png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 		free(image_data);
 		image_data = NULL;
