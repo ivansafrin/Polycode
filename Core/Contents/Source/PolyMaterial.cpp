@@ -121,8 +121,6 @@ void Material::recreateRenderTarget(ShaderRenderTarget *renderTarget) {
 			for(int j=0; j < shaderBindings[i]->getNumRenderTargetBindings(); j++) {
 				if(shaderBindings[i]->getRenderTargetBinding(j)->texture == oldTexture) {
 					shaderBindings[i]->getRenderTargetBinding(j)->texture = newTexture;
-					shaderBindings[i]->getRenderTargetBinding(j)->width = newTexture->getWidth();
-					shaderBindings[i]->getRenderTargetBinding(j)->height = newTexture->getHeight();
 					shaderBindings[i]->clearTexture(shaderBindings[i]->getRenderTargetBinding(j)->name);
 					shaderBindings[i]->addTexture(shaderBindings[i]->getRenderTargetBinding(j)->name, newTexture);					
 				}

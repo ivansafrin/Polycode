@@ -1383,8 +1383,6 @@ void TargetBindingProp::handleEvent(Event *event) {
 		ShaderRenderTarget *target = (ShaderRenderTarget*)targetComboBox->getSelectedItem()->data;		
 		targetBinding->texture = target->texture;
 		targetBinding->id  = target->id;
-		targetBinding->width = target->width;
-		targetBinding->height = target->height;
 		
 		binding->removeRenderTargetBinding(targetBinding);		
 		binding->addRenderTargetBinding(targetBinding);		

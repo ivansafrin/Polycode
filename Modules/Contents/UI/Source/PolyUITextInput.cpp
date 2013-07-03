@@ -1568,10 +1568,14 @@ void UITextInput::handleEvent(Event *event) {
 				draggingSelection = false;
 			break;
 			case InputEvent::EVENT_MOUSEWHEEL_UP:
-				scrollContainer->onMouseWheelUp(0, 0);
+				if(scrollContainer) {
+					scrollContainer->onMouseWheelUp(0, 0);
+				}
 			break;
 			case InputEvent::EVENT_MOUSEWHEEL_DOWN:
-				scrollContainer->onMouseWheelDown(0, 0);
+				if(scrollContainer) {
+					scrollContainer->onMouseWheelDown(0, 0);
+				}
 			break;
 			case InputEvent::EVENT_DOUBLECLICK:
 				selectWordAtCaret();

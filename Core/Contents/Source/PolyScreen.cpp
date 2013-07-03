@@ -162,9 +162,10 @@ void Screen::drawFilter() {
 			renderer->drawScreenQuad(renderer->getXRes(), renderer->getYRes());		
 		} else {
 			for(int j=0; j < materialBinding->getNumOutTargetBindings(); j++) {
-				renderer->bindFrameBufferTexture(materialBinding->getOutTargetBinding(j)->texture);
+				Texture *bindingTexture = materialBinding->getOutTargetBinding(j)->texture;
+				renderer->bindFrameBufferTexture(bindingTexture);
 				
-				renderer->drawScreenQuad(materialBinding->getOutTargetBinding(j)->width, materialBinding->getOutTargetBinding(j)->height);
+				renderer->drawScreenQuad(bindingTexture->getWidth(), bindingTexture->getHeight());
 				renderer->unbindFramebuffers();
 			}						
 		}

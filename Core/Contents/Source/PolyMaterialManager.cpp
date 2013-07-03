@@ -564,8 +564,6 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 									if(renderTargets[l]->id == newBinding->id) {
 										printf("Assigning texture to %s\n", newBinding->id.c_str());
 										newBinding->texture = renderTargets[l]->texture;
-										newBinding->width = renderTargets[l]->width;
-										newBinding->height = renderTargets[l]->height;
 									}
 								}
 								

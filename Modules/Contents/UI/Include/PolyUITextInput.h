@@ -113,7 +113,7 @@ namespace Polycode {
 			 * If the input is single-line, insert the complete text into
 			 * the line, without taking linebreaks into account.
 			 *
-			 * If the input is multi-line, each line is inserted separately
+			* If the input is multi-line, each line is inserted separately
 			 * into the text field
 			 *
 			 * @param text The new text contents.

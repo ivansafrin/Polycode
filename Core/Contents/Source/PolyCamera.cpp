@@ -364,10 +364,13 @@ void Camera::drawFilter(Texture *targetTexture, Number targetTextureWidth, Numbe
 				}
 		} else {
 			for(int j=0; j < materialBinding->getNumOutTargetBindings(); j++) {
-				CoreServices::getInstance()->getRenderer()->setViewportSize(materialBinding->getOutTargetBinding(j)->width, materialBinding->getOutTargetBinding(j)->height);
-				CoreServices::getInstance()->getRenderer()->bindFrameBufferTexture(materialBinding->getOutTargetBinding(j)->texture);
-				CoreServices::getInstance()->getRenderer()->drawScreenQuad(materialBinding->getOutTargetBinding(j)->width, materialBinding->getOutTargetBinding(j)->height);
-				CoreServices::getInstance()->getRenderer()->unbindFramebuffers();
+				Texture *bindingTexture = materialBinding->getOutTargetBinding(j)->texture;
+				if(bindingTexture) {
+					CoreServices::getInstance()->getRenderer()->setViewportSize(bindingTexture->getWidth(), bindingTexture->getHeight());
+					CoreServices::getInstance()->getRenderer()->bindFrameBufferTexture(bindingTexture);				
+					CoreServices::getInstance()->getRenderer()->drawScreenQuad(bindingTexture->getWidth(), bindingTexture->getHeight());
+					CoreServices::getInstance()->getRenderer()->unbindFramebuffers();
+				}
 			}		
 		}
 		CoreServices::getInstance()->getRenderer()->clearShader();

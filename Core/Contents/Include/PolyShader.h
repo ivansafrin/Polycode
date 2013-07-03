@@ -114,7 +114,7 @@ namespace Polycode {
 			Number width;
 			Number height;
 			int sizeMode;
-			Texture *texture;
+			Texture *texture;			
 			
 			Number normalizedWidth;
 			Number normalizedHeight;
@@ -145,8 +145,6 @@ namespace Polycode {
 			String name;
 			int mode;
 			Texture *texture;
-			Number width;
-			Number height;			
 			static const int MODE_IN= 0;
 			static const int MODE_OUT = 1;
 			static const int MODE_COLOR = 2;
