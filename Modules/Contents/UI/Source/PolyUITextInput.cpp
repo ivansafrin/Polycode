@@ -1408,6 +1408,39 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 		_changedText = true;		
 	}
 	
+	if(key == KEY_DELETE) {
+		if(hasSelection) {
+			saveUndoState();
+			deleteSelection();
+			return;
+		} else {
+			ctext = lines[lineOffset];
+			if(caretPosition <= ctext.length()) {
+				if(ctext.length() > 0) {
+					String text2 = ctext.substr(caretPosition, ctext.length()-caretPosition);
+					ctext = ctext.substr(0,caretPosition-1);
+					ctext += text2;
+					_changedText = true;
+					caretPosition--;
+				}
+			} else {
+				if(lineOffset < lines.size() - 1) {
+					saveUndoState();
+					lines[lineOffset] = ctext + lines[lineOffset+1];
+					removeLines(lineOffset+1, lineOffset+2);
+					caretPosition--;
+					updateCaretPosition();
+					return;
+				}
+			}
+		}
+		if(multiLine) {
+			if(linesContainer->getPosition().y + (lineOffset*(lineHeight+lineSpacing)+padding) < 0.0) {
+				scrollContainer->setScrollValue(0.0, ((((lineOffset) * ((lineHeight+lineSpacing)))) + padding)/(scrollContainer->getContentSize().y-scrollContainer->getHeight()));
+			}
+		}
+	}
+	
 	if(key == KEY_BACKSPACE) {
 		if(hasSelection) {
 			saveUndoState();
