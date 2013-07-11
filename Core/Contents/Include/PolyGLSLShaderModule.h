@@ -27,8 +27,9 @@ THE SOFTWARE.
 namespace Polycode {
 	
 	class GLSLProgram;
-	class GLSLProgramParam;
+	class ProgramParam;
 	class GLSLShader;
+	class ShaderProgram;
 
 	class _PolyExport GLSLShaderModule : public PolycodeShaderModule {
 		public:
@@ -36,19 +37,18 @@ namespace Polycode {
 			virtual ~GLSLShaderModule();
 		
 			bool acceptsExtension(const String& extension);
-			Resource* createProgramFromFile(const String& extension, const String& fullPath);
+			ShaderProgram* createProgramFromFile(const String& extension, const String& fullPath);
 			void reloadPrograms();
 			String getShaderType();
 			Shader *createShader(TiXmlNode *node);
+			Shader *createShader(String name, String vpName, String fpName);
 			bool applyShaderMaterial(Renderer *renderer, Material *material, ShaderBinding *localOptions, unsigned int shaderIndex);	
 			void clearShader();
 		
 	protected:
-
-		GLSLProgramParam addParamToProgram(GLSLProgram *program,TiXmlNode *node);		
-		void recreateGLSLProgram(GLSLProgram *prog, const String& fileName, int type);
+		
 		GLSLProgram *createGLSLProgram(const String& fileName, int type);
-		void updateGLSLParam(Renderer *renderer, GLSLShader *glslShader, GLSLProgramParam &param, ShaderBinding *materialOptions, ShaderBinding *localOptions);			
+		void updateGLSLParam(Renderer *renderer, GLSLShader *glslShader, ProgramParam &param, ShaderBinding *materialOptions, ShaderBinding *localOptions);			
 		
 		std::vector<GLSLProgram*> programs;
 	};

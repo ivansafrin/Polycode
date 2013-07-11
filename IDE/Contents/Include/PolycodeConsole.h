@@ -96,7 +96,8 @@ class ConsoleWindow : public UIElement {
 		UITextInput *debugTextInput;
 		UITextInput *consoleTextInput;
 		
-		UIButton *clearButton;
+		UIImageButton *clearButton;
+		UIImageButton *hideConsoleButton;
 		
 		ScreenShape *labelBg;
 };
@@ -119,6 +120,7 @@ class PolycodeConsole : public UIElement {
 		static void clearBacktraces();
 		void _clearBacktraces();
 		
+		
 		void applyTheme();
 		
 		void _addBacktrace(String fileName, int lineNumber, PolycodeProject *project);
@@ -129,14 +131,19 @@ class PolycodeConsole : public UIElement {
 		
 		BackTraceWindow *backtraceWindow;	
 		ConsoleWindow  *consoleWindow;
+
 	protected:
-	
 		UIHSizer *backtraceSizer;
 	
 		PolycodeRemoteDebugger *debugger;		
 		static PolycodeConsole *instance;
 		
-		
 		UITextInput *debugTextInput;
-		UITextInput *consoleTextInput;		
+		UITextInput *consoleTextInput;
+
+	private:
+		std::vector<String> consoleHistory;
+		int consoleHistoryPosition;
+		int consoleHistoryMaxSize;
+
 };

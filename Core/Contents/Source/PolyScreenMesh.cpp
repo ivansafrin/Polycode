@@ -23,12 +23,13 @@
 #include "PolyScreenMesh.h"
 #include "PolyCoreServices.h"
 #include "PolyMaterialManager.h"
+#include "PolyResourceManager.h"
 #include "PolyMesh.h"
 #include "PolyRenderer.h"
 
 using namespace Polycode;
 
-ScreenMesh::ScreenMesh(Mesh *mesh) : ScreenEntity(), texture(NULL) {
+ScreenMesh::ScreenMesh(Mesh *mesh) : ScreenEntity(), material(NULL), texture(NULL) {
 	this->mesh = mesh;
 	lineSmooth = false;
 	lineWidth = 1.0;
@@ -36,14 +37,14 @@ ScreenMesh::ScreenMesh(Mesh *mesh) : ScreenEntity(), texture(NULL) {
 	updateHitBox();
 }
 
-ScreenMesh::ScreenMesh(const String& fileName) : ScreenEntity(), texture(NULL) {
+ScreenMesh::ScreenMesh(const String& fileName) : ScreenEntity(), material(NULL), texture(NULL) {
 	mesh = new Mesh(fileName);
 	lineSmooth = false;
 	lineWidth = 1.0;
 	
 }
 
-ScreenMesh::ScreenMesh(int meshType) : ScreenEntity(), texture(NULL) {
+ScreenMesh::ScreenMesh(int meshType) : ScreenEntity(), material(NULL), texture(NULL) {
 	mesh = new Mesh(meshType);
 	lineSmooth = false;
 	lineWidth = 1.0;
@@ -77,20 +78,71 @@ void ScreenMesh::setTexture(Texture *texture) {
 }
 
 void ScreenMesh::loadTexture(const String& fileName) {
-	texture = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(fileName, true, false);
+	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
+	texture = materialManager->createTextureFromFile(fileName, materialManager->clampDefault, materialManager->mipmapsDefault);
 }
 
 void ScreenMesh::loadTexture(Image *image) {
-	texture = CoreServices::getInstance()->getMaterialManager()->createTextureFromImage(image, true, false);
+	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
+	texture = materialManager->createTextureFromImage(image, materialManager->clampDefault, materialManager->mipmapsDefault);
+}
+
+void ScreenMesh::clearMaterial() {
+	if(localShaderOptions)
+		delete localShaderOptions;
+	localShaderOptions = NULL;
+	this->material = NULL;
+}
+
+void ScreenMesh::setMaterial(Material *material) {
+
+	if(this->material)
+		clearMaterial();
+	
+	if(!material)
+		return;
+		
+	if(material->getNumShaders() == 0)
+			return;
+		
+	this->material = material;
+	localShaderOptions = material->getShader(0)->createBinding();
+	if(texture) {
+		localShaderOptions->clearTexture("diffuse");
+		localShaderOptions->addTexture("diffuse", texture);
+	}
+	
+}
+
+Material *ScreenMesh::getMaterial() {
+	return material;
+}
+
+ShaderBinding *ScreenMesh::getLocalShaderOptions() {
+	return localShaderOptions;
+}
+
+void ScreenMesh::setMaterialByName(const String& materialName) {
+	Material *material =  (Material*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_MATERIAL, materialName);
+	if(!material)
+		return;
+	setMaterial(material);
 }
 
 void ScreenMesh::Render() {	
 	Renderer *renderer = CoreServices::getInstance()->getRenderer();
 	
+	renderer->clearShader();
+	
 	renderer->setLineSize(lineWidth);
 	renderer->setLineSmooth(lineSmooth);
 	
-	renderer->setTexture(texture);
+	if(material) {
+		renderer->applyMaterial(material, localShaderOptions,0);
+	} else {
+		renderer->setTexture(texture);
+	}
+	
 	if(mesh->useVertexColors) {
 		renderer->pushDataArrayForMesh(mesh, RenderDataArray::COLOR_DATA_ARRAY);
 	}

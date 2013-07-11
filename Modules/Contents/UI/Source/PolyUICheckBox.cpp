@@ -74,9 +74,11 @@ String UICheckBox::getCaptionLabel() {
 }
 
 UICheckBox::~UICheckBox() {
-	delete buttonImageChecked;
-	delete buttonImageUnchecked;
-	delete captionLabel;
+	if(!ownsChildren) {
+		delete buttonImageChecked;
+		delete buttonImageUnchecked;
+		delete captionLabel;
+	}
 }
 
 bool UICheckBox::isChecked() {

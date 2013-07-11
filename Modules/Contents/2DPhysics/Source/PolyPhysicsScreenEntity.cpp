@@ -39,6 +39,8 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 	Matrix4 compoundMatrix = screenEntity->getConcatenatedMatrix();
 	entity->ignoreParentMatrix = true;
 	entity->scale = entityScale;
+	entityScale.x = fabs(entityScale.x);
+	entityScale.y = fabs(entityScale.y);
 	this->worldScale = worldScale;
 	collisionOnly = false;
 
@@ -94,7 +96,41 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 			fixture = body->CreateFixture(&fDef);
 			break;
         }
-        break;
+		case ENTITY_CAPSULE: {
+		
+			Number rectSize = (screenEntity->getHeight()/(worldScale*2.0f) * entityScale.y) - (screenEntity->getWidth()/(worldScale*2.0f * entityScale.y));
+					
+			b2CircleShape Shape;
+			fDef.shape = &Shape;
+			Shape.m_radius = screenEntity->getWidth()/(worldScale*2.0f);			
+			Shape.m_p.y = rectSize;
+			fixture = body->CreateFixture(&fDef);
+			Shape.m_p.y = -rectSize;
+			fixture = body->CreateFixture(&fDef);
+			
+			b2PolygonShape Shape2;
+			fDef.shape = &Shape2;
+			Shape2.SetAsBox(screenEntity->getWidth()/(worldScale*2.0f) * entityScale.x, rectSize);
+			fixture = body->CreateFixture(&fDef);
+			break;						
+		}
+		break;
+		case ENTITY_TRIPLE_CIRCLE: {
+		
+			Number rectSize = (screenEntity->getHeight()/(worldScale*2.0f) * entityScale.y) - (screenEntity->getWidth()/(worldScale*2.0f * entityScale.y));
+					
+			b2CircleShape Shape;
+			fDef.shape = &Shape;
+			Shape.m_radius = screenEntity->getWidth()/(worldScale*2.0f);			
+			Shape.m_p.y = rectSize;
+			fixture = body->CreateFixture(&fDef);
+			Shape.m_p.y = -rectSize;
+			fixture = body->CreateFixture(&fDef);
+			Shape.m_p.y = 0;
+			fixture = body->CreateFixture(&fDef);
+			break;						
+		}
+		break;	
 		case ENTITY_MESH: {
 			b2PolygonShape Shape;
 			fDef.shape = &Shape;
@@ -224,27 +260,30 @@ void PhysicsScreenEntity::applyImpulse(Number fx, Number fy) {
 }
 			
 void PhysicsScreenEntity::setTransform(Vector2 pos, Number angle) {
+	if(screenEntity->getParentEntity()) {
+		Matrix4 matrix = screenEntity->getParentEntity()->getConcatenatedMatrix();
+		Vector3 parentPos = matrix.getPosition();		
+		pos.x = parentPos.x + pos.x;
+		pos.y = parentPos.y + pos.y;		
+	}
+
 	body->SetTransform(b2Vec2(pos.x/worldScale, pos.y/worldScale), angle*(PI/180.0f));
-    screenEntity->setPosition(pos);
+	Update();
 }
 
 void PhysicsScreenEntity::Update() {
 	if(collisionOnly) {
 		Matrix4 matrix = screenEntity->getConcatenatedMatrix();
+		Vector3 pos = matrix.getPosition();		
 		b2Vec2 newPos;
-		Number newRotation;
-		
-		Vector3 pos = matrix.getPosition();
 		newPos.x = pos.x/worldScale;
-		newPos.y = pos.y/worldScale;		
-
+		newPos.y = pos.y/worldScale;   
+		
 		Number rx,ry,rz;
-
 		matrix.getEulerAngles(&rx, &ry, &rz);
-		newRotation = rz;
-
+		
 		body->SetAwake(true);
-		body->SetTransform(newPos, newRotation * TORADIANS);
+		body->SetTransform(newPos, rz * TORADIANS);
 	} else {
 		b2Vec2 position = body->GetPosition();
 		Number angle = body->GetAngle();	
@@ -258,7 +297,7 @@ b2Fixture* PhysicsScreenEntity::getFixture(unsigned short index) {
 	if(fixture)	{
 		short i = 0;
 		for (b2Fixture* f = body->GetFixtureList(); f; f = f->GetNext()) {
-			if (i = index) {
+			if (i == index) {
 				fixture = f;
 				return fixture;
 			}

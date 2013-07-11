@@ -29,20 +29,26 @@
 using namespace Polycode;
 
 SceneRenderTexture::SceneRenderTexture(Scene *targetScene, Camera *targetCamera, int renderWidth,int renderHeight, bool floatingPoint) {
-//	targetTexture = CoreServices::getInstance()->getMaterialManager()->createTexture(renderWidth, renderHeight, NULL,true);
+	this->floatingPoint = floatingPoint;
 	CoreServices::getInstance()->getRenderer()->createRenderTextures(&targetTexture, &depthTexture, renderWidth, renderHeight, floatingPoint);
 	this->targetScene = targetScene;
 	this->targetCamera = targetCamera;
-	
-	
+
 	CoreServices::getInstance()->getRenderer()->createRenderTextures(&filterColorBufferTexture, &filterZBufferTexture, renderWidth, renderHeight, floatingPoint);
-	
-	
 	CoreServices::getInstance()->getSceneManager()->registerRenderTexture(this);
 }
 
-void SceneRenderTexture::drawScreen() {
-	//CoreServices::getInstance()->getRenderer()->renderToTexture(targetTexture);
+void SceneRenderTexture::resizeRenderTexture(int newWidth, int newHeight) {
+
+	if(newWidth > 0 && newHeight > 0) {
+		CoreServices::getInstance()->getRenderer()->destroyTexture(targetTexture);
+		CoreServices::getInstance()->getRenderer()->destroyTexture(depthTexture);	
+		CoreServices::getInstance()->getRenderer()->destroyTexture(filterColorBufferTexture);
+		CoreServices::getInstance()->getRenderer()->destroyTexture(filterZBufferTexture);	
+
+		CoreServices::getInstance()->getRenderer()->createRenderTextures(&targetTexture, &depthTexture, newWidth, newHeight, floatingPoint);
+		CoreServices::getInstance()->getRenderer()->createRenderTextures(&filterColorBufferTexture, &filterZBufferTexture, newWidth, newHeight, floatingPoint);
+	}
 }
 	
 Scene *SceneRenderTexture::getTargetScene() {

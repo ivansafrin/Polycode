@@ -55,5 +55,5 @@ bool HelloPolycodeApp::Update() {
 	Number elapsed = core->getElapsed();
 	image->setRotation(image->getRotation() + elapsed * rotationSpeed);
 	
-    return core->Update();
+    return core->updateAndRender();
 }

@@ -48,10 +48,13 @@ namespace Polycode {
 		OpenGLCubemap(Texture *t0, Texture *t1, Texture *t2, Texture *t3, Texture *t4, Texture *t5);
 		virtual ~OpenGLCubemap();
 		
+		void recreateFromTextures();
+		
 		GLuint getTextureID();		
 			
 	protected:
-		
+	
+		bool glCubemapLoaded;
 		int filteringMode;
 		GLuint textureID;
 	};

@@ -1974,7 +1974,11 @@ class CppHeader( _CppHeader ):
             num_newlines = len(filter(lambda a: a=="\n", m))
             headerFileStr = headerFileStr.replace(m, "\n" * num_newlines)        
         headerFileStr = re.sub(r'extern[ ]+"[Cc]"[ ]*', "", headerFileStr)
-                
+
+        #Filter out "using" statements since they aren't properly handled currently
+        # TODO: properly handle "using" statements
+        headerFileStr = re.sub(r'using[\t ]+[^\n\r]+', "", headerFileStr)
+
         self.braceDepth = 0
         lex.lex()
         lex.input(headerFileStr)

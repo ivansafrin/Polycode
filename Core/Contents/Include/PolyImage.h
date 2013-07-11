@@ -23,6 +23,7 @@ THE SOFTWARE.
 #pragma once
 #include "PolyGlobals.h"
 #include "PolyColor.h"
+#include "PolyRectangle.h"
 
 namespace Polycode {
 
@@ -103,16 +104,13 @@ namespace Polycode {
 			* @param width Width of the image to create.
 			* @param height Height of the image to create.			
 			*/ 						
-			void createEmpty(unsigned int width, unsigned int height);
-			
+			void createEmpty(int width, int height);
+
 			/**
 			* Fills the image with the specified color values.
-			* @param r Red value 0-1.
-			* @param g Green value 0-1
-			* @param b Blue value 0-1
-			* @param a Alpha value 0-1									
+			* @param color The color to fill it with.
 			*/ 									
-			void fill(Number r, Number g, Number b, Number a);
+			void fill(Color color);
 			
 			/**
 			* Sets a pixel at specified coordinates to specified color.
@@ -151,21 +149,21 @@ namespace Polycode {
 			* @param y1 Ending y position.
 			* @param col Color to use.						
 			*/						
-			void line(int x0, int y0, int x1, int y1, Color col);
+			void drawLine(int x0, int y0, int x1, int y1, Color col);
 
 			/**
 			* Moves brush to specified position
 			* @param x New brush position X
 			* @param y New brush position Y
 			*/									
-			void moveTo(int x, int y);
+			void moveBrushTo(int x, int y);
 			
 			/**
 			* Translates brush a specified amount relative to its current position.
 			* @param x Amount to translate on X axis
 			* @param y Amount to translate on Y axis
 			*/												
-			void move(int x, int y);
+			void moveBrush(int x, int y);
 			
 			/**
 			* Draws a line to specified position.
@@ -173,7 +171,7 @@ namespace Polycode {
 			* @param y Ending y position.
 			* @param col Color to use.						
 			*/												
-			void lineTo(int x, int y, Color col);
+			void drawLineTo(int x, int y, Color col);
 			
 			/**
 			* Draws a rectangle with specified color.
@@ -183,7 +181,7 @@ namespace Polycode {
 			* @param h Rectangle height.
 			* @param col Color to use.						
 			*/									
-			void drawRect(int x, int y, int w, int h, Color col);
+			void fillRect(int x, int y, int w, int h, Color col);
 			
 			/**
 			* Draws perlin noise in the image
@@ -218,9 +216,19 @@ namespace Polycode {
 			* @param x X position of the area to return.
 			* @param y Y position of the area to return.
 			* @param width Width of the area to return.
-			* @param height Height of the area to return.					
+			* @param height Height of the area to return.
+			* @return Raw image data, in the format specified by the constructor.
 			*/			
-			char *getPixelsInRect(unsigned int x, unsigned int y, unsigned int width, unsigned int height);
+			char *getPixelsInRect(int x, int y, int width, int height);
+
+			/**
+			* Returns a copy of the specified subRect part of the image.
+			*
+			* @param subRect The part of the image to copy. (0, 0) refers to the top left of the image.
+			* @return A pointer to an Image object allocated with new. You have to manually delete this
+			*         object using free.
+			*/
+			Image *getImagePart(Rectangle subRect);
 			
 			/**
 			* Returns the x position of the brush.
@@ -241,16 +249,16 @@ namespace Polycode {
 			/**
 			* Returns the width of the image.
 			*/			
-			unsigned int getWidth() const;
+			int getWidth() const;
 			
 			/**
 			* Returns the height of the image.
 			*/						
-			unsigned int getHeight() const;
+			int getHeight() const;
 			
 			/**
 			* Returns the raw image data
-			* @return Pointer to raw image data.
+			* @return Pointer to raw image data, in the format specified by the constructor.
 			*/						
 			char *getPixels();
 			
@@ -262,7 +270,14 @@ namespace Polycode {
 		
 		protected:
 		
-			void setPixelType(int type);		
+			void setPixelType(int type);
+
+			// transform coordinates from external topleft position mode
+			// to internal bottomleft position mode
+			//
+			// results are written directly into the pointers
+			void transformCoordinates(int *x, int *y);	
+			void transformCoordinates(int *x, int *y, int *w, int *h);	
 		
 		int imageType;
 		int pixelSize;
@@ -274,8 +289,8 @@ namespace Polycode {
 		int brushPosY;
 		
 		char *imageData;
-		unsigned int width;
-		unsigned int height;
+		int width;
+		int height;
 	};
 
 }

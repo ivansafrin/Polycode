@@ -35,7 +35,8 @@ namespace Polycode {
 	class _PolyExport UIButton : public UIElement {
 		public:
 			UIButton(String text, Number width, Number height = 23);
-			~UIButton();		
+			~UIButton();
+			void Resize(Number width, Number height);		
 			void handleEvent(Event *event);
 			
 			void Update();
@@ -44,6 +45,8 @@ namespace Polycode {
 		
 			CoreInput *coreInput;
 			
+			Number labelOffsetX;
+			Number labelOffsetY;
 			Number labelXPos;
 			Number labelYPos;
 			UIBox *buttonRect;

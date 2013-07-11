@@ -45,19 +45,9 @@ namespace Polycode {
 			ScreenLabel(const String& text, int size, const String& fontName = "sans", int amode = 0, bool premultiplyAlpha = false);
 			virtual ~ScreenLabel();		
 		
-			virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly);
-			virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly);
-		
-			/**
-			* Adds a drop shadow to the label.
-			* @param color Color of the drop shadow.
-			* @param size Size of the drop shadow in pixels.
-			* @param offsetX Horizontal offset of the drop shadow.
-			* @param offsetY Vertical offset of the drop shadow.			
-			*/
-			void addDropShadow(Color color, Number size, Number offsetX, Number offsetY);
-			
-			
+			virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
+			virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
+					
 			/**
 			* Sets a new text to the screen label.
 			* @param newText Text to set.
@@ -77,9 +67,7 @@ namespace Polycode {
 			
 		protected:
 			
-			void updateTexture();
-			
+			void updateTexture();			
 			Label *label;
-			ScreenImage *dropShadowImage;
 	};
 }

@@ -44,9 +44,7 @@ namespace Polycode {
 			*/
 			SceneRenderTexture(Scene *targetScene, Camera *targetCamera, int renderWidth,int renderHeight, bool floatingPoint = false);
 			virtual ~SceneRenderTexture();
-			
-			void drawScreen();
-			
+						
 			/**
 			* Returns the actual render texture.
 			*/
@@ -55,6 +53,7 @@ namespace Polycode {
 			Texture *getFilterColorBufferTexture();
 			Texture *getFilterZBufferTexture();			
 
+			void resizeRenderTexture(int newWidth, int newHeight);
 			/**
 			* Returns the target scene.
 			*/			
@@ -69,6 +68,8 @@ namespace Polycode {
 		
 			Texture *filterColorBufferTexture;
 			Texture *filterZBufferTexture;
+		
+			bool floatingPoint;
 		
 			Texture *depthTexture;		
 			Texture *targetTexture;

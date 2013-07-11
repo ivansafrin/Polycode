@@ -14,21 +14,17 @@
 
 using namespace Polycode;
 
+@class PolycodeAppDelegate;
+
 class PolycodeAppEventHandler : public EventHandler {
 	
 public:
 	PolycodeAppEventHandler() {}
 	~PolycodeAppEventHandler() {}
 	
-	void handleEvent(Event *evt) {
-		switch(evt->getEventCode()) {
-			case PolycodeIDEApp::EVENT_SHOW_MENU:
-				[appDelegate showProjectMenu];
-			break;
-		}
-	}
-	
-	id appDelegate;
+	void handleEvent(Event *evt);
+
+	PolycodeAppDelegate* appDelegate;
 };
 
 @interface PolycodeAppDelegate : NSObject <NSApplicationDelegate> {
@@ -53,6 +49,7 @@ public:
 
 // Menu accessors
 
+-(IBAction) toggleConsole: (id) sender;
 -(IBAction) refreshProject: (id) sender;
 -(IBAction) renameFile: (id) sender;
 -(IBAction) removeFile: (id) sender;
@@ -62,10 +59,12 @@ public:
 -(IBAction) exportProject: (id) sender;
 -(IBAction) newProject: (id) sender;
 -(IBAction) closeProject: (id) sender;
+-(IBAction) closeFile: (id) sender;
 -(IBAction) newFile: (id) sender;
 -(IBAction) openProject: (id) sender;
 -(IBAction) saveFile: (id) sender;
 -(IBAction) findText: (id) sender;
 -(IBAction) openDocs: (id) sender;
 -(IBAction) showAbout: (id) sender;
+-(IBAction) showSettings: (id) sender;
 @end

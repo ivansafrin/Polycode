@@ -25,6 +25,8 @@
 #include "PolyShader.h"
 #include "PolyRenderer.h"
 #include "PolyCoreServices.h"
+#include "PolyCore.h"
+#include "PolyTexture.h"
 
 using namespace Polycode;
 
@@ -33,6 +35,7 @@ Material::Material(const String& name) : Resource(Resource::RESOURCE_MATERIAL) {
 	fp16RenderTargets = false;
 	shaderModule = NULL;
 	blendingMode = Renderer::BLEND_MODE_NORMAL;
+	screenMaterial = false;
 }
 
 Material::~Material() {
@@ -53,6 +56,10 @@ void Material::clearShaders() {
 		delete materialShaders[i];
 	}
 	*/
+	
+	for(int i=0; i < materialShaders.size(); i++)	{
+		materialShaders[i]->removeAllHandlersForListener(this);
+	}	
 	materialShaders.clear();
 
 	for(int i=0; i < shaderBindings.size(); i++)	{
@@ -65,28 +72,108 @@ void Material::clearShaders() {
 	}
 	renderTargets.clear();		
 }
+
+void Material::recreateRenderTargets() {
+	for(int i=0; i < renderTargets.size(); i++) {
+		recreateRenderTarget(renderTargets[i]);
+	}
+}
+
+void Material::recreateRenderTarget(ShaderRenderTarget *renderTarget) {
+	int textureWidth;
+	int textureHeight;
+	Texture *newTexture;
+	
+	if(renderTarget->sizeMode == ShaderRenderTarget::SIZE_MODE_NORMALIZED) {
+		Number safeWidth = renderTarget->width;
+		Number safeHeight = renderTarget->height;		
+		if(safeWidth > 1.0)
+			safeWidth = 1.0;
+		if(safeHeight > 1.0)
+			safeHeight = 1.0;
+			
+		if(safeWidth < 0.0)
+			safeWidth = 0.0;
+		if(safeHeight < 0.0)
+			safeHeight = 0.0;
+		
+		if(renderTarget->normalizedWidth > 0 && renderTarget->normalizedHeight > 0) {
+			textureWidth = (int) (renderTarget->normalizedWidth * safeWidth);
+			textureHeight = (int) (renderTarget->normalizedHeight * safeHeight);		
+		} else {
+			textureWidth = (int) (CoreServices::getInstance()->getCore()->getXRes() * safeWidth);
+			textureHeight = (int) (CoreServices::getInstance()->getCore()->getYRes() * safeHeight);
+		}
+	} else {
+		textureWidth = (int)renderTarget->width;
+		textureHeight = (int)renderTarget->height;		
+	}
+	
+	CoreServices::getInstance()->getRenderer()->createRenderTextures(&newTexture, NULL, textureWidth, textureHeight, fp16RenderTargets);
+	newTexture->setResourceName(renderTarget->id);
+	
+	Texture *oldTexture = renderTarget->texture;
+	renderTarget->texture = newTexture;
+
+	if(oldTexture) {	
+		for(int i=0; i < shaderBindings.size(); i++) {
+				
+			for(int j=0; j < shaderBindings[i]->getNumRenderTargetBindings(); j++) {
+				if(shaderBindings[i]->getRenderTargetBinding(j)->texture == oldTexture) {
+					shaderBindings[i]->getRenderTargetBinding(j)->texture = newTexture;
+					shaderBindings[i]->clearTexture(shaderBindings[i]->getRenderTargetBinding(j)->name);
+					shaderBindings[i]->addTexture(shaderBindings[i]->getRenderTargetBinding(j)->name, newTexture);					
+				}
+			}			
+		}
+		
+		CoreServices::getInstance()->getRenderer()->destroyTexture(oldTexture);
+	}
+}
+
+void Material::handleEvent(Event *event) {
+	std::vector<Shader*> _materialShaders = materialShaders;
+	clearShaders();
+	for(int i=0; i < _materialShaders.size(); i++)	{
+		ShaderBinding *newShaderBinding = _materialShaders[i]->createBinding();				
+		addShader(_materialShaders[i], newShaderBinding);
+	}	
+	dispatchEvent(new Event(), Event::RESOURCE_RELOAD_EVENT);	
+}
+
+void Material::removeShader(int shaderIndex) {
+	if(shaderIndex >= 0 && shaderIndex < materialShaders.size()) {
+		materialShaders.erase(materialShaders.begin() + shaderIndex);
+		shaderBindings.erase(shaderBindings.begin() + shaderIndex);		
+	}
+}
+
+void Material::addShaderAtIndex(Shader *shader,ShaderBinding *shaderBinding, int shaderIndex) {
+	materialShaders.insert(materialShaders.begin()+shaderIndex, shader);
+	shaderBindings.insert(shaderBindings.begin()+shaderIndex, shaderBinding);
+	
+	shader->addEventListener(this, Event::RESOURCE_RELOAD_EVENT);	
+	CoreServices::getInstance()->getRenderer()->setRendererShaderParams(shader, shaderBinding);	
+	
+	for(int i=0; i < shader->expectedParams.size(); i++) {
+		if(!shaderBinding->getLocalParamByName(shader->expectedParams[i].name)) {
+			shaderBinding->addParam(shader->expectedParams[i].type, shader->expectedParams[i].name);
+		}
+	}
+}
 			
 void Material::addShader(Shader *shader,ShaderBinding *shaderBinding) {
 	materialShaders.push_back(shader);
 	shaderBindings.push_back(shaderBinding);
 	
-	for(int i=0; i < shader->expectedFragmentParams.size(); i++) {
-		if(!shaderBinding->getLocalParamByName(shader->expectedFragmentParams[i].name)) {
-		if(!shader->expectedFragmentParams[i].isAuto) {
-			shaderBinding->addParam(shader->expectedFragmentParams[i].typeString, shader->expectedFragmentParams[i].name, shader->expectedFragmentParams[i].valueString);
-		}
-		}
-	}		
+	shader->addEventListener(this, Event::RESOURCE_RELOAD_EVENT);	
+	CoreServices::getInstance()->getRenderer()->setRendererShaderParams(shader, shaderBinding);	
 	
-	for(int i=0; i < shader->expectedVertexParams.size(); i++) {
-		if(!shaderBinding->getLocalParamByName(shader->expectedVertexParams[i].name)) {
-		if(!shader->expectedVertexParams[i].isAuto) {	
-			shaderBinding->addParam(shader->expectedVertexParams[i].typeString, shader->expectedVertexParams[i].name, shader->expectedVertexParams[i].valueString);
-		}
+	for(int i=0; i < shader->expectedParams.size(); i++) {
+		if(!shaderBinding->getLocalParamByName(shader->expectedParams[i].name)) {
+			shaderBinding->addParam(shader->expectedParams[i].type, shader->expectedParams[i].name);
 		}
 	}	
-	
-	CoreServices::getInstance()->getRenderer()->setRendererShaderParams(shader, shaderBinding);	
 }
 
 
@@ -128,4 +215,12 @@ int Material::getNumShaderRenderTargets() {
 
 ShaderRenderTarget *Material::getShaderRenderTarget(unsigned int index) {
 	return renderTargets[index];
+}
+
+void Material::removeShaderRenderTarget(int index) {
+	if(index >= 0 && index < renderTargets.size()) {
+		ShaderRenderTarget *renderTarget = renderTargets[index];
+		renderTargets.erase(renderTargets.begin() + index);
+		delete renderTarget;
+	}
 }

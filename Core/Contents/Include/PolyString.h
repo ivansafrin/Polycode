@@ -1,4 +1,4 @@
-/*
+  /*
  Copyright (C) 2011 by Ivan Safrin
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -174,7 +174,7 @@ namespace Polycode {
 			* @param value Number to convert.
 			* @return A string converted from the Number.
 			*/																										
-			static String NumberToString(Number value);
+			static String NumberToString(Number value, int precision = 2);
 
 			/**
 			* Convert an integer to a String.

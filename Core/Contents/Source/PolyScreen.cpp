@@ -47,7 +47,7 @@ Screen::Screen() : EventDispatcher() {
 	ownsChildren = false;
 
 	rootEntity.processInputEvents = true;
-
+	rootEntity.setPositionMode(ScreenEntity::POSITION_CENTER);
 	rootEntity.setRenderer(renderer);
 	rootEntity.setDefaultScreenOptions(false);		
 }
@@ -118,13 +118,9 @@ void Screen::setScreenShader(const String& shaderName) {
 	}
 	
 	for(int i=0; i < filterShaderMaterial->getNumShaders(); i++) {
-		ShaderBinding* binding = filterShaderMaterial->getShader(i)->createBinding();		
-		if( i == 0) 
-			binding->addTexture("screenColorBuffer", originalSceneTexture);
-			
+		ShaderBinding* binding = filterShaderMaterial->getShader(i)->createBinding();	
 		localShaderOptions.push_back(binding);
-	}
-		
+	}	
 	_hasFilterShader = true;
 	
 }
@@ -152,6 +148,13 @@ void Screen::drawFilter() {
 	ShaderBinding* materialBinding;		
 	for(int i=0; i < filterShaderMaterial->getNumShaders(); i++) {
 		materialBinding = filterShaderMaterial->getShaderBinding(i);
+		
+		for(int j=0; j < materialBinding->getNumColorTargetBindings(); j++) {
+			RenderTargetBinding *colorBinding = materialBinding->getColorTargetBinding(j);
+			materialBinding->clearTexture(colorBinding->name);
+			materialBinding->addTexture(colorBinding->name, originalSceneTexture);
+		}
+		
 		renderer->applyMaterial(filterShaderMaterial, localShaderOptions[i], i);	
 			
 		if(i==filterShaderMaterial->getNumShaders()-1) {
@@ -159,9 +162,10 @@ void Screen::drawFilter() {
 			renderer->drawScreenQuad(renderer->getXRes(), renderer->getYRes());		
 		} else {
 			for(int j=0; j < materialBinding->getNumOutTargetBindings(); j++) {
-				renderer->bindFrameBufferTexture(materialBinding->getOutTargetBinding(j)->texture);
+				Texture *bindingTexture = materialBinding->getOutTargetBinding(j)->texture;
+				renderer->bindFrameBufferTexture(bindingTexture);
 				
-				renderer->drawScreenQuad(materialBinding->getOutTargetBinding(j)->width, materialBinding->getOutTargetBinding(j)->height);
+				renderer->drawScreenQuad(bindingTexture->getWidth(), bindingTexture->getHeight());
 				renderer->unbindFramebuffers();
 			}						
 		}
@@ -198,15 +202,12 @@ void Screen::Shutdown() {
 }
 
 void Screen::Update() {
-
+	rootEntity.doUpdates();
 }
 
 void Screen::Render() {
-	Update();
 	renderer->loadIdentity();
 	renderer->translate2D(offset.x, offset.y);
-
-	rootEntity.doUpdates();
 	rootEntity.updateEntityMatrix();
 	rootEntity.transformAndRender();	
 }

@@ -172,7 +172,9 @@ void UIMenuBar::handleEvent(Event *event) {
 }
 
 UIMenuBar::~UIMenuBar() {
-	delete bgShape;
+	if(!ownsChildren) {
+		delete bgShape;
+	}
 }
 
 void UIMenuBar::Resize(Number width, Number height) {

@@ -72,9 +72,11 @@ class _PolyExport OSBasics : public PolyBase {
 	
 		static std::vector<OSFileEntry> parsePhysFSFolder(const Polycode::String& pathString, bool showHidden);
 		static std::vector<OSFileEntry> parseFolder(const Polycode::String& pathString, bool showHidden);
+		static bool fileExists(const Polycode::String& pathString);
 		static bool isFolder(const Polycode::String& pathString);
 		static void createFolder(const Polycode::String& pathString);
 		static void removeItem(const Polycode::String& pathString);
+		static time_t getFileTime(const Polycode::String& pathString);
 		
 	private:
 	

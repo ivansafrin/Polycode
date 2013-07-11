@@ -27,8 +27,30 @@
 #include "PolycodeProject.h"
 #include "PolycodeClipboard.h"
 
+#define MAX_EDITOR_UNDO_ACTIONS	40
+
 using namespace Polycode;
 
+class PolycodeEditorActionData {
+	public:
+		PolycodeEditorActionData(){}
+		virtual ~PolycodeEditorActionData() {}
+};
+
+class PolycodeEditorAction  {
+	public:
+		PolycodeEditorAction(){}
+		~PolycodeEditorAction() {}
+		
+		void deleteData() {
+			delete beforeData;
+			delete afterData;		
+		}
+		
+		String actionName;
+		PolycodeEditorActionData *beforeData;
+		PolycodeEditorActionData *afterData;		
+};
 
 class PolycodeEditor : public ScreenEntity, public ClipboardProvider { 
 public:
@@ -40,9 +62,11 @@ public:
 	
 	virtual void handleEvent(Event *event);
 
-	virtual void Activate() {};
-	
+	virtual void Activate() {};	
 	virtual void saveFile(){};
+	
+	void didAction(String actionName, PolycodeEditorActionData *beforeData, PolycodeEditorActionData *afterData, bool setFileChanged = true);
+	virtual void doAction(String actionName, PolycodeEditorActionData *data) {}
 	
 	virtual String Copy(void **data) { return ""; }
 	virtual void Paste(void *data, String clipboardType) {}
@@ -72,7 +96,9 @@ protected:
 	Vector2 editorSize;
 	
 	String editorType;
-	
+
+	std::vector<PolycodeEditorAction> editorActions;
+	int currentUndoPosition;
 };
 
 

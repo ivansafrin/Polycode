@@ -26,6 +26,7 @@
 #include "PolyInputEvent.h"
 #include "PolyCoreServices.h"
 #include "PolyCore.h"
+#include "PolyUIEvent.h"
 
 using namespace Polycode;
 
@@ -78,15 +79,16 @@ UIVSizer::~UIVSizer() {
 	
 	if (ownsChildren)
 		childElements->ownsChildren = true;
-	delete childElements;
-	
-	delete separatorBgShape;
-	delete separatorHitShape;
+		
+	if(!ownsChildren) {
+		delete childElements;	
+		delete separatorBgShape;
+		delete separatorHitShape;
+	}
 }
 
 void UIVSizer::handleEvent(Event *event) {
 	if(event->getDispatcher() == separatorHitShape) {
-		InputEvent *inputEvent = (InputEvent*)event;
 		switch (event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEDOWN:
 				resizing = true;
@@ -131,11 +133,17 @@ void UIVSizer::Resize(Number width, Number height) {
 	this->height = height;
 	matrixDirty = true;
 	updateSizer();
+	UIElement::Resize(width, height);
+}
+
+Number UIVSizer::getMainHeight() {
+	return mainHeight;
 }
 
 void UIVSizer::setMainHeight(Number height) {
 	mainHeight = height;
 	updateSizer();
+	dispatchEvent(new UIEvent(), UIEvent::CHANGE_EVENT);
 }
 			
 void UIVSizer::addTopChild(UIElement *element) {

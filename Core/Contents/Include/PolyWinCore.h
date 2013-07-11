@@ -31,9 +31,9 @@
 #include <winsock2.h>
 #include <windows.h>
 #include <windowsx.h>
-#include <WinUser.h>
+#include <winuser.h>
 
-#include <MMSystem.h>
+#include <mmsystem.h>
 #include <regstr.h>
 
 
@@ -179,10 +179,11 @@ public:
 		~Win32Core();
 
 		void enableMouse(bool newval);
+		void captureMouse(bool newval);
 		void warpCursor(int x, int y);
 		unsigned int getTicks();		
 		bool Update();
-
+		void Render();
 		void setVSync(bool vSyncVal);
 
 		void handleKeyDown(LPARAM lParam, WPARAM wParam, wchar_t unicodeChar);

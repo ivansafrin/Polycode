@@ -35,47 +35,31 @@ using namespace Polycode;
 
 ScreenLabel::ScreenLabel(const String& text, int size, const String& fontName, int amode, bool premultiplyAlpha) : ScreenShape(ScreenShape::SHAPE_RECT,1,1) {
 	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size, amode, premultiplyAlpha);
-	dropShadowImage = NULL;
 	texture = NULL;
 	updateTexture();
-	positionMode = POSITION_TOPLEFT;	
-	dropShadowImage = NULL;
+	setPositionMode(POSITION_TOPLEFT);
 	colorAffectsChildren = false;
 	positionAtBaseline = true;
 }
 
 ScreenLabel::~ScreenLabel() {
 	delete label;
-	delete dropShadowImage;
 }
 
 Label *ScreenLabel::getLabel() const {
 	return label;
 }
 
-Entity *ScreenLabel::Clone(bool deepClone, bool ignoreEditorOnly) {
+Entity *ScreenLabel::Clone(bool deepClone, bool ignoreEditorOnly) const {
 	ScreenLabel *newLabel = new ScreenLabel(getText(), label->getSize(), label->getFont()->getFontName(), label->getAntialiasMode());
 	applyClone(newLabel, deepClone, ignoreEditorOnly);
 	return newLabel;
 }
 
-void ScreenLabel::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) {
+void ScreenLabel::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
 	ScreenShape::applyClone(clone, deepClone, ignoreEditorOnly);
 	ScreenLabel *_clone = (ScreenLabel*) clone;
 	_clone->positionAtBaseline = positionAtBaseline;
-}
-
-void ScreenLabel::addDropShadow(Color color, Number size, Number offsetX, Number offsetY) {
-	delete dropShadowImage;
-	Image *labelImage = new Image(label);
-	labelImage->fastBlur(size);
-	dropShadowImage = new ScreenImage(labelImage);	
-	delete labelImage;
-	addChild(dropShadowImage);
-	dropShadowImage->setColor(color);
-	dropShadowImage->setPositionMode(POSITION_TOPLEFT);
-	dropShadowImage->setPosition(offsetX, offsetY);
-	dropShadowImage->getMesh()->getPolygon(0)->flipUVY();
 }
 
 const String& ScreenLabel::getText() const {
@@ -109,6 +93,8 @@ void ScreenLabel::Render() {
 }
 
 void ScreenLabel::setText(const String& newText) {
-	label->setText(newText);	
-	updateTexture();
+	if(newText != label->getText() || label->optionsChanged()) {
+		label->setText(newText);	
+		updateTexture();
+	}
 }

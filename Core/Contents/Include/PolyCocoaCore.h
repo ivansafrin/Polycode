@@ -107,7 +107,10 @@ namespace Polycode {
 		
 		void enableMouse(bool newval);
 		unsigned int getTicks();		
-		bool Update();		
+		bool Update();
+		
+		void Render();
+								
 		void setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel);		
 		void resizeTo(int xRes, int yRes);
 		void createThread(Threaded *target);		

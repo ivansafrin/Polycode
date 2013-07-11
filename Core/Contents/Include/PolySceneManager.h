@@ -37,7 +37,10 @@ namespace Polycode {
 		
 		void addScene(Scene *newScene);
 		void Update();
-		void UpdateVirtual();
+		void Render();
+		
+		void renderVirtual();
+				
 		void removeScene(Scene *scene);	
 		void registerRenderTexture(SceneRenderTexture *renderTexture);
 		void unregisterRenderTexture(SceneRenderTexture *renderTexture);

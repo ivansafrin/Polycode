@@ -80,7 +80,8 @@ class AssetBrowser : public UIWindow {
 		~AssetBrowser();
 	
 		String getSelectedAssetPath();
-	
+		String getFullSelectedAssetPath();
+			
 		void parseFolderIntoTree(UITree *tree, OSFileEntry folder);
 
 		String getTemplatePath();

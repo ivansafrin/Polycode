@@ -86,12 +86,12 @@ namespace Polycode {
  			* @param ignoreEditorOnly If true, ignore all child entities where editorOnly is set to true (will still clone the entity you call Clone() on even if its editorOnly flag is set to true.
  			* @return The clone of the entity.
  			*/
-			virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly);
+			virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
 
 			/**
  			* This method must be implemented by all subvlasses implementing Clone.
  			*/
-			virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly);
+			virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
 		
 		
 			// ----------------------------------------------------------------------------------------------------------------
@@ -205,7 +205,9 @@ namespace Polycode {
 			* If set to true, will automatically delete children upon destruction. (defaults to false).
 			*/ 
 			bool ownsChildren;										
+			
 				
+			void setOwnsChildrenRecursive(bool val);
 			//@}
 			// ----------------------------------------------------------------------------------------------------------------
 				
@@ -601,7 +603,7 @@ namespace Polycode {
 			* Returns the user data pointer.
 			* @return User data pointer
 			*/			
-			void *getUserData();
+			void *getUserData() const;
 				
 			/**
 			* Sets the entity's blending mode.
@@ -610,8 +612,8 @@ namespace Polycode {
 			*/
 			void setBlendingMode(int newBlendingMode);
 			
-			Entity *getEntityById(String id, bool recursive);
-			std::vector<Entity*> getEntitiesByTag(String tag, bool recursive);
+			Entity *getEntityById(String id, bool recursive) const;
+			std::vector<Entity*> getEntitiesByTag(String tag, bool recursive) const;
 						
 			Vector3 getChildCenter() const;
 			
@@ -658,7 +660,7 @@ namespace Polycode {
 			//@}		
 		protected:
 		
-			std::vector<String> tags;
+			std::vector<String> *tags;
 		
 			void checkTransformSetters();
 		
@@ -672,12 +674,8 @@ namespace Polycode {
 			Vector3 _position;
 			Vector3 _scale;		
 			Rotation _rotation;
-			
-			Quaternion qYaw;
-			Quaternion qPitch;
-			Quaternion qRoll;			
+	
 			Quaternion rotationQuat;
-			
 			
 			bool lockMatrix;
 			bool matrixDirty;

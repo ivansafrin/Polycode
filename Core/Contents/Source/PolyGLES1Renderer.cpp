@@ -47,7 +47,7 @@ void OpenGLES1Renderer::Resize(int xRes, int yRes) {
     glLoadIdentity();
 	gluPerspective(fov,(GLfloat)xRes/(GLfloat)yRes,nearPlane,farPlane);
 	glViewport(0, 0, xRes, yRes);
-	glScissor(0, 0, xRes, yRes);
+	setScissorBox(0, 0, xRex, yRes);
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLineWidth(1);
@@ -132,7 +132,7 @@ bool OpenGLES1Renderer::test2DCoordinate(Number x, Number y, Poly::Polygon *poly
 	GLfloat nearPlane[3],farPlane[3];
 	
 	GLfloat mv[16];
-	Matrix4 camInverse = cameraMatrix.inverse();	
+	Matrix4 camInverse = cameraMatrix.Inverse();	
 	Matrix4 cmv;
 	cmv.identity();
 	cmv = cmv * camInverse;

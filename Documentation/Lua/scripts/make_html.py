@@ -1,37 +1,67 @@
 import os
+import sys
 from xml.dom.minidom import parse
+
+siteDocs = False
+
+if len(sys.argv) > 1:
+	if sys.argv[1] == "site":
+		siteDocs = True
 
 globalHeaderMain = ""
 
-globalHeaderMain += "<html>\n"
-globalHeaderMain += "\t<head>\n"
-globalHeaderMain += "\t\t<title>Polycode Documentation</title>\n"
-globalHeaderMain += "\t\t<link rel=\"stylesheet\" type=\"text/css\" href=\"css/docs.css\" />\n"
-globalHeaderMain += "\t\t<script type=\"text/javascript\" src=\"js/docs.js\"></script>"
-globalHeaderMain += "\t</head>\n"
-globalHeaderMain += "\t<body>\n"
-globalHeaderMain += "\t\t<div id=\"global_header\"><a href=\"index.html\"><img border=\"0\" src=\"images/docs_header.png\"/></a></div>\n"
-globalHeaderMain += "\t\t<div id=\"content\">\n"
+if siteDocs == True:
+	header_f = open("site_header.html", 'r')
+	globalHeaderMain = header_f.read()
+	globalHeader = globalHeaderMain
+	footer_f = open("site_footer.html", 'r')
+	globalFooter = footer_f.read()
+	
+else:
+	globalHeaderMain += "<html>\n"
+	globalHeaderMain += "\t<head>\n"
+	globalHeaderMain += "\t\t<title>Polycode Documentation</title>\n"
+	globalHeaderMain += "\t\t<link rel=\"stylesheet\" type=\"text/css\" href=\"css/docs.css\" />\n"
+	globalHeaderMain += "\t\t<link href='http://fonts.googleapis.com/css?family=Roboto:400,300' rel='stylesheet' type='text/css'>\n"
+	globalHeaderMain += "\t\t<script type=\"text/javascript\" src=\"js/docs.js\"></script>"
+	globalHeaderMain += "\t</head>\n"
+	globalHeaderMain += "\t<body>\n"
+	globalHeaderMain += "\t\t<div id=\"global_header\"><a href=\"index.html\"><img border=\"0\" src=\"images/docs_header.png\"/></a></div>\n"
+	globalHeaderMain += "\t\t<div id=\"content\">\n"
 
-globalHeader = ""
-globalFooter = ""
+	globalHeader = ""
+	globalFooter = ""
 
-globalHeader += "<html>\n"
-globalHeader += "\t<head>\n"
-globalHeader += "\t\t<title>Polycode Documentation</title>\n"
-globalHeader += "\t\t<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/docs.css\" />\n"
-globalHeader += "\t\t<script type=\"text/javascript\" src=\"js/docs.js\"></script>"
-globalHeader += "\t</head>\n"
-globalHeader += "\t<body>\n"
-globalHeader += "\t\t<div id=\"global_header\"><a href=\"../index.html\"><img border=\"0\" src=\"../images/docs_header.png\"/></a></div>\n"
-globalHeader += "\t\t<div id=\"content\">\n"
+	globalHeader += "<html>\n"
+	globalHeader += "\t<head>\n"
+	globalHeader += "\t\t<title>Polycode Documentation</title>\n"
+	globalHeader += "\t\t<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/docs.css\" />\n"
+	globalHeader += "\t\t<script type=\"text/javascript\" src=\"js/docs.js\"></script>"
+	globalHeader += "\t</head>\n"
+	globalHeader += "\t<body>\n"
+	globalHeader += "\t\t<div id=\"global_header\"><a href=\"../index.html\"><img border=\"0\" src=\"../images/docs_header.png\"/></a></div>\n"
+	globalHeader += "\t\t<div id=\"content\">\n"
 
 
-globalFooter += "\t\t</div>\n"
-globalFooter += "\t</body>\n"
-globalFooter += "\t</html>\n"
+	globalFooter += "\t\t</div>\n"
+	globalFooter += "\t</body>\n"
+	globalFooter += "\t</html>\n"
 
 def createMethods(className, item, static):
+
+	numStatic = 0
+	numRegular = 0
+	for subitem in item.getElementsByTagName('method'):
+		if subitem.hasAttribute("static") == True:
+			numStatic = numStatic + 1
+		else:
+			numRegular = numRegular + 1
+
+	if static == True and numStatic == 0:
+		return ""
+	if static == False and numRegular == 0:
+		return ""
+
 	html = ""
 	html += "\t\t\t\t\t<div class=\"class_methods\">\n"
 	if static == True:
@@ -108,37 +138,39 @@ def makePage(item, classList, classListPlain, moduleName):
 		descText = desc[0].childNodes[0].data
 	html += "\t\t\t\t\t<div class=\"class_desc\">%s</div>\n" % descText
 
-	html += "\t\t\t\t\t<div class=\"class_properties\">\n"
-	html += "\t\t\t\t\t\t<div class=\"class_properties_title\">Static Properties</div>\n"
-	html += "\t\t\t\t\t\t<div class=\"class_properties_list\">\n"
-	for subitem in item.getElementsByTagName('static_member'):
-		html += "\t\t\t\t\t\t\t<div class=\"class_property\">\n"
-		html += "\t\t\t\t\t\t\t\t<div class=\"class_property_name\">%s.%s <span class=\"static_value\">= %s</span></div>\n" % (item.attributes["name"].value, subitem.attributes["name"].value, subitem.attributes["value"].value)
-		html += "\t\t\t\t\t\t\t\t<div class=\"class_property_type\">%s</div>\n" % (subitem.attributes["type"].value)
-		desc = subitem.getElementsByTagName('desc')
-		descText = "No description."
-		if len(desc) > 0:
-			descText = desc[0].childNodes[0].data
-		html += "\t\t\t\t\t\t\t\t<div class=\"class_property_desc\">%s</div>\n" % (descText)
-		html += "\t\t\t\t\t\t\t</div>\n"
-	html += "\t\t\t\t\t\t</div>\n"
-	html += "\t\t\t\t\t</div>\n"
+	if len(item.getElementsByTagName('static_member')) > 0:
+		html += "\t\t\t\t\t<div class=\"class_properties\">\n"
+		html += "\t\t\t\t\t\t<div class=\"class_properties_title\">Static Properties</div>\n"
+		html += "\t\t\t\t\t\t<div class=\"class_properties_list\">\n"
+		for subitem in item.getElementsByTagName('static_member'):
+			html += "\t\t\t\t\t\t\t<div class=\"class_property\">\n"
+			html += "\t\t\t\t\t\t\t\t<div class=\"class_property_name\">%s.%s <span class=\"static_value\">= %s</span></div>\n" % (item.attributes["name"].value, subitem.attributes["name"].value, subitem.attributes["value"].value)
+			html += "\t\t\t\t\t\t\t\t<div class=\"class_property_type\">%s</div>\n" % (subitem.attributes["type"].value)
+			desc = subitem.getElementsByTagName('desc')
+			descText = "No description."
+			if len(desc) > 0:
+				descText = desc[0].childNodes[0].data
+			html += "\t\t\t\t\t\t\t\t<div class=\"class_property_desc\">%s</div>\n" % (descText)
+			html += "\t\t\t\t\t\t\t</div>\n"
+		html += "\t\t\t\t\t\t</div>\n"
+		html += "\t\t\t\t\t</div>\n"
 
-	html += "\t\t\t\t\t<div class=\"class_properties\">\n"
-	html += "\t\t\t\t\t\t<div class=\"class_properties_title\">Properties</div>\n"
-	html += "\t\t\t\t\t\t<div class=\"class_properties_list\">\n"
-	for subitem in item.getElementsByTagName('member'):
-		html += "\t\t\t\t\t\t\t<div class=\"class_property\">\n"
-		html += "\t\t\t\t\t\t\t\t<div class=\"class_property_name\">%s</div>\n" % (subitem.attributes["name"].value)
-		html += "\t\t\t\t\t\t\t\t<div class=\"class_property_type\">%s</div>\n" % (subitem.attributes["type"].value)
-		desc = subitem.getElementsByTagName('desc')
-		descText = "No description."
-		if len(desc) > 0:
-			descText = desc[0].childNodes[0].data
-		html += "\t\t\t\t\t\t\t\t<div class=\"class_property_desc\">%s</div>\n" % (descText)
-		html += "\t\t\t\t\t\t\t</div>\n"
-	html += "\t\t\t\t\t\t</div>\n"
-	html += "\t\t\t\t\t</div>\n"
+	if len(item.getElementsByTagName('member')) > 0:
+		html += "\t\t\t\t\t<div class=\"class_properties\">\n"
+		html += "\t\t\t\t\t\t<div class=\"class_properties_title\">Properties</div>\n"
+		html += "\t\t\t\t\t\t<div class=\"class_properties_list\">\n"
+		for subitem in item.getElementsByTagName('member'):
+			html += "\t\t\t\t\t\t\t<div class=\"class_property\">\n"
+			html += "\t\t\t\t\t\t\t\t<div class=\"class_property_name\">%s</div>\n" % (subitem.attributes["name"].value)
+			html += "\t\t\t\t\t\t\t\t<div class=\"class_property_type\">%s</div>\n" % (subitem.attributes["type"].value)
+			desc = subitem.getElementsByTagName('desc')
+			descText = "No description."
+			if len(desc) > 0:
+				descText = desc[0].childNodes[0].data
+			html += "\t\t\t\t\t\t\t\t<div class=\"class_property_desc\">%s</div>\n" % (descText)
+			html += "\t\t\t\t\t\t\t</div>\n"
+		html += "\t\t\t\t\t\t</div>\n"
+		html += "\t\t\t\t\t</div>\n"
 
 	html += createMethods(item.attributes["name"].value, item, True)
 	html += createMethods(item.attributes["name"].value, item, False)
@@ -163,19 +195,28 @@ def makeHTML(fileName, moduleName):
 	classList += "\t\t\t</div>\n"
 	classList += "\n"
 
-	directory = "../html/%s" % (moduleName)
+	if siteDocs == True:
+		directory = "../site_html/%s" % (moduleName)
+	else:
+		directory = "../html/%s" % (moduleName)
 	if not os.path.exists(directory):
 		os.makedirs(directory)	
 
 	html = globalHeader
 	html += classList
 	html += globalFooter
-	f = open("../html/%s/index.html" % (moduleName), 'w')
+	if siteDocs == True:
+		f = open("../site_html/%s/index.html" % (moduleName), 'w')
+	else:
+		f = open("../html/%s/index.html" % (moduleName), 'w')
 	f.write(html)
 	f.close()
 
 	for item in dom.documentElement.getElementsByTagName('class'):
-		f = open("../html/%s/%s.html" % (moduleName, item.attributes["name"].value), 'w')
+		if siteDocs == True:
+			f = open("../site_html/%s/%s.html" % (moduleName, item.attributes["name"].value), 'w')
+		else:
+			f = open("../html/%s/%s.html" % (moduleName, item.attributes["name"].value), 'w')
 		html = makePage(item, classList, classListPlain, moduleName)
 		f.write(html)
 		f.close()
@@ -194,7 +235,11 @@ for fname in dirList:
 
 indexhtml += "\t</div>\n"
 
-f = open("../html/index.html", 'w')
+if siteDocs == True:
+	f = open("../site_html/index.html", 'w')
+else:
+	f = open("../html/index.html", 'w')
+
 f.write(indexhtml)
 f.close()
 indexhtml += globalFooter

@@ -36,8 +36,8 @@
 using namespace Polycode;
 
 SceneParticleEmitter::SceneParticleEmitter(const String& materialName, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Vector3 emitterRadius, Mesh *particleMesh, SceneMesh *emitter)
-: ParticleEmitter(materialName, particleMesh, particleType, emitterType, lifespan, numParticles,  direction, gravity, deviation, emitterRadius),
-SceneEntity()
+: SceneEntity(),
+ParticleEmitter(materialName, particleMesh, particleType, emitterType, lifespan, numParticles,  direction, gravity, deviation, emitterRadius)
 {
 	isScreenEmitter = false;
 	emitterMesh = emitter;	
@@ -80,8 +80,8 @@ void SceneParticleEmitter::Update() {
 
 
 ScreenParticleEmitter::ScreenParticleEmitter(const String& imageFile, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Vector3 emitterRadius, Mesh *particleMesh, ScreenMesh *emitter)
-		: ParticleEmitter(imageFile, particleMesh, particleType, emitterType, lifespan, numParticles,  direction, gravity, deviation, emitterRadius),
-ScreenEntity()
+		: ScreenEntity(),
+ParticleEmitter(imageFile, particleMesh, particleType, emitterType, lifespan, numParticles,  direction, gravity, deviation, emitterRadius)
 {
 	particleSize = 10.0; 
 	isScreenEmitter = true;
@@ -96,19 +96,21 @@ ScreenParticleEmitter::~ScreenParticleEmitter(){
 	}
 }
 
-Entity *ScreenParticleEmitter::Clone(bool deepClone, bool ignoreEditorOnly) {
+Entity *ScreenParticleEmitter::Clone(bool deepClone, bool ignoreEditorOnly) const {
 	ScreenParticleEmitter *newEmitter = new ScreenParticleEmitter("default.png", Particle::BILLBOARD_PARTICLE, ParticleEmitter::CONTINUOUS_EMITTER, 2.0, 0, Vector3(0.0, -40.0, 0.0), Vector3(0.0, 0.0, 0.0), Vector3(0.0, 0.0, 0.0), Vector3(10.0, 10.0, 0.0));
 	applyClone(newEmitter, deepClone, ignoreEditorOnly);
 	return newEmitter;
 }
 
-void ScreenParticleEmitter::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) {
+void ScreenParticleEmitter::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
 	ScreenParticleEmitter *_clone = (ScreenParticleEmitter*) clone;
 
 	_clone->emitterRadius = this->emitterRadius;
 	_clone->dirVector = this->dirVector;
 	_clone->gravVector = this->gravVector;
 	_clone->deviation = this->deviation;
+
+	_clone->setIgnoreParentMatrix(getIgnoreParentMatrix());
 				
 	_clone->brightnessDeviation = this->brightnessDeviation;
 	_clone->particleSize = this->particleSize;
@@ -163,8 +165,9 @@ ParticleEmitter::ParticleEmitter(const String& imageFile, Mesh *particleMesh, in
 	isScreenEmitter = false;
 	dirVector = direction;
 	gravVector = gravity;
+	ignoreParentMatrix = false;
 	this->emitterType = emitterType;
-	this->emitSpeed = emitSpeed;
+	// TODO: initialize emitSpeed
 	this->deviation = deviation;
 	pMesh = particleMesh;
 	rotationFollowsPath = false;
@@ -211,7 +214,19 @@ ParticleEmitter::ParticleEmitter(const String& imageFile, Mesh *particleMesh, in
 	useScaleCurves = false;	
 }
 
-Texture *ParticleEmitter::getParticleTexture() {
+bool ParticleEmitter::getIgnoreParentMatrix() const {
+	return ignoreParentMatrix;
+}
+
+void ParticleEmitter::setIgnoreParentMatrix(bool val) {
+	ignoreParentMatrix = val;
+	for(int i=0; i < particles.size(); i++) {
+		particles[i]->particleBody->ignoreParentMatrix = ignoreParentMatrix;
+	}
+}
+
+
+Texture *ParticleEmitter::getParticleTexture() const {
 	return particleTexture;
 }
 
@@ -233,7 +248,7 @@ void ParticleEmitter::createParticles() {
 	Particle *particle;	
 	for(int i=0; i < numParticles; i++) {
 		particle = new Particle(particleType, isScreenEmitter, particleMaterial, particleTexture, pMesh);
-		particle->particleBody->ignoreParentMatrix = true;
+		particle->particleBody->ignoreParentMatrix = ignoreParentMatrix;
 		particle->velVector = dirVector;
 		particle->dirVector = dirVector;
 		particle->deviation = deviation;
@@ -320,7 +335,7 @@ void ParticleEmitter::setParticleCount(int count) {
 		Particle *particle;
 		for(int i=0; i  < oldSize; i++) {
 			particle = new Particle(particleType, isScreenEmitter, particleMaterial, particleTexture, pMesh);
-			particle->particleBody->ignoreParentMatrix = true;			
+			particle->particleBody->ignoreParentMatrix = ignoreParentMatrix;
 			particle->velVector = dirVector;
 			particle->dirVector = dirVector;
 			particle->deviation = deviation;
@@ -373,7 +388,10 @@ void ParticleEmitter::resetParticle(Particle *particle) {
 	
 	Vector3	startVector;
 	
-	Vector3 compoundScale = getParticleCompoundScale();
+	Vector3 compoundScale(1.0, 1.0, 1.0);
+	if(ignoreParentMatrix) {
+		compoundScale = getParticleCompoundScale();
+	}
 	
 	particle->dirVector = dirVector;
 //	if(emitterMesh) {
@@ -397,9 +415,13 @@ void ParticleEmitter::resetParticle(Particle *particle) {
 	particle->brightnessDeviation = 1.0f - ( (-brightnessDeviation) + ((brightnessDeviation*2) * ((Number)rand()/RAND_MAX)));
 	
 //	particle->velVector = concatMatrix.rotateVector(particle->velVector);	
+
+	if(ignoreParentMatrix) {
+		particle->particleBody->setPosition(concatMatrix.getPosition());
+	} else {
+		particle->particleBody->setPosition(0.0, 0.0, 0.0);
+	}
 	
-	particle->particleBody->setPosition(concatMatrix.getPosition());
-//	particle->particleBody->setPosition(0.0, 0.0, 0.0);
 	particle->particleBody->Translate(startVector);
 	particle->particleBody->rebuildTransformMatrix();	
 	
@@ -471,7 +493,10 @@ void ParticleEmitter::updateEmitter() {
 	Particle *particle;
 	Number normLife;
 	
-	Vector3 compoundScale = getParticleCompoundScale();
+	Vector3 compoundScale(1.0, 1.0, 1.0);
+	if(ignoreParentMatrix) {
+		compoundScale = getParticleCompoundScale();
+	}
 	
 	for(int i=0;i < numParticles; i++) {	
 		particle = particles[i];

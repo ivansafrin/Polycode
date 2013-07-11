@@ -265,7 +265,7 @@ namespace Polycode {
 				
 				*ax = -fabs(angle_x);
 				*ay = fabs(angle_y);
-				*az = fabs(angle_z);
+				*az = -fabs(angle_z);
 
 			}
 		
@@ -282,7 +282,7 @@ namespace Polycode {
 			/**
 			* Returns the inverse of the matrix.
 			*/
-			Matrix4 inverse() const;
+			Matrix4 Inverse() const;
 			
 			/**
 			* Returns the affine inverse of the matrix.

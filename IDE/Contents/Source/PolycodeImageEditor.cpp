@@ -27,7 +27,12 @@ PolycodeImageEditor::PolycodeImageEditor() : PolycodeEditor(true){
 }
 
 PolycodeImageEditor::~PolycodeImageEditor() {
-	
+	delete grid;
+	delete editorImage;
+	delete leftShape;
+	delete rightShape;
+	delete topShape;
+	delete bottomShape;
 }
 
 bool PolycodeImageEditor::openFile(OSFileEntry filePath) {
@@ -64,17 +69,14 @@ bool PolycodeImageEditor::openFile(OSFileEntry filePath) {
 		
 	editorImage = new ScreenShape(ScreenShape::SHAPE_RECT, 10,10);
 	
-	Image *image = new Image(filePath.fullPath);
-	
-	Texture *newTexture = CoreServices::getInstance()->getMaterialManager()->createTextureFromImage(image);
-	
+	Texture *newTexture = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(filePath.fullPath);
+	newTexture->reloadOnFileModify = true;
 	editorImage->setTexture(newTexture);
 	
 	editorImage->strokeEnabled = true;
 	editorImage->setStrokeColor(1.0, 1.0, 1.0, 0.2);
 	
-	aspectRatio = ((Number)image->getWidth()) / ((Number)image->getHeight());
-	delete image;
+	aspectRatio = ((Number)newTexture->getWidth()) / ((Number)newTexture->getHeight());
 	
 	addChild(editorImage);
 	

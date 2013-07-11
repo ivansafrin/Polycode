@@ -98,6 +98,22 @@ namespace Polycode {
 		bool getKeyState(PolyKEY keyCode);		
 		
 		/** 
+		* Returns the state of the specified joystick button for the specified joystick index. If the joystick index is invalid, returns false
+		* @param joystickIndex Joystick index to check the state on
+		* @param button Joystick button to check the stat of.
+		* @return True if the button is pressed, false otherwise or if joystick index is invalid.
+		*/						
+		bool getJoystickButtonState(int joystickIndex, int button);
+		
+		/** 
+		* Returns the value of the specified joystick axis for the specified joystick index. If the joystick index is invalid, returns 0
+		* @param joystickIndex Joystick index to check the state on
+		* @param axis Joystick axis to get the value of.
+		* @return Value of the joystick axis (0 if joystickIndex is invalid)
+		*/						
+		Number getJoystickAxisValue(int joystickIndex, int axis);
+		
+		/** 
 		* Returns the current mouse position as delta from last frame.
 		* @return Mouse position as a 2d vector delta from last frame.
 		*/		

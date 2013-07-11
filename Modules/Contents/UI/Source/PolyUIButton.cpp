@@ -42,8 +42,8 @@ UIButton::UIButton(String text, Number width, Number height) : UIElement() {
 	Number sb = conf->getNumericValue("Polycode", "uiButtonSkinB");
 	Number sl = conf->getNumericValue("Polycode", "uiButtonSkinL");
 
-	Number labelOffsetX = conf->getNumericValue("Polycode", "uiButtonLabelOffsetX");
-	Number labelOffsetY = conf->getNumericValue("Polycode", "uiButtonLabelOffsetY");
+	labelOffsetX = conf->getNumericValue("Polycode", "uiButtonLabelOffsetX");
+	labelOffsetY = conf->getNumericValue("Polycode", "uiButtonLabelOffsetY");
 		
 	buttonRect = new UIBox(conf->getStringValue("Polycode", "uiButtonSkin"),
 						   st,sr,sb,sl,
@@ -85,6 +85,21 @@ UIButton::UIButton(String text, Number width, Number height) : UIElement() {
 	
 }
 
+void UIButton::Resize(Number width, Number height) {
+	buttonRect->resizeBox(width, height);
+	buttonFocusedRect->resizeBox(width, height);
+	this->width = width;
+	this->height = height;	
+	matrixDirty = true;	
+	setHitbox(width,height);	
+	
+	labelXPos = floor((width-buttonLabel->getWidth())/2.0f) + labelOffsetX;
+	labelYPos = labelOffsetY;
+	buttonLabel->setPosition(labelXPos,labelYPos);
+	
+	UIElement::Resize(width, height);
+}
+
 void UIButton::Update() {
 	if(hasFocus) {
 		buttonFocusedRect->visible = true;
@@ -96,9 +111,12 @@ void UIButton::Update() {
 }
 
 UIButton::~UIButton() {
-	delete buttonRect;
-	delete buttonFocusedRect;
-	delete buttonLabel;
+	coreInput->removeAllHandlersForListener(this);
+	if(!ownsChildren) {
+		delete buttonRect;
+		delete buttonFocusedRect;
+		delete buttonLabel;
+	}
 }
 		
 void UIButton::handleEvent(Event *event) {
@@ -107,7 +125,9 @@ void UIButton::handleEvent(Event *event) {
 		switch(event->getEventCode()) {
 			case InputEvent::EVENT_KEYDOWN:
 				if(hasFocus) {
-					dispatchEvent(new UIEvent(), UIEvent::CLICK_EVENT);					
+					if(((InputEvent*)event)->key == KEY_RETURN || ((InputEvent*)event)->key == KEY_SPACE) {
+						dispatchEvent(new UIEvent(), UIEvent::CLICK_EVENT);
+					}
 				}
 			break;
 		}

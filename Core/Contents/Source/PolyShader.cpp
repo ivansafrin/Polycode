@@ -21,8 +21,65 @@
 */
 
 #include "PolyShader.h"
+#include "PolyMatrix4.h"
 
 using namespace Polycode;
+
+ShaderRenderTarget::ShaderRenderTarget() : PolyBase() {
+	texture = NULL;
+}
+
+void *ProgramParam::createParamData(int type) {
+	switch (type) {
+		case PARAM_NUMBER:
+		{
+			Number *val = new Number();
+			return (void*)val;
+		}
+		break;
+		case PARAM_VECTOR2:
+		{
+			Vector2 *val = new Vector2();
+			return (void*)val;
+		}
+		break;
+		case PARAM_VECTOR3:
+		{
+			Vector3 *val = new Vector3();
+			return (void*)val;
+		}
+		break;		
+		case PARAM_COLOR:
+		{
+			Color *val = new Color();
+			return (void*)val;
+		}
+		break;		
+		case PARAM_MATRIX:
+		{
+			Matrix4 *val = new Matrix4();
+			return (void*)val;
+		}
+		break;		
+		default:		
+			return NULL;
+		break;
+	}
+}
+
+ShaderProgram::ShaderProgram(int type) : Resource(Resource::RESOURCE_PROGRAM) {
+	this->type = type;
+}
+
+ShaderProgram::~ShaderProgram() {
+
+}
+
+void ShaderProgram::reloadResource() {
+	reloadProgram();
+	Resource::reloadResource();	
+}
+
 
 ShaderBinding::ShaderBinding(Shader *shader) {
 	this->shader = shader;
@@ -68,15 +125,67 @@ LocalShaderParam *ShaderBinding::addLocalParam(const String& name, void *ptr) {
 	return newParam;
 }
 
+LocalShaderParam * ShaderBinding::addParam(int type, const String& name) {
+	void *defaultData = ProgramParam::createParamData(type);
+	LocalShaderParam *newParam = new LocalShaderParam();
+	newParam->data = defaultData;
+	newParam->name = name;
+	localParams.push_back(newParam);
+	return newParam;
+}
+
 void ShaderBinding::addRenderTargetBinding(RenderTargetBinding *binding) {
 	renderTargetBindings.push_back(binding);
-	if(binding->mode == RenderTargetBinding::MODE_IN) {
-		inTargetBindings.push_back(binding);
-		printf("Adding in target binding [%s] [%s]\n", binding->id.c_str(), binding->name.c_str());
-	} else {
-		outTargetBindings.push_back(binding);	
-		printf("Adding out target binding [%s]\n", binding->id.c_str());		
+	switch (binding->mode) {
+		case RenderTargetBinding::MODE_IN:
+			inTargetBindings.push_back(binding);		
+		break;
+		case RenderTargetBinding::MODE_OUT:
+			outTargetBindings.push_back(binding);		
+		break;
+		case RenderTargetBinding::MODE_COLOR:
+			colorTargetBindings.push_back(binding);		
+		break;
+		case RenderTargetBinding::MODE_DEPTH:
+			depthTargetBindings.push_back(binding);		
+		break;				
 	}
+}
+
+void ShaderBinding::removeRenderTargetBinding(RenderTargetBinding *binding) {
+	for(int i=0; i < renderTargetBindings.size(); i++) {
+		if(renderTargetBindings[i] == binding) {
+			renderTargetBindings.erase(renderTargetBindings.begin() + i);
+		}
+	}
+	
+	for(int i=0; i < inTargetBindings.size(); i++) {
+		if(inTargetBindings[i] == binding) {
+			inTargetBindings.erase(inTargetBindings.begin() + i);
+			return;
+		}
+	}
+	for(int i=0; i < outTargetBindings.size(); i++) {
+		if(outTargetBindings[i] == binding) {
+			outTargetBindings.erase(outTargetBindings.begin() + i);
+			return;
+		}
+	}
+	
+	for(int i=0; i < colorTargetBindings.size(); i++) {
+		if(colorTargetBindings[i] == binding) {
+			colorTargetBindings.erase(colorTargetBindings.begin() + i);
+			return;
+		}
+	}
+
+	for(int i=0; i < depthTargetBindings.size(); i++) {
+		if(depthTargetBindings[i] == binding) {
+			depthTargetBindings.erase(depthTargetBindings.begin() + i);
+			return;
+		}
+	}
+	
 }
 
 unsigned int ShaderBinding::getNumRenderTargetBindings() {
@@ -103,11 +212,38 @@ RenderTargetBinding *ShaderBinding::getOutTargetBinding(unsigned int index) {
 	return outTargetBindings[index];
 }
 
+unsigned int ShaderBinding::getNumColorTargetBindings() {
+	return colorTargetBindings.size();
+}
+
+RenderTargetBinding *ShaderBinding::getColorTargetBinding(unsigned int index) {
+	return colorTargetBindings[index];
+}
+
+unsigned int ShaderBinding::getNumDepthTargetBindings() {
+	return depthTargetBindings.size();
+}
+
+RenderTargetBinding *ShaderBinding::getDepthTargetBinding(unsigned int index) {
+	return depthTargetBindings[index];
+}
+
 
 Shader::Shader(int type) : Resource(Resource::RESOURCE_SHADER) {
 	numSpotLights = 0;
 	numAreaLights = 0;
 	this->type = type;
+	vp = NULL;
+	fp = NULL;
+}
+
+int Shader::getExpectedParamType(String name) {
+	for(int i=0; i < expectedParams.size(); i++) {
+		if(expectedParams[i].name == name) {
+			return expectedParams[i].type;
+		}
+	}
+	return ProgramParam::PARAM_UNKNOWN;
 }
 
 Shader::~Shader() {

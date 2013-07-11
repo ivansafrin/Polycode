@@ -120,7 +120,7 @@ namespace Polycode {
 		bool isEnabled();		
 		void setEnabled(bool enabled);
 		
-		int getNumEntities() { return entities.size(); }
+		int getNumEntities() { return (int)entities.size(); }
 		SceneEntity *getEntity(int index) { return entities[index]; }
 		
 		/**
@@ -133,10 +133,6 @@ namespace Polycode {
 		
 		void Render(Camera *targetCamera = NULL);
 		void RenderDepthOnly(Camera *targetCamera);
-		
-		static String readString(OSFILE *inFile);
-		void loadScene(const String& fileName);
-		void generateLightmaps(Number lightMapRes, Number lightMapQuality, int numRadPasses);
 		
 		/**
 		* Adds a light to the scene.
@@ -151,22 +147,10 @@ namespace Polycode {
 		void removeLight(SceneLight *light);
 		
 		SceneLight *getNearestLight(Vector3 pos);
-		
-		void writeEntityMatrix(SceneEntity *entity, OSFILE *outFile);
-		void writeString(const String& str, OSFILE *outFile);
-		void saveScene(const String& fileName);
-		
-		int getNumStaticGeometry();
-		SceneMesh *getStaticGeometry(int index);
-		
-		virtual void loadCollisionChild(SceneEntity *entity, bool autoCollide=false, int type=0){}
-		
+				
 		int getNumLights();
 		SceneLight *getLight(int index);
-		
-		SceneEntity *getCustomEntityByType(const String& type) const;
-		std::vector<SceneEntity*> getCustomEntitiesByType(const String& type) const;
-		
+				
 		static const unsigned int ENTITY_MESH = 0;
 		static const unsigned int ENTITY_LIGHT = 1;			
 		static const unsigned int ENTITY_CAMERA = 2;			
@@ -208,10 +192,6 @@ namespace Polycode {
 		bool hasLightmaps;
 		
 		std::vector <SceneLight*> lights;
-		std::vector <SceneMesh*> staticGeometry;
-		std::vector <SceneMesh*> collisionGeometry;
-		std::vector <SceneEntity*> customEntities;
-		
 		
 		bool isSceneVirtual;
 		

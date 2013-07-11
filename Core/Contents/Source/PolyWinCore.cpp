@@ -34,11 +34,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <Shlobj.h>
-#include <Shellapi.h>
-#include <Commdlg.h>
+#include <shlobj.h>
+#include <shellapi.h>
+#include <commdlg.h>
 
-#if !defined(_MINGW)
+#if defined(_MINGW)
+#ifndef MAPVK_VSC_TO_VK_EX
+#define MAPVK_VSC_TO_VK_EX 3
+#endif
+#else
 PFNWGLSWAPINTERVALEXTPROC       wglSwapIntervalEXT = NULL;
 PFNWGLGETSWAPINTERVALEXTPROC    wglGetSwapIntervalEXT = NULL;
 #endif
@@ -117,7 +121,7 @@ Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScre
 		Logger::log("Error initializing sockets!\n");
 	}
 
-	((OpenGLRenderer*)renderer)->initOSSpecific();
+	((OpenGLRenderer*)renderer)->Init();
 
 	wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC) wglGetProcAddress("wglSwapIntervalEXT");
 	wglGetSwapIntervalEXT = (PFNWGLGETSWAPINTERVALEXTPROC) wglGetProcAddress("wglGetSwapIntervalEXT");
@@ -133,7 +137,17 @@ Win32Core::~Win32Core() {
 }
 
 void Win32Core::enableMouse(bool newval) {
-	ShowCursor(newval);	
+	ShowCursor(newval);
+
+	Core::enableMouse(newval);
+}
+
+void Win32Core::captureMouse(bool newval) {
+	// Capture the mouse in the window holding
+	// our polycode screen.
+	SetCapture(hWnd);
+
+	Core::captureMouse(newval);
 }
 
 void Win32Core::warpCursor(int x, int y) {
@@ -150,19 +164,20 @@ unsigned int Win32Core::getTicks() {
 	return GetTickCount();
 }
 
+void Win32Core::Render() {
+	renderer->BeginRender();
+	services->Render();
+	renderer->EndRender();
+	SwapBuffers(hDC);
+}
+
 bool Win32Core::Update() {
 	if(!running)
 		return false;
-
+	doSleep();
 	checkEvents();
 	Gamepad_processEvents();
-
-	renderer->BeginRender();
 	updateCore();
-	renderer->EndRender();
-	
-	SwapBuffers(hDC);
-	doSleep();
 	return running;
 }
 
@@ -476,12 +491,17 @@ PolyKEY Win32Core::mapKey(LPARAM lParam, WPARAM wParam) {
 						wParam = VK_RCONTROL;
 					else
 						wParam = VK_LCONTROL;
-				break;
-				case 33:
+					break;
+				case VK_MENU:
 					if ( lParam&EXTENDED_KEYMASK )
 						wParam = VK_RMENU;
 					else
 						wParam = VK_LMENU;
+					break;
+				case VK_SHIFT:
+					// Use MapVirtualKey to determine whether it's LSHIFT or RSHIFT by scancode.
+					UINT scancode = (lParam & 0x00ff0000) >> 16;
+					wParam = MapVirtualKey(scancode, MAPVK_VSC_TO_VK_EX);
 					break;
 			}
 
@@ -687,6 +707,12 @@ void Win32Core::checkEvents() {
 					case InputEvent::EVENT_MOUSEUP:
 							input->setMouseButtonState(event.mouseButton, false, getTicks());
 					break;
+					case InputEvent::EVENT_MOUSEWHEEL_UP:
+						input->mouseWheelUp(getTicks());
+					break;
+					case InputEvent::EVENT_MOUSEWHEEL_DOWN:
+						input->mouseWheelDown(getTicks());						
+					break;	
 					case InputEvent::EVENT_KEYDOWN:
 						if(!checkSpecialKeyEvents((event.keyCode))) {
 							input->setKeyState(event.keyCode, (char)event.unicodeChar, true, getTicks());

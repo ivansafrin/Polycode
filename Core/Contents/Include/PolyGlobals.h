@@ -39,6 +39,9 @@ THE SOFTWARE.
 	#pragma warning(disable:4996)
 	#pragma warning(disable:4309)
 	#define NULL 0
+	// Prevent windows.h includes from generating min/max macros that
+	// clash with the templates in <algorithm>
+	#define NOMINMAX
 
 
 #endif
@@ -84,8 +87,12 @@ inline Number clampf(Number x, Number a, Number b)
     return x < a ? a : (x > b ? b : x);
 }
 
-#define MIN(a, b)  (((a) < (b)) ? (a) : (b))
-#define MAX(a, b)  (((a) > (b)) ? (a) : (b))
+#ifndef MIN
+	#define MIN(a, b)  (((a) < (b)) ? (a) : (b))
+#endif
+#ifndef MAX
+	#define MAX(a, b)  (((a) > (b)) ? (a) : (b))
+#endif
 
 // Special flag read by create_lua_library parser, suppresses Lua bindings for item.
 #define POLYIGNORE

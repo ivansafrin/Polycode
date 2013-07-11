@@ -25,6 +25,8 @@ THE SOFTWARE.
 #include "PolyGlobals.h"
 #include <vector>
 
+#define RESOURCE_CHECK_INTERVAL	2000
+
 namespace Polycode {
 
 	class Resource;
@@ -44,7 +46,19 @@ namespace Polycode {
 			* @param resource Resource to add.
 			*/ 
 			void addResource(Resource *resource);
+
+			/** 
+			* Removes a resource.
+			* @param resource Resource to resource.
+			*/ 
+			void removeResource(Resource *resource);
 			
+			
+			/**
+			* Returns true if the following resource has been adde to the resource manager.
+			* @param resource Resource to check.
+			*/
+			bool hasResource(Resource *resource);
 			/**
 			* Loads resources from a directory.
 			* @param dirPath Path to directory to load resources from.
@@ -78,6 +92,9 @@ namespace Polycode {
 			* @param resourceName Name of the resource to request.
 			*/
 			Resource *getResource(int resourceType, const String& resourceName) const;
+
+			Resource *getResourceByPath(const String& resourcePath) const;
+
 		
 			/**
 			 * Request a full set of loaded resources. You need to manually cast them to their subclasses based on their type.
@@ -87,8 +104,15 @@ namespace Polycode {
 		
 			void addShaderModule(PolycodeShaderModule *module);
 		
+			void checkForChangedFiles();
+		
+			void Update(int elapsed);
+			
+			bool reloadResourcesOnModify;
 		
 		private:
+			int ticksSinceCheck;
+		
 			std::vector <Resource*> resources;
 			std::vector <PolycodeShaderModule*> shaderModules;
 	};

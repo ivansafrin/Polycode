@@ -23,11 +23,12 @@
 #include "OSBasics.h"
 #ifdef _WINDOWS
 	#include <windows.h>
-	#include <Shellapi.h>
+	#include <shellapi.h>
 #else
 	#include <dirent.h>
 	#include <sys/types.h>
 	#include <sys/stat.h>
+	#include <unistd.h>
 #endif
 
 #include <vector>
@@ -258,6 +259,23 @@ vector<OSFileEntry> OSBasics::parsePhysFSFolder(const String& pathString, bool s
 	return returnVector;
 }
 
+bool OSBasics::fileExists(const Polycode::String& pathString) {
+	if(PHYSFS_exists(pathString.c_str())) {
+		return true;
+	}
+
+#ifdef _WINDOWS
+	WCHAR tmp[4096];
+	memset(tmp, 0, sizeof(WCHAR)*4096);
+	ctow(tmp, pathString.c_str());
+
+	DWORD dwAttrib = GetFileAttributes(tmp);
+    return (dwAttrib != 0xFFFFFFFF);
+#else
+	return (access(pathString.c_str(), F_OK) != -1);
+#endif
+}
+
 vector<OSFileEntry> OSBasics::parseFolder(const String& pathString, bool showHidden) {
 	vector<OSFileEntry> returnVector;
 	
@@ -336,6 +354,47 @@ vector<OSFileEntry> OSBasics::parseFolder(const String& pathString, bool showHid
 #endif
 		
 	return returnVector;
+}
+
+time_t OSBasics::getFileTime(const Polycode::String& pathString) {
+
+	String realString;
+	if(PHYSFS_exists(pathString.c_str())) {
+		realString = String(PHYSFS_getRealDir(pathString.c_str())) + "/" + pathString;
+	} else {
+		realString = pathString;
+	}
+
+#ifdef _WINDOWS
+	WCHAR tmp[4096];
+	memset(tmp, 0, sizeof(WCHAR)*4096);
+	ctow(tmp, pathString.c_str());
+	HANDLE hFile = CreateFile(tmp, GENERIC_READ, FILE_SHARE_WRITE | FILE_SHARE_READ | FILE_SHARE_DELETE,
+								NULL, OPEN_EXISTING, 0, NULL);
+								
+	if(hFile == INVALID_HANDLE_VALUE) {
+		return 0;
+	}
+
+	FILETIME lastModifyTime;
+	BOOL result = GetFileTime(hFile, NULL, NULL, &lastModifyTime);
+	if(!result) {
+		return 0;
+	} else {
+		ULARGE_INTEGER ull;
+		ull.LowPart = lastModifyTime.dwLowDateTime;
+		ull.HighPart = lastModifyTime.dwHighDateTime;
+		return ull.QuadPart / 10000000ULL - 11644473600ULL;
+	}
+#else
+	struct stat statbuf;
+	int retVal = stat(realString.c_str(), &statbuf);
+	if (retVal == 0) {
+		return statbuf.st_mtime;
+	} else {
+		return 0;
+	}
+#endif
 }
 
 void OSBasics::removeItem(const String& pathString) {

@@ -29,6 +29,7 @@ THE SOFTWARE.
 
 #include "PolyGLSLShaderModule.h"
 #include "PolyCoreServices.h"
+#include "PolyCore.h"
 #include "PolyResourceManager.h"
 #include "PolyRenderer.h"
 #include "PolyGLSLProgram.h"
@@ -111,16 +112,31 @@ String GLSLShaderModule::getShaderType() {
 	return "glsl";
 }
 
+Shader *GLSLShaderModule::createShader(String name, String vpName, String fpName) {
+
+	GLSLShader *retShader = NULL;
+
+	GLSLProgram *vp = NULL;
+	GLSLProgram *fp = NULL;
+
+	vp = (GLSLProgram*)CoreServices::getInstance()->getResourceManager()->getResourceByPath(vpName);
+	fp = (GLSLProgram*)CoreServices::getInstance()->getResourceManager()->getResourceByPath(fpName);
+		
+	if(vp != NULL && fp != NULL) {
+		GLSLShader *shader = new GLSLShader(vp,fp);
+		shader->setName(name);
+		retShader = shader;
+		shaders.push_back((Shader*)shader);
+	}
+	return retShader;
+}
+
 Shader *GLSLShaderModule::createShader(TiXmlNode *node) {
-	TiXmlNode* pChild, *pChild2, *pChild3;	
+	TiXmlNode* pChild;
 	GLSLProgram *vp = NULL;
 	GLSLProgram *fp = NULL;
 	GLSLShader *retShader = NULL;
-	
-	std::vector<String> expectedTextures;
-	std::vector<ProgramParam> expectedFragmentParams;	
-	std::vector<ProgramParam> expectedVertexParams;
-		
+			
 	TiXmlElement *nodeElement = node->ToElement();
 	if (!nodeElement) return NULL; // Skip comment nodes
 	
@@ -129,51 +145,36 @@ Shader *GLSLShaderModule::createShader(TiXmlNode *node) {
 		if (!pChildElement) continue; // Skip comment nodes
 		
 		if(strcmp(pChild->Value(), "vp") == 0) {
-			vp = (GLSLProgram*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_PROGRAM, String(pChildElement->Attribute("source")));
-			if(vp) {
-				for (pChild2 = pChild->FirstChild(); pChild2 != 0; pChild2 = pChild2->NextSibling()) {
-					if(strcmp(pChild2->Value(), "params") == 0) {
-						for (pChild3 = pChild2->FirstChild(); pChild3 != 0; pChild3 = pChild3->NextSibling()) {
-							if(strcmp(pChild3->Value(), "param") == 0) {
-								expectedVertexParams.push_back(addParamToProgram(vp,pChild3));
-							}
-						}
-					}
+			String vpFileName = String(pChildElement->Attribute("source"));
+			vp = (GLSLProgram*)CoreServices::getInstance()->getResourceManager()->getResourceByPath(vpFileName);
+			if(!vp) {
+				vp = (GLSLProgram*)CoreServices::getInstance()->getMaterialManager()->createProgramFromFile(vpFileName);
+				if(vp) {
+					vp->setResourcePath(vpFileName);
+					OSFileEntry entry = OSFileEntry(vpFileName, OSFileEntry::TYPE_FILE);
+					vp->setResourceName(entry.name);
+					CoreServices::getInstance()->getResourceManager()->addResource(vp);
 				}
 			}
 		}
 		if(strcmp(pChild->Value(), "fp") == 0) {
-			fp = (GLSLProgram*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_PROGRAM, String(pChildElement->Attribute("source")));
-			if(fp) {
-				for (pChild2 = pChild->FirstChild(); pChild2 != 0; pChild2 = pChild2->NextSibling()) {
-					if(strcmp(pChild2->Value(), "params") == 0) {
-						for (pChild3 = pChild2->FirstChild(); pChild3 != 0; pChild3 = pChild3->NextSibling()) {
-							if(strcmp(pChild3->Value(), "param") == 0) {
-								expectedFragmentParams.push_back(addParamToProgram(fp,pChild3));	
-							}
-						}
-					}
-					if(strcmp(pChild2->Value(), "textures") == 0) {
-						for (pChild3 = pChild2->FirstChild(); pChild3 != 0; pChild3 = pChild3->NextSibling()) {
-							if(strcmp(pChild3->Value(), "texture") == 0) {
-								TiXmlElement *texNodeElement = pChild3->ToElement();
-								if (texNodeElement) {
-									expectedTextures.push_back(String(texNodeElement->Attribute("name")));
-								}
-							}
-						}
-					}					
+			String fpFileName = String(pChildElement->Attribute("source"));		
+			fp = (GLSLProgram*)CoreServices::getInstance()->getResourceManager()->getResourceByPath(fpFileName);
+			if(!fp) {
+				fp = (GLSLProgram*)CoreServices::getInstance()->getMaterialManager()->createProgramFromFile(fpFileName);
+				if(fp) {
+					fp->setResourcePath(fpFileName);
+					OSFileEntry entry = OSFileEntry(fpFileName, OSFileEntry::TYPE_FILE);					
+					fp->setResourceName(entry.name);
+					CoreServices::getInstance()->getResourceManager()->addResource(fp);				
 				}
-			}
+			}			
 		}
 		
 	}
 	if(vp != NULL && fp != NULL) {
 		GLSLShader *cgShader = new GLSLShader(vp,fp);
 		cgShader->setName(String(nodeElement->Attribute("name")));
-		cgShader->expectedTextures = expectedTextures;
-		cgShader->expectedVertexParams = expectedVertexParams;
-		cgShader->expectedFragmentParams = expectedFragmentParams;				
 		retShader = cgShader;
 		shaders.push_back((Shader*)cgShader);
 	}
@@ -185,48 +186,51 @@ void GLSLShaderModule::clearShader() {
 	glUseProgram(0);
 }
 
-void GLSLShaderModule::updateGLSLParam(Renderer *renderer, GLSLShader *glslShader, GLSLProgramParam &param, ShaderBinding *materialOptions, ShaderBinding *localOptions) {
+void GLSLShaderModule::updateGLSLParam(Renderer *renderer, GLSLShader *glslShader, ProgramParam &param, ShaderBinding *materialOptions, ShaderBinding *localOptions) {
 	
-		void *paramData = param.defaultData;
-		LocalShaderParam *localParam = materialOptions->getLocalParamByName(param.name);
-		if(localParam) {
-			paramData = localParam->data;
-		}
+		LocalShaderParam *localParam = NULL;		
+		localParam = materialOptions->getLocalParamByName(param.name);
 		
-		localParam = localOptions->getLocalParamByName(param.name);
-		if(localParam) {
-			paramData = localParam->data;
+		// local options override material options.
+		LocalShaderParam *localOptionsParam = localOptions->getLocalParamByName(param.name);
+		if(localOptionsParam) {
+			localParam = localOptionsParam;
 		}
-		
-		switch(param.paramType) {
-			case GLSLProgramParam::PARAM_Number:
-			{
-				Number *fval;			
-				fval = (Number*)paramData;
-				int paramLocation = glGetUniformLocation(glslShader->shader_id, param.name.c_str());
-				glUniform1f(paramLocation, *fval);
-				break;
-			}
-			case GLSLProgramParam::PARAM_Vector2:
-			{
-				Vector2 *fval2 = (Vector2*)paramData;
-				int paramLocation = glGetUniformLocation(glslShader->shader_id, param.name.c_str());
-				glUniform2f(paramLocation, fval2->x, fval2->y);				break;				
-			}			
-			case GLSLProgramParam::PARAM_Vector3:
-			{
-				Vector3 *fval3 = (Vector3*)paramData;
-				int paramLocation = glGetUniformLocation(glslShader->shader_id, param.name.c_str());
-				glUniform3f(paramLocation, fval3->x,fval3->y,fval3->z);
-				break;				
-			}
-			case GLSLProgramParam::PARAM_Color:
-			{
-				Color *col = (Color*)paramData;
-				int paramLocation = glGetUniformLocation(glslShader->shader_id, param.name.c_str());
-				glUniform4f(paramLocation, col->r, col->g, col->b, col->a);
-				break;				
-			}
+
+		int paramLocation = glGetUniformLocation(glslShader->shader_id, param.name.c_str());
+					
+		switch(param.type) {
+			case ProgramParam::PARAM_NUMBER:
+				if(localParam) {
+					glUniform1f(paramLocation, localParam->getNumber());				
+				} else {
+					glUniform1f(paramLocation, 0.0f);
+				}
+			break;
+			case ProgramParam::PARAM_VECTOR2:
+				if(localParam) {
+					Vector2 vec2 = localParam->getVector2();
+					glUniform2f(paramLocation, vec2.x, vec2.y);
+				} else {
+					glUniform2f(paramLocation, 0.0f, 0.0f);
+				}				
+			break;
+			case ProgramParam::PARAM_VECTOR3:
+				if(localParam) {
+					Vector3 vec3 = localParam->getVector3();
+					glUniform3f(paramLocation, vec3.x, vec3.y, vec3.z);
+				} else {
+					glUniform3f(paramLocation, 0.0f, 0.0f, 0.0f);
+				}
+			break;
+			case ProgramParam::PARAM_COLOR:
+				if(localParam) {
+					Color color = localParam->getColor();
+					glUniform4f(paramLocation, color.r, color.g, color.b, color.a);
+				} else {
+					glUniform4f(paramLocation, 0.0f, 0.0f, 0.0f, 0.0f);
+				}
+			break;				
 		}
 }
 
@@ -268,7 +272,7 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 		LightInfo light;
 		if(i < numRendererAreaLights) {
 			light = areaLights[i];
-			light.position = renderer->getCameraMatrix().inverse() * light.position;
+			light.position = renderer->getCameraMatrix().Inverse() * light.position;
 			ambientVal[0] = renderer->ambientColor.r;
 			ambientVal[1] = renderer->ambientColor.g;
 			ambientVal[2] = renderer->ambientColor.b;										
@@ -318,8 +322,8 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 			light = spotLights[i];
 			pos = light.position;
 			dir = light.dir;						
-			pos = renderer->getCameraMatrix().inverse() * pos;
-			dir = renderer->getCameraMatrix().inverse().rotateVector(dir);
+			pos = renderer->getCameraMatrix().Inverse() * pos;
+			dir = renderer->getCameraMatrix().Inverse().rotateVector(dir);
 			
 			ambientVal[0] = renderer->ambientColor.r;
 			ambientVal[1] = renderer->ambientColor.g;
@@ -418,127 +422,75 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 		
 	GLSLShaderBinding *cgBinding = (GLSLShaderBinding*)material->getShaderBinding(shaderIndex);
 	
-	for(int i=0; i < glslShader->vp->params.size(); i++) {
-		GLSLProgramParam param = glslShader->vp->params[i];
+	for(int i=0; i < glslShader->expectedParams.size(); i++) {
+		ProgramParam param = glslShader->expectedParams[i];
 		updateGLSLParam(renderer, glslShader, param, material->getShaderBinding(shaderIndex), localOptions);
 	}
-	
-	for(int i=0; i < glslShader->fp->params.size(); i++) {
-		GLSLProgramParam param = glslShader->fp->params[i];
-		updateGLSLParam(renderer, glslShader, param, material->getShaderBinding(shaderIndex), localOptions);
-	}	
-	
+		
 	for(int i=0; i < cgBinding->textures.size(); i++) {
-		int texture_location = glGetUniformLocation(glslShader->shader_id, cgBinding->textures[i].name.c_str());
-		glUniform1i(texture_location, textureIndex);
-		glActiveTexture(GL_TEXTURE0 + textureIndex);		
-		glBindTexture(GL_TEXTURE_2D, ((OpenGLTexture*)cgBinding->textures[i].texture)->getTextureID());	
-		textureIndex++;
+		OpenGLTexture *glTexture = (OpenGLTexture*)cgBinding->textures[i].texture;	
+		if(glTexture) {		
+			int texture_location = glGetUniformLocation(glslShader->shader_id, cgBinding->textures[i].name.c_str());
+			glUniform1i(texture_location, textureIndex);
+			glActiveTexture(GL_TEXTURE0 + textureIndex);		
+			glBindTexture(GL_TEXTURE_2D, glTexture->getTextureID());
+			textureIndex++;
+		}
 	}	
 	
 		
 	for(int i=0; i < cgBinding->cubemaps.size(); i++) {
-		int texture_location = glGetUniformLocation(glslShader->shader_id, cgBinding->cubemaps[i].name.c_str());
-		glUniform1i(texture_location, textureIndex);
-		
-		glActiveTexture(GL_TEXTURE0 + textureIndex);	
-			
-		glBindTexture(GL_TEXTURE_CUBE_MAP, ((OpenGLCubemap*)cgBinding->cubemaps[i].cubemap)->getTextureID());	
-		textureIndex++;
+		OpenGLCubemap *glCubemap = (OpenGLCubemap*)cgBinding->cubemaps[i].cubemap;
+		if(glCubemap) {
+			int texture_location = glGetUniformLocation(glslShader->shader_id, cgBinding->cubemaps[i].name.c_str());
+			glUniform1i(texture_location, textureIndex);		
+			glActiveTexture(GL_TEXTURE0 + textureIndex);				
+			glBindTexture(GL_TEXTURE_CUBE_MAP, glCubemap->getTextureID());
+			textureIndex++;
+		}
 	}	
 	
 	cgBinding = (GLSLShaderBinding*)localOptions;
 	for(int i=0; i < cgBinding->textures.size(); i++) {
-		int texture_location = glGetUniformLocation(glslShader->shader_id, cgBinding->textures[i].name.c_str());
-		glUniform1i(texture_location, textureIndex);
-		glActiveTexture(GL_TEXTURE0 + textureIndex);		
-		glBindTexture(GL_TEXTURE_2D, ((OpenGLTexture*)cgBinding->textures[i].texture)->getTextureID());	
-		textureIndex++;
+		OpenGLTexture *glTexture = (OpenGLTexture*)cgBinding->textures[i].texture;
+		if(glTexture) {		
+			int texture_location = glGetUniformLocation(glslShader->shader_id, cgBinding->textures[i].name.c_str());
+			glUniform1i(texture_location, textureIndex);
+			glActiveTexture(GL_TEXTURE0 + textureIndex);		
+			glBindTexture(GL_TEXTURE_2D, glTexture->getTextureID());	
+			textureIndex++;
+		}
 	}		
+
+	for(int i=0; i < cgBinding->cubemaps.size(); i++) {
+		OpenGLCubemap *glCubemap = (OpenGLCubemap*)cgBinding->cubemaps[i].cubemap;	
+		if(glCubemap) {
+			int texture_location = glGetUniformLocation(glslShader->shader_id, cgBinding->cubemaps[i].name.c_str());
+			glUniform1i(texture_location, textureIndex);		
+			glActiveTexture(GL_TEXTURE0 + textureIndex);				
+			glBindTexture(GL_TEXTURE_CUBE_MAP, glCubemap->getTextureID());
+			textureIndex++;
+		}
+	}	
 
 		 
 	return true;
 }
 
-GLSLProgramParam GLSLShaderModule::addParamToProgram(GLSLProgram *program,TiXmlNode *node) {
-		bool isAuto = false;
-		int autoID = 0;
-		int paramType = GLSLProgramParam::PARAM_UNKNOWN;
-		void *defaultData = NULL;
-		void *minData = NULL;
-		void *maxData = NULL;
-		
-		TiXmlElement *nodeElement = node->ToElement();
-		if (!nodeElement) {
-			GLSLProgramParam::createParamData(&paramType, "Number", "0.0", "0.0", "0.0", &defaultData, &minData, &maxData);		
-			return program->addParam("Unknown", "Number", nodeElement->Attribute("default"), isAuto, autoID, paramType, defaultData, minData, maxData); // Skip comment nodes
-		}
-
-		isAuto = false;
-		
-		if(nodeElement->Attribute("auto")) {
-			if(strcmp(nodeElement->Attribute("auto"), "true") == 0) {
-				isAuto = true;
-			}
-		}
-		
-		GLSLProgramParam::createParamData(&paramType, nodeElement->Attribute("type"), nodeElement->Attribute("default"), nodeElement->Attribute("min"), nodeElement->Attribute("max"), &defaultData, &minData, &maxData);
-		
-		return program->addParam(nodeElement->Attribute("name"), nodeElement->Attribute("type"), nodeElement->Attribute("default"), isAuto, autoID, paramType, defaultData, minData, maxData);
-}
-
 void GLSLShaderModule::reloadPrograms() {
 	for(int i=0; i < programs.size(); i++) {
 		GLSLProgram *program = programs[i];
-		recreateGLSLProgram(program, program->getResourcePath(), program->type);	
+		program->reloadProgram();	
 	}	
 }
 
-void GLSLShaderModule::recreateGLSLProgram(GLSLProgram *prog, const String& fileName, int type) {
-	
-	OSFILE *file = OSBasics::open(fileName, "r");
-	OSBasics::seek(file, 0, SEEK_END);	
-	long progsize = OSBasics::tell(file);
-	OSBasics::seek(file, 0, SEEK_SET);
-	char *buffer = (char*)malloc(progsize+1);
-	memset(buffer, 0, progsize+1);
-	OSBasics::read(buffer, progsize, 1, file);
-	OSBasics::close(file);
-	
-	if(type == GLSLProgram::TYPE_VERT) {
-		prog->program =  glCreateShader(GL_VERTEX_SHADER);
-	} else {
-		prog->program =  glCreateShader(GL_FRAGMENT_SHADER);
-	}
-	
-	glShaderSource(prog->program, 1, (const GLchar**)&buffer, 0);
-	glCompileShader(prog->program);	
-	
-	GLint compiled = true;
-    glGetShaderiv(prog->program, GL_COMPILE_STATUS, &compiled);
-    if(!compiled) {
-        GLint length;
-        GLchar* log;
-        glGetShaderiv(prog->program, GL_INFO_LOG_LENGTH, &length);
-        log = (GLchar*)malloc(length);
-        glGetShaderInfoLog(prog->program, length, &length, log);
-		printf("GLSL ERROR: %s\n", log);
-        free(log);
-    }		
-		
-	
-	free(buffer);		
-	
-}
-
 GLSLProgram *GLSLShaderModule::createGLSLProgram(const String& fileName, int type) {
-	GLSLProgram *prog = new GLSLProgram(type);	
-	recreateGLSLProgram(prog, fileName, type);	
+	GLSLProgram *prog = new GLSLProgram(fileName, type);	
 	programs.push_back(prog);
 	return prog;
 }
 
-Resource* GLSLShaderModule::createProgramFromFile(const String& extension, const String& fullPath) {
+ShaderProgram* GLSLShaderModule::createProgramFromFile(const String& extension, const String& fullPath) {
 	if(extension == "vert") {
 		Logger::log("Adding GLSL vertex program %s\n", fullPath.c_str());				
 		return createGLSLProgram(fullPath, GLSLProgram::TYPE_VERT);

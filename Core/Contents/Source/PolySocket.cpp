@@ -38,8 +38,7 @@ Address::Address(unsigned int ip, unsigned int port) {
 	setAddress(ip, port);
 }
 
-Address::Address() {
-	
+Address::Address()  : uintAddress(0), port(0) {
 }
 
 void Address::setAddress(unsigned int ip, unsigned int port) {
@@ -54,7 +53,10 @@ void Address::setAddress(unsigned int ip, unsigned int port) {
 }
 
 void Address::setAddress(String ipAsString, unsigned int port) {
-	unsigned int a,b,c,d;
+	unsigned int a = 127;
+	unsigned int b = 0;
+	unsigned int c = 0;
+	unsigned int d = 1;
 	
 	vector<String> values = ipAsString.split(".");
 	if(values.size() == 4) {

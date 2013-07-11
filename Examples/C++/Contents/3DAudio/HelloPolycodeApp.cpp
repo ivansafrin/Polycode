@@ -39,5 +39,5 @@ bool HelloPolycodeApp::Update() {
 	sourceEntity->Roll(core->getElapsed() * 120);
 	sourceEntity->Pitch(core->getElapsed()* 120);	
 		
-    return core->Update();
+    return core->updateAndRender();
 }

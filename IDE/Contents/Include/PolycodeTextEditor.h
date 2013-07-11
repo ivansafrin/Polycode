@@ -69,8 +69,14 @@ class PolycodeSyntaxHighlighter : public UITextInputSyntaxHighlighter {
 			
 		std::vector<SyntaxHighlightToken> parseText(String text);		
 		std::vector<SyntaxHighlightToken> parseLua(String text);	
-		
+		std::vector<SyntaxHighlightToken> parseGLSL(String text);
+			
+		static const int MODE_LUA = 0;
+		static const int MODE_GLSL = 1;
+						
 	protected:
+	
+		int mode;
 	
 		std::vector<char> separators;
 		std::vector<String> keywords;		
@@ -105,6 +111,12 @@ protected:
 
 class PolycodeTextEditorFactory : public PolycodeEditorFactory {
 public:
-	PolycodeTextEditorFactory() : PolycodeEditorFactory() { extensions.push_back("lua"); extensions.push_back("txt"); extensions.push_back("xml");}
+	PolycodeTextEditorFactory() : PolycodeEditorFactory() {
+		extensions.push_back("lua");
+		extensions.push_back("txt");
+		extensions.push_back("xml");
+		extensions.push_back("vert");
+		extensions.push_back("frag");				
+	}
 	PolycodeEditor *createEditor() { return new PolycodeTextEditor(); }
 };

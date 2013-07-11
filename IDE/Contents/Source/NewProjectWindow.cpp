@@ -34,7 +34,6 @@ NewProjectWindow::NewProjectWindow() : UIWindow(L"Create New Project", 480, 280)
 	
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
-	int fontSize = conf->getNumericValue("Polycode", "uiDefaultFontSize");
 	
 	
 	templateContainer = new UITreeContainer("boxIcon.png", L"Templates", 200, 300-topPadding-padding-padding);	
@@ -131,6 +130,8 @@ void NewProjectWindow::handleEvent(Event *event) {
 				projectLocationInput->setText(pathName);
 
 		}
+		
+		if(enabled) {						
 
 		if(event->getEventCode() == UIEvent::CLICK_EVENT) {
 			if(event->getDispatcher() == okButton) {
@@ -153,6 +154,8 @@ void NewProjectWindow::handleEvent(Event *event) {
 #endif
 			}			
 			
+		}
+		
 		}
 	}
 	

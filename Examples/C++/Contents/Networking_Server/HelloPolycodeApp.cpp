@@ -156,5 +156,5 @@ void HelloPolycodeApp::handleEvent(Event *event) {
 bool HelloPolycodeApp::Update() {
 	updateWorld(core->getElapsed());
 	infoLabel->setText("Example server. ["+String::IntToString(players.size())+" Players]");
-    return core->Update();
+    return core->updateAndRender();
 }

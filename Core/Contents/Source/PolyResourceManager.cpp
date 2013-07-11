@@ -40,14 +40,32 @@ using namespace Polycode;
 
 ResourceManager::ResourceManager() {
 	PHYSFS_init(NULL);
+	ticksSinceCheck = 0;
+	reloadResourcesOnModify = false;
 }
 
 ResourceManager::~ResourceManager() {
 		printf("Shutting down resource manager...\n");
 		PHYSFS_deinit();
+		
 		for(int i=0; i < resources.size(); i++)	{
-			delete resources[i];
+			if(resources[i]->getResourceType() == Resource::RESOURCE_MATERIAL) {
+				delete resources[i];
+			}
 		}
+		
+		for(int i=0; i < resources.size(); i++)	{
+			if(resources[i]->getResourceType() == Resource::RESOURCE_SHADER) {
+				delete resources[i];
+			}
+		}
+
+		for(int i=0; i < resources.size(); i++)	{
+			if(resources[i]->getResourceType() == Resource::RESOURCE_PROGRAM) {
+				delete resources[i];
+			}
+		}
+		
 		resources.clear();
 }
 
@@ -58,26 +76,12 @@ void ResourceManager::parseShaders(const String& dirPath, bool recursive) {
 	for(int i=0; i < resourceDir.size(); i++) {	
 		if(resourceDir[i].type == OSFileEntry::TYPE_FILE) {
 			if(resourceDir[i].extension == "mat") {
-				Logger::log("Adding shaders from %s\n", resourceDir[i].nameWithoutExtension.c_str());
-				TiXmlDocument doc(resourceDir[i].fullPath.c_str());
-				doc.LoadFile();
-				if(doc.Error()) {
-					Logger::log("XML Error: %s\n", doc.ErrorDesc());
-				} else {
-					TiXmlElement *mElem = doc.RootElement()->FirstChildElement("shaders");
-					
-					if(mElem) {
-						TiXmlNode* pChild;					
-						for (pChild = mElem->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {						
-							Shader *newShader = CoreServices::getInstance()->getMaterialManager()->createShaderFromXMLNode(pChild);
-							if(newShader != NULL) {
-								Logger::log("Adding shader %s\n", newShader->getName().c_str());
-								newShader->setResourceName(newShader->getName());
-								resources.push_back(newShader);
-								 CoreServices::getInstance()->getMaterialManager()->registerShader(newShader);
-							}
-						}
-					}
+				MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
+				std::vector<Shader*> shaders = materialManager->loadShadersFromFile(resourceDir[i].fullPath);
+				
+				for(int s=0; s < shaders.size(); s++) {
+					addResource(shaders[s]);
+					materialManager->addShader(shaders[s]);
 				}
 			}
 		} else {
@@ -96,17 +100,14 @@ void ResourceManager::parsePrograms(const String& dirPath, bool recursive) {
 	resourceDir = OSBasics::parseFolder(dirPath, false);
 	for(int i=0; i < resourceDir.size(); i++) {	
 		if(resourceDir[i].type == OSFileEntry::TYPE_FILE) {
-			for(int m=0; m < shaderModules.size(); m++) {
-				PolycodeShaderModule *shaderModule = shaderModules[m];
-				if(shaderModule->acceptsExtension(resourceDir[i].extension)) {
-					Resource *newProgram = shaderModule->createProgramFromFile(resourceDir[i].extension, resourceDir[i].fullPath);
-					if(newProgram) {
-						newProgram->setResourceName(resourceDir[i].name);
-						newProgram->setResourcePath(resourceDir[i].fullPath);				
-						resources.push_back(newProgram);					
-					}
-				}
-			}
+			MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
+			
+			ShaderProgram *newProgram = materialManager->createProgramFromFile(resourceDir[i].fullPath);
+			if(newProgram) {
+				newProgram->setResourceName(resourceDir[i].name);
+				newProgram->setResourcePath(resourceDir[i].fullPath);
+				addResource(newProgram);					
+			}			
 		} else {
 			if(recursive)
 				parsePrograms(dirPath+"/"+resourceDir[i].name, true);
@@ -126,7 +127,7 @@ void ResourceManager::parseMaterials(const String& dirPath, bool recursive) {
 
 				for(int m=0; m < materials.size(); m++) {
 					materials[m]->setResourceName(materials[m]->getName());
-					resources.push_back(materials[m]);
+					addResource(materials[m]);
 					materialManager->addMaterial(materials[m]);
 				}
 			}
@@ -144,24 +145,12 @@ void ResourceManager::parseCubemaps(const String& dirPath, bool recursive) {
 	for(int i=0; i < resourceDir.size(); i++) {	
 		if(resourceDir[i].type == OSFileEntry::TYPE_FILE) {
 			if(resourceDir[i].extension == "mat") {
-				Logger::log("Adding cubemaps from %s\n", resourceDir[i].nameWithoutExtension.c_str());
-				TiXmlDocument doc(resourceDir[i].fullPath.c_str());
-				doc.LoadFile();
-				if(doc.Error()) {
-					Logger::log("XML Error: %s\n", doc.ErrorDesc());
-				} else {
-					TiXmlElement *mElem = doc.RootElement()->FirstChildElement("cubemaps");
-					
-					if(mElem) {
-						TiXmlNode* pChild;					
-						for (pChild = mElem->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {
-							Cubemap *newMat = CoreServices::getInstance()->getMaterialManager()->cubemapFromXMLNode(pChild);
-							//						newMat->setResourceName(newMat->getName());
-							if(newMat)
-								resources.push_back(newMat);
-						}
-					}
-				}
+			
+				MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();			
+				std::vector<Cubemap*> cubemaps = materialManager->loadCubemapsFromFile(resourceDir[i].fullPath);			
+				for(int c=0; c < cubemaps.size(); c++) {
+					addResource(cubemaps[c]);
+				}			
 			}
 		} else {
 			if(recursive)
@@ -170,25 +159,48 @@ void ResourceManager::parseCubemaps(const String& dirPath, bool recursive) {
 	}	
 }
 
-void ResourceManager::addResource(Resource *resource) {
-	resources.push_back(resource);
+bool ResourceManager::hasResource(Resource *resource) {
+	for(int i=0; i < resources.size(); i++) {
+		if(resources[i] == resource) {
+			return true;
+		}
+	}
+	return false;
 }
 
+void ResourceManager::addResource(Resource *resource) {
+	resources.push_back(resource);
+	resource->resourceFileTime = OSBasics::getFileTime(resource->getResourcePath());
+}
+
+void ResourceManager::removeResource(Resource *resource) {
+	for(int i=0;i<resources.size();i++) {
+		if(resources[i] == resource) {
+			resources.erase(resources.begin()+i);
+			return;
+		}
+	}	
+}
+
+
 void ResourceManager::parseTextures(const String& dirPath, bool recursive, const String& basePath) {
+	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
 	vector<OSFileEntry> resourceDir;
 	resourceDir = OSBasics::parseFolder(dirPath, false);
 	for(int i=0; i < resourceDir.size(); i++) {	
 		if(resourceDir[i].type == OSFileEntry::TYPE_FILE) {
 			if(resourceDir[i].extension == "png") {
 				Logger::log("Adding texture %s\n", resourceDir[i].nameWithoutExtension.c_str());
-				Texture *t = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(resourceDir[i].fullPath);
+				Texture *t = materialManager->createTextureFromFile(resourceDir[i].fullPath, materialManager->clampDefault, materialManager->mipmapsDefault);
 				if(t) {
 					if(basePath == "") {
-						t->setResourceName(resourceDir[i].name);					
+						t->setResourceName(resourceDir[i].name);
+						t->setResourcePath(resourceDir[i].fullPath);
 					} else {
 						t->setResourceName(basePath+"/"+resourceDir[i].name);
+						t->setResourcePath(resourceDir[i].fullPath);						
 					}
-					resources.push_back(t);
+					addResource(t);
 				}
 			}
 		} else {
@@ -242,10 +254,20 @@ void ResourceManager::addDirResource(const String& dirPath, bool recursive) {
 	parseOthers(dirPath, recursive);	
 }
 
+Resource *ResourceManager::getResourceByPath(const String& resourcePath) const {
+	Logger::log("requested %s\n", resourcePath.c_str());
+	for(int i =0; i < resources.size(); i++) {
+		if(resources[i]->getResourcePath() == resourcePath) {
+			return resources[i];
+		}
+	}
+	Logger::log("return NULL\n");	
+	return NULL;
+}
+
 Resource *ResourceManager::getResource(int resourceType, const String& resourceName) const {
 	Logger::log("requested %s\n", resourceName.c_str());
 	for(int i =0; i < resources.size(); i++) {
-//		Logger::log("is it %s?\n", resources[i]->getResourceName().c_str());		
 		if(resources[i]->getResourceName() == resourceName && resources[i]->getResourceType() == resourceType) {
 			return resources[i];
 		}
@@ -260,12 +282,33 @@ Resource *ResourceManager::getResource(int resourceType, const String& resourceN
 	return NULL;
 }
 
-// Would it make more sense to pass back, like, something like an ObjectEntry here? Lua hates vectors.
-vector<Resource *> ResourceManager::getResources(int resourceType) {
-	vector<Resource *> result;
-	Logger::log("requested all of type %d\n", resourceType);
+void ResourceManager::checkForChangedFiles() {
+	for(int i=0; i < resources.size(); i++) {
+		if(resources[i]->reloadOnFileModify == true) {
+			time_t newFileTime = OSBasics::getFileTime(resources[i]->getResourcePath());
+//			printf("%s\n%lld %lld\n", resources[i]->getResourcePath().c_str(), newFileTime, resources[i]->resourceFileTime);
+			if((newFileTime != resources[i]->resourceFileTime) && newFileTime != 0) {
+				resources[i]->reloadResource();
+				resources[i]->resourceFileTime = newFileTime;
+			}
+		}
+	}
+}
+
+void ResourceManager::Update(int elapsed) {
+	if(!reloadResourcesOnModify)
+		return;
+		
+	ticksSinceCheck += elapsed;
+	if(ticksSinceCheck > RESOURCE_CHECK_INTERVAL) {
+		ticksSinceCheck = 0;
+		checkForChangedFiles();
+	}
+}
+
+std::vector<Resource*> ResourceManager::getResources(int resourceType) {
+	std::vector<Resource*> result;
 	for(int i =0; i < resources.size(); i++) {
-		//		Logger::log("is it %s?\n", resources[i]->getResourceName().c_str());		
 		if(resources[i]->getResourceType() == resourceType) {
 			result.push_back(resources[i]);
 		}

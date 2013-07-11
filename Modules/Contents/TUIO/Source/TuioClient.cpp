@@ -80,7 +80,7 @@ TuioClient::TuioClient(int port)
 {
 	try {
 		socket = new UdpListeningReceiveSocket(IpEndpointName( IpEndpointName::ANY_ADDRESS, port ), this );
-	} catch (std::exception &e) { 
+	} catch (std::exception&) {
 		std::cerr << "could not bind to UDP port " << port << std::endl;
 		socket = NULL;
 	}
@@ -115,7 +115,6 @@ void TuioClient::ProcessBundle( const ReceivedBundle& b, const IpEndpointName& r
 void TuioClient::ProcessMessage( const ReceivedMessage& msg, const IpEndpointName& remoteEndpoint) {
 	try {
 		ReceivedMessageArgumentStream args = msg.ArgumentStream();
-		ReceivedMessage::const_iterator arg = msg.ArgumentsBegin();
 		
 		if( strcmp( msg.AddressPattern(), "/tuio/2Dobj" ) == 0 ){
 			

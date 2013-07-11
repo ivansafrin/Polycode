@@ -25,8 +25,13 @@
 #include "PolyVector3.h"
 #include "PolyString.h"
 
-#include "al.h"
-#include "alc.h"
+#if defined(__APPLE__) && defined(__MACH__)
+    #include <OpenAL/al.h>
+    #include <OpenAL/alc.h>
+#else
+    #include "al.h"
+    #include "alc.h"
+#endif
 
 #define ALNoErrorStr "No AL error occurred"
 #define ALInvalidNameStr "AL error: a bad name (ID) was passed to an OpenAL function"
@@ -57,6 +62,8 @@ namespace Polycode {
 		virtual ~Sound();
 		
 		void loadFile(String fileName);
+		
+		void reloadProperties();
 		
 		/**
 		* Play the sound once or in a loop.

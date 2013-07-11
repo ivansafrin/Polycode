@@ -26,17 +26,29 @@
 #include "PolycodeUI.h"
 #include "Polycode.h"
 #include "OSBasics.h"
+#include "PolycodeEditor.h"
 
 using namespace Polycode;
 
+#define PROP_PADDING	40
+
+class PolycodeEditorPropActionData;
 
 class PropProp : public UIElement {
 	public:
-		PropProp(String caption);
+		PropProp(String caption, String type);
 		~PropProp();
+
+		virtual void setPropData(PolycodeEditorPropActionData* data) {}
 		
+		virtual void setPropWidth(Number width) {}
+		
+		String propType;
 		ScreenLabel *label;
-		ScreenEntity *propContents;
+		ScreenEntity *propContents;				
+		
+		bool suppressChangeEvent;		
+		bool settingFromData;
 };
 
 class Vector2Prop : public PropProp {
@@ -46,9 +58,19 @@ class Vector2Prop : public PropProp {
 		void handleEvent(Event *event);
 		void set(Vector2 position);
 		Vector2 get();
+		
+		void setPropData(PolycodeEditorPropActionData* data);
+		
+		void setPropWidth(Number width);		
 				
 		UITextInput *positionX;
-		UITextInput *positionY;						
+		UITextInput *positionY;	
+		
+		Vector2 lastData;
+		Vector2 currentData;	
+		
+		ScreenLabel *labelX;
+		ScreenLabel *labelY;		
 };
 
 class SliderProp : public PropProp {
@@ -58,9 +80,15 @@ class SliderProp : public PropProp {
 		void handleEvent(Event *event);
 		void set(Number number);
 		Number get();
+		
+		void setPropWidth(Number width);		
+		void setPropData(PolycodeEditorPropActionData* data);		
 				
 		UIHSlider *slider;
 		ScreenLabel *valueLabel;
+		
+		Number lastValue;
+		Number currentValue;
 };
 
 
@@ -71,10 +99,75 @@ class NumberProp : public PropProp {
 		void handleEvent(Event *event);
 		void set(Number number);
 		Number get();
+		
+		void setPropWidth(Number width);
+		
+		void setPropData(PolycodeEditorPropActionData* data);
 				
 		UITextInput *numberEntry;
+		
+		Number lastValue;
+		Number currentValue;
 };
 
+class TargetBindingProp : public PropProp {
+	public:
+
+		TargetBindingProp(Shader *shader, Material *material, ShaderBinding *binding, RenderTargetBinding *targetBinding);
+		~TargetBindingProp();
+
+		void handleEvent(Event *event);	
+		void setPropWidth(Number width);
+						
+		RenderTargetBinding *targetBinding;
+		Material *material;
+		Shader *shader;
+		ShaderBinding *binding;
+		
+		UIComboBox *typeComboBox;
+		UIComboBox *targetComboBox;
+		UIComboBox *textureComboBox;		
+		UIImageButton *removeButton;					
+	
+};
+
+class RenderTargetProp : public PropProp {
+	public:
+		RenderTargetProp(ShaderRenderTarget *renderTarget, Material *material);
+		~RenderTargetProp();
+
+		void handleEvent(Event *event);	
+		void setPropWidth(Number width);
+		
+		void recreateRenderTarget();
+		
+		Material *material;
+		ShaderRenderTarget *renderTarget;
+		
+		UITextInput *nameInput;		
+		UIComboBox *typeComboBox;		
+		UITextInput *widthInput;
+		UITextInput *heightInput;		
+		UIImageButton *removeButton;					
+};
+
+class ShaderPassProp : public PropProp {
+	public:
+		ShaderPassProp(Material *material, int shaderIndex);
+		~ShaderPassProp();
+		
+		void handleEvent(Event *event);	
+		void setPropWidth(Number width);
+		
+		Material *material;
+		Shader *shader;		
+		int shaderIndex;
+		UIComboBox *shaderComboBox;		
+		UIImageButton *removeButton;
+		
+		UIButton *editButton;
+		
+};
 
 class CustomProp : public PropProp {
 	public:
@@ -97,8 +190,15 @@ class StringProp : public PropProp {
 		void handleEvent(Event *event);
 		void set(String str);
 		String get();
+
+		void setPropWidth(Number width);
+
+		void setPropData(PolycodeEditorPropActionData* data);
 				
 		UITextInput *stringEntry;
+		
+		String lastValue;
+		String currentValue;
 };
 
 class ColorProp : public PropProp {
@@ -107,8 +207,13 @@ class ColorProp : public PropProp {
 		~ColorProp();		
 		void handleEvent(Event *event);
 		
+		virtual void setPropData(PolycodeEditorPropActionData* data);
+		
 		void set(Color color);
 		Color get();
+		
+		Color currentColor;
+		Color lastColor;
 				
 		UIColorBox *colorEntry;
 };
@@ -119,10 +224,17 @@ class ComboProp : public PropProp {
 		~ComboProp();		
 		void handleEvent(Event *event);
 		
+		void setPropData(PolycodeEditorPropActionData* data);
+
+		void setPropWidth(Number width);
+
 		void set(unsigned int index);
 		unsigned int get();
 				
 		UIComboBox *comboEntry;
+		
+		int lastValue;
+		int currentValue;
 };
 
 class BoolProp : public PropProp {
@@ -131,10 +243,15 @@ class BoolProp : public PropProp {
 		~BoolProp();		
 		void handleEvent(Event *event);
 		
+		void setPropData(PolycodeEditorPropActionData* data);
+		
 		void set(bool val);
 		bool get();
 				
 		UICheckBox *checkEntry;
+		
+		bool lastData;
+		bool currentData;
 };
 
 class SoundProp : public PropProp {
@@ -146,10 +263,15 @@ class SoundProp : public PropProp {
 		void set(String soundPath);
 		String get();
 		
+		void setPropData(PolycodeEditorPropActionData* data);
+		
 		Sound *previewSound;
 		ScreenLabel *soundFile;		
 		UIButton *changeButton;
-		UIButton *playButton;		
+		UIButton *playButton;	
+		
+		String lastData;
+		String currentData;
 };
 
 class BezierRGBACurveProp : public PropProp {
@@ -183,25 +305,37 @@ class TextureProp : public PropProp {
 		TextureProp(String caption);
 		~TextureProp();
 		void handleEvent(Event *event);	
-		
+		void setPropWidth(Number width);
+				
 		void set(Texture *texture);
 		Texture* get();
+		
+		void setPropData(PolycodeEditorPropActionData* data);
 				
 		ScreenShape *previewShape;
 		UIButton *changeButton;
+		ScreenLabel *textureLabel;
+		
+		String lastData;
+		String currentData;
 };
 
 class ScreenSpriteProp : public PropProp {
 	public:
 		ScreenSpriteProp(String caption);
 		~ScreenSpriteProp();
-		void handleEvent(Event *event);			
+		void handleEvent(Event *event);
+		
+		void setPropData(PolycodeEditorPropActionData* data);
 		
 		void set(String fileName);
 		String get();		
 				
 		ScreenSprite *previewSprite;
 		UIButton *changeButton;
+		
+		String lastData;
+		String currentData;
 };
 
 
@@ -211,19 +345,26 @@ class ScreenEntityInstanceProp : public PropProp {
 		~ScreenEntityInstanceProp();
 		void handleEvent(Event *event);			
 		
+		void setPropData(PolycodeEditorPropActionData* data);
+		
 		void set(String fileName);
 		String get();		
 				
 		ScreenEntityInstance *previewInstance;
 		UIButton *changeButton;
+		
+		String lastData;
+		String currentData;
+		
 };
-
 
 class PropSheet : public UIElement {
 	public:
 		PropSheet(String caption, String type);
 		~PropSheet();		
 		void Resize(Number width, Number height);
+		
+		virtual void applyPropActionData(PolycodeEditorPropActionData *data);
 		
 		void handleEvent(Event *event);
 		
@@ -244,14 +385,55 @@ class PropSheet : public UIElement {
 		
 		bool collapsed;
 		
+		bool customUndoHandler;
+		
 		std::vector<PropProp*> props;
+};
+
+class ShaderOptionsSheet : public PropSheet {
+	public:
+		ShaderOptionsSheet();
+		~ShaderOptionsSheet();
+		
+		void handleEvent(Event *event);
+		void Update();
+		
+		void clearShader();
+		void setOptionsFromParams(std::vector<ProgramParam> &params);
+		void setShader(Shader *shader, Material *material, ShaderBinding *binding);
+				
+	private:
+		Shader *shader;
+		Material *material;
+		ShaderBinding *binding;
+		
+};
+
+class ShaderTexturesSheet : public PropSheet {
+	public:
+		ShaderTexturesSheet();
+		~ShaderTexturesSheet();
+		
+		void handleEvent(Event *event);
+		void Update();
+		
+		void clearShader();
+		void setShader(Shader *shader, Material *material, ShaderBinding *binding);
+				
+	private:
+		Shader *shader;
+		Material *material;
+		ShaderBinding *binding;
+						
+		std::vector<TextureProp*> textureProps;
+		std::vector<ComboProp*> cubemapProps;		
 };
 
 class EntitySheet : public PropSheet {
 	public:
 		EntitySheet();
-		~EntitySheet();
-		
+		~EntitySheet();	
+	
 		void handleEvent(Event *event);
 		void Update();
 				
@@ -264,13 +446,76 @@ class EntitySheet : public PropSheet {
 		ComboProp *blendingProp;
 };
 
+class ShaderPassesSheet : public PropSheet {
+	public:
+		ShaderPassesSheet();
+		~ShaderPassesSheet();
+		void handleEvent(Event *event);			
+		void refreshPasses();
+		
+		void Update();
+		
+		void setMaterial(Material *material);
+
+		ShaderBinding *binding;
+		Material *material;
+
+		ShaderPassProp *selectedProp;
+
+		UIButton *addButton;		
+		int removeIndex;		
+};
+
+class TargetBindingsSheet : public PropSheet {
+	public:
+		TargetBindingsSheet();
+		~TargetBindingsSheet();
+		void handleEvent(Event *event);				
+		void setShader(Shader *shader, Material *material, ShaderBinding *binding);
+		
+		void Update();
+		
+		void refreshTargets();
+		
+		ShaderBinding *binding;
+		Material *material;
+		Shader *shader;
+		int shaderIndex;
+		
+		UIButton *addButton;		
+		RenderTargetBinding *bindingToRemove;
+
+};
+
+class RenderTargetsSheet : public PropSheet {
+	public:
+		RenderTargetsSheet();
+		~RenderTargetsSheet();
+		void Update();
+		void handleEvent(Event *event);		
+		
+		void refreshTargets();
+		
+		ShaderBinding *binding;
+		Material *material;
+		Material *lastMaterial;
+		
+		Number normTextureWidth;
+		Number normTextureHeight;
+		
+		UIButton *addButton;		
+		int removeIndex;
+};
+
 class EntityPropSheet : public PropSheet {
 	public:
 		EntityPropSheet();		
 		void handleEvent(Event *event);
 		void Update();
 		void refreshProps();
-				
+
+		void applyPropActionData(PolycodeEditorPropActionData *data);
+
 		UIButton *addButton;
 		
 		Entity *entity;
@@ -278,7 +523,7 @@ class EntityPropSheet : public PropSheet {
 		
 		int lastNumProps;
 		
-		int removeIndex;
+		int removeIndex;		
 		
 };
 
@@ -315,7 +560,8 @@ class ScreenLabelSheet : public PropSheet {
 		void handleEvent(Event *event);
 		void Update();
 				
-		ScreenLabel *label;	
+		ScreenLabel *label;
+		ScreenLabel *lastLabel;	
 		
 		int lastSize;
 		String lastFont;
@@ -370,6 +616,20 @@ class ScreenEntityInstanceSheet : public PropSheet {
 		ScreenEntityInstanceProp *instanceProp;
 };
 
+class ScreenEntitySheet : public PropSheet {
+	public:
+		ScreenEntitySheet();
+		~ScreenEntitySheet();
+		
+		void handleEvent(Event *event);
+		void Update();
+		
+		NumberProp *widthProp;
+		NumberProp *heightProp;
+		
+		ScreenEntity *entity;
+		ScreenEntity *lastEntity;
+};
 
 class SoundSheet : public PropSheet {
 	public:
@@ -405,6 +665,7 @@ class ScreenParticleSheet : public PropSheet {
 
 		TextureProp *textureProp;
 		ComboProp *blendingProp;
+		BoolProp *ignoreParentMatrixProp;
 		NumberProp *numParticlesProp;
 		NumberProp *lifespanProp;
 		NumberProp *particleScaleProp;		
@@ -436,6 +697,7 @@ class ScreenParticleSheet : public PropSheet {
 		bool lastEnableProp;
 		Number lastPerlinSize;
 		Number lastSpeedMod;
+		bool lastIgnoreParentMatrix;
 		bool lastRotationFollowsPath;
 		bool lastUseScaleCurves;
 		bool lastUseColorCurves;		
@@ -486,4 +748,53 @@ class PropList : public UIElement {
 		std::vector<PropSheet*> props;	
 		ScreenShape *bg;
 		ScreenShape *bg2;				
+};
+
+class PolycodeEditorPropActionData : public PolycodeEditorActionData {
+	public:
+		PolycodeEditorPropActionData(){ entity = NULL; }
+		virtual ~PolycodeEditorPropActionData(){
+			delete entity;
+		}
+		
+		bool boolVal;
+		String stringVal;
+		int intVal;
+		Number numVal;
+		Color colorVal;
+		Vector3 vector3Val;
+		Vector2 vector2Val;
+		
+		Entity *entity;
+		
+		PropSheet *sheet;
+		PropProp *prop;
+};
+
+
+PolycodeEditorPropActionData *PropDataBool(bool val);
+PolycodeEditorPropActionData *PropDataInt(int val);
+PolycodeEditorPropActionData *PropDataNumber(Number val);
+PolycodeEditorPropActionData *PropDataString(String val);
+PolycodeEditorPropActionData *PropDataColor(Color val);
+PolycodeEditorPropActionData *PropDataVector3(Vector3 val);
+PolycodeEditorPropActionData *PropDataVector2(Vector2 val);
+PolycodeEditorPropActionData *PropDataEntity(Entity *entity);
+
+class PropEvent : public Event {
+	public:
+		PropEvent(PropProp *prop, PropSheet *sheet, PolycodeEditorPropActionData *beforeData, PolycodeEditorPropActionData *afterData);
+		virtual ~PropEvent();
+		
+		void setSheet(PropSheet *sheet);
+		
+		PropProp *prop;
+		PropSheet *sheet;
+		
+		PolycodeEditorPropActionData *beforeData;
+		PolycodeEditorPropActionData *afterData;
+				
+		static const int EVENTBASE_PROPEVENT = 0xC00;
+		static const int EVENT_PROP_CHANGE = EVENTBASE_PROPEVENT+0;
+
 };

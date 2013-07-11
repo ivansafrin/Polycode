@@ -25,10 +25,15 @@
 #include "PolyScreenEntity.h"
 
 namespace Polycode {
-	
+	/*
+	 * Base class for all UI widgets.
+	 *
+	 * processInputEvent is set to true by default.
+	 */
 	class _PolyExport UIElement : public ScreenEntity {
 		public:
 			UIElement();
+			UIElement(Number width, Number height);
 			~UIElement();
 			
 			virtual void Resize(Number width, Number height);

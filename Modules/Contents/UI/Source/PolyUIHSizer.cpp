@@ -75,18 +75,17 @@ UIHSizer::UIHSizer(Number width, Number height, Number mainWidth, bool leftSizer
 
 UIHSizer::~UIHSizer() {
 	coreInput->removeAllHandlersForListener(this);
-	
 	if (ownsChildren)
 		childElements->ownsChildren = true;
-	delete childElements;
-	
-	delete separatorBgShape;
-	delete separatorHitShape;
+	if(!ownsChildren) {
+		delete childElements;	
+		delete separatorBgShape;
+		delete separatorHitShape;
+	}
 }
 
 void UIHSizer::handleEvent(Event *event) {
 	if(event->getDispatcher() == separatorHitShape) {
-		InputEvent *inputEvent = (InputEvent*)event;
 		switch (event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEDOWN:
 				resizing = true;
@@ -131,6 +130,11 @@ void UIHSizer::Resize(Number width, Number height) {
 	this->height = height;
 	matrixDirty = true;
 	updateSizer();
+	UIElement::Resize(width, height);	
+}
+
+Number UIHSizer::getMainWidth() {
+	return mainWidth;
 }
 
 void UIHSizer::setMainWidth(Number width) {

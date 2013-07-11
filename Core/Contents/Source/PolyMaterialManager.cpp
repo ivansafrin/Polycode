@@ -36,6 +36,8 @@ using std::vector;
 
 MaterialManager::MaterialManager() {
 	premultiplyAlphaOnLoad = false;
+	clampDefault = false;
+	mipmapsDefault = true;
 }
 
 MaterialManager::~MaterialManager() {
@@ -78,11 +80,32 @@ void MaterialManager::reloadPrograms() {
 	}
 }
 
+ShaderProgram *MaterialManager::createProgramFromFile(String programPath) {
+	OSFileEntry entry(programPath, OSFileEntry::TYPE_FILE);
+	
+	for(int m=0; m < shaderModules.size(); m++) {
+		PolycodeShaderModule *shaderModule = shaderModules[m];
+		if(shaderModule->acceptsExtension(entry.extension)) {
+			ShaderProgram *newProgram = shaderModule->createProgramFromFile(entry.extension, entry.fullPath);
+			if(newProgram) {
+				newProgram->setResourcePath(programPath);
+			}
+			return newProgram;
+		}
+	}
+	return NULL;
+}
+
 void MaterialManager::addShaderModule(PolycodeShaderModule *module) {
 	shaderModules.push_back(module);
 }
 
 Texture *MaterialManager::createTextureFromFile(const String& fileName, bool clamp, bool createMipmaps) {
+	if(fileName.size() == 0) {
+		Logger::log("empty texture filename\n");
+		return NULL;
+	}
+
 	Texture *newTexture;
 	newTexture = getTextureByResourcePath(fileName);
 	if(newTexture) {
@@ -95,18 +118,16 @@ Texture *MaterialManager::createTextureFromFile(const String& fileName, bool cla
 			image->premultiplyAlpha();
 		}
 		newTexture = createTexture(image->getWidth(), image->getHeight(), image->getPixels(), clamp, createMipmaps);
+		newTexture->setResourcePath(fileName);
+		CoreServices::getInstance()->getResourceManager()->addResource(newTexture);		
 	} else {
-		Logger::log("Error loading image, using default texture.\n");
+		Logger::log("Error loading image (\"%s\"), using default texture.\n", fileName.c_str());
 		delete image;		
 		newTexture = getTextureByResourcePath("default/default.png");
 		return newTexture;
 	}
 		
 	delete image;
-
-//	vector<String> bits = fileName.split("/");
-	
-	newTexture->setResourcePath(fileName);
 	return newTexture;
 }
 
@@ -117,7 +138,7 @@ Texture *MaterialManager::createFramebufferTexture(int width, int height, int ty
 
 Texture *MaterialManager::createNewTexture(int width, int height, bool clamp, bool createMipmaps, int type) {
 	Image *newImage = new Image(width, height, type);
-	newImage->fill(1,1,1,1);
+	newImage->fill(Color(1,1,1,1));
 	Texture *retTexture = createTextureFromImage(newImage, clamp, createMipmaps);
 	delete newImage;
 	return retTexture;
@@ -148,10 +169,6 @@ void MaterialManager::reloadTextures() {
 	}
 }
 
-void MaterialManager::registerShader(Shader *shader) {
-	shaders.push_back(shader);
-}
-
 unsigned int MaterialManager::getNumShaders() {
 	return shaders.size();
 }
@@ -163,6 +180,25 @@ Shader *MaterialManager::getShaderByIndex(unsigned int index) {
 		return NULL;
 }
 
+Shader *MaterialManager::createShader(String shaderType, String name, String vpName, String fpName, bool screenShader) {
+	Shader *retShader = NULL;
+	
+	for(int m=0; m < shaderModules.size(); m++) {
+		PolycodeShaderModule *shaderModule = shaderModules[m];
+		if(shaderModule->getShaderType() == shaderType) {
+			retShader = shaderModule->createShader(name, vpName, fpName);
+		}
+	}
+	
+	if(retShader) {
+		retShader->screenShader = screenShader;
+		retShader->numAreaLights = 0;
+		retShader->numSpotLights = 0;
+	}
+	
+	return retShader;
+}
+
 Shader *MaterialManager::createShaderFromXMLNode(TiXmlNode *node) {
 	TiXmlElement *nodeElement = node->ToElement();
 	if (!nodeElement) return NULL; // Skip comment nodes
@@ -171,7 +207,6 @@ Shader *MaterialManager::createShaderFromXMLNode(TiXmlNode *node) {
 	
 	if(nodeElement->Attribute("type")) {
 		String shaderType = nodeElement->Attribute("type");
-//		Logger::log("Attempting to create %s shader\n", shaderType.c_str());
 		for(int m=0; m < shaderModules.size(); m++) {
 			PolycodeShaderModule *shaderModule = shaderModules[m];
 			if(shaderModule->getShaderType() == shaderType) {
@@ -244,21 +279,20 @@ Cubemap *MaterialManager::cubemapFromXMLNode(TiXmlNode *node) {
 	Cubemap *newCubemap = NULL;
 	
 	String name = nodeElement->Attribute("name");
-	String mapString = nodeElement->GetText();
-	
-	vector<String> maps = mapString.split(",");	
-	if(maps.size() != 6) {
-		Logger::log("Error: A cubemap must contain 6 images \n");
-		return NULL;
-	}
-	
+	String xPos = nodeElement->Attribute("xPos");
+	String xNeg = nodeElement->Attribute("xNeg");
+	String yPos = nodeElement->Attribute("yPos");
+	String yNeg = nodeElement->Attribute("yNeg");
+	String zPos = nodeElement->Attribute("zPos");				
+	String zNeg = nodeElement->Attribute("zNeg");
+		
 	newCubemap = CoreServices::getInstance()->getRenderer()->createCubemap(
-							 (Texture*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_TEXTURE, maps[0]),
-							 (Texture*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_TEXTURE, maps[1]),
-							 (Texture*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_TEXTURE, maps[2]),
-							 (Texture*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_TEXTURE, maps[3]),
-							 (Texture*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_TEXTURE, maps[4]),
-							 (Texture*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_TEXTURE, maps[5])
+		CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(xPos),
+		CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(xNeg),
+		CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(yPos),
+		CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(yNeg),
+		CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(zPos),
+		CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(zNeg)
 	);
 	newCubemap->setResourceName(name);
 	return newCubemap;
@@ -266,6 +300,59 @@ Cubemap *MaterialManager::cubemapFromXMLNode(TiXmlNode *node) {
 
 void MaterialManager::addMaterial(Material *material) {
 	materials.push_back(material);
+}
+
+void MaterialManager::addShader(Shader *shader) {
+	shaders.push_back(shader);
+}
+
+std::vector<Shader*> MaterialManager::loadShadersFromFile(String fileName) {
+	std::vector<Shader*> retVector;
+	
+	TiXmlDocument doc(fileName.c_str());
+	doc.LoadFile();
+	
+	if(doc.Error()) {
+		Logger::log("XML Error: %s\n", doc.ErrorDesc());
+	} else {
+		TiXmlElement *mElem = doc.RootElement()->FirstChildElement("shaders");
+		if(mElem) {
+			TiXmlNode* pChild;					
+			for (pChild = mElem->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {	
+				Shader *newShader = createShaderFromXMLNode(pChild);
+				if(newShader != NULL) {
+					Logger::log("Adding shader %s\n", newShader->getName().c_str());
+					newShader->setResourceName(newShader->getName());
+					retVector.push_back(newShader);
+				}
+			}
+		}
+	}
+	return retVector;
+}
+
+std::vector<Cubemap*> MaterialManager::loadCubemapsFromFile(String fileName) {
+	std::vector<Cubemap*> retVector;
+	
+	TiXmlDocument doc(fileName.c_str());
+	doc.LoadFile();
+	
+	if(doc.Error()) {
+		Logger::log("XML Error: %s\n", doc.ErrorDesc());
+	} else {
+		TiXmlElement *mElem = doc.RootElement()->FirstChildElement("cubemaps");
+		if(mElem) {
+			TiXmlNode* pChild;					
+			for (pChild = mElem->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {
+				Cubemap *newCubemap = cubemapFromXMLNode(pChild);
+				if (newCubemap) {
+					retVector.push_back(newCubemap);
+				}
+			}
+		}
+	}
+	
+	return retVector;
 }
 
 std::vector<Material*> MaterialManager::loadMaterialsFromFile(String fileName) {
@@ -316,10 +403,15 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 	
 	vector<Shader*> materialShaders;
 	vector<ShaderBinding*> newShaderBindings;
-	vector<ShaderRenderTarget*> renderTargets;	
+	vector<ShaderRenderTarget*> renderTargets;
 
 	Material *newMaterial = new Material(mname);
 	
+	if(nodeElement->Attribute("screen")) {
+		if(String(nodeElement->Attribute("screen")) == "true") {
+			newMaterial->screenMaterial = true;
+		}
+	}	
 	
 	if(nodeElement->Attribute("blendingMode")) {
 		newMaterial->blendingMode = atoi(nodeElement->Attribute("blendingMode"));
@@ -352,24 +444,19 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 						newTarget->height = atof(pChildElement->Attribute("height"));	
 						if(pChildElement->Attribute("sizeMode")) {
 							if(strcmp(pChildElement->Attribute("sizeMode"), "normalized") == 0) {
+								newTarget->sizeMode = ShaderRenderTarget::SIZE_MODE_NORMALIZED;	
 								if(newTarget->width > 1.0f)
 									newTarget->width = 1.0f;
 								if(newTarget->height > 1.0f)
 									newTarget->height = 1.0f;
-									
-								newTarget->width = ((Number)CoreServices::getInstance()->getRenderer()->getXRes()) * newTarget->width;
-								newTarget->height = ((Number)CoreServices::getInstance()->getRenderer()->getYRes()) * newTarget->height;
 							}						
 						}
-					}						
-//					Texture *newTexture = CoreServices::getInstance()->getMaterialManager()->createNewTexture(newTarget->width, newTarget->height, true);
-					Texture *newTexture, *temp;
-					CoreServices::getInstance()->getRenderer()->createRenderTextures(&newTexture, &temp, (int)newTarget->width, (int)newTarget->height, newMaterial->fp16RenderTargets);
-					newTexture->setResourceName(newTarget->id);
-					//CoreServices::getInstance()->getResourceManager()->addResource(newTexture);
-					newTarget->texture = newTexture;
+					}
+					
+					newTarget->normalizedWidth = -1;
+					newTarget->normalizedHeight = -1;					
+					newMaterial->recreateRenderTarget(newTarget);					
 					renderTargets.push_back(newTarget);
-
 				}
 			}
 		}	
@@ -396,9 +483,53 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 
 							if(strcmp(pChild2->Value(), "param") == 0){
 								String pname =  pChild2Element->Attribute("name");
-								String ptype =  pChild2Element->Attribute("type");
-								String pvalue =  pChild2Element->Attribute("value");
-								newShaderBinding->addParam(ptype, pname, pvalue);
+								
+								if(!CoreServices::getInstance()->getRenderer()->getDataPointerForName(pname)) {								
+								String pvalue =  pChild2Element->Attribute("value");																
+								int type = materialShader->getExpectedParamType(pname);								
+								LocalShaderParam *param = newShaderBinding->addParam(type, pname);
+								
+								
+								if(param) {
+									switch(type) {
+										case ProgramParam::PARAM_NUMBER:
+										{
+											param->setNumber(atof(pvalue.c_str()));
+										}
+										break;
+										case ProgramParam::PARAM_VECTOR2:
+										{
+											std::vector<String> values = pvalue.split(" ");
+											if(values.size() == 2) {
+												param->setVector2(Vector2(atof(values[0].c_str()), atof(values[1].c_str())));
+											} else {
+												printf("Material parameter error: A Vector2 must have 2 values (%d provided)!\n", (int)values.size());
+											}
+										}											
+										break;
+										case ProgramParam::PARAM_VECTOR3:
+										{
+											std::vector<String> values = pvalue.split(" ");
+											if(values.size() == 3) {
+												param->setVector3(Vector3(atof(values[0].c_str()), atof(values[1].c_str()), atof(values[2].c_str())));
+											} else {
+												printf("Material parameter error: A Vector3 must have 3 values (%d provided)!\n", (int)values.size());
+											}
+										}										
+										break;
+										case ProgramParam::PARAM_COLOR:
+										{
+											std::vector<String> values = pvalue.split(" ");
+											if(values.size() == 4) {
+												param->setColor(Color(atof(values[0].c_str()), atof(values[1].c_str()), atof(values[2].c_str()), atof(values[3].c_str())));
+											} else {
+												printf("Material parameter error: A Vector3 must have 3 values (%d provided)!\n", (int)values.size());
+											}
+										}										
+										break;										
+									}
+									}
+								}
 							}						
 						}
 					}
@@ -418,21 +549,21 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 								}
 								String mode = pChild2Element->Attribute("mode");
 								if(strcmp(mode.c_str(), "in") == 0) {
-									newBinding->mode = RenderTargetBinding::MODE_IN;
+									newBinding->mode = RenderTargetBinding::MODE_IN;			
+								} else if(strcmp(mode.c_str(), "color") == 0) {
+									newBinding->mode = RenderTargetBinding::MODE_COLOR;
+								} else if(strcmp(mode.c_str(), "depth") == 0) {
+									newBinding->mode = RenderTargetBinding::MODE_DEPTH;
 								} else {
 									newBinding->mode = RenderTargetBinding::MODE_OUT;								
 								}
 																
 								newShaderBinding->addRenderTargetBinding(newBinding);
-								//Texture *texture =  (Texture*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_TEXTURE, newBinding->id);
-//								newBinding->texture = texture;
 								
 								for(int l=0; l < renderTargets.size(); l++) {
 									if(renderTargets[l]->id == newBinding->id) {
 										printf("Assigning texture to %s\n", newBinding->id.c_str());
 										newBinding->texture = renderTargets[l]->texture;
-										newBinding->width = renderTargets[l]->width;
-										newBinding->height = renderTargets[l]->height;
 									}
 								}
 								

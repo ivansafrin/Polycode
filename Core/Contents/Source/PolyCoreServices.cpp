@@ -97,6 +97,10 @@ Config *CoreServices::getConfig() {
 	return config;
 }
 
+Logger *CoreServices::getLogger() {
+	return logger;
+}
+
 void CoreServices::installModule(PolycodeModule *module)  {
 	modules.push_back(module);
 	if(module->requiresUpdate()) {
@@ -118,6 +122,7 @@ void CoreServices::setupBasicListeners() {
 }
 
 CoreServices::CoreServices() : EventDispatcher() {
+	logger = new Logger();
 	resourceManager = new ResourceManager();	
 	config = new Config();
 	materialManager = new MaterialManager();
@@ -209,39 +214,38 @@ Renderer *CoreServices::getRenderer() {
 	return renderer;
 }
 
-void CoreServices::Update(int elapsed, bool updateRenderer) {
+void CoreServices::Render() {
+	if(renderer->doClearBuffer)		
+		renderer->clearScreen();
+
+	renderer->setPerspectiveMode();
+	sceneManager->renderVirtual();
+	if(renderer->doClearBuffer)
+		renderer->clearScreen();					
+
+	if(drawScreensFirst) {
+		renderer->clearLights();	
+		screenManager->Render();
+		renderer->setPerspectiveMode();
+		sceneManager->Render();	
+	} else {
+		sceneManager->Render();
+		renderer->clearLights();		
+		screenManager->Render();	
+	}
+}
+
+void CoreServices::Update(int elapsed) {
 	
 	for(int i=0; i < updateModules.size(); i++) {
 		updateModules[i]->Update(elapsed);
 	}
-
-	timerManager->Update();
-	
-	tweenManager->Update();
-	
-	if(updateRenderer) {
-		
-	materialManager->Update(elapsed);	
-	if(drawScreensFirst) {
-		if(renderer->doClearBuffer)
-			renderer->clearScreen();	
-		renderer->setPerspectiveMode();
-		sceneManager->UpdateVirtual();
-		if(renderer->doClearBuffer)		
-			renderer->clearScreen();					
-		screenManager->Update();
-		renderer->setPerspectiveMode();
-		sceneManager->Update();	
-	} else {
-		renderer->setPerspectiveMode();
-		sceneManager->UpdateVirtual();
-		if(renderer->doClearBuffer)		
-			renderer->clearScreen();		
-		sceneManager->Update();
-		screenManager->Update();	
-	}
-	
-	}	
+	resourceManager->Update(elapsed);
+	timerManager->Update();	
+	tweenManager->Update();	
+	materialManager->Update(elapsed);		
+	sceneManager->Update();
+	screenManager->Update();	
 }
 
 SoundManager *CoreServices::getSoundManager() {

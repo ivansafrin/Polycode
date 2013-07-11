@@ -44,8 +44,8 @@ namespace Polycode {
 			*/
 			ScreenShape(int shapeType, Number option1=0, Number option2=0, Number option3=0, Number option4=0);
 		
-			virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly);
-			virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly);
+			virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
+			virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
 				
 			virtual ~ScreenShape();
 			void Render();

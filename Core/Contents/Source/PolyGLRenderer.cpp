@@ -59,6 +59,9 @@ PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer;
 PFNGLENABLEVERTEXATTRIBARRAYARBPROC glEnableVertexAttribArrayARB;
 PFNGLBINDATTRIBLOCATIONPROC glBindAttribLocation;
 
+PFNGLGETPROGRAMIVPROC glGetProgramiv;
+PFNGLGETACTIVEUNIFORMPROC glGetActiveUniform;
+
 // GL_EXT_framebuffer_object
 PFNGLISRENDERBUFFEREXTPROC glIsRenderbufferEXT;
 PFNGLBINDRENDERBUFFEREXTPROC glBindRenderbufferEXT;
@@ -86,14 +89,22 @@ OpenGLRenderer::OpenGLRenderer() : Renderer() {
 	nearPlane = 0.1f;
 	farPlane = 100.0f;
 	verticesToDraw = 0;
-	
-	glDisable(GL_SCISSOR_TEST);
+
 }
 
 void OpenGLRenderer::setClippingPlanes(Number nearPlane_, Number farPlane_) {
 	nearPlane = nearPlane_;
 	farPlane = farPlane_;
 	Resize(xRes,yRes);
+}
+
+bool OpenGLRenderer::Init() {
+	if(!Renderer::Init())
+		return false;
+
+	glDisable(GL_SCISSOR_TEST);
+
+	return true;
 }
 
 void OpenGLRenderer::initOSSpecific(){
@@ -119,6 +130,10 @@ void OpenGLRenderer::initOSSpecific(){
 		glVertexAttribPointer = (PFNGLVERTEXATTRIBPOINTERPROC)wglGetProcAddress("glVertexAttribPointer");
 		glEnableVertexAttribArrayARB = (PFNGLENABLEVERTEXATTRIBARRAYARBPROC)wglGetProcAddress("glEnableVertexAttribArrayARB");
 		glBindAttribLocation = (PFNGLBINDATTRIBLOCATIONPROC)wglGetProcAddress("glBindAttribLocation");
+
+		
+		glGetProgramiv = (PFNGLGETPROGRAMIVPROC)wglGetProcAddress("glGetProgramiv");
+		glGetActiveUniform = (PFNGLGETACTIVEUNIFORMPROC)wglGetProcAddress("glGetActiveUniform");
 
         glIsRenderbufferEXT = (PFNGLISRENDERBUFFEREXTPROC)wglGetProcAddress("glIsRenderbufferEXT");
         glBindRenderbufferEXT = (PFNGLBINDRENDERBUFFEREXTPROC)wglGetProcAddress("glBindRenderbufferEXT");
@@ -153,7 +168,7 @@ void OpenGLRenderer::Resize(int xRes, int yRes) {
     glLoadIdentity();
 	gluPerspective(fov,(GLfloat)xRes/(GLfloat)yRes,nearPlane,farPlane);
 	glViewport(0, 0, xRes, yRes);
-	glScissor(0, 0, xRes, yRes);
+	setScissorBox(Rectangle(0, 0, xRes, yRes));
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLineWidth(1);
@@ -173,7 +188,7 @@ void OpenGLRenderer::Resize(int xRes, int yRes) {
 	GLint numBuffers;
 	glGetIntegerv(GL_MAX_DRAW_BUFFERS, &numBuffers);
 //	Logger::log("MAX_DRAW_BUFFERS: %d \n", numBuffers);
-	
+
 }
 
 void OpenGLRenderer::setDepthFunction(int depthFunction) {
@@ -243,7 +258,7 @@ Vector3 OpenGLRenderer::projectRayFrom2DCoordinate(Number x, Number y) {
 	GLdouble nearPlane[3],farPlane[3];
 	
 	GLdouble mv[16];
-	Matrix4 camInverse = cameraMatrix.inverse();	
+	Matrix4 camInverse = cameraMatrix.Inverse();	
 	Matrix4 cmv;
 	cmv.identity();
 	cmv = cmv * camInverse;
@@ -413,7 +428,11 @@ void OpenGLRenderer::enableFog(bool enable) {
 void OpenGLRenderer::setBlendingMode(int blendingMode) {
 	switch(blendingMode) {
 		case BLEND_MODE_NORMAL:
+			if(blendNormalAsPremultiplied) {
+				glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);			
+			} else{
 				glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			}
 		break;
 		case BLEND_MODE_LIGHTEN:
 				glBlendFunc (GL_SRC_ALPHA, GL_ONE);
@@ -486,7 +505,6 @@ void OpenGLRenderer::_setOrthoMode(Number orthoSizeX, Number orthoSizeY) {
 	
 	if(!orthoMode) {
 		glMatrixMode(GL_PROJECTION);
-		glPushMatrix();
 		glLoadIdentity();
 		glOrtho(-orthoSizeX*0.5,orthoSizeX*0.5,-orthoSizeY*0.5,orthoSizeY*0.5,-farPlane,farPlane);
 		orthoMode = true;
@@ -509,7 +527,6 @@ void OpenGLRenderer::setOrthoMode(Number xSize, Number ySize, bool centered) {
 	glDisable(GL_LIGHTING);
 	glMatrixMode(GL_PROJECTION);
 	glDisable(GL_CULL_FACE);
-	glPushMatrix();
 	glLoadIdentity();
 		
 	if(centered) {
@@ -537,7 +554,6 @@ void OpenGLRenderer::setPerspectiveMode() {
 		glEnable (GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 		glMatrixMode( GL_PROJECTION );
-		glPopMatrix();
 		glMatrixMode( GL_MODELVIEW );
 		orthoMode = false;
 	}
@@ -568,27 +584,27 @@ void OpenGLRenderer::scale3D(Vector3 *scale) {
 	glScalef(scale->x, scale->y, scale->z);
 }
 
-void OpenGLRenderer::bindFrameBufferTexture(Texture *texture) {
-	if(currentFrameBufferTexture) {
-		previousFrameBufferTexture = currentFrameBufferTexture;
-	}
+void OpenGLRenderer::bindFrameBufferTextureDepth(Texture *texture) {
+	if(!texture)
+		return;
 	OpenGLTexture *glTexture = (OpenGLTexture*)texture;
+	glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, glTexture->getFrameBufferID());
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
+}
 
+
+void OpenGLRenderer::bindFrameBufferTexture(Texture *texture) {
+	if(!texture)
+		return;
+	OpenGLTexture *glTexture = (OpenGLTexture*)texture;
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, glTexture->getFrameBufferID());
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	currentFrameBufferTexture = texture;
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
 }
 
 void OpenGLRenderer::unbindFramebuffers() {
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);	
-	currentFrameBufferTexture = NULL;
-	if(previousFrameBufferTexture) {
-		bindFrameBufferTexture(previousFrameBufferTexture);
-		previousFrameBufferTexture = NULL;
-	}
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+	glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
 }
-
 
 void OpenGLRenderer::createRenderTextures(Texture **colorBuffer, Texture **depthBuffer, int width, int height, bool floatingPointBuffer) {
 			
@@ -616,7 +632,7 @@ void OpenGLRenderer::createRenderTextures(Texture **colorBuffer, Texture **depth
 
 	status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
 	if(status == GL_FRAMEBUFFER_COMPLETE_EXT) {
-		Logger::log("color fbo generation successful\n");
+//		Logger::log("color fbo generation successful\n");
 	} else {
 		Logger::log("color fbo generation failed\n");	
 	}
@@ -651,7 +667,7 @@ void OpenGLRenderer::createRenderTextures(Texture **colorBuffer, Texture **depth
 		status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
 
 		if(status == GL_FRAMEBUFFER_COMPLETE_EXT) {
-			Logger::log("depth fbo generation successful\n");
+//			Logger::log("depth fbo generation successful\n");
 		} else {
 			Logger::log("depth fbo generation failed\n");	
 		}

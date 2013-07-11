@@ -34,13 +34,25 @@ class PolycodeRunner : public Threaded {
 		String polyappPath;
 };
 
+class GenericRunner : public Threaded {
+	public:
+		GenericRunner(String app, String file, String inFolder);
+		
+		void runThread();
+		
+		String app;
+		String file;	
+		String inFolder;	
+};
+
 class PolycodeToolLauncher {
 	public: 
 		PolycodeToolLauncher();
 		~PolycodeToolLauncher();		
 		
+		static void openExternalEditor(String app, String file, String inFolder);
 		static String generateTempPath(PolycodeProject *project);
-		static void buildProject(PolycodeProject *project, String destinationPath);
+		static void buildProject(PolycodeProject *project, String destinationPath, bool compileScripts);
 
 		static void runPolyapp(String polyappPath);
 };

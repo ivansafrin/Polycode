@@ -81,12 +81,17 @@ public:
 	
 	void newGroup();	
 	void openProject();
-	void closeProject();	
+	void closeProject();
+	void closeFile();
 	void saveFile();
 	void findText();
 	void runProject();
 	void doRunProject();
-	void exportProject();	
+	void exportProject();
+	void toggleConsole();
+	void showSettings();
+	
+	void removeEditor(PolycodeEditor *editor);
 	
 	// system callbacks
 	
@@ -94,14 +99,22 @@ public:
 	
 	void refreshProject();	
 	
+	bool quitApp();
+	
 	bool needsRedraw;
 	bool lastConnected;
 	
 	const static int EVENT_SHOW_MENU = 1;
 	
-	Core *core;	
+	Core *core;
+	
+	void saveFiles(std::vector<PolycodeEditor*> editors);
+	void closeFiles(std::vector<PolycodeEditor*> editors, String saveMsg="");
+	bool filesHaveChanges(std::vector<PolycodeEditor*> editors);
+	
 protected:
 
+	bool quittingApp;
 	bool runNextFrame;
 
 	bool willRunProject;
@@ -114,4 +127,10 @@ protected:
 
 	UIMenuBar *menuBar;
 	
+private:
+	void doCloseProject();
+	void doCloseFiles(std::vector<PolycodeEditor*> editors);
+	
+	// used in saving/closing files via popup dialog prompts
+	std::vector<PolycodeEditor*> tempEditorStore;
 };

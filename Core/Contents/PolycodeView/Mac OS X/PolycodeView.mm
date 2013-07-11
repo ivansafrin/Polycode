@@ -527,7 +527,10 @@
 			} else {
 				newEvent.eventCode = InputEvent::EVENT_KEYUP;			
 			}		
-		break;				
+		break;
+		default:
+			// Don't care otherwise
+			break;
 	}
 	newEvent.unicodeChar = 0;
 	
@@ -549,7 +552,7 @@
 	newEvent.keyCode = keymap[[theEvent keyCode]];	
 	
 	NSString *chars = [theEvent characters];
-	unsigned int numChars = [chars length];
+	NSUInteger numChars = [chars length];
 	
 //	NSLog(@"CHARS: %@", [chars characterAtIndex:0]);
 	if(numChars > 0) {
@@ -569,14 +572,13 @@
 		return;
 	
 	core->lockMutex(core->eventMutex);	
-	NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:self];	
 	CocoaEvent newEvent;
 	newEvent.eventGroup = CocoaEvent::INPUT_EVENT;
 	newEvent.eventCode = InputEvent::EVENT_KEYUP;
 	newEvent.keyCode = keymap[[theEvent keyCode]];
 	
 	NSString *chars = [theEvent characters];
-	unsigned int numChars = [chars length];
+	NSUInteger numChars = [chars length];
 	
 	if(numChars > 0)
 		newEvent.unicodeChar = [chars characterAtIndex:0];

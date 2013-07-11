@@ -24,6 +24,36 @@ THE SOFTWARE.
 #import "PolycodeView.h"
 #include "PolycodeCocoaPlayer.h"
 
+class PolycodeProxy;
+
+@interface MyDocument : NSDocument
+{
+	PolycodeView *mainView;
+	NSString *docFileName;
+	NSTimer* timer;
+	CocoaPolycodePlayer *player;
+	PolycodeProxy *playerProxy;
+	NSWindow *consoleWindow;
+	NSTextView *consoleTextView;
+	bool showingConsole;
+	bool playerRunning;
+	bool needsToClose;
+
+}
+
+- (void) printToConsole: (NSString*) message;
+- (void) handleDebugError: (NSString*) error onLine:(int) lineNumber;
+- (IBAction) showConsoleWindow: (id) sender;
+
+- (void) destroyPlayer;
+- (void) needToClosePlayer;
+
+@property (assign) IBOutlet PolycodeView *mainView;
+@property (assign) IBOutlet NSWindow *consoleWindow;
+@property (assign) IBOutlet NSTextView *consoleTextView;
+
+@end
+
 class PolycodeProxy : public EventHandler {
 public:
 	PolycodeProxy(){ playerDocument = nil; }
@@ -43,11 +73,11 @@ public:
 					fullError += "In file "+debugEvent->backTrace[i].fileName + " on line " + String::IntToString(debugEvent->backTrace[i].lineNumber)+"\n";
 				}
 			
-				[playerDocument handleDebugError: [NSString stringWithCString:fullError.c_str()] onLine: debugEvent->lineNumber];
+				[playerDocument handleDebugError: [NSString stringWithCString:fullError.c_str() encoding:NSUTF8StringEncoding] onLine: debugEvent->lineNumber];
 			}
 				break;
 			case PolycodeDebugEvent::EVENT_PRINT:
-				[playerDocument printToConsole: [NSString stringWithCString:debugEvent->errorString.c_str()]];				
+				[playerDocument printToConsole: [NSString stringWithCString:debugEvent->errorString.c_str() encoding:NSUTF8StringEncoding]];
 				break;
 			case PolycodeDebugEvent::EVENT_CLOSE:
 				[playerDocument needToClosePlayer];
@@ -59,33 +89,5 @@ public:
 		}
 	}
 	
-	id playerDocument;	
+	MyDocument* playerDocument;
 };
-
-@interface MyDocument : NSDocument
-{
-	PolycodeView *mainView;
-	NSString *docFileName;	
-	NSTimer* timer;
-	CocoaPolycodePlayer *player;
-	PolycodeProxy *playerProxy;
-	NSWindow *consoleWindow;
-	NSTextView *consoleTextView;
-	bool showingConsole;
-	bool playerRunning;
-	bool needsToClose;
-	
-}
-
-- (void) printToConsole: (NSString*) message;
-- (void) handleDebugError: (NSString*) error onLine:(int) lineNumber;
-- (IBAction) showConsoleWindow: (id) sender;
-
-- (void) destroyPlayer;
-- (void) needToClosePlayer;
-
-@property (assign) IBOutlet PolycodeView *mainView;
-@property (assign) IBOutlet NSWindow *consoleWindow;
-@property (assign) IBOutlet NSTextView *consoleTextView;
-
-@end

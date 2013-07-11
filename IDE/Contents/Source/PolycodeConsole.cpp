@@ -23,9 +23,11 @@
 #include "PolycodeConsole.h"
 #include "PolycodeRemoteDebugger.h"
 #include "PolycodeTextEditor.h"
+#include "PolycodeFrame.h"
 
 PolycodeConsole* PolycodeConsole::instance = NULL;
 extern SyntaxHighlightTheme *globalSyntaxTheme;
+extern PolycodeFrame *globalFrame;
 
 BackTraceEntry::BackTraceEntry(String fileName, int lineNumber, PolycodeProject *project) : UIElement() {
 
@@ -90,7 +92,6 @@ BackTraceWindow::BackTraceWindow() : UIElement() {
 
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
-	int fontSize = conf->getNumericValue("Polycode", "uiDefaultFontSize");		
 
 	labelBg = new ScreenShape(ScreenShape::SHAPE_RECT, 20,30);
 	labelBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
@@ -174,15 +175,19 @@ ConsoleWindow::ConsoleWindow() : UIElement() {
 	ScreenLabel *label = new ScreenLabel("CONSOLE", 18, "section");
 	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	addChild(label);
-	label->setPosition(5,3);
+	label->setPosition(35,3);
 
 	debugTextInput = new UITextInput(true, 100, 100);
 	consoleTextInput = new UITextInput(false, 100, 100);
 	addChild(consoleTextInput);	
 	addChild(debugTextInput);	
 	
-	clearButton = new UIButton("Clear", 50);
+	clearButton = new UIImageButton("Images/clear_buffer_icon.png");
 	addChild(clearButton);
+	
+	hideConsoleButton = new UIImageButton("Images/console_hide_button.png");
+	addChild(hideConsoleButton);
+	hideConsoleButton->setPosition(7,5);
 	
 }
 
@@ -192,7 +197,7 @@ void ConsoleWindow::Resize(Number width, Number height) {
 	debugTextInput->Resize(width, height-25-30);
 	debugTextInput->setPosition(0, 30);
 
-	clearButton->setPosition(width - 60, 4);
+	clearButton->setPosition(width - 22, 6);
 
 	consoleTextInput->Resize(width, 25);
 	consoleTextInput->setPosition(0, height-25);	
@@ -215,10 +220,17 @@ PolycodeConsole::PolycodeConsole() : UIElement() {
 	debugTextInput = consoleWindow->debugTextInput;
 	consoleTextInput = consoleWindow->consoleTextInput;
 	
-	consoleTextInput->addEventListener(this, Event::COMPLETE_EVENT);	
+	consoleTextInput->addEventListener(this, Event::COMPLETE_EVENT);
+	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 	consoleTextInput->setColor(0.95, 1.0, 0.647, 1.0);
+
+	consoleHistoryPosition = 0;
+	consoleHistoryMaxSize = 15;
 	
 	consoleWindow->clearButton->addEventListener(this, UIEvent::CLICK_EVENT);
+	consoleWindow->hideConsoleButton->addEventListener(this, UIEvent::CLICK_EVENT);
+	
+	CoreServices::getInstance()->getLogger()->addEventListener(this, Event::NOTIFY_EVENT);
 
 	PolycodeConsole::setInstance(this);
 }
@@ -241,14 +253,22 @@ void PolycodeConsole::setDebugger(PolycodeRemoteDebugger *debugger) {
 }
 
 void PolycodeConsole::handleEvent(Event *event) {
-	if(event->getDispatcher() == consoleWindow->clearButton) {
+
+	if(event->getDispatcher() == CoreServices::getInstance()->getLogger()) {
+		if(event->getEventCode() == Event::NOTIFY_EVENT) {
+			LoggerEvent *loggerEvent = (LoggerEvent*)event;
+			_print(loggerEvent->message);
+		}
+	} else if(event->getDispatcher() == consoleWindow->clearButton) {
 		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {
 			debugTextInput->setText("");
 		}
+	} else if(event->getDispatcher() == consoleWindow->hideConsoleButton) {
+		globalFrame->hideConsole();
 	}
 
 	if(event->getDispatcher() == consoleTextInput) {
-		if(event->getEventCode() == Event::COMPLETE_EVENT && event->getEventType() == "") {
+		if(event->getEventCode() == Event::COMPLETE_EVENT && event->getEventType() == "" && consoleTextInput->getText() != "") {
 			_print(">"+consoleTextInput->getText()+"\n");
 			if(debugger) {
 				if(!debugger->isConnected()) {
@@ -256,9 +276,37 @@ void PolycodeConsole::handleEvent(Event *event) {
 				} else {
 					debugger->injectCode(consoleTextInput->getText());
 				}
-			}	
+			}
+			
+			consoleHistory.push_back(consoleTextInput->getText());
+			if (consoleHistory.size() > consoleHistoryMaxSize) { consoleHistory.erase(consoleHistory.begin()); }
+			consoleHistoryPosition = consoleHistory.size();
 			
 			consoleTextInput->setText("");
+		}
+	}
+
+	if (event->getDispatcher() == CoreServices::getInstance()->getCore()->getInput()) {
+		if (consoleTextInput->hasFocus && event->getEventCode() == InputEvent::EVENT_KEYDOWN) {
+			InputEvent *inputEvent = (InputEvent*)event;
+			if (inputEvent->keyCode() == KEY_UP) { 
+				consoleHistoryPosition--;
+				if (consoleHistoryPosition >= 0) {
+					consoleTextInput->setText(consoleHistory.at(consoleHistoryPosition));
+				} else {
+					consoleHistoryPosition = -1;
+					consoleTextInput->setText("");
+				}
+			}
+			if (inputEvent->keyCode() == KEY_DOWN) { 
+				consoleHistoryPosition++;
+				if (consoleHistoryPosition < consoleHistory.size()) {
+					consoleTextInput->setText(consoleHistory.at(consoleHistoryPosition));
+				} else {
+					consoleHistoryPosition = consoleHistory.size();
+					consoleTextInput->setText("");
+				}
+			}
 		}
 	}
 }

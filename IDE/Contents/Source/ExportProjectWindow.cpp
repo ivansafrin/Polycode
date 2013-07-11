@@ -21,8 +21,11 @@
  */
  
 #include "ExportProjectWindow.h"
+#include "PolycodeFrame.h"
 
-ExportProjectWindow::ExportProjectWindow() : UIWindow(L"Publish Project", 400, 300) {
+extern PolycodeFrame *globalFrame;
+
+ExportProjectWindow::ExportProjectWindow() : UIWindow(L"Publish Project", 400, 360) {
 
 	closeOnEscape = true;
 
@@ -59,17 +62,25 @@ ExportProjectWindow::ExportProjectWindow() : UIWindow(L"Publish Project", 400, 3
 	addChild(linCheckBox);
 	linCheckBox->setPosition(padding, 225);
 
+	label = new ScreenLabel("OPTIONS", 22, "section", Label::ANTIALIAS_FULL);
+	addChild(label);
+	label->color.a = 0.4;	
+	label->setPosition(padding, 260);
+
+	compileCheckBox = new UICheckBox("Compile Scripts (experimental)", false);
+	addChild(compileCheckBox);
+	compileCheckBox->setPosition(padding, 295);
 
 	cancelButton = new UIButton(L"Cancel", 100);
 	cancelButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(cancelButton);
-	cancelButton->setPosition(400-75-padding-100-10, 300-15);
+	cancelButton->setPosition(400-75-padding-100-10, 360-15);
 		
 	
 	okButton = new UIButton(L"Publish", 100);
 	okButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(okButton);
-	okButton->setPosition(400-75-padding, 300-15);
+	okButton->setPosition(400-75-padding, 360-15);
 	
 	projectLocationInput->setText(CoreServices::getInstance()->getCore()->getUserHomeDirectory()+"/Documents/Polycode");
 	
@@ -89,8 +100,16 @@ void ExportProjectWindow::resetForm() {
 }
 
 void ExportProjectWindow::handleEvent(Event *event) {
-
 	if(event->getEventType() == "UIEvent") {
+		if(event->getEventCode() == UIEvent::OK_EVENT && event->getDispatcher() == globalFrame->fileDialog) {
+			String pathName = globalFrame->fileDialog->getSelection();
+			if(pathName != "")
+				projectLocationInput->setText(pathName);
+
+		}
+		
+		if(enabled) {						
+
 		if(event->getEventCode() == UIEvent::CLICK_EVENT) {
 			if(event->getDispatcher() == okButton) {
 				dispatchEvent(new UIEvent(), UIEvent::OK_EVENT);						
@@ -101,14 +120,21 @@ void ExportProjectWindow::handleEvent(Event *event) {
 			}			
 			
 			if(event->getDispatcher() == locationSelectButton) {
+#ifdef USE_POLYCODEUI_FILE_DIALOGS
+				std::vector<String> exts;
+				globalFrame->showFileBrowser(CoreServices::getInstance()->getCore()->getUserHomeDirectory(),  true, exts, false);
+				globalFrame->fileDialog->addEventListener(this, UIEvent::OK_EVENT);
+#else
 				String pathName = CoreServices::getInstance()->getCore()->openFolderPicker();
 				if(pathName != "")
 					projectLocationInput->setText(pathName);
+#endif
 			}			
 			
 		}
+		
+		}
 	}
-	
 	
 	UIWindow::handleEvent(event);	
 }

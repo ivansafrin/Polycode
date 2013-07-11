@@ -43,7 +43,7 @@ ScreenSprite::ScreenSprite(const String& fileName) : ScreenShape(ScreenShape::SH
 	loadFromFile(fileName);
 }
 
-Entity *ScreenSprite::Clone(bool deepClone, bool ignoreEditorOnly) {
+Entity *ScreenSprite::Clone(bool deepClone, bool ignoreEditorOnly) const {
 	ScreenSprite *newSprite = new ScreenSprite(getTexture()->getResourcePath(), spriteWidth, spriteHeight);
 	for(int i=0; i < animations.size(); i++) {
 		newSprite->addAnimation(animations[i]->name, animations[i]->frames, animations[i]->speed);
@@ -55,7 +55,7 @@ Entity *ScreenSprite::Clone(bool deepClone, bool ignoreEditorOnly) {
 	return newSprite;
 }
 
-void ScreenSprite::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) {
+void ScreenSprite::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
 	ScreenShape::applyClone(clone, deepClone, ignoreEditorOnly);
 	
 }
@@ -148,7 +148,13 @@ void ScreenSprite::recalculateSpriteDimensions() {
 	
 	for(int i =0 ; i < animations.size(); i++) {
 		animations[i]->numFramesX = texture->getWidth() / spriteWidth;	
+		if(animations[i]->numFramesX < 1) {
+			animations[i]->numFramesX = 1;
+		}
 		animations[i]->numFramesY = texture->getHeight() / spriteHeight;
+		if(animations[i]->numFramesY < 1) {
+			animations[i]->numFramesY = 1;
+		}		
 		animations[i]->spriteUVWidth = spriteUVWidth;
 		animations[i]->spriteUVHeight = spriteUVHeight;	
 		animations[i]->setOffsetsFromFrameString(animations[i]->frames);
@@ -172,6 +178,18 @@ void ScreenSprite::setSpriteSize(const Number spriteWidth, const Number spriteHe
 
 SpriteAnimation *ScreenSprite::getCurrentAnimation() {
 	return currentAnimation;
+}
+
+unsigned int ScreenSprite::getCurrentAnimationFrame() { 
+   return currentFrame; 
+}
+
+bool ScreenSprite::isCurrentAnimationFinished() {
+    if(currentAnimation) {
+        if(currentFrame >= currentAnimation->numFrames)
+            return true;
+    }
+    return false;
 }
 
 void SpriteAnimation::setOffsetsFromFrameString(const String& frames) {
@@ -199,7 +217,13 @@ SpriteAnimation *ScreenSprite::addAnimation(const String& name, const String& fr
 	
 	
 	newAnimation->numFramesX = texture->getWidth() / spriteWidth;	
+	if(newAnimation->numFramesX < 1) {
+		newAnimation->numFramesX = 1;
+	}
 	newAnimation->numFramesY = texture->getHeight() / spriteHeight;
+	if(newAnimation->numFramesY < 1) {
+		newAnimation->numFramesY = 1;
+	}	
 	newAnimation->spriteUVWidth = spriteUVWidth;
 	newAnimation->spriteUVHeight = spriteUVHeight;
 	
@@ -215,7 +239,7 @@ void ScreenSprite::playAnimation(const String& name, int startFrame, bool once) 
 	paused = false;
 	for(int i=0; i < animations.size(); i++) {
 		if(animations[i]->name == name) {
-			if(currentAnimation == animations[i] && !playingOnce)
+			if(currentAnimation == animations[i] && !playingOnce && !once)
 				return;
 			currentFrame = 0;			
 			currentAnimation = animations[i];

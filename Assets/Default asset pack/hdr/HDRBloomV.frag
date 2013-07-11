@@ -1,5 +1,5 @@
 uniform sampler2D screenTexture;
-const float blurSize = 1.0/512.0;
+uniform float blurSize;
  
 void main(void)
 {

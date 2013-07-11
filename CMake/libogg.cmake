@@ -23,6 +23,19 @@ IF(MSVC)
     LIST(APPEND libogg_SRCS win32/ogg.def)
 ENDIF(MSVC)
 
+IF("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+	# libogg expects configure to be called on linux to
+	# generate config_types.h
+    LIST(APPEND libogg_HDRS include/ogg/config_types.h)
+
+	add_custom_command(OUTPUT include/ogg/config_types.h
+						COMMAND ./configure
+						DEPENDS include/ogg/ogg.h # Hopefully if the libogg version changes, so does this file
+												  # so configure_types.h will be regenerated.
+						WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+					   )
+ENDIF()
+
 #ADD_LIBRARY(libogg_dynamic SHARED ${libogg_SRCS} ${libogg_HDRS})
 ADD_LIBRARY(libogg ${libogg_SRCS} ${libogg_HDRS})
 

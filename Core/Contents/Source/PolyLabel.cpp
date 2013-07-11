@@ -58,9 +58,8 @@ ColorRange::ColorRange(Color color, unsigned int rangeStart, unsigned int rangeE
 }
 
 
-Label::Label(Font *font, const String& text, int size, int antiAliasMode, bool premultiplyAlpha) : Image() {
+Label::Label(Font *font, const String& text, int size, int antiAliasMode, bool premultiplyAlpha) : Image(), _optionsChanged(false) {
 		setPixelType(Image::IMAGE_RGBA);
-		
 		this->font = font;
 		this->size = size;
 		this->premultiplyAlpha = premultiplyAlpha;
@@ -79,6 +78,7 @@ unsigned int Label::getSize() const {
 
 void Label::setSize(int newSize) {
 	size = newSize;
+	_optionsChanged	= true;
 }
 
 int Label::getAntialiasMode() const {
@@ -87,6 +87,7 @@ int Label::getAntialiasMode() const {
 
 void Label::setAntialiasMode(int newMode) {
 	antiAliasMode = newMode;
+	_optionsChanged	= true;	
 }
 
 int Label::getTextWidthForString(const String& text) {
@@ -186,6 +187,7 @@ void Label::setFont(Font *newFont) {
 	if(!newFont)
 		return;
 	font = newFont;
+	_optionsChanged	= true;	
 }
 
 const String& Label::getText() const {
@@ -194,10 +196,12 @@ const String& Label::getText() const {
 
 void Label::clearColors() {
 	colorRanges.clear();
+	_optionsChanged = true;
 }
 
 void Label::setColorForRange(Color color, unsigned int rangeStart, unsigned int rangeEnd) {
 	colorRanges.push_back(ColorRange(color, rangeStart, rangeEnd));
+	_optionsChanged = true;	
 }
 
 Color Label::getColorForIndex(unsigned int index) {
@@ -395,8 +399,12 @@ void Label::renderGlyphs(GlyphData *glyphData) {
 	}
 }
 
-void Label::setText(const String& text) {
+bool Label::optionsChanged() {
+	return _optionsChanged;
+}
 
+void Label::setText(const String& text) {
+	
 	if(!font)
 		return;
 	if(!font->isValid())
@@ -418,4 +426,5 @@ void Label::setText(const String& text) {
 	
 	createEmpty(textWidth,textHeight);	
 	renderGlyphs(&labelData);
+	_optionsChanged = false;	
 }

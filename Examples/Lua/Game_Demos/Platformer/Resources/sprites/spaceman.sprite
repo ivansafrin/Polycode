@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<sprite>
+    <image frameWidth="72" frameHeight="98" fileName="Resources/images/spaceman.png" />
+    <animations>
+        <animation name="walk" frames="0,1,2,3,4,5,6,7,8" speed="0.05" />
+        <animation name="idle" frames="10" speed="0.5" />
+        <animation name="jump" frames="11" speed="0.5" />
+    </animations>
+</sprite>

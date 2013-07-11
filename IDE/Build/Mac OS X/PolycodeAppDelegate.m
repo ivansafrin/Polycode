@@ -8,6 +8,14 @@
 
 #import "PolycodeAppDelegate.h"
 
+void PolycodeAppEventHandler::handleEvent(Event *evt) {
+	switch(evt->getEventCode()) {
+		case PolycodeIDEApp::EVENT_SHOW_MENU:
+			[appDelegate showProjectMenu];
+			break;
+	}
+}
+
 @implementation PolycodeAppDelegate
 
 @synthesize window;
@@ -42,7 +50,7 @@
 - (void)animationTimer:(NSTimer *)timer
 {
 	if(!app->Update()) {
-		[[NSApplication sharedApplication] stop:self];
+		[[NSApplication sharedApplication] terminate:self];
 	}
 	
 	if(mustShowProjectMenu) {
@@ -70,9 +78,17 @@
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
-	NSLog(@"STOPPING\n");
-	app->saveConfigFile();
-	app->core->Shutdown();
+}
+
+- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)theApplication
+{
+	bool retVal = app->quitApp();
+	if(retVal) {
+		app->saveConfigFile();
+		app->core->Shutdown();
+		printf("STOPPING\n");
+	}
+	return retVal;
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)theApplication
@@ -138,6 +154,10 @@
 	app->closeProject();
 }
 
+-(IBAction) closeFile: (id) sender {
+	app->closeFile();
+}
+
 -(IBAction) saveFile: (id) sender {
 	app->saveFile();
 }
@@ -152,6 +172,14 @@
 
 -(IBAction) showAbout: (id) sender {
 	app->showAbout();
+}
+
+-(IBAction) toggleConsole: (id) sender {
+	app->toggleConsole();
+}
+
+-(IBAction) showSettings: (id) sender {
+	app->showSettings();
 }
 
 @end

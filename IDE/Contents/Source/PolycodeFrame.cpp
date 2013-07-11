@@ -499,7 +499,7 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	globalFrame = this;
 	processInputEvents = true;
 	willHideModal = false;
-
+	showingConsole = true;
 	modalChild = NULL;
 	
 	welcomeEntity = new ScreenEntity();
@@ -524,6 +524,8 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	mainSizer->setPosition(0, 45);
 	addChild(mainSizer);
 
+	consoleSize = 200;
+
 	consoleSizer = new UIVSizer(100,100,200, false);
 	mainSizer->addRightChild(consoleSizer);	
 				
@@ -541,6 +543,8 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	topBarBg = new ScreenShape(ScreenShape::SHAPE_RECT, 2,2);
 	topBarBg->setColorInt(21, 18, 17, 255);
 	topBarBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	topBarBg->processInputEvents = true;
+	topBarBg->blockMouseInput = true;
 	addChild(topBarBg);
 	
 	logo = new ScreenImage("Images/barlogo.png");	
@@ -560,11 +564,12 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	currentProjectTitle->color.a = 0.4;
 	currentProjectTitle->setPosition(70, 0);
 
-	currentFileSelector = new UIComboBox(globalMenu, 300);
+	currentFileSelector = new UIComboBox(globalMenu, 350);
 	currentFileSelector->addEventListener(this, UIEvent::CHANGE_EVENT);
-	
 	addChild(currentFileSelector);
 
+	closeFileButton = new UIImageButton("Images/remove_icon.png");
+	addChild(closeFileButton);
 	
 	resizer = new ScreenImage("Images/corner_resize.png");	
 	addChild(resizer);
@@ -586,6 +591,9 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	
 	exampleBrowserWindow = new ExampleBrowserWindow();
 	exampleBrowserWindow->visible = false;
+
+	settingsWindow = new SettingsWindow();
+	settingsWindow->visible = false;
 	
 	newFileWindow = new NewFileWindow();
 	newFileWindow->visible = false;
@@ -598,6 +606,10 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	
 	yesNoPopup = new YesNoPopup();
 	yesNoPopup->visible = false;
+	
+	yesNoCancelPopup = new YesNoCancelPopup();
+	yesNoCancelPopup->visible = false;
+	
 	
 	aboutWindow = new UIWindow("", 800, 440);
 	aboutWindow->closeOnEscape = true;
@@ -627,6 +639,7 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 		
 	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEUP);
 	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
+	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 	
 	curveEditor = new CurveEditor();
 	addChild(curveEditor);
@@ -655,6 +668,8 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	addChild(fileBrowserRoot);
 
 	fileDialog = NULL;
+	
+	displayFilePathInSelector = false;
 }
 
 void PolycodeFrame::showFileBrowser(String baseDir, bool foldersOnly, std::vector<String> extensions, bool allowMultiple) {
@@ -695,6 +710,19 @@ PolycodeProjectBrowser *PolycodeFrame::getProjectBrowser() {
 	return projectBrowser;
 }
 
+void PolycodeFrame::removeEditor(PolycodeEditor *editor) {
+	for(int i=0; i < editors.size(); i++) {
+		if(editors[i] == editor) {
+			editors.erase(editors.begin()+i);
+			editorHolder->removeChild(editor);
+			if(editor == editorHolder->currentEditor) {
+				editorHolder->currentEditor = NULL;
+			}
+			return;
+		}
+	}
+}
+
 void PolycodeFrame::addEditor(PolycodeEditor *editor) {
 	editors.push_back(editor);
 	editorHolder->addChild(editor);
@@ -724,6 +752,30 @@ void PolycodeFrame::hideModal() {
 	modalBlocker->enabled = false;		
 }
 
+void PolycodeFrame::showConsole() {
+	if(!showingConsole)
+		toggleConsole();
+}
+
+void PolycodeFrame::hideConsole() {
+	if(showingConsole)
+		toggleConsole();
+}
+
+void PolycodeFrame::toggleConsole() {
+	if(showingConsole) {
+		consoleSize = consoleSizer->getMainHeight();
+		consoleSizer->setMainHeight(0);
+		console->visible = false;
+		console->enabled = false;
+	} else {
+		consoleSizer->setMainHeight(consoleSize);	
+		console->visible = true;
+		console->enabled = true;		
+	}
+	showingConsole = !showingConsole;
+}
+
 void PolycodeFrame::Update() {
 	if(willHideModal) {
 		hideModal();
@@ -748,28 +800,15 @@ void PolycodeFrame::handleEvent(Event *event) {
 		showEditor(editor);
 	}
 	
-	if(event->getDispatcher() == editorManager) {	
-		currentFileSelector->clearItems();
-		
-		for(int i=0; i < editorManager->openEditors.size(); i++) {
-			OSFileEntry entry(editorManager->openEditors[i]->getFilePath(), OSFileEntry::TYPE_FILE);
-			
-			if(editorManager->openEditors[i]->hasChanges()) {
-				currentFileSelector->addComboItem("* " +entry.name);			
-			} else {
-				currentFileSelector->addComboItem(entry.name);
-			}
-			
-			if(editorManager->getCurrentEditor() == editorManager->openEditors[i]) {
-				currentFileSelector->setSelectedIndex(i);
-			}
-			
-		}
+	if(event->getDispatcher() == editorManager) {
+		updateFileSelector();
 	}
 	
 	if(event->getDispatcher() == projectManager) {
         if(projectManager->getActiveProject()) {
             currentProjectTitle->setText(projectManager->getActiveProject()->getProjectName());
+        } else {
+        	if (projectManager->getProjectCount() == 0) { currentProjectTitle->setText(""); }
         }
 	}
 	
@@ -801,7 +840,32 @@ void PolycodeFrame::handleEvent(Event *event) {
 				if(isDragging) {
 					dragEntity->setPosition(((InputEvent*)event)->mousePosition);
 				}
-			break;	
+			break;
+			// TODO: add in key combos to switch editors in reverse order
+			case InputEvent::EVENT_KEYDOWN:
+				CoreInput *input = CoreServices::getInstance()->getCore()->getInput();
+				
+				if (input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER)) {
+					InputEvent *inEv = (InputEvent*)event;
+					// commenting this out for now until issue with KEY_BACKQUOTE is figured out
+					/*if (inEv->getKey() == KEY_BACKQUOTE) {
+						showNextEditor();
+					}*/
+					if (inEv->getKey() == KEY_SLASH) {
+						displayFilePathInSelector = (displayFilePathInSelector ? false : true);
+						updateFileSelector();
+					}
+				} else if (input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL)) {
+					InputEvent *inEv = (InputEvent*)event;
+					if (inEv->getKey() == KEY_TAB) {
+						showNextEditor();
+					} else if (inEv->getKey() == KEY_SLASH) {
+						displayFilePathInSelector = (displayFilePathInSelector ? false : true);
+						updateFileSelector();
+					}
+				}
+			break;
+				
 		}
 	}
 
@@ -859,8 +923,8 @@ void PolycodeFrame::Resize(int x, int y) {
 	modalBlocker->setShapeSize(x, y);
 	fileDialogBlocker->setShapeSize(x, y);
 		
-	currentFileSelector->setPosition(x-350, 11);
-	
+	currentFileSelector->setPosition(x-400, 11);
+	closeFileButton->setPosition(currentFileSelector->getPosition().x-20, currentFileSelector->getPosition().y+6);
 	
 	if(this->modalChild) {
 		modalChild->setPosition((x-modalChild->getWidth())/2.0f, (y-modalChild->getHeight())/2.0f);
@@ -871,3 +935,47 @@ PolycodeFrame::~PolycodeFrame() {
 	
 }
 
+void PolycodeFrame::showNextEditor() {
+	if (currentFileSelector->getSelectedIndex() == currentFileSelector->getNumItems()-1)
+		currentFileSelector->setSelectedIndex(0);
+	else
+		currentFileSelector->setSelectedIndex(currentFileSelector->getSelectedIndex()+1);
+}
+void PolycodeFrame::showPreviousEditor() {
+	if (currentFileSelector->getSelectedIndex() == 0)
+		currentFileSelector->setSelectedIndex(currentFileSelector->getNumItems()-1);
+	else
+		currentFileSelector->setSelectedIndex(currentFileSelector->getSelectedIndex()-1);
+}
+
+void PolycodeFrame::updateFileSelector() {
+	currentFileSelector->clearItems();
+	
+	for(int i=0; i < editorManager->openEditors.size(); i++) {
+		OSFileEntry entry(editorManager->openEditors[i]->getFilePath(), OSFileEntry::TYPE_FILE);
+		
+		String projName = editorManager->openEditors[i]->parentProject->getProjectName();
+		String rootFolder = editorManager->openEditors[i]->parentProject->getRootFolder();
+		String filePath = editorManager->openEditors[i]->getFilePath();
+		
+		String fullEntry = filePath;
+		if(filePath.find(rootFolder) != -1) {
+			fullEntry = projName + filePath.substr(rootFolder.size(), filePath.size()-1);
+		}
+		if(editorManager->openEditors[i]->hasChanges()) {
+			if (displayFilePathInSelector)
+				currentFileSelector->addComboItem("* "+fullEntry);
+			else
+				currentFileSelector->addComboItem("* "+entry.name);
+		} else {
+			if (displayFilePathInSelector)
+				currentFileSelector->addComboItem(fullEntry);
+			else
+				currentFileSelector->addComboItem(entry.name);
+		}
+		
+		if(editorManager->getCurrentEditor() == editorManager->openEditors[i]) {
+			currentFileSelector->setSelectedIndex(i);
+		}
+	}
+}

@@ -67,5 +67,5 @@ void HelloPolycodeApp::handleEvent(Event *e) {
 
 bool HelloPolycodeApp::Update() {
 	Number elapsed = core->getElapsed();
-    return core->Update();
+    return core->updateAndRender();
 }

@@ -70,20 +70,47 @@ namespace Polycode {
 		// Notice also the SERVERCLIENTEVENT above, which starts with 0x780.
 	};
 
+	/** 
+	* A network server, accepting incoming connections and keeping track of connected clients.
+	*
+	* As the Peer class already provides all connectivity functionality required, the Server class
+	* merely provides another abstraction layer to treat clients separately from mere connections.
+	*
+	* The Server will send the data provided by the ServerWorld class to all clients at defined rate and dispatch events when clients connect, disconnect and send data.
+	*/
 	class _PolyExport Server : public Peer {
 		public:
+			/**
+			* Constructor.
+			* @param port The local port to listen for client connections on.
+			* @param rate How many times per second to send out server data to clients.
+			* @param world An instance of the server data provider. @see ServerWorld
+			*/
 			Server(unsigned int port, unsigned int rate, ServerWorld *world = NULL);
 			~Server();
 		
-			void DisconnectClient(ServerClient *client);
-			void handleEvent(Event *event);		
+			void handlePacket(Packet *packet, PeerConnection *connection);
+			void handleEvent(Event *event);	
 			void handlePeerConnection(PeerConnection *connection);
+			void DisconnectClient(ServerClient *client);
+
+			/**
+			* Get a connected client from its associated peer connection, if any.
+			* @param connection The PeerConnection through which we're communicating 
+			*                   with the client to obtain.
+			* @return The connected client or NULL if doesn't exist.
+			*/
 			ServerClient *getConnectedClient(PeerConnection *connection);
 		
+			/**
+			* @see Peer::sendReliableData
+			*/
 			void sendReliableDataToClient(ServerClient *client, char *data, unsigned int size, unsigned short type);
+
+			/**
+			* @see Peer::sendReliableDataToAll
+			*/
 			void sendReliableDataToAllClients(char *data, unsigned int size, unsigned short type);
-					
-			void handlePacket(Packet *packet, PeerConnection *connection);
 		
 	protected:
 		

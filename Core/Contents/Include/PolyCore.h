@@ -89,12 +89,24 @@ namespace Polycode {
 		
 		virtual bool Update() = 0;
 
+		virtual void Render() = 0;
+		
+		bool updateAndRender();
 		
 		/**
 		* Show or hide cursor.
 		* @param newval True to show mouse, false to hide it.
 		*/		
 		virtual void enableMouse(bool newval);
+
+		/**
+		* Capture the mouse.
+		*
+		* The mouse will be unable to exit the polycode screen.
+		* 
+		* @param newval True to capture the mouse, false to uncapture it.
+		*/		
+		virtual void captureMouse(bool newval);
 		
 		/**
 		* Sets the cursor the application is using.
@@ -377,6 +389,7 @@ namespace Polycode {
 		unsigned int elapsed;
 		
 		bool mouseEnabled;
+		bool mouseCaptured;
 		
 		unsigned int lastSleepFrameTicks;
 		

@@ -40,6 +40,6 @@ bool HelloPolycodeApp::Update() {
 	planet->setPosition(cosf(planetRotation)*150, sinf(planetRotation)*150);
 	moon->setPosition(cosf(moonRotation)*50, sinf(moonRotation)*50);
 		
-    return core->Update();
+    return core->updateAndRender();
 }
 

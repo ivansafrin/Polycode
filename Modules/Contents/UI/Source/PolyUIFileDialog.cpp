@@ -92,7 +92,9 @@ UIFileDialog::UIFileDialog(String baseDir, bool foldersOnly, std::vector<String>
 
 	entryHolder = new UIElement();
 	entryHolder->ownsChildren = true;
-
+	entryHolder->setWidth(1);
+	entryHolder->setHeight(1);
+	
 	scrollContainer = new UIScrollContainer(entryHolder, false, true, 500-140, 320);
 	addChild(scrollContainer);
 
@@ -301,14 +303,16 @@ void UIFileDialog::handleEvent(Event *event) {
 }
 
 UIFileDialog::~UIFileDialog() {
-	delete okButton;
-	delete cancelButton;
-	delete newFolderButton;
-	delete scrollContainer;
-	delete createFolderWindow;
-	delete entryHolder;
-	for(int i=0; i < sideBarEntries.size(); i++) {
-		delete sideBarEntries[i];
+	if(!ownsChildren) {
+		delete okButton;
+		delete cancelButton;
+		delete newFolderButton;
+		delete scrollContainer;
+		delete createFolderWindow;
+		delete entryHolder;
+		for(int i=0; i < sideBarEntries.size(); i++) {
+			delete sideBarEntries[i];
+		}
 	}
 }
 
@@ -330,7 +334,9 @@ CreateFolderWindow::CreateFolderWindow() : UIWindow("New folder name", 290, 80) 
 }
 
 CreateFolderWindow::~CreateFolderWindow() {
-	delete cancelButton;
-	delete okButton;
-	delete nameInput;
+	if(!ownsChildren) {
+		delete cancelButton;
+		delete okButton;
+		delete nameInput;
+	}
 }

@@ -40,5 +40,5 @@ bool HelloPolycodeApp::Update() {
 	sourceEntity->setPosition(300 + (sin(positionValue) * 300), 250 + cos(positionValue) * 100); 
 	listenerEntity->setPosition(300 + (sin(listenerPositionValue) * 300), 250); 
 		
-    return core->Update();
+    return core->updateAndRender();
 }

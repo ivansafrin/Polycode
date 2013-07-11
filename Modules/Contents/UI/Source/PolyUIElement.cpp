@@ -29,6 +29,12 @@ UIElement::UIElement() : ScreenEntity() {
 	processInputEvents = true;
 }
 
+UIElement::UIElement(Number width, Number height) : ScreenEntity() {
+	setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	processInputEvents = true;
+	this->width = width; this->height = height;
+}
+
 UIElement::~UIElement() {
 
 }
@@ -36,4 +42,5 @@ UIElement::~UIElement() {
 void UIElement::Resize(Number width, Number height) {
 	setWidth(width);
 	setHeight(height);
+	dirtyMatrix(true);	
 }

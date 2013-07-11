@@ -39,12 +39,20 @@ namespace Polycode {
 			virtual ~Material();
 			
 			void addShader(Shader *shader,ShaderBinding *shaderBinding);
+			void addShaderAtIndex(Shader *shader,ShaderBinding *shaderBinding, int shaderIndex);			
 			unsigned int getNumShaders() const;
+			
+			void removeShader(int shaderIndex);
 			
 			void addShaderRenderTarget(ShaderRenderTarget *newTarget);
 			int getNumShaderRenderTargets();
 			ShaderRenderTarget *getShaderRenderTarget(unsigned int index);
-				
+			void removeShaderRenderTarget(int index);
+			void recreateRenderTarget(ShaderRenderTarget *renderTarget);	
+			void recreateRenderTargets();
+			
+			void handleEvent(Event *event);
+						
 			const String& getName() const;
 			Shader *getShader(unsigned int index) const;
 			ShaderBinding *getShaderBinding(unsigned int index) const;
@@ -59,6 +67,8 @@ namespace Polycode {
 			void *shaderModule;
 			
 			int blendingMode;
+			
+			bool screenMaterial;
 			
 		protected:
 		

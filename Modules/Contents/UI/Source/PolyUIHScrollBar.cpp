@@ -29,7 +29,7 @@
 
 using namespace Polycode;
 
-UIHScrollBar::UIHScrollBar(Number width, Number height, Number initialRatio) : ScreenEntity() {
+UIHScrollBar::UIHScrollBar(Number width, Number height, Number initialRatio) : UIElement() {
 	
 	scrollValue = 0;
 	
@@ -172,6 +172,8 @@ void UIHScrollBar::handleEvent(Event *event) {
 
 
 UIHScrollBar::~UIHScrollBar() {
-	delete bgBox;
-	delete handleBox;
+	if(!ownsChildren) {
+		delete bgBox;
+		delete handleBox;
+	}
 }

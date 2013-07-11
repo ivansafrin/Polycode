@@ -71,6 +71,7 @@ class ISkeleton {
 				return i;
 			}
 		}
+		return -1;
 	}
 
 	void saveToFile(const char *fileName, bool swapZY) {

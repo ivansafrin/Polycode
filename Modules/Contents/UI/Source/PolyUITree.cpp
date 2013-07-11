@@ -29,7 +29,7 @@
 
 using namespace Polycode;
 
-UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : ScreenEntity() {
+UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : UIElement() {
 		
 	processInputEvents = true;
 	willDrag = false;
@@ -145,7 +145,8 @@ void UITree::removeTreeChild(UITree *child) {
 	}
 }
 
-void UITree::setSelected() {
+void UITree::setSelected(bool byKey) {
+	selectedByKey = byKey;
 	selected = true;
 	refreshTree();
 	if(parent == NULL) {
@@ -286,11 +287,13 @@ void UITree::toggleCollapsed() {
 UITree::~UITree() {
 	clearTree();
 	
-	delete textLabel;
-	delete bgBox;
-	delete selection;
-	delete arrowIconImage;
-	delete iconImage;
+	if(!ownsChildren) {
+		delete textLabel;
+		delete bgBox;
+		delete selection;
+		delete arrowIconImage;
+		delete iconImage;
+	}
 }
 
 void UITree::clearTree() {
@@ -337,4 +340,30 @@ UITree *UITree::addTreeChild(String icon, String text, void *userData) {
 	treeChildren.push_back(newTree);
 	refreshTree();
 	return newTree;
+}
+
+UITree *UITree::getParent() {
+	return parent;
+}
+
+UITree *UITree::getPrevSibling() {
+	UITree *sibling = NULL;
+	if (!parent)
+		return sibling;
+	for (int i=0; i < parent->getNumTreeChildren(); i++) {
+		if (i > 0 && parent->getTreeChild(i) == this)
+			sibling = parent->getTreeChild(i-1);
+	}
+	return sibling;
+}
+
+UITree *UITree::getNextSibling() {
+	UITree *sibling = NULL;
+	if (!parent)
+		return sibling;
+	for (int i=0; i < parent->getNumTreeChildren(); i++) {
+		if (parent->getTreeChild(i) == this && i < parent->getNumTreeChildren()-1)
+			sibling = parent->getTreeChild(i+1);
+	}
+	return sibling;
 }

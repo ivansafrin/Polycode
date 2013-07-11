@@ -24,6 +24,7 @@ THE SOFTWARE.
 #include "PolyGlobals.h"
 #include "PolyScreenEntity.h"
 #include "PolyMesh.h"
+#include "PolyMaterial.h"
 
 namespace Polycode {
 
@@ -96,6 +97,31 @@ namespace Polycode {
 			void setTexture(Texture *texture);
 			
 			/**
+			* Set material from existing Material instance.
+			* @param material Material to apply.
+			*/												
+			void setMaterial(Material *material);
+
+			/**
+			* Set material by name. You can create materials in material files and name them there, then use this to set a material by name to a scene mesh.
+			* @param materialName Name of material to apply.
+			*/									
+			void setMaterialByName(const String& materialName);
+			
+			/**
+			* Clears the currently applied material
+			*/
+			void clearMaterial();
+			
+			/**
+			* Returns the material applied.
+			*/							
+			Material *getMaterial();			
+			
+			
+			ShaderBinding *getLocalShaderOptions();
+						
+			/**
 			* If this is set to true, the lines in wireframe meshes will be anti-aliased if the support is available in the renderer.
 			*/			
 			bool lineSmooth;
@@ -114,6 +140,8 @@ namespace Polycode {
 		
 		protected:
 		
+			Material *material;
+			ShaderBinding *localShaderOptions;			
 			Mesh *mesh;
 			Texture *texture;
 	};

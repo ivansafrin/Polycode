@@ -46,9 +46,7 @@ namespace Polycode {
 		private:
 			bool checked;
 			ScreenLabel *captionLabel;
-			ScreenShape *shadowRect;
 			ScreenImage *buttonImageChecked;
 			ScreenImage *buttonImageUnchecked;			
-			bool pressedDown;
 	};
 }

@@ -86,35 +86,7 @@ PolycodeRemoteDebuggerClient::~PolycodeRemoteDebuggerClient() {
 	client->Disconnect();
 }
 
-extern "C" {	
-
-	
-static void dumpstack (lua_State *L) {
-  int i;
-  int top=lua_gettop(L);
-  printf("dumpstack -- \n");
-  for (i=1; i<=top; i++) {
-    printf("%d\t%s\t",i,luaL_typename(L,i));
-    switch (lua_type(L, i)) {
-      case LUA_TNUMBER:
-        printf("%g\n",lua_tonumber(L,i));
-        break;
-      case LUA_TSTRING:
-        printf("%s\n",lua_tostring(L,i));
-        break;
-      case LUA_TBOOLEAN:
-        printf("%s\n", (lua_toboolean(L, i) ? "true" : "false"));
-        break;
-      case LUA_TNIL:
-        printf("%s\n", "nil");
-        break;
-      default:
-        printf("%p\n",lua_topointer(L,i));
-        break;
-    }
-  }
-  printf("dumpstack -- END\n");
-}	
+extern "C" {
 
 //	extern int luaopen_Tau(lua_State* L); // declare the wrapped module
 		//	loadFileIntoState(L, "Polycode Player.app/Contents/Resources/API/class.lua");
@@ -122,6 +94,7 @@ static void dumpstack (lua_State *L) {
 	int MyLoader(lua_State* pState)
 	{		
 		std::string module = lua_tostring(pState, 1);
+
 		module += ".lua";
 		
 		std::string defaultPath = "API/";
@@ -129,6 +102,7 @@ static void dumpstack (lua_State *L) {
 		
 		const char* fullPath = module.c_str();		
 //		Logger::log("Loading custom class: %s\n", module.c_str());
+
 		OSFILE *inFile = OSBasics::open(module, "r");	
 		
 		if(!inFile) {
@@ -145,7 +119,7 @@ static void dumpstack (lua_State *L) {
 	
 			PolycodePlayer *player = (PolycodePlayer*)CoreServices::getInstance()->getCore()->getUserPointer();	
 			player->report(pState, luaL_loadbuffer(pState, (const char*)buffer, progsize, fullPath));		
-			//free(buffer);
+			free(buffer);
 			OSBasics::close(inFile);	
 		} else {
 			std::string err = "\n\tError - Could could not find ";
@@ -177,7 +151,7 @@ static void dumpstack (lua_State *L) {
 					trace.fileName = fileName;
 					backTrace.push_back(trace);
 					
-					printf(">>>> In file: %s on line %d\n", fileName.c_str(), trace.lineNumber);
+					//printf(">>>> In file: %s on line %d\n", fileName.c_str(), trace.lineNumber);
 					//backTrace += "In file: " + fileName + " on line " + String::IntToString(entry.currentline)+"\n";
 				}
 			}
@@ -213,6 +187,8 @@ static void dumpstack (lua_State *L) {
 		if (msg == NULL) msg = "(error with no message)";
 		lua_pop(L, 1);
 		
+		printf("\n%s\n", msg);
+		
 		String errorString;
 		std::vector<String> info = String(msg).split(":");
 			
@@ -228,6 +204,17 @@ static void dumpstack (lua_State *L) {
 		event->fileName = backTrace[0].fileName;
 		event->lineNumber = backTrace[0].lineNumber;
 
+		printf("\n---------------------\n");
+		printf("Error: %s\n", errorString.c_str());
+		printf("In file: %s\n", backTrace[0].fileName.c_str());
+		printf("On line: %d\n", backTrace[0].lineNumber);
+		printf("---------------------\n");
+		printf("Backtrace\n");
+		for(int i=0; i < backTrace.size(); i++) {
+			printf("* %s on line %d", backTrace[i].fileName.c_str(), backTrace[i].lineNumber);
+		}
+		printf("\n---------------------\n");
+				
 		player->dispatchEvent(event, PolycodeDebugEvent::EVENT_ERROR);
 				
 		return 0;
@@ -425,48 +412,23 @@ static void dumpstack (lua_State *L) {
 					
 		}
 */
-		String fileData = "";
 
-		OSFILE *inFile = OSBasics::open(fileName, "r");	
-		if(inFile) {
-			Logger::log("Opened entrypoint file...");
-			OSBasics::seek(inFile, 0, SEEK_END);	
-			long progsize = OSBasics::tell(inFile);
-			OSBasics::seek(inFile, 0, SEEK_SET);
-			char *buffer = (char*)malloc(progsize+1);
-			memset(buffer, 0, progsize+1);
-			OSBasics::read(buffer, progsize, 1, inFile);
-			fileData = String(buffer);		
-			free(buffer);
-			OSBasics::close(inFile);	
-		} else {
-			Logger::log("Error opening entrypoint file (%s)\n", fileName.c_str());
-		}
-		
-				
-		String fullScript = fileData;
-		
 		doneLoading = true;
 		
-		//lua_gc(L, LUA_GCSTOP, 0);
-		
-		
-
 		lua_getfield (L, LUA_GLOBALSINDEX, "__customError");
 		errH = lua_gettop(L);
 
-		//CoreServices::getInstance()->getCore()->lockMutex(CoreServices::getRenderMutex());			
-		if (report(L, luaL_loadstring(L, fullScript.c_str()))) {			
-			//CoreServices::getInstance()->getCore()->unlockMutex(CoreServices::getRenderMutex());			
-			Logger::log("CRASH LOADING SCRIPT FILE\n");
-//			exit(1);				
-		} else {
+		// MyLoader appends '.lua' so strip it if already present
+		int pos = fileName.rfind(".lua");
+		String stripped = fileName;
+		if (pos > -1 && pos == fileName.length() - 4) stripped = fileName.substr(0, pos);
 		
-		
-			if (lua_pcall(L, 0,0,errH)) {
-				Logger::log("CRASH EXECUTING FILE\n");
-			}
+		lua_getfield(L, LUA_GLOBALSINDEX, "require");
+		lua_pushstring(L, stripped.c_str());		
+		if (lua_pcall(L, 1,0,errH)) {
+			Logger::log("CRASH EXECUTING FILE\n");
 		}
+
 	}
 }
 
@@ -663,6 +625,9 @@ void PolycodePlayer::loadFile(const char *fileName) {
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEUP);
+	core->getInput()->addEventListener(this, InputEvent::EVENT_JOYBUTTON_DOWN);
+	core->getInput()->addEventListener(this, InputEvent::EVENT_JOYBUTTON_UP);
+	core->getInput()->addEventListener(this, InputEvent::EVENT_JOYAXIS_MOVED);
 					
 	if(nameString == "") {
 		return;
@@ -876,12 +841,53 @@ void PolycodePlayer::handleEvent(Event *event) {
 				}
 			}
 			break;																			
+			case InputEvent::EVENT_JOYBUTTON_DOWN:
+			{
+				if(L && !crashed) {
+					lua_getfield (L, LUA_GLOBALSINDEX, "__customError");
+					errH = lua_gettop(L);									
+					lua_getfield(L, LUA_GLOBALSINDEX, "onJoystickButtonDown");
+					lua_pushnumber(L, inputEvent->joystickIndex);
+					lua_pushnumber(L, inputEvent->joystickButton);
+					lua_pcall(L, 2,0,errH);	
+					lua_settop(L, 0);					
+				}
+			}
+			break;																			
+			case InputEvent::EVENT_JOYBUTTON_UP:
+			{
+				if(L && !crashed) {
+					lua_getfield (L, LUA_GLOBALSINDEX, "__customError");
+					errH = lua_gettop(L);									
+					lua_getfield(L, LUA_GLOBALSINDEX, "onJoystickButtonUp");
+					lua_pushnumber(L, inputEvent->joystickIndex);
+					lua_pushnumber(L, inputEvent->joystickButton);
+					lua_pcall(L, 2,0,errH);	
+					lua_settop(L, 0);
+				}
+			}
+			break;																			
+			case InputEvent::EVENT_JOYAXIS_MOVED:
+			{
+				if(L && !crashed) {
+					lua_getfield (L, LUA_GLOBALSINDEX, "__customError");
+					errH = lua_gettop(L);									
+					lua_getfield(L, LUA_GLOBALSINDEX, "onJoystickAxisMoved");
+					lua_pushnumber(L, inputEvent->joystickIndex);
+					lua_pushnumber(L, inputEvent->joystickAxis);
+					lua_pushnumber(L, inputEvent->joystickAxisValue);
+					lua_pcall(L, 3,0,errH);	
+					lua_settop(L, 0);
+				}
+			}
+			break;																			
 		}
 	}
 }
 
 
 bool PolycodePlayer::Update() {
+	bool retVal = core->Update();
 	if(L) {
 		lua_getfield (L, LUA_GLOBALSINDEX, "__customError");
 		errH = lua_gettop(L);	
@@ -890,14 +896,18 @@ bool PolycodePlayer::Update() {
 			doCodeInject = false;			
 			report(L, luaL_loadstring(L, injectCodeString.c_str()));
 			lua_pcall(L, 0,0,errH);		
-		}
-	
+		}	
 		if(!crashed) {
+		
+			lua_getfield(L, LUA_GLOBALSINDEX, "__process_safe_delete");
+			lua_pcall(L, 0,0,errH);	
+		
 			lua_getfield(L, LUA_GLOBALSINDEX, "Update");
 			lua_pushnumber(L, core->getElapsed());
 			lua_pcall(L, 1,0,errH);
 		}
 		lua_settop(L, 0);
 	}
-	return core->Update();
+	core->Render();
+	return retVal;
 }

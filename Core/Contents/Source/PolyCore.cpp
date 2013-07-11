@@ -68,7 +68,7 @@ namespace Polycode {
 		if (fullScreen && !xRes && !yRes) {
 			getScreenInfo(&xRes, &yRes, NULL);
 		}
-		mouseEnabled = true;
+		mouseEnabled = true; mouseCaptured = false;
 		lastSleepFrameTicks = 0;
 		
 		this->monitorIndex = monitorIndex;
@@ -86,6 +86,10 @@ namespace Polycode {
 	
 	void Core::enableMouse(bool newval) {
 		mouseEnabled = newval;
+	}
+
+	void Core::captureMouse(bool newval) {
+		mouseCaptured = newval;
 	}
 	
 	int Core::getNumVideoModes() {
@@ -182,6 +186,12 @@ namespace Polycode {
 			unlockMutex(threadedEventMutex);			
 		}
 	}
+	
+	bool Core::updateAndRender() {
+		bool ret = Update();
+		Render();
+		return ret;
+	}
 							
 	void Core::updateCore() {
 		frames++;
@@ -191,7 +201,7 @@ namespace Polycode {
 		if(elapsed > 1000)
 			elapsed = 1000;
 			
-		services->Update(elapsed, !paused);
+		services->Update(elapsed);
 		
 		if(frameTicks-lastFPSTicks >= 1000) {
 			fps = frames;

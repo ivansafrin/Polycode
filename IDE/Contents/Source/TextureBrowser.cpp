@@ -42,14 +42,18 @@ AssetEntry::AssetEntry(String assetPath, String assetName, String extension) : U
 	
 	if(extension == "png") {
 		imageShape->loadTexture(assetPath);
-	}
-	
-	if(extension == "ogg" || extension == "wav") {
+	} else if(extension == "ogg" || extension == "wav") {
 		imageShape->loadTexture("Images/sound_thumb.png");
-	}
-
-	if(extension == "ttf" || extension == "otf") {
+	} else if(extension == "entity2d") {
+		imageShape->loadTexture("Images/entity_thumb.png");
+	} else if(extension == "entity2d") {
+		imageShape->loadTexture("Images/entity_thumb.png");
+	} else if(extension == "sprite") {
+		imageShape->loadTexture("Images/sprite_thumb.png");		
+	} else if(extension == "ttf" || extension == "otf") {
 		imageShape->loadTexture("Images/font_icon.png");
+	} else if(extension == "vert" || extension == "frag") {
+		imageShape->loadTexture("Images/shader_thumb.png");
 	}
 
 	
@@ -164,7 +168,6 @@ AssetBrowser::AssetBrowser() : UIWindow(L"Asset Browser", 850, 500) {
 	
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
-	int fontSize = conf->getNumericValue("Polycode", "uiDefaultFontSize");
 	
 	closeOnEscape = true;	
 	
@@ -240,6 +243,10 @@ String AssetBrowser::getFileName() {
 
 String AssetBrowser::getTemplatePath() {
 	return templatePath;
+}
+
+String AssetBrowser::getFullSelectedAssetPath() {
+	return assetList->selectedPath;
 }
 
 String AssetBrowser::getSelectedAssetPath() {

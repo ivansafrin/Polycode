@@ -25,15 +25,13 @@
 
 using namespace Polycode;
 
-Renderer::Renderer() : currentTexture(NULL), xRes(0), yRes(0), renderMode(0), orthoMode(false), lightingEnabled(false), clearColor(0.2f, 0.2f, 0.2f, 0.0) {
+Renderer::Renderer() : clearColor(0.2f, 0.2f, 0.2f, 0.0), currentTexture(NULL), renderMode(0), lightingEnabled(false), orthoMode(false), xRes(0), yRes(0) {
 	anisotropy = 0;
 	textureFilteringMode = TEX_FILTERING_LINEAR;
 	currentMaterial = NULL;
 	numLights = 0;
 	exposureLevel = 1;
 	shadersEnabled = true;
-	currentFrameBufferTexture = NULL;
-	previousFrameBufferTexture = NULL;
 	currentMaterial = NULL;
 	numLights = 0;
 	numAreaLights = 0;
@@ -41,18 +39,22 @@ Renderer::Renderer() : currentTexture(NULL), xRes(0), yRes(0), renderMode(0), or
 	exposureLevel = 1;
 	shadersEnabled = true;
 	currentShaderModule = NULL;
-	currentFrameBufferTexture = NULL;
-	previousFrameBufferTexture = NULL;
 	fov = 45.0;
 	setAmbientColor(0.0,0.0,0.0);
 	cullingFrontFaces = false;
 	scissorEnabled = false;
-	
+	blendNormalAsPremultiplied = false;
 	
 	doClearBuffer = true;
 }
 
 Renderer::~Renderer() {
+}
+
+bool Renderer::Init() {
+	initOSSpecific();
+
+	return true;
 }
 
 void Renderer::enableShaders(bool flag) {
@@ -103,7 +105,7 @@ bool Renderer::test2DCoordinateInPolygon(Number x, Number y, Polycode::Polygon *
 	Matrix4 fullMatrix = matrix;
 	
 	if(billboardMode) {
-		Matrix4 camInverse = cameraMatrix.inverse();
+		Matrix4 camInverse = cameraMatrix.Inverse();
 		fullMatrix = fullMatrix * camInverse;
 		
 		fullMatrix.m[0][0] = 1;
@@ -230,7 +232,7 @@ void Renderer::addShaderModule(PolycodeShaderModule *module) {
 void Renderer::sortLights(){
 
 	sorter.basePosition = (getModelviewMatrix()).getPosition();
-	sorter.cameraMatrix = getCameraMatrix().inverse();	
+	sorter.cameraMatrix = getCameraMatrix().Inverse();	
 	sort (areaLights.begin(), areaLights.end(), sorter);
 	sort (spotLights.begin(), spotLights.end(), sorter);	
 }
@@ -343,22 +345,16 @@ void *Renderer::getDataPointerForName(const String &name) {
 	if(name == "ambient_color") {
 		return (void*)&ambientColor;
 	}
+	return NULL;
 }
 
 void Renderer::setRendererShaderParams(Shader *shader, ShaderBinding *binding) {
-	for(int i=0; i < shader->expectedFragmentParams.size(); i++) {
-		if(shader->expectedFragmentParams[i].isAuto) {
-			binding->addLocalParam(shader->expectedFragmentParams[i].name, getDataPointerForName(shader->expectedFragmentParams[i].name));
+	for(int i=0; i < shader->expectedParams.size(); i++) {
+		void *dataPtr = getDataPointerForName(shader->expectedParams[i].name);
+		if(dataPtr) {
+			binding->addLocalParam(shader->expectedParams[i].name, dataPtr);
 		}
 	}
-
-	for(int i=0; i < shader->expectedVertexParams.size(); i++) {
-		if(shader->expectedVertexParams[i].isAuto) {			
-			binding->addLocalParam(shader->expectedVertexParams[i].name, getDataPointerForName(shader->expectedVertexParams[i].name));
-		}
-	}
-
-
 }
 
 void Renderer::pushDataArrayForMesh(Mesh *mesh, int arrayType) {

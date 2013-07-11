@@ -31,5 +31,5 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 }
 
 bool HelloPolycodeApp::Update() {
-    return core->Update();
+    return core->updateAndRender();
 }

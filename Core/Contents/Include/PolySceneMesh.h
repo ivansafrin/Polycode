@@ -92,7 +92,7 @@ namespace Polycode {
 			* @param fileName Filename to load the mesh from.
 			* @param clamp If true, clamps the texture to edges. See Texture for details on that.
 			*/
-			void loadTexture(const String& fileName, bool clamp=true);
+			void loadTexture(const String& fileName);
 			
 			/**
 			* Loads a skeleton from a file and applies it to the scene mesh.

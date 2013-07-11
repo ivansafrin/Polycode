@@ -26,9 +26,17 @@ THE SOFTWARE.
 #include "PolyVector2.h"
 #include "PolyColor.h"
 #include "PolyLogger.h"
+#include "PolyCoreServices.h"
+#include "PolyLogger.h"
+#include "PolyGLHeaders.h"
 
 #ifdef _WINDOWS
 #include <windows.h>
+
+// Some shader functions that aren't defined in glext/wglext
+extern PFNGLGETSHADERIVPROC glGetShaderiv;
+extern PFNGLGETSHADERINFOLOGPROC glGetShaderInfoLog;
+
 #endif
 
 #include "PolyGLHeaders.h"
@@ -55,86 +63,54 @@ extern PFNGLGETUNIFORMLOCATIONARBPROC glGetUniformLocation;
 
 using namespace Polycode;
 
-GLSLProgram::GLSLProgram(int type) : Resource(Resource::RESOURCE_PROGRAM) {
-	this->type = type;
+GLSLProgram::GLSLProgram(String fileName, int type) : ShaderProgram(type) {
+	program = -1;
+	this->fileName = fileName;
+	reloadProgram();
 }
 
 GLSLProgram::~GLSLProgram() {
 	glDeleteShader(program);
 }
 
-GLSLProgramParam GLSLProgram::addParam(const String& name, const String& typeString, const String& valueString, bool isAuto, int autoID, int paramType, void *defaultData, void *minData, void *maxData) {
-	GLSLProgramParam newParam;
-	newParam.name = name;
-	newParam.typeString = typeString;
-	newParam.valueString = valueString;	
-	newParam.paramType = paramType;
-	newParam.defaultData = defaultData;
-	newParam.minValue = minData;
-	newParam.maxValue = maxData;
-	newParam.isAuto = isAuto;
-	newParam.autoID = autoID;
-
-	params.push_back(newParam);
-	return newParam;
-}
-
-void GLSLProgramParam::createParamData(int *retType, const String& type, const String& value, const String& min, const String& max, void **valueRes, void **minRes, void **maxRes) {
+void GLSLProgram::reloadProgram() {
+	if(program != -1)
+		glDeleteShader(program);
 		
-		(*valueRes) = NULL;
-		(*minRes) = NULL;
-		(*maxRes) = NULL;
-						
-		if(type == "Number") {
-			*retType = GLSLProgramParam::PARAM_Number;
-			Number *val = new Number();
-			*val = atof(value.c_str());
-			(*valueRes) = (void*)val;
-			
-			val = new Number();
-			*val = atof(min.c_str());
-			(*minRes) = (void*)val;
-
-			val = new Number();
-			*val = atof(max.c_str());
-			(*maxRes) = (void*)val;			
-			
-			return;		
-		} else if(type == "Vector2") {
-			*retType = GLSLProgramParam::PARAM_Vector2;
-			Vector2 *val = new Vector2();
-			(*valueRes) = (void*)val;
-			vector<String> values = value.split(" ");
-			if(values.size() == 2) {
-				val->set(atof(values[0].c_str()), atof(values[1].c_str()));
-			} else {
-				Logger::log("Error: A Vector2 must have 2 values (%d provided)!\n", values.size());
-			}
-			return;				
-		} else if(type == "Vector3") {
-			*retType = GLSLProgramParam::PARAM_Vector3;
-			Vector3 *val = new Vector3();
-			(*valueRes) = (void*)val;
-			vector<String> values = value.split(" ");
-			if(values.size() == 3) {
-				val->set(atof(values[0].c_str()), atof(values[1].c_str()), atof(values[2].c_str()));
-			} else {
-				Logger::log("Error: A Vector3 must have 3 values (%d provided)!\n", values.size());
-			}
-			return;
-		} else if(type == "Color") {
-			*retType = GLSLProgramParam::PARAM_Color;
-			Color *val = new Color();
-			(*valueRes) = (void*)val;
-			vector<String> values = value.split(" ");
-			if(values.size() == 4) {
-				val->setColor(atof(values[0].c_str()), atof(values[1].c_str()), atof(values[2].c_str()), atof(values[3].c_str()));
-			} else {
-				Logger::log("Error: A Color must have 4 values (%d provided)!\n", values.size());
-			}
-			return;			
-		} else {
-			*retType = GLSLProgramParam::PARAM_UNKNOWN;
-			(*valueRes) =  NULL;
-		}
+	OSFILE *file = OSBasics::open(fileName, "r");
+	if (!file) {
+		Logger::log("Error: shader file %s not found\n", fileName.c_str());
+		program = -1;
+		return;
+	}
+	OSBasics::seek(file, 0, SEEK_END);	
+	long progsize = OSBasics::tell(file);
+	OSBasics::seek(file, 0, SEEK_SET);
+	char *buffer = (char*)malloc(progsize+1);
+	memset(buffer, 0, progsize+1);
+	OSBasics::read(buffer, progsize, 1, file);
+	OSBasics::close(file);
+	
+	if(type == GLSLProgram::TYPE_VERT) {
+		program =  glCreateShader(GL_VERTEX_SHADER);
+	} else {
+		program =  glCreateShader(GL_FRAGMENT_SHADER);
+	}
+	
+	glShaderSource(program, 1, (const GLchar**)&buffer, 0);
+	glCompileShader(program);	
+	
+	GLint compiled = true;
+    glGetShaderiv(program, GL_COMPILE_STATUS, &compiled);
+    if(!compiled) {
+        GLint length;
+        GLchar* log;
+        glGetShaderiv(program, GL_INFO_LOG_LENGTH, &length);
+        log = (GLchar*)malloc(length);
+        glGetShaderInfoLog(program, length, &length, log);
+		printf("GLSL ERROR: %s\n", log);
+		CoreServices::getInstance()->getLogger()->logBroadcast("GLSL ERROR:" + String(log));
+        free(log);
+    }	
+	free(buffer);
 }

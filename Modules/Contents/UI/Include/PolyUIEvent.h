@@ -37,7 +37,8 @@ namespace Polycode {
 			static const int OK_EVENT = EVENTBASE_UIEVENT+2;
 			static const int CANCEL_EVENT = EVENTBASE_UIEVENT+3;
 			static const int CHANGE_EVENT = EVENTBASE_UIEVENT+4;
-						
+			static const int YES_EVENT = EVENTBASE_UIEVENT+5;
+			static const int NO_EVENT = EVENTBASE_UIEVENT+6;									
 		protected:
 		
 			
