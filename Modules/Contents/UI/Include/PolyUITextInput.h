@@ -62,21 +62,23 @@ namespace Polycode {
 	
 	class _PolyExport LineColorData {
 		public:
+			LineColorData() {}
 			LineColorData(Color color, unsigned int rangeStart, unsigned int rangeEnd) {
 				this->color = color;
 				this->rangeStart = rangeStart;
 				this->rangeEnd = rangeEnd;
 			}
 			Color color;
-			unsigned int rangeStart;
-			unsigned int rangeEnd;
+			int rangeStart;
+			int rangeEnd;
 	};
 	
 	class _PolyExport LineColorInfo {
 		public:
-			std::vector<LineColorData> colors;			
+			std::vector<LineColorData> colors;
+			LineColorInfo getColorInfoForRange(int start, int length);
 	};
-	
+		
 	class _PolyExport UITextInputSyntaxHighlighter {
 		public:		
 			virtual std::vector<SyntaxHighlightToken> parseText(String text) = 0;
@@ -87,6 +89,20 @@ namespace Polycode {
 			unsigned int lineNumber;
 			unsigned int caretStart;
 			unsigned int caretEnd;							
+	};
+	
+	class WordWrapLine {
+		public:
+			String text;
+			bool isWordWrap;
+			int actualLineNumber;
+			int lineStart;
+	};
+	
+	class TextColorPair {
+		public:
+			LineColorInfo colorInfo;
+			String text;
 	};
 
 	/**
@@ -150,7 +166,7 @@ namespace Polycode {
 			void clearSelection();
 
 			/**
-			 * Set the current selection.
+			 * Set the currentselection.
 			 *
 			 * If (lineStart, colStart) is further "right" or "down" than (lineEnd, colEnd),
 			 * the two will automatically be swapped. It's thus enough to specify the two "edges"
@@ -322,9 +338,13 @@ namespace Polycode {
 		protected:
 		
 			void readjustBuffer();
+			void updateWordWrap();
+			
+			Number resizeTimer;
+			void doMultilineResize();
 
 			std::vector<LineColorInfo> lineColors;
-					
+			std::vector<LineColorInfo> wordWrapColors;					
 			ScreenEntity *lineNumberAnchor;
 		
 			void renumberLines();
@@ -338,20 +358,33 @@ namespace Polycode {
 			void saveUndoState();
 		
 			bool isNumberOnly;
-		
+			
+			void setActualToCaret();
+			void setOffsetToActual();
+			
+			void convertOffsetToActual(int lineOffset, int caretPosition, int *actualCaretPosition);
+			
+			void convertActualToOffset(int actualLineOffset, int actualCaretPosition, int *lineOffset, int *caretPosition);
+					
 			int caretSkipWordBack(int caretLine, int caretPosition);
 			int caretSkipWordForward(int caretLine, int caretPosition);
 		
-			void selectLineFromOffset();
+			int lineOffsetToActualLineOffset(int lineOffset);
+			void setActualLineOffset();
 			void updateCaretPosition();
 			void setCaretToMouse(Number x, Number y);
-			void dragSelectionTo(Number x, Number y);		
+			void dragSelectionTo(Number x, Number y);
+			
+			void updateSelectionRects();
 		
 			void selectWordAtCaret();
 		
 			void restructLines();
 			void removeLines(unsigned int startIndex, unsigned int endIndex);
-		
+			
+			std::vector<TextColorPair> makeWordWrapBuffer(int wrapLineOffset, String indentPrefix);
+			std::vector<TextColorPair> splitTokens(String stringToSplit, LineColorInfo *stringColorInfo);
+			
 			ScreenShape *selectorRectTop;
 			ScreenShape *selectorRectMiddle;
 			ScreenShape *selectorRectBottom;		
@@ -391,6 +424,8 @@ namespace Polycode {
 			Number caretX,caretY;
 		
 			int caretPosition;
+			int actualCaretPosition;
+			
 			bool doSelectToCaret;
 			
 			UITextInputSyntaxHighlighter *syntaxHighliter;
@@ -415,15 +450,22 @@ namespace Polycode {
 			UIBox *inputRect;
 			ScreenShape *blinkerRect;
 			
+			Color selectionColor;
+			void _setSelectionColor(Color color);
+			
 			Number st;
 			Number sr;
 			Number sb;
 			Number sl;
+			
+			Vector2 selectionDragMouse;
 		
 			Number caretImagePosition;
 			
 			int currentBufferLines;
 			int neededBufferLines;
+			
+			int
 			
 			UIScrollContainer *scrollContainer;
 		
@@ -433,13 +475,19 @@ namespace Polycode {
 			Number lineHeight;
 		
 			int lineOffset;
+			int actualLineOffset;
 			
 			vector<String> lines;
-						
+			vector<WordWrapLine> wordWrapLines;
+									
 			vector<ScreenLabel*> bufferLines;
 			vector<ScreenLabel*> numberLines;
 			
 			Core *core;
+			
+			Number _newWidth;
+			Number _newHeight;
+			bool didMultilineResize;
         
 			enum indentTypes { INDENT_SPACE, INDENT_TAB } indentType;
 			int indentSpacing;

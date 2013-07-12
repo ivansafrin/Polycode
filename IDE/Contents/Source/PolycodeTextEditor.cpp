@@ -490,6 +490,7 @@ void PolycodeTextEditor::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == textInput && event->getEventType() == "UIEvent") {
 		if(!isLoading) {
+			lastFindString = "";
 			setHasChanges(true);
 		}
 	}
@@ -549,6 +550,7 @@ void PolycodeTextEditor::showFindBar() {
 	findBar->visible = true;
 	findBar->focusChild(findBar->findInput);
 	findBar->findInput->selectAll();
+	lastFindString = "";
 	Resize(editorSize.x, editorSize.y);
 }
 

@@ -1054,6 +1054,8 @@ PolycodeIDEApp::~PolycodeIDEApp() {
 
 bool PolycodeIDEApp::Update() {
 
+	bool retVal = core->Update();
+
 	if(willRunProject) {
 		willRunProject = false;
 		runProject();
@@ -1100,6 +1102,7 @@ bool PolycodeIDEApp::Update() {
 	}
 
 
-	return core->updateAndRender();
+	core->Render();
+	return retVal;
 }
 
