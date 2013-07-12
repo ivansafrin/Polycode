@@ -463,9 +463,7 @@ namespace Polycode {
 			Number caretImagePosition;
 			
 			int currentBufferLines;
-			int neededBufferLines;
-			
-			int
+			int neededBufferLines;			
 			
 			UIScrollContainer *scrollContainer;
 		
