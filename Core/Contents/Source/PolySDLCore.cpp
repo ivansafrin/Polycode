@@ -443,11 +443,10 @@ void SDLCore::createFolder(const String& folderPath) {
 }
 
 void SDLCore::copyDiskItem(const String& itemPath, const String& destItemPath) {
-    removeDiskItem(destItemPath);
     int childExitStatus;
     pid_t pid = fork();
     if (pid == 0) {
-        execl("/bin/cp", "/bin/cp", "-R", itemPath.c_str(), destItemPath.c_str(), (char *)0);
+        execl("/bin/cp", "/bin/cp", "-RT", itemPath.c_str(), destItemPath.c_str(), (char *)0);
     } else {
         pid_t ws = waitpid( pid, &childExitStatus, 0);
     }
