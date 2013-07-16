@@ -103,6 +103,7 @@ protected:
 	FindBar *findBar;
 	bool isLoading;
 	String lastFindString;
+	bool firstTimeResize;
 
 	PolycodeSyntaxHighlighter *syntaxHighligher;
 	UITextInput *textInput;

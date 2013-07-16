@@ -97,12 +97,21 @@ namespace Polycode {
 			bool isWordWrap;
 			int actualLineNumber;
 			int lineStart;
+			LineColorInfo colorInfo;
 	};
 	
 	class TextColorPair {
 		public:
 			LineColorInfo colorInfo;
 			String text;
+	};
+
+	class LineInfo {
+		public:
+			LineInfo(){ wordWrapLineIndex = -1; }
+			String text;
+			int wordWrapLineIndex;
+			LineColorInfo colorInfo;
 	};
 
 	/**
@@ -155,9 +164,6 @@ namespace Polycode {
 			 */
 			int insertLine(bool after = true);
 
-			void changedText(bool sendChangeEvent = true);
-			void applySyntaxFormatting();
-			
 			void onKeyDown(PolyKEY key, wchar_t charCode);
 		
 			/**
@@ -295,7 +301,6 @@ namespace Polycode {
 			 */
 			void setSyntaxHighlighter(UITextInputSyntaxHighlighter *syntaxHighlighter);
 					
-			bool isNumberOrCharacter(wchar_t charCode);
 			void Resize(Number width, Number height);
 			
 			/**
@@ -323,7 +328,7 @@ namespace Polycode {
 			 *
 			 * @param text The string to insert.
 			 */
-			void insertText(String text);
+			void insertText(String text, bool updateWordWrap = true);
 			
 			void setCaretPosition(int position);
 			
@@ -334,20 +339,20 @@ namespace Polycode {
             void shiftText(bool left=false);
             void convertIndentToTabs();
             void convertIndentToSpaces();
+			
+			void doMultilineResize();			
 		
 		protected:
 		
-			void readjustBuffer();
-			void updateWordWrap();
+			void readjustBuffer(int lineStart=0, int lineEnd=-1);
+			void updateWordWrap(int lineStart, int lineEnd);
 			
 			Number resizeTimer;
-			void doMultilineResize();
 
-			std::vector<LineColorInfo> lineColors;
-			std::vector<LineColorInfo> wordWrapColors;					
 			ScreenEntity *lineNumberAnchor;
 		
 			void renumberLines();
+			bool isNumberOrCharacter(wchar_t charCode);			
 		
 			bool lineNumbersEnabled;
 		
@@ -358,6 +363,9 @@ namespace Polycode {
 			void saveUndoState();
 		
 			bool isNumberOnly;
+			
+			void changedText(int lineStart, int lineEnd, bool sendChangeEvent = true);
+			void applySyntaxFormatting(int startLine, int end);					
 			
 			void setActualToCaret();
 			void setOffsetToActual();
@@ -382,15 +390,13 @@ namespace Polycode {
 			void restructLines();
 			void removeLines(unsigned int startIndex, unsigned int endIndex);
 			
-			std::vector<TextColorPair> makeWordWrapBuffer(int wrapLineOffset, String indentPrefix);
+			std::vector<TextColorPair> makeWordWrapBuffer(LineInfo *lineInfo, String indentPrefix);
 			std::vector<TextColorPair> splitTokens(String stringToSplit, LineColorInfo *stringColorInfo);
 			
 			ScreenShape *selectorRectTop;
 			ScreenShape *selectorRectMiddle;
 			ScreenShape *selectorRectBottom;		
-			int numLines;
-			
-			bool needFullRedraw;
+			int numLines;			
 			
 			Number padding;
 			Number lineSpacing;
@@ -475,7 +481,7 @@ namespace Polycode {
 			int lineOffset;
 			int actualLineOffset;
 			
-			vector<String> lines;
+			vector<LineInfo> lines;
 			vector<WordWrapLine> wordWrapLines;
 									
 			vector<ScreenLabel*> bufferLines;

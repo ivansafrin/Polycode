@@ -162,7 +162,7 @@ void UITree::handleEvent(Event *event) {
 	} else if(event->getDispatcher() == bgBox) {
 		switch(event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEUP:
-				setSelected();
+//				setSelected();
 				willDrag = false;				
 				isDragging = false;				
 			break;

@@ -427,6 +427,7 @@ std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseLua(String tex
 }
 
 PolycodeTextEditor::PolycodeTextEditor() : PolycodeEditor(true){
+	firstTimeResize = true;
 	editorType = "PolycodeTextEditor";
 }
 
@@ -575,6 +576,7 @@ void PolycodeTextEditor::saveFile() {
 }
 
 void PolycodeTextEditor::Resize(int x, int y) {
+
 	findBar->setBarWidth(x);	
 	
 	if(findBar->visible) {
@@ -583,6 +585,10 @@ void PolycodeTextEditor::Resize(int x, int y) {
 	} else {
 		textInput->Resize(x,y);
 		textInput->setPosition(0,0);
+	}
+	if(firstTimeResize) {
+		textInput->doMultilineResize();
+		firstTimeResize = false;
 	}
 	PolycodeEditor::Resize(x,y);
 }

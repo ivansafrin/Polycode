@@ -556,7 +556,7 @@ void PolycodeIDEApp::openFile(OSFileEntry file) {
 		if(editor) {
 			editor->parentProject = projectManager->getActiveProject();
 			if(editor->openFile(file)) {
-				frame->addEditor(editor);					
+				frame->addEditor(editor);
 				frame->showEditor(editor);
 			} else {
 				delete editor;

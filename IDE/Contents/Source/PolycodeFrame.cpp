@@ -796,8 +796,11 @@ void PolycodeFrame::handleEvent(Event *event) {
 	
 	if(event->getDispatcher() == currentFileSelector && event->getEventType() == "UIEvent") {
 		PolycodeEditor *editor = editorManager->openEditors[currentFileSelector->getSelectedIndex()];
-		editorManager->setCurrentEditor(editor, false);
-		showEditor(editor);
+		
+		if(editorManager->getCurrentEditor() != editor) {
+			editorManager->setCurrentEditor(editor, false);
+			showEditor(editor);
+		}
 	}
 	
 	if(event->getDispatcher() == editorManager) {
