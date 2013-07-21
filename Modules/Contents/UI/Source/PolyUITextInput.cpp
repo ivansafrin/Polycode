@@ -742,9 +742,9 @@ void UITextInput::setActualToCaret() {
 	convertOffsetToActual(lineOffset, caretPosition, &actualCaretPosition);
 }
 
-void UITextInput::convertActualToOffset(int actualLineOffset, int actualCaretPosition, int *lineOffset, int *caretPosition) {	
+void UITextInput::convertActualToOffset(int actualLineOffset, int actualCaretPosition, int *lineOffset, int *caretPosition) {
 	*lineOffset = lines[actualLineOffset].wordWrapLineIndex;
-	
+				
 	int totalTextWidth = wordWrapLines[(*lineOffset)].text.size() - wordWrapLines[(*lineOffset)].lineStart;
 
 	*caretPosition = actualCaretPosition;	
@@ -1084,6 +1084,10 @@ void UITextInput::removeLines(unsigned int startIndex, unsigned int endIndex) {
 }
 
 void UITextInput::selectAll() {
+	actualLineOffset = 0;
+	actualCaretPosition = 0;
+	selectionLine = lines.size()-1;
+	
 	setSelection(0, lines.size()-1, 0, lines[lines.size()-1].text.length());
 }
 
@@ -1235,25 +1239,34 @@ void UITextInput::setUndoState(UITextInputUndoState state) {
 	setText(state.content);
 	actualLineOffset = state.lineOffset;
 	actualCaretPosition = state.caretPosition;
-	updateCaretPosition();	
+	updateCaretPosition();
 	
 	if(state.hasSelection) {
 		setSelection(actualLineOffset, state.selectionLine, actualCaretPosition, state.selectionCaretPosition);
 	}
 	
-	showLine(state.lineOffset, false);
-	changedText(0, lines.size()-1);
+	renumberLines();
+	restructLines();		
+	readjustBuffer();
+
+	showLine(state.lineOffset, false);	
 }
 
 void UITextInput::Undo() {
 	if(undoStateIndex > 0) {
-		undoStateIndex--;
-		setUndoState(undoStates[undoStateIndex]);
+		if(undoStateIndex == maxRedoIndex) {
+			saveUndoState();
+			undoStateIndex -= 2;			
+			setUndoState(undoStates[undoStateIndex]);			
+		} else {
+			undoStateIndex--;
+			setUndoState(undoStates[undoStateIndex]);
+		}
 	}
 }
 
 void UITextInput::Redo() {
-	if(undoStateIndex < MAX_TEXTINPUT_UNDO_STATES-1 && undoStateIndex < maxRedoIndex) {
+	if(undoStateIndex < MAX_TEXTINPUT_UNDO_STATES-1 && undoStateIndex < maxRedoIndex-1) {
 		undoStateIndex++;
 		setUndoState(undoStates[undoStateIndex]);
 	}
