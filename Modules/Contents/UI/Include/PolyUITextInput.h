@@ -59,7 +59,7 @@ namespace Polycode {
 			String text;
 			unsigned int type;
 	};
-	
+
 	class _PolyExport LineColorData {
 		public:
 			LineColorData() {}
@@ -342,7 +342,7 @@ namespace Polycode {
 			
 			void doMultilineResize();			
 		
-		protected:
+		protected:		
 		
 			void readjustBuffer(int lineStart=0, int lineEnd=-1);
 			void updateWordWrap(int lineStart, int lineEnd);
@@ -361,6 +361,8 @@ namespace Polycode {
 				
 			void setUndoState(UITextInputUndoState state);
 			void saveUndoState();
+			
+			void setTextDiff(String text);
 		
 			bool isNumberOnly;
 			
