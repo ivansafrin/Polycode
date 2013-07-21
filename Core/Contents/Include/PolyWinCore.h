@@ -272,6 +272,9 @@ public:
 		unsigned int PixelFormat;
 		PIXELFORMATDESCRIPTOR pfd;
 		
+		// frequency of the windows performance counter
+		double pcFreq;
+
 		// Tracks whether the system supports multitouch at runtime
 		bool hasMultiTouch;
 		
