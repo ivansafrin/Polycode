@@ -74,6 +74,8 @@ namespace Polycode {
 			void Update();
 
 			String getSelection();
+
+			String action;
 		protected:
 
 			String selection;
