@@ -794,7 +794,11 @@ void UITextInput::updateCaretPosition() {
 		String caretSubString = wordWrapLines[lineOffset].text.substr(0,caretPosition);
 		caretImagePosition = bufferLines[0]->getLabel()->getTextWidthForString(caretSubString);
 	}
-	blinkerRect->visible  = true;
+	
+	if(!hasSelection) {
+		blinkerRect->visible  = true;
+	}
+	
 	blinkTimer->Reset();
 	
 	if(doSelectToCaret) {
@@ -1132,11 +1136,15 @@ void UITextInput::insertText(String text, bool updateWordWrap) {
 		lines[lineOffset].text = ctext;
 		
 	} else {
+		String newText = "";
+		if(strings.size() > 0) {
+			newText = strings[0];
+		}
 		String ctext = lines[actualLineOffset].text;
 		String text2 = ctext.substr(caretPosition, ctext.length()-caretPosition);
 		ctext = ctext.substr(0,caretPosition);
-		ctext += strings[0] + text2;
-		actualCaretPosition += strings[0].length();
+		ctext += newText + text2;
+		actualCaretPosition += newText.length();
 		lines[lineOffset].text = ctext;
 	}
 	
@@ -1557,7 +1565,9 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 				}				
 			}
 		}
-		blinkerRect->visible  = true;
+		if(!hasSelection) {
+			blinkerRect->visible  = true;
+		}
 		return;
 	}
 	
@@ -1606,7 +1616,9 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 				}				
 			}			
 		}
-		blinkerRect->visible  = true;		
+		if(!hasSelection) {
+			blinkerRect->visible  = true;
+		}
 		return;
 	}
 	
@@ -2005,14 +2017,16 @@ void UITextInput::readjustBuffer(int lineStart, int lineEnd) {
 	Number bufferLineOffset = bufferOffset * ( lineHeight+lineSpacing);		
 
 	for(int i=0; i < bufferLines.size(); i++) {
-	
+		if(bufferOffset + i < wordWrapLines.size()) {	
+		if(wordWrapLines[bufferOffset+i].dirty || wordWrapLines[bufferOffset+i].lastBufferIndex != i || wordWrapLines[bufferOffset+i].text != bufferLines[i]->getText()) { 
 		bufferLines[i]->getLabel()->clearColors();
-		if(bufferOffset + i < wordWrapLines.size()) {
+		wordWrapLines[bufferOffset+i].dirty = false;
+		wordWrapLines[bufferOffset+i].lastBufferIndex = i;
 			for(int j=0; j < wordWrapLines[bufferOffset+i].colorInfo.colors.size(); j++) {
 				bufferLines[i]->getLabel()->setColorForRange(wordWrapLines[bufferOffset+i].colorInfo.colors[j].color, wordWrapLines[bufferOffset+i].colorInfo.colors[j].rangeStart, wordWrapLines[bufferOffset+i].colorInfo.colors[j].rangeEnd);
 				bufferLines[i]->setColor(1.0, 1.0, 1.0, 1.0);
 			}		
-			
+			}
 //			if(bufferOffset+i >= lineStart && bufferOffset+i <= lineEnd) {			
 				bufferLines[i]->setText(wordWrapLines[bufferOffset+i].text);
 //			}
@@ -2021,7 +2035,6 @@ void UITextInput::readjustBuffer(int lineStart, int lineEnd) {
 			bufferLines[i]->visible = false;
 		}
 		bufferLines[i]->setPosition(-horizontalPixelScroll, bufferLineOffset + (i*(lineHeight+lineSpacing)),0.0f);
-		
 	}
 
 	for(int i=0; i < numberLines.size(); i++) {

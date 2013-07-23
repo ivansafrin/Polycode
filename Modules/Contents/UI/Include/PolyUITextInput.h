@@ -93,11 +93,17 @@ namespace Polycode {
 	
 	class WordWrapLine {
 		public:
+			WordWrapLine() {
+				lastBufferIndex = -1;
+				dirty = true;
+			}
 			String text;
 			bool isWordWrap;
 			int actualLineNumber;
 			int lineStart;
+			int lastBufferIndex;
 			LineColorInfo colorInfo;
+			bool dirty;
 	};
 	
 	class TextColorPair {

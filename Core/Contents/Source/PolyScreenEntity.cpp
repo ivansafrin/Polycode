@@ -62,7 +62,7 @@ ScreenEntity::ScreenEntity() : Entity() {
 	
 	xmouse = 0;
 	ymouse = 0;
-	
+		
 	processInputEvents = false;
 	
 }
