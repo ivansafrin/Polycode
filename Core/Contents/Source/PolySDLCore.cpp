@@ -111,12 +111,14 @@ SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool
 		SDL_JoystickOpen(i);
 		input->addJoystick(i);
 	}
-	
+
+#ifdef USE_X11
 	// Start listening to clipboard events.
 	// (Yes on X11 you need to actively listen to
 	//  clipboard events and respond to them)
 	init_scrap();
-
+#endif // USE_X11
+	
 	((OpenGLRenderer*)renderer)->Init();
 	CoreServices::getInstance()->installModule(new GLSLShaderModule());	
 }
