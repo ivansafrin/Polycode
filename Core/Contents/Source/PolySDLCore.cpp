@@ -53,6 +53,14 @@
 	void put_scrap(int type, int srclen, const char *src);
 	void get_scrap(int type, int *dstlen, char **dst);
 	// end SDL scrap
+
+	// X11 cursor
+#include <X11/cursorfont.h>
+
+	void set_cursor(int cursorType);
+	void free_cursors();
+
+	// end X11 cursor
 #endif
 
 using namespace Polycode;
@@ -118,7 +126,7 @@ SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool
 	//  clipboard events and respond to them)
 	init_scrap();
 #endif // USE_X11
-	
+
 	((OpenGLRenderer*)renderer)->Init();
 	CoreServices::getInstance()->installModule(new GLSLShaderModule());	
 }
@@ -186,6 +194,9 @@ vector<Polycode::Rectangle> SDLCore::getVideoModes() {
 }
 
 SDLCore::~SDLCore() {
+#ifdef USE_X11
+	free_cursors();
+#endif // USE_X11
 	SDL_Quit();
 }
 
@@ -398,7 +409,9 @@ bool SDLCore::Update() {
 }
 
 void SDLCore::setCursor(int cursorType) {
-
+#ifdef USE_X11
+	set_cursor(cursorType);
+#endif // USE_X11
 }
 
 void SDLCore::warpCursor(int x, int y) {
@@ -861,5 +874,67 @@ PRIVATE int clipboard_filter(const SDL_Event *event)
   /* Post the event for X11 clipboard reading above */
   return(1);
 }
+
+// X11 cursor
+
+// WARNING: These functions rely on the SDL_Display and SDL_Window previously initialized by init_scrap
+
+static const int CURSOR_COUNT = 7;
+static Cursor defined_cursors[CURSOR_COUNT] = {0};
+
+void set_cursor(int cursorType) {
+	Cursor cursor = 0;
+	
+	if(cursorType >= 0 && cursorType < CURSOR_COUNT) {
+		cursor = defined_cursors[cursorType];
+		if(!cursor) {
+			switch(cursorType) {
+				case Polycode::Core::CURSOR_TEXT:
+					cursor = XCreateFontCursor (SDL_Display, XC_xterm);
+				break;
+				case Polycode::Core::CURSOR_POINTER:
+					cursor = XCreateFontCursor (SDL_Display, XC_hand1);
+				break;
+				case Polycode::Core::CURSOR_CROSSHAIR:
+					cursor = XCreateFontCursor (SDL_Display, XC_crosshair);
+				break;
+				case Polycode::Core::CURSOR_RESIZE_LEFT_RIGHT:
+					cursor = XCreateFontCursor (SDL_Display, XC_sb_h_double_arrow);
+				break;
+				case Polycode::Core::CURSOR_RESIZE_UP_DOWN:
+					cursor = XCreateFontCursor (SDL_Display, XC_sb_v_double_arrow);
+				break;
+				case Polycode::Core::CURSOR_OPEN_HAND:
+					cursor = XCreateFontCursor (SDL_Display, XC_fleur);
+				break;
+				case Polycode::Core::CURSOR_ARROW:
+					cursor = 0;
+				break;
+			}
+
+			defined_cursors[cursorType] = cursor;
+		}
+	}
+
+	if(!cursor) {
+		// Restore the normal cursor.
+		XUndefineCursor(SDL_Display, SDL_Window);
+	} else {
+		XDefineCursor(SDL_Display, SDL_Window, cursor);
+	}
+	
+	// XFlush(SDL_Display);
+}
+
+void free_cursors() {
+	for(int i = 0; i < CURSOR_COUNT; i++) {
+		if(defined_cursors[i]) {
+			XFreeCursor(SDL_Display, defined_cursors[i]);
+			defined_cursors[i] = 0;
+		}
+	}
+}
+
+// end X11 cursor
 
 #endif // USE_X11
