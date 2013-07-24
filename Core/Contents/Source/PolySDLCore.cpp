@@ -927,7 +927,7 @@ void set_cursor(int cursorType) {
 		XDefineCursor(SDL_Display, SDL_Window, cursor);
 	}
 	
-	// XFlush(SDL_Display);
+	XFlush(SDL_Display);
 }
 
 void free_cursors() {
