@@ -54,13 +54,15 @@
 	void get_scrap(int type, int *dstlen, char **dst);
 	// end SDL scrap
 
-	// X11 cursor
+// X11 cursor
 #include <X11/cursorfont.h>
 
+namespace {
 	void set_cursor(int cursorType);
 	void free_cursors();
+} // namespace
+// end X11 cursor
 
-	// end X11 cursor
 #endif
 
 using namespace Polycode;
@@ -877,10 +879,12 @@ PRIVATE int clipboard_filter(const SDL_Event *event)
 
 // X11 cursor
 
+namespace {
+
 // WARNING: These functions rely on the SDL_Display and SDL_Window previously initialized by init_scrap
 
-static const int CURSOR_COUNT = 7;
-static Cursor defined_cursors[CURSOR_COUNT] = {0};
+const int CURSOR_COUNT = 7;
+Cursor defined_cursors[CURSOR_COUNT] = {0};
 
 void set_cursor(int cursorType) {
 	Cursor cursor = 0;
@@ -934,7 +938,7 @@ void free_cursors() {
 		}
 	}
 }
-
+} // namespace
 // end X11 cursor
 
 #endif // USE_X11
