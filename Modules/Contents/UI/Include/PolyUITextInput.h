@@ -168,7 +168,7 @@ namespace Polycode {
 			 *
 			 * @param after Unused. This must be true.
 			 */
-			int insertLine(bool after = true);
+			int insertLine(String lineText = "");
 
 			void onKeyDown(PolyKEY key, wchar_t charCode);
 		

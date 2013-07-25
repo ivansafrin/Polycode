@@ -196,7 +196,7 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	neededBufferLines = 1;
 	checkBufferLines();
 
-	insertLine(true);
+	insertLine();
 	updateCaretPosition();
 	
 	core = CoreServices::getInstance()->getCore();
@@ -415,7 +415,7 @@ void UITextInput::deleteSelection() {
 		
 		lines[actualLineOffset].text =  lines[actualLineOffset].text + newText;
 		
-		removeLines(selectionTop+1, selectionBottom+1);
+		removeLines(selectionTop+1, selectionBottom);
 		
 			
 	}
@@ -483,8 +483,13 @@ void UITextInput::applySyntaxFormatting(int startLine, int endLine) {
 }
 
 void UITextInput::changedText(int lineStart, int lineEnd, bool sendChangeEvent) {
-	if(lineStart <0)
+	if(lineStart <0) {
 		lineStart = 0;
+	}
+	
+	if(lineEnd > lines.size()-1) {
+		lineEnd = lines.size()-1;
+	}
 
 	if(settingText)
 		return;
@@ -550,18 +555,17 @@ void UITextInput::Resize(Number width, Number height) {
 	textContainer->setPosition(padding + decoratorOffset, padding);
 }
 
-int UITextInput::insertLine(bool after) {
+int UITextInput::insertLine(String lineText) {
 	
 	numLines++;	
 		
-	if(after) {	
-		String newText = "";
+		String newText = lineText;
 		if(lines.size() > 0 && !settingText) {
 			String ctext = lines[actualLineOffset].text;
 			String text2 = ctext.substr(actualCaretPosition, ctext.length()-actualCaretPosition);
 			ctext = ctext.substr(0,actualCaretPosition);
 			lines[actualLineOffset].text = ctext;
-			newText = text2;
+			newText = newText+text2;
 			actualCaretPosition=0;
 			caretPosition = 0;
 		}		
@@ -570,11 +574,10 @@ int UITextInput::insertLine(bool after) {
 						
 		lineOffset = lineOffset + 1;
 		actualLineOffset = actualLineOffset + 1;
-						
-		if(lineOffset >= wordWrapLines.size()) {
+	
+		if(actualLineOffset >= lines.size()) {
 			it = lines.end();
 		} else {
-			int actualLineOffset = wordWrapLines[lineOffset].actualLineNumber;		
 			it = lines.begin() + actualLineOffset;
 		}
 		
@@ -585,27 +588,29 @@ int UITextInput::insertLine(bool after) {
 		WordWrapLine line;		
 		line.text = info.text;
 		line.isWordWrap = false;
-		line.actualLineNumber = actualLineOffset;
+		line.actualLineNumber = actualLineOffset+1;
 		lines[actualLineOffset].wordWrapLineIndex = lineOffset;
 		line.colorInfo = lines[actualLineOffset].colorInfo;
 		
 		vector<WordWrapLine>::iterator wit;
 		wit = wordWrapLines.begin() + lineOffset;
 		wordWrapLines.insert(wit,line);
-	} 
-	
-	if(!settingText) {
+
+
 		for(int i=actualLineOffset+1; i < lines.size(); i++) {
 			lines[i].wordWrapLineIndex += 1;
 		}
 		
 		for(int i=lineOffset+1; i < wordWrapLines.size(); i++) {
 			wordWrapLines[i].actualLineNumber += 1;
+			wordWrapLines[i].dirty = true;
 		}
-	
+		
+		if(!settingText) {
+		
 		restructLines();
 		changedText(actualLineOffset-1, actualLineOffset);		
-	}
+		}		
 	return 1;	
 }
 
@@ -1069,21 +1074,37 @@ void UITextInput::setCaretToMouse(Number x, Number y) {
 void UITextInput::removeLines(unsigned int startIndex, unsigned int endIndex) {	
 
 	int startLine = lines[startIndex].wordWrapLineIndex;
-	int endLine = lines[endIndex].wordWrapLineIndex;
-	if(endIndex == lines.size())
-		endLine = wordWrapLines.size();
-
+	int endLine = lines[endIndex].wordWrapLineIndex;	
+	
+	int actualLineNumber = endIndex;
+	while(actualLineNumber == endIndex && endLine <= wordWrapLines.size()) {
+		endLine++;
+		if(endLine == wordWrapLines.size()) {
+			break;
+		} else {
+			actualLineNumber = wordWrapLines[endLine].actualLineNumber;
+		}
+	}
+	
+	lines.erase(lines.begin()+startIndex, lines.begin()+(endIndex+1));
 	wordWrapLines.erase(wordWrapLines.begin()+startLine, wordWrapLines.begin()+endLine);
 	
-	lines.erase(lines.begin()+startIndex, lines.begin()+endIndex);
-
 	for(int i=startIndex; i < lines.size(); i++) {
 		lines[i].wordWrapLineIndex -= (endLine-startLine);
 	}
 	
 	for(int i=startLine; i < wordWrapLines.size(); i++) {
-		wordWrapLines[i].actualLineNumber -= (endIndex-startIndex);
+		wordWrapLines[i].actualLineNumber -= ((endIndex+1)-startIndex);
+		wordWrapLines[i].dirty = true;
 	}
+	
+	// always need an existing line
+	if(lines.size() == 0) {
+		actualLineOffset = -1;
+		lineOffset = -1;
+		insertLine();
+	}
+	
 	
 	renumberLines();
 	restructLines();
@@ -1117,23 +1138,22 @@ void UITextInput::insertText(String text, bool updateWordWrap) {
 	
 	if(strings.size() > 1) {
 		String ctext = lines[actualLineOffset].text;
-		String text2 = ctext.substr(caretPosition, ctext.length()-caretPosition);
-		ctext = ctext.substr(0,caretPosition);
+		String text2 = ctext.substr(actualCaretPosition, ctext.length()-actualCaretPosition);
+		ctext = ctext.substr(0,actualCaretPosition);
 		ctext += strings[0];
-		lines[lineOffset].text = ctext;
-		caretPosition = ctext.length();
+		lines[actualLineOffset].text = ctext;
+		actualCaretPosition = ctext.length();
 		
 		for(int i=1; i < strings.size()-1; i++) {
-			insertLine(true);
+			insertLine(strings[i]);
 			ctext = strings[i];
-			lines[lineOffset].text = ctext;
-			caretPosition = ctext.length();			
+			actualCaretPosition = ctext.length();			
 		}
 		
-		insertLine(true);
+		insertLine();
 		ctext = strings[strings.size()-1] + text2;
 		actualCaretPosition = ctext.length();
-		lines[lineOffset].text = ctext;
+		lines[actualLineOffset].text = ctext;
 		
 	} else {
 		String newText = "";
@@ -1141,11 +1161,11 @@ void UITextInput::insertText(String text, bool updateWordWrap) {
 			newText = strings[0];
 		}
 		String ctext = lines[actualLineOffset].text;
-		String text2 = ctext.substr(caretPosition, ctext.length()-caretPosition);
-		ctext = ctext.substr(0,caretPosition);
+		String text2 = ctext.substr(actualCaretPosition, ctext.length()-actualCaretPosition);
+		ctext = ctext.substr(0,actualCaretPosition);
 		ctext += newText + text2;
 		actualCaretPosition += newText.length();
-		lines[lineOffset].text = ctext;
+		lines[actualLineOffset].text = ctext;
 	}
 	
 	settingText = false;	
@@ -1254,13 +1274,114 @@ void UITextInput::saveUndoState() {
 }
 
 void UITextInput::setTextDiff(String text) {
-	// TODO: Implement
+
+	settingText = true;
+
+	std::vector<String> strings = text.split("\n");
+	
+	int linesDiff = lines.size()-strings.size();
+	
+	// CHECK INSERTS
+	int diffLineStart = -1;
+	int diffLineEnd = -1;
+	
+	for(int i=0; i < strings.size(); i++) {
+		if(i < lines.size()) {
+			if(strings[i] != lines[i].text) {
+				diffLineStart = i;
+				break;
+			}
+		} else {
+			diffLineStart = i;
+			break;
+		}
+	}
+
+	int linesOffset = lines.size()-1;	
+	for(int i=strings.size()-1; i >= 0; i--, linesOffset--) {
+		if(linesOffset >= 0) {
+			if(strings[i] != lines[linesOffset].text) {
+				diffLineEnd = i+1;
+				break;
+			}
+		} else {
+			diffLineEnd = i+1;
+			break;
+		}
+	}
+	
+	if(diffLineEnd > strings.size()-1) {
+		diffLineEnd = strings.size()-1;
+	}
+
+	int linesAdded = 0;	
+	if(diffLineStart == -1 || diffLineEnd == -1) {
+	} else {
+	
+		if(diffLineStart > diffLineEnd) {
+			int tmp = diffLineEnd;
+			diffLineEnd = diffLineStart;			
+			diffLineStart = tmp;
+		}
+	
+		if( diffLineEnd >= diffLineStart) {
+			actualLineOffset = diffLineStart-1;
+			if(actualLineOffset == -1) {
+				lineOffset = -1;
+			} else {
+				lineOffset = lines[actualLineOffset].wordWrapLineIndex;
+			}
+			
+			for(int i=diffLineStart; i <= diffLineEnd; i++) {
+				insertLine(strings[i]);
+				linesAdded++;
+			}
+			
+			settingText = false;
+			changedText(diffLineStart-1, diffLineEnd+1, false);
+			
+		} else {
+		}
+	}
+	
+	settingText = false;
+
+
+	diffLineStart = -1;
+	diffLineEnd = -1;	
+	
+	// CHECK REMOVES
+	
+	for(int i=0; i < lines.size(); i++) {
+		if(i < strings.size()) {
+			if(lines[i].text != strings[i]) {
+				diffLineStart = i;
+				break;
+			}
+		} else {
+			diffLineStart = i;
+			break;
+		}
+	}
+	
+	diffLineEnd = diffLineStart + (linesAdded + linesDiff) - 1;
+	
+	if(diffLineStart == -1 || diffLineEnd == -1) {
+	} else {
+		if( diffLineEnd >= diffLineStart) {		
+			removeLines(diffLineStart, diffLineEnd);
+			readjustBuffer();
+		}
+	}
 }
 
 void UITextInput::setUndoState(UITextInputUndoState state) {
 	clearSelection();
-	//setTextDiff(state.content);
-	setText(state.content);
+	if(multiLine) {
+		setTextDiff(state.content);	
+	} else {
+		setText(state.content);
+	}
 	actualLineOffset = state.lineOffset;
 	actualCaretPosition = state.caretPosition;
 	updateCaretPosition();
@@ -1304,7 +1425,7 @@ void UITextInput::Cut() {
 	} else if (getLineText(lineOffset) != "") {
         if (!multiLine) { setText(""); }
         else {
-            removeLines(lineOffset, lineOffset+1);
+            removeLines(lineOffset, lineOffset);
             caretPosition = 0;
             updateCaretPosition();
         }
@@ -1634,7 +1755,7 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 			if(hasSelection) {
 				deleteSelection();		
 			}			
-			insertLine(true);
+			insertLine();
 			updateCaretPosition();
             if(linesContainer->getPosition().y + (lineOffset*(lineHeight+lineSpacing)+padding) > scrollContainer->getHeight()-lineHeight-lineSpacing) {
                 scrollContainer->setScrollValue(0.0, (((((lineOffset) * ((lineHeight+lineSpacing)))) + padding-(scrollContainer->getHeight()-lineHeight-lineSpacing))/(scrollContainer->getContentSize().y-scrollContainer->getHeight())));
@@ -1687,8 +1808,8 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 		if(hasSelection)
 			deleteSelection();		
 		ctext = lines[actualLineOffset].text;
-		String text2 = ctext.substr(caretPosition, ctext.length()-caretPosition);
-		ctext = ctext.substr(0,caretPosition);
+		String text2 = ctext.substr(actualCaretPosition, ctext.length()-actualCaretPosition);
+		ctext = ctext.substr(0,actualCaretPosition);
 		ctext += (wchar_t)'\t' + text2;
 		actualCaretPosition++;
 		_changedText = true;		
@@ -1717,7 +1838,7 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 				actualLineOffset--;
 				actualCaretPosition = lines[actualLineOffset].text.length();
 				lines[actualLineOffset].text = lines[actualLineOffset].text + ctext;	
-				removeLines(actualLineOffset+1, actualLineOffset+2);				
+				removeLines(actualLineOffset+1, actualLineOffset+1);
 				changedText(actualLineOffset, actualLineOffset);
 				setOffsetToActual();
 				updateCaretPosition();
@@ -1934,7 +2055,7 @@ void UITextInput::updateWordWrap(int lineStart, int lineEnd) {
 
 	int wordWrapRangeBegin = lines[lineStart].wordWrapLineIndex;
 	int wordWrapRangeEnd = lines[lineEnd].wordWrapLineIndex;
-	
+
 	if(wordWrapRangeBegin == -1) {
 		wordWrapRangeBegin = 0;
 	}
@@ -1943,22 +2064,15 @@ void UITextInput::updateWordWrap(int lineStart, int lineEnd) {
 		wordWrapRangeEnd = wordWrapLines.size()-1;
 	}
 
-	for(int i=wordWrapRangeEnd+1; i < wordWrapLines.size(); i++) {
-		if(wordWrapLines[i].actualLineNumber == lineEnd && wordWrapLines[i].isWordWrap) {
-			wordWrapRangeEnd++;
-		} else {
-			break;
-		}
-	}		
-
 	if(wordWrapLines.size()) {
-		if(wordWrapRangeEnd < wordWrapLines.size()) {
-			wordWrapLines.erase(wordWrapLines.begin()+wordWrapRangeBegin, wordWrapLines.begin()+wordWrapRangeEnd+1);
-		} else {
-			wordWrapLines.erase(wordWrapLines.begin()+wordWrapRangeBegin, wordWrapLines.end());		
+		do {
+			wordWrapRangeEnd++;
 		}
+		while(wordWrapLines[wordWrapRangeEnd].isWordWrap && wordWrapRangeEnd < wordWrapLines.size());
+		
+		wordWrapLines.erase(wordWrapLines.begin()+wordWrapRangeBegin, wordWrapLines.begin()+wordWrapRangeEnd);
 	}
-
+	
 	int insertPoint = wordWrapRangeBegin;
 	
 	for(int i=lineStart; i < lineEnd+1; i++) {
@@ -2003,7 +2117,7 @@ void UITextInput::updateWordWrap(int lineStart, int lineEnd) {
 			lines[actualLineNumber].wordWrapLineIndex = i;		
 		}
 	}
-			
+								
 	readjustBuffer(wordWrapRangeBegin, wordWrapRangeEnd);
 }
 
