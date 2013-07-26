@@ -931,6 +931,7 @@ void set_cursor(int cursorType) {
 }
 
 void free_cursors() {
+	XUndefineCursor(SDL_Display, SDL_Window);
 	for(int i = 0; i < CURSOR_COUNT; i++) {
 		if(defined_cursors[i]) {
 			XFreeCursor(SDL_Display, defined_cursors[i]);
