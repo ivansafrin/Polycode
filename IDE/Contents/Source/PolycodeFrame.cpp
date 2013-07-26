@@ -695,6 +695,8 @@ void PolycodeFrame::showCurveEditor() {
 void PolycodeFrame::showModal(UIWindow *modalChild) {
 	modalBlocker->enabled = true;
 	
+	focusChild(NULL);
+	
 	this->modalChild = modalChild;
 	modalRoot->addChild(modalChild);
 	modalChild->showWindow();
@@ -895,16 +897,14 @@ void PolycodeFrame::handleEvent(Event *event) {
 	} else {
 		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT && event->getDispatcher() == newProjectButton) {
 
-			newProjectWindow->ResetForm();
 			showModal(newProjectWindow);
-
+			newProjectWindow->ResetForm();
 		}	
 		
 	if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT && event->getDispatcher() == examplesButton) {
 
-			newProjectWindow->ResetForm();
 			showModal(exampleBrowserWindow);
-
+			newProjectWindow->ResetForm();
 		}			
 		
 	}

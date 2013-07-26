@@ -96,6 +96,7 @@ String NewFileWindow::getTemplatePath() {
 void NewFileWindow::resetForm() {
 	defaultTemplateTree->setSelected();
 	fileNameInput->setText("Untitled");
+	focusChild(fileNameInput);	
 }
 
 void NewFileWindow::handleEvent(Event *event) {

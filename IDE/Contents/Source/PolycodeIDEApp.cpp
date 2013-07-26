@@ -246,15 +246,14 @@ void PolycodeIDEApp::removeFile() {
 }
 
 void PolycodeIDEApp::newProject() {
-	frame->newProjectWindow->ResetForm();
 	frame->showModal(frame->newProjectWindow);
-	
+	frame->newProjectWindow->ResetForm();	
 }
 
 void PolycodeIDEApp::newFile() {
 	if(projectManager->getActiveProject()) {
-		frame->newFileWindow->resetForm();
 		frame->showModal(frame->newFileWindow);
+		frame->newFileWindow->resetForm();		
 	}
 }
 
@@ -379,8 +378,8 @@ void PolycodeIDEApp::openProject() {
 }
 
 void PolycodeIDEApp::browseExamples() {
-	frame->newProjectWindow->ResetForm();
 	frame->showModal(frame->exampleBrowserWindow);
+	frame->newProjectWindow->ResetForm();	
 
 }
 
@@ -393,8 +392,8 @@ void PolycodeIDEApp::stopProject() {
 
 void PolycodeIDEApp::exportProject() {
 	if(projectManager->getActiveProject()) {
-		frame->exportProjectWindow->resetForm();
 		frame->showModal(frame->exportProjectWindow);		
+		frame->exportProjectWindow->resetForm();		
 	}	
 }
 
