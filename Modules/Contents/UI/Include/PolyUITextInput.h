@@ -54,10 +54,20 @@ namespace Polycode {
 	
 	class _PolyExport SyntaxHighlightToken {
 		public:
-			SyntaxHighlightToken(String text, int type) { this->text = text; this->type = type; }
+			SyntaxHighlightToken() {
+				overrideType = TOKEN_TYPE_NO_OVERRIDE;
+			}
+			
+			SyntaxHighlightToken(String text, int type) { this->text = text; this->type = type; overrideType = TOKEN_TYPE_NO_OVERRIDE; }
 			Color color;
 			String text;
+			int overrideType;
 			unsigned int type;
+			
+			static const int TOKEN_TYPE_NO_OVERRIDE = 0;
+			static const int TOKEN_TYPE_OVERRIDE_START = 1;
+			static const int TOKEN_TYPE_OVERRIDE_END = 2;
+			static const int TOKEN_TYPE_OVERRIDE_LINE = 3;						
 	};
 
 	class _PolyExport LineColorData {
@@ -81,7 +91,7 @@ namespace Polycode {
 		
 	class _PolyExport UITextInputSyntaxHighlighter {
 		public:		
-			virtual std::vector<SyntaxHighlightToken> parseText(String text) = 0;
+			virtual std::vector<SyntaxHighlightToken> parseText(String text, SyntaxHighlightToken overrideToken) = 0;
 	};
 
 	class _PolyExport FindMatch {
@@ -104,6 +114,7 @@ namespace Polycode {
 			int lastBufferIndex;
 			LineColorInfo colorInfo;
 			bool dirty;
+			SyntaxHighlightToken blockOverrideToken;			
 	};
 	
 	class TextColorPair {
@@ -117,7 +128,8 @@ namespace Polycode {
 			LineInfo(){ wordWrapLineIndex = -1; }
 			String text;
 			int wordWrapLineIndex;
-			LineColorInfo colorInfo;
+			LineColorInfo colorInfo;			
+			SyntaxHighlightToken blockOverrideToken;
 	};
 
 	/**
@@ -373,7 +385,9 @@ namespace Polycode {
 			bool isNumberOnly;
 			
 			void changedText(int lineStart, int lineEnd, bool sendChangeEvent = true);
-			void applySyntaxFormatting(int startLine, int end);					
+			void applySyntaxFormatting(int startLine, int end);
+			
+			void applyTokenOverride(int lineIndex, SyntaxHighlightToken overrideToken);
 			
 			void setActualToCaret();
 			void setOffsetToActual();
@@ -390,6 +404,8 @@ namespace Polycode {
 			void updateCaretPosition();
 			void setCaretToMouse(Number x, Number y);
 			void dragSelectionTo(Number x, Number y);
+			
+			void applyBlockOverrides();
 			
 			void updateSelectionRects();
 		

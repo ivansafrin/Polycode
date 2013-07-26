@@ -428,6 +428,139 @@ void UITextInput::deleteSelection() {
 	changedText(actualLineOffset,actualLineOffset);
 }
 
+void UITextInput::applyTokenOverride(int lineIndex, SyntaxHighlightToken overrideToken) {
+	if(overrideToken.overrideType == SyntaxHighlightToken::TOKEN_TYPE_NO_OVERRIDE) {
+	
+	
+		bool previousLineInBlockOverride = false;
+		if(lineIndex > 0) {		
+			if(lines[lineIndex-1].blockOverrideToken.overrideType == SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_LINE ||  lines[lineIndex-1].blockOverrideToken.overrideType == SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_START) {
+				previousLineInBlockOverride = true;
+			}
+		}	
+	
+		if(lines[lineIndex].blockOverrideToken.overrideType == SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_START && !previousLineInBlockOverride) {
+			for(int l=lineIndex; l < lines.size(); l++) {
+
+				if(lines[l].blockOverrideToken.overrideType == SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_START && l != lineIndex) {
+					return;
+				}
+			
+				if(lines[l].blockOverrideToken.overrideType != SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_END) {
+				lines[l].blockOverrideToken.overrideType = SyntaxHighlightToken::TOKEN_TYPE_NO_OVERRIDE;
+				int _lineOffset = lines[l].wordWrapLineIndex;
+				while(wordWrapLines[_lineOffset].actualLineNumber == l && _lineOffset < wordWrapLines.size()) {
+					wordWrapLines[_lineOffset].blockOverrideToken = lines[l].blockOverrideToken;
+					wordWrapLines[_lineOffset].dirty = true;
+					_lineOffset++;
+				}
+				} else {
+					changedText(l,l,false);
+				}
+			}		
+		}
+
+		
+		if(lines[lineIndex].blockOverrideToken.overrideType == SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_END) {
+			if(previousLineInBlockOverride) {
+			for(int l=lineIndex; l < lines.size(); l++) {
+			
+				if((lines[l].blockOverrideToken.overrideType == SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_END || lines[l].blockOverrideToken.overrideType == SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_START) && l != lineIndex) {
+				
+					if(lines[l].blockOverrideToken.overrideType == SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_END) {
+						changedText(l,l,false);
+					}								
+					return;
+				}			
+			
+				lines[l].blockOverrideToken.overrideType = SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_LINE;
+				lines[l].blockOverrideToken.color = lines[lineIndex-1].blockOverrideToken.color;
+				int _lineOffset = lines[l].wordWrapLineIndex;
+				while(wordWrapLines[_lineOffset].actualLineNumber == l && _lineOffset < wordWrapLines.size()) {
+					wordWrapLines[_lineOffset].blockOverrideToken = lines[l].blockOverrideToken;
+					wordWrapLines[_lineOffset].dirty = true;
+					_lineOffset++;
+				}
+			}
+			} else {
+				lines[lineIndex].blockOverrideToken.overrideType = SyntaxHighlightToken::TOKEN_TYPE_NO_OVERRIDE;
+			}
+		}
+
+
+	}
+	
+		if(overrideToken.overrideType == SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_START) {
+			for(int l=lineIndex; l < lines.size(); l++) {
+						
+				if((lines[l].blockOverrideToken.overrideType == SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_END || lines[l].blockOverrideToken.overrideType == SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_START) && l != lineIndex) {
+				
+					if(lines[l].blockOverrideToken.overrideType == SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_END) {
+						changedText(l,l,false);
+					}
+					return;
+				}
+				
+				lines[l].blockOverrideToken = overrideToken;
+				if(l != lineIndex) {					
+					lines[l].blockOverrideToken.overrideType = SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_LINE;
+				}				
+				int _lineOffset = lines[l].wordWrapLineIndex;
+				while(wordWrapLines[_lineOffset].actualLineNumber == l && _lineOffset < wordWrapLines.size()) {
+					wordWrapLines[_lineOffset].blockOverrideToken = lines[l].blockOverrideToken;
+					wordWrapLines[_lineOffset].dirty = true;
+					_lineOffset++;
+				}
+			}
+		}
+		
+		if(overrideToken.overrideType == SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_END) {
+			for(int l=lineIndex; l < lines.size(); l++) {
+			
+				if(lines[l].blockOverrideToken.overrideType != SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_END || l == lineIndex) {
+				
+				if((lines[l].blockOverrideToken.overrideType == SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_START) && l != lineIndex) {
+					return;
+				}				
+
+				lines[l].blockOverrideToken = overrideToken;
+				if(l != lineIndex) {					
+					lines[l].blockOverrideToken.overrideType = SyntaxHighlightToken::TOKEN_TYPE_NO_OVERRIDE;
+				}				
+				
+				int _lineOffset = lines[l].wordWrapLineIndex;
+				while(wordWrapLines[_lineOffset].actualLineNumber == l && _lineOffset < wordWrapLines.size()) {
+					wordWrapLines[_lineOffset].blockOverrideToken = lines[l].blockOverrideToken;
+					wordWrapLines[_lineOffset].dirty = true;
+					_lineOffset++;
+				}
+				} else {
+					if(lines[l].blockOverrideToken.overrideType == SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_END) {
+						changedText(l,l,false);
+					}												
+				}
+			}
+		}	
+}
+
+void UITextInput::applyBlockOverrides() {
+	for(int i=0; i < wordWrapLines.size(); i++) {
+		wordWrapLines[i].blockOverrideToken.overrideType = SyntaxHighlightToken::TOKEN_TYPE_NO_OVERRIDE;	
+	}
+
+	for(int i=0; i < lines.size(); i++) {
+		if(lines[i].blockOverrideToken.overrideType != SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_START && lines[i].blockOverrideToken.overrideType != SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_END) {		
+		lines[i].blockOverrideToken.overrideType = SyntaxHighlightToken::TOKEN_TYPE_NO_OVERRIDE;		
+		}
+	}
+	
+	for(int i=0; i < lines.size(); i++) {
+		if(lines[i].blockOverrideToken.overrideType == SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_START || lines[i].blockOverrideToken.overrideType == SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_END) {
+				applyTokenOverride(i, lines[i].blockOverrideToken);
+		}
+	}
+}
+
 void UITextInput::applySyntaxFormatting(int startLine, int endLine) {
 
 	if(syntaxHighliter && multiLine) {
@@ -445,7 +578,12 @@ void UITextInput::applySyntaxFormatting(int startLine, int endLine) {
 				totalText += L"\n";
 		}		
 
-	std::vector<SyntaxHighlightToken> tokens = syntaxHighliter->parseText(totalText);	
+	SyntaxHighlightToken _blockOverrideToken;
+	if(startLine > 0) {
+		_blockOverrideToken = lines[startLine-1].blockOverrideToken;
+	}
+	
+	std::vector<SyntaxHighlightToken> tokens = syntaxHighliter->parseText(totalText, _blockOverrideToken);	
 	
 	int lineIndex = startLine;
 	lines[lineIndex].colorInfo.colors.clear();
@@ -453,8 +591,17 @@ void UITextInput::applySyntaxFormatting(int startLine, int endLine) {
 	int rangeEnd = 0;
 	
 	
-	for(int i=0; i < tokens.size(); i++) {	
+	SyntaxHighlightToken _overrideToken;
+			
+	for(int i=0; i < tokens.size(); i++) {
+
+		if(tokens[i].overrideType == SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_START || tokens[i].overrideType == SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_END) {
+			_overrideToken = tokens[i];
+		}
+	
 		if(tokens[i].text == "\n") {
+			applyTokenOverride(lineIndex, _overrideToken);
+			_overrideToken.overrideType = SyntaxHighlightToken::TOKEN_TYPE_NO_OVERRIDE;
 			lineIndex++;
 			if(lineIndex < lines.size() && i < tokens.size()-1) {
 				lines[lineIndex].colorInfo.colors.clear();
@@ -475,11 +622,11 @@ void UITextInput::applySyntaxFormatting(int startLine, int endLine) {
 				}				
 			}
 		}
-	}			
+	}
 	
 	}
 
-	readjustBuffer();	
+//	readjustBuffer(startLine, endLine);	
 }
 
 void UITextInput::changedText(int lineStart, int lineEnd, bool sendChangeEvent) {
@@ -581,13 +728,26 @@ int UITextInput::insertLine(String lineText) {
 			it = lines.begin() + actualLineOffset;
 		}
 		
+		SyntaxHighlightToken _overrideToken;
+		
+		if(actualLineOffset > 0) {
+			if(lines[actualLineOffset-1].blockOverrideToken.overrideType != SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_START && lines[actualLineOffset-1].blockOverrideToken.overrideType != SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_END) { 
+				_overrideToken = lines[actualLineOffset-1].blockOverrideToken;
+			} else if(lines[actualLineOffset-1].blockOverrideToken.overrideType == SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_START) {
+				_overrideToken = lines[actualLineOffset-1].blockOverrideToken;
+				_overrideToken.overrideType = SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_LINE;
+			}
+		}
+		
 		LineInfo info;
 		info.text = newText;
+		info.blockOverrideToken = _overrideToken;
 		lines.insert(it,info);
 		
 		WordWrapLine line;		
 		line.text = info.text;
 		line.isWordWrap = false;
+		line.blockOverrideToken = _overrideToken;
 		line.actualLineNumber = actualLineOffset+1;
 		lines[actualLineOffset].wordWrapLineIndex = lineOffset;
 		line.colorInfo = lines[actualLineOffset].colorInfo;
@@ -700,6 +860,7 @@ void UITextInput::setText(String text, bool sendChangeEvent) {
 		changedText(0, lines.size()-1, false);
 //		wordWrapLines.clear();
 //		doMultilineResize();
+		applyBlockOverrides();
 	}
 }
 
@@ -1373,6 +1534,8 @@ void UITextInput::setTextDiff(String text) {
 			readjustBuffer();
 		}
 	}
+	
+	applyBlockOverrides();	
 }
 
 void UITextInput::setUndoState(UITextInputUndoState state) {
@@ -2093,7 +2256,7 @@ void UITextInput::updateWordWrap(int lineStart, int lineEnd) {
 					line.lineStart = indentPrefix.size();
 				}
 				line.actualLineNumber = i;
-				
+				line.blockOverrideToken = lines[i].blockOverrideToken;
 				line.colorInfo = wrapLines[j].colorInfo;
 				wordWrapLines.insert(wordWrapLines.begin()+insertPoint, line);
 				insertPoint++;
@@ -2106,6 +2269,7 @@ void UITextInput::updateWordWrap(int lineStart, int lineEnd) {
 				line.lineStart = 0;
 				lines[i].wordWrapLineIndex = insertPoint;
 				line.colorInfo = lines[i].colorInfo;		
+				line.blockOverrideToken = lines[i].blockOverrideToken;
 				wordWrapLines.insert(wordWrapLines.begin()+insertPoint, line);
 				insertPoint++;				
 		}
@@ -2137,9 +2301,16 @@ void UITextInput::readjustBuffer(int lineStart, int lineEnd) {
 		bufferLines[i]->getLabel()->clearColors();
 		wordWrapLines[bufferOffset+i].dirty = false;
 		wordWrapLines[bufferOffset+i].lastBufferIndex = i;
+		
+			if(wordWrapLines[bufferOffset+i].blockOverrideToken.overrideType != SyntaxHighlightToken::TOKEN_TYPE_NO_OVERRIDE && wordWrapLines[bufferOffset+i].blockOverrideToken.overrideType != SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_END && wordWrapLines[bufferOffset+i].blockOverrideToken.overrideType != SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_START) {
+
+				bufferLines[i]->getLabel()->setColorForRange(wordWrapLines[bufferOffset+i].blockOverrideToken.color, 0, wordWrapLines[bufferOffset+i].text.size()-1);
+				bufferLines[i]->setColor(1.0, 1.0, 1.0, 1.0);			
+			} else {
 			for(int j=0; j < wordWrapLines[bufferOffset+i].colorInfo.colors.size(); j++) {
 				bufferLines[i]->getLabel()->setColorForRange(wordWrapLines[bufferOffset+i].colorInfo.colors[j].color, wordWrapLines[bufferOffset+i].colorInfo.colors[j].rangeStart, wordWrapLines[bufferOffset+i].colorInfo.colors[j].rangeEnd);
 				bufferLines[i]->setColor(1.0, 1.0, 1.0, 1.0);
+			}
 			}		
 			}
 //			if(bufferOffset+i >= lineStart && bufferOffset+i <= lineEnd) {			

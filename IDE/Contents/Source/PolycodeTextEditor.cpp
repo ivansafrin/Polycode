@@ -145,16 +145,16 @@ bool PolycodeSyntaxHighlighter::contains_char(char part, std::vector<char> *list
 	return false;
 }
 
-std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseText(String text) {
+std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseText(String text, SyntaxHighlightToken overrideToken) {
 	if(mode == MODE_LUA) {	
-		return parseLua(text);
+		return parseLua(text, overrideToken);
 	} else {
-		return parseGLSL(text);	
+		return parseGLSL(text, overrideToken);	
 	}
 }
 
 	
-std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseGLSL(String text) {
+std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseGLSL(String text, SyntaxHighlightToken overrideToken) {
 	std::vector<SyntaxHighlightToken> tokens;
 	
 	text = text+"\n";
@@ -167,9 +167,15 @@ std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseGLSL(String te
 	const int MODE_NUMBER = 5;
 	const int MODE_MEMBER = 6;
 						
-	int mode = MODE_GENERAL;
-	
+	int mode = MODE_GENERAL;	
 	bool isComment = false;
+	
+	if(text.find_first_of("*/") != -1) {
+		if(overrideToken.overrideType == SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_LINE || overrideToken.overrideType == SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_START ) {
+		mode = MODE_COMMENT;
+		}
+	}
+	
 	
 	String line = "";
 	
@@ -232,11 +238,16 @@ std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseGLSL(String te
 			if(ch == '*' && lastSeparator == '/' && mode != MODE_STRING) {
 				tokens[tokens.size()-1].type = MODE_COMMENT;
 				tokens[tokens.size()-2].type = MODE_COMMENT;				
-				mode = MODE_COMMENT;				
+				mode = MODE_COMMENT;
+				tokens[tokens.size()-1].overrideType = SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_START;						
 			}
 			
 			if(ch == '/' && lastSeparator == '*' && mode == MODE_COMMENT) {
-				mode = MODE_GENERAL;
+				if(mode == MODE_COMMENT) 	
+					mode = MODE_GENERAL;
+				if(mode != MODE_STRING)
+					tokens[tokens.size()-1].overrideType = SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_END;
+				
 			}
 			
 			if(ch == '\n' )
@@ -287,7 +298,7 @@ std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseGLSL(String te
 	return tokens;
 }
 	
-std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseLua(String text) {
+std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseLua(String text, SyntaxHighlightToken overrideToken) {
 	std::vector<SyntaxHighlightToken> tokens;
 	
 	text = text+"\n";
@@ -300,22 +311,25 @@ std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseLua(String tex
 	const int MODE_NUMBER = 5;
 	const int MODE_MEMBER = 6;
 						
-	int mode = MODE_GENERAL;
-	
+	int mode = MODE_GENERAL;	
 	bool isComment = false;
 	
+	if(text.find_first_of("]]") != -1) {
+		if(overrideToken.overrideType == SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_LINE || overrideToken.overrideType == SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_START ) {
+		mode = MODE_COMMENT;
+		}
+	}
+				
 	String line = "";
 	
 	char lastSeparator = ' ';
 
-	
 	for(int i=0; i < text.length(); i++) {
 		char ch = text[i];				
 		if(contains_char(ch, &separators)) {			
 
 			unsigned int type = mode;
 			unsigned int ch_type = mode;
-
 	
 			if(ch == '\"' && mode != MODE_COMMENT)
 				ch_type = MODE_STRING;
@@ -365,21 +379,28 @@ std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseLua(String tex
 			if(ch == '[' && lastSeparator == '[' && isComment && mode != MODE_STRING) {
 				unsigned int old_mode = mode;
 				mode = MODE_COMMENT;
+				tokens[tokens.size()-1].overrideType = SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_START;
 				
 				// ugly hack for ---[[, which is not a block comment
 				if(tokens.size() > 4) {
 					if(tokens[tokens.size()-5].text == "-") {
 						mode = old_mode;
+						tokens[tokens.size()-1].overrideType = SyntaxHighlightToken::TOKEN_TYPE_NO_OVERRIDE;						
 					}
 				}
 			}
 			
-			if(ch == ']' && lastSeparator == ']' && mode == MODE_COMMENT) {
-				mode = MODE_GENERAL;
+			if(ch == ']' && lastSeparator == ']') {
+				if(mode == MODE_COMMENT) 
+					mode = MODE_GENERAL;
+				if(mode != MODE_STRING)
+					tokens[tokens.size()-1].overrideType = SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_END;
 			}
 			
-			if(ch == '\n' )
+			if(ch == '\n' ) {
 				isComment = false;
+				mode = MODE_GENERAL;
+			}
 				
 
 			if(ch == '\"'  && mode != MODE_COMMENT) {
@@ -403,7 +424,7 @@ std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseLua(String tex
 				tokens[i].color = globalSyntaxTheme->colors[4];			
 			break;
 			case MODE_COMMENT:
-				tokens[i].color = globalSyntaxTheme->colors[1];			
+				tokens[i].color = globalSyntaxTheme->colors[1];
 			break;			
 			case MODE_METHOD:
 				tokens[i].color = globalSyntaxTheme->colors[3];			
