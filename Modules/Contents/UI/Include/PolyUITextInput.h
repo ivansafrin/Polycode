@@ -479,6 +479,7 @@ namespace Polycode {
 			Timer *blinkTimer;
 			UIBox *inputRect;
 			ScreenShape *blinkerRect;
+			Vector2 dragMouseStart;
 			
 			Color selectionColor;
 			void _setSelectionColor(Color color);

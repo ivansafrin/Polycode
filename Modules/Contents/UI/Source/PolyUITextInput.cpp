@@ -2028,7 +2028,9 @@ void UITextInput::Update() {
 	resizeTimer += core->getElapsed();
 	
 	if(draggingSelection) {
-		dragSelectionTo(selectionDragMouse.x, selectionDragMouse.y - linesContainer->getPosition().y);		
+		if(selectionDragMouse != dragMouseStart) {
+			dragSelectionTo(selectionDragMouse.x, selectionDragMouse.y - linesContainer->getPosition().y);	
+		}
 	}
 	
 	if(resizeTimer > 0.2 && !didMultilineResize) {
@@ -2392,6 +2394,7 @@ void UITextInput::handleEvent(Event *event) {
 				}
 				setCaretToMouse(((InputEvent*)event)->mousePosition.x, ((InputEvent*)event)->mousePosition.y - linesContainer->getPosition().y);
 				selectionDragMouse = ((InputEvent*)event)->mousePosition;				
+				dragMouseStart = ((InputEvent*)event)->mousePosition;
 				draggingSelection = true;
 			break;
 			case InputEvent::EVENT_MOUSEUP:
