@@ -166,7 +166,7 @@ void PolycodeProjectManager::exportProject(PolycodeProject *project, String expo
 
 	if(windows) {
 		PolycodeConsole::print("Exporting Windows version to "+exportPath+"/Win \n");
-		CoreServices::getInstance()->getCore()->copyDiskItem(publishPath+"/Win", exportPath+"/Win");
+		CoreServices::getInstance()->getCore()->copyDiskItem(publishPath+"/Win/*", exportPath+"/Win");
 		CoreServices::getInstance()->getCore()->moveDiskItem(exportPath+"/Win/StandalonePlayer.exe", exportPath+"/Win/"+project->getProjectName()+".exe");
 		CoreServices::getInstance()->getCore()->removeDiskItem(exportPath+"/Win/main.polyapp");
 		CoreServices::getInstance()->getCore()->copyDiskItem(polyappPath, exportPath+"/Win/main.polyapp");

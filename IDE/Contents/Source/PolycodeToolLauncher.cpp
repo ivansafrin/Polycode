@@ -114,7 +114,7 @@ void PolycodeToolLauncher::buildProject(PolycodeProject *project, String destina
 }
 
 void PolycodeToolLauncher::openExternalEditor(String app, String file, String inFolder) {
-	GenericRunner *runner = new GenericRunner(app, file, inFolder);
+	GenericRunner *runner = new GenericRunner(app, "\""+file+"\"", inFolder);
 	CoreServices::getInstance()->getCore()->createThread(runner);
 }
 

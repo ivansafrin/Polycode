@@ -31,7 +31,7 @@ PolycodeClipboard *globalClipboard;
 
 
 PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
-	core = new POLYCODE_CORE(view, 1100, 700,false,true, 0, 0,30, -1);	
+	core = new POLYCODE_CORE(view, 1100, 700,false,true, 0, 0,90, -1);	
 //	core->pauseOnLoseFocus = true;
 	
 	CoreServices::getInstance()->getResourceManager()->reloadResourcesOnModify = true;
@@ -161,10 +161,11 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	editEntry->addItem("Redo", "redo");
 	editEntry->addItem("Cut", "cut");
 	editEntry->addItem("Copy", "copy");
+	editEntry->addItem("Find", "find", KEY_f);
 	editEntry->addItem("Settings", "settings");
 
 	UIMenuBarEntry *viewEntry = menuBar->addMenuBarEntry("View");
-	viewEntry->addItem("Toggle Console", "toggle_console", KEY_LSHIFT, KEY_c);
+	viewEntry->addItem("Toggle Console", "toggle_console", KEY_LSHIFT, KEY_t);
 
 	UIMenuBarEntry *projectEntry = menuBar->addMenuBarEntry("Project");
 	projectEntry->addItem("Run Project", "run_project", KEY_r);
@@ -624,6 +625,8 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 			toggleConsole();
 		} else if(action == "settings") {
 			showSettings();
+		} else if(action == "find") {
+			findText();
 		}
 	}
 
@@ -649,7 +652,7 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 				core->setFramerate(3);
 			break;		
 			case Core::EVENT_GAINED_FOCUS:
-				core->setFramerate(30);			
+				core->setFramerate(90);			
 			break;					
 			case Core::EVENT_CORE_RESIZE:
 				if(menuBar) {
