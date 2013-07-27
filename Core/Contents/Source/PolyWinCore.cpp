@@ -126,6 +126,10 @@ Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScre
 	wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC) wglGetProcAddress("wglSwapIntervalEXT");
 	wglGetSwapIntervalEXT = (PFNWGLGETSWAPINTERVALEXTPROC) wglGetProcAddress("wglGetSwapIntervalEXT");
 	
+	LARGE_INTEGER li;
+	QueryPerformanceFrequency(&li);
+	pcFreq = double(li.QuadPart)/1000.0;
+	
 	setVSync(vSync);
 
 	CoreServices::getInstance()->installModule(new GLSLShaderModule());	
@@ -161,7 +165,9 @@ void Win32Core::warpCursor(int x, int y) {
 }
 
 unsigned int Win32Core::getTicks() {
-	return GetTickCount();
+	LARGE_INTEGER li;
+	QueryPerformanceCounter(&li);
+	return unsigned int(li.QuadPart / pcFreq);
 }
 
 void Win32Core::Render() {

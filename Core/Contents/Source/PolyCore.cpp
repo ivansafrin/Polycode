@@ -242,7 +242,7 @@ namespace Polycode {
 #else
 			usleep((refreshInterval - ticksSinceLastFrame) * 1000);
 #endif
-		lastSleepFrameTicks = ticks;
+		lastSleepFrameTicks = getTicks();
 	}
 	
 	
