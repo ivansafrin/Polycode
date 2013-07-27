@@ -138,6 +138,10 @@ def makePage(item, classList, classListPlain, moduleName):
 		descText = desc[0].childNodes[0].data
 	html += "\t\t\t\t\t<div class=\"class_desc\">%s</div>\n" % descText
 
+	classNotes = item.getElementsByTagName('class_notes')
+	for nn in classNotes:
+		html += "\t\t\t\t\t<div class=\"class_desc\">%s</div>\n" % nn.childNodes[0].data
+
 	if len(item.getElementsByTagName('static_member')) > 0:
 		html += "\t\t\t\t\t<div class=\"class_properties\">\n"
 		html += "\t\t\t\t\t\t<div class=\"class_properties_title\">Static Properties</div>\n"
