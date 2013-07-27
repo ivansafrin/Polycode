@@ -221,7 +221,7 @@ void PolycodeIDEApp::doRemoveFile() {
 		if(projectManager->getActiveProject()) {
 			frame->projectBrowser->refreshProject(projectManager->getActiveProject());
 		}
-		PolycodeEditor *editor;
+		PolycodeEditor *editor = 0;
 		for (int i=0; i < editorManager->openEditors.size(); i++) {
 			if (editorManager->openEditors[i]->getFilePath() == projectManager->selectedFile) {
 				editor = editorManager->openEditors[i];
