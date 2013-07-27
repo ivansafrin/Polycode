@@ -1946,7 +1946,7 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 	
 	bool _changedText = false;
 		
-	if((charCode > 31 && charCode < 127) || charCode > 127) {
+	if(((charCode > 31 && charCode < 127) || charCode > 127) && key != KEY_DELETE) {
 		
 		if(!isNumberOnly || (isNumberOnly && ((charCode > 47 && charCode < 58) || (charCode == '.' || charCode == '-')))) {
 			if(!isNumberOrCharacter(charCode)) { 
@@ -1984,31 +1984,34 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 			deleteSelection();
 			return;
 		} else {
-			ctext = lines[lineOffset];
-			if(caretPosition <= ctext.length()) {
+			ctext = lines[actualLineOffset].text;
+			if(actualCaretPosition < ctext.length()) {
 				if(ctext.length() > 0) {
-					String text2 = ctext.substr(caretPosition, ctext.length()-caretPosition);
-					ctext = ctext.substr(0,caretPosition-1);
+					String text2 = ctext.substr(actualCaretPosition+1, ctext.length()-actualCaretPosition);
+					ctext = ctext.substr(0,actualCaretPosition);
 					ctext += text2;
 					_changedText = true;
-					caretPosition--;
+				} else {
+					return;
 				}
 			} else {
-				if(lineOffset < lines.size() - 1) {
+				if(actualLineOffset < lines.size() - 1) {
 					saveUndoState();
-					lines[lineOffset] = ctext + lines[lineOffset+1];
-					removeLines(lineOffset+1, lineOffset+2);
-					caretPosition--;
+					lines[actualLineOffset].text = ctext + lines[actualLineOffset+1].text;
+					removeLines(actualLineOffset+1, actualLineOffset+1);
+					changedText(actualLineOffset, actualLineOffset);
 					updateCaretPosition();
+					return;
+				} else {
 					return;
 				}
 			}
 		}
-		if(multiLine) {
-			if(linesContainer->getPosition().y + (lineOffset*(lineHeight+lineSpacing)+padding) < 0.0) {
-				scrollContainer->setScrollValue(0.0, ((((lineOffset) * ((lineHeight+lineSpacing)))) + padding)/(scrollContainer->getContentSize().y-scrollContainer->getHeight()));
-			}
-		}
+        if (multiLine) {
+            if(linesContainer->getPosition().y + (lineOffset*(lineHeight+lineSpacing)+padding) < 0.0) {
+                scrollContainer->setScrollValue(0.0, ((((lineOffset) * ((lineHeight+lineSpacing)))) + padding)/(scrollContainer->getContentSize().y-scrollContainer->getHeight()));
+            }
+        }
 	}
 	
 	if(key == KEY_BACKSPACE) {

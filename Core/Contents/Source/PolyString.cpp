@@ -73,7 +73,6 @@ size_t String::getDataSizeWithEncoding(int encoding) const {
 			return NULL;
 	}
 }
-
 const char *String::getDataWithEncoding(int encoding) const {
 	switch(encoding) {
 		case ENCODING_UTF8: {
