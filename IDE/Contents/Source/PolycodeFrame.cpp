@@ -544,6 +544,7 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	topBarBg->setColorInt(21, 18, 17, 255);
 	topBarBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	topBarBg->processInputEvents = true;
+	topBarBg->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
 	topBarBg->blockMouseInput = true;
 	addChild(topBarBg);
 	
@@ -706,6 +707,7 @@ void PolycodeFrame::showModal(UIWindow *modalChild) {
 	if(modalChild == yesNoPopup) {
 		yesNoPopup->focusChild(yesNoPopup->okButton);
 	}
+	CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_ARROW);	
 }
 
 PolycodeProjectBrowser *PolycodeFrame::getProjectBrowser() {
@@ -809,6 +811,10 @@ void PolycodeFrame::handleEvent(Event *event) {
 		updateFileSelector();
 	}
 	
+	if(event->getDispatcher() == topBarBg) {
+		CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_ARROW);	
+	}
+	
 	if(event->getDispatcher() == projectManager) {
         if(projectManager->getActiveProject()) {
             currentProjectTitle->setText(projectManager->getActiveProject()->getProjectName());
@@ -841,7 +847,7 @@ void PolycodeFrame::handleEvent(Event *event) {
 				isDragging = false;
 				dragEntity->visible = false;
 			break;
-			case InputEvent::EVENT_MOUSEMOVE:
+			case InputEvent::EVENT_MOUSEMOVE:			
 				if(isDragging) {
 					dragEntity->setPosition(((InputEvent*)event)->mousePosition);
 				}
