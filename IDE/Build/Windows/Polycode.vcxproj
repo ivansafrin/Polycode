@@ -67,6 +67,16 @@
     <ClInclude Include="..\..\Contents\Include\SettingsWindow.h" />
     <ClInclude Include="..\..\Contents\Include\TextureBrowser.h" />
     <ClInclude Include="..\..\Contents\Include\ToolWindows.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Polycode.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\Assets\Icons\app_file_icon.ico" />
+    <None Include="..\..\..\Assets\Icons\main_icon.ico" />
+    <None Include="..\..\..\Assets\Icons\main_icon.png" />
+    <None Include="..\..\..\Assets\Icons\polycode_project.ico" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D6C2171B-9167-4FB6-851A-DC1CEDCFC43D}</ProjectGuid>

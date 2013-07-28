@@ -5,10 +5,10 @@
     <PolycodeDir>$(SolutionDir)..\..\..\Release\Windows\Framework\</PolycodeDir>
     <PolycodeCoreLibsDebug>Polycore_d.lib</PolycodeCoreLibsDebug>
     <PolycodeCoreLibsRelease>Polycore.lib</PolycodeCoreLibsRelease>
-    <PolycodeDependLibsDebug>PolycodeUI_d.lib;Polycore_d.lib;zlibd.lib;freetype_d.lib;liboggd.lib;libvorbisd.lib;libvorbisfiled.lib;OpenAL32d.lib;physfsd.lib;libpng15_staticd.lib</PolycodeDependLibsDebug>
+    <PolycodeDependLibsDebug>PolycodeUI_d.lib;Polycore_d.lib;zlibd.lib;freetype_d.lib;liboggd.lib;libvorbisd.lib;libvorbisfiled.lib;OpenAL32d.lib;physfsd.lib;libpng15_staticd.lib;</PolycodeDependLibsDebug>
     <PolycodeDependLibsRelease>PolycodeUI.lib;Polycore.lib;zlib.lib;freetype.lib;libogg.lib;libvorbis.lib;libvorbisfile.lib;OpenAL32.lib;physfs.lib;libpng15_static.lib</PolycodeDependLibsRelease>
-    <PolycodeWinLibsDebug>opengl32.lib;glu32.lib;winmm.lib;ws2_32.lib</PolycodeWinLibsDebug>
-    <PolycodeWinLibsRelease>opengl32.lib;glu32.lib;winmm.lib;ws2_32.lib</PolycodeWinLibsRelease>
+    <PolycodeWinLibsDebug>opengl32.lib;glu32.lib;winmm.lib;ws2_32.lib;Shlwapi.lib</PolycodeWinLibsDebug>
+    <PolycodeWinLibsRelease>opengl32.lib;glu32.lib;winmm.lib;ws2_32.lib;Shlwapi.lib</PolycodeWinLibsRelease>
     <PolycodeLibsDebug>$(PolycodeCoreLibsDebug);$(PolycodeDependLibsDebug);$(PolycodeWinLibsDebug)</PolycodeLibsDebug>
     <PolycodeLibsRelease>$(PolycodeCoreLibsRelease);$(PolycodeDependLibsRelease);$(PolycodeWinLibsRelease)</PolycodeLibsRelease>
   </PropertyGroup>

@@ -248,6 +248,8 @@ public:
 		std::vector<GamepadDeviceEntry*> gamepads;
 
 		HWND hWnd;
+		bool hasCopyDataString;
+		String copyDataString;
 
 	private:
 

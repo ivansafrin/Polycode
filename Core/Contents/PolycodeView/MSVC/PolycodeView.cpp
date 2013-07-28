@@ -53,6 +53,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	switch (message)
 	{
+	case WM_COPYDATA:
+	{
+		COPYDATASTRUCT *cp = (COPYDATASTRUCT*)lParam;
+		wchar_t *stringData = (wchar_t*)cp->lpData;
+		core->copyDataString = String(stringData);
+		core->hasCopyDataString = true;
+	}
+	break;
 	case WM_SIZE:
 		nWidth = LOWORD(lParam); 
 		nHeight = HIWORD(lParam);

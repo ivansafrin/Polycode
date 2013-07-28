@@ -24,6 +24,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	PolycodeView *view = new PolycodeView(hInstance, nCmdShow, L"", false, false);
 	PolycodeWindowsPlayer *player = new PolycodeWindowsPlayer(view, "main.polyapp", false, false);
 
+	HICON mainIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
+	SendMessage(view->hwnd, WM_SETICON, ICON_SMALL, (LPARAM) mainIcon );
+
 	//player->addEventListener(view, PolycodeDebugEvent::EVENT_ERROR);
 	//player->addEventListener(view, PolycodeDebugEvent::EVENT_PRINT);
 

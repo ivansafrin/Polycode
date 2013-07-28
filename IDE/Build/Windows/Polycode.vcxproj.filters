@@ -173,5 +173,15 @@
     <ClInclude Include="..\..\Contents\Include\SettingsWindow.h">
       <Filter>Include</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Polycode.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\Assets\Icons\main_icon.png" />
+    <None Include="..\..\..\Assets\Icons\main_icon.ico" />
+    <None Include="..\..\..\Assets\Icons\polycode_project.ico" />
+    <None Include="..\..\..\Assets\Icons\app_file_icon.ico" />
   </ItemGroup>
 </Project>

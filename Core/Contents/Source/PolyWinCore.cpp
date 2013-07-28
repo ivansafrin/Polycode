@@ -83,6 +83,7 @@ Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScre
 
 	hWnd = *((HWND*)view->windowData);
 	core = this;
+	hasCopyDataString = false;
 
 	char *buffer = _getcwd(NULL, 0);
 	defaultWorkingDirectory = String(buffer);

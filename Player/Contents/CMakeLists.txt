@@ -31,6 +31,7 @@ SET(polycodeplayer_SRCS
     SET(polycodeplayer_HDRS 
         Include/PolycodePlayer.h
         Include/PolycodeWindowsPlayer.h
+        Include/resource.h
     )
   
     SET(polycodeplayerstandalone_SRCS 
@@ -40,11 +41,12 @@ SET(polycodeplayer_SRCS
     )
     SET(polycodeplayerstandalone_HDRS 
         Include/PolycodePlayer.h
-        Include/PolycodeWindowsPlayer.h   
+        Include/PolycodeWindowsPlayer.h
+        Include/resource.h
     )
  
-    ADD_EXECUTABLE(PolycodePlayer WIN32 ${polycodeplayer_SRCS} ${polycodeplayer_HDRS})
-    ADD_EXECUTABLE(StandalonePlayer WIN32 ${polycodeplayerstandalone_SRCS} ${polycodeplayerstandalone_HDRS})
+    ADD_EXECUTABLE(PolycodePlayer WIN32 Include/Polycode.rc ${polycodeplayer_SRCS} ${polycodeplayer_HDRS})
+    ADD_EXECUTABLE(StandalonePlayer WIN32 Include/Polycode.rc ${polycodeplayerstandalone_SRCS} ${polycodeplayerstandalone_HDRS})
     
 
     TARGET_LINK_LIBRARIES(PolycodePlayer 
