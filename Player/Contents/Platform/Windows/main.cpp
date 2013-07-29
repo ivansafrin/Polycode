@@ -54,5 +54,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 			}
 		} while(player->Update());
 	
+	delete player;
+
 	return Msg.wParam;
 }
