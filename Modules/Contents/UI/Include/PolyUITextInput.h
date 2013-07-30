@@ -368,6 +368,8 @@ namespace Polycode {
 		
 			static UIGlobalMenu *globalMenuSingleton;
 		
+			void showCurrentLineIfOffscreen();
+		
 			void readjustBuffer(int lineStart=0, int lineEnd=-1);
 			void updateWordWrap(int lineStart, int lineEnd);
 			

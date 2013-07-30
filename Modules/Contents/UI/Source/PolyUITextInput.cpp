@@ -1568,7 +1568,21 @@ void UITextInput::setUndoState(UITextInputUndoState state) {
 	restructLines();		
 	readjustBuffer();
 
-	showLine(state.lineOffset, false);	
+	showCurrentLineIfOffscreen();
+}
+
+void UITextInput::showCurrentLineIfOffscreen() {
+	if(!multiLine)
+		return;
+		
+	int bufferOffset = -linesContainer->position.y/ ( lineHeight+lineSpacing);	
+	int heightInLines = (height / ( lineHeight+lineSpacing)) + 1;
+			
+	if(lines[actualLineOffset].wordWrapLineIndex > bufferOffset && lines[actualLineOffset].wordWrapLineIndex < bufferOffset + heightInLines) {
+	
+	} else {
+		showLine(actualLineOffset, false);	
+	}
 }
 
 void UITextInput::Undo() {
@@ -1990,6 +2004,8 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 			ctext += charCode + text2;
 			actualCaretPosition++;
 			_changedText = true;
+			
+			showCurrentLineIfOffscreen();
 		}
 	}
 	
