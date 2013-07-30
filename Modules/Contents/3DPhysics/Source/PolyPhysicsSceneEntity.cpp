@@ -216,6 +216,7 @@ PhysicsSceneEntity::PhysicsSceneEntity(SceneEntity *entity, int type, Number mas
 //		rigidBody->setActivationState(ISLAND_SLEEPING);		
 		rigidBody->setFriction(friction);
 		rigidBody->setRestitution(restitution);
+		rigidBody->setUserPointer((void*)this);
 	}
 }
 

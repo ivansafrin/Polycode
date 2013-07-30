@@ -225,7 +225,7 @@ void OpenGLRenderer::resetViewport() {
 	glViewport(0, 0, viewportWidth, viewportHeight);
 	glScissor(0, 0, viewportWidth, viewportHeight);
 	glMatrixMode(GL_MODELVIEW);	
-
+	glGetDoublev( GL_PROJECTION_MATRIX, sceneProjectionMatrix);
 }
 
 Vector3 OpenGLRenderer::Unproject(Number x, Number y) {

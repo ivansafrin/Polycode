@@ -153,8 +153,7 @@ RayTestResult CollisionScene::getFirstEntityInRay(const Vector3 &origin,  const 
 	btVector3 toVec(dest.x, dest.y, dest.z);
 	
 	btCollisionWorld::ClosestRayResultCallback cb(fromVec, toVec);
-	world->rayTest (fromVec, toVec, cb);
-	
+	world->rayTest (fromVec, toVec, cb);	
 	
 	if (cb.hasHit ()) {
 		CollisionSceneEntity *retEnt = getCollisionEntityByObject(cb.m_collisionObject);
@@ -170,12 +169,7 @@ RayTestResult CollisionScene::getFirstEntityInRay(const Vector3 &origin,  const 
 }
 
 CollisionSceneEntity *CollisionScene::getCollisionEntityByObject(btCollisionObject *collisionObject) {
-	for(int i=0; i <collisionChildren.size(); i++) {
-		if(collisionChildren[i]->collisionObject == collisionObject) {
-			return collisionChildren[i];
-		}
-	}
-	return NULL;
+	return (CollisionSceneEntity*)collisionObject->getUserPointer();
 }
 
 

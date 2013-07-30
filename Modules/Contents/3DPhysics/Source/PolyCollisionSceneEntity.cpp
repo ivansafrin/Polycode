@@ -73,7 +73,9 @@ CollisionSceneEntity::CollisionSceneEntity(SceneEntity *entity, int type, bool c
 	
 	if(shape) {
 		collisionObject->setCollisionShape(shape);
-	}	
+	}
+	
+	collisionObject->setUserPointer((void*)this);
 	
 //	if(type == SHAPE_MESH) {		
 //		concaveShape = dynamic_cast<btConcaveShape*>(shape);
