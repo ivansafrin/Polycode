@@ -28,7 +28,7 @@ void addToMesh(Polycode::Mesh *tmesh, const struct aiScene *sc, const struct aiN
 
 	for (; n < nd->mNumMeshes; ++n) {
 		const struct aiMesh* mesh = scene->mMeshes[nd->mMeshes[n]];
-		printf("Importing mesh:%s\n", mesh->mName.data);
+		printf("Importing mesh:%s (%d vertices) (%d faces) \n", mesh->mName.data, mesh->mNumVertices, mesh->mNumFaces);
 
 		//apply_material(sc->mMaterials[mesh->mMaterialIndex]);
 

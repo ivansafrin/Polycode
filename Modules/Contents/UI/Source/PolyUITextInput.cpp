@@ -859,7 +859,7 @@ void UITextInput::setText(String text, bool sendChangeEvent) {
 		clearSelection();
 		changedText(0, lines.size()-1, false);
 //		wordWrapLines.clear();
-//		doMultilineResize();
+		doMultilineResize();
 		applyBlockOverrides();
 	}
 }
