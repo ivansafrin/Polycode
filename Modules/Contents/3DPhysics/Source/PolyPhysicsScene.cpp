@@ -294,6 +294,14 @@ void PhysicsScene::removeEntity(SceneEntity *entity) {
 	}
 }
 
+void PhysicsScene::removeConstraint(PhysicsHingeConstraint *constraint) {
+	physicsWorld->removeConstraint(constraint->btConstraint);
+}
+
+PhysicsHingeConstraint::~PhysicsHingeConstraint() {
+	delete btConstraint;
+}
+
 void PhysicsHingeConstraint::setLimits(Number minLimit, Number maxLimit) {
 	btConstraint->setLimit(minLimit, maxLimit);
 }
