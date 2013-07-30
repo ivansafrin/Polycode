@@ -39,6 +39,7 @@
 using namespace std;
 
 #define MAX_TEXTINPUT_UNDO_STATES 30
+#define UI_TEXT_INPUT_SCROLL_SPEED 70.0
 
 namespace Polycode {
 

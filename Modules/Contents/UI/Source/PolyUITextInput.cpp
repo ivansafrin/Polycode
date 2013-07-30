@@ -643,7 +643,7 @@ void UITextInput::changedText(int lineStart, int lineEnd, bool sendChangeEvent) 
 
 	applySyntaxFormatting(lineStart, lineEnd);	
 	updateWordWrap(lineStart, lineEnd);
-	
+		
 	if(sendChangeEvent) {
 		dispatchEvent(new UIEvent(), UIEvent::CHANGE_EVENT);	
 	}
@@ -2347,6 +2347,10 @@ void UITextInput::updateWordWrap(int lineStart, int lineEnd) {
 
 void UITextInput::readjustBuffer(int lineStart, int lineEnd) {
 
+	if(scrollContainer) {
+		scrollContainer->getVScrollBar()->setTickSize((UI_TEXT_INPUT_SCROLL_SPEED * lineHeight) /scrollContainer->getContentSize().y);
+	}
+	
 	if(lineEnd == -1) {
 		lineEnd = wordWrapLines.size()-1;
 	}

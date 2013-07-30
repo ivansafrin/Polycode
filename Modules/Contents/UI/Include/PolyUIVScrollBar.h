@@ -43,6 +43,7 @@ namespace Polycode {
 		void scrollTo(Number scrollValue);
 		void Scroll(Number amount);
 		
+		void setTickSize(Number newTickSize);
 		
 		void onMouseWheelDown(Number x, Number y);
 		void onMouseWheelUp(Number x, Number y);
@@ -57,6 +58,7 @@ namespace Polycode {
 		
 	private:		
 		
+		Number tickSize;
 		
 		Number padding;
 		Number scrollValue;
