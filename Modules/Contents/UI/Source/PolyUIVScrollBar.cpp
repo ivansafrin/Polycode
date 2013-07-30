@@ -122,7 +122,12 @@ void UIVScrollBar::scrollTo(Number scrollValue) {
 }
 
 void UIVScrollBar::Scroll(Number amount) {
-	handleBox->setPositionY(((scrollValue+amount) * dragRectHeight) + padding);	
+	Number newValue = scrollValue+amount;
+	if(newValue > 1.0)
+		newValue = 1.0;
+	if(newValue < 0.0)
+		newValue = 0.0;		
+	handleBox->setPositionY(((newValue) * dragRectHeight) + padding);	
 }
 
 void UIVScrollBar::setHandleRatio(Number newRatio) {
