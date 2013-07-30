@@ -30,6 +30,12 @@
 
 using namespace Polycode;
 
+UIGlobalMenu* UITextInput::globalMenuSingleton = NULL;
+
+void UITextInput::setMenuSingleton(UIGlobalMenu *_globalMenu) {
+	globalMenuSingleton = _globalMenu;
+}
+
 UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElement(width, height) {
 	this->multiLine = multiLine;
 	processInputEvents = true;
@@ -2415,6 +2421,20 @@ void UITextInput::readjustBuffer(int lineStart, int lineEnd) {
 
 void UITextInput::handleEvent(Event *event) {
 
+	if(event->getDispatcher() == contextMenu) {
+		UIMenuItem *item = contextMenu->getSelectedItem();
+		if(item->_id == "copy") {
+			Copy();
+		} else if(item->_id == "cut") {
+			Cut();
+		} else if(item->_id == "paste") {
+			Paste();
+		} else if(item->_id == "select_all") {
+			selectAll();
+		}
+	}
+
+
 	if(event->getDispatcher() == core && hasFocus) {
 		switch(event->getEventCode()) {
 			case Core::EVENT_UNDO:
@@ -2447,16 +2467,31 @@ void UITextInput::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == inputRect) {
 		switch(event->getEventCode()) {
-			case InputEvent::EVENT_MOUSEDOWN:
-				if(parentEntity) {
-					((ScreenEntity*)parentEntity)->focusChild(this);
+			case InputEvent::EVENT_MOUSEDOWN:			
+				if(((InputEvent*)event)->getMouseButton() == CoreInput::MOUSE_BUTTON2) {
+					if(globalMenuSingleton) {
+						contextMenu = globalMenuSingleton->showMenuAtMouse(100);
+
+						contextMenu->addOption("Copy", "copy");
+						contextMenu->addOption("Cut", "cut");
+						contextMenu->addOption("Paste", "paste");
+						contextMenu->addDivider();
+						contextMenu->addOption("Select All", "select_all");	
+						contextMenu->fitToScreenVertical();
+						contextMenu->addEventListener(this, UIEvent::OK_EVENT);
+						return;						
+					}
 				} else {
-					hasFocus = true;
+					if(parentEntity) {
+						((ScreenEntity*)parentEntity)->focusChild(this);
+					} else {
+						hasFocus = true;
+					}
+					setCaretToMouse(((InputEvent*)event)->mousePosition.x, ((InputEvent*)event)->mousePosition.y - linesContainer->getPosition().y);
+					selectionDragMouse = ((InputEvent*)event)->mousePosition;				
+					dragMouseStart = ((InputEvent*)event)->mousePosition;
+					draggingSelection = true;
 				}
-				setCaretToMouse(((InputEvent*)event)->mousePosition.x, ((InputEvent*)event)->mousePosition.y - linesContainer->getPosition().y);
-				selectionDragMouse = ((InputEvent*)event)->mousePosition;				
-				dragMouseStart = ((InputEvent*)event)->mousePosition;
-				draggingSelection = true;
 			break;
 			case InputEvent::EVENT_MOUSEUP:
 				draggingSelection = false;

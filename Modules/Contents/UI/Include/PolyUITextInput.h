@@ -29,6 +29,7 @@
 #include "PolyScreenEntity.h"
 #include "PolyUIEvent.h"
 #include "PolyUIBox.h"
+#include "PolyUIMenu.h"
 #include "PolyUIElement.h"
 #include "PolyTimer.h"
 #include "PolyCoreInput.h"
@@ -359,9 +360,13 @@ namespace Polycode {
             void convertIndentToTabs();
             void convertIndentToSpaces();
 			
-			void doMultilineResize();			
+			void doMultilineResize();
+						
+			static void setMenuSingleton(UIGlobalMenu *_globalMenu);
+					
+		protected:
 		
-		protected:		
+			static UIGlobalMenu *globalMenuSingleton;
 		
 			void readjustBuffer(int lineStart=0, int lineEnd=-1);
 			void updateWordWrap(int lineStart, int lineEnd);
@@ -489,6 +494,8 @@ namespace Polycode {
 			Number sr;
 			Number sb;
 			Number sl;
+			
+			UIMenu *contextMenu;
 			
 			Vector2 selectionDragMouse;
 		

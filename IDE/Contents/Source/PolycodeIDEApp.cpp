@@ -72,7 +72,8 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	willRunProject = false;
 
 	globalMenu	= new UIGlobalMenu();
-		
+	UITextInput::setMenuSingleton(globalMenu);
+			
 	printf("creating font editor\n"); 
 	
 	Screen *screen = new Screen();	

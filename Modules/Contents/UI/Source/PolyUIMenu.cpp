@@ -207,6 +207,7 @@ void UIMenu::handleEvent(Event *event) {
 			break;
 			case InputEvent::EVENT_MOUSEMOVE:
 			{
+				CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_ARROW);				
 				InputEvent *inputEvent = (InputEvent*) event;
 				selectedOffset = floor(((inputEvent->getMousePosition().y-selectorPadding)-paddingY)/menuItemHeight);
 					
