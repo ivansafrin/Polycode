@@ -1798,6 +1798,22 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 		return;
 	}
 
+	if(key == KEY_HOME) {
+		if(multiLine) {
+			scrollContainer->setScrollValue(0, 0);
+		
+		}
+		return;
+	}
+	
+	if(key == KEY_END) {
+		if(multiLine) {
+			scrollContainer->setScrollValue(0, 1);
+		
+		}
+		return;
+	}
+
 	if(key == KEY_PAGEDOWN) {
 		if(multiLine) {
 			scrollContainer->scrollVertical((scrollContainer->getHeight())/(scrollContainer->getContentSize().y));
@@ -1946,7 +1962,7 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 	
 	bool _changedText = false;
 		
-	if(((charCode > 31 && charCode < 127) || charCode > 127) && key != KEY_DELETE) {
+	if(((charCode > 31 && charCode < 127) || charCode > 127) && key != KEY_DELETE && key != KEY_HOME && key != KEY_END) {
 		
 		if(!isNumberOnly || (isNumberOnly && ((charCode > 47 && charCode < 58) || (charCode == '.' || charCode == '-')))) {
 			if(!isNumberOrCharacter(charCode)) { 
