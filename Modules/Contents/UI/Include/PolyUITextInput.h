@@ -514,6 +514,8 @@ namespace Polycode {
 			
 			Core *core;
 			
+			Number lastResizeWidth;
+			
 			Number _newWidth;
 			Number _newHeight;
 			bool didMultilineResize;

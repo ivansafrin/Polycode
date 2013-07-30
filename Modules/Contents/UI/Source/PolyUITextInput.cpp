@@ -654,8 +654,11 @@ void UITextInput::setSyntaxHighlighter(UITextInputSyntaxHighlighter *syntaxHighl
 }
 
 void UITextInput::doMultilineResize() {
+
 	if(multiLine) {
-		updateWordWrap(0, lines.size()-1);
+		if(width != lastResizeWidth) {	
+			updateWordWrap(0, lines.size()-1);
+		}
 		renumberLines();
 		restructLines();		
 		readjustBuffer();
@@ -664,6 +667,8 @@ void UITextInput::doMultilineResize() {
 		}
 	}
 	
+	lastResizeWidth = width;
+		
 	didMultilineResize = true;
 	
 	if(hasSelection) {
