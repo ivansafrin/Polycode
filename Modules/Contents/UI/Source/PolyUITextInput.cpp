@@ -1123,14 +1123,10 @@ void UITextInput::replaceAll(String what, String withWhat) {
 	}
 }
 
-void UITextInput::findString(String stringToFind, bool replace, String replaceString) {
-
-	clearSelection();
-	findMatches.clear();
+std::vector<FindMatch> UITextInput::getFindMatches(String stringToFind) {
+	std::vector<FindMatch> findMatches;
 	
 	for(int i=0; i < lines.size(); i++) {
-
-
 		String lineText = lines[i].text;
 		
 		int offset = 0;				
@@ -1145,11 +1141,17 @@ void UITextInput::findString(String stringToFind, bool replace, String replaceSt
 				findMatches.push_back(match);		
 				offset = retVal + stringToFind.length();
 			}			
-		} while(retVal != -1);
-		
+		} while(retVal != -1);		
 	}
-	
-	
+	return findMatches;
+}
+
+void UITextInput::findString(String stringToFind, bool replace, String replaceString) {
+
+	clearSelection();
+	findMatches.clear();		
+	findMatches = getFindMatches(stringToFind);
+		
 	if(findMatches.size() > 0) {
 
 		if(replace) {

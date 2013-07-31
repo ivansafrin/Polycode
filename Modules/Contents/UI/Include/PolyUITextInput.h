@@ -295,6 +295,8 @@ namespace Polycode {
 			 */
 			void findString(String stringToFind, bool replace=false, String replaceString="");
 
+			std::vector<FindMatch> getFindMatches(String stringToFind);
+
 			/**
 			 * Set the current find result to the next one in the result list and select it
 			 * in the text field.

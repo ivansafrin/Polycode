@@ -53,6 +53,7 @@ class FindBar : public UIElement {
 		UIImageButton *closeButton;		
 		
 		UIButton *replaceAllButton;
+		UIComboBox *functionList;
 		
 	protected:
 		ScreenShape *barBg;

@@ -23,6 +23,7 @@
 #include "PolycodeTextEditor.h"
 
 extern SyntaxHighlightTheme *globalSyntaxTheme;
+extern UIGlobalMenu *globalMenu;
 
 void SyntaxHighlightTheme::loadFromFile(String themeName) {
 	String filePath = "SyntaxThemes/"+themeName+".xml";
@@ -486,7 +487,8 @@ bool PolycodeTextEditor::openFile(OSFileEntry filePath) {
 			
 	findBar->closeButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	findBar->replaceAllButton->addEventListener(this, UIEvent::CLICK_EVENT);
-		
+	findBar->functionList->addEventListener(this, UIEvent::CHANGE_EVENT);
+			
 	syntaxHighligher = NULL;
 	
 	if(filePath.extension == "lua" || filePath.extension == "vert" || filePath.extension == "frag") {
@@ -515,6 +517,13 @@ void PolycodeTextEditor::handleEvent(Event *event) {
 			lastFindString = "";
 			setHasChanges(true);
 		}
+	}
+
+	if(event->getDispatcher() == findBar->functionList) {
+		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CHANGE_EVENT) {
+			FindMatch *match = (FindMatch*)findBar->functionList->getSelectedItem()->data;
+			textInput->showLine(match->lineNumber, true);
+		}		
 	}
 
 	if(event->getDispatcher() == findBar->replaceAllButton) {
@@ -573,6 +582,22 @@ void PolycodeTextEditor::showFindBar() {
 	findBar->focusChild(findBar->findInput);
 	findBar->findInput->selectAll();
 	lastFindString = "";
+	
+	for(int i=0; i < findBar->functionList->getNumItems(); i++) {
+		FindMatch *match = (FindMatch*)findBar->functionList->getItemAtIndex(i)->data;
+		findBar->functionList->getItemAtIndex(i)->data = NULL;
+		delete match;
+	}
+	
+	findBar->functionList->clearItems();
+	
+	std::vector<FindMatch> functionMatches = textInput->getFindMatches("function ");
+	for(int i=0; i < functionMatches.size(); i++) {
+		FindMatch *match = new FindMatch();
+		(*match) = functionMatches[i];
+		findBar->functionList->addComboItem(textInput->getLineText(functionMatches[i].lineNumber).replace("function ", ""), (void*) match);
+	}
+	
 	Resize(editorSize.x, editorSize.y);
 }
 
@@ -630,7 +655,7 @@ FindBar::FindBar() : UIElement() {
 	addChild(replaceLabel);
 	replaceLabel->setColor(1.0, 1.0, 1.0, 0.6);
 	replaceLabel->setPosition(200,3);
-
+	
 	processInputEvents = true;
 	
 	findInput = new UITextInput(false, 120, 12);
@@ -644,7 +669,15 @@ FindBar::FindBar() : UIElement() {
 	replaceAllButton = new UIButton("Replace All", 100);
 	addChild(replaceAllButton);
 	replaceAllButton->setPosition(420, 3);
+
+	ScreenImage *functionIcon = new ScreenImage("Images/function_icon.png");
+	addChild(functionIcon);
+	functionIcon->setPosition(540, 5);	
 	
+	functionList = new UIComboBox(globalMenu, 200);
+	addChild(functionList);
+	functionList->setPosition(560, 4);	
+		
 	closeButton = new UIImageButton("Images/barClose.png");
 	addChild(closeButton);
 }
@@ -670,4 +703,5 @@ FindBar::~FindBar(){
 void FindBar::setBarWidth(int width) {
 	barBg->setShapeSize(width, 30);
 	closeButton->setPosition(width - 30, 5);
+	functionList->Resize(width-560-60, functionList->getHeight());
 }
