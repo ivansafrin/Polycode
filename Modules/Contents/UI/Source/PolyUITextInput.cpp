@@ -663,11 +663,19 @@ void UITextInput::doMultilineResize() {
 
 	if(multiLine) {
 		int bufferOffset = -linesContainer->position.y/ ( lineHeight+lineSpacing);	
-		int realLineOffset = wordWrapLines[bufferOffset].actualLineNumber;
+		
+		int realLineOffset = -1;
+		if(bufferOffset > 0 && bufferOffset < wordWrapLines.size()) {
+			realLineOffset = wordWrapLines[bufferOffset].actualLineNumber;
+		}
+		
 		if(width != lastResizeWidth) {	
 			updateWordWrap(0, lines.size()-1);
 		}
-		showLine(realLineOffset, true);
+		
+		if(realLineOffset > -1 && realLineOffset < lines.size()) {
+			showLine(realLineOffset, true);
+		}
 		renumberLines();
 		restructLines();		
 		readjustBuffer();
