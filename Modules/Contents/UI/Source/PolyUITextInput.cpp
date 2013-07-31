@@ -662,9 +662,12 @@ void UITextInput::setSyntaxHighlighter(UITextInputSyntaxHighlighter *syntaxHighl
 void UITextInput::doMultilineResize() {
 
 	if(multiLine) {
+		int bufferOffset = -linesContainer->position.y/ ( lineHeight+lineSpacing);	
+		int realLineOffset = wordWrapLines[bufferOffset].actualLineNumber;
 		if(width != lastResizeWidth) {	
 			updateWordWrap(0, lines.size()-1);
 		}
+		showLine(realLineOffset, true);
 		renumberLines();
 		restructLines();		
 		readjustBuffer();
@@ -1645,6 +1648,8 @@ void UITextInput::showLine(unsigned int lineNumber, bool top) {
 	if(!multiLine) {
 		return;
 	}
+	
+	scrollContainer->setContentSize(width,  (((wordWrapLines.size()+1) * ((lineHeight+lineSpacing)))) + padding);
 
 	if(top) {
 		scrollContainer->setScrollValue(0.0, ((((offsetLineNumber) * ((lineHeight+lineSpacing)))) + padding)/(scrollContainer->getContentSize().y-scrollContainer->getHeight()));
