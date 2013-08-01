@@ -372,8 +372,7 @@ void PolycodeIDEApp::openProject() {
 		PolycodeProject *project = projectManager->openProject(paths[0]);
 		if(project) {
 			projectManager->setActiveProject(project);
-			OSFileEntry projectEntry =	OSFileEntry(project->getProjectFile(), OSFileEntry::TYPE_FILE);
-			openFile(projectEntry);			
+			OSFileEntry projectEntry =	OSFileEntry(project->getProjectFile(), OSFileEntry::TYPE_FILE);	
 		}
 	}
 #endif
@@ -582,7 +581,6 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 				if(project) {
 					projectManager->setActiveProject(project);
 					OSFileEntry projectEntry =	OSFileEntry(project->getProjectFile(), OSFileEntry::TYPE_FILE);
-					openFile(projectEntry);			
 				}
 				
 			}
@@ -931,9 +929,7 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 			String fullPath = String(core->getDefaultWorkingDirectory()+"/"+frame->exampleBrowserWindow->getExamplePath());
 			PolycodeProject* project = projectManager->openProject(fullPath);
 			OSFileEntry projectEntry =	OSFileEntry(project->getProjectFile(), OSFileEntry::TYPE_FILE);
-			projectManager->setActiveProject(project);
-			openFile(projectEntry);			
-			
+			projectManager->setActiveProject(project);			
 			frame->hideModal();			
 		}
 	}
@@ -1015,7 +1011,6 @@ void PolycodeIDEApp::loadConfigFile() {
 					if(project) {
 						OSFileEntry projectEntry =	OSFileEntry(project->getProjectFile(), OSFileEntry::TYPE_FILE);
 						projectManager->setActiveProject(project);
-						openFile(projectEntry);
 					}
 				}
 			}

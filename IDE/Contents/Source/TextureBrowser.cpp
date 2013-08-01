@@ -40,6 +40,8 @@ AssetEntry::AssetEntry(String assetPath, String assetName, String extension) : U
 	imageShape->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 	addChild(imageShape);
 	
+	extension = extension.toLowerCase();
+	
 	if(extension == "png") {
 		imageShape->loadTexture(assetPath);
 	} else if(extension == "ogg" || extension == "wav") {
@@ -93,7 +95,7 @@ void AssetList::setExtensions(std::vector<String> extensions) {
 
 bool AssetList::hasExtension(String extension) {
 	for(int i=0; i < extensions.size(); i++) {
-		if(extensions[i] == extension) {
+		if(extensions[i] == extension.toLowerCase()) {
 			return true;
 		}
 	}
