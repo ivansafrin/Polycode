@@ -1962,18 +1962,19 @@ void PolycodeScreenEditorMain::deleteEntity(ScreenEntity *entity) {
 
 void PolycodeScreenEditorMain::handleEvent(Event *event) {
 
-	if(!editor->enabled)
-		return;
-		
-	InputEvent *inputEvent = (InputEvent*) event;
-	
 	if(event->getEventCode() == Event::RESOURCE_RELOAD_EVENT && event->getEventType() == "") {
 			ScreenEntityInstanceResourceEntry *entry = dynamic_cast<ScreenEntityInstanceResourceEntry*>(event->getDispatcher());
 			if(entry) {	
 				applyEditorProperties(entry->getInstance());
 				applyEditorOnlyChildren(entry->getInstance());				
 			}
-	} else if(event->getEventCode() == UIEvent::CHANGE_EVENT && event->getEventType() == "UIEvent") {
+	}
+	
+	if(!editor->enabled)
+		return;		
+
+	InputEvent *inputEvent = (InputEvent*) event;		
+	if(event->getEventCode() == UIEvent::CHANGE_EVENT && event->getEventType() == "UIEvent") {
 
 
 		if(event->getDispatcher() == pixelSnapBox) {
