@@ -1113,7 +1113,9 @@ bool PolycodeMaterialEditor::openFile(OSFileEntry filePath) {
 	for(int i=0; i < shaders.size(); i++) {
 		materialBrowser->addShader(shaders[i]);		
 		CoreServices::getInstance()->getMaterialManager()->addShader(shaders[i]);
-		CoreServices::getInstance()->getResourceManager()->addResource(shaders[i]);
+		CoreServices::getInstance()->getResourceManager()->addResource(shaders[i]);		
+		shaders[i]->vp->reloadOnFileModify = true;
+		shaders[i]->fp->reloadOnFileModify = true;
 	}	
 
 	cubemaps = CoreServices::getInstance()->getMaterialManager()->loadCubemapsFromFile(filePath.fullPath);
