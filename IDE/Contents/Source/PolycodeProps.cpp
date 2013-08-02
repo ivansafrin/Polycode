@@ -1030,7 +1030,6 @@ void ScreenSpriteProp::setPropData(PolycodeEditorPropActionData* data) {
 void ScreenSpriteProp::set(String fileName) {
 
 	if(fileName != previewSprite->getFileName()) {
-		printf("%s != %s\n", fileName.c_str(), previewSprite->getFileName().c_str());
 		if(previewSprite) {
 			propContents->removeChild(previewSprite);
 			delete previewSprite;
@@ -2720,7 +2719,7 @@ void ScreenImageSheet::Update() {
 
 ScreenSpriteSheet::ScreenSpriteSheet() : PropSheet("SCREEN SPRITE", "ScreenSprite") {
 	sprite = NULL;
-	lastAnimationCheck = NULL;
+	lastSprite = NULL;
 	
 	spriteProp = new ScreenSpriteProp("Sprite");
 	spriteProp->addEventListener(this, Event::CHANGE_EVENT);
@@ -2741,6 +2740,12 @@ void ScreenSpriteSheet::handleEvent(Event *event) {
 	if(!sprite)
 		return;
 
+	if(event->getDispatcher() == sprite->getResourceEntry()) {
+		spriteProp->previewSprite->reloadSprite();
+		sprite->getResourceEntry()->removeAllHandlersForListener(this);
+		lastSprite = NULL;
+	}
+
 	if(event->getDispatcher() == defaultAnimationProp) {
 		sprite->playAnimation(defaultAnimationProp->comboEntry->getSelectedItem()->label, 0, false);
 		spriteProp->previewSprite->playAnimation(defaultAnimationProp->comboEntry->getSelectedItem()->label, 0, false);
@@ -2759,9 +2764,8 @@ void ScreenSpriteSheet::handleEvent(Event *event) {
 }
 
 void ScreenSpriteSheet::Update() {
-	if(sprite) {
-	
-		if(lastAnimationCheck != sprite) {
+	if(sprite) {	
+		if(lastSprite != sprite) {
 			defaultAnimationProp->comboEntry->clearItems();
 			for(int i=0; i < sprite->getNumAnimations(); i++) {
 				defaultAnimationProp->comboEntry->addComboItem(sprite->getAnimationAtIndex(i)->name);
@@ -2772,11 +2776,11 @@ void ScreenSpriteSheet::Update() {
 					}
 				}
 			}
-			lastAnimationCheck = sprite;
-		}
-	
+			lastSprite = sprite;
+		}	
 		enabled = true;	
 		spriteProp->set(sprite->getFileName());
+		sprite->getResourceEntry()->addEventListener(this, Event::RESOURCE_RELOAD_EVENT);
 	} else {
 		enabled = false;
 	}

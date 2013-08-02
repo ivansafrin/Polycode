@@ -597,9 +597,8 @@ class ScreenSpriteSheet : public PropSheet {
 				
 		ScreenSprite *sprite;	
 		ScreenSpriteProp *spriteProp;
-		ComboProp *defaultAnimationProp;
-		
-		ScreenSprite *lastAnimationCheck;
+		ComboProp *defaultAnimationProp;		
+		ScreenSprite *lastSprite;
 		
 };
 

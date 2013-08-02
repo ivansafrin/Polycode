@@ -27,6 +27,8 @@ THE SOFTWARE.
 
 namespace Polycode {
 
+class ScreenSpriteResourceEntry;
+
 class _PolyExport SpriteAnimation {
 	public:
 		Number speed;
@@ -111,6 +113,8 @@ class _PolyExport ScreenSprite : public ScreenShape
 		void recalculateSpriteDimensions();
 	
 		bool loadFromFile(const String& fileName);
+		
+		void reloadSprite();
 	
 		/**
 		* Pauses or unpauses the current sprite animation.
@@ -127,6 +131,8 @@ class _PolyExport ScreenSprite : public ScreenShape
 		
 		void updateSprite();
 		
+		ScreenSpriteResourceEntry *getResourceEntry();
+		
 	protected:
 	
 		String fileName;
@@ -139,12 +145,25 @@ class _PolyExport ScreenSprite : public ScreenShape
 		bool playingOnce;
 		Number lastTick;
 		
+		ScreenSpriteResourceEntry *resourceEntry;
+		
 		Number spriteUVWidth;
 		Number spriteUVHeight;
 		int currentFrame;
 		SpriteAnimation *currentAnimation;
 		
 		std::vector<SpriteAnimation*> animations;
+};
+
+class ScreenSpriteResourceEntry : public Resource {
+	public:
+		ScreenSpriteResourceEntry(ScreenSprite *sprite);
+		virtual ~ScreenSpriteResourceEntry();		
+		ScreenSprite *getSprite();
+		void reloadResource();
+		
+	protected:
+		ScreenSprite* sprite;
 };
 	
 }

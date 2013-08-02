@@ -361,7 +361,8 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain(PolycodeEditor *editor) {
 	previewSprite->setPositionMode(ScreenEntity::POSITION_CENTER);	
 	placingPreviewEntity->addChild(previewSprite);
 	previewSprite->setColor(1.0, 1.0, 1.0, 0.5);
-	
+	previewSprite->getResourceEntry()->reloadOnFileModify = true;
+		
 	previewImage = new ScreenImage("default.png");
 	previewImage->setPositionMode(ScreenEntity::POSITION_CENTER);
 	placingPreviewEntity->addChild(previewImage);
@@ -375,7 +376,8 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain(PolycodeEditor *editor) {
 	previewInstance->getResourceEntry()->addEventListener(this, Event::RESOURCE_RELOAD_EVENT);
 	
 	CoreServices::getInstance()->getResourceManager()->addResource(previewInstance->getResourceEntry());	
-
+	CoreServices::getInstance()->getResourceManager()->addResource(previewSprite->getResourceEntry());	
+	
 	grid = false;
 	setGrid(16);
 	
@@ -1553,7 +1555,8 @@ void PolycodeScreenEditorMain::handleMouseDown(Vector2 position) {
 				placingSprite->id = "ScreenSprite."+String::IntToString(placementCount);
 				placingSprite->blockMouseInput = true;
 				placingSprite->getTexture()->reloadOnFileModify = true;
-				
+				placingSprite->getResourceEntry()->reloadOnFileModify = true;
+								
 				if(previewSprite->getCurrentAnimation()) {
 						placingSprite->playAnimation(previewSprite->getCurrentAnimation()->name, 0, false);
 				}
@@ -2936,8 +2939,13 @@ void PolycodeScreenEditorMain::applyEditorProperties(ScreenEntity *entity) {
 			instance->getResourceEntry()->addEventListener(this, Event::RESOURCE_RELOAD_EVENT);
 			CoreServices::getInstance()->getResourceManager()->addResource(instance->getResourceEntry());
 		}
+	} else if(dynamic_cast<ScreenSprite*>(entity)) {	
+		ScreenSprite *sprite = (((ScreenSprite*)entity));	
+		sprite->getResourceEntry()->reloadOnFileModify = true;
+		if(!CoreServices::getInstance()->getResourceManager()->hasResource(sprite->getResourceEntry())) { 
+			CoreServices::getInstance()->getResourceManager()->addResource(sprite->getResourceEntry());
+		}		
 	} else if(dynamic_cast<ScreenShape*>(entity)) {
-	
 	} else if(dynamic_cast<ScreenImage*>(entity)) {
 	} else if(dynamic_cast<ScreenLabel*>(entity)) {
 

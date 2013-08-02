@@ -30,6 +30,23 @@
 using std::vector;
 using namespace Polycode;
 
+ScreenSpriteResourceEntry::ScreenSpriteResourceEntry(ScreenSprite *sprite)  : Resource(Resource::RESOURCE_SCREEN_ENTITY_INSTANCE) {
+	this->sprite = sprite;
+}
+
+ScreenSpriteResourceEntry::~ScreenSpriteResourceEntry() {
+
+}
+
+ScreenSprite *ScreenSpriteResourceEntry::getSprite() {
+	return sprite;
+}
+
+void ScreenSpriteResourceEntry::reloadResource() {
+	sprite->reloadSprite();
+	Resource::reloadResource();
+}
+
 ScreenSprite* ScreenSprite::ScreenSpriteFromImageFile(const String& fileName, Number spriteWidth, Number spriteHeight) {
 	return new ScreenSprite(fileName, spriteWidth, spriteHeight);
 }
@@ -40,7 +57,10 @@ ScreenSprite::ScreenSprite(const String& fileName) : ScreenShape(ScreenShape::SH
 	currentAnimation = NULL;	
 	paused = false;
 
+	resourceEntry = new ScreenSpriteResourceEntry(this);		
 	loadFromFile(fileName);
+	resourceEntry->setResourceName(fileName);
+	resourceEntry->setResourcePath(fileName);	
 }
 
 Entity *ScreenSprite::Clone(bool deepClone, bool ignoreEditorOnly) const {
@@ -123,6 +143,27 @@ SpriteAnimation *ScreenSprite::getAnimationAtIndex(unsigned int index) {
 	}
 }
 
+void ScreenSprite::reloadSprite() {
+	
+	String _animName = "";
+	int _currentFrame;
+	bool _playingOnce;
+	
+	if(currentAnimation) {
+		_animName = currentAnimation->name;
+		_currentFrame = currentFrame;
+		_playingOnce = playingOnce;
+	}
+	loadFromFile(fileName);
+	
+	if(_animName != "") {
+		playAnimation(_animName, _currentFrame, _playingOnce);
+	}
+}
+
+ScreenSpriteResourceEntry *ScreenSprite::getResourceEntry() {
+	return resourceEntry;
+}
 
 ScreenSprite::ScreenSprite(const String& fileName, Number spriteWidth, Number spriteHeight) : ScreenShape(ScreenShape::SHAPE_RECT, spriteWidth, spriteHeight) {
 	this->spriteWidth = spriteWidth;
