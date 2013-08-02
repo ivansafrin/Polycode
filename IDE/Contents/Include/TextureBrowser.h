@@ -65,6 +65,8 @@ class AssetList : public UIElement {
 		
 	protected:
 	
+		UIImageButton *reloadButton;
+	
 		String currentFolderPath;
 		ScreenShape *bgShape;
 	
