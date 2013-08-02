@@ -140,7 +140,13 @@ PolycodeSpriteEditor::PolycodeSpriteEditor() : PolycodeEditor(true){
 	PropSheet *animationProps = new PropSheet("ANIMATIONS", "");
 	propList->addPropSheet(animationProps);
 
-	animationProps->propHeight = 200;
+	ScreenLabel *animHelpLabel = new ScreenLabel("Comma separated frames, ranges or repeats (e.g. 1,2,3-7,8x5)", 11);
+	animHelpLabel->color.a = 0.4;
+	animationProps->addChild(animHelpLabel);
+	animHelpLabel->setPosition(5, 40);
+
+
+	animationProps->propHeight = 230;
 	
 	animationsAnchor = new UIElement();
 	animationProps->contents->addChild(animationsAnchor);
@@ -165,9 +171,9 @@ PolycodeSpriteEditor::PolycodeSpriteEditor() : PolycodeEditor(true){
 
 void PolycodeSpriteEditor::refreshAnimationEntries() {
 	for(int i=0; i < animationEntries.size(); i++) {
-		animationEntries[i]->setPosition(0, 30*i);
+		animationEntries[i]->setPosition(0, 30 + (30*i));
 	}
-	addAnimationButton->setPosition(0, (animationEntries.size() * 30) + 10);
+	addAnimationButton->setPosition(0, 30 + (animationEntries.size() * 30) + 10);
 }
 
 
