@@ -18,6 +18,11 @@ _G["cast"] = function (c, T)
 	return ret
 end
 
+function __update(elapsed)
+	Services.TweenManager:Update(elapsed)
+	Update(elapsed)
+end
+
 function __is_table_kind_of(T,c)
         local __baseclass = T
         while __baseclass do
@@ -73,9 +78,6 @@ Services.SceneManager.__ptr = Polycore.CoreServices_getSceneManager(Polycore.Cor
 Services.TimerManager = TimerManager("__skip_ptr__")
 Services.TimerManager.__ptr = Polycore.CoreServices_getTimerManager(Polycore.CoreServices_getInstance())
 
-Services.TweenManager = TweenManager("__skip_ptr__")
-Services.TweenManager.__ptr = Polycore.CoreServices_getTweenManager(Polycore.CoreServices_getInstance())
-
 Services.ResourceManager = ResourceManager("__skip_ptr__")
 Services.ResourceManager.__ptr = Polycore.CoreServices_getResourceManager(Polycore.CoreServices_getInstance())
 
@@ -84,6 +86,8 @@ Services.SoundManager.__ptr = Polycore.CoreServices_getSoundManager(Polycore.Cor
 
 Services.FontManager = FontManager("__skip_ptr__")
 Services.FontManager.__ptr = Polycore.CoreServices_getFontManager(Polycore.CoreServices_getInstance())
+
+Services.TweenManager = TweenManager()
 
 function delete(c)
 	c:__delete()

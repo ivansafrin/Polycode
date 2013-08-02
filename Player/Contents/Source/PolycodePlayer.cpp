@@ -355,6 +355,10 @@ extern "C" {
 		lua_getfield(L, LUA_GLOBALSINDEX, "require");
 		lua_pushstring(L, "UI");		
 		lua_call(L, 1, 0);		
+
+		lua_getfield(L, LUA_GLOBALSINDEX, "require");
+		lua_pushstring(L, "tweens");		
+		lua_call(L, 1, 0);
 		
 		lua_getfield(L, LUA_GLOBALSINDEX, "require");
 		lua_pushstring(L, "defaults");		
@@ -902,7 +906,7 @@ bool PolycodePlayer::Update() {
 			lua_getfield(L, LUA_GLOBALSINDEX, "__process_safe_delete");
 			lua_pcall(L, 0,0,errH);	
 		
-			lua_getfield(L, LUA_GLOBALSINDEX, "Update");
+			lua_getfield(L, LUA_GLOBALSINDEX, "__update");
 			lua_pushnumber(L, core->getElapsed());
 			lua_pcall(L, 1,0,errH);
 		}
