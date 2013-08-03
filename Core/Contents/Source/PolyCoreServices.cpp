@@ -64,7 +64,6 @@ CoreServices* CoreServices::getInstance() {
 
 //#ifdef _WINDOWS
 		overrideInstance = new CoreServices;
-		overrideInstance->drawScreensFirst = false;
 		Logger::log("Creating new core services instance...\n");
 		return overrideInstance;
 //#else
@@ -223,7 +222,7 @@ void CoreServices::Render() {
 	if(renderer->doClearBuffer)
 		renderer->clearScreen();					
 
-	if(drawScreensFirst) {
+	if(screenManager->drawScreensFirst) {
 		renderer->clearLights();	
 		screenManager->Render();
 		renderer->setPerspectiveMode();

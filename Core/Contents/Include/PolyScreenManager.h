@@ -48,6 +48,12 @@ namespace Polycode {
 		
 		void handleEvent(Event *event);
 		
+			
+		/**
+		* If set to true, will draw Screens before Scenes (defaults to false).
+		*/	
+		bool drawScreensFirst;
+					
 		private:
 		
 		std::vector <Screen*> screens;

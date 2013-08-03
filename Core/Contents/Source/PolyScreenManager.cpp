@@ -28,7 +28,7 @@
 using namespace Polycode;
 
 ScreenManager::ScreenManager() : EventDispatcher() {
-
+	drawScreensFirst = false;
 }
 
 ScreenManager::~ScreenManager() {
