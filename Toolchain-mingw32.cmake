@@ -6,8 +6,8 @@ SET(CMAKE_C_COMPILER i486-mingw32-gcc)
 SET(CMAKE_CXX_COMPILER i486-mingw32-g++)
 SET(CMAKE_RC_COMPILER i486-mingw32-windres)
 
-# here is the target environment located
-SET(POLYCODE_DIRECTORY "/home/cib/projects/Polycode")
+# here is the target environment located, please replace /path/to/Polycode with the absolute path to your polycode installation
+SET(POLYCODE_DIRECTORY "/path/to/Polycode")
 SET(CMAKE_FIND_ROOT_PATH  /usr/i486-mingw32; ${POLYCODE_DIRECTORY}/Release/Windows/Framework/Core/Dependencies; ${POLYCODE_DIRECTORY}/Release/Windows/Framework/Tools/Dependencies; /home/cib/projects/Polycode/Release/Windows/Framework/Modules/Dependencies; )
 
 # adjust the default behaviour of the FIND_XXX() commands:
