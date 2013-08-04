@@ -86,7 +86,8 @@ CocoaCore::CocoaCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, 
 
 	hidManager = NULL;
 	initGamepad();
-
+	this->fullScreen = false;
+	
 	eventMutex = createMutex();
 	
 //	NSLog(@"BUNDLE: %@", [[NSBundle mainBundle] bundlePath]);
@@ -104,9 +105,11 @@ CocoaCore::CocoaCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, 
 	
 	initTime = mach_absolute_time();					
 
+	modeChangeInfo.needResolutionChange = false;
+
 	renderer = new OpenGLRenderer();
 	services->setRenderer(renderer);			
-	setVideoMode(xRes,yRes,fullScreen, vSync, aaLevel, anisotropyLevel);
+	_setVideoMode(xRes,yRes,fullScreen, vSync, aaLevel, anisotropyLevel);
 	renderer->Init();
 
 	CoreServices::getInstance()->installModule(new GLSLShaderModule());	
@@ -135,9 +138,22 @@ String CocoaCore::getClipboardString() {
 	return [retString UTF8String];
 }
 
-void CocoaCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel) {
+void CocoaCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel) {	
+	// hack to make sure there are no window race conditions
+	modeChangeInfo.needResolutionChange = true;
+	modeChangeInfo.xRes = xRes;
+	modeChangeInfo.yRes = yRes;
+	modeChangeInfo.fullScreen = fullScreen;
+	modeChangeInfo.vSync = vSync;
+	modeChangeInfo.aaLevel = aaLevel;
+	modeChangeInfo.anisotropyLevel = anisotropyLevel;	
+}
+
+void CocoaCore::_setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel) {
 	this->xRes = xRes;
 	this->yRes = yRes;
+	
+	bool _wasFullscreen = this->fullScreen;	
 	this->fullScreen = fullScreen;
 	this->aaLevel = aaLevel;
 	
@@ -170,65 +186,40 @@ void CocoaCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, in
 	}
 	
 	context = [[NSOpenGLContext alloc] initWithFormat: format shareContext:context];
+		
 	[format release];
 
 	if (context == nil) {
         NSLog(@"Failed to create open gl context");
 	}	
-	
 		
 	[glView clearGLContext];
 	[glView setOpenGLContext:context];	
 	[context setView: (NSView*)glView];					
-	
-		
 		
 	renderer->setAnisotropyAmount(anisotropyLevel);
-		
-	renderer->Resize(xRes, yRes);
-//	CoreServices::getInstance()->getMaterialManager()->reloadProgramsAndTextures();	
 	dispatchEvent(new Event(), EVENT_CORE_RESIZE);	
 
-	
-//	NSRect visibleFrame = [[NSScreen mainScreen] visibleFrame];	
-//	NSRect frame = NSMakeRect([[glView window] frame].origin.x, [[glView window] frame].origin.y, xRes, yRes);
-	
-//	frame.origin.x = (visibleFrame.size.width - frame.size.width) * 0.5;
-//	frame.origin.y = (visibleFrame.size.height - frame.size.height) * (9.0/10.0);
-	
-//	[[glView window] setFrame: frame display: YES animate: NO];
-//	if(!fullScreen) {
-		[[glView window] setContentSize: NSMakeSize(xRes, yRes)];
-//	} else {
-//		CGDisplaySwitchToMode (kCGDirectMainDisplay, CGDisplayBestModeForParameters (kCGDirectMainDisplay, 32, xRes, yRes, NULL) );						
-//	}
-	if(fullScreen) {
-#		if __MAC_OS_X_VERSION_MIN_REQUIRED < 1060
-		{
-			CGDisplaySwitchToMode (kCGDirectMainDisplay, CGDisplayBestModeForParameters (kCGDirectMainDisplay, 32, xRes, yRes, NULL) );
-		}
-#		else
-		{
-			CGDisplayModeRef bestDisplayMode = GetBestDisplayModeForParameters(32, xRes, yRes);
-			CGDisplaySetDisplayMode(CGMainDisplayID(), bestDisplayMode, NULL);
-			CGDisplayModeRelease(bestDisplayMode);
-		}
-#		endif
+	[[glView window] setContentSize: NSMakeSize(xRes, yRes)];
 		
+	if(fullScreen) {	
 		if(monitorIndex > -1) {
 			if(monitorIndex > [[NSScreen screens] count]-1) {
 				Logger::log("Requested monitor index above available screens.\n");
 				monitorIndex = -1;
 			}
 		}
-		
+			
 	    if(monitorIndex == -1) {		
-			[glView enterFullScreenMode:[NSScreen mainScreen] withOptions:[NSDictionary dictionaryWithObjectsAndKeys: nil]];
+			[glView enterFullScreenMode:[[glView window] screen] withOptions: nil];
 		} else {
-			[glView enterFullScreenMode:[[NSScreen screens] objectAtIndex:1] withOptions:[NSDictionary dictionaryWithObjectsAndKeys: nil]];
+			[glView enterFullScreenMode:[[NSScreen screens] objectAtIndex:monitorIndex] withOptions: nil];
 		}
-
 		
+		[[glView window] becomeFirstResponder];
+	} else {
+		if(_wasFullscreen)
+			[glView exitFullScreenModeWithOptions: nil];
 	}
 	
 	GLint sync = 0;
@@ -238,6 +229,16 @@ void CocoaCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, in
 	
 	[context setValues:&sync forParameter:NSOpenGLCPSwapInterval];	
 				
+
+	CGLContextObj ctx = (CGLContextObj) [context CGLContextObj];
+	if(fullScreen) {
+		GLint dim[2] = {xRes, yRes};
+		CGLSetParameter(ctx, kCGLCPSurfaceBackingSize, dim);
+		CGLEnable (ctx, kCGLCESurfaceBackingSize);
+	} else {
+		CGLDisable(ctx, kCGLCESurfaceBackingSize);		
+	}
+	renderer->Resize(xRes, yRes);	
 
 	if(aaLevel > 0) {
 		glEnable( GL_MULTISAMPLE_ARB );
@@ -601,7 +602,12 @@ bool CocoaCore::Update() {
 	if(!running)
 		return false;
 	doSleep();
-		
+	
+	if(modeChangeInfo.needResolutionChange) {
+		_setVideoMode(modeChangeInfo.xRes, modeChangeInfo.yRes, modeChangeInfo.fullScreen, modeChangeInfo.vSync, modeChangeInfo.aaLevel, modeChangeInfo.anisotropyLevel);
+		modeChangeInfo.needResolutionChange = false;
+	}
+							
 	updateCore();		
 	return running;
 }
