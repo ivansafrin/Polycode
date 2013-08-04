@@ -52,6 +52,10 @@ namespace Polycode {
 	}
 	
 	Core::Core(int _xRes, int _yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex) : EventDispatcher() {
+	
+		int _hz;
+		getScreenInfo(&defaultScreenWidth, &defaultScreenHeight, &_hz);
+	
 		services = CoreServices::getInstance();
 		input = new CoreInput();
 		services->setCore(this);
@@ -91,11 +95,7 @@ namespace Polycode {
 	void Core::captureMouse(bool newval) {
 		mouseCaptured = newval;
 	}
-	
-	int Core::getNumVideoModes() {
-		return numVideoModes;
-	}
-	
+		
 	Number Core::getXRes() {
 		return xRes;
 	}
@@ -132,15 +132,7 @@ namespace Polycode {
 	Number Core::getTicksFloat() {
 		return ((Number)getTicks())/1000.0f;		
 	}
-	
-	void Core::setVideoModeIndex(int index, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel) {
-		std::vector<Rectangle> resList = getVideoModes();
-		if(index >= resList.size())
-			return;
 		
-		setVideoMode(resList[index].w, resList[index].h, fullScreen, vSync, aaLevel, anisotropyLevel);
-	}
-	
 	void Core::createThread(Threaded *target) {
 		if(!threadedEventMutex) {
 			threadedEventMutex = createMutex();

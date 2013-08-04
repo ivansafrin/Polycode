@@ -298,11 +298,6 @@ void CocoaCore::resizeTo(int xRes, int yRes) {
 	dispatchEvent(new Event(), EVENT_CORE_RESIZE);	
 }
 
-vector<Polycode::Rectangle> CocoaCore::getVideoModes() {
-	vector<Polycode::Rectangle> retVector;
-	return retVector;
-}
-
 CocoaCore::~CocoaCore() {
 	printf("Shutting down cocoa core\n");
 	[glView setCore:nil];	

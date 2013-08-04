@@ -206,16 +206,7 @@ namespace Polycode {
 		* @return Current vertical resolution.
 		*/													
 		Number getYRes();
-		
-		// deprecated
-		int getNumVideoModes();
-		
-		/**
-		* Returns the available system video modes. 
-		* @return An STL vector of video modes.
-		*/															
-		virtual std::vector<Rectangle> getVideoModes() = 0;
-		
+				
 		/**
 		* Provides the current width, height, and refresh rate of the screen.
 		* @param width If non-NULL, current screen width will be written here (or 0 if unknown).
@@ -223,7 +214,7 @@ namespace Polycode {
 		* @param hz If non-NULL, current screen refresh rate will be written here (or 0 if unknown).
 		*/
 		static void getScreenInfo(int *width, int *height, int *hz);
-								
+
 		/**
 		* Creates a folder on disk with the specified path.
 		* @param folderPath Path to create the folder in.
@@ -265,9 +256,7 @@ namespace Polycode {
 		* @return An STL vector of the selected file paths.
 		*/																							
 		virtual std::vector<String> openFilePicker(std::vector<CoreFileExtension> extensions, bool allowMultiple) = 0;
-		
-		void setVideoModeIndex(int index, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel);
-		
+				
 		/**
 		* Sets a new video mode.
 		* @param xRes New horizontal resolution of the renderer.
@@ -357,6 +346,16 @@ namespace Polycode {
 		
 		bool paused;
 		bool pauseOnLoseFocus;
+		
+		/**
+		* Default width of the desktop screen
+		*/
+		int defaultScreenWidth;
+		
+		/**
+		* Default height of the desktop screen
+		*/		
+		int defaultScreenHeight;		
 				
 	protected:	
 	
@@ -397,8 +396,8 @@ namespace Polycode {
 		CoreMutex *threadedEventMutex;
 		
 		int xRes;
-		int yRes;	
-		
+		int yRes;
+				
 		int monitorIndex;
 		
 		int frames;

@@ -155,9 +155,7 @@ namespace Polycode {
 		void unlockMutex(CoreMutex *mutex);
 		CoreMutex *createMutex();		
 		
-		void checkEvents();
-		
-		vector<Rectangle> getVideoModes();
+		void checkEvents();		
 		
 		int lastMouseY;
 		int lastMouseX;				
