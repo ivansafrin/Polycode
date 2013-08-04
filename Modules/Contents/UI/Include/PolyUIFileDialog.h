@@ -106,6 +106,8 @@ namespace Polycode {
 			 * 		   (base path + relative path to top level directory)
 			 */
 			String getSelection();
+
+			String action;
 		protected:
 
 			String selection;
