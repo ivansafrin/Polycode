@@ -1,3 +1,16 @@
+# This CMakeLists.txt is a cross-platform alternative to the $Polycode/IDE/Build/$OS
+# build systems. 
+#
+# It also demonstrates how Polycode projects other than the IDE can be built.
+# First a few variables need to be set:
+# * POLYCODE_ROOT_DIR
+# * POLYCODE_RELEASE_DIR
+# * POLYCODE_CMAKE_DIR
+# * CMAKE_INSTALL_PREFIX
+# Then we can simply include ${POLYCODE_CMAKE_DIR}/PolycodeDependencies.cmake
+# After that, ${POLYCODE_DEPENDENCY_LIBS} will be set to the paths of our required
+# link libraries, which we can simply add to our IDE project with TARGET_LINK_LIBRARIES
+
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 PROJECT(PolycodeIDE)
