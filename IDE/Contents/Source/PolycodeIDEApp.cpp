@@ -357,6 +357,7 @@ void PolycodeIDEApp::openProject() {
 	exts.push_back("polyproject");
 	frame->showFileBrowser(CoreServices::getInstance()->getCore()->getUserHomeDirectory(),	false, exts, false);
 	frame->fileDialog->addEventListener(this, UIEvent::OK_EVENT);
+	frame->fileDialog->action = "openProject";
 #else
 	vector<CoreFileExtension> extensions;
 	CoreFileExtension ext;
@@ -453,7 +454,13 @@ void PolycodeIDEApp::runProject() {
 }
 
 void PolycodeIDEApp::addFiles() {
-	if(projectManager->getActiveProject()) {	
+	if(projectManager->getActiveProject()) {
+#ifdef USE_POLYCODEUI_FILE_DIALOGS
+		std::vector<String> exts;
+		frame->showFileBrowser(CoreServices::getInstance()->getCore()->getUserHomeDirectory(),	false, exts, false);
+		frame->fileDialog->addEventListener(this, UIEvent::OK_EVENT);
+		frame->fileDialog->action = "addFiles";
+#else	
 		vector<CoreFileExtension> extensions;		
 		std::vector<String> files = core->openFilePicker(extensions, true);				
 		
@@ -462,8 +469,9 @@ void PolycodeIDEApp::addFiles() {
 			core->copyDiskItem(files[i], projectManager->activeFolder + "/" + entry.name);
 		}
 		
-		frame->getProjectBrowser()->refreshProject(projectManager->getActiveProject());		
-	}			
+		frame->getProjectBrowser()->refreshProject(projectManager->getActiveProject());
+#endif
+	}		
 }
 
 void PolycodeIDEApp::findText() {
@@ -577,12 +585,16 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 		if(event->getEventCode() == UIEvent::OK_EVENT && event->getEventType() == "UIEvent") {
 			String path = frame->fileDialog->getSelection();
 			if(path != "") {
-				PolycodeProject *project = projectManager->openProject(path);
-				if(project) {
-					projectManager->setActiveProject(project);
-					OSFileEntry projectEntry =	OSFileEntry(project->getProjectFile(), OSFileEntry::TYPE_FILE);
+				if(frame->fileDialog->action == "openProject") {
+					PolycodeProject *project = projectManager->openProject(path);
+					if(project) {
+						projectManager->setActiveProject(project);
+					}
+				} else if(frame->fileDialog->action == "addFiles") {
+					OSFileEntry entry = OSFileEntry(path, OSFileEntry::TYPE_FILE);
+					core->copyDiskItem(path, projectManager->activeFolder + "/" + entry.name);
+					frame->getProjectBrowser()->refreshProject(projectManager->getActiveProject());
 				}
-				
 			}
 		}
 	}

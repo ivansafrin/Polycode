@@ -118,6 +118,10 @@ UIFileDialog::UIFileDialog(String baseDir, bool foldersOnly, std::vector<String>
 }
 
 bool UIFileDialog::canOpen(String extension) {
+	if(extensions.empty()) {
+		return true;
+	}
+	
 	for(int i=0; i < extensions.size(); i++) {
 		if(extensions[i] == extension) {
 			return true;
