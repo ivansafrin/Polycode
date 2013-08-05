@@ -156,6 +156,9 @@ void BezierCurve::removePoint(BezierPoint *point) {
 			break;
 		}
 	}
+	recalculateDistances();
+	buffersDirty = true;	
+
 }
 
 Number BezierCurve::getHeightAt(Number a) {

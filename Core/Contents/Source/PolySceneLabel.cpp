@@ -34,8 +34,7 @@ using namespace Polycode;
 SceneLabel::SceneLabel(const String& fontName, const String& text, int size, Number scale, int amode, bool premultiplyAlpha) : ScenePrimitive(ScenePrimitive::TYPE_PLANE, 1, 1) {
 	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size, amode, premultiplyAlpha);
 	this->scale = scale;
-	setText(text);
-	mesh->arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;
+	updateFromLabel();
 }
 
 SceneLabel::~SceneLabel() {
@@ -45,18 +44,12 @@ Label *SceneLabel::getLabel() {
 	return label;
 }
 
-void SceneLabel::setText(const String& newText) {
-	
-	if(newText == label->getText() && !label->optionsChanged()) {
-		return;
-	}
+void SceneLabel::updateFromLabel() {
 
-	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
-	
+	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();	
 	if(texture)
 		materialManager->deleteTexture(texture);
-		
-	label->setText(newText);	
+
 	texture = materialManager->createTextureFromImage(label, materialManager->clampDefault, materialManager->mipmapsDefault);
 
 	if(material) {
@@ -79,4 +72,14 @@ void SceneLabel::setText(const String& newText) {
 	// TODO: resize it here
 	
 	bBoxRadius = label->getWidth()*scale;
+
+}
+
+void SceneLabel::setText(const String& newText) {
+	
+	if(newText == label->getText() && !label->optionsChanged()) {
+		return;
+	}		
+	label->setText(newText);	
+	updateFromLabel();
 }

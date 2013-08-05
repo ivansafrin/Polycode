@@ -59,6 +59,8 @@ namespace Polycode {
 			
 		protected:
 			
+			void updateFromLabel();
+			
 			Number scale;
 			Label *label;
 	};
