@@ -22,7 +22,7 @@
 
 #pragma once
 #include "PolyGlobals.h"
-#include "PolyScreenShape.h"
+#include "PolyScenePrimitive.h"
 #include "PolyUIElement.h"
 
 namespace Polycode {
@@ -47,7 +47,7 @@ namespace Polycode {
 			
 		protected:
 		
-			ScreenEntity *childElements;			
+			Entity *childElements;			
 			Number mainWidth;
 			
 			CoreInput *coreInput;
@@ -58,8 +58,8 @@ namespace Polycode {
 			
 			bool leftSizer;
 			
-			ScreenShape *separatorHitShape;
-			ScreenShape *separatorBgShape;
+			ScenePrimitive *separatorHitShape;
+			ScenePrimitive *separatorBgShape;
 			
 			UIElement *firstElement;
 			UIElement *secondElement;			

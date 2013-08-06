@@ -24,6 +24,7 @@
 #include "PolyGlobals.h"
 #include "PolyUITree.h"
 #include "PolyUIBox.h"
+#include "PolyInputKeys.h"
 #include "PolyUIElement.h"
 #include "PolyUIScrollContainer.h"
 
@@ -38,7 +39,7 @@ namespace Polycode {
 		void Resize(Number width, Number height);
 		
 		UITree *getRootNode();
-		ScreenEntity *scrollChild;
+		Entity *scrollChild;
 		
 		void onKeyDown(PolyKEY key, wchar_t charCode);
 		void onGainFocus();

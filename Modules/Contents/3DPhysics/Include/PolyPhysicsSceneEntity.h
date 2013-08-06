@@ -30,15 +30,17 @@ THE SOFTWARE.
 class btKinematicCharacterController;
 class btPairCachingGhostObject;
 
+class Entity;
+
 namespace Polycode {
 	
 	/**
-	* A wrapper around SceneEntity that provides physics information.
+	* A wrapper around Entity that provides physics information.
 	*/
-	class _PolyExport PhysicsSceneEntity : public CollisionSceneEntity {
+	class _PolyExport PhysicsEntity : public CollisionEntity {
 	public:
-		PhysicsSceneEntity(SceneEntity *entity, int type, Number mass, Number friction, Number restitution, bool compoundChildren = false);
-		virtual ~PhysicsSceneEntity();
+		PhysicsEntity(Entity *entity, int type, Number mass, Number friction, Number restitution, bool compoundChildren = false);
+		virtual ~PhysicsEntity();
 		virtual void Update();
 				
 			/** @name Physics scene entity
@@ -46,7 +48,6 @@ namespace Polycode {
 			*/
 			//@{			
 				
-		SceneEntity *getSceneEntity();
 		void setFriction(Number friction);		
 		int getType() { return type; }	
 		
@@ -122,9 +123,9 @@ namespace Polycode {
 	/**
 	* A Physics character controller.
 	*/
-	class _PolyExport PhysicsCharacter : public PhysicsSceneEntity {
+	class _PolyExport PhysicsCharacter : public PhysicsEntity {
 		public:
-			PhysicsCharacter(SceneEntity *entity, Number mass, Number friction, Number stepSize);
+			PhysicsCharacter(Entity *entity, Number mass, Number friction, Number stepSize);
 			virtual ~PhysicsCharacter();
 	
 			virtual void Update();
@@ -166,23 +167,23 @@ namespace Polycode {
 			/**
 			* Wheel scene entity.
 			*/			
-			SceneEntity *wheelEntity;
+			Entity *wheelEntity;
 	};
 	
 	/**
 	* A physics vehicle controller.
 	*/
-	class _PolyExport PhysicsVehicle : public PhysicsSceneEntity {
+	class _PolyExport PhysicsVehicle : public PhysicsEntity {
 		public:
 				
-			PhysicsVehicle(SceneEntity *entity, Number mass, Number friction, btDefaultVehicleRaycaster *rayCaster);
+			PhysicsVehicle(Entity *entity, Number mass, Number friction, btDefaultVehicleRaycaster *rayCaster);
 
 			/** @name Physics vehicle
 			*  Public methods
 			*/
 			//@{			
 
-			void addWheel(SceneEntity *entity, Vector3 connection, Vector3 direction, Vector3 axle, Number suspentionRestLength, Number wheelRadius, bool isFrontWheel,Number suspensionStiffness = 20.0f, Number suspensionDamping = 1.0f, Number suspensionCompression = 4.0f, Number wheelFriction = 10000.0f, Number rollInfluence = 0.05f);
+			void addWheel(Entity *entity, Vector3 connection, Vector3 direction, Vector3 axle, Number suspentionRestLength, Number wheelRadius, bool isFrontWheel,Number suspensionStiffness = 20.0f, Number suspensionDamping = 1.0f, Number suspensionCompression = 4.0f, Number wheelFriction = 10000.0f, Number rollInfluence = 0.05f);
 			void applyEngineForce(Number force, unsigned int wheelIndex);
 			void setSteeringValue(Number value, unsigned int wheelIndex);
 			void setBrake(Number value, unsigned int wheelIndex);

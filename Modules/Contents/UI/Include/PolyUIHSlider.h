@@ -22,9 +22,9 @@
 
 #pragma once
 #include "PolyGlobals.h"
-#include "PolyScreenLabel.h"
-#include "PolyScreenShape.h"
-#include "PolyScreenEntity.h"
+#include "PolySceneLabel.h"
+#include "PolyScenePrimitive.h"
+#include "PolyEntity.h"
 #include "PolyUIEvent.h"
 #include "PolyUIBox.h"
 #include "PolyUIElement.h"
@@ -58,13 +58,13 @@ namespace Polycode {
 			Number bgHeight;
 			
 			UIBox *bgRect;
-			ScreenImage *gripRect;
+			SceneImage *gripRect;
 			
 			Number sliderValue;
 			Number startValue;
 			Number endValue;
 			Number sliderWidth;
 			
-			ScreenShape *bgHitBox;
+			ScenePrimitive *bgHitBox;
 	};
 }

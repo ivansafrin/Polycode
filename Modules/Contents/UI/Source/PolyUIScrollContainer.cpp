@@ -29,9 +29,9 @@
 
 using namespace Polycode;
 
-UIScrollContainer::UIScrollContainer(ScreenEntity *scrolledEntity, bool hScroll, bool vScroll, Number width, Number height) : UIElement() {
+UIScrollContainer::UIScrollContainer(Entity *scrolledEntity, bool hScroll, bool vScroll, Number width, Number height) : UIElement() {
 	
-	scrolledEntity->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	scrolledEntity->setPositionMode(Entity::POSITION_TOPLEFT);
 	
 	scrolledEntity->rebuildTransformMatrix();
 	Config *conf = CoreServices::getInstance()->getConfig();
@@ -42,7 +42,6 @@ UIScrollContainer::UIScrollContainer(ScreenEntity *scrolledEntity, bool hScroll,
 	
 	this->width = width;
 	this->height = height;
-	setHitbox(width, height);
 	
 	Number uiScrollPanePadding = conf->getNumericValue("Polycode", "uiScrollPanePadding");			
 	
@@ -79,7 +78,6 @@ UIScrollContainer::UIScrollContainer(ScreenEntity *scrolledEntity, bool hScroll,
 void UIScrollContainer::Resize(Number width, Number height) {
 	this->width = width;
 	this->height = height;
-	setHitbox(width, height);
 	
 	
 	vScrollBar->Resize(height);

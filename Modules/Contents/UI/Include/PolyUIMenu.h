@@ -22,11 +22,11 @@
 
 #pragma once
 #include "PolyUIElement.h"
-#include "PolyScreenLabel.h"
+#include "PolySceneLabel.h"
 #include "PolyUIBox.h"
 
 namespace Polycode {
-	class ScreenLine;
+	class SceneLine;
 
 	/**
 	 * An single selectable entry in an UIMenu
@@ -59,7 +59,7 @@ namespace Polycode {
 		protected:
 			UIMenuItem();
 
-			ScreenLabel *itemLabel;
+			SceneLabel *itemLabel;
 			friend class UIMenu;
 	};
 
@@ -70,7 +70,7 @@ namespace Polycode {
 		bool isSelectable();
 
 	protected:
-		ScreenLine* line;
+		SceneLine* line;
 	};
 
 	/** 
@@ -151,7 +151,7 @@ namespace Polycode {
 	};
 
 
-	class _PolyExport UIGlobalMenu : public ScreenEntity {
+	class _PolyExport UIGlobalMenu : public Entity {
 		public:
 			UIGlobalMenu();
 			~UIGlobalMenu();

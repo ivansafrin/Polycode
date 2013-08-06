@@ -32,25 +32,25 @@ using namespace Polycode;
 
 UIVSizer::UIVSizer(Number width, Number height, Number mainHeight, bool topSizer) : UIElement() {
 
-	this->width = width;
-	this->height = height;
+	setWidth(width);
+	setHeight(height);
 	this->topSizer = topSizer;
 	this->mainHeight = mainHeight;
 	
-	separatorBgShape = new ScreenShape(ScreenShape::SHAPE_RECT, width,1);
-	separatorBgShape->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	separatorBgShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, width,1);
+	separatorBgShape->setPositionMode(Entity::POSITION_TOPLEFT);
 	separatorBgShape->setColor(0.0, 0.0, 0.0, 1.0);	
 	addChild(separatorBgShape);
 
-	childElements = new ScreenEntity();
+	childElements = new Entity();
 	childElements->processInputEvents = true;
 	addChild(childElements);
 	
 	firstElement = NULL;
 	secondElement = NULL;
 	
-	separatorHitShape = new ScreenShape(ScreenShape::SHAPE_RECT, width,8);
-	separatorHitShape->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	separatorHitShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, width,8);
+	separatorHitShape->setPositionMode(Entity::POSITION_TOPLEFT);
 	separatorHitShape->setColor(1.0, 0.0, 0.0, 0.5);	
 	addChild(separatorHitShape);
 	separatorHitShape->blockMouseInput = true;
@@ -164,35 +164,35 @@ void UIVSizer::updateSizer() {
 	
 		if(firstElement) {
 			firstElement->setPosition(0,0);
-			firstElement->Resize(width, mainHeight);
+			firstElement->Resize(getWidth(), mainHeight);
 		}
 	
 		if(secondElement) {
 			secondElement->setPosition(0,mainHeight+1);
-			secondElement->Resize(width, height-mainHeight-1);				
+			secondElement->Resize(getWidth(), getHeight()-mainHeight-1);				
 		}
 
-		separatorBgShape->setShapeSize(width, 1);
+		separatorBgShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, getWidth(), 1);
 		separatorBgShape->setPosition(0,mainHeight);
-		separatorHitShape->setShapeSize(width, 8);
+		separatorHitShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, getWidth(), 8);
 		separatorHitShape->setPosition(0, mainHeight-4);
 		
 	} else {
 
 		if(firstElement) {
 			firstElement->setPosition(0,0);
-			firstElement->Resize(width, height-mainHeight);
+			firstElement->Resize(getWidth(), getHeight()-mainHeight);
 		}
 	
 		if(secondElement) {
-			secondElement->setPosition(0,height-mainHeight+1);
-			secondElement->Resize(width, mainHeight-1);	
+			secondElement->setPosition(0,getHeight()-mainHeight+1);
+			secondElement->Resize(getWidth(), mainHeight-1);	
 		}
 
-		separatorBgShape->setShapeSize(width, 1);
-		separatorBgShape->setPosition(0,height-mainHeight);
-		separatorHitShape->setShapeSize(width, 8);
-		separatorHitShape->setPosition(0, height-mainHeight-4);
+		separatorBgShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, getWidth(), 1);
+		separatorBgShape->setPosition(0,getHeight()-mainHeight);
+		separatorHitShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, getWidth(), 8);
+		separatorHitShape->setPosition(0, getHeight()-mainHeight-4);
 
 	}	
 

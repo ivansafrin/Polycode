@@ -24,11 +24,11 @@ THE SOFTWARE.
 #include "BulletDynamics/Character/btKinematicCharacterController.h"
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
 #include "PolyMatrix4.h"
-#include "PolySceneEntity.h"
+#include "PolyEntity.h"
 
 using namespace Polycode;
 
-PhysicsVehicle::PhysicsVehicle(SceneEntity *entity, Number mass, Number friction,btDefaultVehicleRaycaster *_rayCaster): PhysicsSceneEntity(entity, PhysicsSceneEntity::SHAPE_BOX, mass, friction, 1), rayCaster(_rayCaster), vehicle(NULL) {
+PhysicsVehicle::PhysicsVehicle(Entity *entity, Number mass, Number friction,btDefaultVehicleRaycaster *_rayCaster): PhysicsEntity(entity, PhysicsEntity::SHAPE_BOX, mass, friction, 1), rayCaster(_rayCaster), vehicle(NULL) {
 	
 }
 
@@ -43,7 +43,7 @@ void PhysicsVehicle::warpVehicle(Vector3 position) {
 
 }
 
-void PhysicsVehicle::addWheel(SceneEntity *entity, Vector3 connection, Vector3 direction, Vector3 axle, Number suspentionRestLength, Number wheelRadius, bool isFrontWheel,Number  suspensionStiffness, Number  suspensionDamping, Number suspensionCompression, Number  wheelFriction, Number rollInfluence) {
+void PhysicsVehicle::addWheel(Entity *entity, Vector3 connection, Vector3 direction, Vector3 axle, Number suspentionRestLength, Number wheelRadius, bool isFrontWheel,Number  suspensionStiffness, Number  suspensionDamping, Number suspensionCompression, Number  wheelFriction, Number rollInfluence) {
 	vehicle->addWheel(btVector3(connection.x, connection.y, connection.z),
 					btVector3(direction.x, direction.y, direction.z),
 					btVector3(axle.x, axle.y, axle.z),	
@@ -106,7 +106,7 @@ void PhysicsVehicle::Update() {
 		wheel_info.wheelEntity->setTransformByMatrixPure(m);		
 	}
 	
-	PhysicsSceneEntity::Update();
+	PhysicsEntity::Update();
 }
 
 PhysicsVehicle::~PhysicsVehicle() {
@@ -117,7 +117,7 @@ PhysicsVehicle::~PhysicsVehicle() {
 	}
 }
 
-PhysicsCharacter::PhysicsCharacter(SceneEntity *entity, Number mass, Number friction, Number stepSize) : PhysicsSceneEntity(entity, PhysicsSceneEntity::CHARACTER_CONTROLLER, mass, friction, 1) {	
+PhysicsCharacter::PhysicsCharacter(Entity *entity, Number mass, Number friction, Number stepSize) : PhysicsEntity(entity, PhysicsEntity::CHARACTER_CONTROLLER, mass, friction, 1) {	
 	ghostObject = new btPairCachingGhostObject();
 	
 	Vector3 pos = entity->getPosition();	
@@ -171,9 +171,9 @@ bool PhysicsCharacter::onGround() {
 
 void PhysicsCharacter::Update() {
 	btVector3 pos = ghostObject->getWorldTransform().getOrigin();
-	sceneEntity->setPosition(pos.x(), pos.y(), pos.z());
-	sceneEntity->rebuildTransformMatrix();
-	sceneEntity->dirtyMatrix(true);
+	entity->setPosition(pos.x(), pos.y(), pos.z());
+	entity->rebuildTransformMatrix();
+	entity->dirtyMatrix(true);
 }
 
 PhysicsCharacter::~PhysicsCharacter() {
@@ -181,7 +181,7 @@ PhysicsCharacter::~PhysicsCharacter() {
 	delete ghostObject;	
 }
 
-PhysicsSceneEntity::PhysicsSceneEntity(SceneEntity *entity, int type, Number mass, Number friction, Number restitution, bool compoundChildren) : CollisionSceneEntity(entity, type, compoundChildren) {
+PhysicsEntity::PhysicsEntity(Entity *entity, int type, Number mass, Number friction, Number restitution, bool compoundChildren) : CollisionEntity(entity, type, compoundChildren) {
 
 	this->mass = mass;
 	btVector3 localInertia(0,0,0);
@@ -220,15 +220,15 @@ PhysicsSceneEntity::PhysicsSceneEntity(SceneEntity *entity, int type, Number mas
 	}
 }
 
-void PhysicsSceneEntity::setFriction(Number friction) {
+void PhysicsEntity::setFriction(Number friction) {
 		rigidBody->setFriction(friction);
 }
 
-void PhysicsSceneEntity::setMass(Number mass) {
+void PhysicsEntity::setMass(Number mass) {
 	rigidBody->setMassProps(mass, btVector3(0.0, 0.0, 0.0));
 }
 
-void PhysicsSceneEntity::Update() {		
+void PhysicsEntity::Update() {		
 	Matrix4 m;
 		
 	btScalar* mat = (btScalar*) malloc(sizeof(btScalar) * 16);				
@@ -240,33 +240,33 @@ void PhysicsSceneEntity::Update() {
 	
 	free(mat);
 	
-	sceneEntity->setTransformByMatrixPure(m);
+	entity->setTransformByMatrixPure(m);
 //	collisionObject->getWorldTransform().setFromOpenGLMatrix(mat);
 }
 
-void PhysicsSceneEntity::setVelocity(Vector3 velocity) {
+void PhysicsEntity::setVelocity(Vector3 velocity) {
 	rigidBody->setLinearVelocity(btVector3(velocity.x, velocity.y, velocity.z));
 //	rigidBody->applyForce(btVector3(velocity.x, velocity.y, velocity.z), btVector3(0,0,0));
 }
 
-void PhysicsSceneEntity::setSpin(Vector3 spin) {
+void PhysicsEntity::setSpin(Vector3 spin) {
 	btVector3 angularVel = btVector3(spin.x, spin.y, spin.z);	
 	rigidBody->setAngularVelocity(angularVel);
 }
 
-void PhysicsSceneEntity::applyImpulse(Vector3 direction, Vector3 point) {
+void PhysicsEntity::applyImpulse(Vector3 direction, Vector3 point) {
 	btVector3 imp = btVector3(direction.x, direction.y, direction.z);
 	btVector3 pos = btVector3(point.x, point.y, point.z);
 		 
 	rigidBody->applyImpulse(imp, pos);
 }
 
-void PhysicsSceneEntity::warpTo(Vector3 position, bool resetRotation) {
+void PhysicsEntity::warpTo(Vector3 position, bool resetRotation) {
 	btTransform transform;
 	transform.setIdentity();
 	
 	if(!resetRotation) {
-		Matrix4 ent_mat = sceneEntity->getConcatenatedMatrix();	
+		Matrix4 ent_mat = entity->getConcatenatedMatrix();	
 		btScalar mat[16];
 		for(int i=0; i < 16; i++) {
 			mat[i] = ent_mat.ml[i];
@@ -278,11 +278,7 @@ void PhysicsSceneEntity::warpTo(Vector3 position, bool resetRotation) {
 	rigidBody->setCenterOfMassTransform(transform);
 }
 
-SceneEntity *PhysicsSceneEntity::getSceneEntity() {
-	return sceneEntity;
-}
-
-PhysicsSceneEntity::~PhysicsSceneEntity() {
+PhysicsEntity::~PhysicsEntity() {
 	delete rigidBody;
 	delete myMotionState;	
 }

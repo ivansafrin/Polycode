@@ -89,13 +89,10 @@ UIVScrollBar::UIVScrollBar(Number width, Number height, Number initialRatio) : U
 	this->width = width;	
 	
 	tickSize = 0.01;
-	
-	setHitbox(width, height);
 }
 
 void UIVScrollBar::Resize(int newHeight) {
 	bgBox->resizeBox(width, newHeight);
-	setHitbox(width, newHeight);	
 	setHeight(newHeight);
 	dragRectHeight = height-(padding*2)-scrollHandleHeight;	
 	handleBox->setDragLimits(Rectangle(padding,padding,width-(padding*2)-(width-(padding*2)), dragRectHeight));	

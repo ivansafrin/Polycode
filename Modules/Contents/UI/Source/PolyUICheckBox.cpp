@@ -41,13 +41,13 @@ UICheckBox::UICheckBox(String caption, bool checked) : UIElement() {
 	
 	this->checked = checked;
 	
-	buttonImageChecked = new ScreenImage(checkImage);
+	buttonImageChecked = new SceneImage(checkImage);
 	buttonImageChecked->visible = checked;
 
-	buttonImageUnchecked = new ScreenImage(uncheckImage);
+	buttonImageUnchecked = new SceneImage(uncheckImage);
 	buttonImageUnchecked->visible = !checked;
 	
-	captionLabel = new ScreenLabel(caption, fontSize, fontName, Label::ANTIALIAS_FULL);
+	captionLabel = new SceneLabel(caption, fontSize, fontName, Label::ANTIALIAS_FULL);
 	
 	addChild(captionLabel);
 	captionLabel->setPosition(buttonImageChecked->getWidth() + checkboxTextOffsetX, checkboxTextOffsetY);

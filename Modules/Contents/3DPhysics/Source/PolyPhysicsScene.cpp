@@ -94,9 +94,9 @@ void PhysicsScene::setGravity(Vector3 gravity) {
 	physicsWorld->setGravity(btVector3(gravity.x, gravity.y, gravity.z));
 }
 
-PhysicsSceneEntity *PhysicsScene::getPhysicsEntityByCollisionObject(btCollisionObject *object) {
+PhysicsEntity *PhysicsScene::getPhysicsEntityByCollisionObject(btCollisionObject *object) {
 	for(int i=0; i < physicsChildren.size(); i++) {
-		PhysicsSceneEntity *entity = physicsChildren[i];
+		PhysicsEntity *entity = physicsChildren[i];
 		if(entity->rigidBody == object) {
 			return entity;
 		}
@@ -159,38 +159,38 @@ void PhysicsScene::Update() {
 	
 }
 
-void PhysicsScene::setVelocity(SceneEntity *entity, Vector3 velocity) {
-	PhysicsSceneEntity *physicsEntity = getPhysicsEntityBySceneEntity(entity);
+void PhysicsScene::setVelocity(Entity *entity, Vector3 velocity) {
+	PhysicsEntity *physicsEntity = getPhysicsEntityByEntity(entity);
 	if(physicsEntity) {
 		physicsEntity->setVelocity(velocity);
 	}
 }
 
-void PhysicsScene::setSpin(SceneEntity *entity, Vector3 spin) {
-	PhysicsSceneEntity *physicsEntity = getPhysicsEntityBySceneEntity(entity);
+void PhysicsScene::setSpin(Entity *entity, Vector3 spin) {
+	PhysicsEntity *physicsEntity = getPhysicsEntityByEntity(entity);
 	if(physicsEntity) {
 		physicsEntity->setSpin(spin);
 	}
 }
 
 
-void PhysicsScene::warpEntity(SceneEntity *entity, Vector3 position, bool resetRotation) {
-	PhysicsSceneEntity *physicsEntity = getPhysicsEntityBySceneEntity(entity);
+void PhysicsScene::warpEntity(Entity *entity, Vector3 position, bool resetRotation) {
+	PhysicsEntity *physicsEntity = getPhysicsEntityByEntity(entity);
 	if(physicsEntity) {
 		physicsEntity->rigidBody->setActivationState(DISABLE_DEACTIVATION);	
 		physicsEntity->warpTo(position, resetRotation);
 	}
 }
 
-void PhysicsScene::applyImpulse(SceneEntity *entity, Vector3 force, Vector3 point) {
-	PhysicsSceneEntity *physicsEntity = getPhysicsEntityBySceneEntity(entity);	
+void PhysicsScene::applyImpulse(Entity *entity, Vector3 force, Vector3 point) {
+	PhysicsEntity *physicsEntity = getPhysicsEntityByEntity(entity);	
 	if(physicsEntity) {
 		physicsEntity->rigidBody->setActivationState(DISABLE_DEACTIVATION);		
 		physicsEntity->applyImpulse(force, point);
 	}
 }
 
-PhysicsCharacter *PhysicsScene::addCharacterChild(SceneEntity *newEntity,Number mass, Number friction, Number stepSize, int group) {
+PhysicsCharacter *PhysicsScene::addCharacterChild(Entity *newEntity,Number mass, Number friction, Number stepSize, int group) {
 	addEntity(newEntity);	
 	PhysicsCharacter *newPhysicsEntity = new PhysicsCharacter(newEntity, mass, friction, stepSize);
 	
@@ -230,7 +230,7 @@ void PhysicsScene::removeCharacterChild(PhysicsCharacter *character) {
 }
 
 
-PhysicsVehicle *PhysicsScene::addVehicleChild(SceneEntity *newEntity, Number mass, Number friction, int group) {
+PhysicsVehicle *PhysicsScene::addVehicleChild(Entity *newEntity, Number mass, Number friction, int group) {
 	addEntity(newEntity);		
 	
 	btDefaultVehicleRaycaster *m_vehicleRayCaster = new btDefaultVehicleRaycaster(physicsWorld);
@@ -259,10 +259,10 @@ PhysicsVehicle *PhysicsScene::addVehicleChild(SceneEntity *newEntity, Number mas
 	return newPhysicsEntity;
 }
 
-void PhysicsScene::removePhysicsChild(SceneEntity *entity) {
-	PhysicsSceneEntity *ent = getPhysicsEntityBySceneEntity(entity);
+void PhysicsScene::removePhysicsChild(Entity *entity) {
+	PhysicsEntity *ent = getPhysicsEntityByEntity(entity);
 	if(ent) {
-		if(ent->getType() == PhysicsSceneEntity::CHARACTER_CONTROLLER) {
+		if(ent->getType() == PhysicsEntity::CHARACTER_CONTROLLER) {
 			removeCharacterChild((PhysicsCharacter *)ent);
 		} else {
 		
@@ -285,8 +285,8 @@ void PhysicsScene::removePhysicsChild(SceneEntity *entity) {
 	CollisionScene::removeEntity(entity);
 }
 
-void PhysicsScene::removeEntity(SceneEntity *entity) {
-	PhysicsSceneEntity *ent = getPhysicsEntityBySceneEntity(entity);
+void PhysicsScene::removeEntity(Entity *entity) {
+	PhysicsEntity *ent = getPhysicsEntityByEntity(entity);
 	if(ent) {
 		removePhysicsChild(entity);
 	} else {
@@ -330,9 +330,9 @@ void PhysicsGenericConstraint::setAngularUpperLimit(Vector3 limit) {
 	btConstraint->setAngularUpperLimit(btLimit);
 }
 
-PhysicsGenericConstraint *PhysicsScene::createGenericConstraint(SceneEntity *entity) {
+PhysicsGenericConstraint *PhysicsScene::createGenericConstraint(Entity *entity) {
 
-	PhysicsSceneEntity *pEnt = getPhysicsEntityBySceneEntity(entity);
+	PhysicsEntity *pEnt = getPhysicsEntityByEntity(entity);
 	if(!pEnt) {
 		return NULL;
 	}
@@ -348,8 +348,8 @@ PhysicsGenericConstraint *PhysicsScene::createGenericConstraint(SceneEntity *ent
 	return constraint;
 }
 
-PhysicsHingeConstraint * PhysicsScene::createHingeConstraint(SceneEntity *entity, Vector3 pivot, Vector3 axis, Number minLimit, Number maxLimit) {
-	PhysicsSceneEntity *pEnt = getPhysicsEntityBySceneEntity(entity);
+PhysicsHingeConstraint * PhysicsScene::createHingeConstraint(Entity *entity, Vector3 pivot, Vector3 axis, Number minLimit, Number maxLimit) {
+	PhysicsEntity *pEnt = getPhysicsEntityByEntity(entity);
 	if(!pEnt) {
 		return NULL;
 	}
@@ -367,10 +367,10 @@ PhysicsHingeConstraint * PhysicsScene::createHingeConstraint(SceneEntity *entity
 	return constraint;
 }
 
-PhysicsHingeConstraint *PhysicsScene::createHingeJoint(SceneEntity *entity1, SceneEntity *entity2, Vector3 pivot1, Vector3 axis1, Vector3 pivot2, Vector3 axis2, Number minLimit, Number maxLimit) {
+PhysicsHingeConstraint *PhysicsScene::createHingeJoint(Entity *entity1, Entity *entity2, Vector3 pivot1, Vector3 axis1, Vector3 pivot2, Vector3 axis2, Number minLimit, Number maxLimit) {
 	
-	PhysicsSceneEntity *pEnt1 = getPhysicsEntityBySceneEntity(entity1);
-	PhysicsSceneEntity *pEnt2 = getPhysicsEntityBySceneEntity(entity2);
+	PhysicsEntity *pEnt1 = getPhysicsEntityByEntity(entity1);
+	PhysicsEntity *pEnt2 = getPhysicsEntityByEntity(entity2);
 		
 	if(!pEnt1 || !pEnt2) {
 		return NULL;
@@ -394,26 +394,26 @@ PhysicsHingeConstraint *PhysicsScene::createHingeJoint(SceneEntity *entity1, Sce
 }
 
 
-PhysicsSceneEntity *PhysicsScene::getPhysicsEntityBySceneEntity(SceneEntity *entity) {
-	PhysicsSceneEntity *retEntity = NULL;
+PhysicsEntity *PhysicsScene::getPhysicsEntityByEntity(Entity *entity) {
+	PhysicsEntity *retEntity = NULL;
 	for(int i=0; i < physicsChildren.size(); i++) {
-		if(physicsChildren[i]->getSceneEntity() == entity) {
+		if(physicsChildren[i]->getEntity() == entity) {
 			retEntity = physicsChildren[i];
 		}	
 	}
 	return retEntity;
 }
 
-void PhysicsScene::wakeUp(SceneEntity *entity) {
-	PhysicsSceneEntity *pEnt = getPhysicsEntityBySceneEntity(entity);
+void PhysicsScene::wakeUp(Entity *entity) {
+	PhysicsEntity *pEnt = getPhysicsEntityByEntity(entity);
 	if(!pEnt) {
 		return;
 	}
 	pEnt->rigidBody->setActivationState(DISABLE_DEACTIVATION);
 }
 
-PhysicsSceneEntity *PhysicsScene::trackPhysicsChild(SceneEntity *newEntity, int type, Number mass, Number friction, Number restitution, int group, bool compoundChildren) {
-	PhysicsSceneEntity *newPhysicsEntity = new PhysicsSceneEntity(newEntity, type, mass, friction,restitution, compoundChildren);
+PhysicsEntity *PhysicsScene::trackPhysicsChild(Entity *newEntity, int type, Number mass, Number friction, Number restitution, int group, bool compoundChildren) {
+	PhysicsEntity *newPhysicsEntity = new PhysicsEntity(newEntity, type, mass, friction,restitution, compoundChildren);
 	physicsWorld->addRigidBody(newPhysicsEntity->rigidBody, group,  btBroadphaseProxy::AllFilter); //btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);	
 //	world->addCollisionObject(newPhysicsEntity->collisionObject, group);	
 	//newPhysicsEntity->rigidBody->setActivationState(ISLAND_SLEEPING);	
@@ -422,7 +422,7 @@ PhysicsSceneEntity *PhysicsScene::trackPhysicsChild(SceneEntity *newEntity, int 
 	return newPhysicsEntity;	
 }
 
-PhysicsSceneEntity *PhysicsScene::addPhysicsChild(SceneEntity *newEntity, int type, Number mass, Number friction, Number restitution, int group, bool compoundChildren) {
+PhysicsEntity *PhysicsScene::addPhysicsChild(Entity *newEntity, int type, Number mass, Number friction, Number restitution, int group, bool compoundChildren) {
 	addEntity(newEntity);	
 	return trackPhysicsChild(newEntity, type, mass, friction, restitution, group, compoundChildren);	
 }

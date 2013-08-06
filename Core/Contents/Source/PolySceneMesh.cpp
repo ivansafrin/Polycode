@@ -28,6 +28,7 @@
 #include "PolyRenderer.h"
 #include "PolyMaterial.h"
 #include "PolyMesh.h"
+#include "PolyImage.h"
 #include "PolyShader.h"
 #include "PolySkeleton.h"
 #include "PolyResourceManager.h"
@@ -43,7 +44,7 @@ SceneMesh *SceneMesh::SceneMeshWithType(int meshType) {
 	return new SceneMesh(meshType);
 }
 
-SceneMesh::SceneMesh(const String& fileName) : SceneEntity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
+SceneMesh::SceneMesh(const String& fileName) : Entity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
 	mesh = new Mesh(fileName);
 	bBoxRadius = mesh->getRadius();
 	bBox = mesh->calculateBBox();
@@ -56,7 +57,7 @@ SceneMesh::SceneMesh(const String& fileName) : SceneEntity(), texture(NULL), mat
 	lineWidth = 1.0;
 }
 
-SceneMesh::SceneMesh(Mesh *mesh) : SceneEntity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
+SceneMesh::SceneMesh(Mesh *mesh) : Entity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
 	this->mesh = mesh;
 	bBoxRadius = mesh->getRadius();
 	bBox = mesh->calculateBBox();
@@ -142,7 +143,7 @@ void SceneMesh::setMaterialByName(const String& materialName) {
 	setMaterial(material);
 }
 
-Texture *SceneMesh::getTexture() {
+Texture *SceneMesh::getTexture() const {
 	return texture;
 }
 
@@ -150,6 +151,11 @@ Texture *SceneMesh::getTexture() {
 void SceneMesh::loadTexture(const String& fileName) {
 	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
 	texture = materialManager->createTextureFromFile(fileName, materialManager->clampDefault, materialManager->mipmapsDefault);
+}
+
+void SceneMesh::loadTextureFromImage(Image *image) {
+	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
+	texture = materialManager->createTextureFromImage(image, materialManager->clampDefault, materialManager->mipmapsDefault);	
 }
 
 ShaderBinding *SceneMesh::getLocalShaderOptions() {

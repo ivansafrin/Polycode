@@ -22,9 +22,9 @@
 
 #pragma once
 #include "PolyGlobals.h"
-#include "PolyScreenImage.h"
-#include "PolyScreenShape.h"
-#include "PolyScreenEntity.h"
+#include "PolySceneImage.h"
+#include "PolyScenePrimitive.h"
+#include "PolyEntity.h"
 #include "PolyUIEvent.h"
 #include "PolyUIElement.h"
 
@@ -38,8 +38,8 @@ namespace Polycode {
 			void handleEvent(Event *event);
 				
 		private:
-			ScreenShape *buttonRect;
-			ScreenImage *buttonImage;
+			ScenePrimitive *buttonRect;
+			SceneImage *buttonImage;
 			bool pressedDown;
 	};
 }

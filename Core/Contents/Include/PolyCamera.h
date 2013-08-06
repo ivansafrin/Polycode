@@ -23,7 +23,7 @@
 
 #pragma once
 #include "PolyGlobals.h"
-#include "PolySceneEntity.h"
+#include "PolyEntity.h"
 
 namespace Polycode {
 
@@ -35,7 +35,7 @@ namespace Polycode {
 	/**
 	* Camera in a 3D scene. Cameras can be added to a scene and changed between dynamically. You can also set a shader to a camera that will run as a screen shader for post-processing effects.
 	*/	
-	class _PolyExport Camera : public SceneEntity {
+	class _PolyExport Camera : public Entity {
 		public:
 			
 			/**
@@ -62,7 +62,7 @@ namespace Polycode {
 			* @return Returns true if the entity's bounding radius is within the camera's frustum, or false if it isn't.
 			* @see isSphereInFrustum()
 			*/					
-			bool canSee(SceneEntity *entity);
+			bool canSee(Entity *entity);
 			
 			/**
 			* Toggles orthographic projection mode for camera.

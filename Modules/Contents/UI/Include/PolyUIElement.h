@@ -22,7 +22,7 @@
 
 #pragma once
 #include "PolyGlobals.h"
-#include "PolyScreenEntity.h"
+#include "PolyEntity.h"
 
 namespace Polycode {
 	/*
@@ -30,7 +30,7 @@ namespace Polycode {
 	 *
 	 * processInputEvent is set to true by default.
 	 */
-	class _PolyExport UIElement : public ScreenEntity {
+	class _PolyExport UIElement : public Entity {
 		public:
 			UIElement();
 			UIElement(Number width, Number height);

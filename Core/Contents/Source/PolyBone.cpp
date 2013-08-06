@@ -29,7 +29,7 @@
 
 using namespace Polycode;
 
-Bone::Bone(const String& boneName) : SceneEntity() {
+Bone::Bone(const String& boneName) : Entity() {
 	this->boneName = boneName;
 //	boneMesh = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 0.1, 0.1, 0.1);
 	this->depthTest = false;

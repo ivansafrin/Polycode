@@ -24,15 +24,16 @@
 
 using namespace Polycode;
 
-UIElement::UIElement() : ScreenEntity() {
-	setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+UIElement::UIElement() : Entity() {
+	setPositionMode(Entity::POSITION_TOPLEFT);
 	processInputEvents = true;
 }
 
-UIElement::UIElement(Number width, Number height) : ScreenEntity() {
-	setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+UIElement::UIElement(Number width, Number height) : Entity() {
+	setPositionMode(Entity::POSITION_TOPLEFT);
 	processInputEvents = true;
-	this->width = width; this->height = height;
+	setWidth(width);
+	setHeight(height);
 }
 
 UIElement::~UIElement() {

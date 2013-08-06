@@ -22,7 +22,7 @@
 
 #pragma once
 #include "PolyGlobals.h"
-#include "PolyScreenImage.h"
+#include "PolySceneImage.h"
 #include "PolyUIElement.h"
 
 namespace Polycode {
@@ -41,16 +41,16 @@ namespace Polycode {
 		Number b;
 		Number l;
 		
-		ScreenImage *tlImage;
-		ScreenImage *trImage;		
-		ScreenImage *blImage;		
-		ScreenImage *brImage;			
+		SceneImage *tlImage;
+		SceneImage *trImage;		
+		SceneImage *blImage;		
+		SceneImage *brImage;			
 		
-		ScreenImage *centerImage;
+		SceneImage *centerImage;
 		
-		ScreenImage *tImage;
-		ScreenImage *rImage;
-		ScreenImage *bImage;
-		ScreenImage *lImage;		
+		SceneImage *tImage;
+		SceneImage *rImage;
+		SceneImage *bImage;
+		SceneImage *lImage;		
 	};
 }

@@ -22,10 +22,10 @@
 
 #pragma once
 #include "PolyGlobals.h"
-#include "PolyScreenImage.h"
-#include "PolyScreenLabel.h"
-#include "PolyScreenShape.h"
-#include "PolyScreenEntity.h"
+#include "PolySceneImage.h"
+#include "PolySceneLabel.h"
+#include "PolyScenePrimitive.h"
+#include "PolyEntity.h"
 #include "PolyUIEvent.h"
 #include "PolyUITextInput.h"
 #include "PolyUIWindow.h"
@@ -83,17 +83,17 @@ namespace Polycode {
 			UITextInput *bTextInput;
 			UITextInput *aTextInput;						
 									
-			ScreenImage *mainFrame;
-			ScreenImage *mainBg;			
-			ScreenImage *hueFrame;
-			ScreenImage *hueSelector;
-			ScreenImage *mainSelector;	
+			SceneImage *mainFrame;
+			SceneImage *mainBg;			
+			SceneImage *hueFrame;
+			SceneImage *hueSelector;
+			SceneImage *mainSelector;	
 			
 			UIHSlider *alphaSlider;
 			
-			ScreenShape *mainColorRect;
+			ScenePrimitive *mainColorRect;
 			
-			vector<ScreenLabel *> junkLabels; // Kept only to delete
+			vector<SceneLabel *> junkLabels; // Kept only to delete
 	};
 
 	class _PolyExport UIColorBox : public UIElement {
@@ -116,8 +116,8 @@ namespace Polycode {
 			Color selectedColor;
 				
 			UIBox *frameImage;
-			ScreenShape *bgImage;
-			ScreenShape *colorShape;			
+			ScenePrimitive *bgImage;
+			ScenePrimitive *colorShape;			
 		
 	};
 }

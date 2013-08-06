@@ -31,17 +31,31 @@
 
 using namespace Polycode;
 
-SceneLabel::SceneLabel(const String& fontName, const String& text, int size, Number scale, int amode, bool premultiplyAlpha) : ScenePrimitive(ScenePrimitive::TYPE_PLANE, 1, 1) {
+SceneLabel::SceneLabel(const String& fontName, const String& text, int size, Number scale, int amode, bool premultiplyAlpha) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1) {
 	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size, amode, premultiplyAlpha);
 	this->scale = scale;
+	positionAtBaseline = true;
 	updateFromLabel();
 }
+
+SceneLabel::SceneLabel(const String& text, int size, const String& fontName, int amode, bool premultiplyAlpha) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1){
+
+	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size, amode, premultiplyAlpha);
+	this->scale = 1.0;
+	positionAtBaseline = true;
+	updateFromLabel();
+}
+			
 
 SceneLabel::~SceneLabel() {
 }
 
 Label *SceneLabel::getLabel() {
 	return label;
+}
+
+String SceneLabel::getText() {
+	return label->getText();
 }
 
 void SceneLabel::updateFromLabel() {
@@ -72,7 +86,13 @@ void SceneLabel::updateFromLabel() {
 	// TODO: resize it here
 	
 	bBoxRadius = label->getWidth()*scale;
+}
 
+void SceneLabel::Render() {
+	if(positionAtBaseline) {
+		CoreServices::getInstance()->getRenderer()->translate2D(0.0, -label->getBaselineAdjust() + label->getSize());
+	}
+	ScenePrimitive::Render();
 }
 
 void SceneLabel::setText(const String& newText) {

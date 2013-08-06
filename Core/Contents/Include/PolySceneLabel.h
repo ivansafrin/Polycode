@@ -47,6 +47,13 @@ namespace Polycode {
 			* @param Anti-aliasing mode. Can be Label::ANTIALIAS_FULL or Label::ANTIALIAS_NONE.
 			*/			
 			SceneLabel(const String& fontName, const String& text, int size, Number scale, int amode, bool premultiplyAlpha = false);
+			
+			SceneLabel(const String& text, int size, const String& fontName = "sans", int amode = 0, bool premultiplyAlpha = false);
+
+			String getText();
+			
+			void Render();
+
 			virtual ~SceneLabel();			
 		
 			/**
@@ -56,6 +63,8 @@ namespace Polycode {
 			void setText(const String& newText);
 			
 			Label *getLabel();
+			
+			bool positionAtBaseline;
 			
 		protected:
 			

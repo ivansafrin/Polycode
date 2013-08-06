@@ -22,10 +22,10 @@
 
 #pragma once
 #include "PolyGlobals.h"
-#include "PolyScreenImage.h"
-#include "PolyScreenLabel.h"
-#include "PolyScreenShape.h"
-#include "PolyScreenEntity.h"
+#include "PolySceneImage.h"
+#include "PolySceneLabel.h"
+#include "PolyScenePrimitive.h"
+#include "PolyEntity.h"
 #include "PolyUIEvent.h"
 #include "PolyUIBox.h"
 #include "PolyUIMenu.h"
@@ -74,7 +74,7 @@ namespace Polycode {
 			std::vector<UIComboBoxItem*> items;
 			int selectedIndex;
 			
-			ScreenLabel *selectedLabel;
+			SceneLabel *selectedLabel;
 			Number comboHeight;
 			Number comboWidth;
 			Number dropDownX;
@@ -85,6 +85,6 @@ namespace Polycode {
 			Number nextItemHeight;
 
 			UIBox *bgBox;
-			ScreenImage *dropDownImage;
+			SceneImage *dropDownImage;
 	};
 }

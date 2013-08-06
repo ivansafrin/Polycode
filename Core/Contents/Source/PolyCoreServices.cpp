@@ -31,7 +31,6 @@
 #include "PolyRenderer.h"
 #include "PolyConfig.h"
 #include "PolyFontManager.h"
-#include "PolyScreenManager.h"
 #include "PolySceneManager.h"
 #include "PolyTimerManager.h"
 #include "PolyTweenManager.h"
@@ -124,18 +123,7 @@ CoreServices::CoreServices() : EventDispatcher() {
 	logger = new Logger();
 	resourceManager = new ResourceManager();	
 	config = new Config();
-	materialManager = new MaterialManager();
-	screenManager = new ScreenManager();
-	addEventListener(screenManager, InputEvent::EVENT_MOUSEDOWN);
-	addEventListener(screenManager, InputEvent::EVENT_MOUSEMOVE);
-	addEventListener(screenManager, InputEvent::EVENT_MOUSEUP);
-	addEventListener(screenManager, InputEvent::EVENT_MOUSEWHEEL_UP);
-	addEventListener(screenManager, InputEvent::EVENT_MOUSEWHEEL_DOWN);
-	addEventListener(screenManager, InputEvent::EVENT_KEYDOWN);
-	addEventListener(screenManager, InputEvent::EVENT_KEYUP);
-	addEventListener(screenManager, InputEvent::EVENT_TOUCHES_BEGAN);
-	addEventListener(screenManager, InputEvent::EVENT_TOUCHES_ENDED);
-	addEventListener(screenManager, InputEvent::EVENT_TOUCHES_MOVED);
+	materialManager = new MaterialManager();	
 	sceneManager = new SceneManager();
 	timerManager = new TimerManager();
 	tweenManager = new TweenManager();
@@ -147,7 +135,6 @@ CoreServices::CoreServices() : EventDispatcher() {
 
 CoreServices::~CoreServices() {
 	delete materialManager;
-	delete screenManager;
 	delete sceneManager;
 	delete timerManager;
 	delete tweenManager;
@@ -222,16 +209,8 @@ void CoreServices::Render() {
 	if(renderer->doClearBuffer)
 		renderer->clearScreen();					
 
-	if(screenManager->drawScreensFirst) {
-		renderer->clearLights();	
-		screenManager->Render();
-		renderer->setPerspectiveMode();
-		sceneManager->Render();	
-	} else {
-		sceneManager->Render();
-		renderer->clearLights();		
-		screenManager->Render();	
-	}
+	sceneManager->Render();
+	renderer->clearLights();
 }
 
 void CoreServices::Update(int elapsed) {
@@ -244,15 +223,10 @@ void CoreServices::Update(int elapsed) {
 	tweenManager->Update();	
 	materialManager->Update(elapsed);		
 	sceneManager->Update();
-	screenManager->Update();	
 }
 
 SoundManager *CoreServices::getSoundManager() {
 	return soundManager;
-}
-
-ScreenManager *CoreServices::getScreenManager() {
-	return screenManager;
 }
 
 SceneManager *CoreServices::getSceneManager() {

@@ -26,7 +26,7 @@
 
 using namespace Polycode;
 
-SceneLine::SceneLine(Vector3 start, Vector3 end) : SceneEntity() {
+SceneLine::SceneLine(Vector3 start, Vector3 end) : Entity() {
 	this->ent1 = NULL;
 	this->ent2 = NULL;	
 	
@@ -47,7 +47,7 @@ SceneLine::SceneLine(Vector3 start, Vector3 end) : SceneEntity() {
 	
 }
 
-SceneLine::SceneLine(SceneEntity *ent1, SceneEntity *ent2) : SceneEntity() {
+SceneLine::SceneLine(Entity *ent1, Entity *ent2) : Entity() {
 	this->ent1 = ent1;
 	this->ent2 = ent2;	
 

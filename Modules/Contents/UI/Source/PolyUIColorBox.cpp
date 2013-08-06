@@ -47,11 +47,11 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	String hueSelectorImage = conf->getStringValue("Polycode", "uiColorPickerHueSelector");
 	String mainSelectorImage = conf->getStringValue("Polycode", "uiColorPickerMainSelector");
 
-	mainBg = new ScreenImage(mainBgImage);
+	mainBg = new SceneImage(mainBgImage);
 	mainBg->setPosition(padding, topPadding+padding);
 	addChild(mainBg);
 
-	mainFrame = new ScreenImage(mainFrameImage);
+	mainFrame = new SceneImage(mainFrameImage);
 	mainFrame->setPosition(padding, topPadding+padding);
 	
 	alphaSlider = new UIHSlider(0, 1.0, mainFrame->getWidth());
@@ -59,25 +59,25 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	addChild(alphaSlider);
 	alphaSlider->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
-	mainColorRect = new ScreenShape(ScreenShape::SHAPE_RECT, mainFrame->getWidth(), mainFrame->getHeight());
-	mainColorRect->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	mainColorRect = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, mainFrame->getWidth(), mainFrame->getHeight());
+	mainColorRect->setPositionMode(Entity::POSITION_TOPLEFT);
 	mainColorRect->setPosition(padding+1, topPadding+padding+1);
 	addChild(mainColorRect);
 	addChild(mainFrame);
 
-	hueFrame = new ScreenImage(hueFrameImage);
+	hueFrame = new SceneImage(hueFrameImage);
 	hueFrame->setPosition(mainFrame->getPosition().x + mainFrame->getWidth()+10, topPadding+padding);
 	addChild(hueFrame);
 	
-	hueSelector = new ScreenImage(hueSelectorImage);
-	hueSelector->setPositionMode(ScreenEntity::POSITION_CENTER);
+	hueSelector = new SceneImage(hueSelectorImage);
+	hueSelector->setPositionMode(Entity::POSITION_CENTER);
 	hueSelector->setPosition(hueFrame->getPosition().x + (hueFrame->getWidth()/2.0), hueFrame->getPosition().y);
 	addChild(hueSelector);	
 
 	hueSelector->setDragLimits(Polycode::Rectangle(hueSelector->getPosition().x,hueSelector->getPosition().y,0,hueFrame->getHeight()));
 				
-	mainSelector = new ScreenImage(mainSelectorImage);
-	mainSelector->setPositionMode(ScreenEntity::POSITION_CENTER);	
+	mainSelector = new SceneImage(mainSelectorImage);
+	mainSelector->setPositionMode(Entity::POSITION_CENTER);	
 	mainSelector->setPosition(mainFrame->getPosition());
 	addChild(mainSelector);	
 	
@@ -94,7 +94,7 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	hueFrame->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);
 	hueFrame->processInputEvents = true;	
 	
-	ScreenLabel *label = new ScreenLabel(L"R:", fontSize, fontName);
+	SceneLabel *label = new SceneLabel(L"R:", fontSize, fontName);
 	label->setPosition(hueFrame->getPosition().x+hueFrame->getWidth() + 15, topPadding+padding + 3);
 	addChild(label);
 	junkLabels.push_back(label);
@@ -104,7 +104,7 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	addChild(rTextInput);
 	rTextInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 
-	label = new ScreenLabel(L"G:", fontSize, fontName);
+	label = new SceneLabel(L"G:", fontSize, fontName);
 	label->setPosition(hueFrame->getPosition().x+hueFrame->getWidth() + 15, topPadding+padding + 33);
 	addChild(label);
 	junkLabels.push_back(label);
@@ -114,7 +114,7 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	addChild(gTextInput);
 	gTextInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
-	label = new ScreenLabel(L"B:", fontSize, fontName);
+	label = new SceneLabel(L"B:", fontSize, fontName);
 	label->setPosition(hueFrame->getPosition().x+hueFrame->getWidth() + 15, topPadding+padding + 63);
 	addChild(label);
 	junkLabels.push_back(label);
@@ -124,7 +124,7 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	addChild(bTextInput);
 	bTextInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
-	label = new ScreenLabel(L"A:", fontSize, fontName);
+	label = new SceneLabel(L"A:", fontSize, fontName);
 	label->setPosition(hueFrame->getPosition().x+hueFrame->getWidth() + 15, topPadding+padding + 93);
 	addChild(label);
 	junkLabels.push_back(label);
@@ -433,8 +433,8 @@ UIColorBox::UIColorBox(UIColorPicker *colorPicker, Color initialColor, Number wi
 	Number sl = conf->getNumericValue("Polycode", "uiColorBoxFrameImageL");
 
 
-	bgImage = new ScreenShape(ScreenShape::SHAPE_RECT, width-(frameInset*2), height-(frameInset*2));
-	bgImage->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	bgImage = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, width-(frameInset*2), height-(frameInset*2));
+	bgImage->setPositionMode(Entity::POSITION_TOPLEFT);
 	bgImage->loadTexture(bgImageFile);
 	bgImage->setPosition(frameInset, frameInset);	
 	addChild(bgImage);
@@ -442,8 +442,8 @@ UIColorBox::UIColorBox(UIColorPicker *colorPicker, Color initialColor, Number wi
 	bgImage->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	bgImage->processInputEvents = true;
 
-	colorShape = new ScreenShape(ScreenShape::SHAPE_RECT, width-(frameInset*2), height-(frameInset*2));
-	colorShape->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	colorShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, width-(frameInset*2), height-(frameInset*2));
+	colorShape->setPositionMode(Entity::POSITION_TOPLEFT);
 	colorShape->setPosition(frameInset, frameInset);
 	addChild(colorShape);
 

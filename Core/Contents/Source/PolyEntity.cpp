@@ -57,9 +57,11 @@ Entity::Entity() : EventDispatcher() {
 	visibilityAffectsChildren = true;
 	ownsChildren = false;
 	enableScissor = false;
-	
+	processInputEvents = false;
+	blockMouseInput = false;
 	editorOnly = false; 
-
+	hasFocus = false;
+	snapToPixels = false;
 	tags = NULL;
 }
 
@@ -625,6 +627,31 @@ void Entity::setParentEntity(Entity *entity) {
 	parentEntity = entity;
 }
 
+void Entity::setWidth(Number width) {
+	bBox.x = width;
+}
+
+void Entity::setHeight(Number height) {
+	bBox.y = height;
+}
+
+void Entity::setDepth(Number depth) {
+	bBox.z = depth;
+}
+
+Number Entity::getWidth() const {
+	return bBox.z;
+}
+
+Number Entity::getHeight() const {
+	return bBox.y;
+}
+
+Number Entity::getDepth() const {
+	return bBox.z;
+}
+
+
 Number Entity::getPitch() const {
 	return rotation.pitch;
 }
@@ -720,6 +747,10 @@ Vector3 Entity::getPosition() const {
 	return position;
 }
 
+Vector2 Entity::getPosition2D() const {
+	return Vector2(position.x, position.y);
+}
+
 Number Entity::getCombinedPitch() const {
 	if(parentEntity != NULL)
 		return parentEntity->getCombinedPitch()+rotation.pitch;
@@ -774,3 +805,10 @@ void Entity::addTag(String tag) {
 	}
 }
 
+void Entity::setPositionMode(int newPositionMode) {
+	positionMode = newPositionMode;
+}
+
+int Entity::getPositionMode() const {
+	return positionMode;
+}

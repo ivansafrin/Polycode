@@ -26,17 +26,16 @@ THE SOFTWARE.
 #include "PolyLogger.h"
 #include "PolyMesh.h"
 #include "PolyPolygon.h"
-#include "PolyScreenEntity.h"
-#include "PolyScreenMesh.h"
+#include "PolyEntity.h"
 
 using namespace Polycode;
 
-PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, Number worldScale, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation, int groupIndex) {
+PhysicsScene2DEntity::PhysicsScene2DEntity(Entity *entity, b2World *world, Number worldScale, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation, int groupIndex) {
 	
-	screenEntity = entity;
+	this->entity = entity;
 
 	Vector3 entityScale = entity->getCompoundScale();
-	Matrix4 compoundMatrix = screenEntity->getConcatenatedMatrix();
+	Matrix4 compoundMatrix = entity->getConcatenatedMatrix();
 	entity->ignoreParentMatrix = true;
 	entity->scale = entityScale;
 	entityScale.x = fabs(entityScale.x);
@@ -48,7 +47,7 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 	// Create body definition---------------------------------------
 	b2BodyDef bodyDef;
 	bodyDef.position.Set(compoundMatrix.getPosition().x/worldScale, compoundMatrix.getPosition().y/worldScale);
-	bodyDef.angle = screenEntity->getRotation()*(PI/180.0f);	
+	bodyDef.angle = entity->rotation.roll*(PI/180.0f);	
 	bodyDef.bullet = isSensor;	
 	bodyDef.fixedRotation = fixedRotation;	
 	if(isStatic)
@@ -74,7 +73,7 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 			b2CircleShape Shape;
 			fDef.shape = &Shape;
 			// Set the shape
-			Shape.m_radius = screenEntity->getWidth()/(worldScale*2.0f);
+			Shape.m_radius = entity->getWidth()/(worldScale*2.0f);
 			// Create the fixture
 			fixture = body->CreateFixture(&fDef);
 			break;
@@ -83,26 +82,26 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 			b2PolygonShape Shape;
 			fDef.shape = &Shape;
 			// Set the shape
-			Shape.SetAsBox(screenEntity->getWidth()/(worldScale*2.0f) * entityScale.x, screenEntity->getHeight()/(worldScale*2.0f) * entityScale.y);
+			Shape.SetAsBox(entity->getWidth()/(worldScale*2.0f) * entityScale.x, entity->getHeight()/(worldScale*2.0f) * entityScale.y);
 			// Create the fixture
 			fixture = body->CreateFixture(&fDef);
 			break;
 		}
 		case ENTITY_EDGE: {
 			b2PolygonShape Shape;	
-			Shape.SetAsEdge(b2Vec2(-screenEntity->getWidth()/(worldScale*2.0f),-screenEntity->getHeight()/(2.0*worldScale)),
-							b2Vec2(screenEntity->getWidth()/(worldScale*2.0f),-screenEntity->getHeight()/(2.0*worldScale)));
+			Shape.SetAsEdge(b2Vec2(-entity->getWidth()/(worldScale*2.0f),-entity->getHeight()/(2.0*worldScale)),
+							b2Vec2(entity->getWidth()/(worldScale*2.0f),-entity->getHeight()/(2.0*worldScale)));
 			fDef.shape = &Shape;
 			fixture = body->CreateFixture(&fDef);
 			break;
         }
 		case ENTITY_CAPSULE: {
 		
-			Number rectSize = (screenEntity->getHeight()/(worldScale*2.0f) * entityScale.y) - (screenEntity->getWidth()/(worldScale*2.0f * entityScale.y));
+			Number rectSize = (entity->getHeight()/(worldScale*2.0f) * entityScale.y) - (entity->getWidth()/(worldScale*2.0f * entityScale.y));
 					
 			b2CircleShape Shape;
 			fDef.shape = &Shape;
-			Shape.m_radius = screenEntity->getWidth()/(worldScale*2.0f);			
+			Shape.m_radius = entity->getWidth()/(worldScale*2.0f);			
 			Shape.m_p.y = rectSize;
 			fixture = body->CreateFixture(&fDef);
 			Shape.m_p.y = -rectSize;
@@ -110,18 +109,18 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 			
 			b2PolygonShape Shape2;
 			fDef.shape = &Shape2;
-			Shape2.SetAsBox(screenEntity->getWidth()/(worldScale*2.0f) * entityScale.x, rectSize);
+			Shape2.SetAsBox(entity->getWidth()/(worldScale*2.0f) * entityScale.x, rectSize);
 			fixture = body->CreateFixture(&fDef);
 			break;						
 		}
 		break;
 		case ENTITY_TRIPLE_CIRCLE: {
 		
-			Number rectSize = (screenEntity->getHeight()/(worldScale*2.0f) * entityScale.y) - (screenEntity->getWidth()/(worldScale*2.0f * entityScale.y));
+			Number rectSize = (entity->getHeight()/(worldScale*2.0f) * entityScale.y) - (entity->getWidth()/(worldScale*2.0f * entityScale.y));
 					
 			b2CircleShape Shape;
 			fDef.shape = &Shape;
-			Shape.m_radius = screenEntity->getWidth()/(worldScale*2.0f);			
+			Shape.m_radius = entity->getWidth()/(worldScale*2.0f);			
 			Shape.m_p.y = rectSize;
 			fixture = body->CreateFixture(&fDef);
 			Shape.m_p.y = -rectSize;
@@ -131,7 +130,9 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 			break;						
 		}
 		break;	
-		case ENTITY_MESH: {
+		case ENTITY_MESH:
+		/*		
+		{
 			b2PolygonShape Shape;
 			fDef.shape = &Shape;
 			ScreenMesh* screenMesh = dynamic_cast<ScreenMesh*>(entity);
@@ -157,23 +158,25 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 			}
 			else { Logger::log("Tried to make a mesh collision object from a non-mesh\n"); }
 		}
+		*/
+		break;		
 	}
 }
 
-void PhysicsScreenEntity::applyTorque(Number torque) {
+void PhysicsScene2DEntity::applyTorque(Number torque) {
 	body->ApplyTorque(torque);
 }
 
-void PhysicsScreenEntity::applyForce(Vector2 force){
+void PhysicsScene2DEntity::applyForce(Vector2 force){
 	body->SetAwake(true);
 	body->ApplyForce(b2Vec2(force.x,force.y), b2Vec2(body->GetPosition().x,body->GetPosition().y));
 }
 
-ScreenEntity *PhysicsScreenEntity::getScreenEntity() {
-	return screenEntity;
+Entity *PhysicsScene2DEntity::getEntity() {
+	return entity;
 }
 
-void PhysicsScreenEntity::setVelocity(Number fx, Number fy) {
+void PhysicsScene2DEntity::setVelocity(Number fx, Number fy) {
 	body->SetAwake(true);
 	b2Vec2 f = body->GetLinearVelocity();
 	if(fx != 0)
@@ -183,14 +186,14 @@ void PhysicsScreenEntity::setVelocity(Number fx, Number fy) {
 	body->SetLinearVelocity(f);
 }
 
-void PhysicsScreenEntity::setVelocityX( Number fx) {
+void PhysicsScene2DEntity::setVelocityX( Number fx) {
 	body->SetAwake(true);
 	b2Vec2 f = body->GetLinearVelocity();
 	f.x = fx;	
 	body->SetLinearVelocity(f);
 }
 
-void PhysicsScreenEntity::setVelocityY(Number fy) {
+void PhysicsScene2DEntity::setVelocityY(Number fy) {
 	body->SetAwake(true);
 	b2Vec2 f = body->GetLinearVelocity();
 	f.y = fy;	
@@ -198,70 +201,70 @@ void PhysicsScreenEntity::setVelocityY(Number fy) {
 }
 
 
-void PhysicsScreenEntity::setCollisionCategory(int categoryBits) {
+void PhysicsScene2DEntity::setCollisionCategory(int categoryBits) {
         b2Filter filter=fixture->GetFilterData();
         filter.categoryBits = categoryBits;
         fixture->SetFilterData(filter);
 }
 
-void PhysicsScreenEntity::setCollisionMask(int maskBits) {
+void PhysicsScene2DEntity::setCollisionMask(int maskBits) {
         b2Filter filter=fixture->GetFilterData();
         filter.maskBits = maskBits;
         fixture->SetFilterData(filter);
 }
 
-void PhysicsScreenEntity::setCollisionGroupIndex(int group) {
+void PhysicsScene2DEntity::setCollisionGroupIndex(int group) {
     b2Filter filter=fixture->GetFilterData();
     filter.groupIndex = group;
     fixture->SetFilterData(filter);    
 }
 
-void PhysicsScreenEntity::setLinearDamping(Number damping) {
+void PhysicsScene2DEntity::setLinearDamping(Number damping) {
     body->SetLinearDamping(damping);
 }
 
-void PhysicsScreenEntity::setAngularDamping(Number damping) {
+void PhysicsScene2DEntity::setAngularDamping(Number damping) {
     body->SetAngularDamping(damping);
 }
 
-void PhysicsScreenEntity::setFriction(Number friction) {
+void PhysicsScene2DEntity::setFriction(Number friction) {
     if(fixture) {
         fixture->SetFriction(friction);
     }
 }
 
-void PhysicsScreenEntity::setDensity(Number density) {
+void PhysicsScene2DEntity::setDensity(Number density) {
     if(fixture) {
         fixture->SetDensity(density);
     }
 }
 
-Number PhysicsScreenEntity::getLinearDamping() {
+Number PhysicsScene2DEntity::getLinearDamping() {
     return body->GetLinearDamping();
 }
 
-Number PhysicsScreenEntity::getAngularDamping() {
+Number PhysicsScene2DEntity::getAngularDamping() {
     return body->GetAngularDamping();
 }
 
-Number PhysicsScreenEntity::getFriction() {
+Number PhysicsScene2DEntity::getFriction() {
     return fixture->GetFriction();
 }
 
-Number PhysicsScreenEntity::getDensity() {
+Number PhysicsScene2DEntity::getDensity() {
     return fixture->GetDensity();
 }
 
-void PhysicsScreenEntity::applyImpulse(Number fx, Number fy) {
+void PhysicsScene2DEntity::applyImpulse(Number fx, Number fy) {
 	body->SetAwake(true);
 	b2Vec2 f =  b2Vec2(fx,fy);
 	b2Vec2 p = body->GetWorldPoint(b2Vec2(0.0f, 0.0f));	
 	body->ApplyLinearImpulse(f, p);	
 }
 			
-void PhysicsScreenEntity::setTransform(Vector2 pos, Number angle) {
-	if(screenEntity->getParentEntity()) {
-		Matrix4 matrix = screenEntity->getParentEntity()->getConcatenatedMatrix();
+void PhysicsScene2DEntity::setTransform(Vector2 pos, Number angle) {
+	if(entity->getParentEntity()) {
+		Matrix4 matrix = entity->getParentEntity()->getConcatenatedMatrix();
 		Vector3 parentPos = matrix.getPosition();		
 		pos.x = parentPos.x + pos.x;
 		pos.y = parentPos.y + pos.y;		
@@ -271,9 +274,9 @@ void PhysicsScreenEntity::setTransform(Vector2 pos, Number angle) {
 	Update();
 }
 
-void PhysicsScreenEntity::Update() {
+void PhysicsScene2DEntity::Update() {
 	if(collisionOnly) {
-		Matrix4 matrix = screenEntity->getConcatenatedMatrix();
+		Matrix4 matrix = entity->getConcatenatedMatrix();
 		Vector3 pos = matrix.getPosition();		
 		b2Vec2 newPos;
 		newPos.x = pos.x/worldScale;
@@ -287,13 +290,13 @@ void PhysicsScreenEntity::Update() {
 	} else {
 		b2Vec2 position = body->GetPosition();
 		Number angle = body->GetAngle();	
-		screenEntity->setRotation(angle*(180.0f/PI));	
-		screenEntity->setPosition(position.x*worldScale, position.y*worldScale);
-		screenEntity->rebuildTransformMatrix();		
+		entity->setRoll(angle*(180.0f/PI));	
+		entity->setPosition(position.x*worldScale, position.y*worldScale, 0.0);
+		entity->rebuildTransformMatrix();		
 	}	
 }
 
-b2Fixture* PhysicsScreenEntity::getFixture(unsigned short index) {
+b2Fixture* PhysicsScene2DEntity::getFixture(unsigned short index) {
 	if(fixture)	{
 		short i = 0;
 		for (b2Fixture* f = body->GetFixtureList(); f; f = f->GetNext()) {
@@ -312,13 +315,13 @@ b2Fixture* PhysicsScreenEntity::getFixture(unsigned short index) {
 	return fixture = NULL;	
 }
 
-b2Fixture* PhysicsScreenEntity::getFixture() { return fixture; }
+b2Fixture* PhysicsScene2DEntity::getFixture() { return fixture; }
 
 
 // I believe that at runtime you are not supposed to edit Shapes; However you still can
 // by getting a fixture(above) and then adding "->GetShape()" on the end to get the fixtures shape
 
-PhysicsScreenEntity::~PhysicsScreenEntity() {
+PhysicsScene2DEntity::~PhysicsScene2DEntity() {
 	if(body)
 		body->GetWorld()->DestroyBody(body);	// DestroyBody deletes fixtures and shapes automaticaly according to box2d documentation
 }

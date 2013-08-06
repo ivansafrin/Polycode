@@ -13,8 +13,8 @@ UIFileDialogEntry::UIFileDialogEntry(OSFileEntry entry, bool canSelect, int widt
 	String folderIconName = conf->getStringValue("Polycode", "uiFileBrowserFolderIcon");
 	String placeIconName = conf->getStringValue("Polycode", "uiFileBrowserPlaceIcon");
 
-	bg = new ScreenShape(ScreenShape::SHAPE_RECT, width, 18);
-	bg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	bg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, width, 18);
+	bg->setPositionMode(Entity::POSITION_TOPLEFT);
 	addChild(bg);
 	bg->setColor(0.0, 0.0, 0.0, 0.1);
 	bg->processInputEvents = true;
@@ -22,19 +22,19 @@ UIFileDialogEntry::UIFileDialogEntry(OSFileEntry entry, bool canSelect, int widt
 	this->fileEntry = entry;
 
 	if(isPlace) {
-		icon = new ScreenImage(placeIconName);
+		icon = new SceneImage(placeIconName);
 	} else {
 		if(entry.type == OSFileEntry::TYPE_FILE) {
-			icon = new ScreenImage(fileIconName);
+			icon = new SceneImage(fileIconName);
 		} else {
-			icon = new ScreenImage(folderIconName);
+			icon = new SceneImage(folderIconName);
 		}
 	}
 
 	addChild(icon);
 	icon->setPosition(3,1);
 
-	label = new ScreenLabel(entry.name, 12, "sans");
+	label = new SceneLabel(entry.name, 12, "sans");
 	addChild(label);
 	label->setPosition(25, 2);
 

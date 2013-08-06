@@ -30,7 +30,7 @@
 
 using namespace Polycode;
 
-SceneLight::SceneLight(int type, Scene *parentScene, Number intensity, Number constantAttenuation, Number linearAttenuation, Number quadraticAttenuation) : SceneEntity() {
+SceneLight::SceneLight(int type, Scene *parentScene, Number intensity, Number constantAttenuation, Number linearAttenuation, Number quadraticAttenuation) : Entity() {
 	this->type = type;
 	this->intensity = intensity;
 	this->constantAttenuation = constantAttenuation;

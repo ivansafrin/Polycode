@@ -35,7 +35,7 @@ Skeleton *Skeleton::BlankSkeleton() {
 	return new Skeleton();
 }
 
-Skeleton::Skeleton(const String& fileName) : SceneEntity() {
+Skeleton::Skeleton(const String& fileName) : Entity() {
 	loadSkeleton(fileName);
 	currentAnimation = NULL;
 }
@@ -130,7 +130,7 @@ void Skeleton::loadSkeleton(const String& fileName) {
 		return;
 	}
 	
-	bonesEntity	= new SceneEntity();
+	bonesEntity	= new Entity();
 	bonesEntity->visible = false;
 	addChild(bonesEntity);
 	
@@ -187,7 +187,7 @@ void Skeleton::loadSkeleton(const String& fileName) {
 	}
 
 	Bone *parentBone;
-//	SceneEntity *bProxy;
+//	Entity *bProxy;
 	
 	for(int i=0; i < bones.size(); i++) {
 		if(bones[i]->parentBoneId != -1) {
@@ -202,7 +202,7 @@ void Skeleton::loadSkeleton(const String& fileName) {
 			bonesEntity->addEntity(connector);				
 			connector->setColor(((Number)(rand() % RAND_MAX)/(Number)RAND_MAX),((Number)(rand() % RAND_MAX)/(Number)RAND_MAX),((Number)(rand() % RAND_MAX)/(Number)RAND_MAX),1.0f);
 		} else {
-//			bProxy = new SceneEntity();
+//			bProxy = new Entity();
 //			addEntity(bProxy);			
 //			bProxy->addEntity(bones[i]);
 			bonesEntity->addChild(bones[i]);

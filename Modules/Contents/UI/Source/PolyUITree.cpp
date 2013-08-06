@@ -48,15 +48,15 @@ UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : 
 	cellHeight = conf->getNumericValue("Polycode", "uiTreeCellHeight");
 	this->size = conf->getNumericValue("Polycode", "uiDefaultFontSize");
 	this->arrowIcon = conf->getStringValue("Polycode", "uiTreeArrowIconImage");	
-	textLabel = new ScreenLabel(
+	textLabel = new SceneLabel(
 								text,
 								size,
 								fontName,
 								Label::ANTIALIAS_FULL);
 	textLabel->color.setColorHexFromString(conf->getStringValue("Polycode", "uiTreeFontColor"));
 	
-	bgBox = new ScreenShape(ScreenShape::SHAPE_RECT, treeWidth, cellHeight);	
-	bgBox->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	bgBox = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, treeWidth, cellHeight);	
+	bgBox->setPositionMode(Entity::POSITION_TOPLEFT);
 	bgBox->setPosition(-treeOffset,0);	
 	bgBox->setColor(1, 1, 1, 0);
 	addChild(bgBox);
@@ -74,14 +74,14 @@ UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : 
 						  st,sr,sb,sl,
 						  treeWidth+(padding*2), cellHeight+(padding*2));
 	
-	selection->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	selection->setPositionMode(Entity::POSITION_TOPLEFT);
 	selection->setPosition(-treeOffset-padding,-padding);
 	selection->visible = false;
 	addChild(selection);
-	arrowIconImage = new ScreenImage(arrowIcon.c_str());
+	arrowIconImage = new SceneImage(arrowIcon.c_str());
 	arrowIconImage->setPosition(cellPadding,(cellHeight-arrowIconImage->getHeight())/2.0f);
 	addChild(arrowIconImage);
-	iconImage = new ScreenImage(icon.c_str());
+	iconImage = new SceneImage(icon.c_str());
 	addChild(iconImage);
 	iconImage->setPosition(arrowIconImage->getWidth()+(cellPadding*2),(cellHeight-iconImage->getHeight())/2.0f);
 
@@ -105,7 +105,7 @@ UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : 
 	bgBox->addEventListener(this, InputEvent::EVENT_DOUBLECLICK);	
 	bgBox->processInputEvents = true;
 		
-	setPositionMode(ScreenEntity::POSITION_CENTER);
+	setPositionMode(Entity::POSITION_CENTER);
 	
 	refreshTree();
 }
@@ -113,7 +113,7 @@ UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : 
 void UITree::Resize(Number width) {
 	treeWidth = width;
 	selection->resizeBox(treeWidth+(padding*2), cellHeight+(padding*2));
-	bgBox->setShapeSize(width, cellHeight);
+	bgBox->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, cellHeight);
 	
 	for(int i=0; i < treeChildren.size(); i++) {
 		treeChildren[i]->Resize(width);
@@ -268,7 +268,6 @@ void UITree::refreshTree() {
 	}
 	height = treeHeight + cellHeight;
 	width = treeWidth;
-	setHitbox(width, height);
 	
 	selection->visible = selected;
 	dispatchEvent(new UITreeEvent(), UITreeEvent::NEED_REFRESH_EVENT);	
@@ -309,7 +308,7 @@ void UITree::clearTree() {
 }
 
 void UITree::Update() {
-	arrowIconImage->setRotation(handleRotation);
+	arrowIconImage->setRoll(handleRotation);
 	if(treeChildren.size() > 0)
 		arrowIconImage->visible = true;
 	else

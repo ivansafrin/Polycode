@@ -22,9 +22,9 @@
 
 #pragma once
 #include "PolyGlobals.h"
-#include "PolyScreenLabel.h"
-#include "PolyScreenShape.h"
-#include "PolyScreenEntity.h"
+#include "PolySceneLabel.h"
+#include "PolyScenePrimitive.h"
+#include "PolyEntity.h"
 #include "PolyUIEvent.h"
 #include "PolyUIBox.h"
 #include "PolyUIMenu.h"
@@ -55,8 +55,8 @@ namespace Polycode {
 			void Select();
 			void Deselect();
 
-			ScreenShape *bg;
-			ScreenLabel *label;
+			ScenePrimitive *bg;
+			SceneLabel *label;
 
 			std::vector<UIMenuBarEntryItem> items;
 
@@ -82,7 +82,7 @@ namespace Polycode {
 			bool holdingMouse;
 
 			String selectedItem;
-			ScreenShape *bgShape;
+			ScenePrimitive *bgShape;
 			std::vector<UIMenuBarEntry*> entries;
 			UIMenuBarEntry *currentEntry;
 	};

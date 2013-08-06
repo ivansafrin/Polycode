@@ -23,6 +23,7 @@ THE SOFTWARE.
 #pragma once
 #include "PolyGlobals.h"
 #include "PolySceneMesh.h"
+#include "PolyMesh.h"
 
 namespace Polycode {
 
@@ -45,6 +46,10 @@ namespace Polycode {
 			ScenePrimitive(int type, Number v1=1.0f, Number v2=1.0f, Number v3=1.0f,Number v4=0.0f,Number v5=0.0f);
 			virtual ~ScenePrimitive();
 
+			void setPrimitiveOptions(int type, Number v1=1.0f, Number v2=1.0f, Number v3=1.0f,Number v4=0.0f,Number v5=0.0f);
+
+			void recreatePrimitive();
+		
 			/**
 			* A cube.
 			* v1 - X size
@@ -109,10 +114,16 @@ namespace Polycode {
 			*/			
 			static const int TYPE_UNCAPPED_CYLINDER = 7;
 							
-
 		
 		protected:
-		
+
+			int type;
+			Number v1;
+			Number v2;
+			Number v3;
+			Number v4;
+			Number v5;			
+												
 	};
 	
 }

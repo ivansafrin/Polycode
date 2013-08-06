@@ -31,26 +31,26 @@ using namespace Polycode;
 
 UIHSizer::UIHSizer(Number width, Number height, Number mainWidth, bool leftSizer) : UIElement() {
 
-	this->width = width;
-	this->height = height;
+	setWidth(width);
+	setHeight(height);
 	this->leftSizer = leftSizer;
 	this->mainWidth = mainWidth;
 	
-	separatorBgShape = new ScreenShape(ScreenShape::SHAPE_RECT, 1,height);
-	separatorBgShape->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	separatorBgShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1,height);
+	separatorBgShape->setPositionMode(Entity::POSITION_TOPLEFT);
 	separatorBgShape->setColor(0.0, 0.0, 0.0, 1.0);	
 	addChild(separatorBgShape);
 	
 
-	childElements = new ScreenEntity();
+	childElements = new Entity();
 	childElements->processInputEvents = true;
 	addChild(childElements);
 	
 	firstElement = NULL;
 	secondElement = NULL;
 	
-	separatorHitShape = new ScreenShape(ScreenShape::SHAPE_RECT, 8,height);
-	separatorHitShape->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	separatorHitShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 8,height);
+	separatorHitShape->setPositionMode(Entity::POSITION_TOPLEFT);
 	separatorHitShape->setColor(1.0, 0.0, 0.0, 0.5);	
 	separatorHitShape->blockMouseInput = true;	
 	addChild(separatorHitShape);
@@ -126,8 +126,8 @@ void UIHSizer::handleEvent(Event *event) {
 }
 
 void UIHSizer::Resize(Number width, Number height) {
-	this->width = width;
-	this->height = height;
+	setWidth(width);
+	setHeight(height);
 	matrixDirty = true;
 	updateSizer();
 	UIElement::Resize(width, height);	
@@ -167,9 +167,9 @@ void UIHSizer::updateSizer() {
 			secondElement->Resize(width-mainWidth-1, height);	
 		}
 
-		separatorBgShape->setShapeSize(1, height);
+		separatorBgShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, 1, height);
 		separatorBgShape->setPosition(mainWidth,0);
-		separatorHitShape->setShapeSize(8, height);
+		separatorHitShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, 8, height);
 		separatorHitShape->setPosition(mainWidth-4,0);
 		
 	} else {
@@ -183,9 +183,9 @@ void UIHSizer::updateSizer() {
 			secondElement->Resize(mainWidth-1, height);	
 		}
 
-		separatorBgShape->setShapeSize(1, height);
+		separatorBgShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, 1, height);
 		separatorBgShape->setPosition(width-mainWidth,0);
-		separatorHitShape->setShapeSize(8, height);
+		separatorHitShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, 8, height);
 		separatorHitShape->setPosition(width-mainWidth-4,0);
 	
 	}

@@ -22,7 +22,7 @@ THE SOFTWARE.
 
 #include "PolyCollisionScene.h"
 #include "PolyCollisionSceneEntity.h"
-#include "PolySceneEntity.h"
+#include "PolyEntity.h"
 
 using namespace Polycode;
 
@@ -55,19 +55,19 @@ void CollisionScene::Update() {
 	
 	for(int i=0; i < collisionChildren.size(); i++) {
 		if(collisionChildren[i]->enabled)		
-			collisionChildren[i]->lastPosition = collisionChildren[i]->getSceneEntity()->getPosition();
+			collisionChildren[i]->lastPosition = collisionChildren[i]->getEntity()->getPosition();
 	}
 	Scene::Update();	
 }
 
-void CollisionScene::enableCollision(SceneEntity *entity, bool val) {
-	CollisionSceneEntity *cEnt = getCollisionByScreenEntity(entity);
+void CollisionScene::enableCollision(Entity *entity, bool val) {
+	CollisionEntity *cEnt = getCollisionByScreenEntity(entity);
 	if(cEnt) {
 		cEnt->enabled = val;
 	}
 }
 
-void CollisionScene::adjustForCollision(CollisionSceneEntity *collisionEntity) {
+void CollisionScene::adjustForCollision(CollisionEntity *collisionEntity) {
 	CollisionResult result;
 //	Number elapsed = CoreServices::getInstance()->getCore()->getElapsed();
 	result.collided = false;
@@ -76,25 +76,25 @@ void CollisionScene::adjustForCollision(CollisionSceneEntity *collisionEntity) {
 			result = testCollisionOnCollisionChild(collisionEntity, collisionChildren[i]);
 			if(result.collided) {
 				if(result.setOldPosition) {
-					collisionEntity->getSceneEntity()->setPosition(result.newPos);
+					collisionEntity->getEntity()->setPosition(result.newPos);
 				} else {
-					collisionEntity->getSceneEntity()->Translate(result.colNormal.x*result.colDist, result.colNormal.y*result.colDist, result.colNormal.z*result.colDist);
+					collisionEntity->getEntity()->Translate(result.colNormal.x*result.colDist, result.colNormal.y*result.colDist, result.colNormal.z*result.colDist);
 				}
 			}
 		}
 	}
 }	
 
-CollisionSceneEntity *CollisionScene::getCollisionByScreenEntity(SceneEntity *ent) {
+CollisionEntity *CollisionScene::getCollisionByScreenEntity(Entity *ent) {
 	for(int i=0; i<collisionChildren.size();i++) {
-		if(collisionChildren[i]->getSceneEntity() == ent)
+		if(collisionChildren[i]->getEntity() == ent)
 			return collisionChildren[i];
 	}	
 	return NULL;
 
 }
 
-CollisionResult CollisionScene::testCollisionOnCollisionChild_Convex(CollisionSceneEntity *cEnt1, CollisionSceneEntity *cEnt2) {
+CollisionResult CollisionScene::testCollisionOnCollisionChild_Convex(CollisionEntity *cEnt1, CollisionEntity *cEnt2) {
 	CollisionResult result;
 	result.collided = false;
 	result.setOldPosition = false;
@@ -156,9 +156,9 @@ RayTestResult CollisionScene::getFirstEntityInRay(const Vector3 &origin,  const 
 	world->rayTest (fromVec, toVec, cb);	
 	
 	if (cb.hasHit ()) {
-		CollisionSceneEntity *retEnt = getCollisionEntityByObject(cb.m_collisionObject);
+		CollisionEntity *retEnt = getCollisionEntityByObject(cb.m_collisionObject);
 		if(retEnt) {
-			ret.entity = retEnt->getSceneEntity();
+			ret.entity = retEnt->getEntity();
 			ret.position = Vector3(cb.m_hitPointWorld.getX(), cb.m_hitPointWorld.getY(), cb.m_hitPointWorld.getZ());
 			ret.normal = Vector3(cb.m_hitNormalWorld.getX(), cb.m_hitNormalWorld.getY(), cb.m_hitNormalWorld.getZ());			
 			return ret;
@@ -168,18 +168,18 @@ RayTestResult CollisionScene::getFirstEntityInRay(const Vector3 &origin,  const 
 	return ret;
 }
 
-CollisionSceneEntity *CollisionScene::getCollisionEntityByObject(btCollisionObject *collisionObject) {
-	return (CollisionSceneEntity*)collisionObject->getUserPointer();
+CollisionEntity *CollisionScene::getCollisionEntityByObject(btCollisionObject *collisionObject) {
+	return (CollisionEntity*)collisionObject->getUserPointer();
 }
 
 
-CollisionResult CollisionScene::testCollisionOnCollisionChild(CollisionSceneEntity *cEnt1, CollisionSceneEntity *cEnt2) {
+CollisionResult CollisionScene::testCollisionOnCollisionChild(CollisionEntity *cEnt1, CollisionEntity *cEnt2) {
 		return testCollisionOnCollisionChild_Convex(cEnt1, cEnt2);
 }
 
-CollisionResult CollisionScene::testCollision(SceneEntity *ent1, SceneEntity *ent2) {
-	CollisionSceneEntity *cEnt1 = getCollisionByScreenEntity(ent1);
-	CollisionSceneEntity *cEnt2 = getCollisionByScreenEntity(ent2);
+CollisionResult CollisionScene::testCollision(Entity *ent1, Entity *ent2) {
+	CollisionEntity *cEnt1 = getCollisionByScreenEntity(ent1);
+	CollisionEntity *cEnt2 = getCollisionByScreenEntity(ent2);
 	CollisionResult result;
 	result.collided = false;
 	if(cEnt1 == NULL || cEnt2 == NULL)
@@ -197,13 +197,13 @@ CollisionScene::~CollisionScene() {
 	delete collisionConfiguration;
 }
 
-void CollisionScene::removeCollision(SceneEntity *entity) {
-	CollisionSceneEntity *cEnt = getCollisionByScreenEntity(entity);
+void CollisionScene::removeCollision(Entity *entity) {
+	CollisionEntity *cEnt = getCollisionByScreenEntity(entity);
 	if(cEnt) {
 		world->removeCollisionObject(cEnt->collisionObject);
 		for(int i=0; i < collisionChildren.size(); i++) {
 			if(collisionChildren[i] == cEnt) {
-				std::vector<CollisionSceneEntity*>::iterator target = collisionChildren.begin()+i;
+				std::vector<CollisionEntity*>::iterator target = collisionChildren.begin()+i;
 				delete *target;
 				collisionChildren.erase(target);
 			}
@@ -212,17 +212,17 @@ void CollisionScene::removeCollision(SceneEntity *entity) {
 
 }
 
-void CollisionScene::removeEntity(SceneEntity *entity) {
+void CollisionScene::removeEntity(Entity *entity) {
 	if(getCollisionByScreenEntity(entity)) {
 		removeCollision(entity);	
 	}
 	Scene::removeEntity(entity);
 }
 
-CollisionSceneEntity *CollisionScene::trackCollision(SceneEntity *newEntity, int type, int group) {
-	CollisionSceneEntity *newCollisionEntity = new CollisionSceneEntity(newEntity, type);
+CollisionEntity *CollisionScene::trackCollision(Entity *newEntity, int type, int group) {
+	CollisionEntity *newCollisionEntity = new CollisionEntity(newEntity, type);
 
-//	if(type == CollisionSceneEntity::CHARACTER_CONTROLLER) {
+//	if(type == CollisionEntity::CHARACTER_CONTROLLER) {
 //		world->addCollisionObject(newCollisionEntity->collisionObject,btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);		
 //	} else {
 //		newCollisionEntity->collisionObject->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
@@ -233,7 +233,7 @@ CollisionSceneEntity *CollisionScene::trackCollision(SceneEntity *newEntity, int
 	return newCollisionEntity;
 }
 
-CollisionSceneEntity *CollisionScene::addCollisionChild(SceneEntity *newEntity, int type, int group) {
+CollisionEntity *CollisionScene::addCollisionChild(Entity *newEntity, int type, int group) {
 	addEntity(newEntity);
 	return trackCollision(newEntity, type, group);
 

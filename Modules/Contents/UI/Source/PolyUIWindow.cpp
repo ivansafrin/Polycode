@@ -30,7 +30,7 @@
 using namespace Polycode;
 
 
-UIWindow::UIWindow(String windowName, Number width, Number height) : ScreenEntity(), windowTween(NULL) {
+UIWindow::UIWindow(String windowName, Number width, Number height) : Entity(), windowTween(NULL) {
 	closeOnEscape = false;
 	
 	snapToPixels = true;
@@ -61,14 +61,14 @@ UIWindow::UIWindow(String windowName, Number width, Number height) : ScreenEntit
 	Number titleBarHeight = conf->getNumericValue("Polycode", "uiWindowTitleBarHeight");
 	Number titleBarOffset = conf->getNumericValue("Polycode", "uiWindowTitleBarOffset");
 		
-	titlebarRect = new ScreenShape(ScreenShape::SHAPE_RECT, width, titleBarHeight);
+	titlebarRect = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, width, titleBarHeight);
 	titlebarRect->setPosition(0, titleBarOffset);
 	titlebarRect->setColor(0,0,0,0);
-	titlebarRect->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	titlebarRect->setPositionMode(Entity::POSITION_TOPLEFT);
 	titlebarRect->processInputEvents = true;
 	addChild(titlebarRect);
 	
-	titleLabel = new ScreenLabel(windowName, fontSize, fontName, Label::ANTIALIAS_FULL);
+	titleLabel = new SceneLabel(windowName, fontSize, fontName, Label::ANTIALIAS_FULL);
 	titleLabel->setPosition(conf->getNumericValue("Polycode", "uiWindowTitleX"),conf->getNumericValue("Polycode", "uiWindowTitleY"));
 	addChild(titleLabel);
 	titleLabel->color.setColorHexFromString(conf->getStringValue("Polycode", "uiWindowFontColor"));
@@ -148,8 +148,8 @@ void UIWindow::onMouseDown(Number x, Number y) {
 	hasFocus = true;
 	//dispatchEvent(new ScreenEvent(), ScreenEvent::ENTITY_MOVE_TOP);
 	for(int i=0; i < children.size(); i++) {
-		if(((ScreenEntity*)children[i])->isFocusable()) {
-			focusChild(((ScreenEntity*)children[i]));
+		if(((Entity*)children[i])->isFocusable()) {
+			focusChild(((Entity*)children[i]));
 			return;
 		}
 	}

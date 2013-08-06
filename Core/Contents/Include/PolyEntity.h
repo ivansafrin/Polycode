@@ -24,6 +24,7 @@
 #include "PolyGlobals.h"
 #include "PolyString.h"
 #include "PolyMatrix4.h"
+#include "PolyVector2.h"
 #include "PolyQuaternion.h"
 #include "PolyColor.h"
 #include "PolyRectangle.h"
@@ -223,6 +224,8 @@ namespace Polycode {
 			*/			
 			Vector3 getPosition() const;
 			
+			Vector2 getPosition2D() const;
+			
 			/**
 			* Returns the entity's position added to the combined position of its parent. This method is here only for convenience of calculating certain properties and should not be used to get an entity's actual position in the world. To get the actual world position of the entity, use the entity's concatendated matrix.
 			@see getConcatenatedMatrix()
@@ -236,7 +239,7 @@ namespace Polycode {
 			@param y Y-axis value.
 			@param z Z-axis value.						
 			*/						
-			void setPosition(Number x, Number y, Number z);
+			void setPosition(Number x, Number y, Number z=0.0);
 			
 			/**
 			* Sets the entity's position with a vector.
@@ -262,7 +265,7 @@ namespace Polycode {
 			@param y Y-axis value.
 			@param z Z-axis value.						
 			*/						
-			void Translate(Number x, Number y, Number z);
+			void Translate(Number x, Number y, Number z=0.0);
 			
 			/**
 			* Translates the entity relative to its current position with a vector.
@@ -301,7 +304,7 @@ namespace Polycode {
 			@param y Y-axis value.
 			@param z Z-axis value.						
 			*/									
-			void Scale(Number x, Number y, Number z);
+			void Scale(Number x, Number y, Number z=0.0);
 			
 			/**
 			* Sets the entity's scale.
@@ -309,7 +312,7 @@ namespace Polycode {
 			@param y Y-axis value.
 			@param z Z-axis value.						
 			*/									
-			void setScale(Number x, Number y, Number z);
+			void setScale(Number x, Number y, Number z=1.0);
 			
 			/**
 			* Sets the entity's scale.
@@ -405,7 +408,17 @@ namespace Polycode {
 			* @return Current roll value.
 			*/																										
 			Number getRoll() const;
-		
+			
+			Number getWidth() const;
+
+			Number getHeight() const;
+
+			Number getDepth() const;
+			
+			void setWidth(Number width);
+			void setHeight(Number height);
+			void setDepth(Number depth);
+			
 			/**
 			* Sets the rotation with quaternion value.
 			* @param Current yaw value.
@@ -655,8 +668,73 @@ namespace Polycode {
 			void clearTags();
 			void addTag(String tag); 
 
+			/**
+			* If set to true, will cast shadows (Defaults to true).
+			*/
+			bool castShadows;
+			
+			int collisionShapeType;	
 
+			int positionMode;
 
+			/** 
+			* Changes the positioning mode of the screen entity.		
+			
+			If the positioning mode is Entity::POSITION_TOPLEFT, the entity is translated by half its width and half its height when it's rendered, making all other transformations relative to its top-left corner instead of the center.		
+			If the mode is Entity::POSITION_CENTER, the entity is rendered as is.
+			Set to POSITION_CENTER by default.
+			@param newPositionMode The new positioning mode.
+			*/
+			void setPositionMode(int newPositionMode);
+
+			/**
+			 * Get the position mode.
+			 * @see setPositionMode()
+			 */
+			int getPositionMode() const;
+		
+			/**
+			* Positioning mode in which you specify an entity's topleft corner
+			* as coordinate for placement.
+			*/
+		
+			static const int POSITION_TOPLEFT = 0;
+
+			/**
+			* Positioning mode in which you specify an entity's center as
+			* coordinate for placement.
+			*/
+			static const int POSITION_CENTER = 1;
+
+			bool processInputEvents;
+			
+			bool blockMouseInput;
+			
+			bool hasFocus;
+			bool focusable;
+			
+			Number width;
+			Number height;
+			
+			void setDragLimits(Rectangle rect) {}
+			void clearDragLimits() {}
+			bool isDragged() { return dragged; }
+			bool dragged;
+			void startDrag(Number xOffset, Number yOffset) {}
+			void stopDrag() {}
+			
+			void setHitbox(Number width, Number height) {}
+			
+			void focusChild(Entity *child) {}
+			void focusNextChild();
+			bool isFocusable();
+			
+			Vector2 getScreenPosition() const { return Vector2(); }
+
+			bool hitTest(Number x, Number y) const { return false; }
+			bool hitTest(Vector2 v) const { return false; }
+
+			bool snapToPixels;
 			//@}		
 		protected:
 		

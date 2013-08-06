@@ -24,17 +24,17 @@
 #include "PolyGlobals.h"
 #include "PolyString.h"
 #include "PolyMatrix4.h"
-#include "PolySceneEntity.h"
+#include "PolyEntity.h"
 
 namespace Polycode {
 
 	class Mesh;
 
 	/** 
-	* Skeleton bone. Bones are bound to vertices of a mesh and when transformed, move the bound vertices of the mesh along with them. Bones are subclassed from SceneEntity, but have their own hierarchy system.
+	* Skeleton bone. Bones are bound to vertices of a mesh and when transformed, move the bound vertices of the mesh along with them. Bones are subclassed from Entity, but have their own hierarchy system.
 	* @see Skeleton
 	*/			
-	class _PolyExport Bone : public SceneEntity {
+	class _PolyExport Bone : public Entity {
 		public:
 			/** 
 			* Constructor.

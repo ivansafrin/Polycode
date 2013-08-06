@@ -27,7 +27,7 @@ THE SOFTWARE.
 #include "PolyColor.h"
 #include "PolyVector3.h"
 #include "PolyQuaternion.h"
-#include "PolySceneEntity.h"
+#include "PolyEntity.h"
 #include <vector>
 
 namespace Polycode {
@@ -133,7 +133,7 @@ namespace Polycode {
 	/**
 	* 3D skeleton. Skeletons are applied to scene meshes and can be animated with loaded animations.
 	*/
-	class _PolyExport Skeleton : public SceneEntity {
+	class _PolyExport Skeleton : public Entity {
 		public:
 		
 			/**
@@ -222,7 +222,7 @@ namespace Polycode {
 		
 		protected:
 		
-			SceneEntity *bonesEntity;
+			Entity *bonesEntity;
 		
 			SkeletonAnimation *currentAnimation;
 			std::vector<Bone*> bones;

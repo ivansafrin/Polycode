@@ -51,10 +51,10 @@ namespace Polycode {
 			void Deselect();
 
 			bool canSelect;
-			ScreenShape *bg;
-			ScreenLabel *label;
+			ScenePrimitive *bg;
+			SceneLabel *label;
 			OSFileEntry fileEntry;
-			ScreenImage *icon;
+			SceneImage *icon;
 	};
 
 	/**

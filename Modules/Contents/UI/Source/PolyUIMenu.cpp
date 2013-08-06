@@ -27,7 +27,7 @@
 #include "PolyCoreServices.h"
 #include "PolyCore.h"
 #include "PolyConfig.h"
-#include "PolyScreenLine.h"
+#include "PolySceneLine.h"
 
 using namespace Polycode;
 
@@ -42,7 +42,7 @@ UIMenuItem::UIMenuItem(String label, String _id, void *data, Number comboWidth, 
 	Number paddingX = conf->getNumericValue("Polycode", "uiMenuTextOffsetX");	
 	Number paddingY = conf->getNumericValue("Polycode", "uiMenuTextOffsetY");	
 
-	itemLabel = new ScreenLabel(label, fontSize, fontName);
+	itemLabel = new SceneLabel(label, fontSize, fontName);
 	itemLabel->setPosition(paddingX, floor(((comboHeight/2.0) - itemLabel->getHeight()/2.0) + paddingY));
 	addChild(itemLabel);
 	
@@ -67,8 +67,9 @@ UIMenuDivider::UIMenuDivider(Number comboWidth, Number comboHeight) : UIMenuItem
 	Config *conf    = CoreServices::getInstance()->getConfig();
 	Number paddingX = conf->getNumericValue("Polycode", "uiMenuSelectorPadding");
 
-	line = new ScreenLine(Vector2(paddingX, comboHeight/2.0), Vector2(comboWidth-paddingX, comboHeight/2.0));
-	line->setLineWidth(1.0);
+	line = new SceneLine(Vector3(paddingX, comboHeight/2.0, 0.0), Vector3(comboWidth-paddingX, comboHeight/2.0, 0.0));
+	
+//	line->setLineWidth(1.0);
 	line->setColor(Color(0.0, 0.0, 0.0, 0.7));
 	addChild(line);
 }
@@ -134,8 +135,8 @@ UIMenu::UIMenu(Number menuWidth) : UIElement() {
 
 	initialMouse = CoreServices::getInstance()->getCore()->getInput()->getMousePosition();
 	
-	this->width = menuWidth;
-	this->height = menuItemHeight;
+	setWidth(menuWidth);
+	setHeight(menuItemHeight);
 	
 	// ugh, hackz
 	ignoreMouse = true;
@@ -259,7 +260,7 @@ void UIMenu::Resize(Number width, Number height) {
 	UIElement::Resize(width, height);
 }
 
-UIGlobalMenu::UIGlobalMenu() : ScreenEntity() {
+UIGlobalMenu::UIGlobalMenu() : Entity() {
 	currentMenu = NULL;
 	processInputEvents = true;
 	willHideMenu = false;

@@ -86,7 +86,7 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 		rectHeight = fontSize+12;
 	} 
 
-	linesContainer = new ScreenEntity();	
+	linesContainer = new Entity();	
 	linesContainer->processInputEvents = true;
 	linesContainer->ownsChildren = true;
 	lineSpacing = conf->getNumericValue("Polycode", "textEditLineSpacing");
@@ -116,13 +116,13 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	addChild(inputRect);		
 	
 	if(multiLine) {
-		lineNumberBg = new ScreenShape(ScreenShape::SHAPE_RECT, 1,1);
-		lineNumberBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+		lineNumberBg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1,1);
+		lineNumberBg->setPositionMode(Entity::POSITION_TOPLEFT);
 		lineNumberBg->setColor(0.0, 0.0, 0.0, 0.3);
 		addChild(lineNumberBg);
 		lineNumberBg->visible = false;
 		
-		lineNumberAnchor = new ScreenEntity();
+		lineNumberAnchor = new Entity();
 		linesContainer->addChild(lineNumberAnchor);
 	} else {
 		lineNumberBg = NULL;
@@ -143,31 +143,31 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEOVER);
 	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEOUT);
 	inputRect->processInputEvents = true;
-	inputRect->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	inputRect->setPositionMode(Entity::POSITION_TOPLEFT);
 	
 	selectionColor = Color(181.0f/255.0f, 213.0f/255.0f, 255.0f/255.0f, 1.0f);
 	
-	selectorRectTop = new ScreenShape(ScreenShape::SHAPE_RECT, 1,1);
-	selectorRectTop->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	selectorRectTop = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1,1);
+	selectorRectTop->setPositionMode(Entity::POSITION_TOPLEFT);
 	selectorRectTop->setColor(181.0f/255.0f, 213.0f/255.0f, 255.0f/255.0f, 1);
 	selectorRectTop->visible = false;
 	textContainer->addChild(selectorRectTop);
 
-	selectorRectMiddle = new ScreenShape(ScreenShape::SHAPE_RECT, 1,1);
-	selectorRectMiddle->setPositionMode(ScreenEntity::POSITION_TOPLEFT);	
+	selectorRectMiddle = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1,1);
+	selectorRectMiddle->setPositionMode(Entity::POSITION_TOPLEFT);	
 	selectorRectMiddle->setColor(181.0f/255.0f, 213.0f/255.0f, 255.0f/255.0f, 1);
 	selectorRectMiddle->visible = false;
 	textContainer->addChild(selectorRectMiddle);
 
-	selectorRectBottom = new ScreenShape(ScreenShape::SHAPE_RECT, 1,1);
-	selectorRectBottom->setPositionMode(ScreenEntity::POSITION_TOPLEFT);	
+	selectorRectBottom = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1,1);
+	selectorRectBottom->setPositionMode(Entity::POSITION_TOPLEFT);	
 	selectorRectBottom->setColor(181.0f/255.0f, 213.0f/255.0f, 255.0f/255.0f, 1);
 	selectorRectBottom->visible = false;
 	textContainer->addChild(selectorRectBottom);
 		
 	
-	blinkerRect = new ScreenShape(ScreenShape::SHAPE_RECT, 1, fontSize+2,0,0);
-	blinkerRect->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	blinkerRect = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, fontSize+2,0,0);
+	blinkerRect->setPositionMode(Entity::POSITION_TOPLEFT);
 	blinkerRect->setColor(0,0,0,1);
 	textContainer->addChild(blinkerRect);
 	blinkerRect->visible = false;
@@ -228,7 +228,7 @@ void UITextInput::checkBufferLines() {
 
 	for(int i=0; i < neededBufferLines - currentBufferLines; i++) {
 		if(multiLine) {
-			ScreenLabel *newNumberLine = new ScreenLabel(L"", fontSize, fontName, aaMode);
+			SceneLabel *newNumberLine = new SceneLabel(L"", fontSize, fontName, aaMode);
 			newNumberLine->color = lineNumberColor;
 			lineNumberAnchor->addChild(newNumberLine);
 			numberLines.push_back(newNumberLine);		
@@ -238,7 +238,7 @@ void UITextInput::checkBufferLines() {
 			}
 		}
 	
-		ScreenLabel *newLine = new ScreenLabel(L"", fontSize, fontName, aaMode);
+		SceneLabel *newLine = new SceneLabel(L"", fontSize, fontName, aaMode);
 		newLine->color = textColor;
 		lineHeight = newLine->getHeight();
 		textContainer->addChild(newLine);
@@ -680,7 +680,7 @@ void UITextInput::doMultilineResize() {
 		restructLines();		
 		readjustBuffer();
 		if(lineNumbersEnabled) {
-			lineNumberBg->setShapeSize(decoratorOffset, height);
+			lineNumberBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, decoratorOffset, height);
 		}
 	}
 	
@@ -702,7 +702,6 @@ void UITextInput::Resize(Number width, Number height) {
 	this->width = width;
 	this->height = height;	
 	matrixDirty = true;	
-	setHitbox(width,height);
 	
 	if(multiLine) {
 		inputRect->setHitbox(width - scrollContainer->getVScrollWidth(), height);		
@@ -711,7 +710,7 @@ void UITextInput::Resize(Number width, Number height) {
 		renumberLines();
 		readjustBuffer();
 		if(lineNumbersEnabled) {
-			lineNumberBg->setShapeSize(decoratorOffset, height);
+			lineNumberBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, decoratorOffset, height);
 		}		
 	}
 	
@@ -846,7 +845,7 @@ void UITextInput::restructLines() {
 	}
 	
 	if(multiLine && lineNumbersEnabled) {
-		lineNumberBg->setShapeSize(decoratorOffset, height);
+		lineNumberBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, decoratorOffset, height);
 	}
 	
 	if(scrollContainer) {
@@ -2514,7 +2513,7 @@ void UITextInput::handleEvent(Event *event) {
 					}
 				} else {
 					if(parentEntity) {
-						((ScreenEntity*)parentEntity)->focusChild(this);
+						((Entity*)parentEntity)->focusChild(this);
 					} else {
 						hasFocus = true;
 					}

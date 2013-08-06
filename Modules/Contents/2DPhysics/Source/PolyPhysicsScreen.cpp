@@ -22,48 +22,47 @@ THE SOFTWARE.
 
 
 #include "PolyPhysicsScreen.h"
-#include "PolyScreenEntity.h"
 #include "PolyPhysicsScreenEntity.h"
 #include "PolyCoreServices.h"
 #include "PolyCore.h"
 
 using namespace Polycode;
 
-PhysicsScreenEvent::PhysicsScreenEvent() : Event() {
+PhysicsScene2DEvent::PhysicsScene2DEvent() : Event() {
 
 }
 
-PhysicsScreenEvent::~PhysicsScreenEvent() {
+PhysicsScene2DEvent::~PhysicsScene2DEvent() {
 
 }
 
-ScreenEntity *PhysicsScreenEvent::getFirstEntity() {
+Entity *PhysicsScene2DEvent::getFirstEntity() {
 	return entity1;
 }
 
-ScreenEntity *PhysicsScreenEvent::getSecondEntity() {
+Entity *PhysicsScene2DEvent::getSecondEntity() {
 	return entity2;
 }
 
-void PhysicsScreen::PreSolve(b2Contact* contact, const b2Manifold* oldManifold)
+void PhysicsScene2D::PreSolve(b2Contact* contact, const b2Manifold* oldManifold)
 {
-    if(((PhysicsScreenEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->collisionOnly ||
-       ((PhysicsScreenEntity*)contact->GetFixtureB()->GetBody()->GetUserData())->collisionOnly) {
+    if(((PhysicsScene2DEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->collisionOnly ||
+       ((PhysicsScene2DEntity*)contact->GetFixtureB()->GetBody()->GetUserData())->collisionOnly) {
         contact->SetEnabled(false);
     }    
 }
 
-void PhysicsScreen::BeginContact (b2Contact *contact) {
+void PhysicsScene2D::BeginContact (b2Contact *contact) {
 
 //	if(!contact->GetFixtureA()->IsSensor() && !contact->GetFixtureB()->IsSensor()) {
 //		return;
 //	}
-	PhysicsScreenEvent *newEvent = new PhysicsScreenEvent();
-	newEvent->entity1 = ((PhysicsScreenEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->getScreenEntity();
-	newEvent->entity2 = ((PhysicsScreenEntity*)contact->GetFixtureB()->GetBody()->GetUserData())->getScreenEntity();
+	PhysicsScene2DEvent *newEvent = new PhysicsScene2DEvent();
+	newEvent->entity1 = ((PhysicsScene2DEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->getEntity();
+	newEvent->entity2 = ((PhysicsScene2DEntity*)contact->GetFixtureB()->GetBody()->GetUserData())->getEntity();
 
-    if(((PhysicsScreenEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->collisionOnly ||
-        ((PhysicsScreenEntity*)contact->GetFixtureB()->GetBody()->GetUserData())->collisionOnly) {
+    if(((PhysicsScene2DEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->collisionOnly ||
+        ((PhysicsScene2DEntity*)contact->GetFixtureB()->GetBody()->GetUserData())->collisionOnly) {
         contact->SetEnabled(false);
     }
        
@@ -92,20 +91,20 @@ void PhysicsScreen::BeginContact (b2Contact *contact) {
 
     newEvent->contact = contact;
     
-	newEvent->setEventCode(PhysicsScreenEvent::EVENT_NEW_SHAPE_COLLISION);
+	newEvent->setEventCode(PhysicsScene2DEvent::EVENT_NEW_SHAPE_COLLISION);
 	eventsToDispatch.push_back(newEvent);
 	
 	contacts.push_back(contact);
 }
 
-void PhysicsScreen::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse) {
-	PhysicsScreenEvent *newEvent = new PhysicsScreenEvent();
-	newEvent->entity1 = ((PhysicsScreenEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->getScreenEntity();
-	newEvent->entity2 = ((PhysicsScreenEntity*)contact->GetFixtureB()->GetBody()->GetUserData())->getScreenEntity();
+void PhysicsScene2D::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse) {
+	PhysicsScene2DEvent *newEvent = new PhysicsScene2DEvent();
+	newEvent->entity1 = ((PhysicsScene2DEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->getEntity();
+	newEvent->entity2 = ((PhysicsScene2DEntity*)contact->GetFixtureB()->GetBody()->GetUserData())->getEntity();
 
     
-    if(((PhysicsScreenEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->collisionOnly ||
-       ((PhysicsScreenEntity*)contact->GetFixtureB()->GetBody()->GetUserData())->collisionOnly) {
+    if(((PhysicsScene2DEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->collisionOnly ||
+       ((PhysicsScene2DEntity*)contact->GetFixtureB()->GetBody()->GetUserData())->collisionOnly) {
         contact->SetEnabled(false);
     }
 
@@ -141,15 +140,15 @@ void PhysicsScreen::PostSolve(b2Contact* contact, const b2ContactImpulse* impuls
 			newEvent->frictionStrength = impulse->tangentImpulses[i];		
 	}
 
-	newEvent->setEventCode(PhysicsScreenEvent::EVENT_SOLVE_SHAPE_COLLISION);
+	newEvent->setEventCode(PhysicsScene2DEvent::EVENT_SOLVE_SHAPE_COLLISION);
 	eventsToDispatch.push_back(newEvent);
 
 }
 
-void PhysicsScreen::EndContact (b2Contact *contact) {
-	PhysicsScreenEvent *newEvent = new PhysicsScreenEvent();
-	newEvent->entity1 = ((PhysicsScreenEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->getScreenEntity();
-	newEvent->entity2 = ((PhysicsScreenEntity*)contact->GetFixtureB()->GetBody()->GetUserData())->getScreenEntity();
+void PhysicsScene2D::EndContact (b2Contact *contact) {
+	PhysicsScene2DEvent *newEvent = new PhysicsScene2DEvent();
+	newEvent->entity1 = ((PhysicsScene2DEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->getEntity();
+	newEvent->entity2 = ((PhysicsScene2DEntity*)contact->GetFixtureB()->GetBody()->GetUserData())->getEntity();
     newEvent->contact = contact;
     
 	for(int i=0; i < contacts.size(); i++) {
@@ -158,19 +157,19 @@ void PhysicsScreen::EndContact (b2Contact *contact) {
 			break;
 		}
 	}
-	newEvent->setEventCode(PhysicsScreenEvent::EVENT_END_SHAPE_COLLISION);
+	newEvent->setEventCode(PhysicsScene2DEvent::EVENT_END_SHAPE_COLLISION);
 	eventsToDispatch.push_back(newEvent);
 
 }
 
-bool PhysicsScreen::isEntityColliding(ScreenEntity *ent1) {
-	PhysicsScreenEntity *pEnt1 = getPhysicsByScreenEntity(ent1);
+bool PhysicsScene2D::isEntityColliding(Entity *ent1) {
+	PhysicsScene2DEntity *pEnt1 = getPhysicsByEntity(ent1);
 	if(pEnt1 == NULL)
 		return false;
 
 	for(int i=0; i < contacts.size(); i++) {
-		ScreenEntity *cEnt1 = ((PhysicsScreenEntity*)contacts[i]->GetFixtureA()->GetBody()->GetUserData())->getScreenEntity();
-		ScreenEntity *cEnt2 = ((PhysicsScreenEntity*)contacts[i]->GetFixtureB()->GetBody()->GetUserData())->getScreenEntity();
+		Entity *cEnt1 = ((PhysicsScene2DEntity*)contacts[i]->GetFixtureA()->GetBody()->GetUserData())->getEntity();
+		Entity *cEnt2 = ((PhysicsScene2DEntity*)contacts[i]->GetFixtureB()->GetBody()->GetUserData())->getEntity();
 		if(cEnt1 == ent1 || cEnt2 == ent1) {
 			return true;
 		}
@@ -178,15 +177,15 @@ bool PhysicsScreen::isEntityColliding(ScreenEntity *ent1) {
 	return false;
 }
 
-bool PhysicsScreen::testEntityCollision(ScreenEntity *ent1, ScreenEntity *ent2) {
-	PhysicsScreenEntity *pEnt1 = getPhysicsByScreenEntity(ent1);
-	PhysicsScreenEntity *pEnt2 = getPhysicsByScreenEntity(ent2);	
+bool PhysicsScene2D::testEntityCollision(Entity *ent1, Entity *ent2) {
+	PhysicsScene2DEntity *pEnt1 = getPhysicsByEntity(ent1);
+	PhysicsScene2DEntity *pEnt2 = getPhysicsByEntity(ent2);	
 	if(pEnt1 == NULL || pEnt2 == NULL)
 		return false;
 	
 	for(int i=0; i < contacts.size(); i++) {
-		ScreenEntity *cEnt1 = ((PhysicsScreenEntity*)contacts[i]->GetFixtureA()->GetBody()->GetUserData())->getScreenEntity();
-		ScreenEntity *cEnt2 = ((PhysicsScreenEntity*)contacts[i]->GetFixtureB()->GetBody()->GetUserData())->getScreenEntity();
+		Entity *cEnt1 = ((PhysicsScene2DEntity*)contacts[i]->GetFixtureA()->GetBody()->GetUserData())->getEntity();
+		Entity *cEnt2 = ((PhysicsScene2DEntity*)contacts[i]->GetFixtureB()->GetBody()->GetUserData())->getEntity();
 		
 	        
 		if((cEnt1 == ent1 && cEnt2 == ent2) || (cEnt1 == ent2 && cEnt2 == ent1)) {
@@ -196,15 +195,15 @@ bool PhysicsScreen::testEntityCollision(ScreenEntity *ent1, ScreenEntity *ent2) 
 	return false;
 }
 
-PhysicsScreen::PhysicsScreen() : Screen() {
+PhysicsScene2D::PhysicsScene2D() : Scene() {
 	init(10.0f, 1.0f/60.0f,10,10,Vector2(0.0f, 10.0f));
 }
 
-PhysicsScreen::PhysicsScreen(Number worldScale, Number freq, int velIterations, int posIterations): Screen() {
+PhysicsScene2D::PhysicsScene2D(Number worldScale, Number freq, int velIterations, int posIterations): Scene() {
 	init(worldScale, 1.0f/freq,velIterations, posIterations, Vector2(0.0f, 10.0f));	
 }
 
-void PhysicsScreen::init(Number worldScale, Number physicsTimeStep, int velIterations, int posIterations, Vector2 physicsGravity) {
+void PhysicsScene2D::init(Number worldScale, Number physicsTimeStep, int velIterations, int posIterations, Vector2 physicsGravity) {
 	
 	cyclesLeftOver = 0.0;
 	this->worldScale = worldScale;
@@ -220,26 +219,26 @@ void PhysicsScreen::init(Number worldScale, Number physicsTimeStep, int velItera
 	world->SetContactListener(this);
 }
 
-void PhysicsScreen::setGravity(Vector2 newGravity) {
+void PhysicsScene2D::setGravity(Vector2 newGravity) {
 	world->SetGravity(b2Vec2(newGravity.x, newGravity.y));
 }
                                 
-PhysicsScreenEntity *PhysicsScreen::getPhysicsByScreenEntity(ScreenEntity *ent) {
+PhysicsScene2DEntity *PhysicsScene2D::getPhysicsByEntity(Entity *ent) {
 	for(int i=0; i<physicsChildren.size();i++) {
-		if(physicsChildren[i]->getScreenEntity() == ent)
+		if(physicsChildren[i]->getEntity() == ent)
 			return physicsChildren[i];
 	}	
 	return NULL;
 }
 
-void PhysicsScreen::destroyJoint(PhysicsJoint *joint) {
+void PhysicsScene2D::destroyJoint(PhysicsJoint *joint) {
 	world->DestroyJoint(joint->box2DJoint);
 }
 
 
-PhysicsJoint *PhysicsScreen::createRevoluteJoint(ScreenEntity *ent1, ScreenEntity *ent2, Number ax, Number ay, bool collideConnected, bool enableLimit, Number lowerLimit, Number upperLimit, bool motorEnabled, Number motorSpeed, Number maxTorque) {
-	PhysicsScreenEntity *pEnt1 = getPhysicsByScreenEntity(ent1);
-	PhysicsScreenEntity *pEnt2 = getPhysicsByScreenEntity(ent2);
+PhysicsJoint *PhysicsScene2D::createRevoluteJoint(Entity *ent1, Entity *ent2, Number ax, Number ay, bool collideConnected, bool enableLimit, Number lowerLimit, Number upperLimit, bool motorEnabled, Number motorSpeed, Number maxTorque) {
+	PhysicsScene2DEntity *pEnt1 = getPhysicsByEntity(ent1);
+	PhysicsScene2DEntity *pEnt2 = getPhysicsByEntity(ent2);
 	if(pEnt1 == NULL || pEnt2 == NULL)
     {
 		return NULL;
@@ -261,9 +260,9 @@ PhysicsJoint *PhysicsScreen::createRevoluteJoint(ScreenEntity *ent1, ScreenEntit
 	
 }
 
-PhysicsJoint *PhysicsScreen::createPrismaticJoint(ScreenEntity *ent1, ScreenEntity *ent2, Vector2 worldAxis, Number ax, Number ay, bool collideConnected, Number lowerTranslation, Number upperTranslation, bool enableLimit, Number motorSpeed, Number motorForce, bool motorEnabled) {
-	PhysicsScreenEntity *pEnt1 = getPhysicsByScreenEntity(ent1);
-	PhysicsScreenEntity *pEnt2 = getPhysicsByScreenEntity(ent2);
+PhysicsJoint *PhysicsScene2D::createPrismaticJoint(Entity *ent1, Entity *ent2, Vector2 worldAxis, Number ax, Number ay, bool collideConnected, Number lowerTranslation, Number upperTranslation, bool enableLimit, Number motorSpeed, Number motorForce, bool motorEnabled) {
+	PhysicsScene2DEntity *pEnt1 = getPhysicsByEntity(ent1);
+	PhysicsScene2DEntity *pEnt2 = getPhysicsByEntity(ent2);
 	if(pEnt1 == NULL || pEnt2 == NULL)
 		return NULL;
 	
@@ -290,8 +289,8 @@ PhysicsJoint *PhysicsScreen::createPrismaticJoint(ScreenEntity *ent1, ScreenEnti
 
 }
 
-void PhysicsScreen::wakeUp(ScreenEntity *ent) {
-	PhysicsScreenEntity *pEnt = getPhysicsByScreenEntity(ent);
+void PhysicsScene2D::wakeUp(Entity *ent) {
+	PhysicsScene2DEntity *pEnt = getPhysicsByEntity(ent);
 	if(pEnt == NULL)
 		return;
 		
@@ -299,8 +298,8 @@ void PhysicsScreen::wakeUp(ScreenEntity *ent) {
 }
 
 
-Vector2 PhysicsScreen::getVelocity(ScreenEntity *ent) {
-	PhysicsScreenEntity *pEnt = getPhysicsByScreenEntity(ent);
+Vector2 PhysicsScene2D::getVelocity(Entity *ent) {
+	PhysicsScene2DEntity *pEnt = getPhysicsByEntity(ent);
 	if(pEnt == NULL)
 		return Vector2(0,0);
 	
@@ -308,61 +307,61 @@ Vector2 PhysicsScreen::getVelocity(ScreenEntity *ent) {
 	return Vector2(vec.x, vec.y);
 }
 
-void PhysicsScreen::setAngularVelocity(ScreenEntity *ent, Number spin) {
-	PhysicsScreenEntity *pEnt = getPhysicsByScreenEntity(ent);
+void PhysicsScene2D::setAngularVelocity(Entity *ent, Number spin) {
+	PhysicsScene2DEntity *pEnt = getPhysicsByEntity(ent);
 	if(pEnt == NULL)
 		return;
 
 	pEnt->body->SetAngularVelocity(spin);
 }
 
-void PhysicsScreen::setVelocity(ScreenEntity *ent, Number fx, Number fy) {
-	PhysicsScreenEntity *pEnt = getPhysicsByScreenEntity(ent);
+void PhysicsScene2D::setVelocity(Entity *ent, Number fx, Number fy) {
+	PhysicsScene2DEntity *pEnt = getPhysicsByEntity(ent);
 	if(pEnt == NULL)
 		return;
 	pEnt->setVelocity(fx, fy);	
 }
 
-void PhysicsScreen::setVelocityX(ScreenEntity *ent, Number fx) {
-	PhysicsScreenEntity *pEnt = getPhysicsByScreenEntity(ent);
+void PhysicsScene2D::setVelocityX(Entity *ent, Number fx) {
+	PhysicsScene2DEntity *pEnt = getPhysicsByEntity(ent);
 	if(pEnt == NULL)
 		return;
 	pEnt->setVelocityX(fx);
 }
 
-void PhysicsScreen::setVelocityY(ScreenEntity *ent, Number fy) {
-	PhysicsScreenEntity *pEnt = getPhysicsByScreenEntity(ent);
+void PhysicsScene2D::setVelocityY(Entity *ent, Number fy) {
+	PhysicsScene2DEntity *pEnt = getPhysicsByEntity(ent);
 	if(pEnt == NULL)
 		return;
 	pEnt->setVelocityY(fy);
 }
 
 
-PhysicsScreenEntity *PhysicsScreen::addCollisionChild(ScreenEntity *newEntity, int entType, int groupIndex, bool sensorOnly) {
-	PhysicsScreenEntity *ret;
+PhysicsScene2DEntity *PhysicsScene2D::addCollisionChild(Entity *newEntity, int entType, int groupIndex, bool sensorOnly) {
+	PhysicsScene2DEntity *ret;
 	ret = addPhysicsChild(newEntity, entType, false, 0,0,0, sensorOnly, false, groupIndex);
 	newEntity->ignoreParentMatrix = false;    
 	ret->collisionOnly = true; 
 	return ret;
 }
 
-PhysicsScreenEntity *PhysicsScreen::trackCollisionChild(ScreenEntity *newEntity, int entType, int groupIndex) {
-	PhysicsScreenEntity *ret;
+PhysicsScene2DEntity *PhysicsScene2D::trackCollisionChild(Entity *newEntity, int entType, int groupIndex) {
+	PhysicsScene2DEntity *ret;
 	ret = trackPhysicsChild(newEntity, entType, false, 0,0.0,0, true, false, groupIndex);
 	ret->collisionOnly = true;
 	newEntity->ignoreParentMatrix = false;
 	return ret;
 }
 
-void PhysicsScreen::setTransform(ScreenEntity *ent, Vector2 pos, Number angle) {
-	PhysicsScreenEntity *pEnt = getPhysicsByScreenEntity(ent);
+void PhysicsScene2D::setTransform(Entity *ent, Vector2 pos, Number angle) {
+	PhysicsScene2DEntity *pEnt = getPhysicsByEntity(ent);
 	if(pEnt == NULL)
 		return;
 	pEnt->setTransform(pos, angle);
 }
 
-void PhysicsScreen::applyForce(ScreenEntity *ent, Number fx, Number fy) {
-	PhysicsScreenEntity *pEnt = getPhysicsByScreenEntity(ent);
+void PhysicsScene2D::applyForce(Entity *ent, Number fx, Number fy) {
+	PhysicsScene2DEntity *pEnt = getPhysicsByEntity(ent);
 	if(pEnt == NULL)
 		return;
 
@@ -373,17 +372,17 @@ void PhysicsScreen::applyForce(ScreenEntity *ent, Number fx, Number fy) {
 	pEnt->body->ApplyForce(f, p);
 }
 
-void PhysicsScreen::applyImpulse(ScreenEntity *ent, Number fx, Number fy) {
-	PhysicsScreenEntity *pEnt = getPhysicsByScreenEntity(ent);
+void PhysicsScene2D::applyImpulse(Entity *ent, Number fx, Number fy) {
+	PhysicsScene2DEntity *pEnt = getPhysicsByEntity(ent);
 	if(pEnt == NULL)
 		return;
 	pEnt->applyImpulse(fx, fy);
 }
 
 
-PhysicsJoint *PhysicsScreen::createDistanceJoint(ScreenEntity *ent1, ScreenEntity *ent2, bool collideConnected) {
-	PhysicsScreenEntity *pEnt1 = getPhysicsByScreenEntity(ent1);
-	PhysicsScreenEntity *pEnt2 = getPhysicsByScreenEntity(ent2);
+PhysicsJoint *PhysicsScene2D::createDistanceJoint(Entity *ent1, Entity *ent2, bool collideConnected) {
+	PhysicsScene2DEntity *pEnt1 = getPhysicsByEntity(ent1);
+	PhysicsScene2DEntity *pEnt2 = getPhysicsByEntity(ent2);
 	if(pEnt1 == NULL || pEnt2 == NULL)
 		return NULL;
 	
@@ -398,9 +397,9 @@ PhysicsJoint *PhysicsScreen::createDistanceJoint(ScreenEntity *ent1, ScreenEntit
 	return joint;	
 }
 /*
-b2MouseJoint *PhysicsScreen::createMouseJoint(ScreenEntity *ent1, Vector2 *mp) {
+b2MouseJoint *PhysicsScene2D::createMouseJoint(Entity *ent1, Vector2 *mp) {
 	
-	PhysicsScreenEntity *pEnt1 = getPhysicsByScreenEntity(ent1);
+	PhysicsScene2DEntity *pEnt1 = getPhysicsByEntity(ent1);
 	if(pEnt1 == NULL)
 		return NULL;
 
@@ -422,19 +421,19 @@ b2MouseJoint *PhysicsScreen::createMouseJoint(ScreenEntity *ent1, Vector2 *mp) {
 }
 */
 
-ScreenEntity *PhysicsScreen::getEntityAtPosition(Number x, Number y) {
-	ScreenEntity *ret = NULL;
+Entity *PhysicsScene2D::getEntityAtPosition(Number x, Number y) {
+	Entity *ret = NULL;
 	
 	b2Vec2 mousePosition;
 	mousePosition.x = x/worldScale;
 	mousePosition.y = y/worldScale;
 	
 	for(int i=0;i<physicsChildren.size();i++) {
-		PhysicsScreenEntity *ent = physicsChildren[i];
+		PhysicsScene2DEntity *ent = physicsChildren[i];
 		if(ent->fixture) {
 			for (b2Fixture* f = ent->body->GetFixtureList(); f; f = f->GetNext()) {
 				if(f->TestPoint(mousePosition)) {
-					return ent->getScreenEntity();
+					return ent->getEntity();
 				}
 			}
 		}
@@ -442,8 +441,8 @@ ScreenEntity *PhysicsScreen::getEntityAtPosition(Number x, Number y) {
 	return ret;
 }
 
-bool PhysicsScreen::testEntityAtPosition(ScreenEntity *ent, Number x, Number y) {
-	PhysicsScreenEntity *pEnt = getPhysicsByScreenEntity(ent);	
+bool PhysicsScene2D::testEntityAtPosition(Entity *ent, Number x, Number y) {
+	PhysicsScene2DEntity *pEnt = getPhysicsByEntity(ent);	
 	
 	if(pEnt == NULL)
 		return false;
@@ -463,27 +462,27 @@ bool PhysicsScreen::testEntityAtPosition(ScreenEntity *ent, Number x, Number y) 
 	return false;
 }
 
-void PhysicsScreen::destroyMouseJoint(b2MouseJoint *mJoint) {
+void PhysicsScene2D::destroyMouseJoint(b2MouseJoint *mJoint) {
 		world->DestroyJoint(mJoint);
 		mJoint = NULL;
 }
 
-PhysicsScreenEntity *PhysicsScreen::addPhysicsChild(ScreenEntity *newEntity, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation, int groupIndex) {
+PhysicsScene2DEntity *PhysicsScene2D::addPhysicsChild(Entity *newEntity, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation, int groupIndex) {
 	addChild(newEntity);
 	return trackPhysicsChild(newEntity, entType, isStatic, friction, density, restitution, isSensor, fixedRotation, groupIndex);
 
 }
 
-PhysicsScreenEntity *PhysicsScreen::trackPhysicsChild(ScreenEntity *newEntity, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation, int groupIndex) {
-	newEntity->setPositionMode(ScreenEntity::POSITION_CENTER);
-	PhysicsScreenEntity *newPhysicsEntity = new PhysicsScreenEntity(newEntity, world, worldScale, entType, isStatic, friction, density, restitution, isSensor,fixedRotation, groupIndex);
+PhysicsScene2DEntity *PhysicsScene2D::trackPhysicsChild(Entity *newEntity, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation, int groupIndex) {
+	newEntity->setPositionMode(Entity::POSITION_CENTER);
+	PhysicsScene2DEntity *newPhysicsEntity = new PhysicsScene2DEntity(newEntity, world, worldScale, entType, isStatic, friction, density, restitution, isSensor,fixedRotation, groupIndex);
 	physicsChildren.push_back(newPhysicsEntity);
 	newPhysicsEntity->body->SetAwake(true);
 	return newPhysicsEntity;
 }
 
-void PhysicsScreen::stopTrackingChild(ScreenEntity *entity) {
-	PhysicsScreenEntity *physicsEntityToRemove = getPhysicsByScreenEntity(entity);
+void PhysicsScene2D::stopTrackingChild(Entity *entity) {
+	PhysicsScene2DEntity *physicsEntityToRemove = getPhysicsByEntity(entity);
 	if(!physicsEntityToRemove) {
 		return;
 	}
@@ -500,31 +499,31 @@ void PhysicsScreen::stopTrackingChild(ScreenEntity *entity) {
 	delete physicsEntityToRemove;
 }
 
-void PhysicsScreen::removePhysicsChild(ScreenEntity *entityToRemove) {
+void PhysicsScene2D::removePhysicsChild(Entity *entityToRemove) {
 	stopTrackingChild(entityToRemove);
-	Screen::removeChild(entityToRemove);	
+	Scene::removeEntity(entityToRemove);	
 }
 
-void PhysicsScreen::removeChild(ScreenEntity *entityToRemove) {
-	if(getPhysicsByScreenEntity(entityToRemove)) {
+void PhysicsScene2D::removeChild(Entity *entityToRemove) {
+	if(getPhysicsByEntity(entityToRemove)) {
 		removePhysicsChild(entityToRemove);
 	} else {
-		Screen::removeChild(entityToRemove);	
+		Scene::removeEntity(entityToRemove);	
 	}
 }
 
-void PhysicsScreen::Shutdown() {
+void PhysicsScene2D::Shutdown() {
 
 }
 
-PhysicsScreen::~PhysicsScreen() {
+PhysicsScene2D::~PhysicsScene2D() {
 	for(int i=0; i<physicsChildren.size();i++) {
 			delete physicsChildren[i];
 	}
 	delete world;	
 }
 
-PhysicsScreenEntity *PhysicsScreen::getPhysicsEntityByFixture(b2Fixture *fixture) {
+PhysicsScene2DEntity *PhysicsScene2D::getPhysicsEntityByFixture(b2Fixture *fixture) {
 	for(int i=0; i < physicsChildren.size(); i++) {											
 		for (b2Fixture* f = physicsChildren[i]->body->GetFixtureList(); f; f = f->GetNext()) {
 			if(f == fixture)
@@ -534,7 +533,7 @@ PhysicsScreenEntity *PhysicsScreen::getPhysicsEntityByFixture(b2Fixture *fixture
 	return NULL;	
 }
 
-PhysicsScreenEntity *PhysicsScreen::getPhysicsEntityByShape(b2Shape *shape) {
+PhysicsScene2DEntity *PhysicsScene2D::getPhysicsEntityByShape(b2Shape *shape) {
 	for(int i=0; i < physicsChildren.size(); i++) {
 		for (b2Fixture *f = physicsChildren[i]->body->GetFixtureList(); f; f = f->GetNext()) {
 			if(f->GetShape() == shape)
@@ -544,11 +543,11 @@ PhysicsScreenEntity *PhysicsScreen::getPhysicsEntityByShape(b2Shape *shape) {
 	return NULL;
 }
 	
-void PhysicsScreen::handleEvent(Event *event) {	
-	Screen::handleEvent(event);
+void PhysicsScene2D::handleEvent(Event *event) {	
+	Scene::handleEvent(event);
 }
 
-void PhysicsScreen::Update() {
+void PhysicsScene2D::Update() {
     
 	Number elapsed = CoreServices::getInstance()->getCore()->getElapsed() + cyclesLeftOver;
 	
@@ -565,5 +564,5 @@ void PhysicsScreen::Update() {
 		eventsToDispatch.clear();
 	}
 	cyclesLeftOver = elapsed;
-	Screen::Update();
+	Scene::Update();
 }

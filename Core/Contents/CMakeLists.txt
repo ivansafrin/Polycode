@@ -48,27 +48,15 @@ SET(polycore_SRCS
     Source/PolyResource.cpp
     Source/PolyResourceManager.cpp
     Source/PolyScene.cpp
-    Source/PolySceneEntity.cpp
     Source/PolySceneLabel.cpp
     Source/PolySceneLight.cpp
     Source/PolySceneLine.cpp
     Source/PolySceneManager.cpp
     Source/PolySceneMesh.cpp
     Source/PolyScenePrimitive.cpp
+    Source/PolySceneImage.cpp
     Source/PolySceneRenderTexture.cpp
     Source/PolySceneSound.cpp
-    Source/PolyScreen.cpp
-    Source/PolyScreenEntity.cpp
-    Source/PolyScreenEvent.cpp
-    Source/PolyScreenImage.cpp
-    Source/PolyScreenLabel.cpp
-    Source/PolyScreenLine.cpp
-    Source/PolyScreenManager.cpp
-    Source/PolyScreenMesh.cpp
-    Source/PolyScreenShape.cpp
-    Source/PolyScreenSound.cpp
-    Source/PolyScreenSprite.cpp
-    Source/PolyScreenEntityInstance.cpp
     Source/PolyShader.cpp
     Source/PolySkeleton.cpp
     Source/PolySound.cpp
@@ -143,7 +131,6 @@ SET(polycore_HDRS
     Include/PolyRenderer.h
     Include/PolyResource.h
     Include/PolyResourceManager.h
-    Include/PolySceneEntity.h
     Include/PolyScene.h
     Include/PolySceneLabel.h
     Include/PolySceneLight.h
@@ -151,20 +138,9 @@ SET(polycore_HDRS
     Include/PolySceneManager.h
     Include/PolySceneMesh.h
     Include/PolyScenePrimitive.h
+    Include/PolySceneImage.h
     Include/PolySceneRenderTexture.h
     Include/PolySceneSound.h
-    Include/PolyScreenEntity.h
-    Include/PolyScreenEvent.h
-    Include/PolyScreen.h
-    Include/PolyScreenImage.h
-    Include/PolyScreenLabel.h
-    Include/PolyScreenLine.h
-    Include/PolyScreenManager.h
-    Include/PolyScreenMesh.h
-    Include/PolyScreenShape.h
-    Include/PolyScreenSound.h
-    Include/PolyScreenSprite.h
-    Include/PolyScreenEntityInstance.h
     Include/PolyShader.h
     Include/PolySkeleton.h
     Include/PolySound.h

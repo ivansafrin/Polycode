@@ -49,6 +49,8 @@ Scene::Scene() : EventDispatcher() {
 	ambientColor.setColor(0.0,0.0,0.0,1.0);
 	useClearColor = false;
 	ownsChildren = false;
+	renderer = CoreServices::getInstance()->getRenderer();
+	rootEntity.setRenderer(renderer);
 	CoreServices::getInstance()->getSceneManager()->addScene(this);	
 }
 
@@ -64,6 +66,8 @@ Scene::Scene(bool virtualScene) : EventDispatcher() {
 	ambientColor.setColor(0.0,0.0,0.0,1.0);	
 	useClearColor = false;
 	ownsChildren = false;
+	renderer = CoreServices::getInstance()->getRenderer();
+	rootEntity.setRenderer(renderer);
 	if (!isSceneVirtual) {
 		CoreServices::getInstance()->getSceneManager()->addScene(this);
 	}
@@ -94,18 +98,10 @@ bool Scene::isEnabled() {
 }
 
 void Scene::Update() {
-	for(int i=0; i<entities.size();i++) {
-		entities[i]->doUpdates();		
-		entities[i]->updateEntityMatrix();
-	}
+	rootEntity.doUpdates();
 }
 
 Scene::~Scene() {
-	if(ownsChildren) {
-		for(int i=0; i < entities.size(); i++) {	
-			delete entities[i];
-		}
-	}
 	CoreServices::getInstance()->getSceneManager()->removeScene(this);	
 	delete defaultCamera;
 }
@@ -114,8 +110,6 @@ void Scene::enableLighting(bool enable) {
 	lightingEnabled = enable;
 	CoreServices::getInstance()->getRenderer()->enableLighting(enable);
 }
-
-
 
 void Scene::enableFog(bool enable) {
 	fogEnabled = enable;
@@ -131,31 +125,16 @@ void Scene::setFogProperties(int fogMode, Color color, Number density, Number st
 	
 }
 
-SceneEntity *Scene::getEntityAtScreenPosition(Number x, Number y) {
-	for(int i =0; i< entities.size(); i++) {
-		if(entities[i]->testMouseCollision(x,y)) {
-			return entities[i];
-		}
-	}
-	return NULL;
+void Scene::addEntity(Entity *entity) {
+	rootEntity.addChild(entity);
 }
 
-void Scene::addEntity(SceneEntity *entity) {
-	entity->setRenderer(CoreServices::getInstance()->getRenderer());
-	entities.push_back(entity);
-}
-
-void Scene::addChild(SceneEntity *entity) {
+void Scene::addChild(Entity *entity) {
 	addEntity(entity);
 }
 
-void Scene::removeEntity(SceneEntity *entity) {
-	for(int i=0; i < entities.size(); i++) {
-		if(entities[i] == entity) {
-			entities.erase(entities.begin()+i);
-			return;
-		}		
-	}
+void Scene::removeEntity(Entity *entity) {
+	rootEntity.removeChild(entity);
 }
 
 Camera *Scene::getDefaultCamera() {
@@ -169,12 +148,7 @@ void Scene::Render(Camera *targetCamera) {
 	
 	if(!targetCamera)
 		targetCamera = activeCamera;
-	
-	// prepare lights...
-	for(int i=0; i<entities.size();i++) {
-		entities[i]->updateEntityMatrix();
-	}	
-	
+		
 	//make these the closest
 	
 	Matrix4 textureMatrix;
@@ -247,14 +221,8 @@ void Scene::Render(Camera *targetCamera) {
 	}
 	
 	
-	for(int i=0; i<entities.size();i++) {
-		if(entities[i]->getBBoxRadius() > 0) {
-			if(targetCamera->isSphereInFrustum((entities[i]->getPosition()), entities[i]->getBBoxRadius()))
-				entities[i]->transformAndRender();
-		} else {
-			entities[i]->transformAndRender();		
-		}
-	}
+	rootEntity.updateEntityMatrix();
+	rootEntity.transformAndRender();	
 	
 	if(targetCamera->getOrthoMode()) {
 		CoreServices::getInstance()->getRenderer()->setPerspectiveMode();
@@ -266,28 +234,18 @@ void Scene::Render(Camera *targetCamera) {
 void Scene::RenderDepthOnly(Camera *targetCamera) {
 	
 	CoreServices::getInstance()->getRenderer()->cullFrontFaces(true);
-/*	
-	for(int i=0; i<entities.size();i++) {
-		entities[i]->doUpdates();		
-		entities[i]->updateEntityMatrix();
-	}
-*/	
+
 	targetCamera->rebuildTransformMatrix();	
 	targetCamera->doCameraTransform();	
 	targetCamera->buildFrustumPlanes();
 	
 	CoreServices::getInstance()->getRenderer()->setTexture(NULL);
 	CoreServices::getInstance()->getRenderer()->enableShaders(false);
-	for(int i=0; i<entities.size();i++) {
-		if(entities[i]->castShadows) {
-		if(entities[i]->getBBoxRadius() > 0) {
-			if(targetCamera->isSphereInFrustum((entities[i]->getPosition()), entities[i]->getBBoxRadius()))
-				entities[i]->transformAndRender();
-		} else {
-			entities[i]->transformAndRender();		
-		}
-		}
-	}	
+	
+	
+	rootEntity.updateEntityMatrix();
+	rootEntity.transformAndRender();	
+	
 	CoreServices::getInstance()->getRenderer()->enableShaders(true);
 	CoreServices::getInstance()->getRenderer()->cullFrontFaces(false);	
 }

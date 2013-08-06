@@ -37,10 +37,10 @@ bool UIMenuBarEntryItem::checkShortCut(PolyKEY shortCut) {
 
 UIMenuBarEntry::UIMenuBarEntry(String name): UIElement() {
 	
-	label = new ScreenLabel(name, 14, "sans");
+	label = new SceneLabel(name, 14, "sans");
 	setWidth(label->getLabel()->getTextWidth() + 20);
-	bg = new ScreenShape(ScreenShape::SHAPE_RECT, width, 25);
-	bg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	bg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, width, 25);
+	bg->setPositionMode(Entity::POSITION_TOPLEFT);
 	addChild(bg);
 	bg->color.setColorHex(0xce5a1600);
 	bg->processInputEvents = true;
@@ -69,10 +69,10 @@ UIMenuBar::UIMenuBar(int width, UIGlobalMenu *globalMenu) : UIElement() {
 
 	this->globalMenu = globalMenu;
 
-	bgShape = new ScreenShape(ScreenShape::SHAPE_RECT, width, 25);
+	bgShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, width, 25);
 	addChild(bgShape);
 	bgShape->setColor(0.0, 0.0, 0.0, 1.0);
-	bgShape->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	bgShape->setPositionMode(Entity::POSITION_TOPLEFT);
 	entryOffset = 0;
 
 	currentEntry = NULL;
@@ -178,5 +178,5 @@ UIMenuBar::~UIMenuBar() {
 }
 
 void UIMenuBar::Resize(Number width, Number height) {
-	bgShape->setShapeSize(width, 25);
+	bgShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, 25);
 }

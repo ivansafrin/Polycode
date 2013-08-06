@@ -26,8 +26,7 @@ THE SOFTWARE.
 #include "PolyVector3.h"
 #include "PolyMatrix4.h"
 #include "PolyBezierCurve.h"
-#include "PolySceneEntity.h"
-#include "PolyScreenEntity.h"
+#include "PolyEntity.h"
 
 namespace Polycode {
 
@@ -276,7 +275,7 @@ namespace Polycode {
 	/**
 	* 3D particle emitter.
 	*/
-	class _PolyExport SceneParticleEmitter : public SceneEntity, public ParticleEmitter {
+	class _PolyExport SceneParticleEmitter : public Entity, public ParticleEmitter {
 	public:
 		/**
 		* Constructor.
@@ -324,42 +323,4 @@ namespace Polycode {
 		SceneMesh *emitterMesh;		
 	};	
 		
-	/**
-	* 3D particle emitter.
-	*/
-	class _PolyExport ScreenParticleEmitter : public ScreenEntity, public ParticleEmitter {
-	public:
-		ScreenParticleEmitter(const String& imageFile, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Vector3 emitterRadius, Mesh *particleMesh = NULL, ScreenMesh *emitter = NULL);
-		virtual ~ScreenParticleEmitter();		
-		
-		virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
-		virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
-		
-		/**
-		* Returns the emitter (helper method for LUA).
-		*/ 		
-		ParticleEmitter *getEmitter() { return this; }		
-		
-		void dispatchTriggerCompleteEvent();
-		
-		void addParticleBody(Entity *particleBody);
-		Matrix4 getBaseMatrix();
-		void Update();
-		
-		Vector3 getParticleCompoundScale();
-		
-			/**
-			* Continuous emitter setting.
-			*/ 																													
-			static const int CONTINUOUS_EMITTER = 0;
-
-			/**
-			* Triggered emitter setting.
-			*/ 																																
-			static const int TRIGGERED_EMITTER = 1;
-		
-		
-	protected:
-		ScreenMesh *emitterMesh;
-	};		
 }

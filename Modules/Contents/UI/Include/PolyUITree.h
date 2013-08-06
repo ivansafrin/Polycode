@@ -23,10 +23,10 @@
 #pragma once
 #include "PolyGlobals.h"
 #include "PolyUIElement.h"
-#include "PolyScreenLabel.h"
-#include "PolyScreenImage.h"
-#include "PolyScreenShape.h"
-#include "PolyScreenEntity.h"
+#include "PolySceneLabel.h"
+#include "PolySceneImage.h"
+#include "PolyScenePrimitive.h"
+#include "PolyEntity.h"
 #include "PolyUITreeEvent.h"
 #include "PolyUIBox.h"
 #include "PolyTween.h"
@@ -94,14 +94,14 @@ namespace Polycode {
 			Number padding;
 			UIBox *selection;
 		//	UIBox *bgBox;
-			ScreenShape *bgBox;
-			ScreenLabel *textLabel;
-			ScreenImage *iconImage;
+			ScenePrimitive *bgBox;
+			SceneLabel *textLabel;
+			SceneImage *iconImage;
 			bool selected;
 			Number treeHeight;
 			vector<UITree*> treeChildren;
 			bool collapsed;
-			ScreenImage *arrowIconImage;
+			SceneImage *arrowIconImage;
 			String arrowIcon;
 			Vector2 mouseDownPosition;
 			String fontName;

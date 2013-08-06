@@ -52,12 +52,12 @@ UIHSlider::UIHSlider(Number start, Number end, Number width) : UIElement() {
 	startValue = start;
 	endValue = end;
 		
-	gripRect = new ScreenImage(gripImage);
-	gripRect->setPositionMode(ScreenEntity::POSITION_CENTER);
+	gripRect = new SceneImage(gripImage);
+	gripRect->setPositionMode(Entity::POSITION_CENTER);
 	gripRect->setPosition(0, floor(bgHeight/2.0));
 
-	bgHitBox = new ScreenShape(ScreenShape::SHAPE_RECT, width, gripRect->getHeight());
-	bgHitBox->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	bgHitBox = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, width, gripRect->getHeight());
+	bgHitBox->setPositionMode(Entity::POSITION_TOPLEFT);
 	bgHitBox->setPosition(0, gripRect->getPosition().y - (gripRect->getHeight()/2.0));
 	addChild(bgHitBox);
 	bgHitBox->setColor(1.0,0.0,0.0,0.0);
@@ -112,11 +112,10 @@ void UIHSlider::Resize(Number width, Number height) {
 	this->width = width;
 	this->height = height;	
 	matrixDirty = true;	
-	setHitbox(width,height);
 	sliderWidth = width;
 	gripRect->setDragLimits(Rectangle(0,floor(bgHeight/2.0),width,0));	
 	setSliderValue(sliderValue);
-	bgHitBox->setShapeSize(width,  gripRect->getHeight());
+	bgHitBox->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width,  gripRect->getHeight());
 }
 			
 void UIHSlider::handleEvent(Event *event) {

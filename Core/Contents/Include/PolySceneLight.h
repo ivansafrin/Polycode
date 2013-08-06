@@ -23,7 +23,7 @@ THE SOFTWARE.
 
 #pragma once
 #include "PolyGlobals.h"
-#include "PolySceneEntity.h"
+#include "PolyEntity.h"
 
 namespace Polycode {
 
@@ -36,7 +36,7 @@ namespace Polycode {
 	/**
 	* 3D light source. Lights can be area or spot lights and can be set to different colors. 
 	*/
-	class _PolyExport SceneLight : public SceneEntity {
+	class _PolyExport SceneLight : public Entity {
 		public:
 		
 			/**
@@ -183,7 +183,7 @@ namespace Polycode {
 			void setLightImportance(int newImportance);
 			int getLightImportance() const;
 		
-			SceneEntity *lightShape;
+			Entity *lightShape;
 			
 		protected:
 		

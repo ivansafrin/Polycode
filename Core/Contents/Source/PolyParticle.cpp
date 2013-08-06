@@ -24,7 +24,6 @@
 #include "PolyMesh.h"
 #include "PolyPolygon.h"
 #include "PolySceneMesh.h"
-#include "PolyScreenShape.h"
 
 using namespace Polycode;
 
@@ -99,35 +98,6 @@ void Particle::createSceneParticle(int particleType, Material *material, Mesh *p
 			assert(0);
 		break;
 	}
-}
-
-void Particle::createScreenParticle(int particleType, Texture *texture, Mesh *particleMesh) {
-	
-	ScreenShape *primitive = new ScreenShape(ScreenShape::SHAPE_RECT, 1.0, 1.0f);
-	primitive->setTexture(texture);	
-//	primitive->billboardMode = true;
-//	primitive->billboardRoll = true;
-	
-	particleBody = primitive;			
-	return;
-	
-	switch(particleType) {
-		case BILLBOARD_PARTICLE:
-		{
-			ScreenShape *primitive = new ScreenShape(ScreenShape::SHAPE_RECT, 1.0f, 1.0f);
-//			primitive->setTexture(texture->get)
-			particleBody = primitive;			
-		}
-			break;
-		case MESH_PARTICLE: 
-		{
-//			ScreenMesh *primitive = new ScreenMesh(particleMesh);
-//			primitive->cacheToVertexBuffer(true);
-//			primitive->setMaterial(texture);
-//			particleBody = primitive;						
-		}			
-			break;
-	}	
 }
 
 

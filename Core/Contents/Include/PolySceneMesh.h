@@ -22,7 +22,7 @@ THE SOFTWARE.
  
 #pragma once
 #include "PolyGlobals.h"
-#include "PolySceneEntity.h"
+#include "PolyEntity.h"
 #include "PolyShader.h"
 
 namespace Polycode {
@@ -31,11 +31,12 @@ namespace Polycode {
 	class Mesh;
 	class Texture;
 	class Skeleton;
+	class Image;
 	
 	/**
 	* 3D polygonal mesh instance. The SceneMesh is the base for all polygonal 3d geometry. It can have simple textures or complex materials applied to it.
 	*/
-	class _PolyExport SceneMesh : public SceneEntity {
+	class _PolyExport SceneMesh : public Entity {
 		public:
 		
 			/**
@@ -80,7 +81,7 @@ namespace Polycode {
 			/**
 			* Returns the texture applied.
 			*/				
-			Texture *getTexture();
+			Texture *getTexture() const;
 			
 			/**
 			* Returns the material applied.
@@ -93,6 +94,8 @@ namespace Polycode {
 			* @param clamp If true, clamps the texture to edges. See Texture for details on that.
 			*/
 			void loadTexture(const String& fileName);
+
+			void loadTextureFromImage(Image *image);
 			
 			/**
 			* Loads a skeleton from a file and applies it to the scene mesh.

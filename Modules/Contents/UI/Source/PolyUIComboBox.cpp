@@ -61,7 +61,7 @@ UIComboBox::UIComboBox(UIGlobalMenu *globalMenu, Number comboWidth) : UIElement(
 	dropDownX = conf->getNumericValue("Polycode", "uiComboBoxDropX");
 	dropDownY = conf->getNumericValue("Polycode", "uiComboBoxDropY");
 		
-	dropDownImage = new ScreenImage(dropDownImageFile);
+	dropDownImage = new SceneImage(dropDownImageFile);
 	dropDownImage->setPosition(comboWidth - dropDownImage->getWidth() - dropDownX,dropDownY);
 	
 	this->comboHeight = conf->getNumericValue("Polycode", "uiComboBoxHeight");
@@ -73,7 +73,7 @@ UIComboBox::UIComboBox(UIGlobalMenu *globalMenu, Number comboWidth) : UIElement(
 	addChild(bgBox);
 	addChild(dropDownImage);
 	
-	selectedLabel = new ScreenLabel("<None>", fontSize, fontName);
+	selectedLabel = new SceneLabel("<None>", fontSize, fontName);
 	selectedLabel->positionAtBaseline = false;
 	selectedLabel->setPosition(paddingX, floor(((dropDownImage->getHeight()/2.0) - selectedLabel->getLabel()->getTextHeight()/2.0) + paddingY));
 	addChild(selectedLabel);
@@ -106,7 +106,6 @@ void UIComboBox::Resize(Number width, Number height) {
 	this->width = width;
 	this->height = height;	
 	matrixDirty = true;	
-	setHitbox(width,height);
 	dropDownImage->setPosition(comboWidth - dropDownImage->getWidth() - dropDownX,dropDownY);	
 }
 

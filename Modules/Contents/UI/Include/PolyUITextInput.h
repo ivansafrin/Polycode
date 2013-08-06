@@ -22,11 +22,11 @@
 
 #pragma once
 #include "PolyGlobals.h"
-#include "PolyScreenLabel.h"
-#include "PolyScreenShape.h"
+#include "PolySceneLabel.h"
+#include "PolyScenePrimitive.h"
 #include "PolyFontManager.h"
 #include "PolyFont.h"
-#include "PolyScreenEntity.h"
+#include "PolyEntity.h"
 #include "PolyUIEvent.h"
 #include "PolyUIBox.h"
 #include "PolyUIMenu.h"
@@ -377,7 +377,7 @@ namespace Polycode {
 			
 			Number resizeTimer;
 
-			ScreenEntity *lineNumberAnchor;
+			Entity *lineNumberAnchor;
 		
 			void renumberLines();
 			bool isNumberOrCharacter(wchar_t charCode);			
@@ -427,9 +427,9 @@ namespace Polycode {
 			std::vector<TextColorPair> makeWordWrapBuffer(LineInfo *lineInfo, String indentPrefix);
 			std::vector<TextColorPair> splitTokens(String stringToSplit, LineColorInfo *stringColorInfo);
 			
-			ScreenShape *selectorRectTop;
-			ScreenShape *selectorRectMiddle;
-			ScreenShape *selectorRectBottom;		
+			ScenePrimitive *selectorRectTop;
+			ScenePrimitive *selectorRectMiddle;
+			ScenePrimitive *selectorRectBottom;		
 			int numLines;			
 			
 			Number padding;
@@ -440,7 +440,7 @@ namespace Polycode {
 			int selectionL;
 			int selectionR;
 			
-			ScreenShape *lineNumberBg;
+			ScenePrimitive *lineNumberBg;
 			
 			int decoratorOffset;
 		
@@ -470,12 +470,12 @@ namespace Polycode {
 			
 			UITextInputSyntaxHighlighter *syntaxHighliter;
 		
-			ScreenEntity *linesContainer;
+			Entity *linesContainer;
 
 			// container for the actual text contents
 			UIElement *textContainer; 
 			
-			vector<ScreenLabel*> linesToDelete;	
+			vector<SceneLabel*> linesToDelete;	
 			
 			std::vector<FindMatch> findMatches;
 			int findIndex;
@@ -488,7 +488,7 @@ namespace Polycode {
 			bool multiLine;
 			Timer *blinkTimer;
 			UIBox *inputRect;
-			ScreenShape *blinkerRect;
+			ScenePrimitive *blinkerRect;
 			Vector2 dragMouseStart;
 			
 			Color selectionColor;
@@ -521,8 +521,8 @@ namespace Polycode {
 			vector<LineInfo> lines;
 			vector<WordWrapLine> wordWrapLines;
 									
-			vector<ScreenLabel*> bufferLines;
-			vector<ScreenLabel*> numberLines;
+			vector<SceneLabel*> bufferLines;
+			vector<SceneLabel*> numberLines;
 			
 			Core *core;
 			

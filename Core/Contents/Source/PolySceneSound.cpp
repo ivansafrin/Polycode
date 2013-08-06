@@ -27,7 +27,7 @@ THE SOFTWARE.
 
 using namespace Polycode;
 
-SceneSoundListener::SceneSoundListener() : SceneEntity() {
+SceneSoundListener::SceneSoundListener() : Entity() {
 
 }
 SceneSoundListener::~SceneSoundListener() {
@@ -44,7 +44,7 @@ void SceneSoundListener::Update() {
 }
 
 
-SceneSound::SceneSound(const String& fileName, Number referenceDistance, Number maxDistance, bool directionalSound) : SceneEntity() {
+SceneSound::SceneSound(const String& fileName, Number referenceDistance, Number maxDistance, bool directionalSound) : Entity() {
 
 	this->directionalSound = directionalSound;
 	

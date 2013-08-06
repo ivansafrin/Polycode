@@ -22,10 +22,10 @@
 
 #pragma once
 #include "PolyGlobals.h"
-#include "PolyScreenImage.h"
-#include "PolyScreenLabel.h"
-#include "PolyScreenShape.h"
-#include "PolyScreenEntity.h"
+#include "PolySceneImage.h"
+#include "PolySceneLabel.h"
+#include "PolyScenePrimitive.h"
+#include "PolyEntity.h"
 #include "PolyUIEvent.h"
 #include "PolyFont.h"
 #include "PolyUIElement.h"
@@ -45,8 +45,8 @@ namespace Polycode {
 			
 		private:
 			bool checked;
-			ScreenLabel *captionLabel;
-			ScreenImage *buttonImageChecked;
-			ScreenImage *buttonImageUnchecked;			
+			SceneLabel *captionLabel;
+			SceneImage *buttonImageChecked;
+			SceneImage *buttonImageUnchecked;			
 	};
 }

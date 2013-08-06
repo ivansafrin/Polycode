@@ -49,7 +49,7 @@ UITreeContainer::UITreeContainer(String icon, String text, Number treeWidth, Num
 	blockMouseInput = true;
 	//bgBox->setPosition(-padding, -padding);
 	
-	scrollChild = new ScreenEntity();
+	scrollChild = new Entity();
 	scrollChild->processInputEvents = true;
 	
 	rootNode = new UITree(icon, text, treeWidth,0);		
@@ -100,7 +100,7 @@ void UITreeContainer::handleEvent(Event *event) {
 		if (!hasFocus) {
 			if (event->getEventCode() == InputEvent::EVENT_MOUSEDOWN) {
 				if (parentEntity && isFocusable())
-					((ScreenEntity*)parentEntity)->focusChild(this);
+					((Entity*)parentEntity)->focusChild(this);
 			} else if (event->getEventCode() == InputEvent::EVENT_MOUSEOVER) {
 				CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_ARROW);
 			}

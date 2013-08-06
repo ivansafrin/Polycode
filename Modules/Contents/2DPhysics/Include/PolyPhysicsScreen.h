@@ -23,7 +23,7 @@ THE SOFTWARE.
 #pragma once
 #include "PolyGlobals.h"
 #include "PolyEvent.h"
-#include "PolyScreen.h"
+#include "PolyScene.h"
 #include "PolyVector2.h"
 #include "Box2D/Box2D.h"
 #include <vector>
@@ -32,37 +32,37 @@ THE SOFTWARE.
 
 namespace Polycode {
 
-class ScreenEntity;
-class PhysicsScreenEntity;
+class Entity;
+class PhysicsScene2DEntity;
 class Timer;
 
 /**
 * Event sent out by the PhysicsScreen class when collisions begin and end.
 */	
-class _PolyExport PhysicsScreenEvent : public Event {
+class _PolyExport PhysicsScene2DEvent : public Event {
 	public:	
-		PhysicsScreenEvent();
-		~PhysicsScreenEvent();
+		PhysicsScene2DEvent();
+		~PhysicsScene2DEvent();
 		
 		/**
 		* First colliding entity.
 		*/
-		ScreenEntity *entity1;	
+		Entity *entity1;	
 		
 		/**
 		* Second colliding entity.
 		*/		
-		ScreenEntity *entity2;	
+		Entity *entity2;	
 
 		/**
 		* First colliding entity.
 		*/
-		ScreenEntity *getFirstEntity();	
+		Entity *getFirstEntity();	
 		
 		/**
 		* Second colliding entity.
 		*/		
-		ScreenEntity *getSecondEntity();	
+		Entity *getSecondEntity();	
 
 	
 		/**
@@ -152,28 +152,28 @@ public:
 /**
 * A 2D Physics enabled screen. A PhysicsScreen acts like a normal screen, except that entities added to it with addPhysicsChild have physics automatically simulated. You can also use it to check collisions using addCollisionChild.
 */	
-class _PolyExport PhysicsScreen : public Screen, b2ContactListener {
+class _PolyExport PhysicsScene2D : public Scene, b2ContactListener {
 
 public:
 
 	/**
 	* Creates a new physics screen.
 	*/ 
-	PhysicsScreen(Number worldScale, Number freq, int velIterations=10, int posIterations=10);
+	PhysicsScene2D(Number worldScale, Number freq, int velIterations=10, int posIterations=10);
 	
 	/**
 	* Default constructor.
 	*/
-	PhysicsScreen();
+	PhysicsScene2D();
 	
-	~PhysicsScreen();
+	~PhysicsScene2D();
 	
 	void Update();
 	
 	/**
-	* Adds a ScreenEntity as a physics enabled child. Once an entity is added as a physics child, its transforms are set by the physics engine and you are not able to position it manually. Use addCollisionChild/trackCollisionChild to track collisions of entities that you can position manually.
+	* Adds a Entity as a physics enabled child. Once an entity is added as a physics child, its transforms are set by the physics engine and you are not able to position it manually. Use addCollisionChild/trackCollisionChild to track collisions of entities that you can position manually.
 	* @param newEntity Screen entity to add.
-	* @param entType Physics entity type to add as. Possible values are PhysicsScreenEntity::ENTITY_RECT, PhysicsScreenEntity::ENTITY_CIRCLE and PhysicsScreenEntity::ENTITY_MESH. If the type is ENTITY_MESH, the ScreenEntity passed must be a ScreenMesh!
+	* @param entType Physics entity type to add as. Possible values are PhysicsEntity::ENTITY_RECT, PhysicsEntity::ENTITY_CIRCLE and PhysicsEntity::ENTITY_MESH. If the type is ENTITY_MESH, the Entity passed must be a ScreenMesh!
 	* @param isStatic If this parameter is true, the body is static (doesn't move on its own).
 	* @param friction Friction of the physics entity. Friction controls how entities drag along each other.
 	* @param density Density of the physics entity. Density controls how heavy the entity is.
@@ -183,12 +183,12 @@ public:
     * @param groupIndex is the physiscs shape's collision group. A negative number means objects of that group won't collide with eachother
     * @return The physics entity wrapper.
 	*/
-	PhysicsScreenEntity *addPhysicsChild(ScreenEntity *newEntity, int entType, bool isStatic, Number friction=0.1, Number density=1, Number restitution = 0, bool isSensor = false, bool fixedRotation = false, int groupIndex = 0);
+	PhysicsScene2DEntity *addPhysicsChild(Entity *newEntity, int entType, bool isStatic, Number friction=0.1, Number density=1, Number restitution = 0, bool isSensor = false, bool fixedRotation = false, int groupIndex = 0);
     
 	/**
-	* Tracks a ScreenEntity as a physics enabled child. Once an entity is added as a physics child, its transforms are set by the physics engine and you are not able to position it manually. Use addCollisionChild/trackCollisionChild to track collisions of entities that you can position manually.
+	* Tracks a Entity as a physics enabled child. Once an entity is added as a physics child, its transforms are set by the physics engine and you are not able to position it manually. Use addCollisionChild/trackCollisionChild to track collisions of entities that you can position manually.
 	* @param newEntity Screen entity to add.
-	* @param entType Physics entity type to add as. Possible values are PhysicsScreenEntity::ENTITY_RECT, PhysicsScreenEntity::ENTITY_CIRCLE and PhysicsScreenEntity::ENTITY_MESH. If the type is ENTITY_MESH, the ScreenEntity passed must be a ScreenMesh!
+	* @param entType Physics entity type to add as. Possible values are PhysicsEntity::ENTITY_RECT, PhysicsEntity::ENTITY_CIRCLE and PhysicsEntity::ENTITY_MESH. If the type is ENTITY_MESH, the Entity passed must be a ScreenMesh!
 	* @param isStatic If this parameter is true, the body is static (doesn't move on its own).
 	* @param friction Friction of the physics entity. Friction controls how entities drag along each other.
 	* @param density Density of the physics entity. Density controls how heavy the entity is.
@@ -198,39 +198,39 @@ public:
     * @param groupIndex is the physiscs shape's collision group. A negative number means objects of that group won't collide with eachother
 	* @return The physics entity wrapper.
 	*/
-	PhysicsScreenEntity *trackPhysicsChild(ScreenEntity *newEntity, int entType, bool isStatic, Number friction=0.1, Number density=1, Number restitution = 0, bool isSensor = false, bool fixedRotation = false, int groupIndex = 0);
+	PhysicsScene2DEntity *trackPhysicsChild(Entity *newEntity, int entType, bool isStatic, Number friction=0.1, Number density=1, Number restitution = 0, bool isSensor = false, bool fixedRotation = false, int groupIndex = 0);
     
 	
 	/**
 	* Stops physics tracking for this entity but does not remove from screen.
 	* @param entity Entity to stop tracking for.
 	*/
-	void stopTrackingChild(ScreenEntity *entity);
+	void stopTrackingChild(Entity *entity);
 		
 	/**
 	* Removes a physics child from the screen.
 	* @param entityToRemove Entity to remove from the screen.
 	*/
-	void removePhysicsChild(ScreenEntity *entityToRemove);
+	void removePhysicsChild(Entity *entityToRemove);
 	
 	
-	void removeChild(ScreenEntity *entityToRemove);
-	
-	/**
-	* Begins tracking collisions for a ScreenEntity and adds it to the scene.
-	* @param newEntity Entity to track collisions for.
-	* @param entType Physics shape of the entity. Possible values are PhysicsScreenEntity::ENTITY_RECT or PhysicsScreenEntity::ENTITY_CIRCLE.
-	* @param entityToRemove Entity to remove from the screen.
-	*/	
-	PhysicsScreenEntity *addCollisionChild(ScreenEntity *newEntity, int entType, int groupIndex = 0, bool sensorOnly = true);
+	void removeChild(Entity *entityToRemove);
 	
 	/**
-	* Begins tracking collisions for a ScreenEntity.
+	* Begins tracking collisions for a Entity and adds it to the scene.
 	* @param newEntity Entity to track collisions for.
-	* @param entType Physics shape of the entity. Possible values are PhysicsScreenEntity::ENTITY_RECT or PhysicsScreenEntity::ENTITY_CIRCLE.
+	* @param entType Physics shape of the entity. Possible values are PhysicsEntity::ENTITY_RECT or PhysicsEntity::ENTITY_CIRCLE.
 	* @param entityToRemove Entity to remove from the screen.
 	*/	
-	PhysicsScreenEntity *trackCollisionChild(ScreenEntity *newEntity, int entType, int groupIndex = 0);	
+	PhysicsScene2DEntity *addCollisionChild(Entity *newEntity, int entType, int groupIndex = 0, bool sensorOnly = true);
+	
+	/**
+	* Begins tracking collisions for a Entity.
+	* @param newEntity Entity to track collisions for.
+	* @param entType Physics shape of the entity. Possible values are PhysicsEntity::ENTITY_RECT or PhysicsEntity::ENTITY_CIRCLE.
+	* @param entityToRemove Entity to remove from the screen.
+	*/	
+	PhysicsScene2DEntity *trackCollisionChild(Entity *newEntity, int entType, int groupIndex = 0);	
 	
 	/**
 	* Removes an existing joint.
@@ -245,7 +245,7 @@ public:
 	* @param collideConnected If set to true, both entities will collide with each other, if false, they will not.
 	* @return Created physics joint.	
 	*/ 
-	PhysicsJoint *createDistanceJoint(ScreenEntity *ent1, ScreenEntity *ent2, bool collideConnected);
+	PhysicsJoint *createDistanceJoint(Entity *ent1, Entity *ent2, bool collideConnected);
 	
 	/**
 	* Creates a new prismatic joint. Prismatic joints provide one degree of freedom between two entities. 
@@ -263,7 +263,7 @@ public:
 	* @param worldAxis Specifies the relative world axis for the prismatic joint.	
 	* @return Created physics joint.	
 	*/ 	
-	PhysicsJoint *createPrismaticJoint(ScreenEntity *ent1, ScreenEntity *ent2, Vector2 worldAxis, Number ax, Number ay, bool collideConnected=false, Number lowerTranslation=0, Number upperTranslation=0, bool enableLimit=false, Number motorSpeed=0, Number motorForce=0, bool motorEnabled=false);
+	PhysicsJoint *createPrismaticJoint(Entity *ent1, Entity *ent2, Vector2 worldAxis, Number ax, Number ay, bool collideConnected=false, Number lowerTranslation=0, Number upperTranslation=0, bool enableLimit=false, Number motorSpeed=0, Number motorForce=0, bool motorEnabled=false);
 
 	/**
 	* Creates a new revolute joint. Revolute joints enable one entity to rotate around a point on another entity.
@@ -279,9 +279,9 @@ public:
 	* @param maxTorque	If motorEnabled is true, specifies the maximum torque applied.		
 	* @return Created physics joint.
 	*/ 		
-	PhysicsJoint *createRevoluteJoint(ScreenEntity *ent1, ScreenEntity *ent2, Number ax, Number ay, bool collideConnected=false, bool enableLimit=false, Number lowerLimit=0, Number upperLimit=0, bool motorEnabled=false, Number motorSpeed=0, Number maxTorque=0);
+	PhysicsJoint *createRevoluteJoint(Entity *ent1, Entity *ent2, Number ax, Number ay, bool collideConnected=false, bool enableLimit=false, Number lowerLimit=0, Number upperLimit=0, bool motorEnabled=false, Number motorSpeed=0, Number maxTorque=0);
 	
-//	b2MouseJoint *createMouseJoint(ScreenEntity *ent1, Vector2 *mp);
+//	b2MouseJoint *createMouseJoint(Entity *ent1, Vector2 *mp);
 
 	/**
 	* Applies linear force to an entity.
@@ -289,7 +289,7 @@ public:
 	* @param fx X value of the force direction vector.
 	* @param fy Y value of the force direction vector.		
 	*/ 	
-	void applyForce(ScreenEntity *ent, Number fx, Number fy);
+	void applyForce(Entity *ent, Number fx, Number fy);
 	
 	/**
 	* Applies an impulse to an entity
@@ -297,7 +297,7 @@ public:
 	* @param fx X value of the impulse direction vector.
 	* @param fy Y value of the impulse direction vector.		
 	*/ 		
-	void applyImpulse(ScreenEntity *ent, Number fx, Number fy);
+	void applyImpulse(Entity *ent, Number fx, Number fy);
 
 	/**
 	* Sets the gravity for this screen.
@@ -311,11 +311,11 @@ public:
 	* @param pos New position to set.
 	* @param angle New angle to set.
 	*/ 				
-	void setTransform(ScreenEntity *ent, Vector2 pos, Number angle);
+	void setTransform(Entity *ent, Vector2 pos, Number angle);
 
 	
-	PhysicsScreenEntity *getPhysicsEntityByShape(b2Shape *shape);
-	PhysicsScreenEntity *getPhysicsEntityByFixture(b2Fixture *fixture);
+	PhysicsScene2DEntity *getPhysicsEntityByShape(b2Shape *shape);
+	PhysicsScene2DEntity *getPhysicsEntityByFixture(b2Fixture *fixture);
 
 	/**
 	* Sets the linear velocity of an entity.
@@ -323,35 +323,35 @@ public:
 	* @param fx X direction of velocity vector.
 	* @param fy Y direction of velocity vector.
 	*/ 					
-	void setVelocity(ScreenEntity *ent, Number fx, Number fy);	
+	void setVelocity(Entity *ent, Number fx, Number fy);	
 
 	/**
 	* Sets the linear velocity of an entity on the X axis.
 	* @param ent Entity to set velocity to.
 	* @param fx X direction of velocity vector.
 	*/ 						
-	void setVelocityX(ScreenEntity *ent, Number fx);	
+	void setVelocityX(Entity *ent, Number fx);	
 	
 	/**
 	* Sets the linear velocity of an entity on the Y axis.
 	* @param ent Entity to set velocity to.
 	* @param fy Y direction of velocity vector.
 	*/ 							
-	void setVelocityY(ScreenEntity *ent, Number fy);	
+	void setVelocityY(Entity *ent, Number fy);	
 	
 	/**
 	* Sets the angular velocity of an entity
 	* @param ent Entity to apply spin to.
 	* @param spin Spin value.
 	*/ 								
-	void setAngularVelocity(ScreenEntity *ent, Number spin);
+	void setAngularVelocity(Entity *ent, Number spin);
 
 	/**
 	* Returns the velocity of an entity.
 	* @param ent Entity to return velocity for
 	* @return Velocity of the specified entity.
 	*/ 									
-	Vector2 getVelocity(ScreenEntity *ent);
+	Vector2 getVelocity(Entity *ent);
 			
 	void BeginContact (b2Contact *contact);
 	void EndContact (b2Contact *contact);	
@@ -362,7 +362,7 @@ public:
 	* Wake up a sleeping entity. The physics engine puts non-moving entities to sleep automatically. Use this to wake them up.
 	* @param ent Entity to wake up.
 	*/ 										
-	void wakeUp(ScreenEntity *ent);
+	void wakeUp(Entity *ent);
 	
 	void handleEvent(Event *event);
 
@@ -372,7 +372,7 @@ public:
 	* @param y Y position.
 	* @return If there is a collision-tracked entity at the specified position, it will be returned, NULL if there isn't.
 	*/ 													
-	ScreenEntity *getEntityAtPosition(Number x, Number y);
+	Entity *getEntityAtPosition(Number x, Number y);
 	
 	/**
 	* Returns true if the specified entity is at the specified position.
@@ -381,23 +381,23 @@ public:
 	* @param y Y position.
 	* @return If there specified entity overlaps the specified position, this returns true.
 	*/ 														
-	bool testEntityAtPosition(ScreenEntity *ent, Number x, Number y);
+	bool testEntityAtPosition(Entity *ent, Number x, Number y);
     
 	/**
 	* Tests collision between two entities
 	*/
-	bool testEntityCollision(ScreenEntity *ent1, ScreenEntity *ent2);
+	bool testEntityCollision(Entity *ent1, Entity *ent2);
 	
-	bool isEntityColliding(ScreenEntity *ent1);
+	bool isEntityColliding(Entity *ent1);
 	
 	void Shutdown();
 	
 	/**
 	* Returns the physics entity for the specified screen entity. When you add ScreenEntities to the physics screen, these physics entities are created to track the physics status of the screen entities. You don't need to deal with these ever, but if you want, you can get them anyway.
-	* @param ent ScreenEntity instance to return the physics entity for.
-	* @return PhysicsEntity associated with the ScreenEntity.
+	* @param ent Entity instance to return the physics entity for.
+	* @return PhysicsEntity associated with the Entity.
 	*/
-	PhysicsScreenEntity *getPhysicsByScreenEntity(ScreenEntity *ent);
+	PhysicsScene2DEntity *getPhysicsByEntity(Entity *ent);
 	void destroyMouseJoint(b2MouseJoint *mJoint);
 
 
@@ -408,8 +408,8 @@ protected:
 	
     Number worldScale;
     
-    std::vector <PhysicsScreenEntity*> physicsChildren;
-	std::vector<PhysicsScreenEvent*> eventsToDispatch;
+    std::vector <PhysicsScene2DEntity*> physicsChildren;
+	std::vector<PhysicsScene2DEvent*> eventsToDispatch;
 			
 	void init(Number worldScale, Number physicsTimeStep, int velIterations, int posIterations, Vector2 physicsGravity);
 

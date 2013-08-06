@@ -33,7 +33,7 @@
 
 using namespace Polycode;
 			
-Camera::Camera(Scene *parentScene) : SceneEntity() {
+Camera::Camera(Scene *parentScene) : Entity() {
 	setParentScene(parentScene);
 	orthoMode = false;
 	fov = 45.0f;
@@ -254,7 +254,7 @@ void Camera::buildFrustumPlanes() {
 
 }
 
-bool Camera::canSee(SceneEntity *entity) {
+bool Camera::canSee(Entity *entity) {
 	return isSphereInFrustum(entity->getPosition(), entity->getBBoxRadius());
 }
 

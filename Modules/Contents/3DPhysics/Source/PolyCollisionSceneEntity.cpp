@@ -24,14 +24,14 @@ THE SOFTWARE.
 #include "PolyLogger.h"
 #include "PolyMesh.h"
 #include "PolyPolygon.h"
-#include "PolySceneEntity.h"
+#include "PolyEntity.h"
 #include "PolySceneMesh.h"
 #include "btBulletCollisionCommon.h"
 
 using namespace Polycode;
 
-CollisionSceneEntity::CollisionSceneEntity(SceneEntity *entity, int type, bool compoundChildren) {
-	sceneEntity = entity;
+CollisionEntity::CollisionEntity(Entity *entity, int type, bool compoundChildren) {
+	this->entity = entity;
 	shape = NULL;
 	
 	this->type = type;
@@ -49,7 +49,7 @@ CollisionSceneEntity::CollisionSceneEntity(SceneEntity *entity, int type, bool c
 		 btCompoundShape* compoundShape = new btCompoundShape();
 		 
 		 for(int i=0; i < entity->getNumChildren(); i++) {
-			SceneEntity *child = (SceneEntity*)entity->getChildAtIndex(i);
+			Entity *child = (Entity*)entity->getChildAtIndex(i);
 			btCollisionShape *childShape = createCollisionShape(child, child->collisionShapeType);
 			btTransform transform;
 			
@@ -84,7 +84,7 @@ CollisionSceneEntity::CollisionSceneEntity(SceneEntity *entity, int type, bool c
 //	}		
 }
 
-btCollisionShape *CollisionSceneEntity::createCollisionShape(SceneEntity *entity, int type) {
+btCollisionShape *CollisionEntity::createCollisionShape(Entity *entity, int type) {
 	
 	btCollisionShape *collisionShape = NULL;	
 	
@@ -146,11 +146,11 @@ btCollisionShape *CollisionSceneEntity::createCollisionShape(SceneEntity *entity
 	return collisionShape; 
 }
 
-void CollisionSceneEntity::Update() {	
-	sceneEntity->rebuildTransformMatrix();
+void CollisionEntity::Update() {	
+	entity->rebuildTransformMatrix();
 
 	btScalar mat[16];		
-	Matrix4 ent_mat = sceneEntity->getConcatenatedMatrix();
+	Matrix4 ent_mat = entity->getConcatenatedMatrix();
 	
 	for(int i=0; i < 16; i++) {
 			mat[i] = ent_mat.ml[i];
@@ -159,11 +159,11 @@ void CollisionSceneEntity::Update() {
 	collisionObject->getWorldTransform().setFromOpenGLMatrix(mat);
 }
 
-SceneEntity *CollisionSceneEntity::getSceneEntity() {
-	return sceneEntity;
+Entity *CollisionEntity::getEntity() {
+	return entity;
 }
 
-CollisionSceneEntity::~CollisionSceneEntity() {
+CollisionEntity::~CollisionEntity() {
 	delete shape;
 	delete collisionObject;
 }

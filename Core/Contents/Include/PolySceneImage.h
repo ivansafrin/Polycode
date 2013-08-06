@@ -22,47 +22,48 @@ THE SOFTWARE.
 
 #pragma once
 #include "PolyGlobals.h"
-#include "PolyScreenShape.h"
+#include "PolyImage.h"
+#include "PolyScenePrimitive.h"
 
 namespace Polycode {
 
 	/**
 	* 2D screen image display. This ScreenEntity can load and display and image.
 	*/
-	class _PolyExport ScreenImage : public ScreenShape {
+	class _PolyExport SceneImage : public ScenePrimitive {
 		public:
 		/**
 		* Create screen image from file.
 		* @param fileName 
 		*/
-		ScreenImage(const String& fileName);
-		
+		SceneImage(const String& fileName);
+
 		/**
 		* Create screen image from Image.
 		* @param image Image to create from.
 		*/		
-		ScreenImage(Image *image);		
-		
+		SceneImage(Image *image);		
+
 		/**
 		 * Create screen image from Texture.
 		 * @param texture Texture to create from.
 		 */		
-		ScreenImage(Texture *texture);		
-		
+		SceneImage(Texture *texture);		
+
 		/**
 		* Create screen image from Image.
 		* @param image Image to create from.
 		*/				
-		static ScreenImage* ScreenImageWithImage(Image *image);
-		
+		static SceneImage* SceneImageWithImage(Image *image);
+
 		/**
 		 * Create screen image from Texture.
 		 * @param texture Texture to create from.
 		 */				
-		static ScreenImage* ScreenImageWithTexture(Texture *texture);
-		
-		virtual ~ScreenImage();
-		
+		static SceneImage* SceneImageWithTexture(Texture *texture);
+
+		virtual ~SceneImage();
+
 		virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
 		virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
 
@@ -74,22 +75,22 @@ namespace Polycode {
 		* @param height Height of the display rectangle.
 		*/				
 		void setImageCoordinates(Number x, Number y, Number width, Number height);
-		
+
 		/**
 		* Returns the image width.
 		*/ 
 		Number getImageWidth() const;
-		
+
 		/**
 		* Returns the image height.
 		*/ 		
 		Number getImageHeight() const;
-		
+
 		protected:
 
 		Number imageWidth;
 		Number imageHeight;
-		
+
 	};
 
 }

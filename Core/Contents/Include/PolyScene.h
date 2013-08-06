@@ -25,6 +25,7 @@ THE SOFTWARE.
 #include "PolyString.h"
 #include "PolyColor.h"
 #include "PolyVector3.h"
+#include "PolyEntity.h"
 #include "PolyEventDispatcher.h"
 
 #include <vector>
@@ -34,12 +35,12 @@ class OSFILE;
 namespace Polycode {
 		
 	class Camera;
-	class SceneEntity;
+	class Entity;
 	class SceneLight;
-	class SceneMesh;
+	class Mesh;
 	
 	/**
-	* 3D rendering container. The Scene class is the main container for all 3D rendering in Polycode. Scenes are automatically rendered and need only be instantiated to immediately add themselves to the rendering pipeline. A Scene is created with a camera automatically.
+	* Rendering container. The Scene class is the main container for all rendering in Polycode. Scenes are automatically rendered and need only be instantiated to immediately add themselves to the rendering pipeline. A Scene is created with a camera automatically.
 	*/ 
 	class _PolyExport Scene : public EventDispatcher {
 	public:
@@ -56,22 +57,22 @@ namespace Polycode {
 		virtual ~Scene();
 		
 		/**
-		* Adds a new SceneEntity to the scene
+		* Adds a new Entity to the scene
 		* @param entity New entity to add.
 		*/
-		void addEntity(SceneEntity *entity);
+		void addEntity(Entity *entity);
 
 		/**
-		* Adds a new SceneEntity to the scene
+		* Adds a new Entity to the scene
 		* @param entity New entity to add.
 		*/
-		void addChild(SceneEntity *entity);
+		void addChild(Entity *entity);
 		
 		/**
-		* Removes a SceneEntity from the scene
+		* Removes a Entity from the scene
 		* @param entity New entity to remove.
 		*/		
-		virtual void removeEntity(SceneEntity *entity);
+		virtual void removeEntity(Entity *entity);
 		
 		/**
 		* Returns the scene's default camera.
@@ -120,17 +121,6 @@ namespace Polycode {
 		bool isEnabled();		
 		void setEnabled(bool enabled);
 		
-		int getNumEntities() { return (int)entities.size(); }
-		SceneEntity *getEntity(int index) { return entities[index]; }
-		
-		/**
-		* Returns the entity at the specified screen position. This is currently very slow and not super reliable.
-		* @param x X position.
-		* @param y Y position.
-		* @return Entity at specified screen position.		
-		*/
-		SceneEntity *getEntityAtScreenPosition(Number x, Number y);
-		
 		void Render(Camera *targetCamera = NULL);
 		void RenderDepthOnly(Camera *targetCamera);
 		
@@ -144,8 +134,7 @@ namespace Polycode {
 		* Removes a light from the scene.
 		* @param light Light to remove from the scene.
 		*/		
-		void removeLight(SceneLight *light);
-		
+		void removeLight(SceneLight *light);		
 		SceneLight *getNearestLight(Vector3 pos);
 				
 		int getNumLights();
@@ -187,17 +176,18 @@ namespace Polycode {
 		*/
 		bool ownsChildren;
 		
+		Entity rootEntity;
+		
 	protected:
 		
 		bool hasLightmaps;
 		
-		std::vector <SceneLight*> lights;
-		
+		Renderer *renderer;
+		std::vector <SceneLight*> lights;		
 		bool isSceneVirtual;
 		
 		Camera *defaultCamera;
 		Camera *activeCamera;
-		std::vector <SceneEntity*> entities;
 		
 		bool lightingEnabled;
 		bool fogEnabled;

@@ -23,23 +23,23 @@ THE SOFTWARE.
 #pragma once
 #include "PolyString.h"
 #include "PolyGlobals.h"
-#include "PolySceneEntity.h"
+#include "PolyEntity.h"
 #include "PolyCoreServices.h"
 #include "PolyMesh.h"
 
 namespace Polycode {
 
 	/**
-	* 3D line class. Can connect two SceneEntity classes with a line.
+	* 3D line class. Can connect two Entity classes with a line.
 	*/ 
-	class _PolyExport SceneLine : public SceneEntity {
+	class _PolyExport SceneLine : public Entity {
 		public:
 			/**
 			* Constructs the line with two taraget entities.
 			* @param ent1 Starting entity.
 			* @param ent2 Ending entity.
 			*/
-			SceneLine(SceneEntity *ent1, SceneEntity *ent2);
+			SceneLine(Entity *ent1, Entity *ent2);
 			
 			/**
 			* Constructs the line with two taraget positions.
@@ -71,8 +71,8 @@ namespace Polycode {
 			
 			Vector3 start;
 			Vector3 end;			
-			SceneEntity *ent1;
-			SceneEntity *ent2;
+			Entity *ent1;
+			Entity *ent2;
 	};
 
 }

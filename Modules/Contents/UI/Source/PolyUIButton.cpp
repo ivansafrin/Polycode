@@ -70,7 +70,7 @@ UIButton::UIButton(String text, Number width, Number height) : UIElement() {
 		
 	pressedDown = false;
 	
-	buttonLabel = new ScreenLabel(text, fontSize, fontName, Label::ANTIALIAS_FULL);
+	buttonLabel = new SceneLabel(text, fontSize, fontName, Label::ANTIALIAS_FULL);
 	buttonLabel->color.setColorHexFromString(conf->getStringValue("Polycode", "uiButtonFontColor"));
 	addChild(buttonLabel);
 	labelXPos = floor((width-buttonLabel->getWidth())/2.0f) + labelOffsetX;
@@ -91,7 +91,6 @@ void UIButton::Resize(Number width, Number height) {
 	this->width = width;
 	this->height = height;	
 	matrixDirty = true;	
-	setHitbox(width,height);	
 	
 	labelXPos = floor((width-buttonLabel->getWidth())/2.0f) + labelOffsetX;
 	labelYPos = labelOffsetY;
@@ -157,7 +156,7 @@ void UIButton::handleEvent(Event *event) {
 			case InputEvent::EVENT_MOUSEDOWN:
 				pressedDown = true;
 				if(parentEntity)
-					((ScreenEntity*)parentEntity)->focusChild(this);
+					((Entity*)parentEntity)->focusChild(this);
 				buttonLabel->setPosition(labelXPos+1,labelYPos+1);
 				buttonRect->setPosition(1,1);
 			break;

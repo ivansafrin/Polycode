@@ -20,7 +20,7 @@
  THE SOFTWARE.
 */
 
-#include "PolyScreenImage.h"
+#include "PolySceneImage.h"
 #include "PolyMesh.h"
 #include "PolyPolygon.h"
 #include "PolyTexture.h"
@@ -28,111 +28,111 @@
 
 using namespace Polycode;
 
-ScreenImage* ScreenImage::ScreenImageWithImage(Image *image) {
-	return new ScreenImage(image);
+SceneImage* SceneImage::SceneImageWithImage(Image *image) {
+	return new SceneImage(image);
 }
 
-ScreenImage* ScreenImage::ScreenImageWithTexture(Texture *texture) {
-	return new ScreenImage(texture);	
+SceneImage* SceneImage::SceneImageWithTexture(Texture *texture) {
+	return new SceneImage(texture);	
 }
 
-ScreenImage::ScreenImage(const String& fileName) : ScreenShape(ScreenShape::SHAPE_RECT,1,1) {
+SceneImage::SceneImage(const String& fileName) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1) {
 	loadTexture(fileName);
-	
+
 	imageWidth = texture->getWidth();
 	imageHeight = texture->getHeight();
-	
-	width = texture->getWidth();
-	height = texture->getHeight();	
-	setShapeSize(width, height);	
-	
+
+	setWidth(texture->getWidth());
+	setHeight(texture->getHeight());	
+	setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, getWidth(), getHeight());
+
 	setPositionMode(POSITION_TOPLEFT);
 }
 
-ScreenImage::ScreenImage(Image *image) : ScreenShape(ScreenShape::SHAPE_RECT,1,1) {
-	loadTexture(image);
-	
+SceneImage::SceneImage(Image *image) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1) {
+	loadTextureFromImage(image);
+
 	imageWidth = texture->getWidth();
 	imageHeight = texture->getHeight();
-	
-	width = texture->getWidth();
-	height = texture->getHeight();	
-	setShapeSize(width, height);	
-	
+
+	setWidth(texture->getWidth());
+	setHeight(texture->getHeight());	
+	setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, getWidth(), getHeight());
+
 	setPositionMode(POSITION_TOPLEFT);	
 }
 
-ScreenImage::ScreenImage(Texture *texture) : ScreenShape(ScreenShape::SHAPE_RECT,1,1) {
+SceneImage::SceneImage(Texture *texture) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1)  {
 	setTexture(texture);
-	
+
 	imageWidth = texture->getWidth();
 	imageHeight = texture->getHeight();
-	
-	width = texture->getWidth();
-	height = texture->getHeight();	
-	setShapeSize(width, height);	
-	
+
+	setWidth(texture->getWidth());
+	setHeight(texture->getHeight());	
+	setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, getWidth(), getHeight());
+
 	setPositionMode(POSITION_TOPLEFT);
 }
 
-ScreenImage::~ScreenImage() {
+SceneImage::~SceneImage() {
 
 }
 
-Entity *ScreenImage::Clone(bool deepClone, bool ignoreEditorOnly) const {
-	ScreenImage *newImage = new ScreenImage(getTexture()->getResourcePath());
+Entity *SceneImage::Clone(bool deepClone, bool ignoreEditorOnly) const {
+	SceneImage *newImage = new SceneImage(getTexture()->getResourcePath());
 	applyClone(newImage, deepClone, ignoreEditorOnly);
 	return newImage;
 }
 
-void ScreenImage::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
-	ScreenShape::applyClone(clone, deepClone, ignoreEditorOnly);
+void SceneImage::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
+	//ScreenShape::applyClone(clone, deepClone, ignoreEditorOnly);
 }
 
-void ScreenImage::setImageCoordinates(Number x, Number y, Number width, Number height) {
+void SceneImage::setImageCoordinates(Number x, Number y, Number width, Number height) {
 	Vertex *vertex;
 	Number pixelSizeX = 1/imageWidth;
 	Number pixelSizeY = 1/imageHeight;
-	
-	this->width = width;
-	this->height = height;
-	setHitbox(width, height);
+
+	setWidth(width);
+	setHeight(height);
+		
 	Number whalf = floor(width/2.0f);
 	Number hhalf = floor(height/2.0f);	
-		
+
 	Number xFloat = x * pixelSizeX;
 	Number yFloat = 1 - (y * pixelSizeY);
 	Number wFloat = width * pixelSizeX;
 	Number hFloat = height * pixelSizeY;
-	
+
 	Polygon *imagePolygon = mesh->getPolygon(0);	
 	vertex = imagePolygon->getVertex(0);
 	vertex->set(-whalf,-hhalf,0);
 	vertex->setTexCoord(xFloat, yFloat);
-	
+
 	vertex = imagePolygon->getVertex(1);
 	vertex->set(-whalf+width,-hhalf,0);
 	vertex->setTexCoord(xFloat + wFloat, yFloat);
-	
+
 	vertex = imagePolygon->getVertex(2);
 	vertex->set(-whalf+width,-hhalf+height,0);
 	vertex->setTexCoord(xFloat + wFloat, yFloat - hFloat);
-	
+
 	vertex = imagePolygon->getVertex(3);	
 	vertex->set(-whalf,-hhalf+height,0);	
 	vertex->setTexCoord(xFloat, yFloat - hFloat);
-	
+
 	mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
 	mesh->arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;	
 	rebuildTransformMatrix();
 	matrixDirty = true;
-	
+
 }
 
-Number ScreenImage::getImageWidth() const {
+Number SceneImage::getImageWidth() const {
 	return imageWidth;
 }
 
-Number ScreenImage::getImageHeight() const {
+Number SceneImage::getImageHeight() const {
 	return imageHeight;	
 }
