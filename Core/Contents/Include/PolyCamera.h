@@ -23,6 +23,7 @@
 
 #pragma once
 #include "PolyGlobals.h"
+#include "PolyVector2.h"
 #include "PolySceneEntity.h"
 
 namespace Polycode {
@@ -147,15 +148,21 @@ namespace Polycode {
 			/**
 			* Returns the shader material applied to the camera.
 			*/			
-			Material *getScreenShaderMaterial() { return filterShaderMaterial; }
+			Material *getScreenShaderMaterial() { return filterShaderMaterial; }	
 			
 			/**
 			* Toggles the frustum culling of the camera. (Defaults to true).
 			*/
 			bool frustumCulling;
-			
+		
+			/**
+			/* Shifts camera frustum by factor of the frustum size. (x=-1 will shift the frustum to the left by a whole screen width).
+			*/
+			Vector2 cameraShift;
+					
 		protected:
 		
+					
 			Number orthoSizeX;
 			Number orthoSizeY;
 					
@@ -164,8 +171,6 @@ namespace Polycode {
 			Number fov;
 			Number frustumPlanes[6][4];
 			Scene *parentScene;
-		
-			bool fovSet;
 
 			Material *filterShaderMaterial;			
 			Texture *originalSceneTexture;			

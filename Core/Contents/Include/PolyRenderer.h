@@ -250,6 +250,8 @@ namespace Polycode {
 		Number getViewportWidth();
 		Number getViewportHeight();		
 		
+		void setViewportShift(Number shiftX, Number shiftY);
+		
 		void *getDataPointerForName(const String &name);
 		void setRendererShaderParams(Shader *shader, ShaderBinding *binding);
 		
@@ -315,6 +317,8 @@ namespace Polycode {
 	
 		Number viewportWidth;
 		Number viewportHeight;
+		
+		Vector2 viewportShift;
 			
 		bool cullingFrontFaces;
 				

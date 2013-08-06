@@ -24,6 +24,7 @@
 #include "PolyString.h"
 #include "PolyLogger.h"
 #include "PolyTexture.h"
+#include "PolyVector2.h"
 #include "PolyGLTexture.h"
 #include "PolyCubemap.h"
 #include "PolyGLCubemap.h"
@@ -166,9 +167,8 @@ void OpenGLRenderer::Resize(int xRes, int yRes) {
 	
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-	gluPerspective(fov,(GLfloat)xRes/(GLfloat)yRes,nearPlane,farPlane);
-	glViewport(0, 0, xRes, yRes);
-	setScissorBox(Rectangle(0, 0, xRes, yRes));
+
+	resetViewport();
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLineWidth(1);
@@ -221,9 +221,14 @@ void OpenGLRenderer::setLineSmooth(bool val) {
 void OpenGLRenderer::resetViewport() {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(fov,(GLfloat)viewportWidth/(GLfloat)viewportHeight,nearPlane,farPlane);	
+	//gluPerspective(fov,(GLfloat)viewportWidth/(GLfloat)viewportHeight,nearPlane,farPlane);		
+    Number fW, fH;
+    fH = tan( fov / 360.0 * PI ) * nearPlane;
+    fW = fH * ((GLfloat)viewportWidth/(GLfloat)viewportHeight);
+	glFrustum(-fW + (viewportShift.x*fW*2.0), fW + (viewportShift.x*fW*2.0), -fH + (viewportShift.y*fH*2.0), fH + (viewportShift.y*fH*2.0), nearPlane, farPlane);
+	
 	glViewport(0, 0, viewportWidth, viewportHeight);
-	glScissor(0, 0, viewportWidth, viewportHeight);
+	glScissor(0, 0,  viewportWidth, viewportHeight);
 	glMatrixMode(GL_MODELVIEW);	
 	glGetDoublev( GL_PROJECTION_MATRIX, sceneProjectionMatrix);
 }

@@ -44,6 +44,7 @@ PhysicsSceneEvent::~PhysicsSceneEvent() {
 
 PhysicsScene::PhysicsScene(int maxSubSteps, Vector3 size, bool virtualScene) : CollisionScene(size, virtualScene, true), physicsWorld(NULL), solver(NULL), broadphase(NULL), ghostPairCallback(NULL) {
 	this->maxSubSteps = maxSubSteps;
+	pausePhysics = false;	
 	initPhysicsScene(size);	
 }
 
@@ -142,7 +143,7 @@ void PhysicsScene::processWorldCollisions() {
 }
 
 void PhysicsScene::Update() {
-	
+	if(!pausePhysics) {
 	for(int i=0; i < physicsChildren.size(); i++) {
 //		if(physicsChildren[i]->enabled)
 			physicsChildren[i]->Update();
@@ -154,6 +155,7 @@ void PhysicsScene::Update() {
 		physicsWorld->stepSimulation(elapsed, maxSubSteps);	
 	} else {
 		physicsWorld->stepSimulation(elapsed);		
+	}
 	}
 	CollisionScene::Update();
 	

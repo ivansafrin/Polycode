@@ -41,8 +41,7 @@ Camera::Camera(Scene *parentScene) : SceneEntity() {
 	originalSceneTexture = NULL;
 	zBufferSceneTexture = NULL;
 	exposureLevel = 1.0f;
-	_hasFilterShader = false;	
-	fovSet = false;
+	_hasFilterShader = false;
 	frustumCulling = true;
 }
 
@@ -66,7 +65,6 @@ Number Camera::getExposureLevel() {
 
 void Camera::setFOV(Number fov) {
 	this->fov = fov;
-	fovSet = true;
 }
 
 Number Camera::getFOV() {
@@ -304,7 +302,6 @@ void Camera::setLightDepthTexture(Texture *texture) {
 		localShaderOptions[i]->clearTexture("PolyLight0ZBuffer");
 		localShaderOptions[i]->addTexture("PolyLight0ZBuffer", texture);
 	}
-
 }
 
 void Camera::drawFilter(Texture *targetTexture, Number targetTextureWidth, Number targetTextureHeight, Texture *targetColorTexture, Texture *targetZTexture) {
@@ -376,21 +373,23 @@ void Camera::drawFilter(Texture *targetTexture, Number targetTextureWidth, Numbe
 		CoreServices::getInstance()->getRenderer()->clearShader();
 		CoreServices::getInstance()->getRenderer()->loadIdentity();
 	}
-
 }
 
 void Camera::doCameraTransform() {
-
-	if(fovSet)
-			CoreServices::getInstance()->getRenderer()->setFOV(fov);
-	CoreServices::getInstance()->getRenderer()->setExposureLevel(exposureLevel);
-
+	Renderer *renderer = CoreServices::getInstance()->getRenderer();
+	if(!orthoMode) {
+		renderer->setViewportShift(cameraShift.x, cameraShift.y);
+		renderer->setFOV(fov);
+	}
+	
+	renderer->setExposureLevel(exposureLevel);	
+	
 	if(matrixDirty) {
 		rebuildTransformMatrix();
 	}
 
 	Matrix4 camMatrix = getConcatenatedMatrix();
-	CoreServices::getInstance()->getRenderer()->setCameraMatrix(camMatrix);	
+	renderer->setCameraMatrix(camMatrix);	
 	camMatrix = camMatrix.Inverse();
-	CoreServices::getInstance()->getRenderer()->multModelviewMatrix(camMatrix);		
+	renderer->multModelviewMatrix(camMatrix);		
 }
