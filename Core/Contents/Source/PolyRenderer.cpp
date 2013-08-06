@@ -84,7 +84,7 @@ void Renderer::setExposureLevel(Number level) {
 }
 
 
-bool Renderer::test2DCoordinateInPolygon(Number x, Number y, Polycode::Polygon *poly, const Matrix4 &matrix, bool ortho, bool testBackfacing, bool billboardMode, bool reverseDirection, Matrix4 *adjustMatrix) {
+bool Renderer::test2DCoordinateInPolygon(Number x, Number y, Matrix4 cameraMatrix, Matrix4 projectionMatrix, Polycode::Polygon *poly, const Matrix4 &matrix, bool ortho, bool testBackfacing, bool billboardMode, bool reverseDirection, Matrix4 *adjustMatrix) {
 
 	Vector3 dirVec;
 	Vector3 origin;
@@ -96,7 +96,7 @@ bool Renderer::test2DCoordinateInPolygon(Number x, Number y, Polycode::Polygon *
 		dirVec = Vector3(0.0, 0.0, -1.0);
 		dirVec = cameraMatrix.rotateVector(dirVec);	
 	} else {
-		dirVec = projectRayFrom2DCoordinate(x, y);
+		dirVec = projectRayFrom2DCoordinate(x, y, cameraMatrix, projectionMatrix);
 		origin = cameraMatrix.getPosition();	
 	}
 	

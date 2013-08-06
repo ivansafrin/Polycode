@@ -259,7 +259,7 @@ Vector3 OpenGLRenderer::Unproject(Number x, Number y) {
 	
 }
 
-Vector3 OpenGLRenderer::projectRayFrom2DCoordinate(Number x, Number y) {
+Vector3 OpenGLRenderer::projectRayFrom2DCoordinate(Number x, Number y, Matrix4 cameraMatrix, Matrix4 projectionMatrix) {
 	GLdouble nearPlane[3],farPlane[3];
 	
 	GLdouble mv[16];
@@ -275,8 +275,13 @@ Vector3 OpenGLRenderer::projectRayFrom2DCoordinate(Number x, Number y) {
 	GLint vp[4];
 	glGetIntegerv( GL_VIEWPORT, vp );
 	
-	gluUnProject(x, yRes - y, 0.0, mv, sceneProjectionMatrix, vp,  &nearPlane[0], &nearPlane[1], &nearPlane[2]);
-	gluUnProject(x, yRes - y, 1.0, mv, sceneProjectionMatrix, vp,  &farPlane[0], &farPlane[1], &farPlane[2]);
+	GLdouble _sceneProjectionMatrix[16];
+	for(int i=0; i < 16; i++) {
+		_sceneProjectionMatrix[i] = projectionMatrix.ml[i];
+	}	
+	
+	gluUnProject(x, yRes - y, 0.0, mv, _sceneProjectionMatrix, vp,  &nearPlane[0], &nearPlane[1], &nearPlane[2]);
+	gluUnProject(x, yRes - y, 1.0, mv, _sceneProjectionMatrix, vp,  &farPlane[0], &farPlane[1], &farPlane[2]);
 	
 	Vector3 nearVec(nearPlane[0], nearPlane[1], nearPlane[2]);
 	Vector3 farVec(farPlane[0], farPlane[1], farPlane[2]);

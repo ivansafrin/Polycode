@@ -111,6 +111,8 @@ namespace Polycode {
 			bool hasFilterShader();
 			void drawFilter(Texture *targetTexture = NULL, Number targetTextureWidth = 0.0, Number targetTextureHeight = 0.0, Texture *targetColorTexture = NULL, Texture *targetZTexture = NULL);
 			
+			Matrix4 getProjectionMatrix() const;
+			
 			/**
 			* Sets the exposure for the camera. The exposure value can be passed to a shader for HDR rendering.
 			* @param level The new exposure value.
@@ -156,12 +158,13 @@ namespace Polycode {
 			bool frustumCulling;
 		
 			/**
-			/* Shifts camera frustum by factor of the frustum size. (x=-1 will shift the frustum to the left by a whole screen width).
+			* Shifts camera frustum by factor of the frustum size. (x=-1 will shift the frustum to the left by a whole screen width).
 			*/
 			Vector2 cameraShift;
 					
 		protected:
 		
+			Matrix4 projectionMatrix;
 					
 			Number orthoSizeX;
 			Number orthoSizeY;

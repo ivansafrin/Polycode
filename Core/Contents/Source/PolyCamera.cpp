@@ -375,14 +375,19 @@ void Camera::drawFilter(Texture *targetTexture, Number targetTextureWidth, Numbe
 	}
 }
 
+Matrix4 Camera::getProjectionMatrix() const {
+	return projectionMatrix;
+}
+
 void Camera::doCameraTransform() {
 	Renderer *renderer = CoreServices::getInstance()->getRenderer();
 	if(!orthoMode) {
 		renderer->setViewportShift(cameraShift.x, cameraShift.y);
 		renderer->setFOV(fov);
-	}
-	
+	}	
 	renderer->setExposureLevel(exposureLevel);	
+	
+	projectionMatrix = renderer->getProjectionMatrix();
 	
 	if(matrixDirty) {
 		rebuildTransformMatrix();
