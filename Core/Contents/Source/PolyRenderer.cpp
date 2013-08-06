@@ -151,6 +151,12 @@ Polycode::Rectangle Renderer::getScissorBox() {
 	return scissorBox;
 }
 
+void Renderer::setViewportShift(Number shiftX, Number shiftY) {
+	viewportShift.x = shiftX;
+	viewportShift.y = shiftY;
+	resetViewport();
+}
+
 bool Renderer::isScissorEnabled() {
 	return scissorEnabled;
 }

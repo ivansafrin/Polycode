@@ -181,6 +181,11 @@ namespace Polycode {
 			*/
 			virtual void removeChild(Entity *entityToRemove);
 
+			void moveChildUp(Entity *child);
+			void moveChildDown(Entity *child);
+			void moveChildTop(Entity *child);
+			void moveChildBottom(Entity *child);
+
 			/**
 			* Manually sets the entity's parent. This method does not add the entity to the parent and should not be called manually.
 			@param entity Parent entity.

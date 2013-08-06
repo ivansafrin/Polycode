@@ -135,9 +135,11 @@ namespace Polycode {
 			//@}
 			// ----------------------------------------------------------------------------------------------------------------
 
+		bool pausePhysics;
 		
 	protected:
 		
+		bool paused;
 		int maxSubSteps;
 		void initPhysicsScene(Vector3 size);		
 		

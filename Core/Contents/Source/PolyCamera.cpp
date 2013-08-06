@@ -315,7 +315,6 @@ void Camera::setLightDepthTexture(Texture *texture) {
 		localShaderOptions[i]->clearTexture("PolyLight0ZBuffer");
 		localShaderOptions[i]->addTexture("PolyLight0ZBuffer", texture);
 	}
-
 }
 
 void Camera::drawFilter(Texture *targetTexture, Number targetTextureWidth, Number targetTextureHeight, Texture *targetColorTexture, Texture *targetZTexture) {
@@ -387,7 +386,6 @@ void Camera::drawFilter(Texture *targetTexture, Number targetTextureWidth, Numbe
 		CoreServices::getInstance()->getRenderer()->clearShader();
 		CoreServices::getInstance()->getRenderer()->loadIdentity();
 	}
-
 }
 
 Matrix4 Camera::getProjectionMatrix() {
@@ -396,25 +394,26 @@ Matrix4 Camera::getProjectionMatrix() {
 
 void Camera::doCameraTransform() {
 
-	CoreServices::getInstance()->getRenderer()->setClippingPlanes(nearClipPlane, farClipPlane);
+	Renderer *renderer = CoreServices::getInstance()->getRenderer();
+	renderer->setClippingPlanes(nearClipPlane, farClipPlane);
 
 	if(!orthoMode) {
-		//renderer->setViewportShift(cameraShift.x, cameraShift.y);
-		CoreServices::getInstance()->getRenderer()->setFOV(fov);
-		CoreServices::getInstance()->getRenderer()->setPerspectiveMode();		
+		renderer->setViewportShift(cameraShift.x, cameraShift.y);
+		renderer->setFOV(fov);
+		renderer->setPerspectiveMode();		
 	} else {
-		CoreServices::getInstance()->getRenderer()->setOrthoMode(orthoSizeX, orthoSizeY, !topLeftOrtho);
+		renderer->setOrthoMode(orthoSizeX, orthoSizeY, !topLeftOrtho);
 	}	
-	CoreServices::getInstance()->getRenderer()->setExposureLevel(exposureLevel);
+	renderer->setExposureLevel(exposureLevel);
 
-	projectionMatrix = CoreServices::getInstance()->getRenderer()->getProjectionMatrix();
+	projectionMatrix = renderer->getProjectionMatrix();
 
 	if(matrixDirty) {
 		rebuildTransformMatrix();
 	}
 
 	Matrix4 camMatrix = getConcatenatedMatrix();
-	CoreServices::getInstance()->getRenderer()->setCameraMatrix(camMatrix);	
+	renderer->setCameraMatrix(camMatrix);	
 	camMatrix = camMatrix.Inverse();
-	CoreServices::getInstance()->getRenderer()->multModelviewMatrix(camMatrix);		
+	renderer->multModelviewMatrix(camMatrix);		
 }
