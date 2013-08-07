@@ -103,6 +103,18 @@ void Server::handlePeerConnection(PeerConnection *connection) {
 
 }
 
+int Server::getNumServerClients() {
+	return clients.size();
+}
+
+ServerClient *Server::getServerClient(int index) {
+	if(index >= 0 && index < clients.size()) {
+		return clients[index];
+	} else {
+		return NULL;
+	}
+}	
+
 void Server::DisconnectClient(ServerClient *client) {
 	sendReliableDataToClient(client, NULL, 0, PACKET_TYPE_DISONNECT);
 

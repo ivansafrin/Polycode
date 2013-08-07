@@ -102,6 +102,10 @@ namespace Polycode {
 			*/
 			ServerClient *getConnectedClient(PeerConnection *connection);
 		
+			int getNumServerClients();
+			
+			ServerClient *getServerClient(int index);
+			
 			/**
 			* @see Peer::sendReliableData
 			*/
