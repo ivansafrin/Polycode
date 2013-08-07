@@ -120,6 +120,8 @@ namespace Polycode {
 		btDefaultMotionState* myMotionState;		
 	};
 	
+	typedef PhysicsEntity PhysicsSceneEntity;
+	
 	/**
 	* A Physics character controller.
 	*/

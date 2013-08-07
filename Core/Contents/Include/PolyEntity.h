@@ -731,4 +731,8 @@ namespace Polycode {
 		
 			Renderer *renderer;
 	};
+	
+	typedef Entity SceneEntity;
+	typedef Entity ScreenEntity;
+			
 }
