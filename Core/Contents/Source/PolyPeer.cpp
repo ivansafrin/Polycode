@@ -27,11 +27,14 @@ THE SOFTWARE.
 
 using namespace Polycode;
 
-void PeerConnection::ackPackets(unsigned int ack) {
-	for(int i=0; i < reliablePacketQueue.size(); i++) {
-		if(reliablePacketQueue[i].packet->header.sequence == ack) {
-			delete reliablePacketQueue[i].packet;
-			reliablePacketQueue.erase(reliablePacketQueue.begin()+i);
+void PeerConnection::ackPackets(unsigned int ack) {	
+	std::vector<SentPacketEntry>::iterator it;	
+	for(it = reliablePacketQueue.begin(); it != reliablePacketQueue.end();) {
+		if((*it).packet->header.sequence == ack) {
+			delete (*it).packet;
+			it = reliablePacketQueue.erase(it);
+		} else {
+			++it;
 		}
 	}
 }
@@ -108,12 +111,16 @@ void Peer::sendReliableData(const Address &target, char *data, unsigned int size
 	Packet *packet = createPacket(target, data, size, type);
 	packet->header.reliableID = connection->reliableID;
 	connection->reliableID++;
+	
+	if(connection->reliableID == 0)
+		connection->reliableID = 1;
+
 	sendPacket(target, packet);	
 	
 	SentPacketEntry entry;
 	entry.packet = packet;
 	entry.timestamp = CoreServices::getInstance()->getCore()->getTicks();
-//	connection->reliablePacketQueue.push_back(entry);
+	connection->reliablePacketQueue.push_back(entry);
 
 }
 
@@ -163,9 +170,7 @@ bool Peer::checkPacketAcks(PeerConnection *connection, Packet *packet) {
 		}		
 	}
 	
-	for(int i=0; i < peerConnections.size(); i++) {
-		peerConnections[i]->ackPackets(packet->header.ack);
-	}
+	connection->ackPackets(packet->header.ack);
 	
 	return retVal;
 }
@@ -189,7 +194,7 @@ void Peer::handleEvent(Event *event) {
 
 void Peer::updateReliableDataQueue() {
 	for(int i=0; i < peerConnections.size(); i++) {
-		for(int j=0; j < peerConnections[i]->reliablePacketQueue.size(); j++) {
+		for(int j=0; j < peerConnections[i]->reliablePacketQueue.size(); j++) {		
 			if(peerConnections[i]->reliablePacketQueue[j].timestamp < CoreServices::getInstance()->getCore()->getTicks() - 1000) {
 				peerConnections[i]->reliablePacketQueue[j].timestamp = CoreServices::getInstance()->getCore()->getTicks(); 
 				sendPacket(peerConnections[i]->address, peerConnections[i]->reliablePacketQueue[j].packet);

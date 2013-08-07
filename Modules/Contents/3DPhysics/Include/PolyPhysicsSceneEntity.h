@@ -22,6 +22,7 @@ THE SOFTWARE.
 
 #pragma once
 #include "PolyGlobals.h"
+#include "PolyQuaternion.h"
 #include "PolyCollisionSceneEntity.h"
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
@@ -54,6 +55,11 @@ namespace Polycode {
 		
 		void setMass(Number mass);
 		
+		Vector3 getVelocity();
+		Vector3 getSpin();
+		
+			void setRotation(Quaternion quat);
+			
 			void setVelocity(Vector3 velocity);
 			void warpTo(Vector3 position, bool resetRotation);
 			

@@ -229,25 +229,34 @@ void PhysicsSceneEntity::setMass(Number mass) {
 }
 
 void PhysicsSceneEntity::Update() {		
-	Matrix4 m;
-		
-	btScalar* mat = (btScalar*) malloc(sizeof(btScalar) * 16);				
-		
-	rigidBody->getWorldTransform().getOpenGLMatrix(mat);
-	for(int i=0; i < 16; i++) {
-		m.ml[i] = mat[i];
-	}
-	
-	free(mat);
-	
-	sceneEntity->setTransformByMatrixPure(m);
-//	collisionObject->getWorldTransform().setFromOpenGLMatrix(mat);
+	btVector3 t = rigidBody->getWorldTransform().getOrigin();
+	btQuaternion q = rigidBody->getOrientation();
+	sceneEntity->setRotationQuat(q.getW(), q.getX(), q.getY(), q.getZ());
+	sceneEntity->setPosition(t.getX(), t.getY(), t.getZ());
+}
+
+void PhysicsSceneEntity::setRotation(Quaternion quat) {
+	btTransform t = rigidBody->getWorldTransform();
+	btQuaternion q;
+	q.setValue(quat.x, quat.y, quat.z, quat.w);
+	t.setRotation(q);
+	rigidBody->setWorldTransform(t);
 }
 
 void PhysicsSceneEntity::setVelocity(Vector3 velocity) {
 	rigidBody->setLinearVelocity(btVector3(velocity.x, velocity.y, velocity.z));
-//	rigidBody->applyForce(btVector3(velocity.x, velocity.y, velocity.z), btVector3(0,0,0));
 }
+
+Vector3 PhysicsSceneEntity::getVelocity() {
+	btVector3 retVec = rigidBody->getLinearVelocity();
+	return Vector3(retVec.getX(), retVec.getY(), retVec.getZ());
+}
+
+Vector3 PhysicsSceneEntity::getSpin() {
+	btVector3 retVec = rigidBody->getAngularVelocity();
+	return Vector3(retVec.getX(), retVec.getY(), retVec.getZ());
+}
+
 
 void PhysicsSceneEntity::setSpin(Vector3 spin) {
 	btVector3 angularVel = btVector3(spin.x, spin.y, spin.z);	
