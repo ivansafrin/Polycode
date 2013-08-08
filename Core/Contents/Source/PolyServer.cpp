@@ -35,12 +35,14 @@ ServerClient::~ServerClient() {
 	
 }
 
-void ServerClient::handlePacket(Packet *packet) {
+ServerClientEvent *ServerClient::handlePacket(Packet *packet) {
 	ServerClientEvent *event = new ServerClientEvent();	
 	event->data = packet->data;
 	event->dataSize = packet->header.size;
-	event->dataType = packet->header.type;		
+	event->dataType = packet->header.type;
+	event->client = this;
 	dispatchEvent(event, ServerClientEvent::EVENT_CLIENT_DATA);	
+	return event;
 }
 
 Server::Server(unsigned int port,  unsigned int rate, ServerWorld *world) : Peer(port) {
@@ -139,7 +141,15 @@ void Server::handlePacket(Packet *packet, PeerConnection *connection) {
 		}
 		break;		
 		default:
+		{
 			client->handlePacket(packet);
+			ServerEvent *serverEvent = new ServerEvent();
+			serverEvent->client = client;
+			serverEvent->data = packet->data;
+			serverEvent->dataSize = packet->header.size;
+			serverEvent->dataType = packet->header.type;
+			dispatchEvent(serverEvent, ServerEvent::EVENT_CLIENT_DATA);
+		}
 		break;
 	}
 }

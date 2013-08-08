@@ -41,6 +41,8 @@ namespace Polycode {
 		unsigned int dataSize;
 		unsigned short dataType;
 		
+		ServerClient *client;
+		
 		static const int EVENTBASE_SERVERCLIENTEVENT = 0x780;
 		static const int EVENT_CLIENT_DATA = EVENTBASE_SERVERCLIENTEVENT+0;
 	};
@@ -50,7 +52,7 @@ namespace Polycode {
 		ServerClient();
 		~ServerClient();
 		
-		void handlePacket(Packet *packet);
+		ServerClientEvent *handlePacket(Packet *packet);
 		
 		unsigned int clientID;
 		PeerConnection *connection;
@@ -62,6 +64,10 @@ namespace Polycode {
 		~ServerEvent(){}
 		
 		ServerClient *client;
+		
+		char *data;
+		unsigned int dataSize;
+		unsigned short dataType;		
 		
 		static const int EVENTBASE_SERVEREVENT = 0x700;
 		static const int EVENT_CLIENT_CONNECTED = EVENTBASE_SERVEREVENT+0;
