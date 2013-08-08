@@ -63,6 +63,7 @@ Entity::Entity() : EventDispatcher() {
 	hasFocus = false;
 	snapToPixels = false;
 	tags = NULL;
+	positionMode = POSITION_CENTER;
 }
 
 Entity *Entity::getEntityById(String id, bool recursive) const {
@@ -305,10 +306,28 @@ Vector3 Entity::getChildCenter() const {
 
 
 Matrix4 Entity::buildPositionMatrix() {
+
 	Matrix4 posMatrix;
-	posMatrix.m[3][0] = position.x*matrixAdj;
-	posMatrix.m[3][1] = position.y*matrixAdj;
-	posMatrix.m[3][2] = position.z*matrixAdj;
+	switch(positionMode) {
+		case POSITION_TOPLEFT:
+			posMatrix.m[3][0] = (position.x+floor(bBox.x/2.0f)*scale.x)*matrixAdj;
+			posMatrix.m[3][1] = (position.y+floor(bBox.y/2.0f)*scale.y)*matrixAdj;
+			posMatrix.m[3][2] = position.z*matrixAdj;			
+		break;
+		case POSITION_CENTER:
+			posMatrix.m[3][0] = position.x*matrixAdj;
+			posMatrix.m[3][1] = position.y*matrixAdj;
+			posMatrix.m[3][2] = position.z*matrixAdj;
+		break;
+	}
+
+
+	if(snapToPixels) {
+		posMatrix.m[3][0] = round(posMatrix.m[3][0]);
+		posMatrix.m[3][1] = round(posMatrix.m[3][1]);
+		posMatrix.m[3][2] = round(posMatrix.m[3][2]);		
+	}
+
 	return posMatrix;
 }
 
@@ -512,6 +531,16 @@ void Entity::renderChildren() {
 
 void Entity::dirtyMatrix(bool val) {
 	matrixDirty = val;
+}
+
+void Entity::adjustMatrixForChildren() {
+	if(positionMode == POSITION_TOPLEFT) {
+		if(snapToPixels) {
+			renderer->translate2D((int)-floor(bBox.x/2.0f),(int)floor(bBox.y/2.0f));			
+		} else {
+			renderer->translate2D(-bBox.x/2.0f, -bBox.y/2.0f);	
+		}
+	}
 }
 
 void Entity::setRotationQuat(Number w, Number x, Number y, Number z) {

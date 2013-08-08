@@ -154,6 +154,8 @@ namespace Polycode {
 			*/
 			bool frustumCulling;
 			
+			bool topLeftOrtho;
+			
 		protected:
 		
 			Number orthoSizeX;

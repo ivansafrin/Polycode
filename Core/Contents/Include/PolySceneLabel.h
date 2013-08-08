@@ -70,7 +70,7 @@ namespace Polycode {
 			
 			void updateFromLabel();
 			
-			Number scale;
+			Number labelScale;
 			Label *label;
 	};
 }

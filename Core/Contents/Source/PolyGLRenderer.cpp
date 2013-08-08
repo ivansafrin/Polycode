@@ -498,23 +498,6 @@ void OpenGLRenderer::setFogProperties(int fogMode, Color color, Number density, 
 	glFogf(GL_FOG_END, endDepth);
 }
 
-
-void OpenGLRenderer::_setOrthoMode(Number orthoSizeX, Number orthoSizeY) {
-	this->orthoSizeX = orthoSizeX;
-	this->orthoSizeY = orthoSizeY;
-	
-	if(!orthoMode) {
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		glOrtho(-orthoSizeX*0.5,orthoSizeX*0.5,-orthoSizeY*0.5,orthoSizeY*0.5,-farPlane,farPlane);
-		orthoMode = true;
-	}
-	glGetDoublev( GL_PROJECTION_MATRIX, sceneProjectionMatrixOrtho);
-		
-	glMatrixMode(GL_MODELVIEW);	
-	glLoadIdentity();	
-}
-
 void OpenGLRenderer::setOrthoMode(Number xSize, Number ySize, bool centered) {
 	
 	if(xSize == 0)
@@ -523,17 +506,19 @@ void OpenGLRenderer::setOrthoMode(Number xSize, Number ySize, bool centered) {
 	if(ySize == 0)
 		ySize = yRes;
 		
-	setBlendingMode(BLEND_MODE_NORMAL);
-	glDisable(GL_LIGHTING);
+	this->orthoSizeX = xSize;
+	this->orthoSizeY = ySize;
+
 	glMatrixMode(GL_PROJECTION);
-	glDisable(GL_CULL_FACE);
 	glLoadIdentity();
 		
 	if(centered) {
-		glOrtho(-xSize*0.5,xSize*0.5,ySize*0.5,-ySize*0.5,-1.0f,1.0f);		
+		glOrtho(-xSize*0.5,xSize*0.5,-ySize*0.5,ySize*0.5,nearPlane,farPlane);		
 	} else {
-		glOrtho(0.0f,xSize,ySize,0,-1.0f,1.0f);
+		glOrtho(0.0f,xSize,ySize,0,nearPlane,farPlane);
 	}
+	glGetDoublev( GL_PROJECTION_MATRIX, sceneProjectionMatrixOrtho);
+		
 	orthoMode = true;
 	glMatrixMode(GL_MODELVIEW);	
 	glLoadIdentity();

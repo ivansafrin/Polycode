@@ -116,7 +116,6 @@ namespace Polycode {
 				
 		virtual void loadIdentity() = 0;		
 		virtual void setOrthoMode(Number xSize=0.0f, Number ySize=0.0f, bool centered = false) = 0;
-		virtual void _setOrthoMode(Number orthoSizeX, Number orthoSizeY) = 0;
 		virtual void setPerspectiveMode() = 0;
 		
 		virtual void setTexture(Texture *texture) = 0;		

@@ -77,6 +77,7 @@
 #include "PolySound.h"
 #include "PolySoundManager.h"
 #include "PolySceneSound.h"
+#include "PolySceneImage.h"
 #include "PolyClient.h"
 #include "PolyPeer.h"
 #include "PolyServer.h"

@@ -130,7 +130,6 @@ namespace Polycode {
 		void drawArrays(int drawType);		
 				
 		void setOrthoMode(Number xSize=0.0f, Number ySize=0.0f, bool centered = false);
-		void _setOrthoMode(Number orthoSizeX, Number orthoSizeY);
 		void setPerspectiveMode();
 		
 		void enableBackfaceCulling(bool val);

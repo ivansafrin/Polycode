@@ -636,7 +636,7 @@ namespace Polycode {
 			
 			void doUpdates();				
 			virtual Matrix4 buildPositionMatrix();
-			virtual void adjustMatrixForChildren(){}
+			virtual void adjustMatrixForChildren();
 			void setRenderer(Renderer *renderer);						
 			
 			

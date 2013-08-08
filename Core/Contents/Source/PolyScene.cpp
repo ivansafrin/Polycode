@@ -207,7 +207,7 @@ void Scene::Render(Camera *targetCamera) {
 	}	
 
 	if(targetCamera->getOrthoMode()) {
-		CoreServices::getInstance()->getRenderer()->_setOrthoMode(targetCamera->getOrthoSizeX(), targetCamera->getOrthoSizeY());
+		CoreServices::getInstance()->getRenderer()->setOrthoMode(targetCamera->getOrthoSizeX(), targetCamera->getOrthoSizeY(), !targetCamera->topLeftOrtho);
 	}
 		
 	targetCamera->doCameraTransform();

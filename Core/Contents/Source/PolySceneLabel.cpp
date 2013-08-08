@@ -33,7 +33,7 @@ using namespace Polycode;
 
 SceneLabel::SceneLabel(const String& fontName, const String& text, int size, Number scale, int amode, bool premultiplyAlpha) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1) {
 	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size, amode, premultiplyAlpha);
-	this->scale = scale;
+	this->labelScale = scale;
 	positionAtBaseline = true;
 	updateFromLabel();
 }
@@ -41,7 +41,7 @@ SceneLabel::SceneLabel(const String& fontName, const String& text, int size, Num
 SceneLabel::SceneLabel(const String& text, int size, const String& fontName, int amode, bool premultiplyAlpha) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1){
 
 	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size, amode, premultiplyAlpha);
-	this->scale = 1.0;
+	this->labelScale = 1.0;
 	positionAtBaseline = true;
 	updateFromLabel();
 }
@@ -73,10 +73,10 @@ void SceneLabel::updateFromLabel() {
 
 	delete mesh;
 	mesh = new Mesh(Mesh::QUAD_MESH);
-	mesh->createVPlane(label->getWidth()*scale,label->getHeight()*scale);
+	mesh->createVPlane(label->getWidth()*labelScale,label->getHeight()*labelScale);
 	
-	bBox.x = label->getWidth()*scale;
-	bBox.y = label->getHeight()*scale;
+	bBox.x = label->getWidth()*labelScale;
+	bBox.y = label->getHeight()*labelScale;
 	bBox.z = 0;
 	
 	
@@ -85,7 +85,7 @@ void SceneLabel::updateFromLabel() {
 	
 	// TODO: resize it here
 	
-	bBoxRadius = label->getWidth()*scale;
+	bBoxRadius = label->getWidth()*labelScale;
 }
 
 void SceneLabel::Render() {
