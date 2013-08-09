@@ -295,16 +295,5 @@ void SceneMesh::Render() {
 	
 	if(showVertexNormals) {	
 		renderer->setTexture(NULL);
-		/*
-		for(int i=0; i < mesh->getPolygonCount(); i++) {
-			Polygon *polygon = mesh->getPolygon(i);			
-			unsigned int vCount = polygon->getVertexCount();
-			for(int j=0; j < vCount; j++) {
-				Vertex *vert = polygon->getVertex(j);
-				Vector3 norm = *vert->normal;				
-				CoreServices::getInstance()->getRenderer()->draw3DLine(*vert, norm, 0.4f, Color(0.0f,0.7f,1.0f,0.5f));				
-			}
-		}
-		 */
 	}	
 }

@@ -34,7 +34,8 @@ using namespace Polycode;
 SceneLabel::SceneLabel(const String& fontName, const String& text, int size, Number scale, int amode, bool premultiplyAlpha) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1) {
 	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size, amode, premultiplyAlpha);
 	this->labelScale = scale;
-	positionAtBaseline = true;
+	positionAtBaseline = false;
+	setPositionMode(Entity::POSITION_TOPLEFT);	
 	updateFromLabel();
 }
 
@@ -42,7 +43,8 @@ SceneLabel::SceneLabel(const String& text, int size, const String& fontName, int
 
 	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size, amode, premultiplyAlpha);
 	this->labelScale = 1.0;
-	positionAtBaseline = true;
+	positionAtBaseline = false;
+	setPositionMode(Entity::POSITION_TOPLEFT);		
 	updateFromLabel();
 }
 			
@@ -71,14 +73,12 @@ void SceneLabel::updateFromLabel() {
 		localShaderOptions->addTexture("diffuse", texture);	
 	}
 
-	delete mesh;
-	mesh = new Mesh(Mesh::QUAD_MESH);
-	mesh->createVPlane(label->getWidth()*labelScale,label->getHeight()*labelScale);
+
+	setPrimitiveOptions(type, label->getWidth()*labelScale,label->getHeight()*labelScale);
 	
 	bBox.x = label->getWidth()*labelScale;
 	bBox.y = label->getHeight()*labelScale;
 	bBox.z = 0;
-	
 	
 	if(useVertexBuffer)
 		CoreServices::getInstance()->getRenderer()->createVertexBufferForMesh(mesh);
@@ -90,7 +90,7 @@ void SceneLabel::updateFromLabel() {
 
 void SceneLabel::Render() {
 	if(positionAtBaseline) {
-		CoreServices::getInstance()->getRenderer()->translate2D(0.0, -label->getBaselineAdjust() + label->getSize());
+		CoreServices::getInstance()->getRenderer()->translate2D(0.0, -label->getBaselineAdjust() + label->getSize() + (getHeight()/2.0));
 	}
 	ScenePrimitive::Render();
 }

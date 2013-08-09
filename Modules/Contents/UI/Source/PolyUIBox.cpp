@@ -52,34 +52,29 @@ UIBox::UIBox(String imageFile, Number t, Number r, Number b, Number l, Number bo
 	brImage->setPosition(boxWidth-r, boxHeight-b);	
 	
 	centerImage = new SceneImage(imageFile);
-	centerImage->setImageCoordinates(l,t,centerImage->getWidth()-l-r, centerImage->getHeight()-t-b);
+	centerImage->setImageCoordinates(l,t,centerImage->getWidth()-l-r, centerImage->getHeight()-t-b, boxWidth-l-r, boxHeight-t-b);
 	addChild(centerImage);	
 	centerImage->setPosition(l,t);	
-	centerImage->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, boxWidth-l-r, boxHeight-t-b);
 	
 	tImage = new SceneImage(imageFile);
-	tImage->setImageCoordinates(l,0,tImage->getWidth()-l-r,t);
+	tImage->setImageCoordinates(l,0,tImage->getWidth()-l-r,t, boxWidth-l-r, t);
 	addChild(tImage);
 	tImage->setPosition(l,0);	
-	tImage->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, boxWidth-l-r, t);
 
 	bImage = new SceneImage(imageFile);
-	bImage->setImageCoordinates(l,bImage->getHeight()-b,bImage->getWidth()-l-r,b);
+	bImage->setImageCoordinates(l,bImage->getHeight()-b,bImage->getWidth()-l-r,b, boxWidth-l-r, b);
 	addChild(bImage);
 	bImage->setPosition(l,boxHeight-b);	
-	bImage->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, boxWidth-l-r, b);
 
 	lImage = new SceneImage(imageFile);
-	lImage->setImageCoordinates(0,t,l,lImage->getHeight()-t-b);
+	lImage->setImageCoordinates(0,t,l,lImage->getHeight()-t-b, l, boxHeight-t-b);
 	addChild(lImage);
 	lImage->setPosition(0,t);	
-	lImage->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, l, boxHeight-t-b);
 
 	rImage = new SceneImage(imageFile);
-	rImage->setImageCoordinates(rImage->getWidth()-r,t,r,rImage->getHeight()-t-b);
+	rImage->setImageCoordinates(rImage->getWidth()-r,t,r,rImage->getHeight()-t-b, r, boxHeight-t-b);
 	addChild(rImage);
 	rImage->setPosition(boxWidth-r,t);	
-	rImage->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, r, boxHeight-t-b);	
 	
 	this->t = t;
 	this->r = r;

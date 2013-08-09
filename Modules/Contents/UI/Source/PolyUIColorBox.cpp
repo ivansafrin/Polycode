@@ -455,8 +455,8 @@ UIColorBox::UIColorBox(UIColorPicker *colorPicker, Color initialColor, Number wi
 	colorPicker->addEventListener(this, Event::CHANGE_EVENT);	
 	colorPicker->addEventListener(this, Event::CANCEL_EVENT);
 	
-	this->width = width;
-	this->height = height;
+	setWidth(width);
+	setHeight(height);
 	
 	selectedColor = initialColor;
 	colorShape->color = selectedColor;	

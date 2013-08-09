@@ -85,17 +85,17 @@ UIVScrollBar::UIVScrollBar(Number width, Number height, Number initialRatio) : U
 	
 	lastPositionY = handleBox->getPosition().y;
 	
-	this->height = height;
-	this->width = width;	
+	setHeight(height);
+	setWidth(width);	
 	
 	tickSize = 0.01;
 }
 
 void UIVScrollBar::Resize(int newHeight) {
-	bgBox->resizeBox(width, newHeight);
+	bgBox->resizeBox(getWidth(), newHeight);
 	setHeight(newHeight);
-	dragRectHeight = height-(padding*2)-scrollHandleHeight;	
-	handleBox->setDragLimits(Rectangle(padding,padding,width-(padding*2)-(width-(padding*2)), dragRectHeight));	
+	dragRectHeight = getHeight()-(padding*2)-scrollHandleHeight;	
+	handleBox->setDragLimits(Rectangle(padding,padding,getWidth()-(padding*2)-(getWidth()-(padding*2)), dragRectHeight));	
 }
 
 void UIVScrollBar::Update() {
@@ -130,14 +130,14 @@ void UIVScrollBar::Scroll(Number amount) {
 }
 
 void UIVScrollBar::setHandleRatio(Number newRatio) {
-	scrollHandleHeight = height*newRatio;	
+	scrollHandleHeight = getHeight()*newRatio;	
 	
 	if(scrollHandleHeight < minHandleSize)
 		scrollHandleHeight = minHandleSize;
 
-	dragRectHeight = height-(padding*2)-scrollHandleHeight;	
+	dragRectHeight = getHeight()-(padding*2)-scrollHandleHeight;	
 	handleBox->resizeBox(handleBox->getWidth(), scrollHandleHeight);
-	handleBox->setDragLimits(Rectangle(padding,padding,width-(padding*2)-(width-(padding*2)), dragRectHeight));	
+	handleBox->setDragLimits(Rectangle(padding,padding,getWidth()-(padding*2)-(getWidth()-(padding*2)), dragRectHeight));	
 	
 	if(enabled && handleBox->getPosition().y > dragRectHeight) {
 		handleBox->setPositionY(dragRectHeight);

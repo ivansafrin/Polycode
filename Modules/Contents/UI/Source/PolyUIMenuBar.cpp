@@ -39,7 +39,7 @@ UIMenuBarEntry::UIMenuBarEntry(String name): UIElement() {
 	
 	label = new SceneLabel(name, 14, "sans");
 	setWidth(label->getLabel()->getTextWidth() + 20);
-	bg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, width, 25);
+	bg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, getWidth(), 25);
 	bg->setPositionMode(Entity::POSITION_TOPLEFT);
 	addChild(bg);
 	bg->color.setColorHex(0xce5a1600);
@@ -88,7 +88,7 @@ UIMenuBarEntry *UIMenuBar::addMenuBarEntry(String name) {
 	entries.push_back(newEntry);
 	addChild(newEntry);
 	newEntry->setPosition(entryOffset, 0);
-	entryOffset += newEntry->width;
+	entryOffset += newEntry->getWidth();
 
 	newEntry->bg->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	newEntry->bg->addEventListener(this, InputEvent::EVENT_MOUSEUP);

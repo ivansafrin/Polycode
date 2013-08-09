@@ -129,8 +129,8 @@ void UIVSizer::handleEvent(Event *event) {
 }
 
 void UIVSizer::Resize(Number width, Number height) {
-	this->width = width;
-	this->height = height;
+	setWidth(width);
+	setHeight(height);
 	matrixDirty = true;
 	updateSizer();
 	UIElement::Resize(width, height);

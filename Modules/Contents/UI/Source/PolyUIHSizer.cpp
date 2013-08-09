@@ -160,33 +160,33 @@ void UIHSizer::updateSizer() {
 	
 		if(firstElement) {
 			firstElement->setPosition(0,0);
-			firstElement->Resize(mainWidth, height);
+			firstElement->Resize(mainWidth, getHeight());
 		}	
 		if(secondElement) {
 			secondElement->setPosition(mainWidth+1,0);
-			secondElement->Resize(width-mainWidth-1, height);	
+			secondElement->Resize(getWidth()-mainWidth-1, getHeight());	
 		}
 
-		separatorBgShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, 1, height);
+		separatorBgShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, 1, getHeight());
 		separatorBgShape->setPosition(mainWidth,0);
-		separatorHitShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, 8, height);
+		separatorHitShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, 8, getHeight());
 		separatorHitShape->setPosition(mainWidth-4,0);
 		
 	} else {
 	
 		if(firstElement) {
 			firstElement->setPosition(0,0);
-			firstElement->Resize(width-mainWidth, height);
+			firstElement->Resize(getWidth()-mainWidth, getHeight());
 		}	
 		if(secondElement) {
-			secondElement->setPosition(width-mainWidth+1,0);
-			secondElement->Resize(mainWidth-1, height);	
+			secondElement->setPosition(getWidth()-mainWidth+1,0);
+			secondElement->Resize(mainWidth-1, getHeight());	
 		}
 
-		separatorBgShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, 1, height);
-		separatorBgShape->setPosition(width-mainWidth,0);
-		separatorHitShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, 8, height);
-		separatorHitShape->setPosition(width-mainWidth-4,0);
+		separatorBgShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, 1, getHeight());
+		separatorBgShape->setPosition(getWidth()-mainWidth,0);
+		separatorHitShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, 8, getHeight());
+		separatorHitShape->setPosition(getWidth()-mainWidth-4,0);
 	
 	}
 }

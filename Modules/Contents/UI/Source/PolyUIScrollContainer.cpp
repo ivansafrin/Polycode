@@ -40,8 +40,8 @@ UIScrollContainer::UIScrollContainer(Entity *scrolledEntity, bool hScroll, bool 
 	hasVScroll = vScroll;	
 	
 	
-	this->width = width;
-	this->height = height;
+	setWidth(width);
+	setHeight(height);
 	
 	Number uiScrollPanePadding = conf->getNumericValue("Polycode", "uiScrollPanePadding");			
 	
@@ -76,8 +76,8 @@ UIScrollContainer::UIScrollContainer(Entity *scrolledEntity, bool hScroll, bool 
 }
 
 void UIScrollContainer::Resize(Number width, Number height) {
-	this->width = width;
-	this->height = height;
+	setWidth(width);
+	setHeight(height);
 	
 	
 	vScrollBar->Resize(height);
@@ -115,11 +115,11 @@ void UIScrollContainer::setContentSize(Number newContentWidth, Number newContent
 	contentHeight = newContentHeight;
 	contentWidth = newContentWidth;
 	
-	vScrollBar->setHandleRatio(height / newContentHeight);	
-	hScrollBar->setHandleRatio(width / newContentWidth);	
+	vScrollBar->setHandleRatio(getHeight() / newContentHeight);	
+	hScrollBar->setHandleRatio(getWidth() / newContentWidth);	
 	
 	if(hasVScroll) {
-		if((height / newContentHeight) >= 1) {
+		if((getHeight() / newContentHeight) >= 1) {
 			vScrollBar->enabled = false;
 			vScrollBar->scrollTo(0);
 		} else {
@@ -128,7 +128,7 @@ void UIScrollContainer::setContentSize(Number newContentWidth, Number newContent
 	}
 	
 	if(hasHScroll) {
-		if((width / newContentWidth) >= 1) {
+		if((getWidth() / newContentWidth) >= 1) {
 			hScrollBar->enabled = false;
 			hScrollBar->scrollTo(0);			
 		} else {
@@ -164,13 +164,13 @@ void UIScrollContainer::scrollHorizontal(Number amount) {
 
 void UIScrollContainer::Update() {
 	Vector2 pos = getScreenPosition();
-	scissorBox.setRect(pos.x, pos.y, width, height);
+	scissorBox.setRect(pos.x, pos.y, getWidth(), getHeight());
 }
 
 void UIScrollContainer::handleEvent(Event *event) {
 	if(event->getDispatcher() == vScrollBar) {
 		if(event->getEventCode() == Event::CHANGE_EVENT) {
-			scrollChild->setPositionY(floor(((-contentHeight+height) )*vScrollBar->getScrollValue()));
+			scrollChild->setPositionY(floor(((-contentHeight+getHeight()) )*vScrollBar->getScrollValue()));
 			if(scrollChild->getPosition().y > 0)
 				scrollChild->setPositionY(0);
 				dispatchEvent(new Event(), Event::CHANGE_EVENT);
@@ -179,7 +179,7 @@ void UIScrollContainer::handleEvent(Event *event) {
 	
 	if(event->getDispatcher() == hScrollBar) {
 		if(event->getEventCode() == Event::CHANGE_EVENT) {
-			scrollChild->setPositionX(floor(((-contentWidth+width) )*hScrollBar->getScrollValue()));
+			scrollChild->setPositionX(floor(((-contentWidth+getWidth()) )*hScrollBar->getScrollValue()));
 			if(scrollChild->getPosition().x > 0)
 				scrollChild->setPositionX(0);
 				dispatchEvent(new Event(), Event::CHANGE_EVENT);			

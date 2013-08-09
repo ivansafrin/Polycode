@@ -74,7 +74,7 @@ namespace Polycode {
 		* @param width Width of the display rectangle.
 		* @param height Height of the display rectangle.
 		*/				
-		void setImageCoordinates(Number x, Number y, Number width, Number height);
+		void setImageCoordinates(Number x, Number y, Number width, Number height, Number realWidth=-1, Number realHeight=-1);
 
 		/**
 		* Returns the image width.

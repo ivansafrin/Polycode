@@ -77,8 +77,8 @@ UIButton::UIButton(String text, Number width, Number height) : UIElement() {
 	labelYPos = labelOffsetY;
 	buttonLabel->setPosition(labelXPos,labelYPos);
 	
-	this->width = width;
-	this->height = height;
+	setWidth(width);
+	setHeight(height);
 	focusable = true;
 	
 	buttonRect->processInputEvents = true;
@@ -88,8 +88,8 @@ UIButton::UIButton(String text, Number width, Number height) : UIElement() {
 void UIButton::Resize(Number width, Number height) {
 	buttonRect->resizeBox(width, height);
 	buttonFocusedRect->resizeBox(width, height);
-	this->width = width;
-	this->height = height;	
+	setWidth(width);
+	setHeight(height);
 	matrixDirty = true;	
 	
 	labelXPos = floor((width-buttonLabel->getWidth())/2.0f) + labelOffsetX;

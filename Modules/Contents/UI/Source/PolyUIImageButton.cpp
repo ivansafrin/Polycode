@@ -33,6 +33,7 @@ UIImageButton::UIImageButton(String imageName) : UIElement() {
 	
 	buttonImage = new SceneImage(imageName.c_str());
 	addChild(buttonImage);
+	buttonImage->depthTest = false;
 	
 	buttonRect = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, buttonImage->getWidth(),buttonImage->getHeight(),0,0);
 	buttonRect->setColor(1,1,1,0);
@@ -46,8 +47,8 @@ UIImageButton::UIImageButton(String imageName) : UIElement() {
 	buttonRect->processInputEvents = true;
 	pressedDown = false;
 	
-	width = buttonRect->getWidth();
-	height = buttonRect->getHeight();	
+	setWidth(buttonRect->getWidth());
+	setHeight(buttonRect->getHeight());	
 }
 
 void UIImageButton::handleEvent(Event *event) {

@@ -65,8 +65,8 @@ UICheckBox::UICheckBox(String caption, bool checked) : UIElement() {
 	captionLabel->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	captionLabel->processInputEvents = true;
 	
-	height = buttonImageUnchecked->getHeight();
-	width = buttonImageUnchecked->getWidth() + captionLabel->getWidth() + checkboxTextOffsetX;
+	setHeight(buttonImageUnchecked->getHeight());
+	setWidth(buttonImageUnchecked->getWidth() + captionLabel->getWidth() + checkboxTextOffsetX);
 }
 
 String UICheckBox::getCaptionLabel() {

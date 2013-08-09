@@ -96,15 +96,15 @@ UIComboBox::UIComboBox(UIGlobalMenu *globalMenu, Number comboWidth) : UIElement(
 	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);	
 	bgBox->processInputEvents = true;	
 				
-	this->width = comboWidth;
-	this->height = comboHeight;
+	setWidth(comboWidth);
+	setHeight(comboHeight);
 }
 
 void UIComboBox::Resize(Number width, Number height) {
 	this->comboWidth = width;
 	bgBox->resizeBox(width, comboHeight);
-	this->width = width;
-	this->height = height;	
+	setWidth(width);
+	setHeight(height);	
 	matrixDirty = true;	
 	dropDownImage->setPosition(comboWidth - dropDownImage->getWidth() - dropDownX,dropDownY);	
 }
@@ -145,7 +145,7 @@ UIComboBoxItem *UIComboBox::getSelectedItem() {
 
 void UIComboBox::toggleDropDown() {
 	Vector2 screenPos = this->getScreenPosition();
-	dropDownMenu = globalMenu->showMenu(screenPos.x, screenPos.y, width);
+	dropDownMenu = globalMenu->showMenu(screenPos.x, screenPos.y, getWidth());
 	
 	for(int i=0; i < items.size(); i++) {
 		dropDownMenu->addOption(items[i]->label, String::IntToString(i));

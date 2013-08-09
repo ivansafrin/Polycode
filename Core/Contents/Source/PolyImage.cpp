@@ -193,13 +193,6 @@ void Image::perlinNoise(int seed, bool alpha) {
 	}
 }
 
-void Image::writeBMP(const String& fileName) const {
-//	SDL_Surface *image;
-//	image = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 32, 0x0000FF, 0x00FF00, 0xFF0000, 0x000000);
-//	memcpy(image->pixels,imageData,width * height * 4);
-//	SDL_SaveBMP(image, fileName.c_str());
-}
-
 void Image::fillRect(int x, int y, int w, int h, Color col) {
 	for(int i=0; i < w; i++) {
 		for(int j=0; j < h; j++) {
@@ -564,50 +557,6 @@ void Image::fastBlurVert(int blurSize) {
 void Image::fastBlur(int blurSize) {
 	fastBlurHor(blurSize);
 	fastBlurVert(blurSize);
-/*
-	unsigned char *blurImage = (unsigned char*)malloc(width*height*4);
-
-	int total_r;
-	int total_g;
-	int total_b;
-	int total_a;	
-	
-	unsigned int *imageData32 = (unsigned int*)imageData;
-	unsigned char *pixel;
-	int amt;	
-		
-	for (int y = 0; y < height; y++) {
-		for (int x = 0; x < width; x++) {
-                total_r = 0;
-				total_g = 0;
-				total_b = 0;
-				total_a = 0;
-				amt = 0;
-				for (int ky = -blurSize; ky <= blurSize; ky++) {
-					for (int kx = -blurSize; kx <= blurSize ; kx++) {
-						if(x+kx+((y+ky)*width) > 0 && x+kx+((y+ky)*width) < width*height) {
-							pixel = (unsigned char*)&(imageData32[(x+kx)+((y+ky)*width)]);
-							total_r += pixel[0];
-							total_g += pixel[1];
-							total_b += pixel[2];
-							total_a += pixel[3];
-							amt++;
-						}
-					}
-				}
-				
-//				Logger::log("%d / %d = %d\n",total_r, amt, (total_r/amt));
-				blurImage[((x+(y*width))*4)] = (total_r/amt);
-				blurImage[((x+(y*width))*4)+1] = (total_g / amt);
-				blurImage[((x+(y*width))*4)+2] = (total_b / amt);
-				blurImage[((x+(y*width))*4)+3] = (total_a / amt);
-				
-            }
-        }
-
-	imageData = (char*)blurImage;
-//	free(imageData32);
-*/
 }
 
 void Image::swap(int *v1, int *v2) {

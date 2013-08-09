@@ -46,14 +46,15 @@ namespace Polycode {
 	public:
 		
 		/**
-		* Default constructor.
+		* Default constructor. Defaults to type Scene::SCENE_3D
 		*/
 		Scene();
 		/**
 		* Default constructor with options. 
+		* @param sceneType Type of scene to create. Can be Scene::SCENE_2D, Scene::SCENE_3D or Scene::SCENE_2D_TOPLEFT
 		* @param virtualScene If this flag is set to true, the scene is not rendered to the screen. Use this if you want to render the scene only to a texture.
 		*/		
-		Scene(bool virtualScene);
+		Scene(int sceneType, bool virtualScene = false);
 		virtual ~Scene();
 		
 		/**
@@ -139,12 +140,6 @@ namespace Polycode {
 				
 		int getNumLights();
 		SceneLight *getLight(int index);
-				
-		static const unsigned int ENTITY_MESH = 0;
-		static const unsigned int ENTITY_LIGHT = 1;			
-		static const unsigned int ENTITY_CAMERA = 2;			
-		static const unsigned int ENTITY_ENTITY = 3;
-		static const unsigned int ENTITY_COLLMESH = 4;
 		
 		/**
 		* Scene clear color
@@ -176,9 +171,15 @@ namespace Polycode {
 		*/
 		bool ownsChildren;
 		
+		static const int SCENE_3D = 0;
+		static const int SCENE_2D = 1;
+		static const int SCENE_2D_TOPLEFT = 2;
+						
 		Entity rootEntity;
 		
 	protected:
+		
+		void initScene(int sceneType, bool virtualScene);
 		
 		bool hasLightmaps;
 		
@@ -195,6 +196,8 @@ namespace Polycode {
 		Number fogDensity;
 		Number fogStartDepth;
 		Number fogEndDepth;
+		
+		int sceneType;
 		
 	};
 }

@@ -72,6 +72,7 @@ UIWindow::UIWindow(String windowName, Number width, Number height) : Entity(), w
 	titleLabel->setPosition(conf->getNumericValue("Polycode", "uiWindowTitleX"),conf->getNumericValue("Polycode", "uiWindowTitleY"));
 	addChild(titleLabel);
 	titleLabel->color.setColorHexFromString(conf->getStringValue("Polycode", "uiWindowFontColor"));
+	titleLabel->positionAtBaseline = false;
 		
 	closeBtn = new UIImageButton(conf->getStringValue("Polycode", "uiWindowCloseIcon"));
 	addChild(closeBtn);
@@ -85,8 +86,8 @@ UIWindow::UIWindow(String windowName, Number width, Number height) : Entity(), w
 	titlebarRect->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	closeBtn->addEventListener(this, UIEvent::CLICK_EVENT);
 	
-	this->width = width;
-	this->height = height;
+	setWidth(width);
+	setHeight(height);
 	setHitbox(width, height);
 	
 	focusable = true;
@@ -106,7 +107,7 @@ void UIWindow::setWindowSize(Number w, Number h) {
 	windowRect->resizeBox(w, h);
 	setWidth(w);
 	setHeight(h);	
-	closeBtn->setPosition(width-closeBtn->getWidth()-closeIconX, closeIconY);	
+	closeBtn->setPosition(getWidth()-closeBtn->getWidth()-closeIconX, closeIconY);	
 	matrixDirty = true;
 }
 

@@ -83,8 +83,8 @@ UIHScrollBar::UIHScrollBar(Number width, Number height, Number initialRatio) : U
 	
 	lastPositionX = handleBox->getPosition().x;
 	
-	this->height = height;
-	this->width = width;	
+	setHeight(height);
+	setWidth(width);	
 }
 
 void UIHScrollBar::Update() {
@@ -107,15 +107,15 @@ void UIHScrollBar::Update() {
 }
 
 void UIHScrollBar::setHandleRatio(Number newRatio) {
-	scrollHandleWidth = width*newRatio;	
+	scrollHandleWidth = getWidth()*newRatio;	
 	
 	if(scrollHandleWidth < minHandleSize)
 		scrollHandleWidth = minHandleSize;
 	
-	dragRectWidth = width-(padding*2)-scrollHandleWidth;	
+	dragRectWidth = getWidth()-(padding*2)-scrollHandleWidth;	
 	
 	handleBox->resizeBox(scrollHandleWidth, handleBox->getHeight());
-	handleBox->setDragLimits(Rectangle(padding,padding,dragRectWidth, height-(padding*2)-(height-(padding*2))));	
+	handleBox->setDragLimits(Rectangle(padding,padding,dragRectWidth, getHeight()-(padding*2)-(getHeight()-(padding*2))));	
 	
 	if(enabled && handleBox->getPosition().x > dragRectWidth) {
 		handleBox->setPositionX(dragRectWidth);

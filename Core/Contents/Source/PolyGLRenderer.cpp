@@ -95,7 +95,6 @@ OpenGLRenderer::OpenGLRenderer() : Renderer() {
 void OpenGLRenderer::setClippingPlanes(Number nearPlane_, Number farPlane_) {
 	nearPlane = nearPlane_;
 	farPlane = farPlane_;
-	Resize(xRes,yRes);
 }
 
 bool OpenGLRenderer::Init() {
@@ -515,7 +514,7 @@ void OpenGLRenderer::setOrthoMode(Number xSize, Number ySize, bool centered) {
 	if(centered) {
 		glOrtho(-xSize*0.5,xSize*0.5,-ySize*0.5,ySize*0.5,nearPlane,farPlane);		
 	} else {
-		glOrtho(0.0f,xSize,ySize,0,nearPlane,farPlane);
+		glOrtho(0.0f,xSize,0,ySize,nearPlane,farPlane);
 	}
 	glGetDoublev( GL_PROJECTION_MATRIX, sceneProjectionMatrixOrtho);
 		

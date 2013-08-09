@@ -41,7 +41,6 @@ Entity::Entity() : EventDispatcher() {
 	color.setColor(1.0f,1.0f,1.0f,1.0f);
 	parentEntity = NULL;
 	matrixDirty = true;
-	matrixAdj = 1.0f;
 	billboardMode = false;
 	billboardRoll = false;
 	billboardIgnoreScale = false;
@@ -63,6 +62,7 @@ Entity::Entity() : EventDispatcher() {
 	hasFocus = false;
 	snapToPixels = false;
 	tags = NULL;
+	yAdjust = 1.0;
 	positionMode = POSITION_CENTER;
 }
 
@@ -304,20 +304,33 @@ Vector3 Entity::getChildCenter() const {
 	return childCenter;
 }
 
+void Entity::setInverseY(bool val) {
+	if(val) {
+		yAdjust = -1.0;
+	} else {
+		yAdjust = 1.0;	
+	}
+	for(int i=0; i < children.size(); i++) {
+		children[i]->setInverseY(val);
+	}
+}
+
+bool Entity::getInverseY() {
+	return (yAdjust == -1.0);
+}
 
 Matrix4 Entity::buildPositionMatrix() {
-
 	Matrix4 posMatrix;
 	switch(positionMode) {
 		case POSITION_TOPLEFT:
-			posMatrix.m[3][0] = (position.x+floor(bBox.x/2.0f)*scale.x)*matrixAdj;
-			posMatrix.m[3][1] = (position.y+floor(bBox.y/2.0f)*scale.y)*matrixAdj;
-			posMatrix.m[3][2] = position.z*matrixAdj;			
+			posMatrix.m[3][0] = (position.x+(bBox.x/2.0f)*scale.x);
+			posMatrix.m[3][1] = (position.y+(bBox.y/2.0f)*scale.y) * yAdjust;
+			posMatrix.m[3][2] = position.z;			
 		break;
 		case POSITION_CENTER:
-			posMatrix.m[3][0] = position.x*matrixAdj;
-			posMatrix.m[3][1] = position.y*matrixAdj;
-			posMatrix.m[3][2] = position.z*matrixAdj;
+			posMatrix.m[3][0] = position.x;
+			posMatrix.m[3][1] = position.y * yAdjust;
+			posMatrix.m[3][2] = position.z;
 		break;
 	}
 
@@ -329,6 +342,16 @@ Matrix4 Entity::buildPositionMatrix() {
 	}
 
 	return posMatrix;
+}
+
+void Entity::adjustMatrixForChildren() {
+	if(positionMode == POSITION_TOPLEFT) {
+		if(snapToPixels) {
+			renderer->translate2D(-floor(bBox.x/2.0f), floor(bBox.y/2.0f));			
+		} else {
+			renderer->translate2D(-bBox.x/2.0f, bBox.y/2.0f);	
+		}
+	}
 }
 
 void Entity::rebuildTransformMatrix() {
@@ -401,7 +424,7 @@ Vector3 Entity::getCompoundScale() const {
 
 Matrix4 Entity::getConcatenatedRollMatrix() const {
 	Quaternion q;
-	q.createFromAxisAngle(0.0f, 0.0f, 1.0f, _rotation.roll*matrixAdj);
+	q.createFromAxisAngle(0.0f, 0.0f, 1.0f, _rotation.roll);
 	Matrix4 transformMatrix = q.createMatrix();	
 	
 	if(parentEntity != NULL) 
@@ -519,6 +542,7 @@ void Entity::setRenderer(Renderer *renderer) {
 void Entity::addEntity(Entity *newChild) {
 	newChild->setRenderer(renderer);
 	newChild->setParentEntity(this);
+	newChild->setInverseY(getInverseY());
 	children.push_back(newChild);	
 }
 
@@ -531,16 +555,6 @@ void Entity::renderChildren() {
 
 void Entity::dirtyMatrix(bool val) {
 	matrixDirty = val;
-}
-
-void Entity::adjustMatrixForChildren() {
-	if(positionMode == POSITION_TOPLEFT) {
-		if(snapToPixels) {
-			renderer->translate2D((int)-floor(bBox.x/2.0f),(int)floor(bBox.y/2.0f));			
-		} else {
-			renderer->translate2D(-bBox.x/2.0f, -bBox.y/2.0f);	
-		}
-	}
 }
 
 void Entity::setRotationQuat(Number w, Number x, Number y, Number z) {
@@ -669,7 +683,7 @@ void Entity::setDepth(Number depth) {
 }
 
 Number Entity::getWidth() const {
-	return bBox.z;
+	return bBox.x;
 }
 
 Number Entity::getHeight() const {

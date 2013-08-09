@@ -244,8 +244,6 @@ namespace Polycode {
 		
 			int getType() const { return imageType; }
 			
-			void writeBMP(const String& fileName) const;
-			
 			/**
 			* Returns the width of the image.
 			*/			

@@ -109,8 +109,8 @@ Number UIHSlider::getSliderValue() {
 
 void UIHSlider::Resize(Number width, Number height) {
 	bgRect->resizeBox(width, bgHeight);
-	this->width = width;
-	this->height = height;	
+	setWidth(width);
+	setHeight(height);
 	matrixDirty = true;	
 	sliderWidth = width;
 	gripRect->setDragLimits(Rectangle(0,floor(bgHeight/2.0),width,0));	

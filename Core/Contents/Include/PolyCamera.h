@@ -71,6 +71,8 @@ namespace Polycode {
 			* @param orthoSizeY Height of the orthographic frustum (defaults to 1.0)				
 			*/			
 			void setOrthoMode(bool mode, Number orthoSizeX = 1.0, Number orthoSizeY = 1.0);
+
+			void setOrthoSize(Number orthoSizeX, Number orthoSizeY);
 			
 			/**
 			* Returns true if camera is in orthographic projection mode.
@@ -101,6 +103,8 @@ namespace Polycode {
 			* @return Current FOV value for the camera.
 			*/			
 			Number getFOV();
+			
+			void setClippingPlanes(Number nearClipPlane, Number farClipPlane);
 			
 			void setParentScene(Scene *parentScene);
 			
@@ -160,7 +164,10 @@ namespace Polycode {
 		
 			Number orthoSizeX;
 			Number orthoSizeY;
-					
+			
+			Number nearClipPlane;
+			Number farClipPlane;
+								
 			Number exposureLevel;
 			bool orthoMode;
 			Number fov;

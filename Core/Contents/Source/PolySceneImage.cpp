@@ -43,7 +43,7 @@ SceneImage::SceneImage(const String& fileName) : ScenePrimitive(ScenePrimitive::
 	imageHeight = texture->getHeight();
 
 	setWidth(texture->getWidth());
-	setHeight(texture->getHeight());	
+	setHeight(texture->getHeight());
 	setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, getWidth(), getHeight());
 
 	setPositionMode(POSITION_TOPLEFT);
@@ -89,17 +89,22 @@ void SceneImage::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly
 	//ScreenShape::applyClone(clone, deepClone, ignoreEditorOnly);
 }
 
-void SceneImage::setImageCoordinates(Number x, Number y, Number width, Number height) {
+void SceneImage::setImageCoordinates(Number x, Number y, Number width, Number height, Number realWidth, Number realHeight) {
 	Vertex *vertex;
+	
 	Number pixelSizeX = 1/imageWidth;
 	Number pixelSizeY = 1/imageHeight;
 
-	setWidth(width);
-	setHeight(height);
-		
-	Number whalf = floor(width/2.0f);
-	Number hhalf = floor(height/2.0f);	
+	if(realWidth == -1)
+		realWidth = width;
+	if(realHeight == -1)
+		realHeight = height;
 
+
+	setWidth(realWidth);
+	setHeight(realHeight);	
+	setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, getWidth(), getHeight());	
+		
 	Number xFloat = x * pixelSizeX;
 	Number yFloat = 1 - (y * pixelSizeY);
 	Number wFloat = width * pixelSizeX;
@@ -107,26 +112,22 @@ void SceneImage::setImageCoordinates(Number x, Number y, Number width, Number he
 
 	Polygon *imagePolygon = mesh->getPolygon(0);	
 	vertex = imagePolygon->getVertex(0);
-	vertex->set(-whalf,-hhalf,0);
-	vertex->setTexCoord(xFloat, yFloat);
-
-	vertex = imagePolygon->getVertex(1);
-	vertex->set(-whalf+width,-hhalf,0);
-	vertex->setTexCoord(xFloat + wFloat, yFloat);
-
-	vertex = imagePolygon->getVertex(2);
-	vertex->set(-whalf+width,-hhalf+height,0);
-	vertex->setTexCoord(xFloat + wFloat, yFloat - hFloat);
-
-	vertex = imagePolygon->getVertex(3);	
-	vertex->set(-whalf,-hhalf+height,0);	
 	vertex->setTexCoord(xFloat, yFloat - hFloat);
 
+	vertex = imagePolygon->getVertex(1);
+	vertex->setTexCoord(xFloat + wFloat, yFloat - hFloat);
+
+	vertex = imagePolygon->getVertex(2);
+	vertex->setTexCoord(xFloat + wFloat, yFloat);
+
+	vertex = imagePolygon->getVertex(3);		
+	vertex->setTexCoord(xFloat, yFloat);
+
 	mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
-	mesh->arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;	
+	mesh->arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;
+	
 	rebuildTransformMatrix();
 	matrixDirty = true;
-
 }
 
 Number SceneImage::getImageWidth() const {

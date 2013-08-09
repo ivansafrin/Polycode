@@ -44,6 +44,8 @@ Camera::Camera(Scene *parentScene) : Entity() {
 	_hasFilterShader = false;	
 	fovSet = false;
 	frustumCulling = true;
+	nearClipPlane = 1.0;
+	farClipPlane = 1000.0;
 }
 
 Camera::~Camera() {	
@@ -54,6 +56,12 @@ Camera::~Camera() {
 	delete originalSceneTexture;
 	delete zBufferSceneTexture;
 }
+
+void Camera::setClippingPlanes(Number nearClipPlane, Number farClipPlane) {
+	this->nearClipPlane = nearClipPlane;
+	this->farClipPlane = farClipPlane;	
+}
+
 
 void Camera::setExposureLevel(Number level) {
 	exposureLevel = level;
@@ -87,6 +95,11 @@ bool Camera::isSphereInFrustum(Vector3 pos, Number fRadius) {
     }
 
     return true;
+}
+
+void Camera::setOrthoSize(Number orthoSizeX, Number orthoSizeY) {
+	this->orthoSizeX = orthoSizeX;
+	this->orthoSizeY = orthoSizeY;
 }
 
 void Camera::setOrthoMode(bool mode, Number orthoSizeX, Number orthoSizeY) {
@@ -380,6 +393,8 @@ void Camera::drawFilter(Texture *targetTexture, Number targetTextureWidth, Numbe
 }
 
 void Camera::doCameraTransform() {
+
+	CoreServices::getInstance()->getRenderer()->setClippingPlanes(nearClipPlane, farClipPlane);
 
 	if(fovSet)
 			CoreServices::getInstance()->getRenderer()->setFOV(fov);

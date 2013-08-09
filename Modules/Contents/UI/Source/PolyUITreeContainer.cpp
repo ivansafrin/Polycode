@@ -59,11 +59,11 @@ UITreeContainer::UITreeContainer(String icon, String text, Number treeWidth, Num
 	mainContainer = new UIScrollContainer(scrollChild, false, true, treeWidth-conf->getNumericValue("Polycode", "uiScrollDefaultSize"), treeHeight);
 	addChild(mainContainer);
 	
-	width = treeWidth;
-	height = treeHeight;
-	setHitbox(width, height);
+	setWidth(treeWidth);
+	setHeight(treeHeight);
+	setHitbox(getWidth(), getHeight());
 	
-	Resize(width, height);
+	Resize(getWidth(), getHeight());
 
 	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 	this->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);

@@ -38,6 +38,7 @@ ScenePrimitive::ScenePrimitive(int type, Number v1, Number v2, Number v3,Number 
 }
 
 void ScenePrimitive::recreatePrimitive() {	
+	mesh->clearMesh();
 	switch(type) {
 		case TYPE_PLANE:
 			mesh->createPlane(v1,v2);

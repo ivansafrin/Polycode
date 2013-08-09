@@ -634,9 +634,11 @@ namespace Polycode {
 			String getEntityProp(const String& propName);
 			void setEntityProp(const String& propName, const String& propValue);
 			
+			void setInverseY(bool val);
+			bool getInverseY();
+			
 			void doUpdates();				
 			virtual Matrix4 buildPositionMatrix();
-			virtual void adjustMatrixForChildren();
 			void setRenderer(Renderer *renderer);						
 			
 			
@@ -713,9 +715,6 @@ namespace Polycode {
 			bool hasFocus;
 			bool focusable;
 			
-			Number width;
-			Number height;
-			
 			void setDragLimits(Rectangle rect) {}
 			void clearDragLimits() {}
 			bool isDragged() { return dragged; }
@@ -726,8 +725,8 @@ namespace Polycode {
 			void setHitbox(Number width, Number height) {}
 			
 			void focusChild(Entity *child) {}
-			void focusNextChild();
-			bool isFocusable();
+			void focusNextChild() {}
+			bool isFocusable() {}
 			
 			Vector2 getScreenPosition() const { return Vector2(); }
 
@@ -735,9 +734,13 @@ namespace Polycode {
 			bool hitTest(Vector2 v) const { return false; }
 
 			bool snapToPixels;
+			
 			//@}		
 		protected:
 		
+			void adjustMatrixForChildren();
+		
+			Number yAdjust;
 			std::vector<String> *tags;
 		
 			void checkTransformSetters();
@@ -758,7 +761,6 @@ namespace Polycode {
 			bool lockMatrix;
 			bool matrixDirty;
 			Matrix4 transformMatrix;		
-			Number matrixAdj;		
 			Entity *parentEntity;
 		
 			Renderer *renderer;

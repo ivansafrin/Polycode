@@ -266,8 +266,8 @@ void UITree::refreshTree() {
 		}
 		treeHeight = offset - cellHeight;
 	}
-	height = treeHeight + cellHeight;
-	width = treeWidth;
+	setHeight(treeHeight + cellHeight);
+	setWidth(treeWidth);
 	
 	selection->visible = selected;
 	dispatchEvent(new UITreeEvent(), UITreeEvent::NEED_REFRESH_EVENT);	

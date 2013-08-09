@@ -27,6 +27,7 @@ using namespace Polycode;
 UIElement::UIElement() : Entity() {
 	setPositionMode(Entity::POSITION_TOPLEFT);
 	processInputEvents = true;
+	depthTest = false;	
 }
 
 UIElement::UIElement(Number width, Number height) : Entity() {

@@ -177,8 +177,8 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	blinkTimer->addEventListener(this, Timer::EVENT_TRIGGER);
 
 	focusable = true;
-	this->width = width;
-	this->height = rectHeight;
+	setWidth(width);
+	setHeight(rectHeight);
 	setHitbox(width, rectHeight);
 	
 	scrollContainer = NULL;
@@ -366,7 +366,7 @@ void UITextInput::updateSelectionRects() {
 		selectorRectBottom->visible = true;		
 		Number bottomSize = bufferLines[0]->getLabel()->getTextWidthForString(bottomLine.substr(0,colEnd)) ; 
 		if(bottomSize < 0)
-			bottomSize = this->width-padding;
+			bottomSize = this->getWidth()-padding;
 		Number bottomHeight = lineHeight+lineSpacing;
 		
 		if(bottomSize < 4) {
@@ -379,7 +379,7 @@ void UITextInput::updateSelectionRects() {
 		if(lineEnd != lineStart+1) {
 			// need filler
 			selectorRectMiddle->visible = true;		
-			Number midSize = this->width-padding;
+			Number midSize = this->getWidth()-padding;
 			Number midHeight = 0;			
 			for(int i=lineStart+1; i < lineEnd;i++) {
 				midHeight += lineHeight+lineSpacing;
@@ -669,7 +669,7 @@ void UITextInput::doMultilineResize() {
 			realLineOffset = wordWrapLines[bufferOffset].actualLineNumber;
 		}
 		
-		if(width != lastResizeWidth) {	
+		if(getWidth() != lastResizeWidth) {	
 			updateWordWrap(0, lines.size()-1);
 		}
 		
@@ -680,11 +680,11 @@ void UITextInput::doMultilineResize() {
 		restructLines();		
 		readjustBuffer();
 		if(lineNumbersEnabled) {
-			lineNumberBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, decoratorOffset, height);
+			lineNumberBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, decoratorOffset, getHeight());
 		}
 	}
 	
-	lastResizeWidth = width;
+	lastResizeWidth = getWidth();
 		
 	didMultilineResize = true;
 	
@@ -699,8 +699,8 @@ void UITextInput::Resize(Number width, Number height) {
 	didMultilineResize = false;
 	
 	inputRect->resizeBox(width, height);
-	this->width = width;
-	this->height = height;	
+	setWidth(width);
+	setHeight(height);
 	matrixDirty = true;	
 	
 	if(multiLine) {
@@ -845,15 +845,15 @@ void UITextInput::restructLines() {
 	}
 	
 	if(multiLine && lineNumbersEnabled) {
-		lineNumberBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, decoratorOffset, height);
+		lineNumberBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, decoratorOffset, getHeight());
 	}
 	
 	if(scrollContainer) {
-		scrollContainer->setContentSize(width,  (((wordWrapLines.size()+1) * ((lineHeight+lineSpacing)))) + padding);
+		scrollContainer->setContentSize(getWidth(),  (((wordWrapLines.size()+1) * ((lineHeight+lineSpacing)))) + padding);
 	}	
 	
 	if(multiLine) {
-		inputRect->setHitbox(width - scrollContainer->getVScrollWidth(), height);
+		inputRect->setHitbox(getWidth() - scrollContainer->getVScrollWidth(), getHeight());
 	}	
 	
 }
@@ -1588,7 +1588,7 @@ void UITextInput::showCurrentLineIfOffscreen() {
 		return;
 		
 	int bufferOffset = -linesContainer->position.y/ ( lineHeight+lineSpacing);	
-	int heightInLines = (height / ( lineHeight+lineSpacing)) + 1;
+	int heightInLines = (getHeight() / ( lineHeight+lineSpacing)) + 1;
 			
 	if(lines[actualLineOffset].wordWrapLineIndex > bufferOffset && lines[actualLineOffset].wordWrapLineIndex < bufferOffset + heightInLines) {
 	
@@ -1658,7 +1658,7 @@ void UITextInput::showLine(unsigned int lineNumber, bool top) {
 		return;
 	}
 	
-	scrollContainer->setContentSize(width,  (((wordWrapLines.size()+1) * ((lineHeight+lineSpacing)))) + padding);
+	scrollContainer->setContentSize(getWidth(),  (((wordWrapLines.size()+1) * ((lineHeight+lineSpacing)))) + padding);
 
 	if(top) {
 		scrollContainer->setScrollValue(0.0, ((((offsetLineNumber) * ((lineHeight+lineSpacing)))) + padding)/(scrollContainer->getContentSize().y-scrollContainer->getHeight()));
@@ -2226,7 +2226,7 @@ std::vector<TextColorPair> UITextInput::makeWordWrapBuffer(LineInfo *lineInfo, S
 	String text = lineInfo->text;
 	std::vector<TextColorPair> retVec;
 	
-	if(bufferLines[0]->getLabel()->getTextWidthForString(text) < width - decoratorOffset - padding) {
+	if(bufferLines[0]->getLabel()->getTextWidthForString(text) < getWidth() - decoratorOffset - padding) {
 			return retVec;
 	}		
 	
@@ -2246,7 +2246,7 @@ std::vector<TextColorPair> UITextInput::makeWordWrapBuffer(LineInfo *lineInfo, S
 	
 		for(int i=0; i < parts.size(); i++) {
 			String _checkString = checkString + parts[i].text;
-			if(bufferLines[0]->getLabel()->getTextWidthForString(indentPrefix+_checkString) > width - decoratorOffset - padding) {
+			if(bufferLines[0]->getLabel()->getTextWidthForString(indentPrefix+_checkString) > getWidth() - decoratorOffset - padding) {
 				if(retVec.size() == 0) {
 					TextColorPair pair;
 					pair.text = checkString;

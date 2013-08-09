@@ -32,29 +32,23 @@
 #include "PolyResourceManager.h"
 #include "PolySceneLight.h"
 #include "PolySceneMesh.h"
+#include "PolyCore.h"
 #include "PolySceneManager.h"
 
 using std::vector;
 using namespace Polycode;
 
 Scene::Scene() : EventDispatcher() {
-	defaultCamera = new Camera(this);
-	activeCamera = defaultCamera;
-	fogEnabled = false;
-	lightingEnabled = false;
-	enabled = true;
-	isSceneVirtual = false;
-	hasLightmaps = false;
-	clearColor.setColor(0.13f,0.13f,0.13f,1.0f); 
-	ambientColor.setColor(0.0,0.0,0.0,1.0);
-	useClearColor = false;
-	ownsChildren = false;
-	renderer = CoreServices::getInstance()->getRenderer();
-	rootEntity.setRenderer(renderer);
-	CoreServices::getInstance()->getSceneManager()->addScene(this);	
+	initScene(SCENE_3D, false);
 }
 
-Scene::Scene(bool virtualScene) : EventDispatcher() {
+Scene::Scene(int sceneType, bool virtualScene) : EventDispatcher() {
+	initScene(sceneType, virtualScene);
+}
+
+void Scene::initScene(int sceneType, bool virtualScene) {
+
+	this->sceneType = sceneType;
 	defaultCamera = new Camera(this);
 	activeCamera = defaultCamera;	
 	fogEnabled = false;
@@ -70,6 +64,22 @@ Scene::Scene(bool virtualScene) : EventDispatcher() {
 	rootEntity.setRenderer(renderer);
 	if (!isSceneVirtual) {
 		CoreServices::getInstance()->getSceneManager()->addScene(this);
+	}
+	
+	switch(sceneType) {
+		case SCENE_2D:
+			defaultCamera->setClippingPlanes(-100.0, 100.0);
+			defaultCamera->setOrthoMode(true, CoreServices::getInstance()->getCore()->getXRes(),CoreServices::getInstance()->getCore()->getYRes());	
+		break;
+		case SCENE_2D_TOPLEFT:
+			defaultCamera->setClippingPlanes(-100.0, 100.0);
+			defaultCamera->setOrthoMode(true, 0,0);
+			defaultCamera->topLeftOrtho = true;
+			rootEntity.setInverseY(true);
+		break;
+		case SCENE_3D:
+			defaultCamera->setClippingPlanes(1.0, 1000.0);
+		break;		
 	}
 }
 
@@ -98,6 +108,9 @@ bool Scene::isEnabled() {
 }
 
 void Scene::Update() {
+	if(sceneType == SCENE_2D_TOPLEFT) {
+		rootEntity.position.y = -CoreServices::getInstance()->getCore()->getYRes();
+	}
 	rootEntity.doUpdates();
 }
 
