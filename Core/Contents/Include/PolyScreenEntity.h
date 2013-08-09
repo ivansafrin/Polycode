@@ -213,20 +213,6 @@ class _PolyExport ScreenEntity : public Entity {
 		void focusNextChild();
 
 		/**
-		 * @name Child position operations.
-		 * 
-		 * Move a child in the list of children. Affects display
-		 * order of entities(entities further down in the list will
-		 * appear on top).
-		 */
-		//@{	
-		void moveChildUp(ScreenEntity *child);
-		void moveChildDown(ScreenEntity *child);
-		void moveChildTop(ScreenEntity *child);
-		void moveChildBottom(ScreenEntity *child);
-		//}@
-
-		/**
 		 * Same semantics as getPosition(), but returns only the x and y coordinates.
 		 * 
 		 * @see getPosition()

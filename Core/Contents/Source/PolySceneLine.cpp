@@ -26,43 +26,29 @@
 
 using namespace Polycode;
 
-SceneLine::SceneLine(Vector3 start, Vector3 end) : SceneEntity() {
+SceneLine::SceneLine(Vector3 start, Vector3 end) : SceneMesh(Mesh::LINE_MESH) {
 	this->ent1 = NULL;
-	this->ent2 = NULL;	
-	
+	this->ent2 = NULL;
 	this->start = start;
 	this->end = end;	
-	
-	mesh = new Mesh(Mesh::LINE_MESH);	
-	
-	Polygon *poly = new Polygon();
-	poly->addVertex(0,0,0);
-	poly->addVertex(0,0,0);	
-	mesh->addPolygon(poly);
-	
+	initLine();
 	ignoreParentMatrix = true;
-	
-	lineWidth = 1.0;
-	lineSmooth = false;
-	
 }
 
-SceneLine::SceneLine(SceneEntity *ent1, SceneEntity *ent2) : SceneEntity() {
+SceneLine::SceneLine(SceneEntity *ent1, SceneEntity *ent2) : SceneMesh(Mesh::LINE_MESH) {
 	this->ent1 = ent1;
 	this->ent2 = ent2;	
-
-	mesh = new Mesh(Mesh::LINE_MESH);	
-	
-	Polygon *poly = new Polygon();
-	poly->addVertex(0,0,0);
-	poly->addVertex(0,0,0);	
-	mesh->addPolygon(poly);
-	
+	initLine();
 	ignoreParentMatrix = true;
-	
-	lineWidth = 1.0;
-	lineSmooth = false;
-	
+
+}
+
+void SceneLine::initLine() { 
+	Polygon *poly = new Polygon();
+	poly->addVertex(0,0,0,0,0);
+	poly->addVertex(0,0,0,1,0);	
+	mesh->addPolygon(poly);
+	mesh->arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;		
 }
 
 SceneLine *SceneLine::SceneLineWithPositions(Vector3 start, Vector3 end) {
@@ -70,7 +56,6 @@ SceneLine *SceneLine::SceneLineWithPositions(Vector3 start, Vector3 end) {
 }
 
 SceneLine::~SceneLine() {
-	delete mesh;
 }
 
 void SceneLine::setStart(Vector3 start) {
@@ -81,11 +66,11 @@ void SceneLine::setEnd(Vector3 end) {
 	this->end = end;
 }
 
-void SceneLine::Render() {	
+void SceneLine::Update(){
 
 	Vector3 v1;
-	Vector3 v2;		
-
+	Vector3 v2;
+	
 	if(ent1 != NULL && ent2 != NULL) {
 		v1 = ent1->getConcatenatedMatrix().getPosition();
 		v2 = ent2->getConcatenatedMatrix().getPosition();
@@ -93,22 +78,8 @@ void SceneLine::Render() {
 		v1 = start;
 		v2 = end;
 	}
-
 	
-	mesh->getPolygon(0)->getVertex(0)->set(v1.x,v1.y,v1.z); 
-	mesh->getPolygon(0)->getVertex(1)->set(v2.x,v2.y,v2.z); 	
-	mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
-	
-	Renderer *renderer = CoreServices::getInstance()->getRenderer();
-	
-	renderer->setLineSize(lineWidth);
-	renderer->setLineSmooth(lineSmooth);
-	
-	renderer->setTexture(NULL);	
-	renderer->pushDataArrayForMesh(mesh, RenderDataArray::VERTEX_DATA_ARRAY);
-	renderer->pushDataArrayForMesh(mesh, RenderDataArray::TEXCOORD_DATA_ARRAY);	
-	renderer->pushDataArrayForMesh(mesh, RenderDataArray::NORMAL_DATA_ARRAY);		
-	
-	renderer->drawArrays(mesh->getMeshType());	
-	
+	mesh->getPolygon(0)->getVertex(0)->set(v1.x,v1.y,v1.z);
+	mesh->getPolygon(0)->getVertex(1)->set(v2.x,v2.y,v2.z);
+	mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;	
 }

@@ -143,48 +143,6 @@ void ScreenEntity::focusChild(ScreenEntity *child) {
 	}
 }
 
-void ScreenEntity::moveChildUp(ScreenEntity *child) {
-	for(int i=0; i < children.size(); i++) {
-		if(children[i] == child && i < children.size()-1) {
-			ScreenEntity *next = (ScreenEntity*)children[i+1];
-			children[i+1] = child;
-			children[i] = next;
-			break;
-		}
-	}
-}
-
-void ScreenEntity::moveChildDown(ScreenEntity *child) {
-	for(int i=0; i < children.size(); i++) {
-		if(children[i] == child && i > 0) {
-			ScreenEntity *prev = (ScreenEntity*)children[i-1];
-			children[i-1] = child;
-			children[i] = prev;
-			break;
-		}
-	}
-}
-
-void ScreenEntity::moveChildTop(ScreenEntity *child) {
-	for(int i=0; i < children.size(); i++) {
-		if(children[i] == child && i < children.size()-1) {
-			children.erase(children.begin()+i);
-			children.push_back(child);
-			break;
-		}
-	}
-}
-
-void ScreenEntity::moveChildBottom(ScreenEntity *child) {
-	for(int i=0; i < children.size(); i++) {
-		if(children[i] == child && i > 0) {
-			children.erase(children.begin()+i);
-			children.insert(children.begin(), child);
-			break;
-		}
-	}
-}
-
 bool ScreenEntity::isFocusable() const {
 	return focusable;
 }

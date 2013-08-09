@@ -227,6 +227,48 @@ void Entity::removeChild(Entity *entityToRemove) {
 	}	
 }
 
+void Entity::moveChildUp(Entity *child) {
+	for(int i=0; i < children.size(); i++) {
+		if(children[i] == child && i < children.size()-1) {
+			Entity *next = (Entity*)children[i+1];
+			children[i+1] = child;
+			children[i] = next;
+			break;
+		}
+	}
+}
+
+void Entity::moveChildDown(Entity *child) {
+	for(int i=0; i < children.size(); i++) {
+		if(children[i] == child && i > 0) {
+			Entity *prev = (Entity*)children[i-1];
+			children[i-1] = child;
+			children[i] = prev;
+			break;
+		}
+	}
+}
+
+void Entity::moveChildTop(Entity *child) {
+	for(int i=0; i < children.size(); i++) {
+		if(children[i] == child && i < children.size()-1) {
+			children.erase(children.begin()+i);
+			children.push_back(child);
+			break;
+		}
+	}
+}
+
+void Entity::moveChildBottom(Entity *child) {
+	for(int i=0; i < children.size(); i++) {
+		if(children[i] == child && i > 0) {
+			children.erase(children.begin()+i);
+			children.insert(children.begin(), child);
+			break;
+		}
+	}
+}
+
 unsigned int Entity::getNumChildren() {
 	return children.size();
 }

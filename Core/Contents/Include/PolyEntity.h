@@ -159,6 +159,20 @@ namespace Polycode {
 			*/
 			//@{			
 			
+				/**
+			 * @name Child position operations.
+			 * 
+			 * Move a child in the list of children. Affects display
+			 * order of entities(entities further down in the list will
+			 * appear on top).
+			 */
+			//@{	
+			void moveChildUp(Entity *child);
+			void moveChildDown(Entity *child);
+			void moveChildTop(Entity *child);
+			void moveChildBottom(Entity *child);
+			//}@	
+			
 			/**
 			* @see addChild()
 			*/		
