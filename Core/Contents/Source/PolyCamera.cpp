@@ -392,6 +392,10 @@ void Camera::drawFilter(Texture *targetTexture, Number targetTextureWidth, Numbe
 
 }
 
+Matrix4 Camera::getProjectionMatrix() {
+	return projectionMatrix;
+}
+
 void Camera::doCameraTransform() {
 
 	CoreServices::getInstance()->getRenderer()->setClippingPlanes(nearClipPlane, farClipPlane);
@@ -399,6 +403,8 @@ void Camera::doCameraTransform() {
 	if(fovSet)
 			CoreServices::getInstance()->getRenderer()->setFOV(fov);
 	CoreServices::getInstance()->getRenderer()->setExposureLevel(exposureLevel);
+
+	projectionMatrix = CoreServices::getInstance()->getRenderer()->getProjectionMatrix();
 
 	if(matrixDirty) {
 		rebuildTransformMatrix();

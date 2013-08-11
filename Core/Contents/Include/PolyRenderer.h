@@ -240,9 +240,7 @@ namespace Polycode {
 		
 		void setExposureLevel(Number level);
 		
-		bool rayTriangleIntersect(Vector3 ray_origin, Vector3 ray_direction, Vector3 vert0, Vector3 vert1, Vector3 vert2, Vector3 *hitPoint);
-		
-		virtual Vector3 projectRayFrom2DCoordinate(Number x, Number y) = 0;
+		virtual Vector3 projectRayFrom2DCoordinate(Number x, Number y, Matrix4 cameraMatrix, Matrix4 projectionMatrix) = 0;
 		
 		void enableShaders(bool flag);
 		
@@ -253,9 +251,7 @@ namespace Polycode {
 		void setRendererShaderParams(Shader *shader, ShaderBinding *binding);
 		
 		void addShaderModule(PolycodeShaderModule *module);
-		
-		virtual bool test2DCoordinateInPolygon(Number x, Number y, Polygon *poly, const Matrix4 &matrix, bool ortho, bool testBackfacing, bool billboardMode, bool reverseDirection = false, Matrix4 *adjustMatrix = NULL);
-		
+				
 		virtual Matrix4 getProjectionMatrix() = 0;
 		virtual Matrix4 getModelviewMatrix() = 0;
 		

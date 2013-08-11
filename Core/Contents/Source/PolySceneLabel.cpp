@@ -78,7 +78,7 @@ void SceneLabel::updateFromLabel() {
 	
 	bBox.x = label->getWidth()*labelScale;
 	bBox.y = label->getHeight()*labelScale;
-	bBox.z = 0;
+	bBox.z = 0.001;
 	
 	if(useVertexBuffer)
 		CoreServices::getInstance()->getRenderer()->createVertexBufferForMesh(mesh);

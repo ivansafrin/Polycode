@@ -31,8 +31,9 @@
 #include "PolyResource.h"
 #include "PolyResourceManager.h"
 #include "PolySceneLight.h"
+#include "PolyInputEvent.h"
 #include "PolySceneMesh.h"
-#include "PolyCore.h"
+#include "PolyRay.h"
 #include "PolySceneManager.h"
 
 using std::vector;
@@ -48,6 +49,7 @@ Scene::Scene(int sceneType, bool virtualScene) : EventDispatcher() {
 
 void Scene::initScene(int sceneType, bool virtualScene) {
 
+	core = CoreServices::getInstance()->getCore();
 	this->sceneType = sceneType;
 	defaultCamera = new Camera(this);
 	activeCamera = defaultCamera;	
@@ -81,6 +83,12 @@ void Scene::initScene(int sceneType, bool virtualScene) {
 			defaultCamera->setClippingPlanes(1.0, 1000.0);
 		break;		
 	}
+	
+	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEUP);
+	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
+	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_UP);
+	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_DOWN);	
 }
 
 void Scene::setActiveCamera(Camera *camera) {
@@ -261,6 +269,53 @@ void Scene::RenderDepthOnly(Camera *targetCamera) {
 	
 	CoreServices::getInstance()->getRenderer()->enableShaders(true);
 	CoreServices::getInstance()->getRenderer()->cullFrontFaces(false);	
+}
+
+void Scene::handleEvent(Event *event) {
+	if(event->getDispatcher() == core->getInput() && rootEntity.processInputEvents) {
+		InputEvent *inputEvent = (InputEvent*) event;
+		Vector3 dir =  renderer->projectRayFrom2DCoordinate(inputEvent->mousePosition.x, inputEvent->mousePosition.y, activeCamera->getConcatenatedMatrix(), activeCamera->getProjectionMatrix());				
+		Vector3 pos;
+		
+		
+		switch(sceneType) {
+			case SCENE_2D:
+			{
+				Number orthoSizeX = activeCamera->getOrthoSizeX();
+				Number orthoSizeY = activeCamera->getOrthoSizeY();			
+				pos = Vector3(((inputEvent->mousePosition.x/(Number)core->getXRes())*orthoSizeX) - (orthoSizeX*0.5), (((core->getYRes()-inputEvent->mousePosition.y)/(Number)core->getYRes())*orthoSizeY) - (orthoSizeY*0.5), 0.0);
+				pos = activeCamera->getConcatenatedMatrix() * pos;	
+			}
+			break;
+			case SCENE_2D_TOPLEFT:
+				pos = Vector3(inputEvent->mousePosition.x, core->getYRes()-inputEvent->mousePosition.y, 0.0);
+				pos = activeCamera->getConcatenatedMatrix() * pos;			
+			break;
+			case SCENE_3D:
+				Vector3 pos = activeCamera->getConcatenatedMatrix().getPosition();
+			break;		
+		}
+				
+		Ray ray(pos, dir);
+		
+		switch(inputEvent->getEventCode()) {
+			case InputEvent::EVENT_MOUSEDOWN:
+				rootEntity._onMouseDown(ray, inputEvent->mouseButton, inputEvent->timestamp);
+			break;
+			case InputEvent::EVENT_MOUSEMOVE:
+				rootEntity._onMouseMove(ray, inputEvent->timestamp);
+			break;
+			case InputEvent::EVENT_MOUSEUP:
+				rootEntity._onMouseUp(ray, inputEvent->mouseButton, inputEvent->timestamp);
+			break;
+			case InputEvent::EVENT_MOUSEWHEEL_UP:
+				rootEntity._onMouseWheelUp(ray, inputEvent->timestamp);
+			break;
+			case InputEvent::EVENT_MOUSEWHEEL_DOWN:
+				rootEntity._onMouseWheelDown(ray,inputEvent->timestamp);	
+			break;	
+		}
+	}
 }
 
 void Scene::addLight(SceneLight *light) {

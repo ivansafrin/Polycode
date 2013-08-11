@@ -83,6 +83,7 @@
 #include "PolyServer.h"
 #include "PolyServerWorld.h"
 #include "PolySocket.h"
+#include "PolyRay.h"
 #include "PolyGlobals.h"
 
 #ifdef _WINDOWS

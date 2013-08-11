@@ -21,6 +21,7 @@
 */
 #include "PolyEntity.h"
 #include "PolyRenderer.h"
+#include "PolyInputEvent.h"
 
 using namespace Polycode;
 
@@ -62,6 +63,7 @@ Entity::Entity() : EventDispatcher() {
 	hasFocus = false;
 	snapToPixels = false;
 	tags = NULL;
+	mouseOver = false;
 	yAdjust = 1.0;
 	positionMode = POSITION_CENTER;
 }
@@ -854,4 +856,63 @@ void Entity::setPositionMode(int newPositionMode) {
 
 int Entity::getPositionMode() const {
 	return positionMode;
+}
+
+MouseEventResult Entity::_onMouseDown(const Ray &ray, int mouseButton, int timestamp) {
+	MouseEventResult ret;
+	return ret;
+}
+
+MouseEventResult Entity::_onMouseUp(const Ray &ray, int mouseButton, int timestamp) {
+	MouseEventResult ret;
+	return ret;
+}
+
+MouseEventResult Entity::_onMouseMove(const Ray &ray, int timestamp) {
+	MouseEventResult ret;
+	ret.hit = false;
+	ret.blocked = false;
+	
+	if(processInputEvents && enabled) {
+		if(ray.boxIntersect(bBox, getConcatenatedMatrix())) {
+			ret.hit = true;			
+			dispatchEvent(new InputEvent(Vector2(), timestamp), InputEvent::EVENT_MOUSEMOVE);
+			
+			if(!mouseOver) {
+				dispatchEvent(new InputEvent(Vector2(), timestamp), InputEvent::EVENT_MOUSEOVER);
+				mouseOver = true;
+			}			
+			
+			if(blockMouseInput) {
+				ret.blocked = true;
+			}
+		} else {
+			if(mouseOver) {
+				dispatchEvent(new InputEvent(Vector2(), timestamp), InputEvent::EVENT_MOUSEOUT);
+				mouseOver = false;
+			}		
+		}
+		
+		for(int i=0; i < children.size(); i++) {
+			MouseEventResult childRes = children[i]->_onMouseMove(ray, timestamp);
+				if(childRes.hit)
+					ret.hit = true;
+				
+				if(childRes.blocked) {
+					ret.blocked = true;
+					break;
+				}			
+		}
+	}
+	return ret;
+}
+
+MouseEventResult Entity::_onMouseWheelUp(const Ray &ray, int timestamp) {
+	MouseEventResult ret;
+	return ret;
+}
+
+MouseEventResult Entity::_onMouseWheelDown(const Ray &ray, int timestamp) {
+	MouseEventResult ret;
+	return ret;
 }

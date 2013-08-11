@@ -1,0 +1,81 @@
+/*
+ Copyright (C) 2013 by Ivan Safrin
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
+*/
+
+#include "PolyRay.h"
+#include <stdio.h>
+
+using namespace Polycode;
+
+Ray::Ray(const Vector3 &origin, const Vector3 &direction) {
+	inv_direction = Vector3(1.0/direction.x, 1.0/direction.y, 1.0/direction.z);
+	sign[0] = (inv_direction.x < 0);
+	sign[1] = (inv_direction.y < 0);
+	sign[2] = (inv_direction.z < 0);
+	this->origin = origin;
+	this->direction = direction;
+}
+
+Ray Ray::tranformByMatrix(const Matrix4& matrix) const {
+	Vector3 pos = matrix * origin;
+	Vector3 dir = matrix.rotateVector(direction);
+	dir.Normalize();	
+	return Ray(pos, dir);
+}
+
+
+bool Ray::boxIntersect(const Vector3 &box, const Matrix4 &transformMatrix, float near, float far) const {	
+
+	Ray r  = tranformByMatrix(transformMatrix.Inverse());
+
+	Vector3 bounds[2];
+	bounds[0] = Vector3(-box.x * 0.5, -box.y * 0.5, -box.z * 0.5);
+	bounds[1] = Vector3(box.x * 0.5, box.y * 0.5, box.z * 0.5);	
+	
+	float tmin, tmax, tymin, tymax, tzmin, tzmax;
+	tmin = (bounds[r.sign[0]].x - r.origin.x) * r.inv_direction.x;
+	tmax = (bounds[1-r.sign[0]].x - r.origin.x) * r.inv_direction.x;
+	tymin = (bounds[r.sign[1]].y - r.origin.y) * r.inv_direction.y;
+	tymax = (bounds[1-r.sign[1]].y - r.origin.y) * r.inv_direction.y;
+
+	if ( (tmin > tymax) || (tymin > tmax) )
+		return false;
+
+	if (tymin > tmin)
+		tmin = tymin;
+
+	if (tymax < tmax)
+		tmax = tymax;
+
+	tzmin = (bounds[r.sign[2]].z - r.origin.z) * r.inv_direction.z;
+	tzmax = (bounds[1-r.sign[2]].z - r.origin.z) * r.inv_direction.z;
+	
+	if ( (tmin > tzmax) || (tzmin > tmax) )
+		return false;
+
+	if (tzmin > tmin)
+		tmin = tzmin;
+
+	if (tzmax < tmax)
+		tmax = tzmax;
+		
+	return ( (tmin < far) && (tmax > near) );
+}

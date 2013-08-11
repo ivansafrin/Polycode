@@ -153,6 +153,9 @@ namespace Polycode {
 			*/			
 			Material *getScreenShaderMaterial() { return filterShaderMaterial; }
 			
+			
+			Matrix4 getProjectionMatrix();
+			
 			/**
 			* Toggles the frustum culling of the camera. (Defaults to true).
 			*/
@@ -161,6 +164,8 @@ namespace Polycode {
 			bool topLeftOrtho;
 			
 		protected:
+		
+			Matrix4 projectionMatrix;
 		
 			Number orthoSizeX;
 			Number orthoSizeY;

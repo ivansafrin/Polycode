@@ -43,14 +43,14 @@ void ScenePrimitive::recreatePrimitive() {
 		case TYPE_PLANE:
 			mesh->createPlane(v1,v2);
 			bBox.x = v1;
-			bBox.y = 0;
+			bBox.y = 0.001;
 			bBox.z = v2;
 		break;
 		case TYPE_VPLANE:
 			mesh->createVPlane(v1,v2);
 			bBox.x = v1;
 			bBox.y = v2;
-			bBox.z = 0;
+			bBox.z = 0.001;
 		break;		
 		case TYPE_BOX:
 			mesh->createBox(v1,v2,v3);

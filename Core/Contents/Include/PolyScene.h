@@ -26,6 +26,7 @@ THE SOFTWARE.
 #include "PolyColor.h"
 #include "PolyVector3.h"
 #include "PolyEntity.h"
+#include "PolyCore.h"
 #include "PolyEventDispatcher.h"
 
 #include <vector>
@@ -125,6 +126,8 @@ namespace Polycode {
 		void Render(Camera *targetCamera = NULL);
 		void RenderDepthOnly(Camera *targetCamera);
 		
+		void handleEvent(Event *event);
+		
 		/**
 		* Adds a light to the scene.
 		* @param light Light to add to the scene.
@@ -189,6 +192,8 @@ namespace Polycode {
 		
 		Camera *defaultCamera;
 		Camera *activeCamera;
+		
+		Core *core;
 		
 		bool lightingEnabled;
 		bool fogEnabled;

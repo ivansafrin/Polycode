@@ -28,12 +28,19 @@
 #include "PolyQuaternion.h"
 #include "PolyColor.h"
 #include "PolyRectangle.h"
+#include "PolyRay.h"
 #include "PolyEventDispatcher.h"
 #include <vector>
 
 namespace Polycode {
 
 	class Renderer;
+
+	class _PolyExport MouseEventResult {
+		public:
+			bool hit;
+			bool blocked;
+	};
 
 	class _PolyExport EntityProp {
 	public:
@@ -76,7 +83,7 @@ namespace Polycode {
 			*/			
 			virtual void Update(){};			
 
-			virtual void transformAndRender();		
+			void transformAndRender();		
 
 			void renderChildren();					
 		
@@ -507,7 +514,13 @@ namespace Polycode {
 			*/
 			void setBBoxRadius(Number rad);		
 			
-					
+			MouseEventResult _onMouseDown(const Ray &ray, int mouseButton, int timestamp);
+			MouseEventResult _onMouseUp(const Ray &ray, int mouseButton, int timestamp);
+			MouseEventResult _onMouseMove(const Ray &ray, int timestamp);
+			MouseEventResult _onMouseWheelUp(const Ray &ray, int timestamp);
+			MouseEventResult _onMouseWheelDown(const Ray &ray, int timestamp);
+
+			virtual bool hitTest() { return false; }
 
 			//@}			
 			// ----------------------------------------------------------------------------------------------------------------
@@ -734,6 +747,8 @@ namespace Polycode {
 			bool hitTest(Vector2 v) const { return false; }
 
 			bool snapToPixels;
+			
+			bool mouseOver;
 			
 			//@}		
 		protected:
