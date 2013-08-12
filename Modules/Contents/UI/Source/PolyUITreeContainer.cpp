@@ -82,6 +82,8 @@ void UITreeContainer::Resize(Number width, Number height) {
 //	width = x;
 	//	height = y;
 	setHitbox(width, height);
+	setWidth(width);
+	setHeight(height);
 }
 
 void UITreeContainer::handleEvent(Event *event) {
@@ -239,7 +241,7 @@ void UITreeContainer::onKeyDown(PolyKEY key, wchar_t charCode) {
 
 void UITreeContainer::scrollToNode(UITree *node, bool showAtTop) {
 	
-	Number nodeY = node->getScreenPosition().y - getRootNode()->getScreenPosition().y;
+	Number nodeY = node->getScreenPositionForMainCamera().y - getRootNode()->getScreenPositionForMainCamera().y;
 	Number contentHeight = mainContainer->getContentSize().y;
 	Number scrollHeight = contentHeight - mainContainer->getHeight();
 	Number viewTop = (contentHeight - mainContainer->getHeight()) * mainContainer->getVScrollBar()->getScrollValue();

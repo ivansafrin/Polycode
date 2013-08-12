@@ -46,7 +46,7 @@ void PolycodeEditor::setFilePath(String newPath) {
 
 PolycodeEditor::PolycodeEditor(bool _isReadOnly) : UIElement(), ClipboardProvider() {
 	this->_isReadOnly = _isReadOnly;
-	enableScissor = true;	
+//	enableScissor = true;	
 	processInputEvents = true;
 	_hasChanges = false;
 	
@@ -149,7 +149,7 @@ void PolycodeEditor::didAction(String actionName, PolycodeEditorActionData *befo
 
 void PolycodeEditor::Resize(int x, int y) {
 	editorSize = Vector2(x,y);
-	Vector2 pos = getScreenPosition();
+	Vector2 pos = getScreenPositionForMainCamera();
 	scissorBox.setRect(pos.x,pos.y, x, y);	
 }
 

@@ -71,6 +71,8 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	
 	willRunProject = false;
 
+	SceneLabel::defaultAnchor = Vector3(-1.0, -1.0, 0.0);
+
 	globalMenu	= new UIGlobalMenu();
 	UITextInput::setMenuSingleton(globalMenu);
 			

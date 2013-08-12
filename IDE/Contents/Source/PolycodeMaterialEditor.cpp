@@ -982,7 +982,7 @@ MaterialMainWindow::MaterialMainWindow() : UIElement() {
 }
 	
 void MaterialMainWindow::Resize(Number width, Number height) {	
-	Vector2 pos = getScreenPosition();	
+	Vector2 pos = getScreenPositionForMainCamera();	
 	scissorBox.setRect(pos.x,pos.y,width, height);
 	materialPane->Resize(getWidth(), getHeight());
 	shaderPane->Resize(getWidth(), getHeight());

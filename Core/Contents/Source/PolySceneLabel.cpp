@@ -31,10 +31,13 @@
 
 using namespace Polycode;
 
+Vector3 SceneLabel::defaultAnchor = Vector3();
+
 SceneLabel::SceneLabel(const String& fontName, const String& text, int size, Number scale, int amode, bool premultiplyAlpha) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1) {
 	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size, amode, premultiplyAlpha);
 	this->labelScale = scale;
 	positionAtBaseline = false;
+	setAnchorPoint(SceneLabel::defaultAnchor);
 	updateFromLabel();
 }
 
@@ -43,6 +46,7 @@ SceneLabel::SceneLabel(const String& text, int size, const String& fontName, int
 	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size, amode, premultiplyAlpha);
 	this->labelScale = 1.0;
 	positionAtBaseline = false;
+	setAnchorPoint(SceneLabel::defaultAnchor);	
 	updateFromLabel();
 }
 			

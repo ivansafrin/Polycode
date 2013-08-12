@@ -66,6 +66,8 @@ namespace Polycode {
 			
 			bool positionAtBaseline;
 			
+			static Vector3 defaultAnchor;
+			
 		protected:
 			
 			void updateFromLabel();

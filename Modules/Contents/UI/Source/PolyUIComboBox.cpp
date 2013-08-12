@@ -144,7 +144,7 @@ UIComboBoxItem *UIComboBox::getSelectedItem() {
 }
 
 void UIComboBox::toggleDropDown() {
-	Vector2 screenPos = this->getScreenPosition();
+	Vector2 screenPos = this->getScreenPositionForMainCamera();
 	dropDownMenu = globalMenu->showMenu(screenPos.x, screenPos.y, getWidth());
 	
 	for(int i=0; i < items.size(); i++) {

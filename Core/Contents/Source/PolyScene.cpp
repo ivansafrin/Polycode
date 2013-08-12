@@ -162,8 +162,7 @@ Camera *Scene::getDefaultCamera() {
 	return defaultCamera;
 }
 
-void Scene::Render(Camera *targetCamera) {
-	
+void Scene::Render(Camera *targetCamera) {	
 	if(!targetCamera && !activeCamera)
 		return;
 	
@@ -247,8 +246,7 @@ void Scene::Render(Camera *targetCamera) {
 	
 	if(targetCamera->getOrthoMode()) {
 		CoreServices::getInstance()->getRenderer()->setPerspectiveMode();
-	}
-	
+	}	
 }
 
 

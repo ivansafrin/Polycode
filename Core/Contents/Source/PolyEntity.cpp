@@ -411,6 +411,14 @@ Matrix4 Entity::getConcatenatedRollMatrix() const {
 		return transformMatrix;	
 }
 
+Vector2 Entity::getScreenPosition(Matrix4 projectionMatrix, Matrix4 cameraMatrix) {
+	Vector2 pos = renderer->Project(cameraMatrix, projectionMatrix, getConcatenatedMatrix().getPosition());
+	return pos;
+}
+
+Vector2 Entity::getScreenPositionForMainCamera() {
+	return getScreenPosition(renderer->getProjectionMatrix(), renderer->getCameraMatrix());
+}
 
 void Entity::transformAndRender() {
 	if(!renderer || !enabled)
@@ -869,7 +877,7 @@ MouseEventResult Entity::onMouseDown(const Ray &ray, int mouseButton, int timest
 			}
 		}
 		
-		for(int i=0; i < children.size(); i++) {
+		for(int i=children.size()-1; i>=0; i--) {
 			MouseEventResult childRes = children[i]->onMouseDown(ray, mouseButton, timestamp);
 				if(childRes.hit)
 					ret.hit = true;
@@ -905,7 +913,7 @@ MouseEventResult Entity::onMouseUp(const Ray &ray, int mouseButton, int timestam
 			dispatchEvent(new InputEvent(Vector2(localCoordinate.x, localCoordinate.y), timestamp), InputEvent::EVENT_MOUSEUP_OUTSIDE);
 		}
 		
-		for(int i=0; i < children.size(); i++) {
+		for(int i=children.size()-1; i>=0; i--) {
 			MouseEventResult childRes = children[i]->onMouseUp(ray, mouseButton, timestamp);
 				if(childRes.hit)
 					ret.hit = true;
@@ -930,6 +938,7 @@ MouseEventResult Entity::onMouseMove(const Ray &ray, int timestamp) {
 		localCoordinate = inverse * localCoordinate;	
 	
 		if(ray.boxIntersect(bBox, getAnchorAdjustedMatrix())) {	
+			//setColor(1.0, 0.0, 0.0, 1.0);
 			ret.hit = true;			
 			dispatchEvent(new InputEvent(Vector2(localCoordinate.x, localCoordinate.y), timestamp), InputEvent::EVENT_MOUSEMOVE);
 			
@@ -948,7 +957,7 @@ MouseEventResult Entity::onMouseMove(const Ray &ray, int timestamp) {
 			}		
 		}
 		
-		for(int i=0; i < children.size(); i++) {
+		for(int i=children.size()-1; i>=0; i--) {
 			MouseEventResult childRes = children[i]->onMouseMove(ray, timestamp);
 				if(childRes.hit)
 					ret.hit = true;

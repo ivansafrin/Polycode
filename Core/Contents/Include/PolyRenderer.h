@@ -241,6 +241,8 @@ namespace Polycode {
 		
 		virtual Vector3 projectRayFrom2DCoordinate(Number x, Number y, Matrix4 cameraMatrix, Matrix4 projectionMatrix) = 0;
 		
+		virtual Vector2 Project(const Matrix4 &cameraMatrix, const Matrix4 &projectionMatrix, const Vector3 &coordiante) const = 0;
+		
 		void enableShaders(bool flag);
 		
 		Number getViewportWidth();

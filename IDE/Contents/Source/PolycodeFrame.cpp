@@ -548,7 +548,7 @@ PolycodeFrame::PolycodeFrame() : UIElement() {
 	topBarBg->blockMouseInput = true;
 	addChild(topBarBg);
 	
-	logo = new UIImage("Images/barlogo.png");	
+	logo = new UIImage("Images/barlogo.png");
 	addChild(logo);		
 	
 	
@@ -741,7 +741,7 @@ void PolycodeFrame::showEditor(PolycodeEditor *editor) {
 	
 	editorHolder->currentEditor = editor;
 	editorHolder->currentEditor->enabled = true;
-	editorHolder->currentEditor->Activate();
+	editorHolder->currentEditor->Activate();	
 	
 	Resize(frameSizeX, frameSizeY);
 }
@@ -925,7 +925,7 @@ void PolycodeFrame::Resize(int x, int y) {
 		(y-welcomeImage->getHeight()) / 2); 
 	
 	topBarBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, x, 45);
-	logo->setPosition(x-logo->getWidth()-2, 2);	
+	logo->setPosition(x-logo->getWidth()-2, 2);
 	resizer->setPosition(x-resizer->getWidth()-1, y-resizer->getHeight()-1);	
 	mainSizer->Resize(x,y-45);	
 	

@@ -79,9 +79,10 @@ UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : 
 	selection->visible = false;
 	addChild(selection);
 	arrowIconImage = new SceneImage(arrowIcon.c_str());
-	arrowIconImage->setPosition(cellPadding,(cellHeight-arrowIconImage->getHeight())/2.0f);
+	arrowIconImage->setPosition(cellPadding + arrowIconImage->getWidth()/2.0,(cellHeight)/2.0f);	
 	addChild(arrowIconImage);
 	iconImage = new SceneImage(icon.c_str());
+	iconImage->setAnchorPoint(-1.0, -1.0, 0.0);
 	addChild(iconImage);
 	iconImage->setPosition(arrowIconImage->getWidth()+(cellPadding*2),(cellHeight-iconImage->getHeight())/2.0f);
 
@@ -95,8 +96,7 @@ UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : 
 	parent = NULL;
 	selectedNode = NULL;
 	arrowIconImage->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
-	arrowIconImage->processInputEvents = true;
-	
+	arrowIconImage->processInputEvents = true;	
 	
 	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEUP);
 	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);	
@@ -308,7 +308,7 @@ void UITree::clearTree() {
 }
 
 void UITree::Update() {
-	arrowIconImage->setRoll(handleRotation);
+	arrowIconImage->setRoll(-handleRotation);
 	if(treeChildren.size() > 0)
 		arrowIconImage->visible = true;
 	else

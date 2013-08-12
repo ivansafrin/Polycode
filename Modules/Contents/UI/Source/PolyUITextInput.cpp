@@ -2148,7 +2148,7 @@ void UITextInput::Update() {
 	}
 	linesToDelete.clear();
 
-	textContainer->scissorBox.setRect(textContainer->getScreenPosition().x, textContainer->getScreenPosition().y, textContainer->getWidth(), textContainer->getHeight() + padding);
+	textContainer->scissorBox.setRect(textContainer->getScreenPositionForMainCamera().x, textContainer->getScreenPositionForMainCamera().y, textContainer->getWidth(), textContainer->getHeight() + padding);
 }
 
 UITextInput::~UITextInput() {

@@ -26,6 +26,9 @@ using namespace Polycode;
 
 UIImage::UIImage(String imagePath) : UIElement() {
 	image = new SceneImage(imagePath);
+	image->setAnchorPoint(-1.0, -1.0, 0.0);
+	image->depthTest = false;
+	image->depthWrite = false;		
 	addChild(image);
 	setWidth(image->bBox.x);
 	setHeight(image->bBox.y);	
@@ -43,7 +46,9 @@ UIElement::UIElement() : Entity() {
 	focusable = false;
 	focusParent = NULL;
 	hasDragLimits = false;
-	dragged = false;	
+	dragged = false;
+	depthTest = false;
+	depthWrite = false;			
 }
 
 UIElement::UIElement(Number width, Number height) : Entity() {
@@ -52,6 +57,8 @@ UIElement::UIElement(Number width, Number height) : Entity() {
 	focusParent = NULL;
 	hasDragLimits = false;	
 	dragged = false;	
+	depthTest = false;
+	depthWrite = false;		
 	setWidth(width);
 	setHeight(height);
 }

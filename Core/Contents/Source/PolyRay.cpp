@@ -44,6 +44,9 @@ Ray Ray::tranformByMatrix(const Matrix4& matrix) const {
 
 bool Ray::boxIntersect(const Vector3 &box, const Matrix4 &transformMatrix, float near, float far) const {	
 
+	if(box.x == 0 || box.y == 0 || box.z == 0)
+		return false;
+
 	Ray r  = tranformByMatrix(transformMatrix.Inverse());
 
 	Vector3 bounds[2];

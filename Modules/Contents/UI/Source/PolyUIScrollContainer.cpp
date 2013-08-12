@@ -163,7 +163,7 @@ void UIScrollContainer::scrollHorizontal(Number amount) {
 
 
 void UIScrollContainer::Update() {
-	Vector2 pos = getScreenPosition();
+	Vector2 pos = getScreenPositionForMainCamera();
 	scissorBox.setRect(pos.x, pos.y, getWidth(), getHeight());
 }
 

@@ -249,8 +249,34 @@ Vector3 OpenGLRenderer::Unproject(Number x, Number y) {
 	
 	coords = Vector3( cx, cy, cz );
 	
-	return coords;
+	return coords;	
+}
+
+Vector2 OpenGLRenderer::Project(const Matrix4 &cameraMatrix, const Matrix4 &projectionMatrix, const Vector3 &coordiante) const {
 	
+	GLdouble mv[16];
+	Matrix4 camInverse = cameraMatrix.Inverse();	
+	Matrix4 cmv;
+	cmv.identity();
+	cmv = cmv * camInverse;
+
+	GLint vp[4];
+	glGetIntegerv( GL_VIEWPORT, vp );
+
+	for(int i=0; i < 16; i++) {
+		mv[i] = cmv.ml[i];
+	}
+
+	GLdouble _sceneProjectionMatrix[16];
+	for(int i=0; i < 16; i++) {
+		_sceneProjectionMatrix[i] = projectionMatrix.ml[i];
+	}	
+
+	GLdouble coords[3];
+	
+	gluProject(coordiante.x, coordiante.y, coordiante.z, mv, _sceneProjectionMatrix, vp, &coords[0], &coords[1], &coords[2]);
+	
+	return Vector2(coords[0], yRes-coords[1]);
 }
 
 Vector3 OpenGLRenderer::projectRayFrom2DCoordinate(Number x, Number y, Matrix4 cameraMatrix, Matrix4 projectionMatrix) {

@@ -121,6 +121,8 @@ namespace Polycode {
 		void bindFrameBufferTextureDepth(Texture *texture);		
 		void unbindFramebuffers();
 		
+		Vector2 Project(const Matrix4 &cameraMatrix, const Matrix4 &projectionMatrix, const Vector3 &coordiante) const;
+		
 		void cullFrontFaces(bool val);
 				
 		void pushRenderDataArray(RenderDataArray *array);

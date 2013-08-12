@@ -168,7 +168,7 @@ void UIMenu::fitToScreenVertical() {
 	// Make sure the entity doesn't go past the bottom of the screen.
 	if(dropDownBox->getHeight() < CoreServices::getInstance()->getCore()->getYRes()) {
 		// If the entity is as high as the screen, no point trying to fit it in vertically.
-		Vector2 screenPos = this->getScreenPosition();
+		Vector2 screenPos = this->getScreenPositionForMainCamera();
 		Number exceedScreenBottom = screenPos.y + dropDownBox->getHeight() - CoreServices::getInstance()->getCore()->getYRes();
 		if(exceedScreenBottom > 0) {
 			this->setPosition(this->getPosition().x, this->getPosition().y - exceedScreenBottom);
