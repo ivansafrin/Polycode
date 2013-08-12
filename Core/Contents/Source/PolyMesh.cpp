@@ -794,8 +794,10 @@ namespace Polycode {
 					vector<Polygon*> connectedFaces = getConnectedFaces(v);
 					for(int k=0; k < connectedFaces.size(); k++) {					
 						normal += connectedFaces[k]->getFaceNormal();
-					}					
-					normal = normal / connectedFaces.size();
+					}
+					if(connectedFaces.size() > 0) {
+						normal = normal / connectedFaces.size();
+					}
 					normal.Normalize();
 					v->setNormal(normal.x, normal.y, normal.z);
 				}

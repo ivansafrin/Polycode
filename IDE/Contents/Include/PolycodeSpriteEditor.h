@@ -79,7 +79,7 @@ class PolycodeSpriteEditor : public PolycodeEditor {
 	
 	bool initialLoad;
 	
-	ScreenSprite *previewSprite;
+	SceneSprite *previewSprite;
 };
 
 class PolycodeSpriteEditorFactory : public PolycodeEditorFactory {

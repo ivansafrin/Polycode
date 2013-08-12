@@ -17,7 +17,6 @@
 		6D34143412B816BC0034FA9B /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D34143312B816BC0034FA9B /* IOKit.framework */; };
 		6D3B6C5B14B820A900727F17 /* ToolWindows.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D3B6C5A14B820A900727F17 /* ToolWindows.cpp */; };
 		6D3DC79D1622043A003ED2C9 /* PolycodeConsole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D3DC79C1622043A003ED2C9 /* PolycodeConsole.cpp */; };
-		6D56156814C5430300FC8BD4 /* PolycodeScreenEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D56156714C5430300FC8BD4 /* PolycodeScreenEditor.cpp */; };
 		6D6D3FA614B446A600219173 /* PolycodeToolLauncher.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D6D3FA514B446A600219173 /* PolycodeToolLauncher.cpp */; };
 		6D70AB2A12B29BF200EB6D94 /* NewFileWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D70AB2912B29BF200EB6D94 /* NewFileWindow.cpp */; };
 		6D79732E167F0D4600646407 /* PolycodeSpriteEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D79732D167F0D4600646407 /* PolycodeSpriteEditor.cpp */; };
@@ -92,8 +91,6 @@
 		6D3B6C5C14B820B000727F17 /* ToolWindows.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToolWindows.h; sourceTree = "<group>"; };
 		6D3DC79C1622043A003ED2C9 /* PolycodeConsole.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolycodeConsole.cpp; sourceTree = "<group>"; };
 		6D3DC79F16220440003ED2C9 /* PolycodeConsole.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolycodeConsole.h; sourceTree = "<group>"; };
-		6D56156514C542FB00FC8BD4 /* PolycodeScreenEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolycodeScreenEditor.h; sourceTree = "<group>"; };
-		6D56156714C5430300FC8BD4 /* PolycodeScreenEditor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolycodeScreenEditor.cpp; sourceTree = "<group>"; };
 		6D6D3FA514B446A600219173 /* PolycodeToolLauncher.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; path = PolycodeToolLauncher.cpp; sourceTree = "<group>"; };
 		6D6D3FA814B446AF00219173 /* PolycodeToolLauncher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolycodeToolLauncher.h; sourceTree = "<group>"; };
 		6D70AB2812B29BEC00EB6D94 /* NewFileWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewFileWindow.h; sourceTree = "<group>"; };
@@ -284,7 +281,6 @@
 				6DD1835F1628A4D2005A5682 /* PolycodeRemoteDebugger.h */,
 				6D3DC79F16220440003ED2C9 /* PolycodeConsole.h */,
 				6D797330167F0D4D00646407 /* PolycodeSpriteEditor.h */,
-				6D56156514C542FB00FC8BD4 /* PolycodeScreenEditor.h */,
 				6D797331167F0EA500646407 /* PolycodeProps.h */,
 				6D2AC99D14B8500A00BB63DA /* PolycodeProjectEditor.h */,
 				6D3B6C5C14B820B000727F17 /* ToolWindows.h */,
@@ -320,7 +316,6 @@
 				6D80B0CD163B14CB00EF3C04 /* PolycodeMaterialEditor.cpp */,
 				6DD1835C1628A4CC005A5682 /* PolycodeRemoteDebugger.cpp */,
 				6D3DC79C1622043A003ED2C9 /* PolycodeConsole.cpp */,
-				6D56156714C5430300FC8BD4 /* PolycodeScreenEditor.cpp */,
 				6D797332167F0EB100646407 /* PolycodeProps.cpp */,
 				6D2AC99A14B8500400BB63DA /* PolycodeProjectEditor.cpp */,
 				6D3B6C5A14B820A900727F17 /* ToolWindows.cpp */,
@@ -446,7 +441,6 @@
 				6DCAFD4314B519C900039F34 /* ExampleBrowserWindow.cpp in Sources */,
 				6D3B6C5B14B820A900727F17 /* ToolWindows.cpp in Sources */,
 				6D2AC99B14B8500400BB63DA /* PolycodeProjectEditor.cpp in Sources */,
-				6D56156814C5430300FC8BD4 /* PolycodeScreenEditor.cpp in Sources */,
 				6D3DC79D1622043A003ED2C9 /* PolycodeConsole.cpp in Sources */,
 				6DD1835D1628A4CC005A5682 /* PolycodeRemoteDebugger.cpp in Sources */,
 				6D80B0CE163B14CB00EF3C04 /* PolycodeMaterialEditor.cpp in Sources */,

@@ -313,14 +313,10 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain(PolycodeEditor *editor) {
 	sizePreviewShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1);
 	baseEntity->addChild(sizePreviewShape);
 	sizePreviewShape->setColor(1.0, 1.0, 1.0, 0.0);
-	sizePreviewShape->strokeEnabled = true;
-	sizePreviewShape->strokeColor = Color(1.0, 0.3, 0.0, 0.8);
 	
 	screenPreviewShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1);
 	baseEntity->addChild(screenPreviewShape);
 	screenPreviewShape->setColor(1.0, 1.0, 1.0, 0.0);
-	screenPreviewShape->strokeEnabled = true;
-	screenPreviewShape->strokeColor = Color(1.0, 1.0, 1.0, 0.5);
 
 	layerBaseEntity = new Entity();
 	layerBaseEntity->processInputEvents = true;
@@ -337,13 +333,13 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain(PolycodeEditor *editor) {
 	previewEntity->billboardMode = true;
 	previewEntity->billboardIgnoreScale = true;
 	
-	previewSound = new ScreenSound("test.wav", 50, 100);
+	previewSound = new SceneSound("test.wav", 50, 100);
 	placingPreviewEntity->addChild(previewSound);
 				
 	createSoundRef(previewSound);
 
 	
-	previewEmitter = new ScreenParticleEmitter("default.png", Particle::BILLBOARD_PARTICLE, ParticleEmitter::CONTINUOUS_EMITTER, 2.0, 30, Vector3(0.0, -40.0, 0.0), Vector3(0.0, 0.0, 0.0), Vector3(0.0, 0.0, 0.0), Vector3(10.0, 10.0, 0.0));
+	previewEmitter = new SceneParticleEmitter("default.png", Particle::BILLBOARD_PARTICLE, ParticleEmitter::CONTINUOUS_EMITTER, 2.0, 30, Vector3(0.0, -40.0, 0.0), Vector3(0.0, 0.0, 0.0), Vector3(0.0, 0.0, 0.0), Vector3(10.0, 10.0, 0.0));
 	placingPreviewEntity->addChild(previewEmitter);
 	createParticleRef(previewEmitter);
 	
@@ -357,7 +353,7 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain(PolycodeEditor *editor) {
 	previewLabel->setColor(1.0, 1.0, 1.0, 0.5);
 	previewLabel->positionAtBaseline = false;
 
-	previewSprite = new ScreenSprite("default/default.sprite");
+	previewSprite = new SceneSprite("default/default.sprite");
 	previewSprite->setAnchorPoint(0.0, 0.0, 0.0);	
 	placingPreviewEntity->addChild(previewSprite);
 	previewSprite->setColor(1.0, 1.0, 1.0, 0.5);
@@ -368,7 +364,7 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain(PolycodeEditor *editor) {
 	placingPreviewEntity->addChild(previewImage);
 	previewImage->setColor(1.0, 1.0, 1.0, 0.5);
 
-	previewInstance = new EntityInstance("default/default.entity2d");
+	previewInstance = new SceneEntityInstance("default/default.entity2d");
 	previewInstance->setAnchorPoint(0.0, 0.0, 0.0);
 	placingPreviewEntity->addChild(previewInstance);
 	previewInstance->setColor(1.0, 1.0, 1.0, 0.5);
@@ -407,9 +403,9 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain(PolycodeEditor *editor) {
 
 
 	screenTransformShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 10, 10);
-	screenTransformShape->strokeColor = Color(0.0, 0.3, 1.0, 1.0);
+//	screenTransformShape->strokeColor = Color(0.0, 0.3, 1.0, 1.0);
 	screenTransformShape->lineSmooth = true;
-	screenTransformShape->strokeEnabled = true;
+//	screenTransformShape->strokeEnabled = true;
 	screenTransformShape->setColor(1.0, 1.0, 1.0, 0.0);
 	baseEntity->addChild(screenTransformShape);		
 
@@ -446,7 +442,7 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain(PolycodeEditor *editor) {
 	transformScalerX = new UIImage("Images/ScreenEditor/transform_scaler.png");
 	transformScalerX->setColor(1.0, 0.5, 0.0, 0.7);
 	transformScalerX->setAnchorPoint(0.0, 0.0, 0.0);
-	transformScalerX->setRotation(90);
+	transformScalerX->setRoll(90);
 	transformScalerX->setPosition(50, 0);
 	screenTransform->addChild(transformScalerX);	
 	transformScalerX->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
@@ -457,7 +453,7 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain(PolycodeEditor *editor) {
 	transformScalerXY = new UIImage("Images/ScreenEditor/transform_scaler.png");
 	transformScalerXY->setColor(1.0, 1.0, 1.0, 0.7);
 	transformScalerXY->setAnchorPoint(0.0, 0.0, 0.0);
-	transformScalerXY->setRotation(-45);
+	transformScalerXY->setRoll(-45);
 	transformScalerXY->setPosition(40, -40);
 	screenTransform->addChild(transformScalerXY);
 	transformScalerXY->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
@@ -741,12 +737,12 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain(PolycodeEditor *editor) {
 	particleSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);		
 	entityProps->addPropSheet(particleSheet);
 
-	spriteSheet = new ScreenSpriteSheet();
+	spriteSheet = new SceneSpriteSheet();
 	spriteSheet->addEventListener(this, Event::CHANGE_EVENT);
 	spriteSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);	
 	entityProps->addPropSheet(spriteSheet);
 	
-	instanceSheet = new EntityInstanceSheet();
+	instanceSheet = new SceneEntityInstanceSheet();
 	instanceSheet->addEventListener(this, Event::CHANGE_EVENT);	
 	instanceSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
 	entityProps->addPropSheet(instanceSheet);
@@ -776,15 +772,11 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain(PolycodeEditor *editor) {
 	transform2dSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);	
 	entityProps->addPropSheet(transform2dSheet);
 	
-	EntitySheet = new EntitySheet();
-	entityProps->addPropSheet(EntitySheet);
-	EntitySheet->addEventListener(this, Event::CHANGE_EVENT);	
-	EntitySheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
-				
 	entitySheet = new EntitySheet();
 	entityProps->addPropSheet(entitySheet);
+	entitySheet->addEventListener(this, Event::CHANGE_EVENT);	
 	entitySheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
-	
+					
 	entityPropSheet = new EntityPropSheet();
 	entityPropSheet->addEventListener(this, Event::CHANGE_EVENT);	
 	entityPropSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
@@ -795,7 +787,7 @@ PolycodeScreenEditorMain::PolycodeScreenEditorMain(PolycodeEditor *editor) {
 	parenting = false;
 	parentingChild = NULL;	
 	
-	parentingLine = new SceneLine(Vector2(), Vector2(0,0));
+	parentingLine = new SceneLine(Vector3(), Vector3(0,0,0));
 	parentingLine->setLineWidth(4.0);
 	parentingLine->setColor(0.0, 0.5, 1.0, 0.5);
 	baseEntity->addChild(parentingLine);
@@ -827,7 +819,7 @@ void PolycodeScreenEditorMain::setGrid(int gridSize) {
 		Mesh *gridMesh = new Mesh(Mesh::LINE_MESH);
 		gridMesh->addPolygon(gridPoly);
 	
-		grid = new ScreenMesh(gridMesh);
+		grid = new SceneMesh(gridMesh);
 		grid->setColor(1.0, 1.0, 1.0, 0.1);
 		objectBaseEntity->addChild(grid);		
 	}
@@ -855,7 +847,7 @@ void PolycodeScreenEditorMain::doAction(String actionName, PolycodeEditorActionD
 	} else if(actionName == "rotate") {
 		for(int i=0; i < selectedEntities.size(); i++) {
 			selectedEntities[i]->position = screenData->entries[i].vec3;		
-			selectedEntities[i]->setRotation(screenData->entries[i].number);
+			selectedEntities[i]->setRoll(screenData->entries[i].number);
 		}
 		syncTransformToSelected();			
 	} else if(actionName == "select") {
@@ -945,7 +937,7 @@ void PolycodeScreenEditorMain::syncTransformToSelected() {
 		screenTransform->rotation.roll = selectedEntity->getCombinedRoll();
 	} else {
 			
-		Vector2 center;
+		Vector3 center;
 		Number width;
 		Number height;
 		getCenterAndSizeForSelected(&center, &width, &height);
@@ -1197,7 +1189,7 @@ void PolycodeScreenEditorMain::handleMouseMove(Vector2 position) {
 				Number newAngle = atan2(diff.x, diff.y);				
 			
 				if(selectedEntities.size() == 1) {
-					selectedEntities[0]->setRotation(baseRotateAngles[0] - (TODEGREES * (newAngle-baseAngle)));
+					selectedEntities[0]->setRoll(baseRotateAngles[0] - (TODEGREES * (newAngle-baseAngle)));
 				} else {
 				
 					groupRoll = -(newAngle-baseAngle);
@@ -1207,7 +1199,7 @@ void PolycodeScreenEditorMain::handleMouseMove(Vector2 position) {
 						
 						Vector3 v3CenterRelative = selectedEntities[i]->getParentEntity()->getConcatenatedMatrixRelativeTo(baseEntity).Inverse() * v3Center;	
 						
-						selectedEntities[i]->setRotation(baseRotateAngles[i] - (TODEGREES * (newAngle-baseAngle)));						
+						selectedEntities[i]->setRoll(baseRotateAngles[i] - (TODEGREES * (newAngle-baseAngle)));						
 						
 						Number s = sin(newAngle-baseAngle);
 						Number c = cos(newAngle-baseAngle);
@@ -1483,14 +1475,14 @@ void PolycodeScreenEditorMain::handleMouseDown(Vector2 position) {
 		break;
 		case MODE_PARTICLES:
 		{
-				ScreenParticleEmitter *placingEmitter = new ScreenParticleEmitter("default.png", Particle::BILLBOARD_PARTICLE, ParticleEmitter::CONTINUOUS_EMITTER, 2.0, 30, Vector3(0.0, -40.0, 0.0), Vector3(0.0, 0.0, 0.0), Vector3(0.0, 0.0, 0.0), Vector3(10.0, 10.0, 0.0));
+				SceneParticleEmitter *placingEmitter = new SceneParticleEmitter("default.png", Particle::BILLBOARD_PARTICLE, ParticleEmitter::CONTINUOUS_EMITTER, 2.0, 30, Vector3(0.0, -40.0, 0.0), Vector3(0.0, 0.0, 0.0), Vector3(0.0, 0.0, 0.0), Vector3(10.0, 10.0, 0.0));
 
 				placingEmitter->setPosition(previewEmitter->getPosition2D());
 				placingEmitter->processInputEvents = true;
 				placingEmitter->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 				placingEmitter->addEventListener(this, InputEvent::EVENT_MOUSEUP);				
 				currentLayer->addChild(placingEmitter);
-				placingEmitter->id = "ScreenParticleEmitter."+String::IntToString(placementCount);
+				placingEmitter->id = "SceneParticleEmitter."+String::IntToString(placementCount);
 				placingEmitter->blockMouseInput = true;				
 				placementCount++;	
 				
@@ -1546,13 +1538,13 @@ void PolycodeScreenEditorMain::handleMouseDown(Vector2 position) {
 		break;			
 		case MODE_SPRITE:
 		{
-				ScreenSprite *placingSprite = new ScreenSprite(previewSprite->getFileName());			
+				SceneSprite *placingSprite = new SceneSprite(previewSprite->getFileName());			
 				placingSprite->setPosition(previewSprite->getPosition2D());
 				placingSprite->processInputEvents = true;
 				placingSprite->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 				placingSprite->addEventListener(this, InputEvent::EVENT_MOUSEUP);				
 				currentLayer->addChild(placingSprite);
-				placingSprite->id = "ScreenSprite."+String::IntToString(placementCount);
+				placingSprite->id = "SceneSprite."+String::IntToString(placementCount);
 				placingSprite->blockMouseInput = true;
 				placingSprite->getTexture()->reloadOnFileModify = true;
 				placingSprite->getResourceEntry()->reloadOnFileModify = true;
@@ -1579,7 +1571,7 @@ void PolycodeScreenEditorMain::handleMouseDown(Vector2 position) {
 		break;		
 		case MODE_LINK:
 		{
-				EntityInstance *placingInstance = new EntityInstance(previewInstance->getFileName());
+				SceneEntityInstance *placingInstance = new SceneEntityInstance(previewInstance->getFileName());
 				placingInstance->setPosition(previewInstance->getPosition2D());
 				placingInstance->processInputEvents = true;
 				placingInstance->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
@@ -1639,7 +1631,7 @@ void PolycodeScreenEditorMain::handleMouseDown(Vector2 position) {
 		{
 				Sound *sound = previewSound->getSound();
 				
-				ScreenSound *placingSound = new ScreenSound(sound->getFileName(), sound->getReferenceDistance(), sound->getMaxDistance());
+				SceneSound *placingSound = new SceneSound(sound->getFileName(), sound->getReferenceDistance(), sound->getMaxDistance());
 				placingSound->setPosition(previewSound->getPosition2D());
 				placingSound->processInputEvents = true;
 				placingSound->setAnchorPoint(0.0, 0.0, 0.0);
@@ -1648,7 +1640,7 @@ void PolycodeScreenEditorMain::handleMouseDown(Vector2 position) {
 				placingSound->setWidth(50);
 				placingSound->setHeight(50);				
 				currentLayer->addChild(placingSound);
-				placingSound->id = "ScreenSound."+String::IntToString(placementCount);
+				placingSound->id = "SceneSound."+String::IntToString(placementCount);
 				placingSound->blockMouseInput = true;	
 				placementCount++;
 				
@@ -1696,7 +1688,7 @@ void PolycodeScreenEditorMain::createEntityRef(Entity *entity) {
 	
 }
 
-void PolycodeScreenEditorMain::createParticleRef(ScreenParticleEmitter *target) {
+void PolycodeScreenEditorMain::createParticleRef(SceneParticleEmitter *target) {
 
 	UIImage *markerImage = new UIImage("Images/particle_system_icon_editor.png");
 	markerImage->addTag("editorRef");
@@ -1720,7 +1712,7 @@ void PolycodeScreenEditorMain::createParticleRef(ScreenParticleEmitter *target) 
 		
 }
 
-void PolycodeScreenEditorMain::createSoundRef(ScreenSound *target) {
+void PolycodeScreenEditorMain::createSoundRef(SceneSound *target) {
 	UIImage *markerImage = new UIImage("Images/ScreenEditor/screen_sound_icon.png");
 	target->addChild(markerImage);
 	markerImage->setAnchorPoint(0.0, 0.0, 0.0);
@@ -1851,12 +1843,12 @@ void PolycodeScreenEditorMain::selectEntity(Entity *entity, bool doAction) {
 		}
 	}
 
-	if(dynamic_cast<ScreenParticleEmitter*>(entity)) {
-		particleSheet->emitter = (ScreenParticleEmitter*) entity;
+	if(dynamic_cast<SceneParticleEmitter*>(entity)) {
+		particleSheet->emitter = (SceneParticleEmitter*) entity;
 	}
 	
-	if(dynamic_cast<ScreenSprite*>(entity)) {
-		spriteSheet->sprite = (ScreenSprite*) entity;
+	if(dynamic_cast<SceneSprite*>(entity)) {
+		spriteSheet->sprite = (SceneSprite*) entity;
 	}
 	
 	if(dynamic_cast<ScenePrimitive*>(entity)) {
@@ -1872,12 +1864,12 @@ void PolycodeScreenEditorMain::selectEntity(Entity *entity, bool doAction) {
 		labelSheet->label = (SceneLabel*) entity;
 	}
 
-	if(dynamic_cast<ScreenSound*>(entity)) {
-		soundSheet->sound = ((ScreenSound*) entity);
+	if(dynamic_cast<SceneSound*>(entity)) {
+		soundSheet->sound = ((SceneSound*) entity);
 	}
 	
-	if(dynamic_cast<EntityInstance*>(entity) && entity != layerBaseEntity) {
-		instanceSheet->instance = ((EntityInstance*) entity);
+	if(dynamic_cast<SceneEntityInstance*>(entity) && entity != layerBaseEntity) {
+		instanceSheet->instance = ((SceneEntityInstance*) entity);
 	}
 			
 		
@@ -1963,7 +1955,7 @@ void PolycodeScreenEditorMain::deleteEntity(Entity *entity) {
 void PolycodeScreenEditorMain::handleEvent(Event *event) {
 
 	if(event->getEventCode() == Event::RESOURCE_RELOAD_EVENT && event->getEventType() == "") {
-			EntityInstanceResourceEntry *entry = dynamic_cast<EntityInstanceResourceEntry*>(event->getDispatcher());
+			SceneEntityInstanceResourceEntry *entry = dynamic_cast<SceneEntityInstanceResourceEntry*>(event->getDispatcher());
 			if(entry) {	
 				applyEditorProperties(entry->getInstance());
 				applyEditorOnlyChildren(entry->getInstance());				
@@ -2510,7 +2502,7 @@ void PolycodeScreenEditorMain::Resize(Number width, Number height) {
 		firstResize = false;
 	}
 	
-	UIElement::Resize(width, height);
+	UIElement::Resize(getWidth(), getHeight());
 }
 
 void PolycodeScreenEditorMain::handleDroppedFile(OSFileEntry file, Number x, Number y) {
@@ -2701,11 +2693,11 @@ void PolycodeScreenEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
 		}
 	}
 
-	if(dynamic_cast<EntityInstance*>(entity) && entity != editorMain->layerBaseEntity) {
+	if(dynamic_cast<SceneEntityInstance*>(entity) && entity != editorMain->layerBaseEntity) {
 		if(!(*(entry))["type"])
-			entry->addChild("type", "EntityInstance");
-		EntityInstance *instance = (EntityInstance*) entity;
-		ObjectEntry *instanceEntry = entry->addChild("EntityInstance");		
+			entry->addChild("type", "SceneEntityInstance");
+		SceneEntityInstance *instance = (SceneEntityInstance*) entity;
+		ObjectEntry *instanceEntry = entry->addChild("SceneEntityInstance");		
 		instanceEntry->addChild("filePath", instance->getFileName());
 	}
 	
@@ -2718,13 +2710,13 @@ void PolycodeScreenEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
 	}
 
 	
-	if(dynamic_cast<ScreenParticleEmitter*>(entity)) {
+	if(dynamic_cast<SceneParticleEmitter*>(entity)) {
 		if(!(*(entry))["type"])
-			entry->addChild("type", "ScreenParticleEmitter");
+			entry->addChild("type", "SceneParticleEmitter");
 			
-		ScreenParticleEmitter *emitter = (ScreenParticleEmitter*) entity;
+		SceneParticleEmitter *emitter = (SceneParticleEmitter*) entity;
 		
-		ObjectEntry *emitterEntry = entry->addChild("ScreenParticleEmitter");		
+		ObjectEntry *emitterEntry = entry->addChild("SceneParticleEmitter");		
 
 		emitterEntry->addChild("texturePath", emitter->getParticleTexture()->getResourcePath());
 		emitterEntry->addChild("radiusX", emitter->emitterRadius.x);
@@ -2767,12 +2759,12 @@ void PolycodeScreenEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
 	}
 		
 	
-	if(dynamic_cast<ScreenSprite*>(entity)) {
+	if(dynamic_cast<SceneSprite*>(entity)) {
 		if(!(*(entry))["type"])
-			entry->addChild("type", "ScreenSprite");
-		ScreenSprite *sprite = (ScreenSprite*) entity;
+			entry->addChild("type", "SceneSprite");
+		SceneSprite *sprite = (SceneSprite*) entity;
 		
-		ObjectEntry *spriteEntry = entry->addChild("ScreenSprite");
+		ObjectEntry *spriteEntry = entry->addChild("SceneSprite");
 		spriteEntry->addChild("filePath", sprite->getFileName());
 		
 		String animName = "";
@@ -2794,12 +2786,12 @@ void PolycodeScreenEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
 		labelEntry->addChild("aaMode", (int)label->getLabel()->getAntialiasMode());
 	}
 	
-	if(dynamic_cast<ScreenSound*>(entity)) {
-		ScreenSound *sound = (ScreenSound*) entity;
+	if(dynamic_cast<SceneSound*>(entity)) {
+		SceneSound *sound = (SceneSound*) entity;
 		
 		if(!(*(entry))["type"])
-			entry->addChild("type", "ScreenSound");
-		ObjectEntry *soundEntry = entry->addChild("ScreenSound");		
+			entry->addChild("type", "SceneSound");
+		ObjectEntry *soundEntry = entry->addChild("SceneSound");		
 		soundEntry->addChild("filePath", sound->getSound()->getFileName());
 		soundEntry->addChild("refDistance", sound->getSound()->getReferenceDistance());
 		soundEntry->addChild("maxDistance", sound->getSound()->getMaxDistance());
@@ -2931,8 +2923,8 @@ void PolycodeScreenEditorMain::applyEditorProperties(Entity *entity) {
 		applyEditorProperties((Entity*)entity->getChildAtIndex(i));
 	}
 
-	if(dynamic_cast<EntityInstance*>(entity) && entity != layerBaseEntity) {
-		EntityInstance *instance = (((EntityInstance*)entity));
+	if(dynamic_cast<SceneEntityInstance*>(entity) && entity != layerBaseEntity) {
+		SceneEntityInstance *instance = (((SceneEntityInstance*)entity));
 		instance->cloneUsingReload = true;
 		applyEditorOnlyChildren(instance);
 		instance->getResourceEntry()->reloadOnFileModify = true;		
@@ -2940,8 +2932,8 @@ void PolycodeScreenEditorMain::applyEditorProperties(Entity *entity) {
 			instance->getResourceEntry()->addEventListener(this, Event::RESOURCE_RELOAD_EVENT);
 			CoreServices::getInstance()->getResourceManager()->addResource(instance->getResourceEntry());
 		}
-	} else if(dynamic_cast<ScreenSprite*>(entity)) {	
-		ScreenSprite *sprite = (((ScreenSprite*)entity));	
+	} else if(dynamic_cast<SceneSprite*>(entity)) {	
+		SceneSprite *sprite = (((SceneSprite*)entity));	
 		sprite->getResourceEntry()->reloadOnFileModify = true;
 		if(!CoreServices::getInstance()->getResourceManager()->hasResource(sprite->getResourceEntry())) { 
 			CoreServices::getInstance()->getResourceManager()->addResource(sprite->getResourceEntry());
@@ -2950,18 +2942,18 @@ void PolycodeScreenEditorMain::applyEditorProperties(Entity *entity) {
 	} else if(dynamic_cast<UIImage*>(entity)) {
 	} else if(dynamic_cast<SceneLabel*>(entity)) {
 
-	} else if(dynamic_cast<ScreenSound*>(entity)) {
-		createSoundRef((ScreenSound*)entity);
-	} else if(dynamic_cast<ScreenParticleEmitter*>(entity)) {
-		createParticleRef((ScreenParticleEmitter*)entity);		
+	} else if(dynamic_cast<SceneSound*>(entity)) {
+		createSoundRef((SceneSound*)entity);
+	} else if(dynamic_cast<SceneParticleEmitter*>(entity)) {
+		createParticleRef((SceneParticleEmitter*)entity);		
 	} else {	
 		if(entity != layerBaseEntity && entity->getEntityProp("editor_type") != "layer") {
 			createEntityRef(entity);
 		}
 	}
 	
-	if(dynamic_cast<ScreenMesh*>(entity)) {	
-		Texture *texture = ((ScreenMesh*)entity)->getTexture();
+	if(dynamic_cast<SceneMesh*>(entity)) {	
+		Texture *texture = ((SceneMesh*)entity)->getTexture();
 		if(texture) {
 			texture->reloadOnFileModify = true;
 		}
@@ -2980,7 +2972,7 @@ void PolycodeScreenEditorMain::applyEditorProperties(Entity *entity) {
 bool PolycodeScreenEditor::openFile(OSFileEntry filePath) {
 	PolycodeEditor::openFile(filePath);	
 		
-	EntityInstance *loadedInstance = new EntityInstance(filePath.fullPath);
+	SceneEntityInstance *loadedInstance = new SceneEntityInstance(filePath.fullPath);
 	
 	editorMain->layerBaseEntity = loadedInstance;
 	editorMain->objectBaseEntity->addChild(loadedInstance);
@@ -3030,8 +3022,8 @@ PropertiesSizer::~PropertiesSizer() {
 }
 
 void PropertiesSizer::Resize(Number width, Number height) {
-	sizer->Resize(width, height);
-	UIElement::Resize(width, height);
+	sizer->Resize(getWidth(), getHeight());
+	UIElement::Resize(getWidth(), getHeight());
 }
 
 

@@ -84,6 +84,8 @@
 #include "PolyServerWorld.h"
 #include "PolySocket.h"
 #include "PolyRay.h"
+#include "PolySceneSprite.h"
+#include "PolySceneEntityInstance.h"
 #include "PolyGlobals.h"
 
 #ifdef _WINDOWS

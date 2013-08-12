@@ -889,13 +889,20 @@ MouseEventResult Entity::onMouseUp(const Ray &ray, int mouseButton, int timestam
 	ret.blocked = false;
 	
 	if(processInputEvents && enabled) {
+	
+		Vector3 localCoordinate = Vector3(ray.origin.x,ray.origin.y,0);
+		Matrix4 inverse = getConcatenatedMatrix().Inverse();
+		localCoordinate = inverse * localCoordinate;			
+	
+	
 		if(ray.boxIntersect(bBox, getAnchorAdjustedMatrix())) {
 			ret.hit = true;			
-			dispatchEvent(new InputEvent(Vector2(), timestamp), InputEvent::EVENT_MOUSEUP);
-						
+			dispatchEvent(new InputEvent(Vector2(localCoordinate.x, localCoordinate.y), timestamp), InputEvent::EVENT_MOUSEUP);
 			if(blockMouseInput) {
 				ret.blocked = true;
 			}
+		} else {
+			dispatchEvent(new InputEvent(Vector2(localCoordinate.x, localCoordinate.y), timestamp), InputEvent::EVENT_MOUSEUP_OUTSIDE);
 		}
 		
 		for(int i=0; i < children.size(); i++) {
@@ -917,12 +924,17 @@ MouseEventResult Entity::onMouseMove(const Ray &ray, int timestamp) {
 	ret.blocked = false;
 	
 	if(processInputEvents && enabled) {
+	
+		Vector3 localCoordinate = Vector3(ray.origin.x,ray.origin.y,0);
+		Matrix4 inverse = getConcatenatedMatrix().Inverse();
+		localCoordinate = inverse * localCoordinate;	
+	
 		if(ray.boxIntersect(bBox, getAnchorAdjustedMatrix())) {	
 			ret.hit = true;			
-			dispatchEvent(new InputEvent(Vector2(), timestamp), InputEvent::EVENT_MOUSEMOVE);
+			dispatchEvent(new InputEvent(Vector2(localCoordinate.x, localCoordinate.y), timestamp), InputEvent::EVENT_MOUSEMOVE);
 			
 			if(!mouseOver) {
-				dispatchEvent(new InputEvent(Vector2(), timestamp), InputEvent::EVENT_MOUSEOVER);
+				dispatchEvent(new InputEvent(Vector2(localCoordinate.x, localCoordinate.y), timestamp), InputEvent::EVENT_MOUSEOVER);
 				mouseOver = true;
 			}			
 			
@@ -931,7 +943,7 @@ MouseEventResult Entity::onMouseMove(const Ray &ray, int timestamp) {
 			}
 		} else {
 			if(mouseOver) {
-				dispatchEvent(new InputEvent(Vector2(), timestamp), InputEvent::EVENT_MOUSEOUT);
+				dispatchEvent(new InputEvent(Vector2(localCoordinate.x, localCoordinate.y), timestamp), InputEvent::EVENT_MOUSEOUT);
 				mouseOver = false;
 			}		
 		}

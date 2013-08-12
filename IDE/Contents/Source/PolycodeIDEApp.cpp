@@ -76,8 +76,9 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 			
 	printf("creating font editor\n"); 
 	
-	Screen *screen = new Screen();	
-	screen->rootEntity.setDefaultScreenOptions(true);
+	Scene *screen = new Scene(Scene::SCENE_2D_TOPLEFT);	
+	screen->rootEntity.processInputEvents = true;
+//	screen->rootEntity.setDefaultScreenOptions(true);
 	
 	editorManager = new PolycodeEditorManager();
 	
@@ -129,7 +130,6 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	
 	editorManager->registerEditorFactory(new PolycodeImageEditorFactory());
 	editorManager->registerEditorFactory(new PolycodeMaterialEditorFactory());	
-	editorManager->registerEditorFactory(new PolycodeScreenEditorFactory());	
 	editorManager->registerEditorFactory(new PolycodeFontEditorFactory());
 	editorManager->registerEditorFactory(new PolycodeTextEditorFactory());
 	editorManager->registerEditorFactory(new PolycodeProjectEditorFactory(projectManager));

@@ -219,7 +219,7 @@ EditCurve::EditCurve(BezierCurve *targetCurve, Color curveColor) : UIElement() {
 		poly->addVertex(0.0, 0.0, 0.0);
 	}
 	
-	visMesh = new ScreenMesh(Mesh::LINE_STRIP_MESH);
+	visMesh = new SceneMesh(Mesh::LINE_STRIP_MESH);
 	visMesh->getMesh()->addPolygon(poly);
 	
 	visMesh->lineSmooth = true;
@@ -489,12 +489,12 @@ EditorHolder::~EditorHolder() {
 		
 void EditorHolder::Resize(Number width, Number height) {
 	if(currentEditor) {
-		currentEditor->Resize(width, height);
+		currentEditor->Resize(getWidth(), getHeight());
 	}
 }
 
 
-PolycodeFrame::PolycodeFrame() : Entity() {
+PolycodeFrame::PolycodeFrame() : UIElement() {
 
 	globalFrame = this;
 	processInputEvents = true;
@@ -849,7 +849,7 @@ void PolycodeFrame::handleEvent(Event *event) {
 			break;
 			case InputEvent::EVENT_MOUSEMOVE:			
 				if(isDragging) {
-					dragEntity->setPosition(((InputEvent*)event)->mousePosition);
+					//dragEntity->setPosition(((InputEvent*)event)->mousePosition);
 				}
 			break;
 			// TODO: add in key combos to switch editors in reverse order

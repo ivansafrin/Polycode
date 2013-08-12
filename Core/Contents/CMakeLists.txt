@@ -80,6 +80,8 @@ SET(polycore_SRCS
     Source/PolyClient.cpp
     Source/PolyServer.cpp
     Source/PolyRay.cpp
+    Source/PolySceneSprite.cpp
+    Source/PolySceneEntityInstance.cpp
 )
 
 SET(polycore_HDRS
@@ -164,6 +166,8 @@ SET(polycore_HDRS
     Include/PolyServer.h
     Include/PolyServerWorld.h
     Include/PolyRay.h
+    Include/PolySceneSprite.h
+    Include/PolySceneEntityInstance.h
 )
 
 SET(CMAKE_DEBUG_POSTFIX "_d")

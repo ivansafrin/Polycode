@@ -99,7 +99,7 @@ PostEditorPane::~PostEditorPane() {
 }
 
 void PostEditorPane::Resize(Number width, Number height) {
-	mainSizer->Resize(width, height);
+	mainSizer->Resize(getWidth(), getHeight());
 	headerBgBottom->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, 30);	
 	propList->Resize(width/2.0, height- mainSizer->getMainHeight());
 	
@@ -107,7 +107,7 @@ void PostEditorPane::Resize(Number width, Number height) {
 	optionsPropList->Resize(width/2.0, height- mainSizer->getMainHeight());
 	optionsPropList->setPosition(floor(width/2.0), optionsPropList->getPosition().y);
 	optionsPropList->updateProps();	
-	UIElement::Resize(width, height);
+	UIElement::Resize(getWidth(), getHeight());
 	adjustPreview();
 }
 
@@ -640,7 +640,7 @@ void PostPreviewBox::Resize(Number width, Number height) {
 	int textureHeight = (int) (height-30);
 	renderTexture->resizeRenderTexture(textureWidth, textureHeight);
 	previewShape->setTexture(renderTexture->getTargetTexture());	
-	UIElement::Resize(width, height);
+	UIElement::Resize(getWidth(), getHeight());
 	
 	if(currentMaterial) {
 		for(int i=0; i < currentMaterial->getNumShaderRenderTargets(); i++) {
@@ -741,9 +741,6 @@ MaterialPreviewBox::MaterialPreviewBox() : UIElement() {
 	previewShape->setAnchorPoint(-1.0, -1.0, 0.0);	
 	previewShape->setTexture(renderTexture->getTargetTexture());
 	previewShape->setPosition(20,40);
-	previewShape->strokeEnabled = true;
-	previewShape->strokeColor = Color(1.0, 1.0, 1.0, 0.2);
-	previewShape->setStrokeWidth(1.0);
 	previewBase->addChild(previewShape);
 	
 	shapeSelector = new UIImage("Images/small_selector.png");
@@ -987,10 +984,10 @@ MaterialMainWindow::MaterialMainWindow() : UIElement() {
 void MaterialMainWindow::Resize(Number width, Number height) {	
 	Vector2 pos = getScreenPosition();	
 	scissorBox.setRect(pos.x,pos.y,width, height);
-	materialPane->Resize(width, height);
-	shaderPane->Resize(width, height);
-	cubemapPane->Resize(width, height);
-	postPane->Resize(width, height);
+	materialPane->Resize(getWidth(), getHeight());
+	shaderPane->Resize(getWidth(), getHeight());
+	cubemapPane->Resize(getWidth(), getHeight());
+	postPane->Resize(getWidth(), getHeight());
 }
 
 MaterialBrowser::MaterialBrowser() : UIElement() {

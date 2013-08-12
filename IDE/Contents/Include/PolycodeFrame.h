@@ -97,7 +97,7 @@ class EditCurve : public UIElement {
 		void handleEvent(Event *event);
 		
 		BezierCurve *targetCurve;
-		ScreenMesh *visMesh;
+		SceneMesh *visMesh;
 		Polycode::Polygon *poly;	
 		
 		EditPoint *pointToRemove;
@@ -151,7 +151,7 @@ class EditorHolder : public UIElement {
 		
 };
 
-class PolycodeFrame : public Entity {
+class PolycodeFrame : public UIElement {
 public:
 	
 	PolycodeFrame();

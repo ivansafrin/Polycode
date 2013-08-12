@@ -154,6 +154,7 @@ namespace Polycode {
 			
 			bool showVertexNormals;
 	
+			void setLineWidth(Number newWidth);
 					
 			Number lineWidth;
 			bool lineSmooth;

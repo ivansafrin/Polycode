@@ -183,6 +183,10 @@ void SceneMesh::setSkeleton(Skeleton *skeleton) {
 	}	
 }
 
+void SceneMesh::setLineWidth(Number newWidth) {
+	lineWidth = newWidth;
+}
+
 Material *SceneMesh::getMaterial() {
 	return material;
 }

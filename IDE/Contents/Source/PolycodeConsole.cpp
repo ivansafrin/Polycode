@@ -343,6 +343,6 @@ void PolycodeConsole::_print(String msg) {
 }
 
 void PolycodeConsole::Resize(Number width, Number height) {
-	backtraceSizer->Resize(width, height);
+	backtraceSizer->Resize(getWidth(), getHeight());
 	backtraceSizer->setPosition(0, 0);
 }

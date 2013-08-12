@@ -320,10 +320,10 @@ class TextureProp : public PropProp {
 		String currentData;
 };
 
-class ScreenSpriteProp : public PropProp {
+class SceneSpriteProp : public PropProp {
 	public:
-		ScreenSpriteProp(String caption);
-		~ScreenSpriteProp();
+		SceneSpriteProp(String caption);
+		~SceneSpriteProp();
 		void handleEvent(Event *event);
 		
 		void setPropData(PolycodeEditorPropActionData* data);
@@ -331,7 +331,7 @@ class ScreenSpriteProp : public PropProp {
 		void set(String fileName);
 		String get();		
 				
-		ScreenSprite *previewSprite;
+		SceneSprite *previewSprite;
 		UIButton *changeButton;
 		
 		String lastData;
@@ -339,10 +339,10 @@ class ScreenSpriteProp : public PropProp {
 };
 
 
-class EntityInstanceProp : public PropProp {
+class SceneEntityInstanceProp : public PropProp {
 	public:
-		EntityInstanceProp(String caption);
-		~EntityInstanceProp();
+		SceneEntityInstanceProp(String caption);
+		~SceneEntityInstanceProp();
 		void handleEvent(Event *event);			
 		
 		void setPropData(PolycodeEditorPropActionData* data);
@@ -350,7 +350,7 @@ class EntityInstanceProp : public PropProp {
 		void set(String fileName);
 		String get();		
 				
-		EntityInstance *previewInstance;
+		SceneEntityInstance *previewInstance;
 		UIButton *changeButton;
 		
 		String lastData;
@@ -527,29 +527,6 @@ class EntityPropSheet : public PropSheet {
 		
 };
 
-class ShapeSheet : public PropSheet {
-	public:
-		ShapeSheet();
-		~ShapeSheet();
-		
-		void handleEvent(Event *event);
-		void Update();
-				
-		ScenePrimitive *shape;
-	
-		ComboProp *typeProp;
-		Vector2Prop *shapeSize;
-		BoolProp *strokeProp;
-		ColorProp *strokeColorProp;
-		NumberProp *strokeSize;
-						
-		bool lastStrokeVal;
-		int lastShapeType;
-		Vector2 lastShapeSize;
-		Color lastStrokeColor;
-		Number lastStrokeSize;
-};
-
 class SceneLabelSheet : public PropSheet {
 	public:
 		SceneLabelSheet();
@@ -572,62 +549,32 @@ class SceneLabelSheet : public PropSheet {
 		BoolProp *enableAA;
 };
 
-
-class UIImageSheet : public PropSheet {
+class SceneSpriteSheet : public PropSheet {
 	public:
-		UIImageSheet();
-		~UIImageSheet();
+		SceneSpriteSheet();
+		~SceneSpriteSheet();
 		
 		void handleEvent(Event *event);
 		void Update();
 				
-		UIImage *image;
-		
-		TextureProp *texture;
-		
-};
-
-class ScreenSpriteSheet : public PropSheet {
-	public:
-		ScreenSpriteSheet();
-		~ScreenSpriteSheet();
-		
-		void handleEvent(Event *event);
-		void Update();
-				
-		ScreenSprite *sprite;	
-		ScreenSpriteProp *spriteProp;
+		SceneSprite *sprite;	
+		SceneSpriteProp *spriteProp;
 		ComboProp *defaultAnimationProp;		
-		ScreenSprite *lastSprite;
+		SceneSprite *lastSprite;
 		
 };
 
 
-class EntityInstanceSheet : public PropSheet {
+class SceneEntityInstanceSheet : public PropSheet {
 	public:
-		EntityInstanceSheet();
-		~EntityInstanceSheet();
+		SceneEntityInstanceSheet();
+		~SceneEntityInstanceSheet();
 		
 		void handleEvent(Event *event);
 		void Update();
 				
-		EntityInstance *instance;
-		EntityInstanceProp *instanceProp;
-};
-
-class EntitySheet : public PropSheet {
-	public:
-		EntitySheet();
-		~EntitySheet();
-		
-		void handleEvent(Event *event);
-		void Update();
-		
-		NumberProp *widthProp;
-		NumberProp *heightProp;
-		
-		Entity *entity;
-		Entity *lastEntity;
+		SceneEntityInstance *instance;
+		SceneEntityInstanceProp *instanceProp;
 };
 
 class SoundSheet : public PropSheet {
@@ -638,7 +585,7 @@ class SoundSheet : public PropSheet {
 		void handleEvent(Event *event);
 		void Update();
 				
-		ScreenSound *sound;
+		SceneSound *sound;
 
 		SoundProp *soundProp;		
 		NumberProp *referenceDistance;
@@ -651,80 +598,6 @@ class SoundSheet : public PropSheet {
 		Number lastMaxDistance;
 		Number lastVolume;
 		Number lastPitch;
-};
-
-class ScreenParticleSheet : public PropSheet {
-	public:
-		ScreenParticleSheet();
-		~ScreenParticleSheet();		
-		
-		void handleEvent(Event *event);
-		
-		void Update();
-
-		TextureProp *textureProp;
-		ComboProp *blendingProp;
-		BoolProp *ignoreParentMatrixProp;
-		NumberProp *numParticlesProp;
-		NumberProp *lifespanProp;
-		NumberProp *particleScaleProp;		
-		Vector2Prop *sizeProp;
-		Vector2Prop *dirProp;
-		Vector2Prop *gravProp;		
-		Vector2Prop *deviationProp;	
-		SliderProp *brightnessDeviationProp;
-		BoolProp *perlinEnableProp;
-		NumberProp *perlinModSizeProp;
-		SliderProp *speedModProp;
-		NumberProp *rotationSpeedProp;
-		BoolProp *rotationFollowsPathProp;		
-		BoolProp *useScaleCurvesProp;		
-		BezierCurveProp *scaleCurveProp;
-		
-		BoolProp *useColorCurvesProp;		
-		BezierRGBACurveProp *colorCurveProp;
-				
-		Number lastParticleScale;		
-		Number lastRotationSpeed;
-		Number lastNumParticles;
-		Number lastLifespan;
-		Vector3 lastSize;
-		Vector3 lastDeviation;
-		Vector3 lastDir;
-		Vector3 lastGrav;				
-		Number lastBrightnessDeviation;
-		bool lastEnableProp;
-		Number lastPerlinSize;
-		Number lastSpeedMod;
-		bool lastIgnoreParentMatrix;
-		bool lastRotationFollowsPath;
-		bool lastUseScaleCurves;
-		bool lastUseColorCurves;		
-		BezierCurve *lastScaleCurve;
-		
-		ScreenParticleEmitter *emitter;
-};
-
-class Transform2DSheet : public PropSheet {
-	public:
-		Transform2DSheet();
-		~Transform2DSheet();		
-		
-		void handleEvent(Event *event);
-		
-		void Update();
-		
-		Vector2Prop *positionProp;
-		Vector2Prop *scaleProp;	
-		NumberProp *rotationProp;
-		BoolProp *topLeftProp;
-				
-		Vector2 lastPositon;
-		Vector2 lastScale;
-		Number lastRotation;
-		int lastPositionMode;
-		
-		Entity *entity;
 };
 
 class PropList : public UIElement {

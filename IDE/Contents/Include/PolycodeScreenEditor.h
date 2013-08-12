@@ -160,8 +160,8 @@ class PolycodeScreenEditorMain : public UIElement {
 			
 		void processEventForEntity(Entity *childEntity, InputEvent *inputEvent);
 	
-		void createParticleRef(ScreenParticleEmitter *target);
-		void createSoundRef(ScreenSound *target);
+		void createParticleRef(SceneParticleEmitter *target);
+		void createSoundRef(SceneSound *target);
 		void createEntityRef(Entity *entity);
 		
 		void doAction(String actionName, PolycodeEditorActionData *data);
@@ -210,15 +210,13 @@ class PolycodeScreenEditorMain : public UIElement {
 		
 		Transform2DSheet *transform2dSheet;
 		EntitySheet *entitySheet;
-		ShapeSheet *shapeSheet;
 		UIImageSheet *imageSheet;
 		SceneLabelSheet *labelSheet;
 		SoundSheet *soundSheet;
 		EntityPropSheet *entityPropSheet;
-		EntityInstanceSheet *instanceSheet;
-		ScreenSpriteSheet *spriteSheet;
+		SceneEntityInstanceSheet *instanceSheet;
+		SceneSpriteSheet *spriteSheet;
 		ScreenParticleSheet *particleSheet;
-		EntitySheet *EntitySheet;
 		
 		EntityTreeView *treeView;
 		
@@ -240,15 +238,15 @@ class PolycodeScreenEditorMain : public UIElement {
 	
 		ScenePrimitive *previewShape;
 		UIImage *previewImage;
-		EntityInstance *previewInstance;		
+		SceneEntityInstance *previewInstance;		
 		SceneLabel *previewLabel;							
 		Entity *previewEntity;
-		ScreenParticleEmitter *previewEmitter;
+		SceneParticleEmitter *previewEmitter;
 							
-		ScreenSound *previewSound;
-		ScreenSprite *previewSprite;
+		SceneSound *previewSound;
+		SceneSprite *previewSprite;
 											
-		ScreenMesh *grid;
+		SceneMesh *grid;
 
 		bool firstResize;
 		

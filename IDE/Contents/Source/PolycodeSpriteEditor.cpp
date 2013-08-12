@@ -271,7 +271,7 @@ bool PolycodeSpriteEditor::openFile(OSFileEntry filePath) {
 					
 	initialLoad = true;
 	
-	previewSprite = new ScreenSprite(filePath.fullPath);
+	previewSprite = new SceneSprite(filePath.fullPath);
 	addChild(previewSprite);
 	previewSprite->setAnchorPoint(-1.0, -1.0, 0.0);
 	previewSprite->setPosition(400, 80);				
