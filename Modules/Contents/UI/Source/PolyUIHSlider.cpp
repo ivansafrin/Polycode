@@ -144,8 +144,8 @@ void UIHSlider::handleEvent(Event *event) {
 	if(event->getDispatcher() == gripRect) {
 		InputEvent *inputEvent = (InputEvent*)event;
 		switch(event->getEventCode()) {
-			case InputEvent::EVENT_MOUSEDOWN:
-				gripRect->startDrag(inputEvent->mousePosition.x-gripRect->getPosition().x,inputEvent->mousePosition.y-gripRect->getPosition().y);
+			case InputEvent::EVENT_MOUSEDOWN:			
+				gripRect->startDrag(inputEvent->mousePosition.x,inputEvent->mousePosition.y);
 				dragging = true;				
 			break;
 			case InputEvent::EVENT_MOUSEUP:
