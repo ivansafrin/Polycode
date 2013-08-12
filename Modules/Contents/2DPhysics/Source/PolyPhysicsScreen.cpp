@@ -474,7 +474,7 @@ PhysicsScene2DEntity *PhysicsScene2D::addPhysicsChild(Entity *newEntity, int ent
 }
 
 PhysicsScene2DEntity *PhysicsScene2D::trackPhysicsChild(Entity *newEntity, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation, int groupIndex) {
-	newEntity->setPositionMode(Entity::POSITION_CENTER);
+
 	PhysicsScene2DEntity *newPhysicsEntity = new PhysicsScene2DEntity(newEntity, world, worldScale, entType, isStatic, friction, density, restitution, isSensor,fixedRotation, groupIndex);
 	physicsChildren.push_back(newPhysicsEntity);
 	newPhysicsEntity->body->SetAwake(true);

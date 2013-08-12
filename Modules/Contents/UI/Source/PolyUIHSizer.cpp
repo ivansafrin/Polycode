@@ -37,7 +37,7 @@ UIHSizer::UIHSizer(Number width, Number height, Number mainWidth, bool leftSizer
 	this->mainWidth = mainWidth;
 	
 	separatorBgShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1,height);
-	separatorBgShape->setPositionMode(Entity::POSITION_TOPLEFT);
+	separatorBgShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	separatorBgShape->setColor(0.0, 0.0, 0.0, 1.0);	
 	addChild(separatorBgShape);
 	
@@ -50,7 +50,7 @@ UIHSizer::UIHSizer(Number width, Number height, Number mainWidth, bool leftSizer
 	secondElement = NULL;
 	
 	separatorHitShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 8,height);
-	separatorHitShape->setPositionMode(Entity::POSITION_TOPLEFT);
+	separatorHitShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	separatorHitShape->setColor(1.0, 0.0, 0.0, 0.5);	
 	separatorHitShape->blockMouseInput = true;	
 	addChild(separatorHitShape);

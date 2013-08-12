@@ -147,7 +147,7 @@ namespace Polycode {
 		
 		void translate2D(Number x, Number y);
 		void rotate2D(Number angle);
-		void scale2D(Vector2 *scale);
+		void scale2D(const Vector2 &scale);
 		
 		void enableScissor(bool val);
 		void setScissorBox(Polycode::Rectangle box);		
@@ -165,9 +165,9 @@ namespace Polycode {
 		void enableFog(bool enable);
 		void setFogProperties(int fogMode, Color color, Number density, Number startDepth, Number endDepth);		
 				
-		void translate3D(Vector3 *position);
+		void translate3D(const Vector3 &position);
 		void translate3D(Number x, Number y, Number z);
-		void scale3D(Vector3 *scale);
+		void scale3D(const Vector3 &scale);
 		
 		Matrix4 getProjectionMatrix();
 		Matrix4 getModelviewMatrix();		

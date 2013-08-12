@@ -56,7 +56,7 @@ UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : 
 	textLabel->color.setColorHexFromString(conf->getStringValue("Polycode", "uiTreeFontColor"));
 	
 	bgBox = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, treeWidth, cellHeight);	
-	bgBox->setPositionMode(Entity::POSITION_TOPLEFT);
+	bgBox->setAnchorPoint(-1.0, -1.0, 0.0);
 	bgBox->setPosition(-treeOffset,0);	
 	bgBox->setColor(1, 1, 1, 0);
 	addChild(bgBox);
@@ -74,7 +74,7 @@ UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : 
 						  st,sr,sb,sl,
 						  treeWidth+(padding*2), cellHeight+(padding*2));
 	
-	selection->setPositionMode(Entity::POSITION_TOPLEFT);
+	selection->setAnchorPoint(-1.0, -1.0, 0.0);
 	selection->setPosition(-treeOffset-padding,-padding);
 	selection->visible = false;
 	addChild(selection);
@@ -105,7 +105,7 @@ UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : 
 	bgBox->addEventListener(this, InputEvent::EVENT_DOUBLECLICK);	
 	bgBox->processInputEvents = true;
 		
-	setPositionMode(Entity::POSITION_CENTER);
+	setAnchorPoint(0.0, 0.0, 0.0);
 	
 	refreshTree();
 }

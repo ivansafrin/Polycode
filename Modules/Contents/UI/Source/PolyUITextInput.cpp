@@ -68,7 +68,7 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	
 	numLines = 0;
 	
-	setPositionMode(POSITION_TOPLEFT);
+	setAnchorPoint(0.0, 0.0, 0.0);
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	
 	if(multiLine)
@@ -117,7 +117,7 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	
 	if(multiLine) {
 		lineNumberBg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1,1);
-		lineNumberBg->setPositionMode(Entity::POSITION_TOPLEFT);
+		lineNumberBg->setAnchorPoint(-1.0, -1.0, 0.0);
 		lineNumberBg->setColor(0.0, 0.0, 0.0, 0.3);
 		addChild(lineNumberBg);
 		lineNumberBg->visible = false;
@@ -143,31 +143,31 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEOVER);
 	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEOUT);
 	inputRect->processInputEvents = true;
-	inputRect->setPositionMode(Entity::POSITION_TOPLEFT);
+	inputRect->setAnchorPoint(-1.0, -1.0, 0.0);
 	
 	selectionColor = Color(181.0f/255.0f, 213.0f/255.0f, 255.0f/255.0f, 1.0f);
 	
 	selectorRectTop = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1,1);
-	selectorRectTop->setPositionMode(Entity::POSITION_TOPLEFT);
+	selectorRectTop->setAnchorPoint(-1.0, -1.0, 0.0);
 	selectorRectTop->setColor(181.0f/255.0f, 213.0f/255.0f, 255.0f/255.0f, 1);
 	selectorRectTop->visible = false;
 	textContainer->addChild(selectorRectTop);
 
 	selectorRectMiddle = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1,1);
-	selectorRectMiddle->setPositionMode(Entity::POSITION_TOPLEFT);	
+	selectorRectMiddle->setAnchorPoint(-1.0, -1.0, 0.0);	
 	selectorRectMiddle->setColor(181.0f/255.0f, 213.0f/255.0f, 255.0f/255.0f, 1);
 	selectorRectMiddle->visible = false;
 	textContainer->addChild(selectorRectMiddle);
 
 	selectorRectBottom = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1,1);
-	selectorRectBottom->setPositionMode(Entity::POSITION_TOPLEFT);	
+	selectorRectBottom->setAnchorPoint(-1.0, -1.0, 0.0);	
 	selectorRectBottom->setColor(181.0f/255.0f, 213.0f/255.0f, 255.0f/255.0f, 1);
 	selectorRectBottom->visible = false;
 	textContainer->addChild(selectorRectBottom);
 		
 	
 	blinkerRect = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, fontSize+2,0,0);
-	blinkerRect->setPositionMode(Entity::POSITION_TOPLEFT);
+	blinkerRect->setAnchorPoint(-1.0, -1.0, 0.0);
 	blinkerRect->setColor(0,0,0,1);
 	textContainer->addChild(blinkerRect);
 	blinkerRect->visible = false;
@@ -2512,8 +2512,8 @@ void UITextInput::handleEvent(Event *event) {
 						return;						
 					}
 				} else {
-					if(parentEntity) {
-						((Entity*)parentEntity)->focusChild(this);
+					if(focusParent) {
+						focusParent->focusChild(this);
 					} else {
 						hasFocus = true;
 					}

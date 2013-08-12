@@ -561,16 +561,16 @@ void OpenGLRenderer::BeginRender() {
 	currentTexture = NULL;
 }
 
-void OpenGLRenderer::translate3D(Vector3 *position) {
-	glTranslatef(position->x, position->y, position->z);
+void OpenGLRenderer::translate3D(const Vector3 &position) {
+	glTranslatef(position.x, position.y, position.z);
 }
 
 void OpenGLRenderer::translate3D(Number x, Number y, Number z) {
 	glTranslatef(x, y, z);
 }
 
-void OpenGLRenderer::scale3D(Vector3 *scale) {
-	glScalef(scale->x, scale->y, scale->z);
+void OpenGLRenderer::scale3D(const Vector3 &scale) {
+	glScalef(scale.x, scale.y, scale.z);
 }
 
 void OpenGLRenderer::bindFrameBufferTextureDepth(Texture *texture) {
@@ -802,10 +802,12 @@ void OpenGLRenderer::setTexture(Texture *texture) {
 }
 
 void OpenGLRenderer::pushMatrix() {
+	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 }
 
 void OpenGLRenderer::popMatrix() {
+	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 }
 
@@ -1039,21 +1041,6 @@ void OpenGLRenderer::drawArrays(int drawType) {
 	glDisableClientState( GL_COLOR_ARRAY );		
 }
 
-/*
-void OpenGLRenderer::draw3DVertex2UV(Vertex *vertex, Vector2 *faceUV1, Vector2 *faceUV2) {
-	if(vertex->useVertexColor)
-		glColor4f(vertex->vertexColor.r, vertex->vertexColor.g, vertex->vertexColor.b, vertex->vertexColor.a);
-
-	if(currentTexture || currentMaterial) {
-		glMultiTexCoord2f(GL_TEXTURE0, faceUV1->x, faceUV1->y);
-		glMultiTexCoord2f(GL_TEXTURE1, faceUV2->x, faceUV2->y);
-	}
-
-//	glNormal3f(vertex->normal->x, vertex->normal->y, vertex->normal->z);
-	glVertex3f(vertex->x, vertex->y, vertex->z);
-}
-*/
-
 void OpenGLRenderer::drawScreenQuad(Number qx, Number qy) {
 	setOrthoMode();
 	
@@ -1083,8 +1070,8 @@ void OpenGLRenderer::translate2D(Number x, Number y) {
 	glTranslatef(x, y, 0.0f);
 }
 
-void OpenGLRenderer::scale2D(Vector2 *scale) {
-	glScalef(scale->x, scale->y, 1.0f);
+void OpenGLRenderer::scale2D(const Vector2 &scale) {
+	glScalef(scale.x, scale.y, 1.0f);
 }
 
 void OpenGLRenderer::loadIdentity() {

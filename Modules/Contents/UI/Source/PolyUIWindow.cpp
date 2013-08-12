@@ -30,7 +30,7 @@
 using namespace Polycode;
 
 
-UIWindow::UIWindow(String windowName, Number width, Number height) : Entity(), windowTween(NULL) {
+UIWindow::UIWindow(String windowName, Number width, Number height) : UIElement(), windowTween(NULL) {
 	closeOnEscape = false;
 	
 	snapToPixels = true;
@@ -64,7 +64,7 @@ UIWindow::UIWindow(String windowName, Number width, Number height) : Entity(), w
 	titlebarRect = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, width, titleBarHeight);
 	titlebarRect->setPosition(0, titleBarOffset);
 	titlebarRect->setColor(0,0,0,0);
-	titlebarRect->setPositionMode(Entity::POSITION_TOPLEFT);
+	titlebarRect->setAnchorPoint(-1.0, -1.0, 0.0);
 	titlebarRect->processInputEvents = true;
 	addChild(titlebarRect);
 	
@@ -73,7 +73,8 @@ UIWindow::UIWindow(String windowName, Number width, Number height) : Entity(), w
 	addChild(titleLabel);
 	titleLabel->color.setColorHexFromString(conf->getStringValue("Polycode", "uiWindowFontColor"));
 	titleLabel->positionAtBaseline = false;
-		
+	titleLabel->setAnchorPoint(-1.0, -1.0, 0.0);
+			
 	closeBtn = new UIImageButton(conf->getStringValue("Polycode", "uiWindowCloseIcon"));
 	addChild(closeBtn);
 	closeIconX = conf->getNumericValue("Polycode", "uiCloseIconX");
@@ -147,12 +148,9 @@ void UIWindow::onMouseDown(Number x, Number y) {
 	if(hasFocus)
 		return;
 	hasFocus = true;
-	//dispatchEvent(new ScreenEvent(), ScreenEvent::ENTITY_MOVE_TOP);
-	for(int i=0; i < children.size(); i++) {
-		if(((Entity*)children[i])->isFocusable()) {
-			focusChild(((Entity*)children[i]));
-			return;
-		}
+
+	if(focusChildren.size() > 0) {
+		focusChild(focusChildren[0]);
 	}
 }
 

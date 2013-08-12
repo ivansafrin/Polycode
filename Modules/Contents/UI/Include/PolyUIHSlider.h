@@ -58,7 +58,7 @@ namespace Polycode {
 			Number bgHeight;
 			
 			UIBox *bgRect;
-			SceneImage *gripRect;
+			UIImage *gripRect;
 			
 			Number sliderValue;
 			Number startValue;

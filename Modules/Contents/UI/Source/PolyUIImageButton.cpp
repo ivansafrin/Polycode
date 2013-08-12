@@ -29,15 +29,16 @@
 using namespace Polycode;
 
 UIImageButton::UIImageButton(String imageName) : UIElement() {
-	setPositionMode(Entity::POSITION_TOPLEFT);
+	setAnchorPoint(-1.0, -1.0, 0.0);
 	
 	buttonImage = new SceneImage(imageName.c_str());
 	addChild(buttonImage);
 	buttonImage->depthTest = false;
+	buttonImage->setAnchorPoint(-1.0, -1.0, 0.0);
 	
 	buttonRect = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, buttonImage->getWidth(),buttonImage->getHeight(),0,0);
 	buttonRect->setColor(1,1,1,0);
-	buttonRect->setPositionMode(Entity::POSITION_TOPLEFT);
+	buttonRect->setAnchorPoint(-1.0, -1.0, 0.0);
 	addChild(buttonRect);
 	
 	buttonRect->addEventListener(this, InputEvent::EVENT_MOUSEOVER);

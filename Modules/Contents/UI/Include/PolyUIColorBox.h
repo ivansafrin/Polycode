@@ -86,8 +86,8 @@ namespace Polycode {
 			SceneImage *mainFrame;
 			SceneImage *mainBg;			
 			SceneImage *hueFrame;
-			SceneImage *hueSelector;
-			SceneImage *mainSelector;	
+			UIImage *hueSelector;
+			UIImage *mainSelector;	
 			
 			UIHSlider *alphaSlider;
 			

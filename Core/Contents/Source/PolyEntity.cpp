@@ -60,12 +60,11 @@ Entity::Entity() : EventDispatcher() {
 	processInputEvents = false;
 	blockMouseInput = false;
 	editorOnly = false; 
-	hasFocus = false;
 	snapToPixels = false;
 	tags = NULL;
+	bBox.z = 0.001;
 	mouseOver = false;
 	yAdjust = 1.0;
-	positionMode = POSITION_CENTER;
 }
 
 Entity *Entity::getEntityById(String id, bool recursive) const {
@@ -302,10 +301,6 @@ Entity::~Entity() {
 	if(tags) delete tags;
 }
 
-Vector3 Entity::getChildCenter() const {
-	return childCenter;
-}
-
 void Entity::setInverseY(bool val) {
 	if(val) {
 		yAdjust = -1.0;
@@ -323,19 +318,10 @@ bool Entity::getInverseY() {
 
 Matrix4 Entity::buildPositionMatrix() {
 	Matrix4 posMatrix;
-	switch(positionMode) {
-		case POSITION_TOPLEFT:
-			posMatrix.m[3][0] = (position.x+(bBox.x/2.0f)*scale.x);
-			posMatrix.m[3][1] = (position.y+(bBox.y/2.0f)*scale.y) * yAdjust;
-			posMatrix.m[3][2] = position.z;			
-		break;
-		case POSITION_CENTER:
-			posMatrix.m[3][0] = position.x;
-			posMatrix.m[3][1] = position.y * yAdjust;
-			posMatrix.m[3][2] = position.z;
-		break;
-	}
-
+	
+	posMatrix.m[3][0] = position.x;
+	posMatrix.m[3][1] = position.y * yAdjust;
+	posMatrix.m[3][2] = position.z;
 
 	if(snapToPixels) {
 		posMatrix.m[3][0] = round(posMatrix.m[3][0]);
@@ -344,16 +330,6 @@ Matrix4 Entity::buildPositionMatrix() {
 	}
 
 	return posMatrix;
-}
-
-void Entity::adjustMatrixForChildren() {
-	if(positionMode == POSITION_TOPLEFT) {
-		if(snapToPixels) {
-			renderer->translate2D(-floor(bBox.x/2.0f), floor(bBox.y/2.0f));			
-		} else {
-			renderer->translate2D(-bBox.x/2.0f, bBox.y/2.0f);	
-		}
-	}
 }
 
 void Entity::rebuildTransformMatrix() {
@@ -507,12 +483,15 @@ void Entity::transformAndRender() {
 		renderer->setRenderMode(Renderer::RENDER_MODE_WIREFRAME);
 	else
 		renderer->setRenderMode(Renderer::RENDER_MODE_NORMAL);	
+				
 	if(visible) {
+		renderer->pushMatrix();		
+		renderer->translate3D(-anchorPoint.x * bBox.x * 0.5, -anchorPoint.y * bBox.y * 0.5 * yAdjust, -anchorPoint.z * bBox.z * 0.5);
 		Render();
+		renderer->popMatrix();
 	}
 		
 	if(visible || (!visible && !visibilityAffectsChildren)) {
-		adjustMatrixForChildren();
 		renderChildren();	
 	}
 		
@@ -585,6 +564,13 @@ Matrix4 Entity::getConcatenatedMatrixRelativeTo(Entity *relativeEntity) {
 		return transformMatrix * parentEntity->getConcatenatedMatrixRelativeTo(relativeEntity);
 	else
 		return transformMatrix;
+}
+
+Matrix4 Entity::getAnchorAdjustedMatrix() {
+	Matrix4 mat = getConcatenatedMatrix();
+	Matrix4 adjust;
+	adjust.setPosition(-anchorPoint.x * bBox.x * 0.5, -anchorPoint.y * bBox.y * 0.5 * yAdjust, -anchorPoint.z * bBox.z * 0.5);
+	return mat * adjust;
 }
 
 Matrix4 Entity::getConcatenatedMatrix() {
@@ -850,31 +836,88 @@ void Entity::addTag(String tag) {
 	}
 }
 
-void Entity::setPositionMode(int newPositionMode) {
-	positionMode = newPositionMode;
+void Entity::setAnchorPoint(const Vector3 &anchorPoint) {
+	this->anchorPoint = anchorPoint;	
 }
 
-int Entity::getPositionMode() const {
-	return positionMode;
+void Entity::setAnchorPoint(Number x, Number y, Number z) {
+	anchorPoint.set(x,y,z);
 }
 
-MouseEventResult Entity::_onMouseDown(const Ray &ray, int mouseButton, int timestamp) {
-	MouseEventResult ret;
-	return ret;
+Vector3 Entity::getAnchorPoint() const {
+	return anchorPoint;
 }
 
-MouseEventResult Entity::_onMouseUp(const Ray &ray, int mouseButton, int timestamp) {
-	MouseEventResult ret;
-	return ret;
-}
 
-MouseEventResult Entity::_onMouseMove(const Ray &ray, int timestamp) {
+MouseEventResult Entity::onMouseDown(const Ray &ray, int mouseButton, int timestamp) {
 	MouseEventResult ret;
 	ret.hit = false;
 	ret.blocked = false;
 	
 	if(processInputEvents && enabled) {
-		if(ray.boxIntersect(bBox, getConcatenatedMatrix())) {
+		if(ray.boxIntersect(bBox, getAnchorAdjustedMatrix())) {
+			ret.hit = true;	
+			
+			Vector3 localCoordinate = Vector3(ray.origin.x,ray.origin.y,0);
+			Matrix4 inverse = getConcatenatedMatrix().Inverse();
+			localCoordinate = inverse * localCoordinate;			
+			
+			dispatchEvent(new InputEvent(Vector2(localCoordinate.x, localCoordinate.y), timestamp), InputEvent::EVENT_MOUSEDOWN);
+						
+			if(blockMouseInput) {
+				ret.blocked = true;
+			}
+		}
+		
+		for(int i=0; i < children.size(); i++) {
+			MouseEventResult childRes = children[i]->onMouseDown(ray, mouseButton, timestamp);
+				if(childRes.hit)
+					ret.hit = true;
+				
+				if(childRes.blocked) {
+					ret.blocked = true;
+					break;
+				}			
+		}
+	}
+	return ret;
+}
+
+MouseEventResult Entity::onMouseUp(const Ray &ray, int mouseButton, int timestamp) {
+	MouseEventResult ret;
+	ret.hit = false;
+	ret.blocked = false;
+	
+	if(processInputEvents && enabled) {
+		if(ray.boxIntersect(bBox, getAnchorAdjustedMatrix())) {
+			ret.hit = true;			
+			dispatchEvent(new InputEvent(Vector2(), timestamp), InputEvent::EVENT_MOUSEUP);
+						
+			if(blockMouseInput) {
+				ret.blocked = true;
+			}
+		}
+		
+		for(int i=0; i < children.size(); i++) {
+			MouseEventResult childRes = children[i]->onMouseUp(ray, mouseButton, timestamp);
+				if(childRes.hit)
+					ret.hit = true;
+				
+				if(childRes.blocked) {
+					ret.blocked = true;
+					break;
+				}			
+		}
+	}
+	return ret;}
+
+MouseEventResult Entity::onMouseMove(const Ray &ray, int timestamp) {
+	MouseEventResult ret;
+	ret.hit = false;
+	ret.blocked = false;
+	
+	if(processInputEvents && enabled) {
+		if(ray.boxIntersect(bBox, getAnchorAdjustedMatrix())) {	
 			ret.hit = true;			
 			dispatchEvent(new InputEvent(Vector2(), timestamp), InputEvent::EVENT_MOUSEMOVE);
 			
@@ -894,7 +937,7 @@ MouseEventResult Entity::_onMouseMove(const Ray &ray, int timestamp) {
 		}
 		
 		for(int i=0; i < children.size(); i++) {
-			MouseEventResult childRes = children[i]->_onMouseMove(ray, timestamp);
+			MouseEventResult childRes = children[i]->onMouseMove(ray, timestamp);
 				if(childRes.hit)
 					ret.hit = true;
 				
@@ -907,12 +950,12 @@ MouseEventResult Entity::_onMouseMove(const Ray &ray, int timestamp) {
 	return ret;
 }
 
-MouseEventResult Entity::_onMouseWheelUp(const Ray &ray, int timestamp) {
+MouseEventResult Entity::onMouseWheelUp(const Ray &ray, int timestamp) {
 	MouseEventResult ret;
 	return ret;
 }
 
-MouseEventResult Entity::_onMouseWheelDown(const Ray &ray, int timestamp) {
+MouseEventResult Entity::onMouseWheelDown(const Ray &ray, int timestamp) {
 	MouseEventResult ret;
 	return ret;
 }

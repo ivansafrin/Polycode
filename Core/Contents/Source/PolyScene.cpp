@@ -292,7 +292,7 @@ void Scene::handleEvent(Event *event) {
 				pos = activeCamera->getConcatenatedMatrix() * pos;			
 			break;
 			case SCENE_3D:
-				Vector3 pos = activeCamera->getConcatenatedMatrix().getPosition();
+				pos = activeCamera->getConcatenatedMatrix().getPosition();
 			break;		
 		}
 				
@@ -300,19 +300,19 @@ void Scene::handleEvent(Event *event) {
 		
 		switch(inputEvent->getEventCode()) {
 			case InputEvent::EVENT_MOUSEDOWN:
-				rootEntity._onMouseDown(ray, inputEvent->mouseButton, inputEvent->timestamp);
+				rootEntity.onMouseDown(ray, inputEvent->mouseButton, inputEvent->timestamp);
 			break;
 			case InputEvent::EVENT_MOUSEMOVE:
-				rootEntity._onMouseMove(ray, inputEvent->timestamp);
+				rootEntity.onMouseMove(ray, inputEvent->timestamp);
 			break;
 			case InputEvent::EVENT_MOUSEUP:
-				rootEntity._onMouseUp(ray, inputEvent->mouseButton, inputEvent->timestamp);
+				rootEntity.onMouseUp(ray, inputEvent->mouseButton, inputEvent->timestamp);
 			break;
 			case InputEvent::EVENT_MOUSEWHEEL_UP:
-				rootEntity._onMouseWheelUp(ray, inputEvent->timestamp);
+				rootEntity.onMouseWheelUp(ray, inputEvent->timestamp);
 			break;
 			case InputEvent::EVENT_MOUSEWHEEL_DOWN:
-				rootEntity._onMouseWheelDown(ray,inputEvent->timestamp);	
+				rootEntity.onMouseWheelDown(ray,inputEvent->timestamp);	
 			break;	
 		}
 	}

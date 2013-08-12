@@ -139,12 +139,6 @@ const Matrix4& Renderer::getCameraMatrix() const {
 	return cameraMatrix;
 }
 
-void Renderer::setCameraPosition(Vector3 pos) {
-	cameraPosition = pos;
-	pos = pos * -1;
-	this->translate3D(&pos);
-}
-
 void Renderer::enableScissor(bool val) {
 	scissorEnabled = val;
 }

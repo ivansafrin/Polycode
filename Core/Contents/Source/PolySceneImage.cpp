@@ -45,8 +45,6 @@ SceneImage::SceneImage(const String& fileName) : ScenePrimitive(ScenePrimitive::
 	setWidth(texture->getWidth());
 	setHeight(texture->getHeight());
 	setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, getWidth(), getHeight());
-
-	setPositionMode(POSITION_TOPLEFT);
 }
 
 SceneImage::SceneImage(Image *image) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1) {
@@ -58,8 +56,6 @@ SceneImage::SceneImage(Image *image) : ScenePrimitive(ScenePrimitive::TYPE_VPLAN
 	setWidth(texture->getWidth());
 	setHeight(texture->getHeight());	
 	setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, getWidth(), getHeight());
-
-	setPositionMode(POSITION_TOPLEFT);	
 }
 
 SceneImage::SceneImage(Texture *texture) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1)  {
@@ -71,8 +67,6 @@ SceneImage::SceneImage(Texture *texture) : ScenePrimitive(ScenePrimitive::TYPE_V
 	setWidth(texture->getWidth());
 	setHeight(texture->getHeight());	
 	setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, getWidth(), getHeight());
-
-	setPositionMode(POSITION_TOPLEFT);
 }
 
 SceneImage::~SceneImage() {

@@ -74,9 +74,10 @@ UIButton::UIButton(String text, Number width, Number height) : UIElement() {
 	buttonLabel->color.setColorHexFromString(conf->getStringValue("Polycode", "uiButtonFontColor"));
 	addChild(buttonLabel);
 	labelXPos = floor((width-buttonLabel->getWidth())/2.0f) + labelOffsetX;
-	labelYPos = labelOffsetY;
+	labelYPos = floor(height/2.0) + labelOffsetY;
 	buttonLabel->setPosition(labelXPos,labelYPos);
-	
+	buttonLabel->positionAtBaseline = true;
+	buttonLabel->setAnchorPoint(-1.0, -1.0, 0.0);
 	setWidth(width);
 	setHeight(height);
 	focusable = true;
@@ -93,7 +94,7 @@ void UIButton::Resize(Number width, Number height) {
 	matrixDirty = true;	
 	
 	labelXPos = floor((width-buttonLabel->getWidth())/2.0f) + labelOffsetX;
-	labelYPos = labelOffsetY;
+	labelYPos = floor(height/2.0) + labelOffsetY;
 	buttonLabel->setPosition(labelXPos,labelYPos);
 	
 	UIElement::Resize(width, height);
@@ -155,8 +156,8 @@ void UIButton::handleEvent(Event *event) {
 			break;
 			case InputEvent::EVENT_MOUSEDOWN:
 				pressedDown = true;
-				if(parentEntity)
-					((Entity*)parentEntity)->focusChild(this);
+				if(focusParent)
+					focusParent->focusChild(this);
 				buttonLabel->setPosition(labelXPos+1,labelYPos+1);
 				buttonRect->setPosition(1,1);
 			break;

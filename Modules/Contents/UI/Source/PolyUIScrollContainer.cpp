@@ -31,7 +31,7 @@ using namespace Polycode;
 
 UIScrollContainer::UIScrollContainer(Entity *scrolledEntity, bool hScroll, bool vScroll, Number width, Number height) : UIElement() {
 	
-	scrolledEntity->setPositionMode(Entity::POSITION_TOPLEFT);
+	scrolledEntity->setAnchorPoint(-1.0, -1.0, 0.0);
 	
 	scrolledEntity->rebuildTransformMatrix();
 	Config *conf = CoreServices::getInstance()->getConfig();

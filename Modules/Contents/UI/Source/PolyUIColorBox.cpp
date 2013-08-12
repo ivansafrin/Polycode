@@ -60,7 +60,7 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	alphaSlider->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
 	mainColorRect = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, mainFrame->getWidth(), mainFrame->getHeight());
-	mainColorRect->setPositionMode(Entity::POSITION_TOPLEFT);
+	mainColorRect->setAnchorPoint(-1.0, -1.0, 0.0);
 	mainColorRect->setPosition(padding+1, topPadding+padding+1);
 	addChild(mainColorRect);
 	addChild(mainFrame);
@@ -69,15 +69,15 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	hueFrame->setPosition(mainFrame->getPosition().x + mainFrame->getWidth()+10, topPadding+padding);
 	addChild(hueFrame);
 	
-	hueSelector = new SceneImage(hueSelectorImage);
-	hueSelector->setPositionMode(Entity::POSITION_CENTER);
+	hueSelector = new UIImage(hueSelectorImage);
+	hueSelector->setAnchorPoint(0.0, 0.0, 0.0);
 	hueSelector->setPosition(hueFrame->getPosition().x + (hueFrame->getWidth()/2.0), hueFrame->getPosition().y);
 	addChild(hueSelector);	
 
 	hueSelector->setDragLimits(Polycode::Rectangle(hueSelector->getPosition().x,hueSelector->getPosition().y,0,hueFrame->getHeight()));
 				
-	mainSelector = new SceneImage(mainSelectorImage);
-	mainSelector->setPositionMode(Entity::POSITION_CENTER);	
+	mainSelector = new UIImage(mainSelectorImage);
+	mainSelector->setAnchorPoint(0.0, 0.0, 0.0);
 	mainSelector->setPosition(mainFrame->getPosition());
 	addChild(mainSelector);	
 	
@@ -434,7 +434,7 @@ UIColorBox::UIColorBox(UIColorPicker *colorPicker, Color initialColor, Number wi
 
 
 	bgImage = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, width-(frameInset*2), height-(frameInset*2));
-	bgImage->setPositionMode(Entity::POSITION_TOPLEFT);
+	bgImage->setAnchorPoint(-1.0, -1.0, 0.0);
 	bgImage->loadTexture(bgImageFile);
 	bgImage->setPosition(frameInset, frameInset);	
 	addChild(bgImage);
@@ -443,7 +443,7 @@ UIColorBox::UIColorBox(UIColorPicker *colorPicker, Color initialColor, Number wi
 	bgImage->processInputEvents = true;
 
 	colorShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, width-(frameInset*2), height-(frameInset*2));
-	colorShape->setPositionMode(Entity::POSITION_TOPLEFT);
+	colorShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	colorShape->setPosition(frameInset, frameInset);
 	addChild(colorShape);
 

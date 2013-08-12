@@ -138,6 +138,8 @@ namespace Polycode {
 			
 			Matrix4 getConcatenatedMatrixRelativeTo(Entity *relativeEntity);
 			
+			Matrix4 getAnchorAdjustedMatrix();
+			
 			/** 
 			* Returns Same as getConcatenatedMatrix(), but contains only roll information for rotation. Used internally for billboards.
 			@return Entity's concatenated roll matrix.
@@ -508,19 +510,22 @@ namespace Polycode {
 			*/						
 			Number getCompoundBBoxRadius() const;
 			
+			
+			void setAnchorPoint(const Vector3 &anchorPoint);
+			void setAnchorPoint(Number x, Number y, Number z);			
+			Vector3 getAnchorPoint() const;
+			
 			/**
 			* Sets the bounding box radius.
 			* @param rad New bounding box radius.
 			*/
 			void setBBoxRadius(Number rad);		
 			
-			MouseEventResult _onMouseDown(const Ray &ray, int mouseButton, int timestamp);
-			MouseEventResult _onMouseUp(const Ray &ray, int mouseButton, int timestamp);
-			MouseEventResult _onMouseMove(const Ray &ray, int timestamp);
-			MouseEventResult _onMouseWheelUp(const Ray &ray, int timestamp);
-			MouseEventResult _onMouseWheelDown(const Ray &ray, int timestamp);
-
-			virtual bool hitTest() { return false; }
+			virtual MouseEventResult onMouseDown(const Ray &ray, int mouseButton, int timestamp);
+			virtual MouseEventResult onMouseUp(const Ray &ray, int mouseButton, int timestamp);
+			virtual MouseEventResult onMouseMove(const Ray &ray, int timestamp);
+			virtual MouseEventResult onMouseWheelUp(const Ray &ray, int timestamp);
+			virtual MouseEventResult onMouseWheelDown(const Ray &ray, int timestamp);
 
 			//@}			
 			// ----------------------------------------------------------------------------------------------------------------
@@ -689,71 +694,20 @@ namespace Polycode {
 			bool castShadows;
 			
 			int collisionShapeType;	
-
-			int positionMode;
-
-			/** 
-			* Changes the positioning mode of the screen entity.		
-			
-			If the positioning mode is Entity::POSITION_TOPLEFT, the entity is translated by half its width and half its height when it's rendered, making all other transformations relative to its top-left corner instead of the center.		
-			If the mode is Entity::POSITION_CENTER, the entity is rendered as is.
-			Set to POSITION_CENTER by default.
-			@param newPositionMode The new positioning mode.
-			*/
-			void setPositionMode(int newPositionMode);
-
-			/**
-			 * Get the position mode.
-			 * @see setPositionMode()
-			 */
-			int getPositionMode() const;
-		
-			/**
-			* Positioning mode in which you specify an entity's topleft corner
-			* as coordinate for placement.
-			*/
-		
-			static const int POSITION_TOPLEFT = 0;
-
-			/**
-			* Positioning mode in which you specify an entity's center as
-			* coordinate for placement.
-			*/
-			static const int POSITION_CENTER = 1;
-
-			bool processInputEvents;
-			
+			bool processInputEvents;			
 			bool blockMouseInput;
-			
-			bool hasFocus;
-			bool focusable;
-			
-			void setDragLimits(Rectangle rect) {}
-			void clearDragLimits() {}
-			bool isDragged() { return dragged; }
-			bool dragged;
-			void startDrag(Number xOffset, Number yOffset) {}
-			void stopDrag() {}
-			
+																					
 			void setHitbox(Number width, Number height) {}
-			
-			void focusChild(Entity *child) {}
-			void focusNextChild() {}
-			bool isFocusable() {}
-			
 			Vector2 getScreenPosition() const { return Vector2(); }
 
 			bool hitTest(Number x, Number y) const { return false; }
 			bool hitTest(Vector2 v) const { return false; }
 
-			bool snapToPixels;
-			
+			bool snapToPixels;			
 			bool mouseOver;
 			
 			//@}		
 		protected:
-		
-			void adjustMatrixForChildren();
 		
 			Number yAdjust;
 			std::vector<String> *tags;
@@ -764,7 +718,8 @@ namespace Polycode {
 		
 			std::vector<Entity*> children;
 
-			Vector3 childCenter;
+			Vector3 anchorPoint;
+			
 			Number bBoxRadius;		
 		
 			Vector3 _position;

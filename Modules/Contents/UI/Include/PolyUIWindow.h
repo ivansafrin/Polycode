@@ -25,7 +25,7 @@
 #include "PolyGlobals.h"
 #include "PolyScenePrimitive.h"
 #include "PolySceneLabel.h"
-#include "PolyEntity.h"
+#include "PolyUIElement.h"
 #include "PolyUIEvent.h"
 #include "PolyUIImageButton.h"
 #include "PolyFont.h"
@@ -35,7 +35,7 @@
 
 namespace Polycode {
 
-	class _PolyExport UIWindow : public Entity {
+	class _PolyExport UIWindow : public UIElement {
 		public:
 			UIWindow(String windowName, Number width, Number height);
 			virtual ~UIWindow();

@@ -23,6 +23,7 @@
 #pragma once
 #include "PolyGlobals.h"
 #include "PolyEntity.h"
+#include "PolySceneImage.h"
 
 namespace Polycode {
 	/*
@@ -37,9 +38,45 @@ namespace Polycode {
 			~UIElement();
 			
 			virtual void Resize(Number width, Number height);
+						
+			bool hasFocus;
+			bool focusable;
 			
+			void setDragLimits(Rectangle rect);
+			void clearDragLimits();
+			bool isDragged();
+			void startDrag(Number xOffset, Number yOffset);
+			void stopDrag();
+			
+			void focusChild(Entity *child) {}
+			void focusNextChild() {}
+			bool isFocusable();
+			
+			void addFocusChild(UIElement *element);			
+			void setFocusParent(UIElement *element);
+
+			MouseEventResult onMouseMove(const Ray &ray, int timestamp);
+
+			bool dragged;
+
 		protected:
+		
+			Polycode::Rectangle dragLimits;
+			bool hasDragLimits;
+		
+			Number dragOffsetX;
+			Number dragOffsetY;
 			
+			std::vector<UIElement*> focusChildren;
+			UIElement *focusParent;
+			
+	};
+	
+	class _PolyExport UIImage : public UIElement {
+		public:
+			UIImage(String imagePath);
+		protected:
+			SceneImage *image;
 	};
 	
 }

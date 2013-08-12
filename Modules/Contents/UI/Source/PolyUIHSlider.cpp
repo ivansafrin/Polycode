@@ -52,12 +52,12 @@ UIHSlider::UIHSlider(Number start, Number end, Number width) : UIElement() {
 	startValue = start;
 	endValue = end;
 		
-	gripRect = new SceneImage(gripImage);
-	gripRect->setPositionMode(Entity::POSITION_CENTER);
+	gripRect = new UIImage(gripImage);
+	gripRect->setAnchorPoint(0.0, 0.0, 0.0);
 	gripRect->setPosition(0, floor(bgHeight/2.0));
 
 	bgHitBox = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, width, gripRect->getHeight());
-	bgHitBox->setPositionMode(Entity::POSITION_TOPLEFT);
+	bgHitBox->setAnchorPoint(-1.0, -1.0, 0.0);
 	bgHitBox->setPosition(0, gripRect->getPosition().y - (gripRect->getHeight()/2.0));
 	addChild(bgHitBox);
 	bgHitBox->setColor(1.0,0.0,0.0,0.0);

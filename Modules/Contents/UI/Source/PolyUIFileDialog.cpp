@@ -14,7 +14,7 @@ UIFileDialogEntry::UIFileDialogEntry(OSFileEntry entry, bool canSelect, int widt
 	String placeIconName = conf->getStringValue("Polycode", "uiFileBrowserPlaceIcon");
 
 	bg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, width, 18);
-	bg->setPositionMode(Entity::POSITION_TOPLEFT);
+	bg->setAnchorPoint(-1.0, -1.0, 0.0);
 	addChild(bg);
 	bg->setColor(0.0, 0.0, 0.0, 0.1);
 	bg->processInputEvents = true;

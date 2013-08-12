@@ -130,7 +130,7 @@ namespace Polycode {
 		
 		virtual void translate2D(Number x, Number y) = 0;
 		virtual void rotate2D(Number angle) = 0;
-		virtual void scale2D(Vector2 *scale) = 0;
+		virtual void scale2D(const Vector2 &scale) = 0;
 			
 		
 		virtual void setVertexColor(Number r, Number g, Number b, Number a) = 0;
@@ -143,9 +143,9 @@ namespace Polycode {
 		virtual void setRenderArrayData(RenderDataArray *array, Number *arrayData) = 0;
 		virtual void drawArrays(int drawType) = 0;
 		
-		virtual void translate3D(Vector3 *position) = 0;
+		virtual void translate3D(const Vector3 &position) = 0;
 		virtual void translate3D(Number x, Number y, Number z) = 0;
-		virtual void scale3D(Vector3 *scale) = 0;
+		virtual void scale3D(const Vector3 &scale) = 0;
 		
 		virtual void pushMatrix() = 0;
 		virtual void popMatrix() = 0;
@@ -216,7 +216,6 @@ namespace Polycode {
 		
 		const Matrix4& getCameraMatrix() const;
 		void setCameraMatrix(const Matrix4& matrix);
-		void setCameraPosition(Vector3 pos);
 		
 		virtual void drawScreenQuad(Number qx, Number qy) = 0;
 		

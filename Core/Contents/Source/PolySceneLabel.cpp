@@ -35,7 +35,6 @@ SceneLabel::SceneLabel(const String& fontName, const String& text, int size, Num
 	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size, amode, premultiplyAlpha);
 	this->labelScale = scale;
 	positionAtBaseline = false;
-	setPositionMode(Entity::POSITION_TOPLEFT);	
 	updateFromLabel();
 }
 
@@ -44,7 +43,6 @@ SceneLabel::SceneLabel(const String& text, int size, const String& fontName, int
 	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size, amode, premultiplyAlpha);
 	this->labelScale = 1.0;
 	positionAtBaseline = false;
-	setPositionMode(Entity::POSITION_TOPLEFT);		
 	updateFromLabel();
 }
 			

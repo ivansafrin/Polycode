@@ -99,8 +99,8 @@ void UITreeContainer::handleEvent(Event *event) {
 		
 		if (!hasFocus) {
 			if (event->getEventCode() == InputEvent::EVENT_MOUSEDOWN) {
-				if (parentEntity && isFocusable())
-					((Entity*)parentEntity)->focusChild(this);
+				if (focusParent && isFocusable())
+					focusParent->focusChild(this);
 			} else if (event->getEventCode() == InputEvent::EVENT_MOUSEOVER) {
 				CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_ARROW);
 			}
