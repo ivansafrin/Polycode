@@ -60,13 +60,13 @@ class MaterialPreviewBox : public UIElement {
 		SceneLight *mainLight;
 		SceneLight *secondLight;		
 		SceneRenderTexture *renderTexture;
-		ScreenShape *previewShape;
+		ScenePrimitive *previewShape;
 		
 		std::vector<UIImageButton*> shapeSwitches;
 		std::vector<ScenePrimitive*> shapePrimitives;
-		ScreenImage *shapeSelector;
+		UIImage *shapeSelector;
 		
-		ScreenEntity *previewBase;		
+		Entity *previewBase;		
 		ScenePrimitive *previewPrimitive;	
 		Material *currentMaterial;					
 };
@@ -83,11 +83,11 @@ class PostPreviewBox : public UIElement {
 			
 		Scene *previewScene;
 		SceneRenderTexture *renderTexture;
-		ScreenShape *previewShape;				
-		ScreenEntity *previewBase;		
+		ScenePrimitive *previewShape;				
+		Entity *previewBase;		
 		ScenePrimitive *previewPrimitive;	
 		Material *currentMaterial;	
-		ScreenShape *headerBg;
+		ScenePrimitive *headerBg;
 				
 		Number spinValue;
 		
@@ -131,7 +131,7 @@ class MaterialBrowser : public UIElement {
 														
 	protected:
 	
-		ScreenShape *headerBg;
+		ScenePrimitive *headerBg;
 		UITree *shadersNode;
 		UITree *materialsNode;
 		UITree *cubemapsNode;
@@ -152,7 +152,7 @@ class CubemapEditorPane : public UIElement {
 	protected:
 	
 		PropList *propList;
-		ScreenShape *headerBg;
+		ScenePrimitive *headerBg;
 		
 		TextureProp *yPosTexture;
 		TextureProp *yNegTexture;
@@ -179,7 +179,7 @@ class PostEditorPane : public UIElement {
 		
 		protected:
 		
-		ScreenShape *headerBgBottom;
+		ScenePrimitive *headerBgBottom;
 
 		PropList *propList;				
 		PropSheet *baseProps;
@@ -228,7 +228,7 @@ class ShaderEditorPane : public UIElement {
 		bool choosingVertexProgram;
 	
 		PropList *propList;
-		ScreenShape *headerBg;
+		ScenePrimitive *headerBg;
 		
 		ComboProp *vertexProgramProp;
 		ComboProp *fragmentProgramProp;
@@ -258,7 +258,7 @@ class MaterialEditorPane : public UIElement {
 		MaterialPreviewBox *materialPreview;
 		bool changingMaterial;
 	
-		ScreenShape *headerBg;			
+		ScenePrimitive *headerBg;			
 		
 		PropList *propList;
 		
@@ -301,7 +301,7 @@ class PolycodeMaterialEditor : public PolycodeEditor {
 	String createStringValue(unsigned int type, void *value);
 	
 	protected:
-		ScreenImage *editorImage;
+		UIImage *editorImage;
 		
 		MaterialBrowser *materialBrowser;
 		UIHSizer *mainSizer;

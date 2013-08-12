@@ -44,8 +44,8 @@ class PropProp : public UIElement {
 		virtual void setPropWidth(Number width) {}
 		
 		String propType;
-		ScreenLabel *label;
-		ScreenEntity *propContents;				
+		SceneLabel *label;
+		Entity *propContents;				
 		
 		bool suppressChangeEvent;		
 		bool settingFromData;
@@ -69,8 +69,8 @@ class Vector2Prop : public PropProp {
 		Vector2 lastData;
 		Vector2 currentData;	
 		
-		ScreenLabel *labelX;
-		ScreenLabel *labelY;		
+		SceneLabel *labelX;
+		SceneLabel *labelY;		
 };
 
 class SliderProp : public PropProp {
@@ -85,7 +85,7 @@ class SliderProp : public PropProp {
 		void setPropData(PolycodeEditorPropActionData* data);		
 				
 		UIHSlider *slider;
-		ScreenLabel *valueLabel;
+		SceneLabel *valueLabel;
 		
 		Number lastValue;
 		Number currentValue;
@@ -266,7 +266,7 @@ class SoundProp : public PropProp {
 		void setPropData(PolycodeEditorPropActionData* data);
 		
 		Sound *previewSound;
-		ScreenLabel *soundFile;		
+		SceneLabel *soundFile;		
 		UIButton *changeButton;
 		UIButton *playButton;	
 		
@@ -312,9 +312,9 @@ class TextureProp : public PropProp {
 		
 		void setPropData(PolycodeEditorPropActionData* data);
 				
-		ScreenShape *previewShape;
+		ScenePrimitive *previewShape;
 		UIButton *changeButton;
-		ScreenLabel *textureLabel;
+		SceneLabel *textureLabel;
 		
 		String lastData;
 		String currentData;
@@ -339,10 +339,10 @@ class ScreenSpriteProp : public PropProp {
 };
 
 
-class ScreenEntityInstanceProp : public PropProp {
+class EntityInstanceProp : public PropProp {
 	public:
-		ScreenEntityInstanceProp(String caption);
-		~ScreenEntityInstanceProp();
+		EntityInstanceProp(String caption);
+		~EntityInstanceProp();
 		void handleEvent(Event *event);			
 		
 		void setPropData(PolycodeEditorPropActionData* data);
@@ -350,7 +350,7 @@ class ScreenEntityInstanceProp : public PropProp {
 		void set(String fileName);
 		String get();		
 				
-		ScreenEntityInstance *previewInstance;
+		EntityInstance *previewInstance;
 		UIButton *changeButton;
 		
 		String lastData;
@@ -376,9 +376,9 @@ class PropSheet : public UIElement {
 		String type;
 		
 		Number propHeight;				
-		ScreenEntity *contents;
+		Entity *contents;
 		
-		ScreenShape *bg;
+		ScenePrimitive *bg;
 		
 		UIImageButton *collapseButton;
 		UIImageButton *expandButton;
@@ -535,7 +535,7 @@ class ShapeSheet : public PropSheet {
 		void handleEvent(Event *event);
 		void Update();
 				
-		ScreenShape *shape;
+		ScenePrimitive *shape;
 	
 		ComboProp *typeProp;
 		Vector2Prop *shapeSize;
@@ -550,18 +550,18 @@ class ShapeSheet : public PropSheet {
 		Number lastStrokeSize;
 };
 
-class ScreenLabelSheet : public PropSheet {
+class SceneLabelSheet : public PropSheet {
 	public:
-		ScreenLabelSheet();
-		~ScreenLabelSheet();
+		SceneLabelSheet();
+		~SceneLabelSheet();
 		
 		void refreshFonts();
 		
 		void handleEvent(Event *event);
 		void Update();
 				
-		ScreenLabel *label;
-		ScreenLabel *lastLabel;	
+		SceneLabel *label;
+		SceneLabel *lastLabel;	
 		
 		int lastSize;
 		String lastFont;
@@ -573,15 +573,15 @@ class ScreenLabelSheet : public PropSheet {
 };
 
 
-class ScreenImageSheet : public PropSheet {
+class UIImageSheet : public PropSheet {
 	public:
-		ScreenImageSheet();
-		~ScreenImageSheet();
+		UIImageSheet();
+		~UIImageSheet();
 		
 		void handleEvent(Event *event);
 		void Update();
 				
-		ScreenImage *image;
+		UIImage *image;
 		
 		TextureProp *texture;
 		
@@ -603,22 +603,22 @@ class ScreenSpriteSheet : public PropSheet {
 };
 
 
-class ScreenEntityInstanceSheet : public PropSheet {
+class EntityInstanceSheet : public PropSheet {
 	public:
-		ScreenEntityInstanceSheet();
-		~ScreenEntityInstanceSheet();
+		EntityInstanceSheet();
+		~EntityInstanceSheet();
 		
 		void handleEvent(Event *event);
 		void Update();
 				
-		ScreenEntityInstance *instance;
-		ScreenEntityInstanceProp *instanceProp;
+		EntityInstance *instance;
+		EntityInstanceProp *instanceProp;
 };
 
-class ScreenEntitySheet : public PropSheet {
+class EntitySheet : public PropSheet {
 	public:
-		ScreenEntitySheet();
-		~ScreenEntitySheet();
+		EntitySheet();
+		~EntitySheet();
 		
 		void handleEvent(Event *event);
 		void Update();
@@ -626,8 +626,8 @@ class ScreenEntitySheet : public PropSheet {
 		NumberProp *widthProp;
 		NumberProp *heightProp;
 		
-		ScreenEntity *entity;
-		ScreenEntity *lastEntity;
+		Entity *entity;
+		Entity *lastEntity;
 };
 
 class SoundSheet : public PropSheet {
@@ -724,7 +724,7 @@ class Transform2DSheet : public PropSheet {
 		Number lastRotation;
 		int lastPositionMode;
 		
-		ScreenEntity *entity;
+		Entity *entity;
 };
 
 class PropList : public UIElement {
@@ -742,11 +742,11 @@ class PropList : public UIElement {
 		UIScrollContainer *scrollContainer;		
 	protected:
 	
-		ScreenEntity *propContents;
+		Entity *propContents;
 	
 		std::vector<PropSheet*> props;	
-		ScreenShape *bg;
-		ScreenShape *bg2;				
+		ScenePrimitive *bg;
+		ScenePrimitive *bg2;				
 };
 
 class PolycodeEditorPropActionData : public PolycodeEditorActionData {

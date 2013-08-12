@@ -38,16 +38,16 @@ public:
 	
 protected:
 	
-	ScreenImage *grid;
+	UIImage *grid;
 	
 	UIBox *bg;
 	
-	ScreenEntity *anchor;
-	ScreenLabel *editorLabel;
-	ScreenLabel *editorLabel2;
-	ScreenLabel *editorLabel3;
-	ScreenLabel *editorLabel4;
-	ScreenLabel *editorLabel5;	
+	Entity *anchor;
+	SceneLabel *editorLabel;
+	SceneLabel *editorLabel2;
+	SceneLabel *editorLabel3;
+	SceneLabel *editorLabel4;
+	SceneLabel *editorLabel5;	
 };
 
 class PolycodeFontEditorFactory : public PolycodeEditorFactory {

@@ -56,7 +56,7 @@ class FindBar : public UIElement {
 		UIComboBox *functionList;
 		
 	protected:
-		ScreenShape *barBg;
+		ScenePrimitive *barBg;
 		
 };
 

@@ -24,6 +24,7 @@
 
 #include "Polycode.h"
 #include "OSBasics.h"
+#include "PolyUIElement.h"
 #include "PolycodeProject.h"
 #include "PolycodeClipboard.h"
 
@@ -52,7 +53,7 @@ class PolycodeEditorAction  {
 		PolycodeEditorActionData *afterData;		
 };
 
-class PolycodeEditor : public ScreenEntity, public ClipboardProvider { 
+class PolycodeEditor : public UIElement, public ClipboardProvider { 
 public:
 	PolycodeEditor(bool _isReadOnly);
 	virtual ~PolycodeEditor();

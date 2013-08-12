@@ -77,11 +77,11 @@ TextInputPopup::~TextInputPopup() {
 
 YesNoPopup::YesNoPopup() : UIWindow(L"", 300, 80) {
 	
-	captionLabel = new ScreenLabel("This is a caption", 12);	
+	captionLabel = new SceneLabel("This is a caption", 12);	
 	addChild(captionLabel);
 	captionLabel->setPosition(padding, 35);
 		
-	buttonAnchor = new ScreenEntity();
+	buttonAnchor = new Entity();
 	buttonAnchor->processInputEvents = true;
 	addChild(buttonAnchor);
 			
@@ -133,11 +133,11 @@ YesNoPopup::~YesNoPopup() {
 
 YesNoCancelPopup::YesNoCancelPopup() : UIWindow(L"", 300, 80) {
 	
-	captionLabel = new ScreenLabel("This is a caption", 12);	
+	captionLabel = new SceneLabel("This is a caption", 12);	
 	addChild(captionLabel);
 	captionLabel->setPosition(padding, 35);
 		
-	buttonAnchor = new ScreenEntity();
+	buttonAnchor = new Entity();
 	buttonAnchor->processInputEvents = true;
 	addChild(buttonAnchor);
 	

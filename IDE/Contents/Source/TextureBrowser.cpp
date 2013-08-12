@@ -29,15 +29,15 @@ AssetEntry::AssetEntry(String assetPath, String assetName, String extension) : U
 	if(assetName.length() > 20)
 		assetName = assetName.substr(0,20)+"...";
 
-	selectShape = new ScreenShape(ScreenShape::SHAPE_RECT, 120, 100);
+	selectShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 120, 100);
 	selectShape->visible = false;
-	selectShape->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	selectShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	addChild(selectShape);
 	selectShape->processInputEvents = true;
 	selectShape->setColor(0.0, 0.0, 0.0, 0.5);
 
-	imageShape = new ScreenShape(ScreenShape::SHAPE_RECT, 64,64);
-	imageShape->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	imageShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 64,64);
+	imageShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	addChild(imageShape);
 	
 	extension = extension.toLowerCase();
@@ -61,10 +61,10 @@ AssetEntry::AssetEntry(String assetPath, String assetName, String extension) : U
 	
 	imageShape->setPosition(28, 10);
 	
-	nameLabel = new ScreenLabel(assetName, 10);
+	nameLabel = new SceneLabel(assetName, 10);
 	addChild(nameLabel);
 	nameLabel->color.a = 0.5;
-	nameLabel->setPositionMode(ScreenEntity::POSITION_CENTER);
+	nameLabel->setAnchorPoint(0.0, 0.0, 0.0);
 	nameLabel->setPosition(60, 90);
 }
 
@@ -76,8 +76,8 @@ AssetEntry::~AssetEntry() {
 
 AssetList::AssetList() : UIElement() {
 	
-	bgShape = new ScreenShape(ScreenShape::SHAPE_RECT, 100,100);
-	bgShape->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	bgShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 100,100);
+	bgShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	bgShape->setColor(0.0, 0.0, 0.0, 0.4);
 	addChild(bgShape);
 	
@@ -143,16 +143,16 @@ void AssetList::showFolder(String folderPath) {
 		}
 	}
 	
-	width = 640;
+	setWidth(640);
 	
 	if(xPos == 20) {
-		height = yPos+20;
+		setHeight(yPos+20);
 	} else {
-		height = yPos + 120;	
+		setHeight(yPos + 120);
 	}
 
 	
-	bgShape->setShapeSize(width, height);
+	bgShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, getWidth(), getHeight());
 	bgShape->rebuildTransformMatrix();
 	rebuildTransformMatrix();	
 }

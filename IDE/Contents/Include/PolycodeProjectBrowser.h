@@ -75,7 +75,7 @@ public:
 			
 protected:
 
-		ScreenShape *headerBg;
+		ScenePrimitive *headerBg;
 	
 		UIMenu *contextMenu;
 	

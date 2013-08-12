@@ -26,12 +26,12 @@ extern UIGlobalMenu *globalMenu;
 
 PolycodeProjectBrowser::PolycodeProjectBrowser() : UIElement() {
 
-	headerBg = new ScreenShape(ScreenShape::SHAPE_RECT,10,10);
+	headerBg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE,10,10);
 	addChild(headerBg);
-	headerBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	
-	ScreenLabel *label = new ScreenLabel("PROJECT BROWSER", 18, "section", Label::ANTIALIAS_FULL);
+	SceneLabel *label = new SceneLabel("PROJECT BROWSER", 18, "section", Label::ANTIALIAS_FULL);
 	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	
 	addChild(label);
@@ -144,7 +144,7 @@ void PolycodeProjectBrowser::handleEvent(Event *event) {
 		}
 	}
 	
-	ScreenEntity::handleEvent(event);
+	Entity::handleEvent(event);
 }
 
 UITree *PolycodeProjectBrowser::nodeHasName(UITree *node, String name) {
@@ -205,6 +205,6 @@ void PolycodeProjectBrowser::parseFolderIntoNode(UITree *node, String spath, Pol
 }
 
 void PolycodeProjectBrowser::Resize(Number width, Number height) {
-	headerBg->setShapeSize(width, 30);
+	headerBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, 30);
 	treeContainer->Resize(width, height-30);
 }

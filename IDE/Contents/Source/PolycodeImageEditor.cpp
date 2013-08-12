@@ -37,44 +37,44 @@ PolycodeImageEditor::~PolycodeImageEditor() {
 
 bool PolycodeImageEditor::openFile(OSFileEntry filePath) {
 	
-	grid = new ScreenImage("Images/editorGrid.png");
+	grid = new UIImage("Images/editorGrid.png");
 	
 	addChild(grid);
 	grid->snapToPixels = true;
 	
-	grid->getTexture()->clamp = false;
-	grid->getTexture()->recreateFromImageData();	
+	grid->getImage()->getTexture()->clamp = false;
+	grid->getImage()->getTexture()->recreateFromImageData();	
 		
 	
-	leftShape = new ScreenShape(ScreenShape::SHAPE_RECT, 10,10);
+	leftShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 10,10);
 	leftShape->setColor(0.0, 0.0, 0.0, 0.3);
-	leftShape->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	leftShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	addChild(leftShape);
 
-	rightShape = new ScreenShape(ScreenShape::SHAPE_RECT, 10,10);
+	rightShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 10,10);
 	rightShape->setColor(0.0, 0.0, 0.0, 0.3);
-	rightShape->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	rightShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	addChild(rightShape);
 
-	topShape = new ScreenShape(ScreenShape::SHAPE_RECT, 10,10);
+	topShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 10,10);
 	topShape->setColor(0.0, 0.0, 0.0, 0.3);
-	topShape->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	topShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	addChild(topShape);
 
-	bottomShape = new ScreenShape(ScreenShape::SHAPE_RECT, 10,10);
+	bottomShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 10,10);
 	bottomShape->setColor(0.0, 0.0, 0.0, 0.3);
-	bottomShape->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	bottomShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	addChild(bottomShape);
 		
 		
-	editorImage = new ScreenShape(ScreenShape::SHAPE_RECT, 10,10);
+	editorImage = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 10,10);
 	
 	Texture *newTexture = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(filePath.fullPath);
 	newTexture->reloadOnFileModify = true;
 	editorImage->setTexture(newTexture);
 	
-	editorImage->strokeEnabled = true;
-	editorImage->setStrokeColor(1.0, 1.0, 1.0, 0.2);
+//	editorImage->strokeEnabled = true;
+//	editorImage->setStrokeColor(1.0, 1.0, 1.0, 0.2);
 	
 	aspectRatio = ((Number)newTexture->getWidth()) / ((Number)newTexture->getHeight());
 	
@@ -86,22 +86,22 @@ bool PolycodeImageEditor::openFile(OSFileEntry filePath) {
 
 void PolycodeImageEditor::Resize(int x, int y) {
 	editorImage->setPosition(x/2, y/2);
-	grid->setImageCoordinates(0,0,x,y);	
+	grid->getImage()->setImageCoordinates(0,0,x,y);	
 	
 	if((y * 0.8) * aspectRatio > x * 0.8) {
-		editorImage->setShapeSize((x * 0.8), (x * 0.8) / aspectRatio);	
+		editorImage->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, (x * 0.8), (x * 0.8) / aspectRatio);	
 	} else {
-		editorImage->setShapeSize((y * 0.8) * aspectRatio, (y * 0.8));
+		editorImage->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, (y * 0.8) * aspectRatio, (y * 0.8));
 	}
 	
-	leftShape->setShapeSize((x - editorImage->getWidth())/2.0, y);	
-	rightShape->setShapeSize((x - editorImage->getWidth())/2.0, y);	
+	leftShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, (x - editorImage->getWidth())/2.0, y);	
+	rightShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, (x - editorImage->getWidth())/2.0, y);	
 	rightShape->setPosition(leftShape->getWidth() + editorImage->getWidth(), 0);
 		
-	topShape->setShapeSize(editorImage->getWidth(), (y - editorImage->getHeight())/2.0);
+	topShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, editorImage->getWidth(), (y - editorImage->getHeight())/2.0);
 	topShape->setPosition(leftShape->getWidth(),0);
 
-	bottomShape->setShapeSize(editorImage->getWidth(), (y - editorImage->getHeight())/2.0);
+	bottomShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, editorImage->getWidth(), (y - editorImage->getHeight())/2.0);
 	bottomShape->setPosition(leftShape->getWidth(),y-bottomShape->getHeight());
 
 		

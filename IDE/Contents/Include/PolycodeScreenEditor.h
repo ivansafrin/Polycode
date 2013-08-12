@@ -58,11 +58,11 @@ class PolycodeScreenEditorActionDataEntry {
 		PolycodeScreenEditorActionDataEntry(Vector3 vec3, Number number);	
 		PolycodeScreenEditorActionDataEntry(Vector3 vec3);
 		PolycodeScreenEditorActionDataEntry(Number number);
-		PolycodeScreenEditorActionDataEntry(ScreenEntity *entity);
+		PolycodeScreenEditorActionDataEntry(Entity *entity);
 		Vector3 vec3;
 		Number number;
-		ScreenEntity *entity;
-		ScreenEntity *parentEntity;		
+		Entity *entity;
+		Entity *parentEntity;		
 };
 
 class PolycodeScreenEditorActionData : public PolycodeEditorActionData {
@@ -87,7 +87,7 @@ class EntityTreeView : public UIElement {
 		
 		void syncNodeToEntity(UITree *node, Entity *entity);
 		
-		void setRootEntity(ScreenEntity *entity);
+		void setRootEntity(Entity *entity);
 		
 		void Refresh();
 
@@ -106,8 +106,8 @@ class EntityTreeView : public UIElement {
 	
 		UITreeContainer *treeContainer;
 			
-		ScreenShape *headerBg;		
-		ScreenShape *bg;		
+		ScenePrimitive *headerBg;		
+		ScenePrimitive *bg;		
 				
 };
 
@@ -122,16 +122,16 @@ class PropertiesSizer : public UIElement {
 };
 
 
-class ScreenEntityNameDisplay : public ScreenEntity {
+class EntityNameDisplay : public Entity {
 	public:
-		ScreenEntityNameDisplay(ScreenEntity *targetEntity);
-		~ScreenEntityNameDisplay();
+		EntityNameDisplay(Entity *targetEntity);
+		~EntityNameDisplay();
 		
 		void Update();
 		
-		ScreenLabel *label;
-		ScreenLabel *tagsLabel;		
-		ScreenEntity *targetEntity;
+		SceneLabel *label;
+		SceneLabel *tagsLabel;		
+		Entity *targetEntity;
 };
 
 class PolycodeScreenEditorMain : public UIElement {
@@ -142,32 +142,32 @@ class PolycodeScreenEditorMain : public UIElement {
 			
 		void Resize(Number width, Number height);	
 		void syncTransformToSelected();	
-		ScreenEntity *addNewLayer(String layerName);	
+		Entity *addNewLayer(String layerName);	
 		void updateCursor();		
-		void selectEntity(ScreenEntity *entity, bool doAction = true);
+		void selectEntity(Entity *entity, bool doAction = true);
 		void resetSelectedEntityTransforms();
 		void setMode(int newMode);	
 		void handleEvent(Event *event);	
 		void resizePreviewScreen();		
 		void handleDroppedFile(OSFileEntry file, Number x, Number y);		
-		bool hasSelected(ScreenEntity *entity);
+		bool hasSelected(Entity *entity);
 		
-		void deleteEntity(ScreenEntity *entity);
+		void deleteEntity(Entity *entity);
 	
-		void applyEditorOnly(ScreenEntity *entity);
-		void applyEditorOnlyChildren(ScreenEntity *entity);
-		void applyEditorProperties(ScreenEntity *entity);
+		void applyEditorOnly(Entity *entity);
+		void applyEditorOnlyChildren(Entity *entity);
+		void applyEditorProperties(Entity *entity);
 			
-		void processEventForEntity(ScreenEntity *childEntity, InputEvent *inputEvent);
+		void processEventForEntity(Entity *childEntity, InputEvent *inputEvent);
 	
 		void createParticleRef(ScreenParticleEmitter *target);
 		void createSoundRef(ScreenSound *target);
-		void createEntityRef(ScreenEntity *entity);
+		void createEntityRef(Entity *entity);
 		
 		void doAction(String actionName, PolycodeEditorActionData *data);
 		
 		void setRefVisibility(bool val);
-		void setEntityRefVisibility(ScreenEntity *entity, bool val);
+		void setEntityRefVisibility(Entity *entity, bool val);
 		
 		void getCenterAndSizeForSelected(Vector2 *center, Number *width, Number *height);
 	
@@ -179,8 +179,8 @@ class PolycodeScreenEditorMain : public UIElement {
 		
 		void adjustForSnap(Vector2 *position);
 		
-		void setCurrentLayer(ScreenEntity *newLayer, bool doAction = true);
-		ScreenEntity *getCurrentLayer();
+		void setCurrentLayer(Entity *newLayer, bool doAction = true);
+		Entity *getCurrentLayer();
 		
 		String Copy(void **data);
 		void Paste(void *data, String clipboardType);
@@ -199,50 +199,50 @@ class PolycodeScreenEditorMain : public UIElement {
 		static const int MODE_SPRITE = 10;
 		static const int MODE_PARTICLES = 11;
 																
-		std::vector<ScreenEntity*> layers;
+		std::vector<Entity*> layers;
 		
 		PropList *entityProps;
 		
-		ScreenEntity *layerBaseEntity;		
+		Entity *layerBaseEntity;		
 						
-//		ScreenEntity *selectedEntity;
-		std::vector<ScreenEntity*> selectedEntities;		
+//		Entity *selectedEntity;
+		std::vector<Entity*> selectedEntities;		
 		
 		Transform2DSheet *transform2dSheet;
 		EntitySheet *entitySheet;
 		ShapeSheet *shapeSheet;
-		ScreenImageSheet *imageSheet;
-		ScreenLabelSheet *labelSheet;
+		UIImageSheet *imageSheet;
+		SceneLabelSheet *labelSheet;
 		SoundSheet *soundSheet;
 		EntityPropSheet *entityPropSheet;
-		ScreenEntityInstanceSheet *instanceSheet;
+		EntityInstanceSheet *instanceSheet;
 		ScreenSpriteSheet *spriteSheet;
 		ScreenParticleSheet *particleSheet;
-		ScreenEntitySheet *screenEntitySheet;
+		EntitySheet *EntitySheet;
 		
 		EntityTreeView *treeView;
 		
-		ScreenEntity *objectBaseEntity;		
-		ScreenEntity *placingPreviewEntity;												
+		Entity *objectBaseEntity;		
+		Entity *placingPreviewEntity;												
 		bool multiSelect;
 		
 		PolycodeEditor *editor;	
-		ScreenEntity *baseEntity;			
+		Entity *baseEntity;			
 	protected:
 	
 		PolycodeScreenEditorActionData *beforeData;
-		ScreenEntity *currentLayer;	
+		Entity *currentLayer;	
 	
 		int gridSize;
 		bool gridSnap;
 		
 		bool pixelSnap;
 	
-		ScreenShape *previewShape;
-		ScreenImage *previewImage;
-		ScreenEntityInstance *previewInstance;		
-		ScreenLabel *previewLabel;							
-		ScreenEntity *previewEntity;
+		ScenePrimitive *previewShape;
+		UIImage *previewImage;
+		EntityInstance *previewInstance;		
+		SceneLabel *previewLabel;							
+		Entity *previewEntity;
 		ScreenParticleEmitter *previewEmitter;
 							
 		ScreenSound *previewSound;
@@ -269,8 +269,8 @@ class PolycodeScreenEditorMain : public UIElement {
 		bool zoomingMoved;
 		
 		bool parenting;
-		ScreenEntity *parentingChild;
-		ScreenLine *parentingLine;
+		Entity *parentingChild;
+		SceneLine *parentingLine;
 		
 		
 		int lastMode;
@@ -296,11 +296,11 @@ class PolycodeScreenEditorMain : public UIElement {
 		Number groupRoll;
 		Number baseAngle;
 	
-		ScreenShape *placingShape;	
+		ScenePrimitive *placingShape;	
 		Vector2 placingAnchor;
 		
-		ScreenShape *screenPreviewShape;
-		ScreenShape *sizePreviewShape;
+		ScenePrimitive *screenPreviewShape;
+		ScenePrimitive *sizePreviewShape;
 				
 		Vector2 dragOffset;
 		bool isDraggingEntity;
@@ -308,21 +308,21 @@ class PolycodeScreenEditorMain : public UIElement {
 		
 
 		
-		ScreenEntity *screenTransform;
-		ScreenShape *screenTransformShape;
-		ScreenImage *transformRotator;
+		Entity *screenTransform;
+		ScenePrimitive *screenTransformShape;
+		UIImage *transformRotator;
 
-		ScreenImage *transformScalerY;
-		ScreenImage *transformScalerX;		
-		ScreenImage *transformScalerXY;
+		UIImage *transformScalerY;
+		UIImage *transformScalerX;		
+		UIImage *transformScalerXY;
 							
-		ScreenImage *centerImage;
+		UIImage *centerImage;
 		
-		ScreenEntity *properties;
-		ScreenShape *propertiesBg;
+		Entity *properties;
+		ScenePrimitive *propertiesBg;
 
-		ScreenEntity *viewOptions;
-		ScreenShape *viewOptionsBg;
+		Entity *viewOptions;
+		ScenePrimitive *viewOptionsBg;
 		
 		UITextInput *gridSizeInput;
 		UICheckBox *gridCheckBox;
@@ -334,8 +334,8 @@ class PolycodeScreenEditorMain : public UIElement {
 		
 		UITextInput *scaleInput;
 		
-		ScreenEntity *toolPalette;
-		ScreenShape *toolPaletteBg;
+		Entity *toolPalette;
+		ScenePrimitive *toolPaletteBg;
 		
 		UIImageButton *arrowToolButton;
 		UIImageButton *shapeToolButton;
@@ -364,15 +364,15 @@ class PolycodeScreenEditorMain : public UIElement {
 						
 		Number aspects[16];
 				
-		ScreenImage *selectorImage;
+		UIImage *selectorImage;
 		int mode;	
 };
 
-class ScreenEntityClipboardData {
+class EntityClipboardData {
 	public:
-		ScreenEntityClipboardData(){}
+		EntityClipboardData(){}
 		
-		std::vector<ScreenEntity*> entities;
+		std::vector<Entity*> entities;
 };
 
 class PolycodeScreenEditor : public PolycodeEditor {
@@ -390,7 +390,7 @@ class PolycodeScreenEditor : public PolycodeEditor {
 		void Activate();		
 		
 		void saveCurveToObject(ObjectEntry *entry, BezierCurve *curve);
-		void saveEntityToObjectEntry(ScreenEntity *entity, ObjectEntry *entry);
+		void saveEntityToObjectEntry(Entity *entity, ObjectEntry *entry);
 		void saveFile();
 		
 		void doAction(String actionName, PolycodeEditorActionData *data);

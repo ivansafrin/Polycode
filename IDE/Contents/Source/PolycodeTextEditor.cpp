@@ -640,18 +640,18 @@ void PolycodeTextEditor::Resize(int x, int y) {
 }
 
 FindBar::FindBar() : UIElement() {
-	barBg = new ScreenShape(ScreenShape::SHAPE_RECT, 30,30);
-	barBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	barBg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 30,30);
+	barBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	barBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	addChild(barBg);
-	this->height = 30;
+	setHeight(30);
 	
-	ScreenLabel *findLabel = new ScreenLabel("FIND", 18, "section");
+	SceneLabel *findLabel = new SceneLabel("FIND", 18, "section");
 	addChild(findLabel);
 	findLabel->setColor(1.0, 1.0, 1.0, 0.6);
 	findLabel->setPosition(10,3);
 
-	ScreenLabel *replaceLabel = new ScreenLabel("REPLACE", 18, "section");
+	SceneLabel *replaceLabel = new SceneLabel("REPLACE", 18, "section");
 	addChild(replaceLabel);
 	replaceLabel->setColor(1.0, 1.0, 1.0, 0.6);
 	replaceLabel->setPosition(200,3);
@@ -670,7 +670,7 @@ FindBar::FindBar() : UIElement() {
 	addChild(replaceAllButton);
 	replaceAllButton->setPosition(420, 3);
 
-	ScreenImage *functionIcon = new ScreenImage("Images/function_icon.png");
+	UIImage *functionIcon = new UIImage("Images/function_icon.png");
 	addChild(functionIcon);
 	functionIcon->setPosition(540, 5);	
 	
@@ -701,7 +701,7 @@ FindBar::~FindBar(){
 }
 
 void FindBar::setBarWidth(int width) {
-	barBg->setShapeSize(width, 30);
+	barBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, 30);
 	closeButton->setPosition(width - 30, 5);
 	functionList->Resize(width-560-60, functionList->getHeight());
 }

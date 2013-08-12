@@ -31,6 +31,10 @@ UIImage::UIImage(String imagePath) : UIElement() {
 	setHeight(image->bBox.y);	
 }
 
+SceneImage *UIImage::getImage() {
+	return image;
+}
+
 UIElement::UIElement() : Entity() {
 	setAnchorPoint(-1.0, -1.0, 0.0);
 	processInputEvents = true;

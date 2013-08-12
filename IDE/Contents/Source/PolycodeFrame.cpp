@@ -28,7 +28,7 @@ PolycodeFrame *globalFrame;
 
 extern UIGlobalMenu *globalMenu;
 
-EditPoint::EditPoint(BezierPoint *point, unsigned int type) : ScreenEntity() {
+EditPoint::EditPoint(BezierPoint *point, unsigned int type) : Entity() {
 	this->point = point;
 	this->type = type;
 	processInputEvents = true;
@@ -36,8 +36,8 @@ EditPoint::EditPoint(BezierPoint *point, unsigned int type) : ScreenEntity() {
 	draggingPoint = NULL;
 	dragging = false;
 
-	controlHandle1 = new ScreenImage("Images/bezier_handle.png");
-	controlHandle1->setPositionMode(ScreenEntity::POSITION_CENTER);
+	controlHandle1 = new UIImage("Images/bezier_handle.png");
+	controlHandle1->setAnchorPoint(0.0, 0.0, 0.0);
 	
 	controlHandle1->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	controlHandle1->addEventListener(this, InputEvent::EVENT_MOUSEUP);
@@ -48,8 +48,8 @@ EditPoint::EditPoint(BezierPoint *point, unsigned int type) : ScreenEntity() {
 		
 	addChild(controlHandle1);
 	
-	controlHandle2 = new ScreenImage("Images/bezier_handle.png");
-	controlHandle2->setPositionMode(ScreenEntity::POSITION_CENTER);
+	controlHandle2 = new UIImage("Images/bezier_handle.png");
+	controlHandle2->setAnchorPoint(0.0, 0.0, 0.0);
 	controlHandle2->processInputEvents = true;
 	
 	controlHandle2->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
@@ -61,12 +61,12 @@ EditPoint::EditPoint(BezierPoint *point, unsigned int type) : ScreenEntity() {
 	addChild(controlHandle2);
 	
 	
-	pointHandle = new ScreenImage("Images/bezier_point.png");
+	pointHandle = new UIImage("Images/bezier_point.png");
 	pointHandle->processInputEvents = true;
 	pointHandle->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	pointHandle->addEventListener(this, InputEvent::EVENT_MOUSEUP);
 	pointHandle->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);	
-	pointHandle->setPositionMode(ScreenEntity::POSITION_CENTER);
+	pointHandle->setAnchorPoint(0.0, 0.0, 0.0);
 	pointHandle->setWidth(30);
 	pointHandle->setHeight(30);
 
@@ -76,7 +76,7 @@ EditPoint::EditPoint(BezierPoint *point, unsigned int type) : ScreenEntity() {
 		controlHandle1->enabled = false;		
 		connectorLine1 = NULL;
 	} else {
-		connectorLine1 = new ScreenLine(pointHandle, controlHandle1);
+		connectorLine1 = new SceneLine(pointHandle, controlHandle1);
 		addChild(connectorLine1);
 		connectorLine1->setColorInt(39, 212, 255, 128);
 		connectorLine1->setLineWidth(2.0);
@@ -89,7 +89,7 @@ EditPoint::EditPoint(BezierPoint *point, unsigned int type) : ScreenEntity() {
 		controlHandle2->enabled = false;		
 		connectorLine2 = NULL;
 	} else {
-		connectorLine2 = new ScreenLine(pointHandle, controlHandle2);
+		connectorLine2 = new SceneLine(pointHandle, controlHandle2);
 		addChild(connectorLine2);
 		connectorLine2->setColorInt(39, 212, 255, 128);
 		connectorLine2->setLineWidth(2.0);
@@ -161,7 +161,7 @@ void EditPoint::handleEvent(Event *event) {
 		switch(event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEDOWN:
 				if(mode == CurveEditor::MODE_SELECT) {
-					draggingPoint = (ScreenImage*)event->getDispatcher();
+					draggingPoint = (UIImage*)event->getDispatcher();
 					dragging = true;
 					basePosition = CoreServices::getInstance()->getCore()->getInput()->getMousePosition(); 
 					basePointPosition = draggingPoint->getPosition2D();
@@ -186,7 +186,7 @@ void EditPoint::handleEvent(Event *event) {
 	}
 }
 
-void EditPoint::limitPoint(ScreenImage *point) {
+void EditPoint::limitPoint(UIImage *point) {
 		if(point->position.x < 0.0)
 			point->position.x = 0.0;
 		if(point->position.x > 610.0)
@@ -335,13 +335,13 @@ CurveEditor::CurveEditor() : UIWindow("", 750, 300) {
 	
 	closeOnEscape = true;
 		
-	bg = new ScreenImage("Images/curve_editor_bg.png");
+	bg = new UIImage("Images/curve_editor_bg.png");
 	addChild(bg);
 	bg->setPosition(160, 63);
 	bg->processInputEvents = true;
 	bg->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	
-	selectorImage = new ScreenImage("Images/ScreenEditor/selector.png");
+	selectorImage = new UIImage("Images/ScreenEditor/selector.png");
 	selectorImage->setColor(0.0, 0.0, 0.0, 0.3);
 	addChild(selectorImage);
 		
@@ -494,7 +494,7 @@ void EditorHolder::Resize(Number width, Number height) {
 }
 
 
-PolycodeFrame::PolycodeFrame() : ScreenEntity() {
+PolycodeFrame::PolycodeFrame() : Entity() {
 
 	globalFrame = this;
 	processInputEvents = true;
@@ -502,10 +502,10 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	showingConsole = true;
 	modalChild = NULL;
 	
-	welcomeEntity = new ScreenEntity();
+	welcomeEntity = new Entity();
 	welcomeEntity->processInputEvents = true;
 	addChild(welcomeEntity);
-	welcomeImage = new ScreenImage("Images/welcome.png");
+	welcomeImage = new UIImage("Images/welcome.png");
 	welcomeEntity->addChild(welcomeImage);
 	welcomeEntity->snapToPixels = true;
 	
@@ -540,15 +540,15 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 		
 	projectBrowser->treeContainer->getRootNode()->addEventListener(this, UITreeEvent::DRAG_START_EVENT);
 	
-	topBarBg = new ScreenShape(ScreenShape::SHAPE_RECT, 2,2);
+	topBarBg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 2,2);
 	topBarBg->setColorInt(21, 18, 17, 255);
-	topBarBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	topBarBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	topBarBg->processInputEvents = true;
 	topBarBg->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
 	topBarBg->blockMouseInput = true;
 	addChild(topBarBg);
 	
-	logo = new ScreenImage("Images/barlogo.png");	
+	logo = new UIImage("Images/barlogo.png");	
 	addChild(logo);		
 	
 	
@@ -560,7 +560,7 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	addChild(stopButton);
 	stopButton->setPosition(10,4);
 
-	currentProjectTitle = new ScreenLabel("", 32, "section");
+	currentProjectTitle = new SceneLabel("", 32, "section");
 	addChild(currentProjectTitle);
 	currentProjectTitle->color.a = 0.4;
 	currentProjectTitle->setPosition(70, 0);
@@ -572,13 +572,13 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	closeFileButton = new UIImageButton("Images/remove_icon.png");
 	addChild(closeFileButton);
 	
-	resizer = new ScreenImage("Images/corner_resize.png");	
+	resizer = new UIImage("Images/corner_resize.png");	
 	addChild(resizer);
 	resizer->setColor(0,0,0,0.4);
 	
-	modalBlocker = new ScreenShape(ScreenShape::SHAPE_RECT, 10,10);
+	modalBlocker = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 10,10);
 	modalBlocker->setColor(0,0,0,0.4);
-	modalBlocker->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	modalBlocker->setAnchorPoint(-1.0, -1.0, 0.0);
 	modalBlocker->enabled = false;	
 	modalBlocker->blockMouseInput = true;
 	modalBlocker->processInputEvents = true;
@@ -614,7 +614,7 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	
 	aboutWindow = new UIWindow("", 800, 440);
 	aboutWindow->closeOnEscape = true;
-	ScreenImage *aboutImage = new ScreenImage("Images/about.png");
+	UIImage *aboutImage = new UIImage("Images/about.png");
 	aboutWindow->addChild(aboutImage);
 	aboutImage->setPosition(20, 40);
 	aboutWindow->visible = false;
@@ -623,16 +623,16 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	aboutOKButton->setPosition(700, 420);
 	aboutOKButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
-	ScreenLabel *versionLabel = new ScreenLabel("version 0.8.2", 12, "mono");
+	SceneLabel *versionLabel = new SceneLabel("version 0.8.2", 12, "mono");
 	aboutWindow->addChild(versionLabel);
 	versionLabel->setPosition(20, 430);
 	versionLabel->color.a = 0.4;
 	
 	isDragging  = false;
-	dragLabel = new ScreenLabel("NONE", 11, "sans");
+	dragLabel = new SceneLabel("NONE", 11, "sans");
 	dragLabel->setPosition(0,-15);
 	
-	dragEntity = new ScreenEntity();
+	dragEntity = new Entity();
 	dragEntity->addChild(dragLabel);
 	addChild(dragEntity);
 	dragEntity->visible = false;	
@@ -656,8 +656,8 @@ PolycodeFrame::PolycodeFrame() : ScreenEntity() {
 	modalRoot = new UIElement();
 	addChild(modalRoot);
 	
-	fileDialogBlocker = new ScreenShape(ScreenShape::SHAPE_RECT, 100, 100);
-	fileDialogBlocker->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	fileDialogBlocker = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 100, 100);
+	fileDialogBlocker->setAnchorPoint(-1.0, -1.0, 0.0);
 	addChild(fileDialogBlocker);
 	fileDialogBlocker->setColor(0.0, 0.0, 0.0, 0.5);
 	fileDialogBlocker->processInputEvents = true;
@@ -924,13 +924,13 @@ void PolycodeFrame::Resize(int x, int y) {
 	welcomeEntity->setPosition((x-welcomeImage->getWidth()) / 2,
 		(y-welcomeImage->getHeight()) / 2); 
 	
-	topBarBg->setShapeSize(x, 45);
+	topBarBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, x, 45);
 	logo->setPosition(x-logo->getWidth()-2, 2);	
 	resizer->setPosition(x-resizer->getWidth()-1, y-resizer->getHeight()-1);	
 	mainSizer->Resize(x,y-45);	
 	
-	modalBlocker->setShapeSize(x, y);
-	fileDialogBlocker->setShapeSize(x, y);
+	modalBlocker->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, x, y);
+	fileDialogBlocker->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, x, y);
 		
 	currentFileSelector->setPosition(x-400, 11);
 	closeFileButton->setPosition(currentFileSelector->getPosition().x-20, currentFileSelector->getPosition().y+6);

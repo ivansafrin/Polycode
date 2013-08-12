@@ -82,7 +82,7 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	editorManager = new PolycodeEditorManager();
 	
 	frame = new PolycodeFrame();
-	frame->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	frame->setAnchorPoint(-1.0, -1.0, 0.0);
 
 	frame->editorManager = editorManager;
 	editorManager->addEventListener(frame, Event::CHANGE_EVENT);

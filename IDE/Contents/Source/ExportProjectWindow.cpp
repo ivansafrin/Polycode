@@ -29,7 +29,7 @@ ExportProjectWindow::ExportProjectWindow() : UIWindow(L"Publish Project", 400, 3
 
 	closeOnEscape = true;
 
-	ScreenLabel *label = new ScreenLabel("LOCATION", 22, "section", Label::ANTIALIAS_FULL);
+	SceneLabel *label = new SceneLabel("LOCATION", 22, "section", Label::ANTIALIAS_FULL);
 	addChild(label);
 	label->color.a = 0.4;	
 	label->setPosition(padding, 50);
@@ -45,7 +45,7 @@ ExportProjectWindow::ExportProjectWindow() : UIWindow(L"Publish Project", 400, 3
 	locationSelectButton->setPosition(padding, projectLocationInput->getPosition().y+projectLocationInput->getHeight()+5);
 
 
-	label = new ScreenLabel("PLATFORMS", 22, "section", Label::ANTIALIAS_FULL);
+	label = new SceneLabel("PLATFORMS", 22, "section", Label::ANTIALIAS_FULL);
 	addChild(label);
 	label->color.a = 0.4;	
 	label->setPosition(padding, 150);
@@ -62,7 +62,7 @@ ExportProjectWindow::ExportProjectWindow() : UIWindow(L"Publish Project", 400, 3
 	addChild(linCheckBox);
 	linCheckBox->setPosition(padding, 225);
 
-	label = new ScreenLabel("OPTIONS", 22, "section", Label::ANTIALIAS_FULL);
+	label = new SceneLabel("OPTIONS", 22, "section", Label::ANTIALIAS_FULL);
 	addChild(label);
 	label->color.a = 0.4;	
 	label->setPosition(padding, 260);

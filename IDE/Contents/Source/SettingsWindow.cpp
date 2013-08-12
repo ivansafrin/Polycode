@@ -28,7 +28,7 @@ SettingsWindow::SettingsWindow() : UIWindow(L"Settings", SETTINGS_WINDOW_WIDTH, 
 
 	closeOnEscape = true;
 
-	ScreenLabel *label = new ScreenLabel("TEXT EDITING", 22, "section", Label::ANTIALIAS_FULL);
+	SceneLabel *label = new SceneLabel("TEXT EDITING", 22, "section", Label::ANTIALIAS_FULL);
 	addChild(label);
 	label->color.a = 0.4;
 	label->setPosition(padding, 50);
@@ -47,7 +47,7 @@ SettingsWindow::SettingsWindow() : UIWindow(L"Settings", SETTINGS_WINDOW_WIDTH, 
 	externalTextEditorCommand->setPosition(padding, EDITOR_BROWSE_POS);
 	
 	
-	label = new ScreenLabel("Syntax highlighting theme", 12);
+	label = new SceneLabel("Syntax highlighting theme", 12);
 	addChild(label);
 	label->color.a = 0.6;
 	label->setPosition(padding, EDITOR_BROWSE_POS + 35);

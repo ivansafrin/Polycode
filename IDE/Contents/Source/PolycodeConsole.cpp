@@ -40,15 +40,15 @@ BackTraceEntry::BackTraceEntry(String fileName, int lineNumber, PolycodeProject 
 	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
 	int fontSize = conf->getNumericValue("Polycode", "uiDefaultFontSize");	
 
-	labelBg = new ScreenShape(ScreenShape::SHAPE_RECT, 20,20);
-	labelBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	labelBg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 20,20);
+	labelBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	labelBg->setColor(0.0, 0.0, 0.0, 0.15);
 	labelBg->processInputEvents = true;
 	addChild(labelBg);	
 	
 	labelBg->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	
-	label = new ScreenLabel(fileName+" on line "+String::IntToString(lineNumber), fontSize, fontName);
+	label = new SceneLabel(fileName+" on line "+String::IntToString(lineNumber), fontSize, fontName);
 	addChild(label);
 	label->setPosition(5,2);
 	
@@ -84,7 +84,7 @@ BackTraceEntry::~BackTraceEntry() {
 }
 
 void BackTraceEntry::Resize(Number width, Number height) {
-	labelBg->setShapeSize(width, 20);
+	labelBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, 20);
 
 }
 
@@ -93,12 +93,12 @@ BackTraceWindow::BackTraceWindow() : UIElement() {
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
 
-	labelBg = new ScreenShape(ScreenShape::SHAPE_RECT, 20,30);
-	labelBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	labelBg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 20,30);
+	labelBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	labelBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	addChild(labelBg);
 	
-	ScreenLabel *label = new ScreenLabel("CRASH STACK", 18, "section");
+	SceneLabel *label = new SceneLabel("CRASH STACK", 18, "section");
 	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	addChild(label);
 	label->setPosition(5,3);
@@ -106,15 +106,15 @@ BackTraceWindow::BackTraceWindow() : UIElement() {
 }	
 
 void BackTraceWindow::Resize(Number width, Number height) {
-	labelBg->setShapeSize(width, 30);
-	this->width = width;
-	this->height = height;
+	labelBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, 30);
+	setWidth(width);
+	setHeight(height);
 	adjustEntries();
 }
 
 void BackTraceWindow::adjustEntries() {
 	for(int i=0; i < entries.size(); i++) {
-		entries[i]->Resize(width, 20);
+		entries[i]->Resize(getWidth(), 20);
 		entries[i]->setPosition(0, 30 + (i * 21));
 	}
 }
@@ -167,12 +167,12 @@ BackTraceWindow::~BackTraceWindow() {
 ConsoleWindow::ConsoleWindow() : UIElement() {
 
 
-	labelBg = new ScreenShape(ScreenShape::SHAPE_RECT, 20,30);
-	labelBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	labelBg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 20,30);
+	labelBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	labelBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	addChild(labelBg);
 	
-	ScreenLabel *label = new ScreenLabel("CONSOLE", 18, "section");
+	SceneLabel *label = new SceneLabel("CONSOLE", 18, "section");
 	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	addChild(label);
 	label->setPosition(35,3);
@@ -193,7 +193,7 @@ ConsoleWindow::ConsoleWindow() : UIElement() {
 
 void ConsoleWindow::Resize(Number width, Number height) {
 
-	labelBg->setShapeSize(width, 30);
+	labelBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, 30);
 	debugTextInput->Resize(width, height-25-30);
 	debugTextInput->setPosition(0, 30);
 

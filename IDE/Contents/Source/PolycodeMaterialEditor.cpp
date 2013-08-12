@@ -33,9 +33,9 @@ PostEditorPane::PostEditorPane() : UIElement() {
 	
 	bottomElement = new UIElement();
 	
-	headerBgBottom = new ScreenShape(ScreenShape::SHAPE_RECT,10,10);
+	headerBgBottom = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE,10,10);
 	bottomElement->addChild(headerBgBottom);
-	headerBgBottom->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	headerBgBottom->setAnchorPoint(-1.0, -1.0, 0.0);
 	headerBgBottom->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));	
 	
 	propList = new PropList("POST EFFECT EDITOR");
@@ -100,7 +100,7 @@ PostEditorPane::~PostEditorPane() {
 
 void PostEditorPane::Resize(Number width, Number height) {
 	mainSizer->Resize(width, height);
-	headerBgBottom->setShapeSize(width, 30);	
+	headerBgBottom->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, 30);	
 	propList->Resize(width/2.0, height- mainSizer->getMainHeight());
 	
 	propList->updateProps();
@@ -155,7 +155,7 @@ void PostEditorPane::handleEvent(Event *event) {
 		currentMaterial->setName(nameProp->get());
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);					
 	} else if(event->getDispatcher() == mainSizer && event->getEventCode() == UIEvent::CHANGE_EVENT) {
-			propList->Resize(propList->getWidth(), height-mainSizer->getMainHeight());
+			propList->Resize(propList->getWidth(), getHeight()-mainSizer->getMainHeight());
 			propList->updateProps();
 			adjustPreview();
 	} else if(event->getDispatcher() == passProps || event->getDispatcher() == targetBindingProps) {
@@ -189,9 +189,9 @@ void PostEditorPane::handleEvent(Event *event) {
 CubemapEditorPane::CubemapEditorPane() : UIElement() {
 	currentCubemap = NULL;
 
-	headerBg = new ScreenShape(ScreenShape::SHAPE_RECT,10,10);
+	headerBg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE,10,10);
 	addChild(headerBg);
-	headerBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));	
 	
 	propList = new PropList("CUBEMAP EDITOR");
@@ -311,7 +311,7 @@ CubemapEditorPane::~CubemapEditorPane() {
 }
 
 void CubemapEditorPane::Resize(Number width, Number height) {
-	headerBg->setShapeSize(width, 30);	
+	headerBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, 30);	
 	propList->Resize(370, height);
 	propList->updateProps();
 }
@@ -322,9 +322,9 @@ ShaderEditorPane::ShaderEditorPane() : UIElement() {
 	changingShader = false;
 	currentShader = NULL;
 
-	headerBg = new ScreenShape(ScreenShape::SHAPE_RECT,10,10);
+	headerBg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE,10,10);
 	addChild(headerBg);
-	headerBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));	
 	
 	propList = new PropList("SHADER EDITOR");
@@ -508,19 +508,19 @@ void ShaderEditorPane::setShader(Shader *shader) {
 }
 
 void ShaderEditorPane::Resize(Number width, Number height) {
-	headerBg->setShapeSize(width, 30);	
+	headerBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, 30);	
 	propList->Resize(370, height);
 	propList->updateProps();
 }
 
 PostPreviewBox::PostPreviewBox() : UIElement() {
 
-	headerBg = new ScreenShape(ScreenShape::SHAPE_RECT,10,10);
+	headerBg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE,10,10);
 	addChild(headerBg);
-	headerBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));	
 
-	ScreenLabel *label = new ScreenLabel("POST PREVIEW", 18, "section", Label::ANTIALIAS_FULL);
+	SceneLabel *label = new SceneLabel("POST PREVIEW", 18, "section", Label::ANTIALIAS_FULL);
 	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	addChild(label);
 	label->setPosition(10, 3);
@@ -577,13 +577,13 @@ PostPreviewBox::PostPreviewBox() : UIElement() {
 	previewScene->getDefaultCamera()->lookAt(Vector3(0.0, 0.5, 0.0));
 
 	
-	previewBase = new ScreenEntity();
+	previewBase = new Entity();
 	previewBase->processInputEvents = true;
 	previewBase->setPosition(0, 30);
 	addChild(previewBase);
 	
-	previewShape = new ScreenShape(ScreenShape::SHAPE_RECT, 256, 256);
-	previewShape->setPositionMode(ScreenEntity::POSITION_TOPLEFT);	
+	previewShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 256, 256);
+	previewShape->setAnchorPoint(-1.0, -1.0, 0.0);	
 	previewShape->setTexture(renderTexture->getTargetTexture());
 //	previewShape->strokeEnabled = true;
 //	previewShape->strokeColor = Color(1.0, 1.0, 1.0, 0.2);
@@ -596,7 +596,7 @@ PostPreviewBox::PostPreviewBox() : UIElement() {
 	addChild(rotateCheckBox);
 	rotateCheckBox->setPosition(150, 2);
 
-	label = new ScreenLabel("EXPOSURE", 18, "section", Label::ANTIALIAS_FULL);
+	label = new SceneLabel("EXPOSURE", 18, "section", Label::ANTIALIAS_FULL);
 	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	addChild(label);
 	label->setPosition(270, 3);
@@ -607,7 +607,7 @@ PostPreviewBox::PostPreviewBox() : UIElement() {
 	cameraExposureInput->setText(String::NumberToString(previewScene->getDefaultCamera()->getExposureLevel()));	
 	cameraExposureInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 
-	label = new ScreenLabel("LIGHT INT.", 18, "section", Label::ANTIALIAS_FULL);
+	label = new SceneLabel("LIGHT INT.", 18, "section", Label::ANTIALIAS_FULL);
 	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	addChild(label);
 	label->setPosition(430, 3);
@@ -633,8 +633,8 @@ void PostPreviewBox::Update() {
 }
 
 void PostPreviewBox::Resize(Number width, Number height) {
-	previewShape->setShapeSize(width, height-30);
-	headerBg->setShapeSize(width, 30);
+	previewShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, height-30);
+	headerBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, 30);
 	
 	int textureWidth = (int)width;
 	int textureHeight = (int) (height-30);
@@ -732,13 +732,13 @@ MaterialPreviewBox::MaterialPreviewBox() : UIElement() {
 	previewScene->getDefaultCamera()->setPosition(0,7,9);
 	previewScene->getDefaultCamera()->lookAt(Vector3());
 	
-	previewBase = new ScreenEntity();
+	previewBase = new Entity();
 	previewBase->processInputEvents = true;
 	previewBase->setPosition(0, 0);
 	addChild(previewBase);
 	
-	previewShape = new ScreenShape(ScreenShape::SHAPE_RECT, 256, 256);
-	previewShape->setPositionMode(ScreenEntity::POSITION_TOPLEFT);	
+	previewShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 256, 256);
+	previewShape->setAnchorPoint(-1.0, -1.0, 0.0);	
 	previewShape->setTexture(renderTexture->getTargetTexture());
 	previewShape->setPosition(20,40);
 	previewShape->strokeEnabled = true;
@@ -746,7 +746,7 @@ MaterialPreviewBox::MaterialPreviewBox() : UIElement() {
 	previewShape->setStrokeWidth(1.0);
 	previewBase->addChild(previewShape);
 	
-	shapeSelector = new ScreenImage("Images/small_selector.png");
+	shapeSelector = new UIImage("Images/small_selector.png");
 	previewBase->addChild(shapeSelector);
 	shapeSelector->color.a = 0.4;
 	
@@ -805,9 +805,9 @@ MaterialEditorPane::MaterialEditorPane() : UIElement() {
 
 	changingMaterial = false;
 	
-	headerBg = new ScreenShape(ScreenShape::SHAPE_RECT,10,10);
+	headerBg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE,10,10);
 	addChild(headerBg);
-	headerBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));	
 	
 	propList = new PropList("MATERIAL EDITOR");
@@ -875,7 +875,7 @@ void MaterialEditorPane::reloadShaders() {
 }
 
 void MaterialEditorPane::Resize(Number width, Number height) {
-	headerBg->setShapeSize(width, 30);	
+	headerBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, 30);	
 	propList->Resize(370, height);
 	propList->updateProps();
 }
@@ -1007,9 +1007,9 @@ MaterialBrowser::MaterialBrowser() : UIElement() {
 	addChild(treeContainer);		
 	selectedData = NULL;
 	
-	headerBg = new ScreenShape(ScreenShape::SHAPE_RECT,10,10);
+	headerBg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE,10,10);
 	addChild(headerBg);
-	headerBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));	
 
 	newShaderButton = new UIImageButton("Images/new_shader.png");
@@ -1050,7 +1050,7 @@ void MaterialBrowser::handleEvent(Event *event) {
 			dispatchEvent(new Event(), Event::CHANGE_EVENT);
 		}
 	}	
-	ScreenEntity::handleEvent(event);
+	Entity::handleEvent(event);
 }
 
 
@@ -1085,7 +1085,7 @@ MaterialBrowser::~MaterialBrowser() {
 void MaterialBrowser::Resize(Number width, Number height) {
 	treeContainer->Resize(width, height-30);
 	treeContainer->setPosition(0, 30);	
-	headerBg->setShapeSize(width, 30);	
+	headerBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, 30);	
 	removeButton->setPosition(width - 24, 8);
 }
 

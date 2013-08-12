@@ -39,7 +39,7 @@ class ProjectFontEntry : public UIElement {
 		void handleEvent(Event *event);
 		
 		UITextInput *fontNameInput;
-		ScreenLabel *fontFileLabel;
+		SceneLabel *fontFileLabel;
 		
 		UIImageButton *removeButton;
 		
@@ -65,7 +65,7 @@ class PolycodeProjectEditor : public PolycodeEditor {
 	
 	PolycodeProjectManager *projectManager;
 	
-	ScreenImage *grid;
+	UIImage *grid;
 
 	Object configFile;	
 	
@@ -74,7 +74,7 @@ class PolycodeProjectEditor : public PolycodeEditor {
 	UIElement *mainSettingsWindow;
 	UIElement *moduleSettingsWindow;
 	
-	ScreenShape *headerBg;
+	ScenePrimitive *headerBg;
 	
 	UIElement *fontEntryBase;	
 	std::vector<ProjectFontEntry*> fontEntries;

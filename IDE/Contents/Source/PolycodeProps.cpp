@@ -115,10 +115,10 @@ PropEvent::~PropEvent() {
 
 PropList::PropList(String caption) : UIElement() {
 
-	setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	setAnchorPoint(-1.0, -1.0, 0.0);
 
-	bg = new ScreenShape(ScreenShape::SHAPE_RECT, 10,10);
-	bg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	bg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 10,10);
+	bg->setAnchorPoint(-1.0, -1.0, 0.0);
 	bg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiBgColor"));
 	
 	addChild(bg);
@@ -127,18 +127,18 @@ PropList::PropList(String caption) : UIElement() {
 	
 	blockMouseInput = true;
 
-	bg2 = new ScreenShape(ScreenShape::SHAPE_RECT, 10,10);
-	bg2->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	bg2 = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 10,10);
+	bg2->setAnchorPoint(-1.0, -1.0, 0.0);
 	bg2->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	
 	addChild(bg2);
 
-	ScreenLabel *label = new ScreenLabel(caption, 18, "section", Label::ANTIALIAS_FULL);
+	SceneLabel *label = new SceneLabel(caption, 18, "section", Label::ANTIALIAS_FULL);
 	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	addChild(label);
 	label->setPosition(10, 3);
 
-	propContents = new ScreenEntity();
+	propContents = new Entity();
 	propContents->processInputEvents = true;
 		
 	scrollContainer = new UIScrollContainer(propContents, false, true, 100, 100);
@@ -158,7 +158,7 @@ void PropList::updateProps() {
 }
 
 void PropList::updateSize() {
-	Resize(width, height);
+	Resize(getWidth(), getHeight());
 	scrollContainer->setScrollValue(0, 0);	
 }
 		
@@ -168,8 +168,8 @@ void PropList::Resize(Number width, Number height) {
 		
 	scrollContainer->Resize(width, height-30);
 	
-	bg->setShapeSize(width, height);
-	bg2->setShapeSize(width, 30);	
+	bg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, height);
+	bg2->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, 30);	
 	
 	Number offsetY = 0;
 	for(int i=0; i < props.size(); i++) {
@@ -211,17 +211,17 @@ PropSheet::PropSheet(String caption, String type) : UIElement() {
 	
 	customUndoHandler = false;
 	
-	bg = new ScreenShape(ScreenShape::SHAPE_RECT, 30,30);
+	bg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 30,30);
 	addChild(bg);
 	bg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiSmallHeaderBgColor"));
-	bg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	bg->setAnchorPoint(-1.0, -1.0, 0.0);
 	
-	ScreenLabel *label = new ScreenLabel(caption, 18, "section", Label::ANTIALIAS_FULL);
+	SceneLabel *label = new SceneLabel(caption, 18, "section", Label::ANTIALIAS_FULL);
 	label->color.a = 0.5;
 	addChild(label);
 	label->setPosition(25, 3);	
 	
-	contents = new ScreenEntity();
+	contents = new Entity();
 	contents->processInputEvents = true;
 	addChild(contents);
 	contents->setPosition(20,35);
@@ -289,7 +289,7 @@ void PropSheet::Resize(Number width, Number height) {
 	setWidth(width);
 	setHeight(height);
 	
-	bg->setShapeSize(width, 30);
+	bg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, 30);
 	
 	Number yOffset = 0;
 	
@@ -318,12 +318,12 @@ PropProp::PropProp(String caption, String type) : UIElement() {
 
 	suppressChangeEvent = false;
 	propType = type;
-	label = new ScreenLabel(caption, 12);
+	label = new SceneLabel(caption, 12);
 	label->color.a = 0.4;
 	label->setPosition(0, 5);
 	addChild(label);
 	
-	propContents = new ScreenEntity();
+	propContents = new Entity();
 	propContents->processInputEvents = true;
 	addChild(propContents);
 	propContents->setPosition(100, 0);
@@ -337,12 +337,12 @@ PropProp::~PropProp() {
 
 Vector2Prop::Vector2Prop(String caption) : PropProp(caption, "Vector2") {
 
-	labelX = new ScreenLabel("X:", 11);
+	labelX = new SceneLabel("X:", 11);
 	labelX->color.a = 0.4;
 	propContents->addChild(labelX);
 	labelX->setPosition(-20, 6);	
 
-	labelY = new ScreenLabel("Y:", 11);
+	labelY = new SceneLabel("Y:", 11);
 	labelY->color.a = 0.4;
 	propContents->addChild(labelY);
 	labelY->setPosition(60, 6);	
@@ -530,7 +530,7 @@ SliderProp::SliderProp(String caption, Number min, Number max) : PropProp(captio
 	slider->setPosition(5, 8);
 	propContents->addChild(slider);
 	
-	valueLabel = new ScreenLabel("0.0", 10);
+	valueLabel = new SceneLabel("0.0", 10);
 	propContents->addChild(valueLabel);
 	valueLabel->setPosition(120, 5);
 	valueLabel->color.a = 0.6;
@@ -769,7 +769,7 @@ BoolProp::~BoolProp() {
 
 SoundProp::SoundProp(String caption) : PropProp(caption, "Sound"){
 
-	soundFile = new ScreenLabel("", 11);
+	soundFile = new SceneLabel("", 11);
 	soundFile->setPosition(0, 5);
 	propContents->addChild(soundFile);	
 	soundFile->color.a = 0.6;
@@ -912,8 +912,8 @@ void BezierCurveProp::handleEvent(Event *event) {
 }
 
 TextureProp::TextureProp(String caption) : PropProp(caption, "Texture"){
-	previewShape = new ScreenShape(ScreenShape::SHAPE_RECT, 48, 48);
-	previewShape->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	previewShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 48, 48);
+	previewShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	previewShape->setPosition(2, 1);
 	propContents->addChild(previewShape);
 
@@ -922,7 +922,7 @@ TextureProp::TextureProp(String caption) : PropProp(caption, "Texture"){
 	changeButton->setPosition(60, 5);
 	changeButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
-	textureLabel = new ScreenLabel("", 12, "sans");
+	textureLabel = new SceneLabel("", 12, "sans");
 	propContents->addChild(textureLabel);
 	textureLabel->setPosition(-100, 32);
 	textureLabel->color.a = 0.3;
@@ -983,9 +983,9 @@ Texture* TextureProp::get() {
 ScreenSpriteProp::ScreenSpriteProp(String caption) : PropProp(caption, "ScreenSprite"){
 
 		previewSprite = new ScreenSprite("default/default.sprite");
-		previewSprite->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+		previewSprite->setAnchorPoint(-1.0, -1.0, 0.0);
 		previewSprite->setPosition(2, 1);
-		previewSprite->setShapeSize(48,48);		
+		previewSprite->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, 48,48);		
 		propContents->addChild(previewSprite);	
 
 	
@@ -1038,9 +1038,9 @@ void ScreenSpriteProp::set(String fileName) {
 		currentData = fileName;
 		
 		previewSprite = new ScreenSprite(fileName);
-		previewSprite->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+		previewSprite->setAnchorPoint(-1.0, -1.0, 0.0);
 		previewSprite->setPosition(2, 1);
-		previewSprite->setShapeSize(48,48);		
+		previewSprite->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, 48,48);		
 		propContents->addChild(previewSprite);	
 	}
 }
@@ -1049,9 +1049,9 @@ String ScreenSpriteProp::get() {
 	return previewSprite->getFileName();
 }
 
-ScreenEntityInstanceProp::ScreenEntityInstanceProp(String caption) : PropProp(caption, "ScreenEntityInstance"){
-	previewInstance = new ScreenEntityInstance("default/default.entity2d");
-	previewInstance->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+EntityInstanceProp::EntityInstanceProp(String caption) : PropProp(caption, "EntityInstance"){
+	previewInstance = new EntityInstance("default/default.entity2d");
+	previewInstance->setAnchorPoint(-1.0, -1.0, 0.0);
 	previewInstance->setPosition(2, 1);
 	propContents->addChild(previewInstance);
 
@@ -1062,12 +1062,12 @@ ScreenEntityInstanceProp::ScreenEntityInstanceProp(String caption) : PropProp(ca
 	setHeight(50);
 }
 
-ScreenEntityInstanceProp::~ScreenEntityInstanceProp() {
+EntityInstanceProp::~EntityInstanceProp() {
 
 }
 
 
-void ScreenEntityInstanceProp::handleEvent(Event *event) {
+void EntityInstanceProp::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == globalFrame->assetBrowser && event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {
 		String filePath = globalFrame->assetBrowser->getSelectedAssetPath();
@@ -1089,18 +1089,18 @@ void ScreenEntityInstanceProp::handleEvent(Event *event) {
 	}
 }
 
-void ScreenEntityInstanceProp::setPropData(PolycodeEditorPropActionData* data) {
+void EntityInstanceProp::setPropData(PolycodeEditorPropActionData* data) {
 	set(data->stringVal);
 	dispatchEvent(new Event(), Event::CHANGE_EVENT);
 }
 
-void ScreenEntityInstanceProp::set(String fileName) {
+void EntityInstanceProp::set(String fileName) {
 
 	if(fileName != previewInstance->getFileName()) {
 		propContents->removeChild(previewInstance);
 		delete previewInstance;
-		previewInstance = new ScreenEntityInstance(fileName);
-		previewInstance->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+		previewInstance = new EntityInstance(fileName);
+		previewInstance->setAnchorPoint(-1.0, -1.0, 0.0);
 		previewInstance->setPosition(2, 1);
 		
 		lastData = currentData;
@@ -1115,11 +1115,11 @@ void ScreenEntityInstanceProp::set(String fileName) {
 	}
 }
 
-String ScreenEntityInstanceProp::get() {
+String EntityInstanceProp::get() {
 	return previewInstance->getFileName();
 }
 
-ShapeSheet::ShapeSheet() : PropSheet("SCREEN SHAPE", "ScreenShape") {
+ShapeSheet::ShapeSheet() : PropSheet("SCREEN SHAPE", "ScenePrimitive") {
 	shapeSize = new Vector2Prop("Shape size");
 	addProp(shapeSize);
 
@@ -1162,7 +1162,7 @@ void ShapeSheet::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == shapeSize  && event->getEventCode() == Event::CHANGE_EVENT) {
 		lastShapeSize = shapeSize->get();
-		shape->setShapeSize(lastShapeSize.x, lastShapeSize.y);
+		shape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, lastShapeSize.x, lastShapeSize.y);
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);	
 	}
 
@@ -2135,7 +2135,7 @@ void ShaderTexturesSheet::setShader(Shader *shader, Material *material, ShaderBi
 	Resize(width, height);
 }
 
-ScreenEntitySheet::ScreenEntitySheet() : PropSheet("SCREEN ENTITY", "screen_entity") {
+EntitySheet::EntitySheet() : PropSheet("SCREEN ENTITY", "screen_entity") {
 
 	widthProp = new NumberProp("Width");
 	addProp(widthProp);
@@ -2148,11 +2148,11 @@ ScreenEntitySheet::ScreenEntitySheet() : PropSheet("SCREEN ENTITY", "screen_enti
 	lastEntity = NULL;
 }
 
-ScreenEntitySheet::~ScreenEntitySheet() {
+EntitySheet::~EntitySheet() {
 
 }
 		
-void ScreenEntitySheet::handleEvent(Event *event) {
+void EntitySheet::handleEvent(Event *event) {
 	if(entity) {
 		if(event->getDispatcher() == widthProp) {
 			entity->setWidth(widthProp->get());
@@ -2166,7 +2166,7 @@ void ScreenEntitySheet::handleEvent(Event *event) {
 	PropSheet::handleEvent(event);	
 }
 
-void ScreenEntitySheet::Update() {
+void EntitySheet::Update() {
 	if(entity) {
 		enabled = true;
 		if(entity != lastEntity) {
@@ -2625,10 +2625,10 @@ void Transform2DSheet::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == topLeftProp  && event->getEventCode() == Event::CHANGE_EVENT) {
 		if(topLeftProp->get()) {
-			lastPositionMode = ScreenEntity::POSITION_TOPLEFT;
+			lastPositionMode = Entity::POSITION_TOPLEFT;
 			entity->setPositionMode(lastPositionMode);
 		} else {
-			lastPositionMode = ScreenEntity::POSITION_CENTER;
+			lastPositionMode = Entity::POSITION_CENTER;
 			entity->setPositionMode(lastPositionMode);		
 		}
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
@@ -2654,7 +2654,7 @@ void Transform2DSheet::Update() {
 		}
 
 		if(entity->getPositionMode() != lastPositionMode) {
-			if(entity->getPositionMode() == ScreenEntity::POSITION_TOPLEFT) {
+			if(entity->getPositionMode() == Entity::POSITION_TOPLEFT) {
 				topLeftProp->set(true);
 			} else {
 				topLeftProp->set(false);			
@@ -2678,7 +2678,7 @@ Transform2DSheet::~Transform2DSheet() {
 
 }
 
-ScreenImageSheet::ScreenImageSheet() : PropSheet("SCREEN IMAGE", "ScreenImage") {
+UIImageSheet::UIImageSheet() : PropSheet("SCREEN IMAGE", "UIImage") {
 	image = NULL;
 	
 	texture = new TextureProp("Texture");
@@ -2688,11 +2688,11 @@ ScreenImageSheet::ScreenImageSheet() : PropSheet("SCREEN IMAGE", "ScreenImage") 
 	propHeight = 100;
 }
 
-ScreenImageSheet::~ScreenImageSheet() {
+UIImageSheet::~UIImageSheet() {
 
 }
 		
-void ScreenImageSheet::handleEvent(Event *event) {
+void UIImageSheet::handleEvent(Event *event) {
 	if(!image)
 		return;
 
@@ -2701,14 +2701,14 @@ void ScreenImageSheet::handleEvent(Event *event) {
 		
 		image->setTexture(selectedTexture);
 		selectedTexture->reloadOnFileModify = true;
-		image->setShapeSize(selectedTexture->getWidth(), selectedTexture->getHeight());
+		image->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, selectedTexture->getWidth(), selectedTexture->getHeight());
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}
 	
 	PropSheet::handleEvent(event);
 }
 
-void ScreenImageSheet::Update() {
+void UIImageSheet::Update() {
 	if(image) {
 		enabled = true;	
 		texture->set(image->getTexture());
@@ -2786,21 +2786,21 @@ void ScreenSpriteSheet::Update() {
 	}
 }
 
-ScreenEntityInstanceSheet::ScreenEntityInstanceSheet() : PropSheet("ENTITY INSTANCE", "ScreenEntityInstance") {
+EntityInstanceSheet::EntityInstanceSheet() : PropSheet("ENTITY INSTANCE", "EntityInstance") {
 	instance = NULL;
 	
-	instanceProp = new ScreenEntityInstanceProp("Entity file");
+	instanceProp = new EntityInstanceProp("Entity file");
 	instanceProp->addEventListener(this, Event::CHANGE_EVENT);
 	addProp(instanceProp);
 	
 	propHeight = 100;
 }
 
-ScreenEntityInstanceSheet::~ScreenEntityInstanceSheet() {
+EntityInstanceSheet::~EntityInstanceSheet() {
 
 }
 		
-void ScreenEntityInstanceSheet::handleEvent(Event *event) {
+void EntityInstanceSheet::handleEvent(Event *event) {
 	if(!instance)
 		return;
 
@@ -2817,7 +2817,7 @@ void ScreenEntityInstanceSheet::handleEvent(Event *event) {
 	PropSheet::handleEvent(event);
 }
 
-void ScreenEntityInstanceSheet::Update() {
+void EntityInstanceSheet::Update() {
 	if(instance) {
 		enabled = true;	
 		instanceProp->set(instance->getFileName());
@@ -2826,7 +2826,7 @@ void ScreenEntityInstanceSheet::Update() {
 	}
 }
 
-ScreenLabelSheet::ScreenLabelSheet() : PropSheet("SCREEN LABEL", "ScreenLabel") {
+SceneLabelSheet::SceneLabelSheet() : PropSheet("SCREEN LABEL", "SceneLabel") {
 	label = NULL;
 	
 	caption = new StringProp("Contents");
@@ -2853,7 +2853,7 @@ ScreenLabelSheet::ScreenLabelSheet() : PropSheet("SCREEN LABEL", "ScreenLabel") 
 	refreshFonts();
 }
 
-void ScreenLabelSheet::refreshFonts() {
+void SceneLabelSheet::refreshFonts() {
 	
 	FontManager *fontManager = CoreServices::getInstance()->getFontManager();
 	
@@ -2868,11 +2868,11 @@ void ScreenLabelSheet::refreshFonts() {
 
 }
 
-ScreenLabelSheet::~ScreenLabelSheet() {
+SceneLabelSheet::~SceneLabelSheet() {
 
 }
 
-void ScreenLabelSheet::handleEvent(Event *event) {
+void SceneLabelSheet::handleEvent(Event *event) {
 	if(!label)
 		return;
 
@@ -2917,7 +2917,7 @@ void ScreenLabelSheet::handleEvent(Event *event) {
 	PropSheet::handleEvent(event);
 }
 
-void ScreenLabelSheet::Update() {
+void SceneLabelSheet::Update() {
 	if(label) {
 		enabled = true;		
 		if(label != lastLabel) {

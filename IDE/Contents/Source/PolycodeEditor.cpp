@@ -44,7 +44,7 @@ void PolycodeEditor::setFilePath(String newPath) {
 	filePath = newPath;
 }
 
-PolycodeEditor::PolycodeEditor(bool _isReadOnly) : ScreenEntity(), ClipboardProvider() {
+PolycodeEditor::PolycodeEditor(bool _isReadOnly) : UIElement(), ClipboardProvider() {
 	this->_isReadOnly = _isReadOnly;
 	enableScissor = true;	
 	processInputEvents = true;

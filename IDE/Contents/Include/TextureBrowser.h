@@ -41,12 +41,12 @@ class AssetEntry : public UIElement {
 		AssetEntry(String assetPath, String assetName, String extension);
 		~AssetEntry();
 		
-		ScreenShape *imageShape;
-		ScreenLabel *nameLabel;
+		ScenePrimitive *imageShape;
+		SceneLabel *nameLabel;
 		
 		String assetPath;
 		
-		ScreenShape *selectShape;
+		ScenePrimitive *selectShape;
 };
 
 class AssetList : public UIElement {
@@ -68,7 +68,7 @@ class AssetList : public UIElement {
 		UIImageButton *reloadButton;
 	
 		String currentFolderPath;
-		ScreenShape *bgShape;
+		ScenePrimitive *bgShape;
 	
 		AssetEntry *currentEntry;		
 		std::vector<AssetEntry*> assetEntries;

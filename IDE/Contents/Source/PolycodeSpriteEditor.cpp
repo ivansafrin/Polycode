@@ -100,9 +100,9 @@ SpriteAnimationEntry::~SpriteAnimationEntry() {
 }
 
 PolycodeSpriteEditor::PolycodeSpriteEditor() : PolycodeEditor(true){
-	headerBg = new ScreenShape(ScreenShape::SHAPE_RECT,10,10);
+	headerBg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE,10,10);
 	addChild(headerBg);
-	headerBg->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	
 	initialLoad = false;
@@ -131,7 +131,7 @@ PolycodeSpriteEditor::PolycodeSpriteEditor() : PolycodeEditor(true){
 			
 	baseProps->propHeight = 180;
 	
-	ScreenLabel *label = new ScreenLabel("PREVIEW", 18, "section", Label::ANTIALIAS_FULL);
+	SceneLabel *label = new SceneLabel("PREVIEW", 18, "section", Label::ANTIALIAS_FULL);
 	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	addChild(label);
 	label->setPosition(390, 36);
@@ -140,7 +140,7 @@ PolycodeSpriteEditor::PolycodeSpriteEditor() : PolycodeEditor(true){
 	PropSheet *animationProps = new PropSheet("ANIMATIONS", "");
 	propList->addPropSheet(animationProps);
 
-	ScreenLabel *animHelpLabel = new ScreenLabel("Comma separated frames, ranges or repeats (e.g. 1,2,3-7,8x5)", 11);
+	SceneLabel *animHelpLabel = new SceneLabel("Comma separated frames, ranges or repeats (e.g. 1,2,3-7,8x5)", 11);
 	animHelpLabel->color.a = 0.4;
 	animationProps->addChild(animHelpLabel);
 	animHelpLabel->setPosition(5, 40);
@@ -209,13 +209,13 @@ void PolycodeSpriteEditor::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == widthProp) {
 		previewSprite->setSpriteSize(widthProp->get(), heightProp->get());
-		previewSprite->setShapeSize(widthProp->get(), heightProp->get());
+		previewSprite->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, widthProp->get(), heightProp->get());
 		previewSprite->recalculateSpriteDimensions();		
 	}
 
 	if(event->getDispatcher() == heightProp) {
 		previewSprite->setSpriteSize(widthProp->get(), heightProp->get());
-		previewSprite->setShapeSize(widthProp->get(), heightProp->get());
+		previewSprite->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, widthProp->get(), heightProp->get());
 		previewSprite->recalculateSpriteDimensions();		
 	}
 	
@@ -273,7 +273,7 @@ bool PolycodeSpriteEditor::openFile(OSFileEntry filePath) {
 	
 	previewSprite = new ScreenSprite(filePath.fullPath);
 	addChild(previewSprite);
-	previewSprite->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
+	previewSprite->setAnchorPoint(-1.0, -1.0, 0.0);
 	previewSprite->setPosition(400, 80);				
 	zoomBox->setSelectedIndex(0);
 	previewSprite->getTexture()->reloadOnFileModify = true;	
@@ -327,7 +327,7 @@ void PolycodeSpriteEditor::saveFile() {
 }
 
 void PolycodeSpriteEditor::Resize(int x, int y) {
-	headerBg->setShapeSize(x, 30);
+	headerBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, x, 30);
 	propList->Resize(370, y);
 	propList->updateProps();	
 	PolycodeEditor::Resize(x,y);	

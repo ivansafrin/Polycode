@@ -39,7 +39,7 @@ using namespace Polycode;
 
 #define CURVE_SIZE 160.0
 
-class EditPoint : public ScreenEntity {
+class EditPoint : public Entity {
 	public:
 		EditPoint(BezierPoint *point, unsigned int type);
 		~EditPoint();
@@ -51,21 +51,21 @@ class EditPoint : public ScreenEntity {
 		
 		void setMode(unsigned int mode);
 
-		void limitPoint(ScreenImage *point);
+		void limitPoint(UIImage *point);
 								
-		ScreenImage *pointHandle;
+		UIImage *pointHandle;
 		
-		ScreenImage *controlHandle1;
-		ScreenImage *controlHandle2;
+		UIImage *controlHandle1;
+		UIImage *controlHandle2;
 		
-		ScreenLine *connectorLine1;
-		ScreenLine *connectorLine2;
+		SceneLine *connectorLine1;
+		SceneLine *connectorLine2;
 				
 		static const int TYPE_START_POINT = 0;		
 		static const int TYPE_POINT = 1;
 		static const int TYPE_END_POINT = 2;				
 		
-		ScreenImage *draggingPoint;
+		UIImage *draggingPoint;
 		bool dragging;
 		Vector2 basePosition;
 		Vector2 basePointPosition;
@@ -125,7 +125,7 @@ class CurveEditor : public UIWindow {
 		UIImageButton *addButton;
 		UIImageButton *removeButton;
 				
-		ScreenImage	*selectorImage;
+		UIImage	*selectorImage;
 		
 		static const int MODE_SELECT = 0;		
 		static const int MODE_ADD = 1;
@@ -134,7 +134,7 @@ class CurveEditor : public UIWindow {
 		UITreeContainer *treeContainer;
 		
 		unsigned int mode;
-		ScreenImage *bg;
+		UIImage *bg;
 		
 		EditCurve *selectedCurve;
 		std::vector<EditCurve*> curves;
@@ -151,7 +151,7 @@ class EditorHolder : public UIElement {
 		
 };
 
-class PolycodeFrame : public ScreenEntity {
+class PolycodeFrame : public Entity {
 public:
 	
 	PolycodeFrame();
@@ -195,7 +195,7 @@ public:
 	YesNoPopup *yesNoPopup;
 	YesNoCancelPopup *yesNoCancelPopup;
 	
-	ScreenEntity *welcomeEntity;	
+	Entity *welcomeEntity;	
 	PolycodeProjectBrowser *projectBrowser;
 	PolycodeEditorManager *editorManager;
 		
@@ -233,21 +233,21 @@ private:
 	bool showingConsole;
 	Number consoleSize;
 
-	ScreenShape *fileDialogBlocker;
+	ScenePrimitive *fileDialogBlocker;
 
-	ScreenShape *topBarBg;
-	ScreenImage *logo;	
-	ScreenImage *resizer;	
+	ScenePrimitive *topBarBg;
+	UIImage *logo;	
+	UIImage *resizer;	
 
 	OSFileEntry draggedFile;
-	ScreenEntity *dragEntity;
-	ScreenLabel *dragLabel;
+	Entity *dragEntity;
+	SceneLabel *dragLabel;
 	bool isDragging;
 	
-	ScreenLabel *currentProjectTitle;
+	SceneLabel *currentProjectTitle;
 	UIComboBox *currentFileSelector;
 	
-	ScreenImage *welcomeImage;	
+	UIImage *welcomeImage;	
 	
 	
 	EditorHolder *editorHolder;
@@ -255,7 +255,7 @@ private:
 
 	vector<PolycodeEditor*> editors;
 	
-	ScreenShape *modalBlocker;
+	ScenePrimitive *modalBlocker;
 	UIWindow *modalChild;		
 	
 	UIVSizer *consoleSizer;
