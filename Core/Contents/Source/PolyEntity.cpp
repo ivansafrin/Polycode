@@ -243,7 +243,10 @@ Entity *Entity::getChildAtIndex(unsigned int index) {
 }
 
 void Entity::addChild(Entity *newChild) {
-	addEntity(newChild);
+	newChild->setRenderer(renderer);
+	newChild->setParentEntity(this);
+	newChild->setInverseY(getInverseY());
+	children.push_back(newChild);
 }
 
 void Entity::setColor(Color color) {
@@ -526,13 +529,6 @@ void Entity::setRenderer(Renderer *renderer) {
 	for(int i=0;i<children.size();i++) {
 		children[i]->setRenderer(renderer);
 	}
-}
-
-void Entity::addEntity(Entity *newChild) {
-	newChild->setRenderer(renderer);
-	newChild->setParentEntity(this);
-	newChild->setInverseY(getInverseY());
-	children.push_back(newChild);	
 }
 
 

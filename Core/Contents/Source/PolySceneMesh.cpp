@@ -164,8 +164,7 @@ ShaderBinding *SceneMesh::getLocalShaderOptions() {
 
 void SceneMesh::loadSkeleton(const String& fileName) {
 	skeleton = new Skeleton(fileName);
-	addEntity(skeleton);
-	
+	addChild(skeleton);
 	setSkeleton(skeleton);
 }
 

@@ -167,24 +167,19 @@ namespace Polycode {
 			/** @name Hierarchy operations.
 			*  These methods add and remove entities to and from each other.
 			*/
-			//@{			
-			
-			/**
-			* @see addChild()
-			*/		
-			virtual void addEntity(Entity *newChild);
+			//@{
 
 			/**
 			* Adds another entity as a child. The children inherit the parent's transforms.
 			@param newChild The entity to be added.
 			*/					
-			void addChild(Entity *newChild);
+			virtual void addChild(Entity *newChild);
 			
 			/**
 			* Removes an entity from the entity's children.
 			@param entityToRemove Entity to be removed.
 			*/
-			void removeChild(Entity *entityToRemove);
+			virtual void removeChild(Entity *entityToRemove);
 
 			/**
 			* Manually sets the entity's parent. This method does not add the entity to the parent and should not be called manually.

@@ -214,6 +214,8 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	core->addEventListener(this, Core::EVENT_SELECT_ALL);
 	indentSpacing = 4;
 	indentType = INDENT_TAB;
+	
+	core->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 }
 
 void UITextInput::checkBufferLines() {
@@ -2153,6 +2155,7 @@ void UITextInput::Update() {
 
 UITextInput::~UITextInput() {
 	core->removeAllHandlersForListener(this);
+	core->getInput()->removeAllHandlersForListener(this);
 	delete blinkTimer;
 
 	linesContainer->ownsChildren = true;
@@ -2450,6 +2453,13 @@ void UITextInput::readjustBuffer(int lineStart, int lineEnd) {
 
 
 void UITextInput::handleEvent(Event *event) {
+
+	if(event->getDispatcher() == core->getInput()) {
+		if(event->getEventCode() == InputEvent::EVENT_KEYDOWN) {
+			InputEvent *inputEvent = (InputEvent*) event;
+			onKeyDown(inputEvent->key, inputEvent->charCode);
+		}
+	}
 
 	if(event->getDispatcher() == contextMenu) {
 		UIMenuItem *item = contextMenu->getSelectedItem();

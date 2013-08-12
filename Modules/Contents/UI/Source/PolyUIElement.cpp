@@ -24,6 +24,8 @@
 
 using namespace Polycode;
 
+UIElement *UIElement::globalFocusedChild = NULL;
+
 UIImage::UIImage(String imagePath) : UIElement() {
 	image = new SceneImage(imagePath);
 	image->setAnchorPoint(-1.0, -1.0, 0.0);
@@ -55,12 +57,21 @@ UIElement::UIElement(Number width, Number height) : Entity() {
 	setAnchorPoint(-1.0, -1.0, 0.0);
 	processInputEvents = true;
 	focusParent = NULL;
+	hasFocus = false;
 	hasDragLimits = false;	
 	dragged = false;	
 	depthTest = false;
 	depthWrite = false;		
 	setWidth(width);
 	setHeight(height);
+}
+
+void UIElement::addChild(Entity *child) {
+	UIElement* uiChild = dynamic_cast<UIElement*>(child);
+	if(uiChild) {
+		addFocusChild(uiChild);
+	}
+	Entity::addChild(child);
 }
 
 void UIElement::setDragLimits(Rectangle rect) {
@@ -119,6 +130,21 @@ MouseEventResult UIElement::onMouseMove(const Ray &ray, int timestamp) {
 
 UIElement::~UIElement() {
 
+}
+
+void UIElement::focusChild(UIElement *child) {
+
+	if(UIElement::globalFocusedChild) {
+		UIElement::globalFocusedChild->onLoseFocus();
+		UIElement::globalFocusedChild->hasFocus = false;
+	}
+
+	UIElement::globalFocusedChild = child;
+	
+	if(child) {
+		UIElement::globalFocusedChild->onGainFocus();
+		UIElement::globalFocusedChild->hasFocus = true;
+	}	
 }
 
 void UIElement::addFocusChild(UIElement *element) {

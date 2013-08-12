@@ -154,9 +154,7 @@ namespace Polycode {
 			Config *getConfig();
 			
 					
-			~CoreServices();
-		
-			void *focusedChild;
+			~CoreServices();		
 			
 		protected:
 		

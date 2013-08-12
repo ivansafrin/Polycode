@@ -140,7 +140,7 @@ void Bone::enableBoneLabel(const String& fontLabel, Number size, Number scale, C
 	label->setColor(labelColor);
 	label->billboardMode = true;
 	label->depthTest = false;
-	addEntity(label);
+	addChild(label);
 }
 
 void Bone::Render() {

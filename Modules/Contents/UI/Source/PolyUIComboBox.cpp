@@ -92,6 +92,7 @@ UIComboBox::UIComboBox(UIGlobalMenu *globalMenu, Number comboWidth) : UIElement(
 	selectedOffset = 0;
 
 	dropDownImage->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);	
+	dropDownImage->setAnchorPoint(-1.0, -1.0, 0.0);
 	dropDownImage->processInputEvents = true;	
 	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);	
 	bgBox->processInputEvents = true;	

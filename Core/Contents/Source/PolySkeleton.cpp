@@ -72,7 +72,7 @@ void Skeleton::enableBoneLabels(const String& labelFont, Number size, Number sca
 	label->setColor(labelColor);
 	label->billboardMode = true;
 	label->depthWrite = false;
-	addEntity(label);
+	addChild(label);
 	
 }
 
@@ -194,12 +194,12 @@ void Skeleton::loadSkeleton(const String& fileName) {
 			parentBone = bones[bones[i]->parentBoneId];
 			parentBone->addChildBone(bones[i]);
 			bones[i]->setParentBone(parentBone);
-			parentBone->addEntity(bones[i]);			
+			parentBone->addChild(bones[i]);			
 //			addEntity(bones[i]);										
 			
 			SceneLine *connector = new SceneLine(bones[i], parentBone);
 			connector->depthTest = false;
-			bonesEntity->addEntity(connector);				
+			bonesEntity->addChild(connector);				
 			connector->setColor(((Number)(rand() % RAND_MAX)/(Number)RAND_MAX),((Number)(rand() % RAND_MAX)/(Number)RAND_MAX),((Number)(rand() % RAND_MAX)/(Number)RAND_MAX),1.0f);
 		} else {
 //			bProxy = new Entity();

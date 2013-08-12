@@ -99,7 +99,7 @@ void SceneLight::enableShadows(bool val, Number resolution) {
 		if(!spotCamera) {
 			spotCamera = new Camera(parentScene);
 //			spotCamera->setPitch(-45.0f);
-			addEntity(spotCamera);	
+			addChild(spotCamera);	
 		}
 		shadowMapRes = resolution;
 		shadowsEnabled = true;

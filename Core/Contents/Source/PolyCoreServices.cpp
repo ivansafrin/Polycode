@@ -107,7 +107,6 @@ void CoreServices::installModule(PolycodeModule *module)  {
 	
 	switch(module->getType()) {
 		case PolycodeModule::TYPE_SHADER:
-//			renderer->addShaderModule((ShaderModule*)module);
 			resourceManager->addShaderModule((PolycodeShaderModule*) module);
 			materialManager->addShaderModule((PolycodeShaderModule*) module);
 			renderer->addShaderModule((PolycodeShaderModule*) module);
@@ -129,8 +128,6 @@ CoreServices::CoreServices() : EventDispatcher() {
 	tweenManager = new TweenManager();
 	soundManager = new SoundManager();
 	fontManager = new FontManager();
-	
-	focusedChild = NULL;
 }
 
 CoreServices::~CoreServices() {
@@ -148,43 +145,9 @@ CoreServices::~CoreServices() {
 
 void CoreServices::setCore(Core *core) {
 	this->core = core;
-	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
-	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
-	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEUP);
-	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_DOWN);	
-	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_UP);		
-	core->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
-	core->getInput()->addEventListener(this, InputEvent::EVENT_KEYUP);
-	core->getInput()->addEventListener(this, InputEvent::EVENT_TOUCHES_BEGAN);
-	core->getInput()->addEventListener(this, InputEvent::EVENT_TOUCHES_ENDED);
-	core->getInput()->addEventListener(this, InputEvent::EVENT_TOUCHES_MOVED);		
 }
 
 void CoreServices::handleEvent(Event *event) {
-	if(event->getDispatcher() == core->getInput()) {
-		InputEvent *inputEvent = (InputEvent*)event;
-		switch(event->getEventCode()) {
-			case InputEvent::EVENT_KEYDOWN:
-			case InputEvent::EVENT_KEYUP:
-				dispatchEvent(new InputEvent(inputEvent->key, inputEvent->charCode, inputEvent->timestamp), inputEvent->getEventCode());			
-			break;
-			case InputEvent::EVENT_TOUCHES_BEGAN:
-			case InputEvent::EVENT_TOUCHES_ENDED:
-			case InputEvent::EVENT_TOUCHES_MOVED:						
-			{
-				InputEvent *event = new InputEvent();
-				event->touches = inputEvent->touches;
-				event->timestamp = inputEvent->timestamp;
-				dispatchEvent(event, inputEvent->getEventCode());
-			}
-			break;
-			default:
-				InputEvent *_inputEvent = new InputEvent(inputEvent->mousePosition, inputEvent->timestamp);
-				_inputEvent->mouseButton = inputEvent->mouseButton;
-				dispatchEvent(_inputEvent, inputEvent->getEventCode());			
-			break;
-		}
-	}
 }
 
 Core *CoreServices::getCore() {

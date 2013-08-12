@@ -59,7 +59,7 @@ void SceneParticleEmitter::respawnSceneParticles() {
 }
 
 void SceneParticleEmitter::addParticleBody(Entity *particleBody) {
-	addEntity((Entity*)particleBody);	
+	addChild((Entity*)particleBody);	
 	particleBody->editorOnly = true;
 }
 
