@@ -47,11 +47,11 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	String hueSelectorImage = conf->getStringValue("Polycode", "uiColorPickerHueSelector");
 	String mainSelectorImage = conf->getStringValue("Polycode", "uiColorPickerMainSelector");
 
-	mainBg = new SceneImage(mainBgImage);
+	mainBg = new UIImage(mainBgImage);
 	mainBg->setPosition(padding, topPadding+padding);
 	addChild(mainBg);
 
-	mainFrame = new SceneImage(mainFrameImage);
+	mainFrame = new UIImage(mainFrameImage);
 	mainFrame->setPosition(padding, topPadding+padding);
 	
 	alphaSlider = new UIHSlider(0, 1.0, mainFrame->getWidth());
@@ -65,7 +65,7 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	addChild(mainColorRect);
 	addChild(mainFrame);
 
-	hueFrame = new SceneImage(hueFrameImage);
+	hueFrame = new UIImage(hueFrameImage);
 	hueFrame->setPosition(mainFrame->getPosition().x + mainFrame->getWidth()+10, topPadding+padding);
 	addChild(hueFrame);
 	

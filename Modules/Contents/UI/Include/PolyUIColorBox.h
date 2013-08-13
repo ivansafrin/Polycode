@@ -83,9 +83,9 @@ namespace Polycode {
 			UITextInput *bTextInput;
 			UITextInput *aTextInput;						
 									
-			SceneImage *mainFrame;
-			SceneImage *mainBg;			
-			SceneImage *hueFrame;
+			UIImage *mainFrame;
+			UIImage *mainBg;			
+			UIImage *hueFrame;
 			UIImage *hueSelector;
 			UIImage *mainSelector;	
 			

@@ -41,10 +41,10 @@ UICheckBox::UICheckBox(String caption, bool checked) : UIElement() {
 	
 	this->checked = checked;
 	
-	buttonImageChecked = new SceneImage(checkImage);
+	buttonImageChecked = new UIImage(checkImage);
 	buttonImageChecked->visible = checked;
 
-	buttonImageUnchecked = new SceneImage(uncheckImage);
+	buttonImageUnchecked = new UIImage(uncheckImage);
 	buttonImageUnchecked->visible = !checked;
 	
 	captionLabel = new SceneLabel(caption, fontSize, fontName, Label::ANTIALIAS_FULL);
