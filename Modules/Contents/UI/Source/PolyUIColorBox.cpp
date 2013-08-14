@@ -59,7 +59,22 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	addChild(alphaSlider);
 	alphaSlider->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
-	mainColorRect = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, mainFrame->getWidth(), mainFrame->getHeight());
+	mainColorRect = new SceneMesh(Mesh::QUAD_MESH);
+	mainColorRect->setWidth(mainFrame->getWidth());
+	mainColorRect->setHeight(mainFrame->getWidth());
+	mainColorRect->setDepth(0.001);
+	
+	Polygon *imagePolygon = new Polygon();
+	
+	imagePolygon->addVertex(-mainFrame->getWidth()/2,mainFrame->getHeight()/2.0,0,0,0);
+	imagePolygon->addVertex(mainFrame->getWidth()/2,mainFrame->getHeight()/2.0,0, 1, 0);		
+	imagePolygon->addVertex(mainFrame->getWidth()/2,-mainFrame->getHeight()/2.0,0, 1, 1);									
+	imagePolygon->addVertex(-mainFrame->getWidth()/2,-mainFrame->getHeight()/2.0,0,0,1);
+	
+	mainColorRect->getMesh()->addPolygon(imagePolygon);
+	mainColorRect->getMesh()->dirtyArrays();
+	mainColorRect->backfaceCulled = false;	
+
 	mainColorRect->setAnchorPoint(-1.0, -1.0, 0.0);
 	mainColorRect->setPosition(padding, topPadding+padding);
 	addChild(mainColorRect);
@@ -256,8 +271,7 @@ void UIColorPicker::updateSelectedColor(bool updateTextFields, bool updateHue, b
 	mainColorRect->getMesh()->getPolygon(0)->getVertex(2)->vertexColor = Color(0.0,0.0,0.0,colorAlpha);
 	mainColorRect->getMesh()->getPolygon(0)->getVertex(3)->vertexColor = Color(0.0,0.0,0.0,colorAlpha);	
 	mainColorRect->getMesh()->arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
-	
-		
+			
 	if(updateHue) {
 		hueSelector->setPositionY(hueFrame->getPosition().y + hueFrame->getHeight() - ((currentH/360.0) * hueFrame->getHeight()));
 		lastHueSelectorPosition = hueSelector->getPosition().y;

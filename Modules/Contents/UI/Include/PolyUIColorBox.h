@@ -91,7 +91,7 @@ namespace Polycode {
 			
 			UIHSlider *alphaSlider;
 			
-			ScenePrimitive *mainColorRect;
+			SceneMesh *mainColorRect;
 			
 			vector<SceneLabel *> junkLabels; // Kept only to delete
 	};
