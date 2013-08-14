@@ -74,7 +74,7 @@ UIButton::UIButton(String text, Number width, Number height) : UIElement() {
 	buttonLabel->color.setColorHexFromString(conf->getStringValue("Polycode", "uiButtonFontColor"));
 	addChild(buttonLabel);
 	labelXPos = floor((width-buttonLabel->getWidth())/2.0f) + labelOffsetX;
-	labelYPos = floor(height/2.0) + labelOffsetY;
+	labelYPos = labelOffsetY;
 	buttonLabel->setPosition(labelXPos,labelYPos);
 	buttonLabel->positionAtBaseline = true;
 	buttonLabel->setAnchorPoint(-1.0, -1.0, 0.0);

@@ -49,7 +49,7 @@ namespace Polycode {
 	class _PolyExport UIMenuBarEntry : public UIElement {
 		public:
 			UIMenuBarEntry(String name);
-			~UIMenuBarEntry();		
+			virtual ~UIMenuBarEntry();		
 			void addItem(String name, String code, PolyKEY shortCut1 = KEY_UNKNOWN, PolyKEY shortCut2 = KEY_UNKNOWN);
 
 			void Select();
@@ -65,7 +65,7 @@ namespace Polycode {
 	class _PolyExport UIMenuBar : public UIElement {
 		public:
 			UIMenuBar(int width, UIGlobalMenu *globalMenu);
-			~UIMenuBar();
+			virtual ~UIMenuBar();
 
 			void handleEvent(Event *event);	
 

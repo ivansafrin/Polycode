@@ -34,7 +34,7 @@ namespace Polycode {
 	class _PolyExport UIMenuItem : public UIElement {
 		public:
 			UIMenuItem(String label, String _id, void *data, Number comboWidth, Number comboHeight);
-			~UIMenuItem();
+			virtual ~UIMenuItem();
 
 			virtual bool isSelectable();
 			

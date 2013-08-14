@@ -489,7 +489,7 @@ EditorHolder::~EditorHolder() {
 		
 void EditorHolder::Resize(Number width, Number height) {
 	if(currentEditor) {
-		currentEditor->Resize(getWidth(), getHeight());
+		currentEditor->Resize(width, height);
 	}
 }
 

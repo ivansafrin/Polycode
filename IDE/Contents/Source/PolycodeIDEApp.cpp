@@ -72,11 +72,11 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	willRunProject = false;
 
 	SceneLabel::defaultAnchor = Vector3(-1.0, -1.0, 0.0);
-
+	SceneLabel::defaultPositionAtBaseline = true;
+	
 	globalMenu	= new UIGlobalMenu();
 	UITextInput::setMenuSingleton(globalMenu);
 			
-	printf("creating font editor\n"); 
 	
 	Scene *screen = new Scene(Scene::SCENE_2D_TOPLEFT);	
 	screen->rootEntity.processInputEvents = true;

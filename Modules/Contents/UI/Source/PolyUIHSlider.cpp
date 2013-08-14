@@ -29,7 +29,7 @@ using namespace Polycode;
 
 UIHSlider::UIHSlider(Number start, Number end, Number width) : UIElement() {
 
-	continuous = false;
+	continuous = true;
 	
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	
@@ -53,7 +53,7 @@ UIHSlider::UIHSlider(Number start, Number end, Number width) : UIElement() {
 	endValue = end;
 		
 	gripRect = new UIImage(gripImage);
-	gripRect->setAnchorPoint(0.0, 0.0, 0.0);
+	gripRect->getImage()->setAnchorPoint(0.0, 0.0, 0.0);
 	gripRect->setPosition(0, floor(bgHeight/2.0));
 
 	bgHitBox = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, width, gripRect->getHeight());

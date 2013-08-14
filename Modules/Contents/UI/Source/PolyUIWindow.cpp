@@ -25,6 +25,7 @@
 #include "PolyConfig.h"
 #include "PolyInputEvent.h"
 #include "PolyLabel.h"
+#include "PolyCore.h"
 #include "PolyCoreServices.h"
 
 using namespace Polycode;
@@ -87,6 +88,8 @@ UIWindow::UIWindow(String windowName, Number width, Number height) : UIElement()
 	titlebarRect->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	closeBtn->addEventListener(this, UIEvent::CLICK_EVENT);
 	
+	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
+	
 	setWidth(width);
 	setHeight(height);
 	setHitbox(width, height);
@@ -120,6 +123,7 @@ UIWindow::~UIWindow() {
 		delete titleLabel;
 		delete closeBtn;
 	}
+	CoreServices::getInstance()->getCore()->getInput()->removeAllHandlersForListener(this);
 }
 
 void UIWindow::onKeyDown(PolyKEY key, wchar_t charCode) {
@@ -175,6 +179,14 @@ void UIWindow::hideWindow() {
 }
 
 void UIWindow::handleEvent(Event *event) {
+
+	if(event->getDispatcher() == CoreServices::getInstance()->getCore()->getInput()) {
+		InputEvent *inputEvent = (InputEvent*)event;
+		if(event->getEventCode() == InputEvent::EVENT_KEYDOWN) {
+			onKeyDown(inputEvent->key, inputEvent->charCode);
+		}
+	}
+
 	if(event->getDispatcher() == titlebarRect) {
 		InputEvent *inputEvent = (InputEvent*)event;
 		switch(event->getEventCode()) {

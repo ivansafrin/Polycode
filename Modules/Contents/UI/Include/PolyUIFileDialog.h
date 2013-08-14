@@ -35,7 +35,7 @@ namespace Polycode {
 	class CreateFolderWindow : public UIWindow {
 		public:
 			CreateFolderWindow();
-			~CreateFolderWindow();
+			virtual ~CreateFolderWindow();
 
 			UIButton *okButton;
 			UIButton *cancelButton;

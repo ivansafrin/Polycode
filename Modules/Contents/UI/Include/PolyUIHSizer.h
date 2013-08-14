@@ -32,7 +32,7 @@ namespace Polycode {
 	class _PolyExport UIHSizer : public UIElement {
 		public:
 			UIHSizer(Number width, Number height, Number mainWidth, bool leftSizer);
-			~UIHSizer();
+			virtual ~UIHSizer();
 			
 			void handleEvent(Event *event);
 			

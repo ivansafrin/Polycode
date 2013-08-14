@@ -32,7 +32,7 @@ SceneLine::SceneLine(Vector3 start, Vector3 end) : SceneMesh(Mesh::LINE_MESH) {
 	this->start = start;
 	this->end = end;	
 	initLine();
-	ignoreParentMatrix = true;
+	ignoreParentMatrix = false;
 }
 
 SceneLine::SceneLine(Entity *ent1, Entity *ent2) : SceneMesh(Mesh::LINE_MESH) {
@@ -79,7 +79,7 @@ void SceneLine::Update(){
 		v2 = end;
 	}
 	
-	mesh->getPolygon(0)->getVertex(0)->set(v1.x,v1.y,v1.z);
-	mesh->getPolygon(0)->getVertex(1)->set(v2.x,v2.y,v2.z);
+	mesh->getPolygon(0)->getVertex(0)->set(v1.x,v1.y*yAdjust,v1.z);
+	mesh->getPolygon(0)->getVertex(1)->set(v2.x,v2.y*yAdjust,v2.z);
 	mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;	
 }

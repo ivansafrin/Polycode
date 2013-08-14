@@ -87,6 +87,14 @@ void UITreeContainer::Resize(Number width, Number height) {
 }
 
 void UITreeContainer::handleEvent(Event *event) {
+
+	if(event->getDispatcher() == CoreServices::getInstance()->getCore()->getInput()) {
+		InputEvent *inputEvent = (InputEvent*) event;
+		if(event->getEventCode() == InputEvent::EVENT_KEYDOWN) {
+			onKeyDown(inputEvent->key, inputEvent->charCode);
+		}
+	}
+
 	if(event->getDispatcher() == rootNode) {
 		if(event->getEventCode() == UITreeEvent::NEED_REFRESH_EVENT) {
 			mainContainer->setContentSize(rootNode->getWidth(), rootNode->getHeight());
@@ -122,6 +130,7 @@ UITreeContainer::~UITreeContainer() {
 		delete rootNode;
 		delete mainContainer;
 	}
+	CoreServices::getInstance()->getCore()->getInput()->removeAllHandlersForListener(this);	
 }
 
 void UITreeContainer::onGainFocus() {

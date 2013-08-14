@@ -67,6 +67,7 @@ namespace Polycode {
 			bool positionAtBaseline;
 			
 			static Vector3 defaultAnchor;
+			static bool defaultPositionAtBaseline;
 			
 		protected:
 			

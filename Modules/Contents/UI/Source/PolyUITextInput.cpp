@@ -148,19 +148,19 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	selectionColor = Color(181.0f/255.0f, 213.0f/255.0f, 255.0f/255.0f, 1.0f);
 	
 	selectorRectTop = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1,1);
-	selectorRectTop->setAnchorPoint(-1.0, -1.0, 0.0);
+//	selectorRectTop->setAnchorPoint(-1.0, -1.0, 0.0);
 	selectorRectTop->setColor(181.0f/255.0f, 213.0f/255.0f, 255.0f/255.0f, 1);
 	selectorRectTop->visible = false;
 	textContainer->addChild(selectorRectTop);
 
 	selectorRectMiddle = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1,1);
-	selectorRectMiddle->setAnchorPoint(-1.0, -1.0, 0.0);	
+//	selectorRectMiddle->setAnchorPoint(-1.0, -1.0, 0.0);	
 	selectorRectMiddle->setColor(181.0f/255.0f, 213.0f/255.0f, 255.0f/255.0f, 1);
 	selectorRectMiddle->visible = false;
 	textContainer->addChild(selectorRectMiddle);
 
 	selectorRectBottom = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1,1);
-	selectorRectBottom->setAnchorPoint(-1.0, -1.0, 0.0);	
+//	selectorRectBottom->setAnchorPoint(-1.0, -1.0, 0.0);	
 	selectorRectBottom->setColor(181.0f/255.0f, 213.0f/255.0f, 255.0f/255.0f, 1);
 	selectorRectBottom->visible = false;
 	textContainer->addChild(selectorRectBottom);
@@ -232,6 +232,7 @@ void UITextInput::checkBufferLines() {
 		if(multiLine) {
 			SceneLabel *newNumberLine = new SceneLabel(L"", fontSize, fontName, aaMode);
 			newNumberLine->color = lineNumberColor;
+			newNumberLine->positionAtBaseline = true;
 			lineNumberAnchor->addChild(newNumberLine);
 			numberLines.push_back(newNumberLine);		
 			
@@ -241,6 +242,7 @@ void UITextInput::checkBufferLines() {
 		}
 	
 		SceneLabel *newLine = new SceneLabel(L"", fontSize, fontName, aaMode);
+		newLine->positionAtBaseline = true;
 		newLine->color = textColor;
 		lineHeight = newLine->getHeight();
 		textContainer->addChild(newLine);
@@ -348,7 +350,6 @@ void UITextInput::updateSelectionRects() {
 	
 	selectorRectTop->visible = true;
 	
-
 	topSize = bufferLines[0]->getLabel()->getTextWidthForString(topLine.substr(colStart,fColEnd-colStart)) ; 
 	topHeight = lineHeight+lineSpacing;
 	if(colStart >= 0) {
@@ -2395,7 +2396,7 @@ void UITextInput::readjustBuffer(int lineStart, int lineEnd) {
 	}
 
 	int bufferOffset = -linesContainer->position.y/ ( lineHeight+lineSpacing);	
-	Number bufferLineOffset = bufferOffset * ( lineHeight+lineSpacing);		
+	Number bufferLineOffset = bufferOffset * ( lineHeight+lineSpacing);	
 
 	for(int i=0; i < bufferLines.size(); i++) {
 		if(bufferOffset + i < wordWrapLines.size()) {	

@@ -378,10 +378,10 @@ void SceneSprite::updateSprite() {
 	
 	Polygon *imagePolygon = mesh->getPolygon(0);
 		
-	imagePolygon->getVertex(0)->setTexCoord(xOffset, yOffset+spriteUVHeight);	
-	imagePolygon->getVertex(1)->setTexCoord(xOffset+spriteUVWidth, yOffset+spriteUVHeight);
-	imagePolygon->getVertex(2)->setTexCoord(xOffset+spriteUVWidth, yOffset);
-	imagePolygon->getVertex(3)->setTexCoord(xOffset, yOffset);	
+	imagePolygon->getVertex(0)->setTexCoord(xOffset, yOffset);	
+	imagePolygon->getVertex(1)->setTexCoord(xOffset+spriteUVWidth, yOffset);
+	imagePolygon->getVertex(2)->setTexCoord(xOffset+spriteUVWidth, yOffset+spriteUVHeight);
+	imagePolygon->getVertex(3)->setTexCoord(xOffset, yOffset+spriteUVHeight);	
 		
 	mesh->arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;
 

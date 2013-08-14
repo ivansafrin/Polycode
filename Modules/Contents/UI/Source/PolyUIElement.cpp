@@ -112,7 +112,7 @@ MouseEventResult UIElement::onMouseMove(const Ray &ray, int timestamp) {
 			Matrix4 inverse = parentEntity->getConcatenatedMatrix().Inverse();
 			localCoordinate = inverse * localCoordinate;		
 		}
-		setPosition(localCoordinate.x-dragOffsetX,-localCoordinate.y+dragOffsetY);
+		setPosition(localCoordinate.x-dragOffsetX,-localCoordinate.y-dragOffsetY);
 		if(hasDragLimits) {
 			if(position.x < dragLimits.x)
 				position.x = dragLimits.x;
@@ -129,7 +129,37 @@ MouseEventResult UIElement::onMouseMove(const Ray &ray, int timestamp) {
 }
 
 UIElement::~UIElement() {
+	if(UIElement::globalFocusedChild == this) {
+		UIElement::globalFocusedChild = NULL;
+	}
+}
 
+void UIElement::focusNextChild() {
+
+	int j = 0;
+	bool hasFocusedChild = false;
+	if(UIElement::globalFocusedChild) {
+		for(int i=0; i < focusChildren.size(); i++) {
+			if(focusChildren[i] == UIElement::globalFocusedChild) {
+				j = i;
+				hasFocusedChild = true;
+			}
+		}
+	}
+
+	if(!hasFocusedChild)
+		return;
+
+	for(int i=0; i < focusChildren.size(); i++) {
+		if(focusChildren[j]->isFocusable() && focusChildren[j] != UIElement::globalFocusedChild) {
+			focusChild(focusChildren[j]);
+			return;
+		}
+
+		j++;
+		if(j == focusChildren.size())
+			j = 0;
+	}
 }
 
 void UIElement::focusChild(UIElement *child) {

@@ -36,7 +36,7 @@ namespace Polycode {
 	class _PolyExport UIHSlider : public UIElement {
 		public:
 			UIHSlider(Number start, Number end, Number width);
-			~UIHSlider();		
+			virtual ~UIHSlider();		
 			void handleEvent(Event *event);
 			void Update();
 			

@@ -21,6 +21,7 @@
 */
 #include "PolyEntity.h"
 #include "PolyRenderer.h"
+#include "PolyCoreServices.h"
 #include "PolyInputEvent.h"
 
 using namespace Polycode;
@@ -415,12 +416,12 @@ Matrix4 Entity::getConcatenatedRollMatrix() const {
 }
 
 Vector2 Entity::getScreenPosition(Matrix4 projectionMatrix, Matrix4 cameraMatrix) {
-	Vector2 pos = renderer->Project(cameraMatrix, projectionMatrix, getConcatenatedMatrix().getPosition());
+	Vector2 pos = CoreServices::getInstance()->getRenderer()->Project(cameraMatrix, projectionMatrix, getConcatenatedMatrix().getPosition());
 	return pos;
 }
 
 Vector2 Entity::getScreenPositionForMainCamera() {
-	return getScreenPosition(renderer->getProjectionMatrix(), renderer->getCameraMatrix());
+	return getScreenPosition(CoreServices::getInstance()->getRenderer()->getProjectionMatrix(), CoreServices::getInstance()->getRenderer()->getCameraMatrix());
 }
 
 void Entity::transformAndRender() {
@@ -866,7 +867,9 @@ MouseEventResult Entity::onMouseDown(const Ray &ray, int mouseButton, int timest
 			Matrix4 inverse = getConcatenatedMatrix().Inverse();
 			localCoordinate = inverse * localCoordinate;			
 			
-			dispatchEvent(new InputEvent(Vector2(localCoordinate.x, localCoordinate.y), timestamp), InputEvent::EVENT_MOUSEDOWN);
+			InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x, localCoordinate.y*yAdjust), timestamp);
+			inputEvent->mouseButton = mouseButton;
+			dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEDOWN);
 						
 			if(blockMouseInput) {
 				ret.blocked = true;
@@ -898,15 +901,18 @@ MouseEventResult Entity::onMouseUp(const Ray &ray, int mouseButton, int timestam
 		Matrix4 inverse = getConcatenatedMatrix().Inverse();
 		localCoordinate = inverse * localCoordinate;			
 	
+		InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x, localCoordinate.y*yAdjust), timestamp);
+		inputEvent->mouseButton = mouseButton;			
 	
 		if(ray.boxIntersect(bBox, getAnchorAdjustedMatrix())) {
-			ret.hit = true;			
-			dispatchEvent(new InputEvent(Vector2(localCoordinate.x, localCoordinate.y), timestamp), InputEvent::EVENT_MOUSEUP);
+			ret.hit = true;
+			
+			dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEUP);
 			if(blockMouseInput) {
 				ret.blocked = true;
 			}
 		} else {
-			dispatchEvent(new InputEvent(Vector2(localCoordinate.x, localCoordinate.y), timestamp), InputEvent::EVENT_MOUSEUP_OUTSIDE);
+			dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEUP_OUTSIDE);
 		}
 		
 		for(int i=children.size()-1; i>=0; i--) {
@@ -936,10 +942,10 @@ MouseEventResult Entity::onMouseMove(const Ray &ray, int timestamp) {
 		if(ray.boxIntersect(bBox, getAnchorAdjustedMatrix())) {	
 			//setColor(1.0, 0.0, 0.0, 1.0);
 			ret.hit = true;			
-			dispatchEvent(new InputEvent(Vector2(localCoordinate.x, localCoordinate.y), timestamp), InputEvent::EVENT_MOUSEMOVE);
+			dispatchEvent(new InputEvent(Vector2(localCoordinate.x, localCoordinate.y*yAdjust), timestamp), InputEvent::EVENT_MOUSEMOVE);
 			
 			if(!mouseOver) {
-				dispatchEvent(new InputEvent(Vector2(localCoordinate.x, localCoordinate.y), timestamp), InputEvent::EVENT_MOUSEOVER);
+				dispatchEvent(new InputEvent(Vector2(localCoordinate.x, localCoordinate.y*yAdjust), timestamp), InputEvent::EVENT_MOUSEOVER);
 				mouseOver = true;
 			}			
 			

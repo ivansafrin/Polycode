@@ -45,7 +45,7 @@ namespace Polycode {
         * @param height The height of the scroll container.
         */
 		UIScrollContainer(Entity *scrolledEntity, bool hScroll, bool vScroll, Number width, Number height);
-		~UIScrollContainer();
+		virtual ~UIScrollContainer();
 
         /**
         * Update what size the content child is expected to have.

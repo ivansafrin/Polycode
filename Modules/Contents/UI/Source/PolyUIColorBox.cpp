@@ -32,7 +32,7 @@ using namespace Polycode;
 UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	closeOnEscape = true;
 	
-	continuous = false;
+	continuous = true;
 		
 //	topPadding
 	Config *conf = CoreServices::getInstance()->getConfig();	
@@ -61,7 +61,7 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	
 	mainColorRect = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, mainFrame->getWidth(), mainFrame->getHeight());
 	mainColorRect->setAnchorPoint(-1.0, -1.0, 0.0);
-	mainColorRect->setPosition(padding+1, topPadding+padding+1);
+	mainColorRect->setPosition(padding, topPadding+padding);
 	addChild(mainColorRect);
 	addChild(mainFrame);
 
@@ -70,14 +70,14 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	addChild(hueFrame);
 	
 	hueSelector = new UIImage(hueSelectorImage);
-	hueSelector->setAnchorPoint(0.0, 0.0, 0.0);
+	hueSelector->getImage()->setAnchorPoint(0.0, 0.0, 0.0);
 	hueSelector->setPosition(hueFrame->getPosition().x + (hueFrame->getWidth()/2.0), hueFrame->getPosition().y);
 	addChild(hueSelector);	
 
 	hueSelector->setDragLimits(Polycode::Rectangle(hueSelector->getPosition().x,hueSelector->getPosition().y,0,hueFrame->getHeight()));
 				
 	mainSelector = new UIImage(mainSelectorImage);
-	mainSelector->setAnchorPoint(0.0, 0.0, 0.0);
+	mainSelector->getImage()->setAnchorPoint(0.0, 0.0, 0.0);
 	mainSelector->setPosition(mainFrame->getPosition());
 	addChild(mainSelector);	
 	

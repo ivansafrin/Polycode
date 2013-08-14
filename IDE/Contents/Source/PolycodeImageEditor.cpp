@@ -85,6 +85,7 @@ bool PolycodeImageEditor::openFile(OSFileEntry filePath) {
 }
 
 void PolycodeImageEditor::Resize(int x, int y) {
+
 	editorImage->setPosition(x/2, y/2);
 	grid->getImage()->setImageCoordinates(0,0,x,y);	
 	

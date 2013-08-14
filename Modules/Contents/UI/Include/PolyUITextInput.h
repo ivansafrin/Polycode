@@ -147,7 +147,7 @@ namespace Polycode {
 			 * @param height The height of the element.
 			 */
 			UITextInput(bool multiLine, Number width, Number height);
-			~UITextInput();
+			virtual ~UITextInput();
 		
 			void handleEvent(Event *event);
 			void Update();

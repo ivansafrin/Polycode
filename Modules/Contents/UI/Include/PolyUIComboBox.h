@@ -37,7 +37,7 @@ namespace Polycode {
 	class _PolyExport UIComboBoxItem {
 		public:
 			UIComboBoxItem(String label, void *data);
-			~UIComboBoxItem();
+			virtual ~UIComboBoxItem();
 			
 			void *data;
 			String label;

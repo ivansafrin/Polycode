@@ -35,7 +35,7 @@ namespace Polycode {
 		public:
 			UIElement();
 			UIElement(Number width, Number height);
-			~UIElement();
+			virtual ~UIElement();
 			
 			virtual void Resize(Number width, Number height);
 						
@@ -51,7 +51,7 @@ namespace Polycode {
 			void stopDrag();
 			
 			void focusChild(UIElement *child);
-			void focusNextChild() {}
+			void focusNextChild();
 			bool isFocusable();
 			
 			virtual void onLoseFocus() {}

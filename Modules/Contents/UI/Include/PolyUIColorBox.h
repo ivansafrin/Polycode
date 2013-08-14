@@ -40,7 +40,7 @@ namespace Polycode {
 	class _PolyExport UIColorPicker : public UIWindow {
 		public:
 			UIColorPicker();
-			~UIColorPicker();
+			virtual ~UIColorPicker();
 			
 			void updateSelectedColor(bool updateTextFields=true, bool updateHue = true, bool updateSV=true);
 			void setHue(Number hueNum);			

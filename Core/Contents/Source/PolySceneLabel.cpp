@@ -32,11 +32,12 @@
 using namespace Polycode;
 
 Vector3 SceneLabel::defaultAnchor = Vector3();
+bool SceneLabel::defaultPositionAtBaseline = false;
 
 SceneLabel::SceneLabel(const String& fontName, const String& text, int size, Number scale, int amode, bool premultiplyAlpha) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1) {
 	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size, amode, premultiplyAlpha);
 	this->labelScale = scale;
-	positionAtBaseline = false;
+	positionAtBaseline = SceneLabel::defaultPositionAtBaseline;
 	setAnchorPoint(SceneLabel::defaultAnchor);
 	updateFromLabel();
 }
@@ -45,7 +46,7 @@ SceneLabel::SceneLabel(const String& text, int size, const String& fontName, int
 
 	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size, amode, premultiplyAlpha);
 	this->labelScale = 1.0;
-	positionAtBaseline = false;
+	positionAtBaseline = SceneLabel::defaultPositionAtBaseline;
 	setAnchorPoint(SceneLabel::defaultAnchor);	
 	updateFromLabel();
 }
@@ -92,7 +93,7 @@ void SceneLabel::updateFromLabel() {
 
 void SceneLabel::Render() {
 	if(positionAtBaseline) {
-		CoreServices::getInstance()->getRenderer()->translate2D(0.0, -label->getBaselineAdjust() + label->getSize() + (getHeight()/2.0));
+		CoreServices::getInstance()->getRenderer()->translate2D(0.0, (((Number)label->getSize()) * -1.0) + ((Number)label->getBaselineAdjust()));
 	}
 	ScenePrimitive::Render();
 }

@@ -33,7 +33,7 @@ namespace Polycode {
 	class _PolyExport UITreeContainer : public UIElement {
 	public:
 		UITreeContainer(String icon, String text, Number treeWidth, Number treeHeight);
-		~UITreeContainer();
+		virtual ~UITreeContainer();
 		
 		void handleEvent(Event *event);
 		void Resize(Number width, Number height);
