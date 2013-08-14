@@ -225,10 +225,6 @@ void Scene::Render(Camera *targetCamera) {
 		}
 		CoreServices::getInstance()->getRenderer()->addLight(light->getLightImportance(), position, direction, light->getLightType(), light->lightColor, light->specularLightColor, light->getConstantAttenuation(), light->getLinearAttenuation(), light->getQuadraticAttenuation(), light->getIntensity(), light->getSpotlightCutoff(), light->getSpotlightExponent(), light->areShadowsEnabled(), matrixPtr, shadowMapTexture);
 	}	
-
-	if(targetCamera->getOrthoMode()) {
-		CoreServices::getInstance()->getRenderer()->setOrthoMode(targetCamera->getOrthoSizeX(), targetCamera->getOrthoSizeY(), !targetCamera->topLeftOrtho);
-	}
 		
 	targetCamera->doCameraTransform();
 	targetCamera->buildFrustumPlanes();
@@ -242,11 +238,7 @@ void Scene::Render(Camera *targetCamera) {
 	
 	
 	rootEntity.updateEntityMatrix();
-	rootEntity.transformAndRender();	
-	
-	if(targetCamera->getOrthoMode()) {
-		CoreServices::getInstance()->getRenderer()->setPerspectiveMode();
-	}	
+	rootEntity.transformAndRender();		
 }
 
 

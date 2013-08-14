@@ -99,7 +99,8 @@ PostEditorPane::~PostEditorPane() {
 }
 
 void PostEditorPane::Resize(Number width, Number height) {
-	mainSizer->Resize(getWidth(), getHeight());
+	mainSizer->Resize(width, height);
+	
 	headerBgBottom->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, 30);	
 	propList->Resize(width/2.0, height- mainSizer->getMainHeight());
 	
@@ -107,7 +108,7 @@ void PostEditorPane::Resize(Number width, Number height) {
 	optionsPropList->Resize(width/2.0, height- mainSizer->getMainHeight());
 	optionsPropList->setPosition(floor(width/2.0), optionsPropList->getPosition().y);
 	optionsPropList->updateProps();	
-	UIElement::Resize(getWidth(), getHeight());
+	UIElement::Resize(width, height);
 	adjustPreview();
 }
 
@@ -526,7 +527,7 @@ PostPreviewBox::PostPreviewBox() : UIElement() {
 	label->setPosition(10, 3);
 
 	currentMaterial = NULL;
-	previewScene = new Scene(true);	
+	previewScene = new Scene(Scene::SCENE_3D, true);	
 	
 	renderTexture = new SceneRenderTexture(previewScene, previewScene->getDefaultCamera(), 512, 512, true);
 	
@@ -640,7 +641,7 @@ void PostPreviewBox::Resize(Number width, Number height) {
 	int textureHeight = (int) (height-30);
 	renderTexture->resizeRenderTexture(textureWidth, textureHeight);
 	previewShape->setTexture(renderTexture->getTargetTexture());	
-	UIElement::Resize(getWidth(), getHeight());
+	UIElement::Resize(width, height);
 	
 	if(currentMaterial) {
 		for(int i=0; i < currentMaterial->getNumShaderRenderTargets(); i++) {
@@ -676,7 +677,7 @@ void PostPreviewBox::handleEvent(Event *event) {
 
 MaterialPreviewBox::MaterialPreviewBox() : UIElement() {
 	currentMaterial = NULL;
-	previewScene = new Scene(true);	
+	previewScene = new Scene(Scene::SCENE_3D, true);	
 	
 	renderTexture = new SceneRenderTexture(previewScene, previewScene->getDefaultCamera(), 512, 512);
 	
@@ -984,10 +985,10 @@ MaterialMainWindow::MaterialMainWindow() : UIElement() {
 void MaterialMainWindow::Resize(Number width, Number height) {	
 	Vector2 pos = getScreenPositionForMainCamera();	
 	scissorBox.setRect(pos.x,pos.y,width, height);
-	materialPane->Resize(getWidth(), getHeight());
-	shaderPane->Resize(getWidth(), getHeight());
-	cubemapPane->Resize(getWidth(), getHeight());
-	postPane->Resize(getWidth(), getHeight());
+	materialPane->Resize(width, height);
+	shaderPane->Resize(width, height);
+	cubemapPane->Resize(width, height);
+	postPane->Resize(width, height);
 }
 
 MaterialBrowser::MaterialBrowser() : UIElement() {
@@ -1512,7 +1513,7 @@ void PolycodeMaterialEditor::handleEvent(Event *event) {
 }
 
 void PolycodeMaterialEditor::Resize(int x, int y) {
-	mainSizer->Resize(x,y);
-	PolycodeEditor::Resize(x,y);
+	mainSizer->Resize(((Number)x),((Number)y));
+	PolycodeEditor::Resize(((Number)x),((Number)y));
 }
 

@@ -41,8 +41,7 @@ Camera::Camera(Scene *parentScene) : Entity() {
 	originalSceneTexture = NULL;
 	zBufferSceneTexture = NULL;
 	exposureLevel = 1.0f;
-	_hasFilterShader = false;	
-	fovSet = false;
+	_hasFilterShader = false;
 	frustumCulling = true;
 	nearClipPlane = 1.0;
 	farClipPlane = 1000.0;
@@ -74,7 +73,6 @@ Number Camera::getExposureLevel() {
 
 void Camera::setFOV(Number fov) {
 	this->fov = fov;
-	fovSet = true;
 }
 
 Number Camera::getFOV() {
@@ -400,8 +398,13 @@ void Camera::doCameraTransform() {
 
 	CoreServices::getInstance()->getRenderer()->setClippingPlanes(nearClipPlane, farClipPlane);
 
-	if(fovSet)
-			CoreServices::getInstance()->getRenderer()->setFOV(fov);
+	if(!orthoMode) {
+		//renderer->setViewportShift(cameraShift.x, cameraShift.y);
+		CoreServices::getInstance()->getRenderer()->setFOV(fov);
+		CoreServices::getInstance()->getRenderer()->setPerspectiveMode();		
+	} else {
+		CoreServices::getInstance()->getRenderer()->setOrthoMode(orthoSizeX, orthoSizeY, !topLeftOrtho);
+	}	
 	CoreServices::getInstance()->getRenderer()->setExposureLevel(exposureLevel);
 
 	projectionMatrix = CoreServices::getInstance()->getRenderer()->getProjectionMatrix();

@@ -562,7 +562,6 @@ void OpenGLRenderer::enableBackfaceCulling(bool val) {
 }
 
 void OpenGLRenderer::setPerspectiveMode() {
-	setBlendingMode(BLEND_MODE_NORMAL);
 	if(orthoMode) {
 		if(lightingEnabled) {
 		}

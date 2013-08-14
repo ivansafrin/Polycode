@@ -178,8 +178,6 @@ namespace Polycode {
 			Number fov;
 			Number frustumPlanes[6][4];
 			Scene *parentScene;
-		
-			bool fovSet;
 
 			Material *filterShaderMaterial;			
 			Texture *originalSceneTexture;			
