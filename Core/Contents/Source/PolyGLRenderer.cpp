@@ -88,7 +88,7 @@ using namespace Polycode;
 OpenGLRenderer::OpenGLRenderer() : Renderer() {
 
 	nearPlane = 0.1f;
-	farPlane = 100.0f;
+	farPlane = 1000.0f;
 	verticesToDraw = 0;
 
 }
