@@ -420,4 +420,7 @@ protected:
 };
 
 
+	typedef PhysicsScene2D PhysicsScreen;
+	typedef PhysicsScene2DEvent PhysicsScreenEvent;
+
 }

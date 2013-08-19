@@ -150,5 +150,7 @@ namespace Polycode {
 			Number worldScale;        
 			Entity *entity;
 	};
+	
+	typedef PhysicsScene2DEntity PhysicsScreenEntity;
 
 }

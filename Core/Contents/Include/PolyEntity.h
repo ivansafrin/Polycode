@@ -72,8 +72,13 @@ namespace Polycode {
 	class _PolyExport Entity : public EventDispatcher {
 		public:
 			Entity();
+			
+			Entity(Number width, Number height, Number depth = 0.01);	
+			
 			virtual ~Entity();
 
+
+			void initEntity();
 			/**
 			* Main render method. Override this to do your own drawing.
 			*/

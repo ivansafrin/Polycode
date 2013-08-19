@@ -174,6 +174,7 @@ SceneSprite::SceneSprite(const String& fileName, Number spriteWidth, Number spri
 	currentFrame = 0;
 	currentAnimation = NULL;	
 	paused = false;
+	setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, spriteWidth, spriteHeight);	
 }
 
 SceneSprite::~SceneSprite() {

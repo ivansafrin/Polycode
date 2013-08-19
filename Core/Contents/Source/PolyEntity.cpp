@@ -33,6 +33,17 @@ Rotation::Rotation() {
 }
 
 Entity::Entity() : EventDispatcher() {
+	initEntity();
+}
+
+Entity::Entity(Number width, Number height, Number depth) : EventDispatcher() {
+	initEntity();
+	bBox.x = width;
+	bBox.y = height;
+	bBox.z = depth;		
+}
+
+void Entity::initEntity() {
 	userData = NULL;
 	scale.set(1,1,1);
 	renderer = NULL;

@@ -45,6 +45,7 @@ Camera::Camera(Scene *parentScene) : Entity() {
 	frustumCulling = true;
 	nearClipPlane = 1.0;
 	farClipPlane = 1000.0;
+	topLeftOrtho = false;
 }
 
 Camera::~Camera() {	

@@ -70,6 +70,7 @@ void Scene::initScene(int sceneType, bool virtualScene) {
 	
 	switch(sceneType) {
 		case SCENE_2D:
+			printf("WHAT\n");
 			defaultCamera->setClippingPlanes(-100.0, 100.0);
 			defaultCamera->setOrthoMode(true, CoreServices::getInstance()->getCore()->getXRes(),CoreServices::getInstance()->getCore()->getYRes());	
 		break;
