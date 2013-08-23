@@ -22,6 +22,8 @@
 
 #include "PolyCoreInput.h"
 #include "PolyInputEvent.h"
+#include "PolyCoreServices.h"
+#include "PolyCore.h"
 
 namespace Polycode {
 	
@@ -38,6 +40,8 @@ namespace Polycode {
 	CoreInput::CoreInput() : EventDispatcher() {
 		clearInput();
 		simulateTouchWithMouse = false;
+		simulateMouseWithTouch = false;
+		ignoreOffScreenTouch = false;
 	}
 	
 	void CoreInput::clearInput() {
@@ -237,27 +241,56 @@ namespace Polycode {
 	}
 	
 	void CoreInput::touchesBegan(TouchInfo touch, std::vector<TouchInfo> touches, int ticks) {
+		if(ignoreOffScreenTouch) {
+			Core *core = CoreServices::getInstance()->getCore();
+			if(touch.position.x < 0 || touch.position.x > core->getXRes() || touch.position.y < 0 || touch.position.y > core->getYRes()) {
+				return;
+			}
+		}
 		InputEvent *evt = new InputEvent();
 		evt->touch = touch;		
 		evt->touches = touches;
 		evt->timestamp = ticks;
 		dispatchEvent(evt, InputEvent::EVENT_TOUCHES_BEGAN);
+		if(simulateMouseWithTouch) {
+			mousePosition = touch.position;
+			setMouseButtonState(MOUSE_BUTTON1, true, ticks);
+		}
 	}
 	
 	void CoreInput::touchesMoved(TouchInfo touch, std::vector<TouchInfo> touches, int ticks) {
+		if(ignoreOffScreenTouch) {
+			Core *core = CoreServices::getInstance()->getCore();
+			if(touch.position.x < 0 || touch.position.x > core->getXRes() || touch.position.y < 0 || touch.position.y > core->getYRes()) {
+				return;
+			}
+		}	
 		InputEvent *evt = new InputEvent();
 		evt->touch = touch;
 		evt->touches = touches;
 		evt->timestamp = ticks;		
-		dispatchEvent(evt, InputEvent::EVENT_TOUCHES_MOVED);	
+		dispatchEvent(evt, InputEvent::EVENT_TOUCHES_MOVED);
+		if(simulateMouseWithTouch) {
+			setMousePosition(touch.position.x, touch.position.y, ticks);
+		}
 	}
 	
 	void CoreInput::touchesEnded(TouchInfo touch, std::vector<TouchInfo> touches, int ticks) {
+		if(ignoreOffScreenTouch) {
+			Core *core = CoreServices::getInstance()->getCore();
+			if(touch.position.x < 0 || touch.position.x > core->getXRes() || touch.position.y < 0 || touch.position.y > core->getYRes()) {
+				return;
+			}
+		}	
 		InputEvent *evt = new InputEvent();
 		evt->touch = touch;		
 		evt->touches = touches;
-		evt->timestamp = ticks;		
-		dispatchEvent(evt, InputEvent::EVENT_TOUCHES_ENDED);	
+		evt->timestamp = ticks;	
+		dispatchEvent(evt, InputEvent::EVENT_TOUCHES_ENDED);
+		if(simulateMouseWithTouch) {
+			mousePosition = touch.position;				
+			setMouseButtonState(MOUSE_BUTTON1, false, ticks);
+		}		
 	}
 	
 }

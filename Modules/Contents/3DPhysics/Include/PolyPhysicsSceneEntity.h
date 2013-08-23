@@ -48,7 +48,9 @@ namespace Polycode {
 			*  Public methods
 			*/
 			//@{			
-				
+		
+		void wakeUp();		
+								
 		void setFriction(Number friction);		
 		int getType() { return type; }	
 		

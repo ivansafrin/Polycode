@@ -23,6 +23,7 @@ THE SOFTWARE.
 #pragma once
 #include "PolyGlobals.h"
 #include <vector>
+#include "PolyCore.h"
 
 namespace Polycode {
 
@@ -33,10 +34,11 @@ namespace Polycode {
 			TweenManager();
 			~TweenManager();
 			void addTween(Tween *tween);
-			void removeTween(Tween *tween);	
-			void Update();
+			void Update(Number elapsed);
 		
 		private:
+			std::vector<Tween*> tweensToAdd;
 			std::vector <Tween*> tweens;
+			
 	};
 }

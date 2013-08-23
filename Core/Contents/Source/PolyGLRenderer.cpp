@@ -182,6 +182,7 @@ void OpenGLRenderer::Resize(int xRes, int yRes) {
 	
 	glLineWidth(1.0f);
 	
+	glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 //	glEnable(GL_LINE_SMOOTH);
 	
 	GLint numBuffers;
@@ -208,6 +209,14 @@ void OpenGLRenderer::enableAlphaTest(bool val) {
 	} else {
 		glDisable( GL_ALPHA_TEST ) ;
 	}
+}
+
+void OpenGLRenderer::setPointSmooth(bool val) {
+	if(val)
+		glEnable( GL_POINT_SMOOTH );
+	else
+		glDisable( GL_POINT_SMOOTH );
+
 }
 
 void OpenGLRenderer::setLineSmooth(bool val) {
@@ -303,7 +312,7 @@ Vector3 OpenGLRenderer::projectRayFrom2DCoordinate(Number x, Number y, Matrix4 c
 	GLdouble _sceneProjectionMatrix[16];
 	for(int i=0; i < 16; i++) {
 		_sceneProjectionMatrix[i] = projectionMatrix.ml[i];
-	}	
+	}
 
 	gluUnProject(x, yRes - y, 0.0, mv, _sceneProjectionMatrix, vp, &nearPlane[0], &nearPlane[1], &nearPlane[2]);
 	gluUnProject(x, yRes - y, 1.0, mv, _sceneProjectionMatrix, vp, &farPlane[0], &farPlane[1], &farPlane[2]);
@@ -346,6 +355,10 @@ void OpenGLRenderer::enableLighting(bool enable) {
 
 void OpenGLRenderer::setLineSize(Number lineSize) {
 	glLineWidth(lineSize);
+}
+
+void OpenGLRenderer::setPointSize(Number pointSize) {
+	glPointSize(pointSize);
 }
 
 void OpenGLRenderer::createVertexBufferForMesh(Mesh *mesh) {
@@ -846,7 +859,7 @@ void OpenGLRenderer::pushRenderDataArray(RenderDataArray *array) {
 	
 	switch(array->arrayType) {
 		case RenderDataArray::VERTEX_DATA_ARRAY:
-			glEnableClientState(GL_VERTEX_ARRAY);			
+			glEnableClientState(GL_VERTEX_ARRAY);
 			glBindBufferARB( GL_ARRAY_BUFFER_ARB, 0);
 			glVertexPointer(array->size, GL_FLOAT, 0, array->arrayPtr);
 			verticesToDraw = array->count;

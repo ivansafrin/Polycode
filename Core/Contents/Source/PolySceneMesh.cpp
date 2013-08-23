@@ -55,6 +55,8 @@ SceneMesh::SceneMesh(const String& fileName) : Entity(), texture(NULL), material
 	ownsMesh = true;
 	ownsSkeleton = true;
 	lineWidth = 1.0;
+	pointSize = 1.0;
+	pointSmooth = false;
 }
 
 SceneMesh::SceneMesh(Mesh *mesh) : Entity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
@@ -68,6 +70,8 @@ SceneMesh::SceneMesh(Mesh *mesh) : Entity(), texture(NULL), material(NULL), skel
 	ownsMesh = true;
 	ownsSkeleton = true;	
 	lineWidth = 1.0;
+	pointSize = 1.0;
+	pointSmooth = false;	
 		
 }
 
@@ -251,14 +255,14 @@ void SceneMesh::renderMeshLocally() {
 		mesh->arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;				
 	}
 
-	if(mesh->useVertexColors) {
-		renderer->pushDataArrayForMesh(mesh, RenderDataArray::COLOR_DATA_ARRAY);
-	}
-	 
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::VERTEX_DATA_ARRAY);
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::NORMAL_DATA_ARRAY);		
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::TANGENT_DATA_ARRAY);			
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::TEXCOORD_DATA_ARRAY);	
+
+	if(mesh->useVertexColors) {
+		renderer->pushDataArrayForMesh(mesh, RenderDataArray::COLOR_DATA_ARRAY);
+	}
 	
 	renderer->drawArrays(mesh->getMeshType());
 }
@@ -277,6 +281,8 @@ void SceneMesh::Render() {
 	
 	renderer->setLineSize(lineWidth);
 	renderer->setLineSmooth(lineSmooth);
+	renderer->setPointSize(pointSize);
+	renderer->setPointSmooth(pointSmooth);
 	
 	if(material) {
 		renderer->applyMaterial(material, localShaderOptions,0);

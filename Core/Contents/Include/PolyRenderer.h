@@ -152,7 +152,9 @@ namespace Polycode {
 		
 		virtual void setLineSmooth(bool val) = 0;
 		virtual void setLineSize(Number lineSize) = 0;
-		
+		virtual void setPointSize(Number pointSize) = 0;
+		virtual void setPointSmooth(bool val) = 0;
+				
 		virtual void enableLighting(bool enable) = 0;
 			
 		virtual void enableFog(bool enable) = 0;
@@ -277,8 +279,6 @@ namespace Polycode {
 		static const int TEX_FILTERING_NEAREST = 0;
 		static const int TEX_FILTERING_LINEAR = 1;
 		
-//		void addShadowMap(Texture *texture);
-//		vector<Texture*> getShadowMapTextures(){ return shadowMapTextures; };
 		
 		virtual Vector3 Unproject(Number x, Number y) = 0;
 		

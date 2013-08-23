@@ -162,6 +162,18 @@ void UIElement::focusNextChild() {
 	}
 }
 
+void UIElement::focusSelf() {
+	if(UIElement::globalFocusedChild) {
+		UIElement::globalFocusedChild->onLoseFocus();
+		UIElement::globalFocusedChild->hasFocus = false;
+	}
+
+	UIElement::globalFocusedChild = this;
+	
+	onGainFocus();
+	hasFocus = true;
+}
+
 void UIElement::focusChild(UIElement *child) {
 
 	if(UIElement::globalFocusedChild) {

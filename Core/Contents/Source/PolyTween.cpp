@@ -45,16 +45,15 @@ Tween::	Tween(Number *target, int easeType, Number startVal, Number endVal, Numb
 	tweenTime = 0;
 	if(waitTime == 0.0)
 		*targetVal = startVal;
-	tweenTimer = new Timer(true, 1);
-	tweenTimer->addEventListener(this, 0);
 	complete = false;
-
+	paused = false;
+	
 	actEndTime = time;
 	CoreServices::getInstance()->getTweenManager()->addTween(this);
 }
 
 void Tween::Pause(bool pauseVal) {
-	tweenTimer->Pause(pauseVal);
+	paused = true;
 }
 
 void Tween::setSpeed(Number speed) {
@@ -65,11 +64,6 @@ void Tween::setSpeed(Number speed) {
 }
 
 Tween::~Tween() {
-	tweenTimer->removeEventListener(this, 0);
-	delete tweenTimer;
-	
-	deleteOnComplete = false; // Prevent loop when we removeTween in next line.
-	CoreServices::getInstance()->getTweenManager()->removeTween(this);
 }
 
 bool Tween::isComplete() {
@@ -80,7 +74,10 @@ void Tween::doOnComplete() {
 	dispatchEvent(new Event(), Event::COMPLETE_EVENT);
 }
 
-void Tween::handleEvent(Event *event) {
+void Tween::updateTween(Number elapsed) {
+
+	tweenTime += elapsed;
+	
 	if(tweenTime >= endTime+waitTime) {
 		if(repeat){
 			Reset();
@@ -96,7 +93,6 @@ void Tween::handleEvent(Event *event) {
 		localTargetVal = interpolateTween();
 		*targetVal = localTargetVal;
 	}
-	tweenTime += tweenTimer->getElapsedf();
 	updateCustomTween();
 }
 
@@ -229,6 +225,7 @@ BezierPathTween::BezierPathTween(Vector3 *target, BezierCurve *curve, int easeTy
 	this->curve = curve;
 	this->target = target;
 	pathValue = 0;
+	updateCustomTween();
 }
 
 void BezierPathTween::updateCustomTween() {

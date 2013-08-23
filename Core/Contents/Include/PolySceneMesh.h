@@ -159,6 +159,9 @@ namespace Polycode {
 			Number lineWidth;
 			bool lineSmooth;
 			
+			Number pointSize;
+			bool pointSmooth;
+			
 			/**
 			* If true, will delete its Mesh upon destruction. (defaults to true)
 			*/ 

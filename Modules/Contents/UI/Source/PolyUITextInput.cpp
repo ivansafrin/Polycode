@@ -2523,11 +2523,7 @@ void UITextInput::handleEvent(Event *event) {
 						return;						
 					}
 				} else {
-					if(focusParent) {
-						focusParent->focusChild(this);
-					} else {
-						hasFocus = true;
-					}
+					focusSelf();
 					setCaretToMouse(((InputEvent*)event)->mousePosition.x, ((InputEvent*)event)->mousePosition.y - linesContainer->getPosition().y);
 					selectionDragMouse = ((InputEvent*)event)->mousePosition;				
 					dragMouseStart = ((InputEvent*)event)->mousePosition;

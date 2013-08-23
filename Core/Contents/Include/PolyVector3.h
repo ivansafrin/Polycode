@@ -54,7 +54,7 @@ namespace Polycode {
 			* Default constructor.
 			*/ 
 			Vector3();
-			~Vector3();
+			virtual ~Vector3();
 
 			/**
 			* Sets the vector from x,y,z coordinates.

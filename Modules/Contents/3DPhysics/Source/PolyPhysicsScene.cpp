@@ -119,8 +119,8 @@ void PhysicsScene::processWorldCollisions() {
 		for (int j=0;j<numContacts;j++)
 		{
 			btManifoldPoint& pt = contactManifold->getContactPoint(j);
-			if (pt.getDistance()<0.f)
-			{
+		//	if (pt.getDistance()<0.f)
+		//	{
 				const btVector3& ptA = pt.getPositionWorldOnA();
 				const btVector3& ptB = pt.getPositionWorldOnB();
 				const btVector3& normalOnB = pt.m_normalWorldOnB;
@@ -136,7 +136,7 @@ void PhysicsScene::processWorldCollisions() {
 				event->entityB = getPhysicsEntityByCollisionObject(obB);
 												
 				dispatchEvent(event, PhysicsSceneEvent::COLLISION_EVENT);
-			}
+		//	}
 		}
 	}
 

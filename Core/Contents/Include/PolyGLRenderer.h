@@ -158,7 +158,9 @@ namespace Polycode {
 
 		
 		void setLineSize(Number lineSize);
-		
+		void setPointSize(Number pointSize);
+		void setPointSmooth(bool val);
+				
 		void setVertexColor(Number r, Number g, Number b, Number a);
 		
 		void setBlendingMode(int blendingMode);

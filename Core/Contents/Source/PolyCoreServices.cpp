@@ -183,7 +183,7 @@ void CoreServices::Update(int elapsed) {
 	}
 	resourceManager->Update(elapsed);
 	timerManager->Update();	
-	tweenManager->Update();	
+	tweenManager->Update(elapsed);	
 	materialManager->Update(elapsed);		
 	sceneManager->Update();
 }

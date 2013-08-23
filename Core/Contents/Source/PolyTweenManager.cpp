@@ -22,11 +22,11 @@
 
 #include "PolyTweenManager.h"
 #include "PolyTween.h"
+#include "PolyCore.h"
 
 using namespace Polycode;
 
 TweenManager::TweenManager() {
-
 }
 
 TweenManager::~TweenManager() {
@@ -34,35 +34,40 @@ TweenManager::~TweenManager() {
 }
 
 void TweenManager::addTween(Tween *tween) {
-	tweens.push_back(tween);
+	tweensToAdd.push_back(tween);
 }
 
-void TweenManager::removeTween(Tween *tween) {
-	for(int i=0;i<tweens.size();i++) {
-		if(tweens[i] == tween) {
-			tweens.erase(tweens.begin()+i);
-			if(tween->deleteOnComplete)
-				delete tween;
-			
-		}
-	}
-}
-
-void TweenManager::Update() {
-	Tween *tween;
-	for(int i=0;i<tweens.size();i++) {
-		if(tweens[i]->isComplete()) {
-			if(tweens[i]->repeat) {
-				tweens[i]->Reset();
-				return;
+void TweenManager::Update(Number elapsed) {
+	std::vector<Tween*>::iterator iter = tweens.begin();
+	while (iter != tweens.end()) {	
+		bool mustRemove = false;
+		
+		(*iter)->updateTween(elapsed/1000.0);
+		
+		if((*iter)->isComplete()) {
+			if((*iter)->repeat) {
+				(*iter)->Reset();
 			} else {
-				tween = tweens[i];
-				tweens.erase(tweens.begin()+i);
-				tween->doOnComplete();
-				if(tween->deleteOnComplete)
+				mustRemove = true;
+				(*iter)->doOnComplete();
+				
+				if((*iter)->deleteOnComplete) {
+					Tween *tween = (*iter);
 					delete tween;
-				return;
+				}
 			}
 		}
+		
+		if(mustRemove) {
+			iter = tweens.erase(iter);
+		} else {	
+			++iter;						
+		}
 	}
+	
+	for(int i=0; i < tweensToAdd.size(); i++) {
+		tweens.push_back(tweensToAdd[i]);
+	}
+	tweensToAdd.clear();
+	
 }

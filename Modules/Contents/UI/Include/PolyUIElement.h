@@ -53,7 +53,8 @@ namespace Polycode {
 			void focusChild(UIElement *child);
 			void focusNextChild();
 			bool isFocusable();
-			
+			void focusSelf();
+									
 			virtual void onLoseFocus() {}
 			virtual void onGainFocus() {}
 			

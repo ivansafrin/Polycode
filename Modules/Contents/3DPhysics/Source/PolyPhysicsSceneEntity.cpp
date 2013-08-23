@@ -263,6 +263,10 @@ Vector3 PhysicsEntity::getSpin() {
 	return Vector3(retVec.getX(), retVec.getY(), retVec.getZ());
 }
 
+void PhysicsEntity::wakeUp() {
+	rigidBody->setActivationState(DISABLE_DEACTIVATION);
+}
+
 void PhysicsEntity::applyImpulse(Vector3 direction, Vector3 point) {
 	btVector3 imp = btVector3(direction.x, direction.y, direction.z);
 	btVector3 pos = btVector3(point.x, point.y, point.z);
