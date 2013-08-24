@@ -35,8 +35,10 @@ namespace Polycode {
 			~TweenManager();
 			void addTween(Tween *tween);
 			void Update(Number elapsed);
+			void removeTween(Tween *tween);
 		
 		private:
+					
 			std::vector<Tween*> tweensToAdd;
 			std::vector <Tween*> tweens;
 			

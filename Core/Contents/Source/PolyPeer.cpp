@@ -116,12 +116,12 @@ void Peer::sendReliableData(const Address &target, char *data, unsigned int size
 		connection->reliableID = 1;
 
 	sendPacket(target, packet);	
-	
+	/*
 	SentPacketEntry entry;
 	entry.packet = packet;
 	entry.timestamp = CoreServices::getInstance()->getCore()->getTicks();
 	connection->reliablePacketQueue.push_back(entry);
-
+*/
 }
 
 void Peer::sendDataToAll(char *data, unsigned int size, unsigned short type) {

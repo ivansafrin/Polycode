@@ -164,9 +164,8 @@ namespace Polycode {
 		* If set to true, will fire touch events on mouse input.
 		*/
 		bool simulateTouchWithMouse;
-		bool simulateMouseWithTouch;
-		
-		bool ignoreOffScreenTouch;
+		bool simulateMouseWithTouch;		
+		bool ignoreOffScreenTouch;	
 		
 		void clearInput();
 		
