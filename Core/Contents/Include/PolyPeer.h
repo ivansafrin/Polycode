@@ -28,7 +28,7 @@ THE SOFTWARE.
 #include "PolySocket.h"
 
 #include <vector>
-
+#include <deque>
 
 namespace Polycode {	
 	
@@ -38,7 +38,6 @@ namespace Polycode {
 		unsigned int headerHash;
 		unsigned int sequence;
 		unsigned int ack;
-		unsigned short reliableID;
 		unsigned int ackBitfield;
 		unsigned short size;
 		unsigned short type;
@@ -56,17 +55,16 @@ namespace Polycode {
 	
 	class _PolyExport PeerConnection {
 	public:
-		PeerConnection() { localSequence = 0; remoteSequence = 0; reliableID = 1;}
-		~PeerConnection(){}
+		PeerConnection();
+		~PeerConnection();
 		
-		void ackPackets(unsigned int ack);
-		
+		void ackPacketsWithBitfield(unsigned int ack, unsigned int ackBitfield);		
+		void ackPackets(unsigned int ack);		
 		unsigned int localSequence;
 		unsigned int remoteSequence;
-		unsigned int reliableID;
 		
 		std::vector<SentPacketEntry> reliablePacketQueue;
-		std::vector<unsigned short> recentReliableIDs;
+		std::deque <unsigned int> receivedPacketQueue;
 		Address address;
 	};
 
@@ -151,12 +149,16 @@ namespace Polycode {
 			PeerConnection *addPeerConnection(const Address &address);
 			void removePeerConnection(PeerConnection* connection);
 			
+			void setReliableRetransmissionInterval(int interval);
+					
 			void updateReliableDataQueue();
 		
 			virtual void updatePeer(){}
 			void updateThread();
 		
 		protected:
+		
+			int reliableRetransmissionInverval;
 		
 			Timer *updateTimer;
 			std::vector<PeerConnection*> peerConnections;
