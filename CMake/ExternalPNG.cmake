@@ -18,7 +18,7 @@ EXTERNALPROJECT_ADD(zlib
 
     DOWNLOAD_DIR ${POLYCODE_DEPS_DOWNLOAD_DIR}
     URL http://zlib.net/zlib-1.2.8.tar.gz
-    URL_MD5 44d667c142d7cda120332623eab69f40
+    URL_MD5 1142191120B845F4ED8C8C17455420AC
 
     PATCH_COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PolycodeDependencies_SOURCE_DIR}/../CMake/zlib.cmake <SOURCE_DIR>/CMakeLists.txt && ${CMAKE_COMMAND} -E remove <SOURCE_DIR>/zconf.h
 
