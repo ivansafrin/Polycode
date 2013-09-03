@@ -67,20 +67,13 @@ bool PolycodeImageEditor::openFile(OSFileEntry filePath) {
 	addChild(bottomShape);
 		
 		
-	editorImage = new UIRect(10,10);
-	
-	Texture *newTexture = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(filePath.fullPath);
-	newTexture->reloadOnFileModify = true;
-	editorImage->setTexture(newTexture);
-	
-//	editorImage->strokeEnabled = true;
-//	editorImage->setStrokeColor(1.0, 1.0, 1.0, 0.2);
-	
-	aspectRatio = ((Number)newTexture->getWidth()) / ((Number)newTexture->getHeight());
-	
+	editorImage = new UIRect(filePath.fullPath);
+	aspectRatio = ((Number)editorImage->getWidth()) / ((Number)editorImage->getHeight());
+	editorImage->setAnchorPoint(0.0, 0.0, 0.0);
 	addChild(editorImage);
 	
 	PolycodeEditor::openFile(filePath);
+	
 	return true;
 }
 
@@ -88,7 +81,7 @@ void PolycodeImageEditor::Resize(int x, int y) {
 
 	editorImage->setPosition(x/2, y/2);
 	grid->getImage()->setImageCoordinates(0,0,x,y);	
-	
+
 	if((y * 0.8) * aspectRatio > x * 0.8) {
 		editorImage->Resize((x * 0.8), (x * 0.8) / aspectRatio);	
 	} else {

@@ -69,19 +69,19 @@ void UIRect::setImageCoordinates(Number x, Number y, Number width, Number height
 	Polygon *imagePolygon = rectMesh->getPolygon(0);	
 	vertex = imagePolygon->getVertex(0);
 	vertex->set(-whalf,-hhalf,0);
-	vertex->setTexCoord(xFloat, yFloat + hFloat);
+	vertex->setTexCoord(xFloat, (1.0-yFloat) - hFloat);
 
 	vertex = imagePolygon->getVertex(1);
 	vertex->set(-whalf+width,-hhalf,0);
-	vertex->setTexCoord(xFloat + wFloat, yFloat + hFloat);
+	vertex->setTexCoord(xFloat + wFloat, (1.0-yFloat) - hFloat);
 
 	vertex = imagePolygon->getVertex(2);
 	vertex->set(-whalf+width,-hhalf+height,0);
-	vertex->setTexCoord(xFloat + wFloat, yFloat);
+	vertex->setTexCoord(xFloat + wFloat, 1.0-yFloat);
 
 	vertex = imagePolygon->getVertex(3);	
 	vertex->set(-whalf,-hhalf+height,0);	
-	vertex->setTexCoord(xFloat, yFloat);
+	vertex->setTexCoord(xFloat, 1.0-yFloat);
 
 	rectMesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
 	rectMesh->arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;	
