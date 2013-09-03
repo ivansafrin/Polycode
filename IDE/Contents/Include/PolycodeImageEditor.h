@@ -39,12 +39,12 @@ class PolycodeImageEditor : public PolycodeEditor {
 	protected:
 		UIImage *grid;
 	
-		ScenePrimitive *editorImage;
+		UIRect *editorImage;
 		
-		ScenePrimitive *leftShape;		
-		ScenePrimitive *rightShape;		
-		ScenePrimitive *topShape;		
-		ScenePrimitive *bottomShape;								
+		UIRect *leftShape;		
+		UIRect *rightShape;		
+		UIRect *topShape;		
+		UIRect *bottomShape;								
 		
 		Number aspectRatio;
 };

@@ -56,7 +56,7 @@ UIHSlider::UIHSlider(Number start, Number end, Number width) : UIElement() {
 	gripRect->getImage()->setAnchorPoint(0.0, 0.0, 0.0);
 	gripRect->setPosition(0, floor(bgHeight/2.0));
 
-	bgHitBox = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, width, gripRect->getHeight());
+	bgHitBox = new UIRect(width, gripRect->getHeight());
 	bgHitBox->setAnchorPoint(-1.0, -1.0, 0.0);
 	bgHitBox->setPosition(0, gripRect->getPosition().y - (gripRect->getHeight()/2.0));
 	addChild(bgHitBox);
@@ -115,7 +115,7 @@ void UIHSlider::Resize(Number width, Number height) {
 	sliderWidth = width;
 	gripRect->setDragLimits(Rectangle(0,floor(bgHeight/2.0),width,0));	
 	setSliderValue(sliderValue);
-	bgHitBox->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width,  gripRect->getHeight());
+	bgHitBox->Resize(width,  gripRect->getHeight());
 }
 			
 void UIHSlider::handleEvent(Event *event) {

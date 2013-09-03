@@ -116,8 +116,8 @@ namespace Polycode {
 			Color selectedColor;
 				
 			UIBox *frameImage;
-			ScenePrimitive *bgImage;
-			ScenePrimitive *colorShape;			
+			UIRect *bgImage;
+			UIRect *colorShape;			
 		
 	};
 }

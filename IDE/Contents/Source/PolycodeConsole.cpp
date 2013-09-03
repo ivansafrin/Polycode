@@ -40,7 +40,7 @@ BackTraceEntry::BackTraceEntry(String fileName, int lineNumber, PolycodeProject 
 	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
 	int fontSize = conf->getNumericValue("Polycode", "uiDefaultFontSize");	
 
-	labelBg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 20,20);
+	labelBg = new UIRect(20,20);
 	labelBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	labelBg->setColor(0.0, 0.0, 0.0, 0.15);
 	labelBg->processInputEvents = true;
@@ -84,7 +84,7 @@ BackTraceEntry::~BackTraceEntry() {
 }
 
 void BackTraceEntry::Resize(Number width, Number height) {
-	labelBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, 20);
+	labelBg->Resize(width, 20);
 
 }
 
@@ -93,7 +93,7 @@ BackTraceWindow::BackTraceWindow() : UIElement() {
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
 
-	labelBg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 20,30);
+	labelBg = new UIRect(20,30);
 	labelBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	labelBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	addChild(labelBg);
@@ -106,7 +106,7 @@ BackTraceWindow::BackTraceWindow() : UIElement() {
 }	
 
 void BackTraceWindow::Resize(Number width, Number height) {
-	labelBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, 30);
+	labelBg->Resize(width, 30);
 	setWidth(width);
 	setHeight(height);
 	adjustEntries();
@@ -167,7 +167,7 @@ BackTraceWindow::~BackTraceWindow() {
 ConsoleWindow::ConsoleWindow() : UIElement() {
 
 
-	labelBg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 20,30);
+	labelBg = new UIRect(20,30);
 	labelBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	labelBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	addChild(labelBg);
@@ -193,7 +193,7 @@ ConsoleWindow::ConsoleWindow() : UIElement() {
 
 void ConsoleWindow::Resize(Number width, Number height) {
 
-	labelBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, 30);
+	labelBg->Resize(width, 30);
 	debugTextInput->Resize(width, height-25-30);
 	debugTextInput->setPosition(0, 30);
 

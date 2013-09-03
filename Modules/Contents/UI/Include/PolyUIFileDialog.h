@@ -51,7 +51,7 @@ namespace Polycode {
 			void Deselect();
 
 			bool canSelect;
-			ScenePrimitive *bg;
+			UIRect *bg;
 			SceneLabel *label;
 			OSFileEntry fileEntry;
 			SceneImage *icon;

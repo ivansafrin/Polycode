@@ -55,7 +55,7 @@ UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : 
 								Label::ANTIALIAS_FULL);
 	textLabel->color.setColorHexFromString(conf->getStringValue("Polycode", "uiTreeFontColor"));
 	
-	bgBox = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, treeWidth, cellHeight);	
+	bgBox = new UIRect(treeWidth, cellHeight);	
 	bgBox->setAnchorPoint(-1.0, -1.0, 0.0);
 	bgBox->setPosition(-treeOffset,0);	
 	bgBox->setColor(1, 1, 1, 0);
@@ -113,7 +113,7 @@ UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : 
 void UITree::Resize(Number width) {
 	treeWidth = width;
 	selection->resizeBox(treeWidth+(padding*2), cellHeight+(padding*2));
-	bgBox->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, cellHeight);
+	bgBox->Resize(width, cellHeight);
 	
 	for(int i=0; i < treeChildren.size(); i++) {
 		treeChildren[i]->Resize(width);

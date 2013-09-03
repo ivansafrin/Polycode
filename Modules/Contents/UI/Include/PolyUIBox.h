@@ -41,16 +41,16 @@ namespace Polycode {
 		Number b;
 		Number l;
 		
-		SceneImage *tlImage;
-		SceneImage *trImage;		
-		SceneImage *blImage;		
-		SceneImage *brImage;			
+		UIRect *tlImage;
+		UIRect *trImage;		
+		UIRect *blImage;		
+		UIRect *brImage;			
 		
-		SceneImage *centerImage;
+		UIRect *centerImage;
 		
-		SceneImage *tImage;
-		SceneImage *rImage;
-		SceneImage *bImage;
-		SceneImage *lImage;		
+		UIRect *tImage;
+		UIRect *rImage;
+		UIRect *bImage;
+		UIRect *lImage;		
 	};
 }

@@ -540,7 +540,7 @@ PolycodeFrame::PolycodeFrame() : UIElement() {
 		
 	projectBrowser->treeContainer->getRootNode()->addEventListener(this, UITreeEvent::DRAG_START_EVENT);
 	
-	topBarBg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 2,2);
+	topBarBg = new UIRect(2,2);
 	topBarBg->setColorInt(21, 18, 17, 255);
 	topBarBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	topBarBg->processInputEvents = true;
@@ -576,7 +576,7 @@ PolycodeFrame::PolycodeFrame() : UIElement() {
 	addChild(resizer);
 	resizer->setColor(0,0,0,0.4);
 	
-	modalBlocker = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 10,10);
+	modalBlocker = new UIRect(10,10);
 	modalBlocker->setColor(0,0,0,0.4);
 	modalBlocker->setAnchorPoint(-1.0, -1.0, 0.0);
 	modalBlocker->enabled = false;	
@@ -656,7 +656,7 @@ PolycodeFrame::PolycodeFrame() : UIElement() {
 	modalRoot = new UIElement();
 	addChild(modalRoot);
 	
-	fileDialogBlocker = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 100, 100);
+	fileDialogBlocker = new UIRect(100, 100);
 	fileDialogBlocker->setAnchorPoint(-1.0, -1.0, 0.0);
 	addChild(fileDialogBlocker);
 	fileDialogBlocker->setColor(0.0, 0.0, 0.0, 0.5);
@@ -924,13 +924,13 @@ void PolycodeFrame::Resize(int x, int y) {
 	welcomeEntity->setPosition((x-welcomeImage->getWidth()) / 2,
 		(y-welcomeImage->getHeight()) / 2); 
 	
-	topBarBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, x, 45);
+	topBarBg->Resize(x, 45);
 	logo->setPosition(x-logo->getWidth()-2, 2);
 	resizer->setPosition(x-resizer->getWidth()-1, y-resizer->getHeight()-1);	
 	mainSizer->Resize(x,y-45);	
 	
-	modalBlocker->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, x, y);
-	fileDialogBlocker->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, x, y);
+	modalBlocker->Resize(x, y);
+	fileDialogBlocker->Resize(x, y);
 		
 	currentFileSelector->setPosition(x-400, 11);
 	closeFileButton->setPosition(currentFileSelector->getPosition().x-20, currentFileSelector->getPosition().y+6);

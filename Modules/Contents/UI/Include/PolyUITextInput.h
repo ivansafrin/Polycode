@@ -427,9 +427,9 @@ namespace Polycode {
 			std::vector<TextColorPair> makeWordWrapBuffer(LineInfo *lineInfo, String indentPrefix);
 			std::vector<TextColorPair> splitTokens(String stringToSplit, LineColorInfo *stringColorInfo);
 			
-			ScenePrimitive *selectorRectTop;
-			ScenePrimitive *selectorRectMiddle;
-			ScenePrimitive *selectorRectBottom;		
+			UIRect *selectorRectTop;
+			UIRect *selectorRectMiddle;
+			UIRect *selectorRectBottom;		
 			int numLines;			
 			
 			Number padding;
@@ -440,7 +440,7 @@ namespace Polycode {
 			int selectionL;
 			int selectionR;
 			
-			ScenePrimitive *lineNumberBg;
+			UIRect *lineNumberBg;
 			
 			int decoratorOffset;
 		
@@ -488,7 +488,7 @@ namespace Polycode {
 			bool multiLine;
 			Timer *blinkTimer;
 			UIBox *inputRect;
-			ScenePrimitive *blinkerRect;
+			UIRect *blinkerRect;
 			Vector2 dragMouseStart;
 			
 			Color selectionColor;

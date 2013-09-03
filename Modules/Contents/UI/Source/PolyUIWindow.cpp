@@ -62,7 +62,7 @@ UIWindow::UIWindow(String windowName, Number width, Number height) : UIElement()
 	Number titleBarHeight = conf->getNumericValue("Polycode", "uiWindowTitleBarHeight");
 	Number titleBarOffset = conf->getNumericValue("Polycode", "uiWindowTitleBarOffset");
 		
-	titlebarRect = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, width, titleBarHeight);
+	titlebarRect = new UIRect(width, titleBarHeight);
 	titlebarRect->setPosition(0, titleBarOffset);
 	titlebarRect->setColor(0,0,0,0);
 	titlebarRect->setAnchorPoint(-1.0, -1.0, 0.0);

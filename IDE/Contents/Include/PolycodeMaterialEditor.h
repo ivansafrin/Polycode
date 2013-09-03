@@ -60,7 +60,7 @@ class MaterialPreviewBox : public UIElement {
 		SceneLight *mainLight;
 		SceneLight *secondLight;		
 		SceneRenderTexture *renderTexture;
-		ScenePrimitive *previewShape;
+		UIRect *previewShape;
 		
 		std::vector<UIImageButton*> shapeSwitches;
 		std::vector<ScenePrimitive*> shapePrimitives;
@@ -83,11 +83,11 @@ class PostPreviewBox : public UIElement {
 			
 		Scene *previewScene;
 		SceneRenderTexture *renderTexture;
-		ScenePrimitive *previewShape;				
+		UIRect *previewShape;				
 		Entity *previewBase;		
 		ScenePrimitive *previewPrimitive;	
 		Material *currentMaterial;	
-		ScenePrimitive *headerBg;
+		UIRect *headerBg;
 				
 		Number spinValue;
 		
@@ -131,7 +131,7 @@ class MaterialBrowser : public UIElement {
 														
 	protected:
 	
-		ScenePrimitive *headerBg;
+		UIRect *headerBg;
 		UITree *shadersNode;
 		UITree *materialsNode;
 		UITree *cubemapsNode;
@@ -152,7 +152,7 @@ class CubemapEditorPane : public UIElement {
 	protected:
 	
 		PropList *propList;
-		ScenePrimitive *headerBg;
+		UIRect *headerBg;
 		
 		TextureProp *yPosTexture;
 		TextureProp *yNegTexture;
@@ -179,7 +179,7 @@ class PostEditorPane : public UIElement {
 		
 		protected:
 		
-		ScenePrimitive *headerBgBottom;
+		UIRect *headerBgBottom;
 
 		PropList *propList;				
 		PropSheet *baseProps;
@@ -228,7 +228,7 @@ class ShaderEditorPane : public UIElement {
 		bool choosingVertexProgram;
 	
 		PropList *propList;
-		ScenePrimitive *headerBg;
+		UIRect *headerBg;
 		
 		ComboProp *vertexProgramProp;
 		ComboProp *fragmentProgramProp;
@@ -258,7 +258,7 @@ class MaterialEditorPane : public UIElement {
 		MaterialPreviewBox *materialPreview;
 		bool changingMaterial;
 	
-		ScenePrimitive *headerBg;			
+		UIRect *headerBg;			
 		
 		PropList *propList;
 		

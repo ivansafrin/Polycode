@@ -29,14 +29,14 @@ AssetEntry::AssetEntry(String assetPath, String assetName, String extension) : U
 	if(assetName.length() > 20)
 		assetName = assetName.substr(0,20)+"...";
 
-	selectShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 120, 100);
+	selectShape = new UIRect(120, 100);
 	selectShape->visible = false;
 	selectShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	addChild(selectShape);
 	selectShape->processInputEvents = true;
 	selectShape->setColor(0.0, 0.0, 0.0, 0.5);
 
-	imageShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 64,64);
+	imageShape = new UIRect(64,64);
 	imageShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	addChild(imageShape);
 	
@@ -76,7 +76,7 @@ AssetEntry::~AssetEntry() {
 
 AssetList::AssetList() : UIElement() {
 	
-	bgShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 100,100);
+	bgShape = new UIRect(100,100);
 	bgShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	bgShape->setColor(0.0, 0.0, 0.0, 0.4);
 	addChild(bgShape);
@@ -152,7 +152,7 @@ void AssetList::showFolder(String folderPath) {
 	}
 
 	
-	bgShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, getWidth(), getHeight());
+	bgShape->Resize(getWidth(), getHeight());
 	bgShape->rebuildTransformMatrix();
 	rebuildTransformMatrix();	
 }

@@ -33,7 +33,7 @@ PostEditorPane::PostEditorPane() : UIElement() {
 	
 	bottomElement = new UIElement();
 	
-	headerBgBottom = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE,10,10);
+	headerBgBottom = new UIRect(10,10);
 	bottomElement->addChild(headerBgBottom);
 	headerBgBottom->setAnchorPoint(-1.0, -1.0, 0.0);
 	headerBgBottom->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));	
@@ -101,7 +101,7 @@ PostEditorPane::~PostEditorPane() {
 void PostEditorPane::Resize(Number width, Number height) {
 	mainSizer->Resize(width, height);
 	
-	headerBgBottom->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, 30);	
+	headerBgBottom->Resize(width, 30);	
 	propList->Resize(width/2.0, height- mainSizer->getMainHeight());
 	
 	propList->updateProps();
@@ -190,7 +190,7 @@ void PostEditorPane::handleEvent(Event *event) {
 CubemapEditorPane::CubemapEditorPane() : UIElement() {
 	currentCubemap = NULL;
 
-	headerBg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE,10,10);
+	headerBg = new UIRect(10,10);
 	addChild(headerBg);
 	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));	
@@ -312,7 +312,7 @@ CubemapEditorPane::~CubemapEditorPane() {
 }
 
 void CubemapEditorPane::Resize(Number width, Number height) {
-	headerBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, 30);	
+	headerBg->Resize(width, 30);	
 	propList->Resize(370, height);
 	propList->updateProps();
 }
@@ -323,7 +323,7 @@ ShaderEditorPane::ShaderEditorPane() : UIElement() {
 	changingShader = false;
 	currentShader = NULL;
 
-	headerBg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE,10,10);
+	headerBg = new UIRect(10,10);
 	addChild(headerBg);
 	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));	
@@ -509,14 +509,14 @@ void ShaderEditorPane::setShader(Shader *shader) {
 }
 
 void ShaderEditorPane::Resize(Number width, Number height) {
-	headerBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, 30);	
+	headerBg->Resize(width, 30);	
 	propList->Resize(370, height);
 	propList->updateProps();
 }
 
 PostPreviewBox::PostPreviewBox() : UIElement() {
 
-	headerBg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE,10,10);
+	headerBg = new UIRect(10,10);
 	addChild(headerBg);
 	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));	
@@ -583,7 +583,7 @@ PostPreviewBox::PostPreviewBox() : UIElement() {
 	previewBase->setPosition(0, 30);
 	addChild(previewBase);
 	
-	previewShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 256, 256);
+	previewShape = new UIRect(256, 256);
 	previewShape->setAnchorPoint(-1.0, -1.0, 0.0);	
 	previewShape->setTexture(renderTexture->getTargetTexture());
 //	previewShape->strokeEnabled = true;
@@ -634,8 +634,8 @@ void PostPreviewBox::Update() {
 }
 
 void PostPreviewBox::Resize(Number width, Number height) {
-	previewShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, height-30);
-	headerBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, 30);
+	previewShape->Resize(width, height-30);
+	headerBg->Resize(width, 30);
 	
 	int textureWidth = (int)width;
 	int textureHeight = (int) (height-30);
@@ -738,7 +738,7 @@ MaterialPreviewBox::MaterialPreviewBox() : UIElement() {
 	previewBase->setPosition(0, 0);
 	addChild(previewBase);
 	
-	previewShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 256, 256);
+	previewShape = new UIRect(256, 256);
 	previewShape->setAnchorPoint(-1.0, -1.0, 0.0);	
 	previewShape->setTexture(renderTexture->getTargetTexture());
 	previewShape->setPosition(20,40);
@@ -803,7 +803,7 @@ MaterialEditorPane::MaterialEditorPane() : UIElement() {
 
 	changingMaterial = false;
 	
-	headerBg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE,10,10);
+	headerBg = new UIRect(10,10);
 	addChild(headerBg);
 	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));	
@@ -873,7 +873,7 @@ void MaterialEditorPane::reloadShaders() {
 }
 
 void MaterialEditorPane::Resize(Number width, Number height) {
-	headerBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, 30);	
+	headerBg->Resize(width, 30);	
 	propList->Resize(370, height);
 	propList->updateProps();
 }
@@ -1005,7 +1005,7 @@ MaterialBrowser::MaterialBrowser() : UIElement() {
 	addChild(treeContainer);		
 	selectedData = NULL;
 	
-	headerBg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE,10,10);
+	headerBg = new UIRect(10,10);
 	addChild(headerBg);
 	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));	
@@ -1083,7 +1083,7 @@ MaterialBrowser::~MaterialBrowser() {
 void MaterialBrowser::Resize(Number width, Number height) {
 	treeContainer->Resize(width, height-30);
 	treeContainer->setPosition(0, 30);	
-	headerBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, 30);	
+	headerBg->Resize(width, 30);	
 	removeButton->setPosition(width - 24, 8);
 }
 

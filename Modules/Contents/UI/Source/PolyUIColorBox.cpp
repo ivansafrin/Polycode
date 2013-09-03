@@ -447,7 +447,7 @@ UIColorBox::UIColorBox(UIColorPicker *colorPicker, Color initialColor, Number wi
 	Number sl = conf->getNumericValue("Polycode", "uiColorBoxFrameImageL");
 
 
-	bgImage = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, width-(frameInset*2), height-(frameInset*2));
+	bgImage = new UIRect(width-(frameInset*2), height-(frameInset*2));
 	bgImage->setAnchorPoint(-1.0, -1.0, 0.0);
 	bgImage->loadTexture(bgImageFile);
 	bgImage->setPosition(frameInset, frameInset);	
@@ -456,7 +456,7 @@ UIColorBox::UIColorBox(UIColorPicker *colorPicker, Color initialColor, Number wi
 	bgImage->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	bgImage->processInputEvents = true;
 
-	colorShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, width-(frameInset*2), height-(frameInset*2));
+	colorShape = new UIRect(width-(frameInset*2), height-(frameInset*2));
 	colorShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	colorShape->setPosition(frameInset, frameInset);
 	addChild(colorShape);

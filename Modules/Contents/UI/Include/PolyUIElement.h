@@ -79,6 +79,32 @@ namespace Polycode {
 			UIElement *focusParent;
 			
 	};
+
+	class _PolyExport UIRect : public UIElement {
+		public:
+			UIRect(String fileName);
+			UIRect(Number width, Number height);
+			void initRect(Number width, Number height);
+			~UIRect();
+			void Resize(Number width, Number height);
+			void Render();
+			void loadTexture(String fileName);
+			void setTexture(Texture *texture);
+			void setImageCoordinates(Number x, Number y, Number width, Number height);
+			Number getImageWidth() const;
+			Number getImageHeight() const;
+						
+			Texture *getTexture();			
+		protected:
+		
+			Number imageWidth;
+			Number imageHeight;
+			
+			Mesh *rectMesh;
+			Texture *texture;
+			
+	};
+
 	
 	class _PolyExport UIImage : public UIElement {
 		public:

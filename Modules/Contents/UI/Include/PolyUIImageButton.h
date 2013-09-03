@@ -38,7 +38,7 @@ namespace Polycode {
 			void handleEvent(Event *event);
 				
 		private:
-			ScenePrimitive *buttonRect;
+			UIRect *buttonRect;
 			SceneImage *buttonImage;
 			bool pressedDown;
 	};

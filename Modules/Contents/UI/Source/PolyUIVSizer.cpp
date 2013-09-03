@@ -37,7 +37,7 @@ UIVSizer::UIVSizer(Number width, Number height, Number mainHeight, bool topSizer
 	this->topSizer = topSizer;
 	this->mainHeight = mainHeight;
 	
-	separatorBgShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, width,1);
+	separatorBgShape = new UIRect(width,1);
 	separatorBgShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	separatorBgShape->setColor(0.0, 0.0, 0.0, 1.0);	
 	addChild(separatorBgShape);
@@ -49,7 +49,7 @@ UIVSizer::UIVSizer(Number width, Number height, Number mainHeight, bool topSizer
 	firstElement = NULL;
 	secondElement = NULL;
 	
-	separatorHitShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, width,8);
+	separatorHitShape = new UIRect(width,8);
 	separatorHitShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	separatorHitShape->setColor(1.0, 0.0, 0.0, 0.5);	
 	addChild(separatorHitShape);
@@ -172,9 +172,9 @@ void UIVSizer::updateSizer() {
 			secondElement->Resize(getWidth(), getHeight()-mainHeight-1);				
 		}
 
-		separatorBgShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, getWidth(), 1);
+		separatorBgShape->Resize(getWidth(), 1);
 		separatorBgShape->setPosition(0,mainHeight);
-		separatorHitShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, getWidth(), 8);
+		separatorHitShape->Resize(getWidth(), 8);
 		separatorHitShape->setPosition(0, mainHeight-4);
 		
 	} else {
@@ -189,9 +189,9 @@ void UIVSizer::updateSizer() {
 			secondElement->Resize(getWidth(), mainHeight-1);	
 		}
 
-		separatorBgShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, getWidth(), 1);
+		separatorBgShape->Resize(getWidth(), 1);
 		separatorBgShape->setPosition(0,getHeight()-mainHeight);
-		separatorHitShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, getWidth(), 8);
+		separatorHitShape->Resize(getWidth(), 8);
 		separatorHitShape->setPosition(0, getHeight()-mainHeight-4);
 
 	}	

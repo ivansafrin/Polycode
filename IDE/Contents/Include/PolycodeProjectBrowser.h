@@ -75,7 +75,7 @@ public:
 			
 protected:
 
-		ScenePrimitive *headerBg;
+		UIRect *headerBg;
 	
 		UIMenu *contextMenu;
 	

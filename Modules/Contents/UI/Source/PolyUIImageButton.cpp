@@ -36,7 +36,7 @@ UIImageButton::UIImageButton(String imageName) : UIElement() {
 	buttonImage->depthTest = false;
 	buttonImage->setAnchorPoint(-1.0, -1.0, 0.0);
 	
-	buttonRect = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, buttonImage->getWidth(),buttonImage->getHeight(),0,0);
+	buttonRect = new UIRect(buttonImage->getWidth(),buttonImage->getHeight());
 	buttonRect->setColor(1,1,1,0);
 	buttonRect->setAnchorPoint(-1.0, -1.0, 0.0);
 	addChild(buttonRect);

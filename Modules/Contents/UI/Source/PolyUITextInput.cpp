@@ -116,7 +116,7 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	addChild(inputRect);		
 	
 	if(multiLine) {
-		lineNumberBg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1,1);
+		lineNumberBg = new UIRect(1,1);
 		lineNumberBg->setAnchorPoint(-1.0, -1.0, 0.0);
 		lineNumberBg->setColor(0.0, 0.0, 0.0, 0.3);
 		addChild(lineNumberBg);
@@ -147,26 +147,26 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	
 	selectionColor = Color(181.0f/255.0f, 213.0f/255.0f, 255.0f/255.0f, 1.0f);
 	
-	selectorRectTop = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1,1);
+	selectorRectTop = new UIRect(1,1);
 //	selectorRectTop->setAnchorPoint(-1.0, -1.0, 0.0);
 	selectorRectTop->setColor(181.0f/255.0f, 213.0f/255.0f, 255.0f/255.0f, 1);
 	selectorRectTop->visible = false;
 	textContainer->addChild(selectorRectTop);
 
-	selectorRectMiddle = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1,1);
+	selectorRectMiddle = new UIRect(1,1);
 //	selectorRectMiddle->setAnchorPoint(-1.0, -1.0, 0.0);	
 	selectorRectMiddle->setColor(181.0f/255.0f, 213.0f/255.0f, 255.0f/255.0f, 1);
 	selectorRectMiddle->visible = false;
 	textContainer->addChild(selectorRectMiddle);
 
-	selectorRectBottom = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1,1);
+	selectorRectBottom = new UIRect(1,1);
 //	selectorRectBottom->setAnchorPoint(-1.0, -1.0, 0.0);	
 	selectorRectBottom->setColor(181.0f/255.0f, 213.0f/255.0f, 255.0f/255.0f, 1);
 	selectorRectBottom->visible = false;
 	textContainer->addChild(selectorRectBottom);
 		
 	
-	blinkerRect = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, fontSize+2,0,0);
+	blinkerRect = new UIRect(1, fontSize+2);
 	blinkerRect->setAnchorPoint(-1.0, -1.0, 0.0);
 	blinkerRect->setColor(0,0,0,1);
 	textContainer->addChild(blinkerRect);
@@ -361,8 +361,8 @@ void UITextInput::updateSelectionRects() {
 	if(topSize < 4) {
 		topSize = 4;
 	}
-	selectorRectTop->setScale(topSize, topHeight);
-	selectorRectTop->setPosition(topX + (topSize/2.0) - horizontalPixelScroll, lineStart * (lineHeight+lineSpacing) + (topHeight/2.0));
+	selectorRectTop->Resize(topSize, topHeight);
+	selectorRectTop->setPosition(topX - horizontalPixelScroll, lineStart * (lineHeight+lineSpacing));
 	
 	if(lineEnd > lineStart && lineEnd < wordWrapLines.size()) {
 		String bottomLine = wordWrapLines[lineEnd].text;
@@ -376,8 +376,8 @@ void UITextInput::updateSelectionRects() {
 			bottomSize = 4;
 		}
 
-		selectorRectBottom->setScale(bottomSize, bottomHeight);
-		selectorRectBottom->setPosition(bottomSize/2.0 - horizontalPixelScroll, lineEnd * (lineHeight+lineSpacing) + (bottomHeight/2.0));
+		selectorRectBottom->Resize(bottomSize, bottomHeight);
+		selectorRectBottom->setPosition(-horizontalPixelScroll, lineEnd * (lineHeight+lineSpacing));
 		
 		if(lineEnd != lineStart+1) {
 			// need filler
@@ -387,8 +387,8 @@ void UITextInput::updateSelectionRects() {
 			for(int i=lineStart+1; i < lineEnd;i++) {
 				midHeight += lineHeight+lineSpacing;
 			}
-			selectorRectMiddle->setScale(midSize, midHeight);
-			selectorRectMiddle->setPosition(midSize/2.0 - horizontalPixelScroll, ((lineStart+1) * (lineHeight+lineSpacing)) + (midHeight/2.0));										
+			selectorRectMiddle->Resize(midSize, midHeight);
+			selectorRectMiddle->setPosition(- horizontalPixelScroll, ((lineStart+1) * (lineHeight+lineSpacing)));	
 			
 		}
 		
@@ -683,7 +683,7 @@ void UITextInput::doMultilineResize() {
 		restructLines();		
 		readjustBuffer();
 		if(lineNumbersEnabled) {
-			lineNumberBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, decoratorOffset, getHeight());
+			lineNumberBg->Resize(decoratorOffset, getHeight());
 		}
 	}
 	
@@ -713,7 +713,7 @@ void UITextInput::Resize(Number width, Number height) {
 		renumberLines();
 		readjustBuffer();
 		if(lineNumbersEnabled) {
-			lineNumberBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, decoratorOffset, height);
+			lineNumberBg->Resize(decoratorOffset, height);
 		}		
 	}
 	
@@ -848,7 +848,7 @@ void UITextInput::restructLines() {
 	}
 	
 	if(multiLine && lineNumbersEnabled) {
-		lineNumberBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, decoratorOffset, getHeight());
+		lineNumberBg->Resize(decoratorOffset, getHeight());
 	}
 	
 	if(scrollContainer) {

@@ -640,7 +640,7 @@ void PolycodeTextEditor::Resize(int x, int y) {
 }
 
 FindBar::FindBar() : UIElement() {
-	barBg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 30,30);
+	barBg = new UIRect(30,30);
 	barBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	barBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	addChild(barBg);
@@ -701,7 +701,7 @@ FindBar::~FindBar(){
 }
 
 void FindBar::setBarWidth(int width) {
-	barBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, 30);
+	barBg->Resize(width, 30);
 	closeButton->setPosition(width - 30, 5);
 	functionList->Resize(width-560-60, functionList->getHeight());
 }

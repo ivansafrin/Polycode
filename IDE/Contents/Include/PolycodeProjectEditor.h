@@ -74,7 +74,7 @@ class PolycodeProjectEditor : public PolycodeEditor {
 	UIElement *mainSettingsWindow;
 	UIElement *moduleSettingsWindow;
 	
-	ScenePrimitive *headerBg;
+	UIRect *headerBg;
 	
 	UIElement *fontEntryBase;	
 	std::vector<ProjectFontEntry*> fontEntries;

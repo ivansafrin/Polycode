@@ -46,28 +46,28 @@ bool PolycodeImageEditor::openFile(OSFileEntry filePath) {
 	grid->getImage()->getTexture()->recreateFromImageData();	
 		
 	
-	leftShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 10,10);
+	leftShape = new UIRect(10,10);
 	leftShape->setColor(0.0, 0.0, 0.0, 0.3);
 	leftShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	addChild(leftShape);
 
-	rightShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 10,10);
+	rightShape = new UIRect(10,10);
 	rightShape->setColor(0.0, 0.0, 0.0, 0.3);
 	rightShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	addChild(rightShape);
 
-	topShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 10,10);
+	topShape = new UIRect(10,10);
 	topShape->setColor(0.0, 0.0, 0.0, 0.3);
 	topShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	addChild(topShape);
 
-	bottomShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 10,10);
+	bottomShape = new UIRect(10,10);
 	bottomShape->setColor(0.0, 0.0, 0.0, 0.3);
 	bottomShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	addChild(bottomShape);
 		
 		
-	editorImage = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 10,10);
+	editorImage = new UIRect(10,10);
 	
 	Texture *newTexture = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(filePath.fullPath);
 	newTexture->reloadOnFileModify = true;
@@ -90,19 +90,19 @@ void PolycodeImageEditor::Resize(int x, int y) {
 	grid->getImage()->setImageCoordinates(0,0,x,y);	
 	
 	if((y * 0.8) * aspectRatio > x * 0.8) {
-		editorImage->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, (x * 0.8), (x * 0.8) / aspectRatio);	
+		editorImage->Resize((x * 0.8), (x * 0.8) / aspectRatio);	
 	} else {
-		editorImage->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, (y * 0.8) * aspectRatio, (y * 0.8));
+		editorImage->Resize((y * 0.8) * aspectRatio, (y * 0.8));
 	}
 	
-	leftShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, (x - editorImage->getWidth())/2.0, y);	
-	rightShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, (x - editorImage->getWidth())/2.0, y);	
+	leftShape->Resize((x - editorImage->getWidth())/2.0, y);	
+	rightShape->Resize((x - editorImage->getWidth())/2.0, y);	
 	rightShape->setPosition(leftShape->getWidth() + editorImage->getWidth(), 0);
 		
-	topShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, editorImage->getWidth(), (y - editorImage->getHeight())/2.0);
+	topShape->Resize(editorImage->getWidth(), (y - editorImage->getHeight())/2.0);
 	topShape->setPosition(leftShape->getWidth(),0);
 
-	bottomShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, editorImage->getWidth(), (y - editorImage->getHeight())/2.0);
+	bottomShape->Resize(editorImage->getWidth(), (y - editorImage->getHeight())/2.0);
 	bottomShape->setPosition(leftShape->getWidth(),y-bottomShape->getHeight());
 
 		

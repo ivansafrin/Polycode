@@ -61,7 +61,7 @@ class BackTraceEntry : public UIElement {
 		String fileName;
 		unsigned int lineNumber;
 		
-		ScenePrimitive *labelBg;	
+		UIRect *labelBg;	
 		SceneLabel *label;
 };
 
@@ -81,7 +81,7 @@ class BackTraceWindow : public UIElement {
 		void adjustEntries();
 		
 	protected:			
-		ScenePrimitive *labelBg;
+		UIRect *labelBg;
 		std::vector<BackTraceEntry*> entries;
 		
 };
@@ -99,7 +99,7 @@ class ConsoleWindow : public UIElement {
 		UIImageButton *clearButton;
 		UIImageButton *hideConsoleButton;
 		
-		ScenePrimitive *labelBg;
+		UIRect *labelBg;
 };
 
 class PolycodeConsole : public UIElement {

@@ -70,7 +70,7 @@ namespace Polycode {
 			Tween *windowTween;
 			UIImageButton *closeBtn;
 			UIBox *windowRect;
-			ScenePrimitive *titlebarRect;
+			UIRect *titlebarRect;
 		
 			bool tweenClosing;
 			void resetTween();

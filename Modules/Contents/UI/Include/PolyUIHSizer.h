@@ -58,8 +58,8 @@ namespace Polycode {
 			
 			bool leftSizer;
 			
-			ScenePrimitive *separatorHitShape;
-			ScenePrimitive *separatorBgShape;
+			UIRect *separatorHitShape;
+			UIRect *separatorBgShape;
 			
 			UIElement *firstElement;
 			UIElement *secondElement;			

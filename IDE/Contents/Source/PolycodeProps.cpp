@@ -117,7 +117,7 @@ PropList::PropList(String caption) : UIElement() {
 
 	setAnchorPoint(-1.0, -1.0, 0.0);
 
-	bg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 10,10);
+	bg = new UIRect(10,10);
 	bg->setAnchorPoint(-1.0, -1.0, 0.0);
 	bg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiBgColor"));
 	
@@ -127,7 +127,7 @@ PropList::PropList(String caption) : UIElement() {
 	
 	blockMouseInput = true;
 
-	bg2 = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 10,10);
+	bg2 = new UIRect(10,10);
 	bg2->setAnchorPoint(-1.0, -1.0, 0.0);
 	bg2->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	
@@ -168,8 +168,8 @@ void PropList::Resize(Number width, Number height) {
 		
 	scrollContainer->Resize(width, height-30);
 	
-	bg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, height);
-	bg2->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, 30);	
+	bg->Resize(width, height);
+	bg2->Resize(width, 30);	
 	
 	Number offsetY = 0;
 	for(int i=0; i < props.size(); i++) {
@@ -211,7 +211,7 @@ PropSheet::PropSheet(String caption, String type) : UIElement() {
 	
 	customUndoHandler = false;
 	
-	bg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 30,30);
+	bg = new UIRect(30,30);
 	addChild(bg);
 	bg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiSmallHeaderBgColor"));
 	bg->setAnchorPoint(-1.0, -1.0, 0.0);
@@ -289,7 +289,7 @@ void PropSheet::Resize(Number width, Number height) {
 	setWidth(width);
 	setHeight(height);
 	
-	bg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, 30);
+	bg->Resize(width, 30);
 	
 	Number yOffset = 0;
 	
@@ -912,7 +912,7 @@ void BezierCurveProp::handleEvent(Event *event) {
 }
 
 TextureProp::TextureProp(String caption) : PropProp(caption, "Texture"){
-	previewShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 48, 48);
+	previewShape = new UIRect(48, 48);
 	previewShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	previewShape->setPosition(2, 1);
 	propContents->addChild(previewShape);

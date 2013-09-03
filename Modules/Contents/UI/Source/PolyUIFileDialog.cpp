@@ -13,7 +13,7 @@ UIFileDialogEntry::UIFileDialogEntry(OSFileEntry entry, bool canSelect, int widt
 	String folderIconName = conf->getStringValue("Polycode", "uiFileBrowserFolderIcon");
 	String placeIconName = conf->getStringValue("Polycode", "uiFileBrowserPlaceIcon");
 
-	bg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, width, 18);
+	bg = new UIRect(width, 18);
 	bg->setAnchorPoint(-1.0, -1.0, 0.0);
 	addChild(bg);
 	bg->setColor(0.0, 0.0, 0.0, 0.1);

@@ -69,7 +69,7 @@ class PolycodeSpriteEditor : public PolycodeEditor {
 	
 	PropList *propList;
 	
-	ScenePrimitive *headerBg;	
+	UIRect *headerBg;	
 	
 	UIComboBox *zoomBox;
 	

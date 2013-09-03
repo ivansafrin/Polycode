@@ -58,8 +58,8 @@ namespace Polycode {
 			Number baseMouseY;
 			Number baseMainHeight;
 			
-			ScenePrimitive *separatorHitShape;
-			ScenePrimitive *separatorBgShape;
+			UIRect *separatorHitShape;
+			UIRect *separatorBgShape;
 			
 			UIElement *firstElement;
 			UIElement *secondElement;			

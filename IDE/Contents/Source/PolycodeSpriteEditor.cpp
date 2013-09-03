@@ -100,7 +100,7 @@ SpriteAnimationEntry::~SpriteAnimationEntry() {
 }
 
 PolycodeSpriteEditor::PolycodeSpriteEditor() : PolycodeEditor(true){
-	headerBg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE,10,10);
+	headerBg = new UIRect(10,10);
 	addChild(headerBg);
 	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
@@ -327,7 +327,7 @@ void PolycodeSpriteEditor::saveFile() {
 }
 
 void PolycodeSpriteEditor::Resize(int x, int y) {
-	headerBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, x, 30);
+	headerBg->Resize(x, 30);
 	propList->Resize(370, y);
 	propList->updateProps();	
 	PolycodeEditor::Resize(x,y);	

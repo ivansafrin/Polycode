@@ -21,10 +21,147 @@
  */
 
 #include "PolyUIElement.h"
+#include "PolyRenderer.h"
+#include "PolyCoreServices.h"
+#include "PolyTexture.h"
 
 using namespace Polycode;
 
 UIElement *UIElement::globalFocusedChild = NULL;
+
+UIRect::UIRect(String fileName) : UIElement() {
+	texture = NULL;
+	loadTexture(fileName);
+	if(texture) {	
+		initRect(texture->getWidth(), texture->getHeight());
+		imageWidth = texture->getWidth();
+		imageHeight = texture->getHeight();	
+	} else {
+		initRect(1,  1);
+		imageWidth = 0;
+		imageHeight = 0;
+	}
+}
+
+UIRect::UIRect(Number width, Number height) : UIElement() {
+	texture = NULL;
+	initRect(width, height);
+	imageWidth = 0;
+	imageHeight = 0;
+}
+
+void UIRect::setImageCoordinates(Number x, Number y, Number width, Number height) {
+	Vertex *vertex;
+	Number pixelSizeX = 1/imageWidth;
+	Number pixelSizeY = 1/imageHeight;
+
+	setWidth(width);
+	setHeight(height);
+
+	Number whalf = width/2.0f;
+	Number hhalf = height/2.0f;
+		
+	Number xFloat = x * pixelSizeX;
+	Number yFloat = (y * pixelSizeY);
+	Number wFloat = width * pixelSizeX;
+	Number hFloat = height * pixelSizeY;
+
+	Polygon *imagePolygon = rectMesh->getPolygon(0);	
+	vertex = imagePolygon->getVertex(0);
+	vertex->set(-whalf,-hhalf,0);
+	vertex->setTexCoord(xFloat, yFloat + hFloat);
+
+	vertex = imagePolygon->getVertex(1);
+	vertex->set(-whalf+width,-hhalf,0);
+	vertex->setTexCoord(xFloat + wFloat, yFloat + hFloat);
+
+	vertex = imagePolygon->getVertex(2);
+	vertex->set(-whalf+width,-hhalf+height,0);
+	vertex->setTexCoord(xFloat + wFloat, yFloat);
+
+	vertex = imagePolygon->getVertex(3);	
+	vertex->set(-whalf,-hhalf+height,0);	
+	vertex->setTexCoord(xFloat, yFloat);
+
+	rectMesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
+	rectMesh->arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;	
+	rebuildTransformMatrix();
+	matrixDirty = true;
+}
+
+Number UIRect::getImageWidth() const {
+	return imageWidth;
+}
+
+Number UIRect::getImageHeight() const {
+	return imageHeight;	
+}
+
+void UIRect::initRect(Number width, Number height) {
+	rectMesh = new Mesh(Mesh::QUAD_MESH);
+	processInputEvents = true;
+
+	setAnchorPoint(-1.0, -1.0, 0.0);
+	setWidth(width);	
+	setHeight(height);
+	
+	Number whalf = width/2.0f;
+	Number hhalf = height/2.0f;
+						
+	Polygon *poly = new Polygon();
+	poly->addVertex(-whalf,-hhalf,0,0,0);
+	poly->addVertex(-whalf+width,-hhalf,0, 1, 0);
+	poly->addVertex(-whalf+width,-hhalf+height,0, 1, 1);
+	poly->addVertex(-whalf,-hhalf+height,0,0,1);
+	rectMesh->addPolygon(poly);
+}
+
+UIRect::~UIRect() {
+	delete rectMesh;
+}
+
+void UIRect::loadTexture(String fileName) {
+	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
+	texture = materialManager->createTextureFromFile(fileName, materialManager->clampDefault, false);
+}
+
+void UIRect::setTexture(Texture *texture) {
+	this->texture = texture;
+}	
+
+Texture *UIRect::getTexture() {
+	return texture;
+}
+
+void UIRect::Render() {
+	renderer->clearShader();
+	renderer->setTexture(texture);
+	renderer->pushDataArrayForMesh(rectMesh, RenderDataArray::VERTEX_DATA_ARRAY);
+	renderer->pushDataArrayForMesh(rectMesh, RenderDataArray::TEXCOORD_DATA_ARRAY);	
+	renderer->drawArrays(Mesh::QUAD_MESH);
+}
+
+void UIRect::Resize(Number width, Number height) {
+
+	setWidth(width);	
+	setHeight(height);
+
+	Number whalf = width/2.0f;
+	Number hhalf = height/2.0f;
+	Polygon *polygon;
+	Vertex *vertex;
+
+	polygon = rectMesh->getPolygon(0);	
+	vertex = polygon->getVertex(0);
+	vertex->set(-whalf,-hhalf,0);			
+	vertex = polygon->getVertex(1);
+	vertex->set(-whalf+width,-hhalf,0);			
+	vertex = polygon->getVertex(2);
+	vertex->set(-whalf+width,-hhalf+height,0);			
+	vertex = polygon->getVertex(3);	
+	vertex->set(-whalf,-hhalf+height,0);				
+	rectMesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;	
+}
 
 UIImage::UIImage(String imagePath) : UIElement() {
 	image = new SceneImage(imagePath);

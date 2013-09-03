@@ -233,9 +233,9 @@ private:
 	bool showingConsole;
 	Number consoleSize;
 
-	ScenePrimitive *fileDialogBlocker;
+	UIRect *fileDialogBlocker;
 
-	ScenePrimitive *topBarBg;
+	UIRect *topBarBg;
 	UIImage *logo;	
 	UIImage *resizer;	
 
@@ -255,7 +255,7 @@ private:
 
 	vector<PolycodeEditor*> editors;
 	
-	ScenePrimitive *modalBlocker;
+	UIRect *modalBlocker;
 	UIWindow *modalChild;		
 	
 	UIVSizer *consoleSizer;

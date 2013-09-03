@@ -49,7 +49,7 @@ bool PolycodeFontEditor::openFile(OSFileEntry filePath) {
 	grid->getImage()->getTexture()->clamp = false;
 	grid->getImage()->getTexture()->recreateFromImageData();	
 	
-//	bg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 10,10);
+//	bg = new UIRect(10,10);
 	bg = new UIBox("Images/fontBox.png", 29,9,9,9, 10,10);	
 	bg->setAnchorPoint(-1.0, -1.0, 0.0);
 	bg->setPosition(-50,-50);

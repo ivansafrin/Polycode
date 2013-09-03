@@ -312,7 +312,7 @@ class TextureProp : public PropProp {
 		
 		void setPropData(PolycodeEditorPropActionData* data);
 				
-		ScenePrimitive *previewShape;
+		UIRect *previewShape;
 		UIButton *changeButton;
 		SceneLabel *textureLabel;
 		
@@ -378,7 +378,7 @@ class PropSheet : public UIElement {
 		Number propHeight;				
 		Entity *contents;
 		
-		ScenePrimitive *bg;
+		UIRect *bg;
 		
 		UIImageButton *collapseButton;
 		UIImageButton *expandButton;
@@ -618,8 +618,8 @@ class PropList : public UIElement {
 		Entity *propContents;
 	
 		std::vector<PropSheet*> props;	
-		ScenePrimitive *bg;
-		ScenePrimitive *bg2;				
+		UIRect *bg;
+		UIRect *bg2;				
 };
 
 class PolycodeEditorPropActionData : public PolycodeEditorActionData {

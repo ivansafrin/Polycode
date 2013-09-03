@@ -36,7 +36,7 @@ UIHSizer::UIHSizer(Number width, Number height, Number mainWidth, bool leftSizer
 	this->leftSizer = leftSizer;
 	this->mainWidth = mainWidth;
 	
-	separatorBgShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1,height);
+	separatorBgShape = new UIRect(1,height);
 	separatorBgShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	separatorBgShape->setColor(0.0, 0.0, 0.0, 1.0);	
 	addChild(separatorBgShape);
@@ -49,7 +49,7 @@ UIHSizer::UIHSizer(Number width, Number height, Number mainWidth, bool leftSizer
 	firstElement = NULL;
 	secondElement = NULL;
 	
-	separatorHitShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 8,height);
+	separatorHitShape = new UIRect(8,height);
 	separatorHitShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	separatorHitShape->setColor(1.0, 0.0, 0.0, 0.5);	
 	separatorHitShape->blockMouseInput = true;	
@@ -167,9 +167,9 @@ void UIHSizer::updateSizer() {
 			secondElement->Resize(getWidth()-mainWidth-1, getHeight());	
 		}
 
-		separatorBgShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, 1, getHeight());
+		separatorBgShape->Resize(1, getHeight());
 		separatorBgShape->setPosition(mainWidth,0);
-		separatorHitShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, 8, getHeight());
+		separatorHitShape->Resize(8, getHeight());
 		separatorHitShape->setPosition(mainWidth-4,0);
 		
 	} else {
@@ -183,9 +183,9 @@ void UIHSizer::updateSizer() {
 			secondElement->Resize(mainWidth-1, getHeight());	
 		}
 
-		separatorBgShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, 1, getHeight());
+		separatorBgShape->Resize(1, getHeight());
 		separatorBgShape->setPosition(getWidth()-mainWidth,0);
-		separatorHitShape->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, 8, getHeight());
+		separatorHitShape->Resize(8, getHeight());
 		separatorHitShape->setPosition(getWidth()-mainWidth-4,0);
 	
 	}

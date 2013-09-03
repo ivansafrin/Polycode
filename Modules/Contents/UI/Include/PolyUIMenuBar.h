@@ -55,7 +55,7 @@ namespace Polycode {
 			void Select();
 			void Deselect();
 
-			ScenePrimitive *bg;
+			UIRect *bg;
 			SceneLabel *label;
 
 			std::vector<UIMenuBarEntryItem> items;
@@ -82,7 +82,7 @@ namespace Polycode {
 			bool holdingMouse;
 
 			String selectedItem;
-			ScenePrimitive *bgShape;
+			UIRect *bgShape;
 			std::vector<UIMenuBarEntry*> entries;
 			UIMenuBarEntry *currentEntry;
 	};

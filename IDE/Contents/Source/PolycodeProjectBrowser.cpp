@@ -26,7 +26,7 @@ extern UIGlobalMenu *globalMenu;
 
 PolycodeProjectBrowser::PolycodeProjectBrowser() : UIElement() {
 
-	headerBg = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE,10,10);
+	headerBg = new UIRect(10,10);
 	addChild(headerBg);
 	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
@@ -205,6 +205,6 @@ void PolycodeProjectBrowser::parseFolderIntoNode(UITree *node, String spath, Pol
 }
 
 void PolycodeProjectBrowser::Resize(Number width, Number height) {
-	headerBg->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, width, 30);
+	headerBg->Resize(width, 30);
 	treeContainer->Resize(width, height-30);
 }

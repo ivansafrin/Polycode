@@ -25,111 +25,99 @@
 using namespace Polycode;
 
 UIBox::UIBox(String imageFile, Number t, Number r, Number b, Number l, Number boxWidth, Number boxHeight) : UIElement() {
-	
+
 	setAnchorPoint(-1.0, -1.0, 0.0);	
 	
 	setWidth(boxWidth);
 	setHeight(boxHeight);
 	
-	tlImage = new SceneImage(imageFile);
-	tlImage->setAnchorPoint(-1.0, -1.0, 0.0);
+	tlImage = new UIRect(imageFile);
 	tlImage->setImageCoordinates(0,0,l,t);
 	addChild(tlImage);
 	tlImage->setPosition(0, 0);
-	tlImage->depthTest = false;
-	tlImage->depthWrite = false;	
-	
-	trImage = new SceneImage(imageFile);
-	trImage->setAnchorPoint(-1.0, -1.0, 0.0);
+
+	trImage = new UIRect(imageFile);
 	trImage->setImageCoordinates(trImage->getWidth()-r,0,r,t);
 	addChild(trImage);	
 	trImage->setPosition(boxWidth-r, 0);
-	trImage->depthTest = false;
-	trImage->depthWrite = false;	
 
-
-	blImage = new SceneImage(imageFile);
-	blImage->setAnchorPoint(-1.0, -1.0, 0.0);	
+	blImage = new UIRect(imageFile);
 	blImage->setImageCoordinates(0,blImage->getHeight()-b,l,b);
 	addChild(blImage);	
 	blImage->setPosition(0, boxHeight-b);
-	blImage->depthTest = false;
-	blImage->depthWrite = false;	
 
-	brImage = new SceneImage(imageFile);
-	brImage->setAnchorPoint(-1.0, -1.0, 0.0);
+	brImage = new UIRect(imageFile);
 	brImage->setImageCoordinates(brImage->getWidth()-r,brImage->getHeight()-b,r,b);
 	addChild(brImage);	
 	brImage->setPosition(boxWidth-r, boxHeight-b);	
-	brImage->depthTest = false;
-	brImage->depthWrite = false;	
-	
-	centerImage = new SceneImage(imageFile);
-	centerImage->setAnchorPoint(-1.0, -1.0, 0.0);
-	centerImage->setImageCoordinates(l,t,centerImage->getWidth()-l-r, centerImage->getHeight()-t-b, boxWidth-l-r, boxHeight-t-b);
+
+	centerImage = new UIRect(imageFile);
+	centerImage->setImageCoordinates(l,t,centerImage->getWidth()-l-r, centerImage->getHeight()-t-b);
 	addChild(centerImage);	
 	centerImage->setPosition(l,t);	
-	centerImage->depthTest = false;
-	centerImage->depthWrite = false;	
-	
-	tImage = new SceneImage(imageFile);
-	tImage->setAnchorPoint(-1.0, -1.0, 0.0);
-	tImage->setImageCoordinates(l,0,tImage->getWidth()-l-r,t, boxWidth-l-r, t);
+	centerImage->Resize(boxWidth-l-r, boxHeight-t-b);
+
+	tImage = new UIRect(imageFile);
+	tImage->setImageCoordinates(l,0,tImage->getWidth()-l-r,t);
 	addChild(tImage);
 	tImage->setPosition(l,0);	
-	tImage->depthTest = false;
-	tImage->depthWrite = false;	
+	tImage->Resize(boxWidth-l-r, t);
 
-	bImage = new SceneImage(imageFile);
-	bImage->setAnchorPoint(-1.0, -1.0, 0.0);	
-	bImage->setImageCoordinates(l,bImage->getHeight()-b,bImage->getWidth()-l-r,b, boxWidth-l-r, b);
+	bImage = new UIRect(imageFile);
+	bImage->setImageCoordinates(l,bImage->getHeight()-b,bImage->getWidth()-l-r,b);
 	addChild(bImage);
 	bImage->setPosition(l,boxHeight-b);	
-	bImage->depthTest = false;
-	bImage->depthWrite = false;	
+	bImage->Resize(boxWidth-l-r, b);
 
-	lImage = new SceneImage(imageFile);
-	lImage->setAnchorPoint(-1.0, -1.0, 0.0);		
-	lImage->setImageCoordinates(0,t,l,lImage->getHeight()-t-b, l, boxHeight-t-b);
+	lImage = new UIRect(imageFile);
+	lImage->setImageCoordinates(0,t,l,lImage->getHeight()-t-b);
 	addChild(lImage);
 	lImage->setPosition(0,t);	
-	lImage->depthTest = false;
-	lImage->depthWrite = false;	
+	lImage->Resize(l, boxHeight-t-b);
 
-	rImage = new SceneImage(imageFile);
-	rImage->setAnchorPoint(-1.0, -1.0, 0.0);		
-	rImage->setImageCoordinates(rImage->getWidth()-r,t,r,rImage->getHeight()-t-b, r, boxHeight-t-b);
+	rImage = new UIRect(imageFile);
+	rImage->setImageCoordinates(rImage->getWidth()-r,t,r,rImage->getHeight()-t-b);
 	addChild(rImage);
 	rImage->setPosition(boxWidth-r,t);	
-	rImage->depthTest = false;
-	rImage->depthWrite = false;	
+	rImage->Resize(r, boxHeight-t-b);	
 	
 	this->t = t;
 	this->r = r;
 	this->b = b;
 	this->l = l;
-	
+/*	
+	tlImage->setColor(1.0, 0.0, 0.0, 1.0);
+	trImage->setColor(0.0, 1.0, 0.0, 1.0);		
+	blImage->setColor(0.0, 0.0, 1.0, 1.0);
+	brImage->setColor(1.0, 1.0, 0.0, 1.0);
+	centerImage->setColor(0.0, 1.0, 1.0, 1.0);
+	tImage->setColor(1.0, 0.0, 1.0, 1.0);
+	rImage->setColor(1.0, 0.5, 0.5, 1.0);
+	bImage->setColor(0.5, 1.0, 0.5, 1.0);
+	lImage->setColor(0.5, 0.5, 1.0, 1.0);
+*/	
 	ownsChildren = true;	
 }
 
 void UIBox::resizeBox(Number newWidth, Number newHeight) {
 
-	setWidth(newWidth);
-	setHeight(newHeight);
-
 	brImage->setPosition(newWidth-brImage->getWidth(), newHeight-brImage->getHeight());
 	trImage->setPosition(newWidth-trImage->getWidth(), 0);
 	blImage->setPosition(0, newHeight-blImage->getHeight());
-	
-	centerImage->setImageCoordinates(l,t,centerImage->getImageWidth()-l-r, centerImage->getImageHeight()-t-b, newWidth-l-r, newHeight-t-b);
-	lImage->setImageCoordinates(0,t,l,lImage->getImageHeight()-t-b, l, newHeight-t-b);
-	rImage->setImageCoordinates(rImage->getImageWidth()-r,t,r,rImage->getImageHeight()-t-b, r, newHeight-t-b);
-	bImage->setImageCoordinates(l,bImage->getImageHeight()-b,bImage->getImageWidth()-l-r,b, newWidth-l-r, b);
-	tImage->setImageCoordinates(l,0,tImage->getImageWidth()-l-r,t, newWidth-l-r, t);	
-	
+
+	centerImage->Resize(newWidth-l-r, newHeight-t-b);
+
+	lImage->Resize(l, newHeight-t-b);	
+	rImage->Resize(r, newHeight-t-b);		
+	bImage->Resize(newWidth-l-r, b);
+	tImage->Resize(newWidth-l-r, t);	
+
 	bImage->setPosition(bImage->getPosition().x, newHeight-bImage->getHeight());	
 	rImage->setPosition(newWidth-rImage->getWidth(),rImage->getPosition().y);
-		
+
+	setWidth(newWidth);
+	setHeight(newHeight);
+
 	this->rebuildTransformMatrix();
 }
 
