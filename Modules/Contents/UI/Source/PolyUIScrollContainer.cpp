@@ -73,6 +73,9 @@ UIScrollContainer::UIScrollContainer(Entity *scrolledEntity, bool hScroll, bool 
 	Resize(width, height);	
 	
 	processInputEvents = true;
+	
+	addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_DOWN);
+	addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_UP);	
 }
 
 void UIScrollContainer::Resize(Number width, Number height) {
@@ -88,12 +91,12 @@ void UIScrollContainer::Resize(Number width, Number height) {
 	
 }
 
-void UIScrollContainer::onMouseWheelUp(Number x, Number y) {
+void UIScrollContainer::_onMouseWheelUp() {
 	if(vScrollBar->enabled)
 		vScrollBar->scrollUpOneTick();
 }
 
-void UIScrollContainer::onMouseWheelDown(Number x, Number y) {
+void UIScrollContainer::_onMouseWheelDown() {
 	if(vScrollBar->enabled)
 		vScrollBar->scrollDownOneTick();
 }
@@ -168,6 +171,15 @@ void UIScrollContainer::Update() {
 }
 
 void UIScrollContainer::handleEvent(Event *event) {
+
+	if(event->getDispatcher() == this) {
+		if(event->getEventCode() == InputEvent::EVENT_MOUSEWHEEL_UP) {
+			_onMouseWheelUp();
+		} else if(event->getEventCode() == InputEvent::EVENT_MOUSEWHEEL_DOWN) {
+			_onMouseWheelDown();		
+		}
+	}
+	
 	if(event->getDispatcher() == vScrollBar) {
 		if(event->getEventCode() == Event::CHANGE_EVENT) {
 			scrollChild->setPositionY(floor(((-contentHeight+getHeight()) )*vScrollBar->getScrollValue()));

@@ -2535,12 +2535,12 @@ void UITextInput::handleEvent(Event *event) {
 			break;
 			case InputEvent::EVENT_MOUSEWHEEL_UP:
 				if(scrollContainer) {
-					scrollContainer->onMouseWheelUp(0, 0);
+					scrollContainer->_onMouseWheelUp();
 				}
 			break;
 			case InputEvent::EVENT_MOUSEWHEEL_DOWN:
 				if(scrollContainer) {
-					scrollContainer->onMouseWheelDown(0, 0);
+					scrollContainer->_onMouseWheelDown();
 				}
 			break;
 			case InputEvent::EVENT_DOUBLECLICK:

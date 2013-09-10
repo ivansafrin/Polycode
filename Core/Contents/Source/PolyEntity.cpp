@@ -1036,10 +1036,70 @@ MouseEventResult Entity::onMouseMove(const Ray &ray, int timestamp) {
 
 MouseEventResult Entity::onMouseWheelUp(const Ray &ray, int timestamp) {
 	MouseEventResult ret;
+	ret.hit = false;
+	ret.blocked = false;
+	
+	if(processInputEvents && enabled) {
+		if(ray.boxIntersect(bBox, getAnchorAdjustedMatrix())) {
+			ret.hit = true;	
+			
+			Vector3 localCoordinate = Vector3(ray.origin.x,ray.origin.y,0);
+			Matrix4 inverse = getConcatenatedMatrix().Inverse();
+			localCoordinate = inverse * localCoordinate;			
+			
+			InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x, localCoordinate.y*yAdjust), timestamp);
+			dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEWHEEL_UP);
+												
+			if(blockMouseInput) {
+				ret.blocked = true;
+			}
+		}
+		
+		for(int i=children.size()-1; i>=0; i--) {
+			MouseEventResult childRes = children[i]->onMouseWheelUp(ray, timestamp);
+				if(childRes.hit)
+					ret.hit = true;
+				
+				if(childRes.blocked) {
+					ret.blocked = true;
+					break;
+				}			
+		}
+	}
 	return ret;
 }
 
 MouseEventResult Entity::onMouseWheelDown(const Ray &ray, int timestamp) {
 	MouseEventResult ret;
+	ret.hit = false;
+	ret.blocked = false;
+	
+	if(processInputEvents && enabled) {
+		if(ray.boxIntersect(bBox, getAnchorAdjustedMatrix())) {
+			ret.hit = true;	
+			
+			Vector3 localCoordinate = Vector3(ray.origin.x,ray.origin.y,0);
+			Matrix4 inverse = getConcatenatedMatrix().Inverse();
+			localCoordinate = inverse * localCoordinate;			
+			
+			InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x, localCoordinate.y*yAdjust), timestamp);
+			dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEWHEEL_DOWN);
+												
+			if(blockMouseInput) {
+				ret.blocked = true;
+			}
+		}
+		
+		for(int i=children.size()-1; i>=0; i--) {
+			MouseEventResult childRes = children[i]->onMouseWheelDown(ray, timestamp);
+				if(childRes.hit)
+					ret.hit = true;
+				
+				if(childRes.blocked) {
+					ret.blocked = true;
+					break;
+				}			
+		}
+	}
 	return ret;
 }
