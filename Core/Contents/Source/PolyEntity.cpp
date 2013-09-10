@@ -77,6 +77,7 @@ void Entity::initEntity() {
 	bBox.z = 0.001;
 	mouseOver = false;
 	yAdjust = 1.0;
+	lastClickTicks = 0.0;
 }
 
 Entity *Entity::getEntityById(String id, bool recursive) const {
@@ -923,6 +924,13 @@ MouseEventResult Entity::onMouseDown(const Ray &ray, int mouseButton, int timest
 			InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x, localCoordinate.y*yAdjust), timestamp);
 			inputEvent->mouseButton = mouseButton;
 			dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEDOWN);
+			
+			if(timestamp - lastClickTicks < 400) {
+				InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x, localCoordinate.y*yAdjust), timestamp);
+				inputEvent->mouseButton = mouseButton;
+				dispatchEvent(inputEvent, InputEvent::EVENT_DOUBLECLICK);
+			}
+			lastClickTicks = timestamp;			
 						
 			if(blockMouseInput) {
 				ret.blocked = true;

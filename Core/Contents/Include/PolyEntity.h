@@ -715,6 +715,7 @@ namespace Polycode {
 			//@}		
 		protected:
 		
+			int lastClickTicks;
 			Number yAdjust;
 			std::vector<String> *tags;
 		
