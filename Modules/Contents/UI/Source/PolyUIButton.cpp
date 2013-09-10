@@ -94,7 +94,6 @@ void UIButton::Resize(Number width, Number height) {
 	matrixDirty = true;	
 	
 	labelXPos = floor((width-buttonLabel->getWidth())/2.0f) + labelOffsetX;
-	labelYPos = floor(height/2.0) + labelOffsetY;
 	buttonLabel->setPosition(labelXPos,labelYPos);
 	
 	UIElement::Resize(width, height);
