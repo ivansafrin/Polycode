@@ -65,8 +65,7 @@ bool PolycodeImageEditor::openFile(OSFileEntry filePath) {
 	bottomShape->setColor(0.0, 0.0, 0.0, 0.3);
 	bottomShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	addChild(bottomShape);
-		
-		
+			
 	editorImage = new UIRect(filePath.fullPath);
 	aspectRatio = ((Number)editorImage->getWidth()) / ((Number)editorImage->getHeight());
 	editorImage->setAnchorPoint(0.0, 0.0, 0.0);

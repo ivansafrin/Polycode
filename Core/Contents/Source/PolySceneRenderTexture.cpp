@@ -36,6 +36,7 @@ SceneRenderTexture::SceneRenderTexture(Scene *targetScene, Camera *targetCamera,
 
 	CoreServices::getInstance()->getRenderer()->createRenderTextures(&filterColorBufferTexture, &filterZBufferTexture, renderWidth, renderHeight, floatingPoint);
 	CoreServices::getInstance()->getSceneManager()->registerRenderTexture(this);
+	enabled = true;
 }
 
 void SceneRenderTexture::resizeRenderTexture(int newWidth, int newHeight) {

@@ -63,7 +63,9 @@ namespace Polycode {
 			* Returns the target camera.
 			*/						
 			Camera *getTargetCamera();	
-				
+						
+			bool enabled;
+			
 		protected:
 		
 			Texture *filterColorBufferTexture;

@@ -163,12 +163,12 @@ void OpenGLRenderer::Resize(int xRes, int yRes) {
 	viewportHeight = xRes;
 	glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
 	glClearDepth(1.0f);
-	
+	/*
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
 	resetViewport();
-	
+	*/
 	glMatrixMode(GL_MODELVIEW);
 	glLineWidth(1);
 	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

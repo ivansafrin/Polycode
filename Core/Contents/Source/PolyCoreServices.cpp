@@ -169,9 +169,6 @@ void CoreServices::Render() {
 
 	renderer->setPerspectiveMode();
 	sceneManager->renderVirtual();
-	if(renderer->doClearBuffer)
-		renderer->clearScreen();					
-
 	sceneManager->Render();
 	renderer->clearLights();
 }
