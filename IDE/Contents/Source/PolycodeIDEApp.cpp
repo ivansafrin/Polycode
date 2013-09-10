@@ -31,7 +31,7 @@ PolycodeClipboard *globalClipboard;
 
 
 PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
-	core = new POLYCODE_CORE(view, 1100, 700,false,true, 0, 0,90, -1);	
+	core = new POLYCODE_CORE(view, 1100, 700,false,true, 0, 0,60, -1);	
 //	core->pauseOnLoseFocus = true;
 	
 	CoreServices::getInstance()->getResourceManager()->reloadResourcesOnModify = true;
@@ -665,7 +665,7 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 				core->setFramerate(3);
 			break;		
 			case Core::EVENT_GAINED_FOCUS:
-				core->setFramerate(90);			
+				core->setFramerate(60);			
 			break;					
 			case Core::EVENT_CORE_RESIZE:
 				if(menuBar) {

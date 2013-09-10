@@ -370,13 +370,13 @@ Vector2Prop::Vector2Prop(String caption) : PropProp(caption, "Vector2") {
 
 void Vector2Prop::setPropWidth(Number width) {
 	labelX->setPosition(0, 6);
-	labelY->setPosition(((width-propContents->position.x-PROP_PADDING)/2.0), 6);	
+	labelY->setPosition(((width-propContents->getPosition().x-PROP_PADDING)/2.0), 6);	
 	
-	positionX->position.x = labelX->position.x + 20;
-	positionX->Resize(floor(((width-propContents->position.x-PROP_PADDING)/2.0)-25), positionX->getHeight());
+	positionX->position.x = labelX->getPosition().x + 20;
+	positionX->Resize(floor(((width-propContents->getPosition().x-PROP_PADDING)/2.0)-25), positionX->getHeight());
 
-	positionY->position.x = labelY->position.x + 20;
-	positionY->Resize(floor(((width-propContents->position.x-PROP_PADDING)/2.0)-25), positionY->getHeight());
+	positionY->position.x = labelY->getPosition().x + 20;
+	positionY->Resize(floor(((width-propContents->getPosition().x-PROP_PADDING)/2.0)-25), positionY->getHeight());
 
 }
 
@@ -538,8 +538,8 @@ SliderProp::SliderProp(String caption, Number min, Number max) : PropProp(captio
 }
 
 void SliderProp::setPropWidth(Number width) {
-	slider->Resize(width - propContents->position.x - PROP_PADDING - 50, slider->getHeight());
-	valueLabel->setPosition(width - propContents->position.x - PROP_PADDING - 30, 5);	
+	slider->Resize(width - propContents->getPosition().x - PROP_PADDING - 50, slider->getHeight());
+	valueLabel->setPosition(width - propContents->getPosition().x - PROP_PADDING - 30, 5);	
 }
 
 void SliderProp::handleEvent(Event *event) {
@@ -689,7 +689,7 @@ ComboProp::ComboProp(String caption) : PropProp(caption, "Combo") {
 }
 
 void ComboProp::setPropWidth(Number width) {
-	comboEntry->Resize(width - propContents->position.x - PROP_PADDING, comboEntry->getHeight());
+	comboEntry->Resize(width - propContents->getPosition().x - PROP_PADDING, comboEntry->getHeight());
 }
 
 void ComboProp::setPropData(PolycodeEditorPropActionData* data) {

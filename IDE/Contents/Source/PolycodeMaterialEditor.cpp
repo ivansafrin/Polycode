@@ -571,7 +571,7 @@ PostPreviewBox::PostPreviewBox() : UIElement() {
 	previewScene->addChild(previewPrimitive);
 	previewPrimitive->setMaterialByName("DefaultHDR");
 	previewPrimitive->setColorInt(0, 0, 255, 255);
-	previewPrimitive->rotation.yaw = 20;
+	previewPrimitive->setYaw(20);
 	previewPrimitive->setPosition(1.0, 1.0, -2.5);
 	
 	previewScene->getDefaultCamera()->setPosition(0,3.0,5);

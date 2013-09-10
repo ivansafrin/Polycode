@@ -118,7 +118,7 @@ bool Scene::isEnabled() {
 
 void Scene::Update() {
 	if(sceneType == SCENE_2D_TOPLEFT) {
-		rootEntity.position.y = -CoreServices::getInstance()->getCore()->getYRes();
+		rootEntity.setPositionY(-CoreServices::getInstance()->getCore()->getYRes());
 	}
 	rootEntity.doUpdates();
 }

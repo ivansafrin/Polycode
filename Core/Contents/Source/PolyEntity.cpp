@@ -418,26 +418,7 @@ void Entity::doUpdates() {
 	}	
 }
 
-void Entity::checkTransformSetters() {
-	if(_position != position) {
-		_position = position;
-		matrixDirty = true;
-	}
-
-	if(_scale != scale) {
-		_scale = scale;
-		matrixDirty = true;
-	}
-
-	if(_rotation != rotation) {
-		_rotation = rotation;
-		rebuildRotation();
-		matrixDirty = true;
-	}
-}
-
-void Entity::updateEntityMatrix() {	
-	checkTransformSetters();
+void Entity::updateEntityMatrix() {
 
 	if(matrixDirty)
 		rebuildTransformMatrix();
@@ -450,17 +431,17 @@ void Entity::updateEntityMatrix() {
 Vector3 Entity::getCompoundScale() const {
 	if(parentEntity != NULL) {
 		Vector3 parentScale = parentEntity->getCompoundScale();
-		return Vector3(scale.x * parentScale.x, scale.y * parentScale.y,scale.z * parentScale.z);
+		return Vector3(scale.x * parentScale.x, scale.y * parentScale.y, scale.z * parentScale.z);
 		
+	} else {
+		return scale;
 	}
-	else
-		return scale;	
 }
 
 
 Matrix4 Entity::getConcatenatedRollMatrix() const {
 	Quaternion q;
-	q.createFromAxisAngle(0.0f, 0.0f, 1.0f, _rotation.roll);
+	q.createFromAxisAngle(0.0f, 0.0f, 1.0f, rotation.roll);
 	Matrix4 transformMatrix = q.createMatrix();	
 	
 	if(parentEntity != NULL) 
@@ -614,7 +595,6 @@ Vector3 Entity::getScale() const {
 }
 
 Matrix4 Entity::getConcatenatedMatrixRelativeTo(Entity *relativeEntity) {
-	checkTransformSetters();
 	
 	if(matrixDirty)
 		rebuildTransformMatrix();
@@ -633,7 +613,6 @@ Matrix4 Entity::getAnchorAdjustedMatrix() {
 }
 
 Matrix4 Entity::getConcatenatedMatrix() {
-	checkTransformSetters();
 	if(matrixDirty)
 		rebuildTransformMatrix();
 
@@ -679,7 +658,7 @@ void Entity::setYaw(Number yaw) {
 
 
 void Entity::rebuildRotation() {
-	rotationQuat.fromAxes(_rotation.pitch, _rotation.yaw, _rotation.roll);
+	rotationQuat.fromAxes(rotation.pitch, rotation.yaw, rotation.roll);
 }
 
 void Entity::setEntityProp(const String& propName, const String& propValue) {

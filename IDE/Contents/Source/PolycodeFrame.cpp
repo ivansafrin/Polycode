@@ -187,15 +187,15 @@ void EditPoint::handleEvent(Event *event) {
 }
 
 void EditPoint::limitPoint(UIImage *point) {
-		if(point->position.x < 0.0)
-			point->position.x = 0.0;
-		if(point->position.x > 610.0)
-			point->position.x = 610.0;
+		if(point->getPosition().x < 0.0)
+			point->setPositionX(0.0);
+		if(point->getPosition().x > 610.0)
+			point->setPositionX(610.0);
 
-		if(point->position.y > 0.0)
-			point->position.y = 0.0;
-		if(point->position.y < -254.0)
-			point->position.y = -254.0;
+		if(point->getPosition().y > 0.0)
+			point->setPositionY(0.0);
+		if(point->getPosition().y < -254.0)
+			point->setPositionY(-254.0);
 
 }
 

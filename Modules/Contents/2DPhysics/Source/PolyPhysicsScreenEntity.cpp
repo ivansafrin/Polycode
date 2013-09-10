@@ -37,7 +37,7 @@ PhysicsScene2DEntity::PhysicsScene2DEntity(Entity *entity, b2World *world, Numbe
 	Vector3 entityScale = entity->getCompoundScale();
 	Matrix4 compoundMatrix = entity->getConcatenatedMatrix();
 	entity->ignoreParentMatrix = true;
-	entity->scale = entityScale;
+	entity->setScale(entityScale);
 	entityScale.x = fabs(entityScale.x);
 	entityScale.y = fabs(entityScale.y);
 	this->worldScale = worldScale;
@@ -47,7 +47,7 @@ PhysicsScene2DEntity::PhysicsScene2DEntity(Entity *entity, b2World *world, Numbe
 	// Create body definition---------------------------------------
 	b2BodyDef bodyDef;
 	bodyDef.position.Set(compoundMatrix.getPosition().x/worldScale, compoundMatrix.getPosition().y/worldScale);
-	bodyDef.angle = entity->rotation.roll*(PI/180.0f);	
+	bodyDef.angle = entity->getRoll()*(PI/180.0f);	
 	bodyDef.bullet = isSensor;	
 	bodyDef.fixedRotation = fixedRotation;	
 	if(isStatic)

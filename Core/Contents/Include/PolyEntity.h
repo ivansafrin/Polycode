@@ -670,11 +670,6 @@ namespace Polycode {
 						
 			bool enableScissor;	
 			Polycode::Rectangle scissorBox;			
-		
-			Vector3 position;
-			Vector3 scale;		
-			Rotation rotation;
-			
 			
 			bool editorOnly;
 	
@@ -719,8 +714,6 @@ namespace Polycode {
 			Number yAdjust;
 			std::vector<String> *tags;
 		
-			void checkTransformSetters();
-		
 			void *userData;
 		
 			std::vector<Entity*> children;
@@ -729,9 +722,9 @@ namespace Polycode {
 			
 			Number bBoxRadius;		
 		
-			Vector3 _position;
-			Vector3 _scale;		
-			Rotation _rotation;
+			Vector3 position;
+			Vector3 scale;		
+			Rotation rotation;
 	
 			Quaternion rotationQuat;
 			

@@ -665,7 +665,7 @@ void UITextInput::setSyntaxHighlighter(UITextInputSyntaxHighlighter *syntaxHighl
 void UITextInput::doMultilineResize() {
 
 	if(multiLine) {
-		int bufferOffset = -linesContainer->position.y/ ( lineHeight+lineSpacing);	
+		int bufferOffset = -linesContainer->getPosition().y/ ( lineHeight+lineSpacing);	
 		
 		int realLineOffset = -1;
 		if(bufferOffset > 0 && bufferOffset < wordWrapLines.size()) {
@@ -1590,7 +1590,7 @@ void UITextInput::showCurrentLineIfOffscreen() {
 	if(!multiLine)
 		return;
 		
-	int bufferOffset = -linesContainer->position.y/ ( lineHeight+lineSpacing);	
+	int bufferOffset = -linesContainer->getPosition().y/ ( lineHeight+lineSpacing);	
 	int heightInLines = (getHeight() / ( lineHeight+lineSpacing)) + 1;
 			
 	if(lines[actualLineOffset].wordWrapLineIndex > bufferOffset && lines[actualLineOffset].wordWrapLineIndex < bufferOffset + heightInLines) {
@@ -2395,7 +2395,7 @@ void UITextInput::readjustBuffer(int lineStart, int lineEnd) {
 		lineEnd = wordWrapLines.size()-1;
 	}
 
-	int bufferOffset = -linesContainer->position.y/ ( lineHeight+lineSpacing);	
+	int bufferOffset = -linesContainer->getPosition().y/ ( lineHeight+lineSpacing);	
 	Number bufferLineOffset = bufferOffset * ( lineHeight+lineSpacing);	
 
 	for(int i=0; i < bufferLines.size(); i++) {
