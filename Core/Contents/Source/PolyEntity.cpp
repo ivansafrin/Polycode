@@ -628,31 +628,37 @@ const Matrix4& Entity::getTransformMatrix() const {
 
 void Entity::Pitch(Number pitch) {
 	rotation.pitch += pitch;
+	rebuildRotation();	
 	matrixDirty = true;
 }
 
 void Entity::Yaw(Number yaw) {
 	rotation.yaw += yaw;
+	rebuildRotation();	
 	matrixDirty = true;
 }
 
 void Entity::Roll(Number roll) {
 	rotation.roll += roll;
+	rebuildRotation();	
 	matrixDirty = true;
 }
 
 void Entity::setRoll(Number roll) {
 	rotation.roll = roll;
+	rebuildRotation();	
 	matrixDirty = true;
 }
 
 void Entity::setPitch(Number pitch) {
 	rotation.pitch = pitch;
+	rebuildRotation();	
 	matrixDirty = true;
 }
 
 void Entity::setYaw(Number yaw) {
 	rotation.yaw = yaw;
+	rebuildRotation();
 	matrixDirty = true;
 }
 
