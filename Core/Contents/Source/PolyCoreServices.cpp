@@ -157,6 +157,7 @@ Core *CoreServices::getCore() {
 
 void CoreServices::setRenderer(Renderer *renderer) {
 	this->renderer = renderer;
+	sceneManager->setRenderer(renderer);
 }
 
 Renderer *CoreServices::getRenderer() {

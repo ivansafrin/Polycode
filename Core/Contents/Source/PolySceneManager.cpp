@@ -70,34 +70,38 @@ void SceneManager::addScene(Scene *newScene) {
 void SceneManager::updateRenderTextures(Scene *scene) {
 }
 
+void SceneManager::setRenderer(Renderer *renderer) {
+	this->renderer = renderer;
+}
+
 void SceneManager::renderVirtual() {
 	for(int i=0;i<renderTextures.size();i++) {
 		if(renderTextures[i]->enabled) {
-		CoreServices::getInstance()->getRenderer()->setViewportSize(renderTextures[i]->getTargetTexture()->getWidth(), renderTextures[i]->getTargetTexture()->getHeight());
-		CoreServices::getInstance()->getRenderer()->loadIdentity();
+		renderer->setViewportSize(renderTextures[i]->getTargetTexture()->getWidth(), renderTextures[i]->getTargetTexture()->getHeight());
+		renderer->loadIdentity();
 		if(renderTextures[i]->getTargetScene()->isVirtual())
 			renderTextures[i]->getTargetScene()->Update();
 						
 			if(renderTextures[i]->getTargetCamera()->hasFilterShader()) {
 				renderTextures[i]->getTargetCamera()->drawFilter(renderTextures[i]->getTargetTexture(), renderTextures[i]->getTargetTexture()->getWidth(), renderTextures[i]->getTargetTexture()->getHeight(), renderTextures[i]->getFilterColorBufferTexture(), renderTextures[i]->getFilterZBufferTexture());
 			} else {
-				CoreServices::getInstance()->getRenderer()->bindFrameBufferTexture(renderTextures[i]->getTargetTexture());
+				renderer->bindFrameBufferTexture(renderTextures[i]->getTargetTexture());
 				renderTextures[i]->getTargetScene()->Render(renderTextures[i]->getTargetCamera());
-				CoreServices::getInstance()->getRenderer()->unbindFramebuffers();		
+				renderer->unbindFramebuffers();		
 			}
 		}
 			
-		CoreServices::getInstance()->getRenderer()->clearScreen();
-		CoreServices::getInstance()->getRenderer()->loadIdentity();
+		renderer->clearScreen();
+		renderer->loadIdentity();
 	}
-	CoreServices::getInstance()->getRenderer()->setViewportSize(CoreServices::getInstance()->getRenderer()->getXRes(), CoreServices::getInstance()->getRenderer()->getYRes());
+	renderer->setViewportSize(renderer->getXRes(), renderer->getYRes());
 
 }
 
 void SceneManager::Render() {
 	for(int i=0;i<scenes.size();i++) {
 		if(scenes[i]->isEnabled() && !scenes[i]->isVirtual()) {
-			CoreServices::getInstance()->getRenderer()->loadIdentity();
+			renderer->loadIdentity();
 			Scene *scene = scenes[i];
 			if(scene->getActiveCamera()->hasFilterShader()) {
 				scene->getActiveCamera()->drawFilter();
@@ -105,7 +109,7 @@ void SceneManager::Render() {
 				scene->Render();
 			}
 		}
-		CoreServices::getInstance()->getRenderer()->loadIdentity();			
+		renderer->loadIdentity();			
 	}
 }
 

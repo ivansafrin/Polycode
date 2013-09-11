@@ -29,6 +29,7 @@ namespace Polycode {
 	
 	class Scene;
 	class SceneRenderTexture;
+	class Renderer;
 	
 	class _PolyExport SceneManager : public PolyBase {
 		public:
@@ -44,6 +45,8 @@ namespace Polycode {
 		void removeScene(Scene *scene);	
 		void registerRenderTexture(SceneRenderTexture *renderTexture);
 		void unregisterRenderTexture(SceneRenderTexture *renderTexture);
+
+		void setRenderer(Renderer *renderer);
 				
 		private:
 		
@@ -51,7 +54,8 @@ namespace Polycode {
 		
 		std::vector <Scene*> scenes;
 		std::vector <SceneRenderTexture*> renderTextures;
-			
+		
+		Renderer *renderer;
 	};
 
 }

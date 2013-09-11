@@ -451,12 +451,19 @@ Matrix4 Entity::getConcatenatedRollMatrix() const {
 }
 
 Vector2 Entity::getScreenPosition(Matrix4 projectionMatrix, Matrix4 cameraMatrix) {
-	Vector2 pos = CoreServices::getInstance()->getRenderer()->Project(cameraMatrix, projectionMatrix, getConcatenatedMatrix().getPosition());
-	return pos;
+	if(renderer){
+		return renderer->Project(cameraMatrix, projectionMatrix, getConcatenatedMatrix().getPosition());
+	} else {
+		return Vector2();
+	}
 }
 
 Vector2 Entity::getScreenPositionForMainCamera() {
-	return getScreenPosition(CoreServices::getInstance()->getRenderer()->getProjectionMatrix(), CoreServices::getInstance()->getRenderer()->getCameraMatrix());
+	if(renderer) {
+		return getScreenPosition(renderer->getProjectionMatrix(), renderer->getCameraMatrix());
+	} else {
+		return Vector2();
+	}
 }
 
 void Entity::transformAndRender() {
