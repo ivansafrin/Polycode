@@ -37,17 +37,13 @@ public:
 	void Resize(int x, int y);
 	
 protected:
-	
-	UIImage *grid;
-	
-	UIBox *bg;
-	
+		
 	Entity *anchor;
-	SceneLabel *editorLabel;
-	SceneLabel *editorLabel2;
-	SceneLabel *editorLabel3;
-	SceneLabel *editorLabel4;
-	SceneLabel *editorLabel5;	
+	UILabel *editorLabel;
+	UILabel *editorLabel2;
+	UILabel *editorLabel3;
+	UILabel *editorLabel4;
+	UILabel *editorLabel5;	
 };
 
 class PolycodeFontEditorFactory : public PolycodeEditorFactory {

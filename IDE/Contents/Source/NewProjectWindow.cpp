@@ -64,8 +64,8 @@ NewProjectWindow::NewProjectWindow() : UIWindow(L"Create New Project", 480, 280)
 		}
 	}
 	
-	SceneLabel *label2 = new SceneLabel(L"PROJECT NAME", 18, "section", Label::ANTIALIAS_FULL);
-	label2->color.a = 0.4;
+	UILabel *label2 = new UILabel(L"PROJECT NAME", 18, "section", Label::ANTIALIAS_FULL);
+	label2->color.a = 1.0;
 	addChild(label2);
 	label2->setPosition(padding+220, templateContainer->getPosition().y-2);		
 
@@ -73,8 +73,8 @@ NewProjectWindow::NewProjectWindow() : UIWindow(L"Create New Project", 480, 280)
 	addChild(projectNameInput);
 	projectNameInput->setPosition(label2->getPosition().x-6, label2->getPosition().y + 25);
 	
-	SceneLabel *label3 = new SceneLabel(L"PROJECT LOCATION", 18, "section", Label::ANTIALIAS_FULL);
-	label3->color.a = 0.4;
+	UILabel *label3 = new UILabel(L"PROJECT LOCATION", 18, "section", Label::ANTIALIAS_FULL);
+	label3->color.a = 1.0;
 	addChild(label3);
 	label3->setPosition(padding+220, templateContainer->getPosition().y+65);		
 	

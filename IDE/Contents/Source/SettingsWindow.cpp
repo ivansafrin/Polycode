@@ -28,9 +28,9 @@ SettingsWindow::SettingsWindow() : UIWindow(L"Settings", SETTINGS_WINDOW_WIDTH, 
 
 	closeOnEscape = true;
 
-	SceneLabel *label = new SceneLabel("TEXT EDITING", 22, "section", Label::ANTIALIAS_FULL);
+	UILabel *label = new UILabel("TEXT EDITING", 22, "section", Label::ANTIALIAS_FULL);
 	addChild(label);
-	label->color.a = 0.4;
+	label->color.a = 1.0;
 	label->setPosition(padding, 50);
 
 	useExternalTextEditorBox = new UICheckBox("Use external text editor", false);
@@ -47,9 +47,9 @@ SettingsWindow::SettingsWindow() : UIWindow(L"Settings", SETTINGS_WINDOW_WIDTH, 
 	externalTextEditorCommand->setPosition(padding, EDITOR_BROWSE_POS);
 	
 	
-	label = new SceneLabel("Syntax highlighting theme", 12);
+	label = new UILabel("Syntax highlighting theme", 12);
 	addChild(label);
-	label->color.a = 0.6;
+	label->color.a = 1.0;
 	label->setPosition(padding, EDITOR_BROWSE_POS + 35);
 	
 	syntaxThemeBox = new UIComboBox(globalMenu, 300);

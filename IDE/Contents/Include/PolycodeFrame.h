@@ -241,10 +241,10 @@ private:
 
 	OSFileEntry draggedFile;
 	Entity *dragEntity;
-	SceneLabel *dragLabel;
+	UILabel *dragLabel;
 	bool isDragging;
 	
-	SceneLabel *currentProjectTitle;
+	UILabel *currentProjectTitle;
 	UIComboBox *currentFileSelector;
 	
 	UIImage *welcomeImage;	

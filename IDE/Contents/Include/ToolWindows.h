@@ -59,7 +59,7 @@ class YesNoPopup : public UIWindow {
 		
 		String action;
 	
-		SceneLabel *captionLabel;
+		UILabel *captionLabel;
 	
 		Entity *buttonAnchor;
 		UIButton *cancelButton;
@@ -76,7 +76,7 @@ class YesNoCancelPopup : public UIWindow {
 		
 		String action;
 	
-		SceneLabel *captionLabel;
+		UILabel *captionLabel;
 	
 		Entity *buttonAnchor;
 		UIButton *cancelButton;

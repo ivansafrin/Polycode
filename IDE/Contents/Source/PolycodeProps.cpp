@@ -133,7 +133,7 @@ PropList::PropList(String caption) : UIElement() {
 	
 	addChild(bg2);
 
-	SceneLabel *label = new SceneLabel(caption, 18, "section", Label::ANTIALIAS_FULL);
+	UILabel *label = new UILabel(caption, 18, "section", Label::ANTIALIAS_FULL);
 	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	addChild(label);
 	label->setPosition(10, 3);
@@ -216,8 +216,8 @@ PropSheet::PropSheet(String caption, String type) : UIElement() {
 	bg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiSmallHeaderBgColor"));
 	bg->setAnchorPoint(-1.0, -1.0, 0.0);
 	
-	SceneLabel *label = new SceneLabel(caption, 18, "section", Label::ANTIALIAS_FULL);
-	label->color.a = 0.5;
+	UILabel *label = new UILabel(caption, 18, "section", Label::ANTIALIAS_FULL);
+	label->color.a = 1.0;
 	addChild(label);
 	label->setPosition(25, 3);	
 	
@@ -318,8 +318,8 @@ PropProp::PropProp(String caption, String type) : UIElement() {
 
 	suppressChangeEvent = false;
 	propType = type;
-	label = new SceneLabel(caption, 12);
-	label->color.a = 0.4;
+	label = new UILabel(caption, 12);
+	label->color.a = 1.0;
 	label->setPosition(0, 5);
 	addChild(label);
 	
@@ -337,13 +337,13 @@ PropProp::~PropProp() {
 
 Vector2Prop::Vector2Prop(String caption) : PropProp(caption, "Vector2") {
 
-	labelX = new SceneLabel("X:", 11);
-	labelX->color.a = 0.4;
+	labelX = new UILabel("X:", 11);
+	labelX->color.a = 1.0;
 	propContents->addChild(labelX);
 	labelX->setPosition(-20, 6);	
 
-	labelY = new SceneLabel("Y:", 11);
-	labelY->color.a = 0.4;
+	labelY = new UILabel("Y:", 11);
+	labelY->color.a = 1.0;
 	propContents->addChild(labelY);
 	labelY->setPosition(60, 6);	
 	
@@ -530,10 +530,10 @@ SliderProp::SliderProp(String caption, Number min, Number max) : PropProp(captio
 	slider->setPosition(5, 8);
 	propContents->addChild(slider);
 	
-	valueLabel = new SceneLabel("0.0", 10);
+	valueLabel = new UILabel("0.0", 10);
 	propContents->addChild(valueLabel);
 	valueLabel->setPosition(120, 5);
-	valueLabel->color.a = 0.6;
+	valueLabel->color.a = 1.0;
 	setHeight(30);
 }
 
@@ -769,10 +769,10 @@ BoolProp::~BoolProp() {
 
 SoundProp::SoundProp(String caption) : PropProp(caption, "Sound"){
 
-	soundFile = new SceneLabel("", 11);
+	soundFile = new UILabel("", 11);
 	soundFile->setPosition(0, 5);
 	propContents->addChild(soundFile);	
-	soundFile->color.a = 0.6;
+	soundFile->color.a = 1.0;
 
 	playButton = new UIButton("Play", 50);
 	propContents->addChild(playButton);
@@ -922,10 +922,10 @@ TextureProp::TextureProp(String caption) : PropProp(caption, "Texture"){
 	changeButton->setPosition(60, 5);
 	changeButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
-	textureLabel = new SceneLabel("", 12, "sans");
+	textureLabel = new UILabel("", 12, "sans");
 	propContents->addChild(textureLabel);
 	textureLabel->setPosition(-100, 32);
-	textureLabel->color.a = 0.3;
+	textureLabel->color.a = 1.0;
 		
 	setHeight(60);	
 }
@@ -2233,7 +2233,7 @@ void SceneEntityInstanceSheet::Update() {
 	}
 }
 
-SceneLabelSheet::SceneLabelSheet() : PropSheet("SCREEN LABEL", "SceneLabel") {
+UILabelSheet::UILabelSheet() : PropSheet("SCREEN LABEL", "UILabel") {
 	label = NULL;
 	
 	caption = new StringProp("Contents");
@@ -2260,7 +2260,7 @@ SceneLabelSheet::SceneLabelSheet() : PropSheet("SCREEN LABEL", "SceneLabel") {
 	refreshFonts();
 }
 
-void SceneLabelSheet::refreshFonts() {
+void UILabelSheet::refreshFonts() {
 	
 	FontManager *fontManager = CoreServices::getInstance()->getFontManager();
 	
@@ -2275,11 +2275,11 @@ void SceneLabelSheet::refreshFonts() {
 
 }
 
-SceneLabelSheet::~SceneLabelSheet() {
+UILabelSheet::~UILabelSheet() {
 
 }
 
-void SceneLabelSheet::handleEvent(Event *event) {
+void UILabelSheet::handleEvent(Event *event) {
 	if(!label)
 		return;
 
@@ -2324,7 +2324,7 @@ void SceneLabelSheet::handleEvent(Event *event) {
 	PropSheet::handleEvent(event);
 }
 
-void SceneLabelSheet::Update() {
+void UILabelSheet::Update() {
 	if(label) {
 		enabled = true;		
 		if(label != lastLabel) {

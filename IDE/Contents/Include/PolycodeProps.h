@@ -44,7 +44,7 @@ class PropProp : public UIElement {
 		virtual void setPropWidth(Number width) {}
 		
 		String propType;
-		SceneLabel *label;
+		UILabel *label;
 		Entity *propContents;				
 		
 		bool suppressChangeEvent;		
@@ -69,8 +69,8 @@ class Vector2Prop : public PropProp {
 		Vector2 lastData;
 		Vector2 currentData;	
 		
-		SceneLabel *labelX;
-		SceneLabel *labelY;		
+		UILabel *labelX;
+		UILabel *labelY;		
 };
 
 class SliderProp : public PropProp {
@@ -85,7 +85,7 @@ class SliderProp : public PropProp {
 		void setPropData(PolycodeEditorPropActionData* data);		
 				
 		UIHSlider *slider;
-		SceneLabel *valueLabel;
+		UILabel *valueLabel;
 		
 		Number lastValue;
 		Number currentValue;
@@ -266,7 +266,7 @@ class SoundProp : public PropProp {
 		void setPropData(PolycodeEditorPropActionData* data);
 		
 		Sound *previewSound;
-		SceneLabel *soundFile;		
+		UILabel *soundFile;		
 		UIButton *changeButton;
 		UIButton *playButton;	
 		
@@ -314,7 +314,7 @@ class TextureProp : public PropProp {
 				
 		UIRect *previewShape;
 		UIButton *changeButton;
-		SceneLabel *textureLabel;
+		UILabel *textureLabel;
 		
 		String lastData;
 		String currentData;
@@ -527,18 +527,18 @@ class EntityPropSheet : public PropSheet {
 		
 };
 
-class SceneLabelSheet : public PropSheet {
+class UILabelSheet : public PropSheet {
 	public:
-		SceneLabelSheet();
-		~SceneLabelSheet();
+		UILabelSheet();
+		~UILabelSheet();
 		
 		void refreshFonts();
 		
 		void handleEvent(Event *event);
 		void Update();
 				
-		SceneLabel *label;
-		SceneLabel *lastLabel;	
+		UILabel *label;
+		UILabel *lastLabel;	
 		
 		int lastSize;
 		String lastFont;

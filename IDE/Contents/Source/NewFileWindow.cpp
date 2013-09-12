@@ -56,8 +56,8 @@ NewFileWindow::NewFileWindow() : UIWindow(L"Create New File", 580, 280) {
 		}
 	}	
 	
-	SceneLabel *label2 = new SceneLabel(L"NEW FILE NAME (NO EXTENSION)", 18, "section", Label::ANTIALIAS_FULL);
-	label2->color.a = 0.4;
+	UILabel *label2 = new UILabel(L"NEW FILE NAME (NO EXTENSION)", 18, "section", Label::ANTIALIAS_FULL);
+	label2->color.a = 1.0;
 	label2->getLabel()->setColorForRange(Color(),0, 12);
 	label2->getLabel()->setColorForRange(Color(0.6, 0.6, 0.6, 1.0),12, 40);
 	label2->setText("NEW FILE NAME (NO EXTENSION)");

@@ -29,9 +29,9 @@ ExportProjectWindow::ExportProjectWindow() : UIWindow(L"Publish Project", 400, 3
 
 	closeOnEscape = true;
 
-	SceneLabel *label = new SceneLabel("LOCATION", 22, "section", Label::ANTIALIAS_FULL);
+	UILabel *label = new UILabel("LOCATION", 22, "section", Label::ANTIALIAS_FULL);
 	addChild(label);
-	label->color.a = 0.4;	
+	label->color.a = 1.0;	
 	label->setPosition(padding, 50);
 
 	projectLocationInput = new UITextInput(false, 420-(padding*2.0), 12);	
@@ -45,9 +45,9 @@ ExportProjectWindow::ExportProjectWindow() : UIWindow(L"Publish Project", 400, 3
 	locationSelectButton->setPosition(padding, projectLocationInput->getPosition().y+projectLocationInput->getHeight()+5);
 
 
-	label = new SceneLabel("PLATFORMS", 22, "section", Label::ANTIALIAS_FULL);
+	label = new UILabel("PLATFORMS", 22, "section", Label::ANTIALIAS_FULL);
 	addChild(label);
-	label->color.a = 0.4;	
+	label->color.a = 1.0;	
 	label->setPosition(padding, 150);
 
 	macCheckBox = new UICheckBox("MacOS X (Intel 64-bit)", false);
@@ -62,9 +62,9 @@ ExportProjectWindow::ExportProjectWindow() : UIWindow(L"Publish Project", 400, 3
 	addChild(linCheckBox);
 	linCheckBox->setPosition(padding, 225);
 
-	label = new SceneLabel("OPTIONS", 22, "section", Label::ANTIALIAS_FULL);
+	label = new UILabel("OPTIONS", 22, "section", Label::ANTIALIAS_FULL);
 	addChild(label);
-	label->color.a = 0.4;	
+	label->color.a = 1.0;	
 	label->setPosition(padding, 260);
 
 	compileCheckBox = new UICheckBox("Compile Scripts (experimental)", false);

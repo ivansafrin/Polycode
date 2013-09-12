@@ -39,7 +39,7 @@ class ProjectFontEntry : public UIElement {
 		void handleEvent(Event *event);
 		
 		UITextInput *fontNameInput;
-		SceneLabel *fontFileLabel;
+		UILabel *fontFileLabel;
 		
 		UIImageButton *removeButton;
 		

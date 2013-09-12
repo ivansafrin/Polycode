@@ -277,13 +277,13 @@ void EditCurve::setMode(unsigned int mode) {
 void EditCurve::Activate() {
 	pointsBase->visible = true;
 	pointsBase->enabled = true;
-	visMesh->color.a = 0.7;	
+	visMesh->color.a = 1.0;	
 }
 
 void EditCurve::Deactivate() {
 	pointsBase->visible = false;
 	pointsBase->enabled = false;
-	visMesh->color.a = 0.4;	
+	visMesh->color.a = 1.0;	
 }
 
 void EditCurve::Update() {
@@ -560,9 +560,9 @@ PolycodeFrame::PolycodeFrame() : UIElement() {
 	addChild(stopButton);
 	stopButton->setPosition(10,4);
 
-	currentProjectTitle = new SceneLabel("", 32, "section");
+	currentProjectTitle = new UILabel("", 32, "section");
 	addChild(currentProjectTitle);
-	currentProjectTitle->color.a = 0.4;
+	currentProjectTitle->color.a = 1.0;
 	currentProjectTitle->setPosition(70, 0);
 
 	currentFileSelector = new UIComboBox(globalMenu, 350);
@@ -623,13 +623,13 @@ PolycodeFrame::PolycodeFrame() : UIElement() {
 	aboutOKButton->setPosition(700, 420);
 	aboutOKButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
-	SceneLabel *versionLabel = new SceneLabel("version 0.8.2", 12, "mono");
+	UILabel *versionLabel = new UILabel("version 0.8.2", 12, "mono");
 	aboutWindow->addChild(versionLabel);
 	versionLabel->setPosition(20, 430);
-	versionLabel->color.a = 0.4;
+	versionLabel->color.a = 1.0;
 	
 	isDragging  = false;
-	dragLabel = new SceneLabel("NONE", 11, "sans");
+	dragLabel = new UILabel("NONE", 11, "sans");
 	dragLabel->setPosition(0,-15);
 	
 	dragEntity = new Entity();

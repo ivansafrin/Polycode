@@ -37,7 +37,6 @@ class PolycodeImageEditor : public PolycodeEditor {
 	void Resize(int x, int y);
 	
 	protected:
-		UIImage *grid;
 	
 		UIRect *editorImage;
 		

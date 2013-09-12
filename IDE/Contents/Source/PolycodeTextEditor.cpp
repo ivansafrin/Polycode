@@ -646,12 +646,12 @@ FindBar::FindBar() : UIElement() {
 	addChild(barBg);
 	setHeight(30);
 	
-	SceneLabel *findLabel = new SceneLabel("FIND", 18, "section");
+	UILabel *findLabel = new UILabel("FIND", 18, "section");
 	addChild(findLabel);
 	findLabel->setColor(1.0, 1.0, 1.0, 0.6);
 	findLabel->setPosition(10,3);
 
-	SceneLabel *replaceLabel = new SceneLabel("REPLACE", 18, "section");
+	UILabel *replaceLabel = new UILabel("REPLACE", 18, "section");
 	addChild(replaceLabel);
 	replaceLabel->setColor(1.0, 1.0, 1.0, 0.6);
 	replaceLabel->setPosition(200,3);

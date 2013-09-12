@@ -27,7 +27,6 @@ PolycodeImageEditor::PolycodeImageEditor() : PolycodeEditor(true){
 }
 
 PolycodeImageEditor::~PolycodeImageEditor() {
-	delete grid;
 	delete editorImage;
 	delete leftShape;
 	delete rightShape;
@@ -37,14 +36,6 @@ PolycodeImageEditor::~PolycodeImageEditor() {
 
 bool PolycodeImageEditor::openFile(OSFileEntry filePath) {
 	
-	grid = new UIImage("Images/editorGrid.png");
-	
-	addChild(grid);
-	grid->snapToPixels = true;
-	
-	grid->getImage()->getTexture()->clamp = false;
-	grid->getImage()->getTexture()->recreateFromImageData();	
-		
 	
 	leftShape = new UIRect(10,10);
 	leftShape->setColor(0.0, 0.0, 0.0, 0.3);
@@ -79,7 +70,6 @@ bool PolycodeImageEditor::openFile(OSFileEntry filePath) {
 void PolycodeImageEditor::Resize(int x, int y) {
 
 	editorImage->setPosition(x/2, y/2);
-	grid->getImage()->setImageCoordinates(0,0,x,y);	
 
 	if((y * 0.8) * aspectRatio > x * 0.8) {
 		editorImage->Resize((x * 0.8), (x * 0.8) / aspectRatio);	

@@ -61,9 +61,9 @@ AssetEntry::AssetEntry(String assetPath, String assetName, String extension) : U
 	
 	imageShape->setPosition(28, 10);
 	
-	nameLabel = new SceneLabel(assetName, 10);
+	nameLabel = new UILabel(assetName, 10);
 	addChild(nameLabel);
-	nameLabel->color.a = 0.5;
+	nameLabel->color.a = 1.0;
 	nameLabel->setAnchorPoint(0.0, 0.0, 0.0);
 	nameLabel->setPosition(60, 90);
 }

@@ -1,12 +1,13 @@
 <?xml version="1.0"?>
 <PolyConfig>
 	<uiDefaultFontName>sans</uiDefaultFontName>
-	<uiDefaultFontColor>0xe4e0e3ab</uiDefaultFontColor>
+	<uiDefaultFontColor>0x000000c8</uiDefaultFontColor>
 
-	<uiBgColor>0x322d2bff</uiBgColor>
-	<uiHeaderBgColor>0x262120ff</uiHeaderBgColor>
-	<uiSmallHeaderBgColor>0x2b2624ff</uiSmallHeaderBgColor>
-	<uiHeaderFontColor>0xe4e3e0ad</uiHeaderFontColor>
+	<uiBgColor>0xc8c8c8ff</uiBgColor>
+	<uiHeaderBgColor>0x616161ff</uiHeaderBgColor>
+	<uiSmallHeaderBgColor>0x868686ff</uiSmallHeaderBgColor>
+	<uiHeaderFontColor>0x000000c8</uiHeaderFontColor>
+	<uiSectionFontColor>0x00000080</uiSectionFontColor>
 
 	<uiTextInputFontName>sans</uiTextInputFontName>
 	<uiTextInputFontNameMultiLine>mono</uiTextInputFontNameMultiLine>
@@ -32,7 +33,7 @@
 	<uiTreeCellSkinR>3</uiTreeCellSkinR>
 	<uiTreeCellSkinB>3</uiTreeCellSkinB>
 	<uiTreeCellSkinL>3</uiTreeCellSkinL>
-	<uiTreeFontColor>0xe4e0e3c8</uiTreeFontColor>
+	<uiTreeFontColor>0x000000c8</uiTreeFontColor>
 	<uiTreeCellSelectorSkin>selector.png</uiTreeCellSelectorSkin>
 	<uiTreeCellSelectorSkinPadding>4</uiTreeCellSelectorSkinPadding>
 	<uiTreeCellSelectorSkinT>4</uiTreeCellSelectorSkinT>
@@ -53,7 +54,7 @@
 	<uiButtonSkin>button.png</uiButtonSkin>
 	<uiButtonFocusedSkin>buttonFocused.png</uiButtonFocusedSkin>
 	<uiButtonFontSize>12</uiButtonFontSize>	
-	<uiButtonFontColor>0xe4e0e3c8</uiButtonFontColor>
+	<uiButtonFontColor>0xffffffff</uiButtonFontColor>
 	<uiButtonLabelOffsetX>0</uiButtonLabelOffsetX>
 	<uiButtonLabelOffsetY>4</uiButtonLabelOffsetY>	
 	<uiButtonSkinT>12</uiButtonSkinT>
@@ -68,7 +69,7 @@
 	<uiWindowSkinL>17</uiWindowSkinL>
 	<uiWindowSkinPadding>15</uiWindowSkinPadding>		
 	<uiWindowTitleFont>sans</uiWindowTitleFont>
-	<uiWindowFontColor>0xe4e0e3c8</uiWindowFontColor>	
+	<uiWindowFontColor>0x000000c8</uiWindowFontColor>	
 	<uiWindowTitleFontSize>14</uiWindowTitleFontSize>
 	<uiWindowTitleX>15</uiWindowTitleX>	
 	<uiWindowTitleY>10</uiWindowTitleY>
@@ -107,13 +108,13 @@
 	<uiComboBoxBgImage>combobox_bg.png</uiComboBoxBgImage>
 	<uiComboBoxHeight>24</uiComboBoxHeight>
 	<uiComboBoxBgT>6</uiComboBoxBgT>
-	<uiComboBoxBgR>6</uiComboBoxBgR>
+	<uiComboBoxBgR>10</uiComboBoxBgR>
 	<uiComboBoxBgB>6</uiComboBoxBgB>
-	<uiComboBoxBgL>6</uiComboBoxBgL>
+	<uiComboBoxBgL>10</uiComboBoxBgL>
 	<uiComboBoxDropX>6</uiComboBoxDropX>
 	<uiComboBoxDropY>5</uiComboBoxDropY>
 	<uiComboBoxTextOffsetX>7</uiComboBoxTextOffsetX>
-	<uiComboBoxTextOffsetY>4</uiComboBoxTextOffsetY>		
+	<uiComboBoxTextOffsetY>5</uiComboBoxTextOffsetY>		
 
 
 	<uiMenuFont>sans</uiMenuFont>
@@ -136,10 +137,10 @@
 	<uiMenuSelectorPadding>3</uiMenuSelectorPadding>
 
 	<uiColorBoxFrameImage>colorboxFrame.png</uiColorBoxFrameImage>
-	<uiColorBoxFrameImageT>7</uiColorBoxFrameImageT>
-	<uiColorBoxFrameImageR>7</uiColorBoxFrameImageR>
-	<uiColorBoxFrameImageB>7</uiColorBoxFrameImageB>
-	<uiColorBoxFrameImageL>7</uiColorBoxFrameImageL>					
+	<uiColorBoxFrameImageT>10</uiColorBoxFrameImageT>
+	<uiColorBoxFrameImageR>10</uiColorBoxFrameImageR>
+	<uiColorBoxFrameImageB>10</uiColorBoxFrameImageB>
+	<uiColorBoxFrameImageL>10</uiColorBoxFrameImageL>					
 	<uiColorBoxBgImage>colorboxBg.png</uiColorBoxBgImage>
 	<uiColorBoxFrameInset>4</uiColorBoxFrameInset>
 

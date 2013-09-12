@@ -48,7 +48,7 @@ BackTraceEntry::BackTraceEntry(String fileName, int lineNumber, PolycodeProject 
 	
 	labelBg->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	
-	label = new SceneLabel(fileName+" on line "+String::IntToString(lineNumber), fontSize, fontName);
+	label = new UILabel(fileName+" on line "+String::IntToString(lineNumber), fontSize, fontName);
 	addChild(label);
 	label->setPosition(5,2);
 	
@@ -98,7 +98,7 @@ BackTraceWindow::BackTraceWindow() : UIElement() {
 	labelBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	addChild(labelBg);
 	
-	SceneLabel *label = new SceneLabel("CRASH STACK", 18, "section");
+	UILabel *label = new UILabel("CRASH STACK", 18, "section");
 	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	addChild(label);
 	label->setPosition(5,3);
@@ -172,7 +172,7 @@ ConsoleWindow::ConsoleWindow() : UIElement() {
 	labelBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	addChild(labelBg);
 	
-	SceneLabel *label = new SceneLabel("CONSOLE", 18, "section");
+	UILabel *label = new UILabel("CONSOLE", 18, "section");
 	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	addChild(label);
 	label->setPosition(35,3);

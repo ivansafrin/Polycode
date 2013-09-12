@@ -27,8 +27,6 @@ PolycodeFontEditor::PolycodeFontEditor() : PolycodeEditor(true){
 }
 
 PolycodeFontEditor::~PolycodeFontEditor() {
-	delete grid;
-	delete bg;
 	delete anchor;
 	delete editorLabel;
 	delete editorLabel2;
@@ -40,50 +38,33 @@ PolycodeFontEditor::~PolycodeFontEditor() {
 bool PolycodeFontEditor::openFile(OSFileEntry filePath) {
 	
 	CoreServices::getInstance()->getFontManager()->registerFont(filePath.fullPath, filePath.fullPath);
-	
-	grid = new UIImage("Images/editorGrid.png");
-	
-	addChild(grid);
-	grid->snapToPixels = true;
-	
-	grid->getImage()->getTexture()->clamp = false;
-	grid->getImage()->getTexture()->recreateFromImageData();	
-	
-//	bg = new UIRect(10,10);
-	bg = new UIBox("Images/fontBox.png", 29,9,9,9, 10,10);	
-	bg->setAnchorPoint(-1.0, -1.0, 0.0);
-	bg->setPosition(-50,-50);
-	
-	
+		
 	anchor = new Entity();
 	addChild(anchor);
-	anchor->addChild(bg);
 	anchor->snapToPixels = true;
 	
-	editorLabel = new SceneLabel(L"ABCDEFGHIJKLM", 48, filePath.fullPath, Label::ANTIALIAS_FULL);
+	editorLabel = new UILabel(L"ABCDEFGHIJKLM", 48, filePath.fullPath, Label::ANTIALIAS_FULL);
 	anchor->addChild(editorLabel);
-	editorLabel2 = new SceneLabel(L"NOPQRSTUVWXYZ", 48, filePath.fullPath, Label::ANTIALIAS_FULL);
+	editorLabel2 = new UILabel(L"NOPQRSTUVWXYZ", 48, filePath.fullPath, Label::ANTIALIAS_FULL);
 	editorLabel2->setPosition(0, 48);
 	editorLabel->setPosition((editorLabel2->getWidth()-editorLabel->getWidth())/2, 0);
 	anchor->addChild(editorLabel2);
-	editorLabel3 = new SceneLabel(L"abcdefghijklm", 48, filePath.fullPath, Label::ANTIALIAS_FULL);
+	editorLabel3 = new UILabel(L"abcdefghijklm", 48, filePath.fullPath, Label::ANTIALIAS_FULL);
 	editorLabel3->setPosition((editorLabel2->getWidth()-editorLabel3->getWidth())/2, 96);	
 	anchor->addChild(editorLabel3);
-	editorLabel4 = new SceneLabel(L"nopqrstuvwxyz", 48, filePath.fullPath, Label::ANTIALIAS_FULL);
+	editorLabel4 = new UILabel(L"nopqrstuvwxyz", 48, filePath.fullPath, Label::ANTIALIAS_FULL);
 	editorLabel4->setPosition((editorLabel2->getWidth()-editorLabel4->getWidth())/2, 144);		
 	anchor->addChild(editorLabel4);
-	editorLabel5 = new SceneLabel(L"1234567890", 48, filePath.fullPath, Label::ANTIALIAS_FULL);
+	editorLabel5 = new UILabel(L"1234567890", 48, filePath.fullPath, Label::ANTIALIAS_FULL);
 	editorLabel5->setPosition((editorLabel2->getWidth()-editorLabel5->getWidth())/2, 192);			
 	anchor->addChild(editorLabel5);
-
-	editorLabel->setColor(0,0,0,1);
-	editorLabel2->setColor(0,0,0,1);
-	editorLabel3->setColor(0,0,0,1);
-	editorLabel4->setColor(0,0,0,1);
-	editorLabel5->setColor(0,0,0,1);
 	
-	bg->resizeBox(editorLabel2->getWidth()+100, 192+48+100);
-	
+	Config *conf = CoreServices::getInstance()->getConfig();
+	editorLabel->color.setColorHexFromString(conf->getStringValue("Polycode", "uiDefaultFontColor"));
+	editorLabel2->color.setColorHexFromString(conf->getStringValue("Polycode", "uiDefaultFontColor"));
+	editorLabel3->color.setColorHexFromString(conf->getStringValue("Polycode", "uiDefaultFontColor"));
+	editorLabel4->color.setColorHexFromString(conf->getStringValue("Polycode", "uiDefaultFontColor"));
+	editorLabel5->color.setColorHexFromString(conf->getStringValue("Polycode", "uiDefaultFontColor"));					
 	anchor->setHeight(192+48);
 	anchor->setWidth(editorLabel2->getWidth());
 	
@@ -98,7 +79,6 @@ bool PolycodeFontEditor::openFile(OSFileEntry filePath) {
 
 void PolycodeFontEditor::Resize(int x, int y) {
 	anchor->setPosition((x-anchor->getWidth()) /2, (y-anchor->getHeight()) /2);
-	grid->getImage()->setImageCoordinates(0,0,x,y);
 	PolycodeEditor::Resize(x,y);	
 }
 

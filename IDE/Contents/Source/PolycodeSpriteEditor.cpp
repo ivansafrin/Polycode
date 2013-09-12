@@ -131,7 +131,7 @@ PolycodeSpriteEditor::PolycodeSpriteEditor() : PolycodeEditor(true){
 			
 	baseProps->propHeight = 180;
 	
-	SceneLabel *label = new SceneLabel("PREVIEW", 18, "section", Label::ANTIALIAS_FULL);
+	UILabel *label = new UILabel("PREVIEW", 18, "section", Label::ANTIALIAS_FULL);
 	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	addChild(label);
 	label->setPosition(390, 36);
@@ -140,8 +140,8 @@ PolycodeSpriteEditor::PolycodeSpriteEditor() : PolycodeEditor(true){
 	PropSheet *animationProps = new PropSheet("ANIMATIONS", "");
 	propList->addPropSheet(animationProps);
 
-	SceneLabel *animHelpLabel = new SceneLabel("Comma separated frames, ranges or repeats (e.g. 1,2,3-7,8x5)", 11);
-	animHelpLabel->color.a = 0.4;
+	UILabel *animHelpLabel = new UILabel("Comma separated frames, ranges or repeats (e.g. 1,2,3-7,8x5)", 11);
+	animHelpLabel->color.a = 1.0;
 	animationProps->addChild(animHelpLabel);
 	animHelpLabel->setPosition(5, 40);
 

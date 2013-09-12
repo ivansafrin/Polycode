@@ -24,10 +24,37 @@
 #include "PolyRenderer.h"
 #include "PolyCoreServices.h"
 #include "PolyTexture.h"
+#include "PolyConfig.h"
 
 using namespace Polycode;
 
 UIElement *UIElement::globalFocusedChild = NULL;
+
+UILabel::UILabel(const String& text, int size, const String& fontName, int amode) : UIElement() {
+
+	Config *conf = CoreServices::getInstance()->getConfig();	
+	label = new SceneLabel(text, size, fontName, amode);
+	label->color.setColorHexFromString(conf->getStringValue("Polycode", "uiDefaultFontColor"));
+	addChild(label);
+	bBox = label->bBox;
+}
+
+void UILabel::setText(const String& text) {
+	label->setText(text);
+	bBox = label->bBox;	
+}
+
+String UILabel::getText() {
+	return label->getText();
+}
+
+UILabel::~UILabel() {
+	delete label;
+}
+
+Label *UILabel::getLabel() {
+	return label->getLabel();
+}
 
 UIRect::UIRect(String fileName) : UIElement() {
 	texture = NULL;

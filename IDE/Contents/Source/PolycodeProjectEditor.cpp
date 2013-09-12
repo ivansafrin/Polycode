@@ -56,8 +56,8 @@ ProjectFontEntry::ProjectFontEntry(String fontPath, String fontName) : UIElement
 	
 	OSFileEntry entry = OSFileEntry(fontPath, OSFileEntry::TYPE_FILE);
 	
-	fontFileLabel = new SceneLabel(entry.name, 12);
-	fontFileLabel->color.a = 0.6;
+	fontFileLabel = new UILabel(entry.name, 12);
+	fontFileLabel->color.a = 1.0;
 	addChild(fontFileLabel);
 	fontFileLabel->setPosition(140, 3);
 	
@@ -101,7 +101,7 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	
-	SceneLabel *label = new SceneLabel("PROJECT SETTINGS", 18, "section", Label::ANTIALIAS_FULL);
+	UILabel *label = new UILabel("PROJECT SETTINGS", 18, "section", Label::ANTIALIAS_FULL);
 	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	
 	addChild(label);
@@ -114,8 +114,8 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	
 	Number lastYPos = 40;
 
-	label = new SceneLabel("PROJECT MODULES", 18, "section", Label::ANTIALIAS_FULL);
-	label->color.a = 0.4;
+	label = new UILabel("PROJECT MODULES", 18, "section", Label::ANTIALIAS_FULL);
+	label->color.setColorHexFromString(conf->getStringValue("Polycode", "uiSectionFontColor"));
 	moduleSettingsWindow->addChild(label);
 	label->setPosition(0, lastYPos);
 
@@ -137,8 +137,8 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	
 	lastYPos += 20;
 
-	label = new SceneLabel("PROJECT FONTS", 18, "section", Label::ANTIALIAS_FULL);
-	label->color.a = 0.4;
+	label = new UILabel("PROJECT FONTS", 18, "section", Label::ANTIALIAS_FULL);
+	label->color.setColorHexFromString(conf->getStringValue("Polycode", "uiSectionFontColor"));
 	moduleSettingsWindow->addChild(label);
 	label->setPosition(0, lastYPos);
 	
@@ -156,14 +156,13 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	mainSettingsWindow->setPosition(0,10);
 	addChild(mainSettingsWindow);
 	
-	SceneLabel *label2 = new SceneLabel(L"DEFAULT VIDEO OPTIONS", 18, "section", Label::ANTIALIAS_FULL);	
-	label2->setColor(1.0, 1.0, 1.0, 0.4);
+	UILabel *label2 = new UILabel(L"DEFAULT VIDEO OPTIONS", 18, "section", Label::ANTIALIAS_FULL);	
+	label2->color.setColorHexFromString(conf->getStringValue("Polycode", "uiSectionFontColor"));
 	mainSettingsWindow->addChild(label2);
 	label2->setPosition(padding, 40);		
 
 		
-	label2 = new SceneLabel(L"Width", fontSize, fontName, Label::ANTIALIAS_FULL);
-	label2->setColor(1.0, 1.0, 1.0, 0.5);
+	label2 = new UILabel(L"Width", fontSize, fontName, Label::ANTIALIAS_FULL);
 	mainSettingsWindow->addChild(label2);
 	label2->setPosition(padding + 6, 80);		
 	
@@ -172,8 +171,7 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	defaultWidthInput->setPosition(label2->getPosition().x-6, label2->getPosition().y+18);
 	defaultWidthInput->setNumberOnly(true);
 
-	label2 = new SceneLabel(L"Height", fontSize, fontName, Label::ANTIALIAS_FULL);
-	label2->setColor(1.0, 1.0, 1.0, 0.5);
+	label2 = new UILabel(L"Height", fontSize, fontName, Label::ANTIALIAS_FULL);
 	mainSettingsWindow->addChild(label2);
 	label2->setPosition(padding + 80 + 6, 80);		
 	
@@ -182,8 +180,7 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	defaultHeightInput->setPosition(label2->getPosition().x-6, label2->getPosition().y+18);
 	defaultHeightInput->setNumberOnly(true);
 	
-	label2 = new SceneLabel(L"Anti-aliasing", fontSize, fontName, Label::ANTIALIAS_FULL);
-	label2->setColor(1.0, 1.0, 1.0, 0.5);
+	label2 = new UILabel(L"Anti-aliasing", fontSize, fontName, Label::ANTIALIAS_FULL);
 	mainSettingsWindow->addChild(label2);
 	label2->setPosition(padding + 160 + 6, 80);		
 	
@@ -194,8 +191,7 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	aaLevelComboBox->addComboItem("6x MSAA");			
 	aaLevelComboBox->setPosition(label2->getPosition().x-6, label2->getPosition().y+18);
 
-	label2 = new SceneLabel(L"Texture filtering mode:", fontSize, fontName, Label::ANTIALIAS_FULL);
-	label2->setColor(1.0, 1.0, 1.0, 0.5);
+	label2 = new UILabel(L"Texture filtering mode:", fontSize, fontName, Label::ANTIALIAS_FULL);
 	mainSettingsWindow->addChild(label2);
 	label2->setPosition(padding + 6, defaultHeightInput->getPosition().y+30);		
 	
@@ -205,8 +201,7 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	texFilteringComboBox->setPosition(label2->getPosition().x - 6, label2->getPosition().y+18);
 	
 
-	label2 = new SceneLabel(L"Anisotropic filtering:", fontSize, fontName, Label::ANTIALIAS_FULL);
-	label2->setColor(1.0, 1.0, 1.0, 0.5);	
+	label2 = new UILabel(L"Anisotropic filtering:", fontSize, fontName, Label::ANTIALIAS_FULL);	
 	mainSettingsWindow->addChild(label2);
 	label2->setPosition(padding + 6, texFilteringComboBox->getPosition().y+30);		
 	
@@ -219,8 +214,7 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	afLevelComboBox->addComboItem("16x Anisotropic Filtering");			
 	afLevelComboBox->setPosition(label2->getPosition().x-6, label2->getPosition().y+18);
 
-	label2 = new SceneLabel(L"Framerate", fontSize, fontName, Label::ANTIALIAS_FULL);
-	label2->setColor(1.0, 1.0, 1.0, 0.5);
+	label2 = new UILabel(L"Framerate", fontSize, fontName, Label::ANTIALIAS_FULL);
 	mainSettingsWindow->addChild(label2);
 	label2->setPosition(padding + 6, afLevelComboBox->getPosition().y+30);		
 	
@@ -233,14 +227,13 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	vSyncCheckBox->setPosition(label2->getPosition().x + 80, label2->getPosition().y+18);
 	mainSettingsWindow->addChild(vSyncCheckBox);
 	
-	label2 = new SceneLabel(L"STARTUP OPTIONS", 18, "section", Label::ANTIALIAS_FULL);	
-	label2->setColor(1.0, 1.0, 1.0, 0.4);
+	label2 = new UILabel(L"STARTUP OPTIONS", 18, "section", Label::ANTIALIAS_FULL);	
+	label2->color.setColorHexFromString(conf->getStringValue("Polycode", "uiSectionFontColor"));
 	mainSettingsWindow->addChild(label2);
 	label2->setPosition(padding, vSyncCheckBox->getPosition().y+vSyncCheckBox->getHeight()+20);		
 	
 	
-	label2 = new SceneLabel(L"Entry point file", fontSize, fontName, Label::ANTIALIAS_FULL);
-	label2->setColor(1.0, 1.0, 1.0, 0.5);	
+	label2 = new UILabel(L"Entry point file", fontSize, fontName, Label::ANTIALIAS_FULL);
 	mainSettingsWindow->addChild(label2);
 	label2->setPosition(padding + 6, vSyncCheckBox->getPosition().y+80);		
 	
@@ -253,8 +246,7 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	mainSettingsWindow->addChild(aaLevelComboBox);		
 	mainSettingsWindow->addChild(texFilteringComboBox);	
 
-	label2 = new SceneLabel(L"Background color:", fontSize, fontName, Label::ANTIALIAS_FULL);
-	label2->setColor(1.0, 1.0, 1.0, 0.5);
+	label2 = new UILabel(L"Background color:", fontSize, fontName, Label::ANTIALIAS_FULL);
 	mainSettingsWindow->addChild(label2);
 	label2->setPosition(padding, entryPointInput->getPosition().y+entryPointInput->getHeight()+10);		
 

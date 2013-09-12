@@ -521,7 +521,7 @@ PostPreviewBox::PostPreviewBox() : UIElement() {
 	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));	
 
-	SceneLabel *label = new SceneLabel("POST PREVIEW", 18, "section", Label::ANTIALIAS_FULL);
+	UILabel *label = new UILabel("POST PREVIEW", 18, "section", Label::ANTIALIAS_FULL);
 	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	addChild(label);
 	label->setPosition(10, 3);
@@ -597,7 +597,7 @@ PostPreviewBox::PostPreviewBox() : UIElement() {
 	addChild(rotateCheckBox);
 	rotateCheckBox->setPosition(150, 2);
 
-	label = new SceneLabel("EXPOSURE", 18, "section", Label::ANTIALIAS_FULL);
+	label = new UILabel("EXPOSURE", 18, "section", Label::ANTIALIAS_FULL);
 	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	addChild(label);
 	label->setPosition(270, 3);
@@ -608,7 +608,7 @@ PostPreviewBox::PostPreviewBox() : UIElement() {
 	cameraExposureInput->setText(String::NumberToString(previewScene->getDefaultCamera()->getExposureLevel()));	
 	cameraExposureInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 
-	label = new SceneLabel("LIGHT INT.", 18, "section", Label::ANTIALIAS_FULL);
+	label = new UILabel("LIGHT INT.", 18, "section", Label::ANTIALIAS_FULL);
 	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	addChild(label);
 	label->setPosition(430, 3);
@@ -692,7 +692,7 @@ MaterialPreviewBox::MaterialPreviewBox() : UIElement() {
 	if(previewBg->getLocalShaderOptions()) {
 	previewBg->getLocalShaderOptions()->addTexture("diffuse", tex);
 	}
-	previewScene->addChild(previewBg);
+//	previewScene->addChild(previewBg);
 	
 	previewScene->clearColor.setColor(0.1, 0.1, 0.1, 0.0);	
 	previewScene->ambientColor.setColor(0.2, 0.2, 0.2, 1.0);
@@ -746,7 +746,7 @@ MaterialPreviewBox::MaterialPreviewBox() : UIElement() {
 	
 	shapeSelector = new UIImage("Images/small_selector.png");
 	previewBase->addChild(shapeSelector);
-	shapeSelector->color.a = 0.4;
+	shapeSelector->color.a = 1.0;
 	
 	shapeSwitches.push_back(new UIImageButton("Images/torus_icon.png"));
 	shapeSwitches.push_back(new UIImageButton("Images/sphere_icon.png"));

@@ -77,7 +77,7 @@ TextInputPopup::~TextInputPopup() {
 
 YesNoPopup::YesNoPopup() : UIWindow(L"", 300, 80) {
 	
-	captionLabel = new SceneLabel("This is a caption", 12);	
+	captionLabel = new UILabel("This is a caption", 12);	
 	addChild(captionLabel);
 	captionLabel->setPosition(padding, 35);
 		
@@ -133,7 +133,7 @@ YesNoPopup::~YesNoPopup() {
 
 YesNoCancelPopup::YesNoCancelPopup() : UIWindow(L"", 300, 80) {
 	
-	captionLabel = new SceneLabel("This is a caption", 12);	
+	captionLabel = new UILabel("This is a caption", 12);	
 	addChild(captionLabel);
 	captionLabel->setPosition(padding, 35);
 		

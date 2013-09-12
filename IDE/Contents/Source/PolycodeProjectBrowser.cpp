@@ -31,7 +31,7 @@ PolycodeProjectBrowser::PolycodeProjectBrowser() : UIElement() {
 	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	
-	SceneLabel *label = new SceneLabel("PROJECT BROWSER", 18, "section", Label::ANTIALIAS_FULL);
+	UILabel *label = new UILabel("PROJECT BROWSER", 18, "section", Label::ANTIALIAS_FULL);
 	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	
 	addChild(label);

@@ -62,7 +62,7 @@ class BackTraceEntry : public UIElement {
 		unsigned int lineNumber;
 		
 		UIRect *labelBg;	
-		SceneLabel *label;
+		UILabel *label;
 };
 
 class BackTraceWindow : public UIElement {

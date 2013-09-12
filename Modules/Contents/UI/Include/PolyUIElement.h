@@ -24,6 +24,7 @@
 #include "PolyGlobals.h"
 #include "PolyEntity.h"
 #include "PolySceneImage.h"
+#include "PolySceneLabel.h"
 
 namespace Polycode {
 	/*
@@ -103,6 +104,18 @@ namespace Polycode {
 			Mesh *rectMesh;
 			Texture *texture;
 			
+	};
+	
+	class _PolyExport UILabel : public UIElement {
+		public:
+			UILabel(const String& text, int size, const String& fontName = "sans", int amode = 0);			
+			void setText(const String& text);
+			Label *getLabel();
+			String getText();
+			
+			~UILabel();			
+		protected:
+			SceneLabel *label;
 	};
 
 	

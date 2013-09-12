@@ -45,7 +45,7 @@ UIMenuItem::UIMenuItem(String label, String _id, void *data, Number comboWidth, 
 	itemLabel = new SceneLabel(label, fontSize, fontName);
 	itemLabel->setPosition(paddingX, floor(((comboHeight/2.0) - itemLabel->getHeight()/2.0) + paddingY));
 	addChild(itemLabel);
-	
+	itemLabel->color.setColorHexFromString(conf->getStringValue("Polycode", "uiDefaultFontColor"));
 	this->_id = _id;
 	this->data = data;
 }
