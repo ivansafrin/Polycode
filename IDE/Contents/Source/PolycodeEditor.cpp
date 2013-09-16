@@ -24,6 +24,7 @@
 
 extern PolycodeClipboard *globalClipboard;
 
+
 PolycodeEditorFactory::PolycodeEditorFactory() {
 	
 }

@@ -127,6 +127,9 @@ protected:
 	UIMenuBar *menuBar;
 	
 private:
+
+	std::vector<String> projectsToOpen;
+
 	void doCloseProject();
 	void doCloseFiles(std::vector<PolycodeEditor*> editors);
 	

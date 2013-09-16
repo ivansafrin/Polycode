@@ -151,6 +151,13 @@ class EditorHolder : public UIElement {
 		
 };
 
+class PolycodeEditorContainer : public UIElement {
+	public:
+		PolycodeEditorContainer();
+		~PolycodeEditorContainer();
+};
+
+
 class PolycodeFrame : public UIElement {
 public:
 	

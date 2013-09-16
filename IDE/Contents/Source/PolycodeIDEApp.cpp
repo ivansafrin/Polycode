@@ -58,16 +58,22 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	CoreServices::getInstance()->getResourceManager()->addArchive("Physics3D.pak");
 	CoreServices::getInstance()->getResourceManager()->addArchive("UI.pak");
 			
-	CoreServices::getInstance()->getConfig()->loadConfig("Polycode", "UIThemes/default/theme.xml");
-	CoreServices::getInstance()->getResourceManager()->addArchive("UIThemes/default/");
-	CoreServices::getInstance()->getResourceManager()->addArchive("Images/");	
-
 	CoreServices::getInstance()->getFontManager()->registerFont("section", "Fonts/RobotoCondensed-Bold.ttf");
 
-	CoreServices::getInstance()->getRenderer()->clearColor.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiBgColor"));
 
 //	CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_LINEAR);
 	CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_NEAREST);
+	
+	loadConfigFile();	
+
+	String themeName = CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiTheme");
+	
+	CoreServices::getInstance()->getConfig()->loadConfig("Polycode", "UIThemes/"+themeName+"/theme.xml");
+	CoreServices::getInstance()->getResourceManager()->addArchive("UIThemes/"+themeName+"/");
+	CoreServices::getInstance()->getResourceManager()->addArchive("Images/");	
+
+	CoreServices::getInstance()->getRenderer()->clearColor.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiBgColor"));
+
 	
 	willRunProject = false;
 
@@ -126,6 +132,13 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	
 	frame->Resize(core->getXRes(), core->getYRes());	
 
+	for(int i=0; i < projectsToOpen.size(); i++) {
+		PolycodeProject* project = projectManager->openProject(projectsToOpen[i]);
+		if(project) {
+			OSFileEntry projectEntry =	OSFileEntry(project->getProjectFile(), OSFileEntry::TYPE_FILE);
+			projectManager->setActiveProject(project);
+		}
+	}
 	
 	debugger = new PolycodeRemoteDebugger(projectManager);
 	frame->console->setDebugger(debugger);
@@ -140,7 +153,7 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 		
 	screen->addChild(globalMenu);	
 				
-	loadConfigFile();
+	frame->settingsWindow->updateUI();
 	frame->console->applyTheme();
 
 #ifdef USE_POLYCODEUI_MENUBAR
@@ -903,6 +916,7 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 			if(event->getEventCode() == UIEvent::OK_EVENT) {
 				config->setStringValue("Polycode", "useExternalTextEditor", settingsWindow->useExternalTextEditorBox->isChecked() ? "true" : "false");
 				config->setStringValue("Polycode", "externalTextEditorCommand", settingsWindow->externalTextEditorCommand->getText());
+				config->setStringValue("Polycode", "uiTheme", settingsWindow->uiThemeBox->getSelectedItem()->label);
 			
 				frame->hideModal();
 			}
@@ -977,6 +991,8 @@ void PolycodeIDEApp::saveConfigFile() {
 	configFile.root.name = "config";
 	configFile.root.addChild("open_projects");
 	configFile.root.addChild("syntax_theme", globalSyntaxTheme->name);
+	configFile.root.addChild("ui_theme", config->getStringValue("Polycode", "uiTheme"));
+	
 	for(int i=0; i < projectManager->getProjectCount(); i++) {
 		PolycodeProject *project = projectManager->getProjectByIndex(i);		
 		ObjectEntry *projectEntry = configFile.root["open_projects"]->addChild("project");
@@ -1007,31 +1023,36 @@ void PolycodeIDEApp::loadConfigFile() {
 #else
 	configFile.loadFromXML(core->getUserHomeDirectory()+"/.polycode/config.xml");
 #endif	
+
+	Config *config = CoreServices::getInstance()->getConfig();
+
 	globalSyntaxTheme = new SyntaxHighlightTheme();
+	
+	String uiThemeName = "default";	
+	ObjectEntry *uiTheme = configFile.root["ui_theme"];
+	if(uiTheme) {
+		uiThemeName = uiTheme->stringVal;
+	}	
+	config->setStringValue("Polycode", "uiTheme", uiThemeName);
+	
 	String themeName = "monokai";
 	ObjectEntry *syntaxTheme = configFile.root["syntax_theme"];
 	if(syntaxTheme) {
 		themeName = syntaxTheme->stringVal;
 	}
 	globalSyntaxTheme->loadFromFile(themeName);
-	
+
 	if(configFile.root["open_projects"]) {
 		ObjectEntry *projects = configFile.root["open_projects"];
 		if(projects) {
 			for(int i=0; i < projects->length; i++) {
 				ObjectEntry *entry = (*(*projects)[i])["path"];
 				if(entry) {
-					PolycodeProject* project = projectManager->openProject(entry->stringVal);
-					if(project) {
-						OSFileEntry projectEntry =	OSFileEntry(project->getProjectFile(), OSFileEntry::TYPE_FILE);
-						projectManager->setActiveProject(project);
-					}
+					projectsToOpen.push_back(entry->stringVal);
 				}
 			}
 		}
 	}
-	
-	Config *config = CoreServices::getInstance()->getConfig();
 
 	if(configFile.root["settings"]) {
 		ObjectEntry *settings = configFile.root["settings"];
@@ -1053,7 +1074,6 @@ void PolycodeIDEApp::loadConfigFile() {
 		config->setStringValue("Polycode","useExternalTextEditor", "false");
 		config->setStringValue("Polycode", "externalTextEditorCommand", "");
 	}
-	frame->settingsWindow->updateUI();
 }
 
 

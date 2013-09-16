@@ -53,6 +53,7 @@ class PolycodeEditorAction  {
 		PolycodeEditorActionData *afterData;		
 };
 
+
 class PolycodeEditor : public UIElement, public ClipboardProvider { 
 public:
 	PolycodeEditor(bool _isReadOnly);

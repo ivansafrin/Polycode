@@ -70,6 +70,33 @@ SettingsWindow::SettingsWindow() : UIWindow(L"Settings", SETTINGS_WINDOW_WIDTH, 
 	addChild(browseButton);
 	browseButton->setPosition(SETTINGS_WINDOW_WIDTH - (2*padding + BUTTON_WIDTH/2), EDITOR_BROWSE_POS);
 	
+	
+	label = new UILabel("GENERAL", 22, "section", Label::ANTIALIAS_FULL);
+	addChild(label);
+	label->color.a = 1.0;
+	label->setPosition(padding, 200);
+
+	label = new UILabel("UI theme (requires restart)", 12);
+	addChild(label);
+	label->color.a = 1.0;
+	label->setPosition(padding, 235);
+
+	uiThemeBox = new UIComboBox(globalMenu, 300);
+	addChild(uiThemeBox);
+	uiThemeBox->setPosition(padding, 255);
+	uiThemeBox->addEventListener(this, UIEvent::CHANGE_EVENT);
+	
+	std::vector<OSFileEntry> uiThemes = OSBasics::parseFolder(CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory() + "/UIThemes", false);
+	
+	for(int i=0; i < uiThemes.size(); i++) {
+		if(uiThemes[i].type == OSFileEntry::TYPE_FOLDER) {
+			uiThemeBox->addComboItem(uiThemes[i].name);
+			if(uiThemes[i].name == CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiTheme")) {
+				uiThemeBox->setSelectedIndex(i);
+			}
+		}
+	}
+	
 
 	cancelButton = new UIButton("Cancel", BUTTON_WIDTH);
 	cancelButton->addEventListener(this, UIEvent::CLICK_EVENT);
@@ -150,6 +177,12 @@ void SettingsWindow::updateUI() {
 	for(int i=0; i < syntaxThemeBox->getNumItems(); i++) {
 		if(globalSyntaxTheme->name == syntaxThemeBox->getItemAtIndex(i)->label) {
 			syntaxThemeBox->setSelectedIndex(i);
+		} 
+	}
+
+	for(int i=0; i < uiThemeBox->getNumItems(); i++) {
+		if(config->getStringValue("Polycode", "uiTheme") == uiThemeBox->getItemAtIndex(i)->label) {
+			uiThemeBox->setSelectedIndex(i);
 		} 
 	}
 	

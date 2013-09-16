@@ -692,7 +692,7 @@ MaterialPreviewBox::MaterialPreviewBox() : UIElement() {
 	if(previewBg->getLocalShaderOptions()) {
 	previewBg->getLocalShaderOptions()->addTexture("diffuse", tex);
 	}
-//	previewScene->addChild(previewBg);
+	previewScene->addChild(previewBg);
 	
 	previewScene->clearColor.setColor(0.1, 0.1, 0.1, 0.0);	
 	previewScene->ambientColor.setColor(0.2, 0.2, 0.2, 1.0);

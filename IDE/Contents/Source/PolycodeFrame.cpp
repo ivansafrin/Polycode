@@ -28,6 +28,14 @@ PolycodeFrame *globalFrame;
 
 extern UIGlobalMenu *globalMenu;
 
+PolycodeEditorContainer::PolycodeEditorContainer() {
+
+}
+
+PolycodeEditorContainer::~PolycodeEditorContainer() {
+
+}
+
 EditPoint::EditPoint(BezierPoint *point, unsigned int type) : Entity() {
 	this->point = point;
 	this->type = type;
