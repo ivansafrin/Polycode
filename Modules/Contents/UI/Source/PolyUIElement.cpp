@@ -34,7 +34,7 @@ UILabel::UILabel(const String& text, int size, const String& fontName, int amode
 
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	label = new SceneLabel(text, size, fontName, amode);
-	label->color.setColorHexFromString(conf->getStringValue("Polycode", "uiDefaultFontColor"));
+	color.setColorHexFromString(conf->getStringValue("Polycode", "uiDefaultFontColor"));
 	addChild(label);
 	bBox = label->bBox;
 }

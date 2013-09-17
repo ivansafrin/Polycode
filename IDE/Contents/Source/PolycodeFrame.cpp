@@ -570,7 +570,7 @@ PolycodeFrame::PolycodeFrame() : UIElement() {
 
 	currentProjectTitle = new UILabel("", 32, "section");
 	addChild(currentProjectTitle);
-	currentProjectTitle->color.a = 1.0;
+	currentProjectTitle->setColor(1.0, 1.0, 1.0, 1.0);
 	currentProjectTitle->setPosition(70, 0);
 
 	currentFileSelector = new UIComboBox(globalMenu, 350);
