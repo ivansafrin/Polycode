@@ -67,12 +67,9 @@ namespace Polycode {
 			SceneLabel *titleLabel;
 		
 			Font *font;
-			Tween *windowTween;
 			UIImageButton *closeBtn;
 			UIBox *windowRect;
 			UIRect *titlebarRect;
-		
-			bool tweenClosing;
 			void resetTween();
 	};
 }

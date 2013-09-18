@@ -28,6 +28,8 @@ PolycodeFrame *globalFrame;
 
 extern UIGlobalMenu *globalMenu;
 
+EditorHolder *activeEditorHolder = NULL;
+
 EditPoint::EditPoint(BezierPoint *point, unsigned int type) : Entity() {
 	this->point = point;
 	this->type = type;
@@ -505,18 +507,18 @@ EditorHolder::EditorHolder(PolycodeEditorManager *editorManager, EditorHolder *p
 	mergeSplitButton = new UIImageButton("Images/editor_mergesplit.png");
 	holderBar->addChild(mergeSplitButton);
 	mergeSplitButton->addEventListener(this, UIEvent::CLICK_EVENT);	
-	
-	
+		
 	closeFileButton = new UIImageButton("Images/remove_icon.png");
 	holderBar->addChild(closeFileButton);
 	closeFileButton->setPosition(10, 8);
 	closeFileButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
-	
 	currentFileSelector = new UIComboBox(globalMenu, 350);
 	currentFileSelector->addEventListener(this, UIEvent::CHANGE_EVENT);
 	holderBar->addChild(currentFileSelector);
 	currentFileSelector->setPosition(30, 3);
+
+	addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 			
 	vSizer = NULL;
 	hSizer = NULL;
@@ -529,8 +531,23 @@ EditorHolder::EditorHolder(PolycodeEditorManager *editorManager, EditorHolder *p
 	initialUpdate = true;
 	updateFileSelector();
 	
-	editorToMerge = NULL;
+	editorToMerge = NULL;	
 	
+	isActive = false;
+}
+
+void EditorHolder::setActive(bool val) {
+	isActive = val;
+	if(val) {	
+		headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiAccentColor"));
+		if(activeEditorHolder && activeEditorHolder != this) {
+			activeEditorHolder->setActive(false);
+		}
+		activeEditorHolder = this;
+		editorManager->setCurrentEditor(currentEditor);
+	} else {
+		headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
+	}
 }
 
 void EditorHolder::updateFileSelector() {
@@ -601,6 +618,10 @@ void EditorHolder::setEditor(PolycodeEditor *newEditor) {
 	}
 	updateFileSelector();
 	Resize(getWidth(), getHeight());
+	
+	if(isActive) {
+		editorManager->setCurrentEditor(currentEditor);	
+	}
 }
 
 PolycodeEditor *EditorHolder::getEditor() {
@@ -608,15 +629,25 @@ PolycodeEditor *EditorHolder::getEditor() {
 }
 
 void EditorHolder::handleEvent(Event *event) {
-	if(event->getDispatcher() == vSplitButton) {
+
+	if(event->getDispatcher() == this) {
+		if(holderBar->visible) {
+			setActive(true);
+		}
+	} else if(event->getDispatcher() == vSplitButton) {
 		holderBar->visible = false;
 		holderBar->enabled = false;
 		
 		vSizer = new UIVSizer(getWidth(), getHeight(), getHeight()/2.0, true);
 		addChild(vSizer);
 		firstChildHolder = new EditorHolder(editorManager, this);
-		vSizer->addTopChild(firstChildHolder);
+		firstChildHolder->addEventListener(this, UIEvent::CLOSE_EVENT);
+		vSizer->addTopChild(firstChildHolder);		
+		if(isActive) {
+			firstChildHolder->setActive(true);
+		}		
 		secondChildHolder = new EditorHolder(editorManager, this);
+		secondChildHolder->addEventListener(this, UIEvent::CLOSE_EVENT);
 		vSizer->addBottomChild(secondChildHolder);
 		
 		
@@ -634,9 +665,14 @@ void EditorHolder::handleEvent(Event *event) {
 		hSizer = new UIHSizer(getWidth(), getHeight(), getWidth()/2.0, true);
 		addChild(hSizer);
 		firstChildHolder = new EditorHolder(editorManager, this);
+		firstChildHolder->addEventListener(this, UIEvent::CLOSE_EVENT);		
 		hSizer->addLeftChild(firstChildHolder);
 		secondChildHolder = new EditorHolder(editorManager, this);
+		secondChildHolder->addEventListener(this, UIEvent::CLOSE_EVENT);		
 		hSizer->addRightChild(secondChildHolder);
+		if(isActive) {
+			firstChildHolder->setActive(true);
+		}		
 		
 		if(currentEditor) {
 			removeChild(currentEditor);
@@ -655,6 +691,12 @@ void EditorHolder::handleEvent(Event *event) {
 	} else if(event->getDispatcher() == mergeSplitButton) {
 		if(parentHolder) {
 			parentHolder->mergeSides(this);
+		}
+	} else if(event->getDispatcher() == closeFileButton) {
+		dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);
+	} else if(event->getDispatcher() == firstChildHolder || event->getDispatcher() == secondChildHolder) {
+		if(event->getEventCode() == UIEvent::CLOSE_EVENT) {
+			dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);		
 		}
 	}
 	
@@ -692,6 +734,8 @@ void EditorHolder::_mergeSides(EditorHolder *mainHolder) {
 			holderEditor->setEditorHolder(NULL);
 		}
 	}
+	
+	setActive(true);
 	
 	if(vSizer) {
 		removeChild(vSizer);
@@ -806,6 +850,8 @@ PolycodeFrame::PolycodeFrame(PolycodeEditorManager *editorManager) : UIElement()
 	mainSizer->addLeftChild(projectBrowser);
 
 	editorHolder = new EditorHolder(editorManager, NULL);
+	editorHolder->setActive(true);
+	
 	consoleSizer->addTopChild(editorHolder);
 	
 	console = new PolycodeConsole();	
@@ -998,12 +1044,12 @@ void PolycodeFrame::addEditor(PolycodeEditor *editor) {
 }
 
 void PolycodeFrame::showEditor(PolycodeEditor *editor) {
-	if(editorHolder->getEditor()) {
-		editorHolder->setEditor(NULL);
+	if(activeEditorHolder->getEditor()) {
+		activeEditorHolder->setEditor(NULL);
 	}
 	
-	editorHolder->setEditor(editor);
-	editor->Activate();		
+	activeEditorHolder->setEditor(editor);
+	editor->Activate();
 	Resize(frameSizeX, frameSizeY);
 }
 

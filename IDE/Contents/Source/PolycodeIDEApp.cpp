@@ -115,6 +115,8 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	
 	frame->playButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	frame->stopButton->addEventListener(this, UIEvent::CLICK_EVENT);
+	
+	frame->editorHolder->addEventListener(this, UIEvent::CLOSE_EVENT);
 
 	screen->addChild(frame);
 
@@ -283,13 +285,9 @@ void PolycodeIDEApp::removeEditor(PolycodeEditor *editor) {
 		return;
 	
 	frame->removeEditor(editor);
-	editorManager->destroyEditor(editor);
-	if(editorManager->openEditors.size() > 0) {
-		editorManager->setCurrentEditor(editorManager->openEditors[0]);
-		frame->showEditor(editorManager->openEditors[0]);
-	} else {
-		editorManager->setCurrentEditor(NULL);
-	}
+	editorManager->destroyEditor(editor);		
+	editorManager->setCurrentEditor(NULL);
+	
 }
 
 void PolycodeIDEApp::closeFile() {
@@ -593,6 +591,10 @@ void PolycodeIDEApp::openFile(OSFileEntry file) {
 
 void PolycodeIDEApp::handleEvent(Event *event) {
 
+	if(event->getDispatcher() == frame->editorHolder && event->getEventCode() == UIEvent::CLOSE_EVENT) {
+		closeFile();
+	}
+
 	if(event->getDispatcher() == frame->fileDialog) {
 		if(event->getEventCode() == UIEvent::OK_EVENT && event->getEventType() == "UIEvent") {
 			String path = frame->fileDialog->getSelection();
@@ -794,6 +796,11 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 					if(editor) {
 						editor->saveFile();
 						closeFile();
+						if(editorManager->openEditors.size() > 0) {
+							editorManager->setCurrentEditor(editorManager->openEditors[0]);
+						} else{
+							editorManager->setCurrentEditor(NULL);
+						}						
 					}
 					frame->yesNoCancelPopup->action = "";
 					frame->hideModal();
@@ -808,6 +815,11 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 					if(editor) {
 						editor->setHasChanges(false);
 						closeFile();
+						if(editorManager->openEditors.size() > 0) {
+							editorManager->setCurrentEditor(editorManager->openEditors[0]);
+						} else{
+							editorManager->setCurrentEditor(NULL);
+						}						
 					}
 					frame->yesNoCancelPopup->action = "";					
 					frame->hideModal();

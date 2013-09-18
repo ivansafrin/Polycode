@@ -27,11 +27,12 @@
 #include "PolyLabel.h"
 #include "PolyCore.h"
 #include "PolyCoreServices.h"
+#include "PolyTweenManager.h"
 
 using namespace Polycode;
 
 
-UIWindow::UIWindow(String windowName, Number width, Number height) : UIElement(), windowTween(NULL) {
+UIWindow::UIWindow(String windowName, Number width, Number height) : UIElement() {
 	closeOnEscape = false;
 	
 	snapToPixels = true;
@@ -117,7 +118,6 @@ void UIWindow::setWindowSize(Number w, Number h) {
 
 UIWindow::~UIWindow() {
 	if(!ownsChildren) {
-		delete windowTween;
 		delete windowRect;
 		delete titlebarRect;
 		delete titleLabel;
@@ -159,23 +159,15 @@ void UIWindow::onMouseDown(Number x, Number y) {
 }
 
 void UIWindow::showWindow() {
-	if (windowTween)
-		delete windowTween;
-
 	enabled = true;
 	visible = true;
-	tweenClosing = false;
-	windowTween = new Tween(&color.a, Tween::EASE_IN_QUAD, 0.0f, 1.0f, 0.01f, false, true);
-	windowTween->addEventListener(this, Event::COMPLETE_EVENT);
+	color.a = 1.0;
 }
 
 void UIWindow::hideWindow() {
-	if (windowTween)
-		delete windowTween;
-
-	tweenClosing = true;
-	windowTween = new Tween(&color.a, Tween::EASE_IN_QUAD, 1.0f, 0.0f, 0.01f, false, true);
-	windowTween->addEventListener(this, Event::COMPLETE_EVENT);
+	color.a = 0.0;
+	visible = false;
+	enabled = false;
 }
 
 void UIWindow::handleEvent(Event *event) {
@@ -202,13 +194,5 @@ void UIWindow::handleEvent(Event *event) {
 	if(event->getDispatcher() == closeBtn) {
 		onClose();
 		dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);
-	}
-	if(event->getDispatcher() == windowTween) {
-		if (tweenClosing) {
-			visible = false;
-			enabled = false;
-		}
-		
-		windowTween = NULL;
 	}
 }

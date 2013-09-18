@@ -21,6 +21,7 @@
  */
 
 #include "PolycodeEditor.h"
+#include "PolycodeFrame.h"
 
 extern PolycodeClipboard *globalClipboard;
 
@@ -166,6 +167,9 @@ void PolycodeEditor::Resize(int x, int y) {
 }
 
 PolycodeEditor::~PolycodeEditor() {
+	if(editorHolder) {
+		editorHolder->setEditor(NULL);
+	}
 	Core *core = CoreServices::getInstance()->getCore();
 	core->removeAllHandlersForListener(this);
 }

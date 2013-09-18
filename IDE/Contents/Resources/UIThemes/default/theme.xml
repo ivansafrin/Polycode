@@ -4,6 +4,7 @@
 	<uiDefaultFontColor>0x000000c8</uiDefaultFontColor>
 
 	<uiBgColor>0xc8c8c8ff</uiBgColor>
+	<uiAccentColor>0x31687fff</uiAccentColor>	
 	<uiHeaderBgColor>0x616161ff</uiHeaderBgColor>
 	<uiSmallHeaderBgColor>0x868686ff</uiSmallHeaderBgColor>
 	<uiHeaderFontColor>0x000000c8</uiHeaderFontColor>

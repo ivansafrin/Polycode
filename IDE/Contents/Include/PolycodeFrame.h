@@ -152,11 +152,13 @@ class EditorHolder : public UIElement {
 		void mergeSides(EditorHolder *mainHolder);
 		
 		void Update();
+		void setActive(bool val);
 				
 		void updateFileSelector();
 		
 		void setEditor(PolycodeEditor *newEditor);		
 		PolycodeEditor *getEditor();
+		
 						
 	protected:
 	
@@ -184,6 +186,7 @@ class EditorHolder : public UIElement {
 		
 		bool displayFilePathInSelector;
 		bool initialUpdate;
+		bool isActive;
 };
 
 
@@ -257,6 +260,8 @@ public:
 	void showNextEditor();
 	void showPreviousEditor();
 	
+	EditorHolder *editorHolder;	
+	
 private:
 	
 	int frameSizeX;
@@ -281,10 +286,6 @@ private:
 	UILabel *currentProjectTitle;
 	
 	UIImage *welcomeImage;	
-	
-	
-	EditorHolder *editorHolder;
-	
 
 	vector<PolycodeEditor*> editors;
 	
