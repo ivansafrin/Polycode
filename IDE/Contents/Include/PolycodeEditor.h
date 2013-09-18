@@ -32,6 +32,8 @@
 
 using namespace Polycode;
 
+class EditorHolder;
+
 class PolycodeEditorActionData {
 	public:
 		PolycodeEditorActionData(){}
@@ -87,9 +89,13 @@ public:
 	void setHasChanges(bool newVal);
 	
 	PolycodeProject *parentProject;
+	
+	void setEditorHolder(EditorHolder *holder);
+	EditorHolder *getEditorHolder();
 		
 protected:
 
+	EditorHolder *editorHolder;
 	bool _hasChanges;
 
 	String filePath;

@@ -142,26 +142,55 @@ class CurveEditor : public UIWindow {
 
 class EditorHolder : public UIElement {
 	public:
-		EditorHolder();
+		EditorHolder(PolycodeEditorManager *editorManager, EditorHolder *parentHolder);
 		~EditorHolder();
 		
-		void Resize(Number width, Number height);
+		void handleEvent(Event *event);
+		void Resize(Number width, Number height);		
+		
+		void _mergeSides(EditorHolder *mainHolder);
+		void mergeSides(EditorHolder *mainHolder);
+		
+		void Update();
+				
+		void updateFileSelector();
+		
+		void setEditor(PolycodeEditor *newEditor);		
+		PolycodeEditor *getEditor();
+						
+	protected:
+	
+		EditorHolder *parentHolder;
+		PolycodeEditorManager *editorManager;
 		
 		PolycodeEditor *currentEditor;
+		EditorHolder *editorToMerge;
 		
-};
-
-class PolycodeEditorContainer : public UIElement {
-	public:
-		PolycodeEditorContainer();
-		~PolycodeEditorContainer();
+		UIElement *holderBar;
+		
+		UIRect *headerBg;
+		UIImageButton *vSplitButton;
+		UIImageButton *hSplitButton;
+		UIImageButton *mergeSplitButton;
+		
+		UIVSizer *vSizer;
+		UIHSizer *hSizer;	
+		
+		EditorHolder *firstChildHolder;
+		EditorHolder *secondChildHolder;
+		
+		UIImageButton *closeFileButton;		
+		UIComboBox *currentFileSelector;
+		
+		bool displayFilePathInSelector;
+		bool initialUpdate;
 };
 
 
 class PolycodeFrame : public UIElement {
 public:
 	
-	PolycodeFrame();
+	PolycodeFrame(PolycodeEditorManager *editorManager);
 	~PolycodeFrame();
 	
 	void Resize(int x, int y);
@@ -224,8 +253,6 @@ public:
 	UIWindow *aboutWindow;
 	UIButton *aboutOKButton;
 	
-	UIImageButton *closeFileButton;
-	
 	void updateFileSelector();
 	void showNextEditor();
 	void showPreviousEditor();
@@ -252,7 +279,6 @@ private:
 	bool isDragging;
 	
 	UILabel *currentProjectTitle;
-	UIComboBox *currentFileSelector;
 	
 	UIImage *welcomeImage;	
 	

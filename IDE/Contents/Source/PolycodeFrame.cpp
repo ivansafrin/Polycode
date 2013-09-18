@@ -28,14 +28,6 @@ PolycodeFrame *globalFrame;
 
 extern UIGlobalMenu *globalMenu;
 
-PolycodeEditorContainer::PolycodeEditorContainer() {
-
-}
-
-PolycodeEditorContainer::~PolycodeEditorContainer() {
-
-}
-
 EditPoint::EditPoint(BezierPoint *point, unsigned int type) : Entity() {
 	this->point = point;
 	this->type = type;
@@ -487,22 +479,295 @@ CurveEditor::~CurveEditor() {
 
 }
 
-EditorHolder::EditorHolder() : UIElement() {
+EditorHolder::EditorHolder(PolycodeEditorManager *editorManager, EditorHolder *parentHolder) : UIElement() {
+	this->editorManager = editorManager;
+	this->parentHolder = parentHolder;
+	
 	currentEditor = NULL;
+	
+	holderBar = new UIElement();
+	addChild(holderBar);
+	
+	snapToPixels = true;
+	
+	headerBg = new UIRect(30, 30);
+	holderBar->addChild(headerBg);
+	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
+	
+	vSplitButton = new UIImageButton("Images/editor_vsplit.png");
+	holderBar->addChild(vSplitButton);
+	vSplitButton->addEventListener(this, UIEvent::CLICK_EVENT);
+
+	hSplitButton = new UIImageButton("Images/editor_hsplit.png");
+	holderBar->addChild(hSplitButton);
+	hSplitButton->addEventListener(this, UIEvent::CLICK_EVENT);	
+
+	mergeSplitButton = new UIImageButton("Images/editor_mergesplit.png");
+	holderBar->addChild(mergeSplitButton);
+	mergeSplitButton->addEventListener(this, UIEvent::CLICK_EVENT);	
+	
+	
+	closeFileButton = new UIImageButton("Images/remove_icon.png");
+	holderBar->addChild(closeFileButton);
+	closeFileButton->setPosition(10, 8);
+	closeFileButton->addEventListener(this, UIEvent::CLICK_EVENT);
+	
+	
+	currentFileSelector = new UIComboBox(globalMenu, 350);
+	currentFileSelector->addEventListener(this, UIEvent::CHANGE_EVENT);
+	holderBar->addChild(currentFileSelector);
+	currentFileSelector->setPosition(30, 3);
+			
+	vSizer = NULL;
+	hSizer = NULL;
+	
+	firstChildHolder = NULL;
+	secondChildHolder = NULL;
+	
+	displayFilePathInSelector = false;
+	
+	initialUpdate = true;
+	updateFileSelector();
+	
+	editorToMerge = NULL;
+	
 }
 
-EditorHolder::~EditorHolder() {
-
-}
+void EditorHolder::updateFileSelector() {
+	currentFileSelector->removeAllHandlersForListener(this);
+	currentFileSelector->clearItems();
+	
+	for(int i=0; i < editorManager->openEditors.size(); i++) {
+		OSFileEntry entry(editorManager->openEditors[i]->getFilePath(), OSFileEntry::TYPE_FILE);
 		
-void EditorHolder::Resize(Number width, Number height) {
+		String projName = editorManager->openEditors[i]->parentProject->getProjectName();
+		String rootFolder = editorManager->openEditors[i]->parentProject->getRootFolder();
+		String filePath = editorManager->openEditors[i]->getFilePath();
+		
+		String fullEntry = filePath;
+		if(filePath.find(rootFolder) != -1) {
+			fullEntry = projName + filePath.substr(rootFolder.size(), filePath.size()-1);
+		}
+		if(editorManager->openEditors[i]->hasChanges()) {
+			if (displayFilePathInSelector)
+				currentFileSelector->addComboItem("* "+fullEntry);
+			else
+				currentFileSelector->addComboItem("* "+entry.name);
+		} else {
+			if (displayFilePathInSelector)
+				currentFileSelector->addComboItem(fullEntry);
+			else
+				currentFileSelector->addComboItem(entry.name);
+		}
+		
+		if(currentEditor == editorManager->openEditors[i]) {
+			if(!initialUpdate) {
+				currentFileSelector->setSelectedIndex(i);
+			}
+		}
+	}
+	
+	if(firstChildHolder) {
+		firstChildHolder->updateFileSelector();
+	}
+	if(secondChildHolder) {
+		secondChildHolder->updateFileSelector();
+	}
+	currentFileSelector->addEventListener(this, UIEvent::CHANGE_EVENT);
+	initialUpdate = false;
+}
+
+void EditorHolder::setEditor(PolycodeEditor *newEditor) {
+
+	if(vSizer || hSizer) {
+		firstChildHolder->setEditor(newEditor);
+		return;
+	}
+
 	if(currentEditor) {
-		currentEditor->Resize(width, height);
+		removeChild(currentEditor);
+		currentEditor->setEditorHolder(NULL);
+	}
+	currentEditor = newEditor;
+	if(currentEditor) {	
+		EditorHolder *currentEditorHolder = currentEditor->getEditorHolder();
+		if(currentEditorHolder) {
+			currentEditorHolder->setEditor(NULL);
+		}
+		if(currentEditor) {
+			currentEditor->setEditorHolder(this);	
+		}
+		addChild(currentEditor);
+	}
+	updateFileSelector();
+	Resize(getWidth(), getHeight());
+}
+
+PolycodeEditor *EditorHolder::getEditor() {
+	return currentEditor;
+}
+
+void EditorHolder::handleEvent(Event *event) {
+	if(event->getDispatcher() == vSplitButton) {
+		holderBar->visible = false;
+		holderBar->enabled = false;
+		
+		vSizer = new UIVSizer(getWidth(), getHeight(), getHeight()/2.0, true);
+		addChild(vSizer);
+		firstChildHolder = new EditorHolder(editorManager, this);
+		vSizer->addTopChild(firstChildHolder);
+		secondChildHolder = new EditorHolder(editorManager, this);
+		vSizer->addBottomChild(secondChildHolder);
+		
+		
+		if(currentEditor) {
+			removeChild(currentEditor);
+			currentEditor->setEditorHolder(NULL);			
+			firstChildHolder->setEditor(currentEditor);
+			currentEditor = NULL;
+		}
+		
+	} else if(event->getDispatcher() == hSplitButton) {
+		holderBar->visible = false;
+		holderBar->enabled = false;
+		
+		hSizer = new UIHSizer(getWidth(), getHeight(), getWidth()/2.0, true);
+		addChild(hSizer);
+		firstChildHolder = new EditorHolder(editorManager, this);
+		hSizer->addLeftChild(firstChildHolder);
+		secondChildHolder = new EditorHolder(editorManager, this);
+		hSizer->addRightChild(secondChildHolder);
+		
+		if(currentEditor) {
+			removeChild(currentEditor);
+			currentEditor->setEditorHolder(NULL);
+			firstChildHolder->setEditor(currentEditor);
+			currentEditor = NULL;
+		}
+				
+								
+	} else if(event->getDispatcher() == currentFileSelector) {
+		PolycodeEditor *editor = editorManager->openEditors[currentFileSelector->getSelectedIndex()];		
+		if(currentEditor != editor) {
+			setEditor(editor);
+		}
+	
+	} else if(event->getDispatcher() == mergeSplitButton) {
+		if(parentHolder) {
+			parentHolder->mergeSides(this);
+		}
+	}
+	
+	Resize(getWidth(), getHeight());
+	UIElement::handleEvent(event);
+}
+
+void EditorHolder::Update() {
+	if(editorToMerge) {
+		_mergeSides(editorToMerge);
+		editorToMerge = NULL;
 	}
 }
 
+void EditorHolder::mergeSides(EditorHolder *mainHolder) {
+	editorToMerge = mainHolder;
+}
 
-PolycodeFrame::PolycodeFrame() : UIElement() {
+void EditorHolder::_mergeSides(EditorHolder *mainHolder) {
+	holderBar->visible = true;
+	holderBar->enabled = true;
+
+	PolycodeEditor *mainHolderEditor = mainHolder->getEditor();
+		
+	if(firstChildHolder) {
+		PolycodeEditor *holderEditor = firstChildHolder->getEditor();
+		if(holderEditor) {
+			holderEditor->setEditorHolder(NULL);
+		}
+	}
+
+	if(secondChildHolder) {
+		PolycodeEditor *holderEditor = secondChildHolder->getEditor();
+		if(holderEditor) {		
+			holderEditor->setEditorHolder(NULL);
+		}
+	}
+	
+	if(vSizer) {
+		removeChild(vSizer);
+		delete vSizer;
+	}
+	if(hSizer) {
+		removeChild(hSizer);
+		delete hSizer;
+	}	
+	delete firstChildHolder;
+	delete secondChildHolder;
+	
+	firstChildHolder = NULL;
+	secondChildHolder = NULL;
+	vSizer = NULL;
+	hSizer = NULL;
+	
+	setEditor(mainHolderEditor);
+}
+
+EditorHolder::~EditorHolder() {
+	if(vSizer) {
+		removeChild(vSizer);
+		delete vSizer;
+	}
+	if(hSizer) {
+		removeChild(hSizer);
+		delete hSizer;
+	}	
+	
+	if(firstChildHolder) {
+		delete firstChildHolder;
+	}
+	if(secondChildHolder) {
+		delete secondChildHolder;
+	}
+}
+		
+void EditorHolder::Resize(Number width, Number height) {
+
+	if(headerBg->visible) {
+		headerBg->Resize(width, 30);	
+		hSplitButton->setPosition(width - 30, 7);
+		vSplitButton->setPosition(width - 55, 7);
+		if(parentHolder) {
+			mergeSplitButton->visible = true;
+			mergeSplitButton->enabled = true;
+			mergeSplitButton->setPosition(width - 80, 7);
+			currentFileSelector->Resize(width - 125, currentFileSelector->getHeight());
+		} else {
+			mergeSplitButton->visible = false;
+			mergeSplitButton->enabled = false;			
+			currentFileSelector->Resize(width - 100, currentFileSelector->getHeight());			
+		}
+	}
+		
+	
+	if(currentEditor) {
+		currentEditor->setPosition(0, 30);
+		currentEditor->Resize(width, height-30);
+	}
+	
+	if(vSizer) {
+		vSizer->Resize(width, height);
+	}
+	if(hSizer) {
+		hSizer->Resize(width, height);
+	}
+	
+	UIElement::Resize(width, height);
+}
+
+
+PolycodeFrame::PolycodeFrame(PolycodeEditorManager *editorManager) : UIElement() {
+
+	this->editorManager = editorManager;
 
 	globalFrame = this;
 	processInputEvents = true;
@@ -540,7 +805,7 @@ PolycodeFrame::PolycodeFrame() : UIElement() {
 	projectBrowser = new PolycodeProjectBrowser();
 	mainSizer->addLeftChild(projectBrowser);
 
-	editorHolder = new EditorHolder();
+	editorHolder = new EditorHolder(editorManager, NULL);
 	consoleSizer->addTopChild(editorHolder);
 	
 	console = new PolycodeConsole();	
@@ -572,13 +837,6 @@ PolycodeFrame::PolycodeFrame() : UIElement() {
 	addChild(currentProjectTitle);
 	currentProjectTitle->setColor(1.0, 1.0, 1.0, 1.0);
 	currentProjectTitle->setPosition(70, 0);
-
-	currentFileSelector = new UIComboBox(globalMenu, 350);
-	currentFileSelector->addEventListener(this, UIEvent::CHANGE_EVENT);
-	addChild(currentFileSelector);
-
-	closeFileButton = new UIImageButton("Images/remove_icon.png");
-	addChild(closeFileButton);
 	
 	resizer = new UIImage("Images/corner_resize.png");	
 	addChild(resizer);
@@ -727,8 +985,8 @@ void PolycodeFrame::removeEditor(PolycodeEditor *editor) {
 		if(editors[i] == editor) {
 			editors.erase(editors.begin()+i);
 			editorHolder->removeChild(editor);
-			if(editor == editorHolder->currentEditor) {
-				editorHolder->currentEditor = NULL;
+			if(editor == editorHolder->getEditor()) {
+				editorHolder->setEditor(NULL);
 			}
 			return;
 		}
@@ -737,20 +995,15 @@ void PolycodeFrame::removeEditor(PolycodeEditor *editor) {
 
 void PolycodeFrame::addEditor(PolycodeEditor *editor) {
 	editors.push_back(editor);
-	editorHolder->addChild(editor);
-	editor->enabled = false;
 }
 
 void PolycodeFrame::showEditor(PolycodeEditor *editor) {
-	if(editorHolder->currentEditor) {
-		editorHolder->currentEditor->enabled = false;
-		editorHolder->currentEditor = NULL;
+	if(editorHolder->getEditor()) {
+		editorHolder->setEditor(NULL);
 	}
 	
-	editorHolder->currentEditor = editor;
-	editorHolder->currentEditor->enabled = true;
-	editorHolder->currentEditor->Activate();	
-	
+	editorHolder->setEditor(editor);
+	editor->Activate();		
 	Resize(frameSizeX, frameSizeY);
 }
 
@@ -805,16 +1058,7 @@ void PolycodeFrame::showAssetBrowser(std::vector<String> extensions) {
 }
 
 void PolycodeFrame::handleEvent(Event *event) {
-	
-	if(event->getDispatcher() == currentFileSelector && event->getEventType() == "UIEvent") {
-		PolycodeEditor *editor = editorManager->openEditors[currentFileSelector->getSelectedIndex()];
 		
-		if(editorManager->getCurrentEditor() != editor) {
-			editorManager->setCurrentEditor(editor, false);
-			showEditor(editor);
-		}
-	}
-	
 	if(event->getDispatcher() == editorManager) {
 		updateFileSelector();
 	}
@@ -845,12 +1089,14 @@ void PolycodeFrame::handleEvent(Event *event) {
 		switch(event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEUP:
 				if(isDragging) {
+				/*
 					if(editorHolder->currentEditor) {
 						InputEvent *inputEvent = (InputEvent*) event;						
 						Number posX = inputEvent->mousePosition.x;
 						Number posY = inputEvent->mousePosition.y;			
 						editorHolder->currentEditor->handleDroppedFile(draggedFile, posX, posY);
 					}
+				*/
 				}
 				isDragging = false;
 				dragEntity->visible = false;
@@ -939,10 +1185,7 @@ void PolycodeFrame::Resize(int x, int y) {
 	
 	modalBlocker->Resize(x, y);
 	fileDialogBlocker->Resize(x, y);
-		
-	currentFileSelector->setPosition(x-400, 11);
-	closeFileButton->setPosition(currentFileSelector->getPosition().x-20, currentFileSelector->getPosition().y+6);
-	
+			
 	if(this->modalChild) {
 		modalChild->setPosition((x-modalChild->getWidth())/2.0f, (y-modalChild->getHeight())/2.0f);
 	}
@@ -953,46 +1196,22 @@ PolycodeFrame::~PolycodeFrame() {
 }
 
 void PolycodeFrame::showNextEditor() {
+/*
 	if (currentFileSelector->getSelectedIndex() == currentFileSelector->getNumItems()-1)
 		currentFileSelector->setSelectedIndex(0);
 	else
 		currentFileSelector->setSelectedIndex(currentFileSelector->getSelectedIndex()+1);
+		*/
 }
 void PolycodeFrame::showPreviousEditor() {
+/*
 	if (currentFileSelector->getSelectedIndex() == 0)
 		currentFileSelector->setSelectedIndex(currentFileSelector->getNumItems()-1);
 	else
 		currentFileSelector->setSelectedIndex(currentFileSelector->getSelectedIndex()-1);
+		*/
 }
 
 void PolycodeFrame::updateFileSelector() {
-	currentFileSelector->clearItems();
-	
-	for(int i=0; i < editorManager->openEditors.size(); i++) {
-		OSFileEntry entry(editorManager->openEditors[i]->getFilePath(), OSFileEntry::TYPE_FILE);
-		
-		String projName = editorManager->openEditors[i]->parentProject->getProjectName();
-		String rootFolder = editorManager->openEditors[i]->parentProject->getRootFolder();
-		String filePath = editorManager->openEditors[i]->getFilePath();
-		
-		String fullEntry = filePath;
-		if(filePath.find(rootFolder) != -1) {
-			fullEntry = projName + filePath.substr(rootFolder.size(), filePath.size()-1);
-		}
-		if(editorManager->openEditors[i]->hasChanges()) {
-			if (displayFilePathInSelector)
-				currentFileSelector->addComboItem("* "+fullEntry);
-			else
-				currentFileSelector->addComboItem("* "+entry.name);
-		} else {
-			if (displayFilePathInSelector)
-				currentFileSelector->addComboItem(fullEntry);
-			else
-				currentFileSelector->addComboItem(entry.name);
-		}
-		
-		if(editorManager->getCurrentEditor() == editorManager->openEditors[i]) {
-			currentFileSelector->setSelectedIndex(i);
-		}
-	}
+	editorHolder->updateFileSelector();
 }

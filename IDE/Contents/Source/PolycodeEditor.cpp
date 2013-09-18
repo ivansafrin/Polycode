@@ -51,6 +51,8 @@ PolycodeEditor::PolycodeEditor(bool _isReadOnly) : UIElement(), ClipboardProvide
 	processInputEvents = true;
 	_hasChanges = false;
 	
+	editorHolder = NULL;
+	
 	currentUndoPosition = 0;
 	
 	Core *core = CoreServices::getInstance()->getCore();
@@ -67,6 +69,15 @@ void PolycodeEditor::setHasChanges(bool newVal) {
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}
 }
+
+void PolycodeEditor::setEditorHolder(EditorHolder *holder) {
+	editorHolder = holder;
+}
+
+EditorHolder *PolycodeEditor::getEditorHolder() {
+	return editorHolder;
+}
+
 
 void PolycodeEditor::handleEvent(Event *event) {
 	if(event->getDispatcher() == CoreServices::getInstance()->getCore() && enabled) {

@@ -90,10 +90,9 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	
 	editorManager = new PolycodeEditorManager();
 	
-	frame = new PolycodeFrame();
+	frame = new PolycodeFrame(editorManager);
 	frame->setAnchorPoint(-1.0, -1.0, 0.0);
 
-	frame->editorManager = editorManager;
 	editorManager->addEventListener(frame, Event::CHANGE_EVENT);
 
 	frame->console->backtraceWindow->addEventListener(this, BackTraceEvent::EVENT_BACKTRACE_SELECTED);
@@ -203,8 +202,6 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 
 	needsRedraw = false;
 	lastConnected = false;
-	
-	frame->closeFileButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
 	quittingApp = false;
 	
@@ -963,6 +960,7 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 	}
 	
 	// close files and editors after the close file button is pressed
+	/*
 	if (event->getDispatcher() == frame->closeFileButton) {
 		if (event->getEventCode() == UIEvent::CLICK_EVENT) {
 			if (core->getInput()->getKeyState(KEY_RSHIFT) || core->getInput()->getKeyState(KEY_LSHIFT))
@@ -971,6 +969,7 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 				closeFile();
 		}
 	}
+	*/
 	
 	// open an editor/file if project browser has focus and user hits enter or right-arrow key
 	if (event->getDispatcher() == CoreServices::getInstance()->getCore()->getInput()) {
