@@ -28,10 +28,12 @@
 
 using namespace Polycode;
 
-class SpriteAnimationEntry : public UIElement {
+class SpriteAnimationEntry : public PropProp {
 	public:
 		SpriteAnimationEntry(SpriteAnimation *animation);
 		~SpriteAnimationEntry();
+		
+		void setPropWidth(Number width);
 		
 		void handleEvent(Event *event);
 		
@@ -45,41 +47,73 @@ class SpriteAnimationEntry : public UIElement {
 		SpriteAnimation *animation;
 };
 
-class PolycodeSpriteEditor : public PolycodeEditor {
+
+class SpritePreviewProp : public PropProp {
 	public:
-	PolycodeSpriteEditor();
-	virtual ~PolycodeSpriteEditor();
-	
-	void handleEvent(Event *event);
-	
-	bool openFile(OSFileEntry filePath);
-	void Resize(int x, int y);
-	
-	void saveFile();
-			
+		SpritePreviewProp();
+		void setSprite(SceneSprite *sprite);	
+		void setPropWidth(Number width);		
+		void setSpriteScale(Number scale);		
+		SceneSprite *previewSprite;
+		Number propWidth;
+};
+
+class SpritePreviewSheet : public PropSheet {
+	public:
+		SpritePreviewSheet();
+		void handleEvent(Event *event);
+		void setSprite(SceneSprite *sprite);
+		
+	protected:
+		ComboProp *zoomProp;
+		SpritePreviewProp *previewProp;
+};
+
+class SpriteAnimationsSheet : public PropSheet {
+	public:
+		SpriteAnimationsSheet();
+		void setSprite(SceneSprite *sprite);		
+		void refreshAnimationEntries();	
+		void handleEvent(Event *event);
+		void Update();
+		void Resize(Number width, Number height);
+		
 	protected:
 	
-	void refreshAnimationEntries();
+		int removeIndex;
+		SceneSprite *sprite;
+		int lastNumProps;
+		UILabel *animHelpLabel;
+		UIButton *addAnimationButton;
+};
+
+class PolycodeSpriteEditor : public PolycodeEditor {
+	public:
+		PolycodeSpriteEditor();
+		virtual ~PolycodeSpriteEditor();
+		
+		void handleEvent(Event *event);
+		
+		bool openFile(OSFileEntry filePath);
+		void Resize(int x, int y);
+		
+		void saveFile();
+				
+	protected:
 	
-	std::vector<SpriteAnimationEntry*> animationEntries;
-	
-	UIElement *animationsAnchor;
-	
-	UIButton *addAnimationButton;
-	
-	PropList *propList;
-	
-	UIRect *headerBg;	
-	
-	UIComboBox *zoomBox;
-	
-	TextureProp *textureProp;
-	NumberProp *widthProp;
-	NumberProp *heightProp;	
-	
-	bool initialLoad;
-	
-	SceneSprite *previewSprite;
+		SpriteAnimationsSheet *animationsSheet;
+			
+		PropList *propList;		
+		UIRect *headerBg;	
+		
+		TextureProp *textureProp;
+		NumberProp *widthProp;
+		NumberProp *heightProp;	
+		
+		bool initialLoad;
+		
+		SceneSprite *previewSprite;		
+		SpritePreviewSheet *previewPropSheet;
 };
 
 class PolycodeSpriteEditorFactory : public PolycodeEditorFactory {

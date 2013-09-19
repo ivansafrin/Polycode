@@ -115,6 +115,8 @@ class _PolyExport SceneSprite : public ScenePrimitive
 		bool loadFromFile(const String& fileName);
 		
 		void reloadSprite();
+		
+		void removeAnimation(SpriteAnimation *animation);
 	
 		/**
 		* Pauses or unpauses the current sprite animation.

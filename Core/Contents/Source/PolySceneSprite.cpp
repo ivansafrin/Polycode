@@ -181,6 +181,15 @@ SceneSprite::~SceneSprite() {
 	
 }
 
+void SceneSprite::removeAnimation(SpriteAnimation *animation) {
+	for(int i=0; i < animations.size(); i++) {
+		if(animations[i] == animation) {
+			animations.erase(animations.begin()+i);
+			return;
+		}
+	}
+}
+
 void SceneSprite::recalculateSpriteDimensions() {
 	if(!texture)
 		return;

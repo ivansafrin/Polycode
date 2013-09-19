@@ -371,7 +371,8 @@ class PropSheet : public UIElement {
 		void setCollapsed(bool val);
 		
 		void addProp(PropProp *prop);
-		
+		void setTopPadding(Number padding);
+				
 		String caption;
 		String type;
 		
@@ -384,6 +385,7 @@ class PropSheet : public UIElement {
 		UIImageButton *expandButton;
 		
 		bool collapsed;
+		Number propTopPadding;
 		
 		bool customUndoHandler;
 		
@@ -513,18 +515,16 @@ class EntityPropSheet : public PropSheet {
 		void handleEvent(Event *event);
 		void Update();
 		void refreshProps();
-
 		void applyPropActionData(PolycodeEditorPropActionData *data);
+
 
 		UIButton *addButton;
 		
 		Entity *entity;
 		Entity *lastEntity;
 		
-		int lastNumProps;
-		
-		int removeIndex;		
-		
+		int lastNumProps;		
+		int removeIndex;
 };
 
 class UILabelSheet : public PropSheet {

@@ -238,7 +238,7 @@ PropSheet::PropSheet(String caption, String type) : UIElement() {
 	expandButton->enabled = false;
 		
 	collapsed  = false;
-	
+	propTopPadding = 0;
 	propHeight = 30;
 }
 
@@ -285,13 +285,17 @@ PropSheet::~PropSheet() {
 
 }
 
+void PropSheet::setTopPadding(Number padding) {
+	propTopPadding = padding;
+}
+
 void PropSheet::Resize(Number width, Number height) {
 	setWidth(width);
 	setHeight(height);
 	
 	bg->Resize(width, 30);
 	
-	Number yOffset = 0;
+	Number yOffset = propTopPadding;
 	
 	for(int i=0; i < props.size(); i++) {
 		props[i]->setPosition(0, yOffset);
