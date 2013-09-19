@@ -879,10 +879,10 @@ PolycodeFrame::PolycodeFrame(PolycodeEditorManager *editorManager) : UIElement()
 	addChild(stopButton);
 	stopButton->setPosition(10,4);
 
-	currentProjectTitle = new UILabel("", 32, "section");
-	addChild(currentProjectTitle);
-	currentProjectTitle->setColor(1.0, 1.0, 1.0, 1.0);
-	currentProjectTitle->setPosition(70, 0);
+	currentProjectSelector = new UIComboBox(globalMenu, 300);
+	currentProjectSelector->addEventListener(this, UIEvent::CHANGE_EVENT);
+	addChild(currentProjectSelector);
+	currentProjectSelector->setPosition(60, 10);
 	
 	resizer = new UIImage("Images/corner_resize.png");	
 	addChild(resizer);
@@ -1104,6 +1104,11 @@ void PolycodeFrame::showAssetBrowser(std::vector<String> extensions) {
 }
 
 void PolycodeFrame::handleEvent(Event *event) {
+
+	if(event->getDispatcher() == currentProjectSelector) {
+		PolycodeProject *project = (PolycodeProject*)currentProjectSelector->getSelectedItem()->data;
+		projectManager->setActiveProject(project);
+	}
 		
 	if(event->getDispatcher() == editorManager) {
 		updateFileSelector();
@@ -1114,11 +1119,14 @@ void PolycodeFrame::handleEvent(Event *event) {
 	}
 	
 	if(event->getDispatcher() == projectManager) {
-        if(projectManager->getActiveProject()) {
-            currentProjectTitle->setText(projectManager->getActiveProject()->getProjectName());
-        } else {
-        	if (projectManager->getProjectCount() == 0) { currentProjectTitle->setText(""); }
-        }
+		currentProjectSelector->clearItems();
+		for(int i=0; i < projectManager->getProjectCount(); i++) {
+			PolycodeProject *project = projectManager->getProjectByIndex(i);
+			currentProjectSelector->addComboItem(project->getProjectName(), (void*) project);
+			if(projectManager->getActiveProject() == project) {
+				currentProjectSelector->setSelectedIndex(i, true);
+			}
+		}
 	}
 	
 	if(event->getDispatcher() == aboutOKButton && event->getEventType() == "UIEvent") {

@@ -159,11 +159,13 @@ int UIComboBox::getSelectedIndex() {
 	return selectedIndex;
 }
 
-void UIComboBox::setSelectedIndex(unsigned int newIndex) {
+void UIComboBox::setSelectedIndex(unsigned int newIndex, bool suppressChangeEvent) {
 	if(newIndex < items.size()) {
 		selectedIndex = newIndex;				
-		selectedLabel->setText(items[selectedIndex]->label);		
-		dispatchEvent(new UIEvent(), UIEvent::CHANGE_EVENT);
+		selectedLabel->setText(items[selectedIndex]->label);
+		if(!suppressChangeEvent) {
+			dispatchEvent(new UIEvent(), UIEvent::CHANGE_EVENT);
+		}
 	}
 }
 

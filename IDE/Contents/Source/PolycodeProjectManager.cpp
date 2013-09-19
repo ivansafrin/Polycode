@@ -73,6 +73,7 @@ PolycodeProject* PolycodeProjectManager::openProject(String path) {
 	}
 	
 	projectBrowser->addProject(newProject);
+	dispatchEvent(new Event(), Event::CHANGE_EVENT);	
 	return newProject;
 }
 

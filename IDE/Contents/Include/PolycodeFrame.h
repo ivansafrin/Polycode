@@ -283,7 +283,7 @@ private:
 	UILabel *dragLabel;
 	bool isDragging;
 	
-	UILabel *currentProjectTitle;
+	UIComboBox *currentProjectSelector;
 	
 	UIImage *welcomeImage;	
 

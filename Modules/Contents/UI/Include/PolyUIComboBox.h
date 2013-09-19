@@ -57,7 +57,7 @@ namespace Polycode {
 						
 			int getSelectedIndex();
 			UIComboBoxItem *getSelectedItem();
-			void setSelectedIndex(unsigned int newIndex);
+			void setSelectedIndex(unsigned int newIndex, bool suppressChangeEvent = false);
 			void handleEvent(Event *event);
 			
 			void Resize(Number width, Number height);

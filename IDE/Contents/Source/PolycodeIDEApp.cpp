@@ -349,6 +349,9 @@ void PolycodeIDEApp::doCloseProject() {
 	doCloseFiles(tempEditorStore);
 	frame->getProjectBrowser()->removeProject(projectManager->getActiveProject());
 	projectManager->removeProject(projectManager->getActiveProject());
+	if(projectManager->getProjectCount() > 0) {
+		projectManager->setActiveProject(projectManager->getProjectByIndex(0));
+	}
 }
 
 void PolycodeIDEApp::newGroup() {
@@ -735,8 +738,6 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 					projectManager->activeFolder = selectedData->fileEntry.fullPath;
 				}			
 			}
-			
-			projectManager->setActiveProject(selectedData->parentProject);
 			
 			if(selectedData->type == 0)
 				return;			
