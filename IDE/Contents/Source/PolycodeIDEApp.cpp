@@ -200,7 +200,6 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 #else
 	menuBar = NULL;
 #endif
-	core->setVideoMode(1100, 700, false, true, 0, 0);
 
 	needsRedraw = false;
 	lastConnected = false;
@@ -1004,7 +1003,10 @@ void PolycodeIDEApp::saveConfigFile() {
 	configFile.root.addChild("open_projects");
 	configFile.root.addChild("syntax_theme", globalSyntaxTheme->name);
 	configFile.root.addChild("ui_theme", config->getStringValue("Polycode", "uiTheme"));
-	
+
+	configFile.root.addChild("app_width", String::IntToString(core->getXRes()));
+	configFile.root.addChild("app_height", String::IntToString(core->getYRes()));
+		
 	for(int i=0; i < projectManager->getProjectCount(); i++) {
 		PolycodeProject *project = projectManager->getProjectByIndex(i);		
 		ObjectEntry *projectEntry = configFile.root["open_projects"]->addChild("project");
@@ -1047,6 +1049,24 @@ void PolycodeIDEApp::loadConfigFile() {
 	}	
 	config->setStringValue("Polycode", "uiTheme", uiThemeName);
 	
+	
+	ObjectEntry *appWidth = configFile.root["app_width"];
+	ObjectEntry *appHeight = configFile.root["app_height"];
+	
+	bool setResFromConfig = false;
+	if(appWidth && appHeight) {
+		int newXRes = appWidth->intVal;
+		int newYRes = appHeight->intVal;		
+		if(newXRes > 100 && newYRes > 100) {
+			setResFromConfig = true;
+			core->setVideoMode(newXRes, newYRes, false, true, 0, 0);
+		}
+	}
+	
+	if(!setResFromConfig) {
+			core->setVideoMode(1100, 700, false, true, 0, 0);	
+	}
+		
 	String themeName = "monokai";
 	ObjectEntry *syntaxTheme = configFile.root["syntax_theme"];
 	if(syntaxTheme) {

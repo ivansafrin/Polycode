@@ -198,6 +198,13 @@ CubemapEditorPane::CubemapEditorPane() : UIElement() {
 	propList = new PropList("CUBEMAP EDITOR");
 	addChild(propList);
 	propList->setPosition(0, 0);
+	
+	PropSheet *previewProps = new PropSheet("CUBEMAP PREVIEW", "");
+	propList->addPropSheet(previewProps);
+	MaterialPreviewProp *materialPreviewProp = new MaterialPreviewProp();
+	previewProps->addProp(materialPreviewProp);	
+	cubemapPreview = materialPreviewProp->previewBox;
+	previewProps->propHeight = 300;		
 
 	PropSheet *baseProps1 = new PropSheet("CUBEMAP OPTIONS", "");
 	propList->addPropSheet(baseProps1);
@@ -231,13 +238,9 @@ CubemapEditorPane::CubemapEditorPane() : UIElement() {
 	zPosTexture->addEventListener(this, Event::CHANGE_EVENT);
 	zNegTexture->addEventListener(this, Event::CHANGE_EVENT);						
 	
-	baseProps->propHeight = 220;
+	baseProps->propHeight = 420;
 	propList->updateProps();
-	
-	cubemapPreview = new MaterialPreviewBox();
-	addChild(cubemapPreview);
-	cubemapPreview->setPosition(400, 0);
-	
+		
 	Material *previewMaterial = CoreServices::getInstance()->getMaterialManager()->createMaterial("CubemapPreview", "LightCube");
 	cubemapPreview->setMaterial(previewMaterial);
 	enabled = false;
@@ -313,7 +316,7 @@ CubemapEditorPane::~CubemapEditorPane() {
 
 void CubemapEditorPane::Resize(Number width, Number height) {
 	headerBg->Resize(width, 30);	
-	propList->Resize(370, height);
+	propList->Resize(width, height);
 	propList->updateProps();
 }
 
@@ -510,7 +513,7 @@ void ShaderEditorPane::setShader(Shader *shader) {
 
 void ShaderEditorPane::Resize(Number width, Number height) {
 	headerBg->Resize(width, 30);	
-	propList->Resize(370, height);
+	propList->Resize(width, height);
 	propList->updateProps();
 }
 
@@ -741,7 +744,6 @@ MaterialPreviewBox::MaterialPreviewBox() : UIElement() {
 	previewShape = new UIRect(256, 256);
 	previewShape->setAnchorPoint(-1.0, -1.0, 0.0);	
 	previewShape->setTexture(renderTexture->getTargetTexture());
-	previewShape->setPosition(20,40);
 	previewBase->addChild(previewShape);
 	
 	shapeSelector = new UIImage("Images/small_selector.png");
@@ -755,7 +757,7 @@ MaterialPreviewBox::MaterialPreviewBox() : UIElement() {
 
 	for(int i=0; i < shapeSwitches.size(); i++) {
 		previewBase->addChild(shapeSwitches[i]);
-		shapeSwitches[i]->setPosition(105 + (25 * i), 300);
+		shapeSwitches[i]->setPosition(270, 10+(25 * i));
 		shapeSwitches[i]->addEventListener(this, UIEvent::CLICK_EVENT);
 	}
 
@@ -781,7 +783,9 @@ void MaterialPreviewBox::showPrimitive(unsigned int index) {
 		shapePrimitives[i]->visible = false;	
 	}
 	shapePrimitives[index]->visible = true;	
-	shapeSelector->setPosition(105 - 2 + (25 * index), 298);
+	
+	shapeSelector->setPosition(270 - 2, 10 + ((25 * index) - 2));
+	
 	if(currentMaterial) {
 		shapePrimitives[index]->setMaterial(currentMaterial);
 	}
@@ -799,6 +803,16 @@ void MaterialPreviewBox::handleEvent(Event *event) {
 	}
 }
 
+MaterialPreviewProp::MaterialPreviewProp() : PropProp("", "") {
+	previewBox = new MaterialPreviewBox();
+	propContents->addChild(previewBox);		
+	setHeight(300);	
+}
+
+void MaterialPreviewProp::setPropWidth(Number width) {
+	previewBox->setPosition(((width-300.0)/2.0) - propContents->getPosition().x, 0.0);
+}
+
 MaterialEditorPane::MaterialEditorPane() : UIElement() {	
 
 	changingMaterial = false;
@@ -808,9 +822,17 @@ MaterialEditorPane::MaterialEditorPane() : UIElement() {
 	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));	
 	
+	
 	propList = new PropList("MATERIAL EDITOR");
 	addChild(propList);
 	propList->setPosition(0, 0);
+
+	PropSheet *previewProps = new PropSheet("MATERIAL PREVIEW", "");
+	propList->addPropSheet(previewProps);
+	MaterialPreviewProp *materialPreviewProp = new MaterialPreviewProp();
+	previewProps->addProp(materialPreviewProp);	
+	materialPreview = materialPreviewProp->previewBox;
+	previewProps->propHeight = 300;	
 
 	PropSheet *baseProps = new PropSheet("MATERIAL SETTINGS", "");
 	propList->addPropSheet(baseProps);
@@ -845,11 +867,7 @@ MaterialEditorPane::MaterialEditorPane() : UIElement() {
 		
 	propList->updateProps();
 							
-	
-	materialPreview = new MaterialPreviewBox();
-	addChild(materialPreview);
-	materialPreview->setPosition(400, 0);
-	
+		
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");	
 				
@@ -874,7 +892,7 @@ void MaterialEditorPane::reloadShaders() {
 
 void MaterialEditorPane::Resize(Number width, Number height) {
 	headerBg->Resize(width, 30);	
-	propList->Resize(370, height);
+	propList->Resize(width, height);
 	propList->updateProps();
 }
 

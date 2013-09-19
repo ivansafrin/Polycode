@@ -45,7 +45,6 @@ public:
 	String name;
 };
 
-
 class MaterialPreviewBox : public UIElement {
 	public:
 		MaterialPreviewBox();
@@ -69,6 +68,13 @@ class MaterialPreviewBox : public UIElement {
 		Entity *previewBase;		
 		ScenePrimitive *previewPrimitive;	
 		Material *currentMaterial;					
+};
+
+class MaterialPreviewProp : public PropProp {
+	public:
+		MaterialPreviewProp();		
+		void setPropWidth(Number width);
+		MaterialPreviewBox *previewBox;
 };
 
 class PostPreviewBox : public UIElement {
@@ -240,6 +246,7 @@ class ShaderEditorPane : public UIElement {
 		NumberProp *areaLightsProp;
 		NumberProp *spotLightsProp;		
 };
+
 
 class MaterialEditorPane : public UIElement {
 	public:
