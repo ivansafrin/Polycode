@@ -72,7 +72,6 @@ PolycodeProject* PolycodeProjectManager::openProject(String path) {
 		CoreServices::getInstance()->getFontManager()->registerFont(fontName, fontPath);		
 	}
 	
-	projectBrowser->addProject(newProject);
 	dispatchEvent(new Event(), Event::CHANGE_EVENT);	
 	return newProject;
 }
@@ -113,6 +112,7 @@ void PolycodeProjectManager::setActiveProject(PolycodeProject* project) {
 		if(project){			
 			CoreServices::getInstance()->getResourceManager()->addArchive(project->getRootFolder());
 		}
+		
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}
 }

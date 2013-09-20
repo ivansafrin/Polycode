@@ -108,6 +108,16 @@ void PolycodeEditorManager::setCurrentEditor(PolycodeEditor *editor, bool sendCh
 	}
 }
 
+std::vector<PolycodeEditor*> PolycodeEditorManager::getOpenEditorsForProject(PolycodeProject *project) {
+	std::vector<PolycodeEditor*> retVector;
+
+	for(int i=0; i < openEditors.size(); i++) {
+		if(openEditors[i]->parentProject == project) {
+			retVector.push_back(openEditors[i]);
+		}
+	}
+	return retVector;
+}
 
 PolycodeEditor *PolycodeEditorManager::getEditorForPath(String path) {
 	for(int i=0; i < openEditors.size();i++) {

@@ -120,8 +120,7 @@ protected:
 	PolycodeFrame *frame;
 	
 	PolycodeEditorManager *editorManager;
-	PolycodeProjectManager *projectManager;
-	
+	PolycodeProjectManager *projectManager;	
 	PolycodeRemoteDebugger *debugger;
 
 	UIMenuBar *menuBar;

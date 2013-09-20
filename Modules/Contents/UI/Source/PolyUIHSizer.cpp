@@ -154,6 +154,28 @@ void UIHSizer::addRightChild(UIElement *element) {
 	updateSizer();
 }
 
+void UIHSizer::removeLeftChild() {
+	if(firstElement) {
+		childElements->removeChild(firstElement);
+		firstElement = NULL;
+	}
+}
+
+void UIHSizer::removeRightChild() {
+	if(secondElement) {
+		childElements->removeChild(secondElement);
+		secondElement = NULL;
+	}
+}
+
+UIElement *UIHSizer::getLeftChild() {
+	return firstElement;
+}
+
+UIElement *UIHSizer::getRightChild() {
+	return secondElement;
+}
+
 void UIHSizer::updateSizer() {
 
 	if(leftSizer) {

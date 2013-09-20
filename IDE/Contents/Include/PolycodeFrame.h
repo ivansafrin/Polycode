@@ -142,7 +142,7 @@ class CurveEditor : public UIWindow {
 
 class EditorHolder : public UIElement {
 	public:
-		EditorHolder(PolycodeEditorManager *editorManager, EditorHolder *parentHolder);
+		EditorHolder(PolycodeProject *project, PolycodeEditorManager *editorManager, EditorHolder *parentHolder);
 		~EditorHolder();
 		
 		void handleEvent(Event *event);
@@ -161,6 +161,8 @@ class EditorHolder : public UIElement {
 		
 						
 	protected:
+	
+		PolycodeProject *project;
 	
 		EditorHolder *parentHolder;
 		PolycodeEditorManager *editorManager;
@@ -189,6 +191,49 @@ class EditorHolder : public UIElement {
 		bool isActive;
 };
 
+class PolycodeProjectTab : public UIElement {
+	public:
+		PolycodeProjectTab(PolycodeProject *project, PolycodeEditorManager *editorManager);
+		~PolycodeProjectTab();
+		
+		EditorHolder *getEditorHolder();
+		void Resize(Number width, Number height);
+				
+		void showEditor(PolycodeEditor *editor);		
+		
+		PolycodeProjectBrowser *getProjectBrowser();
+			
+	protected:
+	
+		UIHSizer *mainSizer;	
+		PolycodeProjectBrowser *projectBrowser;
+		EditorHolder *editorHolder;
+		PolycodeEditorManager *editorManager;
+};
+
+class PolycodeProjectFrame : public UIElement {
+	public:
+		PolycodeProjectFrame(PolycodeProject *project, PolycodeEditorManager *editorManager);
+		~PolycodeProjectFrame();
+		
+		PolycodeProject *getProject();
+		
+		PolycodeProjectTab *addNewTab();
+		PolycodeProjectTab *getActiveTab();
+		
+		void Resize(Number width, Number height);
+		
+		EditorHolder *lastActiveEditorHolder;
+		
+	protected:
+	
+		PolycodeProject *project;
+	
+		PolycodeEditorManager *editorManager;
+		PolycodeProjectTab *activeTab;
+		std::vector<PolycodeProjectTab*> tabs;
+};
+
 
 class PolycodeFrame : public UIElement {
 public:
@@ -205,29 +250,32 @@ public:
 	
 	void showFileBrowser(String baseDir, bool foldersOnly, std::vector<String> extensions, bool allowMultiple);
 
-	void handleEvent(Event *event);
-	
-	void addEditor(PolycodeEditor *editor);
-	void removeEditor(PolycodeEditor *editor);
-		
-	void showEditor(PolycodeEditor *editor);
-	
+	void handleEvent(Event *event);	
 	void showAssetBrowser(std::vector<String> extensions);
+	
+	PolycodeProjectBrowser *getCurrentProjectBrowser();
+	PolycodeProjectFrame *getActiveProjectFrame();	
+	PolycodeProjectFrame *getProjectFrame(PolycodeProject *project);
+	
+	void removeProjectFrame(PolycodeProject *project);
+	
 	
 	void toggleConsole();
 	void showConsole();
 	void hideConsole();
 	
-	void showCurveEditor();
+	PolycodeProjectFrame *createProjectFrame(PolycodeProject *project);
+	void switchToProjectFrame(PolycodeProjectFrame *projectFrame);
 	
-	PolycodeProjectBrowser *getProjectBrowser();
+	UIVSizer *getConsoleSizer();
+	
+	void showCurveEditor();
 	
 	NewProjectWindow *newProjectWindow;	
 	ExampleBrowserWindow *exampleBrowserWindow;
 	NewFileWindow *newFileWindow;
 	ExportProjectWindow *exportProjectWindow;
-	SettingsWindow *settingsWindow;
-	
+	SettingsWindow *settingsWindow;	
 	AssetBrowser *assetBrowser;
 	
 	TextInputPopup *textInputPopup;
@@ -235,18 +283,14 @@ public:
 	YesNoCancelPopup *yesNoCancelPopup;
 	
 	Entity *welcomeEntity;	
-	PolycodeProjectBrowser *projectBrowser;
 	PolycodeEditorManager *editorManager;
 		
 	UIImageButton *playButton;
 	UIImageButton *stopButton;
-		
-	UIHSizer *mainSizer;
-	
-	PolycodeConsole *console;
-	
+			
 	PolycodeProjectManager *projectManager;
 		
+	PolycodeConsole *console;	
 	CurveEditor *curveEditor;
 	
 	UIElement *modalRoot;
@@ -257,20 +301,15 @@ public:
 	UIButton *aboutOKButton;
 	
 	void updateFileSelector();
-	void showNextEditor();
-	void showPreviousEditor();
-	
-	EditorHolder *editorHolder;	
 	
 private:
 	
-	int frameSizeX;
-	int frameSizeY;
-	
-	bool willHideModal;
-	
-	bool showingConsole;
 	Number consoleSize;
+				
+	UIVSizer *consoleSizer;
+	
+	bool willHideModal;	
+	bool showingConsole;
 
 	UIRect *fileDialogBlocker;
 
@@ -283,20 +322,19 @@ private:
 	UILabel *dragLabel;
 	bool isDragging;
 	
-	UIComboBox *currentProjectSelector;
-	
+	UIComboBox *currentProjectSelector;	
 	UIImage *welcomeImage;	
-
-	vector<PolycodeEditor*> editors;
 	
 	UIRect *modalBlocker;
 	UIWindow *modalChild;		
 	
-	UIVSizer *consoleSizer;
 	
 	UIButton *newProjectButton;
 	UIButton *examplesButton;
 	
 	bool displayFilePathInSelector;
+	
+	PolycodeProjectFrame* activeProjectFrame;
+	std::vector<PolycodeProjectFrame*> projectFrames;
 
 };

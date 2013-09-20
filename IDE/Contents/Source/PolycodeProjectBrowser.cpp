@@ -24,7 +24,7 @@
 
 extern UIGlobalMenu *globalMenu;
 
-PolycodeProjectBrowser::PolycodeProjectBrowser() : UIElement() {
+PolycodeProjectBrowser::PolycodeProjectBrowser(PolycodeProject *project) : UIElement() {
 
 	headerBg = new UIRect(10,10);
 	addChild(headerBg);
@@ -38,7 +38,7 @@ PolycodeProjectBrowser::PolycodeProjectBrowser() : UIElement() {
 	label->setPosition(10, 3);
 
 
-	treeContainer = new UITreeContainer("boxIcon.png", L"Projects", 200, 555);
+	treeContainer = new UITreeContainer("boxIcon.png", project->getProjectName(), 200, 555);
 	treeContainer->getRootNode()->toggleCollapsed();
 	treeContainer->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
 	treeContainer->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
@@ -48,19 +48,21 @@ PolycodeProjectBrowser::PolycodeProjectBrowser() : UIElement() {
 	data->type = 0;
 	data->parentProject = NULL;
 	treeContainer->getRootNode()->setUserData((void*) data)	;
-	
+
 	addChild(treeContainer);		
 	selectedData = NULL;
+	
+	parseFolderIntoNode(treeContainer->getRootNode(), project->getRootFolder(), project);
 }
 
 PolycodeProjectBrowser::~PolycodeProjectBrowser() {
 	
 }
 
-void PolycodeProjectBrowser::refreshProject(PolycodeProject *project) {
-	
-	UITree *projectTree = treeContainer->getRootNode();
-	
+void PolycodeProjectBrowser::Refresh() {
+// FIX
+/*	
+	UITree *projectTree = treeContainer->getRootNode();	
 	for(int i=0; i < projectTree->getNumTreeChildren(); i++) {
 		UITree *projectChild = projectTree->getTreeChild(i);
 		BrowserUserData *userData = (BrowserUserData*)projectChild->getUserData();
@@ -69,33 +71,7 @@ void PolycodeProjectBrowser::refreshProject(PolycodeProject *project) {
 			return;
 		}
 	}	
-	
-}
-
-void PolycodeProjectBrowser::removeProject(PolycodeProject *project) {
-	
-	UITree *projectTree = treeContainer->getRootNode();
-	
-	for(int i=0; i < projectTree->getNumTreeChildren(); i++) {
-		UITree *projectChild = projectTree->getTreeChild(i);
-		BrowserUserData *userData = (BrowserUserData*)projectChild->getUserData();
-		if(userData->parentProject == project) {
-			projectTree->removeTreeChild(projectChild);
-			return;
-		}
-	}
-}
-
-void PolycodeProjectBrowser::addProject(PolycodeProject *project) {
-	UITree *projectTree = treeContainer->getRootNode()->addTreeChild("projectIcon.png", project->getProjectName(), (void*) project);
-	projectTree->toggleCollapsed();
-	
-	BrowserUserData *data = new BrowserUserData();
-	data->type = 3;
-	data->parentProject = project;
-	projectTree->setUserData((void*) data)	;
-	
-	parseFolderIntoNode(projectTree, project->getRootFolder(), project);	
+*/	
 }
 
 void PolycodeProjectBrowser::handleEvent(Event *event) {

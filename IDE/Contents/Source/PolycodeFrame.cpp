@@ -481,9 +481,10 @@ CurveEditor::~CurveEditor() {
 
 }
 
-EditorHolder::EditorHolder(PolycodeEditorManager *editorManager, EditorHolder *parentHolder) : UIElement() {
+EditorHolder::EditorHolder(PolycodeProject *project, PolycodeEditorManager *editorManager, EditorHolder *parentHolder) : UIElement() {
 	this->editorManager = editorManager;
 	this->parentHolder = parentHolder;
+	this->project = project;
 	
 	currentEditor = NULL;
 	
@@ -554,30 +555,32 @@ void EditorHolder::updateFileSelector() {
 	currentFileSelector->removeAllHandlersForListener(this);
 	currentFileSelector->clearItems();
 	
-	for(int i=0; i < editorManager->openEditors.size(); i++) {
-		OSFileEntry entry(editorManager->openEditors[i]->getFilePath(), OSFileEntry::TYPE_FILE);
+	std::vector<PolycodeEditor*> editors = editorManager->getOpenEditorsForProject(project);
+	
+	for(int i=0; i < editors.size(); i++) {
+		OSFileEntry entry(editors[i]->getFilePath(), OSFileEntry::TYPE_FILE);
 		
-		String projName = editorManager->openEditors[i]->parentProject->getProjectName();
-		String rootFolder = editorManager->openEditors[i]->parentProject->getRootFolder();
-		String filePath = editorManager->openEditors[i]->getFilePath();
+		String projName = editors[i]->parentProject->getProjectName();
+		String rootFolder = editors[i]->parentProject->getRootFolder();
+		String filePath = editors[i]->getFilePath();
 		
 		String fullEntry = filePath;
 		if(filePath.find(rootFolder) != -1) {
 			fullEntry = projName + filePath.substr(rootFolder.size(), filePath.size()-1);
 		}
-		if(editorManager->openEditors[i]->hasChanges()) {
+		if(editors[i]->hasChanges()) {
 			if (displayFilePathInSelector)
-				currentFileSelector->addComboItem("* "+fullEntry);
+				currentFileSelector->addComboItem("* "+fullEntry, (void*)editors[i]);
 			else
-				currentFileSelector->addComboItem("* "+entry.name);
+				currentFileSelector->addComboItem("* "+entry.name, (void*)editors[i]);
 		} else {
 			if (displayFilePathInSelector)
-				currentFileSelector->addComboItem(fullEntry);
+				currentFileSelector->addComboItem(fullEntry, (void*)editors[i]);
 			else
-				currentFileSelector->addComboItem(entry.name);
+				currentFileSelector->addComboItem(entry.name, (void*)editors[i]);
 		}
 		
-		if(currentEditor == editorManager->openEditors[i]) {
+		if(currentEditor == editors[i]) {
 			if(!initialUpdate) {
 				currentFileSelector->setSelectedIndex(i);
 			}
@@ -640,13 +643,13 @@ void EditorHolder::handleEvent(Event *event) {
 		
 		vSizer = new UIVSizer(getWidth(), getHeight(), getHeight()/2.0, true);
 		addChild(vSizer);
-		firstChildHolder = new EditorHolder(editorManager, this);
+		firstChildHolder = new EditorHolder(project, editorManager, this);
 		firstChildHolder->addEventListener(this, UIEvent::CLOSE_EVENT);
 		vSizer->addTopChild(firstChildHolder);		
 		if(isActive) {
 			firstChildHolder->setActive(true);
 		}		
-		secondChildHolder = new EditorHolder(editorManager, this);
+		secondChildHolder = new EditorHolder(project, editorManager, this);
 		secondChildHolder->addEventListener(this, UIEvent::CLOSE_EVENT);
 		vSizer->addBottomChild(secondChildHolder);
 		
@@ -664,10 +667,10 @@ void EditorHolder::handleEvent(Event *event) {
 		
 		hSizer = new UIHSizer(getWidth(), getHeight(), getWidth()/2.0, true);
 		addChild(hSizer);
-		firstChildHolder = new EditorHolder(editorManager, this);
+		firstChildHolder = new EditorHolder(project, editorManager, this);
 		firstChildHolder->addEventListener(this, UIEvent::CLOSE_EVENT);		
 		hSizer->addLeftChild(firstChildHolder);
-		secondChildHolder = new EditorHolder(editorManager, this);
+		secondChildHolder = new EditorHolder(project, editorManager, this);
 		secondChildHolder->addEventListener(this, UIEvent::CLOSE_EVENT);		
 		hSizer->addRightChild(secondChildHolder);
 		if(isActive) {
@@ -683,7 +686,7 @@ void EditorHolder::handleEvent(Event *event) {
 				
 								
 	} else if(event->getDispatcher() == currentFileSelector) {
-		PolycodeEditor *editor = editorManager->openEditors[currentFileSelector->getSelectedIndex()];		
+		PolycodeEditor *editor = (PolycodeEditor*) currentFileSelector->getSelectedItem()->data;
 		if(currentEditor != editor) {
 			setEditor(editor);
 		}
@@ -808,11 +811,86 @@ void EditorHolder::Resize(Number width, Number height) {
 	UIElement::Resize(width, height);
 }
 
+PolycodeProjectTab::PolycodeProjectTab(PolycodeProject *project, PolycodeEditorManager *editorManager) : UIElement() {
+	this->editorManager = editorManager;
+
+	editorHolder = new EditorHolder(project, editorManager, NULL);
+	editorHolder->setActive(true);
+	
+	mainSizer = new UIHSizer(100,100,200,true);
+	addChild(mainSizer);					
+	projectBrowser = new PolycodeProjectBrowser(project);
+	mainSizer->addLeftChild(projectBrowser);
+	mainSizer->addRightChild(editorHolder);
+
+	projectBrowser->treeContainer->getRootNode()->addEventListener(this, UITreeEvent::DRAG_START_EVENT);
+}
+
+void PolycodeProjectTab::Resize(Number width, Number height) {
+	mainSizer->Resize(width, height);
+	UIElement::Resize(width, height);
+}
+
+EditorHolder *PolycodeProjectTab::getEditorHolder() {
+	return editorHolder;
+}
+
+void PolycodeProjectTab::showEditor(PolycodeEditor *editor) {
+	if(activeEditorHolder->getEditor()) {
+		activeEditorHolder->setEditor(NULL);
+	}
+	
+	activeEditorHolder->setEditor(editor);
+	editor->Activate();
+	Resize(getWidth(), getHeight());
+}
+
+PolycodeProjectBrowser *PolycodeProjectTab::getProjectBrowser() {
+	return projectBrowser;
+}
+
+PolycodeProjectTab::~PolycodeProjectTab() {
+
+}
+
+PolycodeProjectFrame::PolycodeProjectFrame(PolycodeProject *project, PolycodeEditorManager *editorManager) {
+	this->editorManager = editorManager;
+	this->project = project;
+	lastActiveEditorHolder = NULL;
+	activeTab = addNewTab();
+}
+
+PolycodeProjectTab *PolycodeProjectFrame::getActiveTab() {
+	return activeTab;
+}
+
+PolycodeProjectTab *PolycodeProjectFrame::addNewTab() {
+	PolycodeProjectTab *newTab = new PolycodeProjectTab(project, editorManager);
+	tabs.push_back(newTab);
+	addChild(newTab);
+	return newTab;
+}
+
+PolycodeProject *PolycodeProjectFrame::getProject() {
+	return project;
+}
+
+void PolycodeProjectFrame::Resize(Number width, Number height) {
+	activeTab->Resize(width, height);
+}
+
+PolycodeProjectFrame::~PolycodeProjectFrame() {
+
+}
+
 
 PolycodeFrame::PolycodeFrame(PolycodeEditorManager *editorManager) : UIElement() {
 
 	this->editorManager = editorManager;
 
+	activeProjectFrame = NULL;
+	consoleSize = 200;
+	
 	globalFrame = this;
 	processInputEvents = true;
 	willHideModal = false;
@@ -837,27 +915,11 @@ PolycodeFrame::PolycodeFrame(PolycodeEditorManager *editorManager) : UIElement()
 	welcomeEntity->addChild(newProjectButton);
 	welcomeEntity->addChild(examplesButton);
 	
-	mainSizer = new UIHSizer(100,100,200,true);
-	mainSizer->setPosition(0, 45);
-	addChild(mainSizer);
-
-	consoleSize = 200;
-
 	consoleSizer = new UIVSizer(100,100,200, false);
-	mainSizer->addRightChild(consoleSizer);	
-				
-	projectBrowser = new PolycodeProjectBrowser();
-	mainSizer->addLeftChild(projectBrowser);
-
-	editorHolder = new EditorHolder(editorManager, NULL);
-	editorHolder->setActive(true);
-	
-	consoleSizer->addTopChild(editorHolder);
-	
 	console = new PolycodeConsole();	
-	consoleSizer->addBottomChild(console);	
-		
-	projectBrowser->treeContainer->getRootNode()->addEventListener(this, UITreeEvent::DRAG_START_EVENT);
+	consoleSizer->addBottomChild(console);
+	addChild(consoleSizer);
+	consoleSizer->setPosition(0.0, 45);
 	
 	topBarBg = new UIRect(2,2);
 	topBarBg->setColorInt(21, 18, 17, 255);
@@ -1014,43 +1076,12 @@ void PolycodeFrame::showModal(UIWindow *modalChild) {
 	modalRoot->addChild(modalChild);
 	modalChild->showWindow();
 	modalChild->addEventListener(this, UIEvent::CLOSE_EVENT);
-	Resize(frameSizeX, frameSizeY);
+	Resize(getWidth(), getHeight());
 	
 	if(modalChild == yesNoPopup) {
 		yesNoPopup->focusChild(yesNoPopup->okButton);
 	}
 	CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_ARROW);	
-}
-
-PolycodeProjectBrowser *PolycodeFrame::getProjectBrowser() {
-	return projectBrowser;
-}
-
-void PolycodeFrame::removeEditor(PolycodeEditor *editor) {
-	for(int i=0; i < editors.size(); i++) {
-		if(editors[i] == editor) {
-			editors.erase(editors.begin()+i);
-			editorHolder->removeChild(editor);
-			if(editor == editorHolder->getEditor()) {
-				editorHolder->setEditor(NULL);
-			}
-			return;
-		}
-	}
-}
-
-void PolycodeFrame::addEditor(PolycodeEditor *editor) {
-	editors.push_back(editor);
-}
-
-void PolycodeFrame::showEditor(PolycodeEditor *editor) {
-	if(activeEditorHolder->getEditor()) {
-		activeEditorHolder->setEditor(NULL);
-	}
-	
-	activeEditorHolder->setEditor(editor);
-	editor->Activate();
-	Resize(frameSizeX, frameSizeY);
 }
 
 void PolycodeFrame::hideModal() {
@@ -1175,19 +1206,20 @@ void PolycodeFrame::handleEvent(Event *event) {
 						updateFileSelector();
 					}
 				} else if (input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL)) {
-					InputEvent *inEv = (InputEvent*)event;
-					if (inEv->getKey() == KEY_TAB) {
-						showNextEditor();
-					} else if (inEv->getKey() == KEY_SLASH) {
-						displayFilePathInSelector = (displayFilePathInSelector ? false : true);
-						updateFileSelector();
-					}
+//					InputEvent *inEv = (InputEvent*)event;
+//					if (inEv->getKey() == KEY_TAB) {
+//						showNextEditor();
+//					} else if (inEv->getKey() == KEY_SLASH) {
+//						displayFilePathInSelector = (displayFilePathInSelector ? false : true);
+//						updateFileSelector();
+//					}
 				}
 			break;
 				
 		}
 	}
 
+/*
 	if(event->getDispatcher() == projectBrowser->treeContainer->getRootNode()) {
 		switch (event->getEventCode()) {
 			case UITreeEvent::DRAG_START_EVENT:
@@ -1203,6 +1235,7 @@ void PolycodeFrame::handleEvent(Event *event) {
 			break;
 		}
 	}
+*/
 
 	if(event->getDispatcher() == modalChild) {
 		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLOSE_EVENT) {
@@ -1224,18 +1257,23 @@ void PolycodeFrame::handleEvent(Event *event) {
 	}
 }
 
+PolycodeProjectBrowser *PolycodeFrame::getCurrentProjectBrowser() {
+	if(activeProjectFrame) {
+		return activeProjectFrame->getActiveTab()->getProjectBrowser();
+	} else {
+		return NULL;
+	}
+}
+
 void PolycodeFrame::Resize(int x, int y) {	
-	
-	frameSizeX = x;
-	frameSizeY = y;
-	
+		
 	welcomeEntity->setPosition((x-welcomeImage->getWidth()) / 2,
 		(y-welcomeImage->getHeight()) / 2); 
 	
 	topBarBg->Resize(x, 45);
 	logo->setPosition(x-logo->getWidth()-2, 2);
 	resizer->setPosition(x-resizer->getWidth()-1, y-resizer->getHeight()-1);	
-	mainSizer->Resize(x,y-45);	
+	consoleSizer->Resize(x,y-45);	
 	
 	modalBlocker->Resize(x, y);
 	fileDialogBlocker->Resize(x, y);
@@ -1243,29 +1281,64 @@ void PolycodeFrame::Resize(int x, int y) {
 	if(this->modalChild) {
 		modalChild->setPosition((x-modalChild->getWidth())/2.0f, (y-modalChild->getHeight())/2.0f);
 	}
+	
+	UIElement::Resize(x, y);
+}
+
+void PolycodeFrame::removeProjectFrame(PolycodeProject *project) {
+
+}
+
+PolycodeProjectFrame *PolycodeFrame::getActiveProjectFrame() {
+	return activeProjectFrame;
 }
 
 PolycodeFrame::~PolycodeFrame() {
 	
 }
 
-void PolycodeFrame::showNextEditor() {
-/*
-	if (currentFileSelector->getSelectedIndex() == currentFileSelector->getNumItems()-1)
-		currentFileSelector->setSelectedIndex(0);
-	else
-		currentFileSelector->setSelectedIndex(currentFileSelector->getSelectedIndex()+1);
-		*/
+UIVSizer *PolycodeFrame::getConsoleSizer() {
+	return consoleSizer;
 }
-void PolycodeFrame::showPreviousEditor() {
-/*
-	if (currentFileSelector->getSelectedIndex() == 0)
-		currentFileSelector->setSelectedIndex(currentFileSelector->getNumItems()-1);
-	else
-		currentFileSelector->setSelectedIndex(currentFileSelector->getSelectedIndex()-1);
-		*/
+
+PolycodeProjectFrame *PolycodeFrame::createProjectFrame(PolycodeProject *project) {
+	PolycodeProjectFrame *newProjectFrame = new PolycodeProjectFrame(project, editorManager);
+	projectFrames.push_back(newProjectFrame);	
+	switchToProjectFrame(newProjectFrame);
+	return newProjectFrame;
+}
+
+void PolycodeFrame::switchToProjectFrame(PolycodeProjectFrame *projectFrame) {
+	if(projectFrame == activeProjectFrame) {
+		return;
+	}
+	if(activeProjectFrame) {
+		consoleSizer->removeTopChild();
+		if(editorManager->getCurrentEditor()) {
+			activeProjectFrame->lastActiveEditorHolder = editorManager->getCurrentEditor()->getEditorHolder();
+		}
+	} 
+	activeProjectFrame = projectFrame;
+	consoleSizer->addTopChild(activeProjectFrame);
+	if(activeProjectFrame->lastActiveEditorHolder) {
+		activeProjectFrame->lastActiveEditorHolder->setActive(true);
+	} else {
+		activeProjectFrame->getActiveTab()->getEditorHolder()->setActive(true);
+	}
+	Resize(getWidth(), getHeight());	
+}
+
+PolycodeProjectFrame *PolycodeFrame::getProjectFrame(PolycodeProject *project) {
+	for(int i=0; i < projectFrames.size(); i++) {
+		if(projectFrames[i]->getProject() == project) {
+			return projectFrames[i];
+		}
+	}
+	return NULL;
 }
 
 void PolycodeFrame::updateFileSelector() {
-	editorHolder->updateFileSelector();
+	if(activeProjectFrame)  {
+		activeProjectFrame->getActiveTab()->getEditorHolder()->updateFileSelector();
+	}
 }

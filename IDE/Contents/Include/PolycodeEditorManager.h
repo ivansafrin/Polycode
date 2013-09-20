@@ -45,6 +45,8 @@ class PolycodeEditorManager : public EventDispatcher {
 		void setCurrentEditor(PolycodeEditor *editor, bool sendChangeEvent = true);
 		PolycodeEditor *getCurrentEditor() { return currentEditor; }
 		
+		std::vector<PolycodeEditor*> getOpenEditorsForProject(PolycodeProject *project);
+		
 		void saveAll();
 		
 		bool hasUnsavedFiles();

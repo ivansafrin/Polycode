@@ -38,7 +38,6 @@ class PolycodeProjectManager : public EventDispatcher {
 	
 	void createNewProject(String templateFolder, String projectName, String projectLocation);
 	PolycodeProject* openProject(String path);
-	void setProjectBrowser(PolycodeProjectBrowser *projectBrowser) { this->projectBrowser = projectBrowser; }
 	
 	PolycodeProject* getActiveProject() { return activeProject; }
 	void setActiveProject(PolycodeProject* project);
@@ -59,9 +58,7 @@ class PolycodeProjectManager : public EventDispatcher {
 protected:
 	
 	
-	PolycodeProject* activeProject;
-	
-	PolycodeProjectBrowser *projectBrowser;
+	PolycodeProject* activeProject;;
 	vector<PolycodeProject*> projects;
 	
 };	

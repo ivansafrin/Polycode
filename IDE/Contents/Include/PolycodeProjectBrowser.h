@@ -51,17 +51,15 @@ class PolycodeProjectBrowserEvent : public Event {
 
 class PolycodeProjectBrowser : public UIElement {
 public:
-	PolycodeProjectBrowser();
+	PolycodeProjectBrowser(PolycodeProject *project);
 	~PolycodeProjectBrowser();
 	
 	void Resize(Number width, Number height);
-	void addProject(PolycodeProject *project);
-	void removeProject(PolycodeProject *project);
 	
 	UITree *nodeHasName(UITree *node, String name);
 	bool listHasFileEntry(vector<OSFileEntry> files, OSFileEntry fileEntry);
 	
-	void refreshProject(PolycodeProject *project);
+	void Refresh();
 	
 	void handleEvent(Event *event);
 	

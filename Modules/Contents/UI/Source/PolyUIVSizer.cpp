@@ -158,6 +158,28 @@ void UIVSizer::addBottomChild(UIElement *element) {
 	updateSizer();
 }
 
+void UIVSizer::removeTopChild() {
+	if(firstElement) {
+		childElements->removeChild(firstElement);
+		firstElement = NULL;
+	}
+}
+
+void UIVSizer::removeBottomChild() {
+	if(secondElement) {
+		childElements->removeChild(secondElement);
+		secondElement = NULL;
+	}
+}
+
+UIElement *UIVSizer::getTopChild() {
+	return firstElement;
+}
+
+UIElement *UIVSizer::getBottomChild() {
+	return secondElement;
+}
+
 void UIVSizer::updateSizer() {
 
 	if(topSizer) {

@@ -41,6 +41,12 @@ namespace Polycode {
 			
 			void addLeftChild(UIElement *element);
 			void addRightChild(UIElement *element);			
+			
+			UIElement *getLeftChild();
+			UIElement *getRightChild();	
+			void removeLeftChild();
+			void removeRightChild();
+						
 			void Resize(Number width, Number height);
 			
 			void updateSizer();

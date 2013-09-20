@@ -43,6 +43,11 @@ namespace Polycode {
 			void addBottomChild(UIElement *element);			
 			void Resize(Number width, Number height);
 			
+			UIElement *getTopChild();
+			UIElement *getBottomChild();	
+			void removeTopChild();
+			void removeBottomChild();
+			
 			void updateSizer();
 			
 		protected:
