@@ -89,8 +89,8 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 			break;
 		}
 		case ENTITY_EDGE: {
-			b2PolygonShape Shape;	
-			Shape.SetAsEdge(b2Vec2(-screenEntity->getWidth()/(worldScale*2.0f),-screenEntity->getHeight()/(2.0*worldScale)),
+			b2EdgeShape Shape;
+			Shape.Set(b2Vec2(-screenEntity->getWidth()/(worldScale*2.0f),-screenEntity->getHeight()/(2.0*worldScale)),
 							b2Vec2(screenEntity->getWidth()/(worldScale*2.0f),-screenEntity->getHeight()/(2.0*worldScale)));
 			fDef.shape = &Shape;
 			fixture = body->CreateFixture(&fDef);

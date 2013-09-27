@@ -81,7 +81,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 #	if prefix != "Polycode":
 #		cppRegisterOut += "CoreServices *inst = (CoreServices*) *((void**)lua_touserdata(L, 1));\n"
 #		cppRegisterOut += "CoreServices::setInstance(inst);\n"
-	cppRegisterOut += "\tstatic const struct luaL_reg %sLib [] = {" % (libSmallName)
+	cppRegisterOut += "\tstatic const struct luaL_Reg %sLib [] = {" % (libSmallName)
 	
 	wrappersHeaderOut += "#pragma once\n\n"
 
@@ -132,9 +132,9 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 		wrappersHeaderOut += "public:\n"
 		wrappersHeaderOut += "	LuaEventHandler() : EventHandler() {}\n"
 		wrappersHeaderOut += "	void handleEvent(Event *e) {\n"
-		wrappersHeaderOut += "		lua_getfield (L, LUA_GLOBALSINDEX, \"__customError\");\n"
+		wrappersHeaderOut += "		lua_getglobal(L, \"__customError\");\n"
 		wrappersHeaderOut += "		int errH = lua_gettop(L);\n"
-		wrappersHeaderOut += "		lua_getfield(L, LUA_GLOBALSINDEX, \"__handleEvent\");\n"
+		wrappersHeaderOut += "		lua_getglobal(L, \"__handleEvent\");\n"
 		wrappersHeaderOut += "		lua_rawgeti( L, LUA_REGISTRYINDEX, wrapperIndex );\n"
 		wrappersHeaderOut += "		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));\n"
 		wrappersHeaderOut += "		*userdataPtr = (PolyBase*)e;\n"
@@ -788,7 +788,15 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 	
 	cppRegisterOut += "\t\t{NULL, NULL}\n"
 	cppRegisterOut += "\t};\n"
-	cppRegisterOut += "\tluaL_openlib(L, \"%s\", %sLib, 0);\n" % (libName, libSmallName)
+
+
+	cppRegisterOut += "\t//luaL_openlib(L, \"%s\", %sLib, 0);\n" % (libName, libSmallName)
+	cppRegisterOut += "\tlua_getglobal(L, \"%s\");\n" % (libName)
+	cppRegisterOut += "\tif (lua_isnil(L, -1)) {\n\t\tlua_pop(L, 1);\n\t\tlua_newtable(L);\n\t}\n"
+	cppRegisterOut += "\tluaL_setfuncs(L, %sLib, 0);\n" % (libSmallName)
+	cppRegisterOut += "\tlua_setglobal(L, \"%s\");\n\n" % (libName)
+
+
 	cppRegisterOut += cppLoaderOut
 	cppRegisterOut += "\treturn 1;\n"
 	cppRegisterOut += "}"
