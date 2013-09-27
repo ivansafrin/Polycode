@@ -303,13 +303,13 @@ extern "C" {
 		
 		Logger::log("Running %s\n", fileName.c_str());
 		
-		L=luaL_newstate();
+		L=lua_open();
 		
 		luaL_openlibs(L);		
 		luaopen_debug(L);		
 		luaopen_Polycode(L);
 				
-		lua_getglobal(L, "package");                    // push "package"
+		lua_getfield(L, LUA_GLOBALSINDEX, "package");	// push "package"
 		lua_getfield(L, -1, "loaders");					// push "package.loaders"
 		lua_remove(L, -2);								// remove "package"
 		
@@ -336,31 +336,31 @@ extern "C" {
 
 		lua_register(L, "__are_same_c_class", areSameCClass);
 		
-		lua_getglobal(L, "require");
+		lua_getfield(L, LUA_GLOBALSINDEX, "require");
 		lua_pushstring(L, "class");		
 		lua_call(L, 1, 0);
 
-		lua_getglobal(L, "require");
+		lua_getfield(L, LUA_GLOBALSINDEX, "require");
 		lua_pushstring(L, "Polycode");		
 		lua_call(L, 1, 0);		
 
-		lua_getglobal(L, "require");
+		lua_getfield(L, LUA_GLOBALSINDEX, "require");
 		lua_pushstring(L, "Physics2D");		
 		lua_call(L, 1, 0);		
 
-		lua_getglobal(L, "require");
+		lua_getfield(L, LUA_GLOBALSINDEX, "require");
 		lua_pushstring(L, "Physics3D");		
 		lua_call(L, 1, 0);		
 
-		lua_getglobal(L, "require");
+		lua_getfield(L, LUA_GLOBALSINDEX, "require");
 		lua_pushstring(L, "UI");		
 		lua_call(L, 1, 0);		
 
-		lua_getglobal(L, "require");
+		lua_getfield(L, LUA_GLOBALSINDEX, "require");
 		lua_pushstring(L, "tweens");		
 		lua_call(L, 1, 0);
 		
-		lua_getglobal(L, "require");
+		lua_getfield(L, LUA_GLOBALSINDEX, "require");
 		lua_pushstring(L, "defaults");		
 		lua_call(L, 1, 0);
 		
@@ -387,12 +387,12 @@ extern "C" {
 	#endif
 #endif
 			String moduleLoadCall = String("luaopen_") + moduleName;
-			lua_getglobal(L, "require");
+			lua_getfield(L, LUA_GLOBALSINDEX, "require");
 			lua_pushstring(L, moduleName.c_str());		
 			lua_call(L, 1, 0);
 
 			printf("LOADING MODULE %s\n", moduleDestPath.c_str());
-			lua_getglobal(L, "package");
+			lua_getfield(L, LUA_GLOBALSINDEX, "package");
 			lua_getfield(L, -1, "loadlib");	
 			lua_pushstring(L, moduleDestPath.c_str());
 			lua_pushstring(L, moduleLoadCall.c_str());			
@@ -401,13 +401,13 @@ extern "C" {
 			lua_setfield(L, LUA_GLOBALSINDEX, "err");								
 			lua_setfield(L, LUA_GLOBALSINDEX, "f");		
 
-//			lua_getglobal(L, "print");
-//			lua_getglobal(L, "err");						
+//			lua_getfield(L, LUA_GLOBALSINDEX, "print");
+//			lua_getfield(L, LUA_GLOBALSINDEX, "err");						
 //			lua_call(L, 1, 0);						
 
 			printf("SETTING CORE SERVICES\n");			
-			lua_getglobal(L, "f");
-			lua_getglobal(L, "__core__services__instance");						
+			lua_getfield(L, LUA_GLOBALSINDEX, "f");
+			lua_getfield(L, LUA_GLOBALSINDEX, "__core__services__instance");						
 			lua_call(L, 1, 0);			
 			
 			printf("DONE LOADING MODULE...\n");				
@@ -419,7 +419,7 @@ extern "C" {
 
 		doneLoading = true;
 		
-		lua_getglobal(L, "__customError");
+		lua_getfield (L, LUA_GLOBALSINDEX, "__customError");
 		errH = lua_gettop(L);
 
 		// MyLoader appends '.lua' so strip it if already present
@@ -427,7 +427,7 @@ extern "C" {
 		String stripped = fileName;
 		if (pos > -1 && pos == fileName.length() - 4) stripped = fileName.substr(0, pos);
 		
-		lua_getglobal(L, "require");
+		lua_getfield(L, LUA_GLOBALSINDEX, "require");
 		lua_pushstring(L, stripped.c_str());		
 		if (lua_pcall(L, 1,0,errH)) {
 			Logger::log("CRASH EXECUTING FILE\n");
@@ -783,9 +783,9 @@ void PolycodePlayer::handleEvent(Event *event) {
 			case InputEvent::EVENT_KEYDOWN:
 			{
 				if(L && !crashed) {
-					lua_getglobal(L, "__customError");
+					lua_getfield (L, LUA_GLOBALSINDEX, "__customError");
 					errH = lua_gettop(L);					
-					lua_getglobal(L, "onKeyDown");
+					lua_getfield(L, LUA_GLOBALSINDEX, "onKeyDown");
 					lua_pushinteger(L, inputEvent->keyCode());
 					lua_pcall(L, 1,0,errH);
 					lua_settop(L, 0);
@@ -795,9 +795,9 @@ void PolycodePlayer::handleEvent(Event *event) {
 			case InputEvent::EVENT_KEYUP:
 			{
 				if(L && !crashed) {
-					lua_getglobal(L, "__customError");
+					lua_getfield (L, LUA_GLOBALSINDEX, "__customError");
 					errH = lua_gettop(L);									
-					lua_getglobal(L, "onKeyUp");
+					lua_getfield(L, LUA_GLOBALSINDEX, "onKeyUp");
 					lua_pushinteger(L, inputEvent->keyCode());
 					lua_pcall(L, 1,0,errH);
 					lua_settop(L, 0);								
@@ -807,9 +807,9 @@ void PolycodePlayer::handleEvent(Event *event) {
 			case InputEvent::EVENT_MOUSEDOWN:
 			{
 				if(L && !crashed) {
-					lua_getglobal(L, "__customError");
+					lua_getfield (L, LUA_GLOBALSINDEX, "__customError");
 					errH = lua_gettop(L);									
-					lua_getglobal(L, "onMouseDown");
+					lua_getfield(L, LUA_GLOBALSINDEX, "onMouseDown");
 					lua_pushinteger(L, inputEvent->mouseButton);
 					lua_pushnumber(L, inputEvent->mousePosition.x);
 					lua_pushnumber(L, inputEvent->mousePosition.y);	
@@ -821,9 +821,9 @@ void PolycodePlayer::handleEvent(Event *event) {
 			case InputEvent::EVENT_MOUSEUP:
 			{
 				if(L && !crashed) {
-					lua_getglobal(L, "__customError");
+					lua_getfield (L, LUA_GLOBALSINDEX, "__customError");
 					errH = lua_gettop(L);									
-					lua_getglobal(L, "onMouseUp");
+					lua_getfield(L, LUA_GLOBALSINDEX, "onMouseUp");
 					lua_pushinteger(L, inputEvent->mouseButton);
 					lua_pushnumber(L, inputEvent->mousePosition.x);
 					lua_pushnumber(L, inputEvent->mousePosition.y);		
@@ -835,9 +835,9 @@ void PolycodePlayer::handleEvent(Event *event) {
 			case InputEvent::EVENT_MOUSEMOVE:
 			{
 				if(L && !crashed) {
-					lua_getglobal(L, "__customError");
+					lua_getfield (L, LUA_GLOBALSINDEX, "__customError");
 					errH = lua_gettop(L);									
-					lua_getglobal(L, "onMouseMove");
+					lua_getfield(L, LUA_GLOBALSINDEX, "onMouseMove");
 					lua_pushnumber(L, inputEvent->mousePosition.x);
 					lua_pushnumber(L, inputEvent->mousePosition.y);	
 					lua_pcall(L, 2,0,errH);					
@@ -848,9 +848,9 @@ void PolycodePlayer::handleEvent(Event *event) {
 			case InputEvent::EVENT_JOYBUTTON_DOWN:
 			{
 				if(L && !crashed) {
-					lua_getglobal(L, "__customError");
+					lua_getfield (L, LUA_GLOBALSINDEX, "__customError");
 					errH = lua_gettop(L);									
-					lua_getglobal(L, "onJoystickButtonDown");
+					lua_getfield(L, LUA_GLOBALSINDEX, "onJoystickButtonDown");
 					lua_pushnumber(L, inputEvent->joystickIndex);
 					lua_pushnumber(L, inputEvent->joystickButton);
 					lua_pcall(L, 2,0,errH);	
@@ -861,9 +861,9 @@ void PolycodePlayer::handleEvent(Event *event) {
 			case InputEvent::EVENT_JOYBUTTON_UP:
 			{
 				if(L && !crashed) {
-					lua_getglobal(L, "__customError");
+					lua_getfield (L, LUA_GLOBALSINDEX, "__customError");
 					errH = lua_gettop(L);									
-					lua_getglobal(L, "onJoystickButtonUp");
+					lua_getfield(L, LUA_GLOBALSINDEX, "onJoystickButtonUp");
 					lua_pushnumber(L, inputEvent->joystickIndex);
 					lua_pushnumber(L, inputEvent->joystickButton);
 					lua_pcall(L, 2,0,errH);	
@@ -874,9 +874,9 @@ void PolycodePlayer::handleEvent(Event *event) {
 			case InputEvent::EVENT_JOYAXIS_MOVED:
 			{
 				if(L && !crashed) {
-					lua_getglobal(L, "__customError");
+					lua_getfield (L, LUA_GLOBALSINDEX, "__customError");
 					errH = lua_gettop(L);									
-					lua_getglobal(L, "onJoystickAxisMoved");
+					lua_getfield(L, LUA_GLOBALSINDEX, "onJoystickAxisMoved");
 					lua_pushnumber(L, inputEvent->joystickIndex);
 					lua_pushnumber(L, inputEvent->joystickAxis);
 					lua_pushnumber(L, inputEvent->joystickAxisValue);
@@ -893,7 +893,7 @@ void PolycodePlayer::handleEvent(Event *event) {
 bool PolycodePlayer::Update() {
 	bool retVal = core->Update();
 	if(L) {
-		lua_getglobal(L, "__customError");
+		lua_getfield (L, LUA_GLOBALSINDEX, "__customError");
 		errH = lua_gettop(L);	
 		if(doCodeInject) {
 			printf("INJECTING CODE:[%s]\n", injectCodeString.c_str());
@@ -903,10 +903,10 @@ bool PolycodePlayer::Update() {
 		}	
 		if(!crashed) {
 		
-			lua_getglobal(L, "__process_safe_delete");
+			lua_getfield(L, LUA_GLOBALSINDEX, "__process_safe_delete");
 			lua_pcall(L, 0,0,errH);	
 		
-			lua_getglobal(L, "__update");
+			lua_getfield(L, LUA_GLOBALSINDEX, "__update");
 			lua_pushnumber(L, core->getElapsed());
 			lua_pcall(L, 1,0,errH);
 		}

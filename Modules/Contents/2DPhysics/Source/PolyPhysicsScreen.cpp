@@ -215,8 +215,7 @@ void PhysicsScreen::init(Number worldScale, Number physicsTimeStep, int velItera
 	
 	b2Vec2 gravity(physicsGravity.x,physicsGravity.y);
 	bool doSleep = true;
-	world  = new b2World(gravity);
-    world->SetAllowSleeping(doSleep);
+	world  = new b2World(gravity, doSleep);
     
 	world->SetContactListener(this);
 }
