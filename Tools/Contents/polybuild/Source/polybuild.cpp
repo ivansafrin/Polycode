@@ -113,7 +113,7 @@ void addFileToZip(zipFile z, String filePath, String pathInZip, bool silent) {
 	bool isScript = (pos > -1 && pos == filePath.length() - 4) ? true : false;
 
 	if(isScript && getArg("--compileScripts") == "true") {
-		lua_State *L = lua_open();
+		lua_State *L = luaL_newstate();
 		int err = 1;
 		if(L && 0 == luaL_loadfile(L, filePath.c_str())) {
 			err = lua_dump(L, MyWriter, z);
