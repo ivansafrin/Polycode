@@ -149,6 +149,8 @@ namespace Polycode {
 		void soundCheck(bool result, const String& err);
 		static unsigned long readByte32(const unsigned char buffer[4]);		
 		static unsigned short readByte16(const unsigned char buffer[2]);
+		
+//		std::vector<Number> *getFloatBuffer();
 
 	protected:
 	
@@ -167,5 +169,6 @@ namespace Polycode {
 		ALuint soundSource;
 		int sampleLength;
 		
+//		std::vector<Number> floatBuffer;
 	};
 }

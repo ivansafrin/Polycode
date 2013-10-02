@@ -78,6 +78,11 @@ void Server::handleEvent(Event *event) {
 				world->getWorldState(client, &worldData, &worldDataSize);			
 				sendData(client->connection->address, (char*)worldData, worldDataSize, PACKET_TYPE_SERVER_DATA);			
 			}
+		} else {
+			for(int i=0; i < clients.size(); i++) {
+				client = clients[i];
+				sendData(client->connection->address, 0, 0, PACKET_TYPE_SERVER_DATA);			
+			}
 		}
 	}	
 	

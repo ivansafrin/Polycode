@@ -196,19 +196,44 @@ class PolycodeProjectTab : public UIElement {
 		PolycodeProjectTab(PolycodeProject *project, PolycodeEditorManager *editorManager);
 		~PolycodeProjectTab();
 		
+		void handleEvent(Event *event);
+		
 		EditorHolder *getEditorHolder();
-		void Resize(Number width, Number height);
-				
-		void showEditor(PolycodeEditor *editor);		
+		void Resize(Number width, Number height);				
+		void showEditor(PolycodeEditor *editor);
+		
+		void setActive(bool val);
+		bool isActive();
+		
+		String getTabName();
+		void setTabName(String newName);		
 		
 		PolycodeProjectBrowser *getProjectBrowser();
 			
 	protected:
 	
+		bool active;
+		String tabName;
 		UIHSizer *mainSizer;	
 		PolycodeProjectBrowser *projectBrowser;
 		EditorHolder *editorHolder;
 		PolycodeEditorManager *editorManager;
+};
+
+class PolycodeTabButton : public UIElement {
+	public:
+		PolycodeTabButton(PolycodeProjectTab *tab);
+		~PolycodeTabButton();
+
+		void setActive(bool val);
+		void handleEvent(Event *event);
+
+		PolycodeProjectTab *getTab();		
+	protected:
+		PolycodeProjectTab *tab;
+		UIRect *bgRect;
+		UILabel *tabLabel;
+	
 };
 
 class PolycodeProjectFrame : public UIElement {
@@ -219,7 +244,13 @@ class PolycodeProjectFrame : public UIElement {
 		PolycodeProject *getProject();
 		
 		PolycodeProjectTab *addNewTab();
+		
+		void showTab(PolycodeProjectTab *tab);
+		
 		PolycodeProjectTab *getActiveTab();
+		void handleEvent(Event *event);
+		
+		void restructTabs();
 		
 		void Resize(Number width, Number height);
 		
@@ -228,10 +259,15 @@ class PolycodeProjectFrame : public UIElement {
 	protected:
 	
 		PolycodeProject *project;
+		
+		UIElement *tabButtonAnchor;
+		
+		UIImageButton *newTabButton;
 	
 		PolycodeEditorManager *editorManager;
 		PolycodeProjectTab *activeTab;
-		std::vector<PolycodeProjectTab*> tabs;
+		std::vector<PolycodeProjectTab*> tabs;		
+		std::vector<PolycodeTabButton*> tabButtons;
 };
 
 

@@ -25,6 +25,15 @@
 
 using namespace Polycode;
 
+Ray::Ray() {
+	inv_direction = Vector3(1.0/direction.x, 1.0/direction.y, 1.0/direction.z);
+	sign[0] = (inv_direction.x < 0);
+	sign[1] = (inv_direction.y < 0);
+	sign[2] = (inv_direction.z < 0);
+	this->origin = origin;
+	this->direction = direction;
+}
+
 Ray::Ray(const Vector3 &origin, const Vector3 &direction) {
 	inv_direction = Vector3(1.0/direction.x, 1.0/direction.y, 1.0/direction.z);
 	sign[0] = (inv_direction.x < 0);

@@ -32,6 +32,7 @@ namespace Polycode {
 	*/
 	class _PolyExport Ray : public PolyBase {
 		public:
+			Ray();
 			Ray(const Vector3 &origin, const Vector3 &direction);
 	
 			bool boxIntersect(const Vector3 &box, const Matrix4 &transformMatrix, float near = 0.0, float far = 9999.0) const;			

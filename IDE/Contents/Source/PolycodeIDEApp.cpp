@@ -592,7 +592,6 @@ void PolycodeIDEApp::openFile(OSFileEntry file) {
 	if(editor) {
 		editorManager->setCurrentEditor(editor);
 	}
-		
 }
 
 void PolycodeIDEApp::handleEvent(Event *event) {

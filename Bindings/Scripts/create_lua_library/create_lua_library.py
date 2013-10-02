@@ -122,7 +122,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 
 	# list of classes that don't get the garbage collection in their meta table
 
-	disable_gc = ["Entity", "ScreenEntity", "ScreenShape", "ScreenMesh", "ScreenLine", "ScreenLabel", "SceneLabel", "SceneMesh", "Screen", "Scene", "Texture", "Image", "Camera", "ScreenParticleEmitter", "SceneParticleEmitter", "Mesh", "Vertex", "Polygon", "Polycode::Polygon", "Material", "ScenePrimitive", "SceneLine", "SceneLight", "SceneSound", "ScreenImage", "SceneEntity", "ScreenEntityInstance"]
+	disable_gc = ["Entity","SceneLabel", "SceneMesh", "Scene", "Texture", "Image", "Camera", "SceneParticleEmitter", "Mesh", "Vertex", "Polygon", "Polycode::Polygon", "Material", "ScenePrimitive", "SceneLine", "SceneLight", "SceneSound", "SceneImage", "SceneEntity", "SceneEntityInstance", "SceneSprite"]
 
 	# Special case: If we are building the Polycode library itself, inject the LuaEventHandler class.
 	# Note: so that event callbacks can work, any object inheriting from EventHandler will secretly
@@ -148,7 +148,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 	# Iterate, process each input file
 	for fileName in filteredFiles:
 		# "Package owned" classes that ship with Polycode
-		inheritInModule = ["PhysicsSceneEntity", "CollisionScene", "CollisionSceneEntity", "UIElement", "UIWindow", "UIMenuItem"]
+		inheritInModule = ["PhysicsEntity", "CollisionScene", "CollisionEntity", "UIElement", "UIWindow", "UIMenuItem"]
 		
 		# A file or comma-separated list of files can be given to specify classes which are "package owned"
 		# and should not be inherited out of Polycode/. The files should contain one class name per line,

@@ -31,11 +31,7 @@ Mesh *Particle::billboardMesh = 0;
 
 Particle::Particle(int particleType, bool isScreenParticle, Material *material, Texture *texture, Mesh *particleMesh) {
 	life = 0;
-	if(isScreenParticle) {
-		createScreenParticle(particleType, texture, particleMesh);		
-	} else {
-		createSceneParticle(particleType, material, particleMesh);
-	}
+	createSceneParticle(particleType, material, particleMesh);
 	
 	Reset(true);
 }

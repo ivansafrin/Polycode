@@ -124,6 +124,7 @@ void Scene::Update() {
 }
 
 Scene::~Scene() {
+	core->getInput()->removeAllHandlersForListener(this);
 	CoreServices::getInstance()->getSceneManager()->removeScene(this);	
 	delete defaultCamera;
 }

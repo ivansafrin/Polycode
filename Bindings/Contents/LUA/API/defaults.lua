@@ -69,9 +69,6 @@ Services.Config.__ptr = Polycore.CoreServices_getConfig(Polycore.CoreServices_ge
 Services.MaterialManager = MaterialManager("__skip_ptr__")
 Services.MaterialManager.__ptr = Polycore.CoreServices_getMaterialManager(Polycore.CoreServices_getInstance())
 
-Services.ScreenManager = ScreenManager("__skip_ptr__")
-Services.ScreenManager.__ptr = Polycore.CoreServices_getScreenManager(Polycore.CoreServices_getInstance())
-
 Services.SceneManager = SceneManager("__skip_ptr__")
 Services.SceneManager.__ptr = Polycore.CoreServices_getSceneManager(Polycore.CoreServices_getInstance())
 

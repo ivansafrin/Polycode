@@ -295,7 +295,6 @@ Number Sound::getMaxDistance() {
 	return maxDistance;
 }
 
-
 void Sound::setIsPositional(bool isPositional) {
 	this->isPositional = isPositional;
 	if(isPositional) {
@@ -392,6 +391,7 @@ ALuint Sound::loadBytes(const char *data, int size, int freq, int channels, int 
 }
 
 ALuint Sound::loadOGG(const String& fileName) {
+//	floatBuffer.clear();
 	vector<char> data;
 	
 	alGenBuffers(1, &buffer);
@@ -443,9 +443,20 @@ ALuint Sound::loadOGG(const String& fileName) {
 	sampleLength = data.size() / sizeof(unsigned short);
 	
 	alBufferData(buffer, format, &data[0], static_cast<ALsizei>(data.size()), freq);
-	
+/*	
+	int32_t *ptr32 = (int32_t*) &data[0];
+	for(int i=0; i < data.size()/2; i++ ) {
+		floatBuffer.push_back(((Number)ptr32[i])/((Number)INT32_MAX));
+	}	
+*/	
 	return buffer;
 }
+
+/*
+std::vector<Number> *Sound::getFloatBuffer() {
+	return &floatBuffer;
+}
+*/
 
 ALuint Sound::loadWAV(const String& fileName) {
 	long bytes;

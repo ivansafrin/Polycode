@@ -45,17 +45,19 @@ namespace Polycode {
 	*/ 
 	class _PolyExport Scene : public EventDispatcher {
 	public:
-		
-		/**
-		* Default constructor. Defaults to type Scene::SCENE_3D
-		*/
-		Scene();
+
 		/**
 		* Default constructor with options. 
 		* @param sceneType Type of scene to create. Can be Scene::SCENE_2D, Scene::SCENE_3D or Scene::SCENE_2D_TOPLEFT
 		* @param virtualScene If this flag is set to true, the scene is not rendered to the screen. Use this if you want to render the scene only to a texture.
 		*/		
 		Scene(int sceneType, bool virtualScene = false);
+				
+		/**
+		* Default constructor. Defaults to type Scene::SCENE_3D
+		*/
+		Scene();
+
 		virtual ~Scene();
 		
 		/**

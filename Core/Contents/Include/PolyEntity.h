@@ -650,8 +650,6 @@ namespace Polycode {
 			
 			Entity *getEntityById(String id, bool recursive) const;
 			std::vector<Entity*> getEntitiesByTag(String tag, bool recursive) const;
-						
-			Vector3 getChildCenter() const;
 			
 			std::vector <EntityProp> entityProps;
 			String getEntityProp(const String& propName);

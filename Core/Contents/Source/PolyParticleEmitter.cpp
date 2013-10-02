@@ -356,6 +356,11 @@ void ParticleEmitter::resetParticle(Particle *particle) {
 			
 }
 
+Vector3 SceneParticleEmitter::getParticleCompoundScale() {
+	return getCompoundScale();
+}
+
+
 Vector3 ParticleEmitter::getParticleCompoundScale() {
 	return Vector3();
 }

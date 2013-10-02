@@ -228,8 +228,6 @@ namespace Polycode {
 			Number particleSize;
 			
 			Texture *getParticleTexture() const;
-			
-			void setParticleTexture(Texture *texture);
 		
 			Vector3 emitterRadius;
 					

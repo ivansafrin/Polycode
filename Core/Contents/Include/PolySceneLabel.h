@@ -38,6 +38,9 @@ namespace Polycode {
 	class _PolyExport SceneLabel : public ScenePrimitive {
 		public:
 			
+			
+			SceneLabel(const String& text, int size, const String& fontName = "sans", int amode = 0, bool premultiplyAlpha = false);
+			
 			/**
 			* Constructor.
 			* @param fontName Name of a registered font to use. @see FontManager for info on how to register fonts.
@@ -48,8 +51,6 @@ namespace Polycode {
 			*/			
 			SceneLabel(const String& fontName, const String& text, int size, Number scale, int amode, bool premultiplyAlpha = false);
 			
-			SceneLabel(const String& text, int size, const String& fontName = "sans", int amode = 0, bool premultiplyAlpha = false);
-
 			String getText();
 			
 			void Render();

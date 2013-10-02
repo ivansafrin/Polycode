@@ -30,7 +30,8 @@ PolycodeRemoteDebugger::PolycodeRemoteDebugger(PolycodeProjectManager *projectMa
 
 	server->addEventListener(this, ServerEvent::EVENT_CLIENT_CONNECTED);
 	server->addEventListener(this, ServerEvent::EVENT_CLIENT_DISCONNECTED);		
-	
+	server->addEventListener(this, ServerEvent::EVENT_CLIENT_DATA);		
+		
 	hasErred = false;
 
 }
@@ -55,58 +56,48 @@ void PolycodeRemoteDebugger::Disconnect() {
 }
 
 void PolycodeRemoteDebugger::handleEvent(Event *event) {
-
-	for(int i=0; i < debuggerClients.size(); i++) {
-		if(event->getDispatcher() == debuggerClients[i]->client) {		
-			ServerClientEvent *clientEvent = (ServerClientEvent*) event;
-			switch(clientEvent->getEventCode()) {
-				case ServerClientEvent::EVENT_CLIENT_DATA:				
-					switch(clientEvent->dataType) {			
-						case EVENT_DEBUG_PRINT:
-						{
-							String printStr = String(clientEvent->data);
-							PolycodeConsole::print(printStr);		
-							PolycodeConsole::print("\n");
-						}
-						break;	
-						case EVENT_DEBUG_ERROR:
-						{		
-						
-							if(!hasErred) {
-								RemoteErrorData *data = (RemoteErrorData*)clientEvent->data;			
-								PolycodeConsole::print("Error in file "+String(data->fileName)+" on line "+String::IntToString(data->lineNumber)+"\n");
-								PolycodeConsole::print(String(data->errorMessage)+"\n");
-								PolycodeConsole::print("Backtrace:\n");
-							
-								CoreServices::getInstance()->getCore()->makeApplicationMain();
-							}
-							
-//							hasErred = true;
-							
-						}
-						break;			
-						case EVENT_DEBUG_BACKTRACE_INFO:
-						{			
-
-							RemoteBacktraceData *data = (RemoteBacktraceData*)clientEvent->data;			
-							PolycodeConsole::print("In file "+String(data->fileName)+" on line "+String::IntToString(data->lineNumber)+"\n");
-							
-							PolycodeConsole::addBacktrace(String(data->fileName), data->lineNumber, projectManager->getActiveProject());
-							
-						}
-						break;							
-										
-					}
-				break;
-			}
-		}
-	}
-
-
+	
 	if(event->getDispatcher() == server) {
-		ServerEvent *serverEvent = (ServerEvent*) event;
-		switch(serverEvent->getEventCode()) {
-		
+		ServerEvent *serverEvent = (ServerEvent*) event;	
+		switch(event->getEventCode()) {
+			case ServerEvent::EVENT_CLIENT_DATA:		
+			{	
+				switch(serverEvent->dataType) {			
+					case EVENT_DEBUG_PRINT:
+					{
+						String printStr = String(serverEvent->data);
+						PolycodeConsole::print(printStr);		
+						PolycodeConsole::print("\n");
+					}
+						break;	
+					case EVENT_DEBUG_ERROR:
+					{		
+						
+						if(!hasErred) {
+							RemoteErrorData *data = (RemoteErrorData*)serverEvent->data;			
+							PolycodeConsole::print("Error in file "+String(data->fileName)+" on line "+String::IntToString(data->lineNumber)+"\n");
+							PolycodeConsole::print(String(data->errorMessage)+"\n");
+							PolycodeConsole::print("Backtrace:\n");
+							
+							CoreServices::getInstance()->getCore()->makeApplicationMain();
+						}
+						//							hasErred = true;
+					}
+						break;			
+					case EVENT_DEBUG_BACKTRACE_INFO:
+					{			
+						
+						RemoteBacktraceData *data = (RemoteBacktraceData*)serverEvent->data;			
+						PolycodeConsole::print("In file "+String(data->fileName)+" on line "+String::IntToString(data->lineNumber)+"\n");
+						
+						PolycodeConsole::addBacktrace(String(data->fileName), data->lineNumber, projectManager->getActiveProject());
+						
+					}
+						break;							
+						
+				}
+				}
+				break;
 			case ServerEvent::EVENT_CLIENT_DISCONNECTED:		
 			{
 				for(int i=0;i<debuggerClients.size();i++) {
@@ -118,19 +109,17 @@ void PolycodeRemoteDebugger::handleEvent(Event *event) {
 					}
 				}
 			}	
-			break;
-			
+				break;
+				
 			case ServerEvent::EVENT_CLIENT_CONNECTED:
 			{
 				DebuggerClient *newClient = new DebuggerClient();
 				newClient->client = serverEvent->client;
-				newClient->client->addEventListener(this, ServerClientEvent::EVENT_CLIENT_DATA);
 				PolycodeConsole::print("Remote debugger client connected...\n");printf("CLIENT CONNECTED\n");		
 				debuggerClients.push_back(newClient);				
 			}
-			break;
+				break;
+				
 		}
-		
-	}
-
+	}				
 }

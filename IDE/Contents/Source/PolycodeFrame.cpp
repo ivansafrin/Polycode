@@ -812,10 +812,14 @@ void EditorHolder::Resize(Number width, Number height) {
 }
 
 PolycodeProjectTab::PolycodeProjectTab(PolycodeProject *project, PolycodeEditorManager *editorManager) : UIElement() {
+
+	tabName = "Default";
+	
 	this->editorManager = editorManager;
 
 	editorHolder = new EditorHolder(project, editorManager, NULL);
 	editorHolder->setActive(true);
+	editorHolder->addEventListener(this, UIEvent::CLOSE_EVENT);
 	
 	mainSizer = new UIHSizer(100,100,200,true);
 	addChild(mainSizer);					
@@ -823,7 +827,32 @@ PolycodeProjectTab::PolycodeProjectTab(PolycodeProject *project, PolycodeEditorM
 	mainSizer->addLeftChild(projectBrowser);
 	mainSizer->addRightChild(editorHolder);
 
+	active = false;
+
 	projectBrowser->treeContainer->getRootNode()->addEventListener(this, UITreeEvent::DRAG_START_EVENT);
+}
+
+void PolycodeProjectTab::setActive(bool val) {
+	active = val;
+}
+
+bool PolycodeProjectTab::isActive() {
+	return active;
+}
+
+void PolycodeProjectTab::handleEvent(Event *event) {
+	if(event->getDispatcher() == editorHolder && event->getEventCode() == UIEvent::CLOSE_EVENT) {
+		dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);
+	}
+	UIElement::handleEvent(event);
+}
+
+String PolycodeProjectTab::getTabName() {
+	return tabName;
+}
+
+void PolycodeProjectTab::setTabName(String newName) {
+	tabName = newName;
 }
 
 void PolycodeProjectTab::Resize(Number width, Number height) {
@@ -853,11 +882,60 @@ PolycodeProjectTab::~PolycodeProjectTab() {
 
 }
 
+PolycodeTabButton::PolycodeTabButton(PolycodeProjectTab *tab) : UIElement() {
+	this->tab = tab;
+	bgRect = new UIRect("Images/tab_bg.png");
+	addChild(bgRect);
+	bgRect->setColor(1.0, 1.0, 1.0, 0.4);
+	bgRect->processInputEvents = true;
+	processInputEvents = true;
+	bgRect->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+	
+	setWidth(150);
+	setHeight(30);
+	
+	tabLabel = new UILabel(tab->getTabName().toUpperCase(), 16, "section");
+	tabLabel->setPosition((getWidth()-tabLabel->getWidth())/2.0, ((getHeight()-tabLabel->getHeight())/2.0) - 3.0);
+	addChild(tabLabel);
+}
+
+void PolycodeTabButton::handleEvent(Event *event) {
+	if(event->getDispatcher() == bgRect) {
+		dispatchEvent(new Event(), Event::SELECT_EVENT);
+	}
+	UIElement::handleEvent(event);
+}
+
+void PolycodeTabButton::setActive(bool val) {
+	if(val) {
+		bgRect->color.a = 0.4;
+	} else {
+		bgRect->color.a = 0.2;	
+	}
+}
+
+PolycodeProjectTab *PolycodeTabButton::getTab() {
+	return tab;
+}
+
+PolycodeTabButton::~PolycodeTabButton() {
+
+}
+
 PolycodeProjectFrame::PolycodeProjectFrame(PolycodeProject *project, PolycodeEditorManager *editorManager) {
 	this->editorManager = editorManager;
 	this->project = project;
 	lastActiveEditorHolder = NULL;
-	activeTab = addNewTab();
+	tabButtonAnchor = new UIElement();
+	addChild(tabButtonAnchor);
+	tabButtonAnchor->setPosition(400, -30);
+	
+	activeTab = NULL;
+	
+	newTabButton = new UIImageButton("Images/new_tab_button.png");
+	tabButtonAnchor->addChild(newTabButton);
+	newTabButton->addEventListener(this, UIEvent::CLICK_EVENT);
+	addNewTab();
 }
 
 PolycodeProjectTab *PolycodeProjectFrame::getActiveTab() {
@@ -867,8 +945,57 @@ PolycodeProjectTab *PolycodeProjectFrame::getActiveTab() {
 PolycodeProjectTab *PolycodeProjectFrame::addNewTab() {
 	PolycodeProjectTab *newTab = new PolycodeProjectTab(project, editorManager);
 	tabs.push_back(newTab);
-	addChild(newTab);
+	
+	PolycodeTabButton *newTabButton = new PolycodeTabButton(newTab);
+	tabButtonAnchor->addChild(newTabButton);
+	tabButtons.push_back(newTabButton);
+	newTabButton->addEventListener(this, Event::SELECT_EVENT);
+	showTab(newTab);
 	return newTab;
+}
+
+void PolycodeProjectFrame::showTab(PolycodeProjectTab *tab) {
+	if(activeTab) {
+		activeTab->setActive(false);
+		activeTab->removeAllHandlersForListener(this);
+		removeChild(activeTab);
+	}
+
+	addChild(tab);
+	tab->addEventListener(this, UIEvent::CLOSE_EVENT);
+	tab->setActive(true);
+	tab->getEditorHolder()->setActive(true);
+	tab->Resize(getWidth(), getHeight());
+	activeTab = tab;
+	restructTabs();		
+}
+
+void PolycodeProjectFrame::restructTabs() {
+	int i;
+	for(i=0; i < tabButtons.size(); i++) {
+		tabButtons[i]->setPosition(i * 155.0, 0.0);
+		tabButtons[i]->setActive(tabButtons[i]->getTab()->isActive());		
+	}
+	newTabButton->setPosition((i * 155), 0.0);
+}
+
+void PolycodeProjectFrame::handleEvent(Event *event) {
+	if(event->getEventCode() == UIEvent::CLOSE_EVENT) {
+		dispatchEvent(new UIEvent, UIEvent::CLOSE_EVENT);
+	} else {
+		if(event->getDispatcher() == newTabButton) {
+			addNewTab();
+		} else {
+			for(int i=0; i < tabButtons.size(); i++) {
+				if(event->getDispatcher() == tabButtons[i]) {
+					if(event->getEventCode() == Event::SELECT_EVENT) {
+						showTab(tabButtons[i]->getTab());
+						break;
+					}
+				}
+			}
+		}
+	}
 }
 
 PolycodeProject *PolycodeProjectFrame::getProject() {
@@ -877,6 +1004,7 @@ PolycodeProject *PolycodeProjectFrame::getProject() {
 
 void PolycodeProjectFrame::Resize(Number width, Number height) {
 	activeTab->Resize(width, height);
+	UIElement::Resize(width, height);
 }
 
 PolycodeProjectFrame::~PolycodeProjectFrame() {
@@ -915,11 +1043,6 @@ PolycodeFrame::PolycodeFrame(PolycodeEditorManager *editorManager) : UIElement()
 	welcomeEntity->addChild(newProjectButton);
 	welcomeEntity->addChild(examplesButton);
 	
-	consoleSizer = new UIVSizer(100,100,200, false);
-	console = new PolycodeConsole();	
-	consoleSizer->addBottomChild(console);
-	addChild(consoleSizer);
-	consoleSizer->setPosition(0.0, 45);
 	
 	topBarBg = new UIRect(2,2);
 	topBarBg->setColorInt(21, 18, 17, 255);
@@ -928,6 +1051,12 @@ PolycodeFrame::PolycodeFrame(PolycodeEditorManager *editorManager) : UIElement()
 	topBarBg->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
 	topBarBg->blockMouseInput = true;
 	addChild(topBarBg);
+
+	consoleSizer = new UIVSizer(100,100,200, false);
+	console = new PolycodeConsole();	
+	consoleSizer->addBottomChild(console);
+	addChild(consoleSizer);
+	consoleSizer->setPosition(0.0, 45);
 	
 	logo = new UIImage("Images/barlogo.png");
 	addChild(logo);		
@@ -1136,6 +1265,12 @@ void PolycodeFrame::showAssetBrowser(std::vector<String> extensions) {
 
 void PolycodeFrame::handleEvent(Event *event) {
 
+	if(event->getDispatcher() == activeProjectFrame) {
+		if(event->getEventCode() == UIEvent::CLOSE_EVENT) {
+			dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);
+		}
+	}
+
 	if(event->getDispatcher() == currentProjectSelector) {
 		PolycodeProject *project = (PolycodeProject*)currentProjectSelector->getSelectedItem()->data;
 		projectManager->setActiveProject(project);
@@ -1317,6 +1452,7 @@ void PolycodeFrame::switchToProjectFrame(PolycodeProjectFrame *projectFrame) {
 		if(editorManager->getCurrentEditor()) {
 			activeProjectFrame->lastActiveEditorHolder = editorManager->getCurrentEditor()->getEditorHolder();
 		}
+		activeProjectFrame->removeAllHandlersForListener(this);
 	} 
 	activeProjectFrame = projectFrame;
 	consoleSizer->addTopChild(activeProjectFrame);
@@ -1325,6 +1461,7 @@ void PolycodeFrame::switchToProjectFrame(PolycodeProjectFrame *projectFrame) {
 	} else {
 		activeProjectFrame->getActiveTab()->getEditorHolder()->setActive(true);
 	}
+	activeProjectFrame->addEventListener(this, UIEvent::CLOSE_EVENT);
 	Resize(getWidth(), getHeight());	
 }
 
