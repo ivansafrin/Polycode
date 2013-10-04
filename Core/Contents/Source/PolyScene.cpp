@@ -49,11 +49,13 @@ Scene::Scene(int sceneType, bool virtualScene) : EventDispatcher() {
 
 void Scene::initScene(int sceneType, bool virtualScene) {
 
+
 	core = CoreServices::getInstance()->getCore();
 	this->sceneType = sceneType;
 	defaultCamera = new Camera(this);
 	activeCamera = defaultCamera;	
 	fogEnabled = false;
+	setFogProperties(Renderer::FOG_LINEAR, Color(0,0,0,0), 0, 0, 0);
 	lightingEnabled = false;
 	enabled = true;
 	isSceneVirtual = virtualScene;	
@@ -174,7 +176,7 @@ void Scene::Render(Camera *targetCamera) {
 	//make these the closest
 	
 	Matrix4 textureMatrix;
-	Matrix4 *matrixPtr;
+	Matrix4 *matrixPtr = NULL;
 	
 	
 	targetCamera->rebuildTransformMatrix();

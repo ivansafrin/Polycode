@@ -33,6 +33,48 @@ namespace Polycode {
 	class _PolyExport Color : public PolyBase {
 		public:
 
+			/**
+			* Red color. r=255, g=0, b=0, a=1
+			*/	
+			const static Color Red;
+			/**
+			* Green color. r=0, g=128, b=0, a=1
+			*/	
+			const static Color Green;
+			/**
+			* Blue color. r=0, g=0, b=255, a=1
+			*/	
+			const static Color Blue;
+			/**
+			* White color. r=255, g=255, b=255, a=1
+			*/	
+			const static Color White;
+			/**
+			* Black color. r=0, g=0, b=0, a=1
+			*/	
+			const static Color Black;
+			/**
+			* Yellow color. r=255, g=255, b=0, a=1
+			*/	
+			const static Color Yellow;
+			/**
+			* Cyan color. r=0, g=255, b=255, a=1
+			*/	
+			const static Color Cyan;
+			/**
+			* Magenta color. r=255, g=0, b=255, a=1
+			*/	
+			const static Color Magenta;
+			/**
+			* Lime color. r=0, g=255, b=0, a=1
+			*/	
+			const static Color Lime;
+			/**
+			* Transparent color. r=0, g=0, b=0, a=0
+			*/	
+			const static Color Transparent;
+
+
 	
 			/**
 			* Create from 0-1 floating point data.

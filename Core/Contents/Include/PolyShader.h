@@ -126,6 +126,7 @@ namespace Polycode {
 	class LocalShaderParam : public PolyBase {
 		public:	
 			String name;
+			bool ownsData;
 			void *data;
 		
 		// Convenience getters/setters for Lua users

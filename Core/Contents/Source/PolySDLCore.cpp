@@ -200,6 +200,8 @@ SDLCore::~SDLCore() {
 	free_cursors();
 #endif // USE_X11
 	SDL_Quit();
+	SDL_DestroyMutex(static_cast<SDLCoreMutex*>(eventMutex)->pMutex);
+	delete eventMutex;
 }
 
 void SDLCore::openURL(String url) {

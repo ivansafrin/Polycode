@@ -97,7 +97,6 @@ GLSLShaderModule::GLSLShaderModule() : PolycodeShaderModule() {
 }
 
 GLSLShaderModule::~GLSLShaderModule() {
-
 }
 
 bool GLSLShaderModule::acceptsExtension(const String& extension) {
@@ -132,6 +131,8 @@ Shader *GLSLShaderModule::createShader(String name, String vpName, String fpName
 }
 
 Shader *GLSLShaderModule::createShader(TiXmlNode *node) {
+
+
 	TiXmlNode* pChild;
 	GLSLProgram *vp = NULL;
 	GLSLProgram *fp = NULL;

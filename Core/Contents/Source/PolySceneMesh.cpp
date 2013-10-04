@@ -85,7 +85,9 @@ SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL), skeleton(NUL
 	lineSmooth = false;
 	ownsMesh = true;
 	ownsSkeleton = true;	
-	lineWidth = 1.0;	
+	lineWidth = 1.0;
+	pointSize = 1.0;
+	pointSmooth = false;
 }
 
 void SceneMesh::setMesh(Mesh *mesh) {
@@ -129,7 +131,7 @@ void SceneMesh::setMaterial(Material *material) {
 		return;
 		
 	if(material->getNumShaders() == 0)
-			return;
+		return;
 		
 	this->material = material;
 	localShaderOptions = material->getShader(0)->createBinding();
@@ -278,12 +280,10 @@ void SceneMesh::cacheToVertexBuffer(bool cache) {
 void SceneMesh::Render() {
 	
 	Renderer *renderer = CoreServices::getInstance()->getRenderer();
-	
 	renderer->setLineSize(lineWidth);
 	renderer->setLineSmooth(lineSmooth);
 	renderer->setPointSize(pointSize);
 	renderer->setPointSmooth(pointSmooth);
-	
 	if(material) {
 		renderer->applyMaterial(material, localShaderOptions,0);
 	} else {

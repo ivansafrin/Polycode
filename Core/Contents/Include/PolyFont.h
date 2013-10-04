@@ -52,5 +52,6 @@ namespace Polycode {
 			unsigned char *buffer;
 			bool valid;
 			FT_Face ftFace;
+			FT_Library FTLibrary;
 	};
 }

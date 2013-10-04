@@ -53,6 +53,7 @@ SceneLabel::SceneLabel(const String& text, int size, const String& fontName, int
 			
 
 SceneLabel::~SceneLabel() {
+	delete label;
 }
 
 Label *SceneLabel::getLabel() {

@@ -48,24 +48,44 @@ ResourceManager::~ResourceManager() {
 		printf("Shutting down resource manager...\n");
 		PHYSFS_deinit();
 		
+		int skippedResources = 0;
+
+		// Not sure why separate loops are needed, but it starts accessing
+		// already deleted memory if they're in the same loop, using a single if statement.
+		// Also what about textures, cubemaps and others? Valgrind complains about these not
+		// being deleted properly.
+		
 		for(int i=0; i < resources.size(); i++)	{
 			if(resources[i]->getResourceType() == Resource::RESOURCE_MATERIAL) {
+				// The destructor of the resource removes it from the list,
+				// decrement 'i' to make sure we don't miss any resources.
 				delete resources[i];
+				--i;
 			}
+			else
+				++skippedResources;
 		}
-		
+
 		for(int i=0; i < resources.size(); i++)	{
 			if(resources[i]->getResourceType() == Resource::RESOURCE_SHADER) {
 				delete resources[i];
+				--i;
 			}
+			else
+				++skippedResources;
 		}
 
 		for(int i=0; i < resources.size(); i++)	{
 			if(resources[i]->getResourceType() == Resource::RESOURCE_PROGRAM) {
 				delete resources[i];
+				--i;
 			}
+			else
+				++skippedResources;
 		}
-		
+
+		printf("Resource manager did not delete %i resources.", skippedResources);
+
 		resources.clear();
 }
 
