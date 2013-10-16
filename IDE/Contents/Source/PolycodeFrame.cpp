@@ -834,6 +834,9 @@ PolycodeProjectTab::PolycodeProjectTab(PolycodeProject *project, PolycodeEditorM
 
 void PolycodeProjectTab::setActive(bool val) {
 	active = val;
+	if(!active) {
+		projectBrowser->removeAllHandlers();
+	}
 }
 
 bool PolycodeProjectTab::isActive() {
@@ -967,7 +970,8 @@ void PolycodeProjectFrame::showTab(PolycodeProjectTab *tab) {
 	tab->getEditorHolder()->setActive(true);
 	tab->Resize(getWidth(), getHeight());
 	activeTab = tab;
-	restructTabs();		
+	restructTabs();
+	dispatchEvent(new UIEvent(), Event::CHANGE_EVENT);			
 }
 
 void PolycodeProjectFrame::restructTabs() {
@@ -1266,6 +1270,13 @@ void PolycodeFrame::showAssetBrowser(std::vector<String> extensions) {
 void PolycodeFrame::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == activeProjectFrame) {
+		if(event->getEventCode() == Event::CHANGE_EVENT) {
+			printf("WOOP\n");
+			dispatchEvent(new Event(), Event::CHANGE_EVENT);
+		}
+	}
+
+	if(event->getDispatcher() == activeProjectFrame) {
 		if(event->getEventCode() == UIEvent::CLOSE_EVENT) {
 			dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);
 		}
@@ -1462,7 +1473,8 @@ void PolycodeFrame::switchToProjectFrame(PolycodeProjectFrame *projectFrame) {
 		activeProjectFrame->getActiveTab()->getEditorHolder()->setActive(true);
 	}
 	activeProjectFrame->addEventListener(this, UIEvent::CLOSE_EVENT);
-	Resize(getWidth(), getHeight());	
+	activeProjectFrame->addEventListener(this, Event::CHANGE_EVENT);	
+	Resize(getWidth(), getHeight());
 }
 
 PolycodeProjectFrame *PolycodeFrame::getProjectFrame(PolycodeProject *project) {

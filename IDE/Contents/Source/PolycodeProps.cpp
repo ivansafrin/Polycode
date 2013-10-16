@@ -2419,7 +2419,7 @@ void SoundSheet::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == soundProp  && event->getEventCode() == Event::CHANGE_EVENT) {
 		lastSoundPath = soundProp->get();
-		sound->getSound()->loadFile(lastSoundPath);
+		sound->getSound()->loadFile(lastSoundPath, false);
 	}
 
 

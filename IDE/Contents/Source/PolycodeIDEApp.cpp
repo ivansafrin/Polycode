@@ -116,6 +116,7 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	frame->stopButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
 	frame->addEventListener(this, UIEvent::CLOSE_EVENT);
+	frame->addEventListener(this, Event::CHANGE_EVENT);	
 	screen->addChild(frame);
 	
 	projectManager = new PolycodeProjectManager();
@@ -613,8 +614,19 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 		}
 	}
 
-	if(event->getDispatcher() == frame && event->getEventCode() == UIEvent::CLOSE_EVENT) {
-		closeFile();
+	if(event->getDispatcher() == frame) {
+		if(event->getEventCode() == Event::CHANGE_EVENT) {
+			printf("HOPHOP\n");
+			if(frame->getCurrentProjectBrowser()) {
+				frame->getCurrentProjectBrowser()->removeAllHandlersForListener(this);
+			}
+			frame->getCurrentProjectBrowser()->addEventListener(this, Event::CHANGE_EVENT);
+			frame->getCurrentProjectBrowser()->addEventListener(this, PolycodeProjectBrowserEvent::HANDLE_MENU_COMMAND);			
+		}
+			
+		if(event->getEventCode() == UIEvent::CLOSE_EVENT) {
+			closeFile();
+		}
 	}
 
 	if(event->getDispatcher() == frame->fileDialog) {

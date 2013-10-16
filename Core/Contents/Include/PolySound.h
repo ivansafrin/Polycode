@@ -57,11 +57,11 @@ namespace Polycode {
 		* Constructor.
 		* @param fileName Path to an OGG or WAV file to load.
 		*/ 
-		Sound(const String& fileName);
-		Sound(const char *data, int size, int channels = 1, ALsizei freq = 44100, int bps = 16);
+		Sound(const String& fileName, bool generateFloatBuffer = false);
+		Sound(int size, const char *data, int channels = 1, ALsizei freq = 44100, int bps = 16);
 		virtual ~Sound();
 		
-		void loadFile(String fileName);
+		void loadFile(String fileName, bool generateFloatBuffer);
 		
 		void reloadProperties();
 		
@@ -138,8 +138,8 @@ namespace Polycode {
 		Number getMaxDistance();
 		
 		ALuint loadBytes(const char *data, int size, int channels = 1, ALsizei freq = 44100, int bps = 16);
-		ALuint loadWAV(const String& fileName);
-		ALuint loadOGG(const String& fileName);
+		ALuint loadWAV(const String& fileName, bool generateFloatBuffer);
+		ALuint loadOGG(const String& fileName, bool generateFloatBuffer);
 		
 		ALuint GenSource(ALuint buffer);
 		ALuint GenSource();
@@ -150,7 +150,7 @@ namespace Polycode {
 		static unsigned long readByte32(const unsigned char buffer[4]);		
 		static unsigned short readByte16(const unsigned char buffer[2]);
 		
-//		std::vector<Number> *getFloatBuffer();
+		POLYIGNORE std::vector<float> *getFloatBuffer();
 
 	protected:
 	
@@ -169,6 +169,6 @@ namespace Polycode {
 		ALuint soundSource;
 		int sampleLength;
 		
-//		std::vector<Number> floatBuffer;
+		std::vector<float> floatBuffer;
 	};
 }

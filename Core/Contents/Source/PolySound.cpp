@@ -57,18 +57,18 @@ long custom_tellfunc(void *datasource) {
 	return OSBasics::tell(file);
 }
 
-Sound::Sound(const String& fileName) :  referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1), sampleLength(-1) {
+Sound::Sound(const String& fileName, bool generateFloatBuffer) :  referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1), sampleLength(-1) {
 	checkALError("Construct: Loose error before construction");
 	soundLoaded = false;	
 
-	loadFile(fileName);	
+	loadFile(fileName, generateFloatBuffer);	
 	
 	setIsPositional(false);
 	
 	checkALError("Construct from file: Finished");
 }
 
-Sound::Sound(const char *data, int size, int channels, int freq, int bps) : referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1), buffer(AL_NONE), soundSource(AL_NONE), sampleLength(-1) {
+Sound::Sound(int size, const char *data, int channels, int freq, int bps) : referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1), buffer(AL_NONE), soundSource(AL_NONE), sampleLength(-1) {
 	checkALError("Construct: Loose error before construction");
 	buffer = loadBytes(data, size, freq, channels, bps);
 	
@@ -82,7 +82,7 @@ Sound::Sound(const char *data, int size, int channels, int freq, int bps) : refe
 	checkALError("Construct from data: Finished");
 }
 
-void Sound::loadFile(String fileName) {
+void Sound::loadFile(String fileName, bool generateFloatBuffer) {
 
 	if(soundLoaded) {
 		alDeleteSources(1,&soundSource);	
@@ -106,9 +106,9 @@ void Sound::loadFile(String fileName) {
 	}
 	
 	if(extension == "wav" || extension == "WAV") {
-		buffer = loadWAV(actualFilename);			
+		buffer = loadWAV(actualFilename, generateFloatBuffer);			
 	} else if(extension == "ogg" || extension == "OGG") {
-		buffer = loadOGG(actualFilename);			
+		buffer = loadOGG(actualFilename, generateFloatBuffer);
 	}
 	
 	this->fileName = actualFilename;
@@ -390,7 +390,7 @@ ALuint Sound::loadBytes(const char *data, int size, int freq, int channels, int 
 	return buffer;
 }
 
-ALuint Sound::loadOGG(const String& fileName) {
+ALuint Sound::loadOGG(const String& fileName, bool generateFloatBuffer) {
 //	floatBuffer.clear();
 	vector<char> data;
 	
@@ -443,22 +443,23 @@ ALuint Sound::loadOGG(const String& fileName) {
 	sampleLength = data.size() / sizeof(unsigned short);
 	
 	alBufferData(buffer, format, &data[0], static_cast<ALsizei>(data.size()), freq);
-/*	
-	int32_t *ptr32 = (int32_t*) &data[0];
-	for(int i=0; i < data.size()/2; i++ ) {
-		floatBuffer.push_back(((Number)ptr32[i])/((Number)INT32_MAX));
-	}	
-*/	
+	
+	if(generateFloatBuffer) {
+		int32_t *ptr32 = (int32_t*) &data[0];
+		for(int i=0; i < data.size()/2; i++ ) {
+			floatBuffer.push_back(((Number)ptr32[i])/((Number)INT32_MAX));
+		}	
+	}
 	return buffer;
 }
 
-/*
-std::vector<Number> *Sound::getFloatBuffer() {
+
+std::vector<float> *Sound::getFloatBuffer() {
 	return &floatBuffer;
 }
-*/
 
-ALuint Sound::loadWAV(const String& fileName) {
+
+ALuint Sound::loadWAV(const String& fileName, bool generateFloatBuffer) {
 	long bytes;
 	vector <char> data;
 	ALsizei freq;
