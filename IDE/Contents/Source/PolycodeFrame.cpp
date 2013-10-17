@@ -900,9 +900,19 @@ PolycodeTabButton::PolycodeTabButton(PolycodeProjectTab *tab) : UIElement() {
 	tabLabel = new UILabel(tab->getTabName().toUpperCase(), 16, "section");
 	tabLabel->setPosition((getWidth()-tabLabel->getWidth())/2.0, ((getHeight()-tabLabel->getHeight())/2.0) - 3.0);
 	addChild(tabLabel);
+	
+	closeButton = new UIImageButton("Images/tab_close_button.png");
+	closeButton->setPosition(4.0, floor((30.0 - closeButton->getHeight()) / 2.0));
+	addChild(closeButton);
+	closeButton->blockMouseInput = true;
+	closeButton->addEventListener(this, UIEvent::CLICK_EVENT);
 }
 
 void PolycodeTabButton::handleEvent(Event *event) {
+	if(event->getDispatcher() == closeButton) {
+		dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);		
+	}
+	
 	if(event->getDispatcher() == bgRect) {
 		dispatchEvent(new Event(), Event::SELECT_EVENT);
 	}
@@ -926,6 +936,7 @@ PolycodeTabButton::~PolycodeTabButton() {
 }
 
 PolycodeProjectFrame::PolycodeProjectFrame(PolycodeProject *project, PolycodeEditorManager *editorManager) {
+	tabToClose = NULL;
 	this->editorManager = editorManager;
 	this->project = project;
 	lastActiveEditorHolder = NULL;
@@ -953,8 +964,48 @@ PolycodeProjectTab *PolycodeProjectFrame::addNewTab() {
 	tabButtonAnchor->addChild(newTabButton);
 	tabButtons.push_back(newTabButton);
 	newTabButton->addEventListener(this, Event::SELECT_EVENT);
+	newTabButton->addEventListener(this, UIEvent::CLOSE_EVENT);		
 	showTab(newTab);
 	return newTab;
+}
+
+void PolycodeProjectFrame::Update() {
+	if(tabToClose) {
+	
+		// can't close the last tab
+		if(tabs.size() == 1) {
+			tabToClose = NULL;
+			return;
+		}
+		
+		for(int i=0; i < tabs.size(); i++) {
+			if(tabs[i] == tabToClose) {
+				tabs.erase(tabs.begin()+i);
+				break;
+			}
+		}
+		
+		for(int i=0; i < tabButtons.size(); i++) {
+			if(tabButtons[i]->getTab() == tabToClose) {
+				tabButtonAnchor->removeChild(tabButtons[i]);
+				delete tabButtons[i];
+				tabButtons.erase(tabButtons.begin()+i);
+				break;
+			}
+		}
+		
+		if(tabToClose == activeTab) {
+			showTab(tabs[0]);
+		}
+		
+		delete tabToClose;
+		tabToClose = NULL;
+		restructTabs();
+	}
+}
+
+void PolycodeProjectFrame::closeTab(PolycodeProjectTab *tab) {
+	tabToClose = tab;
 }
 
 void PolycodeProjectFrame::showTab(PolycodeProjectTab *tab) {
@@ -984,18 +1035,24 @@ void PolycodeProjectFrame::restructTabs() {
 }
 
 void PolycodeProjectFrame::handleEvent(Event *event) {
-	if(event->getEventCode() == UIEvent::CLOSE_EVENT) {
-		dispatchEvent(new UIEvent, UIEvent::CLOSE_EVENT);
+	for(int i=0; i < tabs.size(); i++) {
+		if(event->getDispatcher() == tabs[i] && event->getEventCode() == UIEvent::CLOSE_EVENT) {
+			dispatchEvent(new UIEvent, UIEvent::CLOSE_EVENT);
+			return;
+		 } 
+	}
+	
+	if(event->getDispatcher() == newTabButton) {
+		addNewTab();
 	} else {
-		if(event->getDispatcher() == newTabButton) {
-			addNewTab();
-		} else {
-			for(int i=0; i < tabButtons.size(); i++) {
-				if(event->getDispatcher() == tabButtons[i]) {
-					if(event->getEventCode() == Event::SELECT_EVENT) {
-						showTab(tabButtons[i]->getTab());
-						break;
-					}
+		for(int i=0; i < tabButtons.size(); i++) {
+			if(event->getDispatcher() == tabButtons[i]) {
+				if(event->getEventCode() == Event::SELECT_EVENT) {
+					showTab(tabButtons[i]->getTab());
+					break;
+				} else 	if(event->getEventCode() == UIEvent::CLOSE_EVENT) {
+					closeTab(tabButtons[i]->getTab());
+					break;
 				}
 			}
 		}
@@ -1271,7 +1328,6 @@ void PolycodeFrame::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == activeProjectFrame) {
 		if(event->getEventCode() == Event::CHANGE_EVENT) {
-			printf("WOOP\n");
 			dispatchEvent(new Event(), Event::CHANGE_EVENT);
 		}
 	}

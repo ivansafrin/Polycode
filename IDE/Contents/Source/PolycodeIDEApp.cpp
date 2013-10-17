@@ -616,7 +616,6 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == frame) {
 		if(event->getEventCode() == Event::CHANGE_EVENT) {
-			printf("HOPHOP\n");
 			if(frame->getCurrentProjectBrowser()) {
 				frame->getCurrentProjectBrowser()->removeAllHandlersForListener(this);
 			}

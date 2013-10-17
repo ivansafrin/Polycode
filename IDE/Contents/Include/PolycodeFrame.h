@@ -233,6 +233,8 @@ class PolycodeTabButton : public UIElement {
 		PolycodeProjectTab *tab;
 		UIRect *bgRect;
 		UILabel *tabLabel;
+		
+		UIImageButton *closeButton;
 	
 };
 
@@ -246,7 +248,10 @@ class PolycodeProjectFrame : public UIElement {
 		PolycodeProjectTab *addNewTab();
 		
 		void showTab(PolycodeProjectTab *tab);
+		void closeTab(PolycodeProjectTab *tab);
 		
+		void Update();
+								
 		PolycodeProjectTab *getActiveTab();
 		void handleEvent(Event *event);
 		
@@ -260,14 +265,15 @@ class PolycodeProjectFrame : public UIElement {
 	
 		PolycodeProject *project;
 		
-		UIElement *tabButtonAnchor;
-		
+		UIElement *tabButtonAnchor;		
 		UIImageButton *newTabButton;
 	
 		PolycodeEditorManager *editorManager;
 		PolycodeProjectTab *activeTab;
 		std::vector<PolycodeProjectTab*> tabs;		
 		std::vector<PolycodeTabButton*> tabButtons;
+		
+		PolycodeProjectTab *tabToClose;
 };
 
 
