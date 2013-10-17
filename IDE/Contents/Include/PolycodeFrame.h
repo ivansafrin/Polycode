@@ -193,7 +193,7 @@ class EditorHolder : public UIElement {
 
 class PolycodeProjectTab : public UIElement {
 	public:
-		PolycodeProjectTab(PolycodeProject *project, PolycodeEditorManager *editorManager);
+		PolycodeProjectTab(String caption, PolycodeProject *project, PolycodeEditorManager *editorManager);
 		~PolycodeProjectTab();
 		
 		void handleEvent(Event *event);
@@ -233,6 +233,9 @@ class PolycodeTabButton : public UIElement {
 		PolycodeProjectTab *tab;
 		UIRect *bgRect;
 		UILabel *tabLabel;
+		UIMenu *menu;
+		
+		TextInputPopup *renamePopup;
 		
 		UIImageButton *closeButton;
 	
@@ -245,7 +248,7 @@ class PolycodeProjectFrame : public UIElement {
 		
 		PolycodeProject *getProject();
 		
-		PolycodeProjectTab *addNewTab();
+		PolycodeProjectTab *addNewTab(String caption = "New Tab");
 		
 		void showTab(PolycodeProjectTab *tab);
 		void closeTab(PolycodeProjectTab *tab);
@@ -301,6 +304,7 @@ public:
 	
 	void removeProjectFrame(PolycodeProject *project);
 	
+	TextInputPopup *showTextInput(String caption, String action, String value);
 	
 	void toggleConsole();
 	void showConsole();

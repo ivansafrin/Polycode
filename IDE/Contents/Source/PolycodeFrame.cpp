@@ -811,9 +811,9 @@ void EditorHolder::Resize(Number width, Number height) {
 	UIElement::Resize(width, height);
 }
 
-PolycodeProjectTab::PolycodeProjectTab(PolycodeProject *project, PolycodeEditorManager *editorManager) : UIElement() {
+PolycodeProjectTab::PolycodeProjectTab(String caption, PolycodeProject *project, PolycodeEditorManager *editorManager) : UIElement() {
 
-	tabName = "Default";
+	tabName = caption;
 	
 	this->editorManager = editorManager;
 
@@ -898,7 +898,7 @@ PolycodeTabButton::PolycodeTabButton(PolycodeProjectTab *tab) : UIElement() {
 	setHeight(30);
 	
 	tabLabel = new UILabel(tab->getTabName().toUpperCase(), 16, "section");
-	tabLabel->setPosition((getWidth()-tabLabel->getWidth())/2.0, ((getHeight()-tabLabel->getHeight())/2.0) - 3.0);
+	tabLabel->setPosition(getWidth()-tabLabel->getWidth()-10.0, ((getHeight()-tabLabel->getHeight())/2.0) - 3.0);
 	addChild(tabLabel);
 	
 	closeButton = new UIImageButton("Images/tab_close_button.png");
@@ -909,12 +909,38 @@ PolycodeTabButton::PolycodeTabButton(PolycodeProjectTab *tab) : UIElement() {
 }
 
 void PolycodeTabButton::handleEvent(Event *event) {
+
+	if(event->getDispatcher() == renamePopup) {
+		renamePopup->removeAllHandlersForListener(this);
+		tabLabel->setText(renamePopup->getValue().toUpperCase());
+		tab->setTabName(renamePopup->getValue());
+		tabLabel->setPosition(getWidth()-tabLabel->getWidth()-10.0, ((getHeight()-tabLabel->getHeight())/2.0) - 3.0);
+	}
+
+	if(event->getDispatcher() == menu) {
+		if(menu->getSelectedItem()->_id == "close_tab") {
+			dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);
+		} else if(menu->getSelectedItem()->_id == "rename_tab") {
+			renamePopup = globalFrame->showTextInput("Enter new tab name.", "rename_tab", tab->getTabName());
+			renamePopup->addEventListener(this, UIEvent::OK_EVENT);
+		}
+	}
+	
 	if(event->getDispatcher() == closeButton) {
 		dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);		
 	}
 	
 	if(event->getDispatcher() == bgRect) {
-		dispatchEvent(new Event(), Event::SELECT_EVENT);
+		if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN) {
+			dispatchEvent(new Event(), Event::SELECT_EVENT);
+			InputEvent *inputEvent = (InputEvent*) event;
+			if(inputEvent->getMouseButton() == CoreInput::MOUSE_BUTTON2) {
+				menu = globalMenu->showMenuAtMouse(120);
+				menu->addOption("Rename tab", "rename_tab");
+				menu->addOption("Close tab", "close_tab");
+				menu->addEventListener(this, UIEvent::OK_EVENT);
+			}
+		}		
 	}
 	UIElement::handleEvent(event);
 }
@@ -949,22 +975,22 @@ PolycodeProjectFrame::PolycodeProjectFrame(PolycodeProject *project, PolycodeEdi
 	newTabButton = new UIImageButton("Images/new_tab_button.png");
 	tabButtonAnchor->addChild(newTabButton);
 	newTabButton->addEventListener(this, UIEvent::CLICK_EVENT);
-	addNewTab();
+	addNewTab("Default");
 }
 
 PolycodeProjectTab *PolycodeProjectFrame::getActiveTab() {
 	return activeTab;
 }
 
-PolycodeProjectTab *PolycodeProjectFrame::addNewTab() {
-	PolycodeProjectTab *newTab = new PolycodeProjectTab(project, editorManager);
+PolycodeProjectTab *PolycodeProjectFrame::addNewTab(String caption) {
+	PolycodeProjectTab *newTab = new PolycodeProjectTab(caption, project, editorManager);
 	tabs.push_back(newTab);
 	
 	PolycodeTabButton *newTabButton = new PolycodeTabButton(newTab);
 	tabButtonAnchor->addChild(newTabButton);
 	tabButtons.push_back(newTabButton);
 	newTabButton->addEventListener(this, Event::SELECT_EVENT);
-	newTabButton->addEventListener(this, UIEvent::CLOSE_EVENT);		
+	newTabButton->addEventListener(this, UIEvent::CLOSE_EVENT);
 	showTab(newTab);
 	return newTab;
 }
@@ -1052,6 +1078,9 @@ void PolycodeProjectFrame::handleEvent(Event *event) {
 					break;
 				} else 	if(event->getEventCode() == UIEvent::CLOSE_EVENT) {
 					closeTab(tabButtons[i]->getTab());
+					break;
+				} else 	if(event->getEventCode() == UIEvent::CHANGE_EVENT) {
+					dispatchEvent(new UIEvent(), UIEvent::CHANGE_EVENT);
 					break;
 				}
 			}
@@ -1315,6 +1344,14 @@ void PolycodeFrame::Update() {
 	}
 }
 
+TextInputPopup * PolycodeFrame::showTextInput(String caption, String action, String value) {
+	textInputPopup->action = action;
+	textInputPopup->setCaption(caption);
+	textInputPopup->setValue(value);
+	showModal(textInputPopup);
+	return textInputPopup;
+}
+
 void PolycodeFrame::showAssetBrowser(std::vector<String> extensions) {
 	if(!projectManager->getActiveProject()) {
 		return;
@@ -1529,7 +1566,7 @@ void PolycodeFrame::switchToProjectFrame(PolycodeProjectFrame *projectFrame) {
 		activeProjectFrame->getActiveTab()->getEditorHolder()->setActive(true);
 	}
 	activeProjectFrame->addEventListener(this, UIEvent::CLOSE_EVENT);
-	activeProjectFrame->addEventListener(this, Event::CHANGE_EVENT);	
+	activeProjectFrame->addEventListener(this, Event::CHANGE_EVENT);
 	Resize(getWidth(), getHeight());
 }
 
