@@ -611,7 +611,7 @@ namespace Polycode {
 			Number x = sinf(pos) * radius;
 			Number z = cosf(pos) * radius;
 			
-			if(lastx > -1) {
+			if(i > 0) { // ie only construct faces one we have vertexes from i-1 to use.
 				Polygon *polygon = new Polygon();
 				polygon->addVertex(lastx,0,lastz,0,0);				
 				polygon->addVertex(x,0,z, 1, 0);
@@ -628,7 +628,7 @@ namespace Polycode {
 								
 			}
 			lastx = x;
-			lastz = z;			
+			lastz = z;	
 		/*
 			Polygon *polygon = new Polygon();
 			polygon->addVertex(w,0,h, 1, 1);
