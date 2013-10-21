@@ -37,6 +37,7 @@ namespace Polycode {
 			void handleEvent(Event *event);
 			
 			void setMainHeight(Number height);
+			void setMainHeightWithMinimum(Number newHeight);	
 			Number getMainHeight();
 			
 			void addTopChild(UIElement *element);
@@ -50,10 +51,14 @@ namespace Polycode {
 			
 			void updateSizer();
 			
+			void setMinimumSize(Number minimumSize);
+			
 		protected:
 		
 			Entity *childElements;			
 			Number mainHeight;
+			
+			Number minimumSize;
 			
 			bool topSizer;
 			

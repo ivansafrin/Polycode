@@ -26,10 +26,13 @@
 #include "PolyInputEvent.h"
 #include "PolyCoreServices.h"
 #include "PolyCore.h"
+#include "PolyUIEvent.h"
 
 using namespace Polycode;
 
 UIHSizer::UIHSizer(Number width, Number height, Number mainWidth, bool leftSizer) : UIElement() {
+
+	minimumSize = 100;
 
 	setWidth(width);
 	setHeight(height);
@@ -113,9 +116,9 @@ void UIHSizer::handleEvent(Event *event) {
 			case InputEvent::EVENT_MOUSEMOVE:
 				if(resizing == true) {
 					if(leftSizer) {
-						setMainWidth(baseMainWidth + (inputEvent->mousePosition.x-baseMouseX));
+						setMainWidthWithMinimum(baseMainWidth + (inputEvent->mousePosition.x-baseMouseX));
 					} else {
-						setMainWidth(baseMainWidth - (inputEvent->mousePosition.x-baseMouseX));
+						setMainWidthWithMinimum(baseMainWidth - (inputEvent->mousePosition.x-baseMouseX));
 					}
 				} else {
 					baseMouseX = inputEvent->mousePosition.x;				
@@ -137,9 +140,24 @@ Number UIHSizer::getMainWidth() {
 	return mainWidth;
 }
 
+void UIHSizer::setMainWidthWithMinimum(Number newWidth) {
+	if(newWidth < minimumSize) {
+		newWidth = minimumSize;
+	}
+	if(newWidth > getWidth()-minimumSize) {
+		newWidth = getWidth()-minimumSize;
+	}
+	setMainWidth(newWidth);
+}
+
 void UIHSizer::setMainWidth(Number width) {
 	mainWidth = width;
 	updateSizer();
+	dispatchEvent(new UIEvent(), UIEvent::CHANGE_EVENT);	
+}
+
+void UIHSizer::setMinimumSize(Number minimumSize) {
+	this->minimumSize = minimumSize;
 }
 			
 void UIHSizer::addLeftChild(UIElement *element) {

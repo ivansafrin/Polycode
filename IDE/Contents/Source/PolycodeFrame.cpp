@@ -706,6 +706,7 @@ void EditorHolder::makeVSplit() {
 	holderBar->enabled = false;
 
 	vSizer = new UIVSizer(getWidth(), getHeight(), getHeight()/2.0, true);
+	vSizer->setMinimumSize(200);
 	addChild(vSizer);
 	firstChildHolder = new EditorHolder(project, editorManager, this);
 	firstChildHolder->addEventListener(this, UIEvent::CLOSE_EVENT);
@@ -731,6 +732,7 @@ void EditorHolder::makeHSplit() {
 	holderBar->enabled = false;
 	
 	hSizer = new UIHSizer(getWidth(), getHeight(), getWidth()/2.0, true);
+	hSizer->setMinimumSize(200);
 	addChild(hSizer);
 	firstChildHolder = new EditorHolder(project, editorManager, this);
 	firstChildHolder->addEventListener(this, UIEvent::CLOSE_EVENT);		
@@ -897,6 +899,7 @@ PolycodeProjectTab::PolycodeProjectTab(String caption, PolycodeProject *project,
 	editorHolder->addEventListener(this, UIEvent::CLOSE_EVENT);
 	
 	mainSizer = new UIHSizer(100,100,200,true);
+	mainSizer->setMinimumSize(100);
 	addChild(mainSizer);					
 	projectBrowser = new PolycodeProjectBrowser(project);
 	mainSizer->addLeftChild(projectBrowser);

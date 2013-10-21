@@ -32,6 +32,8 @@ using namespace Polycode;
 
 UIVSizer::UIVSizer(Number width, Number height, Number mainHeight, bool topSizer) : UIElement() {
 
+	minimumSize = 100;
+
 	setWidth(width);
 	setHeight(height);
 	this->topSizer = topSizer;
@@ -116,9 +118,9 @@ void UIVSizer::handleEvent(Event *event) {
 			case InputEvent::EVENT_MOUSEMOVE:
 				if(resizing == true) {
 					if(topSizer) {
-						setMainHeight(baseMainHeight + (inputEvent->mousePosition.y-baseMouseY));
+						setMainHeightWithMinimum(baseMainHeight + (inputEvent->mousePosition.y-baseMouseY));
 					} else {
-						setMainHeight(baseMainHeight - (inputEvent->mousePosition.y-baseMouseY));		
+						setMainHeightWithMinimum(baseMainHeight - (inputEvent->mousePosition.y-baseMouseY));		
 					}
 				} else {
 					baseMouseY = inputEvent->mousePosition.y;
@@ -138,6 +140,20 @@ void UIVSizer::Resize(Number width, Number height) {
 
 Number UIVSizer::getMainHeight() {
 	return mainHeight;
+}
+
+void UIVSizer::setMainHeightWithMinimum(Number newHeight) {
+	if(newHeight < minimumSize) {
+		newHeight = minimumSize;
+	}	
+	if(newHeight > getHeight()-minimumSize) {
+		newHeight = getHeight()-minimumSize;
+	}
+	setMainHeight(newHeight);
+}
+
+void UIVSizer::setMinimumSize(Number minimumSize) {
+	this->minimumSize = minimumSize;
 }
 
 void UIVSizer::setMainHeight(Number height) {

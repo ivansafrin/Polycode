@@ -37,6 +37,8 @@ namespace Polycode {
 			void handleEvent(Event *event);
 			
 			void setMainWidth(Number width);
+			void setMainWidthWithMinimum(Number newWidth);
+						
 			Number getMainWidth();
 			
 			void addLeftChild(UIElement *element);
@@ -51,12 +53,16 @@ namespace Polycode {
 			
 			void updateSizer();
 			
+			void setMinimumSize(Number minimumSize);
+			
 		protected:
 		
 			Entity *childElements;			
 			Number mainWidth;
 			
 			CoreInput *coreInput;
+			
+			Number minimumSize;
 			
 			bool resizing;
 			Number baseMouseX;
