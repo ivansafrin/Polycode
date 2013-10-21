@@ -28,7 +28,7 @@ using namespace Polycode;
 UIGlobalMenu *globalMenu;
 SyntaxHighlightTheme *globalSyntaxTheme;
 PolycodeClipboard *globalClipboard;
-
+PolycodeEditorManager *globalEditorManager;
 
 PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	core = new POLYCODE_CORE(view, 1100, 700,false,true, 0, 0,60, -1);	
@@ -89,6 +89,7 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 //	screen->rootEntity.setDefaultScreenOptions(true);
 	
 	editorManager = new PolycodeEditorManager();
+	globalEditorManager = editorManager;
 	
 	frame = new PolycodeFrame(editorManager);
 	frame->setAnchorPoint(-1.0, -1.0, 0.0);
@@ -120,20 +121,13 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	screen->addChild(frame);
 	
 	projectManager = new PolycodeProjectManager();
+	editorManager->setProjectManager(projectManager);
 		
 	frame->projectManager = projectManager;
 	projectManager->addEventListener(frame, Event::CHANGE_EVENT);
 	projectManager->addEventListener(this, Event::CHANGE_EVENT);
 			
 	frame->Resize(core->getXRes(), core->getYRes());	
-
-	for(int i=0; i < projectsToOpen.size(); i++) {
-		PolycodeProject* project = projectManager->openProject(projectsToOpen[i]);
-		if(project) {
-			OSFileEntry projectEntry =	OSFileEntry(project->getProjectFile(), OSFileEntry::TYPE_FILE);
-			projectManager->setActiveProject(project);
-		}
-	}
 	
 	debugger = new PolycodeRemoteDebugger(projectManager);
 	frame->console->setDebugger(debugger);
@@ -201,6 +195,8 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	quittingApp = false;
 	
 	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
+	
+	applyFinalConfig();
 }
 
 void PolycodeIDEApp::renameFile() {
@@ -573,24 +569,10 @@ void PolycodeIDEApp::openFile(OSFileEntry file) {
 		}	
 	}
 
-	PolycodeEditor *editor = editorManager->getEditorForPath(file.fullPath);
+	PolycodeEditor *editor = editorManager->openFile(file);
 	
 	if(editor) {
 		frame->getActiveProjectFrame()->getActiveTab()->showEditor(editor);
-	} else {
-		editor = editorManager->createEditorForExtension(file.extension);
-		if(editor) {
-			editor->parentProject = projectManager->getActiveProject();
-			if(editor->openFile(file)) {
-				frame->getActiveProjectFrame()->getActiveTab()->showEditor(editor);
-			} else {
-				delete editor;
-				editor = NULL;
-			}
-		}
-	}
-							
-	if(editor) {
 		editorManager->setCurrentEditor(editor);
 	}
 }
@@ -1038,12 +1020,24 @@ void PolycodeIDEApp::saveConfigFile() {
 
 	configFile.root.addChild("app_width", String::IntToString(core->getXRes()));
 	configFile.root.addChild("app_height", String::IntToString(core->getYRes()));
-		
+	
+	ObjectEntry *consoleEntry = configFile.root.addChild("console");
+	consoleEntry->addChild("size", frame->getConsoleSize());
+	consoleEntry->addChild("showing", frame->isShowingConsole());
+	
 	for(int i=0; i < projectManager->getProjectCount(); i++) {
 		PolycodeProject *project = projectManager->getProjectByIndex(i);		
 		ObjectEntry *projectEntry = configFile.root["open_projects"]->addChild("project");
+
+		projectEntry->addChild("is_active", (project == projectManager->getActiveProject()));
+		
 		projectEntry->addChild("name", project->getProjectName());
 		projectEntry->addChild("path", project->getProjectFile());
+		
+		ObjectEntry *projectFrameConfig = frame->getFrameConfigForProject(project);
+		if(projectFrameConfig) {
+			projectEntry->addChild(projectFrameConfig);
+		}
 	}
 
 	configFile.root.addChild("settings");
@@ -1062,7 +1056,6 @@ void PolycodeIDEApp::saveConfigFile() {
 }
 
 void PolycodeIDEApp::loadConfigFile() {
-	Object configFile;
 	// TODO: Make a crossplatform core method to get application data path
 #if defined(__APPLE__) && defined(__MACH__)
 	configFile.loadFromXML(core->getUserHomeDirectory()+"/Library/Application Support/Polycode/config.xml");
@@ -1084,7 +1077,7 @@ void PolycodeIDEApp::loadConfigFile() {
 	
 	ObjectEntry *appWidth = configFile.root["app_width"];
 	ObjectEntry *appHeight = configFile.root["app_height"];
-	
+		
 	bool setResFromConfig = false;
 	if(appWidth && appHeight) {
 		int newXRes = appWidth->intVal;
@@ -1110,10 +1103,7 @@ void PolycodeIDEApp::loadConfigFile() {
 		ObjectEntry *projects = configFile.root["open_projects"];
 		if(projects) {
 			for(int i=0; i < projects->length; i++) {
-				ObjectEntry *entry = (*(*projects)[i])["path"];
-				if(entry) {
-					projectsToOpen.push_back(entry->stringVal);
-				}
+				projectsToOpen.push_back((*projects)[i]);
 			}
 		}
 	}
@@ -1140,11 +1130,85 @@ void PolycodeIDEApp::loadConfigFile() {
 	}
 }
 
+void PolycodeIDEApp::applyFinalConfig() {
 
-PolycodeIDEApp::~PolycodeIDEApp() {
+	PolycodeProject *activeConfigProject = NULL;
 	
+	for(int i=0; i < projectsToOpen.size(); i++) {
+		ObjectEntry *projectPathEntry = ((*projectsToOpen[i])["path"]);		
+		if(projectPathEntry) {
+			String projectPath = projectPathEntry->stringVal;
+			PolycodeProject* project = projectManager->openProject(projectPath);
+			
+			ObjectEntry *projectActiveEntry = ((*projectsToOpen[i])["is_active"]);
+			if(projectActiveEntry) {
+				if(projectActiveEntry->boolVal) {
+					activeConfigProject = project;
+				}
+			}
+			
+			PolycodeProjectFrame *projectFrame = frame->getProjectFrame(project);
+			
+			PolycodeProjectTab *activeTab = NULL;
+			
+			if(project) {
+				OSFileEntry projectEntry =	OSFileEntry(project->getProjectFile(), OSFileEntry::TYPE_FILE);	
+				ObjectEntry *frameEntry = ((*projectsToOpen[i])["frame"]);
+				if(frameEntry) {
+					ObjectEntry *tabs = (*frameEntry)["tabs"];
+					if(tabs) {
+						for(int i=0; i < tabs->length; i++) {
+							ObjectEntry *tab = (*tabs)[i];
+							if(tab) {
+								ObjectEntry *tabName = (*tab)["tab_name"];
+								ObjectEntry *tabActive = (*tab)["tab_active"];
+								
+								if(i == 0) {
+									projectFrame->getTabAtIndex(0)->setTabName(tabName->stringVal);
+								} else {
+									projectFrame->addNewTab(tabName->stringVal);
+								}			
+													
+								projectFrame->getTabAtIndex(i)->applyTabConfig(tab);
+								
+								if(tabActive->boolVal) {
+									activeTab = projectFrame->getTabAtIndex(i);
+								}
+								
+							}
+						}
+						
+						if(activeTab) {
+							projectFrame->showTab(activeTab);
+						}
+					}
+				}
+			}
+		}				
+	}
+	
+	if(activeConfigProject) {
+		projectManager->setActiveProject(activeConfigProject);
+		frame->switchToProjectFrame(frame->getProjectFrame(activeConfigProject));
+	}
+
+	ObjectEntry *consoleEntry = configFile.root["console"];	
+	if(consoleEntry) {
+		if((*consoleEntry)["size"]) {
+			frame->getConsoleSizer()->setMainHeight((*consoleEntry)["size"]->NumberVal);
+		}
+		if((*consoleEntry)["showing"]) {
+			if((*consoleEntry)["showing"]->boolVal) {
+				frame->showConsole();
+			} else {
+				frame->hideConsole();			
+			}
+		}		
+	}
+}
+
+PolycodeIDEApp::~PolycodeIDEApp() {	
 	saveConfigFile();
-	
 	delete core;
 }
 

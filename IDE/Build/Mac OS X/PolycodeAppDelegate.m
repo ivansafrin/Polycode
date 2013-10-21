@@ -82,9 +82,9 @@ void PolycodeAppEventHandler::handleEvent(Event *evt) {
 
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)theApplication
 {
+	app->saveConfigFile();
 	bool retVal = app->quitApp();
 	if(retVal) {
-		app->saveConfigFile();
 		app->core->Shutdown();
 		printf("STOPPING\n");
 	}

@@ -25,10 +25,9 @@
 
 UIColorPicker *globalColorPicker;
 PolycodeFrame *globalFrame;
-
 extern UIGlobalMenu *globalMenu;
-
 EditorHolder *activeEditorHolder = NULL;
+extern PolycodeEditorManager *globalEditorManager;
 
 EditPoint::EditPoint(BezierPoint *point, unsigned int type) : Entity() {
 	this->point = point;
@@ -537,8 +536,79 @@ EditorHolder::EditorHolder(PolycodeProject *project, PolycodeEditorManager *edit
 	isActive = false;
 }
 
+ObjectEntry *EditorHolder::getEditorHolderConfig() {
+	ObjectEntry *configEntry = new ObjectEntry();
+	configEntry->name = "editor_holder";
+	
+	if(vSizer) {	
+		configEntry->addChild("split", "vsplit");
+		ObjectEntry *childEditors = configEntry->addChild("child_editors");
+		childEditors->addChild(firstChildHolder->getEditorHolderConfig())->addChild("size", vSizer->getMainHeight());
+		childEditors->addChild(secondChildHolder->getEditorHolderConfig());				
+	} else if(hSizer) {
+		configEntry->addChild("split", "hsplit");
+		ObjectEntry *childEditors = configEntry->addChild("child_editors");
+		childEditors->addChild(firstChildHolder->getEditorHolderConfig())->addChild("size", hSizer->getMainWidth());
+		childEditors->addChild(secondChildHolder->getEditorHolderConfig());				
+	} else {
+		configEntry->addChild("split", "none");	
+		if(currentEditor) {
+			configEntry->addChild("file_name", 	currentEditor->getFilePath());
+		}
+
+	}
+	return configEntry;
+}
+
+void EditorHolder::applyConfig(ObjectEntry *entry) {
+	ObjectEntry *splitEntry = (*entry)["split"];
+	if(splitEntry) {
+		if(splitEntry->stringVal == "none") {
+			ObjectEntry *fileNameEntry = (*entry)["file_name"];
+			if(fileNameEntry) {
+				OSFileEntry file = OSFileEntry(fileNameEntry->stringVal, OSFileEntry::TYPE_FILE);
+				PolycodeEditor *editor = globalEditorManager->openFile(file);
+				if(editor) {
+					setEditor(editor);
+				}	
+			}
+		} else {
+			if(splitEntry->stringVal == "hsplit") {
+				makeHSplit();
+			} else {
+				makeVSplit();
+			}
+			
+			ObjectEntry *childEntries = (*entry)["child_editors"];
+			if(childEntries) {
+				ObjectEntry *firstChildEntry = (*childEntries)[0];
+				if(firstChildEntry) {
+					firstChildHolder->applyConfig(firstChildEntry);
+					if(vSizer) {
+						vSizer->setMainHeight((*firstChildEntry)["size"]->NumberVal);
+					} else if(hSizer) {
+						hSizer->setMainWidth((*firstChildEntry)["size"]->NumberVal);
+					}
+				}
+				ObjectEntry *secondChildEntry = (*childEntries)[1];
+				if(secondChildEntry) {
+					secondChildHolder->applyConfig(secondChildEntry);
+				}				
+			}
+			
+		}
+	}
+}
+
 void EditorHolder::setActive(bool val) {
+
 	isActive = val;
+	
+	if(vSizer || hSizer) {
+		firstChildHolder->setActive(val);
+		return;
+	}	
+	
 	if(val) {	
 		headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiAccentColor"));
 		if(activeEditorHolder && activeEditorHolder != this) {
@@ -631,6 +701,55 @@ PolycodeEditor *EditorHolder::getEditor() {
 	return currentEditor;
 }
 
+void EditorHolder::makeVSplit() {
+	holderBar->visible = false;
+	holderBar->enabled = false;
+
+	vSizer = new UIVSizer(getWidth(), getHeight(), getHeight()/2.0, true);
+	addChild(vSizer);
+	firstChildHolder = new EditorHolder(project, editorManager, this);
+	firstChildHolder->addEventListener(this, UIEvent::CLOSE_EVENT);
+	vSizer->addTopChild(firstChildHolder);		
+	if(isActive) {
+		firstChildHolder->setActive(true);
+	}		
+	secondChildHolder = new EditorHolder(project, editorManager, this);
+	secondChildHolder->addEventListener(this, UIEvent::CLOSE_EVENT);
+	vSizer->addBottomChild(secondChildHolder);
+
+
+	if(currentEditor) {
+		removeChild(currentEditor);
+		currentEditor->setEditorHolder(NULL);			
+		firstChildHolder->setEditor(currentEditor);
+		currentEditor = NULL;
+	}
+}
+
+void EditorHolder::makeHSplit() {
+	holderBar->visible = false;
+	holderBar->enabled = false;
+	
+	hSizer = new UIHSizer(getWidth(), getHeight(), getWidth()/2.0, true);
+	addChild(hSizer);
+	firstChildHolder = new EditorHolder(project, editorManager, this);
+	firstChildHolder->addEventListener(this, UIEvent::CLOSE_EVENT);		
+	hSizer->addLeftChild(firstChildHolder);
+	secondChildHolder = new EditorHolder(project, editorManager, this);
+	secondChildHolder->addEventListener(this, UIEvent::CLOSE_EVENT);		
+	hSizer->addRightChild(secondChildHolder);
+	if(isActive) {
+		firstChildHolder->setActive(true);
+	}		
+	
+	if(currentEditor) {
+		removeChild(currentEditor);
+		currentEditor->setEditorHolder(NULL);
+		firstChildHolder->setEditor(currentEditor);
+		currentEditor = NULL;
+	}
+}
+
 void EditorHolder::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == this) {
@@ -638,53 +757,9 @@ void EditorHolder::handleEvent(Event *event) {
 			setActive(true);
 		}
 	} else if(event->getDispatcher() == vSplitButton) {
-		holderBar->visible = false;
-		holderBar->enabled = false;
-		
-		vSizer = new UIVSizer(getWidth(), getHeight(), getHeight()/2.0, true);
-		addChild(vSizer);
-		firstChildHolder = new EditorHolder(project, editorManager, this);
-		firstChildHolder->addEventListener(this, UIEvent::CLOSE_EVENT);
-		vSizer->addTopChild(firstChildHolder);		
-		if(isActive) {
-			firstChildHolder->setActive(true);
-		}		
-		secondChildHolder = new EditorHolder(project, editorManager, this);
-		secondChildHolder->addEventListener(this, UIEvent::CLOSE_EVENT);
-		vSizer->addBottomChild(secondChildHolder);
-		
-		
-		if(currentEditor) {
-			removeChild(currentEditor);
-			currentEditor->setEditorHolder(NULL);			
-			firstChildHolder->setEditor(currentEditor);
-			currentEditor = NULL;
-		}
-		
+		makeVSplit();
 	} else if(event->getDispatcher() == hSplitButton) {
-		holderBar->visible = false;
-		holderBar->enabled = false;
-		
-		hSizer = new UIHSizer(getWidth(), getHeight(), getWidth()/2.0, true);
-		addChild(hSizer);
-		firstChildHolder = new EditorHolder(project, editorManager, this);
-		firstChildHolder->addEventListener(this, UIEvent::CLOSE_EVENT);		
-		hSizer->addLeftChild(firstChildHolder);
-		secondChildHolder = new EditorHolder(project, editorManager, this);
-		secondChildHolder->addEventListener(this, UIEvent::CLOSE_EVENT);		
-		hSizer->addRightChild(secondChildHolder);
-		if(isActive) {
-			firstChildHolder->setActive(true);
-		}		
-		
-		if(currentEditor) {
-			removeChild(currentEditor);
-			currentEditor->setEditorHolder(NULL);
-			firstChildHolder->setEditor(currentEditor);
-			currentEditor = NULL;
-		}
-				
-								
+		makeHSplit();								
 	} else if(event->getDispatcher() == currentFileSelector) {
 		PolycodeEditor *editor = (PolycodeEditor*) currentFileSelector->getSelectedItem()->data;
 		if(currentEditor != editor) {
@@ -854,6 +929,35 @@ String PolycodeProjectTab::getTabName() {
 	return tabName;
 }
 
+ObjectEntry *PolycodeProjectTab::getTabConfig() {
+	ObjectEntry *configEntry = new ObjectEntry();
+	configEntry->name = "tab";
+	
+	configEntry->addChild(projectBrowser->getBrowserConfig());
+	
+	configEntry->addChild("tab_name", tabName);	
+	configEntry->addChild("tab_active", isActive());
+	
+	configEntry->addChild(editorHolder->getEditorHolderConfig());
+	return configEntry;
+}
+
+void PolycodeProjectTab::applyTabConfig(ObjectEntry *tabEntry) {
+	ObjectEntry *browserEntry = (*tabEntry)["project_browser"];
+	if(browserEntry) {
+		ObjectEntry *browserWidthEntry = (*browserEntry)["width"];
+		if(browserWidthEntry) {
+			mainSizer->setMainWidth(browserWidthEntry->NumberVal);
+		}
+		projectBrowser->applyBrowserConfig(browserEntry);
+	}
+	
+	ObjectEntry *editorHolderEntry = (*tabEntry)["editor_holder"];
+	if(editorHolderEntry) {
+		editorHolder->applyConfig(editorHolderEntry);
+	}
+}
+
 void PolycodeProjectTab::setTabName(String newName) {
 	tabName = newName;
 }
@@ -978,6 +1082,14 @@ PolycodeProjectFrame::PolycodeProjectFrame(PolycodeProject *project, PolycodeEdi
 	addNewTab("Default");
 }
 
+PolycodeProjectTab *PolycodeProjectFrame::getTabAtIndex(unsigned int index) {
+	return tabs[index];
+}
+
+unsigned int PolycodeProjectFrame::getNumTabs() {
+	return tabs.size();
+}
+
 PolycodeProjectTab *PolycodeProjectFrame::getActiveTab() {
 	return activeTab;
 }
@@ -1058,6 +1170,18 @@ void PolycodeProjectFrame::restructTabs() {
 		tabButtons[i]->setActive(tabButtons[i]->getTab()->isActive());		
 	}
 	newTabButton->setPosition((i * 155), 0.0);
+}
+
+ObjectEntry *PolycodeProjectFrame::getFrameConfig() {
+	ObjectEntry *configEntry = new ObjectEntry();
+	configEntry->name = "frame";
+	
+	ObjectEntry *tabsEntry = configEntry->addChild("tabs");
+	
+	for(int i=0; i < tabs.size(); i++) {
+		tabsEntry->addChild(tabs[i]->getTabConfig());
+	}
+	return configEntry;
 }
 
 void PolycodeProjectFrame::handleEvent(Event *event) {
@@ -1313,6 +1437,10 @@ void PolycodeFrame::hideModal() {
 	modalBlocker->enabled = false;		
 }
 
+bool PolycodeFrame::isShowingConsole() {
+	return showingConsole;
+}
+	
 void PolycodeFrame::showConsole() {
 	if(!showingConsole)
 		toggleConsole();
@@ -1335,6 +1463,14 @@ void PolycodeFrame::toggleConsole() {
 		console->enabled = true;		
 	}
 	showingConsole = !showingConsole;
+}
+
+Number PolycodeFrame::getConsoleSize() {
+	if(showingConsole) {
+		return consoleSizer->getMainHeight();
+	} else {
+		return consoleSize;
+	}
 }
 
 void PolycodeFrame::Update() {
@@ -1522,6 +1658,15 @@ void PolycodeFrame::Resize(int x, int y) {
 	}
 	
 	UIElement::Resize(x, y);
+}
+
+ObjectEntry *PolycodeFrame::getFrameConfigForProject(PolycodeProject *project) {
+	for(int i=0; i < projectFrames.size(); i++) {
+		if(projectFrames[i]->getProject() == project) {
+			return projectFrames[i]->getFrameConfig();
+		}
+	}
+	return NULL;
 }
 
 void PolycodeFrame::removeProjectFrame(PolycodeProject *project) {

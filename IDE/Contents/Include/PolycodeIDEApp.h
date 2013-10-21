@@ -116,6 +116,8 @@ protected:
 	bool quittingApp;
 	bool runNextFrame;
 
+	Object configFile;
+
 	bool willRunProject;
 	PolycodeFrame *frame;
 	
@@ -127,7 +129,9 @@ protected:
 	
 private:
 
-	std::vector<String> projectsToOpen;
+	void applyFinalConfig();
+
+	std::vector<ObjectEntry*> projectsToOpen;
 
 	void doCloseProject();
 	void doCloseFiles(std::vector<PolycodeEditor*> editors);

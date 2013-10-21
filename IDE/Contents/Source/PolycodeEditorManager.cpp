@@ -31,6 +31,10 @@ PolycodeEditorManager::~PolycodeEditorManager() {
 	
 }
 
+void PolycodeEditorManager::setProjectManager(PolycodeProjectManager *projectManager) {
+	this->projectManager = projectManager;
+}
+
 PolycodeEditorFactory *PolycodeEditorManager::getEditorFactoryForExtension(String extension) {
 	for(int i=0;i < editorFactories.size(); i++) {
 		PolycodeEditorFactory *factory = editorFactories[i];
@@ -63,6 +67,23 @@ void PolycodeEditorManager::destroyEditor(PolycodeEditor* editor) {
 			return;
 		}
 	}
+}
+
+PolycodeEditor *PolycodeEditorManager::openFile(OSFileEntry file) {
+	PolycodeEditor *editor = getEditorForPath(file.fullPath);	
+	if(editor) {
+		return editor;
+	} else {
+		editor = createEditorForExtension(file.extension);
+		if(editor) {
+			editor->parentProject = projectManager->getActiveProject();
+			if(!editor->openFile(file)) {
+				delete editor;
+				editor = NULL;
+			}
+		}
+	}
+	return editor;
 }
 
 bool PolycodeEditorManager::hasUnsavedFiles() {

@@ -145,9 +145,15 @@ class EditorHolder : public UIElement {
 		EditorHolder(PolycodeProject *project, PolycodeEditorManager *editorManager, EditorHolder *parentHolder);
 		~EditorHolder();
 		
+		ObjectEntry *getEditorHolderConfig();
+		void applyConfig(ObjectEntry *entry);
+		
 		void handleEvent(Event *event);
 		void Resize(Number width, Number height);		
 		
+		void makeVSplit();
+		void makeHSplit();
+				
 		void _mergeSides(EditorHolder *mainHolder);
 		void mergeSides(EditorHolder *mainHolder);
 		
@@ -202,6 +208,9 @@ class PolycodeProjectTab : public UIElement {
 		void Resize(Number width, Number height);				
 		void showEditor(PolycodeEditor *editor);
 		
+		ObjectEntry *getTabConfig();
+		void applyTabConfig(ObjectEntry *tabEntry);
+		
 		void setActive(bool val);
 		bool isActive();
 		
@@ -250,6 +259,8 @@ class PolycodeProjectFrame : public UIElement {
 		
 		PolycodeProjectTab *addNewTab(String caption = "New Tab");
 		
+		ObjectEntry *getFrameConfig();
+		
 		void showTab(PolycodeProjectTab *tab);
 		void closeTab(PolycodeProjectTab *tab);
 		
@@ -263,6 +274,9 @@ class PolycodeProjectFrame : public UIElement {
 		void Resize(Number width, Number height);
 		
 		EditorHolder *lastActiveEditorHolder;
+		
+		PolycodeProjectTab *getTabAtIndex(unsigned int index);
+		unsigned int getNumTabs();
 		
 	protected:
 	
@@ -306,6 +320,8 @@ public:
 	
 	TextInputPopup *showTextInput(String caption, String action, String value);
 	
+	ObjectEntry *getFrameConfigForProject(PolycodeProject *project);
+	
 	void toggleConsole();
 	void showConsole();
 	void hideConsole();
@@ -347,6 +363,9 @@ public:
 	UIButton *aboutOKButton;
 	
 	void updateFileSelector();
+	
+	bool isShowingConsole();
+	Number getConsoleSize();
 	
 private:
 	

@@ -142,6 +142,74 @@ bool PolycodeProjectBrowser::listHasFileEntry(vector<OSFileEntry> files, OSFileE
 	return false;
 }
 
+void parseOpenNodesIntoEntry(ObjectEntry *entry, UITree *node, bool addNewNode) {
+
+	bool hasOpenNodes = false;
+	for(int i=0; i < node->getNumTreeChildren(); i++) {
+		UITree *child = node->getTreeChild(i);	
+		if(!child->isCollapsed()) {	
+			hasOpenNodes = true;
+		}
+	}
+
+	if(!hasOpenNodes) {
+		return;		
+	}
+
+	ObjectEntry *childNodes = entry;
+	if(addNewNode) {
+		childNodes = entry->addChild("child_nodes");
+	}
+	
+	for(int i=0; i < node->getNumTreeChildren(); i++) {
+		UITree *child = node->getTreeChild(i);
+		if(!child->isCollapsed()) {
+			ObjectEntry *newEntry = childNodes->addChild("open_node");
+			newEntry->addChild("name", child->getLabelText());			
+			parseOpenNodesIntoEntry(newEntry, child, true);
+		}
+	}
+}
+
+ObjectEntry *PolycodeProjectBrowser::getBrowserConfig() {
+	ObjectEntry *configEntry = new ObjectEntry();	
+	configEntry->name = "project_browser";
+	
+	configEntry->addChild("width", getWidth());	
+	ObjectEntry *openNodes = configEntry->addChild("open_nodes");
+	parseOpenNodesIntoEntry(openNodes, treeContainer->getRootNode(), false);
+	
+	return configEntry;
+}
+
+void PolycodeProjectBrowser::applyOpenNodeToTree(UITree* treeNode, ObjectEntry *nodeEntry) {
+	for(int i=0; i < treeNode->getNumTreeChildren(); i++) {
+		if(treeNode->getTreeChild(i)->getLabelText() == (*nodeEntry)["name"]->stringVal ){
+			if(treeNode->getTreeChild(i)->isCollapsed()) {
+				treeNode->getTreeChild(i)->toggleCollapsed();
+				ObjectEntry *childNodes = (*nodeEntry)["child_nodes"];
+				if(childNodes) {
+					for(int j=0; j < childNodes->length; j++) {
+						applyOpenNodeToTree(treeNode->getTreeChild(i), (*childNodes)[j]);
+					}
+				}
+			}
+		}
+	}
+}
+
+void PolycodeProjectBrowser::applyBrowserConfig(ObjectEntry *entry) {
+	ObjectEntry *openNodes = (*entry)["open_nodes"];
+	if(openNodes) {
+		for(int i=0; i < openNodes->length; i++) {
+			ObjectEntry *openNode = (*openNodes)[i];
+			if(openNode) {				
+				applyOpenNodeToTree(treeContainer->getRootNode(), openNode);
+			}
+		}
+	}
+}
+
 void PolycodeProjectBrowser::parseFolderIntoNode(UITree *node, String spath, PolycodeProject *parentProject) {
 	vector<OSFileEntry> files = OSBasics::parseFolder(spath, false);
 	
@@ -183,4 +251,5 @@ void PolycodeProjectBrowser::parseFolderIntoNode(UITree *node, String spath, Pol
 void PolycodeProjectBrowser::Resize(Number width, Number height) {
 	headerBg->Resize(width, 30);
 	treeContainer->Resize(width, height-30);
+	UIElement::Resize(width, height);
 }

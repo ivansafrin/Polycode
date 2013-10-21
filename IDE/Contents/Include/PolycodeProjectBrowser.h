@@ -50,32 +50,33 @@ class PolycodeProjectBrowserEvent : public Event {
 };
 
 class PolycodeProjectBrowser : public UIElement {
-public:
-	PolycodeProjectBrowser(PolycodeProject *project);
-	~PolycodeProjectBrowser();
-	
-	void Resize(Number width, Number height);
-	
-	UITree *nodeHasName(UITree *node, String name);
-	bool listHasFileEntry(vector<OSFileEntry> files, OSFileEntry fileEntry);
-	
-	void Refresh();
-	
-	void handleEvent(Event *event);
-	
-	void parseFolderIntoNode(UITree *node, String spath, PolycodeProject *parentProject);
-	
-	
-	
-	BrowserUserData *getSelectedData() { return selectedData; }
-	
-	UITreeContainer *treeContainer;
+	public:
+		PolycodeProjectBrowser(PolycodeProject *project);
+		~PolycodeProjectBrowser();
+		
+		void Resize(Number width, Number height);
+		
+		ObjectEntry *getBrowserConfig();
+		void applyBrowserConfig(ObjectEntry *entry);
+		
+		UITree *nodeHasName(UITree *node, String name);
+		bool listHasFileEntry(vector<OSFileEntry> files, OSFileEntry fileEntry);
+		
+		void Refresh();
+		
+		void handleEvent(Event *event);
+		
+		void parseFolderIntoNode(UITree *node, String spath, PolycodeProject *parentProject);
+		
+		BrowserUserData *getSelectedData() { return selectedData; }
+		
+		UITreeContainer *treeContainer;
 			
 protected:
 
-		UIRect *headerBg;
-	
-		UIMenu *contextMenu;
-	
+		void applyOpenNodeToTree(UITree* treeNode, ObjectEntry *nodeEntry);
+		
+		UIRect *headerBg;	
+		UIMenu *contextMenu;	
 		BrowserUserData *selectedData;
 };	

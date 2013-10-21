@@ -38,6 +38,7 @@ PolycodeProject* PolycodeProjectManager::openProject(String path) {
 
 	for(int i=0; i < projects.size(); i++) {
 		if(projects[i]->getProjectFile() == path) {
+			setActiveProject(projects[i]);
 			return projects[i];
 		}
 	}	
@@ -71,6 +72,8 @@ PolycodeProject* PolycodeProjectManager::openProject(String path) {
 		String fontName = newProject->data.fonts[i].fontName;
 		CoreServices::getInstance()->getFontManager()->registerFont(fontName, fontPath);		
 	}
+	
+	setActiveProject(newProject);
 	
 	dispatchEvent(new Event(), Event::CHANGE_EVENT);	
 	return newProject;
