@@ -33,6 +33,7 @@ using namespace Polycode;
 UIVSizer::UIVSizer(Number width, Number height, Number mainHeight, bool topSizer) : UIElement() {
 
 	minimumSize = 100;
+	proportionalResize = false;
 
 	setWidth(width);
 	setHeight(height);
@@ -130,7 +131,16 @@ void UIVSizer::handleEvent(Event *event) {
 	}
 }
 
+void UIVSizer::setProportionalResize(bool val) {
+	proportionalResize = val;
+}
+
 void UIVSizer::Resize(Number width, Number height) {
+
+	if(proportionalResize) {
+		mainHeight = mainHeight * (height/getHeight());
+	}
+	
 	setWidth(width);
 	setHeight(height);
 	matrixDirty = true;

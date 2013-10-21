@@ -52,9 +52,12 @@ namespace Polycode {
 			void updateSizer();
 			
 			void setMinimumSize(Number minimumSize);
+			void setProportionalResize(bool val);
 			
 		protected:
 		
+			bool proportionalResize;
+					
 			Entity *childElements;			
 			Number mainHeight;
 			

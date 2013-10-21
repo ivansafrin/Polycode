@@ -585,9 +585,9 @@ void EditorHolder::applyConfig(ObjectEntry *entry) {
 				if(firstChildEntry) {
 					firstChildHolder->applyConfig(firstChildEntry);
 					if(vSizer) {
-						vSizer->setMainHeight((*firstChildEntry)["size"]->NumberVal);
+						vSizer->setMainHeightWithMinimum((*firstChildEntry)["size"]->NumberVal);
 					} else if(hSizer) {
-						hSizer->setMainWidth((*firstChildEntry)["size"]->NumberVal);
+						hSizer->setMainWidthWithMinimum((*firstChildEntry)["size"]->NumberVal);
 					}
 				}
 				ObjectEntry *secondChildEntry = (*childEntries)[1];
@@ -604,7 +604,7 @@ void EditorHolder::setActive(bool val) {
 
 	isActive = val;
 	
-	if(vSizer || hSizer) {
+	if(firstChildHolder) {
 		firstChildHolder->setActive(val);
 		return;
 	}	
@@ -707,6 +707,8 @@ void EditorHolder::makeVSplit() {
 
 	vSizer = new UIVSizer(getWidth(), getHeight(), getHeight()/2.0, true);
 	vSizer->setMinimumSize(200);
+	vSizer->setProportionalResize(true);
+	
 	addChild(vSizer);
 	firstChildHolder = new EditorHolder(project, editorManager, this);
 	firstChildHolder->addEventListener(this, UIEvent::CLOSE_EVENT);
@@ -733,6 +735,8 @@ void EditorHolder::makeHSplit() {
 	
 	hSizer = new UIHSizer(getWidth(), getHeight(), getWidth()/2.0, true);
 	hSizer->setMinimumSize(200);
+	hSizer->setProportionalResize(true);
+	
 	addChild(hSizer);
 	firstChildHolder = new EditorHolder(project, editorManager, this);
 	firstChildHolder->addEventListener(this, UIEvent::CLOSE_EVENT);		

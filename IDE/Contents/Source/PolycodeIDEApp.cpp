@@ -127,7 +127,7 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	projectManager->addEventListener(frame, Event::CHANGE_EVENT);
 	projectManager->addEventListener(this, Event::CHANGE_EVENT);
 			
-	frame->Resize(core->getXRes(), core->getYRes());	
+//	frame->Resize(core->getXRes(), core->getYRes());	
 	
 	debugger = new PolycodeRemoteDebugger(projectManager);
 	frame->console->setDebugger(debugger);
@@ -1074,24 +1074,6 @@ void PolycodeIDEApp::loadConfigFile() {
 	}	
 	config->setStringValue("Polycode", "uiTheme", uiThemeName);
 	
-	
-	ObjectEntry *appWidth = configFile.root["app_width"];
-	ObjectEntry *appHeight = configFile.root["app_height"];
-		
-	bool setResFromConfig = false;
-	if(appWidth && appHeight) {
-		int newXRes = appWidth->intVal;
-		int newYRes = appHeight->intVal;		
-		if(newXRes > 100 && newYRes > 100) {
-			setResFromConfig = true;
-			core->setVideoMode(newXRes, newYRes, false, true, 0, 0);
-		}
-	}
-	
-	if(!setResFromConfig) {
-			core->setVideoMode(1100, 700, false, true, 0, 0);	
-	}
-		
 	String themeName = "default";
 	ObjectEntry *syntaxTheme = configFile.root["syntax_theme"];
 	if(syntaxTheme) {
@@ -1131,6 +1113,40 @@ void PolycodeIDEApp::loadConfigFile() {
 }
 
 void PolycodeIDEApp::applyFinalConfig() {
+
+	ObjectEntry *appWidth = configFile.root["app_width"];
+	ObjectEntry *appHeight = configFile.root["app_height"];
+		
+	bool setResFromConfig = false;
+	if(appWidth && appHeight) {
+		int newXRes = appWidth->intVal;
+		int newYRes = appHeight->intVal;		
+		if(newXRes > 100 && newYRes > 100) {
+			setResFromConfig = true;
+			core->setVideoMode(newXRes, newYRes, false, true, 0, 0);
+			frame->Resize(newXRes, newYRes);
+		}
+	}
+	
+	if(!setResFromConfig) {
+		core->setVideoMode(1100, 700, false, true, 0, 0);	
+		frame->Resize(1100, 700);			
+	}
+
+
+	ObjectEntry *consoleEntry = configFile.root["console"];	
+	if(consoleEntry) {
+		if((*consoleEntry)["size"]) {
+			frame->getConsoleSizer()->setMainHeight((*consoleEntry)["size"]->NumberVal);
+		}
+		if((*consoleEntry)["showing"]) {
+			if((*consoleEntry)["showing"]->boolVal) {
+				frame->showConsole();
+			} else {
+				frame->hideConsole();			
+			}
+		}		
+	}
 
 	PolycodeProject *activeConfigProject = NULL;
 	
@@ -1192,19 +1208,6 @@ void PolycodeIDEApp::applyFinalConfig() {
 		frame->switchToProjectFrame(frame->getProjectFrame(activeConfigProject));
 	}
 
-	ObjectEntry *consoleEntry = configFile.root["console"];	
-	if(consoleEntry) {
-		if((*consoleEntry)["size"]) {
-			frame->getConsoleSizer()->setMainHeight((*consoleEntry)["size"]->NumberVal);
-		}
-		if((*consoleEntry)["showing"]) {
-			if((*consoleEntry)["showing"]->boolVal) {
-				frame->showConsole();
-			} else {
-				frame->hideConsole();			
-			}
-		}		
-	}
 }
 
 PolycodeIDEApp::~PolycodeIDEApp() {	
