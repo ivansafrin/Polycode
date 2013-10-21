@@ -67,4 +67,9 @@ public:
 -(IBAction) openDocs: (id) sender;
 -(IBAction) showAbout: (id) sender;
 -(IBAction) showSettings: (id) sender;
+
+-(IBAction) createNewTab: (id) sender;
+-(IBAction) showNextTab: (id) sender;
+-(IBAction) showPreviousTab: (id) sender;
+-(IBAction) closeTab: (id) sender;
 @end

@@ -236,6 +236,7 @@ class PolycodeTabButton : public UIElement {
 
 		void setActive(bool val);
 		void handleEvent(Event *event);
+		void updateLabel();
 
 		PolycodeProjectTab *getTab();		
 	protected:
@@ -263,6 +264,8 @@ class PolycodeProjectFrame : public UIElement {
 		
 		void showTab(PolycodeProjectTab *tab);
 		void closeTab(PolycodeProjectTab *tab);
+		void showNextTab();
+		void showPreviousTab();
 		
 		void Update();
 								

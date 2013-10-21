@@ -216,6 +216,22 @@ void PolycodeIDEApp::showSettings() {
 	frame->showModal(frame->settingsWindow);
 }
 
+void PolycodeIDEApp::createNewTab() {
+	frame->getActiveProjectFrame()->addNewTab();
+}
+
+void PolycodeIDEApp::closeTab() {
+	frame->getActiveProjectFrame()->closeTab(frame->getActiveProjectFrame()->getActiveTab());
+}
+
+void PolycodeIDEApp::showNextTab() {
+	frame->getActiveProjectFrame()->showNextTab();
+}
+
+void PolycodeIDEApp::showPreviousTab() {
+	frame->getActiveProjectFrame()->showPreviousTab();
+}
+
 void PolycodeIDEApp::toggleConsole() {
 	frame->toggleConsole();
 }
@@ -1181,6 +1197,7 @@ void PolycodeIDEApp::applyFinalConfig() {
 								
 								if(i == 0) {
 									projectFrame->getTabAtIndex(0)->setTabName(tabName->stringVal);
+									projectFrame->restructTabs();
 								} else {
 									projectFrame->addNewTab(tabName->stringVal);
 								}			

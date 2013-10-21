@@ -182,4 +182,21 @@ void PolycodeAppEventHandler::handleEvent(Event *evt) {
 	app->showSettings();
 }
 
+-(IBAction) createNewTab: (id) sender {
+	app->createNewTab();
+}
+
+-(IBAction) showNextTab: (id) sender {
+	app->showNextTab();
+}
+
+-(IBAction) showPreviousTab: (id) sender {
+	app->showPreviousTab();
+}
+
+-(IBAction) closeTab: (id) sender {
+	app->closeTab();
+}
+
+
 @end

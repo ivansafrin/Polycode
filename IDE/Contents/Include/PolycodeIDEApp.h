@@ -90,6 +90,11 @@ public:
 	void toggleConsole();
 	void showSettings();
 	
+	void createNewTab();
+	void closeTab();
+	void showNextTab();
+	void showPreviousTab();
+	
 	void removeEditor(PolycodeEditor *editor);
 	
 	// system callbacks

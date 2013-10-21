@@ -1019,6 +1019,11 @@ PolycodeTabButton::PolycodeTabButton(PolycodeProjectTab *tab) : UIElement() {
 	closeButton->addEventListener(this, UIEvent::CLICK_EVENT);
 }
 
+void PolycodeTabButton::updateLabel() {
+	tabLabel->setText(tab->getTabName().toUpperCase());
+	tabLabel->setPosition(getWidth()-tabLabel->getWidth()-10.0, ((getHeight()-tabLabel->getHeight())/2.0) - 3.0);
+}
+
 void PolycodeTabButton::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == renamePopup) {
@@ -1087,6 +1092,34 @@ PolycodeProjectFrame::PolycodeProjectFrame(PolycodeProject *project, PolycodeEdi
 	tabButtonAnchor->addChild(newTabButton);
 	newTabButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addNewTab("Default");
+}
+
+void PolycodeProjectFrame::showNextTab() {
+	for(int i=0; i < tabs.size(); i++) {
+		if(tabs[i] == activeTab) {
+			if(i < tabs.size()-1) {
+				showTab(tabs[i+1]);
+				return;				
+			} else {
+				showTab(tabs[0]);	
+				return;				
+			}
+		}
+	}
+}
+
+void PolycodeProjectFrame::showPreviousTab() {
+	for(int i=0; i < tabs.size(); i++) {
+		if(tabs[i] == activeTab) {
+			if(i > 0) {
+				showTab(tabs[i-1]);
+				return;				
+			} else {
+				showTab(tabs[tabs.size()-1]);
+				return;
+			}
+		}
+	}
 }
 
 PolycodeProjectTab *PolycodeProjectFrame::getTabAtIndex(unsigned int index) {
@@ -1175,6 +1208,7 @@ void PolycodeProjectFrame::restructTabs() {
 	for(i=0; i < tabButtons.size(); i++) {
 		tabButtons[i]->setPosition(i * 155.0, 0.0);
 		tabButtons[i]->setActive(tabButtons[i]->getTab()->isActive());		
+		tabButtons[i]->updateLabel();
 	}
 	newTabButton->setPosition((i * 155), 0.0);
 }
@@ -1712,11 +1746,7 @@ void PolycodeFrame::switchToProjectFrame(PolycodeProjectFrame *projectFrame) {
 	} 
 	activeProjectFrame = projectFrame;
 	consoleSizer->addTopChild(activeProjectFrame);
-	if(activeProjectFrame->lastActiveEditorHolder) {
-		activeProjectFrame->lastActiveEditorHolder->setActive(true);
-	} else {
-		activeProjectFrame->getActiveTab()->getEditorHolder()->setActive(true);
-	}
+	activeProjectFrame->getActiveTab()->getEditorHolder()->setActive(true);
 	activeProjectFrame->addEventListener(this, UIEvent::CLOSE_EVENT);
 	activeProjectFrame->addEventListener(this, Event::CHANGE_EVENT);
 	Resize(getWidth(), getHeight());
