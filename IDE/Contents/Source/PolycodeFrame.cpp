@@ -554,6 +554,10 @@ ObjectEntry *EditorHolder::getEditorHolderConfig() {
 		configEntry->addChild("split", "none");	
 		if(currentEditor) {
 			configEntry->addChild("file_name", 	currentEditor->getFilePath());
+			ObjectEntry *editorConfig = currentEditor->getEditorConfig();
+			if(editorConfig) {
+				configEntry->addChild(editorConfig)->name = "editor_config";
+			}			
 		}
 
 	}
@@ -570,6 +574,10 @@ void EditorHolder::applyConfig(ObjectEntry *entry) {
 				PolycodeEditor *editor = globalEditorManager->openFile(file);
 				if(editor) {
 					setEditor(editor);
+					ObjectEntry *editorConfig = (*entry)["editor_config"];
+					if(editorConfig) {
+						editor->applyEditorConfig(editorConfig);
+					}
 				}	
 			}
 		} else {

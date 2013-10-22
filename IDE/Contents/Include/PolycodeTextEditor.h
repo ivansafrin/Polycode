@@ -92,6 +92,9 @@ public:
 	void Resize(int x, int y);
 	void saveFile();
 	
+	ObjectEntry *getEditorConfig();
+	void applyEditorConfig(ObjectEntry *configEntry);
+		
 	void handleEvent(Event *event);
 	
 	void hideFindBar();

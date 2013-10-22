@@ -510,6 +510,21 @@ bool PolycodeTextEditor::openFile(OSFileEntry filePath) {
 	return true;
 }
 
+ObjectEntry *PolycodeTextEditor::getEditorConfig() {
+	ObjectEntry *configEntry = new ObjectEntry();
+		
+	configEntry->addChild("scroll_offset", textInput->getScrollContainer()->getVScrollBar()->getScrollValue());
+			
+	return configEntry;
+}
+
+void PolycodeTextEditor::applyEditorConfig(ObjectEntry *configEntry) {
+	ObjectEntry *scrollEntry = (*configEntry)["scroll_offset"];
+	if(scrollEntry) {
+		textInput->getScrollContainer()->setScrollValue(0.0, scrollEntry->NumberVal);
+	}
+}
+
 void PolycodeTextEditor::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == textInput && event->getEventType() == "UIEvent") {

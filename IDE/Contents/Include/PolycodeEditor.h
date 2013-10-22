@@ -77,6 +77,9 @@ public:
 
 	virtual void handleDroppedFile(OSFileEntry file, Number x, Number y) {};
 	
+	virtual ObjectEntry *getEditorConfig() { return NULL; }
+	virtual void applyEditorConfig(ObjectEntry *configEntry) {}
+	
 	void setFilePath(String newPath);
 	String getFilePath() { return filePath; }
 	
