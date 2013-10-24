@@ -81,7 +81,7 @@ UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : 
 	arrowIconImage = new SceneImage(arrowIcon.c_str());
 	arrowIconImage->setPosition(cellPadding + arrowIconImage->getWidth()/2.0,(cellHeight)/2.0f);	
 	addChild(arrowIconImage);
-	iconImage = new SceneImage(icon.c_str());
+	iconImage = new UIImage(icon.c_str());
 	iconImage->setAnchorPoint(-1.0, -1.0, 0.0);
 	addChild(iconImage);
 	iconImage->setPosition(arrowIconImage->getWidth()+(cellPadding*2),(cellHeight-iconImage->getHeight())/2.0f);

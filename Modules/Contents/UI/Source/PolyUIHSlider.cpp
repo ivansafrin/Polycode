@@ -53,7 +53,7 @@ UIHSlider::UIHSlider(Number start, Number end, Number width) : UIElement() {
 	endValue = end;
 		
 	gripRect = new UIImage(gripImage);
-	gripRect->getImage()->setAnchorPoint(0.0, 0.0, 0.0);
+	gripRect->setAnchorPoint(0.0, 0.0, 0.0);
 	gripRect->setPosition(0, floor(bgHeight/2.0));
 
 	bgHitBox = new UIRect(width, gripRect->getHeight());

@@ -733,6 +733,7 @@ void OpenGLRenderer::destroyTexture(Texture *texture) {
 }
 
 void OpenGLRenderer::clearScreen() {
+	glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 

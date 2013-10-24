@@ -91,11 +91,10 @@ void SceneManager::renderVirtual() {
 			}
 		}
 			
-		renderer->clearScreen();
 		renderer->loadIdentity();
 	}
 	renderer->setViewportSize(renderer->getXRes(), renderer->getYRes());
-
+	renderer->clearScreen();
 }
 
 void SceneManager::Render() {

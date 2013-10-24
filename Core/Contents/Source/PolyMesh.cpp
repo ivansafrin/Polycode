@@ -116,6 +116,7 @@ namespace Polycode {
 			
 			Vector3_struct pos;
 			Vector3_struct nor;
+			Vector3_struct tan;			
 			Vector4_struct col;			
 			Vector2_struct tex;
 			
@@ -129,6 +130,10 @@ namespace Polycode {
 				nor.y =  polygons[i]->getVertex(j)->normal.y;
 				nor.z =  polygons[i]->getVertex(j)->normal.z;
 
+				tan.x =  polygons[i]->getVertex(j)->tangent.x;
+				tan.y =  polygons[i]->getVertex(j)->tangent.y;
+				tan.z =  polygons[i]->getVertex(j)->tangent.z;
+
 				col.x =  polygons[i]->getVertex(j)->vertexColor.r;
 				col.y =  polygons[i]->getVertex(j)->vertexColor.g;
 				col.z =  polygons[i]->getVertex(j)->vertexColor.b;
@@ -139,6 +144,7 @@ namespace Polycode {
 				
 				OSBasics::write(&pos, sizeof(Vector3_struct), 1, outFile);
 				OSBasics::write(&nor, sizeof(Vector3_struct), 1, outFile);
+				OSBasics::write(&tan, sizeof(Vector3_struct), 1, outFile);				
 				OSBasics::write(&col, sizeof(Vector4_struct), 1, outFile);				
 				OSBasics::write(&tex, sizeof(Vector2_struct), 1, outFile);								
 				
@@ -181,6 +187,7 @@ namespace Polycode {
 		
 		Vector3_struct pos;
 		Vector3_struct nor;
+		Vector3_struct tan;
 		Vector4_struct col;			
 		Vector2_struct tex;
 		
@@ -190,11 +197,13 @@ namespace Polycode {
 			for(int j=0; j < verticesPerFace; j++) {
 				OSBasics::read(&pos, sizeof(Vector3_struct), 1, inFile);
 				OSBasics::read(&nor, sizeof(Vector3_struct), 1, inFile);
+				OSBasics::read(&tan, sizeof(Vector3_struct), 1, inFile);				
 				OSBasics::read(&col, sizeof(Vector4_struct), 1, inFile);						
 				OSBasics::read(&tex, sizeof(Vector2_struct), 1, inFile);						
 				
 				Vertex *vertex = new Vertex(pos.x, pos.y, pos.z);
 				vertex->setNormal(nor.x,nor.y, nor.z);
+				vertex->tangent = Vector3(tan.x, tan.y, tan.z);
 				vertex->restNormal.set(nor.x,nor.y, nor.z);
 				vertex->vertexColor.setColor(col.x,col.y, col.z, col.w);
 				vertex->setTexCoord(tex.x, tex.y);
@@ -225,8 +234,6 @@ namespace Polycode {
 			}
 			addPolygon(poly);
 		}
-		
-		calculateTangents();
 		
 		arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
 		arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
@@ -758,7 +765,7 @@ namespace Polycode {
 		for(int i =0; i < polygons.size(); i++) {
 			polygons[i]->calculateTangent();
 		}		
-		/*
+
 		for(int i=0; i < polygons.size(); i++) {
 			for(int j=0; j < polygons[i]->getVertexCount(); j++) {		
 				Vertex *v =  polygons[i]->getVertex(j);
@@ -776,7 +783,7 @@ namespace Polycode {
 				v->tangent = tangent;
 			}
 		}		
-		*/
+
 		arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;		
 	}
 	

@@ -34,6 +34,8 @@ UILabel::UILabel(const String& text, int size, const String& fontName, int amode
 
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	label = new SceneLabel(text, size, fontName, amode);
+	label->snapToPixels = true;
+	
 	color.setColorHexFromString(conf->getStringValue("Polycode", "uiDefaultFontColor"));
 	addChild(label);
 	bBox = label->bBox;
@@ -190,21 +192,11 @@ void UIRect::Resize(Number width, Number height) {
 	rectMesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;	
 }
 
-UIImage::UIImage(String imagePath) : UIElement() {
-	image = new SceneImage(imagePath);
-	image->setAnchorPoint(-1.0, -1.0, 0.0);
-	image->depthTest = false;
-	image->depthWrite = false;		
-	addChild(image);
-	setWidth(image->bBox.x);
-	setHeight(image->bBox.y);	
-}
-
-SceneImage *UIImage::getImage() {
-	return image;
+UIImage::UIImage(String imagePath) : UIRect(imagePath) {
 }
 
 UIElement::UIElement() : Entity() {
+	snapToPixels = true;
 	setAnchorPoint(-1.0, -1.0, 0.0);
 	processInputEvents = true;
 	depthTest = false;	

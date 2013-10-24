@@ -69,7 +69,9 @@ namespace Polycode {
 			
 			static Vector3 defaultAnchor;
 			static bool defaultPositionAtBaseline;
-			
+			static bool defaultSnapToPixels;
+			static bool createMipmapsForLabels;
+						
 		protected:
 			
 			void updateFromLabel();

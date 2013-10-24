@@ -179,8 +179,10 @@ void Scene::Render(Camera *targetCamera) {
 	
 	targetCamera->rebuildTransformMatrix();
 		
-	if(useClearColor)
-		CoreServices::getInstance()->getRenderer()->setClearColor(clearColor.r,clearColor.g,clearColor.b);	
+	if(useClearColor) {
+		CoreServices::getInstance()->getRenderer()->setClearColor(clearColor.r,clearColor.g,clearColor.b, clearColor.a);	
+		CoreServices::getInstance()->getRenderer()->clearScreen();		
+	}
 	
 	CoreServices::getInstance()->getRenderer()->setAmbientColor(ambientColor.r,ambientColor.g,ambientColor.b);		
 	

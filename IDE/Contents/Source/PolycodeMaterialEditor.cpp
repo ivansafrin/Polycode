@@ -1154,6 +1154,7 @@ bool PolycodeMaterialEditor::openFile(OSFileEntry filePath) {
 	
 	for(int i=0; i < materials.size(); i++) {
 		materialBrowser->addMaterial(materials[i]);
+		CoreServices::getInstance()->getResourceManager()->addResource(materials[i]);
 	}
 
 	for(int i=0; i < postMaterials.size(); i++) {
@@ -1427,6 +1428,7 @@ void PolycodeMaterialEditor::handleEvent(Event *event) {
 	if(event->getDispatcher() == materialBrowser->newMaterialButton && event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {
 		Material *newMaterial = CoreServices::getInstance()->getMaterialManager()->createMaterial("Untitled", "DefaultShader");
 			materialBrowser->addMaterial(newMaterial)->setSelected();
+			CoreServices::getInstance()->getResourceManager()->addResource(newMaterial);
 			materials.push_back(newMaterial);
 			setHasChanges(true);			
 	}	

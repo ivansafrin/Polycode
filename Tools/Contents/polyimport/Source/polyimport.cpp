@@ -44,6 +44,13 @@ void addToMesh(Polycode::Mesh *tmesh, const struct aiScene *sc, const struct aiN
 					vertex->vertexColor.setColorRGBA(mesh->mColors[0][index].r, mesh->mColors[0][index].g, mesh->mColors[0][index].b, mesh->mColors[0][index].a);
 				}
 
+				if(mesh->mTangents != NULL)  {
+					if(swapZY)
+						vertex->tangent = Vector3(mesh->mTangents[index].x, mesh->mTangents[index].z, -mesh->mTangents[index].y);
+					else
+						vertex->tangent = Vector3(mesh->mTangents[index].x, mesh->mTangents[index].y, mesh->mTangents[index].z);
+				}
+
 				if(mesh->mNormals != NULL)  {
 					if(swapZY)
 						vertex->setNormal(mesh->mNormals[index].x, mesh->mNormals[index].z, -mesh->mNormals[index].y);
@@ -170,11 +177,11 @@ int exportToFile(const char *fileName, bool swapZY) {
 
 int main(int argc, char **argv) {
 
-	printf("Polycode import tool v0.8.2\n");
+	printf("Polycode import tool v"POLYCODE_VERSION_STRING"\n");
 
-	if(argc != 4) {
+	if(argc != 5) {
 		printf("\n\nInvalid arguments!\n");
-		printf("usage: polyimport <source_file> <output_file> (Swap Z/Y:<true>/<false>) \n\n");
+		printf("usage: polyimport <source_file> <output_file> (Swap Z/Y:<true>/<false>) (Generate tangents:<true>/<false>) \n\n");
 		return 0;
 	}
 	
@@ -185,6 +192,12 @@ int main(int argc, char **argv) {
 
 	printf("Loading %s...\n", argv[1]);
 	scene = aiImportFile(argv[1],aiProcessPreset_TargetRealtime_Quality);
+	
+	
+	if(strcmp(argv[4], "true") == 0) {
+		aiApplyPostProcessing(scene, aiProcess_CalcTangentSpace);
+	}
+	
 	if(scene) {
 		exportToFile(argv[2], strcmp(argv[3], "true") == 0);
 	} else {

@@ -47,6 +47,7 @@ Material::~Material() {
 
 void Material::setName(const String &name) {
 	this->name = name;
+	dispatchEvent(new Event(), Event::RESOURCE_CHANGE_EVENT);	
 }
 
 void Material::clearShaders() {

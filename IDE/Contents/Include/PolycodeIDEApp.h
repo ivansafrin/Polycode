@@ -40,6 +40,7 @@
 #include "PolycodeTextEditor.h"
 #include "PolycodeProjectEditor.h"
 #include "PolycodeSpriteEditor.h"
+#include "PolycodeMeshEditor.h"
 
 #include "PolycodeToolLauncher.h"
 

@@ -85,14 +85,14 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	addChild(hueFrame);
 	
 	hueSelector = new UIImage(hueSelectorImage);
-	hueSelector->getImage()->setAnchorPoint(0.0, 0.0, 0.0);
+	hueSelector->setAnchorPoint(0.0, 0.0, 0.0);
 	hueSelector->setPosition(hueFrame->getPosition().x + (hueFrame->getWidth()/2.0), hueFrame->getPosition().y);
 	addChild(hueSelector);	
 
 	hueSelector->setDragLimits(Polycode::Rectangle(hueSelector->getPosition().x,hueSelector->getPosition().y,0,hueFrame->getHeight()));
 				
 	mainSelector = new UIImage(mainSelectorImage);
-	mainSelector->getImage()->setAnchorPoint(0.0, 0.0, 0.0);
+	mainSelector->setAnchorPoint(0.0, 0.0, 0.0);
 	mainSelector->setPosition(mainFrame->getPosition());
 	addChild(mainSelector);	
 	

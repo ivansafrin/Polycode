@@ -76,7 +76,7 @@ class PolycodeSyntaxHighlighter : public UITextInputSyntaxHighlighter {
 		static const int MODE_GLSL = 1;
 						
 	protected:
-	
+
 		int mode;
 	
 		std::vector<char> separators;

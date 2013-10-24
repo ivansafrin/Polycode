@@ -31,9 +31,11 @@ using namespace Polycode;
 UIImageButton::UIImageButton(String imageName) : UIElement() {
 	setAnchorPoint(-1.0, -1.0, 0.0);
 	
-	buttonImage = new SceneImage(imageName.c_str());
+	buttonImage = new UIImage(imageName);
 	addChild(buttonImage);
 	buttonImage->depthTest = false;
+	buttonImage->snapToPixels = true;
+		
 	buttonImage->setAnchorPoint(-1.0, -1.0, 0.0);
 	
 	buttonRect = new UIRect(buttonImage->getWidth(),buttonImage->getHeight());

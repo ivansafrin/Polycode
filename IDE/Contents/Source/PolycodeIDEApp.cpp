@@ -61,8 +61,8 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	CoreServices::getInstance()->getFontManager()->registerFont("section", "Fonts/RobotoCondensed-Bold.ttf");
 
 
-//	CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_LINEAR);
-	CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_NEAREST);
+	CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_LINEAR);
+//	CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_NEAREST);
 	
 	loadConfigFile();	
 
@@ -71,15 +71,14 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	CoreServices::getInstance()->getConfig()->loadConfig("Polycode", "UIThemes/"+themeName+"/theme.xml");
 	CoreServices::getInstance()->getResourceManager()->addArchive("UIThemes/"+themeName+"/");
 	CoreServices::getInstance()->getResourceManager()->addArchive("Images/");	
-
-	CoreServices::getInstance()->getRenderer()->clearColor.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiBgColor"));
-
 	
 	willRunProject = false;
 
 	SceneLabel::defaultAnchor = Vector3(-1.0, -1.0, 0.0);
 	SceneLabel::defaultPositionAtBaseline = true;
-	
+	SceneLabel::defaultSnapToPixels = true;
+	SceneLabel::createMipmapsForLabels = false;
+			
 	globalMenu	= new UIGlobalMenu();
 	UITextInput::setMenuSingleton(globalMenu);
 			
@@ -87,6 +86,9 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	Scene *screen = new Scene(Scene::SCENE_2D_TOPLEFT);	
 	screen->rootEntity.processInputEvents = true;
 //	screen->rootEntity.setDefaultScreenOptions(true);
+
+	screen->clearColor.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiBgColor"));	
+	screen->useClearColor = true;
 	
 	editorManager = new PolycodeEditorManager();
 	globalEditorManager = editorManager;
@@ -138,11 +140,10 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	editorManager->registerEditorFactory(new PolycodeTextEditorFactory());
 	editorManager->registerEditorFactory(new PolycodeProjectEditorFactory(projectManager));
 	editorManager->registerEditorFactory(new PolycodeSpriteEditorFactory());
-
+	editorManager->registerEditorFactory(new PolycodeMeshEditorFactory());
 		
 	screen->addChild(globalMenu);	
 				
-	frame->settingsWindow->updateUI();
 	frame->console->applyTheme();
 
 #ifdef USE_POLYCODEUI_MENUBAR
@@ -213,6 +214,7 @@ void PolycodeIDEApp::showAbout() {
 }
 
 void PolycodeIDEApp::showSettings() {
+	frame->settingsWindow->updateUI();
 	frame->showModal(frame->settingsWindow);
 }
 
@@ -955,11 +957,14 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 				config->setStringValue("Polycode", "useExternalTextEditor", settingsWindow->useExternalTextEditorBox->isChecked() ? "true" : "false");
 				config->setStringValue("Polycode", "externalTextEditorCommand", settingsWindow->externalTextEditorCommand->getText());
 				config->setStringValue("Polycode", "uiTheme", settingsWindow->uiThemeBox->getSelectedItem()->label);
+				
+				if(settingsWindow->textureFilteringBox->getSelectedIndex() == 0) {
+					config->setStringValue("Polycode", "textureFilteringMode", "linear");
+				} else {
+					config->setStringValue("Polycode", "textureFilteringMode", "nearest");				
+				}
 			
 				frame->hideModal();
-			}
-			if(event->getEventCode() == UIEvent::CLOSE_EVENT) {
-				settingsWindow->updateUI();
 			}
 		}
 	}
@@ -1033,7 +1038,8 @@ void PolycodeIDEApp::saveConfigFile() {
 	configFile.root.addChild("open_projects");
 	configFile.root.addChild("syntax_theme", globalSyntaxTheme->name);
 	configFile.root.addChild("ui_theme", config->getStringValue("Polycode", "uiTheme"));
-
+	configFile.root.addChild("texture_filtering_mode", config->getStringValue("Polycode", "textureFilteringMode"));
+	
 	configFile.root.addChild("app_width", String::IntToString(core->getXRes()));
 	configFile.root.addChild("app_height", String::IntToString(core->getYRes()));
 	
@@ -1084,6 +1090,19 @@ void PolycodeIDEApp::loadConfigFile() {
 	globalSyntaxTheme = new SyntaxHighlightTheme();
 	
 	String uiThemeName = "default";	
+	
+	CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_LINEAR);
+	
+	ObjectEntry *texture_filtering_mode = configFile.root["texture_filtering_mode"];
+	config->setStringValue("Polycode", "textureFilteringMode", "linear");	
+	
+	if(texture_filtering_mode) {
+		if(texture_filtering_mode->stringVal == "nearest") {
+		config->setStringValue("Polycode", "textureFilteringMode", "nearest");		
+			CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_NEAREST);
+		}
+	}
+	
 	ObjectEntry *uiTheme = configFile.root["ui_theme"];
 	if(uiTheme) {
 		uiThemeName = uiTheme->stringVal;

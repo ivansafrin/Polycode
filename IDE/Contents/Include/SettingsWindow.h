@@ -46,6 +46,7 @@ class SettingsWindow : public UIWindow {
 		UIButton *browseButton;
 		UIComboBox *syntaxThemeBox;
 		UIComboBox *uiThemeBox;
+		UIComboBox *textureFilteringBox;
 		
 		UIButton *cancelButton;
 		UIButton *okButton;

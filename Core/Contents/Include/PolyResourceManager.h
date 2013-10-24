@@ -23,6 +23,7 @@ THE SOFTWARE.
 
 #pragma once
 #include "PolyGlobals.h"
+#include "PolyEventDispatcher.h"
 #include <vector>
 
 #define RESOURCE_CHECK_INTERVAL	2000
@@ -36,7 +37,7 @@ namespace Polycode {
 	/**
 	* Manages loading and unloading of resources from directories and archives. Should only be accessed via the CoreServices singleton. 
 	*/ 
-	class _PolyExport ResourceManager : public PolyBase {
+	class _PolyExport ResourceManager : public EventDispatcher {
 		public:
 			ResourceManager();
 			~ResourceManager();
@@ -108,7 +109,10 @@ namespace Polycode {
 		
 			void Update(int elapsed);
 			
-			bool reloadResourcesOnModify;
+			bool reloadResourcesOnModify;			
+			bool dispatchChangeEvents;
+			
+			void handleEvent(Event *event);
 		
 		private:
 			int ticksSinceCheck;

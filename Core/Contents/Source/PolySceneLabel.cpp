@@ -33,6 +33,8 @@ using namespace Polycode;
 
 Vector3 SceneLabel::defaultAnchor = Vector3();
 bool SceneLabel::defaultPositionAtBaseline = false;
+bool SceneLabel::defaultSnapToPixels = false;
+bool SceneLabel::createMipmapsForLabels = true;
 
 SceneLabel::SceneLabel(const String& fontName, const String& text, int size, Number scale, int amode, bool premultiplyAlpha) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1) {
 	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size, amode, premultiplyAlpha);
@@ -40,6 +42,7 @@ SceneLabel::SceneLabel(const String& fontName, const String& text, int size, Num
 	positionAtBaseline = SceneLabel::defaultPositionAtBaseline;
 	setAnchorPoint(SceneLabel::defaultAnchor);
 	updateFromLabel();
+	snapToPixels = SceneLabel::defaultSnapToPixels;
 }
 
 SceneLabel::SceneLabel(const String& text, int size, const String& fontName, int amode, bool premultiplyAlpha) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1){
@@ -48,6 +51,7 @@ SceneLabel::SceneLabel(const String& text, int size, const String& fontName, int
 	this->labelScale = 1.0;
 	positionAtBaseline = SceneLabel::defaultPositionAtBaseline;
 	setAnchorPoint(SceneLabel::defaultAnchor);	
+	snapToPixels = SceneLabel::defaultSnapToPixels;	
 	updateFromLabel();
 }
 			
@@ -69,7 +73,11 @@ void SceneLabel::updateFromLabel() {
 	if(texture)
 		materialManager->deleteTexture(texture);
 
-	texture = materialManager->createTextureFromImage(label, materialManager->clampDefault, materialManager->mipmapsDefault);
+	if(SceneLabel::createMipmapsForLabels) {
+		texture = materialManager->createTextureFromImage(label, materialManager->clampDefault, materialManager->mipmapsDefault);	
+	} else {
+		texture = materialManager->createTextureFromImage(label, materialManager->clampDefault, false);		
+	}
 
 	if(material) {
 		localShaderOptions->clearTexture("diffuse");
@@ -86,8 +94,7 @@ void SceneLabel::updateFromLabel() {
 	if(useVertexBuffer)
 		CoreServices::getInstance()->getRenderer()->createVertexBufferForMesh(mesh);
 	
-	// TODO: resize it here
-	
+	// TODO: resize it here	
 	bBoxRadius = label->getWidth()*labelScale;
 }
 

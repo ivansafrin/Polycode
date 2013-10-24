@@ -38,10 +38,11 @@
 using std::vector;
 using namespace Polycode;
 
-ResourceManager::ResourceManager() {
+ResourceManager::ResourceManager() : EventDispatcher() {
 	PHYSFS_init(NULL);
 	ticksSinceCheck = 0;
 	reloadResourcesOnModify = false;
+	dispatchChangeEvents = false;
 }
 
 ResourceManager::~ResourceManager() {
@@ -169,8 +170,18 @@ bool ResourceManager::hasResource(Resource *resource) {
 }
 
 void ResourceManager::addResource(Resource *resource) {
+	resource->addEventListener(this, Event::RESOURCE_CHANGE_EVENT);
 	resources.push_back(resource);
 	resource->resourceFileTime = OSBasics::getFileTime(resource->getResourcePath());
+	if(dispatchChangeEvents) {
+		dispatchEvent(new Event(), Event::CHANGE_EVENT);
+	}
+}
+
+void ResourceManager::handleEvent(Event *event) {
+	if(event->getEventCode() == Event::RESOURCE_CHANGE_EVENT) {
+		dispatchEvent(new Event(), Event::CHANGE_EVENT);	
+	}
 }
 
 void ResourceManager::removeResource(Resource *resource) {

@@ -95,7 +95,7 @@ namespace Polycode {
 			UIBox *selection;
 			UIRect *bgBox;
 			SceneLabel *textLabel;
-			SceneImage *iconImage;
+			UIImage *iconImage;
 			bool selected;
 			Number treeHeight;
 			vector<UITree*> treeChildren;

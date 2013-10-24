@@ -19,27 +19,37 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
-
+ 
 #pragma once
-#include "PolyGlobals.h"
-#include "PolySceneImage.h"
-#include "PolyScenePrimitive.h"
-#include "PolyEntity.h"
-#include "PolyUIEvent.h"
+
+#include "PolycodeEditor.h"
 #include "PolyUIElement.h"
+#include <Polycode.h>
 
-namespace Polycode {
+using namespace Polycode;
 
-	class _PolyExport UIImageButton : public UIElement {
-		public:
-			UIImageButton(String imageName);
-			virtual ~UIImageButton();
+class PolycodeImageEditor : public PolycodeEditor {
+	public:
+	PolycodeImageEditor();
+	virtual ~PolycodeImageEditor();
+	
+	bool openFile(OSFileEntry filePath);
+	void Resize(int x, int y);
+	
+	protected:
+	
+		UIRect *editorImage;
 		
-			void handleEvent(Event *event);
-				
-		private:
-			UIRect *buttonRect;
-			UIImage *buttonImage;
-			bool pressedDown;
-	};
-}
+		UIRect *leftShape;		
+		UIRect *rightShape;		
+		UIRect *topShape;		
+		UIRect *bottomShape;								
+		
+		Number aspectRatio;
+};
+
+class PolycodeImageEditorFactory : public PolycodeEditorFactory {
+	public:
+		PolycodeImageEditorFactory() : PolycodeEditorFactory() { extensions.push_back("png"); }
+		PolycodeEditor *createEditor() { return new PolycodeImageEditor(); }
+};

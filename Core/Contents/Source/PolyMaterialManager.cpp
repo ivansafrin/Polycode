@@ -381,6 +381,7 @@ std::vector<Material*> MaterialManager::loadMaterialsFromFile(String fileName) {
 
 Material *MaterialManager::createMaterial(String materialName, String shaderName) {
 	Material *newMaterial = new Material(materialName);
+	newMaterial->setResourceName(materialName);
 	
 	Shader *retShader = (Shader*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_SHADER, shaderName);
 	
@@ -406,6 +407,8 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 	vector<ShaderRenderTarget*> renderTargets;
 
 	Material *newMaterial = new Material(mname);
+	
+	newMaterial->setResourceName(mname);
 	
 	if(nodeElement->Attribute("screen")) {
 		if(String(nodeElement->Attribute("screen")) == "true") {

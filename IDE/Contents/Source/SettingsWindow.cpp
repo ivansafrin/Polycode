@@ -96,8 +96,19 @@ SettingsWindow::SettingsWindow() : UIWindow(L"Settings", SETTINGS_WINDOW_WIDTH, 
 			}
 		}
 	}
-	
 
+	label = new UILabel("Texture filtering (requires restart)", 12);
+	addChild(label);
+	label->color.a = 1.0;
+	label->setPosition(padding, 285);
+
+	textureFilteringBox = new UIComboBox(globalMenu, 300);
+	addChild(textureFilteringBox);
+	textureFilteringBox->setPosition(padding, 305);
+	textureFilteringBox->addEventListener(this, UIEvent::CHANGE_EVENT);
+	textureFilteringBox->addComboItem("Linear");
+	textureFilteringBox->addComboItem("Nearest");
+	
 	cancelButton = new UIButton("Cancel", BUTTON_WIDTH);
 	cancelButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(cancelButton);
@@ -184,6 +195,12 @@ void SettingsWindow::updateUI() {
 		if(config->getStringValue("Polycode", "uiTheme") == uiThemeBox->getItemAtIndex(i)->label) {
 			uiThemeBox->setSelectedIndex(i);
 		} 
+	}
+	
+	if(config->getStringValue("Polycode", "textureFilteringMode") == "nearest") {
+		textureFilteringBox->setSelectedIndex(1);
+	} else {
+		textureFilteringBox->setSelectedIndex(0);	
 	}
 	
 }

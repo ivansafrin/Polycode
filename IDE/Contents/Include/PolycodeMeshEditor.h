@@ -19,27 +19,57 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
-
+ 
 #pragma once
-#include "PolyGlobals.h"
-#include "PolySceneImage.h"
-#include "PolyScenePrimitive.h"
-#include "PolyEntity.h"
-#include "PolyUIEvent.h"
+
+#include "PolycodeEditor.h"
 #include "PolyUIElement.h"
+#include "PolycodeUI.h"
+#include <Polycode.h>
 
-namespace Polycode {
+using namespace Polycode;
 
-	class _PolyExport UIImageButton : public UIElement {
-		public:
-			UIImageButton(String imageName);
-			virtual ~UIImageButton();
+class PolycodeMeshEditor : public PolycodeEditor {
+	public:
+	
+		PolycodeMeshEditor();
+		virtual ~PolycodeMeshEditor();
+	
+		void handleEvent(Event *event);
+	
+		void reloadMaterials();
+	
+		bool openFile(OSFileEntry filePath);
+		void Resize(int x, int y);
+	
+	protected:
+	
+		Scene *previewScene;
+		SceneLight *mainLight;
+		SceneLight *secondLight;		
+		SceneRenderTexture *renderTexture;
+		UIRect *previewShape;
+		UIRect *bgShape;		
+		SceneMesh *previewMesh;
+		Entity *previewBase;
 		
-			void handleEvent(Event *event);
-				
-		private:
-			UIRect *buttonRect;
-			UIImage *buttonImage;
-			bool pressedDown;
-	};
-}
+		Material *currentMaterial;
+		
+		bool rotating;
+		Vector2 baseMousePosition;		
+		
+		UIComboBox *materialDropDown;
+		UIRect *headerBg;
+		
+		UIHSlider *lightsSlider;
+		
+		Vector3 baseModelPosition;
+		Number baseYaw;
+		Number basePitch;
+};
+
+class PolycodeMeshEditorFactory : public PolycodeEditorFactory {
+	public:
+		PolycodeMeshEditorFactory() : PolycodeEditorFactory() { extensions.push_back("mesh"); }
+		PolycodeEditor *createEditor() { return new PolycodeMeshEditor(); }
+};

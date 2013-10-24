@@ -119,12 +119,9 @@ namespace Polycode {
 	};
 
 	
-	class _PolyExport UIImage : public UIElement {
+	class _PolyExport UIImage : public UIRect {
 		public:
 			UIImage(String imagePath);
-			SceneImage *getImage();
-		protected:
-			SceneImage *image;
 	};
 	
 }

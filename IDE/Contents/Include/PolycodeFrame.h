@@ -103,7 +103,7 @@ class EditCurve : public UIElement {
 		EditPoint *pointToRemove;
 		UIElement *pointsBase;
 		vector<EditPoint*> points;
-		
+
 		unsigned int mode;
 };
 
