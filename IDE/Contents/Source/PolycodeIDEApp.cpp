@@ -813,12 +813,9 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 			PolycodeProjectBrowser *pb = frame->getCurrentProjectBrowser();
 			BrowserUserData *selectedData = pb->getSelectedData();
 						
-			if(selectedData->type == 3) {
+			if(selectedData->type == 0) {
 				projectManager->activeFolder = selectedData->parentProject->getRootFolder();
 				projectManager->selectedFile = "";				
-			} else if(selectedData->type == 0) {
-				projectManager->activeFolder = "";
-				projectManager->selectedFile = "";
 			} else {
 				projectManager->selectedFileEntry = selectedData->fileEntry;
 				projectManager->selectedFile = selectedData->fileEntry.fullPath;

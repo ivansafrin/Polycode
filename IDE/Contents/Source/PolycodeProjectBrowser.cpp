@@ -47,7 +47,7 @@ PolycodeProjectBrowser::PolycodeProjectBrowser(PolycodeProject *project) : UIEle
 	
 	BrowserUserData *data = new BrowserUserData();
 	data->type = 0;
-	data->parentProject = NULL;
+	data->parentProject = project;
 	treeContainer->getRootNode()->setUserData((void*) data)	;
 
 	addChild(treeContainer);		
