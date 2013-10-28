@@ -200,7 +200,7 @@ void PolycodeMeshEditor::Resize(int x, int y) {
 	renderTexture->resizeRenderTexture(x, y-30);
 	previewShape->setTexture(renderTexture->getTargetTexture());	
 	previewShape->Resize(x, y-30);	
-	bgShape->setImageCoordinates(0,0,x,y);
+	bgShape->setImageCoordinates(0,0,x,y-30);
 	
 	bgShape->setPosition(0, 30);
 	previewShape->setPosition(0, 30);

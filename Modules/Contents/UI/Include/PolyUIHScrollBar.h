@@ -35,6 +35,7 @@ namespace Polycode {
 		void Update();
 		Number getScrollValue();
 		void handleEvent(Event *event);
+		void Resize(int newWidth);
 		
 		void scrollTo(Number scrollValue);
 		void Scroll(Number amount);

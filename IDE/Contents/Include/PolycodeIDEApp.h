@@ -78,6 +78,7 @@ public:
 	void openDocs();
 	
 	void addFiles();
+	void importAssets();
 	
 	void newGroup();	
 	void openProject();

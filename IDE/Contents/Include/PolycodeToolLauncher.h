@@ -53,6 +53,7 @@ class PolycodeToolLauncher {
 		static void openExternalEditor(String app, String file, String inFolder);
 		static String generateTempPath(PolycodeProject *project);
 		static void buildProject(PolycodeProject *project, String destinationPath, bool compileScripts);
+		static String importAssets(String sourceFile, String inFolder, bool addMeshes, String prefix, bool swapZY, bool generateTangents, bool listOnly);
 
 		static void runPolyapp(String polyappPath);
 };

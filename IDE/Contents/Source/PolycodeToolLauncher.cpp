@@ -113,6 +113,40 @@ void PolycodeToolLauncher::buildProject(PolycodeProject *project, String destina
 
 }
 
+String PolycodeToolLauncher::importAssets(String sourceFile, String inFolder, bool addMeshes, String prefix, bool swapZY, bool generateTangents, bool listOnly) {
+
+	String ret;
+	String polycodeBasePath = CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory();
+	
+	String args = "\""+sourceFile+"\"";
+	if(listOnly) {
+		args = "-l "+args;
+	}		
+	if(addMeshes) {
+		args = "-a "+args;
+	}
+	if(swapZY) {
+		args = "-s "+args;
+	}
+	if(generateTangents) {
+		args = "-t "+args;
+	}
+	if(prefix != "") {
+		args = "-p "+prefix+" "+args;
+	}
+
+	
+#ifdef _WINDOWS
+	String targetFolder = projectBasePath;
+	String command = "\""+polycodeBasePath+"/Standalone/Bin/polyimport.exe\"";
+	ret = CoreServices::getInstance()->getCore()->executeExternalCommand(command, args, targetFolder);
+#else
+	String command = polycodeBasePath+"/Standalone/Bin/polyimport";
+	ret = CoreServices::getInstance()->getCore()->executeExternalCommand(command, args, inFolder);
+#endif
+	return ret;
+}
+
 void PolycodeToolLauncher::openExternalEditor(String app, String file, String inFolder) {
 	GenericRunner *runner = new GenericRunner(app, "\""+file+"\"", inFolder);
 	CoreServices::getInstance()->getCore()->createThread(runner);

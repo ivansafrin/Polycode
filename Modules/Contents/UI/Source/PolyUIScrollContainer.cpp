@@ -82,10 +82,12 @@ void UIScrollContainer::Resize(Number width, Number height) {
 	setWidth(width);
 	setHeight(height);
 	
-	
+	hScrollBar->Resize(width);	
 	vScrollBar->Resize(height);
+
 	setContentSize(contentWidth, contentHeight);
 	vScrollBar->setPosition(width-vScrollBar->getWidth(), 0);
+	hScrollBar->setPosition(0, height-hScrollBar->getHeight());
 	
 	matrixDirty = true;
 	

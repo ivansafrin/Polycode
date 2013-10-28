@@ -365,6 +365,8 @@ public:
 	UIWindow *aboutWindow;
 	UIButton *aboutOKButton;
 	
+	AssetImporterWindow *assetImporterWindow;
+	
 	void updateFileSelector();
 	
 	bool isShowingConsole();

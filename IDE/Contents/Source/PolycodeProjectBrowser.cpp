@@ -26,6 +26,7 @@ extern UIGlobalMenu *globalMenu;
 
 PolycodeProjectBrowser::PolycodeProjectBrowser(PolycodeProject *project) : UIElement() {
 
+	this->project = project;	
 	headerBg = new UIRect(10,10);
 	addChild(headerBg);
 	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
@@ -52,7 +53,7 @@ PolycodeProjectBrowser::PolycodeProjectBrowser(PolycodeProject *project) : UIEle
 	addChild(treeContainer);		
 	selectedData = NULL;
 	
-	parseFolderIntoNode(treeContainer->getRootNode(), project->getRootFolder(), project);
+	parseFolderIntoNode(treeContainer->getRootNode(), project->getRootFolder());
 }
 
 PolycodeProjectBrowser::~PolycodeProjectBrowser() {
@@ -60,18 +61,7 @@ PolycodeProjectBrowser::~PolycodeProjectBrowser() {
 }
 
 void PolycodeProjectBrowser::Refresh() {
-// FIX
-/*	
-	UITree *projectTree = treeContainer->getRootNode();	
-	for(int i=0; i < projectTree->getNumTreeChildren(); i++) {
-		UITree *projectChild = projectTree->getTreeChild(i);
-		BrowserUserData *userData = (BrowserUserData*)projectChild->getUserData();
-		if(userData->parentProject == project) {
-			parseFolderIntoNode(projectChild, project->getRootFolder(), project);		
-			return;
-		}
-	}	
-*/	
+	parseFolderIntoNode(treeContainer->getRootNode(), project->getRootFolder());		
 }
 
 void PolycodeProjectBrowser::handleEvent(Event *event) {
@@ -97,7 +87,8 @@ void PolycodeProjectBrowser::handleEvent(Event *event) {
 			contextMenu->addOption("New Project", "add_new_project");
 			contextMenu->addOption("New Folder", "add_new_folder");
 			contextMenu->addDivider();
-			contextMenu->addOption("Add external files", "add_files");			
+			contextMenu->addOption("Add external files", "add_files");
+			contextMenu->addOption("Import 3D assets", "import_assets");
 			contextMenu->addDivider();
 			contextMenu->addOption("Refresh", "refresh");
 			contextMenu->addOption("Rename", "rename");						
@@ -210,7 +201,7 @@ void PolycodeProjectBrowser::applyBrowserConfig(ObjectEntry *entry) {
 	}
 }
 
-void PolycodeProjectBrowser::parseFolderIntoNode(UITree *node, String spath, PolycodeProject *parentProject) {
+void PolycodeProjectBrowser::parseFolderIntoNode(UITree *node, String spath) {
 	vector<OSFileEntry> files = OSBasics::parseFolder(spath, false);
 	
 	// check if files got deleted
@@ -230,17 +221,17 @@ void PolycodeProjectBrowser::parseFolderIntoNode(UITree *node, String spath, Pol
 				data->fileEntry = entry;
 				UITree *newChild = node->addTreeChild("folder.png", entry.name, (void*) data);
 				data->type = 2;	
-				data->parentProject = parentProject;
-				parseFolderIntoNode(newChild, entry.fullPath, parentProject);				
+				data->parentProject = project;
+				parseFolderIntoNode(newChild, entry.fullPath);				
 			} else {
-				parseFolderIntoNode(existing, entry.fullPath, parentProject);							
+				parseFolderIntoNode(existing, entry.fullPath);							
 			}
 		} else {
 			if(!nodeHasName(node, entry.name)) {
 				BrowserUserData *data = new BrowserUserData();
 				data->fileEntry = entry;
 				data->type = 1;
-				data->parentProject = parentProject;			
+				data->parentProject = project;			
 				node->addTreeChild("file.png", entry.name, (void*) data);
 			}
 		}

@@ -29,6 +29,7 @@ extern UIGlobalMenu *globalMenu;
 EditorHolder *activeEditorHolder = NULL;
 extern PolycodeEditorManager *globalEditorManager;
 
+
 EditPoint::EditPoint(BezierPoint *point, unsigned int type) : Entity() {
 	this->point = point;
 	this->type = type;
@@ -1388,6 +1389,10 @@ PolycodeFrame::PolycodeFrame(PolycodeEditorManager *editorManager) : UIElement()
 	aboutWindow->addChild(aboutOKButton);
 	aboutOKButton->setPosition(700, 420);
 	aboutOKButton->addEventListener(this, UIEvent::CLICK_EVENT);
+	
+	
+	assetImporterWindow = new AssetImporterWindow();
+	
 	
 	UILabel *versionLabel = new UILabel("version 0.8.2", 12, "mono");
 	aboutWindow->addChild(versionLabel);

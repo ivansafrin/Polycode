@@ -83,3 +83,39 @@ class YesNoCancelPopup : public UIWindow {
 		UIButton *noButton;		
 		UIButton *okButton;
 };
+
+class AssetImporterWindow : public UIWindow {
+	public:
+		AssetImporterWindow();
+		~AssetImporterWindow();
+
+		void clearFiles();
+		void addFile(String fileName);
+		void setFilesToImport(String files);
+		
+		void setSourceFileAndTargetFolder(String file, String folder);
+		void refreshPreview();
+			
+		void handleEvent(Event *event);	
+			
+	protected:
+
+		String file;
+		String folder;
+
+		UIButton *cancelButton;
+		UIButton *okButton;
+		std::vector<UILabel*> fileLabels;
+
+		UICheckBox *usePrefixCheckbox;
+		UITextInput *prefixInput;
+		UICheckBox *addMeshesCheckbox;
+		UICheckBox *generateTangensCheckbox;
+		UICheckBox *swapZYAxisCheckbox;
+				
+		Entity *filesAnchor;
+		UIScrollContainer *filesScroller;
+
+		UILabel *filesToImportLabel;
+};
+

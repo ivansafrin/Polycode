@@ -66,13 +66,14 @@ class PolycodeProjectBrowser : public UIElement {
 		
 		void handleEvent(Event *event);
 		
-		void parseFolderIntoNode(UITree *node, String spath, PolycodeProject *parentProject);
+		void parseFolderIntoNode(UITree *node, String spath);
 		
 		BrowserUserData *getSelectedData() { return selectedData; }
 		
 		UITreeContainer *treeContainer;
 			
 protected:
+		PolycodeProject *project;
 
 		void applyOpenNodeToTree(UITree* treeNode, ObjectEntry *nodeEntry);
 		

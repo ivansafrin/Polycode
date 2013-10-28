@@ -34,7 +34,9 @@ void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, c
 	
 		const struct aiMesh* mesh = scene->mMeshes[nd->mMeshes[n]];
 		if(listOnly) {
-			printf("%s%s.mesh\n", prefix.c_str(), nd->mName.data);
+			if(!addSubmeshes) {
+				printf("%s%s.mesh\n", prefix.c_str(), nd->mName.data);
+			}
 		} else {
 			printf("Importing mesh:%s (%d vertices) (%d faces) \n", mesh->mName.data, mesh->mNumVertices, mesh->mNumFaces);
 		}
@@ -141,16 +143,21 @@ int exportToFile(String prefix, bool swapZY, bool addSubmeshes, bool listOnly) {
 	Polycode::Mesh *mesh = new Polycode::Mesh(Mesh::TRI_MESH);
 	addToMesh(prefix, mesh, scene, scene->mRootNode, swapZY, addSubmeshes, listOnly);
 	
-	if(!listOnly && addSubmeshes) {		
+	if(addSubmeshes) {		
 		String fileNameMesh;
 		if(prefix != "") {
 			fileNameMesh = prefix+".mesh";			
 		} else {
 			fileNameMesh = "out.mesh";
 		}		
-		OSFILE *outFile = OSBasics::open(fileNameMesh.c_str(), "wb");	
-		mesh->saveToFile(outFile);
-		OSBasics::close(outFile);
+
+		if(listOnly) {
+			printf("%s\n", fileNameMesh.c_str());
+		} else {
+			OSFILE *outFile = OSBasics::open(fileNameMesh.c_str(), "wb");	
+			mesh->saveToFile(outFile);
+			OSBasics::close(outFile);
+		}
 	}
 		
 	if(hasWeights) {		

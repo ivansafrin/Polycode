@@ -21,6 +21,7 @@
  */
  
 #include "ToolWindows.h"
+#include "PolycodeToolLauncher.h"
 
 TextInputPopup::TextInputPopup() : UIWindow(L"", 300, 80) {
 	
@@ -194,4 +195,128 @@ void YesNoCancelPopup::handleEvent(Event *event) {
 
 YesNoCancelPopup::~YesNoCancelPopup() {
 	
+}
+
+AssetImporterWindow::AssetImporterWindow() : UIWindow("3D Asset Importer", 500, 300) {
+	filesToImportLabel = new UILabel("Files that will be imported:", 12);
+	addChild(filesToImportLabel);
+	filesToImportLabel->setPosition(padding, 35);
+	
+	filesAnchor = new Entity();	
+		
+	filesScroller = new UIScrollContainer(filesAnchor, true, true, 270, 250);
+	addChild(filesScroller);
+	filesScroller->setPosition(padding, 60);
+		
+	cancelButton = new UIButton(L"Cancel", 100);
+	cancelButton->addEventListener(this, UIEvent::CLICK_EVENT);
+	addChild(cancelButton);
+	cancelButton->setPosition(padding+500-100-100-10-10, 285);		
+	
+	okButton = new UIButton(L"OK", 100);
+	okButton->addEventListener(this, UIEvent::CLICK_EVENT);
+	addChild(okButton);
+	okButton->setPosition(padding+500-100-10, 285);
+	
+	closeOnEscape = true;
+
+	prefixInput = new UITextInput(false, 200, 16);
+	prefixInput->setPosition(290, 60);
+	addChild(prefixInput); 
+	prefixInput->addEventListener(this, UIEvent::CHANGE_EVENT);
+		
+	usePrefixCheckbox = new UICheckBox("Custom filename prefix", false);
+	usePrefixCheckbox->setPosition(290, 90);
+	addChild(usePrefixCheckbox);
+	usePrefixCheckbox->addEventListener(this, UIEvent::CHANGE_EVENT);
+	
+	addMeshesCheckbox = new UICheckBox("Add all meshes to a single mesh", false);
+	addMeshesCheckbox->setPosition(290, 120);
+	addChild(addMeshesCheckbox); 
+	addMeshesCheckbox->addEventListener(this, UIEvent::CHANGE_EVENT);
+	
+	generateTangensCheckbox = new UICheckBox("Generate tangents", true);
+	generateTangensCheckbox->setPosition(290, 150);
+	addChild(generateTangensCheckbox); 
+	
+	swapZYAxisCheckbox = new UICheckBox("Swap Z/Y axis (e.g. for Blender)", false);
+	swapZYAxisCheckbox->setPosition(290, 180);
+	addChild(swapZYAxisCheckbox); 
+}
+
+void AssetImporterWindow::handleEvent(Event *event) {
+	if(event->getDispatcher() == okButton) {
+	
+		String prefixString;
+		if(usePrefixCheckbox->isChecked() && prefixInput->getText() != "") {
+			prefixString = prefixInput->getText().replace(" ", "_");
+		}
+		PolycodeToolLauncher::importAssets(file, folder, addMeshesCheckbox->isChecked(), prefixString, swapZYAxisCheckbox->isChecked(), generateTangensCheckbox->isChecked(), false);	
+	
+		dispatchEvent(new UIEvent(), UIEvent::OK_EVENT);
+		dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);	
+	} else if(event->getDispatcher() == cancelButton) {
+		dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);
+	} else {
+		refreshPreview();
+	}
+	UIWindow::handleEvent(event);
+}
+
+void AssetImporterWindow::clearFiles() {
+	for(int i=0; i < fileLabels.size(); i++) {
+		filesAnchor->removeChild(fileLabels[i]);
+		delete fileLabels[i];
+	}
+	fileLabels.clear();
+	filesScroller->setContentSize(0,0);
+}
+
+void AssetImporterWindow::addFile(String fileName) {
+	UILabel *fileLabel = new UILabel(fileName, 12);
+	filesAnchor->addChild(fileLabel);
+	fileLabel->setPosition(0.0, 14 * fileLabels.size());
+
+	if(fileLabel->getWidth() > filesScroller->getContentSize().x) {
+		filesScroller->setContentSize(fileLabel->getWidth(), (fileLabels.size()+1) * 14);
+	} else {
+		filesScroller->setContentSize(filesScroller->getContentSize().x, (fileLabels.size()+1) * 14);	
+	}	
+	filesScroller->setScrollValue(0, 0);
+	
+	fileLabels.push_back(fileLabel);
+}
+
+void AssetImporterWindow::setSourceFileAndTargetFolder(String file, String folder) {
+	this->file = file;
+	this->folder = folder;
+	refreshPreview();
+}
+
+void AssetImporterWindow::refreshPreview() {
+	String prefixString;
+	if(usePrefixCheckbox->isChecked() && prefixInput->getText() != "") {
+		prefixString = prefixInput->getText().replace(" ", "_");
+	}
+	String fileList = PolycodeToolLauncher::importAssets(file, folder, addMeshesCheckbox->isChecked(), prefixString, swapZYAxisCheckbox->isChecked(), generateTangensCheckbox->isChecked(), true);
+	setFilesToImport(fileList);		
+}
+
+void AssetImporterWindow::setFilesToImport(String files) {	
+	clearFiles();
+	
+	if(files == "") {
+		addFile("NO");
+		addFile("IMPORTABLE");
+		addFile("ASSETS");
+	}else {
+		std::vector<String> splitFiles = files.split("\n");
+		for(int i=0; i < splitFiles.size(); i++) {
+			addFile(splitFiles[i]);
+		}
+	}
+}
+
+AssetImporterWindow::~AssetImporterWindow() {
+
 }

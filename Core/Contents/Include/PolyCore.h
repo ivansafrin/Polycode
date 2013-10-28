@@ -43,6 +43,11 @@ namespace Polycode {
 	
 	class _PolyExport CoreFileExtension : public PolyBase {
 	public:
+		CoreFileExtension() {}
+		CoreFileExtension(String description, String extension) {
+			this->extension = extension;
+			this->description = description;
+		}	
 		String extension;
 		String description;
 	};

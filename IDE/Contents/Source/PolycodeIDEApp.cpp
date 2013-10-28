@@ -485,6 +485,59 @@ void PolycodeIDEApp::runProject() {
 	}
 }
 
+void PolycodeIDEApp::importAssets() {
+	vector<CoreFileExtension> extensions;		
+	
+	extensions.push_back(CoreFileExtension("Collada", "dae"));
+	extensions.push_back(CoreFileExtension("Collada XML", "xml"));
+	extensions.push_back(CoreFileExtension("Blender", "blend"));
+	extensions.push_back(CoreFileExtension("Biovision BVH", "bvh"));
+	extensions.push_back(CoreFileExtension("3D Studio Max 3DS", "3ds"));
+	extensions.push_back(CoreFileExtension("3D Studio Max ASE", "ase"));
+	extensions.push_back(CoreFileExtension("3Wavefront Object", "obj"));
+	extensions.push_back(CoreFileExtension("Stanford Polygon Library", "ply"));
+	extensions.push_back(CoreFileExtension("AutoCAD DXF", "dxf"));
+	extensions.push_back(CoreFileExtension("IFC-STEP", "ifc"));
+	extensions.push_back(CoreFileExtension("Neutral File Format", "nff"));
+	extensions.push_back(CoreFileExtension("Valve Model", "smd"));
+	extensions.push_back(CoreFileExtension("Valve Model", "vta"));
+	extensions.push_back(CoreFileExtension("Quake I", "mdl"));
+	extensions.push_back(CoreFileExtension("Quake II", "md2"));
+	extensions.push_back(CoreFileExtension("Quake III", "md3"));
+	extensions.push_back(CoreFileExtension("Quake III BSP", "pk3"));
+	extensions.push_back(CoreFileExtension("RtCW", "mdc"));
+	extensions.push_back(CoreFileExtension("Doom 3", "md5mesh"));
+	extensions.push_back(CoreFileExtension("Doom 3 Animation", "md5anim"));
+	extensions.push_back(CoreFileExtension("Direct X", "x"));
+	extensions.push_back(CoreFileExtension("Quick 3D", "q3o"));
+	extensions.push_back(CoreFileExtension("Quick 3D", "q3s"));
+	extensions.push_back(CoreFileExtension("Raw Triangles", "raw"));
+	extensions.push_back(CoreFileExtension("AC3D", "ac"));		
+	extensions.push_back(CoreFileExtension("Stereolithography", "stl"));
+	extensions.push_back(CoreFileExtension("Irrlicht Mesh", "irrmesh"));
+	extensions.push_back(CoreFileExtension("Object File Format", "off"));
+	extensions.push_back(CoreFileExtension("Terragen Terrain", "terr"));
+	extensions.push_back(CoreFileExtension("3D GameStudio Model", "mdl"));
+	extensions.push_back(CoreFileExtension("3D GameStudio Terrain", "hmp"));
+	extensions.push_back(CoreFileExtension("Ogre mesh XML", "mesh.xml"));	
+	extensions.push_back(CoreFileExtension("Ogre skeleton XML", "skeleton.xml"));
+	extensions.push_back(CoreFileExtension("Ogre material", "material"));
+	extensions.push_back(CoreFileExtension("Milkshape 3D", "ms3d"));
+	extensions.push_back(CoreFileExtension("Lightwave model", "lwo"));
+	extensions.push_back(CoreFileExtension("Lightwave scene", "lws"));
+	extensions.push_back(CoreFileExtension("Modo model", "lxo"));
+	extensions.push_back(CoreFileExtension("CharacterStudio Motion", "csm"));
+	extensions.push_back(CoreFileExtension("TrueSpace", "scn"));
+	extensions.push_back(CoreFileExtension("XGL", "xgl"));						
+			
+	std::vector<String> files = core->openFilePicker(extensions, false);	
+	if(files.size()) {		
+		frame->assetImporterWindow->setSourceFileAndTargetFolder(files[0], projectManager->activeFolder);
+		frame->showModal(frame->assetImporterWindow);
+		frame->assetImporterWindow->addEventListener(this, UIEvent::OK_EVENT);
+	}
+}
+
 void PolycodeIDEApp::addFiles() {
 	if(projectManager->getActiveProject()) {
 #ifdef USE_POLYCODEUI_FILE_DIALOGS
@@ -596,6 +649,11 @@ void PolycodeIDEApp::openFile(OSFileEntry file) {
 }
 
 void PolycodeIDEApp::handleEvent(Event *event) {
+
+	if(event->getDispatcher() == frame->assetImporterWindow) {
+		frame->getCurrentProjectBrowser()->Refresh();
+	}
+	
 	if(event->getDispatcher() == projectManager && event->getEventCode() == Event::CHANGE_EVENT) {
 		if(projectManager->getActiveProject()) {
 		
@@ -734,6 +792,8 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 						newFile();
 					} else if(bEvent->command == "add_files") {
 						addFiles();
+					} else if(bEvent->command == "import_assets") {
+						importAssets();		
 					} else if(bEvent->command == "add_new_project") {
 						newProject();
 					} else if(bEvent->command == "add_new_folder") {				

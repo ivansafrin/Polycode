@@ -87,6 +87,13 @@ UIHScrollBar::UIHScrollBar(Number width, Number height, Number initialRatio) : U
 	setWidth(width);	
 }
 
+void UIHScrollBar::Resize(int newWidth) {
+	bgBox->resizeBox(newWidth, getHeight());
+	setWidth(newWidth);
+	dragRectWidth = getWidth()-(padding*2)-scrollHandleWidth;	
+	handleBox->setDragLimits(Rectangle(padding,padding,dragRectWidth, getHeight()-(padding*2)-(getHeight()-(padding*2))));
+}
+
 void UIHScrollBar::Update() {
 	if(lastPositionX != handleBox->getPosition().x) {
 		lastPositionX = handleBox->getPosition().x;
