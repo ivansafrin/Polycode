@@ -44,7 +44,7 @@ Renderer::Renderer() : clearColor(0.2f, 0.2f, 0.2f, 0.0), currentTexture(NULL), 
 	cullingFrontFaces = false;
 	scissorEnabled = false;
 	blendNormalAsPremultiplied = false;
-	
+	alphaTestValue = 0.01;
 	doClearBuffer = true;
 }
 

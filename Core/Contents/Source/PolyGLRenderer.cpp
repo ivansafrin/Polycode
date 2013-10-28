@@ -204,7 +204,7 @@ void OpenGLRenderer::setDepthFunction(int depthFunction) {
 
 void OpenGLRenderer::enableAlphaTest(bool val) {
 	if(val) {
-		glAlphaFunc ( GL_GREATER, 0.01) ;
+		glAlphaFunc ( GL_GREATER, alphaTestValue) ;
 		glEnable ( GL_ALPHA_TEST ) ;		
 	} else {
 		glDisable( GL_ALPHA_TEST ) ;

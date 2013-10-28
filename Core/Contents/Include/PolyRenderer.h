@@ -299,6 +299,8 @@ namespace Polycode {
 		bool doClearBuffer;
 		
 		bool blendNormalAsPremultiplied;
+		
+		Number alphaTestValue;
 				
 	protected:
 		virtual void initOSSpecific() {};

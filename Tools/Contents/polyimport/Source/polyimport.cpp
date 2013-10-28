@@ -21,15 +21,23 @@ unsigned int addBone(aiBone *bone) {
 	return bones.size()-1;
 }
 
-void addToMesh(Polycode::Mesh *tmesh, const struct aiScene *sc, const struct aiNode* nd, bool swapZY) {
+void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, const struct aiNode* nd, bool swapZY, bool addSubmeshes, bool listOnly) {
 	int i;
 	unsigned int n = 0, t;
 	// draw all meshes assigned to this node
 
 	for (; n < nd->mNumMeshes; ++n) {
+	
+		if(!addSubmeshes) {
+			tmesh = new Polycode::Mesh(Mesh::TRI_MESH);
+		}
+	
 		const struct aiMesh* mesh = scene->mMeshes[nd->mMeshes[n]];
-		printf("Importing mesh:%s (%d vertices) (%d faces) \n", mesh->mName.data, mesh->mNumVertices, mesh->mNumFaces);
-
+		if(listOnly) {
+			printf("%s%s.mesh\n", prefix.c_str(), nd->mName.data);
+		} else {
+			printf("Importing mesh:%s (%d vertices) (%d faces) \n", mesh->mName.data, mesh->mNumVertices, mesh->mNumFaces);
+		}
 		//apply_material(sc->mMaterials[mesh->mMaterialIndex]);
 
 		for (t = 0; t < mesh->mNumFaces; ++t) {
@@ -83,11 +91,21 @@ void addToMesh(Polycode::Mesh *tmesh, const struct aiScene *sc, const struct aiN
 			}
 			tmesh->addPolygon(poly);
 		}
+		
+		if(!addSubmeshes && !listOnly) {
+			String fileNameMesh = prefix+String(nd->mName.data)+".mesh";			
+			OSFILE *outFile = OSBasics::open(fileNameMesh.c_str(), "wb");	
+			tmesh->saveToFile(outFile);
+			OSBasics::close(outFile);
+			delete tmesh;
+		}
+	
 	}
+	
 
 	// draw all children
 	for (n = 0; n < nd->mNumChildren; ++n) {
-		addToMesh(tmesh, sc, nd->mChildren[n], swapZY);
+		addToMesh(prefix, tmesh, sc, nd->mChildren[n], swapZY, addSubmeshes, listOnly);
 	}
 }
 
@@ -118,17 +136,31 @@ void addToISkeleton(ISkeleton *skel, IBone *parent, const struct aiScene *sc, co
 	skel->addIBone(bone, getBoneID(bone->name));
 }
 
-int exportToFile(const char *fileName, bool swapZY) {
-	String fileNameMesh = String(fileName)+".mesh";
-	OSFILE *outFile = OSBasics::open(fileNameMesh.c_str(), "wb");
+int exportToFile(String prefix, bool swapZY, bool addSubmeshes, bool listOnly) {
+		
 	Polycode::Mesh *mesh = new Polycode::Mesh(Mesh::TRI_MESH);
-	addToMesh(mesh, scene, scene->mRootNode, swapZY);
-	mesh->saveToFile(outFile);
-	OSBasics::close(outFile);
-
-	if(hasWeights) {
-		printf("Mesh has weights, exporting skeleton...\n");
-		String fileNameSkel = String(fileName)+".skeleton";
+	addToMesh(prefix, mesh, scene, scene->mRootNode, swapZY, addSubmeshes, listOnly);
+	
+	if(!listOnly && addSubmeshes) {		
+		String fileNameMesh;
+		if(prefix != "") {
+			fileNameMesh = prefix+".mesh";			
+		} else {
+			fileNameMesh = "out.mesh";
+		}		
+		OSFILE *outFile = OSBasics::open(fileNameMesh.c_str(), "wb");	
+		mesh->saveToFile(outFile);
+		OSBasics::close(outFile);
+	}
+		
+	if(hasWeights) {		
+		if(listOnly) {
+			printf("%s.skeleton\n", prefix.c_str());
+		} else {
+			printf("Mesh has weights, exporting skeleton...\n");
+		}	
+		
+		String fileNameSkel = prefix+".skeleton";
 		ISkeleton *skeleton = new ISkeleton();
 	
 		for (int n = 0; n < scene->mRootNode->mNumChildren; ++n) {
@@ -141,7 +173,13 @@ int exportToFile(const char *fileName, bool swapZY) {
 			printf("Importing animations...\n");
 			for(int i=0; i < scene->mNumAnimations;i++) {
 				aiAnimation *a = scene->mAnimations[i];
-				printf("Importing '%s' (%d tracks)\n", a->mName.data, a->mNumChannels);
+				
+				if(listOnly) {
+					printf("%s%s.anim\n", prefix.c_str(), a->mName.data);
+				} else {
+					printf("Importing '%s' (%d tracks)\n", a->mName.data, a->mNumChannels);					
+				}	
+				
 			
 				IAnimation *anim = new IAnimation();
 				anim->tps = a->mTicksPerSecond;
@@ -165,41 +203,118 @@ int exportToFile(const char *fileName, bool swapZY) {
 			printf("No animations in file...\n");
 		}
 
-		skeleton->saveToFile(fileName, swapZY);
+		if(!listOnly) {
+			skeleton->saveToFile(prefix.c_str(), swapZY);
+		}
 	} else {
-		printf("No weight data, skipping skeleton export...\n");
+		if(!listOnly) {
+			printf("No weight data, skipping skeleton export...\n");
+		}
 	}
 
-
-	delete mesh;
+	if(mesh) {
+		delete mesh;
+	}
 	return 1;
 }
 
 int main(int argc, char **argv) {
 
-	printf("Polycode import tool v"POLYCODE_VERSION_STRING"\n");
 
-	if(argc != 5) {
-		printf("\n\nInvalid arguments!\n");
-		printf("usage: polyimport <source_file> <output_file> (Swap Z/Y:<true>/<false>) (Generate tangents:<true>/<false>) \n\n");
+	bool argsValid = true;
+	bool showHelp = false;
+
+	bool swapZYAxis = false;
+	bool generateTangents = false;
+	bool addSubmeshes = false;
+	bool listOnly = false;
+	bool showAssimpDebug = false;
+	
+	String prefix;
+	
+	int opt;
+	while ((opt = getopt(argc, argv, "adlhp:st")) != -1) {
+		switch ((char)opt) {
+			case 's':
+				swapZYAxis = true;
+			break;
+			case 't':
+				generateTangents = true;
+			break;
+			case 'a':
+				addSubmeshes = true;
+			break;
+			case 'd':
+				showAssimpDebug = true;
+			break;				
+			case 'l':
+				listOnly = true;
+			break;				
+			case 'p':
+				prefix = String(optarg);
+			break;
+			case 'h':
+				showHelp = true;
+			break;			
+			default:
+				argsValid = false;
+			break;
+		}
+	}
+
+	if(listOnly && argc < 3) {
+		argsValid = false;
+	}
+		
+	if(!listOnly) {
+		printf("Polycode import tool v"POLYCODE_VERSION_STRING"\n");	
+	}
+	
+	if(!argsValid) {
+		printf("Invalid arguments! Run with -h to see available options.\n\n");
+		return 0;		
+	}
+	
+	if(showHelp) {
+		printf("usage: polyimport [-adhlst] [-p output_prefix] source_file\n\n");
+		printf("a: Add all meshes to a single mesh.\n");
+		printf("d: Show Assimp debug info.\n");
+		printf("h: Show this help.\n");		
+		printf("l: List output files, but do not convert.\n");				
+		printf("p: Specify a file prefix for exported files.\n");			
+		printf("s: Swap Z/Y axis (e.g. import from Blender)\n");
+		printf("t: Generate tangents.\n");
+		printf("\n");
 		return 0;
 	}
 	
 	PHYSFS_init(argv[0]);
-	struct aiLogStream stream;
-	stream = aiGetPredefinedLogStream(aiDefaultLogStream_STDOUT,NULL);
-	aiAttachLogStream(&stream);
+	
+	if(showAssimpDebug) {
+		struct aiLogStream stream;
+		stream = aiGetPredefinedLogStream(aiDefaultLogStream_STDOUT,NULL);
+		aiAttachLogStream(&stream);
+	}
+	
+	if(argc < 2) {
+		printf("Please specify input filename\n");
+		return 0;
+	}	
+	
+	int inputArg = argc-1;
 
-	printf("Loading %s...\n", argv[1]);
-	scene = aiImportFile(argv[1],aiProcessPreset_TargetRealtime_Quality);
+	if(!listOnly) {
+		printf("Loading %s...\n", argv[inputArg]);
+	}
 	
+	scene = aiImportFile(argv[inputArg],aiProcessPreset_TargetRealtime_Quality);
 	
-	if(strcmp(argv[4], "true") == 0) {
+	if(generateTangents && !listOnly) {
 		aiApplyPostProcessing(scene, aiProcess_CalcTangentSpace);
 	}
 	
 	if(scene) {
-		exportToFile(argv[2], strcmp(argv[3], "true") == 0);
+		exportToFile(prefix, swapZYAxis, addSubmeshes, listOnly);
 	} else {
 		printf("Error opening scene...\n");
 	}

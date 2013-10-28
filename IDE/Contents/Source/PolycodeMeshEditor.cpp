@@ -178,8 +178,8 @@ bool PolycodeMeshEditor::openFile(OSFileEntry filePath) {
 	previewMesh->setMaterialByName("Default");
 	PolycodeEditor::openFile(filePath);
 	
-//	previewMesh->getMesh()->recenterMesh();
-//	previewMesh->getMesh()->calculateTangents();
+	previewMesh->alphaTest = true;
+	CoreServices::getInstance()->getRenderer()->alphaTestValue = 0.9;
 	
 	Number radius = previewMesh->getBBoxRadius();
 	
