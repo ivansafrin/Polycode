@@ -24,53 +24,57 @@
 
 #include "PolycodeEditor.h"
 #include "PolyUIElement.h"
-#include "PolycodeUI.h"
 #include <Polycode.h>
+#include "PolycodeUI.h"
 
 using namespace Polycode;
 
-class PolycodeMeshEditor : public PolycodeEditor {
+class TransformGizmo : public Entity {
 	public:
-	
-		PolycodeMeshEditor();
-		virtual ~PolycodeMeshEditor();
-	
-		void handleEvent(Event *event);
-	
-		void reloadMaterials();
-	
-		bool openFile(OSFileEntry filePath);
-		void Resize(int x, int y);
-	
-	protected:
-	
-		Scene *previewScene;
+		TransformGizmo();
+		~TransformGizmo();
 		
-		SceneLight *mainLight;
-		SceneLight *secondLight;		
-		SceneRenderTexture *renderTexture;
-		UIRect *previewShape;
-		UIRect *bgShape;		
-		SceneMesh *previewMesh;
-		Entity *previewBase;
 		
-		Material *currentMaterial;
-		
-		bool rotating;
-		Vector2 baseMousePosition;		
-		
-		UIComboBox *materialDropDown;
-		UIRect *headerBg;
-		
-		UIHSlider *lightsSlider;
-		
-		Vector3 baseModelPosition;
-		Number baseYaw;
-		Number basePitch;
 };
 
-class PolycodeMeshEditorFactory : public PolycodeEditorFactory {
+class EntityEditorMainView : public UIElement {
+		public:
+			EntityEditorMainView();
+			~EntityEditorMainView();
+			
+			void handleEvent(Event *event);			
+			void Resize(Number width, Number height);
+			void Update();
+			
+		protected:
+		
+			Entity *sideBar;
+			UIRect *headerBg;	
+			
+			Scene *mainScene;
+			SceneRenderTexture *renderTexture;
+			UIRect *renderTextureShape;			
+
+			TransformGizmo *transformGizmo;
+};
+
+class PolycodeEntityEditor : public PolycodeEditor {
 	public:
-		PolycodeMeshEditorFactory() : PolycodeEditorFactory() { extensions.push_back("mesh"); }
-		PolycodeEditor *createEditor() { return new PolycodeMeshEditor(); }
+		PolycodeEntityEditor();
+		virtual ~PolycodeEntityEditor();
+		
+		bool openFile(OSFileEntry filePath);
+		void Resize(int x, int y);
+		
+	protected:
+	
+		EntityEditorMainView *mainView;
+		UIHSizer *mainSizer;
+	
+};
+
+class PolycodeEntityEditorFactory : public PolycodeEditorFactory {
+	public:
+		PolycodeEntityEditorFactory() : PolycodeEditorFactory() { extensions.push_back("entity"); }
+		PolycodeEditor *createEditor() { return new PolycodeEntityEditor(); }
 };

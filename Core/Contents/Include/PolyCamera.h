@@ -157,6 +157,8 @@ namespace Polycode {
 			
 			Matrix4 getProjectionMatrix();
 			
+			Polycode::Rectangle getViewport();
+			
 			/**
 			* Toggles the frustum culling of the camera. (Defaults to true).
 			*/
@@ -173,6 +175,7 @@ namespace Polycode {
 		protected:
 		
 			Matrix4 projectionMatrix;	
+			Polycode::Rectangle viewport;
 			Number orthoSizeX;
 			Number orthoSizeY;
 			

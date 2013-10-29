@@ -293,7 +293,13 @@ Vector2 OpenGLRenderer::Project(const Matrix4 &cameraMatrix, const Matrix4 &proj
 	return Vector2(coords[0], yRes-coords[1]);
 }
 
-Vector3 OpenGLRenderer::projectRayFrom2DCoordinate(Number x, Number y, Matrix4 cameraMatrix, Matrix4 projectionMatrix) {
+Polycode::Rectangle OpenGLRenderer::getViewport() {
+	GLint vp[4];
+	glGetIntegerv( GL_VIEWPORT, vp );
+	return Polycode::Rectangle(vp[0], vp[1], vp[2], vp[3]); 
+}
+
+Vector3 OpenGLRenderer::projectRayFrom2DCoordinate(Number x, Number y, const Matrix4 &cameraMatrix, const Matrix4 &projectionMatrix, const Polycode::Rectangle &viewport) {
 	GLdouble nearPlane[3],farPlane[3];
 
 	GLdouble mv[16];
@@ -306,8 +312,7 @@ Vector3 OpenGLRenderer::projectRayFrom2DCoordinate(Number x, Number y, Matrix4 c
 		mv[i] = cmv.ml[i];
 	}
 
-	GLint vp[4];
-	glGetIntegerv( GL_VIEWPORT, vp );
+	GLint vp[4] = {viewport.x, viewport.y, viewport.w, viewport.h};
 
 	GLdouble _sceneProjectionMatrix[16];
 	for(int i=0; i < 16; i++) {

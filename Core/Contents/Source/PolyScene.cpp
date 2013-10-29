@@ -268,9 +268,11 @@ void Scene::RenderDepthOnly(Camera *targetCamera) {
 void Scene::handleEvent(Event *event) {
 	if(event->getDispatcher() == core->getInput() && rootEntity.processInputEvents) {
 		InputEvent *inputEvent = (InputEvent*) event;
-		Vector3 dir =  renderer->projectRayFrom2DCoordinate(inputEvent->mousePosition.x, inputEvent->mousePosition.y, activeCamera->getConcatenatedMatrix(), activeCamera->getProjectionMatrix());				
+		Polycode::Rectangle viewport = activeCamera->getViewport();
+		viewport.x = sceneMouseAdjust.x;
+		viewport.y = sceneMouseAdjust.y;
+		Vector3 dir =  renderer->projectRayFrom2DCoordinate(inputEvent->mousePosition.x, inputEvent->mousePosition.y, activeCamera->getConcatenatedMatrix(), activeCamera->getProjectionMatrix(), viewport);
 		Vector3 pos;
-		
 		
 		switch(sceneType) {
 			case SCENE_2D:

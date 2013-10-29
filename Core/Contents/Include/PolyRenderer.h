@@ -113,6 +113,8 @@ namespace Polycode {
 		void setViewportSize(int w, int h);
 		void setViewportSizeAndFOV(int w, int h, Number fov);
 		virtual void resetViewport() = 0;
+		
+		virtual Polycode::Rectangle getViewport() = 0;
 				
 		virtual void loadIdentity() = 0;		
 		virtual void setOrthoMode(Number xSize=0.0f, Number ySize=0.0f, bool centered = false) = 0;
@@ -241,7 +243,7 @@ namespace Polycode {
 		
 		void setExposureLevel(Number level);
 		
-		virtual Vector3 projectRayFrom2DCoordinate(Number x, Number y, Matrix4 cameraMatrix, Matrix4 projectionMatrix) = 0;
+		virtual Vector3 projectRayFrom2DCoordinate(Number x, Number y, const Matrix4 &cameraMatrix, const Matrix4 &projectionMatrix, const Polycode::Rectangle &viewport) = 0;
 		
 		virtual Vector2 Project(const Matrix4 &cameraMatrix, const Matrix4 &projectionMatrix, const Vector3 &coordiante) const = 0;
 		

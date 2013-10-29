@@ -394,6 +394,10 @@ Matrix4 Camera::getProjectionMatrix() {
 	return projectionMatrix;
 }
 
+Polycode::Rectangle Camera::getViewport() {
+	return viewport;
+}
+
 void Camera::doCameraTransform() {
 	renderer->setClippingPlanes(nearClipPlane, farClipPlane);
 
@@ -406,6 +410,7 @@ void Camera::doCameraTransform() {
 	}	
 	renderer->setExposureLevel(exposureLevel);
 
+	viewport = renderer->getViewport();
 	projectionMatrix = renderer->getProjectionMatrix();
 
 	if(matrixDirty) {

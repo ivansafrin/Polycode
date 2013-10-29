@@ -171,7 +171,10 @@ namespace Polycode {
 			* If true, will delete its Skeleton upon destruction. (defaults to true)
 			*/ 			
 			bool ownsSkeleton;
-		
+			
+			bool overlayWireframe;
+			Color wireFrameColor;			
+			
 		protected:
 		
 			bool useVertexBuffer;

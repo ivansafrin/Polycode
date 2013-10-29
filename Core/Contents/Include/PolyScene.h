@@ -182,6 +182,8 @@ namespace Polycode {
 						
 		Entity rootEntity;
 		
+		Vector2 sceneMouseAdjust;
+		
 	protected:
 		
 		void initScene(int sceneType, bool virtualScene);

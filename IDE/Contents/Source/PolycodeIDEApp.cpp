@@ -141,7 +141,8 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	editorManager->registerEditorFactory(new PolycodeProjectEditorFactory(projectManager));
 	editorManager->registerEditorFactory(new PolycodeSpriteEditorFactory());
 	editorManager->registerEditorFactory(new PolycodeMeshEditorFactory());
-		
+	editorManager->registerEditorFactory(new PolycodeEntityEditorFactory());
+			
 	screen->addChild(globalMenu);	
 				
 	frame->console->applyTheme();

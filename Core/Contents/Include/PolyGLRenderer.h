@@ -154,8 +154,8 @@ namespace Polycode {
 		void enableScissor(bool val);
 		void setScissorBox(Polycode::Rectangle box);		
 		
-		Vector3 projectRayFrom2DCoordinate(Number x, Number y, Matrix4 cameraMatrix, Matrix4 projectionMatrix);
-
+		Vector3 projectRayFrom2DCoordinate(Number x, Number y, const Matrix4 &cameraMatrix, const Matrix4 &projectionMatrix, const Polycode::Rectangle &viewport);
+		Polycode::Rectangle getViewport();
 		
 		void setLineSize(Number lineSize);
 		void setPointSize(Number pointSize);

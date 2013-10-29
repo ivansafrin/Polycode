@@ -57,6 +57,7 @@ SceneMesh::SceneMesh(const String& fileName) : Entity(), texture(NULL), material
 	lineWidth = 1.0;
 	pointSize = 1.0;
 	pointSmooth = false;
+	overlayWireframe = false;
 }
 
 SceneMesh::SceneMesh(Mesh *mesh) : Entity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
@@ -71,7 +72,8 @@ SceneMesh::SceneMesh(Mesh *mesh) : Entity(), texture(NULL), material(NULL), skel
 	ownsSkeleton = true;	
 	lineWidth = 1.0;
 	pointSize = 1.0;
-	pointSmooth = false;	
+	pointSmooth = false;
+	overlayWireframe = false;		
 		
 }
 
@@ -85,7 +87,8 @@ SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL), skeleton(NUL
 	lineSmooth = false;
 	ownsMesh = true;
 	ownsSkeleton = true;	
-	lineWidth = 1.0;	
+	lineWidth = 1.0;
+	overlayWireframe = false;		
 }
 
 void SceneMesh::setMesh(Mesh *mesh) {
@@ -292,12 +295,27 @@ void SceneMesh::Render() {
 		else
 			renderer->setTexture(NULL);
 	}
-	
+		
 	if(useVertexBuffer) {
 		renderer->drawVertexBuffer(mesh->getVertexBuffer(), mesh->useVertexColors);
 	} else {
 		renderMeshLocally();
 	}
+	
+	if(overlayWireframe) {
+		bool depthTestVal = depthTest;
+		renderer->enableDepthTest(false);
+		renderer->setRenderMode(Renderer::RENDER_MODE_WIREFRAME);
+		renderer->setVertexColor(wireFrameColor.r, wireFrameColor.g, wireFrameColor.b, wireFrameColor.a);
+		
+		if(useVertexBuffer) {
+			renderer->drawVertexBuffer(mesh->getVertexBuffer(), mesh->useVertexColors);
+		} else {
+			renderMeshLocally();
+		}
+		renderer->enableDepthTest(depthTestVal);		
+		renderer->setRenderMode(Renderer::RENDER_MODE_NORMAL);		
+	}	
 	
 	if(material) 
 		renderer->clearShader();
