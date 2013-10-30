@@ -152,6 +152,15 @@ namespace Polycode {
 				return sqrtf( x * x + y * y + z * z );
 			}
 			
+			inline Vector3 setLength(const Number newLength) {
+				Number oldLength = length();
+				if(oldLength != 0 && newLength != oldLength) {
+					(*this) = (*this) * (newLength / oldLength);
+				}
+				return (*this);
+				
+			}
+			
 			/**
 			* Returns the dot product with another vector.
 			* @return Dor product with the vector.

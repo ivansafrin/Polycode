@@ -593,6 +593,11 @@ void Entity::setRotationQuat(Number w, Number x, Number y, Number z) {
 	matrixDirty = true;
 }
 
+void Entity::setRotationByQuaternion(const Quaternion &quaternion) {
+	rotationQuat = quaternion;
+	matrixDirty = true;
+}
+
 Quaternion Entity::getRotationQuat() const {
 	return rotationQuat;
 }

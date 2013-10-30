@@ -29,7 +29,7 @@ PolycodeMeshEditor::PolycodeMeshEditor() : PolycodeEditor(true){
 	previewScene = new Scene(Scene::SCENE_3D, true);		
 	renderTexture = new SceneRenderTexture(previewScene, previewScene->getDefaultCamera(), 512, 512);
 
-	previewScene->clearColor.setColor(0.0, 0.0, 0.0, 0.0);	
+	previewScene->clearColor.setColor(0.2, 0.2, 0.2, 1.0);	
 	previewScene->useClearColor = true;
 	
 //	previewScene->ambientColor.setColor(0.0, 0.0, 0.0, 1.0);
@@ -46,21 +46,7 @@ PolycodeMeshEditor::PolycodeMeshEditor() : PolycodeEditor(true){
 	addChild(headerBg);
 	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));		
-
-	bgShape = new UIRect("Images/editorGrid.png");
-	bgShape->setAnchorPoint(-1.0, -1.0, 0.0);	
-	addChild(bgShape);	
-	bgShape->getTexture()->clamp = false;
-    bgShape->getTexture()->recreateFromImageData();     	
-	bgShape->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiBgColor"));	
-	bgShape->processInputEvents = true;
-	bgShape->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
-	bgShape->addEventListener(this, InputEvent::EVENT_MOUSEUP);
-	bgShape->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);
-	bgShape->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
-	bgShape->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_UP);
-	bgShape->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_DOWN);
-				
+	
 	previewShape = new UIRect(256, 256);
 	previewShape->setAnchorPoint(-1.0, -1.0, 0.0);	
 	previewShape->setTexture(renderTexture->getTargetTexture());
@@ -95,8 +81,9 @@ PolycodeMeshEditor::PolycodeMeshEditor() : PolycodeEditor(true){
 	CoreServices::getInstance()->getResourceManager()->dispatchChangeEvents = true;	
 	CoreServices::getInstance()->getResourceManager()->addEventListener(this, Event::CHANGE_EVENT);
 	
-	rotating = false;
-	previewMesh = NULL;
+	previewMesh = NULL;	
+	trackballCamera = new TrackballCamera(previewScene->getDefaultCamera(), previewShape);
+	
 }
 
 void PolycodeMeshEditor::reloadMaterials() {
@@ -132,40 +119,6 @@ void PolycodeMeshEditor::handleEvent(Event *event) {
 		}
 	} else if(event->getDispatcher() == CoreServices::getInstance()->getResourceManager()) {
 		reloadMaterials();
-	} else if(event->getDispatcher() == bgShape) {
-		InputEvent *inputEvent = (InputEvent*) event;
-		switch(event->getEventCode()) {
-			case InputEvent::EVENT_MOUSEDOWN:
-				rotating = true;
-				baseMousePosition = inputEvent->mousePosition;
-				baseYaw = previewBase->getYaw();
-				basePitch = previewBase->getPitch();
-				baseModelPosition = previewMesh->getPosition();
-			break;
-			case InputEvent::EVENT_MOUSEUP:
-				rotating = false;
-			break;
-			case InputEvent::EVENT_MOUSEUP_OUTSIDE:
-				rotating = false;			
-			break;
-			case InputEvent::EVENT_MOUSEMOVE:
-				if(rotating && previewMesh) {
-					if(CoreServices::getInstance()->getCore()->getInput()->getKeyState(KEY_LALT)) {
-						previewMesh->setPosition(baseModelPosition.x - ((baseMousePosition.x -inputEvent->mousePosition.x) * 0.01), baseModelPosition.y + ((baseMousePosition.y -inputEvent->mousePosition.y) * 0.01));
-						
-					} else {
-						previewBase->setYaw(baseYaw - ((baseMousePosition.x-inputEvent->mousePosition.x) * 0.3));
-						previewBase->setPitch(basePitch - ((baseMousePosition.y-inputEvent->mousePosition.y) * 0.3));
-					}
-				}
-			break;
-			case InputEvent::EVENT_MOUSEWHEEL_UP:
-				previewBase->Scale(1.01, 1.01, 1.01);
-			break;
-			case InputEvent::EVENT_MOUSEWHEEL_DOWN:
-				previewBase->Scale(0.99, 0.99, 0.99);			
-			break;			
-		}
 	}
 }
 
@@ -182,27 +135,19 @@ bool PolycodeMeshEditor::openFile(OSFileEntry filePath) {
 	CoreServices::getInstance()->getRenderer()->alphaTestValue = 0.9;
 	
 	Number radius = previewMesh->getBBoxRadius();
-	
-	previewScene->getDefaultCamera()->setPosition(0,0,radius*3);
-	previewScene->getDefaultCamera()->lookAt(Vector3());
-	
-		
+				
 	mainLight->setPosition(-(radius*3),(radius*3),(radius*3));
 	secondLight->setPosition((radius*3),-(radius*3),(radius*3));
 	
+	trackballCamera->setCameraDistance(radius*3);
 	return true;
 }
 
 void PolycodeMeshEditor::Resize(int x, int y) {
-
-	headerBg->Resize(x, 30);
-	
+	headerBg->Resize(x, 30);	
 	renderTexture->resizeRenderTexture(x, y-30);
 	previewShape->setTexture(renderTexture->getTargetTexture());	
 	previewShape->Resize(x, y-30);	
-	bgShape->setImageCoordinates(0,0,x,y-30);
-	
-	bgShape->setPosition(0, 30);
 	previewShape->setPosition(0, 30);
 }
 

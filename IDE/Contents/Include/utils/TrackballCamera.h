@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2012 by Ivan Safrin
+ Copyright (C) 2013 by Ivan Safrin
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -19,53 +19,51 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
- 
+
 #pragma once
 
-#include "PolycodeEditor.h"
-#include "PolyUIElement.h"
-#include "TrackballCamera.h"
-#include "PolycodeUI.h"
-#include <Polycode.h>
+#include "Polycode.h"
+#include "OSBasics.h"
 
 using namespace Polycode;
 
-class PolycodeMeshEditor : public PolycodeEditor {
+class TrackballCamera : public EventHandler {
 	public:
-	
-		PolycodeMeshEditor();
-		virtual ~PolycodeMeshEditor();
-	
-		void handleEvent(Event *event);
-	
-		void reloadMaterials();
-	
-		bool openFile(OSFileEntry filePath);
-		void Resize(int x, int y);
-	
-	protected:
-	
-		Scene *previewScene;
+		TrackballCamera(Camera *targetCamera, Entity *trackballShape);
+		~TrackballCamera();
 		
-		SceneLight *mainLight;
-		SceneLight *secondLight;		
-		SceneRenderTexture *renderTexture;
-		UIRect *previewShape;
-		SceneMesh *previewMesh;
-		Entity *previewBase;
+		void handleEvent(Event *event);		
+		void setOrbitingCenter(const Vector3 &newCenter);
+		void setCameraDistance(Number cameraDistance);
+		Camera *getTargetCamera();
 		
-		Material *currentMaterial;
-				
-		UIComboBox *materialDropDown;
-		UIRect *headerBg;
+		static const int MOUSE_MODE_IDLE = 0;
+		static const int MOUSE_MODE_ORBITING = 1;
+		static const int MOUSE_MODE_PANNING = 2;
+		static const int MOUSE_MODE_ZOOMING = 3;				
 		
-		UIHSlider *lightsSlider;
-		TrackballCamera *trackballCamera;
-
-};
-
-class PolycodeMeshEditorFactory : public PolycodeEditorFactory {
-	public:
-		PolycodeMeshEditorFactory() : PolycodeEditorFactory() { extensions.push_back("mesh"); }
-		PolycodeEditor *createEditor() { return new PolycodeMeshEditor(); }
+		Number trackballPanSpeed;
+		Number trackballZoomSpeed;	
+		Number trackballRotateSpeed;
+		
+	private:
+	
+		int mouseMode;
+	
+		Vector3 getMouseProjectionOnBall(const Vector2 &mousePosition);
+		void updateCamera();	
+		void processMouseMovement(const Vector2 &newPosition);
+		
+		Camera *targetCamera;
+		Entity *trackballShape;
+		
+		Vector2 trackBallMouseStart;
+		Vector2 trackBallMouseEnd;			
+		Vector3 orbitingCenter;
+		Vector3 trackballRotateStart;
+		Vector3 trackballRotateEnd;	
+		Vector3 trackballEye;		
+		Number cameraDistance;
+		CoreInput *coreInput;		
+		
 };

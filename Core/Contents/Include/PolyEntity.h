@@ -439,6 +439,8 @@ namespace Polycode {
 			*/																									
 			void setRotationQuat(Number w, Number x, Number y, Number z);
 			
+			void setRotationByQuaternion(const Quaternion &quaternion);
+			
 			/**
 			* Returns the current rotation as a quaternion.
 			* @return Current rotation value.

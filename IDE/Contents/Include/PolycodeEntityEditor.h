@@ -26,6 +26,7 @@
 #include "PolyUIElement.h"
 #include <Polycode.h>
 #include "PolycodeUI.h"
+#include "utils/TrackballCamera.h"
 
 using namespace Polycode;
 
@@ -46,8 +47,8 @@ class EntityEditorMainView : public UIElement {
 			void Resize(Number width, Number height);
 			void Update();
 			
-		protected:
-		
+		protected:		
+			
 			Entity *sideBar;
 			UIRect *headerBg;	
 			
@@ -56,6 +57,8 @@ class EntityEditorMainView : public UIElement {
 			UIRect *renderTextureShape;			
 
 			TransformGizmo *transformGizmo;
+			TrackballCamera *trackballCamera;
+			
 };
 
 class PolycodeEntityEditor : public PolycodeEditor {

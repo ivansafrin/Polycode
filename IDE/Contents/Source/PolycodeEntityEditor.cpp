@@ -57,18 +57,21 @@ TransformGizmo::TransformGizmo() : Entity() {
 	ScenePrimitive *yArrow = new ScenePrimitive(ScenePrimitive::TYPE_CONE, 0.2, 0.05, 12);
 	yArrow->setColor(0.0, 1.0, 0.0, 1.0);
 	yArrow->setPosition(0.0, 1.0, 0.0);
+	yArrow->depthTest = false;
 	addChild(yArrow);
 	
 	ScenePrimitive *xArrow = new ScenePrimitive(ScenePrimitive::TYPE_CONE, 0.2, 0.05, 12);
 	xArrow->setColor(1.0, 0.0, 0.0, 1.0);
 	xArrow->setPosition(1.0, 0.0, 0.0);
 	xArrow->Roll(-90);
+	xArrow->depthTest = false;
 	addChild(xArrow);
 
 	ScenePrimitive *zArrow = new ScenePrimitive(ScenePrimitive::TYPE_CONE, 0.2, 0.05, 12);
 	zArrow->setColor(0.0, 0.0, 1.0, 1.0);
 	zArrow->setPosition(0.0, 0.0, 1.0);
 	zArrow->Pitch(90);
+	zArrow->depthTest = false;	
 	addChild(zArrow);
 	
 }
@@ -91,7 +94,7 @@ EntityEditorMainView::EntityEditorMainView() {
 	renderTextureShape->setTexture(renderTexture->getTargetTexture());
 	addChild(renderTextureShape);
 	renderTextureShape->setPosition(0, 30);
-	
+				
 	sideBar = new Entity();
 	addChild(sideBar);
 	sideBar->setPosition(0, 30);
@@ -120,7 +123,9 @@ EntityEditorMainView::EntityEditorMainView() {
 	
 	transformGizmo = new TransformGizmo();
 	mainScene->addChild(transformGizmo);
+	transformGizmo->visible = false;
 	
+	trackballCamera = new TrackballCamera(mainScene->getDefaultCamera(), renderTextureShape);
 }
 
 void EntityEditorMainView::Update() {
@@ -129,13 +134,16 @@ void EntityEditorMainView::Update() {
 }
 
 void EntityEditorMainView::handleEvent(Event *event) {
+
 	if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN ) {
 		InputEvent *inputEvent = (InputEvent*) event;
-		if(inputEvent->mouseButton == CoreInput::MOUSE_BUTTON1) {
+
+		if(inputEvent->mouseButton == CoreInput::MOUSE_BUTTON2) {
 			Entity* targetEntity = (Entity*) event->getDispatcher();
 			
 			transformGizmo->setPosition(targetEntity->getConcatenatedMatrix().getPosition());
-			
+			transformGizmo->visible = true;
+				
 			SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(targetEntity);
 			if(sceneMesh) {
 				sceneMesh->overlayWireframe = true;
