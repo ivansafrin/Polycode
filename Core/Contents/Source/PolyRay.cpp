@@ -55,6 +55,49 @@ Vector3 Ray::planeIntersectPoint(const Vector3 &planeNormal, Number planeDistanc
 	 return origin + direction * (-distanceToOrigin / direction.dot(planeNormal));
 }
 
+bool Ray::polygonIntersect(Polycode::Polygon *polygon) const {
+
+	if(polygon->getVertexCount() < 3) {
+		return false;
+	}
+	
+	Number t,u,v;
+	t = 0; u = 0; v = 0;
+
+	Vector3 edge1 = (*(Vector3*)polygon->getVertex(1)) - (*(Vector3*)polygon->getVertex(0));
+	Vector3 edge2 = (*(Vector3*)polygon->getVertex(2)) - (*(Vector3*)polygon->getVertex(0));
+
+	Vector3 tvec, pvec, qvec;
+	Number det, inv_det;
+
+	pvec = direction.crossProduct(edge2);
+	det = edge1.dot(pvec);
+
+	if (det > -0.00001f)
+			return false;
+
+	inv_det = 1.0f / det;
+
+	tvec = origin - (*(Vector3*)polygon->getVertex(0));
+
+	u = tvec.dot(pvec) * inv_det;
+	if (u < -0.001f || u > 1.001f)
+			return false;
+
+	qvec = tvec.crossProduct(edge1);
+
+	v = direction.dot(qvec) * inv_det;
+	if (v < -0.001f || u + v > 1.001f)
+			return false;
+
+	t = edge2.dot(qvec) * inv_det;
+
+	if (t <= 0)
+			return false;
+			
+	return true;
+}
+
 bool Ray::boxIntersect(const Vector3 &box, const Matrix4 &transformMatrix, float near, float far) const {	
 
 	if(box.x == 0 || box.y == 0 || box.z == 0)

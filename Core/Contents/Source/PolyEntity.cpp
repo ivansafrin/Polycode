@@ -918,25 +918,27 @@ MouseEventResult Entity::onMouseDown(const Ray &ray, int mouseButton, int timest
 	
 	if(processInputEvents && enabled) {
 		if(ray.boxIntersect(bBox, getAnchorAdjustedMatrix())) {
-			ret.hit = true;	
-			
-			Vector3 localCoordinate = Vector3(ray.origin.x,ray.origin.y,0);
-			Matrix4 inverse = getConcatenatedMatrix().Inverse();
-			localCoordinate = inverse * localCoordinate;			
-			
-			InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x, localCoordinate.y*yAdjust), timestamp);
-			inputEvent->mouseButton = mouseButton;
-			dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEDOWN);
-			
-			if(timestamp - lastClickTicks < 400) {
+			if(customHitDetection(ray)) {
+				ret.hit = true;	
+				
+				Vector3 localCoordinate = Vector3(ray.origin.x,ray.origin.y,0);
+				Matrix4 inverse = getConcatenatedMatrix().Inverse();
+				localCoordinate = inverse * localCoordinate;			
+				
 				InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x, localCoordinate.y*yAdjust), timestamp);
 				inputEvent->mouseButton = mouseButton;
-				dispatchEvent(inputEvent, InputEvent::EVENT_DOUBLECLICK);
-			}
-			lastClickTicks = timestamp;			
-						
-			if(blockMouseInput) {
-				ret.blocked = true;
+				dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEDOWN);
+				
+				if(timestamp - lastClickTicks < 400) {
+					InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x, localCoordinate.y*yAdjust), timestamp);
+					inputEvent->mouseButton = mouseButton;
+					dispatchEvent(inputEvent, InputEvent::EVENT_DOUBLECLICK);
+				}
+				lastClickTicks = timestamp;			
+							
+				if(blockMouseInput) {
+					ret.blocked = true;
+				}
 			}
 		}
 		

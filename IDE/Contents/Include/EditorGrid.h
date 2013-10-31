@@ -21,33 +21,19 @@
  */
 
 #pragma once
-#include "PolyGlobals.h"
-#include "PolyVector3.h"
-#include "PolyMatrix4.h"
-#include "PolyPolygon.h"
 
-namespace Polycode {
+#include "Polycode.h"
+#include "OSBasics.h"
 
-	/**
-	* Ray class. 
-	*/
-	class _PolyExport Ray : public PolyBase {
-		public:
-			Ray();
-			Ray(const Vector3 &origin, const Vector3 &direction);
-	
-			bool boxIntersect(const Vector3 &box, const Matrix4 &transformMatrix, float near = 0.0, float far = 9999.0) const;
-			
-			Vector3 planeIntersectPoint(const Vector3 &planeNormal, Number planeDistance) const;
-			Ray tranformByMatrix(const Matrix4& matrix) const;
-			
-			bool polygonIntersect(Polycode::Polygon *polygon) const;
+using namespace Polycode;
+
+class EditorGrid : public Entity {
+	public:
+		EditorGrid();
+		~EditorGrid();
 		
-			Vector3 origin;
-			Vector3 direction;
-			
-			Vector3 inv_direction;
-			int sign[3];
-	};
-	
-}
+		void setGrid(int gridSize);
+		
+	private:
+		SceneMesh *grid;
+};

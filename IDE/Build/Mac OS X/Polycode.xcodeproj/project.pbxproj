@@ -37,7 +37,9 @@
 		6DC825791648571E006AFC03 /* ExportProjectWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DC825781648571E006AFC03 /* ExportProjectWindow.cpp */; };
 		6DCAFD4314B519C900039F34 /* ExampleBrowserWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DCAFD4214B519C900039F34 /* ExampleBrowserWindow.cpp */; };
 		6DCB6026181F1F4B006701AF /* PolycodeEntityEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DCB6025181F1F4B006701AF /* PolycodeEntityEditor.cpp */; };
-		6DCB602B18219FF1006701AF /* TrackballCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DCB602A18219FF1006701AF /* TrackballCamera.cpp */; };
+		6DCB602F1822EA84006701AF /* TrackballCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DCB602E1822EA84006701AF /* TrackballCamera.cpp */; };
+		6DCB60321822EADE006701AF /* TransformGizmo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DCB60311822EADE006701AF /* TransformGizmo.cpp */; };
+		6DCB60351822EBDD006701AF /* EditorGrid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DCB60341822EBDD006701AF /* EditorGrid.cpp */; };
 		6DCE857A12AE018800566FAE /* PolycodeEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DCE857812AE018800566FAE /* PolycodeEditor.cpp */; };
 		6DCE857B12AE018800566FAE /* PolycodeEditorManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DCE857912AE018800566FAE /* PolycodeEditorManager.cpp */; };
 		6DCE85B712AE082B00566FAE /* PolycodeImageEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DCE85B612AE082B00566FAE /* PolycodeImageEditor.cpp */; };
@@ -134,8 +136,12 @@
 		6DCAFD4614B51A2D00039F34 /* ExampleBrowserWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExampleBrowserWindow.h; sourceTree = "<group>"; };
 		6DCB6023181F1F44006701AF /* PolycodeEntityEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolycodeEntityEditor.h; sourceTree = "<group>"; };
 		6DCB6025181F1F4B006701AF /* PolycodeEntityEditor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolycodeEntityEditor.cpp; sourceTree = "<group>"; };
-		6DCB602818219FDF006701AF /* TrackballCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TrackballCamera.h; path = utils/TrackballCamera.h; sourceTree = "<group>"; };
-		6DCB602A18219FF1006701AF /* TrackballCamera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TrackballCamera.cpp; path = utils/TrackballCamera.cpp; sourceTree = "<group>"; };
+		6DCB602D1822EA7E006701AF /* TrackballCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrackballCamera.h; sourceTree = "<group>"; };
+		6DCB602E1822EA84006701AF /* TrackballCamera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TrackballCamera.cpp; sourceTree = "<group>"; };
+		6DCB60311822EADE006701AF /* TransformGizmo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TransformGizmo.cpp; sourceTree = "<group>"; };
+		6DCB60331822EAE5006701AF /* TransformGizmo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TransformGizmo.h; sourceTree = "<group>"; };
+		6DCB60341822EBDD006701AF /* EditorGrid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EditorGrid.cpp; sourceTree = "<group>"; };
+		6DCB60361822EDB1006701AF /* EditorGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditorGrid.h; sourceTree = "<group>"; };
 		6DCE857612AE018000566FAE /* PolycodeEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolycodeEditor.h; sourceTree = "<group>"; };
 		6DCE857712AE018000566FAE /* PolycodeEditorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolycodeEditorManager.h; sourceTree = "<group>"; };
 		6DCE857812AE018800566FAE /* PolycodeEditor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolycodeEditor.cpp; sourceTree = "<group>"; };
@@ -283,6 +289,7 @@
 		6D80E91212AB53FB0037A708 /* Include */ = {
 			isa = PBXGroup;
 			children = (
+				6DCB602C1822EA4A006701AF /* entity_editor */,
 				6DCB602718219FD5006701AF /* utils */,
 				6DCB6023181F1F44006701AF /* PolycodeEntityEditor.h */,
 				6D0F6B5F18170C0400C5327F /* PolycodeMeshEditor.h */,
@@ -320,6 +327,7 @@
 		6D80E91812AB53FB0037A708 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				6DCB60301822EAD5006701AF /* entity_editor */,
 				6DCB602918219FE7006701AF /* utils */,
 				6DCB6025181F1F4B006701AF /* PolycodeEntityEditor.cpp */,
 				6D0F6B6118170C1000C5327F /* PolycodeMeshEditor.cpp */,
@@ -356,7 +364,7 @@
 		6DCB602718219FD5006701AF /* utils */ = {
 			isa = PBXGroup;
 			children = (
-				6DCB602818219FDF006701AF /* TrackballCamera.h */,
+				6DCB602D1822EA7E006701AF /* TrackballCamera.h */,
 			);
 			name = utils;
 			sourceTree = "<group>";
@@ -364,9 +372,27 @@
 		6DCB602918219FE7006701AF /* utils */ = {
 			isa = PBXGroup;
 			children = (
-				6DCB602A18219FF1006701AF /* TrackballCamera.cpp */,
+				6DCB602E1822EA84006701AF /* TrackballCamera.cpp */,
 			);
 			name = utils;
+			sourceTree = "<group>";
+		};
+		6DCB602C1822EA4A006701AF /* entity_editor */ = {
+			isa = PBXGroup;
+			children = (
+				6DCB60361822EDB1006701AF /* EditorGrid.h */,
+				6DCB60331822EAE5006701AF /* TransformGizmo.h */,
+			);
+			name = entity_editor;
+			sourceTree = "<group>";
+		};
+		6DCB60301822EAD5006701AF /* entity_editor */ = {
+			isa = PBXGroup;
+			children = (
+				6DCB60341822EBDD006701AF /* EditorGrid.cpp */,
+				6DCB60311822EADE006701AF /* TransformGizmo.cpp */,
+			);
+			name = entity_editor;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -483,7 +509,9 @@
 				6D128ABD174A9940007B0375 /* SettingsWindow.cpp in Sources */,
 				6D0F6B6218170C1000C5327F /* PolycodeMeshEditor.cpp in Sources */,
 				6DCB6026181F1F4B006701AF /* PolycodeEntityEditor.cpp in Sources */,
-				6DCB602B18219FF1006701AF /* TrackballCamera.cpp in Sources */,
+				6DCB602F1822EA84006701AF /* TrackballCamera.cpp in Sources */,
+				6DCB60321822EADE006701AF /* TransformGizmo.cpp in Sources */,
+				6DCB60351822EBDD006701AF /* EditorGrid.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

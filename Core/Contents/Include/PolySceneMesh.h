@@ -173,7 +173,12 @@ namespace Polycode {
 			bool ownsSkeleton;
 			
 			bool overlayWireframe;
-			Color wireFrameColor;			
+			Color wireFrameColor;	
+			
+			bool useGeometryHitDetection;
+			
+			bool customHitDetection(const Ray &ray);			
+
 			
 		protected:
 		

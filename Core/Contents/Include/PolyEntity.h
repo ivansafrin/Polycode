@@ -669,8 +669,9 @@ namespace Polycode {
 			
 			void doUpdates();				
 			virtual Matrix4 buildPositionMatrix();
-			void setRenderer(Renderer *renderer);						
+			void setRenderer(Renderer *renderer);
 			
+			virtual bool customHitDetection(const Ray &ray) { return true; }			
 			
 			Vector3 bBox;			
 			bool ignoreParentMatrix;

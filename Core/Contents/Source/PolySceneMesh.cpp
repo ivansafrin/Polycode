@@ -58,6 +58,7 @@ SceneMesh::SceneMesh(const String& fileName) : Entity(), texture(NULL), material
 	pointSize = 1.0;
 	pointSmooth = false;
 	overlayWireframe = false;
+	useGeometryHitDetection = false;
 }
 
 SceneMesh::SceneMesh(Mesh *mesh) : Entity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
@@ -73,8 +74,8 @@ SceneMesh::SceneMesh(Mesh *mesh) : Entity(), texture(NULL), material(NULL), skel
 	lineWidth = 1.0;
 	pointSize = 1.0;
 	pointSmooth = false;
-	overlayWireframe = false;		
-		
+	overlayWireframe = false;	
+	useGeometryHitDetection = false;
 }
 
 SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
@@ -88,7 +89,8 @@ SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL), skeleton(NUL
 	ownsMesh = true;
 	ownsSkeleton = true;	
 	lineWidth = 1.0;
-	overlayWireframe = false;		
+	overlayWireframe = false;
+	useGeometryHitDetection = false;			
 }
 
 void SceneMesh::setMesh(Mesh *mesh) {
@@ -276,6 +278,25 @@ void SceneMesh::cacheToVertexBuffer(bool cache) {
 		CoreServices::getInstance()->getRenderer()->createVertexBufferForMesh(mesh);
 	}
 	useVertexBuffer = cache;
+}
+
+bool SceneMesh::customHitDetection(const Ray &ray) {
+	if(!useGeometryHitDetection)
+		return true;
+	
+	Ray transformedRay;
+	
+	Matrix4 adjustedMatrix = getAnchorAdjustedMatrix().Inverse();
+	transformedRay.origin = adjustedMatrix * ray.origin;
+	transformedRay.direction = adjustedMatrix.rotateVector(ray.direction);
+	
+	for(int i=0; i < mesh->getPolygonCount(); i++) {
+		if(transformedRay.polygonIntersect(mesh->getPolygon(i))) {
+			return true;
+		}
+	}
+	
+	return false;
 }
 
 void SceneMesh::Render() {

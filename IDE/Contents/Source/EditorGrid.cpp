@@ -19,35 +19,44 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
+ 
+#include "EditorGrid.h"
 
-#pragma once
-#include "PolyGlobals.h"
-#include "PolyVector3.h"
-#include "PolyMatrix4.h"
-#include "PolyPolygon.h"
+EditorGrid::EditorGrid() : Entity() {
+	grid = NULL;
+	setGrid(1.0);
+	setPitch(90);
+}
 
-namespace Polycode {
-
-	/**
-	* Ray class. 
-	*/
-	class _PolyExport Ray : public PolyBase {
-		public:
-			Ray();
-			Ray(const Vector3 &origin, const Vector3 &direction);
+void EditorGrid::setGrid(int gridSize) {
+	Polycode::Polygon *gridPoly = new Polycode::Polygon();
+	int gridLen = 16;
 	
-			bool boxIntersect(const Vector3 &box, const Matrix4 &transformMatrix, float near = 0.0, float far = 9999.0) const;
-			
-			Vector3 planeIntersectPoint(const Vector3 &planeNormal, Number planeDistance) const;
-			Ray tranformByMatrix(const Matrix4& matrix) const;
-			
-			bool polygonIntersect(Polycode::Polygon *polygon) const;
-		
-			Vector3 origin;
-			Vector3 direction;
-			
-			Vector3 inv_direction;
-			int sign[3];
-	};
-	
+	for(int x=0; x < gridLen+1; x++) {
+			gridPoly->addVertex(x * gridSize,0, 0);
+			gridPoly->addVertex(x * gridSize,gridSize * gridLen, 0);
+	}
+
+	for(int y=0; y < gridLen+1; y++) {
+			gridPoly->addVertex(0, y * gridSize, 0);
+			gridPoly->addVertex(gridSize * gridLen, y * gridSize, 0);                
+	}        
+
+	if(grid) {
+			grid->getMesh()->clearMesh();
+			grid->getMesh()->addPolygon(gridPoly);
+	} else {
+			Mesh *gridMesh = new Mesh(Mesh::LINE_MESH);
+			gridMesh->addPolygon(gridPoly);
+				
+			grid = new SceneMesh(gridMesh);
+			grid->setColor(1.0, 1.0, 1.0, 0.1);
+			addChild(grid);                
+			grid->setPosition(-gridSize * gridLen * 0.5, -gridSize * gridLen * 0.5);
+	}
+}
+
+
+EditorGrid::~EditorGrid() {
+
 }
