@@ -320,6 +320,13 @@ namespace Polycode {
 			*/									
 			void Scale(Number x, Number y, Number z=0.0);
 			
+
+			/**
+			* Scales the entity relative to its current scale.
+			@param scale Scale vector.				
+			*/									
+			void Scale(const Vector3 &scale);			
+
 			/**
 			* Sets the entity's scale.
 			@param x X-axis value.

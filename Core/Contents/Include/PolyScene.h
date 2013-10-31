@@ -130,6 +130,8 @@ namespace Polycode {
 		
 		void handleEvent(Event *event);
 		
+		Ray projectRayFromCameraAndViewportCoordinate(Camera *camera, Vector2 coordinate);
+		
 		/**
 		* Adds a light to the scene.
 		* @param light Light to add to the scene.

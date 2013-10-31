@@ -57,6 +57,8 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	CoreServices::getInstance()->getResourceManager()->addArchive("Physics2D.pak");
 	CoreServices::getInstance()->getResourceManager()->addArchive("Physics3D.pak");
 	CoreServices::getInstance()->getResourceManager()->addArchive("UI.pak");
+
+	CoreServices::getInstance()->getResourceManager()->addDirResource("Materials");	
 			
 	CoreServices::getInstance()->getFontManager()->registerFont("section", "Fonts/RobotoCondensed-Bold.ttf");
 

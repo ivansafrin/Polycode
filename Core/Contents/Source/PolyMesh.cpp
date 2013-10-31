@@ -265,6 +265,35 @@ namespace Polycode {
 		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;										
 		arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;		
 	}
+
+	void Mesh::createCircle(Number w, Number h, unsigned int numSegments) {
+		setMeshType(Mesh::TRIFAN_MESH);
+		Polygon *poly = new Polygon();
+		int step;
+		if(numSegments > 0) {
+				step = ceil(360/numSegments);
+		} else {
+				step = 1;
+		}
+		
+  
+		poly->addVertex(cosf(0)*(w/2),sinf(0)*(h/2), 0, (cosf(0)*0.5) + 0.5,(sinf(0) * 0.5)+ 0.5);		
+		for (int i=0; i < 361; i+= step) {
+				Number degInRad = i*TORADIANS;
+				Vertex *v = poly->addVertex(cos(degInRad)*(w/2),sin(degInRad)*(h/2), 0, (cos(degInRad) * 0.5)+ 0.5 , 1.0- ((sin(degInRad) * 0.5)+ 0.5));
+				Vector3 normal = *v; 
+				normal.Normalize();
+				v->normal = normal;
+		}
+		
+		addPolygon(poly);
+		arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
+		arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
+		arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;						
+		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;										
+		arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;			
+	}
+	
 	
 	void Mesh::createVPlane(Number w, Number h) { 
 		Polygon *imagePolygon = new Polygon();

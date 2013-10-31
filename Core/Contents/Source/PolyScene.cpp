@@ -265,34 +265,41 @@ void Scene::RenderDepthOnly(Camera *targetCamera) {
 	CoreServices::getInstance()->getRenderer()->cullFrontFaces(false);	
 }
 
+Ray Scene::projectRayFromCameraAndViewportCoordinate(Camera *camera, Vector2 coordinate) {
+
+	Polycode::Rectangle viewport = camera->getViewport();
+	viewport.x = sceneMouseAdjust.x;
+	viewport.y = sceneMouseAdjust.y;
+	Vector3 dir =  renderer->projectRayFrom2DCoordinate(coordinate.x, coordinate.y, camera->getConcatenatedMatrix(), camera->getProjectionMatrix(), viewport);
+	Vector3 pos;
+
+	switch(sceneType) {
+		case SCENE_2D:
+		{
+			Number orthoSizeX = camera->getOrthoSizeX();
+			Number orthoSizeY = camera->getOrthoSizeY();			
+			pos = Vector3(((coordinate.x/(Number)core->getXRes())*orthoSizeX) - (orthoSizeX*0.5), (((core->getYRes()-coordinate.y)/(Number)core->getYRes())*orthoSizeY) - (orthoSizeY*0.5), 0.0);
+			pos = camera->getConcatenatedMatrix() * pos;	
+		}
+		break;
+		case SCENE_2D_TOPLEFT:
+			pos = Vector3(coordinate.x, core->getYRes()-coordinate.y, 0.0);
+			pos = camera->getConcatenatedMatrix() * pos;			
+		break;
+		case SCENE_3D:
+			pos = camera->getConcatenatedMatrix().getPosition();
+		break;		
+	}
+
+	return Ray(pos, dir);
+}
+
+
 void Scene::handleEvent(Event *event) {
 	if(event->getDispatcher() == core->getInput() && rootEntity.processInputEvents) {
 		InputEvent *inputEvent = (InputEvent*) event;
-		Polycode::Rectangle viewport = activeCamera->getViewport();
-		viewport.x = sceneMouseAdjust.x;
-		viewport.y = sceneMouseAdjust.y;
-		Vector3 dir =  renderer->projectRayFrom2DCoordinate(inputEvent->mousePosition.x, inputEvent->mousePosition.y, activeCamera->getConcatenatedMatrix(), activeCamera->getProjectionMatrix(), viewport);
-		Vector3 pos;
-		
-		switch(sceneType) {
-			case SCENE_2D:
-			{
-				Number orthoSizeX = activeCamera->getOrthoSizeX();
-				Number orthoSizeY = activeCamera->getOrthoSizeY();			
-				pos = Vector3(((inputEvent->mousePosition.x/(Number)core->getXRes())*orthoSizeX) - (orthoSizeX*0.5), (((core->getYRes()-inputEvent->mousePosition.y)/(Number)core->getYRes())*orthoSizeY) - (orthoSizeY*0.5), 0.0);
-				pos = activeCamera->getConcatenatedMatrix() * pos;	
-			}
-			break;
-			case SCENE_2D_TOPLEFT:
-				pos = Vector3(inputEvent->mousePosition.x, core->getYRes()-inputEvent->mousePosition.y, 0.0);
-				pos = activeCamera->getConcatenatedMatrix() * pos;			
-			break;
-			case SCENE_3D:
-				pos = activeCamera->getConcatenatedMatrix().getPosition();
-			break;		
-		}
-				
-		Ray ray(pos, dir);
+
+		Ray ray = projectRayFromCameraAndViewportCoordinate(activeCamera, inputEvent->mousePosition);
 		
 		switch(inputEvent->getEventCode()) {
 			case InputEvent::EVENT_MOUSEDOWN:

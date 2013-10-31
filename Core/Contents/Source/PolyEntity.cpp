@@ -620,7 +620,8 @@ Matrix4 Entity::getConcatenatedMatrixRelativeTo(Entity *relativeEntity) {
 Matrix4 Entity::getAnchorAdjustedMatrix() {
 	Matrix4 mat = getConcatenatedMatrix();
 	Matrix4 adjust;
-	adjust.setPosition(-anchorPoint.x * bBox.x * 0.5, -anchorPoint.y * bBox.y * 0.5 * yAdjust, -anchorPoint.z * bBox.z * 0.5);
+	Vector3 compoundScale = getCompoundScale();
+	adjust.setPosition(-anchorPoint.x * bBox.x * 0.5 * compoundScale.x, -anchorPoint.y * bBox.y * 0.5 * yAdjust * compoundScale.y, -anchorPoint.z * bBox.z * 0.5 * compoundScale.z);
 	return mat * adjust;
 }
 
@@ -813,6 +814,11 @@ void Entity::Translate(Number x, Number y, Number z) {
 	position.x += x;
 	position.y += y;
 	position.z += z;
+	matrixDirty = true;
+}
+
+void Entity::Scale(const Vector3 &scale) {
+	this->scale = this->scale * scale;
 	matrixDirty = true;
 }
 

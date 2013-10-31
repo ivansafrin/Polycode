@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<polycode_material_library>
+    <shaders>
+        <shader type="glsl" name="OneSidedLine" numAreaLights="0" numSpotLights="0" screen="false">
+            <vp source="default/DefaultShader.vert" />
+            <fp source="Materials/OneSidedLine.frag" />
+        </shader>
+    </shaders>
+    <cubemaps />
+    <materials>
+        <material name="OneSidedLine" blendingMode="0">
+            <shader name="OneSidedLine">
+                <textures />
+            </shader>
+        </material>
+    </materials>
+</polycode_material_library>

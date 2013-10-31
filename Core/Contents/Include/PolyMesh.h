@@ -198,6 +198,14 @@ namespace Polycode {
 			void createVPlane(Number w, Number h);
 
 			/**
+			* Creates a 2D circle.
+			* @param w Width of circle.
+			* @param h Height of plane.			
+			* @param numSegments Number of segments 			
+			*/ 
+			void createCircle(Number w, Number h, unsigned int numSegments);
+
+			/**
 			* Creates a torus.
 			* @param radius Radius of the torus.
 			* @param tubeRadius Radious of the tube.

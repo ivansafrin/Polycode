@@ -88,6 +88,11 @@ namespace Polycode {
 				return Vector3(x * val, y * val, z * val);
 			}
 
+			inline Vector3 operator * (const Vector3 &v2) const {
+				return Vector3(x * v2.x, y * v2.y, z * v2.z);
+			}
+
+
 			inline Vector3 operator / (const Number val) const {
 				assert( val != 0.0 );
 				return operator*(1/val);

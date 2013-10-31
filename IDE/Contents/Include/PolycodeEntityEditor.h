@@ -32,10 +32,59 @@ using namespace Polycode;
 
 class TransformGizmo : public Entity {
 	public:
-		TransformGizmo();
+		TransformGizmo(Scene *targetScene, Camera *targetCamera);
 		~TransformGizmo();
 		
+		void handleEvent(Event *event);		
 		
+		void setTransformMode(int newMode);
+		
+		void Update();
+		
+		void setTransformSelection(std::vector<Entity*> selectedEntities);
+		
+		void transfromSelectedEntities(const Vector3 &move, const Vector3 &scale);	
+		Vector3 getTransformPlanePosition();
+		
+		static const int TRANSFORM_MOVE = 0;		
+		static const int TRANSFORM_SCALE = 1;
+		static const int TRANSFORM_ROTATE = 2;
+								
+	private:
+	
+		std::vector<Entity*> selectedEntities;
+	
+		Scene *targetScene;
+		Camera *targetCamera;
+	
+		CoreInput *coreInput;
+		int mode;
+		bool transforming;
+		
+		Vector3 transformConstraint;
+		Vector3 transformPlane;
+				
+		Vector3 startingPoint;
+					
+		Entity *trasnformDecorators;
+		Entity *scaleDecorators;
+		Entity *transformAndScaleLines;			
+		Entity *rotateDectorators;	
+							
+		Entity *xTransformGrip;
+		Entity *yTransformGrip;
+		Entity *zTransformGrip;				
+};
+
+class EditorGrid : public Entity {
+	public:
+		EditorGrid();
+		~EditorGrid();
+		
+		void setGrid(int gridSize);
+		
+	private:
+		SceneMesh *grid;
 };
 
 class EntityEditorMainView : public UIElement {
@@ -52,12 +101,15 @@ class EntityEditorMainView : public UIElement {
 			Entity *sideBar;
 			UIRect *headerBg;	
 			
+			std::vector<Entity*> selectedEntities;
+			
 			Scene *mainScene;
 			SceneRenderTexture *renderTexture;
 			UIRect *renderTextureShape;			
 
 			TransformGizmo *transformGizmo;
 			TrackballCamera *trackballCamera;
+			EditorGrid *grid;
 			
 };
 

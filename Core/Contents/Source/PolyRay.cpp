@@ -50,6 +50,10 @@ Ray Ray::tranformByMatrix(const Matrix4& matrix) const {
 	return Ray(pos, dir);
 }
 
+Vector3 Ray::planeIntersectPoint(const Vector3 &planeNormal, Number planeDistance) const {
+	Number distanceToOrigin = origin.dot(planeNormal) - planeDistance;
+	 return origin + direction * (-distanceToOrigin / direction.dot(planeNormal));
+}
 
 bool Ray::boxIntersect(const Vector3 &box, const Matrix4 &transformMatrix, float near, float far) const {	
 

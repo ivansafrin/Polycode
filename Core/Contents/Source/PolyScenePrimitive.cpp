@@ -88,6 +88,12 @@ void ScenePrimitive::recreatePrimitive() {
 			bBox.y = v2;
 			bBox.z = v1*2;						
 		break;						
+		case TYPE_CIRCLE:
+			mesh->createCircle(v1, v2, v3);
+			bBox.x = v1;
+			bBox.y = v2;
+			bBox.z = 0.001;
+		break;
 	}
 }
 
