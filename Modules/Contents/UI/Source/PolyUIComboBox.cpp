@@ -74,8 +74,7 @@ UIComboBox::UIComboBox(UIGlobalMenu *globalMenu, Number comboWidth) : UIElement(
 	addChild(dropDownImage);
 	
 	selectedLabel = new SceneLabel("<None>", fontSize, fontName);
-	selectedLabel->positionAtBaseline = false;
-	selectedLabel->setPosition(paddingX, floor(((dropDownImage->getHeight()/2.0) - selectedLabel->getLabel()->getTextHeight()/2.0) + paddingY));
+	selectedLabel->setPosition(paddingX, paddingY);
 	addChild(selectedLabel);
 	
 	selectedLabel->color.setColorHexFromString(conf->getStringValue("Polycode", "uiDefaultFontColor"));

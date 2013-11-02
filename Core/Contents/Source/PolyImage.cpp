@@ -28,6 +28,7 @@
 #include "OSBasics.h"
 #include "PolyPerlin.h"
 #include <algorithm>
+#include <stdlib.h>
 
 using namespace Polycode;
 

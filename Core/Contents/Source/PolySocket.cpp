@@ -22,6 +22,7 @@ THE SOFTWARE.
 
 #include "PolySocket.h"
 #include "PolyLogger.h"
+#include <stdlib.h>
 
 #ifndef _WINDOWS
 	#include <unistd.h>

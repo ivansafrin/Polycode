@@ -988,6 +988,10 @@ EditorHolder *PolycodeProjectTab::getEditorHolder() {
 }
 
 void PolycodeProjectTab::showEditor(PolycodeEditor *editor) {
+    if(!activeEditorHolder) {
+        return;
+    }
+    
 	if(activeEditorHolder->getEditor()) {
 		activeEditorHolder->setEditor(NULL);
 	}

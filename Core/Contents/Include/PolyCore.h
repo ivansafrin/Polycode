@@ -211,6 +211,18 @@ namespace Polycode {
 		* @return Current vertical resolution.
 		*/													
 		Number getYRes();
+
+		/**
+         * Returns actual current horizontal resolution.
+         * @return Current actual horizontal resolution.
+         */
+        virtual Number getBackingXRes() { return getXRes(); }
+
+        /**
+         * Returns actual current vertical resolution.
+         * @return Current actual horizontal resolution.
+         */
+        virtual Number getBackingYRes() { return getYRes(); }
 				
 		/**
 		* Provides the current width, height, and refresh rate of the screen.

@@ -70,6 +70,8 @@ UIRect::UIRect(String fileName) : UIElement() {
 		imageWidth = 0;
 		imageHeight = 0;
 	}
+    setWidth(imageWidth);
+    setHeight(imageHeight);
 }
 
 UIRect::UIRect(Number width, Number height) : UIElement() {

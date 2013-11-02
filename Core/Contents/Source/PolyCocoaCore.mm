@@ -82,8 +82,10 @@ void Core::getScreenInfo(int *width, int *height, int *hz) {
     CGDisplayModeRelease(mode);
 }
 
-CocoaCore::CocoaCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex) : Core(_xRes, _yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate, monitorIndex) {	
+CocoaCore::CocoaCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex, bool retinaSupport) : Core(_xRes, _yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate, monitorIndex) {
 
+    this->retinaSupport = retinaSupport;
+    
 	hidManager = NULL;
 	initGamepad();
 	this->fullScreen = false;
@@ -100,7 +102,11 @@ CocoaCore::CocoaCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, 
 	[view setCore:this];
 	
 	glView = view;
-	
+    
+    if(retinaSupport) {
+        [glView setWantsBestResolutionOpenGLSurface:YES];
+    }
+    
 	context = nil;
 	
 	initTime = mach_absolute_time();					
@@ -149,11 +155,32 @@ void CocoaCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, in
 	modeChangeInfo.anisotropyLevel = anisotropyLevel;	
 }
 
+Number CocoaCore::getBackingXRes() {
+    if(!retinaSupport) {
+        return getXRes();
+    }
+    NSRect backingBounds = [glView convertRectToBacking:[glView bounds]];
+    return backingBounds.size.width;
+}
+
+Number CocoaCore::getBackingYRes() {
+    if(!retinaSupport) {
+        return getYRes();
+    }
+    NSRect backingBounds = [glView convertRectToBacking:[glView bounds]];
+    return backingBounds.size.height;
+}
+
 void CocoaCore::_setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel) {
 	this->xRes = xRes;
 	this->yRes = yRes;
-	
-	bool _wasFullscreen = this->fullScreen;	
+    
+    if(retinaSupport) {
+        NSRect backingBounds = [glView convertRectToBacking: NSMakeRect(0, 0, xRes, yRes)];
+        renderer->setBackingResolutionScale(backingBounds.size.width/xRes, backingBounds.size.height/yRes);
+	}
+    
+	bool _wasFullscreen = this->fullScreen;
 	this->fullScreen = fullScreen;
 	this->aaLevel = aaLevel;
 	
@@ -238,6 +265,7 @@ void CocoaCore::_setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, i
 	} else {
 		CGLDisable(ctx, kCGLCESurfaceBackingSize);		
 	}
+    
 	renderer->Resize(xRes, yRes);	
 
 	if(aaLevel > 0) {

@@ -301,12 +301,19 @@ namespace Polycode {
 		bool doClearBuffer;
 		
 		bool blendNormalAsPremultiplied;
-		
 		Number alphaTestValue;
-				
+        
+        void setBackingResolutionScale(Number xScale, Number yScale);
+        
+        Number getBackingResolutionScaleX();
+        Number getBackingResolutionScaleY();
+        
 	protected:
 		virtual void initOSSpecific() {};
-	
+        
+        Number backingResolutionScaleX;
+        Number backingResolutionScaleY;
+        
 		bool scissorEnabled;
 		
 		Polycode::Rectangle scissorBox;

@@ -4,6 +4,7 @@
 #include "OSBasics.h"
 
 #include "physfs.h"
+#include <unistd.h>
 
 using namespace Polycode;
 

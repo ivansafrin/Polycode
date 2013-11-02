@@ -31,7 +31,7 @@ PolycodeClipboard *globalClipboard;
 PolycodeEditorManager *globalEditorManager;
 
 PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
-	core = new POLYCODE_CORE(view, 1100, 700,false,true, 0, 0,60, -1);	
+	core = new POLYCODE_CORE(view, 1100, 700,false,true, 0, 0,60, -1, true);
 //	core->pauseOnLoseFocus = true;
 	
 	CoreServices::getInstance()->getResourceManager()->reloadResourcesOnModify = true;

@@ -458,7 +458,6 @@ void TransformGizmo::handleEvent(Event *event) {
 	}
 	
 	if(event->getDispatcher() == coreInput && transforming) {
-		InputEvent *inputEvent = (InputEvent*) event;
 		switch(event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEMOVE:
 			{

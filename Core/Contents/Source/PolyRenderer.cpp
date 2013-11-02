@@ -46,6 +46,16 @@ Renderer::Renderer() : clearColor(0.2f, 0.2f, 0.2f, 0.0), currentTexture(NULL), 
 	blendNormalAsPremultiplied = false;
 	alphaTestValue = 0.01;
 	doClearBuffer = true;
+    backingResolutionScaleX = 1.0;
+    backingResolutionScaleY = 1.0;
+}
+
+Number Renderer::getBackingResolutionScaleX() {
+    return backingResolutionScaleX;
+}
+
+Number Renderer::getBackingResolutionScaleY() {
+    return backingResolutionScaleY;
 }
 
 Renderer::~Renderer() {
@@ -220,6 +230,11 @@ void Renderer::pushDataArrayForMesh(Mesh *mesh, int arrayType) {
 		mesh->arrayDirtyMap[arrayType] = false;
 	}
 	pushRenderDataArray(mesh->renderDataArrays[arrayType]);
+}
+
+void Renderer::setBackingResolutionScale(Number xScale, Number yScale) {
+    backingResolutionScaleX = xScale;
+    backingResolutionScaleY = yScale;
 }
 
 int Renderer::getXRes() {

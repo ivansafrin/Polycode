@@ -235,8 +235,8 @@ void OpenGLRenderer::resetViewport() {
     fW = fH * ((GLfloat)viewportWidth/(GLfloat)viewportHeight);
 	glFrustum(-fW + (viewportShift.x*fW*2.0), fW + (viewportShift.x*fW*2.0), -fH + (viewportShift.y*fH*2.0), fH + (viewportShift.y*fH*2.0), nearPlane, farPlane);
 	
-	glViewport(0, 0, viewportWidth, viewportHeight);
-	glScissor(0, 0,  viewportWidth, viewportHeight);
+	glViewport(0, 0, viewportWidth*backingResolutionScaleX, viewportHeight*backingResolutionScaleY);
+	glScissor(0, 0,  viewportWidth*backingResolutionScaleX, viewportHeight*backingResolutionScaleY);
 	glMatrixMode(GL_MODELVIEW);	
 	glGetDoublev( GL_PROJECTION_MATRIX, sceneProjectionMatrix);
 }
@@ -257,7 +257,7 @@ Vector3 OpenGLRenderer::Unproject(Number x, Number y) {
 	
 	wx = ( Number ) x;
 	wy = ( Number ) vp[3] - ( Number ) y;
-	glReadPixels( x, wy, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &wz );
+	glReadPixels( x * backingResolutionScaleX, wy * backingResolutionScaleY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &wz );
 	
 	gluUnProject( wx, wy, wz, mv, proj, vp, &cx, &cy, &cz );
 	
@@ -267,7 +267,7 @@ Vector3 OpenGLRenderer::Unproject(Number x, Number y) {
 }
 
 Vector2 OpenGLRenderer::Project(const Matrix4 &cameraMatrix, const Matrix4 &projectionMatrix, const Vector3 &coordiante) const {
-	
+    
 	GLdouble mv[16];
 	Matrix4 camInverse = cameraMatrix.Inverse();	
 	Matrix4 cmv;
@@ -276,7 +276,7 @@ Vector2 OpenGLRenderer::Project(const Matrix4 &cameraMatrix, const Matrix4 &proj
 
 	GLint vp[4];
 	glGetIntegerv( GL_VIEWPORT, vp );
-
+    
 	for(int i=0; i < 16; i++) {
 		mv[i] = cmv.ml[i];
 	}
@@ -290,7 +290,7 @@ Vector2 OpenGLRenderer::Project(const Matrix4 &cameraMatrix, const Matrix4 &proj
 	
 	gluProject(coordiante.x, coordiante.y, coordiante.z, mv, _sceneProjectionMatrix, vp, &coords[0], &coords[1], &coords[2]);
 	
-	return Vector2(coords[0], yRes-coords[1]);
+    return Vector2(coords[0] / backingResolutionScaleX, ((yRes*backingResolutionScaleY)-coords[1]) / backingResolutionScaleY);
 }
 
 Polycode::Rectangle OpenGLRenderer::getViewport() {
@@ -465,7 +465,7 @@ void OpenGLRenderer::enableScissor(bool val) {
 }
 
 void OpenGLRenderer::setScissorBox(Polycode::Rectangle box) {
-	glScissor(box.x, yRes-box.y-box.h, box.w, box.h);
+	glScissor(box.x*backingResolutionScaleX, (((yRes*backingResolutionScaleY)-(box.y*backingResolutionScaleY))-(box.h*backingResolutionScaleY)), box.w *backingResolutionScaleX, box.h * backingResolutionScaleY);
 	Renderer::setScissorBox(box);
 }
 
@@ -660,9 +660,9 @@ void OpenGLRenderer::createRenderTextures(Texture **colorBuffer, Texture **depth
 	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);	
 	
 	if(floatingPointBuffer) {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F_ARB, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F_ARB, width* backingResolutionScaleX, height* backingResolutionScaleY, 0, GL_RGBA, GL_FLOAT, NULL);
 	} else {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);	
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width * backingResolutionScaleX, height * backingResolutionScaleY, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 	}
 	
 	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, colorTexture, 0);
@@ -694,9 +694,9 @@ void OpenGLRenderer::createRenderTextures(Texture **colorBuffer, Texture **depth
 		glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_LUMINANCE);	
 	
 		if(floatingPointBuffer) {	
-			glTexImage2D(GL_TEXTURE_2D,0,GL_DEPTH_COMPONENT16,width,height,0,GL_DEPTH_COMPONENT,GL_FLOAT,0);
+			glTexImage2D(GL_TEXTURE_2D,0,GL_DEPTH_COMPONENT16,width* backingResolutionScaleX,height * backingResolutionScaleY,0,GL_DEPTH_COMPONENT,GL_FLOAT,0);
 		} else {
-			glTexImage2D(GL_TEXTURE_2D,0,GL_DEPTH_COMPONENT,width,height,0,GL_DEPTH_COMPONENT,GL_UNSIGNED_BYTE,0);
+			glTexImage2D(GL_TEXTURE_2D,0,GL_DEPTH_COMPONENT,width* backingResolutionScaleX,height* backingResolutionScaleY,0,GL_DEPTH_COMPONENT,GL_UNSIGNED_BYTE,0);
 		}
 	
 		glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D, depthTexture, 0);

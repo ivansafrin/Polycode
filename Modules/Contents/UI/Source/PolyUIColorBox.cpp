@@ -323,8 +323,8 @@ void UIColorPicker::handleEvent(Event *event) {
 			case InputEvent::EVENT_MOUSEDOWN:
 			{
 				InputEvent *inputEvent = (InputEvent*) event;
-				hueSelector->setPositionY(inputEvent->getMousePosition().y+hueFrame->position.y);
-				hueSelector->startDrag(inputEvent->mousePosition.x-hueSelector->getPosition().x,inputEvent->mousePosition.y-hueSelector->getPosition().y+hueFrame->position.y);		
+				hueSelector->setPositionY(inputEvent->getMousePosition().y+hueFrame->getPosition().y);
+				hueSelector->startDrag(inputEvent->mousePosition.x-hueSelector->getPosition().x,inputEvent->mousePosition.y-hueSelector->getPosition().y+hueFrame->getPosition().y);
 			}
 			break;
 			case InputEvent::EVENT_MOUSEUP:

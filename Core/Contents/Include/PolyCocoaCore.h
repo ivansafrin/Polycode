@@ -113,7 +113,7 @@ namespace Polycode {
 	class _PolyExport CocoaCore : public Core {		
 	public:
 		
-		CocoaCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex=-1);
+		CocoaCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex=-1, bool retinaSupport=false);
 		virtual ~CocoaCore();
 		
 		void enableMouse(bool newval);
@@ -168,7 +168,10 @@ namespace Polycode {
 		unsigned int nextDeviceID;
 		
 		bool checkSpecialKeyEvents(PolyKEY key);		
-				
+
+        Number getBackingXRes();
+        Number getBackingYRes();
+        
 								
 	protected:	
 		
@@ -176,6 +179,7 @@ namespace Polycode {
 	
 		PolycodeView *glView;
 		uint64_t initTime;
+        bool retinaSupport;
 		
 		VideoModeChangeInfo modeChangeInfo;
 		

@@ -47,7 +47,7 @@ SceneLabel::SceneLabel(const String& fontName, const String& text, int size, Num
 
 SceneLabel::SceneLabel(const String& text, int size, const String& fontName, int amode, bool premultiplyAlpha) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1){
 
-	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size, amode, premultiplyAlpha);
+	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size * CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX(), amode, premultiplyAlpha);
 	this->labelScale = 1.0;
 	positionAtBaseline = SceneLabel::defaultPositionAtBaseline;
 	setAnchorPoint(SceneLabel::defaultAnchor);	
@@ -85,24 +85,28 @@ void SceneLabel::updateFromLabel() {
 	}
 
 
-	setPrimitiveOptions(type, label->getWidth()*labelScale,label->getHeight()*labelScale);
+	setPrimitiveOptions(type, label->getWidth()*labelScale/CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX(),label->getHeight()*labelScale/CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
 	
-	bBox.x = label->getWidth()*labelScale;
-	bBox.y = label->getHeight()*labelScale;
+	bBox.x = label->getWidth()*labelScale / CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX();
+	bBox.y = label->getHeight()*labelScale/ CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX();
 	bBox.z = 0.001;
 	
 	if(useVertexBuffer)
 		CoreServices::getInstance()->getRenderer()->createVertexBufferForMesh(mesh);
 	
 	// TODO: resize it here	
-	bBoxRadius = label->getWidth()*labelScale;
+	bBoxRadius = label->getWidth()*labelScale/CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX();
 }
 
 void SceneLabel::Render() {
 	if(positionAtBaseline) {
-		CoreServices::getInstance()->getRenderer()->translate2D(0.0, (((Number)label->getSize()) * -1.0) + ((Number)label->getBaselineAdjust()));
+		CoreServices::getInstance()->getRenderer()->translate2D(0.0, (((Number)label->getSize()) * -1.0 / CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleY()) + (((Number)label->getBaselineAdjust())/CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleY()));
 	}
 	ScenePrimitive::Render();
+}
+
+int SceneLabel::getTextWidthForString(String text) {
+    return label->getTextWidthForString(text) / CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX();
 }
 
 void SceneLabel::setText(const String& newText) {

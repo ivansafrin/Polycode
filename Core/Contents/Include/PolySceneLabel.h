@@ -55,6 +55,8 @@ namespace Polycode {
 			
 			void Render();
 
+            int getTextWidthForString(String text);
+        
 			virtual ~SceneLabel();			
 		
 			/**
@@ -74,7 +76,7 @@ namespace Polycode {
 						
 		protected:
 			
-			void updateFromLabel();
+			void updateFromLabel();        
 			
 			Number labelScale;
 			Label *label;

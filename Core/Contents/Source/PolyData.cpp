@@ -23,6 +23,7 @@
 #include "PolyData.h"
 #include "OSBasics.h"
 #include <string.h>
+#include <stdlib.h>
 
 using namespace Polycode;
 

@@ -376,10 +376,10 @@ void Vector2Prop::setPropWidth(Number width) {
 	labelX->setPosition(0, 6);
 	labelY->setPosition(((width-propContents->getPosition().x-PROP_PADDING)/2.0), 6);	
 	
-	positionX->position.x = labelX->getPosition().x + 20;
+	positionX->setPositionX(labelX->getPosition().x + 20);
 	positionX->Resize(floor(((width-propContents->getPosition().x-PROP_PADDING)/2.0)-25), positionX->getHeight());
 
-	positionY->position.x = labelY->getPosition().x + 20;
+	positionY->setPositionX(labelY->getPosition().x + 20);
 	positionY->Resize(floor(((width-propContents->getPosition().x-PROP_PADDING)/2.0)-25), positionY->getHeight());
 
 }

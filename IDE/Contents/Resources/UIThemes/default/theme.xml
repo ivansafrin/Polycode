@@ -17,7 +17,9 @@
 	<uiTextInputFontSizeMultiline>13</uiTextInputFontSizeMultiline>	
 	<uiTreeArrowIconImage>arrowIcon.png</uiTreeArrowIconImage>
 	<uiTreeCellHeight>20</uiTreeCellHeight>
-	<uiTreeCellPadding>4</uiTreeCellPadding>
+	<uiTreeTextOffsetX>2</uiTreeTextOffsetX>
+	<uiTreeTextOffsetY>2</uiTreeTextOffsetY>
+	<uiTreeCellPadding>0</uiTreeCellPadding>
 	
 	<textBgSkin>textfield.png</textBgSkin>
 	<textBgSkinMultiline>textfield_multi.png</textBgSkinMultiline>
@@ -36,7 +38,7 @@
 	<uiTreeCellSkinL>3</uiTreeCellSkinL>
 	<uiTreeFontColor>0x000000c8</uiTreeFontColor>
 	<uiTreeCellSelectorSkin>selector.png</uiTreeCellSelectorSkin>
-	<uiTreeCellSelectorSkinPadding>4</uiTreeCellSelectorSkinPadding>
+	<uiTreeCellSelectorSkinPadding>0</uiTreeCellSelectorSkinPadding>
 	<uiTreeCellSelectorSkinT>4</uiTreeCellSelectorSkinT>
 	<uiTreeCellSelectorSkinR>3</uiTreeCellSelectorSkinR>
 	<uiTreeCellSelectorSkinB>4</uiTreeCellSelectorSkinB>

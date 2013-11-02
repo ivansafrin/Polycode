@@ -268,9 +268,10 @@ void Scene::RenderDepthOnly(Camera *targetCamera) {
 Ray Scene::projectRayFromCameraAndViewportCoordinate(Camera *camera, Vector2 coordinate) {
 
 	Polycode::Rectangle viewport = camera->getViewport();
-	viewport.x = sceneMouseAdjust.x;
-	viewport.y = sceneMouseAdjust.y;
-	Vector3 dir =  renderer->projectRayFrom2DCoordinate(coordinate.x, coordinate.y, camera->getConcatenatedMatrix(), camera->getProjectionMatrix(), viewport);
+	viewport.x = sceneMouseAdjust.x * renderer->getBackingResolutionScaleX();
+	viewport.y = sceneMouseAdjust.y * renderer->getBackingResolutionScaleY();
+    
+	Vector3 dir =  renderer->projectRayFrom2DCoordinate(coordinate.x *  renderer->getBackingResolutionScaleX(), coordinate.y  * renderer->getBackingResolutionScaleY(), camera->getConcatenatedMatrix(), camera->getProjectionMatrix(), viewport);
 	Vector3 pos;
 
 	switch(sceneType) {

@@ -350,10 +350,10 @@ void UITextInput::updateSelectionRects() {
 	
 	selectorRectTop->visible = true;
 	
-	topSize = bufferLines[0]->getLabel()->getTextWidthForString(topLine.substr(colStart,fColEnd-colStart)) ; 
+	topSize = bufferLines[0]->getTextWidthForString(topLine.substr(colStart,fColEnd-colStart));
 	topHeight = lineHeight+lineSpacing;
 	if(colStart >= 0) {
-		topX = bufferLines[0]->getLabel()->getTextWidthForString(topLine.substr(0,colStart));
+		topX = bufferLines[0]->getTextWidthForString(topLine.substr(0,colStart));
 	} else {
 		topX = 0;
 	}
@@ -367,7 +367,7 @@ void UITextInput::updateSelectionRects() {
 	if(lineEnd > lineStart && lineEnd < wordWrapLines.size()) {
 		String bottomLine = wordWrapLines[lineEnd].text;
 		selectorRectBottom->visible = true;		
-		Number bottomSize = bufferLines[0]->getLabel()->getTextWidthForString(bottomLine.substr(0,colEnd)) ; 
+		Number bottomSize = bufferLines[0]->getTextWidthForString(bottomLine.substr(0,colEnd)) ; 
 		if(bottomSize < 0)
 			bottomSize = this->getWidth()-padding;
 		Number bottomHeight = lineHeight+lineSpacing;
@@ -979,10 +979,10 @@ void UITextInput::updateCaretPosition() {
 	} else if(caretPosition > wordWrapLines[lineOffset].text.length()) {
 		caretPosition = wordWrapLines[lineOffset].text.length();
 		String caretSubString = wordWrapLines[lineOffset].text.substr(0,caretPosition);
-		caretImagePosition = bufferLines[0]->getLabel()->getTextWidthForString(caretSubString);
+		caretImagePosition = bufferLines[0]->getTextWidthForString(caretSubString);
 	} else {
 		String caretSubString = wordWrapLines[lineOffset].text.substr(0,caretPosition);
-		caretImagePosition = bufferLines[0]->getLabel()->getTextWidthForString(caretSubString);
+		caretImagePosition = bufferLines[0]->getTextWidthForString(caretSubString);
 	}
 	
 	if(!hasSelection) {
@@ -1004,7 +1004,7 @@ void UITextInput::updateCaretPosition() {
 
 			// Update pixel scroll from new character scroll.
 			String subString = wordWrapLines[0].text.substr(0,horizontalCharacterScroll);
-			horizontalPixelScroll = bufferLines[0]->getLabel()->getTextWidthForString(subString);
+			horizontalPixelScroll = bufferLines[0]->getTextWidthForString(subString);
 		}
 
 		// Try scrolling right.
@@ -1013,7 +1013,7 @@ void UITextInput::updateCaretPosition() {
 
 			// Update pixel scroll from new character scroll.
 			String subString = wordWrapLines[0].text.substr(0,horizontalCharacterScroll);
-			horizontalPixelScroll = bufferLines[0]->getLabel()->getTextWidthForString(subString);
+			horizontalPixelScroll = bufferLines[0]->getTextWidthForString(subString);
 		}
 
 		bufferLines[0]->setPosition(-horizontalPixelScroll, 0);
@@ -1056,9 +1056,9 @@ void UITextInput::dragSelectionTo(Number x, Number y) {
 	
 	int len = selectToLine.length();
 	Number slen = 0;
-	int caretPosition = bufferLines[0]->getLabel()->getTextWidthForString(selectToLine.substr(0,len)) - horizontalPixelScroll;
+	int caretPosition = bufferLines[0]->getTextWidthForString(selectToLine.substr(0,len)) - horizontalPixelScroll;
 	for(int i=0; i < len; i++) {
-		slen = bufferLines[0]->getLabel()->getTextWidthForString(selectToLine.substr(0,i)) - horizontalPixelScroll;
+		slen = bufferLines[0]->getTextWidthForString(selectToLine.substr(0,i)) - horizontalPixelScroll;
 		if(slen > x) {
 			caretPosition = i;
 			break;
@@ -1233,8 +1233,8 @@ void UITextInput::setCaretToMouse(Number x, Number y) {
 	int newCaretPosition = -1;
 	
 	for(int i=1; i < len; i++) {
-		slen = bufferLines[0]->getLabel()->getTextWidthForString(wordWrapLines[lineOffset].text.substr(0,i)) - horizontalPixelScroll;
-		Number slen_prev = bufferLines[0]->getLabel()->getTextWidthForString(wordWrapLines[lineOffset].text.substr(0,i-1)) - horizontalPixelScroll;		
+		slen = bufferLines[0]->getTextWidthForString(wordWrapLines[lineOffset].text.substr(0,i)) - horizontalPixelScroll;
+		Number slen_prev = bufferLines[0]->getTextWidthForString(wordWrapLines[lineOffset].text.substr(0,i-1)) - horizontalPixelScroll;		
 		if(x >= slen_prev && x <= slen) {
 			if(x < slen_prev + ((slen - slen_prev) /2.0)) {
 				newCaretPosition = i-1;
@@ -2230,7 +2230,7 @@ std::vector<TextColorPair> UITextInput::makeWordWrapBuffer(LineInfo *lineInfo, S
 	String text = lineInfo->text;
 	std::vector<TextColorPair> retVec;
 	
-	if(bufferLines[0]->getLabel()->getTextWidthForString(text) < getWidth() - decoratorOffset - padding) {
+	if(bufferLines[0]->getTextWidthForString(text) < getWidth() - decoratorOffset - padding) {
 			return retVec;
 	}		
 	
@@ -2250,7 +2250,7 @@ std::vector<TextColorPair> UITextInput::makeWordWrapBuffer(LineInfo *lineInfo, S
 	
 		for(int i=0; i < parts.size(); i++) {
 			String _checkString = checkString + parts[i].text;
-			if(bufferLines[0]->getLabel()->getTextWidthForString(indentPrefix+_checkString) > getWidth() - decoratorOffset - padding) {
+			if(bufferLines[0]->getTextWidthForString(indentPrefix+_checkString) > getWidth() - decoratorOffset - padding) {
 				if(retVec.size() == 0) {
 					TextColorPair pair;
 					pair.text = checkString;
@@ -2434,7 +2434,7 @@ void UITextInput::readjustBuffer(int lineStart, int lineEnd) {
 		
 //			if(bufferOffset+i >= lineStart && bufferOffset+i <= lineEnd) {												
 				numberLines[i]->setText(String::IntToString(wordWrapLines[bufferOffset+i].actualLineNumber+1));
-				int textWidth = ceil(numberLines[i]->getLabel()->getTextWidth());			
+				int textWidth = ceil(numberLines[i]->getWidth());			
 				numberLines[i]->setPosition(-textWidth,padding + bufferLineOffset + (i*(lineHeight+lineSpacing)),0.0f);		
 //			}
 			

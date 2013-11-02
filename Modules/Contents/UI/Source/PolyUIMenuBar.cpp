@@ -99,7 +99,7 @@ UIMenuBarEntry *UIMenuBar::addMenuBarEntry(String name) {
 }
 
 void UIMenuBar::showMenuForEntry(UIMenuBarEntry *entry) {
-	dropMenu = globalMenu->showMenu(entry->position.x, 25, 130);
+	dropMenu = globalMenu->showMenu(entry->getPosition().x, 25, 130);
 	
 	dropMenu->addEventListener(this, UIEvent::OK_EVENT);
 	dropMenu->addEventListener(this, UIEvent::CANCEL_EVENT);
