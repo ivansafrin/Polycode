@@ -28,6 +28,7 @@ THE SOFTWARE.
 #include "PolyShader.h"
 #include "PolyImage.h"
 #include "PolyRectangle.h"
+#include <stack>
 
 namespace Polycode {
 	
@@ -309,11 +310,18 @@ namespace Polycode {
         Number getBackingResolutionScaleX();
         Number getBackingResolutionScaleY();
         
+        void pushVertexColor();
+        void popVertexColor();
+        void multiplyVertexColor(const Color &color);
+        
 	protected:
 		virtual void initOSSpecific() {};
         
         Number backingResolutionScaleX;
         Number backingResolutionScaleY;
+        
+        std::stack<Color> vertexColorStack;
+        Color currentVertexColor;
         
 		bool scissorEnabled;
 		

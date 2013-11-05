@@ -67,6 +67,20 @@ bool Renderer::Init() {
 	return true;
 }
 
+void Renderer::pushVertexColor() {
+    vertexColorStack.push(currentVertexColor);
+}
+
+void Renderer::popVertexColor() {
+    currentVertexColor = vertexColorStack.top();
+    vertexColorStack.pop();
+}
+
+void Renderer::multiplyVertexColor(const Color &color) {
+    currentVertexColor = currentVertexColor * color;
+    setVertexColor(currentVertexColor.r, currentVertexColor.g, currentVertexColor.b, currentVertexColor.a);
+}
+
 void Renderer::enableShaders(bool flag) {
 	shadersEnabled = flag;
 }

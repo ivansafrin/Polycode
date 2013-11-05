@@ -68,7 +68,6 @@ class AssetList : public UIElement {
 		UIImageButton *reloadButton;
 	
 		String currentFolderPath;
-		UIRect *bgShape;
 	
 		AssetEntry *currentEntry;		
 		std::vector<AssetEntry*> assetEntries;

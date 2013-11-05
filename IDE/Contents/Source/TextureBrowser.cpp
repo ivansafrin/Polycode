@@ -36,6 +36,7 @@ AssetEntry::AssetEntry(String assetPath, String assetName, String extension) : U
 	selectShape->processInputEvents = true;
 	selectShape->setColor(0.0, 0.0, 0.0, 0.5);
     selectShape->loadTexture("browserIcons/large_selector.png");
+    selectShape->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 
 	imageShape = new UIRect(64,64);
 	imageShape->setAnchorPoint(-1.0, -1.0, 0.0);
@@ -59,12 +60,16 @@ AssetEntry::AssetEntry(String assetPath, String assetName, String extension) : U
 
 	
 	imageShape->setPosition(28, 10);
-	
-	nameLabel = new UILabel(assetName, 12);
+    imageShape->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    
+    String name = assetName;
+    if(name.length() > 15) {
+        name = name.substr(0, 15)+"...";
+    }
+	nameLabel = new UILabel(name, 11);
 	addChild(nameLabel);
-	nameLabel->color.a = 1.0;
-	nameLabel->setAnchorPoint(0.0, 0.0, 0.0);
-	nameLabel->setPosition(32-7, 80);
+    nameLabel->setPosition((120.0-nameLabel->getWidth())/2.0, 80);
+    
 }
 
 AssetEntry::~AssetEntry() {
@@ -74,12 +79,7 @@ AssetEntry::~AssetEntry() {
 }
 
 AssetList::AssetList() : UIElement() {
-	
-	bgShape = new UIRect(100,100);
-	bgShape->setAnchorPoint(-1.0, -1.0, 0.0);
-	bgShape->setColor(0.0, 0.0, 0.0, 0.4);
-	addChild(bgShape);
-	
+	    
 	reloadButton = new UIImageButton("browserIcons/reload_icon.png", 1.0, 20, 20);
 	reloadButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(reloadButton);	
@@ -151,8 +151,6 @@ void AssetList::showFolder(String folderPath) {
 	}
 
 	
-	bgShape->Resize(getWidth(), getHeight());
-	bgShape->rebuildTransformMatrix();
 	rebuildTransformMatrix();	
 }
 

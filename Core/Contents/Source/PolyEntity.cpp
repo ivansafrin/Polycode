@@ -528,8 +528,8 @@ void Entity::transformAndRender() {
 		 
 	renderer->enableAlphaTest(alphaTest);
 	
-	Color combined = getCombinedColor();
-	renderer->setVertexColor(combined.r,combined.g,combined.b,combined.a);
+    renderer->pushVertexColor();
+	renderer->multiplyVertexColor(color);
 	
 	renderer->setBlendingMode(blendingMode);
 	renderer->enableBackfaceCulling(backfaceCulled);
@@ -554,7 +554,8 @@ void Entity::transformAndRender() {
 				
 	renderer->setRenderMode(mode);	
 	renderer->popMatrix();
-		
+    renderer->popVertexColor();
+	
 	if(!depthWrite)
 		renderer->enableDepthWrite(true);
 	
