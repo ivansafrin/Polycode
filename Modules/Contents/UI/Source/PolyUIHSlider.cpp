@@ -60,11 +60,13 @@ UIHSlider::UIHSlider(Number start, Number end, Number width) : UIElement() {
 	gripRect->setAnchorPoint(0.0, 0.0, 0.0);
 	gripRect->setPosition(0, floor(bgHeight/2.0));
 
-	bgHitBox = new UIRect(width, gripRect->getHeight());
+	bgHitBox = new Entity();
+    bgHitBox->setWidth(width);
+    bgHitBox->setHeight(gripRect->getHeight());
+    bgHitBox->visible = false;
 	bgHitBox->setAnchorPoint(-1.0, -1.0, 0.0);
 	bgHitBox->setPosition(0, gripRect->getPosition().y - (gripRect->getHeight()/2.0));
 	addChild(bgHitBox);
-	bgHitBox->setColor(1.0,0.0,0.0,0.0);
 
 	addChild(gripRect);
 
@@ -119,7 +121,8 @@ void UIHSlider::Resize(Number width, Number height) {
 	sliderWidth = width- (sidePadding*2);
 	gripRect->setDragLimits(Rectangle(sidePadding,floor(bgHeight/2.0),sliderWidth,0));
 	setSliderValue(sliderValue);
-	bgHitBox->Resize(width,  gripRect->getHeight());
+	bgHitBox->setWidth(width);
+    bgHitBox->setHeight(gripRect->getHeight());
 }
 			
 void UIHSlider::handleEvent(Event *event) {

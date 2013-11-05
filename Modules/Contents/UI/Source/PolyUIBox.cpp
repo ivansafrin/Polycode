@@ -23,6 +23,7 @@
 #include "PolyUIBox.h"
 #include "PolyCoreServices.h"
 #include "PolyConfig.h"
+#include "PolyRenderer.h"
 
 using namespace Polycode;
 
@@ -40,67 +41,66 @@ UIBox::UIBox(String imageFile, Number t, Number r, Number b, Number l, Number bo
 	tlImage->setImageCoordinates(0,0,l,t, uiScale);
 	addChild(tlImage);
 	tlImage->setPosition(0, 0);
+    tlImage->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
     
 	trImage = new UIRect(imageFile);
 	trImage->setImageCoordinates((trImage->getWidth()/uiScale)-r,0,r,t, uiScale);
 	addChild(trImage);	
 	trImage->setPosition(boxWidth-r, 0);
+    trImage->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
     
 	blImage = new UIRect(imageFile);
 	blImage->setImageCoordinates(0,(blImage->getHeight()/uiScale)-b,l,b, uiScale);
 	addChild(blImage);	
 	blImage->setPosition(0, boxHeight-b);
-
+    blImage->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    
 	brImage = new UIRect(imageFile);
 	brImage->setImageCoordinates((brImage->getWidth()/uiScale)-r,(brImage->getHeight()/uiScale)-b,r,b, uiScale);
 	addChild(brImage);	
 	brImage->setPosition(boxWidth-r, boxHeight-b);	
-
+    brImage->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    
 	centerImage = new UIRect(imageFile);
 	centerImage->setImageCoordinates(l,t,(centerImage->getWidth()/uiScale)-l-r, (centerImage->getHeight()/uiScale)-t-b, uiScale);
 	addChild(centerImage);	
 	centerImage->setPosition(l,t);	
 	centerImage->Resize(boxWidth-l-r, boxHeight-t-b);
-
+    centerImage->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    
 	tImage = new UIRect(imageFile);
 	tImage->setImageCoordinates(l,0,(tImage->getWidth()/uiScale)-l-r,t, uiScale);
 	addChild(tImage);
 	tImage->setPosition(l,0);	
 	tImage->Resize(boxWidth-l-r, t);
-
+    tImage->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    
 	bImage = new UIRect(imageFile);
 	bImage->setImageCoordinates(l,(bImage->getHeight()/uiScale)-b,(bImage->getWidth()/uiScale)-l-r,b, uiScale);
 	addChild(bImage);
 	bImage->setPosition(l,boxHeight-b);	
 	bImage->Resize(boxWidth-l-r, b);
-
+    bImage->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    
 	lImage = new UIRect(imageFile);
 	lImage->setImageCoordinates(0,t,l,(lImage->getHeight()/uiScale)-t-b, uiScale);
 	addChild(lImage);
 	lImage->setPosition(0,t);	
 	lImage->Resize(l, boxHeight-t-b);
-
+    lImage->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    
 	rImage = new UIRect(imageFile);
 	rImage->setImageCoordinates((rImage->getWidth()/uiScale)-r,t,r,(rImage->getHeight()/uiScale)-t-b, uiScale);
 	addChild(rImage);
 	rImage->setPosition(boxWidth-r,t);	
 	rImage->Resize(r, boxHeight-t-b);	
+    rImage->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	
 	this->t = t;
 	this->r = r;
 	this->b = b;
 	this->l = l;
-/*	
-	tlImage->setColor(1.0, 0.0, 0.0, 1.0);
-	trImage->setColor(0.0, 1.0, 0.0, 1.0);		
-	blImage->setColor(0.0, 0.0, 1.0, 1.0);
-	brImage->setColor(1.0, 1.0, 0.0, 1.0);
-	centerImage->setColor(0.0, 1.0, 1.0, 1.0);
-	tImage->setColor(1.0, 0.0, 1.0, 1.0);
-	rImage->setColor(1.0, 0.5, 0.5, 1.0);
-	bImage->setColor(0.5, 1.0, 0.5, 1.0);
-	lImage->setColor(0.5, 0.5, 1.0, 1.0);
-*/	
+
 	ownsChildren = true;	
 }
 

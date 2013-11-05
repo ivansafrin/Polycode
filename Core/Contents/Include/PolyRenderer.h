@@ -264,12 +264,13 @@ namespace Polycode {
 		
 		static const int RENDER_MODE_NORMAL = 0;
 		static const int RENDER_MODE_WIREFRAME = 1;
-		
-		static const int BLEND_MODE_NORMAL = 0;
-		static const int BLEND_MODE_LIGHTEN = 1;
-		static const int BLEND_MODE_COLOR = 2;
-		static const int BLEND_MODE_PREMULTIPLIED = 3;
-		static const int BLEND_MODE_MULTIPLY = 4;
+
+        static const int BLEND_MODE_NONE = 0;
+		static const int BLEND_MODE_NORMAL = 1;
+		static const int BLEND_MODE_LIGHTEN = 2;
+		static const int BLEND_MODE_COLOR = 3;
+		static const int BLEND_MODE_PREMULTIPLIED = 4;
+		static const int BLEND_MODE_MULTIPLY = 5;
 								
 		static const int FOG_LINEAR = 0;
 		static const int FOG_EXP = 1;

@@ -28,6 +28,7 @@
 #include "PolyCore.h"
 #include "PolyConfig.h"
 #include "PolySceneLine.h"
+#include "PolyRenderer.h"
 
 using namespace Polycode;
 
@@ -43,6 +44,7 @@ UIMenuItem::UIMenuItem(String label, String _id, void *data, Number comboWidth, 
 	Number paddingY = conf->getNumericValue("Polycode", "uiMenuTextOffsetY");	
 
 	itemLabel = new SceneLabel(label, fontSize, fontName);
+    itemLabel->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	itemLabel->setPosition(paddingX, floor(((comboHeight/2.0) - itemLabel->getHeight()/2.0) + paddingY));
 	addChild(itemLabel);
 	itemLabel->color.setColorHexFromString(conf->getStringValue("Polycode", "uiDefaultFontColor"));

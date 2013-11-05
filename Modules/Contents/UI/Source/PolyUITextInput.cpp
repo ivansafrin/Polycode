@@ -27,6 +27,7 @@
 #include "PolyLabel.h"
 #include "PolyCoreServices.h"
 #include "PolyEventHandler.h"
+#include "PolyRenderer.h"
 
 using namespace Polycode;
 
@@ -110,7 +111,8 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	if(multiLine) {
 		inputRect = new UIBox(conf->getStringValue("Polycode", "textBgSkinMultiline"),
 						  st,sr,sb,sl,
-						  width+(padding*2), height+(padding*2));		
+						  width+(padding*2), height+(padding*2));
+        inputRect->setBlendingMode(Renderer::BLEND_MODE_NONE);
 	} else {
 		inputRect = new UIBox(conf->getStringValue("Polycode", "textBgSkin"),
 						  st,sr,sb,sl,
@@ -122,7 +124,7 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	if(multiLine) {
 		lineNumberBg = new UIRect(1,1);
 		lineNumberBg->setAnchorPoint(-1.0, -1.0, 0.0);
-		lineNumberBg->setColor(0.0, 0.0, 0.0, 0.3);
+		lineNumberBg->setColor(0.5, 0.5, 0.5, 1.0);
 		addChild(lineNumberBg);
 		lineNumberBg->visible = false;
 		
@@ -235,6 +237,7 @@ void UITextInput::checkBufferLines() {
 	for(int i=0; i < neededBufferLines - currentBufferLines; i++) {
 		if(multiLine) {
 			SceneLabel *newNumberLine = new SceneLabel(L"", fontSize, fontName, aaMode);
+            newNumberLine->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 			newNumberLine->color = lineNumberColor;
 			newNumberLine->positionAtBaseline = true;
 			lineNumberAnchor->addChild(newNumberLine);
@@ -246,6 +249,7 @@ void UITextInput::checkBufferLines() {
 		}
 	
 		SceneLabel *newLine = new SceneLabel(L"", fontSize, fontName, aaMode);
+        newLine->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 		newLine->positionAtBaseline = true;
 		newLine->color = textColor;
 		lineHeight = newLine->getHeight();

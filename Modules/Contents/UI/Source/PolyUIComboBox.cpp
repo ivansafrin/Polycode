@@ -25,6 +25,7 @@
 #include "PolyLabel.h"
 #include "PolyCoreServices.h"
 #include "PolyConfig.h"
+#include "PolyRenderer.h"
 
 using namespace Polycode;
 
@@ -77,6 +78,7 @@ UIComboBox::UIComboBox(UIGlobalMenu *globalMenu, Number comboWidth) : UIElement(
 	addChild(dropDownImage);
 	
 	selectedLabel = new SceneLabel("<None>", fontSize, fontName);
+    selectedLabel->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	selectedLabel->setPosition(paddingX, paddingY);
 	addChild(selectedLabel);
 	

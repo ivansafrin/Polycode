@@ -93,7 +93,7 @@ namespace Polycode {
 			UITree *parent;
 			Number padding;
 			UIBox *selection;
-			UIRect *bgBox;
+			Entity *bgBox;
 			SceneLabel *textLabel;
 			UIImage *iconImage;
 			bool selected;

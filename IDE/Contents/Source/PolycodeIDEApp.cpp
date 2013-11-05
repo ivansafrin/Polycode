@@ -33,6 +33,8 @@ PolycodeEditorManager *globalEditorManager;
 PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	core = new POLYCODE_CORE(view, 1100, 700,false,true, 0, 0,60, -1, true);
 //	core->pauseOnLoseFocus = true;
+    
+    Entity::defaultBlendingMode = Renderer::BLEND_MODE_NONE;
 	
 	CoreServices::getInstance()->getResourceManager()->reloadResourcesOnModify = true;
 	

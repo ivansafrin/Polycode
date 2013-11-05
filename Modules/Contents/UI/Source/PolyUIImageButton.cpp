@@ -52,7 +52,9 @@ UIImageButton::UIImageButton(String imageName, Number scale, Number width, Numbe
 	
 	buttonRect = new UIRect(buttonImage->getWidth(),buttonImage->getHeight());
                        
-	buttonRect->setColor(1,1,1,0);
+	buttonRect->setColor(1,1,1,1);
+    buttonRect->visible = false;
+    
 	buttonRect->setAnchorPoint(-1.0, -1.0, 0.0);
 	addChild(buttonRect);
 	

@@ -34,6 +34,7 @@ UILabel::UILabel(const String& text, int size, const String& fontName, int amode
 
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	label = new SceneLabel(text, size, fontName, amode);
+    label->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	label->snapToPixels = true;
 	
 	color.setColorHexFromString(conf->getStringValue("Polycode", "uiDefaultFontColor"));
@@ -203,9 +204,11 @@ void UIRect::Resize(Number width, Number height) {
 }
 
 UIImage::UIImage(String imagePath, int width, int height) : UIRect(imagePath, width, height) {
+    setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 }
 
 UIImage::UIImage(String imagePath) : UIRect(imagePath) {
+    setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 }
 
 UIElement::UIElement() : Entity() {

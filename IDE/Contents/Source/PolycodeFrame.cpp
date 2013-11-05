@@ -1010,9 +1010,8 @@ PolycodeProjectTab::~PolycodeProjectTab() {
 
 PolycodeTabButton::PolycodeTabButton(PolycodeProjectTab *tab) : UIElement() {
 	this->tab = tab;
-	bgRect = new UIRect("main/tab_bg.png", 150,30);
+	bgRect = new UIImage("main/tab_bg.png", 150,30);
 	addChild(bgRect);
-	bgRect->setColor(1.0, 1.0, 1.0, 0.4);
 	bgRect->processInputEvents = true;
 	processInputEvents = true;
 	bgRect->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
@@ -1347,6 +1346,7 @@ PolycodeFrame::PolycodeFrame(PolycodeEditorManager *editorManager) : UIElement()
 	resizer->setColor(0,0,0,0.4);
 	
 	modalBlocker = new UIRect(10,10);
+    modalBlocker->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	modalBlocker->setColor(0,0,0,0.4);
 	modalBlocker->setAnchorPoint(-1.0, -1.0, 0.0);
 	modalBlocker->enabled = false;	

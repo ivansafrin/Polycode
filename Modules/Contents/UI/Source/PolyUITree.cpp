@@ -26,6 +26,7 @@
 #include "PolyInputEvent.h"
 #include "PolyLabel.h"
 #include "PolyCoreServices.h"
+#include "PolyRenderer.h"
 
 using namespace Polycode;
 
@@ -54,11 +55,15 @@ UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : 
 								size,
 								fontName,
 								Label::ANTIALIAS_FULL);
+    textLabel->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    
 	textLabel->color.setColorHexFromString(conf->getStringValue("Polycode", "uiTreeFontColor"));
     
-	bgBox = new UIRect(treeWidth, cellHeight);	
+	bgBox = new Entity();
+    bgBox->setWidth(treeWidth);
+    bgBox->setHeight(cellHeight);
 	bgBox->setAnchorPoint(-1.0, -1.0, 0.0);
-	bgBox->setColor(1, 1, 1, 0);
+    bgBox->visible = false;
 	addChild(bgBox);
 	
 	
@@ -121,7 +126,8 @@ UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : 
 void UITree::Resize(Number width) {
 	treeWidth = width;
 	selection->resizeBox(treeWidth+(padding*2), cellHeight+(padding*2));
-	bgBox->Resize(width, cellHeight);
+	bgBox->setWidth(width);
+    bgBox->setHeight(cellHeight);
 	
 	for(int i=0; i < treeChildren.size(); i++) {
 		treeChildren[i]->Resize(width);

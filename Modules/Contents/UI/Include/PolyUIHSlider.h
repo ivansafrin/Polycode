@@ -67,6 +67,6 @@ namespace Polycode {
 			Number endValue;
 			Number sliderWidth;
 			
-			UIRect *bgHitBox;
+			Entity *bgHitBox;
 	};
 }

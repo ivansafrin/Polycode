@@ -69,7 +69,7 @@ namespace Polycode {
 			Font *font;
 			UIImageButton *closeBtn;
 			UIBox *windowRect;
-			UIRect *titlebarRect;
+			Entity *titlebarRect;
 			void resetTween();
 	};
 }

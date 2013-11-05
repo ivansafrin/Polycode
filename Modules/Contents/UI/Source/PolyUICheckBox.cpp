@@ -25,6 +25,7 @@
 #include "PolyLabel.h"
 #include "PolyCoreServices.h"
 #include "PolyConfig.h"
+#include "PolyRenderer.h"
 
 using namespace Polycode;
 
@@ -51,7 +52,8 @@ UICheckBox::UICheckBox(String caption, bool checked) : UIElement() {
     buttonImageUnchecked->Resize(buttonImageUnchecked->getWidth() / uiScale, buttonImageUnchecked->getHeight() / uiScale);
 	
 	captionLabel = new SceneLabel(caption, fontSize, fontName, Label::ANTIALIAS_FULL);
-	
+	captionLabel->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    
 	addChild(captionLabel);
 	captionLabel->setPosition(buttonImageChecked->getWidth() + checkboxTextOffsetX, checkboxTextOffsetY);
 	

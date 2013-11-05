@@ -163,31 +163,19 @@ void OpenGLRenderer::Resize(int xRes, int yRes) {
 	viewportHeight = xRes;
 	glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
 	glClearDepth(1.0f);
-	/*
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
 
-	resetViewport();
-	*/
 	glMatrixMode(GL_MODELVIEW);
 	glLineWidth(1);
-	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-	glEnable(GL_BLEND);
 	glShadeModel(GL_SMOOTH);
 	glDepthFunc( GL_LEQUAL );
 	
 	glEnable(GL_DEPTH_TEST);
 	
 	glLineWidth(1.0f);
-	
 	glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
-//	glEnable(GL_LINE_SMOOTH);
-	
 	GLint numBuffers;
 	glGetIntegerv(GL_MAX_DRAW_BUFFERS, &numBuffers);
-//	Logger::log("MAX_DRAW_BUFFERS: %d \n", numBuffers);
 
 }
 
@@ -479,6 +467,13 @@ void OpenGLRenderer::enableFog(bool enable) {
 }
 
 void OpenGLRenderer::setBlendingMode(int blendingMode) {
+    
+    if(blendingMode == BLEND_MODE_NONE) {
+        glDisable(GL_BLEND);
+    } else {
+        glEnable(GL_BLEND);
+    }
+    
 	switch(blendingMode) {
 		case BLEND_MODE_NORMAL:
 			if(blendNormalAsPremultiplied) {
@@ -503,7 +498,6 @@ void OpenGLRenderer::setBlendingMode(int blendingMode) {
 			glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		break;
 	}
-	glEnable(GL_BLEND);
 }
 
 Matrix4 OpenGLRenderer::getProjectionMatrix() {

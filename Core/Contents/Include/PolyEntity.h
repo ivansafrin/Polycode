@@ -714,6 +714,8 @@ namespace Polycode {
 
 			bool snapToPixels;			
 			bool mouseOver;
+        
+            static int defaultBlendingMode;
 			
 			//@}		
 		protected:

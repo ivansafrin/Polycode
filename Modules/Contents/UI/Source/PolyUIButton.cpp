@@ -27,6 +27,7 @@
 #include "PolyLabel.h"
 #include "PolyCoreServices.h"
 #include "PolyCore.h"
+#include "PolyRenderer.h"
 
 using namespace Polycode;
 
@@ -71,6 +72,7 @@ UIButton::UIButton(String text, Number width, Number height) : UIElement() {
 	pressedDown = false;
 	
 	buttonLabel = new SceneLabel(text, fontSize, fontName, Label::ANTIALIAS_FULL);
+    buttonLabel->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	buttonLabel->color.setColorHexFromString(conf->getStringValue("Polycode", "uiButtonFontColor"));
 	addChild(buttonLabel);
 	labelXPos = floor((width-buttonLabel->getWidth())/2.0f) + labelOffsetX;

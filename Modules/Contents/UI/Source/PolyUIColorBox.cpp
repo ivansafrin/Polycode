@@ -25,7 +25,7 @@
 #include "PolyLabel.h"
 #include "PolyCoreServices.h"
 #include "PolyConfig.h"
-
+#include "PolyRenderer.h"
 
 using namespace Polycode;
 
@@ -60,6 +60,7 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	alphaSlider->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
 	mainColorRect = new SceneMesh(Mesh::QUAD_MESH);
+    mainColorRect->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	mainColorRect->setWidth(mainFrame->getWidth());
 	mainColorRect->setHeight(mainFrame->getWidth());
 	mainColorRect->setDepth(0.001);
@@ -459,6 +460,7 @@ UIColorBox::UIColorBox(UIColorPicker *colorPicker, Color initialColor, Number wi
 	bgImage->processInputEvents = true;
 
 	colorShape = new UIRect(width-(frameInset*2), height-(frameInset*2));
+    colorShape->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	colorShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	colorShape->setPosition(frameInset, frameInset);
 	addChild(colorShape);

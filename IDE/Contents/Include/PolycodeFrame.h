@@ -241,7 +241,7 @@ class PolycodeTabButton : public UIElement {
 		PolycodeProjectTab *getTab();		
 	protected:
 		PolycodeProjectTab *tab;
-		UIRect *bgRect;
+		UIImage *bgRect;
 		UILabel *tabLabel;
 		UIMenu *menu;
 		

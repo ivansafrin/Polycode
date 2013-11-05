@@ -26,6 +26,8 @@
 
 using namespace Polycode;
 
+int Entity::defaultBlendingMode = Renderer::BLEND_MODE_NORMAL;
+
 Rotation::Rotation() {
 	pitch = 0;
 	yaw = 0;
@@ -62,7 +64,7 @@ void Entity::initEntity() {
 	depthWrite = true;
 	ignoreParentMatrix = false;
 	alphaTest = false;
-	blendingMode = Renderer::BLEND_MODE_NORMAL;	
+	blendingMode = Entity::defaultBlendingMode;
 	lockMatrix = false;
 	renderWireframe  = false;
 	colorAffectsChildren = true;

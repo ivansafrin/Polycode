@@ -28,6 +28,7 @@
 #include "PolyCore.h"
 #include "PolyCoreServices.h"
 #include "PolyTweenManager.h"
+#include "PolyRenderer.h"
 
 using namespace Polycode;
 
@@ -64,14 +65,18 @@ UIWindow::UIWindow(String windowName, Number width, Number height) : UIElement()
 	Number titleBarHeight = conf->getNumericValue("Polycode", "uiWindowTitleBarHeight");
 	Number titleBarOffset = conf->getNumericValue("Polycode", "uiWindowTitleBarOffset");
 		
-	titlebarRect = new UIRect(width, titleBarHeight);
+	titlebarRect = new Entity();
+    titlebarRect->setWidth(width);
+    titlebarRect->setHeight(titleBarHeight);
+    titlebarRect->visible = false;
 	titlebarRect->setPosition(0, titleBarOffset);
-	titlebarRect->setColor(0,0,0,0);
 	titlebarRect->setAnchorPoint(-1.0, -1.0, 0.0);
 	titlebarRect->processInputEvents = true;
 	addChild(titlebarRect);
 	
 	titleLabel = new SceneLabel(windowName, fontSize, fontName, Label::ANTIALIAS_FULL);
+    titleLabel->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    
 	titleLabel->setPosition(conf->getNumericValue("Polycode", "uiWindowTitleX"),conf->getNumericValue("Polycode", "uiWindowTitleY"));
 	addChild(titleLabel);
 	titleLabel->color.setColorHexFromString(conf->getStringValue("Polycode", "uiWindowFontColor"));
