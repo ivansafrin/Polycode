@@ -21,62 +21,67 @@
  */
 
 #include "PolyUIBox.h"
+#include "PolyCoreServices.h"
+#include "PolyConfig.h"
 
 using namespace Polycode;
 
 UIBox::UIBox(String imageFile, Number t, Number r, Number b, Number l, Number boxWidth, Number boxHeight) : UIElement() {
 
-	setAnchorPoint(-1.0, -1.0, 0.0);	
+    Config *conf = CoreServices::getInstance()->getConfig();
+    Number uiScale = conf->getNumericValue("Polycode", "uiScale");
+    
+	setAnchorPoint(-1.0, -1.0, 0.0);
 	
 	setWidth(boxWidth);
 	setHeight(boxHeight);
 	
 	tlImage = new UIRect(imageFile);
-	tlImage->setImageCoordinates(0,0,l,t);
+	tlImage->setImageCoordinates(0,0,l,t, uiScale);
 	addChild(tlImage);
 	tlImage->setPosition(0, 0);
-
+    
 	trImage = new UIRect(imageFile);
-	trImage->setImageCoordinates(trImage->getWidth()-r,0,r,t);
+	trImage->setImageCoordinates((trImage->getWidth()/uiScale)-r,0,r,t, uiScale);
 	addChild(trImage);	
 	trImage->setPosition(boxWidth-r, 0);
-
+    
 	blImage = new UIRect(imageFile);
-	blImage->setImageCoordinates(0,blImage->getHeight()-b,l,b);
+	blImage->setImageCoordinates(0,(blImage->getHeight()/uiScale)-b,l,b, uiScale);
 	addChild(blImage);	
 	blImage->setPosition(0, boxHeight-b);
 
 	brImage = new UIRect(imageFile);
-	brImage->setImageCoordinates(brImage->getWidth()-r,brImage->getHeight()-b,r,b);
+	brImage->setImageCoordinates((brImage->getWidth()/uiScale)-r,(brImage->getHeight()/uiScale)-b,r,b, uiScale);
 	addChild(brImage);	
 	brImage->setPosition(boxWidth-r, boxHeight-b);	
 
 	centerImage = new UIRect(imageFile);
-	centerImage->setImageCoordinates(l,t,centerImage->getWidth()-l-r, centerImage->getHeight()-t-b);
+	centerImage->setImageCoordinates(l,t,(centerImage->getWidth()/uiScale)-l-r, (centerImage->getHeight()/uiScale)-t-b, uiScale);
 	addChild(centerImage);	
 	centerImage->setPosition(l,t);	
 	centerImage->Resize(boxWidth-l-r, boxHeight-t-b);
 
 	tImage = new UIRect(imageFile);
-	tImage->setImageCoordinates(l,0,tImage->getWidth()-l-r,t);
+	tImage->setImageCoordinates(l,0,(tImage->getWidth()/uiScale)-l-r,t, uiScale);
 	addChild(tImage);
 	tImage->setPosition(l,0);	
 	tImage->Resize(boxWidth-l-r, t);
 
 	bImage = new UIRect(imageFile);
-	bImage->setImageCoordinates(l,bImage->getHeight()-b,bImage->getWidth()-l-r,b);
+	bImage->setImageCoordinates(l,(bImage->getHeight()/uiScale)-b,(bImage->getWidth()/uiScale)-l-r,b, uiScale);
 	addChild(bImage);
 	bImage->setPosition(l,boxHeight-b);	
 	bImage->Resize(boxWidth-l-r, b);
 
 	lImage = new UIRect(imageFile);
-	lImage->setImageCoordinates(0,t,l,lImage->getHeight()-t-b);
+	lImage->setImageCoordinates(0,t,l,(lImage->getHeight()/uiScale)-t-b, uiScale);
 	addChild(lImage);
 	lImage->setPosition(0,t);	
 	lImage->Resize(l, boxHeight-t-b);
 
 	rImage = new UIRect(imageFile);
-	rImage->setImageCoordinates(rImage->getWidth()-r,t,r,rImage->getHeight()-t-b);
+	rImage->setImageCoordinates((rImage->getWidth()/uiScale)-r,t,r,(rImage->getHeight()/uiScale)-t-b, uiScale);
 	addChild(rImage);
 	rImage->setPosition(boxWidth-r,t);	
 	rImage->Resize(r, boxHeight-t-b);	
@@ -105,12 +110,12 @@ void UIBox::resizeBox(Number newWidth, Number newHeight) {
 	trImage->setPosition(newWidth-trImage->getWidth(), 0);
 	blImage->setPosition(0, newHeight-blImage->getHeight());
 
-	centerImage->Resize(newWidth-l-r, newHeight-t-b);
+	centerImage->Resize(ceil(newWidth-l-r), newHeight-t-b);
 
 	lImage->Resize(l, newHeight-t-b);	
 	rImage->Resize(r, newHeight-t-b);		
-	bImage->Resize(newWidth-l-r, b);
-	tImage->Resize(newWidth-l-r, t);	
+	bImage->Resize(ceil(newWidth-l-r), b);
+	tImage->Resize(ceil(newWidth-l-r), t);
 
 	bImage->setPosition(bImage->getPosition().x, newHeight-bImage->getHeight());	
 	rImage->setPosition(newWidth-rImage->getWidth(),rImage->getPosition().y);

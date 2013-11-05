@@ -96,7 +96,11 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	sb = conf->getNumericValue("Polycode", "textBgSkinB");
 	sl = conf->getNumericValue("Polycode", "textBgSkinL");
 
-	
+	Number textInputOffsetY = conf->getNumericValue("Polycode", "uiTextInputFontOffsetY");
+    if(multiLine) {
+        textInputOffsetY = 0.0;
+    }
+    
 	padding = conf->getNumericValue("Polycode", "textBgSkinPadding");
 	
 	textContainer = new UIElement();
@@ -132,7 +136,7 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 
 	textContainer->setWidth(fabs(this->getWidth() - textContainer->getPosition2D().x - padding));
 	textContainer->setHeight(fabs(this->getHeight() - textContainer->getPosition2D().y));
-	textContainer->setPosition(padding + decoratorOffset, padding);
+	textContainer->setPosition(padding + decoratorOffset, padding + textInputOffsetY);
 	
 	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEUP);	

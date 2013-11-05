@@ -685,15 +685,15 @@ FindBar::FindBar() : UIElement() {
 	addChild(replaceAllButton);
 	replaceAllButton->setPosition(420, 3);
 
-	UIImage *functionIcon = new UIImage("Images/function_icon.png");
+	UIImage *functionIcon = new UIImage("main/function_icon.png", 11, 17);
 	addChild(functionIcon);
-	functionIcon->setPosition(540, 5);	
+	functionIcon->setPosition(540, 6);
 	
 	functionList = new UIComboBox(globalMenu, 200);
 	addChild(functionList);
 	functionList->setPosition(560, 4);	
 		
-	closeButton = new UIImageButton("Images/barClose.png");
+	closeButton = new UIImageButton("main/barClose.png", 1.0, 17, 17);
 	addChild(closeButton);
 }
 
@@ -717,6 +717,6 @@ FindBar::~FindBar(){
 
 void FindBar::setBarWidth(int width) {
 	barBg->Resize(width, 30);
-	closeButton->setPosition(width - 30, 5);
-	functionList->Resize(width-560-60, functionList->getHeight());
+	closeButton->setPosition(width - 30, 6);
+	functionList->Resize(width-560-40, functionList->getHeight());
 }

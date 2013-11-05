@@ -34,6 +34,9 @@ void PolycodeAppEventHandler::handleEvent(Event *evt) {
 	
 	eventHandler = new PolycodeAppEventHandler();
 	eventHandler->appDelegate = self;
+    
+    [[window windowController] setShouldCascadeWindows:NO];
+    [window setFrameAutosaveName:[window representedFilename]];
 	
 	app = new PolycodeIDEApp(polycodeView);
 	app->addEventListener(eventHandler, PolycodeIDEApp::EVENT_SHOW_MENU);

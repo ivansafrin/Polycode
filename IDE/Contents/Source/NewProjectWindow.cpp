@@ -176,7 +176,7 @@ void NewProjectWindow::parseTemplatesIntoTree(UITree *tree, OSFileEntry folder) 
 	for(int i=0; i < templates.size(); i++) {
 		OSFileEntry entry = templates[i];
 		if(entry.type == OSFileEntry::TYPE_FOLDER) {
-			UITree *newChild = tree->addTreeChild("templateIcon.png", entry.name, NULL);			
+			UITree *newChild = tree->addTreeChild("file.png", entry.name, NULL);			
 			TemplateUserData *data = new TemplateUserData();
 			data->type = 1;
 			data->templateFolder = entry.fullPath;

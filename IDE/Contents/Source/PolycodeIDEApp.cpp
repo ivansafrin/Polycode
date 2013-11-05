@@ -70,9 +70,20 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 
 	String themeName = CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiTheme");
 	
+    if(core->getBackingXRes() == core->getXRes()) {
+        CoreServices::getInstance()->getResourceManager()->addArchive("Images");
+    } else {
+        CoreServices::getInstance()->getResourceManager()->addArchive("ImagesRetina");
+        if(OSBasics::fileExists("UIThemes/"+themeName+"_retina")) {
+            themeName = themeName + "_retina";
+        }
+    }
+    
+    printf("LOADING THEME: %s\n", themeName.c_str());
+    
 	CoreServices::getInstance()->getConfig()->loadConfig("Polycode", "UIThemes/"+themeName+"/theme.xml");
 	CoreServices::getInstance()->getResourceManager()->addArchive("UIThemes/"+themeName+"/");
-	CoreServices::getInstance()->getResourceManager()->addArchive("Images/");	
+    
 	
 	willRunProject = false;
 

@@ -100,7 +100,7 @@ namespace Polycode {
 			Number treeHeight;
 			vector<UITree*> treeChildren;
 			bool collapsed;
-			SceneImage *arrowIconImage;
+			UIImage *arrowIconImage;
 			String arrowIcon;
 			Vector2 mouseDownPosition;
 			String fontName;

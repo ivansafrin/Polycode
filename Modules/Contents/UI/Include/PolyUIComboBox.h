@@ -85,6 +85,6 @@ namespace Polycode {
 			Number nextItemHeight;
 
 			UIBox *bgBox;
-			SceneImage *dropDownImage;
+			UIImage *dropDownImage;
 	};
 }

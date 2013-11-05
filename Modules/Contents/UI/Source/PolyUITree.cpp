@@ -37,6 +37,7 @@ UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : 
 	
 	labelText = text;
 	Config *conf = CoreServices::getInstance()->getConfig();
+    Number uiScale = conf->getNumericValue("Polycode", "uiScale");
 	
 	handleRotation = 0;
 	this->treeWidth = treeWidth;
@@ -76,21 +77,24 @@ UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : 
 	selection->setAnchorPoint(-1.0, -1.0, 0.0);
 	selection->visible = false;
 	addChild(selection);
-	arrowIconImage = new SceneImage(arrowIcon.c_str());
+	arrowIconImage = new UIImage(arrowIcon);
+    arrowIconImage->Resize(arrowIconImage->getWidth() / uiScale, arrowIconImage->getHeight() / uiScale);
     arrowIconImage->setAnchorPoint(0.0, 0.0, 0.0);
-    arrowIconImage->setPosition(treeOffset + (arrowIconImage->getWidth()/2.0), (cellHeight) / 2.0);
+    arrowIconImage->setPosition(treeOffset + (arrowIconImage->getWidth()/2.0) + cellPadding, (cellHeight) / 2.0);
     
 	addChild(arrowIconImage);
-	iconImage = new UIImage(icon.c_str());
+	iconImage = new UIImage(icon);
+    iconImage->Resize(iconImage->getWidth() / uiScale, iconImage->getHeight() / uiScale);
+    
 	addChild(iconImage);
     iconImage->setAnchorPoint(-1.0, -1.0, 0.0);
-    iconImage->setPosition(treeOffset + arrowIconImage->getWidth(), (cellHeight-iconImage->getHeight()) / 2.0);
+    iconImage->setPosition(treeOffset + arrowIconImage->getWidth() + cellPadding * 2.0, (cellHeight-iconImage->getHeight()) / 2.0);
     
     Number textOffsetX = conf->getNumericValue("Polycode", "uiTreeTextOffsetX");
     Number textOffsetY = conf->getNumericValue("Polycode", "uiTreeTextOffsetY");
     
 	addChild(textLabel);
-	textLabel->setPosition(treeOffset + arrowIconImage->getWidth()+iconImage->getWidth()+ textOffsetX, textOffsetY);
+	textLabel->setPosition(treeOffset + arrowIconImage->getWidth()+iconImage->getWidth()+ textOffsetX + cellPadding * 3.0, textOffsetY);
     
 	collapsed = false;
 	treeHeight = 0;

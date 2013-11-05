@@ -37,16 +37,17 @@ EntityEditorMainView::EntityEditorMainView() {
 	addChild(renderTextureShape);
 	renderTextureShape->setPosition(0, 30);
 				
-	sideBar = new Entity();
-	addChild(sideBar);
-	sideBar->setPosition(0, 30);
-	sideBar->processInputEvents = true;
 			
 	headerBg = new UIRect(10,10);
 	addChild(headerBg);
 	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	
+	sideBar = new Entity();
+	addChild(sideBar);
+	sideBar->setPosition(0, 0);
+	sideBar->processInputEvents = true;
+    
 	
 	mainScene->getDefaultCamera()->setPosition(10, 10, 10);
 	mainScene->getDefaultCamera()->lookAt(Vector3());

@@ -43,7 +43,7 @@ ProjectFontEntry::ProjectFontEntry(String fontPath, String fontName) : UIElement
 	
 	this->fontPath = fontPath;
 
-	removeButton = new UIImageButton("Images/remove_icon.png");
+	removeButton = new UIImageButton("main/remove_icon.png", 1.0, 12, 12);
 	removeButton->setPosition(0, 5);
 	removeButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(removeButton);

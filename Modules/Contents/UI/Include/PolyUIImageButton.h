@@ -32,7 +32,7 @@ namespace Polycode {
 
 	class _PolyExport UIImageButton : public UIElement {
 		public:
-			UIImageButton(String imageName);
+			UIImageButton(String imageName, Number scale=1.0, Number width = -1, Number height = -1);
 			virtual ~UIImageButton();
 		
 			void handleEvent(Event *event);

@@ -1,30 +1,37 @@
 <?xml version="1.0"?>
 <PolyConfig>
-	<uiDefaultFontName>sans</uiDefaultFontName>
-	<uiDefaultFontColor>0xe4e0e3ab</uiDefaultFontColor>
 
-	<uiBgColor>0x322d2bff</uiBgColor>
-	<uiAccentColor>0x1f3234ff</uiAccentColor>
-	<uiHeaderBgColor>0x262120ff</uiHeaderBgColor>
-	<uiSmallHeaderBgColor>0x2b2624ff</uiSmallHeaderBgColor>
-	<uiHeaderFontColor>0xe4e3e0ad</uiHeaderFontColor>
+	<uiScale>1.0</uiScale>
+
+	<uiDefaultFontName>sans</uiDefaultFontName>
+	<uiDefaultFontColor>0x161616ff</uiDefaultFontColor>
+
+	<uiBgColor>0x494949ff</uiBgColor>
+	<uiAccentColor>0x36526aff</uiAccentColor>	
+	<uiHeaderBgColor>0x232323ff</uiHeaderBgColor>
+	<uiSmallHeaderBgColor>0x3a3a3aff</uiSmallHeaderBgColor>
+	<uiHeaderFontColor>0x545454FF</uiHeaderFontColor>
+	<uiSectionFontColor>0x00000080</uiSectionFontColor>
 
 	<uiTextInputFontName>sans</uiTextInputFontName>
 	<uiTextInputFontNameMultiLine>mono</uiTextInputFontNameMultiLine>
 	<uiDefaultFontSize>12</uiDefaultFontSize>
 	<uiTextInputFontSize>12</uiTextInputFontSize>
-	<uiTextInputFontSizeMultiline>13</uiTextInputFontSizeMultiline>	
+	<uiTextInputFontOffsetY>-2</uiTextInputFontOffsetY>		
+	<uiTextInputFontSizeMultiline>12</uiTextInputFontSizeMultiline>	
 	<uiTreeArrowIconImage>arrowIcon.png</uiTreeArrowIconImage>
 	<uiTreeCellHeight>20</uiTreeCellHeight>
-	<uiTreeCellPadding>4</uiTreeCellPadding>
+	<uiTreeTextOffsetX>2</uiTreeTextOffsetX>
+	<uiTreeTextOffsetY>2</uiTreeTextOffsetY>
+	<uiTreeCellPadding>3</uiTreeCellPadding>
 	
 	<textBgSkin>textfield.png</textBgSkin>
-	<textBgSkinMultiline>textfield_multi.png</textBgSkinMultiline>
-	<textBgSkinT>9</textBgSkinT>
-	<textBgSkinR>9</textBgSkinR>
-	<textBgSkinB>9</textBgSkinB>
-	<textBgSkinL>9</textBgSkinL>
-	<textBgSkinPadding>5</textBgSkinPadding>
+	<textBgSkinMultiline>textfieldMulti.png</textBgSkinMultiline>
+	<textBgSkinT>7</textBgSkinT>
+	<textBgSkinR>7</textBgSkinR>
+	<textBgSkinB>7</textBgSkinB>
+	<textBgSkinL>7</textBgSkinL>
+	<textBgSkinPadding>6</textBgSkinPadding>
 	<textEditLineSpacing>14</textEditLineSpacing>
 	
 	<uiTreeCellSkin>treeCellBg.png</uiTreeCellSkin>
@@ -33,9 +40,9 @@
 	<uiTreeCellSkinR>3</uiTreeCellSkinR>
 	<uiTreeCellSkinB>3</uiTreeCellSkinB>
 	<uiTreeCellSkinL>3</uiTreeCellSkinL>
-	<uiTreeFontColor>0xe4e0e3c8</uiTreeFontColor>
+	<uiTreeFontColor>0xc6c6c6ff</uiTreeFontColor>
 	<uiTreeCellSelectorSkin>selector.png</uiTreeCellSelectorSkin>
-	<uiTreeCellSelectorSkinPadding>4</uiTreeCellSelectorSkinPadding>
+	<uiTreeCellSelectorSkinPadding>0</uiTreeCellSelectorSkinPadding>
 	<uiTreeCellSelectorSkinT>4</uiTreeCellSelectorSkinT>
 	<uiTreeCellSelectorSkinR>3</uiTreeCellSelectorSkinR>
 	<uiTreeCellSelectorSkinB>4</uiTreeCellSelectorSkinB>
@@ -54,7 +61,7 @@
 	<uiButtonSkin>button.png</uiButtonSkin>
 	<uiButtonFocusedSkin>buttonFocused.png</uiButtonFocusedSkin>
 	<uiButtonFontSize>12</uiButtonFontSize>	
-	<uiButtonFontColor>0xe4e0e3c8</uiButtonFontColor>
+	<uiButtonFontColor>0xffffffff</uiButtonFontColor>
 	<uiButtonLabelOffsetX>0</uiButtonLabelOffsetX>
 	<uiButtonLabelOffsetY>4</uiButtonLabelOffsetY>	
 	<uiButtonSkinT>12</uiButtonSkinT>
@@ -69,15 +76,15 @@
 	<uiWindowSkinL>17</uiWindowSkinL>
 	<uiWindowSkinPadding>15</uiWindowSkinPadding>		
 	<uiWindowTitleFont>sans</uiWindowTitleFont>
-	<uiWindowFontColor>0xe4e0e3c8</uiWindowFontColor>	
-	<uiWindowTitleFontSize>14</uiWindowTitleFontSize>
+	<uiWindowFontColor>0x000000c8</uiWindowFontColor>	
+	<uiWindowTitleFontSize>12</uiWindowTitleFontSize>
 	<uiWindowTitleX>15</uiWindowTitleX>	
 	<uiWindowTitleY>10</uiWindowTitleY>
 	<uiWindowTitleBarHeight>25</uiWindowTitleBarHeight>
 	<uiWindowTitleBarOffset>5</uiWindowTitleBarOffset>
 	<uiWindowCloseIcon>closeIcon.png</uiWindowCloseIcon>
-	<uiCloseIconX>11</uiCloseIconX>	
-	<uiCloseIconY>11</uiCloseIconY>		
+	<uiCloseIconX>6</uiCloseIconX>	
+	<uiCloseIconY>6</uiCloseIconY>		
 
 	<uiScrollBgSkin>scrollBg.png</uiScrollBgSkin>
 	<uiScrollBgSkinPadding>1</uiScrollBgSkinPadding>
@@ -97,22 +104,22 @@
 	
 	<uiCheckBoxFont>sans</uiCheckBoxFont>
 	<uiCheckBoxFontSize>12</uiCheckBoxFontSize>	
-	<uiCheckBoxCheckedImage>checkbox_checked.png</uiCheckBoxCheckedImage>
-	<uiCheckBoxUncheckedImage>checkbox_unchecked.png</uiCheckBoxUncheckedImage>
+	<uiCheckBoxCheckedImage>checkboxChecked.png</uiCheckBoxCheckedImage>
+	<uiCheckBoxUncheckedImage>checkboxUnchecked.png</uiCheckBoxUncheckedImage>
 	<uiCheckBoxLabelOffsetX>4</uiCheckBoxLabelOffsetX>
 	<uiCheckBoxLabelOffsetY>3</uiCheckBoxLabelOffsetY>
 		
 	<uiComboBoxFont>sans</uiComboBoxFont>
 	<uiComboBoxFontSize>12</uiComboBoxFontSize>
-	<uiComboBoxDropdownImage>combobox_drop.png</uiComboBoxDropdownImage>
-	<uiComboBoxBgImage>combobox_bg.png</uiComboBoxBgImage>
+	<uiComboBoxDropdownImage>comboBoxDrop.png</uiComboBoxDropdownImage>
+	<uiComboBoxBgImage>comboBoxBg.png</uiComboBoxBgImage>
 	<uiComboBoxHeight>24</uiComboBoxHeight>
-	<uiComboBoxBgT>6</uiComboBoxBgT>
-	<uiComboBoxBgR>6</uiComboBoxBgR>
-	<uiComboBoxBgB>6</uiComboBoxBgB>
-	<uiComboBoxBgL>6</uiComboBoxBgL>
+	<uiComboBoxBgT>8</uiComboBoxBgT>
+	<uiComboBoxBgR>8</uiComboBoxBgR>
+	<uiComboBoxBgB>8</uiComboBoxBgB>
+	<uiComboBoxBgL>8</uiComboBoxBgL>
 	<uiComboBoxDropX>6</uiComboBoxDropX>
-	<uiComboBoxDropY>5</uiComboBoxDropY>
+	<uiComboBoxDropY>4</uiComboBoxDropY>
 	<uiComboBoxTextOffsetX>7</uiComboBoxTextOffsetX>
 	<uiComboBoxTextOffsetY>4</uiComboBoxTextOffsetY>		
 
@@ -124,12 +131,12 @@
 	<uiMenuPaddingX>3</uiMenuPaddingX>
 	<uiMenuPaddingY>10</uiMenuPaddingY>
 	<uiMenuItemHeight>22</uiMenuItemHeight>
-	<uiMenuBgImage>menu_bg.png</uiMenuBgImage>	
-	<uiMenuBgT>4</uiMenuBgT>
-	<uiMenuBgR>6</uiMenuBgR>
-	<uiMenuBgB>9</uiMenuBgB>
-	<uiMenuBgL>6</uiMenuBgL>			
-	<uiMenuSelectorBgImage>menu_selector.png</uiMenuSelectorBgImage>	
+	<uiMenuBgImage>menuBg.png</uiMenuBgImage>	
+	<uiMenuBgT>7</uiMenuBgT>
+	<uiMenuBgR>7</uiMenuBgR>
+	<uiMenuBgB>11</uiMenuBgB>
+	<uiMenuBgL>7</uiMenuBgL>			
+	<uiMenuSelectorBgImage>menuSelector.png</uiMenuSelectorBgImage>	
 	<uiMenuSelectorBgT>0</uiMenuSelectorBgT>
 	<uiMenuSelectorBgR>0</uiMenuSelectorBgR>
 	<uiMenuSelectorBgB>0</uiMenuSelectorBgB>
@@ -137,10 +144,10 @@
 	<uiMenuSelectorPadding>3</uiMenuSelectorPadding>
 
 	<uiColorBoxFrameImage>colorboxFrame.png</uiColorBoxFrameImage>
-	<uiColorBoxFrameImageT>7</uiColorBoxFrameImageT>
-	<uiColorBoxFrameImageR>7</uiColorBoxFrameImageR>
-	<uiColorBoxFrameImageB>7</uiColorBoxFrameImageB>
-	<uiColorBoxFrameImageL>7</uiColorBoxFrameImageL>					
+	<uiColorBoxFrameImageT>10</uiColorBoxFrameImageT>
+	<uiColorBoxFrameImageR>10</uiColorBoxFrameImageR>
+	<uiColorBoxFrameImageB>10</uiColorBoxFrameImageB>
+	<uiColorBoxFrameImageL>10</uiColorBoxFrameImageL>					
 	<uiColorBoxBgImage>colorboxBg.png</uiColorBoxBgImage>
 	<uiColorBoxFrameInset>4</uiColorBoxFrameInset>
 
@@ -148,15 +155,16 @@
 	<uiColorPickerMainFrame>colorPickerMainFrame.png</uiColorPickerMainFrame>
 	<uiColorPickerHueFrame>colorPickerHue.png</uiColorPickerHueFrame>
 	<uiColorPickerHueSelector>colorPickerHueSelector.png</uiColorPickerHueSelector>
-	<uiColorPickerMainSelector>colorPickerTarget.png</uiColorPickerMainSelector>
+	<uiColorPickerMainSelector>colorPickerMainTarget.png</uiColorPickerMainSelector>
 
 	<uiHSliderGrip>hsliderHandle.png</uiHSliderGrip>
 	<uiHSliderBg>hsliderBg.png</uiHSliderBg>
-	<uiHSliderBgHeight>10</uiHSliderBgHeight>
-	<uiHSliderBgT>5</uiHSliderBgT>
-	<uiHSliderBgR>6</uiHSliderBgR>
-	<uiHSliderBgB>5</uiHSliderBgB>
-	<uiHSliderBgL>6</uiHSliderBgL>
+	<uiHSliderBgHeight>16</uiHSliderBgHeight>
+	<uiHSliderSidePadding>8</uiHSliderSidePadding>
+	<uiHSliderBgT>7</uiHSliderBgT>
+	<uiHSliderBgR>7</uiHSliderBgR>
+	<uiHSliderBgB>7</uiHSliderBgB>
+	<uiHSliderBgL>7</uiHSliderBgL>
 
 	<uiFileBrowserFileIcon>file.png</uiFileBrowserFileIcon>
 	<uiFileBrowserFolderIcon>folder.png</uiFileBrowserFolderIcon>

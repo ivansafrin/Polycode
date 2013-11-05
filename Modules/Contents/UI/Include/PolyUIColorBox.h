@@ -93,7 +93,7 @@ namespace Polycode {
 			
 			SceneMesh *mainColorRect;
 			
-			vector<SceneLabel *> junkLabels; // Kept only to delete
+			vector<UILabel *> junkLabels; // Kept only to delete
 	};
 
 	class _PolyExport UIColorBox : public UIElement {

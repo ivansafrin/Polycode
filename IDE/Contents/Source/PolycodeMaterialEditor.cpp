@@ -532,7 +532,7 @@ PostPreviewBox::PostPreviewBox() : UIElement() {
 	currentMaterial = NULL;
 	previewScene = new Scene(Scene::SCENE_3D, true);	
 	
-	renderTexture = new SceneRenderTexture(previewScene, previewScene->getDefaultCamera(), 512, 512, true);
+	renderTexture = new SceneRenderTexture(previewScene, previewScene->getDefaultCamera(), 256, 256, true);
 	
 
 	CoreServices::getInstance()->getRenderer()->setClippingPlanes(0.1, 100.0);
@@ -691,7 +691,7 @@ MaterialPreviewBox::MaterialPreviewBox() : UIElement() {
 	Material *bgMaterial = CoreServices::getInstance()->getMaterialManager()->createMaterial("MaterialEditorBg", "Unlit");
 	
 	previewBg->setMaterial(bgMaterial);
-	Texture *tex = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile("Images/material_grid.png");
+	Texture *tex = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile("materialEditor/material_grid.png");
 	if(previewBg->getLocalShaderOptions()) {
 	previewBg->getLocalShaderOptions()->addTexture("diffuse", tex);
 	}
@@ -746,14 +746,14 @@ MaterialPreviewBox::MaterialPreviewBox() : UIElement() {
 	previewShape->setTexture(renderTexture->getTargetTexture());
 	previewBase->addChild(previewShape);
 	
-	shapeSelector = new UIImage("Images/small_selector.png");
+	shapeSelector = new UIImage("materialEditor/small_selector.png", 22, 22);
 	previewBase->addChild(shapeSelector);
 	shapeSelector->color.a = 1.0;
 	
-	shapeSwitches.push_back(new UIImageButton("Images/torus_icon.png"));
-	shapeSwitches.push_back(new UIImageButton("Images/sphere_icon.png"));
-	shapeSwitches.push_back(new UIImageButton("Images/box_icon.png"));
-	shapeSwitches.push_back(new UIImageButton("Images/plane_icon.png"));
+	shapeSwitches.push_back(new UIImageButton("materialEditor/torus_icon.png", 1.0, 18, 18));
+	shapeSwitches.push_back(new UIImageButton("materialEditor/sphere_icon.png", 1.0, 18, 18));
+	shapeSwitches.push_back(new UIImageButton("materialEditor/box_icon.png", 1.0, 18, 18));
+	shapeSwitches.push_back(new UIImageButton("materialEditor/plane_icon.png", 1.0, 18, 18));
 
 	for(int i=0; i < shapeSwitches.size(); i++) {
 		previewBase->addChild(shapeSwitches[i]);
@@ -1015,10 +1015,10 @@ MaterialBrowser::MaterialBrowser() : UIElement() {
 	treeContainer->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
 	treeContainer->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 		
-	shadersNode = treeContainer->getRootNode()->addTreeChild("Images/shader_icon.png", "Shaders", NULL);
-	materialsNode = treeContainer->getRootNode()->addTreeChild("Images/material_icon.png", "Materials", NULL);
-	cubemapsNode = treeContainer->getRootNode()->addTreeChild("Images/cubemap_icon.png", "Cubemaps", NULL);
-	postEffectsNode = treeContainer->getRootNode()->addTreeChild("Images/screenshader_icon.png", "Post Effects", NULL);
+	shadersNode = treeContainer->getRootNode()->addTreeChild("materialEditor/shader_icon.png", "Shaders", NULL);
+	materialsNode = treeContainer->getRootNode()->addTreeChild("materialEditor/material_icon.png", "Materials", NULL);
+	cubemapsNode = treeContainer->getRootNode()->addTreeChild("materialEditor/cubemap_icon.png", "Cubemaps", NULL);
+	postEffectsNode = treeContainer->getRootNode()->addTreeChild("materialEditor/screenshader_icon.png", "Post Effects", NULL);
 				
 	addChild(treeContainer);		
 	selectedData = NULL;
@@ -1028,23 +1028,23 @@ MaterialBrowser::MaterialBrowser() : UIElement() {
 	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));	
 
-	newShaderButton = new UIImageButton("Images/new_shader.png");
+	newShaderButton = new UIImageButton("materialEditor/new_shader.png", 1.0, 22, 22);
 	addChild(newShaderButton);
 	newShaderButton->setPosition(5,4);
 	
-	newMaterialButton = new UIImageButton("Images/new_material.png");
+	newMaterialButton = new UIImageButton("materialEditor/new_material.png", 1.0, 22, 22);
 	addChild(newMaterialButton);
 	newMaterialButton->setPosition(32,4);
 
-	newCubemapButton = new UIImageButton("Images/new_cubemap.png");
+	newCubemapButton = new UIImageButton("materialEditor/new_cubemap.png", 1.0, 22, 22);
 	addChild(newCubemapButton);
 	newCubemapButton->setPosition(59,4);
 		
-	newPostButton = new UIImageButton("Images/new_screenshader.png");
+	newPostButton = new UIImageButton("materialEditor/new_screenshader.png", 1.0, 22, 22);
 	addChild(newPostButton);
 	newPostButton->setPosition(86,4);
 
-	removeButton = new UIImageButton("Images/remove_icon.png");
+	removeButton = new UIImageButton("main/remove_icon.png", 1.0, 12, 12);
 	addChild(removeButton);
 	removeButton->setPosition(0,4);
 	
@@ -1073,25 +1073,25 @@ void MaterialBrowser::handleEvent(Event *event) {
 UITree *MaterialBrowser::addMaterial(Material *material) {
 	MaterialBrowserData *data = new MaterialBrowserData();
 	data->material = material;
-	return materialsNode->addTreeChild("material_icon.png", material->getName(), (void*)data);
+	return materialsNode->addTreeChild("materialEditor/material_icon.png", material->getName(), (void*)data);
 }
 
 UITree *MaterialBrowser::addShader(Shader *shader) {
 	MaterialBrowserData *data = new MaterialBrowserData();
 	data->shader = shader;
-	return shadersNode->addTreeChild("shader_icon.png", shader->getName(), (void*)data);
+	return shadersNode->addTreeChild("materialEditor/shader_icon.png", shader->getName(), (void*)data);
 }
 
 UITree *MaterialBrowser::addCubemap(Cubemap *cubemap) {
 	MaterialBrowserData *data = new MaterialBrowserData();
 	data->cubemap = cubemap;
-	return cubemapsNode->addTreeChild("cubemap_icon.png", cubemap->getResourceName(), (void*)data);	
+	return cubemapsNode->addTreeChild("materialEditor/cubemap_icon.png", cubemap->getResourceName(), (void*)data);
 }
 
 UITree *MaterialBrowser::addPostMaterial(Material *material) {
 	MaterialBrowserData *data = new MaterialBrowserData();
 	data->postMaterial = material;
-	return postEffectsNode->addTreeChild("screenshader_icon.png", material->getName(), (void*)data);
+	return postEffectsNode->addTreeChild("materialEditor/screenshader_icon.png", material->getName(), (void*)data);
 }
 
 MaterialBrowser::~MaterialBrowser() {

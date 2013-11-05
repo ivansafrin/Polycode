@@ -95,7 +95,5 @@ class TransformGizmoMenu : public UIElement {
 		UIImageButton *rotateModeButton;
 		
 		TransformGizmo *gizmo;
-		
-		UIRect *bg;
 };
 

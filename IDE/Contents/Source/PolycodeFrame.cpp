@@ -62,7 +62,6 @@ EditPoint::EditPoint(BezierPoint *point, unsigned int type) : Entity() {
 	
 	addChild(controlHandle2);
 	
-	
 	pointHandle = new UIImage("Images/bezier_point.png");
 	pointHandle->processInputEvents = true;
 	pointHandle->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
@@ -497,19 +496,19 @@ EditorHolder::EditorHolder(PolycodeProject *project, PolycodeEditorManager *edit
 	holderBar->addChild(headerBg);
 	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	
-	vSplitButton = new UIImageButton("Images/editor_vsplit.png");
+	vSplitButton = new UIImageButton("main/editor_vsplit.png", 1.0, 19, 13);
 	holderBar->addChild(vSplitButton);
 	vSplitButton->addEventListener(this, UIEvent::CLICK_EVENT);
 
-	hSplitButton = new UIImageButton("Images/editor_hsplit.png");
+	hSplitButton = new UIImageButton("main/editor_hsplit.png", 1.0, 19, 13);
 	holderBar->addChild(hSplitButton);
 	hSplitButton->addEventListener(this, UIEvent::CLICK_EVENT);	
 
-	mergeSplitButton = new UIImageButton("Images/editor_mergesplit.png");
+	mergeSplitButton = new UIImageButton("main/editor_mergesplit.png", 1.0, 19, 13);
 	holderBar->addChild(mergeSplitButton);
 	mergeSplitButton->addEventListener(this, UIEvent::CLICK_EVENT);	
 		
-	closeFileButton = new UIImageButton("Images/remove_icon.png");
+	closeFileButton = new UIImageButton("main/remove_icon.png", 1.0, 12, 12);
 	holderBar->addChild(closeFileButton);
 	closeFileButton->setPosition(10, 8);
 	closeFileButton->addEventListener(this, UIEvent::CLICK_EVENT);
@@ -1011,7 +1010,7 @@ PolycodeProjectTab::~PolycodeProjectTab() {
 
 PolycodeTabButton::PolycodeTabButton(PolycodeProjectTab *tab) : UIElement() {
 	this->tab = tab;
-	bgRect = new UIRect("Images/tab_bg.png");
+	bgRect = new UIRect("main/tab_bg.png", 150,30);
 	addChild(bgRect);
 	bgRect->setColor(1.0, 1.0, 1.0, 0.4);
 	bgRect->processInputEvents = true;
@@ -1022,10 +1021,11 @@ PolycodeTabButton::PolycodeTabButton(PolycodeProjectTab *tab) : UIElement() {
 	setHeight(30);
 	
 	tabLabel = new UILabel(tab->getTabName().toUpperCase(), 16, "section");
+    tabLabel->setColor(0.0, 0.0, 0.0, 1.0);
 	tabLabel->setPosition(getWidth()-tabLabel->getWidth()-10.0, ((getHeight()-tabLabel->getHeight())/2.0) - 3.0);
 	addChild(tabLabel);
 	
-	closeButton = new UIImageButton("Images/tab_close_button.png");
+	closeButton = new UIImageButton("main/tab_close_button.png", 1.0, 18, 18);
 	closeButton->setPosition(4.0, floor((30.0 - closeButton->getHeight()) / 2.0));
 	addChild(closeButton);
 	closeButton->blockMouseInput = true;
@@ -1101,7 +1101,7 @@ PolycodeProjectFrame::PolycodeProjectFrame(PolycodeProject *project, PolycodeEdi
 	
 	activeTab = NULL;
 	
-	newTabButton = new UIImageButton("Images/new_tab_button.png");
+	newTabButton = new UIImageButton("main/new_tab_button.png", 1.0, 27, 26);
 	tabButtonAnchor->addChild(newTabButton);
 	newTabButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addNewTab("Default");
@@ -1219,11 +1219,11 @@ void PolycodeProjectFrame::showTab(PolycodeProjectTab *tab) {
 void PolycodeProjectFrame::restructTabs() {
 	int i;
 	for(i=0; i < tabButtons.size(); i++) {
-		tabButtons[i]->setPosition(i * 155.0, 0.0);
+		tabButtons[i]->setPosition(i * 152.0, 0.0);
 		tabButtons[i]->setActive(tabButtons[i]->getTab()->isActive());		
 		tabButtons[i]->updateLabel();
 	}
-	newTabButton->setPosition((i * 155), 0.0);
+	newTabButton->setPosition((i * 152) + 3, 0.0);
 }
 
 ObjectEntry *PolycodeProjectFrame::getFrameConfig() {
@@ -1296,16 +1296,16 @@ PolycodeFrame::PolycodeFrame(PolycodeEditorManager *editorManager) : UIElement()
 	welcomeEntity = new Entity();
 	welcomeEntity->processInputEvents = true;
 	addChild(welcomeEntity);
-	welcomeImage = new UIImage("Images/welcome.png");
+	welcomeImage = new UIImage("main/welcome.png", 759, 207);
 	welcomeEntity->addChild(welcomeImage);
 	welcomeEntity->snapToPixels = true;
 	
 	newProjectButton = new UIButton("Create A New Project!", 220);	
-	newProjectButton->setPosition(230,80);
+	newProjectButton->setPosition(260,120);
 	newProjectButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
 	examplesButton = new UIButton("Browse Example Projects!", 220);	
-	examplesButton->setPosition(460,80);
+	examplesButton->setPosition(490,120);
 	examplesButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
 	welcomeEntity->addChild(newProjectButton);
@@ -1326,24 +1326,23 @@ PolycodeFrame::PolycodeFrame(PolycodeEditorManager *editorManager) : UIElement()
 	addChild(consoleSizer);
 	consoleSizer->setPosition(0.0, 45);
 	
-	logo = new UIImage("Images/barlogo.png");
-	addChild(logo);		
+	logo = new UIImage("main/barLogo.png", 38, 38);
+	addChild(logo);
 	
-	
-	playButton = new UIImageButton("Images/play_button.png");
+	playButton = new UIImageButton("main/play_button.png", 1.0, 32, 32);
 	addChild(playButton);
-	playButton->setPosition(10,4);
+	playButton->setPosition(10,5);
 
-	stopButton = new UIImageButton("Images/stop_button.png");
+	stopButton = new UIImageButton("main/stop_button.png", 1.0, 32, 32);
 	addChild(stopButton);
-	stopButton->setPosition(10,4);
+	stopButton->setPosition(10,5);
 
 	currentProjectSelector = new UIComboBox(globalMenu, 300);
 	currentProjectSelector->addEventListener(this, UIEvent::CHANGE_EVENT);
 	addChild(currentProjectSelector);
 	currentProjectSelector->setPosition(60, 10);
 	
-	resizer = new UIImage("Images/corner_resize.png");	
+	resizer = new UIImage("main/corner_resize.png", 14, 14);
 	addChild(resizer);
 	resizer->setColor(0,0,0,0.4);
 	
@@ -1385,7 +1384,7 @@ PolycodeFrame::PolycodeFrame(PolycodeEditorManager *editorManager) : UIElement()
 	
 	aboutWindow = new UIWindow("", 800, 440);
 	aboutWindow->closeOnEscape = true;
-	UIImage *aboutImage = new UIImage("Images/about.png");
+	UIImage *aboutImage = new UIImage("main/about.png", 321, 122);
 	aboutWindow->addChild(aboutImage);
 	aboutImage->setPosition(20, 40);
 	aboutWindow->visible = false;

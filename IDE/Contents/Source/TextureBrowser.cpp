@@ -35,6 +35,7 @@ AssetEntry::AssetEntry(String assetPath, String assetName, String extension) : U
 	addChild(selectShape);
 	selectShape->processInputEvents = true;
 	selectShape->setColor(0.0, 0.0, 0.0, 0.5);
+    selectShape->loadTexture("browserIcons/large_selector.png");
 
 	imageShape = new UIRect(64,64);
 	imageShape->setAnchorPoint(-1.0, -1.0, 0.0);
@@ -45,27 +46,25 @@ AssetEntry::AssetEntry(String assetPath, String assetName, String extension) : U
 	if(extension == "png") {
 		imageShape->loadTexture(assetPath);
 	} else if(extension == "ogg" || extension == "wav") {
-		imageShape->loadTexture("Images/sound_thumb.png");
-	} else if(extension == "entity2d") {
-		imageShape->loadTexture("Images/entity_thumb.png");
-	} else if(extension == "entity2d") {
-		imageShape->loadTexture("Images/entity_thumb.png");
+		imageShape->loadTexture("browserIcons/sound_icon.png");
+	} else if(extension == "entity") {
+		imageShape->loadTexture("browserIcons/entity_icon");
 	} else if(extension == "sprite") {
-		imageShape->loadTexture("Images/sprite_thumb.png");		
+		imageShape->loadTexture("browserIcons/sprite_icon");
 	} else if(extension == "ttf" || extension == "otf") {
-		imageShape->loadTexture("Images/font_icon.png");
+		imageShape->loadTexture("browserIcons/font_icon.png");
 	} else if(extension == "vert" || extension == "frag") {
-		imageShape->loadTexture("Images/shader_thumb.png");
+		imageShape->loadTexture("browserIcons/shader_icon.png");
 	}
 
 	
 	imageShape->setPosition(28, 10);
 	
-	nameLabel = new UILabel(assetName, 10);
+	nameLabel = new UILabel(assetName, 12);
 	addChild(nameLabel);
 	nameLabel->color.a = 1.0;
 	nameLabel->setAnchorPoint(0.0, 0.0, 0.0);
-	nameLabel->setPosition(60, 90);
+	nameLabel->setPosition(32-7, 80);
 }
 
 AssetEntry::~AssetEntry() {
@@ -81,7 +80,7 @@ AssetList::AssetList() : UIElement() {
 	bgShape->setColor(0.0, 0.0, 0.0, 0.4);
 	addChild(bgShape);
 	
-	reloadButton = new UIImageButton("Images/reload_icon.png");
+	reloadButton = new UIImageButton("browserIcons/reload_icon.png", 1.0, 20, 20);
 	reloadButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(reloadButton);	
 	reloadButton->setPosition(10, 5);		

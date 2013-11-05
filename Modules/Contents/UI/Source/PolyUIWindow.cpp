@@ -38,7 +38,8 @@ UIWindow::UIWindow(String windowName, Number width, Number height) : UIElement()
 	snapToPixels = true;
 	
 	Config *conf = CoreServices::getInstance()->getConfig();	
-	
+    Number uiScale = conf->getNumericValue("Polycode", "uiScale");
+    
 	String fontName = conf->getStringValue("Polycode", "uiWindowTitleFont");
 	int fontSize = conf->getNumericValue("Polycode", "uiWindowTitleFontSize");	
 	
@@ -77,11 +78,11 @@ UIWindow::UIWindow(String windowName, Number width, Number height) : UIElement()
 	titleLabel->positionAtBaseline = false;
 	titleLabel->setAnchorPoint(-1.0, -1.0, 0.0);
 			
-	closeBtn = new UIImageButton(conf->getStringValue("Polycode", "uiWindowCloseIcon"));
+	closeBtn = new UIImageButton(conf->getStringValue("Polycode", "uiWindowCloseIcon"), uiScale);
 	addChild(closeBtn);
 	closeIconX = conf->getNumericValue("Polycode", "uiCloseIconX");
 	closeIconY = conf->getNumericValue("Polycode", "uiCloseIconY");
-		
+	
 	closeBtn->setPosition(width-closeBtn->getWidth()-closeIconX, closeIconY);	
 	
 	titlebarRect->addEventListener(this, InputEvent::EVENT_MOUSEUP);

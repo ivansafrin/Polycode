@@ -26,22 +26,18 @@ TransformGizmoMenu::TransformGizmoMenu(TransformGizmo *gizmo) : UIElement() {
 	processInputEvents = true;
 	
 	this->gizmo = gizmo;
-	
-	bg = new UIRect(100, 30);
-	bg->setColor(0.0, 0.0, 0.0, 0.75);
-	addChild(bg);
-	
-	moveModeButton = new UIImageButton("Images/entity_editor/move_gizmo.png");
+		
+	moveModeButton = new UIImageButton("entityEditor/move_gizmo.png", 1.0, 24, 24);
 	addChild(moveModeButton);
 	moveModeButton->setPosition(4, 2);
 	moveModeButton->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	
-	scaleModeButton = new UIImageButton("Images/entity_editor/scale_gizmo.png");
+	scaleModeButton = new UIImageButton("entityEditor/scale_gizmo.png", 1.0, 24, 24);
 	addChild(scaleModeButton);
 	scaleModeButton->setPosition(30, 2);
 	scaleModeButton->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	
-	rotateModeButton = new UIImageButton("Images/entity_editor/rotate_gizmo.png");
+	rotateModeButton = new UIImageButton("entityEditor/rotate_gizmo.png", 1.0, 24, 24);
 	addChild(rotateModeButton);
 	rotateModeButton->setPosition(60, 2);
 	rotateModeButton->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);

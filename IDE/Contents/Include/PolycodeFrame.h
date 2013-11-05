@@ -296,7 +296,6 @@ class PolycodeProjectFrame : public UIElement {
 		PolycodeProjectTab *tabToClose;
 };
 
-
 class PolycodeFrame : public UIElement {
 public:
 	

@@ -28,10 +28,22 @@
 
 using namespace Polycode;
 
-UIImageButton::UIImageButton(String imageName) : UIElement() {
+UIImageButton::UIImageButton(String imageName, Number scale, Number width, Number height) : UIElement() {
 	setAnchorPoint(-1.0, -1.0, 0.0);
 	
 	buttonImage = new UIImage(imageName);
+
+    Number buttonWidth = buttonImage->getWidth() / scale;
+    Number buttonHeight = buttonImage->getHeight() / scale;
+    
+    if(width != -1) {
+        buttonWidth = width;
+    }
+    if(height != -1) {
+        buttonHeight = height;
+    }
+    
+    buttonImage->Resize(buttonWidth, buttonHeight);
 	addChild(buttonImage);
 	buttonImage->depthTest = false;
 	buttonImage->snapToPixels = true;
@@ -39,6 +51,7 @@ UIImageButton::UIImageButton(String imageName) : UIElement() {
 	buttonImage->setAnchorPoint(-1.0, -1.0, 0.0);
 	
 	buttonRect = new UIRect(buttonImage->getWidth(),buttonImage->getHeight());
+                       
 	buttonRect->setColor(1,1,1,0);
 	buttonRect->setAnchorPoint(-1.0, -1.0, 0.0);
 	addChild(buttonRect);
@@ -49,7 +62,7 @@ UIImageButton::UIImageButton(String imageName) : UIElement() {
 	buttonRect->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	buttonRect->processInputEvents = true;
 	pressedDown = false;
-	
+    
 	setWidth(buttonRect->getWidth());
 	setHeight(buttonRect->getHeight());	
 }

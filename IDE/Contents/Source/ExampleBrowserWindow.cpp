@@ -91,11 +91,13 @@ void ExampleBrowserWindow::handleEvent(Event *event) {
 	if(event->getEventType() == "UIEvent") {
 		if(event->getEventCode() == UIEvent::CLICK_EVENT) {
 			UITree *node = templateContainer->getRootNode()->getSelectedNode();
-			ExampleTemplateUserData *data = (ExampleTemplateUserData*)node->getUserData();
-			if(event->getDispatcher() == okButton && data->type == 1) {
-				dispatchEvent(new UIEvent(), UIEvent::OK_EVENT);						
+            if(node) {
+                ExampleTemplateUserData *data = (ExampleTemplateUserData*)node->getUserData();
+                if(event->getDispatcher() == okButton && data->type == 1) {
+                    dispatchEvent(new UIEvent(), UIEvent::OK_EVENT);
+                }
 			}
-			
+            
 			if(event->getDispatcher() == cancelButton) {
 				dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);				
 			}									
@@ -119,7 +121,7 @@ void ExampleBrowserWindow::parseTemplatesIntoTree(UITree *tree, OSFileEntry fold
 	for(int i=0; i < templates.size(); i++) {
 		OSFileEntry entry = templates[i];
 		if(entry.type == OSFileEntry::TYPE_FOLDER) {
-			UITree *newChild = tree->addTreeChild("templateIcon.png", entry.name, NULL);			
+			UITree *newChild = tree->addTreeChild("file.png", entry.name, NULL);			
 			ExampleTemplateUserData *data = new ExampleTemplateUserData();
 			data->type = 1;
 			data->templateFolder = entry.fullPath;

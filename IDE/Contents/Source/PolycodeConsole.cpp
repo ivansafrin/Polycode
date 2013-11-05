@@ -182,10 +182,10 @@ ConsoleWindow::ConsoleWindow() : UIElement() {
 	addChild(consoleTextInput);	
 	addChild(debugTextInput);	
 	
-	clearButton = new UIImageButton("Images/clear_buffer_icon.png");
+	clearButton = new UIImageButton("main/clear_buffer_icon.png", 1.0, 16, 16);
 	addChild(clearButton);
 	
-	hideConsoleButton = new UIImageButton("Images/console_hide_button.png");
+	hideConsoleButton = new UIImageButton("main/console_hide_button.png", 1.0, 20, 20);
 	addChild(hideConsoleButton);
 	hideConsoleButton->setPosition(7,5);
 	

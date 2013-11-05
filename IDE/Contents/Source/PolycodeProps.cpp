@@ -226,12 +226,12 @@ PropSheet::PropSheet(String caption, String type) : UIElement() {
 	addChild(contents);
 	contents->setPosition(20,35);
 	
-	collapseButton = new UIImageButton("Images/collapse.png");
+	collapseButton = new UIImageButton("main/collapse.png", 1.0, 12, 12);
 	addChild(collapseButton);
 	collapseButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	collapseButton->setPosition(5, 9);
 
-	expandButton = new UIImageButton("Images/expand.png");
+	expandButton = new UIImageButton("main/expand.png", 1.0, 12, 12);
 	addChild(expandButton);
 	expandButton->addEventListener(this, UIEvent::CLICK_EVENT);	
 	expandButton->setPosition(5, 9);
@@ -434,7 +434,7 @@ CustomProp::CustomProp(String key, String value) : PropProp("", "Custom") {
 	propContents->addChild(valueEntry);
 	valueEntry->setPosition(45, 0);
 	
-	removeButton = new UIImageButton("Images/remove_icon.png");
+	removeButton = new UIImageButton("main/remove_icon.png", 1.0, 12, 12);
 	removeButton->addEventListener(this, UIEvent::CLICK_EVENT);	
 	propContents->addChild(removeButton);
 	removeButton->setPosition(-110, 6);
@@ -1128,7 +1128,7 @@ ShaderPassProp::ShaderPassProp(Material *material, int shaderIndex) : PropProp("
 	this->shader = material->getShader(shaderIndex);
 	this->shaderIndex = shaderIndex;
 	
-	removeButton = new UIImageButton("Images/remove_icon.png");
+	removeButton = new UIImageButton("main/remove_icon.png", 1.0, 12, 12);
 	removeButton->addEventListener(this, UIEvent::CLICK_EVENT);	
 	propContents->addChild(removeButton);
 	removeButton->setPosition(-110, 6);
@@ -1193,7 +1193,7 @@ TargetBindingProp::TargetBindingProp(Shader *shader, Material *material, ShaderB
 	this->shader = shader;
 	this->binding = binding;
 		
-	removeButton = new UIImageButton("Images/remove_icon.png");
+	removeButton = new UIImageButton("main/remove_icon.png", 1.0, 12, 12);
 	removeButton->addEventListener(this, UIEvent::CLICK_EVENT);	
 	propContents->addChild(removeButton);
 	removeButton->setPosition(-110, 6);
@@ -1326,7 +1326,7 @@ RenderTargetProp::RenderTargetProp(ShaderRenderTarget *renderTarget, Material *m
 	this->material = material;
 	this->renderTarget = renderTarget;
 
-	removeButton = new UIImageButton("Images/remove_icon.png");
+	removeButton = new UIImageButton("main/remove_icon.png", 1.0, 12, 12);
 	removeButton->addEventListener(this, UIEvent::CLICK_EVENT);	
 	propContents->addChild(removeButton);
 	removeButton->setPosition(-110, 6);

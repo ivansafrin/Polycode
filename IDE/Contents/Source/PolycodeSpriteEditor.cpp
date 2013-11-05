@@ -32,7 +32,7 @@ SpriteAnimationEntry::SpriteAnimationEntry(SpriteAnimation *animation) : PropPro
 	
 	this->animation = animation;
 	
-	removeButton = new UIImageButton("Images/remove_icon.png");
+	removeButton = new UIImageButton("main/remove_icon.png", 1.0, 12, 12);
 	removeButton->setPosition(0, 5);
 	removeButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(removeButton);
@@ -55,7 +55,7 @@ SpriteAnimationEntry::SpriteAnimationEntry(SpriteAnimation *animation) : PropPro
 	speedInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	addChild(speedInput);
 	
-	playButton = new UIImageButton("Images/play_icon.png");
+	playButton = new UIImageButton("main/play_icon.png", 1.0, 16, 16);
 	playButton->setPosition(330, 3);
 	playButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(playButton);

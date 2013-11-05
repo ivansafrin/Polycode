@@ -84,6 +84,7 @@ namespace Polycode {
 	class _PolyExport UIRect : public UIElement {
 		public:
 			UIRect(String fileName);
+            UIRect(String fileName, Number width, Number height);
 			UIRect(Number width, Number height);
 			void initRect(Number width, Number height);
 			~UIRect();
@@ -91,10 +92,10 @@ namespace Polycode {
 			void Render();
 			void loadTexture(String fileName);
 			void setTexture(Texture *texture);
-			void setImageCoordinates(Number x, Number y, Number width, Number height);
+			void setImageCoordinates(Number x, Number y, Number width, Number height, Number imageScale = 1.0);
 			Number getImageWidth() const;
 			Number getImageHeight() const;
-						
+        
 			Texture *getTexture();			
 		protected:
 		
@@ -122,6 +123,7 @@ namespace Polycode {
 	class _PolyExport UIImage : public UIRect {
 		public:
 			UIImage(String imagePath);
+            UIImage(String imagePath, int width, int height);
 	};
 	
 }

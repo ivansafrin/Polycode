@@ -58,6 +58,14 @@ Label *UILabel::getLabel() {
 	return label->getLabel();
 }
 
+UIRect::UIRect(String fileName, Number width, Number height) : UIElement() {
+	texture = NULL;
+	loadTexture(fileName);
+    initRect(width, height);
+    imageWidth = width;
+    imageHeight = height;
+}
+
 UIRect::UIRect(String fileName) : UIElement() {
 	texture = NULL;
 	loadTexture(fileName);
@@ -81,7 +89,7 @@ UIRect::UIRect(Number width, Number height) : UIElement() {
 	imageHeight = 0;
 }
 
-void UIRect::setImageCoordinates(Number x, Number y, Number width, Number height) {
+void UIRect::setImageCoordinates(Number x, Number y, Number width, Number height, Number imageScale) {
 	Vertex *vertex;
 	Number pixelSizeX = 1/imageWidth;
 	Number pixelSizeY = 1/imageHeight;
@@ -92,10 +100,10 @@ void UIRect::setImageCoordinates(Number x, Number y, Number width, Number height
 	Number whalf = width/2.0f;
 	Number hhalf = height/2.0f;
 		
-	Number xFloat = x * pixelSizeX;
-	Number yFloat = (y * pixelSizeY);
-	Number wFloat = width * pixelSizeX;
-	Number hFloat = height * pixelSizeY;
+	Number xFloat = x * pixelSizeX * imageScale;
+	Number yFloat = (y * pixelSizeY) * imageScale;
+	Number wFloat = width * pixelSizeX * imageScale;
+	Number hFloat = height * pixelSizeY * imageScale;
 
 	Polygon *imagePolygon = rectMesh->getPolygon(0);	
 	vertex = imagePolygon->getVertex(0);
@@ -192,6 +200,9 @@ void UIRect::Resize(Number width, Number height) {
 	vertex = polygon->getVertex(3);	
 	vertex->set(-whalf,-hhalf+height,0);				
 	rectMesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;	
+}
+
+UIImage::UIImage(String imagePath, int width, int height) : UIRect(imagePath, width, height) {
 }
 
 UIImage::UIImage(String imagePath) : UIRect(imagePath) {
