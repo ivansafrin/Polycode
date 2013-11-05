@@ -319,8 +319,8 @@ Vector3 OpenGLRenderer::projectRayFrom2DCoordinate(Number x, Number y, const Mat
 		_sceneProjectionMatrix[i] = projectionMatrix.ml[i];
 	}
 
-	gluUnProject(x, yRes - y, 0.0, mv, _sceneProjectionMatrix, vp, &nearPlane[0], &nearPlane[1], &nearPlane[2]);
-	gluUnProject(x, yRes - y, 1.0, mv, _sceneProjectionMatrix, vp, &farPlane[0], &farPlane[1], &farPlane[2]);
+	gluUnProject(x, (yRes*backingResolutionScaleY) - y, 0.0, mv, _sceneProjectionMatrix, vp, &nearPlane[0], &nearPlane[1], &nearPlane[2]);
+	gluUnProject(x, (yRes*backingResolutionScaleY) - y, 1.0, mv, _sceneProjectionMatrix, vp, &farPlane[0], &farPlane[1], &farPlane[2]);
 
 	Vector3 nearVec(nearPlane[0], nearPlane[1], nearPlane[2]);
 	Vector3 farVec(farPlane[0], farPlane[1], farPlane[2]);
