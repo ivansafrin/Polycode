@@ -52,6 +52,12 @@
 				<textures>
 				</textures>				
 			</shader>
-		</material>					
+		</material>
+		<material name="UnlitMaterial">
+			<shader name="Unlit">
+				<textures>
+				</textures>				
+			</shader>
+		</material>							
 	</materials>
 </polycode>

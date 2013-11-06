@@ -323,6 +323,12 @@ void SceneMesh::Render() {
 		renderMeshLocally();
 	}
 	
+	if(material)  {
+		renderer->clearShader();
+	}
+    
+    renderer->setTexture(NULL);
+    
 	if(overlayWireframe) {
 		bool depthTestVal = depthTest;
 		renderer->enableDepthTest(false);
@@ -338,10 +344,5 @@ void SceneMesh::Render() {
 		renderer->setWireframePolygonMode(false);
 	}	
 	
-	if(material) 
-		renderer->clearShader();
-	
-	if(showVertexNormals) {	
-		renderer->setTexture(NULL);
-	}	
+    
 }

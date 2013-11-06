@@ -40,12 +40,12 @@ EntityEditorMainView::EntityEditorMainView() {
 	renderTextureShape->setTexture(renderTexture->getTargetTexture());
 	addChild(renderTextureShape);
 	renderTextureShape->setPosition(0, 30);
-				
 			
 	headerBg = new UIRect(10,10);
 	addChild(headerBg);
 	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
+    
 	
 	sideBar = new Entity();
 	addChild(sideBar);
@@ -78,7 +78,37 @@ EntityEditorMainView::EntityEditorMainView() {
     
 }
 
+Entity *EntityEditorMainView::getSelectedEntity() {
+    if(selectedEntities.size() > 0) {
+        return selectedEntities[selectedEntities.size()-1];
+    } else {
+        return NULL;
+    }
+}
+
 void EntityEditorMainView::Update() {
+    for(int i=0; i < icons.size(); i++) {
+        Number scale = mainScene->getDefaultCamera()->getPosition().distance(icons[i]->getConcatenatedMatrix().getPosition()) * 0.1;
+        icons[i]->setScale(scale, scale, scale);
+    }
+}
+
+void EntityEditorMainView::createIcon(Entity *entity, String iconFile) {
+    ScenePrimitive *iconPrimitive = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 0.3, 0.3);
+    
+    iconPrimitive->setMaterialByName("UnlitMaterial");
+	Texture *tex = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile("entityEditor/"+iconFile);
+	if(iconPrimitive->getLocalShaderOptions()) {
+        iconPrimitive->getLocalShaderOptions()->addTexture("diffuse", tex);
+	}
+    
+    entity->addChild(iconPrimitive);
+    iconPrimitive->billboardMode = true;
+    iconPrimitive->depthTest = false;
+    iconPrimitive->depthWrite = false;
+    iconPrimitive->editorOnly = true;
+    iconPrimitive->alphaTest = true;
+    icons.push_back(iconPrimitive);
 }
 
 void EntityEditorMainView::setEditorProps(Entity *entity) {
@@ -89,6 +119,12 @@ void EntityEditorMainView::setEditorProps(Entity *entity) {
     if(sceneMesh) {
         sceneMesh->wireFrameColor = Color(1.0, 0.8, 0.3, 1.0);
         sceneMesh->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
+        sceneMesh->useGeometryHitDetection = true;
+    }
+    
+    SceneLight *sceneLight = dynamic_cast<SceneLight*>(entity);
+    if(sceneLight) {
+        createIcon(entity, "light_icon.png");
     }
 }
 
@@ -99,9 +135,23 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
         sceneObjectRoot->addChild(newPrimitive);
         setEditorProps(newPrimitive);
         newPrimitive->setPosition(cursorPosition);
+        selectEntity(newPrimitive);
+        newPrimitive->getMesh()->calculateNormals(false);
         return;
     }
 
+    if(command == "add_light") {
+        SceneLight *newLight = new SceneLight(SceneLight::AREA_LIGHT, mainScene, 50);
+        
+        newLight->bBox = Vector3(0.5, 0.5, 0.5);
+        mainScene->addLight(newLight);
+        sceneObjectRoot->addChild(newLight);
+        setEditorProps(newLight);
+        newLight->setPosition(cursorPosition);
+        selectEntity(newLight);
+        return;
+    }
+    
     if(command == "add_mesh") {
         assetSelectType = "mesh";
         globalFrame->assetBrowser->addEventListener(this, UIEvent::OK_EVENT);
@@ -122,6 +172,7 @@ void EntityEditorMainView::handleEvent(Event *event) {
                 sceneObjectRoot->addChild(newMesh);
                 setEditorProps(newMesh);
                 newMesh->setPosition(cursorPosition);
+                selectEntity(newMesh);
             }
             
             globalFrame->assetBrowser->removeAllHandlersForListener(this);
@@ -154,31 +205,36 @@ void EntityEditorMainView::handleEvent(Event *event) {
 
             if(inputEvent->mouseButton == CoreInput::MOUSE_BUTTON2) {
                 Entity* targetEntity = (Entity*) event->getDispatcher();
-                
-                for(int i=0; i < selectedEntities.size(); i++) {
-                    SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(selectedEntities[i]);
-                    if(sceneMesh) {
-                        sceneMesh->overlayWireframe = false;
-                    }
-                }
-                
-                selectedEntities.clear();			
-                selectedEntities.push_back(targetEntity);
-                transformGizmo->setTransformSelection(selectedEntities);
-                                
-                SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(targetEntity);
-                if(sceneMesh) {
-                    sceneMesh->overlayWireframe = true;
-                }
+                selectEntity(targetEntity);
             }
         }
     }
 }
 
+void EntityEditorMainView::selectEntity(Entity *targetEntity) {
+    for(int i=0; i < selectedEntities.size(); i++) {
+        SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(selectedEntities[i]);
+        if(sceneMesh) {
+            sceneMesh->overlayWireframe = false;
+        }
+    }
+    
+    selectedEntities.clear();
+    selectedEntities.push_back(targetEntity);
+    transformGizmo->setTransformSelection(selectedEntities);
+    dispatchEvent(new Event(), Event::CHANGE_EVENT);
+    
+    SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(targetEntity);
+    if(sceneMesh) {
+        sceneMesh->overlayWireframe = true;
+    }
+    
+}
+
 EntityEditorMainView::~EntityEditorMainView() {
 	
 }
-			
+
 void EntityEditorMainView::Resize(Number width, Number height) {
 	headerBg->Resize(width, 30);
 	
@@ -191,11 +247,31 @@ void EntityEditorMainView::Resize(Number width, Number height) {
 }
 
 PolycodeEntityEditor::PolycodeEntityEditor() : PolycodeEditor(true){
-	mainSizer = new UIHSizer(300, 300, 200, false);
+	mainSizer = new UIHSizer(300, 300, 300, false);
 	addChild(mainSizer);
 	
 	mainView = new EntityEditorMainView();
+    mainView->addEventListener(this, Event::CHANGE_EVENT);
 	mainSizer->addLeftChild(mainView);
+    
+    rightSizer = new UIVSizer(10, 10, 150, true);
+    mainSizer->addRightChild(rightSizer);
+    
+    propertyView = new EntityEditorPropertyView();
+    rightSizer->addBottomChild(propertyView);
+}
+
+void PolycodeEntityEditor::handleEvent(Event *event) {
+    
+    if(event->getDispatcher() == mainView) {
+        switch(event->getEventCode()) {
+            case Event::CHANGE_EVENT:
+                propertyView->setEntity(mainView->getSelectedEntity());
+            break;
+        }
+    }
+    
+    PolycodeEditor::handleEvent(event);
 }
 
 PolycodeEntityEditor::~PolycodeEntityEditor() {

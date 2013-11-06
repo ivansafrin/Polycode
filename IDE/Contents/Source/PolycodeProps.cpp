@@ -323,7 +323,6 @@ PropProp::PropProp(String caption, String type) : UIElement() {
 	suppressChangeEvent = false;
 	propType = type;
 	label = new UILabel(caption, 12);
-	label->color.a = 1.0;
 	label->setPosition(0, 5);
 	addChild(label);
 	
@@ -2039,6 +2038,63 @@ void ShaderTexturesSheet::setShader(Shader *shader, Material *material, ShaderBi
 	Resize(getWidth(), getHeight());
 }
 
+MaterialPropSheet::MaterialPropSheet() : PropSheet("MATERIAL", "material") {
+    materialProp = new ComboProp("Material");
+    addProp(materialProp);
+    
+    propHeight = 70;
+    enabled = false;
+}
+
+MaterialPropSheet::~MaterialPropSheet() {
+    
+}
+
+void MaterialPropSheet::setSceneMesh(SceneMesh *sceneMesh) {
+    this->sceneMesh = sceneMesh;
+    
+    if(sceneMesh) {
+        enabled = true;
+        reloadMaterials();
+    } else {
+        enabled = false;
+    }
+}
+
+void MaterialPropSheet::reloadMaterials() {
+
+	Resource *selectedMaterial = NULL;
+    
+    selectedMaterial = NULL;
+    if(sceneMesh) {
+        selectedMaterial = (Resource*)sceneMesh->getMaterial();
+    }
+		
+	materialProp->comboEntry->clearItems();
+	std::vector<Resource*> materials = CoreServices::getInstance()->getResourceManager()->getResources(Resource::RESOURCE_MATERIAL);
+	for(int i=0; i < materials.size(); i++) {
+        if(((Material*)materials[i])->screenMaterial) {
+            continue;
+        }
+		materialProp->comboEntry->addComboItem(materials[i]->getResourceName(), (void*) materials[i]);
+		if(selectedMaterial == materials[i]) {
+			materialProp->comboEntry->setSelectedIndex(i);
+		}
+	}
+}
+
+void MaterialPropSheet::handleEvent(Event *event) {
+    if(!sceneMesh) {
+        PropSheet::handleEvent(event);
+        return;
+    }
+        
+    if(event->getDispatcher() == materialProp  && event->getEventCode() == Event::CHANGE_EVENT) {
+        Material *newMaterial = (Material*)materialProp->comboEntry->getSelectedItem()->data;
+        sceneMesh->setMaterial(newMaterial);
+    }
+    PropSheet::handleEvent(event);
+}
 
 EntitySheet::EntitySheet() : PropSheet("ENTITY", "entity"){
 	idProp = new StringProp("ID");
@@ -2052,7 +2108,8 @@ EntitySheet::EntitySheet() : PropSheet("ENTITY", "entity"){
 	
 	blendingProp = new ComboProp("Blend mode");
 	addProp(blendingProp);
-	
+
+    blendingProp->comboEntry->addComboItem("None");
 	blendingProp->comboEntry->addComboItem("Normal");
 	blendingProp->comboEntry->addComboItem("Lighten");
 	blendingProp->comboEntry->addComboItem("Color");
@@ -2062,7 +2119,7 @@ EntitySheet::EntitySheet() : PropSheet("ENTITY", "entity"){
 	propHeight = 160;
 	
 	entity = NULL;
-	lastEntity = NULL;
+    enabled = false;
 }
 
 EntitySheet::~EntitySheet() {
@@ -2101,31 +2158,28 @@ void EntitySheet::handleEvent(Event *event) {
 	PropSheet::handleEvent(event);	
 }
 
-void EntitySheet::Update() {
-	if(entity) {
-		
-		enabled = true;
-		
-		if(entity != lastEntity) {	
-			idProp->set(entity->id);			
-			
-			String tagString = "";
-			for(int i=0; i < entity->getNumTags(); i++) {
-				if(i != 0) {
-					tagString += ",";
-				}
-				tagString += entity->getTagAtIndex(i);
-			}
-			tagProp->set(tagString);
-			
-			colorProp->set(entity->color);			
-			blendingProp->set(entity->blendingMode);
-			
-			lastEntity = entity;			
-		}
-	} else {
-		enabled = false;
-	}
+
+void EntitySheet::setEntity(Entity *entity) {
+    this->entity = entity;
+    if(entity) {
+        idProp->set(entity->id);
+        
+        String tagString = "";
+        for(int i=0; i < entity->getNumTags(); i++) {
+            if(i != 0) {
+                tagString += ",";
+            }
+            tagString += entity->getTagAtIndex(i);
+        }
+        tagProp->set(tagString);
+        
+        colorProp->set(entity->color);
+        blendingProp->set(entity->blendingMode);
+        
+        enabled = true;
+    } else {
+        enabled = false;
+    }
 }
 
 SceneSpriteSheet::SceneSpriteSheet() : PropSheet("SCREEN SPRITE", "SceneSprite") {

@@ -437,10 +437,10 @@ class EntitySheet : public PropSheet {
 		~EntitySheet();	
 	
 		void handleEvent(Event *event);
-		void Update();
-				
+        void setEntity(Entity *entity);
+
+    protected:
 		Entity *entity;
-		Entity *lastEntity;
 		
 		StringProp *idProp;
 		StringProp *tagProp;
@@ -509,6 +509,21 @@ class RenderTargetsSheet : public PropSheet {
 		int removeIndex;
 };
 
+class MaterialPropSheet : public PropSheet {
+    public:
+        MaterialPropSheet();
+        ~MaterialPropSheet();
+    
+        void handleEvent(Event *event);
+        void reloadMaterials();
+    
+        void setSceneMesh(SceneMesh *sceneMesh);
+    
+    protected:
+        SceneMesh *sceneMesh;
+        ComboProp *materialProp;
+};
+
 class EntityPropSheet : public PropSheet {
 	public:
 		EntityPropSheet();		
@@ -517,12 +532,11 @@ class EntityPropSheet : public PropSheet {
 		void refreshProps();
 		void applyPropActionData(PolycodeEditorPropActionData *data);
 
-
 		UIButton *addButton;
 		
 		Entity *entity;
 		Entity *lastEntity;
-		
+    
 		int lastNumProps;		
 		int removeIndex;
 };

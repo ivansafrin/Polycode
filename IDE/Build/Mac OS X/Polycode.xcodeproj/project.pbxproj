@@ -20,6 +20,7 @@
 		6D3DC79D1622043A003ED2C9 /* PolycodeConsole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D3DC79C1622043A003ED2C9 /* PolycodeConsole.cpp */; };
 		6D6D3FA614B446A600219173 /* PolycodeToolLauncher.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D6D3FA514B446A600219173 /* PolycodeToolLauncher.cpp */; };
 		6D70AB2A12B29BF200EB6D94 /* NewFileWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D70AB2912B29BF200EB6D94 /* NewFileWindow.cpp */; };
+		6D7234B11829E33100BB3D96 /* EntityEditorPropertyView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D7234B01829E33100BB3D96 /* EntityEditorPropertyView.cpp */; };
 		6D79732E167F0D4600646407 /* PolycodeSpriteEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D79732D167F0D4600646407 /* PolycodeSpriteEditor.cpp */; };
 		6D797333167F0EB100646407 /* PolycodeProps.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D797332167F0EB100646407 /* PolycodeProps.cpp */; };
 		6D80B0CE163B14CB00EF3C04 /* PolycodeMaterialEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D80B0CD163B14CB00EF3C04 /* PolycodeMaterialEditor.cpp */; };
@@ -102,6 +103,8 @@
 		6D6D3FA814B446AF00219173 /* PolycodeToolLauncher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolycodeToolLauncher.h; sourceTree = "<group>"; };
 		6D70AB2812B29BEC00EB6D94 /* NewFileWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewFileWindow.h; sourceTree = "<group>"; };
 		6D70AB2912B29BF200EB6D94 /* NewFileWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NewFileWindow.cpp; sourceTree = "<group>"; };
+		6D7234AF1829E32800BB3D96 /* EntityEditorPropertyView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EntityEditorPropertyView.h; sourceTree = "<group>"; };
+		6D7234B01829E33100BB3D96 /* EntityEditorPropertyView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EntityEditorPropertyView.cpp; sourceTree = "<group>"; };
 		6D79732D167F0D4600646407 /* PolycodeSpriteEditor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolycodeSpriteEditor.cpp; sourceTree = "<group>"; };
 		6D797330167F0D4D00646407 /* PolycodeSpriteEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolycodeSpriteEditor.h; sourceTree = "<group>"; };
 		6D797331167F0EA500646407 /* PolycodeProps.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolycodeProps.h; sourceTree = "<group>"; };
@@ -380,6 +383,7 @@
 		6DCB602C1822EA4A006701AF /* entity_editor */ = {
 			isa = PBXGroup;
 			children = (
+				6D7234AF1829E32800BB3D96 /* EntityEditorPropertyView.h */,
 				6DCB60361822EDB1006701AF /* EditorGrid.h */,
 				6DCB60331822EAE5006701AF /* TransformGizmo.h */,
 			);
@@ -389,6 +393,7 @@
 		6DCB60301822EAD5006701AF /* entity_editor */ = {
 			isa = PBXGroup;
 			children = (
+				6D7234B01829E33100BB3D96 /* EntityEditorPropertyView.cpp */,
 				6DCB60341822EBDD006701AF /* EditorGrid.cpp */,
 				6DCB60311822EADE006701AF /* TransformGizmo.cpp */,
 			);
@@ -504,6 +509,7 @@
 				6DD1835D1628A4CC005A5682 /* PolycodeRemoteDebugger.cpp in Sources */,
 				6D80B0CE163B14CB00EF3C04 /* PolycodeMaterialEditor.cpp in Sources */,
 				6DC825791648571E006AFC03 /* ExportProjectWindow.cpp in Sources */,
+				6D7234B11829E33100BB3D96 /* EntityEditorPropertyView.cpp in Sources */,
 				6DC67A541656F693004FD1EF /* TextureBrowser.cpp in Sources */,
 				6D79732E167F0D4600646407 /* PolycodeSpriteEditor.cpp in Sources */,
 				6D797333167F0EB100646407 /* PolycodeProps.cpp in Sources */,

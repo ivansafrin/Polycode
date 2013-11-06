@@ -26,6 +26,7 @@
 #include "PolyUIElement.h"
 #include <Polycode.h>
 #include "PolycodeUI.h"
+#include "EntityEditorPropertyView.h"
 
 #include "TrackballCamera.h"
 
@@ -39,7 +40,10 @@ class EntityEditorMainView : public UIElement {
 			EntityEditorMainView();
 			~EntityEditorMainView();
 			
+            void createIcon(Entity *entity, String iconFile);
             void setEditorProps(Entity *entity);
+    
+            void selectEntity(Entity *targetEntity);
     
 			void handleEvent(Event *event);
 			void Resize(Number width, Number height);
@@ -47,6 +51,8 @@ class EntityEditorMainView : public UIElement {
     
             void addEntityFromMenu(String command);
 			
+            Entity *getSelectedEntity();
+    
 		protected:
 			
 			Entity *sideBar;
@@ -68,12 +74,13 @@ class EntityEditorMainView : public UIElement {
             UIImageButton *addEntityButton;
             UIMenu *addEntityMenu;
     
+            std::vector<ScenePrimitive*> icons;
+    
             Vector3 cursorPosition;
     
             String assetSelectType;
     
 };
-
 
 class PolycodeEntityEditor : public PolycodeEditor {
 	public:
@@ -83,11 +90,17 @@ class PolycodeEntityEditor : public PolycodeEditor {
 		bool openFile(OSFileEntry filePath);
 		void Resize(int x, int y);
 		
+        void handleEvent(Event *event);
+    
 	protected:
 	
 		EntityEditorMainView *mainView;
+        EntityEditorPropertyView *propertyView;
+    
 		UIHSizer *mainSizer;
-	
+        UIVSizer *rightSizer;
+    
+    
 };
 
 class PolycodeEntityEditorFactory : public PolycodeEditorFactory {
