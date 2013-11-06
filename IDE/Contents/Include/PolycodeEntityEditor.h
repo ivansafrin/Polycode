@@ -39,25 +39,39 @@ class EntityEditorMainView : public UIElement {
 			EntityEditorMainView();
 			~EntityEditorMainView();
 			
-			void handleEvent(Event *event);			
+            void setEditorProps(Entity *entity);
+    
+			void handleEvent(Event *event);
 			void Resize(Number width, Number height);
 			void Update();
+    
+            void addEntityFromMenu(String command);
 			
-		protected:		
+		protected:
 			
 			Entity *sideBar;
-			UIRect *headerBg;	
-			
+			UIRect *headerBg;
+				
 			std::vector<Entity*> selectedEntities;
 			
 			Scene *mainScene;
+            Entity *sceneObjectRoot;
+    
 			SceneRenderTexture *renderTexture;
 			UIRect *renderTextureShape;	
 
 			TransformGizmo *transformGizmo;
 			TransformGizmoMenu *transformGizmoMenu;
 			TrackballCamera *trackballCamera;
-			EditorGrid *grid;			
+			EditorGrid *grid;
+    
+            UIImageButton *addEntityButton;
+            UIMenu *addEntityMenu;
+    
+            Vector3 cursorPosition;
+    
+            String assetSelectType;
+    
 };
 
 

@@ -179,11 +179,9 @@ namespace Polycode {
 		virtual void createVertexBufferForMesh(Mesh *mesh) = 0;
 		virtual void drawVertexBuffer(VertexBuffer *buffer, bool enableColorBuffer) = 0;
 		
-		void setRenderMode(int newRenderMode);
-		int getRenderMode();
-		
 		virtual void enableDepthTest(bool val) = 0;
 		virtual void enableDepthWrite(bool val) = 0;
+        virtual void setWireframePolygonMode(bool val) = 0;
 		
 		void billboardMatrix();
 		void billboardMatrixWithScale(Vector3 scale);
@@ -262,9 +260,6 @@ namespace Polycode {
 				
 		virtual Matrix4 getProjectionMatrix() = 0;
 		virtual Matrix4 getModelviewMatrix() = 0;
-		
-		static const int RENDER_MODE_NORMAL = 0;
-		static const int RENDER_MODE_WIREFRAME = 1;
 
         static const int BLEND_MODE_NONE = 0;
 		static const int BLEND_MODE_NORMAL = 1;
@@ -342,7 +337,6 @@ namespace Polycode {
 		Material *currentMaterial;
 		
 		int textureFilteringMode;
-		int renderMode;
 		
 		Matrix4 cameraMatrix;
 	

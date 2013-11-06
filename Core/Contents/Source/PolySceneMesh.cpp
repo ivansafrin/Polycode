@@ -326,7 +326,7 @@ void SceneMesh::Render() {
 	if(overlayWireframe) {
 		bool depthTestVal = depthTest;
 		renderer->enableDepthTest(false);
-		renderer->setRenderMode(Renderer::RENDER_MODE_WIREFRAME);
+		renderer->setWireframePolygonMode(true);
 		renderer->setVertexColor(wireFrameColor.r, wireFrameColor.g, wireFrameColor.b, wireFrameColor.a);
 		
 		if(useVertexBuffer) {
@@ -335,7 +335,7 @@ void SceneMesh::Render() {
 			renderMeshLocally();
 		}
 		renderer->enableDepthTest(depthTestVal);		
-		renderer->setRenderMode(Renderer::RENDER_MODE_NORMAL);		
+		renderer->setWireframePolygonMode(false);
 	}	
 	
 	if(material) 

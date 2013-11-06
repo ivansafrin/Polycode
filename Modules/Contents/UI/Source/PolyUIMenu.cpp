@@ -52,6 +52,10 @@ UIMenuItem::UIMenuItem(String label, String _id, void *data, Number comboWidth, 
 	this->data = data;
 }
 
+String UIMenuItem::getMenuItemID() {
+    return _id;
+}
+
 UIMenuItem::UIMenuItem() : UIElement(), data(NULL), itemLabel(NULL) {
 }
 

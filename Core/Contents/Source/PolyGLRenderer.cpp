@@ -383,40 +383,17 @@ void OpenGLRenderer::drawVertexBuffer(VertexBuffer *buffer, bool enableColorBuff
 	glEnableVertexAttribArrayARB(6);	
 	glVertexAttribPointer(6, 3, GL_FLOAT, 0, 0,  (char *)NULL);
 	
-	
-	
 	GLenum mode = GL_TRIANGLES;
 	
 	switch(buffer->meshType) {
 		case Mesh::TRI_MESH:
-			switch(renderMode) {
-				case RENDER_MODE_NORMAL:
-					mode = GL_TRIANGLES;
-					break;
-				case RENDER_MODE_WIREFRAME:
-					mode = GL_LINE_LOOP;
-					break;
-			}
+            mode = GL_TRIANGLES;
 			break;
 		case Mesh::TRIFAN_MESH:
-			switch(renderMode) {
-				case RENDER_MODE_NORMAL:
-					mode = GL_TRIANGLE_FAN;
-					break;
-				case RENDER_MODE_WIREFRAME:
-					mode = GL_LINE_LOOP;
-					break;
-			}
+            mode = GL_TRIANGLE_FAN;
 			break;
 		case Mesh::QUAD_MESH:
-			switch(renderMode) {
-				case RENDER_MODE_NORMAL:
-					mode = GL_QUADS;
-					break;
-				case RENDER_MODE_WIREFRAME:
-					mode = GL_LINE_LOOP;
-					break;
-			}
+            mode = GL_QUADS;
 			break;
 		case Mesh::LINE_STRIP_MESH:
 			mode = GL_LINE_STRIP;
@@ -829,17 +806,13 @@ void OpenGLRenderer::setTexture(Texture *texture) {
 		return;
 	}
 	
-	if(renderMode == RENDER_MODE_NORMAL) {
-		glActiveTexture(GL_TEXTURE0);	
-		glEnable (GL_TEXTURE_2D);
-				
-		if(currentTexture != texture) {			
-			OpenGLTexture *glTexture = (OpenGLTexture*)texture;
-			glBindTexture (GL_TEXTURE_2D, glTexture->getTextureID());
-		}
-	} else {
-		glDisable(GL_TEXTURE_2D);
-	}
+    glActiveTexture(GL_TEXTURE0);
+    glEnable (GL_TEXTURE_2D);
+            
+    if(currentTexture != texture) {			
+        OpenGLTexture *glTexture = (OpenGLTexture*)texture;
+        glBindTexture (GL_TEXTURE_2D, glTexture->getTextureID());
+    }
 	
 	currentTexture = texture;
 }
@@ -1025,40 +998,27 @@ void OpenGLRenderer::setRenderArrayData(RenderDataArray *array, Number *arrayDat
 	
 }
 
+void OpenGLRenderer::setWireframePolygonMode(bool val) {
+    if(val) {
+        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE);
+    } else {
+        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
+    }
+}
+
 void OpenGLRenderer::drawArrays(int drawType) {
 	
 	GLenum mode = GL_TRIANGLES;
 	
 	switch(drawType) {
 		case Mesh::TRI_MESH:
-			switch(renderMode) {
-				case RENDER_MODE_NORMAL:
-					mode = GL_TRIANGLES;
-					break;
-				case RENDER_MODE_WIREFRAME:
-					mode = GL_LINE_LOOP;
-					break;
-			}
+            mode = GL_TRIANGLES;
 			break;
 		case Mesh::TRIFAN_MESH:
-			switch(renderMode) {
-				case RENDER_MODE_NORMAL:
-					mode = GL_TRIANGLE_FAN;
-					break;
-				case RENDER_MODE_WIREFRAME:
-					mode = GL_LINE_LOOP;
-					break;
-			}
+            mode = GL_TRIANGLE_FAN;
 			break;
 		case Mesh::QUAD_MESH:
-			switch(renderMode) {
-				case RENDER_MODE_NORMAL:
-					mode = GL_QUADS;
-					break;
-				case RENDER_MODE_WIREFRAME:
-					mode = GL_LINE_LOOP;
-					break;
-			}
+            mode = GL_QUADS;
 			break;
 		case Mesh::LINE_STRIP_MESH:
 			mode = GL_LINE_STRIP;

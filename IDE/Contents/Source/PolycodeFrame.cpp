@@ -811,6 +811,8 @@ void EditorHolder::_mergeSides(EditorHolder *mainHolder) {
 	holderBar->visible = true;
 	holderBar->enabled = true;
 
+    activeEditorHolder = this;
+    
 	PolycodeEditor *mainHolderEditor = mainHolder->getEditor();
 		
 	if(firstChildHolder) {
@@ -826,8 +828,6 @@ void EditorHolder::_mergeSides(EditorHolder *mainHolder) {
 			holderEditor->setEditorHolder(NULL);
 		}
 	}
-	
-	setActive(true);
 	
 	if(vSizer) {
 		removeChild(vSizer);
@@ -845,6 +845,7 @@ void EditorHolder::_mergeSides(EditorHolder *mainHolder) {
 	vSizer = NULL;
 	hSizer = NULL;
 	
+	setActive(true);    
 	setEditor(mainHolderEditor);
 }
 

@@ -176,7 +176,9 @@ namespace Polycode {
 		Matrix4 getProjectionMatrix();
 		Matrix4 getModelviewMatrix();		
 		void setModelviewMatrix(Matrix4 m);	
-		void multModelviewMatrix(Matrix4 m);		
+		void multModelviewMatrix(Matrix4 m);
+		
+        void setWireframePolygonMode(bool val);
 		
 		void enableDepthTest(bool val);
 		void enableDepthWrite(bool val);

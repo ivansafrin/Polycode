@@ -70,6 +70,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	centerCircle->depthTest = false;
 	centerCircle->billboardMode = true;
 	addChild(centerCircle);
+    centerCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
 		
 	trasnformDecorators = new Entity();
 	addChild(trasnformDecorators);
@@ -92,6 +93,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	yLine->getMesh()->dirtyArrays();
 	yLine->depthTest = false;
 	yLine->setColor(0.0, 1.0, 0.0, 1.0);
+    yLine->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
 	transformAndScaleLines->addChild(yLine);
 
 	SceneMesh *xLine = new SceneMesh(Mesh::LINE_MESH);	
@@ -102,6 +104,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	xLine->getMesh()->dirtyArrays();
 	xLine->depthTest = false;
 	xLine->setColor(1.0, 0.0, 0.0, 1.0);
+    xLine->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
 	transformAndScaleLines->addChild(xLine);
 
 	SceneMesh *zLine = new SceneMesh(Mesh::LINE_MESH);	
@@ -112,6 +115,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	zLine->getMesh()->dirtyArrays();
 	zLine->depthTest = false;
 	zLine->setColor(0.0, 0.0, 1.0, 1.0);
+    zLine->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
 	transformAndScaleLines->addChild(zLine);
 	
 	// MOVE
@@ -166,6 +170,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	bgCircle->depthTest = false;
 	bgCircle->billboardMode = true;
 	rotateDectorators->addChild(bgCircle);
+    bgCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
 
 	ScenePrimitive *outerCircle = new ScenePrimitive(ScenePrimitive::TYPE_CIRCLE, 2.0, 2.0, 32);
 	outerCircle->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
@@ -173,7 +178,8 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	outerCircle->depthTest = false;
 	outerCircle->billboardMode = true;
 	rotateDectorators->addChild(outerCircle);
-	
+    outerCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
+    
 	ScenePrimitive *pitchCircle = new ScenePrimitive(ScenePrimitive::TYPE_CIRCLE, 1.55, 1.55, 32);
 	pitchCircle->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
 	pitchCircle->setColor(1.0, 0.0, 0.0, 1.0);
@@ -181,7 +187,8 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	pitchCircle->Yaw(90);	
 	rotateDectorators->addChild(pitchCircle);
 	pitchCircle->setMaterialByName("OneSidedLine");
-
+    pitchCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
+    
 	ScenePrimitive *yawCircle = new ScenePrimitive(ScenePrimitive::TYPE_CIRCLE, 1.65, 1.65, 32);
 	yawCircle->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
 	yawCircle->setColor(0.0, 1.0, 0.0, 1.0);
@@ -189,14 +196,16 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	yawCircle->Pitch(90);
 	rotateDectorators->addChild(yawCircle);
 	yawCircle->setMaterialByName("OneSidedLine");
-	
+    yawCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
+    
 	ScenePrimitive *rollCircle = new ScenePrimitive(ScenePrimitive::TYPE_CIRCLE, 1.6, 1.6, 32);
 	rollCircle->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
 	rollCircle->setColor(0.0, 0.0, 1.0, 1.0);
 	rollCircle->depthTest = false;
 	rotateDectorators->addChild(rollCircle);
 	rollCircle->setMaterialByName("OneSidedLine");
-		
+    rollCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
+    
 	pitchCircle->lineWidth = 2.0;	
 	yawCircle->lineWidth = 2.0;
 	rollCircle->lineWidth = 2.0;		

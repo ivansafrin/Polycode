@@ -56,6 +56,8 @@ AssetEntry::AssetEntry(String assetPath, String assetName, String extension) : U
 		imageShape->loadTexture("browserIcons/font_icon.png");
 	} else if(extension == "vert" || extension == "frag") {
 		imageShape->loadTexture("browserIcons/shader_icon.png");
+	} else if(extension == "mesh") {
+		imageShape->loadTexture("browserIcons/mesh_icon.png");
 	}
 
 	

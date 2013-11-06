@@ -50,7 +50,8 @@ void EditorGrid::setGrid(int gridSize) {
 			gridMesh->addPolygon(gridPoly);
 				
 			grid = new SceneMesh(gridMesh);
-			grid->setColor(1.0, 1.0, 1.0, 0.1);
+			grid->setColor(0.3, 0.3, 0.3, 1.0);
+            grid->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
 			addChild(grid);                
 			grid->setPosition(-gridSize * gridLen * 0.5, -gridSize * gridLen * 0.5);
 	}

@@ -25,7 +25,7 @@
 
 using namespace Polycode;
 
-Renderer::Renderer() : clearColor(0.2f, 0.2f, 0.2f, 0.0), currentTexture(NULL), renderMode(0), lightingEnabled(false), orthoMode(false), xRes(0), yRes(0) {
+Renderer::Renderer() : clearColor(0.2f, 0.2f, 0.2f, 0.0), currentTexture(NULL), lightingEnabled(false), orthoMode(false), xRes(0), yRes(0) {
 	anisotropy = 0;
 	textureFilteringMode = TEX_FILTERING_LINEAR;
 	currentMaterial = NULL;
@@ -271,16 +271,8 @@ void Renderer::setClearColor(Color color) {
 	setClearColor(color.r, color.g, color.b, color.a);
 }
 
-void Renderer::setRenderMode(int newRenderMode) {
-	renderMode = newRenderMode;
-}
-
 void Renderer::setTextureFilteringMode(int mode) {
 	textureFilteringMode = mode;
-}
-
-int Renderer::getRenderMode() {
-	return renderMode;
 }
 
 void Renderer::setFOV(Number fov) {

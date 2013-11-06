@@ -534,12 +534,12 @@ void Entity::transformAndRender() {
 	renderer->setBlendingMode(blendingMode);
 	renderer->enableBackfaceCulling(backfaceCulled);
 	
-	int mode = renderer->getRenderMode();
-	if(renderWireframe)
-		renderer->setRenderMode(Renderer::RENDER_MODE_WIREFRAME);
-	else
-		renderer->setRenderMode(Renderer::RENDER_MODE_NORMAL);	
-				
+	if(renderWireframe) {
+		renderer->setWireframePolygonMode(true);
+	} else {
+		renderer->setWireframePolygonMode(false);
+    }
+    
 	if(visible) {
 		renderer->pushMatrix();		
 		renderer->translate3D(-anchorPoint.x * bBox.x * 0.5, -anchorPoint.y * bBox.y * 0.5 * yAdjust, -anchorPoint.z * bBox.z * 0.5);
@@ -550,9 +550,7 @@ void Entity::transformAndRender() {
 	if(visible || (!visible && !visibilityAffectsChildren)) {
 		renderChildren();	
 	}
-		
 				
-	renderer->setRenderMode(mode);	
 	renderer->popMatrix();
     renderer->popVertexColor();
 	

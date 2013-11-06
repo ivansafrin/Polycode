@@ -21,6 +21,10 @@
  */
  
 #include "PolycodeEntityEditor.h"
+#include "PolycodeFrame.h"
+
+extern UIGlobalMenu *globalMenu;
+extern PolycodeFrame *globalFrame;
 
 EntityEditorMainView::EntityEditorMainView() {
 	processInputEvents = true;
@@ -54,47 +58,121 @@ EntityEditorMainView::EntityEditorMainView() {
 
 	grid = new EditorGrid();
 	mainScene->addChild(grid);
-			
-	// TEMPORARY!	
 	
-	ScenePrimitive  *testCube = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 3.0, 1.0, 1.0);
-	testCube->processInputEvents = true;
-	testCube->setColor(0.5, 0.5, 0.5, 1.0);
-//	testCube->setPosition(5, 7, 2);
-	mainScene->addChild(testCube);
-	testCube->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
-	testCube->wireFrameColor = Color(1.0, 0.8, 0.3, 1.0);
-	
+    sceneObjectRoot = new Entity();
+    sceneObjectRoot->processInputEvents = true;
+    mainScene->addChild(sceneObjectRoot);
+    
 	transformGizmo = new TransformGizmo(mainScene, mainScene->getDefaultCamera());
 	mainScene->addChild(transformGizmo);		
 	trackballCamera = new TrackballCamera(mainScene->getDefaultCamera(), renderTextureShape);
 	
+    addEntityButton = new UIImageButton("entityEditor/add_entity.png", 1.0, 24, 24);
+	sideBar->addChild(addEntityButton);
+    addEntityButton->setPosition(4, 2);
+    addEntityButton->addEventListener(this, UIEvent::CLICK_EVENT);
+    
 	transformGizmoMenu = new TransformGizmoMenu(transformGizmo);
 	sideBar->addChild(transformGizmoMenu);
-
+    transformGizmoMenu->setPositionX(40);
+    
 }
 
 void EntityEditorMainView::Update() {
 }
 
+void EntityEditorMainView::setEditorProps(Entity *entity) {
+    entity->processInputEvents = true;
+    entity->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+    
+    SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(entity);
+    if(sceneMesh) {
+        sceneMesh->wireFrameColor = Color(1.0, 0.8, 0.3, 1.0);
+        sceneMesh->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
+    }
+}
+
+void EntityEditorMainView::addEntityFromMenu(String command) {
+
+    if(command == "add_primitive") {
+        ScenePrimitive  *newPrimitive = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 1.0, 1.0, 1.0);
+        sceneObjectRoot->addChild(newPrimitive);
+        setEditorProps(newPrimitive);
+        newPrimitive->setPosition(cursorPosition);
+        return;
+    }
+
+    if(command == "add_mesh") {
+        assetSelectType = "mesh";
+        globalFrame->assetBrowser->addEventListener(this, UIEvent::OK_EVENT);
+        std::vector<String> extensions;
+        extensions.push_back("mesh");
+        globalFrame->showAssetBrowser(extensions);
+        return;
+    }
+
+}
+
 void EntityEditorMainView::handleEvent(Event *event) {
 
-	if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN ) {
-		InputEvent *inputEvent = (InputEvent*) event;
+    if(event->getDispatcher() == globalFrame->assetBrowser) {
+        if(event->getEventCode() == UIEvent::OK_EVENT) {
+            if(assetSelectType == "mesh") {
+                SceneMesh *newMesh = new SceneMesh(globalFrame->assetBrowser->getFullSelectedAssetPath());
+                sceneObjectRoot->addChild(newMesh);
+                setEditorProps(newMesh);
+                newMesh->setPosition(cursorPosition);
+            }
+            
+            globalFrame->assetBrowser->removeAllHandlersForListener(this);
+            globalFrame->hideModal();
+        }
+        
+    } else if(event->getDispatcher() == addEntityMenu) {
+        addEntityMenu->removeAllHandlersForListener(this);
+        String command = addEntityMenu->getSelectedItem()->getMenuItemID();
+        addEntityFromMenu(command);
+    } else if(event->getDispatcher() == addEntityButton) {
+        addEntityMenu = globalMenu->showMenuAtMouse(150);
+        addEntityMenu->addOption("Add Primitive", "add_primitive");
+        addEntityMenu->addOption("Add Mesh", "add_mesh");
+        addEntityMenu->addOption("Add Entity", "add_entity");
+        addEntityMenu->addOption("Add Sprite", "add_sprite");
+        addEntityMenu->addOption("Add Label", "add_label");
+        addEntityMenu->addDivider();
+        addEntityMenu->addOption("Add Light", "add_light");
+        addEntityMenu->addOption("Add Particle System", "add_particles");
+        addEntityMenu->addOption("Add Sound", "add_sound");
+        addEntityMenu->addOption("Add Camera", "add_camera");
+        addEntityMenu->addDivider();
+        addEntityMenu->addOption("Add Empty", "add_empty");
+        addEntityMenu->fitToScreenVertical();
+        addEntityMenu->addEventListener(this, UIEvent::OK_EVENT);
+    } else {
+        if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN ) {
+            InputEvent *inputEvent = (InputEvent*) event;
 
-		if(inputEvent->mouseButton == CoreInput::MOUSE_BUTTON2) {
-			Entity* targetEntity = (Entity*) event->getDispatcher();
-			
-			selectedEntities.clear();			
-			selectedEntities.push_back(targetEntity);
-			transformGizmo->setTransformSelection(selectedEntities);
-							
-			SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(targetEntity);
-			if(sceneMesh) {
-				sceneMesh->overlayWireframe = true;
-			}
-		}
-	}
+            if(inputEvent->mouseButton == CoreInput::MOUSE_BUTTON2) {
+                Entity* targetEntity = (Entity*) event->getDispatcher();
+                
+                for(int i=0; i < selectedEntities.size(); i++) {
+                    SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(selectedEntities[i]);
+                    if(sceneMesh) {
+                        sceneMesh->overlayWireframe = false;
+                    }
+                }
+                
+                selectedEntities.clear();			
+                selectedEntities.push_back(targetEntity);
+                transformGizmo->setTransformSelection(selectedEntities);
+                                
+                SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(targetEntity);
+                if(sceneMesh) {
+                    sceneMesh->overlayWireframe = true;
+                }
+            }
+        }
+    }
 }
 
 EntityEditorMainView::~EntityEditorMainView() {
