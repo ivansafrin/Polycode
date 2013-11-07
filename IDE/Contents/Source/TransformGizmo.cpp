@@ -84,8 +84,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	rotateDectorators = new Entity();
 	addChild(rotateDectorators);	
 		
-			
-	SceneMesh *yLine = new SceneMesh(Mesh::LINE_MESH);	
+	yLine = new SceneMesh(Mesh::LINE_MESH);
 	Polycode::Polygon *poly = new Polycode::Polygon();
 	poly->addVertex(0.0, 0.0, 0.0);
 	poly->addVertex(0.0, 1.0, 0.0);	
@@ -96,7 +95,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
     yLine->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
 	transformAndScaleLines->addChild(yLine);
 
-	SceneMesh *xLine = new SceneMesh(Mesh::LINE_MESH);	
+	xLine = new SceneMesh(Mesh::LINE_MESH);
 	poly = new Polycode::Polygon();
 	poly->addVertex(0.0, 0.0, 0.0);
 	poly->addVertex(1.0, 0.0, 0.0);	
@@ -107,7 +106,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
     xLine->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
 	transformAndScaleLines->addChild(xLine);
 
-	SceneMesh *zLine = new SceneMesh(Mesh::LINE_MESH);	
+	zLine = new SceneMesh(Mesh::LINE_MESH);
 	poly = new Polycode::Polygon();
 	poly->addVertex(0.0, 0.0, 0.0);
 	poly->addVertex(0.0, 0.0, 1.0);	
@@ -120,20 +119,20 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	
 	// MOVE
 	
-	ScenePrimitive *yArrow = new ScenePrimitive(ScenePrimitive::TYPE_CONE, 0.2, 0.05, 12);
+	yArrow = new ScenePrimitive(ScenePrimitive::TYPE_CONE, 0.2, 0.05, 12);
 	yArrow->setColor(0.0, 1.0, 0.0, 1.0);
 	yArrow->setPosition(0.0, 1.0, 0.0);
 	yArrow->depthTest = false;
 	trasnformDecorators->addChild(yArrow);
 	
-	ScenePrimitive *xArrow = new ScenePrimitive(ScenePrimitive::TYPE_CONE, 0.2, 0.05, 12);
+	xArrow = new ScenePrimitive(ScenePrimitive::TYPE_CONE, 0.2, 0.05, 12);
 	xArrow->setColor(1.0, 0.0, 0.0, 1.0);
 	xArrow->setPosition(1.0, 0.0, 0.0);
 	xArrow->Roll(-90);
 	xArrow->depthTest = false;
 	trasnformDecorators->addChild(xArrow);
 
-	ScenePrimitive *zArrow = new ScenePrimitive(ScenePrimitive::TYPE_CONE, 0.2, 0.05, 12);
+	zArrow = new ScenePrimitive(ScenePrimitive::TYPE_CONE, 0.2, 0.05, 12);
 	zArrow->setColor(0.0, 0.0, 1.0, 1.0);
 	zArrow->setPosition(0.0, 0.0, 1.0);
 	zArrow->Pitch(90);
@@ -142,20 +141,20 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 
 	// SCALE
 
-	ScenePrimitive *yBox = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 0.1, 0.1, 0.1);
+	yBox = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 0.1, 0.1, 0.1);
 	yBox->setColor(0.0, 1.0, 0.0, 1.0);
 	yBox->setPosition(0.0, 1.0, 0.0);
 	yBox->depthTest = false;
 	scaleDecorators->addChild(yBox);
 	
-	ScenePrimitive *xBox = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 0.1, 0.1, 0.1);
+	xBox = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 0.1, 0.1, 0.1);
 	xBox->setColor(1.0, 0.0, 0.0, 1.0);
 	xBox->setPosition(1.0, 0.0, 0.0);
 	xBox->Roll(-90);
 	xBox->depthTest = false;
 	scaleDecorators->addChild(xBox);
 
-	ScenePrimitive *zBox = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 0.1, 0.1, 0.1);
+	zBox = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 0.1, 0.1, 0.1);
 	zBox->setColor(0.0, 0.0, 1.0, 1.0);
 	zBox->setPosition(0.0, 0.0, 1.0);
 	zBox->Pitch(90);
@@ -164,7 +163,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 
 	// ROTATE
 
-	ScenePrimitive *bgCircle = new ScenePrimitive(ScenePrimitive::TYPE_CIRCLE, 1.6, 1.6, 32);
+	bgCircle = new ScenePrimitive(ScenePrimitive::TYPE_CIRCLE, 1.6, 1.6, 32);
 	bgCircle->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
 	bgCircle->setColor(0.0, 0.0, 0.0, 1.0);
 	bgCircle->depthTest = false;
@@ -172,7 +171,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	rotateDectorators->addChild(bgCircle);
     bgCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
 
-	ScenePrimitive *outerCircle = new ScenePrimitive(ScenePrimitive::TYPE_CIRCLE, 2.0, 2.0, 32);
+	outerCircle = new ScenePrimitive(ScenePrimitive::TYPE_CIRCLE, 2.0, 2.0, 32);
 	outerCircle->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
 	outerCircle->setColor(1.0, 1.0, 1.0, 1.0);
 	outerCircle->depthTest = false;
@@ -180,7 +179,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	rotateDectorators->addChild(outerCircle);
     outerCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
     
-	ScenePrimitive *pitchCircle = new ScenePrimitive(ScenePrimitive::TYPE_CIRCLE, 1.55, 1.55, 32);
+	pitchCircle = new ScenePrimitive(ScenePrimitive::TYPE_CIRCLE, 1.55, 1.55, 32);
 	pitchCircle->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
 	pitchCircle->setColor(1.0, 0.0, 0.0, 1.0);
 	pitchCircle->depthTest = false;
@@ -189,7 +188,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	pitchCircle->setMaterialByName("OneSidedLine");
     pitchCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
     
-	ScenePrimitive *yawCircle = new ScenePrimitive(ScenePrimitive::TYPE_CIRCLE, 1.65, 1.65, 32);
+	yawCircle = new ScenePrimitive(ScenePrimitive::TYPE_CIRCLE, 1.65, 1.65, 32);
 	yawCircle->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
 	yawCircle->setColor(0.0, 1.0, 0.0, 1.0);
 	yawCircle->depthTest = false;
@@ -198,7 +197,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	yawCircle->setMaterialByName("OneSidedLine");
     yawCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
     
-	ScenePrimitive *rollCircle = new ScenePrimitive(ScenePrimitive::TYPE_CIRCLE, 1.6, 1.6, 32);
+	rollCircle = new ScenePrimitive(ScenePrimitive::TYPE_CIRCLE, 1.6, 1.6, 32);
 	rollCircle->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
 	rollCircle->setColor(0.0, 0.0, 1.0, 1.0);
 	rollCircle->depthTest = false;
@@ -243,10 +242,25 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	yawGrip->useGeometryHitDetection = true;
 	yawGrip->blockMouseInput = true;
 	
-	pitchGrip->visible = false;		
+    viewportRotateGripBase = new Entity();
+    viewportRotateGripBase->processInputEvents = true;
+	rotateDectorators->addChild(viewportRotateGripBase);
+    
+	viewportRotateGrip = new ScenePrimitive(ScenePrimitive::TYPE_TORUS, 2.0 * 0.5, 0.1, 10, 3);
+    viewportRotateGrip->Pitch(90);
+	viewportRotateGrip->setColor(0.0, 1.0, 0.0, 0.2);
+	viewportRotateGrip->depthTest = false;
+	viewportRotateGripBase->addChild(viewportRotateGrip);
+	viewportRotateGrip->processInputEvents = true;
+	viewportRotateGrip->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+	viewportRotateGrip->useGeometryHitDetection = true;
+	viewportRotateGrip->blockMouseInput = true;
+    
+    pitchGrip->visible = false;
 	yawGrip->visible = false;
 	rollGrip->visible = false;
-
+    viewportRotateGrip->visible = false;
+    
 	xTransformGrip = new Entity();
 	xTransformGrip->bBox.set(1.3, 0.1, 0.1);
 	addChild(xTransformGrip);
@@ -277,7 +291,8 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	coreInput = CoreServices::getInstance()->getCore()->getInput();
 	coreInput->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
 	coreInput->addEventListener(this, InputEvent::EVENT_MOUSEUP);	
-	
+
+	gizmoMode = GIZMO_MODE_3D;
 	setTransformMode(TRANSFORM_MOVE);
 }
 
@@ -296,6 +311,8 @@ Vector3 TransformGizmo::getTransformPlanePosition() {
 }
 
 void TransformGizmo::setTransformMode(int newMode) {
+    
+    transformMode = newMode;
 	trasnformDecorators->visible = false;
 	scaleDecorators->visible = false;
 	transformAndScaleLines->visible = false;
@@ -307,6 +324,7 @@ void TransformGizmo::setTransformMode(int newMode) {
 	pitchGrip->enabled = false;
 	rollGrip->enabled = false;
 	yawGrip->enabled = false;
+    viewportRotateGrip->enabled = false;
 	
 			
 	mode = newMode;
@@ -316,20 +334,48 @@ void TransformGizmo::setTransformMode(int newMode) {
 			transformAndScaleLines->visible = true;
 			xTransformGrip->enabled = true;
 			yTransformGrip->enabled = true;
-			zTransformGrip->enabled = true;						
+            if(gizmoMode == GIZMO_MODE_3D) {
+                zTransformGrip->enabled = true;
+                zArrow->visible = true;
+                zLine->visible = true;
+            } else {
+                zArrow->visible = false;
+                zLine->visible = false;
+            }
+            
 		break;
 		case TRANSFORM_SCALE:
 			scaleDecorators->visible = true;
 			transformAndScaleLines->visible = true;					
 			xTransformGrip->enabled = true;
 			yTransformGrip->enabled = true;
-			zTransformGrip->enabled = true;				
+            if(gizmoMode == GIZMO_MODE_3D) {
+                zTransformGrip->enabled = true;
+                zBox->visible = true;
+                zLine->visible = true;
+            } else {
+                zBox->visible = false;
+                zLine->visible = false;
+            }
+
 		break;	
 		case TRANSFORM_ROTATE:
 			rotateDectorators->visible = true;
 			pitchGrip->enabled = true;
-			rollGrip->enabled = true;
-			yawGrip->enabled = true;			
+			yawGrip->enabled = true;
+            viewportRotateGrip->enabled = true;
+            
+            if(gizmoMode == GIZMO_MODE_3D) {
+                rollGrip->enabled = true;
+                rollCircle->visible = true;
+                rollCircle->visible = true;
+                outerCircle->setColor(1.0, 1.0, 1.0, 1.0);
+            } else {
+                rollCircle->visible = false;
+                rollCircle->visible = false;
+                outerCircle->setColor(0.0, 0.0, 1.0, 1.0);
+            }
+            
 		break;
 		default:
 			assert(false); // invalid mode
@@ -412,6 +458,11 @@ Number TransformGizmo::getTransformPlaneAngle() {
 	return atan2(planePosition.x, planePosition.y);
 }
 
+void TransformGizmo::setGizmoMode(int newMode) {
+    gizmoMode = newMode;
+    setTransformMode(transformMode);
+}
+
 void TransformGizmo::handleEvent(Event *event) {
 
 	if(!coreInput->getKeyState(KEY_LALT) && !coreInput->getKeyState(KEY_RALT)) {
@@ -419,14 +470,26 @@ void TransformGizmo::handleEvent(Event *event) {
 			if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN) {
 				transforming = true;
 				transformConstraint = Vector3(1.0, 0.0, 0.0);
-				transformPlane = Vector3(1.0, 0.0, 0.0);
+                
+                if(gizmoMode == GIZMO_MODE_3D) {
+                    transformPlane = Vector3(1.0, 0.0, 0.0);
+                } else {
+                    transformPlane = Vector3(0.0, 0.0, 1.0);
+                }
+                
 				startingAngle = getTransformPlaneAngle();
 			}
 		} else 	if(event->getDispatcher() == yawGrip) {
 			if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN) {
 				transforming = true;
 				transformConstraint = Vector3(0.0, 1.0, 0.0);
-				transformPlane = Vector3(0.0, 1.0, 0.0);
+                
+                if(gizmoMode == GIZMO_MODE_3D) {
+                    transformPlane = Vector3(0.0, 1.0, 0.0);
+                } else {
+                    transformPlane = Vector3(0.0, 0.0, 1.0);
+                }
+                
 				startingAngle = getTransformPlaneAngle();
 			}
 		} else 	if(event->getDispatcher() == rollGrip) {
@@ -436,13 +499,28 @@ void TransformGizmo::handleEvent(Event *event) {
 				transformPlane = Vector3(0.0, 0.0, 1.0);
 				startingAngle = getTransformPlaneAngle();
 			}
+		} else 	if(event->getDispatcher() == viewportRotateGrip) {
+			if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN) {
+                if(gizmoMode == GIZMO_MODE_2D) {
+                    transforming = true;
+                    transformConstraint = Vector3(0.0, 0.0, -1.0);
+                    transformPlane = Vector3(0.0, 0.0, 1.0);
+                    startingAngle = getTransformPlaneAngle();
+                }
+			}
 		}
+
 
 		if(event->getDispatcher() == xTransformGrip) {
 			if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN) {
 				transforming = true;
 				transformConstraint = Vector3(1.0, 0.0, 0.0);
-				transformPlane = Vector3(0.0, 1.0, 0.0);
+                
+                if(gizmoMode == GIZMO_MODE_3D) {
+                    transformPlane = Vector3(0.0, 1.0, 0.0);
+                } else {
+                    transformPlane = Vector3(0.0, 0.0, 1.0);
+                }
 				startingPoint = getTransformPlanePosition();
 			}
 		} else 	if(event->getDispatcher() == yTransformGrip) {
@@ -505,7 +583,11 @@ TransformGizmo::~TransformGizmo() {
 }
 
 void TransformGizmo::Update() {
+    viewportRotateGripBase->lookAt(targetCamera->getPosition());
 	Number scale = getPosition().distance(targetCamera->getPosition()) * 0.1;
+    if(scale < 0.0) {
+        scale = 0.0;
+    }
 	setScale(scale, scale, scale);
 }
 

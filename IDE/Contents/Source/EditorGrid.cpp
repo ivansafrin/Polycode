@@ -24,6 +24,8 @@
 
 EditorGrid::EditorGrid() : Entity() {
 	grid = NULL;
+    gridMode = GRID_MODE_3D;
+    
 	setGrid(1.0);
 	setPitch(90);
 }
@@ -31,15 +33,15 @@ EditorGrid::EditorGrid() : Entity() {
 void EditorGrid::setGrid(int gridSize) {
 	Polycode::Polygon *gridPoly = new Polycode::Polygon();
 	int gridLen = 16;
-	
+    
 	for(int x=0; x < gridLen+1; x++) {
-			gridPoly->addVertex(x * gridSize,0, 0);
-			gridPoly->addVertex(x * gridSize,gridSize * gridLen, 0);
+			gridPoly->addVertex((-gridSize * gridLen * 0.5) + (x * gridSize), (-gridSize * gridLen * 0.5), 0);
+			gridPoly->addVertex((-gridSize * gridLen * 0.5) + (x * gridSize) , (-gridSize * gridLen * 0.5) + (gridSize * gridLen), 0);
 	}
 
 	for(int y=0; y < gridLen+1; y++) {
-			gridPoly->addVertex(0, y * gridSize, 0);
-			gridPoly->addVertex(gridSize * gridLen, y * gridSize, 0);                
+			gridPoly->addVertex((-gridSize * gridLen * 0.5), (-gridSize * gridLen * 0.5) + (y * gridSize), 0);
+			gridPoly->addVertex((-gridSize * gridLen * 0.5) + (gridSize * gridLen), (-gridSize * gridLen * 0.5) + (y * gridSize), 0);
 	}        
 
 	if(grid) {
@@ -52,11 +54,20 @@ void EditorGrid::setGrid(int gridSize) {
 			grid = new SceneMesh(gridMesh);
 			grid->setColor(0.3, 0.3, 0.3, 1.0);
             grid->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
-			addChild(grid);                
-			grid->setPosition(-gridSize * gridLen * 0.5, -gridSize * gridLen * 0.5);
+			addChild(grid);
+            grid->cacheToVertexBuffer(true);
+            
 	}
 }
 
+void EditorGrid::setGridMode(int mode) {
+    gridMode = mode;
+    if(gridMode == GRID_MODE_3D) {
+        grid->setPitch(0);
+    } else {
+        grid->setPitch(90);
+    }
+}
 
 EditorGrid::~EditorGrid() {
 

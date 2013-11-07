@@ -33,7 +33,12 @@ class EditorGrid : public Entity {
 		~EditorGrid();
 		
 		void setGrid(int gridSize);
+        void setGridMode(int mode);
 		
+        static const int GRID_MODE_3D = 0;
+        static const int GRID_MODE_2D = 1;
+    
 	private:
+        int gridMode;
 		SceneMesh *grid;
 };

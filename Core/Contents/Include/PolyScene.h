@@ -117,6 +117,8 @@ namespace Polycode {
 		* @param endDepth Ending depth of the fog.							
 		*/				
 		void setFogProperties(int fogMode, Color color, Number density, Number startDepth, Number endDepth);
+        
+        void setSceneType(int newType);
 	
 		virtual void Update();
 		void setVirtual(bool val);
@@ -184,12 +186,13 @@ namespace Polycode {
 						
 		Entity rootEntity;
 		
-		Vector2 sceneMouseAdjust;
+        Polycode::Rectangle sceneMouseRect;
+        bool remapMouse;
 		
 	protected:
 		
 		void initScene(int sceneType, bool virtualScene);
-		
+
 		bool hasLightmaps;
 		
 		Renderer *renderer;

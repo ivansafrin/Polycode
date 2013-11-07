@@ -29,7 +29,7 @@ extern PolycodeFrame *globalFrame;
 EntityEditorMainView::EntityEditorMainView() {
 	processInputEvents = true;
 
-	mainScene = new Scene(Scene::SCENE_3D, true);		
+	mainScene = new Scene(Scene::SCENE_3D, true);
 	renderTexture = new SceneRenderTexture(mainScene, mainScene->getDefaultCamera(), 512, 512);
 	mainScene->clearColor.setColor(0.2, 0.2, 0.2, 1.0);	
 	mainScene->useClearColor = true;
@@ -47,10 +47,10 @@ EntityEditorMainView::EntityEditorMainView() {
 	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
     
 	
-	sideBar = new Entity();
-	addChild(sideBar);
-	sideBar->setPosition(0, 0);
-	sideBar->processInputEvents = true;
+	topBar = new Entity();
+	addChild(topBar);
+	topBar->setPosition(0, 0);
+	topBar->processInputEvents = true;
     
 	
 	mainScene->getDefaultCamera()->setPosition(10, 10, 10);
@@ -68,14 +68,44 @@ EntityEditorMainView::EntityEditorMainView() {
 	trackballCamera = new TrackballCamera(mainScene->getDefaultCamera(), renderTextureShape);
 	
     addEntityButton = new UIImageButton("entityEditor/add_entity.png", 1.0, 24, 24);
-	sideBar->addChild(addEntityButton);
+	topBar->addChild(addEntityButton);
     addEntityButton->setPosition(4, 2);
     addEntityButton->addEventListener(this, UIEvent::CLICK_EVENT);
     
 	transformGizmoMenu = new TransformGizmoMenu(transformGizmo);
-	sideBar->addChild(transformGizmoMenu);
+	topBar->addChild(transformGizmoMenu);
     transformGizmoMenu->setPositionX(40);
     
+    modeSwitchDropdown = new UIComboBox(globalMenu, 100);
+    topBar->addChild(modeSwitchDropdown);
+    
+    modeSwitchDropdown->addComboItem("3D MODE");
+    modeSwitchDropdown->addComboItem("2D MODE");
+    modeSwitchDropdown->setSelectedIndex(0);
+    modeSwitchDropdown->addEventListener(this, UIEvent::CHANGE_EVENT);
+    
+    editorMode = EDITOR_MODE_3D;
+}
+
+void EntityEditorMainView::setEditorMode(int newMode) {
+    editorMode = newMode;
+    if(editorMode == EDITOR_MODE_3D) {
+        mainScene->setSceneType(Scene::SCENE_3D);
+        grid->setGridMode(EditorGrid::GRID_MODE_3D);
+        transformGizmo->setGizmoMode(TransformGizmo::GIZMO_MODE_3D);
+        mainScene->getDefaultCamera()->setOrthoMode(false);
+        mainScene->getDefaultCamera()->setClippingPlanes(1, 1000);
+        trackballCamera->disableRotation(false);
+    } else {
+        mainScene->setSceneType(Scene::SCENE_2D);
+        mainScene->getDefaultCamera()->setOrthoMode(true);
+        mainScene->getDefaultCamera()->setClippingPlanes(-1, 10000);
+        trackballCamera->setCameraPosition(trackballCamera->getOribitingCenter()+Vector3(0.0, 0.0, trackballCamera->getCameraDistance()));
+        grid->setGridMode(EditorGrid::GRID_MODE_2D);
+        transformGizmo->setGizmoMode(TransformGizmo::GIZMO_MODE_2D);
+        trackballCamera->disableRotation(true);
+        Update();
+    }
 }
 
 Entity *EntityEditorMainView::getSelectedEntity() {
@@ -87,6 +117,12 @@ Entity *EntityEditorMainView::getSelectedEntity() {
 }
 
 void EntityEditorMainView::Update() {
+    
+    if(editorMode == EDITOR_MODE_2D) {
+        Number aspect = renderTextureShape->getWidth() / renderTextureShape->getHeight();
+        mainScene->getDefaultCamera()->setOrthoSize(trackballCamera->getCameraDistance() * aspect, trackballCamera->getCameraDistance());
+    }
+    
     for(int i=0; i < icons.size(); i++) {
         Number scale = mainScene->getDefaultCamera()->getPosition().distance(icons[i]->getConcatenatedMatrix().getPosition()) * 0.1;
         icons[i]->setScale(scale, scale, scale);
@@ -118,7 +154,7 @@ void EntityEditorMainView::setEditorProps(Entity *entity) {
     SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(entity);
     if(sceneMesh) {
         sceneMesh->wireFrameColor = Color(1.0, 0.8, 0.3, 1.0);
-        sceneMesh->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
+//        sceneMesh->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
         sceneMesh->useGeometryHitDetection = true;
     }
     
@@ -165,10 +201,13 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
 
 void EntityEditorMainView::handleEvent(Event *event) {
 
-    if(event->getDispatcher() == globalFrame->assetBrowser) {
+    if(event->getDispatcher() == modeSwitchDropdown) {
+        setEditorMode(modeSwitchDropdown->getSelectedIndex());
+    } else if(event->getDispatcher() == globalFrame->assetBrowser) {
         if(event->getEventCode() == UIEvent::OK_EVENT) {
             if(assetSelectType == "mesh") {
                 SceneMesh *newMesh = new SceneMesh(globalFrame->assetBrowser->getFullSelectedAssetPath());
+                newMesh->cacheToVertexBuffer(true);
                 sceneObjectRoot->addChild(newMesh);
                 setEditorProps(newMesh);
                 newMesh->setPosition(cursorPosition);
@@ -237,13 +276,18 @@ EntityEditorMainView::~EntityEditorMainView() {
 
 void EntityEditorMainView::Resize(Number width, Number height) {
 	headerBg->Resize(width, 30);
-	
-	mainScene->sceneMouseAdjust.x = renderTextureShape->getScreenPositionForMainCamera().x;
-	mainScene->sceneMouseAdjust.y = CoreServices::getInstance()->getCore()->getYRes() - (renderTextureShape->getScreenPositionForMainCamera().y + renderTextureShape->getHeight());
-	
+	modeSwitchDropdown->setPosition(width-110, 4);
+    
+	mainScene->sceneMouseRect.x = renderTextureShape->getScreenPositionForMainCamera().x;
+	mainScene->sceneMouseRect.y = renderTextureShape->getScreenPositionForMainCamera().y;
+	mainScene->sceneMouseRect.w = renderTextureShape->getWidth();
+	mainScene->sceneMouseRect.h = renderTextureShape->getHeight();
+    mainScene->remapMouse = true;
+    
 	renderTexture->resizeRenderTexture(width, height-30);
 	renderTextureShape->setTexture(renderTexture->getTargetTexture());		
 	renderTextureShape->Resize(width, height-30);
+    Update();
 }
 
 PolycodeEntityEditor::PolycodeEntityEditor() : PolycodeEditor(true){

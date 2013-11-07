@@ -48,14 +48,18 @@ class EntityEditorMainView : public UIElement {
 			void handleEvent(Event *event);
 			void Resize(Number width, Number height);
 			void Update();
-    
             void addEntityFromMenu(String command);
 			
+            void setEditorMode(int newMode);
             Entity *getSelectedEntity();
+    
+            static const int EDITOR_MODE_3D = 0;
+            static const int EDITOR_MODE_2D = 1;
     
 		protected:
 			
-			Entity *sideBar;
+            int editorMode;
+			Entity *topBar;
 			UIRect *headerBg;
 				
 			std::vector<Entity*> selectedEntities;
@@ -72,12 +76,12 @@ class EntityEditorMainView : public UIElement {
 			EditorGrid *grid;
     
             UIImageButton *addEntityButton;
+            UIComboBox *modeSwitchDropdown;
             UIMenu *addEntityMenu;
     
             std::vector<ScenePrimitive*> icons;
     
             Vector3 cursorPosition;
-    
             String assetSelectType;
     
 };

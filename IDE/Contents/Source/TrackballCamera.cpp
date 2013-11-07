@@ -49,6 +49,10 @@ TrackballCamera::TrackballCamera(Camera *targetCamera, Entity *trackballShape) :
 	updateCamera();	
 }
 
+Number TrackballCamera::getCameraDistance() {
+    return cameraDistance;
+}
+
 TrackballCamera::~TrackballCamera() {
 	trackballShape->removeAllHandlersForListener(this);
 }
@@ -84,8 +88,10 @@ void TrackballCamera::handleEvent(Event *event) {
 						);
 						trackBallMouseEnd = trackBallMouseStart;												
 					} else {
-						mouseMode = MOUSE_MODE_ORBITING;
-						trackballRotateStart = trackballRotateEnd = getMouseProjectionOnBall(inputEvent->getMousePosition());
+                        if(!rotationDisabled) {
+                            mouseMode = MOUSE_MODE_ORBITING;
+                            trackballRotateStart = trackballRotateEnd = getMouseProjectionOnBall(inputEvent->getMousePosition());
+                        }
 					}
 				}
 			break;
@@ -157,7 +163,14 @@ void TrackballCamera::processMouseMovement(const Vector2 &newPosition) {
 	}
 }
 
+void TrackballCamera::setCameraPosition(Vector3 cameraPosition) {
+    targetCamera->setPosition(cameraPosition);
+    updateCamera();
+}
 
+Vector3 TrackballCamera::getOribitingCenter() {
+    return orbitingCenter;
+}
 
 void TrackballCamera::updateCamera() {
 
@@ -183,7 +196,10 @@ void TrackballCamera::updateCamera() {
 		
 	targetCamera->setPosition(orbitingCenter + trackballEye);	
 	targetCamera->lookAt(orbitingCenter);
-	
+}
+
+bool TrackballCamera::disableRotation(bool val) {
+    rotationDisabled = val;
 }
 
 Vector3 TrackballCamera::getMouseProjectionOnBall(const Vector2 &mousePosition) {

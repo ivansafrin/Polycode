@@ -33,10 +33,10 @@ class TransformGizmo : public Entity {
 		TransformGizmo(Scene *targetScene, Camera *targetCamera);
 		~TransformGizmo();
 		
-		void handleEvent(Event *event);		
-		
+		void handleEvent(Event *event);
 		void setTransformMode(int newMode);
-		
+        void setGizmoMode(int newMode);
+    
 		void Update();
 		
 		void setTransformSelection(std::vector<Entity*> selectedEntities);
@@ -49,8 +49,13 @@ class TransformGizmo : public Entity {
 		static const int TRANSFORM_MOVE = 0;		
 		static const int TRANSFORM_SCALE = 1;
 		static const int TRANSFORM_ROTATE = 2;
-								
+    
+        static const int GIZMO_MODE_3D = 0;
+		static const int GIZMO_MODE_2D = 1;
+    
 	private:
+        int transformMode;
+        int gizmoMode;
 	
 		std::vector<Entity*> selectedEntities;
 	
@@ -78,7 +83,29 @@ class TransformGizmo : public Entity {
 		
 		ScenePrimitive *pitchGrip;
 		ScenePrimitive *rollGrip;
-		ScenePrimitive *yawGrip;				
+		ScenePrimitive *yawGrip;
+
+        ScenePrimitive *viewportRotateGrip;
+        Entity *viewportRotateGripBase;
+    
+        SceneMesh *xLine;
+        SceneMesh *yLine;
+        SceneMesh *zLine;
+    
+        ScenePrimitive *xArrow;
+        ScenePrimitive *yArrow;
+        ScenePrimitive *zArrow;
+    
+        ScenePrimitive *xBox;
+        ScenePrimitive *yBox;
+        ScenePrimitive *zBox;
+    
+        ScenePrimitive *outerCircle;
+        ScenePrimitive *bgCircle;
+    
+        ScenePrimitive *pitchCircle;
+        ScenePrimitive *yawCircle;
+        ScenePrimitive *rollCircle;
 };
 
 class TransformGizmoMenu : public UIElement {

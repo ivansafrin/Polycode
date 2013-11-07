@@ -62,34 +62,40 @@ void Scene::initScene(int sceneType, bool virtualScene) {
 	ambientColor.setColor(0.0,0.0,0.0,1.0);	
 	useClearColor = false;
 	ownsChildren = false;
+    remapMouse = false;
 	renderer = CoreServices::getInstance()->getRenderer();
 	rootEntity.setRenderer(renderer);
 	if (!isSceneVirtual) {
 		CoreServices::getInstance()->getSceneManager()->addScene(this);
 	}
 	
-	switch(sceneType) {
-		case SCENE_2D:
-			printf("WHAT\n");
-			defaultCamera->setClippingPlanes(-100.0, 100.0);
-			defaultCamera->setOrthoMode(true, CoreServices::getInstance()->getCore()->getXRes(),CoreServices::getInstance()->getCore()->getYRes());	
-		break;
-		case SCENE_2D_TOPLEFT:
-			defaultCamera->setClippingPlanes(-100.0, 100.0);
-			defaultCamera->setOrthoMode(true, 0,0);
-			defaultCamera->topLeftOrtho = true;
-			rootEntity.setInverseY(true);
-		break;
-		case SCENE_3D:
-			defaultCamera->setClippingPlanes(1.0, 1000.0);
-		break;		
-	}
+    setSceneType(sceneType);
 	
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEUP);
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_UP);
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_DOWN);	
+}
+
+void Scene::setSceneType(int newType) {
+    sceneType = newType;
+	switch(sceneType) {
+		case SCENE_2D:
+			defaultCamera->setClippingPlanes(-100.0, 100.0);
+			defaultCamera->setOrthoMode(true, CoreServices::getInstance()->getCore()->getXRes(),CoreServices::getInstance()->getCore()->getYRes());
+            break;
+		case SCENE_2D_TOPLEFT:
+			defaultCamera->setClippingPlanes(-100.0, 100.0);
+			defaultCamera->setOrthoMode(true, 0,0);
+			defaultCamera->topLeftOrtho = true;
+			rootEntity.setInverseY(true);
+            break;
+		case SCENE_3D:
+			defaultCamera->setClippingPlanes(1.0, 1000.0);
+            break;		
+	}
+    
 }
 
 void Scene::setActiveCamera(Camera *camera) {
@@ -268,19 +274,33 @@ void Scene::RenderDepthOnly(Camera *targetCamera) {
 Ray Scene::projectRayFromCameraAndViewportCoordinate(Camera *camera, Vector2 coordinate) {
 
 	Polycode::Rectangle viewport = camera->getViewport();
-	viewport.x = sceneMouseAdjust.x * renderer->getBackingResolutionScaleX();
-	viewport.y = sceneMouseAdjust.y * renderer->getBackingResolutionScaleY();
-        
+    
+    if(remapMouse) {
+        viewport.x = sceneMouseRect.x * renderer->getBackingResolutionScaleX();
+        viewport.y = (core->getYRes() - (sceneMouseRect.y + sceneMouseRect.h)) * renderer->getBackingResolutionScaleY();
+    }
+    
 	Vector3 dir =  renderer->projectRayFrom2DCoordinate(coordinate.x *  renderer->getBackingResolutionScaleX(), coordinate.y  * renderer->getBackingResolutionScaleY(), camera->getConcatenatedMatrix(), camera->getProjectionMatrix(), viewport);
 	Vector3 pos;
-
+    
 	switch(sceneType) {
 		case SCENE_2D:
 		{
 			Number orthoSizeX = camera->getOrthoSizeX();
-			Number orthoSizeY = camera->getOrthoSizeY();			
-			pos = Vector3(((coordinate.x/(Number)core->getXRes())*orthoSizeX) - (orthoSizeX*0.5), (((core->getYRes()-coordinate.y)/(Number)core->getYRes())*orthoSizeY) - (orthoSizeY*0.5), 0.0);
-			pos = camera->getConcatenatedMatrix() * pos;	
+			Number orthoSizeY = camera->getOrthoSizeY();
+            
+            Vector2 remappedMouse = Vector2(coordinate.x, coordinate.y);
+            Vector2 screenSize = Vector2(core->getXRes(), core->getYRes());
+            if(remapMouse) {
+                remappedMouse.x = coordinate.x - sceneMouseRect.x;
+                remappedMouse.y = coordinate.y - sceneMouseRect.y;
+                screenSize = Vector2(sceneMouseRect.w, sceneMouseRect.h);
+            }
+            
+			pos = Vector3(((remappedMouse.x/screenSize.x)*orthoSizeX) - (orthoSizeX*0.5), (((screenSize.y-remappedMouse.y)/screenSize.y)*orthoSizeY) - (orthoSizeY*0.5), 0.0);
+            
+			pos = camera->getConcatenatedMatrix() * pos;
+            
 		}
 		break;
 		case SCENE_2D_TOPLEFT:
