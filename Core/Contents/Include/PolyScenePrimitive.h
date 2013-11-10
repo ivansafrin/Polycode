@@ -65,14 +65,13 @@ namespace Polycode {
 			*/			
 			static const int TYPE_PLANE = 1;			
 
-			/**
-			* A sphere.
-			* v1 - Sphere radius
-			* v2 - Lat segments				
-			* v3 - Long segments			
-			*/						
-			static const int TYPE_SPHERE = 2;
-
+            /**
+             * A vertical plane.
+             * v1 - X size
+             * v2 - Y size
+             */
+            static const int TYPE_VPLANE = 2;
+        
 			/**
 			* A cylinder.
 			* v1 - Cylinder length			
@@ -81,20 +80,21 @@ namespace Polycode {
 			*/			
 			static const int TYPE_CYLINDER = 3;
 
-			/**
-			* A cone.
-			* v1 - Cone length.
-			* v2 - Cone raidus.
-			* v3 - Number of segments.
-			*/			
-			static const int TYPE_CONE = 4;
+            /**
+             * A cylinder.
+             * v1 - Cylinder length
+             * v2 - Cylinder radius
+             * v3 - Number of segments.
+             */
+            static const int TYPE_UNCAPPED_CYLINDER = 4;
 
-			/**
-			* A vertical plane.
-			* v1 - X size
-			* v2 - Y size						
-			*/			
-			static const int TYPE_VPLANE = 5;			
+            /**
+             * A sphere.
+             * v1 - Sphere radius
+             * v2 - Lat segments
+             * v3 - Long segments
+             */
+            static const int TYPE_SPHERE = 5;
 
 			/**
 			* A torus.
@@ -104,15 +104,14 @@ namespace Polycode {
 			* v4- Number of pipe segments.
 			*/			
 			static const int TYPE_TORUS = 6;	
-			
-
-			/**
-			* A cylinder.
-			* v1 - Cylinder length			
-			* v2 - Cylinder radius
-			* v3 - Number of segments.
-			*/			
-			static const int TYPE_UNCAPPED_CYLINDER = 7;
+			     
+            /**
+             * A cone.
+             * v1 - Cone length.
+             * v2 - Cone raidus.
+             * v3 - Number of segments.
+             */
+            static const int TYPE_CONE = 7;
 
 			/**
 			* A 2D circle.
@@ -122,7 +121,21 @@ namespace Polycode {
 			*/			
 			static const int TYPE_CIRCLE = 8;			
 
-							
+            /**
+             * A 2D line circle.
+             * v1 - X size
+             * v2 - Y size
+             * v3 - Number of segments
+             */
+            static const int TYPE_LINE_CIRCLE = 9;
+
+            int getPrimitiveType() const;
+        
+            Number getPrimitiveParameter1() const;
+            Number getPrimitiveParameter2() const;
+            Number getPrimitiveParameter3() const;
+            Number getPrimitiveParameter4() const;
+            Number getPrimitiveParameter5() const;
 		
 		protected:
 

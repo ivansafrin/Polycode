@@ -123,6 +123,7 @@ void PolycodeMeshEditor::handleEvent(Event *event) {
 }
 
 PolycodeMeshEditor::~PolycodeMeshEditor() {
+    CoreServices::getInstance()->getResourceManager()->removeAllHandlersForListener(this);
 }
 
 bool PolycodeMeshEditor::openFile(OSFileEntry filePath) {

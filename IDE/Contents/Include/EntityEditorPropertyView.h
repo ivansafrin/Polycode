@@ -44,5 +44,6 @@ class EntityEditorPropertyView : public UIElement {
         PropList *entityProps;
         EntitySheet *entitySheet;
         MaterialPropSheet *materialSheet;
+        ScenePrimitiveSheet *primitiveSheet;
 };
 

@@ -37,7 +37,31 @@ ScenePrimitive::ScenePrimitive(int type, Number v1, Number v2, Number v3,Number 
 	recreatePrimitive();
 }
 
-void ScenePrimitive::recreatePrimitive() {	
+int ScenePrimitive::getPrimitiveType() const {
+    return type;
+}
+
+Number ScenePrimitive::getPrimitiveParameter1() const {
+    return v1;
+}
+
+Number ScenePrimitive::getPrimitiveParameter2() const {
+    return v2;
+}
+    
+Number ScenePrimitive::getPrimitiveParameter3() const {
+    return v3;
+}
+
+Number ScenePrimitive::getPrimitiveParameter4() const {
+    return v4;
+}
+
+Number ScenePrimitive::getPrimitiveParameter5() const {
+    return v5;
+}
+
+void ScenePrimitive::recreatePrimitive() {
 	mesh->clearMesh();
 	switch(type) {
 		case TYPE_PLANE:
@@ -94,6 +118,12 @@ void ScenePrimitive::recreatePrimitive() {
 			bBox.y = v2;
 			bBox.z = 0.001;
 		break;
+		case TYPE_LINE_CIRCLE:
+			mesh->createLineCircle(v1, v2, v3);
+			bBox.x = v1;
+			bBox.y = v2;
+			bBox.z = 0.001;
+        break;
 	}
 }
 

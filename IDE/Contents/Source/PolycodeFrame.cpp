@@ -735,6 +735,7 @@ void EditorHolder::makeVSplit() {
 		firstChildHolder->setEditor(currentEditor);
 		currentEditor = NULL;
 	}
+    Resize(getWidth(), getHeight());
 }
 
 void EditorHolder::makeHSplit() {
@@ -762,6 +763,7 @@ void EditorHolder::makeHSplit() {
 		firstChildHolder->setEditor(currentEditor);
 		currentEditor = NULL;
 	}
+    Resize(getWidth(), getHeight());    
 }
 
 void EditorHolder::handleEvent(Event *event) {
@@ -778,11 +780,13 @@ void EditorHolder::handleEvent(Event *event) {
 		PolycodeEditor *editor = (PolycodeEditor*) currentFileSelector->getSelectedItem()->data;
 		if(currentEditor != editor) {
 			setEditor(editor);
+            Resize(getWidth(), getHeight());
 		}
 	
 	} else if(event->getDispatcher() == mergeSplitButton) {
 		if(parentHolder) {
 			parentHolder->mergeSides(this);
+            Resize(getWidth(), getHeight());
 		}
 	} else if(event->getDispatcher() == closeFileButton) {
 		dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);
@@ -790,9 +794,9 @@ void EditorHolder::handleEvent(Event *event) {
 		if(event->getEventCode() == UIEvent::CLOSE_EVENT) {
 			dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);		
 		}
+        Resize(getWidth(), getHeight());
 	}
 	
-	Resize(getWidth(), getHeight());
 	UIElement::handleEvent(event);
 }
 

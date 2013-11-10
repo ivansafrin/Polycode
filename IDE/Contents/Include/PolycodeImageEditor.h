@@ -40,11 +40,6 @@ class PolycodeImageEditor : public PolycodeEditor {
 	
 		UIRect *editorImage;
 		
-		UIRect *leftShape;		
-		UIRect *rightShape;		
-		UIRect *topShape;		
-		UIRect *bottomShape;								
-		
 		Number aspectRatio;
 };
 

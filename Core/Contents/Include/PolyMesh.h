@@ -205,6 +205,14 @@ namespace Polycode {
 			*/ 
 			void createCircle(Number w, Number h, unsigned int numSegments);
 
+            /**
+             * Creates a 2D circle with normals pointing outwards from vertices.
+             * @param w Width of circle.
+             * @param h Height of plane.
+             * @param numSegments Number of segments
+             */
+            void createLineCircle(Number w, Number h, unsigned int numSegments);
+
 			/**
 			* Creates a torus.
 			* @param radius Radius of the torus.

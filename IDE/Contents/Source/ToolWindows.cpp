@@ -245,6 +245,9 @@ AssetImporterWindow::AssetImporterWindow() : UIWindow("3D Asset Importer", 500, 
 }
 
 void AssetImporterWindow::handleEvent(Event *event) {
+    if(!enabled) {
+        return;
+    }
 	if(event->getDispatcher() == okButton) {
 	
 		String prefixString;

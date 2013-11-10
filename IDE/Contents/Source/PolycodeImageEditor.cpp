@@ -28,40 +28,15 @@ PolycodeImageEditor::PolycodeImageEditor() : PolycodeEditor(true){
 
 PolycodeImageEditor::~PolycodeImageEditor() {
 	delete editorImage;
-	delete leftShape;
-	delete rightShape;
-	delete topShape;
-	delete bottomShape;
 }
 
 bool PolycodeImageEditor::openFile(OSFileEntry filePath) {
-	
-	
-	leftShape = new UIRect(10,10);
-	leftShape->setColor(0.0, 0.0, 0.0, 0.3);
-	leftShape->setAnchorPoint(-1.0, -1.0, 0.0);
-	addChild(leftShape);
-
-	rightShape = new UIRect(10,10);
-	rightShape->setColor(0.0, 0.0, 0.0, 0.3);
-	rightShape->setAnchorPoint(-1.0, -1.0, 0.0);
-	addChild(rightShape);
-
-	topShape = new UIRect(10,10);
-	topShape->setColor(0.0, 0.0, 0.0, 0.3);
-	topShape->setAnchorPoint(-1.0, -1.0, 0.0);
-	addChild(topShape);
-
-	bottomShape = new UIRect(10,10);
-	bottomShape->setColor(0.0, 0.0, 0.0, 0.3);
-	bottomShape->setAnchorPoint(-1.0, -1.0, 0.0);
-	addChild(bottomShape);
-			
+		
 	editorImage = new UIRect(filePath.fullPath);
 	aspectRatio = ((Number)editorImage->getWidth()) / ((Number)editorImage->getHeight());
 	editorImage->setAnchorPoint(0.0, 0.0, 0.0);
 	addChild(editorImage);
-	
+	editorImage->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	PolycodeEditor::openFile(filePath);
 	
 	return true;
@@ -76,18 +51,7 @@ void PolycodeImageEditor::Resize(int x, int y) {
 	} else {
 		editorImage->Resize((y * 0.8) * aspectRatio, (y * 0.8));
 	}
-	
-	leftShape->Resize((x - editorImage->getWidth())/2.0, y);	
-	rightShape->Resize((x - editorImage->getWidth())/2.0, y);	
-	rightShape->setPosition(leftShape->getWidth() + editorImage->getWidth(), 0);
-		
-	topShape->Resize(editorImage->getWidth(), (y - editorImage->getHeight())/2.0);
-	topShape->setPosition(leftShape->getWidth(),0);
-
-	bottomShape->Resize(editorImage->getWidth(), (y - editorImage->getHeight())/2.0);
-	bottomShape->setPosition(leftShape->getWidth(),y-bottomShape->getHeight());
-
-		
+			
 	PolycodeEditor::Resize(x,y);
 }
 

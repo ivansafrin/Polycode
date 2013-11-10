@@ -267,68 +267,111 @@ namespace Polycode {
 	}
 
 	void Mesh::createCircle(Number w, Number h, unsigned int numSegments) {
+		setMeshType(Mesh::TRI_MESH);
+
+        Number lastx = 0;
+		Number lasty = 0;
+		Number lastv = 0;
+
+        Polycode::Polygon *polygon;
+		for (int i=0 ; i < numSegments+1; i++) {
+			Number v = ((Number)i)/((Number)numSegments);
+			Number pos = ((PI*2.0)/((Number)numSegments)) * i;
+			Number x = sin(pos) * w;
+			Number y = cos(pos) * h;
+			
+			if(i > 0) {
+                polygon = new Polygon();
+                polygon->addVertex(0,0,0,0.5,0.5)->setNormal(0.0, 0.0, 1.0);
+                polygon->addVertex(x,y,0, 0.5+(y/h*0.5), 0.5+(x/w*0.5))->setNormal(0.0, 0.0, 1.0);
+                polygon->addVertex(lastx,lasty,0, 0.5+(lasty/h*0.5), 0.5+(lastx/w*0.5))->setNormal(0.0, 0.0, 1.0);
+                addPolygon(polygon);
+            }
+			lastx = x;
+			lastv = v;
+			lasty = y;
+        }
+        
+        
+		arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
+		arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
+		arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;
+		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;
+		arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;			
+	}
+
+    void Mesh::createLineCircle(Number w, Number h, unsigned int numSegments) {
 		setMeshType(Mesh::TRIFAN_MESH);
+     
 		Polygon *poly = new Polygon();
 		int step;
 		if(numSegments > 0) {
-				step = ceil(360/numSegments);
+            step = ceil(360/numSegments);
 		} else {
-				step = 1;
+            step = 1;
 		}
 		
-  
-		poly->addVertex(cosf(0)*(w/2),sinf(0)*(h/2), 0, (cosf(0)*0.5) + 0.5,(sinf(0) * 0.5)+ 0.5);		
+        
+		poly->addVertex(cosf(0)*(w/2),sinf(0)*(h/2), 0, (cosf(0)*0.5) + 0.5,(sinf(0) * 0.5)+ 0.5);
 		for (int i=0; i < 361; i+= step) {
-				Number degInRad = i*TORADIANS;
-				Vertex *v = poly->addVertex(cos(degInRad)*(w/2),sin(degInRad)*(h/2), 0, (cos(degInRad) * 0.5)+ 0.5 , 1.0- ((sin(degInRad) * 0.5)+ 0.5));
-				Vector3 normal = *v; 
-				normal.Normalize();
-				v->normal = normal;
+            Number degInRad = i*TORADIANS;
+            Vertex *v = poly->addVertex(cos(degInRad)*(w/2),sin(degInRad)*(h/2), 0, (cos(degInRad) * 0.5)+ 0.5 , 1.0- ((sin(degInRad) * 0.5)+ 0.5));
+            Vector3 normal = *v;
+            normal.Normalize();
+            v->normal = normal;
 		}
 		
 		addPolygon(poly);
-		arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
-		arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
-		arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;						
-		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;										
-		arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;			
-	}
+        
+		arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
+		arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;
+		arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;
+		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;
+    }
 	
-	
-	void Mesh::createVPlane(Number w, Number h) { 
-		Polygon *imagePolygon = new Polygon();
-		
-		imagePolygon->addVertex(0,0,0,0,0);
-		imagePolygon->addVertex(w,0,0, 1, 0);		
-		imagePolygon->addVertex(w,h,0, 1, 1);									
-		imagePolygon->addVertex(0,h,0,0,1);	
-
-
-		addPolygon(imagePolygon);
+	void Mesh::createVPlane(Number w, Number h) {
+        setMeshType(Mesh::TRI_MESH);
+        
+        Polycode::Polygon *polygon = new Polygon();
+		polygon->addVertex(0,0,0,0,0)->setNormal(0.0, 0.0, 1.0);
+		polygon->addVertex(w,0,0, 1, 0)->setNormal(0.0, 0.0, 1.0);
+		polygon->addVertex(w,h,0, 1, 1)->setNormal(0.0, 0.0, 1.0);
+		addPolygon(polygon);
+        
+        polygon = new Polygon();
+		polygon->addVertex(0,0,0,0,0)->setNormal(0.0, 0.0, 1.0);
+		polygon->addVertex(w,h,0, 1, 1)->setNormal(0.0, 0.0, 1.0);
+		polygon->addVertex(0,h,0,0,1)->setNormal(0.0, 0.0, 1.0);
+		addPolygon(polygon);
 		
 		for(int i=0; i < polygons.size(); i++) {
 			for(int j=0; j < polygons[i]->getVertexCount(); j++) {
 				polygons[i]->getVertex(j)->x = polygons[i]->getVertex(j)->x - (w/2.0f);
 				polygons[i]->getVertex(j)->y = polygons[i]->getVertex(j)->y - (h/2.0f);
+                
 			}
 		}
 
-		calculateNormals();
-		calculateTangents();
-		arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
+		arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
 		arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
 		arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;						
 		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;										
 		arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;		
 	}	
 	
-	void Mesh::createPlane(Number w, Number h) { 
+	void Mesh::createPlane(Number w, Number h) {
+        setMeshType(Mesh::TRI_MESH);
+        
 		Polygon *imagePolygon = new Polygon();
 		imagePolygon->addVertex(0,0,h,0,0);	
 		imagePolygon->addVertex(w,0,h, 1, 0);			
-		imagePolygon->addVertex(w,0,0, 1, 1);		
+		imagePolygon->addVertex(w,0,0, 1, 1);
+		addPolygon(imagePolygon);
+        
+        imagePolygon = new Polygon();
+        imagePolygon->addVertex(0,0,h,0,0);
+		imagePolygon->addVertex(w,0,0, 1, 1);
 		imagePolygon->addVertex(0,0,0,0,1);
-
 		addPolygon(imagePolygon);
 		
 		for(int i=0; i < polygons.size(); i++) {
@@ -695,9 +738,16 @@ namespace Polycode {
 	}
 
 	void Mesh::createBox(Number w, Number d, Number h) {
+        setMeshType(Mesh::TRI_MESH);
+        
 		Polygon *polygon = new Polygon();
 		polygon->addVertex(w,0,h, 1, 1);
 		polygon->addVertex(0,0,h, 1, 0);
+		polygon->addVertex(0,0,0,0,0);
+		addPolygon(polygon);
+        
+        polygon = new Polygon();
+        polygon->addVertex(w,0,h, 1, 1);
 		polygon->addVertex(0,0,0,0,0);
 		polygon->addVertex(w,0,0,0,1);
 		addPolygon(polygon);
@@ -706,12 +756,22 @@ namespace Polycode {
 		polygon->addVertex(w,d,h, 1, 1);
 		polygon->addVertex(w,d,0, 1, 0);
 		polygon->addVertex(0,d,0,0,0);
+        addPolygon(polygon);
+        
+		polygon = new Polygon();
+		polygon->addVertex(w,d,h, 1, 1);
+		polygon->addVertex(0,d,0,0,0);
 		polygon->addVertex(0,d,h,0,1);
 		addPolygon(polygon);
 
 		polygon = new Polygon();
 		polygon->addVertex(0,d,0,0,1);
 		polygon->addVertex(w,d,0, 1, 1);
+		polygon->addVertex(w,0,0, 1, 0);
+		addPolygon(polygon);
+
+        polygon = new Polygon();
+		polygon->addVertex(0,d,0,0,1);
 		polygon->addVertex(w,0,0, 1, 0);
 		polygon->addVertex(0,0,0,0,0);
 		addPolygon(polygon);
@@ -720,6 +780,11 @@ namespace Polycode {
 		polygon->addVertex(0,0,h,0,0);
 		polygon->addVertex(w,0,h, 1, 0);
 		polygon->addVertex(w,d,h, 1, 1);
+		addPolygon(polygon);
+
+        polygon = new Polygon();
+		polygon->addVertex(0,0,h,0,0);
+		polygon->addVertex(w,d,h, 1, 1);
 		polygon->addVertex(0,d,h,0,1);
 		addPolygon(polygon);
 
@@ -727,12 +792,22 @@ namespace Polycode {
 		polygon->addVertex(0,0,h,0,1);
 		polygon->addVertex(0,d,h, 1, 1);
 		polygon->addVertex(0,d,0, 1, 0);
+		addPolygon(polygon);
+        
+		polygon = new Polygon();
+		polygon->addVertex(0,0,h,0,1);
+		polygon->addVertex(0,d,0, 1, 0);
 		polygon->addVertex(0,0,0,0,0);
 		addPolygon(polygon);
 
 		polygon = new Polygon();
 		polygon->addVertex(w,0,h,0,1);
 		polygon->addVertex(w,0,0, 1, 1);
+		polygon->addVertex(w,d,0, 1, 0);
+        addPolygon(polygon);
+        
+        polygon = new Polygon();
+		polygon->addVertex(w,0,h,0,1);
 		polygon->addVertex(w,d,0, 1, 0);
 		polygon->addVertex(w,d,h,0,0);
 		addPolygon(polygon);
@@ -745,7 +820,7 @@ namespace Polycode {
 			}
 		}
 
-		calculateNormals();
+		calculateNormals(false);
 		calculateTangents();
 		arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
 		arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				

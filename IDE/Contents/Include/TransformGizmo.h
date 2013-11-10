@@ -61,6 +61,7 @@ class TransformGizmo : public Entity {
 	
 		Scene *targetScene;
 		Camera *targetCamera;
+    
 	
 		CoreInput *coreInput;
 		int mode;

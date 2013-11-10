@@ -317,6 +317,9 @@ void PropSheet::applyPropActionData(PolycodeEditorPropActionData *data) {
 	data->prop->setPropData(data);
 }
 
+void PropProp::setPropName(String newName) {
+    label->setText(newName);
+}
 
 PropProp::PropProp(String caption, String type) : UIElement() {
 
@@ -2036,6 +2039,222 @@ void ShaderTexturesSheet::setShader(Shader *shader, Material *material, ShaderBi
 
 	dispatchEvent(new Event(), Event::COMPLETE_EVENT);	
 	Resize(getWidth(), getHeight());
+}
+
+ScenePrimitiveSheet::ScenePrimitiveSheet() : PropSheet("PRIMITIVE", "scene_primitive") {
+    typeProp = new ComboProp("Type");
+    typeProp->comboEntry->addComboItem("Box");
+    typeProp->comboEntry->addComboItem("Plane");
+    typeProp->comboEntry->addComboItem("Vert. Plane");
+    typeProp->comboEntry->addComboItem("Cylinder");
+    typeProp->comboEntry->addComboItem("Uncapped Cylinder");
+    typeProp->comboEntry->addComboItem("Sphere");
+    typeProp->comboEntry->addComboItem("Torus");
+    typeProp->comboEntry->addComboItem("Cone");
+    typeProp->comboEntry->addComboItem("Circle");
+    
+    addProp(typeProp);
+    
+    option1Prop = new NumberProp("");
+    addProp(option1Prop);
+    
+    option2Prop = new NumberProp("");
+    addProp(option2Prop);
+    
+    option3Prop = new NumberProp("");
+    addProp(option3Prop);
+    
+    option4Prop = new NumberProp("");
+    addProp(option4Prop);
+
+    option5Prop = new NumberProp("");
+    addProp(option5Prop);
+
+    propHeight = 240;
+    
+    enabled = false;
+    primitive = NULL;
+}
+
+void ScenePrimitiveSheet::updatePrimitiveLabels() {
+    if(!primitive) {
+        return;
+    }
+
+    option1Prop->enabled = false;
+    option1Prop->visible = false;
+    option2Prop->enabled = false;
+    option2Prop->visible = false;
+    option3Prop->enabled = false;
+    option3Prop->visible = false;
+    option4Prop->enabled = false;
+    option4Prop->visible = false;
+    option5Prop->enabled = false;
+    option5Prop->visible = false;
+    
+
+    switch(primitive->getPrimitiveType()) {
+        case ScenePrimitive::TYPE_BOX:
+            option1Prop->setPropName("Width");
+            option2Prop->setPropName("Height");
+            option3Prop->setPropName("Depth");
+            
+            option1Prop->enabled = true;
+            option1Prop->visible = true;
+            option2Prop->enabled = true;
+            option2Prop->visible = true;
+            option3Prop->enabled = true;
+            option3Prop->visible = true;
+            
+            propHeight = 45 + (45 * 3);
+        break;
+        case ScenePrimitive::TYPE_PLANE:
+            option1Prop->setPropName("Width");
+            option2Prop->setPropName("Height");
+            
+            option1Prop->enabled = true;
+            option1Prop->visible = true;
+            option2Prop->enabled = true;
+            option2Prop->visible = true;
+            
+            propHeight = 45 + (45 * 2);
+        break;
+        case ScenePrimitive::TYPE_VPLANE:
+            option1Prop->setPropName("Width");
+            option2Prop->setPropName("Height");
+            
+            option1Prop->enabled = true;
+            option1Prop->visible = true;
+            option2Prop->enabled = true;
+            option2Prop->visible = true;
+            
+            propHeight = 45 + (45 * 2);
+        break;
+        case ScenePrimitive::TYPE_CYLINDER:
+            option1Prop->setPropName("Length");
+            option2Prop->setPropName("Radius");
+            option3Prop->setPropName("Segments");
+            
+            option1Prop->enabled = true;
+            option1Prop->visible = true;
+            option2Prop->enabled = true;
+            option2Prop->visible = true;
+            option3Prop->enabled = true;
+            option3Prop->visible = true;
+            
+            propHeight = 45 + (45 * 3);
+        break;
+        case ScenePrimitive::TYPE_UNCAPPED_CYLINDER:
+            option1Prop->setPropName("Length");
+            option2Prop->setPropName("Radius");
+            option3Prop->setPropName("Segments");
+            
+            option1Prop->enabled = true;
+            option1Prop->visible = true;
+            option2Prop->enabled = true;
+            option2Prop->visible = true;
+            option3Prop->enabled = true;
+            option3Prop->visible = true;
+            
+            propHeight = 45 + (45 * 3);
+        break;
+        case ScenePrimitive::TYPE_SPHERE:
+            option1Prop->setPropName("Radius");
+            option2Prop->setPropName("Lat. segments");
+            option3Prop->setPropName("Long. segments");
+            
+            option1Prop->enabled = true;
+            option1Prop->visible = true;
+            option2Prop->enabled = true;
+            option2Prop->visible = true;
+            option3Prop->enabled = true;
+            option3Prop->visible = true;
+            
+            propHeight = 45 + (45 * 3);
+        break;
+        case ScenePrimitive::TYPE_TORUS:
+            option1Prop->setPropName("Torus radius");
+            option2Prop->setPropName("Pipe radius");
+            option3Prop->setPropName("Ring segments");
+            option4Prop->setPropName("Pipe segments");
+            
+            option1Prop->enabled = true;
+            option1Prop->visible = true;
+            option2Prop->enabled = true;
+            option2Prop->visible = true;
+            option3Prop->enabled = true;
+            option3Prop->visible = true;
+            option4Prop->enabled = true;
+            option4Prop->visible = true;
+            
+            propHeight = 45 + (45 * 4);
+        break;
+        case ScenePrimitive::TYPE_CONE:
+            option1Prop->setPropName("Length");
+            option2Prop->setPropName("Radius");
+            option3Prop->setPropName("Segments");
+            
+            option1Prop->enabled = true;
+            option1Prop->visible = true;
+            option2Prop->enabled = true;
+            option2Prop->visible = true;
+            option3Prop->enabled = true;
+            option3Prop->visible = true;
+            
+            propHeight = 45 + (45 * 3);
+        break;
+        case ScenePrimitive::TYPE_CIRCLE:
+            option1Prop->setPropName("Width");
+            option2Prop->setPropName("Height");
+            option3Prop->setPropName("Segments");
+            
+            option1Prop->enabled = true;
+            option1Prop->visible = true;
+            option2Prop->enabled = true;
+            option2Prop->visible = true;
+            option3Prop->enabled = true;
+            option3Prop->visible = true;
+            
+            propHeight = 45 + (45 * 3);
+        break;
+    }
+    dispatchEvent(new Event(), Event::COMPLETE_EVENT);
+}
+
+ScenePrimitiveSheet::~ScenePrimitiveSheet() {
+    
+}
+
+void ScenePrimitiveSheet::setScenePrimitive(ScenePrimitive *primitive) {
+    this->primitive = primitive;
+    if(primitive) {
+        typeProp->set(primitive->getPrimitiveType());
+        option1Prop->set(primitive->getPrimitiveParameter1());
+        option2Prop->set(primitive->getPrimitiveParameter2());
+        option3Prop->set(primitive->getPrimitiveParameter3());
+        option4Prop->set(primitive->getPrimitiveParameter4());
+        option5Prop->set(primitive->getPrimitiveParameter5());
+        updatePrimitiveLabels();
+        enabled = true;
+    } else {
+        enabled = false;
+    }
+}
+
+void ScenePrimitiveSheet::handleEvent(Event *event) {
+    
+    if(!primitive) {
+        return;
+    }
+    
+    if(event->getEventCode() == Event::CHANGE_EVENT) {
+        primitive->setPrimitiveOptions(typeProp->get(), option1Prop->get(), option2Prop->get(), option3Prop->get(), option4Prop->get(), option5Prop->get());
+        if(event->getDispatcher() == typeProp) {
+            updatePrimitiveLabels();
+        }
+    }
+    
+    PropSheet::handleEvent(event);
 }
 
 MaterialPropSheet::MaterialPropSheet() : PropSheet("MATERIAL", "material") {

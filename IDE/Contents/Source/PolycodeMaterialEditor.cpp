@@ -914,7 +914,7 @@ void MaterialEditorPane::handleEvent(Event *event) {
 			dispatchEvent(new Event(), Event::CHANGE_EVENT);
 		}
 	} else if(event->getDispatcher() == nameProp) {
-		currentMaterial->setName(nameProp->get());
+		currentMaterial->setName(nameProp->get());        
 		if(!changingMaterial) {
 			dispatchEvent(new Event(), Event::CHANGE_EVENT);
 		}

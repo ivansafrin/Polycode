@@ -31,6 +31,9 @@ EntityEditorPropertyView::EntityEditorPropertyView() : UIElement() {
     entityProps->addPropSheet(materialSheet);
     materialSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
     
+    primitiveSheet = new ScenePrimitiveSheet();
+    entityProps->addPropSheet(primitiveSheet);
+    primitiveSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
     
     entitySheet = new EntitySheet();
     entityProps->addPropSheet(entitySheet);
@@ -47,7 +50,10 @@ void EntityEditorPropertyView::setEntity(Entity *entity) {
     
     SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(entity);
     materialSheet->setSceneMesh(sceneMesh);
-    
+
+    ScenePrimitive *scenePrimitive = dynamic_cast<ScenePrimitive*>(entity);
+    primitiveSheet->setScenePrimitive(scenePrimitive);
+
     entitySheet->setEntity(entity);
     Resize(getWidth(), getHeight());
 }

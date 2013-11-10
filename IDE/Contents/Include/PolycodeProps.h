@@ -42,7 +42,8 @@ class PropProp : public UIElement {
 		virtual void setPropData(PolycodeEditorPropActionData* data) {}
 		
 		virtual void setPropWidth(Number width) {}
-		
+        void setPropName(String newName);
+    
 		String propType;
 		UILabel *label;
 		Entity *propContents;				
@@ -507,6 +508,38 @@ class RenderTargetsSheet : public PropSheet {
 		
 		UIButton *addButton;		
 		int removeIndex;
+};
+/*
+class TransformSheet : public PropSheet {
+    public:
+        TransformSheet();
+        ~TransformSheet();
+    
+        void setEntity(Entity *entity);
+    protected:
+        Entity *entity;
+};
+*/
+class ScenePrimitiveSheet : public PropSheet {
+public:
+    ScenePrimitiveSheet();
+    ~ScenePrimitiveSheet();
+    
+    void setScenePrimitive(ScenePrimitive *primitive);
+    void handleEvent(Event *event);
+    
+protected:
+    
+    void updatePrimitiveLabels();
+    
+    ScenePrimitive *primitive;
+    ComboProp *typeProp;
+    
+    NumberProp *option1Prop;
+    NumberProp *option2Prop;
+    NumberProp *option3Prop;
+    NumberProp *option4Prop;
+    NumberProp *option5Prop;
 };
 
 class MaterialPropSheet : public PropSheet {

@@ -176,6 +176,27 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
         return;
     }
 
+    if(command == "add_primitive") {
+        ScenePrimitive  *newPrimitive = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 1.0, 1.0, 1.0);
+        sceneObjectRoot->addChild(newPrimitive);
+        setEditorProps(newPrimitive);
+        newPrimitive->setPosition(cursorPosition);
+        selectEntity(newPrimitive);
+        newPrimitive->getMesh()->calculateNormals(false);
+        return;
+    }
+    
+    
+    if(command == "add_image") {
+        assetSelectType = "image";
+        globalFrame->assetBrowser->addEventListener(this, UIEvent::OK_EVENT);
+        std::vector<String> extensions;
+        extensions.push_back("png");
+        globalFrame->showAssetBrowser(extensions);
+        return;
+    }
+    
+    
     if(command == "add_light") {
         SceneLight *newLight = new SceneLight(SceneLight::AREA_LIGHT, mainScene, 50);
         
@@ -212,6 +233,12 @@ void EntityEditorMainView::handleEvent(Event *event) {
                 setEditorProps(newMesh);
                 newMesh->setPosition(cursorPosition);
                 selectEntity(newMesh);
+            } else if(assetSelectType == "image") {
+                SceneImage *newImage = new SceneImage(globalFrame->assetBrowser->getFullSelectedAssetPath());
+                sceneObjectRoot->addChild(newImage);
+                setEditorProps(newImage);
+                newImage->setPosition(cursorPosition);
+                selectEntity(newImage);
             }
             
             globalFrame->assetBrowser->removeAllHandlersForListener(this);
@@ -227,7 +254,9 @@ void EntityEditorMainView::handleEvent(Event *event) {
         addEntityMenu->addOption("Add Primitive", "add_primitive");
         addEntityMenu->addOption("Add Mesh", "add_mesh");
         addEntityMenu->addOption("Add Entity", "add_entity");
+        addEntityMenu->addDivider();
         addEntityMenu->addOption("Add Sprite", "add_sprite");
+        addEntityMenu->addOption("Add Image", "add_image");
         addEntityMenu->addOption("Add Label", "add_label");
         addEntityMenu->addDivider();
         addEntityMenu->addOption("Add Light", "add_light");
