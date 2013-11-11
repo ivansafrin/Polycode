@@ -239,12 +239,8 @@ namespace Polycode {
 				z = fSin*rkAxis.z;
 			}
 
-			void toEulerAngles (Vector3& eulerAngles) {
-				// See http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
-				// q0 = w, q1 = x, q2 = y, q3 = z
-				eulerAngles.x = atan2( 2 * ( w * x + y * z), 1 - 2 * (x * x + y * y) );
-				eulerAngles.y = asin(2 * ( w * y - z * x));
-				eulerAngles.z = atan2( 2 * ( w * z + x * y), 1 - 2 * (y * y + z * z) );
+			Vector3 toEulerAngles () const {
+                return Vector3(atan2( 2 * ( w * x + y * z), 1 - 2 * (x * x + y * y)), asin(2 * ( w * y - z * x)), atan2( 2 * ( w * z + x * y), 1 - 2 * (y * y + z * z) ));
 			}
 
 			//-----------------------------------------------------------------------

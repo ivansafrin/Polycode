@@ -416,7 +416,6 @@ void TransformGizmo::transfromSelectedEntities(const Vector3 &move, const Vector
 		q.fromAngleAxis(rotate, axisVector);
 		selectedEntities[i]->setRotationByQuaternion(currentRotation * q);
 	}
-	Translate(move);
 }
 
 Number TransformGizmo::getTransformPlaneAngle() {
@@ -583,6 +582,16 @@ TransformGizmo::~TransformGizmo() {
 }
 
 void TransformGizmo::Update() {
+    
+    if(selectedEntities.size() > 0) {
+        Vector3 centerPoint;
+        for(int i=0; i < selectedEntities.size(); i++) {
+            centerPoint += selectedEntities[i]->getConcatenatedMatrix().getPosition();
+        }
+        centerPoint = centerPoint / selectedEntities.size();
+        setPosition(centerPoint);
+    }
+    
     viewportRotateGripBase->lookAt(targetCamera->getPosition());
 	Number scale = getPosition().distance(targetCamera->getPosition()) * 0.1;
     if(scale < 0.0) {

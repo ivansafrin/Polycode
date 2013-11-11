@@ -352,6 +352,12 @@ namespace Polycode {
 			@return Entity's scale as a vector.
 			*/						
 			Vector3 getScale() const;
+        
+            /**
+             * Returns the entity's rotation as euler angles
+             @return Entity's rotation as euler angles
+             */
+            Vector3 getEulerRotation() const;
 		
 			/**
 			* Returns the entity's pitch combined with the combined pitch of its parent.
@@ -376,6 +382,12 @@ namespace Polycode {
 			*/
 			void rebuildRotation();					
 			
+            /**
+             * Sets rotation from euler angles
+             * @param rotation New rotation values
+             */
+            void setRotationEuler(const Vector3 &rotation);
+        
 			/**
 			* Sets the pitch rotation of the entity.
 			* @param pitch New pitch value in degrees.
@@ -734,7 +746,7 @@ namespace Polycode {
 		
 			Vector3 position;
 			Vector3 scale;		
-			Rotation rotation;
+			Vector3 rotation;
 	
 			Quaternion rotationQuat;
 			

@@ -341,6 +341,93 @@ PropProp::~PropProp() {
 
 }
 
+Vector3Prop::Vector3Prop(String caption) : PropProp(caption, "Vector3") {
+    
+	labelX = new UILabel("X:", 11);
+	labelX->color.a = 1.0;
+	propContents->addChild(labelX);
+	labelX->setPosition(-20, 6);
+    
+	labelY = new UILabel("Y:", 11);
+	labelY->color.a = 1.0;
+	propContents->addChild(labelY);
+	labelY->setPosition(-20, 31);
+
+    labelZ = new UILabel("Z:", 11);
+	labelZ->color.a = 1.0;
+	propContents->addChild(labelZ);
+	labelZ->setPosition(-20, 56);
+    
+	xInput = new UITextInput(false, 50, 12);
+	xInput->addEventListener(this, UIEvent::CHANGE_EVENT);
+	xInput->setText("0");
+	xInput->setNumberOnly(true);
+	propContents->addChild(xInput);
+	xInput->setPosition(0, 0);
+
+   	yInput = new UITextInput(false, 50, 12);
+	yInput->addEventListener(this, UIEvent::CHANGE_EVENT);
+	yInput->setText("0");
+	yInput->setNumberOnly(true);
+	propContents->addChild(yInput);
+	yInput->setPosition(0, 25);
+
+    zInput = new UITextInput(false, 50, 12);
+	zInput->addEventListener(this, UIEvent::CHANGE_EVENT);
+	zInput->setText("0");
+	zInput->setNumberOnly(true);
+	propContents->addChild(zInput);
+	zInput->setPosition(0, 50);
+
+	setHeight(75);
+}
+
+void Vector3Prop::setPropWidth(Number width) {
+    xInput->Resize(width-PROP_PADDING-propContents->getPosition().x, xInput->getHeight());
+    yInput->Resize(width-PROP_PADDING-propContents->getPosition().x, yInput->getHeight());
+    zInput->Resize(width-PROP_PADDING-propContents->getPosition().x, zInput->getHeight());
+}
+
+void Vector3Prop::handleEvent(Event *event) {
+
+	if(event->getDispatcher() == xInput || event->getDispatcher() == yInput || event->getDispatcher() == zInput) {
+		if(event->getEventCode() == UIEvent::CHANGE_EVENT) {
+            
+//			if(xInput && yInput && zInput) {
+//				lastData = currentData;
+//				currentData = Vector2(atof(positionX->getText().c_str()), atof(positionY->getText().c_str()));
+//			}
+			if(!suppressChangeEvent) {
+				dispatchEvent(new Event(), Event::CHANGE_EVENT);
+//				dispatchEvent(new PropEvent(this, NULL, PropDataVector2(lastData), PropDataVector2(currentData)), PropEvent::EVENT_PROP_CHANGE);
+                
+			}
+		}
+	}
+
+}
+
+void Vector3Prop::setPropData(PolycodeEditorPropActionData* data) {
+//	set(data->vector2Val);
+	dispatchEvent(new Event(), Event::CHANGE_EVENT);
+}
+
+void Vector3Prop::set(const Vector3 &position) {
+	suppressChangeEvent = true;
+	xInput->setText(String::NumberToString(position.x, 5));
+	yInput->setText(String::NumberToString(position.y, 5));
+	zInput->setText(String::NumberToString(position.z, 5));
+	suppressChangeEvent = false;
+}
+
+Vector3 Vector3Prop::get() const {
+	return Vector3(atof(xInput->getText().c_str()), atof(yInput->getText().c_str()), atof(zInput->getText().c_str()));
+}
+
+Vector3Prop::~Vector3Prop() {
+    
+}
+
 Vector2Prop::Vector2Prop(String caption) : PropProp(caption, "Vector2") {
 
 	labelX = new UILabel("X:", 11);
@@ -2039,6 +2126,74 @@ void ShaderTexturesSheet::setShader(Shader *shader, Material *material, ShaderBi
 
 	dispatchEvent(new Event(), Event::COMPLETE_EVENT);	
 	Resize(getWidth(), getHeight());
+}
+
+TransformSheet::TransformSheet() : PropSheet("TRANSFORM", "entity_transform") {
+    entity = NULL;
+    
+    positionProp = new Vector3Prop("Position");
+    addProp(positionProp);
+    
+    scaleProp = new Vector3Prop("Scale");
+    addProp(scaleProp);
+    
+    rotationProp = new Vector3Prop("Rotation");
+    addProp(rotationProp);
+    
+    propHeight = 275;
+    
+    enabled = false;
+}
+
+TransformSheet::~TransformSheet() {
+
+}
+
+
+void TransformSheet::setEntity(Entity *entity) {
+    this->entity = entity;
+    if(entity) {
+        enabled = true;
+    } else {
+        enabled = false;
+    }
+}
+
+void TransformSheet::Update() {
+    if(!entity) {
+        return;
+    }
+    
+    if(entity->getPosition() != lastPosition) {
+        positionProp->set(entity->getPosition());
+        lastPosition = entity->getPosition();
+    }
+    
+    if(entity->getScale() != lastScale) {
+        scaleProp->set(entity->getScale());
+        lastScale = entity->getScale();
+    }
+    
+    if(entity->getEulerRotation() != lastRotation) {
+        rotationProp->set(entity->getEulerRotation() * TODEGREES);
+        lastRotation = entity->getEulerRotation() * TODEGREES;
+    }
+}
+
+void TransformSheet::handleEvent(Event *event) {
+    if(event->getEventCode() == Event::CHANGE_EVENT) {
+        if(event->getDispatcher() == positionProp) {
+            lastPosition = positionProp->get();
+            entity->setPosition(lastPosition);
+        } else if(event->getDispatcher() == scaleProp) {
+            lastScale = scaleProp->get();
+            entity->setScale(lastScale);
+        } else if(event->getDispatcher() == rotationProp) {
+            lastRotation = rotationProp->get();
+            entity->setRotationEuler(lastRotation);
+        }
+    }
+    PropSheet::handleEvent(event);
 }
 
 ScenePrimitiveSheet::ScenePrimitiveSheet() : PropSheet("PRIMITIVE", "scene_primitive") {

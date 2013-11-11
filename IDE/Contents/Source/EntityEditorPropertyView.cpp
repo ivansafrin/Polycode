@@ -27,6 +27,10 @@ EntityEditorPropertyView::EntityEditorPropertyView() : UIElement() {
     entityProps = new PropList();
     addChild(entityProps);
     
+    transformSheet = new TransformSheet();
+    entityProps->addPropSheet(transformSheet);
+    transformSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
+    
     materialSheet = new MaterialPropSheet();
     entityProps->addPropSheet(materialSheet);
     materialSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
@@ -55,6 +59,7 @@ void EntityEditorPropertyView::setEntity(Entity *entity) {
     primitiveSheet->setScenePrimitive(scenePrimitive);
 
     entitySheet->setEntity(entity);
+    transformSheet->setEntity(entity);
     Resize(getWidth(), getHeight());
 }
 

@@ -443,7 +443,7 @@ Vector3 Entity::getCompoundScale() const {
 
 Matrix4 Entity::getConcatenatedRollMatrix() const {
 	Quaternion q;
-	q.createFromAxisAngle(0.0f, 0.0f, 1.0f, rotation.roll);
+	q.createFromAxisAngle(0.0f, 0.0f, 1.0f, rotation.z);
 	Matrix4 transformMatrix = q.createMatrix();	
 	
 	if(parentEntity != NULL) 
@@ -591,11 +591,13 @@ void Entity::setRotationQuat(Number w, Number x, Number y, Number z) {
 	rotationQuat.x = x;
 	rotationQuat.y = y;
 	rotationQuat.z = z;
+    rotation = rotationQuat.toEulerAngles();
 	matrixDirty = true;
 }
 
 void Entity::setRotationByQuaternion(const Quaternion &quaternion) {
 	rotationQuat = quaternion;
+    rotation = quaternion.toEulerAngles();
 	matrixDirty = true;
 }
 
@@ -605,6 +607,10 @@ Quaternion Entity::getRotationQuat() const {
 
 Vector3 Entity::getScale() const {
 	return scale;
+}
+
+Vector3 Entity::getEulerRotation() const {
+    return rotation;
 }
 
 Matrix4 Entity::getConcatenatedMatrixRelativeTo(Entity *relativeEntity) {
@@ -641,44 +647,49 @@ const Matrix4& Entity::getTransformMatrix() const {
 }
 
 void Entity::Pitch(Number pitch) {
-	rotation.pitch += pitch;
+	rotation.x += pitch;
 	rebuildRotation();	
 	matrixDirty = true;
 }
 
 void Entity::Yaw(Number yaw) {
-	rotation.yaw += yaw;
+	rotation.y += yaw;
 	rebuildRotation();	
 	matrixDirty = true;
 }
 
 void Entity::Roll(Number roll) {
-	rotation.roll += roll;
+	rotation.z += roll;
 	rebuildRotation();	
 	matrixDirty = true;
 }
 
 void Entity::setRoll(Number roll) {
-	rotation.roll = roll;
+	rotation.z = roll;
 	rebuildRotation();	
 	matrixDirty = true;
 }
 
 void Entity::setPitch(Number pitch) {
-	rotation.pitch = pitch;
+	rotation.x = pitch;
 	rebuildRotation();	
 	matrixDirty = true;
 }
 
 void Entity::setYaw(Number yaw) {
-	rotation.yaw = yaw;
+	rotation.y = yaw;
 	rebuildRotation();
 	matrixDirty = true;
 }
 
+void Entity::setRotationEuler(const Vector3 &rotation) {
+    this->rotation = rotation;
+    rebuildRotation();
+    matrixDirty = true;
+}
 
 void Entity::rebuildRotation() {
-	rotationQuat.fromAxes(rotation.pitch, rotation.yaw, rotation.roll);
+	rotationQuat.fromAxes(rotation.x, rotation.y, rotation.z);
 }
 
 void Entity::setEntityProp(const String& propName, const String& propValue) {
@@ -742,15 +753,15 @@ Number Entity::getDepth() const {
 
 
 Number Entity::getPitch() const {
-	return rotation.pitch;
+	return rotation.x;
 }
 
 Number Entity::getYaw() const {
-	return rotation.yaw;
+	return rotation.y;
 }
 
 Number Entity::getRoll() const {
-	return rotation.roll;
+	return rotation.z;
 }
 
 void Entity::setTransformByMatrixPure(const Matrix4& matrix) {
@@ -847,23 +858,23 @@ Vector2 Entity::getPosition2D() const {
 
 Number Entity::getCombinedPitch() const {
 	if(parentEntity != NULL)
-		return parentEntity->getCombinedPitch()+rotation.pitch;
+		return parentEntity->getCombinedPitch()+rotation.x;
 	else
-		return rotation.pitch;
+		return rotation.x;
 }
 
 Number Entity::getCombinedYaw() const {
 	if(parentEntity != NULL)
-		return parentEntity->getCombinedYaw()+rotation.yaw;
+		return parentEntity->getCombinedYaw()+rotation.y;
 	else
-		return rotation.yaw;
+		return rotation.y;
 }
 
 Number Entity::getCombinedRoll() const {
 	if(parentEntity != NULL)
-		return parentEntity->getCombinedRoll()+rotation.roll;
+		return parentEntity->getCombinedRoll()+rotation.z;
 	else
-		return rotation.roll;	
+		return rotation.z;
 }
 
 unsigned int Entity::getNumTags() const {

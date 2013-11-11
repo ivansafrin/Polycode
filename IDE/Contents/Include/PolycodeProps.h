@@ -52,6 +52,28 @@ class PropProp : public UIElement {
 		bool settingFromData;
 };
 
+class Vector3Prop : public PropProp {
+public:
+    Vector3Prop(String caption);
+    ~Vector3Prop();
+    void handleEvent(Event *event);
+    void set(const Vector3 &position);
+
+    Vector3 get() const;
+    void setPropData(PolycodeEditorPropActionData* data);
+    
+    void setPropWidth(Number width);
+    
+    UITextInput *xInput;
+    UITextInput *yInput;
+    UITextInput *zInput;
+    
+    UILabel *labelX;
+    UILabel *labelY;
+    UILabel *labelZ;
+};
+
+
 class Vector2Prop : public PropProp {
 	public:
 		Vector2Prop(String caption);
@@ -509,17 +531,29 @@ class RenderTargetsSheet : public PropSheet {
 		UIButton *addButton;		
 		int removeIndex;
 };
-/*
+
 class TransformSheet : public PropSheet {
     public:
         TransformSheet();
         ~TransformSheet();
     
+        void Update();
+    
         void setEntity(Entity *entity);
+        void handleEvent(Event *event);
+    
     protected:
         Entity *entity;
+    
+        Vector3Prop *positionProp;
+        Vector3Prop *scaleProp;
+        Vector3Prop *rotationProp;
+    
+        Vector3 lastPosition;
+        Vector3 lastScale;
+        Vector3 lastRotation;
 };
-*/
+
 class ScenePrimitiveSheet : public PropSheet {
 public:
     ScenePrimitiveSheet();
