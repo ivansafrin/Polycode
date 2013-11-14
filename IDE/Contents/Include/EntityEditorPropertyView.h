@@ -47,5 +47,6 @@ class EntityEditorPropertyView : public UIElement {
         EntitySheet *entitySheet;
         MaterialPropSheet *materialSheet;
         ScenePrimitiveSheet *primitiveSheet;
+        SceneLightSheet *lightSheet;
 };
 

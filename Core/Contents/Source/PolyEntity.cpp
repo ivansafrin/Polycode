@@ -452,9 +452,9 @@ Matrix4 Entity::getConcatenatedRollMatrix() const {
 		return transformMatrix;	
 }
 
-Vector2 Entity::getScreenPosition(Matrix4 projectionMatrix, Matrix4 cameraMatrix) {
+Vector2 Entity::getScreenPosition(const Matrix4 &projectionMatrix, const Matrix4 &cameraMatrix, const Polycode::Rectangle &viewport) {
 	if(renderer){
-		return renderer->Project(cameraMatrix, projectionMatrix, getConcatenatedMatrix().getPosition());
+		return renderer->Project(cameraMatrix, projectionMatrix, viewport, getConcatenatedMatrix().getPosition());
 	} else {
 		return Vector2();
 	}
@@ -462,7 +462,7 @@ Vector2 Entity::getScreenPosition(Matrix4 projectionMatrix, Matrix4 cameraMatrix
 
 Vector2 Entity::getScreenPositionForMainCamera() {
 	if(renderer) {
-		return getScreenPosition(renderer->getProjectionMatrix(), renderer->getCameraMatrix());
+		return getScreenPosition(renderer->getProjectionMatrix(), renderer->getCameraMatrix(), renderer->getViewport());
 	} else {
 		return Vector2();
 	}

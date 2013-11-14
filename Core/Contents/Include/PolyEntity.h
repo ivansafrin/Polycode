@@ -718,7 +718,7 @@ namespace Polycode {
 			bool blockMouseInput;
 																					
 			void setHitbox(Number width, Number height) {}
-			Vector2 getScreenPosition(Matrix4 projectionMatrix, Matrix4 cameraMatrix);
+            Vector2 getScreenPosition(const Matrix4 &projectionMatrix, const Matrix4 &cameraMatrix, const Polycode::Rectangle &viewport);
 			Vector2 getScreenPositionForMainCamera();
 
 			bool hitTest(Number x, Number y) const { return false; }

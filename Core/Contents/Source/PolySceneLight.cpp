@@ -26,6 +26,7 @@
 #include "PolyCoreServices.h"
 #include "PolyMesh.h"
 #include "PolyRenderer.h"
+#include "PolyScenePrimitive.h"
 #include "PolyScene.h"
 
 using namespace Polycode;
@@ -40,6 +41,7 @@ SceneLight::SceneLight(int type, Scene *parentScene, Number intensity, Number co
 	spotlightCutoff = 40;
 	spotlightExponent = 10;
 		
+    shadowMapRes = 256;
 	this->depthWrite = false;
 	lightMesh = new Mesh(Mesh::QUAD_MESH);
 	lightMesh->createBox(0.1,0.1,0.1);
@@ -53,27 +55,13 @@ SceneLight::SceneLight(int type, Scene *parentScene, Number intensity, Number co
 	lightColor.setColor(1.0f,1.0f,1.0f,1.0f);
 	setSpotlightProperties(40,0.1);
 	
-	/*
-	if(type == SceneLight::SPOT_LIGHT) {
-		lightShape = new ScenePrimitive(ScenePrimitive::TYPE_CONE, 3, 1.0, 8);
-		lightShape->Translate(0,0,-1.5);
-		lightShape->setPitch(90.0);
-		lightShape->setColor(1.0,1.0,0.0, 0.75);
-		lightShape->renderWireframe = true;
-		addChild(lightShape);		
-	} else {
-		lightShape = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 0.5, 0.5, 0.5);
-		lightShape->setColor(1.0,1.0,0.0, 0.75);
-		lightShape->renderWireframe = true;
-		addChild(lightShape);		
-	}
-	lightShape->castShadows = false;
-	lightShape->visible = false;
-	*/
-	
-	lightShape = NULL;
-	
 	lightImportance = 0;
+    
+    debugDraw = false;
+}
+
+void SceneLight::setLightType(int lightType) {
+    this->type = lightType;
 }
 
 void SceneLight::setLightImportance(int newImportance) {
@@ -84,18 +72,17 @@ int SceneLight::getLightImportance() const {
 	return lightImportance;
 }
 
-
 void SceneLight::enableDebugDraw(bool val) {
-	if(lightShape) {
-		lightShape->visible = val;
-	}
+    debugDraw = val;
 }
 
-void SceneLight::enableShadows(bool val, Number resolution) {
+void SceneLight::enableShadows(bool val, unsigned int resolution) {
 	if(val) {
-		if(!zBufferTexture) {
-			CoreServices::getInstance()->getRenderer()->createRenderTextures(NULL, &zBufferTexture, resolution, resolution, false);
-		}
+        if(zBufferTexture) {
+            CoreServices::getInstance()->getMaterialManager()->deleteTexture(zBufferTexture);
+        }
+        
+        CoreServices::getInstance()->getRenderer()->createRenderTextures(NULL, &zBufferTexture, resolution, resolution, false);
 		if(!spotCamera) {
 			spotCamera = new Camera(parentScene);
 //			spotCamera->setPitch(-45.0f);
@@ -127,8 +114,16 @@ void SceneLight::setShadowMapFOV(Number fov) {
 	shadowMapFOV = fov;
 }
 
+Number SceneLight::getShadowMapFOV() const {
+    return shadowMapFOV;
+}
+
 SceneLight::~SceneLight() {
 	printf("Destroying scene light...\n");
+}
+
+unsigned int SceneLight::getShadowMapResolution() const {
+    return shadowMapRes;
 }
 
 void SceneLight::renderDepthMap(Scene *scene) {
@@ -160,14 +155,7 @@ Number SceneLight::getIntensity() const {
 }
 
 void SceneLight::Render() {
-/*
-	CoreServices::getInstance()->getRenderer()->setTexture(NULL);
-	CoreServices::getInstance()->getRenderer()->beginRenderOperation(lightMesh->getMeshType());
-	for(int i=0; i < lightMesh->getPolygonCount(); i++) {
-			CoreServices::getInstance()->getRenderer()->draw3DPolygon(lightMesh->getPolygon(i));
-	}
-	CoreServices::getInstance()->getRenderer()->endRenderOperation();	
-	*/
+    
 }
 
 int SceneLight::getType() const {

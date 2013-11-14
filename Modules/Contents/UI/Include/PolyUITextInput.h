@@ -441,6 +441,7 @@ namespace Polycode {
 			int selectionR;
 			
 			UIRect *lineNumberBg;
+            Number textInputOffsetY;
 			
 			int decoratorOffset;
 		

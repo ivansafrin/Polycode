@@ -25,6 +25,7 @@
 
 extern UIGlobalMenu *globalMenu;
 extern PolycodeFrame *globalFrame;
+extern Scene *globalScene;
 
 EntityEditorMainView::EntityEditorMainView() {
 	processInputEvents = true;
@@ -34,7 +35,7 @@ EntityEditorMainView::EntityEditorMainView() {
 	mainScene->clearColor.setColor(0.2, 0.2, 0.2, 1.0);	
 	mainScene->useClearColor = true;
 	mainScene->rootEntity.processInputEvents = true;
-	
+	   
 	renderTextureShape = new UIRect(256, 256);
 	renderTextureShape->setAnchorPoint(-1.0, -1.0, 0.0);	
 	renderTextureShape->setTexture(renderTexture->getTargetTexture());
@@ -198,7 +199,7 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
     
     
     if(command == "add_light") {
-        SceneLight *newLight = new SceneLight(SceneLight::AREA_LIGHT, mainScene, 50);
+        SceneLight *newLight = new SceneLight(SceneLight::AREA_LIGHT, mainScene, 1.0);
         
         newLight->bBox = Vector3(0.5, 0.5, 0.5);
         mainScene->addLight(newLight);
@@ -271,31 +272,56 @@ void EntityEditorMainView::handleEvent(Event *event) {
         if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN ) {
             InputEvent *inputEvent = (InputEvent*) event;
 
+            CoreInput *input = CoreServices::getInstance()->getCore()->getInput();
             if(inputEvent->mouseButton == CoreInput::MOUSE_BUTTON2) {
                 Entity* targetEntity = (Entity*) event->getDispatcher();
-                selectEntity(targetEntity);
+                selectEntity(targetEntity, input->getKeyState(KEY_LSHIFT) || input->getKeyState(KEY_RSHIFT));
             }
         }
     }
 }
 
-void EntityEditorMainView::selectEntity(Entity *targetEntity) {
-    for(int i=0; i < selectedEntities.size(); i++) {
-        SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(selectedEntities[i]);
-        if(sceneMesh) {
-            sceneMesh->overlayWireframe = false;
-        }
+void EntityEditorMainView::doEntityDeselect(Entity *targetEntity) {
+    SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(targetEntity);
+    if(sceneMesh) {
+        sceneMesh->overlayWireframe = false;
     }
-    
-    selectedEntities.clear();
-    selectedEntities.push_back(targetEntity);
-    transformGizmo->setTransformSelection(selectedEntities);
-    dispatchEvent(new Event(), Event::CHANGE_EVENT);
-    
+}
+
+void EntityEditorMainView::doEntitySelect(Entity *targetEntity) {
     SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(targetEntity);
     if(sceneMesh) {
         sceneMesh->overlayWireframe = true;
     }
+}
+
+
+void EntityEditorMainView::selectEntity(Entity *targetEntity, bool addToSelection) {
+    
+    bool doNotReselect = false;
+    if(!addToSelection) {
+        for(int i=0; i < selectedEntities.size(); i++) {
+            doEntityDeselect(selectedEntities[i]);
+        }
+        selectedEntities.clear();
+    } else {
+        for(int i=0; i < selectedEntities.size(); i++) {
+            if(targetEntity == selectedEntities[i]) {
+                doEntityDeselect(targetEntity);
+                selectedEntities.erase(selectedEntities.begin() + i);
+                doNotReselect = true;
+                break;
+            }
+        }
+    }
+
+    if(!doNotReselect) {
+        selectedEntities.push_back(targetEntity);
+        doEntitySelect(targetEntity);
+    }
+    
+    transformGizmo->setTransformSelection(selectedEntities);
+    dispatchEvent(new Event(), Event::CHANGE_EVENT);
     
 }
 
@@ -307,8 +333,10 @@ void EntityEditorMainView::Resize(Number width, Number height) {
 	headerBg->Resize(width, 30);
 	modeSwitchDropdown->setPosition(width-110, 4);
     
-	mainScene->sceneMouseRect.x = renderTextureShape->getScreenPositionForMainCamera().x;
-	mainScene->sceneMouseRect.y = renderTextureShape->getScreenPositionForMainCamera().y;
+    Vector2 screenPos = renderTextureShape->getScreenPosition(globalScene->getDefaultCamera()->getProjectionMatrix(), globalScene->getDefaultCamera()->getTransformMatrix(), globalScene->getDefaultCamera()->getViewport());
+    
+	mainScene->sceneMouseRect.x = screenPos.x;
+	mainScene->sceneMouseRect.y = screenPos.y;
 	mainScene->sceneMouseRect.w = renderTextureShape->getWidth();
 	mainScene->sceneMouseRect.h = renderTextureShape->getHeight();
     mainScene->remapMouse = true;
@@ -327,11 +355,14 @@ PolycodeEntityEditor::PolycodeEntityEditor() : PolycodeEditor(true){
     mainView->addEventListener(this, Event::CHANGE_EVENT);
 	mainSizer->addLeftChild(mainView);
     
-    rightSizer = new UIVSizer(10, 10, 150, true);
-    mainSizer->addRightChild(rightSizer);
+    mainSizer->setMinimumSize(200);
+    
+//    rightSizer = new UIVSizer(10, 10, 150, true);
+  //  mainSizer->addRightChild(rightSizer);
     
     propertyView = new EntityEditorPropertyView();
-    rightSizer->addBottomChild(propertyView);
+//    rightSizer->addBottomChild(propertyView);
+    mainSizer->addRightChild(propertyView);
 }
 
 void PolycodeEntityEditor::handleEvent(Event *event) {
@@ -354,6 +385,15 @@ bool PolycodeEntityEditor::openFile(OSFileEntry filePath) {
 	PolycodeEditor::openFile(filePath);	
 	return true;
 }
+
+void PolycodeEntityEditor::Activate() {
+    Resize(getWidth(), getHeight());
+}
+
+void PolycodeEntityEditor::saveFile() {
+    
+}
+
 
 void PolycodeEntityEditor::Resize(int x, int y) {
 	mainSizer->Resize(x, y);

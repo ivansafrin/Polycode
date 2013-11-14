@@ -229,45 +229,52 @@ void OpenGLRenderer::resetViewport() {
 	glGetDoublev( GL_PROJECTION_MATRIX, sceneProjectionMatrix);
 }
 
-Vector3 OpenGLRenderer::Unproject(Number x, Number y) {
+Vector3 OpenGLRenderer::Unproject(Number x, Number y, const Matrix4 &cameraMatrix, const Matrix4 &projectionMatrix, const Polycode::Rectangle &viewport) {
 	Vector3 coords;
 	GLfloat wx, wy, wz;
 	GLdouble cx, cy, cz;
-	
+
 	GLdouble mv[16];
-	glGetDoublev( GL_MODELVIEW_MATRIX, mv );
-	
-	GLdouble proj[16];
-	glGetDoublev( GL_PROJECTION_MATRIX, proj );
-	
-	GLint vp[4];
-	glGetIntegerv( GL_VIEWPORT, vp );
+	Matrix4 camInverse = cameraMatrix.Inverse();
+	Matrix4 cmv;
+	cmv.identity();
+	cmv = cmv * camInverse;
+    
+	for(int i=0; i < 16; i++) {
+		mv[i] = cmv.ml[i];
+	}
+    
+	GLint vp[4] = {viewport.x, viewport.y, viewport.w, viewport.h};
+    
+	GLdouble _sceneProjectionMatrix[16];
+	for(int i=0; i < 16; i++) {
+		_sceneProjectionMatrix[i] = projectionMatrix.ml[i];
+	}	
 	
 	wx = ( Number ) x;
 	wy = ( Number ) vp[3] - ( Number ) y;
 	glReadPixels( x * backingResolutionScaleX, wy * backingResolutionScaleY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &wz );
 	
-	gluUnProject( wx, wy, wz, mv, proj, vp, &cx, &cy, &cz );
+	gluUnProject( wx, wy, wz, mv, _sceneProjectionMatrix, vp, &cx, &cy, &cz );
 	
 	coords = Vector3( cx, cy, cz );
 	
 	return coords;	
 }
 
-Vector2 OpenGLRenderer::Project(const Matrix4 &cameraMatrix, const Matrix4 &projectionMatrix, const Vector3 &coordiante) const {
+Vector2 OpenGLRenderer::Project(const Matrix4 &cameraMatrix, const Matrix4 &projectionMatrix, const Polycode::Rectangle &viewport, const Vector3 &coordiante) const {
     
 	GLdouble mv[16];
 	Matrix4 camInverse = cameraMatrix.Inverse();	
 	Matrix4 cmv;
 	cmv.identity();
 	cmv = cmv * camInverse;
-
-	GLint vp[4];
-	glGetIntegerv( GL_VIEWPORT, vp );
     
 	for(int i=0; i < 16; i++) {
 		mv[i] = cmv.ml[i];
 	}
+    
+	GLint vp[4] = {viewport.x, viewport.y, viewport.w, viewport.h};
 
 	GLdouble _sceneProjectionMatrix[16];
 	for(int i=0; i < 16; i++) {
@@ -278,7 +285,7 @@ Vector2 OpenGLRenderer::Project(const Matrix4 &cameraMatrix, const Matrix4 &proj
 	
 	gluProject(coordiante.x, coordiante.y, coordiante.z, mv, _sceneProjectionMatrix, vp, &coords[0], &coords[1], &coords[2]);
 	
-    return Vector2(coords[0] / backingResolutionScaleX, ((yRes*backingResolutionScaleY)-coords[1]) / backingResolutionScaleY);
+    return Vector2(coords[0] / backingResolutionScaleX, (viewport.h-coords[1]) / backingResolutionScaleY);
 }
 
 Polycode::Rectangle OpenGLRenderer::getViewport() {

@@ -554,6 +554,34 @@ class TransformSheet : public PropSheet {
         Vector3 lastRotation;
 };
 
+class SceneLightSheet : public PropSheet {
+    public:
+        SceneLightSheet();
+        ~SceneLightSheet();
+    
+        void setSceneLight(SceneLight *light);
+        void handleEvent(Event *event);
+    
+    protected:
+    
+        SceneLight *light;
+    
+        ComboProp *typeProp;
+        ColorProp *lightColorProp;
+        ColorProp *specularColorProp;
+        NumberProp *intensityProp;
+        SliderProp *constantAttenuationProp;
+        SliderProp *linearAttenuationProp;
+        SliderProp *quadraticAttenuationProp;
+    
+        NumberProp *spotlightCutoffProp;
+        SliderProp *spotlightExponentProp;
+    
+        BoolProp *castShadowsProp;
+        SliderProp *shadowMapFOVProp;
+        NumberProp *shadowResolutionProp;
+};
+
 class ScenePrimitiveSheet : public PropSheet {
 public:
     ScenePrimitiveSheet();
@@ -688,7 +716,7 @@ class PropList : public UIElement {
 		
 		void updateProps();
 		void updateSize();
-		
+    
 		void addPropSheet(PropSheet *sheet);
 		void handleEvent(Event *event);
 		void Resize(Number width, Number height);

@@ -35,6 +35,10 @@ EntityEditorPropertyView::EntityEditorPropertyView() : UIElement() {
     entityProps->addPropSheet(materialSheet);
     materialSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
     
+    lightSheet = new SceneLightSheet();
+    entityProps->addPropSheet(lightSheet);
+    lightSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
+
     primitiveSheet = new ScenePrimitiveSheet();
     entityProps->addPropSheet(primitiveSheet);
     primitiveSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
@@ -42,7 +46,6 @@ EntityEditorPropertyView::EntityEditorPropertyView() : UIElement() {
     entitySheet = new EntitySheet();
     entityProps->addPropSheet(entitySheet);
     entitySheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
-    
 }
 
 void EntityEditorPropertyView::Resize(Number width, Number height) {
@@ -52,6 +55,9 @@ void EntityEditorPropertyView::Resize(Number width, Number height) {
 
 void EntityEditorPropertyView::setEntity(Entity *entity) {
     
+    SceneLight *sceneLight = dynamic_cast<SceneLight*>(entity);
+    lightSheet->setSceneLight(sceneLight);
+    
     SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(entity);
     materialSheet->setSceneMesh(sceneMesh);
 
@@ -60,6 +66,7 @@ void EntityEditorPropertyView::setEntity(Entity *entity) {
 
     entitySheet->setEntity(entity);
     transformSheet->setEntity(entity);
+        
     Resize(getWidth(), getHeight());
 }
 

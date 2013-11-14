@@ -43,13 +43,15 @@ class EntityEditorMainView : public UIElement {
             void createIcon(Entity *entity, String iconFile);
             void setEditorProps(Entity *entity);
     
-            void selectEntity(Entity *targetEntity);
+            void selectEntity(Entity *targetEntity, bool addToSelection = false);
     
 			void handleEvent(Event *event);
 			void Resize(Number width, Number height);
 			void Update();
             void addEntityFromMenu(String command);
-			
+    
+            void doEntityDeselect(Entity *targetEntity);
+            void doEntitySelect(Entity *targetEntity);
             void setEditorMode(int newMode);
             Entity *getSelectedEntity();
     
@@ -93,6 +95,10 @@ class PolycodeEntityEditor : public PolycodeEditor {
 		
 		bool openFile(OSFileEntry filePath);
 		void Resize(int x, int y);
+    
+        void Activate();
+        void saveFile();
+    
 		
         void handleEvent(Event *event);
     

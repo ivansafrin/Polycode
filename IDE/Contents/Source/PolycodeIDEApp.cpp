@@ -29,6 +29,7 @@ UIGlobalMenu *globalMenu;
 SyntaxHighlightTheme *globalSyntaxTheme;
 PolycodeClipboard *globalClipboard;
 PolycodeEditorManager *globalEditorManager;
+Scene *globalScene;
 
 PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	core = new POLYCODE_CORE(view, 1100, 700,false,true, 0, 0,60, -1, true);
@@ -98,7 +99,9 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	UITextInput::setMenuSingleton(globalMenu);
 			
 	
-	Scene *screen = new Scene(Scene::SCENE_2D_TOPLEFT);	
+	Scene *screen = new Scene(Scene::SCENE_2D_TOPLEFT);
+    globalScene = screen;
+    
 	screen->rootEntity.processInputEvents = true;
 //	screen->rootEntity.setDefaultScreenOptions(true);
 
@@ -214,6 +217,10 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 	
 	applyFinalConfig();
+    
+    core->updateAndRender();
+    frame->Resize(core->getXRes(), core->getYRes());
+
 }
 
 void PolycodeIDEApp::renameFile() {

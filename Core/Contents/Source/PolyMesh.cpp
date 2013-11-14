@@ -277,8 +277,8 @@ namespace Polycode {
 		for (int i=0 ; i < numSegments+1; i++) {
 			Number v = ((Number)i)/((Number)numSegments);
 			Number pos = ((PI*2.0)/((Number)numSegments)) * i;
-			Number x = sin(pos) * w;
-			Number y = cos(pos) * h;
+			Number x = sin(pos) * w * 0.5;
+			Number y = cos(pos) * h * 0.5;
 			
 			if(i > 0) {
                 polygon = new Polygon();

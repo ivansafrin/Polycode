@@ -84,7 +84,7 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	
 	Number rectHeight = height;
 	if(!multiLine) {
-		rectHeight = fontSize+12;
+		rectHeight = fontSize+10;
 	} 
 
 	linesContainer = new Entity();	
@@ -97,7 +97,7 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	sb = conf->getNumericValue("Polycode", "textBgSkinB");
 	sl = conf->getNumericValue("Polycode", "textBgSkinL");
 
-	Number textInputOffsetY = conf->getNumericValue("Polycode", "uiTextInputFontOffsetY");
+	textInputOffsetY = conf->getNumericValue("Polycode", "uiTextInputFontOffsetY");
     if(multiLine) {
         textInputOffsetY = 0.0;
     }
@@ -731,7 +731,7 @@ void UITextInput::Resize(Number width, Number height) {
 	
 	textContainer->setWidth(fabs(this->getWidth() - textContainer->getPosition2D().x - padding));
 	textContainer->setHeight(fabs(this->getHeight() - textContainer->getPosition2D().y));
-	textContainer->setPosition(padding + decoratorOffset, padding);
+	textContainer->setPosition(padding + decoratorOffset, padding + textInputOffsetY);
 }
 
 int UITextInput::insertLine(String lineText) {

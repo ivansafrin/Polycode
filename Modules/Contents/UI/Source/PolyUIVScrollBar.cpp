@@ -130,6 +130,7 @@ void UIVScrollBar::Scroll(Number amount) {
 }
 
 void UIVScrollBar::setHandleRatio(Number newRatio) {
+    
 	scrollHandleHeight = getHeight()*newRatio;	
 	
 	if(scrollHandleHeight < minHandleSize)

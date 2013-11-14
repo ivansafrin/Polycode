@@ -175,17 +175,16 @@ void PropList::Resize(Number width, Number height) {
 	for(int i=0; i < props.size(); i++) {
 		props[i]->setPosition(0, offsetY);
 		if(props[i]->enabled) {
-		if(props[i]->collapsed) {
-			offsetY += 30;
-		} else {
-			offsetY += props[i]->propHeight;
-		}
+            if(props[i]->collapsed) {
+                offsetY += 30;
+            } else {
+                offsetY += props[i]->propHeight;
+            }
 		}
 		props[i]->Resize(getWidth(), getHeight());
 	}
 	
 	rebuildTransformMatrix();
-	
 	scrollContainer->setContentSize(width, offsetY);
 }
 
@@ -239,7 +238,7 @@ PropSheet::PropSheet(String caption, String type) : UIElement() {
 		
 	collapsed  = false;
 	propTopPadding = 0;
-	propHeight = 30;
+	propHeight = 0;
 }
 
 void PropSheet::setCollapsed(bool val) {
@@ -457,7 +456,7 @@ Vector2Prop::Vector2Prop(String caption) : PropProp(caption, "Vector2") {
 	propContents->addChild(positionY);
 	positionY->setPosition(80, 0);
 
-	setHeight(30);
+	setHeight(25);
 
 }
 
@@ -528,7 +527,7 @@ CustomProp::CustomProp(String key, String value) : PropProp("", "Custom") {
 	propContents->addChild(removeButton);
 	removeButton->setPosition(-110, 6);
 	
-	setHeight(30);
+	setHeight(25);
 
 }
 
@@ -574,12 +573,12 @@ StringProp::StringProp(String caption) : PropProp(caption, "String") {
 	stringEntry->setText("");
 	propContents->addChild(stringEntry);
 	stringEntry->setPosition(0, 0);
-	setHeight(30);
+	setHeight(25);
 }
 
 void StringProp::setPropWidth(Number width) {
-	stringEntry->Resize(floor((width - PROP_PADDING) * 0.5), stringEntry->getHeight());	
-	stringEntry->setPosition(width-105-PROP_PADDING-stringEntry->getWidth(), 2);
+    stringEntry->Resize(width-PROP_PADDING-propContents->getPosition().x, stringEntry->getHeight());
+	stringEntry->setPosition(0.0, 2);
 	
 }
 
@@ -620,19 +619,19 @@ SliderProp::SliderProp(String caption, Number min, Number max) : PropProp(captio
 	
 	slider = new UIHSlider(min, max, 100);
 	slider->addEventListener(this, UIEvent::CHANGE_EVENT);
-	slider->setPosition(5, 8);
+	slider->setPosition(0, 8);
 	propContents->addChild(slider);
 	
 	valueLabel = new UILabel("0.0", 10);
 	propContents->addChild(valueLabel);
 	valueLabel->setPosition(120, 5);
 	valueLabel->color.a = 1.0;
-	setHeight(30);
+	setHeight(25);
 }
 
 void SliderProp::setPropWidth(Number width) {
 	slider->Resize(width - propContents->getPosition().x - PROP_PADDING - 50, slider->getHeight());
-	valueLabel->setPosition(width - propContents->getPosition().x - PROP_PADDING - 30, 5);	
+	valueLabel->setPosition(width - propContents->getPosition().x - PROP_PADDING - 30, 5);
 }
 
 void SliderProp::handleEvent(Event *event) {
@@ -676,20 +675,20 @@ SliderProp::~SliderProp() {
 
 NumberProp::NumberProp(String caption) : PropProp(caption, "Number") {
 
-	numberEntry = new UITextInput(false, 50, 12);
+	numberEntry = new UITextInput(false, 50, 20);
 	numberEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
 	numberEntry->setText("0");
 	numberEntry->setNumberOnly(true);
 	propContents->addChild(numberEntry);
 	numberEntry->setPosition(0, 2);
 
-	setHeight(30);
+	setHeight(25);
 
 }
 
 void NumberProp::setPropWidth(Number width) {
-	numberEntry->Resize(floor((width - PROP_PADDING) * 0.5), numberEntry->getHeight());	
-	numberEntry->setPosition(width-105-PROP_PADDING-numberEntry->getWidth(), 2);
+    numberEntry->Resize(width-PROP_PADDING-propContents->getPosition().x, numberEntry->getHeight());
+	numberEntry->setPosition(0.0, 2);
 }
 
 void NumberProp::setPropData(PolycodeEditorPropActionData* data) {
@@ -730,9 +729,9 @@ ColorProp::ColorProp(String caption) : PropProp(caption, "Color") {
 
 	colorEntry = new UIColorBox(globalColorPicker, Color(), 45, 25);
 	colorEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
-	colorEntry->setPosition(0, -2);
+	colorEntry->setPosition(-2, 0);
 	propContents->addChild(colorEntry);
-	setHeight(30);
+	setHeight(25);
 
 }
 
@@ -778,7 +777,7 @@ ComboProp::ComboProp(String caption) : PropProp(caption, "Combo") {
 	comboEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
 	propContents->addChild(comboEntry);
 	comboEntry->setPosition(-3, 0);
-	setHeight(30);
+	setHeight(25);
 }
 
 void ComboProp::setPropWidth(Number width) {
@@ -822,9 +821,9 @@ BoolProp::BoolProp(String caption) : PropProp(caption, "Bool") {
 
 	checkEntry = new UICheckBox("", false);
 	checkEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
-	checkEntry->setPosition(0, 2);
+	checkEntry->setPosition(0, 4);
 	propContents->addChild(checkEntry);
-	setHeight(30);
+	setHeight(25);
 
 }
 
@@ -951,7 +950,7 @@ BezierRGBACurveProp::BezierRGBACurveProp(String caption) : PropProp(caption, "Be
 	changeButton->setPosition(0, 0);
 	changeButton->addEventListener(this, UIEvent::CLICK_EVENT);
 
-	setHeight(30);
+	setHeight(25);
 	
 	curveR = NULL;
 	curveG = NULL;
@@ -985,7 +984,7 @@ BezierCurveProp::BezierCurveProp(String caption, String curveName) : PropProp(ca
 	changeButton->setPosition(0, 0);
 	changeButton->addEventListener(this, UIEvent::CLICK_EVENT);
 
-	setHeight(30);
+	setHeight(25);
 	
 	curve = NULL;
 }
@@ -1242,7 +1241,7 @@ ShaderPassProp::ShaderPassProp(Material *material, int shaderIndex) : PropProp("
 	editButton = new UIButton("Options", 30);
 	editButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	propContents->addChild(editButton);
-	setHeight(30);
+	setHeight(25);
 }
 
 ShaderPassProp::~ShaderPassProp() {
@@ -1318,7 +1317,7 @@ TargetBindingProp::TargetBindingProp(Shader *shader, Material *material, ShaderB
 	textureComboBox->addEventListener(this, UIEvent::CHANGE_EVENT);
 	propContents->addChild(textureComboBox);
 	
-	setHeight(30);
+	setHeight(25);
 	
 	if(typeComboBox->getSelectedIndex() == 1) {
 		textureComboBox->enabled = false;
@@ -1447,7 +1446,7 @@ RenderTargetProp::RenderTargetProp(ShaderRenderTarget *renderTarget, Material *m
 	typeComboBox->addEventListener(this, UIEvent::CHANGE_EVENT);
 	propContents->addChild(typeComboBox);
 	
-	setHeight(30);
+	setHeight(25);
 }
 
 void RenderTargetProp::setPropWidth(Number width) {
@@ -2192,6 +2191,116 @@ void TransformSheet::handleEvent(Event *event) {
             lastRotation = rotationProp->get();
             entity->setRotationEuler(lastRotation);
         }
+    }
+    PropSheet::handleEvent(event);
+}
+
+SceneLightSheet::SceneLightSheet() : PropSheet("LIGHT", "scene_light") {
+    typeProp = new ComboProp("Type");
+    typeProp->comboEntry->addComboItem("Area");
+    typeProp->comboEntry->addComboItem("Spot");
+    addProp(typeProp);
+    
+    lightColorProp = new ColorProp("Light color");
+    addProp(lightColorProp);
+    
+    specularColorProp = new ColorProp("Specular color");
+    addProp(specularColorProp);
+    
+    intensityProp = new NumberProp("Intensity");
+    addProp(intensityProp);
+    
+    constantAttenuationProp = new SliderProp("Constant att.", 0.0, 1.0);
+    addProp(constantAttenuationProp);
+    
+    linearAttenuationProp = new SliderProp("Linear att.", 0.0, 1.0);
+    addProp(linearAttenuationProp);
+    
+    quadraticAttenuationProp = new SliderProp("Quadratic att.", 0.0, 1.0);
+    addProp(quadraticAttenuationProp);
+    
+    spotlightCutoffProp = new NumberProp("Spot cutoff");
+    addProp(spotlightCutoffProp);
+    
+    spotlightExponentProp = new SliderProp("Spot exponent", 0.0, 50.0);
+    addProp(spotlightExponentProp);
+    
+    castShadowsProp = new BoolProp("Cast shadows");
+    addProp(castShadowsProp);
+    
+    shadowMapFOVProp = new SliderProp("Shadow FOV", 1.0, 180.0);
+    addProp(shadowMapFOVProp);
+    
+    shadowResolutionProp = new NumberProp("Shadowmap res.");
+    addProp(shadowResolutionProp);
+
+    propHeight = 365;
+    light = NULL;
+    enabled = false;
+}
+
+SceneLightSheet::~SceneLightSheet() {
+    
+}
+
+void SceneLightSheet::setSceneLight(SceneLight *light) {
+    this->light = light;
+    
+    if(light) {
+        light->enableDebugDraw(true);
+        typeProp->set(light->getLightType());
+        lightColorProp->set(light->lightColor);
+        specularColorProp->set(light->specularLightColor);
+        intensityProp->set(light->getIntensity());
+        constantAttenuationProp->set(light->getConstantAttenuation());
+        linearAttenuationProp->set(light->getLinearAttenuation());
+        quadraticAttenuationProp->set(light->getQuadraticAttenuation());
+        
+        spotlightCutoffProp->set(light->getSpotlightCutoff());
+        spotlightExponentProp->set(light->getSpotlightExponent());
+        
+        castShadowsProp->set(light->areShadowsEnabled());
+        shadowMapFOVProp->set(light->getShadowMapFOV());
+        shadowResolutionProp->set(light->getShadowMapResolution());
+        
+        enabled = true;
+    } else {
+        enabled = false;
+    }
+}
+
+void SceneLightSheet::handleEvent(Event *event) {
+    if(!light) {
+        return;
+    }
+    
+    if(event->getEventCode() == Event::CHANGE_EVENT) {
+        if(event->getDispatcher() == typeProp) {
+            light->setLightType(typeProp->get());
+        } else if(event->getDispatcher() == lightColorProp) {
+            light->lightColor = lightColorProp->get();
+        } else if(event->getDispatcher() == specularColorProp) {
+            light->specularLightColor = specularColorProp->get();
+        } else if(event->getDispatcher() == intensityProp) {
+            light->setIntensity(intensityProp->get());
+        } else if(event->getDispatcher() == constantAttenuationProp) {
+            light->setAttenuation(constantAttenuationProp->get(), light->getLinearAttenuation(), light->getQuadraticAttenuation());
+        } else if(event->getDispatcher() == linearAttenuationProp) {
+            light->setAttenuation(light->getConstantAttenuation(), linearAttenuationProp->get(), light->getQuadraticAttenuation());
+        } else if(event->getDispatcher() == quadraticAttenuationProp) {
+            light->setAttenuation(light->getConstantAttenuation(), light->getLinearAttenuation(), quadraticAttenuationProp->get());
+        } else if(event->getDispatcher() == castShadowsProp) {
+            light->enableShadows(castShadowsProp->get(), shadowResolutionProp->get());
+        } else if(event->getDispatcher() == shadowMapFOVProp) {
+            light->setShadowMapFOV(shadowMapFOVProp->get());
+        } else if(event->getDispatcher() == shadowResolutionProp) {
+            light->enableShadows(castShadowsProp->get(), shadowResolutionProp->get());
+        } else if(event->getDispatcher() == spotlightCutoffProp) {
+            light->setSpotlightProperties(spotlightCutoffProp->get(), light->getSpotlightExponent());
+        } else if(event->getDispatcher() == spotlightExponentProp) {
+            light->setSpotlightProperties(light->getSpotlightCutoff(), spotlightExponentProp->get());
+        }
+
     }
     PropSheet::handleEvent(event);
 }

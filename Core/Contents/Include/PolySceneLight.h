@@ -157,7 +157,7 @@ namespace Polycode {
 			* @param val If set to true, enables this light to cast shadows.
 			* @param resolution Resolution of the shadow map. (defaults to 256x256).
 			*/
-			void enableShadows(bool val, Number resolution=256);
+			void enableShadows(bool val, unsigned int resolution=256);
 			
 			/**
 			* This sets the shadow map field of view. The larger the field of view, the more of the scene it encompasses, but the more quality it loses.
@@ -165,6 +165,13 @@ namespace Polycode {
 			*/
 			void setShadowMapFOV(Number fov);
 		
+            /**
+             * Returns the light's shadow map field of view.
+             */
+            Number getShadowMapFOV() const;
+        
+            unsigned int getShadowMapResolution() const;
+        
 			/**
 			* Returns true if shadows are enabled.
 			*/
@@ -182,8 +189,8 @@ namespace Polycode {
 			
 			void setLightImportance(int newImportance);
 			int getLightImportance() const;
-		
-			Entity *lightShape;
+        
+            void setLightType(int lightType);
 			
 		protected:
 		
@@ -206,9 +213,11 @@ namespace Polycode {
 			
 			Matrix4 lightViewMatrix;
 		
-			Number shadowMapRes;
+			unsigned int shadowMapRes;
 			Number shadowMapFOV;	
 			bool shadowsEnabled;
+        
+            bool debugDraw;
 		
 			Number distance;
 			Mesh *lightMesh;

@@ -121,7 +121,7 @@ namespace Polycode {
 		void bindFrameBufferTextureDepth(Texture *texture);		
 		void unbindFramebuffers();
 		
-		Vector2 Project(const Matrix4 &cameraMatrix, const Matrix4 &projectionMatrix, const Vector3 &coordiante) const;
+		Vector2 Project(const Matrix4 &cameraMatrix, const Matrix4 &projectionMatrix, const Polycode::Rectangle &viewport, const Vector3 &coordiante) const;
 		
 		void cullFrontFaces(bool val);
 				
@@ -193,7 +193,7 @@ namespace Polycode {
 		void pushMatrix();
 		void popMatrix();		
 		
-		Vector3 Unproject(Number x, Number y);
+		Vector3 Unproject(Number x, Number y, const Matrix4 &cameraMatrix, const Matrix4 &projectionMatrix, const Polycode::Rectangle &viewport);
 		
 		void setDepthFunction(int depthFunction);
 						

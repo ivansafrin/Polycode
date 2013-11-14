@@ -244,7 +244,7 @@ namespace Polycode {
 		
 		virtual Vector3 projectRayFrom2DCoordinate(Number x, Number y, const Matrix4 &cameraMatrix, const Matrix4 &projectionMatrix, const Polycode::Rectangle &viewport) = 0;
 		
-		virtual Vector2 Project(const Matrix4 &cameraMatrix, const Matrix4 &projectionMatrix, const Vector3 &coordiante) const = 0;
+		virtual Vector2 Project(const Matrix4 &cameraMatrix, const Matrix4 &projectionMatrix, const Polycode::Rectangle &viewport, const Vector3 &coordiante) const = 0;
 		
 		void enableShaders(bool flag);
 		
@@ -279,7 +279,7 @@ namespace Polycode {
 		static const int TEX_FILTERING_LINEAR = 1;
 		
 		
-		virtual Vector3 Unproject(Number x, Number y) = 0;
+		virtual Vector3 Unproject(Number x, Number y, const Matrix4 &cameraMatrix, const Matrix4 &projectionMatrix, const Polycode::Rectangle &viewport) = 0;
 		
 		Color	ambientColor;
 		Color	clearColor;		

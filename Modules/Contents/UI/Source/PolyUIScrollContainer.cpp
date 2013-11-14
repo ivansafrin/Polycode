@@ -116,7 +116,13 @@ Number UIScrollContainer::getVScrollWidth() {
 }
 
 void UIScrollContainer::setContentSize(Number newContentWidth, Number newContentHeight) {
-	
+    
+    if(newContentWidth < 1.0)
+        newContentWidth = 1.0;
+    if(newContentHeight < 1.0)
+        newContentHeight = 1.0;
+
+
 	contentHeight = newContentHeight;
 	contentWidth = newContentWidth;
 	
