@@ -39,6 +39,11 @@ EntityEditorPropertyView::EntityEditorPropertyView() : UIElement() {
     entityProps->addPropSheet(lightSheet);
     lightSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
 
+    particleSheet = new ParticleEmitterSheet();
+    entityProps->addPropSheet(particleSheet);
+    particleSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
+    
+    
     primitiveSheet = new ScenePrimitiveSheet();
     entityProps->addPropSheet(primitiveSheet);
     primitiveSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
@@ -46,6 +51,7 @@ EntityEditorPropertyView::EntityEditorPropertyView() : UIElement() {
     entitySheet = new EntitySheet();
     entityProps->addPropSheet(entitySheet);
     entitySheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
+    
 }
 
 void EntityEditorPropertyView::Resize(Number width, Number height) {
@@ -63,6 +69,9 @@ void EntityEditorPropertyView::setEntity(Entity *entity) {
 
     ScenePrimitive *scenePrimitive = dynamic_cast<ScenePrimitive*>(entity);
     primitiveSheet->setScenePrimitive(scenePrimitive);
+
+    SceneParticleEmitter *emitter = dynamic_cast<SceneParticleEmitter*>(entity);
+    particleSheet->setParticleEmitter(emitter);
 
     entitySheet->setEntity(entity);
     transformSheet->setEntity(entity);

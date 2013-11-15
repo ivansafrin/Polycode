@@ -38,7 +38,8 @@ EditPoint::EditPoint(BezierPoint *point, unsigned int type) : Entity() {
 	draggingPoint = NULL;
 	dragging = false;
 
-	controlHandle1 = new UIImage("Images/bezier_handle.png");
+	controlHandle1 = new UIRect(5, 5);
+    controlHandle1->setColor(0.0, 1.0, 0.3, 1.0);
 	controlHandle1->setAnchorPoint(0.0, 0.0, 0.0);
 	
 	controlHandle1->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
@@ -50,7 +51,8 @@ EditPoint::EditPoint(BezierPoint *point, unsigned int type) : Entity() {
 		
 	addChild(controlHandle1);
 	
-	controlHandle2 = new UIImage("Images/bezier_handle.png");
+	controlHandle2 = new UIRect(5, 5);
+    controlHandle2->setColor(0.0, 1.0, 0.3, 1.0);
 	controlHandle2->setAnchorPoint(0.0, 0.0, 0.0);
 	controlHandle2->processInputEvents = true;
 	
@@ -62,7 +64,8 @@ EditPoint::EditPoint(BezierPoint *point, unsigned int type) : Entity() {
 	
 	addChild(controlHandle2);
 	
-	pointHandle = new UIImage("Images/bezier_point.png");
+	pointHandle = new UIRect(8, 8);
+    pointHandle->setColor(1.0, 0.5, 0.2, 1.0);
 	pointHandle->processInputEvents = true;
 	pointHandle->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	pointHandle->addEventListener(this, InputEvent::EVENT_MOUSEUP);
@@ -79,7 +82,7 @@ EditPoint::EditPoint(BezierPoint *point, unsigned int type) : Entity() {
 	} else {
 		connectorLine1 = new SceneLine(pointHandle, controlHandle1);
 		addChild(connectorLine1);
-		connectorLine1->setColorInt(39, 212, 255, 128);
+		connectorLine1->setColorInt(39, 212, 255, 100);
 		connectorLine1->setLineWidth(2.0);
 		connectorLine1->lineSmooth = true;
 	}
@@ -92,7 +95,7 @@ EditPoint::EditPoint(BezierPoint *point, unsigned int type) : Entity() {
 	} else {
 		connectorLine2 = new SceneLine(pointHandle, controlHandle2);
 		addChild(connectorLine2);
-		connectorLine2->setColorInt(39, 212, 255, 128);
+		connectorLine2->setColorInt(39, 212, 255, 100);
 		connectorLine2->setLineWidth(2.0);
 		connectorLine2->lineSmooth = true;
 	}	
@@ -110,14 +113,14 @@ void EditPoint::setMode(unsigned int mode) {
 
 void EditPoint::updateCurvePoint() {
 
-	point->p1.x = controlHandle1->getPosition2D().x/610;
-	point->p1.y = controlHandle1->getPosition2D().y/-254;	
+	point->p1.x = controlHandle1->getPosition2D().x/300;
+	point->p1.y = controlHandle1->getPosition2D().y/-100;
 
-	point->p2.x = pointHandle->getPosition2D().x/610;
-	point->p2.y = pointHandle->getPosition2D().y/-254;		
+	point->p2.x = pointHandle->getPosition2D().x/300;
+	point->p2.y = pointHandle->getPosition2D().y/-100;		
 	
-	point->p3.x = controlHandle2->getPosition2D().x/610;
-	point->p3.y = controlHandle2->getPosition2D().y/-254;	
+	point->p3.x = controlHandle2->getPosition2D().x/300;
+	point->p3.y = controlHandle2->getPosition2D().y/-100;	
 
 }
 
@@ -187,23 +190,23 @@ void EditPoint::handleEvent(Event *event) {
 	}
 }
 
-void EditPoint::limitPoint(UIImage *point) {
+void EditPoint::limitPoint(UIRect *point) {
 		if(point->getPosition().x < 0.0)
 			point->setPositionX(0.0);
-		if(point->getPosition().x > 610.0)
-			point->setPositionX(610.0);
+		if(point->getPosition().x > 300.0)
+			point->setPositionX(300.0);
 
 		if(point->getPosition().y > 0.0)
 			point->setPositionY(0.0);
-		if(point->getPosition().y < -254.0)
-			point->setPositionY(-254.0);
+		if(point->getPosition().y < -100.0)
+			point->setPositionY(-100.0);
 
 }
 
 void EditPoint::updatePosition() {
-	pointHandle->setPosition(610.0*point->p2.x, -254*point->p2.y, 0.0);	
-	controlHandle1->setPosition(610.0*point->p1.x, -254*point->p1.y, 0.0);	
-	controlHandle2->setPosition(610.0*point->p3.x, -254*point->p3.y, 0.0);	
+	pointHandle->setPosition(300.0*point->p2.x, -100*point->p2.y, 0.0);	
+	controlHandle1->setPosition(300.0*point->p1.x, -100*point->p1.y, 0.0);	
+	controlHandle2->setPosition(300.0*point->p3.x, -100*point->p3.y, 0.0);	
 }
 
 EditPoint::~EditPoint() {
@@ -227,7 +230,7 @@ EditCurve::EditCurve(BezierCurve *targetCurve, Color curveColor) : UIElement() {
 	visMesh->lineWidth = 2.0;
 
 	addChild(visMesh);
-	visMesh->setPosition(0, 254);	
+	visMesh->setPosition(0, 100);	
 	visMesh->color = curveColor;
 	
 	pointsBase = new UIElement();
@@ -264,7 +267,7 @@ void EditCurve::updatePoints() {
 		point->addEventListener(this, Event::CANCEL_EVENT);		
 		pointsBase->addChild(point);
 		points.push_back(point);
-		point->setPosition(0, 254);			
+		point->setPosition(0, 100);			
 	}
 }
 
@@ -315,59 +318,60 @@ void EditCurve::updateCurve() {
 	targetCurve->recalculateDistances();
 	targetCurve->rebuildBuffers();
 	
-	Number interval = 610.0/CURVE_SIZE;
+	Number interval = 300.0/CURVE_SIZE;
 	Number normInterval = 1.0/CURVE_SIZE;
 	
 	interval += interval/CURVE_SIZE;
 	normInterval += normInterval/CURVE_SIZE;
 		
 	for(int i=0; i < CURVE_SIZE; i++) {
-		poly->getVertex(i)->set(targetCurve->getPointAt(normInterval * i).x * 610, targetCurve->getPointAt(normInterval * i).y * -254.0, 0.0);
+		poly->getVertex(i)->set(targetCurve->getPointAt(normInterval * i).x * 300, targetCurve->getPointAt(normInterval * i).y * 100.0, 0.0);
 	}
 	
 	visMesh->getMesh()->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
+    visMesh->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 }
 
 EditCurve::~EditCurve() {
 
 }
 
-CurveEditor::CurveEditor() : UIWindow("", 750, 300) {
+CurveEditor::CurveEditor() : UIWindow("", 440, 160) {
 	
 	closeOnEscape = true;
 		
-	bg = new UIImage("Images/curve_editor_bg.png");
+	bg = new UIRect(300, 100);
+    bg->setColor(0.1, 0.1, 0.1, 1.0);
 	addChild(bg);
 	bg->setPosition(160, 63);
 	bg->processInputEvents = true;
 	bg->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	
-	selectorImage = new UIImage("Images/ScreenEditor/selector.png");
-	selectorImage->setColor(0.0, 0.0, 0.0, 0.3);
+	selectorImage = new UIImage("main/selector.png", 24, 24);
 	addChild(selectorImage);
 		
-	selectButton = new UIImageButton("Images/ScreenEditor/arrow.png");
+	selectButton = new UIImageButton("main/arrow.png", 1.0, 24, 24);
 	addChild(selectButton);
 	selectButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	selectButton->setPosition(170, 33);
 
-	addButton = new UIImageButton("Images/arrow_add.png");
+	addButton = new UIImageButton("main/arrow_add.png", 1.0, 24, 24);
 	addChild(addButton);
 	addButton->addEventListener(this, UIEvent::CLICK_EVENT);	
 	addButton->setPosition(170 + 32, 33);
 
-	removeButton = new UIImageButton("Images/arrow_remove.png");
+	removeButton = new UIImageButton("main/arrow_remove.png", 1.0, 24, 24);
 	addChild(removeButton);
 	removeButton->addEventListener(this, UIEvent::CLICK_EVENT);		
 	removeButton->setPosition(170 + 64, 33);
 	
-	selectorImage->setPosition(selectButton->getPosition().x - 4, selectButton->getPosition().y - 4);
+	selectorImage->setPosition(selectButton->getPosition().x, selectButton->getPosition().y);
 
 	selectedCurve = NULL;
 
 	setMode(0);
 	
-	treeContainer = new UITreeContainer("boxIcon.png", L"Curves", 145, 280);
+	treeContainer = new UITreeContainer("boxIcon.png", L"Curves", 145, 135);
 	treeContainer->getRootNode()->toggleCollapsed();
 	treeContainer->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
 	treeContainer->setPosition(12, 33);
@@ -398,7 +402,7 @@ void CurveEditor::clearCurves() {
 
 void CurveEditor::addCurve(String name, BezierCurve *curve, Color curveColor) {
 
-	UITree *newNode = treeContainer->getRootNode()->addTreeChild("Images/curve_icon.png", name);
+	UITree *newNode = treeContainer->getRootNode()->addTreeChild("main/curve_icon.png", name);
 	EditCurve *editCurve = new EditCurve(curve, curveColor);
 	addChild(editCurve);
 	editCurve->setPosition(160, 63);	
@@ -423,8 +427,8 @@ void CurveEditor::handleEvent(Event *event) {
 				InputEvent *inputEvent = (InputEvent*)event;
 				if(selectedCurve) {
 					Vector2 pos = inputEvent->mousePosition;
-					pos.x = pos.x/610.0;
-					pos.y = 1.0-(pos.y/254.0);
+					pos.x = pos.x/300.0;
+					pos.y = 1.0-(pos.y/100.0);
 					
 					BezierCurve *targetCurve = selectedCurve->targetCurve;
 				
@@ -445,17 +449,17 @@ void CurveEditor::handleEvent(Event *event) {
 	}
 	
 	if(event->getDispatcher() == selectButton) {
-		selectorImage->setPosition(selectButton->getPosition().x - 4, selectButton->getPosition().y - 4);
+		selectorImage->setPosition(selectButton->getPosition().x, selectButton->getPosition().y);
 		setMode(0);
 	}
 
 	if(event->getDispatcher() == addButton) {
-		selectorImage->setPosition(addButton->getPosition().x - 4, addButton->getPosition().y - 4);
+		selectorImage->setPosition(addButton->getPosition().x, addButton->getPosition().y );
 		setMode(1);
 	}
 
 	if(event->getDispatcher() == removeButton) {
-		selectorImage->setPosition(removeButton->getPosition().x - 4, removeButton->getPosition().y - 4);
+		selectorImage->setPosition(removeButton->getPosition().x, removeButton->getPosition().y);
 		setMode(2);
 	}
 	
@@ -469,6 +473,7 @@ void CurveEditor::handleEvent(Event *event) {
 			if(curve) {
 				curve->Activate();
 				curve->setMode(mode);
+                curve->getParentEntity()->moveChildTop(curve);
 			}
 		}
 	}	

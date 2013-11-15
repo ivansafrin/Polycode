@@ -74,12 +74,14 @@ void SceneLine::Update(){
 	if(ent1 != NULL && ent2 != NULL) {
 		v1 = ent1->getConcatenatedMatrix().getPosition();
 		v2 = ent2->getConcatenatedMatrix().getPosition();
+        mesh->getPolygon(0)->getVertex(0)->set(v1.x,v1.y,v1.z);
+        mesh->getPolygon(0)->getVertex(1)->set(v2.x,v2.y,v2.z);
 	} else {
 		v1 = start;
 		v2 = end;
+        mesh->getPolygon(0)->getVertex(0)->set(v1.x,v1.y*yAdjust,v1.z);
+        mesh->getPolygon(0)->getVertex(1)->set(v2.x,v2.y*yAdjust,v2.z);
 	}
 	
-	mesh->getPolygon(0)->getVertex(0)->set(v1.x,v1.y*yAdjust,v1.z);
-	mesh->getPolygon(0)->getVertex(1)->set(v2.x,v2.y*yAdjust,v2.z);
-	mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;	
+	mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
 }

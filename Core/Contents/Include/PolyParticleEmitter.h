@@ -22,303 +22,142 @@ THE SOFTWARE.
 
 #pragma once
 #include "PolyGlobals.h"
-#include "PolyString.h"
-#include "PolyVector3.h"
-#include "PolyMatrix4.h"
+#include "PolySceneMesh.h"
+#include "PolyCore.h"
+#include "PolyPerlin.h"
 #include "PolyBezierCurve.h"
-#include "PolyEntity.h"
 
 namespace Polycode {
+    
+    class SceneParticle {
+        public:
+            Number lifetime;
+            Vector3 position;
+            Vector3 velocity;
+            Vector3 perlinPos;
+            Vector3 rotation;
+            Number brightnessDeviation;
+            Number scale;
+            Color color;
+    };
+    
+    class SceneParticleEmitter : public SceneMesh {
+        public:
+            SceneParticleEmitter(unsigned int particleCount, Number lifetime, Number speed);
+            virtual ~SceneParticleEmitter();
+        
+            void setParticleCount(unsigned int newParticleCount);
+            unsigned int getParticleCount() const;
+        
+            void setParticleLifetime(Number lifetime);
+            Number getParticleLifetime() const;
+        
+            void setDirectionDeviation(const Vector3 &newDeviation);
+            Vector3 getDirectionDeviation() const;
+        
+            void setEmitterSize(const Vector3 &newSize);
+            Vector3 getEmitterSize() const;
+        
+            void setGravity(const Vector3 &newGravity);
+            Vector3 getGravity() const;
+        
+            void Update();
+            void Render();
+        
+            void updateParticles();
+            void rebuildParticles();
+        
+            void setUseFloorPlane(bool val);
+            void setFloorPlaneOffset(Number floorPlaneOffset);
+            void setFloorDamping(Number floorDamping);
+        
+            void setParticlesInWorldSpace(bool val);
+            bool getParticlesInWorldSpace() const;
+        
+            void setPerlinEnabled(bool val);
+            bool getPerlinEnabled() const;
+        
+            void setPerlinValue(const Vector3 &perlinValue);
+            Vector3 getPerlinValue() const;
+        
+            void setParticleType(unsigned int particleType);
+            unsigned int getParticleType() const;
+        
+            void setParticleSize(Number particleSize);
+            Number getParticleSize() const;
+        
+            void setParticleRotationSpeed(const Vector3 &rotationSpeed);
+            Vector3 getParticleRotationSpeed() const;
+        
+            void setParticleDirection(const Vector3 &direction);
+            Vector3 getParticleDirection() const;
+        
+            void setLoopParticles(bool val);
+            bool getLoopParticles() const;
+        
+            static const int PARTICLE_TYPE_POINT = 0;
+            static const int PARTICLE_TYPE_QUAD = 1;
 
-	class Entity;
-	class Material;
-	class Mesh;
-	class Particle;
-	class Perlin;
-	class Scene;
-	class SceneMesh;
-	class Screen;
-	class ScreenMesh;
-	class Texture;
-	class Timer;
+        
+            bool useScaleCurve;
+        
+            /**
+             * Bezier curve that controls the scale of the particles.
+             */
+            BezierCurve scaleCurve;
+        
+            bool useColorCurves;
 
-	/** 
-	* Particle emitter base.
-	*/
-	class _PolyExport ParticleEmitter {
-		public:
-			ParticleEmitter(const String& imageFile, Mesh *particleMesh, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Vector3 emitterRadius);
-			virtual ~ParticleEmitter();
-		
-			virtual void dispatchTriggerCompleteEvent();
-		
-			void createParticles();
-			
-			/**
-			* Sets the speed at which particles rotate
-			* @param speed New rotation speed.
-			*/ 
-			void setRotationSpeed(Number speed);
-			
-			/**
-			* Sets the blending mode used for the particles. See documentation for the Entity for information on blending modes.
-			* @param mode New blending mode.
-			*/ 			
-			void setParticleBlendingMode(int mode);
-			
-			int getParticleBlendingMode() const;
-			
-			/**
-			* Turns depth write on and off for particles.
-			*/ 						
-			void setDepthWrite(bool val);
-			
-			/**
-			* Turns depth test on and off for particles.
-			*/ 									
-			void setDepthTest(bool val);		
-			
-			/**
-			* Turns alpha testing on and off for particles.
-			*/ 												
-			void setAlphaTest(bool val);
-
-			/**
-			* Enables perlin noise movement for particles.
-			*/ 														
-			void enablePerlin(bool val);
-			
-			/**
-			* Sets visibility of all particles in the system
-			*/
-			void setParticleVisibility(bool val);
-			
-			/**
-			* Enables perlin noise movement size.
-			*/ 														
-			void setPerlinModSize(Number size);
-
-			/**
-			* Enables or disables billboard mode for particles.
-			*/ 																	
-			void setBillboardMode(bool mode);
-			
-			/**
-			* Enables or disables the emitter
-			*/ 																				
-			void enableEmitter(bool val);
-			
-			/**
-			* Returns true if the emitter is enabled, false otherwise.
-			*/ 																							
-			bool emitterEnabled();
-
-			/**
-			* Sets the emitter radius on all 3 axises.
-			*/ 																										
-			void setEmitterRadius(Vector3 rad);
-
-			/**
-			* If set to true, will release all particles at once.
-			*/ 																													
-			void setAllAtOnce(bool val);
-			
-
-			unsigned int getNumParticles() const;
-
-			Particle *getParticleAtIndex(unsigned int index) const;
-
-			/**
-			* If emitter mode is TRIGGERED_EMITTER, calling this method will trigger particle emission.
-			*/ 
-			
-			void resetAll();
-	
-			void Trigger();
-			
-			void resetParticle(Particle *particle);
-			
-			/**
-			* Changes the particle count in the emitter.
-			*/ 																													
-			void setParticleCount(int count);
-		
-			virtual Vector3 getParticleCompoundScale();
-			virtual void addParticleBody(Entity *particleBody);
-			virtual Matrix4 getBaseMatrix();
-		
-			/**
-			* Particle movement speed multiplier
-			*/ 																																								
-			Number particleSpeedMod;
-			
-			/**
-			* Particle brightness deviation
-			*/ 																																										
-			Number brightnessDeviation;
-			
-			void updateEmitter();
-
-			/**
-			* Continuous emitter setting.
-			*/ 																													
-			static const int CONTINUOUS_EMITTER = 0;
-
-			/**
-			* Triggered emitter setting.
-			*/ 																																
-			static const int TRIGGERED_EMITTER = 1;
-			
-			/**
-			* Particle direction deviation
-			*/ 																																							
-			Vector3 deviation;
-			/**
-			* Particle direction and emission strength vector
-			*/ 																																								
-			Vector3 dirVector;
-			
-			/**
-			* Particle gravity strength vector
-			*/ 																																								
-			Vector3 gravVector;			
-
-			/**
-			* Lifespan of particles.
-			*/ 																																						
-			Number lifespan;
-		
-			/**
-			* If set to true, particles' rotation will follow their movement.
-			*/ 																																		
-			bool rotationFollowsPath;
-
-			/**
-			* Bezier curve that controls the scale of the particles.
-			*/ 																																				
-			BezierCurve scaleCurve;
-
-			/**
-			* Bezier curve that controls the red component of particles' color.
-			*/ 																																						
-			BezierCurve colorCurveR;
-			/**
-			* Bezier curve that controls the green component of particles' color.
-			*/ 																																								
-			BezierCurve colorCurveG;
-			/**
-			* Bezier curve that controls the blue component of particles' color.
-			*/ 																																								
-			BezierCurve colorCurveB;
-			/**
-			* Bezier curve that controls the alpha component of particles' color.
-			*/ 																																								
-			BezierCurve colorCurveA;
-			
-			/**
-			* If set to true, will use the color curves to control particle color. False by default.
-			*/
-			bool useColorCurves;
-			
-			/**
-			* If set to true, will use the scale curve to control particle scale. False by default.
-			*/			
-			bool useScaleCurves;
-			
-			Number particleSize;
-			
-			Texture *getParticleTexture() const;
-		
-			Vector3 emitterRadius;
-					
-			Number perlinModSize;
-
-			bool perlinEnabled;
-				
-			Number rotationSpeed;
-							
-			int emitterType;
-			
-			bool getIgnoreParentMatrix() const;
-			void setIgnoreParentMatrix(bool val);
-											
-		protected:
-		
-			bool ignoreParentMatrix;
-		
-			int blendingMode;
-		
-			bool isScreenEmitter;
-			Mesh *pMesh;
-		
-			bool allAtOnce;
-			int particleType;
-			Material *particleMaterial;
-			Texture *particleTexture;
-		
-			String textureFile;
-		
-			bool isEmitterEnabled;
-		
-						
-			Perlin *motionPerlin;
-			
-			Number numParticles;
-			std::vector<Particle*> particles;
-			
-			Number emitSpeed;
-			Timer *timer;
-	};
-
-	/**
-	* 3D particle emitter.
-	*/
-	class _PolyExport SceneParticleEmitter : public Entity, public ParticleEmitter {
-	public:
-		/**
-		* Constructor.
-		* @param materialName Name of the material to use for particles.
-		* @param particleParentScene Scene to create particles in.
-		* @param particleType Type of particles to create. Can be Particle::BILLBOARD_PARTICLE or Particle::MESH_PARTICLE
-		* @param emitterType Type of emitter to create. Can be ParticleEmitter::CONTINUOUS_EMITTER or ParticleEmitter::TRIGGERED_EMITTER
-		* @param lifespan Lifetime of particles in seconds.
-		* @param numParticles Total number of particles to create.
-		* @param direction Direction of the emitter, length of this vector controls emitter strength
-		* @param gravity Gravity direction and strength
-		* @param deviation Emitter deviation on each axis
-		* @param particleMesh If particle type is Particle::MESH_PARTICLE, this must be set to the mesh to use for each particle
-		* @param emitter If this is specified, particles will be emitted from this meshe's vertices.
-		*/
-		SceneParticleEmitter(const String& materialName, int particleType, int emitterType, Number lifespan, unsigned int numParticles, Vector3 direction, Vector3 gravity, Vector3 deviation, Vector3 emitterRadius, Mesh *particleMesh = NULL, SceneMesh *emitter = NULL);
-		virtual ~SceneParticleEmitter();		
-		
-		/**
-		* Returns the emitter (helper method for LUA).
-		*/ 
-		ParticleEmitter *getEmitter() { return this; }
-		
-		void respawnSceneParticles();
-		void addParticleBody(Entity *particleBody);
-		Matrix4 getBaseMatrix();
-		void Update();
-		
-		Vector3 getParticleCompoundScale();
-		
-		void dispatchTriggerCompleteEvent();
-		
-			/**
-			* Continuous emitter setting.
-			*/ 																													
-			static const int CONTINUOUS_EMITTER = 0;
-
-			/**
-			* Triggered emitter setting.
-			*/ 																																
-			static const int TRIGGERED_EMITTER = 1;
-		
-		
-	protected:
-		SceneMesh *emitterMesh;		
-	};	
-		
+            /**
+             * Bezier curve that controls the red component of particles' color.
+             */
+            BezierCurve colorCurveR;
+            /**
+             * Bezier curve that controls the green component of particles' color.
+             */
+            BezierCurve colorCurveG;
+            /**
+             * Bezier curve that controls the blue component of particles' color.
+             */
+            BezierCurve colorCurveB;
+            /**
+             * Bezier curve that controls the alpha component of particles' color.
+             */
+            BezierCurve colorCurveA;
+        
+        protected:
+        
+            void resetParticle(unsigned int index);
+        
+            Core *core;
+            unsigned int particleCount;
+            std::vector<SceneParticle> particles;
+            Number particleSpeed;
+            Number lifetime;
+            Number timeStep;
+            Number cyclesLeftOver;
+        
+            Vector3 directionVector;
+            Vector3 directionDeviation;
+            Vector3 emitterSize;
+            Vector3 gravity;
+        
+            Matrix4 systemTrasnformMatrix;
+            bool useFloorPlane;
+            bool particlesInWorldSpace;
+            bool perlinEnabled;
+            Vector3 perlinValue;
+            Perlin *motionPerlin;
+            Number particleSize;
+            Vector3 particleRotationSpeed;
+        
+            Number floorPlaneOffset;
+            Number floorDamping;
+        
+            bool loopParticles;
+        
+            unsigned int particleType;
+            Quaternion q;
+    };
+    
 }

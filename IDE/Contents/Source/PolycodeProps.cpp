@@ -324,7 +324,7 @@ PropProp::PropProp(String caption, String type) : UIElement() {
 
 	suppressChangeEvent = false;
 	propType = type;
-	label = new UILabel(caption, 12);
+	label = new UILabel(caption, 11);
 	label->setPosition(0, 5);
 	addChild(label);
 	
@@ -345,17 +345,17 @@ Vector3Prop::Vector3Prop(String caption) : PropProp(caption, "Vector3") {
 	labelX = new UILabel("X:", 11);
 	labelX->color.a = 1.0;
 	propContents->addChild(labelX);
-	labelX->setPosition(-20, 6);
+	labelX->setPosition(-20, 5);
     
 	labelY = new UILabel("Y:", 11);
 	labelY->color.a = 1.0;
 	propContents->addChild(labelY);
-	labelY->setPosition(-20, 31);
+	labelY->setPosition(-20, 25);
 
     labelZ = new UILabel("Z:", 11);
 	labelZ->color.a = 1.0;
 	propContents->addChild(labelZ);
-	labelZ->setPosition(-20, 56);
+	labelZ->setPosition(-20, 45);
     
 	xInput = new UITextInput(false, 50, 12);
 	xInput->addEventListener(this, UIEvent::CHANGE_EVENT);
@@ -369,16 +369,16 @@ Vector3Prop::Vector3Prop(String caption) : PropProp(caption, "Vector3") {
 	yInput->setText("0");
 	yInput->setNumberOnly(true);
 	propContents->addChild(yInput);
-	yInput->setPosition(0, 25);
+	yInput->setPosition(0, 20);
 
     zInput = new UITextInput(false, 50, 12);
 	zInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	zInput->setText("0");
 	zInput->setNumberOnly(true);
 	propContents->addChild(zInput);
-	zInput->setPosition(0, 50);
+	zInput->setPosition(0, 40);
 
-	setHeight(75);
+	setHeight(65);
 }
 
 void Vector3Prop::setPropWidth(Number width) {
@@ -2139,7 +2139,7 @@ TransformSheet::TransformSheet() : PropSheet("TRANSFORM", "entity_transform") {
     rotationProp = new Vector3Prop("Rotation");
     addProp(rotationProp);
     
-    propHeight = 275;
+    propHeight = 235;
     
     enabled = false;
 }
@@ -2193,6 +2193,145 @@ void TransformSheet::handleEvent(Event *event) {
         }
     }
     PropSheet::handleEvent(event);
+}
+
+ParticleEmitterSheet::ParticleEmitterSheet() : PropSheet("PARTICLE EMITTER", "particle_emitter") {
+    emitter = NULL;
+
+    typeProp = new ComboProp("Type");
+    typeProp->comboEntry->addComboItem("Point");
+    typeProp->comboEntry->addComboItem("Quad");
+    addProp(typeProp);
+
+    countProp = new NumberProp("Count");
+    addProp(countProp);
+    
+    lifetimeProp = new NumberProp("Lifetime");
+    addProp(lifetimeProp);
+
+    particleSizeProp = new NumberProp("Size");
+    addProp(particleSizeProp);
+    
+    worldParticlesProp = new BoolProp("World space");
+    addProp(worldParticlesProp);
+    
+    loopingProp = new BoolProp("Loop");
+    addProp(loopingProp);
+    
+    particleRotaionProp = new Vector3Prop("Rotation");
+    addProp(particleRotaionProp);
+    
+    gravityProp = new Vector3Prop("Gravity");
+    addProp(gravityProp);
+    
+    directionProp = new Vector3Prop("Direction");
+    addProp(directionProp);
+
+    deviationProp = new Vector3Prop("Deviation");
+    addProp(deviationProp);
+
+    sizeProp = new Vector3Prop("Emitter size");
+    addProp(sizeProp);
+
+    perlinProp = new BoolProp("Movement noise");
+    addProp(perlinProp);
+    
+    perlinSizeProp = new Vector3Prop("Noise amount");
+    addProp(perlinSizeProp);
+
+    useColorCurvesProp = new BoolProp("Use color curves");
+    addProp(useColorCurvesProp);
+    
+    colorCurveProp = new BezierRGBACurveProp("Color curves");
+    addProp(colorCurveProp);
+
+    useScaleCurvesProp = new BoolProp("Use scale curve");
+    addProp(useScaleCurvesProp);
+    
+    scaleCurveProp = new BezierCurveProp("Scale curve", "Scale");
+    addProp(scaleCurveProp);
+    
+    propHeight = 700;
+    enabled = false;
+    
+}
+
+ParticleEmitterSheet::~ParticleEmitterSheet() {
+    
+}
+
+void ParticleEmitterSheet::handleEvent(Event *event) {
+    if(!emitter) {
+        return;
+    }
+    if(event->getEventCode() == Event::CHANGE_EVENT) {
+        if(event->getDispatcher() == typeProp) {
+            emitter->setParticleType(typeProp->get());
+        } else if(event->getDispatcher() == countProp) {
+                emitter->setParticleCount(countProp->get());
+        } else if(event->getDispatcher() == lifetimeProp) {
+            emitter->setParticleLifetime(lifetimeProp->get());
+        } else if(event->getDispatcher() == particleSizeProp) {
+            emitter->setParticleSize(particleSizeProp->get());
+        } else if(event->getDispatcher() == worldParticlesProp) {
+            emitter->setParticlesInWorldSpace(worldParticlesProp->get());
+        } else if(event->getDispatcher() == loopingProp) {
+            emitter->setLoopParticles(loopingProp->get());
+        } else if(event->getDispatcher() == particleRotaionProp) {
+            emitter->setParticleRotationSpeed(particleRotaionProp->get());
+        } else if(event->getDispatcher() == gravityProp) {
+            emitter->setGravity(gravityProp->get());
+        } else if(event->getDispatcher() == directionProp) {
+            emitter->setParticleDirection(directionProp->get());
+        } else if(event->getDispatcher() == sizeProp) {
+            emitter->setEmitterSize(sizeProp->get());
+        } else if(event->getDispatcher() == deviationProp) {
+            emitter->setDirectionDeviation(deviationProp->get());
+        } else if(event->getDispatcher() == perlinProp) {
+            emitter->setPerlinEnabled(perlinProp->get());
+        } else if(event->getDispatcher() == perlinSizeProp) {
+            emitter->setPerlinValue(perlinSizeProp->get());
+        } else if(event->getDispatcher() == useColorCurvesProp) {
+            emitter->useColorCurves = useColorCurvesProp->get();
+        } else if(event->getDispatcher() == useScaleCurvesProp) {
+            emitter->useScaleCurve = useScaleCurvesProp->get();
+        }
+
+    }
+    
+    PropSheet::handleEvent(event);
+}
+
+void ParticleEmitterSheet::setParticleEmitter(SceneParticleEmitter *emitter) {
+    this->emitter = emitter;
+    if(emitter) {
+        enabled = true;
+        typeProp->set(emitter->getParticleType());
+        countProp->set(emitter->getParticleCount());
+        lifetimeProp->set(emitter->getParticleLifetime());
+        particleSizeProp->set(emitter->getParticleSize());
+        worldParticlesProp->set(emitter->getParticlesInWorldSpace());
+        loopingProp->set(emitter->getLoopParticles());
+        particleRotaionProp->set(emitter->getParticleRotationSpeed());
+        gravityProp->set(emitter->getGravity());
+        directionProp->set(emitter->getParticleDirection());
+        sizeProp->set(emitter->getEmitterSize());
+        deviationProp->set(emitter->getDirectionDeviation());
+        perlinProp->set(emitter->getPerlinEnabled());
+        perlinSizeProp->set(emitter->getPerlinValue());
+        useColorCurvesProp->set(emitter->useColorCurves);
+        useScaleCurvesProp->set(emitter->useScaleCurve);
+        
+        colorCurveProp->curveR = &emitter->colorCurveR;
+        colorCurveProp->curveG = &emitter->colorCurveG;
+        colorCurveProp->curveB = &emitter->colorCurveB;
+        colorCurveProp->curveA = &emitter->colorCurveA;
+        
+        scaleCurveProp->curve = &emitter->scaleCurve;
+        
+    } else {
+        enabled = false;
+    }
 }
 
 SceneLightSheet::SceneLightSheet() : PropSheet("LIGHT", "scene_light") {

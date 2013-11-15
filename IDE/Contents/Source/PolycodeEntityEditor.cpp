@@ -131,7 +131,7 @@ void EntityEditorMainView::Update() {
 }
 
 void EntityEditorMainView::createIcon(Entity *entity, String iconFile) {
-    ScenePrimitive *iconPrimitive = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 0.3, 0.3);
+    ScenePrimitive *iconPrimitive = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 0.4, 0.4);
     
     iconPrimitive->setMaterialByName("UnlitMaterial");
 	Texture *tex = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile("entityEditor/"+iconFile);
@@ -153,7 +153,9 @@ void EntityEditorMainView::setEditorProps(Entity *entity) {
     entity->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
     
     SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(entity);
-    if(sceneMesh) {
+    SceneParticleEmitter *emitter = dynamic_cast<SceneParticleEmitter*>(entity);
+    
+    if(sceneMesh && !emitter) {
         sceneMesh->wireFrameColor = Color(1.0, 0.8, 0.3, 1.0);
 //        sceneMesh->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
         sceneMesh->useGeometryHitDetection = true;
@@ -163,6 +165,12 @@ void EntityEditorMainView::setEditorProps(Entity *entity) {
     if(sceneLight) {
         createIcon(entity, "light_icon.png");
     }
+    
+    if(emitter) {
+        createIcon(entity, "emitter_icon.png");
+    }
+
+    
 }
 
 void EntityEditorMainView::addEntityFromMenu(String command) {
@@ -200,7 +208,6 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
     
     if(command == "add_light") {
         SceneLight *newLight = new SceneLight(SceneLight::AREA_LIGHT, mainScene, 1.0);
-        
         newLight->bBox = Vector3(0.5, 0.5, 0.5);
         mainScene->addLight(newLight);
         sceneObjectRoot->addChild(newLight);
@@ -217,6 +224,37 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
         extensions.push_back("mesh");
         globalFrame->showAssetBrowser(extensions);
         return;
+    }
+    
+    if(command == "add_particles") {
+        SceneParticleEmitter  *newEmitter = new SceneParticleEmitter(30, 3.0, 0.2);
+        newEmitter->bBox = Vector3(0.5, 0.5, 0.5);
+        
+        newEmitter->setParticleType(SceneParticleEmitter::PARTICLE_TYPE_QUAD);
+        
+        sceneObjectRoot->addChild(newEmitter);
+        setEditorProps(newEmitter);
+        newEmitter->setPosition(cursorPosition);
+        
+        
+        newEmitter->scaleCurve.addControlPoint2dWithHandles(-0.1, 0.5, 0.0, 0.5, 0.1, 0.5);
+        newEmitter->scaleCurve.addControlPoint2dWithHandles(0.9, 0.5, 1.0, 0.5, 1.1, 0.5);
+        
+        newEmitter->colorCurveR.addControlPoint2dWithHandles(-0.1, 0.5, 0.0, 0.5, 0.1, 0.5);
+        newEmitter->colorCurveR.addControlPoint2dWithHandles(0.9, 0.5, 1.0, 0.5, 1.1, 0.5);
+        
+        newEmitter->colorCurveG.addControlPoint2dWithHandles(-0.1, 0.5, 0.0, 0.5, 0.1, 0.5);
+        newEmitter->colorCurveG.addControlPoint2dWithHandles(0.9, 0.5, 1.0, 0.5, 1.1, 0.5);
+        
+        newEmitter->colorCurveB.addControlPoint2dWithHandles(-0.1, 0.5, 0.0, 0.5, 0.1, 0.5);
+        newEmitter->colorCurveB.addControlPoint2dWithHandles(0.9, 0.5, 1.0, 0.5, 1.1, 0.5);
+        
+        newEmitter->colorCurveA.addControlPoint2dWithHandles(-0.1, 0.5, 0.0, 0.5, 0.1, 0.5);
+        newEmitter->colorCurveA.addControlPoint2dWithHandles(0.9, 0.5, 1.0, 0.5, 1.1, 0.5);
+        
+        selectEntity(newEmitter);
+        return;
+        
     }
 
 }
@@ -290,7 +328,9 @@ void EntityEditorMainView::doEntityDeselect(Entity *targetEntity) {
 
 void EntityEditorMainView::doEntitySelect(Entity *targetEntity) {
     SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(targetEntity);
-    if(sceneMesh) {
+    SceneParticleEmitter *emitter = dynamic_cast<SceneParticleEmitter*>(targetEntity);
+    
+    if(sceneMesh && ! emitter) {
         sceneMesh->overlayWireframe = true;
     }
 }

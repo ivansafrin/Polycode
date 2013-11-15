@@ -48,5 +48,6 @@ class EntityEditorPropertyView : public UIElement {
         MaterialPropSheet *materialSheet;
         ScenePrimitiveSheet *primitiveSheet;
         SceneLightSheet *lightSheet;
+        ParticleEmitterSheet *particleSheet;
 };
 

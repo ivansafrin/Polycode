@@ -70,7 +70,6 @@
 #include "PolyScenePrimitive.h"
 #include "PolySceneLabel.h"
 #include "PolyParticleEmitter.h"
-#include "PolyParticle.h"
 #include "PolySceneRenderTexture.h"
 #include "PolyResource.h"
 #include "PolyThreaded.h"

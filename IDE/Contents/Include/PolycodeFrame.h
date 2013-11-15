@@ -51,12 +51,11 @@ class EditPoint : public Entity {
 		
 		void setMode(unsigned int mode);
 
-		void limitPoint(UIImage *point);
+		void limitPoint(UIRect *point);
 								
-		UIImage *pointHandle;
-		
-		UIImage *controlHandle1;
-		UIImage *controlHandle2;
+		UIRect *pointHandle;
+		UIRect *controlHandle1;
+		UIRect *controlHandle2;
 		
 		SceneLine *connectorLine1;
 		SceneLine *connectorLine2;
@@ -134,7 +133,7 @@ class CurveEditor : public UIWindow {
 		UITreeContainer *treeContainer;
 		
 		unsigned int mode;
-		UIImage *bg;
+		UIRect *bg;
 		
 		EditCurve *selectedCurve;
 		std::vector<EditCurve*> curves;

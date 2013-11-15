@@ -26,9 +26,9 @@ THE SOFTWARE.
 #include "PolyEntity.h"
 #include "PolyObject.h"
 #include "PolyParticleEmitter.h"
-#include "PolyParticle.h"
 #include "PolyScenePrimitive.h"
 #include "PolyResource.h"
+#include "PolyBezierCurve.h"
 #include "PolySound.h"
 
 namespace Polycode {

@@ -206,9 +206,6 @@ class PostEditorPane : public UIElement {
 		BoolProp *fp16Prop;
 		
 		PostPreviewBox *postPreview;
-		
-		Screen *previewScreen;
-		
 					
 };
 

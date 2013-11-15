@@ -82,7 +82,6 @@ namespace Polycode {
 		}
 		
 		meshHasVertexBuffer = false;
-		useVertexColors = false;
 	}
 	
 	VertexBuffer *Mesh::getVertexBuffer() {

@@ -554,6 +554,43 @@ class TransformSheet : public PropSheet {
         Vector3 lastRotation;
 };
 
+class ParticleEmitterSheet : public PropSheet {
+    public:
+        ParticleEmitterSheet();
+        ~ParticleEmitterSheet();
+    
+        void handleEvent(Event *event);
+        void setParticleEmitter(SceneParticleEmitter *emitter);
+    
+    protected:
+        SceneParticleEmitter *emitter;
+    
+        ComboProp *typeProp;
+        NumberProp *countProp;
+        NumberProp *lifetimeProp;
+        NumberProp *particleSizeProp;
+
+        BoolProp *worldParticlesProp;
+        BoolProp *loopingProp;
+
+        Vector3Prop *particleRotaionProp;
+    
+        Vector3Prop *gravityProp;
+        Vector3Prop *directionProp;
+        Vector3Prop *sizeProp;
+        Vector3Prop *deviationProp;
+    
+        BoolProp *perlinProp;
+        Vector3Prop *perlinSizeProp;
+    
+        BoolProp *useColorCurvesProp;
+        BezierRGBACurveProp *colorCurveProp;
+
+        BoolProp *useScaleCurvesProp;
+        BezierCurveProp *scaleCurveProp;
+
+};
+
 class SceneLightSheet : public PropSheet {
     public:
         SceneLightSheet();
@@ -670,9 +707,7 @@ class SceneSpriteSheet : public PropSheet {
 		SceneSpriteProp *spriteProp;
 		ComboProp *defaultAnimationProp;		
 		SceneSprite *lastSprite;
-		
 };
-
 
 class SceneEntityInstanceSheet : public PropSheet {
 	public:
