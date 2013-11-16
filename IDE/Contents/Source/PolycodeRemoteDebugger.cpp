@@ -61,7 +61,7 @@ void PolycodeRemoteDebugger::handleEvent(Event *event) {
 		ServerEvent *serverEvent = (ServerEvent*) event;	
 		switch(event->getEventCode()) {
 			case ServerEvent::EVENT_CLIENT_DATA:		
-			{	
+			{
 				switch(serverEvent->dataType) {			
 					case EVENT_DEBUG_PRINT:
 					{

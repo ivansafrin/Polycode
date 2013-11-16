@@ -42,7 +42,7 @@ BackTraceEntry::BackTraceEntry(String fileName, int lineNumber, PolycodeProject 
 
 	labelBg = new UIRect(20,20);
 	labelBg->setAnchorPoint(-1.0, -1.0, 0.0);
-	labelBg->setColor(0.0, 0.0, 0.0, 0.15);
+	labelBg->setColor(0.3, 0.3, 0.3, 1.0);
 	labelBg->processInputEvents = true;
 	addChild(labelBg);	
 	
@@ -70,11 +70,12 @@ void BackTraceEntry::Select() {
 	
 	dispatchEvent(event, BackTraceEvent::EVENT_BACKTRACE_SELECTED);
 		
-	labelBg->setColor(0.0, 0.0, 1.0, 0.35);
+	labelBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiAccentColor"));
+    
 }
 
 void BackTraceEntry::Deselect() {
-	labelBg->setColor(0.0, 0.0, 0.0, 0.15);
+	labelBg->setColor(0.3, 0.3, 0.3, 1.0);
 }
 
 

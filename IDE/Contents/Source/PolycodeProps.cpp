@@ -2677,7 +2677,7 @@ void MaterialPropSheet::setSceneMesh(SceneMesh *sceneMesh) {
     
     if(sceneMesh) {
         enabled = true;
-        reloadMaterials();
+        reloadMaterials();        
     } else {
         enabled = false;
     }

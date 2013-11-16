@@ -70,7 +70,6 @@ THE SOFTWARE.
 		printf("DESTROYING PLAYER");
 		playerRunning = false;
 		[timer invalidate];
-		[timer release];	
 		delete player;
 		delete playerProxy;	
 		player = NULL;
