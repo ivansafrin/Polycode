@@ -2521,7 +2521,7 @@ void ScenePrimitiveSheet::updatePrimitiveLabels() {
             option3Prop->enabled = true;
             option3Prop->visible = true;
             
-            propHeight = 45 + (45 * 3);
+            propHeight = 45 + (32 * 3);
         break;
         case ScenePrimitive::TYPE_PLANE:
             option1Prop->setPropName("Width");
@@ -2532,7 +2532,7 @@ void ScenePrimitiveSheet::updatePrimitiveLabels() {
             option2Prop->enabled = true;
             option2Prop->visible = true;
             
-            propHeight = 45 + (45 * 2);
+            propHeight = 45 + (32 * 2);
         break;
         case ScenePrimitive::TYPE_VPLANE:
             option1Prop->setPropName("Width");
@@ -2543,7 +2543,7 @@ void ScenePrimitiveSheet::updatePrimitiveLabels() {
             option2Prop->enabled = true;
             option2Prop->visible = true;
             
-            propHeight = 45 + (45 * 2);
+            propHeight = 45 + (32 * 2);
         break;
         case ScenePrimitive::TYPE_CYLINDER:
             option1Prop->setPropName("Length");
@@ -2557,7 +2557,7 @@ void ScenePrimitiveSheet::updatePrimitiveLabels() {
             option3Prop->enabled = true;
             option3Prop->visible = true;
             
-            propHeight = 45 + (45 * 3);
+            propHeight = 45 + (32 * 3);
         break;
         case ScenePrimitive::TYPE_UNCAPPED_CYLINDER:
             option1Prop->setPropName("Length");
@@ -2571,7 +2571,7 @@ void ScenePrimitiveSheet::updatePrimitiveLabels() {
             option3Prop->enabled = true;
             option3Prop->visible = true;
             
-            propHeight = 45 + (45 * 3);
+            propHeight = 45 + (32 * 3);
         break;
         case ScenePrimitive::TYPE_SPHERE:
             option1Prop->setPropName("Radius");
@@ -2585,7 +2585,7 @@ void ScenePrimitiveSheet::updatePrimitiveLabels() {
             option3Prop->enabled = true;
             option3Prop->visible = true;
             
-            propHeight = 45 + (45 * 3);
+            propHeight = 45 + (32 * 3);
         break;
         case ScenePrimitive::TYPE_TORUS:
             option1Prop->setPropName("Torus radius");
@@ -2602,7 +2602,7 @@ void ScenePrimitiveSheet::updatePrimitiveLabels() {
             option4Prop->enabled = true;
             option4Prop->visible = true;
             
-            propHeight = 45 + (45 * 4);
+            propHeight = 45 + (32 * 4);
         break;
         case ScenePrimitive::TYPE_CONE:
             option1Prop->setPropName("Length");
@@ -2616,7 +2616,7 @@ void ScenePrimitiveSheet::updatePrimitiveLabels() {
             option3Prop->enabled = true;
             option3Prop->visible = true;
             
-            propHeight = 45 + (45 * 3);
+            propHeight = 45 + (32 * 3);
         break;
         case ScenePrimitive::TYPE_CIRCLE:
             option1Prop->setPropName("Width");
@@ -2630,7 +2630,7 @@ void ScenePrimitiveSheet::updatePrimitiveLabels() {
             option3Prop->enabled = true;
             option3Prop->visible = true;
             
-            propHeight = 45 + (45 * 3);
+            propHeight = 45 + (32 * 3);
         break;
     }
     dispatchEvent(new Event(), Event::COMPLETE_EVENT);

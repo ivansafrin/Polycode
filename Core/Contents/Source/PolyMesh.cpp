@@ -680,58 +680,51 @@ namespace Polycode {
 	
 	void Mesh::createCone(Number height, Number radius, int numSegments) {
 	
-	
-		setMeshType(Mesh::TRI_MESH);
-		Number lastx = -1;
-		Number lastz = -1;		
+        setMeshType(Mesh::TRI_MESH);
+        
+        Number lastx = 0;
+		Number lasty = 0;
+		Number lastv = 0;
+        
+        Polycode::Polygon *polygon;
 		for (int i=0 ; i < numSegments+1; i++) {
+			Number v = ((Number)i)/((Number)numSegments);
 			Number pos = ((PI*2.0)/((Number)numSegments)) * i;
-			Number x = sinf(pos) * radius;
-			Number z = cosf(pos) * radius;
+			Number x = sin(pos) * radius * 0.5;
+			Number y = cos(pos) * radius * 0.5;
 			
-			if(lastx > -1) {
-				Polygon *polygon = new Polygon();
-				polygon->addVertex(lastx,0,lastz,0,0);				
-				polygon->addVertex(x,0,z, 1, 0);
-				polygon->addVertex(0,height,0, 1, 1);				
-				addPolygon(polygon);							
-			
-
-				polygon = new Polygon();	
-				polygon->addVertex(x,0,z, 1, 1);												
-				polygon->addVertex(lastx,0,lastz, 1, 1);																														
-				polygon->addVertex(0,0,0,0,0);												
-				addPolygon(polygon);			
-
-								
-			}
+            if(i > 0) {
+                
+                polygon = new Polygon();
+                polygon->addVertex(lastx,0, lasty, 0.5+(lasty/radius*0.5), 0.5+(lastx/radius*0.5))->setNormal(0.0, -1.0, 0.0);
+                polygon->addVertex(x,0,y, 0.5+(y/radius*0.5), 0.5+(x/radius*0.5))->setNormal(0.0, -1.0, 0.0);                
+                polygon->addVertex(0,height,0,0.5,0.5)->setNormal(0.0, -1.0, 0.0);
+                addPolygon(polygon);
+                
+                
+                polygon = new Polygon();
+                polygon->addVertex(0,0,0,0.5,0.5)->setNormal(0.0, -1.0, 0.0);
+                polygon->addVertex(x,0,y, 0.5+(y/radius*0.5), 0.5+(x/radius*0.5))->setNormal(0.0, -1.0, 0.0);
+                polygon->addVertex(lastx,0, lasty, 0.5+(lasty/radius*0.5), 0.5+(lastx/radius*0.5))->setNormal(0.0, -1.0, 0.0);
+                addPolygon(polygon);
+            }
 			lastx = x;
-			lastz = z;			
-		/*
-			Polygon *polygon = new Polygon();
-			polygon->addVertex(w,0,h, 1, 1);
-			polygon->addVertex(0,0,h, 1, 0);
-			polygon->addVertex(0,0,0,0,0);
-			polygon->addVertex(w,0,0,0,1);
-			addPolygon(polygon);			
-			*/
+			lastv = v;
+			lasty = y;
         }
 		
 		for(int i=0; i < polygons.size(); i++) {
 			for(int j=0; j < polygons[i]->getVertexCount(); j++) {
-//				polygons[i]->getVertex(j)->x = polygons[i]->getVertex(j)->x - (radius/2.0f);
 				polygons[i]->getVertex(j)->y = polygons[i]->getVertex(j)->y - (height/2.0f);
-//				polygons[i]->getVertex(j)->z = polygons[i]->getVertex(j)->z - (radius/2.0f);	
 			}
 		}
-		
 		
 		calculateNormals();
 		calculateTangents();
 		arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
 		arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
-		arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;						
-		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;										
+		arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;
+		arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;
 		arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;			
 	
 	}
