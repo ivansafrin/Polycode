@@ -2102,8 +2102,8 @@ void ShaderTexturesSheet::setShader(Shader *shader, Material *material, ShaderBi
 		for(int j=0; j < cubemaps.size(); j++) {
 			comboProp->comboEntry->addComboItem(cubemaps[j]->getResourceName(), (void*) cubemaps[j]);
 			if(material) {
-				if(material->getShaderBinding(0)) {
-					Cubemap *currentCubemap = material->getShaderBinding(0)->getCubemap(shader->expectedCubemaps[i]);
+				if(binding) {
+					Cubemap *currentCubemap = binding->getCubemap(shader->expectedCubemaps[i]);
 					if(currentCubemap) {
 						if(currentCubemap->getResourceName() == cubemaps[j]->getResourceName()) {
 							comboProp->set(j);
@@ -2122,8 +2122,8 @@ void ShaderTexturesSheet::setShader(Shader *shader, Material *material, ShaderBi
 		TextureProp *textureProp = new TextureProp(shader->expectedTextures[i]);
 		
 		if(material) {
-			if(material->getShaderBinding(0)) {
-				Texture *currentTexture = material->getShaderBinding(0)->getTexture(shader->expectedTextures[i]);
+			if(binding) {
+				Texture *currentTexture = binding->getTexture(shader->expectedTextures[i]);
 				if(currentTexture) {
 					textureProp->set(currentTexture);
 				}
@@ -2455,6 +2455,24 @@ void SceneLightSheet::handleEvent(Event *event) {
     }
     PropSheet::handleEvent(event);
 }
+/*
+SceneMeshSheet::SceneMeshSheet() : PropSheet("MESH FILE", "scene_mesh_file") {
+    enabled = false;
+    sceneMesh = NULL;
+}
+
+SceneMeshSheet::~SceneMeshSheet() {
+        
+}
+
+void SceneMeshSheet::setSceneMesh(SceneMesh *mesh) {
+    
+}
+
+void SceneMeshSheet::handleEvent(Event *event) {
+    
+}
+*/
 
 ScenePrimitiveSheet::ScenePrimitiveSheet() : PropSheet("PRIMITIVE", "scene_primitive") {
     typeProp = new ComboProp("Type");
@@ -2927,8 +2945,9 @@ void SceneEntityInstanceSheet::Update() {
 	}
 }
 
-UILabelSheet::UILabelSheet() : PropSheet("SCREEN LABEL", "UILabel") {
+SceneLabelSheet::SceneLabelSheet() : PropSheet("SCREEN LABEL", "UILabel") {
 	label = NULL;
+    enabled = false;
 	
 	caption = new StringProp("Contents");
 	caption->addEventListener(this, Event::CHANGE_EVENT);
@@ -2938,6 +2957,10 @@ UILabelSheet::UILabelSheet() : PropSheet("SCREEN LABEL", "UILabel") {
 	size->addEventListener(this, Event::CHANGE_EVENT);
 	addProp(size);	
 
+    actualHeight = new NumberProp("Actual height");
+	actualHeight->addEventListener(this, Event::CHANGE_EVENT);
+	addProp(actualHeight);
+
 	font = new ComboProp("Font");
 	font->addEventListener(this, Event::CHANGE_EVENT);
 	addProp(font);	
@@ -2946,15 +2969,13 @@ UILabelSheet::UILabelSheet() : PropSheet("SCREEN LABEL", "UILabel") {
 	enableAA = new BoolProp("Antialias");
 	enableAA->addEventListener(this, Event::CHANGE_EVENT);
 	addProp(enableAA);	
-
-	lastSize = -1;
 	
 	propHeight = 160;
 	
 	refreshFonts();
 }
 
-void UILabelSheet::refreshFonts() {
+void SceneLabelSheet::refreshFonts() {
 	
 	FontManager *fontManager = CoreServices::getInstance()->getFontManager();
 	
@@ -2969,11 +2990,36 @@ void UILabelSheet::refreshFonts() {
 
 }
 
-UILabelSheet::~UILabelSheet() {
+void SceneLabelSheet::setSceneLabel(SceneLabel *label) {
+    this->label = label;
+    
+	if(label) {
+		enabled = true;
+        caption->set(label->getText());
+        enableAA->set(label->getLabel()->getAntialiasMode() == Label::ANTIALIAS_FULL);
+        size->set(label->getLabel()->getSize());
+        actualHeight->set(label->getLabelActualHeight());
+        
+        refreshFonts();
+        
+        for(int i=0; i < font->comboEntry->getNumItems(); i++) {
+            String comboFont = font->comboEntry->getItemAtIndex(i)->label;
+            
+            if(comboFont == label->getLabel()->getFont()->getFontName()) {
+                font->set(i);
+            }
+        }
+        
+	} else {
+		enabled = false;
+	}
+}
+
+SceneLabelSheet::~SceneLabelSheet() {
 
 }
 
-void UILabelSheet::handleEvent(Event *event) {
+void SceneLabelSheet::handleEvent(Event *event) {
 	if(!label)
 		return;
 
@@ -2986,8 +3032,7 @@ void UILabelSheet::handleEvent(Event *event) {
 		String fontName = font->comboEntry->getSelectedItem()->label;
 		Font *font = CoreServices::getInstance()->getFontManager()->getFontByName(fontName);
 		label->getLabel()->setFont(font);
-		label->setText(caption->get());		
-		lastFont = fontName;
+		label->setText(caption->get());
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}
 
@@ -2996,11 +3041,14 @@ void UILabelSheet::handleEvent(Event *event) {
 		int newSize= size->get();
 		if(newSize < 4)
 			newSize = 4;
-		
-		lastSize = newSize;	
 					
 		label->getLabel()->setSize(newSize);
 		label->setText(caption->get());		
+		dispatchEvent(new Event(), Event::CHANGE_EVENT);
+	}
+
+    if(event->getDispatcher() == actualHeight) {
+		label->setLabelActualHeight(actualHeight->get());
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}
 
@@ -3016,33 +3064,6 @@ void UILabelSheet::handleEvent(Event *event) {
 	}
 	
 	PropSheet::handleEvent(event);
-}
-
-void UILabelSheet::Update() {
-	if(label) {
-		enabled = true;		
-		if(label != lastLabel) {
-			lastLabel = label;
-	
-		caption->set(label->getText());		
-		enableAA->set(label->getLabel()->getAntialiasMode() == Label::ANTIALIAS_FULL);
-		size->set(label->getLabel()->getSize());
-		
-		for(int i=0; i < font->comboEntry->getNumItems(); i++) {
-			String comboFont = font->comboEntry->getItemAtIndex(i)->label;
-			
-			if(comboFont == label->getLabel()->getFont()->getFontName()) {
-				if(comboFont != lastFont) {
-					font->set(i);
-					lastFont = comboFont;
-				}
-			}
-		}
-
-		}
-	} else {
-		enabled = false;
-	}
 }
 
 SoundSheet::SoundSheet() : PropSheet("SCREEN SOUND", "Sound") {

@@ -46,6 +46,11 @@ EntityEditorPropertyView::EntityEditorPropertyView() : UIElement() {
     entityProps->addPropSheet(shaderOptionsSheet);
     shaderOptionsSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
     
+    labelSheet = new SceneLabelSheet();
+    entityProps->addPropSheet(labelSheet);
+    labelSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
+    
+    
     lightSheet = new SceneLightSheet();
     entityProps->addPropSheet(lightSheet);
     lightSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
@@ -80,13 +85,18 @@ void EntityEditorPropertyView::handleEvent(Event *event) {
 
 void EntityEditorPropertyView::updateShaderOptions() {
     SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(targetEntity);
+    SceneLabel *sceneLabel = dynamic_cast<SceneLabel*>(targetEntity);
     
     shaderTexturesSheet->enabled = false;
     shaderOptionsSheet->enabled = false;
     
     if(sceneMesh) {
         if(sceneMesh->getMaterial() && sceneMesh->getLocalShaderOptions()) {
+            
+            // can't edit the textures manually on a scene label
+            if(!sceneLabel) {
             shaderTexturesSheet->setShader(sceneMesh->getMaterial()->getShader(0), sceneMesh->getMaterial(), sceneMesh->getLocalShaderOptions());
+            }
             
             shaderOptionsSheet->setShader(sceneMesh->getMaterial()->getShader(0), sceneMesh->getMaterial(), sceneMesh->getLocalShaderOptions());
         }
@@ -103,9 +113,18 @@ void EntityEditorPropertyView::setEntity(Entity *entity) {
     SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(entity);
     materialSheet->setSceneMesh(sceneMesh);
     updateShaderOptions();
-    
+
+    SceneLabel *sceneLabel = dynamic_cast<SceneLabel*>(entity);
+    labelSheet->setSceneLabel(sceneLabel);
+
     ScenePrimitive *scenePrimitive = dynamic_cast<ScenePrimitive*>(entity);
-    primitiveSheet->setScenePrimitive(scenePrimitive);
+    
+    if(!sceneLabel) {
+        primitiveSheet->setScenePrimitive(scenePrimitive);
+    } else {
+        primitiveSheet->setScenePrimitive(NULL);
+    }
+    
 
     SceneParticleEmitter *emitter = dynamic_cast<SceneParticleEmitter*>(entity);
     particleSheet->setParticleEmitter(emitter);

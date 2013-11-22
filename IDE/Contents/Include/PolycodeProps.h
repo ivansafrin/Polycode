@@ -618,6 +618,20 @@ class SceneLightSheet : public PropSheet {
         SliderProp *shadowMapFOVProp;
         NumberProp *shadowResolutionProp;
 };
+/*
+class SceneMeshSheet : public PropSheet {
+    public:
+        SceneMeshSheet();
+        ~SceneMeshSheet();
+    
+        void setSceneMesh(SceneMesh *mesh);
+        void handleEvent(Event *event);
+    
+    private:
+    
+        SceneMesh *sceneMesh;
+};
+*/
 
 class ScenePrimitiveSheet : public PropSheet {
 public:
@@ -673,24 +687,23 @@ class EntityPropSheet : public PropSheet {
 		int removeIndex;
 };
 
-class UILabelSheet : public PropSheet {
+class SceneLabelSheet : public PropSheet {
 	public:
-		UILabelSheet();
-		~UILabelSheet();
+		SceneLabelSheet();
+		~SceneLabelSheet();
 		
 		void refreshFonts();
-		
 		void handleEvent(Event *event);
-		void Update();
+    
+        void setSceneLabel(SceneLabel *label);
+		
+    
+    private:
+		SceneLabel *label;
 				
-		UILabel *label;
-		UILabel *lastLabel;	
-		
-		int lastSize;
-		String lastFont;
-		
 		StringProp *caption;
 		NumberProp *size;
+        NumberProp *actualHeight;
 		ComboProp *font;
 		BoolProp *enableAA;
 };
@@ -708,6 +721,8 @@ class SceneSpriteSheet : public PropSheet {
 		ComboProp *defaultAnimationProp;		
 		SceneSprite *lastSprite;
 };
+
+
 
 class SceneEntityInstanceSheet : public PropSheet {
 	public:

@@ -39,9 +39,12 @@ namespace Polycode {
 		public:
 			
 			
-			SceneLabel(const String& text, int size, const String& fontName = "sans", int amode = 0, Number actualHeight = -1.0, bool premultiplyAlpha = false);
+			SceneLabel(const String& text, int size, const String& fontName = "sans", int amode = 0, Number actualHeight = 0.0, bool premultiplyAlpha = false);
 			
 			String getText();
+        
+            void setLabelActualHeight(Number actualHeight);
+            Number getLabelActualHeight();
 			
 			void Render();
 
@@ -67,8 +70,9 @@ namespace Polycode {
 		protected:
 			
 			void updateFromLabel();        
-			
-			Number labelScale;
+			     
+			Number actualHeight;
+            Number labelScale;
 			Label *label;
 	};
 }

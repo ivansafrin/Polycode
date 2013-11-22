@@ -39,15 +39,11 @@ bool SceneLabel::createMipmapsForLabels = true;
 SceneLabel::SceneLabel(const String& text, int size, const String& fontName, int amode, Number actualHeight, bool premultiplyAlpha) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1){
 
 	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size * CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX(), amode, premultiplyAlpha);
-    if(actualHeight > 0.0) {
-        this->labelScale = actualHeight/((Number)size);
-    } else {
-        this->labelScale = 1.0;
-    }
+    
 	positionAtBaseline = SceneLabel::defaultPositionAtBaseline;
 	setAnchorPoint(SceneLabel::defaultAnchor);	
 	snapToPixels = SceneLabel::defaultSnapToPixels;	
-	updateFromLabel();
+	setLabelActualHeight(actualHeight);
 }
 			
 
@@ -62,9 +58,24 @@ String SceneLabel::getText() {
 	return label->getText();
 }
 
+void SceneLabel::setLabelActualHeight(Number actualHeight) {
+    this->actualHeight = actualHeight;
+    
+    if(actualHeight > 0.0) {
+        labelScale = actualHeight/((Number)label->getSize());
+    } else {
+        labelScale = 1.0;
+    }
+    updateFromLabel();
+}
+
+Number SceneLabel::getLabelActualHeight() {
+    return actualHeight;
+}
+
 void SceneLabel::updateFromLabel() {
 
-	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();	
+	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
 	if(texture)
 		materialManager->deleteTexture(texture);
 

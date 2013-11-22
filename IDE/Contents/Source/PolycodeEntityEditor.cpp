@@ -181,7 +181,6 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
         setEditorProps(newPrimitive);
         newPrimitive->setPosition(cursorPosition);
         selectEntity(newPrimitive);
-        newPrimitive->getMesh()->calculateNormals(false);
         return;
     }
 
@@ -204,7 +203,20 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
         globalFrame->showAssetBrowser(extensions);
         return;
     }
-    
+
+    if(command == "add_label") {
+        SceneLabel  *newLabel = new SceneLabel("TEXT", 12);
+        newLabel->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+        newLabel->setAnchorPoint(-1.0, 0.0, 0.0);
+        newLabel->snapToPixels = false;
+        newLabel->positionAtBaseline = false;
+        sceneObjectRoot->addChild(newLabel);
+        setEditorProps(newLabel);
+        newLabel->setPosition(cursorPosition);
+        selectEntity(newLabel);
+        return;
+    }
+
     
     if(command == "add_light") {
         SceneLight *newLight = new SceneLight(SceneLight::AREA_LIGHT, mainScene, 1.0);
@@ -274,6 +286,10 @@ void EntityEditorMainView::handleEvent(Event *event) {
                 selectEntity(newMesh);
             } else if(assetSelectType == "image") {
                 SceneImage *newImage = new SceneImage(globalFrame->assetBrowser->getFullSelectedAssetPath());
+                newImage->setMaterialByName("UnlitMaterial");
+                if(newImage->getLocalShaderOptions()) {
+                    newImage->getLocalShaderOptions()->addTexture("diffuse", newImage->getTexture());
+                }
                 sceneObjectRoot->addChild(newImage);
                 setEditorProps(newImage);
                 newImage->setPosition(cursorPosition);
