@@ -63,19 +63,6 @@ Bone *Skeleton::getBone(int index) const {
 	return bones[index];
 }
 
-void Skeleton::enableBoneLabels(const String& labelFont, Number size, Number scale, Color labelColor) {
-	for(int i=0; i < bones.size(); i++) {
-		bones[i]->enableBoneLabel(labelFont, size, scale,labelColor);
-	}	
-	
-	SceneLabel *label = new SceneLabel(labelFont, "Skeleton", size, scale, Label::ANTIALIAS_FULL);
-	label->setColor(labelColor);
-	label->billboardMode = true;
-	label->depthWrite = false;
-	addChild(label);
-	
-}
-
 void Skeleton::playAnimationByIndex(int index, bool once) {
 	if(index > animations.size()-1)
 		return;

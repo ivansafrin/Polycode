@@ -37,10 +37,15 @@ class EntityEditorPropertyView : public UIElement {
     
         void setEntity(Entity *entity);
     
+        void handleEvent(Event *event);
+    
+        void updateShaderOptions();
+    
         void Resize(Number width, Number height);
     
     protected:
     
+        Entity *targetEntity;
         PropList *entityProps;
     
         TransformSheet *transformSheet;    
@@ -49,5 +54,8 @@ class EntityEditorPropertyView : public UIElement {
         ScenePrimitiveSheet *primitiveSheet;
         SceneLightSheet *lightSheet;
         ParticleEmitterSheet *particleSheet;
+    
+        ShaderTexturesSheet *shaderTexturesSheet;
+        ShaderOptionsSheet *shaderOptionsSheet;
 };
 

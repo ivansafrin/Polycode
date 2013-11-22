@@ -39,17 +39,7 @@ namespace Polycode {
 		public:
 			
 			
-			SceneLabel(const String& text, int size, const String& fontName = "sans", int amode = 0, bool premultiplyAlpha = false);
-			
-			/**
-			* Constructor.
-			* @param fontName Name of a registered font to use. @see FontManager for info on how to register fonts.
-			* @param text Text to display.
-			* @param size Size in pixels.
-			* @param scale Scale to multiply pixel size by for the actual world size of the label.
-			* @param Anti-aliasing mode. Can be Label::ANTIALIAS_FULL or Label::ANTIALIAS_NONE.
-			*/			
-			SceneLabel(const String& fontName, const String& text, int size, Number scale, int amode, bool premultiplyAlpha = false);
+			SceneLabel(const String& text, int size, const String& fontName = "sans", int amode = 0, Number actualHeight = -1.0, bool premultiplyAlpha = false);
 			
 			String getText();
 			

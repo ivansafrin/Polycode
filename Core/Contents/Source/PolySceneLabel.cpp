@@ -36,19 +36,14 @@ bool SceneLabel::defaultPositionAtBaseline = false;
 bool SceneLabel::defaultSnapToPixels = false;
 bool SceneLabel::createMipmapsForLabels = true;
 
-SceneLabel::SceneLabel(const String& fontName, const String& text, int size, Number scale, int amode, bool premultiplyAlpha) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1) {
-	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size, amode, premultiplyAlpha);
-	this->labelScale = scale;
-	positionAtBaseline = SceneLabel::defaultPositionAtBaseline;
-	setAnchorPoint(SceneLabel::defaultAnchor);
-	updateFromLabel();
-	snapToPixels = SceneLabel::defaultSnapToPixels;
-}
-
-SceneLabel::SceneLabel(const String& text, int size, const String& fontName, int amode, bool premultiplyAlpha) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1){
+SceneLabel::SceneLabel(const String& text, int size, const String& fontName, int amode, Number actualHeight, bool premultiplyAlpha) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1){
 
 	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size * CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX(), amode, premultiplyAlpha);
-	this->labelScale = 1.0;
+    if(actualHeight > 0.0) {
+        this->labelScale = actualHeight/((Number)size);
+    } else {
+        this->labelScale = 1.0;
+    }
 	positionAtBaseline = SceneLabel::defaultPositionAtBaseline;
 	setAnchorPoint(SceneLabel::defaultAnchor);	
 	snapToPixels = SceneLabel::defaultSnapToPixels;	
@@ -100,7 +95,7 @@ void SceneLabel::updateFromLabel() {
 
 void SceneLabel::Render() {
 	if(positionAtBaseline) {
-		CoreServices::getInstance()->getRenderer()->translate2D(0.0, (((Number)label->getSize()) * -1.0 / CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleY()) + (((Number)label->getBaselineAdjust())/CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleY()));
+		CoreServices::getInstance()->getRenderer()->translate2D(0.0, (((Number)label->getSize()*labelScale) * -1.0 / CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleY()) + (((Number)label->getBaselineAdjust())*labelScale/CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleY()));
 	}
 	ScenePrimitive::Render();
 }

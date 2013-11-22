@@ -194,16 +194,7 @@ namespace Polycode {
 			* @param val If true, bones will be rendered, if false, they will not.
 			*/
 			void bonesVisible(bool val);
-			
-			/**
-			* Enables labels with bone names to be rendered. See SceneLabel for details on the parameters.
-			* @param labelFont Font to use
-			* @param size Size of font.
-			* @param scale Scale of font.
-			* @param labelColor Color of the label.
-			*/
-			void enableBoneLabels(const String& labelFont, Number size, Number scale, Color labelColor);
-					
+								
 			/**
 			* Returns the number of bones in the skeleton
 			*/

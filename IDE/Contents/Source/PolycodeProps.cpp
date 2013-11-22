@@ -1916,6 +1916,7 @@ void EntityPropSheet::Update() {
 ShaderOptionsSheet::ShaderOptionsSheet() : PropSheet("SHADER OPTIONS", "shader_options"){
 	shader = NULL;
 	propHeight = 40;
+    enabled = false;
 }
 
 ShaderOptionsSheet::~ShaderOptionsSheet() {
@@ -1927,13 +1928,21 @@ void ShaderOptionsSheet::handleEvent(Event *event) {
 	if(event->getEventCode() == Event::CHANGE_EVENT) {
 		for(int i=0 ; i < props.size(); i++) {
 			if(event->getDispatcher() == props[i]) {
+                
+                LocalShaderParam *param = binding->getLocalParamByName(props[i]->label->getText());
+                
 				if(props[i]->propType == "Number") {
-					(*(Number*)binding->getLocalParamByName(props[i]->label->getText())->data) = ((NumberProp*)props[i])->get();
+                    if(!param){
+                        param = binding->addParam(ProgramParam::PARAM_NUMBER, props[i]->label->getText());
+                    }
+					(*(Number*)param->data) = ((NumberProp*)props[i])->get();
 				} else if(props[i]->propType == "Color") {
-					(*(Color*)binding->getLocalParamByName(props[i]->label->getText())->data) = ((ColorProp*)props[i])->get();
-				
-				} else if(props[i]->propType == "Vector2") {
-					(*(Vector2*)binding->getLocalParamByName(props[i]->label->getText())->data) = ((Vector2Prop*)props[i])->get();
+                    
+                    if(!param){
+                        param = binding->addParam(ProgramParam::PARAM_COLOR, props[i]->label->getText());
+                    }
+                    
+					(*(Color*)param->data) = ((ColorProp*)props[i])->get();
 				
 				}
 				dispatchEvent(new Event(), Event::CHANGE_EVENT);				
@@ -1971,7 +1980,11 @@ void ShaderOptionsSheet::setOptionsFromParams(std::vector<ProgramParam> &params)
 						NumberProp *numberProp = new NumberProp(paramName);
 						addProp(numberProp);
 												
-						Number numberValue = (*(Number*)binding->getLocalParamByName(params[i].name)->data);
+                        LocalShaderParam *param = binding->getLocalParamByName(params[i].name);
+                        Number numberValue = 0.0;
+                        if(param) {
+                            numberValue = (*(Number*)param->data);
+                        }
 						numberProp->set(numberValue);
 						propHeight += 30;
 					}
@@ -1979,25 +1992,19 @@ void ShaderOptionsSheet::setOptionsFromParams(std::vector<ProgramParam> &params)
 					case ProgramParam::PARAM_COLOR:
 					{
 						String paramName = params[i].name;
-						
+
+                        LocalShaderParam *param = binding->getLocalParamByName(params[i].name);
+
 						ColorProp *colorProp = new ColorProp(paramName);
 						addProp(colorProp);
 						
-						Color colorValue = (*(Color*)binding->getLocalParamByName(params[i].name)->data);
+						Color colorValue;
+                        if(param) {
+                            colorValue = (*(Color*)param->data);
+                        }
 						colorProp->set(colorValue);
 						
-						propHeight += 40;												
-					}
-					break;
-					case ProgramParam::PARAM_VECTOR2:
-					{
-						String paramName = params[i].name;						
-						Vector2Prop *vec2Prop = new Vector2Prop(paramName);;
-						addProp(vec2Prop);
-						
-						Vector2 vec2val = (*(Vector2*)binding->getLocalParamByName(params[i].name)->data);
-						vec2Prop->set(vec2val);
-						propHeight += 30;
+						propHeight += 40;				
 					}
 					break;
 				}	
@@ -2010,6 +2017,8 @@ void ShaderOptionsSheet::setShader(Shader *shader, Material *material, ShaderBin
 	this->shader = shader;
 	this->material = material;
 	
+    enabled = true;
+    
 	if(!shader || !material)
 		return;
 		
@@ -2024,6 +2033,7 @@ void ShaderOptionsSheet::setShader(Shader *shader, Material *material, ShaderBin
 ShaderTexturesSheet::ShaderTexturesSheet() : PropSheet("SHADER TEXTURES", "shader_textures"){
 	shader = NULL;
 	propHeight = 40;
+    enabled = false;
 }
 
 ShaderTexturesSheet::~ShaderTexturesSheet() {
@@ -2077,6 +2087,8 @@ void ShaderTexturesSheet::setShader(Shader *shader, Material *material, ShaderBi
 	this->shader = shader;
 	this->material = material;
 	
+    enabled = true;
+    
 	if(!shader || !material)
 		return;
 		
@@ -2713,7 +2725,9 @@ void MaterialPropSheet::handleEvent(Event *event) {
         
     if(event->getDispatcher() == materialProp  && event->getEventCode() == Event::CHANGE_EVENT) {
         Material *newMaterial = (Material*)materialProp->comboEntry->getSelectedItem()->data;
-        sceneMesh->setMaterial(newMaterial);
+        if(sceneMesh->getMaterial() != newMaterial) {
+            sceneMesh->setMaterial(newMaterial);
+        }
     }
     PropSheet::handleEvent(event);
 }

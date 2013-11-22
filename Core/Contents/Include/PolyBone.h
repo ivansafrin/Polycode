@@ -43,8 +43,6 @@ namespace Polycode {
 			Bone(const String& boneName);
 			virtual ~Bone();
 			
-			void enableBoneLabel(const String& labelFont, Number size, Number scale, Color labelColor);
-			
 			/**
 			* Returns the name of the bone.
 			* @return Name of the bone.

@@ -24,6 +24,9 @@
 
 
 EntityEditorPropertyView::EntityEditorPropertyView() : UIElement() {
+    
+    targetEntity = NULL;
+    
     entityProps = new PropList();
     addChild(entityProps);
     
@@ -34,6 +37,14 @@ EntityEditorPropertyView::EntityEditorPropertyView() : UIElement() {
     materialSheet = new MaterialPropSheet();
     entityProps->addPropSheet(materialSheet);
     materialSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
+    
+    shaderTexturesSheet = new ShaderTexturesSheet();
+    entityProps->addPropSheet(shaderTexturesSheet);
+    shaderTexturesSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
+
+    shaderOptionsSheet = new ShaderOptionsSheet();
+    entityProps->addPropSheet(shaderOptionsSheet);
+    shaderOptionsSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
     
     lightSheet = new SceneLightSheet();
     entityProps->addPropSheet(lightSheet);
@@ -59,14 +70,40 @@ void EntityEditorPropertyView::Resize(Number width, Number height) {
     UIElement::Resize(width, height);
 }
 
+void EntityEditorPropertyView::handleEvent(Event *event) {
+    if(event->getDispatcher() == materialSheet) {
+        if(targetEntity) {
+            updateShaderOptions();
+        }
+    }
+}
+
+void EntityEditorPropertyView::updateShaderOptions() {
+    SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(targetEntity);
+    
+    shaderTexturesSheet->enabled = false;
+    shaderOptionsSheet->enabled = false;
+    
+    if(sceneMesh) {
+        if(sceneMesh->getMaterial() && sceneMesh->getLocalShaderOptions()) {
+            shaderTexturesSheet->setShader(sceneMesh->getMaterial()->getShader(0), sceneMesh->getMaterial(), sceneMesh->getLocalShaderOptions());
+            
+            shaderOptionsSheet->setShader(sceneMesh->getMaterial()->getShader(0), sceneMesh->getMaterial(), sceneMesh->getLocalShaderOptions());
+        }
+    }
+}
+
 void EntityEditorPropertyView::setEntity(Entity *entity) {
+    
+    targetEntity = entity;
     
     SceneLight *sceneLight = dynamic_cast<SceneLight*>(entity);
     lightSheet->setSceneLight(sceneLight);
     
     SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(entity);
     materialSheet->setSceneMesh(sceneMesh);
-
+    updateShaderOptions();
+    
     ScenePrimitive *scenePrimitive = dynamic_cast<ScenePrimitive*>(entity);
     primitiveSheet->setScenePrimitive(scenePrimitive);
 

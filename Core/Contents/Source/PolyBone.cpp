@@ -135,14 +135,6 @@ const String& Bone::getName() const {
 	return boneName;
 }
 
-void Bone::enableBoneLabel(const String& fontLabel, Number size, Number scale, Color labelColor) {
-	SceneLabel *label = new SceneLabel(fontLabel, boneName, size, scale, Label::ANTIALIAS_FULL);
-	label->setColor(labelColor);
-	label->billboardMode = true;
-	label->depthTest = false;
-	addChild(label);
-}
-
 void Bone::Render() {
 
 	CoreServices::getInstance()->getRenderer()->setTexture(NULL);	
