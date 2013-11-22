@@ -714,12 +714,13 @@ class SceneSpriteSheet : public PropSheet {
 		~SceneSpriteSheet();
 		
 		void handleEvent(Event *event);
-		void Update();
+        void setSprite(SceneSprite *sprite);
 				
 		SceneSprite *sprite;	
 		SceneSpriteProp *spriteProp;
-		ComboProp *defaultAnimationProp;		
-		SceneSprite *lastSprite;
+        ComboProp *defaultAnimationProp;
+        NumberProp *spriteWidthProp;
+        NumberProp *spriteHeightProp;
 };
 
 

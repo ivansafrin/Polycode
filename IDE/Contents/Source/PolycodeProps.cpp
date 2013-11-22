@@ -1075,6 +1075,7 @@ Texture* TextureProp::get() {
 SceneSpriteProp::SceneSpriteProp(String caption) : PropProp(caption, "SceneSprite"){
 
 		previewSprite = new SceneSprite("default/default.sprite");
+        previewSprite->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 		previewSprite->setAnchorPoint(-1.0, -1.0, 0.0);
 		previewSprite->setPosition(2, 1);
 		previewSprite->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, 48,48);		
@@ -1132,6 +1133,7 @@ void SceneSpriteProp::set(String fileName) {
 		previewSprite = new SceneSprite(fileName);
 		previewSprite->setAnchorPoint(-1.0, -1.0, 0.0);
 		previewSprite->setPosition(2, 1);
+        previewSprite->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 		previewSprite->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, 48,48);		
 		propContents->addChild(previewSprite);	
 	}
@@ -2836,9 +2838,9 @@ void EntitySheet::setEntity(Entity *entity) {
     }
 }
 
-SceneSpriteSheet::SceneSpriteSheet() : PropSheet("SCREEN SPRITE", "SceneSprite") {
+SceneSpriteSheet::SceneSpriteSheet() : PropSheet("SPRITE", "SceneSprite") {
 	sprite = NULL;
-	lastSprite = NULL;
+    enabled = false;
 	
 	spriteProp = new SceneSpriteProp("Sprite");
 	spriteProp->addEventListener(this, Event::CHANGE_EVENT);
@@ -2846,9 +2848,17 @@ SceneSpriteSheet::SceneSpriteSheet() : PropSheet("SCREEN SPRITE", "SceneSprite")
 	
 	defaultAnimationProp = new ComboProp("Animation");
 	defaultAnimationProp->addEventListener(this, Event::CHANGE_EVENT);
-	addProp(defaultAnimationProp);	
-	
-	propHeight = 140;
+	addProp(defaultAnimationProp);
+    
+    spriteWidthProp = new NumberProp("Width");
+	spriteWidthProp->addEventListener(this, Event::CHANGE_EVENT);
+	addProp(spriteWidthProp);
+
+    spriteHeightProp = new NumberProp("Height");
+	spriteHeightProp->addEventListener(this, Event::CHANGE_EVENT);
+	addProp(spriteHeightProp);
+
+	propHeight = 190;
 }
 
 SceneSpriteSheet::~SceneSpriteSheet() {
@@ -2862,9 +2872,19 @@ void SceneSpriteSheet::handleEvent(Event *event) {
 	if(event->getDispatcher() == sprite->getResourceEntry()) {
 		spriteProp->previewSprite->reloadSprite();
 		sprite->getResourceEntry()->removeAllHandlersForListener(this);
-		lastSprite = NULL;
 	}
 
+    if(event->getDispatcher() == spriteWidthProp) {
+        sprite->setActualSpriteSize(spriteWidthProp->get(), sprite->getActualSpriteSize().y);
+        dispatchEvent(new Event(), Event::CHANGE_EVENT);
+	}
+
+    if(event->getDispatcher() == spriteHeightProp) {
+        sprite->setActualSpriteSize(sprite->getActualSpriteSize().x, spriteHeightProp->get());
+        dispatchEvent(new Event(), Event::CHANGE_EVENT);
+	}
+ 
+    
 	if(event->getDispatcher() == defaultAnimationProp) {
 		sprite->playAnimation(defaultAnimationProp->comboEntry->getSelectedItem()->label, 0, false);
 		spriteProp->previewSprite->playAnimation(defaultAnimationProp->comboEntry->getSelectedItem()->label, 0, false);
@@ -2882,9 +2902,10 @@ void SceneSpriteSheet::handleEvent(Event *event) {
 	PropSheet::handleEvent(event);
 }
 
-void SceneSpriteSheet::Update() {
-	if(sprite) {	
-		if(lastSprite != sprite) {
+void SceneSpriteSheet::setSprite(SceneSprite *sprite) {
+    this->sprite = sprite;
+    
+	if(sprite) {
 			defaultAnimationProp->comboEntry->clearItems();
 			for(int i=0; i < sprite->getNumAnimations(); i++) {
 				defaultAnimationProp->comboEntry->addComboItem(sprite->getAnimationAtIndex(i)->name);
@@ -2895,11 +2916,13 @@ void SceneSpriteSheet::Update() {
 					}
 				}
 			}
-			lastSprite = sprite;
-		}	
+
 		enabled = true;	
 		spriteProp->set(sprite->getFileName());
 		sprite->getResourceEntry()->addEventListener(this, Event::RESOURCE_RELOAD_EVENT);
+        
+        spriteWidthProp->set(sprite->getActualSpriteSize().x);
+        spriteHeightProp->set(sprite->getActualSpriteSize().y);
 	} else {
 		enabled = false;
 	}
@@ -2945,7 +2968,7 @@ void SceneEntityInstanceSheet::Update() {
 	}
 }
 
-SceneLabelSheet::SceneLabelSheet() : PropSheet("SCREEN LABEL", "UILabel") {
+SceneLabelSheet::SceneLabelSheet() : PropSheet("LABEL", "UILabel") {
 	label = NULL;
     enabled = false;
 	

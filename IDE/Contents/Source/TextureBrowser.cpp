@@ -51,7 +51,7 @@ AssetEntry::AssetEntry(String assetPath, String assetName, String extension) : U
 	} else if(extension == "entity") {
 		imageShape->loadTexture("browserIcons/entity_icon");
 	} else if(extension == "sprite") {
-		imageShape->loadTexture("browserIcons/sprite_icon");
+		imageShape->loadTexture("browserIcons/sprite_icon.png");
 	} else if(extension == "ttf" || extension == "otf") {
 		imageShape->loadTexture("browserIcons/font_icon.png");
 	} else if(extension == "vert" || extension == "frag") {

@@ -59,6 +59,9 @@ EntityEditorPropertyView::EntityEditorPropertyView() : UIElement() {
     entityProps->addPropSheet(particleSheet);
     particleSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
     
+    spriteSheet = new SceneSpriteSheet();
+    entityProps->addPropSheet(spriteSheet);
+    spriteSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
     
     primitiveSheet = new ScenePrimitiveSheet();
     entityProps->addPropSheet(primitiveSheet);
@@ -86,6 +89,7 @@ void EntityEditorPropertyView::handleEvent(Event *event) {
 void EntityEditorPropertyView::updateShaderOptions() {
     SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(targetEntity);
     SceneLabel *sceneLabel = dynamic_cast<SceneLabel*>(targetEntity);
+    SceneSprite *sceneSprite = dynamic_cast<SceneSprite*>(sceneSprite);
     
     shaderTexturesSheet->enabled = false;
     shaderOptionsSheet->enabled = false;
@@ -93,8 +97,8 @@ void EntityEditorPropertyView::updateShaderOptions() {
     if(sceneMesh) {
         if(sceneMesh->getMaterial() && sceneMesh->getLocalShaderOptions()) {
             
-            // can't edit the textures manually on a scene label
-            if(!sceneLabel) {
+            // can't edit the textures manually on a scene label or sprite
+            if(!sceneLabel && !sceneSprite) {
             shaderTexturesSheet->setShader(sceneMesh->getMaterial()->getShader(0), sceneMesh->getMaterial(), sceneMesh->getLocalShaderOptions());
             }
             
@@ -117,9 +121,12 @@ void EntityEditorPropertyView::setEntity(Entity *entity) {
     SceneLabel *sceneLabel = dynamic_cast<SceneLabel*>(entity);
     labelSheet->setSceneLabel(sceneLabel);
 
+    SceneSprite *sceneSprite = dynamic_cast<SceneSprite*>(entity);
+    spriteSheet->setSprite(sceneSprite);
+
     ScenePrimitive *scenePrimitive = dynamic_cast<ScenePrimitive*>(entity);
     
-    if(!sceneLabel) {
+    if(!sceneLabel && !sceneSprite) {
         primitiveSheet->setScenePrimitive(scenePrimitive);
     } else {
         primitiveSheet->setScenePrimitive(NULL);

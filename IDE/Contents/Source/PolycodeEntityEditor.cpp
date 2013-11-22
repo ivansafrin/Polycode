@@ -204,6 +204,15 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
         return;
     }
 
+    if(command == "add_sprite") {
+        assetSelectType = "sprite";
+        globalFrame->assetBrowser->addEventListener(this, UIEvent::OK_EVENT);
+        std::vector<String> extensions;
+        extensions.push_back("sprite");
+        globalFrame->showAssetBrowser(extensions);
+        return;
+    }
+    
     if(command == "add_label") {
         SceneLabel  *newLabel = new SceneLabel("TEXT", 12);
         newLabel->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
@@ -294,8 +303,24 @@ void EntityEditorMainView::handleEvent(Event *event) {
                 setEditorProps(newImage);
                 newImage->setPosition(cursorPosition);
                 selectEntity(newImage);
+        } else if(assetSelectType == "sprite") {
+            SceneSprite *newSprite = new SceneSprite(globalFrame->assetBrowser->getFullSelectedAssetPath());
+            
+            if(newSprite->getNumAnimations()) {
+                newSprite->playAnimation(newSprite->getAnimationAtIndex(0)->name, 0, false);
             }
             
+            newSprite->setMaterialByName("UnlitMaterial");
+            if(newSprite->getLocalShaderOptions()) {
+                newSprite->getLocalShaderOptions()->addTexture("diffuse", newSprite->getTexture());
+            }
+            sceneObjectRoot->addChild(newSprite);
+            setEditorProps(newSprite);
+            newSprite->setPosition(cursorPosition);
+            selectEntity(newSprite);
+        }
+        
+        
             globalFrame->assetBrowser->removeAllHandlersForListener(this);
             globalFrame->hideModal();
         }

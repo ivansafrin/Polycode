@@ -111,7 +111,10 @@ class _PolyExport SceneSprite : public ScenePrimitive
 		String getFileName() const;
 	
 		void recalculateSpriteDimensions();
-	
+    
+        void setActualSpriteSize(Number width, Number height);
+        Vector2 getActualSpriteSize();
+    
 		bool loadFromFile(const String& fileName);
 		
 		void reloadSprite();
@@ -138,7 +141,8 @@ class _PolyExport SceneSprite : public ScenePrimitive
 	protected:
 	
 		String fileName;
-		
+        Vector2 actualSpriteSize;
+    
 		bool paused;
 	
 		Number spriteWidth;

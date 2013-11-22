@@ -101,7 +101,8 @@ bool SceneSprite::loadFromFile(const String& fileName) {
 		}
 
 		if(frameWidth && frameHeight) {
-			
+			actualSpriteSize.x = frameWidth->NumberVal;
+			actualSpriteSize.y = frameHeight->NumberVal;
 			setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, frameWidth->NumberVal, frameHeight->NumberVal);
 			setSpriteSize(frameWidth->NumberVal, frameHeight->NumberVal);
 		}
@@ -174,6 +175,9 @@ SceneSprite::SceneSprite(const String& fileName, Number spriteWidth, Number spri
 	currentFrame = 0;
 	currentAnimation = NULL;	
 	paused = false;
+    actualSpriteSize.x = spriteWidth;
+    actualSpriteSize.y = spriteHeight;
+    
 	setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, spriteWidth, spriteHeight);	
 }
 
@@ -188,6 +192,16 @@ void SceneSprite::removeAnimation(SpriteAnimation *animation) {
 			return;
 		}
 	}
+}
+
+void SceneSprite::setActualSpriteSize(Number width, Number height) {
+    actualSpriteSize.x = width;
+    actualSpriteSize.y = height;
+	setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, actualSpriteSize.x, actualSpriteSize.y);
+}
+
+Vector2 SceneSprite::getActualSpriteSize() {
+    return actualSpriteSize;
 }
 
 void SceneSprite::recalculateSpriteDimensions() {
@@ -385,14 +399,18 @@ void SceneSprite::Update() {
 void SceneSprite::updateSprite() {
 	Number xOffset = currentAnimation->framesOffsets[currentFrame].x;
 	Number yOffset = 1.0f - currentAnimation->framesOffsets[currentFrame].y - spriteUVHeight;
-	
-	Polygon *imagePolygon = mesh->getPolygon(0);
-		
-	imagePolygon->getVertex(0)->setTexCoord(xOffset, yOffset);	
+
+    Polygon *imagePolygon;
+	imagePolygon = mesh->getPolygon(0);
+	imagePolygon->getVertex(0)->setTexCoord(xOffset, yOffset);
 	imagePolygon->getVertex(1)->setTexCoord(xOffset+spriteUVWidth, yOffset);
 	imagePolygon->getVertex(2)->setTexCoord(xOffset+spriteUVWidth, yOffset+spriteUVHeight);
-	imagePolygon->getVertex(3)->setTexCoord(xOffset, yOffset+spriteUVHeight);	
-		
+	
+    imagePolygon = mesh->getPolygon(1);
+	imagePolygon->getVertex(0)->setTexCoord(xOffset, yOffset);	;
+	imagePolygon->getVertex(1)->setTexCoord(xOffset+spriteUVWidth, yOffset+spriteUVHeight);
+	imagePolygon->getVertex(2)->setTexCoord(xOffset, yOffset+spriteUVHeight);
+    
 	mesh->arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;
 
 }
