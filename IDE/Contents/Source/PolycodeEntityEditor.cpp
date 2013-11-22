@@ -184,6 +184,17 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
         return;
     }
 
+    if(command == "add_empty") {
+        Entity *newEntity = new Entity();
+        sceneObjectRoot->addChild(newEntity);
+        setEditorProps(newEntity);
+        createIcon(newEntity, "empty_icon.png");
+        newEntity->bBox = Vector3(0.5, 0.5, 0.5);
+        newEntity->setPosition(cursorPosition);
+        selectEntity(newEntity);
+        return;
+    }
+
     if(command == "add_primitive") {
         ScenePrimitive  *newPrimitive = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 1.0, 1.0, 1.0);
         sceneObjectRoot->addChild(newPrimitive);
