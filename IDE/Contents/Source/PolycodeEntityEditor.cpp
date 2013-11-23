@@ -175,7 +175,10 @@ void EntityEditorMainView::setEditorProps(Entity *entity) {
         createIcon(entity, "sound_icon.png");
     }
 
-    
+    Camera *camera = dynamic_cast<Camera*>(entity);
+    if(camera) {
+        createIcon(entity, "camera_icon.png");
+    }
 }
 
 void EntityEditorMainView::addEntityFromMenu(String command) {
@@ -210,18 +213,25 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
         return;
     }
 
-    
-
-    if(command == "add_primitive") {
-        ScenePrimitive  *newPrimitive = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 1.0, 1.0, 1.0);
-        sceneObjectRoot->addChild(newPrimitive);
-        setEditorProps(newPrimitive);
-        newPrimitive->setPosition(cursorPosition);
-        selectEntity(newPrimitive);
-        newPrimitive->getMesh()->calculateNormals(false);
+    if(command == "add_sound") {
+        SceneSound *newSound = new SceneSound("default.wav", 1.0, 2.0);
+        sceneObjectRoot->addChild(newSound);
+        setEditorProps(newSound);
+        newSound->bBox = Vector3(0.5, 0.5, 0.5);
+        newSound->setPosition(cursorPosition);
+        selectEntity(newSound);
         return;
     }
-    
+
+    if(command == "add_camera") {
+        Camera *newCamera = new Camera(mainScene);
+        sceneObjectRoot->addChild(newCamera);
+        setEditorProps(newCamera);
+        newCamera->bBox = Vector3(0.5, 0.5, 0.5);
+        newCamera->setPosition(cursorPosition);
+        selectEntity(newCamera);
+        return;
+    }
     
     if(command == "add_image") {
         assetSelectType = "image";

@@ -71,6 +71,9 @@ EntityEditorPropertyView::EntityEditorPropertyView() : UIElement() {
     entityProps->addPropSheet(soundSheet);
     soundSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
 
+    cameraSheet = new CameraSheet();
+    entityProps->addPropSheet(cameraSheet);
+    cameraSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
     
     entitySheet = new EntitySheet();
     entityProps->addPropSheet(entitySheet);
@@ -140,6 +143,11 @@ void EntityEditorPropertyView::setEntity(Entity *entity) {
     SceneSound *sound = dynamic_cast<SceneSound*>(entity);
     if(sound) {
         soundSheet->setSound(sound);
+    }
+
+    Camera *camera = dynamic_cast<Camera*>(entity);
+    if(camera) {
+        cameraSheet->setCamera(camera);
     }
 
     SceneParticleEmitter *emitter = dynamic_cast<SceneParticleEmitter*>(entity);

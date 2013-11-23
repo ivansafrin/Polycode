@@ -398,6 +398,14 @@ Polycode::Rectangle Camera::getViewport() {
 	return viewport;
 }
 
+Number Camera::getNearClipppingPlane() {
+    return nearClipPlane;
+}
+
+Number Camera::getFarClipppingPlane() {
+    return farClipPlane;
+}
+
 void Camera::doCameraTransform() {
 	renderer->setClippingPlanes(nearClipPlane, farClipPlane);
 

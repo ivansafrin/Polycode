@@ -2838,6 +2838,92 @@ void EntitySheet::setEntity(Entity *entity) {
     }
 }
 
+CameraSheet::CameraSheet() : PropSheet("CAMERA", "camera") {
+    enabled = false;
+    camera = NULL;
+    
+    
+    exposureProp = new NumberProp("Exposure");
+    addProp(exposureProp);
+
+    orthoProp = new BoolProp("Orthographic");
+    addProp(orthoProp);
+
+    fovProp = new NumberProp("FOV");
+    addProp(fovProp);
+
+    orthoWidthProp = new NumberProp("Ortho width");
+    addProp(orthoWidthProp);
+
+    orthoHeightProp = new NumberProp("Ortho height");
+    addProp(orthoHeightProp);
+
+    nearClipPlane = new NumberProp("Near clip");
+    addProp(nearClipPlane);
+
+    farClipPlane = new NumberProp("Far clip");
+    addProp(farClipPlane);
+
+    
+    propHeight = 220;
+}
+
+CameraSheet::~CameraSheet() {
+    
+}
+
+void CameraSheet::handleEvent(Event *event) {
+    if(!camera) {
+        return;
+    }
+    
+    if(event->getDispatcher() == fovProp) {
+        camera->setFOV(fovProp->get());
+        dispatchEvent(new Event(), Event::CHANGE_EVENT);
+    } else if(event->getDispatcher() == exposureProp) {
+        camera->setExposureLevel(exposureProp->get());
+        dispatchEvent(new Event(), Event::CHANGE_EVENT);
+    } else if(event->getDispatcher() == orthoProp) {
+        camera->setOrthoMode(orthoProp->get());
+        dispatchEvent(new Event(), Event::CHANGE_EVENT);
+    } else if(event->getDispatcher() == orthoWidthProp) {
+        camera->setOrthoSize(orthoWidthProp->get(), camera->getOrthoSizeY());
+        dispatchEvent(new Event(), Event::CHANGE_EVENT);
+    } else if(event->getDispatcher() == orthoHeightProp) {
+        camera->setOrthoSize(camera->getOrthoSizeX(), orthoHeightProp->get());
+        dispatchEvent(new Event(), Event::CHANGE_EVENT);
+    } else if(event->getDispatcher() == nearClipPlane) {
+        camera->setClippingPlanes(nearClipPlane->get(), camera->getFarClipppingPlane());
+        dispatchEvent(new Event(), Event::CHANGE_EVENT);
+    } else if(event->getDispatcher() == farClipPlane) {
+        camera->setClippingPlanes(camera->getNearClipppingPlane(),farClipPlane->get());
+        dispatchEvent(new Event(), Event::CHANGE_EVENT);
+    }
+
+
+    
+    PropSheet::handleEvent(event);
+}
+
+void CameraSheet::setCamera(Camera *camera) {
+    this->camera = camera;
+    if(camera) {
+        enabled = true;
+        
+        exposureProp->set(camera->getExposureLevel());
+        orthoProp->set(camera->getOrthoMode());
+        orthoWidthProp->set(camera->getOrthoSizeX());
+        orthoHeightProp->set(camera->getOrthoSizeY());
+        nearClipPlane->set(camera->getNearClipppingPlane());
+        farClipPlane->set(camera->getFarClipppingPlane());
+        
+        fovProp->set(camera->getFOV());
+    } else {
+        enabled = false;
+    }
+}
+
+
 SceneSpriteSheet::SceneSpriteSheet() : PropSheet("SPRITE", "SceneSprite") {
 	sprite = NULL;
     enabled = false;

@@ -106,7 +106,11 @@ namespace Polycode {
 			Number getFOV();
 			
 			void setClippingPlanes(Number nearClipPlane, Number farClipPlane);
-			
+        
+        
+            Number getNearClipppingPlane();
+            Number getFarClipppingPlane();
+        
 			void setParentScene(Scene *parentScene);
 			
 			void doCameraTransform();

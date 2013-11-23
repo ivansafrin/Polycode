@@ -57,6 +57,7 @@ class EntityEditorPropertyView : public UIElement {
         SceneLabelSheet *labelSheet;
         SceneSpriteSheet *spriteSheet;
         SoundSheet *soundSheet;
+        CameraSheet *cameraSheet;
     
         ShaderTexturesSheet *shaderTexturesSheet;
         ShaderOptionsSheet *shaderOptionsSheet;

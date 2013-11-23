@@ -723,6 +723,26 @@ class SceneSpriteSheet : public PropSheet {
         NumberProp *spriteHeightProp;
 };
 
+class CameraSheet : public PropSheet {
+    public:
+        CameraSheet();
+        ~CameraSheet();
+    
+        void handleEvent(Event *event);
+        void setCamera(Camera *camera);
+    
+        NumberProp *exposureProp;
+    
+        BoolProp *orthoProp;
+        NumberProp *fovProp;
+        NumberProp *orthoWidthProp;
+        NumberProp *orthoHeightProp;
+    
+        NumberProp *nearClipPlane;
+        NumberProp *farClipPlane;
+    
+        Camera *camera;
+};
 
 
 class SceneEntityInstanceSheet : public PropSheet {
