@@ -743,21 +743,15 @@ class SoundSheet : public PropSheet {
 		~SoundSheet();
 		
 		void handleEvent(Event *event);
-		void Update();
+        void setSound(SceneSound *sound);
 				
 		SceneSound *sound;
 
 		SoundProp *soundProp;		
 		NumberProp *referenceDistance;
 		NumberProp *maxDistance;		
-		NumberProp *volume;
-		NumberProp *pitch;
-		
-		String lastSoundPath;
-		Number lastReferenceDistance;
-		Number lastMaxDistance;
-		Number lastVolume;
-		Number lastPitch;
+		SliderProp *volume;
+		SliderProp *pitch;
 };
 
 class PropList : public UIElement {

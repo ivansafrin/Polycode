@@ -3089,8 +3089,9 @@ void SceneLabelSheet::handleEvent(Event *event) {
 	PropSheet::handleEvent(event);
 }
 
-SoundSheet::SoundSheet() : PropSheet("SCREEN SOUND", "Sound") {
+SoundSheet::SoundSheet() : PropSheet("SOUND", "sound") {
 	sound = NULL;
+    enabled = false;
 	
 	soundProp = new SoundProp("Sound file");
 	soundProp->addEventListener(this, Event::CHANGE_EVENT);
@@ -3104,21 +3105,15 @@ SoundSheet::SoundSheet() : PropSheet("SCREEN SOUND", "Sound") {
 	maxDistance->addEventListener(this, Event::CHANGE_EVENT);
 	addProp(maxDistance);
 
-	volume = new NumberProp("Volume");
+	volume = new SliderProp("Volume", 0.0, 1.0);
 	volume->addEventListener(this, Event::CHANGE_EVENT);
 	addProp(volume);
 	
-	pitch = new NumberProp("Pitch");
+	pitch = new SliderProp("Pitch", 0.0, 2.0);
 	pitch->addEventListener(this, Event::CHANGE_EVENT);
 	addProp(pitch);
-	
-	lastReferenceDistance = 0.0;
-	lastMaxDistance = 0.0;
-	lastVolume = 0.0;
-	lastPitch = 0.0;
-	lastSoundPath = "";
-	
-	propHeight = 230;
+		
+	propHeight = 210;
 }
 
 SoundSheet::~SoundSheet() {
@@ -3130,65 +3125,44 @@ void SoundSheet::handleEvent(Event *event) {
 		return;
 
 	if(event->getDispatcher() == referenceDistance  && event->getEventCode() == Event::CHANGE_EVENT) {
-		lastReferenceDistance = referenceDistance->get();
-		sound->getSound()->setReferenceDistance(lastReferenceDistance);
+		sound->getSound()->setReferenceDistance(referenceDistance->get());
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}
 
 	if(event->getDispatcher() == maxDistance  && event->getEventCode() == Event::CHANGE_EVENT) {
-		lastMaxDistance = maxDistance->get();
-		sound->getSound()->setMaxDistance(lastMaxDistance);
+		sound->getSound()->setMaxDistance(maxDistance->get());
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}
 
 	if(event->getDispatcher() == volume  && event->getEventCode() == Event::CHANGE_EVENT) {
-		lastVolume = volume->get();
-		sound->getSound()->setVolume(lastVolume);
+		sound->getSound()->setVolume(volume->get());
 	}
 
 	if(event->getDispatcher() == pitch  && event->getEventCode() == Event::CHANGE_EVENT) {
-		lastPitch = pitch->get();
-		sound->getSound()->setPitch(lastPitch);
+		sound->getSound()->setPitch(pitch->get());
+        soundProp->previewSound->setPitch(pitch->get());
 	}
 
 	if(event->getDispatcher() == soundProp  && event->getEventCode() == Event::CHANGE_EVENT) {
-		lastSoundPath = soundProp->get();
-		sound->getSound()->loadFile(lastSoundPath, false);
+		sound->getSound()->loadFile(soundProp->get(), false);
 	}
 
 
 	PropSheet::handleEvent(event);
 }
 
-void SoundSheet::Update() {
+void SoundSheet::setSound(SceneSound *sound) {
+    this->sound = sound;
+
 	if(sound) {
 		enabled = true;	
-		
-		if(sound->getSound()->getFileName() != lastSoundPath) {
-			lastSoundPath = sound->getSound()->getFileName();
-			soundProp->set(sound->getSound()->getFileName());
-		}
-		
-		if(sound->getSound()->getReferenceDistance() != lastReferenceDistance) {
-			lastReferenceDistance = sound->getSound()->getReferenceDistance();
-			referenceDistance->set(sound->getSound()->getReferenceDistance());
-		}
 
-		if(sound->getSound()->getMaxDistance() != lastMaxDistance) {
-			lastMaxDistance = sound->getSound()->getMaxDistance();
-			maxDistance->set(sound->getSound()->getMaxDistance());
-		}
-
-		if(sound->getSound()->getVolume() != lastVolume) {
-			lastVolume = sound->getSound()->getVolume();
-			volume->set(sound->getSound()->getVolume());
-		}
-
-		if(sound->getSound()->getPitch() != lastPitch) {
-			lastPitch = sound->getSound()->getPitch();
-			pitch->set(sound->getSound()->getPitch());
-		}
-		
+        soundProp->set(sound->getSound()->getFileName());
+        referenceDistance->set(sound->getSound()->getReferenceDistance());
+        maxDistance->set(sound->getSound()->getMaxDistance());
+        volume->set(sound->getSound()->getVolume());
+        pitch->set(sound->getSound()->getPitch());
+        soundProp->previewSound->setPitch(sound->getSound()->getPitch());
 
 	} else {
 		enabled = false;

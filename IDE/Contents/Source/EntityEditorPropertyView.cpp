@@ -67,6 +67,11 @@ EntityEditorPropertyView::EntityEditorPropertyView() : UIElement() {
     entityProps->addPropSheet(primitiveSheet);
     primitiveSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
     
+    soundSheet = new SoundSheet();
+    entityProps->addPropSheet(soundSheet);
+    soundSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
+
+    
     entitySheet = new EntitySheet();
     entityProps->addPropSheet(entitySheet);
     entitySheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
@@ -131,7 +136,11 @@ void EntityEditorPropertyView::setEntity(Entity *entity) {
     } else {
         primitiveSheet->setScenePrimitive(NULL);
     }
-    
+
+    SceneSound *sound = dynamic_cast<SceneSound*>(entity);
+    if(sound) {
+        soundSheet->setSound(sound);
+    }
 
     SceneParticleEmitter *emitter = dynamic_cast<SceneParticleEmitter*>(entity);
     particleSheet->setParticleEmitter(emitter);

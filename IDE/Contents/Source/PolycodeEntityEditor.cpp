@@ -170,6 +170,11 @@ void EntityEditorMainView::setEditorProps(Entity *entity) {
         createIcon(entity, "emitter_icon.png");
     }
 
+    SceneSound *sound = dynamic_cast<SceneSound*>(entity);
+    if(sound) {
+        createIcon(entity, "sound_icon.png");
+    }
+
     
 }
 
@@ -194,6 +199,18 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
         selectEntity(newEntity);
         return;
     }
+
+    if(command == "add_sound") {
+        SceneSound *newSound = new SceneSound("default.wav", 1.0, 2.0);
+        sceneObjectRoot->addChild(newSound);
+        setEditorProps(newSound);
+        newSound->bBox = Vector3(0.5, 0.5, 0.5);
+        newSound->setPosition(cursorPosition);
+        selectEntity(newSound);
+        return;
+    }
+
+    
 
     if(command == "add_primitive") {
         ScenePrimitive  *newPrimitive = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 1.0, 1.0, 1.0);
