@@ -2,7 +2,14 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 PROJECT(PolycodeStandalone)
 
-SET(POLYCODE_RELEASE_DIR ${PolycodeStandalone_SOURCE_DIR}/../Release/${CMAKE_SYSTEM_NAME})
+IF(NOT CMAKE_BUILD_TYPE)
+    SET(CMAKE_BUILD_TYPE Release CACHE STRING
+      "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
+      FORCE)
+    MESSAGE("No CMAKE_BUILD_TYPE specified, defaulting to ${CMAKE_BUILD_TYPE}") 
+ENDIF(NOT CMAKE_BUILD_TYPE)
+
+SET(POLYCODE_RELEASE_DIR ${PolycodeStandalone_SOURCE_DIR}/../${CMAKE_BUILD_TYPE}/${CMAKE_SYSTEM_NAME})
 SET(CMAKE_INSTALL_PREFIX ${POLYCODE_RELEASE_DIR}/Standalone/)
 
 INSTALL(FILES ../LICENSE.txt
