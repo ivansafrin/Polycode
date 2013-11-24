@@ -217,14 +217,11 @@ EditCurve::EditCurve(BezierCurve *targetCurve, Color curveColor) : UIElement() {
 	
 	this->targetCurve = targetCurve;
 	
-	poly = new Polycode::Polygon();
+	visMesh = new SceneMesh(Mesh::LINE_STRIP_MESH);
 	
 	for(int i=0; i < CURVE_SIZE; i++) {		
-		poly->addVertex(0.0, 0.0, 0.0);
+		visMesh->getMesh()->addVertex(0.0, 0.0, 0.0);
 	}
-	
-	visMesh = new SceneMesh(Mesh::LINE_STRIP_MESH);
-	visMesh->getMesh()->addPolygon(poly);
 	
 	visMesh->lineSmooth = true;
 	visMesh->lineWidth = 2.0;
@@ -325,7 +322,7 @@ void EditCurve::updateCurve() {
 	normInterval += normInterval/CURVE_SIZE;
 		
 	for(int i=0; i < CURVE_SIZE; i++) {
-		poly->getVertex(i)->set(targetCurve->getPointAt(normInterval * i).x * 300, targetCurve->getPointAt(normInterval * i).y * 100.0, 0.0);
+		visMesh->getMesh()->getVertex(i)->set(targetCurve->getPointAt(normInterval * i).x * 300, targetCurve->getPointAt(normInterval * i).y * 100.0, 0.0);
 	}
 	
 	visMesh->getMesh()->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;

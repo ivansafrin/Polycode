@@ -27,6 +27,20 @@ extern UIGlobalMenu *globalMenu;
 extern PolycodeFrame *globalFrame;
 extern Scene *globalScene;
 
+CameraDisplay::CameraDisplay(Camera *camera) : Entity() {
+    
+    camera->addChild(this);
+}
+
+CameraDisplay::~CameraDisplay() {
+    
+}
+
+void CameraDisplay::Update() {
+    
+}
+
+
 EntityEditorMainView::EntityEditorMainView() {
 	processInputEvents = true;
 
@@ -177,6 +191,8 @@ void EntityEditorMainView::setEditorProps(Entity *entity) {
 
     Camera *camera = dynamic_cast<Camera*>(entity);
     if(camera) {
+        
+        CameraDisplay *camVis = new CameraDisplay(camera);
         createIcon(entity, "camera_icon.png");
     }
 }

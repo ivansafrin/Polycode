@@ -24,7 +24,6 @@
 #include "PolyCoreServices.h"
 #include "PolyBone.h"
 #include "PolyMaterial.h"
-#include "PolyPolygon.h"
 #include "PolyRenderer.h"
 #include "PolyMaterial.h"
 #include "PolyMesh.h"
@@ -179,16 +178,12 @@ void SceneMesh::loadSkeleton(const String& fileName) {
 
 void SceneMesh::setSkeleton(Skeleton *skeleton) {
 	this->skeleton = skeleton;
-	for(int i=0; i < mesh->getPolygonCount(); i++) {
-		Polygon *polygon = mesh->getPolygon(i);
-		unsigned int vCount = polygon->getVertexCount();
-		for(int j=0; j < vCount; j++) {
-			Vertex *vertex = polygon->getVertex(j);
-			for(int k=0; k < vertex->getNumBoneAssignments(); k++) {
-				vertex->getBoneAssignment(k)->bone = skeleton->getBone(vertex->getBoneAssignment(k)->boneID);
-			}
-		}
-	}	
+    for(int i=0; i < mesh->getVertexCount(); i++) {
+        Vertex *vertex = mesh->getVertex(i);
+        for(int j=0; j < vertex->getNumBoneAssignments(); j++) {
+            vertex->getBoneAssignment(j)->bone = skeleton->getBone(vertex->getBoneAssignment(j)->boneID);
+        }
+    }
 }
 
 void SceneMesh::setLineWidth(Number newWidth) {
@@ -207,58 +202,54 @@ void SceneMesh::renderMeshLocally() {
 	Renderer *renderer = CoreServices::getInstance()->getRenderer();
 	
 	if(skeleton) {	
-		for(int i=0; i < mesh->getPolygonCount(); i++) {
-			Polygon *polygon = mesh->getPolygon(i);			
-			unsigned int vCount = polygon->getVertexCount();			
-			for(int j=0; j < vCount; j++) {
-				Vertex *vert = polygon->getVertex(j);
-				Vector3 norm;
-				
-					Vector3 aPos = vert->restPosition;
-					Vector3 tPos;
+		for(int i=0; i < mesh->getVertexCount(); i++) {
+            Vertex *vert = mesh->getVertex(i);
+            Vector3 norm;
+            
+            Vector3 aPos = vert->restPosition;
+            Vector3 tPos;
 
-					Number mult = 1;					
-/*				
-					Number mult = 0;
-					for(int b =0; b < vert->getNumBoneAssignments(); b++) {
-						BoneAssignment *bas = vert->getBoneAssignment(b);
-						mult += bas->weight;
-					}
-					mult = 1.0f/mult;
+            Number mult = 1;					
+/*
+            Number mult = 0;
+            for(int b =0; b < vert->getNumBoneAssignments(); b++) {
+                BoneAssignment *bas = vert->getBoneAssignment(b);
+                mult += bas->weight;
+            }
+            mult = 1.0f/mult;
 */				
-					for(int b =0; b < vert->getNumBoneAssignments(); b++) {
-						BoneAssignment *bas = vert->getBoneAssignment(b);
-						Bone *bone = bas->bone;
-						if(bone) {
-							
-							Matrix4 restMatrix = bone->getRestMatrix();
-							Matrix4 finalMatrix = bone->getFinalMatrix();
-							
-							Vector3 vec = restMatrix * aPos;
-							tPos += finalMatrix * vec * (bas->weight*mult);
-							
-							Vector3 nvec = vert->restNormal;
-							nvec = restMatrix.rotateVector(nvec);
-							nvec = finalMatrix.rotateVector(nvec);
-							
-							norm += nvec * (bas->weight*mult);
-						}
-					}					
-					
-				
-					vert->x = tPos.x;
-					vert->y = tPos.y;
-					vert->z = tPos.z;				
-				
-					norm.Normalize();
-					vert->setNormal(norm.x, norm.y, norm.z);
-				
-			}
-		}
-		mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
-		mesh->arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;	
-		mesh->arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;				
-	}
+            for(int b =0; b < vert->getNumBoneAssignments(); b++) {
+                BoneAssignment *bas = vert->getBoneAssignment(b);
+                Bone *bone = bas->bone;
+                if(bone) {
+                    
+                    Matrix4 restMatrix = bone->getRestMatrix();
+                    Matrix4 finalMatrix = bone->getFinalMatrix();
+                    
+                    Vector3 vec = restMatrix * aPos;
+                    tPos += finalMatrix * vec * (bas->weight*mult);
+                    
+                    Vector3 nvec = vert->restNormal;
+                    nvec = restMatrix.rotateVector(nvec);
+                    nvec = finalMatrix.rotateVector(nvec);
+                    
+                    norm += nvec * (bas->weight*mult);
+                }
+            }					
+            
+        
+            vert->x = tPos.x;
+            vert->y = tPos.y;
+            vert->z = tPos.z;				
+        
+            norm.Normalize();
+            vert->setNormal(norm.x, norm.y, norm.z);
+        }
+    }
+    
+    mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
+    mesh->arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;	
+    mesh->arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;
 
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::VERTEX_DATA_ARRAY);
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::NORMAL_DATA_ARRAY);		
@@ -290,10 +281,12 @@ bool SceneMesh::customHitDetection(const Ray &ray) {
 	transformedRay.origin = adjustedMatrix * ray.origin;
 	transformedRay.direction = adjustedMatrix.rotateVector(ray.direction);
 	
-	for(int i=0; i < mesh->getPolygonCount(); i++) {
-		if(transformedRay.polygonIntersect(mesh->getPolygon(i))) {
-			return true;
-		}
+	for(int i=0; i < mesh->getVertexCount(); i+=3) {
+        if(i+2 < mesh->getVertexCount()) {
+           if(transformedRay.polygonIntersect(mesh->getVertex(i), mesh->getVertex(i+1), mesh->getVertex(i+2))) {
+                return true;
+            }
+        }
 	}
 	
 	return false;

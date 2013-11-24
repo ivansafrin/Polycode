@@ -1,6 +1,5 @@
 
 #include "polyimport.h"
-#include "PolyPolygon.h"
 #include "OSBasics.h"
 
 #include "physfs.h"
@@ -45,7 +44,6 @@ void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, c
 
 		for (t = 0; t < mesh->mNumFaces; ++t) {
 			const struct aiFace* face = &mesh->mFaces[t];
-			Polycode::Polygon *poly = new Polycode::Polygon();			
 	
 			for(i = 0; i < face->mNumIndices; i++) {
 				Vertex *vertex = new Vertex();
@@ -90,9 +88,8 @@ void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, c
 					vertex->set(mesh->mVertices[index].x, mesh->mVertices[index].z, -mesh->mVertices[index].y);
 				else
 					vertex->set(mesh->mVertices[index].x, mesh->mVertices[index].y, mesh->mVertices[index].z);
-				poly->addVertex(vertex);
+				tmesh->addVertex(vertex);
 			}
-			tmesh->addPolygon(poly);
 		}
 		
 		if(!addSubmeshes && !listOnly) {

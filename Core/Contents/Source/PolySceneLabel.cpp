@@ -25,7 +25,6 @@
 #include "PolyFontManager.h"
 #include "PolyLabel.h"
 #include "PolyMesh.h"
-#include "PolyPolygon.h"
 #include "PolyRenderer.h"
 #include "PolyMaterialManager.h"
 

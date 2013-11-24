@@ -85,10 +85,8 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	addChild(rotateDectorators);	
 		
 	yLine = new SceneMesh(Mesh::LINE_MESH);
-	Polycode::Polygon *poly = new Polycode::Polygon();
-	poly->addVertex(0.0, 0.0, 0.0);
-	poly->addVertex(0.0, 1.0, 0.0);	
-	yLine->getMesh()->addPolygon(poly);
+	yLine->getMesh()->addVertex(0.0, 0.0, 0.0);
+	yLine->getMesh()->addVertex(0.0, 1.0, 0.0);
 	yLine->getMesh()->dirtyArrays();
 	yLine->depthTest = false;
 	yLine->setColor(0.0, 1.0, 0.0, 1.0);
@@ -96,10 +94,8 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	transformAndScaleLines->addChild(yLine);
 
 	xLine = new SceneMesh(Mesh::LINE_MESH);
-	poly = new Polycode::Polygon();
-	poly->addVertex(0.0, 0.0, 0.0);
-	poly->addVertex(1.0, 0.0, 0.0);	
-	xLine->getMesh()->addPolygon(poly);
+	xLine->getMesh()->addVertex(0.0, 0.0, 0.0);
+	xLine->getMesh()->addVertex(1.0, 0.0, 0.0);
 	xLine->getMesh()->dirtyArrays();
 	xLine->depthTest = false;
 	xLine->setColor(1.0, 0.0, 0.0, 1.0);
@@ -107,10 +103,8 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	transformAndScaleLines->addChild(xLine);
 
 	zLine = new SceneMesh(Mesh::LINE_MESH);
-	poly = new Polycode::Polygon();
-	poly->addVertex(0.0, 0.0, 0.0);
-	poly->addVertex(0.0, 0.0, 1.0);	
-	zLine->getMesh()->addPolygon(poly);
+	zLine->getMesh()->addVertex(0.0, 0.0, 0.0);
+	zLine->getMesh()->addVertex(0.0, 0.0, 1.0);
 	zLine->getMesh()->dirtyArrays();
 	zLine->depthTest = false;
 	zLine->setColor(0.0, 0.0, 1.0, 1.0);

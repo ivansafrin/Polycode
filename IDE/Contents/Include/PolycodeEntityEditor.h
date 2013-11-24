@@ -35,6 +35,16 @@
 
 using namespace Polycode;
 
+class CameraDisplay : public Entity {
+    public:
+        CameraDisplay(Camera *camera);
+        ~CameraDisplay();
+        void Update();
+    
+    private:
+        SceneMesh *fovMesh;
+};
+
 class EntityEditorMainView : public UIElement {
 		public:
 			EntityEditorMainView();

@@ -24,7 +24,7 @@
 #include "PolyGlobals.h"
 #include "PolyVector3.h"
 #include "PolyMatrix4.h"
-#include "PolyPolygon.h"
+#include "PolyVertex.h"
 
 namespace Polycode {
 
@@ -41,7 +41,7 @@ namespace Polycode {
 			Vector3 planeIntersectPoint(const Vector3 &planeNormal, Number planeDistance) const;
 			Ray tranformByMatrix(const Matrix4& matrix) const;
 			
-			bool polygonIntersect(Polycode::Polygon *polygon) const;
+			bool polygonIntersect(Vertex *v1, Vertex *v2, Vertex *v3) const;
 		
 			Vector3 origin;
 			Vector3 direction;

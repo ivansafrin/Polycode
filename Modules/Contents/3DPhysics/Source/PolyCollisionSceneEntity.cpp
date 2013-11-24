@@ -23,7 +23,6 @@ THE SOFTWARE.
 #include "PolyCollisionSceneEntity.h"
 #include "PolyLogger.h"
 #include "PolyMesh.h"
-#include "PolyPolygon.h"
 #include "PolyEntity.h"
 #include "PolySceneMesh.h"
 #include "btBulletCollisionCommon.h"
@@ -128,11 +127,9 @@ btCollisionShape *CollisionEntity::createCollisionShape(Entity *entity, int type
 			SceneMesh* sceneMesh = dynamic_cast<SceneMesh*>(entity);
 			if(sceneMesh != NULL) {
 				btConvexHullShape *hullShape = new btConvexHullShape();
-				for(int i=0; i < sceneMesh->getMesh()->getPolygonCount(); i++) {
-					Polygon *poly = sceneMesh->getMesh()->getPolygon(i);
-					for(int j=0; j < poly->getVertexCount(); j++) {					
-						hullShape->addPoint(btVector3((btScalar)poly->getVertex(j)->x, (btScalar)poly->getVertex(j)->y,(btScalar)poly->getVertex(j)->z));
-					}
+                Mesh *mesh = sceneMesh->getMesh();
+				for(int i=0; i < mesh->getVertexCount(); i++) {
+                    hullShape->addPoint(btVector3((btScalar)mesh->getVertex(i)->x, (btScalar)mesh->getVertex(i)->y,(btScalar)mesh->getVertex(i)->z));
 				}				
 				collisionShape = hullShape;
 				

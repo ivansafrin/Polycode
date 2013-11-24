@@ -22,7 +22,6 @@
 
 #include "PolySceneImage.h"
 #include "PolyMesh.h"
-#include "PolyPolygon.h"
 #include "PolyTexture.h"
 #include "PolyVertex.h"
 
@@ -84,7 +83,6 @@ void SceneImage::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly
 }
 
 void SceneImage::setImageCoordinates(Number x, Number y, Number width, Number height, Number realWidth, Number realHeight) {
-	Vertex *vertex;
 	
 	Number pixelSizeX = 1/imageWidth;
 	Number pixelSizeY = 1/imageHeight;
@@ -104,18 +102,10 @@ void SceneImage::setImageCoordinates(Number x, Number y, Number width, Number he
 	Number wFloat = width * pixelSizeX;
 	Number hFloat = height * pixelSizeY;
 
-	Polygon *imagePolygon = mesh->getPolygon(0);	
-	vertex = imagePolygon->getVertex(0);
-	vertex->setTexCoord(xFloat, yFloat - hFloat);
-
-	vertex = imagePolygon->getVertex(1);
-	vertex->setTexCoord(xFloat + wFloat, yFloat - hFloat);
-
-	vertex = imagePolygon->getVertex(2);
-	vertex->setTexCoord(xFloat + wFloat, yFloat);
-
-	vertex = imagePolygon->getVertex(3);		
-	vertex->setTexCoord(xFloat, yFloat);
+    mesh->getVertex(0)->setTexCoord(xFloat, yFloat - hFloat);
+    mesh->getVertex(1)->setTexCoord(xFloat + wFloat, yFloat - hFloat);
+    mesh->getVertex(2)->setTexCoord(xFloat + wFloat, yFloat);
+    mesh->getVertex(3)->setTexCoord(xFloat, yFloat);
 
 	mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
 	mesh->arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;

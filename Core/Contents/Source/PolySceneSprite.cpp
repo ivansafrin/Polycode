@@ -24,7 +24,6 @@
 #include "PolyCore.h"
 #include "PolyCoreServices.h"
 #include "PolyMesh.h"
-#include "PolyPolygon.h"
 #include "PolyTexture.h"
 
 using std::vector;
@@ -400,16 +399,13 @@ void SceneSprite::updateSprite() {
 	Number xOffset = currentAnimation->framesOffsets[currentFrame].x;
 	Number yOffset = 1.0f - currentAnimation->framesOffsets[currentFrame].y - spriteUVHeight;
 
-    Polygon *imagePolygon;
-	imagePolygon = mesh->getPolygon(0);
-	imagePolygon->getVertex(0)->setTexCoord(xOffset, yOffset);
-	imagePolygon->getVertex(1)->setTexCoord(xOffset+spriteUVWidth, yOffset);
-	imagePolygon->getVertex(2)->setTexCoord(xOffset+spriteUVWidth, yOffset+spriteUVHeight);
+	mesh->getVertex(0)->setTexCoord(xOffset, yOffset);
+	mesh->getVertex(1)->setTexCoord(xOffset+spriteUVWidth, yOffset);
+	mesh->getVertex(2)->setTexCoord(xOffset+spriteUVWidth, yOffset+spriteUVHeight);
 	
-    imagePolygon = mesh->getPolygon(1);
-	imagePolygon->getVertex(0)->setTexCoord(xOffset, yOffset);	;
-	imagePolygon->getVertex(1)->setTexCoord(xOffset+spriteUVWidth, yOffset+spriteUVHeight);
-	imagePolygon->getVertex(2)->setTexCoord(xOffset, yOffset+spriteUVHeight);
+	mesh->getVertex(3)->setTexCoord(xOffset, yOffset);	;
+	mesh->getVertex(4)->setTexCoord(xOffset+spriteUVWidth, yOffset+spriteUVHeight);
+	mesh->getVertex(5)->setTexCoord(xOffset, yOffset+spriteUVHeight);
     
 	mesh->arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;
 

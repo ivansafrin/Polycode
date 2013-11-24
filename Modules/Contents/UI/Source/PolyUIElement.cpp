@@ -91,7 +91,7 @@ UIRect::UIRect(Number width, Number height) : UIElement() {
 }
 
 void UIRect::setImageCoordinates(Number x, Number y, Number width, Number height, Number imageScale) {
-	Vertex *vertex;
+    Vertex *vertex;
 	Number pixelSizeX = 1/imageWidth;
 	Number pixelSizeY = 1/imageHeight;
 
@@ -106,20 +106,19 @@ void UIRect::setImageCoordinates(Number x, Number y, Number width, Number height
 	Number wFloat = width * pixelSizeX * imageScale;
 	Number hFloat = height * pixelSizeY * imageScale;
 
-	Polygon *imagePolygon = rectMesh->getPolygon(0);	
-	vertex = imagePolygon->getVertex(0);
+	vertex = rectMesh->getVertex(0);
 	vertex->set(-whalf,-hhalf,0);
 	vertex->setTexCoord(xFloat, (1.0-yFloat) - hFloat);
 
-	vertex = imagePolygon->getVertex(1);
+	vertex = rectMesh->getVertex(1);
 	vertex->set(-whalf+width,-hhalf,0);
 	vertex->setTexCoord(xFloat + wFloat, (1.0-yFloat) - hFloat);
 
-	vertex = imagePolygon->getVertex(2);
+	vertex = rectMesh->getVertex(2);
 	vertex->set(-whalf+width,-hhalf+height,0);
 	vertex->setTexCoord(xFloat + wFloat, 1.0-yFloat);
 
-	vertex = imagePolygon->getVertex(3);	
+	vertex = rectMesh->getVertex(3);
 	vertex->set(-whalf,-hhalf+height,0);	
 	vertex->setTexCoord(xFloat, 1.0-yFloat);
 
@@ -147,13 +146,11 @@ void UIRect::initRect(Number width, Number height) {
 	
 	Number whalf = width/2.0f;
 	Number hhalf = height/2.0f;
-						
-	Polygon *poly = new Polygon();
-	poly->addVertex(-whalf,-hhalf,0,0,0);
-	poly->addVertex(-whalf+width,-hhalf,0, 1, 0);
-	poly->addVertex(-whalf+width,-hhalf+height,0, 1, 1);
-	poly->addVertex(-whalf,-hhalf+height,0,0,1);
-	rectMesh->addPolygon(poly);
+				
+	rectMesh->addVertex(-whalf,-hhalf,0,0,0);
+	rectMesh->addVertex(-whalf+width,-hhalf,0, 1, 0);
+	rectMesh->addVertex(-whalf+width,-hhalf+height,0, 1, 1);
+	rectMesh->addVertex(-whalf,-hhalf+height,0,0,1);
 }
 
 UIRect::~UIRect() {
@@ -188,17 +185,15 @@ void UIRect::Resize(Number width, Number height) {
 
 	Number whalf = width/2.0f;
 	Number hhalf = height/2.0f;
-	Polygon *polygon;
 	Vertex *vertex;
 
-	polygon = rectMesh->getPolygon(0);	
-	vertex = polygon->getVertex(0);
+	vertex = rectMesh->getVertex(0);
 	vertex->set(-whalf,-hhalf,0);			
-	vertex = polygon->getVertex(1);
+	vertex = rectMesh->getVertex(1);
 	vertex->set(-whalf+width,-hhalf,0);			
-	vertex = polygon->getVertex(2);
+	vertex = rectMesh->getVertex(2);
 	vertex->set(-whalf+width,-hhalf+height,0);			
-	vertex = polygon->getVertex(3);	
+	vertex = rectMesh->getVertex(3);
 	vertex->set(-whalf,-hhalf+height,0);				
 	rectMesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;	
 }

@@ -33,7 +33,6 @@
 #include "PolyMaterial.h"
 #include "PolyMesh.h"
 #include "PolyModule.h"
-#include "PolyPolygon.h"
 
 #if defined(_WINDOWS) && !defined(_MINGW)
 
@@ -878,32 +877,28 @@ RenderDataArray *OpenGLRenderer::createRenderDataArrayForMesh(Mesh *mesh, int ar
 		case RenderDataArray::VERTEX_DATA_ARRAY:
 		{		
 			buffer = (GLfloat*)malloc(1);							
-			for(int i=0; i < mesh->getPolygonCount(); i++) {
-				for(int j=0; j < mesh->getPolygon(i)->getVertexCount(); j++) {
-					newArray->count++;			
-					newBufferSize = bufferSize + 3;
-					buffer = (GLfloat*)realloc(buffer, newBufferSize * sizeof(GLfloat));
-					buffer[bufferSize+0] = mesh->getPolygon(i)->getVertex(j)->x;
-					buffer[bufferSize+1] = mesh->getPolygon(i)->getVertex(j)->y;
-					buffer[bufferSize+2] = mesh->getPolygon(i)->getVertex(j)->z;			
-					bufferSize = newBufferSize;	
-				}		   
+			for(int i=0; i < mesh->getVertexCount(); i++) {
+                newArray->count++;
+                newBufferSize = bufferSize + 3;
+                buffer = (GLfloat*)realloc(buffer, newBufferSize * sizeof(GLfloat));
+                buffer[bufferSize+0] = mesh->getVertex(i)->x;
+                buffer[bufferSize+1] = mesh->getVertex(i)->y;
+                buffer[bufferSize+2] = mesh->getVertex(i)->z;
+                bufferSize = newBufferSize;
 			}
 		}
 		break;
 		case RenderDataArray::COLOR_DATA_ARRAY:
 		{
 			buffer = (GLfloat*)malloc(1);			
-			for(int i=0; i < mesh->getPolygonCount(); i++) {
-				for(int j=0; j < mesh->getPolygon(i)->getVertexCount(); j++) {
-					newBufferSize = bufferSize + 4;			
-					buffer = (GLfloat*)realloc(buffer, newBufferSize * sizeof(GLfloat));
-					buffer[bufferSize+0] = mesh->getPolygon(i)->getVertex(j)->vertexColor.r;
-					buffer[bufferSize+1] = mesh->getPolygon(i)->getVertex(j)->vertexColor.g;
-					buffer[bufferSize+2] = mesh->getPolygon(i)->getVertex(j)->vertexColor.b;
-					buffer[bufferSize+3] = mesh->getPolygon(i)->getVertex(j)->vertexColor.a;			
-					bufferSize = newBufferSize;					
-				}		   
+			for(int i=0; i < mesh->getVertexCount(); i++) {
+                newBufferSize = bufferSize + 4;
+                buffer = (GLfloat*)realloc(buffer, newBufferSize * sizeof(GLfloat));
+                buffer[bufferSize+0] = mesh->getVertex(i)->vertexColor.r;
+                buffer[bufferSize+1] = mesh->getVertex(i)->vertexColor.g;
+                buffer[bufferSize+2] = mesh->getVertex(i)->vertexColor.b;
+                buffer[bufferSize+3] = mesh->getVertex(i)->vertexColor.a;
+                bufferSize = newBufferSize;
 			}
 		}
 		break;
@@ -911,21 +906,13 @@ RenderDataArray *OpenGLRenderer::createRenderDataArrayForMesh(Mesh *mesh, int ar
 		{
 			buffer = (GLfloat*)malloc(1);	
 			
-			for(int i=0; i < mesh->getPolygonCount(); i++) {
-				for(int j=0; j < mesh->getPolygon(i)->getVertexCount(); j++) {
-					newBufferSize = bufferSize + 3;			
-					buffer = (GLfloat*)realloc(buffer, newBufferSize * sizeof(GLfloat));		
-					if(mesh->getPolygon(i)->useVertexNormals) {
-						buffer[bufferSize+0] = mesh->getPolygon(i)->getVertex(j)->normal.x;
-						buffer[bufferSize+1] = mesh->getPolygon(i)->getVertex(j)->normal.y;
-						buffer[bufferSize+2] = mesh->getPolygon(i)->getVertex(j)->normal.z;				
-					} else {
-						buffer[bufferSize+0] = mesh->getPolygon(i)->getFaceNormal().x;
-						buffer[bufferSize+1] = mesh->getPolygon(i)->getFaceNormal().y;
-						buffer[bufferSize+2] = mesh->getPolygon(i)->getFaceNormal().z;
-					}
-					bufferSize = newBufferSize;					
-				}		   
+			for(int i=0; i < mesh->getVertexCount(); i++) {
+                newBufferSize = bufferSize + 3;
+                buffer = (GLfloat*)realloc(buffer, newBufferSize * sizeof(GLfloat));
+                buffer[bufferSize+0] = mesh->getVertex(i)->normal.x;
+                buffer[bufferSize+1] = mesh->getVertex(i)->normal.y;
+                buffer[bufferSize+2] = mesh->getVertex(i)->normal.z;
+                bufferSize = newBufferSize;
 			}			
 		}
 		break;
@@ -933,29 +920,25 @@ RenderDataArray *OpenGLRenderer::createRenderDataArrayForMesh(Mesh *mesh, int ar
 		{
 			buffer = (GLfloat*)malloc(1);	
 			
-			for(int i=0; i < mesh->getPolygonCount(); i++) {
-				for(int j=0; j < mesh->getPolygon(i)->getVertexCount(); j++) {
-					newBufferSize = bufferSize + 3;			
-					buffer = (GLfloat*)realloc(buffer, newBufferSize * sizeof(GLfloat));		
-					buffer[bufferSize+0] = mesh->getPolygon(i)->getVertex(j)->tangent.x;
-					buffer[bufferSize+1] = mesh->getPolygon(i)->getVertex(j)->tangent.y;
-					buffer[bufferSize+2] = mesh->getPolygon(i)->getVertex(j)->tangent.z;				
-					bufferSize = newBufferSize;					
-				}		   
+			for(int i=0; i < mesh->getVertexCount(); i++) {
+                newBufferSize = bufferSize + 3;
+                buffer = (GLfloat*)realloc(buffer, newBufferSize * sizeof(GLfloat));		
+                buffer[bufferSize+0] = mesh->getVertex(i)->tangent.x;
+                buffer[bufferSize+1] = mesh->getVertex(i)->tangent.y;
+                buffer[bufferSize+2] = mesh->getVertex(i)->tangent.z;
+                bufferSize = newBufferSize;
 			}			
 		}
 		break;		
 		case RenderDataArray::TEXCOORD_DATA_ARRAY:
 		{
 			buffer = (GLfloat*)malloc(1);				
-			for(int i=0; i < mesh->getPolygonCount(); i++) {
-				for(int j=0; j < mesh->getPolygon(i)->getVertexCount(); j++) {
-					newBufferSize = bufferSize + 2;			
-					buffer = (GLfloat*)realloc(buffer, newBufferSize * sizeof(GLfloat));		
-					buffer[bufferSize+0] = mesh->getPolygon(i)->getVertex(j)->getTexCoord().x;											
-					buffer[bufferSize+1] = mesh->getPolygon(i)->getVertex(j)->getTexCoord().y;							
-					bufferSize = newBufferSize;					
-				}		   
+			for(int i=0; i < mesh->getVertexCount(); i++) {
+                newBufferSize = bufferSize + 2;
+                buffer = (GLfloat*)realloc(buffer, newBufferSize * sizeof(GLfloat));		
+                buffer[bufferSize+0] = mesh->getVertex(i)->getTexCoord().x;
+                buffer[bufferSize+1] = mesh->getVertex(i)->getTexCoord().y;
+                bufferSize = newBufferSize;
 			}			
 		}
 		break;

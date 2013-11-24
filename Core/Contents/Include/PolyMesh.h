@@ -23,7 +23,6 @@ THE SOFTWARE.
 #pragma once
 #include "PolyGlobals.h"
 #include "PolyVertex.h"
-#include "PolyPolygon.h"
 
 class OSFILE;
 
@@ -111,7 +110,7 @@ namespace Polycode {
 	} Vector2_struct;
 	
 	/**
-	* A polygonal mesh. The mesh is assembled from Polygon instances, which in turn contain Vertex instances. This structure is provided for convenience and when the mesh is rendered, it is cached into vertex arrays with no notions of separate polygons. When data in the mesh changes, arrayDirtyMap must be set to true for the appropriate array types (color, position, normal, etc). Available types are defined in RenderDataArray.
+	*  A mesh comprised of vertices. When data in the mesh changes, arrayDirtyMap must be set to true for the appropriate array types (color, position, normal, etc). Available types are defined in RenderDataArray.
 	*/
 	class _PolyExport Mesh : public PolyBase {
 		public:
@@ -138,12 +137,6 @@ namespace Polycode {
 			virtual ~Mesh();
 			
 			/**
-			* Adds a polygon to the mesh.
-			* @param newPolygon Polygon to add.
-			*/
-			void addPolygon(Polygon *newPolygon);
-
-			/**
 			* Loads a mesh from a file.
 			* @param fileName Path to mesh file.
 			*/			
@@ -164,11 +157,6 @@ namespace Polycode {
 			void loadFromFile(OSFILE *inFile);
 			void saveToFile(OSFILE *outFile);
 			
-			/**
-			* Returns the number of polygons in the mesh.
-			* @return Number of polygons in the mesh.
-			*/						
-			unsigned int getPolygonCount();
 			
 			/**
 			* Returns the total vertex count in the mesh.
@@ -176,12 +164,6 @@ namespace Polycode {
 			*/
 			unsigned int getVertexCount();
 			
-			/**
-			* Returns a polygon at specified index.
-			* @param index Index of polygon.
-			* @return Polygon at index.
-			*/									
-			Polygon *getPolygon(unsigned int index);
 					
 			/**
 			* Creates a plane mesh of specified size.
@@ -261,12 +243,14 @@ namespace Polycode {
 			*/
 			Vector3 recenterMesh();
 		
-			/**
-			* Toggles the mesh between using vertex or polygon normals. 
-			* @param val If true, the mesh will use vertex normals, otherwise it will use the polygon normals.
-			*/
-			void useVertexNormals(bool val);
+            Vertex *addVertex(Number x, Number y, Number z);
 			
+            void addVertex(Vertex *vertex);
+        
+            Vertex *addVertex(Number x, Number y, Number z, Number u, Number v);
+        
+            Vertex *getVertex(unsigned int index) const;
+        
 			/**
 			* Sets the vertex buffer for the mesh.
 			* @param buffer New vertex buffer for mesh.
@@ -296,8 +280,6 @@ namespace Polycode {
 			* Recalculates the tangent space vector for all vertices.
 			*/ 
 			void calculateTangents();
-			
-			std::vector<Polygon*> getConnectedFaces(Vertex *v);
 			
 			/**
 			* Returns the mesh type.
@@ -380,9 +362,9 @@ namespace Polycode {
 		
 		protected:
 					
-		VertexBuffer *vertexBuffer;
-		bool meshHasVertexBuffer;
-		int meshType;
-		std::vector <Polygon*> polygons;
+            VertexBuffer *vertexBuffer;
+            bool meshHasVertexBuffer;
+            int meshType;
+            std::vector <Vertex*> vertices;
 	};
 }

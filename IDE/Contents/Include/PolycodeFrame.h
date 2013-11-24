@@ -97,7 +97,6 @@ class EditCurve : public UIElement {
 		
 		BezierCurve *targetCurve;
 		SceneMesh *visMesh;
-		Polycode::Polygon *poly;	
 		
 		EditPoint *pointToRemove;
 		UIElement *pointsBase;

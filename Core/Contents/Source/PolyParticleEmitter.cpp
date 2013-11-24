@@ -113,7 +113,6 @@ void SceneParticleEmitter::rebuildParticles() {
         case PARTICLE_TYPE_POINT:
         {
             mesh->setMeshType(Mesh::POINT_MESH);
-            Polycode::Polygon *poly = new Polycode::Polygon();
             Matrix4 inverseMatrix = systemTrasnformMatrix.Inverse();
             for(int i=0; i < particles.size(); i++) {
                 if(particles[i].lifetime > lifetime) {
@@ -123,9 +122,8 @@ void SceneParticleEmitter::rebuildParticles() {
                 if(particlesInWorldSpace) {
                     vertexPosition = inverseMatrix * vertexPosition;
                 }
-                poly->addVertex(vertexPosition.x, vertexPosition.y, vertexPosition.z, 0.5, 0.5)->vertexColor = particles[i].color;
+                mesh->addVertex(vertexPosition.x, vertexPosition.y, vertexPosition.z, 0.5, 0.5)->vertexColor = particles[i].color;
             }
-            mesh->addPolygon(poly);
         }
         break;
         case PARTICLE_TYPE_QUAD:
@@ -145,7 +143,6 @@ void SceneParticleEmitter::rebuildParticles() {
                 vertexColor = particles[i].color;
                 finalParticleSize = particleSize * particles[i].scale;
                 
-                Polycode::Polygon *poly = new Polycode::Polygon();
                 Vector3 particlePosition = particles[i].position;
                 if(particlesInWorldSpace) {
                     particlePosition = inverseMatrix * particlePosition;
@@ -154,25 +151,22 @@ void SceneParticleEmitter::rebuildParticles() {
                 Vector3 vertexPosition = Vector3(-finalParticleSize, -finalParticleSize, 0.0);
                 vertexPosition = q.applyTo(vertexPosition);
                 vertexPosition = cameraMatrix.rotateVector(vertexPosition);
-                poly->addVertex(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 0.0, 0.0)->vertexColor = vertexColor;
+                mesh->addVertex(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 0.0, 0.0)->vertexColor = vertexColor;
                 
                 vertexPosition = Vector3(finalParticleSize, -finalParticleSize, 0.0);
                 vertexPosition = q.applyTo(vertexPosition);
                 vertexPosition = cameraMatrix.rotateVector(vertexPosition);
-                poly->addVertex(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 1.0, 0.0)->vertexColor = vertexColor;
+                mesh->addVertex(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 1.0, 0.0)->vertexColor = vertexColor;
 
                 vertexPosition = Vector3(finalParticleSize, finalParticleSize, 0.0);
                 vertexPosition = q.applyTo(vertexPosition);
                 vertexPosition = cameraMatrix.rotateVector(vertexPosition);
-                poly->addVertex(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 1.0, 1.0)->vertexColor = vertexColor;
+                mesh->addVertex(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 1.0, 1.0)->vertexColor = vertexColor;
 
                 vertexPosition = Vector3(-finalParticleSize, finalParticleSize, 0.0);
                 vertexPosition = q.applyTo(vertexPosition);
                 vertexPosition = cameraMatrix.rotateVector(vertexPosition);
-                poly->addVertex(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 0.0, 1.0)->vertexColor = vertexColor;
-
-                
-                mesh->addPolygon(poly);
+                mesh->addVertex(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 0.0, 1.0)->vertexColor = vertexColor;
 
             }
         }

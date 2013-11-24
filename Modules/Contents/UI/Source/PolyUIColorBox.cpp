@@ -64,15 +64,12 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	mainColorRect->setWidth(mainFrame->getWidth());
 	mainColorRect->setHeight(mainFrame->getWidth());
 	mainColorRect->setDepth(0.001);
+		
+	mainColorRect->getMesh()->addVertex(-mainFrame->getWidth()/2,mainFrame->getHeight()/2.0,0,0,0);
+	mainColorRect->getMesh()->addVertex(mainFrame->getWidth()/2,mainFrame->getHeight()/2.0,0, 1, 0);
+	mainColorRect->getMesh()->addVertex(mainFrame->getWidth()/2,-mainFrame->getHeight()/2.0,0, 1, 1);
+	mainColorRect->getMesh()->addVertex(-mainFrame->getWidth()/2,-mainFrame->getHeight()/2.0,0,0,1);
 	
-	Polygon *imagePolygon = new Polygon();
-	
-	imagePolygon->addVertex(-mainFrame->getWidth()/2,mainFrame->getHeight()/2.0,0,0,0);
-	imagePolygon->addVertex(mainFrame->getWidth()/2,mainFrame->getHeight()/2.0,0, 1, 0);		
-	imagePolygon->addVertex(mainFrame->getWidth()/2,-mainFrame->getHeight()/2.0,0, 1, 1);									
-	imagePolygon->addVertex(-mainFrame->getWidth()/2,-mainFrame->getHeight()/2.0,0,0,1);
-	
-	mainColorRect->getMesh()->addPolygon(imagePolygon);
 	mainColorRect->getMesh()->dirtyArrays();
 	mainColorRect->backfaceCulled = false;	
 
@@ -269,10 +266,10 @@ void UIColorPicker::updateSelectedColor(bool updateTextFields, bool updateHue, b
 	hueCol.setColorHSV(currentH, 1.0, 1.0);
 	hueCol.a = colorAlpha;
 
-	mainColorRect->getMesh()->getPolygon(0)->getVertex(0)->vertexColor = Color(1.0,1.0,1.0,colorAlpha);
-	mainColorRect->getMesh()->getPolygon(0)->getVertex(1)->vertexColor = hueCol;
-	mainColorRect->getMesh()->getPolygon(0)->getVertex(2)->vertexColor = Color(0.0,0.0,0.0,colorAlpha);
-	mainColorRect->getMesh()->getPolygon(0)->getVertex(3)->vertexColor = Color(0.0,0.0,0.0,colorAlpha);	
+	mainColorRect->getMesh()->getVertex(0)->vertexColor = Color(1.0,1.0,1.0,colorAlpha);
+	mainColorRect->getMesh()->getVertex(1)->vertexColor = hueCol;
+	mainColorRect->getMesh()->getVertex(2)->vertexColor = Color(0.0,0.0,0.0,colorAlpha);
+	mainColorRect->getMesh()->getVertex(3)->vertexColor = Color(0.0,0.0,0.0,colorAlpha);	
 	mainColorRect->getMesh()->arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
 			
 	if(updateHue) {

@@ -30,7 +30,6 @@
 #include "PolyConfig.h"
 #include "PolyPerlin.h"
 #include "PolyEntity.h"
-#include "PolyPolygon.h"
 #include "PolyEvent.h"
 #include "PolyEventDispatcher.h"
 #include "PolyEventHandler.h"

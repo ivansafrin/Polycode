@@ -39,7 +39,6 @@ SET(polycore_SRCS
     Source/PolyObject.cpp
     Source/PolyParticleEmitter.cpp
     Source/PolyPerlin.cpp
-    Source/PolyPolygon.cpp
     Source/PolyQuaternion.cpp
     Source/PolyQuaternionCurve.cpp
     Source/PolyRectangle.cpp
@@ -125,7 +124,6 @@ SET(polycore_HDRS
     Include/PolyObject.h
     Include/PolyParticleEmitter.h
     Include/PolyPerlin.h
-    Include/PolyPolygon.h
     Include/PolyQuaternionCurve.h
     Include/PolyQuaternion.h
     Include/PolyRectangle.h

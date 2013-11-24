@@ -25,7 +25,6 @@ THE SOFTWARE.
 #include "PolyPhysicsScreenEntity.h"
 #include "PolyLogger.h"
 #include "PolyMesh.h"
-#include "PolyPolygon.h"
 #include "PolyEntity.h"
 
 using namespace Polycode;
