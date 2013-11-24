@@ -109,3 +109,12 @@ void Vertex::setTexCoord(Number u, Number v) {
 	texCoord.x = u;
 	texCoord.y = v;
 }
+
+Vector2 Vertex::getSecondaryTexCoord() {
+	return secondaryTexCoord;
+}
+
+void Vertex::setSecondaryTexCoord(Number u, Number v) {
+	secondaryTexCoord.x = u;
+	secondaryTexCoord.y = v;
+}

@@ -12,6 +12,13 @@ bool hasWeights = false;
 vector<aiBone*> bones;
 unsigned int numBones = 0;
 
+bool writeNormals = false;
+bool writeTangents = false;
+bool writeColors = false;
+bool writeBoneWeights = false;
+bool writeUVs = false;
+bool writeSecondaryUVs = false;
+
 unsigned int addBone(aiBone *bone) {
 	for(int i=0; i < bones.size(); i++) {
 		if(bones[i]->mName == bone->mName)
@@ -30,6 +37,7 @@ void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, c
 	
 		if(!addSubmeshes) {
 			tmesh = new Polycode::Mesh(Mesh::TRI_MESH);
+            tmesh->indexedMesh = true;
 		}
 	
 		const struct aiMesh* mesh = scene->mMeshes[nd->mMeshes[n]];
@@ -41,61 +49,73 @@ void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, c
 			printf("Importing mesh:%s (%d vertices) (%d faces) \n", mesh->mName.data, mesh->mNumVertices, mesh->mNumFaces);
 		}
 		//apply_material(sc->mMaterials[mesh->mMaterialIndex]);
+        
+		for (t = 0; t < mesh->mNumVertices; ++t) {
+            Vertex *vertex = new Vertex();
+            int index = t;
+            if(mesh->mColors[0] != NULL) {
+                vertex->vertexColor.setColorRGBA(mesh->mColors[0][index].r, mesh->mColors[0][index].g, mesh->mColors[0][index].b, mesh->mColors[0][index].a);
+            }
 
-		for (t = 0; t < mesh->mNumFaces; ++t) {
-			const struct aiFace* face = &mesh->mFaces[t];
-	
-			for(i = 0; i < face->mNumIndices; i++) {
-				Vertex *vertex = new Vertex();
+            if(mesh->mTangents != NULL)  {
+                if(swapZY)
+                    vertex->tangent = Vector3(mesh->mTangents[index].x, mesh->mTangents[index].z, -mesh->mTangents[index].y);
+                else
+                    vertex->tangent = Vector3(mesh->mTangents[index].x, mesh->mTangents[index].y, mesh->mTangents[index].z);
+            }
 
-				int index = face->mIndices[i];
-				if(mesh->mColors[0] != NULL) {
-					vertex->vertexColor.setColorRGBA(mesh->mColors[0][index].r, mesh->mColors[0][index].g, mesh->mColors[0][index].b, mesh->mColors[0][index].a);
-				}
+            if(mesh->mNormals != NULL)  {
+                if(swapZY)
+                    vertex->setNormal(mesh->mNormals[index].x, mesh->mNormals[index].z, -mesh->mNormals[index].y);
+                else
+                    vertex->setNormal(mesh->mNormals[index].x, mesh->mNormals[index].y, mesh->mNormals[index].z);
+            }
 
-				if(mesh->mTangents != NULL)  {
-					if(swapZY)
-						vertex->tangent = Vector3(mesh->mTangents[index].x, mesh->mTangents[index].z, -mesh->mTangents[index].y);
-					else
-						vertex->tangent = Vector3(mesh->mTangents[index].x, mesh->mTangents[index].y, mesh->mTangents[index].z);
-				}
+            if(mesh->HasTextureCoords(0))
+            {
+                vertex->setTexCoord(mesh->mTextureCoords[0][index].x, mesh->mTextureCoords[0][index].y);
+            }
 
-				if(mesh->mNormals != NULL)  {
-					if(swapZY)
-						vertex->setNormal(mesh->mNormals[index].x, mesh->mNormals[index].z, -mesh->mNormals[index].y);
-					else
-						vertex->setNormal(mesh->mNormals[index].x, mesh->mNormals[index].y, mesh->mNormals[index].z);
-				}
+            if(mesh->HasTextureCoords(1))
+            {
+                vertex->setSecondaryTexCoord(mesh->mTextureCoords[1][index].x, mesh->mTextureCoords[1][index].y);
+            }
 
-				if(mesh->HasTextureCoords(0))
-				{
-					vertex->setTexCoord(mesh->mTextureCoords[0][index].x, mesh->mTextureCoords[0][index].y);
-				}
+            
+            for( unsigned int a = 0; a < mesh->mNumBones; a++) {
+                aiBone* bone = mesh->mBones[a];
+                unsigned int boneIndex = addBone(bone);
 
-				for( unsigned int a = 0; a < mesh->mNumBones; a++) {
-					aiBone* bone = mesh->mBones[a];
-					unsigned int boneIndex = addBone(bone);
+                for( unsigned int b = 0; b < bone->mNumWeights; b++) {
+                    if(bone->mWeights[b].mVertexId == index) {
+                        vertex->addBoneAssignment(boneIndex, bone->mWeights[b].mWeight);
+                        hasWeights = true;
+                    }
+                }
+            }
 
-					for( unsigned int b = 0; b < bone->mNumWeights; b++) {
-						if(bone->mWeights[b].mVertexId == index) {
-							vertex->addBoneAssignment(boneIndex, bone->mWeights[b].mWeight);
-							hasWeights = true;
-						}
-					}
-				}
-	
-				if(swapZY)
+            if(swapZY) {
 					vertex->set(mesh->mVertices[index].x, mesh->mVertices[index].z, -mesh->mVertices[index].y);
-				else
-					vertex->set(mesh->mVertices[index].x, mesh->mVertices[index].y, mesh->mVertices[index].z);
-				tmesh->addVertex(vertex);
-			}
+            } else {
+                vertex->set(mesh->mVertices[index].x, mesh->mVertices[index].y, mesh->mVertices[index].z);
+            }
+            tmesh->addVertex(vertex);
 		}
+        
+
+         for (t = 0; t < mesh->mNumFaces; ++t) {
+             const struct aiFace* face = &mesh->mFaces[t];
+
+             for(i = 0; i < face->mNumIndices; i++) {
+                 int index = face->mIndices[i];
+                 tmesh->addIndex(index);
+             }
+         }
 		
 		if(!addSubmeshes && !listOnly) {
 			String fileNameMesh = prefix+String(nd->mName.data)+".mesh";			
 			OSFILE *outFile = OSBasics::open(fileNameMesh.c_str(), "wb");	
-			tmesh->saveToFile(outFile);
+			tmesh->saveToFile(outFile, writeNormals, writeTangents, writeColors, writeBoneWeights, writeUVs, writeSecondaryUVs);
 			OSBasics::close(outFile);
 			delete tmesh;
 		}
@@ -139,6 +159,7 @@ void addToISkeleton(ISkeleton *skel, IBone *parent, const struct aiScene *sc, co
 int exportToFile(String prefix, bool swapZY, bool addSubmeshes, bool listOnly) {
 		
 	Polycode::Mesh *mesh = new Polycode::Mesh(Mesh::TRI_MESH);
+    mesh->indexedMesh = true;
 	addToMesh(prefix, mesh, scene, scene->mRootNode, swapZY, addSubmeshes, listOnly);
 	
 	if(addSubmeshes) {		
@@ -153,7 +174,7 @@ int exportToFile(String prefix, bool swapZY, bool addSubmeshes, bool listOnly) {
 			printf("%s\n", fileNameMesh.c_str());
 		} else {
 			OSFILE *outFile = OSBasics::open(fileNameMesh.c_str(), "wb");	
-			mesh->saveToFile(outFile);
+			mesh->saveToFile(outFile, writeNormals, writeTangents, writeColors, writeBoneWeights, writeUVs, writeSecondaryUVs);
 			OSBasics::close(outFile);
 		}
 	}
@@ -234,12 +255,30 @@ int main(int argc, char **argv) {
 	bool addSubmeshes = false;
 	bool listOnly = false;
 	bool showAssimpDebug = false;
-	
+	   
 	String prefix;
 	
 	int opt;
-	while ((opt = getopt(argc, argv, "adlhp:st")) != -1) {
+	while ((opt = getopt(argc, argv, "ngcwuvadlhp:st")) != -1) {
 		switch ((char)opt) {
+            case 'n':
+                writeNormals = true;
+            break;
+            case 'g':
+                writeTangents = true;
+            break;
+            case 'c':
+                writeColors = true;
+            break;
+            case 'w':
+                writeBoneWeights = true;
+            break;
+            case 'u':
+                writeUVs = true;
+            break;
+            case 'v':
+                writeSecondaryUVs = true;
+            break;
 			case 's':
 				swapZYAxis = true;
 			break;
@@ -280,15 +319,24 @@ int main(int argc, char **argv) {
 		return 0;		
 	}
 	
-	if(showHelp) {
-		printf("usage: polyimport [-adhlst] [-p output_prefix] source_file\n\n");
-		printf("a: Add all meshes to a single mesh.\n");
+	if(showHelp || argc < 2) {
+		printf("usage: polyimport [-adhlstngcwuv] [-p output_prefix] source_file\n\n");
+		printf("Misc options:\n");
 		printf("d: Show Assimp debug info.\n");
-		printf("h: Show this help.\n");		
-		printf("l: List output files, but do not convert.\n");				
-		printf("p: Specify a file prefix for exported files.\n");			
+		printf("h: Show this help.\n");
+		printf("l: List output files, but do not convert.\n");
+		printf("p: Specify a file prefix for exported files.\n\n");
+		printf("Mesh import options:\n");
+		printf("a: Add all meshes to a single mesh.\n");
 		printf("s: Swap Z/Y axis (e.g. import from Blender)\n");
-		printf("t: Generate tangents.\n");
+		printf("t: Generate tangents.\n\n");
+		printf("Mesh export options:\n");
+		printf("n: Export normals\n");
+		printf("g: Export tangents\n");
+		printf("c: Export colors\n");
+		printf("w: Export bone weights\n");
+		printf("u: Export UV coordinates\n");
+		printf("v: Export secondary UV coordinates\n");
 		printf("\n");
 		return 0;
 	}
@@ -300,25 +348,22 @@ int main(int argc, char **argv) {
 		stream = aiGetPredefinedLogStream(aiDefaultLogStream_STDOUT,NULL);
 		aiAttachLogStream(&stream);
 	}
-	
-	if(argc < 2) {
-		printf("Please specify input filename\n");
-		return 0;
-	}	
-	
+		
 	int inputArg = argc-1;
 
 	if(!listOnly) {
 		printf("Loading %s...\n", argv[inputArg]);
 	}
 	
-	scene = aiImportFile(argv[inputArg],aiProcessPreset_TargetRealtime_Quality);
-	
-	if(generateTangents && !listOnly) {
-		aiApplyPostProcessing(scene, aiProcess_CalcTangentSpace);
-	}
-	
-	if(scene) {
+	scene = aiImportFile(argv[inputArg], aiProcess_JoinIdenticalVertices|
+                         aiProcess_Triangulate);
+    
+    if(scene) {
+        
+        if(generateTangents && !listOnly) {
+            aiApplyPostProcessing(scene, aiProcess_CalcTangentSpace);
+        }
+        
 		exportToFile(prefix, swapZYAxis, addSubmeshes, listOnly);
 	} else {
 		printf("Error opening scene...\n");

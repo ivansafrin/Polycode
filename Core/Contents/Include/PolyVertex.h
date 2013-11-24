@@ -147,7 +147,10 @@ namespace Polycode {
 			* @param v New vertical texture coordinate.			
 			*/
 			void setTexCoord(Number u, Number v);
-			
+
+			Vector2 getSecondaryTexCoord();
+            void setSecondaryTexCoord(Number u, Number v);
+        
 			/**
 			* Sets the normal
 			* @param x Normal x.
@@ -185,7 +188,8 @@ namespace Polycode {
 			* Texture coordinates
 			*/
 			Vector2 texCoord;
-			
+			Vector2 secondaryTexCoord;
+        
 			bool useVertexColor;
 				
 		protected:

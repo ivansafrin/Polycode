@@ -113,7 +113,7 @@ void PolycodeToolLauncher::buildProject(PolycodeProject *project, String destina
 
 }
 
-String PolycodeToolLauncher::importAssets(String sourceFile, String inFolder, bool addMeshes, String prefix, bool swapZY, bool generateTangents, bool listOnly) {
+String PolycodeToolLauncher::importAssets(String sourceFile, String inFolder, bool addMeshes, String prefix, bool swapZY, bool generateTangents, bool listOnly, bool writeNormals, bool writeTangents, bool writeColors, bool writeBoneWeights, bool writeUVs, bool writeSecondaryUVs) {
 
 	String ret;
 	String polycodeBasePath = CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory();
@@ -131,9 +131,29 @@ String PolycodeToolLauncher::importAssets(String sourceFile, String inFolder, bo
 	if(generateTangents) {
 		args = "-t "+args;
 	}
+    if(writeNormals) {
+		args = "-n "+args;
+    }
+    if(writeTangents) {
+		args = "-g "+args;
+    }
+    if(writeColors) {
+		args = "-c "+args;
+    }
+    if(writeBoneWeights) {
+		args = "-w "+args;
+    }
+    if(writeUVs) {
+		args = "-u "+args;
+    }
+    if(writeSecondaryUVs) {
+		args = "-v "+args;
+    }
+    
 	if(prefix != "") {
 		args = "-p "+prefix+" "+args;
 	}
+    
 
 	
 #ifdef _WINDOWS

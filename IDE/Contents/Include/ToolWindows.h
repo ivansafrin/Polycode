@@ -112,7 +112,14 @@ class AssetImporterWindow : public UIWindow {
 		UICheckBox *addMeshesCheckbox;
 		UICheckBox *generateTangensCheckbox;
 		UICheckBox *swapZYAxisCheckbox;
-				
+
+        UICheckBox *exportNormals;
+        UICheckBox *exportTangents;
+        UICheckBox *exportColors;
+        UICheckBox *exportBoneWeights;
+        UICheckBox *exportUVs;
+        UICheckBox *exportSecondaryUVs;
+    
 		Entity *filesAnchor;
 		UIScrollContainer *filesScroller;
 

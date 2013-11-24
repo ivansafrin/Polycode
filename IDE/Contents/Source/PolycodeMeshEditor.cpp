@@ -131,7 +131,7 @@ bool PolycodeMeshEditor::openFile(OSFileEntry filePath) {
 	previewBase->addChild(previewMesh);
 	previewMesh->setMaterialByName("Default");
 	PolycodeEditor::openFile(filePath);
-	
+
 	previewMesh->alphaTest = true;
 	CoreServices::getInstance()->getRenderer()->alphaTestValue = 0.9;
 	

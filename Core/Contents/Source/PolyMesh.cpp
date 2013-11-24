@@ -37,12 +37,13 @@ Mesh::Mesh(const String& fileName) {
         renderDataArrays[i] = NULL;
     }
 
-    
+    indexedMesh = false;
     meshType = TRI_MESH;
     meshHasVertexBuffer = false;
     loadMesh(fileName);
     vertexBuffer = NULL;			
     useVertexColors = false;
+    useFaceNormals = false;
 }
 
 Mesh::Mesh(int meshType) {
@@ -53,7 +54,9 @@ Mesh::Mesh(int meshType) {
     this->meshType = meshType;
     meshHasVertexBuffer = false;		
     vertexBuffer = NULL;
-    useVertexColors = false;				
+    useVertexColors = false;
+    indexedMesh = false;
+    useFaceNormals = false;
 }
 
 Mesh *Mesh::MeshFromFileName(String& fileName) {
@@ -80,12 +83,24 @@ void Mesh::clearMesh() {
             renderDataArrays[i] = NULL;
         }
     }
+    indexedMesh = false;
+    useFaceNormals = false;
     meshHasVertexBuffer = false;
 }
 
 VertexBuffer *Mesh::getVertexBuffer() {
     return vertexBuffer;
 }
+
+void Mesh::setUseFaceNormals(bool val) {
+    useFaceNormals = val;
+    arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;
+}
+
+bool Mesh::getUseFaceNormals() {
+    return useFaceNormals;
+}
+
 
 void Mesh::setVertexBuffer(VertexBuffer *buffer) {
     vertexBuffer = buffer;
@@ -104,10 +119,36 @@ Number Mesh::getRadius() {
     return hRad;
 }
 
-void Mesh::saveToFile(OSFILE *outFile) {				
+void Mesh::saveToFile(OSFILE *outFile, bool writeNormals, bool writeTangents, bool writeColors, bool writeBoneWeights, bool writeUVs, bool writeSecondaryUVs) {
+    
+    unsigned char meshFlags = 0;
+    
+    if(indexedMesh) {
+        meshFlags |= 1 << 0;
+    }
+    if(writeNormals) {
+        meshFlags |= 1 << 1;
+    }
+    if(writeTangents) {
+        meshFlags |= 1 << 2;
+    }
+    if(writeColors) {
+        meshFlags |= 1 << 3;
+    }
+    if(writeUVs) {
+        meshFlags |= 1 << 4;
+    }
+    if(writeSecondaryUVs) {
+        meshFlags |= 1 << 5;
+    }
+    if(writeBoneWeights) {
+        meshFlags |= 1 << 6;
+    }
+    
+    OSBasics::write(&meshFlags, sizeof(unsigned char), 1, outFile);
+    
     unsigned int numVertices = vertices.size();
-
-    OSBasics::write(&meshType, sizeof(unsigned int), 1, outFile);		
+    OSBasics::write(&meshType, sizeof(unsigned int), 1, outFile);
     OSBasics::write(&numVertices, sizeof(unsigned int), 1, outFile);
 
     Vector3_struct pos;
@@ -115,7 +156,8 @@ void Mesh::saveToFile(OSFILE *outFile) {
     Vector3_struct tan;
     Vector4_struct col;
     Vector2_struct tex;
-
+    Vector2_struct tex2;
+    
     for(int i=0; i < vertices.size(); i++) {
         pos.x =  vertices[i]->x;
         pos.y =  vertices[i]->y;
@@ -136,30 +178,66 @@ void Mesh::saveToFile(OSFILE *outFile) {
         
         tex.x = vertices[i]->getTexCoord().x;
         tex.y = vertices[i]->getTexCoord().y;
-        
-        OSBasics::write(&pos, sizeof(Vector3_struct), 1, outFile);
-        OSBasics::write(&nor, sizeof(Vector3_struct), 1, outFile);
-        OSBasics::write(&tan, sizeof(Vector3_struct), 1, outFile);				
-        OSBasics::write(&col, sizeof(Vector4_struct), 1, outFile);				
-        OSBasics::write(&tex, sizeof(Vector2_struct), 1, outFile);
 
-        unsigned int numBoneWeights = vertices[i]->getNumBoneAssignments();
-        OSBasics::write(&numBoneWeights, sizeof(unsigned int), 1, outFile);					
-        for(int b=0; b < numBoneWeights; b++) {
-            BoneAssignment *a = vertices[i]->getBoneAssignment(b);
-            unsigned int boneID = a->boneID;
-            float weight = a->weight;
-            OSBasics::write(&boneID, sizeof(unsigned int), 1, outFile);
-            OSBasics::write(&weight, sizeof(float), 1, outFile);												
+        tex2.x = vertices[i]->getSecondaryTexCoord().x;
+        tex2.y = vertices[i]->getSecondaryTexCoord().y;
+
+        OSBasics::write(&pos, sizeof(Vector3_struct), 1, outFile);
+        
+        if(writeNormals) {
+            OSBasics::write(&nor, sizeof(Vector3_struct), 1, outFile);
+        }
+        if(writeTangents) {
+            OSBasics::write(&tan, sizeof(Vector3_struct), 1, outFile);
+        }
+        if(writeColors) {
+            OSBasics::write(&col, sizeof(Vector4_struct), 1, outFile);
+        }
+        if(writeUVs) {
+            OSBasics::write(&tex, sizeof(Vector2_struct), 1, outFile);
+        }
+        if(writeSecondaryUVs) {
+            OSBasics::write(&tex2, sizeof(Vector2_struct), 1, outFile);
+        }
+        
+        if(writeBoneWeights) {
+            unsigned int numBoneWeights = vertices[i]->getNumBoneAssignments();
+            OSBasics::write(&numBoneWeights, sizeof(unsigned int), 1, outFile);					
+            for(int b=0; b < numBoneWeights; b++) {
+                BoneAssignment *a = vertices[i]->getBoneAssignment(b);
+                unsigned int boneID = a->boneID;
+                float weight = a->weight;
+                OSBasics::write(&boneID, sizeof(unsigned int), 1, outFile);
+                OSBasics::write(&weight, sizeof(float), 1, outFile);												
+            }
+        }
+    }
+    
+    if(indexedMesh) {
+        unsigned int numIndices = indices.size();
+        OSBasics::write(&numIndices, sizeof(unsigned int), 1, outFile);
+        for(int i=0; i < numIndices; i++) {
+            OSBasics::write(&indices[i], sizeof(unsigned int), 1, outFile);
         }
     }
 }
 
 
 void Mesh::loadFromFile(OSFILE *inFile) {
-
+    
+    unsigned char meshFlags;
+    OSBasics::read(&meshFlags, sizeof(unsigned char), 1, inFile);
+    
+    indexedMesh = meshFlags & (1 << 0);
+    bool hasNormals = meshFlags & (1 << 1);
+    bool hasTangents = meshFlags & (1 << 2);
+    bool hasColors = meshFlags & (1 << 3);
+    bool hasUV = meshFlags & (1 << 4);
+    bool hasSecondaryUVs = meshFlags & (1 << 5);
+    bool hasBoneWeights = meshFlags & (1 << 6);
+    
     unsigned int meshType;		
-    OSBasics::read(&meshType, sizeof(unsigned int), 1, inFile);				
+    OSBasics::read(&meshType, sizeof(unsigned int), 1, inFile);
     setMeshType(meshType);
     
     unsigned int numVertices;
@@ -173,47 +251,70 @@ void Mesh::loadFromFile(OSFILE *inFile) {
     
     for(int i=0; i < numVertices; i++) {
         OSBasics::read(&pos, sizeof(Vector3_struct), 1, inFile);
-        OSBasics::read(&nor, sizeof(Vector3_struct), 1, inFile);
-        OSBasics::read(&tan, sizeof(Vector3_struct), 1, inFile);				
-        OSBasics::read(&col, sizeof(Vector4_struct), 1, inFile);						
-        OSBasics::read(&tex, sizeof(Vector2_struct), 1, inFile);						
-        
         Vertex *vertex = new Vertex(pos.x, pos.y, pos.z);
-        vertex->setNormal(nor.x,nor.y, nor.z);
-        vertex->tangent = Vector3(tan.x, tan.y, tan.z);
-        vertex->restNormal.set(nor.x,nor.y, nor.z);
-        vertex->vertexColor.setColor(col.x,col.y, col.z, col.w);
-        vertex->setTexCoord(tex.x, tex.y);
         
-        unsigned int numBoneWeights;
-        OSBasics::read(&numBoneWeights, sizeof(unsigned int), 1, inFile);								
-        for(int b=0; b < numBoneWeights; b++) {
-            float weight;
-            unsigned int boneID;
-            OSBasics::read(&boneID, sizeof(unsigned int), 1, inFile);													
-            OSBasics::read(&weight, sizeof(float), 1, inFile);																		
-            vertex->addBoneAssignment(boneID, weight);
+        if(hasNormals) {
+            OSBasics::read(&nor, sizeof(Vector3_struct), 1, inFile);
+            vertex->setNormal(nor.x,nor.y, nor.z);
+            vertex->restNormal.set(nor.x,nor.y, nor.z);
+        }
+        if(hasTangents) {
+            OSBasics::read(&tan, sizeof(Vector3_struct), 1, inFile);
+            vertex->tangent = Vector3(tan.x, tan.y, tan.z);
         }
         
-        Number totalWeight = 0;				
-        for(int m=0; m < vertex->getNumBoneAssignments(); m++) {
-            BoneAssignment *ba = vertex->getBoneAssignment(m);					
-            totalWeight += ba->weight;
-        }				
-
-        for(int m=0; m < vertex->getNumBoneAssignments(); m++) {
-            BoneAssignment *ba = vertex->getBoneAssignment(m);					
-            ba->weight = ba->weight/totalWeight;
-        }				
+        if(hasColors) {
+            OSBasics::read(&col, sizeof(Vector4_struct), 1, inFile);
+            vertex->vertexColor.setColor(col.x,col.y, col.z, col.w);
+        }
         
+        if(hasUV) {
+            OSBasics::read(&tex, sizeof(Vector2_struct), 1, inFile);
+            vertex->setTexCoord(tex.x, tex.y);
+        }
+        
+        if(hasSecondaryUVs) {
+            OSBasics::read(&tex, sizeof(Vector2_struct), 1, inFile);
+            vertex->setSecondaryTexCoord(tex.x, tex.y);
+        }
+        
+        if(hasBoneWeights) {
+            unsigned int numBoneWeights;
+            OSBasics::read(&numBoneWeights, sizeof(unsigned int), 1, inFile);								
+            for(int b=0; b < numBoneWeights; b++) {
+                float weight;
+                unsigned int boneID;
+                OSBasics::read(&boneID, sizeof(unsigned int), 1, inFile);													
+                OSBasics::read(&weight, sizeof(float), 1, inFile);																		
+                vertex->addBoneAssignment(boneID, weight);
+            }
+            
+            Number totalWeight = 0;				
+            for(int m=0; m < vertex->getNumBoneAssignments(); m++) {
+                BoneAssignment *ba = vertex->getBoneAssignment(m);					
+                totalWeight += ba->weight;
+            }				
+
+            for(int m=0; m < vertex->getNumBoneAssignments(); m++) {
+                BoneAssignment *ba = vertex->getBoneAssignment(m);					
+                ba->weight = ba->weight/totalWeight;
+            }				
+        }
         addVertex(vertex);
     }
+    
+    if(indexedMesh) {
+        unsigned int numIndices;
+        OSBasics::read(&numIndices, sizeof(unsigned int), 1, inFile);
+        indices.clear();
+        unsigned int val;
+        for(int i=0; i < numIndices; i++) {
+            OSBasics::read(&val, sizeof(unsigned int), 1, inFile);
+            indices.push_back(val);
+        }
+    }
 
-    arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
-    arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
-    arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;
-    arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;	
-    arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;								
+    dirtyArrays();
 }
 
 Vertex *Mesh::addVertex(Number x, Number y, Number z) {
@@ -232,12 +333,12 @@ Vertex *Mesh::addVertex(Number x, Number y, Number z, Number u, Number v) {
     return vertex;
 }
 
-void Mesh::saveToFile(const String& fileName) {
+void Mesh::saveToFile(const String& fileName, bool writeNormals, bool writeTangents, bool writeColors, bool writeBoneWeights, bool writeUVs, bool writeSecondaryUVs) {
     OSFILE *outFile = OSBasics::open(fileName, "wb");
     if(!outFile) {
         Logger::log("Error opening mesh file for saving: %s", fileName.c_str());
     }
-    saveToFile(outFile);
+    saveToFile(outFile, writeNormals, writeTangents, writeColors, writeBoneWeights, writeUVs, writeSecondaryUVs);
     OSBasics::close(outFile);	
 
 }
@@ -423,7 +524,6 @@ void Mesh::createSphere(Number _radius, int _segmentsH, int _segmentsW) {
         Number horangle = ((float)j) / ((float)_segmentsH) * PI;
         Number z = -_radius * cos(horangle);
         Number ringradius = _radius * sin(horangle);
-
         for (int i = 0; i < _segmentsW; i++) {
             Number verangle = 2.0 * ((float)i) / ((float)_segmentsW) * PI;
             Number x = ringradius * sin(verangle);
@@ -483,7 +583,11 @@ void Mesh::createSphere(Number _radius, int _segmentsH, int _segmentsW) {
 }
 
 unsigned int Mesh::getVertexCount() {
-    return vertices.size();
+    if(indexedMesh) {
+        return indices.size();
+    } else {
+        return vertices.size();
+    }
 }
 
 void Mesh::createTorus(Number radius, Number tubeRadius, int rSegments, int tSegments) {
@@ -641,64 +745,58 @@ void Mesh::createCone(Number height, Number radius, int numSegments) {
 
 }
 
+void Mesh::addIndex(unsigned int index) {
+    indices.push_back(index);
+}
+
+void Mesh::addIndexedFace(unsigned int i1, unsigned int i2, unsigned int i3) {
+    indices.push_back(i1);
+    indices.push_back(i2);
+    indices.push_back(i3);
+}
+
+void Mesh::addIndexedFace(unsigned int i1, unsigned int i2, unsigned int i3, unsigned int i4) {
+    indices.push_back(i1);
+    indices.push_back(i2);
+    indices.push_back(i3);
+    indices.push_back(i4);
+}
+
 void Mesh::createBox(Number w, Number d, Number h) {
     setMeshType(Mesh::TRI_MESH);
+    indexedMesh = true;
     
     addVertex(w,0,h, 1, 1);
     addVertex(0,0,h, 1, 0);
     addVertex(0,0,0,0,0);
-    
-    addVertex(w,0,h, 1, 1);
-    addVertex(0,0,0,0,0);
     addVertex(w,0,0,0,1);
-
     addVertex(w,d,h, 1, 1);
-    addVertex(w,d,0, 1, 0);
+    addVertex(0,d,h, 1, 0);
     addVertex(0,d,0,0,0);
-
-    addVertex(w,d,h, 1, 1);
-    addVertex(0,d,0,0,0);
-    addVertex(0,d,h,0,1);
-
-    addVertex(0,d,0,0,1);
-    addVertex(w,d,0, 1, 1);
-    addVertex(w,0,0, 1, 0);
-
-    addVertex(0,d,0,0,1);
-    addVertex(w,0,0, 1, 0);
-    addVertex(0,0,0,0,0);
-
-    addVertex(0,0,h,0,0);
-    addVertex(w,0,h, 1, 0);
-    addVertex(w,d,h, 1, 1);
-
-    addVertex(0,0,h,0,0);
-    addVertex(w,d,h, 1, 1);
-    addVertex(0,d,h,0,1);
-
-    addVertex(0,0,h,0,1);
-    addVertex(0,d,h, 1, 1);
-    addVertex(0,d,0, 1, 0);
-
-    addVertex(0,0,h,0,1);
-    addVertex(0,d,0, 1, 0);
-    addVertex(0,0,0,0,0);
-
-    addVertex(w,0,h,0,1);
-    addVertex(w,0,0, 1, 1);
-    addVertex(w,d,0, 1, 0);
-
-    addVertex(w,0,h,0,1);
-    addVertex(w,d,0, 1, 0);
-    addVertex(w,d,h,0,0);
+    addVertex(w,d,0,0,1);
 
     for(int i=0; i < vertices.size(); i++) {
         vertices[i]->x = vertices[i]->x - (w/2.0f);
         vertices[i]->y = vertices[i]->y - (d/2.0f);
         vertices[i]->z = vertices[i]->z - (h/2.0f);
     }
+    
+    addIndexedFace(0, 1, 2);
+    addIndexedFace(0, 2, 3);
+    addIndexedFace(4, 7, 6);
+    addIndexedFace(4, 6, 5);
+    addIndexedFace(6, 7, 3);
+    addIndexedFace(6, 3, 2);
+    addIndexedFace(1, 0, 4);
+    addIndexedFace(1, 4, 5);
+    addIndexedFace(1, 5, 6);
+    addIndexedFace(1, 6, 2);
+    addIndexedFace(0, 3, 7);
+    addIndexedFace(0, 7, 4);
 
-    calculateNormals(false);
+    calculateNormals(true);
+    setUseFaceNormals(true);
+    
     calculateTangents();
     arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
     arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
@@ -719,7 +817,11 @@ void Mesh::dirtyArrays() {
 }
 
 Vertex *Mesh::getVertex(unsigned int index) const {
-    return vertices[index];
+    if(indexedMesh) {
+        return vertices[indices[index]];
+    } else {
+        return vertices[index];
+    }
 }
 
 void Mesh::calculateTangents() {
@@ -727,25 +829,47 @@ void Mesh::calculateTangents() {
     arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;		
 }
 
-void Mesh::calculateNormals(bool smooth, Number smoothAngle) {
+Vector3 Mesh::getFaceNormalForVertex(unsigned int index) {
+    unsigned int faceNormalIndex;
+    if(meshType == Mesh::QUAD_MESH) {
+        faceNormalIndex = floor(index/4);
+    } else {
+        faceNormalIndex = floor(index/3);
+    }
+    
+    if(faceNormalIndex < faceNormals.size()) {
+        return faceNormals[faceNormalIndex];
+    } else {
+        return Vector3();
+    }
+}
+
+void Mesh::calculateNormals(bool generateFaceNormals) {
     
     int polySize = 3;
     if(meshType == Mesh::QUAD_MESH) {
         polySize = 4;
     }
     
+    faceNormals.clear();
     for(int i=0; i < vertices.size(); i++) {
         vertices[i]->normal = Vector3();
     }
 
-    for(int i=0; i+2 < vertices.size(); i += polySize) {
-        const Vector3 e1 = *(vertices[i]) - *(vertices[i+1]);
-        const Vector3 e2 = *(vertices[i+2]) - *(vertices[i+1]);
-        const Vector3 no = e1.crossProduct(e2);
+    if(indexedMesh) {
+        for(int i=0; i+polySize-1 < indices.size(); i += polySize) {
+            const Vector3 e1 = *(vertices[indices[i]]) - *(vertices[indices[i+1]]);
+            const Vector3 e2 = *(vertices[indices[i+2]]) - *(vertices[indices[i+1]]);
+            const Vector3 no = e1.crossProduct(e2);
+                
+            vertices[indices[i]]->normal -= no;
+            vertices[indices[i+1]]->normal -= no;
+            vertices[indices[i+2]]->normal -= no;
             
-        vertices[i]->normal -= no;
-        vertices[i+1]->normal -= no;
-        vertices[i+2]->normal -= no;
+            if(generateFaceNormals) {
+                faceNormals.push_back(no * -1.0);
+            }
+        }
     }
     
     arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;		

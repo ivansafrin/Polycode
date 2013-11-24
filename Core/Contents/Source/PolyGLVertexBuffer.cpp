@@ -97,9 +97,16 @@ OpenGLVertexBuffer::OpenGLVertexBuffer(Mesh *mesh) : VertexBuffer() {
 	for(int i=0; i < mesh->getVertexCount(); i++) {
         newBufferSize = bufferSize + 3;
         buffer = (GLfloat*)realloc(buffer, newBufferSize * sizeof(GLfloat));
-        buffer[bufferSize+0] = mesh->getVertex(i)->normal.x;
-        buffer[bufferSize+1] = mesh->getVertex(i)->normal.y;
-        buffer[bufferSize+2] = mesh->getVertex(i)->normal.z;
+        if(mesh->getUseFaceNormals()) {
+            Vector3 n = mesh->getFaceNormalForVertex(i);
+            buffer[bufferSize+0] = n.x;
+            buffer[bufferSize+1] = n.y;
+            buffer[bufferSize+2] = n.z;
+        } else {
+            buffer[bufferSize+0] = mesh->getVertex(i)->normal.x;
+            buffer[bufferSize+1] = mesh->getVertex(i)->normal.y;
+            buffer[bufferSize+2] = mesh->getVertex(i)->normal.z;
+        }
         bufferSize = newBufferSize;
 	}
 	

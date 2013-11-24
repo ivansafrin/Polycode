@@ -152,10 +152,10 @@ namespace Polycode {
 			* Saves mesh to a file.
 			* @param fileName Path to file to save to.
 			*/			
-			void saveToFile(const String& fileName);
+			void saveToFile(const String& fileName, bool writeNormals = true, bool writeTangents = true, bool writeColors = true, bool writeBoneWeights = true, bool writeUVs = true, bool writeSecondaryUVs = false);
 
 			void loadFromFile(OSFILE *inFile);
-			void saveToFile(OSFILE *outFile);
+			void saveToFile(OSFILE *outFile, bool writeNormals = true, bool writeTangents = true, bool writeColors = true, bool writeBoneWeights = true, bool writeUVs = true, bool writeSecondaryUVs = false);
 			
 			
 			/**
@@ -274,7 +274,7 @@ namespace Polycode {
 			* @param smooth If true, will use smooth normals.
 			* @param smoothAngle If smooth, this parameter sets the angle tolerance for the approximation function.
 			*/
-			void calculateNormals(bool smooth=true, Number smoothAngle=90.0);	
+			void calculateNormals(bool generateFaceNormals = false);
 
 			/**
 			* Recalculates the tangent space vector for all vertices.
@@ -295,6 +295,9 @@ namespace Polycode {
 			void dirtyArray(unsigned int arrayIndex);
 			void dirtyArrays();
 
+            void setUseFaceNormals(bool val);
+            bool getUseFaceNormals();
+        
 			/**
 			* Calculates the mesh bounding box.
 			*/
@@ -358,13 +361,24 @@ namespace Polycode {
 			* If set to true, the renderer will use the vertex colors instead of entity color transform to render this mesh.
 			*/
 			bool useVertexColors;
-			
-		
+            bool indexedMesh;
+        
+            void addIndexedFace(unsigned int i1, unsigned int i2, unsigned int i3);
+            void addIndexedFace(unsigned int i1, unsigned int i2, unsigned int i3, unsigned int i4);
+            void addIndex(unsigned int index);
+        
+            Vector3 getFaceNormalForVertex(unsigned int index);
+        
 		protected:
-					
+        
+            bool useFaceNormals;
+        
             VertexBuffer *vertexBuffer;
             bool meshHasVertexBuffer;
             int meshType;
+        
+            std::vector<Vector3> faceNormals;
+            std::vector<unsigned int> indices;
             std::vector <Vertex*> vertices;
 	};
 }
