@@ -739,6 +739,14 @@ void Mesh::addIndex(unsigned int index) {
     indices.push_back(index % vertices.size());
 }
 
+Vertex *Mesh::getActualVertex(unsigned int index) const {
+    if(index < vertices.size()) {
+        return vertices[index];
+    } else {
+        return NULL;
+    }
+}
+
 void Mesh::addIndexedFace(unsigned int i1, unsigned int i2, unsigned int i3) {
     if(!vertices.size()) {
         return;
@@ -746,6 +754,14 @@ void Mesh::addIndexedFace(unsigned int i1, unsigned int i2, unsigned int i3) {
     indices.push_back(i1 % vertices.size());
     indices.push_back(i2 % vertices.size());
     indices.push_back(i3 % vertices.size());
+}
+
+void Mesh::addIndexedFace(unsigned int i1, unsigned int i2) {
+    if(!vertices.size()) {
+        return;
+    }
+    indices.push_back(i1 % vertices.size());
+    indices.push_back(i2 % vertices.size());
 }
 
 void Mesh::addIndexedFace(unsigned int i1, unsigned int i2, unsigned int i3, unsigned int i4) {

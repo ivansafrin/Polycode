@@ -29,7 +29,39 @@ extern Scene *globalScene;
 
 CameraDisplay::CameraDisplay(Camera *camera) : Entity() {
     
+    editorOnly = true;
+    
+    fovSceneMesh = new SceneMesh(Mesh::LINE_MESH);
+    fovSceneMesh->setColor(1.0, 0.0, 1.0, 1.0);
+    fovMesh = fovSceneMesh->getMesh();
+    fovMesh->indexedMesh = true;
+    
+    fovMesh->addVertex(0.0, 0.0, 0.0);
+    
+    fovMesh->addVertex(-1.0, 1.0, 1.0);
+    fovMesh->addVertex(1.0, 1.0, 1.0);
+    fovMesh->addVertex(1.0, -1.0, 1.0);
+    fovMesh->addVertex(-1.0, -1.0, 1.0);
+
+//    fovMesh->addVertex(0.0, 0.0, 0.0);
+//    fovMesh->addVertex(0.0, 0.0, 2.0);
+    
+    fovMesh->addIndexedFace(0, 1);
+    fovMesh->addIndexedFace(0, 2);
+    fovMesh->addIndexedFace(0, 3);
+    fovMesh->addIndexedFace(0, 4);
+    
+    fovMesh->addIndexedFace(1, 2);
+    fovMesh->addIndexedFace(2, 3);
+    fovMesh->addIndexedFace(3, 4);
+    fovMesh->addIndexedFace(4, 1);
+    
+//    fovMesh->addIndexedFace(5, 6);
+    
+    addChild(fovSceneMesh);
+    
     camera->addChild(this);
+    this->camera = camera;
 }
 
 CameraDisplay::~CameraDisplay() {
@@ -37,7 +69,23 @@ CameraDisplay::~CameraDisplay() {
 }
 
 void CameraDisplay::Update() {
+    Number fovRad = (90+camera->getFOV()/2.0) * TORADIANS;
     
+    Number displayScale = 2.0;
+    
+    Number xPos = cos(fovRad) * displayScale;
+    Number yPos = xPos * 0.5625;
+    Number zPos = sin(fovRad) * displayScale;
+    
+    fovMesh->getActualVertex(1)->set(-xPos, yPos, zPos);
+    fovMesh->getActualVertex(2)->set(xPos, yPos, zPos);
+    fovMesh->getActualVertex(3)->set(xPos, -yPos, zPos);
+    fovMesh->getActualVertex(4)->set(-xPos, -yPos, zPos);
+    fovMesh->dirtyArray(RenderDataArray::VERTEX_DATA_ARRAY);
+/*
+    fovMesh->getActualVertex(5)->set(0.0, 0.0, camera->getNearClipppingPlane());
+    fovMesh->getActualVertex(6)->set(0.0, 0.0, camera->getFarClipppingPlane());
+ */
 }
 
 

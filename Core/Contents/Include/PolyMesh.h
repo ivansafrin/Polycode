@@ -250,6 +250,8 @@ namespace Polycode {
             Vertex *addVertex(Number x, Number y, Number z, Number u, Number v);
         
             Vertex *getVertex(unsigned int index) const;
+
+            Vertex *getActualVertex(unsigned int index) const;
         
 			/**
 			* Sets the vertex buffer for the mesh.
@@ -362,7 +364,8 @@ namespace Polycode {
 			*/
 			bool useVertexColors;
             bool indexedMesh;
-        
+
+            void addIndexedFace(unsigned int i1, unsigned int i2);
             void addIndexedFace(unsigned int i1, unsigned int i2, unsigned int i3);
             void addIndexedFace(unsigned int i1, unsigned int i2, unsigned int i3, unsigned int i4);
             void addIndex(unsigned int index);

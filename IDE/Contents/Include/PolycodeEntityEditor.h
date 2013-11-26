@@ -42,7 +42,9 @@ class CameraDisplay : public Entity {
         void Update();
     
     private:
-        SceneMesh *fovMesh;
+        SceneMesh *fovSceneMesh;
+        Mesh *fovMesh;
+        Camera *camera;
 };
 
 class EntityEditorMainView : public UIElement {

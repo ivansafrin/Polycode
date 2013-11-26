@@ -113,21 +113,21 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	
 	// MOVE
 	
-	yArrow = new ScenePrimitive(ScenePrimitive::TYPE_CONE, 0.2, 0.1, 12);
+	yArrow = new ScenePrimitive(ScenePrimitive::TYPE_CONE, 0.2, 0.05, 12);
 	yArrow->setColor(0.0, 1.0, 0.0, 1.0);
 	yArrow->setPosition(0.0, 1.0, 0.0);
 	yArrow->depthTest = false;
 	trasnformDecorators->addChild(yArrow);
     yArrow->setMaterialByName("Unlit");
 	
-	xArrow = new ScenePrimitive(ScenePrimitive::TYPE_CONE, 0.2, 0.1, 12);
+	xArrow = new ScenePrimitive(ScenePrimitive::TYPE_CONE, 0.2, 0.05, 12);
 	xArrow->setColor(1.0, 0.0, 0.0, 1.0);
 	xArrow->setPosition(1.0, 0.0, 0.0);
 	xArrow->Roll(-90);
 	xArrow->depthTest = false;
 	trasnformDecorators->addChild(xArrow);
 
-	zArrow = new ScenePrimitive(ScenePrimitive::TYPE_CONE, 0.2, 0.1, 12);
+	zArrow = new ScenePrimitive(ScenePrimitive::TYPE_CONE, 0.2, 0.05, 12);
 	zArrow->setColor(0.0, 0.0, 1.0, 1.0);
 	zArrow->setPosition(0.0, 0.0, 1.0);
 	zArrow->Pitch(90);
