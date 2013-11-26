@@ -529,13 +529,6 @@ void OpenGLRenderer::setFogProperties(int fogMode, Color color, Number density, 
 }
 
 void OpenGLRenderer::setOrthoMode(Number xSize, Number ySize, bool centered) {
-	
-	if(xSize == 0)
-		xSize = xRes;
-
-	if(ySize == 0)
-		ySize = yRes;
-		
 	this->orthoSizeX = xSize;
 	this->orthoSizeY = ySize;
 

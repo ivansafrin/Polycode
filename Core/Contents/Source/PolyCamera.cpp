@@ -47,6 +47,9 @@ Camera::Camera(Scene *parentScene) : Entity() {
 	nearClipPlane = 1.0;
 	farClipPlane = 1000.0;
 	topLeftOrtho = false;
+    orthoSizeX = 1.0;
+    orthoSizeY = 1.0;
+    orthoSizeMode = Camera::ORTHO_SIZE_LOCK_HEIGHT;
 }
 
 Camera::~Camera() {	
@@ -102,9 +105,7 @@ void Camera::setOrthoSize(Number orthoSizeX, Number orthoSizeY) {
 	this->orthoSizeY = orthoSizeY;
 }
 
-void Camera::setOrthoMode(bool mode, Number orthoSizeX, Number orthoSizeY) {
-	this->orthoSizeX = orthoSizeX;
-	this->orthoSizeY = orthoSizeY;
+void Camera::setOrthoMode(bool mode) {
 	orthoMode = mode;
 }			
 
@@ -406,19 +407,41 @@ Number Camera::getFarClipppingPlane() {
     return farClipPlane;
 }
 
+void Camera::setOrthoSizeMode(int orthoSizeMode) {
+    this->orthoSizeMode = orthoSizeMode;
+}
+
+int Camera::getOrthoSizeMode() const {
+    return orthoSizeMode;
+}
+
 void Camera::doCameraTransform() {
 	renderer->setClippingPlanes(nearClipPlane, farClipPlane);
-
+	
+    viewport = renderer->getViewport();
+    
 	if(!orthoMode) {
 		renderer->setViewportShift(cameraShift.x, cameraShift.y);
 		renderer->setFOV(fov);
 		renderer->setPerspectiveMode();		
 	} else {
-		renderer->setOrthoMode(orthoSizeX, orthoSizeY, !topLeftOrtho);
-	}	
+        switch(orthoSizeMode) {
+            case ORTHO_SIZE_MANUAL:
+                renderer->setOrthoMode(orthoSizeX, orthoSizeY, !topLeftOrtho);
+            break;
+            case ORTHO_SIZE_LOCK_HEIGHT:
+                renderer->setOrthoMode(orthoSizeY * (viewport.w/viewport.h), orthoSizeY, !topLeftOrtho);
+            break;
+            case ORTHO_SIZE_LOCK_WIDTH:
+                renderer->setOrthoMode(orthoSizeX, orthoSizeX * (viewport.h/viewport.w), !topLeftOrtho);
+            break;
+            case ORTHO_SIZE_VIEWPORT:
+                renderer->setOrthoMode(viewport.w / renderer->getBackingResolutionScaleX(), viewport.h / renderer->getBackingResolutionScaleY(), !topLeftOrtho);
+            break;
+        }
+	}
 	renderer->setExposureLevel(exposureLevel);
 
-	viewport = renderer->getViewport();
 	projectionMatrix = renderer->getProjectionMatrix();
 
 	if(matrixDirty) {

@@ -388,8 +388,9 @@ class PropSheet : public UIElement {
 		void Resize(Number width, Number height);
 		
 		virtual void applyPropActionData(PolycodeEditorPropActionData *data);
-		
 		void handleEvent(Event *event);
+    
+        void layoutProps();
 		
 		void setCollapsed(bool val);
 		
@@ -731,10 +732,13 @@ class CameraSheet : public PropSheet {
         void handleEvent(Event *event);
         void setCamera(Camera *camera);
     
+        void updateOptionVisibility();
+    
         NumberProp *exposureProp;
     
         BoolProp *orthoProp;
         NumberProp *fovProp;
+        ComboProp *orthoSizeTypeProp;
         NumberProp *orthoWidthProp;
         NumberProp *orthoHeightProp;
     

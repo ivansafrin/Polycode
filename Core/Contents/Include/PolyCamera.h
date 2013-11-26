@@ -71,7 +71,7 @@ namespace Polycode {
 			* @param orthoSizeX Width of the orthographic frustum (defaults to 1.0)
 			* @param orthoSizeY Height of the orthographic frustum (defaults to 1.0)				
 			*/			
-			void setOrthoMode(bool mode, Number orthoSizeX = 1.0, Number orthoSizeY = 1.0);
+			void setOrthoMode(bool mode);
 
 			void setOrthoSize(Number orthoSizeX, Number orthoSizeY);
 			
@@ -169,16 +169,25 @@ namespace Polycode {
 			bool frustumCulling;
 			
 			bool topLeftOrtho;
-			
+		
+            /**
+            * Shifts camera frustum by factor of the frustum size. (x=-1 will shift the frustum to the left by a whole screen width).
+            */
 			Vector2 cameraShift;
+		      
+            void setOrthoSizeMode(int orthoSizeMode);
+            int getOrthoSizeMode() const;
+        
+            static const int ORTHO_SIZE_MANUAL = 0;
+			static const int ORTHO_SIZE_LOCK_HEIGHT = 1;
+			static const int ORTHO_SIZE_LOCK_WIDTH = 2;
+			static const int ORTHO_SIZE_VIEWPORT = 3;
 		
-			/**
-			/* Shifts camera frustum by factor of the frustum size. (x=-1 will shift the frustum to the left by a whole screen width).
-			*/
-					
 		protected:
+        
+            int orthoSizeMode;
 		
-			Matrix4 projectionMatrix;	
+			Matrix4 projectionMatrix;
 			Polycode::Rectangle viewport;
 			Number orthoSizeX;
 			Number orthoSizeY;

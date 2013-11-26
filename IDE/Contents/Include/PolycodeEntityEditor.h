@@ -45,6 +45,24 @@ class CameraDisplay : public Entity {
         SceneMesh *fovSceneMesh;
         Mesh *fovMesh;
         Camera *camera;
+    
+};
+
+class CameraPreviewWindow : public UIElement {
+    public:
+        CameraPreviewWindow();
+        ~CameraPreviewWindow();
+
+        void setCamera(Scene *scene, Camera *camera);
+    
+    private:
+    
+        SceneRenderTexture *renderTexture;
+        Camera *camera;
+        Scene *scene;
+        UIRect *bgRect;
+        UIRect *previewRect;
+    
 };
 
 class EntityEditorMainView : public UIElement {
@@ -71,6 +89,8 @@ class EntityEditorMainView : public UIElement {
             static const int EDITOR_MODE_2D = 1;
     
 		protected:
+    
+    
 			
             int editorMode;
 			Entity *topBar;
@@ -92,6 +112,8 @@ class EntityEditorMainView : public UIElement {
             UIImageButton *addEntityButton;
             UIComboBox *modeSwitchDropdown;
             UIMenu *addEntityMenu;
+    
+            CameraPreviewWindow *cameraPreview;
     
             std::vector<ScenePrimitive*> icons;
     

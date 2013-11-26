@@ -38,10 +38,10 @@ CameraDisplay::CameraDisplay(Camera *camera) : Entity() {
     
     fovMesh->addVertex(0.0, 0.0, 0.0);
     
-    fovMesh->addVertex(-1.0, 1.0, 1.0);
-    fovMesh->addVertex(1.0, 1.0, 1.0);
-    fovMesh->addVertex(1.0, -1.0, 1.0);
-    fovMesh->addVertex(-1.0, -1.0, 1.0);
+    fovMesh->addVertex(-1.0, 1.0, -1.0);
+    fovMesh->addVertex(1.0, 1.0, -1.0);
+    fovMesh->addVertex(1.0, -1.0, -1.0);
+    fovMesh->addVertex(-1.0, -1.0, -1.0);
 
 //    fovMesh->addVertex(0.0, 0.0, 0.0);
 //    fovMesh->addVertex(0.0, 0.0, 2.0);
@@ -69,25 +69,91 @@ CameraDisplay::~CameraDisplay() {
 }
 
 void CameraDisplay::Update() {
-    Number fovRad = (90+camera->getFOV()/2.0) * TORADIANS;
     
-    Number displayScale = 2.0;
+    if(camera->getOrthoMode()) {
+
+        Number xPos = camera->getOrthoSizeX() * 0.5;
+        Number yPos = camera->getOrthoSizeY() * 0.5;
+        Number zPos = 0.0;
+
+ 
+        switch(camera->getOrthoSizeMode()) {
+            case Camera::ORTHO_SIZE_LOCK_HEIGHT:
+                xPos = yPos * (camera->getViewport().w/camera->getViewport().h);
+            break;
+            case Camera::ORTHO_SIZE_LOCK_WIDTH:
+                yPos = xPos * (camera->getViewport().h/camera->getViewport().w);
+            break;
+            case Camera::ORTHO_SIZE_VIEWPORT:
+                xPos = camera->getViewport().w * 0.5;
+                yPos = camera->getViewport().h * 0.5;
+            break;
+        }
+        
+        fovMesh->getActualVertex(1)->set(-xPos, yPos, zPos);
+        fovMesh->getActualVertex(2)->set(xPos, yPos, zPos);
+        fovMesh->getActualVertex(3)->set(xPos, -yPos, zPos);
+        fovMesh->getActualVertex(4)->set(-xPos, -yPos, zPos);
+        fovMesh->dirtyArray(RenderDataArray::VERTEX_DATA_ARRAY);
+    } else {
+        Number fovRad = (90+camera->getFOV()/2.0) * TORADIANS;
+        Number displayScale = 3.0;
+        Number xPos = cos(fovRad) * displayScale;
+        Number yPos = xPos * 0.5625;
+        Number zPos = -sin(fovRad) * displayScale * 0.5;
+        
+        fovMesh->getActualVertex(1)->set(-xPos, yPos, zPos);
+        fovMesh->getActualVertex(2)->set(xPos, yPos, zPos);
+        fovMesh->getActualVertex(3)->set(xPos, -yPos, zPos);
+        fovMesh->getActualVertex(4)->set(-xPos, -yPos, zPos);
+        fovMesh->dirtyArray(RenderDataArray::VERTEX_DATA_ARRAY);
+    }
     
-    Number xPos = cos(fovRad) * displayScale;
-    Number yPos = xPos * 0.5625;
-    Number zPos = sin(fovRad) * displayScale;
-    
-    fovMesh->getActualVertex(1)->set(-xPos, yPos, zPos);
-    fovMesh->getActualVertex(2)->set(xPos, yPos, zPos);
-    fovMesh->getActualVertex(3)->set(xPos, -yPos, zPos);
-    fovMesh->getActualVertex(4)->set(-xPos, -yPos, zPos);
-    fovMesh->dirtyArray(RenderDataArray::VERTEX_DATA_ARRAY);
 /*
     fovMesh->getActualVertex(5)->set(0.0, 0.0, camera->getNearClipppingPlane());
     fovMesh->getActualVertex(6)->set(0.0, 0.0, camera->getFarClipppingPlane());
  */
 }
 
+CameraPreviewWindow::CameraPreviewWindow() : UIElement() {
+    
+    bgRect = new UIRect((160 * 1.5)+16, (90 * 1.5) + 28);
+    addChild(bgRect);
+    bgRect->setColor(0.0, 0.0, 0.0, 0.5);
+    
+    UILabel *label = new UILabel("CAMERA PREVIEW", 11);
+    label->setColor(1.0, 1.0, 1.0, 1.0);
+    addChild(label);
+    label->setPosition(15, 3);
+    
+    previewRect = new UIRect(160 * 1.5, 90 * 1.5);
+    previewRect->setPosition(8, 20);
+    addChild(previewRect);
+    enabled = false;
+    camera = NULL;
+    scene = NULL;
+    renderTexture = NULL;
+}
+
+CameraPreviewWindow::~CameraPreviewWindow() {
+    
+}
+
+void CameraPreviewWindow::setCamera(Scene *scene, Camera *camera) {
+    this->camera = camera;
+    this->scene = scene;
+    if(camera) {
+        enabled = true;
+        if(renderTexture) {
+            delete renderTexture;
+        }
+        renderTexture = new SceneRenderTexture(scene, camera, previewRect->getWidth(), previewRect->getHeight());
+        previewRect->setTexture(renderTexture->getTargetTexture());
+        
+    } else {
+        enabled = false;
+    }
+}
 
 EntityEditorMainView::EntityEditorMainView() {
 	processInputEvents = true;
@@ -103,7 +169,12 @@ EntityEditorMainView::EntityEditorMainView() {
 	renderTextureShape->setTexture(renderTexture->getTargetTexture());
 	addChild(renderTextureShape);
 	renderTextureShape->setPosition(0, 30);
-			
+
+    cameraPreview = new CameraPreviewWindow();
+    addChild(cameraPreview);
+    cameraPreview->setPosition(5, 35);
+    
+    
 	headerBg = new UIRect(10,10);
 	addChild(headerBg);
 	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
@@ -476,6 +547,9 @@ void EntityEditorMainView::doEntitySelect(Entity *targetEntity) {
     if(sceneMesh && ! emitter) {
         sceneMesh->overlayWireframe = true;
     }
+    
+    Camera *camera = dynamic_cast<Camera*>(targetEntity);
+    cameraPreview->setCamera(mainScene, camera);
 }
 
 

@@ -291,16 +291,26 @@ void PropSheet::setTopPadding(Number padding) {
 void PropSheet::Resize(Number width, Number height) {
 	setWidth(width);
 	setHeight(height);
-	
 	bg->Resize(width, 30);
-	
+
+	layoutProps();
+}
+
+void PropSheet::layoutProps() {
 	Number yOffset = propTopPadding;
-	
 	for(int i=0; i < props.size(); i++) {
-		props[i]->setPosition(0, yOffset);
-		props[i]->setPropWidth(width);
-		yOffset += props[i]->getHeight();
+        if(props[i]->enabled) {
+            props[i]->setPosition(0, yOffset);
+            props[i]->setPropWidth(getWidth());
+            yOffset += props[i]->getHeight();
+        }
 	}
+    Number newPropHeight = yOffset + contents->getPosition().y;
+    if(newPropHeight != propHeight) {
+        propHeight = newPropHeight;
+        dispatchEvent(new Event(), Event::COMPLETE_EVENT);	
+    }
+
 }
 
 void PropSheet::addProp(PropProp *prop) {
@@ -2842,30 +2852,72 @@ CameraSheet::CameraSheet() : PropSheet("CAMERA", "camera") {
     enabled = false;
     camera = NULL;
     
-    
     exposureProp = new NumberProp("Exposure");
     addProp(exposureProp);
 
+    nearClipPlane = new NumberProp("Near clip");
+    addProp(nearClipPlane);
+    
+    farClipPlane = new NumberProp("Far clip");
+    addProp(farClipPlane);
+    
     orthoProp = new BoolProp("Orthographic");
     addProp(orthoProp);
 
     fovProp = new NumberProp("FOV");
     addProp(fovProp);
 
+    orthoSizeTypeProp = new ComboProp("Size mode");
+    orthoSizeTypeProp->comboEntry->addComboItem("Manual");
+    orthoSizeTypeProp->comboEntry->addComboItem("Lock height");
+    orthoSizeTypeProp->comboEntry->addComboItem("Lock width");
+    orthoSizeTypeProp->comboEntry->addComboItem("Viewport");
+    
+    addProp(orthoSizeTypeProp);
+    
     orthoWidthProp = new NumberProp("Ortho width");
     addProp(orthoWidthProp);
 
     orthoHeightProp = new NumberProp("Ortho height");
     addProp(orthoHeightProp);
-
-    nearClipPlane = new NumberProp("Near clip");
-    addProp(nearClipPlane);
-
-    farClipPlane = new NumberProp("Far clip");
-    addProp(farClipPlane);
-
     
-    propHeight = 220;
+    propHeight = 260;
+}
+
+void CameraSheet::updateOptionVisibility() {
+    if(!camera) {
+        return;
+    }
+    
+    if(camera->getOrthoMode()) {
+        fovProp->enabled = false;
+        orthoSizeTypeProp->enabled = true;
+        
+        switch(camera->getOrthoSizeMode()) {
+            case Camera::ORTHO_SIZE_MANUAL:
+                orthoWidthProp->enabled = true;
+                orthoHeightProp->enabled = true;
+            break;
+            case Camera::ORTHO_SIZE_LOCK_HEIGHT:
+                orthoWidthProp->enabled = false;
+                orthoHeightProp->enabled = true;
+            break;
+            case Camera::ORTHO_SIZE_LOCK_WIDTH:
+                orthoWidthProp->enabled = true;
+                orthoHeightProp->enabled = false;
+            break;
+            case Camera::ORTHO_SIZE_VIEWPORT:
+                orthoWidthProp->enabled = false;
+                orthoHeightProp->enabled = false;
+            break;
+        }
+    } else {
+        fovProp->enabled = true;
+        orthoSizeTypeProp->enabled = false;
+        orthoWidthProp->enabled = false;
+        orthoHeightProp->enabled = false;
+    }
+    layoutProps();
 }
 
 CameraSheet::~CameraSheet() {
@@ -2898,9 +2950,12 @@ void CameraSheet::handleEvent(Event *event) {
     } else if(event->getDispatcher() == farClipPlane) {
         camera->setClippingPlanes(camera->getNearClipppingPlane(),farClipPlane->get());
         dispatchEvent(new Event(), Event::CHANGE_EVENT);
+    } else if(event->getDispatcher() == orthoSizeTypeProp) {
+        camera->setOrthoSizeMode(orthoSizeTypeProp->get());
+        dispatchEvent(new Event(), Event::CHANGE_EVENT);
     }
 
-
+    updateOptionVisibility();
     
     PropSheet::handleEvent(event);
 }
@@ -2917,7 +2972,10 @@ void CameraSheet::setCamera(Camera *camera) {
         nearClipPlane->set(camera->getNearClipppingPlane());
         farClipPlane->set(camera->getFarClipppingPlane());
         
+        orthoSizeTypeProp->set(camera->getOrthoSizeMode());
         fovProp->set(camera->getFOV());
+        
+        updateOptionVisibility();
     } else {
         enabled = false;
     }

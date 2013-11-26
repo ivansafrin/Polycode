@@ -83,11 +83,13 @@ void Scene::setSceneType(int newType) {
 	switch(sceneType) {
 		case SCENE_2D:
 			defaultCamera->setClippingPlanes(-100.0, 100.0);
-			defaultCamera->setOrthoMode(true, CoreServices::getInstance()->getCore()->getXRes(),CoreServices::getInstance()->getCore()->getYRes());
+			defaultCamera->setOrthoMode(true);
+            defaultCamera->setOrthoSize(CoreServices::getInstance()->getCore()->getXRes(),CoreServices::getInstance()->getCore()->getYRes());
             break;
 		case SCENE_2D_TOPLEFT:
 			defaultCamera->setClippingPlanes(-100.0, 100.0);
-			defaultCamera->setOrthoMode(true, 0,0);
+			defaultCamera->setOrthoMode(true);
+            defaultCamera->setOrthoSizeMode(Camera::ORTHO_SIZE_VIEWPORT);
 			defaultCamera->topLeftOrtho = true;
 			rootEntity.setInverseY(true);
             break;
