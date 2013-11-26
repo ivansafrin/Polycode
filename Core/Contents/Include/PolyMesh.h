@@ -371,6 +371,8 @@ namespace Polycode {
         
 		protected:
         
+            Vector3 calculateFaceTangent(Vertex *v1, Vertex *v2, Vertex *v3);
+        
             bool useFaceNormals;
         
             VertexBuffer *vertexBuffer;

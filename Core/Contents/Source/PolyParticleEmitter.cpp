@@ -48,6 +48,8 @@ void SceneParticleEmitter::resetParticle(unsigned int index) {
     particles[index].velocity = q.applyTo(directionVector);
     particles[index].position = Vector3(-emitterSize.x + (emitterSize.x * RANDOM_NUMBER * 2.0), -emitterSize.y + (emitterSize.y * RANDOM_NUMBER * 2.0), -emitterSize.z + (emitterSize.z * RANDOM_NUMBER * 2.0));
     
+    particles[index].rotation = Vector3(RANDOM_NUMBER * 360.0 *particleRotationSpeed.x, RANDOM_NUMBER * 360.0 *particleRotationSpeed.y, RANDOM_NUMBER * 360.0 *particleRotationSpeed.z);
+    
     if(particlesInWorldSpace) {
         particles[index].position = systemTrasnformMatrix * particles[index].position;
         particles[index].velocity = systemTrasnformMatrix.rotateVector( particles[index].velocity);
@@ -89,7 +91,8 @@ void SceneParticleEmitter::setParticleSize(Number particleSize) {
 void SceneParticleEmitter::setParticleRotationSpeed(const Vector3 &rotationSpeed) {
     particleRotationSpeed = rotationSpeed;
     for(int i=0; i < particles.size(); i++) {
-        particles[i].rotation = Vector3();
+        resetParticle(i);
+        particles[i].lifetime = RANDOM_NUMBER * lifetime;
     }
 }
 

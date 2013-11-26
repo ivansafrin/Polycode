@@ -72,6 +72,9 @@ void Mesh::clearMesh() {
         delete vertices[i];
     }
     vertices.clear();
+    indices.clear();
+    faceNormals.clear();
+    
     if(vertexBuffer)
         delete vertexBuffer;
     vertexBuffer = NULL;
@@ -507,77 +510,47 @@ Vector3 Mesh::calculateBBox() {
     return retVec*2;
 }
 
-void Mesh::createSphere(Number _radius, int _segmentsH, int _segmentsW) {
+void Mesh::createSphere(Number radius, int segmentsH, int segmentsW) {
 
+    segmentsH++;
+    segmentsW++;
+    
     setMeshType(Mesh::TRI_MESH);
+    indexedMesh = true;
 
-    Vector3 **grid = (Vector3 **) malloc(sizeof(Vector3*) * (_segmentsH+1));
-    for (int i=0 ; i < _segmentsH+1; i++) {
-        grid[i] = (Vector3*) malloc(sizeof(Vector3) * _segmentsW+1);		
+    Number tdelta = 360.f/(segmentsW-1);
+    Number pdelta = 180.f/(segmentsH-1);
+    
+    Number phi = -90;
+    Number theta = 0;
+    
+    for(unsigned int i = 0; i< segmentsH; i++) {
+        for(unsigned int j = 0; j < segmentsW; j++) {
+            Vector3 v;
+            v.x = radius * cos(phi*M_PI/180.f) * cos(theta*M_PI/180.f);
+            v.y = radius * sin(phi*M_PI/180.f);
+            v.z = radius * cos(phi*M_PI/180.f) * sin(theta*M_PI/180.f);
+            Vertex *vert = addVertex(v.x, v.y, v.z);
+            v.Normalize();
+            vert->normal = v;
+            vert->texCoord = Vector2(-theta/(360.f) , (phi+90.f)/180.f);
+            theta += tdelta;
+        }
+        phi += pdelta;
+        theta = 0;
     }
     
-    for (int i = 0; i < _segmentsW; i++) {
-        grid[0][i] = Vector3(0,-_radius,0);
-    }
-        
-    for (int j = 1; j < _segmentsH; j++) {
-        Number horangle = ((float)j) / ((float)_segmentsH) * PI;
-        Number z = -_radius * cos(horangle);
-        Number ringradius = _radius * sin(horangle);
-        for (int i = 0; i < _segmentsW; i++) {
-            Number verangle = 2.0 * ((float)i) / ((float)_segmentsW) * PI;
-            Number x = ringradius * sin(verangle);
-            Number y = ringradius * cos(verangle);
-            grid[j][i] = Vector3(y, z, x);
+    for(unsigned int i = 0; i < segmentsH-1; i++) {
+        for(unsigned int j = 0; j< segmentsW-1; j++) {
+            addIndexedFace(((i+1)*segmentsW) + j, ((i+1)*segmentsW) + j+1, (i*segmentsW) + j+1);
+            addIndexedFace((i*segmentsW) + j+1, (i*segmentsW)+j, ((i+1)*segmentsW) + j);
         }
     }
 
-    for (int i = 0; i < _segmentsW; i++) {
-            grid[_segmentsH][i] = Vector3(0,_radius, 0);
-    }
-
-    for (int j = 1; j <= _segmentsH; j++) {
-        for (int i = 0; i < _segmentsW; i++) {
-            Vector3 a = grid[j][i];
-            Vector3 b = grid[j][(i-1+_segmentsW) % _segmentsW];
-            Vector3 c = grid[j-1][(i-1+_segmentsW) % _segmentsW];
-            Vector3 d = grid[j-1][i];
-
-            int i2 = i;
-            if (i == 0) i2 = _segmentsW;
-
-            Number vab = ((float)j) / ((float)_segmentsH);
-            Number vcd = (((float)j)-1.0) / ((float)_segmentsH);
-            Number uad = ((float)i2) / ((float)_segmentsW);
-            Number ubc = (((float)i2)-1.0) / ((float)_segmentsW);
-            Vector2 uva = Vector2(uad,vab);
-            Vector2 uvb = Vector2(ubc,vab);
-            Vector2 uvc = Vector2(ubc,vcd);
-            Vector2 uvd = Vector2(uad,vcd);
-
-            if (j < _segmentsH) {
-                addVertex(c.x, c.y, c.z, uvc.x ,uvc.y);
-                addVertex(b.x, b.y, b.z, uvb.x ,uvb.y);							
-                addVertex(a.x, a.y, a.z, uva.x ,uva.y);
-            }
-            if (j > 1) {
-                addVertex(d.x, d.y, d.z, uvd.x ,uvd.y);
-                addVertex(c.x, c.y, c.z, uvc.x ,uvc.y);
-                addVertex(a.x, a.y, a.z, uva.x ,uva.y);
-            }
-        }
-    }
-    
-    for (int i=0 ; i < _segmentsH+1; i++) {
-        free(grid[i]);
-    }
-    free(grid);
-
-    calculateNormals();
     calculateTangents();
-    arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
-    arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
-    arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;						
+    arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
+    arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;
+    arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;
     arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;
     arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;		
 }
@@ -590,61 +563,46 @@ unsigned int Mesh::getVertexCount() {
     }
 }
 
-void Mesh::createTorus(Number radius, Number tubeRadius, int rSegments, int tSegments) {
+void Mesh::createTorus(Number radius, Number tubeRadius, int segmentsH, int segmentsW) {
 
+    segmentsH++;
+    segmentsW++;
+    
     setMeshType(Mesh::TRI_MESH);
-        
-    Vector3 **grid = (Vector3 **) malloc(sizeof(Vector3*) * rSegments);
-    for (int i=0 ; i < rSegments; i++) {
-        grid[i] = (Vector3*) malloc(sizeof(Vector3) * tSegments);		
+    indexedMesh = true;
+    
+    Number tdelta = 360.f/(segmentsW-1);
+    Number pdelta = 360.f/(segmentsH-1);
+    
+    Number phi = -90;
+    Number theta = 0;
+    
+    for(unsigned int i = 0; i< segmentsH; i++) {
+        for(unsigned int j = 0; j < segmentsW; j++) {
+            Vector3 v;
+            
+            v.x = (radius + tubeRadius*cos(phi*TORADIANS))*cos(theta*TORADIANS);
+            v.y = tubeRadius*sin(phi*TORADIANS);
+            v.z = (radius + tubeRadius*cos(phi*TORADIANS))*sin(theta*TORADIANS);
+            
+            Vertex *vert = addVertex(v.x, v.y, v.z);
+            vert->texCoord = Vector2(-theta/(360.f) , (phi/(360.f)) + 0.5);
+            theta += tdelta;
+        }
+        phi += pdelta;
+        theta = 0;
     }
     
-    for (int i=0 ; i < rSegments; i++) {
-        for (int j = 0; j < tSegments; ++j) {
-            Number u = ((Number)i) / rSegments * 2.0 * PI;
-            Number v = ((Number)j) / tSegments * 2.0 * PI;	
-
-            grid[i][j] = Vector3((radius + tubeRadius*cos(v))*cos(u), tubeRadius*sin(v), (radius + tubeRadius*cos(v))*sin(u));							
-                                                
-        }
-    }	
-    
-    for (int i=0 ; i < rSegments; i++) {
-        for (int j = 0; j < tSegments; ++j) {
-
-            int ip = (i+1) % rSegments;
-            int jp = (j+1) % tSegments;
-                
-            Vector3 a = grid[i ][j];
-            Vector3 b = grid[ip][j];
-            Vector3 c = grid[i ][jp];
-            Vector3 d = grid[ip][jp];
-
-            Vector2 uva = Vector2(((Number)i)     / ((Number)rSegments), ((Number)j)     / ((Number)tSegments));
-            Vector2 uvb = Vector2((((Number)i)+1.0) / ((Number)rSegments), ((Number)j)     / ((Number)tSegments));
-            Vector2 uvc = Vector2(((Number)i)    / ((Number)rSegments), (((Number)j)+1.0) / ((Number)tSegments));
-            Vector2 uvd = Vector2((((Number)i)+1.0) / ((Number)rSegments), (((Number)j)+1.0) / ((Number)tSegments));
-
-
-            addVertex(c.x, c.y, c.z, uvc.x ,uvc.y);
-            addVertex(b.x, b.y, b.z, uvb.x ,uvb.y);							
-            addVertex(a.x, a.y, a.z, uva.x ,uva.y);
-
-            addVertex(b.x, b.y, b.z, uvb.x ,uvb.y);
-            addVertex(c.x, c.y, c.z, uvc.x ,uvc.y);					
-            addVertex(d.x, d.y, d.z, uvd.x ,uvd.y);
+    for(unsigned int i = 0; i < segmentsH-1; i++) {
+        for(unsigned int j = 0; j< segmentsW-1; j++) {
+            addIndexedFace(((i+1)*segmentsW) + j, ((i+1)*segmentsW) + j+1, (i*segmentsW) + j+1);
+            addIndexedFace((i*segmentsW) + j+1, (i*segmentsW)+j, ((i+1)*segmentsW) + j);
         }
     }
     
-    for (int i=0 ; i < rSegments; i++) {
-        free(grid[i]);
-    }		
-    free(grid);
-    
-
     calculateNormals();
     calculateTangents();
-    arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
+    arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
     arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
     arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;						
     arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;										
@@ -654,35 +612,33 @@ void Mesh::createTorus(Number radius, Number tubeRadius, int rSegments, int tSeg
 void Mesh::createCylinder(Number height, Number radius, int numSegments, bool capped) {
 
     setMeshType(Mesh::TRI_MESH);
+    indexedMesh = true;
+    
     Number lastx = 0;
     Number lastz = 0;
-    Number lastv = 0;		
-    for (int i=0 ; i < numSegments+1; i++) {
-        Number v = ((Number)i)/((Number)numSegments);
-        Number pos = ((PI*2.0)/((Number)numSegments)) * i;
-        Number x = sin(pos) * radius;
-        Number z = cos(pos) * radius;
+    Number lastv = 0;
+    
+    numSegments++;
+    
+    if(capped) {
+        addVertex(0,0,0,0.5,0.5)->setNormal(0.0, -1.0, 0.0);
+        addVertex(0,height,0,0.5,0.5)->setNormal(0.0, 1.0, 0.0);
+    }
+    
+    for (int i=0 ; i < numSegments; i++) {
+        Number v = ((Number)i)/((Number)numSegments-1);
+        Number pos = ((PI*2.0)/((Number)numSegments-1)) * i;
+        Number x = sin(pos);
+        Number z = cos(pos);
         
-        if(i > 0) {
-            addVertex(lastx,0,lastz,lastv,0);				
-            addVertex(x,0,z, v, 0);
-            addVertex(x,height,z, v, 1);
-
-            addVertex(x,height,z, v, 1);							
-            addVertex(lastx,height,lastz, lastv, 1);
-            addVertex(lastx,0,lastz,lastv,0);
-            
-            if(capped) {
-                addVertex(lastx,height,lastz, 0.5+(lastz/radius*0.5), 0.5+(lastx/radius*0.5));			
-                addVertex(x,height,z, 0.5+(z/radius*0.5), 0.5+(x/radius*0.5));
-                addVertex(0,height,0,0.5,0.5);
-
-                addVertex(lastx,0,lastz, 0.5+(lastz/radius*0.5), 0.5+(lastx/radius*0.5));						
-                addVertex(0,0,0,0.5,0.5);
-                addVertex(x,0,z, 0.5+(z/radius*0.5), 0.5+(x/radius*0.5));
-            }
-                            
+        addVertex(x*radius,0,z*radius, v, 0)->setNormal(x, 0, z);
+        addVertex(x*radius,height,z*radius, v, 1)->setNormal(x,0,z);
+        
+        if(capped) {
+            addVertex(x*radius,0,z*radius, 0.5+(z*0.5), 0.5+(x*0.5))->setNormal(0.0, -1.0, 0.0);
+            addVertex(x*radius,height,z*radius, 0.5+(z*0.5), 0.5+(x*0.5))->setNormal(0.0, 1.0, 0.0);
         }
+
         lastx = x;
         lastz = z;			
         lastv = v;
@@ -692,8 +648,27 @@ void Mesh::createCylinder(Number height, Number radius, int numSegments, bool ca
         vertices[i]->y = vertices[i]->y - (height/2.0f);
     }
     
+    int vertexOffset = 2;
+    int vertexInterval = 1;
+    if(capped) {
+        vertexInterval = 3;
+        vertexOffset = 6;
+    }
+
     
-    calculateNormals();
+    for (int i=1 ; i <= numSegments-1; i++) {
+        addIndexedFace(vertexOffset, vertexOffset-vertexInterval, vertexOffset-vertexInterval-1 );
+        addIndexedFace(vertexOffset, vertexOffset+1, vertexOffset-vertexInterval );
+        vertexOffset += 2;
+        
+        if(capped) {
+            addIndexedFace(vertexOffset, vertexOffset-vertexInterval-1, 0);
+            addIndexedFace(1, vertexOffset-vertexInterval, vertexOffset+1);
+            vertexOffset += 2;
+        }
+    }
+    
+    
     calculateTangents();
     arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
     arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
@@ -703,101 +678,147 @@ void Mesh::createCylinder(Number height, Number radius, int numSegments, bool ca
 }
 
 void Mesh::createCone(Number height, Number radius, int numSegments) {
-
+    
     setMeshType(Mesh::TRI_MESH);
+    indexedMesh = true;
     
     Number lastx = 0;
-    Number lasty = 0;
-    Number lastv = 0;
+    Number lastz = 0;
     
-    for (int i=0 ; i < numSegments+1; i++) {
-        Number v = ((Number)i)/((Number)numSegments);
-        Number pos = ((PI*2.0)/((Number)numSegments)) * i;
-        Number x = sin(pos) * radius * 0.5;
-        Number y = cos(pos) * radius * 0.5;
-        
-        if(i > 0) {
-            
-            addVertex(lastx,0, lasty, 0.5+(lasty/radius*0.5), 0.5+(lastx/radius*0.5))->setNormal(0.0, -1.0, 0.0);
-            addVertex(x,0,y, 0.5+(y/radius*0.5), 0.5+(x/radius*0.5))->setNormal(0.0, -1.0, 0.0);                
-            addVertex(0,height,0,0.5,0.5)->setNormal(0.0, -1.0, 0.0);
-            
-            addVertex(0,0,0,0.5,0.5)->setNormal(0.0, -1.0, 0.0);
-            addVertex(x,0,y, 0.5+(y/radius*0.5), 0.5+(x/radius*0.5))->setNormal(0.0, -1.0, 0.0);
-            addVertex(lastx,0, lasty, 0.5+(lasty/radius*0.5), 0.5+(lastx/radius*0.5))->setNormal(0.0, -1.0, 0.0);
+    numSegments *= 2;
+    
+    if(!(numSegments % 2)) {
+        numSegments++;
+    }
+    
+    addVertex(0,0,0,0.5,0.5)->setNormal(0.0, -1.0, 0.0);
+    
+    for (int i=0 ; i < numSegments; i++) {
+        Number pos = ((PI*2.0)/((Number)numSegments-1)) * i;
+        Number x = sin(pos);
+        Number z = cos(pos);
+
+        if(!(i % 2)) {
+            addVertex(x*radius,0,z*radius, 0.5+(z*0.5), 0.5+(x*0.5))->setNormal(x, 0.0, z);
+            addVertex(x*radius,0,z*radius, 0.5+(z*0.5), 0.5+(x*0.5))->setNormal(0.0, -1.0, 0.0);
+        } else {
+            addVertex(0,height,0, 0.5, 0.5)->setNormal(0.0, 1.0, 0.0);
         }
+        
         lastx = x;
-        lastv = v;
-        lasty = y;
+        lastz = z;
+
     }
     
     for(int i=0; i < vertices.size(); i++) {
         vertices[i]->y = vertices[i]->y - (height/2.0f);
     }
     
-    calculateNormals();
+    int vertexOffset = 4;
+    
+    for (int i=1 ; i <= (numSegments-1)/2; i++) {
+        addIndexedFace(vertexOffset, vertexOffset-1, vertexOffset-3);
+        addIndexedFace(vertexOffset+1, vertexOffset-2, 0);
+        vertexOffset += 3;
+    }
+    
+    
     calculateTangents();
-    arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
-    arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
+    arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
+    arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;
     arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;
     arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;
-    arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;			
+    arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;
 
 }
 
 void Mesh::addIndex(unsigned int index) {
-    indices.push_back(index);
+    if(!vertices.size()) {
+        return;
+    }
+    indices.push_back(index % vertices.size());
 }
 
 void Mesh::addIndexedFace(unsigned int i1, unsigned int i2, unsigned int i3) {
-    indices.push_back(i1);
-    indices.push_back(i2);
-    indices.push_back(i3);
+    if(!vertices.size()) {
+        return;
+    }
+    indices.push_back(i1 % vertices.size());
+    indices.push_back(i2 % vertices.size());
+    indices.push_back(i3 % vertices.size());
 }
 
 void Mesh::addIndexedFace(unsigned int i1, unsigned int i2, unsigned int i3, unsigned int i4) {
-    indices.push_back(i1);
-    indices.push_back(i2);
-    indices.push_back(i3);
-    indices.push_back(i4);
+    if(!vertices.size()) {
+        return;
+    }
+    indices.push_back(i1 % vertices.size());
+    indices.push_back(i2 % vertices.size());
+    indices.push_back(i3 % vertices.size());
+    indices.push_back(i4 % vertices.size());
 }
 
 void Mesh::createBox(Number w, Number d, Number h) {
     setMeshType(Mesh::TRI_MESH);
-    indexedMesh = true;
+    indexedMesh = false;
     
     addVertex(w,0,h, 1, 1);
     addVertex(0,0,h, 1, 0);
     addVertex(0,0,0,0,0);
+    
+    addVertex(w,0,h, 1, 1);
+    addVertex(0,0,0,0,0);
     addVertex(w,0,0,0,1);
+    
     addVertex(w,d,h, 1, 1);
-    addVertex(0,d,h, 1, 0);
+    addVertex(w,d,0, 1, 0);
     addVertex(0,d,0,0,0);
-    addVertex(w,d,0,0,1);
-
+    
+    addVertex(w,d,h, 1, 1);
+    addVertex(0,d,0,0,0);
+    addVertex(0,d,h,0,1);
+    
+    addVertex(0,d,0,0,1);
+    addVertex(w,d,0, 1, 1);
+    addVertex(w,0,0, 1, 0);
+    
+    addVertex(0,d,0,0,1);
+    addVertex(w,0,0, 1, 0);
+    addVertex(0,0,0,0,0);
+    
+    addVertex(0,0,h,0,0);
+    addVertex(w,0,h, 1, 0);
+    addVertex(w,d,h, 1, 1);
+    
+    addVertex(0,0,h,0,0);
+    addVertex(w,d,h, 1, 1);
+    addVertex(0,d,h,0,1);
+    
+    addVertex(0,0,h,0,1);
+    addVertex(0,d,h, 1, 1);
+    addVertex(0,d,0, 1, 0);
+    
+    addVertex(0,0,h,0,1);
+    addVertex(0,d,0, 1, 0);
+    addVertex(0,0,0,0,0);
+    
+    addVertex(w,0,h,0,1);
+    addVertex(w,0,0, 1, 1);
+    addVertex(w,d,0, 1, 0);
+    
+    addVertex(w,0,h,0,1);
+    addVertex(w,d,0, 1, 0);
+    addVertex(w,d,h,0,0);
+    
     for(int i=0; i < vertices.size(); i++) {
         vertices[i]->x = vertices[i]->x - (w/2.0f);
         vertices[i]->y = vertices[i]->y - (d/2.0f);
         vertices[i]->z = vertices[i]->z - (h/2.0f);
     }
     
-    addIndexedFace(0, 1, 2);
-    addIndexedFace(0, 2, 3);
-    addIndexedFace(4, 7, 6);
-    addIndexedFace(4, 6, 5);
-    addIndexedFace(6, 7, 3);
-    addIndexedFace(6, 3, 2);
-    addIndexedFace(1, 0, 4);
-    addIndexedFace(1, 4, 5);
-    addIndexedFace(1, 5, 6);
-    addIndexedFace(1, 6, 2);
-    addIndexedFace(0, 3, 7);
-    addIndexedFace(0, 7, 4);
-
-    calculateNormals(true);
-    setUseFaceNormals(true);
-    
+    calculateNormals();
     calculateTangents();
+    
     arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
     arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
     arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;						
@@ -824,7 +845,62 @@ Vertex *Mesh::getVertex(unsigned int index) const {
     }
 }
 
+Vector3 Mesh::calculateFaceTangent(Vertex *v1, Vertex *v2, Vertex *v3) {
+    Vector3 tangent;
+    Vector3 side0 = *v1 - *v2;
+    Vector3 side1 = *v3 - *v1;
+    Vector3 normal = side1.crossProduct(side0);
+    normal.Normalize();
+    Number deltaV0 = v1->texCoord.y - v2->texCoord.y;
+    Number deltaV1 = v3->texCoord.y - v1->texCoord.y;
+    tangent = side0 * deltaV1 - side1 * deltaV0;
+    tangent.Normalize();
+    
+    Number deltaU0 = v1->texCoord.x - v2->texCoord.x;
+    Number deltaU1 = v3->texCoord.x - v1->texCoord.x;
+    Vector3 binormal = side0 * deltaU1 - side1 * deltaU0;
+    binormal.Normalize();
+    Vector3 tangentCross = tangent.crossProduct(binormal);
+    
+    if (tangentCross.dot(normal) < 0.0f) {
+        tangent = tangent * -1;
+    }
+    return tangent;
+}
+
 void Mesh::calculateTangents() {
+    
+    int polySize = 3;
+    if(meshType == Mesh::QUAD_MESH) {
+        polySize = 4;
+    }
+    
+    faceNormals.clear();
+    for(int i=0; i < vertices.size(); i++) {
+        vertices[i]->tangent = Vector3();
+    }
+    
+    if(indexedMesh) {
+        for(int i=0; i+polySize-1 < indices.size(); i += polySize) {
+            Vector3 tangent = calculateFaceTangent(vertices[indices[i]], vertices[indices[i+1]], vertices[indices[i+2]]);
+            
+            for(int j=0; j < polySize; j++) {
+                vertices[indices[i+j]]->tangent -= tangent;
+            }
+        }
+    } else {
+        for(int i=0; i+polySize-1 < vertices.size(); i += polySize) {
+            Vector3 tangent = calculateFaceTangent(vertices[i], vertices[i+1], vertices[i+2]);
+            
+            for(int j=0; j < polySize; j++) {
+                vertices[i+j]->tangent = tangent * 1.0;
+            }
+        }
+    }
+    
+    for(int i=0; i < vertices.size(); i++) {
+        vertices[i]->tangent.Normalize();
+    }
 
     arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;		
 }
@@ -861,15 +937,36 @@ void Mesh::calculateNormals(bool generateFaceNormals) {
             const Vector3 e1 = *(vertices[indices[i]]) - *(vertices[indices[i+1]]);
             const Vector3 e2 = *(vertices[indices[i+2]]) - *(vertices[indices[i+1]]);
             const Vector3 no = e1.crossProduct(e2);
-                
-            vertices[indices[i]]->normal -= no;
-            vertices[indices[i+1]]->normal -= no;
-            vertices[indices[i+2]]->normal -= no;
+            
+            for(int j=0; j < polySize; j++) {
+                vertices[indices[i+j]]->normal -= no;
+            }
             
             if(generateFaceNormals) {
                 faceNormals.push_back(no * -1.0);
             }
         }
+    } else {
+        for(int i=0; i+polySize-1 < vertices.size(); i += polySize) {
+            const Vector3 e1 = *(vertices[i]) - *(vertices[i+1]);
+            const Vector3 e2 = *(vertices[i+2]) - *(vertices[i+1]);
+            const Vector3 no = e1.crossProduct(e2);
+            
+            for(int j=0; j < polySize; j++) {
+                vertices[i+j]->normal = no * -1.0;
+            }
+            
+            if(generateFaceNormals) {
+                faceNormals.push_back(no * -1.0);
+            }
+        }
+    }
+    
+    for(int i=0; i < vertices.size(); i++) {
+        vertices[i]->normal.Normalize();
+    }
+    for(int i=0; i < faceNormals.size(); i++) {
+        faceNormals[i].Normalize();
     }
     
     arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;		

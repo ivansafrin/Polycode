@@ -106,9 +106,9 @@ void EntityEditorPropertyView::updateShaderOptions() {
         if(sceneMesh->getMaterial() && sceneMesh->getLocalShaderOptions()) {
             
             // can't edit the textures manually on a scene label or sprite
-            if(!sceneLabel && !sceneSprite) {
+//            if(!sceneLabel && !sceneSprite) {
             shaderTexturesSheet->setShader(sceneMesh->getMaterial()->getShader(0), sceneMesh->getMaterial(), sceneMesh->getLocalShaderOptions());
-            }
+  //          }
             
             shaderOptionsSheet->setShader(sceneMesh->getMaterial()->getShader(0), sceneMesh->getMaterial(), sceneMesh->getLocalShaderOptions());
         }
