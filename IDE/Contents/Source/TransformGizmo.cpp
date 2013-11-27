@@ -118,7 +118,6 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	yArrow->setPosition(0.0, 1.0, 0.0);
 	yArrow->depthTest = false;
 	trasnformDecorators->addChild(yArrow);
-    yArrow->setMaterialByName("Unlit");
 	
 	xArrow = new ScenePrimitive(ScenePrimitive::TYPE_CONE, 0.2, 0.05, 12);
 	xArrow->setColor(1.0, 0.0, 0.0, 1.0);

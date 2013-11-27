@@ -41,7 +41,7 @@ namespace Polycode {
 		
 			/**
 			* Constructs a light with parameters.
-			* @param type Type of light to create. Can be SceneLight::AREA_LIGHT or SceneLight::SPOT_LIGHT
+			* @param type Type of light to create. Can be SceneLight::POINT_LIGHT or SceneLight::SPOT_LIGHT
 			* @param parentScene Scene to light.
 			* @param intensity Light color intensity
 			* @param constantAttenuation Constant falloff attenuation value	
@@ -86,7 +86,7 @@ namespace Polycode {
 
 			const Matrix4& getLightViewMatrix() const;
 			
-			static const int AREA_LIGHT = 0;
+			static const int POINT_LIGHT = 0;
 			static const int SPOT_LIGHT = 1;
 			
 			Texture *getZBufferTexture() const;
@@ -144,13 +144,11 @@ namespace Polycode {
 			*/
 			void setSpotlightProperties(Number spotlightCutoff, Number spotlightExponent) {
 				this->spotlightCutoff = spotlightCutoff;
-				Number cosVal = cos(spotlightCutoff*(PI/180.0));
-				this->spotlightExponent = cosVal - (0.02*spotlightExponent);				
+                this->spotlightExponent = spotlightExponent;
 			}
 			
 			Number getSpotlightCutoff() const { return spotlightCutoff; }
 			Number getSpotlightExponent() const { return spotlightExponent; }
-						
 			
 			/**
 			* If this is called with 'true', the light will generate a shadow map.

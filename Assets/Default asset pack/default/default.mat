@@ -43,6 +43,18 @@
 		</shader>	
 	</shaders>	
 	<materials>
+		<material name="DefaultVertex">
+			<shader name="DefaultShaderVertexNoTexture">
+			</shader>
+		</material>		
+		<material name="DefaultVertexTextured">
+			<shader name="DefaultShaderVertex">
+			</shader>
+		</material>
+		<material name="DefaultVertexTexturedAdditive" blendingMode="2">
+			<shader name="DefaultShaderVertex">
+			</shader>
+		</material>						
 		<material name="Default">
 			<shader name="DefaultShaderNoTexture">
 			</shader>
@@ -53,11 +65,47 @@
 				</textures>				
 			</shader>
 		</material>
-		<material name="UnlitMaterial">
+		<material name="DefaultTexturedAdditive" blendingMode="2">
+			<shader name="DefaultShader">
+				<textures>
+				</textures>				
+			</shader>
+		</material>		
+		<material name="Unlit">
 			<shader name="Unlit">
 				<textures>
 				</textures>				
 			</shader>
-		</material>							
+		</material>
+		<material name="DefaultWithShadows">
+			<shader name="DefaultShaderShadows">
+				<textures>
+				</textures>				
+			</shader>
+		</material>
+		<material name="Particles">
+			<shader name="DefaultParticleShader">
+				<textures>
+				</textures>				
+			</shader>
+		</material>
+		<material name="ParticlesAdditive" blendingMode="2">
+			<shader name="DefaultParticleShader">
+				<textures>
+				</textures>				
+			</shader>
+		</material>
+		<material name="LightCube">
+			<shader name="LightCube">
+				<textures>
+				</textures>				
+			</shader>
+		</material>
+		<material name="NormalColorSpecular">
+			<shader name="NorColSpec">
+				<textures>
+				</textures>				
+			</shader>
+		</material>		
 	</materials>
 </polycode>

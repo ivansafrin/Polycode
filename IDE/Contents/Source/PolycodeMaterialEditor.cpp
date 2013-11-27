@@ -540,11 +540,11 @@ PostPreviewBox::PostPreviewBox() : UIElement() {
 	previewScene->clearColor.setColor(0.0, 0.0, 0.0, 1.0);	
 	previewScene->ambientColor.setColor(0.0, 0.0, 0.0, 1.0);
 
-	mainLight = new SceneLight(SceneLight::AREA_LIGHT, previewScene, 90.0);
+	mainLight = new SceneLight(SceneLight::POINT_LIGHT, previewScene, 90.0);
 	mainLight->setPosition(-6,6,6);
 	previewScene->addLight(mainLight);
 
-	secondLight = new SceneLight(SceneLight::AREA_LIGHT, previewScene, 90.0);
+	secondLight = new SceneLight(SceneLight::POINT_LIGHT, previewScene, 90.0);
 	secondLight->setPosition(6,-6,6);
 	previewScene->addLight(secondLight);
 
@@ -724,11 +724,11 @@ MaterialPreviewBox::MaterialPreviewBox() : UIElement() {
 	previewPrimitive->getMesh()->calculateTangents();	
 
 	
-	mainLight = new SceneLight(SceneLight::AREA_LIGHT, previewScene, 290.0);
+	mainLight = new SceneLight(SceneLight::POINT_LIGHT, previewScene, 290.0);
 	mainLight->setPosition(-10,10,10);
 	previewScene->addLight(mainLight);
 
-	secondLight = new SceneLight(SceneLight::AREA_LIGHT, previewScene, 250.0);
+	secondLight = new SceneLight(SceneLight::POINT_LIGHT, previewScene, 250.0);
 	secondLight->setPosition(10,-10,10);
 	previewScene->addLight(secondLight);
 

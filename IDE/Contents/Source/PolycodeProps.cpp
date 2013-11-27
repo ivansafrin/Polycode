@@ -308,7 +308,7 @@ void PropSheet::layoutProps() {
     Number newPropHeight = yOffset + contents->getPosition().y;
     if(newPropHeight != propHeight) {
         propHeight = newPropHeight;
-        dispatchEvent(new Event(), Event::COMPLETE_EVENT);	
+        dispatchEvent(new Event(), Event::COMPLETE_EVENT);
     }
 
 }
@@ -2360,7 +2360,7 @@ void ParticleEmitterSheet::setParticleEmitter(SceneParticleEmitter *emitter) {
 
 SceneLightSheet::SceneLightSheet() : PropSheet("LIGHT", "scene_light") {
     typeProp = new ComboProp("Type");
-    typeProp->comboEntry->addComboItem("Area");
+    typeProp->comboEntry->addComboItem("Point");
     typeProp->comboEntry->addComboItem("Spot");
     addProp(typeProp);
     
@@ -2382,10 +2382,10 @@ SceneLightSheet::SceneLightSheet() : PropSheet("LIGHT", "scene_light") {
     quadraticAttenuationProp = new SliderProp("Quadratic att.", 0.0, 1.0);
     addProp(quadraticAttenuationProp);
     
-    spotlightCutoffProp = new NumberProp("Spot cutoff");
+    spotlightCutoffProp = new SliderProp("Spot angle", 0.0, 90.0);
     addProp(spotlightCutoffProp);
     
-    spotlightExponentProp = new SliderProp("Spot exponent", 0.0, 50.0);
+    spotlightExponentProp = new SliderProp("Spot softness", 0.0, 1.0);
     addProp(spotlightExponentProp);
     
     castShadowsProp = new BoolProp("Cast shadows");
@@ -2404,6 +2404,33 @@ SceneLightSheet::SceneLightSheet() : PropSheet("LIGHT", "scene_light") {
 
 SceneLightSheet::~SceneLightSheet() {
     
+}
+
+void SceneLightSheet::updateOptionVisibility() {
+    if(!light) {
+        return;
+    }
+    
+    if(light->getLightType() == SceneLight::POINT_LIGHT) {
+        spotlightCutoffProp->enabled = false;
+        spotlightExponentProp->enabled = false;
+        castShadowsProp->enabled = false;
+        shadowMapFOVProp->enabled = false;
+        shadowResolutionProp->enabled = false;
+    } else {
+        spotlightCutoffProp->enabled = true;
+        spotlightExponentProp->enabled = true;
+        castShadowsProp->enabled = true;
+        if(light->areShadowsEnabled()) {
+            shadowMapFOVProp->enabled = true;
+            shadowResolutionProp->enabled = true;
+        } else {
+            shadowMapFOVProp->enabled = false;
+            shadowResolutionProp->enabled = false;
+        }
+    }
+    
+    layoutProps();
 }
 
 void SceneLightSheet::setSceneLight(SceneLight *light) {
@@ -2425,6 +2452,8 @@ void SceneLightSheet::setSceneLight(SceneLight *light) {
         castShadowsProp->set(light->areShadowsEnabled());
         shadowMapFOVProp->set(light->getShadowMapFOV());
         shadowResolutionProp->set(light->getShadowMapResolution());
+        
+        updateOptionVisibility();
         
         enabled = true;
     } else {
@@ -2464,6 +2493,7 @@ void SceneLightSheet::handleEvent(Event *event) {
             light->setSpotlightProperties(light->getSpotlightCutoff(), spotlightExponentProp->get());
         }
 
+        updateOptionVisibility();
     }
     PropSheet::handleEvent(event);
 }

@@ -89,7 +89,7 @@ void spotLight(in int i, in vec3 bump, in vec3 normal, in vec3 tangent, in vec3 
 	lDir = normalize(lDir);
 
 	
-	float cos_outer_cone_angle = gl_LightSource[i].spotExponent;
+	float cos_outer_cone_angle = (1.0-gl_LightSource[i].spotExponent) * gl_LightSource[i].spotCosCutoff;
 	float cos_cur_angle = dot(-lDir, lVec);
 	float cos_inner_cone_angle = gl_LightSource[i].spotCosCutoff;
 

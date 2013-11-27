@@ -31,10 +31,14 @@
 		</shader>							
 	</shaders>
 	<materials>
-		<material name="DefaultHDR" screen="true">
+		<material name="DefaultHDR">
 			<shader name="DefaultShaderNoTextureHDR">
 			</shader>
-		</material>				
+		</material>
+			<material name="NormalColorSpecularHDR">
+			<shader name="NorColSpecHDR">
+			</shader>
+		</material>									
 		<material name="HDRProcess" screen="true">
 			<shader name="HDRProcessShader">
 			</shader>

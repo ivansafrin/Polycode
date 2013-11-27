@@ -597,6 +597,8 @@ class SceneLightSheet : public PropSheet {
         SceneLightSheet();
         ~SceneLightSheet();
     
+        void updateOptionVisibility();
+    
         void setSceneLight(SceneLight *light);
         void handleEvent(Event *event);
     
@@ -612,7 +614,7 @@ class SceneLightSheet : public PropSheet {
         SliderProp *linearAttenuationProp;
         SliderProp *quadraticAttenuationProp;
     
-        NumberProp *spotlightCutoffProp;
+        SliderProp *spotlightCutoffProp;
         SliderProp *spotlightExponentProp;
     
         BoolProp *castShadowsProp;

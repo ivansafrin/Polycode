@@ -34,11 +34,11 @@ PolycodeMeshEditor::PolycodeMeshEditor() : PolycodeEditor(true){
 	
 //	previewScene->ambientColor.setColor(0.0, 0.0, 0.0, 1.0);
 				
-	mainLight = new SceneLight(SceneLight::AREA_LIGHT, previewScene, 1590.0);
+	mainLight = new SceneLight(SceneLight::POINT_LIGHT, previewScene, 1590.0);
 	mainLight->setPosition(-10,10,10);
 	previewScene->addLight(mainLight);
 
-	secondLight = new SceneLight(SceneLight::AREA_LIGHT, previewScene, 1590.0);
+	secondLight = new SceneLight(SceneLight::POINT_LIGHT, previewScene, 1590.0);
 	secondLight->setPosition(10,-10,10);
 	previewScene->addLight(secondLight);
 

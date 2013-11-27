@@ -35,17 +35,31 @@
 
 using namespace Polycode;
 
+class LightDisplay : public Entity {
+public:
+    LightDisplay(SceneLight *light);
+    ~LightDisplay();
+    void Update();
+    
+private:
+    ScenePrimitive *spotSpot;
+    SceneMesh *fovSceneMesh;    
+    Mesh *fovMesh;
+    
+    SceneLight *light;
+};
+
 class CameraDisplay : public Entity {
     public:
         CameraDisplay(Camera *camera);
         ~CameraDisplay();
         void Update();
     
+    
     private:
         SceneMesh *fovSceneMesh;
         Mesh *fovMesh;
         Camera *camera;
-    
 };
 
 class CameraPreviewWindow : public UIElement {

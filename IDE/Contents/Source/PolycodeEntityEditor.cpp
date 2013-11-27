@@ -27,6 +27,65 @@ extern UIGlobalMenu *globalMenu;
 extern PolycodeFrame *globalFrame;
 extern Scene *globalScene;
 
+LightDisplay::LightDisplay(SceneLight *light) {
+    this->light = light;
+    spotSpot = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 1.0, 1.0, 32);
+	spotSpot->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
+    addChild(spotSpot);
+    spotSpot->setColor(1.0, 0.8, 0.0, 1.0);
+    spotSpot->enabled = false;
+    
+    fovSceneMesh = new SceneMesh(Mesh::LINE_MESH);
+    fovSceneMesh->setColor(1.0, 0.8, 0.0, 1.0);
+    fovMesh = fovSceneMesh->getMesh();
+    fovMesh->indexedMesh = true;
+    addChild(fovSceneMesh);
+    
+    fovMesh->addVertex(0.0, 0.0, 0.0);
+    
+    fovMesh->addVertex(-1.0, 1.0, -1.0);
+    fovMesh->addVertex(1.0, 1.0, -1.0);
+    fovMesh->addVertex(1.0, -1.0, -1.0);
+    fovMesh->addVertex(-1.0, -1.0, -1.0);
+    
+    fovMesh->addIndexedFace(0, 1);
+    fovMesh->addIndexedFace(0, 2);
+    fovMesh->addIndexedFace(0, 3);
+    fovMesh->addIndexedFace(0, 4);
+    
+    
+    light->addChild(this);
+}
+
+LightDisplay::~LightDisplay() {
+    
+}
+
+void LightDisplay::Update() {
+    if(light->getLightType() == SceneLight::SPOT_LIGHT) {
+        spotSpot->enabled = true;
+        fovSceneMesh->enabled = true;
+        Number distance = light->getIntensity() * 2.0;
+        Number spotAngle = ((light->getSpotlightCutoff()) * 2.0);
+        Number spotLightSize = ((PI * 2.0) * distance * spotAngle) / 360.0;
+        
+        spotSpot->setPosition(0.0, 0.0, -distance);
+        spotSpot->setPrimitiveOptions(ScenePrimitive::TYPE_LINE_CIRCLE, spotLightSize, spotLightSize, 32);
+       	spotSpot->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
+        
+        spotLightSize *= 0.5;
+        fovMesh->getActualVertex(1)->set(sin(PI/2.0)*spotLightSize, cos(PI/2.0)*spotLightSize, -distance);
+        fovMesh->getActualVertex(2)->set(sin(PI)*spotLightSize, cos(PI)*spotLightSize, -distance);
+        fovMesh->getActualVertex(3)->set(sin(PI + (PI/2.0))*spotLightSize, cos(PI + (PI/2.0))*spotLightSize, -distance);
+        fovMesh->getActualVertex(4)->set(sin(PI*2.0)*spotLightSize, cos(PI*2.0)*spotLightSize, -distance);
+         fovMesh->dirtyArray(RenderDataArray::VERTEX_DATA_ARRAY);
+    } else {
+        spotSpot->enabled = false;
+        fovSceneMesh->enabled = false;
+    }
+}
+
+
 CameraDisplay::CameraDisplay(Camera *camera) : Entity() {
     
     editorOnly = true;
@@ -42,9 +101,6 @@ CameraDisplay::CameraDisplay(Camera *camera) : Entity() {
     fovMesh->addVertex(1.0, 1.0, -1.0);
     fovMesh->addVertex(1.0, -1.0, -1.0);
     fovMesh->addVertex(-1.0, -1.0, -1.0);
-
-//    fovMesh->addVertex(0.0, 0.0, 0.0);
-//    fovMesh->addVertex(0.0, 0.0, 2.0);
     
     fovMesh->addIndexedFace(0, 1);
     fovMesh->addIndexedFace(0, 2);
@@ -55,8 +111,6 @@ CameraDisplay::CameraDisplay(Camera *camera) : Entity() {
     fovMesh->addIndexedFace(2, 3);
     fovMesh->addIndexedFace(3, 4);
     fovMesh->addIndexedFace(4, 1);
-    
-//    fovMesh->addIndexedFace(5, 6);
     
     addChild(fovSceneMesh);
     
@@ -108,11 +162,6 @@ void CameraDisplay::Update() {
         fovMesh->getActualVertex(4)->set(-xPos, -yPos, zPos);
         fovMesh->dirtyArray(RenderDataArray::VERTEX_DATA_ARRAY);
     }
-    
-/*
-    fovMesh->getActualVertex(5)->set(0.0, 0.0, camera->getNearClipppingPlane());
-    fovMesh->getActualVertex(6)->set(0.0, 0.0, camera->getFarClipppingPlane());
- */
 }
 
 CameraPreviewWindow::CameraPreviewWindow() : UIElement() {
@@ -266,7 +315,7 @@ void EntityEditorMainView::Update() {
 void EntityEditorMainView::createIcon(Entity *entity, String iconFile) {
     ScenePrimitive *iconPrimitive = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 0.4, 0.4);
     
-    iconPrimitive->setMaterialByName("UnlitMaterial");
+    iconPrimitive->setMaterialByName("Unlit");
 	Texture *tex = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile("entityEditor/"+iconFile);
 	if(iconPrimitive->getLocalShaderOptions()) {
         iconPrimitive->getLocalShaderOptions()->addTexture("diffuse", tex);
@@ -297,6 +346,7 @@ void EntityEditorMainView::setEditorProps(Entity *entity) {
     SceneLight *sceneLight = dynamic_cast<SceneLight*>(entity);
     if(sceneLight) {
         createIcon(entity, "light_icon.png");
+        LightDisplay *lightVis = new LightDisplay(sceneLight);
     }
     
     if(emitter) {
@@ -310,10 +360,11 @@ void EntityEditorMainView::setEditorProps(Entity *entity) {
 
     Camera *camera = dynamic_cast<Camera*>(entity);
     if(camera) {
-        
         CameraDisplay *camVis = new CameraDisplay(camera);
         createIcon(entity, "camera_icon.png");
     }
+    
+    
 }
 
 void EntityEditorMainView::addEntityFromMenu(String command) {
@@ -401,7 +452,7 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
 
     
     if(command == "add_light") {
-        SceneLight *newLight = new SceneLight(SceneLight::AREA_LIGHT, mainScene, 1.0);
+        SceneLight *newLight = new SceneLight(SceneLight::POINT_LIGHT, mainScene, 1.0);
         newLight->bBox = Vector3(0.5, 0.5, 0.5);
         mainScene->addLight(newLight);
         sceneObjectRoot->addChild(newLight);
@@ -468,7 +519,7 @@ void EntityEditorMainView::handleEvent(Event *event) {
                 selectEntity(newMesh);
             } else if(assetSelectType == "image") {
                 SceneImage *newImage = new SceneImage(globalFrame->assetBrowser->getFullSelectedAssetPath());
-                newImage->setMaterialByName("UnlitMaterial");
+                newImage->setMaterialByName("Unlit");
                 if(newImage->getLocalShaderOptions()) {
                     newImage->getLocalShaderOptions()->addTexture("diffuse", newImage->getTexture());
                 }
@@ -483,7 +534,7 @@ void EntityEditorMainView::handleEvent(Event *event) {
                 newSprite->playAnimation(newSprite->getAnimationAtIndex(0)->name, 0, false);
             }
             
-            newSprite->setMaterialByName("UnlitMaterial");
+            newSprite->setMaterialByName("Unlit");
             if(newSprite->getLocalShaderOptions()) {
                 newSprite->getLocalShaderOptions()->addTexture("diffuse", newSprite->getTexture());
             }
