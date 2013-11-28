@@ -26,6 +26,7 @@
 
 using namespace Polycode;
 
+
 int Entity::defaultBlendingMode = Renderer::BLEND_MODE_NORMAL;
 
 Rotation::Rotation() {

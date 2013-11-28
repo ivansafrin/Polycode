@@ -527,9 +527,9 @@ void Mesh::createSphere(Number radius, int segmentsH, int segmentsW) {
     for(unsigned int i = 0; i< segmentsH; i++) {
         for(unsigned int j = 0; j < segmentsW; j++) {
             Vector3 v;
-            v.x = radius * cos(phi*M_PI/180.f) * cos(theta*M_PI/180.f);
-            v.y = radius * sin(phi*M_PI/180.f);
-            v.z = radius * cos(phi*M_PI/180.f) * sin(theta*M_PI/180.f);
+            v.x = radius * cos(phi*PI/180.f) * cos(theta*PI/180.f);
+            v.y = radius * sin(phi*PI/180.f);
+            v.z = radius * cos(phi*PI/180.f) * sin(theta*PI/180.f);
             Vertex *vert = addVertex(v.x, v.y, v.z);
             v.Normalize();
             vert->normal = v;

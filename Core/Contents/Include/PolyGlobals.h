@@ -82,6 +82,14 @@ THE SOFTWARE.
 
 typedef double Number;
 
+#ifdef _WINDOWS
+#include <cmath>	//cmath for "round / floor"
+
+inline int round(Number x) { 
+	return floor(x + 0.5); 
+}
+#endif
+
 #define RANDOM_NUMBER ((Number)rand()/(Number)RAND_MAX)
 
 inline Number clampf(Number x, Number a, Number b)
