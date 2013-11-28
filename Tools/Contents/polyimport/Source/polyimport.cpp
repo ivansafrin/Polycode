@@ -3,7 +3,12 @@
 #include "OSBasics.h"
 
 #include "physfs.h"
+#ifdef WIN32
 #include "getopt.h"
+#define getopt getopt_a
+#else
+#include <unistd.h>
+#endif
 
 using namespace Polycode;
 
@@ -20,9 +25,6 @@ bool writeBoneWeights = false;
 bool writeUVs = false;
 bool writeSecondaryUVs = false;
 
-#ifdef WIN32
-#define getopt getopt_a
-#endif
 
 unsigned int addBone(aiBone *bone) {
 	for(int i=0; i < bones.size(); i++) {
