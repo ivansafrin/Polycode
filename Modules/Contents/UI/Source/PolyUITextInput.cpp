@@ -2338,8 +2338,8 @@ void UITextInput::updateWordWrap(int lineStart, int lineEnd) {
 		do {
 			wordWrapRangeEnd++;
 		}
-		
-		while(wordWrapLines[wordWrapRangeEnd].isWordWrap && wordWrapRangeEnd < wordWrapLines.size());
+		// put wordWrapLines[wordWrapRangeEnd] at the end, as wordWrapRangeEnd is "1" and throws an assertation in debug|win32|vc2012 if wordWrapLines.size() is "1"
+		while(wordWrapRangeEnd < wordWrapLines.size() && wordWrapLines[wordWrapRangeEnd].isWordWrap);
 		
 		wordWrapLines.erase(wordWrapLines.begin()+wordWrapRangeBegin, wordWrapLines.begin()+wordWrapRangeEnd);
 	}
