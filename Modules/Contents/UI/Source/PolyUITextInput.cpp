@@ -466,7 +466,7 @@ void UITextInput::applyTokenOverride(int lineIndex, SyntaxHighlightToken overrid
 				if(lines[l].blockOverrideToken.overrideType != SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_END) {
 				lines[l].blockOverrideToken.overrideType = SyntaxHighlightToken::TOKEN_TYPE_NO_OVERRIDE;
 				int _lineOffset = lines[l].wordWrapLineIndex;
-				while(wordWrapLines[_lineOffset].actualLineNumber == l && _lineOffset < wordWrapLines.size()) {
+				while((lineOffset < wordWrapLines.size()) && (wordWrapLines[_lineOffset].actualLineNumber == l)) {
 					wordWrapLines[_lineOffset].blockOverrideToken = lines[l].blockOverrideToken;
 					wordWrapLines[_lineOffset].dirty = true;
 					_lineOffset++;
@@ -493,7 +493,7 @@ void UITextInput::applyTokenOverride(int lineIndex, SyntaxHighlightToken overrid
 				lines[l].blockOverrideToken.overrideType = SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_LINE;
 				lines[l].blockOverrideToken.color = lines[lineIndex-1].blockOverrideToken.color;
 				int _lineOffset = lines[l].wordWrapLineIndex;
-				while(wordWrapLines[_lineOffset].actualLineNumber == l && _lineOffset < wordWrapLines.size()) {
+				while((_lineOffset < wordWrapLines.size()) && (wordWrapLines[_lineOffset].actualLineNumber == l)) {
 					wordWrapLines[_lineOffset].blockOverrideToken = lines[l].blockOverrideToken;
 					wordWrapLines[_lineOffset].dirty = true;
 					_lineOffset++;
@@ -523,7 +523,7 @@ void UITextInput::applyTokenOverride(int lineIndex, SyntaxHighlightToken overrid
 					lines[l].blockOverrideToken.overrideType = SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_LINE;
 				}				
 				int _lineOffset = lines[l].wordWrapLineIndex;
-				while(wordWrapLines[_lineOffset].actualLineNumber == l && _lineOffset < wordWrapLines.size()) {
+				while((_lineOffset < wordWrapLines.size()) && (wordWrapLines[_lineOffset].actualLineNumber == l)) {
 					wordWrapLines[_lineOffset].blockOverrideToken = lines[l].blockOverrideToken;
 					wordWrapLines[_lineOffset].dirty = true;
 					_lineOffset++;
@@ -546,7 +546,7 @@ void UITextInput::applyTokenOverride(int lineIndex, SyntaxHighlightToken overrid
 				}				
 				
 				int _lineOffset = lines[l].wordWrapLineIndex;
-				while(wordWrapLines[_lineOffset].actualLineNumber == l && _lineOffset < wordWrapLines.size()) {
+				while((_lineOffset < wordWrapLines.size()) && (wordWrapLines[_lineOffset].actualLineNumber == l)) {
 					wordWrapLines[_lineOffset].blockOverrideToken = lines[l].blockOverrideToken;
 					wordWrapLines[_lineOffset].dirty = true;
 					_lineOffset++;
@@ -922,7 +922,7 @@ void UITextInput::convertOffsetToActual(int lineOffset, int caretPosition, int *
 	if(wordWrapLines[lineOffset].isWordWrap == true) {
 		int lineIndex = lineOffset;
 		int totalActualCaretPosition = caretPosition - wordWrapLines[lineOffset].lineStart;		
-		while(wordWrapLines[lineIndex].isWordWrap == true && lineIndex >= 0) {
+		while((lineIndex >= 0) && (wordWrapLines[lineIndex].isWordWrap == true)) {
 			lineIndex--;
 			totalActualCaretPosition += wordWrapLines[lineIndex].text.size() - wordWrapLines[lineIndex].lineStart;			
 		}
