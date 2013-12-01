@@ -32,7 +32,7 @@ PolycodeEditorManager *globalEditorManager;
 Scene *globalScene;
 
 PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
-	core = new POLYCODE_CORE(view, 1100, 700,false,true, 0, 0,60, -1, true);
+	core = new POLYCODE_CORE(view, 1100, 700,false,true, 0, 0,60, -1);
 //	core->pauseOnLoseFocus = true;
     
     Entity::defaultBlendingMode = Renderer::BLEND_MODE_NONE;
@@ -204,7 +204,7 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	menuBar->addEventListener(this, UIEvent::OK_EVENT);
 
 	screen->addChild(menuBar);
-	frame->position.y = 25;
+	frame->setPositionY(25);
 #else
 	menuBar = NULL;
 #endif
