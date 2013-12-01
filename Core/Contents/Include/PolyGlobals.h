@@ -52,10 +52,11 @@ THE SOFTWARE.
 #endif
  
 #define PI 3.14159265
-#define RADIANS	57.2957795
+//#define RADIANS	57.2957795 ---- RADIANS and TODEGREES are the same value.
 
-#define TODEGREES 57.2957795
-#define TORADIANS 0.0174532925
+
+#define RADIANS_TO_DEGREES 57.2957795 // Multiply this to Radian value.
+#define DEGREES_TO_RADIANS 0.0174532925 // Multiply this by Degree value.
 
 #if defined(_WINDOWS) && defined(Polycore_EXPORTS)
 	#define _PolyExport __declspec(dllexport)
@@ -80,7 +81,7 @@ THE SOFTWARE.
 
 typedef double Number;
 
-#define RANDOM_NUMBER ((Number)rand()/(Number)RAND_MAX)
+#define RANDOM_NUMBER ((Number)rand()/(Number)RAND_MAX) // Generates randon number.
 
 inline Number clampf(Number x, Number a, Number b)
 {
