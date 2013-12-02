@@ -466,7 +466,7 @@ void UITextInput::applyTokenOverride(int lineIndex, SyntaxHighlightToken overrid
 				if(lines[l].blockOverrideToken.overrideType != SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_END) {
 				lines[l].blockOverrideToken.overrideType = SyntaxHighlightToken::TOKEN_TYPE_NO_OVERRIDE;
 				int _lineOffset = lines[l].wordWrapLineIndex;
-				while((lineOffset < wordWrapLines.size()) && (wordWrapLines[_lineOffset].actualLineNumber == l)) {
+				while((_lineOffset < wordWrapLines.size()) && (wordWrapLines[_lineOffset].actualLineNumber == l)) {
 					wordWrapLines[_lineOffset].blockOverrideToken = lines[l].blockOverrideToken;
 					wordWrapLines[_lineOffset].dirty = true;
 					_lineOffset++;
