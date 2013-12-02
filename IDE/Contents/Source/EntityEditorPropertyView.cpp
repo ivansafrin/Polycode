@@ -97,7 +97,7 @@ void EntityEditorPropertyView::handleEvent(Event *event) {
 void EntityEditorPropertyView::updateShaderOptions() {
     SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(targetEntity);
     SceneLabel *sceneLabel = dynamic_cast<SceneLabel*>(targetEntity);
-    SceneSprite *sceneSprite = dynamic_cast<SceneSprite*>(sceneSprite);
+    SceneSprite *sceneSprite = dynamic_cast<SceneSprite*>(targetEntity);
     
     shaderTexturesSheet->enabled = false;
     shaderOptionsSheet->enabled = false;
@@ -106,9 +106,10 @@ void EntityEditorPropertyView::updateShaderOptions() {
         if(sceneMesh->getMaterial() && sceneMesh->getLocalShaderOptions()) {
             
             // can't edit the textures manually on a scene label or sprite
-//            if(!sceneLabel && !sceneSprite) {
+            if(!sceneLabel && !sceneSprite) {
             shaderTexturesSheet->setShader(sceneMesh->getMaterial()->getShader(0), sceneMesh->getMaterial(), sceneMesh->getLocalShaderOptions());
-  //          }
+                shaderTexturesSheet->enabled = true;
+            }
             
             shaderOptionsSheet->setShader(sceneMesh->getMaterial()->getShader(0), sceneMesh->getMaterial(), sceneMesh->getLocalShaderOptions());
         }
@@ -141,14 +142,10 @@ void EntityEditorPropertyView::setEntity(Entity *entity) {
     }
 
     SceneSound *sound = dynamic_cast<SceneSound*>(entity);
-    if(sound) {
-        soundSheet->setSound(sound);
-    }
+    soundSheet->setSound(sound);
 
     Camera *camera = dynamic_cast<Camera*>(entity);
-    if(camera) {
-        cameraSheet->setCamera(camera);
-    }
+    cameraSheet->setCamera(camera);
 
     SceneParticleEmitter *emitter = dynamic_cast<SceneParticleEmitter*>(entity);
     particleSheet->setParticleEmitter(emitter);

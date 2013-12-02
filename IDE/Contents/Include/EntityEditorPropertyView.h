@@ -35,10 +35,8 @@ class EntityEditorPropertyView : public UIElement {
         EntityEditorPropertyView();
         ~EntityEditorPropertyView();
     
-        void setEntity(Entity *entity);
-    
+        void setEntity(Entity *entity);    
         void handleEvent(Event *event);
-    
         void updateShaderOptions();
     
         void Resize(Number width, Number height);

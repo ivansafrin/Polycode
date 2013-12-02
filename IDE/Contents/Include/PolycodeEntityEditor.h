@@ -104,14 +104,16 @@ class EntityEditorMainView : public UIElement {
     
 		protected:
     
-    
+            CoreInput *input;
 			
             int editorMode;
 			Entity *topBar;
 			UIRect *headerBg;
 				
+            unsigned int multiselectIndex;
 			std::vector<Entity*> selectedEntities;
-			
+            std::vector<Entity*> entitiesToSelect;
+    
 			Scene *mainScene;
             Entity *sceneObjectRoot;
     

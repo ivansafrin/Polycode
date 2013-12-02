@@ -206,6 +206,7 @@ void CameraPreviewWindow::setCamera(Scene *scene, Camera *camera) {
 
 EntityEditorMainView::EntityEditorMainView() {
 	processInputEvents = true;
+    multiselectIndex = 0;
 
 	mainScene = new Scene(Scene::SCENE_3D, true);
 	renderTexture = new SceneRenderTexture(mainScene, mainScene->getDefaultCamera(), 512, 512);
@@ -238,7 +239,8 @@ EntityEditorMainView::EntityEditorMainView() {
 	
 	mainScene->getDefaultCamera()->setPosition(10, 10, 10);
 	mainScene->getDefaultCamera()->lookAt(Vector3());
-
+	mainScene->getDefaultCamera()->setClippingPlanes(0.01, 10000);
+    
 	grid = new EditorGrid();
 	mainScene->addChild(grid);
 	
@@ -268,6 +270,8 @@ EntityEditorMainView::EntityEditorMainView() {
     modeSwitchDropdown->addEventListener(this, UIEvent::CHANGE_EVENT);
     
     editorMode = EDITOR_MODE_3D;
+    
+    input = CoreServices::getInstance()->getCore()->getInput();
 }
 
 void EntityEditorMainView::setEditorMode(int newMode) {
@@ -300,6 +304,15 @@ Entity *EntityEditorMainView::getSelectedEntity() {
 }
 
 void EntityEditorMainView::Update() {
+    
+    if(entitiesToSelect.size() != 0) {
+        if(multiselectIndex > entitiesToSelect.size()-1) {
+            multiselectIndex = 0;
+        }
+        selectEntity(entitiesToSelect[multiselectIndex], input->getKeyState(KEY_LSHIFT) || input->getKeyState(KEY_RSHIFT));
+        multiselectIndex++;
+        entitiesToSelect.clear();
+    }
     
     if(editorMode == EDITOR_MODE_2D) {
         Number aspect = renderTextureShape->getWidth() / renderTextureShape->getHeight();
@@ -438,9 +451,9 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
     }
     
     if(command == "add_label") {
-        SceneLabel  *newLabel = new SceneLabel("TEXT", 12);
+        SceneLabel  *newLabel = new SceneLabel("TEXT", 12, "sans", Label::ANTIALIAS_FULL, 1.0);
         newLabel->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
-        newLabel->setAnchorPoint(-1.0, 0.0, 0.0);
+        newLabel->setAnchorPoint(0.0, 0.0, 0.0);
         newLabel->snapToPixels = false;
         newLabel->positionAtBaseline = false;
         sceneObjectRoot->addChild(newLabel);
@@ -454,7 +467,6 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
     if(command == "add_light") {
         SceneLight *newLight = new SceneLight(SceneLight::POINT_LIGHT, mainScene, 1.0);
         newLight->bBox = Vector3(0.5, 0.5, 0.5);
-        mainScene->addLight(newLight);
         sceneObjectRoot->addChild(newLight);
         setEditorProps(newLight);
         newLight->setPosition(cursorPosition);
@@ -578,7 +590,7 @@ void EntityEditorMainView::handleEvent(Event *event) {
             CoreInput *input = CoreServices::getInstance()->getCore()->getInput();
             if(inputEvent->mouseButton == CoreInput::MOUSE_BUTTON2) {
                 Entity* targetEntity = (Entity*) event->getDispatcher();
-                selectEntity(targetEntity, input->getKeyState(KEY_LSHIFT) || input->getKeyState(KEY_RSHIFT));
+                entitiesToSelect.push_back(targetEntity);
             }
         }
     }
