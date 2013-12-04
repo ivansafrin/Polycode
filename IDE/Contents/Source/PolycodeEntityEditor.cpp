@@ -238,7 +238,7 @@ EntityEditorMainView::EntityEditorMainView() {
     
 	
 	mainScene->getDefaultCamera()->setPosition(10, 10, 10);
-	mainScene->getDefaultCamera()->lookAt(Vector3());
+	mainScene->getDefaultCamera( )->lookAt(Vector3());
 	mainScene->getDefaultCamera()->setClippingPlanes(0.01, 10000);
     
 	grid = new EditorGrid();
@@ -326,6 +326,9 @@ void EntityEditorMainView::Update() {
 }
 
 void EntityEditorMainView::createIcon(Entity *entity, String iconFile) {
+    
+    entity->removeAllHandlersForListener(this);
+    
     ScenePrimitive *iconPrimitive = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 0.4, 0.4);
     
     iconPrimitive->setMaterialByName("Unlit");
@@ -336,10 +339,15 @@ void EntityEditorMainView::createIcon(Entity *entity, String iconFile) {
     
     entity->addChild(iconPrimitive);
     iconPrimitive->billboardMode = true;
+    iconPrimitive->processInputEvents = true;
+    iconPrimitive->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+    
+    iconPrimitive->addTag("");
     iconPrimitive->depthTest = false;
     iconPrimitive->depthWrite = false;
     iconPrimitive->editorOnly = true;
     iconPrimitive->alphaTest = true;
+    iconPrimitive->setUserData(entity);
     icons.push_back(iconPrimitive);
 }
 
@@ -466,8 +474,8 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
     
     if(command == "add_light") {
         SceneLight *newLight = new SceneLight(SceneLight::POINT_LIGHT, mainScene, 1.0);
-        newLight->bBox = Vector3(0.5, 0.5, 0.5);
         sceneObjectRoot->addChild(newLight);
+        mainScene->addLight(newLight);
         setEditorProps(newLight);
         newLight->setPosition(cursorPosition);
         selectEntity(newLight);
@@ -590,6 +598,14 @@ void EntityEditorMainView::handleEvent(Event *event) {
             CoreInput *input = CoreServices::getInstance()->getCore()->getInput();
             if(inputEvent->mouseButton == CoreInput::MOUSE_BUTTON2) {
                 Entity* targetEntity = (Entity*) event->getDispatcher();
+                
+                // if it's an icon, select the entity linked to the icon
+                for(int i=0; i < icons.size(); i++) {
+                    if(icons[i] == targetEntity) {
+                        targetEntity = (Entity*)targetEntity->getUserData();
+                    }
+                }
+                
                 entitiesToSelect.push_back(targetEntity);
             }
         }

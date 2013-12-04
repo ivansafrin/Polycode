@@ -346,7 +346,6 @@ void Scene::handleEvent(Event *event) {
 
 void Scene::addLight(SceneLight *light) {
 	lights.push_back(light);
-	addEntity(light);	
 }
 
 void Scene::removeLight(SceneLight *light) {
