@@ -56,6 +56,7 @@ class TransformGizmo : public Entity {
 	private:
         int transformMode;
         int gizmoMode;
+    
 	
 		std::vector<Entity*> selectedEntities;
 	

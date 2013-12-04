@@ -587,7 +587,13 @@ void TransformGizmo::Update() {
     }
     
     viewportRotateGripBase->lookAt(targetCamera->getPosition());
-	Number scale = getPosition().distance(targetCamera->getPosition()) * 0.1;
+	Number scale;
+    if(gizmoMode == GIZMO_MODE_2D) {
+        scale = targetCamera->getPosition().length() * 0.1;
+    } else {
+        scale = getPosition().distance(targetCamera->getPosition()) * 0.1;
+    }
+    
     if(scale < 0.0) {
         scale = 0.0;
     }

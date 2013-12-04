@@ -251,6 +251,7 @@ EntityEditorMainView::EntityEditorMainView() {
 	transformGizmo = new TransformGizmo(mainScene, mainScene->getDefaultCamera());
 	mainScene->addChild(transformGizmo);		
 	trackballCamera = new TrackballCamera(mainScene->getDefaultCamera(), renderTextureShape);
+    trackballCamera->addEventListener(this, Event::CHANGE_EVENT);
 	
     addEntityButton = new UIImageButton("entityEditor/add_entity.png", 1.0, 24, 24);
 	topBar->addChild(addEntityButton);
@@ -320,7 +321,12 @@ void EntityEditorMainView::Update() {
     }
     
     for(int i=0; i < icons.size(); i++) {
-        Number scale = mainScene->getDefaultCamera()->getPosition().distance(icons[i]->getConcatenatedMatrix().getPosition()) * 0.1;
+        Number scale;
+        if(editorMode == EDITOR_MODE_2D) {
+            scale = trackballCamera->getCameraDistance() * 0.1;
+        } else {
+            scale = mainScene->getDefaultCamera()->getPosition().distance(icons[i]->getConcatenatedMatrix().getPosition()) * 0.1;
+        }
         icons[i]->setScale(scale, scale, scale);
     }
 }
@@ -526,7 +532,9 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
 
 void EntityEditorMainView::handleEvent(Event *event) {
 
-    if(event->getDispatcher() == modeSwitchDropdown) {
+    if(event->getDispatcher() == trackballCamera) {
+        Update();
+    } else if(event->getDispatcher() == modeSwitchDropdown) {
         setEditorMode(modeSwitchDropdown->getSelectedIndex());
     } else if(event->getDispatcher() == globalFrame->assetBrowser) {
         if(event->getEventCode() == UIEvent::OK_EVENT) {

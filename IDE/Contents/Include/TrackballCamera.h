@@ -27,7 +27,7 @@
 
 using namespace Polycode;
 
-class TrackballCamera : public EventHandler {
+class TrackballCamera : public EventDispatcher {
 	public:
 		TrackballCamera(Camera *targetCamera, Entity *trackballShape);
 		~TrackballCamera();
@@ -39,7 +39,7 @@ class TrackballCamera : public EventHandler {
     
         void setCameraPosition(Vector3 cameraPosition);
     
-        bool disableRotation(bool val);
+        void disableRotation(bool val);
     
 		static const int MOUSE_MODE_IDLE = 0;
 		static const int MOUSE_MODE_ORBITING = 1;

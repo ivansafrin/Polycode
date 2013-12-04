@@ -23,7 +23,7 @@
 #include "TrackballCamera.h"
 
 
-TrackballCamera::TrackballCamera(Camera *targetCamera, Entity *trackballShape) : EventHandler() {
+TrackballCamera::TrackballCamera(Camera *targetCamera, Entity *trackballShape) : EventDispatcher() {
 	mouseMode = MOUSE_MODE_IDLE;
 	
 	this->targetCamera = targetCamera;
@@ -196,9 +196,10 @@ void TrackballCamera::updateCamera() {
 		
 	targetCamera->setPosition(orbitingCenter + trackballEye);	
 	targetCamera->lookAt(orbitingCenter);
+    dispatchEvent(new Event(), Event::CHANGE_EVENT);
 }
 
-bool TrackballCamera::disableRotation(bool val) {
+void TrackballCamera::disableRotation(bool val) {
     rotationDisabled = val;
 }
 
