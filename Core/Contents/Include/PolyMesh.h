@@ -202,7 +202,7 @@ namespace Polycode {
 			* @param rSegments Number of radial segments.
 			* @param tSegments Number of tube segments.
 			*/ 	
-			void createTorus(Number radius, Number tubeRadius, int rSegments, int tSegments);
+			void createTorus(Number radius, Number tubeRadius, int segmentsW, int segmentsH);
 			
 			/**
 			* Creates a cube mesh of specified size.

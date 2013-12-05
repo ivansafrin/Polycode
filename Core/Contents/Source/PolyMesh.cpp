@@ -563,7 +563,7 @@ unsigned int Mesh::getVertexCount() {
     }
 }
 
-void Mesh::createTorus(Number radius, Number tubeRadius, int segmentsH, int segmentsW) {
+void Mesh::createTorus(Number radius, Number tubeRadius, int segmentsW, int segmentsH) {
 
     segmentsH++;
     segmentsW++;

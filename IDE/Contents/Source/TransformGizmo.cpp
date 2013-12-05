@@ -90,7 +90,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	yLine->getMesh()->dirtyArrays();
 	yLine->depthTest = false;
 	yLine->setColor(0.0, 1.0, 0.0, 1.0);
-    yLine->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
+    yLine->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX() * 2.0);
 	transformAndScaleLines->addChild(yLine);
 
 	xLine = new SceneMesh(Mesh::LINE_MESH);
@@ -99,7 +99,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	xLine->getMesh()->dirtyArrays();
 	xLine->depthTest = false;
 	xLine->setColor(1.0, 0.0, 0.0, 1.0);
-    xLine->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
+    xLine->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX() * 2.0);
 	transformAndScaleLines->addChild(xLine);
 
 	zLine = new SceneMesh(Mesh::LINE_MESH);
@@ -108,7 +108,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	zLine->getMesh()->dirtyArrays();
 	zLine->depthTest = false;
 	zLine->setColor(0.0, 0.0, 1.0, 1.0);
-    zLine->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
+    zLine->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX() * 2.0);
 	transformAndScaleLines->addChild(zLine);
 	
 	// MOVE
@@ -171,7 +171,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	outerCircle->depthTest = false;
 	outerCircle->billboardMode = true;
 	rotateDectorators->addChild(outerCircle);
-    outerCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
+    outerCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX() * 2.0);
     
 	pitchCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 1.55, 1.55, 32);
 	pitchCircle->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
@@ -180,7 +180,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	pitchCircle->Yaw(90);	
 	rotateDectorators->addChild(pitchCircle);
 	pitchCircle->setMaterialByName("OneSidedLine");
-    pitchCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
+    pitchCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX() * 2.0);
     
 	yawCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 1.65, 1.65, 32);
 	yawCircle->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
@@ -189,7 +189,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	yawCircle->Pitch(90);
 	rotateDectorators->addChild(yawCircle);
 	yawCircle->setMaterialByName("OneSidedLine");
-    yawCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
+    yawCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX()* 2.0);
     
 	rollCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 1.6, 1.6, 32);
 	rollCircle->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
@@ -197,15 +197,13 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	rollCircle->depthTest = false;
 	rotateDectorators->addChild(rollCircle);
 	rollCircle->setMaterialByName("OneSidedLine");
-    rollCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
+    rollCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX()* 2.0);
     
-	pitchCircle->lineWidth = 2.0;	
-	yawCircle->lineWidth = 2.0;
-	rollCircle->lineWidth = 2.0;		
 	
 	rotateDectorators->processInputEvents = true;
 	
-	pitchGrip = new ScenePrimitive(ScenePrimitive::TYPE_TORUS, 1.55 * 0.5, 0.1, 10, 3);
+	//pitchGrip = new ScenePrimitive(ScenePrimitive::TYPE_TORUS, 1.55 * 0.5, 0.05, 16, 3);
+    pitchGrip = new ScenePrimitive(ScenePrimitive::TYPE_UNCAPPED_CYLINDER, 0.15, 1.55 * 0.5, 16);
 	pitchGrip->setColor(1.0, 0.0, 0.0, 0.2);
 	pitchGrip->depthTest = false;
 	pitchGrip->Pitch(90);	
@@ -216,7 +214,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	pitchGrip->useGeometryHitDetection = true;
 	pitchGrip->blockMouseInput = true;
 
-	rollGrip = new ScenePrimitive(ScenePrimitive::TYPE_TORUS, 1.6 * 0.5, 0.1, 10, 3);
+    rollGrip = new ScenePrimitive(ScenePrimitive::TYPE_UNCAPPED_CYLINDER, 0.15, 1.55 * 0.5, 16);
 	rollGrip->setColor(0.0, 0.0, 1.0, 0.2);
 	rollGrip->depthTest = false;
 	rollGrip->Pitch(90);		
@@ -226,7 +224,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	rollGrip->useGeometryHitDetection = true;
 	rollGrip->blockMouseInput = true;
 	
-	yawGrip = new ScenePrimitive(ScenePrimitive::TYPE_TORUS, 1.65 * 0.5, 0.1, 10, 3);
+	yawGrip= new ScenePrimitive(ScenePrimitive::TYPE_UNCAPPED_CYLINDER, 0.15, 1.55 * 0.5, 16);
 	yawGrip->setColor(0.0, 1.0, 0.0, 0.2);
 	yawGrip->depthTest = false;
 	yawGrip->Yaw(90);		
@@ -240,7 +238,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
     viewportRotateGripBase->processInputEvents = true;
 	rotateDectorators->addChild(viewportRotateGripBase);
     
-	viewportRotateGrip = new ScenePrimitive(ScenePrimitive::TYPE_TORUS, 2.0 * 0.5, 0.1, 10, 3);
+	viewportRotateGrip = new ScenePrimitive(ScenePrimitive::TYPE_TORUS, 2.0 * 0.5, 0.05, 16, 3);
     viewportRotateGrip->Pitch(90);
 	viewportRotateGrip->setColor(0.0, 1.0, 0.0, 0.2);
 	viewportRotateGrip->depthTest = false;
@@ -249,12 +247,12 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	viewportRotateGrip->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	viewportRotateGrip->useGeometryHitDetection = true;
 	viewportRotateGrip->blockMouseInput = true;
-    
+
     pitchGrip->visible = false;
 	yawGrip->visible = false;
 	rollGrip->visible = false;
     viewportRotateGrip->visible = false;
-    
+
 	xTransformGrip = new Entity();
 	xTransformGrip->bBox.set(1.3, 0.1, 0.1);
 	addChild(xTransformGrip);
@@ -355,21 +353,30 @@ void TransformGizmo::setTransformMode(int newMode) {
 		break;	
 		case TRANSFORM_ROTATE:
 			rotateDectorators->visible = true;
-			pitchGrip->enabled = true;
-			yawGrip->enabled = true;
-            viewportRotateGrip->enabled = true;
             
             if(gizmoMode == GIZMO_MODE_3D) {
                 rollGrip->enabled = true;
                 rollCircle->visible = true;
-                rollCircle->visible = true;
+                pitchGrip->enabled = true;
+                pitchCircle->visible = true;
+                yawGrip->enabled = true;
+                yawCircle->visible = true;
+                viewportRotateGrip->enabled = true;
+                outerCircle->visible = true;
                 outerCircle->setColor(1.0, 1.0, 1.0, 1.0);
+                
             } else {
+                rollGrip->enabled = false;
                 rollCircle->visible = false;
-                rollCircle->visible = false;
+                pitchGrip->enabled = false;
+                pitchCircle->visible = false;
+                yawGrip->enabled = false;
+                yawCircle->visible = false;
+                
+                viewportRotateGrip->enabled = true;
+                outerCircle->visible = true;
                 outerCircle->setColor(0.0, 0.0, 1.0, 1.0);
             }
-            
 		break;
 		default:
 			assert(false); // invalid mode

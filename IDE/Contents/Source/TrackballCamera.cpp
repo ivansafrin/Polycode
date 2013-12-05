@@ -26,6 +26,8 @@
 TrackballCamera::TrackballCamera(Camera *targetCamera, Entity *trackballShape) : EventDispatcher() {
 	mouseMode = MOUSE_MODE_IDLE;
 	
+    rotationDisabled = false;
+    
 	this->targetCamera = targetCamera;
 	this->trackballShape = trackballShape;
 	
@@ -72,7 +74,7 @@ void TrackballCamera::handleEvent(Event *event) {
 		InputEvent *inputEvent = (InputEvent*) event;
 		switch(event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEDOWN:
-				if(coreInput->getKeyState(KEY_LALT) || coreInput->getKeyState(KEY_RALT)) {		
+				if(coreInput->getKeyState(KEY_LALT) || coreInput->getKeyState(KEY_RALT)) {
 					if(coreInput->getKeyState(KEY_LSHIFT) || coreInput->getKeyState(KEY_RSHIFT)) {
 						mouseMode = MOUSE_MODE_PANNING;
 						trackBallMouseStart = Vector2(
