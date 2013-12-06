@@ -203,10 +203,8 @@ Color Entity::getCombinedColor() const {
 Matrix4 Entity::getLookAtMatrix(const Vector3 &loc, const Vector3 &upVector) {
 	rebuildTransformMatrix();
 	Vector3 D;
-	if(parentEntity)
-		D = loc - (parentEntity->getConcatenatedMatrix() *position);		
-	else
-		D = loc - position;
+    
+    D = loc - position;
 	
 	Vector3 back = D * -1;
 	back.Normalize();
@@ -627,9 +625,8 @@ Matrix4 Entity::getConcatenatedMatrixRelativeTo(Entity *relativeEntity) {
 Matrix4 Entity::getAnchorAdjustedMatrix() {
 	Matrix4 mat = getConcatenatedMatrix();
 	Matrix4 adjust;
-	Vector3 compoundScale = getCompoundScale();
-	adjust.setPosition(-anchorPoint.x * bBox.x * 0.5 * compoundScale.x, -anchorPoint.y * bBox.y * 0.5 * yAdjust * compoundScale.y, -anchorPoint.z * bBox.z * 0.5 * compoundScale.z);
-	return mat * adjust;
+	adjust.setPosition(-anchorPoint.x * bBox.x * 0.5, -anchorPoint.y * bBox.y * 0.5 * yAdjust, -anchorPoint.z * bBox.z * 0.5);
+	return adjust * mat;
 }
 
 Matrix4 Entity::getConcatenatedMatrix() {

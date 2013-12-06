@@ -22,25 +22,36 @@
  
 #include "TransformGizmo.h"
 
+extern UIGlobalMenu *globalMenu;
+
 TransformGizmoMenu::TransformGizmoMenu(TransformGizmo *gizmo) : UIElement() {
 	processInputEvents = true;
-	
+    
 	this->gizmo = gizmo;
 		
 	moveModeButton = new UIImageButton("entityEditor/move_gizmo.png", 1.0, 24, 24);
 	addChild(moveModeButton);
 	moveModeButton->setPosition(4, 2);
-	moveModeButton->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+	moveModeButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
 	scaleModeButton = new UIImageButton("entityEditor/scale_gizmo.png", 1.0, 24, 24);
 	addChild(scaleModeButton);
 	scaleModeButton->setPosition(30, 2);
-	scaleModeButton->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+	scaleModeButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
 	rotateModeButton = new UIImageButton("entityEditor/rotate_gizmo.png", 1.0, 24, 24);
 	addChild(rotateModeButton);
 	rotateModeButton->setPosition(60, 2);
-	rotateModeButton->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+	rotateModeButton->addEventListener(this, UIEvent::CLICK_EVENT);
+    
+    orientationCombo = new UIComboBox(globalMenu, 100);
+    orientationCombo->addComboItem("Global");
+    orientationCombo->addComboItem("Local");
+    orientationCombo->setSelectedIndex(0);
+    addChild(orientationCombo);
+    orientationCombo->setPosition(100, 2);
+    
+    orientationCombo->addEventListener(this, UIEvent::CHANGE_EVENT);
 }
 
 void TransformGizmoMenu::handleEvent(Event *event) {
@@ -50,7 +61,9 @@ void TransformGizmoMenu::handleEvent(Event *event) {
 		gizmo->setTransformMode(TransformGizmo::TRANSFORM_SCALE);	
 	} else if(event->getDispatcher() == rotateModeButton) {
 		gizmo->setTransformMode(TransformGizmo::TRANSFORM_ROTATE);	
-	}
+	} else if(event->getDispatcher() == orientationCombo) {
+        gizmo->setTransformOrientation(orientationCombo->getSelectedIndex());
+    }
 }
 
 TransformGizmoMenu::~TransformGizmoMenu() {
@@ -60,6 +73,7 @@ TransformGizmoMenu::~TransformGizmoMenu() {
 
 TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entity() {
 	processInputEvents = true;
+    orientation = ORIENTATION_GLOBAL;
 	
 	this->targetScene = targetScene;
 	this->targetCamera = targetCamera;
@@ -71,7 +85,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	centerCircle->billboardMode = true;
 	addChild(centerCircle);
     centerCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
-		
+		  
 	trasnformDecorators = new Entity();
 	addChild(trasnformDecorators);
 	
@@ -82,8 +96,8 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	addChild(transformAndScaleLines);
 		
 	rotateDectorators = new Entity();
-	addChild(rotateDectorators);	
-		
+	addChild(rotateDectorators);
+    
 	yLine = new SceneMesh(Mesh::LINE_MESH);
 	yLine->getMesh()->addVertex(0.0, 0.0, 0.0);
 	yLine->getMesh()->addVertex(0.0, 1.0, 0.0);
@@ -157,7 +171,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 
 	// ROTATE
 
-	bgCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 1.6, 1.6, 32);
+	bgCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 2.6, 2.6, 32);
 	bgCircle->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
 	bgCircle->setColor(0.0, 0.0, 0.0, 1.0);
 	bgCircle->depthTest = false;
@@ -165,7 +179,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	rotateDectorators->addChild(bgCircle);
     bgCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
 
-	outerCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 2.0, 2.0, 32);
+	outerCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 3.0, 3.0, 32);
 	outerCircle->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
 	outerCircle->setColor(1.0, 1.0, 1.0, 1.0);
 	outerCircle->depthTest = false;
@@ -173,7 +187,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	rotateDectorators->addChild(outerCircle);
     outerCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX() * 2.0);
     
-	pitchCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 1.55, 1.55, 32);
+	pitchCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 2.55, 2.55, 32);
 	pitchCircle->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
 	pitchCircle->setColor(1.0, 0.0, 0.0, 1.0);
 	pitchCircle->depthTest = false;
@@ -182,7 +196,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	pitchCircle->setMaterialByName("OneSidedLine");
     pitchCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX() * 2.0);
     
-	yawCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 1.65, 1.65, 32);
+	yawCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 2.65, 2.65, 32);
 	yawCircle->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
 	yawCircle->setColor(0.0, 1.0, 0.0, 1.0);
 	yawCircle->depthTest = false;
@@ -191,7 +205,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	yawCircle->setMaterialByName("OneSidedLine");
     yawCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX()* 2.0);
     
-	rollCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 1.6, 1.6, 32);
+	rollCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 2.6, 2.6, 32);
 	rollCircle->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
 	rollCircle->setColor(0.0, 0.0, 1.0, 1.0);
 	rollCircle->depthTest = false;
@@ -203,7 +217,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	rotateDectorators->processInputEvents = true;
 	
 	//pitchGrip = new ScenePrimitive(ScenePrimitive::TYPE_TORUS, 1.55 * 0.5, 0.05, 16, 3);
-    pitchGrip = new ScenePrimitive(ScenePrimitive::TYPE_UNCAPPED_CYLINDER, 0.15, 1.55 * 0.5, 16);
+    pitchGrip = new ScenePrimitive(ScenePrimitive::TYPE_UNCAPPED_CYLINDER, 0.15, 2.55 * 0.5, 16);
 	pitchGrip->setColor(1.0, 0.0, 0.0, 0.2);
 	pitchGrip->depthTest = false;
 	pitchGrip->Pitch(90);	
@@ -214,7 +228,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	pitchGrip->useGeometryHitDetection = true;
 	pitchGrip->blockMouseInput = true;
 
-    rollGrip = new ScenePrimitive(ScenePrimitive::TYPE_UNCAPPED_CYLINDER, 0.15, 1.55 * 0.5, 16);
+    rollGrip = new ScenePrimitive(ScenePrimitive::TYPE_UNCAPPED_CYLINDER, 0.15, 2.6 * 0.5, 16);
 	rollGrip->setColor(0.0, 0.0, 1.0, 0.2);
 	rollGrip->depthTest = false;
 	rollGrip->Pitch(90);		
@@ -224,7 +238,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	rollGrip->useGeometryHitDetection = true;
 	rollGrip->blockMouseInput = true;
 	
-	yawGrip= new ScenePrimitive(ScenePrimitive::TYPE_UNCAPPED_CYLINDER, 0.15, 1.55 * 0.5, 16);
+	yawGrip= new ScenePrimitive(ScenePrimitive::TYPE_UNCAPPED_CYLINDER, 0.15, 2.65 * 0.5, 16);
 	yawGrip->setColor(0.0, 1.0, 0.0, 0.2);
 	yawGrip->depthTest = false;
 	yawGrip->Yaw(90);		
@@ -238,7 +252,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
     viewportRotateGripBase->processInputEvents = true;
 	rotateDectorators->addChild(viewportRotateGripBase);
     
-	viewportRotateGrip = new ScenePrimitive(ScenePrimitive::TYPE_TORUS, 2.0 * 0.5, 0.05, 16, 3);
+	viewportRotateGrip = new ScenePrimitive(ScenePrimitive::TYPE_TORUS, 3.0 * 0.5, 0.08, 16, 3);
     viewportRotateGrip->Pitch(90);
 	viewportRotateGrip->setColor(0.0, 1.0, 0.0, 0.2);
 	viewportRotateGrip->depthTest = false;
@@ -255,6 +269,8 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 
 	xTransformGrip = new Entity();
 	xTransformGrip->bBox.set(1.3, 0.1, 0.1);
+    xTransformGrip->depthTest = false;
+    xTransformGrip->setColor(1.0, 0.0, 0.0, 1.0);
 	addChild(xTransformGrip);
 	xTransformGrip->setAnchorPoint(Vector3(-1.0, 0.0, 0.0));
 	xTransformGrip->processInputEvents = true;
@@ -288,18 +304,46 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	setTransformMode(TRANSFORM_MOVE);
 }
 
-Vector3 TransformGizmo::getTransformPlanePosition() {
+void TransformGizmo::setTransformOrientation(int orientation) {
+    this->orientation = orientation;
+}
 
+void TransformGizmo::setTransformPlane(Number x, Number y, Number z, bool forceGlobal) {
+    planeMatrix = getConcatenatedMatrix();
+    
+    Vector3 localPlane = Vector3(x,y,z);
+    localTransformPlane = localPlane;
+    
 	Number planeDistance = 0;
+    
 	if(transformPlane.x > 0) {
 		planeDistance = getPosition().x;
 	} else if(transformPlane.y > 0.0) {
-		planeDistance = getPosition().y;	
+		planeDistance = getPosition().y;
 	} else if(transformPlane.z > 0.0) {
-		planeDistance = getPosition().z;	
+		planeDistance = getPosition().z;
 	}
-	Ray ray = targetScene->projectRayFromCameraAndViewportCoordinate(targetCamera, coreInput->getMousePosition());		
-	return ray.planeIntersectPoint(transformPlane, planeDistance);
+    
+    if(orientation == ORIENTATION_GLOBAL || forceGlobal) {
+        transformPlane = localPlane;
+        transformPlaneDistance = planeDistance;
+        planeMatrix.identity();
+        return;
+    }
+    
+    transformPlane = planeMatrix.rotateVector(localPlane);
+    Vector3 planePoint = localPlane * planeDistance;
+    planePoint = planeMatrix.Inverse().transpose() * planePoint;
+    
+    transformPlaneDistance = planePoint.dot(transformPlane);
+}
+
+Vector3 TransformGizmo::getTransformPlanePosition() {
+
+	Ray ray = targetScene->projectRayFromCameraAndViewportCoordinate(targetCamera, coreInput->getMousePosition());
+    
+    Vector3 ret = ray.planeIntersectPoint(transformPlane, transformPlaneDistance);
+	return planeMatrix.Inverse() * ret;
 }
 
 void TransformGizmo::setTransformMode(int newMode) {
@@ -361,8 +405,8 @@ void TransformGizmo::setTransformMode(int newMode) {
                 pitchCircle->visible = true;
                 yawGrip->enabled = true;
                 yawCircle->visible = true;
-                viewportRotateGrip->enabled = true;
-                outerCircle->visible = true;
+                viewportRotateGrip->enabled = false;
+                outerCircle->visible = false;
                 outerCircle->setColor(1.0, 1.0, 1.0, 1.0);
                 
             } else {
@@ -404,55 +448,77 @@ void TransformGizmo::setTransformSelection(std::vector<Entity*> selectedEntities
 }
 
 void TransformGizmo::transfromSelectedEntities(const Vector3 &move, const Vector3 &scale, Number rotate) {
+    
 	for(int i=0; i < selectedEntities.size(); i++) {
-		selectedEntities[i]->Translate(move);
-		selectedEntities[i]->setScale(selectedEntities[i]->getScale() + scale);
+        
+        
+        if(orientation == ORIENTATION_GLOBAL) {
+            selectedEntities[i]->Translate(move);
+            
+            Vector3 newScale = selectedEntities[i]->getRotationQuat().applyTo(scale);
+            newScale.x = fabs(newScale.x);
+            newScale.y = fabs(newScale.y);
+            newScale.z = fabs(newScale.z);
+            if(scale.x < 0 || scale.y < 0 || scale.z < 0) {
+                newScale = newScale * -1.0;
+            }
+            selectedEntities[i]->setScale(selectedEntities[i]->getScale() + newScale);
+            
+            
+            Quaternion q;
+            Quaternion currentRotation = selectedEntities[i]->getRotationQuat();
+            Vector3 axisVector = transformConstraint;
+            axisVector = currentRotation.Inverse().applyTo(axisVector);
+            q.fromAngleAxis(rotate, axisVector);
+            selectedEntities[i]->setRotationByQuaternion(currentRotation * q);
+            
+        } else {
+            
+            selectedEntities[i]->Translate(getRotationQuat().applyTo(move));
+            selectedEntities[i]->setScale(selectedEntities[i]->getScale() + scale);
+            
+            Quaternion q;
+            Quaternion currentRotation = selectedEntities[i]->getRotationQuat();
+            Vector3 axisVector = transformConstraint;
+            
+            // always global in the 2d view
+            if(gizmoMode == GIZMO_MODE_2D) {
+                axisVector = currentRotation.Inverse().applyTo(axisVector);
+            }
+            q.fromAngleAxis(rotate, axisVector);
+            selectedEntities[i]->setRotationByQuaternion(currentRotation * q);
+            
+        }
 		
-		Quaternion q;
-		Quaternion currentRotation = selectedEntities[i]->getRotationQuat();
-					
-		Vector3 axisVector = transformConstraint;
-		axisVector = currentRotation.Inverse().applyTo(axisVector);
-		
-		q.fromAngleAxis(rotate, axisVector);
-		selectedEntities[i]->setRotationByQuaternion(currentRotation * q);
 	}
 }
 
 Number TransformGizmo::getTransformPlaneAngle() {
-
-	Number planeDistance = 0;
 	
 	Ray gizmoRay;
-	gizmoRay.origin = getConcatenatedMatrix().getPosition();
+	gizmoRay.origin = 0.0;
 	gizmoRay.direction = transformPlane * -1;
-					
-	if(transformPlane.x > 0) {
-		planeDistance = getPosition().x;
-	} else if(transformPlane.y > 0.0) {
-		planeDistance = getPosition().y;	
-	} else if(transformPlane.z > 0.0) {
-		planeDistance = getPosition().z;	
-	}
-						
-	Vector3 gizmoIntersect = gizmoRay.planeIntersectPoint(transformPlane, planeDistance);
+				
+	Vector3 gizmoIntersect = gizmoRay.planeIntersectPoint(transformPlane, transformPlaneDistance);
+    gizmoIntersect = planeMatrix.Inverse() * gizmoIntersect;
 	
 	Ray ray = targetScene->projectRayFromCameraAndViewportCoordinate(targetCamera, coreInput->getMousePosition());	
-	Vector3 mouseIntersect = ray.planeIntersectPoint(transformPlane, planeDistance);
-
+	Vector3 mouseIntersect = ray.planeIntersectPoint(transformPlane, transformPlaneDistance);
+    mouseIntersect = planeMatrix.Inverse() * mouseIntersect;
+    
 	Vector2 planePosition;
-	
-	if(transformPlane.x > 0) {
+    
+	if(localTransformPlane.x > 0) {
 		planePosition.x = mouseIntersect.z - gizmoIntersect.z;
 		planePosition.y = mouseIntersect.y - gizmoIntersect.y;
-	} else if(transformPlane.y > 0.0) {
+	} else if(localTransformPlane.y > 0.0) {
 		planePosition.x = mouseIntersect.x - gizmoIntersect.x;
 		planePosition.y = mouseIntersect.z - gizmoIntersect.z;
-	} else if(transformPlane.z > 0.0) {
+	} else if(localTransformPlane.z > 0.0) {
 		planePosition.x = mouseIntersect.x - gizmoIntersect.x;
 		planePosition.y = mouseIntersect.y - gizmoIntersect.y;
 	}
-	
+    
 	planePosition.Normalize();
 	
 	return atan2(planePosition.x, planePosition.y);
@@ -470,33 +536,21 @@ void TransformGizmo::handleEvent(Event *event) {
 			if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN) {
 				transforming = true;
 				transformConstraint = Vector3(1.0, 0.0, 0.0);
-                
-                if(gizmoMode == GIZMO_MODE_3D) {
-                    transformPlane = Vector3(1.0, 0.0, 0.0);
-                } else {
-                    transformPlane = Vector3(0.0, 0.0, 1.0);
-                }
-                
+                setTransformPlane(1.0, 0.0, 0.0);
 				startingAngle = getTransformPlaneAngle();
 			}
 		} else 	if(event->getDispatcher() == yawGrip) {
 			if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN) {
 				transforming = true;
 				transformConstraint = Vector3(0.0, 1.0, 0.0);
-                
-                if(gizmoMode == GIZMO_MODE_3D) {
-                    transformPlane = Vector3(0.0, 1.0, 0.0);
-                } else {
-                    transformPlane = Vector3(0.0, 0.0, 1.0);
-                }
-                
+                setTransformPlane(0.0, 1.0, 0.0);
 				startingAngle = getTransformPlaneAngle();
 			}
 		} else 	if(event->getDispatcher() == rollGrip) {
 			if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN) {
 				transforming = true;
 				transformConstraint = Vector3(0.0, 0.0, -1.0);
-				transformPlane = Vector3(0.0, 0.0, 1.0);
+				setTransformPlane(0.0, 0.0, 1.0);
 				startingAngle = getTransformPlaneAngle();
 			}
 		} else 	if(event->getDispatcher() == viewportRotateGrip) {
@@ -504,12 +558,11 @@ void TransformGizmo::handleEvent(Event *event) {
                 if(gizmoMode == GIZMO_MODE_2D) {
                     transforming = true;
                     transformConstraint = Vector3(0.0, 0.0, -1.0);
-                    transformPlane = Vector3(0.0, 0.0, 1.0);
+                    setTransformPlane(0.0, 0.0, 1.0, true);
                     startingAngle = getTransformPlaneAngle();
                 }
 			}
 		}
-
 
 		if(event->getDispatcher() == xTransformGrip) {
 			if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN) {
@@ -517,9 +570,9 @@ void TransformGizmo::handleEvent(Event *event) {
 				transformConstraint = Vector3(1.0, 0.0, 0.0);
                 
                 if(gizmoMode == GIZMO_MODE_3D) {
-                    transformPlane = Vector3(0.0, 1.0, 0.0);
+                    setTransformPlane(0.0, 1.0, 0.0);
                 } else {
-                    transformPlane = Vector3(0.0, 0.0, 1.0);
+                    setTransformPlane(0.0, 0.0, 1.0);
                 }
 				startingPoint = getTransformPlanePosition();
 			}
@@ -527,14 +580,14 @@ void TransformGizmo::handleEvent(Event *event) {
 			if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN) {
 				transforming = true;
 				transformConstraint = Vector3(0.0, 1.0, 0.0);
-				transformPlane = Vector3(0.0, 0.0, 1.0);			
+				setTransformPlane(0.0, 0.0, 1.0);
 				startingPoint = getTransformPlanePosition();
 			}
 		} else 	if(event->getDispatcher() == zTransformGrip) {
 			if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN) {
 				transforming = true;
 				transformConstraint = Vector3(0.0, 0.0, 1.0);
-				transformPlane = Vector3(0.0, 1.0, 0.0);			
+				setTransformPlane(0.0, 1.0, 0.0);
 				startingPoint = getTransformPlanePosition();
 			}		
 		}
@@ -582,6 +635,19 @@ TransformGizmo::~TransformGizmo() {
 
 }
 
+void TransformGizmo::updateOrientationForEntity(Entity *entity) {
+    Quaternion q;
+    switch(orientation) {
+        case ORIENTATION_GLOBAL:
+            setRotationByQuaternion(q);
+        break;
+        case ORIENTATION_LOCAL:
+            q = entity->getRotationQuat();
+            setRotationByQuaternion(q);
+        break;
+    }
+}
+
 void TransformGizmo::Update() {
     
     if(selectedEntities.size() > 0) {
@@ -591,9 +657,12 @@ void TransformGizmo::Update() {
         }
         centerPoint = centerPoint / selectedEntities.size();
         setPosition(centerPoint);
+        
+        updateOrientationForEntity(selectedEntities[0]);
     }
     
-    viewportRotateGripBase->lookAt(targetCamera->getPosition());
+    viewportRotateGripBase->setRotationByQuaternion(getRotationQuat().Inverse());
+    
 	Number scale;
     if(gizmoMode == GIZMO_MODE_2D) {
         scale = targetCamera->getPosition().length() * 0.1;

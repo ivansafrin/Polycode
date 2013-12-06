@@ -45,18 +45,27 @@ class TransformGizmo : public Entity {
 		Vector3 getTransformPlanePosition();
 		
 		Number getTransformPlaneAngle();
+    
+        void setTransformOrientation(int orientation);
+    
+        void updateOrientationForEntity(Entity *entity);
+    
+        void setTransformPlane(Number x, Number y, Number z, bool forceGlobal = false);
 		
-		static const int TRANSFORM_MOVE = 0;		
+		static const int TRANSFORM_MOVE = 0;
 		static const int TRANSFORM_SCALE = 1;
 		static const int TRANSFORM_ROTATE = 2;
     
         static const int GIZMO_MODE_3D = 0;
 		static const int GIZMO_MODE_2D = 1;
-    
+
+        static const int ORIENTATION_GLOBAL = 0;
+        static const int ORIENTATION_LOCAL = 1;
+
 	private:
         int transformMode;
         int gizmoMode;
-    
+        int orientation;
 	
 		std::vector<Entity*> selectedEntities;
 	
@@ -70,6 +79,11 @@ class TransformGizmo : public Entity {
 		
 		Vector3 transformConstraint;
 		Vector3 transformPlane;
+        Vector3 localTransformPlane;
+    
+        Number transformPlaneDistance;
+    
+        Matrix4 planeMatrix;
 				
 		Vector3 startingPoint;
 		Number startingAngle;
@@ -108,6 +122,7 @@ class TransformGizmo : public Entity {
         ScenePrimitive *pitchCircle;
         ScenePrimitive *yawCircle;
         ScenePrimitive *rollCircle;
+    
 };
 
 class TransformGizmoMenu : public UIElement {
@@ -122,6 +137,7 @@ class TransformGizmoMenu : public UIElement {
 		UIImageButton *moveModeButton;
 		UIImageButton *scaleModeButton;
 		UIImageButton *rotateModeButton;
+        UIComboBox *orientationCombo;
 		
 		TransformGizmo *gizmo;
 };
