@@ -41,8 +41,12 @@ TransformGizmoMenu::TransformGizmoMenu(TransformGizmo *gizmo) : UIElement() {
 	
 	rotateModeButton = new UIImageButton("entityEditor/rotate_gizmo.png", 1.0, 24, 24);
 	addChild(rotateModeButton);
-	rotateModeButton->setPosition(60, 2);
+	rotateModeButton->setPosition(56, 2);
 	rotateModeButton->addEventListener(this, UIEvent::CLICK_EVENT);
+    
+    transformModeSelector = new UIImage("entityEditor/button_selector.png", 24, 24);
+    addChild(transformModeSelector);
+    transformModeSelector->setPosition(moveModeButton->getPosition());
     
     orientationCombo = new UIComboBox(globalMenu, 100);
     orientationCombo->addComboItem("Global");
@@ -51,18 +55,42 @@ TransformGizmoMenu::TransformGizmoMenu(TransformGizmo *gizmo) : UIElement() {
     addChild(orientationCombo);
     orientationCombo->setPosition(100, 2);
     
+	centerModeMedianButton = new UIImageButton("entityEditor/median_center.png", 1.0, 24, 24);
+	addChild(centerModeMedianButton);
+	centerModeMedianButton->setPosition(210, 2);
+	centerModeMedianButton->addEventListener(this, UIEvent::CLICK_EVENT);
+
+    centerModeCentersButton = new UIImageButton("entityEditor/individual_centers.png", 1.0, 24, 24);
+	addChild(centerModeCentersButton);
+	centerModeCentersButton->setPosition(238, 2);
+	centerModeCentersButton->addEventListener(this, UIEvent::CLICK_EVENT);
+
+    centerModeSelector = new UIImage("entityEditor/button_selector.png", 24, 24);
+    addChild(centerModeSelector);
+    centerModeSelector->setPosition(centerModeMedianButton->getPosition());
+
+    
     orientationCombo->addEventListener(this, UIEvent::CHANGE_EVENT);
 }
 
 void TransformGizmoMenu::handleEvent(Event *event) {
 	if(event->getDispatcher() == moveModeButton) {
 		gizmo->setTransformMode(TransformGizmo::TRANSFORM_MOVE);
+        transformModeSelector->setPosition(moveModeButton->getPosition());
 	} else if(event->getDispatcher() == scaleModeButton) {
-		gizmo->setTransformMode(TransformGizmo::TRANSFORM_SCALE);	
+		gizmo->setTransformMode(TransformGizmo::TRANSFORM_SCALE);
+        transformModeSelector->setPosition(scaleModeButton->getPosition());
 	} else if(event->getDispatcher() == rotateModeButton) {
-		gizmo->setTransformMode(TransformGizmo::TRANSFORM_ROTATE);	
+		gizmo->setTransformMode(TransformGizmo::TRANSFORM_ROTATE);
+        transformModeSelector->setPosition(rotateModeButton->getPosition());
 	} else if(event->getDispatcher() == orientationCombo) {
         gizmo->setTransformOrientation(orientationCombo->getSelectedIndex());
+    } else if(event->getDispatcher() == centerModeMedianButton) {
+        centerModeSelector->setPosition(centerModeMedianButton->getPosition());
+        gizmo->setCenterMode(TransformGizmo::CENTER_MODE_MEDIAN);
+    } else if(event->getDispatcher() == centerModeCentersButton) {
+        centerModeSelector->setPosition(centerModeCentersButton->getPosition());
+        gizmo->setCenterMode(TransformGizmo::CENTER_MODE_INDIVIDUAL);
     }
 }
 
@@ -70,10 +98,15 @@ TransformGizmoMenu::~TransformGizmoMenu() {
 
 }
 
+void TransformGizmo::setCenterMode(int centerMode) {
+    this->centerMode = centerMode;
+}
+
 
 TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entity() {
 	processInputEvents = true;
     orientation = ORIENTATION_GLOBAL;
+    centerMode = CENTER_MODE_MEDIAN;
 	
 	this->targetScene = targetScene;
 	this->targetCamera = targetCamera;
@@ -444,10 +477,11 @@ void TransformGizmo::setTransformSelection(std::vector<Entity*> selectedEntities
 		visible = false;
 		enabled = false;
 	}
-	
 }
 
-void TransformGizmo::transfromSelectedEntities(const Vector3 &move, const Vector3 &scale, Number rotate) {
+void TransformGizmo::transformSelectedEntities(const Vector3 &move, const Vector3 &scale, Number rotate) {
+    
+    Vector3 globalCenter = getConcatenatedMatrix().getPosition();
     
 	for(int i=0; i < selectedEntities.size(); i++) {
         
@@ -464,14 +498,26 @@ void TransformGizmo::transfromSelectedEntities(const Vector3 &move, const Vector
             }
             selectedEntities[i]->setScale(selectedEntities[i]->getScale() + newScale);
             
-            
             Quaternion q;
             Quaternion currentRotation = selectedEntities[i]->getRotationQuat();
             Vector3 axisVector = transformConstraint;
             axisVector = currentRotation.Inverse().applyTo(axisVector);
             q.fromAngleAxis(rotate, axisVector);
-            selectedEntities[i]->setRotationByQuaternion(currentRotation * q);
             
+            
+            if(centerMode == CENTER_MODE_MEDIAN) {
+                Vector3 globalPosition = selectedEntities[i]->getConcatenatedMatrix().getPosition();
+
+                Quaternion tQ;
+                tQ.fromAngleAxis(rotate, transformConstraint);
+                Vector3 trans = globalCenter + tQ.applyTo(globalPosition-globalCenter) - globalPosition;
+                globalPosition += trans;
+                
+                selectedEntities[i]->setPosition(globalPosition - selectedEntities[i]->getParentEntity()->getConcatenatedMatrix().getPosition());
+                selectedEntities[i]->setRotationByQuaternion(currentRotation * q);
+            } else {
+                selectedEntities[i]->setRotationByQuaternion(currentRotation * q);
+            }
         } else {
             
             selectedEntities[i]->Translate(getRotationQuat().applyTo(move));
@@ -486,7 +532,22 @@ void TransformGizmo::transfromSelectedEntities(const Vector3 &move, const Vector
                 axisVector = currentRotation.Inverse().applyTo(axisVector);
             }
             q.fromAngleAxis(rotate, axisVector);
-            selectedEntities[i]->setRotationByQuaternion(currentRotation * q);
+            
+            
+            if(centerMode == CENTER_MODE_MEDIAN) {
+                Vector3 globalPosition = selectedEntities[i]->getConcatenatedMatrix().getPosition();
+                
+                Quaternion tQ;
+                tQ.fromAngleAxis(rotate, getRotationQuat().applyTo(axisVector));
+                Vector3 trans = globalCenter + tQ.applyTo(globalPosition-globalCenter) - globalPosition;
+                globalPosition += trans;
+                
+                selectedEntities[i]->setPosition(globalPosition - selectedEntities[i]->getParentEntity()->getConcatenatedMatrix().getPosition());
+                selectedEntities[i]->setRotationByQuaternion(currentRotation * q);
+            } else {
+                selectedEntities[i]->setRotationByQuaternion(currentRotation * q);
+            }
+
             
         }
 		
@@ -601,21 +662,21 @@ void TransformGizmo::handleEvent(Event *event) {
 					case TRANSFORM_MOVE:
 					{
 						Vector3 newPoint = getTransformPlanePosition();
-						transfromSelectedEntities((newPoint-startingPoint) * transformConstraint, Vector3(0.0, 0.0, 0.0), 0.0);
+						transformSelectedEntities((newPoint-startingPoint) * transformConstraint, Vector3(0.0, 0.0, 0.0), 0.0);
 						startingPoint = newPoint;
 					}
 					break;
 					case TRANSFORM_SCALE:
 					{
 						Vector3 newPoint = getTransformPlanePosition();
-						transfromSelectedEntities(Vector3(0.0, 0.0, 0.0), ((newPoint-startingPoint) * transformConstraint), 0.0);
+						transformSelectedEntities(Vector3(0.0, 0.0, 0.0), ((newPoint-startingPoint) * transformConstraint), 0.0);
 						startingPoint = newPoint;					
 					}
 					break;
 					case TRANSFORM_ROTATE:
 					{
 						Number newAngle = getTransformPlaneAngle();
-						transfromSelectedEntities(Vector3(0.0, 0.0, 0.0), Vector3(0.0, 0.0, 0.0), newAngle - startingAngle);
+						transformSelectedEntities(Vector3(0.0, 0.0, 0.0), Vector3(0.0, 0.0, 0.0), newAngle - startingAngle);
 						startingAngle = newAngle;						
 					}
 					break;
