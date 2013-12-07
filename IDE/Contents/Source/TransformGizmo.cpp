@@ -489,6 +489,13 @@ void TransformGizmo::transformSelectedEntities(const Vector3 &move, const Vector
         if(orientation == ORIENTATION_GLOBAL) {
             selectedEntities[i]->Translate(move);
             
+            Quaternion q;
+            Quaternion currentRotation = selectedEntities[i]->getRotationQuat();
+            Vector3 axisVector = transformConstraint;
+            axisVector = currentRotation.Inverse().applyTo(axisVector);
+            q.fromAngleAxis(rotate, axisVector);
+            
+            
             Vector3 newScale = selectedEntities[i]->getRotationQuat().applyTo(scale);
             newScale.x = fabs(newScale.x);
             newScale.y = fabs(newScale.y);
@@ -496,14 +503,6 @@ void TransformGizmo::transformSelectedEntities(const Vector3 &move, const Vector
             if(scale.x < 0 || scale.y < 0 || scale.z < 0) {
                 newScale = newScale * -1.0;
             }
-            selectedEntities[i]->setScale(selectedEntities[i]->getScale() + newScale);
-            
-            Quaternion q;
-            Quaternion currentRotation = selectedEntities[i]->getRotationQuat();
-            Vector3 axisVector = transformConstraint;
-            axisVector = currentRotation.Inverse().applyTo(axisVector);
-            q.fromAngleAxis(rotate, axisVector);
-            
             
             if(centerMode == CENTER_MODE_MEDIAN) {
                 Vector3 globalPosition = selectedEntities[i]->getConcatenatedMatrix().getPosition();
@@ -515,13 +514,25 @@ void TransformGizmo::transformSelectedEntities(const Vector3 &move, const Vector
                 
                 selectedEntities[i]->setPosition(globalPosition - selectedEntities[i]->getParentEntity()->getConcatenatedMatrix().getPosition());
                 selectedEntities[i]->setRotationByQuaternion(currentRotation * q);
+                
+                selectedEntities[i]->setScale(selectedEntities[i]->getScale() + newScale);
+                
+                if(newScale.length() > 0.0) {
+                    Vector3 scalePosition;
+                    scalePosition.x = globalPosition.x + ((globalPosition.x - globalCenter.x) * newScale.x);
+                    scalePosition.y = globalPosition.y + ((globalPosition.y - globalCenter.y) * newScale.y);
+                    scalePosition.z = globalPosition.z + ((globalPosition.z - globalCenter.z) * newScale.z);
+                    scalePosition = selectedEntities[i]->getParentEntity()->getConcatenatedMatrix().Inverse().transpose() * scalePosition;
+                    selectedEntities[i]->setPosition(scalePosition);
+                }
+                
             } else {
                 selectedEntities[i]->setRotationByQuaternion(currentRotation * q);
+                selectedEntities[i]->setScale(selectedEntities[i]->getScale() + newScale);
             }
         } else {
             
             selectedEntities[i]->Translate(getRotationQuat().applyTo(move));
-            selectedEntities[i]->setScale(selectedEntities[i]->getScale() + scale);
             
             Quaternion q;
             Quaternion currentRotation = selectedEntities[i]->getRotationQuat();
@@ -544,8 +555,21 @@ void TransformGizmo::transformSelectedEntities(const Vector3 &move, const Vector
                 
                 selectedEntities[i]->setPosition(globalPosition - selectedEntities[i]->getParentEntity()->getConcatenatedMatrix().getPosition());
                 selectedEntities[i]->setRotationByQuaternion(currentRotation * q);
+                
+                selectedEntities[i]->setScale(selectedEntities[i]->getScale() + scale);
+                
+                if(scale.length() > 0.0) {
+                    Vector3 scalePosition;
+                    scalePosition.x = globalPosition.x + ((globalPosition.x - globalCenter.x) * scale.x);
+                    scalePosition.y = globalPosition.y + ((globalPosition.y - globalCenter.y) * scale.y);
+                    scalePosition.z = globalPosition.z + ((globalPosition.z - globalCenter.z) * scale.z);
+                    scalePosition = selectedEntities[i]->getParentEntity()->getConcatenatedMatrix().Inverse().transpose() * scalePosition;
+                    selectedEntities[i]->setPosition(scalePosition);
+                }
+                
             } else {
                 selectedEntities[i]->setRotationByQuaternion(currentRotation * q);
+                selectedEntities[i]->setScale(selectedEntities[i]->getScale() + scale);
             }
 
             
