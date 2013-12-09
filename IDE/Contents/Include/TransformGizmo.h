@@ -51,12 +51,16 @@ class TransformGizmo : public Entity {
         void updateOrientationForEntity(Entity *entity);
     
         void setTransformPlane(Number x, Number y, Number z, bool forceGlobal = false);
+        void setTransformPlaneFromView();
     
         void setCenterMode(int centerMode);
 		
 		static const int TRANSFORM_MOVE = 0;
 		static const int TRANSFORM_SCALE = 1;
 		static const int TRANSFORM_ROTATE = 2;
+		static const int TRANSFORM_SCALE_VIEW = 3;
+		static const int TRANSFORM_ROTATE_VIEW = 4;
+		static const int TRANSFORM_MOVE_VIEW = 5;
     
         static const int GIZMO_MODE_3D = 0;
 		static const int GIZMO_MODE_2D = 1;
@@ -75,13 +79,14 @@ class TransformGizmo : public Entity {
         int centerMode;
 	
 		std::vector<Entity*> selectedEntities;
-	
+    
 		Scene *targetScene;
 		Camera *targetCamera;
     
 	
 		CoreInput *coreInput;
 		int mode;
+        int previousMode;
 		bool transforming;
 		
 		Vector3 transformConstraint;
@@ -92,9 +97,12 @@ class TransformGizmo : public Entity {
     
         Matrix4 planeMatrix;
 				
+        Vector3 gizmoPoint;
 		Vector3 startingPoint;
 		Number startingAngle;
-					
+    
+        Number scaleAmount;
+				
 		Entity *trasnformDecorators;
 		Entity *scaleDecorators;
 		Entity *transformAndScaleLines;			

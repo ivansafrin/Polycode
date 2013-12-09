@@ -325,14 +325,16 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 		
 	transforming = false;
 	mode = TRANSFORM_MOVE;
-	
+    	
 	visible = false;
 	enabled = false;
 	
 	coreInput = CoreServices::getInstance()->getCore()->getInput();
 	coreInput->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
-	coreInput->addEventListener(this, InputEvent::EVENT_MOUSEUP);	
-
+	coreInput->addEventListener(this, InputEvent::EVENT_MOUSEUP);
+	coreInput->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+	coreInput->addEventListener(this, InputEvent::EVENT_KEYDOWN);
+    
 	gizmoMode = GIZMO_MODE_3D;
 	setTransformMode(TRANSFORM_MOVE);
 }
@@ -341,23 +343,24 @@ void TransformGizmo::setTransformOrientation(int orientation) {
     this->orientation = orientation;
 }
 
+void TransformGizmo::setTransformPlaneFromView() {
+    if(gizmoMode == GIZMO_MODE_2D) {
+        setTransformPlane(0.0, 0.0, 1.0, true);
+    } else {
+        Vector3 camVec =  targetCamera->getConcatenatedMatrix().getPosition() - getConcatenatedMatrix().getPosition();
+        camVec.Normalize();
+        setTransformPlane(camVec.x, camVec.y, camVec.z, true);
+    }
+}
+
 void TransformGizmo::setTransformPlane(Number x, Number y, Number z, bool forceGlobal) {
     planeMatrix = getConcatenatedMatrix();
     
     Vector3 localPlane = Vector3(x,y,z);
     localTransformPlane = localPlane;
-    
 	Number planeDistance = 0;
-    
-	if(transformPlane.x > 0) {
-		planeDistance = getPosition().x;
-	} else if(transformPlane.y > 0.0) {
-		planeDistance = getPosition().y;
-	} else if(transformPlane.z > 0.0) {
-		planeDistance = getPosition().z;
-	}
-    
-    if(orientation == ORIENTATION_GLOBAL || forceGlobal) {
+
+    if(forceGlobal) {
         transformPlane = localPlane;
         transformPlaneDistance = planeDistance;
         planeMatrix.identity();
@@ -365,18 +368,23 @@ void TransformGizmo::setTransformPlane(Number x, Number y, Number z, bool forceG
     }
     
     transformPlane = planeMatrix.rotateVector(localPlane);
-    Vector3 planePoint = localPlane * planeDistance;
-    planePoint = planeMatrix.Inverse().transpose() * planePoint;
-    
+    Vector3 planePoint = planeMatrix.getPosition();
     transformPlaneDistance = planePoint.dot(transformPlane);
+    
+	Ray gizmoRay;
+	gizmoRay.origin = 0.0;
+	gizmoRay.direction = transformPlane * -1;
+    
+	gizmoPoint = gizmoRay.planeIntersectPoint(transformPlane, transformPlaneDistance);
+    gizmoPoint = planeMatrix.Inverse() * gizmoPoint;
+    
 }
 
 Vector3 TransformGizmo::getTransformPlanePosition() {
 
 	Ray ray = targetScene->projectRayFromCameraAndViewportCoordinate(targetCamera, coreInput->getMousePosition());
-    
     Vector3 ret = ray.planeIntersectPoint(transformPlane, transformPlaneDistance);
-	return planeMatrix.Inverse() * ret;
+    return ret;
 }
 
 void TransformGizmo::setTransformMode(int newMode) {
@@ -486,13 +494,14 @@ void TransformGizmo::transformSelectedEntities(const Vector3 &move, const Vector
 	for(int i=0; i < selectedEntities.size(); i++) {
         
         
-        if(orientation == ORIENTATION_GLOBAL) {
+        if((orientation == ORIENTATION_GLOBAL && mode != TRANSFORM_SCALE_VIEW) || (ORIENTATION_LOCAL && mode == TRANSFORM_MOVE_VIEW)) {
             selectedEntities[i]->Translate(move);
             
             Quaternion q;
             Quaternion currentRotation = selectedEntities[i]->getRotationQuat();
             Vector3 axisVector = transformConstraint;
             axisVector = currentRotation.Inverse().applyTo(axisVector);
+            axisVector.Normalize();
             q.fromAngleAxis(rotate, axisVector);
             
             
@@ -515,7 +524,7 @@ void TransformGizmo::transformSelectedEntities(const Vector3 &move, const Vector
                 selectedEntities[i]->setPosition(globalPosition - selectedEntities[i]->getParentEntity()->getConcatenatedMatrix().getPosition());
                 selectedEntities[i]->setRotationByQuaternion(currentRotation * q);
                 
-                selectedEntities[i]->setScale(selectedEntities[i]->getScale() + newScale);
+                selectedEntities[i]->setScale(selectedEntities[i]->getScale() * (Vector3(1.0, 1.0, 1.0)+newScale));
                 
                 if(newScale.length() > 0.0) {
                     Vector3 scalePosition;
@@ -528,7 +537,7 @@ void TransformGizmo::transformSelectedEntities(const Vector3 &move, const Vector
                 
             } else {
                 selectedEntities[i]->setRotationByQuaternion(currentRotation * q);
-                selectedEntities[i]->setScale(selectedEntities[i]->getScale() + newScale);
+                selectedEntities[i]->setScale(selectedEntities[i]->getScale() * (Vector3(1.0, 1.0, 1.0)+newScale));
             }
         } else {
             
@@ -539,9 +548,10 @@ void TransformGizmo::transformSelectedEntities(const Vector3 &move, const Vector
             Vector3 axisVector = transformConstraint;
             
             // always global in the 2d view
-            if(gizmoMode == GIZMO_MODE_2D) {
+            if(gizmoMode == GIZMO_MODE_2D || mode == TRANSFORM_ROTATE_VIEW) {
                 axisVector = currentRotation.Inverse().applyTo(axisVector);
             }
+            axisVector.Normalize();
             q.fromAngleAxis(rotate, axisVector);
             
             
@@ -556,7 +566,7 @@ void TransformGizmo::transformSelectedEntities(const Vector3 &move, const Vector
                 selectedEntities[i]->setPosition(globalPosition - selectedEntities[i]->getParentEntity()->getConcatenatedMatrix().getPosition());
                 selectedEntities[i]->setRotationByQuaternion(currentRotation * q);
                 
-                selectedEntities[i]->setScale(selectedEntities[i]->getScale() + scale);
+                selectedEntities[i]->setScale(selectedEntities[i]->getScale() * (Vector3(1.0, 1.0, 1.0)+scale));
                 
                 if(scale.length() > 0.0) {
                     Vector3 scalePosition;
@@ -569,7 +579,7 @@ void TransformGizmo::transformSelectedEntities(const Vector3 &move, const Vector
                 
             } else {
                 selectedEntities[i]->setRotationByQuaternion(currentRotation * q);
-                selectedEntities[i]->setScale(selectedEntities[i]->getScale() + scale);
+                selectedEntities[i]->setScale(selectedEntities[i]->getScale() * (Vector3(1.0, 1.0, 1.0)+scale));
             }
 
             
@@ -581,12 +591,13 @@ void TransformGizmo::transformSelectedEntities(const Vector3 &move, const Vector
 Number TransformGizmo::getTransformPlaneAngle() {
 	
 	Ray gizmoRay;
-	gizmoRay.origin = 0.0;
-	gizmoRay.direction = transformPlane * -1;
+	gizmoRay.origin = getConcatenatedMatrix().getPosition();
+	gizmoRay.direction = localTransformPlane * -1;
 				
 	Vector3 gizmoIntersect = gizmoRay.planeIntersectPoint(transformPlane, transformPlaneDistance);
     gizmoIntersect = planeMatrix.Inverse() * gizmoIntersect;
-	
+	   
+    
 	Ray ray = targetScene->projectRayFromCameraAndViewportCoordinate(targetCamera, coreInput->getMousePosition());	
 	Vector3 mouseIntersect = ray.planeIntersectPoint(transformPlane, transformPlaneDistance);
     mouseIntersect = planeMatrix.Inverse() * mouseIntersect;
@@ -653,7 +664,6 @@ void TransformGizmo::handleEvent(Event *event) {
 			if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN) {
 				transforming = true;
 				transformConstraint = Vector3(1.0, 0.0, 0.0);
-                
                 if(gizmoMode == GIZMO_MODE_3D) {
                     setTransformPlane(0.0, 1.0, 0.0);
                 } else {
@@ -678,41 +688,129 @@ void TransformGizmo::handleEvent(Event *event) {
 		}
 	}
 	
-	if(event->getDispatcher() == coreInput && transforming) {
-		switch(event->getEventCode()) {
-			case InputEvent::EVENT_MOUSEMOVE:
-			{
-				switch(mode) {
-					case TRANSFORM_MOVE:
-					{
-						Vector3 newPoint = getTransformPlanePosition();
-						transformSelectedEntities((newPoint-startingPoint) * transformConstraint, Vector3(0.0, 0.0, 0.0), 0.0);
-						startingPoint = newPoint;
-					}
-					break;
-					case TRANSFORM_SCALE:
-					{
-						Vector3 newPoint = getTransformPlanePosition();
-						transformSelectedEntities(Vector3(0.0, 0.0, 0.0), ((newPoint-startingPoint) * transformConstraint), 0.0);
-						startingPoint = newPoint;					
-					}
-					break;
-					case TRANSFORM_ROTATE:
-					{
-						Number newAngle = getTransformPlaneAngle();
-						transformSelectedEntities(Vector3(0.0, 0.0, 0.0), Vector3(0.0, 0.0, 0.0), newAngle - startingAngle);
-						startingAngle = newAngle;						
-					}
-					break;
-				}
-			}
-			break;
-			case InputEvent::EVENT_MOUSEUP:
-			{
-				transforming = false;
-			}
-			break;
-		}
+	if(event->getDispatcher() == coreInput) {
+        
+        if(event->getEventCode() == InputEvent::EVENT_KEYDOWN) {
+            InputEvent *inputEvent = (InputEvent*) event;
+            switch(inputEvent->key) {
+                case KEY_s:
+                {
+                    transforming = true;
+                    previousMode = mode;
+                    mode = TRANSFORM_SCALE_VIEW;
+                    setTransformPlaneFromView();
+                    startingPoint = getTransformPlanePosition();
+                    
+                }
+                break;
+                case KEY_r:
+                {
+                    previousMode = mode;
+                    mode = TRANSFORM_ROTATE_VIEW;
+                    transforming = true;
+                    setTransformPlaneFromView();
+                    transformConstraint = transformPlane;
+                    if(gizmoMode == GIZMO_MODE_2D) {
+                        transformConstraint = transformConstraint * -1.0;
+                    }
+                    startingAngle = getTransformPlaneAngle();
+                }
+                break;
+                case KEY_g:
+                {
+                    previousMode = mode;
+                    mode = TRANSFORM_MOVE_VIEW;
+                    transforming = true;
+                    setTransformPlaneFromView();
+                    startingPoint = getTransformPlanePosition();
+                }
+                break;
+                case KEY_ESCAPE:
+                {
+                    transforming = false;
+                }
+                break;
+            }
+        }
+        
+        if(transforming) {
+            switch(event->getEventCode()) {
+                case InputEvent::EVENT_MOUSEMOVE:
+                {
+                    switch(mode) {
+                        case TRANSFORM_MOVE:
+                        {
+                            Vector3 newPoint = getTransformPlanePosition();
+                            Vector3 diff = (planeMatrix.Inverse() * newPoint) -(planeMatrix.Inverse() * startingPoint);
+                            diff = diff * getCompoundScale();
+                            transformSelectedEntities(transformConstraint * diff, Vector3(0.0, 0.0, 0.0), 0.0);
+                            startingPoint = newPoint;
+                        }
+                        break;
+                        case TRANSFORM_MOVE_VIEW:
+                        {
+                            Vector3 newPoint = getTransformPlanePosition();
+                            Vector3 diff = newPoint - startingPoint;
+                            
+                            transformSelectedEntities(diff, Vector3(0.0, 0.0, 0.0), 0.0);
+                            startingPoint = newPoint;
+                        }
+                        break;
+                        case TRANSFORM_SCALE_VIEW:
+                        {
+                            Vector3 newPoint = getTransformPlanePosition();
+                            
+                            Number scaleMult = 1.0;
+                            if(newPoint.distance(gizmoPoint) < startingPoint.distance(gizmoPoint)) {
+                                scaleMult = -1.0;
+                            }
+                            
+                            transformSelectedEntities(Vector3(0.0, 0.0, 0.0), (Vector3(1.0, 1.0, 1.0) * (newPoint-startingPoint).length() * scaleMult) / getCompoundScale().x, 0.0);
+                            startingPoint = newPoint;
+                        }
+                        break;
+                        case TRANSFORM_ROTATE_VIEW:
+                        {
+                            Number newAngle = getTransformPlaneAngle();
+                            
+                            Vector3 newPoint = planeMatrix.Inverse() *getTransformPlanePosition();
+                            
+                            transformSelectedEntities(Vector3(0.0, 0.0, 0.0), Vector3(0.0, 0.0, 0.0), newAngle - startingAngle);
+                            startingAngle = newAngle;
+                        }
+                        break;
+                        case TRANSFORM_SCALE:
+                        {
+                            Vector3 newPoint = getTransformPlanePosition();
+                            
+                            Vector3 diff = (planeMatrix.Inverse() * newPoint) -(planeMatrix.Inverse() * startingPoint);
+                            diff = diff * getCompoundScale();
+                            
+                            
+                            transformSelectedEntities(Vector3(0.0, 0.0, 0.0), (diff * transformConstraint) / getCompoundScale().x, 0.0);
+                            startingPoint = newPoint;					
+                        }
+                        break;
+                        case TRANSFORM_ROTATE:
+                        {
+                            Number newAngle = getTransformPlaneAngle();
+                            transformSelectedEntities(Vector3(0.0, 0.0, 0.0), Vector3(0.0, 0.0, 0.0), newAngle - startingAngle);
+                            startingAngle = newAngle;						
+                        }
+                        break;
+                    }
+                }
+                break;
+                case InputEvent::EVENT_MOUSEUP:
+                {
+                    if(mode == TRANSFORM_SCALE_VIEW || mode == TRANSFORM_ROTATE_VIEW) {
+                        mode = previousMode;
+                    }
+                    transforming = false;
+                }
+                break;
+            }
+        }
 	}
 }
 
