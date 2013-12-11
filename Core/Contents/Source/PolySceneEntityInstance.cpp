@@ -126,7 +126,7 @@ void SceneEntityInstance::applySceneMesh(ObjectEntry *entry, SceneMesh *sceneMes
                                 ObjectEntry *textureEntry =(*texturesEntry)[j];
                                 if(textureEntry) {
                                     ObjectEntry *nameEntry = (*textureEntry)["name"];
-                                    if(nameEntry) {
+                                    if(nameEntry && textureEntry->stringVal != "") {
                                         
                                         if(textureEntry->name == "cubemap") {
                                             Cubemap *cubemap = (Cubemap*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_CUBEMAP, textureEntry->stringVal);
@@ -248,12 +248,16 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
             Number actualHeight = (*labelEntry)["actualHeight"]->intVal;
 			int aaMode = (*labelEntry)["aaMode"]->intVal;
             
-			SceneLabel *label = new SceneLabel("", size, font, aaMode, actualHeight);
+			SceneLabel *label = new SceneLabel(text, size, font, aaMode, actualHeight);
             label->setAnchorPoint(0.0, 0.0, 0.0);
             label->snapToPixels = false;
             label->positionAtBaseline = false;
             applySceneMesh((*entry)["SceneMesh"], label);
-            label->setText(text);
+            if(label->getLocalShaderOptions()) {
+                label->getLocalShaderOptions()->clearTexture("diffuse");
+                label->getLocalShaderOptions()->addTexture("diffuse", label->getTexture());
+            }
+            
 			entity = label;
         } else if(entityType->stringVal == "SceneParticleEmitter") {
             

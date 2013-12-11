@@ -65,9 +65,7 @@ void Scene::initScene(int sceneType, bool virtualScene) {
     remapMouse = false;
 	renderer = CoreServices::getInstance()->getRenderer();
 	rootEntity.setRenderer(renderer);
-	if (!isSceneVirtual) {
-		CoreServices::getInstance()->getSceneManager()->addScene(this);
-	}
+    CoreServices::getInstance()->getSceneManager()->addScene(this);
 	
     setSceneType(sceneType);
 	

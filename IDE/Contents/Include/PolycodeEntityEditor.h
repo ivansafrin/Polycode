@@ -99,6 +99,8 @@ class EntityEditorMainView : public UIElement {
             void setEditorMode(int newMode);
             Entity *getSelectedEntity();
     
+            void deleteSelected();
+    
             Entity *getObjectRoot();
             void setObjectRoot(Entity *entity);
     

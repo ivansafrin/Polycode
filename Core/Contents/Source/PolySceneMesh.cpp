@@ -254,12 +254,11 @@ void SceneMesh::renderMeshLocally() {
             norm.Normalize();
             vert->setNormal(norm.x, norm.y, norm.z);
         }
+        mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
+        mesh->arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;
+        mesh->arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;
     }
     
-    mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
-    mesh->arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;	
-    mesh->arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;
-
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::VERTEX_DATA_ARRAY);
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::NORMAL_DATA_ARRAY);		
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::TANGENT_DATA_ARRAY);			

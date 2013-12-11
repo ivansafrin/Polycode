@@ -276,6 +276,7 @@ EntityEditorMainView::EntityEditorMainView() {
     editorMode = EDITOR_MODE_3D;
     
     input = CoreServices::getInstance()->getCore()->getInput();
+    input->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 }
 
 void EntityEditorMainView::setEditorMode(int newMode) {
@@ -536,7 +537,31 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
         return;
         
     }
+}
 
+void EntityEditorMainView::deleteSelected() {
+
+    for(int i=0; i < selectedEntities.size(); i++) {
+        selectedEntities[i]->getParentEntity()->removeChild(selectedEntities[i]);
+    }
+    
+    for(int i=0; i < selectedEntities.size(); i++) {
+        selectedEntities[i]->setOwnsChildrenRecursive(true);
+        for(int j=0; j < icons.size(); j++) {
+            if(icons[j]->getUserData() == selectedEntities[i]) {
+                delete icons[j];
+                icons[j]->getParentEntity()->removeChild(icons[j]);
+                icons.erase(icons.begin()+j);
+                break;
+            }
+        }
+        selectedEntities[i]->removeAllHandlers();
+        delete selectedEntities[i];
+    }
+    
+    selectedEntities.clear();
+    transformGizmo->setTransformSelection(selectedEntities);
+    dispatchEvent(new Event(), Event::CHANGE_EVENT);
 }
 
 void EntityEditorMainView::handleEvent(Event *event) {
@@ -608,11 +633,20 @@ void EntityEditorMainView::handleEvent(Event *event) {
         addEntityMenu->addOption("Add Empty", "add_empty");
         addEntityMenu->fitToScreenVertical();
         addEntityMenu->addEventListener(this, UIEvent::OK_EVENT);
+    } else if(event->getDispatcher() == input) {
+        InputEvent *inputEvent = (InputEvent*) event;
+        if(event->getEventCode() == InputEvent::EVENT_KEYDOWN) {
+            switch(inputEvent->key) {
+                case KEY_BACKSPACE:
+                case KEY_DELETE:
+                    deleteSelected();
+                break;
+            }
+        }
     } else {
         if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN ) {
             InputEvent *inputEvent = (InputEvent*) event;
 
-            CoreInput *input = CoreServices::getInstance()->getCore()->getInput();
             if(inputEvent->mouseButton == CoreInput::MOUSE_BUTTON2) {
                 Entity* targetEntity = (Entity*) event->getDispatcher();
                 
@@ -892,8 +926,8 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
         ObjectEntry *labelEntry = entry->addChild("SceneLabel");
         labelEntry->addChild("text", label->getText());
         labelEntry->addChild("font", label->getLabel()->getFont()->getFontName());
-        labelEntry->addChild("size", (int)label->getLabel()->getSize());
-        labelEntry->addChild("actualHeight", (int)label->getLabelActualHeight());
+        labelEntry->addChild("size", (Number)label->getLabel()->getSize());
+        labelEntry->addChild("actualHeight", label->getLabelActualHeight());
         labelEntry->addChild("aaMode", (int)label->getLabel()->getAntialiasMode());
     }
     

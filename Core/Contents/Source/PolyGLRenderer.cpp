@@ -165,8 +165,6 @@ void OpenGLRenderer::Resize(int xRes, int yRes) {
 
 	glMatrixMode(GL_MODELVIEW);
 	glLineWidth(1);
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-	glShadeModel(GL_SMOOTH);
 	glDepthFunc( GL_LEQUAL );
 	
 	glEnable(GL_DEPTH_TEST);

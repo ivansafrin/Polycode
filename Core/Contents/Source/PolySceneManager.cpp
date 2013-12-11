@@ -79,9 +79,6 @@ void SceneManager::renderVirtual() {
 		if(renderTextures[i]->enabled) {
 		renderer->setViewportSize(renderTextures[i]->getTargetTexture()->getWidth(), renderTextures[i]->getTargetTexture()->getHeight());
 		renderer->loadIdentity();
-		if(renderTextures[i]->getTargetScene()->isVirtual())
-			renderTextures[i]->getTargetScene()->Update();
-						
 			if(renderTextures[i]->getTargetCamera()->hasFilterShader()) {
 				renderTextures[i]->getTargetCamera()->drawFilter(renderTextures[i]->getTargetTexture(), renderTextures[i]->getTargetTexture()->getWidth(), renderTextures[i]->getTargetTexture()->getHeight(), renderTextures[i]->getFilterColorBufferTexture(), renderTextures[i]->getFilterZBufferTexture());
 			} else {
