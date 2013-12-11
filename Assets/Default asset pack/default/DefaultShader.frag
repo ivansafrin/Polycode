@@ -115,7 +115,7 @@ void main()
 	fogFactor = clamp(fogFactor, 0.0, 1.0);
 
 	color = mix(gl_Fog.color, color, fogFactor );   
-	color.a = vertexColor.a * texColor.a;	
+	color.a = vertexColor.a * texColor.a * diffuse_color.a;	
 	gl_FragColor = color;
 
 }

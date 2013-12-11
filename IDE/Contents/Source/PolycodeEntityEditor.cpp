@@ -830,16 +830,43 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
         SceneParticleEmitter *emitter = (SceneParticleEmitter*) entity;
         
         ObjectEntry *emitterEntry = entry->addChild("SceneParticleEmitter");
-//        emitterEntry->addChild("radiusX", emitter->emitterRadius.x);
-     
+        emitterEntry->addChild("type", (int)emitter->getParticleType());
+        emitterEntry->addChild("count", (int)emitter->getParticleCount());
+        emitterEntry->addChild("lifetime", emitter->getParticleLifetime());
+        emitterEntry->addChild("size", emitter->getParticleSize());
+        emitterEntry->addChild("world", emitter->getParticlesInWorldSpace());
+        emitterEntry->addChild("loop", emitter->getLoopParticles());
+        emitterEntry->addChild("rX", emitter->getParticleRotationSpeed().x);
+        emitterEntry->addChild("rY", emitter->getParticleRotationSpeed().y);
+        emitterEntry->addChild("rZ", emitter->getParticleRotationSpeed().z);
+        emitterEntry->addChild("gX", emitter->getGravity().x);
+        emitterEntry->addChild("gY", emitter->getGravity().y);
+        emitterEntry->addChild("gZ", emitter->getGravity().z);
+        emitterEntry->addChild("dirX", emitter->getParticleDirection().x);
+        emitterEntry->addChild("dirY", emitter->getParticleDirection().y);
+        emitterEntry->addChild("dirZ", emitter->getParticleDirection().z);
+        emitterEntry->addChild("eX", emitter->getEmitterSize().x);
+        emitterEntry->addChild("eY", emitter->getEmitterSize().y);
+        emitterEntry->addChild("eZ", emitter->getEmitterSize().z);
+        emitterEntry->addChild("devX", emitter->getDirectionDeviation().x);
+        emitterEntry->addChild("devY", emitter->getDirectionDeviation().y);
+        emitterEntry->addChild("devZ", emitter->getDirectionDeviation().z);
+        emitterEntry->addChild("perlin", emitter->getPerlinEnabled());
+        emitterEntry->addChild("pX", emitter->getPerlinValue().x);
+        emitterEntry->addChild("pY", emitter->getPerlinValue().y);
+        emitterEntry->addChild("pZ", emitter->getPerlinValue().z);
+        emitterEntry->addChild("useColorCurves", emitter->useColorCurves);
+        emitterEntry->addChild("useScaleCurve", emitter->useScaleCurve);
         
-        saveCurveToObject(emitterEntry->addChild("scaleCurve"), &emitter->scaleCurve);
-        
-        saveCurveToObject(emitterEntry->addChild("colorCurveR"), &emitter->colorCurveR);
-        saveCurveToObject(emitterEntry->addChild("colorCurveG"), &emitter->colorCurveG);
-        saveCurveToObject(emitterEntry->addChild("colorCurveB"), &emitter->colorCurveB);
-        saveCurveToObject(emitterEntry->addChild("colorCurveA"), &emitter->colorCurveA);
-        
+        if(emitter->useScaleCurve) {
+            saveCurveToObject(emitterEntry->addChild("scaleCurve"), &emitter->scaleCurve);
+        }
+        if(emitter->useColorCurves) {
+            saveCurveToObject(emitterEntry->addChild("colorCurveR"), &emitter->colorCurveR);
+            saveCurveToObject(emitterEntry->addChild("colorCurveG"), &emitter->colorCurveG);
+            saveCurveToObject(emitterEntry->addChild("colorCurveB"), &emitter->colorCurveB);
+            saveCurveToObject(emitterEntry->addChild("colorCurveA"), &emitter->colorCurveA);
+        }
     }
     
     if(dynamic_cast<SceneSprite*>(entity)) {

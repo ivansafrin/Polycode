@@ -177,29 +177,33 @@ void SceneEntityInstance::parseObjectIntoCurve(ObjectEntry *entry, BezierCurve *
 		for(int i=0; i < controlPoints->length; i++) {		
 			ObjectEntry *controlPoint = ((*controlPoints))[i];		
 			if(controlPoint) {
-				Vector2 vpt1;
-				Vector2 vpt2;
-				Vector2 vpt3;
+				Vector3 vpt1;
+				Vector3 vpt2;
+				Vector3 vpt3;
 												
 				ObjectEntry *pt1 = ((*controlPoint))["pt1"];
 				if(pt1) {
 					vpt1.x = ((*pt1))["x"]->NumberVal;
-					vpt1.y = ((*pt1))["y"]->NumberVal;					
+					vpt1.y = ((*pt1))["y"]->NumberVal;
+					vpt1.z = ((*pt1))["z"]->NumberVal;
 				}
 
 				ObjectEntry *pt2 = ((*controlPoint))["pt2"];
 				if(pt2) {
 					vpt2.x = ((*pt2))["x"]->NumberVal;
-					vpt2.y = ((*pt2))["y"]->NumberVal;					
+					vpt2.y = ((*pt2))["y"]->NumberVal;
+					vpt2.z = ((*pt2))["z"]->NumberVal;
+					
 				}
 
 				ObjectEntry *pt3 = ((*controlPoint))["pt3"];
 				if(pt3) {
 					vpt3.x = ((*pt3))["x"]->NumberVal;
-					vpt3.y = ((*pt3))["y"]->NumberVal;					
+					vpt3.y = ((*pt3))["y"]->NumberVal;
+					vpt3.z = ((*pt3))["z"]->NumberVal;
 				}
 
-				curve->addControlPoint(vpt1.x, vpt1.y, 0.0, vpt2.x, vpt2.y, 0.0, vpt3.x, vpt3.y, 0.0);
+				curve->addControlPoint(vpt1.x, vpt1.y, vpt1.z, vpt2.x, vpt2.y, vpt2.z, vpt3.x, vpt3.y, vpt3.z);
 			}
 		}
 	}
@@ -251,6 +255,46 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
             applySceneMesh((*entry)["SceneMesh"], label);
             label->setText(text);
 			entity = label;
+        } else if(entityType->stringVal == "SceneParticleEmitter") {
+            
+			ObjectEntry *emitterEntry = (*entry)["SceneParticleEmitter"];
+            SceneParticleEmitter *emitter = new SceneParticleEmitter(1, 1, 1);
+
+            emitter->setParticleType((*emitterEntry)["type"]->intVal);
+            emitter->setParticleCount((*emitterEntry)["count"]->intVal);
+            emitter->setParticleLifetime((*emitterEntry)["lifetime"]->NumberVal);
+            emitter->setParticleSize((*emitterEntry)["size"]->NumberVal);
+            emitter->setParticlesInWorldSpace((*emitterEntry)["world"]->boolVal);
+            emitter->setLoopParticles((*emitterEntry)["loop"]->boolVal);
+            
+            emitter->setParticleRotationSpeed(Vector3((*emitterEntry)["rX"]->NumberVal, (*emitterEntry)["rY"]->NumberVal, (*emitterEntry)["rZ"]->NumberVal));
+            emitter->setGravity(Vector3((*emitterEntry)["gX"]->NumberVal, (*emitterEntry)["gY"]->NumberVal, (*emitterEntry)["gZ"]->NumberVal));
+            emitter->setParticleDirection(Vector3((*emitterEntry)["dirX"]->NumberVal, (*emitterEntry)["dirY"]->NumberVal, (*emitterEntry)["dirZ"]->NumberVal));
+            emitter->setEmitterSize(Vector3((*emitterEntry)["eX"]->NumberVal, (*emitterEntry)["eY"]->NumberVal, (*emitterEntry)["eZ"]->NumberVal));
+            emitter->setDirectionDeviation(Vector3((*emitterEntry)["devX"]->NumberVal, (*emitterEntry)["devY"]->NumberVal, (*emitterEntry)["devZ"]->NumberVal));
+            
+            emitter->setPerlinEnabled((*emitterEntry)["perlin"]->boolVal);
+            if(emitter->getPerlinEnabled()) {
+                emitter->setPerlinValue(Vector3((*emitterEntry)["pX"]->NumberVal, (*emitterEntry)["pY"]->NumberVal, (*emitterEntry)["pZ"]->NumberVal));
+            }
+            
+            emitter->useColorCurves = (*emitterEntry)["useColorCurves"]->boolVal;
+            emitter->useScaleCurve = (*emitterEntry)["useScaleCurve"]->boolVal;
+            
+            if(emitter->useColorCurves) {
+                parseObjectIntoCurve((*emitterEntry)["colorCurveR"], &emitter->colorCurveR);
+                parseObjectIntoCurve((*emitterEntry)["colorCurveG"], &emitter->colorCurveG);
+                parseObjectIntoCurve((*emitterEntry)["colorCurveB"], &emitter->colorCurveB);
+                parseObjectIntoCurve((*emitterEntry)["colorCurveA"], &emitter->colorCurveA);
+            }
+            
+            if(emitter->useScaleCurve) {
+                parseObjectIntoCurve((*emitterEntry)["scaleCurve"], &emitter->scaleCurve);
+            }
+            
+            applySceneMesh((*entry)["SceneMesh"], emitter);
+			entity = emitter;
+            
 		} else if(entityType->stringVal == "SceneLight") {
             
 			ObjectEntry *lightEntry = (*entry)["SceneLight"];
