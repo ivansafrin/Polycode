@@ -727,6 +727,9 @@ void TransformGizmo::handleEvent(Event *event) {
                 break;
                 case KEY_ESCAPE:
                 {
+                    if(mode == TRANSFORM_SCALE_VIEW || mode == TRANSFORM_ROTATE_VIEW || mode == TRANSFORM_MOVE_VIEW) {
+                        mode = previousMode;
+                    }                    
                     transforming = false;
                 }
                 break;
@@ -803,7 +806,7 @@ void TransformGizmo::handleEvent(Event *event) {
                 break;
                 case InputEvent::EVENT_MOUSEUP:
                 {
-                    if(mode == TRANSFORM_SCALE_VIEW || mode == TRANSFORM_ROTATE_VIEW) {
+                    if(mode == TRANSFORM_SCALE_VIEW || mode == TRANSFORM_ROTATE_VIEW || mode == TRANSFORM_MOVE_VIEW) {
                         mode = previousMode;
                     }
                     transforming = false;

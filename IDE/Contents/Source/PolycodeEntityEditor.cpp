@@ -401,6 +401,10 @@ void EntityEditorMainView::setEditorProps(Entity *entity) {
         createIcon(entity, "camera_icon.png");
     }
     
+    if(!emitter && !sceneLight && !camera && !sound && !sceneMesh && entity != sceneObjectRoot) {
+        createIcon(entity, "empty_icon.png");
+    }
+    
     
 }
 
@@ -419,8 +423,6 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
         Entity *newEntity = new Entity();
         sceneObjectRoot->addChild(newEntity);
         setEditorProps(newEntity);
-        createIcon(newEntity, "empty_icon.png");
-        newEntity->bBox = Vector3(0.5, 0.5, 0.5);
         newEntity->setPosition(cursorPosition);
         selectEntity(newEntity);
         return;
@@ -430,7 +432,6 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
         SceneSound *newSound = new SceneSound("default.wav", 1.0, 2.0);
         sceneObjectRoot->addChild(newSound);
         setEditorProps(newSound);
-        newSound->bBox = Vector3(0.5, 0.5, 0.5);
         newSound->setPosition(cursorPosition);
         selectEntity(newSound);
         return;
@@ -440,7 +441,6 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
         SceneSound *newSound = new SceneSound("default.wav", 1.0, 2.0);
         sceneObjectRoot->addChild(newSound);
         setEditorProps(newSound);
-        newSound->bBox = Vector3(0.5, 0.5, 0.5);
         newSound->setPosition(cursorPosition);
         selectEntity(newSound);
         return;
@@ -450,7 +450,6 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
         Camera *newCamera = new Camera(mainScene);
         sceneObjectRoot->addChild(newCamera);
         setEditorProps(newCamera);
-        newCamera->bBox = Vector3(0.5, 0.5, 0.5);
         newCamera->setPosition(cursorPosition);
         selectEntity(newCamera);
         return;
@@ -867,6 +866,7 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
         labelEntry->addChild("text", label->getText());
         labelEntry->addChild("font", label->getLabel()->getFont()->getFontName());
         labelEntry->addChild("size", (int)label->getLabel()->getSize());
+        labelEntry->addChild("actualHeight", (int)label->getLabelActualHeight());
         labelEntry->addChild("aaMode", (int)label->getLabel()->getAntialiasMode());
     }
     
@@ -907,8 +907,6 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
         
     }
     
-    
-    
     if(dynamic_cast<SceneSound*>(entity)) {
         SceneSound *sound = (SceneSound*) entity;
         
@@ -922,8 +920,30 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
         soundEntry->addChild("volume", sound->getSound()->getVolume());
         soundEntry->addChild("pitch", sound->getSound()->getPitch());
     }
+
+    if(dynamic_cast<Camera*>(entity)) {
+        Camera *camera = (Camera*) entity;
+        
+        if(!(*(entry))["type"]) {
+            entry->addChild("type", "Camera");
+        }
+        
+        ObjectEntry *cameraEntry = entry->addChild("Camera");
+        
+        cameraEntry->addChild("exposure", camera->getExposureLevel());
+        cameraEntry->addChild("nearClip", camera->getNearClipppingPlane());
+        cameraEntry->addChild("farClip", camera->getFarClipppingPlane());
+        cameraEntry->addChild("ortho", camera->getOrthoMode());
+        if(camera->getOrthoMode()) {
+            cameraEntry->addChild("sizeMode", camera->getOrthoSizeMode());
+            cameraEntry->addChild("orthoWidth", camera->getOrthoSizeX());
+            cameraEntry->addChild("orthoHeight", camera->getOrthoSizeY());
+        } else {
+            cameraEntry->addChild("fov", camera->getFOV());
+        }
+    }
     
-    if(dynamic_cast<ScenePrimitive*>(entity) && !dynamic_cast<SceneSprite*>(entity)) {
+    if(dynamic_cast<ScenePrimitive*>(entity) && !dynamic_cast<SceneSprite*>(entity) && !dynamic_cast<SceneLabel*>(entity)) {
         if(!(*(entry))["type"]) {
             entry->addChild("type", "ScenePrimitive");
         }

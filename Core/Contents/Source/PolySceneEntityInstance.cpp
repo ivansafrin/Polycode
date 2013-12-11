@@ -27,6 +27,9 @@
 #include "PolyMaterial.h"
 #include "PolySceneLight.h"
 #include "PolySceneMesh.h"
+#include "PolySceneLabel.h"
+#include "PolySceneSound.h"
+#include "PolyCamera.h"
 
 using namespace Polycode;
 
@@ -232,6 +235,22 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
 			sprite->playAnimation(animName, -1, false);
 			entity = sprite;
             applySceneMesh((*entry)["SceneMesh"], sprite);
+        } else 	if(entityType->stringVal == "SceneLabel") {
+			ObjectEntry *labelEntry = (*entry)["SceneLabel"];
+			
+			String text = (*labelEntry)["text"]->stringVal;
+			String font = (*labelEntry)["font"]->stringVal;
+			int size = (*labelEntry)["size"]->intVal;
+            Number actualHeight = (*labelEntry)["actualHeight"]->intVal;
+			int aaMode = (*labelEntry)["aaMode"]->intVal;
+            
+			SceneLabel *label = new SceneLabel("", size, font, aaMode, actualHeight);
+            label->setAnchorPoint(0.0, 0.0, 0.0);
+            label->snapToPixels = false;
+            label->positionAtBaseline = false;
+            applySceneMesh((*entry)["SceneMesh"], label);
+            label->setText(text);
+			entity = label;
 		} else if(entityType->stringVal == "SceneLight") {
             
 			ObjectEntry *lightEntry = (*entry)["SceneLight"];
@@ -281,45 +300,41 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
                     entity = newMesh;
                 }
             }
-        }
-/*
-		if(entityType->stringVal == "ScreenSound") {
-			ObjectEntry *screenSoundEntry = (*entry)["ScreenSound"];
+        } else if(entityType->stringVal == "SceneSound") {
+			ObjectEntry *soundEntry = (*entry)["SceneSound"];
 			
-			String filePath = (*screenSoundEntry)["filePath"]->stringVal;
-			Number refDistance = (*screenSoundEntry)["refDistance"]->NumberVal;
-			Number maxDistance = (*screenSoundEntry)["maxDistance"]->NumberVal;
-			Number volume = (*screenSoundEntry)["volume"]->NumberVal;
-			Number pitch = (*screenSoundEntry)["pitch"]->NumberVal;
-															
-			ScreenSound *sound = new ScreenSound(filePath, refDistance, maxDistance);
+			String filePath = (*soundEntry)["filePath"]->stringVal;
+			Number refDistance = (*soundEntry)["refDistance"]->NumberVal;
+			Number maxDistance = (*soundEntry)["maxDistance"]->NumberVal;
+			Number volume = (*soundEntry)["volume"]->NumberVal;
+			Number pitch = (*soundEntry)["pitch"]->NumberVal;
+            
+			SceneSound *sound = new SceneSound(filePath, refDistance, maxDistance);
 			sound->getSound()->setVolume(volume);
-			sound->getSound()->setPitch(pitch);	
+			sound->getSound()->setPitch(pitch);
 			
-			sound->setWidth(50);
-			sound->setHeight(50);				
-										
 			entity = sound;
-		}		
-
-
-		if(entityType->stringVal == "ScreenLabel") {
-			ObjectEntry *screenLabelEntry = (*entry)["ScreenLabel"];
-			
-			String text = (*screenLabelEntry)["text"]->stringVal;
-			String font = (*screenLabelEntry)["font"]->stringVal;
-			int size = (*screenLabelEntry)["size"]->intVal;
-			int aaMode = (*screenLabelEntry)["aaMode"]->intVal;
-												
-			ScreenLabel *label = new ScreenLabel(text, size, font, aaMode);
-			label->positionAtBaseline = false;
-			
-			ObjectEntry *screenShapeEntry = (*entry)["ScreenShape"];			
-			applyScreenShape(screenShapeEntry, label);
-			entity = label;
+        } else if(entityType->stringVal == "Camera") {
+			ObjectEntry *cameraEntry = (*entry)["Camera"];
+            
+			Camera *camera = new Camera(parentScene);
+            
+            camera->setExposureLevel((*cameraEntry)["exposure"]->NumberVal);
+            camera->setClippingPlanes((*cameraEntry)["nearClip"]->NumberVal, (*cameraEntry)["farClip"]->NumberVal);
+            camera->setOrthoMode((*cameraEntry)["ortho"]->boolVal);
+            
+            if(camera->getOrthoMode()) {
+                camera->setOrthoSizeMode((*cameraEntry)["sizeMode"]->intVal);
+                camera->setOrthoSize((*cameraEntry)["orthoWidth"]->NumberVal, (*cameraEntry)["orthoHeight"]->NumberVal);
+            } else {
+                camera->setFOV((*cameraEntry)["fov"]->NumberVal);
+            }
+            
+			entity = camera;
 		}
-			*/
-	} 
+
+        
+	}
 
 	if(!entity) {
 		if(targetEntity) {
