@@ -99,6 +99,13 @@ class EntityEditorMainView : public UIElement {
             void setEditorMode(int newMode);
             Entity *getSelectedEntity();
     
+            Entity *getObjectRoot();
+            void setObjectRoot(Entity *entity);
+    
+            Scene *getMainScene();
+    
+            void setEditorPropsRecursive(Entity *entity);
+    
             static const int EDITOR_MODE_3D = 0;
             static const int EDITOR_MODE_2D = 1;
     
@@ -148,6 +155,10 @@ class PolycodeEntityEditor : public PolycodeEditor {
     
         void Activate();
         void saveFile();
+        void saveCurveToObject(ObjectEntry *entry, BezierCurve *curve);
+        void saveShaderOptionsToEntry(ObjectEntry *entry, Material *material, ShaderBinding *binding);
+    
+        void saveEntityToObjectEntry(Entity *entity, ObjectEntry *entry);
     
 		
         void handleEvent(Event *event);

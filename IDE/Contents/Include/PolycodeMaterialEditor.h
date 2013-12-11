@@ -302,7 +302,7 @@ class PolycodeMaterialEditor : public PolycodeEditor {
 	void saveFile();
 	void saveMaterials(ObjectEntry *materialsEntry, std::vector<Material*> materials);
 	
-	String createStringValue(unsigned int type, void *value);
+	static String createStringValue(unsigned int type, void *value);
 	
 	protected:
 		UIImage *editorImage;

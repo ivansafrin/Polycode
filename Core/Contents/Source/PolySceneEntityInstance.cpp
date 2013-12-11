@@ -24,6 +24,9 @@
 #include "PolyLogger.h"
 #include "PolyCoreServices.h"
 #include "PolyResourceManager.h"
+#include "PolyMaterial.h"
+#include "PolySceneLight.h"
+#include "PolySceneMesh.h"
 
 using namespace Polycode;
 
@@ -48,7 +51,8 @@ SceneEntityInstance *SceneEntityInstance::BlankSceneEntityInstance() {
 	return new SceneEntityInstance();
 }
 
-SceneEntityInstance::SceneEntityInstance(const String& fileName) : Entity() {
+SceneEntityInstance::SceneEntityInstance(Scene *parentScene, const String& fileName) : Entity() {
+    this->parentScene = parentScene;
 	resourceEntry = new SceneEntityInstanceResourceEntry(this);		
 	loadFromFile(fileName);
 	resourceEntry->setResourceName(fileName);
@@ -79,7 +83,7 @@ SceneEntityInstanceResourceEntry *SceneEntityInstance::getResourceEntry() {
 Entity *SceneEntityInstance::Clone(bool deepClone, bool ignoreEditorOnly) const {
 	SceneEntityInstance *newEntity;
 	if(cloneUsingReload) {
-		newEntity = new SceneEntityInstance(fileName);
+		newEntity = new SceneEntityInstance(parentScene, fileName);
 	} else {
 		newEntity = new SceneEntityInstance();
 	}
@@ -97,30 +101,70 @@ void SceneEntityInstance::applyClone(Entity *clone, bool deepClone, bool ignoreE
 	}
 }
 
-void SceneEntityInstance::applyScenePrimitive(ObjectEntry *entry, ScenePrimitive *primitive) {
-	if(!entry) 
+void SceneEntityInstance::applySceneMesh(ObjectEntry *entry, SceneMesh *sceneMesh) {
+	if(!entry) {
 		return;
-/*		
-	Number swidth = (*entry)["width"]->NumberVal;
-	Number sheight = (*entry)["height"]->NumberVal;
-	int type = (*entry)["type"]->intVal;
-	
-	shape->setShapeType(type);
-	shape->setShapeSize(swidth, sheight);
-
-	Number strokeColorR = (*entry)["strokeColorR"]->NumberVal;
-	Number strokeColorG = (*entry)["strokeColorG"]->NumberVal;
-	Number strokeColorB = (*entry)["strokeColorB"]->NumberVal;
-	Number strokeColorA = (*entry)["strokeColorA"]->NumberVal;
-
-	bool strokeEnabled = (*entry)["strokeEnabled"]->boolVal;					
-	Number strokeWidth = (*entry)["strokeWidth"]->NumberVal;
-	
-	shape->strokeEnabled = strokeEnabled;
-	shape->strokeWidth = strokeWidth;
-	shape->strokeColor = Color(strokeColorR, strokeColorG, strokeColorB, strokeColorA);
-	
-	*/
+    }
+    
+    ObjectEntry *materialName =(*entry)["material"];
+    if(materialName) {
+        sceneMesh->setMaterialByName(materialName->stringVal);
+        if(sceneMesh->getMaterial()) {
+            ObjectEntry *optionsEntry =(*entry)["shader_options"];
+            if(optionsEntry) {
+                for(int i=0; i < optionsEntry->length; i++) {
+                    ObjectEntry *shaderEntry =(*optionsEntry)[i];
+                    if(shaderEntry) {
+                        
+                        // parse in texture bindings
+                        ObjectEntry *texturesEntry =(*shaderEntry)["textures"];
+                        if(texturesEntry) {
+                            for(int j=0; j < texturesEntry->length; j++) {
+                                ObjectEntry *textureEntry =(*texturesEntry)[j];
+                                if(textureEntry) {
+                                    ObjectEntry *nameEntry = (*textureEntry)["name"];
+                                    if(nameEntry) {
+                                        
+                                        if(textureEntry->name == "cubemap") {
+                                            Cubemap *cubemap = (Cubemap*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_CUBEMAP, textureEntry->stringVal);
+                                            if(cubemap) {
+                                                sceneMesh->getLocalShaderOptions()->addCubemap(nameEntry->stringVal, cubemap);
+                                            }
+                                        } else {
+                                            sceneMesh->getLocalShaderOptions()->addTexture(nameEntry->stringVal, CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(textureEntry->stringVal));
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        
+                        ObjectEntry *paramsEntry =(*shaderEntry)["params"];
+                        if(paramsEntry) {
+                            for(int j=0; j < paramsEntry->length; j++) {
+                                ObjectEntry *paramEntry =(*paramsEntry)[j];
+                                if(paramEntry) {
+                                    ObjectEntry *nameEntry = (*paramEntry)["name"];
+                                    ObjectEntry *valueEntry = (*paramEntry)["value"];
+                                    if(nameEntry && valueEntry) {
+                                        Shader *materialShader = sceneMesh->getMaterial()->getShader(i);
+                                        if(materialShader) {
+                                            int type = materialShader->getExpectedParamType(nameEntry->stringVal);
+                                            LocalShaderParam *param = sceneMesh->getLocalShaderOptions()->addParam(type, nameEntry->stringVal);
+                                            if(param) {
+                                                param->setParamValueFromString(type, valueEntry->stringVal);
+                                            }
+                                        }
+                                    }
+                                    
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
 }
 
 void SceneEntityInstance::parseObjectIntoCurve(ObjectEntry *entry, BezierCurve *curve) {
@@ -162,87 +206,83 @@ void SceneEntityInstance::parseObjectIntoCurve(ObjectEntry *entry, BezierCurve *
 Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entity *targetEntity) {
 
 	Entity *entity = NULL;
-/*	
+
 	ObjectEntry *entityType = (*entry)["type"];
 	if(entityType) {
-	
-		if(entityType->stringVal == "ScreenImage") {
-			ObjectEntry *screenImageEntry = (*entry)["ScreenImage"];			
-			String imagePath = (*screenImageEntry)["filePath"]->stringVal;
-			ScreenImage *image = new ScreenImage(imagePath);
 			
-			ObjectEntry *screenShapeEntry = (*entry)["ScreenShape"];
-			applyScreenShape(screenShapeEntry, image);
-			entity = image;
-		}
-		
-		if(entityType->stringVal == "ScreenParticleEmitter") {
-			ObjectEntry *emitterEntry = (*entry)["ScreenParticleEmitter"];
-									
-			ScreenParticleEmitter *placingEmitter = new ScreenParticleEmitter((*emitterEntry)["texturePath"]->stringVal, Particle::BILLBOARD_PARTICLE, ParticleEmitter::CONTINUOUS_EMITTER, (*emitterEntry)["lifespan"]->NumberVal, (*emitterEntry)["particleCount"]->NumberVal, Vector3((*emitterEntry)["dirX"]->NumberVal, (*emitterEntry)["dirY"]->NumberVal, 0.0), Vector3((*emitterEntry)["gravX"]->NumberVal, (*emitterEntry)["gravY"]->NumberVal, 0.0), Vector3((*emitterEntry)["deviationX"]->NumberVal, (*emitterEntry)["deviationY"]->NumberVal, 0.0), Vector3((*emitterEntry)["radiusX"]->NumberVal, (*emitterEntry)["radiusY"]->NumberVal, 0.0));
-			
-				placingEmitter->brightnessDeviation = (*emitterEntry)["brightnessDeviation"]->NumberVal;
-				placingEmitter->particleSize = (*emitterEntry)["particleSize"]->NumberVal;
-				placingEmitter->perlinModSize = (*emitterEntry)["perlinModSize"]->NumberVal;
-				placingEmitter->perlinEnabled = (*emitterEntry)["perlinEnabled"]->boolVal;
-				placingEmitter->particleSpeedMod = (*emitterEntry)["particleSpeedMod"]->NumberVal;
+        
+        /*
+         
+         if(entityType->stringVal == "SceneEntityInstance") {
+         ObjectEntry *screenInstanceEntry = (*entry)["SceneEntityInstance"];
+         String filePath = (*screenInstanceEntry)["filePath"]->stringVal;
+         SceneEntityInstance *instance = new SceneEntityInstance(filePath);
+         entity = instance;
+         }
+         
+         */
 
-				placingEmitter->rotationSpeed = (*emitterEntry)["rotationSpeed"]->NumberVal;
-				placingEmitter->rotationFollowsPath = (*emitterEntry)["rotationFollowsPath"]->boolVal;
-				placingEmitter->useScaleCurves = (*emitterEntry)["useScaleCurves"]->boolVal;
-				placingEmitter->useColorCurves = (*emitterEntry)["useColorCurves"]->boolVal;
-				
-				bool boolVal;
-				if(emitterEntry->readBool("ignoreParentMatrix", &boolVal)) {
-					placingEmitter->setIgnoreParentMatrix(boolVal);
-				}
-									
-				placingEmitter->setParticleBlendingMode((*emitterEntry)["particleBlendMode"]->intVal);			
-				
-				placingEmitter->setWidth(placingEmitter->emitterRadius.x);
-				placingEmitter->setHeight(placingEmitter->emitterRadius.y);	
-				
-				parseObjectIntoCurve((*emitterEntry)["scaleCurve"], &placingEmitter->scaleCurve);
-				parseObjectIntoCurve((*emitterEntry)["colorCurveR"], &placingEmitter->colorCurveR);
-				parseObjectIntoCurve((*emitterEntry)["colorCurveG"], &placingEmitter->colorCurveG);
-				parseObjectIntoCurve((*emitterEntry)["colorCurveB"], &placingEmitter->colorCurveB);
-				parseObjectIntoCurve((*emitterEntry)["colorCurveA"], &placingEmitter->colorCurveA);										
+		if(entityType->stringVal == "SceneSprite") {
+			ObjectEntry *spriteEntry = (*entry)["SceneSprite"];
+			String filePath = (*spriteEntry)["filePath"]->stringVal;
 			
-			entity = placingEmitter;
-		
-		}		
-
-		if(entityType->stringVal == "ScreenSprite") {
-			ObjectEntry *screenSpriteEntry = (*entry)["ScreenSprite"];			
-			String filePath = (*screenSpriteEntry)["filePath"]->stringVal;
+			SceneSprite *sprite = new SceneSprite(filePath);
 			
-			ScreenSprite *sprite = new ScreenSprite(filePath);
-			
-			String animName = (*screenSpriteEntry)["anim"]->stringVal;
+			String animName = (*spriteEntry)["anim"]->stringVal;
 			sprite->playAnimation(animName, -1, false);
-		
-
-			ObjectEntry *screenShapeEntry = (*entry)["ScreenShape"];
-			applyScreenShape(screenShapeEntry, sprite);
 			entity = sprite;
-		}
+            applySceneMesh((*entry)["SceneMesh"], sprite);
+		} else if(entityType->stringVal == "SceneLight") {
+            
+			ObjectEntry *lightEntry = (*entry)["SceneLight"];
+            if(lightEntry) {
+                int lightType = (*lightEntry)["type"]->intVal;
+                SceneLight *newLight  = new SceneLight(lightType, parentScene, 0);
+                
+                newLight->setIntensity((*lightEntry)["intensity"]->NumberVal);
+                
+                newLight->lightColor.setColor((*lightEntry)["cR"]->NumberVal, (*lightEntry)["cG"]->NumberVal, (*lightEntry)["cB"]->NumberVal, (*lightEntry)["cA"]->NumberVal);
+                newLight->specularLightColor.setColor((*lightEntry)["scR"]->NumberVal, (*lightEntry)["scG"]->NumberVal, (*lightEntry)["scB"]->NumberVal, (*lightEntry)["scA"]->NumberVal);
 
-
-		if(entityType->stringVal == "SceneEntityInstance") {
-			ObjectEntry *screenInstanceEntry = (*entry)["SceneEntityInstance"];
-			String filePath = (*screenInstanceEntry)["filePath"]->stringVal;
-			SceneEntityInstance *instance = new SceneEntityInstance(filePath);			
-			entity = instance;
-		}
-		
-
-		if(entityType->stringVal == "ScreenShape") {
-			ObjectEntry *screenShapeEntry = (*entry)["ScreenShape"];
-			ScreenShape *shape = new ScreenShape(0, 1, 1);
-			applyScreenShape(screenShapeEntry, shape);
-			entity = shape;
-		}
-		
+                newLight->setAttenuation((*lightEntry)["cAtt"]->NumberVal, (*lightEntry)["lAtt"]->NumberVal, (*lightEntry)["qAtt"]->NumberVal);
+                
+                if(newLight->getType() == SceneLight::SPOT_LIGHT) {
+                    newLight->setSpotlightProperties((*lightEntry)["spotCutoff"]->NumberVal, (*lightEntry)["spotExponent"]->NumberVal);
+                    
+                    if((*lightEntry)["shadows"]->boolVal) {
+                        newLight->enableShadows(true, (*lightEntry)["shadowmapRes"]->intVal);
+                        newLight->setShadowMapFOV((*lightEntry)["shadowmapFOV"]->NumberVal);
+                    }
+                }
+                
+                parentScene->addLight(newLight);
+                entity = newLight;
+            }
+ 
+        } else if(entityType->stringVal == "ScenePrimitive") {
+			ObjectEntry *scenePrimitiveEntry = (*entry)["ScenePrimitive"];
+			int pType = (*scenePrimitiveEntry)["type"]->intVal;
+			Number p1 = (*scenePrimitiveEntry)["p1"]->NumberVal;
+			Number p2 = (*scenePrimitiveEntry)["p2"]->NumberVal;
+			Number p3 = (*scenePrimitiveEntry)["p3"]->NumberVal;
+			Number p4 = (*scenePrimitiveEntry)["p4"]->NumberVal;
+			Number p5 = (*scenePrimitiveEntry)["p5"]->NumberVal;
+            
+			ScenePrimitive *primitive = new ScenePrimitive(pType, p1, p2, p3, p4, p5);
+			entity = primitive;
+            applySceneMesh((*entry)["SceneMesh"], primitive);
+		} else if(entityType->stringVal == "SceneMesh") {
+			ObjectEntry *meshEntry = (*entry)["SceneMesh"];
+            if(meshEntry) {
+                ObjectEntry *fileName = (*meshEntry)["file"];
+                if(fileName) {
+                    SceneMesh *newMesh = new SceneMesh(fileName->stringVal);
+                    applySceneMesh(meshEntry, newMesh);
+                    entity = newMesh;
+                }
+            }
+        }
+/*
 		if(entityType->stringVal == "ScreenSound") {
 			ObjectEntry *screenSoundEntry = (*entry)["ScreenSound"];
 			
@@ -261,7 +301,7 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
 										
 			entity = sound;
 		}		
-		
+
 
 		if(entityType->stringVal == "ScreenLabel") {
 			ObjectEntry *screenLabelEntry = (*entry)["ScreenLabel"];
@@ -278,53 +318,35 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
 			applyScreenShape(screenShapeEntry, label);
 			entity = label;
 		}
-	
+			*/
 	} 
 
 	if(!entity) {
 		if(targetEntity) {
 			entity = targetEntity;
 		} else {
-			entity = new ScreenEntity();
+			entity = new Entity();
 		}
 	}
 	
 	entity->ownsChildren = true;
-	
-	if((*entry)["positionMode"]) {
-		entity->setPositionMode((*entry)["positionMode"]->intVal);
-	} else {
-		entity->setPositionMode(ScreenEntity::POSITION_CENTER);
-	}
 
-	Number _width, _height;
-	
-	if(entry->readNumber("width", &_width)) {
-		entity->setWidth(_width);	
-	}
-	
-	if(entry->readNumber("height", &_height)) {
-		entity->setHeight(_height);	
-	}
+	entry->readNumber("bbX", &entity->bBox.x);
+	entry->readNumber("bbY", &entity->bBox.y);
+	entry->readNumber("bbZ", &entity->bBox.z);
 
-	entity->color.r = (*entry)["colorR"]->NumberVal;
-	entity->color.g = (*entry)["colorG"]->NumberVal;
-	entity->color.b = (*entry)["colorB"]->NumberVal;
-	entity->color.a = (*entry)["colorA"]->NumberVal;
+	entity->color.r = (*entry)["cR"]->NumberVal;
+	entity->color.g = (*entry)["cG"]->NumberVal;
+	entity->color.b = (*entry)["cB"]->NumberVal;
+	entity->color.a = (*entry)["cA"]->NumberVal;
 
 
 	if(!targetEntity) {	
 		entity->blendingMode = (*entry)["blendMode"]->intVal;
 
-		entity->scale.x = (*entry)["scaleX"]->NumberVal;
-		entity->scale.y = (*entry)["scaleY"]->NumberVal;
-
-		entity->position.x = (*entry)["posX"]->NumberVal;
-		entity->position.y = (*entry)["posY"]->NumberVal;
-
-		entity->setRotation((*entry)["rotation"]->NumberVal);
-	} else {
-	
+        entity->setScale((*entry)["sX"]->NumberVal, (*entry)["sY"]->NumberVal, (*entry)["sZ"]->NumberVal);
+        entity->setPosition((*entry)["pX"]->NumberVal, (*entry)["pY"]->NumberVal, (*entry)["pZ"]->NumberVal);
+        entity->setRotationEuler(Vector3((*entry)["rX"]->NumberVal, (*entry)["rY"]->NumberVal, (*entry)["rZ"]->NumberVal));
 	}
 	
 	if((*entry)["id"]->stringVal != "") {
@@ -359,7 +381,7 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
 			entity->addChild(childEntity);				
 		}
 	}
-	*/	
+
 	return entity;
 }
 
@@ -385,7 +407,9 @@ bool SceneEntityInstance::loadFromFile(const String& fileName) {
 	this->fileName = fileName;
 	Object loadObject;
 	if(!loadObject.loadFromBinary(fileName)) {
-		Logger::log("Error loading entity instance.\n");
+        if(!loadObject.loadFromXML(fileName)) {
+            Logger::log("Error loading entity instance.\n");
+        }
 	}	
 	ObjectEntry *root = loadObject.root["root"];
 	

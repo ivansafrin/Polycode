@@ -24,6 +24,7 @@ THE SOFTWARE.
 #include "PolyGlobals.h"
 #include "PolyImage.h"
 #include "PolyObject.h"
+#include "PolyShader.h"
 #include <vector>
 
 class TiXmlNode;

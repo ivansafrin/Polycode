@@ -124,7 +124,10 @@ namespace Polycode {
 	};
 	
 	class LocalShaderParam : public PolyBase {
-		public:	
+		public:
+        
+            LocalShaderParam();
+        
 			String name;
 			void *data;
 		
@@ -137,6 +140,8 @@ namespace Polycode {
 		void setVector2(Vector2 x) { memcpy(data, &x, sizeof(x)); }
 		void setVector3(Vector3 x) { memcpy(data, &x, sizeof(x)); }
 		void setColor(Color x)     { static_cast<Color*>(data)->setColor(&x); }
+        
+        void setParamValueFromString(int type, String pvalue);
 	};	
 	
 	class RenderTargetBinding : public PolyBase {

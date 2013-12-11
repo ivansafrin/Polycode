@@ -28,7 +28,9 @@ THE SOFTWARE.
 #include "PolyParticleEmitter.h"
 #include "PolyScenePrimitive.h"
 #include "PolyResource.h"
+#include "PolySceneSprite.h"
 #include "PolyBezierCurve.h"
+#include "PolyScene.h"
 #include "PolySound.h"
 
 namespace Polycode {
@@ -37,7 +39,7 @@ class SceneEntityInstanceResourceEntry;
 
 class SceneEntityInstance : public Entity {
 	public:
-		SceneEntityInstance(const String& fileName);
+		SceneEntityInstance(Scene *parentScene, const String& fileName);
 		SceneEntityInstance();
 		
 		static SceneEntityInstance *BlankSceneEntityInstance();
@@ -52,10 +54,9 @@ class SceneEntityInstance : public Entity {
 		void clearInstance();
 
 		void parseObjectIntoCurve(ObjectEntry *entry, BezierCurve *curve);
-		void applyScenePrimitive(ObjectEntry *entry, ScenePrimitive *primitive);
 		Entity *loadObjectEntryIntoEntity(ObjectEntry *entry, Entity *targetEntity = NULL);
 		bool loadFromFile(const String& fileName);
-		
+        void applySceneMesh(ObjectEntry *entry, SceneMesh *sceneMesh);
 		
 		SceneEntityInstanceResourceEntry *getResourceEntry();
 		
@@ -67,6 +68,7 @@ class SceneEntityInstance : public Entity {
 		
 	protected:
 		
+        Scene *parentScene;
 		SceneEntityInstanceResourceEntry *resourceEntry;
 		
 };

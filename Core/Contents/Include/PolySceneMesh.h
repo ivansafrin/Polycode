@@ -155,7 +155,11 @@ namespace Polycode {
 			bool showVertexNormals;
 	
 			void setLineWidth(Number newWidth);
-					
+
+            String getFilename();
+        
+            void loadFromFile(String fileName);
+        
 			Number lineWidth;
 			bool lineSmooth;
 			
@@ -188,5 +192,6 @@ namespace Polycode {
 			Material *material;
 			Skeleton *skeleton;
 			ShaderBinding *localShaderOptions;
+            String fileName;
 	};
 }

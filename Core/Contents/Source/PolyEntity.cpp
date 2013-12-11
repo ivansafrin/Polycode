@@ -590,12 +590,14 @@ void Entity::setRotationQuat(Number w, Number x, Number y, Number z) {
 	rotationQuat.y = y;
 	rotationQuat.z = z;
     rotation = rotationQuat.toEulerAngles();
+    rotation = rotation * TODEGREES;
 	matrixDirty = true;
 }
 
 void Entity::setRotationByQuaternion(const Quaternion &quaternion) {
 	rotationQuat = quaternion;
     rotation = quaternion.toEulerAngles();
+    rotation = rotation * TODEGREES;
 	matrixDirty = true;
 }
 

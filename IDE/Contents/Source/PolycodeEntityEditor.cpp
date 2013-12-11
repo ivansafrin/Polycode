@@ -22,12 +22,15 @@
  
 #include "PolycodeEntityEditor.h"
 #include "PolycodeFrame.h"
+#include "PolyCubemap.h"
+#include "PolycodeMaterialEditor.h"
 
 extern UIGlobalMenu *globalMenu;
 extern PolycodeFrame *globalFrame;
 extern Scene *globalScene;
 
-LightDisplay::LightDisplay(SceneLight *light) {
+LightDisplay::LightDisplay(SceneLight *light) : Entity() {
+    editorOnly = true;
     this->light = light;
     spotSpot = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 1.0, 1.0, 32);
 	spotSpot->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
@@ -357,6 +360,13 @@ void EntityEditorMainView::createIcon(Entity *entity, String iconFile) {
     icons.push_back(iconPrimitive);
 }
 
+void EntityEditorMainView::setEditorPropsRecursive(Entity *entity) {
+    setEditorProps(entity);
+    for(int i=0; i < entity->getNumChildren(); i++) {
+        setEditorProps(entity->getChildAtIndex(i));
+    }
+}
+
 void EntityEditorMainView::setEditorProps(Entity *entity) {
     entity->processInputEvents = true;
     entity->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
@@ -620,6 +630,10 @@ void EntityEditorMainView::handleEvent(Event *event) {
     }
 }
 
+Scene *EntityEditorMainView::getMainScene() {
+    return mainScene;
+}
+
 void EntityEditorMainView::doEntityDeselect(Entity *targetEntity) {
     SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(targetEntity);
     if(sceneMesh) {
@@ -667,6 +681,21 @@ void EntityEditorMainView::selectEntity(Entity *targetEntity, bool addToSelectio
     transformGizmo->setTransformSelection(selectedEntities);
     dispatchEvent(new Event(), Event::CHANGE_EVENT);
     
+}
+
+Entity *EntityEditorMainView::getObjectRoot() {
+    return sceneObjectRoot;
+}
+
+void EntityEditorMainView::setObjectRoot(Entity *entity) {
+    if(sceneObjectRoot) {
+        sceneObjectRoot->getParentEntity()->removeChild(sceneObjectRoot);
+        delete sceneObjectRoot;
+    }
+    sceneObjectRoot = entity;
+    sceneObjectRoot->processInputEvents = true;
+    mainScene->addChild(sceneObjectRoot);
+    sceneObjectRoot->getParentEntity()->moveChildBottom(sceneObjectRoot);
 }
 
 EntityEditorMainView::~EntityEditorMainView() {
@@ -726,7 +755,12 @@ PolycodeEntityEditor::~PolycodeEntityEditor() {
 }
 
 bool PolycodeEntityEditor::openFile(OSFileEntry filePath) {	
-	PolycodeEditor::openFile(filePath);	
+	PolycodeEditor::openFile(filePath);
+//    return true;
+    SceneEntityInstance *loadedInstance = new SceneEntityInstance(mainView->getMainScene(), filePath.fullPath);
+    mainView->setObjectRoot(loadedInstance);
+    mainView->setEditorPropsRecursive(loadedInstance);
+    
 	return true;
 }
 
@@ -734,8 +768,285 @@ void PolycodeEntityEditor::Activate() {
     Resize(getWidth(), getHeight());
 }
 
-void PolycodeEntityEditor::saveFile() {
+void PolycodeEntityEditor::saveCurveToObject(ObjectEntry *entry, BezierCurve *curve) {
+    ObjectEntry *controlPoints = entry->addChild("controlPoints");
     
+    for(int i=0; i < curve->getNumControlPoints(); i++) {
+        ObjectEntry *controlPointEntry = controlPoints->addChild("controlPoint");
+        ObjectEntry *pt1 = controlPointEntry->addChild("pt1");
+        pt1->addChild("x", curve->getControlPoint(i)->p1.x);
+        pt1->addChild("y", curve->getControlPoint(i)->p1.y);
+        pt1->addChild("z", curve->getControlPoint(i)->p1.z);
+        
+        ObjectEntry *pt2 = controlPointEntry->addChild("pt2");
+        pt2->addChild("x", curve->getControlPoint(i)->p2.x);
+        pt2->addChild("y", curve->getControlPoint(i)->p2.y);
+        pt2->addChild("z", curve->getControlPoint(i)->p2.z);
+        
+        ObjectEntry *pt3 = controlPointEntry->addChild("pt3");
+        pt3->addChild("x", curve->getControlPoint(i)->p3.x);
+        pt3->addChild("y", curve->getControlPoint(i)->p3.y);
+        pt3->addChild("z", curve->getControlPoint(i)->p3.z);
+    }
+}
+
+void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *entry) {
+    if(entity->editorOnly)
+        return;
+    
+    entry->addChild("id", entity->id);
+    
+    String tagString = "";
+    for(int i=0; i < entity->getNumTags(); i++) {
+        if(i != 0) {
+            tagString += ",";
+        }
+        tagString += entity->getTagAtIndex(i);
+    }
+    entry->addChild("tags", tagString);
+
+    
+    if(entity->entityProps.size() > 0) {
+        ObjectEntry *props = entry->addChild("props");
+        for(int i=0; i < entity->entityProps.size(); i++) {
+            ObjectEntry *prop = props->addChild("prop");
+            prop->addChild("name", entity->entityProps[i].propName);
+            prop->addChild("value", entity->entityProps[i].propValue);
+        }
+    }
+    
+    if(dynamic_cast<SceneEntityInstance*>(entity)) {
+        if(!(*(entry))["type"]) {
+            entry->addChild("type", "SceneEntityInstance");
+        }
+        SceneEntityInstance *instance = (SceneEntityInstance*) entity;
+        ObjectEntry *instanceEntry = entry->addChild("SceneEntityInstance");
+        instanceEntry->addChild("filePath", instance->getFileName());
+    }
+    
+    if(dynamic_cast<SceneParticleEmitter*>(entity)) {
+        if(!(*(entry))["type"])
+            entry->addChild("type", "SceneParticleEmitter");
+        
+        SceneParticleEmitter *emitter = (SceneParticleEmitter*) entity;
+        
+        ObjectEntry *emitterEntry = entry->addChild("SceneParticleEmitter");
+//        emitterEntry->addChild("radiusX", emitter->emitterRadius.x);
+     
+        
+        saveCurveToObject(emitterEntry->addChild("scaleCurve"), &emitter->scaleCurve);
+        
+        saveCurveToObject(emitterEntry->addChild("colorCurveR"), &emitter->colorCurveR);
+        saveCurveToObject(emitterEntry->addChild("colorCurveG"), &emitter->colorCurveG);
+        saveCurveToObject(emitterEntry->addChild("colorCurveB"), &emitter->colorCurveB);
+        saveCurveToObject(emitterEntry->addChild("colorCurveA"), &emitter->colorCurveA);
+        
+    }
+    
+    if(dynamic_cast<SceneSprite*>(entity)) {
+        if(!(*(entry))["type"])
+            entry->addChild("type", "SceneSprite");
+        SceneSprite *sprite = (SceneSprite*) entity;
+        
+        ObjectEntry *spriteEntry = entry->addChild("SceneSprite");
+        spriteEntry->addChild("filePath", sprite->getFileName());
+        
+        String animName = "";
+        if(sprite->getCurrentAnimation()) {
+            animName = sprite->getCurrentAnimation()->name;
+        }
+        spriteEntry->addChild("anim", animName);
+    }
+    
+    if(dynamic_cast<SceneLabel*>(entity)) {
+        SceneLabel *label = (SceneLabel*) entity;
+        
+        if(!(*(entry))["type"])
+            entry->addChild("type", "SceneLabel");
+        ObjectEntry *labelEntry = entry->addChild("SceneLabel");
+        labelEntry->addChild("text", label->getText());
+        labelEntry->addChild("font", label->getLabel()->getFont()->getFontName());
+        labelEntry->addChild("size", (int)label->getLabel()->getSize());
+        labelEntry->addChild("aaMode", (int)label->getLabel()->getAntialiasMode());
+    }
+    
+    if(dynamic_cast<SceneLight*>(entity)) {
+        SceneLight *light = (SceneLight*) entity;
+        if(!(*(entry))["type"]) {
+            entry->addChild("type", "SceneLight");
+        }
+        
+        ObjectEntry *lightEntry = entry->addChild("SceneLight");
+        lightEntry->addChild("type", light->getType());
+
+        lightEntry->addChild("cR", light->lightColor.r);
+        lightEntry->addChild("cG", light->lightColor.g);
+        lightEntry->addChild("cB", light->lightColor.b);
+        lightEntry->addChild("cA", light->lightColor.a);
+
+        lightEntry->addChild("scR", light->specularLightColor.r);
+        lightEntry->addChild("scG", light->specularLightColor.g);
+        lightEntry->addChild("scB", light->specularLightColor.b);
+        lightEntry->addChild("scA", light->specularLightColor.a);
+
+        lightEntry->addChild("intensity", light->getIntensity());
+
+        lightEntry->addChild("cAtt", light->getConstantAttenuation());
+        lightEntry->addChild("lAtt", light->getLinearAttenuation());
+        lightEntry->addChild("qAtt", light->getQuadraticAttenuation());
+
+        if(light->getType() == SceneLight::SPOT_LIGHT) {
+            lightEntry->addChild("spotCutoff", light->getSpotlightCutoff());
+            lightEntry->addChild("spotExponent", light->getSpotlightExponent());
+            lightEntry->addChild("shadows", light->areShadowsEnabled());
+            if(light->areShadowsEnabled()) {
+                lightEntry->addChild("shadowmapFOV", light->getShadowMapFOV());
+                lightEntry->addChild("shadowmapRes", (int)light->getShadowMapResolution());
+            }
+        }
+        
+    }
+    
+    
+    
+    if(dynamic_cast<SceneSound*>(entity)) {
+        SceneSound *sound = (SceneSound*) entity;
+        
+        if(!(*(entry))["type"]) {
+            entry->addChild("type", "SceneSound");
+        }
+        ObjectEntry *soundEntry = entry->addChild("SceneSound");
+        soundEntry->addChild("filePath", sound->getSound()->getFileName());
+        soundEntry->addChild("refDistance", sound->getSound()->getReferenceDistance());
+        soundEntry->addChild("maxDistance", sound->getSound()->getMaxDistance());
+        soundEntry->addChild("volume", sound->getSound()->getVolume());
+        soundEntry->addChild("pitch", sound->getSound()->getPitch());
+    }
+    
+    if(dynamic_cast<ScenePrimitive*>(entity) && !dynamic_cast<SceneSprite*>(entity)) {
+        if(!(*(entry))["type"]) {
+            entry->addChild("type", "ScenePrimitive");
+        }
+        ScenePrimitive *primitive = (ScenePrimitive*) entity;
+        ObjectEntry *primitiveEntry = entry->addChild("ScenePrimitive");
+        primitiveEntry->addChild("type", primitive->getPrimitiveType());
+        primitiveEntry->addChild("p1", primitive->getPrimitiveParameter1());
+        primitiveEntry->addChild("p2", primitive->getPrimitiveParameter2());
+        primitiveEntry->addChild("p3", primitive->getPrimitiveParameter3());
+        primitiveEntry->addChild("p4", primitive->getPrimitiveParameter4());
+        primitiveEntry->addChild("p5", primitive->getPrimitiveParameter5());
+    }
+    
+    if(dynamic_cast<SceneMesh*>(entity)) {
+        if(!(*(entry))["type"]) {
+            entry->addChild("type", "SceneMesh");
+        }
+        
+        SceneMesh *sceneMesh = (SceneMesh*) entity;
+        
+        ObjectEntry *meshEntry = entry->addChild("SceneMesh");
+        
+        if(sceneMesh->getFilename() != "") {
+            meshEntry->addChild("file", sceneMesh->getFilename().replace(parentProject->getRootFolder()+"/", ""));
+        }
+        
+        if(sceneMesh->getMaterial()) {
+            meshEntry->addChild("material", sceneMesh->getMaterial()->getResourceName());
+            ObjectEntry *shaderOptions = meshEntry->addChild("shader_options");
+            saveShaderOptionsToEntry(shaderOptions, sceneMesh->getMaterial(), sceneMesh->getLocalShaderOptions());
+        }
+    }
+    
+    if(!(*(entry))["type"])
+        entry->addChild("type", "Entity");
+    
+    entry->addChild("cR", entity->color.r);
+    entry->addChild("cG", entity->color.g);
+    entry->addChild("cB", entity->color.b);
+    entry->addChild("cA", entity->color.a);
+    entry->addChild("blendMode", entity->blendingMode);
+    
+    entry->addChild("sX", entity->getScale().x);
+    entry->addChild("sY", entity->getScale().y);
+    entry->addChild("sZ", entity->getScale().z);
+        
+    entry->addChild("rX", entity->getPitch());
+    entry->addChild("rY", entity->getYaw());
+    entry->addChild("rZ", entity->getRoll());
+    
+    entry->addChild("pX", entity->getPosition().x);
+    entry->addChild("pY", entity->getPosition().y);
+    entry->addChild("pZ", entity->getPosition().z);
+    
+    entry->addChild("bbX", entity->bBox.x);
+    entry->addChild("bbY", entity->bBox.y);
+    entry->addChild("bbZ", entity->bBox.z);
+    
+    ObjectEntry *children = NULL;
+    
+    for(int i=0; i < entity->getNumChildren(); i++) {
+        if(!entity->getChildAtIndex(i)->editorOnly) {
+            if(!children)
+                children = entry->addChild("children");
+            ObjectEntry *child = children->addChild("child");
+            saveEntityToObjectEntry((ScreenEntity*)entity->getChildAtIndex(i), child);
+        }
+    }
+}
+
+void PolycodeEntityEditor::saveShaderOptionsToEntry(ObjectEntry *entry, Material *material, ShaderBinding *binding) {
+
+	
+    if(material->getNumShaders() > 0) {
+        for(int s=0; s < material->getNumShaders(); s++) {
+            Shader *shader = material->getShader(s);
+            
+            ObjectEntry *shaderEntry = entry->addChild("shader");
+            ObjectEntry *texturesEntry = shaderEntry->addChild("textures");
+            
+            for(int j=0; j < shader->expectedTextures.size(); j++) {
+                Texture *texture = binding->getTexture(shader->expectedTextures[j]);
+                if(texture) {
+                    String texturePath = texture->getResourcePath();
+                    texturePath = texturePath.replace(parentProject->getRootFolder()+"/", "");
+                    ObjectEntry *textureEntry = texturesEntry->addChild("texture", texturePath);
+                    textureEntry->addChild("name", shader->expectedTextures[j]);
+                }
+            }
+            
+            for(int j=0; j < shader->expectedCubemaps.size(); j++) {
+                Cubemap *cubemap = binding->getCubemap(shader->expectedCubemaps[j]);
+                if(cubemap) {
+                    String cubemapName = cubemap->getResourceName();
+                    ObjectEntry *cubemapEntry = texturesEntry->addChild("cubemap", cubemapName);
+                    cubemapEntry->addChild("name", shader->expectedCubemaps[j]);
+                }
+            }
+            
+            
+            if(shader->expectedParams.size() > 0 || shader->expectedParams.size() > 0) {
+                ObjectEntry *paramsEntry = shaderEntry->addChild("params");
+                
+                for(int j=0; j < shader->expectedParams.size(); j++) {
+                    if(binding->getLocalParamByName(shader->expectedParams[j].name)) {
+                        ObjectEntry *paramEntry = paramsEntry->addChild("param");
+                        paramEntry->addChild("name", shader->expectedParams[j].name);
+                        paramEntry->addChild("value", PolycodeMaterialEditor::createStringValue(shader->expectedParams[j].type, binding->getLocalParamByName(shader->expectedParams[j].name)->data));
+                    }
+                }
+            }
+        }
+    }
+}
+
+void PolycodeEntityEditor::saveFile() {
+    Object saveObject;
+    
+    saveObject.root.name = "entity";
+    ObjectEntry *children = saveObject.root.addChild("root");
+    saveEntityToObjectEntry(mainView->getObjectRoot(), children);
+    saveObject.saveToXML(filePath);
+    setHasChanges(false);
 }
 
 

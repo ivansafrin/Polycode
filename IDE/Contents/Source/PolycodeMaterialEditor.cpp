@@ -1330,7 +1330,7 @@ void PolycodeMaterialEditor::saveMaterials(ObjectEntry *materialsEntry, std::vec
 						if(shaderBinding->getLocalParamByName(shader->expectedParams[j].name)) {
 							ObjectEntry *paramEntry = paramsEntry->addChild("param");
 							paramEntry->addChild("name", shader->expectedParams[j].name);
-							paramEntry->addChild("value", createStringValue(shader->expectedParams[j].type, shaderBinding->getLocalParamByName(shader->expectedParams[j].name)->data));
+							paramEntry->addChild("value", PolycodeMaterialEditor::createStringValue(shader->expectedParams[j].type, shaderBinding->getLocalParamByName(shader->expectedParams[j].name)->data));
 						}
 					}
 				}
@@ -1459,7 +1459,7 @@ void PolycodeMaterialEditor::handleEvent(Event *event) {
 		setHasChanges(true);
 		CoreServices::getInstance()->getResourceManager()->addResource(cubemap);
 	}	
-		
+
 	if(event->getDispatcher() == materialBrowser->removeButton && event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {
 
 				mainWindow->materialPane->enabled = false;

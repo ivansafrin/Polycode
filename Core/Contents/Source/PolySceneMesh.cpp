@@ -44,9 +44,7 @@ SceneMesh *SceneMesh::SceneMeshWithType(int meshType) {
 }
 
 SceneMesh::SceneMesh(const String& fileName) : Entity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
-	mesh = new Mesh(fileName);
-	bBoxRadius = mesh->getRadius();
-	bBox = mesh->calculateBBox();
+    loadFromFile(fileName);
 	lightmapIndex=0;
 	showVertexNormals = false;
 	useVertexBuffer = false;
@@ -107,6 +105,17 @@ SceneMesh::~SceneMesh() {
 	if(ownsMesh)
 		delete mesh;	
 	delete localShaderOptions;
+}
+
+void SceneMesh::loadFromFile(String fileName) {
+	mesh = new Mesh(fileName);
+	bBoxRadius = mesh->getRadius();
+	bBox = mesh->calculateBBox();
+    this->fileName = fileName;
+}
+
+String SceneMesh::getFilename() {
+    return fileName;
 }
 
 Mesh *SceneMesh::getMesh() {

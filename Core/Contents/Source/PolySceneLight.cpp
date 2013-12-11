@@ -85,6 +85,7 @@ void SceneLight::enableShadows(bool val, unsigned int resolution) {
         CoreServices::getInstance()->getRenderer()->createRenderTextures(NULL, &zBufferTexture, resolution, resolution, false);
 		if(!spotCamera) {
 			spotCamera = new Camera(parentScene);
+            spotCamera->editorOnly = true;
 //			spotCamera->setPitch(-45.0f);
 			addChild(spotCamera);	
 		}

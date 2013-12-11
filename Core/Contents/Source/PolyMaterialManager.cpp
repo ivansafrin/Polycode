@@ -488,50 +488,12 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 								String pname =  pChild2Element->Attribute("name");
 								
 								if(!CoreServices::getInstance()->getRenderer()->getDataPointerForName(pname)) {								
-								String pvalue =  pChild2Element->Attribute("value");																
-								int type = materialShader->getExpectedParamType(pname);								
-								LocalShaderParam *param = newShaderBinding->addParam(type, pname);
-								
-								
-								if(param) {
-									switch(type) {
-										case ProgramParam::PARAM_NUMBER:
-										{
-											param->setNumber(atof(pvalue.c_str()));
-										}
-										break;
-										case ProgramParam::PARAM_VECTOR2:
-										{
-											std::vector<String> values = pvalue.split(" ");
-											if(values.size() == 2) {
-												param->setVector2(Vector2(atof(values[0].c_str()), atof(values[1].c_str())));
-											} else {
-												printf("Material parameter error: A Vector2 must have 2 values (%d provided)!\n", (int)values.size());
-											}
-										}											
-										break;
-										case ProgramParam::PARAM_VECTOR3:
-										{
-											std::vector<String> values = pvalue.split(" ");
-											if(values.size() == 3) {
-												param->setVector3(Vector3(atof(values[0].c_str()), atof(values[1].c_str()), atof(values[2].c_str())));
-											} else {
-												printf("Material parameter error: A Vector3 must have 3 values (%d provided)!\n", (int)values.size());
-											}
-										}										
-										break;
-										case ProgramParam::PARAM_COLOR:
-										{
-											std::vector<String> values = pvalue.split(" ");
-											if(values.size() == 4) {
-												param->setColor(Color(atof(values[0].c_str()), atof(values[1].c_str()), atof(values[2].c_str()), atof(values[3].c_str())));
-											} else {
-												printf("Material parameter error: A Vector3 must have 3 values (%d provided)!\n", (int)values.size());
-											}
-										}										
-										break;										
-									}
-									}
+                                    String pvalue =  pChild2Element->Attribute("value");
+                                    int type = materialShader->getExpectedParamType(pname);
+                                    LocalShaderParam *param = newShaderBinding->addParam(type, pname);
+                                    if(param) {
+                                        param->setParamValueFromString(type, pvalue);
+                                    }
 								}
 							}						
 						}

@@ -1154,7 +1154,7 @@ String SceneSpriteProp::get() {
 }
 
 SceneEntityInstanceProp::SceneEntityInstanceProp(String caption) : PropProp(caption, "SceneEntityInstance"){
-	previewInstance = new SceneEntityInstance("default/default.entity2d");
+//	previewInstance = new SceneEntityInstance("default/default.entity");
 	previewInstance->setAnchorPoint(-1.0, -1.0, 0.0);
 	previewInstance->setPosition(2, 1);
 	propContents->addChild(previewInstance);
@@ -1203,7 +1203,7 @@ void SceneEntityInstanceProp::set(String fileName) {
 	if(fileName != previewInstance->getFileName()) {
 		propContents->removeChild(previewInstance);
 		delete previewInstance;
-		previewInstance = new SceneEntityInstance(fileName);
+//		previewInstance = new SceneEntityInstance(fileName);
 		previewInstance->setAnchorPoint(-1.0, -1.0, 0.0);
 		previewInstance->setPosition(2, 1);
 		
@@ -2198,8 +2198,8 @@ void TransformSheet::Update() {
     }
     
     if(entity->getEulerRotation() != lastRotation) {
-        rotationProp->set(entity->getEulerRotation() * TODEGREES);
-        lastRotation = entity->getEulerRotation() * TODEGREES;
+        rotationProp->set(entity->getEulerRotation());
+        lastRotation = entity->getEulerRotation();
     }
 }
 

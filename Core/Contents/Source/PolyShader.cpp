@@ -104,6 +104,7 @@ unsigned int ShaderBinding::getNumLocalParams() {
 	return localParams.size();
 }
 
+
 LocalShaderParam *ShaderBinding::getLocalParam(unsigned int index) {
 	return localParams[index];
 }
@@ -260,4 +261,50 @@ void Shader::setName(const String& name) {
 
 const String& Shader::getName() const {
 	return name;
+}
+
+LocalShaderParam::LocalShaderParam() {
+    data = NULL;
+}
+
+void LocalShaderParam::setParamValueFromString(int type, String pvalue) {
+        switch(type) {
+            case ProgramParam::PARAM_NUMBER:
+            {
+                setNumber(atof(pvalue.c_str()));
+            }
+                break;
+            case ProgramParam::PARAM_VECTOR2:
+            {
+                std::vector<String> values = pvalue.split(" ");
+                if(values.size() == 2) {
+                    setVector2(Vector2(atof(values[0].c_str()), atof(values[1].c_str())));
+                } else {
+                    printf("Material parameter error: A Vector2 must have 2 values (%d provided)!\n", (int)values.size());
+                }
+            }
+                break;
+            case ProgramParam::PARAM_VECTOR3:
+            {
+                std::vector<String> values = pvalue.split(" ");
+                if(values.size() == 3) {
+                    setVector3(Vector3(atof(values[0].c_str()), atof(values[1].c_str()), atof(values[2].c_str())));
+                } else {
+                    printf("Material parameter error: A Vector3 must have 3 values (%d provided)!\n", (int)values.size());
+                }
+            }
+                break;
+            case ProgramParam::PARAM_COLOR:
+            {
+                std::vector<String> values = pvalue.split(" ");
+                if(values.size() == 4) {
+                    setColor(Color(atof(values[0].c_str()), atof(values[1].c_str()), atof(values[2].c_str()), atof(values[3].c_str())));
+                } else {
+                    printf("Material parameter error: A Vector3 must have 3 values (%d provided)!\n", (int)values.size());
+                }
+            }
+                break;
+        }
+    
+    return false;
 }
