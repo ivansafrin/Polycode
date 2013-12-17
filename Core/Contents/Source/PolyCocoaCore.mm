@@ -175,10 +175,14 @@ void CocoaCore::_setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, i
 	this->xRes = xRes;
 	this->yRes = yRes;
     
+    NSRect backingBounds;
     if(retinaSupport) {
-        NSRect backingBounds = [glView convertRectToBacking: NSMakeRect(0, 0, xRes, yRes)];
+        backingBounds = [glView convertRectToBacking: NSMakeRect(0, 0, xRes, yRes)];
         renderer->setBackingResolutionScale(backingBounds.size.width/xRes, backingBounds.size.height/yRes);
-	}
+	} else {
+        backingBounds.size.width = xRes;
+        backingBounds.size.height = yRes;
+    }
     
 	bool _wasFullscreen = this->fullScreen;
 	this->fullScreen = fullScreen;
@@ -259,14 +263,14 @@ void CocoaCore::_setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, i
 
 	CGLContextObj ctx = (CGLContextObj) [context CGLContextObj];
 	if(fullScreen) {
-		GLint dim[2] = {xRes, yRes};
+		GLint dim[2] = {backingBounds.size.width, backingBounds.size.height};
 		CGLSetParameter(ctx, kCGLCPSurfaceBackingSize, dim);
 		CGLEnable (ctx, kCGLCESurfaceBackingSize);
 	} else {
 		CGLDisable(ctx, kCGLCESurfaceBackingSize);		
 	}
     
-	renderer->Resize(xRes, yRes);	
+	renderer->Resize(xRes, yRes);
 
 	if(aaLevel > 0) {
 		glEnable( GL_MULTISAMPLE_ARB );

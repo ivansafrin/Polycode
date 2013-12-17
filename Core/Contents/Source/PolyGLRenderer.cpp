@@ -493,11 +493,27 @@ Matrix4 OpenGLRenderer::getModelviewMatrix() {
 	return Matrix4(m);
 }
 
+Image *OpenGLRenderer::renderBufferToImage(Texture *texture) {
+    
+	OpenGLTexture *glTexture = (OpenGLTexture*)texture;
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, glTexture->getFrameBufferID());
+    glReadBuffer(GL_COLOR_ATTACHMENT0_EXT);
+    
+	char *imageBuffer = (char*)malloc(texture->getWidth() * backingResolutionScaleX * texture->getHeight() * backingResolutionScaleY * 4);
+	glReadPixels(0, 0, texture->getWidth() * backingResolutionScaleX, texture->getHeight() * backingResolutionScaleY, GL_RGBA, GL_UNSIGNED_BYTE, imageBuffer);
+	Image *retImage = new Image(imageBuffer, texture->getWidth() * backingResolutionScaleX, texture->getHeight() * backingResolutionScaleY, Image::IMAGE_RGBA);
+	free(imageBuffer);
+    
+    unbindFramebuffers();
+	return retImage;
+}
+
 Image *OpenGLRenderer::renderScreenToImage() {
-	glReadBuffer(GL_FRONT);
-	char *imageBuffer = (char*)malloc(xRes * yRes * 4);
-	glReadPixels(0, 0, xRes, yRes, GL_RGBA, GL_UNSIGNED_BYTE, imageBuffer);
-	Image *retImage = new Image(imageBuffer, xRes, yRes, Image::IMAGE_RGBA);	
+    glReadBuffer(GL_FRONT);
+    
+	char *imageBuffer = (char*)malloc(xRes* backingResolutionScaleX * yRes * backingResolutionScaleY * 4);
+	glReadPixels(0, 0, xRes * backingResolutionScaleX, yRes * backingResolutionScaleY, GL_RGBA, GL_UNSIGNED_BYTE, imageBuffer);
+	Image *retImage = new Image(imageBuffer, xRes * backingResolutionScaleX, yRes * backingResolutionScaleY, Image::IMAGE_RGBA);
 	free(imageBuffer);
 	return retImage;
 }

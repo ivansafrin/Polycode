@@ -35,6 +35,8 @@ void SoundManager::initAL() {
 		Logger::log("AL already initialized\n");
 	}
 	
+    captureDevice = NULL;
+    
 	device = alcOpenDevice(0);
 	if(device == 0) {
 		Logger::log("InitializeAL: Cannot open preferred device\n");
@@ -107,6 +109,58 @@ void SoundManager::setListenerOrientation(Vector3 orientation, Vector3 upVector)
 	ori[4] = upVector.y;
 	ori[5] = upVector.z;	
 	alListenerfv(AL_ORIENTATION,ori);
+}
+
+bool SoundManager::recordSound(unsigned int rate, unsigned int sampleSize) {
+    
+    if(captureDevice) {
+        Logger::log("Error: Audio capture already in progress\n");
+        return false;
+    }
+    
+    captureDevice = alcCaptureOpenDevice(NULL, rate, AL_FORMAT_STEREO16, sampleSize);
+    if (alGetError() != AL_NO_ERROR) {
+        captureDevice = NULL;
+        return false;
+    }
+    recordingBufferRate = rate;
+    
+    recordingBuffer = (ALbyte*) malloc(1);
+    recordingBufferSize = 0;
+    
+    alcCaptureStart(captureDevice);
+    return true;
+}
+
+Sound *SoundManager::stopRecording(bool generateFloatBuffer) {
+    if(!captureDevice) {
+        Logger::log("No recording in process\n");
+        return NULL;
+    }
+    alcCaptureStop(captureDevice);
+    alcCaptureCloseDevice(captureDevice);
+    captureDevice = NULL;
+    
+    Sound *newSound = new Sound(recordingBufferSize, (const char*)recordingBuffer, 2, recordingBufferRate, 16, generateFloatBuffer);
+    
+    free(recordingBuffer);
+    
+    return newSound;
+}
+
+void SoundManager::Update() {
+    // if recording sound, save samples
+    if(captureDevice) {
+        ALint samples;
+        alcGetIntegerv(captureDevice, ALC_CAPTURE_SAMPLES, (ALCsizei)sizeof(ALint), &samples);
+        if(samples) {
+            unsigned int newBufferSize = sizeof(ALbyte) * samples * 4;
+            recordingBuffer = (ALbyte*) realloc(recordingBuffer, recordingBufferSize + newBufferSize);
+        
+            alcCaptureSamples(captureDevice, (ALCvoid *)(recordingBuffer+recordingBufferSize), samples);
+            recordingBufferSize += newBufferSize;
+        }
+    }
 }
 
 SoundManager::~SoundManager() {

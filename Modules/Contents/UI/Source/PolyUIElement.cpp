@@ -35,6 +35,8 @@ UILabel::UILabel(const String& text, int size, const String& fontName, int amode
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	label = new SceneLabel(text, size, fontName, amode);
     label->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    label->positionAtBaseline = true;
+    label->setAnchorPoint(-1.0, -1.0, 0.0);
 	label->snapToPixels = true;
 	
 	color.setColorHexFromString(conf->getStringValue("Polycode", "uiDefaultFontColor"));

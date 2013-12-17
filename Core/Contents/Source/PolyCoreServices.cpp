@@ -184,6 +184,7 @@ void CoreServices::Update(int elapsed) {
 	tweenManager->Update(elapsed);	
 	materialManager->Update(elapsed);		
 	sceneManager->Update();
+    soundManager->Update();
 }
 
 SoundManager *CoreServices::getSoundManager() {

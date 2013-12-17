@@ -58,7 +58,7 @@ namespace Polycode {
 		* @param fileName Path to an OGG or WAV file to load.
 		*/ 
 		Sound(const String& fileName, bool generateFloatBuffer = false);
-		Sound(int size, const char *data, int channels = 1, ALsizei freq = 44100, int bps = 16);
+		Sound(int size, const char *data, int channels = 1, ALsizei freq = 44100, int bps = 16, bool generateFloatBuffer = false);
 		virtual ~Sound();
 		
 		void loadFile(String fileName, bool generateFloatBuffer);
@@ -137,7 +137,7 @@ namespace Polycode {
 		Number getReferenceDistance();
 		Number getMaxDistance();
 		
-		ALuint loadBytes(const char *data, int size, int channels = 1, ALsizei freq = 44100, int bps = 16);
+		ALuint loadBytes(const char *data, int size, int channels = 1, ALsizei freq = 44100, int bps = 16, bool generateFloatBuffer = false);
 		ALuint loadWAV(const String& fileName, bool generateFloatBuffer);
 		ALuint loadOGG(const String& fileName, bool generateFloatBuffer);
 		

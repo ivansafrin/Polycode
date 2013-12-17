@@ -614,6 +614,7 @@ void EntityEditorMainView::handleEvent(Event *event) {
     } else if(event->getDispatcher() == addEntityMenu) {
         addEntityMenu->removeAllHandlersForListener(this);
         String command = addEntityMenu->getSelectedItem()->getMenuItemID();
+        addEntityMenu = NULL;
         addEntityFromMenu(command);
     } else if(event->getDispatcher() == addEntityButton) {
         addEntityMenu = globalMenu->showMenuAtMouse(150);
@@ -639,7 +640,7 @@ void EntityEditorMainView::handleEvent(Event *event) {
             switch(inputEvent->key) {
                 case KEY_BACKSPACE:
                 case KEY_DELETE:
-                    deleteSelected();
+                    //deleteSelected();
                 break;
             }
         }

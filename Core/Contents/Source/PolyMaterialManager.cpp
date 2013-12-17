@@ -82,13 +82,14 @@ void MaterialManager::reloadPrograms() {
 
 ShaderProgram *MaterialManager::createProgramFromFile(String programPath) {
 	OSFileEntry entry(programPath, OSFileEntry::TYPE_FILE);
-	
+	   
 	for(int m=0; m < shaderModules.size(); m++) {
 		PolycodeShaderModule *shaderModule = shaderModules[m];
 		if(shaderModule->acceptsExtension(entry.extension)) {
 			ShaderProgram *newProgram = shaderModule->createProgramFromFile(entry.extension, entry.fullPath);
 			if(newProgram) {
 				newProgram->setResourcePath(programPath);
+				newProgram->setResourceName(programPath);
 			}
 			return newProgram;
 		}
@@ -194,8 +195,9 @@ Shader *MaterialManager::createShader(String shaderType, String name, String vpN
 		retShader->screenShader = screenShader;
 		retShader->numAreaLights = 0;
 		retShader->numSpotLights = 0;
+        retShader->setResourceName(name);        
 	}
-	
+    
 	return retShader;
 }
 

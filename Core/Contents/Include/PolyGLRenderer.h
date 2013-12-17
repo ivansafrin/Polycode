@@ -145,6 +145,7 @@ namespace Polycode {
 		void setTexture(Texture *texture);		
 
 		Image *renderScreenToImage();
+		Image *renderBufferToImage(Texture *texture);
 		void clearScreen();	
 		
 		void translate2D(Number x, Number y);

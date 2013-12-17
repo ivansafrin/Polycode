@@ -68,9 +68,9 @@ Sound::Sound(const String& fileName, bool generateFloatBuffer) :  referenceDista
 	checkALError("Construct from file: Finished");
 }
 
-Sound::Sound(int size, const char *data, int channels, int freq, int bps) : referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1), buffer(AL_NONE), soundSource(AL_NONE), sampleLength(-1) {
+Sound::Sound(int size, const char *data, int channels, int freq, int bps, bool generateFloatBuffer) : referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1), buffer(AL_NONE), soundSource(AL_NONE), sampleLength(-1) {
 	checkALError("Construct: Loose error before construction");
-	buffer = loadBytes(data, size, freq, channels, bps);
+	buffer = loadBytes(data, size, freq, channels, bps, generateFloatBuffer);
 	
 	soundSource = GenSource(buffer);
 	
@@ -370,7 +370,7 @@ ALuint Sound::GenSource(ALuint buffer) {
 	return source;
 }
 
-ALuint Sound::loadBytes(const char *data, int size, int freq, int channels, int bps) {
+ALuint Sound::loadBytes(const char *data, int size, int freq, int channels, int bps, bool generateFloatBuffer) {
 	ALenum format;
 	if (channels == 1)
 		format = (bps == 8) ? AL_FORMAT_MONO8 : AL_FORMAT_MONO16;
@@ -387,6 +387,14 @@ ALuint Sound::loadBytes(const char *data, int size, int freq, int channels, int 
 	
 	alBufferData(buffer, format, data, size, freq);
 	checkALError("LoadBytes: load buffer data");
+    
+	if(generateFloatBuffer) {
+		int32_t *ptr32 = (int32_t*) &data[0];
+		for(int i=0; i < size/4; i++ ) {
+			floatBuffer.push_back(((Number)ptr32[i])/((Number)INT32_MAX));
+		}
+	}
+    
 	return buffer;
 }
 
@@ -446,7 +454,7 @@ ALuint Sound::loadOGG(const String& fileName, bool generateFloatBuffer) {
 	
 	if(generateFloatBuffer) {
 		int32_t *ptr32 = (int32_t*) &data[0];
-		for(int i=0; i < data.size()/2; i++ ) {
+		for(int i=0; i < data.size()/4; i++ ) {
 			floatBuffer.push_back(((Number)ptr32[i])/((Number)INT32_MAX));
 		}	
 	}
@@ -556,7 +564,7 @@ ALuint Sound::loadWAV(const String& fileName, bool generateFloatBuffer) {
 		OSBasics::close(f);
 		f = NULL;
 				
-		return loadBytes(&data[0], data.size(), freq, channels, bps);
+		return loadBytes(&data[0], data.size(), freq, channels, bps, generateFloatBuffer);
 //		if (buffer)
 //			if (alIsBuffer(buffer) == AL_TRUE)
 //				alDeleteBuffers(1, &buffer);

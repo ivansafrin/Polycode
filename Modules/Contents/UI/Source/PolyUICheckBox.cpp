@@ -51,9 +51,8 @@ UICheckBox::UICheckBox(String caption, bool checked) : UIElement() {
 	buttonImageUnchecked->visible = !checked;
     buttonImageUnchecked->Resize(buttonImageUnchecked->getWidth() / uiScale, buttonImageUnchecked->getHeight() / uiScale);
 	
-	captionLabel = new SceneLabel(caption, fontSize, fontName, Label::ANTIALIAS_FULL);
-	captionLabel->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
-    
+	captionLabel = new UILabel(caption, fontSize, fontName, Label::ANTIALIAS_FULL);
+	captionLabel->setBlendingMode(Renderer::BLEND_MODE_NORMAL);    
 	addChild(captionLabel);
 	captionLabel->setPosition(buttonImageChecked->getWidth() + checkboxTextOffsetX, checkboxTextOffsetY);
 	

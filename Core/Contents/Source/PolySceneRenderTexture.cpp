@@ -24,7 +24,9 @@
 #include "PolyCoreServices.h"
 #include "PolyRenderer.h"
 #include "PolySceneManager.h"
-
+#include "PolyTexture.h"
+#include "PolyScene.h"
+#include "PolyCamera.h"
 
 using namespace Polycode;
 
@@ -36,6 +38,7 @@ SceneRenderTexture::SceneRenderTexture(Scene *targetScene, Camera *targetCamera,
 
 	CoreServices::getInstance()->getRenderer()->createRenderTextures(&filterColorBufferTexture, &filterZBufferTexture, renderWidth, renderHeight, floatingPoint);
 	CoreServices::getInstance()->getSceneManager()->registerRenderTexture(this);
+    renderer = CoreServices::getInstance()->getRenderer();
 	enabled = true;
 }
 
@@ -66,6 +69,23 @@ Texture *SceneRenderTexture::getFilterZBufferTexture() {
 
 Camera *SceneRenderTexture::getTargetCamera() {
 	return targetCamera;
+}
+
+void SceneRenderTexture::Render() {
+    renderer->setViewportSize(targetTexture->getWidth(), targetTexture->getHeight());
+    renderer->loadIdentity();
+    if(targetCamera->hasFilterShader()) {
+        targetCamera->drawFilter(targetTexture, targetTexture->getWidth(), targetTexture->getHeight(), filterColorBufferTexture, filterZBufferTexture);
+    } else {
+        renderer->bindFrameBufferTexture(targetTexture);
+        targetScene->Render(targetCamera);
+        renderer->unbindFramebuffers();
+    }
+    renderer->loadIdentity();
+}
+
+Image *SceneRenderTexture::saveToImage() {
+    return renderer->renderBufferToImage(targetTexture);
 }
 
 Texture *SceneRenderTexture::getTargetTexture() {

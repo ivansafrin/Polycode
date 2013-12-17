@@ -109,6 +109,7 @@ namespace Polycode {
 		virtual void unbindFramebuffers() = 0;
 
 		virtual Image *renderScreenToImage() = 0;
+		virtual Image *renderBufferToImage(Texture *texture) = 0;
 		
 		void setFOV(Number fov);		
 		void setViewportSize(int w, int h);

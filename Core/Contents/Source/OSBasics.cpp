@@ -63,7 +63,7 @@ void ctow(WCHAR* Dest, const char* Source)
 OSFileEntry::OSFileEntry(const Polycode::String& fullPath, int type) {
 	std::vector<String> parts = fullPath.split("/");
 	
-	if(parts.size() > 0) {
+	if(parts.size() > 1) {
 		String path = parts[0];
 
 		if(parts.size() > 1) {		
@@ -85,7 +85,9 @@ OSFileEntry::OSFileEntry(const String& path, const String& name, int type) {
 void OSFileEntry::init(const Polycode::String& path, const Polycode::String& name, int type) {
 	this->basePath = path;
 
-	if(path == "/") {
+    if(path == "") {
+        this->fullPath = name;
+	} else if(path == "/") {
 		this->fullPath = "/" + name;
 	} else {
 		this->fullPath = path + "/" + name;

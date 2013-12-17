@@ -204,7 +204,7 @@ AssetImporterWindow::AssetImporterWindow() : UIWindow("3D Asset Importer", 650, 
 	
 	filesAnchor = new Entity();	
 		
-	filesScroller = new UIScrollContainer(filesAnchor, true, true, 270, 250);
+	filesScroller = new UIScrollContainer(filesAnchor, true, true, 270, 200);
 	addChild(filesScroller);
 	filesScroller->setPosition(padding, 60);
 		

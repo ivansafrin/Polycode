@@ -88,6 +88,11 @@ UIButton::UIButton(String text, Number width, Number height) : UIElement() {
 	
 }
 
+void UIButton::setCaption(String caption) {
+    buttonLabel->setText(caption);
+    Resize(getWidth(), getHeight());
+}
+
 void UIButton::Resize(Number width, Number height) {
 	buttonRect->resizeBox(width, height);
 	buttonFocusedRect->resizeBox(width, height);

@@ -77,18 +77,8 @@ void SceneManager::setRenderer(Renderer *renderer) {
 void SceneManager::renderVirtual() {
 	for(int i=0;i<renderTextures.size();i++) {
 		if(renderTextures[i]->enabled) {
-		renderer->setViewportSize(renderTextures[i]->getTargetTexture()->getWidth(), renderTextures[i]->getTargetTexture()->getHeight());
-		renderer->loadIdentity();
-			if(renderTextures[i]->getTargetCamera()->hasFilterShader()) {
-				renderTextures[i]->getTargetCamera()->drawFilter(renderTextures[i]->getTargetTexture(), renderTextures[i]->getTargetTexture()->getWidth(), renderTextures[i]->getTargetTexture()->getHeight(), renderTextures[i]->getFilterColorBufferTexture(), renderTextures[i]->getFilterZBufferTexture());
-			} else {
-				renderer->bindFrameBufferTexture(renderTextures[i]->getTargetTexture());
-				renderTextures[i]->getTargetScene()->Render(renderTextures[i]->getTargetCamera());
-				renderer->unbindFramebuffers();		
-			}
-		}
-			
-		renderer->loadIdentity();
+            renderTextures[i]->Render();
+		}			
 	}
 	renderer->setViewportSize(renderer->getXRes(), renderer->getYRes());
 	renderer->clearScreen();

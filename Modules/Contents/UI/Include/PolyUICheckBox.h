@@ -45,7 +45,7 @@ namespace Polycode {
 			
 		private:
 			bool checked;
-			SceneLabel *captionLabel;
+			UILabel *captionLabel;
 			UIImage *buttonImageChecked;
 			UIImage *buttonImageUnchecked;			
 	};
