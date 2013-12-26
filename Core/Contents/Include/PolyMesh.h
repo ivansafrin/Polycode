@@ -243,11 +243,11 @@ namespace Polycode {
 			*/
 			Vector3 recenterMesh();
 		
+            Vertex *addVertex(Number x, Number y, Number z, Number u, Number v);
+        
             Vertex *addVertex(Number x, Number y, Number z);
 			
             void addVertex(Vertex *vertex);
-        
-            Vertex *addVertex(Number x, Number y, Number z, Number u, Number v);
         
             Vertex *getVertex(unsigned int index) const;
 

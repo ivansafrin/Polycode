@@ -848,7 +848,8 @@ MaterialEditorPane::MaterialEditorPane() : UIElement() {
 	blendModeProp = new ComboProp("Blend mode");
 	baseProps->addProp(blendModeProp);
 	blendModeProp->addEventListener(this, Event::CHANGE_EVENT);
-		
+
+	blendModeProp->comboEntry->addComboItem("None");
 	blendModeProp->comboEntry->addComboItem("Normal");
 	blendModeProp->comboEntry->addComboItem("Lighten");
 	blendModeProp->comboEntry->addComboItem("Color");
