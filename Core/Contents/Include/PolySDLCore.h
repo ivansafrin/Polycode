@@ -43,7 +43,7 @@ namespace Polycode {
 		
 	public:
 		
-		SDLCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex=-1);
+		SDLCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex=-1, bool retinaSupport=false);
 		~SDLCore();
 
 		void enableMouse(bool newval);

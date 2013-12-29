@@ -182,9 +182,6 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 						else: # Parent class is in Polycore
 							luaClassBindingOut += "require \"Polycode/%s\"\n\n" % (c["inherits"][0]["class"])
 
-						if (ckey == "ScreenParticleEmitter" or ckey == "SceneParticleEmitter"):
-							luaClassBindingOut += "require \"Polycode/ParticleEmitter\"\n\n"
-
 						luaClassBindingOut += "class \"%s\" (%s)\n\n" % (ckey, c["inherits"][0]["class"])
 						parentClass = c["inherits"][0]["class"]
 						inherits = True

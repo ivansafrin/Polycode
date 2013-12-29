@@ -30,9 +30,11 @@
 #include "OSBasics.h"
 #include <string>
 #include <vector>
+#include <stdint.h>
 #include <limits>
 
 #define MAX_FLOAT (std::numeric_limits<double>::infinity())
+#define INT32_MAX (std::numeric_limits<int32_t>::max())
 
 using namespace std;
 using namespace Polycode;

@@ -204,7 +204,7 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	menuBar->addEventListener(this, UIEvent::OK_EVENT);
 
 	screen->addChild(menuBar);
-	frame->position.y = 25;
+	frame->setPositionY(25);
 #else
 	menuBar = NULL;
 #endif
