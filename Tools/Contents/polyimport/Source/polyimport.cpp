@@ -3,7 +3,12 @@
 #include "OSBasics.h"
 
 #include "physfs.h"
+#ifdef WIN32
+#include "getopt.h"
+#define getopt getopt_a
+#else
 #include <unistd.h>
+#endif
 
 using namespace Polycode;
 
@@ -12,12 +17,14 @@ bool hasWeights = false;
 vector<aiBone*> bones;
 unsigned int numBones = 0;
 
+
 bool writeNormals = false;
 bool writeTangents = false;
 bool writeColors = false;
 bool writeBoneWeights = false;
 bool writeUVs = false;
 bool writeSecondaryUVs = false;
+
 
 unsigned int addBone(aiBone *bone) {
 	for(int i=0; i < bones.size(); i++) {

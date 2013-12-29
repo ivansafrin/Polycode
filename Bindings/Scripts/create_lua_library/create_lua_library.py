@@ -90,6 +90,8 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 	wrappersHeaderOut += "#include \"lua.h\"\n"
 	wrappersHeaderOut += "#include \"lualib.h\"\n"
 	wrappersHeaderOut += "#include \"lauxlib.h\"\n"
+	wrappersHeaderOut += "#undef near\n"
+	wrappersHeaderOut += "#undef far\n"
 	wrappersHeaderOut += "} // extern \"C\" \n\n"
 
 	luaDocOut += "<?xml version=\"1.0\" ?>\n"

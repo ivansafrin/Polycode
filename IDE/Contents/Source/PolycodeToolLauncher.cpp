@@ -157,7 +157,7 @@ String PolycodeToolLauncher::importAssets(String sourceFile, String inFolder, bo
 
 	
 #ifdef _WINDOWS
-	String targetFolder = projectBasePath;
+	String targetFolder = polycodeBasePath;
 	String command = "\""+polycodeBasePath+"/Standalone/Bin/polyimport.exe\"";
 	ret = CoreServices::getInstance()->getCore()->executeExternalCommand(command, args, targetFolder);
 #else
