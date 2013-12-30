@@ -53,7 +53,7 @@ void PolycodeRunner::runThread() {
 	String inFolder = polycodeBasePath+"/Standalone/Player/PolycodePlayer.app/Contents/Resources";
 	String args = polyappPath;
 #elif defined _WINDOWS
-	String command = polycodeBasePath+"/Standalone/Player/PolycodePlayer.exe";
+	String command = "\""+polycodeBasePath+"/Standalone/Player/PolycodePlayer.exe\"";
 	String args = polyappPath;
 	String inFolder = polycodeBasePath+"/Standalone/Player";
 #else
