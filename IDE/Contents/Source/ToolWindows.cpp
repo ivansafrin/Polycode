@@ -285,9 +285,8 @@ void AssetImporterWindow::handleEvent(Event *event) {
 		dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);	
 	} else if(event->getDispatcher() == cancelButton) {
 		dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);
-	} else {
-		refreshPreview();
 	}
+
 	UIWindow::handleEvent(event);
 }
 

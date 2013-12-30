@@ -63,9 +63,6 @@
     <ClCompile Include="..\..\Contents\Source\PolycodeRemoteDebugger.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Contents\Source\PolycodeScreenEditor.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Contents\Source\PolycodeSpriteEditor.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -88,6 +85,24 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Contents\Source\SettingsWindow.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Contents\Source\PolycodeMeshEditor.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Contents\Source\TrackballCamera.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Contents\Source\TransformGizmo.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Contents\Source\EditorGrid.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Contents\Source\EntityEditorPropertyView.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Contents\Source\PolycodeEntityEditor.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
@@ -149,9 +164,6 @@
     <ClInclude Include="..\..\Contents\Include\PolycodeRemoteDebugger.h">
       <Filter>Include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Contents\Include\PolycodeScreenEditor.h">
-      <Filter>Include</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Contents\Include\PolycodeSpriteEditor.h">
       <Filter>Include</Filter>
     </ClInclude>
@@ -174,6 +186,24 @@
       <Filter>Include</Filter>
     </ClInclude>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="..\..\Contents\Include\EditorGrid.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Contents\Include\EntityEditorPropertyView.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Contents\Include\PolycodeEntityEditor.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Contents\Include\PolycodeMeshEditor.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Contents\Include\TrackballCamera.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Contents\Include\TransformGizmo.h">
+      <Filter>Include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Polycode.rc" />

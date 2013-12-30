@@ -203,8 +203,6 @@ void TrackballCamera::updateCamera() {
 
 void TrackballCamera::disableRotation(bool val) {
     rotationDisabled = val;
-
-	return true;
 }
 
 Vector3 TrackballCamera::getMouseProjectionOnBall(const Vector2 &mousePosition) {

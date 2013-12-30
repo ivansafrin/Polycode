@@ -396,7 +396,7 @@ void Mesh::createLineCircle(Number w, Number h, unsigned int numSegments) {
  
     int step;
     if(numSegments > 0) {
-        step = ceil(360/numSegments);
+        step = ceil(360.0/((Number)numSegments));
     } else {
         step = 1;
     }
@@ -924,9 +924,9 @@ void Mesh::calculateTangents() {
 Vector3 Mesh::getFaceNormalForVertex(unsigned int index) {
     unsigned int faceNormalIndex;
     if(meshType == Mesh::QUAD_MESH) {
-        faceNormalIndex = floor(index/4);
+        faceNormalIndex = floor(((Number)index)/4.0);
     } else {
-        faceNormalIndex = floor(index/3);
+        faceNormalIndex = floor(((Number)index)/3.0);
     }
     
     if(faceNormalIndex < faceNormals.size()) {

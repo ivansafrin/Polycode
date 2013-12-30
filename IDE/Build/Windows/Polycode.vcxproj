@@ -11,6 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Contents\Source\EditorGrid.cpp" />
+    <ClCompile Include="..\..\Contents\Source\EntityEditorPropertyView.cpp" />
     <ClCompile Include="..\..\Contents\Source\ExampleBrowserWindow.cpp" />
     <ClCompile Include="..\..\Contents\Source\ExportProjectWindow.cpp" />
     <ClCompile Include="..\..\Contents\Source\NewFileWindow.cpp" />
@@ -19,27 +21,32 @@
     <ClCompile Include="..\..\Contents\Source\PolycodeConsole.cpp" />
     <ClCompile Include="..\..\Contents\Source\PolycodeEditor.cpp" />
     <ClCompile Include="..\..\Contents\Source\PolycodeEditorManager.cpp" />
+    <ClCompile Include="..\..\Contents\Source\PolycodeEntityEditor.cpp" />
     <ClCompile Include="..\..\Contents\Source\PolycodeFontEditor.cpp" />
     <ClCompile Include="..\..\Contents\Source\PolycodeFrame.cpp" />
     <ClCompile Include="..\..\Contents\Source\PolycodeIDEApp.cpp" />
     <ClCompile Include="..\..\Contents\Source\PolycodeImageEditor.cpp" />
     <ClCompile Include="..\..\Contents\Source\PolycodeMaterialEditor.cpp" />
+    <ClCompile Include="..\..\Contents\Source\PolycodeMeshEditor.cpp" />
     <ClCompile Include="..\..\Contents\Source\PolycodeProject.cpp" />
     <ClCompile Include="..\..\Contents\Source\PolycodeProjectBrowser.cpp" />
     <ClCompile Include="..\..\Contents\Source\PolycodeProjectEditor.cpp" />
     <ClCompile Include="..\..\Contents\Source\PolycodeProjectManager.cpp" />
     <ClCompile Include="..\..\Contents\Source\PolycodeProps.cpp" />
     <ClCompile Include="..\..\Contents\Source\PolycodeRemoteDebugger.cpp" />
-    <ClCompile Include="..\..\Contents\Source\PolycodeScreenEditor.cpp" />
     <ClCompile Include="..\..\Contents\Source\PolycodeSpriteEditor.cpp" />
     <ClCompile Include="..\..\Contents\Source\PolycodeTextEditor.cpp" />
     <ClCompile Include="..\..\Contents\Source\PolycodeToolLauncher.cpp" />
     <ClCompile Include="..\..\Contents\Source\SettingsWindow.cpp" />
     <ClCompile Include="..\..\Contents\Source\TextureBrowser.cpp" />
     <ClCompile Include="..\..\Contents\Source\ToolWindows.cpp" />
+    <ClCompile Include="..\..\Contents\Source\TrackballCamera.cpp" />
+    <ClCompile Include="..\..\Contents\Source\TransformGizmo.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Contents\Include\EditorGrid.h" />
+    <ClInclude Include="..\..\Contents\Include\EntityEditorPropertyView.h" />
     <ClInclude Include="..\..\Contents\Include\ExampleBrowserWindow.h" />
     <ClInclude Include="..\..\Contents\Include\ExportProjectWindow.h" />
     <ClInclude Include="..\..\Contents\Include\NewFileWindow.h" />
@@ -48,25 +55,28 @@
     <ClInclude Include="..\..\Contents\Include\PolycodeConsole.h" />
     <ClInclude Include="..\..\Contents\Include\PolycodeEditor.h" />
     <ClInclude Include="..\..\Contents\Include\PolycodeEditorManager.h" />
+    <ClInclude Include="..\..\Contents\Include\PolycodeEntityEditor.h" />
     <ClInclude Include="..\..\Contents\Include\PolycodeFontEditor.h" />
     <ClInclude Include="..\..\Contents\Include\PolycodeFrame.h" />
     <ClInclude Include="..\..\Contents\Include\PolycodeGlobals.h" />
     <ClInclude Include="..\..\Contents\Include\PolycodeIDEApp.h" />
     <ClInclude Include="..\..\Contents\Include\PolycodeImageEditor.h" />
     <ClInclude Include="..\..\Contents\Include\PolycodeMaterialEditor.h" />
+    <ClInclude Include="..\..\Contents\Include\PolycodeMeshEditor.h" />
     <ClInclude Include="..\..\Contents\Include\PolycodeProject.h" />
     <ClInclude Include="..\..\Contents\Include\PolycodeProjectBrowser.h" />
     <ClInclude Include="..\..\Contents\Include\PolycodeProjectEditor.h" />
     <ClInclude Include="..\..\Contents\Include\PolycodeProjectManager.h" />
     <ClInclude Include="..\..\Contents\Include\PolycodeProps.h" />
     <ClInclude Include="..\..\Contents\Include\PolycodeRemoteDebugger.h" />
-    <ClInclude Include="..\..\Contents\Include\PolycodeScreenEditor.h" />
     <ClInclude Include="..\..\Contents\Include\PolycodeSpriteEditor.h" />
     <ClInclude Include="..\..\Contents\Include\PolycodeTextEditor.h" />
     <ClInclude Include="..\..\Contents\Include\PolycodeToolLauncher.h" />
     <ClInclude Include="..\..\Contents\Include\SettingsWindow.h" />
     <ClInclude Include="..\..\Contents\Include\TextureBrowser.h" />
     <ClInclude Include="..\..\Contents\Include\ToolWindows.h" />
+    <ClInclude Include="..\..\Contents\Include\TrackballCamera.h" />
+    <ClInclude Include="..\..\Contents\Include\TransformGizmo.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
