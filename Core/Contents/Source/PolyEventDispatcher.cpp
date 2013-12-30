@@ -69,14 +69,9 @@ namespace Polycode {
 		event->setEventCode(eventCode);
 		for(int i=0;i<handlerEntries.size();i++) {
 			if(handlerEntries[i].eventCode == eventCode) {
-				//				if(handlerEntries[i].handler->onEvent != NULL) {
-				//					handlerEntries[i].handler->onEvent(event);
-				//				}
 				handlerEntries[i].handler->handleEvent(event);
-				handlerEntries[i].handler->secondaryHandler(event);
 			}
-		}
-		
+		}	
 	}
 	
 	void EventDispatcher::dispatchEventNoDelete(Event *event, int eventCode) {
