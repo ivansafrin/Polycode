@@ -112,7 +112,6 @@ void Config::setNumericValue(const String& configNamespace, const String& key, N
 	getEntry(configNamespace, key)->isString = false;		
 }
 
-
 Number Config::getNumericValue(const String& configNamespace, const String& key) {
 	return getEntry(configNamespace, key)->numVal;
 }
@@ -121,4 +120,16 @@ const String& Config::getStringValue(const String& configNamespace, const String
 	return getEntry(configNamespace, key)->stringVal;	
 }
 
+void Config::setBoolValue(const String& configNamespace, const String& key, bool value) {
+	getEntry(configNamespace, key)->stringVal = (!value ? "false" : "true");
+	getEntry(configNamespace, key)->isString = true;
+}
 
+bool Config::getBoolValue(const String& configNamespace, const String& key) {
+	const String& str = getEntry(configNamespace, key)->stringVal;
+
+	if (str == "true" || str == "1") {
+		return true;
+	}		
+	return false;
+}
