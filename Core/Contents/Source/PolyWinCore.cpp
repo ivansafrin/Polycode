@@ -168,7 +168,7 @@ void Win32Core::warpCursor(int x, int y) {
 unsigned int Win32Core::getTicks() {
 	LARGE_INTEGER li;
 	QueryPerformanceCounter(&li);
-	return unsigned int(li.QuadPart / pcFreq);
+	return (unsigned int)(li.QuadPart / pcFreq);
 }
 
 void Win32Core::Render() {
