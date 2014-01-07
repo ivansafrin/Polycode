@@ -610,7 +610,10 @@ void PolycodeTextEditor::showFindBar() {
 	for(int i=0; i < functionMatches.size(); i++) {
 		FindMatch *match = new FindMatch();
 		(*match) = functionMatches[i];
-		findBar->functionList->addComboItem(textInput->getLineText(functionMatches[i].lineNumber).replace("function ", ""), (void*) match);
+        String lineText = textInput->getLineText(functionMatches[i].lineNumber);
+        if (lineText.substr(0,8) == "function") {
+            findBar->functionList->addComboItem(lineText.replace("function ", ""), (void*) match);
+        }
 	}
 	
 	Resize(editorSize.x, editorSize.y);
