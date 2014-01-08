@@ -396,7 +396,7 @@ void Mesh::createLineCircle(Number w, Number h, unsigned int numSegments) {
  
     int step;
     if(numSegments > 0) {
-        step = ceil(360/numSegments);
+        step = ceil(360.0/((Number)numSegments));
     } else {
         step = 1;
     }
@@ -527,9 +527,9 @@ void Mesh::createSphere(Number radius, int segmentsH, int segmentsW) {
     for(unsigned int i = 0; i< segmentsH; i++) {
         for(unsigned int j = 0; j < segmentsW; j++) {
             Vector3 v;
-            v.x = radius * cos(phi*M_PI/180.f) * cos(theta*M_PI/180.f);
-            v.y = radius * sin(phi*M_PI/180.f);
-            v.z = radius * cos(phi*M_PI/180.f) * sin(theta*M_PI/180.f);
+            v.x = radius * cos(phi*PI/180.f) * cos(theta*PI/180.f);
+            v.y = radius * sin(phi*PI/180.f);
+            v.z = radius * cos(phi*PI/180.f) * sin(theta*PI/180.f);
             Vertex *vert = addVertex(v.x, v.y, v.z);
             v.Normalize();
             vert->normal = v;
@@ -928,9 +928,9 @@ void Mesh::calculateTangents() {
 Vector3 Mesh::getFaceNormalForVertex(unsigned int index) {
     unsigned int faceNormalIndex;
     if(meshType == Mesh::QUAD_MESH) {
-        faceNormalIndex = floor(index/4);
+        faceNormalIndex = floor(((Number)index)/4.0);
     } else {
-        faceNormalIndex = floor(index/3);
+        faceNormalIndex = floor(((Number)index)/3.0);
     }
     
     if(faceNormalIndex < faceNormals.size()) {

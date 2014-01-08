@@ -230,3 +230,20 @@ Vector3 TrackballCamera::getMouseProjectionOnBall(const Vector2 &mousePosition) 
 	
 	return projection;	
 }
+/*
+void TrackballCamera::setCameraPosition(Vector3 cameraPosition) {
+
+}
+    
+bool TrackballCamera::disableRotation(bool val) {
+	return false;
+}
+
+    
+Number TrackballCamera::getCameraDistance() {
+	return 0.0;
+}
+
+Vector3 TrackballCamera::getOribitingCenter() {
+	return Vector3();
+}*/

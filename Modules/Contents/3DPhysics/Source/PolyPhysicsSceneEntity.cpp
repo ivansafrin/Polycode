@@ -28,6 +28,7 @@ THE SOFTWARE.
 
 using namespace Polycode;
 
+
 PhysicsVehicle::PhysicsVehicle(Entity *entity, Number mass, Number friction,btDefaultVehicleRaycaster *_rayCaster): PhysicsEntity(entity, PhysicsEntity::SHAPE_BOX, mass, friction, 1), rayCaster(_rayCaster), vehicle(NULL) {
 	
 }

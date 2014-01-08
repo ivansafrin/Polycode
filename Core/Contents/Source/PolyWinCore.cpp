@@ -78,7 +78,7 @@ void Core::getScreenInfo(int *width, int *height, int *hz) {
     if (hz) *hz = mode.dmDisplayFrequency;
 }
 
-Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate,  int monitorIndex) 
+Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate,  int monitorIndex, bool retinaSupport) 
 	: Core(_xRes, _yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate, monitorIndex) {
 
 	hWnd = *((HWND*)view->windowData);
@@ -1024,27 +1024,21 @@ String Win32Core::executeExternalCommand(String command,  String args, String in
 		execInDirectory = defaultWorkingDirectory;
 	}
 
-	SHELLEXECUTEINFO lpExecInfo;
-      lpExecInfo.cbSize  = sizeof(SHELLEXECUTEINFO);
-      lpExecInfo.lpFile = command.getWDataWithEncoding(String::ENCODING_UTF8);
-	lpExecInfo.fMask=SEE_MASK_DOENVSUBST|SEE_MASK_NOCLOSEPROCESS ;     
-      lpExecInfo.hwnd = NULL;  
-      lpExecInfo.lpVerb = L"open"; // to open  program
-      lpExecInfo.lpParameters =  args.getWDataWithEncoding(String::ENCODING_UTF8); //  file name as an argument
-      lpExecInfo.lpDirectory = execInDirectory.getWDataWithEncoding(String::ENCODING_UTF8);   
-      lpExecInfo.nShow = SW_SHOW ;  // show command prompt with normal window size 
-      lpExecInfo.hInstApp = (HINSTANCE) SE_ERR_DDEFAIL ;   //WINSHELLAPI BOOL WINAPI result;
-      ShellExecuteEx(&lpExecInfo);
-    
- 
-      //wait until a file is finished printing
-      if(lpExecInfo.hProcess !=NULL)
-      {
-        ::WaitForSingleObject(lpExecInfo.hProcess, INFINITE);
-        ::CloseHandle(lpExecInfo.hProcess);
-      }
+	String cmdString = "cd \""+execInDirectory+"\" & "+command+" "+args;
 
-	  return "";
+	char   psBuffer[128];
+	FILE   *pPipe;
+	if((pPipe = _popen(cmdString.c_str(), "rt" )) == NULL) {
+		return "";
+	}
+
+	String retString;
+	while(fgets(psBuffer, 128, pPipe)) {
+		retString += String(psBuffer);
+   }
+
+	_pclose(pPipe);
+	return retString;
 }
 
 String Win32Core::openFolderPicker()  {

@@ -53,7 +53,7 @@ void PolycodeRunner::runThread() {
 	String inFolder = polycodeBasePath+"/Standalone/Player/PolycodePlayer.app/Contents/Resources";
 	String args = polyappPath;
 #elif defined _WINDOWS
-	String command = polycodeBasePath+"/Standalone/Player/PolycodePlayer.exe";
+	String command = "\""+polycodeBasePath+"/Standalone/Player/PolycodePlayer.exe\"";
 	String args = polyappPath;
 	String inFolder = polycodeBasePath+"/Standalone/Player";
 #else
@@ -157,9 +157,8 @@ String PolycodeToolLauncher::importAssets(String sourceFile, String inFolder, bo
 
 	
 #ifdef _WINDOWS
-	String targetFolder = projectBasePath;
 	String command = "\""+polycodeBasePath+"/Standalone/Bin/polyimport.exe\"";
-	ret = CoreServices::getInstance()->getCore()->executeExternalCommand(command, args, targetFolder);
+	ret = CoreServices::getInstance()->getCore()->executeExternalCommand(command, args, inFolder);
 #else
 	String command = polycodeBasePath+"/Standalone/Bin/polyimport";
 	ret = CoreServices::getInstance()->getCore()->executeExternalCommand(command, args, inFolder);

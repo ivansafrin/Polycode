@@ -305,6 +305,4 @@ void LocalShaderParam::setParamValueFromString(int type, String pvalue) {
             }
                 break;
         }
-    
-    return false;
 }

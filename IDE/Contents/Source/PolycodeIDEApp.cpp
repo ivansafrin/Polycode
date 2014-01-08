@@ -35,6 +35,8 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	core = new POLYCODE_CORE(view, 1100, 700,false,true, 0, 0,60, -1, true);
 //	core->pauseOnLoseFocus = true;
     
+	printf("DIR: %s\n", core->getDefaultWorkingDirectory().c_str());
+
     Entity::defaultBlendingMode = Renderer::BLEND_MODE_NONE;
 	
 	CoreServices::getInstance()->getResourceManager()->reloadResourcesOnModify = true;
@@ -204,7 +206,7 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	menuBar->addEventListener(this, UIEvent::OK_EVENT);
 
 	screen->addChild(menuBar);
-	frame->position.y = 25;
+	frame->setPositionY(25);
 #else
 	menuBar = NULL;
 #endif

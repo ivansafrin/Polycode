@@ -31,9 +31,9 @@ THE SOFTWARE.
 class btKinematicCharacterController;
 class btPairCachingGhostObject;
 
-class Entity;
 
 namespace Polycode {
+	class Entity;
 	
 	/**
 	* A wrapper around Entity that provides physics information.

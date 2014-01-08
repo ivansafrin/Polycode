@@ -3,6 +3,8 @@
 #include "PolyLabel.h"
 #include <PolyCoreServices.h>
 #include <PolyCore.h>
+#include <PolyConfig.h>
+#include <PolyRenderer.h>
 
 using namespace Polycode;
 
@@ -39,21 +41,22 @@ UIMenuBarEntry::UIMenuBarEntry(String name): UIElement() {
 	
 	label = new SceneLabel(name, 14, "sans");
 	setWidth(label->getLabel()->getTextWidth() + 20);
+	label->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	bg = new UIRect(getWidth(), 25);
 	bg->setAnchorPoint(-1.0, -1.0, 0.0);
 	addChild(bg);
-	bg->color.setColorHex(0xce5a1600);
 	bg->processInputEvents = true;
+	bg->color.setColorHex(0x00000000);
 	addChild(label);
 	label->setPosition(10, 5);
 }
 
 void UIMenuBarEntry::Select() {
-	bg->color.setColorHex(0xce5a16ff);
+	bg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiAccentColor"));
 }
 
 void UIMenuBarEntry::Deselect() {
-	bg->color.setColorHex(0xce5a1600);
+	bg->color.setColorHex(0x00000000);
 }
 
 void UIMenuBarEntry::addItem(String name, String code, PolyKEY shortCut1, PolyKEY shortCut2) {

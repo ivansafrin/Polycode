@@ -90,6 +90,8 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 	wrappersHeaderOut += "#include \"lua.h\"\n"
 	wrappersHeaderOut += "#include \"lualib.h\"\n"
 	wrappersHeaderOut += "#include \"lauxlib.h\"\n"
+	wrappersHeaderOut += "#undef near\n"
+	wrappersHeaderOut += "#undef far\n"
 	wrappersHeaderOut += "} // extern \"C\" \n\n"
 
 	luaDocOut += "<?xml version=\"1.0\" ?>\n"
@@ -181,9 +183,6 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 							luaClassBindingOut += "require \"%s/%s\"\n\n" % (prefix, c["inherits"][0]["class"])
 						else: # Parent class is in Polycore
 							luaClassBindingOut += "require \"Polycode/%s\"\n\n" % (c["inherits"][0]["class"])
-
-						if (ckey == "ScreenParticleEmitter" or ckey == "SceneParticleEmitter"):
-							luaClassBindingOut += "require \"Polycode/ParticleEmitter\"\n\n"
 
 						luaClassBindingOut += "class \"%s\" (%s)\n\n" % (ckey, c["inherits"][0]["class"])
 						parentClass = c["inherits"][0]["class"]
