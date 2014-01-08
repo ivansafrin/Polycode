@@ -114,7 +114,15 @@ namespace Polycode {
 			*/
 			//@{
 
-
+        
+            inline Matrix4 operator * (Number n) const {
+                return Matrix4(
+                           n*m[0][0], n*m[0][1], n*m[0][2], n*m[0][3],
+                           n*m[1][0], n*m[1][1], n*m[1][2], n*m[1][3],
+                           n*m[2][0], n*m[2][1], n*m[2][2], n*m[2][3],
+                           n*m[3][0], n*m[3][1], n*m[3][2], n*m[3][3]);
+            }
+        
 			inline Vector3 operator * ( const Vector3 &v2 ) const
 			{
 				return Vector3(v2.x*m[0][0] + v2.y*m[1][0] + v2.z*m[2][0] + m[3][0],

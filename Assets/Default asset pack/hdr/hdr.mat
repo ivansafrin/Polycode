@@ -45,18 +45,13 @@
 		</material>	
 		<material name="HDRProcessBloom" screen="true">
 			<rendertargets type="rgba_fp16">
-				<rendertarget id="base_target"  sizeMode="normalized" width="1.0" height="1.0"/>			
 				<rendertarget id="bloomtarget"  sizeMode="pixels" width="512" height="512"/>
 				<rendertarget id="bloomtarget2"  sizeMode="pixels" width="512" height="512"/>				
 				<rendertarget id="bloomtarget_final"  sizeMode="pixels" width="512" height="512"/>
 			</rendertargets>
-			<shader name="PassThrough">
-				<targettextures>
-					<targettexture mode="out" id="base_target"/>
-				</targettextures>
-			</shader>	
 			<shader name="ExtractBloom">
 				<targettextures>			
+					<targettexture mode="color" name="screenColorBuffer"/>
 					<targettexture mode="out" id="bloomtarget"/>
 				</targettextures>
 			</shader>									
@@ -72,10 +67,9 @@
 					<targettexture mode="out" id="bloomtarget_final"/>					
 				</targettextures>													
 			</shader>
-			
 			<shader name="HDRProcessShaderBloom">
 				<targettextures>
-					<targettexture mode="in" name="baseTexture" id="base_target"/>								
+					<targettexture mode="color" name="baseTexture"/>								
 					<targettexture mode="in" name="bloomTexture" id="bloomtarget_final"/>				
 				</targettextures>													
 			</shader>			

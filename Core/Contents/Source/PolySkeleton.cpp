@@ -27,6 +27,7 @@
 #include "PolySceneLabel.h"
 #include "PolySceneLine.h"
 #include "PolyTween.h"
+#include "PolyTweenManager.h"
 #include "OSBasics.h"
 
 using namespace Polycode;
@@ -36,12 +37,11 @@ Skeleton *Skeleton::BlankSkeleton() {
 }
 
 Skeleton::Skeleton(const String& fileName) : Entity() {
+    baseAnimation = NULL;
 	loadSkeleton(fileName);
-	currentAnimation = NULL;
 }
 
 Skeleton::Skeleton() {
-	currentAnimation = NULL;	
 }
 
 Skeleton::~Skeleton() {
@@ -63,37 +63,48 @@ Bone *Skeleton::getBone(int index) const {
 	return bones[index];
 }
 
-void Skeleton::playAnimationByIndex(int index, bool once) {
-	if(index > animations.size()-1)
-		return;
-		
-	SkeletonAnimation *anim = animations[index];
-	if(!anim)
-		return;
-	
-	if(anim == currentAnimation && !once)
-		return;
-	
-	if(currentAnimation)
-		currentAnimation->Stop();
-	
-	currentAnimation = anim;
-	anim->Play(once);	
+void Skeleton::setBaseAnimationByName(const String &animName) {
+	SkeletonAnimation *anim = getAnimation(animName);
+	if(anim) {
+        setBaseAnimation(anim);
+    }
 }
 
-void Skeleton::playAnimation(const String& animName, bool once) {
+void Skeleton::setBaseAnimation(SkeletonAnimation *animation){
+    baseAnimation = animation;
+    baseAnimation->setWeight(1.0);
+    animation->Play(false);
+}
+
+
+void Skeleton::playAnimationByName(const String& animName, Number weight, bool once, bool restartIfPlaying) {
 	SkeletonAnimation *anim = getAnimation(animName);
-	if(!anim)
-		return;
-	
-	if(anim == currentAnimation && !once)
-		return;
-	
-	if(currentAnimation)
-		currentAnimation->Stop();
-		
-	currentAnimation = anim;
-	anim->Play(once);
+	if(anim) {
+        playAnimation(anim, weight, once, restartIfPlaying);
+    }
+}
+
+void Skeleton::playAnimation(SkeletonAnimation *animation, Number weight, bool once, bool restartIfPlaying) {
+    
+    if(weight > 1.0) {
+        weight = 1.0;
+    }
+    if(weight < 0.0) {
+        weight = 0.0;
+    }
+    
+    animation->setWeight(weight);
+    
+    if(animation->isPlaying()) {
+        if(restartIfPlaying) {
+            animation->Reset();
+        }
+        return;
+    }
+    
+    animation->Reset();
+    playingAnimations.push_back(animation);
+    animation->Play(once);
 }
 
 SkeletonAnimation *Skeleton::getAnimation(const String& name) const {
@@ -105,10 +116,25 @@ SkeletonAnimation *Skeleton::getAnimation(const String& name) const {
 }
 
 void Skeleton::Update() {
-
-	if(currentAnimation != NULL) {
-		currentAnimation->Update();
-	}
+    
+    for(int i=0; i < bones.size(); i++) {
+        bones[i]->setRotationByQuaternion(bones[i]->baseRotation);
+        bones[i]->setPosition(bones[i]->basePosition);
+        bones[i]->setScale(bones[i]->baseScale);
+    }
+    
+    if(baseAnimation) {
+        baseAnimation->Update();
+    }
+    
+    for(int i=0; i < playingAnimations.size(); i++) {
+        playingAnimations[i]->Update();
+    }
+    
+    for(int i=0; i < bones.size(); i++) {
+        bones[i]->rebuildTransformMatrix();
+        bones[i]->setBoneMatrix(bones[i]->getTransformMatrix());
+    }
 }
 
 void Skeleton::loadSkeleton(const String& fileName) {
@@ -152,6 +178,13 @@ void Skeleton::loadSkeleton(const String& fileName) {
 		
 		bones.push_back(newBone);
 		
+		Quaternion bq;
+		bq.set(rq[0], rq[1], rq[2], rq[3]);
+        
+        newBone->baseRotation = bq;
+        newBone->baseScale = Vector3(s[0], s[1], s[2]);
+        newBone->basePosition = Vector3(t[0], t[1], t[2]);
+        
 		newBone->setPosition(t[0], t[1], t[2]);
 		newBone->setRotationQuat(rq[0], rq[1], rq[2], rq[3]);
 		newBone->setScale(s[0], s[1], s[2]);
@@ -174,29 +207,46 @@ void Skeleton::loadSkeleton(const String& fileName) {
 	}
 
 	Bone *parentBone;
-//	Entity *bProxy;
 	
 	for(int i=0; i < bones.size(); i++) {
 		if(bones[i]->parentBoneId != -1) {
 			parentBone = bones[bones[i]->parentBoneId];
 			parentBone->addChildBone(bones[i]);
 			bones[i]->setParentBone(parentBone);
-			parentBone->addChild(bones[i]);			
-//			addEntity(bones[i]);										
-			
-			SceneLine *connector = new SceneLine(bones[i], parentBone);
-			connector->depthTest = false;
-			bonesEntity->addChild(connector);				
-			connector->setColor(((Number)(rand() % RAND_MAX)/(Number)RAND_MAX),((Number)(rand() % RAND_MAX)/(Number)RAND_MAX),((Number)(rand() % RAND_MAX)/(Number)RAND_MAX),1.0f);
+			parentBone->addChild(bones[i]);
 		} else {
-//			bProxy = new Entity();
-//			addEntity(bProxy);			
-//			bProxy->addEntity(bones[i]);
 			bonesEntity->addChild(bones[i]);
 		}
-	//	bones[i]->visible = false;			
 	}
 	OSBasics::close(inFile);
+}
+
+SkeletonAnimation *Skeleton::getBaseAnimation() {
+    return baseAnimation;
+}
+
+void Skeleton::stopAllAnimations() {
+    for(int i=0; i < playingAnimations.size(); i++) {
+        playingAnimations[i]->Stop();
+    }
+    playingAnimations.clear();
+}
+
+void Skeleton::stopAnimationByName(const String &name) {
+	SkeletonAnimation *anim = getAnimation(name);
+	if(anim) {
+        stopAnimation(anim);
+    }
+}
+
+void Skeleton::stopAnimation(SkeletonAnimation *animation) {
+    for(int i=0; i < playingAnimations.size(); i++) {
+        if(playingAnimations[i] == animation) {
+            playingAnimations[i]->Stop();            
+            playingAnimations.erase(playingAnimations.begin()+i);
+            return;
+        }
+    }
 }
 
 void Skeleton::addAnimation(const String& name, const String& fileName) {
@@ -208,25 +258,35 @@ void Skeleton::addAnimation(const String& name, const String& fileName) {
 		unsigned int activeBones,boneIndex,numPoints,numCurves, curveType;	
 		float length;
 		OSBasics::read(&length, 1, sizeof(float), inFile);
+    
 		SkeletonAnimation *newAnimation = new SkeletonAnimation(name, length);
-		
+    
+        printf("LOADING %s\n", name.c_str());
+    
 		OSBasics::read(&activeBones, sizeof(unsigned int), 1, inFile);
 		
 		//	Logger::log("activeBones: %d\n", activeBones);		
 		for(int j=0; j < activeBones; j++) {
 			OSBasics::read(&boneIndex, sizeof(unsigned int), 1, inFile);
+            if(boneIndex > bones.size()-1) {
+                printf("WARNING: INCORRECT BONE INDEX!\n");
+                continue;
+            }
 			BoneTrack *newTrack = new BoneTrack(bones[boneIndex], length);
 			
+            printf("TRACK FOR BONE %s\n", bones[boneIndex]->getName().c_str());
+            
 			BezierCurve *curve;
 			float vec1[2]; //,vec2[2],vec3[2];
 			
 			OSBasics::read(&numCurves, sizeof(unsigned int), 1, inFile);
-			//			Logger::log("numCurves: %d\n", numCurves);					
+			//			Logger::log("numCurves: %d\n", numCurves);
+            printf("numCurves: %d\n", numCurves);
 			for(int l=0; l < numCurves; l++) {
 				curve = new BezierCurve();
 				OSBasics::read(&curveType, sizeof(unsigned int), 1, inFile);
 				OSBasics::read(&numPoints, sizeof(unsigned int), 1, inFile);
-				for(int k=0; k < numPoints; k++) {					
+				for(int k=0; k < numPoints; k++) {
 					OSBasics::read(vec1, sizeof(float), 2, inFile);					
 					curve->addControlPoint2d(vec1[1], vec1[0]);
 					//					curve->addControlPoint(vec1[1]-10, vec1[0], 0, vec1[1], vec1[0], 0, vec1[1]+10, vec1[0], 0);
@@ -264,7 +324,7 @@ void Skeleton::addAnimation(const String& name, const String& fileName) {
 						break;
 				}
 			}
-			
+			newTrack->initTweens();
 			newAnimation->addBoneTrack(newTrack);
 		}
 		animations.push_back(newAnimation);
@@ -278,6 +338,7 @@ void Skeleton::bonesVisible(bool val) {
 }
 
 BoneTrack::BoneTrack(Bone *bone, Number length) {
+    weight = 0.0;
 	this->length = length;
 	targetBone = bone;
 	scaleX = NULL;
@@ -290,7 +351,6 @@ BoneTrack::BoneTrack(Bone *bone, Number length) {
 	LocX = NULL;			
 	LocY = NULL;
 	LocZ = NULL;
-	initialized = false;
 }
 
 BoneTrack::~BoneTrack() {
@@ -306,99 +366,85 @@ BoneTrack::~BoneTrack() {
 	delete LocZ;
 }
 
+void BoneTrack::Reset() {
+    for(int i=0; i < pathTweens.size(); i++) {
+        if(pathTweens[i]->isComplete()) {
+            CoreServices::getInstance()->getTweenManager()->addTween(pathTweens[i]);
+        }
+        pathTweens[i]->Reset();
+    }
+    if(quatTween->isComplete()) {
+        CoreServices::getInstance()->getTweenManager()->addTween(quatTween);
+    }
+    quatTween->Reset();
+}
 
 void BoneTrack::Stop() {
-	if(initialized) {
-		for(int i=0; i < pathTweens.size(); i++) {
-			pathTweens[i]->Pause(true);
-		}	
-		quatTween->Pause(true);		
+    for(int i=0; i < pathTweens.size(); i++) {
+        pathTweens[i]->Pause(true);
+    }
+    quatTween->Pause(true);
+}
+
+void BoneTrack::initTweens() {
+    
+    BezierPathTween *tween;
+	if(LocX) {
+		tween = new BezierPathTween(&LocXVec, LocX, Tween::EASE_NONE, length, true);
+		pathTweens.push_back(tween);
 	}
+	if(LocY) {
+		tween = new BezierPathTween(&LocYVec, LocY, Tween::EASE_NONE, length, true);
+		pathTweens.push_back(tween);
+	}
+    
+	if(LocZ) {
+		tween = new BezierPathTween(&LocZVec, LocZ, Tween::EASE_NONE, length, true);
+		pathTweens.push_back(tween);
+	}
+	tween = new BezierPathTween(&ScaleXVec, scaleX, Tween::EASE_NONE, length, true);
+	pathTweens.push_back(tween);
+	tween = new BezierPathTween(&ScaleYVec, scaleY, Tween::EASE_NONE, length, true);
+	pathTweens.push_back(tween);
+	tween = new BezierPathTween(&ScaleZVec, scaleZ, Tween::EASE_NONE, length, true);
+	pathTweens.push_back(tween);
+    
+	if(QuatW) {
+        quatTween = new QuaternionTween(&boneQuat, QuatW, QuatX, QuatY, QuatZ, Tween::EASE_NONE, length, true);
+    }
 }
 
 void BoneTrack::Play(bool once) {
-
-	if(!initialized ) {
-	// TODO: change it so that you can set the tweens to not manually restart so you can calculate the
-	// time per tween
-	
-		Number durTime = length; //(LocX->getControlPoint(LocX->getNumControlPoints()-1)->p2.x);//25.0f;
-					
-	BezierPathTween *testTween;		
-	if(LocX) {
-		testTween = new BezierPathTween(&LocXVec, LocX, Tween::EASE_NONE, durTime, !once);
-		pathTweens.push_back(testTween);
-	}
-	if(LocY) {		
-		testTween = new BezierPathTween(&LocYVec, LocY, Tween::EASE_NONE, durTime, !once);
-		pathTweens.push_back(testTween);
-	}
-		
-	if(LocZ) {
-		testTween = new BezierPathTween(&LocZVec, LocZ, Tween::EASE_NONE, durTime, !once);
-		pathTweens.push_back(testTween);
-	}
-	testTween = new BezierPathTween(&ScaleXVec, scaleX, Tween::EASE_NONE, durTime, !once);
-	pathTweens.push_back(testTween);
-	testTween = new BezierPathTween(&ScaleYVec, scaleY, Tween::EASE_NONE, durTime, !once);
-	pathTweens.push_back(testTween);
-	testTween = new BezierPathTween(&ScaleZVec, scaleZ, Tween::EASE_NONE, durTime, !once);
-	pathTweens.push_back(testTween);
-		
-		
-	if(QuatW)
-		quatTween = new QuaternionTween(&boneQuat, QuatW, QuatX, QuatY, QuatZ, Tween::EASE_NONE, durTime, !once);
-
-	initialized = true;
-	} else {
-		for(int i=0; i < pathTweens.size(); i++) {
-			pathTweens[i]->Reset();
+    for(int i=0; i < pathTweens.size(); i++) {
+            pathTweens[i]->Reset();
 			pathTweens[i]->Pause(false);
-		}	
-		quatTween->Reset();
-		quatTween->Pause(false);
-	}
+            pathTweens[i]->repeat = !once;
+    }
+    if(quatTween) {
+        quatTween->Reset();
+        quatTween->Pause(false);
+        quatTween->repeat = !once;
+    }
 }
 
 
 void BoneTrack::Update() {
-
 	if(!targetBone)
 		return;
+    
+    if(quatTween->isComplete()) {
+        return;
+    }
+    
+    Quaternion rotationQuat = targetBone->getRotationQuat();
+    rotationQuat = Quaternion::Slerp(weight, rotationQuat, boneQuat, true);
+    targetBone->setRotationByQuaternion(rotationQuat);
 
-	Matrix4 newMatrix;
-	newMatrix = boneQuat.createMatrix();
+    Vector3 trackPosition = Vector3(LocXVec.y, LocYVec.y, LocZVec.y);
+    targetBone->setPosition((trackPosition * weight) + (targetBone->getPosition() * (1.0 - weight)));
 
-	
-	Matrix4 scaleMatrix;
-	scaleMatrix.m[0][0] *= ScaleXVec.y;
-	scaleMatrix.m[1][1] *= ScaleYVec.y;
-	scaleMatrix.m[2][2] *= ScaleZVec.y;
-	
-
-	Matrix4 posMatrix;
-
-	if(LocX)
-		posMatrix.m[3][0] = LocXVec.y;		
-	else
-		posMatrix.m[3][0] = targetBone->getBaseMatrix()[3][0];
-
-	if(LocY)
-		posMatrix.m[3][1] = LocYVec.y;		
-	else
-		posMatrix.m[3][1] = targetBone->getBaseMatrix()[3][1];
-	
-	if(LocZ)
-		posMatrix.m[3][2] = LocZVec.y;		
-	else
-		posMatrix.m[3][2] = targetBone->getBaseMatrix()[3][2];
-	
-	
-	newMatrix = scaleMatrix*newMatrix*posMatrix;	
-	
-	targetBone->setBoneMatrix(newMatrix);
-	targetBone->setTransformByMatrixPure(newMatrix);		
-
+    Vector3 trackScale = Vector3(ScaleXVec.y, ScaleYVec.y, ScaleZVec.y);
+    Vector3 newScale = ((trackScale - Vector3(1.0, 1.0, 1.0)) * weight) + Vector3(1.0, 1.0, 1.0);
 }
 
 void BoneTrack::setSpeed(Number speed) {
@@ -412,7 +458,22 @@ void BoneTrack::setSpeed(Number speed) {
 SkeletonAnimation::SkeletonAnimation(const String& name, Number duration) {
 	this->name = name;
 	this->duration = duration;
+    this->weight = 1.0;
+    this->playing = false;
 }
+
+bool SkeletonAnimation::isPlaying() const {
+    return playing;
+}
+
+void SkeletonAnimation::setWeight(Number newWeight) {
+    weight = newWeight;
+}
+
+Number SkeletonAnimation::getWeight() const {
+    return weight;
+}
+
 
 void SkeletonAnimation::setSpeed(Number speed) {
 	for(int i=0; i < boneTracks.size(); i++) {
@@ -422,24 +483,35 @@ void SkeletonAnimation::setSpeed(Number speed) {
 
 void SkeletonAnimation::Update() {
 	for(int i=0; i < boneTracks.size(); i++) {
+        boneTracks[i]->weight = weight;
 		boneTracks[i]->Update();
 	}
 }
 
+void SkeletonAnimation::Reset() {
+	for(int i=0; i < boneTracks.size(); i++) {
+		boneTracks[i]->Reset();
+	}
+}
+
 void SkeletonAnimation::Stop() {
+    playing = false;
 	for(int i=0; i < boneTracks.size(); i++) {
 		boneTracks[i]->Stop();
 	}
 }
 
 void SkeletonAnimation::Play(bool once) {
+    playing = true;
 	for(int i=0; i < boneTracks.size(); i++) {
 		boneTracks[i]->Play(once);
 	}
 }
 
 SkeletonAnimation::~SkeletonAnimation() {
-
+    for(int i=0; i < boneTracks.size(); i++) {
+        delete boneTracks[i];
+    }
 }
 
 const String& SkeletonAnimation::getName() const {

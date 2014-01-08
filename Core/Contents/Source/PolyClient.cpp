@@ -63,7 +63,7 @@ void Client::handlePacket(Packet *packet, PeerConnection *connection) {
 			case PACKET_TYPE_SETCLIENT_ID: {
 				clientID = (unsigned short)*packet->data;
 				ClientEvent *newEvent = new ClientEvent();
-				sendReliableData(serverAddress, (char*)&clientID, sizeof(unsigned short), PACKET_TYPE_CLIENT_READY);				
+				sendReliableData(serverAddress, (char*)&clientID, sizeof(unsigned short), PACKET_TYPE_CLIENT_READY);
 				dispatchEvent(newEvent, ClientEvent::EVENT_CLIENT_READY);				
 			} break;
 			case PACKET_TYPE_DISONNECT:

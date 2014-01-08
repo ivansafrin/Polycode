@@ -103,7 +103,7 @@ namespace Polycode {
 		
 			bool _optionsChanged;
 			GlyphData labelData;
-	
+	        
 			std::vector<ColorRange> colorRanges;
 		
 			int baseLineOffset;

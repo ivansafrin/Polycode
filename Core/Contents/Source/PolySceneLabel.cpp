@@ -61,7 +61,7 @@ void SceneLabel::setLabelActualHeight(Number actualHeight) {
     this->actualHeight = actualHeight;
     
     if(actualHeight > 0.0) {
-        labelScale = actualHeight/((Number)label->getSize());
+        labelScale = actualHeight/((Number)label->getSize()) * CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX();
     } else {
         labelScale = 1.0;
     }

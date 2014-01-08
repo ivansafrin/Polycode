@@ -48,7 +48,6 @@ namespace Polycode {
 			* @return Name of the bone.
 			*/
 			const String& getName() const;
-			void Render();
 
 			/**
 			* Sets the parent bone of this bone.
@@ -149,11 +148,11 @@ namespace Polycode {
 			Matrix4 restMatrix;
 			Matrix4 baseMatrix;
 		
-		
-		
+            Quaternion baseRotation;
+            Vector3 baseScale;
+            Vector3 basePosition;
+        
 		protected:
-			Mesh *boneMesh;
-		
 			Bone* parentBone;
 			std::vector<Bone*> childBones;
 			String boneName;

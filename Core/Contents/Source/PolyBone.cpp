@@ -31,17 +31,9 @@ using namespace Polycode;
 
 Bone::Bone(const String& boneName) : Entity() {
 	this->boneName = boneName;
-//	boneMesh = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 0.1, 0.1, 0.1);
-	this->depthTest = false;
 	parentBone = NULL;
 	boneMatrix.identity();
-//	addChild(boneMesh);
-	
-	boneMesh = new Mesh(Mesh::QUAD_MESH);
-	boneMesh->createBox(0.2,0.2,0.2);
-	
 }
-
 
 Bone::~Bone() {
 
@@ -133,15 +125,4 @@ void Bone::setRestMatrix(const Matrix4& matrix) {
 
 const String& Bone::getName() const {
 	return boneName;
-}
-
-void Bone::Render() {
-
-	CoreServices::getInstance()->getRenderer()->setTexture(NULL);	
-//	renderer->pushDataArrayForMesh(boneMesh, RenderDataArray::COLOR_DATA_ARRAY);
-	renderer->pushDataArrayForMesh(boneMesh, RenderDataArray::VERTEX_DATA_ARRAY);
-	renderer->pushDataArrayForMesh(boneMesh, RenderDataArray::TEXCOORD_DATA_ARRAY);	
-	renderer->pushDataArrayForMesh(boneMesh, RenderDataArray::NORMAL_DATA_ARRAY);		
-	renderer->drawArrays(boneMesh->getMeshType());	
-
 }

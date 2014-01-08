@@ -40,10 +40,14 @@ namespace Polycode {
 	class _PolyExport BoneTrack : public PolyBase {
 		public:
 			BoneTrack(Bone *bone, Number length);
+        
+            void initTweens();
 			~BoneTrack();
+        
 			void Play(bool once=false);
 			void Stop();
 			void Update();
+            void Reset();
 		
 			void setSpeed(Number speed);
 			
@@ -75,13 +79,11 @@ namespace Polycode {
 			Vector3 QuatYVec;			
 			Vector3 QuatZVec;		
 		
+            Number weight;
 			
 		protected:
 		
 			Number length;
-		
-			bool initialized;
-		
 			Bone *targetBone;
 			std::vector <BezierPathTween*> pathTweens;
 		
@@ -115,6 +117,9 @@ namespace Polycode {
 			* Stops the animation.
 			*/			
 			void Stop();
+        
+            void Reset();
+        
 			void Update();
 
 			/**
@@ -123,8 +128,15 @@ namespace Polycode {
 			*/					
 			void setSpeed(Number speed);
 			
+            void setWeight(Number newWeight);
+            Number getWeight() const;
+        
+            bool isPlaying() const;
+        
 		protected:
 			
+            Number weight;
+            bool playing;
 			String name;
 			Number duration;
 			std::vector<BoneTrack*> boneTracks;
@@ -165,10 +177,18 @@ namespace Polycode {
 			* @param animName Name of animation to play.
 			* @param once If true, will only play the animation once.
 			*/
-			void playAnimation(const String& animName, bool once = false);
-						
-			void playAnimationByIndex(int index, bool once = false);		
+			void playAnimationByName(const String& animName, Number weight = 1.0, bool once = false, bool restartIfPlaying = false);
 			
+
+            void playAnimation(SkeletonAnimation *animation, Number weight = 1.0, bool once = false, bool restartIfPlaying = false);
+        
+            void setBaseAnimationByName(const String &animName);
+            void setBaseAnimation(SkeletonAnimation *animation);
+        
+            void stopAllAnimations();
+        
+            SkeletonAnimation *getBaseAnimation();
+        
 			/**
 			* Loads in a new animation from a file and adds it to the skeleton.
 			* @param name Name of the new animation.
@@ -181,6 +201,11 @@ namespace Polycode {
 			* @param Name of animation to return.
 			*/
 			SkeletonAnimation *getAnimation(const String& name) const;
+
+        
+            void stopAnimationByName(const String &name);
+            void stopAnimation(SkeletonAnimation *animation);
+        
 			void Update();
 			
 			/**
@@ -206,16 +231,13 @@ namespace Polycode {
 			*/
 			Bone *getBone(int index) const;
 		
-			/**
-			* Returns the current animation.
-			*/
-			SkeletonAnimation *getCurrentAnimation() const { return currentAnimation; }
 		
 		protected:
 		
 			Entity *bonesEntity;
 		
-			SkeletonAnimation *currentAnimation;
+            SkeletonAnimation *baseAnimation;
+            std::vector<SkeletonAnimation*> playingAnimations;
 			std::vector<Bone*> bones;
 			std::vector<SkeletonAnimation*> animations;
 	};

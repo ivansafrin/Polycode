@@ -202,6 +202,7 @@ class ISkeleton {
 			fwrite(&anim->length, sizeof(float), 1, file);
 	
 			fwrite(&anim->numTracks, sizeof(unsigned int), 1, file);
+            
 			for(int j=0; j < anim->numTracks; j++) {
 				ITrack *track = anim->tracks[j];
 				fwrite(&track->boneID, sizeof(unsigned int), 1, file);

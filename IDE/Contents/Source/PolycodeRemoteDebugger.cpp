@@ -101,11 +101,11 @@ void PolycodeRemoteDebugger::handleEvent(Event *event) {
 			case ServerEvent::EVENT_CLIENT_DISCONNECTED:		
 			{
 				for(int i=0;i<debuggerClients.size();i++) {
-					if(debuggerClients[i]->client == serverEvent->client) {		
+					if(debuggerClients[i]->client == serverEvent->client) {
 						DebuggerClient *client = debuggerClients[i];
 						debuggerClients.erase(debuggerClients.begin()+i);	
 						delete client;
-						PolycodeConsole::print("Remote debugger client disconnected...\n");						
+						PolycodeConsole::print("Remote debugger client disconnected...\n");
 					}
 				}
 			}	
@@ -115,7 +115,8 @@ void PolycodeRemoteDebugger::handleEvent(Event *event) {
 			{
 				DebuggerClient *newClient = new DebuggerClient();
 				newClient->client = serverEvent->client;
-				PolycodeConsole::print("Remote debugger client connected...\n");printf("CLIENT CONNECTED\n");		
+				PolycodeConsole::print("Remote debugger client connected...\n");
+                printf("CLIENT CONNECTED\n");
 				debuggerClients.push_back(newClient);				
 			}
 				break;

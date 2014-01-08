@@ -555,6 +555,10 @@ void Mesh::createSphere(Number radius, int segmentsH, int segmentsW) {
     arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;		
 }
 
+unsigned int Mesh::getActualVertexCount() const {
+    return vertices.size();    
+}
+
 unsigned int Mesh::getVertexCount() {
     if(indexedMesh) {
         return indices.size();

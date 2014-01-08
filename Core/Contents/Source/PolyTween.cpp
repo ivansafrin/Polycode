@@ -99,6 +99,7 @@ void Tween::updateTween(Number elapsed) {
 void Tween::Reset() {
 	tweenTime = 0;
 	complete = false;
+    *targetVal = startVal;
 }
 
 Number Tween::interpolateTween() {

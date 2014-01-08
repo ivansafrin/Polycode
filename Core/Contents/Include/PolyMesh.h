@@ -252,6 +252,9 @@ namespace Polycode {
             Vertex *getVertex(unsigned int index) const;
 
             Vertex *getActualVertex(unsigned int index) const;
+
+            unsigned int getActualVertexCount() const;
+        
         
 			/**
 			* Sets the vertex buffer for the mesh.

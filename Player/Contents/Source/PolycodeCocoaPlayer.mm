@@ -31,5 +31,5 @@ CocoaPolycodePlayer::~CocoaPolycodePlayer() {
 }
 
 void CocoaPolycodePlayer::createCore() {
-	core =  new CocoaCore(view, xRes, yRes,  fullScreen, false, 0, aaLevel, frameRate);	
+	core =  new CocoaCore(view, xRes, yRes,  fullScreen, false, 0, aaLevel, frameRate, 0, true);
 }

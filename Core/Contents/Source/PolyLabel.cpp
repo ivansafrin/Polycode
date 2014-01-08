@@ -420,16 +420,18 @@ void Label::setText(const String& text) {
 	unsigned int textWidth = (bbox.xMax -  bbox.xMin)+1;
 	unsigned int textHeight = (bbox.yMax -  bbox.yMin)+1;
 
+	baseLineOffset = bbox.yMin;
+	xAdjustOffset = bbox.xMin;
+	baseLineAdjust = bbox.yMax;
+    
 	if(textWidth % 2 ){
 		textWidth++;
 	}
 	if(textHeight % 2 ){
 		textHeight++;
+        baseLineAdjust++;
 	}
 
-	baseLineOffset = bbox.yMin;
-	xAdjustOffset = bbox.xMin;
-	baseLineAdjust = bbox.yMax;
 	
 	createEmpty(textWidth,textHeight);	
 	renderGlyphs(&labelData);
