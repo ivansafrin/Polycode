@@ -143,6 +143,20 @@
 	<uiMenuSelectorBgL>0</uiMenuSelectorBgL>
 	<uiMenuSelectorPadding>3</uiMenuSelectorPadding>
 
+	<uiIconSelectorBg>UIThemes/default_retina/iconSelectorBg.png</uiIconSelectorBg>
+	<uiIconSelectorBgT>7</uiIconSelectorBgT>
+	<uiIconSelectorBgR>7</uiIconSelectorBgR>
+	<uiIconSelectorBgB>7</uiIconSelectorBgB>
+	<uiIconSelectorBgL>7</uiIconSelectorBgL>
+	<uiIconSelectorPaddingX>7</uiIconSelectorPaddingX>	
+	<uiIconSelectorPaddingY>0</uiIconSelectorPaddingY>
+	<uiIconSelectorBox>UIThemes/default_retina/iconSelectorSelection.png</uiIconSelectorBox>
+	<uiIconSelectorDefaultSize>24</uiIconSelectorDefaultSize>
+	<uiIconSelectorBoxT>0</uiIconSelectorBoxT>
+	<uiIconSelectorBoxR>0</uiIconSelectorBoxR>
+	<uiIconSelectorBoxB>0</uiIconSelectorBoxB>
+	<uiIconSelectorBoxL>0</uiIconSelectorBoxL>
+
 	<uiColorBoxFrameImage>UIThemes/default_retina/colorboxFrame.png</uiColorBoxFrameImage>
 	<uiColorBoxFrameImageT>10</uiColorBoxFrameImageT>
 	<uiColorBoxFrameImageR>10</uiColorBoxFrameImageR>

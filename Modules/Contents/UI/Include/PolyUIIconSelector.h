@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2012 by Ivan Safrin
+ Copyright (C) 2014 by Ivan Safrin
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -20,26 +20,42 @@
  THE SOFTWARE.
  */
 
-#include "PolyUIBox.h"
-#include "PolyUIElement.h"
-#include "PolyUIHSizer.h"
-#include "PolyUIVSizer.h"
-#include "PolyUIButton.h"
-#include "PolyUICheckBox.h"
-#include "PolyUIComboBox.h"
-#include "PolyUIColorBox.h"
+#pragma once
+
+#include "PolyGlobals.h"
+#include "PolyEntity.h"
 #include "PolyUIEvent.h"
-#include "PolyUIHScrollBar.h"
-#include "PolyUIHSlider.h"
+#include "PolyUIBox.h"
 #include "PolyUIImageButton.h"
-#include "PolyUIScrollContainer.h"
-#include "PolyUITextInput.h"
-#include "PolyUITree.h"
-#include "PolyUITreeContainer.h"
-#include "PolyUITreeEvent.h"
-#include "PolyUIVScrollBar.h"
-#include "PolyUIWindow.h"
-#include "PolyUIMenu.h"
-#include "PolyUIFileDialog.h"
-#include "PolyUIMenuBar.h"
-#include "PolyUIIconSelector.h"
+#include "PolyUIElement.h"
+#include "PolyInputEvent.h"
+
+using namespace Polycode;
+
+
+class UIIconSelector : public UIElement {
+    public:
+        UIIconSelector(Number height = 0.0);
+        ~UIIconSelector();
+    
+        void handleEvent(Event *event);
+        void addIcon(String fileName);
+    
+        void selectIndex(unsigned int index);
+        unsigned int getSelectedIndex();
+    
+        void resetSize();
+    
+    protected:
+    
+        std::vector<UIImageButton*> icons;
+    
+        UIBox *bgRect;
+        UIBox *selectorRect;
+        int selectedIndex;
+    
+        Number selectorSize;
+        Number paddingX;
+        Number paddingY;
+};
+

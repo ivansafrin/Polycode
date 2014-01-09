@@ -149,16 +149,9 @@ class TransformGizmoMenu : public UIElement {
 		
 	private:
 	
-		UIImageButton *moveModeButton;
-		UIImageButton *scaleModeButton;
-		UIImageButton *rotateModeButton;
-        UIImage *transformModeSelector;
-    
+        UIIconSelector *transformSelector;
         UIComboBox *orientationCombo;
-    
-		UIImageButton *centerModeMedianButton;
-		UIImageButton *centerModeCentersButton;
-        UIImage *centerModeSelector;
+        UIIconSelector *centerSelector;
     
 		TransformGizmo *gizmo;
 };

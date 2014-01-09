@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2012 by Ivan Safrin
+ Copyright (C) 2014 by Ivan Safrin
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -20,26 +20,37 @@
  THE SOFTWARE.
  */
 
-#include "PolyUIBox.h"
-#include "PolyUIElement.h"
-#include "PolyUIHSizer.h"
-#include "PolyUIVSizer.h"
-#include "PolyUIButton.h"
-#include "PolyUICheckBox.h"
-#include "PolyUIComboBox.h"
-#include "PolyUIColorBox.h"
-#include "PolyUIEvent.h"
-#include "PolyUIHScrollBar.h"
-#include "PolyUIHSlider.h"
-#include "PolyUIImageButton.h"
-#include "PolyUIScrollContainer.h"
-#include "PolyUITextInput.h"
-#include "PolyUITree.h"
-#include "PolyUITreeContainer.h"
-#include "PolyUITreeEvent.h"
-#include "PolyUIVScrollBar.h"
-#include "PolyUIWindow.h"
-#include "PolyUIMenu.h"
-#include "PolyUIFileDialog.h"
-#include "PolyUIMenuBar.h"
-#include "PolyUIIconSelector.h"
+#pragma once
+
+#include "Polycode.h"
+#include "PolycodeUI.h"
+#include "PolycodeProps.h"
+#include "OSBasics.h"
+
+using namespace Polycode;
+
+
+class EntityEditorTreeView : public UIElement {
+    public:
+        EntityEditorTreeView();
+        ~EntityEditorTreeView();
+    
+        void refreshTree();
+        void syncNodeToEntity(UITree *node, Entity *entity);
+    
+        void handleEvent(Event *event);
+        void setSelectedEntity(Entity *entity);
+        Entity *getSelectedEntity();
+    
+        void Resize(Number width, Number height);
+        void setRootEntity(Entity *entity);
+    
+    private:
+    
+        Entity *selectedEntity;
+        bool dontSendSelectionEvent;
+    
+        UITreeContainer *treeContainer;
+        UIRect *headerBg;
+        Entity *rootEntity;
+};

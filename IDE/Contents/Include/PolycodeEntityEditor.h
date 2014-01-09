@@ -27,6 +27,7 @@
 #include <Polycode.h>
 #include "PolycodeUI.h"
 #include "EntityEditorPropertyView.h"
+#include "EntityEditorTreeView.h"
 
 #include "TrackballCamera.h"
 
@@ -147,6 +148,20 @@ class EntityEditorMainView : public UIElement {
     
 };
 
+class EntityEditorPropertyContainer : public UIElement {
+    public:
+        EntityEditorPropertyContainer();
+        ~EntityEditorPropertyContainer();
+        void Resize(Number width, Number height);
+    
+        void handleEvent(Event *event);
+    
+        UIElement *currentView;
+        EntityEditorPropertyView *propertyView;
+        EntityEditorTreeView *treeView;
+        UIIconSelector *propIconSelector;
+};
+
 class PolycodeEntityEditor : public PolycodeEditor {
 	public:
 		PolycodeEntityEditor();
@@ -167,8 +182,11 @@ class PolycodeEntityEditor : public PolycodeEditor {
     
 	protected:
 	
+        EntityEditorPropertyContainer *propertyContainer;
+    
 		EntityEditorMainView *mainView;
         EntityEditorPropertyView *propertyView;
+        EntityEditorTreeView *treeView;
     
 		UIHSizer *mainSizer;
         UIVSizer *rightSizer;

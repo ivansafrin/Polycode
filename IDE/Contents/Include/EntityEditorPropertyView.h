@@ -29,6 +29,7 @@
 
 using namespace Polycode;
 
+
 class EntityEditorPropertyView : public UIElement {
     public:
     

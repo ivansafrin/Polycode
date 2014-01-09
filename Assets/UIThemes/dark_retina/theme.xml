@@ -137,6 +137,20 @@
 	<uiMenuBgB>11</uiMenuBgB>
 	<uiMenuBgL>7</uiMenuBgL>			
 	<uiMenuSelectorBgImage>UIThemes/dark_retina/menuSelector.png</uiMenuSelectorBgImage>	
+	<uiIconSelectorBg>UIThemes/dark_retina/iconSelectorBg.png</uiIconSelectorBg>
+	<uiIconSelectorBgT>7</uiIconSelectorBgT>
+	<uiIconSelectorBgR>7</uiIconSelectorBgR>
+	<uiIconSelectorBgB>7</uiIconSelectorBgB>
+	<uiIconSelectorBgL>7</uiIconSelectorBgL>
+	<uiIconSelectorPaddingX>7</uiIconSelectorPaddingX>	
+	<uiIconSelectorPaddingY>0</uiIconSelectorPaddingY>
+	<uiIconSelectorBox>UIThemes/dark_retina/iconSelectorSelection.png</uiIconSelectorBox>
+	<uiIconSelectorDefaultSize>24</uiIconSelectorDefaultSize>
+	<uiIconSelectorBoxT>0</uiIconSelectorBoxT>
+	<uiIconSelectorBoxR>0</uiIconSelectorBoxR>
+	<uiIconSelectorBoxB>0</uiIconSelectorBoxB>
+	<uiIconSelectorBoxL>0</uiIconSelectorBoxL>	
+
 	<uiMenuSelectorBgT>0</uiMenuSelectorBgT>
 	<uiMenuSelectorBgR>0</uiMenuSelectorBgR>
 	<uiMenuSelectorBgB>0</uiMenuSelectorBgB>

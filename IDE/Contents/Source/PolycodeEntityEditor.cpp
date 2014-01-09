@@ -754,6 +754,58 @@ void EntityEditorMainView::Resize(Number width, Number height) {
     Update();
 }
 
+EntityEditorPropertyContainer::EntityEditorPropertyContainer() : UIElement() {
+    
+    propIconSelector = new UIIconSelector();
+    addChild(propIconSelector);
+    propIconSelector->addIcon("entityEditor/properties_icon.png");
+    propIconSelector->addIcon("entityEditor/icon_tree.png");
+    propIconSelector->addIcon("entityEditor/settings_icon.png");
+    propIconSelector->setPosition(10.0, 3.0);
+    propIconSelector->addEventListener(this, UIEvent::SELECT_EVENT);
+    
+    propertyView = new EntityEditorPropertyView();
+    addChild(propertyView);
+    propertyView->setPosition(0.0, 30.0);
+    currentView = propertyView;
+    
+    treeView = new EntityEditorTreeView();
+    addChild(treeView);
+    treeView->setPosition(0.0, 30.0);
+    treeView->visible = false;
+}
+
+void EntityEditorPropertyContainer::handleEvent(Event *event) {
+    if(event->getDispatcher() == propIconSelector) {
+        currentView->visible = false;
+        currentView->enabled = false;
+        switch(propIconSelector->getSelectedIndex()) {
+            case 0:
+                currentView = propertyView;
+            break;
+            case 1:
+                currentView = treeView;
+                treeView->refreshTree();
+            break;
+            case 2:
+                currentView = treeView;
+            break;
+        }
+        currentView->visible = true;
+        currentView->enabled = true;
+    }
+}
+
+EntityEditorPropertyContainer::~EntityEditorPropertyContainer() {
+    
+}
+
+void EntityEditorPropertyContainer::Resize(Number width, Number height) {
+    propertyView->Resize(width, height-30);
+    treeView->Resize(width, height-30);
+}
+
+
 PolycodeEntityEditor::PolycodeEntityEditor() : PolycodeEditor(true){
 	mainSizer = new UIHSizer(300, 300, 300, false);
 	addChild(mainSizer);
@@ -764,23 +816,30 @@ PolycodeEntityEditor::PolycodeEntityEditor() : PolycodeEditor(true){
     
     mainSizer->setMinimumSize(200);
     
-//    rightSizer = new UIVSizer(10, 10, 150, true);
-  //  mainSizer->addRightChild(rightSizer);
+    propertyContainer = new EntityEditorPropertyContainer();
+    propertyView = propertyContainer->propertyView;
+    treeView = propertyContainer->treeView;
     
-    propertyView = new EntityEditorPropertyView();
-//    rightSizer->addBottomChild(propertyView);
-    mainSizer->addRightChild(propertyView);
+    treeView->addEventListener(this, Event::CHANGE_EVENT);
+    
+    mainSizer->addRightChild(propertyContainer);
 }
 
 void PolycodeEntityEditor::handleEvent(Event *event) {
+    
+    if(event->getDispatcher() == treeView) {
+        mainView->selectEntity(treeView->getSelectedEntity());
+    }
     
     if(event->getDispatcher() == mainView) {
         switch(event->getEventCode()) {
             case Event::CHANGE_EVENT:
                 propertyView->setEntity(mainView->getSelectedEntity());
+                treeView->setSelectedEntity(mainView->getSelectedEntity());
             break;
         }
     }
+    
     
     PolycodeEditor::handleEvent(event);
 }
@@ -794,6 +853,8 @@ bool PolycodeEntityEditor::openFile(OSFileEntry filePath) {
     SceneEntityInstance *loadedInstance = new SceneEntityInstance(mainView->getMainScene(), filePath.fullPath);
     mainView->setObjectRoot(loadedInstance);
     mainView->setEditorPropsRecursive(loadedInstance);
+    
+    treeView->setRootEntity(loadedInstance);
     
 	return true;
 }

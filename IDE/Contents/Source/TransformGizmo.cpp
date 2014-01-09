@@ -28,25 +28,14 @@ TransformGizmoMenu::TransformGizmoMenu(TransformGizmo *gizmo) : UIElement() {
 	processInputEvents = true;
     
 	this->gizmo = gizmo;
-		
-	moveModeButton = new UIImageButton("entityEditor/move_gizmo.png", 1.0, 24, 24);
-	addChild(moveModeButton);
-	moveModeButton->setPosition(4, 2);
-	moveModeButton->addEventListener(this, UIEvent::CLICK_EVENT);
-	
-	scaleModeButton = new UIImageButton("entityEditor/scale_gizmo.png", 1.0, 24, 24);
-	addChild(scaleModeButton);
-	scaleModeButton->setPosition(30, 2);
-	scaleModeButton->addEventListener(this, UIEvent::CLICK_EVENT);
-	
-	rotateModeButton = new UIImageButton("entityEditor/rotate_gizmo.png", 1.0, 24, 24);
-	addChild(rotateModeButton);
-	rotateModeButton->setPosition(56, 2);
-	rotateModeButton->addEventListener(this, UIEvent::CLICK_EVENT);
     
-    transformModeSelector = new UIImage("entityEditor/button_selector.png", 24, 24);
-    addChild(transformModeSelector);
-    transformModeSelector->setPosition(moveModeButton->getPosition());
+    transformSelector = new UIIconSelector();
+    addChild(transformSelector);
+    transformSelector->addIcon("entityEditor/move_gizmo.png");
+    transformSelector->addIcon("entityEditor/scale_gizmo.png");
+    transformSelector->addIcon("entityEditor/rotate_gizmo.png");
+    transformSelector->setPosition(4, 3.0);
+    transformSelector->addEventListener(this, UIEvent::SELECT_EVENT);
     
     orientationCombo = new UIComboBox(globalMenu, 100);
     orientationCombo->addComboItem("Global");
@@ -54,43 +43,38 @@ TransformGizmoMenu::TransformGizmoMenu(TransformGizmo *gizmo) : UIElement() {
     orientationCombo->setSelectedIndex(0);
     addChild(orientationCombo);
     orientationCombo->setPosition(100, 2);
-    
-	centerModeMedianButton = new UIImageButton("entityEditor/median_center.png", 1.0, 24, 24);
-	addChild(centerModeMedianButton);
-	centerModeMedianButton->setPosition(210, 2);
-	centerModeMedianButton->addEventListener(this, UIEvent::CLICK_EVENT);
-
-    centerModeCentersButton = new UIImageButton("entityEditor/individual_centers.png", 1.0, 24, 24);
-	addChild(centerModeCentersButton);
-	centerModeCentersButton->setPosition(238, 2);
-	centerModeCentersButton->addEventListener(this, UIEvent::CLICK_EVENT);
-
-    centerModeSelector = new UIImage("entityEditor/button_selector.png", 24, 24);
-    addChild(centerModeSelector);
-    centerModeSelector->setPosition(centerModeMedianButton->getPosition());
-
-    
     orientationCombo->addEventListener(this, UIEvent::CHANGE_EVENT);
+    
+    centerSelector = new UIIconSelector();
+    addChild(centerSelector);
+    centerSelector->addIcon("entityEditor/median_center.png");
+    centerSelector->addIcon("entityEditor/individual_centers.png");
+    centerSelector->setPosition(210, 3.0);
+    centerSelector->addEventListener(this, UIEvent::SELECT_EVENT);
+    
 }
 
 void TransformGizmoMenu::handleEvent(Event *event) {
-	if(event->getDispatcher() == moveModeButton) {
-		gizmo->setTransformMode(TransformGizmo::TRANSFORM_MOVE);
-        transformModeSelector->setPosition(moveModeButton->getPosition());
-	} else if(event->getDispatcher() == scaleModeButton) {
-		gizmo->setTransformMode(TransformGizmo::TRANSFORM_SCALE);
-        transformModeSelector->setPosition(scaleModeButton->getPosition());
-	} else if(event->getDispatcher() == rotateModeButton) {
-		gizmo->setTransformMode(TransformGizmo::TRANSFORM_ROTATE);
-        transformModeSelector->setPosition(rotateModeButton->getPosition());
+	if(event->getDispatcher() == transformSelector) {
+        switch(transformSelector->getSelectedIndex()) {
+            case 0:
+                gizmo->setTransformMode(TransformGizmo::TRANSFORM_MOVE);
+            break;
+            case 1:
+                gizmo->setTransformMode(TransformGizmo::TRANSFORM_SCALE);
+            break;
+            case 2:
+                gizmo->setTransformMode(TransformGizmo::TRANSFORM_ROTATE);
+            break;
+        }
 	} else if(event->getDispatcher() == orientationCombo) {
         gizmo->setTransformOrientation(orientationCombo->getSelectedIndex());
-    } else if(event->getDispatcher() == centerModeMedianButton) {
-        centerModeSelector->setPosition(centerModeMedianButton->getPosition());
-        gizmo->setCenterMode(TransformGizmo::CENTER_MODE_MEDIAN);
-    } else if(event->getDispatcher() == centerModeCentersButton) {
-        centerModeSelector->setPosition(centerModeCentersButton->getPosition());
-        gizmo->setCenterMode(TransformGizmo::CENTER_MODE_INDIVIDUAL);
+    } else if(event->getDispatcher() == centerSelector) {
+        if(centerSelector->getSelectedIndex() == 0) {
+            gizmo->setCenterMode(TransformGizmo::CENTER_MODE_MEDIAN);
+        } else {
+            gizmo->setCenterMode(TransformGizmo::CENTER_MODE_INDIVIDUAL);
+        }
     }
 }
 
