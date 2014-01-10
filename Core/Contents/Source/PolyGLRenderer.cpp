@@ -85,6 +85,13 @@ PFNGLGENERATEMIPMAPEXTPROC glGenerateMipmapEXT;
 #endif
 using namespace Polycode;
 
+inline void polycodeGLGetNumberv( GLenum pname, GLdouble *params ) {
+	glGetDoublev(pname, params);
+}
+inline void polycodeGLGetNumberv( GLenum pname, GLfloat *params ) {
+	glGetFloatv(pname, params);
+}
+
 OpenGLRenderer::OpenGLRenderer() : Renderer() {
 
 	nearPlane = 0.1f;
@@ -230,7 +237,7 @@ void OpenGLRenderer::resetViewport() {
 	glViewport(0, 0, viewportWidth, viewportHeight);
 	glScissor(0, 0,  viewportWidth, viewportHeight);
 	glMatrixMode(GL_MODELVIEW);	
-	glGetDoublev( GL_PROJECTION_MATRIX, sceneProjectionMatrix);
+	polycodeGLGetNumberv(GL_PROJECTION_MATRIX, sceneProjectionMatrix);
 }
 
 Vector3 OpenGLRenderer::Unproject(Number x, Number y) {
@@ -239,10 +246,10 @@ Vector3 OpenGLRenderer::Unproject(Number x, Number y) {
 	GLdouble cx, cy, cz;
 	
 	GLdouble mv[16];
-	glGetDoublev( GL_MODELVIEW_MATRIX, mv );
+	polycodeGLGetNumberv( GL_MODELVIEW_MATRIX, mv );
 	
 	GLdouble proj[16];
-	glGetDoublev( GL_PROJECTION_MATRIX, proj );
+	polycodeGLGetNumberv( GL_PROJECTION_MATRIX, proj );
 	
 	GLint vp[4];
 	glGetIntegerv( GL_VIEWPORT, vp );
@@ -306,13 +313,29 @@ void OpenGLRenderer::enableDepthTest(bool val) {
 		glDisable(GL_DEPTH_TEST);	
 }
 
+inline void loadMatrixNumber(const GLfloat* m) {
+	glLoadMatrixf(m);
+}
+
+inline void loadMatrixNumber(const GLdouble* m) {
+	glLoadMatrixd(m);
+}
+
+inline void multMatrixNumber(const GLfloat* m) {
+	glMultMatrixf(m);
+}
+
+inline void multMatrixNumber(const GLdouble* m) {
+	glMultMatrixd(m);
+}
+
 void OpenGLRenderer::setModelviewMatrix(Matrix4 m) {
-	glLoadMatrixd(m.ml);
+	loadMatrixNumber(m.ml);
 }
 
 void OpenGLRenderer::multModelviewMatrix(Matrix4 m) {
 //	glMatrixMode(GL_MODELVIEW);
-	glMultMatrixd(m.ml);
+	multMatrixNumber(m.ml);
 }
 
 void OpenGLRenderer::enableLighting(bool enable) {
@@ -465,13 +488,13 @@ void OpenGLRenderer::setBlendingMode(int blendingMode) {
 
 Matrix4 OpenGLRenderer::getProjectionMatrix() {
 	Number m[16];
-	glGetDoublev( GL_PROJECTION_MATRIX, m);
+	polycodeGLGetNumberv( GL_PROJECTION_MATRIX, m);
 	return Matrix4(m);
 }
 
 Matrix4 OpenGLRenderer::getModelviewMatrix() {
 	Number m[16];
-    glGetDoublev( GL_MODELVIEW_MATRIX, m);
+	polycodeGLGetNumberv( GL_MODELVIEW_MATRIX, m);
 	return Matrix4(m);
 }
 
@@ -519,7 +542,7 @@ void OpenGLRenderer::_setOrthoMode(Number orthoSizeX, Number orthoSizeY) {
 		glOrtho(-orthoSizeX*0.5,orthoSizeX*0.5,-orthoSizeY*0.5,orthoSizeY*0.5,-farPlane,farPlane);
 		orthoMode = true;
 	}
-	glGetDoublev( GL_PROJECTION_MATRIX, sceneProjectionMatrixOrtho);
+	polycodeGLGetNumberv( GL_PROJECTION_MATRIX, sceneProjectionMatrixOrtho);
 		
 	glMatrixMode(GL_MODELVIEW);	
 	glLoadIdentity();	
@@ -569,7 +592,7 @@ void OpenGLRenderer::setPerspectiveMode() {
 	}
 	glLoadIdentity();
 	
-	glGetDoublev( GL_PROJECTION_MATRIX, sceneProjectionMatrix);
+	polycodeGLGetNumberv( GL_PROJECTION_MATRIX, sceneProjectionMatrix);
 	currentTexture = NULL;
 }
 

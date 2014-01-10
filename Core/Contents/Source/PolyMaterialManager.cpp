@@ -511,7 +511,7 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 										{
 											std::vector<String> values = pvalue.split(" ");
 											if(values.size() == 3) {
-												param->setVector3(Vector3(atof(values[0].c_str()), atof(values[1].c_str()), atof(values[2].c_str())));
+												param->setVector3(Vector3((Number)atof(values[0].c_str()), (Number)atof(values[1].c_str()), (Number)atof(values[2].c_str())));
 											} else {
 												printf("Material parameter error: A Vector3 must have 3 values (%d provided)!\n", (int)values.size());
 											}
@@ -521,7 +521,7 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 										{
 											std::vector<String> values = pvalue.split(" ");
 											if(values.size() == 4) {
-												param->setColor(Color(atof(values[0].c_str()), atof(values[1].c_str()), atof(values[2].c_str()), atof(values[3].c_str())));
+												param->setColor(Color((Number)atof(values[0].c_str()), (Number)atof(values[1].c_str()), (Number)atof(values[2].c_str()), (Number)atof(values[3].c_str())));
 											} else {
 												printf("Material parameter error: A Vector3 must have 3 values (%d provided)!\n", (int)values.size());
 											}

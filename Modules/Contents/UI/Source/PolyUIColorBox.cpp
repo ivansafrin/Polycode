@@ -251,10 +251,10 @@ void UIColorPicker::updateSelectedColor(bool updateTextFields, bool updateHue, b
 	hueCol.setColorHSV(currentH, 1.0, 1.0);
 	hueCol.a = colorAlpha;
 
-	mainColorRect->getMesh()->getPolygon(0)->getVertex(0)->vertexColor = Color(1.0,1.0,1.0,colorAlpha);
+	mainColorRect->getMesh()->getPolygon(0)->getVertex(0)->vertexColor = Color((Number)1,(Number)1,(Number)1,colorAlpha);
 	mainColorRect->getMesh()->getPolygon(0)->getVertex(1)->vertexColor = hueCol;
-	mainColorRect->getMesh()->getPolygon(0)->getVertex(2)->vertexColor = Color(0.0,0.0,0.0,colorAlpha);
-	mainColorRect->getMesh()->getPolygon(0)->getVertex(3)->vertexColor = Color(0.0,0.0,0.0,colorAlpha);	
+	mainColorRect->getMesh()->getPolygon(0)->getVertex(2)->vertexColor = Color((Number)0,(Number)0,(Number)0,colorAlpha);
+	mainColorRect->getMesh()->getPolygon(0)->getVertex(3)->vertexColor = Color((Number)0,(Number)0,(Number)0,colorAlpha);
 	mainColorRect->getMesh()->arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
 	
 		

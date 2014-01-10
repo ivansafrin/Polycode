@@ -369,9 +369,9 @@ namespace Polycode {
 		
 		for(int i=0; i < polygons.size(); i++) {
 			for(int j=0; j < polygons[i]->getVertexCount(); j++) {				
-				retVec.x = max(retVec.x,fabs(polygons[i]->getVertex(j)->x));
-				retVec.y = max(retVec.y,fabs(polygons[i]->getVertex(j)->y));
-				retVec.z = max(retVec.z,fabs(polygons[i]->getVertex(j)->z));							
+				retVec.x = max(retVec.x,(Number)fabs(polygons[i]->getVertex(j)->x));
+				retVec.y = max(retVec.y,(Number)fabs(polygons[i]->getVertex(j)->y));
+				retVec.z = max(retVec.z,(Number)fabs(polygons[i]->getVertex(j)->z));
 				
 			}
 		}

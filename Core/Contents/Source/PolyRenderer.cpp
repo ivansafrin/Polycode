@@ -25,7 +25,7 @@
 
 using namespace Polycode;
 
-Renderer::Renderer() : clearColor(0.2f, 0.2f, 0.2f, 0.0), currentTexture(NULL), renderMode(0), lightingEnabled(false), orthoMode(false), xRes(0), yRes(0) {
+Renderer::Renderer() : clearColor(0.2, 0.2, 0.2, 0.0), currentTexture(NULL), renderMode(0), lightingEnabled(false), orthoMode(false), xRes(0), yRes(0) {
 	anisotropy = 0;
 	textureFilteringMode = TEX_FILTERING_LINEAR;
 	currentMaterial = NULL;

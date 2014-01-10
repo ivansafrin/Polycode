@@ -70,7 +70,7 @@ size_t String::getDataSizeWithEncoding(int encoding) const {
 			return contents.size();
 		}
 		default:
-			return NULL;
+			return 0;
 	}
 }
 const char *String::getDataWithEncoding(int encoding) const {

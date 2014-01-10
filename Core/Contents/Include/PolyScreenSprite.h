@@ -143,7 +143,7 @@ class _PolyExport ScreenSprite : public ScreenShape
 		Number spriteHeight;
 			
 		bool playingOnce;
-		Number lastTick;
+		double lastTick;
 		
 		ScreenSpriteResourceEntry *resourceEntry;
 		

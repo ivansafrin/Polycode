@@ -16,6 +16,10 @@ ENDIF(NOT CMAKE_BUILD_TYPE)
 #    SET(build_player OFF)
 #ENDIF()
 
+IF(NUMBER_IS_SINGLE)
+add_definitions(-DPOLYCODE_NUMBER_IS_SINGLE)
+ENDIF()
+
 # Options for what components to build
 #OPTION(POLYCODE_BUILD_SHARED "Build Polycode shared libraries" OFF)
 #OPTION(POLYCODE_BUILD_STATIC "Build Polycode static libraries" ON)

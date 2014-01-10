@@ -347,9 +347,9 @@ void ScreenSprite::Update() {
 	if(!currentAnimation)
 		return;
 	
-	Number newTick = CoreServices::getInstance()->getCore()->getTicksFloat();
+	double newTick = CoreServices::getInstance()->getCore()->getTicksFloat();
 	
-	Number elapsed = newTick - lastTick;
+	Number elapsed = Number(newTick - lastTick);
 	
 	if(paused)
 		return;
