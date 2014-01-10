@@ -348,22 +348,22 @@ int exportToFile(String prefix, bool swapZY, bool addSubmeshes, bool listOnly, b
     parentEntry->addChild("cB", "1");
     parentEntry->addChild("cA", "1");
     parentEntry->addChild("blendMode", "0");
-    parentEntry->addChild("sX", 1.0);
-    parentEntry->addChild("sY", 1.0);
-    parentEntry->addChild("sZ", 1.0);
+	parentEntry->addChild("sX", Number(1.0));
+	parentEntry->addChild("sY", Number(1.0));
+	parentEntry->addChild("sZ", Number(1.0));
     
-    parentEntry->addChild("rX", 0.0);
-    parentEntry->addChild("rY", 0.0);
-    parentEntry->addChild("rZ", 0.0);
-    parentEntry->addChild("rW", 1.0);
+	parentEntry->addChild("rX", Number(0.0));
+	parentEntry->addChild("rY", Number(0.0));
+	parentEntry->addChild("rZ", Number(0.0));
+	parentEntry->addChild("rW", Number(1.0));
     
-    parentEntry->addChild("pX", 0.0);
-    parentEntry->addChild("pY", 0.0);
-    parentEntry->addChild("pZ", 0.0);
+	parentEntry->addChild("pX", Number(0.0));
+	parentEntry->addChild("pY", Number(0.0));
+	parentEntry->addChild("pZ", Number(0.0));
     
-    parentEntry->addChild("bbX", 0.0);
-    parentEntry->addChild("bbY", 0.0);
-    parentEntry->addChild("bbZ", 0.0);
+	parentEntry->addChild("bbX", Number(0.0));
+	parentEntry->addChild("bbY", Number(0.0));
+	parentEntry->addChild("bbZ", Number(0.0));
     
     ObjectEntry *children = parentEntry->addChild("children");
 

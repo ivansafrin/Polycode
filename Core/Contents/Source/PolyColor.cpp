@@ -29,7 +29,11 @@ Color::Color() : r(1),g(1),b(1),a(1){
 
 }
 
-Color::Color(Number r,Number g, Number b, Number a) {
+Color::Color(float r,float g, float b, float a) {
+	setColor(r,g,b,a);
+}
+
+Color::Color(double r,double g, double b, double a) {
 	setColor(r,g,b,a);
 }
 

@@ -537,9 +537,9 @@ Vector3 Mesh::calculateBBox() {
     Vector3 retVec;
     
     for(int i=0; i < vertices.size(); i++) {
-        retVec.x = max(retVec.x,fabs(vertices[i]->x));
-        retVec.y = max(retVec.y,fabs(vertices[i]->y));
-        retVec.z = max(retVec.z,fabs(vertices[i]->z));
+		retVec.x = max(retVec.x,(Number)fabs(vertices[i]->x));
+		retVec.y = max(retVec.y,(Number)fabs(vertices[i]->y));
+		retVec.z = max(retVec.z,(Number)fabs(vertices[i]->z));
     }
     
     if(retVec.x == 0.0) {
