@@ -22,7 +22,7 @@ unsigned int addBone(aiBone *bone) {
 }
 
 void addToMesh(Polycode::Mesh *tmesh, const struct aiScene *sc, const struct aiNode* nd, bool swapZY) {
-	int i;
+	int i, nIgnoredPolygons = 0;
 	unsigned int n = 0, t;
 	// draw all meshes assigned to this node
 
@@ -34,6 +34,11 @@ void addToMesh(Polycode::Mesh *tmesh, const struct aiScene *sc, const struct aiN
 
 		for (t = 0; t < mesh->mNumFaces; ++t) {
 			const struct aiFace* face = &mesh->mFaces[t];
+			if (face->mNumIndices != 3) {
+				nIgnoredPolygons++;
+				continue;
+			}
+
 			Polycode::Polygon *poly = new Polycode::Polygon();			
 	
 			for(i = 0; i < face->mNumIndices; i++) {
@@ -75,6 +80,9 @@ void addToMesh(Polycode::Mesh *tmesh, const struct aiScene *sc, const struct aiN
 				poly->addVertex(vertex);
 			}
 			tmesh->addPolygon(poly);
+		}
+		if (nIgnoredPolygons) {
+			printf("Ignored %d non-triangular polygons\n", nIgnoredPolygons);
 		}
 	}
 
