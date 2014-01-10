@@ -149,7 +149,7 @@ class _PolyExport SceneSprite : public ScenePrimitive
 		Number spriteHeight;
 			
 		bool playingOnce;
-		Number lastTick;
+		double lastTick;
 		
 		SceneSpriteResourceEntry *resourceEntry;
 		
