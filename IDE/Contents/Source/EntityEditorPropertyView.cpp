@@ -78,7 +78,11 @@ EntityEditorPropertyView::EntityEditorPropertyView() : UIElement() {
     entitySheet = new EntitySheet();
     entityProps->addPropSheet(entitySheet);
     entitySheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
-        
+    
+}
+
+void EntityEditorPropertyView::setEntityInstance(SceneEntityInstance *instance) {
+    materialSheet->setEntityInstance(instance);
 }
 
 void EntityEditorPropertyView::Resize(Number width, Number height) {

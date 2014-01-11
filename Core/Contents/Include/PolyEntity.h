@@ -593,10 +593,7 @@ namespace Polycode {
 			*/
 			bool backfaceCulled;	
 		
-			/**
-			* If this flag is set to true, the entity will render in wireframe. 
-			*/							
-			bool renderWireframe;
+
 
 			/**
 			* The entity's color.

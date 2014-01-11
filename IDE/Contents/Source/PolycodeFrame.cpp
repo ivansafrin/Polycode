@@ -1552,12 +1552,23 @@ TextInputPopup * PolycodeFrame::showTextInput(String caption, String action, Str
 	return textInputPopup;
 }
 
+void PolycodeFrame::showAssetBrowserForPools(std::vector<ResourcePool*> pools, int resourceType) {
+	if(!projectManager->getActiveProject()) {
+		return;
+	}
+	assetBrowser->setResourcePools(pools, resourceType);
+    assetBrowser->setBrowseMode(AssetBrowser::BROWSE_MODE_RESOURCES);
+	showModal(assetBrowser);
+    
+}
+
 void PolycodeFrame::showAssetBrowser(std::vector<String> extensions) {
 	if(!projectManager->getActiveProject()) {
 		return;
 	}
 	assetBrowser->setProject(projectManager->getActiveProject());
 	assetBrowser->setExtensions(extensions);
+   assetBrowser->setBrowseMode(AssetBrowser::BROWSE_MODE_FILES);
 	showModal(assetBrowser);
 }
 

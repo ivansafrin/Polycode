@@ -277,7 +277,7 @@ void Camera::setParentScene(Scene *parentScene) {
 }
 
 void Camera::setPostFilterByName(const String& materialName) {
-	Material *shaderMaterial = (Material*) CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_MATERIAL, materialName);
+	Material *shaderMaterial = (Material*) CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, materialName);
 	if(shaderMaterial)
 		setPostFilter(shaderMaterial);		
 }

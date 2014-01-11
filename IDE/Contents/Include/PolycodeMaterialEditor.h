@@ -148,7 +148,7 @@ class MaterialBrowser : public UIElement {
 
 class CubemapEditorPane : public UIElement {
 	public:
-		CubemapEditorPane();
+		CubemapEditorPane(ResourcePool *resourcePool);
 		~CubemapEditorPane();
 		void Resize(Number width, Number height);
 		void setCubemap(Cubemap *cubemap);
@@ -174,7 +174,7 @@ class CubemapEditorPane : public UIElement {
 
 class PostEditorPane : public UIElement {
 	public:
-		PostEditorPane();
+		PostEditorPane(ResourcePool *resourcePool);
 		~PostEditorPane();
 		void Resize(Number width, Number height);
 		void setMaterial(Material *material);
@@ -211,7 +211,7 @@ class PostEditorPane : public UIElement {
 
 class ShaderEditorPane : public UIElement {
 	public:
-		ShaderEditorPane();
+		ShaderEditorPane(ResourcePool *resourcePool);
 		~ShaderEditorPane();
 		void Resize(Number width, Number height);
 		void setShader(Shader *shader);
@@ -225,7 +225,7 @@ class ShaderEditorPane : public UIElement {
 			
 	protected:
 	
-		
+        ResourcePool *resourcePool;
 		bool changingShader;
 
 		bool choosingVertexProgram;
@@ -276,7 +276,7 @@ class MaterialEditorPane : public UIElement {
 
 class MaterialMainWindow : public UIElement {
 	public:
-	MaterialMainWindow();
+	MaterialMainWindow(ResourcePool *resourcePool);
 	~MaterialMainWindow(){}
 	
 	void Resize(Number width, Number height);
@@ -305,6 +305,9 @@ class PolycodeMaterialEditor : public PolycodeEditor {
 	static String createStringValue(unsigned int type, void *value);
 	
 	protected:
+    
+        ResourcePool *resourcePool;
+    
 		UIImage *editorImage;
 		
 		MaterialBrowser *materialBrowser;

@@ -38,14 +38,14 @@ public:
 
 class AssetEntry : public UIElement {
 	public:
-		AssetEntry(String assetPath, String assetName, String extension);
+		AssetEntry(String assetPath, String assetName, String extension, Resource *resource);
 		~AssetEntry();
 		
 		UIRect *imageShape;
 		UILabel *nameLabel;
 		
 		String assetPath;
-		
+        Resource *resource;
 		UIRect *selectShape;
 };
 
@@ -59,12 +59,17 @@ class AssetList : public UIElement {
 		bool hasExtension(String extension);
 		
 		void showFolder(String folderPath);
+        void showResourcePool(ResourcePool *pool, int resourceFilter);
+    
+        Resource *getSelectedResource();
+    
 		String selectedPath;
 		
 		void setExtensions(std::vector<String> extensions);
 		
 	protected:
 	
+        Resource *selectedResource;
 		UIImageButton *reloadButton;
 	
 		String currentFolderPath;
@@ -91,8 +96,17 @@ class AssetBrowser : public UIWindow {
 		void setExtensions(std::vector<String> extensions);
 		
 		void setProject(PolycodeProject *project);
-		
+    
+        void setBrowseMode(unsigned int newBrowseMode);
+
+        void setResourcePools(std::vector<ResourcePool*> pools, int resourceFilter);
+        void setResourceFilter(int resourceType);
 		void handleEvent(Event *event);
+    
+        Resource *getSelectedResource();
+    
+        static const int BROWSE_MODE_FILES = 0;
+        static const int BROWSE_MODE_RESOURCES = 1;
 	
 	protected:
 	
@@ -101,6 +115,9 @@ class AssetBrowser : public UIWindow {
 	
 		PolycodeProject *currentProject;
 	
+        unsigned int browseMode;
+        int resourceFilter;
+    
 		UIButton *cancelButton;
 		UIButton *okButton;
 		

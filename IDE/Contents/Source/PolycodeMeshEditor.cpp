@@ -78,8 +78,8 @@ PolycodeMeshEditor::PolycodeMeshEditor() : PolycodeEditor(true){
 	previewBase = new Entity();
 	previewScene->addChild(previewBase);
 
-	CoreServices::getInstance()->getResourceManager()->dispatchChangeEvents = true;	
-	CoreServices::getInstance()->getResourceManager()->addEventListener(this, Event::CHANGE_EVENT);
+	CoreServices::getInstance()->getResourceManager()->getGlobalPool()->dispatchChangeEvents = true;
+	CoreServices::getInstance()->getResourceManager()->getGlobalPool()->addEventListener(this, Event::CHANGE_EVENT);
 	
 	previewMesh = NULL;	
 	trackballCamera = new TrackballCamera(previewScene->getDefaultCamera(), previewShape);

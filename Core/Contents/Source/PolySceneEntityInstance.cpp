@@ -56,12 +56,13 @@ SceneEntityInstance *SceneEntityInstance::BlankSceneEntityInstance() {
 
 SceneEntityInstance::SceneEntityInstance(Scene *parentScene, const String& fileName) : Entity() {
     this->parentScene = parentScene;
-	resourceEntry = new SceneEntityInstanceResourceEntry(this);		
+	resourceEntry = new SceneEntityInstanceResourceEntry(this);
 	loadFromFile(fileName);
 	resourceEntry->setResourceName(fileName);
 	resourceEntry->setResourcePath(fileName);
 	cloneUsingReload = false;
-	ownsChildren = true;	
+	ownsChildren = true;
+    topLevelResourcePool = CoreServices::getInstance()->getResourceManager()->getGlobalPool();
 }
 
 SceneEntityInstance::SceneEntityInstance() : Entity() {
@@ -104,6 +105,52 @@ void SceneEntityInstance::applyClone(Entity *clone, bool deepClone, bool ignoreE
 	}
 }
 
+
+void SceneEntityInstance::linkResourcePool(ResourcePool *pool) {
+    for(int i=0; i < resourcePools.size(); i++) {
+        if(resourcePools[i] == pool) {
+            return;
+        }
+    }
+    pool->setFallbackPool(topLevelResourcePool);
+    topLevelResourcePool = pool;
+    resourcePools.push_back(pool);
+}
+
+unsigned int SceneEntityInstance::getNumLinkedResourePools() {
+    return resourcePools.size();
+}
+
+ResourcePool *SceneEntityInstance::getLinkedResourcePoolAtIndex(unsigned int index) {
+    return resourcePools[index];
+}
+
+void SceneEntityInstance::rebuildResourceLinks() {
+    for(int i=0; i < resourcePools.size(); i++) {
+        if(i == 0) {
+            resourcePools[i]->setFallbackPool(CoreServices::getInstance()->getResourceManager()->getGlobalPool());
+        } else {
+            resourcePools[i]->setFallbackPool(resourcePools[i-1]);
+        }
+    }
+    
+    if(resourcePools.size() > 0) {
+        topLevelResourcePool = resourcePools[resourcePools.size()-1];
+    } else {
+        topLevelResourcePool = CoreServices::getInstance()->getResourceManager()->getGlobalPool();
+    }
+}
+
+void SceneEntityInstance::unlinkResourcePool(ResourcePool *pool) {
+    for(int i=0; i < resourcePools.size(); i++) {
+        if(resourcePools[i] == pool) {
+            resourcePools.erase(resourcePools.begin() + i);
+            rebuildResourceLinks();
+            return;
+        }
+    }
+}
+
 void SceneEntityInstance::applySceneMesh(ObjectEntry *entry, SceneMesh *sceneMesh) {
 	if(!entry) {
 		return;
@@ -111,7 +158,7 @@ void SceneEntityInstance::applySceneMesh(ObjectEntry *entry, SceneMesh *sceneMes
     
     ObjectEntry *materialName =(*entry)["material"];
     if(materialName) {
-        sceneMesh->setMaterialByName(materialName->stringVal);
+        sceneMesh->setMaterialByName(materialName->stringVal, topLevelResourcePool);
         if(sceneMesh->getMaterial()) {
             ObjectEntry *optionsEntry =(*entry)["shader_options"];
             if(optionsEntry) {
@@ -129,8 +176,11 @@ void SceneEntityInstance::applySceneMesh(ObjectEntry *entry, SceneMesh *sceneMes
                                     if(nameEntry && textureEntry->stringVal != "") {
                                         
                                         if(textureEntry->name == "cubemap") {
-                                            Cubemap *cubemap = (Cubemap*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_CUBEMAP, textureEntry->stringVal);
-                                            if(cubemap) {
+                                            Cubemap *cubemap;
+                                            
+                                            cubemap = (Cubemap*)topLevelResourcePool->getResource(Resource::RESOURCE_CUBEMAP, textureEntry->stringVal);
+                                                
+                                                                                      if(cubemap) {
                                                 sceneMesh->getLocalShaderOptions()->addCubemap(nameEntry->stringVal, cubemap);
                                             }
                                         } else {
@@ -453,6 +503,9 @@ String SceneEntityInstance::getFileName() const {
 }
 
 void SceneEntityInstance::clearInstance() {
+    
+    resourcePools.clear();
+    topLevelResourcePool = CoreServices::getInstance()->getResourceManager()->getGlobalPool();
 	for(int i=0; i < children.size(); i++) {
 		removeChild(children[i]);
 		children[i]->setOwnsChildrenRecursive(true);
@@ -473,9 +526,25 @@ bool SceneEntityInstance::loadFromFile(const String& fileName) {
         if(!loadObject.loadFromXML(fileName)) {
             Logger::log("Error loading entity instance.\n");
         }
-	}	
+	}
+    
+	ObjectEntry *settings = loadObject.root["settings"];
+    if(settings) {
+        ObjectEntry *matFiles = (*settings)["matFiles"];
+        for(int i=0; i < matFiles->length; i++) {
+            ObjectEntry *matFile = (*matFiles)[i];
+            if(matFile) {
+                ObjectEntry *path = (*matFile)["path"];
+                if(path) {
+                    ResourcePool *newPool = new ResourcePool(path->stringVal,  CoreServices::getInstance()->getResourceManager()->getGlobalPool());
+                    CoreServices::getInstance()->getMaterialManager()->loadMaterialLibraryIntoPool(newPool, path->stringVal);
+                    linkResourcePool(newPool);
+                }
+            }
+        }
+    }
+    
 	ObjectEntry *root = loadObject.root["root"];
-	
 	if(root) {
 		loadObjectEntryIntoEntity(root, this);
 	}

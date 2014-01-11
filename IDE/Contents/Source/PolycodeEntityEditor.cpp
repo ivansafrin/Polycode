@@ -273,6 +273,14 @@ EntityEditorMainView::EntityEditorMainView() {
     modeSwitchDropdown->setSelectedIndex(0);
     modeSwitchDropdown->addEventListener(this, UIEvent::CHANGE_EVENT);
     
+    shadeModeSelector = new UIIconSelector();
+    shadeModeSelector->addIcon("entityEditor/shade_full.png");
+    shadeModeSelector->addIcon("entityEditor/shade_solid.png");
+    shadeModeSelector->addIcon("entityEditor/shade_wire.png");
+//    topBar->addChild(shadeModeSelector);
+    shadeModeSelector->setPosition(320, 3);
+    shadeModeSelector->addEventListener(this, UIEvent::SELECT_EVENT);
+    
     editorMode = EDITOR_MODE_3D;
     
     input = CoreServices::getInstance()->getCore()->getInput();
@@ -644,6 +652,18 @@ void EntityEditorMainView::handleEvent(Event *event) {
                 break;
             }
         }
+    } else if(event->getDispatcher() == shadeModeSelector) {
+        switch(shadeModeSelector->getSelectedIndex()) {
+            case 0:
+                restoreSettingsRecursive(sceneObjectRoot);
+            break;
+            case 1:
+                setMaterialRecursive("Default", false, sceneObjectRoot);
+            break;
+            case 2:
+                setMaterialRecursive("", true, sceneObjectRoot);
+            break;
+        }
     } else {
         if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN ) {
             InputEvent *inputEvent = (InputEvent*) event;
@@ -662,6 +682,52 @@ void EntityEditorMainView::handleEvent(Event *event) {
             }
         }
     }
+}
+
+void EntityEditorMainView::restoreSettingsRecursive(Entity *entity) {
+    SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(entity);
+    if(sceneMesh && !entity->editorOnly) {
+        SceneMeshSettings *meshSettings = (SceneMeshSettings*) entity->getUserData();
+        if(meshSettings) {
+            sceneMesh->setMaterial(meshSettings->material);
+            sceneMesh->backfaceCulled = meshSettings->backfaceCulled;
+        }
+        sceneMesh->renderWireframe = false;
+    }
+    
+    for(int i=0; i < entity->getNumChildren(); i++) {
+        restoreSettingsRecursive(entity->getChildAtIndex(i));
+    }
+}
+
+void EntityEditorMainView::setMaterialRecursive(const String &materialName, bool wireFrame, Entity *entity) {
+    SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(entity);
+    if(sceneMesh && !entity->editorOnly) {
+        
+        if(!sceneMesh->getUserData()) {
+            SceneMeshSettings *meshSettings = new SceneMeshSettings();
+            meshSettings->material = sceneMesh->getMaterial();
+            meshSettings->backfaceCulled = sceneMesh->backfaceCulled;
+            sceneMesh->setUserData((void*)meshSettings);
+            
+        } else {
+            SceneMeshSettings *meshSettings = (SceneMeshSettings*) entity->getUserData();
+            meshSettings->material = sceneMesh->getMaterial();
+            meshSettings->backfaceCulled = sceneMesh->backfaceCulled;
+        }
+        
+        sceneMesh->setMaterialByName(materialName);
+        sceneMesh->renderWireframe = wireFrame;
+        if(wireFrame) {
+//            sceneMesh->setColor(RANDOM_NUMBER, RANDOM_NUMBER, RANDOM_NUMBER, 1.0);
+            sceneMesh->backfaceCulled = false;
+        }
+    }
+    
+    for(int i=0; i < entity->getNumChildren(); i++) {
+        setMaterialRecursive(materialName, wireFrame, entity->getChildAtIndex(i));
+    }
+
 }
 
 Scene *EntityEditorMainView::getMainScene() {
@@ -773,6 +839,13 @@ EntityEditorPropertyContainer::EntityEditorPropertyContainer() : UIElement() {
     addChild(treeView);
     treeView->setPosition(0.0, 30.0);
     treeView->visible = false;
+    treeView->enabled = false;
+    
+    settingsView = new EntityEditorSettingsView();
+    addChild(settingsView);
+    settingsView->setPosition(0.0, 30.0);
+    settingsView->visible = false;
+    settingsView->enabled = false;
 }
 
 void EntityEditorPropertyContainer::handleEvent(Event *event) {
@@ -788,7 +861,7 @@ void EntityEditorPropertyContainer::handleEvent(Event *event) {
                 treeView->refreshTree();
             break;
             case 2:
-                currentView = treeView;
+                currentView = settingsView;
             break;
         }
         currentView->visible = true;
@@ -803,13 +876,14 @@ EntityEditorPropertyContainer::~EntityEditorPropertyContainer() {
 void EntityEditorPropertyContainer::Resize(Number width, Number height) {
     propertyView->Resize(width, height-30);
     treeView->Resize(width, height-30);
+    settingsView->Resize(width, height-30);
 }
 
 
 PolycodeEntityEditor::PolycodeEntityEditor() : PolycodeEditor(true){
 	mainSizer = new UIHSizer(300, 300, 300, false);
 	addChild(mainSizer);
-	
+    
 	mainView = new EntityEditorMainView();
     mainView->addEventListener(this, Event::CHANGE_EVENT);
 	mainSizer->addLeftChild(mainView);
@@ -819,6 +893,7 @@ PolycodeEntityEditor::PolycodeEntityEditor() : PolycodeEditor(true){
     propertyContainer = new EntityEditorPropertyContainer();
     propertyView = propertyContainer->propertyView;
     treeView = propertyContainer->treeView;
+    settingsView = propertyContainer->settingsView;
     
     treeView->addEventListener(this, Event::CHANGE_EVENT);
     
@@ -850,11 +925,13 @@ PolycodeEntityEditor::~PolycodeEntityEditor() {
 bool PolycodeEntityEditor::openFile(OSFileEntry filePath) {	
 	PolycodeEditor::openFile(filePath);
 //    return true;
-    SceneEntityInstance *loadedInstance = new SceneEntityInstance(mainView->getMainScene(), filePath.fullPath);
+    loadedInstance = new SceneEntityInstance(mainView->getMainScene(), filePath.fullPath);
+    
     mainView->setObjectRoot(loadedInstance);
     mainView->setEditorPropsRecursive(loadedInstance);
-    
     treeView->setRootEntity(loadedInstance);
+    propertyView->setEntityInstance(loadedInstance);
+    settingsView->setEntityInstance(loadedInstance);
     
 	return true;
 }
@@ -1185,9 +1262,18 @@ void PolycodeEntityEditor::saveShaderOptionsToEntry(ObjectEntry *entry, Material
 void PolycodeEntityEditor::saveFile() {
     Object saveObject;
     
+    ObjectEntry *settings = saveObject.root.addChild("settings");
+    ObjectEntry *linkedMaterialFiles = settings->addChild("matFiles");
+    for(int i=0; i < loadedInstance->getNumLinkedResourePools(); i++) {
+        ResourcePool *pool = loadedInstance->getLinkedResourcePoolAtIndex(i);
+        linkedMaterialFiles->addChild("matFile")->addChild("path", pool->getName());
+    }    
+    
     saveObject.root.name = "entity";
     ObjectEntry *children = saveObject.root.addChild("root");
     saveEntityToObjectEntry(mainView->getObjectRoot(), children);
+    
+    
     saveObject.saveToXML(filePath);
     setHasChanges(false);
 }

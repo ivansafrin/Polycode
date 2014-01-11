@@ -28,7 +28,7 @@ extern UIColorPicker *globalColorPicker;
 extern UIGlobalMenu *globalMenu;
 extern PolycodeFrame *globalFrame;
 
-PostEditorPane::PostEditorPane() : UIElement() {
+PostEditorPane::PostEditorPane(ResourcePool *resourcePool) : UIElement() {
 	currentMaterial = NULL;
 	
 	bottomElement = new UIElement();
@@ -58,7 +58,7 @@ PostEditorPane::PostEditorPane() : UIElement() {
 	targetsProps = new RenderTargetsSheet();
 	propList->addPropSheet(targetsProps);
 		
-	passProps = new ShaderPassesSheet();
+	passProps = new ShaderPassesSheet(resourcePool);
 	propList->addPropSheet(passProps);
 	passProps->addEventListener(this, Event::CHANGE_EVENT);
 	passProps->addEventListener(this, Event::REMOVE_EVENT);
@@ -187,7 +187,7 @@ void PostEditorPane::handleEvent(Event *event) {
 
 
 
-CubemapEditorPane::CubemapEditorPane() : UIElement() {
+CubemapEditorPane::CubemapEditorPane(ResourcePool *resourcePool) : UIElement() {
 	currentCubemap = NULL;
 
 	headerBg = new UIRect(10,10);
@@ -241,7 +241,7 @@ CubemapEditorPane::CubemapEditorPane() : UIElement() {
 	baseProps->propHeight = 420;
 	propList->updateProps();
 		
-	Material *previewMaterial = CoreServices::getInstance()->getMaterialManager()->createMaterial("CubemapPreview", "LightCube");
+	Material *previewMaterial = (Material*) CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "LightCube");
 	cubemapPreview->setMaterial(previewMaterial);
 	enabled = false;
 	
@@ -321,8 +321,9 @@ void CubemapEditorPane::Resize(Number width, Number height) {
 }
 
 
-ShaderEditorPane::ShaderEditorPane() : UIElement() {	
+ShaderEditorPane::ShaderEditorPane(ResourcePool *resourcePool) : UIElement() {
 
+    this->resourcePool = resourcePool;
 	changingShader = false;
 	currentShader = NULL;
 
@@ -437,7 +438,7 @@ void ShaderEditorPane::handleEvent(Event *event) {
 		if(newProgram) {
 			newProgram->setResourceName(entry.name);
 			newProgram->setResourcePath(newProgramPath);
-			CoreServices::getInstance()->getResourceManager()->addResource(newProgram);
+			resourcePool->addResource(newProgram);
 		}
 
 		if(choosingVertexProgram) {
@@ -688,9 +689,7 @@ MaterialPreviewBox::MaterialPreviewBox() : UIElement() {
 	previewBg->Yaw(45.0);
 	previewBg->backfaceCulled = false;
 	
-	Material *bgMaterial = CoreServices::getInstance()->getMaterialManager()->createMaterial("MaterialEditorBg", "Unlit");
-	
-	previewBg->setMaterial(bgMaterial);
+	previewBg->setMaterialByName("Unlit");
 	Texture *tex = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile("materialEditor/material_grid.png");
 	if(previewBg->getLocalShaderOptions()) {
 	previewBg->getLocalShaderOptions()->addTexture("diffuse", tex);
@@ -987,12 +986,12 @@ MaterialEditorPane::~MaterialEditorPane() {
 
 }
 
-MaterialMainWindow::MaterialMainWindow() : UIElement() {
+MaterialMainWindow::MaterialMainWindow(ResourcePool *resourcePool) : UIElement() {
 
 	materialPane = new MaterialEditorPane();
-	shaderPane = new ShaderEditorPane();
-	cubemapPane = new CubemapEditorPane();
-	postPane = new PostEditorPane();
+	shaderPane = new ShaderEditorPane(resourcePool);
+	cubemapPane = new CubemapEditorPane(resourcePool);
+	postPane = new PostEditorPane(resourcePool);
 		
 	addChild(materialPane);
 	addChild(shaderPane);	
@@ -1107,11 +1106,13 @@ void MaterialBrowser::Resize(Number width, Number height) {
 }
 
 PolycodeMaterialEditor::PolycodeMaterialEditor() : PolycodeEditor(true){
+    resourcePool = new ResourcePool("Local",     CoreServices::getInstance()->getResourceManager()->getGlobalPool());
+    CoreServices::getInstance()->getResourceManager()->addResourcePool(resourcePool);
 	selectedMaterialNode = NULL;
 }
 
 PolycodeMaterialEditor::~PolycodeMaterialEditor() {
-	
+	delete resourcePool;
 }
 
 bool PolycodeMaterialEditor::openFile(OSFileEntry filePath) {
@@ -1126,11 +1127,11 @@ bool PolycodeMaterialEditor::openFile(OSFileEntry filePath) {
 	materialBrowser->addEventListener(this, Event::CHANGE_EVENT);
 	
 	
-	shaders = CoreServices::getInstance()->getMaterialManager()->loadShadersFromFile(filePath.fullPath);
+	shaders = CoreServices::getInstance()->getMaterialManager()->loadShadersFromFile(resourcePool, filePath.fullPath);
 	for(int i=0; i < shaders.size(); i++) {
 		materialBrowser->addShader(shaders[i]);		
 		CoreServices::getInstance()->getMaterialManager()->addShader(shaders[i]);
-		CoreServices::getInstance()->getResourceManager()->addResource(shaders[i]);		
+		resourcePool->addResource(shaders[i]);
 		shaders[i]->vp->reloadOnFileModify = true;
 		shaders[i]->fp->reloadOnFileModify = true;
 	}	
@@ -1138,11 +1139,11 @@ bool PolycodeMaterialEditor::openFile(OSFileEntry filePath) {
 	cubemaps = CoreServices::getInstance()->getMaterialManager()->loadCubemapsFromFile(filePath.fullPath);
 	for(int i=0; i < cubemaps.size(); i++) {
 		materialBrowser->addCubemap(cubemaps[i]);
-		CoreServices::getInstance()->getResourceManager()->addResource(cubemaps[i]);
+        resourcePool->addResource(cubemaps[i]);
 	}	
 
 	
-	std::vector<Material*> mats = CoreServices::getInstance()->getMaterialManager()->loadMaterialsFromFile(filePath.fullPath);
+	std::vector<Material*> mats = CoreServices::getInstance()->getMaterialManager()->loadMaterialsFromFile(resourcePool, filePath.fullPath);
 	
 	materials.clear();
 	for(int i=0; i < mats.size(); i++) {
@@ -1155,14 +1156,14 @@ bool PolycodeMaterialEditor::openFile(OSFileEntry filePath) {
 	
 	for(int i=0; i < materials.size(); i++) {
 		materialBrowser->addMaterial(materials[i]);
-		CoreServices::getInstance()->getResourceManager()->addResource(materials[i]);
+        resourcePool->addResource(materials[i]);
 	}
 
 	for(int i=0; i < postMaterials.size(); i++) {
 		materialBrowser->addPostMaterial(postMaterials[i]);
 	}
 	
-	mainWindow = new MaterialMainWindow();
+	mainWindow = new MaterialMainWindow(resourcePool);
 	mainSizer->addLeftChild(mainWindow);
 	
 	mainWindow->materialPane->addEventListener(this, Event::CHANGE_EVENT);
@@ -1419,7 +1420,7 @@ void PolycodeMaterialEditor::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == materialBrowser->newPostButton && event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {
 	
-		Material *newMaterial = CoreServices::getInstance()->getMaterialManager()->createMaterial("PostEffect"+String::IntToString(postMaterials.size()), "PassThrough");
+		Material *newMaterial = CoreServices::getInstance()->getMaterialManager()->createMaterial(resourcePool, "PostEffect"+String::IntToString(postMaterials.size()), "PassThrough");
 			newMaterial->screenMaterial = true;
 			materialBrowser->addPostMaterial(newMaterial)->setSelected();
 			postMaterials.push_back(newMaterial);
@@ -1427,15 +1428,15 @@ void PolycodeMaterialEditor::handleEvent(Event *event) {
 	}	
 
 	if(event->getDispatcher() == materialBrowser->newMaterialButton && event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {
-		Material *newMaterial = CoreServices::getInstance()->getMaterialManager()->createMaterial("Untitled", "DefaultShader");
+		Material *newMaterial = CoreServices::getInstance()->getMaterialManager()->createMaterial(resourcePool, "Untitled", "DefaultShader");
 			materialBrowser->addMaterial(newMaterial)->setSelected();
-			CoreServices::getInstance()->getResourceManager()->addResource(newMaterial);
+			resourcePool->addResource(newMaterial);
 			materials.push_back(newMaterial);
 			setHasChanges(true);			
 	}	
 
 	if(event->getDispatcher() == materialBrowser->newShaderButton && event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {
-			Shader *newShader = CoreServices::getInstance()->getMaterialManager()->createShader("glsl", "Untitled", "default/Unlit.vert", "default/Unlit.frag", false);
+			Shader *newShader = CoreServices::getInstance()->getMaterialManager()->createShader(resourcePool, "glsl", "Untitled", "default/Unlit.vert", "default/Unlit.frag", false);
 			if(newShader) {
 				materialBrowser->addShader(newShader);
 				shaders.push_back(newShader);
@@ -1448,17 +1449,17 @@ void PolycodeMaterialEditor::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == materialBrowser->newCubemapButton && event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {	
 		Cubemap *cubemap = CoreServices::getInstance()->getRenderer()->createCubemap(
-							 (Texture*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_TEXTURE, "default.png"),
-							 (Texture*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_TEXTURE, "default.png"),
-							 (Texture*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_TEXTURE, "default.png"),
-							 (Texture*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_TEXTURE, "default.png"),
-							 (Texture*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_TEXTURE, "default.png"),
-							 (Texture*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_TEXTURE, "default.png"));
+							 (Texture*)resourcePool->getResource(Resource::RESOURCE_TEXTURE, "default.png"),
+							 (Texture*)resourcePool->getResource(Resource::RESOURCE_TEXTURE, "default.png"),
+							 (Texture*)resourcePool->getResource(Resource::RESOURCE_TEXTURE, "default.png"),
+							 (Texture*)resourcePool->getResource(Resource::RESOURCE_TEXTURE, "default.png"),
+							 (Texture*)resourcePool->getResource(Resource::RESOURCE_TEXTURE, "default.png"),
+							 (Texture*)resourcePool->getResource(Resource::RESOURCE_TEXTURE, "default.png"));
 		cubemap->setResourceName("Cubemap"+String::IntToString(cubemaps.size()));
 		cubemaps.push_back(cubemap);
 		materialBrowser->addCubemap(cubemap);
 		setHasChanges(true);
-		CoreServices::getInstance()->getResourceManager()->addResource(cubemap);
+		resourcePool->addResource(cubemap);
 	}	
 
 	if(event->getDispatcher() == materialBrowser->removeButton && event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {

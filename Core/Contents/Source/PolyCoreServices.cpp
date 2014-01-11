@@ -107,7 +107,6 @@ void CoreServices::installModule(PolycodeModule *module)  {
 	
 	switch(module->getType()) {
 		case PolycodeModule::TYPE_SHADER:
-			resourceManager->addShaderModule((PolycodeShaderModule*) module);
 			materialManager->addShaderModule((PolycodeShaderModule*) module);
 			renderer->addShaderModule((PolycodeShaderModule*) module);
 		break;

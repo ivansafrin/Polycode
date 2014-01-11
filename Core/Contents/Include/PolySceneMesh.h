@@ -32,6 +32,7 @@ namespace Polycode {
 	class Texture;
 	class Skeleton;
 	class Image;
+    class ResourcePool;
 	
 	/**
 	* 3D polygonal mesh instance. The SceneMesh is the base for all polygonal 3d geometry. It can have simple textures or complex materials applied to it.
@@ -124,7 +125,7 @@ namespace Polycode {
 			* Set material by name. You can create materials in material files and name them there, then use this to set a material by name to a scene mesh.
 			* @param materialName Name of material to apply.
 			*/									
-			void setMaterialByName(const String& materialName);
+			void setMaterialByName(const String& materialName, ResourcePool *resourcePool = NULL);
 			
 			/**
 			* Set the mesh this scene mesh renders.
@@ -181,7 +182,12 @@ namespace Polycode {
 			
 			bool useGeometryHitDetection;
 			
-			bool customHitDetection(const Ray &ray);			
+			bool customHitDetection(const Ray &ray);
+
+            /**
+             * If this flag is set to true, the entity will render in wireframe.
+             */
+            bool renderWireframe;
 
 			
 		protected:

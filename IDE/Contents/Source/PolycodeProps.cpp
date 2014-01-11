@@ -350,6 +350,24 @@ PropProp::~PropProp() {
 
 }
 
+ButtonProp::ButtonProp(const String &caption) : PropProp("", "ButtonProp") {
+    button = new UIButton(caption, 100);
+    addChild(button);
+}
+
+ButtonProp::~ButtonProp() {
+    
+}
+
+UIButton *ButtonProp::getButton() {
+    return button;
+}
+
+void ButtonProp::setPropWidth(Number width) {
+    button->Resize(width-PROP_PADDING, button->getHeight());
+}
+
+
 Vector3Prop::Vector3Prop(String caption) : PropProp(caption, "Vector3") {
     
 	labelX = new UILabel("X:", 11);
@@ -518,6 +536,35 @@ Vector2 Vector2Prop::get() {
 Vector2Prop::~Vector2Prop() {
 
 }
+
+RemovableStringProp::RemovableStringProp(const String &caption) : PropProp("", "RemovableStringProp") {
+    
+    label = new UILabel(caption, 12);
+    addChild(label);
+    label->setPositionX(30);
+    
+   	removeButton = new UIImageButton("main/remove_icon.png", 1.0, 12, 12);
+	removeButton->addEventListener(this, UIEvent::CLICK_EVENT);
+    addChild(removeButton);
+	removeButton->setPosition(0, 2);
+
+	setHeight(25);
+}
+
+String RemovableStringProp::getCaption() {
+    return label->getText();
+}
+
+RemovableStringProp::~RemovableStringProp() {
+    
+}
+
+void RemovableStringProp::handleEvent(Event *event) {
+    if(event->getDispatcher() == removeButton) {
+        dispatchEvent(new Event(), Event::REMOVE_EVENT);
+    }
+}
+
 
 CustomProp::CustomProp(String key, String value) : PropProp("", "Custom") {
 	keyEntry = new UITextInput(false, 120, 12);
@@ -1012,6 +1059,84 @@ void BezierCurveProp::handleEvent(Event *event) {
 		}
 	}
 }
+
+MaterialProp::MaterialProp(const String &caption) : PropProp(caption, "Material"){
+    currentMaterial = NULL;
+    
+	previewShape = new UIRect(48, 48);
+	previewShape->setAnchorPoint(-1.0, -1.0, 0.0);
+	previewShape->setPosition(2, 1);
+	propContents->addChild(previewShape);
+    
+	changeButton = new UIButton("Change", 80);
+	propContents->addChild(changeButton);
+	changeButton->setPosition(60, 5);
+	changeButton->addEventListener(this, UIEvent::CLICK_EVENT);
+	
+	materialLabel = new UILabel("", 12, "sans");
+	propContents->addChild(materialLabel);
+	materialLabel->setPosition(-100, 32);
+	materialLabel->color.a = 1.0;
+    
+	setHeight(60);
+}
+
+void MaterialProp::setEntityInstance(SceneEntityInstance *instance) {
+    entityInstance = instance;
+}
+
+MaterialProp::~MaterialProp() {
+    
+}
+
+
+void MaterialProp::handleEvent(Event *event) {
+    
+	if(event->getDispatcher() == globalFrame->assetBrowser && event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {
+        
+            Resource *selectedResource = globalFrame->assetBrowser->getSelectedResource();
+            if(selectedResource) {
+                Material *material = (Material*) selectedResource;
+                set(material);
+                dispatchEvent(new Event(), Event::CHANGE_EVENT);
+                globalFrame->assetBrowser->removeAllHandlersForListener(this);
+            }
+
+        /*
+		dispatchEvent(new PropEvent(this, NULL, PropDataString(lastData), PropDataString(currentData)), PropEvent::EVENT_PROP_CHANGE);
+         */
+		globalFrame->hideModal();
+		
+	}
+    
+	if(event->getDispatcher() == changeButton && event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {
+		globalFrame->assetBrowser->addEventListener(this, UIEvent::OK_EVENT);
+		
+		std::vector<ResourcePool*> pools;
+        pools.push_back(CoreServices::getInstance()->getResourceManager()->getGlobalPool());
+        for(int i=0; i < entityInstance->getNumLinkedResourePools(); i++) {
+            pools.push_back(entityInstance->getLinkedResourcePoolAtIndex(i));
+        }
+		globalFrame->showAssetBrowserForPools(pools, Resource::RESOURCE_MATERIAL);
+	}
+}
+
+void MaterialProp::set(Material *material) {
+    currentMaterial = material;
+    if(material) {
+        materialLabel->setText(material->getName());
+    }
+}
+
+Material *MaterialProp::get() {
+    return currentMaterial;
+}
+
+void MaterialProp::setPropWidth(Number width) {
+	changeButton->setPosition(width-changeButton->getWidth()-PROP_PADDING-100, 5);
+	previewShape->setPosition(changeButton->getPosition().x-48-10, 1);
+}
+
 
 TextureProp::TextureProp(String caption) : PropProp(caption, "Texture"){
 	previewShape = new UIRect(48, 48);
@@ -1520,7 +1645,8 @@ void RenderTargetProp::handleEvent(Event *event) {
 	PropProp::handleEvent(event);
 }
 
-ShaderPassesSheet::ShaderPassesSheet() : PropSheet("SHADER PASSES", "shaderPasses") {
+ShaderPassesSheet::ShaderPassesSheet(ResourcePool *resourcePool) : PropSheet("SHADER PASSES", "shaderPasses") {
+    this->resourcePool = resourcePool;
 	propHeight = 70;
 	addButton = new UIButton("Add Shader Pass", 150);
 	addButton->addEventListener(this, UIEvent::CLICK_EVENT);
@@ -1587,7 +1713,7 @@ void ShaderPassesSheet::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == addButton) {
 	
-		Shader *defaultShader = (Shader*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_SHADER, "PassThrough");
+		Shader *defaultShader = (Shader*)resourcePool->getResource(Resource::RESOURCE_SHADER, "PassThrough");
 		if(defaultShader) {	
 			ShaderBinding *newShaderBinding = defaultShader->createBinding();		
 			material->addShader(defaultShader, newShaderBinding);
@@ -2733,10 +2859,10 @@ void ScenePrimitiveSheet::handleEvent(Event *event) {
 }
 
 MaterialPropSheet::MaterialPropSheet() : PropSheet("MATERIAL", "material") {
-    materialProp = new ComboProp("Material");
+    
+    materialProp = new MaterialProp("Material");
     addProp(materialProp);
     
-    propHeight = 70;
     enabled = false;
 }
 
@@ -2749,32 +2875,14 @@ void MaterialPropSheet::setSceneMesh(SceneMesh *sceneMesh) {
     
     if(sceneMesh) {
         enabled = true;
-        reloadMaterials();        
+        materialProp->set(sceneMesh->getMaterial());
     } else {
         enabled = false;
     }
 }
 
-void MaterialPropSheet::reloadMaterials() {
-
-	Resource *selectedMaterial = NULL;
-    
-    selectedMaterial = NULL;
-    if(sceneMesh) {
-        selectedMaterial = (Resource*)sceneMesh->getMaterial();
-    }
-		
-	materialProp->comboEntry->clearItems();
-	std::vector<Resource*> materials = CoreServices::getInstance()->getResourceManager()->getResources(Resource::RESOURCE_MATERIAL);
-	for(int i=0; i < materials.size(); i++) {
-        if(((Material*)materials[i])->screenMaterial) {
-            continue;
-        }
-		materialProp->comboEntry->addComboItem(materials[i]->getResourceName(), (void*) materials[i]);
-		if(selectedMaterial == materials[i]) {
-			materialProp->comboEntry->setSelectedIndex(i);
-		}
-	}
+void MaterialPropSheet::setEntityInstance(SceneEntityInstance *instance) {
+    materialProp->setEntityInstance(instance);
 }
 
 void MaterialPropSheet::handleEvent(Event *event) {
@@ -2784,7 +2892,7 @@ void MaterialPropSheet::handleEvent(Event *event) {
     }
         
     if(event->getDispatcher() == materialProp  && event->getEventCode() == Event::CHANGE_EVENT) {
-        Material *newMaterial = (Material*)materialProp->comboEntry->getSelectedItem()->data;
+        Material *newMaterial = materialProp->get();
         if(sceneMesh->getMaterial() != newMaterial) {
             sceneMesh->setMaterial(newMaterial);
         }
@@ -3262,6 +3370,101 @@ void SceneLabelSheet::handleEvent(Event *event) {
 	
 	PropSheet::handleEvent(event);
 }
+
+LinkedMaterialsSheet::LinkedMaterialsSheet() : PropSheet("LINKED MATERIALS", "linked_materials") {
+    
+    addMaterialProp = new ButtonProp("Link materials file");
+    addProp(addMaterialProp);
+    addMaterialProp->getButton()->addEventListener(this, UIEvent::CLICK_EVENT);
+    
+    propToRemove = NULL;
+}
+
+LinkedMaterialsSheet::~LinkedMaterialsSheet() {
+    
+}
+
+void LinkedMaterialsSheet::Update() {
+    if(propToRemove) {
+        if(instance) {
+//            instance->removeLinkedMaterialFile(propToRemove->getCaption());
+            updateMaterials();
+        }
+        propToRemove = NULL;
+    }
+}
+
+void LinkedMaterialsSheet::handleEvent(Event *event) {
+    
+    if(!instance) {
+        return;
+    }
+    
+    for(int i=0; i < props.size(); i++) {
+        if(props[i] == event->getDispatcher()) {
+            propToRemove = (RemovableStringProp*) props[i];
+        }
+    }
+    
+    if(event->getDispatcher() == addMaterialProp->getButton()) {
+		globalFrame->assetBrowser->addEventListener(this, UIEvent::OK_EVENT);
+		std::vector<String> extensions;
+		extensions.push_back("mat");
+		globalFrame->showAssetBrowser(extensions);
+        
+    } else if(event->getDispatcher() == globalFrame->assetBrowser) {
+		String materialPath = globalFrame->assetBrowser->getSelectedAssetPath();
+
+		String fullMaterialPath = globalFrame->assetBrowser->getFullSelectedAssetPath();
+		
+        
+        globalFrame->assetBrowser->removeAllHandlersForListener(this);
+        globalFrame->hideModal();
+        
+        ResourcePool *newPool = new ResourcePool(materialPath,  CoreServices::getInstance()->getResourceManager()->getGlobalPool());
+        CoreServices::getInstance()->getMaterialManager()->loadMaterialLibraryIntoPool(newPool, fullMaterialPath);
+        
+        instance->linkResourcePool(newPool);
+         updateMaterials();
+    }
+    PropSheet::handleEvent(event);
+}
+
+void LinkedMaterialsSheet::updateMaterials() {
+    if(!instance) {
+        return;
+    }
+    
+	for(int i=0; i < props.size(); i++) {
+		contents->removeChild(props[i]);
+		props[i]->removeAllHandlersForListener(this);
+        if(props[i] != addMaterialProp) {
+            delete props[i];
+        }
+	}
+	props.clear();
+    
+    for(int i=0; i < instance->getNumLinkedResourePools(); i++) {
+        ResourcePool *pool = instance->getLinkedResourcePoolAtIndex(i);
+        RemovableStringProp *newProp = new RemovableStringProp(pool->getName());
+        newProp->addEventListener(this, Event::REMOVE_EVENT);
+        addProp(newProp);
+    }
+    
+    addProp(addMaterialProp);
+}
+
+
+void LinkedMaterialsSheet::setEntityInstance(SceneEntityInstance *instance) {
+    this->instance = instance;
+    if(instance) {
+        enabled = true;
+        updateMaterials();
+    } else {
+        enabled = false;
+    }
+}
+
 
 SoundSheet::SoundSheet() : PropSheet("SOUND", "sound") {
 	sound = NULL;

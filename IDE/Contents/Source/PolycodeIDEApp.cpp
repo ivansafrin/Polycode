@@ -39,7 +39,7 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 
     Entity::defaultBlendingMode = Renderer::BLEND_MODE_NONE;
 	
-	CoreServices::getInstance()->getResourceManager()->reloadResourcesOnModify = true;
+	CoreServices::getInstance()->getResourceManager()->getGlobalPool()->reloadResourcesOnModify = true;
 	
 	runNextFrame = false;
 	

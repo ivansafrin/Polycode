@@ -51,6 +51,7 @@ SceneMesh::SceneMesh(const String& fileName) : Entity(), texture(NULL), material
 	lineSmooth = false;
 	ownsMesh = true;
 	ownsSkeleton = true;
+    renderWireframe = false;
 	lineWidth = 1.0;
 	pointSize = 1.0;
 	pointSmooth = false;
@@ -67,6 +68,7 @@ SceneMesh::SceneMesh(Mesh *mesh) : Entity(), texture(NULL), material(NULL), skel
 	useVertexBuffer = false;
 	lineSmooth = false;
 	ownsMesh = true;
+    renderWireframe = false;
 	ownsSkeleton = true;	
 	lineWidth = 1.0;
 	pointSize = 1.0;
@@ -83,6 +85,7 @@ SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL), skeleton(NUL
 	showVertexNormals = false;	
 	useVertexBuffer = false;	
 	lineSmooth = false;
+    renderWireframe = false;
 	ownsMesh = true;
 	ownsSkeleton = true;	
 	lineWidth = 1.0;
@@ -153,11 +156,16 @@ void SceneMesh::setMaterial(Material *material) {
 	
 }
 
-void SceneMesh::setMaterialByName(const String& materialName) {
-	Material *material =  (Material*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_MATERIAL, materialName);
-	if(!material)
-		return;
-	setMaterial(material);
+void SceneMesh::setMaterialByName(const String& materialName, ResourcePool *resourcePool) {
+    
+    Material *material;
+    if(resourcePool) {
+        material =  (Material*)resourcePool->getResource(Resource::RESOURCE_MATERIAL, materialName);        
+    } else {
+        material =  (Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, materialName);
+        
+    }
+    setMaterial(material);
 }
 
 Texture *SceneMesh::getTexture() const {
@@ -318,6 +326,12 @@ void SceneMesh::Render() {
 			renderer->setTexture(NULL);
 	}
 		
+    if(renderWireframe) {
+		renderer->setWireframePolygonMode(true);
+    } else {
+        renderer->setWireframePolygonMode(false);
+    }
+    
 	if(useVertexBuffer) {
 		renderer->drawVertexBuffer(mesh->getVertexBuffer(), mesh->useVertexColors);
 	} else {

@@ -28,6 +28,7 @@
 #include "PolycodeUI.h"
 #include "EntityEditorPropertyView.h"
 #include "EntityEditorTreeView.h"
+#include "EntityEditorSettingsView.h"
 
 #include "TrackballCamera.h"
 
@@ -80,6 +81,13 @@ class CameraPreviewWindow : public UIElement {
     
 };
 
+class SceneMeshSettings {
+    public:
+        Material *material;
+        bool backfaceCulled;
+        ShaderBinding *shaderBinding;
+};
+
 class EntityEditorMainView : public UIElement {
 		public:
 			EntityEditorMainView();
@@ -99,6 +107,9 @@ class EntityEditorMainView : public UIElement {
             void doEntitySelect(Entity *targetEntity);
             void setEditorMode(int newMode);
             Entity *getSelectedEntity();
+    
+            void setMaterialRecursive(const String &materialName, bool wireFrame, Entity *entity);
+            void restoreSettingsRecursive(Entity *entity);
     
             void deleteSelected();
     
@@ -139,6 +150,8 @@ class EntityEditorMainView : public UIElement {
             UIComboBox *modeSwitchDropdown;
             UIMenu *addEntityMenu;
     
+            UIIconSelector *shadeModeSelector;
+    
             CameraPreviewWindow *cameraPreview;
     
             std::vector<ScenePrimitive*> icons;
@@ -159,6 +172,7 @@ class EntityEditorPropertyContainer : public UIElement {
         UIElement *currentView;
         EntityEditorPropertyView *propertyView;
         EntityEditorTreeView *treeView;
+        EntityEditorSettingsView *settingsView;
         UIIconSelector *propIconSelector;
 };
 
@@ -187,7 +201,9 @@ class PolycodeEntityEditor : public PolycodeEditor {
 		EntityEditorMainView *mainView;
         EntityEditorPropertyView *propertyView;
         EntityEditorTreeView *treeView;
+        EntityEditorSettingsView *settingsView;
     
+        SceneEntityInstance *loadedInstance;
 		UIHSizer *mainSizer;
         UIVSizer *rightSizer;
     

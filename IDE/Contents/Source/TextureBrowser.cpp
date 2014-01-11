@@ -22,8 +22,9 @@
  
 #include "TextureBrowser.h"
 
-AssetEntry::AssetEntry(String assetPath, String assetName, String extension) : UIElement() {
+AssetEntry::AssetEntry(String assetPath, String assetName, String extension, Resource *resource) : UIElement() {
 
+    this->resource = resource;
 	this->assetPath = assetPath;
 
 	if(assetName.length() > 20)
@@ -58,6 +59,10 @@ AssetEntry::AssetEntry(String assetPath, String assetName, String extension) : U
 		imageShape->loadTexture("browserIcons/shader_icon.png");
 	} else if(extension == "mesh") {
 		imageShape->loadTexture("browserIcons/mesh_icon.png");
+    } else if(extension == "mat") {
+		imageShape->loadTexture("browserIcons/materials_icon.png");
+    } else if(extension == "material_resource") {
+		imageShape->loadTexture("browserIcons/material_resource_icon.png");
 	}
 
 	
@@ -93,6 +98,10 @@ AssetList::~AssetList() {
 
 }
 
+Resource *AssetList::getSelectedResource() {
+    return selectedResource;
+}
+
 void AssetList::setExtensions(std::vector<String> extensions) {
 	this->extensions = extensions;
 	if(currentFolderPath != "") {
@@ -107,6 +116,50 @@ bool AssetList::hasExtension(String extension) {
 		}
 	}
 	return false;
+}
+
+void AssetList::showResourcePool(ResourcePool *pool, int resourceFilter) {
+	for(int i=0; i < assetEntries.size(); i++) {
+		removeChild(assetEntries[i]);
+		delete assetEntries[i];
+	}
+	assetEntries.clear();
+
+    selectedResource = NULL;
+    
+	currentEntry = NULL;
+	
+	Number xPos = 20;
+	Number yPos = 30;
+	
+    std::vector<Resource*> resources = pool->getResources(resourceFilter);
+    
+    String extension;
+    
+    if(resourceFilter == Resource::RESOURCE_MATERIAL ) {
+        extension = "material_resource";
+    }
+    
+	for(int i=0; i < resources.size(); i++) {
+        AssetEntry *newEntry = new AssetEntry("", resources[i]->getResourceName(), extension, resources[i]);
+        newEntry->selectShape->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+        assetEntries.push_back(newEntry);
+        newEntry->setPosition(xPos, yPos);
+        xPos += 120;
+        if(xPos > 500) {
+            xPos = 20;
+            yPos += 100;
+        }
+        addChild(newEntry);
+	}
+	
+	setWidth(640);
+	
+	if(xPos == 20) {
+		setHeight(yPos+20);
+	} else {
+		setHeight(yPos + 120);
+	}
 }
 
 void AssetList::showFolder(String folderPath) {
@@ -130,7 +183,7 @@ void AssetList::showFolder(String folderPath) {
 		OSFileEntry entry = assets[i];
 		if(entry.type != OSFileEntry::TYPE_FOLDER) {
 			if(hasExtension(entry.extension)) {
-				AssetEntry *newEntry = new AssetEntry(entry.fullPath, entry.name, entry.extension);
+				AssetEntry *newEntry = new AssetEntry(entry.fullPath, entry.name, entry.extension, NULL);
 				newEntry->selectShape->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 				assetEntries.push_back(newEntry);
 				newEntry->setPosition(xPos, yPos);
@@ -169,6 +222,7 @@ void AssetList::handleEvent(Event *event) {
 					currentEntry->selectShape->visible = false;
 				}
 				currentEntry = assetEntries[i];
+                selectedResource = assetEntries[i]->resource;
 			}
 		}
 	}
@@ -176,6 +230,8 @@ void AssetList::handleEvent(Event *event) {
 
 AssetBrowser::AssetBrowser() : UIWindow(L"Asset Browser", 850, 500) {
 	defaultTemplateTree = NULL;
+    
+    browseMode = BROWSE_MODE_FILES;
 	
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
@@ -216,18 +272,38 @@ AssetBrowser::AssetBrowser() : UIWindow(L"Asset Browser", 850, 500) {
 	currentProject = NULL;
 }
 
+void AssetBrowser::setResourcePools(std::vector<ResourcePool*> pools, int resourceFilter) {
+    
+    this->resourceFilter = resourceFilter;
+    
+	templateContainer->getRootNode()->clearTree();
+	templateContainer->getRootNode()->setLabelText("Resource pools");
+	templateContainer->getRootNode()->setUserData(NULL);
+    
+    
+    for(int i=0; i < pools.size(); i++) {
+        ResourcePool *pool = pools[i];
+        UITree *newChild = templateContainer->getRootNode()->addTreeChild("folder.png", pool->getName(), (void*)pool);
+        newChild->setUserData(pool);
+    }
+    
+}
+
+void AssetBrowser::setBrowseMode(unsigned int newBrowseMode) {
+    browseMode = newBrowseMode;
+}
+
 void AssetBrowser::setProject(PolycodeProject *project) {
 	
 	templateContainer->getRootNode()->clearTree();
 
-	vector<OSFileEntry> templates = OSBasics::parseFolder(project->getRootFolder(), false);	
+	vector<OSFileEntry> templates = OSBasics::parseFolder(project->getRootFolder(), false);
 	templateContainer->getRootNode()->setLabelText(project->getProjectName());
-	
-	
+		
 	for(int i=0; i < templates.size(); i++) {
 		OSFileEntry entry = templates[i];
 		if(entry.type == OSFileEntry::TYPE_FOLDER) {
-			UITree *newChild = templateContainer->getRootNode()->addTreeChild("folder.png", entry.name, NULL);			
+			UITree *newChild = templateContainer->getRootNode()->addTreeChild("folder.png", entry.name, NULL);
 			FolderUserData *data = new FolderUserData();
 			data->type = 0;
 			data->folderPath = entry.fullPath;
@@ -264,6 +340,11 @@ void AssetBrowser::setExtensions(std::vector<String> extensions) {
 	assetList->setExtensions(extensions);
 }
 
+Resource *AssetBrowser::getSelectedResource() {
+	return assetList->getSelectedResource();
+    
+}
+
 void AssetBrowser::handleEvent(Event *event) {
 	if(event->getEventType() == "UIEvent") {
 		if(event->getEventCode() == UIEvent::CLICK_EVENT) {
@@ -280,8 +361,16 @@ void AssetBrowser::handleEvent(Event *event) {
 	if(event->getEventType() == "UITreeEvent" && event->getEventCode() == UITreeEvent::SELECTED_EVENT) {
 		if(event->getDispatcher() == templateContainer->getRootNode()) {
 			UITreeEvent *treeEvent = (UITreeEvent*) event;
-			FolderUserData *data = (FolderUserData *)treeEvent->selection->getUserData();
-			assetList->showFolder(data->folderPath);
+            
+            if(browseMode == BROWSE_MODE_FILES) {
+                FolderUserData *data = (FolderUserData *)treeEvent->selection->getUserData();
+                assetList->showFolder(data->folderPath);
+            } else {
+                ResourcePool *pool = (ResourcePool*) treeEvent->selection->getUserData();
+                if(pool) {
+                    assetList->showResourcePool(pool, resourceFilter);
+                }
+            }
 			listContainer->setContentSize(assetList->getWidth(), assetList->getHeight());
 			listContainer->setScrollValue(0,0);
 		}

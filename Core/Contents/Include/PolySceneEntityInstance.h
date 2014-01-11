@@ -39,7 +39,8 @@ class SceneEntityInstanceResourceEntry;
 
 class SceneEntityInstance : public Entity {
 	public:
-		SceneEntityInstance(Scene *parentScene, const String& fileName);
+    
+        SceneEntityInstance(Scene *parentScene, const String& fileName);
 		SceneEntityInstance();
 		
 		static SceneEntityInstance *BlankSceneEntityInstance();
@@ -58,16 +59,26 @@ class SceneEntityInstance : public Entity {
 		bool loadFromFile(const String& fileName);
         void applySceneMesh(ObjectEntry *entry, SceneMesh *sceneMesh);
 		
+        void linkResourcePool(ResourcePool *pool);
+        unsigned int getNumLinkedResourePools();
+        ResourcePool *getLinkedResourcePoolAtIndex(unsigned int index);
+    
+        void unlinkResourcePool(ResourcePool *pool);
+    
 		SceneEntityInstanceResourceEntry *getResourceEntry();
+
 		
 		String getFileName() const;
-		
 		bool cloneUsingReload;
 
 		String fileName;
 		
 	protected:
 		
+        void rebuildResourceLinks();
+    
+        ResourcePool *topLevelResourcePool;
+        std::vector<ResourcePool*> resourcePools;
         Scene *parentScene;
 		SceneEntityInstanceResourceEntry *resourceEntry;
 		

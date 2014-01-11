@@ -67,7 +67,6 @@ void Entity::initEntity() {
 	alphaTest = false;
 	blendingMode = Entity::defaultBlendingMode;
 	lockMatrix = false;
-	renderWireframe  = false;
 	colorAffectsChildren = true;
 	visibilityAffectsChildren = true;
 	ownsChildren = false;
@@ -116,7 +115,6 @@ void Entity::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) co
 	clone->billboardRoll = billboardRoll;
 	clone->alphaTest = alphaTest;
 	clone->backfaceCulled = backfaceCulled;
-	clone->renderWireframe = renderWireframe;
 	clone->depthWrite = depthWrite;
 	clone->depthTest = depthTest;
 	clone->blendingMode = blendingMode;
@@ -532,13 +530,7 @@ void Entity::transformAndRender() {
 	
 	renderer->setBlendingMode(blendingMode);
 	renderer->enableBackfaceCulling(backfaceCulled);
-	
-	if(renderWireframe) {
-		renderer->setWireframePolygonMode(true);
-	} else {
-		renderer->setWireframePolygonMode(false);
-    }
-    
+	   
 	if(visible) {
 		renderer->pushMatrix();		
 		renderer->translate3D(-anchorPoint.x * bBox.x * 0.5, -anchorPoint.y * bBox.y * 0.5 * yAdjust, -anchorPoint.z * bBox.z * 0.5);

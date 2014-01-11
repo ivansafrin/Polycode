@@ -39,6 +39,7 @@ namespace Polycode {
 	class Shader;
 	class String;
 	class ShaderProgram;
+    class ResourcePool;
 	
 	/**
 	* Manages loading and reloading of materials, textures and shaders. This class should be only accessed from the CoreServices singleton.
@@ -57,7 +58,7 @@ namespace Polycode {
 			Texture *createTexture(int width, int height, char *imageData, bool clamp=false, bool createMipmaps = true, int type=Image::IMAGE_RGBA);
 			Texture *createNewTexture(int width, int height, bool clamp=false, bool createMipmaps = true, int type=Image::IMAGE_RGBA);
 			Texture *createTextureFromImage(Image *image, bool clamp=false, bool createMipmaps = true);
-			Texture *createTextureFromFile(const String& fileName, bool clamp=false, bool createMipmaps = true);
+			Texture *createTextureFromFile(const String& fileName, bool clamp=false, bool createMipmaps = true, ResourcePool *resourcePool = NULL);
 			void deleteTexture(Texture *texture);
 		
 			void reloadTextures();
@@ -72,22 +73,24 @@ namespace Polycode {
 			
 			ShaderProgram *createProgramFromFile(String programPath);
 			
+            void loadMaterialLibraryIntoPool(ResourcePool *pool, const String &materialFile);
+        
 			// cubemaps
 		
 			Cubemap *cubemapFromXMLNode(TiXmlNode *node);
 		
 			// materials
-			Material *materialFromXMLNode(TiXmlNode *node);
+			Material *materialFromXMLNode(ResourcePool *resourcePool, TiXmlNode *node);
 			
-			Material *createMaterial(String materialName, String shaderName);
+			Material *createMaterial(ResourcePool *resourcePool, String materialName, String shaderName);
 			
-			Shader *setShaderFromXMLNode(TiXmlNode *node);
-			Shader *createShaderFromXMLNode(TiXmlNode *node);
-			Shader *createShader(String shaderType, String name, String vpName, String fpName, bool screenShader);
+			Shader *setShaderFromXMLNode(ResourcePool *resourcePool, TiXmlNode *node);
+			Shader *createShaderFromXMLNode(ResourcePool *resourcePool, TiXmlNode *node);
+			Shader *createShader(ResourcePool *resourcePool, String shaderType, String name, String vpName, String fpName, bool screenShader);
 		
-			std::vector<Material*> loadMaterialsFromFile(String fileName);
-			std::vector<Shader*> loadShadersFromFile(String fileName);		
-			std::vector<Cubemap*> loadCubemapsFromFile(String fileName);	
+			std::vector<Material*> loadMaterialsFromFile(ResourcePool *resourcePool, const String &fileName);
+			std::vector<Shader*> loadShadersFromFile(ResourcePool *resourcePool, String fileName);
+			std::vector<Cubemap*> loadCubemapsFromFile(String fileName);
 						
 			void addMaterial(Material *material);
 			void addShader(Shader *shader);

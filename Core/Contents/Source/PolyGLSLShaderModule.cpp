@@ -112,15 +112,15 @@ String GLSLShaderModule::getShaderType() {
 	return "glsl";
 }
 
-Shader *GLSLShaderModule::createShader(String name, String vpName, String fpName) {
+Shader *GLSLShaderModule::createShader(ResourcePool *resourcePool, String name, String vpName, String fpName) {
 
 	GLSLShader *retShader = NULL;
 
 	GLSLProgram *vp = NULL;
 	GLSLProgram *fp = NULL;
 
-	vp = (GLSLProgram*)CoreServices::getInstance()->getResourceManager()->getResourceByPath(vpName);
-	fp = (GLSLProgram*)CoreServices::getInstance()->getResourceManager()->getResourceByPath(fpName);
+	vp = (GLSLProgram*)resourcePool->getResourceByPath(vpName);
+	fp = (GLSLProgram*)resourcePool->getResourceByPath(fpName);
 		
 	if(vp != NULL && fp != NULL) {
 		GLSLShader *shader = new GLSLShader(vp,fp);
@@ -131,7 +131,7 @@ Shader *GLSLShaderModule::createShader(String name, String vpName, String fpName
 	return retShader;
 }
 
-Shader *GLSLShaderModule::createShader(TiXmlNode *node) {
+Shader *GLSLShaderModule::createShader(ResourcePool *resourcePool, TiXmlNode *node) {
 	TiXmlNode* pChild;
 	GLSLProgram *vp = NULL;
 	GLSLProgram *fp = NULL;
@@ -146,27 +146,27 @@ Shader *GLSLShaderModule::createShader(TiXmlNode *node) {
 		
 		if(strcmp(pChild->Value(), "vp") == 0) {
 			String vpFileName = String(pChildElement->Attribute("source"));
-			vp = (GLSLProgram*)CoreServices::getInstance()->getResourceManager()->getResourceByPath(vpFileName);
+			vp = (GLSLProgram*)resourcePool->getResourceByPath(vpFileName);
 			if(!vp) {
 				vp = (GLSLProgram*)CoreServices::getInstance()->getMaterialManager()->createProgramFromFile(vpFileName);
 				if(vp) {
 					vp->setResourcePath(vpFileName);
 					OSFileEntry entry = OSFileEntry(vpFileName, OSFileEntry::TYPE_FILE);
 					vp->setResourceName(entry.name);
-					CoreServices::getInstance()->getResourceManager()->addResource(vp);
+					resourcePool->addResource(vp);
 				}
 			}
 		}
 		if(strcmp(pChild->Value(), "fp") == 0) {
 			String fpFileName = String(pChildElement->Attribute("source"));		
-			fp = (GLSLProgram*)CoreServices::getInstance()->getResourceManager()->getResourceByPath(fpFileName);
+			fp = (GLSLProgram*)resourcePool->getResourceByPath(fpFileName);
 			if(!fp) {
 				fp = (GLSLProgram*)CoreServices::getInstance()->getMaterialManager()->createProgramFromFile(fpFileName);
 				if(fp) {
 					fp->setResourcePath(fpFileName);
 					OSFileEntry entry = OSFileEntry(fpFileName, OSFileEntry::TYPE_FILE);					
 					fp->setResourceName(entry.name);
-					CoreServices::getInstance()->getResourceManager()->addResource(fp);				
+					resourcePool->addResource(fp);				
 				}
 			}			
 		}

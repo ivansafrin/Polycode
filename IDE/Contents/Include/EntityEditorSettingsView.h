@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2013 by Ivan Safrin
+ Copyright (C) 2014 by Ivan Safrin
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -30,36 +30,16 @@
 using namespace Polycode;
 
 
-class EntityEditorPropertyView : public UIElement {
-    public:
+class EntityEditorSettingsView : public UIElement {
+public:
+    EntityEditorSettingsView();
+    ~EntityEditorSettingsView();
     
-        EntityEditorPropertyView();
-        ~EntityEditorPropertyView();
+    void setEntityInstance(SceneEntityInstance *instance);
     
-        void setEntityInstance(SceneEntityInstance *instance);
-        void setEntity(Entity *entity);
-        void handleEvent(Event *event);
-        void updateShaderOptions();
+    void Resize(Number width, Number height);
     
-        void Resize(Number width, Number height);
-    
-    protected:
-    
-        Entity *targetEntity;
-        PropList *entityProps;
-    
-        TransformSheet *transformSheet;    
-        EntitySheet *entitySheet;
-        MaterialPropSheet *materialSheet;
-        ScenePrimitiveSheet *primitiveSheet;
-        SceneLightSheet *lightSheet;
-        ParticleEmitterSheet *particleSheet;
-        SceneLabelSheet *labelSheet;
-        SceneSpriteSheet *spriteSheet;
-        SoundSheet *soundSheet;
-        CameraSheet *cameraSheet;
-    
-        ShaderTexturesSheet *shaderTexturesSheet;
-        ShaderOptionsSheet *shaderOptionsSheet;
+private:
+    PropList *entityProps;
+    LinkedMaterialsSheet *materialsSheet;
 };
-

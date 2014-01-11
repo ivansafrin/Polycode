@@ -311,7 +311,9 @@ public:
 
 	void handleEvent(Event *event);	
 	void showAssetBrowser(std::vector<String> extensions);
-	
+
+	void showAssetBrowserForPools(std::vector<ResourcePool*> pools, int resourceType);
+    
 	PolycodeProjectBrowser *getCurrentProjectBrowser();
 	PolycodeProjectFrame *getActiveProjectFrame();	
 	PolycodeProjectFrame *getProjectFrame(PolycodeProject *project);

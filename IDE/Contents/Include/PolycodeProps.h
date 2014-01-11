@@ -53,24 +53,24 @@ class PropProp : public UIElement {
 };
 
 class Vector3Prop : public PropProp {
-public:
-    Vector3Prop(String caption);
-    ~Vector3Prop();
-    void handleEvent(Event *event);
-    void set(const Vector3 &position);
+    public:
+        Vector3Prop(String caption);
+        ~Vector3Prop();
+        void handleEvent(Event *event);
+        void set(const Vector3 &position);
 
-    Vector3 get() const;
-    void setPropData(PolycodeEditorPropActionData* data);
-    
-    void setPropWidth(Number width);
-    
-    UITextInput *xInput;
-    UITextInput *yInput;
-    UITextInput *zInput;
-    
-    UILabel *labelX;
-    UILabel *labelY;
-    UILabel *labelZ;
+        Vector3 get() const;
+        void setPropData(PolycodeEditorPropActionData* data);
+        
+        void setPropWidth(Number width);
+        
+        UITextInput *xInput;
+        UITextInput *yInput;
+        UITextInput *zInput;
+        
+        UILabel *labelX;
+        UILabel *labelY;
+        UILabel *labelZ;
 };
 
 
@@ -112,6 +112,18 @@ class SliderProp : public PropProp {
 		
 		Number lastValue;
 		Number currentValue;
+};
+
+class ButtonProp : public PropProp {
+    public:
+        ButtonProp(const String &caption);
+        ~ButtonProp();
+        void setPropWidth(Number width);
+        UIButton *getButton();
+    
+    private:
+    
+        UIButton *button;
 };
 
 
@@ -191,6 +203,19 @@ class ShaderPassProp : public PropProp {
 		UIButton *editButton;
 		
 };
+
+class RemovableStringProp : public PropProp {
+public:
+    RemovableStringProp(const String &caption);
+    ~RemovableStringProp();
+    void handleEvent(Event *event);
+    
+    String getCaption();
+    
+    UILabel *label;
+    UIImageButton *removeButton;
+};
+
 
 class CustomProp : public PropProp {
 	public:
@@ -321,6 +346,27 @@ class BezierCurveProp : public PropProp {
 		String curveName;
 		BezierCurve *curve;
 		UIButton *changeButton;
+};
+
+class MaterialProp : public PropProp {
+    public:
+        MaterialProp(const String &caption);
+        ~MaterialProp();
+    
+        void setEntityInstance(SceneEntityInstance *instance);
+        void set(Material *material);
+        Material *get();
+		void setPropWidth(Number width);
+        void handleEvent(Event *event);
+    
+    private:
+    
+        SceneEntityInstance *entityInstance;
+        UIRect *previewShape;
+        UIButton *changeButton;
+        UILabel *materialLabel;
+    
+        Material *currentMaterial;
 };
 
 class TextureProp : public PropProp {
@@ -474,7 +520,7 @@ class EntitySheet : public PropSheet {
 
 class ShaderPassesSheet : public PropSheet {
 	public:
-		ShaderPassesSheet();
+		ShaderPassesSheet(ResourcePool *resourcePool);
 		~ShaderPassesSheet();
 		void handleEvent(Event *event);			
 		void refreshPasses();
@@ -488,6 +534,8 @@ class ShaderPassesSheet : public PropSheet {
 
 		ShaderPassProp *selectedProp;
 
+        ResourcePool *resourcePool;
+    
 		UIButton *addButton;		
 		int removeIndex;		
 };
@@ -663,14 +711,14 @@ class MaterialPropSheet : public PropSheet {
         MaterialPropSheet();
         ~MaterialPropSheet();
     
+        void setEntityInstance(SceneEntityInstance *instance);
         void handleEvent(Event *event);
-        void reloadMaterials();
-    
         void setSceneMesh(SceneMesh *sceneMesh);
     
     protected:
+    
+        MaterialProp *materialProp;
         SceneMesh *sceneMesh;
-        ComboProp *materialProp;
 };
 
 class EntityPropSheet : public PropSheet {
@@ -778,6 +826,27 @@ class SoundSheet : public PropSheet {
 		NumberProp *maxDistance;		
 		SliderProp *volume;
 		SliderProp *pitch;
+};
+
+class LinkedMaterialsSheet : public PropSheet {
+    public:
+        LinkedMaterialsSheet();
+        ~LinkedMaterialsSheet();
+    
+        void handleEvent(Event *event);
+        void setEntityInstance(SceneEntityInstance *instance);
+    
+        void Update();
+    
+        void updateMaterials();
+    
+    
+    private:
+        SceneEntityInstance *instance;
+        ButtonProp *addMaterialProp;
+    
+        RemovableStringProp *propToRemove;
+    
 };
 
 class PropList : public UIElement {

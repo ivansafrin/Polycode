@@ -80,6 +80,28 @@ void MaterialManager::reloadPrograms() {
 	}
 }
 
+void MaterialManager::loadMaterialLibraryIntoPool(ResourcePool *pool, const String &materialFile) {
+    std::vector<Shader*> shaders =loadShadersFromFile(pool, materialFile);
+
+    for(int s=0; s < shaders.size(); s++) {
+        pool->addResource(shaders[s]);
+        addShader(shaders[s]);
+    }
+    
+    std::vector<Cubemap*> cubemaps = loadCubemapsFromFile(materialFile);
+    for(int c=0; c < cubemaps.size(); c++) {
+        pool->addResource(cubemaps[c]);
+    }
+    
+    std::vector<Material*> materials = loadMaterialsFromFile(pool, materialFile);
+    
+    for(int m=0; m < materials.size(); m++) {
+        materials[m]->setResourceName(materials[m]->getName());
+        pool->addResource(materials[m]);
+        addMaterial(materials[m]);
+    }
+}
+
 ShaderProgram *MaterialManager::createProgramFromFile(String programPath) {
 	OSFileEntry entry(programPath, OSFileEntry::TYPE_FILE);
 	   
@@ -103,11 +125,15 @@ void MaterialManager::addShaderModule(PolycodeShaderModule *module) {
 
 #define DEFAULT_TEXTURE "default/default.png"
 
-Texture *MaterialManager::createTextureFromFile(const String& fileName, bool clamp, bool createMipmaps) {
+Texture *MaterialManager::createTextureFromFile(const String& fileName, bool clamp, bool createMipmaps, ResourcePool *resourcePool) {
 	if(fileName.size() == 0) {
 		Logger::log("empty texture filename, using default texture.\n");
 		return getTextureByResourcePath(DEFAULT_TEXTURE);
 	}
+    
+    if(!resourcePool) {
+        resourcePool = CoreServices::getInstance()->getResourceManager()->getGlobalPool();
+    }
 
 	Texture *newTexture;
 	newTexture = getTextureByResourcePath(fileName);
@@ -122,7 +148,7 @@ Texture *MaterialManager::createTextureFromFile(const String& fileName, bool cla
 		}
 		newTexture = createTexture(image->getWidth(), image->getHeight(), image->getPixels(), clamp, createMipmaps);
 		newTexture->setResourcePath(fileName);
-		CoreServices::getInstance()->getResourceManager()->addResource(newTexture);		
+        resourcePool->addResource(newTexture);
 	} else {
 		Logger::log("Error loading image (\"%s\"), using default texture.\n", fileName.c_str());		
 		newTexture = getTextureByResourcePath(DEFAULT_TEXTURE);
@@ -181,13 +207,13 @@ Shader *MaterialManager::getShaderByIndex(unsigned int index) {
 		return NULL;
 }
 
-Shader *MaterialManager::createShader(String shaderType, String name, String vpName, String fpName, bool screenShader) {
+Shader *MaterialManager::createShader(ResourcePool *resourcePool, String shaderType, String name, String vpName, String fpName, bool screenShader) {
 	Shader *retShader = NULL;
 	
 	for(int m=0; m < shaderModules.size(); m++) {
 		PolycodeShaderModule *shaderModule = shaderModules[m];
 		if(shaderModule->getShaderType() == shaderType) {
-			retShader = shaderModule->createShader(name, vpName, fpName);
+			retShader = shaderModule->createShader(resourcePool, name, vpName, fpName);
 		}
 	}
 	
@@ -201,7 +227,7 @@ Shader *MaterialManager::createShader(String shaderType, String name, String vpN
 	return retShader;
 }
 
-Shader *MaterialManager::createShaderFromXMLNode(TiXmlNode *node) {
+Shader *MaterialManager::createShaderFromXMLNode(ResourcePool *resourcePool, TiXmlNode *node) {
 	TiXmlElement *nodeElement = node->ToElement();
 	if (!nodeElement) return NULL; // Skip comment nodes
 	
@@ -212,7 +238,7 @@ Shader *MaterialManager::createShaderFromXMLNode(TiXmlNode *node) {
 		for(int m=0; m < shaderModules.size(); m++) {
 			PolycodeShaderModule *shaderModule = shaderModules[m];
 			if(shaderModule->getShaderType() == shaderType) {
-				retShader = shaderModule->createShader(node);
+				retShader = shaderModule->createShader(resourcePool, node);
 			}
 		}		
 	}
@@ -246,7 +272,7 @@ Shader *MaterialManager::createShaderFromXMLNode(TiXmlNode *node) {
 	return retShader;
 }
 
-Shader *MaterialManager::setShaderFromXMLNode(TiXmlNode *node) {
+Shader *MaterialManager::setShaderFromXMLNode(ResourcePool *resourcePool, TiXmlNode *node) {
 	TiXmlElement *nodeElement = node->ToElement();
 	if (!nodeElement) return NULL; // Skip comment nodes
 	
@@ -258,21 +284,10 @@ Shader *MaterialManager::setShaderFromXMLNode(TiXmlNode *node) {
 			retShader = fShader;
 		}
 	} else {
-		retShader = (Shader*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_SHADER, nodeElement->Attribute("name"));
+		retShader = (Shader*)resourcePool->getResource(Resource::RESOURCE_SHADER, nodeElement->Attribute("name"));
 	}
 	return retShader;
 }
-
-
-//			for (pChild = node->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {
-//				if(strcmp(pChild->Value(), "textures") == 0) {
-//					for (pChild2 = pChild->FirstChild(); pChild2 != 0; pChild2 = pChild2->NextSibling()) {
-//						if(strcmp(pChild2->Value(), "texture") == 0)
-//							fShader->setDiffuseTexture((Texture*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_TEXTURE, pChild2->ToElement()->GetText()));
-//					}
-//				}
-//			}
-
 
 Cubemap *MaterialManager::cubemapFromXMLNode(TiXmlNode *node) {
 	TiXmlElement *nodeElement = node->ToElement();
@@ -308,7 +323,7 @@ void MaterialManager::addShader(Shader *shader) {
 	shaders.push_back(shader);
 }
 
-std::vector<Shader*> MaterialManager::loadShadersFromFile(String fileName) {
+std::vector<Shader*> MaterialManager::loadShadersFromFile(ResourcePool *resourcePool, String fileName) {
 	std::vector<Shader*> retVector;
 	
 	TiXmlDocument doc(fileName.c_str());
@@ -321,7 +336,7 @@ std::vector<Shader*> MaterialManager::loadShadersFromFile(String fileName) {
 		if(mElem) {
 			TiXmlNode* pChild;					
 			for (pChild = mElem->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {	
-				Shader *newShader = createShaderFromXMLNode(pChild);
+				Shader *newShader = createShaderFromXMLNode(resourcePool, pChild);
 				if(newShader != NULL) {
 					Logger::log("Adding shader %s\n", newShader->getName().c_str());
 					newShader->setResourceName(newShader->getName());
@@ -357,7 +372,7 @@ std::vector<Cubemap*> MaterialManager::loadCubemapsFromFile(String fileName) {
 	return retVector;
 }
 
-std::vector<Material*> MaterialManager::loadMaterialsFromFile(String fileName) {
+std::vector<Material*> MaterialManager::loadMaterialsFromFile(ResourcePool *resourcePool, const String &fileName) {
 	std::vector<Material*> retVector;
 	
 	TiXmlDocument doc(fileName.c_str());
@@ -370,7 +385,7 @@ std::vector<Material*> MaterialManager::loadMaterialsFromFile(String fileName) {
 		if(mElem) {
 			TiXmlNode* pChild;					
 			for (pChild = mElem->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {
-				Material *newMat = materialFromXMLNode(pChild);
+				Material *newMat = materialFromXMLNode(resourcePool, pChild);
 				if (newMat) {
 					retVector.push_back(newMat);
 				}
@@ -381,11 +396,11 @@ std::vector<Material*> MaterialManager::loadMaterialsFromFile(String fileName) {
 	return retVector;
 }
 
-Material *MaterialManager::createMaterial(String materialName, String shaderName) {
+Material *MaterialManager::createMaterial(ResourcePool *resourcePool, String materialName, String shaderName) {
 	Material *newMaterial = new Material(materialName);
 	newMaterial->setResourceName(materialName);
 	
-	Shader *retShader = (Shader*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_SHADER, shaderName);
+	Shader *retShader = (Shader*)resourcePool->getResource(Resource::RESOURCE_SHADER, shaderName);
 	
 	if(retShader) {
 		ShaderBinding *newShaderBinding = retShader->createBinding();
@@ -395,7 +410,7 @@ Material *MaterialManager::createMaterial(String materialName, String shaderName
 	return newMaterial;
 }
 
-Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
+Material *MaterialManager::materialFromXMLNode(ResourcePool *resourcePool, TiXmlNode *node) {
 	TiXmlElement *nodeElement = node->ToElement();
 	if (!nodeElement) return NULL; // Skip comment nodes
 
@@ -472,7 +487,7 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 		if (!pChild3Element) continue; // Skip comment nodes
 		
 		if(strcmp(pChild3->Value(), "shader") == 0) {
-			materialShader = setShaderFromXMLNode(pChild3);
+			materialShader = setShaderFromXMLNode(resourcePool, pChild3);
 			if(materialShader) {
 				newShaderBinding = materialShader->createBinding();
 				materialShaders.push_back(materialShader);
@@ -560,7 +575,7 @@ Material *MaterialManager::materialFromXMLNode(TiXmlNode *node) {
 								if(pChild2Element->Attribute("name")) {
 									tname =  pChild2Element->Attribute("name");
 								}
-								newShaderBinding->addCubemap(tname, (Cubemap*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_CUBEMAP, pChild2Element->GetText()));
+								newShaderBinding->addCubemap(tname, (Cubemap*)resourcePool->getResource(Resource::RESOURCE_CUBEMAP, pChild2Element->GetText()));
 							}
 							
 						}
