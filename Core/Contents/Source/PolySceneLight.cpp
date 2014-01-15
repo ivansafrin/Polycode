@@ -125,19 +125,21 @@ unsigned int SceneLight::getShadowMapResolution() const {
 }
 
 void SceneLight::renderDepthMap(Scene *scene) {
-	CoreServices::getInstance()->getRenderer()->clearScreen();
-	CoreServices::getInstance()->getRenderer()->pushMatrix();
-	CoreServices::getInstance()->getRenderer()->loadIdentity();
+	Renderer* renderer = CoreServices::getInstance()->getRenderer();
+	renderer->clearScreen();
+	renderer->pushMatrix();
+	renderer->loadIdentity();
 
-	CoreServices::getInstance()->getRenderer()->setViewportSizeAndFOV(shadowMapRes, shadowMapRes, shadowMapFOV);	
-	CoreServices::getInstance()->getRenderer()->bindFrameBufferTexture(zBufferTexture);	
+	renderer->setViewportSize(shadowMapRes, shadowMapRes);
+	Camera* camera = scene->getActiveCamera();
+	renderer->setProjectionFromFoV(shadowMapFOV, camera->getNearClippingPlane(), camera->getFarClippingPlane());
+	renderer->bindFrameBufferTexture(zBufferTexture);
 
 	scene->RenderDepthOnly(spotCamera);
 		
-	lightViewMatrix = CoreServices::getInstance()->getRenderer()->getModelviewMatrix() *  CoreServices::getInstance()->getRenderer()->getProjectionMatrix();
-	CoreServices::getInstance()->getRenderer()->unbindFramebuffers();
-	CoreServices::getInstance()->getRenderer()->popMatrix();
-	CoreServices::getInstance()->getRenderer()->setViewportSizeAndFOV(CoreServices::getInstance()->getCore()->getXRes(), CoreServices::getInstance()->getCore()->getYRes(), 45.0f);
+	lightViewMatrix = renderer->getModelviewMatrix() *  renderer->getProjectionMatrix();
+	renderer->unbindFramebuffers();
+	renderer->popMatrix();
 }
 
 Entity *SceneLight::Clone(bool deepClone, bool ignoreEditorOnly) const {

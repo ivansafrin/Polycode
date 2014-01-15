@@ -410,7 +410,7 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
             camera->setOrthoMode((*cameraEntry)["ortho"]->boolVal);
             
             if(camera->getOrthoMode()) {
-                camera->setOrthoSizeMode((*cameraEntry)["sizeMode"]->intVal);
+				camera->setOrthoSizeMode(Camera::ProjectionMode((*cameraEntry)["sizeMode"]->intVal));
                 camera->setOrthoSize((*cameraEntry)["orthoWidth"]->NumberVal, (*cameraEntry)["orthoHeight"]->NumberVal);
             } else {
                 camera->setFOV((*cameraEntry)["fov"]->NumberVal);

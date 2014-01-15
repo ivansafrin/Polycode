@@ -39,6 +39,15 @@ namespace Polycode {
 	class _PolyExport Camera : public Entity {
 		public:
 			
+			enum ProjectionMode {
+				ORTHO_SIZE_MANUAL = 0,
+				ORTHO_SIZE_LOCK_HEIGHT = 1,
+				ORTHO_SIZE_LOCK_WIDTH = 2,
+				ORTHO_SIZE_VIEWPORT = 3,
+				PERSPECTIVE_FOV = 4,
+				PERSPECTIVE_FRUSTUM = 5
+			};
+
 			/**
 			* Constructor.
 			* @param parentScene Scene to add the camera to.
@@ -75,11 +84,19 @@ namespace Polycode {
 
 			void setOrthoSize(Number orthoSizeX, Number orthoSizeY);
 			
+			/** Switches into frustum mode and sets up the planes. */
+			void setFrustumMode(Number left, Number right, Number bottom, Number top, Number front, Number back);
+
 			/**
 			* Returns true if camera is in orthographic projection mode.
 			* @return True if camera is orthographic, false if otherwise.
 			*/
-			bool getOrthoMode();
+			bool getOrthoMode() {
+				return projectionMode == ORTHO_SIZE_MANUAL ||
+						projectionMode == ORTHO_SIZE_LOCK_HEIGHT ||
+						projectionMode == ORTHO_SIZE_LOCK_WIDTH ||
+						projectionMode == ORTHO_SIZE_VIEWPORT;
+			}
 			
 			/**
 			* Returns the width of the camera's orthographic frustum.
@@ -103,13 +120,15 @@ namespace Polycode {
 			* Returns the current FOV value for the camera.
 			* @return Current FOV value for the camera.
 			*/			
-			Number getFOV();
+			Number getFOV() {
+				return fov;
+			}
 			
 			void setClippingPlanes(Number nearClipPlane, Number farClipPlane);
         
         
-            Number getNearClipppingPlane();
-            Number getFarClipppingPlane();
+			Number getNearClippingPlane();
+			Number getFarClippingPlane();
         
 			void setParentScene(Scene *parentScene);
             Scene *getParentScene() const;
@@ -124,13 +143,17 @@ namespace Polycode {
 			* Sets the exposure for the camera. The exposure value can be passed to a shader for HDR rendering.
 			* @param level The new exposure value.
 			*/						
-			void setExposureLevel(Number level);
+			void setExposureLevel(Number level) {
+				exposureLevel = level;
+			}
 			
 			/**
 			* Returns the camera's exposure value.
 			* @return Current exposure value.
 			*/									
-			Number getExposureLevel();
+			Number getExposureLevel() {
+				return exposureLevel;
+			}
 
 			/**
 			* Sets the post-processing shader for the camera.
@@ -179,30 +202,35 @@ namespace Polycode {
             */
 			Vector2 cameraShift;
 		      
-            void setOrthoSizeMode(int orthoSizeMode);
-            int getOrthoSizeMode() const;
-        
-            static const int ORTHO_SIZE_MANUAL = 0;
-			static const int ORTHO_SIZE_LOCK_HEIGHT = 1;
-			static const int ORTHO_SIZE_LOCK_WIDTH = 2;
-			static const int ORTHO_SIZE_VIEWPORT = 3;
-		
+			/** @deprecated use setProjectionMode(ProjectionMode mode) */
+			void setOrthoSizeMode(ProjectionMode orthoSizeMode) { setProjectionMode(orthoSizeMode); }
+			/** @deprecated use getProjectionMode() */
+			ProjectionMode getOrthoSizeMode() const { return projectionMode; }
+
+			void setProjectionMode(ProjectionMode mode);
+			ProjectionMode getProjectionMode() const { return projectionMode; }
+
+
 		protected:
-        
-            int orthoSizeMode;
-		
+
+			ProjectionMode projectionMode;
+
 			Matrix4 projectionMatrix;
+
 			Polycode::Rectangle viewport;
 			Number orthoSizeX;
 			Number orthoSizeY;
-			
+
 			Number nearClipPlane;
 			Number farClipPlane;
 								
 			Number exposureLevel;
-			bool orthoMode;
 			Number fov;
+
+			Number leftFrustum,rightFrustum,topFrustum,bottomFrustum;
+
 			Number frustumPlanes[6][4];
+
 			Scene *parentScene;
 
 			Material *filterShaderMaterial;			
