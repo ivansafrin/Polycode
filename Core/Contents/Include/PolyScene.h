@@ -188,6 +188,8 @@ namespace Polycode {
 		
         Polycode::Rectangle sceneMouseRect;
         bool remapMouse;
+        
+        bool constrainPickingToViewport;
 		
 	protected:
 		

@@ -222,6 +222,8 @@ EntityEditorMainView::EntityEditorMainView() {
 	renderTextureShape->setTexture(renderTexture->getTargetTexture());
 	addChild(renderTextureShape);
 	renderTextureShape->setPosition(0, 30);
+    renderTextureShape->focusable = true;
+    renderTextureShape->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 
     cameraPreview = new CameraPreviewWindow();
     addChild(cameraPreview);
@@ -252,6 +254,8 @@ EntityEditorMainView::EntityEditorMainView() {
     mainScene->addChild(sceneObjectRoot);
     
 	transformGizmo = new TransformGizmo(mainScene, mainScene->getDefaultCamera());
+    transformGizmo->enabled = false;
+    
 	mainScene->addChild(transformGizmo);		
 	trackballCamera = new TrackballCamera(mainScene->getDefaultCamera(), renderTextureShape);
     trackballCamera->addEventListener(this, Event::CHANGE_EVENT);
@@ -572,9 +576,19 @@ void EntityEditorMainView::deleteSelected() {
     dispatchEvent(new Event(), Event::CHANGE_EVENT);
 }
 
+void EntityEditorMainView::onGainFocus() {
+    transformGizmo->enabled = true;
+}
+
+void EntityEditorMainView::onLoseFocus() {
+    transformGizmo->enabled = false;
+}
+
 void EntityEditorMainView::handleEvent(Event *event) {
 
-    if(event->getDispatcher() == trackballCamera) {
+    if(event->getDispatcher() == renderTextureShape) {
+        focusSelf();
+    } else if(event->getDispatcher() == trackballCamera) {
         Update();
     } else if(event->getDispatcher() == modeSwitchDropdown) {
         setEditorMode(modeSwitchDropdown->getSelectedIndex());
@@ -648,7 +662,9 @@ void EntityEditorMainView::handleEvent(Event *event) {
             switch(inputEvent->key) {
                 case KEY_BACKSPACE:
                 case KEY_DELETE:
-                    //deleteSelected();
+                    if(hasFocus) {
+                        deleteSelected();
+                    }
                 break;
             }
         }
@@ -665,7 +681,7 @@ void EntityEditorMainView::handleEvent(Event *event) {
             break;
         }
     } else {
-        if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN ) {
+        if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN && hasFocus && event->getDispatcher() != renderTextureShape) {
             InputEvent *inputEvent = (InputEvent*) event;
 
             if(inputEvent->mouseButton == CoreInput::MOUSE_BUTTON2) {

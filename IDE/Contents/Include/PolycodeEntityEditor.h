@@ -111,6 +111,8 @@ class EntityEditorMainView : public UIElement {
             void setMaterialRecursive(const String &materialName, bool wireFrame, Entity *entity);
             void restoreSettingsRecursive(Entity *entity);
     
+            void onGainFocus();
+            void onLoseFocus();
             void deleteSelected();
     
             Entity *getObjectRoot();
@@ -191,7 +193,6 @@ class PolycodeEntityEditor : public PolycodeEditor {
     
         void saveEntityToObjectEntry(Entity *entity, ObjectEntry *entry);
     
-		
         void handleEvent(Event *event);
     
 	protected:

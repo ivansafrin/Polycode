@@ -63,6 +63,7 @@ void Scene::initScene(int sceneType, bool virtualScene) {
 	useClearColor = false;
 	ownsChildren = false;
     remapMouse = false;
+    constrainPickingToViewport = true;
 	renderer = CoreServices::getInstance()->getRenderer();
 	rootEntity.setRenderer(renderer);
     CoreServices::getInstance()->getSceneManager()->addScene(this);
@@ -220,7 +221,6 @@ void Scene::Render(Camera *targetCamera) {
 								  0.0f,	0.0f,	0.5f,	0.0f,
 								  0.5f,	0.5f,	0.5f,	1.0f );
 				
-								
 				light->renderDepthMap(this);
 				textureMatrix = light->getLightViewMatrix() * matTexAdj;				
 				matrixPtr = &textureMatrix;				
@@ -320,6 +320,17 @@ void Scene::handleEvent(Event *event) {
 	if(event->getDispatcher() == core->getInput() && rootEntity.processInputEvents) {
 		InputEvent *inputEvent = (InputEvent*) event;
 
+        if(constrainPickingToViewport) {
+            Polycode::Rectangle v = activeCamera->getViewport();
+            if(remapMouse) {
+                v.x = sceneMouseRect.x;
+                v.y = sceneMouseRect.y;
+            }            
+            if(inputEvent->mousePosition.x < v.x || inputEvent->mousePosition.x > v.x+(v.w / renderer->getBackingResolutionScaleX()) || inputEvent->mousePosition.y < v.y || inputEvent->mousePosition.y > v.y + (v.h/renderer->getBackingResolutionScaleY())) {
+                    return;
+            }
+        }
+        
 		Ray ray = projectRayFromCameraAndViewportCoordinate(activeCamera, inputEvent->mousePosition);
 		
 		switch(inputEvent->getEventCode()) {

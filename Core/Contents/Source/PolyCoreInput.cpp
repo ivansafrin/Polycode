@@ -42,6 +42,7 @@ namespace Polycode {
 		simulateTouchWithMouse = false;
 		simulateMouseWithTouch = false;
 		ignoreOffScreenTouch = false;
+        keyRepeat = true;
 	}
 	
 	void CoreInput::clearInput() {
@@ -237,6 +238,13 @@ namespace Polycode {
 	}
 	
 	void CoreInput::setKeyState(PolyKEY keyCode, wchar_t code, bool newState, int ticks) {
+        
+        if(newState && !keyRepeat) {
+            if(keyboardState[keyCode]) {
+                return;
+            }
+        }
+        
 		InputEvent *evt = new InputEvent(keyCode, code, ticks);
 		if(keyCode < 512)
 			keyboardState[keyCode] = newState;

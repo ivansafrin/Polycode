@@ -169,6 +169,7 @@ namespace Polycode {
 		
 		void clearInput();
 		
+        bool keyRepeat;
 		
 		std::vector<JoystickInfo> joysticks;
 		bool keyboardState[512];

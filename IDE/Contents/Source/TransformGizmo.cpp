@@ -610,7 +610,10 @@ void TransformGizmo::setGizmoMode(int newMode) {
 }
 
 void TransformGizmo::handleEvent(Event *event) {
-
+    if(!enabled) {
+        return;
+    }
+    
 	if(!coreInput->getKeyState(KEY_LALT) && !coreInput->getKeyState(KEY_RALT)) {
 		if(event->getDispatcher() == pitchGrip) {
 			if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN) {

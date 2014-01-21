@@ -120,6 +120,9 @@ Number SceneLight::getShadowMapFOV() const {
 }
 
 SceneLight::~SceneLight() {
+    if(parentScene) {
+        parentScene->removeLight(this);
+    }
 	printf("Destroying scene light...\n");
 }
 
