@@ -210,6 +210,7 @@ void CameraPreviewWindow::setCamera(Scene *scene, Camera *camera) {
 EntityEditorMainView::EntityEditorMainView() {
 	processInputEvents = true;
     multiselectIndex = 0;
+    objectRootInstance = NULL;
 
 	mainScene = new Scene(Scene::SCENE_3D, true);
 	renderTexture = new SceneRenderTexture(mainScene, mainScene->getDefaultCamera(), 512, 512);
@@ -249,12 +250,20 @@ EntityEditorMainView::EntityEditorMainView() {
 	grid = new EditorGrid();
 	mainScene->addChild(grid);
 	
+    objectRootBase = new Entity();
+    mainScene->addChild(objectRootBase);
+    objectRootBase->processInputEvents = true;
+    
     sceneObjectRoot = new Entity();
     sceneObjectRoot->processInputEvents = true;
-    mainScene->addChild(sceneObjectRoot);
+    objectRootBase->addChild(sceneObjectRoot);
+    
+    iconBase = new Entity();
+    mainScene->addChild(iconBase);
+    iconBase->processInputEvents = true;
     
 	transformGizmo = new TransformGizmo(mainScene, mainScene->getDefaultCamera());
-    transformGizmo->enabled = false;
+    transformGizmo->enableGizmo = false;
     
 	mainScene->addChild(transformGizmo);		
 	trackballCamera = new TrackballCamera(mainScene->getDefaultCamera(), renderTextureShape);
@@ -338,12 +347,19 @@ void EntityEditorMainView::Update() {
     
     for(int i=0; i < icons.size(); i++) {
         Number scale;
+        
+        Entity *parentEntity = (Entity*) icons[i]->getUserData();
+        
+        Vector3 parentPosition = parentEntity->getConcatenatedMatrix().getPosition();
+        icons[i]->setPosition(parentPosition);
+        
         if(editorMode == EDITOR_MODE_2D) {
             scale = trackballCamera->getCameraDistance() * 0.1;
         } else {
             scale = mainScene->getDefaultCamera()->getPosition().distance(icons[i]->getConcatenatedMatrix().getPosition()) * 0.1;
         }
         icons[i]->setScale(scale, scale, scale);
+        icons[i]->rebuildTransformMatrix();
     }
 }
 
@@ -359,11 +375,12 @@ void EntityEditorMainView::createIcon(Entity *entity, String iconFile) {
         iconPrimitive->getLocalShaderOptions()->addTexture("diffuse", tex);
 	}
     
-    entity->addChild(iconPrimitive);
+    iconBase->addChild(iconPrimitive);
     iconPrimitive->billboardMode = true;
+    iconPrimitive->setUserData((void*)entity);
     iconPrimitive->processInputEvents = true;
     iconPrimitive->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
-    
+    iconPrimitive->ignoreParentMatrix = true;
     iconPrimitive->addTag("");
     iconPrimitive->depthTest = false;
     iconPrimitive->depthWrite = false;
@@ -380,6 +397,26 @@ void EntityEditorMainView::setEditorPropsRecursive(Entity *entity) {
     }
 }
 
+void EntityEditorMainView::setLinkedEntityPropsRecursive(SceneEntityInstance *parentInstance, Entity *entity) {
+    SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(entity);
+    SceneParticleEmitter *emitter = dynamic_cast<SceneParticleEmitter*>(entity);
+    
+    entity->setUserData((void*)parentInstance);
+    entity->processInputEvents = true;
+    entity->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+    entity->editorOnly = true;
+    
+    if(sceneMesh && !emitter) {
+        sceneMesh->wireFrameColor = Color(0.2, 0.9, 0.6, 1.0);
+        sceneMesh->useGeometryHitDetection = true;
+    }
+ 
+    for(int i=0; i < entity->getNumChildren(); i++) {
+        setLinkedEntityPropsRecursive(parentInstance, entity->getChildAtIndex(i));
+    }
+
+}
+
 void EntityEditorMainView::setEditorProps(Entity *entity) {
     entity->processInputEvents = true;
     entity->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
@@ -391,6 +428,13 @@ void EntityEditorMainView::setEditorProps(Entity *entity) {
         sceneMesh->wireFrameColor = Color(1.0, 0.8, 0.3, 1.0);
 //        sceneMesh->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
         sceneMesh->useGeometryHitDetection = true;
+    }
+    
+    SceneEntityInstance *instance = dynamic_cast<SceneEntityInstance*>(entity);
+    if(instance && instance != objectRootInstance) {
+        for(int i=0; i < instance->getNumChildren(); i++) {
+            setLinkedEntityPropsRecursive(instance, instance->getChildAtIndex(i));
+        }
     }
     
     SceneLight *sceneLight = dynamic_cast<SceneLight*>(entity);
@@ -519,6 +563,15 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
         return;
     }
     
+    if(command == "add_entity") {
+        assetSelectType = "entity";
+        globalFrame->assetBrowser->addEventListener(this, UIEvent::OK_EVENT);
+        std::vector<String> extensions;
+        extensions.push_back("entity");
+        globalFrame->showAssetBrowser(extensions);
+        return;
+    }
+    
     if(command == "add_particles") {
         SceneParticleEmitter  *newEmitter = new SceneParticleEmitter(30, 3.0, 0.2);
         newEmitter->bBox = Vector3(0.5, 0.5, 0.5);
@@ -577,11 +630,11 @@ void EntityEditorMainView::deleteSelected() {
 }
 
 void EntityEditorMainView::onGainFocus() {
-    transformGizmo->enabled = true;
+    transformGizmo->enableGizmo = true;
 }
 
 void EntityEditorMainView::onLoseFocus() {
-    transformGizmo->enabled = false;
+    transformGizmo->enableGizmo = false;
 }
 
 void EntityEditorMainView::handleEvent(Event *event) {
@@ -595,14 +648,14 @@ void EntityEditorMainView::handleEvent(Event *event) {
     } else if(event->getDispatcher() == globalFrame->assetBrowser) {
         if(event->getEventCode() == UIEvent::OK_EVENT) {
             if(assetSelectType == "mesh") {
-                SceneMesh *newMesh = new SceneMesh(globalFrame->assetBrowser->getFullSelectedAssetPath());
+                SceneMesh *newMesh = new SceneMesh(globalFrame->assetBrowser->getSelectedAssetPath());
                 newMesh->cacheToVertexBuffer(true);
                 sceneObjectRoot->addChild(newMesh);
                 setEditorProps(newMesh);
                 newMesh->setPosition(cursorPosition);
                 selectEntity(newMesh);
             } else if(assetSelectType == "image") {
-                SceneImage *newImage = new SceneImage(globalFrame->assetBrowser->getFullSelectedAssetPath());
+                SceneImage *newImage = new SceneImage(globalFrame->assetBrowser->getSelectedAssetPath());
                 newImage->setMaterialByName("Unlit");
                 if(newImage->getLocalShaderOptions()) {
                     newImage->getLocalShaderOptions()->addTexture("diffuse", newImage->getTexture());
@@ -611,24 +664,29 @@ void EntityEditorMainView::handleEvent(Event *event) {
                 setEditorProps(newImage);
                 newImage->setPosition(cursorPosition);
                 selectEntity(newImage);
-        } else if(assetSelectType == "sprite") {
-            SceneSprite *newSprite = new SceneSprite(globalFrame->assetBrowser->getFullSelectedAssetPath());
-            
-            if(newSprite->getNumAnimations()) {
-                newSprite->playAnimation(newSprite->getAnimationAtIndex(0)->name, 0, false);
+            } else if(assetSelectType == "sprite") {
+                SceneSprite *newSprite = new SceneSprite(globalFrame->assetBrowser->getSelectedAssetPath());
+                
+                if(newSprite->getNumAnimations()) {
+                    newSprite->playAnimation(newSprite->getAnimationAtIndex(0)->name, 0, false);
+                }
+                
+                newSprite->setMaterialByName("Unlit");
+                if(newSprite->getLocalShaderOptions()) {
+                    newSprite->getLocalShaderOptions()->addTexture("diffuse", newSprite->getTexture());
+                }
+                sceneObjectRoot->addChild(newSprite);
+                setEditorProps(newSprite);
+                newSprite->setPosition(cursorPosition);
+                selectEntity(newSprite);
+            } else if(assetSelectType == "entity") {
+                SceneEntityInstance *newEntity = new SceneEntityInstance(mainScene, globalFrame->assetBrowser->getSelectedAssetPath());
+                sceneObjectRoot->addChild(newEntity);
+                setEditorProps(newEntity);
+                newEntity->setPosition(cursorPosition);
+                selectEntity(newEntity);
             }
             
-            newSprite->setMaterialByName("Unlit");
-            if(newSprite->getLocalShaderOptions()) {
-                newSprite->getLocalShaderOptions()->addTexture("diffuse", newSprite->getTexture());
-            }
-            sceneObjectRoot->addChild(newSprite);
-            setEditorProps(newSprite);
-            newSprite->setPosition(cursorPosition);
-            selectEntity(newSprite);
-        }
-        
-        
             globalFrame->assetBrowser->removeAllHandlersForListener(this);
             globalFrame->hideModal();
         }
@@ -665,6 +723,16 @@ void EntityEditorMainView::handleEvent(Event *event) {
                     if(hasFocus) {
                         deleteSelected();
                     }
+                break;
+                case KEY_ESCAPE:
+                {
+                    for(int i=0; i < selectedEntities.size(); i++) {
+                        doEntityDeselect(selectedEntities[i]);
+                    }
+                    selectedEntities.clear();
+                    transformGizmo->setTransformSelection(selectedEntities);
+                    dispatchEvent(new Event(), Event::CHANGE_EVENT);                    
+                }
                 break;
             }
         }
@@ -755,6 +823,22 @@ void EntityEditorMainView::doEntityDeselect(Entity *targetEntity) {
     if(sceneMesh) {
         sceneMesh->overlayWireframe = false;
     }
+    
+    SceneEntityInstance *instance = dynamic_cast<SceneEntityInstance*>(targetEntity);
+    if(instance) {
+        setOverlayWireframeRecursive(targetEntity, false);
+    }
+    
+}
+
+void EntityEditorMainView::setOverlayWireframeRecursive(Entity *targetEntity, bool val) {
+    SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(targetEntity);
+    if(sceneMesh) {
+        sceneMesh->overlayWireframe = val;
+    }
+    for(int i=0; i < targetEntity->getNumChildren(); i++) {
+        setOverlayWireframeRecursive(targetEntity->getChildAtIndex(i), val);
+    }
 }
 
 void EntityEditorMainView::doEntitySelect(Entity *targetEntity) {
@@ -765,12 +849,22 @@ void EntityEditorMainView::doEntitySelect(Entity *targetEntity) {
         sceneMesh->overlayWireframe = true;
     }
     
+    SceneEntityInstance *instance = dynamic_cast<SceneEntityInstance*>(targetEntity);
+    if(instance) {
+        setOverlayWireframeRecursive(targetEntity, true);
+    }
+    
     Camera *camera = dynamic_cast<Camera*>(targetEntity);
     cameraPreview->setCamera(mainScene, camera);
 }
 
 
 void EntityEditorMainView::selectEntity(Entity *targetEntity, bool addToSelection) {
+    
+    if(targetEntity->getUserData()) {
+        SceneEntityInstance *instance = (SceneEntityInstance*)targetEntity->getUserData();
+        targetEntity = instance;
+    }
     
     bool doNotReselect = false;
     if(!addToSelection) {
@@ -803,14 +897,15 @@ Entity *EntityEditorMainView::getObjectRoot() {
     return sceneObjectRoot;
 }
 
-void EntityEditorMainView::setObjectRoot(Entity *entity) {
+void EntityEditorMainView::setObjectRoot(SceneEntityInstance *entity) {
+    objectRootInstance = entity;
     if(sceneObjectRoot) {
         sceneObjectRoot->getParentEntity()->removeChild(sceneObjectRoot);
         delete sceneObjectRoot;
     }
     sceneObjectRoot = entity;
     sceneObjectRoot->processInputEvents = true;
-    mainScene->addChild(sceneObjectRoot);
+    objectRootBase->addChild(sceneObjectRoot);
     sceneObjectRoot->getParentEntity()->moveChildBottom(sceneObjectRoot);
 }
 
@@ -945,6 +1040,7 @@ bool PolycodeEntityEditor::openFile(OSFileEntry filePath) {
     
     mainView->setObjectRoot(loadedInstance);
     mainView->setEditorPropsRecursive(loadedInstance);
+    
     treeView->setRootEntity(loadedInstance);
     propertyView->setEntityInstance(loadedInstance);
     settingsView->setEntityInstance(loadedInstance);
@@ -1003,7 +1099,7 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
         }
     }
     
-    if(dynamic_cast<SceneEntityInstance*>(entity)) {
+    if(dynamic_cast<SceneEntityInstance*>(entity) && entity != mainView->getObjectRoot()) {
         if(!(*(entry))["type"]) {
             entry->addChild("type", "SceneEntityInstance");
         }
@@ -1122,7 +1218,7 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
         }
         
     }
-    
+
     if(dynamic_cast<SceneSound*>(entity)) {
         SceneSound *sound = (SceneSound*) entity;
         

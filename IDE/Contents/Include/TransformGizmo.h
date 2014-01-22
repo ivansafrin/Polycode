@@ -71,6 +71,8 @@ class TransformGizmo : public Entity {
         static const int CENTER_MODE_MEDIAN = 0;
         static const int CENTER_MODE_INDIVIDUAL = 1;
     
+        bool enableGizmo;
+    
 	private:
         int transformMode;
         int gizmoMode;

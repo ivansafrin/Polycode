@@ -88,6 +88,7 @@ class SceneMeshSettings {
         ShaderBinding *shaderBinding;
 };
 
+
 class EntityEditorMainView : public UIElement {
 		public:
 			EntityEditorMainView();
@@ -110,13 +111,15 @@ class EntityEditorMainView : public UIElement {
     
             void setMaterialRecursive(const String &materialName, bool wireFrame, Entity *entity);
             void restoreSettingsRecursive(Entity *entity);
-    
+            void setOverlayWireframeRecursive(Entity *targetEntity, bool val);
+            void setLinkedEntityPropsRecursive(SceneEntityInstance *parentInstance, Entity *entity);
+        
             void onGainFocus();
             void onLoseFocus();
             void deleteSelected();
     
             Entity *getObjectRoot();
-            void setObjectRoot(Entity *entity);
+            void setObjectRoot(SceneEntityInstance *entity);
     
             Scene *getMainScene();
     
@@ -139,6 +142,10 @@ class EntityEditorMainView : public UIElement {
     
 			Scene *mainScene;
             Entity *sceneObjectRoot;
+    
+            Entity *objectRootBase;
+            Entity *iconBase;
+            SceneEntityInstance *objectRootInstance;
     
 			SceneRenderTexture *renderTexture;
 			UIRect *renderTextureShape;	

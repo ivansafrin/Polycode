@@ -50,7 +50,7 @@ AssetEntry::AssetEntry(String assetPath, String assetName, String extension, Res
 	} else if(extension == "ogg" || extension == "wav") {
 		imageShape->loadTexture("browserIcons/sound_icon.png");
 	} else if(extension == "entity") {
-		imageShape->loadTexture("browserIcons/entity_icon");
+		imageShape->loadTexture("browserIcons/entity_icon.png");
 	} else if(extension == "sprite") {
 		imageShape->loadTexture("browserIcons/sprite_icon.png");
 	} else if(extension == "ttf" || extension == "otf") {
@@ -63,8 +63,7 @@ AssetEntry::AssetEntry(String assetPath, String assetName, String extension, Res
 		imageShape->loadTexture("browserIcons/materials_icon.png");
     } else if(extension == "material_resource") {
 		imageShape->loadTexture("browserIcons/material_resource_icon.png");
-	}
-
+    }
 	
 	imageShape->setPosition(28, 10);
     imageShape->setBlendingMode(Renderer::BLEND_MODE_NORMAL);

@@ -3377,7 +3377,7 @@ LinkedMaterialsSheet::LinkedMaterialsSheet() : PropSheet("LINKED MATERIALS", "li
     addProp(addMaterialProp);
     addMaterialProp->getButton()->addEventListener(this, UIEvent::CLICK_EVENT);
     
-    propToRemove = NULL;
+    poolRemoveIndex = -1;
 }
 
 LinkedMaterialsSheet::~LinkedMaterialsSheet() {
@@ -3385,12 +3385,12 @@ LinkedMaterialsSheet::~LinkedMaterialsSheet() {
 }
 
 void LinkedMaterialsSheet::Update() {
-    if(propToRemove) {
+    if(poolRemoveIndex > -1) {
         if(instance) {
-//            instance->removeLinkedMaterialFile(propToRemove->getCaption());
+            instance->unlinkResourcePool(instance->getLinkedResourcePoolAtIndex(poolRemoveIndex));
             updateMaterials();
         }
-        propToRemove = NULL;
+        poolRemoveIndex = -1;
     }
 }
 
@@ -3402,7 +3402,7 @@ void LinkedMaterialsSheet::handleEvent(Event *event) {
     
     for(int i=0; i < props.size(); i++) {
         if(props[i] == event->getDispatcher()) {
-            propToRemove = (RemovableStringProp*) props[i];
+            poolRemoveIndex = i;
         }
     }
     

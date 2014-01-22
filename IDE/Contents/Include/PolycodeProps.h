@@ -845,7 +845,7 @@ class LinkedMaterialsSheet : public PropSheet {
         SceneEntityInstance *instance;
         ButtonProp *addMaterialProp;
     
-        RemovableStringProp *propToRemove;
+        int poolRemoveIndex;
     
 };
 

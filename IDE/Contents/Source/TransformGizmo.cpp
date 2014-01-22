@@ -91,6 +91,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	processInputEvents = true;
     orientation = ORIENTATION_GLOBAL;
     centerMode = CENTER_MODE_MEDIAN;
+    enableGizmo = true;
 	
 	this->targetScene = targetScene;
 	this->targetCamera = targetCamera;
@@ -610,7 +611,7 @@ void TransformGizmo::setGizmoMode(int newMode) {
 }
 
 void TransformGizmo::handleEvent(Event *event) {
-    if(!enabled) {
+    if(!enableGizmo) {
         return;
     }
     

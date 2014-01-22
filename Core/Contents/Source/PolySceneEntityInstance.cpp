@@ -266,20 +266,12 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
 
 	ObjectEntry *entityType = (*entry)["type"];
 	if(entityType) {
-			
-        
-        /*
-         
-         if(entityType->stringVal == "SceneEntityInstance") {
-         ObjectEntry *screenInstanceEntry = (*entry)["SceneEntityInstance"];
-         String filePath = (*screenInstanceEntry)["filePath"]->stringVal;
-         SceneEntityInstance *instance = new SceneEntityInstance(filePath);
-         entity = instance;
-         }
-         
-         */
-
-		if(entityType->stringVal == "SceneSprite") {
+        if(entityType->stringVal == "SceneEntityInstance") {
+            ObjectEntry *instanceEntry = (*entry)["SceneEntityInstance"];
+            String filePath = (*instanceEntry)["filePath"]->stringVal;
+            SceneEntityInstance *instance = new SceneEntityInstance(parentScene, filePath);
+            entity = instance;
+         } else if(entityType->stringVal == "SceneSprite") {
 			ObjectEntry *spriteEntry = (*entry)["SceneSprite"];
 			String filePath = (*spriteEntry)["filePath"]->stringVal;
 			
