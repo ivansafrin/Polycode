@@ -67,7 +67,8 @@ namespace Polycode {
 			void *shaderModule;
 			
 			int blendingMode;
-			
+        
+            bool wireframe;
 			bool screenMaterial;
 			
 		protected:

@@ -359,7 +359,7 @@ void Camera::drawFilter(Texture *targetTexture, Number targetTextureWidth, Numbe
 			materialBinding->addTexture(depthBinding->name, finalTargetZTexture);
 		}
 		
-		renderer->applyMaterial(filterShaderMaterial, localShaderOptions[i], i);		
+		renderer->applyMaterial(filterShaderMaterial, localShaderOptions[i], i, true);
 		if(i==filterShaderMaterial->getNumShaders()-1) {
 				if(targetTexture) {
 					renderer->setViewportSize(targetTextureWidth, targetTextureHeight);	

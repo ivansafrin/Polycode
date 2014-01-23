@@ -54,6 +54,7 @@ void Scene::initScene(int sceneType, bool virtualScene) {
 	defaultCamera = new Camera(this);
 	activeCamera = defaultCamera;	
 	fogEnabled = false;
+    overrideMaterial = NULL;
 	lightingEnabled = false;
 	enabled = true;
 	isSceneVirtual = virtualScene;	
@@ -75,6 +76,10 @@ void Scene::initScene(int sceneType, bool virtualScene) {
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_UP);
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_DOWN);	
+}
+
+void Scene::setOverrideMaterial(Material *material) {
+    overrideMaterial = material;
 }
 
 void Scene::setSceneType(int newType) {
@@ -174,6 +179,8 @@ Camera *Scene::getDefaultCamera() {
 void Scene::Render(Camera *targetCamera) {	
 	if(!targetCamera && !activeCamera)
 		return;
+    
+    renderer->setOverrideMaterial(overrideMaterial);
 	
 	if(!targetCamera)
 		targetCamera = activeCamera;

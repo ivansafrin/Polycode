@@ -758,41 +758,6 @@ void OpenGLRenderer::clearBuffer(bool colorBuffer, bool depthBuffer) {
 	glClear(clearMask);	
 }
 
-void OpenGLRenderer::applyMaterial(Material *material,  ShaderBinding *localOptions,unsigned int shaderIndex) {
-	if(!material->getShader(shaderIndex) || !shadersEnabled) {
-		setTexture(NULL);
-		return;
-	}
-	
-	FixedShaderBinding *fBinding;
-	
-	switch(material->getShader(shaderIndex)->getType()) {
-		case Shader::FIXED_SHADER:
-//			FixedShader *fShader = (FixedShader*)material->getShader();
-			fBinding = (FixedShaderBinding*)material->getShaderBinding(shaderIndex);
-			setTexture(fBinding->getDiffuseTexture());
-//			setTexture(fShader->getDiffuseTexture());
-		break;	
-		case Shader::MODULE_SHADER:		
-			currentMaterial = material;
-			if(material->shaderModule == NULL) {
-				for(int m=0; m < shaderModules.size(); m++) {
-					PolycodeShaderModule *shaderModule = shaderModules[m];	
-					if(shaderModule->hasShader(material->getShader(shaderIndex))) {
-						material->shaderModule = (void*)shaderModule;
-					}
-				}	
-			} else {
-				PolycodeShaderModule *shaderModule = (PolycodeShaderModule*)material->shaderModule;
-				shaderModule->applyShaderMaterial(this, material, localOptions, shaderIndex);
-				currentShaderModule = shaderModule;
-			}
-		break;
-	}
-	
-	setBlendingMode(material->blendingMode);
-}
-
 void OpenGLRenderer::clearShader() {
 
 	glDisable(GL_COLOR_MATERIAL);

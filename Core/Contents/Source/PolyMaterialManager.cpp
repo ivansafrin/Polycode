@@ -431,7 +431,11 @@ Material *MaterialManager::materialFromXMLNode(ResourcePool *resourcePool, TiXml
 		if(String(nodeElement->Attribute("screen")) == "true") {
 			newMaterial->screenMaterial = true;
 		}
-	}	
+	}
+    
+	if(nodeElement->Attribute("wireframe")) {
+		newMaterial->wireframe = String(nodeElement->Attribute("wireframe")) == "true";
+	}
 	
 	if(nodeElement->Attribute("blendingMode")) {
 		newMaterial->blendingMode = atoi(nodeElement->Attribute("blendingMode"));

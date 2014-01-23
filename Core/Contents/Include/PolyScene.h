@@ -129,6 +129,8 @@ namespace Polycode {
 		
 		void Render(Camera *targetCamera = NULL);
 		void RenderDepthOnly(Camera *targetCamera);
+        
+        void setOverrideMaterial(Material *material);
 		
 		void handleEvent(Event *event);
 		
@@ -204,6 +206,8 @@ namespace Polycode {
 		Camera *defaultCamera;
 		Camera *activeCamera;
 		
+        Material *overrideMaterial;
+        
 		Core *core;
 		
 		bool lightingEnabled;

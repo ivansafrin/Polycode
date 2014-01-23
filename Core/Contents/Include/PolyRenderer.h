@@ -172,7 +172,7 @@ namespace Polycode {
 		
 		virtual void setBlendingMode(int blendingMode) = 0;	
 			
-		virtual void applyMaterial(Material *material, ShaderBinding *localOptions, unsigned int shaderIndex) = 0;
+		virtual void applyMaterial(Material *material, ShaderBinding *localOptions, unsigned int shaderIndex, bool forceMaterial);
 		virtual void clearShader() = 0;
 		
 		virtual void setDepthFunction(int depthFunction) = 0;
@@ -306,6 +306,8 @@ namespace Polycode {
         Number getBackingResolutionScaleX();
         Number getBackingResolutionScaleY();
         
+        void setOverrideMaterial(Material *material);
+        
         void pushVertexColor();
         void popVertexColor();
         void multiplyVertexColor(const Color &color);
@@ -340,7 +342,8 @@ namespace Polycode {
 		int textureFilteringMode;
 		
 		Matrix4 cameraMatrix;
-	
+        Material *overrideMaterial;
+        
 		PolycodeShaderModule* currentShaderModule;
 		std::vector <PolycodeShaderModule*> shaderModules;
 

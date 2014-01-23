@@ -109,11 +109,11 @@ class EntityEditorMainView : public UIElement {
             void setEditorMode(int newMode);
             Entity *getSelectedEntity();
     
-            void setMaterialRecursive(const String &materialName, bool wireFrame, Entity *entity);
-            void restoreSettingsRecursive(Entity *entity);
             void setOverlayWireframeRecursive(Entity *targetEntity, bool val);
             void setLinkedEntityPropsRecursive(SceneEntityInstance *parentInstance, Entity *entity);
-        
+    
+            void disableLighting(bool disable);
+    
             void onGainFocus();
             void onLoseFocus();
             void deleteSelected();
@@ -132,6 +132,7 @@ class EntityEditorMainView : public UIElement {
     
             CoreInput *input;
 			
+            bool lightsDisabled;
             int editorMode;
 			Entity *topBar;
 			UIRect *headerBg;
@@ -142,6 +143,9 @@ class EntityEditorMainView : public UIElement {
     
 			Scene *mainScene;
             Entity *sceneObjectRoot;
+    
+            SceneLight *customLight1;
+            SceneLight *customLight2;
     
             Entity *objectRootBase;
             Entity *iconBase;
@@ -160,6 +164,7 @@ class EntityEditorMainView : public UIElement {
             UIMenu *addEntityMenu;
     
             UIIconSelector *shadeModeSelector;
+            UIIconSelector *lightingModeSelector;
     
             CameraPreviewWindow *cameraPreview;
     

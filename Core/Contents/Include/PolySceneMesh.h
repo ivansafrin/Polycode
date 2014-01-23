@@ -183,11 +183,8 @@ namespace Polycode {
 			bool useGeometryHitDetection;
 			
 			bool customHitDetection(const Ray &ray);
-
-            /**
-             * If this flag is set to true, the entity will render in wireframe.
-             */
-            bool renderWireframe;
+        
+            bool forceMaterial;
 
 			
 		protected:

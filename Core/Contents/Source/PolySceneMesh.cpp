@@ -51,12 +51,12 @@ SceneMesh::SceneMesh(const String& fileName) : Entity(), texture(NULL), material
 	lineSmooth = false;
 	ownsMesh = true;
 	ownsSkeleton = true;
-    renderWireframe = false;
 	lineWidth = 1.0;
 	pointSize = 1.0;
 	pointSmooth = false;
 	overlayWireframe = false;
 	useGeometryHitDetection = false;
+    forceMaterial = false;
 }
 
 SceneMesh::SceneMesh(Mesh *mesh) : Entity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
@@ -68,13 +68,13 @@ SceneMesh::SceneMesh(Mesh *mesh) : Entity(), texture(NULL), material(NULL), skel
 	useVertexBuffer = false;
 	lineSmooth = false;
 	ownsMesh = true;
-    renderWireframe = false;
 	ownsSkeleton = true;	
 	lineWidth = 1.0;
 	pointSize = 1.0;
 	pointSmooth = false;
 	overlayWireframe = false;	
 	useGeometryHitDetection = false;
+    forceMaterial = false;
 }
 
 SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
@@ -85,12 +85,12 @@ SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL), skeleton(NUL
 	showVertexNormals = false;	
 	useVertexBuffer = false;	
 	lineSmooth = false;
-    renderWireframe = false;
 	ownsMesh = true;
 	ownsSkeleton = true;	
 	lineWidth = 1.0;
 	overlayWireframe = false;
-	useGeometryHitDetection = false;			
+	useGeometryHitDetection = false;
+    forceMaterial = false;
 }
 
 void SceneMesh::setMesh(Mesh *mesh) {
@@ -318,19 +318,13 @@ void SceneMesh::Render() {
 	renderer->setPointSmooth(pointSmooth);
 	
 	if(material) {
-		renderer->applyMaterial(material, localShaderOptions,0);
+		renderer->applyMaterial(material, localShaderOptions,0, forceMaterial);
 	} else {
 		if(texture)
 			renderer->setTexture(texture);
 		else
 			renderer->setTexture(NULL);
 	}
-		
-    if(renderWireframe) {
-		renderer->setWireframePolygonMode(true);
-    } else {
-        renderer->setWireframePolygonMode(false);
-    }
     
 	if(useVertexBuffer) {
 		renderer->drawVertexBuffer(mesh->getVertexBuffer(), mesh->useVertexColors);
@@ -355,9 +349,7 @@ void SceneMesh::Render() {
 		} else {
 			renderMeshLocally();
 		}
-		renderer->enableDepthTest(depthTestVal);		
-		renderer->setWireframePolygonMode(false);
+		renderer->enableDepthTest(depthTestVal);
 	}	
-	
-    
+    renderer->setWireframePolygonMode(false);    
 }

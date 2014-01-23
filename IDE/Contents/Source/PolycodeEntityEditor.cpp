@@ -211,6 +211,7 @@ EntityEditorMainView::EntityEditorMainView() {
 	processInputEvents = true;
     multiselectIndex = 0;
     objectRootInstance = NULL;
+    lightsDisabled = false;
 
 	mainScene = new Scene(Scene::SCENE_3D, true);
 	renderTexture = new SceneRenderTexture(mainScene, mainScene->getDefaultCamera(), 512, 512);
@@ -218,6 +219,20 @@ EntityEditorMainView::EntityEditorMainView() {
 	mainScene->useClearColor = true;
 	mainScene->rootEntity.processInputEvents = true;
 	   
+    Number customFalloff = 0.006;
+    // setup custom lights for disabled lighting
+    customLight1 = new SceneLight(SceneLight::POINT_LIGHT, mainScene,999999, customFalloff, customFalloff, customFalloff);
+    customLight1->editorOnly = true;
+    customLight1->setPosition(9999, 9999, 9999);
+    mainScene->addLight(customLight1);
+    customLight1->enabled = false;
+
+    customLight2 = new SceneLight(SceneLight::POINT_LIGHT, mainScene,999999, customFalloff, customFalloff, customFalloff);
+    customLight2->editorOnly = true;
+    customLight2->setPosition(-9999, -9999, -9999);
+    mainScene->addLight(customLight2);
+    customLight2->enabled = false;
+    
 	renderTextureShape = new UIRect(256, 256);
 	renderTextureShape->setAnchorPoint(-1.0, -1.0, 0.0);	
 	renderTextureShape->setTexture(renderTexture->getTargetTexture());
@@ -290,9 +305,17 @@ EntityEditorMainView::EntityEditorMainView() {
     shadeModeSelector->addIcon("entityEditor/shade_full.png");
     shadeModeSelector->addIcon("entityEditor/shade_solid.png");
     shadeModeSelector->addIcon("entityEditor/shade_wire.png");
-//    topBar->addChild(shadeModeSelector);
+    topBar->addChild(shadeModeSelector);
     shadeModeSelector->setPosition(320, 3);
     shadeModeSelector->addEventListener(this, UIEvent::SELECT_EVENT);
+
+    lightingModeSelector = new UIIconSelector();
+    lightingModeSelector->addIcon("entityEditor/lights_icon.png");
+    lightingModeSelector->addIcon("entityEditor/nolights_icon.png");
+    topBar->addChild(lightingModeSelector);
+    lightingModeSelector->setPosition(420, 3);
+    lightingModeSelector->addEventListener(this, UIEvent::SELECT_EVENT);
+    
     
     editorMode = EDITOR_MODE_3D;
     
@@ -378,6 +401,7 @@ void EntityEditorMainView::createIcon(Entity *entity, String iconFile) {
     iconBase->addChild(iconPrimitive);
     iconPrimitive->billboardMode = true;
     iconPrimitive->setUserData((void*)entity);
+    iconPrimitive->forceMaterial = true;
     iconPrimitive->processInputEvents = true;
     iconPrimitive->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
     iconPrimitive->ignoreParentMatrix = true;
@@ -548,6 +572,7 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
         SceneLight *newLight = new SceneLight(SceneLight::POINT_LIGHT, mainScene, 1.0);
         sceneObjectRoot->addChild(newLight);
         mainScene->addLight(newLight);
+        newLight->enabled = !lightsDisabled;        
         setEditorProps(newLight);
         newLight->setPosition(cursorPosition);
         selectEntity(newLight);
@@ -736,16 +761,25 @@ void EntityEditorMainView::handleEvent(Event *event) {
                 break;
             }
         }
+    } else if(event->getDispatcher() == lightingModeSelector) {
+        switch(lightingModeSelector->getSelectedIndex()) {
+            case 0:
+                disableLighting(false);
+            break;
+            case 1:
+                disableLighting(true);
+            break;
+        }
     } else if(event->getDispatcher() == shadeModeSelector) {
         switch(shadeModeSelector->getSelectedIndex()) {
             case 0:
-                restoreSettingsRecursive(sceneObjectRoot);
+                mainScene->setOverrideMaterial(NULL);
             break;
             case 1:
-                setMaterialRecursive("Default", false, sceneObjectRoot);
+                mainScene->setOverrideMaterial((Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Default"));
             break;
             case 2:
-                setMaterialRecursive("", true, sceneObjectRoot);
+                mainScene->setOverrideMaterial((Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "UnlitWireframe"));
             break;
         }
     } else {
@@ -768,50 +802,22 @@ void EntityEditorMainView::handleEvent(Event *event) {
     }
 }
 
-void EntityEditorMainView::restoreSettingsRecursive(Entity *entity) {
-    SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(entity);
-    if(sceneMesh && !entity->editorOnly) {
-        SceneMeshSettings *meshSettings = (SceneMeshSettings*) entity->getUserData();
-        if(meshSettings) {
-            sceneMesh->setMaterial(meshSettings->material);
-            sceneMesh->backfaceCulled = meshSettings->backfaceCulled;
-        }
-        sceneMesh->renderWireframe = false;
+void EntityEditorMainView::disableLighting(bool disable) {
+    
+    lightsDisabled = disable;
+    
+    for(int i=0; i < mainScene->getNumLights(); i++) {
+        SceneLight *light = mainScene->getLight(i);
+        light->enabled = !disable;
     }
     
-    for(int i=0; i < entity->getNumChildren(); i++) {
-        restoreSettingsRecursive(entity->getChildAtIndex(i));
+    if(disable) {
+        customLight1->enabled = true;
+        customLight2->enabled = true;
+    } else {
+        customLight1->enabled = false;
+        customLight2->enabled = false;
     }
-}
-
-void EntityEditorMainView::setMaterialRecursive(const String &materialName, bool wireFrame, Entity *entity) {
-    SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(entity);
-    if(sceneMesh && !entity->editorOnly) {
-        
-        if(!sceneMesh->getUserData()) {
-            SceneMeshSettings *meshSettings = new SceneMeshSettings();
-            meshSettings->material = sceneMesh->getMaterial();
-            meshSettings->backfaceCulled = sceneMesh->backfaceCulled;
-            sceneMesh->setUserData((void*)meshSettings);
-            
-        } else {
-            SceneMeshSettings *meshSettings = (SceneMeshSettings*) entity->getUserData();
-            meshSettings->material = sceneMesh->getMaterial();
-            meshSettings->backfaceCulled = sceneMesh->backfaceCulled;
-        }
-        
-        sceneMesh->setMaterialByName(materialName);
-        sceneMesh->renderWireframe = wireFrame;
-        if(wireFrame) {
-//            sceneMesh->setColor(RANDOM_NUMBER, RANDOM_NUMBER, RANDOM_NUMBER, 1.0);
-            sceneMesh->backfaceCulled = false;
-        }
-    }
-    
-    for(int i=0; i < entity->getNumChildren(); i++) {
-        setMaterialRecursive(materialName, wireFrame, entity->getChildAtIndex(i));
-    }
-
 }
 
 Scene *EntityEditorMainView::getMainScene() {

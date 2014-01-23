@@ -36,6 +36,7 @@ Material::Material(const String& name) : Resource(Resource::RESOURCE_MATERIAL) {
 	shaderModule = NULL;
 	blendingMode = Renderer::BLEND_MODE_NORMAL;
 	screenMaterial = false;
+    wireframe = false;
 }
 
 Material::~Material() {

@@ -29,6 +29,10 @@
 			<vp source="default/Unlit.vert"/>
 			<fp source="default/Unlit.frag"/>
 		</shader>
+		<shader type="glsl" name="UnlitUntextured" numAreaLights="0" numSpotLights="0">		
+			<vp source="default/Unlit.vert"/>
+			<fp source="default/UnlitUntextured.frag"/>
+		</shader>		
 		<shader type="glsl" name="LightCube" numAreaLights="0" numSpotLights="0">		
 			<vp source="default/DefaultShader.vert"/>
 			<fp source="default/LightCube.frag"/>
@@ -70,7 +74,11 @@
 				<textures>
 				</textures>				
 			</shader>
-		</material>		
+		</material>	
+		<material name="UnlitWireframe" wireframe="true">
+			<shader name="UnlitUntextured">
+			</shader>
+		</material>
 		<material name="Unlit">
 			<shader name="Unlit">
 				<textures>

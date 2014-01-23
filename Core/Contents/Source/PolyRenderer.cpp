@@ -21,6 +21,9 @@
 */
 
 #include "PolyRenderer.h"
+#include "PolyFixedShader.h"
+#include "PolyMaterial.h"
+#include "PolyModule.h"
 #include "PolyMesh.h"
 
 using namespace Polycode;
@@ -48,6 +51,11 @@ Renderer::Renderer() : clearColor(0.2f, 0.2f, 0.2f, 0.0), currentTexture(NULL), 
 	doClearBuffer = true;
     backingResolutionScaleX = 1.0;
     backingResolutionScaleY = 1.0;
+    overrideMaterial = NULL;
+}
+
+void Renderer::setOverrideMaterial(Material *material) {
+    overrideMaterial = material;
 }
 
 Number Renderer::getBackingResolutionScaleX() {
@@ -244,6 +252,49 @@ void Renderer::pushDataArrayForMesh(Mesh *mesh, int arrayType) {
 		mesh->arrayDirtyMap[arrayType] = false;
 	}
 	pushRenderDataArray(mesh->renderDataArrays[arrayType]);
+}
+
+void Renderer::applyMaterial(Material *material,  ShaderBinding *localOptions,unsigned int shaderIndex, bool forceMaterial) {
+    
+    if(overrideMaterial) {
+        if(!forceMaterial) {
+            material = overrideMaterial;
+        }
+    }
+    
+	if(!material->getShader(shaderIndex) || !shadersEnabled) {
+		setTexture(NULL);
+		return;
+	}
+	
+	FixedShaderBinding *fBinding;
+	
+	switch(material->getShader(shaderIndex)->getType()) {
+		case Shader::FIXED_SHADER:
+            //			FixedShader *fShader = (FixedShader*)material->getShader();
+			fBinding = (FixedShaderBinding*)material->getShaderBinding(shaderIndex);
+			setTexture(fBinding->getDiffuseTexture());
+            //			setTexture(fShader->getDiffuseTexture());
+            break;
+		case Shader::MODULE_SHADER:
+			currentMaterial = material;
+			if(material->shaderModule == NULL) {
+				for(int m=0; m < shaderModules.size(); m++) {
+					PolycodeShaderModule *shaderModule = shaderModules[m];
+					if(shaderModule->hasShader(material->getShader(shaderIndex))) {
+						material->shaderModule = (void*)shaderModule;
+					}
+				}
+			} else {
+				PolycodeShaderModule *shaderModule = (PolycodeShaderModule*)material->shaderModule;
+				shaderModule->applyShaderMaterial(this, material, localOptions, shaderIndex);
+				currentShaderModule = shaderModule;
+			}
+            break;
+	}
+	
+	setBlendingMode(material->blendingMode);
+    setWireframePolygonMode(material->wireframe);
 }
 
 void Renderer::setBackingResolutionScale(Number xScale, Number yScale) {

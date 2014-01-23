@@ -199,7 +199,6 @@ namespace Polycode {
 		void setDepthFunction(int depthFunction);
 						
 		void clearShader();
-		void applyMaterial(Material *material,  ShaderBinding *localOptions, unsigned int shaderIndex);
 		
 	protected:
 		void initOSSpecific();
