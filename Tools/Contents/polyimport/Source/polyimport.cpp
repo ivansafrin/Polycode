@@ -193,7 +193,12 @@ int exportToFile(String prefix, bool swapZY, bool addSubmeshes, bool listOnly) {
 			printf("Mesh has weights, exporting skeleton...\n");
 		}	
 		
-		String fileNameSkel = prefix+".skeleton";
+		String fileNameSkel;
+        if(prefix != "") {
+            fileNameSkel = prefix+".skeleton";
+        } else {
+            fileNameSkel = "out.skeleton";
+        }
 		ISkeleton *skeleton = new ISkeleton();
 	
 		for (int n = 0; n < scene->mRootNode->mNumChildren; ++n) {
@@ -237,7 +242,7 @@ int exportToFile(String prefix, bool swapZY, bool addSubmeshes, bool listOnly) {
 		}
 
 		if(!listOnly) {
-			skeleton->saveToFile(prefix.c_str(), swapZY);
+			skeleton->saveToFile(fileNameSkel.c_str(), swapZY);
 		}
 	} else {
 		if(!listOnly) {
@@ -373,7 +378,7 @@ int main(int argc, char **argv) {
         
 		exportToFile(prefix, swapZYAxis, addSubmeshes, listOnly);
 	} else {
-		printf("Error opening scene...\n");
+		printf("Error opening scene (%s)\n", aiGetErrorString());
 	}
 
 	aiReleaseImport(scene);

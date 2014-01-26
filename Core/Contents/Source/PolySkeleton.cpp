@@ -250,86 +250,88 @@ void Skeleton::stopAnimation(SkeletonAnimation *animation) {
 }
 
 void Skeleton::addAnimation(const String& name, const String& fileName) {
-	OSFILE *inFile = OSBasics::open(fileName.c_str(), "rb");
-	if(!inFile) {
+
+    OSFILE *inFile = OSBasics::open(fileName.c_str(), "rb");
+    
+    if(!inFile) {
 		return;
 	}
 	
-		unsigned int activeBones,boneIndex,numPoints,numCurves, curveType;	
-		float length;
-		OSBasics::read(&length, 1, sizeof(float), inFile);
+    unsigned int activeBones,numPoints,numCurves, curveType;
+    float length;
+    OSBasics::read(&length, 1, sizeof(float), inFile);
+
+    SkeletonAnimation *newAnimation = new SkeletonAnimation(name, length);
+    OSBasics::read(&activeBones, sizeof(unsigned int), 1, inFile);
     
-		SkeletonAnimation *newAnimation = new SkeletonAnimation(name, length);
-    
-        printf("LOADING %s\n", name.c_str());
-    
-		OSBasics::read(&activeBones, sizeof(unsigned int), 1, inFile);
-		
-		//	Logger::log("activeBones: %d\n", activeBones);		
-		for(int j=0; j < activeBones; j++) {
-			OSBasics::read(&boneIndex, sizeof(unsigned int), 1, inFile);
-            if(boneIndex > bones.size()-1) {
-                printf("WARNING: INCORRECT BONE INDEX!\n");
-                continue;
-            }
-			BoneTrack *newTrack = new BoneTrack(bones[boneIndex], length);
-			
-            printf("TRACK FOR BONE %s\n", bones[boneIndex]->getName().c_str());
+    unsigned short boneNameLen;
+    char boneNameBuffer[1024];
+
+    for(int j=0; j < activeBones; j++) {
+        
+        OSBasics::read(&boneNameLen, sizeof(unsigned short), 1, inFile);
+        OSBasics::read(boneNameBuffer, 1, boneNameLen, inFile);
+        boneNameBuffer[boneNameLen] = '\0';
+        
+        Bone *trackBone = getBoneByName(boneNameBuffer);
+        if(!trackBone) {
+            printf("WARNING, INVALID BONE NAME: %s\n", boneNameBuffer);
+            continue;
+        }
+        
+        BoneTrack *newTrack = new BoneTrack(trackBone, length);
+        
+        BezierCurve *curve;
+        float vec1[2];
+        
+        OSBasics::read(&numCurves, sizeof(unsigned int), 1, inFile);
+        for(int l=0; l < numCurves; l++) {
+            curve = new BezierCurve();
+            OSBasics::read(&curveType, sizeof(unsigned int), 1, inFile);
+            OSBasics::read(&numPoints, sizeof(unsigned int), 1, inFile);
             
-			BezierCurve *curve;
-			float vec1[2]; //,vec2[2],vec3[2];
-			
-			OSBasics::read(&numCurves, sizeof(unsigned int), 1, inFile);
-			//			Logger::log("numCurves: %d\n", numCurves);
-            printf("numCurves: %d\n", numCurves);
-			for(int l=0; l < numCurves; l++) {
-				curve = new BezierCurve();
-				OSBasics::read(&curveType, sizeof(unsigned int), 1, inFile);
-				OSBasics::read(&numPoints, sizeof(unsigned int), 1, inFile);
-				for(int k=0; k < numPoints; k++) {
-					OSBasics::read(vec1, sizeof(float), 2, inFile);					
-					curve->addControlPoint2d(vec1[1], vec1[0]);
-					//					curve->addControlPoint(vec1[1]-10, vec1[0], 0, vec1[1], vec1[0], 0, vec1[1]+10, vec1[0], 0);
-				}
-				switch(curveType) {
-					case 0:
-						newTrack->scaleX = curve;
-						break;
-					case 1:
-						newTrack->scaleY = curve;
-						break;
-					case 2:
-						newTrack->scaleZ = curve;					
-						break;
-					case 3:
-						newTrack->QuatW = curve;					
-						break;
-					case 4:
-						newTrack->QuatX = curve;					
-						break;
-					case 5:
-						newTrack->QuatY = curve;					
-						break;
-					case 6:
-						newTrack->QuatZ = curve;					
-						break;
-					case 7:;
-						newTrack->LocX = curve;					
-						break;
-					case 8:
-						newTrack->LocY = curve;					
-						break;
-					case 9:
-						newTrack->LocZ = curve;					
-						break;
-				}
-			}
-			newTrack->initTweens();
-			newAnimation->addBoneTrack(newTrack);
-		}
-		animations.push_back(newAnimation);
-	
-	
+            for(int k=0; k < numPoints; k++) {
+                OSBasics::read(vec1, sizeof(float), 2, inFile);					
+                curve->addControlPoint2d(vec1[1], vec1[0]);
+            }
+            switch(curveType) {
+                case 0:
+                    newTrack->scaleX = curve;
+                    break;
+                case 1:
+                    newTrack->scaleY = curve;
+                    break;
+                case 2:
+                    newTrack->scaleZ = curve;					
+                    break;
+                case 3:
+                    newTrack->QuatW = curve;					
+                    break;
+                case 4:
+                    newTrack->QuatX = curve;					
+                    break;
+                case 5:
+                    newTrack->QuatY = curve;					
+                    break;
+                case 6:
+                    newTrack->QuatZ = curve;					
+                    break;
+                case 7:;
+                    newTrack->LocX = curve;					
+                    break;
+                case 8:
+                    newTrack->LocY = curve;					
+                    break;
+                case 9:
+                    newTrack->LocZ = curve;					
+                    break;
+            }
+        }
+        newTrack->initTweens();
+        newAnimation->addBoneTrack(newTrack);
+    }
+    
+    animations.push_back(newAnimation);
 	OSBasics::close(inFile);	
 }
 

@@ -30,11 +30,9 @@ class IBone {
 
 class ITrack {
 	public:
-		ITrack(){ boneID = 666; }
-		unsigned int boneID;
-
-	aiNodeAnim *nodeAnim;
-		
+		ITrack(){}
+        aiNodeAnim *nodeAnim;
+        Polycode::String boneName;
 };
 
 class IAnimation {
@@ -76,7 +74,7 @@ class ISkeleton {
 
 	void saveToFile(const char *fileName, bool swapZY) {
 		using Polycode::String;
-		String fileNameSkel = String(fileName)+".skeleton";
+		String fileNameSkel = String(fileName);
 		FILE *file = fopen(fileNameSkel.c_str(), "wb");
 		unsigned int numBones = bones.size();
 		
@@ -90,7 +88,7 @@ class ISkeleton {
 		for(int i=0; i < animations.size(); i++) {
 			IAnimation *anim = animations[i];
 			for(int j=0; j < anim->numTracks; j++) {
-				anim->tracks[j]->boneID = this->getBoneID(anim->tracks[j]->nodeAnim->mNodeName);
+				anim->tracks[j]->boneName = anim->tracks[j]->nodeAnim->mNodeName.data;
 			}
 		}
 
@@ -184,7 +182,8 @@ class ISkeleton {
 
 	//	unsigned int numAnimations = animations.size();
 	//	fwrite(&numAnimations, sizeof(unsigned int), 1, file);
-
+        
+        
 		for(int i=0; i < animations.size(); i++) {
 
 			char anim_s[2];
@@ -205,8 +204,14 @@ class ISkeleton {
             
 			for(int j=0; j < anim->numTracks; j++) {
 				ITrack *track = anim->tracks[j];
-				fwrite(&track->boneID, sizeof(unsigned int), 1, file);
-				
+                
+                unsigned short boneNameLen = track->boneName.length();
+				fwrite(&boneNameLen, sizeof(unsigned short), 1, file);
+                
+                char boneNameBuffer[1024];
+                memcpy(boneNameBuffer, track->boneName.c_str(), boneNameLen);
+                fwrite(boneNameBuffer, 1, boneNameLen, file);
+                
 				aiNodeAnim *nodeAnim = track->nodeAnim;
 
 				unsigned int curveType,numPoints;
