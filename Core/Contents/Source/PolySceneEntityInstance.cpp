@@ -495,10 +495,10 @@ void SceneEntityInstance::clearInstance() {
     resourcePools.clear();
     topLevelResourcePool = CoreServices::getInstance()->getResourceManager()->getGlobalPool();
 	for(int i=0; i < children.size(); i++) {
-		removeChild(children[i]);
 		children[i]->setOwnsChildrenRecursive(true);
 		delete children[i];
 	}
+    children.clear();
 }
 
 bool SceneEntityInstance::loadFromFile(const String& fileName) {

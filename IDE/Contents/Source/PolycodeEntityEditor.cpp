@@ -477,6 +477,10 @@ void EntityEditorMainView::setEditorProps(Entity *entity) {
     if(instance && instance != objectRootInstance) {
         for(int i=0; i < instance->getNumChildren(); i++) {
             setLinkedEntityPropsRecursive(instance, instance->getChildAtIndex(i));
+            instance->getResourceEntry()->reloadOnFileModify = true;
+            if(!CoreServices::getInstance()->getResourceManager()->getGlobalPool()->hasResource(instance->getResourceEntry())) {
+                CoreServices::getInstance()->getResourceManager()->getGlobalPool()->addResource(instance->getResourceEntry());
+            }
         }
     }
     
