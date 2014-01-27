@@ -79,6 +79,10 @@ EntityEditorPropertyView::EntityEditorPropertyView() : UIElement() {
     entityProps->addPropSheet(entitySheet);
     entitySheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
     
+    propSheet = new EntityPropSheet();
+    entityProps->addPropSheet(propSheet);
+    propSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
+    
 }
 
 void EntityEditorPropertyView::setEntityInstance(SceneEntityInstance *instance) {
@@ -155,6 +159,7 @@ void EntityEditorPropertyView::setEntity(Entity *entity) {
     particleSheet->setParticleEmitter(emitter);
 
     entitySheet->setEntity(entity);
+    propSheet->setEntity(entity);
     transformSheet->setEntity(entity);
         
     Resize(getWidth(), getHeight());

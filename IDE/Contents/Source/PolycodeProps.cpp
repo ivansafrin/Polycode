@@ -353,6 +353,7 @@ PropProp::~PropProp() {
 ButtonProp::ButtonProp(const String &caption) : PropProp("", "ButtonProp") {
     button = new UIButton(caption, 100);
     addChild(button);
+    setHeight(25);
 }
 
 ButtonProp::~ButtonProp() {
@@ -586,6 +587,13 @@ CustomProp::CustomProp(String key, String value) : PropProp("", "Custom") {
 	
 	setHeight(25);
 
+}
+
+void CustomProp::setPropWidth(Number width) {
+    Number halfWidth = (width-PROP_PADDING-10) * 0.5;
+    keyEntry->Resize(halfWidth, keyEntry->getHeight());
+    valueEntry->Resize(halfWidth, valueEntry->getHeight());
+    valueEntry->setPositionX(keyEntry->getPosition().x + halfWidth);
 }
 
 CustomProp::~CustomProp() {
@@ -1925,22 +1933,18 @@ void RenderTargetsSheet::handleEvent(Event *event) {
 
 
 EntityPropSheet::EntityPropSheet() : PropSheet("CUSTOM PROPERTIES", "entityProps"){
+	
+    addButtonProp = new ButtonProp("Add Property");
+    addProp(addButtonProp);
+    addButtonProp->getButton()->addEventListener(this, UIEvent::CLICK_EVENT);
 
-	propHeight = 75;
-	
-	addButton = new UIButton("Add Property", 150);
-	addButton->addEventListener(this, UIEvent::CLICK_EVENT);
-	contents->addChild(addButton);
-	addButton->setPosition(15, 35);
-	
 	customUndoHandler = true;
 	
 	entity = NULL;
-	lastEntity = NULL;
 	
 	lastNumProps = 0;
-	
 	removeIndex = -1;
+    enabled = false;
 }
 
 void EntityPropSheet::applyPropActionData(PolycodeEditorPropActionData *data) {
@@ -1960,7 +1964,7 @@ void EntityPropSheet::handleEvent(Event *event) {
 	if(!entity)
 		return;
 		
-	if(event->getDispatcher() == addButton && event->getEventType() == "UIEvent") {
+	if(event->getDispatcher() == addButtonProp->getButton() && event->getEventType() == "UIEvent") {
 		PolycodeEditorPropActionData *beforeData = PropDataEntity(entity);	
 		entity->entityProps.push_back(EntityProp());
 		refreshProps();
@@ -1974,13 +1978,13 @@ void EntityPropSheet::handleEvent(Event *event) {
 		if(event->getDispatcher() == props[i] && event->getEventType() == "") {
 			switch(event->getEventCode()) {						
 				case Event::CANCEL_EVENT:
-					removeIndex = i;
+					removeIndex = i-1;
 				break;
 				case Event::CHANGE_EVENT:
 					PolycodeEditorPropActionData *beforeData = PropDataEntity(entity);
-					if(i < entity->entityProps.size()) {
-						entity->entityProps[i].propName = ((CustomProp*)props[i])->getKey();
-						entity->entityProps[i].propValue = ((CustomProp*)props[i])->getValue();			
+					if(i-1 < entity->entityProps.size()) {
+						entity->entityProps[i-1].propName = ((CustomProp*)props[i])->getKey();
+						entity->entityProps[i-1].propValue = ((CustomProp*)props[i])->getValue();
 					}
 					PolycodeEditorPropActionData *afterData = PropDataEntity(entity);			
 					PropEvent *propEvent = new PropEvent(NULL, this, beforeData, afterData);
@@ -1995,12 +1999,15 @@ void EntityPropSheet::handleEvent(Event *event) {
 void EntityPropSheet::refreshProps() {
 
 	for(int i=0; i < props.size(); i++) {
-		contents->removeChild(props[i]);
-		props[i]->removeAllHandlersForListener(this);
-		delete props[i];
+        if(props[i] != addButtonProp) {
+            contents->removeChild(props[i]);
+            props[i]->removeAllHandlersForListener(this);
+            delete props[i];
+        }
 	}
 	props.clear();
-	propHeight = 0;
+    props.push_back(addButtonProp);
+    
 	
 	for(int i=0; i < entity->entityProps.size(); i++) {			
 		EntityProp prop = entity->entityProps[i];
@@ -2008,12 +2015,8 @@ void EntityPropSheet::refreshProps() {
 		newProp->addEventListener(this, Event::CANCEL_EVENT);
 		newProp->addEventListener(this, Event::CHANGE_EVENT);		
 		addProp(newProp);
-		propHeight += 30;
 	}
 	
-	
-	addButton->setPosition(15, propHeight);	
-	propHeight += 70;	
 	
 	if(lastNumProps != entity->entityProps.size()) {
 		dispatchEvent(new Event(), Event::COMPLETE_EVENT);
@@ -2024,11 +2027,19 @@ void EntityPropSheet::refreshProps() {
 	Resize(getWidth(), getHeight());	
 }
 
+void EntityPropSheet::setEntity(Entity *entity){
+    this->entity = entity;
+	if(entity) {
+		enabled = true;
+        refreshProps();
+	} else {
+		enabled = false;		
+	}
+}
+
 void EntityPropSheet::Update() {
 	if(entity) {
-	
 		if(removeIndex != -1) {
-		
 			PolycodeEditorPropActionData *beforeData = PropDataEntity(entity);
 				
 			if(removeIndex < entity->entityProps.size()) {
@@ -2040,14 +2051,6 @@ void EntityPropSheet::Update() {
 			PropEvent *propEvent = new PropEvent(NULL, this, beforeData, afterData);
 			dispatchEvent(propEvent, PropEvent::EVENT_PROP_CHANGE);
 		}
-	
-		enabled = true;		
-		if(entity != lastEntity) {
-			refreshProps();
-			lastEntity = entity;
-		}
-	} else {
-		enabled = false;		
 	}
 }
 

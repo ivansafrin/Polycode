@@ -223,6 +223,7 @@ class CustomProp : public PropProp {
 		~CustomProp();
 		void handleEvent(Event *event);
 		void set(String key, String val);
+		void setPropWidth(Number width);    
 		String getValue();
 		String getKey();
 				
@@ -729,11 +730,11 @@ class EntityPropSheet : public PropSheet {
 		void Update();
 		void refreshProps();
 		void applyPropActionData(PolycodeEditorPropActionData *data);
+        void setEntity(Entity *entity);
 
-		UIButton *addButton;
+        ButtonProp *addButtonProp;
 		
 		Entity *entity;
-		Entity *lastEntity;
     
 		int lastNumProps;		
 		int removeIndex;
