@@ -420,7 +420,7 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 	glUniformMatrix4fv(mloc, 1, false, mat);
 		
 		
-	GLSLShaderBinding *cgBinding = (GLSLShaderBinding*)material->getShaderBinding(shaderIndex);
+	ShaderBinding *cgBinding = material->getShaderBinding(shaderIndex);
 	
 	for(int i=0; i < glslShader->expectedParams.size(); i++) {
 		ProgramParam param = glslShader->expectedParams[i];
@@ -450,7 +450,7 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 		}
 	}	
 	
-	cgBinding = (GLSLShaderBinding*)localOptions;
+	cgBinding = localOptions;
 	for(int i=0; i < cgBinding->textures.size(); i++) {
 		OpenGLTexture *glTexture = (OpenGLTexture*)cgBinding->textures[i].texture;
 		if(glTexture) {		

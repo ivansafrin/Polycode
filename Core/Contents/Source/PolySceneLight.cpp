@@ -56,8 +56,6 @@ SceneLight::SceneLight(int type, Scene *parentScene, Number intensity, Number co
 	setSpotlightProperties(40,0.1);
 	
 	lightImportance = 0;
-    
-    debugDraw = false;
 }
 
 void SceneLight::setLightType(int lightType) {
@@ -70,10 +68,6 @@ void SceneLight::setLightImportance(int newImportance) {
 
 int SceneLight::getLightImportance() const {
 	return lightImportance;
-}
-
-void SceneLight::enableDebugDraw(bool val) {
-    debugDraw = val;
 }
 
 void SceneLight::enableShadows(bool val, unsigned int resolution) {
@@ -145,6 +139,38 @@ void SceneLight::renderDepthMap(Scene *scene) {
 	CoreServices::getInstance()->getRenderer()->popMatrix();
 	CoreServices::getInstance()->getRenderer()->setViewportSizeAndFOV(CoreServices::getInstance()->getCore()->getXRes(), CoreServices::getInstance()->getCore()->getYRes(), 45.0f);
 }
+
+Entity *SceneLight::Clone(bool deepClone, bool ignoreEditorOnly) const {
+    SceneLight *newLight = new SceneLight(type, NULL, intensity, constantAttenuation, linearAttenuation, quadraticAttenuation);
+    applyClone(newLight, deepClone, ignoreEditorOnly);
+    return newLight;
+}
+
+void SceneLight::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
+    Entity::applyClone(clone, deepClone, ignoreEditorOnly);
+    SceneLight *cloneLight = (SceneLight*) clone;
+    
+    cloneLight->setAttenuation(constantAttenuation, linearAttenuation, quadraticAttenuation);
+    cloneLight->setIntensity(intensity);
+    cloneLight->lightColor = lightColor;
+    cloneLight->specularLightColor = specularLightColor;
+    cloneLight->enableShadows(shadowsEnabled, shadowMapRes);
+    cloneLight->setShadowMapFOV(shadowMapFOV);
+    cloneLight->setSpotlightProperties(spotlightCutoff, spotlightExponent);
+    cloneLight->setLightType(type);
+}
+
+Scene *SceneLight::getParentScene() const {
+    return parentScene;
+}
+
+void SceneLight::setParentScene(Scene *scene) {
+    parentScene = scene;
+    if(spotCamera) {
+        spotCamera->setParentScene(scene);
+    }
+}
+
 
 const Matrix4& SceneLight::getLightViewMatrix() const {
 	return lightViewMatrix;

@@ -35,11 +35,51 @@ SceneParticleEmitter::SceneParticleEmitter(unsigned int particleCount, Number li
     mesh->useVertexColors = true;
     depthWrite = false;
     setParticleCount(particleCount);
-    
 }
 
 SceneParticleEmitter::~SceneParticleEmitter() {
     delete motionPerlin;
+}
+
+Entity *SceneParticleEmitter::Clone(bool deepClone, bool ignoreEditorOnly) const {
+    SceneParticleEmitter *newEmitter = new SceneParticleEmitter(1, 1, 1);
+    applyClone(newEmitter, deepClone, ignoreEditorOnly);
+    return newEmitter;
+}
+
+void SceneParticleEmitter::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
+    
+    SceneMesh::applyClone(clone, deepClone, ignoreEditorOnly);
+    
+    SceneParticleEmitter *cloneEmitter = (SceneParticleEmitter*) clone;
+    
+    cloneEmitter->setParticleCount(particleCount);
+    cloneEmitter->setParticleSpeed(particleSpeed);
+    cloneEmitter->setParticleLifetime(lifetime);
+    cloneEmitter->setParticleDirection(directionVector);
+    cloneEmitter->setDirectionDeviation(directionDeviation);
+    cloneEmitter->setEmitterSize(emitterSize);
+    cloneEmitter->setGravity(gravity);
+    cloneEmitter->setUseFloorPlane(useFloorPlane);
+    cloneEmitter->setParticlesInWorldSpace(particlesInWorldSpace);
+    cloneEmitter->setPerlinEnabled(perlinEnabled);
+    cloneEmitter->setPerlinValue(perlinValue);
+    cloneEmitter->setParticleSize(particleSize);
+    cloneEmitter->setFloorPlaneOffset(floorPlaneOffset);
+    cloneEmitter->setFloorDamping(floorDamping);
+    cloneEmitter->setLoopParticles(loopParticles);
+    cloneEmitter->setParticleType(particleType);
+    
+    cloneEmitter->scaleCurve = scaleCurve;
+    cloneEmitter->useScaleCurve = useScaleCurve;
+
+    cloneEmitter->colorCurveR = colorCurveR;
+    cloneEmitter->colorCurveG = colorCurveG;
+    cloneEmitter->colorCurveB = colorCurveB;
+    cloneEmitter->colorCurveA = colorCurveA;
+    cloneEmitter->useColorCurves = useColorCurves;
+    
+    cloneEmitter->getMesh()->useVertexColors = true;
 }
 
 void SceneParticleEmitter::resetParticle(unsigned int index) {
@@ -260,6 +300,14 @@ Vector3 SceneParticleEmitter::getParticleRotationSpeed() const {
 
 void SceneParticleEmitter::setPerlinEnabled(bool val) {
     perlinEnabled = val;
+}
+
+Number SceneParticleEmitter::getParticleSpeed() const {
+    return particleSpeed;
+}
+
+void SceneParticleEmitter::setParticleSpeed(Number speed) {
+    particleSpeed = speed;
 }
 
 void SceneParticleEmitter::setPerlinValue(const Vector3 &perlinValue) {

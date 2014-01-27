@@ -2362,6 +2362,9 @@ ParticleEmitterSheet::ParticleEmitterSheet() : PropSheet("PARTICLE EMITTER", "pa
     particleSizeProp = new NumberProp("Size");
     addProp(particleSizeProp);
     
+    particleSpeedProp = new NumberProp("Speed");
+    addProp(particleSpeedProp);
+    
     worldParticlesProp = new BoolProp("World space");
     addProp(worldParticlesProp);
     
@@ -2419,6 +2422,8 @@ void ParticleEmitterSheet::handleEvent(Event *event) {
             emitter->setParticleType(typeProp->get());
         } else if(event->getDispatcher() == countProp) {
                 emitter->setParticleCount(countProp->get());
+        } else if(event->getDispatcher() == particleSpeedProp) {
+            emitter->setParticleSpeed(particleSpeedProp->get());
         } else if(event->getDispatcher() == lifetimeProp) {
             emitter->setParticleLifetime(lifetimeProp->get());
         } else if(event->getDispatcher() == particleSizeProp) {
@@ -2463,6 +2468,7 @@ void ParticleEmitterSheet::setParticleEmitter(SceneParticleEmitter *emitter) {
         worldParticlesProp->set(emitter->getParticlesInWorldSpace());
         loopingProp->set(emitter->getLoopParticles());
         particleRotaionProp->set(emitter->getParticleRotationSpeed());
+        particleSpeedProp->set(emitter->getParticleSpeed());
         gravityProp->set(emitter->getGravity());
         directionProp->set(emitter->getParticleDirection());
         sizeProp->set(emitter->getEmitterSize());
@@ -2563,7 +2569,6 @@ void SceneLightSheet::setSceneLight(SceneLight *light) {
     this->light = light;
     
     if(light) {
-        light->enableDebugDraw(true);
         typeProp->set(light->getLightType());
         lightColorProp->set(light->lightColor);
         specularColorProp->set(light->specularLightColor);

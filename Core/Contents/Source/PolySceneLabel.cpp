@@ -44,9 +44,32 @@ SceneLabel::SceneLabel(const String& text, int size, const String& fontName, int
 	snapToPixels = SceneLabel::defaultSnapToPixels;	
 	setLabelActualHeight(actualHeight);
 }
-			
+
+Entity *SceneLabel::Clone(bool deepClone, bool ignoreEditorOnly) const {
+	SceneLabel *newLabel = new SceneLabel(label->getText(), label->getSize(), label->getFont()->getFontName(), actualHeight, label->getPremultiplyAlpha());
+    applyClone(newLabel, deepClone, ignoreEditorOnly);
+    return newLabel;
+}
+
+void SceneLabel::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
+    
+    SceneLabel* cloneLabel = (SceneLabel*) clone;
+    
+
+    cloneLabel->getLabel()->setSize(label->getSize());
+    cloneLabel->getLabel()->setAntialiasMode(label->getAntialiasMode());
+    cloneLabel->getLabel()->setFont(label->getFont());
+    cloneLabel->getLabel()->setPremultiplyAlpha(label->getPremultiplyAlpha());
+    cloneLabel->setLabelActualHeight(actualHeight);
+    cloneLabel->positionAtBaseline = positionAtBaseline;
+    cloneLabel->setText(label->getText());
+    
+    ScenePrimitive::applyClone(clone, deepClone, ignoreEditorOnly);
+}
+
 
 SceneLabel::~SceneLabel() {
+    delete label;
 }
 
 Label *SceneLabel::getLabel() {

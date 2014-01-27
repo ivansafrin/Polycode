@@ -112,6 +112,7 @@ namespace Polycode {
             Number getFarClipppingPlane();
         
 			void setParentScene(Scene *parentScene);
+            Scene *getParentScene() const;
 			
 			void doCameraTransform();
 			void setLightDepthTexture(Texture *texture);			
@@ -158,6 +159,9 @@ namespace Polycode {
 			*/			
 			Material *getScreenShaderMaterial() { return filterShaderMaterial; }	
 			
+        
+            virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
+            virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
 			
 			Matrix4 getProjectionMatrix();
 			

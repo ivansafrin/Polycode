@@ -118,21 +118,24 @@ LocalShaderParam *ShaderBinding::getLocalParamByName(const String& name) {
 	return NULL;
 }
 
-LocalShaderParam *ShaderBinding::addLocalParam(const String& name, void *ptr) {
-	LocalShaderParam *newParam = new LocalShaderParam();
-	newParam->name = name;
-	newParam->data = ptr;
-	localParams.push_back(newParam);
-	return newParam;
-}
-
 LocalShaderParam * ShaderBinding::addParam(int type, const String& name) {
 	void *defaultData = ProgramParam::createParamData(type);
 	LocalShaderParam *newParam = new LocalShaderParam();
 	newParam->data = defaultData;
 	newParam->name = name;
+    newParam->type = type;
 	localParams.push_back(newParam);
 	return newParam;
+}
+
+LocalShaderParam *ShaderBinding::addParamPointer(int type, const String& name, void *ptr) {
+    LocalShaderParam *newParam = new LocalShaderParam();
+    newParam->name = name;
+    newParam->data = ptr;
+    newParam->type = type;
+    newParam->ownsPointer = false;
+    localParams.push_back(newParam);
+    return newParam;
 }
 
 void ShaderBinding::addRenderTargetBinding(RenderTargetBinding *binding) {
@@ -186,7 +189,22 @@ void ShaderBinding::removeRenderTargetBinding(RenderTargetBinding *binding) {
 			return;
 		}
 	}
-	
+}
+
+void ShaderBinding::copyTo(ShaderBinding *targetBinding) {
+    for(int i=0; i < textures.size(); i++) {
+        targetBinding->textures.push_back(textures[i]);
+    }
+    
+    for(int i=0; i < cubemaps.size(); i++) {
+        targetBinding->cubemaps.push_back(cubemaps[i]);
+    }
+
+    for(int i=0; i < localParams.size(); i++) {
+        LocalShaderParam *copyParam = localParams[i]->Copy();
+        targetBinding->localParams.push_back(copyParam);
+    }
+    
 }
 
 unsigned int ShaderBinding::getNumRenderTargetBindings() {
@@ -247,6 +265,10 @@ int Shader::getExpectedParamType(String name) {
 	return ProgramParam::PARAM_UNKNOWN;
 }
 
+ShaderBinding *Shader::createBinding() {
+    return new ShaderBinding(this);
+}
+
 Shader::~Shader() {
 
 }
@@ -265,6 +287,66 @@ const String& Shader::getName() const {
 
 LocalShaderParam::LocalShaderParam() {
     data = NULL;
+    ownsPointer = true;
+}
+
+LocalShaderParam::~LocalShaderParam() {
+    if(ownsPointer) {
+        switch(type) {
+            case ProgramParam::PARAM_NUMBER:
+                delete ((Number*) data);
+            break;
+            case ProgramParam::PARAM_VECTOR2:
+                delete ((Vector2*) data);
+            break;
+            case ProgramParam::PARAM_VECTOR3:
+                delete ((Vector3*) data);
+            break;
+            case ProgramParam::PARAM_COLOR:
+                delete ((Color*) data);
+            break;
+            case ProgramParam::PARAM_MATRIX:
+                delete ((Matrix4*) data);
+            break;
+        }
+    }
+}
+
+LocalShaderParam *LocalShaderParam::Copy() {
+    LocalShaderParam *copyParam = new LocalShaderParam();
+    copyParam->name = name;
+    copyParam->type = type;
+    copyParam->data = ProgramParam::createParamData(type);
+    copyParam->ownsPointer = ownsPointer;
+    
+    switch(type) {
+        case ProgramParam::PARAM_NUMBER:
+        {
+            copyParam->setNumber(getNumber());
+        }
+        break;
+        case ProgramParam::PARAM_VECTOR2:
+        {
+            copyParam->setVector2(getVector2());
+        }
+        break;
+        case ProgramParam::PARAM_VECTOR3:
+        {
+            copyParam->setVector3(getVector3());
+        }
+        break;
+        case ProgramParam::PARAM_COLOR:
+        {
+            copyParam->setColor(getColor());
+        }
+        break;
+        case ProgramParam::PARAM_MATRIX:
+        {
+            copyParam->setMatrix4(getMatrix4());
+        }
+        break;
+    }
+    return copyParam;
 }
 
 void LocalShaderParam::setParamValueFromString(int type, String pvalue) {
@@ -305,4 +387,54 @@ void LocalShaderParam::setParamValueFromString(int type, String pvalue) {
             }
                 break;
         }
+}
+
+Cubemap *ShaderBinding::getCubemap(const String& name) {
+	for(int i=0; i < cubemaps.size(); i++) {
+		if(cubemaps[i].name == name) {
+			return cubemaps[i].cubemap;
+		}
+	}
+	return NULL;
+}
+
+Texture *ShaderBinding::getTexture(const String& name) {
+	for(int i=0; i < textures.size(); i++) {
+		if(textures[i].name == name) {
+			return textures[i].texture;
+		}
+	}
+	return NULL;
+}
+
+void ShaderBinding::addTexture(const String& name, Texture *texture) {
+	TextureBinding binding;
+	binding.name = name;
+	binding.texture = texture;
+	textures.push_back(binding);
+}
+
+void ShaderBinding::addCubemap(const String& name, Cubemap *cubemap) {
+	CubemapBinding binding;
+	binding.cubemap = cubemap;
+	binding.name = name;
+	cubemaps.push_back(binding);
+}
+
+void ShaderBinding::clearCubemap(const String& name) {
+	for(int i=0; i < cubemaps.size(); i++) {
+		if(cubemaps[i].name == name) {
+			cubemaps.erase(cubemaps.begin()+i);
+			return;
+		}
+	}
+}
+
+void ShaderBinding::clearTexture(const String& name) {
+	for(int i=0; i < textures.size(); i++) {
+		if(textures[i].name == name) {
+			textures.erase(textures.begin()+i);
+			return;
+		}
+	}
 }

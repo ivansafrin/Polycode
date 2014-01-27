@@ -57,7 +57,12 @@ namespace Polycode {
 			* @param newText New text to display.
 			*/ 
 			void setText(const String& newText);
+        
+            virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
+            virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
 			
+			void updateFromLabel();
+        
 			Label *getLabel();
 			
 			bool positionAtBaseline;
@@ -69,7 +74,6 @@ namespace Polycode {
 						
 		protected:
 			
-			void updateFromLabel();        
 			     
 			Number actualHeight;
             Number labelScale;

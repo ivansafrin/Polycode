@@ -237,7 +237,7 @@ void Renderer::setRendererShaderParams(Shader *shader, ShaderBinding *binding) {
 	for(int i=0; i < shader->expectedParams.size(); i++) {
 		void *dataPtr = getDataPointerForName(shader->expectedParams[i].name);
 		if(dataPtr) {
-			binding->addLocalParam(shader->expectedParams[i].name, dataPtr);
+			binding->addParamPointer(shader->expectedParams[i].type, shader->expectedParams[i].name, dataPtr);
 		}
 	}
 }

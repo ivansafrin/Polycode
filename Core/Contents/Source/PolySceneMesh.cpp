@@ -45,8 +45,6 @@ SceneMesh *SceneMesh::SceneMeshWithType(int meshType) {
 
 SceneMesh::SceneMesh(const String& fileName) : Entity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
     loadFromFile(fileName);
-	lightmapIndex=0;
-	showVertexNormals = false;
 	useVertexBuffer = false;
 	lineSmooth = false;
 	ownsMesh = true;
@@ -63,8 +61,6 @@ SceneMesh::SceneMesh(Mesh *mesh) : Entity(), texture(NULL), material(NULL), skel
 	this->mesh = mesh;
 	bBoxRadius = mesh->getRadius();
 	bBox = mesh->calculateBBox();
-	lightmapIndex=0;
-	showVertexNormals = false;	
 	useVertexBuffer = false;
 	lineSmooth = false;
 	ownsMesh = true;
@@ -81,8 +77,6 @@ SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL), skeleton(NUL
 	mesh = new Mesh(meshType);
 	bBoxRadius = mesh->getRadius();
 	bBox = mesh->calculateBBox();
-	lightmapIndex=0;
-	showVertexNormals = false;	
 	useVertexBuffer = false;	
 	lineSmooth = false;
 	ownsMesh = true;
@@ -97,10 +91,8 @@ void SceneMesh::setMesh(Mesh *mesh) {
 	this->mesh = mesh;
 	bBoxRadius = mesh->getRadius();
 	bBox = mesh->calculateBBox();
-	showVertexNormals = false;	
 	useVertexBuffer = false;	
 }
-
 
 SceneMesh::~SceneMesh() {
 	if(ownsSkeleton)
@@ -108,6 +100,45 @@ SceneMesh::~SceneMesh() {
 	if(ownsMesh)
 		delete mesh;	
 	delete localShaderOptions;
+}
+
+Entity *SceneMesh::Clone(bool deepClone, bool ignoreEditorOnly) const {
+    SceneMesh *newEntity = new SceneMesh(mesh->getMeshType());
+    applyClone(newEntity, deepClone, ignoreEditorOnly);
+    return newEntity;
+}
+
+void SceneMesh::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
+    Entity::applyClone(clone, deepClone, ignoreEditorOnly);
+    SceneMesh *_clone = (SceneMesh*) clone;
+    
+    _clone->lineWidth = lineWidth;
+    _clone->lineSmooth = lineSmooth;
+    _clone->pointSize = pointSize;
+    _clone->pointSmooth = pointSmooth;
+    _clone->ownsMesh = ownsMesh;
+    _clone->ownsSkeleton = ownsSkeleton;
+    _clone->overlayWireframe = overlayWireframe;
+    _clone->wireFrameColor = wireFrameColor;
+    _clone->useGeometryHitDetection = useGeometryHitDetection;
+    _clone->forceMaterial = forceMaterial;
+    _clone->setFilename(fileName);
+    
+    Mesh *newMesh = mesh->Copy();
+    _clone->setMesh(newMesh);
+    
+    if(useVertexBuffer) {
+        _clone->cacheToVertexBuffer(true);
+    }
+    
+    _clone->setMaterial(material);
+    if(material) {
+        localShaderOptions->copyTo(_clone->getLocalShaderOptions());
+    }
+}
+
+void SceneMesh::setFilename(String fileName) {
+    this->fileName = fileName;
 }
 
 void SceneMesh::loadFromFile(String fileName) {

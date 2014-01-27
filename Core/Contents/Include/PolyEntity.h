@@ -102,7 +102,7 @@ namespace Polycode {
 			virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
 
 			/**
- 			* This method must be implemented by all subvlasses implementing Clone.
+ 			* This method must be implemented by all subclasses implementing Clone.
  			*/
 			virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
 		

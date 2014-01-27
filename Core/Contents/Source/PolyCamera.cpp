@@ -268,6 +268,28 @@ void Camera::buildFrustumPlanes() {
 
 }
 
+Entity *Camera::Clone(bool deepClone, bool ignoreEditorOnly) const {
+    Camera *newCamera = new Camera(NULL);
+    applyClone(newCamera, deepClone, ignoreEditorOnly);
+    return newCamera;
+}
+
+void Camera::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
+    Entity::applyClone(clone, deepClone, ignoreEditorOnly);
+    
+    Camera *cloneCamera = (Camera*) clone;
+    cloneCamera->setFOV(fov);
+    cloneCamera->setOrthoMode(orthoMode);
+    cloneCamera->setOrthoSizeMode(orthoSizeMode);
+    cloneCamera->setOrthoSize(orthoSizeX, orthoSizeY);
+    cloneCamera->setClippingPlanes(nearClipPlane, farClipPlane);
+    cloneCamera->setExposureLevel(exposureLevel);
+}
+
+Scene *Camera::getParentScene() const {
+    return parentScene;
+}
+
 bool Camera::canSee(Entity *entity) {
 	return isSphereInFrustum(entity->getPosition(), entity->getBBoxRadius());
 }
@@ -303,7 +325,7 @@ void Camera::setPostFilter(Material *shaderMaterial) {
 	for(int i=0; i < shaderMaterial->getNumShaders(); i++) {
 		ShaderBinding* binding = shaderMaterial->getShader(i)->createBinding();		
 		localShaderOptions.push_back(binding);
-		binding->addLocalParam("exposure", (void*)&exposureLevel);				
+		binding->addParamPointer(ProgramParam::PARAM_NUMBER, "exposure", (void*)&exposureLevel);
 	}
 
 	_hasFilterShader = true;

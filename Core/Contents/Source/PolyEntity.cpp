@@ -106,9 +106,9 @@ Entity *Entity::Clone(bool deepClone, bool ignoreEditorOnly) const {
 
 void Entity::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
 	clone->ownsChildren = ownsChildren;
-	clone->position = position;
-	clone->rotation = rotation;
-	clone->scale = scale;
+	clone->setPosition(position);
+	clone->setRotationEuler(rotation);
+	clone->setScale(scale);
 	clone->color = color;
 	clone->custEntityType = custEntityType;
 	clone->billboardMode = billboardMode;	
@@ -127,7 +127,10 @@ void Entity::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) co
 	clone->ignoreParentMatrix = ignoreParentMatrix;
 	clone->enableScissor = enableScissor;
 	clone->scissorBox = scissorBox;
-	clone->editorOnly = editorOnly;	
+	clone->editorOnly = editorOnly;
+	clone->snapToPixels = snapToPixels;
+    clone->setAnchorPoint(anchorPoint);
+    
 	clone->id = id;
 	if(tags == NULL) {
 		clone->tags = NULL;

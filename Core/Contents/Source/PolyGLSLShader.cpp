@@ -60,64 +60,6 @@ extern PFNGLGETUNIFORMLOCATIONARBPROC glGetUniformLocation;
 
 using namespace Polycode;
 
-GLSLShaderBinding::GLSLShaderBinding(GLSLShader *shader) : ShaderBinding(shader) {
-	glslShader = shader;
-}
-
-GLSLShaderBinding::~GLSLShaderBinding() {
-	
-}
-
-Cubemap *GLSLShaderBinding::getCubemap(const String& name) {
-	for(int i=0; i < cubemaps.size(); i++) {
-		if(cubemaps[i].name == name) {			
-			return cubemaps[i].cubemap;
-		}
-	}
-	return NULL;
-}
-
-Texture *GLSLShaderBinding::getTexture(const String& name) {
-	for(int i=0; i < textures.size(); i++) {
-		if(textures[i].name == name) {			
-			return textures[i].texture;
-		}
-	}
-	return NULL;
-}
-			
-void GLSLShaderBinding::addTexture(const String& name, Texture *texture) {
-	GLSLTextureBinding binding;
-	binding.name = name;
-	binding.texture = texture;
-	textures.push_back(binding);
-}
-
-void GLSLShaderBinding::addCubemap(const String& name, Cubemap *cubemap) {
-	GLSLCubemapBinding binding;
-	binding.cubemap = cubemap;
-	binding.name = name;
-	cubemaps.push_back(binding);
-}
-
-void GLSLShaderBinding::clearCubemap(const String& name) {
-	for(int i=0; i < cubemaps.size(); i++) {
-		if(cubemaps[i].name == name) {
-			cubemaps.erase(cubemaps.begin()+i);
-			return;
-		}
-	}
-}
-
-void GLSLShaderBinding::clearTexture(const String& name) {
-	for(int i=0; i < textures.size(); i++) {
-		if(textures[i].name == name) {
-			textures.erase(textures.begin()+i);
-			return;
-		}
-	}
-}
-
 int GLSLShader::getPolycodeParamType(int glType) {
 	switch(glType) {
 		case GL_FLOAT:
@@ -265,8 +207,4 @@ void GLSLShader::reload() {
 
 GLSLShader::~GLSLShader() {
 	unlinkProgram();
-}
-
-ShaderBinding *GLSLShader::createBinding() {
-	return new GLSLShaderBinding(this);
 }

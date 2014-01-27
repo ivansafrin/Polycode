@@ -150,14 +150,11 @@ namespace Polycode {
 			* If this is set to true, the mesh will be cached to a hardware vertex buffer if those are available. This can dramatically speed up rendering.
 			*/
 			void cacheToVertexBuffer(bool cache);
-	
-			unsigned int lightmapIndex;
-			
-			bool showVertexNormals;
-	
+				
 			void setLineWidth(Number newWidth);
 
             String getFilename();
+            void setFilename(String fileName);
         
             void loadFromFile(String fileName);
         
@@ -185,7 +182,9 @@ namespace Polycode {
 			bool customHitDetection(const Ray &ray);
         
             bool forceMaterial;
-
+        
+            virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
+            virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
 			
 		protected:
 		

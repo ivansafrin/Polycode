@@ -37,6 +37,12 @@
 
 using namespace Polycode;
 
+class EntityEditorClipboardData {
+public:
+    EntityEditorClipboardData(){}
+    std::vector<Entity*> entities;
+};
+
 class LightDisplay : public Entity {
 public:
     LightDisplay(SceneLight *light);
@@ -108,11 +114,15 @@ class EntityEditorMainView : public UIElement {
             void doEntitySelect(Entity *targetEntity);
             void setEditorMode(int newMode);
             Entity *getSelectedEntity();
+            std::vector<Entity*> getSelectedEntities();
     
             void setOverlayWireframeRecursive(Entity *targetEntity, bool val);
             void setLinkedEntityPropsRecursive(SceneEntityInstance *parentInstance, Entity *entity);
     
+            void Paste(EntityEditorClipboardData *data);
+    
             void disableLighting(bool disable);
+            void selectNone();
     
             void onGainFocus();
             void onLoseFocus();
@@ -204,6 +214,10 @@ class PolycodeEntityEditor : public PolycodeEditor {
         void saveShaderOptionsToEntry(ObjectEntry *entry, Material *material, ShaderBinding *binding);
     
         void saveEntityToObjectEntry(Entity *entity, ObjectEntry *entry);
+    
+        String Copy(void **data);
+        void Paste(void *data, String clipboardType);
+        void destroyClipboardData(void *data, String type);
     
         void handleEvent(Event *event);
     

@@ -136,6 +136,9 @@ namespace Polycode {
             Number getPrimitiveParameter3() const;
             Number getPrimitiveParameter4() const;
             Number getPrimitiveParameter5() const;
+        
+            virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
+            virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
 		
 		protected:
 

@@ -76,6 +76,14 @@ unsigned int Label::getSize() const {
 	return size;
 }
 
+bool Label::getPremultiplyAlpha() const {
+    return premultiplyAlpha;
+}
+
+void Label::setPremultiplyAlpha(bool val) {
+    premultiplyAlpha = val;
+}
+
 void Label::setSize(int newSize) {
 	size = newSize;
 	_optionsChanged	= true;

@@ -391,6 +391,33 @@ void Mesh::createCircle(Number w, Number h, unsigned int numSegments) {
     arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;			
 }
 
+Mesh *Mesh::Copy() const {
+    Mesh *newMesh = new Mesh(meshType);
+    newMesh->indexedMesh = indexedMesh;
+    newMesh->setUseFaceNormals(useFaceNormals);
+    
+    for(int i=0; i < vertices.size(); i++) {
+        Vertex *v = new Vertex();
+        (*v) = *(vertices[i]);
+        newMesh->addVertex(v);
+    }
+
+    for(int i=0; i < indices.size(); i++) {
+        newMesh->addIndex(indices[i]);
+    }
+
+    for(int i=0; i < faceNormals.size(); i++) {
+        newMesh->addFaceNormal(faceNormals[i]);
+    }
+    
+    newMesh->dirtyArrays();
+    return newMesh;
+}
+
+void Mesh::addFaceNormal(Vector3 faceNormal) {
+    faceNormals.push_back(faceNormal);
+}
+
 void Mesh::createLineCircle(Number w, Number h, unsigned int numSegments) {
     setMeshType(Mesh::TRIFAN_MESH);
  

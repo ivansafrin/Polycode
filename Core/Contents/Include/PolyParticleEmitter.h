@@ -77,6 +77,9 @@ namespace Polycode {
             void setPerlinEnabled(bool val);
             bool getPerlinEnabled() const;
         
+            Number getParticleSpeed() const;
+            void setParticleSpeed(Number speed);
+        
             void setPerlinValue(const Vector3 &perlinValue);
             Vector3 getPerlinValue() const;
         
@@ -124,6 +127,10 @@ namespace Polycode {
              * Bezier curve that controls the alpha component of particles' color.
              */
             BezierCurve colorCurveA;
+        
+        
+            virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
+            virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
         
         protected:
         

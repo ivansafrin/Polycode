@@ -79,7 +79,7 @@ Entity *SceneImage::Clone(bool deepClone, bool ignoreEditorOnly) const {
 }
 
 void SceneImage::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
-	//ScreenShape::applyClone(clone, deepClone, ignoreEditorOnly);
+	ScenePrimitive::applyClone(clone, deepClone, ignoreEditorOnly);
 }
 
 void SceneImage::setImageCoordinates(Number x, Number y, Number width, Number height, Number realWidth, Number realHeight) {

@@ -179,17 +179,18 @@ namespace Polycode {
 			* Returns the light type.
 			*/
 			int getLightType() const { return type; }
-		
-			/**
-			* If set to true, draws a wireframe primitive visualizing the light.
-			*/
-			void enableDebugDraw(bool val);
 			
 			void setLightImportance(int newImportance);
 			int getLightImportance() const;
         
             void setLightType(int lightType);
-			
+		
+            virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
+            virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
+        
+            Scene *getParentScene() const;
+            void setParentScene(Scene *scene);
+        
 		protected:
 		
 			Number spotlightExponent;
@@ -214,8 +215,6 @@ namespace Polycode {
 			unsigned int shadowMapRes;
 			Number shadowMapFOV;	
 			bool shadowsEnabled;
-        
-            bool debugDraw;
 		
 			Number distance;
 			Mesh *lightMesh;

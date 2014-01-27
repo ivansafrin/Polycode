@@ -127,6 +127,17 @@ void ScenePrimitive::recreatePrimitive() {
 	}
 }
 
+Entity *ScenePrimitive::Clone(bool deepClone, bool ignoreEditorOnly) const {
+    ScenePrimitive *newEntity = new ScenePrimitive(type, v1, v2, v3, v4, v5);
+    applyClone(newEntity, deepClone, ignoreEditorOnly);
+    return newEntity;
+}
+
+void ScenePrimitive::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
+    SceneMesh::applyClone(clone, deepClone, ignoreEditorOnly);    
+    ((ScenePrimitive*)clone)->setPrimitiveOptions(type, v1, v2, v3, v4, v5);
+}
+
 void ScenePrimitive::setPrimitiveOptions(int type, Number v1, Number v2, Number v3,Number v4,Number v5) {
 
 	this->type = type;

@@ -26,6 +26,7 @@ THE SOFTWARE.
 #include "PolyColor.h"
 #include "PolyVector2.h"
 #include "PolyVector3.h"
+#include "PolyMatrix4.h"
 #include "PolyResource.h"
 #include <string.h>
 
@@ -49,7 +50,17 @@ namespace Polycode {
 	static const int PARAM_VECTOR3 = 3;
 	static const int PARAM_COLOR = 4;
 	static const int PARAM_MATRIX = 5;
-	};	
+	};
+	
+	typedef struct {
+		Texture *texture;
+		String name;
+	} TextureBinding;
+    
+	typedef struct {
+		Cubemap *cubemap;
+		String name;
+	} CubemapBinding;
 
 	class _PolyExport ShaderProgram : public Resource {
 		public:
@@ -76,7 +87,7 @@ namespace Polycode {
 			void setName(const String& name);
 			const String& getName() const;
 			
-			virtual ShaderBinding *createBinding() = 0;
+			ShaderBinding *createBinding();
 			virtual void reload() {}								
 			
 			int getExpectedParamType(String name);
@@ -127,21 +138,27 @@ namespace Polycode {
 		public:
         
             LocalShaderParam();
+            ~LocalShaderParam();
+            LocalShaderParam *Copy();
         
 			String name;
 			void *data;
+			int type;
+            bool ownsPointer;
 		
-		// Convenience getters/setters for Lua users
-		Number getNumber()         { return *((Number *)data); }
-		Vector2 getVector2()       { return *((Vector2 *)data); }
-		Vector3 getVector3()       { return *((Vector3 *)data); }
-		Color getColor()           { return *((Color *)data); }
-		void setNumber(Number x)   { memcpy(data, &x, sizeof(x)); }
-		void setVector2(Vector2 x) { memcpy(data, &x, sizeof(x)); }
-		void setVector3(Vector3 x) { memcpy(data, &x, sizeof(x)); }
-		void setColor(Color x)     { static_cast<Color*>(data)->setColor(&x); }
-        
-        void setParamValueFromString(int type, String pvalue);
+            // Convenience getters/setters for Lua users
+            Number getNumber()         { return *((Number *)data); }
+            Vector2 getVector2()       { return *((Vector2 *)data); }
+            Vector3 getVector3()       { return *((Vector3 *)data); }
+            Matrix4 getMatrix4()       { return *((Matrix4 *)data); }
+            Color getColor()           { return *((Color *)data); }
+            void setNumber(Number x)   { memcpy(data, &x, sizeof(x)); }
+            void setVector2(Vector2 x) { memcpy(data, &x, sizeof(x)); }
+            void setVector3(Vector3 x) { memcpy(data, &x, sizeof(x)); }
+            void setMatrix4(Matrix4 x) { memcpy(data, &x, sizeof(x)); }
+            void setColor(Color x)     { static_cast<Color*>(data)->setColor(&x); }
+            
+            void setParamValueFromString(int type, String pvalue);
 	};	
 	
 	class RenderTargetBinding : public PolyBase {
@@ -160,15 +177,18 @@ namespace Polycode {
 		public:
 			ShaderBinding(Shader *shader);
 			virtual ~ShaderBinding();
+        
+            void copyTo(ShaderBinding *targetBinding);
 
-			virtual Texture *getTexture(const String& name){ return NULL;};
-			virtual Cubemap *getCubemap(const String& name){ return NULL;};			
-			virtual void clearTexture(const String& name){};
-			virtual void clearCubemap(const String& name){};
-			virtual void addTexture(const String& name, Texture *texture)  {};
+            Texture *getTexture(const String& name);
+            Cubemap *getCubemap(const String& name);
+			void clearTexture(const String& name);
+			void clearCubemap(const String& name);
+            void addTexture(const String& name, Texture *texture);
+            void addCubemap(const String& name, Cubemap *cubemap);
+        
 			LocalShaderParam *addParam(int type, const String& name);
-			virtual void addCubemap(const String& name, Cubemap *cubemap) {};
-		
+			LocalShaderParam *addParamPointer(int type, const String& name, void *ptr);        
 			unsigned int getNumLocalParams();
 			LocalShaderParam *getLocalParam(unsigned int index);
 			LocalShaderParam *getLocalParamByName(const String& name);
@@ -190,8 +210,9 @@ namespace Polycode {
 
 			unsigned int getNumOutTargetBindings();
 			RenderTargetBinding *getOutTargetBinding(unsigned int index);
-			
-			LocalShaderParam *addLocalParam(const String& name, void *ptr);
+			            
+            std::vector<TextureBinding> textures;
+            std::vector<CubemapBinding> cubemaps;
 		
 			Shader* shader;
 			std::vector<LocalShaderParam*> localParams;

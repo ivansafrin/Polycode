@@ -618,6 +618,7 @@ class ParticleEmitterSheet : public PropSheet {
         NumberProp *countProp;
         NumberProp *lifetimeProp;
         NumberProp *particleSizeProp;
+        NumberProp *particleSpeedProp;
 
         BoolProp *worldParticlesProp;
         BoolProp *loopingProp;

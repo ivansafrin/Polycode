@@ -81,6 +81,9 @@ namespace Polycode {
 			void setColorForRange(Color color, unsigned int rangeStart, unsigned int rangeEnd);
 		
 			Color getColorForIndex(unsigned int index);
+        
+            bool getPremultiplyAlpha() const;
+            void setPremultiplyAlpha(bool val);
 		
 			void setFont(Font *newFont);
 			Font *getFont() const;

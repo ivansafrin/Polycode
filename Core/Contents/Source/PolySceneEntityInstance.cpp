@@ -307,6 +307,7 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
             SceneParticleEmitter *emitter = new SceneParticleEmitter(1, 1, 1);
 
             emitter->setParticleType((*emitterEntry)["type"]->intVal);
+            emitter->setParticleSpeed((*emitterEntry)["speed"]->NumberVal);
             emitter->setParticleCount((*emitterEntry)["count"]->intVal);
             emitter->setParticleLifetime((*emitterEntry)["lifetime"]->NumberVal);
             emitter->setParticleSize((*emitterEntry)["size"]->NumberVal);
@@ -327,16 +328,11 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
             emitter->useColorCurves = (*emitterEntry)["useColorCurves"]->boolVal;
             emitter->useScaleCurve = (*emitterEntry)["useScaleCurve"]->boolVal;
             
-            if(emitter->useColorCurves) {
-                parseObjectIntoCurve((*emitterEntry)["colorCurveR"], &emitter->colorCurveR);
-                parseObjectIntoCurve((*emitterEntry)["colorCurveG"], &emitter->colorCurveG);
-                parseObjectIntoCurve((*emitterEntry)["colorCurveB"], &emitter->colorCurveB);
-                parseObjectIntoCurve((*emitterEntry)["colorCurveA"], &emitter->colorCurveA);
-            }
-            
-            if(emitter->useScaleCurve) {
-                parseObjectIntoCurve((*emitterEntry)["scaleCurve"], &emitter->scaleCurve);
-            }
+            parseObjectIntoCurve((*emitterEntry)["colorCurveR"], &emitter->colorCurveR);
+            parseObjectIntoCurve((*emitterEntry)["colorCurveG"], &emitter->colorCurveG);
+            parseObjectIntoCurve((*emitterEntry)["colorCurveB"], &emitter->colorCurveB);
+            parseObjectIntoCurve((*emitterEntry)["colorCurveA"], &emitter->colorCurveA);
+            parseObjectIntoCurve((*emitterEntry)["scaleCurve"], &emitter->scaleCurve);
             
             applySceneMesh((*entry)["SceneMesh"], emitter);
 			entity = emitter;

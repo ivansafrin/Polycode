@@ -109,6 +109,7 @@ class _PolyExport SceneSprite : public ScenePrimitive
 		Vector2 getSpriteSize();
 	
 		String getFileName() const;
+        void setSpriteFilename(String fileName);
 	
 		void recalculateSpriteDimensions();
     

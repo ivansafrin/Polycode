@@ -56,10 +56,28 @@ SceneSprite::SceneSprite(const String& fileName) : ScenePrimitive(ScenePrimitive
 	currentAnimation = NULL;	
 	paused = false;
 
-	resourceEntry = new SceneSpriteResourceEntry(this);		
+	resourceEntry = new SceneSpriteResourceEntry(this);
 	loadFromFile(fileName);
 	resourceEntry->setResourceName(fileName);
 	resourceEntry->setResourcePath(fileName);	
+}
+
+SceneSprite::SceneSprite(const String& fileName, Number spriteWidth, Number spriteHeight) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1) {
+	this->spriteWidth = spriteWidth;
+	this->spriteHeight = spriteHeight;
+	loadTexture(fileName);
+    resourceEntry = NULL;
+    
+	currentFrame = 0;
+	currentAnimation = NULL;
+	paused = false;
+    actualSpriteSize.x = spriteWidth;
+    actualSpriteSize.y = spriteHeight;
+    
+    setSpriteSize(spriteWidth, spriteHeight);
+	setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, spriteWidth, spriteHeight);
+    
+    recalculateSpriteDimensions();
 }
 
 Entity *SceneSprite::Clone(bool deepClone, bool ignoreEditorOnly) const {
@@ -70,12 +88,26 @@ Entity *SceneSprite::Clone(bool deepClone, bool ignoreEditorOnly) const {
 	if(currentAnimation) {
 		newSprite->playAnimation(currentAnimation->name, currentFrame, playingOnce);
 	}
+    
+    newSprite->setSpriteFilename(fileName);
 	applyClone(newSprite, deepClone, ignoreEditorOnly);
+    
+    newSprite->setActualSpriteSize(actualSpriteSize.x, actualSpriteSize.y);
+    
 	return newSprite;
 }
 
 void SceneSprite::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
-//	ScreenShape::applyClone(clone, deepClone, ignoreEditorOnly);	
+	ScenePrimitive::applyClone(clone, deepClone, ignoreEditorOnly);
+}
+
+void SceneSprite::setSpriteFilename(String fileName) {
+    this->fileName = fileName;
+    if(!resourceEntry) {
+        resourceEntry = new SceneSpriteResourceEntry(this);
+    }
+    resourceEntry->setResourceName(fileName);
+    resourceEntry->setResourcePath(fileName);
 }
 
 bool SceneSprite::loadFromFile(const String& fileName) {
@@ -163,21 +195,6 @@ void SceneSprite::reloadSprite() {
 
 SceneSpriteResourceEntry *SceneSprite::getResourceEntry() {
 	return resourceEntry;
-}
-
-SceneSprite::SceneSprite(const String& fileName, Number spriteWidth, Number spriteHeight) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1) {
-	this->spriteWidth = spriteWidth;
-	this->spriteHeight = spriteHeight;	
-	loadTexture(fileName);
-		
-	recalculateSpriteDimensions();
-	currentFrame = 0;
-	currentAnimation = NULL;	
-	paused = false;
-    actualSpriteSize.x = spriteWidth;
-    actualSpriteSize.y = spriteHeight;
-    
-	setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, spriteWidth, spriteHeight);	
 }
 
 SceneSprite::~SceneSprite() {

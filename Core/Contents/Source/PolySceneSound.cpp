@@ -43,6 +43,21 @@ void SceneSoundListener::Update() {
 	CoreServices::getInstance()->getSoundManager()->setListenerOrientation(direction, upVector);
 }
 
+Entity *SceneSound::Clone(bool deepClone, bool ignoreEditorOnly) const {
+    SceneSound *newSound = new SceneSound(sound->getFileName(), sound->getReferenceDistance(), sound->getMaxDistance(), directionalSound);
+    applyClone(newSound, deepClone, ignoreEditorOnly);
+    return newSound;
+}
+
+void SceneSound::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
+    Entity::applyClone(clone, deepClone, ignoreEditorOnly);
+    SceneSound *cloneSound = (SceneSound*) clone;
+    
+    cloneSound->getSound()->setPositionalProperties(sound->getReferenceDistance(), sound->getMaxDistance());
+    cloneSound->setDirectionalSound(directionalSound);
+    cloneSound->getSound()->setVolume(sound->getVolume());
+    cloneSound->getSound()->setPitch(sound->getPitch());
+}
 
 SceneSound::SceneSound(const String& fileName, Number referenceDistance, Number maxDistance, bool directionalSound) : Entity() {
 
@@ -55,6 +70,13 @@ SceneSound::SceneSound(const String& fileName, Number referenceDistance, Number 
 
 SceneSound::~SceneSound() {
 	delete sound;
+}
+
+bool SceneSound::isDirectionalSound() const {
+    return directionalSound;
+}
+void SceneSound::setDirectionalSound(bool val) {
+    directionalSound = val;
 }
 
 void SceneSound::Update() {

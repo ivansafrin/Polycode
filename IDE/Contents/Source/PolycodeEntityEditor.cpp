@@ -323,6 +323,10 @@ EntityEditorMainView::EntityEditorMainView() {
     input->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 }
 
+std::vector<Entity*> EntityEditorMainView::getSelectedEntities() {
+    return selectedEntities;
+}
+
 void EntityEditorMainView::setEditorMode(int newMode) {
     editorMode = newMode;
     if(editorMode == EDITOR_MODE_3D) {
@@ -349,6 +353,19 @@ Entity *EntityEditorMainView::getSelectedEntity() {
         return selectedEntities[selectedEntities.size()-1];
     } else {
         return NULL;
+    }
+}
+
+
+void EntityEditorMainView::Paste(EntityEditorClipboardData *data) {
+    
+    selectNone();
+    
+    for(int i=0; i < data->entities.size(); i++) {
+        Entity *entity = data->entities[i]->Clone(true, true);
+        setEditorPropsRecursive(entity);
+        sceneObjectRoot->addChild(entity);
+        selectEntity(entity, true);
     }
 }
 
@@ -417,7 +434,9 @@ void EntityEditorMainView::createIcon(Entity *entity, String iconFile) {
 void EntityEditorMainView::setEditorPropsRecursive(Entity *entity) {
     setEditorProps(entity);
     for(int i=0; i < entity->getNumChildren(); i++) {
-        setEditorProps(entity->getChildAtIndex(i));
+        if(!entity->getChildAtIndex(i)->editorOnly) {
+            setEditorProps(entity->getChildAtIndex(i));
+        }
     }
 }
 
@@ -465,6 +484,10 @@ void EntityEditorMainView::setEditorProps(Entity *entity) {
     if(sceneLight) {
         createIcon(entity, "light_icon.png");
         LightDisplay *lightVis = new LightDisplay(sceneLight);
+        if(!sceneLight->getParentScene()) {
+            sceneLight->setParentScene(mainScene);
+            mainScene->addLight(sceneLight);
+        }
     }
     
     if(emitter) {
@@ -566,7 +589,6 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
         selectEntity(newLabel);
         return;
     }
-
     
     if(command == "add_light") {
         SceneLight *newLight = new SceneLight(SceneLight::POINT_LIGHT, mainScene, 1.0);
@@ -751,12 +773,7 @@ void EntityEditorMainView::handleEvent(Event *event) {
                 break;
                 case KEY_ESCAPE:
                 {
-                    for(int i=0; i < selectedEntities.size(); i++) {
-                        doEntityDeselect(selectedEntities[i]);
-                    }
-                    selectedEntities.clear();
-                    transformGizmo->setTransformSelection(selectedEntities);
-                    dispatchEvent(new Event(), Event::CHANGE_EVENT);                    
+                    selectNone();
                 }
                 break;
             }
@@ -800,6 +817,15 @@ void EntityEditorMainView::handleEvent(Event *event) {
             }
         }
     }
+}
+
+void EntityEditorMainView::selectNone() {
+    for(int i=0; i < selectedEntities.size(); i++) {
+        doEntityDeselect(selectedEntities[i]);
+    }
+    selectedEntities.clear();
+    transformGizmo->setTransformSelection(selectedEntities);
+    dispatchEvent(new Event(), Event::CHANGE_EVENT);
 }
 
 void EntityEditorMainView::disableLighting(bool disable) {
@@ -925,15 +951,16 @@ void EntityEditorMainView::Resize(Number width, Number height) {
     
     Vector2 screenPos = renderTextureShape->getScreenPosition(globalScene->getDefaultCamera()->getProjectionMatrix(), globalScene->getDefaultCamera()->getTransformMatrix(), globalScene->getDefaultCamera()->getViewport());
     
+	renderTexture->resizeRenderTexture(width, height-30);
+	renderTextureShape->setTexture(renderTexture->getTargetTexture());		
+	renderTextureShape->Resize(width, height-30);
+    
 	mainScene->sceneMouseRect.x = screenPos.x;
 	mainScene->sceneMouseRect.y = screenPos.y;
 	mainScene->sceneMouseRect.w = renderTextureShape->getWidth();
 	mainScene->sceneMouseRect.h = renderTextureShape->getHeight();
     mainScene->remapMouse = true;
     
-	renderTexture->resizeRenderTexture(width, height-30);
-	renderTextureShape->setTexture(renderTexture->getTargetTexture());		
-	renderTextureShape->Resize(width, height-30);
     Update();
 }
 
@@ -1123,6 +1150,7 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
         ObjectEntry *emitterEntry = entry->addChild("SceneParticleEmitter");
         emitterEntry->addChild("type", (int)emitter->getParticleType());
         emitterEntry->addChild("count", (int)emitter->getParticleCount());
+        emitterEntry->addChild("speed", emitter->getParticleSpeed());
         emitterEntry->addChild("lifetime", emitter->getParticleLifetime());
         emitterEntry->addChild("size", emitter->getParticleSize());
         emitterEntry->addChild("world", emitter->getParticlesInWorldSpace());
@@ -1149,15 +1177,12 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
         emitterEntry->addChild("useColorCurves", emitter->useColorCurves);
         emitterEntry->addChild("useScaleCurve", emitter->useScaleCurve);
         
-        if(emitter->useScaleCurve) {
-            saveCurveToObject(emitterEntry->addChild("scaleCurve"), &emitter->scaleCurve);
-        }
-        if(emitter->useColorCurves) {
-            saveCurveToObject(emitterEntry->addChild("colorCurveR"), &emitter->colorCurveR);
-            saveCurveToObject(emitterEntry->addChild("colorCurveG"), &emitter->colorCurveG);
-            saveCurveToObject(emitterEntry->addChild("colorCurveB"), &emitter->colorCurveB);
-            saveCurveToObject(emitterEntry->addChild("colorCurveA"), &emitter->colorCurveA);
-        }
+        saveCurveToObject(emitterEntry->addChild("scaleCurve"), &emitter->scaleCurve);
+            
+        saveCurveToObject(emitterEntry->addChild("colorCurveR"), &emitter->colorCurveR);
+        saveCurveToObject(emitterEntry->addChild("colorCurveG"), &emitter->colorCurveG);
+        saveCurveToObject(emitterEntry->addChild("colorCurveB"), &emitter->colorCurveB);
+        saveCurveToObject(emitterEntry->addChild("colorCurveA"), &emitter->colorCurveA);
     }
     
     if(dynamic_cast<SceneSprite*>(entity)) {
@@ -1374,6 +1399,40 @@ void PolycodeEntityEditor::saveShaderOptionsToEntry(ObjectEntry *entry, Material
                 }
             }
         }
+    }
+}
+
+String PolycodeEntityEditor::Copy(void **data) {
+    std::vector<Entity*> selectedEntities = mainView->getSelectedEntities();
+    
+    if(selectedEntities.size() > 0) {
+        EntityEditorClipboardData *newData = new EntityEditorClipboardData();
+        for(int i=0; i < selectedEntities.size(); i++) {
+            ScreenEntity *clone = (ScreenEntity*)selectedEntities[i]->Clone(true, true);
+            newData->entities.push_back(clone);
+        }
+        *data = (void*) newData;
+    }
+    return "Entity";
+}
+
+void PolycodeEntityEditor::destroyClipboardData(void *data, String type) {
+    if(type == "Entity") {
+        EntityEditorClipboardData *oldData = (EntityEditorClipboardData*) data;
+        for(int i=0; i < oldData->entities.size(); i++) {
+            delete oldData->entities[i];
+        }
+        delete oldData;
+    }
+}
+
+void PolycodeEntityEditor::Paste(void *data, String clipboardType) {
+    if(!data) {
+        return;
+    }
+    
+    if(clipboardType == "Entity") {
+        mainView->Paste((EntityEditorClipboardData*)data);
     }
 }
 

@@ -266,7 +266,10 @@ namespace Polycode {
 			* Returns the vertex buffer for the mesh.
 			* @return The vertex buffer for this mesh.
 			*/
-			VertexBuffer *getVertexBuffer();		
+			VertexBuffer *getVertexBuffer();
+        
+        
+            Mesh *Copy() const;
 			
 			/**
 			* Returns the radius of the mesh (furthest vertex away from origin).
@@ -374,6 +377,8 @@ namespace Polycode {
             void addIndex(unsigned int index);
         
             Vector3 getFaceNormalForVertex(unsigned int index);
+        
+            void addFaceNormal(Vector3 faceNormal);
         
 		protected:
         
