@@ -64,7 +64,11 @@ typedef struct {
 			* @see EventHandler
 			*/						
 			void addEventListener(EventHandler *handler, int eventCode);
-			
+        
+			void addEventListenerUnique(EventHandler *handler, int eventCode);
+        
+            bool hasEventListener(EventHandler *handler, int eventCode);
+        
 			/**
 			* Removes a listener for a specific handler and event code. 
 			* @param handler The event handler to remove as a listener

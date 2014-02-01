@@ -478,6 +478,7 @@ void EntityEditorMainView::setEditorProps(Entity *entity) {
         for(int i=0; i < instance->getNumChildren(); i++) {
             setLinkedEntityPropsRecursive(instance, instance->getChildAtIndex(i));
             instance->getResourceEntry()->reloadOnFileModify = true;
+            instance->getResourceEntry()->addEventListenerUnique(this, Event::RESOURCE_RELOAD_EVENT);
             if(!CoreServices::getInstance()->getResourceManager()->getGlobalPool()->hasResource(instance->getResourceEntry())) {
                 CoreServices::getInstance()->getResourceManager()->getGlobalPool()->addResource(instance->getResourceEntry());
             }
@@ -689,8 +690,12 @@ void EntityEditorMainView::onLoseFocus() {
 }
 
 void EntityEditorMainView::handleEvent(Event *event) {
-
-    if(event->getDispatcher() == renderTextureShape) {
+	if(event->getEventCode() == Event::RESOURCE_RELOAD_EVENT) {
+        SceneEntityInstanceResourceEntry *entry = dynamic_cast<SceneEntityInstanceResourceEntry*>(event->getDispatcher());
+        if(entry) {
+                setEditorProps(entry->getInstance());
+        }
+	} else if(event->getDispatcher() == renderTextureShape) {
         focusSelf();
     } else if(event->getDispatcher() == trackballCamera) {
         Update();
@@ -735,8 +740,7 @@ void EntityEditorMainView::handleEvent(Event *event) {
                 sceneObjectRoot->addChild(newEntity);
                 setEditorProps(newEntity);
                 newEntity->setPosition(cursorPosition);
-                selectEntity(newEntity);
-            }
+                selectEntity(newEntity);            }
             
             globalFrame->assetBrowser->removeAllHandlersForListener(this);
             globalFrame->hideModal();
