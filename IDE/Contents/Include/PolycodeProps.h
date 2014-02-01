@@ -557,7 +557,7 @@ class TargetBindingsSheet : public PropSheet {
 		Shader *shader;
 		int shaderIndex;
 		
-		UIButton *addButton;		
+		ButtonProp *addButton;
 		RenderTargetBinding *bindingToRemove;
 
 };

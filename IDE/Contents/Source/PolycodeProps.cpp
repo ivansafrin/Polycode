@@ -1750,12 +1750,10 @@ void ShaderPassesSheet::handleEvent(Event *event) {
 }
 
 TargetBindingsSheet::TargetBindingsSheet() : PropSheet("TEXTURE BINDINGS", "targetBindings") {
-	propHeight = 70;
-	addButton = new UIButton("Add Render Target", 150);
-	addButton->addEventListener(this, UIEvent::CLICK_EVENT);
-	contents->addChild(addButton);
-	addButton->setPosition(15, 35);	
-	customUndoHandler = true;	
+	addButton = new ButtonProp("Add Render Target");
+	addButton->getButton()->addEventListener(this, UIEvent::CLICK_EVENT);
+    addProp(addButton);
+	customUndoHandler = true;
 	material = NULL;
 	binding = NULL;	
 	bindingToRemove = NULL;
@@ -1783,12 +1781,15 @@ void TargetBindingsSheet::Update() {
 
 void TargetBindingsSheet::refreshTargets() {
 	for(int i=0; i < props.size(); i++) {
-		contents->removeChild(props[i]);
-		props[i]->removeAllHandlersForListener(this);
-		delete props[i];
+        if(props[i] != addButton) {
+            contents->removeChild(props[i]);
+            props[i]->removeAllHandlersForListener(this);
+            delete props[i];
+        }
 	}
 	props.clear();
 	propHeight = 0;
+    props.push_back(addButton);
 
 	if(!material) {
 		return;
@@ -1803,7 +1804,6 @@ void TargetBindingsSheet::refreshTargets() {
 		
 	}
 				
-	addButton->setPosition(15, propHeight);	
 	propHeight += 70;	
 
 	dispatchEvent(new Event(), Event::COMPLETE_EVENT);		
@@ -1812,7 +1812,7 @@ void TargetBindingsSheet::refreshTargets() {
 
 void TargetBindingsSheet::handleEvent(Event *event) {
 
-	if(event->getDispatcher() == addButton) {
+	if(event->getDispatcher() == addButton->getButton()) {
 		RenderTargetBinding* newBinding = new RenderTargetBinding();
 		newBinding->mode = RenderTargetBinding::MODE_COLOR;
 		newBinding->texture = NULL;		
