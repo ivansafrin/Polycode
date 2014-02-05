@@ -2214,12 +2214,22 @@ void PolycodeScreenEditorMain::handleEvent(Event *event) {
 
 		if(event->getDispatcher() == unparentButton) {
 			for(int i=0; i < selectedEntities.size(); i++) {
+				if(selectedEntities[i]->getEntityProp("editor_type") == "layer"){
+					PolycodeConsole::print("You cannot unparent a layer.\n");
+					continue;
+				} else if(selectedEntities[i] == layerBaseEntity){
+					PolycodeConsole::print("You cannot unparent the root entity.\n");
+					continue;
+				}
 				if(selectedEntities[i]->getParentEntity()) {
 					selectedEntities[i]->getParentEntity()->removeChild(selectedEntities[i]);
 					currentLayer->addChild(selectedEntities[i]);
 				}
 			}
 			syncTransformToSelected();			
+			if(treeView) {
+				treeView->Refresh();
+			}
 		}
 			
 	
