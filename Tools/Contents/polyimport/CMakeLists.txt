@@ -2,8 +2,7 @@ INCLUDE(PolycodeIncludes)
 
 FIND_PACKAGE(Assimp REQUIRED)
 INCLUDE_DIRECTORIES(
-    ${ASSIMP_INCLUDE_DIR} 
-	${Polycode_SOURCE_DIR}/Tools/Dependencies/getopt
+    ${ASSIMP_INCLUDE_DIR}
     Include)
 
 IF(WIN32)
