@@ -54,7 +54,7 @@ PolycodeEditor::PolycodeEditor(bool _isReadOnly) : UIElement(), ClipboardProvide
 	
 	editorHolder = NULL;
 	
-	currentUndoPosition = 0;
+	currentUndoPosition = -1;
 	
 	Core *core = CoreServices::getInstance()->getCore();
 	
@@ -108,8 +108,8 @@ void PolycodeEditor::handleEvent(Event *event) {
 				if(editorActions.size() > 0) {
 				doAction(editorActions[currentUndoPosition].actionName, editorActions[currentUndoPosition].beforeData);
 				currentUndoPosition--;
-				if(currentUndoPosition < 0) {
-					currentUndoPosition = 0;
+				if(currentUndoPosition < -1) {
+					currentUndoPosition = -1;
 				}
 				}				
 			}
@@ -132,18 +132,22 @@ void PolycodeEditor::handleEvent(Event *event) {
 
 void PolycodeEditor::didAction(String actionName, PolycodeEditorActionData *beforeData, PolycodeEditorActionData *afterData, bool setFileChanged) {
 
-//	printf("DID ACTION: %s\n", actionName.c_str());
+//	printf("DID ACTION (pos: %d): %s\n", currentUndoPosition, actionName.c_str());
 	
 	if(setFileChanged) {
 		setHasChanges(true);
 	}
 	
 	// if the undo position is not at the end, remove the states after it
-	if(currentUndoPosition < editorActions.size()-1 && editorActions.size() > 0) {
+	if(currentUndoPosition < (int)(editorActions.size())-1 && editorActions.size() > 0) {
 		for(int i=currentUndoPosition+1; i < editorActions.size(); i++) {
 			editorActions[i].deleteData();		
 		}
-		editorActions.erase(editorActions.begin()+currentUndoPosition+1, editorActions.end());
+        if(currentUndoPosition > -1) {
+            editorActions.erase(editorActions.begin()+currentUndoPosition+1, editorActions.end());
+        } else {
+            editorActions.clear();
+        }
 	}
 
 	PolycodeEditorAction newAction;
@@ -157,7 +161,7 @@ void PolycodeEditor::didAction(String actionName, PolycodeEditorActionData *befo
 		editorActions.erase(editorActions.begin());
 	}
 	
-	currentUndoPosition = editorActions.size()-1;	
+	currentUndoPosition = editorActions.size()-1;
 }
 
 void PolycodeEditor::Resize(int x, int y) {

@@ -108,9 +108,9 @@ void ScenePrimitive::recreatePrimitive() {
 		break;				
 		case TYPE_TORUS:
 			mesh->createTorus(v1,v2,v3,v4);
-			bBox.x = v1*2;
-			bBox.y = v2;
-			bBox.z = v1*2;						
+			bBox.x = (v1*2) + (v2*2);
+			bBox.y = v2 * 2;
+			bBox.z = (v1*2) + (v2*2);
 		break;						
 		case TYPE_CIRCLE:
 			mesh->createCircle(v1, v2, v3);

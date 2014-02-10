@@ -24,6 +24,12 @@
 
 extern UIGlobalMenu *globalMenu;
 
+TrasnformGizmoEvent::TrasnformGizmoEvent(int mode) : Event() {
+    this->mode =  mode;
+    this->eventCode = eventCode;
+    eventType = "TrasnformGizmoEvent";
+}
+
 TransformGizmoMenu::TransformGizmoMenu(TransformGizmo *gizmo) : UIElement() {
 	processInputEvents = true;
     
@@ -92,7 +98,8 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
     orientation = ORIENTATION_GLOBAL;
     centerMode = CENTER_MODE_MEDIAN;
     enableGizmo = true;
-	
+    firstMove = true;
+    
 	this->targetScene = targetScene;
 	this->targetCamera = targetCamera;
 	
@@ -474,6 +481,11 @@ void TransformGizmo::setTransformSelection(std::vector<Entity*> selectedEntities
 
 void TransformGizmo::transformSelectedEntities(const Vector3 &move, const Vector3 &scale, Number rotate) {
     
+    if(firstMove) {
+        firstMove = false;
+        dispatchEvent(new TrasnformGizmoEvent(mode), Event::SELECT_EVENT);
+    }
+    
     Vector3 globalCenter = getConcatenatedMatrix().getPosition();
     
 	for(int i=0; i < selectedEntities.size(); i++) {
@@ -716,9 +728,11 @@ void TransformGizmo::handleEvent(Event *event) {
                 case KEY_ESCAPE:
                 {
                     if(mode == TRANSFORM_SCALE_VIEW || mode == TRANSFORM_ROTATE_VIEW || mode == TRANSFORM_MOVE_VIEW) {
+                        dispatchEndEvent();
                         mode = previousMode;
                     }                    
                     transforming = false;
+                    firstMove = true;
                 }
                 break;
             }
@@ -794,15 +808,35 @@ void TransformGizmo::handleEvent(Event *event) {
                 break;
                 case InputEvent::EVENT_MOUSEUP:
                 {
+                    dispatchEndEvent();
+                    
                     if(mode == TRANSFORM_SCALE_VIEW || mode == TRANSFORM_ROTATE_VIEW || mode == TRANSFORM_MOVE_VIEW) {
                         mode = previousMode;
                     }
                     transforming = false;
+                    firstMove = true;
                 }
                 break;
             }
         }
 	}
+}
+
+void TransformGizmo::dispatchEndEvent() {
+    switch(mode) {
+        case TRANSFORM_MOVE:
+        case TRANSFORM_MOVE_VIEW:
+            dispatchEvent(new TrasnformGizmoEvent(mode), Event::CHANGE_EVENT);
+            break;
+        case TRANSFORM_SCALE:
+        case TRANSFORM_SCALE_VIEW:
+            dispatchEvent(new TrasnformGizmoEvent(mode), Event::CHANGE_EVENT);
+            break;
+        case TRANSFORM_ROTATE:
+        case TRANSFORM_ROTATE_VIEW:
+            dispatchEvent(new TrasnformGizmoEvent(mode), Event::CHANGE_EVENT);
+            break;
+    }
 }
 
 TransformGizmo::~TransformGizmo() {

@@ -56,7 +56,7 @@ class PolycodeEditorAction  {
 };
 
 
-class PolycodeEditor : public UIElement, public ClipboardProvider { 
+class PolycodeEditor : public UIElement, public ClipboardProvider {
 public:
 	PolycodeEditor(bool _isReadOnly);
 	virtual ~PolycodeEditor();

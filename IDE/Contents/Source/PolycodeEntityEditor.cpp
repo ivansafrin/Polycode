@@ -29,6 +29,26 @@ extern UIGlobalMenu *globalMenu;
 extern PolycodeFrame *globalFrame;
 extern Scene *globalScene;
 
+PolycodeSceneEditorActionDataEntry::PolycodeSceneEditorActionDataEntry(Vector3 vec3, Number number) {
+    this->vec3 = vec3;
+    this->number = number;
+}
+PolycodeSceneEditorActionDataEntry::PolycodeSceneEditorActionDataEntry(Vector3 vec3) {
+    this->vec3 = vec3;
+}
+
+PolycodeSceneEditorActionDataEntry::PolycodeSceneEditorActionDataEntry(Quaternion quat) {
+    this->quat = quat;
+}
+
+PolycodeSceneEditorActionDataEntry::PolycodeSceneEditorActionDataEntry(Number number) {
+    this->number = number;
+}
+
+PolycodeSceneEditorActionDataEntry::PolycodeSceneEditorActionDataEntry(Entity *entity) {
+    this->entity = entity;
+}
+
 LightDisplay::LightDisplay(SceneLight *light) : Entity() {
     editorOnly = true;
     this->light = light;
@@ -207,11 +227,14 @@ void CameraPreviewWindow::setCamera(Scene *scene, Camera *camera) {
     }
 }
 
-EntityEditorMainView::EntityEditorMainView() {
+EntityEditorMainView::EntityEditorMainView(PolycodeEditor *editor) {
 	processInputEvents = true;
     multiselectIndex = 0;
     objectRootInstance = NULL;
     lightsDisabled = false;
+    beforeData = NULL;
+    
+    this->editor = editor;
 
 	mainScene = new Scene(Scene::SCENE_3D, true);
 	renderTexture = new SceneRenderTexture(mainScene, mainScene->getDefaultCamera(), 512, 512);
@@ -279,6 +302,8 @@ EntityEditorMainView::EntityEditorMainView() {
     
 	transformGizmo = new TransformGizmo(mainScene, mainScene->getDefaultCamera());
     transformGizmo->enableGizmo = false;
+    transformGizmo->addEventListener(this, Event::CHANGE_EVENT);
+    transformGizmo->addEventListener(this, Event::SELECT_EVENT);
     
 	mainScene->addChild(transformGizmo);		
 	trackballCamera = new TrackballCamera(mainScene->getDefaultCamera(), renderTextureShape);
@@ -327,6 +352,61 @@ std::vector<Entity*> EntityEditorMainView::getSelectedEntities() {
     return selectedEntities;
 }
 
+void EntityEditorMainView::doAction(String actionName, PolycodeEditorActionData *data) {
+    PolycodeSceneEditorActionData *sceneData = (PolycodeSceneEditorActionData*)data;
+	if(actionName == "move") {
+		for(int i=0; i < selectedEntities.size(); i++) {
+            if(i < sceneData->entries.size()) {
+			selectedEntities[i]->setPosition(sceneData->entries[i].vec3);
+            }
+		}
+	} else if(actionName == "scale") {
+		for(int i=0; i < selectedEntities.size(); i++) {
+            if(i < sceneData->entries.size()) {
+                selectedEntities[i]->setScale(sceneData->entries[i].vec3);
+            }
+		}
+    } else if(actionName == "rotate") {
+		for(int i=0; i < selectedEntities.size(); i++) {
+            if(i < sceneData->entries.size()) {
+                selectedEntities[i]->setRotationByQuaternion(sceneData->entries[i].quat);
+            }
+		}
+    } else if(actionName == "select") {
+        selectNone(false);
+        if(sceneData) {
+            for(int i=0; i < sceneData->entries.size(); i++) {
+                    selectEntity(sceneData->entries[i].entity, true, false);
+            }
+        }
+    } else if(actionName == "delete") {
+        if(sceneData->reverse) {
+            selectNone(false);
+            for(int i=0; i < sceneData->entries.size(); i++) {
+                sceneData->entries[i].parentEntity->addChild(sceneData->entries[i].entity);
+                setEditorPropsRecursive(sceneData->entries[i].entity);
+                selectEntity(sceneData->entries[i].entity, true, false);
+            }
+		} else {
+            deleteSelected(false);
+		}
+    } else if(actionName == "create_entity") {
+        if(sceneData->reverse) {
+			deleteSelected(false);
+            selectNone(false);
+            for(int i=0; i < sceneData->entries.size(); i++) {
+                selectEntity(sceneData->entries[i].entity, true, false);
+            }
+            
+		} else {
+            selectNone(false);
+            sceneData->entries[0].parentEntity->addChild(sceneData->entries[0].entity);
+            setEditorPropsRecursive(sceneData->entries[0].entity);
+            selectEntity(sceneData->entries[0].entity, true, false);
+		}
+    }
+}
+
 void EntityEditorMainView::setEditorMode(int newMode) {
     editorMode = newMode;
     if(editorMode == EDITOR_MODE_3D) {
@@ -359,7 +439,7 @@ Entity *EntityEditorMainView::getSelectedEntity() {
 
 void EntityEditorMainView::Paste(EntityEditorClipboardData *data) {
     
-    selectNone();
+    selectNone(false);
     
     for(int i=0; i < data->entities.size(); i++) {
         Entity *entity = data->entities[i]->Clone(true, true);
@@ -524,7 +604,8 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
         sceneObjectRoot->addChild(newPrimitive);
         setEditorProps(newPrimitive);
         newPrimitive->setPosition(cursorPosition);
-        selectEntity(newPrimitive);
+        didPlaceEntity(newPrimitive);
+        selectEntity(newPrimitive, false, false);
         return;
     }
 
@@ -533,7 +614,8 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
         sceneObjectRoot->addChild(newEntity);
         setEditorProps(newEntity);
         newEntity->setPosition(cursorPosition);
-        selectEntity(newEntity);
+        didPlaceEntity(newEntity);
+        selectEntity(newEntity, false, false);
         return;
     }
 
@@ -542,16 +624,8 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
         sceneObjectRoot->addChild(newSound);
         setEditorProps(newSound);
         newSound->setPosition(cursorPosition);
-        selectEntity(newSound);
-        return;
-    }
-
-    if(command == "add_sound") {
-        SceneSound *newSound = new SceneSound("default.wav", 1.0, 2.0);
-        sceneObjectRoot->addChild(newSound);
-        setEditorProps(newSound);
-        newSound->setPosition(cursorPosition);
-        selectEntity(newSound);
+        didPlaceEntity(newSound);
+        selectEntity(newSound, false, false);
         return;
     }
 
@@ -560,7 +634,8 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
         sceneObjectRoot->addChild(newCamera);
         setEditorProps(newCamera);
         newCamera->setPosition(cursorPosition);
-        selectEntity(newCamera);
+        didPlaceEntity(newCamera);
+        selectEntity(newCamera, false, false);
         return;
     }
     
@@ -591,7 +666,8 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
         sceneObjectRoot->addChild(newLabel);
         setEditorProps(newLabel);
         newLabel->setPosition(cursorPosition);
-        selectEntity(newLabel);
+        didPlaceEntity(newLabel);
+        selectEntity(newLabel, false, false);
         return;
     }
     
@@ -602,7 +678,8 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
         newLight->enabled = !lightsDisabled;        
         setEditorProps(newLight);
         newLight->setPosition(cursorPosition);
-        selectEntity(newLight);
+        didPlaceEntity(newLight);
+        selectEntity(newLight, false, false);
         return;
     }
     
@@ -650,14 +727,46 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
         newEmitter->colorCurveA.addControlPoint2dWithHandles(-0.1, 0.5, 0.0, 0.5, 0.1, 0.5);
         newEmitter->colorCurveA.addControlPoint2dWithHandles(0.9, 0.5, 1.0, 0.5, 1.1, 0.5);
         
-        selectEntity(newEmitter);
+        selectEntity(newEmitter, false, false);
+        didPlaceEntity(newEmitter);        
         return;
         
     }
 }
 
-void EntityEditorMainView::deleteSelected() {
+void EntityEditorMainView::didPlaceEntity(Entity *entity) {
+    PolycodeSceneEditorActionData *beforeData = new PolycodeSceneEditorActionData();
+    PolycodeSceneEditorActionData *data = new PolycodeSceneEditorActionData();
+    data->reverse = false;
+    
+    for(int i=0; i < selectedEntities.size(); i++) {
+        beforeData->entries.push_back(PolycodeSceneEditorActionDataEntry(selectedEntities[i]));
+    }
+    
+    PolycodeSceneEditorActionDataEntry entry(entity);
+    entry.parentEntity = sceneObjectRoot;
+    data->entries.push_back(entry);
+    
+    editor->didAction("create_entity", beforeData, data);
+}
 
+void EntityEditorMainView::deleteSelected(bool doAction) {
+
+    
+    if(doAction) {
+        PolycodeSceneEditorActionData *oldData = new PolycodeSceneEditorActionData();
+        PolycodeSceneEditorActionData *data = new PolycodeSceneEditorActionData();
+        data->reverse = false;
+        oldData->deleteEntitiesInDestructor = true;
+        
+        for(int i=0; i < selectedEntities.size(); i++) {
+            PolycodeSceneEditorActionDataEntry entry(selectedEntities[i]);
+            entry.parentEntity = selectedEntities[i]->getParentEntity();
+            oldData->entries.push_back(entry);
+        }
+
+        editor->didAction("delete", oldData, data);
+    }
     for(int i=0; i < selectedEntities.size(); i++) {
         selectedEntities[i]->getParentEntity()->removeChild(selectedEntities[i]);
     }
@@ -673,7 +782,7 @@ void EntityEditorMainView::deleteSelected() {
             }
         }
         selectedEntities[i]->removeAllHandlers();
-        delete selectedEntities[i];
+      //  delete selectedEntities[i];
     }
     
     selectedEntities.clear();
@@ -690,7 +799,76 @@ void EntityEditorMainView::onLoseFocus() {
 }
 
 void EntityEditorMainView::handleEvent(Event *event) {
-	if(event->getEventCode() == Event::RESOURCE_RELOAD_EVENT) {
+    
+    if(event->getDispatcher() == transformGizmo) {
+        if(event->getEventCode() == Event::CHANGE_EVENT) {
+            TrasnformGizmoEvent *trasnformEvent = (TrasnformGizmoEvent*) event;
+            switch(trasnformEvent->mode) {
+                case TransformGizmo::TRANSFORM_MOVE:
+                case TransformGizmo::TRANSFORM_MOVE_VIEW:
+                {
+                    PolycodeSceneEditorActionData *data = new PolycodeSceneEditorActionData();
+                    for(int i=0; i < selectedEntities.size(); i++) {
+                        data->entries.push_back(PolycodeSceneEditorActionDataEntry(selectedEntities[i]->getPosition()));
+                    }
+                    editor->didAction("move", beforeData, data);
+                }
+                break;
+                case TransformGizmo::TRANSFORM_SCALE:
+                case TransformGizmo::TRANSFORM_SCALE_VIEW:
+                {
+                    PolycodeSceneEditorActionData *data = new PolycodeSceneEditorActionData();
+                    for(int i=0; i < selectedEntities.size(); i++) {
+                        data->entries.push_back(PolycodeSceneEditorActionDataEntry(selectedEntities[i]->getScale()));
+                    }
+                    editor->didAction("scale", beforeData, data);
+                }
+                break;
+                case TransformGizmo::TRANSFORM_ROTATE:
+                case TransformGizmo::TRANSFORM_ROTATE_VIEW:
+                {
+                    PolycodeSceneEditorActionData *data = new PolycodeSceneEditorActionData();
+                    for(int i=0; i < selectedEntities.size(); i++) {
+                        data->entries.push_back(PolycodeSceneEditorActionDataEntry(selectedEntities[i]->getRotationQuat()));
+                    }
+                    editor->didAction("rotate", beforeData, data);
+                }
+                break;
+            }
+        } else if(event->getEventCode() == Event::SELECT_EVENT) {
+            TrasnformGizmoEvent *trasnformEvent = (TrasnformGizmoEvent*) event;
+            switch(trasnformEvent->mode) {
+                case TransformGizmo::TRANSFORM_MOVE:
+                case TransformGizmo::TRANSFORM_MOVE_VIEW:
+                {
+                    beforeData = new PolycodeSceneEditorActionData();
+                    for(int i=0; i < selectedEntities.size(); i++) {
+                        beforeData->entries.push_back(PolycodeSceneEditorActionDataEntry(selectedEntities[i]->getPosition()));
+                    }
+                }
+                break;
+                case TransformGizmo::TRANSFORM_SCALE:
+                case TransformGizmo::TRANSFORM_SCALE_VIEW:
+                {
+                    beforeData = new PolycodeSceneEditorActionData();
+                    for(int i=0; i < selectedEntities.size(); i++) {
+                        beforeData->entries.push_back(PolycodeSceneEditorActionDataEntry(selectedEntities[i]->getScale()));
+                    }
+                }
+                break;
+                case TransformGizmo::TRANSFORM_ROTATE:
+                case TransformGizmo::TRANSFORM_ROTATE_VIEW:
+                {
+                    beforeData = new PolycodeSceneEditorActionData();
+                    for(int i=0; i < selectedEntities.size(); i++) {
+                        beforeData->entries.push_back(PolycodeSceneEditorActionDataEntry(selectedEntities[i]->getRotationQuat()));
+                    }
+                }
+                break;
+            }
+        }
+        
+	} else if(event->getEventCode() == Event::RESOURCE_RELOAD_EVENT) {
         SceneEntityInstanceResourceEntry *entry = dynamic_cast<SceneEntityInstanceResourceEntry*>(event->getDispatcher());
         if(entry) {
                 setEditorProps(entry->getInstance());
@@ -709,7 +887,8 @@ void EntityEditorMainView::handleEvent(Event *event) {
                 sceneObjectRoot->addChild(newMesh);
                 setEditorProps(newMesh);
                 newMesh->setPosition(cursorPosition);
-                selectEntity(newMesh);
+                didPlaceEntity(newMesh);
+                selectEntity(newMesh, false, false);
             } else if(assetSelectType == "image") {
                 SceneImage *newImage = new SceneImage(globalFrame->assetBrowser->getSelectedAssetPath());
                 newImage->setMaterialByName("Unlit");
@@ -719,7 +898,8 @@ void EntityEditorMainView::handleEvent(Event *event) {
                 sceneObjectRoot->addChild(newImage);
                 setEditorProps(newImage);
                 newImage->setPosition(cursorPosition);
-                selectEntity(newImage);
+                didPlaceEntity(newImage);
+                selectEntity(newImage, false, false);
             } else if(assetSelectType == "sprite") {
                 SceneSprite *newSprite = new SceneSprite(globalFrame->assetBrowser->getSelectedAssetPath());
                 
@@ -734,13 +914,16 @@ void EntityEditorMainView::handleEvent(Event *event) {
                 sceneObjectRoot->addChild(newSprite);
                 setEditorProps(newSprite);
                 newSprite->setPosition(cursorPosition);
-                selectEntity(newSprite);
+                didPlaceEntity(newSprite);
+                selectEntity(newSprite, false, false);
             } else if(assetSelectType == "entity") {
                 SceneEntityInstance *newEntity = new SceneEntityInstance(mainScene, globalFrame->assetBrowser->getSelectedAssetPath());
                 sceneObjectRoot->addChild(newEntity);
                 setEditorProps(newEntity);
                 newEntity->setPosition(cursorPosition);
-                selectEntity(newEntity);            }
+                didPlaceEntity(newEntity);
+                selectEntity(newEntity, false, false);
+            }
             
             globalFrame->assetBrowser->removeAllHandlersForListener(this);
             globalFrame->hideModal();
@@ -776,12 +959,12 @@ void EntityEditorMainView::handleEvent(Event *event) {
                 case KEY_BACKSPACE:
                 case KEY_DELETE:
                     if(hasFocus) {
-                        deleteSelected();
+                        deleteSelected(true);
                     }
                 break;
                 case KEY_ESCAPE:
                 {
-                    selectNone();
+                    selectNone(true);
                 }
                 break;
             }
@@ -827,7 +1010,18 @@ void EntityEditorMainView::handleEvent(Event *event) {
     }
 }
 
-void EntityEditorMainView::selectNone() {
+void EntityEditorMainView::selectNone(bool doAction) {
+    
+    if(doAction) {
+        
+        beforeData = new PolycodeSceneEditorActionData();
+        for(int i=0; i < selectedEntities.size(); i++) {
+            beforeData->entries.push_back(PolycodeSceneEditorActionDataEntry(selectedEntities[i]));
+        }
+        
+        editor->didAction("select", beforeData, NULL, false);
+    }
+    
     for(int i=0; i < selectedEntities.size(); i++) {
         doEntityDeselect(selectedEntities[i]);
     }
@@ -899,7 +1093,14 @@ void EntityEditorMainView::doEntitySelect(Entity *targetEntity) {
 }
 
 
-void EntityEditorMainView::selectEntity(Entity *targetEntity, bool addToSelection) {
+void EntityEditorMainView::selectEntity(Entity *targetEntity, bool addToSelection, bool doAction) {
+
+    if(doAction) {
+        beforeData = new PolycodeSceneEditorActionData();
+        for(int i=0; i < selectedEntities.size(); i++) {
+            beforeData->entries.push_back(PolycodeSceneEditorActionDataEntry(selectedEntities[i]));
+        }
+    }
     
     if(targetEntity->getUserData()) {
         SceneEntityInstance *instance = (SceneEntityInstance*)targetEntity->getUserData();
@@ -926,6 +1127,14 @@ void EntityEditorMainView::selectEntity(Entity *targetEntity, bool addToSelectio
     if(!doNotReselect) {
         selectedEntities.push_back(targetEntity);
         doEntitySelect(targetEntity);
+    }
+    
+    if(doAction) {
+        PolycodeSceneEditorActionData *data = new PolycodeSceneEditorActionData();
+        for(int i=0; i < selectedEntities.size(); i++) {
+            data->entries.push_back(PolycodeSceneEditorActionDataEntry(selectedEntities[i]));
+        }
+        editor->didAction("select", beforeData, data);
     }
     
     transformGizmo->setTransformSelection(selectedEntities);
@@ -1036,7 +1245,7 @@ PolycodeEntityEditor::PolycodeEntityEditor() : PolycodeEditor(true){
 	mainSizer = new UIHSizer(300, 300, 300, false);
 	addChild(mainSizer);
     
-	mainView = new EntityEditorMainView();
+	mainView = new EntityEditorMainView(this);
     mainView->addEventListener(this, Event::CHANGE_EVENT);
 	mainSizer->addLeftChild(mainView);
     
@@ -1069,6 +1278,10 @@ void PolycodeEntityEditor::handleEvent(Event *event) {
     
     
     PolycodeEditor::handleEvent(event);
+}
+
+void PolycodeEntityEditor::doAction(String actionName, PolycodeEditorActionData *data) {
+    mainView->doAction(actionName, data);
 }
 
 PolycodeEntityEditor::~PolycodeEntityEditor() {

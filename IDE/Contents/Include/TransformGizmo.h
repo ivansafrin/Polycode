@@ -28,6 +28,17 @@
 
 using namespace Polycode;
 
+class TrasnformGizmoEvent : public Event {
+    public:
+        TrasnformGizmoEvent(int mode);
+    
+        static const int EVENT_TRANSLATE = 0;
+        static const int EVENT_SCALE = 1;
+        static const int EVENT_ROTATE = 2;
+    
+        int mode;
+};
+
 class TransformGizmo : public Entity {
 	public:
 		TransformGizmo(Scene *targetScene, Camera *targetCamera);
@@ -74,6 +85,9 @@ class TransformGizmo : public Entity {
         bool enableGizmo;
     
 	private:
+    
+        void dispatchEndEvent();
+    
         int transformMode;
         int gizmoMode;
         int orientation;
@@ -84,6 +98,8 @@ class TransformGizmo : public Entity {
     
 		Scene *targetScene;
 		Camera *targetCamera;
+    
+        bool firstMove;
     
 	
 		CoreInput *coreInput;

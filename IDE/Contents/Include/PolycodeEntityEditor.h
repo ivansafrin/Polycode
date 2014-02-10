@@ -43,6 +43,46 @@ public:
     std::vector<Entity*> entities;
 };
 
+class PolycodeSceneEditorActionDataEntry {
+public:
+    PolycodeSceneEditorActionDataEntry(){
+        entity = NULL;
+        parentEntity = NULL;
+    }
+    
+    PolycodeSceneEditorActionDataEntry(Vector3 vec3, Number number);
+    PolycodeSceneEditorActionDataEntry(Quaternion quat);
+    PolycodeSceneEditorActionDataEntry(Vector3 vec3);
+    PolycodeSceneEditorActionDataEntry(Number number);
+    PolycodeSceneEditorActionDataEntry(Entity *entity);
+    Vector3 vec3;
+    Quaternion quat;
+    Number number;
+    Entity *entity;
+    Entity *parentEntity;
+};
+
+
+class PolycodeSceneEditorActionData : public PolycodeEditorActionData {
+    public:
+        PolycodeSceneEditorActionData() {
+            reverse = true;
+            deleteEntitiesInDestructor = false;
+        }
+    
+        ~PolycodeSceneEditorActionData() {
+            if(deleteEntitiesInDestructor) {
+                for(int i=0; i < entries.size(); i++) {
+                    delete entries[i].entity;
+                }
+            }
+        }
+    
+        std::vector<PolycodeSceneEditorActionDataEntry> entries;
+        bool deleteEntitiesInDestructor;
+        bool reverse;
+};
+
 class LightDisplay : public Entity {
 public:
     LightDisplay(SceneLight *light);
@@ -97,13 +137,13 @@ class SceneMeshSettings {
 
 class EntityEditorMainView : public UIElement {
 		public:
-			EntityEditorMainView();
+			EntityEditorMainView(PolycodeEditor *editor);
 			~EntityEditorMainView();
 			
             void createIcon(Entity *entity, String iconFile);
             void setEditorProps(Entity *entity);
     
-            void selectEntity(Entity *targetEntity, bool addToSelection = false);
+            void selectEntity(Entity *targetEntity, bool addToSelection = false, bool doAction = true);
     
 			void handleEvent(Event *event);
 			void Resize(Number width, Number height);
@@ -122,11 +162,15 @@ class EntityEditorMainView : public UIElement {
             void Paste(EntityEditorClipboardData *data);
     
             void disableLighting(bool disable);
-            void selectNone();
+            void selectNone(bool doAction);
     
             void onGainFocus();
             void onLoseFocus();
-            void deleteSelected();
+            void deleteSelected(bool doAction);
+    
+            void doAction(String actionName, PolycodeEditorActionData *data);
+    
+            void didPlaceEntity(Entity *entity);
     
             Entity *getObjectRoot();
             void setObjectRoot(SceneEntityInstance *entity);
@@ -141,11 +185,14 @@ class EntityEditorMainView : public UIElement {
 		protected:
     
             CoreInput *input;
+            PolycodeSceneEditorActionData *beforeData;
 			
             bool lightsDisabled;
             int editorMode;
 			Entity *topBar;
 			UIRect *headerBg;
+    
+            PolycodeEditor *editor;
 				
             unsigned int multiselectIndex;
 			std::vector<Entity*> selectedEntities;
@@ -214,6 +261,7 @@ class PolycodeEntityEditor : public PolycodeEditor {
         void saveShaderOptionsToEntry(ObjectEntry *entry, Material *material, ShaderBinding *binding);
     
         void saveEntityToObjectEntry(Entity *entity, ObjectEntry *entry);
+        void doAction(String actionName, PolycodeEditorActionData *data);
     
         String Copy(void **data);
         void Paste(void *data, String clipboardType);
