@@ -387,8 +387,10 @@ void EntityEditorMainView::doAction(String actionName, PolycodeEditorActionData 
                 setEditorPropsRecursive(sceneData->entries[i].entity);
                 selectEntity(sceneData->entries[i].entity, true, false);
             }
+            sceneData->deleteEntitiesInDestructor = false;
 		} else {
             deleteSelected(false);
+            sceneData->deleteEntitiesInDestructor = true;
 		}
     } else if(actionName == "create_entity") {
         if(sceneData->reverse) {
