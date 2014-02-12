@@ -34,6 +34,7 @@ SceneParticleEmitter::SceneParticleEmitter(unsigned int particleCount, Number li
     motionPerlin = new Perlin(3,5,1.0,RANDOM_NUMBER);
     mesh->useVertexColors = true;
     depthWrite = false;
+    systemEnabled = true;
     setParticleCount(particleCount);
 }
 
@@ -101,7 +102,7 @@ void SceneParticleEmitter::setParticleCount(unsigned int newParticleCount) {
     particles.resize(particleCount);
     for(int i=0; i < particles.size(); i++) {
         resetParticle(i);
-        particles[i].lifetime = RANDOM_NUMBER * lifetime;
+        particles[i].lifetime = RANDOM_NUMBER * -lifetime;
         particles[i].perlinPos = Vector3(RANDOM_NUMBER, RANDOM_NUMBER, RANDOM_NUMBER);
         particles[i].brightnessDeviation = 1.0;
         particles[i].scale = 1.0;
@@ -132,7 +133,7 @@ void SceneParticleEmitter::setParticleRotationSpeed(const Vector3 &rotationSpeed
     particleRotationSpeed = rotationSpeed;
     for(int i=0; i < particles.size(); i++) {
         resetParticle(i);
-        particles[i].lifetime = RANDOM_NUMBER * lifetime;
+        particles[i].lifetime = RANDOM_NUMBER * -lifetime;
     }
 }
 
@@ -140,7 +141,7 @@ void SceneParticleEmitter::setLoopParticles(bool val) {
     loopParticles = val;
     for(int i=0; i < particles.size(); i++) {
         resetParticle(i);
-        particles[i].lifetime = RANDOM_NUMBER * lifetime;
+        particles[i].lifetime = RANDOM_NUMBER * -lifetime;
     }
 }
 
@@ -148,6 +149,15 @@ bool SceneParticleEmitter::getLoopParticles() const {
     return loopParticles;
 }
 
+void SceneParticleEmitter::enableParticleSystem(bool val) {
+    systemEnabled = val;
+    if(val) {
+        for(int i=0; i < particles.size(); i++) {
+            resetParticle(i);
+            particles[i].lifetime = RANDOM_NUMBER * -lifetime;
+        }
+    }
+}
 
 void SceneParticleEmitter::rebuildParticles() {
     mesh->clearMesh();
@@ -158,7 +168,7 @@ void SceneParticleEmitter::rebuildParticles() {
             mesh->setMeshType(Mesh::POINT_MESH);
             Matrix4 inverseMatrix = systemTrasnformMatrix.Inverse();
             for(int i=0; i < particles.size(); i++) {
-                if(particles[i].lifetime > lifetime) {
+                if(particles[i].lifetime > lifetime || particles[i].lifetime < 0.0) {
                     continue;
                 }
                 Vector3 vertexPosition = particles[i].position;
@@ -179,7 +189,7 @@ void SceneParticleEmitter::rebuildParticles() {
             Color vertexColor;
             Number finalParticleSize;
             for(int i=0; i < particles.size(); i++) {
-                if(particles[i].lifetime > lifetime) {
+                if(particles[i].lifetime > lifetime || particles[i].lifetime < 0.0) {
                     continue;
                 }
                 q.fromAxes(particles[i].rotation.x, particles[i].rotation.y, particles[i].rotation.z);
@@ -242,7 +252,7 @@ void SceneParticleEmitter::setParticleLifetime(Number lifetime) {
     this->lifetime = lifetime;
     for(int i=0; i < particles.size(); i++) {
         resetParticle(i);
-        particles[i].lifetime = RANDOM_NUMBER * lifetime;
+        particles[i].lifetime = RANDOM_NUMBER * -lifetime;
     }
 }
 
@@ -320,9 +330,13 @@ void SceneParticleEmitter::updateParticles() {
     for(int i=0; i < particles.size(); i++) {
         particles[i].lifetime += timeStep;
         if(particles[i].lifetime > lifetime) {
-            if(loopParticles) {
+            if(loopParticles && systemEnabled) {
                 resetParticle(i);
             }
+        }
+        
+        if(particles[i].lifetime < 0.0) {
+            continue;
         }
         
         normLife = particles[i].lifetime / lifetime;

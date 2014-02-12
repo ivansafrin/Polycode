@@ -840,7 +840,7 @@ void TransformGizmo::dispatchEndEvent() {
 }
 
 TransformGizmo::~TransformGizmo() {
-
+    coreInput->removeAllHandlersForListener(this);
 }
 
 void TransformGizmo::updateOrientationForEntity(Entity *entity) {

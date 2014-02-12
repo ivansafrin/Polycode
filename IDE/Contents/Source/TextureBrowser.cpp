@@ -118,16 +118,9 @@ bool AssetList::hasExtension(String extension) {
 }
 
 void AssetList::showResourcePool(ResourcePool *pool, int resourceFilter) {
-	for(int i=0; i < assetEntries.size(); i++) {
-		removeChild(assetEntries[i]);
-		delete assetEntries[i];
-	}
-	assetEntries.clear();
-
-    selectedResource = NULL;
-    
-	currentEntry = NULL;
 	
+    clearList();
+    
 	Number xPos = 20;
 	Number yPos = 30;
 	
@@ -161,17 +154,21 @@ void AssetList::showResourcePool(ResourcePool *pool, int resourceFilter) {
 	}
 }
 
-void AssetList::showFolder(String folderPath) {
-
-	currentFolderPath = folderPath;
-
+void AssetList::clearList() {
 	for(int i=0; i < assetEntries.size(); i++) {
 		removeChild(assetEntries[i]);
 		delete assetEntries[i];
 	}
 	assetEntries.clear();
-	
 	currentEntry = NULL;
+    selectedResource = NULL;
+}
+
+void AssetList::showFolder(String folderPath) {
+
+	currentFolderPath = folderPath;
+
+    clearList();
 	
 	vector<OSFileEntry> assets = OSBasics::parseFolder(folderPath, false);	
 	
@@ -289,7 +286,10 @@ void AssetBrowser::setResourcePools(std::vector<ResourcePool*> pools, int resour
 }
 
 void AssetBrowser::setBrowseMode(unsigned int newBrowseMode) {
-    browseMode = newBrowseMode;
+    if(browseMode != newBrowseMode) {
+        assetList->clearList();
+        browseMode = newBrowseMode;
+    }
 }
 
 void AssetBrowser::setProject(PolycodeProject *project) {

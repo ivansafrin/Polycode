@@ -37,6 +37,7 @@ EntityEditorPropertyView::EntityEditorPropertyView() : UIElement() {
     materialSheet = new MaterialPropSheet();
     entityProps->addPropSheet(materialSheet);
     materialSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
+    materialSheet->addEventListener(this, Event::CHANGE_EVENT);
     
     shaderTexturesSheet = new ShaderTexturesSheet();
     entityProps->addPropSheet(shaderTexturesSheet);

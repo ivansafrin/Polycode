@@ -524,8 +524,13 @@ bool SceneEntityInstance::loadFromFile(const String& fileName) {
             if(matFile) {
                 ObjectEntry *path = (*matFile)["path"];
                 if(path) {
-                    ResourcePool *newPool = new ResourcePool(path->stringVal,  CoreServices::getInstance()->getResourceManager()->getGlobalPool());
-                    CoreServices::getInstance()->getMaterialManager()->loadMaterialLibraryIntoPool(newPool, path->stringVal);
+                    ResourcePool *newPool = CoreServices::getInstance()->getResourceManager()->getResourcePoolByName(path->stringVal);
+                    if(!newPool) {
+                        newPool = new ResourcePool(path->stringVal,  CoreServices::getInstance()->getResourceManager()->getGlobalPool());
+                        CoreServices::getInstance()->getMaterialManager()->loadMaterialLibraryIntoPool(newPool, path->stringVal);
+                        CoreServices::getInstance()->getResourceManager()->addResourcePool(newPool);
+                    }
+                    
                     linkResourcePool(newPool);
                 }
             }

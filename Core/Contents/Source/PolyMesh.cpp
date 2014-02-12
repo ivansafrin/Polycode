@@ -461,10 +461,13 @@ void Mesh::createVPlane(Number w, Number h) {
             vertices[i]->y = vertices[i]->y - (h/2.0f);
     }
 
+    calculateNormals();
+    calculateTangents();
+    
     arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
     arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
     arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;						
-    arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;										
+    arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;				
     arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;		
 }	
 

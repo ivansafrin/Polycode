@@ -1162,7 +1162,8 @@ TextureProp::TextureProp(String caption) : PropProp(caption, "Texture"){
 	textureLabel->setPosition(-100, 32);
 	textureLabel->color.a = 1.0;
 		
-	setHeight(60);	
+	setHeight(60);
+    ownsChildren = true;
 }
 
 void TextureProp::setPropWidth(Number width) {
@@ -1171,7 +1172,7 @@ void TextureProp::setPropWidth(Number width) {
 }
 
 TextureProp::~TextureProp() {
-
+    
 }
 
 void TextureProp::setPropData(PolycodeEditorPropActionData* data) {
@@ -2903,6 +2904,7 @@ void MaterialPropSheet::handleEvent(Event *event) {
         Material *newMaterial = materialProp->get();
         if(sceneMesh->getMaterial() != newMaterial) {
             sceneMesh->setMaterial(newMaterial);
+            dispatchEvent(new Event(), Event::CHANGE_EVENT);
         }
     }
     PropSheet::handleEvent(event);
@@ -3424,8 +3426,7 @@ void LinkedMaterialsSheet::handleEvent(Event *event) {
 		String materialPath = globalFrame->assetBrowser->getSelectedAssetPath();
 
 		String fullMaterialPath = globalFrame->assetBrowser->getFullSelectedAssetPath();
-		
-        
+		        
         globalFrame->assetBrowser->removeAllHandlersForListener(this);
         globalFrame->hideModal();
         

@@ -123,6 +123,7 @@ void PolycodeMeshEditor::handleEvent(Event *event) {
 }
 
 PolycodeMeshEditor::~PolycodeMeshEditor() {
+    printf("CALLED IT!\n");
     CoreServices::getInstance()->getResourceManager()->removeAllHandlersForListener(this);
 }
 

@@ -604,6 +604,7 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
         sceneObjectRoot->addChild(newPrimitive);
         setEditorProps(newPrimitive);
         newPrimitive->setPosition(cursorPosition);
+        newPrimitive->setMaterialByName("Default");
         didPlaceEntity(newPrimitive);
         selectEntity(newPrimitive, false, false);
         return;
@@ -728,9 +729,8 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
         newEmitter->colorCurveA.addControlPoint2dWithHandles(0.9, 0.5, 1.0, 0.5, 1.1, 0.5);
         
         selectEntity(newEmitter, false, false);
-        didPlaceEntity(newEmitter);        
+        didPlaceEntity(newEmitter);
         return;
-        
     }
 }
 
@@ -886,6 +886,7 @@ void EntityEditorMainView::handleEvent(Event *event) {
                 newMesh->cacheToVertexBuffer(true);
                 sceneObjectRoot->addChild(newMesh);
                 setEditorProps(newMesh);
+                newMesh->setMaterialByName("Default");
                 newMesh->setPosition(cursorPosition);
                 didPlaceEntity(newMesh);
                 selectEntity(newMesh, false, false);
@@ -1159,7 +1160,14 @@ void EntityEditorMainView::setObjectRoot(SceneEntityInstance *entity) {
 }
 
 EntityEditorMainView::~EntityEditorMainView() {
-	
+    delete mainScene;
+    delete renderTexture;
+    delete transformGizmo;
+    delete transformGizmoMenu;
+    delete trackballCamera;
+    delete grid;
+    delete cameraPreview;
+    input->removeAllHandlersForListener(this);
 }
 
 void EntityEditorMainView::Resize(Number width, Number height) {
@@ -1285,6 +1293,7 @@ void PolycodeEntityEditor::doAction(String actionName, PolycodeEditorActionData 
 }
 
 PolycodeEntityEditor::~PolycodeEntityEditor() {
+    delete mainView;
 }
 
 bool PolycodeEntityEditor::openFile(OSFileEntry filePath) {	

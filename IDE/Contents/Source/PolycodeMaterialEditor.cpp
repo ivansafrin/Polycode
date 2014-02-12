@@ -1107,6 +1107,8 @@ void MaterialBrowser::Resize(Number width, Number height) {
 
 PolycodeMaterialEditor::PolycodeMaterialEditor() : PolycodeEditor(true){
     resourcePool = new ResourcePool("Local",     CoreServices::getInstance()->getResourceManager()->getGlobalPool());
+    resourcePool->reloadResourcesOnModify = true;
+    
     CoreServices::getInstance()->getResourceManager()->addResourcePool(resourcePool);
 	selectedMaterialNode = NULL;
 }

@@ -67,6 +67,8 @@ namespace Polycode {
             void updateParticles();
             void rebuildParticles();
         
+            void enableParticleSystem(bool val);
+        
             void setUseFloorPlane(bool val);
             void setFloorPlaneOffset(Number floorPlaneOffset);
             void setFloorDamping(Number floorDamping);
@@ -136,6 +138,7 @@ namespace Polycode {
         
             void resetParticle(unsigned int index);
         
+            bool systemEnabled;
             Core *core;
             unsigned int particleCount;
             std::vector<SceneParticle> particles;

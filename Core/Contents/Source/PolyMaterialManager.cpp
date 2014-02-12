@@ -81,6 +81,7 @@ void MaterialManager::reloadPrograms() {
 }
 
 void MaterialManager::loadMaterialLibraryIntoPool(ResourcePool *pool, const String &materialFile) {
+    printf("LOADING [%s] into pool [%s]\n", materialFile.c_str(), pool->getName().c_str());
     std::vector<Shader*> shaders =loadShadersFromFile(pool, materialFile);
 
     for(int s=0; s < shaders.size(); s++) {

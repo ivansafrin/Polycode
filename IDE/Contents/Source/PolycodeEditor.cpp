@@ -80,7 +80,8 @@ EditorHolder *PolycodeEditor::getEditorHolder() {
 }
 
 
-void PolycodeEditor::handleEvent(Event *event) {
+void PolycodeEditor::handleEvent(Event *event) {    
+    
 	if(event->getDispatcher() == CoreServices::getInstance()->getCore() && enabled) {
 		switch(event->getEventCode()) {
 

@@ -57,6 +57,8 @@ class AssetList : public UIElement {
 		void handleEvent(Event *event);
 		
 		bool hasExtension(String extension);
+    
+        void clearList();
 		
 		void showFolder(String folderPath);
         void showResourcePool(ResourcePool *pool, int resourceFilter);
