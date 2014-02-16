@@ -54,6 +54,7 @@ void Scene::initScene(int sceneType, bool virtualScene) {
 	defaultCamera = new Camera(this);
 	activeCamera = defaultCamera;	
 	fogEnabled = false;
+	fogMode = Renderer::FOG_LINEAR;
     overrideMaterial = NULL;
 	lightingEnabled = false;
 	enabled = true;

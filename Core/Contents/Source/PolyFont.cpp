@@ -26,12 +26,16 @@
 
 using namespace Polycode;
 
+int Font::fontAllocCount = 0;
+FT_Library Font::FTLibrary = NULL;
+
 Font::Font(const String& fileName) {
 
 	this->fileName = fileName;
 
-	FT_Library FTLibrary;
-	FT_Init_FreeType(&FTLibrary);
+	if (++fontAllocCount == 1) {
+		FT_Init_FreeType(&FTLibrary);
+	}
 	
 	loaded = false;
 	buffer = NULL;
@@ -78,6 +82,9 @@ bool Font::isValid() const {
 Font::~Font() {
 	if(buffer) {
 		free(buffer);
+	}
+	if (--fontAllocCount == 0) {
+		FT_Done_FreeType(FTLibrary);
 	}
 }
 

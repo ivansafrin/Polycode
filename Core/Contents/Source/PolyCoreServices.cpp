@@ -135,6 +135,7 @@ CoreServices::~CoreServices() {
 	delete timerManager;
 	delete tweenManager;
 	delete resourceManager;
+	delete config;
 	delete soundManager;
 	delete fontManager;
 	instanceMap.clear();
