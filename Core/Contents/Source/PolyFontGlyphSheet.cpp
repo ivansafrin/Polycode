@@ -156,10 +156,12 @@ void FontGlyphSheet::buildGlyphs(std::set<wchar_t> characters) {
 			gd.size_x = slot->bitmap.width;
 			gd.size_y = slot->bitmap.rows;
 			gd.advance.set(Number(slot->advance.x)/(64<<shift), Number(slot->advance.y)/(64<<shift));
-			int dataLength = slot->bitmap.pitch * gd.size_y;
-			gd.data = new unsigned char[dataLength];
 			gd.pitch = slot->bitmap.pitch;
-			memcpy(gd.data, slot->bitmap.buffer, dataLength);
+			int dataLength = slot->bitmap.pitch * gd.size_y;
+			if (dataLength) {
+				gd.data = new unsigned char[dataLength];
+				memcpy(gd.data, slot->bitmap.buffer, dataLength);
+			}
 		}
 	}
 
