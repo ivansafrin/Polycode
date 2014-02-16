@@ -275,11 +275,12 @@ void Camera::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) co
     Entity::applyClone(clone, deepClone, ignoreEditorOnly);
     
     Camera *cloneCamera = (Camera*) clone;
-    cloneCamera->setFOV(fov);
-    cloneCamera->setOrthoMode(orthoMode);
-    cloneCamera->setOrthoSizeMode(orthoSizeMode);
-    cloneCamera->setOrthoSize(orthoSizeX, orthoSizeY);
-    cloneCamera->setClippingPlanes(nearClipPlane, farClipPlane);
+	cloneCamera->projectionMatrix = Matrix4(projectionMatrix.ml);
+	cloneCamera->fov = fov;
+	cloneCamera->viewport = viewport;
+	cloneCamera->setOrthoSize(orthoSizeX, orthoSizeY);
+	cloneCamera->projectionMode = projectionMode;
+	cloneCamera->setClippingPlanes(nearClipPlane, farClipPlane);
     cloneCamera->setExposureLevel(exposureLevel);
 }
 
