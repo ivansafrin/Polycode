@@ -28,9 +28,10 @@
 
 using namespace Polycode;
 
-SceneParticleEmitter::SceneParticleEmitter(unsigned int particleCount, Number lifetime, Number speed) : SceneMesh(Mesh::POINT_MESH), particleCount(particleCount), particleSpeed(speed), lifetime(lifetime), directionVector(0.0, 1.0, 0.0), timeStep(0.01666), cyclesLeftOver(0.0), useFloorPlane(false), floorPlaneOffset(-1.0), floorDamping(0.5), particlesInWorldSpace(false), perlinEnabled(false), perlinValue(1.0,1.0,1.0), particleType(SceneParticleEmitter::PARTICLE_TYPE_POINT), particleSize(0.1), particleRotationSpeed(0.0, 0.0, 0.0), useColorCurves(false), useScaleCurve(false), loopParticles(true){
+SceneParticleEmitter::SceneParticleEmitter(unsigned int particleCount, Number lifetime, Number speed) : SceneMesh(Mesh::POINT_MESH), particleCount(particleCount), particleSpeed(speed), lifetime(lifetime), directionVector(0.0, 1.0, 0.0), cyclesLeftOver(0.0), useFloorPlane(false), floorPlaneOffset(-1.0), floorDamping(0.5), particlesInWorldSpace(false), perlinEnabled(false), perlinValue(1.0,1.0,1.0), particleType(SceneParticleEmitter::PARTICLE_TYPE_POINT), particleSize(0.1), particleRotationSpeed(0.0, 0.0, 0.0), useColorCurves(false), useScaleCurve(false), loopParticles(true){
     
     core = CoreServices::getInstance()->getCore();
+	timeStep = core->getRefreshIntervalMs() / 1000.0f;
     motionPerlin = new Perlin(3,5,1.0,RANDOM_NUMBER);
     mesh->useVertexColors = true;
     depthWrite = false;
