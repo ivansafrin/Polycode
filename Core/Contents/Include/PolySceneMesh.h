@@ -184,8 +184,10 @@ namespace Polycode {
             bool forceMaterial;
         
             virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
-            virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
-			
+			virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
+
+			virtual void bakeIntoMesh(Mesh* destinationMesh, const Matrix4* parentTransform);
+
 		protected:
 		
 			bool useVertexBuffer;

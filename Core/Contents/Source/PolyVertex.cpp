@@ -21,6 +21,7 @@
 */
 
 #include "PolyVertex.h"
+#include "PolyMatrix4.h"
 
 using namespace Polycode;
 
@@ -56,15 +57,7 @@ Vertex::Vertex(Number x, Number y, Number z, Number u, Number v) : Vector3(x,y,z
 }
 
 void Vertex::addBoneAssignment(unsigned int boneID, Number boneWeight) {
-	BoneAssignment *newBas = new BoneAssignment();
-	newBas->boneID = boneID;
-	if(boneWeight > 1)
-		boneWeight = 1;
-	if(boneWeight < 0)
-		boneWeight = 0;
-		
-	newBas->weight = boneWeight;
-	boneAssignments.push_back(newBas);
+	boneAssignments.push_back(BoneAssignment(boneID, clampf(boneWeight, 0, 1)));
 }
 
 void Vertex::setNormal(Number x, Number y, Number z) {
@@ -80,11 +73,11 @@ void Vertex::normalizeWeights() {
 //			return;
 			
 	for(int i =0 ;i < boneAssignments.size(); i++) {
-		allWeights += boneAssignments[i]->weight;
+		allWeights += boneAssignments[i].weight;
 	}
-	
+	Number inverseWeight = 1.0f/allWeights;
 	for(int i =0 ;i < boneAssignments.size(); i++) {
-		boneAssignments[i]->weight *= 1.0f/allWeights;
+		boneAssignments[i].weight *= inverseWeight;
 	}	
 }
 
@@ -93,7 +86,7 @@ int Vertex::getNumBoneAssignments() {
 }
 
 BoneAssignment *Vertex::getBoneAssignment(unsigned int index) {
-	return boneAssignments[index];
+	return &boneAssignments[index];
 }
 
 Vertex::~Vertex() {
@@ -117,4 +110,12 @@ Vector2 Vertex::getSecondaryTexCoord() {
 void Vertex::setSecondaryTexCoord(Number u, Number v) {
 	secondaryTexCoord.x = u;
 	secondaryTexCoord.y = v;
+}
+
+void Vertex::transformBy(Matrix4* m) {
+	Vector3::operator=((*m) * (*this));
+	restNormal = m->rotateVector(restNormal);
+	restPosition = (*m) * restPosition;
+	normal = m->rotateVector(normal);
+	tangent = m->rotateVector(tangent);
 }

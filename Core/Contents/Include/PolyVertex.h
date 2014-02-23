@@ -30,14 +30,21 @@
 namespace Polycode {
 
 	class Bone;
+	class Matrix4;
 	
 	/**
 	* Bone assignment.
 	*/ 
 	class _PolyExport BoneAssignment {
 		public:
-			BoneAssignment(){
-				bone = NULL;
+			BoneAssignment()
+			:	bone(NULL) {
+			}
+			BoneAssignment(unsigned int boneID, Number weight)
+			:	boneID(boneID)
+			,	weight(weight)
+			,	bone(NULL)
+			{
 			}
 			/**
 			* Id of the bone assigned.
@@ -159,6 +166,9 @@ namespace Polycode {
 			*/			
 			void setNormal(Number x, Number y, Number z);
 
+			/** Applies necessary transform and rotations of this vertex by the matrix given. */
+			void transformBy(Matrix4* m);
+
 			/**
 			* Rest normal.
 			*/
@@ -194,7 +204,7 @@ namespace Polycode {
 				
 		protected:
 		
-			std::vector <BoneAssignment*> boneAssignments;
+			std::vector <BoneAssignment> boneAssignments;
 		
 	};
 }

@@ -1029,3 +1029,17 @@ int Mesh::getMeshType() {
 void Mesh::setMeshType(int newType) {
     meshType = newType;
 }
+
+void Mesh::addMesh(Mesh *sourceMesh, Matrix4 *sourceTransform) {
+	if (sourceMesh->meshType != meshType) {
+		Logger::logw("Mesh::addMesh Meshes not of same type!");
+	}
+
+	for (int i = 0; i < sourceMesh->getVertexCount(); i++) {
+		Vertex* vertex = new Vertex(*sourceMesh->getVertex(i));
+		if (sourceTransform) {
+			vertex->transformBy(sourceTransform);
+		}
+		addVertex(vertex);
+	}
+}

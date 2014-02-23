@@ -254,6 +254,10 @@ namespace Polycode {
             Vertex *getActualVertex(unsigned int index) const;
 
             unsigned int getActualVertexCount() const;
+
+			/** Copies all the faces from the mesh given into this mesh. Meshes must be the same type.
+				Optionally transforms the vertices as well. */
+			void addMesh(Mesh* sourceMesh, Matrix4* sourceTransform = NULL);
         
         
 			/**

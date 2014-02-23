@@ -23,6 +23,7 @@
 #include "PolyRenderer.h"
 #include "PolyCoreServices.h"
 #include "PolyInputEvent.h"
+#include "PolyMesh.h"
 
 using namespace Polycode;
 
@@ -232,7 +233,7 @@ void Entity::lookAt(const Vector3 &loc, const Vector3 &upVector) {
 
 void Entity::lookAtEntity(Entity *entity,  const Vector3 &upVector) {
 	if(entity->getParentEntity())
-		lookAt(entity->getParentEntity()->getConcatenatedMatrix() * (entity->getPosition()), upVector);		
+		lookAt(entity->getParentEntity()->getConcatenatedMatrix() * (entity->getPosition()), upVector);
 	else
 		lookAt(entity->getPosition(), upVector);
 }
@@ -1114,4 +1115,30 @@ MouseEventResult Entity::onMouseWheelDown(const Ray &ray, int timestamp) {
 		}
 	}
 	return ret;
+}
+
+Mesh* Entity::bakeChildMeshes(Mesh* destinationMesh, Matrix4* transform) {
+	if (destinationMesh == NULL) {
+		destinationMesh = new Mesh(Mesh::TRI_MESH);
+	}
+	updateEntityMatrix();
+	bakeIntoMesh(destinationMesh, transform);
+
+	if (!children.empty()) {
+
+		Matrix4 subTransform;
+		if (transform == NULL) {
+			transform = &transformMatrix;
+		}
+		else {
+			subTransform = transformMatrix * *transform;
+			transform = &subTransform;
+		}
+
+		for (children_t::iterator it = children.begin(); it != children.end(); it++) {
+			(*it)->bakeChildMeshes(destinationMesh, transform);
+		}
+	}
+
+	return destinationMesh;
 }
