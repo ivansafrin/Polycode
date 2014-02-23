@@ -414,10 +414,12 @@ void Entity::rebuildTransformMatrix() {
 }
 
 void Entity::doUpdates() {
-	Update();
-	for(int i=0; i < children.size(); i++) {
-		children[i]->doUpdates();
-	}	
+	if (enabled) {
+		Update();
+		for(int i=0; i < children.size(); i++) {
+			children[i]->doUpdates();
+		}
+	}
 }
 
 void Entity::updateEntityMatrix() {
