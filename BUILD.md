@@ -70,21 +70,51 @@ Note: Release is "Build for Archiving" in Xcode4.
 
 ### Windows and Visual Studio ###
 
-To generate a Microsoft Visual Studio (any version) project for building
-Polycode dependencies, perform the following steps in the Polycode 
-directory from a command prompt (for VS2010):
+The windows build process works with visual studio project files. You will need 
+to manually compile generated files inside visual studio itself. Running cmake 
+will only generate the necesary project files! You can install the 
+[express edition](http://www.visualstudio.com/downloads/download-visual-studio-vs#d-2010-express).
+You may also need to install service pack 1 for it seperatly if you encounter 
+problems.
 
-    cd Dependencies
-    mkdir Build
-    cd Build
-    cmake -G "Visual Studio 10" ..
+**If you have cygwin installed** you may have a incompatible version of `cmake` 
+installed, please run `cmake` (just the command, no arguments) and in the 
+Generators section at the bottom ensure you see "Visual Studio 10" in the list. 
+If you dont see it then you are seing the cygwin version of `cmake`, go to the 
+[cmake site](http://www.cmake.org/cmake/resources/software.html) and install 
+the windows version. Unfortunately cmake will add itself to the end of the 
+`PATH` which will mean you will still see the cygwin `cmake`. You will need to 
+edit your `PATH` (WinKey+PauseBreak / Advanced System Settings / "Advanced" tab 
+/ Environment Variables... / "System Variables" section / "Path" key) and move 
+the cmake path from the end to the begining and adjust the `;` delimeters 
+accordingly. Running `cmake` again in a new console window should now show you 
+"Visual Studio 10" in the Generators section. You should also verify the 
+version by running `cmake --version` (2.8.8 or greater is required by Polycode).
+
+To generate a Microsoft Visual Studio project for building Polycode 
+dependencies, perform the following steps in the Polycode directory from a 
+command prompt (for VS2010):
+
+ - `cd Dependencies`
+ - `mkdir Build`
+ - `cd Build`
+ - generate project: `cmake -G "Visual Studio 10" ..`
     
-This generates a PolycodeDependencies.sln in the Build directory. 
-Building the ALL_BUILD project in the solution in Visual Studio will download, build and 
-install the dependencies. Note that you need to build both Debug and
-Release.
+This generates a `PolycodeDependencies.sln` in the Build directory. 
+ 
+ - open the project in visual studio
+ - with the build type set to Debug (see main toolbar, right next to Win32)
+ - build the `ALL_BUILD` target (right click / Build)
+ - build the `glext` target
+ - build the `wglext` target
+ - set build type to Release
+ - build the `ALL_BUILD` target (right click / Build)
+ - build the `glext` target
+ - build the `wglext` target
 
-You will also need to manually build the "glext" and "wglext" projects.
+This will download, build and install the dependencies. You need to build both 
+Debug and Release! If you only build Debug you will get errors in cmake when 
+trying to build Polycode itself later.
 
 ### Unix Makefiles ###
 
@@ -138,17 +168,32 @@ templates and examples that will build out of the box.
 
 ### Windows and Visual Studio ###
 
-To generate a Microsoft Visual Studio project for building Polycode, 
-perform the following steps in the Polycode directory from a 
+For issues with `cmake` refer to troubleshooting explanation in the 
+building the Dependencies for windows section.
+
+Perform the following steps in the Polycode directory from a 
 command prompt:
 
-    mkdir Build
-    cd Build
-    cmake -G "Visual Studio 10" ..
-    
-Build the "ALL_BUILD" target in this project in both Debug and Release
-and then build the "install" target, also in Debug and Release. This
-will install Polycode into the Release/Windows/Framework directory,
+ - `mkdir Build`
+ - `cd Build`
+ - `cmake -G "Visual Studio 10" ..`
+
+This generates a `Polycode.sln` in the Build directory. 
+
+If you you get errors related to dependencies, such as the following cmake 
+error: `Could NOT find PNG (missing: PNG_LIBRARY)`, then you have not build the 
+Dependencies correctly. Please go back and make sure you've build all the 
+specified targets as well as build both Debug and Release versions.
+
+ - open the project in visual studio
+ - make sure the build is set to "Debug"
+ - build the `ALL_BUILD` target
+ - build the `INSTALL` target
+ - make sure the build is set to "Release"
+ - build the `ALL_BUILD` target
+ - build the `INSTALL` target
+
+This will install Polycode into the Release/Windows/Framework directory,
 which should mirror the binary download from the website and contain
 templates and examples that will build out of the box.
 
@@ -212,6 +257,10 @@ following commands in the Polycode source root:
 
 ### Mac and Linux ###
 
+Make sure you've followed the alternative build process as explained at the 
+start of this section! The following will not work if you followed the normal 
+build process.
+
     cd Standalone
     mkdir Build
     cd Build
@@ -222,6 +271,10 @@ This will create a Release/YourArchitecture/Standalone folder with the
 same structure as the binary Polycode Lua release.
 
 ### Windows ###
+
+Make sure you've followed the alternative build process as explained at the 
+start of this section! The following will not work if you followed the normal 
+build process.
     
     cd Standalone
     mkdir Build
