@@ -91,6 +91,21 @@ namespace Polycode {
 		* @param key String key of the value.
 		*/						
 		const String& getStringValue(const String& configNamespace, const String& key);
+
+		/**
+		* Sets a string value that represents boolean (true|false) key.
+		* @param configNamespace Namespace to set value in.
+		* @param key String key of the value.
+		* @param value The string value to save.
+		*/
+		void setBoolValue(const String& configNamespace, const String& key, bool value);
+
+		/**
+		* Returns a boolean value by eveluating a string key (true|1 = true).
+		* @param configNamespace Namespace to get the value from.
+		* @param key String key of the value.
+		*/
+		bool getBoolValue(const String& configNamespace, const String& key);
 		
 	private:
 		
