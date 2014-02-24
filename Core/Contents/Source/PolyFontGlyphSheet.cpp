@@ -37,6 +37,7 @@ FontGlyphSheet::FontGlyphSheet(Font* font, int size, FontTextureGlyphMode mode)
 :	font(font)
 ,	size(size)
 ,	mode(mode)
+,	tabWidth(100)
 {
 }
 
@@ -280,30 +281,41 @@ int FontGlyphSheet::renderStringVertices(String textIn, std::vector<Vertex*>& ve
 	wchar_t prevChar = -1;
 	for (std::wstring::const_iterator it = text.begin(); it != text.end(); it++) {
 
-		std::map<wchar_t,FontTextureGlyph>::iterator glyphLoc = locations.find(*it);
-		if (glyphLoc == locations.end()) {
-			Logger::log("Missing glyph for codepoint %d '%lc'\n",*it,*it);
-			glyphLoc = locations.find('?');
-		}
-
-//		if (prevChar != -1) {
-//			FT_Vector delta;
-//			FT_Get_Kerning( ftFace, FT_Get_Char_Index(ftFace, prevChar), FT_Get_Char_Index(ftFace, *it), FT_KERNING_DEFAULT, &delta);
-//			cursor.x += delta.x / Number(64);
-//		}
-
-		for (int i = 0; i < 4; i++, index++) {
-			Vertex* vertex;
-			if (index == vertices.size()) {
-				vertices.push_back(vertex = new Vertex());
+		switch(*it) {
+		case '\t':
+			cursor.x = (int(cursor.x / tabWidth) + 1) * tabWidth;
+			break;
+		case '\n':
+			cursor.x = 0;
+			cursor.y += size;
+			break;
+		default:
+			std::map<wchar_t,FontTextureGlyph>::iterator glyphLoc = locations.find(*it);
+			if (glyphLoc == locations.end()) {
+				Logger::log("Missing glyph for codepoint %d '%lc'\n",*it,*it);
+				glyphLoc = locations.find('?');
 			}
-			else {
-				vertex = vertices[index];
+
+	//		if (prevChar != -1) {
+	//			FT_Vector delta;
+	//			FT_Get_Kerning( ftFace, FT_Get_Char_Index(ftFace, prevChar), FT_Get_Char_Index(ftFace, *it), FT_KERNING_DEFAULT, &delta);
+	//			cursor.x += delta.x / Number(64);
+	//		}
+
+			for (int i = 0; i < 4; i++, index++) {
+				Vertex* vertex;
+				if (index == vertices.size()) {
+					vertices.push_back(vertex = new Vertex());
+				}
+				else {
+					vertex = vertices[index];
+				}
+				vertex->set(cursor.x + glyphLoc->second.offset[i].x, cursor.y + glyphLoc->second.offset[i].y, 0);
+				vertex->texCoord = glyphLoc->second.texCoord[i];
 			}
-			vertex->set(cursor.x + glyphLoc->second.offset[i].x, cursor.y + glyphLoc->second.offset[i].y, 0);
-			vertex->texCoord = glyphLoc->second.texCoord[i];
+			cursor += glyphLoc->second.advance;
+			break;
 		}
-		cursor += glyphLoc->second.advance;
 
 		prevChar = *it;
 	}

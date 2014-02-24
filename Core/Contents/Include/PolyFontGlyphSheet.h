@@ -73,6 +73,8 @@ namespace Polycode {
 			int renderStringVertices(String text, std::vector<Vertex*>& vertices, int index = 0);
 
 			Texture* getTexture() { return texture; }
+
+			int tabWidth;
 			
 		protected:
 			Font* font;
