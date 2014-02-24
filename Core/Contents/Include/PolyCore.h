@@ -308,7 +308,12 @@ namespace Polycode {
 		* Returns the total ticks elapsed since launch.
 		* @return Time elapsed since launch in milliseconds
 		*/						
-		virtual unsigned int getTicks() = 0;		
+		virtual unsigned int getTicks() = 0;
+
+		/** Returns the target number of milliseconds between frames */
+		long getRefreshIntervalMs() const {
+			return refreshInterval;
+		}
 		
 		/**
 		* Returns the total ticks elapsed since launch.
