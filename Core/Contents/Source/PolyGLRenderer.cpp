@@ -84,6 +84,13 @@ PFNGLGENERATEMIPMAPEXTPROC glGenerateMipmapEXT;
 #endif
 using namespace Polycode;
 
+inline void polycodeGLGetNumberv( GLenum pname, GLdouble *params ) {
+    glGetDoublev(pname, params);
+}
+inline void polycodeGLGetNumberv( GLenum pname, GLfloat *params ) {
+	glGetFloatv(pname, params);
+}
+
 OpenGLRenderer::OpenGLRenderer() : Renderer() {
 
 	verticesToDraw = 0;

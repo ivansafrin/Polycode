@@ -3093,10 +3093,10 @@ void CameraSheet::handleEvent(Event *event) {
         camera->setOrthoSize(camera->getOrthoSizeX(), orthoHeightProp->get());
         dispatchEvent(new Event(), Event::CHANGE_EVENT);
     } else if(event->getDispatcher() == nearClipPlane) {
-        camera->setClippingPlanes(nearClipPlane->get(), camera->getFarClipppingPlane());
+        camera->setClippingPlanes(nearClipPlane->get(), camera->getFarClippingPlane());
         dispatchEvent(new Event(), Event::CHANGE_EVENT);
     } else if(event->getDispatcher() == farClipPlane) {
-        camera->setClippingPlanes(camera->getNearClipppingPlane(),farClipPlane->get());
+        camera->setClippingPlanes(camera->getNearClippingPlane(),farClipPlane->get());
         dispatchEvent(new Event(), Event::CHANGE_EVENT);
     } else if(event->getDispatcher() == orthoSizeTypeProp) {
         camera->setOrthoSizeMode(orthoSizeTypeProp->get());
@@ -3117,8 +3117,8 @@ void CameraSheet::setCamera(Camera *camera) {
         orthoProp->set(camera->getOrthoMode());
         orthoWidthProp->set(camera->getOrthoSizeX());
         orthoHeightProp->set(camera->getOrthoSizeY());
-        nearClipPlane->set(camera->getNearClipppingPlane());
-        farClipPlane->set(camera->getFarClipppingPlane());
+        nearClipPlane->set(camera->getNearClippingPlane());
+        farClipPlane->set(camera->getFarClippingPlane());
         
         orthoSizeTypeProp->set(camera->getOrthoSizeMode());
         fovProp->set(camera->getFOV());

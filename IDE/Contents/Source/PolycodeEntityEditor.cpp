@@ -1511,8 +1511,8 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
         ObjectEntry *cameraEntry = entry->addChild("Camera");
         
         cameraEntry->addChild("exposure", camera->getExposureLevel());
-        cameraEntry->addChild("nearClip", camera->getNearClipppingPlane());
-        cameraEntry->addChild("farClip", camera->getFarClipppingPlane());
+        cameraEntry->addChild("nearClip", camera->getNearClippingPlane());
+        cameraEntry->addChild("farClip", camera->getFarClippingPlane());
         cameraEntry->addChild("ortho", camera->getOrthoMode());
         if(camera->getOrthoMode()) {
             cameraEntry->addChild("sizeMode", camera->getOrthoSizeMode());

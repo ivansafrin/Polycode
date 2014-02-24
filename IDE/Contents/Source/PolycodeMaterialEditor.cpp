@@ -534,9 +534,6 @@ PostPreviewBox::PostPreviewBox() : UIElement() {
 	previewScene = new Scene(Scene::SCENE_3D, true);	
 	
 	renderTexture = new SceneRenderTexture(previewScene, previewScene->getDefaultCamera(), 256, 256, true);
-	
-
-	CoreServices::getInstance()->getRenderer()->setClippingPlanes(0.1, 100.0);
 
 	previewScene->clearColor.setColor(0.0, 0.0, 0.0, 1.0);	
 	previewScene->ambientColor.setColor(0.0, 0.0, 0.0, 1.0);
