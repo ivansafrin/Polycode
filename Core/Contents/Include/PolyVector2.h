@@ -104,10 +104,13 @@ namespace Polycode {
 				return Vector2(x + v2.x, y + v2.y);
 			}		
 
+            inline Vector2 operator - () {
+                return Vector2(-x, -y);
+            }
 
 			inline bool operator == ( const Vector2& v2)  {
 				return (v2.x == x && v2.y == y);
-			}		
+			}
 
 			inline bool operator != ( const Vector2& v2)  {
 				return (v2.x != x || v2.y != y);
