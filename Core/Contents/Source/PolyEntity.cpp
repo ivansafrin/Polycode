@@ -681,6 +681,7 @@ Number Entity::getRoll() const {
 
 void Entity::setTransformByMatrixPure(const Matrix4& matrix) {
 	transformMatrix = matrix;
+	_position = position = matrix.getPosition();
 }
 
 void Entity::setPosition(const Vector3 &posVec) {
