@@ -137,9 +137,16 @@ CoreServices::~CoreServices() {
 	delete resourceManager;
 	delete soundManager;
 	delete fontManager;
+    delete logger;
+    delete config;
+    delete renderer;
+
+    for(std::size_t i = 0; i < modules.size(); i++) {
+        delete modules[i];
+    }
+    
 	instanceMap.clear();
 	overrideInstance = NULL;
-	
 }
 
 void CoreServices::setCore(Core *core) {

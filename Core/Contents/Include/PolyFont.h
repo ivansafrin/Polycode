@@ -49,6 +49,7 @@ namespace Polycode {
 			String fileName;
 			String fontName;
 		
+            FT_Library FTLibrary;        
 			unsigned char *buffer;
 			bool valid;
 			FT_Face ftFace;

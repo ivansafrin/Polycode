@@ -30,7 +30,6 @@ Font::Font(const String& fileName) {
 
 	this->fileName = fileName;
 
-	FT_Library FTLibrary;
 	FT_Init_FreeType(&FTLibrary);
 	
 	loaded = false;
@@ -79,6 +78,7 @@ Font::~Font() {
 	if(buffer) {
 		free(buffer);
 	}
+    FT_Done_FreeType(FTLibrary);
 }
 
 FT_Face Font::getFace() {

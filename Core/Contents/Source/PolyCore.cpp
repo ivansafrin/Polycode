@@ -111,6 +111,7 @@ namespace Polycode {
 	Core::~Core() {
 		printf("Shutting down core");
 		delete services;
+        delete input;
 	}
 	
 	void Core::Shutdown() {	
