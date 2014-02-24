@@ -26,7 +26,7 @@
 using namespace Polycode;
 
 FontManager::FontManager() {
-	
+    FT_Init_FreeType(&FTLibrary);	
 }
 
 FontManager::~FontManager() {
@@ -35,6 +35,7 @@ FontManager::~FontManager() {
 		delete entry.font;
 	}
 	fonts.clear();
+    FT_Done_FreeType(FTLibrary);    
 }
 
 unsigned int FontManager::getNumFonts() const {
@@ -63,7 +64,7 @@ void FontManager::removeFontEntry(FontEntry *entry, bool deleteFont) {
 }
 
 void FontManager::registerFont(const String& fontName, const String& fontPath) {
-	Font *font = new Font(fontPath);
+	Font *font = new Font(fontPath, FTLibrary);
 	if(font->loaded) {
 		FontEntry newEntry;
 		newEntry.font = font;

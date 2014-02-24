@@ -25,6 +25,8 @@ THE SOFTWARE.
 #include "PolyGlobals.h"
 #include "PolyString.h"
 #include <vector>
+#include "ft2build.h"
+#include FT_FREETYPE_H
 
 namespace Polycode {
 
@@ -67,6 +69,7 @@ namespace Polycode {
 		
 	private:
 		
+        FT_Library FTLibrary;        
 		std::vector <FontEntry> fonts;
 		
 	};

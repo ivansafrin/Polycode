@@ -26,11 +26,9 @@
 
 using namespace Polycode;
 
-Font::Font(const String& fileName) {
+Font::Font(const String& fileName, FT_Library FTLibrary) {
 
 	this->fileName = fileName;
-
-	FT_Init_FreeType(&FTLibrary);
 	
 	loaded = false;
 	buffer = NULL;
@@ -78,7 +76,6 @@ Font::~Font() {
 	if(buffer) {
 		free(buffer);
 	}
-    FT_Done_FreeType(FTLibrary);
 }
 
 FT_Face Font::getFace() {
