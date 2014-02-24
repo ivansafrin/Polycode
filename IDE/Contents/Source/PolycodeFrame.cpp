@@ -1745,7 +1745,7 @@ ObjectEntry *PolycodeFrame::getFrameConfigForProject(PolycodeProject *project) {
 }
 
 void PolycodeFrame::removeProjectFrame(PolycodeProject *project) {
-
+    //TODO: implement. this is being called from PolycodeIDEApp::doCloseProject()
 }
 
 PolycodeProjectFrame *PolycodeFrame::getActiveProjectFrame() {
