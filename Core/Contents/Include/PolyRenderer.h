@@ -111,16 +111,14 @@ namespace Polycode {
 		virtual Image *renderScreenToImage() = 0;
 		virtual Image *renderBufferToImage(Texture *texture) = 0;
 		
-		void setFOV(Number fov);		
 		void setViewportSize(int w, int h);
-		void setViewportSizeAndFOV(int w, int h, Number fov);
 		virtual void resetViewport() = 0;
 		
 		virtual Polycode::Rectangle getViewport() = 0;
 				
 		virtual void loadIdentity() = 0;		
-		virtual void setOrthoMode(Number xSize=0.0f, Number ySize=0.0f, bool centered = false) = 0;
-		virtual void setPerspectiveMode() = 0;
+		virtual void setProjectionOrtho(Number xSize=0.0f, Number ySize=0.0f, Number near=-256.0f, Number far=256.0f, bool centered = false) = 0;
+		virtual void setPerspectiveDefaults() = 0;
 		
 		virtual void setTexture(Texture *texture) = 0;		
 		virtual void enableBackfaceCulling(bool val) = 0;
@@ -188,21 +186,20 @@ namespace Polycode {
 		void billboardMatrixWithScale(Vector3 scale);
 		
 		void setTextureFilteringMode(int mode);
-		
+
 		/**
-		 * Set the near and far clipping planes for the visible frustum.
+		 * Set the frustum clipping planes.
 		 *
 		 * Please check the supplied external links for more information
 		 * about the problems of a high farPlane/nearPlane setting.
 		 *
-		 * @param nearPlane The new near clipping plane.
-		 * @param farPlane The new far clipping plane.
-		 *
-		 * @see http://en.wikipedia.org/wiki/Viewing_frustum
 		 * @see http://www.opengl.org/sdk/docs/man2/xhtml/glFrustum.xml
 		 */
-		virtual void setClippingPlanes(Number nearPlane, Number farPlane) = 0;
-		
+		virtual void setProjectionFromFrustum(Number left, Number right, Number bottom, Number top, Number front, Number back) = 0;
+
+
+		virtual void setProjectionFromFoV(Number fov, Number near, Number far) = 0;
+
 		/**
 		 * Enable/disable alpha tests.
 		 *
@@ -356,13 +353,8 @@ namespace Polycode {
 		
 		bool shadersEnabled;
 		Number fov;
-		
-		Number orthoSizeX;
-		Number orthoSizeY;
 				
 		bool lightingEnabled;
-		
-		bool orthoMode;
 	
 		int xRes;
 		int yRes;

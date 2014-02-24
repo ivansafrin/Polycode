@@ -34,10 +34,10 @@
 using namespace Polycode;
 			
 Camera::Camera(Scene *parentScene) : Entity() {
+	projectionMode = PERSPECTIVE_FOV;
 	renderer = CoreServices::getInstance()->getRenderer();
 	setParentScene(parentScene);
-	orthoMode = false;
-	fov = 45.0f;
+	setFOV(45.0f);
 	filterShaderMaterial = NULL;
 	originalSceneTexture = NULL;
 	zBufferSceneTexture = NULL;
@@ -48,8 +48,7 @@ Camera::Camera(Scene *parentScene) : Entity() {
 	farClipPlane = 1000.0;
 	topLeftOrtho = false;
     orthoSizeX = 1.0;
-    orthoSizeY = 1.0;
-    orthoSizeMode = Camera::ORTHO_SIZE_LOCK_HEIGHT;
+	orthoSizeY = 1.0;
 }
 
 Camera::~Camera() {	
@@ -66,24 +65,10 @@ void Camera::setClippingPlanes(Number nearClipPlane, Number farClipPlane) {
 	this->farClipPlane = farClipPlane;	
 }
 
-
-void Camera::setExposureLevel(Number level) {
-	exposureLevel = level;
-}
-
-Number Camera::getExposureLevel() {
-	return exposureLevel;
-}
-
-
 void Camera::setFOV(Number fov) {
+	setProjectionMode(PERSPECTIVE_FOV);
 	this->fov = fov;
 }
-
-Number Camera::getFOV() {
-	return fov;
-}
-
 
 bool Camera::isSphereInFrustum(Vector3 pos, Number fRadius) {
 	if(!frustumCulling)
@@ -106,11 +91,23 @@ void Camera::setOrthoSize(Number orthoSizeX, Number orthoSizeY) {
 }
 
 void Camera::setOrthoMode(bool mode) {
-	orthoMode = mode;
+	if (mode && !getOrthoMode()) {
+		setProjectionMode(ORTHO_SIZE_LOCK_HEIGHT);
+	}
+	else if (!mode && getOrthoMode()) {
+		setProjectionMode(PERSPECTIVE_FOV);
+	}
 }			
 
-bool Camera::getOrthoMode() {
-	return orthoMode;
+
+void Camera::setFrustumMode(Number left, Number right, Number bottom, Number top, Number front, Number back) {
+	setProjectionMode(PERSPECTIVE_FRUSTUM);
+	leftFrustum = left;
+	rightFrustum = right;
+	bottomFrustum = bottom;
+	topFrustum = top;
+	nearClipPlane = front;
+	farClipPlane = back;
 }
 
 Number Camera::getOrthoSizeX() {
@@ -278,11 +275,12 @@ void Camera::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) co
     Entity::applyClone(clone, deepClone, ignoreEditorOnly);
     
     Camera *cloneCamera = (Camera*) clone;
-    cloneCamera->setFOV(fov);
-    cloneCamera->setOrthoMode(orthoMode);
-    cloneCamera->setOrthoSizeMode(orthoSizeMode);
-    cloneCamera->setOrthoSize(orthoSizeX, orthoSizeY);
-    cloneCamera->setClippingPlanes(nearClipPlane, farClipPlane);
+	cloneCamera->projectionMatrix = Matrix4(projectionMatrix.ml);
+	cloneCamera->fov = fov;
+	cloneCamera->viewport = viewport;
+	cloneCamera->setOrthoSize(orthoSizeX, orthoSizeY);
+	cloneCamera->projectionMode = projectionMode;
+	cloneCamera->setClippingPlanes(nearClipPlane, farClipPlane);
     cloneCamera->setExposureLevel(exposureLevel);
 }
 
@@ -421,46 +419,44 @@ Polycode::Rectangle Camera::getViewport() {
 	return viewport;
 }
 
-Number Camera::getNearClipppingPlane() {
+Number Camera::getNearClippingPlane() {
     return nearClipPlane;
 }
 
-Number Camera::getFarClipppingPlane() {
+Number Camera::getFarClippingPlane() {
     return farClipPlane;
 }
 
-void Camera::setOrthoSizeMode(int orthoSizeMode) {
-    this->orthoSizeMode = orthoSizeMode;
-}
-
-int Camera::getOrthoSizeMode() const {
-    return orthoSizeMode;
+void Camera::setProjectionMode(int mode) {
+	projectionMode = mode;
 }
 
 void Camera::doCameraTransform() {
-	renderer->setClippingPlanes(nearClipPlane, farClipPlane);
 	
     viewport = renderer->getViewport();
-    
-	if(!orthoMode) {
-		renderer->setViewportShift(cameraShift.x, cameraShift.y);
-		renderer->setFOV(fov);
-		renderer->setPerspectiveMode();		
-	} else {
-        switch(orthoSizeMode) {
-            case ORTHO_SIZE_MANUAL:
-                renderer->setOrthoMode(orthoSizeX, orthoSizeY, !topLeftOrtho);
-            break;
-            case ORTHO_SIZE_LOCK_HEIGHT:
-                renderer->setOrthoMode(orthoSizeY * (viewport.w/viewport.h), orthoSizeY, !topLeftOrtho);
-            break;
-            case ORTHO_SIZE_LOCK_WIDTH:
-                renderer->setOrthoMode(orthoSizeX, orthoSizeX * (viewport.h/viewport.w), !topLeftOrtho);
-            break;
-            case ORTHO_SIZE_VIEWPORT:
-                renderer->setOrthoMode(viewport.w / renderer->getBackingResolutionScaleX(), viewport.h / renderer->getBackingResolutionScaleY(), !topLeftOrtho);
-            break;
-        }
+
+	switch (projectionMode) {
+		case PERSPECTIVE_FOV:
+			renderer->setViewportShift(cameraShift.x, cameraShift.y);
+			renderer->setProjectionFromFoV(fov, nearClipPlane, farClipPlane);
+			renderer->setPerspectiveDefaults();
+		break;
+		case PERSPECTIVE_FRUSTUM:
+			renderer->setProjectionFromFrustum(leftFrustum, rightFrustum, bottomFrustum, topFrustum, nearClipPlane, farClipPlane);
+			renderer->setPerspectiveDefaults();
+		break;
+		case ORTHO_SIZE_MANUAL:
+			renderer->setProjectionOrtho(orthoSizeX, orthoSizeY, nearClipPlane, farClipPlane, !topLeftOrtho);
+		break;
+		case ORTHO_SIZE_LOCK_HEIGHT:
+			renderer->setProjectionOrtho(orthoSizeY * (viewport.w/viewport.h), orthoSizeY, nearClipPlane, farClipPlane, !topLeftOrtho);
+		break;
+		case ORTHO_SIZE_LOCK_WIDTH:
+			renderer->setProjectionOrtho(orthoSizeX, orthoSizeX * (viewport.h/viewport.w), nearClipPlane, farClipPlane, !topLeftOrtho);
+		break;
+		case ORTHO_SIZE_VIEWPORT:
+			renderer->setProjectionOrtho(viewport.w / renderer->getBackingResolutionScaleX(), viewport.h / renderer->getBackingResolutionScaleY(), !topLeftOrtho);
+		break;
 	}
 	renderer->setExposureLevel(exposureLevel);
 

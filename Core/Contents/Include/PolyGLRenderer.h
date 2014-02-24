@@ -131,8 +131,8 @@ namespace Polycode {
 		void setRenderArrayData(RenderDataArray *array, Number *arrayData);
 		void drawArrays(int drawType);		
 				
-		void setOrthoMode(Number xSize=0.0f, Number ySize=0.0f, bool centered = false);
-		void setPerspectiveMode();
+		void setProjectionOrtho(Number xSize=0.0f, Number ySize=0.0f, Number near=-256.0f, Number far=256.0f, bool centered = false);
+		void setPerspectiveDefaults();
 		
 		void enableBackfaceCulling(bool val);
 		
@@ -184,8 +184,9 @@ namespace Polycode {
 		void enableDepthTest(bool val);
 		void enableDepthWrite(bool val);
 				
-		void setClippingPlanes(Number nearPlane_, Number farPlane_);
-				
+		void setProjectionFromFrustum(Number left, Number right, Number bottom, Number top, Number near, Number far);
+		void setProjectionFromFoV(Number fov, Number near, Number far);
+
 		void clearBuffer(bool colorBuffer, bool depthBuffer);	
 		void drawToColorBuffer(bool val);
 		
@@ -202,9 +203,6 @@ namespace Polycode {
 		
 	protected:
 		void initOSSpecific();
-		
-		Number nearPlane;
-		Number farPlane;
 		
 		int verticesToDraw;
 		

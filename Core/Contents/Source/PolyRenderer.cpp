@@ -28,7 +28,7 @@
 
 using namespace Polycode;
 
-Renderer::Renderer() : clearColor(0.2f, 0.2f, 0.2f, 0.0), currentTexture(NULL), lightingEnabled(false), orthoMode(false), xRes(0), yRes(0) {
+Renderer::Renderer() : clearColor(0.2, 0.2, 0.2, 0.0), currentTexture(NULL), lightingEnabled(false), xRes(0), yRes(0) {
 	anisotropy = 0;
 	textureFilteringMode = TEX_FILTERING_LINEAR;
 	currentMaterial = NULL;
@@ -42,7 +42,6 @@ Renderer::Renderer() : clearColor(0.2f, 0.2f, 0.2f, 0.0), currentTexture(NULL), 
 	exposureLevel = 1;
 	shadersEnabled = true;
 	currentShaderModule = NULL;
-	fov = 45.0;
 	setAmbientColor(0.0,0.0,0.0);
 	cullingFrontFaces = false;
 	scissorEnabled = false;
@@ -326,19 +325,7 @@ void Renderer::setTextureFilteringMode(int mode) {
 	textureFilteringMode = mode;
 }
 
-void Renderer::setFOV(Number fov) {
-	this->fov = fov;
-	resetViewport();
-}
-
 void Renderer::setViewportSize(int w, int h) {
-	viewportWidth = w;
-	viewportHeight = h;
-	resetViewport();
-}
-
-void Renderer::setViewportSizeAndFOV(int w, int h, Number fov) {
-	this->fov = fov;
 	viewportWidth = w;
 	viewportHeight = h;
 	resetViewport();
