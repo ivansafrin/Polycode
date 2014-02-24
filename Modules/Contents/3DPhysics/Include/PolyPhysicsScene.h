@@ -128,6 +128,8 @@ namespace Polycode {
 		void applyImpulse(Entity *entity, Vector3 force, Vector3 point);
 		
 		PhysicsVehicle *addVehicleChild(Entity *newEntity, Number mass, Number friction, int group  = 1);
+
+		PhysicsVehicle *trackVehicleChild(Entity *newEntity, Number mass, Number friction, int group  = 1);
 		
 		void setGravity(Vector3 gravity);
 		

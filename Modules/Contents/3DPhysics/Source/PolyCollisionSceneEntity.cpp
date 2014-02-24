@@ -87,40 +87,43 @@ btCollisionShape *CollisionEntity::createCollisionShape(Entity *entity, int type
 	
 	btCollisionShape *collisionShape = NULL;	
 	
-	Vector3 entityScale = entity->getScale();
-	Number largestScale = entityScale.x;
-	if(entityScale.y > largestScale)
-		largestScale = entityScale.y;
-	if(entityScale.z > largestScale)
-		largestScale = entityScale.z;
-
+    Vector3 scale = entity->getCompoundScale();
+    Vector3 bBox = entity->bBox;// * scale;
 	
+    Number largestSize = bBox.x;
+    if(bBox.y > largestSize) {
+        largestSize = bBox.y;
+    }
+    if(bBox.z > largestSize) {
+        largestSize = bBox.z;
+    }
+    
 	switch(type) {
 		case SHAPE_CAPSULE:
 		case CHARACTER_CONTROLLER:
-			collisionShape = new btCapsuleShape(entity->bBox.x/2.0f, entity->bBox.y/2.0f);			
+			collisionShape = new btCapsuleShape(bBox.x/2.0f, bBox.y/2.0f);
 		break;
 		case SHAPE_CONE: {
-			Number largest = entity->bBox.x;
-			if(entity->bBox.z > largest) {
-				largest = entity->bBox.z;
+			Number largest = bBox.x;
+			if(bBox.z > largest) {
+				largest = bBox.z;
 			}
-			collisionShape = new btConeShape(largest/2.0f, entity->bBox.y);					
+			collisionShape = new btConeShape(largest/2.0f, bBox.y);
 			}
 		break;
 		case SHAPE_CYLINDER:
 		{
-			collisionShape = new btCylinderShape(btVector3(entity->bBox.x/2.0, entity->bBox.y/2.0f,entity->bBox.z/2.0));
+			collisionShape = new btCylinderShape(btVector3(bBox.x/2.0, bBox.y/2.0f,bBox.z/2.0));
 		}
 		break;
 		case SHAPE_PLANE:
-			collisionShape = new btBoxShape(btVector3(entity->bBox.x/2.0f, 0.05,entity->bBox.z/2.0f));			
+			collisionShape = new btBoxShape(btVector3(bBox.x/2.0f, 0.05,bBox.z/2.0f));
 			break;
 		case SHAPE_BOX:
-			collisionShape = new btBoxShape(btVector3(entity->bBox.x/2.0f*entityScale.x, entity->bBox.y/2.0f*entityScale.y,entity->bBox.z/2.0f*entityScale.z));			
+			collisionShape = new btBoxShape(btVector3(bBox.x/2.0f, bBox.y/2.0f,bBox.z/2.0f));
 			break;
 		case SHAPE_SPHERE:
-			collisionShape = new btSphereShape(entity->bBox.x/2.0f*largestScale);
+			collisionShape = new btSphereShape(largestSize/2.0f);
 			break;
 		case SHAPE_MESH:
 		{
@@ -135,11 +138,14 @@ btCollisionShape *CollisionEntity::createCollisionShape(Entity *entity, int type
 				
 			} else {
 				Logger::log("Tried to make a mesh collision object from a non-mesh\n");
-				collisionShape = new btBoxShape(btVector3(entity->bBox.x/2.0f, entity->bBox.y/2.0f,entity->bBox.z/2.0f));			
+				collisionShape = new btBoxShape(btVector3(bBox.x/2.0f, bBox.y/2.0f,bBox.z/2.0f));
 			}
 		}
 		break;
-	}	
+	}
+    
+    collisionShape->setLocalScaling(btVector3(scale.x, scale.y, scale.z));
+    
 	return collisionShape; 
 }
 

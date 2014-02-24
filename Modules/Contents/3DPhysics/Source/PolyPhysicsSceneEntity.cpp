@@ -45,7 +45,13 @@ void PhysicsVehicle::warpVehicle(Vector3 position) {
 }
 
 void PhysicsVehicle::addWheel(Entity *entity, Vector3 connection, Vector3 direction, Vector3 axle, Number suspentionRestLength, Number wheelRadius, bool isFrontWheel,Number  suspensionStiffness, Number  suspensionDamping, Number suspensionCompression, Number  wheelFriction, Number rollInfluence) {
-	vehicle->addWheel(btVector3(connection.x, connection.y, connection.z),
+    entity->ignoreParentMatrix = true;
+    entity->setScale(entity->getCompoundScale());
+    
+    Vector3 vehicleScale = getEntity()->getScale();
+    btVector3 conn = btVector3(connection.x * vehicleScale.x, connection.y  * vehicleScale.y, connection.z * vehicleScale.z);
+    
+	vehicle->addWheel(conn,
 					btVector3(direction.x, direction.y, direction.z),
 					btVector3(axle.x, axle.y, axle.z),	
 					suspentionRestLength,
@@ -59,14 +65,12 @@ void PhysicsVehicle::addWheel(Entity *entity, Vector3 connection, Vector3 direct
 	wheel_info.wheelEntity = entity;
 	wheel_info.wheelIndex = wheels.size();
 	
-	
 			btWheelInfo& wheel = vehicle->getWheelInfo(wheel_info.wheelIndex);
 			wheel.m_suspensionStiffness = suspensionStiffness;
 			wheel.m_wheelsDampingRelaxation = suspensionDamping;
 			wheel.m_wheelsDampingCompression = suspensionCompression;
 			wheel.m_frictionSlip = wheelFriction;
 			wheel.m_rollInfluence = rollInfluence;
-	
 	
 	wheels.push_back(wheel_info);
 	
@@ -95,16 +99,11 @@ void PhysicsVehicle::Update() {
 	
 	for(int i=0; i < wheels.size(); i++) {	
 		PhysicsVehicleWheelInfo wheel_info = wheels[i];
-		vehicle->updateWheelTransform(i,true);
-		
-		btScalar mat[16];		
-//		vehicle->getWheelTransformWS(i).getOpenGLMatrix(mat);
-		vehicle->getWheelInfo(i).m_worldTransform.getOpenGLMatrix(mat);
-	
-		for(int j=0; j < 16; j++) {
-			m.ml[j] = mat[j];
-		}			
-		wheel_info.wheelEntity->setTransformByMatrixPure(m);		
+		vehicle->updateWheelTransform(i,true);        
+        btVector3 t = vehicle->getWheelInfo(i).m_worldTransform.getOrigin();
+        btQuaternion q = vehicle->getWheelInfo(i).m_worldTransform.getRotation();
+        wheel_info.wheelEntity->setRotationQuat(q.getW(), q.getX(), q.getY(), q.getZ());
+        wheel_info.wheelEntity->setPosition(t.getX(), t.getY(), t.getZ());
 	}
 	
 	PhysicsEntity::Update();
@@ -286,10 +285,15 @@ void PhysicsEntity::warpTo(Vector3 position, bool resetRotation) {
 			mat[i] = ent_mat.ml[i];
 		}	
 		transform.setFromOpenGLMatrix(mat);	
-	}
+	} else {
+        rigidBody->setAngularVelocity(btVector3());
+    }
 	
-	transform.setOrigin(btVector3(position.x,position.y,position.z));	
+	transform.setOrigin(btVector3(position.x,position.y,position.z));
+    
 	rigidBody->setCenterOfMassTransform(transform);
+    
+    
 }
 
 PhysicsEntity::~PhysicsEntity() {

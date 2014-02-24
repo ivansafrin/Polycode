@@ -124,7 +124,7 @@ void PolycodeMeshEditor::handleEvent(Event *event) {
 
 PolycodeMeshEditor::~PolycodeMeshEditor() {
     printf("CALLED IT!\n");
-    CoreServices::getInstance()->getResourceManager()->removeAllHandlersForListener(this);
+    CoreServices::getInstance()->getResourceManager()->getGlobalPool()->removeAllHandlersForListener(this);
 }
 
 bool PolycodeMeshEditor::openFile(OSFileEntry filePath) {

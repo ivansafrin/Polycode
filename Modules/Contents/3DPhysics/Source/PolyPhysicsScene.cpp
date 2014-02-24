@@ -231,34 +231,42 @@ void PhysicsScene::removeCharacterChild(PhysicsCharacter *character) {
 	
 }
 
-
-PhysicsVehicle *PhysicsScene::addVehicleChild(Entity *newEntity, Number mass, Number friction, int group) {
-	addEntity(newEntity);		
-	
+PhysicsVehicle *PhysicsScene::trackVehicleChild(Entity *newEntity, Number mass, Number friction, int group) {
+    
+    
 	btDefaultVehicleRaycaster *m_vehicleRayCaster = new btDefaultVehicleRaycaster(physicsWorld);
 	
-	PhysicsVehicle *newPhysicsEntity = new PhysicsVehicle(newEntity, mass, friction,m_vehicleRayCaster);		
-	physicsWorld->addRigidBody(newPhysicsEntity->rigidBody, group, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);	
-		
-	newPhysicsEntity->vehicle = new btRaycastVehicle(newPhysicsEntity->tuning,newPhysicsEntity->rigidBody,m_vehicleRayCaster);	
+	PhysicsVehicle *newPhysicsEntity = new PhysicsVehicle(newEntity, mass, friction,m_vehicleRayCaster);
+    
+    newEntity->ignoreParentMatrix = true;
+    newEntity->setScale(newEntity->getCompoundScale());
+    
+	physicsWorld->addRigidBody(newPhysicsEntity->rigidBody, group, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);
+    
+	newPhysicsEntity->vehicle = new btRaycastVehicle(newPhysicsEntity->tuning,newPhysicsEntity->rigidBody,m_vehicleRayCaster);
 	
 	newPhysicsEntity->rigidBody->setActivationState(DISABLE_DEACTIVATION);
 	
-		
-	int rightIndex = 0; 
-		int upIndex = 1; 
-		int forwardIndex = 2;
-			
+    
+	int rightIndex = 0;
+    int upIndex = 1;
+    int forwardIndex = 2;
+    
 	physicsWorld->addVehicle(newPhysicsEntity->vehicle);
 	
 	newPhysicsEntity->vehicle->setCoordinateSystem(rightIndex,upIndex,forwardIndex);
-
+    
 	newPhysicsEntity->vehicle->resetSuspension();
-
+    
 	physicsChildren.push_back(newPhysicsEntity);
 	collisionChildren.push_back(newPhysicsEntity);
-		
-	return newPhysicsEntity;
+    
+ 	return newPhysicsEntity;
+}
+
+PhysicsVehicle *PhysicsScene::addVehicleChild(Entity *newEntity, Number mass, Number friction, int group) {
+	addEntity(newEntity);
+    return trackVehicleChild(newEntity, mass, friction, group);
 }
 
 void PhysicsScene::removePhysicsChild(Entity *entity) {
@@ -416,9 +424,15 @@ void PhysicsScene::wakeUp(Entity *entity) {
 
 PhysicsEntity *PhysicsScene::trackPhysicsChild(Entity *newEntity, int type, Number mass, Number friction, Number restitution, int group, bool compoundChildren) {
 	PhysicsEntity *newPhysicsEntity = new PhysicsEntity(newEntity, type, mass, friction,restitution, compoundChildren);
-	physicsWorld->addRigidBody(newPhysicsEntity->rigidBody, group,  btBroadphaseProxy::AllFilter); //btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);	
-//	world->addCollisionObject(newPhysicsEntity->collisionObject, group);	
-	//newPhysicsEntity->rigidBody->setActivationState(ISLAND_SLEEPING);	
+    
+    newEntity->ignoreParentMatrix = true;
+    newEntity->setScale(newEntity->getCompoundScale());
+    
+	physicsWorld->addRigidBody(newPhysicsEntity->rigidBody, group,  btBroadphaseProxy::AllFilter); //btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);
+    if(mass == 0.0) {
+//        world->addCollisionObject(newPhysicsEntity->collisionObject, group);
+    }
+	newPhysicsEntity->rigidBody->setActivationState(DISABLE_DEACTIVATION);	
 	physicsChildren.push_back(newPhysicsEntity);
 	collisionChildren.push_back(newPhysicsEntity);	
 	return newPhysicsEntity;	

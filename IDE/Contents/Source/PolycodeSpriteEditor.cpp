@@ -177,7 +177,8 @@ void SpritePreviewProp::setPropWidth(Number width) {
 
 void SpritePreviewProp::setSprite(SceneSprite *sprite) {
 	previewSprite = sprite;
-	propContents->addChild(sprite);	
+	propContents->addChild(sprite);
+    setSpriteScale(1.0);
 }
 
 void SpritePreviewProp::setSpriteScale(Number scale) {
@@ -186,6 +187,7 @@ void SpritePreviewProp::setSpriteScale(Number scale) {
 	}
 	previewSprite->setScale(scale, scale);
 	setPropWidth(propWidth);
+    this->setHeight((previewSprite->getHeight() * scale) + 20);
 }
 
 SpriteAnimationsSheet::SpriteAnimationsSheet() : PropSheet("ANIMATIONS", "") {
@@ -363,6 +365,7 @@ bool PolycodeSpriteEditor::openFile(OSFileEntry filePath) {
 	initialLoad = true;
 		
 	previewSprite = new SceneSprite(filePath.fullPath);
+    previewSprite->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	previewSprite->setAnchorPoint(-1.0, -1.0, 0.0);
 	previewSprite->setPosition(400, 80);				
 	previewSprite->getTexture()->reloadOnFileModify = true;	

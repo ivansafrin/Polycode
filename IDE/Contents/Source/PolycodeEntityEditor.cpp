@@ -441,6 +441,11 @@ Entity *EntityEditorMainView::getSelectedEntity() {
 
 void EntityEditorMainView::Paste(EntityEditorClipboardData *data) {
     
+    if(!hasFocus) {
+        return;
+    }
+    
+    
     selectNone(false);
     
     for(int i=0; i < data->entities.size(); i++) {
@@ -1635,6 +1640,7 @@ void PolycodeEntityEditor::saveShaderOptionsToEntry(ObjectEntry *entry, Material
 }
 
 String PolycodeEntityEditor::Copy(void **data) {
+    
     std::vector<Entity*> selectedEntities = mainView->getSelectedEntities();
     
     if(selectedEntities.size() > 0) {
