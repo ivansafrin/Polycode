@@ -21,6 +21,8 @@
 */
 
 #include "PolyString.h"
+#include <iomanip>
+#include <sstream>
 
 using namespace Polycode;
 using namespace std;
@@ -180,16 +182,15 @@ String String::toUpperCase() const {
 
 
 String String::NumberToString(Number value, int precision) {
-	char temp[128];
-	String precisionStr = String("%.")+IntToString(precision)+String("f");
-	sprintf(temp, precisionStr.c_str(), value);
-	return String(temp);
+    stringstream ss;
+    ss << fixed << setprecision(precision) << value;
+    return String(ss.str());
 }
 
 String String::IntToString(int value) {
-	char temp[128];
-	sprintf(temp, "%d", value);
-	return String(temp);
+	stringstream ss;
+	ss << value;
+	return String(ss.str());
 }
 
 
