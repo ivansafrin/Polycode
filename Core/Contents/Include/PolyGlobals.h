@@ -84,7 +84,11 @@ THE SOFTWARE.
 	#define PLATFORM PLATFORM_UNIX
 #endif
 
+#ifdef POLYCODE_NUMBER_IS_SINGLE
+typedef float Number;
+#else
 typedef double Number;
+#endif
 
 #ifdef _WINDOWS
 #include <cmath>	//cmath for "round / floor"
