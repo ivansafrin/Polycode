@@ -26,6 +26,7 @@
 #include "PolyPerlin.h"
 #include "PolyResource.h"
 #include "PolyScene.h"
+#include "PolySceneMesh.h"
 #include "PolyScreen.h"
 #include "PolyTimer.h"
 #include "PolyMaterialManager.h"
@@ -230,13 +231,24 @@ Texture *ParticleEmitter::getParticleTexture() const {
 	return particleTexture;
 }
 
-void ParticleEmitter::setParticleTexture(Texture *texture) {
-	particleTexture = texture;
+template<typename T>
+inline void setParticlesTexture(std::vector<Particle*>& particles, Texture* texture) {
 	for(int i=0; i < particles.size(); i++) {
-		((ScreenMesh*)particles[i]->particleBody)->setTexture(particleTexture);
+		Particle* particle = particles[i];
+		T* particleSceneMesh = (T*)particle->particleBody;
+		particleSceneMesh->setTexture(texture);
 	}
 }
-			
+
+void ScreenParticleEmitter::setParticleTexture(Texture *texture) {
+	particleTexture = texture;
+	setParticlesTexture<ScreenMesh>(particles, texture);
+}
+void SceneParticleEmitter::setParticleTexture(Texture *texture) {
+	particleTexture = texture;
+	setParticlesTexture<SceneMesh>(particles, texture);
+}
+
 void ParticleEmitter::createParticles() {
 	
 	if(isScreenEmitter)

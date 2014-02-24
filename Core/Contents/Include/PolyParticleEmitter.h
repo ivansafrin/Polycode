@@ -230,7 +230,7 @@ namespace Polycode {
 			
 			Texture *getParticleTexture() const;
 			
-			void setParticleTexture(Texture *texture);
+			virtual void setParticleTexture(Texture *texture) = 0;
 		
 			Vector3 emitterRadius;
 					
@@ -309,6 +309,8 @@ namespace Polycode {
 		
 		void dispatchTriggerCompleteEvent();
 		
+		virtual void setParticleTexture(Texture *texture);
+
 			/**
 			* Continuous emitter setting.
 			*/ 																													
@@ -334,7 +336,8 @@ namespace Polycode {
 		
 		virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
 		virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
-		
+		virtual void setParticleTexture(Texture *texture);
+
 		/**
 		* Returns the emitter (helper method for LUA).
 		*/ 		
