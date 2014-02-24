@@ -48,6 +48,7 @@ void wtoc(char* Dest, const WCHAR* Source)
 		Dest[i] = (char)Source[i];
 		++i;
 	}
+	Dest[i] = 0;
 }
 void ctow(WCHAR* Dest, const char* Source)
 {
@@ -56,6 +57,7 @@ void ctow(WCHAR* Dest, const char* Source)
 		Dest[i] = (WCHAR)Source[i];
 		++i;
 	}
+	Dest[i] = 0;
 }
 
 #endif
@@ -313,17 +315,14 @@ vector<OSFileEntry> OSBasics::parseFolder(const String& pathString, bool showHid
 	SetCurrentDirectory(tmp);
 
 
-	HANDLE hFind = FindFirstFile((LPCWSTR)"*", &findFileData);
+	HANDLE hFind = FindFirstFile(L"*", &findFileData);
 	if(hFind  == INVALID_HANDLE_VALUE) {
 		SetCurrentDirectory(curDir);
 		return returnVector;
 	}
 
-	char fileName[260];
 	do {		
-		memset(fileName, 0, 260);
-		wtoc(fileName, findFileData.cFileName);
-		String fname = string(fileName);
+		String fname(findFileData.cFileName);
 		
 		if((fname.c_str()[0] != '.' || (fname.c_str()[0] == '.'  && showHidden)) && fname != "..") {
 			if( findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) {
