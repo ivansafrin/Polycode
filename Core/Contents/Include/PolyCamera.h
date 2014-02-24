@@ -39,14 +39,23 @@ namespace Polycode {
 	class _PolyExport Camera : public Entity {
 		public:
 			
-			enum ProjectionMode {
-				ORTHO_SIZE_MANUAL = 0,
-				ORTHO_SIZE_LOCK_HEIGHT = 1,
-				ORTHO_SIZE_LOCK_WIDTH = 2,
-				ORTHO_SIZE_VIEWPORT = 3,
-				PERSPECTIVE_FOV = 4,
-				PERSPECTIVE_FRUSTUM = 5
-			};
+			/** ProjectionMode: Orthographic projection, with manually set size. */
+			static const int ORTHO_SIZE_MANUAL = 0;
+
+			/** ProjectionMode: Orthographic projection, with height specified used and width scaled proportionally . */
+			static const int ORTHO_SIZE_LOCK_HEIGHT = 1;
+
+			/** ProjectionMode: Orthographic projection, with width specified used and height scaled proportionally. */
+			static const int ORTHO_SIZE_LOCK_WIDTH = 2;
+
+			/** ProjectionMode: Orthographic projection, scaled to viewport backing resolution. */
+			static const int ORTHO_SIZE_VIEWPORT = 3;
+
+			/** ProjectionMode: Perspective projection, with field of view specified. */
+			static const int PERSPECTIVE_FOV = 4;
+
+			/** ProjectionMode: Perspective projection, with bounds set by edges of frustum. */
+			static const int PERSPECTIVE_FRUSTUM = 5;
 
 			/**
 			* Constructor.
@@ -203,17 +212,17 @@ namespace Polycode {
 			Vector2 cameraShift;
 		      
 			/** @deprecated use setProjectionMode(ProjectionMode mode) */
-			void setOrthoSizeMode(ProjectionMode orthoSizeMode) { setProjectionMode(orthoSizeMode); }
+			void setOrthoSizeMode(int orthoSizeMode) { setProjectionMode(orthoSizeMode); }
 			/** @deprecated use getProjectionMode() */
-			ProjectionMode getOrthoSizeMode() const { return projectionMode; }
+			int getOrthoSizeMode() const { return projectionMode; }
 
-			void setProjectionMode(ProjectionMode mode);
-			ProjectionMode getProjectionMode() const { return projectionMode; }
+			void setProjectionMode(int mode);
+			int getProjectionMode() const { return projectionMode; }
 
 
 		protected:
 
-			ProjectionMode projectionMode;
+			int projectionMode;
 
 			Matrix4 projectionMatrix;
 

@@ -427,7 +427,7 @@ Number Camera::getFarClippingPlane() {
     return farClipPlane;
 }
 
-void Camera::setProjectionMode(ProjectionMode mode) {
+void Camera::setProjectionMode(int mode) {
 	projectionMode = mode;
 }
 
