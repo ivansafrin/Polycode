@@ -17,5 +17,5 @@ cmake -G "Unix Makefiles" -DPOLYCODE_BUILD_BINDINGS=ON -DPOLYCODE_BUILD_PLAYER=O
 make
 make install
 cd ../../Standalone/Build
-cmake -G "Unix Makefiles"
+cmake -G "Unix Makefiles" ..
 make install
