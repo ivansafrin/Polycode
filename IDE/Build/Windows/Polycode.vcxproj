@@ -13,6 +13,8 @@
   <ItemGroup>
     <ClCompile Include="..\..\Contents\Source\EditorGrid.cpp" />
     <ClCompile Include="..\..\Contents\Source\EntityEditorPropertyView.cpp" />
+    <ClCompile Include="..\..\Contents\Source\EntityEditorSettingsView.cpp" />
+    <ClCompile Include="..\..\Contents\Source\EntityEditorTreeView.cpp" />
     <ClCompile Include="..\..\Contents\Source\ExampleBrowserWindow.cpp" />
     <ClCompile Include="..\..\Contents\Source\ExportProjectWindow.cpp" />
     <ClCompile Include="..\..\Contents\Source\NewFileWindow.cpp" />
@@ -47,6 +49,8 @@
   <ItemGroup>
     <ClInclude Include="..\..\Contents\Include\EditorGrid.h" />
     <ClInclude Include="..\..\Contents\Include\EntityEditorPropertyView.h" />
+    <ClInclude Include="..\..\Contents\Include\EntityEditorSettingsView.h" />
+    <ClInclude Include="..\..\Contents\Include\EntityEditorTreeView.h" />
     <ClInclude Include="..\..\Contents\Include\ExampleBrowserWindow.h" />
     <ClInclude Include="..\..\Contents\Include\ExportProjectWindow.h" />
     <ClInclude Include="..\..\Contents\Include\NewFileWindow.h" />

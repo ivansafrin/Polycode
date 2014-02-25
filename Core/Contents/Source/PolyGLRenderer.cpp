@@ -219,13 +219,13 @@ void OpenGLRenderer::setProjectionFromFrustum(Number left, Number right, Number 
 
 }
 
-void OpenGLRenderer::setProjectionFromFoV(Number fov, Number near, Number far) {
+void OpenGLRenderer::setProjectionFromFoV(Number fov, Number _near, Number _far) {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	Number fW, fH;
-	fH = tan( fov / 360.0 * PI ) * near;
+	fH = tan( fov / 360.0 * PI ) * _near;
 	fW = fH * ((GLfloat)viewportWidth/(GLfloat)viewportHeight);
-	glFrustum(-fW + (viewportShift.x*fW*2.0), fW + (viewportShift.x*fW*2.0), -fH + (viewportShift.y*fH*2.0), fH + (viewportShift.y*fH*2.0), near, far);
+	glFrustum(-fW + (viewportShift.x*fW*2.0), fW + (viewportShift.x*fW*2.0), -fH + (viewportShift.y*fH*2.0), fH + (viewportShift.y*fH*2.0), _near, _far);
 	glMatrixMode(GL_MODELVIEW);
 	polycodeGLGetNumberv(GL_PROJECTION_MATRIX, sceneProjectionMatrix);
 }
@@ -551,14 +551,14 @@ void OpenGLRenderer::setFogProperties(int fogMode, Color color, Number density, 
 	glFogf(GL_FOG_END, endDepth);
 }
 
-void OpenGLRenderer::setProjectionOrtho(Number xSize, Number ySize, Number near, Number far, bool centered) {
+void OpenGLRenderer::setProjectionOrtho(Number xSize, Number ySize, Number _near, Number _far, bool centered) {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 		
 	if(centered) {
-		glOrtho(-xSize*0.5,xSize*0.5,-ySize*0.5,ySize*0.5,near,far);
+		glOrtho(-xSize*0.5, xSize*0.5, -ySize*0.5, ySize*0.5, _near, _far);
 	} else {
-		glOrtho(0.0f,xSize,0,ySize,near,far);
+		glOrtho(0.0f, xSize, 0, ySize, _near, _far);
 	}
 	polycodeGLGetNumberv( GL_PROJECTION_MATRIX, sceneProjectionMatrixOrtho);
 

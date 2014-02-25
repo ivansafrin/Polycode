@@ -231,7 +231,7 @@ void FontGlyphSheet::buildGlyphs(std::set<wchar_t> characters) {
 							int v = (gd.data[scan_y * gd.pitch + scan_x] >> 7) & 1;
 							if (v != value) {
 								int dx2 = dx*dx;
-								Number d(sqrt(dx2+dy2));
+								Number d(sqrt((Number)(dx2+dy2)));
 								if (d < dist) {
 									dist = d;
 								}
