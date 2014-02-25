@@ -1,6 +1,7 @@
 
 #include "PolyUIFileDialog.h"
 #include "PolyConfig.h"
+#include "PolyRenderer.h"
 
 using namespace Polycode;
 
@@ -16,25 +17,27 @@ UIFileDialogEntry::UIFileDialogEntry(OSFileEntry entry, bool canSelect, int widt
 	bg = new UIRect(width, 18);
 	bg->setAnchorPoint(-1.0, -1.0, 0.0);
 	addChild(bg);
-	bg->setColor(0.0, 0.0, 0.0, 0.1);
+	bg->setColor(0.5, 0.5, 0.5, 1.0);
 	bg->processInputEvents = true;
+	bg->visible = false;
 
 	this->fileEntry = entry;
 
 	if(isPlace) {
-		icon = new SceneImage(placeIconName);
+		icon = new UIImage(placeIconName);
 	} else {
 		if(entry.type == OSFileEntry::TYPE_FILE) {
-			icon = new SceneImage(fileIconName);
+			icon = new UIImage(fileIconName);
 		} else {
-			icon = new SceneImage(folderIconName);
+			icon = new UIImage(folderIconName);
 		}
 	}
 
+	icon->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	addChild(icon);
 	icon->setPosition(3,1);
 
-	label = new SceneLabel(entry.name, 12, "sans");
+	label = new UILabel(entry.name, 12, "sans");
 	addChild(label);
 	label->setPosition(25, 2);
 
@@ -45,11 +48,11 @@ UIFileDialogEntry::UIFileDialogEntry(OSFileEntry entry, bool canSelect, int widt
 }
 
 void UIFileDialogEntry::Select() {
-	bg->setColor(0.0, 0.0, 0.0, 0.5);
+	bg->visible = true;
 }
 
 void UIFileDialogEntry::Deselect() {
-	bg->setColor(0.0, 0.0, 0.0, 0.1);
+	bg->visible = false;
 }
 
 UIFileDialogEntry::~UIFileDialogEntry() {

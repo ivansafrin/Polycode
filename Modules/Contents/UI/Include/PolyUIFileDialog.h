@@ -52,9 +52,9 @@ namespace Polycode {
 
 			bool canSelect;
 			UIRect *bg;
-			SceneLabel *label;
+			UILabel *label;
 			OSFileEntry fileEntry;
-			SceneImage *icon;
+			UIImage *icon;
 	};
 
 	/**
