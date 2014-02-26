@@ -238,6 +238,9 @@ public:
 		void moveDiskItem(const String& itemPath, const String& destItemPath);
 		void removeDiskItem(const String& itemPath);
 
+		Number getBackingXRes();
+		Number getBackingYRes();
+
 		void setCursor(int cursorType);
 
 		void copyStringToClipboard(const String& str);
@@ -253,6 +256,7 @@ public:
 
 	private:
 
+		Number scaleFactor;
 		bool checkSpecialKeyEvents(PolyKEY key);
 
 		unsigned int nextDeviceID;
@@ -268,6 +272,7 @@ public:
 		int lastMouseY;
 
 		bool isFullScreen;
+		bool retinaSupport;
 
 		HDC hDC;
 		HGLRC hRC;

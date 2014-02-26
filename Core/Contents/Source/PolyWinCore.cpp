@@ -85,6 +85,8 @@ Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScre
 	core = this;
 	hasCopyDataString = false;
 
+	scaleFactor = 1.0;
+
 	char *buffer = _getcwd(NULL, 0);
 	defaultWorkingDirectory = String(buffer);
 	free(buffer);
@@ -115,6 +117,8 @@ Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScre
 	renderer = new OpenGLRenderer();
 	services->setRenderer(renderer);
 
+	renderer->setBackingResolutionScale(scaleFactor, scaleFactor);
+
 	setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel);
 		
 	WSADATA WsaData;
@@ -134,6 +138,14 @@ Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScre
 	setVSync(vSync);
 
 	CoreServices::getInstance()->installModule(new GLSLShaderModule());	
+}
+
+Number Win32Core::getBackingXRes() {
+	return getXRes() *scaleFactor;
+}
+
+Number Win32Core::getBackingYRes() {
+	return getYRes() *scaleFactor;
 }
 
 Win32Core::~Win32Core() {
