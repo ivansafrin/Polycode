@@ -371,6 +371,10 @@ void ButtonProp::setPropWidth(Number width) {
 
 Vector3Prop::Vector3Prop(String caption) : PropProp(caption, "Vector3") {
     
+    xInput = NULL;
+    yInput = NULL;
+    zInput = NULL;
+    
 	labelX = new UILabel("X:", 11);
 	labelX->color.a = 1.0;
 	propContents->addChild(labelX);
