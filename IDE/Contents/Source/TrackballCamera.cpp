@@ -35,6 +35,8 @@ TrackballCamera::TrackballCamera(Camera *targetCamera, Entity *trackballShape) :
 	trackballShape->addEventListener(this, InputEvent::EVENT_MOUSEUP);
 	trackballShape->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);	
 	trackballShape->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);
+	trackballShape->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_UP);
+	trackballShape->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_DOWN);
 	trackballShape->processInputEvents = true;
 	
 	trackballRotateSpeed = 1.0;
@@ -103,7 +105,15 @@ void TrackballCamera::handleEvent(Event *event) {
 			break;
 			case InputEvent::EVENT_MOUSEMOVE:
 				processMouseMovement(inputEvent->getMousePosition());
-			break;						
+			break;
+			case InputEvent::EVENT_MOUSEWHEEL_UP:
+				cameraDistance *= 0.9;
+				updateCamera();
+			break;
+			case InputEvent::EVENT_MOUSEWHEEL_DOWN:
+				cameraDistance *= 1.1;
+				updateCamera();
+			break;
 		}		
 		return;
 	}
