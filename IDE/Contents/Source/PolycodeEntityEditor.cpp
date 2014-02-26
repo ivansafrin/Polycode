@@ -384,6 +384,12 @@ void EntityEditorMainView::doAction(String actionName, PolycodeEditorActionData 
             selectNone(false);
             for(int i=0; i < sceneData->entries.size(); i++) {
                 sceneData->entries[i].parentEntity->addChild(sceneData->entries[i].entity);
+                
+                SceneLight *sceneLight = dynamic_cast<SceneLight*>(sceneData->entries[i].entity);
+                if(sceneLight) {
+                    mainScene->addLight(sceneLight);
+                }
+                
                 setEditorPropsRecursive(sceneData->entries[i].entity);
                 selectEntity(sceneData->entries[i].entity, true, false);
             }
@@ -403,6 +409,13 @@ void EntityEditorMainView::doAction(String actionName, PolycodeEditorActionData 
 		} else {
             selectNone(false);
             sceneData->entries[0].parentEntity->addChild(sceneData->entries[0].entity);
+            
+            SceneLight *sceneLight = dynamic_cast<SceneLight*>(sceneData->entries[0].entity);
+            if(sceneLight) {
+                mainScene->addLight(sceneLight);
+            }
+            
+            
             setEditorPropsRecursive(sceneData->entries[0].entity);
             selectEntity(sceneData->entries[0].entity, true, false);
 		}
@@ -776,6 +789,10 @@ void EntityEditorMainView::deleteSelected(bool doAction) {
     }
     for(int i=0; i < selectedEntities.size(); i++) {
         selectedEntities[i]->getParentEntity()->removeChild(selectedEntities[i]);
+        SceneLight *sceneLight = dynamic_cast<SceneLight*>(selectedEntities[i]);
+        if(sceneLight) {
+            mainScene->removeLight(sceneLight);
+        }
     }
     
     for(int i=0; i < selectedEntities.size(); i++) {
@@ -789,7 +806,6 @@ void EntityEditorMainView::deleteSelected(bool doAction) {
             }
         }
         selectedEntities[i]->removeAllHandlers();
-      //  delete selectedEntities[i];
     }
     
     selectedEntities.clear();

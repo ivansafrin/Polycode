@@ -106,7 +106,7 @@ void PolycodeEditor::handleEvent(Event *event) {
 			break;
 			case Core::EVENT_UNDO:
 			{
-				if(editorActions.size() > 0) {
+				if(editorActions.size() > 0 && currentUndoPosition >= 0) {
 				doAction(editorActions[currentUndoPosition].actionName, editorActions[currentUndoPosition].beforeData);
 				currentUndoPosition--;
 				if(currentUndoPosition < -1) {

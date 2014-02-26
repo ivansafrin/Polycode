@@ -240,6 +240,7 @@ void Entity::lookAtEntity(Entity *entity,  const Vector3 &upVector) {
 void Entity::removeChild(Entity *entityToRemove) {
 	for(int i=0;i<children.size();i++) {
 		if(children[i] == entityToRemove) {
+            entityToRemove->setParentEntity(NULL);
 			children.erase(children.begin()+i);
 			return;
 		}

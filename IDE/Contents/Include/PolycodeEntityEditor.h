@@ -73,7 +73,9 @@ class PolycodeSceneEditorActionData : public PolycodeEditorActionData {
         ~PolycodeSceneEditorActionData() {
             if(deleteEntitiesInDestructor) {
                 for(int i=0; i < entries.size(); i++) {
-                    delete entries[i].entity;
+                    if(!entries[i].entity->getParentEntity()) {
+                        delete entries[i].entity;
+                    }
                 }
             }
         }
