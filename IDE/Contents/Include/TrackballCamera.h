@@ -39,6 +39,8 @@ class TrackballCamera : public EventDispatcher {
     
         void setCameraPosition(Vector3 cameraPosition);
     
+		bool isNavKeyDown();
+
         void disableRotation(bool val);
     
 		static const int MOUSE_MODE_IDLE = 0;
@@ -54,7 +56,7 @@ class TrackballCamera : public EventDispatcher {
 		Number trackballRotateSpeed;
 		
 	private:
-	
+
 		int mouseMode;
 	
 		Vector3 getMouseProjectionOnBall(const Vector2 &mousePosition);

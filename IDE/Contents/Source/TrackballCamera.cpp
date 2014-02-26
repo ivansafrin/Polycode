@@ -70,13 +70,17 @@ Camera *TrackballCamera::getTargetCamera() {
 	return targetCamera;
 }
 
-void TrackballCamera::handleEvent(Event *event) {
 
+bool TrackballCamera::isNavKeyDown() {
+	return (coreInput->getKeyState(KEY_LALT) || coreInput->getKeyState(KEY_RALT));
+}
+
+void TrackballCamera::handleEvent(Event *event) {
 	if(event->getDispatcher() == trackballShape) {
 		InputEvent *inputEvent = (InputEvent*) event;
 		switch(event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEDOWN:
-				if(coreInput->getKeyState(KEY_LALT) || coreInput->getKeyState(KEY_RALT)) {
+				if(isNavKeyDown() || inputEvent->mouseButton == CoreInput::MOUSE_BUTTON3) {
 					if(coreInput->getKeyState(KEY_LSHIFT) || coreInput->getKeyState(KEY_RSHIFT)) {
 						mouseMode = MOUSE_MODE_PANNING;
 						trackBallMouseStart = Vector2(
