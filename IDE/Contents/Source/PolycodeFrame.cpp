@@ -1432,6 +1432,7 @@ PolycodeFrame::PolycodeFrame(PolycodeEditorManager *editorManager) : UIElement()
 		
 	globalColorPicker = new UIColorPicker();
 	globalColorPicker->setPosition(300,300);
+    globalColorPicker->setContinuous(false);
 	addChild(globalColorPicker);
 
 	modalRoot = new UIElement();

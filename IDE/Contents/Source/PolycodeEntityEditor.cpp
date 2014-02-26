@@ -1212,7 +1212,9 @@ void EntityEditorMainView::Resize(Number width, Number height) {
     Update();
 }
 
-EntityEditorPropertyContainer::EntityEditorPropertyContainer() : UIElement() {
+EntityEditorPropertyContainer::EntityEditorPropertyContainer(PolycodeEditor *editor) : UIElement() {
+    
+    this->editor = editor;
     
     propIconSelector = new UIIconSelector();
     addChild(propIconSelector);
@@ -1223,6 +1225,7 @@ EntityEditorPropertyContainer::EntityEditorPropertyContainer() : UIElement() {
     propIconSelector->addEventListener(this, UIEvent::SELECT_EVENT);
     
     propertyView = new EntityEditorPropertyView();
+    propertyView->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
     addChild(propertyView);
     propertyView->setPosition(0.0, 30.0);
     currentView = propertyView;
@@ -1258,6 +1261,11 @@ void EntityEditorPropertyContainer::handleEvent(Event *event) {
         }
         currentView->visible = true;
         currentView->enabled = true;
+    } else if(event->getDispatcher() == propertyView) {
+        if(event->getEventCode() == PropEvent::EVENT_PROP_CHANGE) {
+            PropEvent *propEvent  = (PropEvent*) event;
+            editor->didAction("prop_change", propEvent->beforeData, propEvent->afterData);
+        }
     }
 }
 
@@ -1282,7 +1290,7 @@ PolycodeEntityEditor::PolycodeEntityEditor() : PolycodeEditor(true){
     
     mainSizer->setMinimumSize(200);
     
-    propertyContainer = new EntityEditorPropertyContainer();
+    propertyContainer = new EntityEditorPropertyContainer(this);
     propertyView = propertyContainer->propertyView;
     treeView = propertyContainer->treeView;
     settingsView = propertyContainer->settingsView;
@@ -1312,7 +1320,13 @@ void PolycodeEntityEditor::handleEvent(Event *event) {
 }
 
 void PolycodeEntityEditor::doAction(String actionName, PolycodeEditorActionData *data) {
-    mainView->doAction(actionName, data);
+    
+    if(actionName == "prop_change") {
+        PolycodeEditorPropActionData *propData = (PolycodeEditorPropActionData*) data;
+		propData->sheet->applyPropActionData(propData);
+    } else {
+        mainView->doAction(actionName, data);
+    }
 }
 
 PolycodeEntityEditor::~PolycodeEntityEditor() {

@@ -236,7 +236,7 @@ class EntityEditorMainView : public UIElement {
 
 class EntityEditorPropertyContainer : public UIElement {
     public:
-        EntityEditorPropertyContainer();
+        EntityEditorPropertyContainer(PolycodeEditor *editor);
         ~EntityEditorPropertyContainer();
         void Resize(Number width, Number height);
     
@@ -247,6 +247,10 @@ class EntityEditorPropertyContainer : public UIElement {
         EntityEditorTreeView *treeView;
         EntityEditorSettingsView *settingsView;
         UIIconSelector *propIconSelector;
+    
+    private:
+    
+        PolycodeEditor *editor;
 };
 
 class PolycodeEntityEditor : public PolycodeEditor {

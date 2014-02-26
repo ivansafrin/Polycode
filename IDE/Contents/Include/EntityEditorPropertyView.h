@@ -25,6 +25,7 @@
 #include "Polycode.h"
 #include "PolycodeUI.h"
 #include "PolycodeProps.h"
+
 #include "OSBasics.h"
 
 using namespace Polycode;

@@ -96,9 +96,17 @@ void EntityEditorPropertyView::Resize(Number width, Number height) {
 }
 
 void EntityEditorPropertyView::handleEvent(Event *event) {
-    if(event->getDispatcher() == materialSheet) {
-        if(targetEntity) {
-            updateShaderOptions();
+    if(event->getEventCode() == PropEvent::EVENT_PROP_CHANGE) {
+        
+        PropEvent *propEvent = (PropEvent*) event;
+        
+        PropEvent *newPropEvent = new PropEvent(propEvent->prop, propEvent->sheet, propEvent->beforeData, propEvent->afterData);
+        dispatchEvent(newPropEvent, PropEvent::EVENT_PROP_CHANGE);
+    } else {
+        if(event->getDispatcher() == materialSheet) {
+            if(targetEntity) {
+                updateShaderOptions();
+            }
         }
     }
 }
