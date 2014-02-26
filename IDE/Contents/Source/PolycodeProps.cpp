@@ -421,13 +421,13 @@ void Vector3Prop::handleEvent(Event *event) {
 	if(event->getDispatcher() == xInput || event->getDispatcher() == yInput || event->getDispatcher() == zInput) {
 		if(event->getEventCode() == UIEvent::CHANGE_EVENT) {
             
-//			if(xInput && yInput && zInput) {
-//				lastData = currentData;
-//				currentData = Vector2(atof(positionX->getText().c_str()), atof(positionY->getText().c_str()));
-//			}
+            if(xInput && yInput && zInput) {
+                lastData = currentData;
+                currentData = Vector3(atof(xInput->getText().c_str()), atof(yInput->getText().c_str()), atof(zInput->getText().c_str()));
+            }
 			if(!suppressChangeEvent) {
 				dispatchEvent(new Event(), Event::CHANGE_EVENT);
-//				dispatchEvent(new PropEvent(this, NULL, PropDataVector2(lastData), PropDataVector2(currentData)), PropEvent::EVENT_PROP_CHANGE);
+				dispatchEvent(new PropEvent(this, NULL, PropDataVector3(lastData), PropDataVector3(currentData)), PropEvent::EVENT_PROP_CHANGE);
                 
 			}
 		}
@@ -436,7 +436,7 @@ void Vector3Prop::handleEvent(Event *event) {
 }
 
 void Vector3Prop::setPropData(PolycodeEditorPropActionData* data) {
-//	set(data->vector2Val);
+	set(data->vector3Val);
 	dispatchEvent(new Event(), Event::CHANGE_EVENT);
 }
 
@@ -685,6 +685,7 @@ SliderProp::SliderProp(String caption, Number min, Number max) : PropProp(captio
 	slider = new UIHSlider(min, max, 100);
 	slider->addEventListener(this, UIEvent::CHANGE_EVENT);
 	slider->setPosition(0, 8);
+    slider->setContinuous(false);
 	propContents->addChild(slider);
 	
 	valueLabel = new UILabel("0.0", 10);
@@ -1847,7 +1848,7 @@ RenderTargetsSheet::RenderTargetsSheet() : PropSheet("RENDER TARGETS", "renderTa
 	contents->addChild(addButton);
 	addButton->setPosition(15, 35);
 	
-	customUndoHandler = true;	
+	customUndoHandler = true;
 	material = NULL;
 	binding = NULL;
 	
@@ -2058,6 +2059,7 @@ void EntityPropSheet::Update() {
 ShaderOptionsSheet::ShaderOptionsSheet() : PropSheet("SHADER OPTIONS", "shader_options"){
 	shader = NULL;
 	propHeight = 40;
+    customUndoHandler = true;
     enabled = false;
 }
 
@@ -2175,6 +2177,7 @@ void ShaderOptionsSheet::setShader(Shader *shader, Material *material, ShaderBin
 ShaderTexturesSheet::ShaderTexturesSheet() : PropSheet("SHADER TEXTURES", "shader_textures"){
 	shader = NULL;
 	propHeight = 40;
+    customUndoHandler = true;
     enabled = false;
 }
 

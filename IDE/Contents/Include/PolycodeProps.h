@@ -71,6 +71,10 @@ class Vector3Prop : public PropProp {
         UILabel *labelX;
         UILabel *labelY;
         UILabel *labelZ;
+    
+        Vector3 lastData;
+        Vector3 currentData;
+    
 };
 
 
