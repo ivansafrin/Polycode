@@ -42,7 +42,10 @@ class PolycodeEditorActionData {
 
 class PolycodeEditorAction  {
 	public:
-		PolycodeEditorAction(){}
+		PolycodeEditorAction(){
+            beforeData = NULL;
+            afterData = NULL;
+        }
 		~PolycodeEditorAction() {}
 		
 		void deleteData() {

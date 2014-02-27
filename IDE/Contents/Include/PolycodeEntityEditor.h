@@ -116,8 +116,13 @@ class CameraPreviewWindow : public UIElement {
     public:
         CameraPreviewWindow();
         ~CameraPreviewWindow();
-
+    
+        void handleEvent(Event *event);
+        void Resize(Number width, Number height);
+    
         void setCamera(Scene *scene, Camera *camera);
+    
+        bool isPinned();
     
     private:
     
@@ -126,7 +131,11 @@ class CameraPreviewWindow : public UIElement {
         Scene *scene;
         UIRect *bgRect;
         UIRect *previewRect;
+        bool pinned;
+        bool cameraSelected;
     
+        UIComboBox *aspectCombo;
+        UIButton *pinButton;
 };
 
 class SceneMeshSettings {

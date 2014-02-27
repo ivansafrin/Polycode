@@ -189,22 +189,89 @@ void CameraDisplay::Update() {
 
 CameraPreviewWindow::CameraPreviewWindow() : UIElement() {
     
-    bgRect = new UIRect((160 * 1.5)+16, (90 * 1.5) + 28);
+    bgRect = new UIRect((160 * 1.5)+16, (90 * 1.5) + 38);
     addChild(bgRect);
     bgRect->setColor(0.0, 0.0, 0.0, 0.5);
     
-    UILabel *label = new UILabel("CAMERA PREVIEW", 11);
+    UILabel *label = new UILabel("PREVIEW", 11);
     label->setColor(1.0, 1.0, 1.0, 1.0);
-    addChild(label);
+//    addChild(label);
     label->setPosition(15, 3);
+  
+    aspectCombo = new UIComboBox(globalMenu, 80);
+    addChild(aspectCombo);
+    aspectCombo->setPosition(5, 3);
+    aspectCombo->addComboItem("16:9");
+    aspectCombo->addComboItem("16:10");
+    aspectCombo->addComboItem("4:3");
+    aspectCombo->addEventListener(this, UIEvent::CHANGE_EVENT);
+    
+    pinButton = new UIButton("Pin", 60);
+    addChild(pinButton);
+    pinButton->addEventListener(this, UIEvent::CLICK_EVENT);
     
     previewRect = new UIRect(160 * 1.5, 90 * 1.5);
-    previewRect->setPosition(8, 20);
+    previewRect->setPosition(8, 30);
     addChild(previewRect);
     enabled = false;
     camera = NULL;
     scene = NULL;
     renderTexture = NULL;
+    
+    bBox = bgRect->bBox;
+    pinned = false;
+    cameraSelected = false;
+    
+    aspectCombo->setSelectedIndex(0);
+}
+
+bool CameraPreviewWindow::isPinned() {
+    return pinned;
+}
+
+void CameraPreviewWindow::Resize(Number width, Number height) {
+    UIElement::Resize(width, height);
+    bgRect->Resize(width, height);
+    
+    previewRect->Resize(width-16, height-38);
+    
+    if(camera) {
+        if(renderTexture) {
+            delete renderTexture;
+        }
+        renderTexture = new SceneRenderTexture(scene, camera, previewRect->getWidth(), previewRect->getHeight());
+        previewRect->setTexture(renderTexture->getTargetTexture());
+    }
+    pinButton->setPosition(width-70, 3);
+}
+
+void CameraPreviewWindow::handleEvent(Event *event) {
+    
+    if(event->getDispatcher() == pinButton) {
+        pinned = !pinned;
+        if(pinned) {
+            pinButton->setCaption("Unpin");
+        } else {
+            pinButton->setCaption("Pin");
+            if(!cameraSelected) {
+                enabled = false;
+                camera = NULL;
+            }
+        }
+    } else if(event->getDispatcher() == aspectCombo) {
+        switch(aspectCombo->getSelectedIndex()) {
+            case 0:
+                Resize(bBox.y * 1.77777, bBox.y);
+            break;
+            case 1:
+                Resize(bBox.y * 1.6, bBox.y);
+            break;
+            case 2:
+                Resize(bBox.y * 1.3, bBox.y);
+            break;
+                
+        }
+    }
 }
 
 CameraPreviewWindow::~CameraPreviewWindow() {
@@ -212,8 +279,15 @@ CameraPreviewWindow::~CameraPreviewWindow() {
 }
 
 void CameraPreviewWindow::setCamera(Scene *scene, Camera *camera) {
+    
+    if(pinned && !camera) {
+        cameraSelected = false;
+        return;
+    }
+    
     this->camera = camera;
     this->scene = scene;
+    
     if(camera) {
         enabled = true;
         if(renderTexture) {
@@ -223,7 +297,9 @@ void CameraPreviewWindow::setCamera(Scene *scene, Camera *camera) {
         previewRect->setTexture(renderTexture->getTargetTexture());
         
     } else {
-        enabled = false;
+        if(!pinned) {
+            enabled = false;
+        }
     }
 }
 
@@ -865,6 +941,7 @@ void EntityEditorMainView::handleEvent(Event *event) {
                         data->entries.push_back(PolycodeSceneEditorActionDataEntry(selectedEntities[i]->getPosition()));
                     }
                     editor->didAction("move", beforeData, data);
+                    beforeData = NULL;
                 }
                 break;
                 case TransformGizmo::TRANSFORM_SCALE:
@@ -875,6 +952,7 @@ void EntityEditorMainView::handleEvent(Event *event) {
                         data->entries.push_back(PolycodeSceneEditorActionDataEntry(selectedEntities[i]->getScale()));
                     }
                     editor->didAction("scale", beforeData, data);
+                    beforeData = NULL;
                 }
                 break;
                 case TransformGizmo::TRANSFORM_ROTATE:
@@ -885,6 +963,7 @@ void EntityEditorMainView::handleEvent(Event *event) {
                         data->entries.push_back(PolycodeSceneEditorActionDataEntry(selectedEntities[i]->getRotationQuat()));
                     }
                     editor->didAction("rotate", beforeData, data);
+                    beforeData = NULL;                    
                 }
                 break;
             }
@@ -1118,6 +1197,7 @@ void EntityEditorMainView::selectNone(bool doAction) {
         }
         
         editor->didAction("select", beforeData, NULL, false);
+        beforeData = NULL;
     }
     
     for(int i=0; i < selectedEntities.size(); i++) {
@@ -1233,6 +1313,7 @@ void EntityEditorMainView::selectEntity(Entity *targetEntity, bool addToSelectio
             data->entries.push_back(PolycodeSceneEditorActionDataEntry(selectedEntities[i]));
         }
         editor->didAction("select", beforeData, data);
+        beforeData = NULL;
     }
     
     transformGizmo->setTransformSelection(selectedEntities);
