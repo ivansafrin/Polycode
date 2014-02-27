@@ -163,6 +163,11 @@ class EntityEditorMainView : public UIElement {
     
             void Paste(EntityEditorClipboardData *data);
     
+            void moveSelectedUp();
+            void moveSelectedDown();
+            void moveSelectedTop();
+            void moveSelectedBottom();
+    
             void disableLighting(bool disable);
             void selectNone(bool doAction);
     
@@ -192,7 +197,9 @@ class EntityEditorMainView : public UIElement {
             bool lightsDisabled;
             int editorMode;
 			Entity *topBar;
+			Entity *bottomBar;
 			UIRect *headerBg;
+			UIRect *footerBg;
     
             PolycodeEditor *editor;
 				
@@ -224,6 +231,11 @@ class EntityEditorMainView : public UIElement {
     
             UIIconSelector *shadeModeSelector;
             UIIconSelector *lightingModeSelector;
+    
+            UIImageButton *moveUpButton;
+            UIImageButton *moveTopButton;
+            UIImageButton *moveDownButton;
+            UIImageButton *moveBottomButton;
     
             CameraPreviewWindow *cameraPreview;
     

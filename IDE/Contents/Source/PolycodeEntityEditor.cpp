@@ -273,7 +273,16 @@ EntityEditorMainView::EntityEditorMainView(PolycodeEditor *editor) {
 	addChild(headerBg);
 	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
+
+	footerBg = new UIRect(10,10);
+	addChild(footerBg);
+	footerBg->setAnchorPoint(-1.0, -1.0, 0.0);
+	footerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
     
+	bottomBar = new Entity();
+	addChild(bottomBar);
+	bottomBar->setPosition(0, 0);
+	bottomBar->processInputEvents = true;
 	
 	topBar = new Entity();
 	addChild(topBar);
@@ -340,6 +349,27 @@ EntityEditorMainView::EntityEditorMainView(PolycodeEditor *editor) {
     topBar->addChild(lightingModeSelector);
     lightingModeSelector->setPosition(420, 3);
     lightingModeSelector->addEventListener(this, UIEvent::SELECT_EVENT);
+    
+    
+    moveUpButton = new UIImageButton("entityEditor/button_move_up.png", 1.0, 24, 24);
+	bottomBar->addChild(moveUpButton);
+    moveUpButton->setPosition(4, 2);
+    moveUpButton->addEventListener(this, UIEvent::CLICK_EVENT);
+    
+    moveTopButton = new UIImageButton("entityEditor/button_move_top.png", 1.0, 24, 24);
+	bottomBar->addChild(moveTopButton);
+    moveTopButton->setPosition(30, 2);
+    moveTopButton->addEventListener(this, UIEvent::CLICK_EVENT);
+
+    moveDownButton = new UIImageButton("entityEditor/button_move_down.png", 1.0, 24, 24);
+	bottomBar->addChild(moveDownButton);
+    moveDownButton->setPosition(56, 2);
+    moveDownButton->addEventListener(this, UIEvent::CLICK_EVENT);
+
+    moveBottomButton = new UIImageButton("entityEditor/button_move_bottom.png", 1.0, 24, 24);
+	bottomBar->addChild(moveBottomButton);
+    moveBottomButton->setPosition(82, 2);
+    moveBottomButton->addEventListener(this, UIEvent::CLICK_EVENT);
     
     
     editorMode = EDITOR_MODE_3D;
@@ -1014,6 +1044,14 @@ void EntityEditorMainView::handleEvent(Event *event) {
                 mainScene->setOverrideMaterial((Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "UnlitWireframe"));
             break;
         }
+    } else if(event->getDispatcher() == moveUpButton) {
+        moveSelectedUp();
+    } else if(event->getDispatcher() == moveTopButton) {
+        moveSelectedTop();
+    } else if(event->getDispatcher() == moveDownButton) {
+        moveSelectedDown();
+    } else if(event->getDispatcher() == moveBottomButton) {
+        moveSelectedBottom();
     } else {
         if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN && hasFocus && event->getDispatcher() != renderTextureShape) {
             InputEvent *inputEvent = (InputEvent*) event;
@@ -1030,6 +1068,42 @@ void EntityEditorMainView::handleEvent(Event *event) {
                 
                 entitiesToSelect.push_back(targetEntity);
             }
+        }
+    }
+}
+
+void EntityEditorMainView::moveSelectedUp() {
+    for(int i=0; i < selectedEntities.size(); i++) {
+        Entity *parent = selectedEntities[i]->getParentEntity();
+        if(parent) {
+            parent->moveChildUp(selectedEntities[i]);
+        }
+    }
+}
+
+void EntityEditorMainView::moveSelectedDown() {
+    for(int i=0; i < selectedEntities.size(); i++) {
+        Entity *parent = selectedEntities[i]->getParentEntity();
+        if(parent) {
+            parent->moveChildDown(selectedEntities[i]);
+        }
+    }
+}
+
+void EntityEditorMainView::moveSelectedTop() {
+    for(int i=0; i < selectedEntities.size(); i++) {
+        Entity *parent = selectedEntities[i]->getParentEntity();
+        if(parent) {
+            parent->moveChildTop(selectedEntities[i]);
+        }
+    }
+}
+
+void EntityEditorMainView::moveSelectedBottom() {
+    for(int i=0; i < selectedEntities.size(); i++) {
+        Entity *parent = selectedEntities[i]->getParentEntity();
+        if(parent) {
+            parent->moveChildBottom(selectedEntities[i]);
         }
     }
 }
@@ -1195,13 +1269,18 @@ EntityEditorMainView::~EntityEditorMainView() {
 
 void EntityEditorMainView::Resize(Number width, Number height) {
 	headerBg->Resize(width, 30);
+	footerBg->Resize(width, 30);
+    
+    footerBg->setPosition(0.0, height-30);
+    bottomBar->setPosition(0.0, height-30);
+    
 	modeSwitchDropdown->setPosition(width-110, 4);
     
     Vector2 screenPos = renderTextureShape->getScreenPosition(globalScene->getDefaultCamera()->getProjectionMatrix(), globalScene->getDefaultCamera()->getTransformMatrix(), globalScene->getDefaultCamera()->getViewport());
     
-	renderTexture->resizeRenderTexture(width, height-30);
+	renderTexture->resizeRenderTexture(width, height-60);
 	renderTextureShape->setTexture(renderTexture->getTargetTexture());		
-	renderTextureShape->Resize(width, height-30);
+	renderTextureShape->Resize(width, height-60);
     
 	mainScene->sceneMouseRect.x = screenPos.x;
 	mainScene->sceneMouseRect.y = screenPos.y;
