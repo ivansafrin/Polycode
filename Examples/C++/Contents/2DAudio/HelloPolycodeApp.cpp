@@ -7,23 +7,23 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);	
 
-	Screen *screen = new Screen();
+	Scene *scene = new Scene(Scene::SCENE_2D_TOPLEFT);
 	
-	sourceEntity = new ScreenEntity();
-	ScreenSound *testSound = new ScreenSound("Resources/test.wav", 200, 600);
+	sourceEntity = new SceneEntity();
+	SceneSound *testSound = new SceneSound("Resources/test.wav", 200, 600);
 	testSound->getSound()->Play(true);
 	sourceEntity->addChild(testSound);
-	ScreenShape *soundShape = new ScreenShape(ScreenShape::SHAPE_CIRCLE, 20,20,10);
+	ScenePrimitive *soundShape = new ScenePrimitive(ScenePrimitive::TYPE_CIRCLE, 20,20,10);
 	sourceEntity->addChild(soundShape);	
-	screen->addChild(sourceEntity);
+	scene->addChild(sourceEntity);
 	
 	listenerEntity = new ScreenEntity();
-	ScreenSoundListener *soundListener = new ScreenSoundListener();
+	SceneSoundListener *soundListener = new SceneSoundListener();
 	listenerEntity->addChild(soundListener);
-	soundShape = new ScreenShape(ScreenShape::SHAPE_CIRCLE, 20,20,10);
+	soundShape = new ScenePrimitive(ScenePrimitive::TYPE_CIRCLE, 20,20,10);
 	soundShape->setColor(0.0, 1.0, 0.0, 1.0);
 	listenerEntity->addChild(soundShape);	
-	screen->addChild(listenerEntity);
+	scene->addChild(listenerEntity);
 
 	listenerPositionValue = 0;
 	positionValue = 0;	
