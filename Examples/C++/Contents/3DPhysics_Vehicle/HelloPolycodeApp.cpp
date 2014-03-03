@@ -7,9 +7,10 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
 
-	Screen *hud = new Screen();
+	Scene *hud = new Scene(Scene::SCENE_2D);
 	
-	onGroundLabel = new ScreenLabel("Arrow keys to control, spacebar to brake, press R to reset car", 16);
+	onGroundLabel = new SceneLabel("Arrow keys to control, spacebar to brake, press R to reset car", 16);
+	onGroundLabel->setPosition(-70,230);
 	hud->addChild(onGroundLabel);	
 	
 	scene = new PhysicsScene();

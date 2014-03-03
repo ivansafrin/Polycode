@@ -7,11 +7,12 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
 
-	Scene *hud = new Scene();
+	Scene *hud = new Scene(Scene::SCENE_2D);
 	onGroundLabel = new SceneLabel("Arrow keys to control, spacebar to jump, press R to reset", 16);
+	onGroundLabel->setPosition(-85,230);
 	hud->addChild(onGroundLabel);	
 	onGroundLabel = new SceneLabel("On Ground:", 16);
-	onGroundLabel->setPosition(0,20);
+	onGroundLabel->setPosition(-280,215);
 	hud->addChild(onGroundLabel);
 	
 
