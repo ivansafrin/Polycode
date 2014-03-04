@@ -195,12 +195,12 @@ bool PhysicsScene2D::testEntityCollision(Entity *ent1, Entity *ent2) {
 	return false;
 }
 
-PhysicsScene2D::PhysicsScene2D() : Scene(Scene::SCENE_2D_TOPLEFT) {
-	init(10.0f, 1.0f/60.0f,10,10,Vector2(0.0f, 10.0f));
+PhysicsScene2D::PhysicsScene2D() : Scene(Scene::SCENE_2D) {
+	init(10.0f, 1.0f/60.0f,10,10,Vector2(0.0f, -10.0f));
 }
 
-PhysicsScene2D::PhysicsScene2D(Number worldScale, Number freq, int velIterations, int posIterations): Scene(Scene::SCENE_2D_TOPLEFT) {
-	init(worldScale, 1.0f/freq,velIterations, posIterations, Vector2(0.0f, 10.0f));	
+PhysicsScene2D::PhysicsScene2D(Number worldScale, Number freq, int velIterations, int posIterations): Scene(Scene::SCENE_2D) {
+	init(worldScale, 1.0f/freq,velIterations, posIterations, Vector2(0.0f, -10.0f));	
 }
 
 void PhysicsScene2D::init(Number worldScale, Number physicsTimeStep, int velIterations, int posIterations, Vector2 physicsGravity) {
