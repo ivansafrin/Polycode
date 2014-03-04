@@ -7,9 +7,9 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
 
-	Screen *screen = new Screen();			
-	image = new ScreenImage("Resources/polycode_logo.png");
-	screen->addChild(image);	
+	Scene *scene = new Scene(Scene::SCENE_2D);			
+	image = new SceneImage("Resources/polycode_logo.png");
+	scene->addChild(image);	
 }
 
 HelloPolycodeApp::~HelloPolycodeApp() {
@@ -17,6 +17,6 @@ HelloPolycodeApp::~HelloPolycodeApp() {
 
 bool HelloPolycodeApp::Update() {
 	Number elapsed = core->getElapsed();
-	image->setRotation(image->getRotation()+(elapsed*100));
+	image->setRoll(image->getRoll()+(elapsed*100));
     return core->updateAndRender();
 }

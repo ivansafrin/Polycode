@@ -7,14 +7,14 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);	
 
-	screen = new PhysicsScreen(0.5, 50);
+	scene = new PhysicsScene2D(0.5, 50);
 	lastEntity = NULL;
 	
 	for(int i=0; i < 50; i++) {
-		ScreenShape *shape = new ScreenShape(ScreenShape::SHAPE_RECT, 30,15);
-		shape->setRotation(rand() % 360);
-		shape->setPosition(rand() % 640, rand() % 480);
-		screen->addCollisionChild(shape, PhysicsScreenEntity::ENTITY_RECT);
+		ScenePrimitive *shape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 30,15);
+		shape->setRoll(rand() % 360);
+		shape->setPosition(-640/2 + rand() % 640, 480/2 - rand() % 480);
+		scene->addCollisionChild(shape, PhysicsScene2DEntity::ENTITY_RECT);
 	}
 	
 }
@@ -28,7 +28,7 @@ bool HelloPolycodeApp::Update() {
 	if(lastEntity)
 		lastEntity->setColor(1.0, 1.0, 1.0, 1.0);	
 	Vector2 mouse = core->getInput()->getMousePosition();
-	ScreenEntity * entity = screen->getEntityAtPosition(mouse.x, mouse.y);
+	SceneEntity * entity = scene->getEntityAtPosition(mouse.x-680/2+20, -mouse.y+480/2);
 	if(entity) {
 		entity->setColor(1.0, 0.0, 0.0, 1.0);
 		lastEntity = entity;

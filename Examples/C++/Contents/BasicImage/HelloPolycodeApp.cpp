@@ -7,9 +7,9 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
 
-	Screen *screen = new Screen();			
-	ScreenImage *image = new ScreenImage("Resources/polycode_logo.png");
-	screen->addChild(image);	
+	Scene *scene = new Scene(Scene::SCENE_2D);			
+	SceneImage *image = new SceneImage("Resources/polycode_logo.png");
+	scene->addChild(image);	
 }
 
 HelloPolycodeApp::~HelloPolycodeApp() {

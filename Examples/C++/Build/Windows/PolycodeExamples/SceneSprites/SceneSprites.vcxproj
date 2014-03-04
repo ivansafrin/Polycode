@@ -11,16 +11,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Contents\ScreenSprites\HelloPolycodeApp.cpp" />
+    <ClCompile Include="..\..\Contents\SceneSprites\HelloPolycodeApp.cpp" />
     <ClCompile Include="..\PolycodeExample.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Contents\ScreenSprites\HelloPolycodeApp.h" />
+    <ClInclude Include="..\..\Contents\SceneSprites\HelloPolycodeApp.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{6822657B-F9F3-44C4-B2E6-C51A8F1815C7}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>MyScreenSprites</RootNamespace>
+    <RootNamespace>MySceneSprites</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -46,12 +46,12 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)..\..\..\Core\include;$(SolutionDir)..\..\..\Core\Dependencies\include;$(SolutionDir)..\..\..\Core\PolycodeView;$(SolutionDir)..\..\..\Core\Dependencies\include\AL;$(SolutionDir)..\Contents\ScreenSprites;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)..\..\..\Core\include;$(SolutionDir)..\..\..\Core\Dependencies\include;$(SolutionDir)..\..\..\Core\PolycodeView;$(SolutionDir)..\..\..\Core\Dependencies\include\AL;$(SolutionDir)..\Contents\SceneSprites;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)..\..\..\Core\lib;$(SolutionDir)..\..\..\Core\Dependencies\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)..\..\..\Core\include;$(SolutionDir)..\..\..\Core\Dependencies\include;$(SolutionDir)..\..\..\Core\PolycodeView;$(SolutionDir)..\..\..\Core\Dependencies\include\AL;$(SolutionDir)..\Contents\ScreenSprites;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)..\..\..\Core\include;$(SolutionDir)..\..\..\Core\Dependencies\include;$(SolutionDir)..\..\..\Core\PolycodeView;$(SolutionDir)..\..\..\Core\Dependencies\include\AL;$(SolutionDir)..\Contents\SceneSprites;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)..\..\..\Core\lib;$(SolutionDir)..\..\..\Core\Dependencies\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

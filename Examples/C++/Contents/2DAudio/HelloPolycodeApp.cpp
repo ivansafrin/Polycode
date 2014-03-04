@@ -17,7 +17,7 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 	sourceEntity->addChild(soundShape);	
 	scene->addChild(sourceEntity);
 	
-	listenerEntity = new ScreenEntity();
+	listenerEntity = new SceneEntity();
 	SceneSoundListener *soundListener = new SceneSoundListener();
 	listenerEntity->addChild(soundListener);
 	soundShape = new ScenePrimitive(ScenePrimitive::TYPE_CIRCLE, 20,20,10);

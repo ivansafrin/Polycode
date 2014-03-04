@@ -12,12 +12,12 @@ public:
     
 private:
 
-	ScreenShape *sun;
-	ScreenShape *planet;
-	ScreenShape *moon;	
+	ScenePrimitive *sun;
+	ScenePrimitive *planet;
+	ScenePrimitive *moon;	
 	
-	Number planetRotation;
-	Number moonRotation;
+	Number planetRoll;
+	Number moonRoll;
 			
     Core *core;
 };

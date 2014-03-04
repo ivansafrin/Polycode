@@ -7,10 +7,9 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
 
-	Screen *screen = new Screen();			
-	image = new ScreenImage("Resources/polycode_logo.png");
-	image->setPositionMode(ScreenEntity::POSITION_CENTER);
-	screen->addChild(image);	
+	Scene *scene = new Scene(Scene::SCENE_2D);			
+	image = new SceneImage("Resources/polycode_logo.png");
+	scene->addChild(image);	
 	
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
@@ -26,8 +25,8 @@ void HelloPolycodeApp::handleEvent(Event *e) {
 		InputEvent *inputEvent = (InputEvent*)e;
 		switch(e->getEventCode()) {
 			case InputEvent::EVENT_MOUSEMOVE:
-				image->setPosition(inputEvent->mousePosition.x,
-						   inputEvent->mousePosition.y);
+				image->setPosition(inputEvent->mousePosition.x-680/2+20,
+						-inputEvent->mousePosition.y+480/2);
 			break;
 			case InputEvent::EVENT_MOUSEDOWN:
 				image->setColor(1,0,0,1);

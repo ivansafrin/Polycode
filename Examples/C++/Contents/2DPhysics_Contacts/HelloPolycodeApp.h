@@ -15,5 +15,5 @@ public:
 private:
     Core *core;	
 	Sound *collisionSound;
-	PhysicsScreen *screen;	
+	PhysicsScene2D *scene;	
 };

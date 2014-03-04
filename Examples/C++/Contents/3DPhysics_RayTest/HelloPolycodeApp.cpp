@@ -9,6 +9,7 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 
 	Scene *hud = new Scene(Scene::SCENE_2D);
 	SceneLabel *label = new SceneLabel("Click on a shape to select it.", 16);
+	label->setPosition(-640/2+120,480/2-10);
 	hud->addChild(label);	
 
 	scene = new CollisionScene();
