@@ -4,7 +4,7 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 
 	core = new POLYCODE_CORE(view, 640,480,false,false,0,0,90);
 
-	PhysicsScene *scene = new PhysicsScene(10, 50);
+	PhysicsScene2D *scene = new PhysicsScene2D(10, 50);
 
 	ScenePrimitive *ceiling = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 640, 20);
 	ceiling->setColor(0.0, 0.0, 0.0, 1.0);

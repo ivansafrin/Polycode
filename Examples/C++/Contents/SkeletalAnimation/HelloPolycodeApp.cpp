@@ -15,7 +15,7 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	scene->addEntity(mesh);
 	mesh->loadSkeleton("Resources/ninja.skeleton");
 	mesh->getSkeleton()->addAnimation("Run", "Resources/run.anim");
-	mesh->getSkeleton()->playAnimation("Run");
+	mesh->getSkeleton()->playAnimationByName("Run");
 
 	scene->getDefaultCamera()->setPosition(25,25,25);
 	scene->getDefaultCamera()->lookAt(Vector3(0,0,0));	

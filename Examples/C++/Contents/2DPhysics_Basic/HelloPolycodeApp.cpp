@@ -12,7 +12,7 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 	scene->addPhysicsChild(shape, PhysicsScene2DEntity::ENTITY_RECT, true);	
 	
 	for(int i=0; i < 200; i++) {
-		shape = new ScenePrimitive(ScenePrimitive::TYPE_PLANE, 20,5);
+		shape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 20,5);
 		shape->setRoll(rand() % 360);
 		shape->setPosition(-640/2 + rand() % 640, 480/2 - rand() % 300);
 		scene->addPhysicsChild(shape, PhysicsScene2DEntity::ENTITY_RECT, false);		
