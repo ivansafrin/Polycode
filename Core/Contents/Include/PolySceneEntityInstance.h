@@ -41,9 +41,9 @@ class SceneEntityInstance : public Entity {
 	public:
     
         SceneEntityInstance(Scene *parentScene, const String& fileName);
-		SceneEntityInstance();
+		SceneEntityInstance(Scene *parentScene);
 		
-		static SceneEntityInstance *BlankSceneEntityInstance();
+		static SceneEntityInstance *BlankSceneEntityInstance(Scene *parentScene);
 
 		virtual ~SceneEntityInstance();
 	

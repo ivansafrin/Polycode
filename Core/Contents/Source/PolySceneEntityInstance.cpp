@@ -50,8 +50,8 @@ void SceneEntityInstanceResourceEntry::reloadResource() {
 	Resource::reloadResource();
 }
 
-SceneEntityInstance *SceneEntityInstance::BlankSceneEntityInstance() {
-	return new SceneEntityInstance();
+SceneEntityInstance *SceneEntityInstance::BlankSceneEntityInstance(Scene *parentScene) {
+	return new SceneEntityInstance(parentScene);
 }
 
 SceneEntityInstance::SceneEntityInstance(Scene *parentScene, const String& fileName) : Entity() {
@@ -65,7 +65,8 @@ SceneEntityInstance::SceneEntityInstance(Scene *parentScene, const String& fileN
     topLevelResourcePool = CoreServices::getInstance()->getResourceManager()->getGlobalPool();
 }
 
-SceneEntityInstance::SceneEntityInstance() : Entity() {
+SceneEntityInstance::SceneEntityInstance(Scene *parentScene) : Entity() {
+    this->parentScene = parentScene;
 	cloneUsingReload = true;
 	ownsChildren = true;
 	resourceEntry = new SceneEntityInstanceResourceEntry(this);
@@ -89,7 +90,7 @@ Entity *SceneEntityInstance::Clone(bool deepClone, bool ignoreEditorOnly) const 
 	if(cloneUsingReload) {
 		newEntity = new SceneEntityInstance(parentScene, fileName);
 	} else {
-		newEntity = new SceneEntityInstance();
+		newEntity = new SceneEntityInstance(parentScene);
 	}
 	applyClone(newEntity, deepClone, ignoreEditorOnly);
 	return newEntity;

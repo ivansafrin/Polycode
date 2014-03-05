@@ -110,6 +110,8 @@ namespace Polycode {
 		PhysicsEntity *trackPhysicsChild(Entity *newEntity, int type=0, Number mass = 0.0f, Number friction=1, Number restitution=0, int group=1, bool compoundChildren = false);		
 		
 		PhysicsCharacter *addCharacterChild(Entity *newEntity, Number mass, Number friction, Number stepSize, int group  = 1);
+		PhysicsCharacter *trackCharacterChild(Entity *newEntity, Number mass, Number friction, Number stepSize, int group  = 1);
+        
 		void removeCharacterChild(PhysicsCharacter *character);
 		
 		PhysicsHingeConstraint *createHingeConstraint(Entity *entity, Vector3 pivot, Vector3 axis, Number minLimit, Number maxLimit);

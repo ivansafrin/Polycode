@@ -192,8 +192,7 @@ void PhysicsScene::applyImpulse(Entity *entity, Vector3 force, Vector3 point) {
 	}
 }
 
-PhysicsCharacter *PhysicsScene::addCharacterChild(Entity *newEntity,Number mass, Number friction, Number stepSize, int group) {
-	addEntity(newEntity);	
+PhysicsCharacter *PhysicsScene::trackCharacterChild(Entity *newEntity, Number mass, Number friction, Number stepSize, int group) {
 	PhysicsCharacter *newPhysicsEntity = new PhysicsCharacter(newEntity, mass, friction, stepSize);
 	
 	physicsWorld->addCollisionObject(newPhysicsEntity->ghostObject,group, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);
@@ -202,14 +201,18 @@ PhysicsCharacter *PhysicsScene::addCharacterChild(Entity *newEntity,Number mass,
 	
 	physicsWorld->getBroadphase()->getOverlappingPairCache()->cleanProxyFromPairs(newPhysicsEntity->ghostObject->getBroadphaseHandle(),physicsWorld->getDispatcher());
 	
-	newPhysicsEntity->character->reset ();
-	
+	newPhysicsEntity->character->reset ();	
 	newPhysicsEntity->character->setUseGhostSweepTest(false);
 	
 	physicsChildren.push_back(newPhysicsEntity);
 	collisionChildren.push_back(newPhysicsEntity);
-	return newPhysicsEntity;
-	
+    
+    return newPhysicsEntity;
+}
+
+PhysicsCharacter *PhysicsScene::addCharacterChild(Entity *newEntity,Number mass, Number friction, Number stepSize, int group) {
+	addEntity(newEntity);
+	return trackCharacterChild(newEntity, mass, friction, stepSize, group);
 }
 
 void PhysicsScene::removeCharacterChild(PhysicsCharacter *character) {
