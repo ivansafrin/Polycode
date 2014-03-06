@@ -66,6 +66,8 @@ class SceneEntityInstance : public Entity {
         void unlinkResourcePool(ResourcePool *pool);
     
 		SceneEntityInstanceResourceEntry *getResourceEntry();
+    
+        ResourcePool *getTopLevelResourcePool();
 
 		
 		String getFileName() const;

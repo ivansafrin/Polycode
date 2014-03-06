@@ -257,6 +257,17 @@ void SceneParticleEmitter::setParticleLifetime(Number lifetime) {
     }
 }
 
+void SceneParticleEmitter::triggerParticles(bool allAtOnce) {
+    for(int i=0; i < particles.size(); i++) {
+        resetParticle(i);
+        if(allAtOnce) {
+            particles[i].lifetime = 0.0;
+        } else {
+            particles[i].lifetime = RANDOM_NUMBER * -lifetime;
+        }
+    }
+}
+
 Vector3 SceneParticleEmitter::getDirectionDeviation() const {
     return directionDeviation;
 }

@@ -57,18 +57,19 @@ SceneEntityInstance *SceneEntityInstance::BlankSceneEntityInstance(Scene *parent
 SceneEntityInstance::SceneEntityInstance(Scene *parentScene, const String& fileName) : Entity() {
     this->parentScene = parentScene;
 	resourceEntry = new SceneEntityInstanceResourceEntry(this);
+    topLevelResourcePool = CoreServices::getInstance()->getResourceManager()->getGlobalPool();
 	loadFromFile(fileName);
 	resourceEntry->setResourceName(fileName);
 	resourceEntry->setResourcePath(fileName);
 	cloneUsingReload = false;
 	ownsChildren = true;
-    topLevelResourcePool = CoreServices::getInstance()->getResourceManager()->getGlobalPool();
 }
 
 SceneEntityInstance::SceneEntityInstance(Scene *parentScene) : Entity() {
     this->parentScene = parentScene;
 	cloneUsingReload = true;
 	ownsChildren = true;
+    topLevelResourcePool = CoreServices::getInstance()->getResourceManager()->getGlobalPool();    
 	resourceEntry = new SceneEntityInstanceResourceEntry(this);
 }
 
@@ -489,6 +490,10 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
 
 String SceneEntityInstance::getFileName() const {
 	return fileName;
+}
+
+ResourcePool *SceneEntityInstance::getTopLevelResourcePool() {
+    return topLevelResourcePool;
 }
 
 void SceneEntityInstance::clearInstance() {

@@ -67,6 +67,8 @@ namespace Polycode {
             void updateParticles();
             void rebuildParticles();
         
+            void triggerParticles(bool allAtOnce);
+        
             void enableParticleSystem(bool val);
         
             void setUseFloorPlane(bool val);
