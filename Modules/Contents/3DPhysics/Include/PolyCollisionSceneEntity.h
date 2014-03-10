@@ -80,32 +80,37 @@ namespace Polycode {
 		/**
 		* Mesh shape
 		*/		
-		static const int SHAPE_MESH = 3;			
+		static const int SHAPE_MESH = 3;	
+
+		/**
+		* Mesh shape
+		*/		
+		static const int SHAPE_STATIC_MESH =4;	
 		
 		/**
 		* Character controller shape
 		*/				
-		static const int CHARACTER_CONTROLLER = 4;
+		static const int CHARACTER_CONTROLLER = 5;
 		
 		/**
 		* Capsule shape
 		*/						
-		static const int SHAPE_CAPSULE = 5;		
+		static const int SHAPE_CAPSULE = 6;		
 		
 		/**
 		* Plane shape
 		*/								
-		static const int SHAPE_PLANE = 6;
+		static const int SHAPE_PLANE = 7;
 		
 		/**
 		* Cone shape
 		*/										
-		static const int SHAPE_CONE = 7;
+		static const int SHAPE_CONE = 8;
 		
 		/**
 		* Cylinder shape
 		*/												
-		static const int SHAPE_CYLINDER = 8;
+		static const int SHAPE_CYLINDER = 9;
 						
 			bool enabled;
 			btCollisionShape *shape;

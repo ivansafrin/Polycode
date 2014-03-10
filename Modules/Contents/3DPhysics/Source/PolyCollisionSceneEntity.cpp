@@ -76,11 +76,11 @@ CollisionEntity::CollisionEntity(Entity *entity, int type, bool compoundChildren
 	
 	collisionObject->setUserPointer((void*)this);
 	
-//	if(type == SHAPE_MESH) {		
-//		concaveShape = dynamic_cast<btConcaveShape*>(shape);
-//	} else {
-		convexShape	= dynamic_cast<btConvexShape*>(shape);		
-//	}		
+	if(type == SHAPE_STATIC_MESH) {		
+		concaveShape = dynamic_cast<btConcaveShape*>(shape);
+	} else {
+		convexShape	= dynamic_cast<btConvexShape*>(shape);
+	}
 }
 
 btCollisionShape *CollisionEntity::createCollisionShape(Entity *entity, int type) {
@@ -138,6 +138,39 @@ btCollisionShape *CollisionEntity::createCollisionShape(Entity *entity, int type
 				
 			} else {
 				Logger::log("Tried to make a mesh collision object from a non-mesh\n");
+				collisionShape = new btBoxShape(btVector3(bBox.x/2.0f, bBox.y/2.0f,bBox.z/2.0f));
+			}
+		}
+		break;
+		case SHAPE_STATIC_MESH:
+		{
+			SceneMesh* sceneMesh = dynamic_cast<SceneMesh*>(entity);
+			if(sceneMesh != NULL) {
+				Mesh *mesh = sceneMesh->getMesh();
+				int vertCount = mesh->getVertexCount();
+				
+				//convert from Polycode mesh format to Bullet mesh format here
+				btTriangleMesh *triMesh = new btTriangleMesh(true, false);
+				btVector3 *vert0 = new btVector3();
+				btVector3 *vert1 = new btVector3();
+				btVector3 *vert2 = new btVector3();
+
+				for(int i = 0; i < vertCount; i+= 3)
+				{
+					vert0->setValue(mesh->getVertex(i)->x, mesh->getVertex(i)->y, mesh->getVertex(i)->z);
+					vert1->setValue(mesh->getVertex(i+1)->x, mesh->getVertex(i+1)->y, mesh->getVertex(i+1)->z);
+					vert2->setValue(mesh->getVertex(i+2)->x, mesh->getVertex(i+2)->y, mesh->getVertex(i+2)->z);
+					triMesh->addTriangle(*vert0, *vert1, *vert2); 
+				}
+				delete vert0;
+				delete vert1;
+				delete vert2;
+
+				btBvhTriangleMeshShape *physMesh = new btBvhTriangleMeshShape( dynamic_cast<btStridingMeshInterface*>(triMesh), true );
+				collisionShape = physMesh;
+				
+			} else {
+				Logger::log("Tried to make a static mesh collision object from a non-mesh\n");
 				collisionShape = new btBoxShape(btVector3(bBox.x/2.0f, bBox.y/2.0f,bBox.z/2.0f));
 			}
 		}
