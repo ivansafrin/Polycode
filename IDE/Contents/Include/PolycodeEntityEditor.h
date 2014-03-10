@@ -248,6 +248,7 @@ class EntityEditorMainView : public UIElement {
     
             UIImageButton *gridSettingsButton;
             EditorGridSettingsWindow *gridSettings;
+            UIIconSelector *snapSelector;
     
             CameraPreviewWindow *cameraPreview;
     

@@ -100,6 +100,9 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
     enableGizmo = true;
     firstMove = true;
     
+    snapEnabled = false;
+    snapSize = 1.0;
+    
 	this->targetScene = targetScene;
 	this->targetCamera = targetCamera;
 	
@@ -331,6 +334,14 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	setTransformMode(TRANSFORM_MOVE);
 }
 
+void TransformGizmo::enableSnap(bool val) {
+    snapEnabled = val;
+}
+
+void TransformGizmo::setSnapSize(Number snapSize) {
+    this->snapSize = snapSize;
+}
+
 void TransformGizmo::setTransformOrientation(int orientation) {
     this->orientation = orientation;
 }
@@ -462,6 +473,7 @@ void TransformGizmo::setTransformMode(int newMode) {
 }
 
 void TransformGizmo::setTransformSelection(std::vector<Entity*> selectedEntities) {
+    entityPositions.clear();
 	this->selectedEntities = selectedEntities;
 	if(selectedEntities.size() > 0) {
 		visible = true;
@@ -469,7 +481,8 @@ void TransformGizmo::setTransformSelection(std::vector<Entity*> selectedEntities
 		
 		Vector3 centerPoint;
 		for(int i=0; i < selectedEntities.size(); i++) {
-			centerPoint += selectedEntities[i]->getConcatenatedMatrix().getPosition();			
+			centerPoint += selectedEntities[i]->getConcatenatedMatrix().getPosition();
+            entityPositions.push_back(selectedEntities[i]->getPosition());
 		}
 		centerPoint = centerPoint / selectedEntities.size();
 		setPosition(centerPoint);
@@ -477,6 +490,7 @@ void TransformGizmo::setTransformSelection(std::vector<Entity*> selectedEntities
 		visible = false;
 		enabled = false;
 	}
+    
 }
 
 void TransformGizmo::transformSelectedEntities(const Vector3 &move, const Vector3 &scale, Number rotate) {
@@ -487,12 +501,11 @@ void TransformGizmo::transformSelectedEntities(const Vector3 &move, const Vector
     }
     
     Vector3 globalCenter = getConcatenatedMatrix().getPosition();
-    
 	for(int i=0; i < selectedEntities.size(); i++) {
         
         
         if((orientation == ORIENTATION_GLOBAL && mode != TRANSFORM_SCALE_VIEW) || (ORIENTATION_LOCAL && mode == TRANSFORM_MOVE_VIEW)) {
-            selectedEntities[i]->Translate(move);
+            entityPositions[i] += move;
             
             Quaternion q;
             Quaternion currentRotation = selectedEntities[i]->getRotationQuat();
@@ -538,7 +551,7 @@ void TransformGizmo::transformSelectedEntities(const Vector3 &move, const Vector
             }
         } else {
             
-            selectedEntities[i]->Translate(getRotationQuat().applyTo(move));
+            entityPositions[i] += getRotationQuat().applyTo(move);
             
             Quaternion q;
             Quaternion currentRotation = selectedEntities[i]->getRotationQuat();
@@ -580,6 +593,19 @@ void TransformGizmo::transformSelectedEntities(const Vector3 &move, const Vector
             }
 
             
+        }
+
+        // snap if moving and snap is on
+        if(scale.length() == 0.0 && rotate == 0.0) {
+            if(snapEnabled) {
+                Vector3 snappedPositon = entityPositions[i];
+                snappedPositon.x = round(((Number)snappedPositon.x)/(snapSize)) * snapSize;
+                snappedPositon.y = round(((Number)snappedPositon.y)/(snapSize)) * snapSize;
+                snappedPositon.z = round(((Number)snappedPositon.z)/(snapSize)) * snapSize;
+                selectedEntities[i]->setPosition(snappedPositon);
+            } else {
+                selectedEntities[i]->setPosition(entityPositions[i]);
+            }
         }
 		
 	}

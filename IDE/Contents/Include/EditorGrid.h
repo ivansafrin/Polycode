@@ -80,6 +80,9 @@ public:
 protected:
     
     EditorGrid *grid;
+    
+    UICheckBox *visibleCheck;
+    
     UITextInput *sizeInput;
     UITextInput *countInput;
     

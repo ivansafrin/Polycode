@@ -371,6 +371,7 @@ EntityEditorMainView::EntityEditorMainView(PolycodeEditor *editor) {
 	mainScene->getDefaultCamera()->setClippingPlanes(0.01, 10000);
     
 	grid = new EditorGrid();
+    grid->addEventListener(this, Event::CHANGE_EVENT);
 	mainScene->addChild(grid);
 	
     objectRootBase = new Entity();
@@ -451,6 +452,13 @@ EntityEditorMainView::EntityEditorMainView(PolycodeEditor *editor) {
 	bottomBar->addChild(gridSettingsButton);
     gridSettingsButton->setPosition(120, 2);
     gridSettingsButton->addEventListener(this, UIEvent::CLICK_EVENT);
+    
+    snapSelector = new UIIconSelector();
+    snapSelector->addIcon("entityEditor/snap_off.png");
+    snapSelector->addIcon("entityEditor/snap_on.png");
+    bottomBar->addChild(snapSelector);
+    snapSelector->setPosition(156, 2);
+    snapSelector->addEventListener(this, UIEvent::SELECT_EVENT);
     
     editorMode = EDITOR_MODE_3D;
     
@@ -1142,6 +1150,18 @@ void EntityEditorMainView::handleEvent(Event *event) {
     } else if(event->getDispatcher() == gridSettingsButton) {
         gridSettings->visible = !gridSettings->visible;
         gridSettings->enabled = !gridSettings->enabled;
+    } else if(event->getDispatcher() == snapSelector) {
+        switch(snapSelector->getSelectedIndex()) {
+            case 0:
+                transformGizmo->enableSnap(false);
+            break;
+            case 1:
+                transformGizmo->enableSnap(true);
+                transformGizmo->setSnapSize(grid->getGridSize());
+            break;
+        }
+    } else if(event->getDispatcher() == grid) {
+                transformGizmo->setSnapSize(grid->getGridSize());        
     } else {
         if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN && hasFocus && event->getDispatcher() != renderTextureShape) {
             InputEvent *inputEvent = (InputEvent*) event;

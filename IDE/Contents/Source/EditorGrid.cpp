@@ -22,21 +22,26 @@
  
 #include "EditorGrid.h"
 
-EditorGridSettingsWindow::EditorGridSettingsWindow(EditorGrid *grid) : UIWindow("Grid Settings", 100, 160) {
+EditorGridSettingsWindow::EditorGridSettingsWindow(EditorGrid *grid) : UIWindow("Grid Settings", 100, 190) {
     
     visible = false;
     enabled = false;
     
     this->grid = grid;
     
+    visibleCheck = new UICheckBox("Enabled", grid->visible);
+    addChild(visibleCheck);
+    visibleCheck->setPosition(10, 40);
+    visibleCheck->addEventListener(this, UIEvent::CHANGE_EVENT);
+    
     UILabel *label = new UILabel("Size:", 12);
     label->setColor(1.0, 1.0 ,1.0, 1.0);
     addChild(label);
-    label->setPosition(10, 40);
+    label->setPosition(10, 70);
     
     sizeInput = new UITextInput(false, 50, 10);
     addChild(sizeInput);
-    sizeInput->setPosition(60, 38);
+    sizeInput->setPosition(60, 68);
     sizeInput->setNumberOnly(true);
     sizeInput->setText(String::NumberToString(grid->getGridSize()));
     sizeInput->addEventListener(this, UIEvent::CHANGE_EVENT);
@@ -44,28 +49,28 @@ EditorGridSettingsWindow::EditorGridSettingsWindow(EditorGrid *grid) : UIWindow(
     label = new UILabel("Count:", 12);
     label->setColor(1.0, 1.0 ,1.0, 1.0);
     addChild(label);
-    label->setPosition(10, 70);
+    label->setPosition(10, 100);
 
     countInput = new UITextInput(false, 50, 10);
     addChild(countInput);
-    countInput->setPosition(60, 68);
+    countInput->setPosition(60, 98);
     countInput->setNumberOnly(true);
     countInput->setText(String::IntToString(grid->getGridLen()));
     countInput->addEventListener(this, UIEvent::CHANGE_EVENT);
     
     xAxisBox = new UICheckBox("X Axis", grid->isXAxisEnabled());
     addChild(xAxisBox);
-    xAxisBox->setPosition(10, 100);
+    xAxisBox->setPosition(10, 130);
     xAxisBox->addEventListener(this, UIEvent::CHANGE_EVENT);
     
     yAxisBox = new UICheckBox("Y Axis", grid->isYAxisEnabled());
     addChild(yAxisBox);
-    yAxisBox->setPosition(10, 125);
+    yAxisBox->setPosition(10, 155);
     yAxisBox->addEventListener(this, UIEvent::CHANGE_EVENT);
     
     zAxisBox = new UICheckBox("Z Axis", grid->isZAxisEnabled());
     addChild(zAxisBox);
-    zAxisBox->setPosition(10, 150);
+    zAxisBox->setPosition(10, 180);
     zAxisBox->addEventListener(this, UIEvent::CHANGE_EVENT);
 }
 
@@ -80,6 +85,8 @@ void EditorGridSettingsWindow::handleEvent(Event *event) {
         grid->enableYAxis(yAxisBox->isChecked());
     } else if(event->getDispatcher() == zAxisBox) {
         grid->enableZAxis(zAxisBox->isChecked());
+    } else if(event->getDispatcher() == visibleCheck) {
+        grid->visible = visibleCheck->isChecked();
     }
     UIWindow::handleEvent(event);
 }
@@ -122,6 +129,7 @@ EditorGrid::EditorGrid() : Entity() {
 void EditorGrid::setGridSize(Number size) {
     gridSize = size;
     rebuildGrid();
+    dispatchEvent(new Event(), Event::CHANGE_EVENT);
 }
 
 void EditorGrid::setGridLen(int len) {
@@ -162,6 +170,13 @@ void EditorGrid::enableZAxis(bool val) {
 }
 
 void EditorGrid::rebuildGrid() {
+    
+    int gridLen = this->gridLen;
+    
+    // make sure the grid is even
+    if((gridLen % 2) != 0) {
+        gridLen++;
+    }
     
     grid->getMesh()->clearMesh();
 

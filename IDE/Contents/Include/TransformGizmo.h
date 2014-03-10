@@ -49,7 +49,10 @@ class TransformGizmo : public Entity {
         void setGizmoMode(int newMode);
     
 		void Update();
-		
+    
+        void enableSnap(bool val);
+        void setSnapSize(Number snapSize);
+    
 		void setTransformSelection(std::vector<Entity*> selectedEntities);
 		
 		void transformSelectedEntities(const Vector3 &move, const Vector3 &scale, Number rotate);
@@ -86,6 +89,9 @@ class TransformGizmo : public Entity {
     
 	private:
     
+        bool snapEnabled;
+        Number snapSize;
+    
         void dispatchEndEvent();
     
         int transformMode;
@@ -95,6 +101,7 @@ class TransformGizmo : public Entity {
         int centerMode;
 	
 		std::vector<Entity*> selectedEntities;
+		std::vector<Vector3> entityPositions;
     
 		Scene *targetScene;
 		Camera *targetCamera;
