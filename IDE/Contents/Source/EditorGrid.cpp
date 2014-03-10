@@ -22,47 +22,178 @@
  
 #include "EditorGrid.h"
 
+EditorGridSettingsWindow::EditorGridSettingsWindow(EditorGrid *grid) : UIWindow("Grid Settings", 100, 160) {
+    
+    visible = false;
+    enabled = false;
+    
+    this->grid = grid;
+    
+    UILabel *label = new UILabel("Size:", 12);
+    label->setColor(1.0, 1.0 ,1.0, 1.0);
+    addChild(label);
+    label->setPosition(10, 40);
+    
+    sizeInput = new UITextInput(false, 50, 10);
+    addChild(sizeInput);
+    sizeInput->setPosition(60, 38);
+    sizeInput->setNumberOnly(true);
+    sizeInput->setText(String::NumberToString(grid->getGridSize()));
+    sizeInput->addEventListener(this, UIEvent::CHANGE_EVENT);
+    
+    label = new UILabel("Count:", 12);
+    label->setColor(1.0, 1.0 ,1.0, 1.0);
+    addChild(label);
+    label->setPosition(10, 70);
+
+    countInput = new UITextInput(false, 50, 10);
+    addChild(countInput);
+    countInput->setPosition(60, 68);
+    countInput->setNumberOnly(true);
+    countInput->setText(String::IntToString(grid->getGridLen()));
+    countInput->addEventListener(this, UIEvent::CHANGE_EVENT);
+    
+    xAxisBox = new UICheckBox("X Axis", grid->isXAxisEnabled());
+    addChild(xAxisBox);
+    xAxisBox->setPosition(10, 100);
+    xAxisBox->addEventListener(this, UIEvent::CHANGE_EVENT);
+    
+    yAxisBox = new UICheckBox("Y Axis", grid->isYAxisEnabled());
+    addChild(yAxisBox);
+    yAxisBox->setPosition(10, 125);
+    yAxisBox->addEventListener(this, UIEvent::CHANGE_EVENT);
+    
+    zAxisBox = new UICheckBox("Z Axis", grid->isZAxisEnabled());
+    addChild(zAxisBox);
+    zAxisBox->setPosition(10, 150);
+    zAxisBox->addEventListener(this, UIEvent::CHANGE_EVENT);
+}
+
+void EditorGridSettingsWindow::handleEvent(Event *event) {
+    if(event->getDispatcher() == sizeInput) {
+        grid->setGridSize(sizeInput->getText().toNumber());
+    } else if(event->getDispatcher() == countInput) {
+        grid->setGridLen(countInput->getText().toInteger());
+    } else if(event->getDispatcher() == xAxisBox) {
+        grid->enableXAxis(xAxisBox->isChecked());
+    } else if(event->getDispatcher() == yAxisBox) {
+        grid->enableYAxis(yAxisBox->isChecked());
+    } else if(event->getDispatcher() == zAxisBox) {
+        grid->enableZAxis(zAxisBox->isChecked());
+    }
+    UIWindow::handleEvent(event);
+}
+
+EditorGridSettingsWindow::~EditorGridSettingsWindow() {
+    
+}
+
 EditorGrid::EditorGrid() : Entity() {
 	grid = NULL;
     gridMode = GRID_MODE_3D;
     
-	setGrid(1.0);
-	setPitch(90);
+    Mesh *gridMesh = new Mesh(Mesh::LINE_MESH);
+    
+    grid = new SceneMesh(gridMesh);
+    grid->setColor(0.3, 0.3, 0.3, 1.0);
+    grid->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
+    addChild(grid);
+    
+    yLine = new SceneLine(Vector3(), Vector3());
+    addChild(yLine);
+    yLine->setColor(0.0, 0.8, 0.0, 1.0);
+
+    xLine = new SceneLine(Vector3(), Vector3());
+    addChild(xLine);
+    xLine->setColor(0.8, 0.0, 0.0, 1.0);
+    
+    zLine = new SceneLine(Vector3(), Vector3());
+    addChild(zLine);
+    zLine->setColor(0.0, 0.0, 0.8, 1.0);
+
+    gridSize = 1.0;
+    gridLen = 16;
+    
+    
+    rebuildGrid();
+    grid->setPitch(90);
 }
 
-void EditorGrid::setGrid(int gridSize) {
-	int gridLen = 16;
-    
-	if(grid) {
-        grid->getMesh()->clearMesh();
-	} else {
-        Mesh *gridMesh = new Mesh(Mesh::LINE_MESH);
-        
-        grid = new SceneMesh(gridMesh);
-        grid->setColor(0.3, 0.3, 0.3, 1.0);
-        grid->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
-        addChild(grid);
-	}
-    
-	for(int x=0; x < gridLen+1; x++) {
-			grid->getMesh()->addVertex((-gridSize * gridLen * 0.5) + (x * gridSize), (-gridSize * gridLen * 0.5), 0);
-			grid->getMesh()->addVertex((-gridSize * gridLen * 0.5) + (x * gridSize) , (-gridSize * gridLen * 0.5) + (gridSize * gridLen), 0);
-	}
+void EditorGrid::setGridSize(Number size) {
+    gridSize = size;
+    rebuildGrid();
+}
 
-	for(int y=0; y < gridLen+1; y++) {
-			grid->getMesh()->addVertex((-gridSize * gridLen * 0.5), (-gridSize * gridLen * 0.5) + (y * gridSize), 0);
-			grid->getMesh()->addVertex((-gridSize * gridLen * 0.5) + (gridSize * gridLen), (-gridSize * gridLen * 0.5) + (y * gridSize), 0);
-	}
+void EditorGrid::setGridLen(int len) {
+    gridLen = len;
+    rebuildGrid();
+}
+
+Number EditorGrid::getGridSize() {
+    return gridSize;
+}
+
+int EditorGrid::getGridLen() {
+    return gridLen;
+}
+
+bool EditorGrid::isXAxisEnabled() {
+    return xLine->visible;
+}
+
+bool EditorGrid::isYAxisEnabled() {
+    return yLine->visible;
+}
+
+bool EditorGrid::isZAxisEnabled() {
+     return zLine->visible;
+}
+
+void EditorGrid::enableXAxis(bool val) {
+    xLine->visible = val;
+}
+
+void EditorGrid::enableYAxis(bool val) {
+    yLine->visible = val;
+}
+
+void EditorGrid::enableZAxis(bool val) {
+    zLine->visible = val;
+}
+
+void EditorGrid::rebuildGrid() {
     
-    grid->cacheToVertexBuffer(true);    
+    grid->getMesh()->clearMesh();
+
+    for(int x=0; x < gridLen+1; x++) {
+        grid->getMesh()->addVertex((-gridSize * gridLen * 0.5) + (x * gridSize), (-gridSize * gridLen * 0.5), 0);
+        grid->getMesh()->addVertex((-gridSize * gridLen * 0.5) + (x * gridSize) , (-gridSize * gridLen * 0.5) + (gridSize * gridLen), 0);
+    }
+    
+    for(int y=0; y < gridLen+1; y++) {
+        grid->getMesh()->addVertex((-gridSize * gridLen * 0.5), (-gridSize * gridLen * 0.5) + (y * gridSize), 0);
+        grid->getMesh()->addVertex((-gridSize * gridLen * 0.5) + (gridSize * gridLen), (-gridSize * gridLen * 0.5) + (y * gridSize), 0);
+    }
+    
+    yLine->setStart(Vector3(0.0, gridSize * gridLen * 0.5, 0.0));
+    yLine->setEnd(Vector3(0.0, gridSize * gridLen * -0.5, 0.0));
+    yLine->visible = false;
+
+    xLine->setStart(Vector3(gridSize * gridLen * 0.5, 0.0, 0.0));
+    xLine->setEnd(Vector3(gridSize * gridLen * -0.5, 0.0, 0.0));
+
+    zLine->setStart(Vector3(0.0, 0.0, gridSize * gridLen * 0.5));
+    zLine->setEnd(Vector3(0.0, 0.0, gridSize * gridLen * -0.5));
+    
+    grid->cacheToVertexBuffer(true);
 }
 
 void EditorGrid::setGridMode(int mode) {
     gridMode = mode;
     if(gridMode == GRID_MODE_3D) {
-        grid->setPitch(0);
-    } else {
         grid->setPitch(90);
+    } else {
+        grid->setPitch(0);
     }
 }
 

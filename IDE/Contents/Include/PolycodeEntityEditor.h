@@ -244,7 +244,10 @@ class EntityEditorMainView : public UIElement {
             UIImageButton *moveUpButton;
             UIImageButton *moveTopButton;
             UIImageButton *moveDownButton;
-            UIImageButton *moveBottomButton;
+            UIImageButton *moveBottomButton;    
+    
+            UIImageButton *gridSettingsButton;
+            EditorGridSettingsWindow *gridSettings;
     
             CameraPreviewWindow *cameraPreview;
     

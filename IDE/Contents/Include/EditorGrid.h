@@ -22,7 +22,9 @@
 
 #pragma once
 
-#include "Polycode.h"
+#include <Polycode.h>
+#include "PolycodeUI.h"
+
 #include "OSBasics.h"
 
 using namespace Polycode;
@@ -32,8 +34,23 @@ class EditorGrid : public Entity {
 		EditorGrid();
 		~EditorGrid();
 		
-		void setGrid(int gridSize);
         void setGridMode(int mode);
+    
+        Number getGridSize();
+        int getGridLen();
+    
+        void setGridSize(Number size);
+        void setGridLen(int len);
+    
+        bool isXAxisEnabled();
+        bool isYAxisEnabled();
+        bool isZAxisEnabled();
+
+        void enableXAxis(bool val);
+        void enableYAxis(bool val);
+        void enableZAxis(bool val);
+    
+        void rebuildGrid();
 		
         static const int GRID_MODE_3D = 0;
         static const int GRID_MODE_2D = 1;
@@ -41,4 +58,32 @@ class EditorGrid : public Entity {
 	private:
         int gridMode;
 		SceneMesh *grid;
+    
+        SceneLine *yLine;
+        SceneLine *xLine;
+        SceneLine *zLine;
+    
+        Number gridSize;
+        int gridLen;
+    
+        bool threeDeeGrid;
+};
+
+
+class EditorGridSettingsWindow : public UIWindow {
+public:
+    EditorGridSettingsWindow(EditorGrid *grid);
+    ~EditorGridSettingsWindow();
+    
+    void handleEvent(Event *event);
+    
+protected:
+    
+    EditorGrid *grid;
+    UITextInput *sizeInput;
+    UITextInput *countInput;
+    
+    UICheckBox *xAxisBox;
+    UICheckBox *yAxisBox;
+    UICheckBox *zAxisBox;
 };

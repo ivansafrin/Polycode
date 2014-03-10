@@ -393,7 +393,7 @@ EntityEditorMainView::EntityEditorMainView(PolycodeEditor *editor) {
 	mainScene->addChild(transformGizmo);		
 	trackballCamera = new TrackballCamera(mainScene->getDefaultCamera(), renderTextureShape);
     trackballCamera->addEventListener(this, Event::CHANGE_EVENT);
-	
+	   
     addEntityButton = new UIImageButton("entityEditor/add_entity.png", 1.0, 24, 24);
 	topBar->addChild(addEntityButton);
     addEntityButton->setPosition(4, 2);
@@ -447,11 +447,19 @@ EntityEditorMainView::EntityEditorMainView(PolycodeEditor *editor) {
     moveBottomButton->setPosition(82, 2);
     moveBottomButton->addEventListener(this, UIEvent::CLICK_EVENT);
     
+    gridSettingsButton = new UIImageButton("entityEditor/grid_button.png", 1.0, 24, 24);
+	bottomBar->addChild(gridSettingsButton);
+    gridSettingsButton->setPosition(120, 2);
+    gridSettingsButton->addEventListener(this, UIEvent::CLICK_EVENT);
     
     editorMode = EDITOR_MODE_3D;
     
     input = CoreServices::getInstance()->getCore()->getInput();
     input->addEventListener(this, InputEvent::EVENT_KEYDOWN);
+    
+    gridSettings = new EditorGridSettingsWindow(grid);
+    addChild(gridSettings);
+    gridSettings->setPosition(30,40);
 }
 
 std::vector<Entity*> EntityEditorMainView::getSelectedEntities() {
@@ -1131,6 +1139,9 @@ void EntityEditorMainView::handleEvent(Event *event) {
         moveSelectedDown();
     } else if(event->getDispatcher() == moveBottomButton) {
         moveSelectedBottom();
+    } else if(event->getDispatcher() == gridSettingsButton) {
+        gridSettings->visible = !gridSettings->visible;
+        gridSettings->enabled = !gridSettings->enabled;
     } else {
         if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN && hasFocus && event->getDispatcher() != renderTextureShape) {
             InputEvent *inputEvent = (InputEvent*) event;

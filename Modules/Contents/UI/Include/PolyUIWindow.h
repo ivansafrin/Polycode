@@ -43,7 +43,7 @@ namespace Polycode {
 			void showWindow();
 			void hideWindow();
 			void onKeyDown(PolyKEY key, wchar_t charCode);
-			virtual void onClose(){}
+			virtual void onClose();
 			void onLoseFocus();
 			
 			void setWindowSize(Number w, Number h);

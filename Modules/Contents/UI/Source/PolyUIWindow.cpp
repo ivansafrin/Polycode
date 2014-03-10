@@ -176,6 +176,11 @@ void UIWindow::hideWindow() {
 	enabled = false;
 }
 
+void UIWindow::onClose() {
+    visible = false;
+    enabled = false;
+}
+
 void UIWindow::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == CoreServices::getInstance()->getCore()->getInput()) {

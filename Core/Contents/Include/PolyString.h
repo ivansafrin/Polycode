@@ -175,6 +175,10 @@ namespace Polycode {
 			* @return A string converted from the Number.
 			*/																										
 			static String NumberToString(Number value, int precision = 2);
+        
+        
+            Number toNumber();
+            int toInteger();
 
 			/**
 			* Convert an integer to a String.

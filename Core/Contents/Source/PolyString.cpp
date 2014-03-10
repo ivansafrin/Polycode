@@ -157,6 +157,14 @@ vector<String> String::split(const String &delim) const {
 	return tokens;
 }
 
+Number String::toNumber() {
+    return atof(contents.c_str());
+}
+
+int String::toInteger() {
+    return atoi(contents.c_str());
+}
+
 String String::replace(const String &what, const String &withWhat) const {
 
 	size_t pos = 0;
