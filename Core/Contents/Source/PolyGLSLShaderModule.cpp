@@ -240,17 +240,12 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 
 	glPushMatrix();
 	glLoadIdentity();
-	
-	
-	int numRendererAreaLights = renderer->getNumAreaLights();
+		
+	int numRendererPointLights = renderer->getNumPointLights();
 	int numRendererSpotLights = renderer->getNumSpotLights();
 	
-	int numTotalLights = glslShader->numAreaLights + glslShader->numSpotLights;
-	
-	if(numTotalLights > 0) {
-		renderer->sortLights();	
-	}
-	
+	int numTotalLights = glslShader->numPointLights + glslShader->numSpotLights;
+		
 	for(int i=0 ; i < numTotalLights; i++) {
 		GLfloat resetData[] = {0.0, 0.0, 0.0, 0.0};				
 		glLightfv (GL_LIGHT0+i, GL_DIFFUSE, resetData);	
@@ -265,13 +260,13 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 	
 	int lightIndex = 0;
 	
-	vector<LightInfo> areaLights = renderer->getAreaLights();
+	vector<LightInfo> pointLights = renderer->getPointLights();
 		
 	GLfloat ambientVal[] = {1, 1, 1, 1.0};				
-	for(int i=0; i < glslShader->numAreaLights; i++) {
+	for(int i=0; i < glslShader->numPointLights; i++) {
 		LightInfo light;
-		if(i < numRendererAreaLights) {
-			light = areaLights[i];
+		if(i < numRendererPointLights) {
+			light = pointLights[i];
 			light.position = renderer->getCameraMatrix().Inverse() * light.position;
 			ambientVal[0] = renderer->ambientColor.r;
 			ambientVal[1] = renderer->ambientColor.g;
@@ -410,7 +405,8 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 	glPopMatrix();
 		
 	glEnable(GL_TEXTURE_2D);
-		
+
+/*
 	Matrix4 modelMatrix = renderer->getCurrentModelMatrix();
 	int mloc = glGetUniformLocation(glslShader->shader_id, "modelMatrix");				
 	GLfloat mat[16];
@@ -418,7 +414,7 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 		mat[z] = modelMatrix.ml[z];
 	}
 	glUniformMatrix4fv(mloc, 1, false, mat);
-		
+*/
 		
 	ShaderBinding *cgBinding = material->getShaderBinding(shaderIndex);
 	

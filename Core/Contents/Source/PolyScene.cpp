@@ -374,13 +374,6 @@ void Scene::removeLight(SceneLight *light) {
 	}
 }
 
-SceneLight *Scene::getNearestLight(Vector3 pos) {
-	if(lights.size() > 0)
-		return lights[0];
-	else
-		return NULL;
-}
-
 int Scene::getNumLights() {
 	return lights.size();
 }

@@ -250,7 +250,7 @@ RenderTargetBinding *ShaderBinding::getDepthTargetBinding(unsigned int index) {
 
 Shader::Shader(int type) : Resource(Resource::RESOURCE_SHADER) {
 	numSpotLights = 0;
-	numAreaLights = 0;
+	numPointLights = 0;
 	this->type = type;
 	vp = NULL;
 	fp = NULL;

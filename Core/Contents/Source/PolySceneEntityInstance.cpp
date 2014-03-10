@@ -348,6 +348,11 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
                 
                 newLight->setIntensity((*lightEntry)["intensity"]->NumberVal);
                 
+                ObjectEntry *importanceEntry = (*lightEntry)["importance"];
+                if(importanceEntry) {
+                    newLight->setLightImportance(importanceEntry->intVal);
+                }
+                
                 newLight->lightColor.setColor((*lightEntry)["cR"]->NumberVal, (*lightEntry)["cG"]->NumberVal, (*lightEntry)["cB"]->NumberVal, (*lightEntry)["cA"]->NumberVal);
                 newLight->specularLightColor.setColor((*lightEntry)["scR"]->NumberVal, (*lightEntry)["scG"]->NumberVal, (*lightEntry)["scB"]->NumberVal, (*lightEntry)["scA"]->NumberVal);
 

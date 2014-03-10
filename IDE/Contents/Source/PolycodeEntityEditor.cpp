@@ -1691,7 +1691,8 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
         lightEntry->addChild("scA", light->specularLightColor.a);
 
         lightEntry->addChild("intensity", light->getIntensity());
-
+        lightEntry->addChild("importance", light->getLightImportance());
+        
         lightEntry->addChild("cAtt", light->getConstantAttenuation());
         lightEntry->addChild("lAtt", light->getLinearAttenuation());
         lightEntry->addChild("qAtt", light->getQuadraticAttenuation());

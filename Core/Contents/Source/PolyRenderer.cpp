@@ -37,7 +37,7 @@ Renderer::Renderer() : clearColor(0.2, 0.2, 0.2, 0.0), currentTexture(NULL), lig
 	shadersEnabled = true;
 	currentMaterial = NULL;
 	numLights = 0;
-	numAreaLights = 0;
+	numPointLights = 0;
 	numSpotLights = 0;	
 	exposureLevel = 1;
 	shadersEnabled = true;
@@ -98,10 +98,10 @@ void Renderer::setCameraMatrix(const Matrix4& matrix) {
 
 void Renderer::clearLights() {
 	numLights = 0;
-	numAreaLights = 0;
+	numPointLights = 0;
 	numSpotLights = 0;	
 	lights.clear();
-	areaLights.clear();
+	pointLights.clear();
 	spotLights.clear();
 }
 
@@ -114,14 +114,12 @@ void Renderer::addShaderModule(PolycodeShaderModule *module) {
 }
 
 void Renderer::sortLights(){
-
-	sorter.basePosition = (getModelviewMatrix()).getPosition();
-	sorter.cameraMatrix = getCameraMatrix().Inverse();	
-	sort (areaLights.begin(), areaLights.end(), sorter);
+    sorter.basePosition = (getModelviewMatrix() * cameraMatrix).getPosition();
+	sort (pointLights.begin(), pointLights.end(), sorter);
 	sort (spotLights.begin(), spotLights.end(), sorter);	
 }
 
-void Renderer::addLight(int lightImportance, Vector3 position, Vector3 direction, int type, Color color, Color specularColor, Number constantAttenuation, Number linearAttenuation, Number quadraticAttenuation, Number intensity, Number spotlightCutoff, Number spotlightExponent, bool shadowsEnabled, Matrix4 *textureMatrix,Texture *shadowMapTexture) {
+void Renderer::addLight(int lightImportance, const Vector3 &position, const Vector3 &direction, int type, const Color &color, const Color &specularColor, Number constantAttenuation, Number linearAttenuation, Number quadraticAttenuation, Number intensity, Number spotlightCutoff, Number spotlightExponent, bool shadowsEnabled, Matrix4 *textureMatrix,Texture *shadowMapTexture) {
 
 	numLights++;
 	
@@ -147,9 +145,9 @@ void Renderer::addLight(int lightImportance, Vector3 position, Vector3 direction
 	info.position = position;
 	lights.push_back(info);
 	switch(type) {
-		case 0: //area light
-			areaLights.push_back(info);
-			numAreaLights++;
+		case 0: //point light
+			pointLights.push_back(info);
+			numPointLights++;
 		break;
 		case 1: //spot light
 			spotLights.push_back(info);			
@@ -267,13 +265,16 @@ void Renderer::applyMaterial(Material *material,  ShaderBinding *localOptions,un
 	}
 	
 	FixedShaderBinding *fBinding;
+    
+    Shader *shader = material->getShader(shaderIndex);
+	if(shader->numPointLights + shader->numSpotLights > 0) {
+		sortLights();
+	}
 	
 	switch(material->getShader(shaderIndex)->getType()) {
 		case Shader::FIXED_SHADER:
-            //			FixedShader *fShader = (FixedShader*)material->getShader();
 			fBinding = (FixedShaderBinding*)material->getShaderBinding(shaderIndex);
 			setTexture(fBinding->getDiffuseTexture());
-            //			setTexture(fShader->getDiffuseTexture());
             break;
 		case Shader::MODULE_SHADER:
 			currentMaterial = material;

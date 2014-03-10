@@ -2507,6 +2507,9 @@ SceneLightSheet::SceneLightSheet() : PropSheet("LIGHT", "scene_light") {
     typeProp->comboEntry->addComboItem("Spot");
     addProp(typeProp);
     
+    importanceProp = new NumberProp("Importance");
+    addProp(importanceProp);
+    
     lightColorProp = new ColorProp("Light color");
     addProp(lightColorProp);
     
@@ -2588,6 +2591,8 @@ void SceneLightSheet::setSceneLight(SceneLight *light) {
         linearAttenuationProp->set(light->getLinearAttenuation());
         quadraticAttenuationProp->set(light->getQuadraticAttenuation());
         
+        importanceProp->set(light->getLightImportance());
+        
         spotlightCutoffProp->set(light->getSpotlightCutoff());
         spotlightExponentProp->set(light->getSpotlightExponent());
         
@@ -2633,6 +2638,8 @@ void SceneLightSheet::handleEvent(Event *event) {
             light->setSpotlightProperties(spotlightCutoffProp->get(), light->getSpotlightExponent());
         } else if(event->getDispatcher() == spotlightExponentProp) {
             light->setSpotlightProperties(light->getSpotlightCutoff(), spotlightExponentProp->get());
+        } else if(event->getDispatcher() == importanceProp) {
+            light->setLightImportance(importanceProp->get());
         }
 
         updateOptionVisibility();

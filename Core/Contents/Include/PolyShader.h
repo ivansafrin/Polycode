@@ -99,7 +99,7 @@ namespace Polycode {
 			static const int MODULE_SHADER = 1;
 
 			int numSpotLights;
-			int numAreaLights;
+			int numPointLights;
 			
 			std::vector<String> expectedTextures;
 			std::vector<String> expectedCubemaps;			

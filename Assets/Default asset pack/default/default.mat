@@ -1,43 +1,43 @@
 <?xml version="1.0" ?>
 <polycode>	
 	<shaders>		
-		<shader type="glsl" name="DefaultShader" numAreaLights="4" numSpotLights="2">		
+		<shader type="glsl" name="DefaultShader" numPointLights="4" numSpotLights="2">		
 			<vp source="default/DefaultShader.vert"/>
 			<fp source="default/DefaultShader.frag"/>
 		</shader>	
-		<shader type="glsl" name="DefaultShaderNoTexture" numAreaLights="4" numSpotLights="2">	
+		<shader type="glsl" name="DefaultShaderNoTexture" numPointLights="4" numSpotLights="2">	
 			<vp source="default/DefaultShader.vert"/>
 			<fp source="default/DefaultShaderNoTexture.frag"/>
 		</shader>
-		<shader type="glsl" name="DefaultShaderShadows" numAreaLights="4" numSpotLights="2">		
+		<shader type="glsl" name="DefaultShaderShadows" numPointLights="4" numSpotLights="2">		
 			<vp source="default/DefaultShaderShadows.vert"/>
 			<fp source="default/DefaultShaderShadows.frag"/>
 		</shader>		
-		<shader type="glsl" name="DefaultShaderVertex" numAreaLights="4" numSpotLights="2">		
+		<shader type="glsl" name="DefaultShaderVertex" numPointLights="4" numSpotLights="2">		
 			<vp source="default/DefaultShaderVertex.vert"/>
 			<fp source="default/DefaultShaderVertex.frag"/>
 		</shader>			
-		<shader type="glsl" name="DefaultShaderVertexNoTexture" numAreaLights="4" numSpotLights="2">		
+		<shader type="glsl" name="DefaultShaderVertexNoTexture" numPointLights="4" numSpotLights="2">		
 			<vp source="default/DefaultShaderVertex.vert"/>
 			<fp source="default/DefaultShaderVertexNoTexture.frag"/>
 		</shader>
-		<shader type="glsl" name="DefaultParticleShader" numAreaLights="4" numSpotLights="2">		
+		<shader type="glsl" name="DefaultParticleShader" numPointLights="4" numSpotLights="2">		
 			<vp source="default/DefaultShader.vert"/>
 			<fp source="default/DefaultParticleShader.frag"/>
 		</shader>															
-		<shader type="glsl" name="Unlit" numAreaLights="0" numSpotLights="0">		
+		<shader type="glsl" name="Unlit" numPointLights="0" numSpotLights="0">		
 			<vp source="default/Unlit.vert"/>
 			<fp source="default/Unlit.frag"/>
 		</shader>
-		<shader type="glsl" name="UnlitUntextured" numAreaLights="0" numSpotLights="0">		
+		<shader type="glsl" name="UnlitUntextured" numPointLights="0" numSpotLights="0">		
 			<vp source="default/Unlit.vert"/>
 			<fp source="default/UnlitUntextured.frag"/>
 		</shader>		
-		<shader type="glsl" name="LightCube" numAreaLights="0" numSpotLights="0">		
+		<shader type="glsl" name="LightCube" numPointLights="0" numSpotLights="0">		
 			<vp source="default/DefaultShader.vert"/>
 			<fp source="default/LightCube.frag"/>
 		</shader>		
-		<shader type="glsl" name="NorColSpec" numAreaLights="4" numSpotLights="2">		
+		<shader type="glsl" name="NorColSpec" numPointLights="4" numSpotLights="2">		
 			<vp source="default/NormalShader.vert"/>
 			<fp source="default/NorColSpec.frag"/>
 		</shader>

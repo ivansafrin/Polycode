@@ -34,7 +34,7 @@ namespace Polycode {
 //	class ScenePrimitive;
 	
 	/**
-	* 3D light source. Lights can be area or spot lights and can be set to different colors. 
+	* 3D light source. Lights can be point or spot lights and can be set to different colors. 
 	*/
 	class _PolyExport SceneLight : public Entity {
 		public:

@@ -240,7 +240,7 @@ class ShaderEditorPane : public UIElement {
 		BoolProp *screenShaderProp;
 	
 		
-		NumberProp *areaLightsProp;
+		NumberProp *pointLightsProp;
 		NumberProp *spotLightsProp;		
 };
 

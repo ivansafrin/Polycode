@@ -349,6 +349,7 @@ void SceneMesh::Render() {
 	renderer->setPointSmooth(pointSmooth);
 	
 	if(material) {
+        
 		renderer->applyMaterial(material, localShaderOptions,0, forceMaterial);
 	} else {
 		if(texture)

@@ -147,7 +147,6 @@ namespace Polycode {
 		* @param light Light to remove from the scene.
 		*/		
 		void removeLight(SceneLight *light);		
-		SceneLight *getNearestLight(Vector3 pos);
 				
 		int getNumLights();
 		SceneLight *getLight(int index);

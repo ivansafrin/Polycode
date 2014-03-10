@@ -356,9 +356,9 @@ ShaderEditorPane::ShaderEditorPane(ResourcePool *resourcePool) : UIElement() {
 	baseProps->addProp(fragmentProgramProp);	
 	fragmentProgramProp->addEventListener(this, Event::CHANGE_EVENT);	
 	
-	areaLightsProp = new NumberProp("Num area lights");
-	baseProps->addProp(areaLightsProp);	
-	areaLightsProp->addEventListener(this, Event::CHANGE_EVENT);
+	pointLightsProp = new NumberProp("Num point lights");
+	baseProps->addProp(pointLightsProp);
+	pointLightsProp->addEventListener(this, Event::CHANGE_EVENT);
 
 	spotLightsProp = new NumberProp("Num spotlights");
 	baseProps->addProp(spotLightsProp);	
@@ -388,8 +388,8 @@ void ShaderEditorPane::handleEvent(Event *event) {
 			dispatchEvent(new Event(), Event::CHANGE_EVENT);			
 		}
 				
-		if(event->getDispatcher() == areaLightsProp) {
-			currentShader->numAreaLights = floor(areaLightsProp->get());
+		if(event->getDispatcher() == pointLightsProp) {
+			currentShader->numPointLights = floor(pointLightsProp->get());
 			dispatchEvent(new Event(), Event::CHANGE_EVENT);
 		}
 
@@ -504,7 +504,7 @@ void ShaderEditorPane::setShader(Shader *shader) {
 	
 	screenShaderProp->set(shader->screenShader);
 	
-	areaLightsProp->set(shader->numAreaLights);
+	pointLightsProp->set(shader->numPointLights);
 	spotLightsProp->set(shader->numSpotLights);
 	
 	enabled = true;
@@ -1350,7 +1350,7 @@ void PolycodeMaterialEditor::saveFile() {
 		ObjectEntry *shaderEntry = shadersEntry->addChild("shader");
 		shaderEntry->addChild("type", String("glsl"));
 		shaderEntry->addChild("name", shaders[i]->getName());
-		shaderEntry->addChild("numAreaLights", shaders[i]->numAreaLights);
+		shaderEntry->addChild("numPointLights", shaders[i]->numPointLights);
 		shaderEntry->addChild("numSpotLights", shaders[i]->numSpotLights);
 		shaderEntry->addChild("screen", shaders[i]->screenShader);
 

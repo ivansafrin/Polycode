@@ -1,11 +1,11 @@
 <?xml version="1.0" ?>
 <polycode>	
 	<shaders>
-		<shader type="glsl" name="NorColSpecHDR" numAreaLights="4" numSpotLights="2">		
+		<shader type="glsl" name="NorColSpecHDR" numPointLights="4" numSpotLights="2">		
 			<vp source="default/NormalShader.vert"/>
 			<fp source="hdr/NorColSpecHDR.frag"/>
 		</shader>
-		<shader type="glsl" name="DefaultShaderNoTextureHDR" numAreaLights="4" numSpotLights="2">	
+		<shader type="glsl" name="DefaultShaderNoTextureHDR" numPointLights="4" numSpotLights="2">	
 			<vp source="default/DefaultShader.vert"/>
 			<fp source="hdr/DefaultShaderNoTextureHDR.frag"/>
 		</shader>		

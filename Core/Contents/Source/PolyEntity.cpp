@@ -500,12 +500,9 @@ void Entity::transformAndRender() {
 	renderer->pushMatrix();
 	if(ignoreParentMatrix && parentEntity) {
 		renderer->multModelviewMatrix(parentEntity->getConcatenatedMatrix().Inverse());
-//		renderer->setCurrentModelMatrix(parentEntity->getConcatenatedMatrix().Inverse());
 	}
 
-		renderer->multModelviewMatrix(transformMatrix);
-		renderer->setCurrentModelMatrix(transformMatrix);
-		
+    renderer->multModelviewMatrix(transformMatrix);
 	renderer->setVertexColor(color.r,color.g,color.b,color.a);
 	
 	if(billboardMode) {

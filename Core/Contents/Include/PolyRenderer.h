@@ -65,12 +65,11 @@ namespace Polycode {
 	class _PolyExport LightSorter : public PolyBase {
 		public:
 			Vector3 basePosition;
-			Matrix4 cameraMatrix;
-			bool operator() (LightInfo i,LightInfo j) {
+			bool operator() (LightInfo i,LightInfo j) {                
 				if(i.lightImportance > j.lightImportance)
 					return true;
 				if(i.lightImportance == j.lightImportance)
-					return ((cameraMatrix*i.position).distance(basePosition)<(cameraMatrix*j.position).distance(basePosition));
+					return i.position.distance(basePosition) < j.position.distance(basePosition);
 				return false; 
 			}
 	};
@@ -164,10 +163,7 @@ namespace Polycode {
 				
 		virtual void multModelviewMatrix(Matrix4 m) = 0;
 		virtual void setModelviewMatrix(Matrix4 m) = 0;
-		
-		void setCurrentModelMatrix(Matrix4 m) { currentModelMatrix = m; }
-		Matrix4 getCurrentModelMatrix() { return currentModelMatrix; }
-		
+				
 		virtual void setBlendingMode(int blendingMode) = 0;	
 			
 		virtual void applyMaterial(Material *material, ShaderBinding *localOptions, unsigned int shaderIndex, bool forceMaterial);
@@ -236,7 +232,7 @@ namespace Polycode {
 		virtual void cullFrontFaces(bool val) = 0;
 		
 		void clearLights();
-		void addLight(int lightImportance, Vector3 position, Vector3 direction, int type, Color color, Color specularColor, Number constantAttenuation, Number linearAttenuation, Number quadraticAttenuation, Number intensity, Number spotlightCutoff, Number spotlightExponent, bool shadowsEnabled, Matrix4 *textureMatrix, Texture *shadowMapTexture);
+		void addLight(int lightImportance, const Vector3 &position, const Vector3 &direction, int type, const Color &color, const Color &specularColor, Number constantAttenuation, Number linearAttenuation, Number quadraticAttenuation, Number intensity, Number spotlightCutoff, Number spotlightExponent, bool shadowsEnabled, Matrix4 *textureMatrix, Texture *shadowMapTexture);
 		
 		void setExposureLevel(Number level);
 		
@@ -286,11 +282,11 @@ namespace Polycode {
 		
 		void sortLights();
 		
-		int getNumAreaLights() { return numAreaLights; }
+		int getNumPointLights() { return numPointLights; }
 		int getNumSpotLights() { return numSpotLights; }
 		int getNumLights() { return numLights; }
 		
-		std::vector<LightInfo> getAreaLights() { return areaLights; }
+		std::vector<LightInfo> getPointLights() { return pointLights; }
 		std::vector<LightInfo> getSpotLights() { return spotLights;	}
 		
 		bool doClearBuffer;
@@ -323,7 +319,6 @@ namespace Polycode {
 		Polycode::Rectangle scissorBox;
 	
 		Number anisotropy;
-		Matrix4 currentModelMatrix;
 		LightSorter sorter;	
 	
 		Number viewportWidth;
@@ -345,10 +340,10 @@ namespace Polycode {
 		std::vector <PolycodeShaderModule*> shaderModules;
 
 		std::vector<LightInfo> lights;
-		std::vector<LightInfo> areaLights;
+		std::vector<LightInfo> pointLights;
 		std::vector<LightInfo> spotLights;
 		int numLights;
-		int numAreaLights;
+		int numPointLights;
 		int numSpotLights;
 		
 		bool shadersEnabled;

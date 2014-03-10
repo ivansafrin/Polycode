@@ -661,6 +661,7 @@ class SceneLightSheet : public PropSheet {
         SceneLight *light;
     
         ComboProp *typeProp;
+        NumberProp *importanceProp;
         ColorProp *lightColorProp;
         ColorProp *specularColorProp;
         NumberProp *intensityProp;

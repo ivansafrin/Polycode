@@ -220,7 +220,7 @@ Shader *MaterialManager::createShader(ResourcePool *resourcePool, String shaderT
 	
 	if(retShader) {
 		retShader->screenShader = screenShader;
-		retShader->numAreaLights = 0;
+		retShader->numPointLights = 0;
 		retShader->numSpotLights = 0;
         retShader->setResourceName(name);        
 	}
@@ -247,11 +247,11 @@ Shader *MaterialManager::createShaderFromXMLNode(ResourcePool *resourcePool, TiX
 	if (!retShader)
 		return NULL;
 
-	int numAreaLights = 0;
+	int numPointLights = 0;
 	int numSpotLights = 0;
 		
-	if(nodeElement->Attribute("numAreaLights")) {
-		numAreaLights = atoi(nodeElement->Attribute("numAreaLights"));
+	if(nodeElement->Attribute("numPointLights")) {
+		numPointLights = atoi(nodeElement->Attribute("numPointLights"));
 	}
 	if(nodeElement->Attribute("numSpotLights")) {
 		numSpotLights = atoi(nodeElement->Attribute("numSpotLights"));
@@ -266,7 +266,7 @@ Shader *MaterialManager::createShaderFromXMLNode(ResourcePool *resourcePool, TiX
 	}
 	
 	if(retShader) {
-		retShader->numAreaLights = numAreaLights;
+		retShader->numPointLights = numPointLights;
 		retShader->numSpotLights = numSpotLights;		
 	}	
 	
