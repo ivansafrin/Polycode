@@ -30,6 +30,61 @@ using namespace Polycode;
 
 UIElement *UIElement::globalFocusedChild = NULL;
 
+UIMultilineLabel::UIMultilineLabel(const String& text, int size, int spacing, const String& fontName, int amode) : UIElement() {
+    labelSize = size;
+    labelFontName = fontName;
+    labelAAMode = amode;
+    this->spacing = spacing;
+    setText(text);
+}
+
+void UIMultilineLabel::setText(const String& text) {
+    clearLabels();
+    
+    std::vector<String> lines = text.split("\n");
+    
+    Number lineSize = spacing;
+    Number yPos = 0.0;
+    for(int i=0; i < lines.size(); i++) {
+        if(lines[i] == "") {
+            yPos += lineSize + spacing;
+        } else {
+            UILabel *label = new UILabel(lines[i], labelSize, labelFontName, labelAAMode);
+            lineSize = label->getHeight();
+            addChild(label);
+            label->setPositionY(yPos);
+            yPos += label->getHeight() + spacing;
+            addChild(label);
+        }
+    }
+}
+
+String UIMultilineLabel::getText() {
+    String text;
+    for(int i=0; i < labels.size(); i++) {
+        if(i != 0) {
+            text += "\n";
+        }
+        text += labels[i]->getText();
+    }
+    return text;
+}
+
+void UIMultilineLabel::clearLabels() {
+    for(int i=0; i < labels.size(); i++) {
+        removeChild(labels[i]);
+        delete labels[i];
+    }
+    labels.clear();
+}
+
+UIMultilineLabel::~UIMultilineLabel() {
+    if(!ownsChildren) {
+        clearLabels();
+    }
+}
+
+
 UILabel::UILabel(const String& text, int size, const String& fontName, int amode) : UIElement() {
 
 	Config *conf = CoreServices::getInstance()->getConfig();	

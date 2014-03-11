@@ -118,6 +118,25 @@ namespace Polycode {
 		protected:
 			SceneLabel *label;
 	};
+    
+	class _PolyExport UIMultilineLabel : public UIElement {
+    public:
+        UIMultilineLabel(const String& text, int size, int spacing, const String& fontName = "sans", int amode = 0);
+        void setText(const String& text);
+        String getText();
+        
+        ~UIMultilineLabel();
+    protected:
+        
+        int labelSize;
+        String labelFontName;
+        int labelAAMode;
+        int spacing;
+        
+        void clearLabels();
+        std::vector<UILabel*> labels;
+	};
+    
 
 	
 	class _PolyExport UIImage : public UIRect {

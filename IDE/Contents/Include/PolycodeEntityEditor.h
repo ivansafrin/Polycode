@@ -240,6 +240,8 @@ class EntityEditorMainView : public UIElement {
     
             UIIconSelector *shadeModeSelector;
             UIIconSelector *lightingModeSelector;
+
+            UIIconSelector *iconVisibilitySelector;
     
             UIImageButton *moveUpButton;
             UIImageButton *moveTopButton;

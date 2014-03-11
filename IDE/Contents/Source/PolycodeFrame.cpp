@@ -1400,15 +1400,26 @@ PolycodeFrame::PolycodeFrame(PolycodeEditorManager *editorManager) : UIElement()
 	aboutOKButton->setPosition(700, 420);
 	aboutOKButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
+    String info1Text = "Polycode is developed by:\n\nProject lead:\nIvan Safrin\n\nTop project contributors in order of commits:\nCameron Hart, Andi McClure, samiamwork, Christian Bielert,\nChristopher Reed, TheCosmotect, Danny Warren, Paul Smith,\nDevin Stone, Jon Kristinsson, Henry Maddocks,\nJohan Klokkhammer Helsing, Chris Ledet, Per Bodin, Quinlan P.,\nLee-R, Guillaume Papin, Remi Gillig, ZenX2,\nMatt Tuttle, Alejandro Cámara, Jake Scott, tastymorsel";
+    
+    UIMultilineLabel *info1 = new UIMultilineLabel(info1Text, 12, 5);
+    aboutWindow->addChild(info1);
+    info1->setPosition(40, 200);
+    
+    String info2Text = "Polycode uses the following open-source libraries:\n\nAssimp (BSD license)\nBox2D (zlib license)\nBullet Physics (zlib license)\nFreetype (Freetype license)\nlibpng (libpng license)\nLua (MIT license),\nOggVorbis (BSD license)\nPhysFS (zlib license)\ntinyXML (zlib license)\nSDL (on Linux only) (zlib license)\n\nPolycode itself is distributed\nunder the MIT license.\n\n\n\nThank you for using Polycode!";
+    
+    UIMultilineLabel *info2 = new UIMultilineLabel(info2Text, 12, 5);
+    aboutWindow->addChild(info2);
+    info2->setPosition(450, 40);
+
+	UILabel *versionLabel = new UILabel("version "POLYCODE_VERSION_STRING, 12, "mono");
+	aboutWindow->addChild(versionLabel);
+	versionLabel->setPosition(40, 430);
+	versionLabel->color.a = 1.0;
 	
 	assetImporterWindow = new AssetImporterWindow();
 	
-	
-	UILabel *versionLabel = new UILabel("version 0.8.2", 12, "mono");
-	aboutWindow->addChild(versionLabel);
-	versionLabel->setPosition(20, 430);
-	versionLabel->color.a = 1.0;
-	
+		
 	isDragging  = false;
 	dragLabel = new UILabel("NONE", 11, "sans");
 	dragLabel->setPosition(0,-15);

@@ -313,6 +313,7 @@ EntityEditorMainView::EntityEditorMainView(PolycodeEditor *editor) {
     this->editor = editor;
 
 	mainScene = new Scene(Scene::SCENE_3D, true);
+
 	renderTexture = new SceneRenderTexture(mainScene, mainScene->getDefaultCamera(), 512, 512);
 	mainScene->clearColor.setColor(0.2, 0.2, 0.2, 1.0);	
 	mainScene->useClearColor = true;
@@ -459,6 +460,14 @@ EntityEditorMainView::EntityEditorMainView(PolycodeEditor *editor) {
     bottomBar->addChild(snapSelector);
     snapSelector->setPosition(156, 2);
     snapSelector->addEventListener(this, UIEvent::SELECT_EVENT);
+    
+    iconVisibilitySelector = new UIIconSelector();
+    iconVisibilitySelector->addIcon("entityEditor/show_icons.png");
+    iconVisibilitySelector->addIcon("entityEditor/hide_icons.png");
+    bottomBar->addChild(iconVisibilitySelector);
+    iconVisibilitySelector->setPosition(230, 2);
+    iconVisibilitySelector->addEventListener(this, UIEvent::SELECT_EVENT);
+    
     
     editorMode = EDITOR_MODE_3D;
     
@@ -622,6 +631,7 @@ void EntityEditorMainView::Update() {
         }
         icons[i]->setScale(scale, scale, scale);
         icons[i]->rebuildTransformMatrix();
+        icons[i]->recalculateAABBAllChildren();
     }
 }
 
@@ -1161,7 +1171,16 @@ void EntityEditorMainView::handleEvent(Event *event) {
             break;
         }
     } else if(event->getDispatcher() == grid) {
-                transformGizmo->setSnapSize(grid->getGridSize());        
+                transformGizmo->setSnapSize(grid->getGridSize());
+    } else if(event->getDispatcher() == iconVisibilitySelector) {
+        switch(iconVisibilitySelector->getSelectedIndex()) {
+            case 0:
+                iconBase->visible = true;
+            break;
+            case 1:
+                iconBase->visible = false;
+            break;
+        }
     } else {
         if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN && hasFocus && event->getDispatcher() != renderTextureShape) {
             InputEvent *inputEvent = (InputEvent*) event;
