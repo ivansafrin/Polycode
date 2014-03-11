@@ -70,18 +70,36 @@ void Camera::setFOV(Number fov) {
 	this->fov = fov;
 }
 
-bool Camera::isSphereInFrustum(Vector3 pos, Number fRadius) {
+bool Camera::isSphereInFrustum(const Vector3 &pos, Number fRadius) {
 	if(!frustumCulling)
 		return true;
     for( int i = 0; i < 6; ++i )
     {
-        if( frustumPlanes[i][0] * pos.x +
-            frustumPlanes[i][1] * pos.y +
-            frustumPlanes[i][2] * pos.z +
-            frustumPlanes[i][3] <= -fRadius )
+        if( frustumPlanes[i].x * pos.x +
+            frustumPlanes[i].y * pos.y +
+            frustumPlanes[i].z * pos.z +
+            frustumPlanes[i].w <= -fRadius )
             return false;
     }
 
+    return true;
+}
+
+
+bool Camera::isAABBInFrustum(const AABB &aabb) {
+    for( int i=0; i < 6; i++) {
+        int out = 0;
+        out += (frustumPlanes[i].dot(Vector4(aabb.min.x, aabb.min.y, aabb.min.z, 1.0)) < 0.0) ? 1 : 0;
+        out += (frustumPlanes[i].dot(Vector4(aabb.max.x, aabb.min.y, aabb.min.z, 1.0)) < 0.0) ? 1 : 0;
+        out += (frustumPlanes[i].dot(Vector4(aabb.min.x, aabb.max.y, aabb.min.z, 1.0)) < 0.0) ? 1 : 0;
+        out += (frustumPlanes[i].dot(Vector4(aabb.max.x, aabb.max.y, aabb.min.z, 1.0)) < 0.0) ? 1 : 0;
+        out += (frustumPlanes[i].dot(Vector4(aabb.min.x, aabb.min.y, aabb.max.z, 1.0)) < 0.0) ? 1 : 0;
+        out += (frustumPlanes[i].dot(Vector4(aabb.max.x, aabb.min.y, aabb.max.z, 1.0)) < 0.0) ? 1 : 0;
+        out += (frustumPlanes[i].dot(Vector4(aabb.min.x, aabb.max.y, aabb.max.z, 1.0)) < 0.0) ? 1 : 0;
+        out += (frustumPlanes[i].dot(Vector4(aabb.max.x, aabb.max.y, aabb.max.z, 1.0)) < 0.0) ? 1 : 0;
+        if( out==8 ) return false;
+    }
+    
     return true;
 }
 
@@ -121,12 +139,10 @@ Number Camera::getOrthoSizeY() {
 
 void Camera::buildFrustumPlanes() {
 
-	Matrix4 p; 
 	Matrix4 mv;
 	Matrix4 mvp;
 	Number t;
 
-	p = renderer->getProjectionMatrix();
     mv = renderer->getModelviewMatrix();
 
     //
@@ -134,134 +150,134 @@ void Camera::buildFrustumPlanes() {
     // a combined model-view-projection matrix.
     //
 
-    mvp.ml[ 0] = mv.ml[ 0] * p.ml[ 0] + mv.ml[ 1] * p.ml[ 4] + mv.ml[ 2] * p.ml[ 8] + mv.ml[ 3] * p.ml[12];
+    mvp.ml[ 0] = mv.ml[ 0] * projectionMatrix.ml[ 0] + mv.ml[ 1] * projectionMatrix.ml[ 4] + mv.ml[ 2] * projectionMatrix.ml[ 8] + mv.ml[ 3] * projectionMatrix.ml[12];
 
-    mvp.ml[ 1] = mv.ml[ 0] * p.ml[ 1] + mv.ml[ 1] * p.ml[ 5] + mv.ml[ 2] * p.ml[ 9] + mv.ml[ 3] * p.ml[13];
-    mvp.ml[ 2] = mv.ml[ 0] * p.ml[ 2] + mv.ml[ 1] * p.ml[ 6] + mv.ml[ 2] * p.ml[10] + mv.ml[ 3] * p.ml[14];
-    mvp.ml[ 3] = mv.ml[ 0] * p.ml[ 3] + mv.ml[ 1] * p.ml[ 7] + mv.ml[ 2] * p.ml[11] + mv.ml[ 3] * p.ml[15];
+    mvp.ml[ 1] = mv.ml[ 0] * projectionMatrix.ml[ 1] + mv.ml[ 1] * projectionMatrix.ml[ 5] + mv.ml[ 2] * projectionMatrix.ml[ 9] + mv.ml[ 3] * projectionMatrix.ml[13];
+    mvp.ml[ 2] = mv.ml[ 0] * projectionMatrix.ml[ 2] + mv.ml[ 1] * projectionMatrix.ml[ 6] + mv.ml[ 2] * projectionMatrix.ml[10] + mv.ml[ 3] * projectionMatrix.ml[14];
+    mvp.ml[ 3] = mv.ml[ 0] * projectionMatrix.ml[ 3] + mv.ml[ 1] * projectionMatrix.ml[ 7] + mv.ml[ 2] * projectionMatrix.ml[11] + mv.ml[ 3] * projectionMatrix.ml[15];
 
-    mvp.ml[ 4] = mv.ml[ 4] * p.ml[ 0] + mv.ml[ 5] * p.ml[ 4] + mv.ml[ 6] * p.ml[ 8] + mv.ml[ 7] * p.ml[12];
-    mvp.ml[ 5] = mv.ml[ 4] * p.ml[ 1] + mv.ml[ 5] * p.ml[ 5] + mv.ml[ 6] * p.ml[ 9] + mv.ml[ 7] * p.ml[13];
-    mvp.ml[ 6] = mv.ml[ 4] * p.ml[ 2] + mv.ml[ 5] * p.ml[ 6] + mv.ml[ 6] * p.ml[10] + mv.ml[ 7] * p.ml[14];
-    mvp.ml[ 7] = mv.ml[ 4] * p.ml[ 3] + mv.ml[ 5] * p.ml[ 7] + mv.ml[ 6] * p.ml[11] + mv.ml[ 7] * p.ml[15];
+    mvp.ml[ 4] = mv.ml[ 4] * projectionMatrix.ml[ 0] + mv.ml[ 5] * projectionMatrix.ml[ 4] + mv.ml[ 6] * projectionMatrix.ml[ 8] + mv.ml[ 7] * projectionMatrix.ml[12];
+    mvp.ml[ 5] = mv.ml[ 4] * projectionMatrix.ml[ 1] + mv.ml[ 5] * projectionMatrix.ml[ 5] + mv.ml[ 6] * projectionMatrix.ml[ 9] + mv.ml[ 7] * projectionMatrix.ml[13];
+    mvp.ml[ 6] = mv.ml[ 4] * projectionMatrix.ml[ 2] + mv.ml[ 5] * projectionMatrix.ml[ 6] + mv.ml[ 6] * projectionMatrix.ml[10] + mv.ml[ 7] * projectionMatrix.ml[14];
+    mvp.ml[ 7] = mv.ml[ 4] * projectionMatrix.ml[ 3] + mv.ml[ 5] * projectionMatrix.ml[ 7] + mv.ml[ 6] * projectionMatrix.ml[11] + mv.ml[ 7] * projectionMatrix.ml[15];
 
-    mvp.ml[ 8] = mv.ml[ 8] * p.ml[ 0] + mv.ml[ 9] * p.ml[ 4] + mv.ml[10] * p.ml[ 8] + mv.ml[11] * p.ml[12];
-    mvp.ml[ 9] = mv.ml[ 8] * p.ml[ 1] + mv.ml[ 9] * p.ml[ 5] + mv.ml[10] * p.ml[ 9] + mv.ml[11] * p.ml[13];
-    mvp.ml[10] = mv.ml[ 8] * p.ml[ 2] + mv.ml[ 9] * p.ml[ 6] + mv.ml[10] * p.ml[10] + mv.ml[11] * p.ml[14];
-    mvp.ml[11] = mv.ml[ 8] * p.ml[ 3] + mv.ml[ 9] * p.ml[ 7] + mv.ml[10] * p.ml[11] + mv.ml[11] * p.ml[15];
+    mvp.ml[ 8] = mv.ml[ 8] * projectionMatrix.ml[ 0] + mv.ml[ 9] * projectionMatrix.ml[ 4] + mv.ml[10] * projectionMatrix.ml[ 8] + mv.ml[11] * projectionMatrix.ml[12];
+    mvp.ml[ 9] = mv.ml[ 8] * projectionMatrix.ml[ 1] + mv.ml[ 9] * projectionMatrix.ml[ 5] + mv.ml[10] * projectionMatrix.ml[ 9] + mv.ml[11] * projectionMatrix.ml[13];
+    mvp.ml[10] = mv.ml[ 8] * projectionMatrix.ml[ 2] + mv.ml[ 9] * projectionMatrix.ml[ 6] + mv.ml[10] * projectionMatrix.ml[10] + mv.ml[11] * projectionMatrix.ml[14];
+    mvp.ml[11] = mv.ml[ 8] * projectionMatrix.ml[ 3] + mv.ml[ 9] * projectionMatrix.ml[ 7] + mv.ml[10] * projectionMatrix.ml[11] + mv.ml[11] * projectionMatrix.ml[15];
 
-    mvp.ml[12] = mv.ml[12] * p.ml[ 0] + mv.ml[13] * p.ml[ 4] + mv.ml[14] * p.ml[ 8] + mv.ml[15] * p.ml[12];
-    mvp.ml[13] = mv.ml[12] * p.ml[ 1] + mv.ml[13] * p.ml[ 5] + mv.ml[14] * p.ml[ 9] + mv.ml[15] * p.ml[13];
-    mvp.ml[14] = mv.ml[12] * p.ml[ 2] + mv.ml[13] * p.ml[ 6] + mv.ml[14] * p.ml[10] + mv.ml[15] * p.ml[14];
-    mvp.ml[15] = mv.ml[12] * p.ml[ 3] + mv.ml[13] * p.ml[ 7] + mv.ml[14] * p.ml[11] + mv.ml[15] * p.ml[15];
+    mvp.ml[12] = mv.ml[12] * projectionMatrix.ml[ 0] + mv.ml[13] * projectionMatrix.ml[ 4] + mv.ml[14] * projectionMatrix.ml[ 8] + mv.ml[15] * projectionMatrix.ml[12];
+    mvp.ml[13] = mv.ml[12] * projectionMatrix.ml[ 1] + mv.ml[13] * projectionMatrix.ml[ 5] + mv.ml[14] * projectionMatrix.ml[ 9] + mv.ml[15] * projectionMatrix.ml[13];
+    mvp.ml[14] = mv.ml[12] * projectionMatrix.ml[ 2] + mv.ml[13] * projectionMatrix.ml[ 6] + mv.ml[14] * projectionMatrix.ml[10] + mv.ml[15] * projectionMatrix.ml[14];
+    mvp.ml[15] = mv.ml[12] * projectionMatrix.ml[ 3] + mv.ml[13] * projectionMatrix.ml[ 7] + mv.ml[14] * projectionMatrix.ml[11] + mv.ml[15] * projectionMatrix.ml[15];
 
     //
     // Extract the frustum's right clipping plane and normalize it.
     //
 
-    frustumPlanes[0][0] = mvp.ml[ 3] - mvp.ml[ 0];
-    frustumPlanes[0][1] = mvp.ml[ 7] - mvp.ml[ 4];
-    frustumPlanes[0][2] = mvp.ml[11] - mvp.ml[ 8];
-    frustumPlanes[0][3] = mvp.ml[15] - mvp.ml[12];
+    frustumPlanes[0].x = mvp.ml[ 3] - mvp.ml[ 0];
+    frustumPlanes[0].y = mvp.ml[ 7] - mvp.ml[ 4];
+    frustumPlanes[0].z = mvp.ml[11] - mvp.ml[ 8];
+    frustumPlanes[0].w = mvp.ml[15] - mvp.ml[12];
 
-    t = (Number) sqrt( frustumPlanes[0][0] * frustumPlanes[0][0] + 
-                      frustumPlanes[0][1] * frustumPlanes[0][1] + 
-                      frustumPlanes[0][2] * frustumPlanes[0][2] );
+    t = (Number) sqrt( frustumPlanes[0].x * frustumPlanes[0].x + 
+                      frustumPlanes[0].y * frustumPlanes[0].y + 
+                      frustumPlanes[0].z * frustumPlanes[0].z );
 
-    frustumPlanes[0][0] /= t;
-    frustumPlanes[0][1] /= t;
-    frustumPlanes[0][2] /= t;
-    frustumPlanes[0][3] /= t;
+    frustumPlanes[0].x /= t;
+    frustumPlanes[0].y /= t;
+    frustumPlanes[0].z /= t;
+    frustumPlanes[0].w /= t;
 
     //
     // Extract the frustum's left clipping plane and normalize it.
     //
 
-    frustumPlanes[1][0] = mvp.ml[ 3] + mvp.ml[ 0];
-    frustumPlanes[1][1] = mvp.ml[ 7] + mvp.ml[ 4];
-    frustumPlanes[1][2] = mvp.ml[11] + mvp.ml[ 8];
-    frustumPlanes[1][3] = mvp.ml[15] + mvp.ml[12];
+    frustumPlanes[1].x = mvp.ml[ 3] + mvp.ml[ 0];
+    frustumPlanes[1].y = mvp.ml[ 7] + mvp.ml[ 4];
+    frustumPlanes[1].z = mvp.ml[11] + mvp.ml[ 8];
+    frustumPlanes[1].w = mvp.ml[15] + mvp.ml[12];
 
-    t = (Number) sqrt( frustumPlanes[1][0] * frustumPlanes[1][0] + 
-                      frustumPlanes[1][1] * frustumPlanes[1][1] + 
-                      frustumPlanes[1][2] * frustumPlanes[1][2] );
+    t = (Number) sqrt( frustumPlanes[1].x * frustumPlanes[1].x + 
+                      frustumPlanes[1].y * frustumPlanes[1].y + 
+                      frustumPlanes[1].z * frustumPlanes[1].z );
 
-    frustumPlanes[1][0] /= t;
-    frustumPlanes[1][1] /= t;
-    frustumPlanes[1][2] /= t;
-    frustumPlanes[1][3] /= t;
+    frustumPlanes[1].x /= t;
+    frustumPlanes[1].y /= t;
+    frustumPlanes[1].z /= t;
+    frustumPlanes[1].w /= t;
 
     //
     // Extract the frustum's bottom clipping plane and normalize it.
     //
 
-    frustumPlanes[2][0] = mvp.ml[ 3] + mvp.ml[ 1];
-    frustumPlanes[2][1] = mvp.ml[ 7] + mvp.ml[ 5];
-    frustumPlanes[2][2] = mvp.ml[11] + mvp.ml[ 9];
-    frustumPlanes[2][3] = mvp.ml[15] + mvp.ml[13];
+    frustumPlanes[2].x = mvp.ml[ 3] + mvp.ml[ 1];
+    frustumPlanes[2].y = mvp.ml[ 7] + mvp.ml[ 5];
+    frustumPlanes[2].z = mvp.ml[11] + mvp.ml[ 9];
+    frustumPlanes[2].w = mvp.ml[15] + mvp.ml[13];
 
-    t = (Number) sqrt( frustumPlanes[2][0] * frustumPlanes[2][0] + 
-                      frustumPlanes[2][1] * frustumPlanes[2][1] + 
-                      frustumPlanes[2][2] * frustumPlanes[2][2] );
+    t = (Number) sqrt( frustumPlanes[2].x * frustumPlanes[2].x + 
+                      frustumPlanes[2].y * frustumPlanes[2].y + 
+                      frustumPlanes[2].z * frustumPlanes[2].z );
 
-    frustumPlanes[2][0] /= t;
-    frustumPlanes[2][1] /= t;
-    frustumPlanes[2][2] /= t;
-    frustumPlanes[2][3] /= t;
+    frustumPlanes[2].x /= t;
+    frustumPlanes[2].y /= t;
+    frustumPlanes[2].z /= t;
+    frustumPlanes[2].w /= t;
 
     //
     // Extract the frustum's top clipping plane and normalize it.
     //
 
-    frustumPlanes[3][0] = mvp.ml[ 3] - mvp.ml[ 1];
-    frustumPlanes[3][1] = mvp.ml[ 7] - mvp.ml[ 5];
-    frustumPlanes[3][2] = mvp.ml[11] - mvp.ml[ 9];
-    frustumPlanes[3][3] = mvp.ml[15] - mvp.ml[13];
+    frustumPlanes[3].x = mvp.ml[ 3] - mvp.ml[ 1];
+    frustumPlanes[3].y = mvp.ml[ 7] - mvp.ml[ 5];
+    frustumPlanes[3].z = mvp.ml[11] - mvp.ml[ 9];
+    frustumPlanes[3].w = mvp.ml[15] - mvp.ml[13];
 
-    t = (Number) sqrt( frustumPlanes[3][0] * frustumPlanes[3][0] + 
-                      frustumPlanes[3][1] * frustumPlanes[3][1] + 
-                      frustumPlanes[3][2] * frustumPlanes[3][2] );
+    t = (Number) sqrt( frustumPlanes[3].x * frustumPlanes[3].x + 
+                      frustumPlanes[3].y * frustumPlanes[3].y + 
+                      frustumPlanes[3].z * frustumPlanes[3].z );
 
-    frustumPlanes[3][0] /= t;
-    frustumPlanes[3][1] /= t;
-    frustumPlanes[3][2] /= t;
-    frustumPlanes[3][3] /= t;
+    frustumPlanes[3].x /= t;
+    frustumPlanes[3].y /= t;
+    frustumPlanes[3].z /= t;
+    frustumPlanes[3].w /= t;
 
     //
     // Extract the frustum's far clipping plane and normalize it.
     //
 
-    frustumPlanes[4][0] = mvp.ml[ 3] - mvp.ml[ 2];
-    frustumPlanes[4][1] = mvp.ml[ 7] - mvp.ml[ 6];
-    frustumPlanes[4][2] = mvp.ml[11] - mvp.ml[10];
-    frustumPlanes[4][3] = mvp.ml[15] - mvp.ml[14];
+    frustumPlanes[4].x = mvp.ml[ 3] - mvp.ml[ 2];
+    frustumPlanes[4].y = mvp.ml[ 7] - mvp.ml[ 6];
+    frustumPlanes[4].z = mvp.ml[11] - mvp.ml[10];
+    frustumPlanes[4].w = mvp.ml[15] - mvp.ml[14];
 
-    t = (Number) sqrt( frustumPlanes[4][0] * frustumPlanes[4][0] +  
-                      frustumPlanes[4][1] * frustumPlanes[4][1] + 
-                      frustumPlanes[4][2] * frustumPlanes[4][2] );
+    t = (Number) sqrt( frustumPlanes[4].x * frustumPlanes[4].x +  
+                      frustumPlanes[4].y * frustumPlanes[4].y + 
+                      frustumPlanes[4].z * frustumPlanes[4].z );
 
-    frustumPlanes[4][0] /= t;
-    frustumPlanes[4][1] /= t;
-    frustumPlanes[4][2] /= t;
-    frustumPlanes[4][3] /= t;
+    frustumPlanes[4].x /= t;
+    frustumPlanes[4].y /= t;
+    frustumPlanes[4].z /= t;
+    frustumPlanes[4].w /= t;
 
     //
     // Extract the frustum's near clipping plane and normalize it.
     //
 
-    frustumPlanes[5][0] = mvp.ml[ 3] + mvp.ml[ 2];
-    frustumPlanes[5][1] = mvp.ml[ 7] + mvp.ml[ 6];
-    frustumPlanes[5][2] = mvp.ml[11] + mvp.ml[10];
-    frustumPlanes[5][3] = mvp.ml[15] + mvp.ml[14];
+    frustumPlanes[5].x = mvp.ml[ 3] + mvp.ml[ 2];
+    frustumPlanes[5].y = mvp.ml[ 7] + mvp.ml[ 6];
+    frustumPlanes[5].z = mvp.ml[11] + mvp.ml[10];
+    frustumPlanes[5].w = mvp.ml[15] + mvp.ml[14];
 
-    t = (Number) sqrt( frustumPlanes[5][0] * frustumPlanes[5][0] + 
-                      frustumPlanes[5][1] * frustumPlanes[5][1] + 
-                      frustumPlanes[5][2] * frustumPlanes[5][2] );
+    t = (Number) sqrt( frustumPlanes[5].x * frustumPlanes[5].x + 
+                      frustumPlanes[5].y * frustumPlanes[5].y + 
+                      frustumPlanes[5].z * frustumPlanes[5].z );
 
-    frustumPlanes[5][0] /= t;
-    frustumPlanes[5][1] /= t;
-    frustumPlanes[5][2] /= t;
-    frustumPlanes[5][3] /= t;
+    frustumPlanes[5].x /= t;
+    frustumPlanes[5].y /= t;
+    frustumPlanes[5].z /= t;
+    frustumPlanes[5].w /= t;
 
 }
 
@@ -286,10 +302,6 @@ void Camera::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) co
 
 Scene *Camera::getParentScene() const {
     return parentScene;
-}
-
-bool Camera::canSee(Entity *entity) {
-	return isSphereInFrustum(entity->getPosition(), entity->getBBoxRadius());
 }
 
 void Camera::setParentScene(Scene *parentScene) {

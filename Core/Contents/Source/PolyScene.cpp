@@ -64,6 +64,7 @@ void Scene::initScene(int sceneType, bool virtualScene) {
 	useClearColor = false;
 	ownsChildren = false;
     remapMouse = false;
+    _doVisibilityChecking = true;
     constrainPickingToViewport = true;
 	renderer = CoreServices::getInstance()->getRenderer();
 	rootEntity.setRenderer(renderer);
@@ -71,6 +72,7 @@ void Scene::initScene(int sceneType, bool virtualScene) {
 	
     setSceneType(sceneType);
 	
+    core->addEventListener(this, Core::EVENT_CORE_RESIZE);
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEUP);
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
@@ -96,6 +98,7 @@ void Scene::setSceneType(int newType) {
             defaultCamera->setOrthoSizeMode(Camera::ORTHO_SIZE_VIEWPORT);
 			defaultCamera->topLeftOrtho = true;
 			rootEntity.setInverseY(true);
+            rootEntity.setPositionY(-CoreServices::getInstance()->getCore()->getYRes());            
             break;
 		case SCENE_3D:
 			defaultCamera->setClippingPlanes(1.0, 1000.0);
@@ -129,9 +132,7 @@ bool Scene::isEnabled() {
 }
 
 void Scene::Update() {
-	if(sceneType == SCENE_2D_TOPLEFT) {
-		rootEntity.setPositionY(-CoreServices::getInstance()->getCore()->getYRes());
-	}
+    rootEntity.updateEntityMatrix();
 	rootEntity.doUpdates();
 }
 
@@ -174,6 +175,35 @@ void Scene::removeEntity(Entity *entity) {
 
 Camera *Scene::getDefaultCamera() {
 	return defaultCamera;
+}
+
+void Scene::doVisibilityChecking(bool val) {
+    _doVisibilityChecking = val;
+    if(!_doVisibilityChecking) {
+        setEntityVisibilityBool(&rootEntity, true);
+    }
+}
+
+bool Scene::doesVisibilityChecking() {
+    return _doVisibilityChecking;
+}
+
+void Scene::setEntityVisibilityBool(Entity *entity, bool val) {
+    entity->rendererVis = val;
+    for(int i=0; i < entity->getNumChildren(); i++) {
+        setEntityVisibilityBool(entity->getChildAtIndex(i), val);
+    }
+}
+
+void Scene::setEntityVisibility(Entity *entity, Camera *camera) {
+    if(camera->frustumCulling) {
+        entity->rendererVis = camera->isAABBInFrustum(entity->getWorldAABB());
+    } else {
+        entity->rendererVis = true;
+    }
+    for(int i=0; i < entity->getNumChildren(); i++) {
+        setEntityVisibility(entity->getChildAtIndex(i), camera);
+    }
 }
 
 void Scene::Render(Camera *targetCamera) {	
@@ -244,17 +274,18 @@ void Scene::Render(Camera *targetCamera) {
 	}	
 		
 	targetCamera->doCameraTransform();
-	targetCamera->buildFrustumPlanes();
-	
-	CoreServices::getInstance()->getRenderer()->enableFog(fogEnabled);	
+    
+	CoreServices::getInstance()->getRenderer()->enableFog(fogEnabled);
 	if(fogEnabled) {
 		CoreServices::getInstance()->getRenderer()->setFogProperties(fogMode, fogColor, fogDensity, fogStartDepth, fogEndDepth);
 	} else {
 		CoreServices::getInstance()->getRenderer()->setFogProperties(fogMode, fogColor, 0.0, fogStartDepth, fogEndDepth);	
 	}
 	
-	
-	rootEntity.updateEntityMatrix();
+    if(_doVisibilityChecking) {
+        targetCamera->buildFrustumPlanes();
+        setEntityVisibility(&rootEntity, targetCamera);
+    }
 	rootEntity.transformAndRender();		
 }
 
@@ -264,14 +295,15 @@ void Scene::RenderDepthOnly(Camera *targetCamera) {
 	CoreServices::getInstance()->getRenderer()->cullFrontFaces(true);
 
 	targetCamera->rebuildTransformMatrix();	
-	targetCamera->doCameraTransform();	
-	targetCamera->buildFrustumPlanes();
+	targetCamera->doCameraTransform();
 	
 	CoreServices::getInstance()->getRenderer()->setTexture(NULL);
 	CoreServices::getInstance()->getRenderer()->enableShaders(false);
-	
-	
-	rootEntity.updateEntityMatrix();
+		
+    if(_doVisibilityChecking) {
+        targetCamera->buildFrustumPlanes();
+        setEntityVisibility(&rootEntity, targetCamera);
+    }
 	rootEntity.transformAndRender();	
 	
 	CoreServices::getInstance()->getRenderer()->enableShaders(true);
@@ -324,7 +356,11 @@ Ray Scene::projectRayFromCameraAndViewportCoordinate(Camera *camera, Vector2 coo
 
 
 void Scene::handleEvent(Event *event) {
-	if(event->getDispatcher() == core->getInput() && rootEntity.processInputEvents) {
+    if(event->getDispatcher() == core) {
+        if(sceneType == SCENE_2D_TOPLEFT) {
+            rootEntity.setPositionY(-CoreServices::getInstance()->getCore()->getYRes());
+        }
+    } else if(event->getDispatcher() == core->getInput() && rootEntity.processInputEvents) {
 		InputEvent *inputEvent = (InputEvent*) event;
 
         if(constrainPickingToViewport) {

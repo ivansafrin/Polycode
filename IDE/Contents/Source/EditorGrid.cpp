@@ -200,6 +200,8 @@ void EditorGrid::rebuildGrid() {
     zLine->setStart(Vector3(0.0, 0.0, gridSize * gridLen * 0.5));
     zLine->setEnd(Vector3(0.0, 0.0, gridSize * gridLen * -0.5));
     
+    grid->setLocalBoundingBox(gridSize * gridLen, 0.0, gridSize * gridLen);
+    
     grid->cacheToVertexBuffer(true);
 }
 

@@ -218,7 +218,7 @@ CameraPreviewWindow::CameraPreviewWindow() : UIElement() {
     scene = NULL;
     renderTexture = NULL;
     
-    bBox = bgRect->bBox;
+    setLocalBoundingBox(bgRect->getLocalBoundingBox());
     pinned = false;
     cameraSelected = false;
     
@@ -322,13 +322,13 @@ EntityEditorMainView::EntityEditorMainView(PolycodeEditor *editor) {
     // setup custom lights for disabled lighting
     customLight1 = new SceneLight(SceneLight::POINT_LIGHT, mainScene,999999, customFalloff, customFalloff, customFalloff);
     customLight1->editorOnly = true;
-    customLight1->setPosition(9999, 9999, 9999);
+    customLight1->setPosition(-9999, 9999, 9999);
     mainScene->addLight(customLight1);
     customLight1->enabled = false;
 
     customLight2 = new SceneLight(SceneLight::POINT_LIGHT, mainScene,999999, customFalloff, customFalloff, customFalloff);
     customLight2->editorOnly = true;
-    customLight2->setPosition(-9999, -9999, -9999);
+    customLight2->setPosition(8999, -8999, -8999);
     mainScene->addLight(customLight2);
     customLight2->enabled = false;
     
@@ -846,7 +846,7 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
     
     if(command == "add_particles") {
         SceneParticleEmitter  *newEmitter = new SceneParticleEmitter(30, 3.0, 0.2);
-        newEmitter->bBox = Vector3(0.5, 0.5, 0.5);
+        newEmitter->setLocalBoundingBox(0.5, 0.5, 0.5);
         
         newEmitter->setParticleType(SceneParticleEmitter::PARTICLE_TYPE_QUAD);
         
@@ -1800,9 +1800,9 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
     entry->addChild("pY", entity->getPosition().y);
     entry->addChild("pZ", entity->getPosition().z);
     
-    entry->addChild("bbX", entity->bBox.x);
-    entry->addChild("bbY", entity->bBox.y);
-    entry->addChild("bbZ", entity->bBox.z);
+    entry->addChild("bbX", entity->getLocalBoundingBox().x);
+    entry->addChild("bbY", entity->getLocalBoundingBox().y);
+    entry->addChild("bbZ", entity->getLocalBoundingBox().z);
     
     ObjectEntry *children = NULL;
     

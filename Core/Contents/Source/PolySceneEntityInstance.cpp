@@ -439,10 +439,12 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
 	
 	entity->ownsChildren = true;
 
-	entry->readNumber("bbX", &entity->bBox.x);
-	entry->readNumber("bbY", &entity->bBox.y);
-	entry->readNumber("bbZ", &entity->bBox.z);
-
+    Vector3 bBox;
+	entry->readNumber("bbX", &bBox.x);
+	entry->readNumber("bbY", &bBox.y);
+	entry->readNumber("bbZ", &bBox.z);
+    entity->setLocalBoundingBox(bBox);
+    
 	entity->color.r = (*entry)["cR"]->NumberVal;
 	entity->color.g = (*entry)["cG"]->NumberVal;
 	entity->color.b = (*entry)["cB"]->NumberVal;

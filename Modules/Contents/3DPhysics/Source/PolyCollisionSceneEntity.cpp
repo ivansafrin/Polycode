@@ -88,7 +88,7 @@ btCollisionShape *CollisionEntity::createCollisionShape(Entity *entity, int type
 	btCollisionShape *collisionShape = NULL;	
 	
     Vector3 scale = entity->getCompoundScale();
-    Vector3 bBox = entity->bBox;// * scale;
+    Vector3 bBox = entity->getLocalBoundingBox();// * scale;
 	
     Number largestSize = bBox.x;
     if(bBox.y > largestSize) {

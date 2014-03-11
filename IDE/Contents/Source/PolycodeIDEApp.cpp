@@ -102,6 +102,10 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 			
 	
 	Scene *screen = new Scene(Scene::SCENE_2D_TOPLEFT);
+    
+    screen->doVisibilityChecking(false);
+    screen->getDefaultCamera()->frustumCulling = false;
+    
     globalScene = screen;
     
 	screen->rootEntity.processInputEvents = true;

@@ -70,6 +70,7 @@ SET(polycore_SRCS
     Source/PolyTweenManager.cpp
     Source/PolyVector2.cpp
     Source/PolyVector3.cpp
+    Source/PolyVector4.cpp
     Source/PolyVertex.cpp
     Source/tinystr.cpp
     Source/tinyxml.cpp
@@ -157,6 +158,7 @@ SET(polycore_HDRS
     Include/PolyTweenManager.h
     Include/PolyVector2.h
     Include/PolyVector3.h
+    Include/PolyVector4.h
     Include/PolyVertex.h
     Include/tinystr.h
     Include/tinyxml.h

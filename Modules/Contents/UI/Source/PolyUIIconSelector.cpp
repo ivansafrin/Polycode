@@ -102,7 +102,7 @@ void UIIconSelector::resetSize() {
     setWidth((paddingX*2)+innerSize);
     setHeight((paddingY*2)+selectorSize);
     
-    bgRect->resizeBox(bBox.x, bBox.y);
+    bgRect->resizeBox(getWidth(), getHeight());
 }
 
 UIIconSelector::~UIIconSelector() {

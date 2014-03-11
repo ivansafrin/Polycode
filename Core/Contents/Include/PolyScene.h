@@ -191,12 +191,18 @@ namespace Polycode {
         bool remapMouse;
         
         bool constrainPickingToViewport;
-		
+        
+        void doVisibilityChecking(bool val);
+        bool doesVisibilityChecking();
+		      
 	protected:
 		
 		void initScene(int sceneType, bool virtualScene);
-
+        void setEntityVisibility(Entity *entity, Camera *camera);
+        void setEntityVisibilityBool(Entity *entity, bool val);
+        
 		bool hasLightmaps;
+        bool _doVisibilityChecking;
 		
 		Renderer *renderer;
 		std::vector <SceneLight*> lights;		

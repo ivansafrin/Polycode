@@ -25,6 +25,7 @@
 #include "PolyGlobals.h"
 #include "PolyEntity.h"
 #include "PolyVector2.h"
+#include "PolyVector4.h"
 
 namespace Polycode {
 
@@ -73,15 +74,9 @@ namespace Polycode {
 			* @return Returns true if the sphere is within the camera's frustum, or false if it isn't.
 			* @see canSee()
 			*/								
-			bool isSphereInFrustum(Vector3 pos, Number fRadius);
-		
-			/**
-			* Checks if the camera can see an entity based on its bounding radius.
-			* @param entity Entity to check.
-			* @return Returns true if the entity's bounding radius is within the camera's frustum, or false if it isn't.
-			* @see isSphereInFrustum()
-			*/					
-			bool canSee(Entity *entity);
+			bool isSphereInFrustum(const Vector3 &pos, Number fRadius);
+        
+            bool isAABBInFrustum(const AABB &aabb);
 			
 			/**
 			* Toggles orthographic projection mode for camera.
@@ -238,7 +233,7 @@ namespace Polycode {
 
 			Number leftFrustum,rightFrustum,topFrustum,bottomFrustum;
 
-			Number frustumPlanes[6][4];
+			Vector4 frustumPlanes[6];
 
 			Scene *parentScene;
 

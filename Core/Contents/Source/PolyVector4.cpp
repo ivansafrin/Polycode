@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2012 by Ivan Safrin
+ Copyright (C) 2011 by Ivan Safrin
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -18,53 +18,30 @@
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
- */
- 
-#pragma once
+*/
 
-#include "PolycodeEditor.h"
-#include "PolyUIElement.h"
-#include "TrackballCamera.h"
-#include "PolycodeUI.h"
-#include <Polycode.h>
+#include "PolyVector4.h"
 
 using namespace Polycode;
 
-class PolycodeMeshEditor : public PolycodeEditor {
-	public:
-	
-		PolycodeMeshEditor();
-		virtual ~PolycodeMeshEditor();
-	
-		void handleEvent(Event *event);
-	
-		void reloadMaterials();
-	
-		bool openFile(OSFileEntry filePath);
-		void Resize(int x, int y);
-	
-	protected:
-	
-		Scene *previewScene;
-		
-		SceneLight *mainLight;
-		SceneLight *secondLight;		
-		SceneRenderTexture *renderTexture;
-		UIRect *previewShape;
-		SceneMesh *previewMesh;
-		Entity *previewBase;
-		
-		Material *currentMaterial;
-				
-		UIComboBox *materialDropDown;
-		UIRect *headerBg;
-		
-		TrackballCamera *trackballCamera;
+Vector4::Vector4() : x(0),y(0),z(0), w(0){
+}
 
-};
+void Vector4::set(Number x, Number y, Number z, Number w) {
+	this->x = x;
+	this->y = y;
+	this->z = z;
+	this->w = w;
+}
 
-class PolycodeMeshEditorFactory : public PolycodeEditorFactory {
-	public:
-		PolycodeMeshEditorFactory() : PolycodeEditorFactory() { extensions.push_back("mesh"); }
-		PolycodeEditor *createEditor() { return new PolycodeMeshEditor(); }
-};
+Vector4::Vector4(Number x,Number y,Number z, Number w) {
+	set(x, y, z, w);
+}
+
+Vector4::Vector4(Number val) {
+	set(val,val,val,val);
+}
+
+Vector4::~Vector4() {
+
+}

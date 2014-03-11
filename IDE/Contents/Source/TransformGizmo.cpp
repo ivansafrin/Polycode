@@ -296,7 +296,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
     viewportRotateGrip->visible = false;
 
 	xTransformGrip = new Entity();
-	xTransformGrip->bBox.set(1.3, 0.1, 0.1);
+	xTransformGrip->setLocalBoundingBox(1.3, 0.1, 0.1);
     xTransformGrip->depthTest = false;
     xTransformGrip->setColor(1.0, 0.0, 0.0, 1.0);
 	addChild(xTransformGrip);
@@ -305,14 +305,14 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	xTransformGrip->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 
 	yTransformGrip = new Entity();
-	yTransformGrip->bBox.set(0.1, 1.3, 0.1);
+	yTransformGrip->setLocalBoundingBox(0.1, 1.3, 0.1);
 	addChild(yTransformGrip);
 	yTransformGrip->setAnchorPoint(Vector3(0.0, -1.0, 0.0));
 	yTransformGrip->processInputEvents = true;
 	yTransformGrip->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 
 	zTransformGrip = new Entity();
-	zTransformGrip->bBox.set(0.1, 0.1, 1.3);
+	zTransformGrip->setLocalBoundingBox(0.1, 0.1, 1.3);
 	addChild(zTransformGrip);
 	zTransformGrip->setAnchorPoint(Vector3(0.0, 0.0, -1.0));
 	zTransformGrip->processInputEvents = true;

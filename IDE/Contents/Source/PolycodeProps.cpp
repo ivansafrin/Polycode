@@ -1347,12 +1347,7 @@ void SceneEntityInstanceProp::set(String fileName) {
 		previewInstance->setPosition(2, 1);
 		
 		lastData = currentData;
-		currentData = fileName;
-		
-		Number radius = previewInstance->getCompoundBBoxRadius();
-		if(radius > 48) {
-			previewInstance->setScale(48.0/(radius*2.0), 48.0/(radius*2.0));		
-		}
+		currentData = fileName;		
 		
 		propContents->addChild(previewInstance);	
 	}

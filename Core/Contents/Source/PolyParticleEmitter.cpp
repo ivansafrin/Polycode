@@ -28,7 +28,7 @@
 
 using namespace Polycode;
 
-SceneParticleEmitter::SceneParticleEmitter(unsigned int particleCount, Number lifetime, Number speed) : SceneMesh(Mesh::POINT_MESH), particleCount(particleCount), particleSpeed(speed), lifetime(lifetime), directionVector(0.0, 1.0, 0.0), cyclesLeftOver(0.0), useFloorPlane(false), floorPlaneOffset(-1.0), floorDamping(0.5), particlesInWorldSpace(false), perlinEnabled(false), perlinValue(1.0,1.0,1.0), particleType(SceneParticleEmitter::PARTICLE_TYPE_POINT), particleSize(0.1), particleRotationSpeed(0.0, 0.0, 0.0), useColorCurves(false), useScaleCurve(false), loopParticles(true){
+SceneParticleEmitter::SceneParticleEmitter(unsigned int particleCount, Number lifetime, Number speed) : SceneMesh(Mesh::POINT_MESH), particleCount(particleCount), particleSpeed(speed), lifetime(lifetime), directionVector(0.0, 1.0, 0.0), cyclesLeftOver(0.0), useFloorPlane(false), floorPlaneOffset(-1.0), floorDamping(0.5), particlesInWorldSpace(false), perlinEnabled(false), perlinValue(1.0,1.0,1.0), particleType(SceneParticleEmitter::PARTICLE_TYPE_QUAD), particleSize(0.1), particleRotationSpeed(0.0, 0.0, 0.0), useColorCurves(false), useScaleCurve(false), loopParticles(true){
     
     core = CoreServices::getInstance()->getCore();
 	timeStep = core->getRefreshIntervalMs() / 1000.0f;
@@ -162,12 +162,12 @@ void SceneParticleEmitter::enableParticleSystem(bool val) {
 
 void SceneParticleEmitter::rebuildParticles() {
     mesh->clearMesh();
+    Matrix4 inverseMatrix = systemTrasnformMatrix.Inverse();
     
     switch(particleType) {
         case PARTICLE_TYPE_POINT:
         {
             mesh->setMeshType(Mesh::POINT_MESH);
-            Matrix4 inverseMatrix = systemTrasnformMatrix.Inverse();
             for(int i=0; i < particles.size(); i++) {
                 if(particles[i].lifetime > lifetime || particles[i].lifetime < 0.0) {
                     continue;
@@ -183,7 +183,6 @@ void SceneParticleEmitter::rebuildParticles() {
         case PARTICLE_TYPE_QUAD:
         {
             mesh->setMeshType(Mesh::QUAD_MESH);
-            Matrix4 inverseMatrix = systemTrasnformMatrix.Inverse();
             Matrix4 cameraMatrix = renderer->getCameraMatrix();
             Quaternion q;
             
@@ -337,7 +336,11 @@ void SceneParticleEmitter::setPerlinValue(const Vector3 &perlinValue) {
 }
 
 void SceneParticleEmitter::updateParticles() {
+    
+    Matrix4 inverseMatrix = systemTrasnformMatrix.Inverse();
+    
     Number normLife;
+    Vector3 newBBox;
     
     for(int i=0; i < particles.size(); i++) {
         particles[i].lifetime += timeStep;
@@ -371,6 +374,7 @@ void SceneParticleEmitter::updateParticles() {
         
         particles[i].velocity += gravity * timeStep;
         particles[i].position += particles[i].velocity * timeStep * particleSpeed;
+        
         if(perlinEnabled) {
             
             particles[i].position += Vector3(motionPerlin->Get((particles[i].lifetime/lifetime), particles[i].perlinPos.x) * perlinValue.x * timeStep, motionPerlin->Get((particles[i].lifetime/lifetime), particles[i].perlinPos.y) * perlinValue.y * timeStep , motionPerlin->Get((particles[i].lifetime/lifetime), particles[i].perlinPos.z) * perlinValue.z * timeStep);
@@ -382,7 +386,24 @@ void SceneParticleEmitter::updateParticles() {
                 particles[i].velocity.y *= -1.0 * floorDamping;
             }
         }
+        
+        Vector3 bBoxTest = particles[i].position;
+        if(particlesInWorldSpace) {
+            bBoxTest = inverseMatrix * bBoxTest;
+        }
+        
+        if(fabs(bBoxTest.x) > newBBox.x) {
+            newBBox.x = fabs(bBoxTest.x);
+        }
+        if(fabs(bBoxTest.y) > newBBox.y) {
+            newBBox.y = fabs(bBoxTest.y);
+        }
+        if(fabs(bBoxTest.z) > newBBox.z) {
+            newBBox.z = fabs(bBoxTest.z);
+        }
     }
+    
+    setLocalBoundingBox((newBBox + Vector3(particleSize, particleSize, particleSize))* 2.0);
 }
 
 void SceneParticleEmitter::Render() {

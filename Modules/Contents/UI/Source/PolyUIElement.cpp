@@ -41,12 +41,12 @@ UILabel::UILabel(const String& text, int size, const String& fontName, int amode
 	
 	color.setColorHexFromString(conf->getStringValue("Polycode", "uiDefaultFontColor"));
 	addChild(label);
-	bBox = label->bBox;
+	setLocalBoundingBox(label->getLocalBoundingBox());
 }
 
 void UILabel::setText(const String& text) {
 	label->setText(text);
-	bBox = label->bBox;	
+    setLocalBoundingBox(label->getLocalBoundingBox());
 }
 
 String UILabel::getText() {
