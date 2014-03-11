@@ -109,7 +109,8 @@ EditorGrid::EditorGrid() : Entity() {
     yLine = new SceneLine(Vector3(), Vector3());
     addChild(yLine);
     yLine->setColor(0.0, 0.8, 0.0, 1.0);
-
+    yLine->visible = false;
+    
     xLine = new SceneLine(Vector3(), Vector3());
     addChild(xLine);
     xLine->setColor(0.8, 0.0, 0.0, 1.0);
@@ -192,7 +193,6 @@ void EditorGrid::rebuildGrid() {
     
     yLine->setStart(Vector3(0.0, gridSize * gridLen * 0.5, 0.0));
     yLine->setEnd(Vector3(0.0, gridSize * gridLen * -0.5, 0.0));
-    yLine->visible = false;
 
     xLine->setStart(Vector3(gridSize * gridLen * 0.5, 0.0, 0.0));
     xLine->setEnd(Vector3(gridSize * gridLen * -0.5, 0.0, 0.0));

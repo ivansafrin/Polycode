@@ -491,6 +491,7 @@ void EntityEditorMainView::doAction(String actionName, PolycodeEditorActionData 
 			selectedEntities[i]->setPosition(sceneData->entries[i].vec3);
             }
 		}
+        transformGizmo->setTransformSelection(selectedEntities);
 	} else if(actionName == "scale") {
 		for(int i=0; i < selectedEntities.size(); i++) {
             if(i < sceneData->entries.size()) {
