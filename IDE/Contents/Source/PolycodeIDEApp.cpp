@@ -1344,7 +1344,6 @@ PolycodeIDEApp::~PolycodeIDEApp() {
 
 bool PolycodeIDEApp::Update() {
 
-	bool retVal = core->Update();
 
 	if(willRunProject) {
 		willRunProject = false;
@@ -1390,7 +1389,7 @@ bool PolycodeIDEApp::Update() {
 		frame->getConsoleSizer()->enabled = false;		
 	}
 
-
+	bool retVal = core->Update();
 	core->Render();
 	return retVal;
 }

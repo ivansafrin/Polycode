@@ -132,7 +132,6 @@ bool Scene::isEnabled() {
 }
 
 void Scene::Update() {
-    rootEntity.updateEntityMatrix();
 	rootEntity.doUpdates();
 }
 
@@ -209,6 +208,8 @@ void Scene::setEntityVisibility(Entity *entity, Camera *camera) {
 void Scene::Render(Camera *targetCamera) {	
 	if(!targetCamera && !activeCamera)
 		return;
+    
+    rootEntity.updateEntityMatrix();
     
     renderer->setOverrideMaterial(overrideMaterial);
 	
@@ -292,6 +293,7 @@ void Scene::Render(Camera *targetCamera) {
 
 void Scene::RenderDepthOnly(Camera *targetCamera) {
 	
+    rootEntity.updateEntityMatrix();    
 	CoreServices::getInstance()->getRenderer()->cullFrontFaces(true);
 
 	targetCamera->rebuildTransformMatrix();	
