@@ -293,7 +293,7 @@ void Scene::Render(Camera *targetCamera) {
 
 void Scene::RenderDepthOnly(Camera *targetCamera) {
 	
-    rootEntity.updateEntityMatrix();    
+    rootEntity.updateEntityMatrix();
 	CoreServices::getInstance()->getRenderer()->cullFrontFaces(true);
 
 	targetCamera->rebuildTransformMatrix();	

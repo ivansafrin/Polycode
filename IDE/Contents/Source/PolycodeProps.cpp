@@ -1209,6 +1209,11 @@ void TextureProp::handleEvent(Event *event) {
 void TextureProp::set(Texture *texture) {
 	previewShape->setTexture(texture);
 	
+    if(!texture) {
+        textureLabel->setText("<None>");
+        return;
+    }
+    
 	lastData = currentData;
 	currentData = texture->getResourcePath();
 	
@@ -1657,10 +1662,9 @@ void RenderTargetProp::handleEvent(Event *event) {
 ShaderPassesSheet::ShaderPassesSheet(ResourcePool *resourcePool) : PropSheet("SHADER PASSES", "shaderPasses") {
     this->resourcePool = resourcePool;
 	propHeight = 70;
-	addButton = new UIButton("Add Shader Pass", 150);
-	addButton->addEventListener(this, UIEvent::CLICK_EVENT);
-	contents->addChild(addButton);
-	addButton->setPosition(15, 35);
+	addButton = new ButtonProp("Add Shader Pass");
+	addButton->getButton()->addEventListener(this, UIEvent::CLICK_EVENT);
+    addProp(addButton);
 	
 	customUndoHandler = true;
 	material = NULL;
@@ -1682,13 +1686,15 @@ void ShaderPassesSheet::setMaterial(Material *material) {
 void ShaderPassesSheet::refreshPasses() {
 
 	for(int i=0; i < props.size(); i++) {
-		contents->removeChild(props[i]);
-		props[i]->removeAllHandlersForListener(this);
-		delete props[i];
+        if(props[i] != addButton) {
+            contents->removeChild(props[i]);
+            props[i]->removeAllHandlersForListener(this);
+            delete props[i];
+        }
 	}
 	props.clear();
-	propHeight = 0;
-
+    props.push_back(addButton);
+    
 	if(!material) {
 		return;
 	}
@@ -1699,11 +1705,7 @@ void ShaderPassesSheet::refreshPasses() {
 		passProp->addEventListener(this, Event::CHANGE_EVENT);		
 		passProp->addEventListener(this, Event::SELECT_EVENT);
 		addProp(passProp);
-		propHeight += 30;	
 	}
-	
-	addButton->setPosition(15, propHeight);	
-	propHeight += 70;	
 
 	dispatchEvent(new Event(), Event::COMPLETE_EVENT);		
 	Resize(getWidth(), getHeight());	
@@ -1720,7 +1722,7 @@ void ShaderPassesSheet::Update() {
 
 void ShaderPassesSheet::handleEvent(Event *event) {
 
-	if(event->getDispatcher() == addButton) {
+	if(event->getDispatcher() == addButton->getButton()) {
 	
 		Shader *defaultShader = (Shader*)resourcePool->getResource(Resource::RESOURCE_SHADER, "PassThrough");
 		if(defaultShader) {	
@@ -1789,7 +1791,6 @@ void TargetBindingsSheet::refreshTargets() {
         }
 	}
 	props.clear();
-	propHeight = 0;
     props.push_back(addButton);
 
 	if(!material) {
@@ -1801,11 +1802,7 @@ void TargetBindingsSheet::refreshTargets() {
 		TargetBindingProp *bindingProp = new TargetBindingProp(shader, material, binding, targetBinding);
 		bindingProp->addEventListener(this, Event::REMOVE_EVENT);	
 		addProp(bindingProp);
-		propHeight += 30;		
-		
 	}
-				
-	propHeight += 70;	
 
 	dispatchEvent(new Event(), Event::COMPLETE_EVENT);		
 	Resize(getWidth(), getHeight());	
@@ -1842,11 +1839,10 @@ void TargetBindingsSheet::handleEvent(Event *event) {
 
 RenderTargetsSheet::RenderTargetsSheet() : PropSheet("RENDER TARGETS", "renderTargets") {
 	propHeight = 70;
-	addButton = new UIButton("Add Render Target", 150);
-	addButton->addEventListener(this, UIEvent::CLICK_EVENT);
-	contents->addChild(addButton);
-	addButton->setPosition(15, 35);
-	
+	addButton = new ButtonProp("Add Render Target");
+	addButton->getButton()->addEventListener(this, UIEvent::CLICK_EVENT);
+    addProp(addButton);
+    
 	customUndoHandler = true;
 	material = NULL;
 	binding = NULL;
@@ -1860,12 +1856,14 @@ RenderTargetsSheet::~RenderTargetsSheet() {
 
 void RenderTargetsSheet::refreshTargets() {
 	for(int i=0; i < props.size(); i++) {
-		contents->removeChild(props[i]);
-		props[i]->removeAllHandlersForListener(this);
-		delete props[i];
+        if(props[i] != addButton) {
+            contents->removeChild(props[i]);
+            props[i]->removeAllHandlersForListener(this);
+            delete props[i];
+        }
 	}
 	props.clear();
-	propHeight = 0;
+    props.push_back(addButton);
 
 	if(!material) {
 		return;
@@ -1876,11 +1874,7 @@ void RenderTargetsSheet::refreshTargets() {
 		RenderTargetProp *targetProp = new RenderTargetProp(renderTarget, material);		
 		targetProp->addEventListener(this, Event::CANCEL_EVENT);	
 		addProp(targetProp);
-		propHeight += 30;		
 	}
-	
-	addButton->setPosition(15, propHeight);	
-	propHeight += 70;	
 
 	dispatchEvent(new Event(), Event::COMPLETE_EVENT);		
 	Resize(getWidth(), getHeight());	
@@ -1904,7 +1898,7 @@ void RenderTargetsSheet::handleEvent(Event *event) {
 	if(!material)
 		return;
 
-	if(event->getDispatcher() == addButton) {
+	if(event->getDispatcher() == addButton->getButton()) {
 		ShaderRenderTarget* newRenderTarget = new ShaderRenderTarget();
 		newRenderTarget->id = "render_target";
 		newRenderTarget->width = 1.0;
