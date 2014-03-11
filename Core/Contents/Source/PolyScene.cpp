@@ -90,7 +90,7 @@ void Scene::setSceneType(int newType) {
 		case SCENE_2D:
 			defaultCamera->setClippingPlanes(-100.0, 100.0);
 			defaultCamera->setOrthoMode(true);
-            defaultCamera->setOrthoSize(CoreServices::getInstance()->getCore()->getXRes(),CoreServices::getInstance()->getCore()->getYRes());
+            defaultCamera->setOrthoSize(1.0, 1.0);
             break;
 		case SCENE_2D_TOPLEFT:
 			defaultCamera->setClippingPlanes(-100.0, 100.0);

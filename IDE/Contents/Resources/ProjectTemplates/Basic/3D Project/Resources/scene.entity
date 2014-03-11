@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<entity>
+    <settings>
+        <matFiles />
+    </settings>
+    <root polystring:id="" polystring:tags="" type="Entity" cR="1" cG="1" cB="1" cA="1" blendMode="0" sX="1" sY="1" sZ="1" rX="0" rY="0" rZ="0" pX="0" pY="0" pZ="0" bbX="0" bbY="0" bbZ="0.001">
+        <children>
+            <child polystring:id="" polystring:tags="" type="ScenePrimitive" cR="1" cG="1" cB="1" cA="1" blendMode="0" sX="1" sY="1" sZ="1" rX="0" rY="0" rZ="0" pX="0" pY="0" pZ="0" bbX="1" bbY="1" bbZ="1">
+                <ScenePrimitive type="0" p1="1" p2="1" p3="1" p4="0" p5="0" />
+                <SceneMesh material="Default">
+                    <shader_options>
+                        <shader>
+                            <textures />
+                            <params />
+                        </shader>
+                    </shader_options>
+                </SceneMesh>
+            </child>
+            <child polystring:id="" polystring:tags="" type="SceneLight" cR="1" cG="1" cB="1" cA="1" blendMode="0" sX="1" sY="1" sZ="1" rX="0" rY="0" rZ="0" pX="-0.902726" pY="2.48259" pZ="1.87848" bbX="0.1" bbY="0.1" bbZ="0.1">
+                <SceneLight type="0" cR="1" cG="1" cB="1" cA="1" scR="1" scG="1" scB="1" scA="1" intensity="10" importance="0" cAtt="1" lAtt="1" qAtt="1" />
+            </child>
+            <child id="main_camera" polystring:tags="" type="Camera" cR="1" cG="1" cB="1" cA="1" blendMode="0" sX="1" sY="1" sZ="1" rX="-30.3846" rY="29.6938" rZ="-1.83067e-15" pX="1.9097" pY="2.35075" pZ="3.58659" bbX="0" bbY="0" bbZ="0.001">
+                <Camera exposure="1" nearClip="1" farClip="1000" ortho="false" fov="45" />
+            </child>
+        </children>
+    </root>
+</entity>
