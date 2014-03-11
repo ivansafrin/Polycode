@@ -53,18 +53,15 @@ void Entity::initEntity() {
 	enabled = true;
 	depthTest = true;
 	visible = true;
-	bBoxRadius = 0;
 	color.setColor(1.0f,1.0f,1.0f,1.0f);
 	parentEntity = NULL;
 	matrixDirty = true;
 	billboardMode = false;
 	billboardRoll = false;
 	billboardIgnoreScale = false;
-	backfaceCulled = true;
 	depthOnly = false;
 	depthWrite = true;
 	ignoreParentMatrix = false;
-	alphaTest = false;
 	blendingMode = Entity::defaultBlendingMode;
 	lockMatrix = false;
 	colorAffectsChildren = true;
@@ -80,6 +77,7 @@ void Entity::initEntity() {
 	mouseOver = false;
 	yAdjust = 1.0;
 	lastClickTicks = 0.0;
+    rendererVis = true;
 }
 
 Entity *Entity::getEntityById(String id, bool recursive) const {
@@ -113,8 +111,6 @@ void Entity::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) co
 	clone->custEntityType = custEntityType;
 	clone->billboardMode = billboardMode;	
 	clone->billboardRoll = billboardRoll;
-	clone->alphaTest = alphaTest;
-	clone->backfaceCulled = backfaceCulled;
 	clone->depthWrite = depthWrite;
 	clone->depthTest = depthTest;
 	clone->blendingMode = blendingMode;
@@ -319,38 +315,8 @@ void Entity::setColor(Number r, Number g, Number b, Number a) {
 	color.setColor(r,g,b,a);
 }
 
-void Entity::recalculateBBox() {
-	
-}
-
 void Entity::setBlendingMode(int newBlendingMode) {
 	blendingMode = newBlendingMode;
-}
-
-Number Entity::getBBoxRadius() const {
-	Number compRad;
-	Number biggest = bBoxRadius;
-	for(int i=0;i<children.size();i++) {
-		compRad = children[i]->getCompoundBBoxRadius();
-		if(compRad > biggest)
-			biggest = compRad;
-	}	
-	return biggest;
-}
-
-Number Entity::getCompoundBBoxRadius() const {
-	Number compRad;
-	Number biggest = bBoxRadius + position.distance(Vector3(0,0,0));
-	for(int i=0;i<children.size();i++) {
-		compRad = children[i]->getCompoundBBoxRadius();
-		if(compRad > biggest)
-			biggest = compRad;
-	}	
-	return biggest;
-}
-
-void Entity::setBBoxRadius(Number rad) {
-	bBoxRadius = rad;
 }
 
 Entity::~Entity() {
@@ -371,6 +337,7 @@ void Entity::setInverseY(bool val) {
 	for(int i=0; i < children.size(); i++) {
 		children[i]->setInverseY(val);
 	}
+    matrixDirty = true;
 }
 
 bool Entity::getInverseY() {
@@ -425,9 +392,11 @@ void Entity::doUpdates() {
 
 void Entity::updateEntityMatrix() {
 
-	if(matrixDirty)
+	if(matrixDirty) {
 		rebuildTransformMatrix();
-	
+        recalculateAABBAllChildren();
+	}
+    
 	for(int i=0; i < children.size(); i++) {
 		children[i]->updateEntityMatrix();
 	}
@@ -525,16 +494,13 @@ void Entity::transformAndRender() {
 		renderer->enableDepthTest(false);
 	else
 		renderer->enableDepthTest(true);
-		 
-	renderer->enableAlphaTest(alphaTest);
 	
     renderer->pushVertexColor();
 	renderer->multiplyVertexColor(color);
 	
 	renderer->setBlendingMode(blendingMode);
-	renderer->enableBackfaceCulling(backfaceCulled);
 	   
-	if(visible) {
+	if(visible && rendererVis) {
 		renderer->pushMatrix();		
 		renderer->translate3D(-anchorPoint.x * bBox.x * 0.5, -anchorPoint.y * bBox.y * 0.5 * yAdjust, -anchorPoint.z * bBox.z * 0.5);
 		Render();
@@ -578,6 +544,102 @@ void Entity::renderChildren() {
 
 void Entity::dirtyMatrix(bool val) {
 	matrixDirty = val;
+}
+
+void Entity::recalculateAABBAllChildren() {
+    recalculateAABB();
+    for(int i=0; i< children.size(); i++) {
+        children[i]->recalculateAABBAllChildren();
+    }
+}
+
+void Entity::recalculateAABB() {
+
+    aabb.min = Vector3();
+    aabb.max = Vector3();
+    
+    Vector3 bBoxCoords[8] = {
+        Vector3(-bBox.x * 0.5, -bBox.y * 0.5, bBox.z * 0.5),
+        Vector3(bBox.x * 0.5, -bBox.y * 0.5, bBox.z * 0.5),
+        Vector3(-bBox.x * 0.5, -bBox.y * 0.5, -bBox.z * 0.5),
+        Vector3(bBox.x * 0.5, -bBox.y * 0.5, -bBox.z * 0.5),
+        Vector3(-bBox.x * 0.5, bBox.y * 0.5, bBox.z * 0.5),
+        Vector3(bBox.x * 0.5, bBox.y * 0.5, bBox.z * 0.5),
+        Vector3(-bBox.x * 0.5, bBox.y * 0.5, -bBox.z * 0.5),
+        Vector3(bBox.x * 0.5, bBox.y * 0.5, -bBox.z * 0.5)
+    };
+    
+    Matrix4 fullMatrix = getAnchorAdjustedMatrix();
+    if(ignoreParentMatrix) {
+        fullMatrix = transformMatrix;
+    }
+    
+    for(int i=0; i < 8; i++) {
+        bBoxCoords[i] = fullMatrix * bBoxCoords[i];
+        if(i ==0 ) {
+            aabb.min = bBoxCoords[i];
+            aabb.max = bBoxCoords[i];
+        } else {
+            if(bBoxCoords[i].x < aabb.min.x) {
+                aabb.min.x = bBoxCoords[i].x;
+            }
+            if(bBoxCoords[i].y < aabb.min.y) {
+                aabb.min.y = bBoxCoords[i].y;
+            }
+            if(bBoxCoords[i].z < aabb.min.z) {
+                aabb.min.z = bBoxCoords[i].z;
+            }
+            
+            if(bBoxCoords[i].x > aabb.max.x) {
+                aabb.max.x = bBoxCoords[i].x;
+            }
+            if(bBoxCoords[i].y > aabb.max.y) {
+                aabb.max.y = bBoxCoords[i].y;
+            }
+            if(bBoxCoords[i].z > aabb.max.z) {
+                aabb.max.z = bBoxCoords[i].z;
+            }
+        }
+    }
+        
+}
+
+AABB Entity::getWorldAABB() {
+    return aabb;
+}
+
+Vector3 Entity::getLocalBoundingBox() {
+    return bBox;
+}
+
+void Entity::setLocalBoundingBox(const Vector3 box) {
+    bBox = box;
+    recalculateAABB();
+    matrixDirty = true;
+}
+
+void Entity::setLocalBoundingBox(Number x, Number y, Number z) {
+    bBox.set(x, y, z);
+    recalculateAABB();
+    matrixDirty = true;
+}
+
+void Entity::setLocalBoundingBoxX(Number x) {
+    bBox.x = x;
+    recalculateAABB();
+    matrixDirty = true;
+}
+
+void Entity::setLocalBoundingBoxY(Number y) {
+    bBox.y = y;
+    recalculateAABB();
+    matrixDirty = true;
+}
+
+void Entity::setLocalBoundingBoxZ(Number z) {
+    bBox.z = z;
+    recalculateAABB();
+    matrixDirty = true;
 }
 
 void Entity::setRotationQuat(Number w, Number x, Number y, Number z) {
@@ -723,15 +785,15 @@ void Entity::setParentEntity(Entity *entity) {
 }
 
 void Entity::setWidth(Number width) {
-	bBox.x = width;
+	setLocalBoundingBoxX(width);
 }
 
 void Entity::setHeight(Number height) {
-	bBox.y = height;
+	setLocalBoundingBoxY(height);
 }
 
 void Entity::setDepth(Number depth) {
-	bBox.z = depth;
+	setLocalBoundingBoxZ(depth);
 }
 
 Number Entity::getWidth() const {
@@ -745,7 +807,6 @@ Number Entity::getHeight() const {
 Number Entity::getDepth() const {
 	return bBox.z;
 }
-
 
 Number Entity::getPitch() const {
 	return rotation.x;
@@ -906,11 +967,13 @@ void Entity::addTag(String tag) {
 }
 
 void Entity::setAnchorPoint(const Vector3 &anchorPoint) {
-	this->anchorPoint = anchorPoint;	
+	this->anchorPoint = anchorPoint;
+    matrixDirty = true;
 }
 
 void Entity::setAnchorPoint(Number x, Number y, Number z) {
 	anchorPoint.set(x,y,z);
+    matrixDirty = true;
 }
 
 Vector3 Entity::getAnchorPoint() const {

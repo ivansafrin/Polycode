@@ -47,6 +47,12 @@ namespace Polycode {
 		String propName;
 		String propValue;		
 	};
+    
+    class _PolyExport AABB {
+        public:
+            Vector3 min;
+            Vector3 max;
+    };
 
 	class _PolyExport Rotation {
 		public:
@@ -519,33 +525,10 @@ namespace Polycode {
 			*/
 			//@{			
 	
-			/**
-			* Recalculates the bounding box of the entity based on its size.
-			*/
-			void recalculateBBox();
-			
-			/**
-			* Returns the bounding box radius.
-			* @return The bounding box radius.
-			*/			
-			Number getBBoxRadius() const;
-			
-			/**
-			* Returns the entity's bounding box radius compounded from its children's bounding box radii.
-			* @return The compound bounding box radius.
-			*/						
-			Number getCompoundBBoxRadius() const;
-			
 			
 			void setAnchorPoint(const Vector3 &anchorPoint);
 			void setAnchorPoint(Number x, Number y, Number z);			
 			Vector3 getAnchorPoint() const;
-			
-			/**
-			* Sets the bounding box radius.
-			* @param rad New bounding box radius.
-			*/
-			void setBBoxRadius(Number rad);		
 			
 			virtual MouseEventResult onMouseDown(const Ray &ray, int mouseButton, int timestamp);
 			virtual MouseEventResult onMouseUp(const Ray &ray, int mouseButton, int timestamp);
@@ -582,17 +565,7 @@ namespace Polycode {
 			* matrix when billboardMode is enabled
 			*/
 			bool billboardIgnoreScale;
-			
-			/**
-			* Normally, translucent textures do not affect the depth buffer, but if this flag is set to true, this entity's alpha channel is written to the depth buffer at a preset threshold. This flag is set to false by default.
-			*/			
-			bool alphaTest;
-			
-			/**
-			* If this flag is set to false, backface culling is disabled when rendering this entity, rendering both sides of each face. Set to true by default.
-			*/
-			bool backfaceCulled;	
-		
+
 
 
 			/**
@@ -681,8 +654,7 @@ namespace Polycode {
 			void setRenderer(Renderer *renderer);
 			
 			virtual bool customHitDetection(const Ray &ray) { return true; }			
-			
-			Vector3 bBox;			
+					
 			bool ignoreParentMatrix;
 						
 			bool enableScissor;	
@@ -705,6 +677,8 @@ namespace Polycode {
 			void clearTags();
 			void addTag(String tag); 
 
+			//@}
+        
 			/**
 			* If set to true, will cast shadows (Defaults to true).
 			*/
@@ -725,10 +699,29 @@ namespace Polycode {
 			bool mouseOver;
         
             static int defaultBlendingMode;
-			
-			//@}		
+        
+            void recalculateAABBAllChildren();
+            void recalculateAABB();
+        
+            /*
+             Return axis-aligned bounding box in world space.
+             */
+            AABB getWorldAABB();
+        
+            Vector3 getLocalBoundingBox();
+            void setLocalBoundingBox(const Vector3 box);
+            void setLocalBoundingBox(Number x, Number y, Number z);
+            void setLocalBoundingBoxX(Number x);
+            void setLocalBoundingBoxY(Number y);
+            void setLocalBoundingBoxZ(Number z);
+        
+            bool rendererVis;
+
 		protected:
 		
+            AABB aabb;
+            Vector3 bBox;
+        
 			int lastClickTicks;
 			Number yAdjust;
 			std::vector<String> *tags;
@@ -738,8 +731,6 @@ namespace Polycode {
 			std::vector<Entity*> children;
 
 			Vector3 anchorPoint;
-			
-			Number bBoxRadius;		
 		
 			Vector3 position;
 			Vector3 scale;		
@@ -749,7 +740,8 @@ namespace Polycode {
 			
 			bool lockMatrix;
 			bool matrixDirty;
-			Matrix4 transformMatrix;		
+        
+			Matrix4 transformMatrix;
 			Entity *parentEntity;
 		
 			Renderer *renderer;

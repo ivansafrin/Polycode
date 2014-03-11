@@ -218,7 +218,7 @@ CameraPreviewWindow::CameraPreviewWindow() : UIElement() {
     scene = NULL;
     renderTexture = NULL;
     
-    bBox = bgRect->bBox;
+    setLocalBoundingBox(bgRect->getLocalBoundingBox());
     pinned = false;
     cameraSelected = false;
     
@@ -313,6 +313,7 @@ EntityEditorMainView::EntityEditorMainView(PolycodeEditor *editor) {
     this->editor = editor;
 
 	mainScene = new Scene(Scene::SCENE_3D, true);
+
 	renderTexture = new SceneRenderTexture(mainScene, mainScene->getDefaultCamera(), 512, 512);
 	mainScene->clearColor.setColor(0.2, 0.2, 0.2, 1.0);	
 	mainScene->useClearColor = true;
@@ -322,13 +323,13 @@ EntityEditorMainView::EntityEditorMainView(PolycodeEditor *editor) {
     // setup custom lights for disabled lighting
     customLight1 = new SceneLight(SceneLight::POINT_LIGHT, mainScene,999999, customFalloff, customFalloff, customFalloff);
     customLight1->editorOnly = true;
-    customLight1->setPosition(9999, 9999, 9999);
+    customLight1->setPosition(-9999, 9999, 9999);
     mainScene->addLight(customLight1);
     customLight1->enabled = false;
 
     customLight2 = new SceneLight(SceneLight::POINT_LIGHT, mainScene,999999, customFalloff, customFalloff, customFalloff);
     customLight2->editorOnly = true;
-    customLight2->setPosition(-9999, -9999, -9999);
+    customLight2->setPosition(8999, -8999, -8999);
     mainScene->addLight(customLight2);
     customLight2->enabled = false;
     
@@ -460,6 +461,14 @@ EntityEditorMainView::EntityEditorMainView(PolycodeEditor *editor) {
     snapSelector->setPosition(156, 2);
     snapSelector->addEventListener(this, UIEvent::SELECT_EVENT);
     
+    iconVisibilitySelector = new UIIconSelector();
+    iconVisibilitySelector->addIcon("entityEditor/show_icons.png");
+    iconVisibilitySelector->addIcon("entityEditor/hide_icons.png");
+    bottomBar->addChild(iconVisibilitySelector);
+    iconVisibilitySelector->setPosition(230, 2);
+    iconVisibilitySelector->addEventListener(this, UIEvent::SELECT_EVENT);
+    
+    
     editorMode = EDITOR_MODE_3D;
     
     input = CoreServices::getInstance()->getCore()->getInput();
@@ -482,6 +491,7 @@ void EntityEditorMainView::doAction(String actionName, PolycodeEditorActionData 
 			selectedEntities[i]->setPosition(sceneData->entries[i].vec3);
             }
 		}
+        transformGizmo->setTransformSelection(selectedEntities);
 	} else if(actionName == "scale") {
 		for(int i=0; i < selectedEntities.size(); i++) {
             if(i < sceneData->entries.size()) {
@@ -622,6 +632,7 @@ void EntityEditorMainView::Update() {
         }
         icons[i]->setScale(scale, scale, scale);
         icons[i]->rebuildTransformMatrix();
+        icons[i]->recalculateAABBAllChildren();
     }
 }
 
@@ -846,7 +857,7 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
     
     if(command == "add_particles") {
         SceneParticleEmitter  *newEmitter = new SceneParticleEmitter(30, 3.0, 0.2);
-        newEmitter->bBox = Vector3(0.5, 0.5, 0.5);
+        newEmitter->setLocalBoundingBox(0.5, 0.5, 0.5);
         
         newEmitter->setParticleType(SceneParticleEmitter::PARTICLE_TYPE_QUAD);
         
@@ -1161,7 +1172,16 @@ void EntityEditorMainView::handleEvent(Event *event) {
             break;
         }
     } else if(event->getDispatcher() == grid) {
-                transformGizmo->setSnapSize(grid->getGridSize());        
+                transformGizmo->setSnapSize(grid->getGridSize());
+    } else if(event->getDispatcher() == iconVisibilitySelector) {
+        switch(iconVisibilitySelector->getSelectedIndex()) {
+            case 0:
+                iconBase->visible = true;
+            break;
+            case 1:
+                iconBase->visible = false;
+            break;
+        }
     } else {
         if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN && hasFocus && event->getDispatcher() != renderTextureShape) {
             InputEvent *inputEvent = (InputEvent*) event;
@@ -1800,9 +1820,9 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
     entry->addChild("pY", entity->getPosition().y);
     entry->addChild("pZ", entity->getPosition().z);
     
-    entry->addChild("bbX", entity->bBox.x);
-    entry->addChild("bbY", entity->bBox.y);
-    entry->addChild("bbZ", entity->bBox.z);
+    entry->addChild("bbX", entity->getLocalBoundingBox().x);
+    entry->addChild("bbY", entity->getLocalBoundingBox().y);
+    entry->addChild("bbZ", entity->getLocalBoundingBox().z);
     
     ObjectEntry *children = NULL;
     

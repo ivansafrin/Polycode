@@ -541,7 +541,7 @@ class ShaderPassesSheet : public PropSheet {
 
         ResourcePool *resourcePool;
     
-		UIButton *addButton;		
+		ButtonProp *addButton;
 		int removeIndex;		
 };
 
@@ -582,7 +582,7 @@ class RenderTargetsSheet : public PropSheet {
 		Number normTextureWidth;
 		Number normTextureHeight;
 		
-		UIButton *addButton;		
+		ButtonProp *addButton;
 		int removeIndex;
 };
 

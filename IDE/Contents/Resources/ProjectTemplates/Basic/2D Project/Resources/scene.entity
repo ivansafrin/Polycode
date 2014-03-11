@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<entity>
+    <settings>
+        <matFiles />
+    </settings>
+    <root polystring:id="" polystring:tags="" type="Entity" cR="1" cG="1" cB="1" cA="1" blendMode="0" sX="1" sY="1" sZ="1" rX="0" rY="0" rZ="0" pX="0" pY="0" pZ="0" bbX="0" bbY="0" bbZ="0.001">
+        <children>
+            <child polystring:id="" polystring:tags="" type="SceneLabel" cR="1" cG="1" cB="1" cA="1" blendMode="1" sX="0.0916359" sY="0.0916359" sZ="0.0916359" rX="0" rY="0" rZ="0" pX="0" pY="0" pZ="0" bbX="7.75" bbY="1" bbZ="0.001">
+                <SceneLabel text="Hello, Polycode!" font="sans" size="48" actualHeight="1" aaMode="0" />
+                <SceneMesh />
+            </child>
+        </children>
+    </root>
+</entity>

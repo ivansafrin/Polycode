@@ -28,7 +28,7 @@
 #include "OSBasics.h"
 
 #define SETTINGS_WINDOW_WIDTH 400
-#define SETTINGS_WINDOW_HEIGHT 500
+#define SETTINGS_WINDOW_HEIGHT 375
 
 using namespace Polycode;
 

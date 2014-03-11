@@ -77,7 +77,7 @@ UIComboBox::UIComboBox(UIGlobalMenu *globalMenu, Number comboWidth) : UIElement(
 	addChild(bgBox);
 	addChild(dropDownImage);
 	
-	selectedLabel = new SceneLabel("<None>", fontSize, fontName);
+	selectedLabel = new UILabel("<None>", fontSize, fontName);
     selectedLabel->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	selectedLabel->setPosition(paddingX, paddingY);
 	addChild(selectedLabel);

@@ -74,7 +74,7 @@ namespace Polycode {
 			std::vector<UIComboBoxItem*> items;
 			int selectedIndex;
 			
-			SceneLabel *selectedLabel;
+			UILabel *selectedLabel;
 			Number comboHeight;
 			Number comboWidth;
 			Number dropDownX;

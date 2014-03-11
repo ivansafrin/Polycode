@@ -34,13 +34,15 @@ PolycodeMeshEditor::PolycodeMeshEditor() : PolycodeEditor(true){
 	
 //	previewScene->ambientColor.setColor(0.0, 0.0, 0.0, 1.0);
 				
-	mainLight = new SceneLight(SceneLight::POINT_LIGHT, previewScene, 1590.0);
-	mainLight->setPosition(-10,10,10);
+    Number customFalloff = 0.006;
+	mainLight = new SceneLight(SceneLight::POINT_LIGHT, previewScene, 999999, customFalloff, customFalloff, customFalloff);
 	previewScene->addLight(mainLight);
 
-	secondLight = new SceneLight(SceneLight::POINT_LIGHT, previewScene, 1590.0);
-	secondLight->setPosition(10,-10,10);
+	secondLight = new SceneLight(SceneLight::POINT_LIGHT, previewScene, 999999, customFalloff, customFalloff, customFalloff);
 	previewScene->addLight(secondLight);
+    
+	mainLight->setPosition(9999, 9999, 9999);
+	secondLight->setPosition(-9999, -9999, -9999);
 
 	headerBg = new UIRect(10,10);
 	addChild(headerBg);
@@ -62,17 +64,6 @@ PolycodeMeshEditor::PolycodeMeshEditor() : PolycodeEditor(true){
 	addChild(materialDropDown);
 	materialDropDown->setPosition(100, 3);
 
-	label = new UILabel("LIGHTS", 18, "section", Label::ANTIALIAS_FULL);
-	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
-	addChild(label);
-	label->setPosition(320, 3);
-
-	lightsSlider = new UIHSlider(0.0, 5000, 200);
-	addChild(lightsSlider);
-	lightsSlider->setSliderValue(1000.0);
-	lightsSlider->setPosition(380, 8);	
-	lightsSlider->addEventListener(this, UIEvent::CHANGE_EVENT);
-	
 	reloadMaterials();
 
 	previewBase = new Entity();
@@ -110,10 +101,7 @@ void PolycodeMeshEditor::reloadMaterials() {
 
 void PolycodeMeshEditor::handleEvent(Event *event) {
 	
-	if(event->getDispatcher() == lightsSlider) {
-		mainLight->setIntensity(lightsSlider->getSliderValue());
-		secondLight->setIntensity(lightsSlider->getSliderValue());		
-	} else if(event->getDispatcher() == materialDropDown) {
+    if(event->getDispatcher() == materialDropDown) {
 		if(previewMesh) {
 			previewMesh->setMaterial((Material*)materialDropDown->getSelectedItem()->data);
 		}
@@ -123,7 +111,6 @@ void PolycodeMeshEditor::handleEvent(Event *event) {
 }
 
 PolycodeMeshEditor::~PolycodeMeshEditor() {
-    printf("CALLED IT!\n");
     CoreServices::getInstance()->getResourceManager()->getGlobalPool()->removeAllHandlersForListener(this);
 }
 
@@ -135,13 +122,8 @@ bool PolycodeMeshEditor::openFile(OSFileEntry filePath) {
 
 	previewMesh->alphaTest = true;
 	CoreServices::getInstance()->getRenderer()->alphaTestValue = 0.9;
-	
-	Number radius = previewMesh->getBBoxRadius();
 				
-	mainLight->setPosition(-(radius*3),(radius*3),(radius*3));
-	secondLight->setPosition((radius*3),-(radius*3),(radius*3));
-	
-	trackballCamera->setCameraDistance(radius*3);
+	trackballCamera->setCameraDistance(previewMesh->getLocalBoundingBox().x);
 	return true;
 }
 

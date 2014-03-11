@@ -27,7 +27,7 @@ THE SOFTWARE.
 // Compile support for lua bindings.
 //#define _COMPILE_LUA
 
-#define POLYCODE_VERSION_STRING "0.8.3"
+#define POLYCODE_VERSION_STRING "0.8.4a_dev"
 
 #define COMPILE_GL_RENDERER
 

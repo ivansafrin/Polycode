@@ -55,12 +55,13 @@ SceneMesh::SceneMesh(const String& fileName) : Entity(), texture(NULL), material
 	overlayWireframe = false;
 	useGeometryHitDetection = false;
     forceMaterial = false;
+    backfaceCulled = true;
+	alphaTest = false;
 }
 
 SceneMesh::SceneMesh(Mesh *mesh) : Entity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
 	this->mesh = mesh;
-	bBoxRadius = mesh->getRadius();
-	bBox = mesh->calculateBBox();
+	setLocalBoundingBox(mesh->calculateBBox());
 	useVertexBuffer = false;
 	lineSmooth = false;
 	ownsMesh = true;
@@ -71,12 +72,13 @@ SceneMesh::SceneMesh(Mesh *mesh) : Entity(), texture(NULL), material(NULL), skel
 	overlayWireframe = false;	
 	useGeometryHitDetection = false;
     forceMaterial = false;
+    backfaceCulled = true;
+	alphaTest = false;
 }
 
 SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
 	mesh = new Mesh(meshType);
-	bBoxRadius = mesh->getRadius();
-	bBox = mesh->calculateBBox();
+	setLocalBoundingBox(mesh->calculateBBox());
 	useVertexBuffer = false;	
 	lineSmooth = false;
 	ownsMesh = true;
@@ -85,12 +87,13 @@ SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL), skeleton(NUL
 	overlayWireframe = false;
 	useGeometryHitDetection = false;
     forceMaterial = false;
+    backfaceCulled = true;
+	alphaTest = false;
 }
 
 void SceneMesh::setMesh(Mesh *mesh) {
 	this->mesh = mesh;
-	bBoxRadius = mesh->getRadius();
-	bBox = mesh->calculateBBox();
+	setLocalBoundingBox(mesh->calculateBBox());
 	useVertexBuffer = false;	
 }
 
@@ -117,6 +120,8 @@ void SceneMesh::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly)
     _clone->pointSize = pointSize;
     _clone->pointSmooth = pointSmooth;
     _clone->ownsMesh = ownsMesh;
+	_clone->alphaTest = alphaTest;
+	_clone->backfaceCulled = backfaceCulled;
     _clone->ownsSkeleton = ownsSkeleton;
     _clone->overlayWireframe = overlayWireframe;
     _clone->wireFrameColor = wireFrameColor;
@@ -143,8 +148,7 @@ void SceneMesh::setFilename(String fileName) {
 
 void SceneMesh::loadFromFile(String fileName) {
 	mesh = new Mesh(fileName);
-	bBoxRadius = mesh->getRadius();
-	bBox = mesh->calculateBBox();
+	setLocalBoundingBox(mesh->calculateBBox());
     this->fileName = fileName;
 }
 
@@ -343,6 +347,9 @@ void SceneMesh::Render() {
 	
 	Renderer *renderer = CoreServices::getInstance()->getRenderer();
 	
+    renderer->enableAlphaTest(alphaTest);
+	renderer->enableBackfaceCulling(backfaceCulled);
+    
 	renderer->setLineSize(lineWidth);
 	renderer->setLineSmooth(lineSmooth);
 	renderer->setPointSize(pointSize);

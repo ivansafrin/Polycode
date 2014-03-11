@@ -115,15 +115,11 @@ void SceneLabel::updateFromLabel() {
 
 	setPrimitiveOptions(type, label->getWidth()*labelScale/CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX(),label->getHeight()*labelScale/CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
 	
-	bBox.x = label->getWidth()*labelScale / CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX();
-	bBox.y = label->getHeight()*labelScale/ CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX();
-	bBox.z = 0.001;
-	
+    setLocalBoundingBox(label->getWidth()*labelScale / CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX(), label->getHeight()*labelScale/ CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX(), 0.001);
+    
 	if(useVertexBuffer)
 		CoreServices::getInstance()->getRenderer()->createVertexBufferForMesh(mesh);
 	
-	// TODO: resize it here	
-	bBoxRadius = label->getWidth()*labelScale/CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX();
 }
 
 void SceneLabel::Render() {

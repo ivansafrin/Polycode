@@ -185,6 +185,18 @@ namespace Polycode {
         
             virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
             virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
+        
+            
+            /**
+             * Normally, translucent textures do not affect the depth buffer, but if this flag is set to true, this entity's alpha channel is written to the depth buffer at a preset threshold. This flag is set to false by default.
+             */
+            bool alphaTest;
+            
+            /**
+             * If this flag is set to false, backface culling is disabled when rendering this entity, rendering both sides of each face. Set to true by default.
+             */
+            bool backfaceCulled;	
+        
 			
 		protected:
 		

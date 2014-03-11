@@ -59,7 +59,6 @@ class PolycodeMeshEditor : public PolycodeEditor {
 		UIComboBox *materialDropDown;
 		UIRect *headerBg;
 		
-		UIHSlider *lightsSlider;
 		TrackballCamera *trackballCamera;
 
 };
