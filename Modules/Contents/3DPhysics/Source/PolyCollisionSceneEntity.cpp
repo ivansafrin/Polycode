@@ -88,7 +88,7 @@ btCollisionShape *CollisionEntity::createCollisionShape(Entity *entity, int type
 	btCollisionShape *collisionShape = NULL;	
 	
     Vector3 scale = entity->getCompoundScale();
-    Vector3 bBox = entity->getLocalBoundingBox();// * scale;
+    Vector3 bBox = entity->getLocalBoundingBox() * scale;
 	
     Number largestSize = bBox.x;
     if(bBox.y > largestSize) {
@@ -144,7 +144,7 @@ btCollisionShape *CollisionEntity::createCollisionShape(Entity *entity, int type
 		break;
 	}
     
-    collisionShape->setLocalScaling(btVector3(scale.x, scale.y, scale.z));
+   // collisionShape->setLocalScaling(btVector3(scale.x, scale.y, scale.z));
     
 	return collisionShape; 
 }

@@ -1180,7 +1180,7 @@ void PolycodeIDEApp::loadConfigFile() {
 
 	globalSyntaxTheme = new SyntaxHighlightTheme();
 	
-	String uiThemeName = "default";	
+	String uiThemeName = "dark";
 	
 	CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_LINEAR);
 	
