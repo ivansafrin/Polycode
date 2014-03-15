@@ -254,22 +254,12 @@ void SceneMesh::renderMeshLocally() {
 	Renderer *renderer = CoreServices::getInstance()->getRenderer();
 	
 	if(skeleton) {	
-		for(int i=0; i < mesh->getVertexCount(); i++) {
-            Vertex *vert = mesh->getVertex(i);
+		for(int i=0; i < mesh->getActualVertexCount(); i++) {
+            Vertex *vert = mesh->getActualVertex(i);
             Vector3 norm;
             
-            Vector3 aPos = vert->restPosition;
             Vector3 tPos;
 
-            Number mult = 1;					
-/*
-            Number mult = 0;
-            for(int b =0; b < vert->getNumBoneAssignments(); b++) {
-                BoneAssignment *bas = vert->getBoneAssignment(b);
-                mult += bas->weight;
-            }
-            mult = 1.0f/mult;
-*/				
             for(int b =0; b < vert->getNumBoneAssignments(); b++) {
                 BoneAssignment *bas = vert->getBoneAssignment(b);
                 Bone *bone = bas->bone;
@@ -278,14 +268,14 @@ void SceneMesh::renderMeshLocally() {
                     Matrix4 restMatrix = bone->getRestMatrix();
                     Matrix4 finalMatrix = bone->getFinalMatrix();
                     
-                    Vector3 vec = restMatrix * aPos;
-                    tPos += finalMatrix * vec * (bas->weight*mult);
+                    Vector3 vec = restMatrix * vert->restPosition;
+                    tPos += finalMatrix * vec * (bas->weight);
                     
                     Vector3 nvec = vert->restNormal;
                     nvec = restMatrix.rotateVector(nvec);
                     nvec = finalMatrix.rotateVector(nvec);
                     
-                    norm += nvec * (bas->weight*mult);
+                    norm += nvec * (bas->weight);
                 }
             }					
             
