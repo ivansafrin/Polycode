@@ -86,7 +86,7 @@ void Mesh::clearMesh() {
             renderDataArrays[i] = NULL;
         }
     }
-    indexedMesh = false;
+
     useFaceNormals = false;
     meshHasVertexBuffer = false;
 }
