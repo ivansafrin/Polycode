@@ -8,7 +8,7 @@ class ClientPlayer {
 	public:
 		int clientID;
 		char state;
-		ScreenEntity *playerEntity;
+		SceneEntity *playerEntity;
 };
 
 class HelloPolycodeApp : public EventHandler {
@@ -22,12 +22,12 @@ public:
     
 private:
 	Core *core;
-	Screen *gameScreen;
+	Scene *gameScene;
 	Client *client;
 	ClientData clientData;
 	char state;
 	
-	ScreenLabel *motdLabel;	
+	SceneLabel *motdLabel;	
 	
 	vector<ClientPlayer*> players;
 };

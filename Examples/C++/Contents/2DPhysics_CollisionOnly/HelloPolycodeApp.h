@@ -13,6 +13,6 @@ public:
 	
 private:
     Core *core;	
-	PhysicsScreen *screen;
-	ScreenShape *checkShape;
+	PhysicsScene2D *scene;
+	ScenePrimitive *checkShape;
 };

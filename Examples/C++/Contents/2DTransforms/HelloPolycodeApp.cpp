@@ -7,13 +7,12 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
 
-	Screen *screen = new Screen();			
+	Scene *scene = new Scene(Scene::SCENE_2D_TOPLEFT);			
 	for(Number i=0; i < 10; i++) {
-		ScreenImage *image = new ScreenImage("Resources/polycode_logo.png");
-		screen->addChild(image);	
+		SceneImage *image = new SceneImage("Resources/polycode_logo.png");
+		scene->addChild(image);	
 		image->setPosition(160+(42*i), 230);
-		image->setPositionMode(ScreenEntity::POSITION_CENTER);
-		image->setRotation(45*i);
+		image->setRoll(45*i);
 		image->setScale(1.0-(0.1*i),1.0-(0.1*i));
 	}
 }

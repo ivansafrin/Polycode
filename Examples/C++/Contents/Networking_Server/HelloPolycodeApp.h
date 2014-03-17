@@ -8,7 +8,7 @@ class Player {
 	public:		
 		Vector2 position;
 		Number angle;
-		ScreenEntity *playerEntity;
+		SceneEntity *playerEntity;
 		ServerClient *client;
 		char turning_state;
 		char thrusting;
@@ -41,8 +41,8 @@ public:
     
 private:
 	Core *core;
-	Screen *gameScreen;
-	ScreenLabel *infoLabel;
+	Scene *gameScene;
+	SceneLabel *infoLabel;
 	Server *server;
 	vector<Player*> players;
 	ServerState serverState;

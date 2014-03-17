@@ -10,11 +10,11 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : ServerWorld(), EventHan
 	memset(serverInfo.motd, 0, 256);
 	strcat(serverInfo.motd, "MOTD : ** Welcome to the Network Example server! **");
 
-	gameScreen = new Screen();	
+	gameScene = new Scene(Scene::SCENE_2D);	
 
-	Screen *hudScreen = new Screen();
-	infoLabel = new ScreenLabel("Example server. [0 Players]", 32);
-	hudScreen->addChild(infoLabel);
+	Scene *hudScene = new Scene(Scene::SCENE_2D);
+	infoLabel = new SceneLabel("Example server. [0 Players]", 32);
+	hudScene->addChild(infoLabel);
 	
 	server = new Server(52345, 50, this);
 	
@@ -42,10 +42,10 @@ void HelloPolycodeApp::updateWorld(Number elapsed) {
 				player->rotateSpeed = 0;
 			break;			
 			case TURNING_LEFT:
-				player->rotateSpeed = -100;			
+				player->rotateSpeed = 100;			
 			break;
 			case TURNING_RIGHT:
-				player->rotateSpeed = 100;			
+				player->rotateSpeed = -100;			
 			break;
 			
 		}
@@ -57,7 +57,7 @@ void HelloPolycodeApp::updateWorld(Number elapsed) {
 	
 		// update the server display
 		player->playerEntity->setPosition(player->position.x, player->position.y);
-		player->playerEntity->setRotation(player->angle);
+		player->playerEntity->setRoll(player->angle);
 
 										
 	}
@@ -119,7 +119,7 @@ void HelloPolycodeApp::handleEvent(Event *event) {
 						Player *player = players[i];
 						players.erase(players.begin()+i);						
 						
-						gameScreen->removeChild(player->playerEntity);
+						gameScene->removeEntity(player->playerEntity);
 						delete player->playerEntity;
 						delete player;
 					}
@@ -134,13 +134,11 @@ void HelloPolycodeApp::handleEvent(Event *event) {
 				newPlayer->position.y = 480/2;				
 				newPlayer->client = serverEvent->client;												
 				newPlayer->client->addEventListener(this, ServerClientEvent::EVENT_CLIENT_DATA);					
-				ScreenEntity *playerEntity = new ScreenEntity();				
-				playerEntity->setPositionMode(ScreenEntity::POSITION_CENTER);
-				ScreenShape *playerBody = new ScreenShape(ScreenShape::SHAPE_CIRCLE, 30,30,3);				
-				playerBody->setRotation(-90.0);
+				SceneEntity *playerEntity = new SceneEntity();				
+				ScenePrimitive *playerBody = new ScenePrimitive(ScenePrimitive::TYPE_CIRCLE, 30,30,3);				
+				playerBody->setRoll(-90.0);
 				playerEntity->addChild(playerBody);
-				playerEntity->setPosition(640/2,480/2);
-				gameScreen->addChild(playerEntity);
+				gameScene->addChild(playerEntity);
 				newPlayer->playerEntity = playerEntity;												
 				players.push_back(newPlayer);
 				printf("Player connected\n");

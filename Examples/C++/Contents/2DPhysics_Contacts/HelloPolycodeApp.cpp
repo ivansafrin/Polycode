@@ -7,27 +7,27 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);	
 
-	screen = new PhysicsScreen(10, 60);		
-	ScreenShape *shape = new ScreenShape(ScreenShape::SHAPE_RECT, 600,30);
+	scene = new PhysicsScene2D(10, 60);		
+	ScenePrimitive *shape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 600,30);
 	shape->setColor(0.0,0.0,0.0,1.0);
-	shape->setPosition(640/2, 400);
-	screen->addPhysicsChild(shape, PhysicsScreenEntity::ENTITY_RECT, true);	
+	shape->setPosition(0, -480/2+40);
+	scene->addPhysicsChild(shape, PhysicsScene2DEntity::ENTITY_RECT, true);	
 	
 	for(int i=0; i < 50; i++) {
-		shape = new ScreenShape(ScreenShape::SHAPE_RECT, 20,5);
-		shape->setRotation(rand() % 360);
-		shape->setPosition(rand() % 640, rand() % 300);
-		screen->addPhysicsChild(shape, PhysicsScreenEntity::ENTITY_RECT, false);		
+		shape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 20,5);
+		shape->setRoll(rand() % 360);
+		shape->setPosition(-640/2 + rand() % 640, 480/2 - rand() % 300);
+		scene->addPhysicsChild(shape, PhysicsScene2DEntity::ENTITY_RECT, false);		
 	}
 	collisionSound = new Sound("Resources/hit.wav");
-	screen->addEventListener(this, PhysicsScreenEvent::EVENT_SOLVE_SHAPE_COLLISION);
+	scene->addEventListener(this, PhysicsScene2DEvent::EVENT_SOLVE_SHAPE_COLLISION);
 }
 
 void HelloPolycodeApp::handleEvent(Event *e) {
-	if(e->getDispatcher() == screen) {
+	if(e->getDispatcher() == scene) {
 		switch(e->getEventCode()) {
-			case PhysicsScreenEvent::EVENT_SOLVE_SHAPE_COLLISION:
-				PhysicsScreenEvent *pe = (PhysicsScreenEvent*)e;
+			case PhysicsScene2DEvent::EVENT_SOLVE_SHAPE_COLLISION:
+				PhysicsScene2DEvent *pe = (PhysicsScene2DEvent*)e;
 				if(pe->impactStrength > 5)
 					collisionSound->Play();
 			break;

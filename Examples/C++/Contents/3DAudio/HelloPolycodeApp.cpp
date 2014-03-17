@@ -18,7 +18,7 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 	sourceEntity->addChild(soundShape);	
 	scene->addEntity(sourceEntity);
 	
-	SceneLight *light = new SceneLight(SceneLight::AREA_LIGHT, scene, 1000);
+	SceneLight *light = new SceneLight(SceneLight::POINT_LIGHT, scene, 1000);
 	scene->addLight(light);
 
 	SceneSoundListener *soundListener = new SceneSoundListener();

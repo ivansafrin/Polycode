@@ -7,15 +7,15 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
 
-	gameScreen = new Screen();	
+	gameScene = new Scene(Scene::SCENE_2D);	
 
-	Screen *hudScreen = new Screen();
-	ScreenLabel *label = new ScreenLabel("Example client.  Press escape to exit.", 16);
-	hudScreen->addChild(label);
+	Scene *hudScene = new Scene(Scene::SCENE_2D);
+	SceneLabel *label = new SceneLabel("Example client.  Press escape to exit.", 16);
+	hudScene->addChild(label);
 	
-	motdLabel =  new ScreenLabel("", 16);
-	motdLabel->setPosition(0, 20);
-	hudScreen->addChild(motdLabel);
+	motdLabel =  new SceneLabel("", 16);
+	motdLabel->setPosition(0, -480/2+20);
+	hudScene->addChild(motdLabel);
 		
 	client = new Client(6543, 50);
 	client->setPersistentData(&clientData, sizeof(ClientData));
@@ -38,13 +38,11 @@ void HelloPolycodeApp::createClientPlayer(int clientID) {
 	ClientPlayer *player = new ClientPlayer();
 	player->clientID = clientID;
 	
-	ScreenEntity *playerEntity = new ScreenEntity();				
-	playerEntity->setPositionMode(ScreenEntity::POSITION_CENTER);
-	ScreenShape *playerBody = new ScreenShape(ScreenShape::SHAPE_CIRCLE, 30,30,3);				
-	playerBody->setRotation(-90.0);	
+	SceneEntity *playerEntity = new SceneEntity();				
+	ScenePrimitive *playerBody = new ScenePrimitive(ScenePrimitive::TYPE_CIRCLE, 30,30,3);				
+	playerBody->setRoll(-90.0);	
 	playerEntity->addChild(playerBody);
-	playerEntity->setPosition(640/2,480/2);
-	gameScreen->addChild(playerEntity);
+	gameScene->addChild(playerEntity);
 	player->playerEntity = playerEntity;												
 	
 	player->state = 0;
@@ -108,7 +106,7 @@ void HelloPolycodeApp::handleEvent(Event *event) {
 							for(int j=0; j < MAX_PLAYERS; j++) {
 								if(clientPlayer->clientID == serverState->players[j].clientID && serverState->players[j].state != 0) {
 									clientPlayer->playerEntity->setPosition(serverState->players[j].posX, serverState->players[j].posY);
-									clientPlayer->playerEntity->setRotation(serverState->players[j].angle);								
+									clientPlayer->playerEntity->setRoll(serverState->players[j].angle);								
 								}
 							}							
 						}

@@ -18,22 +18,22 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	box->setPosition(0.0, 0.5, 0.0);
 	scene->addEntity(box);
 	
-	SceneLight *light = new SceneLight(SceneLight::AREA_LIGHT, scene, 5);
+	SceneLight *light = new SceneLight(SceneLight::POINT_LIGHT, scene, 5);
 	light->setPosition(3,2,3);
 	light->setLightColor(1,0,0);
 	scene->addLight(light);
 
-	light = new SceneLight(SceneLight::AREA_LIGHT, scene, 5);
+	light = new SceneLight(SceneLight::POINT_LIGHT, scene, 5);
 	light->setPosition(-3,2,3);
 	light->setLightColor(0,1,0);
 	scene->addLight(light);
 
-	light = new SceneLight(SceneLight::AREA_LIGHT, scene, 5);
+	light = new SceneLight(SceneLight::POINT_LIGHT, scene, 5);
 	light->setPosition(-3,2,-3);
 	light->setLightColor(0,0,1);
 	scene->addLight(light);
 
-	light = new SceneLight(SceneLight::AREA_LIGHT, scene, 5);
+	light = new SceneLight(SceneLight::POINT_LIGHT, scene, 5);
 	light->setPosition(3,2,-3);
 	light->setLightColor(1,0,1);
 	scene->addLight(light);
