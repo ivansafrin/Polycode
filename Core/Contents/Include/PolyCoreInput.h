@@ -90,6 +90,12 @@ namespace Polycode {
 		*/		
 		Vector2 getMousePosition();
 		
+		/**
+		* Returns the current mouse position for a Scene::SCENE_2D
+		* @return mousePosition as a 2D vetor
+		*/
+		Vector2 getMousePositionScene2D();
+
 		/** 
 		* Returns the state of the specified key.
 		* @param keyCode The key to check for
