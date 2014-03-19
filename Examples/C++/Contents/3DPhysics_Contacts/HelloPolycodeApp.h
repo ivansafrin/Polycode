@@ -11,6 +11,10 @@ public:
     bool Update();
     
 	void handleEvent(Event *event);
+    
 private:
+    
 	Core *core;
+    PhysicsScene *scene;
+    Sound *collisionSound;
 };

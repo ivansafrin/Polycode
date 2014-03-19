@@ -7,7 +7,7 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
 
-	PhysicsScene *scene = new PhysicsScene();
+	scene = new PhysicsScene();
 
 	ScenePrimitive *ground = new ScenePrimitive(ScenePrimitive::TYPE_PLANE, 10, 10);
 	ground->loadTexture("Resources/green_texture.png");
@@ -24,14 +24,22 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	
 	scene->getDefaultCamera()->setPosition(7,7,7);
 	scene->getDefaultCamera()->lookAt(Vector3(0,0,0));
-	
+    
+    scene->addEventListener(this, PhysicsSceneEvent::COLLISION_EVENT);
+	collisionSound = new Sound("Resources/hit.wav");
 }
 
 HelloPolycodeApp::~HelloPolycodeApp() {
 }
 
 void HelloPolycodeApp::handleEvent(Event *event) {
-
+    if(event->getDispatcher() == scene) {
+        PhysicsSceneEvent *physicsEvent = (PhysicsSceneEvent*) event;
+        if(physicsEvent->appliedImpulse > 2.0) {
+            collisionSound->Play();
+        }
+        
+    }
 }
 
 bool HelloPolycodeApp::Update() {

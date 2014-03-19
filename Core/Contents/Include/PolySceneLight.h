@@ -191,6 +191,8 @@ namespace Polycode {
             Scene *getParentScene() const;
             void setParentScene(Scene *scene);
         
+            Camera *getSpotlightCamera();
+        
 		protected:
 		
 			Number spotlightExponent;

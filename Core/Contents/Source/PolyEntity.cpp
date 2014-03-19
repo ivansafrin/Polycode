@@ -683,7 +683,6 @@ Matrix4 Entity::getConcatenatedMatrixRelativeTo(Entity *relativeEntity) {
 	
 	if(matrixDirty) {
 		rebuildTransformMatrix();
-        recalculateAABBAllChildren();
     }
 
 	if(parentEntity != NULL && parentEntity != relativeEntity)
@@ -702,7 +701,6 @@ Matrix4 Entity::getAnchorAdjustedMatrix() {
 Matrix4 Entity::getConcatenatedMatrix() {
 	if(matrixDirty) {
 		rebuildTransformMatrix();
-        recalculateAABBAllChildren();
     }
     
 	if(parentEntity != NULL) 

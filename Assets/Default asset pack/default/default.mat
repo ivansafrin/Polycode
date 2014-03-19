@@ -79,12 +79,26 @@
 			<shader name="UnlitUntextured">
 			</shader>
 		</material>
+		<material name="UnlitUntextured">
+			<shader name="UnlitUntextured">
+			</shader>
+		</material>	
+		<material name="UnlitUntexturedAdditive" blendingMode="2">
+			<shader name="UnlitUntextured">
+			</shader>
+		</material>		
 		<material name="Unlit">
 			<shader name="Unlit">
 				<textures>
 				</textures>				
 			</shader>
 		</material>
+		<material name="UnlitAdditive" blendingMode="2">
+			<shader name="Unlit">
+				<textures>
+				</textures>				
+			</shader>
+		</material>		
 		<material name="UnlitAdditive" blendingMode="2">
 			<shader name="Unlit">
 				<textures>

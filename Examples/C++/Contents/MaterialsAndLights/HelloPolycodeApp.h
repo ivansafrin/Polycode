@@ -10,5 +10,10 @@ public:
     bool Update();
     
 private:
+    
+    Entity *lights;
+    ScenePrimitive *torus;
 	Core *core;
+    Scene *scene;
+    Number cameraRotation;
 };

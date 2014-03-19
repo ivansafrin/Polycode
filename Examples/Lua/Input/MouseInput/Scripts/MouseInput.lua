@@ -3,14 +3,16 @@
 -- Set the image position to mouse position when the mouse is moved
 -- and change the image color when mouse is left or right clicked
 
-screen = Screen()
-image = ScreenImage("Resources/polycode_logo.png")
-image:setPositionMode(ScreenEntity.POSITION_CENTER)
-screen:addChild(image)
+scene = Scene(Scene.SCENE_2D)
+scene:getActiveCamera():setOrthoSize(640,480)
+
+image = SceneImage("Resources/polycode_logo.png")
+scene:addChild(image)
 
 function onMouseMove(x,y)
-	image.position.x = x
-	image.position.y = y
+	local ray =scene:projectRayFromCameraAndViewportCoordinate(scene:getActiveCamera(), Vector2(x,y))
+	image:setPosition(ray.origin.x, ray.origin.y)
+
 end
 
 function onMouseDown(button, x,y)

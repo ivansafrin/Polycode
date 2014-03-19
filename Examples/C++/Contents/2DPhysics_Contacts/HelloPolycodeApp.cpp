@@ -7,7 +7,7 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);	
 
-	PhysicsScene2D *scene = new PhysicsScene2D(0.1, 60);
+	scene = new PhysicsScene2D(0.1, 60);
 	ScenePrimitive *shape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1.0,0.05);
 	shape->setColor(0.0,0.0,0.1,1.0);
 	shape->setPosition(0, -0.3);
@@ -30,7 +30,7 @@ void HelloPolycodeApp::handleEvent(Event *e) {
 		switch(e->getEventCode()) {
 			case PhysicsScene2DEvent::EVENT_SOLVE_SHAPE_COLLISION:
 				PhysicsScene2DEvent *pe = (PhysicsScene2DEvent*)e;
-				if(pe->impactStrength > 5)
+				if(pe->impactStrength > 1.0)
 					collisionSound->Play();
 			break;
 		}
