@@ -2,19 +2,11 @@
 
 HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 
-	core = new POLYCODE_CORE(view, 640,480,false,false,0,0,90);
+	core = new POLYCODE_CORE(view, 640,480,false,true,0,0,90, 0, true);
 
 	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
 
-	Scene *hud = new Scene(Scene::SCENE_2D);
-	onGroundLabel = new SceneLabel("Arrow keys to control, spacebar to jump, press R to reset", 16);
-	onGroundLabel->setPosition(-85,230);
-	hud->addChild(onGroundLabel);	
-	onGroundLabel = new SceneLabel("On Ground:", 16);
-	onGroundLabel->setPosition(-280,215);
-	hud->addChild(onGroundLabel);
-	
 
 	scene = new PhysicsScene();
 
@@ -46,6 +38,16 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	testBox->setPosition(2,1,-2);
 	scene->addCollisionChild(testBox, PhysicsSceneEntity::SHAPE_BOX);
 		
+	Scene *hud = new Scene(Scene::SCENE_2D_TOPLEFT);
+	onGroundLabel = new SceneLabel("Arrow keys to control, spacebar to jump, press R to reset", 16);
+    onGroundLabel->setAnchorPoint(-1.0, -1.0, 0.0);
+	onGroundLabel->setPosition(0,0);
+	hud->addChild(onGroundLabel);
+	onGroundLabel = new SceneLabel("On Ground:", 16);
+    onGroundLabel->setAnchorPoint(-1.0, -1.0, 0.0);
+	onGroundLabel->setPosition(0,32);
+	hud->addChild(onGroundLabel);
+    
 	
 	scene->getDefaultCamera()->setPosition(7,7,7);
 	scene->getDefaultCamera()->lookAt(Vector3(0,0,0));

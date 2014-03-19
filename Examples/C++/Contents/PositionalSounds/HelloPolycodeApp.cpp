@@ -2,24 +2,22 @@
 
 HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 
-	core = new POLYCODE_CORE(view, 640,480,false,false,0,0,90);
+	core = new POLYCODE_CORE(view, 640,480,false,true,0,0,90, 0, true);
 	
 	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);	
 
 	Scene *scene = new Scene();
 	
-	sourceEntity = new SceneEntity();
+	sourceEntity = new Entity();
+    
 	SceneSound *testSound = new SceneSound("Resources/test.wav", 20, 50);
 	testSound->getSound()->Play(true);
 	sourceEntity->addChild(testSound);
+    
 	ScenePrimitive *soundShape = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 1,1,1);
-	soundShape->setMaterialByName("Default");
 	sourceEntity->addChild(soundShape);	
-	scene->addEntity(sourceEntity);
-	
-	SceneLight *light = new SceneLight(SceneLight::POINT_LIGHT, scene, 1000);
-	scene->addLight(light);
+	scene->addEntity(sourceEntity);	
 
 	SceneSoundListener *soundListener = new SceneSoundListener();
 	scene->addEntity(soundListener);

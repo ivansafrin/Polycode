@@ -2,21 +2,21 @@
 
 HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 
-	core = new POLYCODE_CORE(view, 640,480,false,false,0,0,90);
+	core = new POLYCODE_CORE(view, 640,480,false,true,0,0,90, 0, true);
 
 	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);	
 
-	scene = new PhysicsScene2D(10, 50);
+	scene = new PhysicsScene2D(0.1, 50);
 	
-	checkShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 90,10);
+	checkShape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 0.2,0.03);
 	scene->addCollisionChild(checkShape, PhysicsScene2DEntity::ENTITY_RECT);
 
 	
 	for(int i=0; i < 50; i++) {
-		ScenePrimitive *shape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 30,15);
+		ScenePrimitive *shape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 0.1,0.02);
 		shape->setRoll(rand() % 360);
-		shape->setPosition(640/2 - rand() % 640, 480/2 - rand() % 480);
+		shape->setPosition(-0.5 + RANDOM_NUMBER, -0.5 + RANDOM_NUMBER);
 		scene->addCollisionChild(shape, PhysicsScene2DEntity::ENTITY_RECT);
 	}
 	
@@ -49,7 +49,8 @@ HelloPolycodeApp::~HelloPolycodeApp() {
 
 bool HelloPolycodeApp::Update() {
 	Vector2 mouse = core->getInput()->getMousePosition();
-	checkShape->setPosition(mouse.x-680/2+20, -mouse.y+480/2);
+    Ray ray = scene->projectRayFromCameraAndViewportCoordinate(scene->getActiveCamera(), mouse);
+    checkShape->setPosition(ray.origin.x, ray.origin.y);
 	checkShape->setRoll(checkShape->getRoll() + (core->getElapsed() * 100));
     return core->updateAndRender();
 }

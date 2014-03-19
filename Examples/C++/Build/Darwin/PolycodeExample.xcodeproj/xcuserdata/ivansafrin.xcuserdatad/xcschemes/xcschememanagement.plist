@@ -4,16 +4,6 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>2DAudio.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>14</integer>
-		</dict>
-		<key>2DParticles.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>16</integer>
-		</dict>
 		<key>2DPhysics_Basic.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -39,30 +29,10 @@
 			<key>orderHint</key>
 			<integer>23</integer>
 		</dict>
-		<key>2DTransforms.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>2</integer>
-		</dict>
-		<key>3DAudio.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>15</integer>
-		</dict>
 		<key>3DBasics.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>9</integer>
-		</dict>
-		<key>3DMeshParticles.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>18</integer>
-		</dict>
-		<key>3DParticles.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>17</integer>
 		</dict>
 		<key>3DPhysics_Basic.xcscheme</key>
 		<dict>
@@ -94,20 +64,10 @@
 			<key>orderHint</key>
 			<integer>29</integer>
 		</dict>
-		<key>AdvancedLighting.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>11</integer>
-		</dict>
 		<key>BasicImage.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
-		</dict>
-		<key>BasicLighting.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>10</integer>
 		</dict>
 		<key>BasicText.xcscheme</key>
 		<dict>
@@ -124,32 +84,37 @@
 			<key>orderHint</key>
 			<integer>8</integer>
 		</dict>
+		<key>MaterialsAndLights.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>11</integer>
+		</dict>
 		<key>MouseInput.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>7</integer>
 		</dict>
-		<key>Networking_Client.xcscheme</key>
+		<key>ParticleSystems.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>31</integer>
-		</dict>
-		<key>Networking_Server.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>30</integer>
+			<integer>16</integer>
 		</dict>
 		<key>PlayingSounds.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>13</integer>
 		</dict>
-		<key>ScreenEntities.xcscheme</key>
+		<key>PositionalSounds.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>15</integer>
+		</dict>
+		<key>SceneEntities.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>3</integer>
 		</dict>
-		<key>ScreenSprites.xcscheme</key>
+		<key>SceneSprites.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>4</integer>
@@ -158,6 +123,11 @@
 		<dict>
 			<key>orderHint</key>
 			<integer>12</integer>
+		</dict>
+		<key>Transforms.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>2</integer>
 		</dict>
 		<key>UpdateLoop.xcscheme</key>
 		<dict>

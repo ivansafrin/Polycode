@@ -2,12 +2,13 @@
 
 HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 
-	core = new POLYCODE_CORE(view, 640,480,false,false,0,0,90);
+	core = new POLYCODE_CORE(view, 640,480,false,true,0,0,90, 0, true);
 
 	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
 
-	Scene *scene = new Scene(Scene::SCENE_2D);			
+	Scene *scene = new Scene(Scene::SCENE_2D);
+    scene->getDefaultCamera()->setOrthoSize(640, 480);
 	image = new SceneImage("Resources/polycode_logo.png");
 	scene->addChild(image);	
 	

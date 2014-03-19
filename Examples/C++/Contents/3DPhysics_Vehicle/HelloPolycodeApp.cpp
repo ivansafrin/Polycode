@@ -2,16 +2,10 @@
 
 HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 
-	core = new POLYCODE_CORE(view, 640,480,false,false,0,0,90);
+	core = new POLYCODE_CORE(view, 640,480,false,true,0,0,90, 0, true);
 
 	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
-
-	Scene *hud = new Scene(Scene::SCENE_2D);
-	
-	onGroundLabel = new SceneLabel("Arrow keys to control, spacebar to brake, press R to reset car", 16);
-	onGroundLabel->setPosition(-70,230);
-	hud->addChild(onGroundLabel);	
 	
 	scene = new PhysicsScene();
 

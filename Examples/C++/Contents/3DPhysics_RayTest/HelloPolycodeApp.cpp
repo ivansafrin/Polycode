@@ -2,7 +2,7 @@
 
 HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 
-	core = new POLYCODE_CORE(view, 640,480,false,false,0,0,90);
+	core = new POLYCODE_CORE(view, 640,480,false,true,0,0,90,0, true);
 
 	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
@@ -25,7 +25,7 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 
 	box = new ScenePrimitive(ScenePrimitive::TYPE_CONE, 1,1,10);
 	box->loadTexture("Resources/pink_texture.png");
-	box->setPosition(1,1,2);
+	box->setPosition(1,2,2);
 	scene->addCollisionChild(box, CollisionEntity::SHAPE_CONE);
 
 	box = new ScenePrimitive(ScenePrimitive::TYPE_CYLINDER, 2,0.5,10);
@@ -50,8 +50,8 @@ void HelloPolycodeApp::handleEvent(Event *e) {
 		InputEvent *inputEvent = (InputEvent*)e;
 		switch(e->getEventCode()) {
 			case InputEvent::EVENT_MOUSEDOWN:
-				Vector3 dir = CoreServices::getInstance()->getRenderer()->projectRayFrom2DCoordinate(inputEvent->mousePosition.x, inputEvent->mousePosition.y, CoreServices::getInstance()->getRenderer()->getCameraMatrix(), CoreServices::getInstance()->getRenderer()->getProjectionMatrix(),CoreServices::getInstance()->getRenderer()->getViewport());
-				RayTestResult res = scene->getFirstEntityInRay(scene->getDefaultCamera()->getPosition(), dir * 1000);				
+                Ray ray = scene->projectRayFromCameraAndViewportCoordinate(scene->getActiveCamera(), inputEvent->mousePosition);
+				RayTestResult res = scene->getFirstEntityInRay(ray.origin, ray.direction * 100.0);
 
 				if(lastEntity) {
 					lastEntity->setColor(1.0,1.0,1.0,1.0);

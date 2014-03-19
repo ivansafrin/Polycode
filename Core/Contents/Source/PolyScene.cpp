@@ -327,8 +327,22 @@ Ray Scene::projectRayFromCameraAndViewportCoordinate(Camera *camera, Vector2 coo
 	switch(sceneType) {
 		case SCENE_2D:
 		{
-			Number orthoSizeX = camera->getOrthoSizeX();
-			Number orthoSizeY = camera->getOrthoSizeY();
+            
+            Number orthoSizeX = camera->getOrthoSizeX();
+            Number orthoSizeY = camera->getOrthoSizeY();
+
+            switch(camera->getProjectionMode()) {
+                case Camera::ORTHO_SIZE_LOCK_HEIGHT:
+                    orthoSizeX = orthoSizeY * (viewport.w/viewport.h);
+                    break;
+                case Camera::ORTHO_SIZE_LOCK_WIDTH:
+                    orthoSizeY = orthoSizeX * (viewport.h/viewport.w);
+                    break;
+                case Camera::ORTHO_SIZE_VIEWPORT:
+                    orthoSizeX = camera->getViewport().x;
+                    orthoSizeY = camera->getViewport().y;
+                break;
+            }
             
             Vector2 remappedMouse = Vector2(coordinate.x, coordinate.y);
             Vector2 screenSize = Vector2(core->getXRes(), core->getYRes());

@@ -2,14 +2,16 @@
 
 HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 
-	core = new POLYCODE_CORE(view, 640,480,false,false,0,0,90);
+	core = new POLYCODE_CORE(view, 640,480,false,true,0,0,90, 0, true);
 
 	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
 	
-	Scene *scene = new Scene();	
-	SceneParticleEmitter *emitter = new SceneParticleEmitter(100,50,3);
+	Scene *scene = new Scene(Scene::SCENE_2D);
+	SceneParticleEmitter *emitter = new SceneParticleEmitter(100,2.0,0.5);
 	
+    emitter->setParticleRotationSpeed(Vector3(0.0, 0.0, 100.0));
+    
 	emitter->useScaleCurve = true;
 	emitter->scaleCurve.clearControlPoints();
 	emitter->scaleCurve.addControlPoint2d(0, 0.3);
@@ -42,8 +44,14 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 	emitter->colorCurveA.addControlPoint2d(0.05, 1);
 	emitter->colorCurveA.addControlPoint2d(0.6, 1);
 	emitter->colorCurveA.addControlPoint2d(1, 0);
+    
+    emitter->setPosition(0.0, -0.4, 0.0);
+    
+    emitter->setMaterialByName("UnlitAdditive");
+    
+    Texture *tex = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile("Resources/particle.png");
+    emitter->getLocalShaderOptions()->addTexture("diffuse", tex);
 
-	emitter->setPosition(640/2, 400);
 	scene->addChild(emitter);
 }
 
