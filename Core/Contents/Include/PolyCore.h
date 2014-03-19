@@ -232,6 +232,9 @@ namespace Polycode {
 		*/
 		static void getScreenInfo(int *width, int *height, int *hz);
 
+        int getScreenWidth();
+        int getScreenHeight();
+        
 		/**
 		* Creates a folder on disk with the specified path.
 		* @param folderPath Path to create the folder in.

@@ -83,6 +83,18 @@ namespace Polycode {
 		refreshInterval = 1000 / frameRate;		
 		threadedEventMutex = NULL;
 	}
+    
+    int Core::getScreenWidth() {
+        int width, height, hz;
+        getScreenInfo(&width, &height, &hz);
+        return width;
+    }
+    
+    int Core::getScreenHeight() {
+        int width, height, hz;
+        getScreenInfo(&width, &height, &hz);
+        return height;
+    }
 	
 	void Core::setFramerate(int frameRate) {
 		refreshInterval = 1000 / frameRate;
