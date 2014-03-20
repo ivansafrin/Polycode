@@ -1,0 +1,7 @@
+<?xml version="1.0" ?>
+<PolycodeProject defaultWidth="640" defaultHeight="480" antiAliasingLevel="0" entryPoint="Scripts/ScreenEntities.lua" vSync="true" anisotropyLevel="0" frameRate="90" textureFiltering="linear">
+    <backgroundColor red="0.25" green="0.25" blue="0.25" />
+    <packedItems>
+        <item type="folder" path="Scripts" />
+    </packedItems>
+</PolycodeProject>

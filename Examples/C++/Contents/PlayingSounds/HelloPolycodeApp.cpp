@@ -7,9 +7,9 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
 	
-	Screen *screen = new Screen();
-	ScreenLabel *label = new ScreenLabel("Click anywhere to play a sound!", 32);
-	screen->addChild(label);
+	Scene *scene = new Scene();
+	SceneLabel *label = new SceneLabel("Click anywhere to play a sound!", 32);
+	scene->addChild(label);
 		
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	testSound = new Sound("Resources/test.wav");

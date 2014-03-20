@@ -49,9 +49,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MouseInput", "MouseInput\Mo
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PlayingSounds", "PlayingSounds\PlayingSounds.vcxproj", "{E15F77B2-9AEE-49E7-8B8C-D44FD4461FCC}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScreenEntities", "ScreenEntities\ScreenEntities.vcxproj", "{F2E3C438-3BCA-4E78-B3BC-2A7E930A6848}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SceneEntities", "SceneEntities\SceneEntities.vcxproj", "{F2E3C438-3BCA-4E78-B3BC-2A7E930A6848}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScreenSprites", "ScreenSprites\ScreenSprites.vcxproj", "{6822657B-F9F3-44C4-B2E6-C51A8F1815C7}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SceneSprites", "SceneSprites\SceneSprites.vcxproj", "{6822657B-F9F3-44C4-B2E6-C51A8F1815C7}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SkeletalAnimation", "SkeletalAnimation\SkeletalAnimation.vcxproj", "{BFA6C0C6-15A9-4A92-857E-01566CFB293E}"
 EndProject

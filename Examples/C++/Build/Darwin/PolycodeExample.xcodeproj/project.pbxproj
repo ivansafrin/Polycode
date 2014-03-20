@@ -7,46 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6D11ABBE13F7235200898F64 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DB7CD4B13E8B18000398A04 /* main.m */; };
-		6D11ABBF13F7235200898F64 /* PolycodeExampleAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DB7CD5113E8B18000398A04 /* PolycodeExampleAppDelegate.mm */; };
-		6D11ABC013F7235200898F64 /* PolycodeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DB7CD7B13E8B2F400398A04 /* PolycodeView.mm */; };
-		6D11ABC313F7235200898F64 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD7813E8B2A800398A04 /* OpenAL.framework */; };
-		6D11ABC413F7235200898F64 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD7613E8B2A400398A04 /* OpenGL.framework */; };
-		6D11ABC513F7235200898F64 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD7413E8B29E00398A04 /* IOKit.framework */; };
-		6D11ABC613F7235200898F64 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD3E13E8B18000398A04 /* Cocoa.framework */; };
-		6D11ABC713F7235200898F64 /* libPolycore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6313E8B27700398A04 /* libPolycore.a */; };
-		6D11ABC813F7235200898F64 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6613E8B28E00398A04 /* libfreetype.a */; };
-		6D11ABC913F7235200898F64 /* liblibogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6713E8B28E00398A04 /* liblibogg.a */; };
-		6D11ABCA13F7235200898F64 /* liblibvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6813E8B28E00398A04 /* liblibvorbis.a */; };
-		6D11ABCB13F7235200898F64 /* liblibvorbisfile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6913E8B28E00398A04 /* liblibvorbisfile.a */; };
-		6D11ABCC13F7235200898F64 /* libphysfs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6A13E8B28E00398A04 /* libphysfs.a */; };
-		6D11ABCD13F7235200898F64 /* libpng15.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6B13E8B28E00398A04 /* libpng15.a */; };
-		6D11ABCE13F7235200898F64 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6C13E8B28E00398A04 /* libz.a */; };
-		6D11ABD013F7235200898F64 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6DB7CD4713E8B18000398A04 /* InfoPlist.strings */; };
-		6D11ABD113F7235200898F64 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 6DB7CD4D13E8B18000398A04 /* Credits.rtf */; };
-		6D11ABD213F7235200898F64 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6DB7CD5313E8B18000398A04 /* MainMenu.xib */; };
-		6D11ABDB13F7237D00898F64 /* libPolycodeNetworking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D11ABDA13F7237D00898F64 /* libPolycodeNetworking.a */; };
-		6D11ABE013F723AF00898F64 /* HelloPolycodeApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D11ABDD13F723AF00898F64 /* HelloPolycodeApp.cpp */; };
-		6D11ABE313F723D800898F64 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DB7CD4B13E8B18000398A04 /* main.m */; };
-		6D11ABE413F723D800898F64 /* PolycodeExampleAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DB7CD5113E8B18000398A04 /* PolycodeExampleAppDelegate.mm */; };
-		6D11ABE513F723D800898F64 /* PolycodeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DB7CD7B13E8B2F400398A04 /* PolycodeView.mm */; };
-		6D11ABE813F723D800898F64 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD7813E8B2A800398A04 /* OpenAL.framework */; };
-		6D11ABE913F723D800898F64 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD7613E8B2A400398A04 /* OpenGL.framework */; };
-		6D11ABEA13F723D800898F64 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD7413E8B29E00398A04 /* IOKit.framework */; };
-		6D11ABEB13F723D800898F64 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD3E13E8B18000398A04 /* Cocoa.framework */; };
-		6D11ABEC13F723D800898F64 /* libPolycodeNetworking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D11ABDA13F7237D00898F64 /* libPolycodeNetworking.a */; };
-		6D11ABED13F723D800898F64 /* libPolycore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6313E8B27700398A04 /* libPolycore.a */; };
-		6D11ABEE13F723D800898F64 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6613E8B28E00398A04 /* libfreetype.a */; };
-		6D11ABEF13F723D800898F64 /* liblibogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6713E8B28E00398A04 /* liblibogg.a */; };
-		6D11ABF013F723D800898F64 /* liblibvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6813E8B28E00398A04 /* liblibvorbis.a */; };
-		6D11ABF113F723D800898F64 /* liblibvorbisfile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6913E8B28E00398A04 /* liblibvorbisfile.a */; };
-		6D11ABF213F723D800898F64 /* libphysfs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6A13E8B28E00398A04 /* libphysfs.a */; };
-		6D11ABF313F723D800898F64 /* libpng15.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6B13E8B28E00398A04 /* libpng15.a */; };
-		6D11ABF413F723D800898F64 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6C13E8B28E00398A04 /* libz.a */; };
-		6D11ABF613F723D800898F64 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6DB7CD4713E8B18000398A04 /* InfoPlist.strings */; };
-		6D11ABF713F723D800898F64 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 6DB7CD4D13E8B18000398A04 /* Credits.rtf */; };
-		6D11ABF813F723D800898F64 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6DB7CD5313E8B18000398A04 /* MainMenu.xib */; };
-		6D11AC0313F7240800898F64 /* HelloPolycodeApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D11AC0013F7240800898F64 /* HelloPolycodeApp.cpp */; };
 		6D180D7813EC8AB700103604 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DB7CD4B13E8B18000398A04 /* main.m */; };
 		6D180D7913EC8AB700103604 /* PolycodeExampleAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DB7CD5113E8B18000398A04 /* PolycodeExampleAppDelegate.mm */; };
 		6D180D7A13EC8AB700103604 /* PolycodeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DB7CD7B13E8B2F400398A04 /* PolycodeView.mm */; };
@@ -389,44 +349,6 @@
 		6D6EBFAF13EC54C700FCEA29 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 6DB7CD4D13E8B18000398A04 /* Credits.rtf */; };
 		6D6EBFB013EC54C700FCEA29 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6DB7CD5313E8B18000398A04 /* MainMenu.xib */; };
 		6D6EBFBA13EC553400FCEA29 /* HelloPolycodeApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D6EBFB813EC553400FCEA29 /* HelloPolycodeApp.cpp */; };
-		6D6EBFBD13EC55E800FCEA29 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DB7CD4B13E8B18000398A04 /* main.m */; };
-		6D6EBFBE13EC55E800FCEA29 /* PolycodeExampleAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DB7CD5113E8B18000398A04 /* PolycodeExampleAppDelegate.mm */; };
-		6D6EBFBF13EC55E800FCEA29 /* PolycodeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DB7CD7B13E8B2F400398A04 /* PolycodeView.mm */; };
-		6D6EBFC213EC55E800FCEA29 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD7813E8B2A800398A04 /* OpenAL.framework */; };
-		6D6EBFC313EC55E800FCEA29 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD7613E8B2A400398A04 /* OpenGL.framework */; };
-		6D6EBFC413EC55E800FCEA29 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD7413E8B29E00398A04 /* IOKit.framework */; };
-		6D6EBFC513EC55E800FCEA29 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD3E13E8B18000398A04 /* Cocoa.framework */; };
-		6D6EBFC613EC55E800FCEA29 /* libPolycore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6313E8B27700398A04 /* libPolycore.a */; };
-		6D6EBFC713EC55E800FCEA29 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6613E8B28E00398A04 /* libfreetype.a */; };
-		6D6EBFC813EC55E800FCEA29 /* liblibogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6713E8B28E00398A04 /* liblibogg.a */; };
-		6D6EBFC913EC55E800FCEA29 /* liblibvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6813E8B28E00398A04 /* liblibvorbis.a */; };
-		6D6EBFCA13EC55E800FCEA29 /* liblibvorbisfile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6913E8B28E00398A04 /* liblibvorbisfile.a */; };
-		6D6EBFCB13EC55E800FCEA29 /* libphysfs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6A13E8B28E00398A04 /* libphysfs.a */; };
-		6D6EBFCC13EC55E800FCEA29 /* libpng15.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6B13E8B28E00398A04 /* libpng15.a */; };
-		6D6EBFCD13EC55E800FCEA29 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6C13E8B28E00398A04 /* libz.a */; };
-		6D6EBFCF13EC55E800FCEA29 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6DB7CD4713E8B18000398A04 /* InfoPlist.strings */; };
-		6D6EBFD013EC55E800FCEA29 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 6DB7CD4D13E8B18000398A04 /* Credits.rtf */; };
-		6D6EBFD113EC55E800FCEA29 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6DB7CD5313E8B18000398A04 /* MainMenu.xib */; };
-		6D6EBFDB13EC560F00FCEA29 /* HelloPolycodeApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D6EBFD913EC560F00FCEA29 /* HelloPolycodeApp.cpp */; };
-		6D6EBFDE13EC573100FCEA29 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DB7CD4B13E8B18000398A04 /* main.m */; };
-		6D6EBFDF13EC573100FCEA29 /* PolycodeExampleAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DB7CD5113E8B18000398A04 /* PolycodeExampleAppDelegate.mm */; };
-		6D6EBFE013EC573100FCEA29 /* PolycodeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DB7CD7B13E8B2F400398A04 /* PolycodeView.mm */; };
-		6D6EBFE313EC573100FCEA29 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD7813E8B2A800398A04 /* OpenAL.framework */; };
-		6D6EBFE413EC573100FCEA29 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD7613E8B2A400398A04 /* OpenGL.framework */; };
-		6D6EBFE513EC573100FCEA29 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD7413E8B29E00398A04 /* IOKit.framework */; };
-		6D6EBFE613EC573100FCEA29 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD3E13E8B18000398A04 /* Cocoa.framework */; };
-		6D6EBFE713EC573100FCEA29 /* libPolycore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6313E8B27700398A04 /* libPolycore.a */; };
-		6D6EBFE813EC573100FCEA29 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6613E8B28E00398A04 /* libfreetype.a */; };
-		6D6EBFE913EC573100FCEA29 /* liblibogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6713E8B28E00398A04 /* liblibogg.a */; };
-		6D6EBFEA13EC573100FCEA29 /* liblibvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6813E8B28E00398A04 /* liblibvorbis.a */; };
-		6D6EBFEB13EC573100FCEA29 /* liblibvorbisfile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6913E8B28E00398A04 /* liblibvorbisfile.a */; };
-		6D6EBFEC13EC573100FCEA29 /* libphysfs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6A13E8B28E00398A04 /* libphysfs.a */; };
-		6D6EBFED13EC573100FCEA29 /* libpng15.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6B13E8B28E00398A04 /* libpng15.a */; };
-		6D6EBFEE13EC573100FCEA29 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6C13E8B28E00398A04 /* libz.a */; };
-		6D6EBFF013EC573100FCEA29 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6DB7CD4713E8B18000398A04 /* InfoPlist.strings */; };
-		6D6EBFF113EC573100FCEA29 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 6DB7CD4D13E8B18000398A04 /* Credits.rtf */; };
-		6D6EBFF213EC573100FCEA29 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6DB7CD5313E8B18000398A04 /* MainMenu.xib */; };
-		6D6EBFFC13EC575B00FCEA29 /* HelloPolycodeApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D6EBFFA13EC575B00FCEA29 /* HelloPolycodeApp.cpp */; };
 		6D6EBFFF13EC5E4F00FCEA29 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DB7CD4B13E8B18000398A04 /* main.m */; };
 		6D6EC00013EC5E4F00FCEA29 /* PolycodeExampleAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DB7CD5113E8B18000398A04 /* PolycodeExampleAppDelegate.mm */; };
 		6D6EC00113EC5E4F00FCEA29 /* PolycodeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DB7CD7B13E8B2F400398A04 /* PolycodeView.mm */; };
@@ -446,25 +368,6 @@
 		6D6EC01213EC5E4F00FCEA29 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 6DB7CD4D13E8B18000398A04 /* Credits.rtf */; };
 		6D6EC01313EC5E4F00FCEA29 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6DB7CD5313E8B18000398A04 /* MainMenu.xib */; };
 		6D6EC01D13EC5EA900FCEA29 /* HelloPolycodeApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D6EC01B13EC5EA900FCEA29 /* HelloPolycodeApp.cpp */; };
-		6D6EC02013EC5F1E00FCEA29 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DB7CD4B13E8B18000398A04 /* main.m */; };
-		6D6EC02113EC5F1E00FCEA29 /* PolycodeExampleAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DB7CD5113E8B18000398A04 /* PolycodeExampleAppDelegate.mm */; };
-		6D6EC02213EC5F1E00FCEA29 /* PolycodeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DB7CD7B13E8B2F400398A04 /* PolycodeView.mm */; };
-		6D6EC02513EC5F1E00FCEA29 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD7813E8B2A800398A04 /* OpenAL.framework */; };
-		6D6EC02613EC5F1E00FCEA29 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD7613E8B2A400398A04 /* OpenGL.framework */; };
-		6D6EC02713EC5F1E00FCEA29 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD7413E8B29E00398A04 /* IOKit.framework */; };
-		6D6EC02813EC5F1E00FCEA29 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD3E13E8B18000398A04 /* Cocoa.framework */; };
-		6D6EC02913EC5F1E00FCEA29 /* libPolycore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6313E8B27700398A04 /* libPolycore.a */; };
-		6D6EC02A13EC5F1E00FCEA29 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6613E8B28E00398A04 /* libfreetype.a */; };
-		6D6EC02B13EC5F1E00FCEA29 /* liblibogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6713E8B28E00398A04 /* liblibogg.a */; };
-		6D6EC02C13EC5F1E00FCEA29 /* liblibvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6813E8B28E00398A04 /* liblibvorbis.a */; };
-		6D6EC02D13EC5F1E00FCEA29 /* liblibvorbisfile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6913E8B28E00398A04 /* liblibvorbisfile.a */; };
-		6D6EC02E13EC5F1E00FCEA29 /* libphysfs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6A13E8B28E00398A04 /* libphysfs.a */; };
-		6D6EC02F13EC5F1E00FCEA29 /* libpng15.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6B13E8B28E00398A04 /* libpng15.a */; };
-		6D6EC03013EC5F1E00FCEA29 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB7CD6C13E8B28E00398A04 /* libz.a */; };
-		6D6EC03213EC5F1E00FCEA29 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6DB7CD4713E8B18000398A04 /* InfoPlist.strings */; };
-		6D6EC03313EC5F1E00FCEA29 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 6DB7CD4D13E8B18000398A04 /* Credits.rtf */; };
-		6D6EC03413EC5F1E00FCEA29 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6DB7CD5313E8B18000398A04 /* MainMenu.xib */; };
-		6D6EC03E13EC5F4900FCEA29 /* HelloPolycodeApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D6EC03C13EC5F4900FCEA29 /* HelloPolycodeApp.cpp */; };
 		6D6EC04113EC7AA000FCEA29 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DB7CD4B13E8B18000398A04 /* main.m */; };
 		6D6EC04213EC7AA000FCEA29 /* PolycodeExampleAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DB7CD5113E8B18000398A04 /* PolycodeExampleAppDelegate.mm */; };
 		6D6EC04313EC7AA000FCEA29 /* PolycodeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DB7CD7B13E8B2F400398A04 /* PolycodeView.mm */; };
@@ -483,7 +386,6 @@
 		6D6EC05313EC7AA000FCEA29 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6DB7CD4713E8B18000398A04 /* InfoPlist.strings */; };
 		6D6EC05413EC7AA000FCEA29 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 6DB7CD4D13E8B18000398A04 /* Credits.rtf */; };
 		6D6EC05513EC7AA000FCEA29 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6DB7CD5313E8B18000398A04 /* MainMenu.xib */; };
-		6D6EC05F13EC7AED00FCEA29 /* HelloPolycodeApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D6EC05D13EC7AED00FCEA29 /* HelloPolycodeApp.cpp */; };
 		6D6EC06213EC833B00FCEA29 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DB7CD4B13E8B18000398A04 /* main.m */; };
 		6D6EC06313EC833B00FCEA29 /* PolycodeExampleAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DB7CD5113E8B18000398A04 /* PolycodeExampleAppDelegate.mm */; };
 		6D6EC06413EC833B00FCEA29 /* PolycodeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DB7CD7B13E8B2F400398A04 /* PolycodeView.mm */; };
@@ -660,15 +562,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		6D11ABD713F7235200898F64 /* Networking_Server.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Networking_Server.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D11ABDA13F7237D00898F64 /* libPolycodeNetworking.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycodeNetworking.a; path = ../../Modules/lib/libPolycodeNetworking.a; sourceTree = "<group>"; };
-		6D11ABDD13F723AF00898F64 /* HelloPolycodeApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = HelloPolycodeApp.cpp; path = Contents/Networking_Server/HelloPolycodeApp.cpp; sourceTree = "<group>"; };
-		6D11ABDE13F723AF00898F64 /* HelloPolycodeApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HelloPolycodeApp.h; path = Contents/Networking_Server/HelloPolycodeApp.h; sourceTree = "<group>"; };
-		6D11ABDF13F723AF00898F64 /* NetworkingExampleGlobals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NetworkingExampleGlobals.h; path = Contents/Networking_Server/NetworkingExampleGlobals.h; sourceTree = "<group>"; };
-		6D11ABFD13F723D800898F64 /* Networking_Client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Networking_Client.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		6D11AC0013F7240800898F64 /* HelloPolycodeApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = HelloPolycodeApp.cpp; path = Contents/Networking_Client/HelloPolycodeApp.cpp; sourceTree = "<group>"; };
-		6D11AC0113F7240800898F64 /* HelloPolycodeApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HelloPolycodeApp.h; path = Contents/Networking_Client/HelloPolycodeApp.h; sourceTree = "<group>"; };
-		6D11AC0213F7240800898F64 /* NetworkingExampleGlobals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NetworkingExampleGlobals.h; path = Contents/Networking_Client/NetworkingExampleGlobals.h; sourceTree = "<group>"; };
 		6D180D9313EC8AB700103604 /* 2DPhysics_Contacts.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 2DPhysics_Contacts.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D180D9613EC8B3900103604 /* HelloPolycodeApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = HelloPolycodeApp.cpp; path = Contents/2DPhysics_Contacts/HelloPolycodeApp.cpp; sourceTree = "<group>"; };
 		6D180D9713EC8B3900103604 /* HelloPolycodeApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HelloPolycodeApp.h; path = Contents/2DPhysics_Contacts/HelloPolycodeApp.h; sourceTree = "<group>"; };
@@ -711,12 +605,12 @@
 		6D5E8DC413E9FF9A0008A6B3 /* HelloPolycodeApp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HelloPolycodeApp.h; path = Contents/UpdateLoop/HelloPolycodeApp.h; sourceTree = "<group>"; };
 		6D6EBF2713EBCE8E00FCEA29 /* HelloPolycodeApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HelloPolycodeApp.h; path = Contents/BasicImage/HelloPolycodeApp.h; sourceTree = "<group>"; };
 		6D6EBF2813EBCE9C00FCEA29 /* HelloPolycodeApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HelloPolycodeApp.h; path = Contents/BasicText/HelloPolycodeApp.h; sourceTree = "<group>"; };
-		6D6EBF2913EBCEA500FCEA29 /* HelloPolycodeApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HelloPolycodeApp.h; path = Contents/2DTransforms/HelloPolycodeApp.h; sourceTree = "<group>"; };
-		6D6EBF2A13EBCEB300FCEA29 /* HelloPolycodeApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HelloPolycodeApp.h; path = Contents/ScreenEntities/HelloPolycodeApp.h; sourceTree = "<group>"; };
-		6D6EBF2B13EBCEBD00FCEA29 /* HelloPolycodeApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HelloPolycodeApp.h; path = Contents/ScreenSprites/HelloPolycodeApp.h; sourceTree = "<group>"; };
+		6D6EBF2913EBCEA500FCEA29 /* HelloPolycodeApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HelloPolycodeApp.h; path = Contents/Transforms/HelloPolycodeApp.h; sourceTree = "<group>"; };
+		6D6EBF2A13EBCEB300FCEA29 /* HelloPolycodeApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HelloPolycodeApp.h; path = Contents/SceneEntities/HelloPolycodeApp.h; sourceTree = "<group>"; };
+		6D6EBF2B13EBCEBD00FCEA29 /* HelloPolycodeApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HelloPolycodeApp.h; path = Contents/SceneSprites/HelloPolycodeApp.h; sourceTree = "<group>"; };
 		6D6EBF2C13EBCECB00FCEA29 /* HelloPolycodeApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HelloPolycodeApp.h; path = Contents/SkeletalAnimation/HelloPolycodeApp.h; sourceTree = "<group>"; };
-		6D6EBF2D13EBCED700FCEA29 /* HelloPolycodeApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HelloPolycodeApp.h; path = Contents/AdvancedLighting/HelloPolycodeApp.h; sourceTree = "<group>"; };
-		6D6EBF2E13EBCEE300FCEA29 /* HelloPolycodeApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HelloPolycodeApp.h; path = Contents/3DAudio/HelloPolycodeApp.h; sourceTree = "<group>"; };
+		6D6EBF2D13EBCED700FCEA29 /* HelloPolycodeApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HelloPolycodeApp.h; path = Contents/MaterialsAndLights/HelloPolycodeApp.h; sourceTree = "<group>"; };
+		6D6EBF2E13EBCEE300FCEA29 /* HelloPolycodeApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HelloPolycodeApp.h; path = Contents/PositionalSounds/HelloPolycodeApp.h; sourceTree = "<group>"; };
 		6D6EBF4A13EBD6BB00FCEA29 /* MouseInput.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MouseInput.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D6EBF4D13EBD70900FCEA29 /* HelloPolycodeApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = HelloPolycodeApp.cpp; path = Contents/MouseInput/HelloPolycodeApp.cpp; sourceTree = "<group>"; };
 		6D6EBF4E13EBD70900FCEA29 /* HelloPolycodeApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HelloPolycodeApp.h; path = Contents/MouseInput/HelloPolycodeApp.h; sourceTree = "<group>"; };
@@ -726,24 +620,13 @@
 		6D6EBF9413EC52B400FCEA29 /* 3DBasics.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 3DBasics.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D6EBF9713EC532A00FCEA29 /* HelloPolycodeApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = HelloPolycodeApp.cpp; path = Contents/3DBasics/HelloPolycodeApp.cpp; sourceTree = "<group>"; };
 		6D6EBF9813EC532A00FCEA29 /* HelloPolycodeApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HelloPolycodeApp.h; path = Contents/3DBasics/HelloPolycodeApp.h; sourceTree = "<group>"; };
-		6D6EBFB513EC54C700FCEA29 /* 2DParticles.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 2DParticles.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		6D6EBFB813EC553400FCEA29 /* HelloPolycodeApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = HelloPolycodeApp.cpp; path = Contents/2DParticles/HelloPolycodeApp.cpp; sourceTree = "<group>"; };
-		6D6EBFB913EC553400FCEA29 /* HelloPolycodeApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HelloPolycodeApp.h; path = Contents/2DParticles/HelloPolycodeApp.h; sourceTree = "<group>"; };
-		6D6EBFD613EC55E800FCEA29 /* 3DParticles.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 3DParticles.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		6D6EBFD913EC560F00FCEA29 /* HelloPolycodeApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = HelloPolycodeApp.cpp; path = Contents/3DParticles/HelloPolycodeApp.cpp; sourceTree = "<group>"; };
-		6D6EBFDA13EC560F00FCEA29 /* HelloPolycodeApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HelloPolycodeApp.h; path = Contents/3DParticles/HelloPolycodeApp.h; sourceTree = "<group>"; };
-		6D6EBFF713EC573100FCEA29 /* 3DMeshParticles.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 3DMeshParticles.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		6D6EBFFA13EC575B00FCEA29 /* HelloPolycodeApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = HelloPolycodeApp.cpp; path = Contents/3DMeshParticles/HelloPolycodeApp.cpp; sourceTree = "<group>"; };
-		6D6EBFFB13EC575B00FCEA29 /* HelloPolycodeApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HelloPolycodeApp.h; path = Contents/3DMeshParticles/HelloPolycodeApp.h; sourceTree = "<group>"; };
+		6D6EBFB513EC54C700FCEA29 /* ParticleSystems.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ParticleSystems.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6D6EBFB813EC553400FCEA29 /* HelloPolycodeApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = HelloPolycodeApp.cpp; path = Contents/ParticleSystems/HelloPolycodeApp.cpp; sourceTree = "<group>"; };
+		6D6EBFB913EC553400FCEA29 /* HelloPolycodeApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HelloPolycodeApp.h; path = Contents/ParticleSystems/HelloPolycodeApp.h; sourceTree = "<group>"; };
 		6D6EC01813EC5E4F00FCEA29 /* PlayingSounds.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PlayingSounds.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D6EC01B13EC5EA900FCEA29 /* HelloPolycodeApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = HelloPolycodeApp.cpp; path = Contents/PlayingSounds/HelloPolycodeApp.cpp; sourceTree = "<group>"; };
 		6D6EC01C13EC5EA900FCEA29 /* HelloPolycodeApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HelloPolycodeApp.h; path = Contents/PlayingSounds/HelloPolycodeApp.h; sourceTree = "<group>"; };
-		6D6EC03913EC5F1E00FCEA29 /* 2DAudio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 2DAudio.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		6D6EC03C13EC5F4900FCEA29 /* HelloPolycodeApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = HelloPolycodeApp.cpp; path = Contents/2DAudio/HelloPolycodeApp.cpp; sourceTree = "<group>"; };
-		6D6EC03D13EC5F4900FCEA29 /* HelloPolycodeApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HelloPolycodeApp.h; path = Contents/2DAudio/HelloPolycodeApp.h; sourceTree = "<group>"; };
 		6D6EC05A13EC7AA000FCEA29 /* BasicLighting.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BasicLighting.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		6D6EC05D13EC7AED00FCEA29 /* HelloPolycodeApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = HelloPolycodeApp.cpp; path = Contents/BasicLighting/HelloPolycodeApp.cpp; sourceTree = "<group>"; };
-		6D6EC05E13EC7AED00FCEA29 /* HelloPolycodeApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HelloPolycodeApp.h; path = Contents/BasicLighting/HelloPolycodeApp.h; sourceTree = "<group>"; };
 		6D6EC07B13EC833B00FCEA29 /* 2DPhysics_Basic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 2DPhysics_Basic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D6EC07E13EC839C00FCEA29 /* HelloPolycodeApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = HelloPolycodeApp.cpp; path = Contents/2DPhysics_Basic/HelloPolycodeApp.cpp; sourceTree = "<group>"; };
 		6D6EC07F13EC839C00FCEA29 /* HelloPolycodeApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HelloPolycodeApp.h; path = Contents/2DPhysics_Basic/HelloPolycodeApp.h; sourceTree = "<group>"; };
@@ -774,65 +657,25 @@
 		6DB7CD7813E8B2A800398A04 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		6DB7CD7A13E8B2F400398A04 /* PolycodeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeView.h; path = ../../../Core/PolycodeView/PolycodeView.h; sourceTree = "<group>"; };
 		6DB7CD7B13E8B2F400398A04 /* PolycodeView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = PolycodeView.mm; path = ../../../Core/PolycodeView/PolycodeView.mm; sourceTree = "<group>"; };
-		6DB7CD9F13E8B49100398A04 /* HelloPolycodeApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; name = HelloPolycodeApp.cpp; path = Contents/2DTransforms/HelloPolycodeApp.cpp; sourceTree = "<group>"; };
-		6DB7CDEE13E8B61500398A04 /* 2DTransforms.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 2DTransforms.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6DB7CD9F13E8B49100398A04 /* HelloPolycodeApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; name = HelloPolycodeApp.cpp; path = Contents/Transforms/HelloPolycodeApp.cpp; sourceTree = "<group>"; };
+		6DB7CDEE13E8B61500398A04 /* Transforms.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Transforms.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DE0EE2513E8BA5400A0842D /* BasicImage.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BasicImage.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DE0EE2713E8BA6500A0842D /* HelloPolycodeApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; name = HelloPolycodeApp.cpp; path = Contents/BasicImage/HelloPolycodeApp.cpp; sourceTree = "<group>"; };
 		6DE0EE5113E913F600A0842D /* BasicText.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BasicText.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DE0EE5513E9143800A0842D /* HelloPolycodeApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; name = HelloPolycodeApp.cpp; path = Contents/BasicText/HelloPolycodeApp.cpp; sourceTree = "<group>"; };
-		6DE0EE7313E9174600A0842D /* ScreenEntities.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ScreenEntities.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		6DE0EE7613E9180A00A0842D /* HelloPolycodeApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; name = HelloPolycodeApp.cpp; path = Contents/ScreenEntities/HelloPolycodeApp.cpp; sourceTree = "<group>"; };
-		6DE0EE9413E91AFA00A0842D /* ScreenSprites.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ScreenSprites.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		6DE0EE9713E91B0900A0842D /* HelloPolycodeApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = HelloPolycodeApp.cpp; path = Contents/ScreenSprites/HelloPolycodeApp.cpp; sourceTree = "<group>"; };
-		6DE0EEB613E91C6200A0842D /* AdvancedLighting.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AdvancedLighting.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		6DE0EEB913E91CA700A0842D /* HelloPolycodeApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; name = HelloPolycodeApp.cpp; path = Contents/AdvancedLighting/HelloPolycodeApp.cpp; sourceTree = "<group>"; };
+		6DE0EE7313E9174600A0842D /* SceneEntities.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SceneEntities.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6DE0EE7613E9180A00A0842D /* HelloPolycodeApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; name = HelloPolycodeApp.cpp; path = Contents/SceneEntities/HelloPolycodeApp.cpp; sourceTree = "<group>"; };
+		6DE0EE9413E91AFA00A0842D /* SceneSprites.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SceneSprites.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6DE0EE9713E91B0900A0842D /* HelloPolycodeApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = HelloPolycodeApp.cpp; path = Contents/SceneSprites/HelloPolycodeApp.cpp; sourceTree = "<group>"; };
+		6DE0EEB613E91C6200A0842D /* MaterialsAndLights.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MaterialsAndLights.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6DE0EEB913E91CA700A0842D /* HelloPolycodeApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; name = HelloPolycodeApp.cpp; path = Contents/MaterialsAndLights/HelloPolycodeApp.cpp; sourceTree = "<group>"; };
 		6DE0EED713E91E6100A0842D /* SkeletalAnimation.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SkeletalAnimation.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DE0EEDA13E91E8700A0842D /* HelloPolycodeApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; name = HelloPolycodeApp.cpp; path = Contents/SkeletalAnimation/HelloPolycodeApp.cpp; sourceTree = "<group>"; };
-		6DE0EEF813E91F9F00A0842D /* 3DAudio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 3DAudio.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		6DE0EEFB13E91FB200A0842D /* HelloPolycodeApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; name = HelloPolycodeApp.cpp; path = Contents/3DAudio/HelloPolycodeApp.cpp; sourceTree = "<group>"; };
+		6DE0EEF813E91F9F00A0842D /* PositionalSounds.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PositionalSounds.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6DE0EEFB13E91FB200A0842D /* HelloPolycodeApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; name = HelloPolycodeApp.cpp; path = Contents/PositionalSounds/HelloPolycodeApp.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		6D11ABC213F7235200898F64 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6D11ABC313F7235200898F64 /* OpenAL.framework in Frameworks */,
-				6D11ABC413F7235200898F64 /* OpenGL.framework in Frameworks */,
-				6D11ABC513F7235200898F64 /* IOKit.framework in Frameworks */,
-				6D11ABC613F7235200898F64 /* Cocoa.framework in Frameworks */,
-				6D11ABDB13F7237D00898F64 /* libPolycodeNetworking.a in Frameworks */,
-				6D11ABC713F7235200898F64 /* libPolycore.a in Frameworks */,
-				6D11ABC813F7235200898F64 /* libfreetype.a in Frameworks */,
-				6D11ABC913F7235200898F64 /* liblibogg.a in Frameworks */,
-				6D11ABCA13F7235200898F64 /* liblibvorbis.a in Frameworks */,
-				6D11ABCB13F7235200898F64 /* liblibvorbisfile.a in Frameworks */,
-				6D11ABCC13F7235200898F64 /* libphysfs.a in Frameworks */,
-				6D11ABCD13F7235200898F64 /* libpng15.a in Frameworks */,
-				6D11ABCE13F7235200898F64 /* libz.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		6D11ABE713F723D800898F64 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6D11ABE813F723D800898F64 /* OpenAL.framework in Frameworks */,
-				6D11ABE913F723D800898F64 /* OpenGL.framework in Frameworks */,
-				6D11ABEA13F723D800898F64 /* IOKit.framework in Frameworks */,
-				6D11ABEB13F723D800898F64 /* Cocoa.framework in Frameworks */,
-				6D11ABEC13F723D800898F64 /* libPolycodeNetworking.a in Frameworks */,
-				6D11ABED13F723D800898F64 /* libPolycore.a in Frameworks */,
-				6D11ABEE13F723D800898F64 /* libfreetype.a in Frameworks */,
-				6D11ABEF13F723D800898F64 /* liblibogg.a in Frameworks */,
-				6D11ABF013F723D800898F64 /* liblibvorbis.a in Frameworks */,
-				6D11ABF113F723D800898F64 /* liblibvorbisfile.a in Frameworks */,
-				6D11ABF213F723D800898F64 /* libphysfs.a in Frameworks */,
-				6D11ABF313F723D800898F64 /* libpng15.a in Frameworks */,
-				6D11ABF413F723D800898F64 /* libz.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		6D180D7C13EC8AB700103604 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1175,44 +1018,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		6D6EBFC113EC55E800FCEA29 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6D6EBFC213EC55E800FCEA29 /* OpenAL.framework in Frameworks */,
-				6D6EBFC313EC55E800FCEA29 /* OpenGL.framework in Frameworks */,
-				6D6EBFC413EC55E800FCEA29 /* IOKit.framework in Frameworks */,
-				6D6EBFC513EC55E800FCEA29 /* Cocoa.framework in Frameworks */,
-				6D6EBFC613EC55E800FCEA29 /* libPolycore.a in Frameworks */,
-				6D6EBFC713EC55E800FCEA29 /* libfreetype.a in Frameworks */,
-				6D6EBFC813EC55E800FCEA29 /* liblibogg.a in Frameworks */,
-				6D6EBFC913EC55E800FCEA29 /* liblibvorbis.a in Frameworks */,
-				6D6EBFCA13EC55E800FCEA29 /* liblibvorbisfile.a in Frameworks */,
-				6D6EBFCB13EC55E800FCEA29 /* libphysfs.a in Frameworks */,
-				6D6EBFCC13EC55E800FCEA29 /* libpng15.a in Frameworks */,
-				6D6EBFCD13EC55E800FCEA29 /* libz.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		6D6EBFE213EC573100FCEA29 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6D6EBFE313EC573100FCEA29 /* OpenAL.framework in Frameworks */,
-				6D6EBFE413EC573100FCEA29 /* OpenGL.framework in Frameworks */,
-				6D6EBFE513EC573100FCEA29 /* IOKit.framework in Frameworks */,
-				6D6EBFE613EC573100FCEA29 /* Cocoa.framework in Frameworks */,
-				6D6EBFE713EC573100FCEA29 /* libPolycore.a in Frameworks */,
-				6D6EBFE813EC573100FCEA29 /* libfreetype.a in Frameworks */,
-				6D6EBFE913EC573100FCEA29 /* liblibogg.a in Frameworks */,
-				6D6EBFEA13EC573100FCEA29 /* liblibvorbis.a in Frameworks */,
-				6D6EBFEB13EC573100FCEA29 /* liblibvorbisfile.a in Frameworks */,
-				6D6EBFEC13EC573100FCEA29 /* libphysfs.a in Frameworks */,
-				6D6EBFED13EC573100FCEA29 /* libpng15.a in Frameworks */,
-				6D6EBFEE13EC573100FCEA29 /* libz.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		6D6EC00313EC5E4F00FCEA29 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1229,25 +1034,6 @@
 				6D6EC00D13EC5E4F00FCEA29 /* libphysfs.a in Frameworks */,
 				6D6EC00E13EC5E4F00FCEA29 /* libpng15.a in Frameworks */,
 				6D6EC00F13EC5E4F00FCEA29 /* libz.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		6D6EC02413EC5F1E00FCEA29 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6D6EC02513EC5F1E00FCEA29 /* OpenAL.framework in Frameworks */,
-				6D6EC02613EC5F1E00FCEA29 /* OpenGL.framework in Frameworks */,
-				6D6EC02713EC5F1E00FCEA29 /* IOKit.framework in Frameworks */,
-				6D6EC02813EC5F1E00FCEA29 /* Cocoa.framework in Frameworks */,
-				6D6EC02913EC5F1E00FCEA29 /* libPolycore.a in Frameworks */,
-				6D6EC02A13EC5F1E00FCEA29 /* libfreetype.a in Frameworks */,
-				6D6EC02B13EC5F1E00FCEA29 /* liblibogg.a in Frameworks */,
-				6D6EC02C13EC5F1E00FCEA29 /* liblibvorbis.a in Frameworks */,
-				6D6EC02D13EC5F1E00FCEA29 /* liblibvorbisfile.a in Frameworks */,
-				6D6EC02E13EC5F1E00FCEA29 /* libphysfs.a in Frameworks */,
-				6D6EC02F13EC5F1E00FCEA29 /* libpng15.a in Frameworks */,
-				6D6EC03013EC5F1E00FCEA29 /* libz.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1446,26 +1232,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		6D11ABDC13F7239900898F64 /* Networking_Server */ = {
-			isa = PBXGroup;
-			children = (
-				6D11ABDD13F723AF00898F64 /* HelloPolycodeApp.cpp */,
-				6D11ABDE13F723AF00898F64 /* HelloPolycodeApp.h */,
-				6D11ABDF13F723AF00898F64 /* NetworkingExampleGlobals.h */,
-			);
-			name = Networking_Server;
-			sourceTree = "<group>";
-		};
-		6D11ABFF13F723E800898F64 /* Networking_Client */ = {
-			isa = PBXGroup;
-			children = (
-				6D11AC0013F7240800898F64 /* HelloPolycodeApp.cpp */,
-				6D11AC0113F7240800898F64 /* HelloPolycodeApp.h */,
-				6D11AC0213F7240800898F64 /* NetworkingExampleGlobals.h */,
-			);
-			name = Networking_Client;
-			sourceTree = "<group>";
-		};
 		6D180D9513EC8B2500103604 /* 2DPhysics_Contacts */ = {
 			isa = PBXGroup;
 			children = (
@@ -1556,13 +1322,13 @@
 			name = 3DPhysics_RayTest;
 			sourceTree = "<group>";
 		};
-		6D49C8F113E8B93000A3426A /* 2DTransforms */ = {
+		6D49C8F113E8B93000A3426A /* Transforms */ = {
 			isa = PBXGroup;
 			children = (
 				6D6EBF2913EBCEA500FCEA29 /* HelloPolycodeApp.h */,
 				6DB7CD9F13E8B49100398A04 /* HelloPolycodeApp.cpp */,
 			);
-			name = 2DTransforms;
+			name = Transforms;
 			sourceTree = "<group>";
 		};
 		6D5E8DA213E9FF290008A6B3 /* UpdateLoop */ = {
@@ -1610,31 +1376,13 @@
 			name = 3DBasics;
 			sourceTree = "<group>";
 		};
-		6D6EBFB713EC552600FCEA29 /* 2DParticles */ = {
+		6D6EBFB713EC552600FCEA29 /* ParticleSystems */ = {
 			isa = PBXGroup;
 			children = (
 				6D6EBFB813EC553400FCEA29 /* HelloPolycodeApp.cpp */,
 				6D6EBFB913EC553400FCEA29 /* HelloPolycodeApp.h */,
 			);
-			name = 2DParticles;
-			sourceTree = "<group>";
-		};
-		6D6EBFD813EC560400FCEA29 /* 3DParticles */ = {
-			isa = PBXGroup;
-			children = (
-				6D6EBFD913EC560F00FCEA29 /* HelloPolycodeApp.cpp */,
-				6D6EBFDA13EC560F00FCEA29 /* HelloPolycodeApp.h */,
-			);
-			name = 3DParticles;
-			sourceTree = "<group>";
-		};
-		6D6EBFF913EC573E00FCEA29 /* 3DMeshParticles */ = {
-			isa = PBXGroup;
-			children = (
-				6D6EBFFA13EC575B00FCEA29 /* HelloPolycodeApp.cpp */,
-				6D6EBFFB13EC575B00FCEA29 /* HelloPolycodeApp.h */,
-			);
-			name = 3DMeshParticles;
+			name = ParticleSystems;
 			sourceTree = "<group>";
 		};
 		6D6EC01A13EC5E8300FCEA29 /* PlayingSounds */ = {
@@ -1644,24 +1392,6 @@
 				6D6EC01C13EC5EA900FCEA29 /* HelloPolycodeApp.h */,
 			);
 			name = PlayingSounds;
-			sourceTree = "<group>";
-		};
-		6D6EC03B13EC5F3E00FCEA29 /* 2DAudio */ = {
-			isa = PBXGroup;
-			children = (
-				6D6EC03C13EC5F4900FCEA29 /* HelloPolycodeApp.cpp */,
-				6D6EC03D13EC5F4900FCEA29 /* HelloPolycodeApp.h */,
-			);
-			name = 2DAudio;
-			sourceTree = "<group>";
-		};
-		6D6EC05C13EC7AD700FCEA29 /* BasicLighting */ = {
-			isa = PBXGroup;
-			children = (
-				6D6EC05D13EC7AED00FCEA29 /* HelloPolycodeApp.cpp */,
-				6D6EC05E13EC7AED00FCEA29 /* HelloPolycodeApp.h */,
-			);
-			name = BasicLighting;
 			sourceTree = "<group>";
 		};
 		6D6EC07D13EC837D00FCEA29 /* 2DPhysics_Basic */ = {
@@ -1678,23 +1408,19 @@
 			children = (
 				6DE0EE0713E8BA3E00A0842D /* BasicImage */,
 				6DE0EE5413E9142800A0842D /* BasicText */,
-				6D49C8F113E8B93000A3426A /* 2DTransforms */,
-				6DE0EE7513E917E600A0842D /* ScreenEntities */,
-				6DE0EE9613E91B0100A0842D /* ScreenSprites */,
+				6D49C8F113E8B93000A3426A /* Transforms */,
+				6DE0EE7513E917E600A0842D /* SceneEntities */,
+				6DE0EE9613E91B0100A0842D /* SceneSprites */,
 				6D5E8DA213E9FF290008A6B3 /* UpdateLoop */,
 				6D5E8DE313EA01670008A6B3 /* EventHandling */,
 				6D6EBF4C13EBD6E800FCEA29 /* MouseInput */,
 				6D6EBF5013EBE2A200FCEA29 /* KeyboardInput */,
 				6D6EBF9613EC531C00FCEA29 /* 3DBasics */,
 				6DE0EED913E91E7D00A0842D /* SkeletalAnimation */,
-				6D6EC05C13EC7AD700FCEA29 /* BasicLighting */,
-				6DE0EEB813E91C8F00A0842D /* AdvancedLighting */,
+				6DE0EEB813E91C8F00A0842D /* MaterialsAndLights */,
 				6D6EC01A13EC5E8300FCEA29 /* PlayingSounds */,
-				6D6EC03B13EC5F3E00FCEA29 /* 2DAudio */,
-				6DE0EEFA13E91FA700A0842D /* 3DAudio */,
-				6D6EBFB713EC552600FCEA29 /* 2DParticles */,
-				6D6EBFD813EC560400FCEA29 /* 3DParticles */,
-				6D6EBFF913EC573E00FCEA29 /* 3DMeshParticles */,
+				6DE0EEFA13E91FA700A0842D /* PositionalSounds */,
+				6D6EBFB713EC552600FCEA29 /* ParticleSystems */,
 				6D6EC07D13EC837D00FCEA29 /* 2DPhysics_Basic */,
 				6D180D9513EC8B2500103604 /* 2DPhysics_Contacts */,
 				6D180DB813EC8CB100103604 /* 2DPhysics_Joints */,
@@ -1706,8 +1432,6 @@
 				6D180EE613EF796800103604 /* 3DPhysics_Contacts */,
 				6D180E5D13EF284100103604 /* 3DPhysics_Character */,
 				6D180E8313EF4F4F00103604 /* 3DPhysics_Vehicle */,
-				6D11ABDC13F7239900898F64 /* Networking_Server */,
-				6D11ABFF13F723E800898F64 /* Networking_Client */,
 				6DB7CD4413E8B18000398A04 /* PolycodeExample */,
 				6DB7CD3D13E8B18000398A04 /* Frameworks */,
 				6DB7CD3B13E8B18000398A04 /* Products */,
@@ -1717,24 +1441,21 @@
 		6DB7CD3B13E8B18000398A04 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				6DB7CDEE13E8B61500398A04 /* 2DTransforms.app */,
+				6DB7CDEE13E8B61500398A04 /* Transforms.app */,
 				6DE0EE2513E8BA5400A0842D /* BasicImage.app */,
 				6DE0EE5113E913F600A0842D /* BasicText.app */,
-				6DE0EE7313E9174600A0842D /* ScreenEntities.app */,
-				6DE0EE9413E91AFA00A0842D /* ScreenSprites.app */,
-				6DE0EEB613E91C6200A0842D /* AdvancedLighting.app */,
+				6DE0EE7313E9174600A0842D /* SceneEntities.app */,
+				6DE0EE9413E91AFA00A0842D /* SceneSprites.app */,
+				6DE0EEB613E91C6200A0842D /* MaterialsAndLights.app */,
 				6DE0EED713E91E6100A0842D /* SkeletalAnimation.app */,
-				6DE0EEF813E91F9F00A0842D /* 3DAudio.app */,
+				6DE0EEF813E91F9F00A0842D /* PositionalSounds.app */,
 				6D5E8DC113E9FF540008A6B3 /* UpdateLoop.app */,
 				6D4F9EA713EA062700D1590C /* EventHandling.app */,
 				6D6EBF4A13EBD6BB00FCEA29 /* MouseInput.app */,
 				6D6EBF6C13EBE2A800FCEA29 /* KeyboardInput.app */,
 				6D6EBF9413EC52B400FCEA29 /* 3DBasics.app */,
-				6D6EBFB513EC54C700FCEA29 /* 2DParticles.app */,
-				6D6EBFD613EC55E800FCEA29 /* 3DParticles.app */,
-				6D6EBFF713EC573100FCEA29 /* 3DMeshParticles.app */,
+				6D6EBFB513EC54C700FCEA29 /* ParticleSystems.app */,
 				6D6EC01813EC5E4F00FCEA29 /* PlayingSounds.app */,
-				6D6EC03913EC5F1E00FCEA29 /* 2DAudio.app */,
 				6D6EC05A13EC7AA000FCEA29 /* BasicLighting.app */,
 				6D6EC07B13EC833B00FCEA29 /* 2DPhysics_Basic.app */,
 				6D180D9313EC8AB700103604 /* 2DPhysics_Contacts.app */,
@@ -1747,8 +1468,6 @@
 				6D180EE313EF795500103604 /* 3DPhysics_Contacts.app */,
 				6D180F0A13EF9F0500103604 /* 3DPhysics_CollisionOnly.app */,
 				6D180F5013F0658400103604 /* 3DPhysics_RayTest.app */,
-				6D11ABD713F7235200898F64 /* Networking_Server.app */,
-				6D11ABFD13F723D800898F64 /* Networking_Client.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1833,31 +1552,31 @@
 			name = BasicText;
 			sourceTree = "<group>";
 		};
-		6DE0EE7513E917E600A0842D /* ScreenEntities */ = {
+		6DE0EE7513E917E600A0842D /* SceneEntities */ = {
 			isa = PBXGroup;
 			children = (
 				6D6EBF2A13EBCEB300FCEA29 /* HelloPolycodeApp.h */,
 				6DE0EE7613E9180A00A0842D /* HelloPolycodeApp.cpp */,
 			);
-			name = ScreenEntities;
+			name = SceneEntities;
 			sourceTree = "<group>";
 		};
-		6DE0EE9613E91B0100A0842D /* ScreenSprites */ = {
+		6DE0EE9613E91B0100A0842D /* SceneSprites */ = {
 			isa = PBXGroup;
 			children = (
 				6D6EBF2B13EBCEBD00FCEA29 /* HelloPolycodeApp.h */,
 				6DE0EE9713E91B0900A0842D /* HelloPolycodeApp.cpp */,
 			);
-			name = ScreenSprites;
+			name = SceneSprites;
 			sourceTree = "<group>";
 		};
-		6DE0EEB813E91C8F00A0842D /* AdvancedLighting */ = {
+		6DE0EEB813E91C8F00A0842D /* MaterialsAndLights */ = {
 			isa = PBXGroup;
 			children = (
 				6D6EBF2D13EBCED700FCEA29 /* HelloPolycodeApp.h */,
 				6DE0EEB913E91CA700A0842D /* HelloPolycodeApp.cpp */,
 			);
-			name = AdvancedLighting;
+			name = MaterialsAndLights;
 			sourceTree = "<group>";
 		};
 		6DE0EED913E91E7D00A0842D /* SkeletalAnimation */ = {
@@ -1869,54 +1588,18 @@
 			name = SkeletalAnimation;
 			sourceTree = "<group>";
 		};
-		6DE0EEFA13E91FA700A0842D /* 3DAudio */ = {
+		6DE0EEFA13E91FA700A0842D /* PositionalSounds */ = {
 			isa = PBXGroup;
 			children = (
 				6D6EBF2E13EBCEE300FCEA29 /* HelloPolycodeApp.h */,
 				6DE0EEFB13E91FB200A0842D /* HelloPolycodeApp.cpp */,
 			);
-			name = 3DAudio;
+			name = PositionalSounds;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		6D11ABBC13F7235200898F64 /* Networking_Server */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 6D11ABD413F7235200898F64 /* Build configuration list for PBXNativeTarget "Networking_Server" */;
-			buildPhases = (
-				6D11ABBD13F7235200898F64 /* Sources */,
-				6D11ABC213F7235200898F64 /* Frameworks */,
-				6D11ABCF13F7235200898F64 /* Resources */,
-				6D11ABD313F7235200898F64 /* ShellScript */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = Networking_Server;
-			productName = PolycodeExample;
-			productReference = 6D11ABD713F7235200898F64 /* Networking_Server.app */;
-			productType = "com.apple.product-type.application";
-		};
-		6D11ABE113F723D800898F64 /* Networking_Client */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 6D11ABFA13F723D800898F64 /* Build configuration list for PBXNativeTarget "Networking_Client" */;
-			buildPhases = (
-				6D11ABE213F723D800898F64 /* Sources */,
-				6D11ABE713F723D800898F64 /* Frameworks */,
-				6D11ABF513F723D800898F64 /* Resources */,
-				6D11ABF913F723D800898F64 /* ShellScript */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = Networking_Client;
-			productName = PolycodeExample;
-			productReference = 6D11ABFD13F723D800898F64 /* Networking_Client.app */;
-			productType = "com.apple.product-type.application";
-		};
 		6D180D7613EC8AB700103604 /* 2DPhysics_Contacts */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6D180D9013EC8AB700103604 /* Build configuration list for PBXNativeTarget "2DPhysics_Contacts" */;
@@ -2187,9 +1870,9 @@
 			productReference = 6D6EBF9413EC52B400FCEA29 /* 3DBasics.app */;
 			productType = "com.apple.product-type.application";
 		};
-		6D6EBF9A13EC54C700FCEA29 /* 2DParticles */ = {
+		6D6EBF9A13EC54C700FCEA29 /* ParticleSystems */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 6D6EBFB213EC54C700FCEA29 /* Build configuration list for PBXNativeTarget "2DParticles" */;
+			buildConfigurationList = 6D6EBFB213EC54C700FCEA29 /* Build configuration list for PBXNativeTarget "ParticleSystems" */;
 			buildPhases = (
 				6D6EBF9B13EC54C700FCEA29 /* Sources */,
 				6D6EBFA013EC54C700FCEA29 /* Frameworks */,
@@ -2200,45 +1883,9 @@
 			);
 			dependencies = (
 			);
-			name = 2DParticles;
+			name = ParticleSystems;
 			productName = PolycodeExample;
-			productReference = 6D6EBFB513EC54C700FCEA29 /* 2DParticles.app */;
-			productType = "com.apple.product-type.application";
-		};
-		6D6EBFBB13EC55E800FCEA29 /* 3DParticles */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 6D6EBFD313EC55E800FCEA29 /* Build configuration list for PBXNativeTarget "3DParticles" */;
-			buildPhases = (
-				6D6EBFBC13EC55E800FCEA29 /* Sources */,
-				6D6EBFC113EC55E800FCEA29 /* Frameworks */,
-				6D6EBFCE13EC55E800FCEA29 /* Resources */,
-				6D6EBFD213EC55E800FCEA29 /* ShellScript */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = 3DParticles;
-			productName = PolycodeExample;
-			productReference = 6D6EBFD613EC55E800FCEA29 /* 3DParticles.app */;
-			productType = "com.apple.product-type.application";
-		};
-		6D6EBFDC13EC573100FCEA29 /* 3DMeshParticles */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 6D6EBFF413EC573100FCEA29 /* Build configuration list for PBXNativeTarget "3DMeshParticles" */;
-			buildPhases = (
-				6D6EBFDD13EC573100FCEA29 /* Sources */,
-				6D6EBFE213EC573100FCEA29 /* Frameworks */,
-				6D6EBFEF13EC573100FCEA29 /* Resources */,
-				6D6EBFF313EC573100FCEA29 /* ShellScript */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = 3DMeshParticles;
-			productName = PolycodeExample;
-			productReference = 6D6EBFF713EC573100FCEA29 /* 3DMeshParticles.app */;
+			productReference = 6D6EBFB513EC54C700FCEA29 /* ParticleSystems.app */;
 			productType = "com.apple.product-type.application";
 		};
 		6D6EBFFD13EC5E4F00FCEA29 /* PlayingSounds */ = {
@@ -2257,24 +1904,6 @@
 			name = PlayingSounds;
 			productName = PolycodeExample;
 			productReference = 6D6EC01813EC5E4F00FCEA29 /* PlayingSounds.app */;
-			productType = "com.apple.product-type.application";
-		};
-		6D6EC01E13EC5F1E00FCEA29 /* 2DAudio */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 6D6EC03613EC5F1E00FCEA29 /* Build configuration list for PBXNativeTarget "2DAudio" */;
-			buildPhases = (
-				6D6EC01F13EC5F1E00FCEA29 /* Sources */,
-				6D6EC02413EC5F1E00FCEA29 /* Frameworks */,
-				6D6EC03113EC5F1E00FCEA29 /* Resources */,
-				6D6EC03513EC5F1E00FCEA29 /* ShellScript */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = 2DAudio;
-			productName = PolycodeExample;
-			productReference = 6D6EC03913EC5F1E00FCEA29 /* 2DAudio.app */;
 			productType = "com.apple.product-type.application";
 		};
 		6D6EC03F13EC7AA000FCEA29 /* BasicLighting */ = {
@@ -2313,9 +1942,9 @@
 			productReference = 6D6EC07B13EC833B00FCEA29 /* 2DPhysics_Basic.app */;
 			productType = "com.apple.product-type.application";
 		};
-		6DB7CDD313E8B61500398A04 /* 2DTransforms */ = {
+		6DB7CDD313E8B61500398A04 /* Transforms */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 6DB7CDEB13E8B61500398A04 /* Build configuration list for PBXNativeTarget "2DTransforms" */;
+			buildConfigurationList = 6DB7CDEB13E8B61500398A04 /* Build configuration list for PBXNativeTarget "Transforms" */;
 			buildPhases = (
 				6DB7CDD413E8B61500398A04 /* Sources */,
 				6DB7CDD913E8B61500398A04 /* Frameworks */,
@@ -2326,9 +1955,9 @@
 			);
 			dependencies = (
 			);
-			name = 2DTransforms;
+			name = Transforms;
 			productName = PolycodeExample;
-			productReference = 6DB7CDEE13E8B61500398A04 /* 2DTransforms.app */;
+			productReference = 6DB7CDEE13E8B61500398A04 /* Transforms.app */;
 			productType = "com.apple.product-type.application";
 		};
 		6DE0EE0913E8BA5400A0842D /* BasicImage */ = {
@@ -2367,9 +1996,9 @@
 			productReference = 6DE0EE5113E913F600A0842D /* BasicText.app */;
 			productType = "com.apple.product-type.application";
 		};
-		6DE0EE5713E9174600A0842D /* ScreenEntities */ = {
+		6DE0EE5713E9174600A0842D /* SceneEntities */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 6DE0EE7013E9174600A0842D /* Build configuration list for PBXNativeTarget "ScreenEntities" */;
+			buildConfigurationList = 6DE0EE7013E9174600A0842D /* Build configuration list for PBXNativeTarget "SceneEntities" */;
 			buildPhases = (
 				6DE0EE5813E9174600A0842D /* Sources */,
 				6DE0EE5D13E9174600A0842D /* Frameworks */,
@@ -2380,14 +2009,14 @@
 			);
 			dependencies = (
 			);
-			name = ScreenEntities;
+			name = SceneEntities;
 			productName = PolycodeExample;
-			productReference = 6DE0EE7313E9174600A0842D /* ScreenEntities.app */;
+			productReference = 6DE0EE7313E9174600A0842D /* SceneEntities.app */;
 			productType = "com.apple.product-type.application";
 		};
-		6DE0EE7813E91AFA00A0842D /* ScreenSprites */ = {
+		6DE0EE7813E91AFA00A0842D /* SceneSprites */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 6DE0EE9113E91AFA00A0842D /* Build configuration list for PBXNativeTarget "ScreenSprites" */;
+			buildConfigurationList = 6DE0EE9113E91AFA00A0842D /* Build configuration list for PBXNativeTarget "SceneSprites" */;
 			buildPhases = (
 				6DE0EE7913E91AFA00A0842D /* Sources */,
 				6DE0EE7E13E91AFA00A0842D /* Frameworks */,
@@ -2398,14 +2027,14 @@
 			);
 			dependencies = (
 			);
-			name = ScreenSprites;
+			name = SceneSprites;
 			productName = PolycodeExample;
-			productReference = 6DE0EE9413E91AFA00A0842D /* ScreenSprites.app */;
+			productReference = 6DE0EE9413E91AFA00A0842D /* SceneSprites.app */;
 			productType = "com.apple.product-type.application";
 		};
-		6DE0EE9A13E91C6200A0842D /* AdvancedLighting */ = {
+		6DE0EE9A13E91C6200A0842D /* MaterialsAndLights */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 6DE0EEB313E91C6200A0842D /* Build configuration list for PBXNativeTarget "AdvancedLighting" */;
+			buildConfigurationList = 6DE0EEB313E91C6200A0842D /* Build configuration list for PBXNativeTarget "MaterialsAndLights" */;
 			buildPhases = (
 				6DE0EE9B13E91C6200A0842D /* Sources */,
 				6DE0EEA013E91C6200A0842D /* Frameworks */,
@@ -2416,9 +2045,9 @@
 			);
 			dependencies = (
 			);
-			name = AdvancedLighting;
+			name = MaterialsAndLights;
 			productName = PolycodeExample;
-			productReference = 6DE0EEB613E91C6200A0842D /* AdvancedLighting.app */;
+			productReference = 6DE0EEB613E91C6200A0842D /* MaterialsAndLights.app */;
 			productType = "com.apple.product-type.application";
 		};
 		6DE0EEBB13E91E6100A0842D /* SkeletalAnimation */ = {
@@ -2439,9 +2068,9 @@
 			productReference = 6DE0EED713E91E6100A0842D /* SkeletalAnimation.app */;
 			productType = "com.apple.product-type.application";
 		};
-		6DE0EEDC13E91F9F00A0842D /* 3DAudio */ = {
+		6DE0EEDC13E91F9F00A0842D /* PositionalSounds */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 6DE0EEF513E91F9F00A0842D /* Build configuration list for PBXNativeTarget "3DAudio" */;
+			buildConfigurationList = 6DE0EEF513E91F9F00A0842D /* Build configuration list for PBXNativeTarget "PositionalSounds" */;
 			buildPhases = (
 				6DE0EEDD13E91F9F00A0842D /* Sources */,
 				6DE0EEE213E91F9F00A0842D /* Frameworks */,
@@ -2452,9 +2081,9 @@
 			);
 			dependencies = (
 			);
-			name = 3DAudio;
+			name = PositionalSounds;
 			productName = PolycodeExample;
-			productReference = 6DE0EEF813E91F9F00A0842D /* 3DAudio.app */;
+			productReference = 6DE0EEF813E91F9F00A0842D /* PositionalSounds.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -2477,24 +2106,21 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				6DB7CDD313E8B61500398A04 /* 2DTransforms */,
+				6DB7CDD313E8B61500398A04 /* Transforms */,
 				6DE0EE0913E8BA5400A0842D /* BasicImage */,
 				6DE0EE3513E913F600A0842D /* BasicText */,
-				6DE0EE5713E9174600A0842D /* ScreenEntities */,
-				6DE0EE7813E91AFA00A0842D /* ScreenSprites */,
-				6DE0EE9A13E91C6200A0842D /* AdvancedLighting */,
+				6DE0EE5713E9174600A0842D /* SceneEntities */,
+				6DE0EE7813E91AFA00A0842D /* SceneSprites */,
+				6DE0EE9A13E91C6200A0842D /* MaterialsAndLights */,
 				6DE0EEBB13E91E6100A0842D /* SkeletalAnimation */,
-				6DE0EEDC13E91F9F00A0842D /* 3DAudio */,
+				6DE0EEDC13E91F9F00A0842D /* PositionalSounds */,
 				6D5E8DA513E9FF530008A6B3 /* UpdateLoop */,
 				6D4F9E8B13EA062700D1590C /* EventHandling */,
 				6D6EBF2F13EBD6BB00FCEA29 /* MouseInput */,
 				6D6EBF5113EBE2A800FCEA29 /* KeyboardInput */,
 				6D6EBF7913EC52B400FCEA29 /* 3DBasics */,
-				6D6EBF9A13EC54C700FCEA29 /* 2DParticles */,
-				6D6EBFBB13EC55E800FCEA29 /* 3DParticles */,
-				6D6EBFDC13EC573100FCEA29 /* 3DMeshParticles */,
+				6D6EBF9A13EC54C700FCEA29 /* ParticleSystems */,
 				6D6EBFFD13EC5E4F00FCEA29 /* PlayingSounds */,
-				6D6EC01E13EC5F1E00FCEA29 /* 2DAudio */,
 				6D6EC03F13EC7AA000FCEA29 /* BasicLighting */,
 				6D6EC06013EC833B00FCEA29 /* 2DPhysics_Basic */,
 				6D180D7613EC8AB700103604 /* 2DPhysics_Contacts */,
@@ -2507,33 +2133,11 @@
 				6D180EC313EF795500103604 /* 3DPhysics_Contacts */,
 				6D180EEA13EF9F0500103604 /* 3DPhysics_CollisionOnly */,
 				6D180F3013F0658400103604 /* 3DPhysics_RayTest */,
-				6D11ABBC13F7235200898F64 /* Networking_Server */,
-				6D11ABE113F723D800898F64 /* Networking_Client */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		6D11ABCF13F7235200898F64 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6D11ABD013F7235200898F64 /* InfoPlist.strings in Resources */,
-				6D11ABD113F7235200898F64 /* Credits.rtf in Resources */,
-				6D11ABD213F7235200898F64 /* MainMenu.xib in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		6D11ABF513F723D800898F64 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6D11ABF613F723D800898F64 /* InfoPlist.strings in Resources */,
-				6D11ABF713F723D800898F64 /* Credits.rtf in Resources */,
-				6D11ABF813F723D800898F64 /* MainMenu.xib in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		6D180D8B13EC8AB700103604 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2694,26 +2298,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		6D6EBFCE13EC55E800FCEA29 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6D6EBFCF13EC55E800FCEA29 /* InfoPlist.strings in Resources */,
-				6D6EBFD013EC55E800FCEA29 /* Credits.rtf in Resources */,
-				6D6EBFD113EC55E800FCEA29 /* MainMenu.xib in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		6D6EBFEF13EC573100FCEA29 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6D6EBFF013EC573100FCEA29 /* InfoPlist.strings in Resources */,
-				6D6EBFF113EC573100FCEA29 /* Credits.rtf in Resources */,
-				6D6EBFF213EC573100FCEA29 /* MainMenu.xib in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		6D6EC01013EC5E4F00FCEA29 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2721,16 +2305,6 @@
 				6D6EC01113EC5E4F00FCEA29 /* InfoPlist.strings in Resources */,
 				6D6EC01213EC5E4F00FCEA29 /* Credits.rtf in Resources */,
 				6D6EC01313EC5E4F00FCEA29 /* MainMenu.xib in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		6D6EC03113EC5F1E00FCEA29 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6D6EC03213EC5F1E00FCEA29 /* InfoPlist.strings in Resources */,
-				6D6EC03313EC5F1E00FCEA29 /* Credits.rtf in Resources */,
-				6D6EC03413EC5F1E00FCEA29 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2837,32 +2411,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		6D11ABD313F7235200898F64 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
-		};
-		6D11ABF913F723D800898F64 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
-		};
 		6D180D8F13EC8AB700103604 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 12;
@@ -3071,46 +2619,7 @@
 			shellPath = /bin/sh;
 			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
-		6D6EBFD213EC55E800FCEA29 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 12;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
-		};
-		6D6EBFF313EC573100FCEA29 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 12;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
-		};
 		6D6EC01413EC5E4F00FCEA29 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 12;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cp -R $PROJECT_DIR/Resources \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
-		};
-		6D6EC03513EC5F1E00FCEA29 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 12;
 			files = (
@@ -3256,28 +2765,6 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		6D11ABBD13F7235200898F64 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6D11ABBE13F7235200898F64 /* main.m in Sources */,
-				6D11ABBF13F7235200898F64 /* PolycodeExampleAppDelegate.mm in Sources */,
-				6D11ABC013F7235200898F64 /* PolycodeView.mm in Sources */,
-				6D11ABE013F723AF00898F64 /* HelloPolycodeApp.cpp in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		6D11ABE213F723D800898F64 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6D11ABE313F723D800898F64 /* main.m in Sources */,
-				6D11ABE413F723D800898F64 /* PolycodeExampleAppDelegate.mm in Sources */,
-				6D11ABE513F723D800898F64 /* PolycodeView.mm in Sources */,
-				6D11AC0313F7240800898F64 /* HelloPolycodeApp.cpp in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		6D180D7713EC8AB700103604 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -3454,28 +2941,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		6D6EBFBC13EC55E800FCEA29 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6D6EBFBD13EC55E800FCEA29 /* main.m in Sources */,
-				6D6EBFBE13EC55E800FCEA29 /* PolycodeExampleAppDelegate.mm in Sources */,
-				6D6EBFBF13EC55E800FCEA29 /* PolycodeView.mm in Sources */,
-				6D6EBFDB13EC560F00FCEA29 /* HelloPolycodeApp.cpp in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		6D6EBFDD13EC573100FCEA29 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6D6EBFDE13EC573100FCEA29 /* main.m in Sources */,
-				6D6EBFDF13EC573100FCEA29 /* PolycodeExampleAppDelegate.mm in Sources */,
-				6D6EBFE013EC573100FCEA29 /* PolycodeView.mm in Sources */,
-				6D6EBFFC13EC575B00FCEA29 /* HelloPolycodeApp.cpp in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		6D6EBFFE13EC5E4F00FCEA29 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -3487,17 +2952,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		6D6EC01F13EC5F1E00FCEA29 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6D6EC02013EC5F1E00FCEA29 /* main.m in Sources */,
-				6D6EC02113EC5F1E00FCEA29 /* PolycodeExampleAppDelegate.mm in Sources */,
-				6D6EC02213EC5F1E00FCEA29 /* PolycodeView.mm in Sources */,
-				6D6EC03E13EC5F4900FCEA29 /* HelloPolycodeApp.cpp in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		6D6EC04013EC7AA000FCEA29 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -3505,7 +2959,6 @@
 				6D6EC04113EC7AA000FCEA29 /* main.m in Sources */,
 				6D6EC04213EC7AA000FCEA29 /* PolycodeExampleAppDelegate.mm in Sources */,
 				6D6EC04313EC7AA000FCEA29 /* PolycodeView.mm in Sources */,
-				6D6EC05F13EC7AED00FCEA29 /* HelloPolycodeApp.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3638,94 +3091,6 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		6D11ABD513F7235200898F64 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
-				HEADER_SEARCH_PATHS = $inherited;
-				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\\\"$(SRCROOT)/../../Core/lib\\\"",
-					"\\\"$(SRCROOT)/../../Core/Dependencies/lib\\\"",
-					"\"$(SRCROOT)/../../Modules/lib\"",
-				);
-				PRODUCT_NAME = Networking_Server;
-				WRAPPER_EXTENSION = app;
-			};
-			name = Debug;
-		};
-		6D11ABD613F7235200898F64 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
-				HEADER_SEARCH_PATHS = $inherited;
-				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\\\"$(SRCROOT)/../../Core/lib\\\"",
-					"\\\"$(SRCROOT)/../../Core/Dependencies/lib\\\"",
-					"\"$(SRCROOT)/../../Modules/lib\"",
-				);
-				PRODUCT_NAME = Networking_Server;
-				WRAPPER_EXTENSION = app;
-			};
-			name = Release;
-		};
-		6D11ABFB13F723D800898F64 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
-				HEADER_SEARCH_PATHS = $inherited;
-				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\\\\\\\"$(SRCROOT)/../../Core/lib\\\\\\\"",
-					"\\\\\\\"$(SRCROOT)/../../Core/Dependencies/lib\\\\\\\"",
-					"\\\"$(SRCROOT)/../../Modules/lib\\\"",
-				);
-				PRODUCT_NAME = Networking_Client;
-				WRAPPER_EXTENSION = app;
-			};
-			name = Debug;
-		};
-		6D11ABFC13F723D800898F64 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
-				HEADER_SEARCH_PATHS = $inherited;
-				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\\\\\\\"$(SRCROOT)/../../Core/lib\\\\\\\"",
-					"\\\\\\\"$(SRCROOT)/../../Core/Dependencies/lib\\\\\\\"",
-					"\\\"$(SRCROOT)/../../Modules/lib\\\"",
-				);
-				PRODUCT_NAME = Networking_Client;
-				WRAPPER_EXTENSION = app;
-			};
-			name = Release;
-		};
 		6D180D9113EC8AB700103604 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -4436,7 +3801,7 @@
 				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
 				LIBRARY_SEARCH_PATHS = $inherited;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = YES;
-				PRODUCT_NAME = 2DParticles;
+				PRODUCT_NAME = ParticleSystems;
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = NO;
 				WRAPPER_EXTENSION = app;
 			};
@@ -4457,89 +3822,7 @@
 				LIBRARY_SEARCH_PATHS = $inherited;
 				ONLY_ACTIVE_ARCH = YES;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = YES;
-				PRODUCT_NAME = 2DParticles;
-				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = NO;
-				WRAPPER_EXTENSION = app;
-			};
-			name = Release;
-		};
-		6D6EBFD413EC55E800FCEA29 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
-				GCC_USE_STANDARD_INCLUDE_SEARCHING = YES;
-				HEADER_SEARCH_PATHS = $inherited;
-				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
-				LIBRARY_SEARCH_PATHS = $inherited;
-				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = YES;
-				PRODUCT_NAME = 3DParticles;
-				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = NO;
-				WRAPPER_EXTENSION = app;
-			};
-			name = Debug;
-		};
-		6D6EBFD513EC55E800FCEA29 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
-				GCC_USE_STANDARD_INCLUDE_SEARCHING = YES;
-				HEADER_SEARCH_PATHS = $inherited;
-				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
-				LIBRARY_SEARCH_PATHS = $inherited;
-				ONLY_ACTIVE_ARCH = YES;
-				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = YES;
-				PRODUCT_NAME = 3DParticles;
-				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = NO;
-				WRAPPER_EXTENSION = app;
-			};
-			name = Release;
-		};
-		6D6EBFF513EC573100FCEA29 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
-				GCC_USE_STANDARD_INCLUDE_SEARCHING = YES;
-				HEADER_SEARCH_PATHS = $inherited;
-				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
-				LIBRARY_SEARCH_PATHS = $inherited;
-				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = YES;
-				PRODUCT_NAME = 3DMeshParticles;
-				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = NO;
-				WRAPPER_EXTENSION = app;
-			};
-			name = Debug;
-		};
-		6D6EBFF613EC573100FCEA29 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
-				GCC_USE_STANDARD_INCLUDE_SEARCHING = YES;
-				HEADER_SEARCH_PATHS = $inherited;
-				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
-				LIBRARY_SEARCH_PATHS = $inherited;
-				ONLY_ACTIVE_ARCH = YES;
-				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = YES;
-				PRODUCT_NAME = 3DMeshParticles;
+				PRODUCT_NAME = ParticleSystems;
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = NO;
 				WRAPPER_EXTENSION = app;
 			};
@@ -4581,47 +3864,6 @@
 				ONLY_ACTIVE_ARCH = YES;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = YES;
 				PRODUCT_NAME = PlayingSounds;
-				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = NO;
-				WRAPPER_EXTENSION = app;
-			};
-			name = Release;
-		};
-		6D6EC03713EC5F1E00FCEA29 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
-				GCC_USE_STANDARD_INCLUDE_SEARCHING = YES;
-				HEADER_SEARCH_PATHS = $inherited;
-				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
-				LIBRARY_SEARCH_PATHS = $inherited;
-				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = YES;
-				PRODUCT_NAME = 2DAudio;
-				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = NO;
-				WRAPPER_EXTENSION = app;
-			};
-			name = Debug;
-		};
-		6D6EC03813EC5F1E00FCEA29 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "PolycodeExample/PolycodeExample-Prefix.pch";
-				GCC_USE_STANDARD_INCLUDE_SEARCHING = YES;
-				HEADER_SEARCH_PATHS = $inherited;
-				INFOPLIST_FILE = "PolycodeExample/PolycodeExample-Info.plist";
-				LIBRARY_SEARCH_PATHS = $inherited;
-				ONLY_ACTIVE_ARCH = YES;
-				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = YES;
-				PRODUCT_NAME = 2DAudio;
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = NO;
 				WRAPPER_EXTENSION = app;
 			};
@@ -4721,6 +3963,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_CXX_LIBRARY = "libc++";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
@@ -4747,7 +3990,7 @@
 					"\"$(SRCROOT)/../../Modules/lib\"",
 					"\"$(SRCROOT)/../../Modules/Dependencies/lib\"",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				__TARGET_NAME__ = "$(TARGET_NAME)";
@@ -4758,6 +4001,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_CXX_LIBRARY = "libc++";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "__TARGET_NAME__=$(TARGET_NAME)";
@@ -4782,7 +4026,7 @@
 					"\"$(SRCROOT)/../../Modules/lib\"",
 					"\"$(SRCROOT)/../../Modules/Dependencies/lib\"",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				SDKROOT = macosx;
 				__TARGET_NAME__ = "$(TARGET_NAME)";
 			};
@@ -4803,7 +4047,7 @@
 					"\"$(SRCROOT)/../../Core/lib\"",
 					"\"$(SRCROOT)/../../Core/Dependencies/lib\"",
 				);
-				PRODUCT_NAME = 2DTransforms;
+				PRODUCT_NAME = Transforms;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -4823,7 +4067,7 @@
 					"\"$(SRCROOT)/../../Core/lib\"",
 					"\"$(SRCROOT)/../../Core/Dependencies/lib\"",
 				);
-				PRODUCT_NAME = 2DTransforms;
+				PRODUCT_NAME = Transforms;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -4928,7 +4172,7 @@
 					"\"$(SRCROOT)/../../Core/lib\"",
 					"\"$(SRCROOT)/../../Core/Dependencies/lib\"",
 				);
-				PRODUCT_NAME = ScreenEntities;
+				PRODUCT_NAME = SceneEntities;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -4949,7 +4193,7 @@
 					"\"$(SRCROOT)/../../Core/lib\"",
 					"\"$(SRCROOT)/../../Core/Dependencies/lib\"",
 				);
-				PRODUCT_NAME = ScreenEntities;
+				PRODUCT_NAME = SceneEntities;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -4970,7 +4214,7 @@
 					"\"$(SRCROOT)/../../Core/lib\"",
 					"\"$(SRCROOT)/../../Core/Dependencies/lib\"",
 				);
-				PRODUCT_NAME = ScreenSprites;
+				PRODUCT_NAME = SceneSprites;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -4991,7 +4235,7 @@
 					"\"$(SRCROOT)/../../Core/lib\"",
 					"\"$(SRCROOT)/../../Core/Dependencies/lib\"",
 				);
-				PRODUCT_NAME = ScreenSprites;
+				PRODUCT_NAME = SceneSprites;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -5012,7 +4256,7 @@
 					"\"$(SRCROOT)/../../Core/lib\"",
 					"\"$(SRCROOT)/../../Core/Dependencies/lib\"",
 				);
-				PRODUCT_NAME = AdvancedLighting;
+				PRODUCT_NAME = MaterialsAndLights;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -5033,7 +4277,7 @@
 					"\"$(SRCROOT)/../../Core/lib\"",
 					"\"$(SRCROOT)/../../Core/Dependencies/lib\"",
 				);
-				PRODUCT_NAME = AdvancedLighting;
+				PRODUCT_NAME = MaterialsAndLights;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -5096,7 +4340,7 @@
 					"\"$(SRCROOT)/../../Core/lib\"",
 					"\"$(SRCROOT)/../../Core/Dependencies/lib\"",
 				);
-				PRODUCT_NAME = 3DAudio;
+				PRODUCT_NAME = PositionalSounds;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -5117,7 +4361,7 @@
 					"\"$(SRCROOT)/../../Core/lib\"",
 					"\"$(SRCROOT)/../../Core/Dependencies/lib\"",
 				);
-				PRODUCT_NAME = 3DAudio;
+				PRODUCT_NAME = PositionalSounds;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -5125,24 +4369,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		6D11ABD413F7235200898F64 /* Build configuration list for PBXNativeTarget "Networking_Server" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				6D11ABD513F7235200898F64 /* Debug */,
-				6D11ABD613F7235200898F64 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		6D11ABFA13F723D800898F64 /* Build configuration list for PBXNativeTarget "Networking_Client" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				6D11ABFB13F723D800898F64 /* Debug */,
-				6D11ABFC13F723D800898F64 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		6D180D9013EC8AB700103604 /* Build configuration list for PBXNativeTarget "2DPhysics_Contacts" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -5278,29 +4504,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6D6EBFB213EC54C700FCEA29 /* Build configuration list for PBXNativeTarget "2DParticles" */ = {
+		6D6EBFB213EC54C700FCEA29 /* Build configuration list for PBXNativeTarget "ParticleSystems" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6D6EBFB313EC54C700FCEA29 /* Debug */,
 				6D6EBFB413EC54C700FCEA29 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		6D6EBFD313EC55E800FCEA29 /* Build configuration list for PBXNativeTarget "3DParticles" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				6D6EBFD413EC55E800FCEA29 /* Debug */,
-				6D6EBFD513EC55E800FCEA29 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		6D6EBFF413EC573100FCEA29 /* Build configuration list for PBXNativeTarget "3DMeshParticles" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				6D6EBFF513EC573100FCEA29 /* Debug */,
-				6D6EBFF613EC573100FCEA29 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -5310,15 +4518,6 @@
 			buildConfigurations = (
 				6D6EC01613EC5E4F00FCEA29 /* Debug */,
 				6D6EC01713EC5E4F00FCEA29 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		6D6EC03613EC5F1E00FCEA29 /* Build configuration list for PBXNativeTarget "2DAudio" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				6D6EC03713EC5F1E00FCEA29 /* Debug */,
-				6D6EC03813EC5F1E00FCEA29 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -5350,7 +4549,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6DB7CDEB13E8B61500398A04 /* Build configuration list for PBXNativeTarget "2DTransforms" */ = {
+		6DB7CDEB13E8B61500398A04 /* Build configuration list for PBXNativeTarget "Transforms" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6DB7CDEC13E8B61500398A04 /* Debug */,
@@ -5377,7 +4576,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6DE0EE7013E9174600A0842D /* Build configuration list for PBXNativeTarget "ScreenEntities" */ = {
+		6DE0EE7013E9174600A0842D /* Build configuration list for PBXNativeTarget "SceneEntities" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6DE0EE7113E9174600A0842D /* Debug */,
@@ -5386,7 +4585,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6DE0EE9113E91AFA00A0842D /* Build configuration list for PBXNativeTarget "ScreenSprites" */ = {
+		6DE0EE9113E91AFA00A0842D /* Build configuration list for PBXNativeTarget "SceneSprites" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6DE0EE9213E91AFA00A0842D /* Debug */,
@@ -5395,7 +4594,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6DE0EEB313E91C6200A0842D /* Build configuration list for PBXNativeTarget "AdvancedLighting" */ = {
+		6DE0EEB313E91C6200A0842D /* Build configuration list for PBXNativeTarget "MaterialsAndLights" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6DE0EEB413E91C6200A0842D /* Debug */,
@@ -5413,7 +4612,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6DE0EEF513E91F9F00A0842D /* Build configuration list for PBXNativeTarget "3DAudio" */ = {
+		6DE0EEF513E91F9F00A0842D /* Build configuration list for PBXNativeTarget "PositionalSounds" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6DE0EEF613E91F9F00A0842D /* Debug */,

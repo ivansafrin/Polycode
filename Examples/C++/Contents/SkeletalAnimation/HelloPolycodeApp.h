@@ -10,5 +10,8 @@ public:
     bool Update();
     
 private:
+    
+    Number blendSinVal;
+    SceneMesh *mesh;
 	Core *core;
 };

@@ -2,7 +2,7 @@
 
 HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 
-	core = new POLYCODE_CORE(view, 640,480,false,false,0,0,90);
+	core = new POLYCODE_CORE(view, 640,480,false,true,0,0,90, 0, true);
 
 	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
@@ -16,13 +16,13 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 	box = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 0.5,0.5,0.5);
 	box->loadTexture("Resources/pink_texture.png");
 	box->setPosition(0,1,0);
-	scene->addCollisionChild(box, CollisionSceneEntity::SHAPE_BOX);
+	scene->addCollisionChild(box, CollisionEntity::SHAPE_BOX);
 
 	bigBox = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 2,2,2);
 	bigBox->loadTexture("Resources/pink_texture.png");
 	bigBox->setColor(0.0,1.0,1.0,0.5);
 	bigBox->setPosition(0,1,0);
-	scene->addCollisionChild(bigBox, CollisionSceneEntity::SHAPE_BOX);
+	scene->addCollisionChild(bigBox, CollisionEntity::SHAPE_BOX);
 
 	
 	scene->getDefaultCamera()->setPosition(7,7,7);

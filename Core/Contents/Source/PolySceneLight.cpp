@@ -129,6 +129,9 @@ void SceneLight::renderDepthMap(Scene *scene) {
 	renderer->pushMatrix();
 	renderer->loadIdentity();
 
+    Number vpW = renderer->getViewportWidth();
+    Number vpH = renderer->getViewportHeight();
+    
 	renderer->setViewportSize(shadowMapRes, shadowMapRes);
 	Camera* camera = scene->getActiveCamera();
 	renderer->setProjectionFromFoV(shadowMapFOV, camera->getNearClippingPlane(), camera->getFarClippingPlane());
@@ -139,6 +142,7 @@ void SceneLight::renderDepthMap(Scene *scene) {
 	lightViewMatrix = renderer->getModelviewMatrix() *  renderer->getProjectionMatrix();
 	renderer->unbindFramebuffers();
 	renderer->popMatrix();
+	renderer->setViewportSize(vpW , vpH);
 }
 
 Entity *SceneLight::Clone(bool deepClone, bool ignoreEditorOnly) const {
@@ -172,6 +176,9 @@ void SceneLight::setParentScene(Scene *scene) {
     }
 }
 
+Camera *SceneLight::getSpotlightCamera() {
+    return spotCamera;
+}
 
 const Matrix4& SceneLight::getLightViewMatrix() const {
 	return lightViewMatrix;

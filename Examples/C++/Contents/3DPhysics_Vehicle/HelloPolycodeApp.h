@@ -17,7 +17,7 @@ private:
 	PhysicsVehicle *vehicleController;
 	ScenePrimitive *testBox;
 	ScenePrimitive *vehicle;	
-	ScreenLabel *onGroundLabel;	
+	SceneLabel *onGroundLabel;	
 	Number steeringValue;
 	Number engineForce;
 	bool breaking;

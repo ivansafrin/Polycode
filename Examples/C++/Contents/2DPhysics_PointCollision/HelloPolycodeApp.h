@@ -12,6 +12,6 @@ public:
 	
 private:
 	Core *core;	
-	PhysicsScreen *screen;
-	ScreenEntity *lastEntity;
+	PhysicsScene2D *scene;
+	SceneEntity *lastEntity;
 };

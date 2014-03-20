@@ -2,7 +2,7 @@ CC=g++
 CFLAGS=-I../../Core/Dependencies/include -I../../Core/Dependencies/include/AL -I../../Core/include -I../../Modules/include -I../../Modules/Dependencies/include -I../../Modules/Dependencies/include/bullet
 LDFLAGS=-lrt -ldl -lpthread ../../Core/lib/libPolycore.a ../../Core/Dependencies/lib/libfreetype.a ../../Core/Dependencies/lib/liblibvorbisfile.a ../../Core/Dependencies/lib/liblibvorbis.a ../../Core/Dependencies/lib/liblibogg.a ../../Core/Dependencies/lib/libopenal.so ../../Core/Dependencies/lib/libphysfs.a ../../Core/Dependencies/lib/libpng15.a ../../Core/Dependencies/lib/libz.a -lGL -lGLU -lSDL ../../Modules/lib/libPolycode2DPhysics.a ../../Modules/Dependencies/lib/libBox2D.a ../../Modules/lib/libPolycode3DPhysics.a ../../Modules/Dependencies/lib/libBulletDynamics.a ../../Modules/Dependencies/lib/libBulletCollision.a ../../Modules/Dependencies/lib/libLinearMath.a
 
-default: 2DAudio 2DParticles 2DPhysics_Basic 2DPhysics_CollisionOnly 2DPhysics_Contacts 2DPhysics_Joints 2DPhysics_PointCollision 2DShapes 2DTransforms 3DAudio 3DBasics 3DMeshParticles 3DParticles 3DPhysics_Basic 3DPhysics_Character 3DPhysics_CollisionOnly 3DPhysics_Contacts 3DPhysics_RayTest 3DPhysics_Vehicle AdvancedLighting BasicImage BasicLighting BasicText EventHandling KeyboardInput MouseInput Networking_Client Networking_Server PlayingSounds ScreenEntities ScreenSprites SkeletalAnimation UpdateLoop  
+default: 2DAudio 2DParticles 2DPhysics_Basic 2DPhysics_CollisionOnly 2DPhysics_Contacts 2DPhysics_Joints 2DPhysics_PointCollision 2DShapes 2DTransforms 3DAudio 3DBasics 3DMeshParticles 3DParticles 3DPhysics_Basic 3DPhysics_Character 3DPhysics_CollisionOnly 3DPhysics_Contacts 3DPhysics_RayTest 3DPhysics_Vehicle AdvancedLighting BasicImage BasicLighting BasicText EventHandling KeyboardInput MouseInput Networking_Client Networking_Server PlayingSounds SceneEntities SceneSprites SkeletalAnimation UpdateLoop  
 
 clean:
 	rm 2DAudio
@@ -34,8 +34,8 @@ clean:
 	rm Networking_Client
 	rm Networking_Server
 	rm PlayingSounds
-	rm ScreenEntities
-	rm ScreenSprites
+	rm SceneEntities
+	rm SceneSprites
 	rm SkeletalAnimation
 	rm UpdateLoop
 
@@ -97,10 +97,10 @@ Networking_Server:
 	$(CC) $(CFLAGS) -I./Contents/Networking_Server main.cpp Contents/Networking_Server/HelloPolycodeApp.cpp -o Networking_Server $(LDFLAGS)
 PlayingSounds:
 	$(CC) $(CFLAGS) -I./Contents/PlayingSounds main.cpp Contents/PlayingSounds/HelloPolycodeApp.cpp -o PlayingSounds $(LDFLAGS)
-ScreenEntities:
-	$(CC) $(CFLAGS) -I./Contents/ScreenEntities main.cpp Contents/ScreenEntities/HelloPolycodeApp.cpp -o ScreenEntities $(LDFLAGS)
-ScreenSprites:
-	$(CC) $(CFLAGS) -I./Contents/ScreenSprites main.cpp Contents/ScreenSprites/HelloPolycodeApp.cpp -o ScreenSprites $(LDFLAGS)
+SceneEntities:
+	$(CC) $(CFLAGS) -I./Contents/SceneEntities main.cpp Contents/SceneEntities/HelloPolycodeApp.cpp -o SceneEntities $(LDFLAGS)
+SceneSprites:
+	$(CC) $(CFLAGS) -I./Contents/SceneSprites main.cpp Contents/SceneSprites/HelloPolycodeApp.cpp -o SceneSprites $(LDFLAGS)
 SkeletalAnimation:
 	$(CC) $(CFLAGS) -I./Contents/SkeletalAnimation main.cpp Contents/SkeletalAnimation/HelloPolycodeApp.cpp -o SkeletalAnimation $(LDFLAGS)
 UpdateLoop:

@@ -2,16 +2,15 @@
 
 HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 
-	core = new POLYCODE_CORE(view, 640,480,false,false,0,0,90);
+	core = new POLYCODE_CORE(view, 640,480,false,true,0,0,90, 0, true);
 
 	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
 
-	Screen *screen = new Screen();			
-	image = new ScreenImage("Resources/polycode_logo.png");
-	image->setPositionMode(ScreenEntity::POSITION_CENTER);
-	image->setPosition(640/2, 480/2);
-	screen->addChild(image);	
+	Scene *scene = new Scene(Scene::SCENE_2D);
+    scene->getDefaultCamera()->setOrthoSize(640, 480);
+	image = new SceneImage("Resources/polycode_logo.png");
+	scene->addChild(image);	
 	
 	rotationSpeed = 0;
 	core->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
@@ -30,10 +29,10 @@ void HelloPolycodeApp::handleEvent(Event *e) {
 			case InputEvent::EVENT_KEYDOWN:
 				switch (inputEvent->keyCode()) {
 					case KEY_LEFT:
-						rotationSpeed = -200;
+						rotationSpeed = 200;
 					break;
 					case KEY_RIGHT:
-						rotationSpeed = 200;					
+						rotationSpeed = -200;					
 					break;
 				}
 			break;
@@ -53,7 +52,7 @@ void HelloPolycodeApp::handleEvent(Event *e) {
 bool HelloPolycodeApp::Update() {
 	
 	Number elapsed = core->getElapsed();
-	image->setRotation(image->getRotation() + elapsed * rotationSpeed);
+	image->setRoll(image->getRoll() + elapsed * rotationSpeed);
 	
     return core->updateAndRender();
 }

@@ -14,6 +14,6 @@ public:
 private:
 	
 	Number rotationSpeed;
-	ScreenImage *image;
+	SceneImage *image;
     Core *core;
 };

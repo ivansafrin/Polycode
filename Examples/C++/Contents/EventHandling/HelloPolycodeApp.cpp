@@ -2,7 +2,7 @@
 
 HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 
-	core = new POLYCODE_CORE(view, 640,480,false,false,0,0,90);
+	core = new POLYCODE_CORE(view, 640,480,false,true,0,0,90, 0, true);
 	  
 	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
@@ -10,9 +10,10 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 	rotateTimer = new Timer(true, 1000);
 	rotateTimer->addEventListener(this, Timer::EVENT_TRIGGER);
 
-	Screen *screen = new Screen();			
-	image = new ScreenImage("Resources/polycode_logo.png");
-	screen->addChild(image);	
+	Scene *scene = new Scene(Scene::SCENE_2D);
+    scene->getActiveCamera()->setOrthoSize(640, 480);
+	image = new SceneImage("Resources/polycode_logo.png");
+	scene->addChild(image);	
 }
 
 HelloPolycodeApp::~HelloPolycodeApp() {
@@ -20,7 +21,7 @@ HelloPolycodeApp::~HelloPolycodeApp() {
 
 void HelloPolycodeApp::handleEvent(Event *e) {
 	if(e->getDispatcher() == rotateTimer && e->getEventCode() == Timer::EVENT_TRIGGER) {
-		image->setRotation(image->getRotation() + 90);
+		image->setRoll(image->getRoll() + 90);
 	}
 }
 

@@ -2,15 +2,15 @@
 
 HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) : EventHandler() {
 
-	core = new POLYCODE_CORE(view, 640,480,false,false,0,0,90);
+	core = new POLYCODE_CORE(view, 640,480,false,true,0,0,90, 0, true);
 
 	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
 
-	Screen *screen = new Screen();			
-	image = new ScreenImage("Resources/polycode_logo.png");
-	image->setPositionMode(ScreenEntity::POSITION_CENTER);
-	screen->addChild(image);	
+	scene = new Scene(Scene::SCENE_2D);
+    scene->getActiveCamera()->setOrthoSize(640,480);
+	image = new SceneImage("Resources/polycode_logo.png");
+	scene->addChild(image);	
 	
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
@@ -26,8 +26,10 @@ void HelloPolycodeApp::handleEvent(Event *e) {
 		InputEvent *inputEvent = (InputEvent*)e;
 		switch(e->getEventCode()) {
 			case InputEvent::EVENT_MOUSEMOVE:
-				image->setPosition(inputEvent->mousePosition.x,
-						   inputEvent->mousePosition.y);
+            {
+                Ray ray =scene->projectRayFromCameraAndViewportCoordinate(scene->getActiveCamera(), inputEvent->getMousePosition());
+                image->setPosition(ray.origin.x, ray.origin.y);
+            }
 			break;
 			case InputEvent::EVENT_MOUSEDOWN:
 				image->setColor(1,0,0,1);

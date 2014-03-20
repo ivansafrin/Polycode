@@ -2,13 +2,14 @@
 
 HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 
-	core = new POLYCODE_CORE(view, 640,480,false,false,0,0,90);
+	core = new POLYCODE_CORE(view, 640,480,false,true,0,0,90,0, true);
 
 	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
 
-	Screen *hud = new Screen();
-	ScreenLabel *label = new ScreenLabel("Click on a shape to select it.", 16);
+	Scene *hud = new Scene(Scene::SCENE_2D);
+	SceneLabel *label = new SceneLabel("Click on a shape to select it.", 16);
+	label->setPosition(-640/2+120,480/2-10);
 	hud->addChild(label);	
 
 	scene = new CollisionScene();
@@ -20,17 +21,17 @@ HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 	box = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 1,1,1);
 	box->loadTexture("Resources/pink_texture.png");
 	box->setPosition(0,1,0);
-	scene->addCollisionChild(box, CollisionSceneEntity::SHAPE_MESH);
+	scene->addCollisionChild(box, CollisionEntity::SHAPE_MESH);
 
 	box = new ScenePrimitive(ScenePrimitive::TYPE_CONE, 1,1,10);
 	box->loadTexture("Resources/pink_texture.png");
-	box->setPosition(1,1,2);
-	scene->addCollisionChild(box, CollisionSceneEntity::SHAPE_CONE);
+	box->setPosition(1,2,2);
+	scene->addCollisionChild(box, CollisionEntity::SHAPE_CONE);
 
 	box = new ScenePrimitive(ScenePrimitive::TYPE_CYLINDER, 2,0.5,10);
 	box->loadTexture("Resources/pink_texture.png");
 	box->setPosition(2,1,-1);
-	scene->addCollisionChild(box, CollisionSceneEntity::SHAPE_CYLINDER);
+	scene->addCollisionChild(box, CollisionEntity::SHAPE_CYLINDER);
 
 	
 	scene->getDefaultCamera()->setPosition(7,7,7);
@@ -49,8 +50,8 @@ void HelloPolycodeApp::handleEvent(Event *e) {
 		InputEvent *inputEvent = (InputEvent*)e;
 		switch(e->getEventCode()) {
 			case InputEvent::EVENT_MOUSEDOWN:
-				Vector3 dir = CoreServices::getInstance()->getRenderer()->projectRayFrom2DCoordinate(inputEvent->mousePosition.x, inputEvent->mousePosition.y);
-				RayTestResult res = scene->getFirstEntityInRay(scene->getDefaultCamera()->getPosition(), dir * 1000);				
+                Ray ray = scene->projectRayFromCameraAndViewportCoordinate(scene->getActiveCamera(), inputEvent->mousePosition);
+				RayTestResult res = scene->getFirstEntityInRay(ray.origin, ray.direction * 100.0);
 
 				if(lastEntity) {
 					lastEntity->setColor(1.0,1.0,1.0,1.0);

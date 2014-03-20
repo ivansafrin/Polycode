@@ -2,14 +2,15 @@
 
 HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 
-	core = new POLYCODE_CORE(view, 640,480,false,false,0,0,90);
+	core = new POLYCODE_CORE(view, 640,480,false,true,0,0,90, 0, true);
 	  
 	CoreServices::getInstance()->getResourceManager()->addArchive("Resources/default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
 
-	Screen *screen = new Screen();			
-	image = new ScreenImage("Resources/polycode_logo.png");
-	screen->addChild(image);	
+	Scene *scene = new Scene(Scene::SCENE_2D);
+    scene->getDefaultCamera()->setOrthoSize(640,480);
+	image = new SceneImage("Resources/polycode_logo.png");
+	scene->addChild(image);	
 }
 
 HelloPolycodeApp::~HelloPolycodeApp() {
@@ -17,6 +18,6 @@ HelloPolycodeApp::~HelloPolycodeApp() {
 
 bool HelloPolycodeApp::Update() {
 	Number elapsed = core->getElapsed();
-	image->setRotation(image->getRotation()+(elapsed*100));
+	image->setRoll(image->getRoll()+(elapsed*100));
     return core->updateAndRender();
 }

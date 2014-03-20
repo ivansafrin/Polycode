@@ -35,20 +35,21 @@ namespace Polycode {
 	class _PolyExport SceneLine : public SceneMesh {
 		public:
 		
+		
+            /**
+             * Constructs the line with two taraget entities.
+             * @param ent1 Starting entity.
+             * @param ent2 Ending entity.
+             */
+            SceneLine(Entity *ent1, Entity *ent2);
+        
+        
 			/**
 			* Constructs the line with two taraget positions.
 			* @param start Starting position.
 			* @param end Ending position.
 			*/			
 			SceneLine(Vector3 start, Vector3 end);
-		
-			/**
-			* Constructs the line with two taraget entities.
-			* @param ent1 Starting entity.
-			* @param ent2 Ending entity.
-			*/
-			SceneLine(Entity *ent1, Entity *ent2);
-			
 
 			/**
 			* Constructs the line with two taraget positions.

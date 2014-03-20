@@ -2,22 +2,21 @@
 
 HelloPolycodeApp::HelloPolycodeApp(PolycodeView *view) {
 
-	core = new POLYCODE_CORE(view, 640,480,false,false,0,0,90);
+	core = new POLYCODE_CORE(view, 640,480,false,true,0,0,90, 0, true);
 
-	PhysicsScreen *screen = new PhysicsScreen(10, 60);	
-	
-	ScreenShape *shape = new ScreenShape(ScreenShape::SHAPE_RECT, 600,30);
-	shape->setColor(0.0,0.0,0.0,1.0);
-	shape->setPosition(640/2, 400);
-	screen->addPhysicsChild(shape, PhysicsScreenEntity::ENTITY_RECT, true);	
+	PhysicsScene2D *scene = new PhysicsScene2D(0.1, 60);	
+	ScenePrimitive *shape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1.0,0.05);
+	shape->setColor(0.0,0.0,0.1,1.0);
+	shape->setPosition(0, -0.3);
+	scene->addPhysicsChild(shape, PhysicsScene2DEntity::ENTITY_RECT, true);	
 	
 	for(int i=0; i < 200; i++) {
-		shape = new ScreenShape(ScreenShape::SHAPE_RECT, 20,5);
-		shape->setRotation(rand() % 360);
-		shape->setPosition(rand() % 640, rand() % 300);
-		screen->addPhysicsChild(shape, PhysicsScreenEntity::ENTITY_RECT, false);		
+		shape = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 0.08,0.02);
+		shape->setRoll(rand() % 360);
+        shape->setColor(RANDOM_NUMBER, RANDOM_NUMBER, RANDOM_NUMBER, 1.0);
+		shape->setPosition(-0.3 + (RANDOM_NUMBER*0.6), RANDOM_NUMBER);
+		scene->addPhysicsChild(shape, PhysicsScene2DEntity::ENTITY_RECT, false);
 	}
-
 }
 
 HelloPolycodeApp::~HelloPolycodeApp() {

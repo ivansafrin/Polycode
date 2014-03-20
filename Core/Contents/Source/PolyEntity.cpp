@@ -506,13 +506,21 @@ void Entity::transformAndRender() {
 		Render();
 		renderer->popMatrix();
 	}
+    
+    if(!colorAffectsChildren) {
+        renderer->popVertexColor();
+        if(visible || (!visible && !visibilityAffectsChildren)) {
+            renderChildren();
+        }
+    } else {
+        if(visible || (!visible && !visibilityAffectsChildren)) {
+            renderChildren();
+        }
+        renderer->popVertexColor();
+    }
 		
-	if(visible || (!visible && !visibilityAffectsChildren)) {
-		renderChildren();	
-	}
 				
 	renderer->popMatrix();
-    renderer->popVertexColor();
 	
 	if(!depthWrite)
 		renderer->enableDepthWrite(true);
@@ -673,10 +681,11 @@ Vector3 Entity::getEulerRotation() const {
 
 Matrix4 Entity::getConcatenatedMatrixRelativeTo(Entity *relativeEntity) {
 	
-	if(matrixDirty)
+	if(matrixDirty) {
 		rebuildTransformMatrix();
+    }
 
-	if(parentEntity != NULL && parentEntity != relativeEntity) 
+	if(parentEntity != NULL && parentEntity != relativeEntity)
 		return transformMatrix * parentEntity->getConcatenatedMatrixRelativeTo(relativeEntity);
 	else
 		return transformMatrix;
@@ -690,9 +699,10 @@ Matrix4 Entity::getAnchorAdjustedMatrix() {
 }
 
 Matrix4 Entity::getConcatenatedMatrix() {
-	if(matrixDirty)
+	if(matrixDirty) {
 		rebuildTransformMatrix();
-
+    }
+    
 	if(parentEntity != NULL) 
 		return transformMatrix * parentEntity->getConcatenatedMatrix();
 	else

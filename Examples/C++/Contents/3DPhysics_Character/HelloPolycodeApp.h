@@ -16,7 +16,7 @@ private:
 	PhysicsScene *scene;	
 	PhysicsCharacter *playerController;
 	ScenePrimitive *player;
-	ScreenLabel *onGroundLabel;	
+	SceneLabel *onGroundLabel;	
 	Number walkSpeed;
 	Number rotateSpeed;
 	Number playerDirection;

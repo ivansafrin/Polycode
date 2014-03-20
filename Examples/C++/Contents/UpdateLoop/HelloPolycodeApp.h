@@ -12,6 +12,6 @@ public:
     
 private:
 
-	ScreenImage *image;
+	SceneImage *image;
 	Core *core;
 };
