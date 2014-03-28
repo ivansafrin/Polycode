@@ -72,6 +72,12 @@ namespace Polycode {
 		* @param y New y offset.		
 		*/						
 		void setScreenOffset(Number x, Number y);
+
+		/**
+		 * Screen offset.
+		 * @return Current screen offset.
+		 */
+		Vector2 getScreenOffset();
 				
 		virtual void Shutdown();
 		virtual void Update();

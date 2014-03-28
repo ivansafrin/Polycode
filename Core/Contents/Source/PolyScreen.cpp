@@ -181,6 +181,10 @@ void Screen::setScreenOffset(Number x, Number y) {
 	offset.y = y;	
 }
 
+Vector2 Screen::getScreenOffset() {
+	return offset;
+}
+
 bool Screen::hasFilterShader() const {
 	return _hasFilterShader;
 }
