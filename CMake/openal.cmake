@@ -55,7 +55,7 @@ OPTION(DLOPEN  "Check for the dlopen API for loading optional libs"  ON)
 
 OPTION(WERROR  "Treat compile warnings as errors"      OFF)
 
-OPTION(UTILS  "Build and install utility programs"  ON)
+OPTION(UTILS  "Build and install utility programs"  OFF)
 
 OPTION(EXAMPLES  "Build and install example programs"  OFF)
 
