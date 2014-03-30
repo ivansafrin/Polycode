@@ -363,7 +363,7 @@ namespace Polycode {
              * Returns the entity's rotation as euler angles
              @return Entity's rotation as euler angles
              */
-            Vector3 getEulerRotation() const;
+            Vector3 getRotationEuler() const;
 		
 			/**
 			* Returns the entity's pitch combined with the combined pitch of its parent.
