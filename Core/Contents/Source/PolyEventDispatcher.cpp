@@ -73,7 +73,6 @@ namespace Polycode {
 				//					handlerEntries[i].handler->onEvent(event);
 				//				}
 				handlerEntries[i].handler->handleEvent(event);
-				handlerEntries[i].handler->secondaryHandler(event);
 			}
 		}
 		

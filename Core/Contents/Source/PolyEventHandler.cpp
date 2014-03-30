@@ -28,9 +28,6 @@ namespace Polycode {
 	EventHandler::EventHandler() {
 	}
 	
-	void EventHandler::secondaryHandler(Event *event) {
-	}	
-	
 	EventHandler::~EventHandler() {
 		
 	}
