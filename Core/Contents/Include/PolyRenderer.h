@@ -118,6 +118,7 @@ namespace Polycode {
 		virtual void loadIdentity() = 0;		
 		virtual void setProjectionOrtho(Number xSize=0.0f, Number ySize=0.0f, Number near=-256.0f, Number far=256.0f, bool centered = false) = 0;
 		virtual void setPerspectiveDefaults() = 0;
+        virtual void setProjectionMatrix(Matrix4 matrix) = 0;
 		
 		virtual void setTexture(Texture *texture) = 0;		
 		virtual void enableBackfaceCulling(bool val) = 0;

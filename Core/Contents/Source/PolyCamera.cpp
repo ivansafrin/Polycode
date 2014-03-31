@@ -329,7 +329,7 @@ void Camera::setPostFilter(Material *shaderMaterial) {
 		
 	this->filterShaderMaterial = shaderMaterial;
 	if(!originalSceneTexture) {
-		renderer->createRenderTextures(&originalSceneTexture, &zBufferSceneTexture, CoreServices::getInstance()->getCore()->getXRes(), CoreServices::getInstance()->getCore()->getYRes(), shaderMaterial->fp16RenderTargets);
+        CoreServices::getInstance()->getRenderer()->createRenderTextures(&originalSceneTexture, &zBufferSceneTexture, CoreServices::getInstance()->getCore()->getXRes(), CoreServices::getInstance()->getCore()->getYRes(), shaderMaterial->fp16RenderTargets);
 	}
 	
 	for(int i=0; i < shaderMaterial->getNumShaders(); i++) {
@@ -443,6 +443,10 @@ void Camera::setProjectionMode(int mode) {
 	projectionMode = mode;
 }
 
+void Camera::setProjectionMatrix(Matrix4 matrix) {
+    projectionMatrix = matrix;
+}
+
 void Camera::doCameraTransform() {
 	
     viewport = renderer->getViewport();
@@ -469,10 +473,15 @@ void Camera::doCameraTransform() {
 		case ORTHO_SIZE_VIEWPORT:
 			renderer->setProjectionOrtho(viewport.w / renderer->getBackingResolutionScaleX(), viewport.h / renderer->getBackingResolutionScaleY(), !topLeftOrtho);
 		break;
+		case MANUAL_MATRIX:
+            renderer->setProjectionMatrix(projectionMatrix);
+        break;
 	}
 	renderer->setExposureLevel(exposureLevel);
 
-	projectionMatrix = renderer->getProjectionMatrix();
+    if(projectionMode != MANUAL_MATRIX) {
+        projectionMatrix = renderer->getProjectionMatrix();
+    }
 
 	if(matrixDirty) {
 		rebuildTransformMatrix();

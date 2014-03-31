@@ -566,6 +566,16 @@ void OpenGLRenderer::setProjectionOrtho(Number xSize, Number ySize, Number _near
 	glLoadIdentity();
 }
 
+void OpenGLRenderer::setProjectionMatrix(Matrix4 matrix) {
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    
+	glLoadMatrixd(matrix.ml);
+    
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+}
+
 void OpenGLRenderer::enableBackfaceCulling(bool val) {
 	if(val)
 		glEnable(GL_CULL_FACE);
