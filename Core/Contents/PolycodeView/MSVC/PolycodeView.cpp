@@ -160,13 +160,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 PolycodeView::PolycodeView(HINSTANCE hInstance, int nCmdShow, LPCTSTR windowTitle, bool resizable, bool showDebugConsole) : PolycodeViewBase() {
 
-
+	/*
 	typedef BOOL(WINAPI *SetProcessDPIAwarePtr)(VOID);
 	SetProcessDPIAwarePtr set_process_dpi_aware_func = GetProcAddress(GetModuleHandleA("user32.dll"), "SetProcessDPIAware");
 	if (set_process_dpi_aware_func) {
 		set_process_dpi_aware_func();
 	}
-
+	*/
 	WNDCLASSEX wcex;
 
 	wcex.cbSize = sizeof(WNDCLASSEX);

@@ -11,16 +11,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Contents\Networking_Client\HelloPolycodeApp.cpp" />
+    <ClCompile Include="..\..\Contents\PositionalSounds\HelloPolycodeApp.cpp" />
     <ClCompile Include="..\PolycodeExample.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Contents\Networking_Client\HelloPolycodeApp.h" />
+    <ClInclude Include="..\..\Contents\PositionalSounds\HelloPolycodeApp.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{D14D0437-1D06-4021-A7C4-01F2443DE4F6}</ProjectGuid>
+    <ProjectGuid>{C9E390FF-1EB2-420A-8C5A-774F0FB4AA98}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>MyNetworking_Client</RootNamespace>
+    <RootNamespace>MyPositionalSounds</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -46,12 +46,12 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)..\..\..\Core\include;$(SolutionDir)..\..\..\Core\Dependencies\include;$(SolutionDir)..\..\..\Core\PolycodeView;$(SolutionDir)..\..\..\Core\Dependencies\include\AL;$(SolutionDir)..\Contents\Networking_Client;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)..\..\..\Core\include;$(SolutionDir)..\..\..\Core\Dependencies\include;$(SolutionDir)..\..\..\Core\PolycodeView;$(SolutionDir)..\..\..\Core\Dependencies\include\AL;$(SolutionDir)..\Contents\PositionalSounds;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)..\..\..\Core\lib;$(SolutionDir)..\..\..\Core\Dependencies\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)..\..\..\Core\include;$(SolutionDir)..\..\..\Core\Dependencies\include;$(SolutionDir)..\..\..\Core\PolycodeView;$(SolutionDir)..\..\..\Core\Dependencies\include\AL;$(SolutionDir)..\Contents\Networking_Client;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)..\..\..\Core\include;$(SolutionDir)..\..\..\Core\Dependencies\include;$(SolutionDir)..\..\..\Core\PolycodeView;$(SolutionDir)..\..\..\Core\Dependencies\include\AL;$(SolutionDir)..\Contents\PositionalSounds;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)..\..\..\Core\lib;$(SolutionDir)..\..\..\Core\Dependencies\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

@@ -57,6 +57,10 @@ namespace Polycode {
 
 			/** ProjectionMode: Perspective projection, with bounds set by edges of frustum. */
 			static const int PERSPECTIVE_FRUSTUM = 5;
+        
+            /** ProjectionMode: Manual matrix projection. */
+            static const int MANUAL_MATRIX = 6;
+        
 
 			/**
 			* Constructor.
@@ -191,6 +195,7 @@ namespace Polycode {
             virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
 			
 			Matrix4 getProjectionMatrix();
+            void setProjectionMatrix(Matrix4 matrix);
 			
 			Polycode::Rectangle getViewport();
 			

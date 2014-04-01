@@ -132,6 +132,7 @@ namespace Polycode {
 		void drawArrays(int drawType);		
 				
 		void setProjectionOrtho(Number xSize=0.0f, Number ySize=0.0f, Number near=-256.0f, Number far=256.0f, bool centered = false);
+        void setProjectionMatrix(Matrix4 matrix);
 		void setPerspectiveDefaults();
 		
 		void enableBackfaceCulling(bool val);

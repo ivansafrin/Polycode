@@ -30,11 +30,6 @@ SoundManager::SoundManager() {
 }
 
 void SoundManager::initAL() {
-	alGetError();
-	if(alcGetCurrentContext() == 0) {
-		Logger::log("AL already initialized\n");
-	}
-	
     captureDevice = NULL;
     
 	device = alcOpenDevice(0);
@@ -42,36 +37,35 @@ void SoundManager::initAL() {
 		Logger::log("InitializeAL: Cannot open preferred device\n");
 		return;
 	}
-	
-	if (alcGetError(device) != ALC_NO_ERROR) {
+
+	ALCenum error = alcGetError(device);
+	if (error != ALC_NO_ERROR) {
 		alcCloseDevice(device);
-	//	PCCE_THROW("InitializeAL: Could not open device (alc error)");
+		Logger::log("InitializeAL: Could not open device (%d).", error);
+		return;
 	}
 	
 	context = alcCreateContext(device, 0);
 	if (context == 0) {
 		alcCloseDevice(device);
-	//	PCCE_THROW("InitializeAL: Could not create context");
+		Logger::log("InitializeAL: Could not create context");
+		return;
 	}
-	if (alcGetError(device) != ALC_NO_ERROR) {
+
+	error = alcGetError(device);
+	if (error != ALC_NO_ERROR) {
 		alcDestroyContext(context);
 		alcCloseDevice(device);
-	//	PCCE_THROW("InitializeAL: Could not open device (alc error)");
+		Logger::log("InitializeAL: Could not open device (%d).", error);
+		return;
 	}
 	
 	if (alcMakeContextCurrent(context) != ALC_TRUE) {
 		alcDestroyContext(context);
 		alcCloseDevice(device);
-	//	PCCE_THROW("InitializeAL: Could not make context current");
+		Logger::log("InitializeAL: Could not make context current");
+		return;
 	}
-	if (alcGetError(device) != ALC_NO_ERROR) {
-		alcMakeContextCurrent(0);
-		alcDestroyContext(context);
-		alcCloseDevice(device);
-	//	PCCE_THROW("InitializeAL: Could not make context current (alc error)");
-	}
-	
-	alGetError();
 	
 	ALfloat listenerPos[] = { 0.0, 0.0, 0.0 };
 	ALfloat listenerVel[] = { 0.0, 0.0, 0.0 };	
@@ -80,13 +74,8 @@ void SoundManager::initAL() {
 	alListenerfv(AL_POSITION, listenerPos);
 	alListenerfv(AL_VELOCITY, listenerVel);
 	alListenerfv(AL_ORIENTATION, listenerOri);
-	if (alGetError() != AL_NO_ERROR) {
-//		ShutdownAL();
-//		PCCE_THROW("InitializeAL: Could not set listener position");
-	}
 	
 	alDistanceModel(AL_LINEAR_DISTANCE_CLAMPED);
-//	alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
 	
 	Logger::log("OpenAL initialized...\n");
 }

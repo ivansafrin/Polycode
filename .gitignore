@@ -86,6 +86,16 @@ Player/Build/Mac OS X/Polycode Player.xcodeproj/project.xcworkspace/xcuserdata/i
 !/IDE/Build/Windows/Polycode.rc
 !/IDE/Build/Windows/resource.h
 
+/IDE/Build/Windows2013/*
+!/IDE/Build/Windows2013/main.cpp
+!/IDE/Build/Windows2013/Polycode.props
+!/IDE/Build/Windows2013/Polycode.sln
+!/IDE/Build/Windows2013/Polycode.vcxproj
+!/IDE/Build/Windows2013/Polycode.vcxproj.filters
+!/IDE/Build/Windows2013/Polycode.vcxproj.user
+!/IDE/Build/Windows2013/Polycode.rc
+!/IDE/Build/Windows2013/resource.h
+
 /IDE/Build/Linux/Build
 
 /Core/Build/Mac\ OS\ X/build
