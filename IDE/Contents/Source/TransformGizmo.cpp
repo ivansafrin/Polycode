@@ -716,52 +716,54 @@ void TransformGizmo::handleEvent(Event *event) {
 	
 	if(event->getDispatcher() == coreInput) {
         
-        if(event->getEventCode() == InputEvent::EVENT_KEYDOWN) {
-            InputEvent *inputEvent = (InputEvent*) event;
-            switch(inputEvent->key) {
-                case KEY_s:
-                {
-                    transforming = true;
-                    previousMode = mode;
-                    mode = TRANSFORM_SCALE_VIEW;
-                    setTransformPlaneFromView();
-                    startingPoint = getTransformPlanePosition();
-                    
-                }
-                break;
-                case KEY_r:
-                {
-                    previousMode = mode;
-                    mode = TRANSFORM_ROTATE_VIEW;
-                    transforming = true;
-                    setTransformPlaneFromView();
-                    transformConstraint = transformPlane;
-                    if(gizmoMode == GIZMO_MODE_2D) {
-                        transformConstraint = transformConstraint * -1.0;
-                    }
-                    startingAngle = getTransformPlaneAngle();
-                }
-                break;
-                case KEY_g:
-                {
-                    previousMode = mode;
-                    mode = TRANSFORM_MOVE_VIEW;
-                    transforming = true;
-                    setTransformPlaneFromView();
-                    startingPoint = getTransformPlanePosition();
-                }
-                break;
-                case KEY_ESCAPE:
-                {
-                    if(mode == TRANSFORM_SCALE_VIEW || mode == TRANSFORM_ROTATE_VIEW || mode == TRANSFORM_MOVE_VIEW) {
-                        dispatchEndEvent();
-                        mode = previousMode;
-                    }                    
-                    transforming = false;
-                    firstMove = true;
-                }
-                break;
-            }
+		if (!coreInput->getKeyState(KEY_LCTRL) && !coreInput->getKeyState(KEY_RCTRL) && !coreInput->getKeyState(KEY_LALT) && !coreInput->getKeyState(KEY_RALT)) {
+			if (event->getEventCode() == InputEvent::EVENT_KEYDOWN) {
+				InputEvent *inputEvent = (InputEvent*)event;
+				switch (inputEvent->key) {
+				case KEY_s:
+				{
+							  transforming = true;
+							  previousMode = mode;
+							  mode = TRANSFORM_SCALE_VIEW;
+							  setTransformPlaneFromView();
+							  startingPoint = getTransformPlanePosition();
+
+				}
+					break;
+				case KEY_r:
+				{
+							  previousMode = mode;
+							  mode = TRANSFORM_ROTATE_VIEW;
+							  transforming = true;
+							  setTransformPlaneFromView();
+							  transformConstraint = transformPlane;
+							  if (gizmoMode == GIZMO_MODE_2D) {
+								  transformConstraint = transformConstraint * -1.0;
+							  }
+							  startingAngle = getTransformPlaneAngle();
+				}
+					break;
+				case KEY_g:
+				{
+							  previousMode = mode;
+							  mode = TRANSFORM_MOVE_VIEW;
+							  transforming = true;
+							  setTransformPlaneFromView();
+							  startingPoint = getTransformPlanePosition();
+				}
+					break;
+				case KEY_ESCAPE:
+				{
+								   if (mode == TRANSFORM_SCALE_VIEW || mode == TRANSFORM_ROTATE_VIEW || mode == TRANSFORM_MOVE_VIEW) {
+									   dispatchEndEvent();
+									   mode = previousMode;
+								   }
+								   transforming = false;
+								   firstMove = true;
+				}
+					break;
+				}
+			}
         }
         
         if(transforming) {
