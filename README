@@ -2,7 +2,7 @@ Polycode is a cross-platform framework for creative code. You can use it as a C+
 
 The core Polycode API is written in C++ and can be used to create portable native applications.
 
-On top of the core C++ API, Polycode offers a LUA-based scripting system with its own set of compilation tools. The LUA API mirrors the C++ API and can be used to easily create prototypes and even publish complete applications to multiple platforms without compiling C++.
+On top of the core C++ API, Polycode offers a Lua-based scripting system with its own set of compilation tools. The Lua API mirrors the C++ API and can be used to easily create prototypes and even publish complete applications to multiple platforms without compiling C++.
 
 Polycode is available under the MIT license and was designed and developed by Ivan Safrin.
 
