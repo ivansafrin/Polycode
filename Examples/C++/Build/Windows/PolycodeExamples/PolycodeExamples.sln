@@ -13,8 +13,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "2DPhysics_Joints", "2DPhysi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "2DPhysics_PointCollision", "2DPhysics_PointCollision\2DPhysics_PointCollision.vcxproj", "{9E6D3E8C-09FE-46F2-B96A-95E8FC6F3C87}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "2DShapes", "2DShapes\2DShapes.vcxproj", "{4ED670DE-75E4-44F7-8C55-34356C5AD4FD}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Transforms", "Transforms\Transforms.vcxproj", "{7ABD5439-B7BD-495D-88BE-7EC7469AC681}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PositionalSounds", "PositionalSounds\PositionalSounds.vcxproj", "{C9E390FF-1EB2-420A-8C5A-774F0FB4AA98}"
