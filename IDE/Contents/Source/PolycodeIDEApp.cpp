@@ -31,7 +31,7 @@ PolycodeClipboard *globalClipboard;
 PolycodeEditorManager *globalEditorManager;
 Scene *globalScene;
 
-PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
+PolycodeIDEApp::PolycodeIDEApp(PolycodeViewBase *view) : EventDispatcher() {
 	core = new POLYCODE_CORE(view, 1100, 700,false,false, 0, 0,60, -1, true);
 //	core->pauseOnLoseFocus = true;
     

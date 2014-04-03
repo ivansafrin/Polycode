@@ -13,7 +13,7 @@
     <PolycodeLibsRelease>$(PolycodeCoreLibsRelease);$(PolycodeDependLibsRelease);$(PolycodeWinLibsRelease)</PolycodeLibsRelease>
   </PropertyGroup>
   <PropertyGroup>
-    <IncludePath>..\..\Contents\Include;$(PolycodeDir)Core\include;$(PolycodeDir)Modules\include;$(PolycodeDir)Core\Dependencies\include;$(PolycodeDir)Core\PolycodeView;$(PolycodeDir)Core\Dependencies\include\AL;$(IncludePath)</IncludePath>
+    <IncludePath>.\;..\WindowsShared;..\..\Contents\Include;$(PolycodeDir)Core\include;$(PolycodeDir)Modules\include;$(PolycodeDir)Core\Dependencies\include;$(PolycodeDir)Core\PolycodeView;$(PolycodeDir)Core\Dependencies\include\AL;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup>
     <LibraryPath>$(PolycodeDir)Core\lib;$(PolycodeDir)Core\Dependencies\lib;$(PolycodeDir)Modules\lib;$(PolycodeDir)Modules\Dependencies\lib;$(LibraryPath)</LibraryPath>

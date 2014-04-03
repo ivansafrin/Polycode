@@ -52,6 +52,7 @@
     <ClCompile Include="..\..\Contents\Source\ToolWindows.cpp" />
     <ClCompile Include="..\..\Contents\Source\TrackballCamera.cpp" />
     <ClCompile Include="..\..\Contents\Source\TransformGizmo.cpp" />
+    <ClCompile Include="..\WindowsShared\PolycodeWinIDEView.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -89,6 +90,7 @@
     <ClInclude Include="..\..\Contents\Include\ToolWindows.h" />
     <ClInclude Include="..\..\Contents\Include\TrackballCamera.h" />
     <ClInclude Include="..\..\Contents\Include\TransformGizmo.h" />
+    <ClInclude Include="..\WindowsShared\PolycodeWinIDEView.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
@@ -185,7 +187,7 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>USE_POLYCODEUI_MENUBAR;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -219,7 +221,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>USE_POLYCODEUI_MENUBAR;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

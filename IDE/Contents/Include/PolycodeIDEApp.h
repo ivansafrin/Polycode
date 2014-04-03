@@ -52,7 +52,7 @@ using namespace Polycode;
 
 class PolycodeIDEApp : public EventDispatcher {
 public:
-	PolycodeIDEApp(PolycodeView *view);
+	PolycodeIDEApp(PolycodeViewBase *view);
 	~PolycodeIDEApp();
 	
 	void handleEvent(Event *event);	
