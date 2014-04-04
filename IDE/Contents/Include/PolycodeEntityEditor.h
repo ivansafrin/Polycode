@@ -313,7 +313,6 @@ class PolycodeEntityEditor : public PolycodeEditor {
     
         SceneEntityInstance *loadedInstance;
 		UIHSizer *mainSizer;
-        UIVSizer *rightSizer;
     
     
 };

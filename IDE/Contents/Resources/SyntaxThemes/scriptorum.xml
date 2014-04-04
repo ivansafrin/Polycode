@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<syntaxTheme useStrongHinting="false">
+	<bgColor r="208" g="204" b="192"/>
+	<cursorColor r="20" g="14" b="15"/>
+	<selectionColor r="177" g="172" b="159"/>
+	<lineNumberColor r="247" g="239" b="140"/>
+	<textColors>
+		<color r="29" g="20" b="21"/>
+		<color r="116" g="99" b="87"/>	
+		<color r="111" g="46" b="33"/>
+		<color r="177" g="60" b="40"/>
+		<color r="22" g="46" b="124"/>
+		<color r="142" g="113" b="14"/>
+		<color r="25" g="71" b="203"/>
+		<color r="70" g="139" b="120"/>		
+	</textColors>
+</syntaxTheme>

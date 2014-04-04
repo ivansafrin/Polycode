@@ -309,11 +309,11 @@ EntityEditorMainView::EntityEditorMainView(PolycodeEditor *editor) {
     objectRootInstance = NULL;
     lightsDisabled = false;
     beforeData = NULL;
+    setOwnsChildrenRecursive(true);
     
     this->editor = editor;
-
 	mainScene = new Scene(Scene::SCENE_3D, true);
-
+    
 	renderTexture = new SceneRenderTexture(mainScene, mainScene->getDefaultCamera(), 512, 512);
 	mainScene->clearColor.setColor(0.2, 0.2, 0.2, 1.0);	
 	mainScene->useClearColor = true;
@@ -1391,11 +1391,11 @@ void EntityEditorMainView::setObjectRoot(SceneEntityInstance *entity) {
 EntityEditorMainView::~EntityEditorMainView() {
     delete mainScene;
     delete renderTexture;
-    delete transformGizmo;
-    delete transformGizmoMenu;
-    delete trackballCamera;
-    delete grid;
-    delete cameraPreview;
+//    delete transformGizmo;
+//    delete transformGizmoMenu;
+//    delete trackballCamera;
+//    delete grid;
+//    delete cameraPreview;
     input->removeAllHandlersForListener(this);
 }
 
@@ -1541,7 +1541,14 @@ void PolycodeEntityEditor::doAction(String actionName, PolycodeEditorActionData 
 }
 
 PolycodeEntityEditor::~PolycodeEntityEditor() {
+    mainView->getMainScene()->rootEntity.setOwnsChildrenRecursive(true);
     delete mainView;
+    delete propertyView;
+    delete treeView;
+    delete settingsView;
+    
+    delete propertyContainer;
+    delete mainSizer;
 }
 
 bool PolycodeEntityEditor::openFile(OSFileEntry filePath) {	

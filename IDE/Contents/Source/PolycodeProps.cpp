@@ -144,10 +144,11 @@ PropList::PropList(String caption) : UIElement() {
 	scrollContainer = new UIScrollContainer(propContents, false, true, 100, 100);
 	scrollContainer->setPosition(0, 30);
 	addChild(scrollContainer);
+    
+    ownsChildren = true;
 }
 
 PropList::~PropList() {
-
 }
 		
 void PropList::updateProps() {
@@ -604,9 +605,6 @@ CustomProp::~CustomProp() {
 	keyEntry->removeAllHandlersForListener(this);
 	valueEntry->removeAllHandlersForListener(this);
 	removeButton->removeAllHandlersForListener(this);
-	delete removeButton;
-	delete keyEntry;
-	delete valueEntry;
 }
 
 void CustomProp::handleEvent(Event *event) {

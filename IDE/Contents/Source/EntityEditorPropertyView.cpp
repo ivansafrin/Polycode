@@ -175,4 +175,6 @@ void EntityEditorPropertyView::setEntity(Entity *entity) {
 }
 
 EntityEditorPropertyView::~EntityEditorPropertyView() {
+    entityProps->setOwnsChildrenRecursive(true);
+    delete entityProps;
 }
