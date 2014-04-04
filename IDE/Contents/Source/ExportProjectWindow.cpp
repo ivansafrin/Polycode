@@ -67,7 +67,7 @@ ExportProjectWindow::ExportProjectWindow() : UIWindow(L"Publish Project", 400, 3
 	label->color.a = 1.0;	
 	label->setPosition(padding, 260);
 
-	compileCheckBox = new UICheckBox("Compile Scripts (experimental)", false);
+	compileCheckBox = new UICheckBox("Compile Scripts", false);
 	addChild(compileCheckBox);
 	compileCheckBox->setPosition(padding, 295);
 
