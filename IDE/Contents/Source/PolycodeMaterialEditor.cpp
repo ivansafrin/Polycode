@@ -654,7 +654,9 @@ void PostPreviewBox::Resize(Number width, Number height) {
 }
 
 PostPreviewBox::~PostPreviewBox() {
-
+    previewScene->rootEntity.setOwnsChildrenRecursive(true);
+    delete previewScene;
+    delete renderTexture;
 }
 
 void PostPreviewBox::setMaterial(Material *material) {
@@ -765,7 +767,9 @@ void MaterialPreviewBox::clearMaterial() {
 }
 
 MaterialPreviewBox::~MaterialPreviewBox() {
-
+    delete renderTexture;
+    previewScene->rootEntity.setOwnsChildrenRecursive(true);
+    delete previewScene;
 }
 
 void MaterialPreviewBox::setMaterial(Material *material) {
@@ -989,12 +993,16 @@ MaterialMainWindow::MaterialMainWindow(ResourcePool *resourcePool) : UIElement()
 	shaderPane = new ShaderEditorPane(resourcePool);
 	cubemapPane = new CubemapEditorPane(resourcePool);
 	postPane = new PostEditorPane(resourcePool);
-		
+    
+    ownsChildren = true;
+    
 	addChild(materialPane);
 	addChild(shaderPane);	
 	addChild(cubemapPane);
-	addChild(postPane);	
-	enableScissor = true;
+	addChild(postPane);
+}
+
+MaterialMainWindow::~MaterialMainWindow() {
 }
 	
 void MaterialMainWindow::Resize(Number width, Number height) {	
@@ -1112,6 +1120,12 @@ PolycodeMaterialEditor::PolycodeMaterialEditor() : PolycodeEditor(true){
 
 PolycodeMaterialEditor::~PolycodeMaterialEditor() {
 	delete resourcePool;
+    
+    
+    mainWindow->setOwnsChildrenRecursive(true);
+    delete mainWindow;
+    delete mainSizer;
+    delete materialBrowser;
 }
 
 bool PolycodeMaterialEditor::openFile(OSFileEntry filePath) {

@@ -277,7 +277,7 @@ class MaterialEditorPane : public UIElement {
 class MaterialMainWindow : public UIElement {
 	public:
 	MaterialMainWindow(ResourcePool *resourcePool);
-	~MaterialMainWindow(){}
+	~MaterialMainWindow();
 	
 	void Resize(Number width, Number height);
 	
@@ -307,8 +307,6 @@ class PolycodeMaterialEditor : public PolycodeEditor {
 	protected:
     
         ResourcePool *resourcePool;
-    
-		UIImage *editorImage;
 		
 		MaterialBrowser *materialBrowser;
 		UIHSizer *mainSizer;
