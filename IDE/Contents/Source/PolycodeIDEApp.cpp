@@ -31,8 +31,12 @@ PolycodeClipboard *globalClipboard;
 PolycodeEditorManager *globalEditorManager;
 Scene *globalScene;
 
+#ifdef _WINDOWS
 PolycodeIDEApp::PolycodeIDEApp(PolycodeViewBase *view) : EventDispatcher() {
-	core = new POLYCODE_CORE(view, 1100, 700,false,false, 0, 0,60, -1, true);
+#else
+PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
+#endif
+	core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1, true);
 //	core->pauseOnLoseFocus = true;
     
 	printf("DIR: %s\n", core->getDefaultWorkingDirectory().c_str());
