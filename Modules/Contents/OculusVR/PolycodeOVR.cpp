@@ -22,11 +22,15 @@
 
 #include "PolycodeOVR.h"
 
-PolycodeOVR::PolycodeOVR(Scene *parentScene) {
+PolycodeOVR::PolycodeOVR(Scene *parentScene, Number eyeDistanceScale) {
     
+    this->eyeDistanceScale = eyeDistanceScale;
     this->parentScene = parentScene;
     
     cameraRoot = new Entity();
+    
+    cameraBase = new Entity();
+    cameraRoot->addChild(cameraBase);
     
     leftCamera = new Camera(parentScene);
     rightCamera = new Camera(parentScene);
@@ -36,8 +40,8 @@ PolycodeOVR::PolycodeOVR(Scene *parentScene) {
     rightCamera->setClippingPlanes(0.001, 100.0);
     rightCamera->frustumCulling = false;
     
-    cameraRoot->addChild(leftCamera);
-    cameraRoot->addChild(rightCamera);
+    cameraBase->addChild(leftCamera);
+    cameraBase->addChild(rightCamera);
     
     initOVR();
 }
@@ -104,13 +108,12 @@ void PolycodeOVR::initOVR() {
     rightCamera->setProjectionMode(Camera::MANUAL_MATRIX);
     rightCamera->setProjectionMatrix(projRightPolycode);
     
-    
-    float    halfIPD  = hmd.InterpupillaryDistance * 0.5f;
-    
-    Number scale = 1.0;
-    
+    interpupilaryDistance = hmd.InterpupillaryDistance;
+    float halfIPD  = interpupilaryDistance * 0.5f * eyeDistanceScale;
     leftCamera->setPosition(-halfIPD, 0.0, 0.0);
     rightCamera->setPosition(halfIPD, 0.0, 0.0);
+    
+    Number scale = 1.0;
     
     leftCamera->setPostFilterByName("VRCorrect");
     leftCamera->getLocalShaderOptions()[0]->addParam(ProgramParam::PARAM_VECTOR2, "screenCenter")->setVector2(Vector2(0.5, 0.5));
@@ -129,6 +132,18 @@ void PolycodeOVR::initOVR() {
     
 }
 
+Number PolycodeOVR::getEyeDistanceScale() {
+    return eyeDistanceScale;
+}
+
+void PolycodeOVR::setEyeDistanceScale(Number scale) {
+    this->eyeDistanceScale = scale;
+    float halfIPD  = interpupilaryDistance * 0.5f * eyeDistanceScale;
+    leftCamera->setPosition(-halfIPD, 0.0, 0.0);
+    rightCamera->setPosition(halfIPD, 0.0, 0.0);
+    
+}
+
 Texture *PolycodeOVR::getLeftTexture() {
     return leftTexture->getTargetTexture();
 }
@@ -141,11 +156,15 @@ void PolycodeOVR::Update() {
     Quaternion q;
     OVR::Quatf ovrQ = SFusion->GetOrientation();
     q.set(ovrQ.w, ovrQ.x, ovrQ.y, ovrQ.z);
-    cameraRoot->setRotationByQuaternion(q);
+    cameraBase->setRotationByQuaternion(q);
 }
 
 Entity *PolycodeOVR::getCameraRoot() {
     return cameraRoot;
+}
+
+Entity *PolycodeOVR::getCameraBase() {
+    return cameraBase;
 }
 
 PolycodeOVR::~PolycodeOVR() {

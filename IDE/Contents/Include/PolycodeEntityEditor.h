@@ -179,6 +179,7 @@ class EntityEditorMainView : public UIElement {
     
             void disableLighting(bool disable);
             void selectNone(bool doAction);
+            void selectAll(bool doAction);
     
             void onGainFocus();
             void onLoseFocus();
@@ -298,6 +299,7 @@ class PolycodeEntityEditor : public PolycodeEditor {
     
         String Copy(void **data);
         void Paste(void *data, String clipboardType);
+        void selectAll();
         void destroyClipboardData(void *data, String type);
     
         void handleEvent(Event *event);

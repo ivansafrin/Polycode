@@ -1,6 +1,7 @@
 
 #include "polyimport.h"
 #include "OSBasics.h"
+#include "PolyObject.h"
 
 #include "physfs.h"
 #ifdef WIN32
@@ -35,7 +36,7 @@ unsigned int addBone(aiBone *bone) {
 	return bones.size()-1;
 }
 
-void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, const struct aiNode* nd, bool swapZY, bool addSubmeshes, bool listOnly) {
+void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, const struct aiNode* nd, bool swapZY, bool addSubmeshes, bool listOnly, ObjectEntry *parentSceneObject) {
 	int i, nIgnoredPolygons = 0;
 	unsigned int n = 0, t;
 	// draw all meshes assigned to this node
@@ -48,6 +49,9 @@ void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, c
 		}
 	
 		const struct aiMesh* mesh = scene->mMeshes[nd->mMeshes[n]];
+        
+        Vector3 bBox;
+        
 		if(listOnly) {
 			if(!addSubmeshes) {
 				printf("%s%s.mesh\n", prefix.c_str(), nd->mName.data);
@@ -106,6 +110,17 @@ void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, c
             } else {
                 vertex->set(mesh->mVertices[index].x, mesh->mVertices[index].y, mesh->mVertices[index].z);
             }
+            
+            if(fabs(vertex->x) > bBox.x) {
+                bBox.x = vertex->x;
+            }
+            if(fabs(vertex->y) > bBox.y) {
+                bBox.y = vertex->y;
+            }
+            if(fabs(vertex->z) > bBox.z) {
+                bBox.z = vertex->z;
+            }
+            
             tmesh->addVertex(vertex);
 		}
         
@@ -129,16 +144,61 @@ void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, c
 			tmesh->saveToFile(outFile, writeNormals, writeTangents, writeColors, writeBoneWeights, writeUVs, writeSecondaryUVs);
 			OSBasics::close(outFile);
 			delete tmesh;
+            
+            ObjectEntry *meshEntry = parentSceneObject->addChild("child");
+            meshEntry->addChild("id", String(nd->mName.data));
+            meshEntry->addChild("tags", "");
+            meshEntry->addChild("type", "SceneMesh");
+            meshEntry->addChild("cR", "1");
+            meshEntry->addChild("cG", "1");
+            meshEntry->addChild("cB", "1");
+            meshEntry->addChild("cA", "1");
+            meshEntry->addChild("blendMode", "0");
+            
+            aiVector3D p;
+            aiVector3D s;
+            aiQuaternion r;
+            nd->mTransformation.Decompose(s, r, p);
+            
+            meshEntry->addChild("sX", s.x);
+            meshEntry->addChild("sY", s.y);
+            meshEntry->addChild("sZ", s.z);
+
+            meshEntry->addChild("rX", r.x);
+            meshEntry->addChild("rY", r.y);
+            meshEntry->addChild("rZ", r.z);
+            meshEntry->addChild("rW", r.w);
+            
+            meshEntry->addChild("pX", p.x);
+            meshEntry->addChild("pY", p.y);
+            meshEntry->addChild("pZ", p.z);
+            
+            meshEntry->addChild("bbX", bBox.x);
+            meshEntry->addChild("bbY", bBox.y);
+            meshEntry->addChild("bbZ", bBox.z);
+            
+            ObjectEntry *sceneMeshEntry = meshEntry->addChild("SceneMesh");
+            sceneMeshEntry->addChild("file", fileNameMesh);
+            
+            String materialName = "Default";
+            int materialIndex = mesh->mMaterialIndex;
+            if(materialIndex < scene->mNumMaterials) {
+                aiString name;
+                scene->mMaterials[materialIndex]->Get(AI_MATKEY_NAME,name);
+                if(name.length > 0) {
+                    materialName = String(name.data);
+                }
+            }
+            sceneMeshEntry->addChild("material", materialName);
 		}
 		if (nIgnoredPolygons) {
 			printf("Ignored %d non-triangular polygons\n", nIgnoredPolygons);
 		}
 	}
-	
-
+	   
 	// draw all children
 	for (n = 0; n < nd->mNumChildren; ++n) {
-		addToMesh(prefix, tmesh, sc, nd->mChildren[n], swapZY, addSubmeshes, listOnly);
+		addToMesh(prefix, tmesh, sc, nd->mChildren[n], swapZY, addSubmeshes, listOnly, parentSceneObject);
 	}
 }
 
@@ -169,13 +229,46 @@ void addToISkeleton(ISkeleton *skel, IBone *parent, const struct aiScene *sc, co
 	skel->addIBone(bone, getBoneID(bone->name));
 }
 
-int exportToFile(String prefix, bool swapZY, bool addSubmeshes, bool listOnly) {
+int exportToFile(String prefix, bool swapZY, bool addSubmeshes, bool listOnly, bool exportEntity) {
+
+    Object sceneObject;
+    sceneObject.root.name = "entity";
+    ObjectEntry *parentEntry = sceneObject.root.addChild("root");
+    
+    parentEntry->addChild("id", "");
+    parentEntry->addChild("tags", "");
+    parentEntry->addChild("type", "Entity");
+    parentEntry->addChild("cR", "1");
+    parentEntry->addChild("cG", "1");
+    parentEntry->addChild("cB", "1");
+    parentEntry->addChild("cA", "1");
+    parentEntry->addChild("blendMode", "0");
+    parentEntry->addChild("sX", 1.0);
+    parentEntry->addChild("sY", 1.0);
+    parentEntry->addChild("sZ", 1.0);
+    
+    parentEntry->addChild("rX", 0.0);
+    parentEntry->addChild("rY", 0.0);
+    parentEntry->addChild("rZ", 0.0);
+    parentEntry->addChild("rW", 1.0);
+    
+    parentEntry->addChild("pX", 0.0);
+    parentEntry->addChild("pY", 0.0);
+    parentEntry->addChild("pZ", 0.0);
+    
+    parentEntry->addChild("bbX", 0.0);
+    parentEntry->addChild("bbY", 0.0);
+    parentEntry->addChild("bbZ", 0.0);
+    
+    ObjectEntry *children = parentEntry->addChild("children");
+
 		
 	Polycode::Mesh *mesh = new Polycode::Mesh(Mesh::TRI_MESH);
     mesh->indexedMesh = true;
-	addToMesh(prefix, mesh, scene, scene->mRootNode, swapZY, addSubmeshes, listOnly);
+	addToMesh(prefix, mesh, scene, scene->mRootNode, swapZY, addSubmeshes, listOnly, children);
+    
 	
-	if(addSubmeshes) {		
+	if(addSubmeshes) {
 		String fileNameMesh;
 		if(prefix != "") {
 			fileNameMesh = prefix+".mesh";			
@@ -255,6 +348,15 @@ int exportToFile(String prefix, bool swapZY, bool addSubmeshes, bool listOnly) {
 			printf("No weight data, skipping skeleton export...\n");
 		}
 	}
+    
+    if(!listOnly && exportEntity) {
+		String entityFileName;
+		if(prefix != "") {
+			entityFileName = prefix+".entity";
+		} else {
+			entityFileName = "out.entity";
+		}        sceneObject.saveToXML(entityFileName);
+    }
 
 	if(mesh) {
 		delete mesh;
@@ -273,12 +375,17 @@ int main(int argc, char **argv) {
 	bool addSubmeshes = false;
 	bool listOnly = false;
 	bool showAssimpDebug = false;
+    bool generateNormals = false;
+    bool exportEntity = false;
 	   
 	String prefix;
 	
 	int opt;
-	while ((opt = getopt(argc, argv, "ngcwuvadlhp:st")) != -1) {
+	while ((opt = getopt(argc, argv, "engcwuvadlhp:stm")) != -1) {
 		switch ((char)opt) {
+            case 'e':
+                exportEntity = true;
+            break;
             case 'n':
                 writeNormals = true;
             break;
@@ -303,6 +410,9 @@ int main(int argc, char **argv) {
 			case 't':
 				generateTangents = true;
 			break;
+			case 'm':
+				generateNormals = true;
+                break;
 			case 'a':
 				addSubmeshes = true;
 			break;
@@ -347,6 +457,7 @@ int main(int argc, char **argv) {
 		printf("Mesh import options:\n");
 		printf("a: Add all meshes to a single mesh.\n");
 		printf("s: Swap Z/Y axis (e.g. import from Blender)\n");
+		printf("m: Generate normals.\n");
 		printf("t: Generate tangents.\n\n");
 		printf("Mesh export options:\n");
 		printf("n: Export normals\n");
@@ -355,6 +466,7 @@ int main(int argc, char **argv) {
 		printf("w: Export bone weights\n");
 		printf("u: Export UV coordinates\n");
 		printf("v: Export secondary UV coordinates\n");
+		printf("e: Export entity scene\n");
 		printf("\n");
 		return 0;
 	}
@@ -377,12 +489,16 @@ int main(int argc, char **argv) {
                          aiProcess_Triangulate);
     
     if(scene) {
+
+        if(generateNormals && !listOnly) {
+            aiApplyPostProcessing(scene, aiProcess_GenSmoothNormals);
+        }
         
         if(generateTangents && !listOnly) {
             aiApplyPostProcessing(scene, aiProcess_CalcTangentSpace);
         }
         
-		exportToFile(prefix, swapZYAxis, addSubmeshes, listOnly);
+		exportToFile(prefix, swapZYAxis, addSubmeshes, listOnly, exportEntity);
 	} else {
 		printf("Error opening scene (%s)\n", aiGetErrorString());
 	}

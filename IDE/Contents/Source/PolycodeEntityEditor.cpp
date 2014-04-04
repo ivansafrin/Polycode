@@ -1238,6 +1238,29 @@ void EntityEditorMainView::moveSelectedBottom() {
     }
 }
 
+void EntityEditorMainView::selectAll(bool doAction) {
+
+    if(doAction) {
+        beforeData = new PolycodeSceneEditorActionData();
+        for(int i=0; i < selectedEntities.size(); i++) {
+            beforeData->entries.push_back(PolycodeSceneEditorActionDataEntry(selectedEntities[i]));
+        }
+        
+        editor->didAction("select", beforeData, NULL, false);
+        beforeData = NULL;
+    }
+
+    selectedEntities.clear();
+    for(int i=0; i < objectRootInstance->getNumChildren(); i++) {
+        Entity *child = objectRootInstance->getChildAtIndex(i);
+        if(!child->editorOnly) {
+            selectEntity(child, true, false);
+        }
+    }
+    transformGizmo->setTransformSelection(selectedEntities);
+    dispatchEvent(new Event(), Event::CHANGE_EVENT);
+}
+
 void EntityEditorMainView::selectNone(bool doAction) {
     
     if(doAction) {
@@ -1910,6 +1933,12 @@ void PolycodeEntityEditor::destroyClipboardData(void *data, String type) {
             delete oldData->entities[i];
         }
         delete oldData;
+    }
+}
+
+void PolycodeEntityEditor::selectAll() {
+    if(mainView->hasFocus) {
+        mainView->selectAll(true);
     }
 }
 
