@@ -454,7 +454,9 @@ PolycodeTextEditor::PolycodeTextEditor() : PolycodeEditor(true){
 }
 
 PolycodeTextEditor::~PolycodeTextEditor() {
+    textInput->setOwnsChildrenRecursive(true);
 	delete textInput;
+    findBar->setOwnsChildrenRecursive(true);
 	delete findBar;
 	if(syntaxHighligher)
 		delete syntaxHighligher;
@@ -711,11 +713,7 @@ void FindBar::onKeyDown(PolyKEY key, wchar_t charCode) {
 }
 
 FindBar::~FindBar(){
-	delete findInput;
-	delete replaceInput;
-	delete closeButton;
-	delete replaceAllButton;
-	delete barBg;
+
 }
 
 void FindBar::setBarWidth(int width) {

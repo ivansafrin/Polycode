@@ -28,6 +28,8 @@ PolycodeMeshEditor::PolycodeMeshEditor() : PolycodeEditor(true){
 	
 	previewScene = new Scene(Scene::SCENE_3D, true);		
 	renderTexture = new SceneRenderTexture(previewScene, previewScene->getDefaultCamera(), 512, 512);
+    
+    ownsChildren = true;
 
 	previewScene->clearColor.setColor(0.2, 0.2, 0.2, 1.0);	
 	previewScene->useClearColor = true;
@@ -112,6 +114,10 @@ void PolycodeMeshEditor::handleEvent(Event *event) {
 
 PolycodeMeshEditor::~PolycodeMeshEditor() {
     CoreServices::getInstance()->getResourceManager()->getGlobalPool()->removeAllHandlersForListener(this);
+    previewScene->rootEntity.setOwnsChildrenRecursive(true);
+    delete previewScene;
+    delete renderTexture;
+    delete trackballCamera;
 }
 
 bool PolycodeMeshEditor::openFile(OSFileEntry filePath) {

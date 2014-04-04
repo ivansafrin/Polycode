@@ -533,9 +533,10 @@ EditorHolder::EditorHolder(PolycodeProject *project, PolycodeEditorManager *edit
 	initialUpdate = true;
 	updateFileSelector();
 	
-	editorToMerge = NULL;	
-	
+	editorToMerge = NULL;
 	isActive = false;
+    
+    setOwnsChildrenRecursive(true);
 }
 
 ObjectEntry *EditorHolder::getEditorHolderConfig() {

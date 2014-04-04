@@ -109,7 +109,9 @@ String UILabel::getText() {
 }
 
 UILabel::~UILabel() {
-	delete label;
+    if(!ownsChildren) {
+        delete label;
+    }
 }
 
 Label *UILabel::getLabel() {
