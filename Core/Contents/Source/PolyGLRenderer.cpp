@@ -850,83 +850,72 @@ RenderDataArray *OpenGLRenderer::createRenderDataArrayForMesh(Mesh *mesh, int ar
 	RenderDataArray *newArray = createRenderDataArray(arrayType);
 		
 	newArray->count = 0;
-	long bufferSize = 0;
-	long newBufferSize = 0;		
+	long bufferOffset = 0;
 	GLfloat* buffer = NULL;
 	
 	switch (arrayType) {
 		case RenderDataArray::VERTEX_DATA_ARRAY:
 		{		
-			buffer = (GLfloat*)malloc(1);							
+			buffer = (GLfloat*)malloc(mesh->getVertexCount() * sizeof(GLfloat) * 3);
 			for(int i=0; i < mesh->getVertexCount(); i++) {
                 newArray->count++;
-                newBufferSize = bufferSize + 3;
-                buffer = (GLfloat*)realloc(buffer, newBufferSize * sizeof(GLfloat));
-                buffer[bufferSize+0] = mesh->getVertex(i)->x;
-                buffer[bufferSize+1] = mesh->getVertex(i)->y;
-                buffer[bufferSize+2] = mesh->getVertex(i)->z;
-                bufferSize = newBufferSize;
+                buffer[bufferOffset+0] = mesh->getVertex(i)->x;
+                buffer[bufferOffset+1] = mesh->getVertex(i)->y;
+                buffer[bufferOffset+2] = mesh->getVertex(i)->z;
+                bufferOffset += 3;
 			}
 		}
 		break;
 		case RenderDataArray::COLOR_DATA_ARRAY:
 		{
-			buffer = (GLfloat*)malloc(1);			
+			buffer = (GLfloat*)malloc(mesh->getVertexCount() * sizeof(GLfloat) * 4);
 			for(int i=0; i < mesh->getVertexCount(); i++) {
-                newBufferSize = bufferSize + 4;
-                buffer = (GLfloat*)realloc(buffer, newBufferSize * sizeof(GLfloat));
-                buffer[bufferSize+0] = mesh->getVertex(i)->vertexColor.r;
-                buffer[bufferSize+1] = mesh->getVertex(i)->vertexColor.g;
-                buffer[bufferSize+2] = mesh->getVertex(i)->vertexColor.b;
-                buffer[bufferSize+3] = mesh->getVertex(i)->vertexColor.a;
-                bufferSize = newBufferSize;
+                buffer[bufferOffset+0] = mesh->getVertex(i)->vertexColor.r;
+                buffer[bufferOffset+1] = mesh->getVertex(i)->vertexColor.g;
+                buffer[bufferOffset+2] = mesh->getVertex(i)->vertexColor.b;
+                buffer[bufferOffset+3] = mesh->getVertex(i)->vertexColor.a;
+                bufferOffset += 4;
 			}
 		}
 		break;
 		case RenderDataArray::NORMAL_DATA_ARRAY:
 		{
-			buffer = (GLfloat*)malloc(1);	
+			buffer = (GLfloat*)malloc(mesh->getVertexCount() * sizeof(GLfloat) * 3);
 			
 			for(int i=0; i < mesh->getVertexCount(); i++) {
-                newBufferSize = bufferSize + 3;
-                buffer = (GLfloat*)realloc(buffer, newBufferSize * sizeof(GLfloat));
                 if(mesh->getUseFaceNormals()) {
                     Vector3 n = mesh->getFaceNormalForVertex(i);
-                    buffer[bufferSize+0] = n.x;
-                    buffer[bufferSize+1] = n.y;
-                    buffer[bufferSize+2] = n.z;
+                    buffer[bufferOffset+0] = n.x;
+                    buffer[bufferOffset+1] = n.y;
+                    buffer[bufferOffset+2] = n.z;
                 } else {
-                    buffer[bufferSize+0] = mesh->getVertex(i)->normal.x;
-                    buffer[bufferSize+1] = mesh->getVertex(i)->normal.y;
-                    buffer[bufferSize+2] = mesh->getVertex(i)->normal.z;
+                    buffer[bufferOffset+0] = mesh->getVertex(i)->normal.x;
+                    buffer[bufferOffset+1] = mesh->getVertex(i)->normal.y;
+                    buffer[bufferOffset+2] = mesh->getVertex(i)->normal.z;
                 }
-                bufferSize = newBufferSize;
+                bufferOffset += 3;
 			}			
 		}
 		break;
 		case RenderDataArray::TANGENT_DATA_ARRAY:
 		{
-			buffer = (GLfloat*)malloc(1);	
+			buffer = (GLfloat*)malloc(mesh->getVertexCount() * sizeof(GLfloat) * 3);
 			
 			for(int i=0; i < mesh->getVertexCount(); i++) {
-                newBufferSize = bufferSize + 3;
-                buffer = (GLfloat*)realloc(buffer, newBufferSize * sizeof(GLfloat));		
-                buffer[bufferSize+0] = mesh->getVertex(i)->tangent.x;
-                buffer[bufferSize+1] = mesh->getVertex(i)->tangent.y;
-                buffer[bufferSize+2] = mesh->getVertex(i)->tangent.z;
-                bufferSize = newBufferSize;
+                buffer[bufferOffset+0] = mesh->getVertex(i)->tangent.x;
+                buffer[bufferOffset+1] = mesh->getVertex(i)->tangent.y;
+                buffer[bufferOffset+2] = mesh->getVertex(i)->tangent.z;
+                bufferOffset += 3;
 			}			
 		}
 		break;		
 		case RenderDataArray::TEXCOORD_DATA_ARRAY:
 		{
-			buffer = (GLfloat*)malloc(1);				
+			buffer = (GLfloat*)malloc(mesh->getVertexCount() * sizeof(GLfloat) * 2);
 			for(int i=0; i < mesh->getVertexCount(); i++) {
-                newBufferSize = bufferSize + 2;
-                buffer = (GLfloat*)realloc(buffer, newBufferSize * sizeof(GLfloat));		
-                buffer[bufferSize+0] = mesh->getVertex(i)->getTexCoord().x;
-                buffer[bufferSize+1] = mesh->getVertex(i)->getTexCoord().y;
-                bufferSize = newBufferSize;
+                buffer[bufferOffset+0] = mesh->getVertex(i)->getTexCoord().x;
+                buffer[bufferOffset+1] = mesh->getVertex(i)->getTexCoord().y;
+                bufferOffset += 2;
 			}			
 		}
 		break;
