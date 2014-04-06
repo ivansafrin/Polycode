@@ -313,6 +313,7 @@ void AssetBrowser::setProject(PolycodeProject *project) {
 	}	
 	
 	currentProject = project;
+    templateContainer->getScrollContainer()->setScrollValue(0.0, 0.0);    
 }
 
 AssetBrowser::~AssetBrowser() {
@@ -363,7 +364,9 @@ void AssetBrowser::handleEvent(Event *event) {
             
             if(browseMode == BROWSE_MODE_FILES) {
                 FolderUserData *data = (FolderUserData *)treeEvent->selection->getUserData();
-                assetList->showFolder(data->folderPath);
+                if(data) {
+                    assetList->showFolder(data->folderPath);
+                }
             } else {
                 ResourcePool *pool = (ResourcePool*) treeEvent->selection->getUserData();
                 if(pool) {

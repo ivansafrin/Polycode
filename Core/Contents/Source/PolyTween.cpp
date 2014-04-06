@@ -53,7 +53,7 @@ Tween::	Tween(Number *target, int easeType, Number startVal, Number endVal, Numb
 }
 
 void Tween::Pause(bool pauseVal) {
-	paused = true;
+	paused = pauseVal;
 }
 
 void Tween::setSpeed(Number speed) {
@@ -76,6 +76,10 @@ void Tween::doOnComplete() {
 
 void Tween::updateTween(Number elapsed) {
 
+    if(paused) {
+        return;
+    }
+    
 	tweenTime += elapsed;
 	
 	if(tweenTime >= endTime+waitTime) {

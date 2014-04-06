@@ -187,8 +187,7 @@ namespace Polycode {
 		
 		protected:
 		
-			bool buffersDirty;
-		
+            bool distancesDirty;
 
 	
 			

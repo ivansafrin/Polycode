@@ -111,6 +111,7 @@ class AssetImporterWindow : public UIWindow {
 		UITextInput *prefixInput;
 		UICheckBox *addMeshesCheckbox;
 		UICheckBox *generateTangensCheckbox;
+		UICheckBox *generateNormalsCheckbox;
 		UICheckBox *swapZYAxisCheckbox;
 
         UICheckBox *exportNormals;

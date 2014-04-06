@@ -448,7 +448,7 @@ int main(int argc, char **argv) {
 	}
 	
 	if(showHelp || argc < 2) {
-		printf("usage: polyimport [-adhlstngcwuv] [-p output_prefix] source_file\n\n");
+		printf("usage: polyimport [-adhlstngcwuvme] [-p output_prefix] source_file\n\n");
 		printf("Misc options:\n");
 		printf("d: Show Assimp debug info.\n");
 		printf("h: Show this help.\n");
@@ -490,12 +490,12 @@ int main(int argc, char **argv) {
     
     if(scene) {
 
-        if(generateNormals && !listOnly) {
-            aiApplyPostProcessing(scene, aiProcess_GenSmoothNormals);
-        }
-        
         if(generateTangents && !listOnly) {
             aiApplyPostProcessing(scene, aiProcess_CalcTangentSpace);
+        }
+        
+        if(generateNormals && !listOnly) {
+            aiApplyPostProcessing(scene, aiProcess_GenSmoothNormals);
         }
         
 		exportToFile(prefix, swapZYAxis, addSubmeshes, listOnly, exportEntity);

@@ -235,12 +235,16 @@ AssetImporterWindow::AssetImporterWindow() : UIWindow("3D Asset Importer", 650, 
 	addChild(addMeshesCheckbox); 
 	addMeshesCheckbox->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
+	generateNormalsCheckbox = new UICheckBox("Generate normals", false);
+	generateNormalsCheckbox->setPosition(290, 120);
+	addChild(generateNormalsCheckbox);
+    
 	generateTangensCheckbox = new UICheckBox("Generate tangents", true);
-	generateTangensCheckbox->setPosition(290, 120);
-	addChild(generateTangensCheckbox); 
-	
+	generateTangensCheckbox->setPosition(290, 150);
+	addChild(generateTangensCheckbox);
+
 	swapZYAxisCheckbox = new UICheckBox("Swap Z/Y axis (e.g. for Blender)", false);
-	swapZYAxisCheckbox->setPosition(290, 150);
+	swapZYAxisCheckbox->setPosition(290, 180);
 	addChild(swapZYAxisCheckbox);
     
     exportNormals = new UICheckBox("Vertex normals", true);
@@ -279,7 +283,7 @@ void AssetImporterWindow::handleEvent(Event *event) {
 		if(usePrefixCheckbox->isChecked() && prefixInput->getText() != "") {
 			prefixString = prefixInput->getText().replace(" ", "_");
 		}
-		PolycodeToolLauncher::importAssets(file, folder, addMeshesCheckbox->isChecked(), prefixString, swapZYAxisCheckbox->isChecked(), generateTangensCheckbox->isChecked(), false, exportNormals->isChecked(), exportTangents->isChecked(), exportColors->isChecked(), exportBoneWeights->isChecked(), exportUVs->isChecked(), exportSecondaryUVs->isChecked());
+		PolycodeToolLauncher::importAssets(file, folder, addMeshesCheckbox->isChecked(), prefixString, swapZYAxisCheckbox->isChecked(), generateNormalsCheckbox->isChecked(), generateTangensCheckbox->isChecked(), false, exportNormals->isChecked(), exportTangents->isChecked(), exportColors->isChecked(), exportBoneWeights->isChecked(), exportUVs->isChecked(), exportSecondaryUVs->isChecked());
 	
 		dispatchEvent(new UIEvent(), UIEvent::OK_EVENT);
 		dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);	
@@ -325,7 +329,7 @@ void AssetImporterWindow::refreshPreview() {
 	if(usePrefixCheckbox->isChecked() && prefixInput->getText() != "") {
 		prefixString = prefixInput->getText().replace(" ", "_");
 	}
-	String fileList = PolycodeToolLauncher::importAssets(file, folder, addMeshesCheckbox->isChecked(), prefixString, swapZYAxisCheckbox->isChecked(), generateTangensCheckbox->isChecked(), true, false, false, false, false, false, false);
+	String fileList = PolycodeToolLauncher::importAssets(file, folder, addMeshesCheckbox->isChecked(), prefixString, swapZYAxisCheckbox->isChecked(), generateNormalsCheckbox->isChecked(), generateTangensCheckbox->isChecked(), true, false, false, false, false, false, false);
 	setFilesToImport(fileList);		
 }
 
