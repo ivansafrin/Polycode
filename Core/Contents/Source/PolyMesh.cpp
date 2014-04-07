@@ -537,6 +537,16 @@ Vector3 Mesh::calculateBBox() {
         retVec.z = max(retVec.z,fabs(vertices[i]->z));
     }
     
+    if(retVec.x == 0.0) {
+        retVec.x = 0.001;
+    }
+    if(retVec.y == 0.0) {
+        retVec.y = 0.001;
+    }
+    if(retVec.z == 0.0) {
+        retVec.z = 0.001;
+    }
+
     return retVec*2;
 }
 
