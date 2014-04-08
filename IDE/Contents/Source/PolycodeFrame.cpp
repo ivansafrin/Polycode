@@ -637,7 +637,7 @@ void EditorHolder::updateFileSelector() {
 	currentFileSelector->clearItems();
 	
 	std::vector<PolycodeEditor*> editors = editorManager->getOpenEditorsForProject(project);
-	
+
 	for(int i=0; i < editors.size(); i++) {
 		OSFileEntry entry(editors[i]->getFilePath(), OSFileEntry::TYPE_FILE);
 		
@@ -700,12 +700,14 @@ void EditorHolder::setEditor(PolycodeEditor *newEditor) {
 		}
 		addChild(currentEditor);
 	}
+
 	updateFileSelector();
-	Resize(getWidth(), getHeight());
-	
+    
 	if(isActive) {
-		editorManager->setCurrentEditor(currentEditor);	
+		editorManager->setCurrentEditor(currentEditor);
 	}
+    
+	Resize(getWidth(), getHeight());
 }
 
 PolycodeEditor *EditorHolder::getEditor() {
@@ -843,7 +845,11 @@ void EditorHolder::_mergeSides(EditorHolder *mainHolder) {
 	if(hSizer) {
 		removeChild(hSizer);
 		delete hSizer;
-	}	
+	}
+    
+    firstChildHolder->setOwnsChildrenRecursive(false);
+    secondChildHolder->setOwnsChildrenRecursive(false);
+    
 	delete firstChildHolder;
 	delete secondChildHolder;
 	
@@ -852,7 +858,7 @@ void EditorHolder::_mergeSides(EditorHolder *mainHolder) {
 	vSizer = NULL;
 	hSizer = NULL;
 	
-	setActive(true);    
+	setActive(true);
 	setEditor(mainHolderEditor);
 }
 
