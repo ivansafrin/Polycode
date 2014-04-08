@@ -120,6 +120,7 @@ class AssetImporterWindow : public UIWindow {
         UICheckBox *exportBoneWeights;
         UICheckBox *exportUVs;
         UICheckBox *exportSecondaryUVs;
+        UICheckBox *exportScene;
     
 		Entity *filesAnchor;
 		UIScrollContainer *filesScroller;

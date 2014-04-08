@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#pragma once
+
  #include "OVR.h"
  #include "Polycode.h"
 

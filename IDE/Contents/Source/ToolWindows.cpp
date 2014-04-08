@@ -197,7 +197,7 @@ YesNoCancelPopup::~YesNoCancelPopup() {
 	
 }
 
-AssetImporterWindow::AssetImporterWindow() : UIWindow("3D Asset Importer", 650, 250) {
+AssetImporterWindow::AssetImporterWindow() : UIWindow("3D Asset Importer", 650, 280) {
 	filesToImportLabel = new UILabel("Files that will be imported:", 12);
 	addChild(filesToImportLabel);
 	filesToImportLabel->setPosition(padding, 35);
@@ -211,12 +211,12 @@ AssetImporterWindow::AssetImporterWindow() : UIWindow("3D Asset Importer", 650, 
 	cancelButton = new UIButton(L"Cancel", 100);
 	cancelButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(cancelButton);
-	cancelButton->setPosition(padding+650-100-100-10-10, 235);
+	cancelButton->setPosition(padding+650-100-100-10-10, 265);
 	
 	okButton = new UIButton(L"OK", 100);
 	okButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(okButton);
-	okButton->setPosition(padding+650-100-10, 235);
+	okButton->setPosition(padding+650-100-10, 265);
 	
 	closeOnEscape = true;
 
@@ -267,9 +267,13 @@ AssetImporterWindow::AssetImporterWindow() : UIWindow("3D Asset Importer", 650, 
 	exportUVs->setPosition(520, 150);
 	addChild(exportUVs);
     
-    exportSecondaryUVs = new UICheckBox("Secondary UVs", true);
+    exportSecondaryUVs = new UICheckBox("Secondary UVs", false);
 	exportSecondaryUVs->setPosition(520, 180);
 	addChild(exportSecondaryUVs);
+
+    exportScene = new UICheckBox("Export Entity file", false);
+	exportScene->setPosition(520, 210);
+	addChild(exportScene);
     
 }
 
@@ -283,7 +287,7 @@ void AssetImporterWindow::handleEvent(Event *event) {
 		if(usePrefixCheckbox->isChecked() && prefixInput->getText() != "") {
 			prefixString = prefixInput->getText().replace(" ", "_");
 		}
-		PolycodeToolLauncher::importAssets(file, folder, addMeshesCheckbox->isChecked(), prefixString, swapZYAxisCheckbox->isChecked(), generateNormalsCheckbox->isChecked(), generateTangensCheckbox->isChecked(), false, exportNormals->isChecked(), exportTangents->isChecked(), exportColors->isChecked(), exportBoneWeights->isChecked(), exportUVs->isChecked(), exportSecondaryUVs->isChecked());
+		PolycodeToolLauncher::importAssets(file, folder, addMeshesCheckbox->isChecked(), prefixString, swapZYAxisCheckbox->isChecked(), generateNormalsCheckbox->isChecked(), generateTangensCheckbox->isChecked(), false, exportNormals->isChecked(), exportTangents->isChecked(), exportColors->isChecked(), exportBoneWeights->isChecked(), exportUVs->isChecked(), exportSecondaryUVs->isChecked(), exportScene->isChecked());
 	
 		dispatchEvent(new UIEvent(), UIEvent::OK_EVENT);
 		dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);	
@@ -329,7 +333,7 @@ void AssetImporterWindow::refreshPreview() {
 	if(usePrefixCheckbox->isChecked() && prefixInput->getText() != "") {
 		prefixString = prefixInput->getText().replace(" ", "_");
 	}
-	String fileList = PolycodeToolLauncher::importAssets(file, folder, addMeshesCheckbox->isChecked(), prefixString, swapZYAxisCheckbox->isChecked(), generateNormalsCheckbox->isChecked(), generateTangensCheckbox->isChecked(), true, false, false, false, false, false, false);
+	String fileList = PolycodeToolLauncher::importAssets(file, folder, addMeshesCheckbox->isChecked(), prefixString, swapZYAxisCheckbox->isChecked(), generateNormalsCheckbox->isChecked(), generateTangensCheckbox->isChecked(), true, false, false, false, false, false, false, false);
 	setFilesToImport(fileList);		
 }
 

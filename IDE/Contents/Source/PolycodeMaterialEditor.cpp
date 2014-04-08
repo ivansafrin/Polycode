@@ -241,7 +241,7 @@ CubemapEditorPane::CubemapEditorPane(ResourcePool *resourcePool) : UIElement() {
 	baseProps->propHeight = 420;
 	propList->updateProps();
 		
-	Material *previewMaterial = (Material*) CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "LightCube");
+	Material *previewMaterial = (Material*) CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "SkyBox");
 	cubemapPreview->setMaterial(previewMaterial);
 	enabled = false;
 	

@@ -34,8 +34,12 @@
 			<fp source="default/UnlitUntextured.frag"/>
 		</shader>		
 		<shader type="glsl" name="LightCube" numPointLights="0" numSpotLights="0">		
-			<vp source="default/DefaultShader.vert"/>
+			<vp source="default/LightCube.vert"/>
 			<fp source="default/LightCube.frag"/>
+		</shader>
+		<shader type="glsl" name="SkyBox" numPointLights="0" numSpotLights="0">		
+			<vp source="default/LightCube.vert"/>
+			<fp source="default/SkyBox.frag"/>
 		</shader>		
 		<shader type="glsl" name="NorColSpec" numPointLights="4" numSpotLights="2">		
 			<vp source="default/NormalShader.vert"/>
@@ -129,6 +133,12 @@
 				</textures>				
 			</shader>
 		</material>
+		<material name="SkyBox">
+			<shader name="SkyBox">
+				<textures>
+				</textures>				
+			</shader>
+		</material>		
 		<material name="NormalColorSpecular">
 			<shader name="NorColSpec">
 				<textures>
