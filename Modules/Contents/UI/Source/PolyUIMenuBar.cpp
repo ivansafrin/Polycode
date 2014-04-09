@@ -29,7 +29,12 @@
 
 using namespace Polycode;
 
+UIMenuBarEntryItem::UIMenuBarEntryItem(bool isDivider) {
+	this->isDivider = true;
+}
+
 UIMenuBarEntryItem::UIMenuBarEntryItem(String name, String code, PolyKEY shortCut1, PolyKEY shortCut2) {
+	this->isDivider = false;
 	this->name = name;
 	this->code = code;
 	this->shortCut1 = shortCut1;
@@ -89,6 +94,10 @@ void UIMenuBarEntry::addItem(String name, String code, PolyKEY shortCut1, PolyKE
 	items.push_back(UIMenuBarEntryItem(name,code, shortCut1, shortCut2));
 }
 
+void UIMenuBarEntry::addDivider() {
+	items.push_back(UIMenuBarEntryItem(true));
+}
+
 UIMenuBarEntry::~UIMenuBarEntry() {
 	delete bg;
 	delete label;
@@ -134,7 +143,11 @@ void UIMenuBar::showMenuForEntry(UIMenuBarEntry *entry) {
 	dropMenu->addEventListener(this, UIEvent::CANCEL_EVENT);
 
 	for(int i=0; i < entry->items.size(); i++) {
-		dropMenu->addOption(entry->items[i].name, entry->items[i].code);
+		if(entry->items[i].isDivider) {
+			dropMenu->addDivider();
+		} else {
+			dropMenu->addOption(entry->items[i].name, entry->items[i].code);
+		}
 	}
 
 	if(currentEntry) {
