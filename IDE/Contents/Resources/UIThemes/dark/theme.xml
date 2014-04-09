@@ -144,6 +144,11 @@
 	<uiMenuSelectorBgB>0</uiMenuSelectorBgB>
 	<uiMenuSelectorBgL>0</uiMenuSelectorBgL>
 	<uiMenuSelectorPadding>3</uiMenuSelectorPadding>
+	<uiMenuDividerBgImage>menuDividerBg.png</uiMenuDividerBgImage>
+	<uiMenuDividerBgT>1</uiMenuDividerBgT>
+	<uiMenuDividerBgR>0</uiMenuDividerBgR>
+	<uiMenuDividerBgB>1</uiMenuDividerBgB>
+	<uiMenuDividerBgL>0</uiMenuDividerBgL>			
 
 	<uiIconSelectorBg>iconSelectorBg.png</uiIconSelectorBg>
 	<uiIconSelectorBgT>7</uiIconSelectorBgT>

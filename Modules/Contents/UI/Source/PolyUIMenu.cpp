@@ -71,21 +71,23 @@ UIMenuItem::~UIMenuItem() {
 
 UIMenuDivider::UIMenuDivider(Number comboWidth, Number comboHeight) : UIMenuItem() {
 	Config *conf    = CoreServices::getInstance()->getConfig();
-	Number paddingX = conf->getNumericValue("Polycode", "uiMenuSelectorPadding");
+	String dividerBgImage = conf->getStringValue("Polycode", "uiMenuDividerBgImage");
 
-	line = new SceneLine(Vector3(paddingX, comboHeight/2.0, 0.0), Vector3(comboWidth-paddingX, comboHeight/2.0, 0.0));
-	
-//	line->setLineWidth(1.0);
-	line->setColor(Color(0.0, 0.0, 0.0, 0.7));
-	addChild(line);
+	Number st = conf->getNumericValue("Polycode", "uiMenuDividerBgT");
+	Number sr = conf->getNumericValue("Polycode", "uiMenuDividerBgR");
+	Number sb = conf->getNumericValue("Polycode", "uiMenuDividerBgB");
+	Number sl = conf->getNumericValue("Polycode", "uiMenuDividerBgL");
+
+	dividerBox = new UIBox(dividerBgImage, st,sr,sb,sl, comboWidth, comboHeight);
+	dividerBox->setPosition(0,0);
+	addChild(dividerBox);
 }
 
 UIMenuDivider::~UIMenuDivider() {
-	delete line;
+	delete dividerBox;
 }
 
-bool UIMenuDivider::isSelectable()
-{
+bool UIMenuDivider::isSelectable() {
 	return false;
 }
 
@@ -260,8 +262,7 @@ UIMenuItem *UIMenu::addOption(String label, String _id, void *data) {
 	return newItem;
 }
 
-UIMenuItem *UIMenu::addDivider()
-{
+UIMenuItem *UIMenu::addDivider() {
 	Number newItemHeight = menuItemHeight;
 	UIMenuItem *newItem = new UIMenuDivider(menuWidth, newItemHeight);
 	items.push_back(newItem);
