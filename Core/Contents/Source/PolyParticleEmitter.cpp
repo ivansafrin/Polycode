@@ -37,6 +37,7 @@ SceneParticleEmitter::SceneParticleEmitter(unsigned int particleCount, Number li
     depthWrite = false;
     systemEnabled = true;
     setParticleCount(particleCount);
+    colorDeviation = Color(0.0, 0.0, 0.0, 0.0);
 }
 
 SceneParticleEmitter::~SceneParticleEmitter() {
@@ -96,6 +97,11 @@ void SceneParticleEmitter::resetParticle(unsigned int index) {
         particles[index].position = systemTrasnformMatrix * particles[index].position;
         particles[index].velocity = systemTrasnformMatrix.rotateVector( particles[index].velocity);
     }
+    
+    particles[index].color = Color(1.0 - (RANDOM_NUMBER*colorDeviation.r),
+                                   1.0 - (RANDOM_NUMBER*colorDeviation.g),
+                                   1.0 - (RANDOM_NUMBER*colorDeviation.b),
+                                   1.0 - (RANDOM_NUMBER*colorDeviation.a));
 }
 
 void SceneParticleEmitter::setParticleCount(unsigned int newParticleCount) {
@@ -360,8 +366,6 @@ void SceneParticleEmitter::updateParticles() {
                                         colorCurveG.getHeightAt(normLife)*particles[i].brightnessDeviation,
                                         colorCurveB.getHeightAt(normLife)*particles[i].brightnessDeviation,
                                         colorCurveA.getHeightAt(normLife)*particles[i].brightnessDeviation);
-        } else {
-            particles[i].color = color;
         }
         
         if(useScaleCurve) {

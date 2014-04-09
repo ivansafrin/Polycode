@@ -133,6 +133,9 @@ namespace Polycode {
             BezierCurve colorCurveA;
         
         
+            Color colorDeviation;
+        
+        
             virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
             virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
         
