@@ -123,6 +123,8 @@
 	<uiComboBoxTextOffsetX>7</uiComboBoxTextOffsetX>
 	<uiComboBoxTextOffsetY>4</uiComboBoxTextOffsetY>		
 
+	<uiMenuBarFont>sans</uiMenuBarFont>
+	<uiMenuBarFontSize>12</uiMenuBarFontSize>
 
 	<uiMenuFont>sans</uiMenuFont>
 	<uiMenuFontSize>12</uiMenuFontSize>

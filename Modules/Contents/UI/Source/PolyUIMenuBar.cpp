@@ -59,8 +59,13 @@ bool UIMenuBarEntryItem::checkShortCut(PolyKEY shortCut) {
 }
 
 UIMenuBarEntry::UIMenuBarEntry(String name): UIElement() {
-	
-	label = new SceneLabel(name, 14, "sans");
+
+	Config *conf = CoreServices::getInstance()->getConfig();
+
+	String fontName = conf->getStringValue("Polycode", "uiMenuBarFont");
+	int fontSize = conf->getNumericValue("Polycode", "uiMenuBarFontSize");
+
+	label = new SceneLabel(name, fontSize, fontName);
 	setWidth(label->getLabel()->getTextWidth() + 20);
 	label->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	bg = new UIRect(getWidth(), 25);
