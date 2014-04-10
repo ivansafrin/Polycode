@@ -47,11 +47,11 @@ TARGET_LINK_LIBRARIES(PolycodeTUIO
     Polycore 
     ${BOX2D_LIBRARIES}
     ${OPENGL_LIBRARIES}
-    ${OPENAL_LIBRARY}
+    ${OPENAL_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
     ${PNG_LIBRARIES}
     ${FREETYPE_LIBRARIES}
-    ${PHYSFS_LIBRARY}
-    ${VORBISFILE_LIBRARY})
+    ${PHYSFS_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
+    ${VORBISFILE_LIBRARIES}) # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
 IF(APPLE)
     TARGET_LINK_LIBRARIES(PolycodeTUIO "-framework Cocoa")
 ENDIF(APPLE)

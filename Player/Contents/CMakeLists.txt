@@ -1,28 +1,28 @@
 INCLUDE(PolycodeIncludes)
     
 SET(CMAKE_DEBUG_POSTFIX "_d")
-
 IF(MSVC OR MINGW)
 
-INCLUDE_DIRECTORIES(
-    ${LUA_INCLUDE_DIR}
-    ${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/Include
+	MESSAGE("---------- WINDOWS/MINGW BUILD TARGETS ~ PLAYER ----------")
+	INCLUDE_DIRECTORIES(
+		${LUA_INCLUDE_DIR}
+		${Polycode_SOURCE_DIR}/Bindings/Contents/LUA/Include
  
-    ${Polycode_SOURCE_DIR}/Modules/Contents/UI/Include
-    ${Polycode_SOURCE_DIR}/Modules/Bindings/UI/Include
+		${Polycode_SOURCE_DIR}/Modules/Contents/UI/Include
+		${Polycode_SOURCE_DIR}/Modules/Bindings/UI/Include
 
-    ${BOX2D_INCLUDE_DIR}
-    ${Polycode_SOURCE_DIR}/Modules/Contents/2DPhysics/Include
-    ${Polycode_SOURCE_DIR}/Modules/Bindings/2DPhysics/Include
+		${BOX2D_INCLUDE_DIR}
+		${Polycode_SOURCE_DIR}/Modules/Contents/2DPhysics/Include
+		${Polycode_SOURCE_DIR}/Modules/Bindings/2DPhysics/Include
 
-    ${BULLET_INCLUDE_DIR}
-    ${Polycode_SOURCE_DIR}/Modules/Contents/3DPhysics/Include
-    ${Polycode_SOURCE_DIR}/Modules/Bindings/3DPhysics/Include
-    Include
-    ../../Core/Contents/PolycodeView/MSVC/
-)
+		${BULLET_INCLUDE_DIR}
+		${Polycode_SOURCE_DIR}/Modules/Contents/3DPhysics/Include
+		${Polycode_SOURCE_DIR}/Modules/Bindings/3DPhysics/Include
+		Include
+		../../Core/Contents/PolycodeView/MSVC/
+	)
 
-SET(polycodeplayer_SRCS 
+	SET(polycodeplayer_SRCS 
         Source/PolycodePlayer.cpp
         Source/PolycodeWindowsPlayer.cpp
         Platform/Windows/main.cpp        
@@ -47,86 +47,102 @@ SET(polycodeplayer_SRCS
  
     ADD_EXECUTABLE(PolycodePlayer WIN32 Include/Polycode.rc ${polycodeplayer_SRCS} ${polycodeplayer_HDRS})
     ADD_EXECUTABLE(StandalonePlayer WIN32 Include/Polycode.rc ${polycodeplayerstandalone_SRCS} ${polycodeplayerstandalone_HDRS})
-    
-
+	
+	IF(CMAKE_BUILD_TYPE STREQUAL "Release")
+		SET(BOX2D_LINK_LIBRARY general ${BOX2D_RELEASE_LIBRARY})
+		SET(LIBBULLETMULTITHREADED_LINK general ${LIBBULLETMULTITHREADED})
+		SET(LIBBULLETSOFTBODY_LINK general ${LIBBULLETSOFTBODY})
+		SET(LIBBULLETDYNAMICS_LINK general ${LIBBULLETDYNAMICS})
+		SET(LIBBULLETCOLLISION_LINK general ${LIBBULLETCOLLISION})
+		SET(LIBBULLETMATH_LINK general ${LIBBULLETMATH})
+	ELSEIF(CMAKE_BUILD_TYPE STREQUAL "Debug")
+		SET(BOX2D_LINK_LIBRARY debug ${BOX2D_RELEASE_LIBRARY_DEBUG})
+		SET(LIBBULLETMULTITHREADED_LINK debug ${LIBBULLETMULTITHREADED_DEBUG})
+		SET(LIBBULLETSOFTBODY_LINK debug ${LIBBULLETSOFTBODY_DEBUG})
+		SET(LIBBULLETDYNAMICS_LINK debug ${LIBBULLETDYNAMICS_DEBUG})
+		SET(LIBBULLETCOLLISION_LINK debug ${LIBBULLETCOLLISION_DEBUG})
+		SET(LIBBULLETMATH_LINK debug ${LIBBULLETMATH_DEBUG})
+	ENDIF(CMAKE_BUILD_TYPE STREQUAL "Release")
+	
+	MESSAGE(" ~ BOX2D_LINK_LIBRARY = ${BOX2D_LINK_LIBRARY}")
+	MESSAGE(" ~ LIBBULLETMULTITHREADED_LINK = ${LIBBULLETMULTITHREADED_LINK}")
+	MESSAGE(" ~ LIBBULLETSOFTBODY_LINK = ${LIBBULLETSOFTBODY_LINK}")
+	MESSAGE(" ~ LIBBULLETDYNAMICS_LINK = ${LIBBULLETDYNAMICS_LINK}")
+	MESSAGE(" ~ LIBBULLETCOLLISION_LINK = ${LIBBULLETCOLLISION_LINK}")
+	MESSAGE(" ~ LIBBULLETMATH_LINK = ${LIBBULLETMATH_LINK}")
+	MESSAGE(" ~ OPENAL LIBRARIES = ${OPENAL_LIBRARIES}")
+	
     TARGET_LINK_LIBRARIES(PolycodePlayer 
         PolycodeLua 
         Polycore
         ${ZLIB_LIBRARIES}
-        ${LUA_LIBRARY}
+        ${LUA_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
         ${OPENGL_LIBRARIES}
-        ${OPENAL_LIBRARY}
+        ${OPENAL_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
         ${PNG_LIBRARIES}
         ${FREETYPE_LIBRARIES}
-        ${PHYSFS_LIBRARY}
-        ${OGG_LIBRARY}
-        ${VORBIS_LIBRARY}
-        ${VORBISFILE_LIBRARY}
+        ${PHYSFS_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
+        ${OGG_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
+        ${VORBIS_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
+        ${VORBISFILE_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
         opengl32
         glu32
         winmm
         ws2_32
-    Physics2DLua
-    Physics3DLua
-    UILua
-    Polycode2DPhysics
-    Polycode3DPhysics
-    PolycodeUI
-    optimized ${BOX2D_RELEASE_LIBRARY}
-    debug ${BOX2D_DEBUG_LIBRARY}
-        optimized ${LIBBULLETMULTITHREADED}
-        optimized ${LIBBULLETSOFTBODY} 
-        optimized ${LIBBULLETDYNAMICS} 
-        optimized ${LIBBULLETCOLLISION}
-        optimized ${LIBBULLETMATH}            
-        debug ${LIBBULLETMULTITHREADED_DEBUG}
-        debug ${LIBBULLETSOFTBODY_DEBUG} 
-        debug ${LIBBULLETDYNAMICS_DEBUG} 
-        debug ${LIBBULLETCOLLISION_DEBUG}
-        debug ${LIBBULLETMATH_DEBUG}  
+        
+		Physics2DLua
+		Physics3DLua
+		UILua
+		Polycode2DPhysics
+		Polycode3DPhysics
+		PolycodeUI
+		
+		${BOX2D_LINK_LIBRARY}  
+		${LIBBULLETMULTITHREADED_LINK}
+		${LIBBULLETSOFTBODY_LINK} 
+		${LIBBULLETDYNAMICS_LINK} 
+		${LIBBULLETCOLLISION_LINK}
+		${LIBBULLETMATH_LINK}  
      )
 
     TARGET_LINK_LIBRARIES(StandalonePlayer 
         PolycodeLua 
         Polycore 
         ${ZLIB_LIBRARIES}
-        ${LUA_LIBRARY}
+        ${LUA_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
         ${OPENGL_LIBRARIES}
-        ${OPENAL_LIBRARY}
+        ${OPENAL_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
         ${PNG_LIBRARIES}
         ${FREETYPE_LIBRARIES}
-        ${PHYSFS_LIBRARY}
-        ${OGG_LIBRARY}
-        ${VORBIS_LIBRARY}
-        ${VORBISFILE_LIBRARY} 
+        ${PHYSFS_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
+        ${OGG_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
+        ${VORBIS_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
+        ${VORBISFILE_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug 
         opengl32
         glu32
         winmm
         ws2_32 
-    Physics2DLua
-    Physics3DLua
-    UILua
-    Polycode2DPhysics
-    Polycode3DPhysics
-    PolycodeUI
-    optimized ${BOX2D_RELEASE_LIBRARY}
-    debug ${BOX2D_DEBUG_LIBRARY}
-        optimized ${LIBBULLETMULTITHREADED}
-        optimized ${LIBBULLETSOFTBODY} 
-        optimized ${LIBBULLETDYNAMICS} 
-        optimized ${LIBBULLETCOLLISION}
-        optimized ${LIBBULLETMATH}            
-        debug ${LIBBULLETMULTITHREADED_DEBUG}
-        debug ${LIBBULLETSOFTBODY_DEBUG} 
-        debug ${LIBBULLETDYNAMICS_DEBUG} 
-        debug ${LIBBULLETCOLLISION_DEBUG}
-        debug ${LIBBULLETMATH_DEBUG} 
+        
+		Physics2DLua
+		Physics3DLua
+		UILua
+		Polycode2DPhysics
+		Polycode3DPhysics
+		PolycodeUI
+    
+		${BOX2D_LINK_LIBRARY}  
+		${LIBBULLETMULTITHREADED_LINK}
+		${LIBBULLETSOFTBODY_LINK} 
+		${LIBBULLETDYNAMICS_LINK} 
+		${LIBBULLETCOLLISION_LINK}
+		${LIBBULLETMATH_LINK}  
      )
 
 ELSEIF(APPLE)
-
 # Needed for LuaJIT
 SET( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -pagezero_size 10000 -image_base 100000000" ) 
+
+MESSAGE("---------- APPLE BUILD TARGETS ~ PLAYER ----------")
   
 INCLUDE_DIRECTORIES(
     ${LUA_INCLUDE_DIR}
@@ -179,7 +195,7 @@ INCLUDE_DIRECTORIES(
     
 #    IF(POLYCODE_BUILD_SHARED)
 #        ADD_EXECUTABLE(PolycodePlayer MACOSX_BUNDLE ${polycodeplayer_SRCS} ${polycodeplayer_HDRS})
-#        TARGET_LINK_LIBRARIES(PolycodePlayer Polycore PolycodeLua ${LUA_LIBRARY})
+#        TARGET_LINK_LIBRARIES(PolycodePlayer Polycore PolycodeLua ${LUA_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug)
 #    ENDIF(POLYCODE_BUILD_SHARED)
 
 find_program(IBTOOL ibtool HINTS "/usr/bin" "${OSX_DEVELOPER_ROOT}/usr/bin")
@@ -203,40 +219,60 @@ endif()
 
     ADD_EXECUTABLE(StandalonePlayer MACOSX_BUNDLE ${polycodeplayerstandalone_SRCS} ${polycodeplayerstandalone_HDRS})
     set_target_properties( StandalonePlayer PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${Polycode_SOURCE_DIR}/Player/Contents/Platform/Darwin/Standalone/Info.plist )
-
+    
+	IF(CMAKE_BUILD_TYPE STREQUAL "Release")
+		SET(BOX2D_LINK_LIBRARY general ${BOX2D_RELEASE_LIBRARY})
+		SET(LIBBULLETMULTITHREADED_LINK general ${LIBBULLETMULTITHREADED})
+		SET(LIBBULLETSOFTBODY_LINK general ${LIBBULLETSOFTBODY})
+		SET(LIBBULLETDYNAMICS_LINK general ${LIBBULLETDYNAMICS})
+		SET(LIBBULLETCOLLISION_LINK general ${LIBBULLETCOLLISION})
+		SET(LIBBULLETMATH_LINK general ${LIBBULLETMATH})
+	ELSEIF(CMAKE_BUILD_TYPE STREQUAL "Debug")
+		SET(BOX2D_LINK_LIBRARY debug ${BOX2D_RELEASE_LIBRARY_DEBUG})
+		SET(LIBBULLETMULTITHREADED_LINK debug ${LIBBULLETMULTITHREADED_DEBUG})
+		SET(LIBBULLETSOFTBODY_LINK debug ${LIBBULLETSOFTBODY_DEBUG})
+		SET(LIBBULLETDYNAMICS_LINK debug ${LIBBULLETDYNAMICS_DEBUG})
+		SET(LIBBULLETCOLLISION_LINK debug ${LIBBULLETCOLLISION_DEBUG})
+		SET(LIBBULLETMATH_LINK debug ${LIBBULLETMATH_DEBUG})
+	ENDIF(CMAKE_BUILD_TYPE STREQUAL "Release")
+	
+	MESSAGE(" ~ BOX2D_LINK_LIBRARY = ${BOX2D_LINK_LIBRARY}")
+	MESSAGE(" ~ LIBBULLETMULTITHREADED_LINK = ${LIBBULLETMULTITHREADED_LINK}")
+	MESSAGE(" ~ LIBBULLETSOFTBODY_LINK = ${LIBBULLETSOFTBODY_LINK}")
+	MESSAGE(" ~ LIBBULLETDYNAMICS_LINK = ${LIBBULLETDYNAMICS_LINK}")
+	MESSAGE(" ~ LIBBULLETCOLLISION_LINK = ${LIBBULLETCOLLISION_LINK}")
+	MESSAGE(" ~ LIBBULLETMATH_LINK = ${LIBBULLETMATH_LINK}")
+	MESSAGE(" ~ OPENAL LIBRARIES = ${OPENAL_LIBRARIES}")
+	
     TARGET_LINK_LIBRARIES(PolycodePlayer 
         Polycore 
         PolycodeLua 
         "-framework Cocoa"
         "-framework IOKit"
-        ${LUA_LIBRARY}
+        ${LUA_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
         ${OPENGL_LIBRARIES}
-        ${OPENAL_LIBRARY}
+        ${OPENAL_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
         ${ZLIB_LIBRARIES}
         ${PNG_LIBRARIES}
         ${FREETYPE_LIBRARIES}
-        ${PHYSFS_LIBRARY}
-        ${OGG_LIBRARY}
-        ${VORBIS_LIBRARY}
-        ${VORBISFILE_LIBRARY}
+        ${PHYSFS_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
+        ${OGG_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
+        ${VORBIS_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
+        ${VORBISFILE_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
 	
-	${BOX2D_RELEASE_LIBRARY}
-        optimized ${LIBBULLETMULTITHREADED}
-        optimized ${LIBBULLETSOFTBODY} 
-        optimized ${LIBBULLETDYNAMICS} 
-        optimized ${LIBBULLETCOLLISION}
-        optimized ${LIBBULLETMATH}            
-        debug ${LIBBULLETMULTITHREADED_DEBUG}
-        debug ${LIBBULLETSOFTBODY_DEBUG} 
-        debug ${LIBBULLETDYNAMICS_DEBUG} 
-        debug ${LIBBULLETCOLLISION_DEBUG}
-        debug ${LIBBULLETMATH_DEBUG}  
-	Polycode2DPhysics
-	Polycode3DPhysics
-	PolycodeUI
-	Physics2DLua
-	Physics3DLua
-	UILua
+		${BOX2D_LINK_LIBRARY}    
+        ${LIBBULLETMULTITHREADED_LINK}
+        ${LIBBULLETSOFTBODY_LINK} 
+        ${LIBBULLETDYNAMICS_LINK} 
+        ${LIBBULLETCOLLISION_LINK}
+        ${LIBBULLETMATH_LINK}
+          
+		Polycode2DPhysics
+		Polycode3DPhysics
+		PolycodeUI
+		Physics2DLua
+		Physics3DLua
+		UILua
 	
      )
 
@@ -245,34 +281,30 @@ endif()
         PolycodeLua 
         "-framework Cocoa"
         "-framework IOKit"
-        ${LUA_LIBRARY}
+        ${LUA_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
         ${OPENGL_LIBRARIES}
-        ${OPENAL_LIBRARY}
+        ${OPENAL_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
         ${ZLIB_LIBRARIES}
         ${PNG_LIBRARIES}
         ${FREETYPE_LIBRARIES}
-        ${PHYSFS_LIBRARY}
-        ${OGG_LIBRARY}
-        ${VORBIS_LIBRARY}
-        ${VORBISFILE_LIBRARY}
+        ${PHYSFS_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
+        ${OGG_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
+        ${VORBIS_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
+        ${VORBISFILE_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
 	
-	${BOX2D_RELEASE_LIBRARY}
-        optimized ${LIBBULLETMULTITHREADED}
-        optimized ${LIBBULLETSOFTBODY} 
-        optimized ${LIBBULLETDYNAMICS} 
-        optimized ${LIBBULLETCOLLISION}
-        optimized ${LIBBULLETMATH}            
-        debug ${LIBBULLETMULTITHREADED_DEBUG}
-        debug ${LIBBULLETSOFTBODY_DEBUG} 
-        debug ${LIBBULLETDYNAMICS_DEBUG} 
-        debug ${LIBBULLETCOLLISION_DEBUG}
-        debug ${LIBBULLETMATH_DEBUG}  
-	Polycode2DPhysics
-	Polycode3DPhysics
-	PolycodeUI
-	Physics2DLua
-	Physics3DLua
-	UILua
+		${BOX2D_LINK_LIBRARY}    
+        ${LIBBULLETMULTITHREADED_LINK}
+        ${LIBBULLETSOFTBODY_LINK} 
+        ${LIBBULLETDYNAMICS_LINK} 
+        ${LIBBULLETCOLLISION_LINK}
+        ${LIBBULLETMATH_LINK}
+        
+		Polycode2DPhysics
+		Polycode3DPhysics
+		PolycodeUI
+		Physics2DLua
+		Physics3DLua
+		UILua
      )
 
 	add_custom_command (TARGET PolycodePlayer PRE_BUILD
@@ -333,7 +365,7 @@ foreach(xib ${PolycodePlayerStandalone_XIBS})
 
 endforeach()
 ELSE(MSVC OR MINGW)
-
+MESSAGE("---------- LINUX BUILD TARGETS ~ PLAYER ----------")
    
 INCLUDE_DIRECTORIES(
     ${LUA_INCLUDE_DIR}
@@ -377,41 +409,61 @@ INCLUDE_DIRECTORIES(
     ADD_EXECUTABLE(PolycodePlayer ${polycodeplayer_SRCS} ${polycodeplayer_HDRS})
     ADD_EXECUTABLE(StandalonePlayer ${polycodeplayerstandalone_SRCS} ${polycodeplayerstandalone_HDRS})
     
-
+	IF(CMAKE_BUILD_TYPE STREQUAL "Release")
+		SET(BOX2D_LINK_LIBRARY general ${BOX2D_RELEASE_LIBRARY})
+		SET(LIBBULLETMULTITHREADED_LINK general ${LIBBULLETMULTITHREADED})
+		SET(LIBBULLETSOFTBODY_LINK general ${LIBBULLETSOFTBODY})
+		SET(LIBBULLETDYNAMICS_LINK general ${LIBBULLETDYNAMICS})
+		SET(LIBBULLETCOLLISION_LINK general ${LIBBULLETCOLLISION})
+		SET(LIBBULLETMATH_LINK general ${LIBBULLETMATH})
+	ELSEIF(CMAKE_BUILD_TYPE STREQUAL "Debug")
+		SET(BOX2D_LINK_LIBRARY debug ${BOX2D_RELEASE_LIBRARY_DEBUG})
+		SET(LIBBULLETMULTITHREADED_LINK debug ${LIBBULLETMULTITHREADED_DEBUG})
+		SET(LIBBULLETSOFTBODY_LINK debug ${LIBBULLETSOFTBODY_DEBUG})
+		SET(LIBBULLETDYNAMICS_LINK debug ${LIBBULLETDYNAMICS_DEBUG})
+		SET(LIBBULLETCOLLISION_LINK debug ${LIBBULLETCOLLISION_DEBUG})
+		SET(LIBBULLETMATH_LINK debug ${LIBBULLETMATH_DEBUG})
+	ENDIF(CMAKE_BUILD_TYPE STREQUAL "Release")
+	
+	MESSAGE(" ~ BOX2D_LINK_LIBRARY = ${BOX2D_LINK_LIBRARY}")
+	MESSAGE(" ~ LIBBULLETMULTITHREADED_LINK = ${LIBBULLETMULTITHREADED_LINK}")
+	MESSAGE(" ~ LIBBULLETSOFTBODY_LINK = ${LIBBULLETSOFTBODY_LINK}")
+	MESSAGE(" ~ LIBBULLETDYNAMICS_LINK = ${LIBBULLETDYNAMICS_LINK}")
+	MESSAGE(" ~ LIBBULLETCOLLISION_LINK = ${LIBBULLETCOLLISION_LINK}")
+	MESSAGE(" ~ LIBBULLETMATH_LINK = ${LIBBULLETMATH_LINK}")
+	MESSAGE(" ~ OPENAL LIBRARIES = ${OPENAL_LIBRARIES}")
+	
     TARGET_LINK_LIBRARIES(PolycodePlayer 
 	rt
 	pthread
         PolycodeLua 
         Polycore 
-        ${LUA_LIBRARY}
+        ${LUA_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
         ${FREETYPE_LIBRARIES}
-        ${VORBISFILE_LIBRARY}
-        ${VORBIS_LIBRARY}
-        ${OGG_LIBRARY}
-        ${OPENAL_LIBRARY}
-        ${PHYSFS_LIBRARY}
+        ${VORBISFILE_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
+        ${VORBIS_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
+        ${OGG_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
+        ${OPENAL_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
+        ${PHYSFS_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
         ${PNG_LIBRARIES}
-        ${ZLIB_LIBRARY}
+        ${ZLIB_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
         ${OPENGL_LIBRARIES}
-        ${SDL_LIBRARY}
-	dl
-	Physics2DLua
-	Physics3DLua
-	UILua
-	Polycode2DPhysics
-	Polycode3DPhysics
-	PolycodeUI
-	${BOX2D_RELEASE_LIBRARY}
-        optimized ${LIBBULLETMULTITHREADED}
-        optimized ${LIBBULLETSOFTBODY} 
-        optimized ${LIBBULLETDYNAMICS} 
-        optimized ${LIBBULLETCOLLISION}
-        optimized ${LIBBULLETMATH}            
-        debug ${LIBBULLETMULTITHREADED_DEBUG}
-        debug ${LIBBULLETSOFTBODY_DEBUG} 
-        debug ${LIBBULLETDYNAMICS_DEBUG} 
-        debug ${LIBBULLETCOLLISION_DEBUG}
-        debug ${LIBBULLETMATH_DEBUG}  
+        ${SDL_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
+        
+		dl
+		Physics2DLua
+		Physics3DLua
+		UILua
+		Polycode2DPhysics
+		Polycode3DPhysics
+		PolycodeUI
+		
+		${BOX2D_LINK_LIBRARY}
+		${LIBBULLETMULTITHREADED_LINK}
+		${LIBBULLETSOFTBODY_LINK}
+		${LIBBULLETDYNAMICS_LINK}
+		${LIBBULLETCOLLISION_LINK}
+		${LIBBULLETMATH_LINK}          
      )
 
     TARGET_LINK_LIBRARIES(StandalonePlayer 
@@ -419,35 +471,32 @@ INCLUDE_DIRECTORIES(
 	pthread
         PolycodeLua 
         Polycore 
-        ${LUA_LIBRARY}
+        ${LUA_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
         ${FREETYPE_LIBRARIES}
-        ${VORBISFILE_LIBRARY}
-        ${VORBIS_LIBRARY}
-        ${OGG_LIBRARY}
-        ${OPENAL_LIBRARY}
-        ${PHYSFS_LIBRARY}
+        ${VORBISFILE_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
+        ${VORBIS_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
+        ${OGG_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
+        ${OPENAL_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
+        ${PHYSFS_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
         ${PNG_LIBRARIES}
-        ${ZLIB_LIBRARY}
+        ${ZLIB_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
         ${OPENGL_LIBRARIES}
-        ${SDL_LIBRARY}
-	dl
-	Physics2DLua
-	Physics3DLua
-	UILua
-	Polycode2DPhysics
-	Polycode3DPhysics
-	PolycodeUI
-	${BOX2D_RELEASE_LIBRARY}
-        optimized ${LIBBULLETMULTITHREADED}
-        optimized ${LIBBULLETSOFTBODY} 
-        optimized ${LIBBULLETDYNAMICS} 
-        optimized ${LIBBULLETCOLLISION}
-        optimized ${LIBBULLETMATH}            
-        debug ${LIBBULLETMULTITHREADED_DEBUG}
-        debug ${LIBBULLETSOFTBODY_DEBUG} 
-        debug ${LIBBULLETDYNAMICS_DEBUG} 
-        debug ${LIBBULLETCOLLISION_DEBUG}
-        debug ${LIBBULLETMATH_DEBUG}  
+        ${SDL_LIBRARIES} # Use LIBRARIES rather than LIBRARY to compile against either Release or Debug
+	
+		dl
+		Physics2DLua
+		Physics3DLua
+		UILua
+		Polycode2DPhysics
+		Polycode3DPhysics
+		PolycodeUI
+	
+		${BOX2D_LINK_LIBRARY}       
+        ${LIBBULLETMULTITHREADED_LINK}
+        ${LIBBULLETSOFTBODY_LINK} 
+        ${LIBBULLETDYNAMICS_LINK} 
+        ${LIBBULLETCOLLISION_LINK}
+        ${LIBBULLETMATH_LINK}  
      )
 
     
