@@ -35,7 +35,7 @@ FIND_PATH(VORBIS_INCLUDE_DIR
 )
 
 FIND_LIBRARY(VORBIS_LIBRARY 
-	NAMES vorbis libvorbis
+	NAMES vorbis libvorbis liblibvorbis
 	HINTS
 	NO_DEFAULT_PATH
 	NO_CMAKE_ENVIRONMENT_PATH
@@ -50,7 +50,7 @@ FIND_LIBRARY(VORBIS_LIBRARY
 
 # First search for d-suffixed libs
 FIND_LIBRARY(VORBIS_LIBRARY_DEBUG 
-	NAMES vorbisd vorbis_d libvorbisd libvorbis_d
+	NAMES vorbisd vorbis_d libvorbisd libvorbis_d liblibvorbisd liblibvorbis_d #dont ask me why lib is prefixed twice...
 	HINTS
 	NO_DEFAULT_PATH
 	NO_CMAKE_ENVIRONMENT_PATH
@@ -86,6 +86,8 @@ IF(VORBIS_LIBRARY)
 	ELSE()
 		SET(VORBIS_LIBRARIES "${VORBIS_LIBRARY}")		# Could add "general" keyword, but it is optional
 	ENDIF()
+ELSEIF(VORBIG_LIBRARY_DEBUG)
+	SET(VORBIG_LIBRARIES debug "${VORBIS_LIBRARY_DEBUG}")
 ENDIF()
 
 # handle the QUIETLY and REQUIRED arguments and set XXX_FOUND to TRUE if all listed variables are TRUE
