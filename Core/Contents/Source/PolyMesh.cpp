@@ -105,7 +105,10 @@ bool Mesh::getUseFaceNormals() {
 }
 
 
-void Mesh::setVertexBuffer(VertexBuffer *buffer) {
+void Mesh::setVertexBuffer(VertexBuffer *buffer) {    
+    if(vertexBuffer) {
+        delete vertexBuffer;
+    }
     vertexBuffer = buffer;
     meshHasVertexBuffer = true;
 }
@@ -605,6 +608,17 @@ unsigned int Mesh::getVertexCount() {
     } else {
         return vertices.size();
     }
+}
+
+unsigned int Mesh::getIndexCount() {
+    return indices.size();
+}
+
+unsigned int Mesh::getIndexAt(unsigned int index) {
+    if(index < indices.size()) {
+        return indices[index];
+    }
+    return 0;
 }
 
 void Mesh::createTorus(Number radius, Number tubeRadius, int segmentsW, int segmentsH) {

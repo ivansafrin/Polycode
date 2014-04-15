@@ -39,6 +39,7 @@ namespace Polycode {
             Number brightnessDeviation;
             Number scale;
             Color color;
+            int varianceIndex;
     };
     
     class SceneParticleEmitter : public SceneMesh {
@@ -104,7 +105,7 @@ namespace Polycode {
         
             static const int PARTICLE_TYPE_POINT = 0;
             static const int PARTICLE_TYPE_QUAD = 1;
-
+            static const int PARTICLE_TYPE_MESH = 2;
         
             bool useScaleCurve;
         
@@ -135,12 +136,17 @@ namespace Polycode {
         
             Color colorDeviation;
         
+            void addSourceMesh(Mesh *mesh);
+            int getNumSourceMeshes();
+            Mesh *getSourcesMeshAtIndex(int index);
+            void removeSourceMeshAtIndex(int index);
         
             virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
             virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
         
         protected:
         
+            std::vector<Mesh*> sourceMeshes;
             void resetParticle(unsigned int index);
         
             bool systemEnabled;

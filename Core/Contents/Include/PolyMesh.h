@@ -380,6 +380,9 @@ namespace Polycode {
         
             void addFaceNormal(Vector3 faceNormal);
         
+            unsigned int getIndexCount();
+            unsigned int getIndexAt(unsigned int index);
+        
 		protected:
         
             Vector3 calculateFaceTangent(Vertex *v1, Vertex *v2, Vertex *v3);
