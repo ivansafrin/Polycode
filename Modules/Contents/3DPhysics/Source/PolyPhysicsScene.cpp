@@ -44,7 +44,8 @@ PhysicsSceneEvent::~PhysicsSceneEvent() {
 
 PhysicsScene::PhysicsScene(int maxSubSteps, Vector3 size, bool virtualScene) : CollisionScene(size, virtualScene, true), physicsWorld(NULL), solver(NULL), broadphase(NULL), ghostPairCallback(NULL) {
 	this->maxSubSteps = maxSubSteps;
-	pausePhysics = false;	
+	pausePhysics = false;
+	timeStep = 1.0f/60.0f;
 	initPhysicsScene(size);	
 }
 
@@ -152,13 +153,21 @@ void PhysicsScene::Update() {
 	
 	Number elapsed = CoreServices::getInstance()->getCore()->getElapsed();
 	if(maxSubSteps > 0) {
-		physicsWorld->stepSimulation(elapsed, maxSubSteps);	
+		physicsWorld->stepSimulation(elapsed, maxSubSteps, timeStep);	
 	} else {
 		physicsWorld->stepSimulation(elapsed);		
 	}
 	}
 	CollisionScene::Update();
 	
+}
+
+Number PhysicsScene::getTimeStep() {
+	return timeStep;
+}
+
+void PhysicsScene::setTimeStep(Number newTime) {
+	timeStep = newTime;
 }
 
 void PhysicsScene::setVelocity(Entity *entity, Vector3 velocity) {

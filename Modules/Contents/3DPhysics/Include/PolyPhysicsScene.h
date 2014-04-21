@@ -120,6 +120,8 @@ namespace Polycode {
 		
 		PhysicsGenericConstraint *createGenericConstraint(Entity *entity);
 				
+		Number getTimeStep();
+		void setTimeStep(Number newTime);
 		void setVelocity(Entity *entity, Vector3 velocity);
 		void setSpin(Entity *entity, Vector3 spin);
 				
@@ -145,7 +147,8 @@ namespace Polycode {
 		
 		bool paused;
 		int maxSubSteps;
-		void initPhysicsScene(Vector3 size);		
+		void initPhysicsScene(Vector3 size);
+		Number timeStep;
 		
 		btDiscreteDynamicsWorld* physicsWorld;
 		btSequentialImpulseConstraintSolver *solver;		
