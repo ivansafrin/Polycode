@@ -116,6 +116,10 @@ namespace Polycode {
 		*/												
 		static const int SHAPE_CYLINDER = 8;
 
+		/**
+		* Compound mesh shape
+		*/												
+		static const int SHAPE_MESH_COMPOUND = 9;
 		
 		btRigidBody* rigidBody;
 		

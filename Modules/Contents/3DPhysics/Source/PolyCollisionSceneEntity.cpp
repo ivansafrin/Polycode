@@ -126,16 +126,21 @@ btCollisionShape *CollisionEntity::createCollisionShape(Entity *entity, int type
 			collisionShape = new btSphereShape(largestSize/2.0f);
 			break;
 		case SHAPE_MESH:
+		case SHAPE_MESH_COMPOUND:
 		{
 			SceneMesh* sceneMesh = dynamic_cast<SceneMesh*>(entity);
 			if(sceneMesh != NULL) {
-				btConvexHullShape *hullShape = new btConvexHullShape();
-                Mesh *mesh = sceneMesh->getMesh();
-				for(int i=0; i < mesh->getVertexCount(); i++) {
-                    hullShape->addPoint(btVector3((btScalar)mesh->getVertex(i)->x, (btScalar)mesh->getVertex(i)->y,(btScalar)mesh->getVertex(i)->z));
-				}				
-				collisionShape = hullShape;
-				
+				if(type == SHAPE_MESH) {
+					btConvexHullShape *hullShape = new btConvexHullShape();
+					Mesh *mesh = sceneMesh->getMesh();
+					for(int i=0; i < mesh->getActualVertexCount(); i++) {
+						hullShape->addPoint(btVector3((btScalar)mesh->getActualVertex(i)->x, (btScalar)mesh->getActualVertex(i)->y,(btScalar)mesh->getActualVertex(i)->z));
+					}				
+					collisionShape = hullShape;
+				} else {
+					Mesh* mesh = sceneMesh->getMesh();
+					collisionShape = createCompoundMeshShape(mesh);
+				}
 			} else {
 				Logger::log("Tried to make a mesh collision object from a non-mesh\n");
 				collisionShape = new btBoxShape(btVector3(bBox.x/2.0f, bBox.y/2.0f,bBox.z/2.0f));
@@ -147,6 +152,111 @@ btCollisionShape *CollisionEntity::createCollisionShape(Entity *entity, int type
    // collisionShape->setLocalScaling(btVector3(scale.x, scale.y, scale.z));
     
 	return collisionShape; 
+}
+
+btCollisionShape *CollisionEntity::createCompoundMeshShape(Mesh *mesh) {
+	unsigned int vertexCount = mesh->getVertexCount();
+	unsigned int actualVertexCount = mesh->getActualVertexCount();
+
+	Vertex*** hullArray = new Vertex**[vertexCount/3];
+	for(int p=0; p < (vertexCount/3); p++)
+		hullArray[p] = NULL;
+				
+	int hullArraySize = 0;
+	int hullSize = 0;
+	int maxHullVerts = 1000;
+				
+	bool foundVert0 = false;
+	bool foundVert1 = false;
+	bool foundVert2 = false;
+	bool foundHull = false;
+	
+	for(int i=0; i < vertexCount; i+=3) {
+		Vertex* vert0 = mesh->getVertex(i);
+		Vertex* vert1 = mesh->getVertex(i+1);
+		Vertex* vert2 = mesh->getVertex(i+2);
+		if(i == 0) {
+				Vertex** newHull = new Vertex*[maxHullVerts];
+				for(int p=0; p < maxHullVerts; p++)
+					newHull[p] = NULL;
+				newHull[0] = vert0;
+				newHull[1] = vert1;
+				newHull[2] = vert2;
+				hullArray[i] = newHull;
+		} else {
+			foundHull = false;
+			for(int j=(vertexCount/3-1); j > -1; j--) {
+				if(hullArray[j] == NULL){
+					hullArraySize = j;
+					continue;
+				}
+				if(j < (hullArraySize - 2))
+					break;
+				foundVert0 = false;
+				foundVert1 = false;
+				foundVert2 = false;
+				for(int k = 0; k < maxHullVerts; k++) {
+					if(hullArray[j][k] == NULL) {
+						hullSize = k;
+						break;
+					}
+					if(hullArray[j][k] == vert0){
+						foundVert0 = true;
+					} else if(hullArray[j][k] == vert1){
+						foundVert1 = true;
+					} else if(hullArray[j][k] == vert2){
+						foundVert2 = true;
+					}
+				}
+				if(foundVert0 || foundVert1 || foundVert2){
+					foundHull = true;
+					if(!foundVert0){
+						hullArray[j][hullSize] = vert0;
+					}
+					if(!foundVert1){
+						hullArray[j][hullSize+foundVert0] = vert1;
+					}
+					if(!foundVert2){
+						hullArray[j][hullSize+foundVert0+foundVert1] = vert2;
+					}
+				}
+			}
+			if(!foundHull) {
+				Vertex** newHull = new Vertex*[maxHullVerts];
+				for(int p=0; p < maxHullVerts; p++)
+					newHull[p] = NULL;
+				newHull[0] = vert0;
+				newHull[1] = vert1;
+				newHull[2] = vert2;
+				hullArray[hullArraySize] = newHull;
+			}
+		}
+	}
+	btTransform transform;	
+
+	transform.setOrigin(btVector3(0,0,0));
+	transform.setRotation(btQuaternion(0,0,0));
+	
+	btCompoundShape* meshShape = new btCompoundShape();
+	for(int i=0; i < (vertexCount/3); i++) {
+		if(hullArray[i] == NULL)
+			break;
+		btConvexHullShape *hullShape = new btConvexHullShape();
+		for(int j=0; j < maxHullVerts; j++) {
+			if(hullArray[i][j] == NULL)
+				break;
+			btScalar x,y,z;
+			x = hullArray[i][j]->x;
+			y = hullArray[i][j]->y;
+			z = hullArray[i][j]->z;
+			hullShape->addPoint(btVector3(x, y, z));
+		}
+		delete[] hullArray[i];
+		meshShape->addChildShape(transform, hullShape);
+	}
+	delete[] hullArray;
+	
+	return meshShape;
 }
 
 void CollisionEntity::Update() {	
