@@ -32,6 +32,7 @@ class btCollisionObject;
 namespace Polycode {
 
 	class Entity;
+	class Mesh;
 
 	/**
 	* A wrapped around Entity that provides collision information.
@@ -59,7 +60,8 @@ namespace Polycode {
 			virtual void Update();
 		
 			btConvexShape *getConvexShape(){ return convexShape; }					
-			btCollisionShape *createCollisionShape(Entity *entity, int type);		
+			btCollisionShape *createCollisionShape(Entity *entity, int type);
+			btCollisionShape *createCompoundMeshShape(Mesh *mesh);
 			btCollisionObject *collisionObject;		
 			Vector3 lastPosition;
 		
@@ -106,6 +108,11 @@ namespace Polycode {
 		* Cylinder shape
 		*/												
 		static const int SHAPE_CYLINDER = 8;
+
+		/**
+		* Compound mesh shape
+		*/												
+		static const int SHAPE_MESH_COMPOUND = 9;
 						
 			bool enabled;
 			btCollisionShape *shape;
