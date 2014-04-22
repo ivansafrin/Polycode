@@ -121,6 +121,11 @@ namespace Polycode {
 		*/												
 		static const int SHAPE_MESH_COMPOUND = 9;
 		
+		/**
+		* Concave mesh shape
+		*/												
+		static const int SHAPE_MESH_CONCAVE = 10;
+
 		btRigidBody* rigidBody;
 		
 	protected:
@@ -153,7 +158,8 @@ namespace Polycode {
 			void warpCharacter(Vector3 position);
 			void setJumpSpeed(Number jumpSpeed);
 			void setFallSpeed(Number fallSpeed);			
-			void setMaxJumpHeight(Number maxJumpHeight);			
+			void setMaxJumpHeight(Number maxJumpHeight);
+			void setMaxSlope(Number maxSlope);
 			bool onGround();
 			//@}
 			// ----------------------------------------------------------------------------------------------------------------

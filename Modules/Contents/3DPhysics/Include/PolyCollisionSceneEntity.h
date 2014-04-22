@@ -113,6 +113,11 @@ namespace Polycode {
 		* Compound mesh shape
 		*/												
 		static const int SHAPE_MESH_COMPOUND = 9;
+
+		/**
+		* Concave mesh shape
+		*/												
+		static const int SHAPE_MESH_CONCAVE = 10;
 						
 			bool enabled;
 			btCollisionShape *shape;

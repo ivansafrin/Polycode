@@ -76,11 +76,11 @@ CollisionEntity::CollisionEntity(Entity *entity, int type, bool compoundChildren
 	
 	collisionObject->setUserPointer((void*)this);
 	
-//	if(type == SHAPE_MESH) {		
-//		concaveShape = dynamic_cast<btConcaveShape*>(shape);
-//	} else {
+	if(type == SHAPE_MESH_CONCAVE) {		
+		concaveShape = dynamic_cast<btConcaveShape*>(shape);
+	} else {
 		convexShape	= dynamic_cast<btConvexShape*>(shape);		
-//	}		
+	}		
 }
 
 btCollisionShape *CollisionEntity::createCollisionShape(Entity *entity, int type) {
@@ -127,19 +127,42 @@ btCollisionShape *CollisionEntity::createCollisionShape(Entity *entity, int type
 			break;
 		case SHAPE_MESH:
 		case SHAPE_MESH_COMPOUND:
+		case SHAPE_MESH_CONCAVE:
 		{
 			SceneMesh* sceneMesh = dynamic_cast<SceneMesh*>(entity);
+			Mesh *mesh = sceneMesh->getMesh();
 			if(sceneMesh != NULL) {
 				if(type == SHAPE_MESH) {
 					btConvexHullShape *hullShape = new btConvexHullShape();
-					Mesh *mesh = sceneMesh->getMesh();
 					for(int i=0; i < mesh->getActualVertexCount(); i++) {
 						hullShape->addPoint(btVector3((btScalar)mesh->getActualVertex(i)->x, (btScalar)mesh->getActualVertex(i)->y,(btScalar)mesh->getActualVertex(i)->z));
 					}				
 					collisionShape = hullShape;
-				} else {
-					Mesh* mesh = sceneMesh->getMesh();
+				} else if(type == SHAPE_MESH_COMPOUND) {
 					collisionShape = createCompoundMeshShape(mesh);
+				} else {
+					btTriangleMesh *triMesh = new btTriangleMesh(true, false);
+					btVector3 *vert0 = new btVector3(0,0,0);
+					btVector3 *vert1 = new btVector3(0,0,0);
+					btVector3 *vert2 = new btVector3(0,0,0);
+					for( int i=0; i < mesh->getVertexCount(); i+=3) {
+						vert0->setX(mesh->getVertex(i)->x);
+						vert0->setY(mesh->getVertex(i)->y);
+						vert0->setZ(mesh->getVertex(i)->z);
+
+						vert1->setX(mesh->getVertex(i+1)->x);
+						vert1->setY(mesh->getVertex(i+1)->y);
+						vert1->setZ(mesh->getVertex(i+1)->z);
+
+						vert2->setX(mesh->getVertex(i+2)->x);
+						vert2->setY(mesh->getVertex(i+2)->y);
+						vert2->setZ(mesh->getVertex(i+2)->z);
+
+						triMesh->addTriangle(*vert0, *vert1, *vert2, false);
+					}
+					btBvhTriangleMeshShape *bvhMesh = new btBvhTriangleMeshShape(triMesh, true, true);
+					delete vert0,vert1,vert2,triMesh;
+					collisionShape = bvhMesh;
 				}
 			} else {
 				Logger::log("Tried to make a mesh collision object from a non-mesh\n");
