@@ -353,7 +353,8 @@ void AssetBrowser::handleEvent(Event *event) {
 			}
 			
 			if(event->getDispatcher() == cancelButton) {
-				dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);				
+				dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);
+                removeAllHandlers();
 			}									
 		}
 	}
