@@ -41,6 +41,17 @@ PolycodeSceneEditorActionDataEntry::PolycodeSceneEditorActionDataEntry(Quaternio
     this->quat = quat;
 }
 
+PolycodeSceneEditorActionDataEntry::PolycodeSceneEditorActionDataEntry(Vector3 vec3, Vector3 vec3Secondary) {
+    this->vec3 = vec3;
+    this->vec3Secondary = vec3Secondary;
+}
+
+PolycodeSceneEditorActionDataEntry::PolycodeSceneEditorActionDataEntry(Quaternion quat, Vector3 vec3) {
+    this->quat = quat;
+    this->vec3 = vec3;
+}
+
+
 PolycodeSceneEditorActionDataEntry::PolycodeSceneEditorActionDataEntry(Number number) {
     this->number = number;
 }
@@ -496,12 +507,14 @@ void EntityEditorMainView::doAction(String actionName, PolycodeEditorActionData 
 		for(int i=0; i < selectedEntities.size(); i++) {
             if(i < sceneData->entries.size()) {
                 selectedEntities[i]->setScale(sceneData->entries[i].vec3);
+                selectedEntities[i]->setPosition(sceneData->entries[i].vec3Secondary);
             }
 		}
     } else if(actionName == "rotate") {
 		for(int i=0; i < selectedEntities.size(); i++) {
             if(i < sceneData->entries.size()) {
                 selectedEntities[i]->setRotationByQuaternion(sceneData->entries[i].quat);
+                selectedEntities[i]->setPosition(sceneData->entries[i].vec3);
             }
 		}
     } else if(actionName == "select") {
@@ -976,7 +989,7 @@ void EntityEditorMainView::handleEvent(Event *event) {
                 {
                     PolycodeSceneEditorActionData *data = new PolycodeSceneEditorActionData();
                     for(int i=0; i < selectedEntities.size(); i++) {
-                        data->entries.push_back(PolycodeSceneEditorActionDataEntry(selectedEntities[i]->getScale()));
+                        data->entries.push_back(PolycodeSceneEditorActionDataEntry(selectedEntities[i]->getScale(), selectedEntities[i]->getPosition()));
                     }
                     editor->didAction("scale", beforeData, data);
                     beforeData = NULL;
@@ -987,7 +1000,7 @@ void EntityEditorMainView::handleEvent(Event *event) {
                 {
                     PolycodeSceneEditorActionData *data = new PolycodeSceneEditorActionData();
                     for(int i=0; i < selectedEntities.size(); i++) {
-                        data->entries.push_back(PolycodeSceneEditorActionDataEntry(selectedEntities[i]->getRotationQuat()));
+                        data->entries.push_back(PolycodeSceneEditorActionDataEntry(selectedEntities[i]->getRotationQuat(), selectedEntities[i]->getPosition()));
                     }
                     editor->didAction("rotate", beforeData, data);
                     beforeData = NULL;                    
@@ -1011,7 +1024,7 @@ void EntityEditorMainView::handleEvent(Event *event) {
                 {
                     beforeData = new PolycodeSceneEditorActionData();
                     for(int i=0; i < selectedEntities.size(); i++) {
-                        beforeData->entries.push_back(PolycodeSceneEditorActionDataEntry(selectedEntities[i]->getScale()));
+                        beforeData->entries.push_back(PolycodeSceneEditorActionDataEntry(selectedEntities[i]->getScale(), selectedEntities[i]->getPosition()));
                     }
                 }
                 break;
@@ -1020,7 +1033,7 @@ void EntityEditorMainView::handleEvent(Event *event) {
                 {
                     beforeData = new PolycodeSceneEditorActionData();
                     for(int i=0; i < selectedEntities.size(); i++) {
-                        beforeData->entries.push_back(PolycodeSceneEditorActionDataEntry(selectedEntities[i]->getRotationQuat()));
+                        beforeData->entries.push_back(PolycodeSceneEditorActionDataEntry(selectedEntities[i]->getRotationQuat(), selectedEntities[i]->getPosition()));
                     }
                 }
                 break;

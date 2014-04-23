@@ -172,7 +172,7 @@ namespace Polycode {
 		void rebuildBuffers();
 		
 		/**
-		* Removes (and deletes!) a gives point by pointer
+		* Removes (and deletes!) a given point by pointer
 		*/
 		void removePoint(BezierPoint *point);
 

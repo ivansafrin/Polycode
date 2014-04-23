@@ -53,9 +53,12 @@ public:
     PolycodeSceneEditorActionDataEntry(Vector3 vec3, Number number);
     PolycodeSceneEditorActionDataEntry(Quaternion quat);
     PolycodeSceneEditorActionDataEntry(Vector3 vec3);
+    PolycodeSceneEditorActionDataEntry(Vector3 vec3, Vector3 vec3Secondary);
+    PolycodeSceneEditorActionDataEntry(Quaternion quat, Vector3 vec3);
     PolycodeSceneEditorActionDataEntry(Number number);
     PolycodeSceneEditorActionDataEntry(Entity *entity);
     Vector3 vec3;
+    Vector3 vec3Secondary;
     Quaternion quat;
     Number number;
     Entity *entity;
