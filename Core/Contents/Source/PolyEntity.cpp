@@ -444,6 +444,10 @@ void Entity::transformAndRender() {
 	if(!renderer || !enabled)
 		return;
 
+	if(matrixDirty) {
+		rebuildTransformMatrix();
+    }
+    
 	if(depthOnly) {
 		renderer->drawToColorBuffer(false);
 	}

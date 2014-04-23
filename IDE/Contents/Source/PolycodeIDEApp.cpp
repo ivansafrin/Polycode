@@ -1393,8 +1393,7 @@ bool PolycodeIDEApp::Update() {
 		frame->getConsoleSizer()->enabled = false;		
 	}
 
-	bool retVal = core->Update();
-	core->Render();
-	return retVal;
+
+	return core->updateAndRender();
 }
 
