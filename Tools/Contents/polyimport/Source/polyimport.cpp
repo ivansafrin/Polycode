@@ -19,7 +19,7 @@ vector<aiBone*> bones;
 unsigned int numBones = 0;
 
 std::vector<String> materialsInFile;
-
+std::vector<String> meshesInFile;
 
 bool writeNormals = false;
 bool writeTangents = false;
@@ -27,6 +27,15 @@ bool writeColors = false;
 bool writeBoneWeights = false;
 bool writeUVs = false;
 bool writeSecondaryUVs = false;
+
+bool hasMesh(String meshName) {
+    for(int i=0; i < meshesInFile.size(); i++) {
+        if(meshesInFile[i] == meshName) {
+            return true;
+        }
+    }
+    return false;
+}
 
 bool hasMaterial(String materialName) {
     for(int i=0; i < materialsInFile.size(); i++) {
@@ -46,7 +55,7 @@ unsigned int addBone(aiBone *bone) {
 	return bones.size()-1;
 }
 
-void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, const struct aiNode* nd, bool swapZY, bool addSubmeshes, bool listOnly, ObjectEntry *parentSceneObject, String overrideMaterial, ObjectEntry *materialsParent, String assetPrefixPath) {
+void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, const struct aiNode* nd, bool swapZY, bool addSubmeshes, bool listOnly, ObjectEntry *parentSceneObject, String overrideMaterial, ObjectEntry *materialsParent, String assetPrefixPath, String baseFileName) {
 	int i, nIgnoredPolygons = 0;
 	unsigned int n = 0, t;
 	// draw all meshes assigned to this node
@@ -62,9 +71,26 @@ void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, c
         
         Vector3 bBox;
         
+        String meshFileName = String(nd->mName.data);
+
+        if(meshFileName == "") {
+            meshFileName = baseFileName;
+        }
+        
+        
+        int idx = 0;
+        String baseMeshFileName = meshFileName;
+        
+        while(hasMesh(meshFileName)) {
+            meshFileName = baseMeshFileName + String::IntToString(idx);
+            idx++;
+        }
+        
+        meshesInFile.push_back(meshFileName);
+        
 		if(listOnly) {
 			if(!addSubmeshes) {
-				printf("%s%s.mesh\n", prefix.c_str(), nd->mName.data);
+				printf("%s%s.mesh\n", prefix.c_str(), meshFileName.c_str());
 			}
 		} else {
 			printf("Importing mesh:%s (%d vertices) (%d faces) \n", mesh->mName.data, mesh->mNumVertices, mesh->mNumFaces);
@@ -149,7 +175,7 @@ void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, c
          }
 		
 		if(!addSubmeshes && !listOnly) {
-			String fileNameMesh = prefix+String(nd->mName.data)+".mesh";			
+			String fileNameMesh = prefix+meshFileName+".mesh";			
 			OSFILE *outFile = OSBasics::open(fileNameMesh.c_str(), "wb");	
 			tmesh->saveToFile(outFile, writeNormals, writeTangents, writeColors, writeBoneWeights, writeUVs, writeSecondaryUVs);
 			OSBasics::close(outFile);
@@ -257,7 +283,7 @@ void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, c
 	   
 	// draw all children
 	for (n = 0; n < nd->mNumChildren; ++n) {
-		addToMesh(prefix, tmesh, sc, nd->mChildren[n], swapZY, addSubmeshes, listOnly, parentSceneObject, overrideMaterial, materialsParent, assetPrefixPath);
+		addToMesh(prefix, tmesh, sc, nd->mChildren[n], swapZY, addSubmeshes, listOnly, parentSceneObject, overrideMaterial, materialsParent, assetPrefixPath, baseFileName);
 	}
 }
 
@@ -333,7 +359,7 @@ int exportToFile(String prefix, bool swapZY, bool addSubmeshes, bool listOnly, b
 		
 	Polycode::Mesh *mesh = new Polycode::Mesh(Mesh::TRI_MESH);
     mesh->indexedMesh = true;
-	addToMesh(prefix, mesh, scene, scene->mRootNode, swapZY, addSubmeshes, listOnly, children, overrideMaterial, materialsParent, assetPrefixPath);
+	addToMesh(prefix, mesh, scene, scene->mRootNode, swapZY, addSubmeshes, listOnly, children, overrideMaterial, materialsParent, assetPrefixPath, baseFileName);
     
 	
 	if(addSubmeshes) {
