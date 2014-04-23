@@ -570,7 +570,7 @@ void PolycodeIDEApp::importAssets() {
 			
 	std::vector<String> files = core->openFilePicker(extensions, false);	
 	if(files.size()) {		
-		frame->assetImporterWindow->setSourceFileAndTargetFolder(files[0], projectManager->activeFolder);
+		frame->assetImporterWindow->setSourceFileAndTargetFolder(files[0], projectManager->activeFolder, projectManager->activeFolder.replace(projectManager->getActiveProject()->getRootFolder(), ""));
 		frame->showModal(frame->assetImporterWindow);
 		frame->assetImporterWindow->addEventListener(this, UIEvent::OK_EVENT);
 	}

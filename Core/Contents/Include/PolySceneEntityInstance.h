@@ -55,7 +55,7 @@ class SceneEntityInstance : public Entity {
 		void clearInstance();
 
 		void parseObjectIntoCurve(ObjectEntry *entry, BezierCurve *curve);
-		Entity *loadObjectEntryIntoEntity(ObjectEntry *entry, Entity *targetEntity = NULL);
+		Entity *loadObjectEntryIntoEntity(ObjectEntry *entry, Entity *targetEntity = NULL, int entityFileVersion = 1);
 		bool loadFromFile(const String& fileName);
         void applySceneMesh(ObjectEntry *entry, SceneMesh *sceneMesh);
 		

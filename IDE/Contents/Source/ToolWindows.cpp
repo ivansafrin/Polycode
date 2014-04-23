@@ -197,7 +197,7 @@ YesNoCancelPopup::~YesNoCancelPopup() {
 	
 }
 
-AssetImporterWindow::AssetImporterWindow() : UIWindow("3D Asset Importer", 650, 280) {
+AssetImporterWindow::AssetImporterWindow() : UIWindow("3D Asset Importer", 650, 330) {
 	filesToImportLabel = new UILabel("Files that will be imported:", 12);
 	addChild(filesToImportLabel);
 	filesToImportLabel->setPosition(padding, 35);
@@ -211,12 +211,12 @@ AssetImporterWindow::AssetImporterWindow() : UIWindow("3D Asset Importer", 650, 
 	cancelButton = new UIButton(L"Cancel", 100);
 	cancelButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(cancelButton);
-	cancelButton->setPosition(padding+650-100-100-10-10, 265);
+	cancelButton->setPosition(padding+650-100-100-10-10, 315);
 	
 	okButton = new UIButton(L"OK", 100);
 	okButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(okButton);
-	okButton->setPosition(padding+650-100-10, 265);
+	okButton->setPosition(padding+650-100-10, 315);
 	
 	closeOnEscape = true;
 
@@ -272,8 +272,21 @@ AssetImporterWindow::AssetImporterWindow() : UIWindow("3D Asset Importer", 650, 
 	addChild(exportSecondaryUVs);
 
     exportScene = new UICheckBox("Export Entity file", false);
-	exportScene->setPosition(520, 210);
+	exportScene->setPosition(290, 240);
 	addChild(exportScene);
+
+    generateMatFile = new UICheckBox("Generate material file", false);
+	generateMatFile->setPosition(450, 240);
+	addChild(generateMatFile);
+
+    overrideMaterial = new UICheckBox("Override materials:", false);
+	overrideMaterial->setPosition(290, 270);
+	addChild(overrideMaterial);
+
+    overrideMaterialInput = new UITextInput(false, 200, 16);
+	overrideMaterialInput->setPosition(450, 265);
+	addChild(overrideMaterialInput);
+    overrideMaterialInput->setText("Default");
     
 }
 
@@ -287,7 +300,7 @@ void AssetImporterWindow::handleEvent(Event *event) {
 		if(usePrefixCheckbox->isChecked() && prefixInput->getText() != "") {
 			prefixString = prefixInput->getText().replace(" ", "_");
 		}
-		PolycodeToolLauncher::importAssets(file, folder, addMeshesCheckbox->isChecked(), prefixString, swapZYAxisCheckbox->isChecked(), generateNormalsCheckbox->isChecked(), generateTangensCheckbox->isChecked(), false, exportNormals->isChecked(), exportTangents->isChecked(), exportColors->isChecked(), exportBoneWeights->isChecked(), exportUVs->isChecked(), exportSecondaryUVs->isChecked(), exportScene->isChecked());
+		PolycodeToolLauncher::importAssets(file, folder, addMeshesCheckbox->isChecked(), prefixString, swapZYAxisCheckbox->isChecked(), generateNormalsCheckbox->isChecked(), generateTangensCheckbox->isChecked(), false, exportNormals->isChecked(), exportTangents->isChecked(), exportColors->isChecked(), exportBoneWeights->isChecked(), exportUVs->isChecked(), exportSecondaryUVs->isChecked(), exportScene->isChecked(), generateMatFile->isChecked(), overrideMaterial->isChecked(), overrideMaterialInput->getText(), true, projectRelativeFolder);
 	
 		dispatchEvent(new UIEvent(), UIEvent::OK_EVENT);
 		dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);	
@@ -322,9 +335,10 @@ void AssetImporterWindow::addFile(String fileName) {
 	fileLabels.push_back(fileLabel);
 }
 
-void AssetImporterWindow::setSourceFileAndTargetFolder(String file, String folder) {
+void AssetImporterWindow::setSourceFileAndTargetFolder(String file, String folder, String projectRelativeFolder) {
 	this->file = file;
 	this->folder = folder;
+    this->projectRelativeFolder = projectRelativeFolder;
 	refreshPreview();
 }
 
@@ -333,7 +347,7 @@ void AssetImporterWindow::refreshPreview() {
 	if(usePrefixCheckbox->isChecked() && prefixInput->getText() != "") {
 		prefixString = prefixInput->getText().replace(" ", "_");
 	}
-	String fileList = PolycodeToolLauncher::importAssets(file, folder, addMeshesCheckbox->isChecked(), prefixString, swapZYAxisCheckbox->isChecked(), generateNormalsCheckbox->isChecked(), generateTangensCheckbox->isChecked(), true, false, false, false, false, false, false, false);
+	String fileList = PolycodeToolLauncher::importAssets(file, folder, addMeshesCheckbox->isChecked(), prefixString, swapZYAxisCheckbox->isChecked(), generateNormalsCheckbox->isChecked(), generateTangensCheckbox->isChecked(), true, false, false, false, false, false, false, false, false, false, "", false, "");
 	setFilesToImport(fileList);		
 }
 

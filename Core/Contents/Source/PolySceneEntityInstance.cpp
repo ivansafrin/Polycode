@@ -262,7 +262,7 @@ void SceneEntityInstance::parseObjectIntoCurve(ObjectEntry *entry, BezierCurve *
 	
 }
 
-Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entity *targetEntity) {
+Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entity *targetEntity, int entityFileVersion) {
 
 	Entity *entity = NULL;
 
@@ -456,7 +456,12 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
 
         entity->setScale((*entry)["sX"]->NumberVal, (*entry)["sY"]->NumberVal, (*entry)["sZ"]->NumberVal);
         entity->setPosition((*entry)["pX"]->NumberVal, (*entry)["pY"]->NumberVal, (*entry)["pZ"]->NumberVal);
-        entity->setRotationEuler(Vector3((*entry)["rX"]->NumberVal, (*entry)["rY"]->NumberVal, (*entry)["rZ"]->NumberVal));
+        
+        if(entityFileVersion > 1) {
+            entity->setRotationQuat((*entry)["rW"]->NumberVal, (*entry)["rX"]->NumberVal, (*entry)["rY"]->NumberVal, (*entry)["rZ"]->NumberVal);
+        } else {
+            entity->setRotationEuler(Vector3((*entry)["rX"]->NumberVal, (*entry)["rY"]->NumberVal, (*entry)["rZ"]->NumberVal));
+        }
 	}
 	
 	if((*entry)["id"]->stringVal != "") {
@@ -487,7 +492,7 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
 	if(children) {
 		for(int i=0; i < children->length; i++) {
 			ObjectEntry *childEntry = ((*children))[i];
-			ScreenEntity *childEntity = loadObjectEntryIntoEntity(childEntry);
+			ScreenEntity *childEntity = loadObjectEntryIntoEntity(childEntry, NULL, entityFileVersion);
 			entity->addChild(childEntity);				
 		}
 	}
@@ -529,6 +534,13 @@ bool SceneEntityInstance::loadFromFile(const String& fileName) {
         }
 	}
     
+    int entityFileVersion = 1;
+    
+    ObjectEntry *versionObject = loadObject.root["version"];
+    if(versionObject) {
+        entityFileVersion = versionObject->intVal;
+    }
+    
 	ObjectEntry *settings = loadObject.root["settings"];
     if(settings) {
         ObjectEntry *matFiles = (*settings)["matFiles"];
@@ -552,7 +564,7 @@ bool SceneEntityInstance::loadFromFile(const String& fileName) {
     
 	ObjectEntry *root = loadObject.root["root"];
 	if(root) {
-		loadObjectEntryIntoEntity(root, this);
+		loadObjectEntryIntoEntity(root, this, entityFileVersion);
 	}
 	
 	return true;

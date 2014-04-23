@@ -93,7 +93,7 @@ class AssetImporterWindow : public UIWindow {
 		void addFile(String fileName);
 		void setFilesToImport(String files);
 		
-		void setSourceFileAndTargetFolder(String file, String folder);
+		void setSourceFileAndTargetFolder(String file, String folder, String projectRelativeFolder);
 		void refreshPreview();
 			
 		void handleEvent(Event *event);	
@@ -102,7 +102,8 @@ class AssetImporterWindow : public UIWindow {
 
 		String file;
 		String folder;
-
+		String projectRelativeFolder;
+    
 		UIButton *cancelButton;
 		UIButton *okButton;
 		std::vector<UILabel*> fileLabels;
@@ -121,6 +122,10 @@ class AssetImporterWindow : public UIWindow {
         UICheckBox *exportUVs;
         UICheckBox *exportSecondaryUVs;
         UICheckBox *exportScene;
+    
+        UICheckBox *generateMatFile;
+        UICheckBox *overrideMaterial;
+        UITextInput *overrideMaterialInput;
     
 		Entity *filesAnchor;
 		UIScrollContainer *filesScroller;

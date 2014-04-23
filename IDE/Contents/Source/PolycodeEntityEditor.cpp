@@ -1859,9 +1859,10 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
     entry->addChild("sY", entity->getScale().y);
     entry->addChild("sZ", entity->getScale().z);
         
-    entry->addChild("rX", entity->getPitch());
-    entry->addChild("rY", entity->getYaw());
-    entry->addChild("rZ", entity->getRoll());
+    entry->addChild("rX", entity->getRotationQuat().x);
+    entry->addChild("rY", entity->getRotationQuat().y);
+    entry->addChild("rZ", entity->getRotationQuat().z);
+    entry->addChild("rW", entity->getRotationQuat().w);
     
     entry->addChild("pX", entity->getPosition().x);
     entry->addChild("pY", entity->getPosition().y);
@@ -1980,6 +1981,8 @@ void PolycodeEntityEditor::saveFile() {
     }    
     
     saveObject.root.name = "entity";
+    saveObject.root.addChild("version", 2);
+    
     ObjectEntry *children = saveObject.root.addChild("root");
     saveEntityToObjectEntry(mainView->getObjectRoot(), children);
     
