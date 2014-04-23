@@ -608,8 +608,7 @@ vector<String> CocoaCore::openFilePicker(vector<CoreFileExtension> extensions, b
 }
 
 void CocoaCore::Render() {
-	lockMutex(CoreServices::getRenderMutex());	
-	checkEvents();
+	lockMutex(CoreServices::getRenderMutex());
 	
 	if(!paused) {	
 		renderer->BeginRender();
@@ -635,7 +634,8 @@ bool CocoaCore::Update() {
 		modeChangeInfo.needResolutionChange = false;
 	}
 							
-	updateCore();		
+	updateCore();
+	checkEvents();
 	return running;
 }
 

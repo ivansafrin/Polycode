@@ -286,7 +286,7 @@ void CameraPreviewWindow::handleEvent(Event *event) {
 }
 
 CameraPreviewWindow::~CameraPreviewWindow() {
-    
+    delete renderTexture;
 }
 
 void CameraPreviewWindow::setCamera(Scene *scene, Camera *camera) {
@@ -324,6 +324,9 @@ EntityEditorMainView::EntityEditorMainView(PolycodeEditor *editor) {
     
     this->editor = editor;
 	mainScene = new Scene(Scene::SCENE_3D, true);
+    
+//    mainScene->getDefaultCamera()->frustumCulling = false;
+//    mainScene->doVisibilityChecking(false);
     
 	renderTexture = new SceneRenderTexture(mainScene, mainScene->getDefaultCamera(), 512, 512);
 	mainScene->clearColor.setColor(0.2, 0.2, 0.2, 1.0);	
@@ -574,12 +577,12 @@ void EntityEditorMainView::setEditorMode(int newMode) {
         grid->setGridMode(EditorGrid::GRID_MODE_3D);
         transformGizmo->setGizmoMode(TransformGizmo::GIZMO_MODE_3D);
         mainScene->getDefaultCamera()->setOrthoMode(false);
-        mainScene->getDefaultCamera()->setClippingPlanes(1, 1000);
+        mainScene->getDefaultCamera()->setClippingPlanes(0.1, 1000);
         trackballCamera->disableRotation(false);
     } else {
         mainScene->setSceneType(Scene::SCENE_2D);
         mainScene->getDefaultCamera()->setOrthoMode(true);
-        mainScene->getDefaultCamera()->setClippingPlanes(-1, 10000);
+        mainScene->getDefaultCamera()->setClippingPlanes(-100, 100);
         trackballCamera->setCameraPosition(trackballCamera->getOribitingCenter()+Vector3(0.0, 0.0, trackballCamera->getCameraDistance()));
         grid->setGridMode(EditorGrid::GRID_MODE_2D);
         transformGizmo->setGizmoMode(TransformGizmo::GIZMO_MODE_2D);
@@ -1425,6 +1428,7 @@ void EntityEditorMainView::setObjectRoot(SceneEntityInstance *entity) {
 }
 
 EntityEditorMainView::~EntityEditorMainView() {
+    mainScene->rootEntity.setOwnsChildrenRecursive(true);
     delete mainScene;
     delete renderTexture;
 //    delete transformGizmo;
