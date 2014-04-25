@@ -192,6 +192,8 @@ class EntityEditorMainView : public UIElement {
     
             void didPlaceEntity(Entity *entity);
     
+            void setBBox();
+    
             Entity *getObjectRoot();
             void setObjectRoot(SceneEntityInstance *entity);
     
@@ -225,6 +227,8 @@ class EntityEditorMainView : public UIElement {
     
             SceneLight *customLight1;
             SceneLight *customLight2;
+    
+        	ScenePrimitive *bBoxVis;
     
             Entity *objectRootBase;
             Entity *iconBase;

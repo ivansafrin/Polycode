@@ -2923,7 +2923,10 @@ EntitySheet::EntitySheet() : PropSheet("ENTITY", "entity"){
 	
 	blendingProp = new ComboProp("Blend mode");
 	addProp(blendingProp);
-
+    
+    bBoxProp = new Vector3Prop("Bounding box");
+	addProp(bBoxProp);
+    
     blendingProp->comboEntry->addComboItem("None");
 	blendingProp->comboEntry->addComboItem("Normal");
 	blendingProp->comboEntry->addComboItem("Lighten");
@@ -2952,6 +2955,8 @@ void EntitySheet::handleEvent(Event *event) {
 		entity->color = colorProp->get();
 	}else if(event->getDispatcher() == idProp  && event->getEventCode() == Event::CHANGE_EVENT) {
 		entity->id = idProp->get();
+	}else if(event->getDispatcher() == bBoxProp  && event->getEventCode() == Event::CHANGE_EVENT) {
+		entity->setLocalBoundingBox(bBoxProp->get());
 	} else if(event->getDispatcher() == tagProp  && event->getEventCode() == Event::CHANGE_EVENT) {
 		
 		String tagString = "";
@@ -2990,6 +2995,8 @@ void EntitySheet::setEntity(Entity *entity) {
         
         colorProp->set(entity->color);
         blendingProp->set(entity->blendingMode);
+        
+        bBoxProp->set(entity->getLocalBoundingBox());
         
         enabled = true;
     } else {

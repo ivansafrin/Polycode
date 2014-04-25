@@ -521,6 +521,7 @@ class EntitySheet : public PropSheet {
 		StringProp *tagProp;
 		ColorProp *colorProp;
 		ComboProp *blendingProp;
+		Vector3Prop *bBoxProp;
 };
 
 class ShaderPassesSheet : public PropSheet {

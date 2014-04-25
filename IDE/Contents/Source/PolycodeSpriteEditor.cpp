@@ -114,17 +114,11 @@ SpriteAnimationEntry::~SpriteAnimationEntry() {
 }
 
 SpritePreviewSheet::SpritePreviewSheet() : PropSheet("SPRITE PREVIEW", ""){
-	zoomProp = new ComboProp("Zoom");
+	zoomProp = new SliderProp("Zoom", 0.1, 16);
 	addProp(zoomProp);
 	zoomProp->addEventListener(this, Event::CHANGE_EVENT);	
 	
-	zoomProp->comboEntry->addComboItem("No Zoom");
-	zoomProp->comboEntry->addComboItem("Zoom 2x");
-	zoomProp->comboEntry->addComboItem("Zoom 4x");
-	zoomProp->comboEntry->addComboItem("Zoom 8x");
-	zoomProp->comboEntry->addComboItem("Zoom 16x");
-
-	zoomProp->set(0);
+	zoomProp->set(1.0);
 	
 	previewProp = new SpritePreviewProp();
 	addProp(previewProp);
@@ -132,23 +126,7 @@ SpritePreviewSheet::SpritePreviewSheet() : PropSheet("SPRITE PREVIEW", ""){
 
 void SpritePreviewSheet::handleEvent(Event *event) {
 	if(event->getDispatcher() == zoomProp) {
-		switch (zoomProp->get()) {
-			case 1:
-				previewProp->setSpriteScale(2.0);
-			break;
-			case 2:
-				previewProp->setSpriteScale(4.0);
-			break;
-			case 3:
-				previewProp->setSpriteScale(8.0);			
-			break;
-			case 4:
-				previewProp->setSpriteScale(16.0);			
-			break;
-			default:
-				previewProp->setSpriteScale(1.0);
-			break;
-		}
+        previewProp->setSpriteScale(zoomProp->get());
 		
 		if(previewProp->previewSprite) {
 			propHeight = (previewProp->previewSprite->getHeight() * previewProp->previewSprite->getScale().y) + zoomProp->getHeight()+ 50;						

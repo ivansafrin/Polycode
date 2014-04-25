@@ -65,7 +65,7 @@ class SpritePreviewSheet : public PropSheet {
 		void setSprite(SceneSprite *sprite);
 		
 	protected:
-		ComboProp *zoomProp;
+		SliderProp *zoomProp;
 		SpritePreviewProp *previewProp;
 };
 

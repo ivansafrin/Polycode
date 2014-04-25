@@ -105,7 +105,7 @@ Entity *Entity::Clone(bool deepClone, bool ignoreEditorOnly) const {
 void Entity::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
 	clone->ownsChildren = ownsChildren;
 	clone->setPosition(position);
-	clone->setRotationEuler(rotation);
+	clone->setRotationByQuaternion(rotationQuat);
 	clone->setScale(scale);
 	clone->color = color;
 	clone->custEntityType = custEntityType;

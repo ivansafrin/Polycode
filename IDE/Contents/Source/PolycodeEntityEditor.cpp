@@ -325,8 +325,8 @@ EntityEditorMainView::EntityEditorMainView(PolycodeEditor *editor) {
     this->editor = editor;
 	mainScene = new Scene(Scene::SCENE_3D, true);
     
-//    mainScene->getDefaultCamera()->frustumCulling = false;
-//    mainScene->doVisibilityChecking(false);
+    mainScene->getDefaultCamera()->frustumCulling = false;
+    mainScene->doVisibilityChecking(false);
     
 	renderTexture = new SceneRenderTexture(mainScene, mainScene->getDefaultCamera(), 512, 512);
 	mainScene->clearColor.setColor(0.2, 0.2, 0.2, 1.0);	
@@ -383,7 +383,7 @@ EntityEditorMainView::EntityEditorMainView(PolycodeEditor *editor) {
 	
 	mainScene->getDefaultCamera()->setPosition(10, 10, 10);
 	mainScene->getDefaultCamera( )->lookAt(Vector3());
-	mainScene->getDefaultCamera()->setClippingPlanes(0.01, 10000);
+	mainScene->getDefaultCamera()->setClippingPlanes(0.01, 1000);
     
 	grid = new EditorGrid();
     grid->addEventListener(this, Event::CHANGE_EVENT);
@@ -482,6 +482,12 @@ EntityEditorMainView::EntityEditorMainView(PolycodeEditor *editor) {
     iconVisibilitySelector->setPosition(230, 2);
     iconVisibilitySelector->addEventListener(this, UIEvent::SELECT_EVENT);
     
+    bBoxVis = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 1.0, 1.0, 1.0);
+    bBoxVis->overlayWireframe = true;
+    bBoxVis->wireFrameColor = Color(0.3, 0.5, 1.0, 0.5);
+    bBoxVis->color.a = 0.0;
+    bBoxVis->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    mainScene->addChild(bBoxVis);
     
     editorMode = EDITOR_MODE_3D;
     
@@ -506,6 +512,7 @@ void EntityEditorMainView::doAction(String actionName, PolycodeEditorActionData 
             }
 		}
         transformGizmo->setTransformSelection(selectedEntities);
+        setBBox();
 	} else if(actionName == "scale") {
 		for(int i=0; i < selectedEntities.size(); i++) {
             if(i < sceneData->entries.size()) {
@@ -650,6 +657,8 @@ void EntityEditorMainView::Update() {
         icons[i]->rebuildTransformMatrix();
         icons[i]->recalculateAABBAllChildren();
     }
+    
+    setBBox();
 }
 
 void EntityEditorMainView::createIcon(Entity *entity, String iconFile) {
@@ -959,6 +968,7 @@ void EntityEditorMainView::deleteSelected(bool doAction) {
     
     selectedEntities.clear();
     transformGizmo->setTransformSelection(selectedEntities);
+    setBBox();
     dispatchEvent(new Event(), Event::CHANGE_EVENT);
 }
 
@@ -1274,6 +1284,7 @@ void EntityEditorMainView::selectAll(bool doAction) {
         }
     }
     transformGizmo->setTransformSelection(selectedEntities);
+    setBBox();
     dispatchEvent(new Event(), Event::CHANGE_EVENT);
 }
 
@@ -1295,6 +1306,7 @@ void EntityEditorMainView::selectNone(bool doAction) {
     }
     selectedEntities.clear();
     transformGizmo->setTransformSelection(selectedEntities);
+    setBBox();
     dispatchEvent(new Event(), Event::CHANGE_EVENT);
 }
 
@@ -1406,9 +1418,28 @@ void EntityEditorMainView::selectEntity(Entity *targetEntity, bool addToSelectio
         beforeData = NULL;
     }
     
+    
+    
     transformGizmo->setTransformSelection(selectedEntities);
+    setBBox();
     dispatchEvent(new Event(), Event::CHANGE_EVENT);
     
+}
+
+void EntityEditorMainView::setBBox() {
+    if(selectedEntities.size() > 0) {
+        bBoxVis->visible = true;
+        
+        Entity *targetEntity = selectedEntities[0];
+        bBoxVis->setPrimitiveOptions(ScenePrimitive::TYPE_BOX, targetEntity->getLocalBoundingBox().x, targetEntity->getLocalBoundingBox().y, targetEntity->getLocalBoundingBox().z);
+        
+        Matrix4 mat = targetEntity->getConcatenatedMatrix();
+        bBoxVis->setTransformByMatrixPure(mat);
+        bBoxVis->dirtyMatrix(false);
+        
+    } else {
+        bBoxVis->visible = false;
+    }
 }
 
 Entity *EntityEditorMainView::getObjectRoot() {
