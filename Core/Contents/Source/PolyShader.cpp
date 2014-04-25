@@ -92,12 +92,6 @@ ShaderBinding::~ShaderBinding() {
 	for(int i=0; i < renderTargetBindings.size(); i++) {
 		delete renderTargetBindings[i];
 	}	
-	for(int i=0; i < inTargetBindings.size(); i++) {
-		delete inTargetBindings[i];
-	}	
-	for(int i=0; i < outTargetBindings.size(); i++) {
-		delete outTargetBindings[i];
-	}	
 }
 
 unsigned int ShaderBinding::getNumLocalParams() {

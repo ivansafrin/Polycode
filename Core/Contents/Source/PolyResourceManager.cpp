@@ -45,6 +45,8 @@ ResourcePool::ResourcePool(const String &name, ResourcePool *fallbackPool) {
 	dispatchChangeEvents = false;
 	reloadResourcesOnModify = false;
 	ticksSinceCheck = 0;
+    resourceSubscribers = 0;
+    deleteOnUnsubscribe = false;
 }
 
 ResourcePool::~ResourcePool() {
@@ -381,11 +383,13 @@ void ResourceManager::addResourcePool(ResourcePool *pool) {
 }
 
 ResourcePool *ResourceManager::getResourcePoolByName(const String &name) {
+    printf("request resource pool [%s]\n", name.c_str());
     for(int i=0; i < pools.size(); i++) {
         if(pools[i]->getName() == name) {
             return pools[i];
         }
     }
+    printf("resource pool not found!\n");
     return NULL;
 }
 
@@ -395,6 +399,17 @@ void ResourceManager::removeResourcePool(ResourcePool *pool) {
             pools.erase(pools.begin()+i);
             return;
         }
+    }
+}
+
+void ResourceManager::subscribeToResourcePool(ResourcePool *pool) {
+    pool->resourceSubscribers++;
+}
+
+void ResourceManager::unsubscibeFromResourcePool(ResourcePool *pool) {
+    pool->resourceSubscribers--;
+    if(pool->deleteOnUnsubscribe && pool->resourceSubscribers < 1) {
+        delete pool;
     }
 }
 

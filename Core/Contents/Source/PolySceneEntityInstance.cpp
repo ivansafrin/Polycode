@@ -76,6 +76,9 @@ SceneEntityInstance::SceneEntityInstance(Scene *parentScene) : Entity() {
 SceneEntityInstance::~SceneEntityInstance() {	
 	CoreServices::getInstance()->getResourceManager()->removeResource(resourceEntry);
 	delete resourceEntry;
+    for(int i=0; i < resourcePools.size(); i++) {
+        CoreServices::getInstance()->getResourceManager()->unsubscibeFromResourcePool(resourcePools[i]);
+    }
 }
 
 void SceneEntityInstance::reloadEntityInstance() {
@@ -116,6 +119,7 @@ void SceneEntityInstance::linkResourcePool(ResourcePool *pool) {
     }
     pool->setFallbackPool(topLevelResourcePool);
     topLevelResourcePool = pool;
+    CoreServices::getInstance()->getResourceManager()->subscribeToResourcePool(pool);
     resourcePools.push_back(pool);
 }
 
@@ -148,6 +152,7 @@ void SceneEntityInstance::unlinkResourcePool(ResourcePool *pool) {
         if(resourcePools[i] == pool) {
             resourcePools.erase(resourcePools.begin() + i);
             rebuildResourceLinks();
+            CoreServices::getInstance()->getResourceManager()->unsubscibeFromResourcePool(pool);
             return;
         }
     }
@@ -552,6 +557,7 @@ bool SceneEntityInstance::loadFromFile(const String& fileName) {
                     ResourcePool *newPool = CoreServices::getInstance()->getResourceManager()->getResourcePoolByName(path->stringVal);
                     if(!newPool) {
                         newPool = new ResourcePool(path->stringVal,  CoreServices::getInstance()->getResourceManager()->getGlobalPool());
+                        newPool->deleteOnUnsubscribe = true;
                         CoreServices::getInstance()->getMaterialManager()->loadMaterialLibraryIntoPool(newPool, path->stringVal);
                         CoreServices::getInstance()->getResourceManager()->addResourcePool(newPool);
                     }

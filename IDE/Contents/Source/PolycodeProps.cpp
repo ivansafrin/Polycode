@@ -3438,8 +3438,15 @@ void LinkedMaterialsSheet::handleEvent(Event *event) {
         globalFrame->assetBrowser->removeAllHandlersForListener(this);
         globalFrame->hideModal();
         
-        ResourcePool *newPool = new ResourcePool(materialPath,  CoreServices::getInstance()->getResourceManager()->getGlobalPool());
-        CoreServices::getInstance()->getMaterialManager()->loadMaterialLibraryIntoPool(newPool, fullMaterialPath);
+        ResourcePool *newPool = CoreServices::getInstance()->getResourceManager()->getResourcePoolByName(materialPath);
+        
+        if(!newPool) {
+            newPool = new ResourcePool(materialPath,  CoreServices::getInstance()->getResourceManager()->getGlobalPool());
+            newPool->reloadResourcesOnModify = true;
+            newPool->deleteOnUnsubscribe = true;
+            CoreServices::getInstance()->getMaterialManager()->loadMaterialLibraryIntoPool(newPool, fullMaterialPath);
+            CoreServices::getInstance()->getResourceManager()->addResourcePool(newPool);
+        }
         
         instance->linkResourcePool(newPool);
          updateMaterials();
