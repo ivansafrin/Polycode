@@ -43,8 +43,12 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 
     Entity::defaultBlendingMode = Renderer::BLEND_MODE_NONE;
 	
+    ResourcePool::defaultReloadResourcesOnModify = true;
+    Resource::defaultReloadOnFileModify = true;
+    
 	CoreServices::getInstance()->getResourceManager()->getGlobalPool()->reloadResourcesOnModify = true;
 	
+    
 	runNextFrame = false;
 	
 	core->addEventListener(this, Core::EVENT_CORE_RESIZE);

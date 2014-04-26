@@ -63,6 +63,8 @@ namespace Polycode {
             int resourceSubscribers;
             bool deleteOnUnsubscribe;
         
+            static bool defaultReloadResourcesOnModify;
+        
         private:
         
             ResourcePool *fallbackPool;

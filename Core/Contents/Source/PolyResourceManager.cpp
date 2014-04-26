@@ -38,12 +38,14 @@
 using std::vector;
 using namespace Polycode;
 
+bool ResourcePool::defaultReloadResourcesOnModify = false;
+
 ResourcePool::ResourcePool(const String &name, ResourcePool *fallbackPool) {
     
     this->name = name;
     this->fallbackPool = fallbackPool;
 	dispatchChangeEvents = false;
-	reloadResourcesOnModify = false;
+	reloadResourcesOnModify = ResourcePool::defaultReloadResourcesOnModify;
 	ticksSinceCheck = 0;
     resourceSubscribers = 0;
     deleteOnUnsubscribe = false;

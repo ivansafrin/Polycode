@@ -61,6 +61,9 @@ namespace Polycode {
 			static const int RESOURCE_SCREEN_ENTITY_INSTANCE = 8;
 			
 			bool reloadOnFileModify;
+        
+            static bool defaultReloadOnFileModify;
+        
 			time_t resourceFileTime;
 						
 			//@}

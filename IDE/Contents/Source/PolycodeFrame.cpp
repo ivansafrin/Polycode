@@ -1513,7 +1513,7 @@ void PolycodeFrame::showModal(UIWindow *modalChild) {
 void PolycodeFrame::hideModal() {
 	if(modalChild) {
 		modalRoot->removeChild(modalChild);
-		modalChild->removeEventListener(this, UIEvent::CLOSE_EVENT);	
+		modalChild->removeAllHandlers();
 		modalChild->hideWindow(); 
 		modalChild = NULL;
 	}
