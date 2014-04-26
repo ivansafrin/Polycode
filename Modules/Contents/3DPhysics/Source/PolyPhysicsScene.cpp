@@ -202,10 +202,10 @@ void PhysicsScene::applyImpulse(Entity *entity, Vector3 force, Vector3 point) {
 	}
 }
 
-PhysicsCharacter *PhysicsScene::trackCharacterChild(Entity *newEntity, Number mass, Number friction, Number stepSize, int group) {
+PhysicsCharacter *PhysicsScene::trackCharacterChild(Entity *newEntity, Number mass, Number friction, Number stepSize, int group, int mask) {
 	PhysicsCharacter *newPhysicsEntity = new PhysicsCharacter(newEntity, mass, friction, stepSize);
 	
-	physicsWorld->addCollisionObject(newPhysicsEntity->ghostObject,group, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);
+	physicsWorld->addCollisionObject(newPhysicsEntity->ghostObject,group, mask);
 	physicsWorld->addAction(newPhysicsEntity->character);
 	
 	
@@ -220,7 +220,7 @@ PhysicsCharacter *PhysicsScene::trackCharacterChild(Entity *newEntity, Number ma
     return newPhysicsEntity;
 }
 
-PhysicsCharacter *PhysicsScene::addCharacterChild(Entity *newEntity,Number mass, Number friction, Number stepSize, int group) {
+PhysicsCharacter *PhysicsScene::addCharacterChild(Entity *newEntity,Number mass, Number friction, Number stepSize, int group, int mask) {
 	addEntity(newEntity);
 	return trackCharacterChild(newEntity, mass, friction, stepSize, group);
 }
@@ -244,7 +244,7 @@ void PhysicsScene::removeCharacterChild(PhysicsCharacter *character) {
 	
 }
 
-PhysicsVehicle *PhysicsScene::trackVehicleChild(Entity *newEntity, Number mass, Number friction, int group) {
+PhysicsVehicle *PhysicsScene::trackVehicleChild(Entity *newEntity, Number mass, Number friction, int group, int mask) {
     
     
 	btDefaultVehicleRaycaster *m_vehicleRayCaster = new btDefaultVehicleRaycaster(physicsWorld);
@@ -254,7 +254,7 @@ PhysicsVehicle *PhysicsScene::trackVehicleChild(Entity *newEntity, Number mass, 
     newEntity->ignoreParentMatrix = true;
     newEntity->setScale(newEntity->getCompoundScale());
     
-	physicsWorld->addRigidBody(newPhysicsEntity->rigidBody, group, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);
+	physicsWorld->addRigidBody(newPhysicsEntity->rigidBody, group, mask);
     
 	newPhysicsEntity->vehicle = new btRaycastVehicle(newPhysicsEntity->tuning,newPhysicsEntity->rigidBody,m_vehicleRayCaster);
 	
@@ -277,7 +277,7 @@ PhysicsVehicle *PhysicsScene::trackVehicleChild(Entity *newEntity, Number mass, 
  	return newPhysicsEntity;
 }
 
-PhysicsVehicle *PhysicsScene::addVehicleChild(Entity *newEntity, Number mass, Number friction, int group) {
+PhysicsVehicle *PhysicsScene::addVehicleChild(Entity *newEntity, Number mass, Number friction, int group, int mask) {
 	addEntity(newEntity);
     return trackVehicleChild(newEntity, mass, friction, group);
 }
@@ -435,13 +435,13 @@ void PhysicsScene::wakeUp(Entity *entity) {
 	pEnt->rigidBody->setActivationState(DISABLE_DEACTIVATION);
 }
 
-PhysicsEntity *PhysicsScene::trackPhysicsChild(Entity *newEntity, int type, Number mass, Number friction, Number restitution, int group, bool compoundChildren) {
+PhysicsEntity *PhysicsScene::trackPhysicsChild(Entity *newEntity, int type, Number mass, Number friction, Number restitution, int group, int mask, bool compoundChildren) {
 	PhysicsEntity *newPhysicsEntity = new PhysicsEntity(newEntity, type, mass, friction,restitution, compoundChildren);
     
     newEntity->ignoreParentMatrix = true;
     newEntity->setScale(newEntity->getCompoundScale());
     
-	physicsWorld->addRigidBody(newPhysicsEntity->rigidBody, group,  btBroadphaseProxy::AllFilter); //btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);
+	physicsWorld->addRigidBody(newPhysicsEntity->rigidBody, group,  mask); //btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);
     if(mass == 0.0) {
 //        world->addCollisionObject(newPhysicsEntity->collisionObject, group);
     }
@@ -451,7 +451,7 @@ PhysicsEntity *PhysicsScene::trackPhysicsChild(Entity *newEntity, int type, Numb
 	return newPhysicsEntity;	
 }
 
-PhysicsEntity *PhysicsScene::addPhysicsChild(Entity *newEntity, int type, Number mass, Number friction, Number restitution, int group, bool compoundChildren) {
+PhysicsEntity *PhysicsScene::addPhysicsChild(Entity *newEntity, int type, Number mass, Number friction, Number restitution, int group, int mask, bool compoundChildren) {
 	addEntity(newEntity);	
-	return trackPhysicsChild(newEntity, type, mass, friction, restitution, group, compoundChildren);	
+	return trackPhysicsChild(newEntity, type, mass, friction, restitution, group, mask, compoundChildren);	
 }
