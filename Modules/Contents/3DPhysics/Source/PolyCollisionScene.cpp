@@ -26,6 +26,51 @@ THE SOFTWARE.
 
 using namespace Polycode;
 
+CollisionResult::CollisionResult() : collided(false),colNormal(),colDist(0),setOldPosition(false),newPos(){
+
+}
+
+CollisionResult::~CollisionResult() {
+
+}
+
+RayTestResult::RayTestResult() : entity(NULL),normal(),position(){
+
+}
+
+RayTestResult::~RayTestResult() {
+
+}
+
+RayTestResultMultiple::RayTestResultMultiple() {
+
+}
+
+RayTestResultMultiple::~RayTestResultMultiple() {
+	clearResults();
+}
+
+void RayTestResultMultiple::addResult(RayTestResult *result){
+	results.push_back(result);
+}
+
+RayTestResult *RayTestResultMultiple::getResult(int index) {
+	if(index < results.size())
+		return results[index];
+	else
+		return NULL;
+}
+
+unsigned int RayTestResultMultiple::getResultCount() {
+	return results.size();
+}
+
+void RayTestResultMultiple::clearResults() {
+	for(int i=0; i < results.size(); i++ )
+		delete results[i];
+	results.clear();
+}
+
 CollisionScene::CollisionScene(Vector3 size, bool virtualScene, bool deferInitCollision) : Scene(Scene::SCENE_3D, virtualScene), world(NULL), collisionConfiguration(NULL), dispatcher(NULL), axisSweep(NULL) {
 	if(!deferInitCollision) {
 		initCollisionScene(size);
@@ -168,6 +213,22 @@ RayTestResult CollisionScene::getFirstEntityInRay(const Vector3 &origin,  const 
 	return ret;
 }
 
+RayTestResultMultiple CollisionScene::getAllEntitiesInRay(const Vector3 &origin,  const Vector3 &dest) {
+	RayTestResultMultiple ret;
+	ret.clearResults();
+
+	btVector3 fromVec(origin.x, origin.y, origin.z);
+	btVector3 toVec(dest.x, dest.y, dest.z);
+
+	btCollisionWorld::AllHitsRayResultCallback cb(fromVec, toVec);
+	world->rayTest(fromVec, toVec, cb);
+
+	if(cb.hasHit()) {
+		// you know it might help if this part was actually finished
+	}
+	return ret;
+}
+
 CollisionEntity *CollisionScene::getCollisionEntityByObject(btCollisionObject *collisionObject) {
 	return (CollisionEntity*)collisionObject->getUserPointer();
 }
@@ -219,22 +280,22 @@ void CollisionScene::removeEntity(Entity *entity) {
 	Scene::removeEntity(entity);
 }
 
-CollisionEntity *CollisionScene::trackCollision(Entity *newEntity, int type, int group) {
+CollisionEntity *CollisionScene::trackCollision(Entity *newEntity, int type, int group, int mask) {
 	CollisionEntity *newCollisionEntity = new CollisionEntity(newEntity, type);
 
 //	if(type == CollisionEntity::CHARACTER_CONTROLLER) {
 //		world->addCollisionObject(newCollisionEntity->collisionObject,btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);		
 //	} else {
 //		newCollisionEntity->collisionObject->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
-		world->addCollisionObject(newCollisionEntity->collisionObject, group);
+		world->addCollisionObject(newCollisionEntity->collisionObject, group, mask);
 //	}
 	
 	collisionChildren.push_back(newCollisionEntity);
 	return newCollisionEntity;
 }
 
-CollisionEntity *CollisionScene::addCollisionChild(Entity *newEntity, int type, int group) {
+CollisionEntity *CollisionScene::addCollisionChild(Entity *newEntity, int type, int group, int mask) {
 	addEntity(newEntity);
-	return trackCollision(newEntity, type, group);
+	return trackCollision(newEntity, type, group, mask);
 
 }
