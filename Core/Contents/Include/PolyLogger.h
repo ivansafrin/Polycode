@@ -34,15 +34,34 @@ namespace Polycode {
 			String message;
 			
 	};
-
+	
+	/**
+	* Logs information to the console, should only be called through Logger::
+	*/
 	class _PolyExport Logger : public EventDispatcher {
 		public:
+			/**
+			* Default constructor
+			*/
 			Logger();
 			virtual ~Logger();
 
+			/**
+			* Dispatches LoggerEvent and calls Logger::log()
+			* @param message String to log
+			*/
 			void logBroadcast(String message);
 
+			/**
+			* Logs information to the console or debug window of VS (only available if compiled as debug)
+			* @param format c-strings to log, put the params into the first using: "%s", 2. param is set as 1. %s, 3. param is set as 2. %s, and so on
+			*/
 			static void log(const char *format, ...);
+
+			/**
+			* Logs information through wcout
+			* @param str The c-string to log
+			*/
 			static void logw(const char *str);
 	};
 }
