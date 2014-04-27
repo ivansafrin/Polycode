@@ -54,7 +54,7 @@ namespace Polycode {
 
 			/**
 			* Logs information to the console or debug window of VS (only available if compiled as debug)
-			* @param format c-strings to log, put the params into the first using: "%s", 2. param is set as 1. %s, 3. param is set as 2. %s, and so on
+			* @param format c-strings to log, put the params into the first using the formatting of printf (reference: http://www.cplusplus.com/reference/cstdio/printf/)
 			*/
 			static void log(const char *format, ...);
 
