@@ -80,9 +80,14 @@ class _PolyExport CollisionResult {
 			* Entity returned.
 			*/
 			Entity *entity;
+
+			/**
+			* Ray fraction.
+			*/
+			Number fraction;
 		
 			/**
-			* Ray normal
+			* Ray normal.
 			*/		
 			Vector3 normal;
 		
@@ -93,7 +98,7 @@ class _PolyExport CollisionResult {
 	};
 
 	/**
-	* Result of a ray test with multiple hits
+	* Result of a ray test with multiple hits.
 	*/
 	class _PolyExport RayTestResultMultiple {
 		public:
@@ -119,7 +124,7 @@ class _PolyExport CollisionResult {
 			unsigned int getResultCount();
 
 			/**
-			* clears all results 
+			* clears all results. 
 			*/
 			void clearResults();
 
@@ -153,7 +158,7 @@ class _PolyExport CollisionResult {
 			//@{			
 			
 			RayTestResult getFirstEntityInRay(const Vector3 &origin,  const Vector3 &dest);	
-			RayTestResultMultiple getAllEntitiesInRay(const Vector3 &origin,  const Vector3 &dest);
+			RayTestResultMultiple getAllEntitiesInRay(const Vector3 &origin,  const Vector3 &dest, int group=1, int mask=-1);
 			void enableCollision(Entity *entity, bool val);											
 			CollisionEntity *getCollisionByScreenEntity(Entity *ent);
 			CollisionResult testCollision(Entity *ent1, Entity *ent2);
