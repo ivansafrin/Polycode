@@ -226,7 +226,8 @@ RayTestResult CollisionScene::getFirstEntityInRay(const Vector3 &origin,  const 
 		if(retEnt) {
 			ret.entity = retEnt->getEntity();
 			ret.position = Vector3(cb.m_hitPointWorld.getX(), cb.m_hitPointWorld.getY(), cb.m_hitPointWorld.getZ());
-			ret.normal = Vector3(cb.m_hitNormalWorld.getX(), cb.m_hitNormalWorld.getY(), cb.m_hitNormalWorld.getZ());			
+			ret.normal = Vector3(cb.m_hitNormalWorld.getX(), cb.m_hitNormalWorld.getY(), cb.m_hitNormalWorld.getZ());
+			ret.fraction = cb.m_closestHitFraction;
 			return ret;
 		}
 	}
@@ -234,7 +235,7 @@ RayTestResult CollisionScene::getFirstEntityInRay(const Vector3 &origin,  const 
 	return ret;
 }
 
-RayTestResultMultiple CollisionScene::getAllEntitiesInRay(const Vector3 &origin,  const Vector3 &dest) {
+RayTestResultMultiple CollisionScene::getAllEntitiesInRay(const Vector3 &origin,  const Vector3 &dest, int group, int mask) {
 	RayTestResultMultiple ret;
 	ret.clearResults();
 
@@ -242,10 +243,23 @@ RayTestResultMultiple CollisionScene::getAllEntitiesInRay(const Vector3 &origin,
 	btVector3 toVec(dest.x, dest.y, dest.z);
 
 	btCollisionWorld::AllHitsRayResultCallback cb(fromVec, toVec);
+	cb.m_collisionFilterGroup = group;
+	cb.m_collisionFilterMask = mask;
+
 	world->rayTest(fromVec, toVec, cb);
 
 	if(cb.hasHit()) {
-		// you know it might help if this part was actually finished
+		for(int i=0; i < cb.m_collisionObjects.size(); i++) {
+			CollisionEntity *retEnt = getCollisionEntityByObject(cb.m_collisionObjects[i]);
+			if(retEnt) {
+				RayTestResult *ray = new RayTestResult;
+				ray->entity = retEnt->getEntity();
+				ray->fraction = cb.m_hitFractions[i];
+				ray->normal= Vector3(cb.m_hitNormalWorld[i].getX(), cb.m_hitNormalWorld[i].getY(), cb.m_hitNormalWorld[i].getZ());
+				ray->position= Vector3(cb.m_hitPointWorld[i].getX(), cb.m_hitPointWorld[i].getY(), cb.m_hitPointWorld[i].getZ());
+				ret.addResult(ray);
+			}
+		}
 	}
 	return ret;
 }
