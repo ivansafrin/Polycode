@@ -55,6 +55,14 @@ unsigned int addBone(aiBone *bone) {
 	return bones.size()-1;
 }
 
+aiMatrix4x4 getFullTransform(const struct aiNode *nd) {
+    if(nd->mParent) {
+        return  getFullTransform(nd->mParent) * nd->mTransformation;
+    } else {
+        return nd->mTransformation;
+    }
+}
+
 void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, const struct aiNode* nd, bool swapZY, bool addSubmeshes, bool listOnly, ObjectEntry *parentSceneObject, String overrideMaterial, ObjectEntry *materialsParent, String assetPrefixPath, String baseFileName) {
 	int i, nIgnoredPolygons = 0;
 	unsigned int n = 0, t;
@@ -194,7 +202,10 @@ void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, c
             aiVector3D p;
             aiVector3D s;
             aiQuaternion r;
-            nd->mTransformation.Decompose(s, r, p);
+
+            aiMatrix4x4 fullTransform = getFullTransform(nd);
+            
+            fullTransform.Decompose(s, r, p);
             
             meshEntry->addChild("sX", s.x);
             
