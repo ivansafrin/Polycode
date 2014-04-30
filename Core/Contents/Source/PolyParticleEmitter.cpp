@@ -422,14 +422,14 @@ void SceneParticleEmitter::updateParticles() {
         
         normLife = particles[i].lifetime / lifetime;
         if(useColorCurves) {
-            particles[i].color.setColor(colorCurveR.getHeightAt(normLife)*particles[i].brightnessDeviation,
-                                        colorCurveG.getHeightAt(normLife)*particles[i].brightnessDeviation,
-                                        colorCurveB.getHeightAt(normLife)*particles[i].brightnessDeviation,
-                                        colorCurveA.getHeightAt(normLife)*particles[i].brightnessDeviation);
+            particles[i].color.setColor(colorCurveR.getYValueAtX(normLife)*particles[i].brightnessDeviation,
+                                        colorCurveG.getYValueAtX(normLife)*particles[i].brightnessDeviation,
+                                        colorCurveB.getYValueAtX(normLife)*particles[i].brightnessDeviation,
+                                        colorCurveA.getYValueAtX(normLife)*particles[i].brightnessDeviation);
         }
         
         if(useScaleCurve) {
-            particles[i].scale = scaleCurve.getHeightAt(normLife);
+            particles[i].scale = scaleCurve.getYValueAtX(normLife);
         } else {
             particles[i].scale = 1.0;
         }

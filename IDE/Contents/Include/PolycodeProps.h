@@ -221,6 +221,33 @@ public:
 };
 
 
+class LayerProp : public PropProp {
+    public:
+        LayerProp(SceneEntityInstance *instance, SceneEntityInstanceLayer *layer);
+        ~LayerProp();
+        void handleEvent(Event *event);
+        void setPropWidth(Number width);
+    
+        void setInstance(SceneEntityInstance *instance);
+    
+    private:
+    
+        SceneEntityInstance *instance;
+        SceneEntityInstanceLayer *layer;
+        UILabel *layerName;
+        UIImageButton *hideLayerButton;
+        UIImageButton *showLayerButton;
+        UIImageButton *moreButton;
+    
+        UIMenu *menu;
+    
+        UIImageButton *removeLayerButton;
+    
+        unsigned char layerID = 0;
+    
+        UIRect *bgRect;
+};
+
 class CustomProp : public PropProp {
 	public:
 		CustomProp(String key, String value);
@@ -513,10 +540,16 @@ class EntitySheet : public PropSheet {
 	
 		void handleEvent(Event *event);
         void setEntity(Entity *entity);
+    
+        void refreshLayers();
+    
+        void setEntityInstance(SceneEntityInstance *instance);
 
     protected:
 		Entity *entity;
 		
+        SceneEntityInstance *instance;
+        ComboProp *layersProp;
 		StringProp *idProp;
 		StringProp *tagProp;
 		ColorProp *colorProp;
@@ -834,6 +867,24 @@ class SoundSheet : public PropSheet {
 		NumberProp *maxDistance;		
 		SliderProp *volume;
 		SliderProp *pitch;
+};
+
+class LayerSheet : public PropSheet {
+    public:
+        LayerSheet();
+        ~LayerSheet();
+        
+        void handleEvent(Event *event);
+        void setEntityInstance(SceneEntityInstance *instance);
+    
+        void setFromEntity();
+    
+        void Update();
+
+    private:
+        ButtonProp *addLayerProp;
+        SceneEntityInstance *instance;
+        int layerRemoveIndex;
 };
 
 class LinkedMaterialsSheet : public PropSheet {

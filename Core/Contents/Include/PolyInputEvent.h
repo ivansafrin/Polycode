@@ -115,6 +115,8 @@ namespace Polycode {
 		unsigned int joystickButton;
 		unsigned int joystickAxis;
 		unsigned int joystickIndex;
+        
+        Number hitDistance;
 		
 		protected:
 		

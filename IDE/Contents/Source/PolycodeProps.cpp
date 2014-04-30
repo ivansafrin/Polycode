@@ -173,6 +173,7 @@ void PropList::Resize(Number width, Number height) {
 	bg2->Resize(width, 30);	
 	
 	Number offsetY = 0;
+    Number resizeHeight = height;
 	for(int i=0; i < props.size(); i++) {
 		props[i]->setPosition(0, offsetY);
 		if(props[i]->enabled) {
@@ -182,7 +183,8 @@ void PropList::Resize(Number width, Number height) {
                 offsetY += props[i]->propHeight;
             }
 		}
-		props[i]->Resize(getWidth(), getHeight());
+		props[i]->Resize(getWidth(), resizeHeight);
+        resizeHeight -= offsetY;        
 	}
 	
 	rebuildTransformMatrix();
@@ -571,6 +573,128 @@ void RemovableStringProp::handleEvent(Event *event) {
     }
 }
 
+LayerProp::LayerProp(SceneEntityInstance *instance, SceneEntityInstanceLayer *layer) : PropProp("", "Layer") {
+    
+    bgRect = new UIRect(1.0, 1.0);
+    bgRect->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
+
+    propContents->addChild(bgRect);
+    
+    this->layer = layer;
+    this->instance = instance;
+    
+    layerID = layer->layerID;
+    
+    removeLayerButton = new UIImageButton("main/remove_icon.png", 1.0, 12, 12);
+    propContents->addChild(removeLayerButton);
+    removeLayerButton->setPosition(-95, 5.0);
+    removeLayerButton->addEventListener(this, UIEvent::CLICK_EVENT);
+    
+    hideLayerButton = new UIImageButton("entityEditor/visible_button.png", 1.0, 24, 24);
+    propContents->addChild(hideLayerButton);
+    hideLayerButton->setPosition(-95, 0.0);
+    hideLayerButton->addEventListener(this, UIEvent::CLICK_EVENT);
+
+    
+    showLayerButton = new UIImageButton("entityEditor/invisible_button.png", 1.0, 24, 24);
+    propContents->addChild(showLayerButton);
+    showLayerButton->setPosition(-95, 0.0);
+    showLayerButton->addEventListener(this, UIEvent::CLICK_EVENT);
+    showLayerButton->visible = false;
+    showLayerButton->enabled = false;
+    
+    moreButton = new UIImageButton("entityEditor/button_more.png", 1.0, 24, 24);
+    propContents->addChild(moreButton);
+    moreButton->setPosition(-70, 0.0);
+    moreButton->addEventListener(this, UIEvent::CLICK_EVENT);
+    
+    
+    layerName = new UILabel(layer->name, 12);
+    layerName->setColor(1.0, 1.0, 1.0, 1.0);
+    propContents->addChild(layerName);
+    layerName->setPosition(-40, 5.0);
+    
+    if(layerID == 0) {
+        moreButton->visible = false;
+        moreButton->enabled = false;
+        removeLayerButton->visible = false;
+        removeLayerButton->enabled = false;
+    }
+    
+    if(layer->visible) {
+        hideLayerButton->visible = true;
+        hideLayerButton->enabled = true;
+        showLayerButton->visible = false;
+        showLayerButton->enabled = false;
+    } else {
+        hideLayerButton->visible = false;
+        hideLayerButton->enabled = false;
+        showLayerButton->visible = true;
+        showLayerButton->enabled = true;
+    }
+    
+    menu = NULL;
+    
+	setHeight(25);
+}
+
+void LayerProp::setInstance(SceneEntityInstance *instance) {
+    this->instance = instance;
+}
+
+LayerProp::~LayerProp() {
+    
+}
+
+void LayerProp::handleEvent(Event *event) {
+    if(!instance) {
+        return;
+    }
+    
+    if(event->getDispatcher() == hideLayerButton) {
+        hideLayerButton->visible = false;
+        hideLayerButton->enabled = false;
+        showLayerButton->visible = true;
+        showLayerButton->enabled = true;
+        layer->setLayerVisibility(false);
+    } else if(event->getDispatcher() == showLayerButton) {
+        hideLayerButton->visible = true;
+        hideLayerButton->enabled = true;
+        showLayerButton->visible = false;
+        showLayerButton->enabled = false;
+        layer->setLayerVisibility(true);
+    } else if(event->getDispatcher() == removeLayerButton) {
+        dispatchEvent(new Event(), Event::REMOVE_EVENT);
+    } else if(event->getDispatcher() == moreButton) {
+        menu = globalMenu->showMenuAtMouse(150);
+        menu->addOption("Rename", "rename");
+        menu->addEventListener(this, UIEvent::OK_EVENT);
+    } else if(event->getDispatcher() == menu) {
+        menu->removeAllHandlersForListener(this);
+        String command = menu->getSelectedItem()->getMenuItemID();
+        if(command == "rename") {
+            globalFrame->textInputPopup->action = "renameLayer";
+            globalFrame->textInputPopup->setCaption("Rename layer");
+            globalFrame->textInputPopup->setValue(layer->name);
+            globalFrame->textInputPopup->addEventListener(this, UIEvent::OK_EVENT);
+            globalFrame->showModal(globalFrame->textInputPopup);
+            
+        }
+    } else if(event->getDispatcher() == globalFrame->textInputPopup) {
+        globalFrame->textInputPopup->removeAllHandlersForListener(this);
+        if(globalFrame->textInputPopup->action == "renameLayer") {
+            layer->name = globalFrame->textInputPopup->getValue();
+            layerName->setText(layer->name);
+        }
+    }
+}
+
+void LayerProp::setPropWidth(Number width) {
+    bgRect->Resize(width-PROP_PADDING, 24.0);
+    bgRect->setPosition(-propContents->getPosition().x, 0.0);
+    
+    removeLayerButton->setPosition(width-PROP_PADDING-propContents->getPosition().x-20, 5.0);
+}
 
 CustomProp::CustomProp(String key, String value) : PropProp("", "Custom") {
 	keyEntry = new UITextInput(false, 120, 12);
@@ -2911,7 +3035,15 @@ void MaterialPropSheet::handleEvent(Event *event) {
     PropSheet::handleEvent(event);
 }
 
+void EntitySheet::setEntityInstance(SceneEntityInstance *instance) {
+    this->instance = instance;
+}
+
 EntitySheet::EntitySheet() : PropSheet("ENTITY", "entity"){
+    
+    layersProp = new ComboProp("Layer");
+    addProp(layersProp);
+    
 	idProp = new StringProp("ID");
 	addProp(idProp);
 
@@ -2973,11 +3105,24 @@ void EntitySheet::handleEvent(Event *event) {
 		for(int i=0; i < tags.size(); i++) {
 			entity->addTag(tags[i]);
 		}		
+	} else if(event->getDispatcher() == layersProp  && event->getEventCode() == Event::CHANGE_EVENT) {
+        SceneEntityInstanceLayer *layer = (SceneEntityInstanceLayer*)layersProp->comboEntry->getSelectedItem()->data;
+        entity->layerID = layer->layerID;
 	}
-	
 	PropSheet::handleEvent(event);	
 }
 
+void EntitySheet::refreshLayers() {
+    layersProp->comboEntry->clearItems();
+    
+    for(int i=0; i < instance->getNumLayers(); i++) {
+        SceneEntityInstanceLayer *layer = instance->getLayerAtIndex(i);
+        layersProp->comboEntry->addComboItem(layer->name, (void*)layer);
+        if(layer->layerID == entity->layerID) {
+            layersProp->comboEntry->setSelectedIndex(i);
+        }
+    }
+}
 
 void EntitySheet::setEntity(Entity *entity) {
     this->entity = entity;
@@ -2997,7 +3142,7 @@ void EntitySheet::setEntity(Entity *entity) {
         blendingProp->set(entity->blendingMode);
         
         bBoxProp->set(entity->getLocalBoundingBox());
-        
+        refreshLayers();
         enabled = true;
     } else {
         enabled = false;
@@ -3387,6 +3532,87 @@ void SceneLabelSheet::handleEvent(Event *event) {
 	}
 	
 	PropSheet::handleEvent(event);
+}
+
+LayerSheet::LayerSheet() : PropSheet("VISIBILITY LAYERS", "layers") {
+    
+    
+    addLayerProp = new ButtonProp("Add new layer");
+    addProp(addLayerProp);
+    addLayerProp->getButton()->addEventListener(this, UIEvent::CLICK_EVENT);
+    
+    instance = NULL;
+    layerRemoveIndex = -1;
+}
+
+void LayerSheet::setFromEntity() {
+    if(!instance) {
+        return;
+    }
+    
+	for(int i=0; i < props.size(); i++) {
+		contents->removeChild(props[i]);
+		props[i]->removeAllHandlersForListener(this);
+        if(props[i] != addLayerProp) {
+            delete props[i];
+        }
+	}
+	props.clear();
+    
+    for(int i=0; i < instance->getNumLayers(); i++) {
+        SceneEntityInstanceLayer *layer = instance->getLayerAtIndex(i);
+        LayerProp *newProp = new LayerProp(this->instance, layer);
+        newProp->addEventListener(this, Event::REMOVE_EVENT);
+        addProp(newProp);
+    }
+    
+    addProp(addLayerProp);
+}
+
+LayerSheet::~LayerSheet() {
+    
+}
+
+void LayerSheet::Update() {
+    if(layerRemoveIndex != -1) {
+        
+        SceneEntityInstanceLayer *layer = instance->getLayerAtIndex(layerRemoveIndex);
+        if(layer) {
+            std::vector<Entity*> entities = instance->getEntitiesByLayerID(layer->layerID, true);
+            for(int i=0; i < entities.size(); i++) {
+                entities[i]->layerID = 0;
+                entities[i]->visible = true;
+            }
+            instance->removeLayer(layer);
+        }
+        setFromEntity();
+        layerRemoveIndex = -1;
+    }
+}
+
+void LayerSheet::setEntityInstance(SceneEntityInstance *instance) {
+    this->instance = instance;
+    setFromEntity();
+}
+
+void LayerSheet::handleEvent(Event *event) {
+    
+    if(!instance) {
+        return;
+    }
+    
+    for(int i=0; i < props.size(); i++) {
+        if(props[i] == event->getDispatcher()) {
+            layerRemoveIndex = i;
+        }
+    }
+    
+    if(event->getDispatcher() == addLayerProp->getButton()) {
+        instance->createNewLayer("newLayer");
+        setFromEntity();
+    }
+    
+    PropSheet::handleEvent(event);
 }
 
 LinkedMaterialsSheet::LinkedMaterialsSheet() : PropSheet("LINKED MATERIALS", "linked_materials") {

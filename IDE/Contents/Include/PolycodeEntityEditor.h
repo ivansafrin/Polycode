@@ -148,6 +148,16 @@ class SceneMeshSettings {
         ShaderBinding *shaderBinding;
 };
 
+class MultiselectorEntry {
+    public:
+        Entity *entity;
+        Number distance;
+};
+
+class EntityDistanceSorter : public PolyBase {
+    public:
+    bool operator() (MultiselectorEntry i,MultiselectorEntry j);
+};
 
 class EntityEditorMainView : public UIElement {
 		public:
@@ -206,6 +216,8 @@ class EntityEditorMainView : public UIElement {
     
 		protected:
     
+            bool selectingNewEntities();
+    
             CoreInput *input;
             PolycodeSceneEditorActionData *beforeData;
 			
@@ -220,7 +232,10 @@ class EntityEditorMainView : public UIElement {
 				
             unsigned int multiselectIndex;
 			std::vector<Entity*> selectedEntities;
-            std::vector<Entity*> entitiesToSelect;
+            std::vector<MultiselectorEntry> entitiesToSelect;
+            std::vector<MultiselectorEntry> lastEntitiesToSelect;
+    
+            EntityDistanceSorter distanceSorter;
     
 			Scene *mainScene;
             Entity *sceneObjectRoot;

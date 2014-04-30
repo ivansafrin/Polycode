@@ -624,14 +624,40 @@ void EntityEditorMainView::Paste(EntityEditorClipboardData *data) {
     }
 }
 
+bool EntityEditorMainView::selectingNewEntities(){
+    
+    if(entitiesToSelect.size() != lastEntitiesToSelect.size()) {
+        return true;
+    }
+    
+    for(int i=0; i < entitiesToSelect.size(); i++) {
+        if(lastEntitiesToSelect[i].entity != entitiesToSelect[i].entity) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool EntityDistanceSorter::operator() (MultiselectorEntry i,MultiselectorEntry j) {
+	if(i.distance < j.distance) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 void EntityEditorMainView::Update() {
     
     if(entitiesToSelect.size() != 0) {
-        if(multiselectIndex > entitiesToSelect.size()-1) {
+        
+        sort (entitiesToSelect.begin(), entitiesToSelect.end(), distanceSorter);
+        
+        if(multiselectIndex > entitiesToSelect.size()-1 || selectingNewEntities()) {
             multiselectIndex = 0;
         }
-        selectEntity(entitiesToSelect[multiselectIndex], input->getKeyState(KEY_LSHIFT) || input->getKeyState(KEY_RSHIFT));
+        selectEntity(entitiesToSelect[multiselectIndex].entity, input->getKeyState(KEY_LSHIFT) || input->getKeyState(KEY_RSHIFT));
         multiselectIndex++;
+        lastEntitiesToSelect = entitiesToSelect;
         entitiesToSelect.clear();
     }
     
@@ -643,19 +669,25 @@ void EntityEditorMainView::Update() {
     for(int i=0; i < icons.size(); i++) {
         Number scale;
         
+        
         Entity *parentEntity = (Entity*) icons[i]->getUserData();
         
-        Vector3 parentPosition = parentEntity->getConcatenatedMatrix().getPosition();
-        icons[i]->setPosition(parentPosition);
-        
-        if(editorMode == EDITOR_MODE_2D) {
-            scale = trackballCamera->getCameraDistance() * 0.1;
+        if(!parentEntity->visible) {
+            icons[i]->visible = false;
         } else {
-            scale = mainScene->getDefaultCamera()->getPosition().distance(icons[i]->getConcatenatedMatrix().getPosition()) * 0.1;
+            icons[i]->visible = true;
+            Vector3 parentPosition = parentEntity->getConcatenatedMatrix().getPosition();
+            icons[i]->setPosition(parentPosition);
+            
+            if(editorMode == EDITOR_MODE_2D) {
+                scale = trackballCamera->getCameraDistance() * 0.1;
+            } else {
+                scale = mainScene->getDefaultCamera()->getPosition().distance(icons[i]->getConcatenatedMatrix().getPosition()) * 0.1;
+            }
+            icons[i]->setScale(scale, scale, scale);
+            icons[i]->rebuildTransformMatrix();
+            icons[i]->recalculateAABBAllChildren();
         }
-        icons[i]->setScale(scale, scale, scale);
-        icons[i]->rebuildTransformMatrix();
-        icons[i]->recalculateAABBAllChildren();
     }
     
     setBBox();
@@ -1212,8 +1244,9 @@ void EntityEditorMainView::handleEvent(Event *event) {
         if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN && hasFocus && event->getDispatcher() != renderTextureShape) {
             InputEvent *inputEvent = (InputEvent*) event;
 
-            if(inputEvent->mouseButton == CoreInput::MOUSE_BUTTON2) {
-                Entity* targetEntity = (Entity*) event->getDispatcher();
+            Entity* targetEntity = (Entity*) event->getDispatcher();
+            if(inputEvent->mouseButton == CoreInput::MOUSE_BUTTON2 && targetEntity->visible) {
+
                 
                 // if it's an icon, select the entity linked to the icon
                 for(int i=0; i < icons.size(); i++) {
@@ -1222,7 +1255,11 @@ void EntityEditorMainView::handleEvent(Event *event) {
                     }
                 }
                 
-                entitiesToSelect.push_back(targetEntity);
+                MultiselectorEntry entry;
+                entry.entity = targetEntity;
+                entry.distance = inputEvent->hitDistance;
+
+                entitiesToSelect.push_back(entry);
             }
         }
     }
@@ -1535,7 +1572,7 @@ void EntityEditorPropertyContainer::handleEvent(Event *event) {
             break;
             case 1:
                 currentView = treeView;
-                treeView->refreshTree();
+                treeView->getTreeSheet()->refreshTree();
             break;
             case 2:
                 currentView = settingsView;
@@ -1577,22 +1614,22 @@ PolycodeEntityEditor::PolycodeEntityEditor() : PolycodeEditor(true){
     treeView = propertyContainer->treeView;
     settingsView = propertyContainer->settingsView;
     
-    treeView->addEventListener(this, Event::CHANGE_EVENT);
+    treeView->getTreeSheet()->addEventListener(this, Event::CHANGE_EVENT);
     
     mainSizer->addRightChild(propertyContainer);
 }
 
 void PolycodeEntityEditor::handleEvent(Event *event) {
     
-    if(event->getDispatcher() == treeView) {
-        mainView->selectEntity(treeView->getSelectedEntity());
+    if(event->getDispatcher() == treeView->getTreeSheet()) {
+        mainView->selectEntity(treeView->getTreeSheet()->getSelectedEntity());
     }
     
     if(event->getDispatcher() == mainView) {
         switch(event->getEventCode()) {
             case Event::CHANGE_EVENT:
                 propertyView->setEntity(mainView->getSelectedEntity());
-                treeView->setSelectedEntity(mainView->getSelectedEntity());
+                treeView->getTreeSheet()->setSelectedEntity(mainView->getSelectedEntity());
             break;
         }
     }
@@ -1630,7 +1667,7 @@ bool PolycodeEntityEditor::openFile(OSFileEntry filePath) {
     mainView->setObjectRoot(loadedInstance);
     mainView->setEditorPropsRecursive(loadedInstance);
     
-    treeView->setRootEntity(loadedInstance);
+    treeView->setEntityInstance(loadedInstance);
     propertyView->setEntityInstance(loadedInstance);
     settingsView->setEntityInstance(loadedInstance);
     
@@ -1668,6 +1705,7 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
         return;
     
     entry->addChild("id", entity->id);
+    entry->addChild("layerID", (int)entity->layerID);
     
     String tagString = "";
     for(int i=0; i < entity->getNumTags(); i++) {
@@ -2009,7 +2047,18 @@ void PolycodeEntityEditor::saveFile() {
     for(int i=0; i < loadedInstance->getNumLinkedResourePools(); i++) {
         ResourcePool *pool = loadedInstance->getLinkedResourcePoolAtIndex(i);
         linkedMaterialFiles->addChild("matFile")->addChild("path", pool->getName());
-    }    
+    }
+    
+    ObjectEntry *layersEntry = settings->addChild("layers");
+    for(int i=0; i < loadedInstance->getNumLayers(); i++) {
+        SceneEntityInstanceLayer *layer = loadedInstance->getLayerAtIndex(i);
+        if(layer->layerID != 0) {
+            ObjectEntry *layerEntry = layersEntry->addChild("layer");
+            layerEntry->addChild("name", layer->name);
+            layerEntry->addChild("id", layer->layerID);
+            layerEntry->addChild("visible", layer->visible);
+        }
+    }
     
     saveObject.root.name = "entity";
     saveObject.root.addChild("version", 2);

@@ -27,6 +27,7 @@ THE SOFTWARE.
 #include "PolyColor.h"
 #include "PolyVector3.h"
 #include "PolyQuaternion.h"
+#include "PolyQuaternionCurve.h"
 #include "PolyEntity.h"
 #include <vector>
 
@@ -40,13 +41,11 @@ namespace Polycode {
 	class _PolyExport BoneTrack : public PolyBase {
 		public:
 			BoneTrack(Bone *bone, Number length);
-        
-            void initTweens();
 			~BoneTrack();
         
 			void Play(bool once=false);
 			void Stop();
-			void Update();
+			void Update(Number elapsed);
             void Reset();
 		
 			void setSpeed(Number speed);
@@ -62,30 +61,21 @@ namespace Polycode {
 			BezierCurve *LocY;
 			BezierCurve *LocZ;
 			
-			Vector3 LocXVec;
-			Vector3 LocYVec;
-			Vector3 LocZVec;						
-
-			Vector3 ScaleXVec;
-			Vector3 ScaleYVec;
-			Vector3 ScaleZVec;						
-		
-		
+			Vector3 position;
+            Vector3 scale;
 			Quaternion boneQuat;
-			QuaternionTween *quatTween;
-			
-			Vector3 QuatWVec;
-			Vector3 QuatXVec;
-			Vector3 QuatYVec;			
-			Vector3 QuatZVec;		
-		
+            QuaternionCurve *quatCurve;
+        
             Number weight;
 			
 		protected:
 		
 			Number length;
+            Number speed;
+            bool paused;
+            Number time;
 			Bone *targetBone;
-			std::vector <BezierPathTween*> pathTweens;
+            bool playOnce;
 		
 	};
 

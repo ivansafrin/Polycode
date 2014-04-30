@@ -94,10 +94,10 @@ bool Ray::polygonIntersect(Vertex *v1, Vertex *v2, Vertex *v3) const {
 	return true;
 }
 
-bool Ray::boxIntersect(const Vector3 &box, const Matrix4 &transformMatrix, float near, float far) const {	
+Number Ray::boxIntersect(const Vector3 &box, const Matrix4 &transformMatrix, float near, float far) const {
 
 	if(box.x == 0 || box.y == 0 || box.z == 0)
-		return false;
+		return -1.0;
 
 	Ray r  = tranformByMatrix(transformMatrix.Inverse());
 
@@ -112,7 +112,7 @@ bool Ray::boxIntersect(const Vector3 &box, const Matrix4 &transformMatrix, float
 	tymax = (bounds[1-r.sign[1]].y - r.origin.y) * r.inv_direction.y;
 
 	if ( (tmin > tymax) || (tymin > tmax) )
-		return false;
+		return -1.0;
 
 	if (tymin > tmin)
 		tmin = tymin;
@@ -124,7 +124,7 @@ bool Ray::boxIntersect(const Vector3 &box, const Matrix4 &transformMatrix, float
 	tzmax = (bounds[1-r.sign[2]].z - r.origin.z) * r.inv_direction.z;
 	
 	if ( (tmin > tzmax) || (tzmin > tmax) )
-		return false;
+		return -1.0;
 
 	if (tzmin > tmin)
 		tmin = tzmin;
@@ -132,5 +132,9 @@ bool Ray::boxIntersect(const Vector3 &box, const Matrix4 &transformMatrix, float
 	if (tzmax < tmax)
 		tmax = tzmax;
 		
-	return ( (tmin < far) && (tmax > near) );
+	if( (tmin < far) && (tmax > near) ) {
+        return fabs(tmin);
+    } else {
+        return -1.0;
+    }
 }

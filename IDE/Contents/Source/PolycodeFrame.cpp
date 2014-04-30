@@ -313,7 +313,6 @@ void EditCurve::handleEvent(Event *event) {
 
 void EditCurve::updateCurve() {
 	targetCurve->recalculateDistances();
-	targetCurve->rebuildBuffers();
 	
 	Number interval = 300.0/CURVE_SIZE;
 	Number normInterval = 1.0/CURVE_SIZE;
@@ -1513,7 +1512,7 @@ void PolycodeFrame::showModal(UIWindow *modalChild) {
 void PolycodeFrame::hideModal() {
 	if(modalChild) {
 		modalRoot->removeChild(modalChild);
-		modalChild->removeAllHandlers();
+		assetBrowser->removeAllHandlers();
 		modalChild->hideWindow(); 
 		modalChild = NULL;
 	}

@@ -36,7 +36,8 @@ THE SOFTWARE.
 namespace Polycode {
 
 class SceneEntityInstanceResourceEntry;
-
+    class SceneEntityInstanceLayer;
+    
 class SceneEntityInstance : public Entity {
 	public:
     
@@ -69,6 +70,13 @@ class SceneEntityInstance : public Entity {
     
         ResourcePool *getTopLevelResourcePool();
 
+        bool hasLayerID(unsigned char layerID) const;
+        unsigned int getNumLayers() const;
+        SceneEntityInstanceLayer *getLayerAtIndex(unsigned int index) const;
+        void removeLayer(SceneEntityInstanceLayer *layer);
+    
+    
+        SceneEntityInstanceLayer *createNewLayer(String name);
 		
 		String getFileName() const;
 		bool cloneUsingReload;
@@ -77,6 +85,8 @@ class SceneEntityInstance : public Entity {
 		
 	protected:
 		
+        std::vector<SceneEntityInstanceLayer*> layers;
+    
         void rebuildResourceLinks();
     
         ResourcePool *topLevelResourcePool;
@@ -85,6 +95,19 @@ class SceneEntityInstance : public Entity {
 		SceneEntityInstanceResourceEntry *resourceEntry;
 		
 };
+    
+class SceneEntityInstanceLayer {
+    public:
+        SceneEntityInstanceLayer(SceneEntityInstance *instance,String name);
+    
+        void setLayerVisibility(bool val);
+    
+        String name;
+        unsigned char layerID;
+        bool visible;
+        SceneEntityInstance *instance;
+};
+
 
 class SceneEntityInstanceResourceEntry : public Resource {
 	public:

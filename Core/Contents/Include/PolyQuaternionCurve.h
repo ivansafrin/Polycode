@@ -33,7 +33,8 @@ namespace Polycode {
 		public:
 		Quaternion q1;
 		Quaternion q2;
-		Quaternion q3;		
+		Quaternion q3;
+        Number time;
 	};	
 
 	class _PolyExport QuaternionCurve : public PolyBase {
@@ -45,12 +46,9 @@ namespace Polycode {
 			Quaternion interpolate(unsigned int fromIndex, Number t, bool useShortestPath);
 						
 			void generatePointsFromCurves(BezierCurve *wCurve, BezierCurve *xCurve, BezierCurve *yCurve, BezierCurve *zCurve);
-			void recalcTangents();
 		
 		protected:
 		
 			std::vector<QuatTriple> tPoints;
-			std::vector<Quaternion> points;
-			std::vector<Quaternion> tangents;
 	};
 }

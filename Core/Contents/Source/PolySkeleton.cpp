@@ -327,7 +327,6 @@ void Skeleton::addAnimation(const String& name, const String& fileName) {
                     break;
             }
         }
-        newTrack->initTweens();
         newAnimation->addBoneTrack(newTrack);
     }
     
@@ -343,6 +342,11 @@ BoneTrack::BoneTrack(Bone *bone, Number length) {
     weight = 0.0;
 	this->length = length;
 	targetBone = bone;
+    paused = false;
+    time = 0.0;
+    speed = 1.0;
+    playOnce = false;
+    
 	scaleX = NULL;
 	scaleY = NULL;
 	scaleZ = NULL;
@@ -353,6 +357,8 @@ BoneTrack::BoneTrack(Bone *bone, Number length) {
 	LocX = NULL;			
 	LocY = NULL;
 	LocZ = NULL;
+    
+    quatCurve = NULL;
 }
 
 BoneTrack::~BoneTrack() {
@@ -369,91 +375,78 @@ BoneTrack::~BoneTrack() {
 }
 
 void BoneTrack::Reset() {
-    for(int i=0; i < pathTweens.size(); i++) {
-        if(pathTweens[i]->isComplete()) {
-            CoreServices::getInstance()->getTweenManager()->addTween(pathTweens[i]);
-        }
-        pathTweens[i]->Reset();
-    }
-    if(quatTween->isComplete()) {
-        CoreServices::getInstance()->getTweenManager()->addTween(quatTween);
-    }
-    quatTween->Reset();
+    time = 0.0;
 }
 
 void BoneTrack::Stop() {
-    for(int i=0; i < pathTweens.size(); i++) {
-        pathTweens[i]->Pause(true);
-    }
-    quatTween->Pause(true);
+    paused = true;
 }
 
-void BoneTrack::initTweens() {
-    
-    BezierPathTween *tween;
-	if(LocX) {
-		tween = new BezierPathTween(&LocXVec, LocX, Tween::EASE_NONE, length, true);
-		pathTweens.push_back(tween);
-	}
-	if(LocY) {
-		tween = new BezierPathTween(&LocYVec, LocY, Tween::EASE_NONE, length, true);
-		pathTweens.push_back(tween);
-	}
-    
-	if(LocZ) {
-		tween = new BezierPathTween(&LocZVec, LocZ, Tween::EASE_NONE, length, true);
-		pathTweens.push_back(tween);
-	}
-	tween = new BezierPathTween(&ScaleXVec, scaleX, Tween::EASE_NONE, length, true);
-	pathTweens.push_back(tween);
-	tween = new BezierPathTween(&ScaleYVec, scaleY, Tween::EASE_NONE, length, true);
-	pathTweens.push_back(tween);
-	tween = new BezierPathTween(&ScaleZVec, scaleZ, Tween::EASE_NONE, length, true);
-	pathTweens.push_back(tween);
-    
-	if(QuatW) {
-        quatTween = new QuaternionTween(&boneQuat, QuatW, QuatX, QuatY, QuatZ, Tween::EASE_NONE, length, true);
-    }
-}
 
 void BoneTrack::Play(bool once) {
-    for(int i=0; i < pathTweens.size(); i++) {
-            pathTweens[i]->Reset();
-			pathTweens[i]->Pause(false);
-            pathTweens[i]->repeat = !once;
-    }
-    if(quatTween) {
-        quatTween->Reset();
-        quatTween->Pause(false);
-        quatTween->repeat = !once;
-    }
+    paused = true;
+    playOnce = once;
 }
 
 
-void BoneTrack::Update() {
+void BoneTrack::Update(Number elapsed) {
 	if(!targetBone)
 		return;
     
-    if(quatTween->isComplete()) {
-        return;
+//    if(!paused) {
+        time += elapsed * speed;
+//    }
+    
+    if(time > length) {
+        if(playOnce) {
+            time = length;
+            return;
+        } else {
+            time = time - length;
+        }
     }
+    
+    if(LocX) {
+        position.x = LocX->getYValueAtX(time);
+    }
+    if(LocY) {
+        position.y = LocY->getYValueAtX(time);
+    }
+    if(LocZ) {
+        position.z = LocZ->getYValueAtX(time);
+    }
+    
+    if(scaleX) {
+        scale.x = scaleX->getYValueAtX(time);
+    }
+    if(scaleY) {
+        scale.y = scaleY->getYValueAtX(time);
+    }
+    if(scaleZ) {
+        scale.z = scaleZ->getYValueAtX(time);
+    }
+    
+    if(!quatCurve) {
+        if(QuatW) {
+            quatCurve = new QuaternionCurve(QuatW, QuatX, QuatY, QuatZ);
+        }
+    }
+    
+    if(quatCurve) {
+        boneQuat = quatCurve->interpolate(time/length, true);
+    }
+
     
     Quaternion rotationQuat = targetBone->getRotationQuat();
     rotationQuat = Quaternion::Slerp(weight, rotationQuat, boneQuat, true);
     targetBone->setRotationByQuaternion(rotationQuat);
 
-    Vector3 trackPosition = Vector3(LocXVec.y, LocYVec.y, LocZVec.y);
-    targetBone->setPosition((trackPosition * weight) + (targetBone->getPosition() * (1.0 - weight)));
-
-    Vector3 trackScale = Vector3(ScaleXVec.y, ScaleYVec.y, ScaleZVec.y);
-    Vector3 newScale = ((trackScale - Vector3(1.0, 1.0, 1.0)) * weight) + Vector3(1.0, 1.0, 1.0);
+    targetBone->setPosition((position * weight) + (targetBone->getPosition() * (1.0 - weight)));
+    Vector3 newScale = ((scale - Vector3(1.0, 1.0, 1.0)) * weight) + Vector3(1.0, 1.0, 1.0);
 }
 
 void BoneTrack::setSpeed(Number speed) {
-	for(int i=0; i < pathTweens.size(); i++) {
-		pathTweens[i]->setSpeed(speed);
-	}	
-	quatTween->setSpeed(speed);
+    this->speed = speed;
 }
 
 
@@ -484,9 +477,10 @@ void SkeletonAnimation::setSpeed(Number speed) {
 }
 
 void SkeletonAnimation::Update() {
+    Number elapsed = CoreServices::getInstance()->getCore()->getElapsed();
 	for(int i=0; i < boneTracks.size(); i++) {
         boneTracks[i]->weight = weight;
-		boneTracks[i]->Update();
+		boneTracks[i]->Update(elapsed);
 	}
 }
 

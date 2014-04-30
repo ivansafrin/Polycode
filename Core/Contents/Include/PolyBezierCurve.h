@@ -26,10 +26,9 @@
 
 #include "PolyGlobals.h"
 #include "PolyVector3.h"
+#include "PolyVector2.h"
 #include <vector>
 
-
-#define BUFFER_CACHE_PRECISION 100
 
 namespace Polycode {
 
@@ -143,12 +142,6 @@ namespace Polycode {
 		*/										
 		void addControlPoint2d(Number x, Number y);
 		
-		/**
-		* Returns the height of the curve at a specified point on the curve. Heights are cached into a buffer with a finite cache precision to speed up the curve usage in animation. If you need to quickly get 2D height out of a curve and you don't care about total precision, use this method.
-		* @param a Normalized (0-1) position along the curve.
-		* @return Height value at specified position.
-		*/												
-		Number getHeightAt(Number a);
 
 		/**
 		* Returns the 3d point of the curve at a specified point on the curve.
@@ -163,33 +156,33 @@ namespace Polycode {
 		* @return 3d point at specified position.
 		*/																				
 		Vector3 getPointBetween(Number a, BezierPoint *bp1, BezierPoint *bp2);
-		
+
 		void clearControlPoints();
-		
-		/** 
-		* Rebuilds the height cache buffers for 2d height curves.
-		*/	
-		void rebuildBuffers();
+        
+        Number getYValueAtX(Number x);
+		Number getTValueAtX(Number x);
 		
 		/**
 		* Removes (and deletes!) a given point by pointer
 		*/
 		void removePoint(BezierPoint *point);
-
-		Number heightBuffer[BUFFER_CACHE_PRECISION];
-
+        
 		BezierPoint *insertPoint;
 
 		std::vector<BezierPoint*> controlPoints;
 		std::vector<Number> distances;
 		
-		void recalculateDistances();		
+		void recalculateDistances();
+		
+        Number evaluationAccuracy;
 		
 		protected:
 		
+            Number minX;
+            Number maxX;
+            Number midX;
+        
             bool distancesDirty;
-
-	
 			
 	};
 
