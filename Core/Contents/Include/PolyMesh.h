@@ -120,13 +120,13 @@ namespace Polycode {
 			* Construct with an empty mesh of specified type.
 			* @param meshType Type of mesh. Possible values are: Mesh::QUAD_MESH, Mesh::TRI_MESH, Mesh::TRIFAN_MESH, Mesh::TRISTRIP_MESH, Mesh::LINE_MESH, Mesh::POINT_MESH.
 			*/			
-			Mesh(int meshType);
+			explicit Mesh(int meshType);
 					
 			/**
 			* Construct from a mesh loaded from a file.
 			* @param fileName Path to mesh file.
 			*/
-			Mesh(const String& fileName);
+			explicit Mesh(const String& fileName);
 
 			/**
 			* Construct from a mesh loaded from a file.

@@ -44,18 +44,18 @@ namespace Polycode {
 			* Construct a scene mesh from a mesh file.
 			* @param fileName Path to mesh file to load.
 			*/
-			SceneMesh(const String& fileName);
+			explicit SceneMesh(const String& fileName);
 			
 			/**
 			* Construct an empty scene mesh with the specified type.
 			* @param meshType Mesh type to create. See Mesh for possible values.
 			*/			
-			SceneMesh(int meshType);		
+			explicit SceneMesh(int meshType);
 			
 			/**
 			* Construct scene mesh from an existing Mesh instance.
 			*/
-			SceneMesh(Mesh *mesh);
+			explicit SceneMesh(Mesh *mesh);
 			
 			/**
 			* Construct scene mesh from an existing Mesh instance.

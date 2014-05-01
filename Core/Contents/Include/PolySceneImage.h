@@ -36,19 +36,19 @@ namespace Polycode {
 		* Create screen image from file.
 		* @param fileName 
 		*/
-		SceneImage(const String& fileName);
+		explicit SceneImage(const String& fileName);
 
 		/**
 		* Create screen image from Image.
 		* @param image Image to create from.
 		*/		
-		SceneImage(Image *image);		
+		explicit SceneImage(Image *image);
 
 		/**
 		 * Create screen image from Texture.
 		 * @param texture Texture to create from.
 		 */		
-		SceneImage(Texture *texture);		
+		explicit SceneImage(Texture *texture);
 
 		/**
 		* Create screen image from Image.
