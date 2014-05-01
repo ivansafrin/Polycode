@@ -182,7 +182,7 @@ PhysicsCharacter::~PhysicsCharacter() {
 }
 
 PhysicsEntity::PhysicsEntity(Entity *entity, int type, Number mass, Number friction, Number restitution, bool compoundChildren) : CollisionEntity(entity, type, compoundChildren) {
-
+    enabled = true;
 	this->mass = mass;
 	btVector3 localInertia(0,0,0);
 	Vector3 pos = entity->getPosition();	

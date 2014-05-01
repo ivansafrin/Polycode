@@ -117,8 +117,6 @@ namespace Polycode {
 		static const int SHAPE_CYLINDER = 8;
 
 		
-		bool enabled;
-		
 		btRigidBody* rigidBody;
 		
 	protected:

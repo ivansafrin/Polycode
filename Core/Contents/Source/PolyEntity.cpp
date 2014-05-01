@@ -602,6 +602,9 @@ void Entity::recalculateAABB() {
     
     Matrix4 fullMatrix = getAnchorAdjustedMatrix();
     if(ignoreParentMatrix) {
+        if(matrixDirty) {
+            rebuildTransformMatrix();
+        }
         fullMatrix = transformMatrix;
     }
     

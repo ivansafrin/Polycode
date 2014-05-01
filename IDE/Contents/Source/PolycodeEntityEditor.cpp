@@ -215,6 +215,7 @@ CameraPreviewWindow::CameraPreviewWindow() : UIElement() {
     aspectCombo->addComboItem("16:9");
     aspectCombo->addComboItem("16:10");
     aspectCombo->addComboItem("4:3");
+    aspectCombo->addComboItem("16:18");
     aspectCombo->addEventListener(this, UIEvent::CHANGE_EVENT);
     
     pinButton = new UIButton("Pin", 60);
@@ -279,6 +280,9 @@ void CameraPreviewWindow::handleEvent(Event *event) {
             break;
             case 2:
                 Resize(bBox.y * 1.3, bBox.y);
+            break;
+            case 3:
+                Resize(bBox.y * 0.888, bBox.y);
             break;
                 
         }

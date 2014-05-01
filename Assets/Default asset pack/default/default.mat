@@ -1,27 +1,27 @@
 <?xml version="1.0" ?>
 <polycode>	
 	<shaders>		
-		<shader type="glsl" name="DefaultShader" numPointLights="4" numSpotLights="2">		
+		<shader type="glsl" name="DefaultShader" numPointLights="6" numSpotLights="2">		
 			<vp source="default/DefaultShader.vert"/>
 			<fp source="default/DefaultShader.frag"/>
 		</shader>	
-		<shader type="glsl" name="DefaultShaderNoTexture" numPointLights="4" numSpotLights="2">	
+		<shader type="glsl" name="DefaultShaderNoTexture" numPointLights="6" numSpotLights="2">	
 			<vp source="default/DefaultShader.vert"/>
 			<fp source="default/DefaultShaderNoTexture.frag"/>
 		</shader>
-		<shader type="glsl" name="DefaultShaderShadows" numPointLights="4" numSpotLights="2">		
+		<shader type="glsl" name="DefaultShaderShadows" numPointLights="6" numSpotLights="2">		
 			<vp source="default/DefaultShaderShadows.vert"/>
 			<fp source="default/DefaultShaderShadows.frag"/>
 		</shader>		
-		<shader type="glsl" name="DefaultShaderVertex" numPointLights="4" numSpotLights="2">		
+		<shader type="glsl" name="DefaultShaderVertex" numPointLights="6" numSpotLights="2">		
 			<vp source="default/DefaultShaderVertex.vert"/>
 			<fp source="default/DefaultShaderVertex.frag"/>
 		</shader>			
-		<shader type="glsl" name="DefaultShaderVertexNoTexture" numPointLights="4" numSpotLights="2">		
+		<shader type="glsl" name="DefaultShaderVertexNoTexture" numPointLights="6" numSpotLights="2">		
 			<vp source="default/DefaultShaderVertex.vert"/>
 			<fp source="default/DefaultShaderVertexNoTexture.frag"/>
 		</shader>
-		<shader type="glsl" name="DefaultParticleShader" numPointLights="4" numSpotLights="2">		
+		<shader type="glsl" name="DefaultParticleShader" numPointLights="6" numSpotLights="2">		
 			<vp source="default/DefaultShader.vert"/>
 			<fp source="default/DefaultParticleShader.frag"/>
 		</shader>															
@@ -41,7 +41,7 @@
 			<vp source="default/LightCube.vert"/>
 			<fp source="default/SkyBox.frag"/>
 		</shader>		
-		<shader type="glsl" name="NorColSpec" numPointLights="4" numSpotLights="2">		
+		<shader type="glsl" name="NorColSpec" numPointLights="6" numSpotLights="2">		
 			<vp source="default/NormalShader.vert"/>
 			<fp source="default/NorColSpec.frag"/>
 		</shader>

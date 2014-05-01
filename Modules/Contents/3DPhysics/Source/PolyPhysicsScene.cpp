@@ -145,8 +145,9 @@ void PhysicsScene::processWorldCollisions() {
 void PhysicsScene::Update() {
 	if(!pausePhysics) {
 	for(int i=0; i < physicsChildren.size(); i++) {
-//		if(physicsChildren[i]->enabled)
+		if(physicsChildren[i]->enabled) {
 			physicsChildren[i]->Update();
+        }
 	}
 	
 	
