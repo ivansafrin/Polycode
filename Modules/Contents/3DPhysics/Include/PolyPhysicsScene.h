@@ -106,11 +106,11 @@ namespace Polycode {
 		void removePhysicsChild(Entity *entity);
 		PhysicsEntity *getPhysicsEntityByEntity(Entity *entity);
 		
-		PhysicsEntity *addPhysicsChild(Entity *newEntity, int type=0, Number mass = 0.0f, Number friction=1, Number restitution=0, int group=1, bool compoundChildren = false);		
-		PhysicsEntity *trackPhysicsChild(Entity *newEntity, int type=0, Number mass = 0.0f, Number friction=1, Number restitution=0, int group=1, bool compoundChildren = false);		
+		PhysicsEntity *addPhysicsChild(Entity *newEntity, int type=0, Number mass = 0.0f, Number friction=1, Number restitution=0, int group=1, int mask=1, bool compoundChildren = false);		
+		PhysicsEntity *trackPhysicsChild(Entity *newEntity, int type=0, Number mass = 0.0f, Number friction=1, Number restitution=0, int group=1, int mask=1, bool compoundChildren = false);		
 		
-		PhysicsCharacter *addCharacterChild(Entity *newEntity, Number mass, Number friction, Number stepSize, int group  = 1);
-		PhysicsCharacter *trackCharacterChild(Entity *newEntity, Number mass, Number friction, Number stepSize, int group  = 1);
+		PhysicsCharacter *addCharacterChild(Entity *newEntity, Number mass, Number friction, Number stepSize, int group=1, int mask=btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);
+		PhysicsCharacter *trackCharacterChild(Entity *newEntity, Number mass, Number friction, Number stepSize, int group=1, int mask=btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);
         
 		void removeCharacterChild(PhysicsCharacter *character);
 		
@@ -120,6 +120,8 @@ namespace Polycode {
 		
 		PhysicsGenericConstraint *createGenericConstraint(Entity *entity);
 				
+		Number getTimeStep();
+		void setTimeStep(Number newTime);
 		void setVelocity(Entity *entity, Vector3 velocity);
 		void setSpin(Entity *entity, Vector3 spin);
 				
@@ -129,9 +131,9 @@ namespace Polycode {
 		
 		void applyImpulse(Entity *entity, Vector3 force, Vector3 point);
 		
-		PhysicsVehicle *addVehicleChild(Entity *newEntity, Number mass, Number friction, int group  = 1);
+		PhysicsVehicle *addVehicleChild(Entity *newEntity, Number mass, Number friction, int group=btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter, int mask=1);
 
-		PhysicsVehicle *trackVehicleChild(Entity *newEntity, Number mass, Number friction, int group  = 1);
+		PhysicsVehicle *trackVehicleChild(Entity *newEntity, Number mass, Number friction, int group=btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter, int mask=1);
 		
 		void setGravity(Vector3 gravity);
 		
@@ -145,7 +147,8 @@ namespace Polycode {
 		
 		bool paused;
 		int maxSubSteps;
-		void initPhysicsScene(Vector3 size);		
+		void initPhysicsScene(Vector3 size);
+		Number timeStep;
 		
 		btDiscreteDynamicsWorld* physicsWorld;
 		btSequentialImpulseConstraintSolver *solver;		

@@ -164,6 +164,10 @@ void PhysicsCharacter::setMaxJumpHeight(Number maxJumpHeight) {
 	character->setMaxJumpHeight(maxJumpHeight);
 }
 
+void PhysicsCharacter::setMaxSlope(Number maxSlope) {
+	character->setMaxSlope(maxSlope);
+}
+
 bool PhysicsCharacter::onGround() {
 	return character->onGround();
 }

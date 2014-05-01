@@ -116,6 +116,21 @@ namespace Polycode {
 		*/												
 		static const int SHAPE_CYLINDER = 8;
 
+		/** 
+		* Compound mesh shape.
+		* Use this when you want to create a physics object that consists of
+		* multiple convex hulls. Your mesh must have triangles only, smoothing 
+		* enabled, and it needs to be constructed out of convex elements.
+		*/												
+		static const int SHAPE_MESH_COMPOUND = 9;
+		
+		/**
+		* Concave mesh shape.
+		* Use this when you want to create a complex concave physics object.
+		* There are two limitations to this kind of object, it can't move and
+		* the mesh must be composed of triangles only.
+		*/													
+		static const int SHAPE_MESH_CONCAVE = 10;
 		
 		bool enabled;
 		
@@ -151,7 +166,8 @@ namespace Polycode {
 			void warpCharacter(Vector3 position);
 			void setJumpSpeed(Number jumpSpeed);
 			void setFallSpeed(Number fallSpeed);			
-			void setMaxJumpHeight(Number maxJumpHeight);			
+			void setMaxJumpHeight(Number maxJumpHeight);
+			void setMaxSlope(Number maxSlope);
 			bool onGround();
 			//@}
 			// ----------------------------------------------------------------------------------------------------------------

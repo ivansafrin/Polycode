@@ -38,45 +38,98 @@ class CollisionEntity;
 /**
 * Result of a collision test.
 */
-struct CollisionResult {
+class _PolyExport CollisionResult {
+	public:
+		/**
+		* Default constructor.
+		*/
+		CollisionResult();
+		virtual ~CollisionResult();
 
-	/**
-	* True if collided.
-	*/ 
-	bool collided;
+		/**
+		* True if collided.
+		*/ 
+		bool collided;
 	
-	/**
-	* Collision normal.
-	*/ 	
-	Vector3 colNormal;
+		/**
+		* Collision normal.
+		*/ 	
+		Vector3 colNormal;
 	
-	/**
-	* Collision distance.
-	*/ 		
-	Number colDist;
+		/**
+		* Collision distance.
+		*/ 		
+		Number colDist;
 		
-	bool setOldPosition;
-	Vector3 newPos;
+		bool setOldPosition;
+		Vector3 newPos;
 };
 	
 	/**
 	* Result of a ray test.
 	*/
-	struct RayTestResult {
-		/**
-		* Entity returned.
-		*/
-		Entity *entity;
+	class _PolyExport RayTestResult {
+		public:
+			/**
+			* Default constructor.
+			*/
+			RayTestResult();
+			virtual ~RayTestResult();
+			
+			/**
+			* Entity returned.
+			*/
+			Entity *entity;
+
+			/**
+			* Ray fraction.
+			*/
+			Number fraction;
 		
-		/**
-		* Ray normal
-		*/		
-		Vector3 normal;
+			/**
+			* Ray normal.
+			*/		
+			Vector3 normal;
 		
-		/**
-		* Ray position.
-		*/				
-		Vector3 position;
+			/**
+			* Ray position.
+			*/				
+			Vector3 position;
+	};
+
+	/**
+	* Result of a ray test with multiple hits.
+	*/
+	class _PolyExport RayTestResultMultiple {
+		public:
+			/**
+			* Default constructor.
+			*/
+			RayTestResultMultiple();
+			virtual ~RayTestResultMultiple();
+
+			/**
+			* Adds a single RayTestResult.
+			*/
+			void addResult(RayTestResult *result);
+
+			/**
+			* Gets a result.
+			*/
+			RayTestResult *getResult(int index);
+
+			/**
+			* Gets the total number of results held.
+			*/
+			unsigned int getResultCount();
+
+			/**
+			* clears all results. 
+			*/
+			void clearResults();
+
+		protected:
+			std::vector<RayTestResult*> results;
 	};
 
 	/**
@@ -104,15 +157,16 @@ struct CollisionResult {
 			*/
 			//@{			
 			
-			RayTestResult getFirstEntityInRay(const Vector3 &origin,  const Vector3 &dest);			
+			RayTestResult getFirstEntityInRay(const Vector3 &origin,  const Vector3 &dest);	
+			RayTestResultMultiple getAllEntitiesInRay(const Vector3 &origin,  const Vector3 &dest, int group=1, int mask=-1);
 			void enableCollision(Entity *entity, bool val);											
 			CollisionEntity *getCollisionByScreenEntity(Entity *ent);
 			CollisionResult testCollision(Entity *ent1, Entity *ent2);
 			CollisionResult testCollisionOnCollisionChild(CollisionEntity *cEnt1, CollisionEntity *cEnt2);				
 			CollisionResult testCollisionOnCollisionChild_Convex(CollisionEntity *cEnt1, CollisionEntity *cEnt2);	
 		
-			virtual CollisionEntity *addCollisionChild(Entity *newEntity, int type=0, int group=1);
-			CollisionEntity *trackCollision(Entity *newEntity, int type=0, int group=1);
+			virtual CollisionEntity *addCollisionChild(Entity *newEntity, int type=0, int group=1, int mask=-1);
+			CollisionEntity *trackCollision(Entity *newEntity, int type=0, int group=1, int mask=-1);
 			void removeCollision(Entity *entity);
 			void adjustForCollision(CollisionEntity *collisionEntity);
 			
