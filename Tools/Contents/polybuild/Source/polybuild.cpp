@@ -1,7 +1,8 @@
 
 #include "polybuild.h"
 #include "string.h"
-#include "zip.h"
+#include "archive.h"
+#include "archive_entry.h"
 
 #ifdef _WINDOWS
 	#include <windows.h>
@@ -24,141 +25,12 @@ vector<BuildArg> args;
 #define MAXFILENAME (2048)
 
 String getArg(String argName) {
-	/*
-	if(argName == "--config")
-		return "ExampleProject.xml";
-
-	if(argName == "--out")
-		return "ExampleProject.polyapp";
-
-		*/
-
 	for(int i=0; i < args.size(); i++) {
 		if(args[i].name == argName) {
 			return args[i].value;
 		}
 	}
 	return "";
-}
-
-uLong filetime(
-    const char *f,
-    tm_zip *tmzip,
-    uLong *dt)
-{
-  int ret=0;
-  struct stat s;
-  struct tm* filedate;
-  time_t tm_t=0;
-
-  if (strcmp(f,"-")!=0)
-  {
-    char name[MAXFILENAME+1];
-    int len = strlen(f);
-    if (len > MAXFILENAME)
-      len = MAXFILENAME;
-
-    strncpy(name, f,MAXFILENAME-1);
-    /* strncpy doesnt append the trailing NULL, of the string is too long. */
-    name[ MAXFILENAME ] = '\0';
-
-    if (name[len - 1] == '/')
-      name[len - 1] = '\0';
-
-    /* not all systems allow stat'ing a file with / appended */
-#ifdef _WINDOWS
-
-#else
-    if (stat(name,&s)==0)
-    {
-      tm_t = s.st_mtime;
-      ret = 1;
-    }
-#endif
-  }
-  filedate = localtime(&tm_t);
-
-  tmzip->tm_sec  = filedate->tm_sec;
-  tmzip->tm_min  = filedate->tm_min;
-  tmzip->tm_hour = filedate->tm_hour;
-  tmzip->tm_mday = filedate->tm_mday;
-  tmzip->tm_mon  = filedate->tm_mon ;
-  tmzip->tm_year = filedate->tm_year;
-
-  return ret;
-}
-
-extern "C" int MyWriter(lua_State *L, const void *p, size_t sz, void *ud) {
-	int err = zipWriteInFileInZip(static_cast<zipFile>(ud), p, sz);
-	// Non 0 means an error and stops lua_dump from calling the writer again.
-	return (err != ZIP_OK) && (sz != 0) ? 1 : 0;
-}
-
-void addFileToZip(zipFile z, String filePath, String pathInZip, bool silent) {
-	if(!silent)
-		printf("Packaging %s as %s\n", filePath.c_str(), pathInZip.c_str());
-
-	zip_fileinfo zi;
-	zi.tmz_date.tm_sec = zi.tmz_date.tm_min = zi.tmz_date.tm_hour = 
-		zi.tmz_date.tm_mday = zi.tmz_date.tm_mon = zi.tmz_date.tm_year = 0;
-	zi.dosDate = 0;
-	zi.internal_fa = 0;
-	zi.external_fa = 0;
-	filetime(filePath.c_str(),&zi.tmz_date,&zi.dosDate);
-
-	zipOpenNewFileInZip(z, pathInZip.c_str(), &zi, NULL, 0, NULL, 0, NULL, Z_DEFLATED, 2);
-
-	// Are we dealing with a script file?
-	int pos = filePath.rfind(".lua");
-	bool isScript = (pos > -1 && pos == filePath.length() - 4) ? true : false;
-
-	if(isScript && getArg("--compileScripts") == "true") {
-		lua_State *L = lua_open();
-		int err = 1;
-		if(L && 0 == luaL_loadfile(L, filePath.c_str())) {
-			err = lua_dump(L, MyWriter, z);
-		}
-		if(L) lua_close(L);
-		if(err) {
-			printf("Error compiling script. Ignoring.\n");
-		}
-	} else {
-		FILE *f = fopen(filePath.c_str(), "rb");
-		fseek(f, 0, SEEK_END);
-		long fileSize = ftell(f);
-		fseek(f, 0, SEEK_SET);
-		char *buf = (char*) malloc(fileSize);
-		fread(buf, fileSize, 1, f);
-		zipWriteInFileInZip(z, buf, fileSize);
-		free(buf);
-		fclose(f);
-	}
-
-	zipCloseFileInZip(z);
-}
-
-void addFolderToZip(zipFile z, String folderPath, String parentFolder, bool silent) {
-	std::vector<OSFileEntry> files = OSBasics::parseFolder(folderPath, false);
-	for(int i=0; i < files.size(); i++) {
-		if(files[i].type == OSFileEntry::TYPE_FILE) {
-
-			String pathInZip;
-			if(parentFolder == "") {
-				pathInZip = files[i].name;
-			} else {
-				pathInZip = parentFolder + "/" + files[i].name;
-			}
-
-			addFileToZip(z, files[i].fullPath, pathInZip, silent);
-
-		} else {
-			if(parentFolder == "") {
-				addFolderToZip(z, files[i].fullPath.c_str(), files[i].name, silent);
-			} else {
-				addFolderToZip(z, files[i].fullPath.c_str(), parentFolder + "/" + files[i].name, silent);
-			}
-		}
-	}
 }
 
 #ifdef _WINDOWS
@@ -168,6 +40,60 @@ for(int i = 0; i < SourceSize; ++i)
 Dest[i] = (char)Source[i];
 }
 #endif
+
+void addFileToZip(struct archive *a, String filePath, String pathInZip, bool silent)  {
+    struct archive_entry *entry;
+    struct stat st;
+    int len;
+    FILE *fd;
+    char buff[8192];
+    
+    stat(filePath.c_str(), &st);
+    
+    entry = archive_entry_new();
+    archive_entry_set_pathname(entry, pathInZip.c_str());
+    archive_entry_set_size(entry, st.st_size);
+    archive_entry_set_filetype(entry, AE_IFREG);
+    archive_entry_set_perm(entry, 0644);
+    archive_write_header(a, entry);
+    
+    fd = fopen(filePath.c_str(), "rb");
+    if(fd) {
+        len = fread(buff, 1, sizeof(buff), fd);
+        while ( len > 0 ) {
+            archive_write_data(a, buff, len);
+            len = fread(buff, 1, sizeof(buff), fd);
+        }
+        fclose(fd);
+    }
+    archive_entry_free(entry);
+    
+}
+
+void addFolderToZip(struct archive *a, String folderPath, String parentFolder, bool silent) {
+	std::vector<OSFileEntry> files = OSBasics::parseFolder(folderPath, false);
+	for(int i=0; i < files.size(); i++) {
+		if(files[i].type == OSFileEntry::TYPE_FILE) {
+            
+			String pathInZip;
+			if(parentFolder == "") {
+				pathInZip = files[i].name;
+			} else {
+				pathInZip = parentFolder + "/" + files[i].name;
+			}
+            
+			addFileToZip(a, files[i].fullPath, pathInZip, silent);
+            
+		} else {
+			if(parentFolder == "") {
+				addFolderToZip(a, files[i].fullPath.c_str(), files[i].name, silent);
+			} else {
+				addFolderToZip(a, files[i].fullPath.c_str(), parentFolder + "/" + files[i].name, silent);
+			}
+		}
+	}
+}
+
 
 int main(int argc, char **argv) {
 		
@@ -359,7 +285,13 @@ int main(int argc, char **argv) {
 		}
 	}
 
-	zipFile z = zipOpen(getArg("--out").c_str(), 0);
+    struct archive *a;
+    
+    a = archive_write_new();
+    archive_write_set_format_zip(a);
+    archive_write_open_filename(a, getArg("--out").c_str());
+    
+	//zipFile z = zipOpen(getArg("--out").c_str(), 0);
 	
 
 	Object runInfo;
@@ -410,8 +342,8 @@ int main(int argc, char **argv) {
 				printf("Path:%s\n", moduleAPIPath.c_str());		
 
 
-				addFolderToZip(z, moduleAPIPath, "", false);
-				addFolderToZip(z, moduleLibPath, "__lib", false);
+				addFolderToZip(a, moduleAPIPath, "", false);
+				addFolderToZip(a, moduleLibPath, "__lib", false);
 
 				//String module = configFile.root["entryPoint"]->stringVal;
 			}
@@ -429,9 +361,9 @@ int main(int argc, char **argv) {
 				if(entryPath && entryType) {
 					if (!entrySource) entrySource = entryPath;
 					if(entryType->stringVal == "folder") {
-						addFolderToZip(z, entrySource->stringVal, entryPath->stringVal, false);
+						addFolderToZip(a, entrySource->stringVal, entryPath->stringVal, false);
 					} else {
-						addFileToZip(z, entrySource->stringVal, entryPath->stringVal, false);
+						addFileToZip(a, entrySource->stringVal, entryPath->stringVal, false);
 					}
 				}
 			}
@@ -441,11 +373,10 @@ int main(int argc, char **argv) {
 
 
 	runInfo.saveToXML("runinfo_tmp_zzzz.polyrun");
-	addFileToZip(z, "runinfo_tmp_zzzz.polyrun", "runinfo.polyrun", true);
-
-	//addFolderToZip(z, getArg("--project"), "");
+	addFileToZip(a, "runinfo_tmp_zzzz.polyrun", "runinfo.polyrun", true);
 	
-	zipClose(z, "");	
+    archive_write_close(a);
+    archive_write_free(a);
 
 #ifdef _WINDOWS
 	char *buffer = _getcwd(NULL, 0);
