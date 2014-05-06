@@ -27,6 +27,8 @@
 *.exp
 *.zip
 *.swo
+*.swm
+*.swn
 *.opensdf
 *.user.*
 *.xcuserstate
