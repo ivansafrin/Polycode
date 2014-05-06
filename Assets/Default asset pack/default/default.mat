@@ -4,7 +4,11 @@
 		<shader type="glsl" name="DefaultShader" numPointLights="6" numSpotLights="2">		
 			<vp source="default/DefaultShader.vert"/>
 			<fp source="default/DefaultShader.frag"/>
-		</shader>	
+		</shader>
+		<shader type="glsl" name="ColSpecEmit" numPointLights="6" numSpotLights="2">		
+			<vp source="default/DefaultShader.vert"/>
+			<fp source="default/ColSpecEmit.frag"/>
+		</shader>			
 		<shader type="glsl" name="DefaultShaderNoTexture" numPointLights="6" numSpotLights="2">	
 			<vp source="default/DefaultShader.vert"/>
 			<fp source="default/DefaultShaderNoTexture.frag"/>
@@ -69,6 +73,12 @@
 		</material>			
 		<material name="DefaultTextured">
 			<shader name="DefaultShader">
+				<textures>
+				</textures>				
+			</shader>
+		</material>
+		<material name="ColSpecEmit">
+			<shader name="ColSpecEmit">
 				<textures>
 				</textures>				
 			</shader>

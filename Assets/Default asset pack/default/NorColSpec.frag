@@ -7,6 +7,7 @@ varying vec4 vertexColor;
 uniform sampler2D diffuse;
 uniform sampler2D normal_map;
 uniform sampler2D specular_map;
+uniform sampler2D emit_map;
 
 uniform vec4 diffuse_color;
 uniform vec4 specular_color;
