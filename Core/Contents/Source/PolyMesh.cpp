@@ -342,7 +342,8 @@ Vertex *Mesh::addVertex(Number x, Number y, Number z, Number u, Number v) {
 void Mesh::saveToFile(const String& fileName, bool writeNormals, bool writeTangents, bool writeColors, bool writeBoneWeights, bool writeUVs, bool writeSecondaryUVs) {
     OSFILE *outFile = OSBasics::open(fileName, "wb");
     if(!outFile) {
-        Logger::log("Error opening mesh file for saving: %s", fileName.c_str());
+        Logger::log("Error opening mesh file for saving: %s\n", fileName.c_str());
+        return;
     }
     saveToFile(outFile, writeNormals, writeTangents, writeColors, writeBoneWeights, writeUVs, writeSecondaryUVs);
     OSBasics::close(outFile);	
@@ -352,7 +353,8 @@ void Mesh::saveToFile(const String& fileName, bool writeNormals, bool writeTange
 void Mesh::loadMesh(const String& fileName) {
     OSFILE *inFile = OSBasics::open(fileName, "rb");
     if(!inFile) {
-        Logger::log("Error opening mesh file %s", fileName.c_str());
+        Logger::log("Error opening mesh file %s\n", fileName.c_str());
+        return;
     }
     loadFromFile(inFile);
     OSBasics::close(inFile);	

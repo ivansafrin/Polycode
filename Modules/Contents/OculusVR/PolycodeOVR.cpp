@@ -141,6 +141,7 @@ void PolycodeOVR::setEyeDistanceScale(Number scale) {
     float halfIPD  = interpupilaryDistance * 0.5f * eyeDistanceScale;
     leftCamera->setPosition(-halfIPD, 0.0, 0.0);
     rightCamera->setPosition(halfIPD, 0.0, 0.0);
+
     
 }
 
