@@ -101,6 +101,7 @@ namespace Polycode {
 			bool premultiplyAlphaOnLoad;
 			bool clampDefault;
 			bool mipmapsDefault;
+			bool keepTextureData;
 			
 		private:
 			std::vector<Texture*> textures;
