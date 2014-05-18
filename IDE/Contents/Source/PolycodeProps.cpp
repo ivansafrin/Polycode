@@ -574,7 +574,8 @@ void RemovableStringProp::handleEvent(Event *event) {
 }
 
 LayerProp::LayerProp(SceneEntityInstance *instance, SceneEntityInstanceLayer *layer) : PropProp("", "Layer") {
-    
+	layerID = 0;
+
     bgRect = new UIRect(1.0, 1.0);
     bgRect->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 
