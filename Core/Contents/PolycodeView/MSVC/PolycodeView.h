@@ -4,7 +4,6 @@
 #include <windows.h>
 #include "PolyCore.h"
 
-using namespace Polycode;
 
 namespace Polycode {
 
