@@ -243,7 +243,7 @@ class LayerProp : public PropProp {
     
         UIImageButton *removeLayerButton;
     
-        unsigned char layerID = 0;
+		unsigned char layerID;
     
         UIRect *bgRect;
 };
