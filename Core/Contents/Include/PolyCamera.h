@@ -185,6 +185,9 @@ namespace Polycode {
 			*/
 			std::vector<ShaderBinding*> getLocalShaderOptions() { return localShaderOptions; }
 			
+            unsigned int getNumLocalShaderOptions() const;
+            ShaderBinding* getLocalShaderOption(unsigned int index) const;
+        
 			/**
 			* Returns the shader material applied to the camera.
 			*/			
