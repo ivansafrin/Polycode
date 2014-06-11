@@ -194,6 +194,8 @@ class EntityEditorMainView : public UIElement {
             void selectNone(bool doAction);
             void selectAll(bool doAction);
     
+            SceneRenderTexture *getRenderTexture();
+    
             void onGainFocus();
             void onLoseFocus();
             void deleteSelected(bool doAction);
@@ -312,6 +314,8 @@ class PolycodeEntityEditor : public PolycodeEditor {
 		void Resize(int x, int y);
     
         void Activate();
+        void Deactivate();
+    
         void saveFile();
         void saveCurveToObject(ObjectEntry *entry, BezierCurve *curve);
         void saveShaderOptionsToEntry(ObjectEntry *entry, Material *material, ShaderBinding *binding);

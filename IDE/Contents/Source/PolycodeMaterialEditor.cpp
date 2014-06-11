@@ -94,6 +94,17 @@ PostEditorPane::PostEditorPane(ResourcePool *resourcePool) : UIElement() {
 		
 }
 
+void PostEditorPane::Activate() {
+    postPreview->previewScene->enabled = true;
+    postPreview->renderTexture->enabled = true;
+}
+
+void PostEditorPane::Deactivate() {
+    postPreview->previewScene->enabled = false;
+    postPreview->renderTexture->enabled = false;
+}
+
+
 PostEditorPane::~PostEditorPane() {
 
 }
@@ -246,6 +257,18 @@ CubemapEditorPane::CubemapEditorPane(ResourcePool *resourcePool) : UIElement() {
 	enabled = false;
 	
 }
+
+
+void CubemapEditorPane::Activate() {
+    cubemapPreview->previewScene->enabled = true;
+    cubemapPreview->renderTexture->enabled = true;
+}
+
+void CubemapEditorPane::Deactivate() {
+    cubemapPreview->previewScene->enabled = false;
+    cubemapPreview->renderTexture->enabled = false;
+}
+
 
 void CubemapEditorPane::setCubemap(Cubemap *cubemap) {
 	enabled = true;
@@ -941,6 +964,16 @@ void MaterialEditorPane::handleEvent(Event *event) {
 	}
 }
 
+void MaterialEditorPane::Activate() {
+    materialPreview->previewScene->enabled = true;
+    materialPreview->renderTexture->enabled = true;
+}
+
+void MaterialEditorPane::Deactivate() {
+    materialPreview->previewScene->enabled = false;
+    materialPreview->renderTexture->enabled = false;
+}
+
 void MaterialEditorPane::setMaterial(Material *material) {
 	changingMaterial = true;
 	
@@ -1000,6 +1033,18 @@ MaterialMainWindow::MaterialMainWindow(ResourcePool *resourcePool) : UIElement()
 	addChild(shaderPane);	
 	addChild(cubemapPane);
 	addChild(postPane);
+}
+
+void MaterialMainWindow::Activate() {
+    materialPane->Activate();
+    cubemapPane->Activate();
+    cubemapPane->Activate();
+}
+
+void MaterialMainWindow::Deactivate() {
+    materialPane->Deactivate();
+    cubemapPane->Deactivate();
+    cubemapPane->Deactivate();
 }
 
 MaterialMainWindow::~MaterialMainWindow() {
@@ -1114,6 +1159,14 @@ PolycodeMaterialEditor::PolycodeMaterialEditor() : PolycodeEditor(true){
     
     
 	selectedMaterialNode = NULL;
+}
+
+void PolycodeMaterialEditor::Activate() {
+    mainWindow->Activate();
+}
+
+void PolycodeMaterialEditor::Deactivate() {
+    mainWindow->Deactivate();
 }
 
 PolycodeMaterialEditor::~PolycodeMaterialEditor() {

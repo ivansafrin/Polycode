@@ -581,6 +581,10 @@ void EntityEditorMainView::doAction(String actionName, PolycodeEditorActionData 
     }
 }
 
+SceneRenderTexture *EntityEditorMainView::getRenderTexture() {
+    return renderTexture;
+}
+
 void EntityEditorMainView::setEditorMode(int newMode) {
     editorMode = newMode;
     if(editorMode == EDITOR_MODE_3D) {
@@ -1680,6 +1684,13 @@ bool PolycodeEntityEditor::openFile(OSFileEntry filePath) {
 
 void PolycodeEntityEditor::Activate() {
     Resize(getWidth(), getHeight());
+    mainView->getMainScene()->enabled = true;
+    mainView->getRenderTexture()->enabled = true;
+}
+
+void PolycodeEntityEditor::Deactivate() {
+    mainView->getMainScene()->enabled = false;
+    mainView->getRenderTexture()->enabled = false;
 }
 
 void PolycodeEntityEditor::saveCurveToObject(ObjectEntry *entry, BezierCurve *curve) {

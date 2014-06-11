@@ -146,6 +146,8 @@ class EditorHolder : public UIElement {
 		ObjectEntry *getEditorHolderConfig();
 		void applyConfig(ObjectEntry *entry);
 		
+        void activateEditor(bool val);
+    
 		void handleEvent(Event *event);
 		void Resize(Number width, Number height);		
 		

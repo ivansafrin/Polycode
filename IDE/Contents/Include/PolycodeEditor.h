@@ -69,7 +69,8 @@ public:
 	
 	virtual void handleEvent(Event *event);
 
-	virtual void Activate() {};	
+	virtual void Activate() {};
+   	virtual void Deactivate() {};
 	virtual void saveFile(){};
 	
 	void didAction(String actionName, PolycodeEditorActionData *beforeData, PolycodeEditorActionData *afterData, bool setFileChanged = true);

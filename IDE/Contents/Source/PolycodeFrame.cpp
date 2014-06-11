@@ -538,6 +538,21 @@ EditorHolder::EditorHolder(PolycodeProject *project, PolycodeEditorManager *edit
     setOwnsChildrenRecursive(true);
 }
 
+void EditorHolder::activateEditor(bool val) {
+	if(firstChildHolder) {
+		firstChildHolder->activateEditor(val);
+		secondChildHolder->activateEditor(val);
+		return;
+	}
+    if(currentEditor) {
+        if(val) {
+            currentEditor->Activate();
+        } else {
+            currentEditor->Deactivate();
+        }
+    }
+}
+
 ObjectEntry *EditorHolder::getEditorHolderConfig() {
 	ObjectEntry *configEntry = new ObjectEntry();
 	configEntry->name = "editor_holder";
@@ -686,10 +701,12 @@ void EditorHolder::setEditor(PolycodeEditor *newEditor) {
 
 	if(currentEditor) {
 		removeChild(currentEditor);
+        currentEditor->Deactivate();
 		currentEditor->setEditorHolder(NULL);
 	}
 	currentEditor = newEditor;
-	if(currentEditor) {	
+	if(currentEditor) {
+        currentEditor->Activate();
 		EditorHolder *currentEditorHolder = currentEditor->getEditorHolder();
 		if(currentEditorHolder) {
 			currentEditorHolder->setEditor(NULL);
@@ -937,9 +954,11 @@ PolycodeProjectTab::PolycodeProjectTab(String caption, PolycodeProject *project,
 
 void PolycodeProjectTab::setActive(bool val) {
 	active = val;
+    editorHolder->activateEditor(val);
+    
 	if(!active) {
 		projectBrowser->removeAllHandlers();
-	}
+    }
 }
 
 bool PolycodeProjectTab::isActive() {
