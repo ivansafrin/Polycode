@@ -1106,8 +1106,14 @@ int UITextInput::caretSkipWordBack(int caretLine, int caretPosition) {
 		if(!isNumberOrCharacter(chr) && i < caretPosition-1) {
 			return i+1;
 		}
-	}	
-	return 0;
+	}
+    String bit = lines[caretLine].text;
+    char chr = ((char*)bit.c_str())[0];
+    if(isNumberOrCharacter(chr)) {
+        return 0;
+    } else {
+        return 1;
+    }
 }
 
 int UITextInput::caretSkipWordForward(int caretLine, int caretPosition) {
@@ -1680,6 +1686,7 @@ void UITextInput::showLine(unsigned int lineNumber, bool top) {
 
 bool UITextInput::isNumberOrCharacter(wchar_t charCode) {
 
+    if(charCode == '\t' || charCode == ' ') return false;
 	if(charCode == '_') return true;
 
 	if(charCode > 47 && charCode < 58)
