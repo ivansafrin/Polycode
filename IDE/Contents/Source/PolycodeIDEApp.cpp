@@ -572,12 +572,24 @@ void PolycodeIDEApp::importAssets() {
 	extensions.push_back(CoreFileExtension("TrueSpace", "scn"));
 	extensions.push_back(CoreFileExtension("XGL", "xgl"));						
 			
+#ifdef USE_POLYCODEUI_FILE_DIALOGS
+	std::vector<String> exts;
+	for(int i=0; i < extensions.size(); i++) {
+		exts.push_back(extensions[i].extension);
+	}
+
+	frame->showFileBrowser(CoreServices::getInstance()->getCore()->getUserHomeDirectory(),	false, exts, false);
+	frame->fileDialog->addEventListener(this, UIEvent::OK_EVENT);
+	frame->fileDialog->action = "openImportAssets";
+	
+#else
 	std::vector<String> files = core->openFilePicker(extensions, false);	
 	if(files.size()) {		
 		frame->assetImporterWindow->setSourceFileAndTargetFolder(files[0], projectManager->activeFolder, projectManager->activeFolder.replace(projectManager->getActiveProject()->getRootFolder(), ""));
 		frame->showModal(frame->assetImporterWindow);
 		frame->assetImporterWindow->addEventListener(this, UIEvent::OK_EVENT);
 	}
+#endif
 }
 
 void PolycodeIDEApp::addFiles() {
@@ -740,7 +752,11 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 				} else if(frame->fileDialog->action == "addFiles") {
 					OSFileEntry entry = OSFileEntry(path, OSFileEntry::TYPE_FILE);
 					core->copyDiskItem(path, projectManager->activeFolder + "/" + entry.name);
-                    refreshProject();
+ 			                   refreshProject();
+				} else if(frame->fileDialog->action == "openImportAssets") {
+					frame->assetImporterWindow->setSourceFileAndTargetFolder(path, projectManager->activeFolder, projectManager->activeFolder.replace(projectManager->getActiveProject()->getRootFolder(), ""));
+					frame->showModal(frame->assetImporterWindow);
+					frame->assetImporterWindow->addEventListener(this, UIEvent::OK_EVENT);
 				}
 			}
 		}
