@@ -353,7 +353,7 @@ void OpenGLES1Renderer::BeginRender() {
 }
 
 void OpenGLES1Renderer::setClearColor(Number r, Number g, Number b) {
-	clearColor.setColor(r,g,b,1.0f);	
+	clearColor.setColor(r,g,b,1.0f);
 	glClearColor(r,g,b,0.0f);
 }
 
@@ -479,8 +479,17 @@ Texture *OpenGLES1Renderer::createTexture(unsigned int width, unsigned int heigh
 	return newTexture;
 }
 
-void OpenGLES1Renderer::clearScreen() {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+void OpenGLES1Renderer::clearScreen(bool clearColor, bool clearDepth) {
+	GLbitfield mask = 0;
+	if (clearColor) {
+		mask |= GL_COLOR_BUFFER_BIT;
+	}
+	if (clearDepth) {
+		mask |= GL_DEPTH_BUFFER_BIT;
+	}
+	if (mask) {
+		glClear(mask);
+	}
 }
 
 void OpenGLES1Renderer::applyMaterial(Material *material,  ShaderBinding *localOptions,unsigned int shaderIndex) {

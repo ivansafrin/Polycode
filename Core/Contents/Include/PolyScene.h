@@ -157,9 +157,16 @@ namespace Polycode {
 		Color clearColor;
 		
 		/**
-		* If set to true, the renderer will use the scene's clear color when rendering the scene.
+		* If set to true, the renderer will clear the screen prior to rendering the scene
+		* @default true
 		*/
 		bool useClearColor;
+
+		/**
+		* If set to true, the renderer will clear the depth buffer prior to rendering the scene.
+		* @default true
+		*/
+		bool useClearDepth;
 
 		/**
 		* Ambient color, passed to lighting shaders

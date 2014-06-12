@@ -730,9 +730,20 @@ void OpenGLRenderer::destroyTexture(Texture *texture) {
 	delete glTex;
 }
 
-void OpenGLRenderer::clearScreen() {
-	glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+void OpenGLRenderer::clearScreen(bool useClearColor, bool useClearDepth) {
+	if (useClearColor) {
+		glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
+	}
+	GLbitfield mask = 0;
+	if (useClearColor) {
+		mask |= GL_COLOR_BUFFER_BIT;
+	}
+	if (useClearDepth) {
+		mask |= GL_DEPTH_BUFFER_BIT;
+	}
+	if (mask) {
+		glClear(mask);
+	}
 }
 
 void OpenGLRenderer::drawToColorBuffer(bool val) {

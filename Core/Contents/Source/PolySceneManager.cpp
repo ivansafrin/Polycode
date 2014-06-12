@@ -75,13 +75,17 @@ void SceneManager::setRenderer(Renderer *renderer) {
 }
 
 void SceneManager::renderVirtual() {
+	bool anyVirtualsRendered = false;
 	for(int i=0;i<renderTextures.size();i++) {
 		if(renderTextures[i]->enabled) {
             renderTextures[i]->Render();
+			anyVirtualsRendered = true;
 		}			
 	}
 	renderer->setViewportSize(renderer->getXRes(), renderer->getYRes());
-	renderer->clearScreen();
+	if (anyVirtualsRendered) {
+		renderer->clearScreen();
+	}
 }
 
 void SceneManager::Render() {

@@ -62,6 +62,7 @@ void Scene::initScene(int sceneType, bool virtualScene) {
 	clearColor.setColor(0.13f,0.13f,0.13f,1.0f); 
 	ambientColor.setColor(0.0,0.0,0.0,1.0);	
 	useClearColor = false;
+	useClearDepth = true;
 	ownsChildren = false;
     remapMouse = false;
     _doVisibilityChecking = true;
@@ -226,7 +227,9 @@ void Scene::Render(Camera *targetCamera) {
 		
 	if(useClearColor) {
 		CoreServices::getInstance()->getRenderer()->setClearColor(clearColor.r,clearColor.g,clearColor.b, clearColor.a);	
-		CoreServices::getInstance()->getRenderer()->clearScreen();		
+	}
+	if (useClearColor || useClearDepth) {
+		CoreServices::getInstance()->getRenderer()->clearScreen(useClearColor, useClearDepth);
 	}
 	
 	CoreServices::getInstance()->getRenderer()->setAmbientColor(ambientColor.r,ambientColor.g,ambientColor.b);		
