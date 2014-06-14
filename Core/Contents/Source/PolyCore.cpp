@@ -241,13 +241,16 @@ namespace Polycode {
 	void Core::doSleep() {
 		unsigned int ticks = getTicks();
 		unsigned int ticksSinceLastFrame = ticks - lastSleepFrameTicks;
-		if(ticksSinceLastFrame <= refreshInterval)
+		int sleepTimeMs = refreshInterval - ticksSinceLastFrame;
+		if(sleepTimeMs > 0) {
 #ifdef _WINDOWS
-		Sleep((refreshInterval - ticksSinceLastFrame));
+			Sleep(sleepTimeMs);
 #else
-			usleep((refreshInterval - ticksSinceLastFrame) * 1000);
+			usleep(sleepTimeMs * 1000);
 #endif
+		}
 		lastSleepFrameTicks = getTicks();
+		timeSleptMs = lastSleepFrameTicks - ticks;
 	}
 	
 	
