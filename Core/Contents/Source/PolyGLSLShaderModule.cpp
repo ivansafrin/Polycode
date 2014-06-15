@@ -230,7 +230,15 @@ void GLSLShaderModule::updateGLSLParam(Renderer *renderer, GLSLShader *glslShade
 				} else {
 					glUniform4f(paramLocation, 0.0f, 0.0f, 0.0f, 0.0f);
 				}
-			break;				
+			break;
+			case ProgramParam::PARAM_MATRIX:
+				if(localParam) {
+					glUniformMatrix4fv(paramLocation, 1, false, localParam->getMatrix4().ml);
+				} else {
+					Matrix4 defaultMatrix;
+					glUniformMatrix4fv(paramLocation, 1, false, defaultMatrix.ml);
+				}
+			break;
 		}
 }
 
