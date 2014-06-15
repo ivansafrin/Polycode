@@ -22,36 +22,42 @@
 
 #include "EntityEditorTreeView.h"
 
-EntityEditorTreeView::EntityEditorTreeView() : UIElement() {
-
+EntityEditorTreeSheet::EntityEditorTreeSheet() : PropSheet("LIST VIEW", "list_view"){
     treeContainer = new UITreeContainer("folder.png", "Root", 10, 10);
-    addChild(treeContainer);
+    contents->addChild(treeContainer);
     treeContainer->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
-    treeContainer->setPosition(0, 30);
+    treeContainer->setPosition(-20, -5);
     treeContainer->getRootNode()->toggleCollapsed();
     
-	headerBg = new UIRect(10,10);
-	addChild(headerBg);
-	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
-	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	
-	UILabel *label = new UILabel("TREE VIEW", 18, "section", Label::ANTIALIAS_FULL);
-	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
-	
-	addChild(label);
-	label->setPosition(10, 3);
-    
     selectedEntity = NULL;
     dontSendSelectionEvent = false;
 }
 
-void EntityEditorTreeView::setRootEntity(Entity *entity) {
+EntityEditorTreeView::EntityEditorTreeView() : UIElement() {
+
+    entityProps = new PropList("HIERARCHY");
+    addChild(entityProps);
+    
+    layerSheet = new LayerSheet();
+    entityProps->addPropSheet(layerSheet);
+    layerSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
+    
+    
+    treeSheet = new EntityEditorTreeSheet();
+    entityProps->addPropSheet(treeSheet);
+    
+
+}
+
+
+void EntityEditorTreeSheet::setRootEntity(Entity *entity) {
     rootEntity = entity;
     treeContainer->getRootNode()->setUserData((void*) entity);
     refreshTree();
 }
 
-void EntityEditorTreeView::syncNodeToEntity(UITree *node, Entity *entity) {
+void EntityEditorTreeSheet::syncNodeToEntity(UITree *node, Entity *entity) {
     // remove non existing and set proper ids,
 	
 	std::vector<UITree*> nodesToRemove;
@@ -132,16 +138,16 @@ void EntityEditorTreeView::syncNodeToEntity(UITree *node, Entity *entity) {
 	}
 }
 
-Entity *EntityEditorTreeView::getSelectedEntity() {
+Entity *EntityEditorTreeSheet::getSelectedEntity() {
     return selectedEntity;
 }
 
-void EntityEditorTreeView::setSelectedEntity(Entity *entity) {
+void EntityEditorTreeSheet::setSelectedEntity(Entity *entity) {
     selectedEntity = entity;
     refreshTree();
 }
 
-void EntityEditorTreeView::handleEvent(Event *event) {
+void EntityEditorTreeSheet::handleEvent(Event *event) {
 	
 	if(event->getDispatcher() == treeContainer->getRootNode()) {
 		if(event->getEventCode() == UITreeEvent::SELECTED_EVENT){
@@ -154,19 +160,31 @@ void EntityEditorTreeView::handleEvent(Event *event) {
 			dontSendSelectionEvent = false;
 		}
 	}
-	ScreenEntity::handleEvent(event);
+	PropSheet::handleEvent(event);
 }
 
+void EntityEditorTreeView::setEntityInstance(SceneEntityInstance *instance) {
+    treeSheet->setRootEntity(instance);
+    layerSheet->setEntityInstance(instance);
+}
 
-void EntityEditorTreeView::refreshTree() {
+void EntityEditorTreeSheet::refreshTree() {
     syncNodeToEntity(treeContainer->getRootNode(), rootEntity);
 }
 
-EntityEditorTreeView::~EntityEditorTreeView() {
+EntityEditorTreeSheet::~EntityEditorTreeSheet() {
     
 }
 
+EntityEditorTreeSheet *EntityEditorTreeView::getTreeSheet() {
+    return treeSheet;
+}
+
+void EntityEditorTreeSheet::Resize(Number width, Number height) {
+    treeContainer->Resize(width, height-60);
+    PropSheet::Resize(width, height);
+}
+
 void EntityEditorTreeView::Resize(Number width, Number height) {
-    treeContainer->Resize(width, height-30);
-    headerBg->Resize(width, 30);
+    entityProps->Resize(width, height);
 }

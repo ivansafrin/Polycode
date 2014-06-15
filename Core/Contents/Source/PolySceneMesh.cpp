@@ -356,7 +356,10 @@ void SceneMesh::Render() {
 	}
     
 	if(useVertexBuffer) {
-		renderer->drawVertexBuffer(mesh->getVertexBuffer(), mesh->useVertexColors);
+        VertexBuffer *vb = mesh->getVertexBuffer();
+        if(vb){
+            renderer->drawVertexBuffer(vb, mesh->useVertexColors);
+        }
 	} else {
 		renderMeshLocally();
 	}

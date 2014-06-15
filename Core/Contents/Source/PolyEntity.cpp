@@ -78,6 +78,7 @@ void Entity::initEntity() {
 	yAdjust = 1.0;
 	lastClickTicks = 0.0;
     rendererVis = true;
+    layerID = 0;
 }
 
 Entity *Entity::getEntityById(String id, bool recursive) const {
@@ -105,7 +106,7 @@ Entity *Entity::Clone(bool deepClone, bool ignoreEditorOnly) const {
 void Entity::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
 	clone->ownsChildren = ownsChildren;
 	clone->setPosition(position);
-	clone->setRotationEuler(rotation);
+	clone->setRotationByQuaternion(rotationQuat);
 	clone->setScale(scale);
 	clone->color = color;
 	clone->custEntityType = custEntityType;
@@ -126,6 +127,7 @@ void Entity::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) co
 	clone->editorOnly = editorOnly;
 	clone->snapToPixels = snapToPixels;
     clone->setAnchorPoint(anchorPoint);
+    clone->layerID = layerID;
     
 	clone->id = id;
 	if(tags == NULL) {
@@ -154,6 +156,23 @@ void Entity::setOwnsChildrenRecursive(bool val) {
 	for(int i=0; i < children.size(); i++) {
 		children[i]->setOwnsChildrenRecursive(val);
 	}
+}
+
+std::vector<Entity*> Entity::getEntitiesByLayerID(unsigned char layerID, bool recursive) const {
+	std::vector<Entity*> retVector;
+    
+	for(int i=0;i<children.size();i++) {
+		if(children[i]->layerID == layerID) {
+			retVector.push_back(children[i]);
+		}
+		
+		if(recursive) {
+			std::vector<Entity*> childVector = children[i]->getEntitiesByLayerID(layerID, recursive);
+			retVector.insert(retVector.end(), childVector.begin(), childVector.end());
+		}
+	}
+	
+	return retVector;
 }
 
 std::vector<Entity*> Entity::getEntitiesByTag(String tag, bool recursive) const {
@@ -444,6 +463,10 @@ void Entity::transformAndRender() {
 	if(!renderer || !enabled)
 		return;
 
+	if(matrixDirty) {
+		rebuildTransformMatrix();
+    }
+    
 	if(depthOnly) {
 		renderer->drawToColorBuffer(false);
 	}
@@ -579,6 +602,9 @@ void Entity::recalculateAABB() {
     
     Matrix4 fullMatrix = getAnchorAdjustedMatrix();
     if(ignoreParentMatrix) {
+        if(matrixDirty) {
+            rebuildTransformMatrix();
+        }
         fullMatrix = transformMatrix;
     }
     
@@ -703,7 +729,7 @@ Matrix4 Entity::getConcatenatedMatrix() {
 		rebuildTransformMatrix();
     }
     
-	if(parentEntity != NULL) 
+	if(parentEntity != NULL && !ignoreParentMatrix) 
 		return transformMatrix * parentEntity->getConcatenatedMatrix();
 	else
 		return transformMatrix;
@@ -995,9 +1021,11 @@ MouseEventResult Entity::onMouseDown(const Ray &ray, int mouseButton, int timest
 	MouseEventResult ret;
 	ret.hit = false;
 	ret.blocked = false;
+    Number hitDistance;
 	
 	if(processInputEvents && enabled) {
-		if(ray.boxIntersect(bBox, getAnchorAdjustedMatrix())) {
+        hitDistance = ray.boxIntersect(bBox, getAnchorAdjustedMatrix());
+		if(hitDistance >= 0.0) {
 			if(customHitDetection(ray)) {
 				ret.hit = true;	
 				
@@ -1006,6 +1034,7 @@ MouseEventResult Entity::onMouseDown(const Ray &ray, int mouseButton, int timest
 				localCoordinate = inverse * localCoordinate;			
 				
 				InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x, localCoordinate.y*yAdjust), timestamp);
+                inputEvent->hitDistance = hitDistance;
 				inputEvent->mouseButton = mouseButton;
 				dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEDOWN);
 				
@@ -1040,7 +1069,8 @@ MouseEventResult Entity::onMouseUp(const Ray &ray, int mouseButton, int timestam
 	MouseEventResult ret;
 	ret.hit = false;
 	ret.blocked = false;
-	
+	Number hitDistance;
+    
 	if(processInputEvents && enabled) {
 	
 		Vector3 localCoordinate = Vector3(ray.origin.x,ray.origin.y,0);
@@ -1049,10 +1079,11 @@ MouseEventResult Entity::onMouseUp(const Ray &ray, int mouseButton, int timestam
 	
 		InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x, localCoordinate.y*yAdjust), timestamp);
 		inputEvent->mouseButton = mouseButton;			
-	
-		if(ray.boxIntersect(bBox, getAnchorAdjustedMatrix())) {
+
+        hitDistance = ray.boxIntersect(bBox, getAnchorAdjustedMatrix());
+		if(hitDistance >= 0.0) {
 			ret.hit = true;
-			
+			inputEvent->hitDistance = hitDistance;
 			dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEUP);
 			if(blockMouseInput) {
 				ret.blocked = true;
@@ -1078,20 +1109,26 @@ MouseEventResult Entity::onMouseMove(const Ray &ray, int timestamp) {
 	MouseEventResult ret;
 	ret.hit = false;
 	ret.blocked = false;
-	
+    Number hitDistance;
+    
 	if(processInputEvents && enabled) {
 	
 		Vector3 localCoordinate = Vector3(ray.origin.x,ray.origin.y,0);
 		Matrix4 inverse = getConcatenatedMatrix().Inverse();
 		localCoordinate = inverse * localCoordinate;	
-	
-		if(ray.boxIntersect(bBox, getAnchorAdjustedMatrix())) {	
+        
+        hitDistance = ray.boxIntersect(bBox, getAnchorAdjustedMatrix());
+		if(hitDistance >= 0.0) {
 			//setColor(1.0, 0.0, 0.0, 1.0);
-			ret.hit = true;			
-			dispatchEvent(new InputEvent(Vector2(localCoordinate.x, localCoordinate.y*yAdjust), timestamp), InputEvent::EVENT_MOUSEMOVE);
+			ret.hit = true;
+            InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x, localCoordinate.y*yAdjust), timestamp);
+            inputEvent->hitDistance = hitDistance;
+			dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEMOVE);
 			
 			if(!mouseOver) {
-				dispatchEvent(new InputEvent(Vector2(localCoordinate.x, localCoordinate.y*yAdjust), timestamp), InputEvent::EVENT_MOUSEOVER);
+                InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x, localCoordinate.y*yAdjust), timestamp);
+                inputEvent->hitDistance = hitDistance;
+				dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEOVER);
 				mouseOver = true;
 			}			
 			
@@ -1123,9 +1160,11 @@ MouseEventResult Entity::onMouseWheelUp(const Ray &ray, int timestamp) {
 	MouseEventResult ret;
 	ret.hit = false;
 	ret.blocked = false;
+    Number hitDistance;
 	
 	if(processInputEvents && enabled) {
-		if(ray.boxIntersect(bBox, getAnchorAdjustedMatrix())) {
+        hitDistance = ray.boxIntersect(bBox, getAnchorAdjustedMatrix());
+		if(hitDistance >= 0.0) {
 			ret.hit = true;	
 			
 			Vector3 localCoordinate = Vector3(ray.origin.x,ray.origin.y,0);
@@ -1133,6 +1172,7 @@ MouseEventResult Entity::onMouseWheelUp(const Ray &ray, int timestamp) {
 			localCoordinate = inverse * localCoordinate;			
 			
 			InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x, localCoordinate.y*yAdjust), timestamp);
+            inputEvent->hitDistance = hitDistance;
 			dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEWHEEL_UP);
 												
 			if(blockMouseInput) {
@@ -1158,9 +1198,11 @@ MouseEventResult Entity::onMouseWheelDown(const Ray &ray, int timestamp) {
 	MouseEventResult ret;
 	ret.hit = false;
 	ret.blocked = false;
-	
+	Number hitDistance;
+    
 	if(processInputEvents && enabled) {
-		if(ray.boxIntersect(bBox, getAnchorAdjustedMatrix())) {
+        hitDistance = ray.boxIntersect(bBox, getAnchorAdjustedMatrix());
+		if(hitDistance >= 0.0) {
 			ret.hit = true;	
 			
 			Vector3 localCoordinate = Vector3(ray.origin.x,ray.origin.y,0);
@@ -1168,6 +1210,7 @@ MouseEventResult Entity::onMouseWheelDown(const Ray &ray, int timestamp) {
 			localCoordinate = inverse * localCoordinate;			
 			
 			InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x, localCoordinate.y*yAdjust), timestamp);
+            inputEvent->hitDistance = hitDistance;
 			dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEWHEEL_DOWN);
 												
 			if(blockMouseInput) {

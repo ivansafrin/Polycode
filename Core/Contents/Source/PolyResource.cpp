@@ -26,9 +26,11 @@
 
 using namespace Polycode;
 
+bool Resource::defaultReloadOnFileModify = false;
+
 Resource::Resource(int type) : EventDispatcher() {
 	this->type = type;
-	reloadOnFileModify = false;
+	reloadOnFileModify = defaultReloadOnFileModify;
 	resourceFileTime = 0;
 }
 

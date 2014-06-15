@@ -121,7 +121,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	addChild(scaleDecorators);
 		
 	transformAndScaleLines = new Entity();
-	addChild(transformAndScaleLines);
+	addChild(transformAndScaleLines);    
 		
 	rotateDectorators = new Entity();
 	addChild(rotateDectorators);
@@ -132,6 +132,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	yLine->getMesh()->dirtyArrays();
 	yLine->depthTest = false;
 	yLine->setColor(0.0, 1.0, 0.0, 1.0);
+    yLine->setLocalBoundingBox(yLine->getMesh()->calculateBBox());
     yLine->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX() * 2.0);
 	transformAndScaleLines->addChild(yLine);
 
@@ -141,6 +142,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	xLine->getMesh()->dirtyArrays();
 	xLine->depthTest = false;
 	xLine->setColor(1.0, 0.0, 0.0, 1.0);
+    xLine->setLocalBoundingBox(xLine->getMesh()->calculateBBox());
     xLine->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX() * 2.0);
 	transformAndScaleLines->addChild(xLine);
 
@@ -150,6 +152,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	zLine->getMesh()->dirtyArrays();
 	zLine->depthTest = false;
 	zLine->setColor(0.0, 0.0, 1.0, 1.0);
+    zLine->setLocalBoundingBox(zLine->getMesh()->calculateBBox());
     zLine->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX() * 2.0);
 	transformAndScaleLines->addChild(zLine);
 	
@@ -533,6 +536,9 @@ void TransformGizmo::transformSelectedEntities(const Vector3 &move, const Vector
                 
                 selectedEntities[i]->setPosition(globalPosition - selectedEntities[i]->getParentEntity()->getConcatenatedMatrix().getPosition());
                 selectedEntities[i]->setRotationByQuaternion(currentRotation * q);
+                if(move.length() == 0.0) {
+                    entityPositions[i] = selectedEntities[i]->getPosition();
+                }
                 
                 selectedEntities[i]->setScale(selectedEntities[i]->getScale() * (Vector3(1.0, 1.0, 1.0)+newScale));
                 
@@ -543,6 +549,9 @@ void TransformGizmo::transformSelectedEntities(const Vector3 &move, const Vector
                     scalePosition.z = globalPosition.z + ((globalPosition.z - globalCenter.z) * newScale.z);
                     scalePosition = selectedEntities[i]->getParentEntity()->getConcatenatedMatrix().Inverse().transpose() * scalePosition;
                     selectedEntities[i]->setPosition(scalePosition);
+                    if(move.length() == 0.0) {
+                        entityPositions[i] = selectedEntities[i]->getPosition();
+                    }
                 }
                 
             } else {
@@ -575,6 +584,9 @@ void TransformGizmo::transformSelectedEntities(const Vector3 &move, const Vector
                 
                 selectedEntities[i]->setPosition(globalPosition - selectedEntities[i]->getParentEntity()->getConcatenatedMatrix().getPosition());
                 selectedEntities[i]->setRotationByQuaternion(currentRotation * q);
+                if(move.length() == 0.0) {
+                    entityPositions[i] = selectedEntities[i]->getPosition();
+                }
                 
                 selectedEntities[i]->setScale(selectedEntities[i]->getScale() * (Vector3(1.0, 1.0, 1.0)+scale));
                 
@@ -585,6 +597,9 @@ void TransformGizmo::transformSelectedEntities(const Vector3 &move, const Vector
                     scalePosition.z = globalPosition.z + ((globalPosition.z - globalCenter.z) * scale.z);
                     scalePosition = selectedEntities[i]->getParentEntity()->getConcatenatedMatrix().Inverse().transpose() * scalePosition;
                     selectedEntities[i]->setPosition(scalePosition);
+                    if(move.length() == 0.0) {
+                        entityPositions[i] = selectedEntities[i]->getPosition();
+                    }
                 }
                 
             } else {

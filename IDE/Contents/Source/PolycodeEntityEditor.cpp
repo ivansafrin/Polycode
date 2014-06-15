@@ -41,6 +41,17 @@ PolycodeSceneEditorActionDataEntry::PolycodeSceneEditorActionDataEntry(Quaternio
     this->quat = quat;
 }
 
+PolycodeSceneEditorActionDataEntry::PolycodeSceneEditorActionDataEntry(Vector3 vec3, Vector3 vec3Secondary) {
+    this->vec3 = vec3;
+    this->vec3Secondary = vec3Secondary;
+}
+
+PolycodeSceneEditorActionDataEntry::PolycodeSceneEditorActionDataEntry(Quaternion quat, Vector3 vec3) {
+    this->quat = quat;
+    this->vec3 = vec3;
+}
+
+
 PolycodeSceneEditorActionDataEntry::PolycodeSceneEditorActionDataEntry(Number number) {
     this->number = number;
 }
@@ -204,6 +215,7 @@ CameraPreviewWindow::CameraPreviewWindow() : UIElement() {
     aspectCombo->addComboItem("16:9");
     aspectCombo->addComboItem("16:10");
     aspectCombo->addComboItem("4:3");
+    aspectCombo->addComboItem("16:18");
     aspectCombo->addEventListener(this, UIEvent::CHANGE_EVENT);
     
     pinButton = new UIButton("Pin", 60);
@@ -269,13 +281,16 @@ void CameraPreviewWindow::handleEvent(Event *event) {
             case 2:
                 Resize(bBox.y * 1.3, bBox.y);
             break;
+            case 3:
+                Resize(bBox.y * 0.888, bBox.y);
+            break;
                 
         }
     }
 }
 
 CameraPreviewWindow::~CameraPreviewWindow() {
-    
+    delete renderTexture;
 }
 
 void CameraPreviewWindow::setCamera(Scene *scene, Camera *camera) {
@@ -313,6 +328,9 @@ EntityEditorMainView::EntityEditorMainView(PolycodeEditor *editor) {
     
     this->editor = editor;
 	mainScene = new Scene(Scene::SCENE_3D, true);
+    
+    mainScene->getDefaultCamera()->frustumCulling = false;
+    mainScene->doVisibilityChecking(false);
     
 	renderTexture = new SceneRenderTexture(mainScene, mainScene->getDefaultCamera(), 512, 512);
 	mainScene->clearColor.setColor(0.2, 0.2, 0.2, 1.0);	
@@ -369,7 +387,7 @@ EntityEditorMainView::EntityEditorMainView(PolycodeEditor *editor) {
 	
 	mainScene->getDefaultCamera()->setPosition(10, 10, 10);
 	mainScene->getDefaultCamera( )->lookAt(Vector3());
-	mainScene->getDefaultCamera()->setClippingPlanes(0.01, 10000);
+	mainScene->getDefaultCamera()->setClippingPlanes(0.01, 1000);
     
 	grid = new EditorGrid();
     grid->addEventListener(this, Event::CHANGE_EVENT);
@@ -468,6 +486,12 @@ EntityEditorMainView::EntityEditorMainView(PolycodeEditor *editor) {
     iconVisibilitySelector->setPosition(230, 2);
     iconVisibilitySelector->addEventListener(this, UIEvent::SELECT_EVENT);
     
+    bBoxVis = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 1.0, 1.0, 1.0);
+    bBoxVis->overlayWireframe = true;
+    bBoxVis->wireFrameColor = Color(0.3, 0.5, 1.0, 0.5);
+    bBoxVis->color.a = 0.0;
+    bBoxVis->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    mainScene->addChild(bBoxVis);
     
     editorMode = EDITOR_MODE_3D;
     
@@ -492,16 +516,19 @@ void EntityEditorMainView::doAction(String actionName, PolycodeEditorActionData 
             }
 		}
         transformGizmo->setTransformSelection(selectedEntities);
+        setBBox();
 	} else if(actionName == "scale") {
 		for(int i=0; i < selectedEntities.size(); i++) {
             if(i < sceneData->entries.size()) {
                 selectedEntities[i]->setScale(sceneData->entries[i].vec3);
+                selectedEntities[i]->setPosition(sceneData->entries[i].vec3Secondary);
             }
 		}
     } else if(actionName == "rotate") {
 		for(int i=0; i < selectedEntities.size(); i++) {
             if(i < sceneData->entries.size()) {
                 selectedEntities[i]->setRotationByQuaternion(sceneData->entries[i].quat);
+                selectedEntities[i]->setPosition(sceneData->entries[i].vec3);
             }
 		}
     } else if(actionName == "select") {
@@ -554,6 +581,10 @@ void EntityEditorMainView::doAction(String actionName, PolycodeEditorActionData 
     }
 }
 
+SceneRenderTexture *EntityEditorMainView::getRenderTexture() {
+    return renderTexture;
+}
+
 void EntityEditorMainView::setEditorMode(int newMode) {
     editorMode = newMode;
     if(editorMode == EDITOR_MODE_3D) {
@@ -561,12 +592,12 @@ void EntityEditorMainView::setEditorMode(int newMode) {
         grid->setGridMode(EditorGrid::GRID_MODE_3D);
         transformGizmo->setGizmoMode(TransformGizmo::GIZMO_MODE_3D);
         mainScene->getDefaultCamera()->setOrthoMode(false);
-        mainScene->getDefaultCamera()->setClippingPlanes(1, 1000);
+        mainScene->getDefaultCamera()->setClippingPlanes(0.1, 1000);
         trackballCamera->disableRotation(false);
     } else {
         mainScene->setSceneType(Scene::SCENE_2D);
         mainScene->getDefaultCamera()->setOrthoMode(true);
-        mainScene->getDefaultCamera()->setClippingPlanes(-1, 10000);
+        mainScene->getDefaultCamera()->setClippingPlanes(-100, 100);
         trackballCamera->setCameraPosition(trackballCamera->getOribitingCenter()+Vector3(0.0, 0.0, trackballCamera->getCameraDistance()));
         grid->setGridMode(EditorGrid::GRID_MODE_2D);
         transformGizmo->setGizmoMode(TransformGizmo::GIZMO_MODE_2D);
@@ -601,14 +632,40 @@ void EntityEditorMainView::Paste(EntityEditorClipboardData *data) {
     }
 }
 
+bool EntityEditorMainView::selectingNewEntities(){
+    
+    if(entitiesToSelect.size() != lastEntitiesToSelect.size()) {
+        return true;
+    }
+    
+    for(int i=0; i < entitiesToSelect.size(); i++) {
+        if(lastEntitiesToSelect[i].entity != entitiesToSelect[i].entity) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool EntityDistanceSorter::operator() (MultiselectorEntry i,MultiselectorEntry j) {
+	if(i.distance < j.distance) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 void EntityEditorMainView::Update() {
     
     if(entitiesToSelect.size() != 0) {
-        if(multiselectIndex > entitiesToSelect.size()-1) {
+        
+        sort (entitiesToSelect.begin(), entitiesToSelect.end(), distanceSorter);
+        
+        if(multiselectIndex > entitiesToSelect.size()-1 || selectingNewEntities()) {
             multiselectIndex = 0;
         }
-        selectEntity(entitiesToSelect[multiselectIndex], input->getKeyState(KEY_LSHIFT) || input->getKeyState(KEY_RSHIFT));
+        selectEntity(entitiesToSelect[multiselectIndex].entity, input->getKeyState(KEY_LSHIFT) || input->getKeyState(KEY_RSHIFT));
         multiselectIndex++;
+        lastEntitiesToSelect = entitiesToSelect;
         entitiesToSelect.clear();
     }
     
@@ -620,20 +677,28 @@ void EntityEditorMainView::Update() {
     for(int i=0; i < icons.size(); i++) {
         Number scale;
         
+        
         Entity *parentEntity = (Entity*) icons[i]->getUserData();
         
-        Vector3 parentPosition = parentEntity->getConcatenatedMatrix().getPosition();
-        icons[i]->setPosition(parentPosition);
-        
-        if(editorMode == EDITOR_MODE_2D) {
-            scale = trackballCamera->getCameraDistance() * 0.1;
+        if(!parentEntity->visible) {
+            icons[i]->visible = false;
         } else {
-            scale = mainScene->getDefaultCamera()->getPosition().distance(icons[i]->getConcatenatedMatrix().getPosition()) * 0.1;
+            icons[i]->visible = true;
+            Vector3 parentPosition = parentEntity->getConcatenatedMatrix().getPosition();
+            icons[i]->setPosition(parentPosition);
+            
+            if(editorMode == EDITOR_MODE_2D) {
+                scale = trackballCamera->getCameraDistance() * 0.1;
+            } else {
+                scale = mainScene->getDefaultCamera()->getPosition().distance(icons[i]->getConcatenatedMatrix().getPosition()) * 0.1;
+            }
+            icons[i]->setScale(scale, scale, scale);
+            icons[i]->rebuildTransformMatrix();
+            icons[i]->recalculateAABBAllChildren();
         }
-        icons[i]->setScale(scale, scale, scale);
-        icons[i]->rebuildTransformMatrix();
-        icons[i]->recalculateAABBAllChildren();
     }
+    
+    setBBox();
 }
 
 void EntityEditorMainView::createIcon(Entity *entity, String iconFile) {
@@ -943,6 +1008,7 @@ void EntityEditorMainView::deleteSelected(bool doAction) {
     
     selectedEntities.clear();
     transformGizmo->setTransformSelection(selectedEntities);
+    setBBox();
     dispatchEvent(new Event(), Event::CHANGE_EVENT);
 }
 
@@ -976,7 +1042,7 @@ void EntityEditorMainView::handleEvent(Event *event) {
                 {
                     PolycodeSceneEditorActionData *data = new PolycodeSceneEditorActionData();
                     for(int i=0; i < selectedEntities.size(); i++) {
-                        data->entries.push_back(PolycodeSceneEditorActionDataEntry(selectedEntities[i]->getScale()));
+                        data->entries.push_back(PolycodeSceneEditorActionDataEntry(selectedEntities[i]->getScale(), selectedEntities[i]->getPosition()));
                     }
                     editor->didAction("scale", beforeData, data);
                     beforeData = NULL;
@@ -987,7 +1053,7 @@ void EntityEditorMainView::handleEvent(Event *event) {
                 {
                     PolycodeSceneEditorActionData *data = new PolycodeSceneEditorActionData();
                     for(int i=0; i < selectedEntities.size(); i++) {
-                        data->entries.push_back(PolycodeSceneEditorActionDataEntry(selectedEntities[i]->getRotationQuat()));
+                        data->entries.push_back(PolycodeSceneEditorActionDataEntry(selectedEntities[i]->getRotationQuat(), selectedEntities[i]->getPosition()));
                     }
                     editor->didAction("rotate", beforeData, data);
                     beforeData = NULL;                    
@@ -1011,7 +1077,7 @@ void EntityEditorMainView::handleEvent(Event *event) {
                 {
                     beforeData = new PolycodeSceneEditorActionData();
                     for(int i=0; i < selectedEntities.size(); i++) {
-                        beforeData->entries.push_back(PolycodeSceneEditorActionDataEntry(selectedEntities[i]->getScale()));
+                        beforeData->entries.push_back(PolycodeSceneEditorActionDataEntry(selectedEntities[i]->getScale(), selectedEntities[i]->getPosition()));
                     }
                 }
                 break;
@@ -1020,7 +1086,7 @@ void EntityEditorMainView::handleEvent(Event *event) {
                 {
                     beforeData = new PolycodeSceneEditorActionData();
                     for(int i=0; i < selectedEntities.size(); i++) {
-                        beforeData->entries.push_back(PolycodeSceneEditorActionDataEntry(selectedEntities[i]->getRotationQuat()));
+                        beforeData->entries.push_back(PolycodeSceneEditorActionDataEntry(selectedEntities[i]->getRotationQuat(), selectedEntities[i]->getPosition()));
                     }
                 }
                 break;
@@ -1186,8 +1252,9 @@ void EntityEditorMainView::handleEvent(Event *event) {
         if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN && hasFocus && event->getDispatcher() != renderTextureShape) {
             InputEvent *inputEvent = (InputEvent*) event;
 
-            if(inputEvent->mouseButton == CoreInput::MOUSE_BUTTON2) {
-                Entity* targetEntity = (Entity*) event->getDispatcher();
+            Entity* targetEntity = (Entity*) event->getDispatcher();
+            if(inputEvent->mouseButton == CoreInput::MOUSE_BUTTON2 && targetEntity->visible) {
+
                 
                 // if it's an icon, select the entity linked to the icon
                 for(int i=0; i < icons.size(); i++) {
@@ -1196,7 +1263,11 @@ void EntityEditorMainView::handleEvent(Event *event) {
                     }
                 }
                 
-                entitiesToSelect.push_back(targetEntity);
+                MultiselectorEntry entry;
+                entry.entity = targetEntity;
+                entry.distance = inputEvent->hitDistance;
+
+                entitiesToSelect.push_back(entry);
             }
         }
     }
@@ -1238,6 +1309,30 @@ void EntityEditorMainView::moveSelectedBottom() {
     }
 }
 
+void EntityEditorMainView::selectAll(bool doAction) {
+
+    if(doAction) {
+        beforeData = new PolycodeSceneEditorActionData();
+        for(int i=0; i < selectedEntities.size(); i++) {
+            beforeData->entries.push_back(PolycodeSceneEditorActionDataEntry(selectedEntities[i]));
+        }
+        
+        editor->didAction("select", beforeData, NULL, false);
+        beforeData = NULL;
+    }
+
+    selectedEntities.clear();
+    for(int i=0; i < objectRootInstance->getNumChildren(); i++) {
+        Entity *child = objectRootInstance->getChildAtIndex(i);
+        if(!child->editorOnly) {
+            selectEntity(child, true, false);
+        }
+    }
+    transformGizmo->setTransformSelection(selectedEntities);
+    setBBox();
+    dispatchEvent(new Event(), Event::CHANGE_EVENT);
+}
+
 void EntityEditorMainView::selectNone(bool doAction) {
     
     if(doAction) {
@@ -1256,6 +1351,7 @@ void EntityEditorMainView::selectNone(bool doAction) {
     }
     selectedEntities.clear();
     transformGizmo->setTransformSelection(selectedEntities);
+    setBBox();
     dispatchEvent(new Event(), Event::CHANGE_EVENT);
 }
 
@@ -1367,9 +1463,28 @@ void EntityEditorMainView::selectEntity(Entity *targetEntity, bool addToSelectio
         beforeData = NULL;
     }
     
+    
+    
     transformGizmo->setTransformSelection(selectedEntities);
+    setBBox();
     dispatchEvent(new Event(), Event::CHANGE_EVENT);
     
+}
+
+void EntityEditorMainView::setBBox() {
+    if(selectedEntities.size() > 0) {
+        bBoxVis->visible = true;
+        
+        Entity *targetEntity = selectedEntities[0];
+        bBoxVis->setPrimitiveOptions(ScenePrimitive::TYPE_BOX, targetEntity->getLocalBoundingBox().x, targetEntity->getLocalBoundingBox().y, targetEntity->getLocalBoundingBox().z);
+        
+        Matrix4 mat = targetEntity->getConcatenatedMatrix();
+        bBoxVis->setTransformByMatrixPure(mat);
+        bBoxVis->dirtyMatrix(false);
+        
+    } else {
+        bBoxVis->visible = false;
+    }
 }
 
 Entity *EntityEditorMainView::getObjectRoot() {
@@ -1389,6 +1504,7 @@ void EntityEditorMainView::setObjectRoot(SceneEntityInstance *entity) {
 }
 
 EntityEditorMainView::~EntityEditorMainView() {
+    mainScene->rootEntity.setOwnsChildrenRecursive(true);
     delete mainScene;
     delete renderTexture;
 //    delete transformGizmo;
@@ -1464,7 +1580,7 @@ void EntityEditorPropertyContainer::handleEvent(Event *event) {
             break;
             case 1:
                 currentView = treeView;
-                treeView->refreshTree();
+                treeView->getTreeSheet()->refreshTree();
             break;
             case 2:
                 currentView = settingsView;
@@ -1506,22 +1622,22 @@ PolycodeEntityEditor::PolycodeEntityEditor() : PolycodeEditor(true){
     treeView = propertyContainer->treeView;
     settingsView = propertyContainer->settingsView;
     
-    treeView->addEventListener(this, Event::CHANGE_EVENT);
+    treeView->getTreeSheet()->addEventListener(this, Event::CHANGE_EVENT);
     
     mainSizer->addRightChild(propertyContainer);
 }
 
 void PolycodeEntityEditor::handleEvent(Event *event) {
     
-    if(event->getDispatcher() == treeView) {
-        mainView->selectEntity(treeView->getSelectedEntity());
+    if(event->getDispatcher() == treeView->getTreeSheet()) {
+        mainView->selectEntity(treeView->getTreeSheet()->getSelectedEntity());
     }
     
     if(event->getDispatcher() == mainView) {
         switch(event->getEventCode()) {
             case Event::CHANGE_EVENT:
                 propertyView->setEntity(mainView->getSelectedEntity());
-                treeView->setSelectedEntity(mainView->getSelectedEntity());
+                treeView->getTreeSheet()->setSelectedEntity(mainView->getSelectedEntity());
             break;
         }
     }
@@ -1559,7 +1675,7 @@ bool PolycodeEntityEditor::openFile(OSFileEntry filePath) {
     mainView->setObjectRoot(loadedInstance);
     mainView->setEditorPropsRecursive(loadedInstance);
     
-    treeView->setRootEntity(loadedInstance);
+    treeView->setEntityInstance(loadedInstance);
     propertyView->setEntityInstance(loadedInstance);
     settingsView->setEntityInstance(loadedInstance);
     
@@ -1568,6 +1684,13 @@ bool PolycodeEntityEditor::openFile(OSFileEntry filePath) {
 
 void PolycodeEntityEditor::Activate() {
     Resize(getWidth(), getHeight());
+    mainView->getMainScene()->enabled = true;
+    mainView->getRenderTexture()->enabled = true;
+}
+
+void PolycodeEntityEditor::Deactivate() {
+    mainView->getMainScene()->enabled = false;
+    mainView->getRenderTexture()->enabled = false;
 }
 
 void PolycodeEntityEditor::saveCurveToObject(ObjectEntry *entry, BezierCurve *curve) {
@@ -1597,6 +1720,7 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
         return;
     
     entry->addChild("id", entity->id);
+    entry->addChild("layerID", (int)entity->layerID);
     
     String tagString = "";
     for(int i=0; i < entity->getNumTags(); i++) {
@@ -1819,9 +1943,10 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
     entry->addChild("sY", entity->getScale().y);
     entry->addChild("sZ", entity->getScale().z);
         
-    entry->addChild("rX", entity->getPitch());
-    entry->addChild("rY", entity->getYaw());
-    entry->addChild("rZ", entity->getRoll());
+    entry->addChild("rX", entity->getRotationQuat().x);
+    entry->addChild("rY", entity->getRotationQuat().y);
+    entry->addChild("rZ", entity->getRotationQuat().z);
+    entry->addChild("rW", entity->getRotationQuat().w);
     
     entry->addChild("pX", entity->getPosition().x);
     entry->addChild("pY", entity->getPosition().y);
@@ -1913,6 +2038,12 @@ void PolycodeEntityEditor::destroyClipboardData(void *data, String type) {
     }
 }
 
+void PolycodeEntityEditor::selectAll() {
+    if(mainView->hasFocus) {
+        mainView->selectAll(true);
+    }
+}
+
 void PolycodeEntityEditor::Paste(void *data, String clipboardType) {
     if(!data) {
         return;
@@ -1931,9 +2062,22 @@ void PolycodeEntityEditor::saveFile() {
     for(int i=0; i < loadedInstance->getNumLinkedResourePools(); i++) {
         ResourcePool *pool = loadedInstance->getLinkedResourcePoolAtIndex(i);
         linkedMaterialFiles->addChild("matFile")->addChild("path", pool->getName());
-    }    
+    }
+    
+    ObjectEntry *layersEntry = settings->addChild("layers");
+    for(int i=0; i < loadedInstance->getNumLayers(); i++) {
+        SceneEntityInstanceLayer *layer = loadedInstance->getLayerAtIndex(i);
+        if(layer->layerID != 0) {
+            ObjectEntry *layerEntry = layersEntry->addChild("layer");
+            layerEntry->addChild("name", layer->name);
+            layerEntry->addChild("id", layer->layerID);
+            layerEntry->addChild("visible", layer->visible);
+        }
+    }
     
     saveObject.root.name = "entity";
+    saveObject.root.addChild("version", 2);
+    
     ObjectEntry *children = saveObject.root.addChild("root");
     saveEntityToObjectEntry(mainView->getObjectRoot(), children);
     

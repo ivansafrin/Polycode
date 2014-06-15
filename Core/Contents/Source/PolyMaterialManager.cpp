@@ -38,6 +38,7 @@ MaterialManager::MaterialManager() {
 	premultiplyAlphaOnLoad = false;
 	clampDefault = false;
 	mipmapsDefault = true;
+    keepTextureData = true;
 }
 
 MaterialManager::~MaterialManager() {
@@ -176,12 +177,20 @@ Texture *MaterialManager::createNewTexture(int width, int height, bool clamp, bo
 Texture *MaterialManager::createTexture(int width, int height, char *imageData, bool clamp, bool createMipmaps, int type) {
 	Texture *newTexture = CoreServices::getInstance()->getRenderer()->createTexture(width, height, imageData,clamp, createMipmaps, type);
 	textures.push_back(newTexture);
+    if(!keepTextureData) {
+        free(newTexture->textureData);
+        newTexture->textureData = NULL;
+    }
 	return newTexture;
 }
 
 Texture *MaterialManager::createTextureFromImage(Image *image, bool clamp, bool createMipmaps) {
 	Texture *newTexture;
 	newTexture = createTexture(image->getWidth(), image->getHeight(), image->getPixels(),clamp, createMipmaps, image->getType());
+    if(!keepTextureData) {
+        free(newTexture->textureData);
+        newTexture->textureData = NULL;
+    }
 	return newTexture; 
 }
 

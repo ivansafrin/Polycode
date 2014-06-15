@@ -136,6 +136,17 @@ Number Camera::getOrthoSizeY() {
 	return orthoSizeY;
 }
 
+unsigned int Camera::getNumLocalShaderOptions()const {
+    return localShaderOptions.size();
+}
+
+ShaderBinding* Camera::getLocalShaderOption(unsigned int index) const {
+    if(index < localShaderOptions.size()) {
+        return localShaderOptions[index];
+    } else {
+        return NULL;
+    }
+}
 
 void Camera::buildFrustumPlanes() {
 

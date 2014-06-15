@@ -185,7 +185,7 @@ void Peer::sendPacket(const Address &target, Packet *packet) {
 }
 
 bool Peer::checkPacketAcks(PeerConnection *connection, Packet *packet) {
-	if(packet->header.sequence > connection->remoteSequence) {
+	if(packet->header.sequence > connection->remoteSequence || connection->remoteSequence == 0) {
 		connection->remoteSequence = packet->header.sequence;
 	} else {
 		return false;

@@ -37,6 +37,7 @@ SceneParticleEmitter::SceneParticleEmitter(unsigned int particleCount, Number li
     depthWrite = false;
     systemEnabled = true;
     setParticleCount(particleCount);
+    colorDeviation = Color(0.0, 0.0, 0.0, 0.0);
 }
 
 SceneParticleEmitter::~SceneParticleEmitter() {
@@ -47,6 +48,27 @@ Entity *SceneParticleEmitter::Clone(bool deepClone, bool ignoreEditorOnly) const
     SceneParticleEmitter *newEmitter = new SceneParticleEmitter(1, 1, 1);
     applyClone(newEmitter, deepClone, ignoreEditorOnly);
     return newEmitter;
+}
+
+void SceneParticleEmitter::addSourceMesh(Mesh *mesh) {
+    sourceMeshes.push_back(mesh);
+}
+
+int SceneParticleEmitter::getNumSourceMeshes() {
+    return sourceMeshes.size();
+}
+
+Mesh *SceneParticleEmitter::getSourcesMeshAtIndex(int index) {
+    if(index > 0 && index < sourceMeshes.size()) {
+        return sourceMeshes[index];
+    }
+    return false;
+}
+
+void SceneParticleEmitter::removeSourceMeshAtIndex(int index) {
+    if(index > 0 && index < sourceMeshes.size()) {
+        sourceMeshes.erase(sourceMeshes.begin() + index);
+    }
 }
 
 void SceneParticleEmitter::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
@@ -86,6 +108,13 @@ void SceneParticleEmitter::applyClone(Entity *clone, bool deepClone, bool ignore
 
 void SceneParticleEmitter::resetParticle(unsigned int index) {
     particles[index].lifetime = 0.0;
+    
+    if(sourceMeshes.size() > 0) {
+        particles[index].varianceIndex = rand() % sourceMeshes.size();
+    } else {
+        particles[index].varianceIndex = 0;
+    }
+    
     q.fromAxes(-directionDeviation.x + (directionDeviation.x * RANDOM_NUMBER * 2.0), -directionDeviation.y + (directionDeviation.y * RANDOM_NUMBER * 2.0), -directionDeviation.z + (directionDeviation.z * RANDOM_NUMBER * 2.0));
     particles[index].velocity = q.applyTo(directionVector);
     particles[index].position = Vector3(-emitterSize.x + (emitterSize.x * RANDOM_NUMBER * 2.0), -emitterSize.y + (emitterSize.y * RANDOM_NUMBER * 2.0), -emitterSize.z + (emitterSize.z * RANDOM_NUMBER * 2.0));
@@ -96,6 +125,11 @@ void SceneParticleEmitter::resetParticle(unsigned int index) {
         particles[index].position = systemTrasnformMatrix * particles[index].position;
         particles[index].velocity = systemTrasnformMatrix.rotateVector( particles[index].velocity);
     }
+    
+    particles[index].color = Color(1.0 - (RANDOM_NUMBER*colorDeviation.r),
+                                   1.0 - (RANDOM_NUMBER*colorDeviation.g),
+                                   1.0 - (RANDOM_NUMBER*colorDeviation.b),
+                                   1.0 - (RANDOM_NUMBER*colorDeviation.a));
 }
 
 void SceneParticleEmitter::setParticleCount(unsigned int newParticleCount) {
@@ -180,9 +214,9 @@ void SceneParticleEmitter::rebuildParticles() {
             }
         }
         break;
+        case PARTICLE_TYPE_MESH:
         case PARTICLE_TYPE_QUAD:
         {
-            mesh->setMeshType(Mesh::QUAD_MESH);
             Matrix4 cameraMatrix = renderer->getCameraMatrix();
             Quaternion q;
             
@@ -201,25 +235,55 @@ void SceneParticleEmitter::rebuildParticles() {
                     particlePosition = inverseMatrix * particlePosition;
                 }
                 
-                Vector3 vertexPosition = Vector3(-finalParticleSize, -finalParticleSize, 0.0);
-                vertexPosition = q.applyTo(vertexPosition);
-                vertexPosition = cameraMatrix.rotateVector(vertexPosition);
-                mesh->addVertex(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 0.0, 0.0)->vertexColor = vertexColor;
-                
-                vertexPosition = Vector3(finalParticleSize, -finalParticleSize, 0.0);
-                vertexPosition = q.applyTo(vertexPosition);
-                vertexPosition = cameraMatrix.rotateVector(vertexPosition);
-                mesh->addVertex(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 1.0, 0.0)->vertexColor = vertexColor;
+                if(particleType == PARTICLE_TYPE_MESH) {
+                    mesh->setMeshType(Mesh::TRI_MESH);
+                    
+                    int indexOffset = 0;
+                    
+                    int meshIndex = particles[i].varianceIndex;
+                    if(meshIndex < sourceMeshes.size()) {
+                        
+                        indexOffset = mesh->getActualVertexCount();
+                        
+                        for(int v=0; v <  sourceMeshes[meshIndex]->getActualVertexCount(); v++) {
+                            Vertex *sv = sourceMeshes[meshIndex]->getActualVertex(v);
+                            Vector3 vpos = Vector3(sv->x, sv->y, sv->z) * finalParticleSize;
+                            vpos = q.applyTo(vpos);
+                            
+                            vpos += particlePosition;
+                            Vertex *newV = mesh->addVertex(vpos.x, vpos.y, vpos.z, sv->texCoord.x, sv->texCoord.y);
+                            newV->vertexColor = vertexColor;
+                            newV->normal = q.applyTo(sv->normal);
+                        }
+                        
+                        for(int v=0; v < sourceMeshes[meshIndex]->getIndexCount(); v++) {
+                            mesh->addIndex(indexOffset + sourceMeshes[meshIndex]->getIndexAt(v));
+                        }
+                    }
+                    
+                } else {
+                    mesh->setMeshType(Mesh::QUAD_MESH);
+                    
+                    Vector3 vertexPosition = Vector3(-finalParticleSize, -finalParticleSize, 0.0);
+                    vertexPosition = q.applyTo(vertexPosition);
+                    vertexPosition = cameraMatrix.rotateVector(vertexPosition);
+                    mesh->addVertex(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 0.0, 0.0)->vertexColor = vertexColor;
+                    
+                    vertexPosition = Vector3(finalParticleSize, -finalParticleSize, 0.0);
+                    vertexPosition = q.applyTo(vertexPosition);
+                    vertexPosition = cameraMatrix.rotateVector(vertexPosition);
+                    mesh->addVertex(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 1.0, 0.0)->vertexColor = vertexColor;
 
-                vertexPosition = Vector3(finalParticleSize, finalParticleSize, 0.0);
-                vertexPosition = q.applyTo(vertexPosition);
-                vertexPosition = cameraMatrix.rotateVector(vertexPosition);
-                mesh->addVertex(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 1.0, 1.0)->vertexColor = vertexColor;
+                    vertexPosition = Vector3(finalParticleSize, finalParticleSize, 0.0);
+                    vertexPosition = q.applyTo(vertexPosition);
+                    vertexPosition = cameraMatrix.rotateVector(vertexPosition);
+                    mesh->addVertex(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 1.0, 1.0)->vertexColor = vertexColor;
 
-                vertexPosition = Vector3(-finalParticleSize, finalParticleSize, 0.0);
-                vertexPosition = q.applyTo(vertexPosition);
-                vertexPosition = cameraMatrix.rotateVector(vertexPosition);
-                mesh->addVertex(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 0.0, 1.0)->vertexColor = vertexColor;
+                    vertexPosition = Vector3(-finalParticleSize, finalParticleSize, 0.0);
+                    vertexPosition = q.applyTo(vertexPosition);
+                    vertexPosition = cameraMatrix.rotateVector(vertexPosition);
+                    mesh->addVertex(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 0.0, 1.0)->vertexColor = vertexColor;
+                }
 
             }
         }
@@ -228,8 +292,10 @@ void SceneParticleEmitter::rebuildParticles() {
     }
   
     mesh->dirtyArrays();
-//    mesh->dirtyArray(RenderDataArray::VERTEX_DATA_ARRAY);
- //   mesh->dirtyArray(RenderDataArray::COLOR_DATA_ARRAY);
+    
+    if(useVertexBuffer) {
+		CoreServices::getInstance()->getRenderer()->createVertexBufferForMesh(mesh);
+    }
 }
 
 unsigned int SceneParticleEmitter::getParticleCount() const {
@@ -356,16 +422,14 @@ void SceneParticleEmitter::updateParticles() {
         
         normLife = particles[i].lifetime / lifetime;
         if(useColorCurves) {
-            particles[i].color.setColor(colorCurveR.getHeightAt(normLife)*particles[i].brightnessDeviation,
-                                        colorCurveG.getHeightAt(normLife)*particles[i].brightnessDeviation,
-                                        colorCurveB.getHeightAt(normLife)*particles[i].brightnessDeviation,
-                                        colorCurveA.getHeightAt(normLife)*particles[i].brightnessDeviation);
-        } else {
-            particles[i].color = color;
+            particles[i].color.setColor(colorCurveR.getYValueAtX(normLife)*particles[i].brightnessDeviation,
+                                        colorCurveG.getYValueAtX(normLife)*particles[i].brightnessDeviation,
+                                        colorCurveB.getYValueAtX(normLife)*particles[i].brightnessDeviation,
+                                        colorCurveA.getYValueAtX(normLife)*particles[i].brightnessDeviation);
         }
         
         if(useScaleCurve) {
-            particles[i].scale = scaleCurve.getHeightAt(normLife);
+            particles[i].scale = scaleCurve.getYValueAtX(normLife);
         } else {
             particles[i].scale = 1.0;
         }

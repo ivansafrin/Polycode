@@ -101,7 +101,7 @@ extern "C" {
 		defaultPath.append(module);
 		
 		const char* fullPath = module.c_str();		
-//		Logger::log("Loading custom class: %s\n", module.c_str());
+        Logger::log("Loading custom class: %s\n", module.c_str());
 
 		OSFILE *inFile = OSBasics::open(module, "r");	
 		
@@ -367,9 +367,9 @@ extern "C" {
 		luaopen_Physics2D(L);
 		luaopen_Physics3D(L);
 		luaopen_UI(L);
-		
-				
-		/*		
+        
+        printf("CORE SERVICES: %d\n", CoreServices::getInstance());
+
 		for(int i=0; i < loadedModules.size(); i++) {
 			String moduleName = loadedModules[i];
 #ifdef _WINDOWS
@@ -398,24 +398,15 @@ extern "C" {
 			lua_pushstring(L, moduleLoadCall.c_str());			
 			lua_call(L, 2, 2);
 			
-			lua_setfield(L, LUA_GLOBALSINDEX, "err");								
-			lua_setfield(L, LUA_GLOBALSINDEX, "f");		
-
-//			lua_getfield(L, LUA_GLOBALSINDEX, "print");
-//			lua_getfield(L, LUA_GLOBALSINDEX, "err");						
-//			lua_call(L, 1, 0);						
-
+			lua_setfield(L, LUA_GLOBALSINDEX, "err");
+			lua_setfield(L, LUA_GLOBALSINDEX, "f");
 			printf("SETTING CORE SERVICES\n");			
 			lua_getfield(L, LUA_GLOBALSINDEX, "f");
-			lua_getfield(L, LUA_GLOBALSINDEX, "__core__services__instance");						
+			lua_getfield(L, LUA_GLOBALSINDEX, "__core__services__instance");
 			lua_call(L, 1, 0);			
 			
-			printf("DONE LOADING MODULE...\n");				
-			//local f = package.loadlib("/Users/ivansafrin/Desktop/Workshop/HelloPolycodeLUA/libPolycode2DPhysicsModule.dylib", "luaopen_Physics2D")
-			//f(Polycore.CoreServices_getInstance())
-					
+			printf("DONE LOADING MODULE...\n");
 		}
-*/
 
 		doneLoading = true;
 		

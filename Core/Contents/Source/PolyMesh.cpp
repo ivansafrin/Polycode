@@ -105,7 +105,10 @@ bool Mesh::getUseFaceNormals() {
 }
 
 
-void Mesh::setVertexBuffer(VertexBuffer *buffer) {
+void Mesh::setVertexBuffer(VertexBuffer *buffer) {    
+    if(vertexBuffer) {
+        delete vertexBuffer;
+    }
     vertexBuffer = buffer;
     meshHasVertexBuffer = true;
 }
@@ -339,7 +342,8 @@ Vertex *Mesh::addVertex(Number x, Number y, Number z, Number u, Number v) {
 void Mesh::saveToFile(const String& fileName, bool writeNormals, bool writeTangents, bool writeColors, bool writeBoneWeights, bool writeUVs, bool writeSecondaryUVs) {
     OSFILE *outFile = OSBasics::open(fileName, "wb");
     if(!outFile) {
-        Logger::log("Error opening mesh file for saving: %s", fileName.c_str());
+        Logger::log("Error opening mesh file for saving: %s\n", fileName.c_str());
+        return;
     }
     saveToFile(outFile, writeNormals, writeTangents, writeColors, writeBoneWeights, writeUVs, writeSecondaryUVs);
     OSBasics::close(outFile);	
@@ -349,7 +353,8 @@ void Mesh::saveToFile(const String& fileName, bool writeNormals, bool writeTange
 void Mesh::loadMesh(const String& fileName) {
     OSFILE *inFile = OSBasics::open(fileName, "rb");
     if(!inFile) {
-        Logger::log("Error opening mesh file %s", fileName.c_str());
+        Logger::log("Error opening mesh file %s\n", fileName.c_str());
+        return;
     }
     loadFromFile(inFile);
     OSBasics::close(inFile);	
@@ -532,11 +537,21 @@ Vector3 Mesh::calculateBBox() {
     Vector3 retVec;
     
     for(int i=0; i < vertices.size(); i++) {
-        retVec.x = max(retVec.x,fabs(vertices[i]->x));
-        retVec.y = max(retVec.y,fabs(vertices[i]->y));
-        retVec.z = max(retVec.z,fabs(vertices[i]->z));
+		retVec.x = max(retVec.x,(Number)fabs(vertices[i]->x));
+		retVec.y = max(retVec.y,(Number)fabs(vertices[i]->y));
+		retVec.z = max(retVec.z,(Number)fabs(vertices[i]->z));
     }
     
+    if(retVec.x == 0.0) {
+        retVec.x = 0.001;
+    }
+    if(retVec.y == 0.0) {
+        retVec.y = 0.001;
+    }
+    if(retVec.z == 0.0) {
+        retVec.z = 0.001;
+    }
+
     return retVec*2;
 }
 
@@ -595,6 +610,17 @@ unsigned int Mesh::getVertexCount() {
     } else {
         return vertices.size();
     }
+}
+
+unsigned int Mesh::getIndexCount() {
+    return indices.size();
+}
+
+unsigned int Mesh::getIndexAt(unsigned int index) {
+    if(index < indices.size()) {
+        return indices[index];
+    }
+    return 0;
 }
 
 void Mesh::createTorus(Number radius, Number tubeRadius, int segmentsW, int segmentsH) {

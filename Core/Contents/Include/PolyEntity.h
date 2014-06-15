@@ -641,7 +641,10 @@ namespace Polycode {
 			
 			Entity *getEntityById(String id, bool recursive) const;
 			std::vector<Entity*> getEntitiesByTag(String tag, bool recursive) const;
-			
+
+            std::vector<Entity*> getEntitiesByLayerID(unsigned char layerID, bool recursive) const;
+        
+        
 			std::vector <EntityProp> entityProps;
 			String getEntityProp(const String& propName);
 			void setEntityProp(const String& propName, const String& propValue);
@@ -716,6 +719,8 @@ namespace Polycode {
             void setLocalBoundingBoxZ(Number z);
         
             bool rendererVis;
+        
+            unsigned char layerID;
 
 		protected:
 		

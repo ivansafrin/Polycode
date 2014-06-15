@@ -53,9 +53,12 @@ public:
     PolycodeSceneEditorActionDataEntry(Vector3 vec3, Number number);
     PolycodeSceneEditorActionDataEntry(Quaternion quat);
     PolycodeSceneEditorActionDataEntry(Vector3 vec3);
+    PolycodeSceneEditorActionDataEntry(Vector3 vec3, Vector3 vec3Secondary);
+    PolycodeSceneEditorActionDataEntry(Quaternion quat, Vector3 vec3);
     PolycodeSceneEditorActionDataEntry(Number number);
     PolycodeSceneEditorActionDataEntry(Entity *entity);
     Vector3 vec3;
+    Vector3 vec3Secondary;
     Quaternion quat;
     Number number;
     Entity *entity;
@@ -145,6 +148,16 @@ class SceneMeshSettings {
         ShaderBinding *shaderBinding;
 };
 
+class MultiselectorEntry {
+    public:
+        Entity *entity;
+        Number distance;
+};
+
+class EntityDistanceSorter : public PolyBase {
+    public:
+    bool operator() (MultiselectorEntry i,MultiselectorEntry j);
+};
 
 class EntityEditorMainView : public UIElement {
 		public:
@@ -179,6 +192,9 @@ class EntityEditorMainView : public UIElement {
     
             void disableLighting(bool disable);
             void selectNone(bool doAction);
+            void selectAll(bool doAction);
+    
+            SceneRenderTexture *getRenderTexture();
     
             void onGainFocus();
             void onLoseFocus();
@@ -187,6 +203,8 @@ class EntityEditorMainView : public UIElement {
             void doAction(String actionName, PolycodeEditorActionData *data);
     
             void didPlaceEntity(Entity *entity);
+    
+            void setBBox();
     
             Entity *getObjectRoot();
             void setObjectRoot(SceneEntityInstance *entity);
@@ -199,6 +217,8 @@ class EntityEditorMainView : public UIElement {
             static const int EDITOR_MODE_2D = 1;
     
 		protected:
+    
+            bool selectingNewEntities();
     
             CoreInput *input;
             PolycodeSceneEditorActionData *beforeData;
@@ -214,13 +234,18 @@ class EntityEditorMainView : public UIElement {
 				
             unsigned int multiselectIndex;
 			std::vector<Entity*> selectedEntities;
-            std::vector<Entity*> entitiesToSelect;
+            std::vector<MultiselectorEntry> entitiesToSelect;
+            std::vector<MultiselectorEntry> lastEntitiesToSelect;
+    
+            EntityDistanceSorter distanceSorter;
     
 			Scene *mainScene;
             Entity *sceneObjectRoot;
     
             SceneLight *customLight1;
             SceneLight *customLight2;
+    
+        	ScenePrimitive *bBoxVis;
     
             Entity *objectRootBase;
             Entity *iconBase;
@@ -289,6 +314,8 @@ class PolycodeEntityEditor : public PolycodeEditor {
 		void Resize(int x, int y);
     
         void Activate();
+        void Deactivate();
+    
         void saveFile();
         void saveCurveToObject(ObjectEntry *entry, BezierCurve *curve);
         void saveShaderOptionsToEntry(ObjectEntry *entry, Material *material, ShaderBinding *binding);
@@ -298,6 +325,7 @@ class PolycodeEntityEditor : public PolycodeEditor {
     
         String Copy(void **data);
         void Paste(void *data, String clipboardType);
+        void selectAll();
         void destroyClipboardData(void *data, String type);
     
         void handleEvent(Event *event);

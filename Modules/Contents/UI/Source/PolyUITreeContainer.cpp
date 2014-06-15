@@ -86,6 +86,10 @@ void UITreeContainer::Resize(Number width, Number height) {
 	setHeight(height);
 }
 
+UIScrollContainer *UITreeContainer::getScrollContainer() {
+    return mainContainer;
+}
+
 void UITreeContainer::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == CoreServices::getInstance()->getCore()->getInput()) {

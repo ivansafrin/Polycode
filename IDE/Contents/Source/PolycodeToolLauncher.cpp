@@ -113,7 +113,7 @@ void PolycodeToolLauncher::buildProject(PolycodeProject *project, String destina
 
 }
 
-String PolycodeToolLauncher::importAssets(String sourceFile, String inFolder, bool addMeshes, String prefix, bool swapZY, bool generateTangents, bool listOnly, bool writeNormals, bool writeTangents, bool writeColors, bool writeBoneWeights, bool writeUVs, bool writeSecondaryUVs) {
+String PolycodeToolLauncher::importAssets(String sourceFile, String inFolder, bool addMeshes, String prefix, bool swapZY, bool generateNormals, bool generateTangents, bool listOnly, bool writeNormals, bool writeTangents, bool writeColors, bool writeBoneWeights, bool writeUVs, bool writeSecondaryUVs, bool exportScene, bool generateMaterialFile, bool overrideMaterials, String materialOverrideName, bool specifyBaseAssetPath, String baseAssetPath) {
 
 	String ret;
 	String polycodeBasePath = CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory();
@@ -127,6 +127,9 @@ String PolycodeToolLauncher::importAssets(String sourceFile, String inFolder, bo
 	}
 	if(swapZY) {
 		args = "-s "+args;
+	}
+	if(generateNormals) {
+		args = "-m "+args;
 	}
 	if(generateTangents) {
 		args = "-t "+args;
@@ -149,9 +152,20 @@ String PolycodeToolLauncher::importAssets(String sourceFile, String inFolder, bo
     if(writeSecondaryUVs) {
 		args = "-v "+args;
     }
-    
+    if(exportScene) {
+		args = "-e "+args;
+    }
+    if(generateMaterialFile) {
+		args = "-f "+args;
+    }
+    if(overrideMaterials) {
+		args = "-o \""+materialOverrideName+"\" "+args;
+    }
+    if(specifyBaseAssetPath) {
+		args = "-x \""+baseAssetPath+"\" "+args;        
+    }
 	if(prefix != "") {
-		args = "-p "+prefix+" "+args;
+		args = "-p \""+prefix+"\" "+args;
 	}
     
 

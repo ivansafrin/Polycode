@@ -79,6 +79,17 @@ PolycodeMeshEditor::PolycodeMeshEditor() : PolycodeEditor(true){
 	
 }
 
+void PolycodeMeshEditor::Activate() {
+    previewScene->enabled = true;
+    renderTexture->enabled = true;
+}
+
+void PolycodeMeshEditor::Deactivate() {
+    previewScene->enabled = false;
+    renderTexture->enabled = false;
+    
+}
+
 void PolycodeMeshEditor::reloadMaterials() {
 
 	Resource *selectedMaterial = NULL;

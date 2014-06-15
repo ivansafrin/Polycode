@@ -313,7 +313,6 @@ void EditCurve::handleEvent(Event *event) {
 
 void EditCurve::updateCurve() {
 	targetCurve->recalculateDistances();
-	targetCurve->rebuildBuffers();
 	
 	Number interval = 300.0/CURVE_SIZE;
 	Number normInterval = 1.0/CURVE_SIZE;
@@ -539,6 +538,21 @@ EditorHolder::EditorHolder(PolycodeProject *project, PolycodeEditorManager *edit
     setOwnsChildrenRecursive(true);
 }
 
+void EditorHolder::activateEditor(bool val) {
+	if(firstChildHolder) {
+		firstChildHolder->activateEditor(val);
+		secondChildHolder->activateEditor(val);
+		return;
+	}
+    if(currentEditor) {
+        if(val) {
+            currentEditor->Activate();
+        } else {
+            currentEditor->Deactivate();
+        }
+    }
+}
+
 ObjectEntry *EditorHolder::getEditorHolderConfig() {
 	ObjectEntry *configEntry = new ObjectEntry();
 	configEntry->name = "editor_holder";
@@ -637,7 +651,7 @@ void EditorHolder::updateFileSelector() {
 	currentFileSelector->clearItems();
 	
 	std::vector<PolycodeEditor*> editors = editorManager->getOpenEditorsForProject(project);
-	
+
 	for(int i=0; i < editors.size(); i++) {
 		OSFileEntry entry(editors[i]->getFilePath(), OSFileEntry::TYPE_FILE);
 		
@@ -687,10 +701,12 @@ void EditorHolder::setEditor(PolycodeEditor *newEditor) {
 
 	if(currentEditor) {
 		removeChild(currentEditor);
+        currentEditor->Deactivate();
 		currentEditor->setEditorHolder(NULL);
 	}
 	currentEditor = newEditor;
-	if(currentEditor) {	
+	if(currentEditor) {
+        currentEditor->Activate();
 		EditorHolder *currentEditorHolder = currentEditor->getEditorHolder();
 		if(currentEditorHolder) {
 			currentEditorHolder->setEditor(NULL);
@@ -700,12 +716,14 @@ void EditorHolder::setEditor(PolycodeEditor *newEditor) {
 		}
 		addChild(currentEditor);
 	}
+
 	updateFileSelector();
-	Resize(getWidth(), getHeight());
-	
+    
 	if(isActive) {
-		editorManager->setCurrentEditor(currentEditor);	
+		editorManager->setCurrentEditor(currentEditor);
 	}
+    
+	Resize(getWidth(), getHeight());
 }
 
 PolycodeEditor *EditorHolder::getEditor() {
@@ -843,7 +861,11 @@ void EditorHolder::_mergeSides(EditorHolder *mainHolder) {
 	if(hSizer) {
 		removeChild(hSizer);
 		delete hSizer;
-	}	
+	}
+    
+    firstChildHolder->setOwnsChildrenRecursive(false);
+    secondChildHolder->setOwnsChildrenRecursive(false);
+    
 	delete firstChildHolder;
 	delete secondChildHolder;
 	
@@ -852,7 +874,7 @@ void EditorHolder::_mergeSides(EditorHolder *mainHolder) {
 	vSizer = NULL;
 	hSizer = NULL;
 	
-	setActive(true);    
+	setActive(true);
 	setEditor(mainHolderEditor);
 }
 
@@ -932,9 +954,11 @@ PolycodeProjectTab::PolycodeProjectTab(String caption, PolycodeProject *project,
 
 void PolycodeProjectTab::setActive(bool val) {
 	active = val;
+    editorHolder->activateEditor(val);
+    
 	if(!active) {
 		projectBrowser->removeAllHandlers();
-	}
+    }
 }
 
 bool PolycodeProjectTab::isActive() {
@@ -1507,7 +1531,7 @@ void PolycodeFrame::showModal(UIWindow *modalChild) {
 void PolycodeFrame::hideModal() {
 	if(modalChild) {
 		modalRoot->removeChild(modalChild);
-		modalChild->removeEventListener(this, UIEvent::CLOSE_EVENT);	
+		assetBrowser->removeAllHandlers();
 		modalChild->hideWindow(); 
 		modalChild = NULL;
 	}

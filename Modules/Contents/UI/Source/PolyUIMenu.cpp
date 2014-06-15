@@ -247,6 +247,16 @@ UIMenuItem *UIMenu::addOption(String label, String _id, void *data) {
 	newItem->setPosition(0,paddingY+nextItemHeight);
 	nextItemHeight += menuItemHeight;
 	dropDownBox->resizeBox(menuWidth, nextItemHeight + (paddingY * 2.0));
+    
+    Number difference = CoreServices::getInstance()->getCore()->getYRes() - (getPosition().y + dropDownBox->getHeight());
+    if(difference < 0) {
+        setPositionY(getPosition().y + difference);
+    }
+    difference = CoreServices::getInstance()->getCore()->getXRes() - (getPosition().x + dropDownBox->getWidth());
+    if(difference < 0) {
+        setPositionX(getPosition().x + difference);
+    }
+    
 	return newItem;
 }
 

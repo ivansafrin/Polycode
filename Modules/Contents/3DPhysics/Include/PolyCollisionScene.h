@@ -109,8 +109,10 @@ struct CollisionResult {
 			CollisionEntity *getCollisionByScreenEntity(Entity *ent);
 			CollisionResult testCollision(Entity *ent1, Entity *ent2);
 			CollisionResult testCollisionOnCollisionChild(CollisionEntity *cEnt1, CollisionEntity *cEnt2);				
-			CollisionResult testCollisionOnCollisionChild_Convex(CollisionEntity *cEnt1, CollisionEntity *cEnt2);	
+			CollisionResult testCollisionOnCollisionChild_Convex(CollisionEntity *cEnt1, CollisionEntity *cEnt2);
 		
+            bool isColliding(Entity *ent1);
+        
 			virtual CollisionEntity *addCollisionChild(Entity *newEntity, int type=0, int group=1);
 			CollisionEntity *trackCollision(Entity *newEntity, int type=0, int group=1);
 			void removeCollision(Entity *entity);

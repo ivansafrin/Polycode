@@ -55,6 +55,7 @@ SceneEntityInstance *SceneEntityInstance::BlankSceneEntityInstance(Scene *parent
 }
 
 SceneEntityInstance::SceneEntityInstance(Scene *parentScene, const String& fileName) : Entity() {
+    createNewLayer("default");
     this->parentScene = parentScene;
 	resourceEntry = new SceneEntityInstanceResourceEntry(this);
     topLevelResourcePool = CoreServices::getInstance()->getResourceManager()->getGlobalPool();
@@ -66,6 +67,7 @@ SceneEntityInstance::SceneEntityInstance(Scene *parentScene, const String& fileN
 }
 
 SceneEntityInstance::SceneEntityInstance(Scene *parentScene) : Entity() {
+    createNewLayer("default");
     this->parentScene = parentScene;
 	cloneUsingReload = true;
 	ownsChildren = true;
@@ -73,9 +75,16 @@ SceneEntityInstance::SceneEntityInstance(Scene *parentScene) : Entity() {
 	resourceEntry = new SceneEntityInstanceResourceEntry(this);
 }
 
-SceneEntityInstance::~SceneEntityInstance() {	
+SceneEntityInstance::~SceneEntityInstance() {
+    for(int i=0; i < layers.size(); i++) {
+            delete layers[i];
+    }
+    
 	CoreServices::getInstance()->getResourceManager()->removeResource(resourceEntry);
 	delete resourceEntry;
+    for(int i=0; i < resourcePools.size(); i++) {
+        CoreServices::getInstance()->getResourceManager()->unsubscibeFromResourcePool(resourcePools[i]);
+    }
 }
 
 void SceneEntityInstance::reloadEntityInstance() {
@@ -116,6 +125,7 @@ void SceneEntityInstance::linkResourcePool(ResourcePool *pool) {
     }
     pool->setFallbackPool(topLevelResourcePool);
     topLevelResourcePool = pool;
+    CoreServices::getInstance()->getResourceManager()->subscribeToResourcePool(pool);
     resourcePools.push_back(pool);
 }
 
@@ -148,6 +158,7 @@ void SceneEntityInstance::unlinkResourcePool(ResourcePool *pool) {
         if(resourcePools[i] == pool) {
             resourcePools.erase(resourcePools.begin() + i);
             rebuildResourceLinks();
+            CoreServices::getInstance()->getResourceManager()->unsubscibeFromResourcePool(pool);
             return;
         }
     }
@@ -262,7 +273,7 @@ void SceneEntityInstance::parseObjectIntoCurve(ObjectEntry *entry, BezierCurve *
 	
 }
 
-Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entity *targetEntity) {
+Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entity *targetEntity, int entityFileVersion) {
 
 	Entity *entity = NULL;
 
@@ -456,12 +467,21 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
 
         entity->setScale((*entry)["sX"]->NumberVal, (*entry)["sY"]->NumberVal, (*entry)["sZ"]->NumberVal);
         entity->setPosition((*entry)["pX"]->NumberVal, (*entry)["pY"]->NumberVal, (*entry)["pZ"]->NumberVal);
-        entity->setRotationEuler(Vector3((*entry)["rX"]->NumberVal, (*entry)["rY"]->NumberVal, (*entry)["rZ"]->NumberVal));
+        
+        if(entityFileVersion > 1) {
+            entity->setRotationQuat((*entry)["rW"]->NumberVal, (*entry)["rX"]->NumberVal, (*entry)["rY"]->NumberVal, (*entry)["rZ"]->NumberVal);
+        } else {
+            entity->setRotationEuler(Vector3((*entry)["rX"]->NumberVal, (*entry)["rY"]->NumberVal, (*entry)["rZ"]->NumberVal));
+        }
 	}
 	
 	if((*entry)["id"]->stringVal != "") {
 		entity->id = (*entry)["id"]->stringVal;
 	}
+    
+    if((*entry)["layerID"]) {
+        entity->layerID = (unsigned int)((*entry)["layerID"]->intVal);
+    }
 	
 	String tagString = (*entry)["tags"]->stringVal; 
 	
@@ -487,7 +507,7 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
 	if(children) {
 		for(int i=0; i < children->length; i++) {
 			ObjectEntry *childEntry = ((*children))[i];
-			ScreenEntity *childEntity = loadObjectEntryIntoEntity(childEntry);
+			ScreenEntity *childEntity = loadObjectEntryIntoEntity(childEntry, NULL, entityFileVersion);
 			entity->addChild(childEntity);				
 		}
 	}
@@ -514,6 +534,65 @@ void SceneEntityInstance::clearInstance() {
     children.clear();
 }
 
+bool SceneEntityInstance::hasLayerID(unsigned char layerID) const {
+    for(int i=0; i < layers.size(); i++) {
+        if(layers[i]->layerID == layerID) {
+            return true;
+        }
+    }
+    return false;
+}
+
+SceneEntityInstanceLayer::SceneEntityInstanceLayer(SceneEntityInstance *instance, String name) {
+    this->instance = instance;
+    this->name = name;
+    visible = true;
+}
+
+void SceneEntityInstanceLayer::setLayerVisibility(bool val) {
+    visible = val;
+    
+    std::vector<Entity*> entities = instance->getEntitiesByLayerID(layerID, true);
+    for(int i=0; i < entities.size(); i++) {
+        entities[i]->visible = val;
+    }
+}
+
+SceneEntityInstanceLayer *SceneEntityInstance::createNewLayer(String name) {
+    SceneEntityInstanceLayer *newLayer = new SceneEntityInstanceLayer(this, name);
+    
+    unsigned char layerID;
+    for(layerID=0; layerID <= 255; layerID++) {
+        if(!hasLayerID(layerID)) {
+            break;
+        }
+    }
+    newLayer->layerID = layerID;
+    layers.push_back(newLayer);
+    return newLayer;
+}
+
+unsigned int SceneEntityInstance::getNumLayers() const {
+    return layers.size();
+}
+
+void SceneEntityInstance::removeLayer(SceneEntityInstanceLayer *layer) {
+    for(int i=0; i < layers.size(); i++) {
+        if(layers[i] == layer) {
+            delete layers[i];
+            layers.erase(layers.begin()+i);
+        }
+    }
+}
+
+SceneEntityInstanceLayer *SceneEntityInstance::getLayerAtIndex(unsigned int index) const {
+    if(index < layers.size()) {
+        return layers[index];
+    } else {
+        return NULL;
+    }
+}
+
 bool SceneEntityInstance::loadFromFile(const String& fileName) {
 
 	clearInstance();
@@ -529,8 +608,33 @@ bool SceneEntityInstance::loadFromFile(const String& fileName) {
         }
 	}
     
+    int entityFileVersion = 1;
+    
+    ObjectEntry *versionObject = loadObject.root["version"];
+    if(versionObject) {
+        entityFileVersion = versionObject->intVal;
+    }
+    
 	ObjectEntry *settings = loadObject.root["settings"];
     if(settings) {
+        
+        ObjectEntry *layersEntry = (*settings)["layers"];
+        if(layersEntry) {
+            for(int i=0; i < layersEntry->length; i++) {
+                ObjectEntry *layer = (*layersEntry)[i];
+                if(layer) {
+                    ObjectEntry *name = (*layer)["name"];
+                    ObjectEntry *layerID = (*layer)["id"];
+                    ObjectEntry *visible = (*layer)["visible"];
+                    if(name && layerID && visible) {
+                        SceneEntityInstanceLayer *newLayer = new SceneEntityInstanceLayer(this, name->stringVal);
+                        newLayer->visible = visible->boolVal;
+                        newLayer->layerID = (unsigned char) layerID->intVal;
+                        layers.push_back(newLayer);
+                    }
+                }
+            }
+        }
         ObjectEntry *matFiles = (*settings)["matFiles"];
         for(int i=0; i < matFiles->length; i++) {
             ObjectEntry *matFile = (*matFiles)[i];
@@ -540,6 +644,7 @@ bool SceneEntityInstance::loadFromFile(const String& fileName) {
                     ResourcePool *newPool = CoreServices::getInstance()->getResourceManager()->getResourcePoolByName(path->stringVal);
                     if(!newPool) {
                         newPool = new ResourcePool(path->stringVal,  CoreServices::getInstance()->getResourceManager()->getGlobalPool());
+                        newPool->deleteOnUnsubscribe = true;
                         CoreServices::getInstance()->getMaterialManager()->loadMaterialLibraryIntoPool(newPool, path->stringVal);
                         CoreServices::getInstance()->getResourceManager()->addResourcePool(newPool);
                     }
@@ -552,8 +657,20 @@ bool SceneEntityInstance::loadFromFile(const String& fileName) {
     
 	ObjectEntry *root = loadObject.root["root"];
 	if(root) {
-		loadObjectEntryIntoEntity(root, this);
+		loadObjectEntryIntoEntity(root, this, entityFileVersion);
 	}
+    
+    for(int i=0; i < layers.size(); i++ ) {
+        SceneEntityInstanceLayer *layer = layers[i];
+        if(layer->layerID != 0) {
+            if(layer->visible == false) {
+                std::vector<Entity*> layerEntities = getEntitiesByLayerID(layer->layerID, true);
+                for(int j=0; j < layerEntities.size(); j++) {
+                    layerEntities[j]->visible = false;
+                }
+            }
+        }
+    }
 	
 	return true;
 }

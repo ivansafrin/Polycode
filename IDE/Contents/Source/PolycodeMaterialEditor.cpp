@@ -94,6 +94,17 @@ PostEditorPane::PostEditorPane(ResourcePool *resourcePool) : UIElement() {
 		
 }
 
+void PostEditorPane::Activate() {
+    postPreview->previewScene->enabled = true;
+    postPreview->renderTexture->enabled = true;
+}
+
+void PostEditorPane::Deactivate() {
+    postPreview->previewScene->enabled = false;
+    postPreview->renderTexture->enabled = false;
+}
+
+
 PostEditorPane::~PostEditorPane() {
 
 }
@@ -241,11 +252,23 @@ CubemapEditorPane::CubemapEditorPane(ResourcePool *resourcePool) : UIElement() {
 	baseProps->propHeight = 420;
 	propList->updateProps();
 		
-	Material *previewMaterial = (Material*) CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "LightCube");
+	Material *previewMaterial = (Material*) CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "SkyBox");
 	cubemapPreview->setMaterial(previewMaterial);
 	enabled = false;
 	
 }
+
+
+void CubemapEditorPane::Activate() {
+    cubemapPreview->previewScene->enabled = true;
+    cubemapPreview->renderTexture->enabled = true;
+}
+
+void CubemapEditorPane::Deactivate() {
+    cubemapPreview->previewScene->enabled = false;
+    cubemapPreview->renderTexture->enabled = false;
+}
+
 
 void CubemapEditorPane::setCubemap(Cubemap *cubemap) {
 	enabled = true;
@@ -941,6 +964,16 @@ void MaterialEditorPane::handleEvent(Event *event) {
 	}
 }
 
+void MaterialEditorPane::Activate() {
+    materialPreview->previewScene->enabled = true;
+    materialPreview->renderTexture->enabled = true;
+}
+
+void MaterialEditorPane::Deactivate() {
+    materialPreview->previewScene->enabled = false;
+    materialPreview->renderTexture->enabled = false;
+}
+
 void MaterialEditorPane::setMaterial(Material *material) {
 	changingMaterial = true;
 	
@@ -1000,6 +1033,18 @@ MaterialMainWindow::MaterialMainWindow(ResourcePool *resourcePool) : UIElement()
 	addChild(shaderPane);	
 	addChild(cubemapPane);
 	addChild(postPane);
+}
+
+void MaterialMainWindow::Activate() {
+    materialPane->Activate();
+    cubemapPane->Activate();
+    cubemapPane->Activate();
+}
+
+void MaterialMainWindow::Deactivate() {
+    materialPane->Deactivate();
+    cubemapPane->Deactivate();
+    cubemapPane->Deactivate();
 }
 
 MaterialMainWindow::~MaterialMainWindow() {
@@ -1111,16 +1156,21 @@ void MaterialBrowser::Resize(Number width, Number height) {
 }
 
 PolycodeMaterialEditor::PolycodeMaterialEditor() : PolycodeEditor(true){
-    resourcePool = new ResourcePool("Local",     CoreServices::getInstance()->getResourceManager()->getGlobalPool());
-    resourcePool->reloadResourcesOnModify = true;
     
-    CoreServices::getInstance()->getResourceManager()->addResourcePool(resourcePool);
+    
 	selectedMaterialNode = NULL;
 }
 
+void PolycodeMaterialEditor::Activate() {
+    mainWindow->Activate();
+}
+
+void PolycodeMaterialEditor::Deactivate() {
+    mainWindow->Deactivate();
+}
+
 PolycodeMaterialEditor::~PolycodeMaterialEditor() {
-	delete resourcePool;
-    
+    CoreServices::getInstance()->getResourceManager()->unsubscibeFromResourcePool(resourcePool);
     
     mainWindow->setOwnsChildrenRecursive(true);
     delete mainWindow;
@@ -1130,6 +1180,19 @@ PolycodeMaterialEditor::~PolycodeMaterialEditor() {
 
 bool PolycodeMaterialEditor::openFile(OSFileEntry filePath) {
 	
+    String resourceName = filePath.fullPath.replace(parentProject->getRootFolder()+"/", "");
+    
+    resourcePool = CoreServices::getInstance()->getResourceManager()->getResourcePoolByName(resourceName);
+    
+    if(!resourcePool) {
+        resourcePool = new ResourcePool(resourceName,  CoreServices::getInstance()->getResourceManager()->getGlobalPool());
+        resourcePool->reloadResourcesOnModify = true;
+        resourcePool->deleteOnUnsubscribe = true;
+        CoreServices::getInstance()->getMaterialManager()->loadMaterialLibraryIntoPool(resourcePool, filePath.fullPath);
+        CoreServices::getInstance()->getResourceManager()->addResourcePool(resourcePool);
+    }
+    
+    CoreServices::getInstance()->getResourceManager()->subscribeToResourcePool(resourcePool);
 		
 	mainSizer = new UIHSizer(100,100,200,false);
 	addChild(mainSizer);	
@@ -1139,42 +1202,33 @@ bool PolycodeMaterialEditor::openFile(OSFileEntry filePath) {
 	
 	materialBrowser->addEventListener(this, Event::CHANGE_EVENT);
 	
-	
-	shaders = CoreServices::getInstance()->getMaterialManager()->loadShadersFromFile(resourcePool, filePath.fullPath);
-	for(int i=0; i < shaders.size(); i++) {
-		materialBrowser->addShader(shaders[i]);		
-		CoreServices::getInstance()->getMaterialManager()->addShader(shaders[i]);
-		resourcePool->addResource(shaders[i]);
-		shaders[i]->vp->reloadOnFileModify = true;
-		shaders[i]->fp->reloadOnFileModify = true;
-	}	
-
-	cubemaps = CoreServices::getInstance()->getMaterialManager()->loadCubemapsFromFile(filePath.fullPath);
-	for(int i=0; i < cubemaps.size(); i++) {
-		materialBrowser->addCubemap(cubemaps[i]);
-        resourcePool->addResource(cubemaps[i]);
-	}	
-
-	
-	std::vector<Material*> mats = CoreServices::getInstance()->getMaterialManager()->loadMaterialsFromFile(resourcePool, filePath.fullPath);
-	
-	materials.clear();
-	for(int i=0; i < mats.size(); i++) {
-		if(mats[i]->screenMaterial) {
-			postMaterials.push_back(mats[i]);
+    std::vector<Resource*> res = resourcePool->getResources(Resource::RESOURCE_SHADER);
+    for(int i=0; i < res.size(); i++) {
+        Shader *shader = (Shader*)res[i];
+		materialBrowser->addShader(shader);
+		shader->vp->reloadOnFileModify = true;
+		shader->fp->reloadOnFileModify = true;
+        shaders.push_back(shader);
+    }
+    
+    res = resourcePool->getResources(Resource::RESOURCE_CUBEMAP);
+    for(int i=0; i < res.size(); i++) {
+        Cubemap *cubemap = (Cubemap*)res[i];
+		materialBrowser->addCubemap(cubemap);
+        cubemaps.push_back(cubemap);
+    }
+    
+    res = resourcePool->getResources(Resource::RESOURCE_MATERIAL);
+    for(int i=0; i < res.size(); i++) {
+        Material *material = (Material*)res[i];
+		if(material->screenMaterial) {
+			postMaterials.push_back(material);
+            materialBrowser->addPostMaterial(material);
 		} else {
-			materials.push_back(mats[i]);		
+			materials.push_back(material);
+            materialBrowser->addMaterial(material);
 		}
-	}
-	
-	for(int i=0; i < materials.size(); i++) {
-		materialBrowser->addMaterial(materials[i]);
-        resourcePool->addResource(materials[i]);
-	}
-
-	for(int i=0; i < postMaterials.size(); i++) {
-		materialBrowser->addPostMaterial(postMaterials[i]);
-	}
+    }
 	
 	mainWindow = new MaterialMainWindow(resourcePool);
 	mainSizer->addLeftChild(mainWindow);

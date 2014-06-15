@@ -60,6 +60,11 @@ namespace Polycode {
 			bool reloadResourcesOnModify;
             bool dispatchChangeEvents;
         
+            int resourceSubscribers;
+            bool deleteOnUnsubscribe;
+        
+            static bool defaultReloadResourcesOnModify;
+        
         private:
         
             ResourcePool *fallbackPool;
@@ -113,6 +118,9 @@ namespace Polycode {
 			std::vector<Resource*> getResources(int resourceType);
         
 			void removeResource(Resource *resource);
+        
+            void subscribeToResourcePool(ResourcePool *pool);
+            void unsubscibeFromResourcePool(ResourcePool *pool);
         
 			void Update(int elapsed);
 			void handleEvent(Event *event);

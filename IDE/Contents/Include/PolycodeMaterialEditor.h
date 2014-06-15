@@ -155,6 +155,9 @@ class CubemapEditorPane : public UIElement {
 		void handleEvent(Event *event);
 		Cubemap *currentCubemap;		
 		
+        void Activate();
+        void Deactivate();
+    
 	protected:
 	
 		PropList *propList;
@@ -181,6 +184,9 @@ class PostEditorPane : public UIElement {
 		void handleEvent(Event *event);
 		Material *currentMaterial;	
 		
+        void Activate();
+        void Deactivate();
+    
 		void adjustPreview();
 		
 		protected:
@@ -249,6 +255,10 @@ class MaterialEditorPane : public UIElement {
 	public:
 		MaterialEditorPane();
 		~MaterialEditorPane();
+    
+        void Activate();
+        void Deactivate();
+    
 		
 		void setMaterial(Material *material);
 		void handleEvent(Event *event);
@@ -279,6 +289,9 @@ class MaterialMainWindow : public UIElement {
 	MaterialMainWindow(ResourcePool *resourcePool);
 	~MaterialMainWindow();
 	
+    void Activate();
+    void Deactivate();
+    
 	void Resize(Number width, Number height);
 	
 	MaterialEditorPane *materialPane;
@@ -297,8 +310,10 @@ class PolycodeMaterialEditor : public PolycodeEditor {
 	bool openFile(OSFileEntry filePath);
 	void Resize(int x, int y);
 	
+    void Activate();
+    void Deactivate();
 	
-	void handleEvent(Event *event);	
+	void handleEvent(Event *event);
 	void saveFile();
 	void saveMaterials(ObjectEntry *materialsEntry, std::vector<Material*> materials);
 	

@@ -61,7 +61,8 @@ PolycodeEditor::PolycodeEditor(bool _isReadOnly) : UIElement(), ClipboardProvide
 	core->addEventListener(this, Core::EVENT_COPY);
 	core->addEventListener(this, Core::EVENT_PASTE);
 	core->addEventListener(this, Core::EVENT_UNDO);	
-	core->addEventListener(this, Core::EVENT_REDO);	
+	core->addEventListener(this, Core::EVENT_REDO);
+	core->addEventListener(this, Core::EVENT_SELECT_ALL);
 }
 
 void PolycodeEditor::setHasChanges(bool newVal) {
@@ -88,6 +89,11 @@ void PolycodeEditor::handleEvent(Event *event) {
 			// Only copypaste of more complex IDE entities is handled here.
 			// Pure text copy/paste is handled in:
 			// Modules/Contents/UI/Source/PolyUITextInput.cpp
+			case Core::EVENT_SELECT_ALL:
+			{
+                selectAll();
+            }
+            break;
 			case Core::EVENT_COPY:
 			{
 				void *data = NULL;

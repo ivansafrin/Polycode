@@ -52,7 +52,7 @@ CoreMutex *CoreServices::getRenderMutex() {
 
 void CoreServices::setInstance(CoreServices *_instance) {
 	overrideInstance = _instance;
-	Logger::log("Overriding core instance...\n");
+	Logger::log("Overriding core instance to %d...\n", _instance);
 }
 
 CoreServices* CoreServices::getInstance() {

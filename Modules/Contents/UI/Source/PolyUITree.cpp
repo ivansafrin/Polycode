@@ -319,6 +319,7 @@ void UITree::clearTree() {
 		delete child;
 	}
 	treeChildren.clear();
+    dispatchEvent(new UITreeEvent(), UITreeEvent::NEED_REFRESH_EVENT);
 }
 
 void UITree::Update() {

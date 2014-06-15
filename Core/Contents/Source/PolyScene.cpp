@@ -197,6 +197,7 @@ void Scene::setEntityVisibilityBool(Entity *entity, bool val) {
 
 void Scene::setEntityVisibility(Entity *entity, Camera *camera) {
     if(camera->frustumCulling) {
+        entity->recalculateAABB();
         entity->rendererVis = camera->isAABBInFrustum(entity->getWorldAABB());
     } else {
         entity->rendererVis = true;

@@ -69,7 +69,8 @@ public:
 	
 	virtual void handleEvent(Event *event);
 
-	virtual void Activate() {};	
+	virtual void Activate() {};
+   	virtual void Deactivate() {};
 	virtual void saveFile(){};
 	
 	void didAction(String actionName, PolycodeEditorActionData *beforeData, PolycodeEditorActionData *afterData, bool setFileChanged = true);
@@ -77,7 +78,8 @@ public:
 	
 	virtual String Copy(void **data) { return ""; }
 	virtual void Paste(void *data, String clipboardType) {}
-
+	virtual void selectAll() {}
+    
 	virtual void handleDroppedFile(OSFileEntry file, Number x, Number y) {};
 	
 	virtual ObjectEntry *getEditorConfig() { return NULL; }

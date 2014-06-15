@@ -59,6 +59,10 @@ OpenGLTexture::OpenGLTexture(unsigned int width, unsigned int height, char *text
 }
 
 void OpenGLTexture::recreateFromImageData() {
+    
+    if(!textureData) {
+        return;
+    }
 	
 	Number anisotropy = CoreServices::getInstance()->getRenderer()->getAnisotropyAmount();
 	

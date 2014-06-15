@@ -1,27 +1,31 @@
 <?xml version="1.0" ?>
 <polycode>	
 	<shaders>		
-		<shader type="glsl" name="DefaultShader" numPointLights="4" numSpotLights="2">		
+		<shader type="glsl" name="DefaultShader" numPointLights="6" numSpotLights="2">		
 			<vp source="default/DefaultShader.vert"/>
 			<fp source="default/DefaultShader.frag"/>
-		</shader>	
-		<shader type="glsl" name="DefaultShaderNoTexture" numPointLights="4" numSpotLights="2">	
+		</shader>
+		<shader type="glsl" name="ColSpecEmit" numPointLights="6" numSpotLights="2">		
+			<vp source="default/DefaultShader.vert"/>
+			<fp source="default/ColSpecEmit.frag"/>
+		</shader>			
+		<shader type="glsl" name="DefaultShaderNoTexture" numPointLights="6" numSpotLights="2">	
 			<vp source="default/DefaultShader.vert"/>
 			<fp source="default/DefaultShaderNoTexture.frag"/>
 		</shader>
-		<shader type="glsl" name="DefaultShaderShadows" numPointLights="4" numSpotLights="2">		
+		<shader type="glsl" name="DefaultShaderShadows" numPointLights="6" numSpotLights="2">		
 			<vp source="default/DefaultShaderShadows.vert"/>
 			<fp source="default/DefaultShaderShadows.frag"/>
 		</shader>		
-		<shader type="glsl" name="DefaultShaderVertex" numPointLights="4" numSpotLights="2">		
+		<shader type="glsl" name="DefaultShaderVertex" numPointLights="6" numSpotLights="2">		
 			<vp source="default/DefaultShaderVertex.vert"/>
 			<fp source="default/DefaultShaderVertex.frag"/>
 		</shader>			
-		<shader type="glsl" name="DefaultShaderVertexNoTexture" numPointLights="4" numSpotLights="2">		
+		<shader type="glsl" name="DefaultShaderVertexNoTexture" numPointLights="6" numSpotLights="2">		
 			<vp source="default/DefaultShaderVertex.vert"/>
 			<fp source="default/DefaultShaderVertexNoTexture.frag"/>
 		</shader>
-		<shader type="glsl" name="DefaultParticleShader" numPointLights="4" numSpotLights="2">		
+		<shader type="glsl" name="DefaultParticleShader" numPointLights="6" numSpotLights="2">		
 			<vp source="default/DefaultShader.vert"/>
 			<fp source="default/DefaultParticleShader.frag"/>
 		</shader>															
@@ -34,10 +38,14 @@
 			<fp source="default/UnlitUntextured.frag"/>
 		</shader>		
 		<shader type="glsl" name="LightCube" numPointLights="0" numSpotLights="0">		
-			<vp source="default/DefaultShader.vert"/>
+			<vp source="default/LightCube.vert"/>
 			<fp source="default/LightCube.frag"/>
+		</shader>
+		<shader type="glsl" name="SkyBox" numPointLights="0" numSpotLights="0">		
+			<vp source="default/LightCube.vert"/>
+			<fp source="default/SkyBox.frag"/>
 		</shader>		
-		<shader type="glsl" name="NorColSpec" numPointLights="4" numSpotLights="2">		
+		<shader type="glsl" name="NorColSpec" numPointLights="6" numSpotLights="2">		
 			<vp source="default/NormalShader.vert"/>
 			<fp source="default/NorColSpec.frag"/>
 		</shader>
@@ -65,6 +73,12 @@
 		</material>			
 		<material name="DefaultTextured">
 			<shader name="DefaultShader">
+				<textures>
+				</textures>				
+			</shader>
+		</material>
+		<material name="ColSpecEmit">
+			<shader name="ColSpecEmit">
 				<textures>
 				</textures>				
 			</shader>
@@ -129,6 +143,12 @@
 				</textures>				
 			</shader>
 		</material>
+		<material name="SkyBox">
+			<shader name="SkyBox">
+				<textures>
+				</textures>				
+			</shader>
+		</material>		
 		<material name="NormalColorSpecular">
 			<shader name="NorColSpec">
 				<textures>

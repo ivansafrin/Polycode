@@ -94,6 +94,27 @@ CollisionEntity *CollisionScene::getCollisionByScreenEntity(Entity *ent) {
 
 }
 
+bool CollisionScene::isColliding(Entity *ent1) {
+    CollisionEntity *cEnt1 = getCollisionByScreenEntity(ent1);
+    if(cEnt1) {
+        int numManifolds = world->getDispatcher()->getNumManifolds();
+        for (int i=0;i<numManifolds;i++)
+        {
+            btPersistentManifold* contactManifold = world->getDispatcher()->getManifoldByIndexInternal(i);
+          
+            btCollisionObject* obA = static_cast<btCollisionObject*>(contactManifold->getBody0());
+            btCollisionObject* obB = static_cast<btCollisionObject*>(contactManifold->getBody1());
+            
+            if(obA == cEnt1->collisionObject || obB == cEnt1->collisionObject) {
+                return true;
+            }
+        }
+    } else {
+        return false;
+    }
+    return false;
+}
+
 CollisionResult CollisionScene::testCollisionOnCollisionChild_Convex(CollisionEntity *cEnt1, CollisionEntity *cEnt2) {
 	CollisionResult result;
 	result.collided = false;
