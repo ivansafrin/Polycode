@@ -257,6 +257,7 @@ void Entity::removeChild(Entity *entityToRemove) {
 		if(children[i] == entityToRemove) {
             entityToRemove->setParentEntity(NULL);
 			children.erase(children.begin()+i);
+			entityToRemove->parentEntity = NULL;
 			return;
 		}
 	}	
