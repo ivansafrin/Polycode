@@ -135,12 +135,18 @@ void Material::recreateRenderTarget(ShaderRenderTarget *renderTarget) {
 }
 
 void Material::handleEvent(Event *event) {
-	std::vector<Shader*> _materialShaders = materialShaders;
-	clearShaders();
-	for(int i=0; i < _materialShaders.size(); i++)	{
-		ShaderBinding *newShaderBinding = _materialShaders[i]->createBinding();				
-		addShader(_materialShaders[i], newShaderBinding);
-	}	
+	//Fix the bindings when we detect a reload
+	for (int i = 0; i < materialShaders.size(); i++) {
+		Shader* shader = materialShaders[i];
+		ShaderBinding* shaderBinding = shaderBindings[i];
+		CoreServices::getInstance()->getRenderer()->setRendererShaderParams(shader, shaderBinding);
+
+		for(int i=0; i < shader->expectedParams.size(); i++) {
+			if(!shaderBinding->getLocalParamByName(shader->expectedParams[i].name)) {
+				shaderBinding->addParam(shader->expectedParams[i].type, shader->expectedParams[i].name);
+			}
+		}
+	}
 	dispatchEvent(new Event(), Event::RESOURCE_RELOAD_EVENT);	
 }
 
