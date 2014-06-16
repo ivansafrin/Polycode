@@ -221,6 +221,13 @@ namespace Polycode {
 			void createSphere(Number radius, int numRings, int numSegments);
 
 			/**
+			* Creates an icosphere of specified radius
+			* @param radius Radius of sphere.
+			* @param subdivisions 0 means you get an icosahedron, don't recommend ever going above about 4 or 5 as they get really big
+			*/
+			void createIcosphere(Number radius, int subdivisions);
+
+			/**
 			* Creates a cylinder mesh.
 			* @param height Height of the cylinder.
 			* @param radius Radius of the cylinder.
