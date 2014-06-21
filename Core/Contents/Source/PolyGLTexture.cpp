@@ -66,11 +66,10 @@ void OpenGLTexture::recreateFromImageData() {
 	
 	Number anisotropy = CoreServices::getInstance()->getRenderer()->getAnisotropyAmount();
 	
-	if(glTextureLoaded) {
-		glDeleteTextures(1, &textureID);
+	if (!glTextureLoaded) {
+		glGenTextures(1, &textureID);
 	}
 	
-	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_2D, textureID);
 	
 	if(clamp) {
