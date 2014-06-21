@@ -186,6 +186,12 @@ void GLSLShaderModule::clearShader() {
 	glUseProgram(0);
 }
 
+#ifdef POLYCODE_NUMBER_IS_SINGLE
+#define polycodeUniformMatrix4v glUniformMatrix4fv
+#else
+#define polycodeUniformMatrix4v glUniformMatrix4dv
+#endif
+
 void GLSLShaderModule::updateGLSLParam(Renderer *renderer, GLSLShader *glslShader, ProgramParam &param, ShaderBinding *materialOptions, ShaderBinding *localOptions) {
 	
 		LocalShaderParam *localParam = NULL;		
@@ -233,10 +239,10 @@ void GLSLShaderModule::updateGLSLParam(Renderer *renderer, GLSLShader *glslShade
 			break;
 			case ProgramParam::PARAM_MATRIX:
 				if(localParam) {
-					glUniformMatrix4fv(paramLocation, 1, false, localParam->getMatrix4().ml);
+					polycodeUniformMatrix4v(paramLocation, 1, false, localParam->getMatrix4().ml);
 				} else {
 					Matrix4 defaultMatrix;
-					glUniformMatrix4fv(paramLocation, 1, false, defaultMatrix.ml);
+					polycodeUniformMatrix4v(paramLocation, 1, false, defaultMatrix.ml);
 				}
 			break;
 		}
