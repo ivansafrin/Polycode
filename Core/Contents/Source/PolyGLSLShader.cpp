@@ -143,16 +143,18 @@ void GLSLShader::linkProgram() {
 		switch(type) {
 			case GL_SAMPLER_2D:
 				expectedTextures.push_back(String(name));
-				printf("expectedTextures: %s\n", name);
+				printf("Shader %s expecting texture: %s\n", this->getName().c_str(), name);
 			break;
 			case GL_SAMPLER_CUBE:
 				expectedCubemaps.push_back(String(name));
+				printf("Shader %s expecting cubemap: %s\n", this->getName().c_str(), name);
 			break;			
 			default:
 				ProgramParam param;
 				param.name = String(name);
 				param.type = getPolycodeParamType(type);
 				expectedParams.push_back(param);
+				printf("Shader %s expecting param glType 0x%x, polycode type %d: %s\n", this->getName().c_str(), type, param.type, name);
 			break;
 		}
 		}
