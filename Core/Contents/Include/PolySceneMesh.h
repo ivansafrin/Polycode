@@ -102,7 +102,7 @@ namespace Polycode {
 			* Loads a skeleton from a file and applies it to the scene mesh.
 			* @param fileName Filename to load the skeleton from.
 			*/
-			void loadSkeleton(const String& fileName);
+			Skeleton *loadSkeleton(const String& fileName);
 			
 			/**
 			* Sets the texture from an existing Texture instance.

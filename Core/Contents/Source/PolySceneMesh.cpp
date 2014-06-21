@@ -222,10 +222,11 @@ ShaderBinding *SceneMesh::getLocalShaderOptions() {
 	return localShaderOptions;
 }
 
-void SceneMesh::loadSkeleton(const String& fileName) {
+Skeleton *SceneMesh::loadSkeleton(const String& fileName) {
 	skeleton = new Skeleton(fileName);
 	addChild(skeleton);
 	setSkeleton(skeleton);
+    return skeleton;
 }
 
 void SceneMesh::setSkeleton(Skeleton *skeleton) {
