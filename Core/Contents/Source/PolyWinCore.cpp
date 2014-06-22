@@ -1299,3 +1299,12 @@ String Win32Core::getClipboardString() {
 	GlobalUnlock(clip0);
 	return retString;
 }
+
+void Win32Core::handleFocusChange(bool newFocus){
+	if (newFocus){
+		gainFocus();
+	}
+	else {
+		loseFocus();
+	}
+}
