@@ -193,10 +193,12 @@ void Win32Core::Render() {
 bool Win32Core::Update() {
 	if(!running)
 		return false;
-	doSleep();
-	checkEvents();
-	Gamepad_processEvents();
-	updateCore();
+	doSleep();	
+	if(!paused){
+		checkEvents();
+		Gamepad_processEvents();
+		updateCore();
+	}
 	return running;
 }
 

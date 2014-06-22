@@ -197,15 +197,9 @@ namespace Polycode {
 	}
 	
 	bool Core::updateAndRender() {
-		bool ret;
-		if (!paused){
-			ret = Update();
-			Render();
-		}
-		else {
-			doSleep();
-			ret = running;
-		}
+		bool ret = Update();
+		Render();
+
 		return ret;
 	}
 							
