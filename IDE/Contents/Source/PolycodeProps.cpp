@@ -2446,9 +2446,9 @@ void TransformSheet::Update() {
         lastScale = entity->getScale();
     }
     
-    if(entity->getEulerRotation() != lastRotation) {
-        rotationProp->set(entity->getEulerRotation());
-        lastRotation = entity->getEulerRotation();
+    if(entity->getRotationEuler() != lastRotation) {
+        rotationProp->set(entity->getRotationEuler());
+        lastRotation = entity->getRotationEuler();
     }
 }
 

@@ -701,7 +701,7 @@ Vector3 Entity::getScale() const {
 	return scale;
 }
 
-Vector3 Entity::getEulerRotation() const {
+Vector3 Entity::getRotationEuler() const {
     return rotation;
 }
 
