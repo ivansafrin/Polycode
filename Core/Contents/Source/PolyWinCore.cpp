@@ -214,10 +214,12 @@ bool Win32Core::systemUpdate() {
 	if(!running)
 		return false;
 	captureMouse(Core::mouseCaptured);
-	doSleep();
-	checkEvents();
-	Gamepad_processEvents();
-	updateCore();
+	doSleep();	
+	if(!paused){
+		checkEvents();
+		Gamepad_processEvents();
+		updateCore();
+	}
 	return running;
 }
 

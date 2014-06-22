@@ -318,8 +318,10 @@ bool SDLCore::Update() {
 		return false;
 	doSleep();	
 	
-	updateCore();
-	
+	if(!paused) {
+		updateCore();
+	}
+
 	SDL_Event event;
 	while ( SDL_PollEvent(&event) ) {
 			switch (event.type) {

@@ -659,13 +659,14 @@ bool CocoaCore::systemUpdate() {
 	if(!running)
 		return false;
 	doSleep();
-	
-	if(modeChangeInfo.needResolutionChange) {
-		_setVideoMode(modeChangeInfo.xRes, modeChangeInfo.yRes, modeChangeInfo.fullScreen, modeChangeInfo.vSync, modeChangeInfo.aaLevel, modeChangeInfo.anisotropyLevel);
-		modeChangeInfo.needResolutionChange = false;
-	}
+	if(!paused){
+		if(modeChangeInfo.needResolutionChange) {
+			_setVideoMode(modeChangeInfo.xRes, modeChangeInfo.yRes, modeChangeInfo.fullScreen, modeChangeInfo.vSync, modeChangeInfo.aaLevel, modeChangeInfo.anisotropyLevel);
+			modeChangeInfo.needResolutionChange = false;
+		}
 							
-	updateCore();
+		updateCore();
+	}
 	checkEvents();
 	return running;
 }
