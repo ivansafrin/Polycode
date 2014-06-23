@@ -62,7 +62,7 @@ Mesh *SceneParticleEmitter::getSourcesMeshAtIndex(int index) {
     if(index > 0 && index < sourceMeshes.size()) {
         return sourceMeshes[index];
     }
-    return false;
+	return NULL;
 }
 
 void SceneParticleEmitter::removeSourceMeshAtIndex(int index) {
