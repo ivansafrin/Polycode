@@ -3,7 +3,6 @@
 #include <winsock2.h>
 #include <windows.h>
 #include "PolyCore.h"
-#include "PolycodeWinIDEView.h"
 
 using namespace Polycode;
 
