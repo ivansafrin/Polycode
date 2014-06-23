@@ -109,7 +109,6 @@ void Entity::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) co
 	clone->setRotationByQuaternion(rotationQuat);
 	clone->setScale(scale);
 	clone->color = color;
-	clone->custEntityType = custEntityType;
 	clone->billboardMode = billboardMode;	
 	clone->billboardRoll = billboardRoll;
 	clone->depthWrite = depthWrite;

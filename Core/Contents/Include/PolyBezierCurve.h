@@ -157,26 +157,43 @@ namespace Polycode {
 		*/																				
 		Vector3 getPointBetween(Number a, BezierPoint *bp1, BezierPoint *bp2);
 
+        /**
+         * Removes all curve control points.
+         */
 		void clearControlPoints();
         
+        /**
+         * Returns the Y-axis value of the curve at specified X-axis value.
+         */
         Number getYValueAtX(Number x);
+
+        /**
+         * Returns the normalized curve position value at specified X-axis value.
+         */
 		Number getTValueAtX(Number x);
 		
 		/**
-		* Removes (and deletes!) a given point by pointer
+		* Removes (and deletes!) a given point by pointer.
 		*/
 		void removePoint(BezierPoint *point);
         
+        /**
+        * The point after which new control points should be added. If NULL, new control points are added to the end of the curve.
+        */
 		BezierPoint *insertPoint;
-
-		std::vector<BezierPoint*> controlPoints;
-		std::vector<Number> distances;
 		
-		void recalculateDistances();
-		
+        /**
+         * Accuracy value for X-axis curve evaluation. The higher this number, the faster but less accurate X-axis curve evaluation is.
+            Defaults to 0.01
+         */
         Number evaluationAccuracy;
+        
+        void recalculateDistances();        
 		
 		protected:
+        
+            std::vector<BezierPoint*> controlPoints;
+            std::vector<Number> distances;
 		
             Number minX;
             Number maxX;

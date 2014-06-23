@@ -196,7 +196,7 @@ namespace Polycode {
 			/**
 			* Returns a new color after blending the second color with specified blending mode. 
 			* @param c2 Color to blend with
-			* @param mode Blending mode to use. Currently possible values are Color::BLEND_NORMAL, Color::BLEND_COLOR
+			* @param mode Blending mode to use. Currently possible values are Color::BLEND_NORMAL, Color::BLEND_REPLACE_COLOR and Color::BLEND_ADDITIVE
 			* @param amount Amount to blend.
 			*/
 			Color blendColor(Color c2, int mode, Number amount, Color c3 = Color());

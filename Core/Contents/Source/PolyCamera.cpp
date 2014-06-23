@@ -356,13 +356,6 @@ bool Camera::hasFilterShader() {
 	return _hasFilterShader;
 }
 
-void Camera::setLightDepthTexture(Texture *texture) {
-	for(int i=0; i < localShaderOptions.size(); i++) {
-		localShaderOptions[i]->clearTexture("PolyLight0ZBuffer");
-		localShaderOptions[i]->addTexture("PolyLight0ZBuffer", texture);
-	}
-}
-
 void Camera::drawFilter(Texture *targetTexture, Number targetTextureWidth, Number targetTextureHeight, Texture *targetColorTexture, Texture *targetZTexture) {
 
 	if(!filterShaderMaterial)

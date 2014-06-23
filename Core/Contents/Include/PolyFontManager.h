@@ -60,11 +60,26 @@ namespace Polycode {
 		*/		
 		Font *getFontByName(const String& fontName);
 		
+        /**
+         * Returns number of registered fonts.
+         */
 		unsigned int getNumFonts() const;
+        
+        /**
+         * Returns the font entry by specified index or NULL if index is invalid.
+         */
 		FontEntry *getFontEntryByIndex(const unsigned int index);
 
+        /**
+         * Returns the font entry based on the font path or NULL if no fonts are registered with the specified path.
+         */
 		FontEntry *getFontEntryByFontPath(const String &fontPath);
 		
+        /**
+         * Removes the font entry from manager and optionally delets the associated Font.
+         * @param entry FontEntry to remove.
+
+         */
 		void removeFontEntry(FontEntry *entry, bool deleteFont);
 		
 	private:

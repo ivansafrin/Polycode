@@ -199,7 +199,7 @@ void UIMenu::handleEvent(Event *event) {
 		if((event->getEventCode() == InputEvent::EVENT_MOUSEDOWN || (event->getEventCode() == InputEvent::EVENT_MOUSEUP && initialMouse != inputEvent->getMousePosition())) && !ignoreMouse) {
 			if(selectorBox->visible) {
 				dispatchEvent(new UIEvent(), UIEvent::OK_EVENT);
-			} else if(!dropDownBox->hitTest(inputEvent->getMousePosition())) {
+			} else {
 				dispatchEvent(new UIEvent(), UIEvent::CANCEL_EVENT);
 			}
 		}

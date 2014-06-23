@@ -43,7 +43,7 @@ SceneMesh *SceneMesh::SceneMeshWithType(int meshType) {
 	return new SceneMesh(meshType);
 }
 
-SceneMesh::SceneMesh(const String& fileName) : Entity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
+SceneMesh::SceneMesh(const String& fileName) : Entity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL), mesh(NULL) {
     loadFromFile(fileName);
 	useVertexBuffer = false;
 	lineSmooth = false;
@@ -147,6 +147,9 @@ void SceneMesh::setFilename(String fileName) {
 }
 
 void SceneMesh::loadFromFile(String fileName) {
+    if(mesh && ownsMesh) {
+        delete mesh;
+    }
 	mesh = new Mesh(fileName);
 	setLocalBoundingBox(mesh->calculateBBox());
     this->fileName = fileName;

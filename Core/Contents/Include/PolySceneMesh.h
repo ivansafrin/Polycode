@@ -72,6 +72,9 @@ namespace Polycode {
 			
 			void Render();
 			
+            /**
+             * Returns the local material binding options for this mesh.
+             */
 			ShaderBinding *getLocalShaderOptions();
 			
 			/**
@@ -150,22 +153,49 @@ namespace Polycode {
 			* If this is set to true, the mesh will be cached to a hardware vertex buffer if those are available. This can dramatically speed up rendering.
 			*/
 			void cacheToVertexBuffer(bool cache);
-				
+			
+            /**
+             * Sets the line width for line-based meshes.
+             */
 			void setLineWidth(Number newWidth);
 
+            /**
+             * If this mesh was loaded form file, returns the filename of the loaded mesh.
+             */
             String getFilename();
+        
+            /**
+             * Sets the filename path of the mesh.
+             */
             void setFilename(String fileName);
         
+            /**
+             * Loads mesh from file. Deletes current mesh if ownsMesh is set to true.
+             */
             void loadFromFile(String fileName);
         
+            /**
+             * Line width for line-based meshes.
+             */
 			Number lineWidth;
+        
+            /**
+             * If set to true, will antialias the lines in a line-based mesh. Defaults to false.
+             */
 			bool lineSmooth;
 			
+            /**
+             * Point size for point-based meshes.
+             */
 			Number pointSize;
+        
+            /**
+             * If setto true, will antialias points in a point-based mesh. Defaults to false.
+             */
 			bool pointSmooth;
 			
 			/**
-			* If true, will delete its Mesh upon destruction. (defaults to true)
+			* If true, will delete its Mesh upon destruction or mesh loading. (defaults to true)
 			*/ 
 			bool ownsMesh;
 
@@ -174,13 +204,27 @@ namespace Polycode {
 			*/ 			
 			bool ownsSkeleton;
 			
+            /**
+             * If set to true, will render the mesh wireframe on top of the mesh using wireFrameColor.
+             * @see wireFrameColor
+             */
 			bool overlayWireframe;
+        
+            /*
+             * If overlayWireframe is set to true, defines the color of the mesh wireframe.
+             */
 			Color wireFrameColor;	
 			
+            /**
+             * If set to true, will check against actual geometry polygons on ray hit detection. Defaults to false.
+             */
 			bool useGeometryHitDetection;
 			
 			bool customHitDetection(const Ray &ray);
         
+            /**
+             * The Renderer has an ability to set an override material that is set for all rendered entities. If forceMaterial is set to true, this entity will always use its assigned material, even if an override material is set.
+             */
             bool forceMaterial;
         
             virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;

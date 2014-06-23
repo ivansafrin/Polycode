@@ -42,7 +42,6 @@ SceneManager::~SceneManager() {
 }
 
 void SceneManager::removeScene(Scene *scene) {
-	Logger::log("Removing scene\n");
 	for(int i=0;i<scenes.size();i++) {
 		if(scenes[i] == scene) {
 			scenes.erase(scenes.begin()+i);

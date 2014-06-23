@@ -65,8 +65,18 @@ typedef struct {
 			*/						
 			void addEventListener(EventHandler *handler, int eventCode);
         
+            /**
+             * Adds an event listener for specified event code if it hasn't already been added, otherwise does nothing.
+             * @param handler The event handler to add as a listener
+             * @param eventCode The requested event code to listen to.
+             */
 			void addEventListenerUnique(EventHandler *handler, int eventCode);
         
+            /**
+             * Returns true if this event dispatcher is registered with the specified EventHandler with the specified event code.
+             * @param handler EventHandler to check.
+             * @param eventCode The event code to check.
+             */
             bool hasEventListener(EventHandler *handler, int eventCode);
         
 			/**

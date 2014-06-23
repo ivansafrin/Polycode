@@ -329,8 +329,8 @@ EntityEditorMainView::EntityEditorMainView(PolycodeEditor *editor) {
     this->editor = editor;
 	mainScene = new Scene(Scene::SCENE_3D, true);
     
-    mainScene->getDefaultCamera()->frustumCulling = false;
-    mainScene->doVisibilityChecking(false);
+//    mainScene->getDefaultCamera()->frustumCulling = false;
+//    mainScene->doVisibilityChecking(false);
     
 	renderTexture = new SceneRenderTexture(mainScene, mainScene->getDefaultCamera(), 512, 512);
 	mainScene->clearColor.setColor(0.2, 0.2, 0.2, 1.0);	

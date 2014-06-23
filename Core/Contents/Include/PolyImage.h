@@ -198,18 +198,6 @@ namespace Polycode {
 			void fastBlurVert(int blurSize);
 			void fastBlurHor(int blurSize);
 			
-			/**
-			* Blurs the image using gaussian blur
-			* @param radius Radius of the blur
-			* @param deviation Standard deviation of the gaussian distribution
-			*/															
-			void gaussianBlur(float radius, float deviation);
-			float* createKernel(float radius, float deviation);
-			
-			// What are these??? I wrote them way too long ago.
-			void darken(Number amt, bool color, bool alpha);
-			void lighten(Number amt, bool color, bool alpha);
-			void multiply(Number amt, bool color, bool alpha);
 						
 			/**
 			* Returns an area of the image buffer. The area can go outside of image bounds, in which case the pixels not within the image are zeroed out. This method allocates new memory for the returned buffer and you must free it manually.
@@ -260,6 +248,9 @@ namespace Polycode {
 			*/						
 			char *getPixels();
 			
+            /**
+             * Multiplies the RGB values by alpha for each pixel.
+             */
 			void premultiplyAlpha();
 		
 			static const int IMAGE_RGB = 0;

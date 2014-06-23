@@ -147,8 +147,16 @@ namespace Polycode {
 			*/
 			Matrix4 getConcatenatedMatrix();
 			
+            /**
+             * Returns the concatenated matrix up to the specified parent entity.
+             * @param relativeEntity Parent entity, relative to which to return the transform matrix.
+             */
 			Matrix4 getConcatenatedMatrixRelativeTo(Entity *relativeEntity);
 			
+            /**
+             * Returns the concatenated matrix, multiplied by the entity's anchor adjustment.
+             * @see setAnchorPoint
+             */
 			Matrix4 getAnchorAdjustedMatrix();
 			
 			/** 
@@ -192,9 +200,24 @@ namespace Polycode {
 			*/
 			virtual void removeChild(Entity *entityToRemove);
 
+            /**
+             * Moves the specified child one position up the render list.
+             */
 			void moveChildUp(Entity *child);
+        
+            /**
+             * Moves the specified child one position down the render list.
+             */
 			void moveChildDown(Entity *child);
+        
+            /**
+             * Moves the specified child up to the top of the render list.
+             */
 			void moveChildTop(Entity *child);
+        
+            /**
+             * Moves the specified child up to the bottom of the render list.
+             */
 			void moveChildBottom(Entity *child);
 
 			/**
@@ -227,7 +250,10 @@ namespace Polycode {
 			*/ 
 			bool ownsChildren;										
 			
-				
+			/**
+             * Sets the ownsChildren flag for this entity and recursively for all its child entities.
+             * @see ownsChildren
+             */
 			void setOwnsChildrenRecursive(bool val);
 			//@}
 			// ----------------------------------------------------------------------------------------------------------------
@@ -244,6 +270,9 @@ namespace Polycode {
 			*/			
 			Vector3 getPosition() const;
 			
+            /**
+             * Returns the entity's position as a Vector2
+             */
 			Vector2 getPosition2D() const;
 			
 			/**
@@ -447,29 +476,51 @@ namespace Polycode {
 			* @return Current roll value.
 			*/																										
 			Number getRoll() const;
-			
+			     
+            /**
+             * Returns the bounding box X value.
+             */
 			Number getWidth() const;
 
+            /**
+             * Returns the bounding box Y value.
+             */
 			Number getHeight() const;
 
+            /**
+             * Returns the bounding box Z value.
+             */
 			Number getDepth() const;
 			
+            /**
+             * Sets the bounding box X value.
+             */
 			void setWidth(Number width);
+        
+            /**
+             * Sets the bounding box Y value.
+             */
 			void setHeight(Number height);
+        
+            /**
+             * Sets the bounding box Z value.
+             */
 			void setDepth(Number depth);
 			
 			/**
 			* Sets the rotation with quaternion value.
-			* @param Current yaw value.
-			*/																									
+			*/
 			void setRotationQuat(Number w, Number x, Number y, Number z);
-			
+
+            /*
+            * Sets the rotation with quaternion value.
+            */
 			void setRotationByQuaternion(const Quaternion &quaternion);
 			
 			/**
 			* Returns the current rotation as a quaternion.
 			* @return Current rotation value.
-			*/																												
+			*/
 			Quaternion getRotationQuat() const;
 			
 			/**
@@ -481,7 +532,7 @@ namespace Polycode {
 			
 			/**
 			* Orients the entity towards another entity with the provided up vector. The up vector determines which side of the entity will be pointing in that direction.
-			* @param loc Location to look at.
+			* @param entity Entity to look at.
 			* @param upVector The up vector.
 			* @see lookAt()
 			*/																																		
@@ -518,16 +569,25 @@ namespace Polycode {
 			void setColor(Color color);
 
 			//@}
-			// ----------------------------------------------------------------------------------------------------------------
-	
-			/** @name Bounding box operations.
-			*  These methods modify the bounding box of the entity. The bounding box is used for culling and collision detection.
-			*/
-			//@{			
-	
+
 			
+            /**
+             * Sets the anchor (center) point of the entity as normalized half bounding box coordinates. (i.e. -1.0 or 1.0 will offset the entity by half on a particular axis).
+             * @param anchorPoint Anchor point as a 3D Vector.
+             */
 			void setAnchorPoint(const Vector3 &anchorPoint);
-			void setAnchorPoint(Number x, Number y, Number z);			
+        
+            /**
+             * Sets the anchor (center) point of the entity as normalized half bounding box coordinates. (i.e. -1.0 or 1.0 will offset the entity by half on a particular axis).
+             * @param x X Offset
+             * @param y Y Offset
+             * @param z Z Offset
+             */
+			void setAnchorPoint(Number x, Number y, Number z);
+        
+            /**
+             * Returns the current anchor (center) point of the entity.
+             */
 			Vector3 getAnchorPoint() const;
 			
 			virtual MouseEventResult onMouseDown(const Ray &ray, int mouseButton, int timestamp);
@@ -536,19 +596,11 @@ namespace Polycode {
 			virtual MouseEventResult onMouseWheelUp(const Ray &ray, int timestamp);
 			virtual MouseEventResult onMouseWheelDown(const Ray &ray, int timestamp);
 
-			//@}			
-			// ----------------------------------------------------------------------------------------------------------------
 		
 			/** @name Rendering properties
 			*  Methods and properties affecting the way the entity is rendered.
 			*/
-			//@{			
-		
-		
-			/**
-			* You can set a custom string identifier for user purposes.
-			*/									
-			String custEntityType;
+			//@{
 								
 			/**
 			* If this flag is true, the entity will always face the camera. False by default.
@@ -565,8 +617,6 @@ namespace Polycode {
 			* matrix when billboardMode is enabled
 			*/
 			bool billboardIgnoreScale;
-
-
 
 			/**
 			* The entity's color.
@@ -595,6 +645,7 @@ namespace Polycode {
 			
 			/**
 			* Entity blending mode. Possible values are Renderer::BLEND_MODE_NONE, Renderer::BLEND_MODE_NORMAL, Renderer::BLEND_MODE_LIGHTEN, Renderer::BLEND_MODE_COLOR, Renderer::BLEND_MODE_PREMULTIPLIED, Renderer::BLEND_MODE_MULTIPLY. See the Renderer class for details on individual blending modes.
+                This blending mode is overridden by the material.
 			*/
 			int blendingMode;	
 			
@@ -607,7 +658,6 @@ namespace Polycode {
 			* If set to false, the children will be rendered even if the entity is invisible.
 			*/ 
 			bool visibilityAffectsChildren;	
-
 			
 			/**
 			* If this flag is set to true, this entity will render only into the depth buffer. This, effectively, means that it will be invisible, but still obscuring other entities.
@@ -639,90 +689,211 @@ namespace Polycode {
 			*/
 			void setBlendingMode(int newBlendingMode);
 			
+            /**
+             * Returns the first child entity that has the specified string id.
+             * @param id Specified id to search for.
+             * @param recursive If set to true, will search all child entities recursively.
+             * @return Entity with specified string id or NULL if not found.
+             */
 			Entity *getEntityById(String id, bool recursive) const;
+        
+            /**
+             * Returns all child entities which have the specified tag.
+             * @param tag Tag to search for.
+             * @param recursive If set to true, will search all child entities recursively.
+             * @return List of child entities that contain the specified tag.
+             */
 			std::vector<Entity*> getEntitiesByTag(String tag, bool recursive) const;
 
+            /**
+             * Returns all child entities that have the specified layer ID. Layer IDs are used by the entity instances to separate entities into groups.
+             * @param Layer ID to search for.
+             * @param recursive If set to true, will search all child entities recursively.
+             * @return List of child entities that contain the specified layer ID.
+             */
             std::vector<Entity*> getEntitiesByLayerID(unsigned char layerID, bool recursive) const;
         
-        
-			std::vector <EntityProp> entityProps;
+            /** 
+             * Returns custom string dictionary property of the entity based on the property name.
+             * @param Property name to look up.
+             * @return String property for specified property name or "null" if this property doesn't exist.
+             */
 			String getEntityProp(const String& propName);
+        
+            /**
+             * Sets the entity property for a specified property name in the entity's custom property dictionary.
+             * @param propName Property name to set.
+             * @param propValue Value to set for the specified property name.
+             */
 			void setEntityProp(const String& propName, const String& propValue);
 			
+            /**
+             * If set to true, the y position of the entity matrix will be multiplied by -1.0, inverting its Y-axis coordinate system.
+             */
 			void setInverseY(bool val);
+        
+            /**
+             * Returns true if the entity is set to use an inverse Y-coordinate system.
+             */
 			bool getInverseY();
 			
 			void doUpdates();				
 			virtual Matrix4 buildPositionMatrix();
 			void setRenderer(Renderer *renderer);
 			
+            /**
+             * Implement this method to do custom ray hit detection beyond a bounding box check. Always returns true by default.
+             */
 			virtual bool customHitDetection(const Ray &ray) { return true; }			
-					
+			/**
+             * If set to true, the entity's transformations will not be affected by its parents. Defaults to false.
+             */
 			bool ignoreParentMatrix;
 						
-			bool enableScissor;	
+            /**
+             * If set to true, will constrain the rendering of this entity into the viewport coordinates defined by scissorBox.
+             * @see scissorBox
+             */
+			bool enableScissor;
+        
+            /**
+             * Defines the viewport coordinates to clip rendering to if enableScissor is defined.
+             * @see enableScissor
+             */
 			Polycode::Rectangle scissorBox;			
 			
+            /**
+             * Flags an editor only entity. If set to true, this entity will not be saved to file by entity instances or show up in the IDE entity editor.
+             */
 			bool editorOnly;
-	
-			/** @name Class and ID strings
-			*  These properties can be used to set and retrieve string-based ids and
-			* tags
-			*/
-			//@{			
 
+            /**
+             * String ID of the entity. Can be used to retrieve specific entities by their ID.
+             */
 			String id;
 
+            /**
+             * Returns the number of tags this entity has.
+             */
 			unsigned int getNumTags() const;
+        
+            /**
+             * Returns the tag at specified index or an empty string if index is invalid.
+             */
 			String getTagAtIndex(unsigned int index) const;
+        
+            /**
+             * Returns true if this entity contains the specified tag.
+             * @param tag Tag to look up.
+             * @return True if this entity contains the specified tag, false if it doesn't.
+             */
 			bool hasTag(String tag) const;
 			
+            /**
+             * Removes all tags from this entity.
+             */
 			void clearTags();
-			void addTag(String tag); 
-
-			//@}
         
-			/**
-			* If set to true, will cast shadows (Defaults to true).
-			*/
-			bool castShadows;
+            /**
+             * Adds a string tag to the entity.
+             * @param tag Tag to add.
+             */
+			void addTag(String tag);
 			
-			int collisionShapeType;	
-			bool processInputEvents;			
+            /**
+             * Entity collision type for physics module. This is set per physics module documentaiton.
+             */
+			unsigned char collisionShapeType;
+        
+            /**
+             * If set to true, will automatically process mouse events and dispatch its own input events if mouse events intersect with the entity's bounding box. Defaults to false.
+                 Attention: All of the entity's parents' processInputEvents flags must be set to true for this to function including the parent Scene's rootEntity!
+             */
+			bool processInputEvents;
+        
+            /**
+             * If set to true, will block input events for entities below itself in the parent's entiy list.
+             */
 			bool blockMouseInput;
-																					
-			void setHitbox(Number width, Number height) {}
+						
+		
+            /** 
+             * Returns the screen pixel position of the entity using a specified projection matrix, camera matrix and viewport.
+             * @param projectionMatrix Projection matrix to use.
+             * @param cameraMatrix Camera matrix to use.
+             * @param viewport Viewport rectangle.
+             * @return Pixel position of the entity on the screen.
+             */
             Vector2 getScreenPosition(const Matrix4 &projectionMatrix, const Matrix4 &cameraMatrix, const Polycode::Rectangle &viewport);
+        
+            /**
+             * Returns the screen pixel position of the entity using the last projection matrix, camera matrix and viewport that were set in the renderer.
+             * @return Pixel position of the entity on the screen.
+             */
 			Vector2 getScreenPositionForMainCamera();
 
-			bool hitTest(Number x, Number y) const { return false; }
-			bool hitTest(Vector2 v) const { return false; }
 
-			bool snapToPixels;			
+            /**
+             * If set to true, will round the position of this entity to integral values. Use this if you need pixel-perfect positioning in 2D.
+             */
+			bool snapToPixels;
+        
 			bool mouseOver;
         
+            /**
+             * Sets the default blending mode for all created entities.
+             */
             static int defaultBlendingMode;
         
             void recalculateAABBAllChildren();
             void recalculateAABB();
         
-            /*
+            /**
              Return axis-aligned bounding box in world space.
              */
             AABB getWorldAABB();
         
+            /**
+             * Returns the bounding box of the entity. This is used for hit-testing as well as visibility calculation.
+             */
             Vector3 getLocalBoundingBox();
+        
+            /**
+             * Sets the bounding box of the entity as a 3D Vector. This is used for hit-testing as well as visibility calculation.
+             */
             void setLocalBoundingBox(const Vector3 box);
+        
+            /**
+             * Sets the bounding box of the entity. This is used for hit-testing as well as visibility calculation.
+             */
             void setLocalBoundingBox(Number x, Number y, Number z);
+        
+            /**
+             * Sets the bounding box X-axis value of the entity.
+             */
             void setLocalBoundingBoxX(Number x);
+        
+            /**
+             * Sets the bounding box Y-axis value of the entity.
+             */
             void setLocalBoundingBoxY(Number y);
+
+            /**
+             * Sets the bounding box Z-axis value of the entity.
+             */
             void setLocalBoundingBoxZ(Number z);
         
             bool rendererVis;
         
+            /**
+            * Layer ID. Used by entity instances to separate entities into groups.
+            */
             unsigned char layerID;
 
+            std::vector <EntityProp> entityProps;
+        
 		protected:
+        
 		
             AABB aabb;
             Vector3 bBox;

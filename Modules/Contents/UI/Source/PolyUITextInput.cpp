@@ -185,7 +185,6 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	focusable = true;
 	setWidth(width);
 	setHeight(rectHeight);
-	setHitbox(width, rectHeight);
 	
 	scrollContainer = NULL;
 	if(multiLine) {
@@ -715,7 +714,6 @@ void UITextInput::Resize(Number width, Number height) {
 	matrixDirty = true;	
 	
 	if(multiLine) {
-		inputRect->setHitbox(width - scrollContainer->getVScrollWidth(), height);		
 		neededBufferLines = (height / ( lineHeight+lineSpacing)) + 1;
 		checkBufferLines();
 		renumberLines();
@@ -861,12 +859,7 @@ void UITextInput::restructLines() {
 	
 	if(scrollContainer) {
 		scrollContainer->setContentSize(getWidth(),  (((wordWrapLines.size()+1) * ((lineHeight+lineSpacing)))) + padding);
-	}	
-	
-	if(multiLine) {
-		inputRect->setHitbox(getWidth() - scrollContainer->getVScrollWidth(), getHeight());
-	}	
-	
+	}
 }
 
 void UITextInput::setCaretPosition(int position) {

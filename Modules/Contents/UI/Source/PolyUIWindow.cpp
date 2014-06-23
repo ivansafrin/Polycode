@@ -99,7 +99,6 @@ UIWindow::UIWindow(String windowName, Number width, Number height) : UIElement()
 	
 	setWidth(width);
 	setHeight(height);
-	setHitbox(width, height);
 	
 	focusable = true;
 	blockMouseInput = true;
