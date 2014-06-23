@@ -128,7 +128,7 @@ namespace Polycode {
 		
 		virtual void setAmbientColor(Number r, Number g, Number b);
 		
-		virtual void clearScreen() = 0;
+		virtual void clearScreen(bool clearColor = true, bool clearDepth = true) = 0;
 		
 		virtual void translate2D(Number x, Number y) = 0;
 		virtual void rotate2D(Number angle) = 0;

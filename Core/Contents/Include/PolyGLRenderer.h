@@ -147,7 +147,7 @@ namespace Polycode {
 
 		Image *renderScreenToImage();
 		Image *renderBufferToImage(Texture *texture);
-		void clearScreen();	
+		void clearScreen(bool clearColor = true, bool clearDepth = true);
 		
 		void translate2D(Number x, Number y);
 		void rotate2D(Number angle);
