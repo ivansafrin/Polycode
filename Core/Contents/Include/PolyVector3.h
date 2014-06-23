@@ -159,6 +159,15 @@ namespace Polycode {
 			inline Number length () const {
 				return sqrtf( x * x + y * y + z * z );
 			}
+
+			/**
+			* Returns square of the length of the vector.
+			* Cheaper to execute than length(), for use when you're just e.g. comparing vector lengths.
+			* @return Square length of the vector.
+			*/
+			inline Number lengthSquared() const {
+				return dot(*this);
+			}
 			
 			inline Vector3 setLength(const Number newLength) {
 				Number oldLength = length();
