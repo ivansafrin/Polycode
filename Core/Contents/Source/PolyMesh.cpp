@@ -678,6 +678,8 @@ void Mesh::subdivideToRadius(Number radius, int subdivisions)
 
 void Mesh::createOctosphere(Number radius, int subdivisions) {
 
+    setMeshType(Mesh::TRI_MESH);
+    
 	indexedMesh = true;
 
 	Vector3 points[6]={
@@ -705,7 +707,8 @@ void Mesh::createOctosphere(Number radius, int subdivisions) {
 	addIndexedFace(1, 5, 2);
 
 	subdivideToRadius(radius, subdivisions);
-
+    
+    calculateNormals();
 	calculateTangents();
 	arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
 	arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;
@@ -716,6 +719,8 @@ void Mesh::createOctosphere(Number radius, int subdivisions) {
 
 void Mesh::createIcosphere(Number radius, int subdivisions) {
 
+    setMeshType(Mesh::TRI_MESH);
+    
 	const float a = 0.5257311121191336;
 	const float b = 0.85065080835204;
 
@@ -765,6 +770,7 @@ void Mesh::createIcosphere(Number radius, int subdivisions) {
 
 	subdivideToRadius(radius, subdivisions);
 
+    calculateNormals();
 	calculateTangents();
 	arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
 	arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;

@@ -2788,6 +2788,8 @@ ScenePrimitiveSheet::ScenePrimitiveSheet() : PropSheet("PRIMITIVE", "scene_primi
     typeProp->comboEntry->addComboItem("Torus");
     typeProp->comboEntry->addComboItem("Cone");
     typeProp->comboEntry->addComboItem("Circle");
+    typeProp->comboEntry->addComboItem("IcoSphere");
+    typeProp->comboEntry->addComboItem("OctoSphere");
     
     addProp(typeProp);
     
@@ -2908,6 +2910,28 @@ void ScenePrimitiveSheet::updatePrimitiveLabels() {
             
             propHeight = 45 + (32 * 3);
         break;
+        case ScenePrimitive::TYPE_ICOSPHERE:
+            option1Prop->setPropName("Radius");
+            option2Prop->setPropName("Subdivisions");
+            
+            option1Prop->enabled = true;
+            option1Prop->visible = true;
+            option2Prop->enabled = true;
+            option2Prop->visible = true;
+            
+            propHeight = 45 + (32 * 2);
+        break;
+        case ScenePrimitive::TYPE_OCTOSPHERE:
+            option1Prop->setPropName("Radius");
+            option2Prop->setPropName("Subdivisions");
+            
+            option1Prop->enabled = true;
+            option1Prop->visible = true;
+            option2Prop->enabled = true;
+            option2Prop->visible = true;
+            
+            propHeight = 45 + (32 * 2);
+        break;
         case ScenePrimitive::TYPE_TORUS:
             option1Prop->setPropName("Torus radius");
             option2Prop->setPropName("Pipe radius");
@@ -2984,7 +3008,20 @@ void ScenePrimitiveSheet::handleEvent(Event *event) {
     }
     
     if(event->getEventCode() == Event::CHANGE_EVENT) {
-        primitive->setPrimitiveOptions(typeProp->get(), option1Prop->get(), option2Prop->get(), option3Prop->get(), option4Prop->get(), option5Prop->get());
+        
+        Number v1 = option1Prop->get();
+        Number v2 = option2Prop->get();
+        Number v3 = option3Prop->get();
+        Number v4 = option4Prop->get();
+        Number v5 = option5Prop->get();
+        
+        if((typeProp->get() == ScenePrimitive::TYPE_ICOSPHERE  && primitive->getPrimitiveType() != ScenePrimitive::TYPE_ICOSPHERE)|| (typeProp->get() == ScenePrimitive::TYPE_OCTOSPHERE  && primitive->getPrimitiveType() != ScenePrimitive::TYPE_OCTOSPHERE)) {
+            option2Prop->set(1.0);
+            v2 = 1.0;
+        }
+        
+        primitive->setPrimitiveOptions(typeProp->get(), v1, v2, v3, v4, v5);
+           
         if(event->getDispatcher() == typeProp) {
             updatePrimitiveLabels();
         }

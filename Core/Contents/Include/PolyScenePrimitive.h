@@ -120,14 +120,29 @@ namespace Polycode {
 			* v3 - Number of segments
 			*/			
 			static const int TYPE_CIRCLE = 8;			
-
+        
+            /**
+             * An ico sphere.
+             * v1 - Sphere radius
+             * v2 - number of subdivisions
+             */
+            static const int TYPE_ICOSPHERE = 9;
+        
+            /**
+             * An ico sphere.
+             * v1 - Sphere radius
+             * v2 - number of subdivisions
+             */
+            static const int TYPE_OCTOSPHERE = 10;
+        
             /**
              * A 2D line circle.
              * v1 - X size
              * v2 - Y size
              * v3 - Number of segments
              */
-            static const int TYPE_LINE_CIRCLE = 9;
+            static const int TYPE_LINE_CIRCLE = 11;
+
 
             int getPrimitiveType() const;
         

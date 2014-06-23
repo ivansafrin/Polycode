@@ -104,6 +104,14 @@ void ScenePrimitive::recreatePrimitive() {
 			mesh->createLineCircle(v1, v2, v3);
             setLocalBoundingBox(v1, v2, 0.001);
         break;
+		case TYPE_ICOSPHERE:
+			mesh->createIcosphere(v1, v2);
+            setLocalBoundingBox(v1*2, v1*2, v1*2);
+        break;
+		case TYPE_OCTOSPHERE:
+			mesh->createOctosphere(v1, v2);
+            setLocalBoundingBox(v1*2, v1*2, v1*2);
+        break;
 	}
 }
 
