@@ -42,7 +42,7 @@ class SceneEntityInstance : public Entity {
 	public:
     
         SceneEntityInstance(Scene *parentScene, const String& fileName);
-		SceneEntityInstance(Scene *parentScene);
+		explicit SceneEntityInstance(Scene *parentScene);
 		
 		static SceneEntityInstance *BlankSceneEntityInstance(Scene *parentScene);
 

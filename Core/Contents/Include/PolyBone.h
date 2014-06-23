@@ -40,7 +40,7 @@ namespace Polycode {
 			* Constructor.
 			* @param boneName Name of the bone.
 			*/				
-			Bone(const String& boneName);
+			explicit Bone(const String& boneName);
 			virtual ~Bone();
 			
 			/**

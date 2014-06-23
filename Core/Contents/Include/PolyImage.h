@@ -39,7 +39,7 @@ namespace Polycode {
 			* Create image from file name.
 			* @param fileName Path to image file to load.
 			*/ 
-			Image(const String& fileName);
+			explicit Image(const String& fileName);
 			
 			/**
 			* Create a blank image of specified size and type.
