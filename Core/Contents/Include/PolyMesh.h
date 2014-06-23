@@ -305,7 +305,16 @@ namespace Polycode {
 
             void setUseFaceNormals(bool val);
             bool getUseFaceNormals();
-        
+
+			inline unsigned int getIndexGroupSize() {
+				switch (meshType) {
+				case QUAD_MESH: return 4;
+				case TRI_MESH: return 3;
+				case LINE_MESH: return 2;
+				default: return 1;
+				}
+			}
+
 			/**
 			* Calculates the mesh bounding box.
 			*/
@@ -374,7 +383,21 @@ namespace Polycode {
             void addIndexedFace(unsigned int i1, unsigned int i2);
             void addIndexedFace(unsigned int i1, unsigned int i2, unsigned int i3);
             void addIndexedFace(unsigned int i1, unsigned int i2, unsigned int i3, unsigned int i4);
-            void addIndex(unsigned int index);
+			void addIndex(unsigned int index);
+
+			/** Removes a range of vertices starting at beginRemoveVertex. vertexRemovalCount should be a multiple of the num
+			 * if you want to keep your mesh data clean. If this is an indexedMesh, will also remove any faces that reference
+			 * @param beginRemoveVertex First element of the vertex array to remove
+			 * @param vertexRemovalCount Number of elements to remove from the vertex array */
+			void removeVertexRange(unsigned int beginRemoveVertex, int vertexRemovalCount = 3);
+
+			/** Removes a face from the mesh. Face is defined as a quad for QUAD_MESH, a triangle for TRI_MESH, a line for LI
+			 *  In indexedMesh mode this may result in orphaned vertices.
+			 * @param faceIndex The 0-indexed face of the mesh (and NOT the index into the indices array!) */
+			void removeFace(unsigned int faceIndex);
+
+			/** For indexedMesh only, removes any unused vertices from the mesh. */
+			int removeUnusedVertices();
         
             Vector3 getFaceNormalForVertex(unsigned int index);
         
