@@ -41,8 +41,13 @@ namespace Polycode {
 			* @param b Blue value 0-1
 			* @param a Alpha value 0-1									
 			*/														
-			Color(Number r,Number g, Number b, Number a);
-			
+			Color(float r,float g,float b,float a);
+
+			/**
+			* @copydoc Color::Color(float,float,float,float)
+			*/
+			Color(double r,double g,double b,double a);
+
 			/**
 			* Default constructor.
 			*/						

@@ -324,9 +324,9 @@ namespace Polycode {
 		
 		/**
 		* Returns the total ticks elapsed since launch.
-		* @return Time elapsed since launch in floating point microseconds.
+		* @return Time elapsed since launch in floating point seconds.
 		*/		
-		Number getTicksFloat();
+		double getTicksFloat();
 		
 		void setUserPointer(void *ptr) { userPointer = ptr; }
 		void *getUserPointer() { return userPointer; }

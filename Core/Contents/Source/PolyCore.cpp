@@ -142,8 +142,8 @@ namespace Polycode {
 		return ((Number)elapsed)/1000.0f;
 	}
 	
-	Number Core::getTicksFloat() {
-		return ((Number)getTicks())/1000.0f;		
+	double Core::getTicksFloat() {
+		return getTicks()/1000.0d;
 	}
 		
 	void Core::createThread(Threaded *target) {
