@@ -108,6 +108,12 @@ namespace Polycode {
 				return pos;
 			}
 
+			inline Vector3 multiplyWithPerspective(const Vector3 &v2) const
+			{
+				Number divisor = v2.x*m[0][3] + v2.y*m[1][3] + v2.z*m[2][3] + m[3][3];
+				return (*this * v2) / divisor;
+			}
+
 			// ----------------------------------------------------------------------------------------------------------------
 			/** @name Operators
 			*  Available vector operators.
