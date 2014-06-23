@@ -143,7 +143,7 @@ namespace Polycode {
 	}
 	
 	double Core::getTicksFloat() {
-		return getTicks()/1000.0d;
+		return getTicks()/1000.0;
 	}
 		
 	void Core::createThread(Threaded *target) {
