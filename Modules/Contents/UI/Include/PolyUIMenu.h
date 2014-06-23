@@ -72,7 +72,7 @@ namespace Polycode {
 		bool isSelectable();
 
 	protected:
-		SceneLine* line;
+		UIBox* dividerBox;
 	};
 
 	/** 

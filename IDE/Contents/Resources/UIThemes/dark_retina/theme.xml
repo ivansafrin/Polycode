@@ -123,25 +123,32 @@
 	<uiComboBoxTextOffsetX>7</uiComboBoxTextOffsetX>
 	<uiComboBoxTextOffsetY>4</uiComboBoxTextOffsetY>		
 
+	<uiMenuBarFont>sans</uiMenuBarFont>
+	<uiMenuBarFontSize>12</uiMenuBarFontSize>
 
 	<uiMenuFont>sans</uiMenuFont>
 	<uiMenuFontSize>12</uiMenuFontSize>
 	<uiMenuTextOffsetX>10</uiMenuTextOffsetX>
 	<uiMenuTextOffsetY>-1</uiMenuTextOffsetY>		
 	<uiMenuPaddingX>3</uiMenuPaddingX>
-	<uiMenuPaddingY>10</uiMenuPaddingY>
+	<uiMenuPaddingY>3</uiMenuPaddingY>
 	<uiMenuItemHeight>22</uiMenuItemHeight>
 	<uiMenuBgImage>menuBg.png</uiMenuBgImage>	
-	<uiMenuBgT>7</uiMenuBgT>
-	<uiMenuBgR>7</uiMenuBgR>
-	<uiMenuBgB>11</uiMenuBgB>
-	<uiMenuBgL>7</uiMenuBgL>			
+	<uiMenuBgT>3</uiMenuBgT>
+	<uiMenuBgR>3</uiMenuBgR>
+	<uiMenuBgB>3</uiMenuBgB>
+	<uiMenuBgL>3</uiMenuBgL>			
 	<uiMenuSelectorBgImage>menuSelector.png</uiMenuSelectorBgImage>	
 	<uiMenuSelectorBgT>0</uiMenuSelectorBgT>
 	<uiMenuSelectorBgR>0</uiMenuSelectorBgR>
 	<uiMenuSelectorBgB>0</uiMenuSelectorBgB>
 	<uiMenuSelectorBgL>0</uiMenuSelectorBgL>
 	<uiMenuSelectorPadding>3</uiMenuSelectorPadding>
+	<uiMenuDividerBgImage>menuDividerBg.png</uiMenuDividerBgImage>
+	<uiMenuDividerBgT>1</uiMenuDividerBgT>
+	<uiMenuDividerBgR>0</uiMenuDividerBgR>
+	<uiMenuDividerBgB>1</uiMenuDividerBgB>
+	<uiMenuDividerBgL>0</uiMenuDividerBgL>			
 
 	<uiIconSelectorBg>iconSelectorBg.png</uiIconSelectorBg>
 	<uiIconSelectorBgT>7</uiIconSelectorBgT>

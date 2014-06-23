@@ -35,7 +35,9 @@ namespace Polycode {
 
 	class UIMenuBarEntryItem {
 		public:
+			UIMenuBarEntryItem(bool isDivider);
 			UIMenuBarEntryItem(String name, String code, PolyKEY shortCut1, PolyKEY shortCut2);
+			bool isDivider;
 			String name;	
 			String code;
 
@@ -51,6 +53,7 @@ namespace Polycode {
 			UIMenuBarEntry(String name);
 			virtual ~UIMenuBarEntry();		
 			void addItem(String name, String code, PolyKEY shortCut1 = KEY_UNKNOWN, PolyKEY shortCut2 = KEY_UNKNOWN);
+			void addDivider();
 
 			void Select();
 			void Deselect();

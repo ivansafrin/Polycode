@@ -1,3 +1,24 @@
+/*
+ Copyright (C) 2012 by Ivan Safrin
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
+ */
 
 #include "PolyUIMenuBar.h"
 #include "PolyLabel.h"
@@ -8,7 +29,12 @@
 
 using namespace Polycode;
 
+UIMenuBarEntryItem::UIMenuBarEntryItem(bool isDivider) {
+	this->isDivider = true;
+}
+
 UIMenuBarEntryItem::UIMenuBarEntryItem(String name, String code, PolyKEY shortCut1, PolyKEY shortCut2) {
+	this->isDivider = false;
 	this->name = name;
 	this->code = code;
 	this->shortCut1 = shortCut1;
@@ -38,8 +64,13 @@ bool UIMenuBarEntryItem::checkShortCut(PolyKEY shortCut) {
 }
 
 UIMenuBarEntry::UIMenuBarEntry(String name): UIElement() {
-	
-	label = new SceneLabel(name, 14, "sans");
+
+	Config *conf = CoreServices::getInstance()->getConfig();
+
+	String fontName = conf->getStringValue("Polycode", "uiMenuBarFont");
+	int fontSize = conf->getNumericValue("Polycode", "uiMenuBarFontSize");
+
+	label = new SceneLabel(name, fontSize, fontName);
 	setWidth(label->getLabel()->getTextWidth() + 20);
 	label->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	bg = new UIRect(getWidth(), 25);
@@ -61,6 +92,10 @@ void UIMenuBarEntry::Deselect() {
 
 void UIMenuBarEntry::addItem(String name, String code, PolyKEY shortCut1, PolyKEY shortCut2) {
 	items.push_back(UIMenuBarEntryItem(name,code, shortCut1, shortCut2));
+}
+
+void UIMenuBarEntry::addDivider() {
+	items.push_back(UIMenuBarEntryItem(true));
 }
 
 UIMenuBarEntry::~UIMenuBarEntry() {
@@ -108,7 +143,11 @@ void UIMenuBar::showMenuForEntry(UIMenuBarEntry *entry) {
 	dropMenu->addEventListener(this, UIEvent::CANCEL_EVENT);
 
 	for(int i=0; i < entry->items.size(); i++) {
-		dropMenu->addOption(entry->items[i].name, entry->items[i].code);
+		if(entry->items[i].isDivider) {
+			dropMenu->addDivider();
+		} else {
+			dropMenu->addOption(entry->items[i].name, entry->items[i].code);
+		}
 	}
 
 	if(currentEntry) {

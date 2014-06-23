@@ -186,13 +186,18 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	fileEntry->addItem("New File", "new_file", KEY_n);
 	fileEntry->addItem("New Project", "new_project", KEY_LSHIFT, KEY_n);
 	fileEntry->addItem("New Folder", "new_folder", KEY_LSHIFT, KEY_f);
+	fileEntry->addDivider();
 	fileEntry->addItem("Open Project", "open_project", KEY_LSHIFT, KEY_o);
 	fileEntry->addItem("Close Project", "close_project", KEY_LSHIFT, KEY_w);
+	fileEntry->addDivider();
 	fileEntry->addItem("Close File", "close_file", KEY_w);
 	fileEntry->addItem("Remove File", "remove_file");
+	fileEntry->addDivider();
 	fileEntry->addItem("Refresh Project", "refresh_project");
 	fileEntry->addItem("Save File", "save_file", KEY_s);
+	fileEntry->addDivider();
 	fileEntry->addItem("Browse Examples", "browse_examples", KEY_LSHIFT, KEY_e);
+	fileEntry->addDivider();
 	fileEntry->addItem("Quit", "quit");
 
 	UIMenuBarEntry *editEntry = menuBar->addMenuBarEntry("Edit");
@@ -200,7 +205,9 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	editEntry->addItem("Redo", "redo");
 	editEntry->addItem("Cut", "cut");
 	editEntry->addItem("Copy", "copy");
+	editEntry->addDivider();
 	editEntry->addItem("Find", "find", KEY_f);
+	editEntry->addDivider();
 	editEntry->addItem("Settings", "settings");
 
 	UIMenuBarEntry *viewEntry = menuBar->addMenuBarEntry("View");
