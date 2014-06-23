@@ -221,6 +221,20 @@ namespace Polycode {
 			void createSphere(Number radius, int numRings, int numSegments);
 
 			/**
+			* Creates an icosphere of specified radius
+			* @param radius Radius of sphere.
+			* @param subdivisions 0 means you get an icosahedron, don't recommend ever going above about 4 or 5 as they get really big
+			*/
+			void createIcosphere(Number radius, int subdivisions);
+
+			/**
+			* Creates an octosphere of specified radius
+			* @param radius Radius of sphere.
+			* @param subdivisions 0 means you get an octagon, don't recommend ever going too high as they get really big
+			*/
+			void createOctosphere(Number radius, int subdivisions);
+
+			/**
 			* Creates a cylinder mesh.
 			* @param height Height of the cylinder.
 			* @param radius Radius of the cylinder.
@@ -406,7 +420,9 @@ namespace Polycode {
             unsigned int getIndexCount();
             unsigned int getIndexAt(unsigned int index);
         
-		protected:
+            void subdivideToRadius(Number radius, int subdivisions);
+
+        protected:
         
             Vector3 calculateFaceTangent(Vertex *v1, Vertex *v2, Vertex *v3);
         

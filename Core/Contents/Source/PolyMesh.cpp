@@ -20,6 +20,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+#include <map>
+
 #include "PolyMesh.h"
 #include "PolyLogger.h"
 #include "OSBasics.h"
@@ -598,6 +600,177 @@ void Mesh::createSphere(Number radius, int segmentsH, int segmentsW) {
     arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;
     arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;
     arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;		
+}
+
+void Mesh::subdivideToRadius(Number radius, int subdivisions)
+{
+	typedef std::map<std::pair<int,int>, int> EdgeSet;
+	for (int s = 0; s < subdivisions; s++) {
+		EdgeSet dividedEdges;
+		//Take a copy of the number of face indices at the BEGINNING, so we don't go on forever
+		for (int i = 0, n = indices.size(); i < n; i += 3) {
+
+			int vi0 = indices[i];
+			int vi1 = indices[i+1];
+			int vi2 = indices[i+2];
+
+			Vertex* v0 = vertices[vi0];
+			Vertex* v1 = vertices[vi1];
+			Vertex* v2 = vertices[vi2];
+
+			//Midpoints
+			Vector3 vm01 = ((*v0) + (*v1)) * 0.5f;
+			Vector3 vm12 = ((*v1) + (*v2)) * 0.5f;
+			Vector3 vm20 = ((*v2) + (*v0)) * 0.5f;
+
+			//Normalize so they're pushed outwards to the sphere
+			vm01 = vm01 * (radius / vm01.length());
+			vm12 = vm12 * (radius / vm12.length());
+			vm20 = vm20 * (radius / vm20.length());
+
+			std::pair<int,int>
+				key01 = vi0 < vi1 ? std::pair<int,int>(vi0, vi1) : std::pair<int,int>(vi1, vi0),
+				key12 = vi1 < vi2 ? std::pair<int,int>(vi1, vi2) : std::pair<int,int>(vi2, vi1),
+				key20 = vi2 < vi0 ? std::pair<int,int>(vi2, vi0) : std::pair<int,int>(vi0, vi2);
+
+			EdgeSet::iterator it01 = dividedEdges.find(key01);
+			int vmi01;
+			if (it01 != dividedEdges.end()) {
+				vmi01 = it01->second;
+			}
+			else {
+				vmi01 = vertices.size();
+				addVertex(vm01.x, vm01.y, vm01.z);
+				dividedEdges[key01] = vmi01;
+			}
+			EdgeSet::iterator it12 = dividedEdges.find(key12);
+			int vmi12;
+			if (it12 != dividedEdges.end()) {
+				vmi12 = it12->second;
+			}
+			else {
+				vmi12 = vertices.size();
+				addVertex(vm12.x, vm12.y, vm12.z);
+				dividedEdges[key12] = vmi12;
+			}
+			EdgeSet::iterator it20 = dividedEdges.find(key20);
+			int vmi20;
+			if (it20 != dividedEdges.end()) {
+				vmi20 = it20->second;
+			}
+			else {
+				vmi20 = vertices.size();
+				addVertex(vm20.x, vm20.y, vm20.z);
+				dividedEdges[key20] = vmi20;
+			}
+
+			addIndexedFace(vi0, vmi01, vmi20);
+			addIndexedFace(vi1, vmi12, vmi01);
+			addIndexedFace(vi2, vmi20, vmi12);
+
+			//Recycle the original face to be the new central face
+			indices[i] = vmi01;
+			indices[i+1] = vmi12;
+			indices[i+2] = vmi20;
+		}
+	}
+}
+
+void Mesh::createOctosphere(Number radius, int subdivisions) {
+
+	indexedMesh = true;
+
+	Vector3 points[6]={
+		Vector3(0,0,-1),
+		Vector3(0,0,1),
+		Vector3(-1,0,0),
+		Vector3(1,0,0),
+		Vector3(0,-1,0),
+		Vector3(0,1,0)
+	};
+
+	for(int i =0;i<6;i++) {
+		Vector3 n = points[i];
+		Vector3 v = n * radius;
+		addVertex(new Vertex(v.x, v.y, v.z, n.x, n.y, n.z));
+	}
+
+	addIndexedFace(0, 4, 2);
+	addIndexedFace(0, 2, 5);
+	addIndexedFace(0, 5, 3);
+	addIndexedFace(0, 3, 4);
+	addIndexedFace(1, 2, 4);
+	addIndexedFace(1, 4, 3);
+	addIndexedFace(1, 3, 5);
+	addIndexedFace(1, 5, 2);
+
+	subdivideToRadius(radius, subdivisions);
+
+	calculateTangents();
+	arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
+	arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;
+	arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;
+	arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;
+	arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;
+}
+
+void Mesh::createIcosphere(Number radius, int subdivisions) {
+
+	const float a = 0.5257311121191336;
+	const float b = 0.85065080835204;
+
+	indexedMesh = true;
+
+	Vector3 icosahedron_points[12]={
+		Vector3(-a,  b, 0),
+		Vector3( a,  b, 0),
+		Vector3(-a, -b, 0),
+		Vector3( a, -b, 0),
+		Vector3(0, -a,  b),
+		Vector3(0,  a,  b),
+		Vector3(0, -a, -b),
+		Vector3(0,  a, -b),
+		Vector3( b, 0, -a),
+		Vector3( b, 0,  a),
+		Vector3(-b, 0, -a),
+		Vector3(-b, 0,  a)
+	};
+
+	for(int i =0;i<12;i++) {
+		Vector3 n = icosahedron_points[i];
+		Vector3 v = n * radius;
+		addVertex(new Vertex(v.x, v.y, v.z, n.x, n.y, n.z));
+	}
+
+	addIndexedFace(0, 11, 5);
+	addIndexedFace(0, 5, 1);
+	addIndexedFace(0, 1, 7);
+	addIndexedFace(0, 7, 10);
+	addIndexedFace(0, 10, 11);
+	addIndexedFace(1, 5, 9);
+	addIndexedFace(5, 11, 4);
+	addIndexedFace(11, 10, 2);
+	addIndexedFace(10, 7, 6);
+	addIndexedFace(7, 1, 8);
+	addIndexedFace(3, 9, 4);
+	addIndexedFace(3, 4, 2);
+	addIndexedFace(3, 2, 6);
+	addIndexedFace(3, 6, 8);
+	addIndexedFace(3, 8, 9);
+	addIndexedFace(4, 9, 5);
+	addIndexedFace(2, 4, 11);
+	addIndexedFace(6, 2, 10);
+	addIndexedFace(8, 6, 7);
+	addIndexedFace(9, 8, 1);
+
+	subdivideToRadius(radius, subdivisions);
+
+	calculateTangents();
+	arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
+	arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;
+	arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;
+	arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;
+	arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;
 }
 
 unsigned int Mesh::getActualVertexCount() const {

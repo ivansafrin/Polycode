@@ -53,6 +53,9 @@ namespace Polycode {
 			
 			int getWidth() const;
 			int getHeight() const;
+
+			void setCreateMipmaps(bool createMipmapsIn) { createMipmaps = createMipmapsIn; }
+			bool getCreateMipmaps() const { return createMipmaps; }
 		
 			bool clamp;
 			char *textureData;
