@@ -91,16 +91,12 @@ You will also need to manually build the "glext" and "wglext" projects.
 To generate and build Debug and Release builds with Unix Makefiles 
 perform the following steps in the Polycode directory from a terminal:
 
-    cd Dependencies
-    mkdir Build
-    cd Build
-    mkdir Debug
-    cd Debug
+    mkdir -p Dependencies/Build/Debug
+    cd Dependencies/Build/Debug
     cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug ../..
     make
-    cd ..
-    mkdir Release
-    cd Release
+    mkdir ../Release
+    cd ../Release
     cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ../..
     make
     
@@ -162,16 +158,13 @@ before doing this as they are not automatically installed by the
 Dependencies project above. You can get SDL from http://www.libsdl.org 
 or using the package manager of your distribution.
 
-    mkdir Build
-    cd Build
-    mkdir Debug
-    cd Debug
+    mkdir -p Build/Debug
+    cd Build/Debug
     cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug ../..
     make
     make install
-    cd ..
-    mkdir Release
-    cd Release
+    mkdir ../Release
+    cd ../Release
     cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ../..
     make
     make install
