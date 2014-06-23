@@ -186,12 +186,6 @@ void GLSLShaderModule::clearShader() {
 	glUseProgram(0);
 }
 
-#ifdef POLYCODE_NUMBER_IS_SINGLE
-#define polycodeUniformMatrix4v glUniformMatrix4fv
-#else
-#define polycodeUniformMatrix4v glUniformMatrix4dv
-#endif
-
 void GLSLShaderModule::updateGLSLParam(Renderer *renderer, GLSLShader *glslShader, ProgramParam &param, ShaderBinding *materialOptions, ShaderBinding *localOptions) {
 	
 		LocalShaderParam *localParam = NULL;		
@@ -239,10 +233,29 @@ void GLSLShaderModule::updateGLSLParam(Renderer *renderer, GLSLShader *glslShade
 			break;
 			case ProgramParam::PARAM_MATRIX:
 				if(localParam) {
-					polycodeUniformMatrix4v(paramLocation, 1, false, localParam->getMatrix4().ml);
-				} else {
+#ifdef POLYCODE_NUMBER_IS_SINGLE
+                    glUniformMatrix4fv(paramLocation, 1, false, localParam->getMatrix4().ml);
+#else
+                    // no glUniformMatrix4dv on some systems
+                    float copyMatrix[16];
+                    Matrix4 m = localParam->getMatrix4();
+                    for(int i=0; i < 16; i++) {
+                        copyMatrix[i] = m.ml[i];
+                    }
+                    glUniformMatrix4fv(paramLocation, 1, false, copyMatrix);
+#endif
+                } else {
 					Matrix4 defaultMatrix;
-					polycodeUniformMatrix4v(paramLocation, 1, false, defaultMatrix.ml);
+#ifdef POLYCODE_NUMBER_IS_SINGLE
+					getMatrix4(paramLocation, 1, false, defaultMatrix.ml);
+#else
+                    // no glUniformMatrix4dv on some systems
+                    float copyMatrix[16];
+                    for(int i=0; i < 16; i++) {
+                        copyMatrix[i] = defaultMatrix.ml[i];
+                    }
+                    glUniformMatrix4fv(paramLocation, 1, false, copyMatrix);
+#endif
 				}
 			break;
 		}
