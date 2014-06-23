@@ -317,6 +317,10 @@ namespace Polycode {
 		long getRefreshIntervalMs() const {
 			return refreshInterval;
 		}
+
+		long getTimeSleptMs() const {
+			return timeSleptMs;
+		}
 		
 		/**
 		* Returns the total ticks elapsed since launch.
@@ -396,6 +400,7 @@ namespace Polycode {
 		void *userPointer;
 		
 		long refreshInterval;
+		unsigned int timeSleptMs;
 		
 		bool fullScreen;
 		int aaLevel;
