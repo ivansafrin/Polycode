@@ -188,13 +188,15 @@ void Win32Core::captureMouse(bool newval) {
 }
 
 void Win32Core::warpCursor(int x, int y) {
-	POINT point;
-	point.x = x;
-	point.y = y;
-	ClientToScreen(hWnd, &point);
-	SetCursorPos(point.x,point.y);
-	lastMouseX = x;
-	lastMouseY = y;
+	if(!paused){
+		POINT point;
+		point.x = x;
+		point.y = y;
+		ClientToScreen(hWnd, &point);
+		SetCursorPos(point.x,point.y);
+		lastMouseX = x;
+		lastMouseY = y;
+	}
 }
 
 unsigned int Win32Core::getTicks() {
