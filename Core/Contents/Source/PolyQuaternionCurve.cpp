@@ -62,7 +62,7 @@ void QuaternionCurve::generatePointsFromCurves(BezierCurve *wCurve, BezierCurve 
 
 Quaternion QuaternionCurve::interpolate(Number t, bool useShortestPath)
 {
-	t = std::min(std::max(t, 0.0), 1.0);
+	t = std::min(std::max(t, Number(0.0)), Number(1.0));
     Number fSeg = t * (tPoints.size() - 1);
     unsigned int segIdx = (unsigned int)fSeg;
     t = fSeg - segIdx;
