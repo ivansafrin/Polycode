@@ -356,7 +356,7 @@ void LocalShaderParam::setParamValueFromString(int type, String pvalue) {
                 if(values.size() == 2) {
                     setVector2(Vector2(atof(values[0].c_str()), atof(values[1].c_str())));
                 } else {
-                    printf("Material parameter error: A Vector2 must have 2 values (%d provided)!\n", (int)values.size());
+					printf("Material parameter error: Vector2 %s must have 2 values (%d provided)!\n", name.c_str(), (int)values.size());
                 }
             }
                 break;
@@ -366,7 +366,7 @@ void LocalShaderParam::setParamValueFromString(int type, String pvalue) {
                 if(values.size() == 3) {
                     setVector3(Vector3(atof(values[0].c_str()), atof(values[1].c_str()), atof(values[2].c_str())));
                 } else {
-                    printf("Material parameter error: A Vector3 must have 3 values (%d provided)!\n", (int)values.size());
+					printf("Material parameter error: Vector3 %s must have 3 values (%d provided)!\n", name.c_str(), (int)values.size());
                 }
             }
                 break;
@@ -376,7 +376,7 @@ void LocalShaderParam::setParamValueFromString(int type, String pvalue) {
                 if(values.size() == 4) {
                     setColor(Color(atof(values[0].c_str()), atof(values[1].c_str()), atof(values[2].c_str()), atof(values[3].c_str())));
                 } else {
-                    printf("Material parameter error: A Vector3 must have 3 values (%d provided)!\n", (int)values.size());
+					printf("Material parameter error: Color %s must have 4 values (%d provided)!\n", name.c_str(), (int)values.size());
                 }
             }
                 break;
