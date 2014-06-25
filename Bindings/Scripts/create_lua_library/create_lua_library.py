@@ -169,7 +169,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 			f = open(fileName) # Def: Input file handle
 			contents = f.read().replace("_PolyExport", "") # Def: Input file contents, strip out "_PolyExport"
 			cppHeader = CppHeaderParser.CppHeader(contents, "string") # Def: Input file contents, parsed structure
-			ignore_classes = ["PolycodeShaderModule", "Object", "Threaded", "OpenGLCubemap", "PolyBase"]
+			ignore_classes = ["PolycodeShaderModule", "Object", "Threaded", "OpenGLCubemap", "PolyBase", "Matrix4::union "]
 
 			# Iterate, check each class in this file.
 			for ckey in cppHeader.classes: 
@@ -194,11 +194,12 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 					luaClassBindingOut += "class \"%s\"\n\n" % ckey
 
 				if ckey in ignore_classes:
+					print("INGORING class %s" % ckey)
 					continue
 
-				if len(c["methods"]["public"]) < 2: # Used to, this was a continue.
-					print("Warning: Lua-binding class with less than two methods")
-					continue # FIXME: Remove this, move any non-compileable classes into ignore_classes
+				#if len(c["methods"]["public"]) < 2: # Used to, this was a continue.
+				#	print("Warning: Lua-binding class with less than two methods")
+				#	continue # FIXME: Remove this, move any non-compileable classes into ignore_classes
 
 				extendString = ""
 				if len(c["inherits"]) > 0:
