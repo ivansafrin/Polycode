@@ -147,17 +147,17 @@ namespace Polycode {
             bool ownsPointer;
 		
             // Convenience getters/setters for Lua users
-            Number getNumber()         { return *((Number *)data); }
-            Vector2 getVector2()       { return *((Vector2 *)data); }
-            Vector3 getVector3()       { return *((Vector3 *)data); }
-            Matrix4 getMatrix4()       { return *((Matrix4 *)data); }
-            Color getColor()           { return *((Color *)data); }
-            void setNumber(Number x)   { memcpy(data, &x, sizeof(x)); }
-            void setVector2(Vector2 x) { memcpy(data, &x, sizeof(x)); }
-            void setVector3(Vector3 x) { memcpy(data, &x, sizeof(x)); }
-            void setMatrix4(Matrix4 x) { memcpy(data, &x, sizeof(x)); }
-            void setColor(Color x)     { static_cast<Color*>(data)->setColor(&x); }
-            
+            Number getNumber();
+            Vector2 getVector2();
+            Vector3 getVector3();
+            Matrix4 getMatrix4();
+            Color getColor();
+            void setNumber(Number x);
+            void setVector2(Vector2 x);
+            void setVector3(Vector3 x);
+            void setMatrix4(Matrix4 x);
+            void setColor(Color x);
+        
             void setParamValueFromString(int type, String pvalue);
 	};	
 	

@@ -275,6 +275,76 @@ void Shader::setName(const String& name) {
 	this->name = name;
 }
 
+Number LocalShaderParam::getNumber() {
+    if(type != ProgramParam::PARAM_NUMBER) {
+        return 0.0;
+    }
+    return *((Number *)data);
+}
+
+Vector2 LocalShaderParam::getVector2() {
+    if(type != ProgramParam::PARAM_VECTOR2) {
+        return Vector2();
+    }
+    return *((Vector2 *)data);
+}
+
+Vector3 LocalShaderParam::getVector3() {
+    if(type != ProgramParam::PARAM_VECTOR3) {
+        return Vector3();
+    }
+    return *((Vector3 *)data);
+}
+
+Matrix4 LocalShaderParam::getMatrix4() {
+    if(type != ProgramParam::PARAM_MATRIX) {
+        return Matrix4();
+    }
+    return *((Matrix4 *)data);
+}
+
+Color LocalShaderParam::getColor() {
+    if(type != ProgramParam::PARAM_COLOR) {
+        return Color(0.0, 0.0, 0.0, 0.0);
+    }
+    return *((Color *)data);
+}
+
+void LocalShaderParam::setNumber(Number x) {
+    if(type != ProgramParam::PARAM_NUMBER) {
+        return;
+    }
+    memcpy(data, &x, sizeof(x));
+}
+
+void LocalShaderParam::setVector2(Vector2 x) {
+    if(type != ProgramParam::PARAM_VECTOR2) {
+        return;
+    }
+    memcpy(data, &x, sizeof(x));
+}
+
+void LocalShaderParam::setVector3(Vector3 x) {
+    if(type != ProgramParam::PARAM_VECTOR3) {
+        return;
+    }
+    memcpy(data, &x, sizeof(x));
+}
+
+void LocalShaderParam::setMatrix4(Matrix4 x) {
+    if(type != ProgramParam::PARAM_MATRIX) {
+        return;
+    }
+    memcpy(data, &x, sizeof(x));
+}
+
+void LocalShaderParam::setColor(Color x) {
+    if(type != ProgramParam::PARAM_COLOR) {
+        return;
+    }
+    static_cast<Color*>(data)->setColor(&x);
+}
+
 const String& Shader::getName() const {
 	return name;
 }
