@@ -1214,6 +1214,45 @@ MaterialProp::MaterialProp(const String &caption) : PropProp(caption, "Material"
 	materialLabel->setPosition(-100, 32);
 	materialLabel->color.a = 1.0;
     
+    previewScene = new Scene(Scene::SCENE_3D, true);
+    
+    previewScene->rootEntity.setOwnsChildrenRecursive(true);
+    
+	ScenePrimitive *previewBg = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 15.0, 15.0, 15.0);
+	previewBg->Yaw(45.0);
+	previewBg->backfaceCulled = false;
+	
+	previewBg->setMaterialByName("Unlit");
+	Texture *tex = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile("materialEditor/material_grid.png");
+	if(previewBg->getLocalShaderOptions()) {
+        previewBg->getLocalShaderOptions()->addTexture("diffuse", tex);
+	}
+	previewScene->addChild(previewBg);
+	
+   	renderTexture = new SceneRenderTexture(previewScene, previewScene->getDefaultCamera(), 48*2, 48*2);
+    
+	previewScene->clearColor.setColor(0.1, 0.1, 0.1, 0.0);
+	previewScene->ambientColor.setColor(0.2, 0.2, 0.2, 1.0);
+    
+	previewPrimitive = new ScenePrimitive(ScenePrimitive::TYPE_SPHERE, 3.0, 16, 16);
+	previewScene->addChild(previewPrimitive);
+	previewPrimitive->getMesh()->calculateTangents();
+  	
+	mainLight = new SceneLight(SceneLight::POINT_LIGHT, previewScene, 290.0);
+	mainLight->setPosition(-10,10,10);
+	previewScene->addLight(mainLight);
+    
+	secondLight = new SceneLight(SceneLight::POINT_LIGHT, previewScene, 250.0);
+	secondLight->setPosition(10,-10,10);
+	previewScene->addLight(secondLight);
+    
+	
+	previewScene->getDefaultCamera()->setPosition(0,5,8);
+	previewScene->getDefaultCamera()->lookAt(Vector3());
+    
+    previewShape->setTexture(renderTexture->getTargetTexture());
+    
+    
 	setHeight(60);
 }
 
@@ -1222,9 +1261,9 @@ void MaterialProp::setEntityInstance(SceneEntityInstance *instance) {
 }
 
 MaterialProp::~MaterialProp() {
-    
+    delete renderTexture;
+    delete previewScene;
 }
-
 
 void MaterialProp::handleEvent(Event *event) {
     
@@ -1259,6 +1298,7 @@ void MaterialProp::handleEvent(Event *event) {
 
 void MaterialProp::set(Material *material) {
     currentMaterial = material;
+    previewPrimitive->setMaterial(material);
     if(material) {
         materialLabel->setText(material->getName());
     }

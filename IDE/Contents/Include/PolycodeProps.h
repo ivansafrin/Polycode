@@ -393,6 +393,13 @@ class MaterialProp : public PropProp {
     
     private:
     
+        Scene *previewScene;
+        SceneLight *mainLight;
+        SceneLight *secondLight;
+        SceneRenderTexture *renderTexture;
+        ScenePrimitive *previewPrimitive;
+    
+    
         SceneEntityInstance *entityInstance;
         UIRect *previewShape;
         UIButton *changeButton;
