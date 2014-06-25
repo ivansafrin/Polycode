@@ -1505,7 +1505,7 @@ void PolycodeMaterialEditor::handleEvent(Event *event) {
 	if(event->getDispatcher() == materialBrowser->newShaderButton && event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {
 			Shader *newShader = CoreServices::getInstance()->getMaterialManager()->createShader(resourcePool, "glsl", "Untitled", "default/Unlit.vert", "default/Unlit.frag", false);
 			if(newShader) {
-				materialBrowser->addShader(newShader);
+				materialBrowser->addShader(newShader)->setSelected();
 				shaders.push_back(newShader);
 				CoreServices::getInstance()->getMaterialManager()->addShader(newShader);
 				setHasChanges(true);	
@@ -1524,7 +1524,7 @@ void PolycodeMaterialEditor::handleEvent(Event *event) {
 							 (Texture*)resourcePool->getResource(Resource::RESOURCE_TEXTURE, "default.png"));
 		cubemap->setResourceName("Cubemap"+String::IntToString(cubemaps.size()));
 		cubemaps.push_back(cubemap);
-		materialBrowser->addCubemap(cubemap);
+		materialBrowser->addCubemap(cubemap)->setSelected();
 		setHasChanges(true);
 		resourcePool->addResource(cubemap);
 	}	
