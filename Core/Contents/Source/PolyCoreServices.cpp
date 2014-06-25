@@ -42,6 +42,10 @@ std::map<long, CoreServices*> CoreServices::instanceMap;
 CoreMutex *CoreServices::renderMutex = 0;
 CoreServices* CoreServices::overrideInstance = NULL;
 
+CoreServices *Polycode::Services() {
+    return CoreServices::getInstance();
+}
+
 CoreMutex *CoreServices::getRenderMutex() {
 	if(renderMutex == NULL) {
 		Logger::log("Creating render mutex...\n");

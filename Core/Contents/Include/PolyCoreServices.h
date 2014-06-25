@@ -182,4 +182,8 @@ namespace Polycode {
 			FontManager *fontManager;
 			Renderer *renderer;
 	};
+    
+
+    CoreServices *Services();
+    
 }
