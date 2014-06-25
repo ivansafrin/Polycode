@@ -110,7 +110,7 @@ void UIBox::resizeBox(Number newWidth, Number newHeight) {
 	trImage->setPosition(newWidth-trImage->getWidth(), 0);
 	blImage->setPosition(0, newHeight-blImage->getHeight());
 
-	centerImage->Resize(ceil(newWidth-l-r), newHeight-t-b);
+	centerImage->Resize(ceil(newWidth-l-r), ceil(newHeight-t-b));
 
 	lImage->Resize(l, newHeight-t-b);	
 	rImage->Resize(r, newHeight-t-b);		
