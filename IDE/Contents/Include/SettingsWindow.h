@@ -28,7 +28,7 @@
 #include "OSBasics.h"
 
 #define SETTINGS_WINDOW_WIDTH 400
-#define SETTINGS_WINDOW_HEIGHT 375
+#define SETTINGS_WINDOW_HEIGHT 560
 
 using namespace Polycode;
 
@@ -41,12 +41,23 @@ class SettingsWindow : public UIWindow {
 		void handleEvent(Event *event);
 		void updateUI();
 
+		/**
+		* Set the key properties
+		* @param keyString String of the selected label
+		* @return int describing which keys you use
+		*/
+		int setKeyProp(String keyString);
+
 		UICheckBox *useExternalTextEditorBox;
 		UITextInput *externalTextEditorCommand;
 		UIButton *browseButton;
 		UIComboBox *syntaxThemeBox;
 		UIComboBox *uiThemeBox;
 		UIComboBox *textureFilteringBox;
+
+		UIComboBox *keyPan;
+		UIComboBox *keyRot;
+		UIComboBox *keyZoom;
 		
 		UIButton *cancelButton;
 		UIButton *okButton;

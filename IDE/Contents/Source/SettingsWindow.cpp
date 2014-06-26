@@ -25,7 +25,7 @@ extern UIGlobalMenu *globalMenu;
 extern SyntaxHighlightTheme *globalSyntaxTheme;
 
 SettingsWindow::SettingsWindow() : UIWindow(L"Settings", SETTINGS_WINDOW_WIDTH, SETTINGS_WINDOW_HEIGHT) {
-
+	Config *config = CoreServices::getInstance()->getConfig();
 	closeOnEscape = true;
 
 	UILabel *label = new UILabel("TEXT EDITING", 22, "section", Label::ANTIALIAS_FULL);
@@ -112,6 +112,80 @@ SettingsWindow::SettingsWindow() : UIWindow(L"Settings", SETTINGS_WINDOW_WIDTH, 
 	textureFilteringBox->addEventListener(this, UIEvent::CHANGE_EVENT);
 	textureFilteringBox->addComboItem("Linear");
 	textureFilteringBox->addComboItem("Nearest");
+
+	label = new UILabel("KEYS", 22, "section", Label::ANTIALIAS_FULL);
+	addChild(label);
+	label->color.a = 1.0;
+	label->setPosition(padding, 350);
+
+	label = new UILabel("Pan Key (+ Mouse)", 12);
+	addChild(label);
+	label->color.a = 1.0;
+	label->setPosition(padding, 350 + 35);
+
+	keyPan = new UIComboBox(globalMenu, 300);
+	addChild(keyPan);
+	keyPan->setPosition(padding, 350 + 55);
+	keyPan->addEventListener(this, UIEvent::CHANGE_EVENT);
+	keyPan->addComboItem("ALT");
+	keyPan->addComboItem("SHIFT");
+	keyPan->addComboItem("CTRL");
+	keyPan->addComboItem("ALT GR");
+	keyPan->addComboItem("WINDOWS KEY");
+	keyPan->addComboItem("ALT + SHIFT");
+	keyPan->addComboItem("ALT + CTRL");
+	keyPan->addComboItem("SHIFT + CTRL");
+	keyPan->addComboItem("ALT + SHIFT + CTRL");
+	keyPan->addComboItem("ALT GR + SHIFT");
+	keyPan->addComboItem("ALT GR + CTRL");
+	keyPan->addComboItem("ALT GR + SHIFT + CTRL");
+	keyPan->setSelectedIndex(config->getNumericValue("Polycode", "keyPan"), true);
+
+	label = new UILabel("Rotation Key (+ Mouse)", 12);
+	addChild(label);
+	label->color.a = 1.0;
+	label->setPosition(padding, 350 + 80);
+
+	keyRot = new UIComboBox(globalMenu, 300);
+	addChild(keyRot);
+	keyRot->setPosition(padding, 350 + 100);
+	keyRot->addEventListener(this, UIEvent::CHANGE_EVENT);
+	keyRot->addComboItem("ALT");
+	keyRot->addComboItem("SHIFT");
+	keyRot->addComboItem("CTRL");
+	keyRot->addComboItem("ALT GR");
+	keyRot->addComboItem("WINDOWS KEY");
+	keyRot->addComboItem("ALT + SHIFT");
+	keyRot->addComboItem("ALT + CTRL");
+	keyRot->addComboItem("SHIFT + CTRL");
+	keyRot->addComboItem("ALT + SHIFT + CTRL");
+	keyRot->addComboItem("ALT GR + SHIFT");
+	keyRot->addComboItem("ALT GR + CTRL");
+	keyRot->addComboItem("ALT GR + SHIFT + CTRL");
+	keyRot->setSelectedIndex(config->getNumericValue("Polycode", "keyRot"), true);
+
+	label = new UILabel("Zoom Key (+ Mouse)", 12);
+	addChild(label);
+	label->color.a = 1.0;
+	label->setPosition(padding, 350 + 125);
+
+	keyZoom = new UIComboBox(globalMenu, 300);
+	addChild(keyZoom);
+	keyZoom->setPosition(padding, 350 + 145);
+	keyZoom->addEventListener(this, UIEvent::CHANGE_EVENT);
+	keyZoom->addComboItem("ALT");
+	keyZoom->addComboItem("SHIFT");
+	keyZoom->addComboItem("CTRL");
+	keyZoom->addComboItem("ALT GR");
+	keyZoom->addComboItem("WINDOWS KEY");
+	keyZoom->addComboItem("ALT + SHIFT");
+	keyZoom->addComboItem("ALT + CTRL");
+	keyZoom->addComboItem("SHIFT + CTRL");
+	keyZoom->addComboItem("ALT + SHIFT + CTRL");
+	keyZoom->addComboItem("ALT GR + SHIFT");
+	keyZoom->addComboItem("ALT GR + CTRL");
+	keyZoom->addComboItem("ALT GR + SHIFT + CTRL");
+	keyZoom->setSelectedIndex(config->getNumericValue("Polycode", "keyZoom"), true);
 	
 	cancelButton = new UIButton("Cancel", BUTTON_WIDTH);
 	cancelButton->addEventListener(this, UIEvent::CLICK_EVENT);
@@ -125,12 +199,19 @@ SettingsWindow::SettingsWindow() : UIWindow(L"Settings", SETTINGS_WINDOW_WIDTH, 
 }
 
 void SettingsWindow::handleEvent(Event *event) {
+	Config *config = CoreServices::getInstance()->getConfig();
 	if(event->getEventType() == "UIEvent") {
 		if(event->getEventCode() == UIEvent::CHANGE_EVENT) {
-			if(event->getDispatcher() == syntaxThemeBox) {
-				if(syntaxThemeBox->getSelectedItem()->label != globalSyntaxTheme->name) {
+			if (event->getDispatcher() == syntaxThemeBox) {
+				if (syntaxThemeBox->getSelectedItem()->label != globalSyntaxTheme->name) {
 					globalSyntaxTheme->loadFromFile(syntaxThemeBox->getSelectedItem()->label);
 				}
+			} else if (event->getDispatcher() == keyPan){
+				config->setNumericValue("Polycode", "keyPan", setKeyProp(keyPan->getSelectedItem()->label));
+			} else if (event->getDispatcher() == keyRot){
+				config->setNumericValue("Polycode", "keyRot", setKeyProp(keyRot->getSelectedItem()->label));
+			} else if (event->getDispatcher() == keyZoom){
+				config->setNumericValue("Polycode", "keyZoom", setKeyProp(keyZoom->getSelectedItem()->label));
 			}
 		} else if(event->getEventCode() == UIEvent::CLICK_EVENT) {
 			if(event->getDispatcher() == okButton) {
@@ -208,6 +289,34 @@ void SettingsWindow::updateUI() {
 	}
 	
 }
-	
+
+int SettingsWindow::setKeyProp(String keyString){
+	if (keyString == "ALT"){
+		return 0;
+	} else if (keyString == "SHIFT"){
+		return 1;
+	} else if (keyString == "CTRL"){
+		return 2;
+	} else if (keyString == "ALT GR"){
+		return 3;
+	} else if (keyString == "WINDOWS KEY"){
+		return 4;
+	} else if (keyString == "ALT + SHIFT"){
+		return 5;
+	} else if (keyString == "ALT + CTRL"){
+		return 6;
+	} else if (keyString == "SHIFT + CTRL"){
+		return 7;
+	} else if (keyString == "ALT + SHIFT + CTRL"){
+		return 8;
+	} else if (keyString == "ALT GR + SHIFT"){
+		return 9;
+	} else if (keyString == "ALT GR + CTRL"){
+		return 10;
+	} else if (keyString == "ALT GR + SHIFT + CTRL"){
+		return 11;
+	}
+}
+
 SettingsWindow::~SettingsWindow() {
 }

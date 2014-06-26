@@ -1181,6 +1181,11 @@ void PolycodeIDEApp::saveConfigFile() {
 	ObjectEntry *textEditorEntry = configFile.root["settings"]->addChild("text_editor");
 	textEditorEntry->addChild("use_external", config->getStringValue("Polycode", "useExternalTextEditor"));
 	textEditorEntry->addChild("command", config->getStringValue("Polycode", "externalTextEditorCommand"));
+	
+	ObjectEntry *keysEntry = configFile.root["settings"]->addChild("keys");
+	keysEntry->addChild("key_pan", config->getNumericValue("Polycode", "keyPan"));
+	keysEntry->addChild("key_rot", config->getNumericValue("Polycode", "keyRot"));
+	keysEntry->addChild("key_zoom", config->getNumericValue("Polycode", "keyZoom"));
 
 #if defined(__APPLE__) && defined(__MACH__)
 	core->createFolder(core->getUserHomeDirectory()+"/Library/Application Support/Polycode");
@@ -1240,25 +1245,46 @@ void PolycodeIDEApp::loadConfigFile() {
 		}
 	}
 
-	if(configFile.root["settings"]) {
+	if (configFile.root["settings"]) {
 		ObjectEntry *settings = configFile.root["settings"];
 		ObjectEntry *textEditor = (*settings)["text_editor"];
-		if(textEditor) {
-			if((*textEditor)["use_external"]) {
+		ObjectEntry *keysEntry = (*settings)["keys"];
+		if (textEditor) {
+			if ((*textEditor)["use_external"]) {
 				config->setStringValue("Polycode", "useExternalTextEditor", (*textEditor)["use_external"]->stringVal);
 			} else {
 				config->setStringValue("Polycode", "useExternalTextEditor", "false");
 			}
 
-			if((*textEditor)["command"]) {
+			if ((*textEditor)["command"]) {
 				config->setStringValue("Polycode", "externalTextEditorCommand", (*textEditor)["command"]->stringVal);
 			} else {
 				config->setStringValue("Polycode", "externalTextEditorCommand", "");
 			}
+			if (keysEntry){
+				if ((*keysEntry)["key_pan"]){
+					config->setNumericValue("Polycode", "keyPan", (*keysEntry)["key_pan"]->NumberVal);
+				} else {
+					config->setNumericValue("Polycode", "keyPan", 5);
+				}
+				if ((*keysEntry)["key_rot"]){
+					config->setNumericValue("Polycode", "keyRot", (*keysEntry)["key_rot"]->NumberVal);
+				} else {
+					config->setNumericValue("Polycode", "keyRot", 0);
+				}
+				if ((*keysEntry)["key_zoom"]){
+					config->setNumericValue("Polycode", "keyZoom", (*keysEntry)["key_zoom"]->NumberVal);
+				} else {
+					config->setNumericValue("Polycode", "keyZoom", 6);
+				}
+			}
+		} else {
+			config->setStringValue("Polycode", "useExternalTextEditor", "false");
+			config->setStringValue("Polycode", "externalTextEditorCommand", "");
+			config->setNumericValue("Polycode", "keyPan", 5);
+			config->setNumericValue("Polycode", "keyRot", 0);
+			config->setNumericValue("Polycode", "keyZoom", 6);
 		}
-	} else {
-		config->setStringValue("Polycode","useExternalTextEditor", "false");
-		config->setStringValue("Polycode", "externalTextEditorCommand", "");
 	}
 }
 
