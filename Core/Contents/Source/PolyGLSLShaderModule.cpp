@@ -292,33 +292,32 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 			ambientVal[0] = renderer->ambientColor.r;
 			ambientVal[1] = renderer->ambientColor.g;
 			ambientVal[2] = renderer->ambientColor.b;										
-			ambientVal[3] = 1;
-		
-		GLfloat data4[] = {light.color.x * light.intensity, light.color.y * light.intensity, light.color.z * light.intensity, 1.0};					
-		glLightfv (GL_LIGHT0+lightIndex, GL_DIFFUSE, data4);
-		
-		data4[0] = light.specularColor.r* light.intensity;
-		data4[1] = light.specularColor.g* light.intensity;
-		data4[2] = light.specularColor.b* light.intensity;
-		data4[3] = light.specularColor.a* light.intensity;
-		glLightfv (GL_LIGHT0+lightIndex, GL_SPECULAR, data4);				
-			
-		data4[3] = 1.0;
-			
-		glLightfv (GL_LIGHT0+lightIndex, GL_AMBIENT, ambientVal);		
-		glLightf (GL_LIGHT0+lightIndex, GL_SPOT_CUTOFF, 180);
+            ambientVal[3] = 1;
+            
+            GLfloat data4[] = {light.color.x * light.intensity, light.color.y * light.intensity, light.color.z * light.intensity, 1.0};
+            glLightfv (GL_LIGHT0+lightIndex, GL_DIFFUSE, data4);
+            
+            data4[0] = light.specularColor.r* light.intensity;
+            data4[1] = light.specularColor.g* light.intensity;
+            data4[2] = light.specularColor.b* light.intensity;
+            data4[3] = light.specularColor.a* light.intensity;
+            glLightfv (GL_LIGHT0+lightIndex, GL_SPECULAR, data4);				
+                
+            data4[3] = 1.0;
+                
+            glLightfv (GL_LIGHT0+lightIndex, GL_AMBIENT, ambientVal);		
+            glLightf (GL_LIGHT0+lightIndex, GL_SPOT_CUTOFF, 180);
 
-		data4[0] = light.position.x;
-		data4[1] = light.position.y;
-		data4[2] = light.position.z;
-		glLightfv (GL_LIGHT0+lightIndex, GL_POSITION, data4);		
+            data4[0] = light.position.x;
+            data4[1] = light.position.y;
+            data4[2] = light.position.z;
+            glLightfv (GL_LIGHT0+lightIndex, GL_POSITION, data4);		
 
-		glLightf (GL_LIGHT0+lightIndex, GL_CONSTANT_ATTENUATION, light.constantAttenuation);		
-		glLightf (GL_LIGHT0+lightIndex, GL_LINEAR_ATTENUATION, light.linearAttenuation);				
-		glLightf (GL_LIGHT0+lightIndex, GL_QUADRATIC_ATTENUATION, light.quadraticAttenuation);				
-		
-		} 			
-		lightIndex++;
+            glLightf (GL_LIGHT0+lightIndex, GL_CONSTANT_ATTENUATION, light.constantAttenuation);		
+            glLightf (GL_LIGHT0+lightIndex, GL_LINEAR_ATTENUATION, light.linearAttenuation);				
+            glLightf (GL_LIGHT0+lightIndex, GL_QUADRATIC_ATTENUATION, light.quadraticAttenuation);				
+            lightIndex++;
+		}
 	}
 
 	vector<LightInfo> spotLights = renderer->getSpotLights();
@@ -346,82 +345,82 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 			ambientVal[2] = renderer->ambientColor.b;										
 			ambientVal[3] = 1;
 		
-		GLfloat data4[] = {light.color.x * light.intensity, light.color.y * light.intensity, light.color.z * light.intensity, 1.0};					
-		glLightfv (GL_LIGHT0+lightIndex, GL_DIFFUSE, data4);
-		
-		data4[0] = light.specularColor.r* light.intensity;
-		data4[1] = light.specularColor.g* light.intensity;
-		data4[2] = light.specularColor.b* light.intensity;
-		data4[3] = light.specularColor.a* light.intensity;
-		glLightfv (GL_LIGHT0+lightIndex, GL_SPECULAR, data4);		
-			
-		data4[3] = 1.0;			
-			
-		glLightfv (GL_LIGHT0+lightIndex, GL_AMBIENT, ambientVal);		
-		glLightf (GL_LIGHT0+lightIndex, GL_SPOT_CUTOFF, light.spotlightCutoff);
+            GLfloat data4[] = {light.color.x * light.intensity, light.color.y * light.intensity, light.color.z * light.intensity, 1.0};
+            glLightfv (GL_LIGHT0+lightIndex, GL_DIFFUSE, data4);
+            
+            data4[0] = light.specularColor.r* light.intensity;
+            data4[1] = light.specularColor.g* light.intensity;
+            data4[2] = light.specularColor.b* light.intensity;
+            data4[3] = light.specularColor.a* light.intensity;
+            glLightfv (GL_LIGHT0+lightIndex, GL_SPECULAR, data4);		
+                
+            data4[3] = 1.0;			
+                
+            glLightfv (GL_LIGHT0+lightIndex, GL_AMBIENT, ambientVal);		
+            glLightf (GL_LIGHT0+lightIndex, GL_SPOT_CUTOFF, light.spotlightCutoff);
 
-		glLightf (GL_LIGHT0+lightIndex, GL_SPOT_EXPONENT, light.spotlightExponent);
-		
-		data4[0] = dir.x;
-		data4[1] = dir.y;
-		data4[2] = dir.z;
-		glLightfv (GL_LIGHT0+lightIndex, GL_SPOT_DIRECTION, data4);
+            glLightf (GL_LIGHT0+lightIndex, GL_SPOT_EXPONENT, light.spotlightExponent);
+            
+            data4[0] = dir.x;
+            data4[1] = dir.y;
+            data4[2] = dir.z;
+            glLightfv (GL_LIGHT0+lightIndex, GL_SPOT_DIRECTION, data4);
 
-		data4[0] = pos.x;
-		data4[1] = pos.y;
-		data4[2] = pos.z;
-		glLightfv (GL_LIGHT0+lightIndex, GL_POSITION, data4);		
+            data4[0] = pos.x;
+            data4[1] = pos.y;
+            data4[2] = pos.z;
+            glLightfv (GL_LIGHT0+lightIndex, GL_POSITION, data4);		
 
-		glLightf (GL_LIGHT0+lightIndex, GL_CONSTANT_ATTENUATION, light.constantAttenuation);		
-		glLightf (GL_LIGHT0+lightIndex, GL_LINEAR_ATTENUATION, light.linearAttenuation);				
-		glLightf (GL_LIGHT0+lightIndex, GL_QUADRATIC_ATTENUATION, light.quadraticAttenuation);				
-		
-		if(light.shadowsEnabled) {		
-			if(shadowMapTextureIndex < 4) {
-				switch(shadowMapTextureIndex) {
-					case 0:
-						strcpy(texName, "shadowMap0");
-						strcpy(matName, "shadowMatrix0");						
-					break;
-					case 1:
-						strcpy(texName, "shadowMap1");
-						strcpy(matName, "shadowMatrix1");												
-					break;
-					case 2:
-						strcpy(texName, "shadowMap2");
-						strcpy(matName, "shadowMatrix2");																		
-					break;
-					case 3:
-						strcpy(texName, "shadowMap3");
-						strcpy(matName, "shadowMatrix3");																		
-					break;							
-				}
-			
-				int texture_location = glGetUniformLocation(glslShader->shader_id, texName);
-				glUniform1i(texture_location, textureIndex);
-				glActiveTexture(GL_TEXTURE0 + textureIndex);		
-				glBindTexture(GL_TEXTURE_2D, ((OpenGLTexture*)light.shadowMapTexture)->getTextureID());	
-				textureIndex++;
-				
-				int mloc = glGetUniformLocation(glslShader->shader_id, matName);
-				light.textureMatrix = light.textureMatrix;
-				
-			
-				GLfloat mat[16];
-				for(int z=0; z < 16; z++) {
-					mat[z] = light.textureMatrix.ml[z];
-				}
-				glUniformMatrix4fv(mloc, 1, false, mat);
-		
-					
-			}
-			shadowMapTextureIndex++;
+            glLightf (GL_LIGHT0+lightIndex, GL_CONSTANT_ATTENUATION, light.constantAttenuation);		
+            glLightf (GL_LIGHT0+lightIndex, GL_LINEAR_ATTENUATION, light.linearAttenuation);				
+            glLightf (GL_LIGHT0+lightIndex, GL_QUADRATIC_ATTENUATION, light.quadraticAttenuation);				
+            
+            if(light.shadowsEnabled) {
+                if(shadowMapTextureIndex < 4) {
+                    switch(shadowMapTextureIndex) {
+                        case 0:
+                            strcpy(texName, "shadowMap0");
+                            strcpy(matName, "shadowMatrix0");						
+                        break;
+                        case 1:
+                            strcpy(texName, "shadowMap1");
+                            strcpy(matName, "shadowMatrix1");												
+                        break;
+                        case 2:
+                            strcpy(texName, "shadowMap2");
+                            strcpy(matName, "shadowMatrix2");																		
+                        break;
+                        case 3:
+                            strcpy(texName, "shadowMap3");
+                            strcpy(matName, "shadowMatrix3");																		
+                        break;							
+                    }
+                
+                    int texture_location = glGetUniformLocation(glslShader->shader_id, texName);
+                    glUniform1i(texture_location, textureIndex);
+                    glActiveTexture(GL_TEXTURE0 + textureIndex);		
+                    glBindTexture(GL_TEXTURE_2D, ((OpenGLTexture*)light.shadowMapTexture)->getTextureID());	
+                    textureIndex++;
+                    
+                    int mloc = glGetUniformLocation(glslShader->shader_id, matName);
+                    light.textureMatrix = light.textureMatrix;
+                    
+                
+                    GLfloat mat[16];
+                    for(int z=0; z < 16; z++) {
+                        mat[z] = light.textureMatrix.ml[z];
+                    }
+                    glUniformMatrix4fv(mloc, 1, false, mat);
+            
+                        
+                }
+                shadowMapTextureIndex++;
+            } else {
+                light.shadowsEnabled = false;
+            }
+            
+            lightIndex++;
 		}
-	else {							
-			light.shadowsEnabled = false;
-		}		
-		} 	
-		lightIndex++;
 	}
 	glPopMatrix();
 		
