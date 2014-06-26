@@ -315,6 +315,8 @@ int SettingsWindow::setKeyProp(String keyString){
 		return 10;
 	} else if (keyString == "ALT GR + SHIFT + CTRL"){
 		return 11;
+	} else {
+		return 0;
 	}
 }
 

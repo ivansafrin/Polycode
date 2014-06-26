@@ -48,6 +48,9 @@ class SettingsWindow : public UIWindow {
 		*/
 		int setKeyProp(String keyString);
 
+		UIComboBox *settingsSelector;
+
+		UIElement *rootGeneral;
 		UICheckBox *useExternalTextEditorBox;
 		UITextInput *externalTextEditorCommand;
 		UIButton *browseButton;
@@ -55,6 +58,7 @@ class SettingsWindow : public UIWindow {
 		UIComboBox *uiThemeBox;
 		UIComboBox *textureFilteringBox;
 
+		UIElement *rootKeys;
 		UIComboBox *keyPan;
 		UIComboBox *keyRot;
 		UIComboBox *keyZoom;

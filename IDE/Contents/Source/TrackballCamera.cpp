@@ -97,6 +97,8 @@ bool TrackballCamera::isActionKeyDown(String actionKey){
 		return ((coreInput->getKeyState(KEY_MODE)) && (coreInput->getKeyState(KEY_LCTRL) || coreInput->getKeyState(KEY_RCTRL)));
 	} else if (key == 11){
 		return ((coreInput->getKeyState(KEY_LALT) || coreInput->getKeyState(KEY_RALT)) && (coreInput->getKeyState(KEY_MODE)));
+	} else {
+		return false;
 	}
 }
 
