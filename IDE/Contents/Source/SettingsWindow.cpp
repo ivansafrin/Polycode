@@ -28,104 +28,124 @@ SettingsWindow::SettingsWindow() : UIWindow(L"Settings", SETTINGS_WINDOW_WIDTH, 
 	Config *config = CoreServices::getInstance()->getConfig();
 	closeOnEscape = true;
 
+	rootGeneral = new UIElement(SETTINGS_WINDOW_WIDTH - (padding * 2), SETTINGS_WINDOW_HEIGHT - 50);
+	addChild(rootGeneral);
+	rootGeneral->setPositionY(55);
+
+	rootKeys = new UIElement(SETTINGS_WINDOW_WIDTH - (padding * 2), SETTINGS_WINDOW_HEIGHT - 50);
+	addChild(rootKeys);
+	rootKeys->setPositionY(55);
+
+	rootKeys->visible = false;
+	rootKeys->enabled = false;
+
+	settingsSelector = new UIComboBox(globalMenu, SETTINGS_WINDOW_WIDTH - padding);
+	addChild(settingsSelector);
+	settingsSelector->setPosition(padding, 25);
+	settingsSelector->addEventListener(this, UIEvent::CHANGE_EVENT);
+
+	settingsSelector->addComboItem("General");
+	settingsSelector->addComboItem("Keys");
+	settingsSelector->setSelectedIndex(0);
+
 	UILabel *label = new UILabel("TEXT EDITING", 22, "section", Label::ANTIALIAS_FULL);
-	addChild(label);
+	rootGeneral->addChild(label);
 	label->color.a = 1.0;
-	label->setPosition(padding, 50);
+	label->setPosition(padding, 0);
 
 	useExternalTextEditorBox = new UICheckBox("Use external text editor", false);
-	addChild(useExternalTextEditorBox); 
-	useExternalTextEditorBox->setPosition(padding, 85);
+	rootGeneral->addChild(useExternalTextEditorBox);
+	useExternalTextEditorBox->setPosition(padding, 35);
 
-	#define BUTTON_WIDTH 80
-	#define BUTTON_PADDING 10
-	#define EDITOR_BROWSE_POS 110
-	#define TEXTBOX_HEIGHT 12
+#define BUTTON_WIDTH 80
+#define BUTTON_PADDING 10
+#define EDITOR_BROWSE_POS 60
+#define TEXTBOX_HEIGHT 12
 
-	externalTextEditorCommand = new UITextInput(false, SETTINGS_WINDOW_WIDTH - (padding*2 + BUTTON_WIDTH + BUTTON_PADDING/2), TEXTBOX_HEIGHT);
-	addChild(externalTextEditorCommand);
+	externalTextEditorCommand = new UITextInput(false, SETTINGS_WINDOW_WIDTH - (padding * 2 + BUTTON_WIDTH + BUTTON_PADDING / 2), TEXTBOX_HEIGHT);
+	rootGeneral->addChild(externalTextEditorCommand);
 	externalTextEditorCommand->setPosition(padding, EDITOR_BROWSE_POS);
-	
-	
+
+
 	label = new UILabel("Syntax highlighting theme", 12);
-	addChild(label);
+	rootGeneral->addChild(label);
 	label->color.a = 1.0;
 	label->setPosition(padding, EDITOR_BROWSE_POS + 35);
-	
+
 	syntaxThemeBox = new UIComboBox(globalMenu, 300);
-	addChild(syntaxThemeBox);
+	rootGeneral->addChild(syntaxThemeBox);
 	syntaxThemeBox->setPosition(padding, EDITOR_BROWSE_POS + 55);
 	syntaxThemeBox->addEventListener(this, UIEvent::CHANGE_EVENT);
-	
+
 	std::vector<OSFileEntry> themes = OSBasics::parseFolder(CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory() + "/SyntaxThemes", false);
-	
-	for(int i=0; i < themes.size(); i++) {
-		if(themes[i].extension == "xml") {
+
+	for (int i = 0; i < themes.size(); i++) {
+		if (themes[i].extension == "xml") {
 			syntaxThemeBox->addComboItem(themes[i].nameWithoutExtension);
 		}
 	}
 
 	browseButton = new UIButton("Browse...", BUTTON_WIDTH);
 	browseButton->addEventListener(this, UIEvent::CLICK_EVENT);
-	addChild(browseButton);
-	browseButton->setPosition(SETTINGS_WINDOW_WIDTH - (2*padding + BUTTON_WIDTH/2), EDITOR_BROWSE_POS);
-	
-	
+	rootGeneral->addChild(browseButton);
+	browseButton->setPosition(SETTINGS_WINDOW_WIDTH - (2 * padding + BUTTON_WIDTH / 2), EDITOR_BROWSE_POS);
+
+
 	label = new UILabel("GENERAL", 22, "section", Label::ANTIALIAS_FULL);
-	addChild(label);
+	rootGeneral->addChild(label);
 	label->color.a = 1.0;
-	label->setPosition(padding, 200);
+	label->setPosition(padding, 160);
 
 	label = new UILabel("UI theme (requires restart)", 12);
-	addChild(label);
+	rootGeneral->addChild(label);
 	label->color.a = 1.0;
-	label->setPosition(padding, 235);
+	label->setPosition(padding, 185);
 
 	uiThemeBox = new UIComboBox(globalMenu, 300);
-	addChild(uiThemeBox);
-	uiThemeBox->setPosition(padding, 255);
+	rootGeneral->addChild(uiThemeBox);
+	uiThemeBox->setPosition(padding, 205);
 	uiThemeBox->addEventListener(this, UIEvent::CHANGE_EVENT);
-	
+
 	std::vector<OSFileEntry> uiThemes = OSBasics::parseFolder(CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory() + "/UIThemes", false);
-	
-	for(int i=0; i < uiThemes.size(); i++) {
-		if(uiThemes[i].type == OSFileEntry::TYPE_FOLDER) {
-            
-            // do not list retina theme copies
-            if(uiThemes[i].name.find("_retina") == -1) {
-                uiThemeBox->addComboItem(uiThemes[i].name);
-                if(uiThemes[i].name == CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiTheme")) {
-                    uiThemeBox->setSelectedIndex(i);
-                }
-            }
+
+	for (int i = 0; i < uiThemes.size(); i++) {
+		if (uiThemes[i].type == OSFileEntry::TYPE_FOLDER) {
+
+			// do not list retina theme copies
+			if (uiThemes[i].name.find("_retina") == -1) {
+				uiThemeBox->addComboItem(uiThemes[i].name);
+				if (uiThemes[i].name == CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiTheme")) {
+					uiThemeBox->setSelectedIndex(i);
+				}
+			}
 		}
 	}
 
 	label = new UILabel("Texture filtering (requires restart)", 12);
-	addChild(label);
+	rootGeneral->addChild(label);
 	label->color.a = 1.0;
-	label->setPosition(padding, 285);
+	label->setPosition(padding, 235);
 
 	textureFilteringBox = new UIComboBox(globalMenu, 300);
-	addChild(textureFilteringBox);
-	textureFilteringBox->setPosition(padding, 305);
+	rootGeneral->addChild(textureFilteringBox);
+	textureFilteringBox->setPosition(padding, 255);
 	textureFilteringBox->addEventListener(this, UIEvent::CHANGE_EVENT);
 	textureFilteringBox->addComboItem("Linear");
 	textureFilteringBox->addComboItem("Nearest");
 
 	label = new UILabel("KEYS", 22, "section", Label::ANTIALIAS_FULL);
-	addChild(label);
+	rootKeys->addChild(label);
 	label->color.a = 1.0;
-	label->setPosition(padding, 350);
+	label->setPosition(padding, 0);
 
 	label = new UILabel("Pan Key (+ Mouse)", 12);
-	addChild(label);
+	rootKeys->addChild(label);
 	label->color.a = 1.0;
-	label->setPosition(padding, 350 + 35);
+	label->setPosition(padding, 35);
 
 	keyPan = new UIComboBox(globalMenu, 300);
-	addChild(keyPan);
-	keyPan->setPosition(padding, 350 + 55);
+	rootKeys->addChild(keyPan);
+	keyPan->setPosition(padding, 55);
 	keyPan->addEventListener(this, UIEvent::CHANGE_EVENT);
 	keyPan->addComboItem("ALT");
 	keyPan->addComboItem("SHIFT");
@@ -142,13 +162,13 @@ SettingsWindow::SettingsWindow() : UIWindow(L"Settings", SETTINGS_WINDOW_WIDTH, 
 	keyPan->setSelectedIndex(config->getNumericValue("Polycode", "keyPan"), true);
 
 	label = new UILabel("Rotation Key (+ Mouse)", 12);
-	addChild(label);
+	rootKeys->addChild(label);
 	label->color.a = 1.0;
-	label->setPosition(padding, 350 + 80);
+	label->setPosition(padding, 80);
 
 	keyRot = new UIComboBox(globalMenu, 300);
-	addChild(keyRot);
-	keyRot->setPosition(padding, 350 + 100);
+	rootKeys->addChild(keyRot);
+	keyRot->setPosition(padding, 100);
 	keyRot->addEventListener(this, UIEvent::CHANGE_EVENT);
 	keyRot->addComboItem("ALT");
 	keyRot->addComboItem("SHIFT");
@@ -165,13 +185,13 @@ SettingsWindow::SettingsWindow() : UIWindow(L"Settings", SETTINGS_WINDOW_WIDTH, 
 	keyRot->setSelectedIndex(config->getNumericValue("Polycode", "keyRot"), true);
 
 	label = new UILabel("Zoom Key (+ Mouse)", 12);
-	addChild(label);
+	rootKeys->addChild(label);
 	label->color.a = 1.0;
-	label->setPosition(padding, 350 + 125);
+	label->setPosition(padding, 125);
 
 	keyZoom = new UIComboBox(globalMenu, 300);
-	addChild(keyZoom);
-	keyZoom->setPosition(padding, 350 + 145);
+	rootKeys->addChild(keyZoom);
+	keyZoom->setPosition(padding, 145);
 	keyZoom->addEventListener(this, UIEvent::CHANGE_EVENT);
 	keyZoom->addComboItem("ALT");
 	keyZoom->addComboItem("SHIFT");
@@ -186,22 +206,22 @@ SettingsWindow::SettingsWindow() : UIWindow(L"Settings", SETTINGS_WINDOW_WIDTH, 
 	keyZoom->addComboItem("ALT GR + CTRL");
 	keyZoom->addComboItem("ALT GR + SHIFT + CTRL");
 	keyZoom->setSelectedIndex(config->getNumericValue("Polycode", "keyZoom"), true);
-	
+
 	cancelButton = new UIButton("Cancel", BUTTON_WIDTH);
 	cancelButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(cancelButton);
-	cancelButton->setPosition(SETTINGS_WINDOW_WIDTH - (2*padding + BUTTON_WIDTH*1.5 + BUTTON_PADDING), SETTINGS_WINDOW_HEIGHT - padding);
+	cancelButton->setPosition(SETTINGS_WINDOW_WIDTH - (2 * padding + BUTTON_WIDTH*1.5 + BUTTON_PADDING), SETTINGS_WINDOW_HEIGHT - padding);
 
 	okButton = new UIButton("OK", BUTTON_WIDTH);
 	okButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(okButton);
-	okButton->setPosition(SETTINGS_WINDOW_WIDTH - (2*padding + BUTTON_WIDTH/2), SETTINGS_WINDOW_HEIGHT - padding);
+	okButton->setPosition(SETTINGS_WINDOW_WIDTH - (2 * padding + BUTTON_WIDTH / 2), SETTINGS_WINDOW_HEIGHT - padding);
 }
 
 void SettingsWindow::handleEvent(Event *event) {
 	Config *config = CoreServices::getInstance()->getConfig();
-	if(event->getEventType() == "UIEvent") {
-		if(event->getEventCode() == UIEvent::CHANGE_EVENT) {
+	if (event->getEventType() == "UIEvent") {
+		if (event->getEventCode() == UIEvent::CHANGE_EVENT) {
 			if (event->getDispatcher() == syntaxThemeBox) {
 				if (syntaxThemeBox->getSelectedItem()->label != globalSyntaxTheme->name) {
 					globalSyntaxTheme->loadFromFile(syntaxThemeBox->getSelectedItem()->label);
@@ -212,7 +232,20 @@ void SettingsWindow::handleEvent(Event *event) {
 				config->setNumericValue("Polycode", "keyRot", setKeyProp(keyRot->getSelectedItem()->label));
 			} else if (event->getDispatcher() == keyZoom){
 				config->setNumericValue("Polycode", "keyZoom", setKeyProp(keyZoom->getSelectedItem()->label));
+			} else if (event->getDispatcher() == settingsSelector){
+				if (settingsSelector->getSelectedItem()->label == "Keys"){
+					rootKeys->enabled = true;
+					rootKeys->visible = true;
+					rootGeneral->enabled = false;
+					rootGeneral->visible = false;
+				} else if (settingsSelector->getSelectedItem()->label == "General"){
+					rootKeys->enabled = false;
+					rootKeys->visible = false;
+					rootGeneral->enabled = true;
+					rootGeneral->visible = true;
+				}
 			}
+
 		} else if(event->getEventCode() == UIEvent::CLICK_EVENT) {
 			if(event->getDispatcher() == okButton) {
 				dispatchEvent(new UIEvent(), UIEvent::OK_EVENT);
