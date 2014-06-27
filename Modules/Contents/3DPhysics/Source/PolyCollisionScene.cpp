@@ -235,9 +235,9 @@ RayTestResult CollisionScene::getFirstEntityInRay(const Vector3 &origin,  const 
 	return ret;
 }
 
-RayTestResultMultiple CollisionScene::getAllEntitiesInRay(const Vector3 &origin,  const Vector3 &dest, int group, int mask) {
-	RayTestResultMultiple ret;
-	ret.clearResults();
+RayTestResultMultiple *CollisionScene::getAllEntitiesInRay(const Vector3 &origin,  const Vector3 &dest, int group, int mask) {
+	RayTestResultMultiple *ret = new RayTestResultMultiple();
+	ret->clearResults();
 
 	btVector3 fromVec(origin.x, origin.y, origin.z);
 	btVector3 toVec(dest.x, dest.y, dest.z);
@@ -257,7 +257,7 @@ RayTestResultMultiple CollisionScene::getAllEntitiesInRay(const Vector3 &origin,
 				ray->fraction = cb.m_hitFractions[i];
 				ray->normal= Vector3(cb.m_hitNormalWorld[i].getX(), cb.m_hitNormalWorld[i].getY(), cb.m_hitNormalWorld[i].getZ());
 				ray->position= Vector3(cb.m_hitPointWorld[i].getX(), cb.m_hitPointWorld[i].getY(), cb.m_hitPointWorld[i].getZ());
-				ret.addResult(ray);
+				ret->addResult(ray);
 			}
 		}
 	}

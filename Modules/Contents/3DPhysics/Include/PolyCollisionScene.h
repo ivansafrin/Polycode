@@ -158,7 +158,7 @@ class _PolyExport CollisionResult {
 			//@{			
 			
 			RayTestResult getFirstEntityInRay(const Vector3 &origin,  const Vector3 &dest);	
-			RayTestResultMultiple getAllEntitiesInRay(const Vector3 &origin,  const Vector3 &dest, int group=1, int mask=-1);
+			RayTestResultMultiple *getAllEntitiesInRay(const Vector3 &origin,  const Vector3 &dest, int group=1, int mask=-1);
 			void enableCollision(Entity *entity, bool val);											
 			CollisionEntity *getCollisionByScreenEntity(Entity *ent);
 			CollisionResult testCollision(Entity *ent1, Entity *ent2);
