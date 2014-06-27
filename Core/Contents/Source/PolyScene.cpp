@@ -245,13 +245,12 @@ void Scene::Render(Camera *targetCamera) {
 		Vector3 direction;
 		Vector3 position;
 		matrixPtr = NULL;				
-		direction.x = 0;		
-		direction.y = 0;
-		direction.z = -1;
-		
+		direction.x = 0;
+		direction.y = 0.0;
+		direction.z = -1.0;
+		direction.Normalize();
 		
 		direction = light->getConcatenatedMatrix().rotateVector(direction);
-		direction.Normalize();
 		
 		Texture *shadowMapTexture = NULL;
 		if(light->areShadowsEnabled()) {

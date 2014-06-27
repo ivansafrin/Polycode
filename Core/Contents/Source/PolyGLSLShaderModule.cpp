@@ -375,6 +375,8 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
             glLightf (GL_LIGHT0+lightIndex, GL_LINEAR_ATTENUATION, light.linearAttenuation);				
             glLightf (GL_LIGHT0+lightIndex, GL_QUADRATIC_ATTENUATION, light.quadraticAttenuation);				
             
+            Number shadowAmount = 0.0;
+            
             if(light.shadowsEnabled) {
                 if(shadowMapTextureIndex < 4) {
                     switch(shadowMapTextureIndex) {
@@ -401,22 +403,22 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
                     glActiveTexture(GL_TEXTURE0 + textureIndex);		
                     glBindTexture(GL_TEXTURE_2D, ((OpenGLTexture*)light.shadowMapTexture)->getTextureID());	
                     textureIndex++;
-                    
-                    int mloc = glGetUniformLocation(glslShader->shader_id, matName);
-                    light.textureMatrix = light.textureMatrix;
-                    
-                
-                    GLfloat mat[16];
-                    for(int z=0; z < 16; z++) {
-                        mat[z] = light.textureMatrix.ml[z];
-                    }
-                    glUniformMatrix4fv(mloc, 1, false, mat);
             
-                        
+                    LocalShaderParam *matParam = material->getShaderBinding(shaderIndex)->getLocalParamByName(matName);
+                    if(matParam) {
+                        matParam->setMatrix4(light.textureMatrix);
+                    }
+                    
+                    shadowAmount = 1.0;
+                    
                 }
+                
                 shadowMapTextureIndex++;
-            } else {
-                light.shadowsEnabled = false;
+            }
+            
+            LocalShaderParam *amountParam = material->getShaderBinding(shaderIndex)->getLocalParamByName("shadowAmount");
+            if(amountParam) {
+                amountParam->setNumber(shadowAmount);
             }
             
             lightIndex++;
@@ -427,13 +429,12 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 	glEnable(GL_TEXTURE_2D);
 
 	Matrix4 modelMatrix = renderer->getModelviewMatrix() * renderer->getCameraMatrix();
-	int mloc = glGetUniformLocation(glslShader->shader_id, "modelMatrix");				
-	GLfloat mat[16];
-	for(int z=0; z < 16; z++) {
-		mat[z] = modelMatrix.ml[z];
-	}
-	glUniformMatrix4fv(mloc, 1, false, mat);
-		
+    LocalShaderParam *modelMatrixParam = material->getShaderBinding(shaderIndex)->getLocalParamByName("modelMatrix");
+    
+    if(modelMatrixParam) {
+        modelMatrixParam->setMatrix4(modelMatrix);
+    }
+    
 	ShaderBinding *cgBinding = material->getShaderBinding(shaderIndex);
 	
 	for(int i=0; i < glslShader->expectedParams.size(); i++) {

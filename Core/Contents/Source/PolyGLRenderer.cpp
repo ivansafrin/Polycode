@@ -635,7 +635,8 @@ void OpenGLRenderer::bindFrameBufferTextureDepth(Texture *texture) {
 		return;
 	OpenGLTexture *glTexture = (OpenGLTexture*)texture;
 	glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, glTexture->getFrameBufferID());
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
+    Renderer::bindFrameBufferTextureDepth(texture);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	        
 }
 
 
@@ -644,12 +645,14 @@ void OpenGLRenderer::bindFrameBufferTexture(Texture *texture) {
 		return;
 	OpenGLTexture *glTexture = (OpenGLTexture*)texture;
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, glTexture->getFrameBufferID());
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
+    Renderer::bindFrameBufferTexture(texture);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void OpenGLRenderer::unbindFramebuffers() {
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 	glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
+    Renderer::unbindFramebuffers();
 }
 
 void OpenGLRenderer::createRenderTextures(Texture **colorBuffer, Texture **depthBuffer, int width, int height, bool floatingPointBuffer) {

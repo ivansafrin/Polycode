@@ -8,13 +8,12 @@ uniform sampler2D diffuse;
 uniform sampler2D shadowMap0;
 uniform sampler2D shadowMap1;
 
-uniform mat4 shadowMatrix0;
-uniform mat4 shadowMatrix1;
-
 uniform vec4 diffuse_color;
 uniform vec4 specular_color;
 uniform vec4 ambient_color;
 uniform float shininess;
+
+uniform float shadowAmount;
 
 
 float calculateAttenuation(in int i, in float dist)
@@ -57,11 +56,13 @@ void pointLight(in int i, in vec3 normal, in vec4 pos, inout vec4 diffuse, inout
 void spotLight(in int i, in vec3 normal, in vec4 pos, inout vec4 diffuse, inout vec4 specular, sampler2D shadowMap, vec4 ShadowCoord) {
 	
 	vec4 shadowCoordinateWdivide = ShadowCoord / ShadowCoord.w;
-	shadowCoordinateWdivide.z -= 0.000005;
+	//shadowCoordinateWdivide.z -= 0.00005;
 	float distanceFromLight = texture2D(shadowMap,shadowCoordinateWdivide.st).z;
 	float shadow = 1.0;
-	if (shadowCoordinateWdivide.x > 0.01 && shadowCoordinateWdivide.y > 0.01 && shadowCoordinateWdivide.x < 0.99 && shadowCoordinateWdivide.y < 0.99)
+	if (shadowCoordinateWdivide.x > 0.001 && shadowCoordinateWdivide.y > 0.001 && shadowCoordinateWdivide.x < 0.999 && shadowCoordinateWdivide.y < 0.999)
 		shadow = distanceFromLight < shadowCoordinateWdivide.z ? 0.0 : 1.0 ;
+	
+	shadow = clamp(shadow+(1.0-shadowAmount), 0.0, 1.0);
 	
 	vec4 color = diffuse_color;
 	vec4 matspec = specular_color;

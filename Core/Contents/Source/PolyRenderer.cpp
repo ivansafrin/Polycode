@@ -105,6 +105,37 @@ void Renderer::clearLights() {
 	spotLights.clear();
 }
 
+
+void Renderer::bindFrameBufferTexture(Texture *texture) {
+    framebufferStackColor.push(texture);
+}
+
+void Renderer::bindFrameBufferTextureDepth(Texture *texture) {
+    framebufferStackDepth.push(texture);
+}
+
+void Renderer::unbindFramebuffers() {
+    if(framebufferStackColor.size() > 0) {
+        framebufferStackColor.pop();
+    }
+    if(framebufferStackDepth.size() > 0) {
+        framebufferStackDepth.pop();
+    }
+
+    if(framebufferStackColor.size() > 0) {
+        Texture *rebindTexture = framebufferStackColor.top();
+        framebufferStackColor.pop();
+        bindFrameBufferTexture(rebindTexture);
+    }
+
+    if(framebufferStackDepth.size() > 0) {
+        Texture *rebindTexture = framebufferStackDepth.top();
+        framebufferStackDepth.pop();
+        bindFrameBufferTextureDepth(rebindTexture);
+    }
+    
+}
+
 void Renderer::setExposureLevel(Number level) {
 	exposureLevel = level;
 }

@@ -896,6 +896,7 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
         mainScene->addLight(newLight);
         newLight->enabled = !lightsDisabled;        
         setEditorProps(newLight);
+        newLight->setLocalBoundingBox(Vector3());
         newLight->setPosition(cursorPosition);
         didPlaceEntity(newLight);
         selectEntity(newLight, false, false);

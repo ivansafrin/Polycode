@@ -103,9 +103,9 @@ namespace Polycode {
 		virtual void createRenderTextures(Texture **colorBuffer, Texture **depthBuffer, int width, int height, bool floatingPointBuffer) = 0;
 		
 		virtual Texture *createFramebufferTexture(unsigned int width, unsigned int height) = 0;
-		virtual void bindFrameBufferTexture(Texture *texture) = 0;
-		virtual void bindFrameBufferTextureDepth(Texture *texture) = 0;
-		virtual void unbindFramebuffers() = 0;
+		virtual void bindFrameBufferTexture(Texture *texture);
+		virtual void bindFrameBufferTextureDepth(Texture *texture);
+		virtual void unbindFramebuffers();
 
 		virtual Image *renderScreenToImage() = 0;
 		virtual Image *renderBufferToImage(Texture *texture) = 0;
@@ -314,6 +314,9 @@ namespace Polycode {
         
         std::stack<Color> vertexColorStack;
         Color currentVertexColor;
+        
+        std::stack<Texture*> framebufferStackColor;
+        std::stack<Texture*> framebufferStackDepth;
         
 		bool scissorEnabled;
 		

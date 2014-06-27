@@ -74,12 +74,16 @@ void SceneLight::enableShadows(bool val, unsigned int resolution) {
         if(zBufferTexture) {
             CoreServices::getInstance()->getMaterialManager()->deleteTexture(zBufferTexture);
         }
-        
         CoreServices::getInstance()->getRenderer()->createRenderTextures(NULL, &zBufferTexture, resolution, resolution, false);
 		if(!spotCamera) {
 			spotCamera = new Camera(parentScene);
+            /*
+            spotCamera->setProjectionMode(Camera::ORTHO_SIZE_MANUAL);
+            spotCamera->setOrthoSize(5.0, 5.0);
+             */
             spotCamera->editorOnly = true;
-//			spotCamera->setPitch(-45.0f);
+            spotCamera->setClippingPlanes(0.01, 100.0);
+//            spotCamera->setPitch(90.0);
 			addChild(spotCamera);	
 		}
 		shadowMapRes = resolution;
@@ -124,8 +128,8 @@ unsigned int SceneLight::getShadowMapResolution() const {
 }
 
 void SceneLight::renderDepthMap(Scene *scene) {
+    spotCamera->setFOV(shadowMapFOV);
 	Renderer* renderer = CoreServices::getInstance()->getRenderer();
-	renderer->clearScreen();
 	renderer->pushMatrix();
 	renderer->loadIdentity();
 
@@ -133,13 +137,11 @@ void SceneLight::renderDepthMap(Scene *scene) {
     Number vpH = renderer->getViewportHeight();
     
 	renderer->setViewportSize(shadowMapRes, shadowMapRes);
-	Camera* camera = scene->getActiveCamera();
-	renderer->setProjectionFromFoV(shadowMapFOV, camera->getNearClippingPlane(), camera->getFarClippingPlane());
 	renderer->bindFrameBufferTexture(zBufferTexture);
 
 	scene->RenderDepthOnly(spotCamera);
 		
-	lightViewMatrix = renderer->getModelviewMatrix() *  renderer->getProjectionMatrix();
+	lightViewMatrix = getConcatenatedMatrix().Inverse() *  renderer->getProjectionMatrix();
 	renderer->unbindFramebuffers();
 	renderer->popMatrix();
 	renderer->setViewportSize(vpW , vpH);
