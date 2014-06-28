@@ -48,7 +48,8 @@ class SettingsWindow : public UIWindow {
 		*/
 		int setKeyProp(String keyString);
 
-		UIComboBox *settingsSelector;
+		UITab *keys, *general;
+		UITabFrame *tabFrame;
 
 		UIElement *rootGeneral;
 		UICheckBox *useExternalTextEditorBox;

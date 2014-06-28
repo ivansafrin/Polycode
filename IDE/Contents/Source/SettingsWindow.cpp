@@ -29,24 +29,18 @@ SettingsWindow::SettingsWindow() : UIWindow(L"Settings", SETTINGS_WINDOW_WIDTH, 
 	closeOnEscape = true;
 
 	rootGeneral = new UIElement(SETTINGS_WINDOW_WIDTH - (padding * 2), SETTINGS_WINDOW_HEIGHT - 50);
-	addChild(rootGeneral);
-	rootGeneral->setPositionY(55);
 
 	rootKeys = new UIElement(SETTINGS_WINDOW_WIDTH - (padding * 2), SETTINGS_WINDOW_HEIGHT - 50);
-	addChild(rootKeys);
-	rootKeys->setPositionY(55);
 
-	rootKeys->visible = false;
-	rootKeys->enabled = false;
+	general = new UITab("General", rootGeneral);
+	keys = new UITab("Keys", rootKeys);
 
-	settingsSelector = new UIComboBox(globalMenu, SETTINGS_WINDOW_WIDTH - padding);
-	addChild(settingsSelector);
-	settingsSelector->setPosition(padding, 25);
-	settingsSelector->addEventListener(this, UIEvent::CHANGE_EVENT);
+	tabFrame = new UITabFrame(general, SETTINGS_WINDOW_WIDTH - (padding * 2), SETTINGS_WINDOW_HEIGHT - 25);
+	tabFrame->addNewTab(keys);
+	tabFrame->showTab(general);
+	tabFrame->setPositionY(25);
 
-	settingsSelector->addComboItem("General");
-	settingsSelector->addComboItem("Keys");
-	settingsSelector->setSelectedIndex(0);
+	addChild(tabFrame);
 
 	UILabel *label = new UILabel("TEXT EDITING", 22, "section", Label::ANTIALIAS_FULL);
 	rootGeneral->addChild(label);
@@ -232,18 +226,6 @@ void SettingsWindow::handleEvent(Event *event) {
 				config->setNumericValue("Polycode", "keyRot", setKeyProp(keyRot->getSelectedItem()->label));
 			} else if (event->getDispatcher() == keyZoom){
 				config->setNumericValue("Polycode", "keyZoom", setKeyProp(keyZoom->getSelectedItem()->label));
-			} else if (event->getDispatcher() == settingsSelector){
-				if (settingsSelector->getSelectedItem()->label == "Keys"){
-					rootKeys->enabled = true;
-					rootKeys->visible = true;
-					rootGeneral->enabled = false;
-					rootGeneral->visible = false;
-				} else if (settingsSelector->getSelectedItem()->label == "General"){
-					rootKeys->enabled = false;
-					rootKeys->visible = false;
-					rootGeneral->enabled = true;
-					rootGeneral->visible = true;
-				}
 			}
 
 		} else if(event->getEventCode() == UIEvent::CLICK_EVENT) {
