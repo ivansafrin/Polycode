@@ -1261,30 +1261,30 @@ void PolycodeIDEApp::loadConfigFile() {
 			} else {
 				config->setStringValue("Polycode", "externalTextEditorCommand", "");
 			}
-			if (keysEntry){
-				if ((*keysEntry)["key_pan"]){
-					config->setNumericValue("Polycode", "keyPan", (*keysEntry)["key_pan"]->NumberVal);
-				} else {
-					config->setNumericValue("Polycode", "keyPan", 5);
-				}
-				if ((*keysEntry)["key_rot"]){
-					config->setNumericValue("Polycode", "keyRot", (*keysEntry)["key_rot"]->NumberVal);
-				} else {
-					config->setNumericValue("Polycode", "keyRot", 0);
-				}
-				if ((*keysEntry)["key_zoom"]){
-					config->setNumericValue("Polycode", "keyZoom", (*keysEntry)["key_zoom"]->NumberVal);
-				} else {
-					config->setNumericValue("Polycode", "keyZoom", 6);
-				}
-			}
-		} else {
-			config->setStringValue("Polycode", "useExternalTextEditor", "false");
-			config->setStringValue("Polycode", "externalTextEditorCommand", "");
-			config->setNumericValue("Polycode", "keyPan", 5);
-			config->setNumericValue("Polycode", "keyRot", 0);
-			config->setNumericValue("Polycode", "keyZoom", 6);
 		}
+		if (keysEntry){
+			if ((*keysEntry)["key_pan"]){
+				config->setNumericValue("Polycode", "keyPan", (*keysEntry)["key_pan"]->NumberVal);
+			} else {
+				config->setNumericValue("Polycode", "keyPan", 5);
+			}
+			if ((*keysEntry)["key_rot"]){
+				config->setNumericValue("Polycode", "keyRot", (*keysEntry)["key_rot"]->NumberVal);
+			} else {
+				config->setNumericValue("Polycode", "keyRot", 0);
+			}
+			if ((*keysEntry)["key_zoom"]){
+				config->setNumericValue("Polycode", "keyZoom", (*keysEntry)["key_zoom"]->NumberVal);
+			} else {
+				config->setNumericValue("Polycode", "keyZoom", 6);
+			}
+		}
+	} else {
+		config->setStringValue("Polycode", "useExternalTextEditor", "false");
+		config->setStringValue("Polycode", "externalTextEditorCommand", "");
+		config->setNumericValue("Polycode", "keyPan", 5);
+		config->setNumericValue("Polycode", "keyRot", 0);
+		config->setNumericValue("Polycode", "keyZoom", 6);
 	}
 }
 
