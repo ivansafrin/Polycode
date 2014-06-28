@@ -28,371 +28,372 @@ extern PolycodeFrame *globalFrame;
 extern UIGlobalMenu *globalMenu;
 
 
-SpriteAnimationEntry::SpriteAnimationEntry(SpriteAnimation *animation) : PropProp("","") {
-	
-	this->animation = animation;
-	
-	removeButton = new UIImageButton("main/remove_icon.png", 1.0, 12, 12);
-	removeButton->setPosition(0, 5);
-	removeButton->addEventListener(this, UIEvent::CLICK_EVENT);
-	addChild(removeButton);
-
-	nameInput = new UITextInput(false, 82, 12);
-	nameInput->setText(animation->name);
-	nameInput->setPosition(20, 0);
-	nameInput->addEventListener(this, UIEvent::CHANGE_EVENT);
-	addChild(nameInput);
-
-	framesInput = new UITextInput(false, 142, 12);
-	framesInput->setText(animation->frames);
-	framesInput->setPosition(115, 0);
-	framesInput->addEventListener(this, UIEvent::CHANGE_EVENT);
-	addChild(framesInput);
-
-	speedInput = new UITextInput(false, 42, 12);
-	speedInput->setText(String::NumberToString(animation->speed));
-	speedInput->setPosition(270, 0);
-	speedInput->addEventListener(this, UIEvent::CHANGE_EVENT);
-	addChild(speedInput);
-	
-	playButton = new UIImageButton("main/play_icon.png", 1.0, 16, 16);
-	playButton->setPosition(330, 3);
-	playButton->addEventListener(this, UIEvent::CLICK_EVENT);
-	addChild(playButton);
-	
-	setHeight(30);
-	
+SceneSpriteRewrite::SceneSpriteRewrite(String imageFileName) : SceneMesh(Mesh::QUAD_MESH) {
+    Texture *spriteTexture = Services()->getMaterialManager()->createTextureFromFile(imageFileName, true, Services()->getMaterialManager()->mipmapsDefault);
+    setTexture(spriteTexture);
 }
 
-void SpriteAnimationEntry::setPropWidth(Number width) {
-	Number fieldsWidth = width - 40 - 15 - PROP_PADDING;
-	
-	nameInput->Resize(fieldsWidth * 0.4, nameInput->getHeight());
-	framesInput->Resize(fieldsWidth * 0.4, framesInput->getHeight());
-	speedInput->Resize(fieldsWidth * 0.2, speedInput->getHeight());
-	
-	framesInput->setPositionX(nameInput->getPosition().x + nameInput->getWidth() + 5);
-	speedInput->setPositionX(framesInput->getPosition().x + framesInput->getWidth() + 5);
-	playButton->setPositionX(speedInput->getPosition().x + speedInput->getWidth() + 5);
+void SceneSpriteRewrite::addSpriteFrame(const SpriteFrame &frame) {
+    frames.push_back(frame);
 }
 
-void SpriteAnimationEntry::handleEvent(Event *event) {
-
-	if(event->getEventCode() == UIEvent::CHANGE_EVENT && event->getEventType() == "UIEvent") {
-		if(event->getDispatcher() == nameInput) {
-			animation->name = nameInput->getText();
-		}
-
-		if(event->getDispatcher() == framesInput) {
-			animation->setOffsetsFromFrameString(framesInput->getText());
-		}
-
-		if(event->getDispatcher() == speedInput) {
-			animation->speed = atof(speedInput->getText().c_str());
-		}
-
-	}
-	
-	if(event->getEventCode() == UIEvent::CLICK_EVENT && event->getEventType() == "UIEvent") {
-		if(event->getDispatcher() == removeButton) {
-			dispatchEvent(new Event(), Event::CANCEL_EVENT);
-		}
-
-		if(event->getDispatcher() == playButton) {
-			dispatchEvent(new Event(), Event::CHANGE_EVENT);
-		}
-
-	}
+unsigned int SceneSpriteRewrite::getNumFrames() const {
+    return frames.size();
 }
 
-SpriteAnimationEntry::~SpriteAnimationEntry() {
-	delete nameInput;
-	delete framesInput;
-	delete speedInput;
-	delete removeButton;
-	delete playButton;
+SpriteFrame SceneSpriteRewrite::getSpriteFrame(unsigned int index) const {
+    if(index < frames.size()) {
+        return frames[index];
+    } else {
+        return SpriteFrame();
+    }
 }
 
-SpritePreviewSheet::SpritePreviewSheet() : PropSheet("SPRITE PREVIEW", ""){
-	zoomProp = new SliderProp("Zoom", 0.1, 16);
-	addProp(zoomProp);
-	zoomProp->addEventListener(this, Event::CHANGE_EVENT);	
-	
-	zoomProp->set(1.0);
-	
-	previewProp = new SpritePreviewProp();
-	addProp(previewProp);
+SceneSpriteRewrite::~SceneSpriteRewrite() {
+    
 }
 
-void SpritePreviewSheet::handleEvent(Event *event) {
-	if(event->getDispatcher() == zoomProp) {
-        previewProp->setSpriteScale(zoomProp->get());
-		
-		if(previewProp->previewSprite) {
-			propHeight = (previewProp->previewSprite->getHeight() * previewProp->previewSprite->getScale().y) + zoomProp->getHeight()+ 50;						
-			dispatchEvent(new Event(), Event::COMPLETE_EVENT);
-		}
-	}
-	PropSheet::handleEvent(event);
+void SceneSpriteRewrite::clearFrames() {
+    frames.clear();
 }
 
-void SpritePreviewSheet::setSprite(SceneSprite *sprite) {
-	previewProp->setSprite(sprite);
-	propHeight = sprite->getHeight() + zoomProp->getHeight()+ 50;	
-	dispatchEvent(new Event(), Event::COMPLETE_EVENT);
+void SceneSpriteRewrite::createGridFrames(Number width, Number height) {
+    
+    for(Number x = 0.0; x+width <= 1.0; x += width) {
+        for(Number y = 0.0; y+height <= 1.0; y += height) {
+            SpriteFrame frame;
+            frame.coordinates = Polycode::Rectangle(x, y, width, height);
+            addSpriteFrame(frame);
+        }
+    }
 }
 
-SpritePreviewProp::SpritePreviewProp() : PropProp("", "") {
-	previewSprite = NULL;
+Polycode::Rectangle createBoxAtCoordinate(Image *image, unsigned int x, unsigned int y) {
+    Polycode::Rectangle rect;
+    
+    rect.x = x;
+    rect.y = y;
+    
+    while(x < image->getWidth()) {
+        if(image->getPixel(x, y).a == 0.0) {
+            break;
+        }
+        x++;
+    }
+    rect.w = x - rect.x;
+    
+    // look down at first x
+    Number y1 = y;
+    while(y1 < image->getHeight()) {
+        if(image->getPixel(rect.x, y1).a == 0.0) {
+            break;
+        }
+        y1++;
+    }
+    Number h1 = y1;
+    
+    // look down at last x
+    while(y < image->getHeight()) {
+        if(image->getPixel(x, y).a == 0.0) {
+            break;
+        }
+        y++;
+    }
+    Number h2 = y;
+
+    if(h1 > h2) {
+        h2 = h1;
+    }
+    
+    rect.h = h2 - rect.y;
+    
+
+    
+    return rect;
 }
 
-void SpritePreviewProp::setPropWidth(Number width) {
-	if(previewSprite) {
-		previewSprite->setPosition(((width-(previewSprite->getWidth()* previewSprite->getScale().x))/2.0) - propContents->getPosition().x, 0.0);
-	}
-	propWidth = width;
+bool rectIntersect(const Polycode::Rectangle &r1, const Polycode::Rectangle &r2, Number minDistance) {
+    return !(r2.x - minDistance > r1.x + r1.w ||
+             r2.x + r2.w + minDistance < r1.x ||
+             r2.y - minDistance > r1.y + r1.h ||
+             r2.y + r2.h + minDistance < r1.y);
 }
 
-void SpritePreviewProp::setSprite(SceneSprite *sprite) {
-	previewSprite = sprite;
-	propContents->addChild(sprite);
-    setSpriteScale(1.0);
+void SceneSpriteRewrite::createFramesFromIslands(unsigned int minDistance) {
+    String imageFileName = getTexture()->getResourcePath();
+    
+    Image *image = new Image(imageFileName);
+    
+    
+    std::vector<Polycode::Rectangle> rects;
+    
+    for(int y=0; y < image->getHeight(); y++) {
+        for(int x=0; x < image->getWidth(); x++) {
+            if(image->getPixel(x, y).a > 0.0) {
+                Polycode::Rectangle rect = createBoxAtCoordinate(image,x,y);
+                rects.push_back(rect);
+                x += rect.w;
+            }
+        }
+    }
+    
+    while(rects.size() > 1) {
+
+        bool intersected = false;
+        for(int i=0; i < rects.size(); i++) {
+            for(int i2=0; i2 < rects.size(); i2++) {
+                if(i != i2) {
+                    if(rectIntersect(rects[i], rects[i2], minDistance)) {
+
+                        Polycode::Rectangle newRect;
+                        
+                        newRect.x = std::min(rects[i].x, rects[i2].x);
+                        newRect.y = std::min(rects[i].y, rects[i2].y);
+                        
+                        newRect.w = std::max(rects[i].x + rects[i].w, rects[i2].x + rects[i2].w) - newRect.x;
+                        newRect.h = std::max(rects[i].y + rects[i].h, rects[i2].y + rects[i2].h) - newRect.y;
+                        
+                        rects[i] = newRect;
+                        rects.erase(rects.begin() + i2);
+                        
+                        intersected = true;
+                        
+                        break;
+                    }
+                }
+            }
+        }
+
+        if(!intersected) {
+            break;
+        }
+  
+    }
+    
+    
+    for(int i=0; i < rects.size(); i++) {
+        SpriteFrame frame;
+        frame.coordinates = rects[i];
+        
+        frame.coordinates.x = frame.coordinates.x / ((Number)image->getWidth());
+        frame.coordinates.y = frame.coordinates.y / ((Number)image->getHeight());
+        frame.coordinates.w = frame.coordinates.w / ((Number)image->getWidth());
+        frame.coordinates.h = frame.coordinates.h / ((Number)image->getHeight());
+        
+        addSpriteFrame(frame);
+    }
+    
+    delete image;
+    
+    
 }
 
-void SpritePreviewProp::setSpriteScale(Number scale) {
-	if(!previewSprite) {
-		return;
-	}
-	previewSprite->setScale(scale, scale);
-	setPropWidth(propWidth);
-    this->setHeight((previewSprite->getHeight() * scale) + 20);
+SpriteSheetEditor::SpriteSheetEditor(SceneSpriteRewrite *sprite) : UIElement() {
+    
+    this->sprite = sprite;
+    
+    enableScissor = true;
+    
+    previewBg = new UIImage("main/grid_dark.png");
+    addChild(previewBg);
+    
+    previewImage = new UIRect(10, 10);
+    previewImage->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    addChild(previewImage);
+    
+    frameVisualizerMesh = new SceneMesh(Mesh::LINE_MESH);
+    frameVisualizerMesh->setColor(1.0, 1.0, 1.0, 1.0);
+    addChild(frameVisualizerMesh);
+    frameVisualizerMesh->setAnchorPoint(-1.0, -1.0, 0.0);
+    
+    frameVisualizerMesh->loadTexture("main/stipple.png");
+    
+    frameVisualizerMesh->lineWidth = 1; //CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX();
+    
+    previewImage->setTexture(sprite->getTexture());
+    
+    bottomMenu = new Entity();
+    addChild(bottomMenu);
+    
+    bottomMenu->processInputEvents = true;
+    
+    bottomMenuRect = new UIRect(100, 100);
+	bottomMenu->addChild(bottomMenuRect);
+	bottomMenuRect->setAnchorPoint(-1.0, -1.0, 0.0);
+	bottomMenuRect->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
+    
+    changeImageButton = new UIButton("Change image", 120);
+    bottomMenu->addChild(changeImageButton);
+    changeImageButton->addEventListener(this, UIEvent::CLICK_EVENT);
+    changeImageButton->setPosition(5.0, 3.0);
+    
+    generateFramesButton = new UIButton("Generate frames", 120);
+    bottomMenu->addChild(generateFramesButton);
+    generateFramesButton->addEventListener(this, UIEvent::CLICK_EVENT);
+    generateFramesButton->setPosition(130.0, 3.0);
+    
+    generateTypeDropdown = new UIComboBox(globalMenu, 120);
+    bottomMenu->addChild(generateTypeDropdown);
+    generateTypeDropdown->setPosition(260, 3.0);
+    
+    generateTypeDropdown->addComboItem("Uniform grid");
+    generateTypeDropdown->addComboItem("Detect islands");
+    
+    generateTypeDropdown->setSelectedIndex(0);
+    
+    uniformGridWidthInput = new UITextInput(false, 30, 12);
+    bottomMenu->addChild(uniformGridWidthInput);
+    uniformGridWidthInput->setPosition(385, 3);
+    uniformGridWidthInput->setText("32");
+    uniformGridWidthInput->setNumberOnly(true);
+
+    uniformGridHeightInput = new UITextInput(false, 30, 12);
+    bottomMenu->addChild(uniformGridHeightInput);
+    uniformGridHeightInput->setPosition(430, 3);
+    uniformGridHeightInput->setText("32");
+    uniformGridHeightInput->setNumberOnly(true);
+    
+    minimumDistanceInput = new UITextInput(false, 30, 12);
+    bottomMenu->addChild(minimumDistanceInput);
+    minimumDistanceInput->setPosition(475, 3);
+    minimumDistanceInput->setText("0");
+    minimumDistanceInput->setNumberOnly(true);
 }
 
-SpriteAnimationsSheet::SpriteAnimationsSheet() : PropSheet("ANIMATIONS", "") {
-	animHelpLabel = new UILabel("Comma separated frames, ranges or repeats (e.g. 1,2,3-7,8x5)", 11);
-	contents->addChild(animHelpLabel);
+void SpriteSheetEditor::Update() {
+    Mesh *mesh = frameVisualizerMesh->getMesh();
 
-	propHeight = 230;
-		
-	addAnimationButton = new UIButton("Add Animation", 100);
-	contents->addChild(addAnimationButton);
-	addAnimationButton->addEventListener(this, UIEvent::CLICK_EVENT);
-	
-	setTopPadding(30);
-	lastNumProps = 0;
-	sprite = NULL;
-	removeIndex = -1;
+    mesh->clearMesh();
+    mesh->indexedMesh = true;
+    
+    unsigned int offset = 0;
+    for(int i=0; i < sprite->getNumFrames(); i++){
+        SpriteFrame frame = sprite->getSpriteFrame(i);
+        
+        mesh->addVertex(frame.coordinates.x, -frame.coordinates.y, 0.0, frame.coordinates.x, frame.coordinates.y);
+        mesh->addVertex(frame.coordinates.x+frame.coordinates.w, -frame.coordinates.y, 0.0, frame.coordinates.x+frame.coordinates.w, frame.coordinates.y);
+        mesh->addVertex(frame.coordinates.x+frame.coordinates.w, -frame.coordinates.y - frame.coordinates.h, 0.0, frame.coordinates.x+frame.coordinates.w, frame.coordinates.y + frame.coordinates.h);
+        mesh->addVertex(frame.coordinates.x, -frame.coordinates.y - frame.coordinates.h, 0.0, frame.coordinates.x, frame.coordinates.y + frame.coordinates.h);
+        
+        mesh->addIndexedFace(offset+0,offset+1);
+        mesh->addIndexedFace(offset+1,offset+2);
+        mesh->addIndexedFace(offset+2,offset+3);
+        mesh->addIndexedFace(offset+3,offset+0);
+        
+        offset += 4;
+    }
+    
+    mesh->dirtyArrays();
 }
 
-void SpriteAnimationsSheet::Update() {
-	if(removeIndex != -1) {
-		SpriteAnimationEntry *entryProp = (SpriteAnimationEntry*) props[removeIndex];
-		sprite->removeAnimation(entryProp->animation);
-		removeIndex = -1;
-		refreshAnimationEntries();		
-	}
+void SpriteSheetEditor::handleEvent(Event *event) {
+    if(event->getDispatcher() == changeImageButton) {
+        globalFrame->assetBrowser->addEventListener(this, UIEvent::OK_EVENT);
+        std::vector<String> extensions;
+        extensions.push_back("png");
+        globalFrame->showAssetBrowser(extensions);
+    } else if(event->getDispatcher() == generateFramesButton) {
+        sprite->clearFrames();
+        
+        if(generateTypeDropdown->getSelectedIndex() == 0) {
+            Number frameWidth = uniformGridWidthInput->getText().toNumber() / ((Number)sprite->getTexture()->getWidth());
+            Number frameHeight = uniformGridHeightInput->getText().toNumber() / ((Number)sprite->getTexture()->getHeight());
+            sprite->createGridFrames(frameWidth, frameHeight);
+        } else {
+            sprite->createFramesFromIslands(minimumDistanceInput->getText().toInteger());
+        }
+    } else if(event->getDispatcher() == globalFrame->assetBrowser) {
+        String newImagePath = globalFrame->assetBrowser->getSelectedAssetPath();
+        
+        sprite->loadTexture(globalFrame->assetBrowser->getSelectedAssetPath());
+        previewImage->setTexture(sprite->getTexture());
+        
+        globalFrame->assetBrowser->removeAllHandlersForListener(this);
+        globalFrame->hideModal();
+        
+        Resize(getWidth(), getHeight());
+        
+    }
 }
 
-void SpriteAnimationsSheet::Resize(Number width, Number height) {
-	addAnimationButton->Resize(width - 60, addAnimationButton->getHeight());
-	animHelpLabel->setPosition((width-animHelpLabel->getWidth())/2.0, 0.0);
-	
-	PropSheet::Resize(width, height);
+SpriteSheetEditor::~SpriteSheetEditor() {
+    
 }
 
-void SpriteAnimationsSheet::handleEvent(Event *event) {
+void SpriteSheetEditor::Resize(Number width, Number height) {
+    
+    previewBg->Resize(width, height-30.0);
+    previewBg->setImageCoordinates(0, 0, width, height-30);
+    
+    Vector2 screenPosition = getScreenPositionForMainCamera();
+    scissorBox.setRect(screenPosition.x, screenPosition.y, width, height);
 
-	if(event->getDispatcher() == addAnimationButton) {
-		if(sprite) {
-			sprite->addAnimation("new_animation", "0", 0.1);
-			refreshAnimationEntries();
-		}
-	} else {
-		for(int i=0; i < props.size(); i++) {
-			if(event->getDispatcher() == props[i]) {
-				SpriteAnimationEntry *entryProp = (SpriteAnimationEntry*) props[i];
-				
-				if(event->getEventCode() == Event::CANCEL_EVENT) {
-					removeIndex = i;
-					break;
-				} else if(event->getEventCode() == Event::CHANGE_EVENT) {
-					sprite->playAnimation(entryProp->nameInput->getText(), 0, false);
-				}
-			}
-		}
-	}
-	
-	PropSheet::handleEvent(event);
-}
+    
+    
+    Number imageAspectRatio = ((Number)previewImage->getTexture()->getHeight()) / ((Number)previewImage->getTexture()->getWidth());
+    
+    Number imageWidth = (height-30.0) / imageAspectRatio;
+    Number imageHeight = height-30.0;
+    
+    if(imageWidth > width) {
+        imageWidth = width;
+        imageHeight = width * imageAspectRatio;
+    }
+    
+    previewImage->Resize(imageWidth, imageHeight);
 
-void SpriteAnimationsSheet::setSprite(SceneSprite *sprite) {
-	this->sprite = sprite;
-	refreshAnimationEntries();
-}
-
-void SpriteAnimationsSheet::refreshAnimationEntries() {
-
-	if(!sprite) {
-		return;
-	}
-
-	for(int i=0; i < props.size(); i++) {
-		contents->removeChild(props[i]);
-		props[i]->removeAllHandlersForListener(this);
-		delete props[i];
-	}
-	props.clear();
-	propHeight = 30;
-	
-	for(int i=0; i < sprite->getNumAnimations(); i++) {			
-		SpriteAnimation *animation = sprite->getAnimationAtIndex(i);		
-		SpriteAnimationEntry *newEntry = new SpriteAnimationEntry(animation);
-		newEntry->addEventListener(this, Event::CHANGE_EVENT);
-		newEntry->addEventListener(this, Event::CANCEL_EVENT);
-		addProp(newEntry);
-		propHeight += 30;
-	}
-	
-	addAnimationButton->setPosition(15, propHeight);	
-	propHeight += 70;	
-	
-	if(lastNumProps != sprite->getNumAnimations()) {
-		dispatchEvent(new Event(), Event::COMPLETE_EVENT);
-	}
-	
-	lastNumProps = sprite->getNumAnimations();		
-	Resize(getWidth(), getHeight());	
+    
+    previewImage->setPosition((width-previewImage->getWidth())/ 2.0, (height-previewImage->getHeight()-30.0)/2.0);
+    
+    frameVisualizerMesh->setPosition(previewImage->getPosition());
+    frameVisualizerMesh->setScale(previewImage->getWidth(), previewImage->getHeight(), 1.0);
+    
+    bottomMenuRect->Resize(width, 30.0);
+    bottomMenu->setPosition(0.0, height-30.0);
+    
+    UIElement::Resize(width, height);
 }
 
 PolycodeSpriteEditor::PolycodeSpriteEditor() : PolycodeEditor(true){
-	headerBg = new UIRect(10,10);
-	addChild(headerBg);
-	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
-	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
-	
-	initialLoad = false;
-
-	propList = new PropList("SPRITE EDITOR");
-	addChild(propList);
-	propList->setPosition(0, 0);
-		
-	previewPropSheet = new SpritePreviewSheet();
-	propList->addPropSheet(previewPropSheet);
-
-	PropSheet *baseProps = new PropSheet("IMAGE OPTIONS", "");
-	propList->addPropSheet(baseProps);
-	
-	textureProp = new TextureProp("Base image");
-	baseProps->addProp(textureProp);
-
-	widthProp = new NumberProp("Frame width");
-	widthProp->set(32);
-	baseProps->addProp(widthProp);	
-
-	heightProp = new NumberProp("Frame height");
-	heightProp->set(32);
-	baseProps->addProp(heightProp);	
-	
-	widthProp->addEventListener(this, Event::CHANGE_EVENT);	
-	textureProp->addEventListener(this, Event::CHANGE_EVENT);
-	heightProp->addEventListener(this, Event::CHANGE_EVENT);		
-			
-	baseProps->propHeight = 180;
-	
-	animationsSheet = new SpriteAnimationsSheet();
-	propList->addPropSheet(animationsSheet);	
-			
-	propList->updateProps();
-	
+    mainSizer = new UIVSizer(100, 100, 200, false);
+    addChild(mainSizer);
+    
+    topSizer = new UIHSizer(100, 100, 400, false);
+    mainSizer->addTopChild(topSizer);
+    
+    sprite = new SceneSpriteRewrite("default.png");
+    
+    SpriteFrame frame;
+    frame.coordinates = Polycode::Rectangle(0.1, 0.4, 0.41, 0.2);
+    sprite->addSpriteFrame(frame);
+    
+    frame.coordinates = Polycode::Rectangle(0.7, 0.6, 0.2, 0.3);
+    sprite->addSpriteFrame(frame);
+    
+    spriteSheetEditor = new SpriteSheetEditor(sprite);
+    topSizer->addLeftChild(spriteSheetEditor);
 }
 
 void PolycodeSpriteEditor::handleEvent(Event *event) {
 
-	if(!initialLoad) {	
-		if(event->getDispatcher() == textureProp) {
-			previewSprite->setTexture(textureProp->get());
-			previewSprite->recalculateSpriteDimensions();
-			previewSprite->getTexture()->reloadOnFileModify = true;
-		}
-
-		if(event->getDispatcher() == widthProp) {
-			previewSprite->setSpriteSize(widthProp->get(), heightProp->get());
-			previewSprite->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, widthProp->get(), heightProp->get());
-			previewSprite->recalculateSpriteDimensions();		
-		}
-
-		if(event->getDispatcher() == heightProp) {
-			previewSprite->setSpriteSize(widthProp->get(), heightProp->get());
-			previewSprite->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, widthProp->get(), heightProp->get());
-			previewSprite->recalculateSpriteDimensions();		
-		}
-	}
 }
 
 PolycodeSpriteEditor::~PolycodeSpriteEditor() {	
-	delete propList;
-	delete headerBg;
-	delete textureProp;
-	delete widthProp;
-	delete heightProp;
-	delete previewSprite;
+
 }
 
 bool PolycodeSpriteEditor::openFile(OSFileEntry filePath) {
-					
-	initialLoad = true;
-		
-	previewSprite = new SceneSprite(filePath.fullPath);
-    previewSprite->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
-	previewSprite->setAnchorPoint(-1.0, -1.0, 0.0);
-	previewSprite->setPosition(400, 80);				
-	previewSprite->getTexture()->reloadOnFileModify = true;	
-	previewPropSheet->setSprite(previewSprite);
 	
-	if(previewSprite->getNumAnimations() > 0) {
-		previewSprite->playAnimation(previewSprite->getAnimationAtIndex(0)->name, 0, false);
-	}
-	
-	animationsSheet->setSprite(previewSprite);
-	
-	widthProp->set(previewSprite->getSpriteSize().x);
-	heightProp->set(previewSprite->getSpriteSize().y);
-		
-	textureProp->set(previewSprite->getTexture());
-				
-	PolycodeEditor::openFile(filePath);
-	
-	initialLoad = false;
-	return true;
+    PolycodeEditor::openFile(filePath);
+    return true;
 }
 
 void PolycodeSpriteEditor::saveFile() {
-	Object saveObject;
-	
-	saveObject.root.name = "sprite";
-	
-	ObjectEntry *image = saveObject.root.addChild("image");
-	image->addChild("frameWidth", widthProp->get());
-	image->addChild("frameHeight", heightProp->get());
-	image->addChild("fileName", previewSprite->getTexture()->getResourcePath());
-	
-	ObjectEntry *animations = saveObject.root.addChild("animations");
 
-	for(int i=0; i < previewSprite->getNumAnimations(); i++) {
-		ObjectEntry *animation = animations->addChild("animation");	
-		SpriteAnimation *anim = previewSprite->getAnimationAtIndex(i);
-		
-		animation->addChild("name", anim->name);
-		animation->addChild("frames", anim->frames);
-		animation->addChild("speed", anim->speed);			
-	}
-	saveObject.saveToXML(filePath);
 }
 
 void PolycodeSpriteEditor::Resize(int x, int y) {
-	headerBg->Resize(x, 30);
-	propList->Resize(x, y);
-	propList->updateProps();	
-	PolycodeEditor::Resize(x,y);	
+    mainSizer->Resize(x, y);
+	PolycodeEditor::Resize(x,y);
 }
 

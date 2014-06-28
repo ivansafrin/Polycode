@@ -28,63 +28,66 @@
 
 using namespace Polycode;
 
-class SpriteAnimationEntry : public PropProp {
-	public:
-		SpriteAnimationEntry(SpriteAnimation *animation);
-		~SpriteAnimationEntry();
-		
-		void setPropWidth(Number width);
-		
-		void handleEvent(Event *event);
-		
-		UITextInput *nameInput;
-		UITextInput *framesInput;
-		UITextInput *speedInput;
-						
-		UIImageButton *removeButton;
-		UIImageButton *playButton;	
-		
-		SpriteAnimation *animation;
+
+class SpriteFrame {
+    public:
+        Polycode::Rectangle coordinates;
+        Vector2 anchorPoint;
 };
 
-
-class SpritePreviewProp : public PropProp {
-	public:
-		SpritePreviewProp();
-		void setSprite(SceneSprite *sprite);	
-		void setPropWidth(Number width);		
-		void setSpriteScale(Number scale);		
-		SceneSprite *previewSprite;
-		Number propWidth;
+class SceneSpriteRewrite : public SceneMesh {
+    public:
+        SceneSpriteRewrite(String imageFileName);
+        ~SceneSpriteRewrite();
+    
+    
+    
+        // frame manipulation
+        void addSpriteFrame(const SpriteFrame &frame);
+        unsigned int getNumFrames() const;
+        SpriteFrame getSpriteFrame(unsigned int index) const;
+        void clearFrames();
+    
+        // automatic frame generation
+        void createGridFrames(Number width, Number height);
+        void createFramesFromIslands(unsigned int minDistance);
+    
+    protected:
+    
+        std::vector<SpriteFrame> frames;
 };
 
-class SpritePreviewSheet : public PropSheet {
-	public:
-		SpritePreviewSheet();
-		void handleEvent(Event *event);
-		void setSprite(SceneSprite *sprite);
-		
-	protected:
-		SliderProp *zoomProp;
-		SpritePreviewProp *previewProp;
-};
-
-class SpriteAnimationsSheet : public PropSheet {
-	public:
-		SpriteAnimationsSheet();
-		void setSprite(SceneSprite *sprite);		
-		void refreshAnimationEntries();	
-		void handleEvent(Event *event);
-		void Update();
-		void Resize(Number width, Number height);
-		
-	protected:
-	
-		int removeIndex;
-		SceneSprite *sprite;
-		int lastNumProps;
-		UILabel *animHelpLabel;
-		UIButton *addAnimationButton;
+class SpriteSheetEditor : public UIElement {
+    public:
+        SpriteSheetEditor(SceneSpriteRewrite *sprite);
+        ~SpriteSheetEditor();
+    
+        void handleEvent(Event *event);
+    
+        void Update();
+    
+        void Resize(Number width, Number height);
+    
+    protected:
+    
+        SceneSpriteRewrite *sprite;
+        UIRect *previewImage;
+    
+        UIImage *previewBg;
+    
+        SceneMesh *frameVisualizerMesh;
+    
+        Entity *bottomMenu;
+        UIRect *bottomMenuRect;
+        UIButton *changeImageButton;
+        UIButton *generateFramesButton;
+    
+        UITextInput *uniformGridWidthInput;
+        UITextInput *uniformGridHeightInput;
+    
+        UITextInput *minimumDistanceInput;
+    
+        UIComboBox *generateTypeDropdown;
 };
 
 class PolycodeSpriteEditor : public PolycodeEditor {
@@ -96,24 +99,16 @@ class PolycodeSpriteEditor : public PolycodeEditor {
 		
 		bool openFile(OSFileEntry filePath);
 		void Resize(int x, int y);
-		
 		void saveFile();
 				
 	protected:
 	
-		SpriteAnimationsSheet *animationsSheet;
-			
-		PropList *propList;		
-		UIRect *headerBg;	
-		
-		TextureProp *textureProp;
-		NumberProp *widthProp;
-		NumberProp *heightProp;	
-		
-		bool initialLoad;
-		
-		SceneSprite *previewSprite;		
-		SpritePreviewSheet *previewPropSheet;
+        SceneSpriteRewrite *sprite;
+        UIVSizer *mainSizer;
+        UIHSizer *topSizer;
+    
+        SpriteSheetEditor *spriteSheetEditor;
+    
 };
 
 class PolycodeSpriteEditorFactory : public PolycodeEditorFactory {
