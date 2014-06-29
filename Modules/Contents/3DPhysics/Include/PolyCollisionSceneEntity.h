@@ -61,7 +61,6 @@ namespace Polycode {
 		
 			btConvexShape *getConvexShape(){ return convexShape; }					
 			btCollisionShape *createCollisionShape(Entity *entity, int type);
-			btCollisionShape *createCompoundMeshShape(Mesh *mesh);
 			btCollisionObject *collisionObject;		
 			Vector3 lastPosition;
 		

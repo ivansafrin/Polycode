@@ -136,6 +136,7 @@ class AssetImporterWindow : public UIWindow {
         UICheckBox *exportBoneWeights;
         UICheckBox *exportUVs;
         UICheckBox *exportSecondaryUVs;
+		UICheckBox *exportPhysicsInfo;
         UICheckBox *exportScene;
     
         UICheckBox *generateMatFile;
