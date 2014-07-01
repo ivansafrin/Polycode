@@ -40,6 +40,10 @@ SceneSpriteRewrite::SceneSpriteRewrite(SpriteSet *spriteSet) : SceneMesh(Mesh::Q
     spriteTimerVal = 0.1;
 }
 
+SpriteState *SceneSpriteRewrite::getCurrentSpriteState() {
+    return currentSpriteState;
+}
+
 void SceneSpriteRewrite::setPaused(bool val) {
     paused = val;
 }
@@ -221,6 +225,15 @@ SpriteSet::SpriteSet(String imageFileName) {
     nextFrameIDIndex = 0;
 }
 
+void SpriteSet::removeFrameByID(unsigned int frameID) {
+    for(int i=0; i < frames.size(); i++) {
+        if(frames[i].frameID == frameID) {
+            frames.erase(frames.begin() + i);
+            return;
+        }
+    }
+}
+
 Texture *SpriteSet::loadTexture(String imageFileName) {
     Texture *spriteTexture = Services()->getMaterialManager()->createTextureFromFile(imageFileName, true, Services()->getMaterialManager()->mipmapsDefault);
     setTexture(spriteTexture);
@@ -228,6 +241,17 @@ Texture *SpriteSet::loadTexture(String imageFileName) {
 }
 
 void SpriteSet::addSpriteFrame(const SpriteFrame &frame) {
+    
+    // do not add existing frames
+    for(int i=0; i < frames.size(); i++) {
+        SpriteFrame existingFrame = frames[i];
+        
+        if(existingFrame.coordinates == frame.coordinates) {
+            return;
+        }
+        
+    }
+    
     frames.push_back(frame);
     frames[frames.size()-1].frameID = nextFrameIDIndex;
     nextFrameIDIndex++;
@@ -285,6 +309,7 @@ SpriteSet::~SpriteSet() {
 
 void SpriteSet::clearFrames() {
     frames.clear();
+    nextFrameIDIndex = 0;
 }
 
 void SpriteSet::createGridFrames(Number width, Number height) {
@@ -471,14 +496,19 @@ SpriteSheetEditor::SpriteSheetEditor(SpriteSet *sprite) : UIElement() {
     changeImageButton->addEventListener(this, UIEvent::CLICK_EVENT);
     changeImageButton->setPosition(5.0, 3.0);
     
+    clearFramesButton = new UIButton("Clear frames", 110);
+    bottomMenu->addChild(clearFramesButton);
+    clearFramesButton->addEventListener(this, UIEvent::CLICK_EVENT);
+    clearFramesButton->setPosition(130.0, 3.0);
+    
     generateFramesButton = new UIButton("Generate frames", 120);
     bottomMenu->addChild(generateFramesButton);
     generateFramesButton->addEventListener(this, UIEvent::CLICK_EVENT);
-    generateFramesButton->setPosition(130.0, 3.0);
+    generateFramesButton->setPosition(230.0, 3.0);
     
     generateTypeDropdown = new UIComboBox(globalMenu, 120);
     bottomMenu->addChild(generateTypeDropdown);
-    generateTypeDropdown->setPosition(260, 3.0);
+    generateTypeDropdown->setPosition(360, 3.0);
     
     generateTypeDropdown->addComboItem("Uniform grid");
     generateTypeDropdown->addComboItem("Detect islands");
@@ -487,21 +517,25 @@ SpriteSheetEditor::SpriteSheetEditor(SpriteSet *sprite) : UIElement() {
     
     uniformGridWidthInput = new UITextInput(false, 30, 12);
     bottomMenu->addChild(uniformGridWidthInput);
-    uniformGridWidthInput->setPosition(385, 3);
+    uniformGridWidthInput->setPosition(485, 3);
     uniformGridWidthInput->setText("32");
     uniformGridWidthInput->setNumberOnly(true);
 
     uniformGridHeightInput = new UITextInput(false, 30, 12);
     bottomMenu->addChild(uniformGridHeightInput);
-    uniformGridHeightInput->setPosition(430, 3);
+    uniformGridHeightInput->setPosition(530, 3);
     uniformGridHeightInput->setText("32");
     uniformGridHeightInput->setNumberOnly(true);
     
     minimumDistanceInput = new UITextInput(false, 30, 12);
     bottomMenu->addChild(minimumDistanceInput);
-    minimumDistanceInput->setPosition(475, 3);
+    minimumDistanceInput->setPosition(575, 3);
     minimumDistanceInput->setText("0");
     minimumDistanceInput->setNumberOnly(true);
+    
+    creatingFrame = false;
+    
+    Services()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 }
 
 bool SpriteSheetEditor::hasSelectedID(unsigned int frameID) {
@@ -553,6 +587,22 @@ void SpriteSheetEditor::Update() {
         
     }
     
+    if(creatingFrame) {
+     
+        SpriteFrame frame = frameToAdd;
+        
+        mesh->addVertex(frame.coordinates.x, -frame.coordinates.y, 0.0, frame.coordinates.x, frame.coordinates.y);
+        mesh->addVertex(frame.coordinates.x+frame.coordinates.w, -frame.coordinates.y, 0.0, frame.coordinates.x+frame.coordinates.w, frame.coordinates.y);
+        mesh->addVertex(frame.coordinates.x+frame.coordinates.w, -frame.coordinates.y - frame.coordinates.h, 0.0, frame.coordinates.x+frame.coordinates.w, frame.coordinates.y + frame.coordinates.h);
+        mesh->addVertex(frame.coordinates.x, -frame.coordinates.y - frame.coordinates.h, 0.0, frame.coordinates.x, frame.coordinates.y + frame.coordinates.h);
+        mesh->addIndexedFace(offset+0,offset+1);
+        mesh->addIndexedFace(offset+1,offset+2);
+        mesh->addIndexedFace(offset+2,offset+3);
+        mesh->addIndexedFace(offset+3,offset+0);
+        offset += 4;
+
+    }
+    
     mesh->dirtyArrays();
     meshSelected->dirtyArrays();
 }
@@ -564,8 +614,6 @@ void SpriteSheetEditor::handleEvent(Event *event) {
         extensions.push_back("png");
         globalFrame->showAssetBrowser(extensions);
     } else if(event->getDispatcher() == generateFramesButton) {
-        sprite->clearFrames();
-        
         if(generateTypeDropdown->getSelectedIndex() == 0) {
             Number frameWidth = uniformGridWidthInput->getText().toNumber() / ((Number)sprite->getTexture()->getWidth());
             Number frameHeight = uniformGridHeightInput->getText().toNumber() / ((Number)sprite->getTexture()->getHeight());
@@ -573,6 +621,11 @@ void SpriteSheetEditor::handleEvent(Event *event) {
         } else {
             sprite->createFramesFromIslands(minimumDistanceInput->getText().toInteger());
         }
+        
+        dispatchEvent(new Event(),Event::CHANGE_EVENT);
+    } else if(event->getDispatcher() == clearFramesButton) {
+        sprite->clearFrames();
+        dispatchEvent(new Event(),Event::CHANGE_EVENT);
     } else if(event->getDispatcher() == globalFrame->assetBrowser) {
         String newImagePath = globalFrame->assetBrowser->getSelectedAssetPath();
         
@@ -583,10 +636,26 @@ void SpriteSheetEditor::handleEvent(Event *event) {
         globalFrame->hideModal();
         
         Resize(getWidth(), getHeight());
+      
+    } else if(event->getDispatcher() == Services()->getCore()->getInput()) {
+        InputEvent *inputEvent = (InputEvent*) event;
+        
+        switch(inputEvent->getEventCode()) {
+            case InputEvent::EVENT_KEYDOWN:
+            {
+                switch(inputEvent->getKey()) {
+                    case Polycode::KEY_BACKSPACE:
+                    case Polycode::KEY_DELETE:
+                        if(previewBg->hasFocus) {
+                            deleteSelectedFrames();
+                        }
+                    break;
+                }
+            }
+            break;
+        }
         
     } else if(event->getDispatcher() == previewBg) {
-        
-        InputEvent *inputEvent = (InputEvent*) event;
         
         switch(event->getEventCode()) {
             case InputEvent::EVENT_MOUSEWHEEL_UP:
@@ -601,14 +670,22 @@ void SpriteSheetEditor::handleEvent(Event *event) {
                 Resize(getWidth(), getHeight());
             break;
             case InputEvent::EVENT_MOUSEDOWN:
+                
+                previewBg->focusSelf();
+                
                 if(Services()->getCore()->getInput()->getKeyState(KEY_LALT)) {
                     panning = true;
                     panMouseBase = Services()->getCore()->getInput()->getMousePosition();
                 } else {
-                    clearSelected();
+                    
+                    if(!Services()->getCore()->getInput()->getKeyState(KEY_LSHIFT) &&
+                       !Services()->getCore()->getInput()->getKeyState(KEY_LSHIFT)) {
+                        clearSelected();
+                    }
                     
                     // check hit detection on frames
                     Vector2 mouseCoord = Services()->getCore()->getInput()->getMousePosition();
+                    clickBaseCoord = mouseCoord;
                     
                     for(int i=0; i < sprite->getNumFrames(); i++) {
                         SpriteFrame frame = sprite->getSpriteFrame(i);
@@ -622,8 +699,9 @@ void SpriteSheetEditor::handleEvent(Event *event) {
                         transforedCoords.w = frame.coordinates.w * zoomScale * previewImage->getWidth();
                         transforedCoords.h = frame.coordinates.h * zoomScale  * previewImage->getHeight();
 
-                        if(mouseCoord.x > transforedCoords.x && mouseCoord.x < transforedCoords.x + transforedCoords.w && mouseCoord.y > transforedCoords.y && mouseCoord.y < transforedCoords.y + transforedCoords.h) {
+                        if(mouseCoord.x >= transforedCoords.x && mouseCoord.x <= transforedCoords.x + transforedCoords.w && mouseCoord.y >= transforedCoords.y && mouseCoord.y <= transforedCoords.y + transforedCoords.h) {
                             selectedIDs.push_back(frame.frameID);
+                            break;
                         }
                     }
                 }
@@ -633,13 +711,68 @@ void SpriteSheetEditor::handleEvent(Event *event) {
                     panOffset += Services()->getCore()->getInput()->getMousePosition() - panMouseBase;
                     panMouseBase = Services()->getCore()->getInput()->getMousePosition();
                     Resize(getWidth(), getHeight());
+                } else {
+                    CoreInput *input = Services()->getCore()->getInput();
+                    
+                    if(input->getMouseButtonState(CoreInput::MOUSE_BUTTON1)) {
+                        if(clickBaseCoord.distance(input->getMousePosition()) > 2.0) {
+                            
+                            Vector2 screenCoordinates = previewImage->getScreenPositionForMainCamera();
+                            screenCoordinates = clickBaseCoord - screenCoordinates;
+                            
+                            screenCoordinates.x = screenCoordinates.x / previewImage->getWidth() / zoomScale;
+                            screenCoordinates.y = screenCoordinates.y / previewImage->getHeight() / zoomScale;
+                            
+                            
+                            Vector2 screenCoordinates2 = previewImage->getScreenPositionForMainCamera();
+                            screenCoordinates2 = input->getMousePosition() - screenCoordinates2;
+                            
+                            screenCoordinates2.x = screenCoordinates2.x / previewImage->getWidth() / zoomScale;
+                            screenCoordinates2.y = screenCoordinates2.y / previewImage->getHeight() / zoomScale;
+                            
+                            frameToAdd.coordinates.x = screenCoordinates.x;
+                            frameToAdd.coordinates.y = screenCoordinates.y;
+                            
+                            frameToAdd.coordinates.w = screenCoordinates2.x - screenCoordinates.x;
+                            frameToAdd.coordinates.h = screenCoordinates2.y - screenCoordinates.y;
+                            
+                            creatingFrame = true;
+                            
+                        }
+                    }
                 }
             break;
             case InputEvent::EVENT_MOUSEUP:
                 panning = false;
+                if(creatingFrame) {
+                    creatingFrame = false;
+                    if(fabs(frameToAdd.coordinates.w) > 0.001 & fabs(frameToAdd.coordinates.h) > 0.001) {
+                        
+                        if(frameToAdd.coordinates.w < 0.0) {
+                            frameToAdd.coordinates.x = frameToAdd.coordinates.x + frameToAdd.coordinates.w;
+                            frameToAdd.coordinates.w *= -1.0;
+                        }
+
+                        if(frameToAdd.coordinates.h < 0.0) {
+                            frameToAdd.coordinates.y = frameToAdd.coordinates.y + frameToAdd.coordinates.h;
+                            frameToAdd.coordinates.h *= -1.0;
+                        }
+                        
+                        
+                        sprite->addSpriteFrame(frameToAdd);
+                    }
+                }
             break;
         }
     }
+}
+
+void SpriteSheetEditor::deleteSelectedFrames() {
+ 
+    for(int i=0; i < selectedIDs.size(); i++) {
+        sprite->removeFrameByID(selectedIDs[i]);
+    }
+    clearSelected();
 }
 
 void SpriteSheetEditor::clearSelected() {
@@ -859,6 +992,7 @@ void SpriteStateEditBar::clearBar() {
 
 void SpriteStateEditBar::setSpriteState(SpriteState *state) {
     spriteState = state;
+    state->rebuildStateMeshes();
     refreshBar();
     
 }
@@ -1153,6 +1287,7 @@ PolycodeSpriteEditor::PolycodeSpriteEditor() : PolycodeEditor(true){
     
     spriteSheetEditor = new SpriteSheetEditor(sprite);
     topSizer->addLeftChild(spriteSheetEditor);
+    spriteSheetEditor->addEventListener(this, Event::CHANGE_EVENT);
     
     spriteBrowser = new SpriteBrowser(sprite);
     bottomSizer->addLeftChild(spriteBrowser);
@@ -1183,6 +1318,11 @@ void PolycodeSpriteEditor::handleEvent(Event *event) {
         stateEditor->getDetailsEditor()->refreshState();
     } else if(event->getDispatcher() == stateEditor) {
         spritePreview->getSceneSprite()->setSpriteState(stateEditor->getSelectedState());
+    } else if(event->getDispatcher() == spriteSheetEditor) {
+        SpriteState *state = spritePreview->getSceneSprite()->getCurrentSpriteState();
+        if(state) {
+            state->rebuildStateMeshes();
+        }
     }
 }
 

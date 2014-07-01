@@ -101,6 +101,7 @@ class SpriteSet {
         SpriteFrame getSpriteFrame(unsigned int index) const;
     
         SpriteFrame getSpriteFrameByID(unsigned int frameID) const;
+        void removeFrameByID(unsigned int frameID);
     
         void clearFrames();
     
@@ -135,6 +136,7 @@ class SceneSpriteRewrite : public SceneMesh {
     
         void setSprite(Sprite *spriteEntry);
         void setSpriteState(SpriteState *spriteState);
+        SpriteState *getCurrentSpriteState();
     
     protected:
     
@@ -172,6 +174,8 @@ class SpriteSheetEditor : public UIElement {
     
         void Update();
     
+        void deleteSelectedFrames();
+    
         void clearSelected();
         bool hasSelectedID(unsigned int frameID);
         std::vector<unsigned int> getSelectedFrameIDs();
@@ -180,8 +184,14 @@ class SpriteSheetEditor : public UIElement {
     
     protected:
     
+        bool creatingFrame;
+    
         Number zoomScale;
         Vector2 panOffset;
+    
+        SpriteFrame frameToAdd;
+
+        Vector2 clickBaseCoord;
     
         Vector2 panMouseBase;
         bool panning;
@@ -198,6 +208,7 @@ class SpriteSheetEditor : public UIElement {
         UIRect *bottomMenuRect;
         UIButton *changeImageButton;
         UIButton *generateFramesButton;
+        UIButton *clearFramesButton;
     
         UITextInput *uniformGridWidthInput;
         UITextInput *uniformGridHeightInput;
