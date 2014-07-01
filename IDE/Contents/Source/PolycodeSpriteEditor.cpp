@@ -28,20 +28,226 @@ extern PolycodeFrame *globalFrame;
 extern UIGlobalMenu *globalMenu;
 
 
-SceneSpriteRewrite::SceneSpriteRewrite(String imageFileName) : SceneMesh(Mesh::QUAD_MESH) {
+SceneSpriteRewrite::SceneSpriteRewrite(SpriteSet *spriteSet) : SceneMesh(Mesh::QUAD_MESH) {
+    currentSprite = NULL;
+    currentSpriteState = NULL;
+    this->spriteSet = spriteSet;
+    defaultMesh = mesh;
+    currentFrame = 0;
+    core = Services()->getCore();
+    spriteTimer = 0.0;
+    paused = false;
+    spriteTimerVal = 0.1;
+}
+
+void SceneSpriteRewrite::setPaused(bool val) {
+    paused = val;
+}
+
+bool SceneSpriteRewrite::isPaused() {
+    return paused;
+}
+
+void SceneSpriteRewrite::setCurrentFrame(unsigned int frameIndex) {
+    currentFrame = frameIndex;
+}
+
+
+void SceneSpriteRewrite::setSprite(Sprite *spriteEntry) {
+    currentSprite = spriteEntry;
+}
+
+void SceneSpriteRewrite::setSpriteState(SpriteState *spriteState) {
+    currentSpriteState = spriteState;
+}
+
+void SceneSpriteRewrite::Update() {
+
+    if(!currentSprite || !currentSpriteState) {
+        return;
+    }
+    
+    setTexture(spriteSet->getTexture());
+    
+    if(paused) {
+        return;
+    }
+    
+    spriteTimer += core->getElapsed();
+    
+    if(spriteTimer > 1.0/currentSpriteState->getStateFPS()) {
+        spriteTimer = 0.0;
+        currentFrame++;
+        if(currentFrame >= currentSpriteState->getNumFrameIDs()) {
+            currentFrame = 0;
+        }
+    }
+    
+}
+
+unsigned int SceneSpriteRewrite::getCurrentFrame() {
+    return currentFrame;
+}
+
+void SceneSpriteRewrite::Render() {
+    
+    if(!currentSprite || !currentSpriteState) {
+        return;
+    }
+    
+    Mesh *stateMesh = currentSpriteState->getMeshForFrameIndex(currentFrame);
+    if(stateMesh) {
+        setMesh(stateMesh);
+    } else {
+        setMesh(defaultMesh);
+    }
+
+    SceneMesh::Render();
+}
+
+SceneSpriteRewrite::~SceneSpriteRewrite() {
+    
+}
+
+SpriteState::SpriteState(SpriteSet *spriteSet, String name) {
+    this->spriteSet = spriteSet;
+    this->name = name;
+    stateFPS = 60.0;
+}
+
+void SpriteState::setStateFPS(Number fps) {
+    stateFPS = fps;
+}
+
+Number SpriteState::getStateFPS() {
+    return stateFPS;
+}
+
+void SpriteState::setName(String name) {
+    this->name = name;
+}
+
+Mesh *SpriteState::getMeshForFrameIndex(unsigned int index) {
+    if(index < frameMeshes.size()) {
+        return frameMeshes[index];
+    } else {
+        return NULL;
+    }
+}
+
+void SpriteState::rebuildStateMeshes() {
+    for(int i=0; i < frameMeshes.size(); i++) {
+        delete frameMeshes[i];
+    }
+    frameMeshes.clear();
+    
+    for(int i=0; i < frameIDs.size(); i++) {
+        Mesh *frameMesh = new Mesh(Mesh::QUAD_MESH);
+        SpriteFrame frame = spriteSet->getSpriteFrameByID(frameIDs[i]);
+        
+        frameMesh->indexedMesh = true;
+        
+        Number frameWidth = 100.0;
+        Number frameHeight = 100.0;
+        
+        frameMesh->addVertex(0.0, 0.0, 0.0, frame.coordinates.x, 1.0-frame.coordinates.y);
+        frameMesh->addVertex(0.0, -frameHeight, 0.0, frame.coordinates.x, 1.0-frame.coordinates.y  - frame.coordinates.h);
+        frameMesh->addVertex(frameWidth, -frameHeight, 0.0, frame.coordinates.x+frame.coordinates.w, 1.0- frame.coordinates.y  - frame.coordinates.h);
+        frameMesh->addVertex(frameWidth, 0.0, 0.0, frame.coordinates.x+frame.coordinates.w, 1.0-frame.coordinates.y);
+        
+        frameMesh->addIndexedFace(0,1);
+        frameMesh->addIndexedFace(1,2);
+        frameMesh->addIndexedFace(2,3);
+        frameMesh->addIndexedFace(3,0);
+        
+        frameMesh->dirtyArrays();
+        
+        frameMeshes.push_back(frameMesh);
+    }
+}
+
+String SpriteState::getName() const {
+    return name;
+}
+
+unsigned int SpriteState::getNumFrameIDs() {
+    return frameIDs.size();
+}
+
+unsigned int SpriteState::getFrameIDAtIndex(unsigned int index) {
+    if(index < frameIDs.size()) {
+        return frameIDs[index];
+    } else {
+        return 0;
+    }
+}
+
+void SpriteState::appendFrames(std::vector<unsigned int> newFrameIDs) {
+    frameIDs.insert( frameIDs.end(), newFrameIDs.begin(), newFrameIDs.end());
+    rebuildStateMeshes();
+}
+
+unsigned int Sprite::getNumStates() {
+    return states.size();
+}
+
+SpriteState *Sprite::getState(unsigned int index) {
+    if(index < states.size()) {
+        return states[index];
+    } else {
+        return NULL;
+    }
+}
+
+void Sprite::addSpriteState(SpriteState *state) {
+    states.push_back(state);
+}
+
+Sprite::Sprite(String name) {
+    this->name = name;
+}
+
+String Sprite::getName() {
+    return name;
+}
+
+void Sprite::setName(String name) {
+    this->name = name;
+}
+
+
+SpriteSet::SpriteSet(String imageFileName) {
+    loadTexture(imageFileName);
+    nextFrameIDIndex = 0;
+}
+
+Texture *SpriteSet::loadTexture(String imageFileName) {
     Texture *spriteTexture = Services()->getMaterialManager()->createTextureFromFile(imageFileName, true, Services()->getMaterialManager()->mipmapsDefault);
     setTexture(spriteTexture);
+    return spriteTexture;
 }
 
-void SceneSpriteRewrite::addSpriteFrame(const SpriteFrame &frame) {
+void SpriteSet::addSpriteFrame(const SpriteFrame &frame) {
     frames.push_back(frame);
+    frames[frames.size()-1].frameID = nextFrameIDIndex;
+    nextFrameIDIndex++;
+    
 }
 
-unsigned int SceneSpriteRewrite::getNumFrames() const {
+SpriteFrame SpriteSet::getSpriteFrameByID(unsigned int frameID) const {
+    for(int i=0; i < frames.size(); i++) {
+        if(frames[i].frameID == frameID ){
+            return frames[i];
+        }
+    }
+    return SpriteFrame();
+}
+
+unsigned int SpriteSet::getNumFrames() const {
     return frames.size();
 }
 
-SpriteFrame SceneSpriteRewrite::getSpriteFrame(unsigned int index) const {
+SpriteFrame SpriteSet::getSpriteFrame(unsigned int index) const {
     if(index < frames.size()) {
         return frames[index];
     } else {
@@ -49,15 +255,39 @@ SpriteFrame SceneSpriteRewrite::getSpriteFrame(unsigned int index) const {
     }
 }
 
-SceneSpriteRewrite::~SceneSpriteRewrite() {
+void SpriteSet::addSpriteEntry(Sprite *newEntry) {
+    sprites.push_back(newEntry);
+}
+
+unsigned int SpriteSet::getNumSpriteEntries() const {
+    return sprites.size();
+}
+
+Sprite *SpriteSet::getSpriteEntry(unsigned int index) const {
+    if(index < sprites.size()) {
+        return sprites[index];
+    } else {
+        return NULL;
+    }
+}
+
+void SpriteSet::setTexture(Texture *texture) {
+    spriteTexture = texture;
+}
+
+Texture *SpriteSet::getTexture() {
+    return spriteTexture;
+}
+
+SpriteSet::~SpriteSet() {
     
 }
 
-void SceneSpriteRewrite::clearFrames() {
+void SpriteSet::clearFrames() {
     frames.clear();
 }
 
-void SceneSpriteRewrite::createGridFrames(Number width, Number height) {
+void SpriteSet::createGridFrames(Number width, Number height) {
     
     for(Number x = 0.0; x+width <= 1.0; x += width) {
         for(Number y = 0.0; y+height <= 1.0; y += height) {
@@ -119,7 +349,7 @@ bool rectIntersect(const Polycode::Rectangle &r1, const Polycode::Rectangle &r2,
              r2.y + r2.h + minDistance < r1.y);
 }
 
-void SceneSpriteRewrite::createFramesFromIslands(unsigned int minDistance) {
+void SpriteSet::createFramesFromIslands(unsigned int minDistance) {
     String imageFileName = getTexture()->getResourcePath();
     
     Image *image = new Image(imageFileName);
@@ -184,18 +414,26 @@ void SceneSpriteRewrite::createFramesFromIslands(unsigned int minDistance) {
     }
     
     delete image;
-    
-    
 }
 
-SpriteSheetEditor::SpriteSheetEditor(SceneSpriteRewrite *sprite) : UIElement() {
+SpriteSheetEditor::SpriteSheetEditor(SpriteSet *sprite) : UIElement() {
     
     this->sprite = sprite;
     
+    zoomScale = 1.0;
     enableScissor = true;
     
     previewBg = new UIImage("main/grid_dark.png");
     addChild(previewBg);
+    previewBg->processInputEvents = true;
+    
+    panning = false;
+    
+    previewBg->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_DOWN);
+    previewBg->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_UP);
+    previewBg->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+    previewBg->addEventListener(this, InputEvent::EVENT_MOUSEUP);
+    previewBg->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
     
     previewImage = new UIRect(10, 10);
     previewImage->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
@@ -205,10 +443,16 @@ SpriteSheetEditor::SpriteSheetEditor(SceneSpriteRewrite *sprite) : UIElement() {
     frameVisualizerMesh->setColor(1.0, 1.0, 1.0, 1.0);
     addChild(frameVisualizerMesh);
     frameVisualizerMesh->setAnchorPoint(-1.0, -1.0, 0.0);
-    
     frameVisualizerMesh->loadTexture("main/stipple.png");
-    
     frameVisualizerMesh->lineWidth = 1; //CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX();
+
+    frameVisualizerMeshSelected = new SceneMesh(Mesh::LINE_MESH);
+    frameVisualizerMeshSelected->setColor(1.0, 1.0, 0.0, 1.0);
+    addChild(frameVisualizerMeshSelected);
+    frameVisualizerMeshSelected->setAnchorPoint(-1.0, -1.0, 0.0);
+    frameVisualizerMeshSelected->loadTexture("main/stipple.png");
+    frameVisualizerMeshSelected->lineWidth = 2;
+    
     
     previewImage->setTexture(sprite->getTexture());
     
@@ -260,13 +504,28 @@ SpriteSheetEditor::SpriteSheetEditor(SceneSpriteRewrite *sprite) : UIElement() {
     minimumDistanceInput->setNumberOnly(true);
 }
 
+bool SpriteSheetEditor::hasSelectedID(unsigned int frameID) {
+    for(int i=0; i < selectedIDs.size(); i++) {
+        if(selectedIDs[i] == frameID) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void SpriteSheetEditor::Update() {
     Mesh *mesh = frameVisualizerMesh->getMesh();
-
-    mesh->clearMesh();
-    mesh->indexedMesh = true;
+    Mesh *meshSelected = frameVisualizerMeshSelected->getMesh();
     
+    mesh->clearMesh();
+    meshSelected->clearMesh();
+    
+    mesh->indexedMesh = true;
+    meshSelected->indexedMesh = true;
+    
+    unsigned int offsetSelected = 0;
     unsigned int offset = 0;
+    
     for(int i=0; i < sprite->getNumFrames(); i++){
         SpriteFrame frame = sprite->getSpriteFrame(i);
         
@@ -274,16 +533,28 @@ void SpriteSheetEditor::Update() {
         mesh->addVertex(frame.coordinates.x+frame.coordinates.w, -frame.coordinates.y, 0.0, frame.coordinates.x+frame.coordinates.w, frame.coordinates.y);
         mesh->addVertex(frame.coordinates.x+frame.coordinates.w, -frame.coordinates.y - frame.coordinates.h, 0.0, frame.coordinates.x+frame.coordinates.w, frame.coordinates.y + frame.coordinates.h);
         mesh->addVertex(frame.coordinates.x, -frame.coordinates.y - frame.coordinates.h, 0.0, frame.coordinates.x, frame.coordinates.y + frame.coordinates.h);
-        
         mesh->addIndexedFace(offset+0,offset+1);
         mesh->addIndexedFace(offset+1,offset+2);
         mesh->addIndexedFace(offset+2,offset+3);
         mesh->addIndexedFace(offset+3,offset+0);
-        
         offset += 4;
+        
+        if(hasSelectedID(frame.frameID)) {
+            meshSelected->addVertex(frame.coordinates.x, -frame.coordinates.y, 0.0, frame.coordinates.x, frame.coordinates.y);
+            meshSelected->addVertex(frame.coordinates.x+frame.coordinates.w, -frame.coordinates.y, 0.0, frame.coordinates.x+frame.coordinates.w, frame.coordinates.y);
+            meshSelected->addVertex(frame.coordinates.x+frame.coordinates.w, -frame.coordinates.y - frame.coordinates.h, 0.0, frame.coordinates.x+frame.coordinates.w, frame.coordinates.y + frame.coordinates.h);
+            meshSelected->addVertex(frame.coordinates.x, -frame.coordinates.y - frame.coordinates.h, 0.0, frame.coordinates.x, frame.coordinates.y + frame.coordinates.h);
+            meshSelected->addIndexedFace(offsetSelected+0,offsetSelected+1);
+            meshSelected->addIndexedFace(offsetSelected+1,offsetSelected+2);
+            meshSelected->addIndexedFace(offsetSelected+2,offsetSelected+3);
+            meshSelected->addIndexedFace(offsetSelected+3,offsetSelected+0);
+            offsetSelected += 4;
+        }
+        
     }
     
     mesh->dirtyArrays();
+    meshSelected->dirtyArrays();
 }
 
 void SpriteSheetEditor::handleEvent(Event *event) {
@@ -313,11 +584,74 @@ void SpriteSheetEditor::handleEvent(Event *event) {
         
         Resize(getWidth(), getHeight());
         
+    } else if(event->getDispatcher() == previewBg) {
+        
+        InputEvent *inputEvent = (InputEvent*) event;
+        
+        switch(event->getEventCode()) {
+            case InputEvent::EVENT_MOUSEWHEEL_UP:
+                zoomScale *= 1.02;
+                Resize(getWidth(), getHeight());
+            break;
+            case InputEvent::EVENT_MOUSEWHEEL_DOWN:
+                zoomScale *= 0.98;
+                if(zoomScale < 0.1) {
+                    zoomScale = 0.1;
+                }
+                Resize(getWidth(), getHeight());
+            break;
+            case InputEvent::EVENT_MOUSEDOWN:
+                if(Services()->getCore()->getInput()->getKeyState(KEY_LALT)) {
+                    panning = true;
+                    panMouseBase = Services()->getCore()->getInput()->getMousePosition();
+                } else {
+                    clearSelected();
+                    
+                    // check hit detection on frames
+                    Vector2 mouseCoord = Services()->getCore()->getInput()->getMousePosition();
+                    
+                    for(int i=0; i < sprite->getNumFrames(); i++) {
+                        SpriteFrame frame = sprite->getSpriteFrame(i);
+                        
+                        Polycode::Rectangle transforedCoords;
+                        
+                        Vector2 corner = previewImage->getScreenPositionForMainCamera();
+                        
+                        transforedCoords.x = corner.x + (frame.coordinates.x * zoomScale * previewImage->getWidth()) ;
+                        transforedCoords.y = corner.y + (frame.coordinates.y * zoomScale * previewImage->getHeight());
+                        transforedCoords.w = frame.coordinates.w * zoomScale * previewImage->getWidth();
+                        transforedCoords.h = frame.coordinates.h * zoomScale  * previewImage->getHeight();
+
+                        if(mouseCoord.x > transforedCoords.x && mouseCoord.x < transforedCoords.x + transforedCoords.w && mouseCoord.y > transforedCoords.y && mouseCoord.y < transforedCoords.y + transforedCoords.h) {
+                            selectedIDs.push_back(frame.frameID);
+                        }
+                    }
+                }
+            break;
+            case InputEvent::EVENT_MOUSEMOVE:
+                if(panning) {
+                    panOffset += Services()->getCore()->getInput()->getMousePosition() - panMouseBase;
+                    panMouseBase = Services()->getCore()->getInput()->getMousePosition();
+                    Resize(getWidth(), getHeight());
+                }
+            break;
+            case InputEvent::EVENT_MOUSEUP:
+                panning = false;
+            break;
+        }
     }
+}
+
+void SpriteSheetEditor::clearSelected() {
+    selectedIDs.clear();
 }
 
 SpriteSheetEditor::~SpriteSheetEditor() {
     
+}
+
+std::vector<unsigned int> SpriteSheetEditor::getSelectedFrameIDs() {
+    return selectedIDs;
 }
 
 void SpriteSheetEditor::Resize(Number width, Number height) {
@@ -327,7 +661,6 @@ void SpriteSheetEditor::Resize(Number width, Number height) {
     
     Vector2 screenPosition = getScreenPositionForMainCamera();
     scissorBox.setRect(screenPosition.x, screenPosition.y, width, height);
-
     
     
     Number imageAspectRatio = ((Number)previewImage->getTexture()->getHeight()) / ((Number)previewImage->getTexture()->getWidth());
@@ -341,17 +674,462 @@ void SpriteSheetEditor::Resize(Number width, Number height) {
     }
     
     previewImage->Resize(imageWidth, imageHeight);
-
+    previewImage->setScale(zoomScale, zoomScale, 1.0);
     
-    previewImage->setPosition((width-previewImage->getWidth())/ 2.0, (height-previewImage->getHeight()-30.0)/2.0);
+    previewImage->setPosition((width-(previewImage->getWidth()*zoomScale))/ 2.0, (height-(previewImage->getHeight()*zoomScale)-30.0)/2.0);
+    
+    previewImage->Translate(panOffset.x, panOffset.y, 0.0);
     
     frameVisualizerMesh->setPosition(previewImage->getPosition());
-    frameVisualizerMesh->setScale(previewImage->getWidth(), previewImage->getHeight(), 1.0);
+    frameVisualizerMesh->setScale(previewImage->getWidth() * zoomScale, previewImage->getHeight() * zoomScale, 1.0);
+
+    frameVisualizerMeshSelected->setPosition(previewImage->getPosition());
+    frameVisualizerMeshSelected->setScale(previewImage->getWidth() * zoomScale, previewImage->getHeight() * zoomScale, 1.0);
     
-    bottomMenuRect->Resize(width, 30.0);
+
+    
+    bottomMenuRect->Resize(width, 31.0);
     bottomMenu->setPosition(0.0, height-30.0);
     
     UIElement::Resize(width, height);
+}
+
+SpriteBrowser::SpriteBrowser(SpriteSet *spriteSet) : UIElement () {
+    this->spriteSet = spriteSet;
+    
+	headerBg = new UIRect(10,10);
+	addChild(headerBg);
+	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
+	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
+	
+    newSpriteButton = new UIButton("Add", 40);
+    addChild(newSpriteButton);
+    newSpriteButton->setPosition(3.0, 3.0);
+    newSpriteButton->addEventListener(this, UIEvent::CLICK_EVENT);
+    
+    spriteTreeView = new UITreeContainer("boxIcon.png", "Sprites", 10, 10);
+    spriteTreeView->setPosition(0, 30);
+    addChild(spriteTreeView);
+    
+    spriteTreeView->getRootNode()->toggleCollapsed();
+    
+    spriteTreeView->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
+}
+
+void SpriteBrowser::handleEvent(Event *event) {
+    if(event->getDispatcher() == newSpriteButton) {
+        Sprite *newEntry = new Sprite("New Sprite");
+        spriteSet->addSpriteEntry(newEntry);
+        refreshSprites();
+    } else if(event->getDispatcher() ==   spriteTreeView->getRootNode()) {
+        selectedEntry = (Sprite*) spriteTreeView->getRootNode()->getSelectedNode()->getUserData();
+        if(selectedEntry) {
+            dispatchEvent(new Event(), Event::CHANGE_EVENT);
+        }
+    }
+}
+
+Sprite *SpriteBrowser::getSelectedSpriteEntry() {
+    return selectedEntry;
+}
+
+void SpriteBrowser::refreshSprites() {
+    spriteTreeView->getRootNode()->clearTree();
+    for(int i=0; i < spriteSet->getNumSpriteEntries(); i++) {
+        Sprite *spriteEntry = spriteSet->getSpriteEntry(i);
+        spriteTreeView->getRootNode()->addTreeChild("file.png", spriteEntry->getName(), (void*)spriteEntry);
+    }
+}
+
+SpriteBrowser::~SpriteBrowser() {
+    
+}
+
+void SpriteBrowser::Resize(Number width, Number height) {
+    headerBg->Resize(width, 30.0);
+    
+    spriteTreeView->Resize(width, height-30);
+}
+
+SpriteStateEditorDetails::SpriteStateEditorDetails(SpriteSet *spriteSet) : UIElement() {
+    
+    this->spriteSet = spriteSet;
+    
+    editBar = new SpriteStateEditBar(spriteSet);
+    addChild(editBar);
+    editBar->setPosition(10.0, 50.0);
+    
+    playButton = new UIImageButton("spriteEditor/play_button.png", 1.0, 32, 32);
+    addChild(playButton);
+    playButton->setPosition(10.0, 5.0);
+    playButton->addEventListener(this, UIEvent::CLICK_EVENT);
+    
+    pauseButton = new UIImageButton("spriteEditor/pause_button.png", 1.0, 32, 32);
+    addChild(pauseButton);
+    pauseButton->setPosition(10.0, 5.0);
+    pauseButton->addEventListener(this, UIEvent::CLICK_EVENT);
+    
+    appendFramesButton = new UIButton("Append selected frames", 200.0);
+    addChild(appendFramesButton);
+    appendFramesButton->setPosition(100.0, 10.0);
+    appendFramesButton->addEventListener(this, UIEvent::CLICK_EVENT);
+    
+    fpsInput = new UITextInput(false, 30.0, 12.0);
+    addChild(fpsInput);
+    fpsInput->setPosition(50.0, 10.0);
+    fpsInput->addEventListener(this, UIEvent::CHANGE_EVENT);
+    
+    visible = false;
+    enabled = false;
+}
+
+void SpriteStateEditBar::setSceneSprite(SceneSpriteRewrite *sprite) {
+    sceneSprite = sprite;
+}
+
+SpriteStateEditBar *SpriteStateEditorDetails::getEditBar() {
+    return editBar;
+}
+
+void SpriteStateEditorDetails::setSceneSprite(SceneSpriteRewrite *sceneSprite) {
+    this->sceneSprite = sceneSprite;
+    editBar->setSceneSprite(sceneSprite);
+}
+
+void SpriteStateEditorDetails::Update() {
+    if(sceneSprite) {
+        if(sceneSprite->isPaused()) {
+            playButton->visible = true;
+            playButton->enabled = true;
+            pauseButton->visible = false;
+            pauseButton->enabled = false;
+        } else {
+            playButton->visible = false;
+            playButton->enabled = false;
+            pauseButton->visible = true;
+            pauseButton->enabled = true;
+        }
+    }
+}
+
+void SpriteStateEditorDetails::setSpriteState(SpriteState *state) {
+    visible = true;
+    enabled = true;
+    spriteState = state;
+    
+    fpsInput->setText(String::NumberToString(state->getStateFPS()));
+    
+    editBar->setSpriteState(state);
+}
+
+void SpriteStateEditorDetails::handleEvent(Event *event) {
+    if(event->getDispatcher() == fpsInput) {
+        spriteState->setStateFPS(fpsInput->getText().toNumber());
+    } else if(event->getDispatcher() == playButton) {
+        sceneSprite->setPaused(false);
+    }  else if(event->getDispatcher() == pauseButton) {
+        sceneSprite->setPaused(true);
+    }
+}
+
+SpriteStateEditorDetails::~SpriteStateEditorDetails() {
+    
+}
+
+UIButton *SpriteStateEditorDetails::getAppendFramesButton() {
+    return appendFramesButton;
+}
+
+SpriteState *SpriteStateEditorDetails::getSpriteState() {
+    return spriteState;
+}
+
+void SpriteStateEditorDetails::refreshState() {
+    editBar->refreshBar();
+}
+
+void SpriteStateEditorDetails::Resize(Number width, Number height) {
+    editBar->Resize(width, height-30.0);
+    editBar->Resize(width-20.0, height-60.0);
+}
+
+void SpriteStateEditBar::clearBar() {
+    
+}
+
+void SpriteStateEditBar::setSpriteState(SpriteState *state) {
+    spriteState = state;
+    refreshBar();
+    
+}
+
+void SpriteStateEditBar::refreshBar() {
+    
+    if(!spriteSet || !spriteState || !sceneSprite) {
+        return;
+    }
+    
+    barMesh->setTexture(spriteSet->getTexture());
+    
+    Mesh *mesh = barMesh->getMesh();
+    mesh->clearMesh();
+    mesh->indexedMesh = true;
+    
+    Mesh *meshBg = barMeshBg->getMesh();
+    meshBg->clearMesh();
+    meshBg->indexedMesh = true;
+
+    Mesh *meshTicks = frameTicksMesh->getMesh();
+    meshTicks->clearMesh();
+    meshTicks->indexedMesh = true;
+    meshTicks->useVertexColors = true;
+    
+    Mesh *meshGrips = frameGripsMesh->getMesh();
+    meshGrips->clearMesh();
+    meshGrips->indexedMesh = true;
+    
+    
+    unsigned int offset = 0;
+    for(int i=0; i < spriteState->getNumFrameIDs(); i++) {
+        unsigned int frameID = spriteState->getFrameIDAtIndex(i);
+     
+        SpriteFrame frame = spriteSet->getSpriteFrameByID(frameID);
+        
+        Number gapSize = 1.0;
+        
+        Number frameTickHeight = 20.0;
+        Number frameTickGap = 2.0;
+        
+        Number frameSize = 50.0;
+        Number frameHeight = getHeight()-frameTickHeight-frameTickGap;
+        
+        if(frameHeight < frameSize) {
+            frameHeight = frameSize;
+        }
+        
+        Number frameOffset = ((Number)i) * frameSize;
+        
+        // draw frame ticks
+        
+        Color vertexColor(0.1, 0.1, 0.1, 1.0);
+        if(i % 2) {
+            vertexColor = Color(0.2, 0.2, 0.2, 1.0);
+        }
+        
+        if(i == sceneSprite->getCurrentFrame()) {
+            vertexColor = Color(1.0, 0.8, 0.0, 1.0);
+        }
+        
+        meshTicks->addVertex(frameOffset, 0.0, 0.0, 0.0, 0.0)->vertexColor = vertexColor;
+        meshTicks->addVertex(frameOffset, 0.0-frameTickHeight, 0.0, 0.0, 1.0)->vertexColor = vertexColor;
+        meshTicks->addVertex(frameOffset+frameSize-gapSize, -frameTickHeight, 0.0, 1.0, 1.0)->vertexColor = vertexColor;
+        meshTicks->addVertex(frameOffset+frameSize-gapSize, 0.0, 0.0, 1.0, 0.0)->vertexColor = vertexColor;
+        
+        
+        meshTicks->addIndexedFace(offset+0,offset+1);
+        meshTicks->addIndexedFace(offset+1,offset+2);
+        meshTicks->addIndexedFace(offset+2,offset+3);
+        meshTicks->addIndexedFace(offset+3,offset+0);
+        
+        // draw icons
+        
+        Number imageAspectRatio = ((Number)spriteSet->getTexture()->getWidth()) / ((Number)spriteSet->getTexture()->getHeight());
+        Number aspectRatio = frame.coordinates.h / frame.coordinates.w / imageAspectRatio;
+        
+        Number iconFrameWidth = frameSize * 0.5;
+        Number iconFrameHeight = iconFrameWidth * aspectRatio;
+        
+        Number iconOffset = 5.0;
+        
+        mesh->addVertex(frameOffset+iconOffset, -frameTickHeight-frameTickGap-iconOffset, 0.0, frame.coordinates.x, 1.0-frame.coordinates.y);
+        mesh->addVertex(frameOffset+iconOffset, -frameTickHeight-frameTickGap-iconFrameHeight-iconOffset, 0.0, frame.coordinates.x, 1.0-frame.coordinates.y  - frame.coordinates.h);
+        mesh->addVertex(frameOffset+iconFrameWidth+iconOffset, -frameTickHeight-frameTickGap-iconFrameHeight-iconOffset, 0.0, frame.coordinates.x+frame.coordinates.w, 1.0- frame.coordinates.y  - frame.coordinates.h);
+        mesh->addVertex(frameOffset+iconFrameWidth+iconOffset, -frameTickHeight-frameTickGap-iconOffset, 0.0, frame.coordinates.x+frame.coordinates.w, 1.0-frame.coordinates.y);
+        
+        mesh->addIndexedFace(offset+0,offset+1);
+        mesh->addIndexedFace(offset+1,offset+2);
+        mesh->addIndexedFace(offset+2,offset+3);
+        mesh->addIndexedFace(offset+3,offset+0);
+        
+        // draw frame backgrounds
+        
+        meshBg->addVertex(frameOffset, -frameTickHeight-frameTickGap, 0.0, 0.0, 0.0);
+        meshBg->addVertex(frameOffset, -frameTickHeight-frameTickGap-frameHeight, 0.0, 0.0, 1.0);
+        meshBg->addVertex(frameOffset+frameSize-gapSize, -frameTickHeight-frameTickGap-frameHeight, 0.0, 1.0, 1.0);
+        meshBg->addVertex(frameOffset+frameSize-gapSize, -frameTickHeight-frameTickGap, 0.0, 1.0, 0.0);
+
+        
+        meshBg->addIndexedFace(offset+0,offset+1);
+        meshBg->addIndexedFace(offset+1,offset+2);
+        meshBg->addIndexedFace(offset+2,offset+3);
+        meshBg->addIndexedFace(offset+3,offset+0);
+        
+        
+        Number gripWidth = 8;
+        Number gripHeight = 24;
+        
+        Number gripOffset = (frameHeight-24.0) / 2.0;
+        
+        meshGrips->addVertex(frameOffset+frameSize-gapSize-gripWidth, -frameTickHeight-frameTickGap-gripOffset, 0.0, 0.0, 0.0);
+        meshGrips->addVertex(frameOffset+frameSize-gapSize-gripWidth, -frameTickHeight-frameTickGap-gripHeight-gripOffset, 0.0, 0.0, 1.0);
+        meshGrips->addVertex(frameOffset+frameSize-gapSize, -frameTickHeight-frameTickGap-gripHeight-gripOffset, 0.0, 1.0, 1.0);
+        meshGrips->addVertex(frameOffset+frameSize-gapSize, -frameTickHeight-frameTickGap-gripOffset, 0.0, 1.0, 0.0);
+        
+        meshGrips->addIndexedFace(offset+0,offset+1);
+        meshGrips->addIndexedFace(offset+1,offset+2);
+        meshGrips->addIndexedFace(offset+2,offset+3);
+        meshGrips->addIndexedFace(offset+3,offset+0);
+        
+        offset += 4;
+        
+    }
+    
+    mesh->dirtyArrays();
+    meshBg->dirtyArrays();
+    meshTicks->dirtyArrays();
+}
+
+void SpriteStateEditBar::Update() {
+    refreshBar();
+}
+
+void SpriteStateEditBar::Resize(Number width, Number height) {
+    UIElement::Resize(width, height);
+    refreshBar();
+}
+
+SpriteStateEditBar::SpriteStateEditBar(SpriteSet *spriteSet) : UIElement() {
+    
+    this->spriteSet = spriteSet;
+    sceneSprite = NULL;
+    spriteState = NULL;
+    
+    barMeshBg = new SceneMesh(Mesh::QUAD_MESH);
+    addChild(barMeshBg);
+    barMeshBg->loadTexture("spriteEditor/sprite_frame_bg.png");
+    
+    barMesh = new SceneMesh(Mesh::QUAD_MESH);
+    addChild(barMesh);
+    barMesh->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    
+    frameTicksMesh = new SceneMesh(Mesh::QUAD_MESH);
+    addChild(frameTicksMesh);
+    
+    frameGripsMesh = new SceneMesh(Mesh::QUAD_MESH);
+    addChild(frameGripsMesh);
+    frameGripsMesh->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    frameGripsMesh->loadTexture("spriteEditor/frame_grip.png");
+}
+
+SpriteStateEditBar::~SpriteStateEditBar() {
+    
+}
+
+SpriteStateEditor::SpriteStateEditor(SpriteSet *spriteSet) : UIElement() {
+    this->spriteSet = spriteSet;
+    
+	headerBg = new UIRect(10,10);
+	addChild(headerBg);
+	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
+	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
+    
+    stateSizer = new UIHSizer(10, 10, 200, true);
+    addChild(stateSizer);
+    stateSizer->setPosition(0, 30.0);
+    
+    stateTreeView = new UITreeContainer("boxIcon.png", "States", 10, 10);
+    stateSizer->addLeftChild(stateTreeView);
+    stateTreeView->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
+    stateTreeView->getRootNode()->toggleCollapsed();
+    
+    stateDetails = new SpriteStateEditorDetails(spriteSet);
+    stateSizer->addRightChild(stateDetails);
+    
+    newStateButton = new UIButton("New State", 100.0);
+    addChild(newStateButton);
+    newStateButton->setPosition(3.0, 3.0);
+    newStateButton->addEventListener(this, UIEvent::CLICK_EVENT);
+    
+    selectedState = NULL;
+    
+    visible = false;
+    enabled = false;
+}
+
+SpriteState *SpriteStateEditor::getSelectedState() {
+    return selectedState;
+}
+
+SpriteStateEditorDetails *SpriteStateEditor::getDetailsEditor() {
+    return stateDetails;
+}
+
+void SpriteStateEditor::setSpriteEntry(Sprite *entry) {
+    
+    visible = true;
+    enabled = true;
+
+    spriteSetEntry = entry;
+    refreshStates();
+}
+
+void SpriteStateEditor::handleEvent(Event *event) {
+    if(event->getDispatcher() == newStateButton) {
+        
+        String newStateName = "New State";
+        if(spriteSetEntry->getNumStates() == 0) {
+            newStateName = "default";
+        }
+        
+        SpriteState *newState = new SpriteState(spriteSet, newStateName);
+        spriteSetEntry->addSpriteState(newState);
+        
+        refreshStates();
+        
+    } else if(event->getDispatcher() == stateTreeView->getRootNode()) {
+        selectedState = (SpriteState*) stateTreeView->getRootNode()->getSelectedNode()->getUserData();
+        if(selectedState) {
+            stateDetails->setSpriteState(selectedState);
+            dispatchEvent(new Event(), Event::CHANGE_EVENT);
+        }
+        
+    }
+}
+
+void SpriteStateEditor::refreshStates() {
+    stateTreeView->getRootNode()->clearTree();
+    
+    for(int i=0; i < spriteSetEntry->getNumStates(); i++) {
+        SpriteState *state = spriteSetEntry->getState(i);
+        stateTreeView->getRootNode()->addTreeChild("file.png", state->getName(), (void*) state);
+    }
+}
+
+SpriteStateEditor::~SpriteStateEditor() {
+    
+}
+
+void SpriteStateEditor::Resize(Number width, Number height) {
+    headerBg->Resize(width, 30.0);
+    stateSizer->Resize(width, height-30);
+}
+
+SpritePreview::SpritePreview(SpriteSet *spriteSet) : UIElement() {
+    sprite = new SceneSpriteRewrite(spriteSet);
+    addChild(sprite);
+    sprite->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+}
+
+SceneSpriteRewrite *SpritePreview::getSceneSprite() {
+    return sprite;
+}
+
+SpritePreview::~SpritePreview() {
+    
+}
+
+void SpritePreview::Resize(Number width, Number height) {
+    sprite->setPosition( (width-sprite->getWidth())/ 2.0, (height-sprite->getHeight())/ 2.0);
 }
 
 PolycodeSpriteEditor::PolycodeSpriteEditor() : PolycodeEditor(true){
@@ -361,7 +1139,10 @@ PolycodeSpriteEditor::PolycodeSpriteEditor() : PolycodeEditor(true){
     topSizer = new UIHSizer(100, 100, 400, false);
     mainSizer->addTopChild(topSizer);
     
-    sprite = new SceneSpriteRewrite("default.png");
+    bottomSizer = new UIHSizer(100, 100, 200, true);
+    mainSizer->addBottomChild(bottomSizer);
+    
+    sprite = new SpriteSet("default.png");
     
     SpriteFrame frame;
     frame.coordinates = Polycode::Rectangle(0.1, 0.4, 0.41, 0.2);
@@ -372,13 +1153,40 @@ PolycodeSpriteEditor::PolycodeSpriteEditor() : PolycodeEditor(true){
     
     spriteSheetEditor = new SpriteSheetEditor(sprite);
     topSizer->addLeftChild(spriteSheetEditor);
+    
+    spriteBrowser = new SpriteBrowser(sprite);
+    bottomSizer->addLeftChild(spriteBrowser);
+    spriteBrowser->addEventListener(this, Event::CHANGE_EVENT);
+    
+    stateEditor = new SpriteStateEditor(sprite);
+    bottomSizer->addRightChild(stateEditor);
+    
+    addFramesButton = stateEditor->getDetailsEditor()->getAppendFramesButton();
+    addFramesButton->addEventListener(this, UIEvent::CLICK_EVENT);
+    
+    spritePreview = new SpritePreview(sprite);
+    topSizer->addRightChild(spritePreview);
+    
+    stateEditor->getDetailsEditor()->setSceneSprite(spritePreview->getSceneSprite());
+    
+    stateEditor->addEventListener(this, Event::CHANGE_EVENT);
+    
 }
 
 void PolycodeSpriteEditor::handleEvent(Event *event) {
-
+    if(event->getDispatcher() == spriteBrowser) {
+        stateEditor->setSpriteEntry(spriteBrowser->getSelectedSpriteEntry());
+        spritePreview->getSceneSprite()->setSprite(spriteBrowser->getSelectedSpriteEntry());
+    } else if(event->getDispatcher() == addFramesButton) {
+        SpriteState *spriteState = stateEditor->getDetailsEditor()->getSpriteState();
+        spriteState->appendFrames(spriteSheetEditor->getSelectedFrameIDs());
+        stateEditor->getDetailsEditor()->refreshState();
+    } else if(event->getDispatcher() == stateEditor) {
+        spritePreview->getSceneSprite()->setSpriteState(stateEditor->getSelectedState());
+    }
 }
 
-PolycodeSpriteEditor::~PolycodeSpriteEditor() {	
+PolycodeSpriteEditor::~PolycodeSpriteEditor() {
 
 }
 
