@@ -123,7 +123,7 @@ void SpriteState::removeFrameByIndex(unsigned int index) {
     if(index < frameIDs.size()) {
         frameIDs.erase(frameIDs.begin()+index);
     }
-    rebuildStateMeshes();    
+    rebuildStateMeshes();
 }
 
 void SpriteState::removeFrameIndices(std::vector<unsigned int> indices) {
@@ -156,6 +156,11 @@ Number SpriteState::getStateFPS() {
 
 void SpriteState::setName(String name) {
     this->name = name;
+}
+
+void SpriteState::setNewFrameIDs(std::vector<unsigned int> newIDs) {
+    frameIDs = newIDs;
+    rebuildStateMeshes();
 }
 
 Mesh *SpriteState::getMeshForFrameIndex(unsigned int index) {
@@ -1193,6 +1198,8 @@ SpriteStateEditBar::SpriteStateEditBar(SpriteSet *spriteSet) : UIElement() {
     sceneSprite = NULL;
     spriteState = NULL;
     
+    draggingFrames = false;
+    
     barBase = new UIElement();
     
     barMeshBg = new SceneMesh(Mesh::QUAD_MESH);
@@ -1215,6 +1222,8 @@ SpriteStateEditBar::SpriteStateEditBar(SpriteSet *spriteSet) : UIElement() {
     this->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_UP);
     this->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_DOWN);
     this->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+    this->addEventListener(this, InputEvent::EVENT_MOUSEUP);
+    this->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
     
     Services()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
     
@@ -1240,15 +1249,48 @@ void SpriteStateEditBar::handleEvent(Event *event) {
                 }
             break;
             case InputEvent::EVENT_MOUSEDOWN:
+                
+                clickBaseCoord = Services()->getCore()->getInput()->getMousePosition();
+                focusSelf();
+                frameMoveBase = Services()->getCore()->getInput()->getMousePosition();
+                
                 if(inputEvent->getMousePosition().y < getHeight()-scroller->getHScrollBar()->getHeight()) {
                     unsigned int selectedFrameIndex = (inputEvent->getMousePosition().x - barBase->getPosition().x)/ defaultFrameWidth / zoomScale;
-                    if(!Services()->getCore()->getInput()->getKeyState(KEY_LSHIFT) &&
-                       !Services()->getCore()->getInput()->getKeyState(KEY_LSHIFT)) {
-                        selectedFrames.clear();
+                    
+                    if(!isFrameSelected(selectedFrameIndex)) {
+                        if(!Services()->getCore()->getInput()->getKeyState(KEY_LSHIFT) &&
+                           !Services()->getCore()->getInput()->getKeyState(KEY_LSHIFT)) {
+                            selectedFrames.clear();
+                        }
+                        selectedFrames.push_back(selectedFrameIndex);
+                        std::sort(selectedFrames.begin(), selectedFrames.end());
                     }
-                    selectedFrames.push_back(selectedFrameIndex);
                 }
-                focusSelf();
+                
+            break;
+            case InputEvent::EVENT_MOUSEMOVE:
+                if(Services()->getCore()->getInput()->getMousePosition().distance(clickBaseCoord) > 4.0 && Services()->getCore()->getInput()->getMouseButtonState(CoreInput::MOUSE_BUTTON1)) {
+                    
+                    draggingFrames = true;
+                    
+                    Number distance = Services()->getCore()->getInput()->getMousePosition().x - frameMoveBase.x;
+                    
+                    if(fabs(distance) > defaultFrameWidth * zoomScale) {
+                        if(distance > 0.0) {
+                            moveSelectedRight();
+                        } else {
+                            moveSelectedLeft();
+                        }
+                        frameMoveBase =  Services()->getCore()->getInput()->getMousePosition();
+                    }
+                    
+                } else {
+                    draggingFrames = false;
+                }
+            break;
+            case InputEvent::EVENT_MOUSEUP:
+
+                draggingFrames = false;
             break;
         }
     } else if(event->getDispatcher() == Services()->getCore()->getInput()) {
@@ -1265,6 +1307,73 @@ void SpriteStateEditBar::handleEvent(Event *event) {
             }
         }
     }
+}
+
+void swapElements(const std::vector<unsigned int>& indexes, std::vector<unsigned int>& array){
+    for(int j=0; j < indexes.size(); j++){
+        unsigned int i = indexes[j];
+        if (i < 1 || i >= array.size()){
+            continue;
+        }
+        std::swap(array[i-1], array[i]);
+    }
+}
+
+void swapElementsRight(const std::vector<unsigned int>& indexes, std::vector<unsigned int>& array){
+    for(int j=indexes.size()-1; j >= 0; j--){
+        unsigned int i = indexes[j];
+        if (i > array.size() - 2){
+            continue;
+        }
+        std::swap(array[i+1], array[i]);
+    }
+}
+
+void SpriteStateEditBar::moveSelectedLeft() {
+
+    if(spriteState->getNumFrameIDs() < 2) {
+        return;
+    }
+    
+    std::vector<unsigned int> newIDS;
+    
+    for(int i=0; i < spriteState->getNumFrameIDs(); i++) {
+        unsigned int frameID = spriteState->getFrameIDAtIndex(i);
+        newIDS.push_back(frameID);
+    }
+    
+    swapElements(selectedFrames, newIDS);
+    
+    for(int i=0; i < selectedFrames.size(); i++) {
+        if(selectedFrames[i] > 0) {
+            selectedFrames[i]--;
+        }
+    }
+    
+    spriteState->setNewFrameIDs(newIDS);
+}
+
+void SpriteStateEditBar::moveSelectedRight() {
+    if(spriteState->getNumFrameIDs() < 2) {
+        return;
+    }
+    
+    std::vector<unsigned int> newIDS;
+    
+    for(int i=0; i < spriteState->getNumFrameIDs(); i++) {
+        unsigned int frameID = spriteState->getFrameIDAtIndex(i);
+        newIDS.push_back(frameID);
+    }
+    
+    swapElementsRight(selectedFrames, newIDS);
+    
+    for(int i=0; i < selectedFrames.size(); i++) {
+        if(selectedFrames[i] < spriteState->getNumFrameIDs()-1) {
+            selectedFrames[i]++;
+        }
+    }
+    
+    spriteState->setNewFrameIDs(newIDS);
 }
 
 void SpriteStateEditBar::deleteSelectedFrames() {

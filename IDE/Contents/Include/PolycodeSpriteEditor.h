@@ -51,6 +51,8 @@ class SpriteState {
     
         Mesh *getMeshForFrameIndex(unsigned int index);
     
+        void setNewFrameIDs(std::vector<unsigned int> newIDs);
+    
         void removeFrameByIndex(unsigned int frameIndex);
         void removeFrameIndices(std::vector<unsigned int> indices);
     
@@ -257,6 +259,9 @@ class SpriteStateEditBar : public UIElement {
     
         void handleEvent(Event *event);
     
+        void moveSelectedLeft();
+        void moveSelectedRight();
+    
         bool isFrameSelected(unsigned int frameID);
         void deleteSelectedFrames();
     
@@ -266,6 +271,11 @@ class SpriteStateEditBar : public UIElement {
         void setSpriteState(SpriteState *state);
     
     protected:
+    
+        Vector2 clickBaseCoord;
+        Vector2 frameMoveBase;
+    
+        bool draggingFrames;
     
         Number zoomScale;
         SpriteState *spriteState;
