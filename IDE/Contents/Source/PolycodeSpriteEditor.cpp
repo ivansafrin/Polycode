@@ -119,6 +119,33 @@ SpriteState::SpriteState(SpriteSet *spriteSet, String name) {
     stateFPS = 60.0;
 }
 
+void SpriteState::removeFrameByIndex(unsigned int index) {
+    if(index < frameIDs.size()) {
+        frameIDs.erase(frameIDs.begin()+index);
+    }
+    rebuildStateMeshes();    
+}
+
+void SpriteState::removeFrameIndices(std::vector<unsigned int> indices) {
+    std::vector<unsigned int> newFrames;
+    
+    for(int i=0; i < frameIDs.size(); i++) {
+        bool hasIndex = false;
+        for(int j=0; j < indices.size(); j++) {
+            if(indices[j] == i) {
+                hasIndex = true;
+                break;
+            }
+        }
+        if(!hasIndex) {
+            newFrames.push_back(frameIDs[i]);
+        }
+    }
+    
+    frameIDs = newFrames;
+    rebuildStateMeshes();
+}
+
 void SpriteState::setStateFPS(Number fps) {
     stateFPS = fps;
 }
@@ -700,7 +727,9 @@ void SpriteSheetEditor::handleEvent(Event *event) {
                         transforedCoords.h = frame.coordinates.h * zoomScale  * previewImage->getHeight();
 
                         if(mouseCoord.x >= transforedCoords.x && mouseCoord.x <= transforedCoords.x + transforedCoords.w && mouseCoord.y >= transforedCoords.y && mouseCoord.y <= transforedCoords.y + transforedCoords.h) {
-                            selectedIDs.push_back(frame.frameID);
+                            if(!hasSelectedID(frame.frameID)) {
+                                selectedIDs.push_back(frame.frameID);
+                            }
                             break;
                         }
                     }
@@ -1012,7 +1041,8 @@ void SpriteStateEditBar::refreshBar() {
     Mesh *meshBg = barMeshBg->getMesh();
     meshBg->clearMesh();
     meshBg->indexedMesh = true;
-
+    meshBg->useVertexColors = true;
+    
     Mesh *meshTicks = frameTicksMesh->getMesh();
     meshTicks->clearMesh();
     meshTicks->indexedMesh = true;
@@ -1022,6 +1052,8 @@ void SpriteStateEditBar::refreshBar() {
     meshGrips->clearMesh();
     meshGrips->indexedMesh = true;
     
+    Number frameOffset;
+    Number frameSize;
     
     unsigned int offset = 0;
     for(int i=0; i < spriteState->getNumFrameIDs(); i++) {
@@ -1031,17 +1063,17 @@ void SpriteStateEditBar::refreshBar() {
         
         Number gapSize = 1.0;
         
-        Number frameTickHeight = 20.0;
+        Number frameTickHeight = 10.0;
         Number frameTickGap = 2.0;
         
-        Number frameSize = 50.0;
-        Number frameHeight = getHeight()-frameTickHeight-frameTickGap;
+        frameSize = defaultFrameWidth * zoomScale;
+        Number frameHeight = getHeight()-frameTickHeight-frameTickGap-scroller->getHScrollBar()->getHeight();
         
-        if(frameHeight < frameSize) {
-            frameHeight = frameSize;
+        if(frameHeight < 32.0) {
+            frameHeight = 32.0;
         }
         
-        Number frameOffset = ((Number)i) * frameSize;
+        frameOffset = ((Number)i) * frameSize;
         
         // draw frame ticks
         
@@ -1073,7 +1105,12 @@ void SpriteStateEditBar::refreshBar() {
         Number iconFrameWidth = frameSize * 0.5;
         Number iconFrameHeight = iconFrameWidth * aspectRatio;
         
-        Number iconOffset = 5.0;
+        if(iconFrameHeight > frameHeight * 0.8) {
+            iconFrameHeight = frameHeight * 0.8;
+            iconFrameWidth = iconFrameHeight / aspectRatio;
+        }
+        
+        Number iconOffset = 2.0;
         
         mesh->addVertex(frameOffset+iconOffset, -frameTickHeight-frameTickGap-iconOffset, 0.0, frame.coordinates.x, 1.0-frame.coordinates.y);
         mesh->addVertex(frameOffset+iconOffset, -frameTickHeight-frameTickGap-iconFrameHeight-iconOffset, 0.0, frame.coordinates.x, 1.0-frame.coordinates.y  - frame.coordinates.h);
@@ -1087,10 +1124,16 @@ void SpriteStateEditBar::refreshBar() {
         
         // draw frame backgrounds
         
-        meshBg->addVertex(frameOffset, -frameTickHeight-frameTickGap, 0.0, 0.0, 0.0);
-        meshBg->addVertex(frameOffset, -frameTickHeight-frameTickGap-frameHeight, 0.0, 0.0, 1.0);
-        meshBg->addVertex(frameOffset+frameSize-gapSize, -frameTickHeight-frameTickGap-frameHeight, 0.0, 1.0, 1.0);
-        meshBg->addVertex(frameOffset+frameSize-gapSize, -frameTickHeight-frameTickGap, 0.0, 1.0, 0.0);
+        Color bgFrameColor = Color(1.0, 1.0, 1.0, 1.0);
+        
+        if(isFrameSelected(i)) {
+            bgFrameColor = Color(1.0, 0.5, 0.5, 1.0);
+        }
+        
+        meshBg->addVertex(frameOffset, -frameTickHeight-frameTickGap, 0.0, 0.0, 0.0)->vertexColor = bgFrameColor;
+        meshBg->addVertex(frameOffset, -frameTickHeight-frameTickGap-frameHeight, 0.0, 0.0, 1.0)->vertexColor = bgFrameColor;
+        meshBg->addVertex(frameOffset+frameSize-gapSize, -frameTickHeight-frameTickGap-frameHeight, 0.0, 1.0, 1.0)->vertexColor = bgFrameColor;
+        meshBg->addVertex(frameOffset+frameSize-gapSize, -frameTickHeight-frameTickGap, 0.0, 1.0, 0.0)->vertexColor = bgFrameColor;
 
         
         meshBg->addIndexedFace(offset+0,offset+1);
@@ -1121,6 +1164,17 @@ void SpriteStateEditBar::refreshBar() {
     mesh->dirtyArrays();
     meshBg->dirtyArrays();
     meshTicks->dirtyArrays();
+    
+    scroller->setContentSize(frameOffset+frameSize, getHeight());
+}
+
+bool SpriteStateEditBar::isFrameSelected(unsigned int frameIndex) {
+    for(int i=0; i < selectedFrames.size(); i++) {
+        if(selectedFrames[i] == frameIndex) {
+            return true;
+        }
+    }
+    return false;
 }
 
 void SpriteStateEditBar::Update() {
@@ -1129,6 +1183,7 @@ void SpriteStateEditBar::Update() {
 
 void SpriteStateEditBar::Resize(Number width, Number height) {
     UIElement::Resize(width, height);
+    scroller->Resize(width, height);
     refreshBar();
 }
 
@@ -1138,21 +1193,86 @@ SpriteStateEditBar::SpriteStateEditBar(SpriteSet *spriteSet) : UIElement() {
     sceneSprite = NULL;
     spriteState = NULL;
     
+    barBase = new UIElement();
+    
     barMeshBg = new SceneMesh(Mesh::QUAD_MESH);
-    addChild(barMeshBg);
+    barBase->addChild(barMeshBg);
     barMeshBg->loadTexture("spriteEditor/sprite_frame_bg.png");
+    barMeshBg->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
     
     barMesh = new SceneMesh(Mesh::QUAD_MESH);
-    addChild(barMesh);
+    barBase->addChild(barMesh);
     barMesh->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
     
     frameTicksMesh = new SceneMesh(Mesh::QUAD_MESH);
-    addChild(frameTicksMesh);
+    barBase->addChild(frameTicksMesh);
     
     frameGripsMesh = new SceneMesh(Mesh::QUAD_MESH);
-    addChild(frameGripsMesh);
+    barBase->addChild(frameGripsMesh);
     frameGripsMesh->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
     frameGripsMesh->loadTexture("spriteEditor/frame_grip.png");
+    
+    this->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_UP);
+    this->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_DOWN);
+    this->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+    
+    Services()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
+    
+    zoomScale = 1.0;
+    defaultFrameWidth = 50.0;
+    
+    scroller = new UIScrollContainer(barBase, true, false, 10, 10);
+    addChild(scroller);
+}
+
+void SpriteStateEditBar::handleEvent(Event *event) {
+    if(event->getDispatcher() == this) {
+        InputEvent *inputEvent = (InputEvent*) event;
+        
+        switch(event->getEventCode()) {
+            case InputEvent::EVENT_MOUSEWHEEL_UP:
+                zoomScale *= 1.02;
+            break;
+            case InputEvent::EVENT_MOUSEWHEEL_DOWN:
+                zoomScale *= 0.98;
+                if(zoomScale < 0.25) {
+                    zoomScale = 0.25;
+                }
+            break;
+            case InputEvent::EVENT_MOUSEDOWN:
+                if(inputEvent->getMousePosition().y < getHeight()-scroller->getHScrollBar()->getHeight()) {
+                    unsigned int selectedFrameIndex = (inputEvent->getMousePosition().x - barBase->getPosition().x)/ defaultFrameWidth / zoomScale;
+                    if(!Services()->getCore()->getInput()->getKeyState(KEY_LSHIFT) &&
+                       !Services()->getCore()->getInput()->getKeyState(KEY_LSHIFT)) {
+                        selectedFrames.clear();
+                    }
+                    selectedFrames.push_back(selectedFrameIndex);
+                }
+                focusSelf();
+            break;
+        }
+    } else if(event->getDispatcher() == Services()->getCore()->getInput()) {
+        InputEvent *inputEvent = (InputEvent*) event;
+        
+        if(event->getEventCode() == InputEvent::EVENT_KEYDOWN) {
+            switch(inputEvent->getKey()) {
+                case Polycode::KEY_DELETE:
+                case Polycode::KEY_BACKSPACE:
+                    if(hasFocus) {
+                        deleteSelectedFrames();
+                    }
+                break;
+            }
+        }
+    }
+}
+
+void SpriteStateEditBar::deleteSelectedFrames() {
+    if(!spriteState) {
+        return;
+    }
+    spriteState->removeFrameIndices(selectedFrames);
+    selectedFrames.clear();
 }
 
 SpriteStateEditBar::~SpriteStateEditBar() {

@@ -51,6 +51,9 @@ class SpriteState {
     
         Mesh *getMeshForFrameIndex(unsigned int index);
     
+        void removeFrameByIndex(unsigned int frameIndex);
+        void removeFrameIndices(std::vector<unsigned int> indices);
+    
         void rebuildStateMeshes();
     
         void setStateFPS(Number fps);
@@ -252,22 +255,34 @@ class SpriteStateEditBar : public UIElement {
         void clearBar();
         void refreshBar();
     
+        void handleEvent(Event *event);
+    
+        bool isFrameSelected(unsigned int frameID);
+        void deleteSelectedFrames();
+    
         void Update();
     
         void setSceneSprite(SceneSpriteRewrite *sprite);
-
         void setSpriteState(SpriteState *state);
     
     protected:
     
+        Number zoomScale;
         SpriteState *spriteState;
         SpriteSet *spriteSet;
         SceneSpriteRewrite *sceneSprite;
+    
+        Number defaultFrameWidth;
     
         SceneMesh *barMesh;
         SceneMesh *barMeshBg;
         SceneMesh *frameTicksMesh;
         SceneMesh *frameGripsMesh;
+    
+        UIElement *barBase;
+        UIScrollContainer *scroller;
+    
+        std::vector<unsigned int> selectedFrames;
 };
 
 
