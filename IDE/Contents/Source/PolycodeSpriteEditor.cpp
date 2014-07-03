@@ -163,6 +163,13 @@ void SpriteState::setNewFrameIDs(std::vector<unsigned int> newIDs) {
     rebuildStateMeshes();
 }
 
+void SpriteState::insertFrame(unsigned int index, unsigned int frameID) {
+    if(index < frameIDs.size()) {
+        frameIDs.insert(frameIDs.begin()+index, frameID);
+    }
+    rebuildStateMeshes();
+}
+
 Mesh *SpriteState::getMeshForFrameIndex(unsigned int index) {
     if(index < frameMeshes.size()) {
         return frameMeshes[index];
@@ -1061,18 +1068,38 @@ void SpriteStateEditBar::refreshBar() {
     Number frameSize;
     
     unsigned int offset = 0;
+    unsigned int offsetIcon = 0;
+    unsigned int offsetGrip = 0;
+    
     for(int i=0; i < spriteState->getNumFrameIDs(); i++) {
         unsigned int frameID = spriteState->getFrameIDAtIndex(i);
      
         SpriteFrame frame = spriteSet->getSpriteFrameByID(frameID);
+        
         
         Number gapSize = 1.0;
         
         Number frameTickHeight = 10.0;
         Number frameTickGap = 2.0;
         
+        bool drawGrip = true;
+        bool drawIcon = true;
+        
         frameSize = defaultFrameWidth * zoomScale;
         Number frameHeight = getHeight()-frameTickHeight-frameTickGap-scroller->getHScrollBar()->getHeight();
+        
+        if(i < spriteState->getNumFrameIDs()-1) {
+            if(spriteState->getFrameIDAtIndex(i+1) == frameID) {
+                gapSize = 0.0;
+                drawGrip = false;
+            }
+        }
+        
+        if(i > 0) {
+            if(spriteState->getFrameIDAtIndex(i-1) == frameID) {
+                drawIcon = false;
+            }
+        }
         
         if(frameHeight < 32.0) {
             frameHeight = 32.0;
@@ -1117,15 +1144,20 @@ void SpriteStateEditBar::refreshBar() {
         
         Number iconOffset = 2.0;
         
-        mesh->addVertex(frameOffset+iconOffset, -frameTickHeight-frameTickGap-iconOffset, 0.0, frame.coordinates.x, 1.0-frame.coordinates.y);
-        mesh->addVertex(frameOffset+iconOffset, -frameTickHeight-frameTickGap-iconFrameHeight-iconOffset, 0.0, frame.coordinates.x, 1.0-frame.coordinates.y  - frame.coordinates.h);
-        mesh->addVertex(frameOffset+iconFrameWidth+iconOffset, -frameTickHeight-frameTickGap-iconFrameHeight-iconOffset, 0.0, frame.coordinates.x+frame.coordinates.w, 1.0- frame.coordinates.y  - frame.coordinates.h);
-        mesh->addVertex(frameOffset+iconFrameWidth+iconOffset, -frameTickHeight-frameTickGap-iconOffset, 0.0, frame.coordinates.x+frame.coordinates.w, 1.0-frame.coordinates.y);
+        if(drawIcon) {
         
-        mesh->addIndexedFace(offset+0,offset+1);
-        mesh->addIndexedFace(offset+1,offset+2);
-        mesh->addIndexedFace(offset+2,offset+3);
-        mesh->addIndexedFace(offset+3,offset+0);
+            mesh->addVertex(frameOffset+iconOffset, -frameTickHeight-frameTickGap-iconOffset, 0.0, frame.coordinates.x, 1.0-frame.coordinates.y);
+            mesh->addVertex(frameOffset+iconOffset, -frameTickHeight-frameTickGap-iconFrameHeight-iconOffset, 0.0, frame.coordinates.x, 1.0-frame.coordinates.y  - frame.coordinates.h);
+            mesh->addVertex(frameOffset+iconFrameWidth+iconOffset, -frameTickHeight-frameTickGap-iconFrameHeight-iconOffset, 0.0, frame.coordinates.x+frame.coordinates.w, 1.0- frame.coordinates.y  - frame.coordinates.h);
+            mesh->addVertex(frameOffset+iconFrameWidth+iconOffset, -frameTickHeight-frameTickGap-iconOffset, 0.0, frame.coordinates.x+frame.coordinates.w, 1.0-frame.coordinates.y);
+            
+            mesh->addIndexedFace(offsetIcon+0,offsetIcon+1);
+            mesh->addIndexedFace(offsetIcon+1,offsetIcon+2);
+            mesh->addIndexedFace(offsetIcon+2,offsetIcon+3);
+            mesh->addIndexedFace(offsetIcon+3,offsetIcon+0);
+            
+            offsetIcon += 4;
+        }
         
         // draw frame backgrounds
         
@@ -1152,15 +1184,19 @@ void SpriteStateEditBar::refreshBar() {
         
         Number gripOffset = (frameHeight-24.0) / 2.0;
         
-        meshGrips->addVertex(frameOffset+frameSize-gapSize-gripWidth, -frameTickHeight-frameTickGap-gripOffset, 0.0, 0.0, 0.0);
-        meshGrips->addVertex(frameOffset+frameSize-gapSize-gripWidth, -frameTickHeight-frameTickGap-gripHeight-gripOffset, 0.0, 0.0, 1.0);
-        meshGrips->addVertex(frameOffset+frameSize-gapSize, -frameTickHeight-frameTickGap-gripHeight-gripOffset, 0.0, 1.0, 1.0);
-        meshGrips->addVertex(frameOffset+frameSize-gapSize, -frameTickHeight-frameTickGap-gripOffset, 0.0, 1.0, 0.0);
-        
-        meshGrips->addIndexedFace(offset+0,offset+1);
-        meshGrips->addIndexedFace(offset+1,offset+2);
-        meshGrips->addIndexedFace(offset+2,offset+3);
-        meshGrips->addIndexedFace(offset+3,offset+0);
+        if(drawGrip) {
+            meshGrips->addVertex(frameOffset+frameSize-gapSize-gripWidth, -frameTickHeight-frameTickGap-gripOffset, 0.0, 0.0, 0.0);
+            meshGrips->addVertex(frameOffset+frameSize-gapSize-gripWidth, -frameTickHeight-frameTickGap-gripHeight-gripOffset, 0.0, 0.0, 1.0);
+            meshGrips->addVertex(frameOffset+frameSize-gapSize, -frameTickHeight-frameTickGap-gripHeight-gripOffset, 0.0, 1.0, 1.0);
+            meshGrips->addVertex(frameOffset+frameSize-gapSize, -frameTickHeight-frameTickGap-gripOffset, 0.0, 1.0, 0.0);
+            
+            meshGrips->addIndexedFace(offsetGrip+0,offsetGrip+1);
+            meshGrips->addIndexedFace(offsetGrip+1,offsetGrip+2);
+            meshGrips->addIndexedFace(offsetGrip+2,offsetGrip+3);
+            meshGrips->addIndexedFace(offsetGrip+3,offsetGrip+0);
+            
+            offsetGrip += 4;
+        }
         
         offset += 4;
         
@@ -1199,6 +1235,7 @@ SpriteStateEditBar::SpriteStateEditBar(SpriteSet *spriteSet) : UIElement() {
     spriteState = NULL;
     
     draggingFrames = false;
+    extendingFrame = false;
     
     barBase = new UIElement();
     
@@ -1224,6 +1261,7 @@ SpriteStateEditBar::SpriteStateEditBar(SpriteSet *spriteSet) : UIElement() {
     this->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
     this->addEventListener(this, InputEvent::EVENT_MOUSEUP);
     this->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
+    this->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);
     
     Services()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
     
@@ -1249,47 +1287,121 @@ void SpriteStateEditBar::handleEvent(Event *event) {
                 }
             break;
             case InputEvent::EVENT_MOUSEDOWN:
-                
+            {
                 clickBaseCoord = Services()->getCore()->getInput()->getMousePosition();
                 focusSelf();
                 frameMoveBase = Services()->getCore()->getInput()->getMousePosition();
                 
-                if(inputEvent->getMousePosition().y < getHeight()-scroller->getHScrollBar()->getHeight()) {
-                    unsigned int selectedFrameIndex = (inputEvent->getMousePosition().x - barBase->getPosition().x)/ defaultFrameWidth / zoomScale;
-                    
-                    if(!isFrameSelected(selectedFrameIndex)) {
-                        if(!Services()->getCore()->getInput()->getKeyState(KEY_LSHIFT) &&
-                           !Services()->getCore()->getInput()->getKeyState(KEY_LSHIFT)) {
-                            selectedFrames.clear();
-                        }
-                        selectedFrames.push_back(selectedFrameIndex);
-                        std::sort(selectedFrames.begin(), selectedFrames.end());
+                
+                Number offsetInFrame = fmod(inputEvent->getMousePosition().x - barBase->getPosition().x, defaultFrameWidth * zoomScale);
+                
+                
+                extendingIndex = (inputEvent->getMousePosition().x - barBase->getPosition().x)/ defaultFrameWidth / zoomScale;
+                extendingID = spriteState->getFrameIDAtIndex(extendingIndex);
+                
+                bool willBeExtendingFrame = true;
+                
+                if(extendingIndex < spriteState->getNumFrameIDs()-1) {
+                    if(spriteState->getFrameIDAtIndex(extendingIndex+1) == extendingID) {
+                        willBeExtendingFrame = false;
                     }
                 }
                 
+                
+                if((defaultFrameWidth * zoomScale) - offsetInFrame < 20.0 && willBeExtendingFrame) {
+                    
+                    extendingFrame = true;
+                    
+                    while(spriteState->getFrameIDAtIndex(extendingIndex-1) == extendingID && extendingID > 1) {
+                        extendingIndex--;
+                    }
+                    
+                    selectedFrames.clear();
+                } else {
+                    if(inputEvent->getMousePosition().y < getHeight()-scroller->getHScrollBar()->getHeight()) {
+                        unsigned int selectedFrameIndex = (inputEvent->getMousePosition().x - barBase->getPosition().x)/ defaultFrameWidth / zoomScale;
+                        
+                        if(!isFrameSelected(selectedFrameIndex)) {
+                            if(!Services()->getCore()->getInput()->getKeyState(KEY_LSHIFT) &&
+                               !Services()->getCore()->getInput()->getKeyState(KEY_LSHIFT)) {
+                                selectedFrames.clear();
+                            }
+                            doSelectFrame(selectedFrameIndex);
+                        }
+                    }
+                }
+
+            }
             break;
             case InputEvent::EVENT_MOUSEMOVE:
-                if(Services()->getCore()->getInput()->getMousePosition().distance(clickBaseCoord) > 4.0 && Services()->getCore()->getInput()->getMouseButtonState(CoreInput::MOUSE_BUTTON1)) {
-                    
-                    draggingFrames = true;
-                    
+                
+                if(extendingFrame) {
                     Number distance = Services()->getCore()->getInput()->getMousePosition().x - frameMoveBase.x;
                     
                     if(fabs(distance) > defaultFrameWidth * zoomScale) {
                         if(distance > 0.0) {
-                            moveSelectedRight();
+                            spriteState->insertFrame(extendingIndex, extendingID);
                         } else {
-                            moveSelectedLeft();
+                            if(extendingIndex < spriteState->getNumFrameIDs()-1) {
+                                if(spriteState->getFrameIDAtIndex(extendingIndex+1) == extendingID) {
+                                    spriteState->removeFrameByIndex(extendingIndex+1);
+                                }
+                            }
                         }
                         frameMoveBase =  Services()->getCore()->getInput()->getMousePosition();
                     }
-                    
                 } else {
-                    draggingFrames = false;
+                    if(Services()->getCore()->getInput()->getMousePosition().distance(clickBaseCoord) > 4.0 && Services()->getCore()->getInput()->getMouseButtonState(CoreInput::MOUSE_BUTTON1)) {
+                        
+                        draggingFrames = true;
+                        
+                        Number distance = Services()->getCore()->getInput()->getMousePosition().x - frameMoveBase.x;
+                        
+                        if(fabs(distance) > defaultFrameWidth * zoomScale) {
+                            if(distance > 0.0) {
+                                moveSelectedRight();
+                            } else {
+                                moveSelectedLeft();
+                            }
+                            frameMoveBase =  Services()->getCore()->getInput()->getMousePosition();
+                        }
+                        
+                    } else {
+                        draggingFrames = false;
+                        Number offsetInFrame = fmod(inputEvent->getMousePosition().x - barBase->getPosition().x, defaultFrameWidth * zoomScale);
+                        if((offsetInFrame / (defaultFrameWidth * zoomScale)) > 0.8) {
+                            Services()->getCore()->setCursor(Core::CURSOR_RESIZE_LEFT_RIGHT);
+                        } else {
+                            Services()->getCore()->setCursor(Core::CURSOR_ARROW);
+                        }
+                        
+                        extendingIndex = (inputEvent->getMousePosition().x - barBase->getPosition().x)/ defaultFrameWidth / zoomScale;
+                        extendingID = spriteState->getFrameIDAtIndex(extendingIndex);
+                        
+                        if(extendingIndex < spriteState->getNumFrameIDs()-1) {
+                            if(spriteState->getFrameIDAtIndex(extendingIndex+1) == extendingID) {
+                                Services()->getCore()->setCursor(Core::CURSOR_ARROW);
+                            }
+                        }
+                        
+                        
+                    }
                 }
             break;
             case InputEvent::EVENT_MOUSEUP:
-
+            case InputEvent::EVENT_MOUSEUP_OUTSIDE:
+                extendingFrame = false;
+                
+                if(Services()->getCore()->getInput()->getMousePosition().distance(clickBaseCoord) < 4.0) {
+                    if(inputEvent->getMousePosition().y < getHeight()-scroller->getHScrollBar()->getHeight()) {
+                        unsigned int selectedFrameIndex = (inputEvent->getMousePosition().x - barBase->getPosition().x)/ defaultFrameWidth / zoomScale;
+                        if(!Services()->getCore()->getInput()->getKeyState(KEY_LSHIFT) &&
+                           !Services()->getCore()->getInput()->getKeyState(KEY_LSHIFT)) {
+                            selectedFrames.clear();
+                        }
+                        doSelectFrame(selectedFrameIndex);
+                    }
+                }
                 draggingFrames = false;
             break;
         }
@@ -1307,6 +1419,30 @@ void SpriteStateEditBar::handleEvent(Event *event) {
             }
         }
     }
+}
+
+void SpriteStateEditBar::doSelectFrame(unsigned int selectedFrameIndex) {
+    unsigned int selectedFrameID = spriteState->getFrameIDAtIndex(selectedFrameIndex);
+    
+    // select back and front
+    int frameIndex = selectedFrameIndex;
+    do {
+        if(!isFrameSelected(frameIndex)) {
+            selectedFrames.push_back(frameIndex);
+        }
+        frameIndex--;
+    } while(spriteState->getFrameIDAtIndex(frameIndex) == selectedFrameID && frameIndex >= 0);
+    
+    frameIndex = selectedFrameIndex;
+    do {
+        if(!isFrameSelected(frameIndex)) {
+            selectedFrames.push_back(frameIndex);
+        }
+        frameIndex++;
+    } while(spriteState->getFrameIDAtIndex(frameIndex) == selectedFrameID && frameIndex < spriteState->getNumFrameIDs());
+    
+    
+    std::sort(selectedFrames.begin(), selectedFrames.end());
 }
 
 void swapElements(const std::vector<unsigned int>& indexes, std::vector<unsigned int>& array){
@@ -1335,6 +1471,12 @@ void SpriteStateEditBar::moveSelectedLeft() {
         return;
     }
     
+    for(int i=0; i < selectedFrames.size();i++) {
+        if(selectedFrames[i] == 0) {
+            return;
+        }
+    }
+    
     std::vector<unsigned int> newIDS;
     
     for(int i=0; i < spriteState->getNumFrameIDs(); i++) {
@@ -1356,6 +1498,12 @@ void SpriteStateEditBar::moveSelectedLeft() {
 void SpriteStateEditBar::moveSelectedRight() {
     if(spriteState->getNumFrameIDs() < 2) {
         return;
+    }
+    
+    for(int i=0; i < selectedFrames.size();i++) {
+        if(selectedFrames[i] == spriteState->getNumFrameIDs()-1) {
+            return;
+        }
     }
     
     std::vector<unsigned int> newIDS;
