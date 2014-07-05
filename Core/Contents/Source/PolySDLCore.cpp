@@ -318,8 +318,10 @@ bool SDLCore::Update() {
 		return false;
 	doSleep();	
 	
-	updateCore();
-	
+	if(!paused) {
+		updateCore();
+	}
+
 	SDL_Event event;
 	while ( SDL_PollEvent(&event) ) {
 			switch (event.type) {
@@ -417,7 +419,8 @@ void SDLCore::setCursor(int cursorType) {
 }
 
 void SDLCore::warpCursor(int x, int y) {
-	SDL_WarpMouse(x, y);
+	if(!paused)
+		SDL_WarpMouse(x, y);
 }
 
 void SDLCore::lockMutex(CoreMutex *mutex) {

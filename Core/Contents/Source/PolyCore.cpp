@@ -80,6 +80,7 @@ namespace Polycode {
 		if(frameRate == 0)
 			frameRate = 60;
 		
+		this->frameRate = frameRate;
 		refreshInterval = 1000 / frameRate;		
 		threadedEventMutex = NULL;
 	}
@@ -97,6 +98,7 @@ namespace Polycode {
     }
 	
 	void Core::setFramerate(int frameRate) {
+		this->frameRate = frameRate;
 		refreshInterval = 1000 / frameRate;
 	}
 	
@@ -167,6 +169,7 @@ namespace Polycode {
 			paused = true;
 		}
 		input->clearInput();
+		refreshInterval = 1000 / 2;
 		dispatchEvent(new Event(), EVENT_LOST_FOCUS);
 	}
 	
@@ -174,7 +177,8 @@ namespace Polycode {
 		if(pauseOnLoseFocus) {
 			paused = false;
 		}	
-		input->clearInput();		
+		input->clearInput();
+		refreshInterval = 1000 / frameRate;
 		dispatchEvent(new Event(), EVENT_GAINED_FOCUS);
 	}
 	
@@ -194,7 +198,11 @@ namespace Polycode {
 	
 	bool Core::updateAndRender() {
 		bool ret = Update();
-		Render();
+		
+		if (!paused){
+			Render();
+		}
+
 		return ret;
 	}
 							

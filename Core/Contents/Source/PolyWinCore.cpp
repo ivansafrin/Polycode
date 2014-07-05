@@ -168,13 +168,15 @@ void Win32Core::captureMouse(bool newval) {
 }
 
 void Win32Core::warpCursor(int x, int y) {
-	POINT point;
-	point.x = x;
-	point.y = y;
-	ClientToScreen(hWnd, &point);
-	SetCursorPos(point.x,point.y);
-	lastMouseX = x;
-	lastMouseY = y;
+	if(!paused){
+		POINT point;
+		point.x = x;
+		point.y = y;
+		ClientToScreen(hWnd, &point);
+		SetCursorPos(point.x,point.y);
+		lastMouseX = x;
+		lastMouseY = y;
+	}
 }
 
 unsigned int Win32Core::getTicks() {
@@ -193,10 +195,12 @@ void Win32Core::Render() {
 bool Win32Core::Update() {
 	if(!running)
 		return false;
-	doSleep();
-	checkEvents();
-	Gamepad_processEvents();
-	updateCore();
+	doSleep();	
+	if(!paused){
+		checkEvents();
+		Gamepad_processEvents();
+		updateCore();
+	}
 	return running;
 }
 
@@ -1298,4 +1302,13 @@ String Win32Core::getClipboardString() {
 	String retString = String(c);
 	GlobalUnlock(clip0);
 	return retString;
+}
+
+void Win32Core::handleFocusChange(bool newFocus){
+	if (newFocus){
+		gainFocus();
+	}
+	else {
+		loseFocus();
+	}
 }
