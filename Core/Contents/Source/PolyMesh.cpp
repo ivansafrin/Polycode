@@ -41,13 +41,13 @@ Mesh::Mesh(const String& fileName) {
 
     indexedMesh = false;
     meshType = TRI_MESH;
+	hasPhysicsInfo = false;
+	physicsInfo = NULL;
     meshHasVertexBuffer = false;
     loadMesh(fileName);
     vertexBuffer = NULL;			
     useVertexColors = false;
     useFaceNormals = false;
-	physicsInfo = NULL;
-	hasPhysicsInfo = false;
 }
 
 Mesh::Mesh(int meshType) {
@@ -58,11 +58,11 @@ Mesh::Mesh(int meshType) {
     this->meshType = meshType;
     meshHasVertexBuffer = false;		
     vertexBuffer = NULL;
+	hasPhysicsInfo = false;
+	physicsInfo = NULL;
     useVertexColors = false;
     indexedMesh = false;
     useFaceNormals = false;
-	physicsInfo = NULL;
-	hasPhysicsInfo = false;
 }
 
 Mesh *Mesh::MeshFromFileName(String& fileName) {
