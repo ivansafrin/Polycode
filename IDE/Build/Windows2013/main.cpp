@@ -92,7 +92,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	MSG Msg;
 	do {
-		if(PeekMessage(&Msg, NULL, 0,0,PM_REMOVE)) {
+		while (PeekMessage(&Msg, NULL, 0, 0, PM_REMOVE | PM_QS_INPUT)) {
 
 			if (!TranslateAccelerator(view->hwnd, view->haccel, &Msg)) {
 				TranslateMessage(&Msg);
