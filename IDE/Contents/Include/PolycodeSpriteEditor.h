@@ -58,13 +58,25 @@ class SpriteState {
         void removeFrameByIndex(unsigned int frameIndex);
         void removeFrameIndices(std::vector<unsigned int> indices);
     
+        void setPixelsPerUnit(Number ppu);
+        Number getPixelsPerUnit();
+    
         void rebuildStateMeshes();
     
         void setStateFPS(Number fps);
         Number getStateFPS();
     
+        void setBoundingBox(Vector2 boundingBox);
+        Vector2 getBoundingBox();
+    
+        Vector2 getSpriteOffset();
+        void setSpriteOffset(const Vector2 &offset);
+    
     protected:
     
+        Vector2 boundingBox;
+        Vector2 spriteOffset;
+        Number pixelsPerUnit;
         Number stateFPS;
         SpriteSet *spriteSet;
         String name;
@@ -144,6 +156,7 @@ class SceneSpriteRewrite : public SceneMesh {
         void setSprite(Sprite *spriteEntry);
         void setSpriteState(SpriteState *spriteState);
         SpriteState *getCurrentSpriteState();
+
     
     protected:
     
@@ -164,12 +177,18 @@ class SpritePreview : public UIElement {
         SpritePreview(SpriteSet *spriteSet);
         ~SpritePreview();
     
+        void Update();
+    
         SceneSpriteRewrite *getSceneSprite();
         void Resize(Number width, Number height);
     
     protected:
-    
+        UIRect *headerBg;    
+        UIImage *previewBg;
         SceneSpriteRewrite *sprite;
+    
+        ScenePrimitive *boundingBoxPreview;
+    
 };
 
 class SpriteSheetEditor : public UIElement {
@@ -191,7 +210,10 @@ class SpriteSheetEditor : public UIElement {
     
     protected:
     
+        UIRect *headerBg;
+    
         bool creatingFrame;
+        bool willCreateFrame;
     
         Number zoomScale;
         Vector2 panOffset;
@@ -246,7 +268,8 @@ class SpriteBrowser : public UIElement {
         Sprite *selectedEntry;
     
         UITreeContainer *spriteTreeView;
-        UIButton *newSpriteButton;
+        UIImageButton *newSpriteButton;
+        UIImageButton *removeSpriteButton;
 };
 
 
@@ -302,6 +325,20 @@ class SpriteStateEditBar : public UIElement {
         std::vector<unsigned int> selectedFrames;
 };
 
+class SpriteStateBrowser : public UIElement {
+    public:
+        SpriteStateBrowser();
+        ~SpriteStateBrowser();
+    
+        void Resize(Number width, Number height);
+    
+        UITreeContainer *stateTreeView;
+        UIRect *headerBg;
+    
+        UIImageButton *newStateButton;
+        UIImageButton *removeStateButton;
+    
+};
 
 class SpriteStateEditorDetails : public UIElement {
     public:
@@ -325,11 +362,19 @@ class SpriteStateEditorDetails : public UIElement {
     
     protected:
     
+        UIRect *headerBg;
+    
         SpriteState *spriteState;
         SpriteSet *spriteSet;
         SceneSpriteRewrite *sceneSprite;
     
         UITextInput *fpsInput;
+        UITextInput *scaleInput;
+        UITextInput *bBoxWidthInput;
+        UITextInput *bBoxHeightInput;
+
+        UITextInput *offsetXInput;
+        UITextInput *offsetYInput;
     
         UIButton *appendFramesButton;
         UIImageButton *playButton;
@@ -354,16 +399,18 @@ class SpriteStateEditor : public UIElement {
         SpriteState *getSelectedState();
 
     protected:
+        UITreeContainer *stateTreeView;
         SpriteSet *spriteSet;
         SpriteState *selectedState;
-        UIRect *headerBg;
+    
+        SpriteStateBrowser *stateBrowser;
     
         Sprite *spriteSetEntry;
     
-        UIButton *newStateButton;
+        UIImageButton *newStateButton;
     
         UIHSizer *stateSizer;
-        UITreeContainer *stateTreeView;
+
     
         SpriteStateEditorDetails *stateDetails;
 };

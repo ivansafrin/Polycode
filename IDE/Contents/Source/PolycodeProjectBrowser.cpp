@@ -201,6 +201,34 @@ void PolycodeProjectBrowser::applyBrowserConfig(ObjectEntry *entry) {
 	}
 }
 
+String PolycodeProjectBrowser::getIconForExtension(String extension) {
+    if(extension == "mesh") {
+        return "treeIcons/mesh.png";
+    } else if(extension == "png") {
+        return "treeIcons/image.png";
+    } else if(extension == "frag" || extension == "vert") {
+        return "treeIcons/shader.png";
+    } else if(extension == "otf" || extension == "ttf") {
+        return "treeIcons/font.png";
+    } else if(extension == "skeleton") {
+        return "treeIcons/skeleton.png";
+    } else if(extension == "anim") {
+        return "treeIcons/animation.png";
+    } else if(extension == "ogg" || extension == "wav") {
+        return "treeIcons/sound.png";
+    } else if(extension == "entity") {
+        return "treeIcons/entity.png";
+    } else if(extension == "mat") {
+        return "treeIcons/materials.png";
+    } else if(extension == "sprite" || extension == "sprites") {
+        return "treeIcons/sprites.png";
+    } else if(extension == "polyproject") {
+        return "treeIcons/project.png";
+    } else {
+        return "file.png";
+    }
+}
+
 void PolycodeProjectBrowser::parseFolderIntoNode(UITree *node, String spath) {
 	vector<OSFileEntry> files = OSBasics::parseFolder(spath, false);
 	
@@ -232,7 +260,7 @@ void PolycodeProjectBrowser::parseFolderIntoNode(UITree *node, String spath) {
 				data->fileEntry = entry;
 				data->type = 1;
 				data->parentProject = project;			
-				node->addTreeChild("file.png", entry.name, (void*) data);
+				node->addTreeChild(getIconForExtension(entry.extension), entry.name, (void*) data);
 			}
 		}
 	}		

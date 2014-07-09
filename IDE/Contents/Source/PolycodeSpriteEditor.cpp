@@ -63,6 +63,8 @@ void SceneSpriteRewrite::setSprite(Sprite *spriteEntry) {
 
 void SceneSpriteRewrite::setSpriteState(SpriteState *spriteState) {
     currentSpriteState = spriteState;
+    Vector2 bBox = spriteState->getBoundingBox();
+    setLocalBoundingBox(bBox.x / spriteState->getPixelsPerUnit(), bBox.y / spriteState->getPixelsPerUnit(), 0.001);
 }
 
 void SceneSpriteRewrite::Update() {
@@ -117,6 +119,34 @@ SpriteState::SpriteState(SpriteSet *spriteSet, String name) {
     this->spriteSet = spriteSet;
     this->name = name;
     stateFPS = 60.0;
+    pixelsPerUnit = 1.0;
+}
+
+void SpriteState::setBoundingBox(Vector2 boundingBox) {
+    this->boundingBox = boundingBox;
+}
+
+Vector2 SpriteState::getBoundingBox() {
+    return boundingBox;
+}
+
+Vector2 SpriteState::getSpriteOffset() {
+    return spriteOffset;
+}
+
+void SpriteState::setSpriteOffset(const Vector2 &offset) {
+    spriteOffset = offset;
+    rebuildStateMeshes();
+}
+
+
+void SpriteState::setPixelsPerUnit(Number ppu) {
+    pixelsPerUnit = ppu;
+    rebuildStateMeshes();
+}
+
+Number SpriteState::getPixelsPerUnit() {
+    return pixelsPerUnit;
 }
 
 void SpriteState::removeFrameByIndex(unsigned int index) {
@@ -190,13 +220,23 @@ void SpriteState::rebuildStateMeshes() {
         
         frameMesh->indexedMesh = true;
         
-        Number frameWidth = 100.0;
-        Number frameHeight = 100.0;
+        Number aspectRatio = frame.coordinates.w / frame.coordinates.h;
+        Number textureAspectRatio = ((Number)spriteSet->getTexture()->getWidth()) / ((Number)spriteSet->getTexture()->getHeight());
         
-        frameMesh->addVertex(0.0, 0.0, 0.0, frame.coordinates.x, 1.0-frame.coordinates.y);
-        frameMesh->addVertex(0.0, -frameHeight, 0.0, frame.coordinates.x, 1.0-frame.coordinates.y  - frame.coordinates.h);
-        frameMesh->addVertex(frameWidth, -frameHeight, 0.0, frame.coordinates.x+frame.coordinates.w, 1.0- frame.coordinates.y  - frame.coordinates.h);
-        frameMesh->addVertex(frameWidth, 0.0, 0.0, frame.coordinates.x+frame.coordinates.w, 1.0-frame.coordinates.y);
+        
+        Number frameHeight = frame.coordinates.h * ((Number)spriteSet->getTexture()->getHeight()) / pixelsPerUnit;
+        
+        Number frameWidth = frameHeight * aspectRatio * textureAspectRatio;
+        
+        
+        Vector2 meshOffset;
+        meshOffset.x = frameWidth * spriteOffset.x;
+        meshOffset.y = frameHeight * spriteOffset.y;
+        
+        frameMesh->addVertex(meshOffset.x+-frameWidth*0.5, meshOffset.y+frameHeight*0.5, 0.0, frame.coordinates.x, 1.0-frame.coordinates.y);
+        frameMesh->addVertex(meshOffset.x+-frameWidth*0.5, meshOffset.y+frameHeight*0.5-frameHeight, 0.0, frame.coordinates.x, 1.0-frame.coordinates.y  - frame.coordinates.h);
+        frameMesh->addVertex(meshOffset.x+-frameWidth*0.5+frameWidth, meshOffset.y+frameHeight*0.5-frameHeight, 0.0, frame.coordinates.x+frame.coordinates.w, 1.0- frame.coordinates.y  - frame.coordinates.h);
+        frameMesh->addVertex(meshOffset.x+-frameWidth*0.5+frameWidth, meshOffset.y+frameHeight*0.5, 0.0, frame.coordinates.x+frame.coordinates.w, 1.0-frame.coordinates.y);
         
         frameMesh->addIndexedFace(0,1);
         frameMesh->addIndexedFace(1,2);
@@ -482,8 +522,9 @@ void SpriteSet::createFramesFromIslands(unsigned int minDistance) {
 
 SpriteSheetEditor::SpriteSheetEditor(SpriteSet *sprite) : UIElement() {
     
+	   
     this->sprite = sprite;
-    
+    willCreateFrame = false;
     zoomScale = 1.0;
     enableScissor = true;
     
@@ -571,8 +612,23 @@ SpriteSheetEditor::SpriteSheetEditor(SpriteSet *sprite) : UIElement() {
     minimumDistanceInput->setPosition(575, 3);
     minimumDistanceInput->setText("0");
     minimumDistanceInput->setNumberOnly(true);
+   
+    headerBg = new UIRect(10,10);
+	addChild(headerBg);
+	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
+	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
+	
+	UILabel *label = new UILabel("SPRITE SHEET", 18, "section", Label::ANTIALIAS_FULL);
+	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
+	
+	addChild(label);
+	label->setPosition(10, 3);
+    
+    
     
     creatingFrame = false;
+    
+    
     
     Services()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 }
@@ -696,6 +752,8 @@ void SpriteSheetEditor::handleEvent(Event *event) {
         
     } else if(event->getDispatcher() == previewBg) {
         
+        InputEvent *inputEvent = (InputEvent*) event;
+        
         switch(event->getEventCode()) {
             case InputEvent::EVENT_MOUSEWHEEL_UP:
                 zoomScale *= 1.02;
@@ -710,6 +768,7 @@ void SpriteSheetEditor::handleEvent(Event *event) {
             break;
             case InputEvent::EVENT_MOUSEDOWN:
                 
+                willCreateFrame = true;
                 previewBg->focusSelf();
                 
                 if(Services()->getCore()->getInput()->getKeyState(KEY_LALT)) {
@@ -755,7 +814,7 @@ void SpriteSheetEditor::handleEvent(Event *event) {
                 } else {
                     CoreInput *input = Services()->getCore()->getInput();
                     
-                    if(input->getMouseButtonState(CoreInput::MOUSE_BUTTON1)) {
+                    if(input->getMouseButtonState(CoreInput::MOUSE_BUTTON1) && willCreateFrame) {
                         if(clickBaseCoord.distance(input->getMousePosition()) > 2.0) {
                             
                             Vector2 screenCoordinates = previewImage->getScreenPositionForMainCamera();
@@ -785,6 +844,7 @@ void SpriteSheetEditor::handleEvent(Event *event) {
             break;
             case InputEvent::EVENT_MOUSEUP:
                 panning = false;
+                willCreateFrame = false;
                 if(creatingFrame) {
                     creatingFrame = false;
                     if(fabs(frameToAdd.coordinates.w) > 0.001 & fabs(frameToAdd.coordinates.h) > 0.001) {
@@ -830,8 +890,11 @@ std::vector<unsigned int> SpriteSheetEditor::getSelectedFrameIDs() {
 
 void SpriteSheetEditor::Resize(Number width, Number height) {
     
-    previewBg->Resize(width, height-30.0);
-    previewBg->setImageCoordinates(0, 0, width, height-30);
+    headerBg->Resize(width, 30.0);
+    
+    previewBg->setPosition(0.0, 30.0);
+    previewBg->Resize(width, height-60.0);
+    previewBg->setImageCoordinates(0, 0, width, height-60);
     
     Vector2 screenPosition = getScreenPositionForMainCamera();
     scissorBox.setRect(screenPosition.x, screenPosition.y, width, height);
@@ -839,8 +902,8 @@ void SpriteSheetEditor::Resize(Number width, Number height) {
     
     Number imageAspectRatio = ((Number)previewImage->getTexture()->getHeight()) / ((Number)previewImage->getTexture()->getWidth());
     
-    Number imageWidth = (height-30.0) / imageAspectRatio;
-    Number imageHeight = height-30.0;
+    Number imageWidth = (height-60.0) / imageAspectRatio;
+    Number imageHeight = height-60.0;
     
     if(imageWidth > width) {
         imageWidth = width;
@@ -850,7 +913,7 @@ void SpriteSheetEditor::Resize(Number width, Number height) {
     previewImage->Resize(imageWidth, imageHeight);
     previewImage->setScale(zoomScale, zoomScale, 1.0);
     
-    previewImage->setPosition((width-(previewImage->getWidth()*zoomScale))/ 2.0, (height-(previewImage->getHeight()*zoomScale)-30.0)/2.0);
+    previewImage->setPosition((width-(previewImage->getWidth()*zoomScale))/ 2.0, 30.0+(height-(previewImage->getHeight()*zoomScale)-60.0)/2.0);
     
     previewImage->Translate(panOffset.x, panOffset.y, 0.0);
     
@@ -859,8 +922,6 @@ void SpriteSheetEditor::Resize(Number width, Number height) {
 
     frameVisualizerMeshSelected->setPosition(previewImage->getPosition());
     frameVisualizerMeshSelected->setScale(previewImage->getWidth() * zoomScale, previewImage->getHeight() * zoomScale, 1.0);
-    
-
     
     bottomMenuRect->Resize(width, 31.0);
     bottomMenu->setPosition(0.0, height-30.0);
@@ -876,12 +937,23 @@ SpriteBrowser::SpriteBrowser(SpriteSet *spriteSet) : UIElement () {
 	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	
-    newSpriteButton = new UIButton("Add", 40);
-    addChild(newSpriteButton);
-    newSpriteButton->setPosition(3.0, 3.0);
-    newSpriteButton->addEventListener(this, UIEvent::CLICK_EVENT);
+	UILabel *label = new UILabel("SPRITES", 18, "section", Label::ANTIALIAS_FULL);
+	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
+	
+	addChild(label);
+	label->setPosition(10, 3);
     
-    spriteTreeView = new UITreeContainer("boxIcon.png", "Sprites", 10, 10);
+    
+    newSpriteButton = new UIImageButton("spriteEditor/button_add.png", 1.0, 24, 24);
+    addChild(newSpriteButton);
+    newSpriteButton->addEventListener(this, UIEvent::CLICK_EVENT);
+
+    removeSpriteButton = new UIImageButton("spriteEditor/button_remove.png", 1.0, 24, 24);
+    addChild(removeSpriteButton);
+    removeSpriteButton->addEventListener(this, UIEvent::CLICK_EVENT);
+    
+    
+    spriteTreeView = new UITreeContainer("boxIcon.png", "All Sprites", 10, 10);
     spriteTreeView->setPosition(0, 30);
     addChild(spriteTreeView);
     
@@ -911,7 +983,7 @@ void SpriteBrowser::refreshSprites() {
     spriteTreeView->getRootNode()->clearTree();
     for(int i=0; i < spriteSet->getNumSpriteEntries(); i++) {
         Sprite *spriteEntry = spriteSet->getSpriteEntry(i);
-        spriteTreeView->getRootNode()->addTreeChild("file.png", spriteEntry->getName(), (void*)spriteEntry);
+        spriteTreeView->getRootNode()->addTreeChild("treeIcons/sprite.png", spriteEntry->getName(), (void*)spriteEntry);
     }
 }
 
@@ -922,6 +994,9 @@ SpriteBrowser::~SpriteBrowser() {
 void SpriteBrowser::Resize(Number width, Number height) {
     headerBg->Resize(width, 30.0);
     
+    removeSpriteButton->setPosition(width - 30.0, 3.0);
+    newSpriteButton->setPosition(width - 56.0, 3.0);
+    
     spriteTreeView->Resize(width, height-30);
 }
 
@@ -929,29 +1004,93 @@ SpriteStateEditorDetails::SpriteStateEditorDetails(SpriteSet *spriteSet) : UIEle
     
     this->spriteSet = spriteSet;
     
+    headerBg = new UIRect(10,10);
+	addChild(headerBg);
+	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
+	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
+    
+	UILabel *label = new UILabel("STATE DETAILS", 18, "section", Label::ANTIALIAS_FULL);
+	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
+	addChild(label);
+	label->setPosition(10, 3);
+    
     editBar = new SpriteStateEditBar(spriteSet);
     addChild(editBar);
-    editBar->setPosition(10.0, 50.0);
+    editBar->setPosition(140.0, 80.0);
     
     playButton = new UIImageButton("spriteEditor/play_button.png", 1.0, 32, 32);
     addChild(playButton);
-    playButton->setPosition(10.0, 5.0);
+    playButton->setPosition(140.0, 35.0);
     playButton->addEventListener(this, UIEvent::CLICK_EVENT);
     
     pauseButton = new UIImageButton("spriteEditor/pause_button.png", 1.0, 32, 32);
     addChild(pauseButton);
-    pauseButton->setPosition(10.0, 5.0);
+    pauseButton->setPosition(140.0, 35.0);
     pauseButton->addEventListener(this, UIEvent::CLICK_EVENT);
     
     appendFramesButton = new UIButton("Append selected frames", 200.0);
     addChild(appendFramesButton);
-    appendFramesButton->setPosition(100.0, 10.0);
+    appendFramesButton->setPosition(190.0, 40.0);
     appendFramesButton->addEventListener(this, UIEvent::CLICK_EVENT);
     
-    fpsInput = new UITextInput(false, 30.0, 12.0);
+    UIImage *divider = new UIImage("spriteEditor/divider.png", 4, 128);
+    addChild(divider);
+    divider->setPosition(130.0, 30.0);
+    divider->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
+    
+	label = new UILabel("FPS", 18, "section", Label::ANTIALIAS_FULL);
+	label->setPosition(55.0-label->getWidth(), 40.0);
+    addChild(label);
+    
+    fpsInput = new UITextInput(false, 50.0, 12.0);
     addChild(fpsInput);
-    fpsInput->setPosition(50.0, 10.0);
+    fpsInput->setPosition(60.0, 40.0);
     fpsInput->addEventListener(this, UIEvent::CHANGE_EVENT);
+    
+	label = new UILabel("SCALE", 18, "section", Label::ANTIALIAS_FULL);
+	label->setPosition(55.0-label->getWidth(), 70.0);
+    addChild(label);
+    
+    scaleInput = new UITextInput(false, 50.0, 12.0);
+    addChild(scaleInput);
+    scaleInput->setPosition(60.0, 70.0);
+    scaleInput->addEventListener(this, UIEvent::CHANGE_EVENT);
+
+	label = new UILabel("WIDTH", 18, "section", Label::ANTIALIAS_FULL);
+	label->setPosition(55.0-label->getWidth(), 100.0);
+    addChild(label);
+    
+    bBoxWidthInput = new UITextInput(false, 50.0, 12.0);
+    addChild(bBoxWidthInput);
+    bBoxWidthInput->setPosition(60.0, 100.0);
+    bBoxWidthInput->addEventListener(this, UIEvent::CHANGE_EVENT);
+
+	label = new UILabel("HEIGHT", 18, "section", Label::ANTIALIAS_FULL);
+	label->setPosition(55.0-label->getWidth(), 130.0);
+    addChild(label);
+    
+    bBoxHeightInput = new UITextInput(false, 50.0, 12.0);
+    addChild(bBoxHeightInput);
+    bBoxHeightInput->setPosition(60.0, 130.0);
+    bBoxHeightInput->addEventListener(this, UIEvent::CHANGE_EVENT);
+
+	label = new UILabel("X OFF", 18, "section", Label::ANTIALIAS_FULL);
+	label->setPosition(55.0-label->getWidth(), 160.0);
+    addChild(label);
+    
+    offsetXInput = new UITextInput(false, 50.0, 12.0);
+    addChild(offsetXInput);
+    offsetXInput->setPosition(60.0, 160.0);
+    offsetXInput->addEventListener(this, UIEvent::CHANGE_EVENT);
+    
+	label = new UILabel("Y OFF", 18, "section", Label::ANTIALIAS_FULL);
+	label->setPosition(55.0-label->getWidth(), 190.0);
+    addChild(label);
+    
+    offsetYInput = new UITextInput(false, 50.0, 12.0);
+    addChild(offsetYInput);
+    offsetYInput->setPosition(60.0, 190.0);
+    offsetYInput->addEventListener(this, UIEvent::CHANGE_EVENT);
     
     visible = false;
     enabled = false;
@@ -990,15 +1129,28 @@ void SpriteStateEditorDetails::setSpriteState(SpriteState *state) {
     visible = true;
     enabled = true;
     spriteState = state;
-    
-    fpsInput->setText(String::NumberToString(state->getStateFPS()));
-    
     editBar->setSpriteState(state);
+    
+    refreshState();
 }
 
 void SpriteStateEditorDetails::handleEvent(Event *event) {
     if(event->getDispatcher() == fpsInput) {
         spriteState->setStateFPS(fpsInput->getText().toNumber());
+    } else if(event->getDispatcher() == scaleInput) {
+        spriteState->setPixelsPerUnit(scaleInput->getText().toNumber());
+    } else if(event->getDispatcher() == bBoxWidthInput) {
+        Vector2 bBox = spriteState->getBoundingBox();
+        spriteState->setBoundingBox(Vector2(bBoxWidthInput->getText().toNumber(), bBox.y));
+    } else if(event->getDispatcher() == bBoxHeightInput) {
+        Vector2 bBox = spriteState->getBoundingBox();
+        spriteState->setBoundingBox(Vector2(bBox.x, bBoxHeightInput->getText().toNumber()));
+    } else if(event->getDispatcher() == offsetXInput) {
+        Vector2 offset = spriteState->getSpriteOffset();
+        spriteState->setSpriteOffset(Vector2(offsetXInput->getText().toNumber(), offset.y));
+    } else if(event->getDispatcher() == offsetYInput) {
+        Vector2 offset = spriteState->getSpriteOffset();
+        spriteState->setSpriteOffset(Vector2(offset.x, offsetYInput->getText().toNumber()));
     } else if(event->getDispatcher() == playButton) {
         sceneSprite->setPaused(false);
     }  else if(event->getDispatcher() == pauseButton) {
@@ -1020,11 +1172,19 @@ SpriteState *SpriteStateEditorDetails::getSpriteState() {
 
 void SpriteStateEditorDetails::refreshState() {
     editBar->refreshBar();
+    fpsInput->setText(String::NumberToString(spriteState->getStateFPS()));
+    scaleInput->setText(String::NumberToString(spriteState->getPixelsPerUnit()));
+    bBoxWidthInput->setText(String::NumberToString(spriteState->getBoundingBox().x));
+    bBoxHeightInput->setText(String::NumberToString(spriteState->getBoundingBox().y));
+    
+    offsetXInput->setText(String::NumberToString(spriteState->getSpriteOffset().x));
+    offsetYInput->setText(String::NumberToString(spriteState->getSpriteOffset().y));
+    
 }
 
 void SpriteStateEditorDetails::Resize(Number width, Number height) {
-    editBar->Resize(width, height-30.0);
-    editBar->Resize(width-20.0, height-60.0);
+    headerBg->Resize(width, 30.0);
+    editBar->Resize(width-110.0, height-90.0);
 }
 
 void SpriteStateEditBar::clearBar() {
@@ -1078,6 +1238,7 @@ void SpriteStateEditBar::refreshBar() {
         
         
         Number gapSize = 1.0;
+        Number frameGapSize = 1.0;
         
         Number frameTickHeight = 10.0;
         Number frameTickGap = 2.0;
@@ -1120,8 +1281,8 @@ void SpriteStateEditBar::refreshBar() {
         
         meshTicks->addVertex(frameOffset, 0.0, 0.0, 0.0, 0.0)->vertexColor = vertexColor;
         meshTicks->addVertex(frameOffset, 0.0-frameTickHeight, 0.0, 0.0, 1.0)->vertexColor = vertexColor;
-        meshTicks->addVertex(frameOffset+frameSize-gapSize, -frameTickHeight, 0.0, 1.0, 1.0)->vertexColor = vertexColor;
-        meshTicks->addVertex(frameOffset+frameSize-gapSize, 0.0, 0.0, 1.0, 0.0)->vertexColor = vertexColor;
+        meshTicks->addVertex(frameOffset+frameSize-frameGapSize, -frameTickHeight, 0.0, 1.0, 1.0)->vertexColor = vertexColor;
+        meshTicks->addVertex(frameOffset+frameSize-frameGapSize, 0.0, 0.0, 1.0, 0.0)->vertexColor = vertexColor;
         
         
         meshTicks->addIndexedFace(offset+0,offset+1);
@@ -1288,37 +1449,36 @@ void SpriteStateEditBar::handleEvent(Event *event) {
             break;
             case InputEvent::EVENT_MOUSEDOWN:
             {
-                clickBaseCoord = Services()->getCore()->getInput()->getMousePosition();
-                focusSelf();
-                frameMoveBase = Services()->getCore()->getInput()->getMousePosition();
                 
-                
-                Number offsetInFrame = fmod(inputEvent->getMousePosition().x - barBase->getPosition().x, defaultFrameWidth * zoomScale);
-                
-                
-                extendingIndex = (inputEvent->getMousePosition().x - barBase->getPosition().x)/ defaultFrameWidth / zoomScale;
-                extendingID = spriteState->getFrameIDAtIndex(extendingIndex);
-                
-                bool willBeExtendingFrame = true;
-                
-                if(extendingIndex < spriteState->getNumFrameIDs()-1) {
-                    if(spriteState->getFrameIDAtIndex(extendingIndex+1) == extendingID) {
-                        willBeExtendingFrame = false;
-                    }
-                }
-                
-                
-                if((defaultFrameWidth * zoomScale) - offsetInFrame < 20.0 && willBeExtendingFrame) {
+                if(inputEvent->getMousePosition().y < getHeight()-scroller->getHScrollBar()->getHeight()) {                        
+                    clickBaseCoord = Services()->getCore()->getInput()->getMousePosition();
+                    focusSelf();
+                    frameMoveBase = Services()->getCore()->getInput()->getMousePosition();
                     
-                    extendingFrame = true;
                     
-                    while(spriteState->getFrameIDAtIndex(extendingIndex-1) == extendingID && extendingID > 1) {
-                        extendingIndex--;
+                    Number offsetInFrame = fmod(inputEvent->getMousePosition().x - barBase->getPosition().x, defaultFrameWidth * zoomScale);
+                    
+                    
+                    extendingIndex = (inputEvent->getMousePosition().x - barBase->getPosition().x)/ defaultFrameWidth / zoomScale;
+                    extendingID = spriteState->getFrameIDAtIndex(extendingIndex);
+                    
+                    bool willBeExtendingFrame = true;
+                    
+                    if(extendingIndex < spriteState->getNumFrameIDs()-1) {
+                        if(spriteState->getFrameIDAtIndex(extendingIndex+1) == extendingID) {
+                            willBeExtendingFrame = false;
+                        }
                     }
                     
-                    selectedFrames.clear();
-                } else {
-                    if(inputEvent->getMousePosition().y < getHeight()-scroller->getHScrollBar()->getHeight()) {
+                    
+                    if((defaultFrameWidth * zoomScale) - offsetInFrame < 20.0 && willBeExtendingFrame) {
+                        
+                        extendingFrame = true;
+                        
+                        while(spriteState->getFrameIDAtIndex(extendingIndex-1) == extendingID && extendingID > 1) {
+                            extendingIndex--;
+                        }
+                    } else {
                         unsigned int selectedFrameIndex = (inputEvent->getMousePosition().x - barBase->getPosition().x)/ defaultFrameWidth / zoomScale;
                         
                         if(!isFrameSelected(selectedFrameIndex)) {
@@ -1336,6 +1496,7 @@ void SpriteStateEditBar::handleEvent(Event *event) {
             case InputEvent::EVENT_MOUSEMOVE:
                 
                 if(extendingFrame) {
+                    selectedFrames.clear();
                     Number distance = Services()->getCore()->getInput()->getMousePosition().x - frameMoveBase.x;
                     
                     if(fabs(distance) > defaultFrameWidth * zoomScale) {
@@ -1351,7 +1512,7 @@ void SpriteStateEditBar::handleEvent(Event *event) {
                         frameMoveBase =  Services()->getCore()->getInput()->getMousePosition();
                     }
                 } else {
-                    if(Services()->getCore()->getInput()->getMousePosition().distance(clickBaseCoord) > 4.0 && Services()->getCore()->getInput()->getMouseButtonState(CoreInput::MOUSE_BUTTON1)) {
+                    if(Services()->getCore()->getInput()->getMousePosition().distance(clickBaseCoord) > 4.0 && Services()->getCore()->getInput()->getMouseButtonState(CoreInput::MOUSE_BUTTON1) && inputEvent->getMousePosition().y < getHeight()-scroller->getHScrollBar()->getHeight()) {
                         
                         draggingFrames = true;
                         
@@ -1536,30 +1697,64 @@ SpriteStateEditBar::~SpriteStateEditBar() {
     
 }
 
-SpriteStateEditor::SpriteStateEditor(SpriteSet *spriteSet) : UIElement() {
-    this->spriteSet = spriteSet;
+SpriteStateBrowser::SpriteStateBrowser() : UIElement() {
     
 	headerBg = new UIRect(10,10);
 	addChild(headerBg);
 	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
     
+	UILabel *label = new UILabel("STATES", 18, "section", Label::ANTIALIAS_FULL);
+	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
+	addChild(label);
+	label->setPosition(10, 3);
+    
+    
+    stateTreeView = new UITreeContainer("boxIcon.png", "All States", 10, 10);
+    addChild(stateTreeView);
+    stateTreeView->getRootNode()->toggleCollapsed();
+    stateTreeView->setPosition(0.0, 30.0);
+    
+    newStateButton = new UIImageButton("spriteEditor/button_add.png", 1.0, 24, 24);
+    addChild(newStateButton);
+    newStateButton->addEventListener(this, UIEvent::CLICK_EVENT);
+    
+    removeStateButton = new UIImageButton("spriteEditor/button_remove.png", 1.0, 24, 24);
+    addChild(removeStateButton);
+    removeStateButton->addEventListener(this, UIEvent::CLICK_EVENT);
+    
+    
+}
+
+SpriteStateBrowser::~SpriteStateBrowser() {
+    
+}
+
+void SpriteStateBrowser::Resize(Number width, Number height) {
+    headerBg->Resize(width, 30.0);
+    stateTreeView->Resize(width, height-30.0);
+    
+    removeStateButton->setPosition(width - 30.0, 3.0);
+    newStateButton->setPosition(width - 56.0, 3.0);
+}
+
+SpriteStateEditor::SpriteStateEditor(SpriteSet *spriteSet) : UIElement() {
+    this->spriteSet = spriteSet;
+    
     stateSizer = new UIHSizer(10, 10, 200, true);
     addChild(stateSizer);
-    stateSizer->setPosition(0, 30.0);
-    
-    stateTreeView = new UITreeContainer("boxIcon.png", "States", 10, 10);
-    stateSizer->addLeftChild(stateTreeView);
-    stateTreeView->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
-    stateTreeView->getRootNode()->toggleCollapsed();
     
     stateDetails = new SpriteStateEditorDetails(spriteSet);
     stateSizer->addRightChild(stateDetails);
     
-    newStateButton = new UIButton("New State", 100.0);
-    addChild(newStateButton);
-    newStateButton->setPosition(3.0, 3.0);
+    stateBrowser = new SpriteStateBrowser();
+    stateSizer->addLeftChild(stateBrowser);
+    
+    newStateButton = stateBrowser->newStateButton;
     newStateButton->addEventListener(this, UIEvent::CLICK_EVENT);
+    
+    stateTreeView = stateBrowser->stateTreeView;
+    stateTreeView->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
     
     selectedState = NULL;
     
@@ -1612,7 +1807,7 @@ void SpriteStateEditor::refreshStates() {
     
     for(int i=0; i < spriteSetEntry->getNumStates(); i++) {
         SpriteState *state = spriteSetEntry->getState(i);
-        stateTreeView->getRootNode()->addTreeChild("file.png", state->getName(), (void*) state);
+        stateTreeView->getRootNode()->addTreeChild("treeIcons/state.png", state->getName(), (void*) state);
     }
 }
 
@@ -1621,14 +1816,37 @@ SpriteStateEditor::~SpriteStateEditor() {
 }
 
 void SpriteStateEditor::Resize(Number width, Number height) {
-    headerBg->Resize(width, 30.0);
-    stateSizer->Resize(width, height-30);
+    stateSizer->Resize(width, height);
 }
 
 SpritePreview::SpritePreview(SpriteSet *spriteSet) : UIElement() {
+    
+    previewBg = new UIImage("main/grid_dark.png");
+    addChild(previewBg);
+    previewBg->processInputEvents = true;
+    previewBg->setPosition(0.0, 30.0);
+    
     sprite = new SceneSpriteRewrite(spriteSet);
     addChild(sprite);
     sprite->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    
+    headerBg = new UIRect(10,10);
+	addChild(headerBg);
+	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
+	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
+	
+	UILabel *label = new UILabel("PREVIEW", 18, "section", Label::ANTIALIAS_FULL);
+	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
+	
+	addChild(label);
+	label->setPosition(10, 3);
+    
+    boundingBoxPreview = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1.0, 1.0);
+    addChild(boundingBoxPreview);
+    boundingBoxPreview->overlayWireframe = true;
+    boundingBoxPreview->wireFrameColor = Color(0.0, 0.5, 1.0, 1.0);
+    boundingBoxPreview->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    boundingBoxPreview->color.a = 0.0;
 }
 
 SceneSpriteRewrite *SpritePreview::getSceneSprite() {
@@ -1639,8 +1857,27 @@ SpritePreview::~SpritePreview() {
     
 }
 
+void SpritePreview::Update() {
+    
+    SpriteState  *state = sprite->getCurrentSpriteState();
+    
+    Vector2 bBox;
+    if(state) {
+        bBox = state->getBoundingBox();
+        sprite->setLocalBoundingBox(bBox.x / state->getPixelsPerUnit(), bBox.y / state->getPixelsPerUnit(), 0.001);
+    }
+    
+    boundingBoxPreview->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, sprite->getLocalBoundingBox().x, sprite->getLocalBoundingBox().y);
+
+}
+
 void SpritePreview::Resize(Number width, Number height) {
-    sprite->setPosition( (width-sprite->getWidth())/ 2.0, (height-sprite->getHeight())/ 2.0);
+    headerBg->Resize(width, 30.0);
+    previewBg->Resize(width, height-30.0);
+    previewBg->setImageCoordinates(0, 0, width, height-30.0);
+    
+    sprite->setPosition(width/2.0, height/2.0);
+    boundingBoxPreview->setPosition(sprite->getPosition());
 }
 
 PolycodeSpriteEditor::PolycodeSpriteEditor() : PolycodeEditor(true){
@@ -1654,13 +1891,6 @@ PolycodeSpriteEditor::PolycodeSpriteEditor() : PolycodeEditor(true){
     mainSizer->addBottomChild(bottomSizer);
     
     sprite = new SpriteSet("default.png");
-    
-    SpriteFrame frame;
-    frame.coordinates = Polycode::Rectangle(0.1, 0.4, 0.41, 0.2);
-    sprite->addSpriteFrame(frame);
-    
-    frame.coordinates = Polycode::Rectangle(0.7, 0.6, 0.2, 0.3);
-    sprite->addSpriteFrame(frame);
     
     spriteSheetEditor = new SpriteSheetEditor(sprite);
     topSizer->addLeftChild(spriteSheetEditor);
@@ -1691,8 +1921,31 @@ void PolycodeSpriteEditor::handleEvent(Event *event) {
         spritePreview->getSceneSprite()->setSprite(spriteBrowser->getSelectedSpriteEntry());
     } else if(event->getDispatcher() == addFramesButton) {
         SpriteState *spriteState = stateEditor->getDetailsEditor()->getSpriteState();
+        bool generateBBox = false;
+        if(spriteState->getNumFrameIDs() == 0) {
+            generateBBox = true;
+        }
         spriteState->appendFrames(spriteSheetEditor->getSelectedFrameIDs());
+        
+        if(generateBBox && spriteSheetEditor->getSelectedFrameIDs().size() > 0) {
+            
+            SpriteFrame frame = sprite->getSpriteFrameByID(spriteSheetEditor->getSelectedFrameIDs()[0]);
+            
+            Number aspectRatio = frame.coordinates.w / frame.coordinates.h;
+            
+            Number textureAspectRatio = ((Number)sprite->getTexture()->getWidth()) / ((Number)sprite->getTexture()->getHeight());
+            
+            
+            Number frameHeight = frame.coordinates.h * ((Number)sprite->getTexture()->getHeight());
+            
+            Number frameWidth = frameHeight * aspectRatio * textureAspectRatio;
+            
+            spriteState->setBoundingBox(Vector2(frameWidth, frameHeight));
+        }
+        
         stateEditor->getDetailsEditor()->refreshState();
+    
+        
     } else if(event->getDispatcher() == stateEditor) {
         spritePreview->getSceneSprite()->setSpriteState(stateEditor->getSelectedState());
     } else if(event->getDispatcher() == spriteSheetEditor) {
