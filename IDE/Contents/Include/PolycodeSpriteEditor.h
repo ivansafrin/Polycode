@@ -122,6 +122,8 @@ class SpriteSet {
         SpriteFrame getSpriteFrameByID(unsigned int frameID) const;
         void removeFrameByID(unsigned int frameID);
     
+        void setSpriteFrame(const SpriteFrame &frame);
+    
         void clearFrames();
     
         // automatic frame generation
@@ -191,6 +193,39 @@ class SpritePreview : public UIElement {
     
 };
 
+class TransformGrips : public UIElement {
+    public:
+        TransformGrips();
+        ~TransformGrips();
+    
+        void setGripRectangle(Polycode::Rectangle rectangle);
+    
+        void handleEvent(Event *event);
+        Polycode::Rectangle getGripRectangle();
+    
+    private:
+    
+        bool transforming;
+        UIImage *movingTransform;
+    
+        Polycode::Rectangle gripRectangle;
+    
+        Vector2 mouseBase;
+    
+        UIRect *mainRect;
+        UIImage *transformTL;
+        UIImage *transformT;
+        UIImage *transformTR;
+        UIImage *transformR;
+        UIImage *transformL;
+        UIImage *transformBL;
+        UIImage *transformB;
+        UIImage *transformBR;
+        UIImage *transformOffset;
+        std::vector<UIElement*> grips;
+    
+};
+
 class SpriteSheetEditor : public UIElement {
     public:
         SpriteSheetEditor(SpriteSet *sprite);
@@ -199,6 +234,8 @@ class SpriteSheetEditor : public UIElement {
         void handleEvent(Event *event);
     
         void Update();
+    
+        void Render();
     
         void deleteSelectedFrames();
     
@@ -217,6 +254,8 @@ class SpriteSheetEditor : public UIElement {
     
         Number zoomScale;
         Vector2 panOffset;
+    
+        TransformGrips *transformGrips;
     
         SpriteFrame frameToAdd;
 
