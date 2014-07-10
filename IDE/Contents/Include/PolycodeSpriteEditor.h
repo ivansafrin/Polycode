@@ -198,10 +198,12 @@ class TransformGrips : public UIElement {
         TransformGrips();
         ~TransformGrips();
     
-        void setGripRectangle(Polycode::Rectangle rectangle);
+        void setGripRectangle(Polycode::Rectangle rectangle, Vector2 offset);
     
         void handleEvent(Event *event);
         Polycode::Rectangle getGripRectangle();
+    
+        Vector2 getAnchorPoint();
     
     private:
     
@@ -209,6 +211,7 @@ class TransformGrips : public UIElement {
         UIImage *movingTransform;
     
         Polycode::Rectangle gripRectangle;
+        Vector2 anchorPoint;
     
         Vector2 mouseBase;
     

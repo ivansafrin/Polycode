@@ -229,9 +229,13 @@ void SpriteState::rebuildStateMeshes() {
         Number frameWidth = frameHeight * aspectRatio * textureAspectRatio;
         
         
+        
         Vector2 meshOffset;
         meshOffset.x = frameWidth * spriteOffset.x;
         meshOffset.y = frameHeight * spriteOffset.y;
+        
+        meshOffset.x -= frameWidth * frame.anchorPoint.x;
+        meshOffset.y += frameHeight * frame.anchorPoint.y;
         
         frameMesh->addVertex(meshOffset.x+-frameWidth*0.5, meshOffset.y+frameHeight*0.5, 0.0, frame.coordinates.x, 1.0-frame.coordinates.y);
         frameMesh->addVertex(meshOffset.x+-frameWidth*0.5, meshOffset.y+frameHeight*0.5-frameHeight, 0.0, frame.coordinates.x, 1.0-frame.coordinates.y  - frame.coordinates.h);
@@ -553,7 +557,7 @@ TransformGrips::TransformGrips() : UIElement() {
     grips.push_back(transformB);
     transformBR = new UIImage("spriteEditor/transform_corner.png", 8, 8);
     grips.push_back(transformBR);
-    transformOffset = new UIImage("spriteEditor/transform_offset.png", 8, 8);
+    transformOffset = new UIImage("spriteEditor/transform_offset.png", 12, 12);
     grips.push_back(transformOffset);
     
     for(int i=0; i < grips.size(); i++) {
@@ -570,7 +574,6 @@ TransformGrips::TransformGrips() : UIElement() {
     
     Services()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
     
-    transformOffset->visible = false;
     transforming = false;
     
     movingTransform = NULL;
@@ -615,6 +618,9 @@ void TransformGrips::handleEvent(Event *event) {
                 gripRectangle.h += newMouse.y - mouseBase.y;
             } else if(movingTransform == transformB) {
                 gripRectangle.h += newMouse.y - mouseBase.y;
+            } else if(movingTransform == transformOffset) {
+                anchorPoint.x += (newMouse.x - mouseBase.x) / gripRectangle.w;
+                anchorPoint.y += (newMouse.y - mouseBase.y) / gripRectangle.h;
             }
             
             mouseBase = newMouse;
@@ -633,11 +639,15 @@ void TransformGrips::handleEvent(Event *event) {
     }
 }
 
+Vector2 TransformGrips::getAnchorPoint() {
+    return anchorPoint;
+}
+
 TransformGrips::~TransformGrips() {
     
 }
 
-void TransformGrips::setGripRectangle(Polycode::Rectangle rectangle) {
+void TransformGrips::setGripRectangle(Polycode::Rectangle rectangle, Vector2 offset) {
 
     mainRect->setPosition(rectangle.x, rectangle.y);
     mainRect->Resize(rectangle.w, rectangle.h);
@@ -653,7 +663,10 @@ void TransformGrips::setGripRectangle(Polycode::Rectangle rectangle) {
     transformB->setPosition(rectangle.x + (rectangle.w * 0.5), rectangle.y+rectangle.h);
     transformBR->setPosition(rectangle.x+rectangle.w, rectangle.y+rectangle.h);
     
+    transformOffset->setPosition(rectangle.x + (rectangle.w * 0.5) + (offset.x * rectangle.w), rectangle.y + (rectangle.h * 0.5) + (offset.y * rectangle.h));
+    
     gripRectangle = rectangle;
+    anchorPoint = offset;
 
 }
 
@@ -908,6 +921,8 @@ void SpriteSheetEditor::handleEvent(Event *event) {
             frame.coordinates.w = gripRect.w / previewImage->getWidth() / zoomScale;
             frame.coordinates.h = gripRect.h / previewImage->getHeight() / zoomScale;
             
+            frame.anchorPoint = transformGrips->getAnchorPoint();
+            
             sprite->setSpriteFrame(frame);
             dispatchEvent(new Event(),Event::CHANGE_EVENT);
         }
@@ -961,7 +976,7 @@ void SpriteSheetEditor::handleEvent(Event *event) {
                         if(mouseCoord.x >= transforedCoords.x && mouseCoord.x <= transforedCoords.x + transforedCoords.w && mouseCoord.y >= transforedCoords.y && mouseCoord.y <= transforedCoords.y + transforedCoords.h) {
                             if(!hasSelectedID(frame.frameID)) {
                                 selectedIDs.push_back(frame.frameID);
-                                willCreateFrame = false;                                
+                                willCreateFrame = false;
                             }
                             break;
                         }
@@ -1113,7 +1128,7 @@ void SpriteSheetEditor::Render() {
         gripRect.w = frame.coordinates.w * previewImage->getWidth() * zoomScale;
         gripRect.h = frame.coordinates.h * previewImage->getHeight() * zoomScale;
         
-        transformGrips->setGripRectangle(gripRect);
+        transformGrips->setGripRectangle(gripRect, frame.anchorPoint);
     } else {
         transformGrips->visible = false;
         transformGrips->enabled = false;
