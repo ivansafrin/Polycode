@@ -63,6 +63,11 @@ void SceneSpriteRewrite::setSprite(Sprite *spriteEntry) {
 
 void SceneSpriteRewrite::setSpriteState(SpriteState *spriteState) {
     currentSpriteState = spriteState;
+    
+    if(!currentSpriteState) {
+        return;
+    }
+    
     Vector2 bBox = spriteState->getBoundingBox();
     setLocalBoundingBox(bBox.x / spriteState->getPixelsPerUnit(), bBox.y / spriteState->getPixelsPerUnit(), 0.001);
 }
@@ -124,7 +129,7 @@ SpriteState::SpriteState(SpriteSet *spriteSet, String name) {
 
 void SpriteState::setBoundingBox(Vector2 boundingBox) {
     this->boundingBox = boundingBox;
-    rebuildStateMeshes();    
+    rebuildStateMeshes();
 }
 
 Vector2 SpriteState::getBoundingBox() {
@@ -295,6 +300,21 @@ Sprite::Sprite(String name) {
     this->name = name;
 }
 
+void Sprite::removeSpriteState(SpriteState *state) {
+    for(int i=0; i < states.size(); i++) {
+        if(states[i] == state) {
+            states.erase(states.begin() + i);
+            return;
+        }
+    }
+}
+
+Sprite::~Sprite() {
+    for(int i=0; i < states.size(); i++) {
+        delete states[i];
+    }
+}
+
 String Sprite::getName() {
     return name;
 }
@@ -313,6 +333,15 @@ void SpriteSet::removeFrameByID(unsigned int frameID) {
     for(int i=0; i < frames.size(); i++) {
         if(frames[i].frameID == frameID) {
             frames.erase(frames.begin() + i);
+            return;
+        }
+    }
+}
+
+void SpriteSet::removeSprite(Sprite *sprite) {
+    for(int i=0; i < sprites.size(); i++) {
+        if(sprites[i] == sprite) {
+            sprites.erase(sprites.begin()+i);
             return;
         }
     }
@@ -1238,6 +1267,10 @@ SpriteBrowser::SpriteBrowser(SpriteSet *spriteSet) : UIElement () {
     removeSpriteButton = new UIImageButton("spriteEditor/button_remove.png", 1.0, 24, 24);
     addChild(removeSpriteButton);
     removeSpriteButton->addEventListener(this, UIEvent::CLICK_EVENT);
+
+    moreButton = new UIImageButton("spriteEditor/button_more.png", 1.0, 24, 24);
+    addChild(moreButton);
+    moreButton->addEventListener(this, UIEvent::CLICK_EVENT);
     
     
     spriteTreeView = new UITreeContainer("boxIcon.png", "All Sprites", 10, 10);
@@ -1247,14 +1280,66 @@ SpriteBrowser::SpriteBrowser(SpriteSet *spriteSet) : UIElement () {
     spriteTreeView->getRootNode()->toggleCollapsed();
     
     spriteTreeView->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
+    
+	globalFrame->textInputPopup->addEventListener(this, UIEvent::OK_EVENT);
+	globalFrame->yesNoPopup->addEventListener(this, UIEvent::OK_EVENT);
 }
 
 void SpriteBrowser::handleEvent(Event *event) {
     if(event->getDispatcher() == newSpriteButton) {
-        Sprite *newEntry = new Sprite("New Sprite");
-        spriteSet->addSpriteEntry(newEntry);
-        refreshSprites();
-    } else if(event->getDispatcher() ==   spriteTreeView->getRootNode()) {
+		globalFrame->textInputPopup->action = "newSprite";
+		globalFrame->textInputPopup->setCaption("New sprite name");
+		globalFrame->textInputPopup->setValue("New Sprite");
+		globalFrame->showModal(globalFrame->textInputPopup);
+    } else if(event->getDispatcher() == globalFrame->textInputPopup) {
+        if(event->getEventCode() == UIEvent::OK_EVENT) {
+            if(globalFrame->textInputPopup->action == "newSprite") {
+                Sprite *newEntry = new Sprite(globalFrame->textInputPopup->getValue());
+                
+                SpriteState *defaultState = new SpriteState(spriteSet, "default");
+                newEntry->addSpriteState(defaultState);
+                
+                spriteSet->addSpriteEntry(newEntry);
+                selectedEntry = newEntry;
+                refreshSprites();
+            } else if(globalFrame->textInputPopup->action == "renameSprite") {
+                selectedEntry->setName(globalFrame->textInputPopup->getValue());
+                refreshSprites();
+            }
+        }
+    } else if(event->getDispatcher() == globalFrame->yesNoPopup) {
+        if(event->getEventCode() == UIEvent::OK_EVENT) {
+            if(globalFrame->yesNoPopup->action == "removeSprite") {
+                if(selectedEntry) {
+                    spriteSet->removeSprite(selectedEntry);
+                    selectedEntry = NULL;
+                    refreshSprites();
+                    dispatchEvent(new Event(), Event::CHANGE_EVENT);
+                }
+            }
+        }
+    } else if(event->getDispatcher() == removeSpriteButton) {
+        if(selectedEntry) {
+            globalFrame->yesNoPopup->setCaption("Are you sure you want to remove sprite \""+selectedEntry->getName()+"\"?");
+            globalFrame->yesNoPopup->action = "removeSprite";
+            globalFrame->showModal(globalFrame->yesNoPopup);
+
+        }
+    } else if(event->getDispatcher() == moreButton) {
+        spriteMoreMenu = globalMenu->showMenuAtMouse(100.0);
+        spriteMoreMenu->addOption("Rename", "rename");
+        spriteMoreMenu->fitToScreenVertical();
+        spriteMoreMenu->addEventListener(this, UIEvent::OK_EVENT);
+    } else if(event->getDispatcher() == spriteMoreMenu) {
+        if(selectedEntry) {
+            if(spriteMoreMenu->getSelectedItem()->getMenuItemID() == "rename") {
+                globalFrame->textInputPopup->action = "renameSprite";
+                globalFrame->textInputPopup->setCaption("New sprite name");
+                globalFrame->textInputPopup->setValue(selectedEntry->getName());
+                globalFrame->showModal(globalFrame->textInputPopup);
+            }
+        }
+    } else if(event->getDispatcher() == spriteTreeView->getRootNode()) {
         selectedEntry = (Sprite*) spriteTreeView->getRootNode()->getSelectedNode()->getUserData();
         if(selectedEntry) {
             dispatchEvent(new Event(), Event::CHANGE_EVENT);
@@ -1270,7 +1355,10 @@ void SpriteBrowser::refreshSprites() {
     spriteTreeView->getRootNode()->clearTree();
     for(int i=0; i < spriteSet->getNumSpriteEntries(); i++) {
         Sprite *spriteEntry = spriteSet->getSpriteEntry(i);
-        spriteTreeView->getRootNode()->addTreeChild("treeIcons/sprite.png", spriteEntry->getName(), (void*)spriteEntry);
+        UITree *treeNode = spriteTreeView->getRootNode()->addTreeChild("treeIcons/sprite.png", spriteEntry->getName(), (void*)spriteEntry);
+        if(spriteEntry == selectedEntry) {
+            treeNode->setSelected();
+        }
     }
 }
 
@@ -1280,9 +1368,10 @@ SpriteBrowser::~SpriteBrowser() {
 
 void SpriteBrowser::Resize(Number width, Number height) {
     headerBg->Resize(width, 30.0);
-    
-    removeSpriteButton->setPosition(width - 30.0, 3.0);
-    newSpriteButton->setPosition(width - 56.0, 3.0);
+
+    moreButton->setPosition(width - 30.0, 3.0);
+    removeSpriteButton->setPosition(width - 56.0, 3.0);
+    newSpriteButton->setPosition(width - 82.0, 3.0);
     
     spriteTreeView->Resize(width, height-30);
 }
@@ -1413,11 +1502,16 @@ void SpriteStateEditorDetails::Update() {
 }
 
 void SpriteStateEditorDetails::setSpriteState(SpriteState *state) {
+    if(!state) {
+        visible = false;
+        enabled = false;
+        editBar->setSpriteState(state);
+        return;
+    }
     visible = true;
     enabled = true;
     spriteState = state;
     editBar->setSpriteState(state);
-    
     refreshState();
 }
 
@@ -1480,8 +1574,10 @@ void SpriteStateEditBar::clearBar() {
 
 void SpriteStateEditBar::setSpriteState(SpriteState *state) {
     spriteState = state;
-    state->rebuildStateMeshes();
-    refreshBar();
+    if(state) {
+        state->rebuildStateMeshes();
+        refreshBar();
+    }
     
 }
 
@@ -2010,6 +2106,9 @@ SpriteStateBrowser::SpriteStateBrowser() : UIElement() {
     addChild(removeStateButton);
     removeStateButton->addEventListener(this, UIEvent::CLICK_EVENT);
     
+    moreButton = new UIImageButton("spriteEditor/button_more.png", 1.0, 24, 24);
+    addChild(moreButton);
+    moreButton->addEventListener(this, UIEvent::CLICK_EVENT);
     
 }
 
@@ -2020,9 +2119,10 @@ SpriteStateBrowser::~SpriteStateBrowser() {
 void SpriteStateBrowser::Resize(Number width, Number height) {
     headerBg->Resize(width, 30.0);
     stateTreeView->Resize(width, height-30.0);
-    
-    removeStateButton->setPosition(width - 30.0, 3.0);
-    newStateButton->setPosition(width - 56.0, 3.0);
+
+    moreButton->setPosition(width - 30.0, 3.0);
+    removeStateButton->setPosition(width - 56.0, 3.0);
+    newStateButton->setPosition(width - 82.0, 3.0);
 }
 
 SpriteStateEditor::SpriteStateEditor(SpriteSet *spriteSet) : UIElement() {
@@ -2040,8 +2140,14 @@ SpriteStateEditor::SpriteStateEditor(SpriteSet *spriteSet) : UIElement() {
     newStateButton = stateBrowser->newStateButton;
     newStateButton->addEventListener(this, UIEvent::CLICK_EVENT);
     
+    stateBrowser->removeStateButton->addEventListener(this, UIEvent::CLICK_EVENT);
+    stateBrowser->moreButton->addEventListener(this, UIEvent::CLICK_EVENT);
+    
     stateTreeView = stateBrowser->stateTreeView;
     stateTreeView->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
+    
+	globalFrame->textInputPopup->addEventListener(this, UIEvent::OK_EVENT);
+	globalFrame->yesNoPopup->addEventListener(this, UIEvent::OK_EVENT);
     
     selectedState = NULL;
     
@@ -2059,25 +2165,78 @@ SpriteStateEditorDetails *SpriteStateEditor::getDetailsEditor() {
 
 void SpriteStateEditor::setSpriteEntry(Sprite *entry) {
     
+    if(!entry) {
+        visible = false;
+        enabled = false;
+        return;
+    }
+    
     visible = true;
     enabled = true;
 
     spriteSetEntry = entry;
+    
     refreshStates();
+    
+    if(entry->getNumStates() > 0) {
+        stateBrowser->stateTreeView->getRootNode()->getTreeChild(0)->setSelected();
+    }
+    
 }
 
 void SpriteStateEditor::handleEvent(Event *event) {
     if(event->getDispatcher() == newStateButton) {
         
-        String newStateName = "New State";
-        if(spriteSetEntry->getNumStates() == 0) {
-            newStateName = "default";
+        globalFrame->textInputPopup->action = "newState";
+		globalFrame->textInputPopup->setCaption("New state name");
+		globalFrame->textInputPopup->setValue("New State");
+        globalFrame->showModal(globalFrame->textInputPopup);
+        
+    } else if(event->getDispatcher() == globalFrame->textInputPopup) {
+        if(event->getEventCode() == UIEvent::OK_EVENT) {
+            if(globalFrame->textInputPopup->action == "newState") {
+                SpriteState *newState = new SpriteState(spriteSet, globalFrame->textInputPopup->getValue());
+                spriteSetEntry->addSpriteState(newState);
+                refreshStates();
+            } else if(globalFrame->textInputPopup->action == "renameState") {
+                selectedState->setName(globalFrame->textInputPopup->getValue());
+                refreshStates();
+            }
         }
-        
-        SpriteState *newState = new SpriteState(spriteSet, newStateName);
-        spriteSetEntry->addSpriteState(newState);
-        
-        refreshStates();
+    } else if(event->getDispatcher() == globalFrame->yesNoPopup) {
+        if(event->getEventCode() == UIEvent::OK_EVENT) {
+            if(globalFrame->yesNoPopup->action == "removeState") {
+                if(selectedState) {
+                    spriteSetEntry->removeSpriteState(selectedState);
+                    delete selectedState;
+                    selectedState = NULL;
+                    stateDetails->setSpriteState(NULL);
+                    refreshStates();
+                    dispatchEvent(new Event(), Event::CHANGE_EVENT);
+                }
+            }
+        }
+    } else if(event->getDispatcher() == stateBrowser->removeStateButton) {
+        if(selectedState) {
+            globalFrame->yesNoPopup->setCaption("Are you sure you want to remove state \""+selectedState->getName()+"\"?");
+            globalFrame->yesNoPopup->action = "removeState";
+            globalFrame->showModal(globalFrame->yesNoPopup);
+            
+        }
+    } else if(event->getDispatcher() == stateBrowser->moreButton) {
+        stateMoreMenu = globalMenu->showMenuAtMouse(100.0);
+        stateMoreMenu->addOption("Rename", "rename");
+        stateMoreMenu->fitToScreenVertical();
+        stateMoreMenu->addEventListener(this, UIEvent::OK_EVENT);
+    } else if(event->getDispatcher() == stateMoreMenu) {
+        if(selectedState) {
+            if(stateMoreMenu->getSelectedItem()->getMenuItemID() == "rename") {
+                globalFrame->textInputPopup->action = "renameState";
+                globalFrame->textInputPopup->setCaption("New state name");
+                globalFrame->textInputPopup->setValue(selectedState->getName());
+                globalFrame->showModal(globalFrame->textInputPopup);
+            }
+        }
         
     } else if(event->getDispatcher() == stateTreeView->getRootNode()) {
         selectedState = (SpriteState*) stateTreeView->getRootNode()->getSelectedNode()->getUserData();
@@ -2094,7 +2253,10 @@ void SpriteStateEditor::refreshStates() {
     
     for(int i=0; i < spriteSetEntry->getNumStates(); i++) {
         SpriteState *state = spriteSetEntry->getState(i);
-        stateTreeView->getRootNode()->addTreeChild("treeIcons/state.png", state->getName(), (void*) state);
+        UITree *newNode = stateTreeView->getRootNode()->addTreeChild("treeIcons/state.png", state->getName(), (void*) state);
+        if(state == selectedState) {
+            newNode->setSelected();
+        }
     }
 }
 
@@ -2204,8 +2366,9 @@ PolycodeSpriteEditor::PolycodeSpriteEditor() : PolycodeEditor(true){
 
 void PolycodeSpriteEditor::handleEvent(Event *event) {
     if(event->getDispatcher() == spriteBrowser) {
-        stateEditor->setSpriteEntry(spriteBrowser->getSelectedSpriteEntry());
-        spritePreview->getSceneSprite()->setSprite(spriteBrowser->getSelectedSpriteEntry());
+        Sprite *selectedSprite = spriteBrowser->getSelectedSpriteEntry();
+        stateEditor->setSpriteEntry(selectedSprite);
+        spritePreview->getSceneSprite()->setSprite(selectedSprite);
     } else if(event->getDispatcher() == addFramesButton) {
         SpriteState *spriteState = stateEditor->getDetailsEditor()->getSpriteState();
         bool generateBBox = false;

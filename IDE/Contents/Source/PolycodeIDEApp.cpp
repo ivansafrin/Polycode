@@ -916,7 +916,6 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 						editor->saveFile();
 						closeFile();
 					}
-					frame->yesNoCancelPopup->action = "";
 					frame->hideModal();					
 				}
 				break;
@@ -927,7 +926,6 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 						editor->setHasChanges(false);
 						closeFile();
 					}
-					frame->yesNoCancelPopup->action = "";					
 					frame->hideModal();
 				}
 				break;
@@ -948,7 +946,6 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 							editorManager->setCurrentEditor(NULL);
 						}						
 					}
-					frame->yesNoCancelPopup->action = "";
 					frame->hideModal();
 					if(quitApp()) {
 						core->Shutdown();
@@ -967,7 +964,6 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 							editorManager->setCurrentEditor(NULL);
 						}						
 					}
-					frame->yesNoCancelPopup->action = "";					
 					frame->hideModal();
 					if(quitApp()) {
 						core->Shutdown();
@@ -990,7 +986,6 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 				case UIEvent::CANCEL_EVENT:
 					break;
 			}
-			frame->yesNoCancelPopup->action = "";
 			frame->hideModal();
 		}
 		
@@ -1006,7 +1001,6 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 				case UIEvent::CANCEL_EVENT:
 					break;
 			}
-			frame->yesNoCancelPopup->action = "";
 			frame->hideModal();
 		}
 	} else if(event->getDispatcher() == frame->yesNoPopup) {
@@ -1016,7 +1010,6 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 			}
 			
 			frame->hideModal();
-			frame->yesNoPopup->action = "";		
 		}
 	
 		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {
@@ -1030,7 +1023,6 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 			}
 			
 			frame->hideModal();
-			frame->yesNoPopup->action = "";
 		}
 	}
 	

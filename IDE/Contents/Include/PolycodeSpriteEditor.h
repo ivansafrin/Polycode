@@ -87,11 +87,13 @@ class SpriteState {
 class Sprite {
     public:
         Sprite(String name);
+        ~Sprite();
     
         String getName();
         void setName(String name);
     
         void addSpriteState(SpriteState *state);
+        void removeSpriteState(SpriteState *state);
     
         unsigned int getNumStates();
         SpriteState *getState(unsigned int index);
@@ -113,6 +115,8 @@ class SpriteSet {
         void addSpriteEntry(Sprite *newEntry);
         unsigned int getNumSpriteEntries() const;
         Sprite *getSpriteEntry(unsigned int index) const;
+        void removeSprite(Sprite *sprite);
+    
     
         // frame manipulation
         void addSpriteFrame(const SpriteFrame &frame);
@@ -323,6 +327,9 @@ class SpriteBrowser : public UIElement {
         UITreeContainer *spriteTreeView;
         UIImageButton *newSpriteButton;
         UIImageButton *removeSpriteButton;
+        UIImageButton *moreButton;
+    
+        UIMenu *spriteMoreMenu;
 };
 
 
@@ -390,6 +397,7 @@ class SpriteStateBrowser : public UIElement {
     
         UIImageButton *newStateButton;
         UIImageButton *removeStateButton;
+        UIImageButton *moreButton;
     
 };
 
@@ -455,6 +463,8 @@ class SpriteStateEditor : public UIElement {
         UITreeContainer *stateTreeView;
         SpriteSet *spriteSet;
         SpriteState *selectedState;
+    
+        UIMenu *stateMoreMenu;
     
         SpriteStateBrowser *stateBrowser;
     
