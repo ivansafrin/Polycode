@@ -124,6 +124,7 @@ SpriteState::SpriteState(SpriteSet *spriteSet, String name) {
 
 void SpriteState::setBoundingBox(Vector2 boundingBox) {
     this->boundingBox = boundingBox;
+    rebuildStateMeshes();    
 }
 
 Vector2 SpriteState::getBoundingBox() {
@@ -231,8 +232,8 @@ void SpriteState::rebuildStateMeshes() {
         
         
         Vector2 meshOffset;
-        meshOffset.x = frameWidth * spriteOffset.x;
-        meshOffset.y = frameHeight * spriteOffset.y;
+        meshOffset.x = boundingBox.x * spriteOffset.x / pixelsPerUnit;
+        meshOffset.y = boundingBox.y * spriteOffset.y / pixelsPerUnit;
         
         meshOffset.x -= frameWidth * frame.anchorPoint.x;
         meshOffset.y += frameHeight * frame.anchorPoint.y;
@@ -405,12 +406,13 @@ void SpriteSet::clearFrames() {
     nextFrameIDIndex = 0;
 }
 
-void SpriteSet::createGridFrames(Number width, Number height) {
+void SpriteSet::createGridFrames(Number width, Number height, const Vector2 &defaultAnchor) {
     
     for(Number x = 0.0; x+width <= 1.0; x += width) {
         for(Number y = 0.0; y+height <= 1.0; y += height) {
             SpriteFrame frame;
             frame.coordinates = Polycode::Rectangle(x, y, width, height);
+            frame.anchorPoint = defaultAnchor;
             addSpriteFrame(frame);
         }
     }
@@ -467,7 +469,7 @@ bool rectIntersect(const Polycode::Rectangle &r1, const Polycode::Rectangle &r2,
              r2.y + r2.h + minDistance < r1.y);
 }
 
-void SpriteSet::createFramesFromIslands(unsigned int minDistance) {
+void SpriteSet::createFramesFromIslands(unsigned int minDistance, const Vector2 &defaultAnchor) {
     String imageFileName = getTexture()->getResourcePath();
     
     Image *image = new Image(imageFileName);
@@ -527,6 +529,8 @@ void SpriteSet::createFramesFromIslands(unsigned int minDistance) {
         frame.coordinates.y = frame.coordinates.y / ((Number)image->getHeight());
         frame.coordinates.w = frame.coordinates.w / ((Number)image->getWidth());
         frame.coordinates.h = frame.coordinates.h / ((Number)image->getHeight());
+        
+        frame.anchorPoint = defaultAnchor;
         
         addSpriteFrame(frame);
     }
@@ -731,40 +735,105 @@ SpriteSheetEditor::SpriteSheetEditor(SpriteSet *sprite) : UIElement() {
     changeImageButton->addEventListener(this, UIEvent::CLICK_EVENT);
     changeImageButton->setPosition(5.0, 3.0);
     
-    clearFramesButton = new UIButton("Clear frames", 110);
+    clearFramesButton = new UIButton("Clear", 60);
     bottomMenu->addChild(clearFramesButton);
     clearFramesButton->addEventListener(this, UIEvent::CLICK_EVENT);
-    clearFramesButton->setPosition(130.0, 3.0);
+    clearFramesButton->setPosition(125.0, 3.0);
     
-    generateFramesButton = new UIButton("Generate frames", 120);
+    generateFramesButton = new UIButton("Generate", 70);
     bottomMenu->addChild(generateFramesButton);
     generateFramesButton->addEventListener(this, UIEvent::CLICK_EVENT);
-    generateFramesButton->setPosition(230.0, 3.0);
+    generateFramesButton->setPosition(185.0, 3.0);
     
     generateTypeDropdown = new UIComboBox(globalMenu, 120);
     bottomMenu->addChild(generateTypeDropdown);
-    generateTypeDropdown->setPosition(360, 3.0);
+    generateTypeDropdown->setPosition(255, 3.0);
     
     generateTypeDropdown->addComboItem("Uniform grid");
-    generateTypeDropdown->addComboItem("Detect islands");
+    generateTypeDropdown->addComboItem("Detect frames");
     
     generateTypeDropdown->setSelectedIndex(0);
     
-    uniformGridWidthInput = new UITextInput(false, 30, 12);
-    bottomMenu->addChild(uniformGridWidthInput);
-    uniformGridWidthInput->setPosition(485, 3);
+    generateTypeDropdown->addEventListener(this, UIEvent::CHANGE_EVENT);
+    
+    generateOptionsButton = new UIButton("Options", 80);
+    bottomMenu->addChild(generateOptionsButton);
+    generateOptionsButton->setPosition(375.0, 3.0);
+    generateOptionsButton->addEventListener(this, UIEvent::CLICK_EVENT);
+    
+    optionsWindow = new UIWindow("Frame generation options", 230.0, 100.0);
+    addChild(optionsWindow);
+    optionsWindow->hideWindow();
+    optionsWindow->visible = false;
+    optionsWindow->enabled = false;
+    
+    uniformOptions = new UIElement();
+    optionsWindow->addChild(uniformOptions);
+    detectOptions = new UIElement();
+    optionsWindow->addChild(detectOptions);
+    detectOptions->visible = false;
+    detectOptions->enabled = false;
+    
+    UILabel *label;
+    
+    label = new UILabel("Default anchor", 12);
+    optionsWindow->addChild(label);
+    label->setPosition(120.0 - label->getWidth(), 43.0);
+    
+    defaultAnchorCombo = new UIComboBox(globalMenu, 112.0);
+    optionsWindow->addChild(defaultAnchorCombo);
+    defaultAnchorCombo->setPosition(130.0, 40.0);
+    
+    
+    defaultAnchorCombo->addComboItem("Center");
+    defaultAnchorCombo->addComboItem("Top-left");
+    defaultAnchorCombo->addComboItem("Top");
+    defaultAnchorCombo->addComboItem("Top-right");
+    defaultAnchorCombo->addComboItem("Left");
+    defaultAnchorCombo->addComboItem("Right");
+    defaultAnchorCombo->addComboItem("Bottom-left");
+    defaultAnchorCombo->addComboItem("Bottom");
+    defaultAnchorCombo->addComboItem("Bottom-right");
+    defaultAnchorCombo->setSelectedIndex(0);
+    
+    
+    defaultAnchors.push_back(Vector2(0.0, 0.0));
+    defaultAnchors.push_back(Vector2(-0.5, -0.5));
+    defaultAnchors.push_back(Vector2(0.0, -0.5));
+    defaultAnchors.push_back(Vector2(0.5, -0.5));
+    defaultAnchors.push_back(Vector2(-0.5, 0.0));
+    defaultAnchors.push_back(Vector2(0.5, 0.0));
+    defaultAnchors.push_back(Vector2(-0.5, 0.5));
+    defaultAnchors.push_back(Vector2(0.0, 0.5));
+    defaultAnchors.push_back(Vector2(0.5, 0.5));
+    
+    label = new UILabel("Grid width (px)", 12);
+    uniformOptions->addChild(label);
+    label->setPosition(120.0 - label->getWidth(), 68.0);
+    
+    uniformGridWidthInput = new UITextInput(false, 100.0, 12);
+    uniformOptions->addChild(uniformGridWidthInput);
+    uniformGridWidthInput->setPosition(130.0, 65.0);
     uniformGridWidthInput->setText("32");
     uniformGridWidthInput->setNumberOnly(true);
 
-    uniformGridHeightInput = new UITextInput(false, 30, 12);
-    bottomMenu->addChild(uniformGridHeightInput);
-    uniformGridHeightInput->setPosition(530, 3);
+    label = new UILabel("Grid height (px)", 12);
+    uniformOptions->addChild(label);
+    label->setPosition(120.0 - label->getWidth(), 93.0);
+    
+    uniformGridHeightInput = new UITextInput(false, 100, 12);
+    uniformOptions->addChild(uniformGridHeightInput);
+    uniformGridHeightInput->setPosition(130.0, 90);
     uniformGridHeightInput->setText("32");
     uniformGridHeightInput->setNumberOnly(true);
     
+    label = new UILabel("Min. distance (px)", 12);
+    detectOptions->addChild(label);
+    label->setPosition(120.0 - label->getWidth(), 68.0);
+    
     minimumDistanceInput = new UITextInput(false, 30, 12);
-    bottomMenu->addChild(minimumDistanceInput);
-    minimumDistanceInput->setPosition(575, 3);
+    detectOptions->addChild(minimumDistanceInput);
+    minimumDistanceInput->setPosition(130.0, 65.0);
     minimumDistanceInput->setText("0");
     minimumDistanceInput->setNumberOnly(true);
    
@@ -773,17 +842,13 @@ SpriteSheetEditor::SpriteSheetEditor(SpriteSet *sprite) : UIElement() {
 	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	
-	UILabel *label = new UILabel("SPRITE SHEET", 18, "section", Label::ANTIALIAS_FULL);
+	label = new UILabel("SPRITE SHEET", 18, "section", Label::ANTIALIAS_FULL);
 	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	
 	addChild(label);
 	label->setPosition(10, 3);
     
-    
-    
     creatingFrame = false;
-    
-    
     
     Services()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 }
@@ -869,15 +934,30 @@ void SpriteSheetEditor::handleEvent(Event *event) {
         if(generateTypeDropdown->getSelectedIndex() == 0) {
             Number frameWidth = uniformGridWidthInput->getText().toNumber() / ((Number)sprite->getTexture()->getWidth());
             Number frameHeight = uniformGridHeightInput->getText().toNumber() / ((Number)sprite->getTexture()->getHeight());
-            sprite->createGridFrames(frameWidth, frameHeight);
+            sprite->createGridFrames(frameWidth, frameHeight, defaultAnchors[defaultAnchorCombo->getSelectedIndex()]);
         } else {
-            sprite->createFramesFromIslands(minimumDistanceInput->getText().toInteger());
+            sprite->createFramesFromIslands(minimumDistanceInput->getText().toInteger(), defaultAnchors[defaultAnchorCombo->getSelectedIndex()]);
         }
         
         dispatchEvent(new Event(),Event::CHANGE_EVENT);
+    } else if(event->getDispatcher() == generateTypeDropdown) {
+        if(generateTypeDropdown->getSelectedIndex() == 0) {
+            uniformOptions->visible = true;
+            uniformOptions->enabled = true;
+            detectOptions->visible = false;
+            detectOptions->enabled = false;
+        } else {
+            uniformOptions->visible = false;
+            uniformOptions->enabled = false;
+            detectOptions->visible = true;
+            detectOptions->enabled = true;
+        }
     } else if(event->getDispatcher() == clearFramesButton) {
         sprite->clearFrames();
         dispatchEvent(new Event(),Event::CHANGE_EVENT);
+    } else if(event->getDispatcher() == generateOptionsButton) {
+        optionsWindow->visible = !optionsWindow->visible;
+        optionsWindow->enabled = !optionsWindow->enabled;
     } else if(event->getDispatcher() == globalFrame->assetBrowser) {
         String newImagePath = globalFrame->assetBrowser->getSelectedAssetPath();
         
@@ -1104,6 +1184,7 @@ void SpriteSheetEditor::Resize(Number width, Number height) {
     bottomMenuRect->Resize(width, 31.0);
     bottomMenu->setPosition(0.0, height-30.0);
     
+    optionsWindow->setPosition(width-optionsWindow->getWidth()-10.0, height-optionsWindow->getHeight()-40.0);
     
     UIElement::Resize(width, height);
 }

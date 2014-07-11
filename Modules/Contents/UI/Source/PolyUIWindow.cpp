@@ -166,11 +166,9 @@ void UIWindow::onMouseDown(Number x, Number y) {
 void UIWindow::showWindow() {
 	enabled = true;
 	visible = true;
-	color.a = 1.0;
 }
 
 void UIWindow::hideWindow() {
-	color.a = 0.0;
 	visible = false;
 	enabled = false;
 }

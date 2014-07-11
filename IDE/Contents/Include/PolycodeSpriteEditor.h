@@ -127,8 +127,8 @@ class SpriteSet {
         void clearFrames();
     
         // automatic frame generation
-        void createGridFrames(Number width, Number height);
-        void createFramesFromIslands(unsigned int minDistance);
+        void createGridFrames(Number width, Number height, const Vector2 &defaultAnchor);
+        void createFramesFromIslands(unsigned int minDistance, const Vector2 &defaultAnchor);
     
     protected:
     
@@ -270,6 +270,8 @@ class SpriteSheetEditor : public UIElement {
         SpriteSet *sprite;
         UIRect *previewImage;
     
+        std::vector<Vector2> defaultAnchors;
+    
         UIImage *previewBg;
     
         SceneMesh *frameVisualizerMesh;
@@ -280,6 +282,15 @@ class SpriteSheetEditor : public UIElement {
         UIButton *changeImageButton;
         UIButton *generateFramesButton;
         UIButton *clearFramesButton;
+    
+        UIButton *generateOptionsButton;
+    
+        UIElement *uniformOptions;
+        UIElement *detectOptions;
+    
+        UIComboBox *defaultAnchorCombo;
+    
+        UIWindow *optionsWindow;
     
         UITextInput *uniformGridWidthInput;
         UITextInput *uniformGridHeightInput;
