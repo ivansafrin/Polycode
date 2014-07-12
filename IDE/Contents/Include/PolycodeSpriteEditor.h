@@ -185,6 +185,8 @@ class SpritePreview : public UIElement {
     
         void Update();
     
+        void handleEvent(Event *event);
+    
         SceneSpriteRewrite *getSceneSprite();
         void Resize(Number width, Number height);
     
@@ -192,6 +194,8 @@ class SpritePreview : public UIElement {
         UIRect *headerBg;    
         UIImage *previewBg;
         SceneSpriteRewrite *sprite;
+    
+        UIIconSelector *bgSelector;
     
         ScenePrimitive *boundingBoxPreview;
     
@@ -255,6 +259,8 @@ class SpriteSheetEditor : public UIElement {
     protected:
     
         UIRect *headerBg;
+    
+        UIIconSelector *bgSelector;
     
         bool creatingFrame;
         bool willCreateFrame;
@@ -438,6 +444,9 @@ class SpriteStateEditorDetails : public UIElement {
         UITextInput *offsetYInput;
     
         UIButton *appendFramesButton;
+        UIButton *removeFramesButton;
+        UIButton *clearFramesButton;
+    
         UIImageButton *playButton;
         UIImageButton *pauseButton;
         SpriteStateEditBar *editBar;
@@ -508,6 +517,6 @@ class PolycodeSpriteEditor : public PolycodeEditor {
 
 class PolycodeSpriteEditorFactory : public PolycodeEditorFactory {
 	public:
-		PolycodeSpriteEditorFactory() : PolycodeEditorFactory() { extensions.push_back("sprite"); }
+		PolycodeSpriteEditorFactory() : PolycodeEditorFactory() { extensions.push_back("sprites"); }
 		PolycodeEditor *createEditor() { return new PolycodeSpriteEditor(); }
 };

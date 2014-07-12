@@ -877,6 +877,13 @@ SpriteSheetEditor::SpriteSheetEditor(SpriteSet *sprite) : UIElement() {
 	addChild(label);
 	label->setPosition(10, 3);
     
+    bgSelector = new UIIconSelector();
+    bgSelector->addIcon("spriteEditor/grid_icon_dark.png");
+    bgSelector->addIcon("spriteEditor/grid_icon_light.png");
+    bgSelector->selectIndex(0);
+    bgSelector->addEventListener(this, UIEvent::SELECT_EVENT);
+    addChild(bgSelector);
+    
     creatingFrame = false;
     
     Services()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
@@ -969,6 +976,15 @@ void SpriteSheetEditor::handleEvent(Event *event) {
         }
         
         dispatchEvent(new Event(),Event::CHANGE_EVENT);
+    } else if(event->getDispatcher() == bgSelector) {
+        switch(bgSelector->getSelectedIndex()) {
+            case 0:
+                previewBg->loadTexture("main/grid_dark.png");
+                break;
+            case 1:
+                previewBg->loadTexture("main/grid_light.png");
+                break;
+        }
     } else if(event->getDispatcher() == generateTypeDropdown) {
         if(generateTypeDropdown->getSelectedIndex() == 0) {
             uniformOptions->visible = true;
@@ -1215,6 +1231,8 @@ void SpriteSheetEditor::Resize(Number width, Number height) {
     
     optionsWindow->setPosition(width-optionsWindow->getWidth()-10.0, height-optionsWindow->getHeight()-40.0);
     
+    bgSelector->setPosition(width - bgSelector->getWidth()-3.0, 3.0);
+    
     UIElement::Resize(width, height);
 }
 
@@ -1404,68 +1422,78 @@ SpriteStateEditorDetails::SpriteStateEditorDetails(SpriteSet *spriteSet) : UIEle
     pauseButton->setPosition(140.0, 35.0);
     pauseButton->addEventListener(this, UIEvent::CLICK_EVENT);
     
-    appendFramesButton = new UIButton("Append selected frames", 200.0);
+    appendFramesButton = new UIButton("Append", 80.0);
     addChild(appendFramesButton);
-    appendFramesButton->setPosition(190.0, 40.0);
+    appendFramesButton->setPosition(180.0, 40.0);
     appendFramesButton->addEventListener(this, UIEvent::CLICK_EVENT);
+
+    removeFramesButton = new UIButton("Remove", 80.0);
+    addChild(removeFramesButton);
+    removeFramesButton->setPosition(180.0 + 80.0 + 5.0, 40.0);
+    removeFramesButton->addEventListener(this, UIEvent::CLICK_EVENT);
+    
+    clearFramesButton = new UIButton("Clear", 80.0);
+    addChild(clearFramesButton);
+    clearFramesButton->setPosition(180.0 + 160.0 + 10.0, 40.0);
+    clearFramesButton->addEventListener(this, UIEvent::CLICK_EVENT);
     
     UIImage *divider = new UIImage("spriteEditor/divider.png", 4, 128);
     addChild(divider);
-    divider->setPosition(130.0, 30.0);
+    divider->setPosition(132.0, 30.0);
     divider->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
     
 	label = new UILabel("FPS", 18, "section", Label::ANTIALIAS_FULL);
-	label->setPosition(55.0-label->getWidth(), 40.0);
+	label->setPosition(60.0-label->getWidth(), 40.0);
     addChild(label);
     
     fpsInput = new UITextInput(false, 50.0, 12.0);
     addChild(fpsInput);
-    fpsInput->setPosition(60.0, 40.0);
+    fpsInput->setPosition(65.0, 40.0);
     fpsInput->addEventListener(this, UIEvent::CHANGE_EVENT);
     
 	label = new UILabel("SCALE", 18, "section", Label::ANTIALIAS_FULL);
-	label->setPosition(55.0-label->getWidth(), 70.0);
+	label->setPosition(60.0-label->getWidth(), 65.0);
     addChild(label);
     
     scaleInput = new UITextInput(false, 50.0, 12.0);
     addChild(scaleInput);
-    scaleInput->setPosition(60.0, 70.0);
+    scaleInput->setPosition(65.0, 65.0);
     scaleInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 
 	label = new UILabel("WIDTH", 18, "section", Label::ANTIALIAS_FULL);
-	label->setPosition(55.0-label->getWidth(), 100.0);
+	label->setPosition(60.0-label->getWidth(), 90.0);
     addChild(label);
     
     bBoxWidthInput = new UITextInput(false, 50.0, 12.0);
     addChild(bBoxWidthInput);
-    bBoxWidthInput->setPosition(60.0, 100.0);
+    bBoxWidthInput->setPosition(65.0, 90.0);
     bBoxWidthInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 
 	label = new UILabel("HEIGHT", 18, "section", Label::ANTIALIAS_FULL);
-	label->setPosition(55.0-label->getWidth(), 130.0);
+	label->setPosition(60.0-label->getWidth(), 115.0);
     addChild(label);
     
     bBoxHeightInput = new UITextInput(false, 50.0, 12.0);
     addChild(bBoxHeightInput);
-    bBoxHeightInput->setPosition(60.0, 130.0);
+    bBoxHeightInput->setPosition(65.0, 115.0);
     bBoxHeightInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 
 	label = new UILabel("X OFF", 18, "section", Label::ANTIALIAS_FULL);
-	label->setPosition(55.0-label->getWidth(), 160.0);
+	label->setPosition(60.0-label->getWidth(), 140.0);
     addChild(label);
     
     offsetXInput = new UITextInput(false, 50.0, 12.0);
     addChild(offsetXInput);
-    offsetXInput->setPosition(60.0, 160.0);
+    offsetXInput->setPosition(65.0, 140.0);
     offsetXInput->addEventListener(this, UIEvent::CHANGE_EVENT);
     
 	label = new UILabel("Y OFF", 18, "section", Label::ANTIALIAS_FULL);
-	label->setPosition(55.0-label->getWidth(), 190.0);
+	label->setPosition(60.0-label->getWidth(), 165.0);
     addChild(label);
     
     offsetYInput = new UITextInput(false, 50.0, 12.0);
     addChild(offsetYInput);
-    offsetYInput->setPosition(60.0, 190.0);
+    offsetYInput->setPosition(65.0, 165.0);
     offsetYInput->addEventListener(this, UIEvent::CHANGE_EVENT);
     
     visible = false;
@@ -2296,6 +2324,14 @@ SpritePreview::SpritePreview(SpriteSet *spriteSet) : UIElement() {
     boundingBoxPreview->wireFrameColor = Color(0.0, 0.5, 1.0, 1.0);
     boundingBoxPreview->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
     boundingBoxPreview->color.a = 0.0;
+    
+    bgSelector = new UIIconSelector();
+    bgSelector->addIcon("spriteEditor/grid_icon_dark.png");
+    bgSelector->addIcon("spriteEditor/grid_icon_light.png");
+    bgSelector->selectIndex(0);
+    bgSelector->addEventListener(this, UIEvent::SELECT_EVENT);
+    addChild(bgSelector);
+    
 }
 
 SceneSpriteRewrite *SpritePreview::getSceneSprite() {
@@ -2304,6 +2340,19 @@ SceneSpriteRewrite *SpritePreview::getSceneSprite() {
 
 SpritePreview::~SpritePreview() {
     
+}
+
+void SpritePreview::handleEvent(Event *event) {
+    if(event->getDispatcher() == bgSelector) {
+        switch(bgSelector->getSelectedIndex()) {
+            case 0:
+                previewBg->loadTexture("main/grid_dark.png");
+            break;
+            case 1:
+                previewBg->loadTexture("main/grid_light.png");
+            break;
+        }
+    }
 }
 
 void SpritePreview::Update() {
@@ -2327,6 +2376,8 @@ void SpritePreview::Resize(Number width, Number height) {
     
     sprite->setPosition(width/2.0, height/2.0);
     boundingBoxPreview->setPosition(sprite->getPosition());
+    
+    bgSelector->setPosition(width - bgSelector->getWidth() - 3.0, 3.0);
 }
 
 PolycodeSpriteEditor::PolycodeSpriteEditor() : PolycodeEditor(true){
