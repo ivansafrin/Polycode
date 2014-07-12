@@ -44,6 +44,10 @@ SpriteState *SceneSpriteRewrite::getCurrentSpriteState() {
     return currentSpriteState;
 }
 
+SpriteSet *SceneSpriteRewrite::getSpriteSet() {
+    return spriteSet;
+}
+
 void SceneSpriteRewrite::setPaused(bool val) {
     paused = val;
 }
@@ -129,6 +133,11 @@ SpriteState::SpriteState(SpriteSet *spriteSet, String name) {
 
 void SpriteState::setBoundingBox(Vector2 boundingBox) {
     this->boundingBox = boundingBox;
+    rebuildStateMeshes();
+}
+
+void SpriteState::clearFrames() {
+    frameIDs.clear();
     rebuildStateMeshes();
 }
 
@@ -1564,6 +1573,10 @@ void SpriteStateEditorDetails::handleEvent(Event *event) {
         sceneSprite->setPaused(false);
     }  else if(event->getDispatcher() == pauseButton) {
         sceneSprite->setPaused(true);
+    } else if(event->getDispatcher() == clearFramesButton) {
+        spriteState->clearFrames();
+    } else if(event->getDispatcher() == removeFramesButton) {
+        editBar->deleteSelectedFrames();
     }
 }
 
@@ -2318,12 +2331,12 @@ SpritePreview::SpritePreview(SpriteSet *spriteSet) : UIElement() {
 	addChild(label);
 	label->setPosition(10, 3);
     
-    boundingBoxPreview = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1.0, 1.0);
+    boundingBoxPreview = new SceneMesh(Mesh::LINE_MESH);
     addChild(boundingBoxPreview);
-    boundingBoxPreview->overlayWireframe = true;
-    boundingBoxPreview->wireFrameColor = Color(0.0, 0.5, 1.0, 1.0);
-    boundingBoxPreview->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
-    boundingBoxPreview->color.a = 0.0;
+    boundingBoxPreview->loadTexture("main/stipple_small.png");
+    boundingBoxPreview->lineWidth = 1;
+    
+    
     
     bgSelector = new UIIconSelector();
     bgSelector->addIcon("spriteEditor/grid_icon_dark.png");
@@ -2359,13 +2372,39 @@ void SpritePreview::Update() {
     
     SpriteState  *state = sprite->getCurrentSpriteState();
     
-    Vector2 bBox;
     if(state) {
-        bBox = state->getBoundingBox();
+        Vector2 bBox = state->getBoundingBox();
         sprite->setLocalBoundingBox(bBox.x / state->getPixelsPerUnit(), bBox.y / state->getPixelsPerUnit(), 0.001);
     }
     
-    boundingBoxPreview->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, sprite->getLocalBoundingBox().x, sprite->getLocalBoundingBox().y);
+    //boundingBoxPreview->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, sprite->getLocalBoundingBox().x, sprite->getLocalBoundingBox().y);
+    
+    Mesh *bbBoxMesh = boundingBoxPreview->getMesh();
+    bbBoxMesh->clearMesh();
+    bbBoxMesh->indexedMesh = true;
+    
+    Vector3 bBox = sprite->getLocalBoundingBox();
+    
+    SpriteFrame frame;
+    
+    frame.coordinates.x = 0.0;
+    frame.coordinates.y = 0.0;
+    Vector3 bBoxNorm = bBox;
+    bBoxNorm.Normalize();
+    frame.coordinates.w = bBoxNorm.x;
+    frame.coordinates.h = bBoxNorm.y;
+    
+    bbBoxMesh->addVertex(-bBox.x * 0.5, bBox.y * 0.5, 0.0, frame.coordinates.x, frame.coordinates.y);
+    bbBoxMesh->addVertex((-bBox.x * 0.5)+bBox.x, bBox.y * 0.5, 0.0, frame.coordinates.x+frame.coordinates.w, frame.coordinates.y);
+    bbBoxMesh->addVertex((-bBox.x * 0.5)+bBox.x, bBox.y * 0.5 - bBox.y, 0.0, frame.coordinates.x+frame.coordinates.w, frame.coordinates.y + frame.coordinates.h);
+    bbBoxMesh->addVertex(-bBox.x * 0.5, bBox.y * 0.5 - bBox.y, 0.0, frame.coordinates.x, frame.coordinates.y + frame.coordinates.h);
+    
+    bbBoxMesh->addIndexedFace(0,1);
+    bbBoxMesh->addIndexedFace(1,2);
+    bbBoxMesh->addIndexedFace(2,3);
+    bbBoxMesh->addIndexedFace(3,0);
+    
+    bbBoxMesh->dirtyArrays();
 
 }
 
@@ -2468,7 +2507,12 @@ bool PolycodeSpriteEditor::openFile(OSFileEntry filePath) {
 }
 
 void PolycodeSpriteEditor::saveFile() {
-
+    Object fileObject;
+    
+    
+    
+    
+    fileObject.saveToXML(filePath);
 }
 
 void PolycodeSpriteEditor::Resize(int x, int y) {

@@ -57,6 +57,7 @@ class SpriteState {
     
         void removeFrameByIndex(unsigned int frameIndex);
         void removeFrameIndices(std::vector<unsigned int> indices);
+        void clearFrames();
     
         void setPixelsPerUnit(Number ppu);
         Number getPixelsPerUnit();
@@ -197,7 +198,7 @@ class SpritePreview : public UIElement {
     
         UIIconSelector *bgSelector;
     
-        ScenePrimitive *boundingBoxPreview;
+        SceneMesh *boundingBoxPreview;
     
 };
 
