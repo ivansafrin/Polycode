@@ -51,10 +51,10 @@ void UIMultilineLabel::setText(const String& text) {
         } else {
             UILabel *label = new UILabel(lines[i], labelSize, labelFontName, labelAAMode);
             lineSize = label->getHeight();
-            addChild(label);
             label->setPositionY(yPos);
             yPos += label->getHeight() + spacing;
             addChild(label);
+			labels.push_back(label);
         }
     }
 }
