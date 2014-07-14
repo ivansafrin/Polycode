@@ -333,9 +333,147 @@ void Sprite::setName(String name) {
 }
 
 
-SpriteSet::SpriteSet(String imageFileName) {
-    loadTexture(imageFileName);
+SpriteSet::SpriteSet(String fileName) {
+//    loadTexture(imageFileName);
     nextFrameIDIndex = 0;
+    loadSpriteSet(fileName);
+
+}
+
+void SpriteSet::loadSpriteSet(String fileName) {
+	Object loadObject;
+	if(!loadObject.loadFromBinary(fileName)) {
+        if(!loadObject.loadFromXML(fileName)) {
+            Logger::log("Error loading sprite sheet: %s.\n", fileName.c_str());
+            return;
+        }
+	}
+    
+    ObjectEntry *spriteSheetEntry = loadObject.root["sprite_sheet"];
+    if(spriteSheetEntry) {
+        ObjectEntry *fileNameEntry = (*spriteSheetEntry)["fileName"];
+        if(fileNameEntry) {
+            loadTexture(fileNameEntry->stringVal);
+        }
+        
+        ObjectEntry *framesEntry = (*spriteSheetEntry)["frames"];
+        if(framesEntry) {
+            for(int i=0; i < framesEntry->length; i++) {
+                ObjectEntry *frameEntry = (*framesEntry)[i];
+                
+                if(frameEntry) {
+                    SpriteFrame frame;
+
+                    ObjectEntry *idEntry = (*frameEntry)["id"];
+                    if(idEntry) {
+                        frame.frameID = idEntry->intVal;
+                    }
+                    
+                    ObjectEntry *xEntry = (*frameEntry)["x"];
+                    if(xEntry) {
+                        frame.coordinates.x = xEntry->NumberVal;
+                    }
+                    ObjectEntry *yEntry = (*frameEntry)["y"];
+                    if(yEntry) {
+                        frame.coordinates.y = yEntry->NumberVal;
+                    }
+                    ObjectEntry *wEntry = (*frameEntry)["w"];
+                    if(wEntry) {
+                        frame.coordinates.w = wEntry->NumberVal;
+                    }
+                    ObjectEntry *hEntry = (*frameEntry)["h"];
+                    if(hEntry) {
+                        frame.coordinates.h = hEntry->NumberVal;
+                    }
+                    ObjectEntry *axEntry = (*frameEntry)["ax"];
+                    if(axEntry) {
+                        frame.anchorPoint.x = axEntry->NumberVal;
+                    }
+                    ObjectEntry *ayEntry = (*frameEntry)["ay"];
+                    if(ayEntry) {
+                        frame.anchorPoint.y = ayEntry->NumberVal;
+                    }
+                    
+                    addSpriteFrame(frame, false);
+                }
+                
+            }
+        }
+        
+    } else {
+        return;
+    }
+    
+    ObjectEntry *spritesEntry = loadObject.root["sprites"];
+    if(spritesEntry) {
+        for(int i=0; i < spritesEntry->length; i++) {
+            ObjectEntry *spriteEntry = (*spritesEntry)[i];
+            if(spriteEntry) {
+                ObjectEntry *nameEntry = (*spriteEntry)["name"];
+                String spriteName;
+                if(nameEntry) {
+                    spriteName = nameEntry->stringVal;
+                }
+                Sprite *newSprite = new Sprite(spriteName);
+                addSpriteEntry(newSprite);
+                
+                ObjectEntry *statesEntry = (*spriteEntry)["states"];
+                
+                if(statesEntry) {
+                    for(int j=0; j < statesEntry->length; j++) {
+                        ObjectEntry *stateEntry = (*statesEntry)[j];
+                        if(stateEntry) {
+                            SpriteState *newState = new SpriteState(this, "");
+                            
+                            ObjectEntry *nameEntry = (*stateEntry)["name"];
+                            if(nameEntry) {
+                                newState->setName(nameEntry->stringVal);
+                            }
+                            
+                            ObjectEntry *fpsEntry = (*stateEntry)["fps"];
+                            if(fpsEntry) {
+                                newState->setStateFPS(fpsEntry->NumberVal);
+                            }
+
+                            ObjectEntry *scaleEntry = (*stateEntry)["scale"];
+                            if(scaleEntry) {
+                                newState->setPixelsPerUnit(scaleEntry->NumberVal);
+                            }
+
+                            ObjectEntry *widthEntry = (*stateEntry)["width"];
+                            ObjectEntry *heightEntry = (*stateEntry)["height"];
+                            if(widthEntry && heightEntry) {
+                                newState->setBoundingBox(Vector2(widthEntry->NumberVal, heightEntry->NumberVal));
+                            }
+                            
+                            ObjectEntry *xOffsetEntry = (*stateEntry)["offset_x"];
+                            ObjectEntry *yOffsetEntry = (*stateEntry)["offset_y"];
+                            if(xOffsetEntry && yOffsetEntry) {
+                                newState->setSpriteOffset(Vector2(xOffsetEntry->NumberVal, yOffsetEntry->NumberVal));
+                            }
+                            
+                            ObjectEntry *frameIDsEntry = (*stateEntry)["frame_ids"];
+                            
+                            if(frameIDsEntry) {
+                                std::vector<String> frameIDs = frameIDsEntry->stringVal.split(",");
+                                
+                                std::vector<unsigned int> frameIDInts;
+                                for(int f=0; f < frameIDs.size(); f++) {
+                                    frameIDInts.push_back(frameIDs[f].toInteger());
+                                }
+                                
+                                newState->appendFrames(frameIDInts);
+                            }
+                            
+                            newSprite->addSpriteState(newState);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+
 }
 
 void SpriteSet::removeFrameByID(unsigned int frameID) {
@@ -362,7 +500,7 @@ Texture *SpriteSet::loadTexture(String imageFileName) {
     return spriteTexture;
 }
 
-void SpriteSet::addSpriteFrame(const SpriteFrame &frame) {
+void SpriteSet::addSpriteFrame(const SpriteFrame &frame, bool assignID) {
     
     // do not add existing frames
     for(int i=0; i < frames.size(); i++) {
@@ -375,8 +513,12 @@ void SpriteSet::addSpriteFrame(const SpriteFrame &frame) {
     }
     
     frames.push_back(frame);
-    frames[frames.size()-1].frameID = nextFrameIDIndex;
-    nextFrameIDIndex++;
+    if(assignID) {
+        frames[frames.size()-1].frameID = nextFrameIDIndex;
+        nextFrameIDIndex++;
+    } else {
+        nextFrameIDIndex = frame.frameID + 1;
+    }
     
 }
 
@@ -2420,37 +2562,6 @@ void SpritePreview::Resize(Number width, Number height) {
 }
 
 PolycodeSpriteEditor::PolycodeSpriteEditor() : PolycodeEditor(true){
-    mainSizer = new UIVSizer(100, 100, 200, false);
-    addChild(mainSizer);
-    
-    topSizer = new UIHSizer(100, 100, 400, false);
-    mainSizer->addTopChild(topSizer);
-    
-    bottomSizer = new UIHSizer(100, 100, 200, true);
-    mainSizer->addBottomChild(bottomSizer);
-    
-    sprite = new SpriteSet("default.png");
-    
-    spriteSheetEditor = new SpriteSheetEditor(sprite);
-    topSizer->addLeftChild(spriteSheetEditor);
-    spriteSheetEditor->addEventListener(this, Event::CHANGE_EVENT);
-    
-    spriteBrowser = new SpriteBrowser(sprite);
-    bottomSizer->addLeftChild(spriteBrowser);
-    spriteBrowser->addEventListener(this, Event::CHANGE_EVENT);
-    
-    stateEditor = new SpriteStateEditor(sprite);
-    bottomSizer->addRightChild(stateEditor);
-    
-    addFramesButton = stateEditor->getDetailsEditor()->getAppendFramesButton();
-    addFramesButton->addEventListener(this, UIEvent::CLICK_EVENT);
-    
-    spritePreview = new SpritePreview(sprite);
-    topSizer->addRightChild(spritePreview);
-    
-    stateEditor->getDetailsEditor()->setSceneSprite(spritePreview->getSceneSprite());
-    
-    stateEditor->addEventListener(this, Event::CHANGE_EVENT);
     
 }
 
@@ -2502,16 +2613,102 @@ PolycodeSpriteEditor::~PolycodeSpriteEditor() {
 
 bool PolycodeSpriteEditor::openFile(OSFileEntry filePath) {
 	
+    sprite = new SpriteSet(filePath.fullPath);
+    
+    mainSizer = new UIVSizer(100, 100, 200, false);
+    addChild(mainSizer);
+    
+    topSizer = new UIHSizer(100, 100, 400, false);
+    mainSizer->addTopChild(topSizer);
+    
+    bottomSizer = new UIHSizer(100, 100, 200, true);
+    mainSizer->addBottomChild(bottomSizer);
+    
+    
+    spriteSheetEditor = new SpriteSheetEditor(sprite);
+    topSizer->addLeftChild(spriteSheetEditor);
+    spriteSheetEditor->addEventListener(this, Event::CHANGE_EVENT);
+    
+    spriteBrowser = new SpriteBrowser(sprite);
+    bottomSizer->addLeftChild(spriteBrowser);
+    spriteBrowser->addEventListener(this, Event::CHANGE_EVENT);
+    
+    stateEditor = new SpriteStateEditor(sprite);
+    bottomSizer->addRightChild(stateEditor);
+    
+    addFramesButton = stateEditor->getDetailsEditor()->getAppendFramesButton();
+    addFramesButton->addEventListener(this, UIEvent::CLICK_EVENT);
+    
+    spritePreview = new SpritePreview(sprite);
+    topSizer->addRightChild(spritePreview);
+    
+    stateEditor->getDetailsEditor()->setSceneSprite(spritePreview->getSceneSprite());
+    
+    stateEditor->addEventListener(this, Event::CHANGE_EVENT);
+    
+    spriteBrowser->refreshSprites();
+    
+    
     PolycodeEditor::openFile(filePath);
     return true;
 }
 
 void PolycodeSpriteEditor::saveFile() {
     Object fileObject;
+    fileObject.root.name = "sprite_set";
+    
+    ObjectEntry *spriteSheetEntry = fileObject.root.addChild("sprite_sheet");
+    
+    spriteSheetEntry->addChild("fileName", sprite->getTexture()->getResourcePath());
+    
+    ObjectEntry *framesEntry = spriteSheetEntry->addChild("frames");
     
     
+    for(int i=0; i < sprite->getNumFrames(); i++) {
+        ObjectEntry *frameEntry = framesEntry->addChild("frame");
+        SpriteFrame frame = sprite->getSpriteFrame(i);
+        frameEntry->addChild("id", (int)frame.frameID);
+        frameEntry->addChild("x", frame.coordinates.x);
+        frameEntry->addChild("y", frame.coordinates.y);
+        frameEntry->addChild("w", frame.coordinates.w);
+        frameEntry->addChild("h", frame.coordinates.h);
+        frameEntry->addChild("ax", frame.anchorPoint.x);
+        frameEntry->addChild("ay", frame.anchorPoint.y);
+    }
     
-    
+    ObjectEntry *spritesEntry = fileObject.root.addChild("sprites");
+    for(int i=0; i < sprite->getNumSpriteEntries(); i++) {
+        Sprite *spriteEntry = sprite->getSpriteEntry(i);
+        ObjectEntry *spriteEntryEntry = spritesEntry->addChild("sprite");
+        spriteEntryEntry->addChild("name", spriteEntry->getName());
+
+        ObjectEntry *spriteStatesEntry = spriteEntryEntry->addChild("states");
+        
+        for(int j=0; j < spriteEntry->getNumStates(); j++) {
+            SpriteState *spriteState = spriteEntry->getState(j);
+            ObjectEntry *spriteStateEntry = spriteStatesEntry->addChild("state");
+            
+            spriteStateEntry->addChild("name", spriteState->getName());
+            spriteStateEntry->addChild("fps", spriteState->getStateFPS());
+            spriteStateEntry->addChild("scale", spriteState->getPixelsPerUnit());
+            spriteStateEntry->addChild("width", spriteState->getBoundingBox().x);
+            spriteStateEntry->addChild("height", spriteState->getBoundingBox().y);
+            spriteStateEntry->addChild("offset_x", spriteState->getSpriteOffset().x);
+            spriteStateEntry->addChild("offset_y", spriteState->getSpriteOffset().y);
+            
+            String frameIDs;
+            
+            for(int f=0; f < spriteState->getNumFrameIDs(); f++) {
+                frameIDs += String::IntToString(spriteState->getFrameIDAtIndex(f));
+                if(f < spriteState->getNumFrameIDs()-1) {
+                    frameIDs += ",";
+                }
+            }
+            
+            spriteStateEntry->addChild("frame_ids", frameIDs);
+        }
+        
+    }
     fileObject.saveToXML(filePath);
 }
 

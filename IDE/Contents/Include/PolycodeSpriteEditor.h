@@ -118,9 +118,10 @@ class SpriteSet {
         Sprite *getSpriteEntry(unsigned int index) const;
         void removeSprite(Sprite *sprite);
     
+        void loadSpriteSet(String fileName);
     
         // frame manipulation
-        void addSpriteFrame(const SpriteFrame &frame);
+        void addSpriteFrame(const SpriteFrame &frame, bool assignID = true);
         unsigned int getNumFrames() const;
         SpriteFrame getSpriteFrame(unsigned int index) const;
     
