@@ -63,5 +63,25 @@ namespace Polycode {
 			* @param str The c-string to log
 			*/
 			static void logw(const char *str);
+
+			void setLogToFile(bool val);
+			bool getLogToFile();
+
+			/**
+			* @return The file that is logged to
+			*/
+			FILE *getLogFile();
+
+			/**
+			* @return The logger instance
+			*/
+			static Logger *getInstance();
+
+	protected:
+		FILE *logFile;
+		bool logToFile;
+
+	private:
+		static Logger *overrideInstance;
 	};
 }

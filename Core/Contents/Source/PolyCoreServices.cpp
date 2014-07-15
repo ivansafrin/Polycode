@@ -100,7 +100,7 @@ Config *CoreServices::getConfig() {
 }
 
 Logger *CoreServices::getLogger() {
-	return logger;
+	return Logger::getInstance();
 }
 
 void CoreServices::installModule(PolycodeModule *module)  {
@@ -122,7 +122,7 @@ void CoreServices::setupBasicListeners() {
 }
 
 CoreServices::CoreServices() : EventDispatcher() {
-	logger = new Logger();
+	logger = Logger::getInstance();
 	resourceManager = new ResourceManager();	
 	config = new Config();
 	materialManager = new MaterialManager();	

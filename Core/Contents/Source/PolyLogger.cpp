@@ -24,12 +24,16 @@
 #ifdef _MSC_VER
 #include <windows.h>
 #endif
+#include "PolyLogger.h"
 #include <stdio.h>
 #include <stdarg.h>
 #include <string>
 #include <iostream>
+#include <time.h>
 
 using namespace Polycode;
+
+Logger* Logger::overrideInstance = NULL;
 
 LoggerEvent::LoggerEvent(String message) : Event() {
 	this->message = message;
@@ -41,11 +45,12 @@ LoggerEvent::~LoggerEvent() {
 
 
 Logger::Logger() : EventDispatcher() {
-
+	logToFile = false;
+	logFile = fopen("poly.log", "w");
 }
 
 Logger::~Logger() {
-
+	fclose(logFile);
 }
 
 void Logger::logBroadcast(String message) {
@@ -62,6 +67,12 @@ void Logger::log(const char *format, ...) {
 	va_start(args, format);
 	vfprintf(stderr, format, args);
 	va_end(args);
+	
+	if (Logger::getInstance()->getLogToFile()){
+		va_start(args, format);
+		vfprintf(Logger::getInstance()->getLogFile(), format, args);
+		va_end(args);
+	}
 
 #ifdef _MSC_VER
 #ifdef _DEBUG
@@ -83,4 +94,38 @@ void Logger::log(const char *format, ...) {
 #endif
 #endif
 
+}
+
+void Logger::setLogToFile(bool val){
+	if (!logToFile && val){
+		time_t t = time(NULL);
+		char mbstr[100];
+		if (strftime(mbstr, sizeof(mbstr), "%y_%m_%d.log", localtime(&t))) {
+			//if (logFile)
+			//	fclose(logFile);
+			logFile = fopen((const char*)mbstr, "w");
+		} else {
+			logFile = fopen("poly.log", "w");
+		}
+	}
+
+	logToFile = val;
+}
+
+bool Logger::getLogToFile(){
+	return logToFile;
+}
+
+FILE *Logger::getLogFile(){
+	return logFile;
+}
+
+Logger *Logger::getInstance(){
+	if (overrideInstance) {
+		return overrideInstance;
+	}
+
+	overrideInstance = new Logger;
+	//Logger::log("Creating new logger instance...\n");
+	return overrideInstance;
 }
