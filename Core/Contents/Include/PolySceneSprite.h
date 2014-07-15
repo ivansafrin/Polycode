@@ -23,154 +23,167 @@ THE SOFTWARE.
 #pragma once
 #include "PolyGlobals.h"
 #include "PolyScenePrimitive.h"
+#include "PolyCore.h"
+#include "PolyResourceManager.h"
 #include <vector>
 
 namespace Polycode {
 
-class SceneSpriteResourceEntry;
-
-class _PolyExport SpriteAnimation {
-	public:
-		Number speed;
-		String name;
-		String frames;
-		int numFrames;
-		
-		int numFramesX;
-		int numFramesY;
-		Number spriteUVWidth;
-		Number spriteUVHeight;
-						
-		void setOffsetsFromFrameString(const String& frames);
-	
-		std::vector<Vector2> framesOffsets;
-};
-
-/**
-* Animated 2D image sprite. This screen entity can load spritesheet images and play back animations.
-*/
-class _PolyExport SceneSprite : public ScenePrimitive 
-{
-	public:
-	
-		/**
-		* Create a sprite from a sprite file format
-		* @param fileName Sprite file to load
-		*/
-		SceneSprite(const String& fileName);
-	
-		/**
-		* Create a sprite from a spritesheet image of specified size.
-		* @param fileName Image file to load spritesheet from.
-		* @param spriteWidth Pixel width of each sprite cell.
-		* @param spriteWidth Pixel height of each sprite cell.		
-		*/
-		SceneSprite(const String& fileName, Number spriteWidth, Number spriteHeight);
-		
-		/**
-		* Create a sprite from a spritesheet image of specified size.
-		* @param fileName Image file to load spritesheet from.
-		* @param spriteWidth Pixel width of each sprite cell.
-		* @param spriteWidth Pixel height of each sprite cell.		
-		*/		
-		static SceneSprite* SceneSpriteFromImageFile(const String& fileName, Number spriteWidth, Number spriteHeight);
-		
-		virtual ~SceneSprite();
-		
-		virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
-		virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
-
-		/**
-		* Adds a new animation to the sprite. Animations are added by specifying a list of frame indexes and then can be played back by the specified name.
-		* @param name Name of the new animation.
-		* @param frames A comma separated list of frames indexes to include in the animation.
-		* @speed Speed at which to play back the animation.
-		* @return Returns newly added animation
-		*/
-		SpriteAnimation *addAnimation(const String& name, const String& frames, Number speed);
-		
-		/**
-		* Shows a specific frame of the current animation.
-		* @param frameIndex Frame index of the frame to show.
-		*/
-		void showFrame(unsigned int frameIndex);
-		
-		/**
-		* Play back a previously created animation by name.
-		* @param name Name of the animation to play.
-		* @param startFrame Starting frame for playback.
-		* @param once If true, only plays once, otherwise loops.
-		*/
-		void playAnimation(const String& name, int startFrame, bool once);
-		void Update();
-		
-		void setSpriteSize(const Number spriteWidth, const Number spriteHeight);
-	
-		Vector2 getSpriteSize();
-	
-		String getFileName() const;
-        void setSpriteFilename(String fileName);
-	
-		void recalculateSpriteDimensions();
     
-        void setActualSpriteSize(Number width, Number height);
-        Vector2 getActualSpriteSize();
+    class SpriteFrame {
+    public:
+        Polycode::Rectangle coordinates;
+        Vector2 anchorPoint;
+        unsigned int frameID;
+    };
     
-		bool loadFromFile(const String& fileName);
-		
-		void reloadSprite();
-		
-		void removeAnimation(SpriteAnimation *animation);
-	
-		/**
-		* Pauses or unpauses the current sprite animation.
-		* @param val If true, pauses the current animation, if false, resumes playing it.
-		*/ 
-		void Pause(bool val);
-		
-		unsigned int getNumAnimations();		
-		SpriteAnimation *getAnimationAtIndex(unsigned int index);
-		
-		SpriteAnimation *getCurrentAnimation();
-		unsigned int getCurrentAnimationFrame();
-		bool isCurrentAnimationFinished();
-		
-		void updateSprite();
-		
-		SceneSpriteResourceEntry *getResourceEntry();
-		
-	protected:
-	
-		String fileName;
-        Vector2 actualSpriteSize;
+    class SpriteSet;
     
-		bool paused;
-	
-		Number spriteWidth;
-		Number spriteHeight;
-			
-		bool playingOnce;
-		double lastTick;
-		
-		SceneSpriteResourceEntry *resourceEntry;
-		
-		Number spriteUVWidth;
-		Number spriteUVHeight;
-		int currentFrame;
-		SpriteAnimation *currentAnimation;
-		
-		std::vector<SpriteAnimation*> animations;
-};
-
-class SceneSpriteResourceEntry : public Resource {
-	public:
-		SceneSpriteResourceEntry(SceneSprite *sprite);
-		virtual ~SceneSpriteResourceEntry();		
-		SceneSprite *getSprite();
-		void reloadResource();
-		
-	protected:
-		SceneSprite* sprite;
-};
-	
+    class SpriteState {
+    public:
+        SpriteState(SpriteSet *spriteSet, String name);
+        
+        void setName(String name);
+        String getName() const;
+        
+        void POLYIGNORE appendFrames(std::vector<unsigned int> newFrameIDs);
+        
+        unsigned int getNumFrameIDs();
+        unsigned int getFrameIDAtIndex(unsigned int index);
+        
+        Mesh *getMeshForFrameIndex(unsigned int index);
+        
+        void insertFrame(unsigned int index, unsigned int frameID);
+        
+        void POLYIGNORE setNewFrameIDs(std::vector<unsigned int> newIDs);
+        
+        void removeFrameByIndex(unsigned int frameIndex);
+        void POLYIGNORE removeFrameIndices(std::vector<unsigned int> indices);
+        void clearFrames();
+        
+        void setPixelsPerUnit(Number ppu);
+        Number getPixelsPerUnit();
+        
+        void rebuildStateMeshes();
+        
+        void setStateFPS(Number fps);
+        Number getStateFPS();
+        
+        void setBoundingBox(Vector2 boundingBox);
+        Vector2 getBoundingBox();
+        
+        Vector2 getSpriteOffset();
+        void setSpriteOffset(const Vector2 &offset);
+        
+    protected:
+        
+        Vector2 boundingBox;
+        Vector2 spriteOffset;
+        Number pixelsPerUnit;
+        Number stateFPS;
+        SpriteSet *spriteSet;
+        String name;
+        std::vector<unsigned int> frameIDs;
+        std::vector<Mesh*> frameMeshes;
+    };
+    
+    class SpriteSet;
+    
+    class Sprite : public Resource {
+    public:
+        Sprite(String name);
+        ~Sprite();
+        
+        String getName();
+        void setName(String name);
+        
+        void addSpriteState(SpriteState *state);
+        void removeSpriteState(SpriteState *state);
+        
+        unsigned int getNumStates();
+        SpriteState *getState(unsigned int index);
+        
+        void setParentSpritSet(SpriteSet *spriteSet);
+        SpriteSet *getParentSpriteSet();
+        
+    protected:
+        String name;
+        SpriteSet *parentSpriteSet;
+        std::vector<SpriteState*> states;
+    };
+    
+    class SpriteSet : public ResourcePool {
+    public:
+        SpriteSet(String imageFileName, ResourcePool *parentPool);
+        ~SpriteSet();
+        
+        void setTexture(Texture *texture);
+        Texture *getTexture();
+        Texture *loadTexture(String imageFileName);
+        
+        void addSpriteEntry(Sprite *newEntry);
+        unsigned int getNumSpriteEntries() const;
+        Sprite *getSpriteEntry(unsigned int index) const;
+        void removeSprite(Sprite *sprite);
+        
+        void loadSpriteSet(String fileName);
+        
+        // frame manipulation
+        void addSpriteFrame(const SpriteFrame &frame, bool assignID = true);
+        unsigned int getNumFrames() const;
+        SpriteFrame getSpriteFrame(unsigned int index) const;
+        
+        SpriteFrame getSpriteFrameByID(unsigned int frameID) const;
+        void removeFrameByID(unsigned int frameID);
+        
+        void setSpriteFrame(const SpriteFrame &frame);
+        
+        void clearFrames();
+        
+        // automatic frame generation
+        void createGridFrames(Number width, Number height, const Vector2 &defaultAnchor);
+        void createFramesFromIslands(unsigned int minDistance, const Vector2 &defaultAnchor);
+        
+    protected:
+        
+        unsigned int nextFrameIDIndex;
+        Texture *spriteTexture;
+        std::vector<SpriteFrame> frames;
+        std::vector<Sprite*> sprites;
+    };
+    
+    class SceneSprite : public SceneMesh {
+    public:
+        SceneSprite(SpriteSet *spriteSet);
+        ~SceneSprite();
+        
+        SpriteSet *getSpriteSet();
+        Sprite *getCurrentSprite();
+        
+        void setCurrentFrame(unsigned int frameIndex);
+        unsigned int getCurrentFrame();
+        void Update();
+        void Render();
+        
+        void setPaused(bool val);
+        bool isPaused();
+        
+        void setSprite(Sprite *spriteEntry);
+        void setSpriteState(SpriteState *spriteState);
+        SpriteState *getCurrentSpriteState();
+        
+        
+    protected:
+        
+        bool paused;
+        Core *core;
+        unsigned int currentFrame;
+        Mesh *defaultMesh;
+        Sprite *currentSprite;
+        SpriteState *currentSpriteState;
+        SpriteSet *spriteSet;
+        Number spriteTimer;
+        Number spriteTimerVal;
+        
+    };
 }

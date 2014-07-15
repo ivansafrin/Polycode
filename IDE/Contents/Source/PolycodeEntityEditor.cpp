@@ -870,9 +870,12 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
     if(command == "add_sprite") {
         assetSelectType = "sprite";
         globalFrame->assetBrowser->addEventListener(this, UIEvent::OK_EVENT);
-        std::vector<String> extensions;
-        extensions.push_back("sprite");
-        globalFrame->showAssetBrowser(extensions);
+		std::vector<ResourcePool*> pools;
+        pools.push_back(CoreServices::getInstance()->getResourceManager()->getGlobalPool());
+        for(int i=0; i < objectRootInstance->getNumLinkedResourePools(); i++) {
+            pools.push_back(objectRootInstance->getLinkedResourcePoolAtIndex(i));
+        }
+		globalFrame->showAssetBrowserForPools(pools, Resource::RESOURCE_SPRITE);
         return;
     }
     
@@ -1128,6 +1131,30 @@ void EntityEditorMainView::handleEvent(Event *event) {
                 didPlaceEntity(newImage);
                 selectEntity(newImage, false, false);
             } else if(assetSelectType == "sprite") {
+                
+                Resource *selectedResource = globalFrame->assetBrowser->getSelectedResource();
+                
+                if(selectedResource) {
+                    Sprite *sprite = (Sprite*) selectedResource;
+                    
+                    SceneSprite *newSprite = new SceneSprite(sprite->getParentSpriteSet());
+                    newSprite->setSprite(sprite);
+                    if(sprite->getNumStates() > 0) {
+                        newSprite->setSpriteState(sprite->getState(0));
+                    }
+                    
+                    newSprite->setMaterialByName("Unlit");
+                    if(newSprite->getLocalShaderOptions()) {
+                        newSprite->getLocalShaderOptions()->addTexture("diffuse", newSprite->getTexture());
+                    }
+                    sceneObjectRoot->addChild(newSprite);
+                    setEditorProps(newSprite);
+                    newSprite->setPosition(cursorPosition);
+                    didPlaceEntity(newSprite);
+                    selectEntity(newSprite, false, false);
+                }
+                
+                /*
                 SceneSprite *newSprite = new SceneSprite(globalFrame->assetBrowser->getSelectedAssetPath());
                 
                 if(newSprite->getNumAnimations()) {
@@ -1143,6 +1170,7 @@ void EntityEditorMainView::handleEvent(Event *event) {
                 newSprite->setPosition(cursorPosition);
                 didPlaceEntity(newSprite);
                 selectEntity(newSprite, false, false);
+                 */
             } else if(assetSelectType == "entity") {
                 SceneEntityInstance *newEntity = new SceneEntityInstance(mainScene, globalFrame->assetBrowser->getSelectedAssetPath());
                 sceneObjectRoot->addChild(newEntity);
@@ -1796,6 +1824,7 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
     }
     
     if(dynamic_cast<SceneSprite*>(entity)) {
+        /*
         if(!(*(entry))["type"])
             entry->addChild("type", "SceneSprite");
         SceneSprite *sprite = (SceneSprite*) entity;
@@ -1808,6 +1837,7 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
             animName = sprite->getCurrentAnimation()->name;
         }
         spriteEntry->addChild("anim", animName);
+        */
     }
     
     if(dynamic_cast<SceneLabel*>(entity)) {
@@ -2059,10 +2089,10 @@ void PolycodeEntityEditor::saveFile() {
     Object saveObject;
     
     ObjectEntry *settings = saveObject.root.addChild("settings");
-    ObjectEntry *linkedMaterialFiles = settings->addChild("matFiles");
+    ObjectEntry *linkedMaterialFiles = settings->addChild("linkedResourcePools");
     for(int i=0; i < loadedInstance->getNumLinkedResourePools(); i++) {
         ResourcePool *pool = loadedInstance->getLinkedResourcePoolAtIndex(i);
-        linkedMaterialFiles->addChild("matFile")->addChild("path", pool->getName());
+        linkedMaterialFiles->addChild("resourcePool")->addChild("path", pool->getName());
     }
     
     ObjectEntry *layersEntry = settings->addChild("layers");

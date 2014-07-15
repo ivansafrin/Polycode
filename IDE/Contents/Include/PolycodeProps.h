@@ -427,7 +427,7 @@ class TextureProp : public PropProp {
 		String lastData;
 		String currentData;
 };
-
+/*
 class SceneSpriteProp : public PropProp {
 	public:
 		SceneSpriteProp(String caption);
@@ -445,7 +445,7 @@ class SceneSpriteProp : public PropProp {
 		String lastData;
 		String currentData;
 };
-
+*/
 
 class SceneEntityInstanceProp : public PropProp {
 	public:
@@ -806,7 +806,7 @@ class SceneLabelSheet : public PropSheet {
 		ComboProp *font;
 		BoolProp *enableAA;
 };
-
+/*
 class SceneSpriteSheet : public PropSheet {
 	public:
 		SceneSpriteSheet();
@@ -821,6 +821,7 @@ class SceneSpriteSheet : public PropSheet {
         NumberProp *spriteWidthProp;
         NumberProp *spriteHeightProp;
 };
+*/
 
 class CameraSheet : public PropSheet {
     public:

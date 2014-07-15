@@ -28,158 +28,6 @@
 
 using namespace Polycode;
 
-class SpriteFrame {
-    public:
-        Polycode::Rectangle coordinates;
-        Vector2 anchorPoint;
-        unsigned int frameID;
-};
-
-class SpriteSet;
-
-class SpriteState {
-    public:
-        SpriteState(SpriteSet *spriteSet, String name);
-    
-        void setName(String name);
-        String getName() const;
-    
-        void appendFrames(std::vector<unsigned int> newFrameIDs);
-    
-        unsigned int getNumFrameIDs();
-        unsigned int getFrameIDAtIndex(unsigned int index);
-    
-        Mesh *getMeshForFrameIndex(unsigned int index);
-    
-        void insertFrame(unsigned int index, unsigned int frameID);
-    
-        void setNewFrameIDs(std::vector<unsigned int> newIDs);
-    
-        void removeFrameByIndex(unsigned int frameIndex);
-        void removeFrameIndices(std::vector<unsigned int> indices);
-        void clearFrames();
-    
-        void setPixelsPerUnit(Number ppu);
-        Number getPixelsPerUnit();
-    
-        void rebuildStateMeshes();
-    
-        void setStateFPS(Number fps);
-        Number getStateFPS();
-    
-        void setBoundingBox(Vector2 boundingBox);
-        Vector2 getBoundingBox();
-    
-        Vector2 getSpriteOffset();
-        void setSpriteOffset(const Vector2 &offset);
-    
-    protected:
-    
-        Vector2 boundingBox;
-        Vector2 spriteOffset;
-        Number pixelsPerUnit;
-        Number stateFPS;
-        SpriteSet *spriteSet;
-        String name;
-        std::vector<unsigned int> frameIDs;
-        std::vector<Mesh*> frameMeshes;
-};
-
-class Sprite {
-    public:
-        Sprite(String name);
-        ~Sprite();
-    
-        String getName();
-        void setName(String name);
-    
-        void addSpriteState(SpriteState *state);
-        void removeSpriteState(SpriteState *state);
-    
-        unsigned int getNumStates();
-        SpriteState *getState(unsigned int index);
-    
-    protected:
-        String name;
-        std::vector<SpriteState*> states;
-};
-
-class SpriteSet {
-    public:
-        SpriteSet(String imageFileName);
-        ~SpriteSet();
-
-        void setTexture(Texture *texture);
-        Texture *getTexture();
-        Texture *loadTexture(String imageFileName);
-    
-        void addSpriteEntry(Sprite *newEntry);
-        unsigned int getNumSpriteEntries() const;
-        Sprite *getSpriteEntry(unsigned int index) const;
-        void removeSprite(Sprite *sprite);
-    
-        void loadSpriteSet(String fileName);
-    
-        // frame manipulation
-        void addSpriteFrame(const SpriteFrame &frame, bool assignID = true);
-        unsigned int getNumFrames() const;
-        SpriteFrame getSpriteFrame(unsigned int index) const;
-    
-        SpriteFrame getSpriteFrameByID(unsigned int frameID) const;
-        void removeFrameByID(unsigned int frameID);
-    
-        void setSpriteFrame(const SpriteFrame &frame);
-    
-        void clearFrames();
-    
-        // automatic frame generation
-        void createGridFrames(Number width, Number height, const Vector2 &defaultAnchor);
-        void createFramesFromIslands(unsigned int minDistance, const Vector2 &defaultAnchor);
-    
-    protected:
-    
-        unsigned int nextFrameIDIndex;
-        Texture *spriteTexture;
-        std::vector<SpriteFrame> frames;
-        std::vector<Sprite*> sprites;
-};
-
-
-class SceneSpriteRewrite : public SceneMesh {
-    public:
-        SceneSpriteRewrite(SpriteSet *spriteSet);
-        ~SceneSpriteRewrite();
-    
-        SpriteSet *getSpriteSet();
-        Sprite *getCurrentSprite();
-    
-        void setCurrentFrame(unsigned int frameIndex);
-        unsigned int getCurrentFrame();
-        void Update();
-        void Render();
-    
-        void setPaused(bool val);
-        bool isPaused();
-    
-        void setSprite(Sprite *spriteEntry);
-        void setSpriteState(SpriteState *spriteState);
-        SpriteState *getCurrentSpriteState();
-
-    
-    protected:
-    
-        bool paused;
-        Core *core;
-        unsigned int currentFrame;
-        Mesh *defaultMesh;
-        Sprite *currentSprite;
-        SpriteState *currentSpriteState;
-        SpriteSet *spriteSet;
-        Number spriteTimer;
-        Number spriteTimerVal;
-    
-};
-
 class SpritePreview : public UIElement {
     public:
         SpritePreview(SpriteSet *spriteSet);
@@ -189,13 +37,13 @@ class SpritePreview : public UIElement {
     
         void handleEvent(Event *event);
     
-        SceneSpriteRewrite *getSceneSprite();
+        SceneSprite *getSceneSprite();
         void Resize(Number width, Number height);
     
     protected:
         UIRect *headerBg;    
         UIImage *previewBg;
-        SceneSpriteRewrite *sprite;
+        SceneSprite *sprite;
     
         UIIconSelector *bgSelector;
     
@@ -362,7 +210,7 @@ class SpriteStateEditBar : public UIElement {
     
         void Update();
     
-        void setSceneSprite(SceneSpriteRewrite *sprite);
+        void setSceneSprite(SceneSprite *sprite);
         void setSpriteState(SpriteState *state);
     
     protected:
@@ -378,7 +226,7 @@ class SpriteStateEditBar : public UIElement {
         Number zoomScale;
         SpriteState *spriteState;
         SpriteSet *spriteSet;
-        SceneSpriteRewrite *sceneSprite;
+        SceneSprite *sceneSprite;
     
         Number defaultFrameWidth;
     
@@ -422,7 +270,7 @@ class SpriteStateEditorDetails : public UIElement {
         void setSpriteState(SpriteState *state);
         SpriteState *getSpriteState();
     
-        void setSceneSprite(SceneSpriteRewrite *spritePreview);
+        void setSceneSprite(SceneSprite *spritePreview);
     
         void refreshState();
     
@@ -435,7 +283,7 @@ class SpriteStateEditorDetails : public UIElement {
     
         SpriteState *spriteState;
         SpriteSet *spriteSet;
-        SceneSpriteRewrite *sceneSprite;
+        SceneSprite *sceneSprite;
     
         UITextInput *fpsInput;
         UITextInput *scaleInput;

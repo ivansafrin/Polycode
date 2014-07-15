@@ -1388,7 +1388,7 @@ void TextureProp::set(Texture *texture) {
 Texture* TextureProp::get() {
 	return previewShape->getTexture();
 }
-
+/*
 SceneSpriteProp::SceneSpriteProp(String caption) : PropProp(caption, "SceneSprite"){
 
 		previewSprite = new SceneSprite("default/default.sprite");
@@ -1459,7 +1459,7 @@ void SceneSpriteProp::set(String fileName) {
 String SceneSpriteProp::get() {
 	return previewSprite->getFileName();
 }
-
+*/
 SceneEntityInstanceProp::SceneEntityInstanceProp(String caption) : PropProp(caption, "SceneEntityInstance"){
 //	previewInstance = new SceneEntityInstance("default/default.entity");
 	previewInstance->setAnchorPoint(-1.0, -1.0, 0.0);
@@ -3360,7 +3360,7 @@ void CameraSheet::setCamera(Camera *camera) {
     }
 }
 
-
+/*
 SceneSpriteSheet::SceneSpriteSheet() : PropSheet("SPRITE", "SceneSprite") {
 	sprite = NULL;
     enabled = false;
@@ -3450,6 +3450,7 @@ void SceneSpriteSheet::setSprite(SceneSprite *sprite) {
 		enabled = false;
 	}
 }
+*/
 
 SceneEntityInstanceSheet::SceneEntityInstanceSheet() : PropSheet("ENTITY INSTANCE", "SceneEntityInstance") {
 	instance = NULL;
@@ -3732,28 +3733,42 @@ void LinkedMaterialsSheet::handleEvent(Event *event) {
 		globalFrame->assetBrowser->addEventListener(this, UIEvent::OK_EVENT);
 		std::vector<String> extensions;
 		extensions.push_back("mat");
+		extensions.push_back("sprites");
 		globalFrame->showAssetBrowser(extensions);
         
     } else if(event->getDispatcher() == globalFrame->assetBrowser) {
-		String materialPath = globalFrame->assetBrowser->getSelectedAssetPath();
+		String resourcePath = globalFrame->assetBrowser->getSelectedAssetPath();
 
-		String fullMaterialPath = globalFrame->assetBrowser->getFullSelectedAssetPath();
+		String fullResourcePath = globalFrame->assetBrowser->getFullSelectedAssetPath();
 		        
         globalFrame->assetBrowser->removeAllHandlersForListener(this);
         globalFrame->hideModal();
         
-        ResourcePool *newPool = CoreServices::getInstance()->getResourceManager()->getResourcePoolByName(materialPath);
+        ResourcePool *newPool = CoreServices::getInstance()->getResourceManager()->getResourcePoolByName(resourcePath);
         
         if(!newPool) {
-            newPool = new ResourcePool(materialPath,  CoreServices::getInstance()->getResourceManager()->getGlobalPool());
-            newPool->reloadResourcesOnModify = true;
-            newPool->deleteOnUnsubscribe = true;
-            CoreServices::getInstance()->getMaterialManager()->loadMaterialLibraryIntoPool(newPool, fullMaterialPath);
+            String extension = resourcePath.substr(resourcePath.find_last_of(".")+1, resourcePath.length());
+
+            if(extension == "mat") {
+                
+                newPool = new ResourcePool(resourcePath,  CoreServices::getInstance()->getResourceManager()->getGlobalPool());
+                newPool->reloadResourcesOnModify = true;
+                newPool->deleteOnUnsubscribe = true;
+                
+                CoreServices::getInstance()->getMaterialManager()->loadMaterialLibraryIntoPool(newPool, fullResourcePath);
+            } else if( extension == "sprites") {
+                SpriteSet *spriteSet = new SpriteSet(resourcePath,  CoreServices::getInstance()->getResourceManager()->getGlobalPool());
+                spriteSet->reloadResourcesOnModify = true;
+                spriteSet->deleteOnUnsubscribe = true;
+                newPool = spriteSet;
+            }
+            
             CoreServices::getInstance()->getResourceManager()->addResourcePool(newPool);
+            
         }
         
         instance->linkResourcePool(newPool);
-         updateMaterials();
+        updateMaterials();
     }
     PropSheet::handleEvent(event);
 }

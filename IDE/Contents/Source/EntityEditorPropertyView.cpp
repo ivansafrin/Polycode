@@ -59,11 +59,11 @@ EntityEditorPropertyView::EntityEditorPropertyView() : UIElement() {
     particleSheet = new ParticleEmitterSheet();
     entityProps->addPropSheet(particleSheet);
     particleSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
-    
+  /*
     spriteSheet = new SceneSpriteSheet();
     entityProps->addPropSheet(spriteSheet);
     spriteSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
-    
+    */
     primitiveSheet = new ScenePrimitiveSheet();
     entityProps->addPropSheet(primitiveSheet);
     primitiveSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
@@ -149,7 +149,7 @@ void EntityEditorPropertyView::setEntity(Entity *entity) {
     labelSheet->setSceneLabel(sceneLabel);
 
     SceneSprite *sceneSprite = dynamic_cast<SceneSprite*>(entity);
-    spriteSheet->setSprite(sceneSprite);
+//    spriteSheet->setSprite(sceneSprite);
 
     ScenePrimitive *scenePrimitive = dynamic_cast<ScenePrimitive*>(entity);
     

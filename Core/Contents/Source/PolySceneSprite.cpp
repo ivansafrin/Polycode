@@ -25,405 +25,712 @@
 #include "PolyCoreServices.h"
 #include "PolyMesh.h"
 #include "PolyTexture.h"
+#include "PolyLogger.h"
 
 using std::vector;
 using namespace Polycode;
 
-SceneSpriteResourceEntry::SceneSpriteResourceEntry(SceneSprite *sprite)  : Resource(Resource::RESOURCE_SCREEN_ENTITY_INSTANCE) {
-	this->sprite = sprite;
+
+SceneSprite::SceneSprite(SpriteSet *spriteSet) : SceneMesh(Mesh::QUAD_MESH) {
+    currentSprite = NULL;
+    currentSpriteState = NULL;
+    this->spriteSet = spriteSet;
+    defaultMesh = mesh;
+    currentFrame = 0;
+    core = Services()->getCore();
+    spriteTimer = 0.0;
+    paused = false;
+    spriteTimerVal = 0.1;
+    setTexture(spriteSet->getTexture());
 }
 
-SceneSpriteResourceEntry::~SceneSpriteResourceEntry() {
-
+SpriteState *SceneSprite::getCurrentSpriteState() {
+    return currentSpriteState;
 }
 
-SceneSprite *SceneSpriteResourceEntry::getSprite() {
-	return sprite;
+SpriteSet *SceneSprite::getSpriteSet() {
+    return spriteSet;
 }
 
-void SceneSpriteResourceEntry::reloadResource() {
-	sprite->reloadSprite();
-	Resource::reloadResource();
+Sprite *SceneSprite::getCurrentSprite() {
+    return currentSprite;
 }
 
-SceneSprite* SceneSprite::SceneSpriteFromImageFile(const String& fileName, Number spriteWidth, Number spriteHeight) {
-	return new SceneSprite(fileName, spriteWidth, spriteHeight);
+void SceneSprite::setPaused(bool val) {
+    paused = val;
 }
 
-SceneSprite::SceneSprite(const String& fileName) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1) {
-
-	currentFrame = 0;
-	currentAnimation = NULL;	
-	paused = false;
-
-	resourceEntry = new SceneSpriteResourceEntry(this);
-	loadFromFile(fileName);
-	resourceEntry->setResourceName(fileName);
-	resourceEntry->setResourcePath(fileName);	
+bool SceneSprite::isPaused() {
+    return paused;
 }
 
-SceneSprite::SceneSprite(const String& fileName, Number spriteWidth, Number spriteHeight) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1) {
-	this->spriteWidth = spriteWidth;
-	this->spriteHeight = spriteHeight;
-	loadTexture(fileName);
-    resourceEntry = NULL;
+void SceneSprite::setCurrentFrame(unsigned int frameIndex) {
+    currentFrame = frameIndex;
+}
+
+void SceneSprite::setSprite(Sprite *spriteEntry) {
+    currentSprite = spriteEntry;
+}
+
+void SceneSprite::setSpriteState(SpriteState *spriteState) {
+    currentSpriteState = spriteState;
     
-	currentFrame = 0;
-	currentAnimation = NULL;
-	paused = false;
-    actualSpriteSize.x = spriteWidth;
-    actualSpriteSize.y = spriteHeight;
-    
-    setSpriteSize(spriteWidth, spriteHeight);
-	setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, spriteWidth, spriteHeight);
-    
-    recalculateSpriteDimensions();
-}
-
-Entity *SceneSprite::Clone(bool deepClone, bool ignoreEditorOnly) const {
-	SceneSprite *newSprite = new SceneSprite(getTexture()->getResourcePath(), spriteWidth, spriteHeight);
-	for(int i=0; i < animations.size(); i++) {
-		newSprite->addAnimation(animations[i]->name, animations[i]->frames, animations[i]->speed);
-	}
-	if(currentAnimation) {
-		newSprite->playAnimation(currentAnimation->name, currentFrame, playingOnce);
-	}
-    
-    newSprite->setSpriteFilename(fileName);
-	applyClone(newSprite, deepClone, ignoreEditorOnly);
-    
-    newSprite->setActualSpriteSize(actualSpriteSize.x, actualSpriteSize.y);
-    
-	return newSprite;
-}
-
-void SceneSprite::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
-	ScenePrimitive::applyClone(clone, deepClone, ignoreEditorOnly);
-}
-
-void SceneSprite::setSpriteFilename(String fileName) {
-    this->fileName = fileName;
-    if(!resourceEntry) {
-        resourceEntry = new SceneSpriteResourceEntry(this);
+    if(!currentSpriteState) {
+        return;
     }
-    resourceEntry->setResourceName(fileName);
-    resourceEntry->setResourcePath(fileName);
-}
-
-bool SceneSprite::loadFromFile(const String& fileName) {
-	Object loadObject;
-	
-	animations.clear();
-	
-	if(!loadObject.loadFromXML(fileName)) {
-		return false;
-	}
-	
-	this->fileName = fileName;
-	
-	ObjectEntry *image = loadObject.root["image"];
-	if(image) {
-		ObjectEntry *frameWidth = (*image)["frameWidth"];
-		ObjectEntry *frameHeight = (*image)["frameHeight"];	
-		ObjectEntry *fileName = (*image)["fileName"];
-		
-		if(fileName) {
-			loadTexture(fileName->stringVal);
-		}
-
-		if(frameWidth && frameHeight) {
-			actualSpriteSize.x = frameWidth->NumberVal;
-			actualSpriteSize.y = frameHeight->NumberVal;
-			setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, frameWidth->NumberVal, frameHeight->NumberVal);
-			setSpriteSize(frameWidth->NumberVal, frameHeight->NumberVal);
-		}
-	}
-	
-	ObjectEntry *animationsEntry = loadObject.root["animations"];
-	
-	if(animationsEntry) {
-		for(int i=0; i < animationsEntry->length; i++) {
-			ObjectEntry *animation = (*animationsEntry)[i];
-			if(animation) {
-				ObjectEntry *name = (*animation)["name"];
-				ObjectEntry *frames = (*animation)["frames"];	
-				ObjectEntry *speed = (*animation)["speed"];
-				
-				if(name && frames && speed) {
-					addAnimation(name->stringVal, frames->stringVal, speed->NumberVal);
-				} else {
-					printf("Error parsing animation node\n");
-				}
-			}
-		}
-	}
-	
-	recalculateSpriteDimensions();
-
-	return true;
-}
-
-unsigned int SceneSprite::getNumAnimations() {
-	return animations.size();
-}
-
-SpriteAnimation *SceneSprite::getAnimationAtIndex(unsigned int index) {
-	if(index < animations.size()) {
-		return animations[index];
-	} else {
-		return NULL;
-	}
-}
-
-void SceneSprite::reloadSprite() {
-	
-	String _animName = "";
-	int _currentFrame;
-	bool _playingOnce;
-	
-	if(currentAnimation) {
-		_animName = currentAnimation->name;
-		_currentFrame = currentFrame;
-		_playingOnce = playingOnce;
-	}
-	loadFromFile(fileName);
-	
-	if(_animName != "") {
-		playAnimation(_animName, _currentFrame, _playingOnce);
-	}
-}
-
-SceneSpriteResourceEntry *SceneSprite::getResourceEntry() {
-	return resourceEntry;
-}
-
-SceneSprite::~SceneSprite() {
-	
-}
-
-void SceneSprite::removeAnimation(SpriteAnimation *animation) {
-	for(int i=0; i < animations.size(); i++) {
-		if(animations[i] == animation) {
-			animations.erase(animations.begin()+i);
-			return;
-		}
-	}
-}
-
-void SceneSprite::setActualSpriteSize(Number width, Number height) {
-    actualSpriteSize.x = width;
-    actualSpriteSize.y = height;
-	setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, actualSpriteSize.x, actualSpriteSize.y);
-}
-
-Vector2 SceneSprite::getActualSpriteSize() {
-    return actualSpriteSize;
-}
-
-void SceneSprite::recalculateSpriteDimensions() {
-	if(!texture)
-		return;
-		
-	spriteUVWidth = 1.0f / ((Number) texture->getWidth() / spriteWidth);
-	spriteUVHeight = 1.0f / ((Number) texture->getHeight() / spriteHeight);
-	
-	for(int i =0 ; i < animations.size(); i++) {
-		animations[i]->numFramesX = texture->getWidth() / spriteWidth;	
-		if(animations[i]->numFramesX < 1) {
-			animations[i]->numFramesX = 1;
-		}
-		animations[i]->numFramesY = texture->getHeight() / spriteHeight;
-		if(animations[i]->numFramesY < 1) {
-			animations[i]->numFramesY = 1;
-		}		
-		animations[i]->spriteUVWidth = spriteUVWidth;
-		animations[i]->spriteUVHeight = spriteUVHeight;	
-		animations[i]->setOffsetsFromFrameString(animations[i]->frames);
-	}
-}
-
-Vector2 SceneSprite::getSpriteSize() {
-	return Vector2(spriteWidth, spriteHeight);
-}
-
-String SceneSprite::getFileName() const {
-	return fileName;
-}
-
-void SceneSprite::setSpriteSize(const Number spriteWidth, const Number spriteHeight) {
-	this->spriteWidth = spriteWidth;
-	this->spriteHeight = spriteHeight;	
-	
-	recalculateSpriteDimensions();	
-}
-
-SpriteAnimation *SceneSprite::getCurrentAnimation() {
-	return currentAnimation;
-}
-
-unsigned int SceneSprite::getCurrentAnimationFrame() { 
-   return currentFrame; 
-}
-
-bool SceneSprite::isCurrentAnimationFinished() {
-    if(currentAnimation) {
-        if(currentFrame >= currentAnimation->numFrames)
-            return true;
-    }
-    return false;
-}
-
-void SpriteAnimation::setOffsetsFromFrameString(const String& frames) {
-	framesOffsets.clear();
-	vector<String> frameNumbers = frames.split(",");
-	
-	int frameNumber;
-	int frameX;
-	int frameY;
-	
-	numFrames = 0;
-	
-	for(int i=0; i < frameNumbers.size(); i++) {
-		if(frameNumbers[i].find_first_of("-") != -1) {
-			vector<String> _frameNumbers = frameNumbers[i].split("-");
-			if(_frameNumbers.size() > 1) {
-				int frameNumberStart = atoi(_frameNumbers[0].c_str());
-				int frameNumberEnd = atoi(_frameNumbers[1].c_str());
-				int dir = 1;
-				if(frameNumberEnd < frameNumberStart) {
-					dir = -1;
-				}				
-				for(int j=frameNumberStart; j != frameNumberEnd + dir; j += dir) {
-					frameX = j % numFramesX;
-					frameY = j/numFramesX;
-					framesOffsets.push_back(Vector2(spriteUVWidth * frameX, spriteUVHeight * frameY));
-					numFrames++;
-				}
-			}
-		} else if(frameNumbers[i].find_first_of("x") != -1) {
-			vector<String> _frameNumbers = frameNumbers[i].split("x");
-			if(_frameNumbers.size() > 1) {
-				int _frameNumber = atoi(_frameNumbers[0].c_str());
-				int frameNumberCount = atoi(_frameNumbers[1].c_str());				
-				for(int j=0; j < frameNumberCount; j++) {
-					frameX = _frameNumber % numFramesX;
-					frameY = _frameNumber/numFramesX;
-					framesOffsets.push_back(Vector2(spriteUVWidth * frameX, spriteUVHeight * frameY));
-					numFrames++;					
-				}
-			}				
-		} else {	
-			frameNumber = atoi(frameNumbers[i].c_str());
-			frameX = frameNumber % numFramesX;
-			frameY = frameNumber/numFramesX;
-			framesOffsets.push_back(Vector2(spriteUVWidth * frameX, spriteUVHeight * frameY));
-			numFrames++;			
-		}
-	}
-	
-	this->frames = frames;
-
-}
-
-SpriteAnimation *SceneSprite::addAnimation(const String& name, const String& frames, Number speed) {
-	SpriteAnimation *newAnimation = new SpriteAnimation();	
-	
-	
-	newAnimation->numFramesX = texture->getWidth() / spriteWidth;	
-	if(newAnimation->numFramesX < 1) {
-		newAnimation->numFramesX = 1;
-	}
-	newAnimation->numFramesY = texture->getHeight() / spriteHeight;
-	if(newAnimation->numFramesY < 1) {
-		newAnimation->numFramesY = 1;
-	}	
-	newAnimation->spriteUVWidth = spriteUVWidth;
-	newAnimation->spriteUVHeight = spriteUVHeight;
-	
-	newAnimation->setOffsetsFromFrameString(frames);
-			
-	newAnimation->speed = speed;
-	newAnimation->name = name;
-	animations.push_back(newAnimation);
-	return newAnimation;
-}
-
-void SceneSprite::playAnimation(const String& name, int startFrame, bool once) {
-	paused = false;
-	for(int i=0; i < animations.size(); i++) {
-		if(animations[i]->name == name) {
-			if(currentAnimation == animations[i] && !playingOnce && !once)
-				return;
-			currentFrame = 0;			
-			currentAnimation = animations[i];
-			if(startFrame == -1) {
-				currentFrame = rand() % currentAnimation->numFrames;
-			} else {
-				if(startFrame < currentAnimation->numFrames) {
-					currentFrame = startFrame;
-				}
-			}
-			playingOnce = once;
-			lastTick = 0;
-		}
-	}
-}
-
-void SceneSprite::Pause(bool val) {
-	paused = val;
-}
-
-void SceneSprite::showFrame(unsigned int frameIndex) {
-	if(!currentAnimation)
-		return;
-
-	if(frameIndex < currentAnimation->numFrames) {
-		currentFrame = frameIndex;
-		updateSprite();
-	}
+    
+    Vector2 bBox = spriteState->getBoundingBox();
+    setLocalBoundingBox(bBox.x / spriteState->getPixelsPerUnit(), bBox.y / spriteState->getPixelsPerUnit(), 0.001);
 }
 
 void SceneSprite::Update() {
-	if(!currentAnimation)
-		return;
-	
-	double newTick = CoreServices::getInstance()->getCore()->getTicksFloat();
-	
-	Number elapsed = Number(newTick - lastTick);
-	
-	if(paused)
-		return;
-	
-	if(elapsed > currentAnimation->speed) {
-	currentFrame++;
-	if(currentFrame >= currentAnimation->numFrames) {
-		if(playingOnce) {
-			dispatchEvent(new Event(), Event::COMPLETE_EVENT);
-			return;			
-		} else {
-			currentFrame = 0;
-		}
-	}
-	
-	updateSprite();
-			
-	lastTick = newTick;
-		
-	}
+    
+    if(!currentSprite || !currentSpriteState) {
+        return;
+    }
+    
+    setTexture(spriteSet->getTexture());
+    
+    if(paused) {
+        return;
+    }
+    
+    spriteTimer += core->getElapsed();
+    
+    if(spriteTimer > 1.0/currentSpriteState->getStateFPS()) {
+        spriteTimer = 0.0;
+        currentFrame++;
+        if(currentFrame >= currentSpriteState->getNumFrameIDs()) {
+            currentFrame = 0;
+        }
+    }
 }
 
-void SceneSprite::updateSprite() {
-	Number xOffset = currentAnimation->framesOffsets[currentFrame].x;
-	Number yOffset = 1.0f - currentAnimation->framesOffsets[currentFrame].y - spriteUVHeight;
+unsigned int SceneSprite::getCurrentFrame() {
+    return currentFrame;
+}
 
-	mesh->getVertex(0)->setTexCoord(xOffset, yOffset);
-	mesh->getVertex(1)->setTexCoord(xOffset+spriteUVWidth, yOffset);
-	mesh->getVertex(2)->setTexCoord(xOffset+spriteUVWidth, yOffset+spriteUVHeight);
-	
-	mesh->getVertex(3)->setTexCoord(xOffset, yOffset);	;
-	mesh->getVertex(4)->setTexCoord(xOffset+spriteUVWidth, yOffset+spriteUVHeight);
-	mesh->getVertex(5)->setTexCoord(xOffset, yOffset+spriteUVHeight);
+void SceneSprite::Render() {
     
-	mesh->arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;
+    if(!currentSprite || !currentSpriteState) {
+        return;
+    }
+    
+    Mesh *stateMesh = currentSpriteState->getMeshForFrameIndex(currentFrame);
+    if(stateMesh) {
+        setMesh(stateMesh);
+    } else {
+        setMesh(defaultMesh);
+    }
+    
+    SceneMesh::Render();
+}
 
+SceneSprite::~SceneSprite() {
+    
+}
+
+SpriteState::SpriteState(SpriteSet *spriteSet, String name) {
+    this->spriteSet = spriteSet;
+    this->name = name;
+    stateFPS = 60.0;
+    pixelsPerUnit = 1.0;
+}
+
+void SpriteState::setBoundingBox(Vector2 boundingBox) {
+    this->boundingBox = boundingBox;
+    rebuildStateMeshes();
+}
+
+void SpriteState::clearFrames() {
+    frameIDs.clear();
+    rebuildStateMeshes();
+}
+
+Vector2 SpriteState::getBoundingBox() {
+    return boundingBox;
+}
+
+Vector2 SpriteState::getSpriteOffset() {
+    return spriteOffset;
+}
+
+void SpriteState::setSpriteOffset(const Vector2 &offset) {
+    spriteOffset = offset;
+    rebuildStateMeshes();
+}
+
+
+void SpriteState::setPixelsPerUnit(Number ppu) {
+    pixelsPerUnit = ppu;
+    rebuildStateMeshes();
+}
+
+Number SpriteState::getPixelsPerUnit() {
+    return pixelsPerUnit;
+}
+
+void SpriteState::removeFrameByIndex(unsigned int index) {
+    if(index < frameIDs.size()) {
+        frameIDs.erase(frameIDs.begin()+index);
+    }
+    rebuildStateMeshes();
+}
+
+void SpriteState::removeFrameIndices(std::vector<unsigned int> indices) {
+    std::vector<unsigned int> newFrames;
+    
+    for(int i=0; i < frameIDs.size(); i++) {
+        bool hasIndex = false;
+        for(int j=0; j < indices.size(); j++) {
+            if(indices[j] == i) {
+                hasIndex = true;
+                break;
+            }
+        }
+        if(!hasIndex) {
+            newFrames.push_back(frameIDs[i]);
+        }
+    }
+    
+    frameIDs = newFrames;
+    rebuildStateMeshes();
+}
+
+void SpriteState::setStateFPS(Number fps) {
+    stateFPS = fps;
+}
+
+Number SpriteState::getStateFPS() {
+    return stateFPS;
+}
+
+void SpriteState::setName(String name) {
+    this->name = name;
+}
+
+void SpriteState::setNewFrameIDs(std::vector<unsigned int> newIDs) {
+    frameIDs = newIDs;
+    rebuildStateMeshes();
+}
+
+void SpriteState::insertFrame(unsigned int index, unsigned int frameID) {
+    if(index < frameIDs.size()) {
+        frameIDs.insert(frameIDs.begin()+index, frameID);
+    }
+    rebuildStateMeshes();
+}
+
+Mesh *SpriteState::getMeshForFrameIndex(unsigned int index) {
+    if(index < frameMeshes.size()) {
+        return frameMeshes[index];
+    } else {
+        return NULL;
+    }
+}
+
+void SpriteState::rebuildStateMeshes() {
+    for(int i=0; i < frameMeshes.size(); i++) {
+        delete frameMeshes[i];
+    }
+    frameMeshes.clear();
+    
+    for(int i=0; i < frameIDs.size(); i++) {
+        Mesh *frameMesh = new Mesh(Mesh::QUAD_MESH);
+        SpriteFrame frame = spriteSet->getSpriteFrameByID(frameIDs[i]);
+        
+        frameMesh->indexedMesh = true;
+        
+        Number aspectRatio = frame.coordinates.w / frame.coordinates.h;
+        Number textureAspectRatio = ((Number)spriteSet->getTexture()->getWidth()) / ((Number)spriteSet->getTexture()->getHeight());
+        
+        
+        Number frameHeight = frame.coordinates.h * ((Number)spriteSet->getTexture()->getHeight()) / pixelsPerUnit;
+        
+        Number frameWidth = frameHeight * aspectRatio * textureAspectRatio;
+        
+        
+        
+        Vector2 meshOffset;
+        meshOffset.x = boundingBox.x * spriteOffset.x / pixelsPerUnit;
+        meshOffset.y = boundingBox.y * spriteOffset.y / pixelsPerUnit;
+        
+        meshOffset.x -= frameWidth * frame.anchorPoint.x;
+        meshOffset.y += frameHeight * frame.anchorPoint.y;
+        
+        frameMesh->addVertex(meshOffset.x+-frameWidth*0.5, meshOffset.y+frameHeight*0.5, 0.0, frame.coordinates.x, 1.0-frame.coordinates.y);
+        frameMesh->addVertex(meshOffset.x+-frameWidth*0.5, meshOffset.y+frameHeight*0.5-frameHeight, 0.0, frame.coordinates.x, 1.0-frame.coordinates.y  - frame.coordinates.h);
+        frameMesh->addVertex(meshOffset.x+-frameWidth*0.5+frameWidth, meshOffset.y+frameHeight*0.5-frameHeight, 0.0, frame.coordinates.x+frame.coordinates.w, 1.0- frame.coordinates.y  - frame.coordinates.h);
+        frameMesh->addVertex(meshOffset.x+-frameWidth*0.5+frameWidth, meshOffset.y+frameHeight*0.5, 0.0, frame.coordinates.x+frame.coordinates.w, 1.0-frame.coordinates.y);
+        
+        frameMesh->addIndexedFace(0,1);
+        frameMesh->addIndexedFace(1,2);
+        frameMesh->addIndexedFace(2,3);
+        frameMesh->addIndexedFace(3,0);
+        
+        frameMesh->dirtyArrays();
+        
+        frameMeshes.push_back(frameMesh);
+    }
+}
+
+String SpriteState::getName() const {
+    return name;
+}
+
+unsigned int SpriteState::getNumFrameIDs() {
+    return frameIDs.size();
+}
+
+unsigned int SpriteState::getFrameIDAtIndex(unsigned int index) {
+    if(index < frameIDs.size()) {
+        return frameIDs[index];
+    } else {
+        return 0;
+    }
+}
+
+void SpriteState::appendFrames(std::vector<unsigned int> newFrameIDs) {
+    frameIDs.insert( frameIDs.end(), newFrameIDs.begin(), newFrameIDs.end());
+    rebuildStateMeshes();
+}
+
+unsigned int Sprite::getNumStates() {
+    return states.size();
+}
+
+SpriteState *Sprite::getState(unsigned int index) {
+    if(index < states.size()) {
+        return states[index];
+    } else {
+        return NULL;
+    }
+}
+
+void Sprite::addSpriteState(SpriteState *state) {
+    states.push_back(state);
+}
+
+Sprite::Sprite(String name) : Resource(Resource::RESOURCE_SPRITE){
+    this->name = name;
+    this->setResourceName(name);
+}
+
+void Sprite::setParentSpritSet(SpriteSet *spriteSet) {
+    parentSpriteSet = spriteSet;
+}
+
+SpriteSet *Sprite::getParentSpriteSet() {
+    return parentSpriteSet;
+}
+
+void Sprite::removeSpriteState(SpriteState *state) {
+    for(int i=0; i < states.size(); i++) {
+        if(states[i] == state) {
+            states.erase(states.begin() + i);
+            return;
+        }
+    }
+}
+
+Sprite::~Sprite() {
+    for(int i=0; i < states.size(); i++) {
+        delete states[i];
+    }
+}
+
+String Sprite::getName() {
+    return name;
+}
+
+void Sprite::setName(String name) {
+    this->name = name;
+}
+
+
+SpriteSet::SpriteSet(String fileName, ResourcePool *parentPool) : ResourcePool(fileName, parentPool) {
+    nextFrameIDIndex = 0;
+    loadSpriteSet(fileName);
+    
+}
+
+void SpriteSet::loadSpriteSet(String fileName) {
+	Object loadObject;
+	if(!loadObject.loadFromBinary(fileName)) {
+        if(!loadObject.loadFromXML(fileName)) {
+            Logger::log("Error loading sprite sheet: %s.\n", fileName.c_str());
+            return;
+        }
+	}
+    
+    ObjectEntry *spriteSheetEntry = loadObject.root["sprite_sheet"];
+    if(spriteSheetEntry) {
+        ObjectEntry *fileNameEntry = (*spriteSheetEntry)["fileName"];
+        if(fileNameEntry) {
+            loadTexture(fileNameEntry->stringVal);
+        }
+        
+        ObjectEntry *framesEntry = (*spriteSheetEntry)["frames"];
+        if(framesEntry) {
+            for(int i=0; i < framesEntry->length; i++) {
+                ObjectEntry *frameEntry = (*framesEntry)[i];
+                
+                if(frameEntry) {
+                    SpriteFrame frame;
+                    
+                    ObjectEntry *idEntry = (*frameEntry)["id"];
+                    if(idEntry) {
+                        frame.frameID = idEntry->intVal;
+                    }
+                    
+                    ObjectEntry *xEntry = (*frameEntry)["x"];
+                    if(xEntry) {
+                        frame.coordinates.x = xEntry->NumberVal;
+                    }
+                    ObjectEntry *yEntry = (*frameEntry)["y"];
+                    if(yEntry) {
+                        frame.coordinates.y = yEntry->NumberVal;
+                    }
+                    ObjectEntry *wEntry = (*frameEntry)["w"];
+                    if(wEntry) {
+                        frame.coordinates.w = wEntry->NumberVal;
+                    }
+                    ObjectEntry *hEntry = (*frameEntry)["h"];
+                    if(hEntry) {
+                        frame.coordinates.h = hEntry->NumberVal;
+                    }
+                    ObjectEntry *axEntry = (*frameEntry)["ax"];
+                    if(axEntry) {
+                        frame.anchorPoint.x = axEntry->NumberVal;
+                    }
+                    ObjectEntry *ayEntry = (*frameEntry)["ay"];
+                    if(ayEntry) {
+                        frame.anchorPoint.y = ayEntry->NumberVal;
+                    }
+                    
+                    addSpriteFrame(frame, false);
+                }
+                
+            }
+        }
+        
+    } else {
+        return;
+    }
+    
+    ObjectEntry *spritesEntry = loadObject.root["sprites"];
+    if(spritesEntry) {
+        for(int i=0; i < spritesEntry->length; i++) {
+            ObjectEntry *spriteEntry = (*spritesEntry)[i];
+            if(spriteEntry) {
+                ObjectEntry *nameEntry = (*spriteEntry)["name"];
+                String spriteName;
+                if(nameEntry) {
+                    spriteName = nameEntry->stringVal;
+                }
+                Sprite *newSprite = new Sprite(spriteName);
+                addSpriteEntry(newSprite);
+                
+                ObjectEntry *statesEntry = (*spriteEntry)["states"];
+                
+                if(statesEntry) {
+                    for(int j=0; j < statesEntry->length; j++) {
+                        ObjectEntry *stateEntry = (*statesEntry)[j];
+                        if(stateEntry) {
+                            SpriteState *newState = new SpriteState(this, "");
+                            
+                            ObjectEntry *nameEntry = (*stateEntry)["name"];
+                            if(nameEntry) {
+                                newState->setName(nameEntry->stringVal);
+                            }
+                            
+                            ObjectEntry *fpsEntry = (*stateEntry)["fps"];
+                            if(fpsEntry) {
+                                newState->setStateFPS(fpsEntry->NumberVal);
+                            }
+                            
+                            ObjectEntry *scaleEntry = (*stateEntry)["scale"];
+                            if(scaleEntry) {
+                                newState->setPixelsPerUnit(scaleEntry->NumberVal);
+                            }
+                            
+                            ObjectEntry *widthEntry = (*stateEntry)["width"];
+                            ObjectEntry *heightEntry = (*stateEntry)["height"];
+                            if(widthEntry && heightEntry) {
+                                newState->setBoundingBox(Vector2(widthEntry->NumberVal, heightEntry->NumberVal));
+                            }
+                            
+                            ObjectEntry *xOffsetEntry = (*stateEntry)["offset_x"];
+                            ObjectEntry *yOffsetEntry = (*stateEntry)["offset_y"];
+                            if(xOffsetEntry && yOffsetEntry) {
+                                newState->setSpriteOffset(Vector2(xOffsetEntry->NumberVal, yOffsetEntry->NumberVal));
+                            }
+                            
+                            ObjectEntry *frameIDsEntry = (*stateEntry)["frame_ids"];
+                            
+                            if(frameIDsEntry) {
+                                std::vector<String> frameIDs = frameIDsEntry->stringVal.split(",");
+                                
+                                std::vector<unsigned int> frameIDInts;
+                                for(int f=0; f < frameIDs.size(); f++) {
+                                    frameIDInts.push_back(frameIDs[f].toInteger());
+                                }
+                                
+                                newState->appendFrames(frameIDInts);
+                            }
+                            
+                            newSprite->addSpriteState(newState);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    
+}
+
+void SpriteSet::removeFrameByID(unsigned int frameID) {
+    for(int i=0; i < frames.size(); i++) {
+        if(frames[i].frameID == frameID) {
+            frames.erase(frames.begin() + i);
+            return;
+        }
+    }
+}
+
+void SpriteSet::removeSprite(Sprite *sprite) {
+    for(int i=0; i < sprites.size(); i++) {
+        if(sprites[i] == sprite) {
+            removeResource(sprites[i]);
+            sprites.erase(sprites.begin()+i);
+            return;
+        }
+    }
+}
+
+Texture *SpriteSet::loadTexture(String imageFileName) {
+    Texture *spriteTexture = Services()->getMaterialManager()->createTextureFromFile(imageFileName, true, Services()->getMaterialManager()->mipmapsDefault);
+    setTexture(spriteTexture);
+    return spriteTexture;
+}
+
+void SpriteSet::addSpriteFrame(const SpriteFrame &frame, bool assignID) {
+    
+    // do not add existing frames
+    for(int i=0; i < frames.size(); i++) {
+        SpriteFrame existingFrame = frames[i];
+        
+        if(existingFrame.coordinates == frame.coordinates) {
+            return;
+        }
+        
+    }
+    
+    frames.push_back(frame);
+    if(assignID) {
+        frames[frames.size()-1].frameID = nextFrameIDIndex;
+        nextFrameIDIndex++;
+    } else {
+        nextFrameIDIndex = frame.frameID + 1;
+    }
+    
+}
+
+void SpriteSet::setSpriteFrame(const SpriteFrame &frame) {
+    for(int i=0 ;i < frames.size(); i++) {
+        if(frames[i].frameID == frame.frameID) {
+            frames[i].coordinates = frame.coordinates;
+            frames[i].anchorPoint = frame.anchorPoint;
+            return;
+        }
+    }
+}
+
+SpriteFrame SpriteSet::getSpriteFrameByID(unsigned int frameID) const {
+    for(int i=0; i < frames.size(); i++) {
+        if(frames[i].frameID == frameID ){
+            return frames[i];
+        }
+    }
+    return SpriteFrame();
+}
+
+unsigned int SpriteSet::getNumFrames() const {
+    return frames.size();
+}
+
+SpriteFrame SpriteSet::getSpriteFrame(unsigned int index) const {
+    if(index < frames.size()) {
+        return frames[index];
+    } else {
+        return SpriteFrame();
+    }
+}
+
+void SpriteSet::addSpriteEntry(Sprite *newEntry) {
+    addResource(newEntry);
+    newEntry->setParentSpritSet(this);
+    sprites.push_back(newEntry);
+}
+
+unsigned int SpriteSet::getNumSpriteEntries() const {
+    return sprites.size();
+}
+
+Sprite *SpriteSet::getSpriteEntry(unsigned int index) const {
+    if(index < sprites.size()) {
+        return sprites[index];
+    } else {
+        return NULL;
+    }
+}
+
+void SpriteSet::setTexture(Texture *texture) {
+    spriteTexture = texture;
+}
+
+Texture *SpriteSet::getTexture() {
+    return spriteTexture;
+}
+
+SpriteSet::~SpriteSet() {
+    
+}
+
+void SpriteSet::clearFrames() {
+    frames.clear();
+    nextFrameIDIndex = 0;
+}
+
+void SpriteSet::createGridFrames(Number width, Number height, const Vector2 &defaultAnchor) {
+    
+    for(Number x = 0.0; x+width <= 1.0; x += width) {
+        for(Number y = 0.0; y+height <= 1.0; y += height) {
+            SpriteFrame frame;
+            frame.coordinates = Polycode::Rectangle(x, y, width, height);
+            frame.anchorPoint = defaultAnchor;
+            addSpriteFrame(frame);
+        }
+    }
+}
+
+Polycode::Rectangle createBoxAtCoordinate(Image *image, unsigned int x, unsigned int y) {
+    Polycode::Rectangle rect;
+    
+    rect.x = x;
+    rect.y = y;
+    
+    while(x < image->getWidth()) {
+        if(image->getPixel(x, y).a == 0.0) {
+            break;
+        }
+        x++;
+    }
+    rect.w = x - rect.x;
+    
+    // look down at first x
+    Number y1 = y;
+    while(y1 < image->getHeight()) {
+        if(image->getPixel(rect.x, y1).a == 0.0) {
+            break;
+        }
+        y1++;
+    }
+    Number h1 = y1;
+    
+    // look down at last x
+    while(y < image->getHeight()) {
+        if(image->getPixel(x, y).a == 0.0) {
+            break;
+        }
+        y++;
+    }
+    Number h2 = y;
+    
+    if(h1 > h2) {
+        h2 = h1;
+    }
+    
+    rect.h = h2 - rect.y;
+    
+    
+    
+    return rect;
+}
+
+bool rectIntersect(const Polycode::Rectangle &r1, const Polycode::Rectangle &r2, Number minDistance) {
+    return !(r2.x - minDistance > r1.x + r1.w ||
+             r2.x + r2.w + minDistance < r1.x ||
+             r2.y - minDistance > r1.y + r1.h ||
+             r2.y + r2.h + minDistance < r1.y);
+}
+
+void SpriteSet::createFramesFromIslands(unsigned int minDistance, const Vector2 &defaultAnchor) {
+    String imageFileName = getTexture()->getResourcePath();
+    
+    Image *image = new Image(imageFileName);
+    
+    
+    std::vector<Polycode::Rectangle> rects;
+    
+    for(int y=0; y < image->getHeight(); y++) {
+        for(int x=0; x < image->getWidth(); x++) {
+            if(image->getPixel(x, y).a > 0.0) {
+                Polycode::Rectangle rect = createBoxAtCoordinate(image,x,y);
+                rects.push_back(rect);
+                x += rect.w;
+            }
+        }
+    }
+    
+    while(rects.size() > 1) {
+        
+        bool intersected = false;
+        for(int i=0; i < rects.size(); i++) {
+            for(int i2=0; i2 < rects.size(); i2++) {
+                if(i != i2) {
+                    if(rectIntersect(rects[i], rects[i2], minDistance)) {
+                        
+                        Polycode::Rectangle newRect;
+                        
+                        newRect.x = std::min(rects[i].x, rects[i2].x);
+                        newRect.y = std::min(rects[i].y, rects[i2].y);
+                        
+                        newRect.w = std::max(rects[i].x + rects[i].w, rects[i2].x + rects[i2].w) - newRect.x;
+                        newRect.h = std::max(rects[i].y + rects[i].h, rects[i2].y + rects[i2].h) - newRect.y;
+                        
+                        rects[i] = newRect;
+                        rects.erase(rects.begin() + i2);
+                        
+                        intersected = true;
+                        
+                        break;
+                    }
+                }
+            }
+        }
+        
+        if(!intersected) {
+            break;
+        }
+        
+    }
+    
+    
+    for(int i=0; i < rects.size(); i++) {
+        SpriteFrame frame;
+        frame.coordinates = rects[i];
+        
+        frame.coordinates.x = frame.coordinates.x / ((Number)image->getWidth());
+        frame.coordinates.y = frame.coordinates.y / ((Number)image->getHeight());
+        frame.coordinates.w = frame.coordinates.w / ((Number)image->getWidth());
+        frame.coordinates.h = frame.coordinates.h / ((Number)image->getHeight());
+        
+        frame.anchorPoint = defaultAnchor;
+        
+        addSpriteFrame(frame);
+    }
+    
+    delete image;
 }

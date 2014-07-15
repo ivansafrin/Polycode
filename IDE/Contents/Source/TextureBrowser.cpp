@@ -51,7 +51,7 @@ AssetEntry::AssetEntry(String assetPath, String assetName, String extension, Res
 		imageShape->loadTexture("browserIcons/sound_icon.png");
 	} else if(extension == "entity") {
 		imageShape->loadTexture("browserIcons/entity_icon.png");
-	} else if(extension == "sprite") {
+	} else if(extension == "sprites") {
 		imageShape->loadTexture("browserIcons/sprite_icon.png");
 	} else if(extension == "ttf" || extension == "otf") {
 		imageShape->loadTexture("browserIcons/font_icon.png");
@@ -63,7 +63,10 @@ AssetEntry::AssetEntry(String assetPath, String assetName, String extension, Res
 		imageShape->loadTexture("browserIcons/materials_icon.png");
     } else if(extension == "material_resource") {
 		imageShape->loadTexture("browserIcons/material_resource_icon.png");
+    } else if(extension == "sprite_resource") {
+		imageShape->loadTexture("browserIcons/sprite_icon.png");
     }
+
 	
 	imageShape->setPosition(28, 10);
     imageShape->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
@@ -130,6 +133,8 @@ void AssetList::showResourcePool(ResourcePool *pool, int resourceFilter) {
     
     if(resourceFilter == Resource::RESOURCE_MATERIAL ) {
         extension = "material_resource";
+    } else if(resourceFilter == Resource::RESOURCE_SPRITE ) {
+        extension = "sprite_resource";
     }
     
 	for(int i=0; i < resources.size(); i++) {
@@ -274,6 +279,11 @@ void AssetBrowser::setResourcePools(std::vector<ResourcePool*> pools, int resour
     
 	templateContainer->getRootNode()->clearTree();
 	templateContainer->getRootNode()->setLabelText("Resource pools");
+
+    FolderUserData *userData = (FolderUserData*) templateContainer->getRootNode()->getUserData();
+    if(userData) {
+        delete userData;
+    }
 	templateContainer->getRootNode()->setUserData(NULL);
     
     
@@ -298,7 +308,17 @@ void AssetBrowser::setProject(PolycodeProject *project) {
 
 	vector<OSFileEntry> templates = OSBasics::parseFolder(project->getRootFolder(), false);
 	templateContainer->getRootNode()->setLabelText(project->getProjectName());
-		
+	
+    FolderUserData *userData = (FolderUserData*) templateContainer->getRootNode()->getUserData();
+    if(userData) {
+        delete userData;
+    }
+    
+	FolderUserData *rootData = new FolderUserData();
+    rootData->folderPath = project->getRootFolder();
+    rootData->type = 0;
+    templateContainer->getRootNode()->setUserData(rootData);
+    
 	for(int i=0; i < templates.size(); i++) {
 		OSFileEntry entry = templates[i];
 		if(entry.type == OSFileEntry::TYPE_FOLDER) {

@@ -33,7 +33,7 @@
 
 using namespace Polycode;
 
-SceneEntityInstanceResourceEntry::SceneEntityInstanceResourceEntry(SceneEntityInstance *instance)  : Resource(Resource::RESOURCE_SCREEN_ENTITY_INSTANCE) {
+SceneEntityInstanceResourceEntry::SceneEntityInstanceResourceEntry(SceneEntityInstance *instance)  : Resource(Resource::RESOURCE_ENTITY_INSTANCE) {
 	this->instance = instance;
 }
 
@@ -285,6 +285,7 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
             SceneEntityInstance *instance = new SceneEntityInstance(parentScene, filePath);
             entity = instance;
          } else if(entityType->stringVal == "SceneSprite") {
+             /*
 			ObjectEntry *spriteEntry = (*entry)["SceneSprite"];
 			String filePath = (*spriteEntry)["filePath"]->stringVal;
 			
@@ -294,6 +295,7 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
 			sprite->playAnimation(animName, -1, false);
 			entity = sprite;
             applySceneMesh((*entry)["SceneMesh"], sprite);
+              */
         } else 	if(entityType->stringVal == "SceneLabel") {
 			ObjectEntry *labelEntry = (*entry)["SceneLabel"];
 			
@@ -635,21 +637,35 @@ bool SceneEntityInstance::loadFromFile(const String& fileName) {
                 }
             }
         }
-        ObjectEntry *matFiles = (*settings)["matFiles"];
-        for(int i=0; i < matFiles->length; i++) {
-            ObjectEntry *matFile = (*matFiles)[i];
-            if(matFile) {
-                ObjectEntry *path = (*matFile)["path"];
-                if(path) {
-                    ResourcePool *newPool = CoreServices::getInstance()->getResourceManager()->getResourcePoolByName(path->stringVal);
-                    if(!newPool) {
-                        newPool = new ResourcePool(path->stringVal,  CoreServices::getInstance()->getResourceManager()->getGlobalPool());
-                        newPool->deleteOnUnsubscribe = true;
-                        CoreServices::getInstance()->getMaterialManager()->loadMaterialLibraryIntoPool(newPool, path->stringVal);
-                        CoreServices::getInstance()->getResourceManager()->addResourcePool(newPool);
+        ObjectEntry *resPools = (*settings)["linkedResourcePools"];
+        if(resPools) {
+            for(int i=0; i < resPools->length; i++) {
+                ObjectEntry *resPool = (*resPools)[i];
+                if(resPool) {
+                    ObjectEntry *path = (*resPool)["path"];
+                    if(path) {
+                        ResourcePool *newPool = CoreServices::getInstance()->getResourceManager()->getResourcePoolByName(path->stringVal);
+                        
+                        if(!newPool) {
+                            
+                            String extension = path->stringVal.substr(path->stringVal.find_last_of(".")+1, path->stringVal.length());
+                            
+                            if(extension == "mat") {
+                                newPool = new ResourcePool(path->stringVal,  CoreServices::getInstance()->getResourceManager()->getGlobalPool());
+                                newPool->deleteOnUnsubscribe = true;
+                                CoreServices::getInstance()->getMaterialManager()->loadMaterialLibraryIntoPool(newPool, path->stringVal);
+                            } else if( extension == "sprites") {
+                                SpriteSet *spriteSet = new SpriteSet(path->stringVal,  CoreServices::getInstance()->getResourceManager()->getGlobalPool());
+                                spriteSet->deleteOnUnsubscribe = true;
+                                newPool = spriteSet;
+                                
+                            }
+                            
+                            CoreServices::getInstance()->getResourceManager()->addResourcePool(newPool);
+                        }
+                        
+                        linkResourcePool(newPool);
                     }
-                    
-                    linkResourcePool(newPool);
                 }
             }
         }
