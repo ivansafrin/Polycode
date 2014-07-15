@@ -100,7 +100,7 @@ Config *CoreServices::getConfig() {
 }
 
 Logger *CoreServices::getLogger() {
-	return Logger::getInstance();
+	return logger;
 }
 
 void CoreServices::installModule(PolycodeModule *module)  {
