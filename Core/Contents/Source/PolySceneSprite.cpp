@@ -104,9 +104,7 @@ void SceneSprite::setSpriteByName(String spriteName) {
 }
 
 void SceneSprite::setSprite(Sprite *spriteEntry) {
-    if(spriteEntry->getParentSpriteSet() != spriteSet) {
-        setSpriteSet(spriteEntry->getParentSpriteSet());
-    }
+    setSpriteSet(spriteEntry->getParentSpriteSet());
     currentSprite = spriteEntry;
     currentSpriteState = NULL;
 }
@@ -114,6 +112,12 @@ void SceneSprite::setSprite(Sprite *spriteEntry) {
 void SceneSprite::setSpriteSet(SpriteSet *spriteSet) {
     this->spriteSet = spriteSet;
     setTexture(spriteSet->getTexture());
+    
+    if(getLocalShaderOptions()) {
+        getLocalShaderOptions()->clearTexture("diffuse");
+        getLocalShaderOptions()->addTexture("diffuse", getTexture());
+    }
+    
     currentSprite = NULL;
     currentSpriteState = NULL;
 }

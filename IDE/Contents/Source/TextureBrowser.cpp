@@ -43,6 +43,8 @@ AssetEntry::AssetEntry(String assetPath, String assetName, String extension, Res
 	imageShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	addChild(imageShape);
 	
+    spritePreview = NULL;
+    
 	extension = extension.toLowerCase();
 	
 	if(extension == "png") {
@@ -64,7 +66,31 @@ AssetEntry::AssetEntry(String assetPath, String assetName, String extension, Res
     } else if(extension == "material_resource") {
 		imageShape->loadTexture("browserIcons/material_resource_icon.png");
     } else if(extension == "sprite_resource") {
-		imageShape->loadTexture("browserIcons/sprite_icon.png");
+		imageShape->visible = false;
+        
+        SpriteSet *spriteSet = (SpriteSet*) CoreServices::getInstance()->getResourceManager()->getResourcePoolByName(assetPath);
+        if(spriteSet) {
+            spritePreview = new SceneSprite(spriteSet);
+            spritePreview->setSpriteByName(assetName);
+            if(spritePreview->getCurrentSprite()) {
+                if(spritePreview->getCurrentSprite()->getNumStates() > 0) {
+                    spritePreview->setSpriteState(spritePreview->getCurrentSprite()->getState(0), 0, false);
+                }
+            }
+            addChild(spritePreview);
+            spritePreview->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+            
+            spritePreview->setPosition(28+32, 10+32);
+            
+            Number spriteScale = 1.0;
+            if(spritePreview->getHeight() > spritePreview->getWidth()) {
+                spriteScale = 64.0 / spritePreview->getHeight();
+            } else {
+                spriteScale = 64.0 / spritePreview->getWidth();
+            }
+            spritePreview->setScale(spriteScale, spriteScale, 1.0);
+            
+        }
     }
 
 	
@@ -85,6 +111,9 @@ AssetEntry::~AssetEntry() {
 	delete imageShape;
 	delete nameLabel;
 	delete selectShape;
+    if(spritePreview) {
+        delete spritePreview;
+    }
 }
 
 AssetList::AssetList() : UIElement() {
@@ -138,7 +167,7 @@ void AssetList::showResourcePool(ResourcePool *pool, int resourceFilter) {
     }
     
 	for(int i=0; i < resources.size(); i++) {
-        AssetEntry *newEntry = new AssetEntry("", resources[i]->getResourceName(), extension, resources[i]);
+        AssetEntry *newEntry = new AssetEntry(pool->getName(), resources[i]->getResourceName(), extension, resources[i]);
         newEntry->selectShape->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
         assetEntries.push_back(newEntry);
         newEntry->setPosition(xPos, yPos);

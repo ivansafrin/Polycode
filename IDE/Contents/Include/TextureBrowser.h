@@ -42,6 +42,7 @@ class AssetEntry : public UIElement {
 		~AssetEntry();
 		
 		UIRect *imageShape;
+        SceneSprite *spritePreview;
 		UILabel *nameLabel;
 		
 		String assetPath;
