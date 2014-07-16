@@ -34,6 +34,7 @@ using namespace Polycode;
 SceneSprite::SceneSprite(SpriteSet *spriteSet) : SceneMesh(Mesh::QUAD_MESH) {
     currentSprite = NULL;
     currentSpriteState = NULL;
+    this->spriteSet = NULL;
     setSpriteSet(spriteSet);
     defaultMesh = mesh;
     currentFrame = 0;
@@ -104,13 +105,31 @@ void SceneSprite::setSpriteByName(String spriteName) {
 }
 
 void SceneSprite::setSprite(Sprite *spriteEntry) {
-    setSpriteSet(spriteEntry->getParentSpriteSet());
+    
+    if(currentSprite){
+        currentSprite->removeAllHandlersForListener(this);
+    }
+    
+    if(spriteEntry) {
+        setSpriteSet(spriteEntry->getParentSpriteSet());
+    }
     currentSprite = spriteEntry;
     currentSpriteState = NULL;
+    
+    if(currentSprite) {
+        currentSprite->addEventListener(this, Event::CHANGE_EVENT);
+    }
 }
 
 void SceneSprite::setSpriteSet(SpriteSet *spriteSet) {
+    
+    if(this->spriteSet) {
+        this->spriteSet->removeAllHandlersForListener(this);
+    }
+    
     this->spriteSet = spriteSet;
+    spriteSet->addEventListener(this, Event::CHANGE_EVENT);
+    
     setTexture(spriteSet->getTexture());
     
     if(getLocalShaderOptions()) {
@@ -120,6 +139,43 @@ void SceneSprite::setSpriteSet(SpriteSet *spriteSet) {
     
     currentSprite = NULL;
     currentSpriteState = NULL;
+}
+
+void SceneSprite::handleEvent(Event *event) {
+    if(event->getDispatcher() == spriteSet) {
+        if(event->getEventCode() == Event::CHANGE_EVENT) {
+            
+            bool hasSprite = false;
+            for(int i=0; i < spriteSet->getNumSpriteEntries(); i++) {
+                if(currentSprite == spriteSet->getSpriteEntry(i)) {
+                    hasSprite = true;
+                    break;
+                }
+            }
+            if(!hasSprite) {
+                if(spriteSet->getNumSpriteEntries() > 0) {
+                    setSprite(spriteSet->getSpriteEntry(0));
+                } else {
+                    setSprite(NULL);
+                }
+            }
+        }
+    } else if(event->getDispatcher() == currentSprite) {
+        bool hasState = false;
+        for(int i=0; i < currentSprite->getNumStates(); i++) {
+            if(currentSprite->getState(i) == currentSpriteState) {
+                hasState = true;
+                break;
+            }
+        }
+        if(!hasState) {
+            if(currentSprite->getNumStates() > 0) {
+                setSpriteState(currentSprite->getState(0), 0, playOnce);
+            } else {
+                setSpriteState(NULL, 0, playOnce);
+            }
+        }
+    }
 }
 
 void SceneSprite::setSpriteStateByName(String name, unsigned int startingFrame, bool playOnce) {
@@ -387,6 +443,7 @@ SpriteState *Sprite::getStateByName(const String &name) {
 
 void Sprite::addSpriteState(SpriteState *state) {
     states.push_back(state);
+    dispatchEvent(new Event(), Event::CHANGE_EVENT);
 }
 
 Sprite::Sprite(String name) : Resource(Resource::RESOURCE_SPRITE){
@@ -406,6 +463,7 @@ void Sprite::removeSpriteState(SpriteState *state) {
     for(int i=0; i < states.size(); i++) {
         if(states[i] == state) {
             states.erase(states.begin() + i);
+            dispatchEvent(new Event(), Event::CHANGE_EVENT);            
             return;
         }
     }
@@ -582,6 +640,7 @@ void SpriteSet::removeSprite(Sprite *sprite) {
         if(sprites[i] == sprite) {
             removeResource(sprites[i]);
             sprites.erase(sprites.begin()+i);
+            dispatchEvent(new Event(), Event::CHANGE_EVENT);
             return;
         }
     }
@@ -659,6 +718,7 @@ void SpriteSet::addSpriteEntry(Sprite *newEntry) {
     addResource(newEntry);
     newEntry->setParentSpritSet(this);
     sprites.push_back(newEntry);
+    dispatchEvent(new Event(), Event::CHANGE_EVENT);
 }
 
 unsigned int SpriteSet::getNumSpriteEntries() const {

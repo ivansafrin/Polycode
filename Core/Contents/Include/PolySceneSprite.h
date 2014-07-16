@@ -167,8 +167,9 @@ namespace Polycode {
         SpriteSet *getSpriteSet();
         Sprite *getCurrentSprite();
         
-        void setSpriteSet(SpriteSet *spriteSet);
+        void handleEvent(Event *event);
         
+        void setSpriteSet(SpriteSet *spriteSet);
         void setSpriteByName(String spriteName);
         
         void setCurrentFrame(unsigned int frameIndex);
