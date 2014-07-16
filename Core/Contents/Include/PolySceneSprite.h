@@ -102,9 +102,11 @@ namespace Polycode {
         
         unsigned int getNumStates();
         SpriteState *getState(unsigned int index);
+        SpriteState *getStateByName(const String &name);
         
         void setParentSpritSet(SpriteSet *spriteSet);
         SpriteSet *getParentSpriteSet();
+        
         
     protected:
         String name;
@@ -144,6 +146,8 @@ namespace Polycode {
         void createGridFrames(Number width, Number height, const Vector2 &defaultAnchor);
         void createFramesFromIslands(unsigned int minDistance, const Vector2 &defaultAnchor);
         
+        Sprite *getSpriteByName(String spriteName);
+        
     protected:
         
         unsigned int nextFrameIDIndex;
@@ -157,8 +161,15 @@ namespace Polycode {
         SceneSprite(SpriteSet *spriteSet);
         ~SceneSprite();
         
+        Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
+        void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
+        
         SpriteSet *getSpriteSet();
         Sprite *getCurrentSprite();
+        
+        void setSpriteSet(SpriteSet *spriteSet);
+        
+        void setSpriteByName(String spriteName);
         
         void setCurrentFrame(unsigned int frameIndex);
         unsigned int getCurrentFrame();
@@ -169,12 +180,21 @@ namespace Polycode {
         bool isPaused();
         
         void setSprite(Sprite *spriteEntry);
-        void setSpriteState(SpriteState *spriteState);
+        
+        void setSpriteState(SpriteState *spriteState, unsigned int startingFrame, bool playOnce);
+        
+        void setSpriteStateByName(String name, unsigned int startingFrame, bool playOnce);
+        
         SpriteState *getCurrentSpriteState();
         
+
+        bool getStartOnRandomFrame();
+        void setStartOnRandomFrame(bool val);
         
     protected:
         
+        bool startOnRandomFrame;
+        bool playOnce;
         bool paused;
         Core *core;
         unsigned int currentFrame;

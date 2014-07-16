@@ -218,7 +218,6 @@ void AssetList::handleEvent(Event *event) {
 			if(event->getDispatcher() == assetEntries[i]->selectShape && event->getEventCode() == InputEvent::EVENT_MOUSEDOWN) {
 				assetEntries[i]->selectShape->visible = true;
 				selectedPath = assetEntries[i]->assetPath;
-				printf("%s\n", selectedPath.c_str());
 				if(currentEntry) {
 					currentEntry->selectShape->visible = false;
 				}
@@ -274,6 +273,10 @@ AssetBrowser::AssetBrowser() : UIWindow(L"Asset Browser", 850, 500) {
 }
 
 void AssetBrowser::setResourcePools(std::vector<ResourcePool*> pools, int resourceFilter) {
+    
+    if(this->resourceFilter != resourceFilter) {
+        assetList->clearList();
+    }
     
     this->resourceFilter = resourceFilter;
     

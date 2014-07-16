@@ -285,17 +285,38 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
             SceneEntityInstance *instance = new SceneEntityInstance(parentScene, filePath);
             entity = instance;
          } else if(entityType->stringVal == "SceneSprite") {
-             /*
+
 			ObjectEntry *spriteEntry = (*entry)["SceneSprite"];
-			String filePath = (*spriteEntry)["filePath"]->stringVal;
-			
-			SceneSprite *sprite = new SceneSprite(filePath);
-			
-			String animName = (*spriteEntry)["anim"]->stringVal;
-			sprite->playAnimation(animName, -1, false);
-			entity = sprite;
-            applySceneMesh((*entry)["SceneMesh"], sprite);
-              */
+			String spriteSetName = (*spriteEntry)["sprite_set"]->stringVal;
+
+             SpriteSet *spriteSet = (SpriteSet*)CoreServices::getInstance()->getResourceManager()->getResourcePoolByName(spriteSetName);
+             
+             if(spriteSet) {
+                 SceneSprite *sprite = new SceneSprite(spriteSet);
+                 
+                 String spriteName = (*spriteEntry)["sprite"]->stringVal;
+                 sprite->setSpriteByName(spriteName);
+
+                 
+                 String stateName = (*spriteEntry)["state"]->stringVal;
+                 
+                 if(sprite->getCurrentSprite()) {
+                     SpriteState *state = sprite->getCurrentSprite()->getStateByName(stateName);
+                     if(state) {
+                         sprite->setSpriteState(state, 0, false);
+                     }
+                     
+                     ObjectEntry *randomFrameEntry = (*spriteEntry)["random_frame"];
+                     if(randomFrameEntry) {
+                        sprite->setStartOnRandomFrame(randomFrameEntry->boolVal);
+                     }
+                     
+                 }
+                 
+                 entity = sprite;
+                 applySceneMesh((*entry)["SceneMesh"], sprite);
+             }
+
         } else 	if(entityType->stringVal == "SceneLabel") {
 			ObjectEntry *labelEntry = (*entry)["SceneLabel"];
 			

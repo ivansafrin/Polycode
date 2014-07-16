@@ -764,8 +764,9 @@ void EntityEditorMainView::setEditorProps(Entity *entity) {
     
     SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(entity);
     SceneParticleEmitter *emitter = dynamic_cast<SceneParticleEmitter*>(entity);
+    SceneSprite *sprite = dynamic_cast<SceneSprite*>(entity);
     
-    if(sceneMesh && !emitter) {
+    if(sceneMesh && !emitter && !sprite) {
         sceneMesh->wireFrameColor = Color(1.0, 0.8, 0.3, 1.0);
 //        sceneMesh->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
         sceneMesh->useGeometryHitDetection = true;
@@ -1140,7 +1141,7 @@ void EntityEditorMainView::handleEvent(Event *event) {
                     SceneSprite *newSprite = new SceneSprite(sprite->getParentSpriteSet());
                     newSprite->setSprite(sprite);
                     if(sprite->getNumStates() > 0) {
-                        newSprite->setSpriteState(sprite->getState(0));
+                        newSprite->setSpriteState(sprite->getState(0), 0, false);
                     }
                     
                     newSprite->setMaterialByName("Unlit");
@@ -1824,20 +1825,23 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
     }
     
     if(dynamic_cast<SceneSprite*>(entity)) {
-        /*
+
         if(!(*(entry))["type"])
             entry->addChild("type", "SceneSprite");
         SceneSprite *sprite = (SceneSprite*) entity;
         
         ObjectEntry *spriteEntry = entry->addChild("SceneSprite");
-        spriteEntry->addChild("filePath", sprite->getFileName());
+        
+        spriteEntry->addChild("sprite_set", sprite->getSpriteSet()->getName());
+        spriteEntry->addChild("sprite", sprite->getCurrentSprite()->getName());
+        spriteEntry->addChild("random_frame", sprite->getStartOnRandomFrame());
         
         String animName = "";
-        if(sprite->getCurrentAnimation()) {
-            animName = sprite->getCurrentAnimation()->name;
+        if(sprite->getCurrentSpriteState()) {
+            animName = sprite->getCurrentSpriteState()->getName();
         }
-        spriteEntry->addChild("anim", animName);
-        */
+        spriteEntry->addChild("state", animName);
+
     }
     
     if(dynamic_cast<SceneLabel*>(entity)) {

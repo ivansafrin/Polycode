@@ -427,7 +427,7 @@ class TextureProp : public PropProp {
 		String lastData;
 		String currentData;
 };
-/*
+
 class SceneSpriteProp : public PropProp {
 	public:
 		SceneSpriteProp(String caption);
@@ -436,16 +436,21 @@ class SceneSpriteProp : public PropProp {
 		
 		void setPropData(PolycodeEditorPropActionData* data);
 		
-		void set(String fileName);
-		String get();		
+        void setEntityInstance(SceneEntityInstance *instance);
+    
+		void set(Sprite *sprite);
+		Sprite *get();
 				
+        SceneEntityInstance *entityInstance;
+    
+        Sprite *sprite;
 		SceneSprite *previewSprite;
 		UIButton *changeButton;
-		
-		String lastData;
-		String currentData;
+        UILabel *spriteName;
+    
+        Sprite *lastData;
+		Sprite *currentData;
 };
-*/
 
 class SceneEntityInstanceProp : public PropProp {
 	public:
@@ -806,7 +811,7 @@ class SceneLabelSheet : public PropSheet {
 		ComboProp *font;
 		BoolProp *enableAA;
 };
-/*
+
 class SceneSpriteSheet : public PropSheet {
 	public:
 		SceneSpriteSheet();
@@ -814,14 +819,16 @@ class SceneSpriteSheet : public PropSheet {
 		
 		void handleEvent(Event *event);
         void setSprite(SceneSprite *sprite);
+    
+        void setEntityInstance(SceneEntityInstance *instance);
 				
-		SceneSprite *sprite;	
-		SceneSpriteProp *spriteProp;
-        ComboProp *defaultAnimationProp;
-        NumberProp *spriteWidthProp;
-        NumberProp *spriteHeightProp;
+		SceneSprite *sprite;
+    
+        SceneSpriteProp *spriteProp;
+        BoolProp *randomFrameProp;
+        ComboProp *defaultStateProp;
 };
-*/
+
 
 class CameraSheet : public PropSheet {
     public:

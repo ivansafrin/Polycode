@@ -34,15 +34,43 @@ using namespace Polycode;
 SceneSprite::SceneSprite(SpriteSet *spriteSet) : SceneMesh(Mesh::QUAD_MESH) {
     currentSprite = NULL;
     currentSpriteState = NULL;
-    this->spriteSet = spriteSet;
+    setSpriteSet(spriteSet);
     defaultMesh = mesh;
     currentFrame = 0;
     core = Services()->getCore();
     spriteTimer = 0.0;
     paused = false;
+    playOnce = false;
     spriteTimerVal = 0.1;
-    setTexture(spriteSet->getTexture());
+    useGeometryHitDetection = false;
+    ownsMesh = false;
+    startOnRandomFrame = false;
 }
+
+bool SceneSprite::getStartOnRandomFrame() {
+    return startOnRandomFrame;
+}
+
+void SceneSprite::setStartOnRandomFrame(bool val) {
+    startOnRandomFrame = val;
+    if(val && currentSpriteState) {
+        currentFrame = rand() % currentSpriteState->getNumFrameIDs();
+    }
+}
+
+Entity *SceneSprite::Clone(bool deepClone, bool ignoreEditorOnly) const {
+    SceneSprite *newSprite = new SceneSprite(spriteSet);
+    newSprite->setSprite(currentSprite);
+    newSprite->setSpriteState(currentSpriteState, currentFrame, playOnce);
+    newSprite->setStartOnRandomFrame(startOnRandomFrame);
+    applyClone(newSprite, deepClone, ignoreEditorOnly);
+    return newSprite;
+}
+
+void SceneSprite::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
+    SceneMesh::applyClone(clone, deepClone, ignoreEditorOnly);
+}
+
 
 SpriteState *SceneSprite::getCurrentSpriteState() {
     return currentSpriteState;
@@ -68,16 +96,47 @@ void SceneSprite::setCurrentFrame(unsigned int frameIndex) {
     currentFrame = frameIndex;
 }
 
-void SceneSprite::setSprite(Sprite *spriteEntry) {
-    currentSprite = spriteEntry;
+void SceneSprite::setSpriteByName(String spriteName) {
+    Sprite *sprite = spriteSet->getSpriteByName(spriteName);
+    if(sprite) {
+        setSprite(sprite);
+    }
 }
 
-void SceneSprite::setSpriteState(SpriteState *spriteState) {
+void SceneSprite::setSprite(Sprite *spriteEntry) {
+    if(spriteEntry->getParentSpriteSet() != spriteSet) {
+        setSpriteSet(spriteEntry->getParentSpriteSet());
+    }
+    currentSprite = spriteEntry;
+    currentSpriteState = NULL;
+}
+
+void SceneSprite::setSpriteSet(SpriteSet *spriteSet) {
+    this->spriteSet = spriteSet;
+    setTexture(spriteSet->getTexture());
+    currentSprite = NULL;
+    currentSpriteState = NULL;
+}
+
+void SceneSprite::setSpriteStateByName(String name, unsigned int startingFrame, bool playOnce) {
+    if(!currentSprite) {
+        return;
+    }
+    SpriteState *spriteState = currentSprite->getStateByName(name);
+    if(spriteState) {
+        setSpriteState(spriteState, startingFrame, playOnce);
+    }
+}
+
+void SceneSprite::setSpriteState(SpriteState *spriteState, unsigned int startingFrame, bool playOnce) {
     currentSpriteState = spriteState;
     
     if(!currentSpriteState) {
         return;
     }
+    
+    this->playOnce = playOnce;
+    currentFrame = startingFrame;
     
     Vector2 bBox = spriteState->getBoundingBox();
     setLocalBoundingBox(bBox.x / spriteState->getPixelsPerUnit(), bBox.y / spriteState->getPixelsPerUnit(), 0.001);
@@ -101,7 +160,11 @@ void SceneSprite::Update() {
         spriteTimer = 0.0;
         currentFrame++;
         if(currentFrame >= currentSpriteState->getNumFrameIDs()) {
-            currentFrame = 0;
+            if(playOnce) {
+                currentFrame = currentSpriteState->getNumFrameIDs()-1;
+            } else {
+                currentFrame = 0;
+            }
         }
     }
 }
@@ -118,9 +181,11 @@ void SceneSprite::Render() {
     
     Mesh *stateMesh = currentSpriteState->getMeshForFrameIndex(currentFrame);
     if(stateMesh) {
-        setMesh(stateMesh);
+        this->mesh = stateMesh;
+        useVertexBuffer = false;
     } else {
-        setMesh(defaultMesh);
+        this->mesh = defaultMesh;
+        useVertexBuffer = false;
     }
     
     SceneMesh::Render();
@@ -305,6 +370,15 @@ SpriteState *Sprite::getState(unsigned int index) {
     } else {
         return NULL;
     }
+}
+
+SpriteState *Sprite::getStateByName(const String &name) {
+    for(int i=0; i < states.size(); i++) {
+        if(states[i]->getName() == name) {
+            return states[i];
+        }
+    }
+    return NULL;
 }
 
 void Sprite::addSpriteState(SpriteState *state) {
@@ -507,6 +581,15 @@ void SpriteSet::removeSprite(Sprite *sprite) {
             return;
         }
     }
+}
+
+Sprite *SpriteSet::getSpriteByName(String spriteName) {
+    for(int i=0; i < sprites.size(); i++) {
+        if(sprites[i]->getName() == spriteName) {
+            return sprites[i];
+        }
+    }
+    return NULL;
 }
 
 Texture *SpriteSet::loadTexture(String imageFileName) {

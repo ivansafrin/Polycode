@@ -1388,78 +1388,118 @@ void TextureProp::set(Texture *texture) {
 Texture* TextureProp::get() {
 	return previewShape->getTexture();
 }
-/*
+
 SceneSpriteProp::SceneSpriteProp(String caption) : PropProp(caption, "SceneSprite"){
 
-		previewSprite = new SceneSprite("default/default.sprite");
-        previewSprite->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
-		previewSprite->setAnchorPoint(-1.0, -1.0, 0.0);
-		previewSprite->setPosition(2, 1);
-		previewSprite->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, 48,48);		
-		propContents->addChild(previewSprite);	
-
-	
+	previewSprite = NULL;
+    
 	changeButton = new UIButton("Change", 80);
 	propContents->addChild(changeButton);
 	changeButton->setPosition(60, 5);
 	changeButton->addEventListener(this, UIEvent::CLICK_EVENT);
-	setHeight(70);
+	setHeight(55);
+    
+	spriteName = new UILabel("", 12, "sans");
+	propContents->addChild(spriteName);
+	spriteName->setPosition(-100, 32);
+	spriteName->color.a = 1.0;
+    
 }
 
 SceneSpriteProp::~SceneSpriteProp() {
 
 }
 
+void SceneSpriteProp::setEntityInstance(SceneEntityInstance *instance) {
+    entityInstance = instance;
+}
+
 void SceneSpriteProp::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == globalFrame->assetBrowser && event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {
-		String filePath = globalFrame->assetBrowser->getSelectedAssetPath();
-		
-		set(filePath);
-		
-		globalFrame->assetBrowser->removeAllHandlersForListener(this);
-		dispatchEvent(new Event(), Event::CHANGE_EVENT);
-		dispatchEvent(new PropEvent(this, NULL, PropDataString(lastData), PropDataString(currentData)), PropEvent::EVENT_PROP_CHANGE);
-		globalFrame->hideModal();
+        
+        Resource *selectedResource = globalFrame->assetBrowser->getSelectedResource();
+        
+        if(selectedResource) {
+            sprite = (Sprite*) selectedResource;
+            previewSprite->setSprite(sprite);
+            
+            if(sprite->getNumStates() > 0) {
+                previewSprite->setSpriteState(sprite->getState(0), 0, false);
+            }
+            
+            Number spriteScale = 1.0;
+            if(previewSprite->getHeight() > previewSprite->getWidth()) {
+                spriteScale = 40.0 / previewSprite->getHeight();
+            } else {
+                spriteScale = 40.0 / previewSprite->getWidth();
+            }
+            previewSprite->setScale(spriteScale, spriteScale, 1.0);
+            
+            dispatchEvent(new Event(), Event::CHANGE_EVENT);
+//            dispatchEvent(new PropEvent(this, NULL, PropDataString(lastData), PropDataString(currentData)), PropEvent::EVENT_PROP_CHANGE);
+        }
+        globalFrame->assetBrowser->removeAllHandlersForListener(this);
+        globalFrame->hideModal();
+        
+        
 	}
 
 	if(event->getDispatcher() == changeButton && event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {
-		globalFrame->assetBrowser->addEventListener(this, UIEvent::OK_EVENT);
-		
-		std::vector<String> extensions;
-		extensions.push_back("sprite");
-		globalFrame->showAssetBrowser(extensions);
+        
+        globalFrame->assetBrowser->addEventListener(this, UIEvent::OK_EVENT);
+		std::vector<ResourcePool*> pools;
+        pools.push_back(CoreServices::getInstance()->getResourceManager()->getGlobalPool());
+        for(int i=0; i < entityInstance->getNumLinkedResourePools(); i++) {
+            pools.push_back(entityInstance->getLinkedResourcePoolAtIndex(i));
+        }
+		globalFrame->showAssetBrowserForPools(pools, Resource::RESOURCE_SPRITE);
+        
 	}
 }
 
 void SceneSpriteProp::setPropData(PolycodeEditorPropActionData* data) {
-	set(data->stringVal);
-	dispatchEvent(new Event(), Event::CHANGE_EVENT);	
+//    set(data->stringVal);
+//	dispatchEvent(new Event(), Event::CHANGE_EVENT);
 }
 
-void SceneSpriteProp::set(String fileName) {
+void SceneSpriteProp::set(Sprite *sprite) {
 
-	if(fileName != previewSprite->getFileName()) {
-		if(previewSprite) {
-			propContents->removeChild(previewSprite);
-			delete previewSprite;
-		}
-		lastData = currentData;
-		currentData = fileName;
+    this->sprite = sprite;
+    
+    spriteName->setText(sprite->getName());
+
+    if(previewSprite) {
+        propContents->removeChild(previewSprite);
+        delete previewSprite;
+    }
+
+    lastData = currentData;
+    currentData = sprite;
 		
-		previewSprite = new SceneSprite(fileName);
-		previewSprite->setAnchorPoint(-1.0, -1.0, 0.0);
-		previewSprite->setPosition(2, 1);
-        previewSprite->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
-		previewSprite->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, 48,48);		
-		propContents->addChild(previewSprite);	
-	}
+    previewSprite = new SceneSprite(sprite->getParentSpriteSet());
+    previewSprite->setSprite(sprite);
+    if(sprite->getNumStates() > 0) {
+        previewSprite->setSpriteState(sprite->getState(0), 0, false);
+    }
+    previewSprite->setAnchorPoint(-1.0, -1.0, 0.0);
+    previewSprite->setPosition(2, 1);
+    previewSprite->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    propContents->addChild(previewSprite);
+    
+    Number spriteScale = 1.0;
+    if(previewSprite->getHeight() > previewSprite->getWidth()) {
+        spriteScale = 40.0 / previewSprite->getHeight();
+    } else {
+        spriteScale = 40.0 / previewSprite->getWidth();
+    }
+    previewSprite->setScale(spriteScale, spriteScale, 1.0);
 }
 
-String SceneSpriteProp::get() {
-	return previewSprite->getFileName();
+Sprite *SceneSpriteProp::get() {
+	return sprite;
 }
-*/
+
 SceneEntityInstanceProp::SceneEntityInstanceProp(String caption) : PropProp(caption, "SceneEntityInstance"){
 //	previewInstance = new SceneEntityInstance("default/default.entity");
 	previewInstance->setAnchorPoint(-1.0, -1.0, 0.0);
@@ -3360,68 +3400,68 @@ void CameraSheet::setCamera(Camera *camera) {
     }
 }
 
-/*
+
 SceneSpriteSheet::SceneSpriteSheet() : PropSheet("SPRITE", "SceneSprite") {
 	sprite = NULL;
     enabled = false;
 	
-	spriteProp = new SceneSpriteProp("Sprite");
-	spriteProp->addEventListener(this, Event::CHANGE_EVENT);
-	addProp(spriteProp);	
+    spriteProp = new SceneSpriteProp("Sprite");
+    spriteProp->addEventListener(this, Event::CHANGE_EVENT);
+    addProp(spriteProp);
 	
-	defaultAnimationProp = new ComboProp("Animation");
-	defaultAnimationProp->addEventListener(this, Event::CHANGE_EVENT);
-	addProp(defaultAnimationProp);
+	defaultStateProp = new ComboProp("State");
+	defaultStateProp->addEventListener(this, Event::CHANGE_EVENT);
+	addProp(defaultStateProp);
+
+    randomFrameProp = new BoolProp("Random start frame");
+    randomFrameProp->addEventListener(this, Event::CHANGE_EVENT);
+    addProp(randomFrameProp);
     
-    spriteWidthProp = new NumberProp("Width");
-	spriteWidthProp->addEventListener(this, Event::CHANGE_EVENT);
-	addProp(spriteWidthProp);
-
-    spriteHeightProp = new NumberProp("Height");
-	spriteHeightProp->addEventListener(this, Event::CHANGE_EVENT);
-	addProp(spriteHeightProp);
-
 	propHeight = 190;
 }
 
 SceneSpriteSheet::~SceneSpriteSheet() {
 
 }
-		
+
+void SceneSpriteSheet::setEntityInstance(SceneEntityInstance *instance) {
+    spriteProp->setEntityInstance(instance);
+}
+
 void SceneSpriteSheet::handleEvent(Event *event) {
 	if(!sprite)
 		return;
 
-	if(event->getDispatcher() == sprite->getResourceEntry()) {
-		spriteProp->previewSprite->reloadSprite();
-		sprite->getResourceEntry()->removeAllHandlersForListener(this);
+	if(event->getDispatcher() == defaultStateProp) {
+		sprite->setSpriteStateByName(defaultStateProp->comboEntry->getSelectedItem()->label, 0, false);
+            spriteProp->previewSprite->setSpriteStateByName(defaultStateProp->comboEntry->getSelectedItem()->label, 0, false);
 	}
 
-    if(event->getDispatcher() == spriteWidthProp) {
-        sprite->setActualSpriteSize(spriteWidthProp->get(), sprite->getActualSpriteSize().y);
-        dispatchEvent(new Event(), Event::CHANGE_EVENT);
-	}
-
-    if(event->getDispatcher() == spriteHeightProp) {
-        sprite->setActualSpriteSize(sprite->getActualSpriteSize().x, spriteHeightProp->get());
-        dispatchEvent(new Event(), Event::CHANGE_EVENT);
-	}
- 
+	if(event->getDispatcher() == randomFrameProp) {
+        sprite->setStartOnRandomFrame(randomFrameProp->get());
+    }
     
-	if(event->getDispatcher() == defaultAnimationProp) {
-		sprite->playAnimation(defaultAnimationProp->comboEntry->getSelectedItem()->label, 0, false);
-		spriteProp->previewSprite->playAnimation(defaultAnimationProp->comboEntry->getSelectedItem()->label, 0, false);
+	if(event->getDispatcher() == spriteProp) {
+        sprite->setSprite(spriteProp->get());
+        defaultStateProp->comboEntry->clearItems();
+        
+        if(spriteProp->get()->getNumStates() > 0) {
+            sprite->setSpriteState(spriteProp->get()->getState(0), 0, false);
+        }
+
+        Sprite *spriteEntry = sprite->getCurrentSprite();
+        for(int i=0; i < spriteEntry->getNumStates(); i++) {
+            defaultStateProp->comboEntry->addComboItem(spriteEntry->getState(i)->getName());
+            
+            if(sprite->getCurrentSpriteState()) {
+                if(sprite->getCurrentSpriteState() == spriteEntry->getState(i)) {
+                    defaultStateProp->comboEntry->setSelectedIndex(i);
+                    //spriteProp->previewSprite->setSpriteStateByName(defaultStateProp->comboEntry->getSelectedItem()->label, 0, false);
+                }
+            }
+        }
 	}
 
-	if(event->getDispatcher() == spriteProp) {
-		sprite->loadFromFile(spriteProp->get());
-			defaultAnimationProp->comboEntry->clearItems();
-			for(int i=0; i < sprite->getNumAnimations(); i++) {
-				defaultAnimationProp->comboEntry->addComboItem(sprite->getAnimationAtIndex(i)->name);
-			}
-		
-	}
-	
 	PropSheet::handleEvent(event);
 }
 
@@ -3429,28 +3469,27 @@ void SceneSpriteSheet::setSprite(SceneSprite *sprite) {
     this->sprite = sprite;
     
 	if(sprite) {
-			defaultAnimationProp->comboEntry->clearItems();
-			for(int i=0; i < sprite->getNumAnimations(); i++) {
-				defaultAnimationProp->comboEntry->addComboItem(sprite->getAnimationAtIndex(i)->name);
-				if(sprite->getCurrentAnimation()) {
-					if(sprite->getCurrentAnimation()->name == sprite->getAnimationAtIndex(i)->name) {
-						defaultAnimationProp->comboEntry->setSelectedIndex(i);
-						spriteProp->previewSprite->playAnimation(sprite->getCurrentAnimation()->name, 0, false);
+            spriteProp->set(sprite->getCurrentSprite());
+			defaultStateProp->comboEntry->clearItems();
+        
+            Sprite *spriteEntry = sprite->getCurrentSprite();
+			for(int i=0; i < spriteEntry->getNumStates(); i++) {
+				defaultStateProp->comboEntry->addComboItem(spriteEntry->getState(i)->getName());
+                
+				if(sprite->getCurrentSpriteState()) {
+					if(sprite->getCurrentSpriteState() == spriteEntry->getState(i)) {
+						defaultStateProp->comboEntry->setSelectedIndex(i);
+						//spriteProp->previewSprite->setSpriteStateByName(defaultStateProp->comboEntry->getSelectedItem()->label, 0, false);
 					}
 				}
 			}
+            randomFrameProp->set(sprite->getStartOnRandomFrame());
 
-		enabled = true;	
-		spriteProp->set(sprite->getFileName());
-		sprite->getResourceEntry()->addEventListener(this, Event::RESOURCE_RELOAD_EVENT);
-        
-        spriteWidthProp->set(sprite->getActualSpriteSize().x);
-        spriteHeightProp->set(sprite->getActualSpriteSize().y);
+		enabled = true;
 	} else {
 		enabled = false;
 	}
 }
-*/
 
 SceneEntityInstanceSheet::SceneEntityInstanceSheet() : PropSheet("ENTITY INSTANCE", "SceneEntityInstance") {
 	instance = NULL;

@@ -1907,7 +1907,7 @@ void PolycodeSpriteEditor::handleEvent(Event *event) {
     
         
     } else if(event->getDispatcher() == stateEditor) {
-        spritePreview->getSceneSprite()->setSpriteState(stateEditor->getSelectedState());
+        spritePreview->getSceneSprite()->setSpriteState(stateEditor->getSelectedState(), 0, false);
     } else if(event->getDispatcher() == spriteSheetEditor) {
         SpriteState *state = spritePreview->getSceneSprite()->getCurrentSpriteState();
         if(state) {
