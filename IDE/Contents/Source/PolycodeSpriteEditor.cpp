@@ -137,7 +137,7 @@ Vector2 TransformGrips::getAnchorPoint() {
 }
 
 TransformGrips::~TransformGrips() {
-    
+    Services()->getCore()->getInput()->removeAllHandlersForListener(this);
 }
 
 void TransformGrips::setGripRectangle(Polycode::Rectangle rectangle, Vector2 offset) {
@@ -644,7 +644,7 @@ void SpriteSheetEditor::clearSelected() {
 }
 
 SpriteSheetEditor::~SpriteSheetEditor() {
-    
+    Services()->getCore()->getInput()->removeAllHandlersForListener(this);
 }
 
 std::vector<unsigned int> SpriteSheetEditor::getSelectedFrameIDs() {
@@ -841,7 +841,8 @@ void SpriteBrowser::refreshSprites() {
 }
 
 SpriteBrowser::~SpriteBrowser() {
-    
+	globalFrame->textInputPopup->removeAllHandlersForListener(this);
+	globalFrame->yesNoPopup->removeAllHandlersForListener(this);
 }
 
 void SpriteBrowser::Resize(Number width, Number height) {
@@ -1569,7 +1570,7 @@ void SpriteStateEditBar::deleteSelectedFrames() {
 }
 
 SpriteStateEditBar::~SpriteStateEditBar() {
-    
+    Services()->getCore()->getInput()->removeAllHandlersForListener(this);
 }
 
 SpriteStateBrowser::SpriteStateBrowser() : UIElement() {
@@ -1753,6 +1754,8 @@ void SpriteStateEditor::refreshStates() {
 }
 
 SpriteStateEditor::~SpriteStateEditor() {
+	globalFrame->textInputPopup->removeAllHandlersForListener(this);
+	globalFrame->yesNoPopup->removeAllHandlersForListener(this);
     
 }
 
@@ -1918,6 +1921,13 @@ void PolycodeSpriteEditor::handleEvent(Event *event) {
 
 PolycodeSpriteEditor::~PolycodeSpriteEditor() {
     CoreServices::getInstance()->getResourceManager()->unsubscibeFromResourcePool(sprite);
+    delete mainSizer;
+    delete topSizer;
+    delete bottomSizer;
+    delete spriteSheetEditor;
+    delete spriteBrowser;
+    delete stateEditor;
+    delete spritePreview;
 }
 
 bool PolycodeSpriteEditor::openFile(OSFileEntry filePath) {

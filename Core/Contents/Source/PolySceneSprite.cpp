@@ -463,7 +463,7 @@ void Sprite::removeSpriteState(SpriteState *state) {
     for(int i=0; i < states.size(); i++) {
         if(states[i] == state) {
             states.erase(states.begin() + i);
-            dispatchEvent(new Event(), Event::CHANGE_EVENT);            
+            dispatchEvent(new Event(), Event::CHANGE_EVENT);
             return;
         }
     }

@@ -3733,9 +3733,9 @@ void LayerSheet::handleEvent(Event *event) {
     PropSheet::handleEvent(event);
 }
 
-LinkedMaterialsSheet::LinkedMaterialsSheet() : PropSheet("LINKED MATERIALS", "linked_materials") {
+LinkedMaterialsSheet::LinkedMaterialsSheet() : PropSheet("LINKED RESOURCE POOLS", "linked_materials") {
     
-    addMaterialProp = new ButtonProp("Link materials file");
+    addMaterialProp = new ButtonProp("Link resource pool");
     addProp(addMaterialProp);
     addMaterialProp->getButton()->addEventListener(this, UIEvent::CLICK_EVENT);
     

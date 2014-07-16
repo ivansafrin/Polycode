@@ -48,6 +48,7 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
     
 	CoreServices::getInstance()->getResourceManager()->getGlobalPool()->reloadResourcesOnModify = true;
 	
+    CoreServices::getInstance()->getMaterialManager()->mipmapsDefault = true;    
     
 	runNextFrame = false;
 	
@@ -1271,7 +1272,7 @@ void PolycodeIDEApp::applyFinalConfig() {
 	}
 	
 	if(!setResFromConfig) {
-		core->setVideoMode(1100, 700, false, true, 0, 0);	
+		core->setVideoMode(1100, 700, false, true, 0, 0);
 		frame->Resize(1100, 700);			
 	}
 
