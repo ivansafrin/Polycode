@@ -359,6 +359,7 @@ EntityEditorMainView::EntityEditorMainView(PolycodeEditor *editor) {
     renderTextureShape->focusable = true;
     renderTextureShape->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 
+    
     cameraPreview = new CameraPreviewWindow();
     addChild(cameraPreview);
     cameraPreview->setPosition(5, 35);
@@ -423,13 +424,16 @@ EntityEditorMainView::EntityEditorMainView(PolycodeEditor *editor) {
 	topBar->addChild(transformGizmoMenu);
     transformGizmoMenu->setPositionX(40);
     
-    modeSwitchDropdown = new UIComboBox(globalMenu, 100);
-    topBar->addChild(modeSwitchDropdown);
-    
-    modeSwitchDropdown->addComboItem("3D MODE");
-    modeSwitchDropdown->addComboItem("2D MODE");
-    modeSwitchDropdown->setSelectedIndex(0);
-    modeSwitchDropdown->addEventListener(this, UIEvent::CHANGE_EVENT);
+
+    viewModeSelector = new UIIconSelector();
+    viewModeSelector->addIcon("entityEditor/icon_cam_2d.png");
+    viewModeSelector->addIcon("entityEditor/icon_cam_x.png");
+    viewModeSelector->addIcon("entityEditor/icon_cam_y.png");
+    viewModeSelector->addIcon("entityEditor/icon_cam_z.png");
+    viewModeSelector->addIcon("entityEditor/icon_cam_3d.png");
+    topBar->addChild(viewModeSelector);
+    viewModeSelector->selectIndex(EDITOR_MODE_3D);
+    viewModeSelector->addEventListener(this, UIEvent::SELECT_EVENT);
     
     shadeModeSelector = new UIIconSelector();
     shadeModeSelector->addIcon("entityEditor/shade_full.png");
@@ -587,23 +591,49 @@ SceneRenderTexture *EntityEditorMainView::getRenderTexture() {
 
 void EntityEditorMainView::setEditorMode(int newMode) {
     editorMode = newMode;
-    if(editorMode == EDITOR_MODE_3D) {
-        mainScene->setSceneType(Scene::SCENE_3D);
-        grid->setGridMode(EditorGrid::GRID_MODE_3D);
-        transformGizmo->setGizmoMode(TransformGizmo::GIZMO_MODE_3D);
-        mainScene->getDefaultCamera()->setOrthoMode(false);
-        mainScene->getDefaultCamera()->setClippingPlanes(0.1, 1000);
-        trackballCamera->disableRotation(false);
-    } else {
-        mainScene->setSceneType(Scene::SCENE_2D);
-        mainScene->getDefaultCamera()->setOrthoMode(true);
-        mainScene->getDefaultCamera()->setClippingPlanes(-100, 100);
-        trackballCamera->setCameraPosition(trackballCamera->getOribitingCenter()+Vector3(0.0, 0.0, trackballCamera->getCameraDistance()));
-        grid->setGridMode(EditorGrid::GRID_MODE_2D);
-        transformGizmo->setGizmoMode(TransformGizmo::GIZMO_MODE_2D);
-        trackballCamera->disableRotation(true);
-        Update();
+    
+    switch(editorMode) {
+        case EDITOR_MODE_3D:
+            mainScene->setSceneType(Scene::SCENE_3D);
+            grid->setGridMode(EditorGrid::GRID_MODE_3D);
+            transformGizmo->setGizmoMode(TransformGizmo::GIZMO_MODE_3D);
+            mainScene->getDefaultCamera()->setOrthoMode(false);
+            mainScene->getDefaultCamera()->setClippingPlanes(0.1, 1000);
+            trackballCamera->disableRotation(false);
+        break;
+        case EDITOR_MODE_3D_X:
+            mainScene->setSceneType(Scene::SCENE_2D);
+            mainScene->getDefaultCamera()->setOrthoMode(true);
+            mainScene->getDefaultCamera()->setClippingPlanes(-0.1, 1000);
+            trackballCamera->setCameraPosition(trackballCamera->getOribitingCenter()+Vector3(trackballCamera->getCameraDistance(), 0.0, 0.0));
+            grid->setGridMode(EditorGrid::GRID_MODE_2D_X);
+            transformGizmo->setGizmoMode(TransformGizmo::GIZMO_MODE_2D);
+            trackballCamera->disableRotation(true);
+            Update();
+        break;
+        case EDITOR_MODE_3D_Y:
+            mainScene->setSceneType(Scene::SCENE_2D);
+            mainScene->getDefaultCamera()->setOrthoMode(true);
+            mainScene->getDefaultCamera()->setClippingPlanes(-0.1, 1000);
+            trackballCamera->setCameraPosition(trackballCamera->getOribitingCenter()+Vector3(0.001, trackballCamera->getCameraDistance(), 0.00));
+            grid->setGridMode(EditorGrid::GRID_MODE_2D_Y);
+            transformGizmo->setGizmoMode(TransformGizmo::GIZMO_MODE_2D);
+            trackballCamera->disableRotation(true);
+            Update();
+        break;
+        case EDITOR_MODE_3D_Z:
+        case EDITOR_MODE_2D:
+            mainScene->setSceneType(Scene::SCENE_2D);
+            mainScene->getDefaultCamera()->setOrthoMode(true);
+            mainScene->getDefaultCamera()->setClippingPlanes(-0.1, 1000);
+            trackballCamera->setCameraPosition(trackballCamera->getOribitingCenter()+Vector3(0.0, 0.0, trackballCamera->getCameraDistance()));
+            grid->setGridMode(EditorGrid::GRID_MODE_2D_Z);
+            transformGizmo->setGizmoMode(TransformGizmo::GIZMO_MODE_2D);
+            trackballCamera->disableRotation(true);
+            Update();
+        break;
     }
+
 }
 
 Entity *EntityEditorMainView::getSelectedEntity() {
@@ -669,10 +699,11 @@ void EntityEditorMainView::Update() {
         entitiesToSelect.clear();
     }
     
-    if(editorMode == EDITOR_MODE_2D) {
+    if(editorMode != EDITOR_MODE_3D) {
         Number aspect = renderTextureShape->getWidth() / renderTextureShape->getHeight();
         mainScene->getDefaultCamera()->setOrthoSize(trackballCamera->getCameraDistance() * aspect, trackballCamera->getCameraDistance());
     }
+    
     
     for(int i=0; i < icons.size(); i++) {
         Number scale;
@@ -687,7 +718,7 @@ void EntityEditorMainView::Update() {
             Vector3 parentPosition = parentEntity->getConcatenatedMatrix().getPosition();
             icons[i]->setPosition(parentPosition);
             
-            if(editorMode == EDITOR_MODE_2D) {
+            if(editorMode != EDITOR_MODE_3D) {
                 scale = trackballCamera->getCameraDistance() * 0.1;
             } else {
                 scale = mainScene->getDefaultCamera()->getPosition().distance(icons[i]->getConcatenatedMatrix().getPosition()) * 0.1;
@@ -1107,8 +1138,8 @@ void EntityEditorMainView::handleEvent(Event *event) {
         focusSelf();
     } else if(event->getDispatcher() == trackballCamera) {
         Update();
-    } else if(event->getDispatcher() == modeSwitchDropdown) {
-        setEditorMode(modeSwitchDropdown->getSelectedIndex());
+    } else if(event->getDispatcher() == viewModeSelector) {
+        setEditorMode(viewModeSelector->getSelectedIndex());
     } else if(event->getDispatcher() == globalFrame->assetBrowser) {
         if(event->getEventCode() == UIEvent::OK_EVENT) {
             if(assetSelectType == "mesh") {
@@ -1552,7 +1583,7 @@ void EntityEditorMainView::Resize(Number width, Number height) {
     footerBg->setPosition(0.0, height-30);
     bottomBar->setPosition(0.0, height-30);
     
-	modeSwitchDropdown->setPosition(width-110, 4);
+	viewModeSelector->setPosition(width-viewModeSelector->getWidth()-10.0, 3);
     
     Vector2 screenPos = renderTextureShape->getScreenPosition(globalScene->getDefaultCamera()->getProjectionMatrix(), globalScene->getDefaultCamera()->getTransformMatrix(), globalScene->getDefaultCamera()->getViewport());
     

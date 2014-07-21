@@ -213,9 +213,11 @@ class EntityEditorMainView : public UIElement {
     
             void setEditorPropsRecursive(Entity *entity);
     
-            static const int EDITOR_MODE_3D = 0;
-            static const int EDITOR_MODE_2D = 1;
-    
+            static const int EDITOR_MODE_2D = 0;
+            static const int EDITOR_MODE_3D_X = 1;
+            static const int EDITOR_MODE_3D_Y = 2;
+            static const int EDITOR_MODE_3D_Z = 3;
+            static const int EDITOR_MODE_3D = 4;
 		protected:
     
             bool selectingNewEntities();
@@ -260,7 +262,10 @@ class EntityEditorMainView : public UIElement {
 			EditorGrid *grid;
     
             UIImageButton *addEntityButton;
-            UIComboBox *modeSwitchDropdown;
+    
+            UIIconSelector *viewModeSelector;
+    
+    
             UIMenu *addEntityMenu;
     
             UIIconSelector *shadeModeSelector;

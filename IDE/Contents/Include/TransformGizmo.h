@@ -28,6 +28,43 @@
 
 using namespace Polycode;
 
+
+class TransformGrips : public UIElement {
+public:
+    TransformGrips();
+    ~TransformGrips();
+    
+    void setGripRectangle(Polycode::Rectangle rectangle, Vector2 offset);
+    
+    void handleEvent(Event *event);
+    Polycode::Rectangle getGripRectangle();
+    
+    Vector2 getAnchorPoint();
+    
+private:
+    
+    bool transforming;
+    UIImage *movingTransform;
+    
+    Polycode::Rectangle gripRectangle;
+    Vector2 anchorPoint;
+    
+    Vector2 mouseBase;
+    
+    UIRect *mainRect;
+    UIImage *transformTL;
+    UIImage *transformT;
+    UIImage *transformTR;
+    UIImage *transformR;
+    UIImage *transformL;
+    UIImage *transformBL;
+    UIImage *transformB;
+    UIImage *transformBR;
+    UIImage *transformOffset;
+    std::vector<UIElement*> grips;
+    
+};
+
 class TrasnformGizmoEvent : public Event {
     public:
         TrasnformGizmoEvent(int mode);

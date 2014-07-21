@@ -24,6 +24,142 @@
 
 extern UIGlobalMenu *globalMenu;
 
+TransformGrips::TransformGrips() : UIElement() {
+    
+    mainRect = new UIRect(1.0, 1.0);
+    mainRect->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    mainRect->color.setColor(0.0, 0.5, 1.0, 0.2);
+    grips.push_back(mainRect);
+    
+    transformTL = new UIImage("spriteEditor/transform_corner.png", 8, 8);
+    grips.push_back(transformTL);
+    transformT = new UIImage("spriteEditor/transform_corner.png", 8, 8);
+    grips.push_back(transformT);
+    transformTR = new UIImage("spriteEditor/transform_corner.png", 8, 8);
+    grips.push_back(transformTR);
+    transformL = new UIImage("spriteEditor/transform_corner.png", 8, 8);
+    grips.push_back(transformL);
+    transformR = new UIImage("spriteEditor/transform_corner.png", 8, 8);
+    grips.push_back(transformR);
+    transformBL = new UIImage("spriteEditor/transform_corner.png", 8, 8);
+    grips.push_back(transformBL);
+    transformB = new UIImage("spriteEditor/transform_corner.png", 8, 8);
+    grips.push_back(transformB);
+    transformBR = new UIImage("spriteEditor/transform_corner.png", 8, 8);
+    grips.push_back(transformBR);
+    transformOffset = new UIImage("spriteEditor/transform_offset.png", 12, 12);
+    grips.push_back(transformOffset);
+    
+    for(int i=0; i < grips.size(); i++) {
+        addChild(grips[i]);
+        if(grips[i] != mainRect) {
+            grips[i]->setAnchorPoint(Vector3());
+        }
+        grips[i]->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+        grips[i]->addEventListener(this, InputEvent::EVENT_MOUSEUP);
+        grips[i]->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);
+        grips[i]->blockMouseInput = true;
+    }
+    
+    
+    Services()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
+    
+    transforming = false;
+    
+    movingTransform = NULL;
+}
+
+Polycode::Rectangle TransformGrips::getGripRectangle() {
+    return gripRectangle;
+}
+
+void TransformGrips::handleEvent(Event *event) {
+    if(event->getDispatcher() == Services()->getCore()->getInput()) {
+        if(transforming) {
+            
+            Vector2 newMouse = Services()->getCore()->getInput()->getMousePosition();
+            
+            if(movingTransform == mainRect) {
+                gripRectangle.x += newMouse.x - mouseBase.x;
+                gripRectangle.y += newMouse.y - mouseBase.y;
+            } else if(movingTransform == transformTL) {
+                gripRectangle.x += newMouse.x - mouseBase.x;
+                gripRectangle.y += newMouse.y - mouseBase.y;
+                gripRectangle.w -= newMouse.x - mouseBase.x;
+                gripRectangle.h -= newMouse.y - mouseBase.y;
+            } else if(movingTransform == transformTR) {
+                gripRectangle.y += newMouse.y - mouseBase.y;
+                gripRectangle.w += newMouse.x - mouseBase.x;
+                gripRectangle.h -= newMouse.y - mouseBase.y;
+            } else if(movingTransform == transformT) {
+                gripRectangle.y += newMouse.y - mouseBase.y;
+                gripRectangle.h -= newMouse.y - mouseBase.y;
+            } else if(movingTransform == transformL) {
+                gripRectangle.x += newMouse.x - mouseBase.x;
+                gripRectangle.w -= newMouse.x - mouseBase.x;
+            } else if(movingTransform == transformR) {
+                gripRectangle.w += newMouse.x - mouseBase.x;
+            } else if(movingTransform == transformBL) {
+                gripRectangle.x += newMouse.x - mouseBase.x;
+                gripRectangle.w -= newMouse.x - mouseBase.x;
+                gripRectangle.h += newMouse.y - mouseBase.y;
+            } else if(movingTransform == transformBR) {
+                gripRectangle.w += newMouse.x - mouseBase.x;
+                gripRectangle.h += newMouse.y - mouseBase.y;
+            } else if(movingTransform == transformB) {
+                gripRectangle.h += newMouse.y - mouseBase.y;
+            } else if(movingTransform == transformOffset) {
+                anchorPoint.x += (newMouse.x - mouseBase.x) / gripRectangle.w;
+                anchorPoint.y += (newMouse.y - mouseBase.y) / gripRectangle.h;
+            }
+            
+            mouseBase = newMouse;
+            dispatchEvent(new Event(), Event::CHANGE_EVENT);
+        }
+    } else {
+        if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN) {
+            movingTransform = (UIImage*) event->getDispatcher();
+            transforming = true;
+            
+            mouseBase = Services()->getCore()->getInput()->getMousePosition();
+            
+        } else {
+            transforming = false;
+        }
+    }
+}
+
+Vector2 TransformGrips::getAnchorPoint() {
+    return anchorPoint;
+}
+
+TransformGrips::~TransformGrips() {
+    Services()->getCore()->getInput()->removeAllHandlersForListener(this);
+}
+
+void TransformGrips::setGripRectangle(Polycode::Rectangle rectangle, Vector2 offset) {
+    
+    mainRect->setPosition(rectangle.x, rectangle.y);
+    mainRect->Resize(rectangle.w, rectangle.h);
+    
+    transformTL->setPosition(rectangle.x, rectangle.y);
+    transformT->setPosition(rectangle.x + (rectangle.w * 0.5), rectangle.y);
+    transformTR->setPosition(rectangle.x + (rectangle.w), rectangle.y);
+    
+    transformL->setPosition(rectangle.x, rectangle.y +(rectangle.h * 0.5));
+    transformR->setPosition(rectangle.x + (rectangle.w), rectangle.y+(rectangle.h * 0.5));
+    
+    transformBL->setPosition(rectangle.x, rectangle.y+rectangle.h);
+    transformB->setPosition(rectangle.x + (rectangle.w * 0.5), rectangle.y+rectangle.h);
+    transformBR->setPosition(rectangle.x+rectangle.w, rectangle.y+rectangle.h);
+    
+    transformOffset->setPosition(rectangle.x + (rectangle.w * 0.5) + (offset.x * rectangle.w), rectangle.y + (rectangle.h * 0.5) + (offset.y * rectangle.h));
+    
+    gripRectangle = rectangle;
+    anchorPoint = offset;
+    
+}
+
 TrasnformGizmoEvent::TrasnformGizmoEvent(int mode) : Event() {
     this->mode =  mode;
     this->eventCode = eventCode;

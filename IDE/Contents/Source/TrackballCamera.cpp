@@ -151,8 +151,10 @@ void TrackballCamera::processMouseMovement(const Vector2 &newPosition) {
 								
 				Vector3 pan = trackballEye.crossProduct(Vector3(0.0, 1.0, 0.0)).setLength(mouseChange.x);
 				
-				pan = pan + (Vector3(0.0, 1.0, 0.0).setLength(mouseChange.y));
-				
+                Vector3 panCross = trackballEye.crossProduct(Vector3(0.0, 1.0, 0.0)).crossProduct(trackballEye);
+                
+				pan = pan + (panCross.setLength(mouseChange.y));
+                
 				targetCamera->Translate(pan);
 				orbitingCenter += pan;
 				trackBallMouseStart = trackBallMouseEnd;

@@ -37,6 +37,7 @@ class TrackballCamera : public EventDispatcher {
 		void setCameraDistance(Number cameraDistance);
 		Camera *getTargetCamera();
     
+    
         void setCameraPosition(Vector3 cameraPosition);
     
 		bool isNavKeyDown();

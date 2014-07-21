@@ -207,10 +207,23 @@ void EditorGrid::rebuildGrid() {
 
 void EditorGrid::setGridMode(int mode) {
     gridMode = mode;
-    if(gridMode == GRID_MODE_3D) {
-        grid->setPitch(90);
-    } else {
-        grid->setPitch(0);
+    switch(gridMode) {
+        case GRID_MODE_3D:
+            grid->setPitch(90);
+            grid->setYaw(0);
+        break;
+        case GRID_MODE_2D_X:
+            grid->setYaw(-90);
+            grid->setPitch(0);
+        break;
+        case GRID_MODE_2D_Y:
+            grid->setPitch(90);
+            grid->setYaw(0);
+        break;
+        case GRID_MODE_2D_Z:
+            grid->setPitch(0);
+            grid->setYaw(0);
+        break;
     }
 }
 

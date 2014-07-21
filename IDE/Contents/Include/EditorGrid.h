@@ -53,7 +53,9 @@ class EditorGrid : public Entity {
         void rebuildGrid();
 		
         static const int GRID_MODE_3D = 0;
-        static const int GRID_MODE_2D = 1;
+        static const int GRID_MODE_2D_X = 1;
+        static const int GRID_MODE_2D_Y = 2;
+        static const int GRID_MODE_2D_Z = 3;
     
 	private:
         int gridMode;
