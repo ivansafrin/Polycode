@@ -84,9 +84,9 @@ AssetEntry::AssetEntry(String assetPath, String assetName, String extension, Res
             
             Number spriteScale = 1.0;
             if(spritePreview->getHeight() > spritePreview->getWidth()) {
-                spriteScale = 64.0 / spritePreview->getHeight();
+                spriteScale = 64.0 / spritePreview->getSpriteBoundingBox().y;
             } else {
-                spriteScale = 64.0 / spritePreview->getWidth();
+                spriteScale = 64.0 / spritePreview->getSpriteBoundingBox().x;
             }
             spritePreview->setScale(spriteScale, spriteScale, 1.0);
             

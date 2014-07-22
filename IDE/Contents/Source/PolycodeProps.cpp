@@ -1430,9 +1430,9 @@ void SceneSpriteProp::handleEvent(Event *event) {
             
             Number spriteScale = 1.0;
             if(previewSprite->getHeight() > previewSprite->getWidth()) {
-                spriteScale = 40.0 / previewSprite->getHeight();
+                spriteScale = 40.0 / previewSprite->getSpriteBoundingBox().y;
             } else {
-                spriteScale = 40.0 / previewSprite->getWidth();
+                spriteScale = 40.0 / previewSprite->getSpriteBoundingBox().x;
             }
             previewSprite->setScale(spriteScale, spriteScale, 1.0);
             
@@ -1482,8 +1482,8 @@ void SceneSpriteProp::set(Sprite *sprite) {
     if(sprite->getNumStates() > 0) {
         previewSprite->setSpriteState(sprite->getState(0), 0, false);
     }
-    previewSprite->setAnchorPoint(-1.0, -1.0, 0.0);
-    previewSprite->setPosition(2, 1);
+    previewSprite->setAnchorPoint(0.0, 0.0, 0.0);
+    previewSprite->setPosition(22, 21);
     previewSprite->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
     propContents->addChild(previewSprite);
     

@@ -776,7 +776,7 @@ SpriteStateEditorDetails::SpriteStateEditorDetails(SpriteSet *spriteSet) : UIEle
     fpsInput->setPosition(65.0, 40.0);
     fpsInput->addEventListener(this, UIEvent::CHANGE_EVENT);
     
-	label = new UILabel("SCALE", 18, "section", Label::ANTIALIAS_FULL);
+	label = new UILabel("PPU", 18, "section", Label::ANTIALIAS_FULL);
 	label->setPosition(60.0-label->getWidth(), 65.0);
     addChild(label);
     
@@ -1537,6 +1537,7 @@ void SpriteStateEditor::setSpriteEntry(Sprite *entry) {
     
     if(entry->getNumStates() > 0) {
         stateBrowser->stateTreeView->getRootNode()->getTreeChild(0)->setSelected();
+        dispatchEvent(new Event(), Event::CHANGE_EVENT);
     }
     
 }
@@ -1690,27 +1691,35 @@ void SpritePreview::Update() {
     
     SpriteState  *state = sprite->getCurrentSpriteState();
     
-    if(state) {
-        Vector2 bBox = state->getBoundingBox();
-        sprite->setLocalBoundingBox(bBox.x / state->getPixelsPerUnit(), bBox.y / state->getPixelsPerUnit(), 0.001);
-    }
-    
+//    if(state) {
+//        Vector2 bBox = state->getBoundingBox();
+//        sprite->setLocalBoundingBox(bBox.x / state->getPixelsPerUnit(), bBox.y / state->getPixelsPerUnit(), 0.001);
+//    }
+//    
     //boundingBoxPreview->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, sprite->getLocalBoundingBox().x, sprite->getLocalBoundingBox().y);
     
     Mesh *bbBoxMesh = boundingBoxPreview->getMesh();
     bbBoxMesh->clearMesh();
     bbBoxMesh->indexedMesh = true;
     
-    Vector3 bBox = sprite->getLocalBoundingBox();
+    
+    Number spriteScale =  (getWidth() - 80) / sprite->getSpriteBoundingBox().x;
+    
+    if(sprite->getSpriteBoundingBox().y * spriteScale > getHeight() - 80) {
+        spriteScale =  (getHeight() - 80) / sprite->getSpriteBoundingBox().y;
+    }
+    
+    Vector3 bBox = sprite->getLocalBoundingBox() * spriteScale;
     
     SpriteFrame frame;
+    
     
     frame.coordinates.x = 0.0;
     frame.coordinates.y = 0.0;
     Vector3 bBoxNorm = bBox;
     bBoxNorm.Normalize();
-    frame.coordinates.w = bBoxNorm.x;
-    frame.coordinates.h = bBoxNorm.y;
+    frame.coordinates.w = bBoxNorm.x * spriteScale;
+    frame.coordinates.h = bBoxNorm.y * spriteScale;
     
     bbBoxMesh->addVertex(-bBox.x * 0.5, bBox.y * 0.5, 0.0, frame.coordinates.x, frame.coordinates.y);
     bbBoxMesh->addVertex((-bBox.x * 0.5)+bBox.x, bBox.y * 0.5, 0.0, frame.coordinates.x+frame.coordinates.w, frame.coordinates.y);
@@ -1723,6 +1732,8 @@ void SpritePreview::Update() {
     bbBoxMesh->addIndexedFace(3,0);
     
     bbBoxMesh->dirtyArrays();
+    
+    sprite->setScale(spriteScale, spriteScale, 1.0);
 
 }
 
@@ -1735,6 +1746,8 @@ void SpritePreview::Resize(Number width, Number height) {
     boundingBoxPreview->setPosition(sprite->getPosition());
     
     bgSelector->setPosition(width - bgSelector->getWidth() - 3.0, 3.0);
+    
+    UIElement::Resize(width, height);
 }
 
 PolycodeSpriteEditor::PolycodeSpriteEditor() : PolycodeEditor(true){
@@ -1744,8 +1757,8 @@ PolycodeSpriteEditor::PolycodeSpriteEditor() : PolycodeEditor(true){
 void PolycodeSpriteEditor::handleEvent(Event *event) {
     if(event->getDispatcher() == spriteBrowser) {
         Sprite *selectedSprite = spriteBrowser->getSelectedSpriteEntry();
-        stateEditor->setSpriteEntry(selectedSprite);
         spritePreview->getSceneSprite()->setSprite(selectedSprite);
+        stateEditor->setSpriteEntry(selectedSprite);
     } else if(event->getDispatcher() == addFramesButton) {
         SpriteState *spriteState = stateEditor->getDetailsEditor()->getSpriteState();
         bool generateBBox = false;

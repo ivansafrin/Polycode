@@ -141,6 +141,10 @@ void SceneSprite::setSpriteSet(SpriteSet *spriteSet) {
     currentSpriteState = NULL;
 }
 
+Vector3 SceneSprite::getSpriteBoundingBox() const {
+    return spriteBoundingBox;
+}
+
 void SceneSprite::handleEvent(Event *event) {
     if(event->getDispatcher() == spriteSet) {
         if(event->getEventCode() == Event::CHANGE_EVENT) {
@@ -195,11 +199,14 @@ void SceneSprite::setSpriteState(SpriteState *spriteState, unsigned int starting
         return;
     }
     
+    Vector2 bBox = currentSpriteState->getBoundingBox();
+    setLocalBoundingBox(bBox.x / currentSpriteState->getPixelsPerUnit(), bBox.y / currentSpriteState->getPixelsPerUnit(), 0.001);
+    
+    spriteBoundingBox = currentSpriteState->getLargestFrameBoundingBox();
+    
     this->playOnce = playOnce;
     currentFrame = startingFrame;
     
-    Vector2 bBox = spriteState->getBoundingBox();
-    setLocalBoundingBox(bBox.x / spriteState->getPixelsPerUnit(), bBox.y / spriteState->getPixelsPerUnit(), 0.001);
 }
 
 void SceneSprite::Update() {
@@ -207,6 +214,11 @@ void SceneSprite::Update() {
     if(!currentSprite || !currentSpriteState) {
         return;
     }
+    
+    Vector2 bBox = currentSpriteState->getBoundingBox();
+    setLocalBoundingBox(bBox.x / currentSpriteState->getPixelsPerUnit(), bBox.y / currentSpriteState->getPixelsPerUnit(), 0.001);
+    
+    spriteBoundingBox = currentSpriteState->getLargestFrameBoundingBox();
     
     setTexture(spriteSet->getTexture());
     
@@ -339,6 +351,10 @@ void SpriteState::setNewFrameIDs(std::vector<unsigned int> newIDs) {
     rebuildStateMeshes();
 }
 
+Vector3 SpriteState::getLargestFrameBoundingBox() const {
+    return largestFrameBoundingBox;
+}
+
 void SpriteState::insertFrame(unsigned int index, unsigned int frameID) {
     if(index < frameIDs.size()) {
         frameIDs.insert(frameIDs.begin()+index, frameID);
@@ -359,6 +375,8 @@ void SpriteState::rebuildStateMeshes() {
         delete frameMeshes[i];
     }
     frameMeshes.clear();
+    
+    largestFrameBoundingBox = Vector3();
     
     for(int i=0; i < frameIDs.size(); i++) {
         Mesh *frameMesh = new Mesh(Mesh::QUAD_MESH);
@@ -388,6 +406,21 @@ void SpriteState::rebuildStateMeshes() {
         frameMesh->addVertex(meshOffset.x+-frameWidth*0.5+frameWidth, meshOffset.y+frameHeight*0.5-frameHeight, 0.0, frame.coordinates.x+frame.coordinates.w, 1.0- frame.coordinates.y  - frame.coordinates.h);
         frameMesh->addVertex(meshOffset.x+-frameWidth*0.5+frameWidth, meshOffset.y+frameHeight*0.5, 0.0, frame.coordinates.x+frame.coordinates.w, 1.0-frame.coordinates.y);
         
+        
+        for(int j=0; j < 4; j++) {
+            Number val = fabs(frameMesh->getActualVertex(j)->x);
+            if(val > largestFrameBoundingBox.x) {
+                largestFrameBoundingBox.x = val;
+            }
+            val = fabs(frameMesh->getActualVertex(j)->y);
+            if(val > largestFrameBoundingBox.y) {
+                largestFrameBoundingBox.y = val;
+            }
+            val = fabs(frameMesh->getActualVertex(j)->z);
+            if(val > largestFrameBoundingBox.z) {
+                largestFrameBoundingBox.z = val;
+            }
+        }
         frameMesh->addIndexedFace(0,1);
         frameMesh->addIndexedFace(1,2);
         frameMesh->addIndexedFace(2,3);
@@ -397,6 +430,8 @@ void SpriteState::rebuildStateMeshes() {
         
         frameMeshes.push_back(frameMesh);
     }
+    
+    largestFrameBoundingBox = largestFrameBoundingBox * 2.0;
 }
 
 String SpriteState::getName() const {
@@ -622,8 +657,6 @@ void SpriteSet::loadSpriteSet(String fileName) {
             }
         }
     }
-    
-    
 }
 
 void SpriteSet::removeFrameByID(unsigned int frameID) {

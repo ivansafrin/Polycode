@@ -69,6 +69,8 @@ namespace Polycode {
         void setStateFPS(Number fps);
         Number getStateFPS();
         
+        Vector3 getLargestFrameBoundingBox() const;
+        
         void setBoundingBox(Vector2 boundingBox);
         Vector2 getBoundingBox();
         
@@ -77,6 +79,7 @@ namespace Polycode {
         
     protected:
         
+        Vector3 largestFrameBoundingBox;
         Vector2 boundingBox;
         Vector2 spriteOffset;
         Number pixelsPerUnit;
@@ -177,6 +180,8 @@ namespace Polycode {
         void Update();
         void Render();
         
+        Vector3 getSpriteBoundingBox() const;
+        
         void setPaused(bool val);
         bool isPaused();
         
@@ -194,6 +199,7 @@ namespace Polycode {
         
     protected:
         
+        Vector3 spriteBoundingBox;
         bool startOnRandomFrame;
         bool playOnce;
         bool paused;
