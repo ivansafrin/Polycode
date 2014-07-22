@@ -486,12 +486,25 @@ void TransformGizmo::setTransformOrientation(int orientation) {
 }
 
 void TransformGizmo::setTransformPlaneFromView() {
-    if(gizmoMode == GIZMO_MODE_2D) {
-        setTransformPlane(0.0, 0.0, 1.0, true);
-    } else {
-        Vector3 camVec =  targetCamera->getConcatenatedMatrix().getPosition() - getConcatenatedMatrix().getPosition();
-        camVec.Normalize();
-        setTransformPlane(camVec.x, camVec.y, camVec.z, true);
+    
+    switch(gizmoMode) {
+        case GIZMO_MODE_2D_X:
+            setTransformPlane(1.0, 0.0, 0.0, true);
+            transformConstraint = Vector3(1.0, 0.0, 0.0);
+        break;
+        case GIZMO_MODE_2D_Y:
+            setTransformPlane(0.0, 1.0, 0.0, true);
+            transformConstraint = Vector3(0.0, 1.0, 0.0);
+        break;
+        case GIZMO_MODE_2D_Z:
+            setTransformPlane(0.0, 0.0, 1.0, true);
+            transformConstraint = Vector3(0.0, 0.0, -1.0);
+        break;
+        default:
+            Vector3 camVec =  targetCamera->getConcatenatedMatrix().getPosition() - getConcatenatedMatrix().getPosition();
+            camVec.Normalize();
+            setTransformPlane(camVec.x, camVec.y, camVec.z, true);
+        break;
     }
 }
 
@@ -525,6 +538,11 @@ void TransformGizmo::setTransformPlane(Number x, Number y, Number z, bool forceG
 Vector3 TransformGizmo::getTransformPlanePosition() {
 
 	Ray ray = targetScene->projectRayFromCameraAndViewportCoordinate(targetCamera, coreInput->getMousePosition());
+    
+    // hack to fix NaN's in the plane intersect math (sorry)
+    ray.direction += Vector3(0.00001, 0.00001, 0.00001);
+    
+    
     Vector3 ret = ray.planeIntersectPoint(transformPlane, transformPlaneDistance);
     return ret;
 }
@@ -545,64 +563,171 @@ void TransformGizmo::setTransformMode(int newMode) {
 	yawGrip->enabled = false;
     viewportRotateGrip->enabled = false;
 	
+    xTransformGrip->enabled = false;
+    yTransformGrip->enabled = false;
+    zTransformGrip->enabled = false;
+    
 			
 	mode = newMode;
 	switch (mode) {
 		case TRANSFORM_MOVE:
 			trasnformDecorators->visible = true;
 			transformAndScaleLines->visible = true;
-			xTransformGrip->enabled = true;
-			yTransformGrip->enabled = true;
-            if(gizmoMode == GIZMO_MODE_3D) {
-                zTransformGrip->enabled = true;
-                zArrow->visible = true;
-                zLine->visible = true;
-            } else {
-                zArrow->visible = false;
-                zLine->visible = false;
-            }
             
+            switch(gizmoMode) {
+                case GIZMO_MODE_3D:
+                    xTransformGrip->enabled = true;
+                    yTransformGrip->enabled = true;
+                    zTransformGrip->enabled = true;
+                    xArrow->visible = true;
+                    yArrow->visible = true;
+                    zArrow->visible = true;
+                    xLine->visible = true;
+                    yLine->visible = true;
+                    zLine->visible = true;
+                break;
+                case GIZMO_MODE_2D_X:
+                    xTransformGrip->enabled = false;
+                    yTransformGrip->enabled = true;
+                    zTransformGrip->enabled = true;
+                    xArrow->visible = false;
+                    yArrow->visible = true;
+                    zArrow->visible = true;
+                    xLine->visible = false;
+                    yLine->visible = true;
+                    zLine->visible = true;
+                break;
+                case GIZMO_MODE_2D_Y:
+                    xTransformGrip->enabled = true;
+                    yTransformGrip->enabled = false;
+                    zTransformGrip->enabled = true;
+                    xArrow->visible = true;
+                    yArrow->visible = false;
+                    zArrow->visible = true;
+                    xLine->visible = true;
+                    yLine->visible = false;
+                    zLine->visible = true;
+                break;
+                case GIZMO_MODE_2D_Z:
+                    xTransformGrip->enabled = true;
+                    yTransformGrip->enabled = true;
+                    zTransformGrip->enabled = false;
+                    xArrow->visible = true;
+                    yArrow->visible = true;
+                    zArrow->visible = false;
+                    xLine->visible = true;
+                    yLine->visible = true;
+                    zLine->visible = false;
+
+                break;
+            }
 		break;
 		case TRANSFORM_SCALE:
 			scaleDecorators->visible = true;
-			transformAndScaleLines->visible = true;					
-			xTransformGrip->enabled = true;
-			yTransformGrip->enabled = true;
-            if(gizmoMode == GIZMO_MODE_3D) {
-                zTransformGrip->enabled = true;
-                zBox->visible = true;
-                zLine->visible = true;
-            } else {
-                zBox->visible = false;
-                zLine->visible = false;
+			transformAndScaleLines->visible = true;
+            switch(gizmoMode) {
+                case GIZMO_MODE_3D:
+                    xTransformGrip->enabled = true;
+                    yTransformGrip->enabled = true;
+                    zTransformGrip->enabled = true;
+                    xBox->visible = true;
+                    yBox->visible = true;
+                    zBox->visible = true;
+                    xLine->visible = true;
+                    yLine->visible = true;
+                    zLine->visible = true;
+                    break;
+                case GIZMO_MODE_2D_X:
+                    xTransformGrip->enabled = false;
+                    yTransformGrip->enabled = true;
+                    zTransformGrip->enabled = true;
+                    xBox->visible = false;
+                    yBox->visible = true;
+                    zBox->visible = true;
+                    xLine->visible = false;
+                    yLine->visible = true;
+                    zLine->visible = true;
+                    break;
+                case GIZMO_MODE_2D_Y:
+                    xTransformGrip->enabled = true;
+                    yTransformGrip->enabled = false;
+                    zTransformGrip->enabled = true;
+                    xBox->visible = true;
+                    yBox->visible = false;
+                    zBox->visible = true;
+                    xLine->visible = true;
+                    yLine->visible = false;
+                    zLine->visible = true;
+                    break;
+                case GIZMO_MODE_2D_Z:
+                    xTransformGrip->enabled = true;
+                    yTransformGrip->enabled = true;
+                    zTransformGrip->enabled = false;
+                    xBox->visible = true;
+                    yBox->visible = true;
+                    zBox->visible = false;
+                    xLine->visible = true;
+                    yLine->visible = true;
+                    zLine->visible = false;
+                    break;
             }
+            
 
 		break;	
 		case TRANSFORM_ROTATE:
 			rotateDectorators->visible = true;
             
-            if(gizmoMode == GIZMO_MODE_3D) {
-                rollGrip->enabled = true;
-                rollCircle->visible = true;
-                pitchGrip->enabled = true;
-                pitchCircle->visible = true;
-                yawGrip->enabled = true;
-                yawCircle->visible = true;
-                viewportRotateGrip->enabled = false;
-                outerCircle->visible = false;
-                outerCircle->setColor(1.0, 1.0, 1.0, 1.0);
-                
-            } else {
-                rollGrip->enabled = false;
-                rollCircle->visible = false;
-                pitchGrip->enabled = false;
-                pitchCircle->visible = false;
-                yawGrip->enabled = false;
-                yawCircle->visible = false;
-                
-                viewportRotateGrip->enabled = true;
-                outerCircle->visible = true;
-                outerCircle->setColor(0.0, 0.0, 1.0, 1.0);
+            switch(gizmoMode) {
+                case GIZMO_MODE_3D:
+                    rollGrip->enabled = true;
+                    rollCircle->visible = true;
+                    pitchGrip->enabled = true;
+                    pitchCircle->visible = true;
+                    yawGrip->enabled = true;
+                    yawCircle->visible = true;
+                    viewportRotateGrip->enabled = false;
+                    outerCircle->visible = false;
+                    outerCircle->setColor(1.0, 1.0, 1.0, 1.0);
+                break;
+                case GIZMO_MODE_2D_X:
+                    rollGrip->enabled = false;
+                    rollCircle->visible = false;
+                    pitchGrip->enabled = false;
+                    pitchCircle->visible = false;
+                    yawGrip->enabled = false;
+                    yawCircle->visible = false;
+                    viewportRotateGrip->enabled = true;
+                    outerCircle->visible = true;
+                    outerCircle->setColor(1.0, 0.0, 0.0, 1.0);
+                    viewportRotateGrip->setYaw(90);
+                    viewportRotateGrip->setPitch(90);
+                break;
+                case GIZMO_MODE_2D_Y:
+                    rollGrip->enabled = false;
+                    rollCircle->visible = false;
+                    pitchGrip->enabled = false;
+                    pitchCircle->visible = false;
+                    yawGrip->enabled = false;
+                    yawCircle->visible = false;
+                    viewportRotateGrip->enabled = true;
+                    outerCircle->visible = true;
+                    outerCircle->setColor(0.0, 1.0, 0.0, 1.0);
+                    viewportRotateGrip->setPitch(0);
+                    viewportRotateGrip->setYaw(0);
+                break;
+                case GIZMO_MODE_2D_Z:
+                    rollGrip->enabled = false;
+                    rollCircle->visible = false;
+                    pitchGrip->enabled = false;
+                    pitchCircle->visible = false;
+                    yawGrip->enabled = false;
+                    yawCircle->visible = false;
+                    viewportRotateGrip->enabled = true;
+                    outerCircle->visible = true;
+                    outerCircle->setColor(0.0, 0.0, 1.0, 1.0);
+                    viewportRotateGrip->setPitch(90);
+                    viewportRotateGrip->setYaw(0);
+                break;
             }
 		break;
 		default:
@@ -703,7 +828,7 @@ void TransformGizmo::transformSelectedEntities(const Vector3 &move, const Vector
             Vector3 axisVector = transformConstraint;
             
             // always global in the 2d view
-            if(gizmoMode == GIZMO_MODE_2D || mode == TRANSFORM_ROTATE_VIEW) {
+            if(gizmoMode != GIZMO_MODE_3D || mode == TRANSFORM_ROTATE_VIEW) {
                 axisVector = currentRotation.Inverse().applyTo(axisVector);
             }
             axisVector.Normalize();
@@ -828,10 +953,9 @@ void TransformGizmo::handleEvent(Event *event) {
 			}
 		} else 	if(event->getDispatcher() == viewportRotateGrip) {
 			if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN) {
-                if(gizmoMode == GIZMO_MODE_2D) {
+                if(gizmoMode != GIZMO_MODE_3D) {
                     transforming = true;
-                    transformConstraint = Vector3(0.0, 0.0, -1.0);
-                    setTransformPlane(0.0, 0.0, 1.0, true);
+                    setTransformPlaneFromView();
                     startingAngle = getTransformPlaneAngle();
                 }
 			}
@@ -888,7 +1012,7 @@ void TransformGizmo::handleEvent(Event *event) {
 							  transforming = true;
 							  setTransformPlaneFromView();
 							  transformConstraint = transformPlane;
-							  if (gizmoMode == GIZMO_MODE_2D) {
+							  if (gizmoMode == GIZMO_MODE_2D_Z) {
 								  transformConstraint = transformConstraint * -1.0;
 							  }
 							  startingAngle = getTransformPlaneAngle();
@@ -927,6 +1051,10 @@ void TransformGizmo::handleEvent(Event *event) {
                             Vector3 newPoint = getTransformPlanePosition();
                             Vector3 diff = (planeMatrix.Inverse() * newPoint) -(planeMatrix.Inverse() * startingPoint);
                             diff = diff * getCompoundScale();
+                            
+                            printf("newPoint: %f,%f,%f\n", newPoint.x, newPoint.y, newPoint.z);
+                            printf("diff: %f,%f,%f (constraint: %f,%f,%f)\n", diff.x, diff.y, diff.z, transformConstraint.x, transformConstraint.y, transformConstraint.z);
+                            
                             transformSelectedEntities(transformConstraint * diff, Vector3(0.0, 0.0, 0.0), 0.0);
                             startingPoint = newPoint;
                         }
@@ -1051,7 +1179,7 @@ void TransformGizmo::Update() {
     viewportRotateGripBase->setRotationByQuaternion(getRotationQuat().Inverse());
     
 	Number scale;
-    if(gizmoMode == GIZMO_MODE_2D) {
+    if(gizmoMode != GIZMO_MODE_3D) {
         scale = targetCamera->getPosition().length() * 0.1;
     } else {
         scale = getPosition().distance(targetCamera->getPosition()) * 0.1;

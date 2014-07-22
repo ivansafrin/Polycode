@@ -607,7 +607,7 @@ void EntityEditorMainView::setEditorMode(int newMode) {
             mainScene->getDefaultCamera()->setClippingPlanes(-0.1, 1000);
             trackballCamera->setCameraPosition(trackballCamera->getOribitingCenter()+Vector3(trackballCamera->getCameraDistance(), 0.0, 0.0));
             grid->setGridMode(EditorGrid::GRID_MODE_2D_X);
-            transformGizmo->setGizmoMode(TransformGizmo::GIZMO_MODE_2D);
+            transformGizmo->setGizmoMode(TransformGizmo::GIZMO_MODE_2D_X);
             trackballCamera->disableRotation(true);
             Update();
         break;
@@ -617,7 +617,7 @@ void EntityEditorMainView::setEditorMode(int newMode) {
             mainScene->getDefaultCamera()->setClippingPlanes(-0.1, 1000);
             trackballCamera->setCameraPosition(trackballCamera->getOribitingCenter()+Vector3(0.001, trackballCamera->getCameraDistance(), 0.00));
             grid->setGridMode(EditorGrid::GRID_MODE_2D_Y);
-            transformGizmo->setGizmoMode(TransformGizmo::GIZMO_MODE_2D);
+            transformGizmo->setGizmoMode(TransformGizmo::GIZMO_MODE_2D_Y);
             trackballCamera->disableRotation(true);
             Update();
         break;
@@ -628,7 +628,7 @@ void EntityEditorMainView::setEditorMode(int newMode) {
             mainScene->getDefaultCamera()->setClippingPlanes(-0.1, 1000);
             trackballCamera->setCameraPosition(trackballCamera->getOribitingCenter()+Vector3(0.0, 0.0, trackballCamera->getCameraDistance()));
             grid->setGridMode(EditorGrid::GRID_MODE_2D_Z);
-            transformGizmo->setGizmoMode(TransformGizmo::GIZMO_MODE_2D);
+            transformGizmo->setGizmoMode(TransformGizmo::GIZMO_MODE_2D_Z);
             trackballCamera->disableRotation(true);
             Update();
         break;

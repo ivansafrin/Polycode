@@ -114,8 +114,10 @@ class TransformGizmo : public Entity {
 		static const int TRANSFORM_MOVE_VIEW = 5;
     
         static const int GIZMO_MODE_3D = 0;
-		static const int GIZMO_MODE_2D = 1;
-
+		static const int GIZMO_MODE_2D_X = 1;
+		static const int GIZMO_MODE_2D_Y = 2;
+		static const int GIZMO_MODE_2D_Z = 3;
+    
         static const int ORIENTATION_GLOBAL = 0;
         static const int ORIENTATION_LOCAL = 1;
 
