@@ -36,7 +36,7 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeViewBase *view) : EventDispatcher() {
 #else
 PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 #endif
-	core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1, true);
+	core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1, false);
 //	core->pauseOnLoseFocus = true;
     
 	printf("DIR: %s\n", core->getDefaultWorkingDirectory().c_str());
