@@ -1,16 +1,16 @@
 /*
  Copyright (C) 2011 by Ivan Safrin
- 
+
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
  in the Software without restriction, including without limitation the rights
  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  copies of the Software, and to permit persons to whom the Software is
  furnished to do so, subject to the following conditions:
- 
+
  The above copyright notice and this permission notice shall be included in
  all copies or substantial portions of the Software.
- 
+
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -65,11 +65,11 @@ SceneMesh::SceneMesh(Mesh *mesh) : Entity(), texture(NULL), material(NULL), skel
 	useVertexBuffer = false;
 	lineSmooth = false;
 	ownsMesh = true;
-	ownsSkeleton = true;	
+	ownsSkeleton = true;
 	lineWidth = 1.0;
 	pointSize = 1.0;
 	pointSmooth = false;
-	overlayWireframe = false;	
+	overlayWireframe = false;
 	useGeometryHitDetection = false;
     forceMaterial = false;
     backfaceCulled = true;
@@ -79,10 +79,10 @@ SceneMesh::SceneMesh(Mesh *mesh) : Entity(), texture(NULL), material(NULL), skel
 SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
 	mesh = new Mesh(meshType);
 	setLocalBoundingBox(mesh->calculateBBox());
-	useVertexBuffer = false;	
+	useVertexBuffer = false;
 	lineSmooth = false;
 	ownsMesh = true;
-	ownsSkeleton = true;	
+	ownsSkeleton = true;
 	lineWidth = 1.0;
 	overlayWireframe = false;
 	useGeometryHitDetection = false;
@@ -94,14 +94,14 @@ SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL), skeleton(NUL
 void SceneMesh::setMesh(Mesh *mesh) {
 	this->mesh = mesh;
 	setLocalBoundingBox(mesh->calculateBBox());
-	useVertexBuffer = false;	
+	useVertexBuffer = false;
 }
 
 SceneMesh::~SceneMesh() {
 	if(ownsSkeleton)
 		delete skeleton;
 	if(ownsMesh)
-		delete mesh;	
+		delete mesh;
 	delete localShaderOptions;
 }
 
@@ -114,7 +114,7 @@ Entity *SceneMesh::Clone(bool deepClone, bool ignoreEditorOnly) const {
 void SceneMesh::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
     Entity::applyClone(clone, deepClone, ignoreEditorOnly);
     SceneMesh *_clone = (SceneMesh*) clone;
-    
+
     _clone->lineWidth = lineWidth;
     _clone->lineSmooth = lineSmooth;
     _clone->pointSize = pointSize;
@@ -128,14 +128,14 @@ void SceneMesh::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly)
     _clone->useGeometryHitDetection = useGeometryHitDetection;
     _clone->forceMaterial = forceMaterial;
     _clone->setFilename(fileName);
-    
+
     Mesh *newMesh = mesh->Copy();
     _clone->setMesh(newMesh);
-    
+
     if(useVertexBuffer) {
         _clone->cacheToVertexBuffer(true);
     }
-    
+
     _clone->setMaterial(material);
     if(material) {
         localShaderOptions->copyTo(_clone->getLocalShaderOptions());
@@ -151,6 +151,7 @@ void SceneMesh::loadFromFile(String fileName) {
         delete mesh;
     }
 	mesh = new Mesh(fileName);
+    mesh->calculateNormals();
 	setLocalBoundingBox(mesh->calculateBBox());
     this->fileName = fileName;
 }
@@ -178,30 +179,30 @@ void SceneMesh::setMaterial(Material *material) {
 
 	if(this->material)
 		clearMaterial();
-	
+
 	if(!material)
 		return;
-		
+
 	if(material->getNumShaders() == 0)
 			return;
-		
+
 	this->material = material;
 	localShaderOptions = material->getShader(0)->createBinding();
 	if(texture) {
 		localShaderOptions->clearTexture("diffuse");
 		localShaderOptions->addTexture("diffuse", texture);
 	}
-	
+
 }
 
 void SceneMesh::setMaterialByName(const String& materialName, ResourcePool *resourcePool) {
-    
+
     Material *material;
     if(resourcePool) {
-        material =  (Material*)resourcePool->getResource(Resource::RESOURCE_MATERIAL, materialName);        
+        material =  (Material*)resourcePool->getResource(Resource::RESOURCE_MATERIAL, materialName);
     } else {
         material =  (Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, materialName);
-        
+
     }
     setMaterial(material);
 }
@@ -218,7 +219,7 @@ void SceneMesh::loadTexture(const String& fileName) {
 
 void SceneMesh::loadTextureFromImage(Image *image) {
 	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
-	texture = materialManager->createTextureFromImage(image, materialManager->clampDefault, materialManager->mipmapsDefault);	
+	texture = materialManager->createTextureFromImage(image, materialManager->clampDefault, materialManager->mipmapsDefault);
 }
 
 ShaderBinding *SceneMesh::getLocalShaderOptions() {
@@ -256,38 +257,38 @@ Skeleton *SceneMesh::getSkeleton() {
 
 void SceneMesh::renderMeshLocally() {
 	Renderer *renderer = CoreServices::getInstance()->getRenderer();
-	
-	if(skeleton) {	
+
+	if(skeleton) {
 		for(int i=0; i < mesh->getActualVertexCount(); i++) {
             Vertex *vert = mesh->getActualVertex(i);
             Vector3 norm;
-            
+
             Vector3 tPos;
 
             for(int b =0; b < vert->getNumBoneAssignments(); b++) {
                 BoneAssignment *bas = vert->getBoneAssignment(b);
                 Bone *bone = bas->bone;
                 if(bone) {
-                    
+
                     Matrix4 restMatrix = bone->getRestMatrix();
                     Matrix4 finalMatrix = bone->getFinalMatrix();
-                    
+
                     Vector3 vec = restMatrix * vert->restPosition;
                     tPos += finalMatrix * vec * (bas->weight);
-                    
+
                     Vector3 nvec = vert->restNormal;
                     nvec = restMatrix.rotateVector(nvec);
                     nvec = finalMatrix.rotateVector(nvec);
-                    
+
                     norm += nvec * (bas->weight);
                 }
-            }					
-            
-        
+            }
+
+
             vert->x = tPos.x;
             vert->y = tPos.y;
-            vert->z = tPos.z;				
-        
+            vert->z = tPos.z;
+
             norm.Normalize();
             vert->setNormal(norm.x, norm.y, norm.z);
         }
@@ -295,16 +296,16 @@ void SceneMesh::renderMeshLocally() {
         mesh->arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;
         mesh->arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;
     }
-    
+
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::VERTEX_DATA_ARRAY);
-	renderer->pushDataArrayForMesh(mesh, RenderDataArray::NORMAL_DATA_ARRAY);		
-	renderer->pushDataArrayForMesh(mesh, RenderDataArray::TANGENT_DATA_ARRAY);			
-	renderer->pushDataArrayForMesh(mesh, RenderDataArray::TEXCOORD_DATA_ARRAY);	
+	renderer->pushDataArrayForMesh(mesh, RenderDataArray::NORMAL_DATA_ARRAY);
+	renderer->pushDataArrayForMesh(mesh, RenderDataArray::TANGENT_DATA_ARRAY);
+	renderer->pushDataArrayForMesh(mesh, RenderDataArray::TEXCOORD_DATA_ARRAY);
 
 	if(mesh->useVertexColors) {
 		renderer->pushDataArrayForMesh(mesh, RenderDataArray::COLOR_DATA_ARRAY);
 	}
-	
+
 	renderer->drawArrays(mesh->getMeshType());
 }
 
@@ -319,13 +320,13 @@ void SceneMesh::cacheToVertexBuffer(bool cache) {
 bool SceneMesh::customHitDetection(const Ray &ray) {
 	if(!useGeometryHitDetection)
 		return true;
-	
+
 	Ray transformedRay;
-	
+
 	Matrix4 adjustedMatrix = getAnchorAdjustedMatrix().Inverse();
 	transformedRay.origin = adjustedMatrix * ray.origin;
 	transformedRay.direction = adjustedMatrix.rotateVector(ray.direction);
-	
+
 	for(int i=0; i < mesh->getVertexCount(); i+=3) {
         if(i+2 < mesh->getVertexCount()) {
            if(transformedRay.polygonIntersect(mesh->getVertex(i), mesh->getVertex(i+1), mesh->getVertex(i+2))) {
@@ -333,24 +334,24 @@ bool SceneMesh::customHitDetection(const Ray &ray) {
             }
         }
 	}
-	
+
 	return false;
 }
 
 void SceneMesh::Render() {
-	
+
 	Renderer *renderer = CoreServices::getInstance()->getRenderer();
-	
+
     renderer->enableAlphaTest(alphaTest);
 	renderer->enableBackfaceCulling(backfaceCulled);
-    
+
 	renderer->setLineSize(lineWidth);
 	renderer->setLineSmooth(lineSmooth);
 	renderer->setPointSize(pointSize);
 	renderer->setPointSmooth(pointSmooth);
-	
+
 	if(material) {
-        
+
 		renderer->applyMaterial(material, localShaderOptions,0, forceMaterial);
 	} else {
 		if(texture)
@@ -358,7 +359,7 @@ void SceneMesh::Render() {
 		else
 			renderer->setTexture(NULL);
 	}
-    
+
 	if(useVertexBuffer) {
         VertexBuffer *vb = mesh->getVertexBuffer();
         if(vb){
@@ -367,25 +368,25 @@ void SceneMesh::Render() {
 	} else {
 		renderMeshLocally();
 	}
-	
+
 	if(material)  {
 		renderer->clearShader();
 	}
-    
+
     renderer->setTexture(NULL);
-    
+
 	if(overlayWireframe) {
 		bool depthTestVal = depthTest;
 		renderer->enableDepthTest(false);
 		renderer->setWireframePolygonMode(true);
 		renderer->setVertexColor(wireFrameColor.r, wireFrameColor.g, wireFrameColor.b, wireFrameColor.a);
-		
+
 		if(useVertexBuffer) {
 			renderer->drawVertexBuffer(mesh->getVertexBuffer(), mesh->useVertexColors);
 		} else {
 			renderMeshLocally();
 		}
 		renderer->enableDepthTest(depthTestVal);
-	}	
-    renderer->setWireframePolygonMode(false);    
+	}
+    renderer->setWireframePolygonMode(false);
 }
