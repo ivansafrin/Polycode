@@ -103,10 +103,6 @@ CocoaCore::CocoaCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, 
 	
 	glView = view;
     
-    if(retinaSupport) {
-        [glView setWantsBestResolutionOpenGLSurface:YES];
-    }
-    
 	context = nil;
 	
 	initTime = mach_absolute_time();					
@@ -144,7 +140,8 @@ String CocoaCore::getClipboardString() {
 	return [retString UTF8String];
 }
 
-void CocoaCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel) {	
+void CocoaCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, bool retinaSupport) {
+    this->retinaSupport = retinaSupport;
 	// hack to make sure there are no window race conditions
 	modeChangeInfo.needResolutionChange = true;
 	modeChangeInfo.xRes = xRes;
@@ -174,14 +171,18 @@ Number CocoaCore::getBackingYRes() {
 void CocoaCore::_setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel) {
 	this->xRes = xRes;
 	this->yRes = yRes;
-    
+
     NSRect backingBounds;
     if(retinaSupport) {
+        [glView setWantsBestResolutionOpenGLSurface:YES];
         backingBounds = [glView convertRectToBacking: NSMakeRect(0, 0, xRes, yRes)];
         renderer->setBackingResolutionScale(backingBounds.size.width/xRes, backingBounds.size.height/yRes);
 	} else {
+        [glView setWantsBestResolutionOpenGLSurface:NO];
         backingBounds.size.width = xRes;
         backingBounds.size.height = yRes;
+        renderer->setBackingResolutionScale(1.0, 1.0);
+        
     }
     
 	bool _wasFullscreen = this->fullScreen;

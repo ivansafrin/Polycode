@@ -112,6 +112,9 @@ namespace Polycode {
 			 * Gets the last fixture selected (automatically set to last added on creation)
 			 */
 			b2Fixture* getFixture();
+        
+            bool getFixedRotation() const;
+            void setFixedRotation(bool val);
 
 			/**
 			* Rectangular physics entity
@@ -147,7 +150,8 @@ namespace Polycode {
 
 		protected:
         
-			Number worldScale;        
+            bool fixedRotation;
+			Number worldScale;
 			Entity *entity;
 	};
 	

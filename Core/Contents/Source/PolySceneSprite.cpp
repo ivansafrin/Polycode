@@ -193,6 +193,11 @@ void SceneSprite::setSpriteStateByName(String name, unsigned int startingFrame, 
 }
 
 void SceneSprite::setSpriteState(SpriteState *spriteState, unsigned int startingFrame, bool playOnce) {
+    
+    if(currentSpriteState != spriteState || playOnce) {
+        currentFrame = startingFrame;
+    }
+    
     currentSpriteState = spriteState;
     
     if(!currentSpriteState) {
@@ -205,7 +210,6 @@ void SceneSprite::setSpriteState(SpriteState *spriteState, unsigned int starting
     spriteBoundingBox = currentSpriteState->getLargestFrameBoundingBox();
     
     this->playOnce = playOnce;
-    currentFrame = startingFrame;
     
 }
 
@@ -401,10 +405,10 @@ void SpriteState::rebuildStateMeshes() {
         meshOffset.x -= frameWidth * frame.anchorPoint.x;
         meshOffset.y += frameHeight * frame.anchorPoint.y;
         
-        frameMesh->addVertex(meshOffset.x+-frameWidth*0.5, meshOffset.y+frameHeight*0.5, 0.0, frame.coordinates.x, 1.0-frame.coordinates.y);
-        frameMesh->addVertex(meshOffset.x+-frameWidth*0.5, meshOffset.y+frameHeight*0.5-frameHeight, 0.0, frame.coordinates.x, 1.0-frame.coordinates.y  - frame.coordinates.h);
-        frameMesh->addVertex(meshOffset.x+-frameWidth*0.5+frameWidth, meshOffset.y+frameHeight*0.5-frameHeight, 0.0, frame.coordinates.x+frame.coordinates.w, 1.0- frame.coordinates.y  - frame.coordinates.h);
-        frameMesh->addVertex(meshOffset.x+-frameWidth*0.5+frameWidth, meshOffset.y+frameHeight*0.5, 0.0, frame.coordinates.x+frame.coordinates.w, 1.0-frame.coordinates.y);
+        frameMesh->addVertex(meshOffset.x+-frameWidth*0.5, meshOffset.y+frameHeight*0.5, 0.0, frame.coordinates.x, 1.0-frame.coordinates.y)->setNormal(0.0, 0.0, 1.0);
+        frameMesh->addVertex(meshOffset.x+-frameWidth*0.5, meshOffset.y+frameHeight*0.5-frameHeight, 0.0, frame.coordinates.x, 1.0-frame.coordinates.y  - frame.coordinates.h)->setNormal(0.0, 0.0, 1.0);
+        frameMesh->addVertex(meshOffset.x+-frameWidth*0.5+frameWidth, meshOffset.y+frameHeight*0.5-frameHeight, 0.0, frame.coordinates.x+frame.coordinates.w, 1.0- frame.coordinates.y  - frame.coordinates.h)->setNormal(0.0, 0.0, 1.0);
+        frameMesh->addVertex(meshOffset.x+-frameWidth*0.5+frameWidth, meshOffset.y+frameHeight*0.5, 0.0, frame.coordinates.x+frame.coordinates.w, 1.0-frame.coordinates.y)->setNormal(0.0, 0.0, 1.0);
         
         
         for(int j=0; j < 4; j++) {

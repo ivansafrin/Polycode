@@ -122,7 +122,7 @@ namespace Polycode {
 		
 		void Render();
 								
-		void setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel);		
+		void setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, bool retinaSupport = true);
 		void resizeTo(int xRes, int yRes);
 		void createThread(Threaded *target);		
 		

@@ -513,6 +513,11 @@ std::vector<Entity*> EntityEditorMainView::getSelectedEntities() {
 
 void EntityEditorMainView::doAction(String actionName, PolycodeEditorActionData *data) {
     PolycodeSceneEditorActionData *sceneData = (PolycodeSceneEditorActionData*)data;
+    
+    if(!sceneData) {
+        return;
+    }
+    
 	if(actionName == "move") {
 		for(int i=0; i < selectedEntities.size(); i++) {
             if(i < sceneData->entries.size()) {

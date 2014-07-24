@@ -1489,9 +1489,9 @@ void SceneSpriteProp::set(Sprite *sprite) {
     
     Number spriteScale = 1.0;
     if(previewSprite->getHeight() > previewSprite->getWidth()) {
-        spriteScale = 40.0 / previewSprite->getHeight();
+        spriteScale = 40.0 / previewSprite->getSpriteBoundingBox().y;
     } else {
-        spriteScale = 40.0 / previewSprite->getWidth();
+        spriteScale = 40.0 / previewSprite->getSpriteBoundingBox().x;
     }
     previewSprite->setScale(spriteScale, spriteScale, 1.0);
 }

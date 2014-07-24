@@ -31,6 +31,7 @@ using namespace Polycode;
 
 PhysicsScene2DEntity::PhysicsScene2DEntity(Entity *entity, b2World *world, Number worldScale, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation, int groupIndex) {
 	
+    this->fixedRotation =  fixedRotation;
 	this->entity = entity;
 
 	Vector3 entityScale = entity->getCompoundScale();
@@ -160,6 +161,15 @@ PhysicsScene2DEntity::PhysicsScene2DEntity(Entity *entity, b2World *world, Numbe
 		*/
 		break;		
 	}
+}
+
+bool PhysicsScene2DEntity::getFixedRotation() const {
+    return fixedRotation;
+}
+
+void PhysicsScene2DEntity::setFixedRotation(bool val) {
+    fixedRotation = val;
+    
 }
 
 void PhysicsScene2DEntity::applyTorque(Number torque) {
