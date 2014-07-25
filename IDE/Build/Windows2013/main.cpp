@@ -75,7 +75,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	PathRemoveFileSpec( FilePath );    
 	SetCurrentDirectory( FilePath );
 
-	PolycodeWinIDEView *view = new PolycodeWinIDEView(hInstance, nCmdShow, L"Polycode", true, false);
+	PolycodeWinIDEView *view = new PolycodeWinIDEView(hInstance, nCmdShow, L"Polycode", true, true);
 	PolycodeIDEApp *app = new PolycodeIDEApp(view);
 
 	globalApp = app;

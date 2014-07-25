@@ -278,7 +278,10 @@ namespace Polycode {
 		* @return An STL vector of the selected file paths.
 		*/																							
 		virtual std::vector<String> openFilePicker(std::vector<CoreFileExtension> extensions, bool allowMultiple) = 0;
-				
+		
+		virtual String saveFilePicker(std::vector<CoreFileExtension> extensions) = 0;
+
+		
 		/**
 		* Sets a new video mode.
 		* @param xRes New horizontal resolution of the renderer.

@@ -182,7 +182,7 @@ public:
 		void captureMouse(bool newval);
 		void warpCursor(int x, int y);
 		unsigned int getTicks();		
-		bool Update();
+		bool systemUpdate();
 		void Render();
 		void setVSync(bool vSyncVal);
 
@@ -196,7 +196,7 @@ public:
 
 		bool isMultiTouchEnabled() { return hasMultiTouch; }
 
-		void setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel);
+		void setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, bool retinaSupport = true);
 		
 		void initContext(bool usePixelFormat, unsigned int pixelFormat);
 		void destroyContext();
@@ -231,6 +231,8 @@ public:
 		
 		String executeExternalCommand(String command,  String args, String inDirectory);
 		std::vector<String> openFilePicker(std::vector<CoreFileExtension> extensions, bool allowMultiple);
+		String saveFilePicker(std::vector<CoreFileExtension> extensions);
+
 		void createFolder(const String& folderPath);
 		void openURL(String url);
 		String openFolderPicker();

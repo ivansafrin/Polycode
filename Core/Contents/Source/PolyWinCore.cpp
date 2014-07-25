@@ -190,7 +190,7 @@ void Win32Core::Render() {
 	SwapBuffers(hDC);
 }
 
-bool Win32Core::Update() {
+bool Win32Core::systemUpdate() {
 	if(!running)
 		return false;
 	doSleep();
@@ -210,7 +210,7 @@ void Win32Core::setVSync(bool vSyncVal) {
 	}
 }
 
-void Win32Core::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel) {
+void Win32Core::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, bool retinaSupport) {
 
 	bool resetContext = false;
 
@@ -1139,6 +1139,66 @@ std::vector<String> Win32Core::openFilePicker(std::vector<CoreFileExtension> ext
 		retVec[i] = retVec[i].replace("\\", "/");
 	}
 	return retVec;
+}
+
+String Win32Core::saveFilePicker(std::vector<CoreFileExtension> extensions) {
+	OPENFILENAME ofn;
+	wchar_t fBuffer[2048];
+
+	wchar_t filterString[2048];
+
+	ZeroMemory(&ofn, sizeof(OPENFILENAME));
+
+	ofn.lStructSize = sizeof (ofn);
+	ofn.hwndOwner = hWnd;
+	ofn.lpstrFile = fBuffer;
+	ofn.lpstrFile[0] = '\0';
+	ofn.nMaxFile = sizeof(fBuffer);
+
+	if (extensions.size() > 0) {
+		int offset = 0;
+		for (int i = 0; i < extensions.size(); i++) {
+			//	filterString += extensions[i].description+"\0*."+extensions[i].extension+"\0";
+			memcpy(filterString + offset, extensions[i].description.getWDataWithEncoding(String::ENCODING_UTF8), extensions[i].description.length() * sizeof(wchar_t));
+			offset += extensions[i].description.length();
+			filterString[offset] = '\0';
+			offset++;
+			filterString[offset] = '*';
+			offset++;
+			filterString[offset] = '.';
+			offset++;
+			memcpy(filterString + offset, extensions[i].extension.getWDataWithEncoding(String::ENCODING_UTF8), extensions[i].extension.length() * sizeof(wchar_t));
+			offset += extensions[i].extension.length();
+			filterString[offset] = '\0';
+			offset++;
+		}
+		filterString[offset] = '\0';
+		ofn.lpstrFilter = filterString;
+
+		ofn.nFilterIndex = 1;
+	}
+	else {
+		ofn.lpstrFilter = NULL;
+	}
+
+	ofn.lpstrFileTitle = NULL;
+	ofn.nMaxFileTitle = 0;
+	ofn.lpstrInitialDir = NULL;
+
+	ofn.Flags = OFN_PATHMUSTEXIST  | OFN_EXPLORER;
+
+	std::vector<String> retVec;
+
+	String retPath = "";
+
+	if (GetSaveFileName(&ofn)) {
+		retPath = String(fBuffer);
+	}
+
+	SetCurrentDirectory(defaultWorkingDirectory.getWDataWithEncoding(String::ENCODING_UTF8));
+
+	retPath = retPath.replace("\\", "/");
+	return retPath;
 }
 
 void Win32Core::createFolder(const String& folderPath) {
