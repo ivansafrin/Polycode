@@ -92,9 +92,11 @@ namespace Polycode {
 		Core(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex);
 		virtual ~Core();
 		
-		virtual bool Update() = 0;
-
+        bool Update();
 		virtual void Render() = 0;
+        
+        bool fixedUpdate();
+        virtual bool systemUpdate() = 0;
 		
 		bool updateAndRender();
 		
@@ -267,7 +269,7 @@ namespace Polycode {
 		*/
 		virtual String openFolderPicker() = 0;
 
-		void setFramerate(int frameRate);
+		void setFramerate(int frameRate, int maxFixedCycles = 8);
 		
 		/**
 		* Opens a system file picker for the specified extensions.
@@ -321,6 +323,8 @@ namespace Polycode {
 		long getTimeSleptMs() const {
 			return timeSleptMs;
 		}
+        
+        Number getFixedTimestep();
 		
 		/**
 		* Returns the total ticks elapsed since launch.
@@ -393,7 +397,6 @@ namespace Polycode {
 		void loseFocus();
 		void gainFocus();
 		
-		
 		String userHomeDirectory;
 		String defaultWorkingDirectory;
 		
@@ -416,6 +419,11 @@ namespace Polycode {
 		unsigned int lastFrameTicks;
 		unsigned int lastFPSTicks;
 		unsigned int elapsed;
+        
+        double fixedElapsed;
+        double fixedTimestep;
+        double timeLeftOver;
+        double maxFixedElapsed;
 		
 		bool mouseEnabled;
 		bool mouseCaptured;

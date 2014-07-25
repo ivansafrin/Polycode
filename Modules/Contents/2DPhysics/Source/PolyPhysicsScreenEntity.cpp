@@ -301,7 +301,6 @@ void PhysicsScene2DEntity::Update() {
 		Number angle = body->GetAngle();	
 		entity->setRoll(angle*(180.0f/PI));	
 		entity->setPosition(position.x*worldScale, position.y*worldScale, 0.0);
-		entity->rebuildTransformMatrix();		
 	}	
 }
 

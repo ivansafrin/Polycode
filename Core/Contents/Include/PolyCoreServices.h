@@ -65,6 +65,7 @@ namespace Polycode {
 			Renderer *getRenderer();
 			
 			void Update(int elapsed);
+            void fixedUpdate();
 			void Render();
 			
 			void setCore(Core *core);

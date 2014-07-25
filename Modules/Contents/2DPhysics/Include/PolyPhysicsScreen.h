@@ -159,7 +159,7 @@ public:
 	/**
 	* Creates a new physics screen.
 	*/ 
-	PhysicsScene2D(Number worldScale, Number freq, int velIterations=10, int posIterations=10);
+	PhysicsScene2D(Number worldScale, int velIterations=10, int posIterations=10);
 	
 	/**
 	* Default constructor.
@@ -168,7 +168,7 @@ public:
 	
 	~PhysicsScene2D();
 	
-	void Update();
+	void fixedUpdate();
 	
 	/**
 	* Adds a Entity as a physics enabled child. Once an entity is added as a physics child, its transforms are set by the physics engine and you are not able to position it manually. Use addCollisionChild/trackCollisionChild to track collisions of entities that you can position manually.
@@ -404,18 +404,16 @@ public:
     
 protected:
 
-	Number cyclesLeftOver;
 	
     Number worldScale;
     
     std::vector <PhysicsScene2DEntity*> physicsChildren;
 	std::vector<PhysicsScene2DEvent*> eventsToDispatch;
 			
-	void init(Number worldScale, Number physicsTimeStep, int velIterations, int posIterations, Vector2 physicsGravity);
+	void init(Number worldScale, int velIterations, int posIterations, Vector2 physicsGravity);
 
 	std::vector<b2Contact*> contacts;
-    b2World *world;    
-	Number timeStep;
+    b2World *world;
 	int32 velocityIterations, positionIterations;
 };
 

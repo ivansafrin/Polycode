@@ -102,6 +102,14 @@ void SceneManager::Render() {
 	}
 }
 
+void SceneManager::fixedUpdate() {
+	for(int i=0;i<scenes.size();i++) {
+		if(scenes[i]->isEnabled()) {
+			scenes[i]->fixedUpdate();
+		}
+	}
+}
+
 void SceneManager::Update() {
 	for(int i=0;i<scenes.size();i++) {
 		if(scenes[i]->isEnabled()) {

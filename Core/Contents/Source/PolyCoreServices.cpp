@@ -184,6 +184,10 @@ void CoreServices::Render() {
 	renderer->clearLights();
 }
 
+void CoreServices::fixedUpdate() {
+    sceneManager->fixedUpdate();
+}
+
 void CoreServices::Update(int elapsed) {
 	
 	for(int i=0; i < updateModules.size(); i++) {

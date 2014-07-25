@@ -196,19 +196,17 @@ bool PhysicsScene2D::testEntityCollision(Entity *ent1, Entity *ent2) {
 }
 
 PhysicsScene2D::PhysicsScene2D() : Scene(Scene::SCENE_2D) {
-	init(10.0f, 1.0f/60.0f,10,10,Vector2(0.0f, -10.0f));
+	init(10.0f,10,10,Vector2(0.0f, -10.0f));
 }
 
-PhysicsScene2D::PhysicsScene2D(Number worldScale, Number freq, int velIterations, int posIterations): Scene(Scene::SCENE_2D) {
-	init(worldScale, 1.0f/freq,velIterations, posIterations, Vector2(0.0f, -10.0f));	
+PhysicsScene2D::PhysicsScene2D(Number worldScale, int velIterations, int posIterations): Scene(Scene::SCENE_2D) {
+	init(worldScale, velIterations, posIterations, Vector2(0.0f, -10.0f));
 }
 
-void PhysicsScene2D::init(Number worldScale, Number physicsTimeStep, int velIterations, int posIterations, Vector2 physicsGravity) {
+void PhysicsScene2D::init(Number worldScale, int velIterations, int posIterations, Vector2 physicsGravity) {
 	
-	cyclesLeftOver = 0.0;
 	this->worldScale = worldScale;
 	
-	timeStep = physicsTimeStep;
 	velocityIterations = velIterations;
     positionIterations = posIterations;
 	
@@ -547,22 +545,24 @@ void PhysicsScene2D::handleEvent(Event *event) {
 	Scene::handleEvent(event);
 }
 
-void PhysicsScene2D::Update() {
+void PhysicsScene2D::fixedUpdate() {
     
-	Number elapsed = CoreServices::getInstance()->getCore()->getElapsed() + cyclesLeftOver;
-	
-	while(elapsed > timeStep) {
-		elapsed -= timeStep;
-		for(int i=0; i<physicsChildren.size();i++) {
-			physicsChildren[i]->Update();
-		}
-		world->Step(timeStep, velocityIterations,positionIterations);
+    for(int i=0; i<physicsChildren.size();i++) {
+        if(physicsChildren[i]->collisionOnly) {
+            physicsChildren[i]->Update();
+        }
+    }
+    world->Step(core->getFixedTimestep(), velocityIterations,positionIterations);
+    
+    for(int i=0; i<physicsChildren.size();i++) {
+        if(!physicsChildren[i]->collisionOnly) {
+            physicsChildren[i]->Update();
+        }
+    }
 		
-		for(int i=0; i < eventsToDispatch.size(); i++) {
-			dispatchEvent(eventsToDispatch[i], eventsToDispatch[i]->getEventCode());
-		}
-		eventsToDispatch.clear();
-	}
-	cyclesLeftOver = elapsed;
-	Scene::Update();
+    for(int i=0; i < eventsToDispatch.size(); i++) {
+        dispatchEvent(eventsToDispatch[i], eventsToDispatch[i]->getEventCode());
+    }
+    eventsToDispatch.clear();
+	Scene::fixedUpdate();
 }

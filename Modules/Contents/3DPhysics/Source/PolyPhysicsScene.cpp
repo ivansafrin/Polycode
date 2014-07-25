@@ -142,23 +142,21 @@ void PhysicsScene::processWorldCollisions() {
 
 }
 
-void PhysicsScene::Update() {
+void PhysicsScene::fixedUpdate() {
 	if(!pausePhysics) {
-	for(int i=0; i < physicsChildren.size(); i++) {
-		if(physicsChildren[i]->enabled) {
-			physicsChildren[i]->Update();
+        for(int i=0; i < physicsChildren.size(); i++) {
+            if(physicsChildren[i]->enabled) {
+                physicsChildren[i]->Update();
+            }
+        }
+                
+        if(maxSubSteps > 0) {
+            physicsWorld->stepSimulation(core->getFixedTimestep(), maxSubSteps);
+        } else {
+            physicsWorld->stepSimulation(core->getFixedTimestep());
         }
 	}
-	
-	
-	Number elapsed = CoreServices::getInstance()->getCore()->getElapsed();
-	if(maxSubSteps > 0) {
-		physicsWorld->stepSimulation(elapsed, maxSubSteps);	
-	} else {
-		physicsWorld->stepSimulation(elapsed);		
-	}
-	}
-	CollisionScene::Update();
+	CollisionScene::fixedUpdate();
 	
 }
 

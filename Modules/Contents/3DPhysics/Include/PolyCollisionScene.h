@@ -92,7 +92,7 @@ struct CollisionResult {
 		
 			void initCollisionScene(Vector3 size);
 		
-			virtual void Update();
+			virtual void fixedUpdate();
 			
 			virtual void removeEntity(Entity *entity);
 						

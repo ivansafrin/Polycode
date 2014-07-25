@@ -44,7 +44,7 @@ void CollisionScene::initCollisionScene(Vector3 size) {
 	world = new btCollisionWorld(dispatcher,axisSweep,collisionConfiguration);	
 }
 
-void CollisionScene::Update() {
+void CollisionScene::fixedUpdate() {
 	
 	for(int i=0; i < collisionChildren.size(); i++) {
 		if(collisionChildren[i]->enabled)
@@ -57,7 +57,7 @@ void CollisionScene::Update() {
 		if(collisionChildren[i]->enabled)		
 			collisionChildren[i]->lastPosition = collisionChildren[i]->getEntity()->getPosition();
 	}
-	Scene::Update();	
+	Scene::fixedUpdate();
 }
 
 void CollisionScene::enableCollision(Entity *entity, bool val) {

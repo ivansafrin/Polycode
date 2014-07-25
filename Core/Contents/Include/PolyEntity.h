@@ -93,7 +93,8 @@ namespace Polycode {
 			* Main update method. Override this to do your updates before the render cycle.
 			*/			
 			virtual void Update(){};			
-
+			virtual void fixedUpdate(){};
+        
 			void transformAndRender();		
 
 			void renderChildren();					
@@ -737,7 +738,8 @@ namespace Polycode {
              */
 			bool getInverseY();
 			
-			void doUpdates();				
+			void doUpdates();
+			void doFixedUpdates();
 			virtual Matrix4 buildPositionMatrix();
 			void setRenderer(Renderer *renderer);
 			

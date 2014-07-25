@@ -130,6 +130,9 @@ end
 function Update(e)
 end
 
+function fixedUpdate()
+end
+
 KEY_UNKNOWN= 0
 KEY_FIRST= 0
 KEY_BACKSPACE= 8

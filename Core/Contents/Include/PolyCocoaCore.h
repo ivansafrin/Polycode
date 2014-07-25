@@ -118,7 +118,7 @@ namespace Polycode {
 		
 		void enableMouse(bool newval);
 		unsigned int getTicks();		
-		bool Update();
+		bool systemUpdate();
 		
 		void Render();
 								

@@ -119,7 +119,8 @@ namespace Polycode {
 		void setFogProperties(int fogMode, Color color, Number density, Number startDepth, Number endDepth);
         
         void setSceneType(int newType);
-	
+
+		virtual void fixedUpdate();
 		virtual void Update();
 		void setVirtual(bool val);
 		bool isVirtual();

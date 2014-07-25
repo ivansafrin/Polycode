@@ -60,6 +60,7 @@ namespace Polycode {
 		input = new CoreInput();
 		services->setCore(this);
 		fps = 0;
+        timeLeftOver = 0.0;
 		running = true;
 		frames = 0;
 		lastFrameTicks=0;
@@ -80,7 +81,7 @@ namespace Polycode {
 		if(frameRate == 0)
 			frameRate = 60;
 		
-		refreshInterval = 1000 / frameRate;		
+		setFramerate(frameRate);
 		threadedEventMutex = NULL;
 	}
     
@@ -96,8 +97,10 @@ namespace Polycode {
         return height;
     }
 	
-	void Core::setFramerate(int frameRate) {
+	void Core::setFramerate(int frameRate, int maxFixedCycles) {
 		refreshInterval = 1000 / frameRate;
+        fixedTimestep = 1.0 / ((double) frameRate);
+        maxFixedElapsed = fixedTimestep * maxFixedCycles;
 	}
 	
 	void Core::enableMouse(bool newval) {
@@ -197,15 +200,41 @@ namespace Polycode {
 		Render();
 		return ret;
 	}
+    
+    bool Core::fixedUpdate() {
+        if(fixedElapsed < fixedTimestep) {
+            return false;
+        }
+        services->fixedUpdate();
+        fixedElapsed -= fixedTimestep;
+        return true;
+    }
+    
+    Number Core::getFixedTimestep() {
+        return fixedTimestep;
+    }
+    
+    bool Core::Update() {
+        bool ret = systemUpdate();
+        while(fixedUpdate()) {}
+        return ret;
+    }
 							
 	void Core::updateCore() {
 		frames++;
 		frameTicks = getTicks();
 		elapsed = frameTicks - lastFrameTicks;
-		
+		      
 		if(elapsed > 1000)
 			elapsed = 1000;
-			
+		
+        timeLeftOver = fixedElapsed;
+        fixedElapsed = (((Number)elapsed)/1000.0f) + timeLeftOver;
+        
+        if(fixedElapsed > maxFixedElapsed) {
+            fixedElapsed = maxFixedElapsed;
+        }
+        
 		services->Update(elapsed);
 		
 		if(frameTicks-lastFPSTicks >= 1000) {

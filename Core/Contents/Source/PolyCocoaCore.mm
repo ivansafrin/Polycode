@@ -625,7 +625,7 @@ void CocoaCore::Render() {
 	unlockMutex(CoreServices::getRenderMutex());
 }
 
-bool CocoaCore::Update() {
+bool CocoaCore::systemUpdate() {
 	if(!running)
 		return false;
 	doSleep();
@@ -639,8 +639,6 @@ bool CocoaCore::Update() {
 	checkEvents();
 	return running;
 }
-
-
 
 static void hatValueToXY(CFIndex value, CFIndex range, int * outX, int * outY) {
 	if (value == range) {

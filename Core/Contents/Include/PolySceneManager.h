@@ -51,6 +51,7 @@ namespace Polycode {
         
         // Polycode internal
 		void Update();
+		void fixedUpdate();
 		void Render();
 		void renderVirtual();
 		void registerRenderTexture(SceneRenderTexture *renderTexture);

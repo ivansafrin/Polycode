@@ -882,7 +882,7 @@ void PolycodePlayer::handleEvent(Event *event) {
 
 
 bool PolycodePlayer::Update() {
-	bool retVal = core->Update();
+	bool retVal = core->systemUpdate();
 	if(L) {
 		lua_getfield (L, LUA_GLOBALSINDEX, "__customError");
 		errH = lua_gettop(L);	
@@ -893,7 +893,6 @@ bool PolycodePlayer::Update() {
 			lua_pcall(L, 0,0,errH);		
 		}	
 		if(!crashed) {
-		
 			lua_getfield(L, LUA_GLOBALSINDEX, "__process_safe_delete");
 			lua_pcall(L, 0,0,errH);	
 		
@@ -901,6 +900,12 @@ bool PolycodePlayer::Update() {
 			lua_pushnumber(L, core->getElapsed());
 			lua_pcall(L, 1,0,errH);
 		}
+        
+        while(core->fixedUpdate()) {
+			lua_getfield(L, LUA_GLOBALSINDEX, "fixedUpdate");
+			lua_pcall(L, 0,0,errH);
+        }
+        
 		lua_settop(L, 0);
 	}
 	core->Render();

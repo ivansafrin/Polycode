@@ -90,7 +90,7 @@ namespace Polycode {
 		PhysicsScene(int maxSubSteps = 0, Vector3 size = Vector3(200), bool virtualScene = false);
 		virtual ~PhysicsScene();	
 		
-		void Update();		
+		void fixedUpdate();
 		
 		void removeEntity(Entity *entity);
 		

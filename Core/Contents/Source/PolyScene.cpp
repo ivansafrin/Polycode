@@ -138,6 +138,11 @@ void Scene::Update() {
 	rootEntity.doUpdates();
 }
 
+void Scene::fixedUpdate() {
+    rootEntity.updateEntityMatrix();
+	rootEntity.doFixedUpdates();
+}
+
 Scene::~Scene() {
 	core->getInput()->removeAllHandlersForListener(this);
 	CoreServices::getInstance()->getSceneManager()->removeScene(this);	
