@@ -77,7 +77,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	MSG Msg;
 
 		do {
-			while (PeekMessage(&Msg, NULL, 0, 0, PM_REMOVE | PM_QS_INPUT)) {
+			while (PeekMessage(&Msg, NULL, 0, 0, PM_REMOVE)) {
 				TranslateMessage(&Msg);
 				DispatchMessage(&Msg);
 			}
