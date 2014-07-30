@@ -36,6 +36,7 @@ IF(MSVC OR MINGW)
 
 INSTALL(PROGRAMS ${POLYCODE_RELEASE_DIR}/Framework/Tools/polybuild.exe DESTINATION Bin)
 INSTALL(PROGRAMS ${POLYCODE_RELEASE_DIR}/Framework/Tools/polyimport.exe DESTINATION Bin)
+INSTALL(PROGRAMS ${POLYCODE_RELEASE_DIR}/Framework/Tools/Dependencies/bin/archive.dll DESTINATION Bin)
 INSTALL(DIRECTORY ${PolycodeStandalone_SOURCE_DIR}/../Assets/Templates/Lua DESTINATION Template)
 
 
