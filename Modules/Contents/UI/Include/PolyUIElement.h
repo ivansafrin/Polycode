@@ -125,6 +125,30 @@ namespace Polycode {
         void setText(const String& text);
         String getText();
         
+		/**
+		* Sets the color of the Labels as normalized floating point values.
+		* @param r Red value as a 0-1 floating point number.
+		* @param g Green value as a 0-1 floating point number.
+		* @param b Blue value as a 0-1 floating point number.
+		* @param a Alpha value as a 0-1 floating point number.
+		*/
+		void setColor(Number r, Number g, Number b, Number a);
+
+		/**
+		* Sets the color of the entity as 0-255 integers.
+		* @param r Red value as a 0-255 integer.
+		* @param g Green value as a 0-255 integer.
+		* @param b Blue value as a 0-255 integer.
+		* @param a Alpha value as a 0-255 integer.
+		*/
+		void setColorInt(int r, int g, int b, int a);
+
+		/**
+		* Sets the color of the entity.
+		* @param color Color to set the entity color to.
+		*/
+		void setColor(Color color);
+
         ~UIMultilineLabel();
     protected:
         
