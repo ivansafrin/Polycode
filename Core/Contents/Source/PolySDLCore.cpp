@@ -107,7 +107,7 @@ SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool
 	renderer = new OpenGLRenderer();
 	services->setRenderer(renderer);
 
-	setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel);
+	setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, retinaSupport);
 	SDL_WM_SetCaption(windowTitle->c_str(), windowTitle->c_str());
 	
 	SDL_EnableUNICODE(1);
@@ -133,7 +133,7 @@ SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool
 	CoreServices::getInstance()->installModule(new GLSLShaderModule());	
 }
 
-void SDLCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel) {
+void SDLCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, bool retinaSupport) {
 	this->xRes = xRes;
 	this->yRes = yRes;
 	this->fullScreen = fullScreen;
@@ -313,7 +313,7 @@ void SDLCore::Render() {
 	SDL_GL_SwapBuffers();
 }
 
-bool SDLCore::Update() {
+bool SDLCore::systemUpdate() {
 	if(!running)
 		return false;
 	doSleep();	
@@ -496,6 +496,13 @@ String SDLCore::openFolderPicker() {
 
 vector<String> SDLCore::openFilePicker(vector<CoreFileExtension> extensions, bool allowMultiple) {
 	vector<String> r;
+	printf("WARNING: openFilePicker is not implemented in SDLCore!\n");
+	return r;
+}
+
+String SDLCore::saveFilePicker(std::vector<CoreFileExtension> extensions) {
+	String r;
+	printf("WARNING: saveFilePicker is not implemented in SDLCore!\n");
 	return r;
 }
 
