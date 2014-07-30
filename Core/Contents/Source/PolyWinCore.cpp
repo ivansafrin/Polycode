@@ -162,7 +162,27 @@ void Win32Core::enableMouse(bool newval) {
 void Win32Core::captureMouse(bool newval) {
 	// Capture the mouse in the window holding
 	// our polycode screen.
-	SetCapture(hWnd);
+	if (newval){
+		RECT rect;
+		GetWindowRect(core->hWnd, &rect);
+
+		RECT crect;
+		RECT arect;
+
+		GetClientRect(core->hWnd, &crect);
+		arect = crect;
+		AdjustWindowRectEx(&arect, WS_CAPTION | WS_BORDER, FALSE, 0);
+
+		rect.left += (crect.left - arect.left);
+		rect.right += (crect.right - arect.right);
+		rect.top += (crect.top - arect.top);
+		rect.bottom += (crect.bottom - arect.bottom);
+
+		ClipCursor(&rect);
+	}
+	else {
+		ClipCursor(NULL);
+	}
 
 	Core::captureMouse(newval);
 }
@@ -193,6 +213,7 @@ void Win32Core::Render() {
 bool Win32Core::systemUpdate() {
 	if(!running)
 		return false;
+	captureMouse(Core::mouseCaptured);
 	doSleep();
 	checkEvents();
 	Gamepad_processEvents();
