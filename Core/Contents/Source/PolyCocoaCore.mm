@@ -571,6 +571,36 @@ String CocoaCore::openFolderPicker() {
 	}	
 }
 
+String CocoaCore::saveFilePicker(std::vector<CoreFileExtension> extensions) {
+	unlockMutex(eventMutex);	    
+    String retString;
+  	NSSavePanel *attachmentPanel = [NSSavePanel savePanel];
+    
+	[attachmentPanel setCanCreateDirectories: YES];
+
+	NSMutableArray *types = nil;
+    
+	if(extensions.size() > 0) {
+		types = [[NSMutableArray alloc] init];
+		for(int i=0; i < extensions.size(); i++) {
+			CoreFileExtension extInfo = extensions[i];
+			[types addObject: [NSString stringWithUTF8String: extInfo.extension.c_str()]];
+		}
+	}
+	[attachmentPanel setAllowedFileTypes:types];
+    
+	if ( [attachmentPanel runModal] == NSOKButton )
+	{
+		NSURL* url = [attachmentPanel URL];
+        if(url) {
+            NSString* fileName = [url path];
+            retString = [fileName UTF8String];
+		}
+	}
+    
+    return retString;
+}
+
 vector<String> CocoaCore::openFilePicker(vector<CoreFileExtension> extensions, bool allowMultiple) {
 	unlockMutex(eventMutex);	
 	vector<String> retVector;

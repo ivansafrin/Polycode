@@ -132,6 +132,7 @@ namespace Polycode {
 		void removeDiskItem(const String& itemPath);
 		String openFolderPicker();
 		vector<String> openFilePicker(vector<CoreFileExtension> extensions, bool allowMultiple);
+        String saveFilePicker(std::vector<CoreFileExtension> extensions);
 		
 		String executeExternalCommand(String command, String args, String inDirectory="");
 		
