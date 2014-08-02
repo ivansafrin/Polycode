@@ -44,6 +44,7 @@
     <ClCompile Include="..\..\Contents\Source\ToolWindows.cpp" />
     <ClCompile Include="..\..\Contents\Source\TrackballCamera.cpp" />
     <ClCompile Include="..\..\Contents\Source\TransformGizmo.cpp" />
+    <ClCompile Include="..\WindowsShared\PolycodeWinIDEView.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -81,6 +82,7 @@
     <ClInclude Include="..\..\Contents\Include\ToolWindows.h" />
     <ClInclude Include="..\..\Contents\Include\TrackballCamera.h" />
     <ClInclude Include="..\..\Contents\Include\TransformGizmo.h" />
+    <ClInclude Include="..\WindowsShared\PolycodeWinIDEView.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
