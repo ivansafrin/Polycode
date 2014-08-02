@@ -96,12 +96,31 @@ void UIMultilineLabel::clearLabels() {
     labels.clear();
 }
 
+Number UIMultilineLabel::getWidth(){
+	Number maxWidth = 0;
+	for (int i = 0; i < labels.size(); i++) {
+		if (labels[i]->getWidth() > maxWidth){
+			maxWidth = labels[i]->getWidth();
+		}
+	}
+	return maxWidth;
+}
+
+Number UIMultilineLabel::getHeight(){
+	Number maxHeight = 0;
+	for (int i = 0; i < labels.size(); i++) {
+		if (labels[i]->getHeight() > maxHeight){
+			maxHeight = labels[i]->getHeight();
+		}
+	}
+	return maxHeight;
+}
+
 UIMultilineLabel::~UIMultilineLabel() {
     if(!ownsChildren) {
         clearLabels();
     }
 }
-
 
 UILabel::UILabel(const String& text, int size, const String& fontName, int amode) : UIElement() {
 

@@ -149,6 +149,16 @@ namespace Polycode {
 		*/
 		void setColor(Color color);
 
+		/**
+		* @return the max width as a Number
+		*/
+		Number getWidth();
+
+		/**
+		* @return the max height as a Number
+		*/
+		Number getHeight();
+
         ~UIMultilineLabel();
     protected:
         
@@ -160,9 +170,7 @@ namespace Polycode {
         void clearLabels();
         std::vector<UILabel*> labels;
 	};
-    
-
-	
+    	
 	class _PolyExport UIImage : public UIRect {
 		public:
 			UIImage(String imagePath);
