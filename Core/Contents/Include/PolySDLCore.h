@@ -49,9 +49,9 @@ namespace Polycode {
 		void enableMouse(bool newval);
 		void captureMouse(bool);
 		unsigned int getTicks();
-		bool Update();
+		bool systemUpdate();
 		void Render();
-		void setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel);
+		void setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, bool retinaSupport = true);
 		void createThread(Threaded *target);
 		std::vector<Rectangle> getVideoModes();
 		
@@ -68,6 +68,7 @@ namespace Polycode {
 		void removeDiskItem(const String& itemPath);
 		String openFolderPicker();
 		std::vector<String> openFilePicker(std::vector<CoreFileExtension> extensions, bool allowMultiple);
+                String saveFilePicker(std::vector<CoreFileExtension> extensions);
 		void resizeTo(int xRes, int yRes);
 
 		String executeExternalCommand(String command, String args, String inDirectory="");

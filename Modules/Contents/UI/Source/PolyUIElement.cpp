@@ -51,10 +51,10 @@ void UIMultilineLabel::setText(const String& text) {
         } else {
             UILabel *label = new UILabel(lines[i], labelSize, labelFontName, labelAAMode);
             lineSize = label->getHeight();
-            addChild(label);
             label->setPositionY(yPos);
             yPos += label->getHeight() + spacing;
             addChild(label);
+			labels.push_back(label);
         }
     }
 }
@@ -68,6 +68,24 @@ String UIMultilineLabel::getText() {
         text += labels[i]->getText();
     }
     return text;
+}
+
+void UIMultilineLabel::setColor(Color color) {
+	for (int i = 0; i < labels.size(); i++) {
+		labels[i]->color.setColor(&color);
+	}
+}
+
+void UIMultilineLabel::setColorInt(int r, int g, int b, int a) {
+	for (int i = 0; i < labels.size(); i++) {
+		labels[i]->color.setColorRGBA(r, g, b, a);
+	}
+}
+
+void UIMultilineLabel::setColor(Number r, Number g, Number b, Number a) {
+	for (int i = 0; i < labels.size(); i++) {
+		labels[i]->color.setColor(r, g, b, a);
+	}
 }
 
 void UIMultilineLabel::clearLabels() {
