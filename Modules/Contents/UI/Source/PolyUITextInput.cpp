@@ -221,6 +221,8 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	indentType = INDENT_TAB;
 	
 	core->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
+
+	setPassword(false);
 }
 
 void UITextInput::checkBufferLines() {
@@ -974,16 +976,39 @@ void UITextInput::updateCaretPosition() {
 		setActualLineOffset();
 	}
 
-	caretImagePosition = 0;
-	if(caretPosition == 0) {
+	if(password) {
 		caretImagePosition = 0;
-	} else if(caretPosition > wordWrapLines[lineOffset].text.length()) {
-		caretPosition = wordWrapLines[lineOffset].text.length();
-		String caretSubString = wordWrapLines[lineOffset].text.substr(0,caretPosition);
-		caretImagePosition = bufferLines[0]->getTextWidthForString(caretSubString);
+		String passText = "";
+
+		if(caretPosition == 0) {
+			caretImagePosition = 0;
+		} else if(caretPosition > wordWrapLines[lineOffset].text.length()) {
+			caretPosition = wordWrapLines[lineOffset].text.length();
+			String caretSubString = wordWrapLines[lineOffset].text.substr(0,caretPosition);
+			for(int i = 0; i < caretSubString.length(); i++) {
+				passText += "*";
+			}
+			caretImagePosition = bufferLines[0]->getTextWidthForString(passText);
+		} else {
+			String caretSubString = wordWrapLines[lineOffset].text.substr(0,caretPosition);
+			for(int i = 0; i < caretSubString.length(); i++) {
+				passText += "*";
+			}
+			caretImagePosition = bufferLines[0]->getTextWidthForString(passText);
+		}
 	} else {
-		String caretSubString = wordWrapLines[lineOffset].text.substr(0,caretPosition);
-		caretImagePosition = bufferLines[0]->getTextWidthForString(caretSubString);
+		caretImagePosition = 0;
+
+		if(caretPosition == 0) {
+			caretImagePosition = 0;
+		} else if(caretPosition > wordWrapLines[lineOffset].text.length()) {
+			caretPosition = wordWrapLines[lineOffset].text.length();
+			String caretSubString = wordWrapLines[lineOffset].text.substr(0,caretPosition);
+			caretImagePosition = bufferLines[0]->getTextWidthForString(caretSubString);
+		} else {
+			String caretSubString = wordWrapLines[lineOffset].text.substr(0,caretPosition);
+			caretImagePosition = bufferLines[0]->getTextWidthForString(caretSubString);
+		}
 	}
 	
 	if(!hasSelection) {
@@ -2424,8 +2449,16 @@ void UITextInput::readjustBuffer(int lineStart, int lineEnd) {
 			}
 			}		
 			}
-//			if(bufferOffset+i >= lineStart && bufferOffset+i <= lineEnd) {			
+//			if(bufferOffset+i >= lineStart && bufferOffset+i <= lineEnd) {
+			if(password) {
+				String passText = "";
+				for(int pst = 0; pst < wordWrapLines[bufferOffset+i].text.length(); pst++) {
+					passText += "*";
+				}
+				bufferLines[i]->setText(passText);
+			} else {
 				bufferLines[i]->setText(wordWrapLines[bufferOffset+i].text);
+			}
 //			}
 			bufferLines[i]->visible = true;
 		} else {
@@ -2651,4 +2684,8 @@ void UITextInput::convertIndentToTabs() {
 		
 		//TODO
 	}
+}
+
+void UITextInput::setPassword(bool password) {
+	this->password = password;
 }
