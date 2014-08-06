@@ -365,8 +365,6 @@ namespace Polycode {
 			void doMultilineResize();
 						
 			static void setMenuSingleton(UIGlobalMenu *_globalMenu);
-			
-			void setPassword(bool password);
 					
 		protected:
 		
@@ -488,7 +486,6 @@ namespace Polycode {
 			int maxRedoIndex;
 			bool isTypingWord;
 		
-			bool password;
 			bool multiLine;
 			Timer *blinkTimer;
 			UIBox *inputRect;
