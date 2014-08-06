@@ -2026,7 +2026,11 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 			ctext = lines[actualLineOffset].text;
 			String text2 = ctext.substr(actualCaretPosition, ctext.length()-actualCaretPosition);
 			ctext = ctext.substr(0,actualCaretPosition);
-			ctext += charCode + text2;
+			if(password) {
+				ctext += "*" + text2;
+			} else {
+				ctext += charCode + text2;
+			}
 			actualCaretPosition++;
 			_changedText = true;
 			
@@ -2651,4 +2655,8 @@ void UITextInput::convertIndentToTabs() {
 		
 		//TODO
 	}
+}
+
+void UITextInput::setPassword(bool password) {
+	this->password = password;
 }
