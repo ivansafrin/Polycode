@@ -284,6 +284,19 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
             String filePath = (*instanceEntry)["filePath"]->stringVal;
             SceneEntityInstance *instance = new SceneEntityInstance(parentScene, filePath);
             entity = instance;
+         } else if(entityType->stringVal == "SceneCurve") {
+			ObjectEntry *curveEntry = (*entry)["SceneCurve"];
+             
+             SceneCurve *curve = new SceneCurve();
+             
+            if(curveEntry) {
+                curve->renderCurve = (*curveEntry)["render"]->boolVal;
+                curve->curveResolution = (*curveEntry)["resolution"]->intVal;                
+                parseObjectIntoCurve((*curveEntry)["curve"], curve->getCurve());
+            }
+             
+             entity = curve;
+             
          } else if(entityType->stringVal == "SceneSprite") {
 
 			ObjectEntry *spriteEntry = (*entry)["SceneSprite"];

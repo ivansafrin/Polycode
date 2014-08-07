@@ -24,11 +24,38 @@ THE SOFTWARE.
 #include "PolyString.h"
 #include "PolyGlobals.h"
 #include "PolySceneMesh.h"
+#include "PolyBezierCurve.h"
 #include "PolyCoreServices.h"
 #include "PolyMesh.h"
 
 namespace Polycode {
 
+    
+    class _PolyExport SceneCurve : public SceneMesh {
+        public:
+        
+            SceneCurve();
+            SceneCurve(BezierCurve *curve);
+        
+            static SceneCurve *SceneCurveWithCurve(BezierCurve *curve);
+        
+            virtual ~SceneCurve();
+            void Update();
+        
+            virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
+            virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
+ 
+        
+            BezierCurve *getCurve();
+        
+            bool renderCurve;
+            int curveResolution;
+        
+        protected:
+        
+            BezierCurve *curve;
+    };
+    
 	/**
 	* 3D line class. Can connect two SceneEntity classes with a line.
 	*/ 

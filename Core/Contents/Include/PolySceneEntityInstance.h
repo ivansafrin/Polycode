@@ -30,6 +30,7 @@ THE SOFTWARE.
 #include "PolyResource.h"
 #include "PolySceneSprite.h"
 #include "PolyBezierCurve.h"
+#include "PolySceneLine.h"
 #include "PolyScene.h"
 #include "PolySound.h"
 

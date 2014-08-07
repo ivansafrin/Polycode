@@ -812,6 +812,21 @@ class SceneLabelSheet : public PropSheet {
 		BoolProp *enableAA;
 };
 
+class SceneCurveSheet : public PropSheet {
+    public:
+        SceneCurveSheet();
+        ~SceneCurveSheet();
+    
+        void handleEvent(Event *event);
+        void setCurve(SceneCurve *curve);
+    
+        SceneCurve *curve;
+        ButtonProp *addPointProp;
+        BoolProp *renderProp;
+        NumberProp *numPointsProp;
+    
+};
+
 class SceneSpriteSheet : public PropSheet {
 	public:
 		SceneSpriteSheet();

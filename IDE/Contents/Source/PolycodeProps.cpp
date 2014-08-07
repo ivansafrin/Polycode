@@ -3400,6 +3400,70 @@ void CameraSheet::setCamera(Camera *camera) {
     }
 }
 
+SceneCurveSheet::SceneCurveSheet() : PropSheet("CURVE", "SceneCurve") {
+    curve = NULL;
+    enabled = false;
+    
+    addPointProp = new ButtonProp("Add Curve Point");
+    addProp(addPointProp);
+    addPointProp->getButton()->addEventListener(this, UIEvent::CLICK_EVENT);
+
+    renderProp = new BoolProp("Render");
+    addProp(renderProp);
+    renderProp->addEventListener(this, Event::CHANGE_EVENT);
+
+    numPointsProp = new NumberProp("Resolution");
+    addProp(numPointsProp);
+    numPointsProp->addEventListener(this, Event::CHANGE_EVENT);
+
+}
+
+SceneCurveSheet::~SceneCurveSheet() {
+    
+}
+
+void SceneCurveSheet::handleEvent(Event *event) {
+    if(!curve) {
+        return;
+    }
+    
+	if(event->getDispatcher() == renderProp) {
+        curve->renderCurve = renderProp->get();
+    } else if(event->getDispatcher() == numPointsProp) {
+        curve->curveResolution = (int)numPointsProp->get();
+    } else if(event->getDispatcher() == addPointProp->getButton()) {
+        
+        BezierPoint *lastPoint = curve->getCurve()->getControlPoint(curve->getCurve()->getNumControlPoints()-1);
+
+        Vector3 directionOffsetPoint = curve->getCurve()->getPointAt(0.9);
+        
+        Vector3 directionNormal = lastPoint->p2 - directionOffsetPoint;
+        directionNormal.Normalize();
+        
+        Vector3 newPoint1 = lastPoint->p2 + (directionNormal * 1.0);
+        Vector3 newPoint2 = lastPoint->p2 + (directionNormal * 2.0);
+        Vector3 newPoint3 = lastPoint->p2 + (directionNormal* 3.0);
+        
+        curve->getCurve()->addControlPoint(newPoint1.x, newPoint1.y, newPoint1.z,
+                                        newPoint2.x, newPoint2.y, newPoint2.z,
+                                        newPoint3.x, newPoint3.y, newPoint3.z);
+        
+    }
+    
+    PropSheet::handleEvent(event);
+}
+
+void SceneCurveSheet::setCurve(SceneCurve *curve) {
+    this->curve = curve;
+    if(curve) {
+        renderProp->set(curve->renderCurve);
+        numPointsProp->set(curve->curveResolution);
+        enabled = true;
+    } else {
+        enabled = false;
+    }
+}
+
 
 SceneSpriteSheet::SceneSpriteSheet() : PropSheet("SPRITE", "SceneSprite") {
 	sprite = NULL;

@@ -1050,11 +1050,7 @@ void TransformGizmo::handleEvent(Event *event) {
                         {
                             Vector3 newPoint = getTransformPlanePosition();
                             Vector3 diff = (planeMatrix.Inverse() * newPoint) -(planeMatrix.Inverse() * startingPoint);
-                            diff = diff * getCompoundScale();
-                            
-                            printf("newPoint: %f,%f,%f\n", newPoint.x, newPoint.y, newPoint.z);
-                            printf("diff: %f,%f,%f (constraint: %f,%f,%f)\n", diff.x, diff.y, diff.z, transformConstraint.x, transformConstraint.y, transformConstraint.z);
-                            
+                            diff = diff * getCompoundScale();                                                        
                             transformSelectedEntities(transformConstraint * diff, Vector3(0.0, 0.0, 0.0), 0.0);
                             startingPoint = newPoint;
                         }

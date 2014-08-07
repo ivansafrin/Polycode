@@ -51,6 +51,9 @@ EntityEditorPropertyView::EntityEditorPropertyView() : UIElement() {
     entityProps->addPropSheet(labelSheet);
     labelSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
     
+    curveSheet = new SceneCurveSheet();
+    entityProps->addPropSheet(curveSheet);
+    curveSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
     
     lightSheet = new SceneLightSheet();
     entityProps->addPropSheet(lightSheet);
@@ -149,6 +152,9 @@ void EntityEditorPropertyView::setEntity(Entity *entity) {
     SceneLabel *sceneLabel = dynamic_cast<SceneLabel*>(entity);
     labelSheet->setSceneLabel(sceneLabel);
 
+    SceneCurve *sceneCurve = dynamic_cast<SceneCurve*>(entity);
+    curveSheet->setCurve(sceneCurve);
+    
     SceneSprite *sceneSprite = dynamic_cast<SceneSprite*>(entity);
     spriteSheet->setSprite(sceneSprite);
 

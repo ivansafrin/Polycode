@@ -76,6 +76,47 @@ TextInputPopup::~TextInputPopup() {
 	
 }
 
+MessagePopup::MessagePopup() : UIWindow("", 300, 80) {
+    captionLabel = new UILabel("This is a caption", 12);
+	addChild(captionLabel);
+	captionLabel->setPosition(padding, 35);
+    
+	okButton = new UIButton(L"OK", 100);
+	okButton->addEventListener(this, UIEvent::CLICK_EVENT);
+    addChild(okButton);
+	okButton->setPosition(120, 60);
+	
+	closeOnEscape = true;
+}
+
+MessagePopup::~MessagePopup() {
+    
+}
+
+void MessagePopup::setCaption(String caption) {
+	captionLabel->setText(caption);
+	
+	Number windowSize = captionLabel->getWidth() + 50;
+	if(windowSize < 400)
+		windowSize = 400;
+	setWindowSize(windowSize, 80);
+	captionLabel->setPosition(padding + (windowSize - captionLabel->getWidth()) / 2.0, 35);
+	okButton->setPosition(padding + ((windowSize - okButton->getWidth()) / 2.0), 60);
+}
+
+void MessagePopup::handleEvent(Event *event) {
+	if(event->getEventType() == "UIEvent") {
+		if(event->getEventCode() == UIEvent::CLICK_EVENT) {
+			if(event->getDispatcher() == okButton) {
+				dispatchEvent(new UIEvent(), UIEvent::OK_EVENT);
+				dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);
+			}
+		}
+	}
+	UIWindow::handleEvent(event);
+}
+
+
 YesNoPopup::YesNoPopup() : UIWindow(L"", 300, 80) {
 	
 	captionLabel = new UILabel("This is a caption", 12);	

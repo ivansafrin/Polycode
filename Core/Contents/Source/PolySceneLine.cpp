@@ -25,6 +25,79 @@
 
 using namespace Polycode;
 
+using std::min;
+using std::max;
+
+SceneCurve::SceneCurve() : SceneMesh(Mesh::LINE_STRIP_MESH) {
+    curveResolution = 256;
+    renderCurve = true;
+    curve = new BezierCurve();
+}
+
+SceneCurve::SceneCurve(BezierCurve *curve) : SceneMesh(Mesh::LINE_STRIP_MESH) {
+    curveResolution = 256;
+    renderCurve = true;
+    this->curve = curve;
+}
+
+SceneCurve *SceneCurve::SceneCurveWithCurve(BezierCurve *curve) {
+    return new SceneCurve(curve);
+}
+
+Entity *SceneCurve::Clone(bool deepClone, bool ignoreEditorOnly) const {
+	SceneCurve *newCurve = new SceneCurve();
+	applyClone(newCurve, deepClone, ignoreEditorOnly);
+	return newCurve;
+}
+
+void SceneCurve::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
+    SceneMesh::applyClone(clone, deepClone, ignoreEditorOnly);
+    
+    SceneCurve *cloneCurve = (SceneCurve*)clone;
+    cloneCurve->renderCurve = renderCurve;
+    cloneCurve->curveResolution = curveResolution;
+    
+    for(int i=0; i < curve->getNumControlPoints(); i++) {
+        BezierPoint *pt = curve->getControlPoint(i);
+        cloneCurve->getCurve()->addControlPoint(
+            pt->p1.x, pt->p1.y, pt->p1.z,
+            pt->p2.x, pt->p2.y, pt->p2.z,
+            pt->p3.x, pt->p3.y, pt->p3.z);
+    }
+}
+
+
+SceneCurve::~SceneCurve() {
+    delete curve;
+}
+
+BezierCurve *SceneCurve::getCurve() {
+    return curve;
+}
+
+void SceneCurve::Update() {
+    mesh->clearMesh();
+    Vector3 bBox;
+    
+    if(renderCurve) {
+
+        Number step = (1.0 / ((Number)curveResolution));
+        
+        for(Number offset=0.0; offset <= 1.0; offset += step) {
+            Vector3 pt = curve->getPointAt(offset);
+            mesh->addVertex(pt.x, pt.y, pt.z, offset, 0.0);
+            
+            bBox.x = max(bBox.x,(Number)fabs(pt.x));
+            bBox.y = max(bBox.y,(Number)fabs(pt.y));
+            bBox.z = max(bBox.z,(Number)fabs(pt.z));
+
+        }
+    }
+    
+    setLocalBoundingBox(bBox * 2.0);
+    mesh->dirtyArray(RenderDataArray::VERTEX_DATA_ARRAY);
+}
+
 SceneLine::SceneLine(Vector3 start, Vector3 end) : SceneMesh(Mesh::LINE_MESH) {
 	this->ent1 = NULL;
 	this->ent2 = NULL;

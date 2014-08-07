@@ -1409,6 +1409,9 @@ PolycodeFrame::PolycodeFrame(PolycodeEditorManager *editorManager) : UIElement()
 	
 	yesNoPopup = new YesNoPopup();
 	yesNoPopup->visible = false;
+    
+    messagePopup = new MessagePopup();
+    messagePopup->visible = false;
 	
 	yesNoCancelPopup = new YesNoCancelPopup();
 	yesNoCancelPopup->visible = false;

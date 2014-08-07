@@ -60,6 +60,217 @@ PolycodeSceneEditorActionDataEntry::PolycodeSceneEditorActionDataEntry(Entity *e
     this->entity = entity;
 }
 
+DummyTargetEntity::DummyTargetEntity() {
+    addTag("dummy_target");
+    propertyEntity = NULL;
+}
+
+DummyTargetEntity::~DummyTargetEntity() {
+    
+}
+
+Vector3 DummyTargetEntity::getSelectedPoint() const {
+    return selectedPoint;
+}
+
+void DummyTargetEntity::selectPoint(Vector3 point) {
+    selectedPoint = point;
+    InputEvent *rebroadcastEvent = new InputEvent();
+    rebroadcastEvent->mouseButton = CoreInput::MOUSE_BUTTON2;
+    dispatchEvent(rebroadcastEvent, InputEvent::EVENT_MOUSEDOWN);
+    
+}
+
+Entity *DummyTargetEntity::getPropertyEntity() {
+    return propertyEntity;
+}
+
+CurveDisplay::CurveDisplay(Scene *parentScene, SceneCurve *curve) : DummyTargetEntity () {
+    editorOnly = true;
+    curve->addChild(this);
+    this->curve = curve;
+    this->parentScene = parentScene;
+    targetPoint = NULL;
+    propertyEntity = curve;
+    
+    controlPointLines = new SceneMesh(Mesh::LINE_MESH);
+    controlPointLines->setColor(1.0, 1.0, 0.4, 1.0);
+    addChild(controlPointLines);
+    
+   
+    mainPoints = new SceneMesh(Mesh::POINT_MESH);
+    mainPoints->setColor(0.0, 0.5, 1.0, 1.0);
+    addChild(mainPoints);
+    mainPoints->pointSize = 10.0;
+    mainPoints->pointSmooth = true;
+
+    controlPoints = new SceneMesh(Mesh::POINT_MESH);
+    controlPoints->setColor(1.0, 0.7, 0.0, 1.0);
+    addChild(controlPoints);
+    controlPoints->pointSize = 8.0;
+    controlPoints->pointSmooth = true;
+    
+    renderControlPoints = false;
+    
+    coreInput = Services()->getCore()->getInput();
+    coreInput->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+}
+
+void CurveDisplay::handleDelete() {
+    if(targetPoint) {
+        if(curve->getCurve()->getNumControlPoints() > 2) {
+            curve->getCurve()->removePoint(targetPoint);
+        } else {
+            globalFrame->messagePopup->setCaption("Curve must have at least two points.");
+            globalFrame->showModal(globalFrame->messagePopup);
+        }
+    }
+}
+
+void CurveDisplay::handleDeselect() {
+    renderControlPoints = false;
+}
+
+void CurveDisplay::handleSelect() {
+    renderControlPoints = true;
+}
+
+CurveDisplay::~CurveDisplay() {
+    Services()->getCore()->getInput()->removeAllHandlersForListener(this);
+}
+
+void CurveDisplay::handleEvent(Event *event) {
+    
+    InputEvent *inputEvent = (InputEvent*) event;
+    if(inputEvent->mouseButton == CoreInput::MOUSE_BUTTON2) {
+        
+        Ray ray = parentScene->projectRayFromCameraAndViewportCoordinate(parentScene->getDefaultCamera(), coreInput->getMousePosition());
+        
+        for(int i=0; i < curve->getCurve()->getNumControlPoints(); i++) {
+            Matrix4 parentMatrix = getConcatenatedMatrix();
+            Matrix4 pointTransform;
+            
+            Vector3 pt = curve->getCurve()->getControlPoint(i)->p2;
+            pt = parentMatrix * pt;
+            Number relativeSize = parentScene->getDefaultCamera()->getPosition().distance(pt) * 0.02;
+            Vector3 hitSize(relativeSize, relativeSize, relativeSize);
+            pointTransform.setPosition(pt.x, pt.y, pt.z);
+            if(ray.boxIntersect(hitSize, pointTransform) >= 0.0) {
+                selectMode = SELECT_MODE_P2;
+                targetPoint = curve->getCurve()->getControlPoint(i);
+                selectPoint(pt);
+            }
+            
+            if(renderControlPoints) {
+                pt = curve->getCurve()->getControlPoint(i)->p1;
+                pt = parentMatrix * pt;
+                relativeSize = parentScene->getDefaultCamera()->getPosition().distance(pt) * 0.02;
+                hitSize.set(relativeSize, relativeSize, relativeSize);
+                pointTransform.setPosition(pt.x, pt.y, pt.z);
+                if(ray.boxIntersect(hitSize, pointTransform) >= 0.0) {
+                    selectMode = SELECT_MODE_P1;
+                    targetPoint = curve->getCurve()->getControlPoint(i);
+                    selectPoint(pt);
+                }
+                
+                pt = curve->getCurve()->getControlPoint(i)->p3;
+                pt = parentMatrix * pt;
+                relativeSize = parentScene->getDefaultCamera()->getPosition().distance(pt) * 0.02;
+                hitSize.set(relativeSize, relativeSize, relativeSize);
+                pointTransform.setPosition(pt.x, pt.y, pt.z);
+                if(ray.boxIntersect(hitSize, pointTransform) >= 0.0) {
+                    selectMode = SELECT_MODE_P3;
+                    targetPoint = curve->getCurve()->getControlPoint(i);
+                    selectPoint(pt);
+                }
+            }
+        }
+    }
+}
+
+void CurveDisplay::setDummyTransform(Entity *dummy) {
+    if(targetPoint) {
+        Vector3 position = dummy->getPosition();
+        
+        Matrix4 parentMatrix = getConcatenatedMatrix().Inverse();
+        position = parentMatrix * position;
+        
+        Vector3 p1Offset = targetPoint->p1 - targetPoint->p2;
+        Vector3 p3Offset = targetPoint->p3 - targetPoint->p2;
+        
+        switch(selectMode) {
+            case SELECT_MODE_P1:
+            {
+                targetPoint->p1 = position;
+                
+                // transform the opposing point to match
+                Number p3Distance = targetPoint->p3.distance(targetPoint->p2);
+                Vector3 p3Normal = p1Offset * -1.0;
+                p3Normal.Normalize();
+                targetPoint->p3 = targetPoint->p2 + (p3Normal * p3Distance);
+            }
+            break;
+            case SELECT_MODE_P2:
+            {
+                targetPoint->p2 = position;
+                targetPoint->p1 = position+p1Offset;
+                targetPoint->p3 = position+p3Offset;
+            }
+            break;
+            case SELECT_MODE_P3:
+            {
+                targetPoint->p3 = position;
+                
+                // transform the opposing point to match
+                Number p1Distance = targetPoint->p1.distance(targetPoint->p2);
+                Vector3 p1Normal = p3Offset * -1.0;
+                p1Normal.Normalize();
+                targetPoint->p1 = targetPoint->p2 + (p1Normal * p1Distance);
+                
+            }
+            break;
+        }
+        
+        curve->getCurve()->recalculateDistances();
+    }
+}
+
+void CurveDisplay::Update() {
+    
+    mainPoints->getMesh()->clearMesh();
+    controlPoints->getMesh()->clearMesh();
+    controlPointLines->getMesh()->clearMesh();
+    
+    for(int i=0; i < curve->getCurve()->getNumControlPoints(); i++) {
+        
+        Vector3 pt2 = curve->getCurve()->getControlPoint(i)->p2;
+        mainPoints->getMesh()->addVertex(pt2.x, pt2.y, pt2.z);
+        
+        if(renderControlPoints) {
+            Vector3 pt1 = curve->getCurve()->getControlPoint(i)->p1;
+            controlPoints->getMesh()->addVertex(pt1.x, pt1.y, pt1.z);
+            
+            Vector3 pt3 = curve->getCurve()->getControlPoint(i)->p3;
+            controlPoints->getMesh()->addVertex(pt3.x, pt3.y, pt3.z);
+            
+            
+            controlPointLines->getMesh()->addVertex(pt1.x, pt1.y, pt1.z);
+            controlPointLines->getMesh()->addVertex(pt2.x, pt2.y, pt2.z);
+            
+            controlPointLines->getMesh()->addVertex(pt2.x, pt2.y, pt2.z);
+            controlPointLines->getMesh()->addVertex(pt3.x, pt3.y, pt3.z);
+        }
+    }
+    
+    mainPoints->setLocalBoundingBox(mainPoints->getMesh()->calculateBBox());
+    controlPoints->setLocalBoundingBox(controlPoints->getMesh()->calculateBBox());
+    controlPointLines->setLocalBoundingBox(controlPointLines->getMesh()->calculateBBox());
+    
+    mainPoints->getMesh()->dirtyArray(RenderDataArray::VERTEX_DATA_ARRAY);
+    controlPoints->getMesh()->dirtyArray(RenderDataArray::VERTEX_DATA_ARRAY);
+    controlPointLines->getMesh()->dirtyArray(RenderDataArray::VERTEX_DATA_ARRAY);
+}
+
 LightDisplay::LightDisplay(SceneLight *light) : Entity() {
     editorOnly = true;
     this->light = light;
@@ -87,6 +298,7 @@ LightDisplay::LightDisplay(SceneLight *light) : Entity() {
     fovMesh->addIndexedFace(0, 3);
     fovMesh->addIndexedFace(0, 4);
     
+    fovSceneMesh->setLocalBoundingBox(fovMesh->calculateBBox());
     
     light->addChild(this);
 }
@@ -113,6 +325,7 @@ void LightDisplay::Update() {
         fovMesh->getActualVertex(3)->set(sin(PI + (PI/2.0))*spotLightSize, cos(PI + (PI/2.0))*spotLightSize, -distance);
         fovMesh->getActualVertex(4)->set(sin(PI*2.0)*spotLightSize, cos(PI*2.0)*spotLightSize, -distance);
          fovMesh->dirtyArray(RenderDataArray::VERTEX_DATA_ARRAY);
+        fovSceneMesh->setLocalBoundingBox(fovMesh->calculateBBox());
     } else {
         spotSpot->enabled = false;
         fovSceneMesh->enabled = false;
@@ -145,6 +358,8 @@ CameraDisplay::CameraDisplay(Camera *camera) : Entity() {
     fovMesh->addIndexedFace(2, 3);
     fovMesh->addIndexedFace(3, 4);
     fovMesh->addIndexedFace(4, 1);
+    
+    fovSceneMesh->setLocalBoundingBox(fovMesh->calculateBBox());
     
     addChild(fovSceneMesh);
     
@@ -324,6 +539,7 @@ EntityEditorMainView::EntityEditorMainView(PolycodeEditor *editor) {
     objectRootInstance = NULL;
     lightsDisabled = false;
     beforeData = NULL;
+    dummyTargetEntity = NULL;
     setOwnsChildrenRecursive(true);
     
     this->editor = editor;
@@ -336,6 +552,9 @@ EntityEditorMainView::EntityEditorMainView(PolycodeEditor *editor) {
 	mainScene->clearColor.setColor(0.2, 0.2, 0.2, 1.0);	
 	mainScene->useClearColor = true;
 	mainScene->rootEntity.processInputEvents = true;
+    
+    dummyEntity = new Entity();
+    mainScene->addChild(dummyEntity);
 	   
     Number customFalloff = 0.006;
     // setup custom lights for disabled lighting
@@ -643,7 +862,12 @@ void EntityEditorMainView::setEditorMode(int newMode) {
 
 Entity *EntityEditorMainView::getSelectedEntity() {
     if(selectedEntities.size() > 0) {
-        return selectedEntities[selectedEntities.size()-1];
+        
+        if(selectedEntities[selectedEntities.size()-1] == dummyEntity) {
+            return dummyTargetEntity->getPropertyEntity();
+        } else {
+            return selectedEntities[selectedEntities.size()-1];
+        }
     } else {
         return NULL;
     }
@@ -690,6 +914,12 @@ bool EntityDistanceSorter::operator() (MultiselectorEntry i,MultiselectorEntry j
 }
 
 void EntityEditorMainView::Update() {
+    
+    // update dummy target if trasnforming dummy entity
+    
+    if(dummyTargetEntity) {
+        dummyTargetEntity->setDummyTransform(dummyEntity);
+    }
     
     if(entitiesToSelect.size() != 0) {
         
@@ -830,6 +1060,14 @@ void EntityEditorMainView::setEditorProps(Entity *entity) {
         }
     }
     
+    SceneCurve *sceneCurve = dynamic_cast<SceneCurve*>(entity);
+    if(sceneCurve) {
+        CurveDisplay *curveVis = new CurveDisplay(mainScene, sceneCurve);
+        curveVis->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+        createIcon(entity, "curve_icon.png");
+    }
+    
+    
     if(emitter) {
         createIcon(entity, "emitter_icon.png");
     }
@@ -872,6 +1110,25 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
         newEntity->setPosition(cursorPosition);
         didPlaceEntity(newEntity);
         selectEntity(newEntity, false, false);
+        return;
+    }
+    
+    if(command == "add_curve") {
+        SceneCurve *curve = new SceneCurve();
+        
+        curve->getCurve()->addControlPoint(3.0, -1.0, 0.0,
+                                           2.0, 0.0, 0.0,
+                                           1.0, 1.0, 0.0);
+        curve->getCurve()->addControlPoint(
+                                           -1.0, 1.0, 0.0,
+                                           -2.0, 0.0, 0.0,
+                                           -3.0, -1.0, 0.0);
+        
+        sceneObjectRoot->addChild(curve);
+        setEditorProps(curve);
+        curve->setPosition(cursorPosition);
+        didPlaceEntity(curve);
+        selectEntity(curve, false, false);
         return;
     }
 
@@ -1011,6 +1268,17 @@ void EntityEditorMainView::didPlaceEntity(Entity *entity) {
 
 void EntityEditorMainView::deleteSelected(bool doAction) {
 
+    for(int i=0; i < selectedEntities.size(); i++) {
+        if(selectedEntities[i] == dummyEntity) {
+            if(dummyTargetEntity) {
+                dummyTargetEntity->handleDelete();
+                dummyEntity->removeAllHandlers();
+                selectedEntities.clear();
+                transformGizmo->setTransformSelection(selectedEntities);
+                return;
+            }
+        }
+    }
     
     if(doAction) {
         PolycodeSceneEditorActionData *oldData = new PolycodeSceneEditorActionData();
@@ -1062,6 +1330,7 @@ void EntityEditorMainView::onLoseFocus() {
 }
 
 void EntityEditorMainView::handleEvent(Event *event) {
+    
     
     if(event->getDispatcher() == transformGizmo) {
         if(event->getEventCode() == Event::CHANGE_EVENT) {
@@ -1242,6 +1511,7 @@ void EntityEditorMainView::handleEvent(Event *event) {
         addEntityMenu->addOption("Add Camera", "add_camera");
         addEntityMenu->addDivider();
         addEntityMenu->addOption("Add Empty", "add_empty");
+        addEntityMenu->addOption("Add Curve", "add_curve");
         addEntityMenu->fitToScreenVertical();
         addEntityMenu->addEventListener(this, UIEvent::OK_EVENT);
     } else if(event->getDispatcher() == input) {
@@ -1318,7 +1588,10 @@ void EntityEditorMainView::handleEvent(Event *event) {
         if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN && hasFocus && event->getDispatcher() != renderTextureShape) {
             InputEvent *inputEvent = (InputEvent*) event;
 
+    
             Entity* targetEntity = (Entity*) event->getDispatcher();
+            
+            
             if(inputEvent->mouseButton == CoreInput::MOUSE_BUTTON2 && targetEntity->visible) {
 
                 
@@ -1328,6 +1601,15 @@ void EntityEditorMainView::handleEvent(Event *event) {
                         targetEntity = (Entity*)targetEntity->getUserData();
                     }
                 }
+                
+                // check if dispatcher is a dummy target
+                DummyTargetEntity *dummyTarget = dynamic_cast<DummyTargetEntity*>(event->getDispatcher());
+                if(dummyTarget) {
+                    targetEntity = dummyEntity;
+                    dummyTargetEntity = dummyTarget;
+                    dummyEntity->setPosition(dummyTarget->getSelectedPoint());
+                }
+                
                 
                 MultiselectorEntry entry;
                 entry.entity = targetEntity;
@@ -1401,6 +1683,7 @@ void EntityEditorMainView::selectAll(bool doAction) {
 
 void EntityEditorMainView::selectNone(bool doAction) {
     
+    
     if(doAction) {
         
         beforeData = new PolycodeSceneEditorActionData();
@@ -1415,6 +1698,7 @@ void EntityEditorMainView::selectNone(bool doAction) {
     for(int i=0; i < selectedEntities.size(); i++) {
         doEntityDeselect(selectedEntities[i]);
     }
+    cameraPreview->setCamera(mainScene, NULL);
     selectedEntities.clear();
     transformGizmo->setTransformSelection(selectedEntities);
     setBBox();
@@ -1449,6 +1733,20 @@ void EntityEditorMainView::doEntityDeselect(Entity *targetEntity) {
         sceneMesh->overlayWireframe = false;
     }
     
+    if(targetEntity == dummyEntity) {
+        if(dummyTargetEntity) {
+            dummyTargetEntity->handleDeselect();
+        }
+    }
+    
+    std::vector<Entity*> dummySelectChildren = targetEntity->getEntitiesByTag("dummy_target", true);
+    for(int i=0; i < dummySelectChildren.size(); i++) {
+        DummyTargetEntity *dummy = dynamic_cast<DummyTargetEntity*>(dummySelectChildren[i]);
+        if(dummy) {
+            dummy->handleDeselect();
+        }
+    }
+    
     SceneEntityInstance *instance = dynamic_cast<SceneEntityInstance*>(targetEntity);
     if(instance) {
         setOverlayWireframeRecursive(targetEntity, false);
@@ -1473,6 +1771,24 @@ void EntityEditorMainView::doEntitySelect(Entity *targetEntity) {
     if(sceneMesh && ! emitter) {
         sceneMesh->overlayWireframe = true;
     }
+    
+    if(targetEntity == dummyEntity) {
+        if(dummyTargetEntity) {
+            dummyTargetEntity->handleSelect();
+        }
+    } else {
+        // clear the dummy target if dummy is not selected
+        dummyTargetEntity = NULL;
+    }
+    
+    std::vector<Entity*> dummySelectChildren = targetEntity->getEntitiesByTag("dummy_target", true);
+    for(int i=0; i < dummySelectChildren.size(); i++) {
+        DummyTargetEntity *dummy = dynamic_cast<DummyTargetEntity*>(dummySelectChildren[i]);
+        if(dummy) {
+            dummy->handleSelect();
+        }
+    }
+    
     
     SceneEntityInstance *instance = dynamic_cast<SceneEntityInstance*>(targetEntity);
     if(instance) {
@@ -1880,17 +2196,37 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
 
     }
     
-    if(dynamic_cast<SceneLabel*>(entity)) {
-        SceneLabel *label = (SceneLabel*) entity;
+    if(dynamic_cast<SceneSprite*>(entity)) {
         
         if(!(*(entry))["type"])
-            entry->addChild("type", "SceneLabel");
-        ObjectEntry *labelEntry = entry->addChild("SceneLabel");
-        labelEntry->addChild("text", label->getText());
-        labelEntry->addChild("font", label->getLabel()->getFont()->getFontName());
-        labelEntry->addChild("size", (Number)label->getLabel()->getSize());
-        labelEntry->addChild("actualHeight", label->getLabelActualHeight());
-        labelEntry->addChild("aaMode", (int)label->getLabel()->getAntialiasMode());
+            entry->addChild("type", "SceneSprite");
+        SceneSprite *sprite = (SceneSprite*) entity;
+        
+        ObjectEntry *spriteEntry = entry->addChild("SceneSprite");
+        
+        spriteEntry->addChild("sprite_set", sprite->getSpriteSet()->getName());
+        spriteEntry->addChild("sprite", sprite->getCurrentSprite()->getName());
+        spriteEntry->addChild("random_frame", sprite->getStartOnRandomFrame());
+        
+        String animName = "";
+        if(sprite->getCurrentSpriteState()) {
+            animName = sprite->getCurrentSpriteState()->getName();
+        }
+        spriteEntry->addChild("state", animName);
+        
+    }
+    
+    if(dynamic_cast<SceneCurve*>(entity)) {
+        SceneCurve *curve = (SceneCurve*) entity;
+        
+        if(!(*(entry))["type"])
+            entry->addChild("type", "SceneCurve");
+        
+        ObjectEntry *curveEntry = entry->addChild("SceneCurve");
+        curveEntry->addChild("render", curve->renderCurve);
+        curveEntry->addChild("resolution", curve->curveResolution);        
+        saveCurveToObject(curveEntry->addChild("curve"), curve->getCurve());
+        
     }
     
     if(dynamic_cast<SceneLight*>(entity)) {

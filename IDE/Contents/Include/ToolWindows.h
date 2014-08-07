@@ -49,6 +49,20 @@ class TextInputPopup : public UIWindow {
 		UIButton *okButton;	
 };
 
+class MessagePopup : public UIWindow {
+    public:
+    MessagePopup();
+    ~MessagePopup();
+    
+    void setCaption(String caption);
+    void handleEvent(Event *event);
+    
+        String action;
+        UILabel *captionLabel;
+        UIButton *okButton;
+    
+};
+
 class YesNoPopup : public UIWindow {
 	public:
 		YesNoPopup();
@@ -65,6 +79,7 @@ class YesNoPopup : public UIWindow {
 		UIButton *cancelButton;
 		UIButton *okButton;	
 };
+
 
 class YesNoCancelPopup : public UIWindow {
 	public:

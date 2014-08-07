@@ -346,6 +346,7 @@ public:
 	
 	TextInputPopup *textInputPopup;
 	YesNoPopup *yesNoPopup;
+    MessagePopup *messagePopup;
 	YesNoCancelPopup *yesNoCancelPopup;
 	
 	Entity *welcomeEntity;	

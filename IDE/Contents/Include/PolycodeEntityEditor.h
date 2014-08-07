@@ -88,6 +88,61 @@ class PolycodeSceneEditorActionData : public PolycodeEditorActionData {
         bool reverse;
 };
 
+
+class DummyTargetEntity : public Entity {
+    public:
+        DummyTargetEntity();
+        ~DummyTargetEntity();
+    
+        Vector3 getSelectedPoint() const;
+        void selectPoint(Vector3 point);
+        virtual void setDummyTransform(Entity *dummy) {}
+    
+        virtual void handleDelete() {}
+        virtual void handleDeselect() {}
+        virtual void handleSelect() {}
+    
+        Entity *getPropertyEntity();
+    
+    protected:
+    
+        Vector3 selectedPoint;
+        Entity *propertyEntity;
+};
+
+class CurveDisplay : public DummyTargetEntity {
+    public:
+        CurveDisplay(Scene *parentScene, SceneCurve *curve);
+        ~CurveDisplay();
+    
+        void setDummyTransform(Entity *dummy);
+        void handleDelete();
+        void handleDeselect();
+        void handleSelect();
+    
+        void Update();
+        void handleEvent(Event *event);
+
+        static const int SELECT_MODE_P1 = 0;
+        static const int SELECT_MODE_P2 = 1;
+        static const int SELECT_MODE_P3 = 2;
+    
+        bool renderControlPoints;
+    
+    private:
+    
+        int selectMode;
+    
+        BezierPoint *targetPoint;
+    
+        CoreInput *coreInput;
+        SceneCurve *curve;
+        SceneMesh *mainPoints;
+        SceneMesh *controlPoints;
+        SceneMesh *controlPointLines;
+        Scene *parentScene;
+};
+
 class LightDisplay : public Entity {
 public:
     LightDisplay(SceneLight *light);
@@ -240,6 +295,9 @@ class EntityEditorMainView : public UIElement {
             std::vector<MultiselectorEntry> lastEntitiesToSelect;
     
             EntityDistanceSorter distanceSorter;
+    
+            Entity *dummyEntity;
+            DummyTargetEntity *dummyTargetEntity;
     
 			Scene *mainScene;
             Entity *sceneObjectRoot;
