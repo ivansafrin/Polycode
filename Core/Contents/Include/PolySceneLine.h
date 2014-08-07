@@ -30,25 +30,58 @@ THE SOFTWARE.
 
 namespace Polycode {
 
-    
+	/**
+     * BezierCurve scene rendering/placement class. You can use this class to place a bezier curve in scene space for use as animation tracks or rendering.
+     */
     class _PolyExport SceneCurve : public SceneMesh {
         public:
         
+            /*
+             * Create empty scene curve.
+             */
             SceneCurve();
-            SceneCurve(BezierCurve *curve);
         
+            /*
+             * Create scene curve with an existing curve.
+             * @param curve Existing curve to use.
+             */
+            SceneCurve(BezierCurve *curve);
+
+            /*
+             * Create scene curve with an existing curve.
+             * @param curve Existing curve to use.
+             */
             static SceneCurve *SceneCurveWithCurve(BezierCurve *curve);
+        
+            /*
+             * Return a point along the curve in world space.
+             * @param t Number value from 0.0 to 1.0 along the curve
+             * @return A Vector3 point along the curve in world space.
+             */
+            Vector3 getWorldPointAt(Number t);
+
         
             virtual ~SceneCurve();
             void Update();
         
+        
             virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
             virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
  
-        
+            /*
+             * Return the actual bezier curve class.
+             * @return The bezier curve used in this scene curve.
+             */
             BezierCurve *getCurve();
         
+            /*
+             * If set to true, renders the curve on every frame (defaults to true).
+             */
             bool renderCurve;
+        
+            /*
+             * Number of vertices to use in rendering the curve.
+             */
             int curveResolution;
         
         protected:

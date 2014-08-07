@@ -44,6 +44,10 @@ SceneCurve *SceneCurve::SceneCurveWithCurve(BezierCurve *curve) {
     return new SceneCurve(curve);
 }
 
+Vector3 SceneCurve::getWorldPointAt(Number t) {
+    return getConcatenatedMatrix() * curve->getPointAt(t);
+}
+
 Entity *SceneCurve::Clone(bool deepClone, bool ignoreEditorOnly) const {
 	SceneCurve *newCurve = new SceneCurve();
 	applyClone(newCurve, deepClone, ignoreEditorOnly);
