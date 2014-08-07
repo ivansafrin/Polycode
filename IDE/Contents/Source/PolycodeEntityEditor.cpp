@@ -945,6 +945,14 @@ void EntityEditorMainView::Update() {
         if(multiselectIndex > entitiesToSelect.size()-1 || selectingNewEntities()) {
             multiselectIndex = 0;
         }
+
+        // force dummy to always select
+        for(int i=0; i < entitiesToSelect.size(); i++) {
+            if(entitiesToSelect[i].entity == dummyEntity) {
+                multiselectIndex = i;
+            }
+        }
+        
         selectEntity(entitiesToSelect[multiselectIndex].entity, input->getKeyState(KEY_LSHIFT) || input->getKeyState(KEY_RSHIFT));
         multiselectIndex++;
         lastEntitiesToSelect = entitiesToSelect;
