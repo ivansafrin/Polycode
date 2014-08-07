@@ -95,7 +95,7 @@ class DummyTargetEntity : public Entity {
         ~DummyTargetEntity();
     
         Vector3 getSelectedPoint() const;
-        void selectPoint(Vector3 point);
+        void selectPoint(Vector3 point, Number distance);
         virtual void setDummyTransform(Entity *dummy) {}
     
         virtual void handleDelete() {}
@@ -298,6 +298,7 @@ class EntityEditorMainView : public UIElement {
     
             Entity *dummyEntity;
             DummyTargetEntity *dummyTargetEntity;
+            Vector3 lastSelectedDummyPoint;
     
 			Scene *mainScene;
             Entity *sceneObjectRoot;

@@ -73,10 +73,11 @@ Vector3 DummyTargetEntity::getSelectedPoint() const {
     return selectedPoint;
 }
 
-void DummyTargetEntity::selectPoint(Vector3 point) {
+void DummyTargetEntity::selectPoint(Vector3 point, Number distance) {
     selectedPoint = point;
     InputEvent *rebroadcastEvent = new InputEvent();
     rebroadcastEvent->mouseButton = CoreInput::MOUSE_BUTTON2;
+    rebroadcastEvent->hitDistance = distance;
     dispatchEvent(rebroadcastEvent, InputEvent::EVENT_MOUSEDOWN);
     
 }
@@ -156,10 +157,12 @@ void CurveDisplay::handleEvent(Event *event) {
             Number relativeSize = parentScene->getDefaultCamera()->getPosition().distance(pt) * 0.02;
             Vector3 hitSize(relativeSize, relativeSize, relativeSize);
             pointTransform.setPosition(pt.x, pt.y, pt.z);
-            if(ray.boxIntersect(hitSize, pointTransform) >= 0.0) {
+            
+            Number distance = ray.boxIntersect(hitSize, pointTransform);
+            if(distance >= 0.0) {
                 selectMode = SELECT_MODE_P2;
                 targetPoint = curve->getCurve()->getControlPoint(i);
-                selectPoint(pt);
+                selectPoint(pt, distance);
             }
             
             if(renderControlPoints) {
@@ -168,10 +171,12 @@ void CurveDisplay::handleEvent(Event *event) {
                 relativeSize = parentScene->getDefaultCamera()->getPosition().distance(pt) * 0.02;
                 hitSize.set(relativeSize, relativeSize, relativeSize);
                 pointTransform.setPosition(pt.x, pt.y, pt.z);
-                if(ray.boxIntersect(hitSize, pointTransform) >= 0.0) {
+
+                distance = ray.boxIntersect(hitSize, pointTransform);
+                if(distance >= 0.0) {
                     selectMode = SELECT_MODE_P1;
                     targetPoint = curve->getCurve()->getControlPoint(i);
-                    selectPoint(pt);
+                    selectPoint(pt, distance);
                 }
                 
                 pt = curve->getCurve()->getControlPoint(i)->p3;
@@ -179,10 +184,12 @@ void CurveDisplay::handleEvent(Event *event) {
                 relativeSize = parentScene->getDefaultCamera()->getPosition().distance(pt) * 0.02;
                 hitSize.set(relativeSize, relativeSize, relativeSize);
                 pointTransform.setPosition(pt.x, pt.y, pt.z);
-                if(ray.boxIntersect(hitSize, pointTransform) >= 0.0) {
+                distance = ray.boxIntersect(hitSize, pointTransform);
+                
+                if(distance >= 0.0) {
                     selectMode = SELECT_MODE_P3;
                     targetPoint = curve->getCurve()->getControlPoint(i);
-                    selectPoint(pt);
+                    selectPoint(pt, distance);
                 }
             }
         }
@@ -897,6 +904,16 @@ bool EntityEditorMainView::selectingNewEntities(){
     if(entitiesToSelect.size() != lastEntitiesToSelect.size()) {
         return true;
     }
+
+    for(int i=0; i < entitiesToSelect.size(); i++) {
+        if(entitiesToSelect[i].entity == dummyEntity) {
+            if(dummyTargetEntity) {
+                if(dummyTargetEntity->getSelectedPoint() != lastSelectedDummyPoint) {
+                    return true;
+                }
+            }
+        }
+    }
     
     for(int i=0; i < entitiesToSelect.size(); i++) {
         if(lastEntitiesToSelect[i].entity != entitiesToSelect[i].entity) {
@@ -923,7 +940,6 @@ void EntityEditorMainView::Update() {
     }
     
     if(entitiesToSelect.size() != 0) {
-        
         sort (entitiesToSelect.begin(), entitiesToSelect.end(), distanceSorter);
         
         if(multiselectIndex > entitiesToSelect.size()-1 || selectingNewEntities()) {
@@ -932,6 +948,9 @@ void EntityEditorMainView::Update() {
         selectEntity(entitiesToSelect[multiselectIndex].entity, input->getKeyState(KEY_LSHIFT) || input->getKeyState(KEY_RSHIFT));
         multiselectIndex++;
         lastEntitiesToSelect = entitiesToSelect;
+        if(dummyTargetEntity) {
+            lastSelectedDummyPoint = dummyTargetEntity->getSelectedPoint();
+        }
         entitiesToSelect.clear();
     }
     
