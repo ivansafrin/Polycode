@@ -92,6 +92,7 @@ CurveDisplay::CurveDisplay(Scene *parentScene, SceneCurve *curve) : DummyTargetE
     this->parentScene = parentScene;
     targetPoint = NULL;
     propertyEntity = curve;
+    colorAffectsChildren = false;
     
     controlPointLines = new SceneMesh(Mesh::LINE_MESH);
     controlPointLines->setColor(1.0, 1.0, 0.4, 1.0);
@@ -1606,6 +1607,9 @@ void EntityEditorMainView::handleEvent(Event *event) {
                 DummyTargetEntity *dummyTarget = dynamic_cast<DummyTargetEntity*>(event->getDispatcher());
                 if(dummyTarget) {
                     targetEntity = dummyEntity;
+                    if(dummyTargetEntity) {
+                        dummyTargetEntity->handleDeselect();
+                    }
                     dummyTargetEntity = dummyTarget;
                     dummyEntity->setPosition(dummyTarget->getSelectedPoint());
                 }

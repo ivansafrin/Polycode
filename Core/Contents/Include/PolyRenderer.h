@@ -304,6 +304,7 @@ namespace Polycode {
         
         void pushVertexColor();
         void popVertexColor();
+        void loadVertexColorIdentity();
         void multiplyVertexColor(const Color &color);
         
 	protected:

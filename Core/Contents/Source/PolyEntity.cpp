@@ -503,7 +503,6 @@ void Entity::transformAndRender() {
 	}
 
     renderer->multModelviewMatrix(transformMatrix);
-	renderer->setVertexColor(color.r,color.g,color.b,color.a);
 	
 	if(billboardMode) {
 		if(billboardIgnoreScale) {
@@ -539,18 +538,20 @@ void Entity::transformAndRender() {
 	}
     
     if(!colorAffectsChildren) {
-        renderer->popVertexColor();
+        renderer->pushVertexColor();
+        renderer->loadVertexColorIdentity();
         if(visible || (!visible && !visibilityAffectsChildren)) {
             renderChildren();
         }
+        renderer->popVertexColor();
     } else {
         if(visible || (!visible && !visibilityAffectsChildren)) {
             renderChildren();
         }
-        renderer->popVertexColor();
     }
 		
-				
+    renderer->popVertexColor();
+    
 	renderer->popMatrix();
 	
 	if(!depthWrite)

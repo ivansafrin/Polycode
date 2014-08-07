@@ -88,6 +88,11 @@ void Renderer::multiplyVertexColor(const Color &color) {
     setVertexColor(currentVertexColor.r, currentVertexColor.g, currentVertexColor.b, currentVertexColor.a);
 }
 
+void Renderer::loadVertexColorIdentity() {
+    currentVertexColor = Color(1.0, 1.0, 1.0, 1.0);
+    setVertexColor(currentVertexColor.r, currentVertexColor.g, currentVertexColor.b, currentVertexColor.a);
+}
+
 void Renderer::enableShaders(bool flag) {
 	shadersEnabled = flag;
 }
