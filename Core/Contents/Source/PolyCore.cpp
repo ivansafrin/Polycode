@@ -227,8 +227,13 @@ namespace Polycode {
 		      
 		if(elapsed > 1000)
 			elapsed = 1000;
-		
-        timeLeftOver = fixedElapsed;
+
+		if(fixedElapsed > 0) {
+            timeLeftOver = fixedElapsed;
+        } else {
+            timeLeftOver = 0;
+        }
+        
         fixedElapsed = (((Number)elapsed)/1000.0f) + timeLeftOver;
         
         if(fixedElapsed > maxFixedElapsed) {
