@@ -241,6 +241,8 @@ Matrix4 Entity::getLookAtMatrix(const Vector3 &loc, const Vector3 &upVector) {
 void Entity::lookAt(const Vector3 &loc, const Vector3 &upVector) {	
 	Matrix4 newMatrix = getLookAtMatrix(loc, upVector);
 	rotationQuat.createFromMatrix(newMatrix);
+    rotation = rotationQuat.toEulerAngles();
+    rotation = rotation * TODEGREES; 
 	matrixDirty = true;
 }
 
