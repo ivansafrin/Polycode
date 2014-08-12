@@ -134,7 +134,9 @@ void PhysicsScene::processWorldCollisions() {
 								
 				event->entityA = getPhysicsEntityByCollisionObject(obA);	
 				event->entityB = getPhysicsEntityByCollisionObject(obB);
-												
+                event->collisionEntityA = getCollisionEntityByObject(obA);
+                event->collisionEntityB = getCollisionEntityByObject(obB);
+            
 				dispatchEvent(event, PhysicsSceneEvent::COLLISION_EVENT);
 		//	}
 		}

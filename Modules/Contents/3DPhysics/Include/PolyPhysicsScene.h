@@ -50,6 +50,9 @@ namespace Polycode {
 			
 			PhysicsEntity *entityA;
 			PhysicsEntity *entityB;
+            CollisionEntity *collisionEntityA;
+            CollisionEntity *collisionEntityB;
+        
 
 			Number appliedImpulse;
 						
