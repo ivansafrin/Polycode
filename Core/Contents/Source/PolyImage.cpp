@@ -29,6 +29,7 @@
 #include "PolyPerlin.h"
 #include <algorithm>
 #include <stdlib.h>
+#include "rgbe.h"
 
 using namespace Polycode;
 
@@ -63,7 +64,7 @@ void Image::setPixelType(int type) {
 			pixelSize = 4;						
 		break;
 		case IMAGE_FP16:		
-			pixelSize = 16;
+			pixelSize = 6;
 		break;
 		default:
 			pixelSize = 4;								
@@ -501,7 +502,162 @@ bool Image::savePNG(const String &fileName) {
 
 
 bool Image::loadImage(const String& fileName) {
-	return loadPNG(fileName);
+    
+	String extension;
+	size_t found;
+	found=fileName.rfind(".");
+	if (found != -1) {
+		extension = fileName.substr(found+1);
+	} else {
+		extension = "";
+	}
+
+    if(extension == "png") {
+        return loadPNG(fileName);
+    } else if(extension == "hdr") {
+        return loadHDR(fileName);
+    } else {
+        Logger::log("Error: Invalid image format.\n");
+        return false;
+    }
+}
+
+inline hfloat Image::convertFloatToHFloat(float f) {
+    float _f = f;
+    uint32_t x = *(uint32_t *)(&_f);
+    uint32_t sign = (uint32_t)(x >> 31);
+    uint32_t mantissa;
+    uint32_t exp;
+    hfloat          hf;
+    
+    // get mantissa
+    mantissa = x & ((1 << 23) - 1);
+    // get exponent bits
+    exp = x & FLOAT_MAX_BIASED_EXP;
+    if (exp >= HALF_FLOAT_MAX_BIASED_EXP_AS_SINGLE_FP_EXP)
+    {
+        // check if the original single precision float number is a NaN
+        if (mantissa && (exp == FLOAT_MAX_BIASED_EXP))
+        {
+            // we have a single precision NaN
+            mantissa = (1 << 23) - 1;
+        }
+        else
+        {
+            // 16-bit half-float representation stores number as Inf
+            mantissa = 0;
+        }
+        hf = (((hfloat)sign) << 15) | (hfloat)(HALF_FLOAT_MAX_BIASED_EXP) |
+        (hfloat)(mantissa >> 13);
+    }
+    // check if exponent is <= -15
+    else if (exp <= HALF_FLOAT_MIN_BIASED_EXP_AS_SINGLE_FP_EXP)
+    {
+        
+        // store a denorm half-float value or zero
+        exp = (HALF_FLOAT_MIN_BIASED_EXP_AS_SINGLE_FP_EXP - exp) >> 23;
+        mantissa >>= (14 + exp);
+        
+        hf = (((hfloat)sign) << 15) | (hfloat)(mantissa);
+    }
+    else
+    {
+        hf = (((hfloat)sign) << 15) |
+        (hfloat)((exp - HALF_FLOAT_MIN_BIASED_EXP_AS_SINGLE_FP_EXP) >> 13) |
+        (hfloat)(mantissa >> 13);
+    }
+    
+    return hf;
+}
+
+TokenArray Image::readTokens(char *line, const char *tokenString) {
+	char **tokens = (char**)malloc(sizeof(void*));
+	char *pch;
+	int numTokens = 0;
+	pch = strtok (line, tokenString);
+	while (pch != NULL) {
+		numTokens++;
+		tokens = (char**)realloc(tokens, sizeof(void*) *numTokens);
+		tokens[numTokens-1] = (char*) malloc(strlen(pch)+1);
+		memcpy(tokens[numTokens-1], pch, strlen(pch)+1);
+		pch = strtok (NULL, tokenString);
+	}
+    
+	TokenArray ta;
+	ta.size = numTokens;
+	ta.tokens = tokens;
+	return ta;
+}
+
+void Image::freeTokens(TokenArray tokens) {
+	int i;
+	for(i =0; i < tokens.size; i++) {
+		free(tokens.tokens[i]);
+	}
+	free(tokens.tokens);
+}
+
+bool Image::loadHDR(const String &fileName) {
+    
+    printf("Loading HDR image\n");
+    
+    setPixelType(IMAGE_FP16);
+
+    FILE *file = fopen (fileName.c_str(), "rb");
+	if(!file) {
+		return false;
+    }
+
+    if(RGBE_ReadHeader(file, &width, &height, NULL) != RGBE_RETURN_SUCCESS) {
+        
+        // if ReadHeader failed, try reading info manually.
+        
+        char line [ 128 ];
+        Number exposure;
+        
+        fseek(file, 0, SEEK_SET);
+        
+        while ( fgets ( line, sizeof(line), file ) != NULL ) {
+            TokenArray ta = readTokens(line, "=");
+            if(strcmp(ta.tokens[0], "EXPOSURE") == 0) {
+                exposure = atof(ta.tokens[1]);
+            }
+            if(strcmp(ta.tokens[0], "FORMAT") == 0) {
+                //printf("format is %s\n", ta.tokens[1]);
+            }
+            freeTokens(ta);
+            
+            ta = readTokens(line, " ");
+            if(strcmp(ta.tokens[0], "-Y") == 0) {
+                //printf("image size is %d x %d\n", atoi(ta.tokens[1]), atoi(ta.tokens[3]));
+                width = atoi(ta.tokens[1]);
+                height = atoi(ta.tokens[3]);
+                freeTokens(ta);
+                break;
+            }
+            freeTokens(ta);
+        }
+    }
+    
+    float *data = (float *)malloc(sizeof(float)*3*width*height);
+    
+    printf("Reading fp pixels (%d x %d)\n", width, height);
+    
+    RGBE_ReadPixels_RLE(file, data, width, height);
+
+    float *hFloatImageData = (float*) malloc(sizeof(float)*3*width*height);
+/*
+    for(int i=0; i < width*height; i++) {
+		hFloatImageData[i*3] = convertFloatToHFloat(data[i*3]);
+		hFloatImageData[(i*3)+1] = convertFloatToHFloat(data[(i*3)+1]);
+		hFloatImageData[(i*3)+2] = convertFloatToHFloat(data[(i*3)+2]);
+    }
+*/
+    imageData = (char*) data; //(char*)hFloatImageData;
+    
+ //   free(data);
+	fclose(file);
+    return true;
 }
 
 bool Image::loadPNG(const String& fileName) {

@@ -44,8 +44,8 @@ OpenGLTexture::OpenGLTexture(unsigned int width, unsigned int height, char *text
 			pixelType = GL_UNSIGNED_BYTE;			
 		break;
 		case Image::IMAGE_FP16:
-			glTextureType = GL_RGBA;
-			glTextureFormat = GL_RGBA16F_ARB;				
+			glTextureType = GL_RGB;
+			glTextureFormat = GL_RGBA;
 			pixelType = GL_FLOAT;
 		break;		
 		default:

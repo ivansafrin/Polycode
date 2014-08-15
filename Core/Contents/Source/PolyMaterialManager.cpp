@@ -148,7 +148,7 @@ Texture *MaterialManager::createTextureFromFile(const String& fileName, bool cla
 		if(premultiplyAlphaOnLoad) {
 			image->premultiplyAlpha();
 		}
-		newTexture = createTexture(image->getWidth(), image->getHeight(), image->getPixels(), clamp, createMipmaps);
+		newTexture = createTexture(image->getWidth(), image->getHeight(), image->getPixels(), clamp, createMipmaps, image->getType());
 		newTexture->setResourcePath(fileName);
         resourcePool->addResource(newTexture);
 	} else {

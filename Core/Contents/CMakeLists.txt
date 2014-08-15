@@ -83,6 +83,7 @@ SET(polycore_SRCS
     Source/PolyRay.cpp
     Source/PolySceneSprite.cpp
     Source/PolySceneEntityInstance.cpp
+    Source/rgbe.cpp
 )
 
 SET(polycore_HDRS
@@ -170,6 +171,7 @@ SET(polycore_HDRS
     Include/PolyRay.h
     Include/PolySceneSprite.h
     Include/PolySceneEntityInstance.h
+    Include/rgbe.h
 )
 
 SET(CMAKE_DEBUG_POSTFIX "_d")

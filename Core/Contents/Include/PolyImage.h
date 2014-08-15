@@ -28,7 +28,19 @@ THE SOFTWARE.
 namespace Polycode {
 
 	class String;
+    
+    #define HALF_FLOAT_MIN_BIASED_EXP_AS_SINGLE_FP_EXP 0x38000000
+    #define HALF_FLOAT_MAX_BIASED_EXP_AS_SINGLE_FP_EXP 0x47800000
+    #define FLOAT_MAX_BIASED_EXP (0xFF << 23)
+    #define HALF_FLOAT_MAX_BIASED_EXP (0x1F << 10)
+    
+    typedef uint16_t hfloat;
 
+    typedef struct POLYIGNORE  {
+        int size;
+        char **tokens;
+    } TokenArray;
+    
 	/**
 	* An image in memory. Basic RGB or RGBA images stored in memory. Can be loaded from PNG files, created into textures and written to file.
 	*/
@@ -81,6 +93,10 @@ namespace Polycode {
 			*/ 			
 			bool loadImage(const String& fileName);
 			bool loadPNG(const String& fileName);
+        
+            static POLYIGNORE TokenArray readTokens(char *line, const char *tokens);
+            static POLYIGNORE void freeTokens(TokenArray tokens);
+            bool loadHDR(const String &fileName);
 			
 			/**
 			* Saves the image to a file. Currently only PNG files are supported.
@@ -259,6 +275,9 @@ namespace Polycode {
 		
 		protected:
 		
+        
+            static inline hfloat convertFloatToHFloat(float f);
+        
 			void setPixelType(int type);
 
 			// transform coordinates from external topleft position mode
