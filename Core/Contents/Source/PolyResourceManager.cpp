@@ -30,6 +30,8 @@
 #include "PolyMaterial.h"
 #include "PolyShader.h"
 #include "PolyTexture.h"
+#include "PolyPluginManager.h"
+#include "PolyPlugin.h"
 #include "OSBasics.h"
 
 #include "physfs.h"
@@ -121,6 +123,7 @@ void ResourceManager::addDirResource(const String& dirPath, bool recursive) {
 	parseShadersIntoPool(globalPool, dirPath, recursive);
 	parseCubemapsIntoPool(globalPool, dirPath, recursive);
 	parseMaterialsIntoPool(globalPool, dirPath, recursive);
+	parsePluginsIntoPool(globalPool, dirPath, recursive);
 	parseOtherIntoPool(globalPool, dirPath, recursive);
 }
 
@@ -311,6 +314,30 @@ void ResourceManager::parseCubemapsIntoPool(ResourcePool *pool, const String& di
 		}
 	}	
 }
+
+
+void ResourceManager::parsePluginsIntoPool(ResourcePool *pool, const String& dirPath, bool recursive) {
+	vector<OSFileEntry> resourceDir;
+	resourceDir = OSBasics::parseFolder(dirPath, false);
+
+	for (int i = 0; i < resourceDir.size(); i++) {
+		if (resourceDir[i].type == OSFileEntry::TYPE_FILE) {
+			if (resourceDir[i].extension == "plugin") {
+
+				PluginManager *pluginManager = CoreServices::getInstance()->getPluginManager();
+				std::vector<Plugin*> plugins = pluginManager->loadPluginsFromFile(resourceDir[i].fullPath);
+				for (int p = 0; p < plugins.size(); p++) {
+					pool->addResource(plugins[p]);
+				}
+			}
+		}
+		else {
+			if (recursive)
+				parsePluginsIntoPool(pool, dirPath + "/" + resourceDir[i].name, true);
+		}
+	}
+}
+
 
 void ResourceManager::handleEvent(Event *event) {
 	if(event->getEventCode() == Event::RESOURCE_CHANGE_EVENT) {

@@ -95,6 +95,10 @@ FontManager *CoreServices::getFontManager() {
 	return fontManager;
 }
 
+PluginManager *CoreServices::getPluginManager(){
+	return pluginManager;
+}
+
 Config *CoreServices::getConfig() {
 	return config;
 }
