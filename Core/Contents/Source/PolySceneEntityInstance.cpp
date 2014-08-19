@@ -497,7 +497,6 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
 	entity->color.b = (*entry)["cB"]->NumberVal;
 	entity->color.a = (*entry)["cA"]->NumberVal;
 
-
 	if(!targetEntity) {	
 		entity->blendingMode = (*entry)["blendMode"]->intVal;
 
@@ -528,16 +527,47 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
 		}
 	}
 	
-	ObjectEntry *props = (*entry)["props"];
-	if(props) {
-		for(int i=0; i < props->length; i++) {		
-			ObjectEntry *prop = ((*props))[i];		
-			if(prop) {
-				entity->setEntityProp((*prop)["name"]->stringVal, (*prop)["value"]->stringVal);
+	if (entityFileVersion <= 2){
+		ObjectEntry *props = (*entry)["props"];
+		if (props) {
+			for (int i = 0; i < props->length; i++) {
+				ObjectEntry *prop = ((*props))[i];
+				if (prop) {
+					entity->setEntityProp((*prop)["name"]->stringVal, (*prop)["value"]->stringVal);
+				}
+			}
+		}
+	} else {
+		ObjectEntry *props = (*entry)["props"];
+		if (props) {
+			for (int i = 0; i < props->length; i++) {
+				ObjectEntry *prop = ((*props))[i];
+				if (prop) {
+					switch ((*prop)["type"]->intVal) {
+					case Prop::PROP_STRING:
+						entity->setEntityProp((*prop)["name"]->stringVal, (*prop)["value"]->stringVal);
+						break;
+					case Prop::PROP_ARRAY:
+						entity->setEntityProp((*prop)["name"]->stringVal, (*prop)["value"]); 
+						break;
+					case Prop::PROP_BOOL:
+						entity->setEntityProp((*prop)["name"]->stringVal, (*prop)["value"]->boolVal);
+						break;
+					case Prop::PROP_INT:
+						entity->setEntityProp((*prop)["name"]->stringVal, (*prop)["value"]->intVal);
+						break;
+					case Prop::PROP_NUMBER:
+						entity->setEntityProp((*prop)["name"]->stringVal, (*prop)["value"]->NumberVal);
+						break;
+					default:
+						entity->setEntityProp((*prop)["name"]->stringVal, (*prop)["value"]->stringVal);
+						break;
+					}
+				}
 			}
 		}
 	}
-														
+
 	ObjectEntry *children = (*entry)["children"];
 	
 	if(children) {
@@ -703,6 +733,14 @@ bool SceneEntityInstance::loadFromFile(const String& fileName) {
                 }
             }
         }
+
+		ObjectEntry *plugins = (*settings)["requiredPlugins"];
+		if (plugins) {
+			for (int p = 0; p < plugins->length; p++) {
+				String requiredPlugin = (*plugins->children[p])["requiredPlugin"]->stringVal;
+				addPluginByName(requiredPlugin);
+			}
+		}
     }
     
 	ObjectEntry *root = loadObject.root["root"];
@@ -723,4 +761,14 @@ bool SceneEntityInstance::loadFromFile(const String& fileName) {
     }
 	
 	return true;
+}
+
+void SceneEntityInstance::addPluginByName(const String& name, ResourcePool *resourcePool) {
+	Plugin *plugin;
+	if (resourcePool) {
+		plugin = (Plugin*) resourcePool->getResource(Resource::RESOURCE_PLUGIN, name);
+	} else {
+		plugin = (Plugin*)Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_PLUGIN, name);
+	}
+	requiredPlugins.push_back(plugin);
 }

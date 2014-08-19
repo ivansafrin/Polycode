@@ -26,23 +26,14 @@ THE SOFTWARE.
 #include "PolyResource.h"
 
 namespace Polycode {
-
+	class ObjectEntry;
+	
 	class _PolyExport Prop : public PolyBase {
 	public:
-		//Prop(int val);
-		//Prop(Number val);
-		//Prop(bool val);
-		//Prop(PolyBase *val);
-
-		Prop(int type, String name);
+		Prop(const String& name, const int type = Prop::PROP_STRING);
 		~Prop();
 
 		Prop *loadPropFromEntry(ObjectEntry* entry);
-
-		//Number	numberVal;
-		//int		intVal;
-		//bool		boolVal;
-		//PolyBase *classVal;
 
 		int type;
 		String name;
@@ -63,8 +54,6 @@ namespace Polycode {
 			Plugin(const String& name);
 			~Plugin();
 		
-			//void loadPluginFromFile(const String& fileName);
-			
 			Plugin* loadPluginFromEntry(ObjectEntry *entry);
 
 			void addProp(Prop* prop);

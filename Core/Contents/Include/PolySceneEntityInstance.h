@@ -78,7 +78,9 @@ class SceneEntityInstance : public Entity {
     
     
         SceneEntityInstanceLayer *createNewLayer(String name);
-		
+	
+		void addPluginByName(const String& name, ResourcePool *resourcePool = NULL);
+
 		String getFileName() const;
 		bool cloneUsingReload;
 
@@ -94,6 +96,8 @@ class SceneEntityInstance : public Entity {
         std::vector<ResourcePool*> resourcePools;
         Scene *parentScene;
 		SceneEntityInstanceResourceEntry *resourceEntry;
+
+		std::vector<Plugin*> requiredPlugins;
 		
 };
     

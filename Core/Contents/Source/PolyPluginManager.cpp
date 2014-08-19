@@ -37,11 +37,11 @@ std::vector<Plugin*> PluginManager::loadPluginsFromFile(const String &fileName){
 	Object pluginFile;
 	if (!pluginFile.loadFromBinary(fileName))
 		if (!pluginFile.loadFromXML(fileName))
-			return;
+			return retPlugins;
 
 	ObjectEntry* versionEntry = pluginFile.root["version"];
 	if (!versionEntry->NumberVal <= version)
-		return;
+		return retPlugins;
 
 	for (int i = 0; i < pluginFile.root.length; i++){
 		ObjectEntry* pluginEntry = pluginFile.root.children[i];

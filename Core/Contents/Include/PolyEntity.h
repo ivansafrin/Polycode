@@ -30,6 +30,7 @@
 #include "PolyRectangle.h"
 #include "PolyRay.h"
 #include "PolyEventDispatcher.h"
+#include "PolyPlugin.h"
 #include <vector>
 
 namespace Polycode {
@@ -42,10 +43,15 @@ namespace Polycode {
 			bool blocked;
 	};
 
-	class _PolyExport EntityProp {
+	class _PolyExport EntityProp : public Prop {
 	public:
-		String propName;
-		String propValue;		
+		EntityProp(const String& name, const unsigned int& type = Prop::PROP_STRING);
+
+		String	stringVal;
+		Number	numberVal;
+		int		intVal;
+		bool	boolVal;
+		std::vector<EntityProp*> arrayVal;
 	};
     
     class _PolyExport AABB {
@@ -719,14 +725,23 @@ namespace Polycode {
              * @param Property name to look up.
              * @return String property for specified property name or "null" if this property doesn't exist.
              */
-			String getEntityProp(const String& propName);
-        
+			bool readEntityProp(const String& propName, String& propVal);
+			bool readEntityProp(const String& propName, int& propVal);
+			bool readEntityProp(const String& propName, Number& propVal);
+			bool readEntityProp(const String& propName, bool& propVal);
+			bool readEntityProp(const String& propName, std::vector<EntityProp*>& propVal);
+
+			std::vector<EntityProp*> getEntityPropArrayByName(const String& propName) const;
             /**
              * Sets the entity property for a specified property name in the entity's custom property dictionary.
              * @param propName Property name to set.
              * @param propValue Value to set for the specified property name.
              */
-			void setEntityProp(const String& propName, const String& propValue);
+			void setEntityProp(const String& propName, const String& propVal);
+			void setEntityProp(const String& propName, const int& propVal);
+			void setEntityProp(const String& propName, const Number& propVal);
+			void setEntityProp(const String& propName, const bool& propVal);
+			void setEntityProp(const String& propName, const std::vector<EntityProp*>& propVal);
 			
             /**
              * If set to true, the y position of the entity matrix will be multiplied by -1.0, inverting its Y-axis coordinate system.
@@ -892,7 +907,7 @@ namespace Polycode {
             */
             unsigned char layerID;
 
-            std::vector <EntityProp> entityProps;
+            std::vector <EntityProp*> entityProps;
         
 		protected:
         

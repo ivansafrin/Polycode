@@ -2164,7 +2164,7 @@ void EntityPropSheet::handleEvent(Event *event) {
 		
 	if(event->getDispatcher() == addButtonProp->getButton() && event->getEventType() == "UIEvent") {
 		PolycodeEditorPropActionData *beforeData = PropDataEntity(entity);	
-		entity->entityProps.push_back(EntityProp());
+		entity->entityProps.push_back(new EntityProp(""));
 		refreshProps();
 		PolycodeEditorPropActionData *afterData = PropDataEntity(entity);			
 		PropEvent *propEvent = new PropEvent(NULL, this, beforeData, afterData);
@@ -2181,12 +2181,12 @@ void EntityPropSheet::handleEvent(Event *event) {
 				case Event::CHANGE_EVENT:
 					PolycodeEditorPropActionData *beforeData = PropDataEntity(entity);
 					if(i-1 < entity->entityProps.size()) {
-						entity->entityProps[i-1].propName = ((CustomProp*)props[i])->getKey();
-						entity->entityProps[i-1].propValue = ((CustomProp*)props[i])->getValue();
+						entity->entityProps[i-1]->name = ((CustomProp*)props[i])->getKey();
+						entity->entityProps[i-1]->stringVal= ((CustomProp*)props[i])->getValue();
 					}
-					PolycodeEditorPropActionData *afterData = PropDataEntity(entity);			
+					PolycodeEditorPropActionData *afterData = PropDataEntity(entity);
 					PropEvent *propEvent = new PropEvent(NULL, this, beforeData, afterData);
-					dispatchEvent(propEvent, PropEvent::EVENT_PROP_CHANGE);					
+					dispatchEvent(propEvent, PropEvent::EVENT_PROP_CHANGE);
 				break;				
 			}
 		}
@@ -2208,8 +2208,8 @@ void EntityPropSheet::refreshProps() {
     
 	
 	for(int i=0; i < entity->entityProps.size(); i++) {			
-		EntityProp prop = entity->entityProps[i];
-		CustomProp *newProp = new CustomProp(prop.propName, prop.propValue);
+		EntityProp* prop = entity->entityProps[i];
+		CustomProp *newProp = new CustomProp(prop->name, prop->stringVal);
 		newProp->addEventListener(this, Event::CANCEL_EVENT);
 		newProp->addEventListener(this, Event::CHANGE_EVENT);		
 		addProp(newProp);
@@ -3990,4 +3990,122 @@ void SoundSheet::setSound(SceneSound *sound) {
 	} else {
 		enabled = false;
 	}
+}
+
+CustomSheet::CustomSheet(ObjectEntry *sheetEntry) : PropSheet((*sheetEntry)["name"]->stringVal.toUpperCase(), (*sheetEntry)["fileext"]->stringVal) {
+	//ObjectEntry *propsEntry = (*sheetEntry)["props"];
+	reloadSheetFromFile(sheetEntry);
+}
+
+CustomSheet::~CustomSheet(){}
+
+void CustomSheet::reloadSheetFromFile(ObjectEntry *sheetEntry){
+	if (!(*sheetEntry)["props"])
+		return;
+
+	ObjectEntry *propsEntry = (*sheetEntry)["props"];
+	refreshProps(propsEntry);
+	PropProp *prop;
+	if (propsEntry->children.size() == 0)
+		return;
+
+	for (int i = 0; i < propsEntry->children.size(); i++) {
+		String caption = (*propsEntry->children[i])["name"]->stringVal;
+		switch ((*propsEntry->children[i])["type"]->intVal){
+		case PROP_VECTOR3:
+			prop = new Vector3Prop(caption);
+			prop->setPropData(PropDataVector3(Vector3((*propsEntry->children[i])["v1"]->NumberVal, (*propsEntry->children[i])["v2"]->NumberVal, (*propsEntry->children[i])["v3"]->NumberVal)));
+			break;
+		case PROP_VECTOR2:
+			prop = new Vector2Prop(caption);
+			prop->setPropData(PropDataVector2(Vector2((*propsEntry->children[i])["v1"]->NumberVal, (*propsEntry->children[i])["v2"]->NumberVal)));
+			break;
+		case PROP_SLIDER:
+			prop = new SliderProp(caption, (*propsEntry->children[i])["min"]->NumberVal, (*propsEntry->children[i])["max"]->NumberVal);
+			dynamic_cast<SliderProp*>(prop)->set((*propsEntry->children[i])["current"]->NumberVal);
+			break;
+		case PROP_BUTTON:
+			prop = new ButtonProp(caption);
+			break;
+		case PROP_NUMBER:
+			prop = new NumberProp(caption);
+			break;
+			//case PROP_TARGET_BINDING:
+			//	Shader *shader;
+			//	Material *material;
+			//	ShaderBinding *shaderBin;
+			//	RenderTargetBinding *targetBin;
+
+			//	prop = new TargetBindingProp(shader, material, shaderBin, targetBin);
+
+			//	break;
+			//case PROP_RENDER_TARGET:
+			//	ShaderRenderTarget *renderTarget;
+			//	Material *material;
+			//	prop = new RenderTargetProp(renderTarget, material);
+			//	break;
+			//case PROP_SHADER_PASS:
+			//	prop = new ShaderPassProp();
+			//	break;
+			//case PROP_REMOVABLE_STRING:
+			//	prop = new RemovableStringProp(caption);
+			//	break;
+			//case PROP_LAYER:
+			//	SceneEntityInstance *instance = new SceneEntityInstance();
+			//	prop = new LayerProp();
+			//	break;
+		case PROP_STRING:
+			prop = new StringProp(caption);
+			dynamic_cast<StringProp*>(prop)->set((*propsEntry->children[i])["current"]->stringVal);
+			break;
+		case PROP_COLOR:
+			prop = new ColorProp(caption);
+			break;
+		case PROP_COMBO:
+			prop = new ComboProp(caption);
+			break;
+		case PROP_BOOL:
+			prop = new BoolProp(caption);
+			break;
+		case PROP_SOUND:
+			prop = new SoundProp(caption);
+			break;
+		case PROP_BEZIER_RGBA_CURVE:
+			prop = new BezierRGBACurveProp(caption);
+			break;
+		case PROP_BEZIER_CURVE:
+			prop = new BezierCurveProp(caption, (*propsEntry->children[i])["curvename"]->stringVal);
+			break;
+		case PROP_MATERIAL:
+			prop = new MaterialProp(caption);
+			break;
+		case PROP_TEXTURE:
+			prop = new TextureProp(caption);
+			break;
+		case PROP_SCENE_SPRITE:
+			prop = new SceneSpriteProp(caption);
+			break;
+		case PROP_SCENE_ENTITY_INSTANCE:
+			prop = new SceneEntityInstanceProp(caption);
+			break;
+		case PROP_CUSTOM:
+		default:
+			prop = new CustomProp(caption, caption);
+			break;
+		}
+		addProp(prop);
+		props[i] = prop;
+	}
+}
+
+void CustomSheet::refreshProps(ObjectEntry *propsEntry){
+	
+}
+
+void CustomSheet::Update(){
+
+}
+
+void CustomSheet::handleEvent(Event *e){
+
 }

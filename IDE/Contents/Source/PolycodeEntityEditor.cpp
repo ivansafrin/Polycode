@@ -2139,11 +2139,7 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
     
     if(entity->entityProps.size() > 0) {
         ObjectEntry *props = entry->addChild("props");
-        for(int i=0; i < entity->entityProps.size(); i++) {
-            ObjectEntry *prop = props->addChild("prop");
-            prop->addChild("name", entity->entityProps[i].propName);
-            prop->addChild("value", entity->entityProps[i].propValue);
-        }
+		savePropsToEntry(props, entity->entityProps);
     }
     
     if(dynamic_cast<SceneEntityInstance*>(entity) && entity != mainView->getObjectRoot()) {
@@ -2506,12 +2502,11 @@ void PolycodeEntityEditor::saveFile() {
     }
     
     saveObject.root.name = "entity";
-    saveObject.root.addChild("version", 2);
+    saveObject.root.addChild("version", 3);
     
     ObjectEntry *children = saveObject.root.addChild("root");
     saveEntityToObjectEntry(mainView->getObjectRoot(), children);
-    
-    
+        
     saveObject.saveToXML(filePath);
     setHasChanges(false);
 }
@@ -2520,5 +2515,40 @@ void PolycodeEntityEditor::saveFile() {
 void PolycodeEntityEditor::Resize(int x, int y) {
 	mainSizer->Resize(x, y);
 	PolycodeEditor::Resize(x,y);
+}
+
+void PolycodeEntityEditor::savePropsToEntry(ObjectEntry *entry, std::vector<EntityProp*> props) {
+	for (int i = 0; i < props.size(); i++) {
+		ObjectEntry *prop = entry->addChild("prop");
+		prop->addChild("name", props[i]->name);
+		//prop->addChild("value", entity->entityProps[i].propValue);
+		switch (props[i]->type) {
+		case Prop::PROP_STRING:
+			prop->addChild("value", props[i]->stringVal);
+			break;
+		case Prop::PROP_ARRAY:
+			ObjectEntry *childrenProps;
+			for (int a = 0; a < props[i]->arrayVal.size(); a++) {
+				ObjectEntry* childProp;
+				savePropsToEntry(childProp, props[i]->arrayVal);
+				childrenProps->addChild(childProp);
+			}
+			prop->addChild(childrenProps);
+			break;
+		case Prop::PROP_BOOL:
+			prop->addChild("value", props[i]->boolVal);
+			break;
+		case Prop::PROP_INT:
+			prop->addChild("value", props[i]->intVal);
+			break;
+		case Prop::PROP_NUMBER:
+			prop->addChild("value", props[i]->numberVal);
+			break;
+		default:
+			prop->addChild("value", props[i]->stringVal);
+			break;
+		}
+		prop->addChild("type", props[i]->type);
+	}
 }
 

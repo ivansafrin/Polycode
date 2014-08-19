@@ -383,7 +383,8 @@ class PolycodeEntityEditor : public PolycodeEditor {
         void saveFile();
         void saveCurveToObject(ObjectEntry *entry, BezierCurve *curve);
         void saveShaderOptionsToEntry(ObjectEntry *entry, Material *material, ShaderBinding *binding);
-    
+		void savePropsToEntry(ObjectEntry *entry, std::vector<EntityProp*> props);
+
         void saveEntityToObjectEntry(Entity *entity, ObjectEntry *entry);
         void doAction(String actionName, PolycodeEditorActionData *data);
     

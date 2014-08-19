@@ -22,12 +22,14 @@ THE SOFTWARE.
 
 #include "PolyPlugin.h"
 #include "PolyObject.h"
+#include "PolyCoreServices.h"
+#include "PolyPluginManager.h"
+#include "PolyResourceManager.h"
 
 using namespace Polycode;
 
 Plugin::Plugin(const String& name) : Resource(Resource::RESOURCE_PLUGIN) {
-	this->name = name;
-	
+	Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_PLUGIN, name);
 }
 
 Plugin::~Plugin() {}
@@ -62,6 +64,27 @@ Plugin* Plugin::loadPluginFromEntry(ObjectEntry* entry){
 	}
 }
 
+unsigned int Plugin::getNumProps() const {
+	return props.size();
+}
+
+void Plugin::addProp(Prop *prop) {
+	props.push_back(prop);
+}
+
+void Plugin::removeProp(Prop *propToRemove) {
+	for (int i = 0; i<props.size(); i++) {
+		if (props[i] == propToRemove) {
+			props.erase(props.begin() + i);
+			return;
+		}
+	}
+}
+
+std::vector<Prop*> Plugin::getProps() const {
+	return props;
+}
+
 //Prop::Prop(int val){
 //	this->intVal = val;
 //	this->type = PROP_INT;
@@ -82,7 +105,7 @@ Plugin* Plugin::loadPluginFromEntry(ObjectEntry* entry){
 //	this->type = PROP_CLASS;
 //}
 
-Prop::Prop(int type, String name){
+Prop::Prop(const String& name, const int type){
 	this->type = type;
 	this->name = name;
 }
@@ -98,7 +121,7 @@ Prop* Prop::loadPropFromEntry(ObjectEntry* entry){
 		return NULL;
 	String name = (*entry)["name"]->stringVal;
 
-	Prop(type, name);
+	Prop(name, type);
 
 	/*switch (type){
 	case Prop::PROP_NUMBER:

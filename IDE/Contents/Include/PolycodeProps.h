@@ -77,7 +77,6 @@ class Vector3Prop : public PropProp {
     
 };
 
-
 class Vector2Prop : public PropProp {
 	public:
 		Vector2Prop(String caption);
@@ -129,7 +128,6 @@ class ButtonProp : public PropProp {
     
         UIButton *button;
 };
-
 
 class NumberProp : public PropProp {
 	public:
@@ -219,7 +217,6 @@ public:
     UILabel *label;
     UIImageButton *removeButton;
 };
-
 
 class LayerProp : public PropProp {
     public:
@@ -836,14 +833,13 @@ class SceneSpriteSheet : public PropSheet {
         void setSprite(SceneSprite *sprite);
     
         void setEntityInstance(SceneEntityInstance *instance);
-				
+		
 		SceneSprite *sprite;
     
         SceneSpriteProp *spriteProp;
         BoolProp *randomFrameProp;
         ComboProp *defaultStateProp;
 };
-
 
 class CameraSheet : public PropSheet {
     public:
@@ -868,7 +864,6 @@ class CameraSheet : public PropSheet {
     
         Camera *camera;
 };
-
 
 class SceneEntityInstanceSheet : public PropSheet {
 	public:
@@ -936,6 +931,43 @@ class LinkedMaterialsSheet : public PropSheet {
     
         int poolRemoveIndex;
     
+};
+
+class CustomSheet : public PropSheet {
+public:
+	CustomSheet(ObjectEntry *sheetEntry);
+	~CustomSheet();
+
+	void handleEvent(Event *event);
+	void reloadSheetFromFile(ObjectEntry *sheetEntry);
+	void refreshProps(ObjectEntry *propsEntry);
+	void Update();
+	
+	static const int PROP_VECTOR3				= 0;
+	static const int PROP_VECTOR2				= 1;
+	static const int PROP_SLIDER				= 2;
+	static const int PROP_BUTTON				= 3;
+	static const int PROP_NUMBER				= 4;
+	static const int PROP_TARGET_BINDING		= 5;
+	static const int PROP_RENDER_TARGET			= 6;
+	static const int PROP_SHADER_PASS			= 7;
+	static const int PROP_REMOVABLE_STRING		= 8;
+	static const int PROP_LAYER					= 9;
+	static const int PROP_CUSTOM				= 10;
+	static const int PROP_STRING				= 11;
+	static const int PROP_COLOR					= 12;
+	static const int PROP_COMBO					= 13;
+	static const int PROP_BOOL					= 14;
+	static const int PROP_SOUND					= 15;
+	static const int PROP_BEZIER_RGBA_CURVE		= 16;
+	static const int PROP_BEZIER_CURVE			= 17;
+	static const int PROP_MATERIAL				= 18;
+	static const int PROP_TEXTURE				= 19;
+	static const int PROP_SCENE_SPRITE			= 20;
+	static const int PROP_SCENE_ENTITY_INSTANCE = 21;
+	
+//private:
+//	std::vector<PropProp*> props;
 };
 
 class PropList : public UIElement {
