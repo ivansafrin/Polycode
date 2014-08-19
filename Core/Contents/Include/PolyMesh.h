@@ -422,11 +422,25 @@ namespace Polycode {
         
             void subdivideToRadius(Number radius, int subdivisions);
 
+			/** Calculates physics info. 
+			*/
+			void calculatePhysicsInfo();
+
+			/** Clears physics info.
+			*/
+			void clearPhysicsInfo();
+
+			/** Returns a two dimensional vector that contains the physics hulls of the mesh and the vertices within them. 
+			*/
+			//std::vector<std::vector<unsigned int>*> *getPhysicsInfo();
+			std::vector<std::vector<unsigned int>*> *physicsInfo;
+
         protected:
         
             Vector3 calculateFaceTangent(Vertex *v1, Vertex *v2, Vertex *v3);
         
             bool useFaceNormals;
+			bool hasPhysicsInfo;
         
             VertexBuffer *vertexBuffer;
             bool meshHasVertexBuffer;

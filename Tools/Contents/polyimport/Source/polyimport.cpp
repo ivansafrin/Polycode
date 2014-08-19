@@ -63,7 +63,7 @@ aiMatrix4x4 getFullTransform(const struct aiNode *nd) {
     }
 }
 
-void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, const struct aiNode* nd, bool swapZY, bool addSubmeshes, bool listOnly, ObjectEntry *parentSceneObject, String overrideMaterial, ObjectEntry *materialsParent, String assetPrefixPath, String baseFileName) {
+void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, const struct aiNode* nd, bool swapZY, bool addSubmeshes, bool listOnly, ObjectEntry *parentSceneObject, String overrideMaterial, ObjectEntry *materialsParent, String assetPrefixPath, String baseFileName, bool generatePhysicsInfo) {
 	int i, nIgnoredPolygons = 0;
 	unsigned int n = 0, t;
 	// draw all meshes assigned to this node
@@ -185,6 +185,8 @@ void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, c
 		if(!addSubmeshes && !listOnly) {
 			String fileNameMesh = prefix+meshFileName+".mesh";			
 			OSFILE *outFile = OSBasics::open(fileNameMesh.c_str(), "wb");	
+			if(generatePhysicsInfo)
+				tmesh->calculatePhysicsInfo();
 			tmesh->saveToFile(outFile, writeNormals, writeTangents, writeColors, writeBoneWeights, writeUVs, writeSecondaryUVs);
 			OSBasics::close(outFile);
 			delete tmesh;
@@ -294,7 +296,7 @@ void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, c
 	   
 	// draw all children
 	for (n = 0; n < nd->mNumChildren; ++n) {
-		addToMesh(prefix, tmesh, sc, nd->mChildren[n], swapZY, addSubmeshes, listOnly, parentSceneObject, overrideMaterial, materialsParent, assetPrefixPath, baseFileName);
+		addToMesh(prefix, tmesh, sc, nd->mChildren[n], swapZY, addSubmeshes, listOnly, parentSceneObject, overrideMaterial, materialsParent, assetPrefixPath, baseFileName, generatePhysicsInfo);
 	}
 }
 
@@ -325,7 +327,7 @@ void addToISkeleton(ISkeleton *skel, IBone *parent, const struct aiScene *sc, co
 	skel->addIBone(bone, getBoneID(bone->name));
 }
 
-int exportToFile(String prefix, bool swapZY, bool addSubmeshes, bool listOnly, bool exportEntity, bool generateMaterialFile, String overrideMaterial, String assetPrefixPath, String baseFileName) {
+int exportToFile(String prefix, bool swapZY, bool addSubmeshes, bool listOnly, bool exportEntity, bool generateMaterialFile, String overrideMaterial, String assetPrefixPath, String baseFileName, bool generatePhysicsInfo) {
 
     Object materialObject;
     ObjectEntry *materialsParent = NULL;;
@@ -370,7 +372,7 @@ int exportToFile(String prefix, bool swapZY, bool addSubmeshes, bool listOnly, b
 		
 	Polycode::Mesh *mesh = new Polycode::Mesh(Mesh::TRI_MESH);
     mesh->indexedMesh = true;
-	addToMesh(prefix, mesh, scene, scene->mRootNode, swapZY, addSubmeshes, listOnly, children, overrideMaterial, materialsParent, assetPrefixPath, baseFileName);
+	addToMesh(prefix, mesh, scene, scene->mRootNode, swapZY, addSubmeshes, listOnly, children, overrideMaterial, materialsParent, assetPrefixPath, baseFileName, generatePhysicsInfo);
     
 	
 	if(addSubmeshes) {
@@ -384,7 +386,9 @@ int exportToFile(String prefix, bool swapZY, bool addSubmeshes, bool listOnly, b
 		if(listOnly) {
 			printf("%s\n", fileNameMesh.c_str());
 		} else {
-			OSFILE *outFile = OSBasics::open(fileNameMesh.c_str(), "wb");	
+			OSFILE *outFile = OSBasics::open(fileNameMesh.c_str(), "wb");
+			if(generatePhysicsInfo)
+				mesh->calculatePhysicsInfo();	
 			mesh->saveToFile(outFile, writeNormals, writeTangents, writeColors, writeBoneWeights, writeUVs, writeSecondaryUVs);
 			OSBasics::close(outFile);
 		}
@@ -493,13 +497,14 @@ int main(int argc, char **argv) {
     bool generateNormals = false;
     bool exportEntity = false;
 	bool generateMaterialFile = false;
+	bool generatePhysicsInfo = false;
     String overrideMaterial;
     
 	String prefix;
     String assetPrefixPath;
 	
 	int opt;
-	while ((opt = getopt(argc, argv, "engcwuvadlhp:stmfo:x:")) != -1) {
+	while ((opt = getopt(argc, argv, "engcwuvadlhp:stmfo:x:i")) != -1) {
 		switch ((char)opt) {
             case 'e':
                 exportEntity = true;
@@ -555,6 +560,9 @@ int main(int argc, char **argv) {
 			case 'x':
 				assetPrefixPath = String(optarg)+"/";
             break;
+			case 'i':
+				generatePhysicsInfo = true;
+			break;
 			default:
 				argsValid = false;
 			break;
@@ -575,7 +583,7 @@ int main(int argc, char **argv) {
 	}
 	
 	if(showHelp || argc < 2) {
-		printf("usage: polyimport [-adhlstngcwuvmef] [-o override_material] [-p output_prefix] [-x asset_path] source_file\n\n");
+		printf("usage: polyimport [-adhlstngcwuvmefi] [-o override_material] [-p output_prefix] [-x asset_path] source_file\n\n");
 		printf("Misc options:\n");
 		printf("d: Show Assimp debug info.\n");
 		printf("h: Show this help.\n");
@@ -593,6 +601,7 @@ int main(int argc, char **argv) {
 		printf("w: Export bone weights\n");
 		printf("u: Export UV coordinates\n");
 		printf("v: Export secondary UV coordinates\n");
+		printf("i: Export physics info.\n");
 		printf("\nEntity export options:\n");
 		printf("e: Export entity scene\n");
 		printf("f: Generate material file\n");
@@ -638,7 +647,7 @@ int main(int argc, char **argv) {
             aiApplyPostProcessing(scene, aiProcess_GenSmoothNormals);
         }
         
-		exportToFile(prefix, swapZYAxis, addSubmeshes, listOnly, exportEntity, generateMaterialFile, overrideMaterial, assetPrefixPath, baseFileName);
+		exportToFile(prefix, swapZYAxis, addSubmeshes, listOnly, exportEntity, generateMaterialFile, overrideMaterial, assetPrefixPath, baseFileName, generatePhysicsInfo);
 	} else {
 		printf("Error opening scene (%s)\n", aiGetErrorString());
 	}

@@ -41,6 +41,8 @@ Mesh::Mesh(const String& fileName) {
 
     indexedMesh = false;
     meshType = TRI_MESH;
+	hasPhysicsInfo = false;
+	physicsInfo = NULL;
     meshHasVertexBuffer = false;
     loadMesh(fileName);
     vertexBuffer = NULL;			
@@ -56,6 +58,8 @@ Mesh::Mesh(int meshType) {
     this->meshType = meshType;
     meshHasVertexBuffer = false;		
     vertexBuffer = NULL;
+	hasPhysicsInfo = false;
+	physicsInfo = NULL;
     useVertexColors = false;
     indexedMesh = false;
     useFaceNormals = false;
@@ -91,6 +95,7 @@ void Mesh::clearMesh() {
 
     useFaceNormals = false;
     meshHasVertexBuffer = false;
+    clearPhysicsInfo();
 }
 
 VertexBuffer *Mesh::getVertexBuffer() {
@@ -151,6 +156,9 @@ void Mesh::saveToFile(OSFILE *outFile, bool writeNormals, bool writeTangents, bo
     }
     if(writeBoneWeights) {
         meshFlags |= 1 << 6;
+    }
+    if(hasPhysicsInfo) {
+        meshFlags |= 1 << 7;
     }
     
     OSBasics::write(&meshFlags, sizeof(unsigned char), 1, outFile);
@@ -228,6 +236,19 @@ void Mesh::saveToFile(OSFILE *outFile, bool writeNormals, bool writeTangents, bo
             OSBasics::write(&indices[i], sizeof(unsigned int), 1, outFile);
         }
     }
+    
+    if(hasPhysicsInfo) {
+        unsigned int numHulls = physicsInfo->size();
+        OSBasics::write(&numHulls, sizeof(unsigned int), 1, outFile);
+        for(int i=0; i < numHulls; i++) {
+            vector<unsigned int> *hull = physicsInfo->at(i);
+            unsigned int numPoints = hull->size();
+            OSBasics::write(&numPoints, sizeof(unsigned int), 1, outFile);
+            for(int j=0; j < numPoints; j++) {
+            	OSBasics::write(&(hull->at(j)), sizeof(unsigned int), 1, outFile);
+            }
+        }
+    }
 }
 
 
@@ -243,6 +264,7 @@ void Mesh::loadFromFile(OSFILE *inFile) {
     bool hasUV = meshFlags & (1 << 4);
     bool hasSecondaryUVs = meshFlags & (1 << 5);
     bool hasBoneWeights = meshFlags & (1 << 6);
+    hasPhysicsInfo = meshFlags & (1 << 7);
     
     unsigned int meshType;		
     OSBasics::read(&meshType, sizeof(unsigned int), 1, inFile);
@@ -321,7 +343,26 @@ void Mesh::loadFromFile(OSFILE *inFile) {
             indices.push_back(val);
         }
     }
-
+    
+    if(hasPhysicsInfo) {
+        unsigned int numHulls;
+        unsigned int numPoints;
+        unsigned int val;
+        OSBasics::read(&numHulls, sizeof(unsigned int), 1, inFile);
+        clearPhysicsInfo();
+        physicsInfo = new vector<vector<unsigned int>*>;
+        for(int i=0; i < numHulls; i++) {
+            vector<unsigned int> *hull = new vector<unsigned int>;
+            OSBasics::read(&numPoints, sizeof(unsigned int), 1, inFile);
+            for(int j=0; j < numPoints; j++) {
+            	OSBasics::read(&val, sizeof(unsigned int), 1, inFile);
+            	hull->push_back(val);
+            }
+            physicsInfo->push_back(hull);
+        }
+        hasPhysicsInfo = true;
+    }
+    
     dirtyArrays();
 }
 
@@ -415,6 +456,20 @@ Mesh *Mesh::Copy() const {
 
     for(int i=0; i < faceNormals.size(); i++) {
         newMesh->addFaceNormal(faceNormals[i]);
+    }
+    
+    if(hasPhysicsInfo) {
+        vector<vector<unsigned int>*> *newPhysicsInfo = new vector<vector<unsigned int>*>;
+        for(int i=0; i < physicsInfo->size(); i++) {
+            vector<unsigned int> *hull = physicsInfo->at(i);
+            vector<unsigned int> *newHull = new vector<unsigned int>;
+            for(int j=0; j < hull->size(); j++) {
+                newHull->push_back(hull->at(j));
+            }
+            newPhysicsInfo->push_back(newHull);
+        }
+        newMesh->physicsInfo = newPhysicsInfo;
+        newMesh->hasPhysicsInfo = true;
     }
     
     newMesh->dirtyArrays();
@@ -1300,4 +1355,89 @@ int Mesh::getMeshType() {
 
 void Mesh::setMeshType(int newType) {
     meshType = newType;
+}
+
+void Mesh::calculatePhysicsInfo() {
+	if(!indexedMesh)
+		return;
+	clearPhysicsInfo();
+	physicsInfo = new vector<vector<unsigned int>*>;
+	
+	for(int i=0; i < getVertexCount(); i+=3) {
+		unsigned int vert0 = indices[i];
+		unsigned int vert1 = indices[i+1];
+		unsigned int vert2 = indices[i+2];
+		vector<unsigned int> *p = new vector<unsigned int>;
+		p->push_back(vert0);
+		p->push_back(vert1);
+		p->push_back(vert2);
+		physicsInfo->push_back(p);
+	}
+
+	for(int i=0; i < physicsInfo->size(); i++) {
+		vector<unsigned int> *hull = physicsInfo->at(i);
+		if(hull != NULL) {
+			for(int j=0; j < physicsInfo->size(); j++) {
+				vector<unsigned int> *hull2 = physicsInfo->at(j);
+				if(hull2 != NULL && hull2 != hull) {
+					bool foundVert = false;
+					for(int k=0; (k < hull->size()) && !foundVert; k++) {
+						unsigned int v1 = hull->at(k);
+						for(int l=0; (l < hull2->size()) && !foundVert; l++) {
+							if(v1 == hull2->at(l))
+								foundVert = true;
+						}
+					}
+
+					if(foundVert) {
+						for(int l=0; l < hull2->size(); l++) {
+							unsigned int v = hull2->at(l);
+							bool isDupe = false;
+							for(int k=0; (k < hull->size()) && !isDupe; k++) {
+								if(v == hull->at(k))
+									isDupe = true;
+							}
+							
+							if(!isDupe){
+								hull->push_back(v);
+							}
+						}
+						physicsInfo->at(j) = NULL;
+						delete hull2;
+					}
+				}
+			}
+		}
+	}
+
+	vector<vector<unsigned int>*> *tempArray = new vector<vector<unsigned int>*>;
+	for(int i=0; i < physicsInfo->size(); i++) {
+		if(physicsInfo->at(i) != NULL) {
+			tempArray->push_back(physicsInfo->at(i));
+		}
+	}
+	delete physicsInfo;
+	physicsInfo = tempArray;
+	hasPhysicsInfo = true;
+}
+/*
+vector<vector<unsigned int>*> *Mesh::getPhysicsInfo() {
+	if(hasPhysicsInfo)
+		return physicsInfo;
+	else
+		return NULL;
+}
+*/
+void Mesh::clearPhysicsInfo() {
+	if(physicsInfo == NULL)
+		return;
+	
+	for(int i=0; i < physicsInfo->size(); i++) {
+		delete physicsInfo->at(i);
+		physicsInfo->at(i) = NULL;
+	}
+
+	delete physicsInfo;
+	physicsInfo = NULL;
+	hasPhysicsInfo = false;
 }
