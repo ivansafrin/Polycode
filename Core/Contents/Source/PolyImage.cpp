@@ -598,9 +598,7 @@ void Image::freeTokens(TokenArray tokens) {
 }
 
 bool Image::loadHDR(const String &fileName) {
-    
-    printf("Loading HDR image\n");
-    
+        
     setPixelType(IMAGE_FP16);
 
     FILE *file = fopen (fileName.c_str(), "rb");
@@ -640,8 +638,6 @@ bool Image::loadHDR(const String &fileName) {
     }
     
     float *data = (float *)malloc(sizeof(float)*3*width*height);
-    
-    printf("Reading fp pixels (%d x %d)\n", width, height);
     
     RGBE_ReadPixels_RLE(file, data, width, height);
 

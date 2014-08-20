@@ -442,6 +442,9 @@ void BoneTrack::Update(Number elapsed) {
     targetBone->setRotationByQuaternion(rotationQuat);
 
     targetBone->setPosition((position * weight) + (targetBone->getPosition() * (1.0 - weight)));
+    
+    targetBone->setScale(scale);
+    
     Vector3 newScale = ((scale - Vector3(1.0, 1.0, 1.0)) * weight) + Vector3(1.0, 1.0, 1.0);
 }
 
