@@ -40,6 +40,8 @@ class PolycodeClipboard {
 		void setData(void *data, String type, ClipboardProvider *provider);
 		void *getData();
 		String getType();
+        ClipboardProvider *getCurrentProvider();
+        void setCurrentProvider(ClipboardProvider *provider);
 
 	protected:
 

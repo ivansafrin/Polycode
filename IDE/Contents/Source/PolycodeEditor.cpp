@@ -181,6 +181,12 @@ PolycodeEditor::~PolycodeEditor() {
 	if(editorHolder) {
 		editorHolder->setEditor(NULL);
 	}
+    
+    if(globalClipboard->getCurrentProvider() == this) {
+        destroyClipboardData(globalClipboard->getData(), globalClipboard->getType());
+        globalClipboard->setCurrentProvider(NULL);
+    }
+    
 	Core *core = CoreServices::getInstance()->getCore();
 	core->removeAllHandlersForListener(this);
 }

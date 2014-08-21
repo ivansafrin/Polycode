@@ -31,7 +31,7 @@ void PolycodeClipboard::setData(void *data, String type, ClipboardProvider *prov
 	if(!data)
 		return;
 
-	if(this->data) {
+	if(this->data && currentProvider) {
 		currentProvider->destroyClipboardData(this->data, this->type);
 		this->data = NULL;
 		currentProvider = NULL;
@@ -40,6 +40,14 @@ void PolycodeClipboard::setData(void *data, String type, ClipboardProvider *prov
 	this->data = data;
 	this->type = type;
 	currentProvider = provider;
+}
+
+ClipboardProvider *PolycodeClipboard::getCurrentProvider() {
+    return currentProvider;
+}
+
+void PolycodeClipboard::setCurrentProvider(ClipboardProvider *provider) {
+    currentProvider = provider;
 }
 
 void *PolycodeClipboard::getData() {
