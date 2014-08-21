@@ -326,13 +326,24 @@ bool SceneMesh::customHitDetection(const Ray &ray) {
 	transformedRay.origin = adjustedMatrix * ray.origin;
 	transformedRay.direction = adjustedMatrix.rotateVector(ray.direction);
 	
-	for(int i=0; i < mesh->getVertexCount(); i+=3) {
-        if(i+2 < mesh->getVertexCount()) {
-           if(transformedRay.polygonIntersect(mesh->getVertex(i), mesh->getVertex(i+1), mesh->getVertex(i+2))) {
-                return true;
+    if(mesh->indexedMesh) {
+        for(int i=0; i < mesh->getIndexCount(); i+=3) {
+            if(i+2 < mesh->getIndexCount()) {
+                if(transformedRay.polygonIntersect(mesh->getIndexedVertex(i), mesh->getIndexedVertex(i+1), mesh->getIndexedVertex(i+2))) {
+                    return true;
+                }
             }
         }
-	}
+        
+    } else {
+        for(int i=0; i < mesh->getVertexCount(); i+=3) {
+            if(i+2 < mesh->getVertexCount()) {
+               if(transformedRay.polygonIntersect(mesh->getVertex(i), mesh->getVertex(i+1), mesh->getVertex(i+2))) {
+                    return true;
+                }
+            }
+        }
+    }
 	
 	return false;
 }
