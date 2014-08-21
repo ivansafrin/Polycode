@@ -45,7 +45,6 @@ Mesh::Mesh(const String& fileName) {
     loadMesh(fileName);
     vertexBuffer = NULL;			
     useVertexColors = false;
-    useFaceNormals = false;
 }
 
 Mesh::Mesh(int meshType) {
@@ -58,7 +57,6 @@ Mesh::Mesh(int meshType) {
     vertexBuffer = NULL;
     useVertexColors = false;
     indexedMesh = false;
-    useFaceNormals = false;
 }
 
 Mesh *Mesh::MeshFromFileName(String& fileName) {
@@ -75,7 +73,6 @@ void Mesh::clearMesh() {
     }
     vertices.clear();
     indices.clear();
-    faceNormals.clear();
     
     if(vertexBuffer)
         delete vertexBuffer;
@@ -89,21 +86,11 @@ void Mesh::clearMesh() {
         }
     }
 
-    useFaceNormals = false;
     meshHasVertexBuffer = false;
 }
 
 VertexBuffer *Mesh::getVertexBuffer() {
     return vertexBuffer;
-}
-
-void Mesh::setUseFaceNormals(bool val) {
-    useFaceNormals = val;
-    arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;
-}
-
-bool Mesh::getUseFaceNormals() {
-    return useFaceNormals;
 }
 
 
@@ -401,7 +388,6 @@ void Mesh::createCircle(Number w, Number h, unsigned int numSegments) {
 Mesh *Mesh::Copy() const {
     Mesh *newMesh = new Mesh(meshType);
     newMesh->indexedMesh = indexedMesh;
-    newMesh->setUseFaceNormals(useFaceNormals);
     
     for(int i=0; i < vertices.size(); i++) {
         Vertex *v = new Vertex();
@@ -413,16 +399,8 @@ Mesh *Mesh::Copy() const {
         newMesh->addIndex(indices[i]);
     }
 
-    for(int i=0; i < faceNormals.size(); i++) {
-        newMesh->addFaceNormal(faceNormals[i]);
-    }
-    
     newMesh->dirtyArrays();
     return newMesh;
-}
-
-void Mesh::addFaceNormal(Vector3 faceNormal) {
-    faceNormals.push_back(faceNormal);
 }
 
 void Mesh::createLineCircle(Number w, Number h, unsigned int numSegments) {
@@ -779,16 +757,8 @@ void Mesh::createIcosphere(Number radius, int subdivisions) {
 	arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;
 }
 
-unsigned int Mesh::getActualVertexCount() const {
-    return vertices.size();    
-}
-
 unsigned int Mesh::getVertexCount() {
-    if(indexedMesh) {
-        return indices.size();
-    } else {
-        return vertices.size();
-    }
+    return vertices.size();
 }
 
 unsigned int Mesh::getIndexCount() {
@@ -978,14 +948,6 @@ void Mesh::addIndex(unsigned int index) {
     indices.push_back(index % vertices.size());
 }
 
-Vertex *Mesh::getActualVertex(unsigned int index) const {
-    if(index < vertices.size()) {
-        return vertices[index];
-    } else {
-        return NULL;
-    }
-}
-
 void Mesh::addIndexedFace(unsigned int i1, unsigned int i2, unsigned int i3) {
     if(!vertices.size()) {
         return;
@@ -1039,9 +1001,6 @@ void Mesh::removeVertexRange(unsigned int beginRemoveVertex, int vertexRemovalCo
 				unsigned int faceIndex = i/groupSize;
 				i = faceIndex * groupSize;
 				indices.erase(indices.begin() + i, indices.begin() + i + groupSize);
-				if (useFaceNormals) {
-					faceNormals.erase(faceNormals.begin() + i);
-				}
 			}
 			else {
 				if (faceVertexIndex > beginRemoveVertex) {
@@ -1159,12 +1118,12 @@ void Mesh::dirtyArrays() {
     }
 }
 
+Vertex *Mesh::getIndexedVertex(unsigned int index) const {
+    return vertices[indices[index]];
+}
+
 Vertex *Mesh::getVertex(unsigned int index) const {
-    if(indexedMesh) {
-        return vertices[indices[index]];
-    } else {
-        return vertices[index];
-    }
+    return vertices[index];
 }
 
 Vector3 Mesh::calculateFaceTangent(Vertex *v1, Vertex *v2, Vertex *v3) {
@@ -1197,7 +1156,6 @@ void Mesh::calculateTangents() {
         polySize = 4;
     }
     
-    faceNormals.clear();
     for(int i=0; i < vertices.size(); i++) {
         vertices[i]->tangent = Vector3();
     }
@@ -1227,29 +1185,13 @@ void Mesh::calculateTangents() {
     arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;		
 }
 
-Vector3 Mesh::getFaceNormalForVertex(unsigned int index) {
-    unsigned int faceNormalIndex;
-    if(meshType == Mesh::QUAD_MESH) {
-        faceNormalIndex = floor(((Number)index)/4.0);
-    } else {
-        faceNormalIndex = floor(((Number)index)/3.0);
-    }
-    
-    if(faceNormalIndex < faceNormals.size()) {
-        return faceNormals[faceNormalIndex];
-    } else {
-        return Vector3();
-    }
-}
-
-void Mesh::calculateNormals(bool generateFaceNormals) {
+void Mesh::calculateNormals() {
     
     int polySize = 3;
     if(meshType == Mesh::QUAD_MESH) {
         polySize = 4;
     }
     
-    faceNormals.clear();
     for(int i=0; i < vertices.size(); i++) {
         vertices[i]->normal = Vector3();
     }
@@ -1263,10 +1205,6 @@ void Mesh::calculateNormals(bool generateFaceNormals) {
             for(int j=0; j < polySize; j++) {
                 vertices[indices[i+j]]->normal -= no;
             }
-            
-            if(generateFaceNormals) {
-                faceNormals.push_back(no * -1.0);
-            }
         }
     } else {
         for(int i=0; i+polySize-1 < vertices.size(); i += polySize) {
@@ -1277,18 +1215,11 @@ void Mesh::calculateNormals(bool generateFaceNormals) {
             for(int j=0; j < polySize; j++) {
                 vertices[i+j]->normal = no * -1.0;
             }
-            
-            if(generateFaceNormals) {
-                faceNormals.push_back(no * -1.0);
-            }
         }
     }
     
     for(int i=0; i < vertices.size(); i++) {
         vertices[i]->normal.Normalize();
-    }
-    for(int i=0; i < faceNormals.size(); i++) {
-        faceNormals[i].Normalize();
     }
     
     arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;		

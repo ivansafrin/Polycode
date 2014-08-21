@@ -135,6 +135,10 @@ void Skeleton::Update() {
         bones[i]->rebuildTransformMatrix();
         bones[i]->setBoneMatrix(bones[i]->getTransformMatrix());
     }
+    
+    for(int i=0; i < bones.size(); i++) {
+        bones[i]->rebuildFinalMatrix();
+    }
 }
 
 void Skeleton::loadSkeleton(const String& fileName) {

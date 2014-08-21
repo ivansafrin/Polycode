@@ -258,8 +258,8 @@ void SceneMesh::renderMeshLocally() {
 	Renderer *renderer = CoreServices::getInstance()->getRenderer();
 	
 	if(skeleton) {	
-		for(int i=0; i < mesh->getActualVertexCount(); i++) {
-            Vertex *vert = mesh->getActualVertex(i);
+		for(int i=0; i < mesh->getVertexCount(); i++) {
+            Vertex *vert = mesh->getVertex(i);
             Vector3 norm;
             
             Vector3 tPos;

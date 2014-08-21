@@ -51,96 +51,188 @@ OpenGLVertexBuffer::OpenGLVertexBuffer(Mesh *mesh) : VertexBuffer() {
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB, vertexBufferID);
 	
 	meshType = mesh->getMeshType();
-	
-	long bufferOffset = 0;
-    int bufferSize = mesh->getVertexCount() * sizeof(GLfloat) * 3;
-	GLfloat *buffer = (GLfloat*)malloc(bufferSize);
     
-	vertexCount = 0;
-	for(int i=0; i < mesh->getVertexCount(); i++) {
-        vertexCount++;
-        buffer[bufferOffset+0] = mesh->getVertex(i)->x;
-        buffer[bufferOffset+1] = mesh->getVertex(i)->y;
-        buffer[bufferOffset+2] = mesh->getVertex(i)->z;
-        bufferOffset += 3;
-	}
-	glBufferDataARB(GL_ARRAY_BUFFER_ARB, bufferSize, buffer, GL_STATIC_DRAW_ARB);
-	free(buffer);
+    Vertex *vertex;
+    
+    if(mesh->indexedMesh) {
+        
+        long bufferOffset = 0;
+        int bufferSize = mesh->getIndexCount() * sizeof(GLfloat) * 3;
+        GLfloat *buffer = (GLfloat*)malloc(bufferSize);
+        
+        vertexCount = 0;
+        for(int i=0; i < mesh->getIndexCount(); i++) {
+            vertexCount++;
+            vertex = mesh->getIndexedVertex(i);
+            buffer[bufferOffset+0] = vertex->x;
+            buffer[bufferOffset+1] = vertex->y;
+            buffer[bufferOffset+2] = vertex->z;
+            bufferOffset += 3;
+        }
+        glBufferDataARB(GL_ARRAY_BUFFER_ARB, bufferSize, buffer, GL_STATIC_DRAW_ARB);
+        free(buffer);
+        
+        glGenBuffersARB(1, &texCoordBufferID);
+        glBindBufferARB(GL_ARRAY_BUFFER_ARB, texCoordBufferID);
+        
+        
+        
+        bufferOffset = 0;
+        bufferSize = mesh->getIndexCount() * sizeof(GLfloat) * 2;
+        buffer = (GLfloat*)malloc(bufferSize);
+        
+        for(int i=0; i < mesh->getIndexCount(); i++) {
+            vertex = mesh->getIndexedVertex(i);
+            buffer[bufferOffset+0] = vertex->getTexCoord().x;
+            buffer[bufferOffset+1] = vertex->getTexCoord().y;
+            bufferOffset += 2;
+        }
+        
+        glBufferDataARB(GL_ARRAY_BUFFER_ARB, bufferSize, buffer, GL_STATIC_DRAW_ARB);
+        free(buffer);
+        
+        glGenBuffersARB(1, &normalBufferID);
+        glBindBufferARB(GL_ARRAY_BUFFER_ARB, normalBufferID);
+        
+        bufferSize = mesh->getIndexCount() * sizeof(GLfloat) * 3;
+        bufferOffset = 0;
+        buffer = (GLfloat*)malloc(bufferSize);
+        
+        for(int i=0; i < mesh->getIndexCount(); i++) {
+            vertex = mesh->getIndexedVertex(i);
+            buffer[bufferOffset+0] = vertex->normal.x;
+            buffer[bufferOffset+1] = vertex->normal.y;
+            buffer[bufferOffset+2] = vertex->normal.z;
+            bufferOffset += 3;
+        }
+        
+        glBufferDataARB(GL_ARRAY_BUFFER_ARB, bufferSize, buffer, GL_STATIC_DRAW_ARB);
+        free(buffer);
+        
+        glGenBuffersARB(1, &tangentBufferID);
+        glBindBufferARB(GL_ARRAY_BUFFER_ARB, tangentBufferID);
+        
+        bufferSize = mesh->getIndexCount() * sizeof(GLfloat) * 3;
+        bufferOffset = 0;
+        buffer = (GLfloat*)malloc(bufferSize);
+        
+        for(int i=0; i < mesh->getIndexCount(); i++) {
+            vertex = mesh->getIndexedVertex(i);
+            buffer[bufferOffset+0] = vertex->tangent.x;
+            buffer[bufferOffset+1] = vertex->tangent.y;
+            buffer[bufferOffset+2] = vertex->tangent.z;
+            bufferOffset += 3;
+        }
+        
+        glBufferDataARB(GL_ARRAY_BUFFER_ARB, bufferSize, buffer, GL_STATIC_DRAW_ARB);
+        free(buffer);
+        
+        glGenBuffersARB(1, &colorBufferID);
+        glBindBufferARB(GL_ARRAY_BUFFER_ARB, colorBufferID);
+        
+        bufferSize = mesh->getIndexCount() * sizeof(GLfloat) * 4;
+        bufferOffset = 0;
+        buffer = (GLfloat*)malloc(bufferSize);
+        
+        for(int i=0; i < mesh->getIndexCount(); i++) {
+            vertex = mesh->getIndexedVertex(i);
+            buffer[bufferOffset+0] = vertex->vertexColor.r;
+            buffer[bufferOffset+1] = vertex->vertexColor.g;
+            buffer[bufferOffset+2] = vertex->vertexColor.b;
+            buffer[bufferOffset+3] = vertex->vertexColor.a;
+            bufferOffset += 4;
+        }
+        
+        glBufferDataARB(GL_ARRAY_BUFFER_ARB, bufferSize, buffer, GL_STATIC_DRAW_ARB);
+        free(buffer);
+    } else {
+    
 
-	glGenBuffersARB(1, &texCoordBufferID);
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB, texCoordBufferID);
-	
-    bufferOffset = 0;
-	bufferSize = mesh->getVertexCount() * sizeof(GLfloat) * 2;
-	buffer = (GLfloat*)malloc(bufferSize);
-	
-	for(int i=0; i < mesh->getVertexCount(); i++) {
-        buffer[bufferOffset+0] = mesh->getVertex(i)->getTexCoord().x;
-        buffer[bufferOffset+1] = mesh->getVertex(i)->getTexCoord().y;
-        bufferOffset += 2;
-	}
-	
-	glBufferDataARB(GL_ARRAY_BUFFER_ARB, bufferSize, buffer, GL_STATIC_DRAW_ARB);
-	free(buffer);
-	
-	glGenBuffersARB(1, &normalBufferID);
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB, normalBufferID);
-	
-	bufferSize = mesh->getVertexCount() * sizeof(GLfloat) * 3;
-    bufferOffset = 0;
-	buffer = (GLfloat*)malloc(bufferSize);
-	
-	for(int i=0; i < mesh->getVertexCount(); i++) {
-        if(mesh->getUseFaceNormals()) {
-            Vector3 n = mesh->getFaceNormalForVertex(i);
-            buffer[bufferOffset+0] = n.x;
-            buffer[bufferOffset+1] = n.y;
-            buffer[bufferOffset+2] = n.z;
-        } else {
+        long bufferOffset = 0;
+        int bufferSize = mesh->getVertexCount() * sizeof(GLfloat) * 3;
+        GLfloat *buffer = (GLfloat*)malloc(bufferSize);
+        
+        vertexCount = 0;
+        for(int i=0; i < mesh->getVertexCount(); i++) {
+            vertexCount++;
+            buffer[bufferOffset+0] = mesh->getVertex(i)->x;
+            buffer[bufferOffset+1] = mesh->getVertex(i)->y;
+            buffer[bufferOffset+2] = mesh->getVertex(i)->z;
+            bufferOffset += 3;
+        }
+        glBufferDataARB(GL_ARRAY_BUFFER_ARB, bufferSize, buffer, GL_STATIC_DRAW_ARB);
+        free(buffer);
+
+        glGenBuffersARB(1, &texCoordBufferID);
+        glBindBufferARB(GL_ARRAY_BUFFER_ARB, texCoordBufferID);
+        
+        
+        
+        bufferOffset = 0;
+        bufferSize = mesh->getVertexCount() * sizeof(GLfloat) * 2;
+        buffer = (GLfloat*)malloc(bufferSize);
+        
+        for(int i=0; i < mesh->getVertexCount(); i++) {
+            buffer[bufferOffset+0] = mesh->getVertex(i)->getTexCoord().x;
+            buffer[bufferOffset+1] = mesh->getVertex(i)->getTexCoord().y;
+            bufferOffset += 2;
+        }
+        
+        glBufferDataARB(GL_ARRAY_BUFFER_ARB, bufferSize, buffer, GL_STATIC_DRAW_ARB);
+        free(buffer);
+        
+        glGenBuffersARB(1, &normalBufferID);
+        glBindBufferARB(GL_ARRAY_BUFFER_ARB, normalBufferID);
+        
+        bufferSize = mesh->getVertexCount() * sizeof(GLfloat) * 3;
+        bufferOffset = 0;
+        buffer = (GLfloat*)malloc(bufferSize);
+        
+        for(int i=0; i < mesh->getVertexCount(); i++) {
             buffer[bufferOffset+0] = mesh->getVertex(i)->normal.x;
             buffer[bufferOffset+1] = mesh->getVertex(i)->normal.y;
             buffer[bufferOffset+2] = mesh->getVertex(i)->normal.z;
+            bufferOffset += 3;
         }
-        bufferOffset += 3;
-	}
-	
-	glBufferDataARB(GL_ARRAY_BUFFER_ARB, bufferSize, buffer, GL_STATIC_DRAW_ARB);
-	free(buffer);	
+        
+        glBufferDataARB(GL_ARRAY_BUFFER_ARB, bufferSize, buffer, GL_STATIC_DRAW_ARB);
+        free(buffer);	
 
-	glGenBuffersARB(1, &tangentBufferID);
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB, tangentBufferID);
-	
-	bufferSize = mesh->getVertexCount() * sizeof(GLfloat) * 3;
-    bufferOffset = 0;
-	buffer = (GLfloat*)malloc(bufferSize);
-	
-	for(int i=0; i < mesh->getVertexCount(); i++) {
-        buffer[bufferOffset+0] = mesh->getVertex(i)->tangent.x;
-        buffer[bufferOffset+1] = mesh->getVertex(i)->tangent.y;
-        buffer[bufferOffset+2] = mesh->getVertex(i)->tangent.z;
-        bufferOffset += 3;
-	}
-	
-	glBufferDataARB(GL_ARRAY_BUFFER_ARB, bufferSize, buffer, GL_STATIC_DRAW_ARB);
-	free(buffer);	
-	
-	glGenBuffersARB(1, &colorBufferID);
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB, colorBufferID);
-	
-	bufferSize = mesh->getVertexCount() * sizeof(GLfloat) * 4;
-	bufferOffset = 0;
-	buffer = (GLfloat*)malloc(bufferSize);
-	
-	for(int i=0; i < mesh->getVertexCount(); i++) {
-        buffer[bufferOffset+0] = mesh->getVertex(i)->vertexColor.r;
-        buffer[bufferOffset+1] = mesh->getVertex(i)->vertexColor.g;
-        buffer[bufferOffset+2] = mesh->getVertex(i)->vertexColor.b;
-        buffer[bufferOffset+3] = mesh->getVertex(i)->vertexColor.a;
-        bufferOffset += 4;
-	}
-	
-	glBufferDataARB(GL_ARRAY_BUFFER_ARB, bufferSize, buffer, GL_STATIC_DRAW_ARB);
-	free(buffer);	
+        glGenBuffersARB(1, &tangentBufferID);
+        glBindBufferARB(GL_ARRAY_BUFFER_ARB, tangentBufferID);
+        
+        bufferSize = mesh->getVertexCount() * sizeof(GLfloat) * 3;
+        bufferOffset = 0;
+        buffer = (GLfloat*)malloc(bufferSize);
+        
+        for(int i=0; i < mesh->getVertexCount(); i++) {
+            buffer[bufferOffset+0] = mesh->getVertex(i)->tangent.x;
+            buffer[bufferOffset+1] = mesh->getVertex(i)->tangent.y;
+            buffer[bufferOffset+2] = mesh->getVertex(i)->tangent.z;
+            bufferOffset += 3;
+        }
+        
+        glBufferDataARB(GL_ARRAY_BUFFER_ARB, bufferSize, buffer, GL_STATIC_DRAW_ARB);
+        free(buffer);	
+        
+        glGenBuffersARB(1, &colorBufferID);
+        glBindBufferARB(GL_ARRAY_BUFFER_ARB, colorBufferID);
+        
+        bufferSize = mesh->getVertexCount() * sizeof(GLfloat) * 4;
+        bufferOffset = 0;
+        buffer = (GLfloat*)malloc(bufferSize);
+        
+        for(int i=0; i < mesh->getVertexCount(); i++) {
+            buffer[bufferOffset+0] = mesh->getVertex(i)->vertexColor.r;
+            buffer[bufferOffset+1] = mesh->getVertex(i)->vertexColor.g;
+            buffer[bufferOffset+2] = mesh->getVertex(i)->vertexColor.b;
+            buffer[bufferOffset+3] = mesh->getVertex(i)->vertexColor.a;
+            bufferOffset += 4;
+        }
+        
+        glBufferDataARB(GL_ARRAY_BUFFER_ARB, bufferSize, buffer, GL_STATIC_DRAW_ARB);
+        free(buffer);
+    }
 	
 }
 

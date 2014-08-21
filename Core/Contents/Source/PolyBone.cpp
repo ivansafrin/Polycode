@@ -71,13 +71,19 @@ Matrix4 Bone::getBoneMatrix() const {
 }
 
 Matrix4 Bone::getFinalMatrix() const {
-	Matrix4 final = boneMatrix;
+    return finalMatrix;
+}
 
-	if(parentBone) {
-		final = final * parentBone->getFinalMatrix();
-	} 
-	
-	return final;
+Matrix4 Bone::buildFinalMatrix() const {
+    if(parentBone) {
+        return boneMatrix * parentBone->buildFinalMatrix();
+    } else {
+        return boneMatrix;
+    }
+}
+
+void Bone::rebuildFinalMatrix() {
+    finalMatrix = buildFinalMatrix();
 }
 
 void Bone::setBoneMatrix(const Matrix4& matrix) {

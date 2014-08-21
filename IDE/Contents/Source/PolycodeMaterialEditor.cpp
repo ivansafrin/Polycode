@@ -591,7 +591,7 @@ PostPreviewBox::PostPreviewBox() : UIElement() {
 	previewPrimitive->setPosition(-0.8, 1.0, 0.8);
 
 	previewPrimitive = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 2,  2, 2);
-	previewPrimitive->getMesh()->calculateNormals(false);	
+	previewPrimitive->getMesh()->calculateNormals();	
 	previewScene->addChild(previewPrimitive);
 	previewPrimitive->setMaterialByName("DefaultHDR");
 	previewPrimitive->setColorInt(0, 0, 255, 255);
@@ -733,7 +733,7 @@ MaterialPreviewBox::MaterialPreviewBox() : UIElement() {
 
 	previewPrimitive = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 4.0, 4.0, 4.0);
 	previewPrimitive->Yaw(45.0);
-	previewPrimitive->getMesh()->calculateNormals(false);
+	previewPrimitive->getMesh()->calculateNormals();
 	previewPrimitive->getMesh()->calculateTangents();
 	previewScene->addChild(previewPrimitive);
 	shapePrimitives.push_back(previewPrimitive);

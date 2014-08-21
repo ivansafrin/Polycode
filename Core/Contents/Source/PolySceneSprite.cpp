@@ -412,15 +412,16 @@ void SpriteState::rebuildStateMeshes() {
         
         
         for(int j=0; j < 4; j++) {
-            Number val = fabs(frameMesh->getActualVertex(j)->x);
+            Vertex *vertex = frameMesh->getVertex(j);
+            Number val = fabs(vertex->x);
             if(val > largestFrameBoundingBox.x) {
                 largestFrameBoundingBox.x = val;
             }
-            val = fabs(frameMesh->getActualVertex(j)->y);
+            val = fabs(vertex->y);
             if(val > largestFrameBoundingBox.y) {
                 largestFrameBoundingBox.y = val;
             }
-            val = fabs(frameMesh->getActualVertex(j)->z);
+            val = fabs(vertex->z);
             if(val > largestFrameBoundingBox.z) {
                 largestFrameBoundingBox.z = val;
             }

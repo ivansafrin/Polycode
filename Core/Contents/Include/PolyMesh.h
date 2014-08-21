@@ -264,11 +264,8 @@ namespace Polycode {
             void addVertex(Vertex *vertex);
         
             Vertex *getVertex(unsigned int index) const;
-
-            Vertex *getActualVertex(unsigned int index) const;
-
-            unsigned int getActualVertexCount() const;
         
+            Vertex *getIndexedVertex(unsigned int index) const;
         
 			/**
 			* Sets the vertex buffer for the mesh.
@@ -296,7 +293,7 @@ namespace Polycode {
 			* @param smooth If true, will use smooth normals.
 			* @param smoothAngle If smooth, this parameter sets the angle tolerance for the approximation function.
 			*/
-			void calculateNormals(bool generateFaceNormals = false);
+			void calculateNormals();
 
 			/**
 			* Recalculates the tangent space vector for all vertices.
@@ -316,9 +313,6 @@ namespace Polycode {
 
 			void dirtyArray(unsigned int arrayIndex);
 			void dirtyArrays();
-
-            void setUseFaceNormals(bool val);
-            bool getUseFaceNormals();
 
 			inline unsigned int getIndexGroupSize() {
 				switch (meshType) {
@@ -413,10 +407,6 @@ namespace Polycode {
 			/** For indexedMesh only, removes any unused vertices from the mesh. */
 			int removeUnusedVertices();
         
-            Vector3 getFaceNormalForVertex(unsigned int index);
-        
-            void addFaceNormal(Vector3 faceNormal);
-        
             unsigned int getIndexCount();
             unsigned int getIndexAt(unsigned int index);
         
@@ -426,13 +416,10 @@ namespace Polycode {
         
             Vector3 calculateFaceTangent(Vertex *v1, Vertex *v2, Vertex *v3);
         
-            bool useFaceNormals;
-        
             VertexBuffer *vertexBuffer;
             bool meshHasVertexBuffer;
             int meshType;
         
-            std::vector<Vector3> faceNormals;
             std::vector<unsigned int> indices;
             std::vector <Vertex*> vertices;
 	};

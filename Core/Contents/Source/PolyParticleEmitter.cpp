@@ -243,10 +243,10 @@ void SceneParticleEmitter::rebuildParticles() {
                     int meshIndex = particles[i].varianceIndex;
                     if(meshIndex < sourceMeshes.size()) {
                         
-                        indexOffset = mesh->getActualVertexCount();
+                        indexOffset = mesh->getVertexCount();
                         
-                        for(int v=0; v <  sourceMeshes[meshIndex]->getActualVertexCount(); v++) {
-                            Vertex *sv = sourceMeshes[meshIndex]->getActualVertex(v);
+                        for(int v=0; v <  sourceMeshes[meshIndex]->getVertexCount(); v++) {
+                            Vertex *sv = sourceMeshes[meshIndex]->getVertex(v);
                             Vector3 vpos = Vector3(sv->x, sv->y, sv->z) * finalParticleSize;
                             vpos = q.applyTo(vpos);
                             

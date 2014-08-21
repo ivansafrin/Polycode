@@ -328,10 +328,10 @@ void LightDisplay::Update() {
        	spotSpot->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
         
         spotLightSize *= 0.5;
-        fovMesh->getActualVertex(1)->set(sin(PI/2.0)*spotLightSize, cos(PI/2.0)*spotLightSize, -distance);
-        fovMesh->getActualVertex(2)->set(sin(PI)*spotLightSize, cos(PI)*spotLightSize, -distance);
-        fovMesh->getActualVertex(3)->set(sin(PI + (PI/2.0))*spotLightSize, cos(PI + (PI/2.0))*spotLightSize, -distance);
-        fovMesh->getActualVertex(4)->set(sin(PI*2.0)*spotLightSize, cos(PI*2.0)*spotLightSize, -distance);
+        fovMesh->getVertex(1)->set(sin(PI/2.0)*spotLightSize, cos(PI/2.0)*spotLightSize, -distance);
+        fovMesh->getVertex(2)->set(sin(PI)*spotLightSize, cos(PI)*spotLightSize, -distance);
+        fovMesh->getVertex(3)->set(sin(PI + (PI/2.0))*spotLightSize, cos(PI + (PI/2.0))*spotLightSize, -distance);
+        fovMesh->getVertex(4)->set(sin(PI*2.0)*spotLightSize, cos(PI*2.0)*spotLightSize, -distance);
          fovMesh->dirtyArray(RenderDataArray::VERTEX_DATA_ARRAY);
         fovSceneMesh->setLocalBoundingBox(fovMesh->calculateBBox());
     } else {
@@ -401,10 +401,10 @@ void CameraDisplay::Update() {
             break;
         }
         
-        fovMesh->getActualVertex(1)->set(-xPos, yPos, zPos);
-        fovMesh->getActualVertex(2)->set(xPos, yPos, zPos);
-        fovMesh->getActualVertex(3)->set(xPos, -yPos, zPos);
-        fovMesh->getActualVertex(4)->set(-xPos, -yPos, zPos);
+        fovMesh->getVertex(1)->set(-xPos, yPos, zPos);
+        fovMesh->getVertex(2)->set(xPos, yPos, zPos);
+        fovMesh->getVertex(3)->set(xPos, -yPos, zPos);
+        fovMesh->getVertex(4)->set(-xPos, -yPos, zPos);
         fovMesh->dirtyArray(RenderDataArray::VERTEX_DATA_ARRAY);
     } else {
         Number fovRad = (90+camera->getFOV()/2.0) * TORADIANS;
@@ -413,10 +413,10 @@ void CameraDisplay::Update() {
         Number yPos = xPos * 0.5625;
         Number zPos = -sin(fovRad) * displayScale * 0.5;
         
-        fovMesh->getActualVertex(1)->set(-xPos, yPos, zPos);
-        fovMesh->getActualVertex(2)->set(xPos, yPos, zPos);
-        fovMesh->getActualVertex(3)->set(xPos, -yPos, zPos);
-        fovMesh->getActualVertex(4)->set(-xPos, -yPos, zPos);
+        fovMesh->getVertex(1)->set(-xPos, yPos, zPos);
+        fovMesh->getVertex(2)->set(xPos, yPos, zPos);
+        fovMesh->getVertex(3)->set(xPos, -yPos, zPos);
+        fovMesh->getVertex(4)->set(-xPos, -yPos, zPos);
         fovMesh->dirtyArray(RenderDataArray::VERTEX_DATA_ARRAY);
     }
 }

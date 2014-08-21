@@ -138,6 +138,9 @@ namespace Polycode {
 			* @return Full base matrix.
 			*/						
 			Matrix4 getFullBaseMatrix() const;
+        
+            void rebuildFinalMatrix();
+            Matrix4 buildFinalMatrix() const;
 		
 			/**
 			* Id of the bone.
@@ -147,6 +150,7 @@ namespace Polycode {
 			Matrix4 boneMatrix;
 			Matrix4 restMatrix;
 			Matrix4 baseMatrix;
+            Matrix4 finalMatrix;
 		
             Quaternion baseRotation;
             Vector3 baseScale;
