@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2013 by Ivan Safrin
+ Copyright (C) 2014 by Ivan Safrin
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -20,33 +20,35 @@
  THE SOFTWARE.
  */
 
-#pragma once
-#include "PolyGlobals.h"
-#include "PolyVector3.h"
-#include "PolyMatrix4.h"
+#include "PolyRenderDataArray.h"
 
-namespace Polycode {
+using namespace Polycode;
 
-	/**
-	* Ray class. 
-	*/
-	class _PolyExport Ray : public PolyBase {
-		public:
-			Ray();
-			Ray(const Vector3 &origin, const Vector3 &direction);
-	
-			Number boxIntersect(const Vector3 &box, const Matrix4 &transformMatrix, float near = 0.0, float far = 9999.0) const;
-			
-			Vector3 planeIntersectPoint(const Vector3 &planeNormal, Number planeDistance) const;
-			Ray tranformByMatrix(const Matrix4& matrix) const;
-			
-			bool polygonIntersect(const Vector3 &v1, const Vector3 &v2, const Vector3 &v3) const;
-		
-			Vector3 origin;
-			Vector3 direction;
-			
-			Vector3 inv_direction;
-			int sign[3];
-	};
-	
+RenderDataArray::RenderDataArray(unsigned int type) {
+    this->type = type;
+}
+
+void *RenderDataArray::getArrayData() {
+    return NULL;
+}
+
+unsigned int RenderDataArray::getDataSize() {
+    return 0;
+}
+
+void *VertexDataArray::getArrayData() {
+    return (void*) data.data();
+}
+
+unsigned int VertexDataArray::getDataSize() {
+    return data.size();
+}
+
+
+void *IndexDataArray::getArrayData() {
+    return (void*) data.data();
+}
+
+unsigned int IndexDataArray::getDataSize() {
+    return data.size();
 }

@@ -23,7 +23,6 @@
 #include "PolySceneImage.h"
 #include "PolyMesh.h"
 #include "PolyTexture.h"
-#include "PolyVertex.h"
 
 using namespace Polycode;
 
@@ -102,13 +101,12 @@ void SceneImage::setImageCoordinates(Number x, Number y, Number width, Number he
 	Number wFloat = width * pixelSizeX;
 	Number hFloat = height * pixelSizeY;
 
-    mesh->getVertex(0)->setTexCoord(xFloat, yFloat - hFloat);
-    mesh->getVertex(1)->setTexCoord(xFloat + wFloat, yFloat - hFloat);
-    mesh->getVertex(2)->setTexCoord(xFloat + wFloat, yFloat);
-    mesh->getVertex(3)->setTexCoord(xFloat, yFloat);
-
-	mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
-	mesh->arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;
+    mesh->vertexTexCoordArray.data.clear();
+    
+    mesh->addTexCoord(xFloat, yFloat - hFloat);
+    mesh->addTexCoord(xFloat + wFloat, yFloat - hFloat);
+    mesh->addTexCoord(xFloat + wFloat, yFloat);
+    mesh->addTexCoord(xFloat, yFloat);
 	
 	rebuildTransformMatrix();
 	matrixDirty = true;

@@ -30,6 +30,8 @@ THE SOFTWARE.
 #define POLYCODE_VERSION_STRING "0.8.4a_dev"
 
 #define COMPILE_GL_RENDERER
+typedef float PolyRendererVertexType;
+typedef unsigned int PolyRendererIndexType;
 
 #ifdef _WINDOWS
 	#define WIN32_LEAN_AND_MEAN

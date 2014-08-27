@@ -106,36 +106,44 @@ void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, c
 		//apply_material(sc->mMaterials[mesh->mMaterialIndex]);
         
 		for (t = 0; t < mesh->mNumVertices; ++t) {
-            Vertex *vertex = new Vertex();
+
+            Vector3 vPosition;
+            
             int index = t;
             if(mesh->mColors[0] != NULL) {
-                vertex->vertexColor.setColorRGBA(mesh->mColors[0][index].r, mesh->mColors[0][index].g, mesh->mColors[0][index].b, mesh->mColors[0][index].a);
+                tmesh->addColor(mesh->mColors[0][index].r, mesh->mColors[0][index].g, mesh->mColors[0][index].b, mesh->mColors[0][index].a);
             }
 
             if(mesh->mTangents != NULL)  {
-                if(swapZY)
-                    vertex->tangent = Vector3(mesh->mTangents[index].x, mesh->mTangents[index].z, -mesh->mTangents[index].y);
-                else
-                    vertex->tangent = Vector3(mesh->mTangents[index].x, mesh->mTangents[index].y, mesh->mTangents[index].z);
+                if(swapZY) {
+                    tmesh->addTangent(mesh->mTangents[index].x, mesh->mTangents[index].z, -mesh->mTangents[index].y);
+                } else {
+                    tmesh->addTangent(mesh->mTangents[index].x, mesh->mTangents[index].y, mesh->mTangents[index].z);
+                }
             }
 
             if(mesh->mNormals != NULL)  {
-                if(swapZY)
-                    vertex->setNormal(mesh->mNormals[index].x, mesh->mNormals[index].z, -mesh->mNormals[index].y);
-                else
-                    vertex->setNormal(mesh->mNormals[index].x, mesh->mNormals[index].y, mesh->mNormals[index].z);
+                if(swapZY) {
+                    tmesh->addNormal(mesh->mNormals[index].x, mesh->mNormals[index].z, -mesh->mNormals[index].y);
+                } else {
+                    tmesh->addNormal(mesh->mNormals[index].x, mesh->mNormals[index].y, mesh->mNormals[index].z);
+                }
             }
 
             if(mesh->HasTextureCoords(0))
             {
-                vertex->setTexCoord(mesh->mTextureCoords[0][index].x, mesh->mTextureCoords[0][index].y);
+                tmesh->addTexCoord(mesh->mTextureCoords[0][index].x, mesh->mTextureCoords[0][index].y);
             }
 
             if(mesh->HasTextureCoords(1))
             {
-                vertex->setSecondaryTexCoord(mesh->mTextureCoords[1][index].x, mesh->mTextureCoords[1][index].y);
+                tmesh->addTexCoord2(mesh->mTextureCoords[1][index].x, mesh->mTextureCoords[1][index].y);
             }
 
+            int numAssignments = 0;
+            
+            float weights[4] = {0.0, 0.0, 0.0, 0.0};
+            unsigned int boneIds[4] = {0, 0, 0 ,0};
             
             for( unsigned int a = 0; a < mesh->mNumBones; a++) {
                 aiBone* bone = mesh->mBones[a];
@@ -143,29 +151,36 @@ void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, c
 
                 for( unsigned int b = 0; b < bone->mNumWeights; b++) {
                     if(bone->mWeights[b].mVertexId == index) {
-                        vertex->addBoneAssignment(boneIndex, bone->mWeights[b].mWeight);
+                        if(numAssignments < 4) {
+                            weights[numAssignments] = bone->mWeights[b].mWeight;
+                            boneIds[numAssignments] = boneIndex;
+                            numAssignments++;
+                        }
                         hasWeights = true;
                     }
                 }
             }
+            
+            
+            tmesh->addBoneAssignments(weights[0], boneIds[0], weights[1], boneIds[1], weights[2], boneIds[2], weights[3], boneIds[3]);
 
             if(swapZY) {
-					vertex->set(mesh->mVertices[index].x, mesh->mVertices[index].z, -mesh->mVertices[index].y);
+					vPosition.set(mesh->mVertices[index].x, mesh->mVertices[index].z, -mesh->mVertices[index].y);
             } else {
-                vertex->set(mesh->mVertices[index].x, mesh->mVertices[index].y, mesh->mVertices[index].z);
+                vPosition.set(mesh->mVertices[index].x, mesh->mVertices[index].y, mesh->mVertices[index].z);
             }
             
-            if(fabs(vertex->x) > bBox.x) {
-                bBox.x = fabs(vertex->x);
+            if(fabs(vPosition.x) > bBox.x) {
+                bBox.x = fabs(vPosition.x);
             }
-            if(fabs(vertex->y) > bBox.y) {
-                bBox.y = fabs(vertex->y);
+            if(fabs(vPosition.y) > bBox.y) {
+                bBox.y = fabs(vPosition.y);
             }
-            if(fabs(vertex->z) > bBox.z) {
-                bBox.z = fabs(vertex->z);
+            if(fabs(vPosition.z) > bBox.z) {
+                bBox.z = fabs(vPosition.z);
             }
             
-            tmesh->addVertex(vertex);
+            tmesh->addVertex(vPosition.x, vPosition.y, vPosition.z);
 		}
         
 

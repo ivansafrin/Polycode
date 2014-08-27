@@ -392,26 +392,33 @@ void OpenGLRenderer::drawVertexBuffer(VertexBuffer *buffer, bool enableColorBuff
 	OpenGLVertexBuffer *glVertexBuffer = (OpenGLVertexBuffer*)buffer;
 
 	glEnableClientState(GL_VERTEX_ARRAY);		
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glEnableClientState(GL_NORMAL_ARRAY);	
-	
-	if(enableColorBuffer)  {
-		glEnableClientState(GL_COLOR_ARRAY);				
-		
+    glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getVertexBufferID());
+	glVertexPointer( 3, GL_FLOAT, 0, (char *) NULL );
+
+	if(enableColorBuffer && glVertexBuffer->getColorBufferID() != -1)  {
+		glEnableClientState(GL_COLOR_ARRAY);
 		glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getColorBufferID());
 		glColorPointer( 4, GL_FLOAT, 0, (char *) NULL );	
 	}
-	glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getVertexBufferID());
-	glVertexPointer( 3, GL_FLOAT, 0, (char *) NULL );	
-	glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getNormalBufferID());
-	glNormalPointer(GL_FLOAT, 0, (char *) NULL );			
-	glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getTextCoordBufferID());
-	glTexCoordPointer( 2, GL_FLOAT, 0, (char *) NULL );
-
-	glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getTangentBufferID());	
-	glEnableVertexAttribArrayARB(6);	
-	glVertexAttribPointer(6, 3, GL_FLOAT, 0, 0,  (char *)NULL);
-	
+    
+    if(glVertexBuffer->getNormalBufferID() != -1) {
+        glEnableClientState(GL_NORMAL_ARRAY);
+        glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getNormalBufferID());
+        glNormalPointer(GL_FLOAT, 0, (char *) NULL );
+    }
+    
+    if(glVertexBuffer->getTextCoordBufferID() != -1) {
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+        glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getTextCoordBufferID());
+        glTexCoordPointer( 2, GL_FLOAT, 0, (char *) NULL );
+    }
+    
+    if(glVertexBuffer->getTangentBufferID() != -1) {
+        glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getTangentBufferID());
+        glEnableVertexAttribArrayARB(6);	
+        glVertexAttribPointer(6, 3, GL_FLOAT, 0, 0,  (char *)NULL);
+	}
+    
 	GLenum mode = GL_TRIANGLES;
 	
 	switch(buffer->meshType) {
@@ -438,15 +445,19 @@ void OpenGLRenderer::drawVertexBuffer(VertexBuffer *buffer, bool enableColorBuff
 			break;
 	}	
 	
-	glDrawArrays( mode, 0, buffer->getVertexCount() );
-	
-	glDisableClientState( GL_VERTEX_ARRAY);	
+    if(glVertexBuffer->getIndexBufferID() != -1) {
+        glBindBufferARB( GL_ELEMENT_ARRAY_BUFFER_ARB, glVertexBuffer->getIndexBufferID());
+        glDrawElements(mode, glVertexBuffer->getIndexCount(), GL_UNSIGNED_INT, (void*)0);
+        glBindBufferARB( GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+    } else {
+        glDrawArrays( mode, 0, buffer->getVertexCount() );
+	}
+    
+    glDisableVertexAttribArrayARB(6);
+	glDisableClientState( GL_VERTEX_ARRAY);
 	glDisableClientState( GL_TEXTURE_COORD_ARRAY );		
 	glDisableClientState( GL_NORMAL_ARRAY );
-	
-	if(enableColorBuffer) {
-		glDisableClientState( GL_COLOR_ARRAY );	
-	}
+	glDisableClientState( GL_COLOR_ARRAY );
 }
 
 void OpenGLRenderer::enableScissor(bool val) {
@@ -845,229 +856,46 @@ void OpenGLRenderer::popMatrix() {
 }
 
 void OpenGLRenderer::pushRenderDataArray(RenderDataArray *array) {
-		
 	
-	switch(array->arrayType) {
+	switch(array->type) {
 		case RenderDataArray::VERTEX_DATA_ARRAY:
 			glEnableClientState(GL_VERTEX_ARRAY);
 			glBindBufferARB( GL_ARRAY_BUFFER_ARB, 0);
-			glVertexPointer(array->size, GL_FLOAT, 0, array->arrayPtr);
-			verticesToDraw = array->count;
+			glVertexPointer(3, GL_FLOAT, 0, array->getArrayData());
+			verticesToDraw = array->getDataSize() / 3;
 		break;
-		case RenderDataArray::COLOR_DATA_ARRAY:		
-			glColorPointer(array->size, GL_FLOAT, 0, array->arrayPtr);			
+		case RenderDataArray::COLOR_DATA_ARRAY:
+            if(array->getDataSize() != verticesToDraw * 4) {
+                return;
+            }
+			glColorPointer(4, GL_FLOAT, 0, array->getArrayData());
 			glEnableClientState(GL_COLOR_ARRAY);
 		break;
 		case RenderDataArray::TEXCOORD_DATA_ARRAY:
+            if(array->getDataSize() != verticesToDraw * 2) {
+                return;
+            }
 			glEnableClientState(GL_TEXTURE_COORD_ARRAY);						
 			glBindBufferARB( GL_ARRAY_BUFFER_ARB, 0);			
-			glTexCoordPointer(array->size, GL_FLOAT, 0, array->arrayPtr);
+			glTexCoordPointer(2, GL_FLOAT, 0, array->getArrayData());
 		break;
 		case RenderDataArray::NORMAL_DATA_ARRAY:
+            if(array->getDataSize() != verticesToDraw * 3) {
+                return;
+            }
 			glEnableClientState(GL_NORMAL_ARRAY);	
 			glBindBufferARB( GL_ARRAY_BUFFER_ARB, 0);			
-			glNormalPointer(GL_FLOAT, 0, array->arrayPtr);	
+			glNormalPointer(GL_FLOAT, 0, array->getArrayData());
 		break;
 		case RenderDataArray::TANGENT_DATA_ARRAY:
+            if(array->getDataSize() != verticesToDraw * 3) {
+                return;
+            }
 			glEnableVertexAttribArrayARB(6);		
-			glVertexAttribPointer(6, array->size, GL_FLOAT, 0, 0, array->arrayPtr);
+			glVertexAttribPointer(6, 3, GL_FLOAT, 0, 0, array->getArrayData());
 		break;
 		
 	}
-}
-
-RenderDataArray *OpenGLRenderer::createRenderDataArrayForMesh(Mesh *mesh, int arrayType) {
-	RenderDataArray *newArray = createRenderDataArray(arrayType);
-		
-	newArray->count = 0;
-	long bufferOffset = 0;
-	GLfloat* buffer = NULL;
-    
-    Vertex *vertex;
-    if(mesh->indexedMesh) {
-        
-        unsigned int indexCount = mesh->getIndexCount();
-        
-        switch (arrayType) {
-            case RenderDataArray::VERTEX_DATA_ARRAY:
-            {
-                buffer = (GLfloat*)malloc(indexCount * sizeof(GLfloat) * 3);
-                for(int i=0; i < indexCount; i++) {
-                    vertex = mesh->getIndexedVertex(i);
-                    buffer[bufferOffset+0] = vertex->x;
-                    buffer[bufferOffset+1] = vertex->y;
-                    buffer[bufferOffset+2] = vertex->z;
-                    bufferOffset += 3;
-                    newArray->count++;
-                }
-            }
-                break;
-            case RenderDataArray::COLOR_DATA_ARRAY:
-            {
-                buffer = (GLfloat*)malloc(indexCount * sizeof(GLfloat) * 4);
-                for(int i=0; i < indexCount; i++) {
-                    vertex = mesh->getIndexedVertex(i);
-                    buffer[bufferOffset+0] = vertex->vertexColor.r;
-                    buffer[bufferOffset+1] = vertex->vertexColor.g;
-                    buffer[bufferOffset+2] = vertex->vertexColor.b;
-                    buffer[bufferOffset+3] = vertex->vertexColor.a;
-                    bufferOffset += 4;
-                }
-            }
-                break;
-            case RenderDataArray::NORMAL_DATA_ARRAY:
-            {
-                buffer = (GLfloat*)malloc(indexCount * sizeof(GLfloat) * 3);
-                for(int i=0; i < indexCount; i++) {
-                    vertex = mesh->getIndexedVertex(i);
-                    buffer[bufferOffset+0] = vertex->normal.x;
-                    buffer[bufferOffset+1] = vertex->normal.y;
-                    buffer[bufferOffset+2] = vertex->normal.z;
-                    bufferOffset += 3;                    
-                }
-                
-            }
-                break;
-            case RenderDataArray::TANGENT_DATA_ARRAY:
-            {
-                buffer = (GLfloat*)malloc(indexCount * sizeof(GLfloat) * 3);
-                
-                for(int i=0; i < indexCount; i++) {
-                    vertex = mesh->getIndexedVertex(i);
-                    buffer[bufferOffset+0] = vertex->tangent.x;
-                    buffer[bufferOffset+1] = vertex->tangent.y;
-                    buffer[bufferOffset+2] = vertex->tangent.z;
-                    bufferOffset += 3;
-                }
-            }
-                break;
-            case RenderDataArray::TEXCOORD_DATA_ARRAY:
-            {
-                buffer = (GLfloat*)malloc(indexCount * sizeof(GLfloat) * 2);
-                for(int i=0; i < indexCount; i++) {
-                    vertex = mesh->getIndexedVertex(i);
-                    buffer[bufferOffset+0] = vertex->getTexCoord().x;
-                    buffer[bufferOffset+1] = vertex->getTexCoord().y;
-                    bufferOffset += 2;
-                }
-            }
-                break;
-            default:
-            break;
-        }
-        
-    } else {
-        unsigned int vertexCount = mesh->getVertexCount();
-        
-        switch (arrayType) {
-            case RenderDataArray::VERTEX_DATA_ARRAY:
-            {
-                buffer = (GLfloat*)malloc(vertexCount * sizeof(GLfloat) * 3);
-                for(int i=0; i < vertexCount; i++) {
-                    vertex = mesh->getVertex(i);
-                    buffer[bufferOffset+0] = vertex->x;
-                    buffer[bufferOffset+1] = vertex->y;
-                    buffer[bufferOffset+2] = vertex->z;
-                    bufferOffset += 3;
-                    newArray->count++;
-                }
-            }
-                break;
-            case RenderDataArray::COLOR_DATA_ARRAY:
-            {
-                buffer = (GLfloat*)malloc(vertexCount * sizeof(GLfloat) * 4);
-                for(int i=0; i < vertexCount; i++) {
-                    vertex = mesh->getVertex(i);
-                    buffer[bufferOffset+0] = vertex->vertexColor.r;
-                    buffer[bufferOffset+1] = vertex->vertexColor.g;
-                    buffer[bufferOffset+2] = vertex->vertexColor.b;
-                    buffer[bufferOffset+3] = vertex->vertexColor.a;
-                    bufferOffset += 4;
-                }
-            }
-                break;
-            case RenderDataArray::NORMAL_DATA_ARRAY:
-            {
-                buffer = (GLfloat*)malloc(vertexCount * sizeof(GLfloat) * 3);
-                for(int i=0; i < vertexCount; i++) {
-                    vertex = mesh->getVertex(i);
-                    buffer[bufferOffset+0] = vertex->normal.x;
-                    buffer[bufferOffset+1] = vertex->normal.y;
-                    buffer[bufferOffset+2] = vertex->normal.z;
-                    bufferOffset += 3;
-                }
-  
-            }
-                break;
-            case RenderDataArray::TANGENT_DATA_ARRAY:
-            {
-                buffer = (GLfloat*)malloc(vertexCount * sizeof(GLfloat) * 3);
-                
-                for(int i=0; i < vertexCount; i++) {
-                    vertex = mesh->getVertex(i);
-                    buffer[bufferOffset+0] = vertex->tangent.x;
-                    buffer[bufferOffset+1] = vertex->tangent.y;
-                    buffer[bufferOffset+2] = vertex->tangent.z;
-                    bufferOffset += 3;
-                }
-            }
-                break;		
-            case RenderDataArray::TEXCOORD_DATA_ARRAY:
-            {
-                buffer = (GLfloat*)malloc(vertexCount * sizeof(GLfloat) * 2);
-                for(int i=0; i < vertexCount; i++) {
-                    vertex = mesh->getVertex(i);
-                    buffer[bufferOffset+0] = vertex->getTexCoord().x;
-                    buffer[bufferOffset+1] = vertex->getTexCoord().y;
-                    bufferOffset += 2;
-                }			
-            }
-            break;
-            default:
-            break;
-        }
-    }
-    
-	if(buffer != NULL) {
-		free(newArray->arrayPtr);
-		newArray->arrayPtr = buffer;		
-	}
-	
-	return newArray;
-}
-
-RenderDataArray *OpenGLRenderer::createRenderDataArray(int arrayType) {
-	RenderDataArray *newArray = new RenderDataArray();
-	newArray->arrayType = arrayType;
-	newArray->arrayPtr = malloc(1);
-	newArray->stride = 0;
-	newArray->count = 0;
-	
-	switch (arrayType) {
-		case RenderDataArray::VERTEX_DATA_ARRAY:
-			newArray->size = 3;
-			break;
-		case RenderDataArray::COLOR_DATA_ARRAY:
-			newArray->size = 4;
-			break;			
-		case RenderDataArray::NORMAL_DATA_ARRAY:
-			newArray->size = 3;
-			break;	
-		case RenderDataArray::TANGENT_DATA_ARRAY:
-			newArray->size = 3;
-			break;														
-		case RenderDataArray::TEXCOORD_DATA_ARRAY:
-			newArray->size = 2;
-			break;									
-		default:
-			break;
-	}
-	
-	return newArray;
-}
-
-void OpenGLRenderer::setRenderArrayData(RenderDataArray *array, Number *arrayData) {
-	
 }
 
 void OpenGLRenderer::setWireframePolygonMode(bool val) {
@@ -1078,7 +906,7 @@ void OpenGLRenderer::setWireframePolygonMode(bool val) {
     }
 }
 
-void OpenGLRenderer::drawArrays(int drawType) {
+void OpenGLRenderer::drawArrays(int drawType, IndexDataArray *indexArray) {
 	
 	GLenum mode = GL_TRIANGLES;
 	
@@ -1106,14 +934,22 @@ void OpenGLRenderer::drawArrays(int drawType) {
 		break;
 	}
 	
-	glDrawArrays( mode, 0, verticesToDraw);	
-	
+    if(indexArray) {
+        if(indexArray->getDataSize() > 0) {
+            glBindBufferARB( GL_ELEMENT_ARRAY_BUFFER_ARB, 0);            
+            glDrawElements(mode, indexArray->getDataSize(), GL_UNSIGNED_INT, indexArray->getArrayData());
+        }
+    } else {
+        glDrawArrays( mode, 0, verticesToDraw);
+	}
+    
 	verticesToDraw = 0;
 		
 	glDisableClientState( GL_VERTEX_ARRAY);	
 	glDisableClientState( GL_TEXTURE_COORD_ARRAY );		
 	glDisableClientState( GL_NORMAL_ARRAY );
-	glDisableClientState( GL_COLOR_ARRAY );		
+	glDisableClientState( GL_COLOR_ARRAY );
+    glDisableVertexAttribArrayARB(6);
 }
 
 void OpenGLRenderer::drawScreenQuad(Number qx, Number qy) {

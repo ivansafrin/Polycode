@@ -24,6 +24,7 @@ THE SOFTWARE.
 #include "PolyGlobals.h"
 #include "PolyEntity.h"
 #include "PolyShader.h"
+#include "PolyRenderDataArray.h"
 
 namespace Polycode {
 
@@ -239,8 +240,7 @@ namespace Polycode {
             /**
              * If this flag is set to false, backface culling is disabled when rendering this entity, rendering both sides of each face. Set to true by default.
              */
-            bool backfaceCulled;	
-        
+            bool backfaceCulled;
 			
 		protected:
 		
@@ -251,5 +251,12 @@ namespace Polycode {
 			Skeleton *skeleton;
 			ShaderBinding *localShaderOptions;
             String fileName;
+        
+    
+            VertexDataArray skeletalVertexPositions;
+            VertexDataArray skeletalVertexNormals;
+        
+        
+        
 	};
 }

@@ -275,18 +275,6 @@ void Renderer::setRendererShaderParams(Shader *shader, ShaderBinding *binding) {
 	}
 }
 
-void Renderer::pushDataArrayForMesh(Mesh *mesh, int arrayType) {
-	if(mesh->arrayDirtyMap[arrayType] == true || mesh->renderDataArrays[arrayType] == NULL) {
-		if(mesh->renderDataArrays[arrayType] != NULL) {
-			free(mesh->renderDataArrays[arrayType]->arrayPtr);
-			delete mesh->renderDataArrays[arrayType];
-		}
-		mesh->renderDataArrays[arrayType] = createRenderDataArrayForMesh(mesh, arrayType);
-		mesh->arrayDirtyMap[arrayType] = false;
-	}
-	pushRenderDataArray(mesh->renderDataArrays[arrayType]);
-}
-
 void Renderer::applyMaterial(Material *material,  ShaderBinding *localOptions,unsigned int shaderIndex, bool forceMaterial) {
     
     if(overrideMaterial) {

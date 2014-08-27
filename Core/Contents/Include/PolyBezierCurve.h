@@ -29,7 +29,6 @@
 #include "PolyVector2.h"
 #include <vector>
 
-
 namespace Polycode {
 
 	/** 
@@ -177,6 +176,9 @@ namespace Polycode {
 		*/
 		void removePoint(BezierPoint *point);
         
+        void setHeightCacheResolution(Number resolution);
+        void rebuildHeightCache();
+        
         /**
         * The point after which new control points should be added. If NULL, new control points are added to the end of the curve.
         */
@@ -188,12 +190,18 @@ namespace Polycode {
          */
         Number evaluationAccuracy;
         
-        void recalculateDistances();        
+        void recalculateDistances();
+        
+        static bool cacheHeightValues;
+        static unsigned int defaultHeightCacheResolution;
 		
 		protected:
         
+            unsigned int heightCacheResolution;
             std::vector<BezierPoint*> controlPoints;
             std::vector<Number> distances;
+        
+            std::vector<Number> heightCache;
 		
             Number minX;
             Number maxX;

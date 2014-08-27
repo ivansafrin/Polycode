@@ -44,6 +44,7 @@ SET(polycore_SRCS
     Source/PolyQuaternionCurve.cpp
     Source/PolyRectangle.cpp
     Source/PolyRenderer.cpp
+    Source/PolyRenderDataArray.cpp
     Source/PolyResource.cpp
     Source/PolyResourceManager.cpp
     Source/PolyScene.cpp
@@ -71,7 +72,6 @@ SET(polycore_SRCS
     Source/PolyVector2.cpp
     Source/PolyVector3.cpp
     Source/PolyVector4.cpp
-    Source/PolyVertex.cpp
     Source/tinystr.cpp
     Source/tinyxml.cpp
     Source/tinyxmlerror.cpp
@@ -133,6 +133,7 @@ SET(polycore_HDRS
     Include/PolyQuaternion.h
     Include/PolyRectangle.h
     Include/PolyRenderer.h
+    Include/PolyRenderDataArray.h
     Include/PolyResource.h
     Include/PolyResourceManager.h
     Include/PolyScene.h
@@ -160,7 +161,6 @@ SET(polycore_HDRS
     Include/PolyVector2.h
     Include/PolyVector3.h
     Include/PolyVector4.h
-    Include/PolyVertex.h
     Include/tinystr.h
     Include/tinyxml.h
     Include/PolySocket.h

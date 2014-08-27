@@ -265,7 +265,6 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	yLine = new SceneMesh(Mesh::LINE_MESH);
 	yLine->getMesh()->addVertex(0.0, 0.0, 0.0);
 	yLine->getMesh()->addVertex(0.0, 1.0, 0.0);
-	yLine->getMesh()->dirtyArrays();
 	yLine->depthTest = false;
 	yLine->setColor(0.0, 1.0, 0.0, 1.0);
     yLine->setLocalBoundingBox(yLine->getMesh()->calculateBBox());
@@ -275,7 +274,6 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	xLine = new SceneMesh(Mesh::LINE_MESH);
 	xLine->getMesh()->addVertex(0.0, 0.0, 0.0);
 	xLine->getMesh()->addVertex(1.0, 0.0, 0.0);
-	xLine->getMesh()->dirtyArrays();
 	xLine->depthTest = false;
 	xLine->setColor(1.0, 0.0, 0.0, 1.0);
     xLine->setLocalBoundingBox(xLine->getMesh()->calculateBBox());
@@ -285,7 +283,6 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	zLine = new SceneMesh(Mesh::LINE_MESH);
 	zLine->getMesh()->addVertex(0.0, 0.0, 0.0);
 	zLine->getMesh()->addVertex(0.0, 0.0, 1.0);
-	zLine->getMesh()->dirtyArrays();
 	zLine->depthTest = false;
 	zLine->setColor(0.0, 0.0, 1.0, 1.0);
     zLine->setLocalBoundingBox(zLine->getMesh()->calculateBBox());

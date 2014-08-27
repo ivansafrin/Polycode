@@ -24,6 +24,8 @@
 
 using namespace Polycode;
 
+bool BezierCurve::cacheHeightValues = false;
+unsigned int BezierCurve::defaultHeightCacheResolution = 512;
 
 BezierPoint::BezierPoint(Number p1x, Number p1y, Number p1z, Number p2x, Number p2y, Number p2z, Number p3x, Number p3y, Number p3z) {
 	p1.x = p1x;
@@ -41,6 +43,7 @@ BezierCurve::BezierCurve(){
 	insertPoint = NULL;
 	evaluationAccuracy = 0.01;
     distancesDirty =  false;
+    heightCacheResolution = defaultHeightCacheResolution;
 }
 
 void BezierCurve::clearControlPoints() {
@@ -125,7 +128,22 @@ void BezierCurve::recalculateDistances() {
     minX = getPointAt(0.0).x;
     maxX = getPointAt(1.0).x;
     midX = getPointAt(0.5).x;
+
+    if(cacheHeightValues) {
+        rebuildHeightCache();
+    }
+}
+
+void BezierCurve::rebuildHeightCache() {
+    heightCache.clear();
     
+    Number xSize = maxX - minX;
+    
+    for(int i=0; i < heightCacheResolution; i++) {
+        Number xVal = minX + (xSize * ((Number)i)/((Number)heightCacheResolution));
+        Number heightValue = getPointAt(getTValueAtX(xVal)).y;
+        heightCache.push_back(heightValue);
+    }
 }
 
 Vector3 BezierCurve::getPointBetween(Number a, BezierPoint *bp1, BezierPoint *bp2) {
@@ -140,7 +158,23 @@ Vector3 BezierCurve::getPointBetween(Number a, BezierPoint *bp1, BezierPoint *bp
 }
 
 Number BezierCurve::getYValueAtX(Number x) {
-    return getPointAt(getTValueAtX(x)).y;
+    if(cacheHeightValues) {
+        if(distancesDirty) {
+            recalculateDistances();
+        }
+        unsigned int cacheIndex = (x-minX/(maxX-minX)) * ((Number) heightCacheResolution);
+        if(cacheIndex > heightCacheResolution-1) {
+            cacheIndex = heightCacheResolution-1;
+        }
+        return heightCache[cacheIndex];
+    } else {
+        return getPointAt(getTValueAtX(x)).y;
+    }
+}
+
+void BezierCurve::setHeightCacheResolution(Number resolution) {
+    heightCacheResolution = resolution;
+    distancesDirty = true;
 }
 
 Number BezierCurve::getTValueAtX(Number x) {

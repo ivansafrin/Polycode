@@ -3,7 +3,7 @@
 #include "PolyGlobals.h"
 #include "ft2build.h"
 #include "PolyString.h"
-#include "PolyVertex.h"
+#include "PolyVector2.h"
 #include <vector>
 #include <map>
 #include <set>
@@ -70,7 +70,7 @@ namespace Polycode {
 
 			/** Used by TextMesh to generate the vertices for the given text into the vertex array.
 				@return the next index after that which was used */
-			int renderStringVertices(String text, std::vector<Vertex*>& vertices, int index = 0);
+			//int renderStringVertices(String text, std::vector<Vertex*>& vertices, int index = 0);
 
 			Texture* getTexture() { return texture; }
 

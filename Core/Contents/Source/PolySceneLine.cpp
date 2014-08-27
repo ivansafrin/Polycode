@@ -89,7 +89,7 @@ void SceneCurve::Update() {
         
         for(Number offset=0.0; offset <= 1.0; offset += step) {
             Vector3 pt = curve->getPointAt(offset);
-            mesh->addVertex(pt.x, pt.y, pt.z, offset, 0.0);
+            mesh->addVertexWithUV(pt.x, pt.y, pt.z, offset, 0.0);
             
             bBox.x = max(bBox.x,(Number)fabs(pt.x));
             bBox.y = max(bBox.y,(Number)fabs(pt.y));
@@ -99,7 +99,6 @@ void SceneCurve::Update() {
     }
     
     setLocalBoundingBox(bBox * 2.0);
-    mesh->dirtyArray(RenderDataArray::VERTEX_DATA_ARRAY);
 }
 
 SceneLine::SceneLine(Vector3 start, Vector3 end) : SceneMesh(Mesh::LINE_MESH) {
@@ -120,9 +119,8 @@ SceneLine::SceneLine(Entity *ent1, Entity *ent2) : SceneMesh(Mesh::LINE_MESH) {
 }
 
 void SceneLine::initLine() {
-	mesh->addVertex(0,0,0,0,0);
-	mesh->addVertex(0,0,0,1,0);
-	mesh->arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;		
+	mesh->addVertexWithUV(0,0,0,0,0);
+	mesh->addVertexWithUV(0,0,0,1,0);
 }
 
 SceneLine *SceneLine::SceneLineWithPositions(Vector3 start, Vector3 end) {
@@ -144,18 +142,20 @@ void SceneLine::Update(){
 
 	Vector3 v1;
 	Vector3 v2;
+
+    mesh->vertexPositionArray.data.clear();
 	
 	if(ent1 != NULL && ent2 != NULL) {
 		v1 = ent1->getConcatenatedMatrix().getPosition();
 		v2 = ent2->getConcatenatedMatrix().getPosition();
-        mesh->getVertex(0)->set(v1.x,v1.y,v1.z);
-        mesh->getVertex(1)->set(v2.x,v2.y,v2.z);
+        
+        mesh->addVertex(v1.x,v1.y,v1.z);
+        mesh->addVertex(v2.x,v2.y,v2.z);
 	} else {
 		v1 = start;
 		v2 = end;
-        mesh->getVertex(0)->set(v1.x,v1.y*yAdjust,v1.z);
-        mesh->getVertex(1)->set(v2.x,v2.y*yAdjust,v2.z);
+        mesh->addVertex(v1.x,v1.y*yAdjust,v1.z);
+        mesh->addVertex(v2.x,v2.y*yAdjust,v2.z);
+
 	}
-	
-	mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
 }

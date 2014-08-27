@@ -168,7 +168,7 @@ UIRect::UIRect(Number width, Number height) : UIElement() {
 }
 
 void UIRect::setImageCoordinates(Number x, Number y, Number width, Number height, Number imageScale) {
-    Vertex *vertex;
+
 	Number pixelSizeX = 1/imageWidth;
 	Number pixelSizeY = 1/imageHeight;
 
@@ -183,24 +183,21 @@ void UIRect::setImageCoordinates(Number x, Number y, Number width, Number height
 	Number wFloat = width * pixelSizeX * imageScale;
 	Number hFloat = height * pixelSizeY * imageScale;
 
-	vertex = rectMesh->getVertex(0);
-	vertex->set(-whalf,-hhalf,0);
-	vertex->setTexCoord(xFloat, (1.0-yFloat) - hFloat);
+    rectMesh->vertexPositionArray.data.clear();
+    rectMesh->vertexTexCoordArray.data.clear();
+    
+	rectMesh->addVertex(-whalf,-hhalf,0);
+	rectMesh->addTexCoord(xFloat, (1.0-yFloat) - hFloat);
 
-	vertex = rectMesh->getVertex(1);
-	vertex->set(-whalf+width,-hhalf,0);
-	vertex->setTexCoord(xFloat + wFloat, (1.0-yFloat) - hFloat);
+	rectMesh->addVertex(-whalf+width,-hhalf,0);
+	rectMesh->addTexCoord(xFloat + wFloat, (1.0-yFloat) - hFloat);
 
-	vertex = rectMesh->getVertex(2);
-	vertex->set(-whalf+width,-hhalf+height,0);
-	vertex->setTexCoord(xFloat + wFloat, 1.0-yFloat);
+	rectMesh->addVertex(-whalf+width,-hhalf+height,0);
+	rectMesh->addTexCoord(xFloat + wFloat, 1.0-yFloat);
 
-	vertex = rectMesh->getVertex(3);
-	vertex->set(-whalf,-hhalf+height,0);	
-	vertex->setTexCoord(xFloat, 1.0-yFloat);
+	rectMesh->addVertex(-whalf,-hhalf+height,0);
+	rectMesh->addTexCoord(xFloat, 1.0-yFloat);
 
-	rectMesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
-	rectMesh->arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;	
 	rebuildTransformMatrix();
 	matrixDirty = true;
 }
@@ -224,10 +221,10 @@ void UIRect::initRect(Number width, Number height) {
 	Number whalf = width/2.0f;
 	Number hhalf = height/2.0f;
 				
-	rectMesh->addVertex(-whalf,-hhalf,0,0,0);
-	rectMesh->addVertex(-whalf+width,-hhalf,0, 1, 0);
-	rectMesh->addVertex(-whalf+width,-hhalf+height,0, 1, 1);
-	rectMesh->addVertex(-whalf,-hhalf+height,0,0,1);
+	rectMesh->addVertexWithUV(-whalf,-hhalf,0,0,0);
+	rectMesh->addVertexWithUV(-whalf+width,-hhalf,0, 1, 0);
+	rectMesh->addVertexWithUV(-whalf+width,-hhalf+height,0, 1, 1);
+	rectMesh->addVertexWithUV(-whalf,-hhalf+height,0,0,1);
 }
 
 UIRect::~UIRect() {
@@ -250,9 +247,11 @@ Texture *UIRect::getTexture() {
 void UIRect::Render() {
 	renderer->clearShader();
 	renderer->setTexture(texture);
-	renderer->pushDataArrayForMesh(rectMesh, RenderDataArray::VERTEX_DATA_ARRAY);
-	renderer->pushDataArrayForMesh(rectMesh, RenderDataArray::TEXCOORD_DATA_ARRAY);	
-	renderer->drawArrays(Mesh::QUAD_MESH);
+    
+    renderer->pushRenderDataArray(&rectMesh->vertexPositionArray);
+    renderer->pushRenderDataArray(&rectMesh->vertexTexCoordArray);
+
+	renderer->drawArrays(Mesh::QUAD_MESH, NULL);
 }
 
 void UIRect::Resize(Number width, Number height) {
@@ -262,17 +261,13 @@ void UIRect::Resize(Number width, Number height) {
 
 	Number whalf = width/2.0f;
 	Number hhalf = height/2.0f;
-	Vertex *vertex;
 
-	vertex = rectMesh->getVertex(0);
-	vertex->set(-whalf,-hhalf,0);			
-	vertex = rectMesh->getVertex(1);
-	vertex->set(-whalf+width,-hhalf,0);			
-	vertex = rectMesh->getVertex(2);
-	vertex->set(-whalf+width,-hhalf+height,0);			
-	vertex = rectMesh->getVertex(3);
-	vertex->set(-whalf,-hhalf+height,0);				
-	rectMesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;	
+    rectMesh->vertexPositionArray.data.clear();
+
+    rectMesh->addVertex(-whalf,-hhalf,0);
+    rectMesh->addVertex(-whalf+width,-hhalf,0);
+    rectMesh->addVertex(-whalf+width,-hhalf+height,0);
+    rectMesh->addVertex(-whalf,-hhalf+height,0);
 }
 
 UIImage::UIImage(String imagePath, int width, int height) : UIRect(imagePath, width, height) {

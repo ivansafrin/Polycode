@@ -50,6 +50,7 @@ namespace Polycode {
 		GLuint getNormalBufferID();
 		GLuint getColorBufferID();
 		GLuint getTangentBufferID();
+		GLuint getIndexBufferID();
 				
 	protected:
 		
@@ -57,7 +58,8 @@ namespace Polycode {
 		GLuint texCoordBufferID;
 		GLuint normalBufferID;
 		GLuint colorBufferID;	
-		GLuint tangentBufferID;				
+		GLuint tangentBufferID;
+        GLuint indexBufferID;
 	};
 	
 }

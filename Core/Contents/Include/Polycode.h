@@ -48,6 +48,7 @@
 #include "PolyQuaternionCurve.h"
 #include "PolyRectangle.h"
 #include "PolyRenderer.h"
+#include "PolyRenderDataArray.h"
 #include "PolyCoreServices.h"
 #include "PolyImage.h"
 #include "PolyLabel.h"

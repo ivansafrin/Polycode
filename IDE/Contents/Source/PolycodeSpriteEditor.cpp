@@ -238,10 +238,10 @@ void SpriteSheetEditor::Update() {
     for(int i=0; i < sprite->getNumFrames(); i++){
         SpriteFrame frame = sprite->getSpriteFrame(i);
         
-        mesh->addVertex(frame.coordinates.x, -frame.coordinates.y, 0.0, frame.coordinates.x, frame.coordinates.y);
-        mesh->addVertex(frame.coordinates.x+frame.coordinates.w, -frame.coordinates.y, 0.0, frame.coordinates.x+frame.coordinates.w, frame.coordinates.y);
-        mesh->addVertex(frame.coordinates.x+frame.coordinates.w, -frame.coordinates.y - frame.coordinates.h, 0.0, frame.coordinates.x+frame.coordinates.w, frame.coordinates.y + frame.coordinates.h);
-        mesh->addVertex(frame.coordinates.x, -frame.coordinates.y - frame.coordinates.h, 0.0, frame.coordinates.x, frame.coordinates.y + frame.coordinates.h);
+        mesh->addVertexWithUV(frame.coordinates.x, -frame.coordinates.y, 0.0, frame.coordinates.x, frame.coordinates.y);
+        mesh->addVertexWithUV(frame.coordinates.x+frame.coordinates.w, -frame.coordinates.y, 0.0, frame.coordinates.x+frame.coordinates.w, frame.coordinates.y);
+        mesh->addVertexWithUV(frame.coordinates.x+frame.coordinates.w, -frame.coordinates.y - frame.coordinates.h, 0.0, frame.coordinates.x+frame.coordinates.w, frame.coordinates.y + frame.coordinates.h);
+        mesh->addVertexWithUV(frame.coordinates.x, -frame.coordinates.y - frame.coordinates.h, 0.0, frame.coordinates.x, frame.coordinates.y + frame.coordinates.h);
         mesh->addIndexedFace(offset+0,offset+1);
         mesh->addIndexedFace(offset+1,offset+2);
         mesh->addIndexedFace(offset+2,offset+3);
@@ -249,10 +249,10 @@ void SpriteSheetEditor::Update() {
         offset += 4;
         
         if(hasSelectedID(frame.frameID)) {
-            meshSelected->addVertex(frame.coordinates.x, -frame.coordinates.y, 0.0, frame.coordinates.x, frame.coordinates.y);
-            meshSelected->addVertex(frame.coordinates.x+frame.coordinates.w, -frame.coordinates.y, 0.0, frame.coordinates.x+frame.coordinates.w, frame.coordinates.y);
-            meshSelected->addVertex(frame.coordinates.x+frame.coordinates.w, -frame.coordinates.y - frame.coordinates.h, 0.0, frame.coordinates.x+frame.coordinates.w, frame.coordinates.y + frame.coordinates.h);
-            meshSelected->addVertex(frame.coordinates.x, -frame.coordinates.y - frame.coordinates.h, 0.0, frame.coordinates.x, frame.coordinates.y + frame.coordinates.h);
+            meshSelected->addVertexWithUV(frame.coordinates.x, -frame.coordinates.y, 0.0, frame.coordinates.x, frame.coordinates.y);
+            meshSelected->addVertexWithUV(frame.coordinates.x+frame.coordinates.w, -frame.coordinates.y, 0.0, frame.coordinates.x+frame.coordinates.w, frame.coordinates.y);
+            meshSelected->addVertexWithUV(frame.coordinates.x+frame.coordinates.w, -frame.coordinates.y - frame.coordinates.h, 0.0, frame.coordinates.x+frame.coordinates.w, frame.coordinates.y + frame.coordinates.h);
+            meshSelected->addVertexWithUV(frame.coordinates.x, -frame.coordinates.y - frame.coordinates.h, 0.0, frame.coordinates.x, frame.coordinates.y + frame.coordinates.h);
             meshSelected->addIndexedFace(offsetSelected+0,offsetSelected+1);
             meshSelected->addIndexedFace(offsetSelected+1,offsetSelected+2);
             meshSelected->addIndexedFace(offsetSelected+2,offsetSelected+3);
@@ -266,10 +266,10 @@ void SpriteSheetEditor::Update() {
      
         SpriteFrame frame = frameToAdd;
         
-        mesh->addVertex(frame.coordinates.x, -frame.coordinates.y, 0.0, frame.coordinates.x, frame.coordinates.y);
-        mesh->addVertex(frame.coordinates.x+frame.coordinates.w, -frame.coordinates.y, 0.0, frame.coordinates.x+frame.coordinates.w, frame.coordinates.y);
-        mesh->addVertex(frame.coordinates.x+frame.coordinates.w, -frame.coordinates.y - frame.coordinates.h, 0.0, frame.coordinates.x+frame.coordinates.w, frame.coordinates.y + frame.coordinates.h);
-        mesh->addVertex(frame.coordinates.x, -frame.coordinates.y - frame.coordinates.h, 0.0, frame.coordinates.x, frame.coordinates.y + frame.coordinates.h);
+        mesh->addVertexWithUV(frame.coordinates.x, -frame.coordinates.y, 0.0, frame.coordinates.x, frame.coordinates.y);
+        mesh->addVertexWithUV(frame.coordinates.x+frame.coordinates.w, -frame.coordinates.y, 0.0, frame.coordinates.x+frame.coordinates.w, frame.coordinates.y);
+        mesh->addVertexWithUV(frame.coordinates.x+frame.coordinates.w, -frame.coordinates.y - frame.coordinates.h, 0.0, frame.coordinates.x+frame.coordinates.w, frame.coordinates.y + frame.coordinates.h);
+        mesh->addVertexWithUV(frame.coordinates.x, -frame.coordinates.y - frame.coordinates.h, 0.0, frame.coordinates.x, frame.coordinates.y + frame.coordinates.h);
         mesh->addIndexedFace(offset+0,offset+1);
         mesh->addIndexedFace(offset+1,offset+2);
         mesh->addIndexedFace(offset+2,offset+3);
@@ -277,10 +277,6 @@ void SpriteSheetEditor::Update() {
         offset += 4;
 
     }
-    
-    
-    mesh->dirtyArrays();
-    meshSelected->dirtyArrays();
     
 }
 
@@ -1019,10 +1015,17 @@ void SpriteStateEditBar::refreshBar() {
             vertexColor = Color(1.0, 0.8, 0.0, 1.0);
         }
         
-        meshTicks->addVertex(frameOffset, 0.0, 0.0, 0.0, 0.0)->vertexColor = vertexColor;
-        meshTicks->addVertex(frameOffset, 0.0-frameTickHeight, 0.0, 0.0, 1.0)->vertexColor = vertexColor;
-        meshTicks->addVertex(frameOffset+frameSize-frameGapSize, -frameTickHeight, 0.0, 1.0, 1.0)->vertexColor = vertexColor;
-        meshTicks->addVertex(frameOffset+frameSize-frameGapSize, 0.0, 0.0, 1.0, 0.0)->vertexColor = vertexColor;
+        meshTicks->addVertexWithUV(frameOffset, 0.0, 0.0, 0.0, 0.0);
+        meshTicks->addColor(vertexColor);
+        
+        meshTicks->addVertexWithUV(frameOffset, 0.0-frameTickHeight, 0.0, 0.0, 1.0);
+        meshTicks->addColor(vertexColor);
+        
+        meshTicks->addVertexWithUV(frameOffset+frameSize-frameGapSize, -frameTickHeight, 0.0, 1.0, 1.0);
+        meshTicks->addColor(vertexColor);
+        
+        meshTicks->addVertexWithUV(frameOffset+frameSize-frameGapSize, 0.0, 0.0, 1.0, 0.0);
+        meshTicks->addColor(vertexColor);
         
         
         meshTicks->addIndexedFace(offset+0,offset+1);
@@ -1047,10 +1050,10 @@ void SpriteStateEditBar::refreshBar() {
         
         if(drawIcon) {
         
-            mesh->addVertex(frameOffset+iconOffset, -frameTickHeight-frameTickGap-iconOffset, 0.0, frame.coordinates.x, 1.0-frame.coordinates.y);
-            mesh->addVertex(frameOffset+iconOffset, -frameTickHeight-frameTickGap-iconFrameHeight-iconOffset, 0.0, frame.coordinates.x, 1.0-frame.coordinates.y  - frame.coordinates.h);
-            mesh->addVertex(frameOffset+iconFrameWidth+iconOffset, -frameTickHeight-frameTickGap-iconFrameHeight-iconOffset, 0.0, frame.coordinates.x+frame.coordinates.w, 1.0- frame.coordinates.y  - frame.coordinates.h);
-            mesh->addVertex(frameOffset+iconFrameWidth+iconOffset, -frameTickHeight-frameTickGap-iconOffset, 0.0, frame.coordinates.x+frame.coordinates.w, 1.0-frame.coordinates.y);
+            mesh->addVertexWithUV(frameOffset+iconOffset, -frameTickHeight-frameTickGap-iconOffset, 0.0, frame.coordinates.x, 1.0-frame.coordinates.y);
+            mesh->addVertexWithUV(frameOffset+iconOffset, -frameTickHeight-frameTickGap-iconFrameHeight-iconOffset, 0.0, frame.coordinates.x, 1.0-frame.coordinates.y  - frame.coordinates.h);
+            mesh->addVertexWithUV(frameOffset+iconFrameWidth+iconOffset, -frameTickHeight-frameTickGap-iconFrameHeight-iconOffset, 0.0, frame.coordinates.x+frame.coordinates.w, 1.0- frame.coordinates.y  - frame.coordinates.h);
+            mesh->addVertexWithUV(frameOffset+iconFrameWidth+iconOffset, -frameTickHeight-frameTickGap-iconOffset, 0.0, frame.coordinates.x+frame.coordinates.w, 1.0-frame.coordinates.y);
             
             mesh->addIndexedFace(offsetIcon+0,offsetIcon+1);
             mesh->addIndexedFace(offsetIcon+1,offsetIcon+2);
@@ -1068,10 +1071,17 @@ void SpriteStateEditBar::refreshBar() {
             bgFrameColor = Color(1.0, 0.5, 0.5, 1.0);
         }
         
-        meshBg->addVertex(frameOffset, -frameTickHeight-frameTickGap, 0.0, 0.0, 0.0)->vertexColor = bgFrameColor;
-        meshBg->addVertex(frameOffset, -frameTickHeight-frameTickGap-frameHeight, 0.0, 0.0, 1.0)->vertexColor = bgFrameColor;
-        meshBg->addVertex(frameOffset+frameSize-gapSize, -frameTickHeight-frameTickGap-frameHeight, 0.0, 1.0, 1.0)->vertexColor = bgFrameColor;
-        meshBg->addVertex(frameOffset+frameSize-gapSize, -frameTickHeight-frameTickGap, 0.0, 1.0, 0.0)->vertexColor = bgFrameColor;
+        meshBg->addVertexWithUV(frameOffset, -frameTickHeight-frameTickGap, 0.0, 0.0, 0.0);
+        meshBg->addColor(bgFrameColor);
+        
+        meshBg->addVertexWithUV(frameOffset, -frameTickHeight-frameTickGap-frameHeight, 0.0, 0.0, 1.0);
+        meshBg->addColor(bgFrameColor);
+        
+        meshBg->addVertexWithUV(frameOffset+frameSize-gapSize, -frameTickHeight-frameTickGap-frameHeight, 0.0, 1.0, 1.0);
+        meshBg->addColor(bgFrameColor);
+        
+        meshBg->addVertexWithUV(frameOffset+frameSize-gapSize, -frameTickHeight-frameTickGap, 0.0, 1.0, 0.0);
+        meshBg->addColor(bgFrameColor);
 
         
         meshBg->addIndexedFace(offset+0,offset+1);
@@ -1086,10 +1096,10 @@ void SpriteStateEditBar::refreshBar() {
         Number gripOffset = (frameHeight-24.0) / 2.0;
         
         if(drawGrip) {
-            meshGrips->addVertex(frameOffset+frameSize-gapSize-gripWidth, -frameTickHeight-frameTickGap-gripOffset, 0.0, 0.0, 0.0);
-            meshGrips->addVertex(frameOffset+frameSize-gapSize-gripWidth, -frameTickHeight-frameTickGap-gripHeight-gripOffset, 0.0, 0.0, 1.0);
-            meshGrips->addVertex(frameOffset+frameSize-gapSize, -frameTickHeight-frameTickGap-gripHeight-gripOffset, 0.0, 1.0, 1.0);
-            meshGrips->addVertex(frameOffset+frameSize-gapSize, -frameTickHeight-frameTickGap-gripOffset, 0.0, 1.0, 0.0);
+            meshGrips->addVertexWithUV(frameOffset+frameSize-gapSize-gripWidth, -frameTickHeight-frameTickGap-gripOffset, 0.0, 0.0, 0.0);
+            meshGrips->addVertexWithUV(frameOffset+frameSize-gapSize-gripWidth, -frameTickHeight-frameTickGap-gripHeight-gripOffset, 0.0, 0.0, 1.0);
+            meshGrips->addVertexWithUV(frameOffset+frameSize-gapSize, -frameTickHeight-frameTickGap-gripHeight-gripOffset, 0.0, 1.0, 1.0);
+            meshGrips->addVertexWithUV(frameOffset+frameSize-gapSize, -frameTickHeight-frameTickGap-gripOffset, 0.0, 1.0, 0.0);
             
             meshGrips->addIndexedFace(offsetGrip+0,offsetGrip+1);
             meshGrips->addIndexedFace(offsetGrip+1,offsetGrip+2);
@@ -1102,10 +1112,6 @@ void SpriteStateEditBar::refreshBar() {
         offset += 4;
         
     }
-    
-    mesh->dirtyArrays();
-    meshBg->dirtyArrays();
-    meshTicks->dirtyArrays();
     
     scroller->setContentSize(frameOffset+frameSize, getHeight());
 }
@@ -1721,17 +1727,15 @@ void SpritePreview::Update() {
     frame.coordinates.w = bBoxNorm.x * spriteScale;
     frame.coordinates.h = bBoxNorm.y * spriteScale;
     
-    bbBoxMesh->addVertex(-bBox.x * 0.5, bBox.y * 0.5, 0.0, frame.coordinates.x, frame.coordinates.y);
-    bbBoxMesh->addVertex((-bBox.x * 0.5)+bBox.x, bBox.y * 0.5, 0.0, frame.coordinates.x+frame.coordinates.w, frame.coordinates.y);
-    bbBoxMesh->addVertex((-bBox.x * 0.5)+bBox.x, bBox.y * 0.5 - bBox.y, 0.0, frame.coordinates.x+frame.coordinates.w, frame.coordinates.y + frame.coordinates.h);
-    bbBoxMesh->addVertex(-bBox.x * 0.5, bBox.y * 0.5 - bBox.y, 0.0, frame.coordinates.x, frame.coordinates.y + frame.coordinates.h);
+    bbBoxMesh->addVertexWithUV(-bBox.x * 0.5, bBox.y * 0.5, 0.0, frame.coordinates.x, frame.coordinates.y);
+    bbBoxMesh->addVertexWithUV((-bBox.x * 0.5)+bBox.x, bBox.y * 0.5, 0.0, frame.coordinates.x+frame.coordinates.w, frame.coordinates.y);
+    bbBoxMesh->addVertexWithUV((-bBox.x * 0.5)+bBox.x, bBox.y * 0.5 - bBox.y, 0.0, frame.coordinates.x+frame.coordinates.w, frame.coordinates.y + frame.coordinates.h);
+    bbBoxMesh->addVertexWithUV(-bBox.x * 0.5, bBox.y * 0.5 - bBox.y, 0.0, frame.coordinates.x, frame.coordinates.y + frame.coordinates.h);
     
     bbBoxMesh->addIndexedFace(0,1);
     bbBoxMesh->addIndexedFace(1,2);
     bbBoxMesh->addIndexedFace(2,3);
     bbBoxMesh->addIndexedFace(3,0);
-    
-    bbBoxMesh->dirtyArrays();
     
     sprite->setScale(spriteScale, spriteScale, 1.0);
 

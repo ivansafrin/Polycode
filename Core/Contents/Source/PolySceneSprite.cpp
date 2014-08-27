@@ -405,23 +405,25 @@ void SpriteState::rebuildStateMeshes() {
         meshOffset.x -= frameWidth * frame.anchorPoint.x;
         meshOffset.y += frameHeight * frame.anchorPoint.y;
         
-        frameMesh->addVertex(meshOffset.x+-frameWidth*0.5, meshOffset.y+frameHeight*0.5, 0.0, frame.coordinates.x, 1.0-frame.coordinates.y)->setNormal(0.0, 0.0, 1.0);
-        frameMesh->addVertex(meshOffset.x+-frameWidth*0.5, meshOffset.y+frameHeight*0.5-frameHeight, 0.0, frame.coordinates.x, 1.0-frame.coordinates.y  - frame.coordinates.h)->setNormal(0.0, 0.0, 1.0);
-        frameMesh->addVertex(meshOffset.x+-frameWidth*0.5+frameWidth, meshOffset.y+frameHeight*0.5-frameHeight, 0.0, frame.coordinates.x+frame.coordinates.w, 1.0- frame.coordinates.y  - frame.coordinates.h)->setNormal(0.0, 0.0, 1.0);
-        frameMesh->addVertex(meshOffset.x+-frameWidth*0.5+frameWidth, meshOffset.y+frameHeight*0.5, 0.0, frame.coordinates.x+frame.coordinates.w, 1.0-frame.coordinates.y)->setNormal(0.0, 0.0, 1.0);
+        frameMesh->addVertexWithUVAndNormal(meshOffset.x+-frameWidth*0.5, meshOffset.y+frameHeight*0.5, 0.0, frame.coordinates.x, 1.0-frame.coordinates.y, 0.0, 0.0, 1.0);
+        frameMesh->addVertexWithUVAndNormal(meshOffset.x+-frameWidth*0.5, meshOffset.y+frameHeight*0.5-frameHeight, 0.0, frame.coordinates.x, 1.0-frame.coordinates.y  - frame.coordinates.h, 0.0, 0.0, 1.0);
+        frameMesh->addVertexWithUVAndNormal(meshOffset.x+-frameWidth*0.5+frameWidth, meshOffset.y+frameHeight*0.5-frameHeight, 0.0, frame.coordinates.x+frame.coordinates.w, 1.0- frame.coordinates.y  - frame.coordinates.h, 0.0, 0.0, 1.0);
+        frameMesh->addVertexWithUVAndNormal(meshOffset.x+-frameWidth*0.5+frameWidth, meshOffset.y+frameHeight*0.5, 0.0, frame.coordinates.x+frame.coordinates.w, 1.0-frame.coordinates.y, 0.0, 0.0, 1.0);
         
         
         for(int j=0; j < 4; j++) {
-            Vertex *vertex = frameMesh->getVertex(j);
-            Number val = fabs(vertex->x);
+
+            Vector3 vertex(frameMesh->vertexPositionArray.data[j], frameMesh->vertexPositionArray.data[j+1], frameMesh->vertexPositionArray.data[j+2]);
+            
+            Number val = fabs(vertex.x);
             if(val > largestFrameBoundingBox.x) {
                 largestFrameBoundingBox.x = val;
             }
-            val = fabs(vertex->y);
+            val = fabs(vertex.y);
             if(val > largestFrameBoundingBox.y) {
                 largestFrameBoundingBox.y = val;
             }
-            val = fabs(vertex->z);
+            val = fabs(vertex.z);
             if(val > largestFrameBoundingBox.z) {
                 largestFrameBoundingBox.z = val;
             }
@@ -430,8 +432,6 @@ void SpriteState::rebuildStateMeshes() {
         frameMesh->addIndexedFace(1,2);
         frameMesh->addIndexedFace(2,3);
         frameMesh->addIndexedFace(3,0);
-        
-        frameMesh->dirtyArrays();
         
         frameMeshes.push_back(frameMesh);
     }

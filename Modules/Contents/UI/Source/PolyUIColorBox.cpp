@@ -65,12 +65,11 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	mainColorRect->setHeight(mainFrame->getWidth());
 	mainColorRect->setDepth(0.001);
 		
-	mainColorRect->getMesh()->addVertex(-mainFrame->getWidth()/2,mainFrame->getHeight()/2.0,0,0,0);
-	mainColorRect->getMesh()->addVertex(mainFrame->getWidth()/2,mainFrame->getHeight()/2.0,0, 1, 0);
-	mainColorRect->getMesh()->addVertex(mainFrame->getWidth()/2,-mainFrame->getHeight()/2.0,0, 1, 1);
-	mainColorRect->getMesh()->addVertex(-mainFrame->getWidth()/2,-mainFrame->getHeight()/2.0,0,0,1);
+	mainColorRect->getMesh()->addVertexWithUV(-mainFrame->getWidth()/2,mainFrame->getHeight()/2.0,0,0,0);
+	mainColorRect->getMesh()->addVertexWithUV(mainFrame->getWidth()/2,mainFrame->getHeight()/2.0,0, 1, 0);
+	mainColorRect->getMesh()->addVertexWithUV(mainFrame->getWidth()/2,-mainFrame->getHeight()/2.0,0, 1, 1);
+	mainColorRect->getMesh()->addVertexWithUV(-mainFrame->getWidth()/2,-mainFrame->getHeight()/2.0,0,0,1);
 	
-	mainColorRect->getMesh()->dirtyArrays();
 	mainColorRect->backfaceCulled = false;	
 
 	mainColorRect->setAnchorPoint(-1.0, -1.0, 0.0);
@@ -266,12 +265,14 @@ void UIColorPicker::updateSelectedColor(bool updateTextFields, bool updateHue, b
 	hueCol.setColorHSV(currentH, 1.0, 1.0);
 	hueCol.a = colorAlpha;
 
-	mainColorRect->getMesh()->getVertex(0)->vertexColor = Color((Number)1,(Number)1,(Number)1,colorAlpha);
-	mainColorRect->getMesh()->getVertex(1)->vertexColor = hueCol;
-	mainColorRect->getMesh()->getVertex(2)->vertexColor = Color((Number)0,(Number)0,(Number)0,colorAlpha);
-	mainColorRect->getMesh()->getVertex(3)->vertexColor = Color((Number)0,(Number)0,(Number)0,colorAlpha);
-	mainColorRect->getMesh()->arrayDirtyMap[RenderDataArray::COLOR_DATA_ARRAY] = true;				
-			
+    
+    mainColorRect->getMesh()->vertexColorArray.data.clear();
+    
+    mainColorRect->getMesh()->addColor(Color((Number)1,(Number)1,(Number)1,colorAlpha));
+    mainColorRect->getMesh()->addColor(hueCol);
+    mainColorRect->getMesh()->addColor(Color((Number)0,(Number)0,(Number)0,colorAlpha));
+    mainColorRect->getMesh()->addColor(Color((Number)0,(Number)0,(Number)0,colorAlpha));
+    
 	if(updateHue) {
 		hueSelector->setPositionY(hueFrame->getPosition().y + hueFrame->getHeight() - ((currentH/360.0) * hueFrame->getHeight()));
 		lastHueSelectorPosition = hueSelector->getPosition().y;

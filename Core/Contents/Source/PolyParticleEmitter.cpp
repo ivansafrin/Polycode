@@ -210,7 +210,8 @@ void SceneParticleEmitter::rebuildParticles() {
                 if(particlesInWorldSpace) {
                     vertexPosition = inverseMatrix * vertexPosition;
                 }
-                mesh->addVertex(vertexPosition.x, vertexPosition.y, vertexPosition.z, 0.5, 0.5)->vertexColor = particles[i].color;
+                mesh->addVertexWithUV(vertexPosition.x, vertexPosition.y, vertexPosition.z, 0.5, 0.5);
+                mesh->addColor(particles[i].color);
             }
         }
         break;
@@ -245,20 +246,24 @@ void SceneParticleEmitter::rebuildParticles() {
                         
                         indexOffset = mesh->getVertexCount();
                         
+                        // TODO: fix
+                        /*
                         for(int v=0; v <  sourceMeshes[meshIndex]->getVertexCount(); v++) {
                             Vertex *sv = sourceMeshes[meshIndex]->getVertex(v);
+                            
                             Vector3 vpos = Vector3(sv->x, sv->y, sv->z) * finalParticleSize;
                             vpos = q.applyTo(vpos);
                             
                             vpos += particlePosition;
-                            Vertex *newV = mesh->addVertex(vpos.x, vpos.y, vpos.z, sv->texCoord.x, sv->texCoord.y);
-                            newV->vertexColor = vertexColor;
-                            newV->normal = q.applyTo(sv->normal);
+                            mesh->addVertexWithUV(vpos.x, vpos.y, vpos.z, sv->texCoord.x, sv->texCoord.y);
+                            mesh->addColor(vertexColor);
+                            mesh->addNormal(q.applyTo(sv->normal);
                         }
                         
                         for(int v=0; v < sourceMeshes[meshIndex]->getIndexCount(); v++) {
                             mesh->addIndex(indexOffset + sourceMeshes[meshIndex]->getIndexAt(v));
                         }
+                         */
                     }
                     
                 } else {
@@ -267,22 +272,26 @@ void SceneParticleEmitter::rebuildParticles() {
                     Vector3 vertexPosition = Vector3(-finalParticleSize, -finalParticleSize, 0.0);
                     vertexPosition = q.applyTo(vertexPosition);
                     vertexPosition = cameraMatrix.rotateVector(vertexPosition);
-                    mesh->addVertex(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 0.0, 0.0)->vertexColor = vertexColor;
+                    mesh->addVertexWithUV(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 0.0, 0.0);
+                    mesh->addColor(vertexColor);
                     
                     vertexPosition = Vector3(finalParticleSize, -finalParticleSize, 0.0);
                     vertexPosition = q.applyTo(vertexPosition);
                     vertexPosition = cameraMatrix.rotateVector(vertexPosition);
-                    mesh->addVertex(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 1.0, 0.0)->vertexColor = vertexColor;
+                    mesh->addVertexWithUV(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 1.0, 0.0);
+                    mesh->addColor(vertexColor);
 
                     vertexPosition = Vector3(finalParticleSize, finalParticleSize, 0.0);
                     vertexPosition = q.applyTo(vertexPosition);
                     vertexPosition = cameraMatrix.rotateVector(vertexPosition);
-                    mesh->addVertex(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 1.0, 1.0)->vertexColor = vertexColor;
+                    mesh->addVertexWithUV(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 1.0, 1.0);
+                    mesh->addColor(vertexColor);
 
                     vertexPosition = Vector3(-finalParticleSize, finalParticleSize, 0.0);
                     vertexPosition = q.applyTo(vertexPosition);
                     vertexPosition = cameraMatrix.rotateVector(vertexPosition);
-                    mesh->addVertex(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 0.0, 1.0)->vertexColor = vertexColor;
+                    mesh->addVertexWithUV(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 0.0, 1.0);
+                    mesh->addColor(vertexColor);
                 }
 
             }
@@ -290,8 +299,6 @@ void SceneParticleEmitter::rebuildParticles() {
             break;
             
     }
-  
-    mesh->dirtyArrays();
     
     if(useVertexBuffer) {
 		CoreServices::getInstance()->getRenderer()->createVertexBufferForMesh(mesh);

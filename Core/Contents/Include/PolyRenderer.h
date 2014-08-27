@@ -39,6 +39,7 @@ namespace Polycode {
 	class PolycodeShaderModule;
 	class Polygon;
 	class RenderDataArray;
+    class IndexDataArray;
 	class ShaderBinding;
 	class Texture;
 	class VertexBuffer;
@@ -82,8 +83,6 @@ namespace Polycode {
 	*
 	* The renderer should only be accessed from the CoreServices singleton. Renderer operations should only be called from within Render methods of entities so that they can be properly managed.
 	*
-	* @see http://www.glprogramming.com/red/
-	* @see http://nehe.gamedev.net/tutorial/lessons_01__05/22004/
 	*/
 	class _PolyExport Renderer : public PolyBase {
 	public:
@@ -136,14 +135,9 @@ namespace Polycode {
 			
 		
 		virtual void setVertexColor(Number r, Number g, Number b, Number a) = 0;
-		
-		void pushDataArrayForMesh(Mesh *mesh, int arrayType);
-		
+				
 		virtual void pushRenderDataArray(RenderDataArray *array) = 0;
-		virtual RenderDataArray *createRenderDataArrayForMesh(Mesh *mesh, int arrayType) = 0;
-		virtual RenderDataArray *createRenderDataArray(int arrayType) = 0;
-		virtual void setRenderArrayData(RenderDataArray *array, Number *arrayData) = 0;
-		virtual void drawArrays(int drawType) = 0;
+		virtual void drawArrays(int drawType, IndexDataArray *indexArray) = 0;
 		
 		virtual void translate3D(const Vector3 &position) = 0;
 		virtual void translate3D(Number x, Number y, Number z) = 0;

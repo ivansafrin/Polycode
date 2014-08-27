@@ -55,13 +55,13 @@ Vector3 Ray::planeIntersectPoint(const Vector3 &planeNormal, Number planeDistanc
 	 return origin + direction * (-distanceToOrigin / direction.dot(planeNormal));
 }
 
-bool Ray::polygonIntersect(Vertex *v1, Vertex *v2, Vertex *v3) const {
+bool Ray::polygonIntersect(const Vector3 &v1, const Vector3 &v2, const Vector3 &v3) const {
 
     Number t,u,v;
 	t = 0; u = 0; v = 0;
 
-	Vector3 edge1 = (*(Vector3*)v2) - (*(Vector3*)v3);
-	Vector3 edge2 = (*(Vector3*)v1) - (*(Vector3*)v3);
+	Vector3 edge1 = v2 - v3;
+	Vector3 edge2 = v1 - v3;
 
 	Vector3 tvec, pvec, qvec;
 	Number det, inv_det;
@@ -74,7 +74,7 @@ bool Ray::polygonIntersect(Vertex *v1, Vertex *v2, Vertex *v3) const {
 
 	inv_det = 1.0f / det;
 
-	tvec = origin - (*(Vector3*)v3);
+	tvec = origin - v3;
 
 	u = tvec.dot(pvec) * inv_det;
 	if (u < -0.001f || u > 1.001f)

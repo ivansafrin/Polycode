@@ -273,6 +273,7 @@ void FontGlyphSheet::buildGlyphs(std::set<wchar_t> characters) {
 	for (glyph_list_t::iterator it = glyphData.begin(); it != glyphData.end(); it++) delete *it;
 }
 
+/*
 int FontGlyphSheet::renderStringVertices(String textIn, std::vector<Vertex*>& vertices, int index) {
 	textIn.getWDataWithEncoding(String::ENCODING_UTF8);
 	std::wstring& text = textIn.w_contents;
@@ -322,5 +323,5 @@ int FontGlyphSheet::renderStringVertices(String textIn, std::vector<Vertex*>& ve
 	return index;
 }
 
-
+*/
 

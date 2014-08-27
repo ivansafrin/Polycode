@@ -24,9 +24,9 @@ void TextMesh::setText(const String &text) {
 }
 
 void TextMesh::rebuild() {
-	arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
-	arrayDirtyMap[RenderDataArray::TEXCOORD_DATA_ARRAY] = true;
 
+    // TODO: FIX
+/*
 	if (text == "" || font == NULL) {
 		for (std::vector<Vertex*>::iterator it = vertices.begin(); it != vertices.end(); it++) delete *it;
 		vertices.clear();
@@ -40,6 +40,7 @@ void TextMesh::rebuild() {
 		}
 		vertices.resize(last);
 	}
+ */
 }
 
 

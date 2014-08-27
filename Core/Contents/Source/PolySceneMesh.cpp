@@ -43,7 +43,7 @@ SceneMesh *SceneMesh::SceneMeshWithType(int meshType) {
 	return new SceneMesh(meshType);
 }
 
-SceneMesh::SceneMesh(const String& fileName) : Entity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL), mesh(NULL) {
+SceneMesh::SceneMesh(const String& fileName) : Entity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL), mesh(NULL), skeletalVertexPositions(RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(RenderDataArray::NORMAL_DATA_ARRAY) {
     loadFromFile(fileName);
 	useVertexBuffer = false;
 	lineSmooth = false;
@@ -59,7 +59,7 @@ SceneMesh::SceneMesh(const String& fileName) : Entity(), texture(NULL), material
 	alphaTest = false;
 }
 
-SceneMesh::SceneMesh(Mesh *mesh) : Entity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
+SceneMesh::SceneMesh(Mesh *mesh) : Entity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL), skeletalVertexPositions(RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(RenderDataArray::NORMAL_DATA_ARRAY) {
 	this->mesh = mesh;
 	setLocalBoundingBox(mesh->calculateBBox());
 	useVertexBuffer = false;
@@ -76,7 +76,7 @@ SceneMesh::SceneMesh(Mesh *mesh) : Entity(), texture(NULL), material(NULL), skel
 	alphaTest = false;
 }
 
-SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
+SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL), skeletalVertexPositions(RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(RenderDataArray::NORMAL_DATA_ARRAY) {
 	mesh = new Mesh(meshType);
 	setLocalBoundingBox(mesh->calculateBBox());
 	useVertexBuffer = false;	
@@ -234,12 +234,6 @@ Skeleton *SceneMesh::loadSkeleton(const String& fileName) {
 
 void SceneMesh::setSkeleton(Skeleton *skeleton) {
 	this->skeleton = skeleton;
-    for(int i=0; i < mesh->getVertexCount(); i++) {
-        Vertex *vertex = mesh->getVertex(i);
-        for(int j=0; j < vertex->getNumBoneAssignments(); j++) {
-            vertex->getBoneAssignment(j)->bone = skeleton->getBone(vertex->getBoneAssignment(j)->boneID);
-        }
-    }
 }
 
 void SceneMesh::setLineWidth(Number newWidth) {
@@ -256,56 +250,71 @@ Skeleton *SceneMesh::getSkeleton() {
 
 void SceneMesh::renderMeshLocally() {
 	Renderer *renderer = CoreServices::getInstance()->getRenderer();
-	
-	if(skeleton) {	
-		for(int i=0; i < mesh->getVertexCount(); i++) {
-            Vertex *vert = mesh->getVertex(i);
-            Vector3 norm;
-            
-            Vector3 tPos;
 
-            for(int b =0; b < vert->getNumBoneAssignments(); b++) {
-                BoneAssignment *bas = vert->getBoneAssignment(b);
-                Bone *bone = bas->bone;
-                if(bone) {
-                    
-                    Matrix4 restMatrix = bone->getRestMatrix();
-                    Matrix4 finalMatrix = bone->getFinalMatrix();
-                    
-                    Vector3 vec = restMatrix * vert->restPosition;
-                    tPos += finalMatrix * vec * (bas->weight);
-                    
-                    Vector3 nvec = vert->restNormal;
-                    nvec = restMatrix.rotateVector(nvec);
-                    nvec = finalMatrix.rotateVector(nvec);
-                    
-                    norm += nvec * (bas->weight);
-                }
-            }					
-            
+	
+	if(skeleton) {
         
-            vert->x = tPos.x;
-            vert->y = tPos.y;
-            vert->z = tPos.z;				
+        skeletalVertexPositions.data.clear();
+        skeletalVertexNormals.data.clear();
+        
+		for(int i=0; i < mesh->vertexPositionArray.data.size()/3; i++) {
+            
+            Vector3 norm;
+            Vector3 tPos;
+            
+            for(int b=0; b < 4; b++) {
+            
+                PolyRendererVertexType boneWeight = mesh->vertexBoneWeightArray.data[(i*4)+b];
+                
+                if(boneWeight > 0.0) {
+                    
+                    Bone *bone = skeleton->getBone(mesh->vertexBoneIndexArray.data[(i*4)+b]);
+                        
+                    Vector3 restVert(mesh->vertexPositionArray.data[i*3], mesh->vertexPositionArray.data[(i*3)+1], mesh->vertexPositionArray.data[(i*3)+2]);
+                                         
+                    Vector3 vec = bone->restMatrix * restVert;
+                    tPos += bone->finalMatrix * vec * (boneWeight);
+                        
+                    Vector3 nvec(mesh->vertexNormalArray.data[i*3], mesh->vertexNormalArray.data[(i*3)+1], mesh->vertexNormalArray.data[(i*3)+2]);
+                    
+                    nvec = bone->restMatrix.rotateVector(nvec);
+                    nvec = bone->finalMatrix.rotateVector(nvec);
+                    
+                    norm += nvec * (boneWeight);
+                }
+            }
+
+            skeletalVertexPositions.data.push_back(tPos.x);
+            skeletalVertexPositions.data.push_back(tPos.y);
+            skeletalVertexPositions.data.push_back(tPos.z);
         
             norm.Normalize();
-            vert->setNormal(norm.x, norm.y, norm.z);
+            
+            skeletalVertexNormals.data.push_back(norm.x);
+            skeletalVertexNormals.data.push_back(norm.y);
+            skeletalVertexNormals.data.push_back(norm.z);
         }
-        mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
-        mesh->arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;
-        mesh->arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;
+        
+        renderer->pushRenderDataArray(&skeletalVertexPositions);
+        renderer->pushRenderDataArray(&skeletalVertexNormals);
+        
+    } else {
+        renderer->pushRenderDataArray(&mesh->vertexPositionArray);
+        renderer->pushRenderDataArray(&mesh->vertexNormalArray);
     }
     
-	renderer->pushDataArrayForMesh(mesh, RenderDataArray::VERTEX_DATA_ARRAY);
-	renderer->pushDataArrayForMesh(mesh, RenderDataArray::NORMAL_DATA_ARRAY);		
-	renderer->pushDataArrayForMesh(mesh, RenderDataArray::TANGENT_DATA_ARRAY);			
-	renderer->pushDataArrayForMesh(mesh, RenderDataArray::TEXCOORD_DATA_ARRAY);	
-
+    renderer->pushRenderDataArray(&mesh->vertexTangentArray);
+    renderer->pushRenderDataArray(&mesh->vertexTexCoordArray);
+    
 	if(mesh->useVertexColors) {
-		renderer->pushDataArrayForMesh(mesh, RenderDataArray::COLOR_DATA_ARRAY);
+		renderer->pushRenderDataArray(&mesh->vertexColorArray);
 	}
-	
-	renderer->drawArrays(mesh->getMeshType());
+    
+    if(mesh->indexedMesh) {
+        renderer->drawArrays(mesh->getMeshType(), &mesh->indexArray);
+    } else {
+        renderer->drawArrays(mesh->getMeshType(), NULL);
+    }
 }
 
 void SceneMesh::cacheToVertexBuffer(bool cache) {
@@ -329,7 +338,7 @@ bool SceneMesh::customHitDetection(const Ray &ray) {
     if(mesh->indexedMesh) {
         for(int i=0; i < mesh->getIndexCount(); i+=3) {
             if(i+2 < mesh->getIndexCount()) {
-                if(transformedRay.polygonIntersect(mesh->getIndexedVertex(i), mesh->getIndexedVertex(i+1), mesh->getIndexedVertex(i+2))) {
+                if(transformedRay.polygonIntersect(mesh->getVertexPositionAtIndex(i), mesh->getVertexPositionAtIndex(i+1), mesh->getVertexPositionAtIndex(i+2))) {
                     return true;
                 }
             }
@@ -338,13 +347,13 @@ bool SceneMesh::customHitDetection(const Ray &ray) {
     } else {
         for(int i=0; i < mesh->getVertexCount(); i+=3) {
             if(i+2 < mesh->getVertexCount()) {
-               if(transformedRay.polygonIntersect(mesh->getVertex(i), mesh->getVertex(i+1), mesh->getVertex(i+2))) {
+               if(transformedRay.polygonIntersect(mesh->getVertexPosition(i), mesh->getVertexPosition(i+1), mesh->getVertexPosition(i+2))) {
                     return true;
                 }
             }
         }
     }
-	
+
 	return false;
 }
 

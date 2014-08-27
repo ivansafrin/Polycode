@@ -319,12 +319,13 @@ void EditCurve::updateCurve() {
 	
 	interval += interval/CURVE_SIZE;
 	normInterval += normInterval/CURVE_SIZE;
-		
-	for(int i=0; i < CURVE_SIZE; i++) {
-		visMesh->getMesh()->getVertex(i)->set(targetCurve->getPointAt(normInterval * i).x * 300, targetCurve->getPointAt(normInterval * i).y * 100.0, 0.0);
+
+    visMesh->getMesh()->vertexPositionArray.data.clear();
+    
+	for(int i=0; i < CURVE_SIZE; i++) {        
+        visMesh->getMesh()->addVertex(targetCurve->getPointAt(normInterval * i).x * 300, targetCurve->getPointAt(normInterval * i).y * 100.0, 0.0);
 	}
 	
-	visMesh->getMesh()->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;
     visMesh->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 }
 

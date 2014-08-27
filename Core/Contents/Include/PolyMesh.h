@@ -22,19 +22,17 @@ THE SOFTWARE.
  
 #pragma once
 #include "PolyGlobals.h"
-#include "PolyVertex.h"
+#include "PolyRenderDataArray.h"
+#include "PolyColor.h"
+#include "PolyVector3.h"
+#include "PolyVector2.h"
+#include <vector>
 
 class OSFILE;
 
 namespace Polycode {
 	
 	class String;
-
-	class _PolyExport VertexSorter : public PolyBase {
-		public:
-			Vertex *target;
-			bool operator() (Vertex *v1,Vertex *v2) { return (v1->distance(*target)<v2->distance(*target));}
-	};	
 	
 	class _PolyExport VertexBuffer : public PolyBase {
 		public:	
@@ -42,60 +40,21 @@ namespace Polycode {
 			virtual ~VertexBuffer(){}
 		
 			int getVertexCount() const { return vertexCount;}
+			int getIndexCount() const { return indexCount;}
 		
 			int verticesPerFace;
 			int meshType;
 		protected:
-		int vertexCount;
+            int vertexCount;
+            int indexCount;
 			
 	};
-	
-	/**
-	* Render data array.
-	*/
-	class _PolyExport RenderDataArray : public PolyBase {
-	public:		
-		int arrayType;
-		int stride;
-		int size;
-		void *arrayPtr;
-		void *rendererData;
-		int count;
 		
-		/**
-		* Vertex position array.
-		*/
-		static const int VERTEX_DATA_ARRAY = 0;
-		
-		/**
-		* Vertex color array.
-		*/		
-		static const int COLOR_DATA_ARRAY = 1;		
-		
-		/**
-		* Vertex normal array.
-		*/				
-		static const int NORMAL_DATA_ARRAY = 2;				
-
-		/**
-		* Vertex texture coordinate array.
-		*/						
-		static const int TEXCOORD_DATA_ARRAY = 3;
-		
-		/**
-		* Tangent vector array.
-		*/				
-		static const int TANGENT_DATA_ARRAY = 4;				
-		
-		
-	};
-		
-
 	typedef struct {
 		float x;
 		float y;
 		float z;
-		float w;		
+		float w;
 	} Vector4_struct;
 	
 	typedef struct {
@@ -155,6 +114,8 @@ namespace Polycode {
 			void saveToFile(const String& fileName, bool writeNormals = true, bool writeTangents = true, bool writeColors = true, bool writeBoneWeights = true, bool writeUVs = true, bool writeSecondaryUVs = false);
 
 			void loadFromFile(OSFILE *inFile);
+
+        
 			void saveToFile(OSFILE *outFile, bool writeNormals = true, bool writeTangents = true, bool writeColors = true, bool writeBoneWeights = true, bool writeUVs = true, bool writeSecondaryUVs = false);
 			
 			
@@ -256,16 +217,37 @@ namespace Polycode {
 			* Recenters the mesh with all vertices being as equidistant from origin as possible.
 			*/
 			Vector3 recenterMesh();
+
+            void setVertexAtOffset(unsigned int offset, Number x, Number y, Number z);
+        
+            void addVertexWithUVAndNormal(Number x, Number y, Number z, Number u, Number v, Number nx, Number ny, Number nz);
 		
-            Vertex *addVertex(Number x, Number y, Number z, Number u, Number v);
+            void addTexCoord(Number u, Number v);
+            void addTexCoord2(Number u, Number v);
         
-            Vertex *addVertex(Number x, Number y, Number z);
-			
-            void addVertex(Vertex *vertex);
+            void addTangent(Number x, Number y, Number z);
         
-            Vertex *getVertex(unsigned int index) const;
+            void addVertexWithUV(Number x, Number y, Number z, Number u, Number v);
         
-            Vertex *getIndexedVertex(unsigned int index) const;
+            void addVertex(Number x, Number y, Number z);
+        
+            void addNormal(Number nx, Number ny, Number nz);
+            void addNormal(const Vector3 &n);
+
+            void addBoneAssignments(Number b1Weight, unsigned int b1Index, Number b2Weight, unsigned int b2Index, Number b3Weight, unsigned int b3Index, Number b4Weight, unsigned int b4Index);
+        
+            void addColor(Number r, Number g, Number b, Number a);
+            void addColor(const Color &color);
+        
+        
+            Vector3 getVertexPosition(unsigned int vertexOffset);
+        
+            Vector3 getVertexPositionAtIndex(unsigned int index);
+
+            Vector2 getVertexTexCoord(unsigned int vertexOffset);
+        
+            Vector2 getVertexTexCoordAtIndex(unsigned int index);
+        
         
 			/**
 			* Sets the vertex buffer for the mesh.
@@ -310,9 +292,6 @@ namespace Polycode {
 			* @param newType New mesh type. Possible values are: Mesh::QUAD_MESH, Mesh::TRI_MESH, Mesh::TRIFAN_MESH, Mesh::TRISTRIP_MESH, Mesh::LINE_MESH, Mesh::POINT_MESH.
 			*/ 
 			void setMeshType(int newType);
-
-			void dirtyArray(unsigned int arrayIndex);
-			void dirtyArrays();
 
 			inline unsigned int getIndexGroupSize() {
 				switch (meshType) {
@@ -368,19 +347,8 @@ namespace Polycode {
 			* Line loop based mesh.
 			*/									
 			static const int LINE_LOOP_MESH = 7;
-		
-		
-			/**
-			* Render array dirty map. If any of these are flagged as dirty, the renderer will rebuild them from the mesh data. See RenderDataArray for types of render arrays.
-			* @see RenderDataArray
-			*/
-			bool arrayDirtyMap[16];
-			
-			/**
-			* Render arrays. See RenderDataArray for types of render arrays.
-			* @see RenderDataArray			
-			*/			
-			RenderDataArray *renderDataArrays[16];
+        
+        
 		
 			/**
 			* If set to true, the renderer will use the vertex colors instead of entity color transform to render this mesh.
@@ -408,19 +376,36 @@ namespace Polycode {
 			int removeUnusedVertices();
         
             unsigned int getIndexCount();
-            unsigned int getIndexAt(unsigned int index);
         
             void subdivideToRadius(Number radius, int subdivisions);
-
+        
+            static Vector3 calculateFaceTangent(const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, const Vector2 &texCoord1, const Vector2 &texCoord2, const Vector2 &texCoord3);
+        
+            void normalizeBoneWeights();
+        
+            VertexDataArray vertexPositionArray;
+            VertexDataArray vertexColorArray;
+            VertexDataArray vertexNormalArray;
+            VertexDataArray vertexTexCoordArray;
+            VertexDataArray vertexTexCoord2Array;
+            VertexDataArray vertexTangentArray;
+        
+            VertexDataArray vertexBoneWeightArray;
+            IndexDataArray vertexBoneIndexArray;
+        
+            IndexDataArray indexArray;
+        
         protected:
         
-            Vector3 calculateFaceTangent(Vertex *v1, Vertex *v2, Vertex *v3);
+            void loadFromFileV2(OSFILE *inFile);
+            void loadFromFileLegacyV1(OSFILE *inFile);
+
+            void writeVertexBlock(VertexDataArray *array, OSFILE *outFile);
+            void writeIndexBlock(IndexDataArray *array, OSFILE *outFile);
         
             VertexBuffer *vertexBuffer;
             bool meshHasVertexBuffer;
             int meshType;
-        
-            std::vector<unsigned int> indices;
-            std::vector <Vertex*> vertices;
+
 	};
 }

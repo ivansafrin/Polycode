@@ -126,10 +126,7 @@ namespace Polycode {
 		void cullFrontFaces(bool val);
 				
 		void pushRenderDataArray(RenderDataArray *array);
-		RenderDataArray *createRenderDataArrayForMesh(Mesh *mesh, int arrayType);
-		RenderDataArray *createRenderDataArray(int arrayType);
-		void setRenderArrayData(RenderDataArray *array, Number *arrayData);
-		void drawArrays(int drawType);		
+		void drawArrays(int drawType, IndexDataArray *indexArray);
 				
 		void setProjectionOrtho(Number xSize=0.0f, Number ySize=0.0f, Number near=-256.0f, Number far=256.0f, bool centered = false);
         void setProjectionMatrix(Matrix4 matrix);
