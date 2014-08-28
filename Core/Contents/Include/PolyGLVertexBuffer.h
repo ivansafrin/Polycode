@@ -51,7 +51,9 @@ namespace Polycode {
 		GLuint getColorBufferID();
 		GLuint getTangentBufferID();
 		GLuint getIndexBufferID();
-				
+		GLuint getBoneWeightBufferID();
+		GLuint getBoneIndexBufferID();
+        
 	protected:
 		
 		GLuint vertexBufferID;
@@ -60,6 +62,9 @@ namespace Polycode {
 		GLuint colorBufferID;	
 		GLuint tangentBufferID;
         GLuint indexBufferID;
+        
+        GLuint boneWeightBufferID;
+        GLuint boneIndexBufferID;
 	};
 	
 }

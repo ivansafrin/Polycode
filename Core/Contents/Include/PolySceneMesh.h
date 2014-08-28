@@ -241,6 +241,8 @@ namespace Polycode {
              * If this flag is set to false, backface culling is disabled when rendering this entity, rendering both sides of each face. Set to true by default.
              */
             bool backfaceCulled;
+        
+            bool sendBoneMatricesToMaterial;
 			
 		protected:
 		
@@ -252,7 +254,8 @@ namespace Polycode {
 			ShaderBinding *localShaderOptions;
             String fileName;
         
-    
+            std::vector<Matrix4> materialBoneMatrices;
+        
             VertexDataArray skeletalVertexPositions;
             VertexDataArray skeletalVertexNormals;
         

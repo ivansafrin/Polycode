@@ -121,7 +121,9 @@ void GLSLShader::linkProgram() {
 	shader_id = glCreateProgram();
     glAttachShader(shader_id, ((GLSLProgram*)fp)->program);
     glAttachShader(shader_id, ((GLSLProgram*)vp)->program);	
-	glBindAttribLocation(shader_id, 6, "vTangent");	
+	glBindAttribLocation(shader_id, 6, "vTangent");
+	glBindAttribLocation(shader_id, 7, "vBoneWeights");
+	glBindAttribLocation(shader_id, 8, "vBoneIndices");
     glLinkProgram(shader_id);
 	if(vp) {
 		vp->addEventListener(this, Event::RESOURCE_RELOAD_EVENT);

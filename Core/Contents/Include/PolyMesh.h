@@ -391,7 +391,7 @@ namespace Polycode {
             VertexDataArray vertexTangentArray;
         
             VertexDataArray vertexBoneWeightArray;
-            IndexDataArray vertexBoneIndexArray;
+            VertexDataArray vertexBoneIndexArray;
         
             IndexDataArray indexArray;
         

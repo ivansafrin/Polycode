@@ -246,7 +246,20 @@ void GLSLShaderModule::updateGLSLParam(Renderer *renderer, GLSLShader *glslShade
 			break;
 			case ProgramParam::PARAM_MATRIX:
 				if(localParam) {
-					setUniformMatrix(paramLocation, localParam->getMatrix4());
+                    if(localParam->arraySize > 0) {
+                        Matrix4 *matPointer = (Matrix4*)localParam->data;
+                        std::vector<float> matrixData;
+                        for(int i=0; i < localParam->arraySize; i++) {
+                            for(int j=0; j < 16; j++) {
+                                matrixData.push_back(matPointer[i].ml[j]);
+                            }
+                        }
+                        
+                        glUniformMatrix4fv(paramLocation, localParam->arraySize, false, &matrixData[0]);
+                    
+                    } else {
+                        setUniformMatrix(paramLocation, localParam->getMatrix4());
+                    }
                 } else {
 					Matrix4 defaultMatrix;
 					setUniformMatrix(paramLocation, defaultMatrix);

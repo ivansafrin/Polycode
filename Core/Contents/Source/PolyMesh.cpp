@@ -197,7 +197,7 @@ void Mesh::saveToFile(OSFILE *outFile, bool writeNormals, bool writeTangents, bo
     
     if(writeBoneWeights) {
         writeVertexBlock(&vertexBoneWeightArray, outFile);
-        writeIndexBlock(&vertexBoneIndexArray, outFile);
+        writeVertexBlock(&vertexBoneIndexArray, outFile);
     }
 }
 
@@ -258,7 +258,7 @@ void Mesh::loadFromFileV2(OSFILE *inFile) {
             break;
             case RenderDataArray::BONE_INDEX_DATA_ARRAY:
                 vertexBoneIndexArray.data.resize(blockSize);
-                OSBasics::read(&vertexBoneIndexArray.data[0], sizeof(PolyRendererIndexType), blockSize, inFile);
+                OSBasics::read(&vertexBoneIndexArray.data[0], sizeof(PolyRendererVertexType), blockSize, inFile);
             break;
         }
     }

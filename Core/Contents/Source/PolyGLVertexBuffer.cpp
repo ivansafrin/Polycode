@@ -54,6 +54,8 @@ OpenGLVertexBuffer::OpenGLVertexBuffer(Mesh *mesh) : VertexBuffer() {
     colorBufferID = -1;
     tangentBufferID = -1;
     indexBufferID = -1;
+    boneWeightBufferID = -1;
+    boneIndexBufferID = -1;
     
     
 	meshType = mesh->getMeshType();
@@ -85,7 +87,21 @@ OpenGLVertexBuffer::OpenGLVertexBuffer(Mesh *mesh) : VertexBuffer() {
         glBufferDataARB(GL_ARRAY_BUFFER_ARB,  mesh->vertexTangentArray.getDataSize() * sizeof(PolyRendererVertexType), mesh->vertexTangentArray.getArrayData(), GL_STATIC_DRAW_ARB);
     }
     
-    if(mesh->vertexTangentArray.getDataSize() == vertexCount * 4) {
+    if(mesh->vertexBoneWeightArray.getDataSize() == vertexCount * 4) {
+        glGenBuffersARB(1, &boneWeightBufferID);
+        glBindBufferARB(GL_ARRAY_BUFFER_ARB, boneWeightBufferID);
+        
+        glBufferDataARB(GL_ARRAY_BUFFER_ARB,  mesh->vertexBoneWeightArray.getDataSize() * sizeof(PolyRendererVertexType), mesh->vertexBoneWeightArray.getArrayData(), GL_STATIC_DRAW_ARB);
+    }
+    
+    if(mesh->vertexBoneIndexArray.getDataSize() == vertexCount * 4) {
+        glGenBuffersARB(1, &boneIndexBufferID);
+        glBindBufferARB(GL_ARRAY_BUFFER_ARB, boneIndexBufferID);
+        
+        glBufferDataARB(GL_ARRAY_BUFFER_ARB,  mesh->vertexBoneIndexArray.getDataSize() * sizeof(PolyRendererVertexType), mesh->vertexBoneIndexArray.getArrayData(), GL_STATIC_DRAW_ARB);
+    }
+    
+    if(mesh->vertexColorArray.getDataSize() == vertexCount * 4) {
         glGenBuffersARB(1, &colorBufferID);
         glBindBufferARB(GL_ARRAY_BUFFER_ARB, colorBufferID);
             
@@ -98,6 +114,7 @@ OpenGLVertexBuffer::OpenGLVertexBuffer(Mesh *mesh) : VertexBuffer() {
         glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB,  mesh->indexArray.getDataSize() * sizeof(PolyRendererIndexType), mesh->indexArray.getArrayData(), GL_STATIC_DRAW_ARB);
         indexCount = mesh->indexArray.getDataSize();
     }
+    
 }
 
 OpenGLVertexBuffer::~OpenGLVertexBuffer() {
@@ -106,6 +123,16 @@ OpenGLVertexBuffer::~OpenGLVertexBuffer() {
 	glDeleteBuffersARB(1, &normalBufferID);
 	glDeleteBuffersARB(1, &colorBufferID);
 	glDeleteBuffersARB(1, &indexBufferID);
+	glDeleteBuffersARB(1, &boneWeightBufferID);
+	glDeleteBuffersARB(1, &boneIndexBufferID);
+}
+
+GLuint OpenGLVertexBuffer::getBoneWeightBufferID() {
+    return boneWeightBufferID;
+}
+
+GLuint OpenGLVertexBuffer::getBoneIndexBufferID() {
+    return boneIndexBufferID;
 }
 
 GLuint OpenGLVertexBuffer::getColorBufferID() {

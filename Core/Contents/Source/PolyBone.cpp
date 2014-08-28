@@ -83,7 +83,7 @@ Matrix4 Bone::buildFinalMatrix() const {
 }
 
 void Bone::rebuildFinalMatrix() {
-    finalMatrix = buildFinalMatrix();
+    finalMatrix = restMatrix * buildFinalMatrix();
 }
 
 void Bone::setBoneMatrix(const Matrix4& matrix) {

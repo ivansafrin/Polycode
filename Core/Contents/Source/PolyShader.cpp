@@ -351,6 +351,7 @@ const String& Shader::getName() const {
 
 LocalShaderParam::LocalShaderParam() {
     data = NULL;
+    arraySize = 0;
     ownsPointer = true;
 }
 

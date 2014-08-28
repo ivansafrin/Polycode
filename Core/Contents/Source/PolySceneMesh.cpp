@@ -57,6 +57,7 @@ SceneMesh::SceneMesh(const String& fileName) : Entity(), texture(NULL), material
     forceMaterial = false;
     backfaceCulled = true;
 	alphaTest = false;
+    sendBoneMatricesToMaterial = false;
 }
 
 SceneMesh::SceneMesh(Mesh *mesh) : Entity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL), skeletalVertexPositions(RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(RenderDataArray::NORMAL_DATA_ARRAY) {
@@ -74,6 +75,7 @@ SceneMesh::SceneMesh(Mesh *mesh) : Entity(), texture(NULL), material(NULL), skel
     forceMaterial = false;
     backfaceCulled = true;
 	alphaTest = false;
+    sendBoneMatricesToMaterial = false;
 }
 
 SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL), skeletalVertexPositions(RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(RenderDataArray::NORMAL_DATA_ARRAY) {
@@ -89,6 +91,7 @@ SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL), skeleton(NUL
     forceMaterial = false;
     backfaceCulled = true;
 	alphaTest = false;
+    sendBoneMatricesToMaterial = false;
 }
 
 void SceneMesh::setMesh(Mesh *mesh) {
@@ -271,13 +274,11 @@ void SceneMesh::renderMeshLocally() {
                     Bone *bone = skeleton->getBone(mesh->vertexBoneIndexArray.data[(i*4)+b]);
                         
                     Vector3 restVert(mesh->vertexPositionArray.data[i*3], mesh->vertexPositionArray.data[(i*3)+1], mesh->vertexPositionArray.data[(i*3)+2]);
-                                         
-                    Vector3 vec = bone->restMatrix * restVert;
-                    tPos += bone->finalMatrix * vec * (boneWeight);
+                    
+                    tPos += bone->finalMatrix * restVert * (boneWeight);
                         
                     Vector3 nvec(mesh->vertexNormalArray.data[i*3], mesh->vertexNormalArray.data[(i*3)+1], mesh->vertexNormalArray.data[(i*3)+2]);
                     
-                    nvec = bone->restMatrix.rotateVector(nvec);
                     nvec = bone->finalMatrix.rotateVector(nvec);
                     
                     norm += nvec * (boneWeight);
@@ -378,6 +379,19 @@ void SceneMesh::Render() {
 		else
 			renderer->setTexture(NULL);
 	}
+    
+    if(sendBoneMatricesToMaterial && localShaderOptions && skeleton) {
+        LocalShaderParam *skeletonMatrix = localShaderOptions->getLocalParamByName("skeletonMatrix[0]");
+        
+        if(skeletonMatrix) {
+            for(int i=0; i < skeleton->getNumBones(); i++) {
+                materialBoneMatrices[i] = skeleton->getBone(i)->getFinalMatrix();
+            }
+        } else {
+            materialBoneMatrices.resize(skeleton->getNumBones());
+            localShaderOptions->addParamPointer(ProgramParam::PARAM_MATRIX, "skeletonMatrix[0]", materialBoneMatrices.data())->arraySize = skeleton->getNumBones();
+        }
+    }
     
 	if(useVertexBuffer) {
         VertexBuffer *vb = mesh->getVertexBuffer();

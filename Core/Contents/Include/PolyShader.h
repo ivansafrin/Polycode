@@ -88,7 +88,7 @@ namespace Polycode {
 			const String& getName() const;
 			
 			ShaderBinding *createBinding();
-			virtual void reload() {}								
+			virtual void reload() {}
 			
 			int getExpectedParamType(String name);
 			
@@ -145,6 +145,7 @@ namespace Polycode {
 			void *data;
 			int type;
             bool ownsPointer;
+            unsigned int arraySize;
 		
             // Convenience getters/setters for Lua users
             Number getNumber();

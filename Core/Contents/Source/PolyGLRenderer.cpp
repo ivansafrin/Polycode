@@ -419,6 +419,20 @@ void OpenGLRenderer::drawVertexBuffer(VertexBuffer *buffer, bool enableColorBuff
         glVertexAttribPointer(6, 3, GL_FLOAT, 0, 0,  (char *)NULL);
 	}
     
+    if(glVertexBuffer->getBoneWeightBufferID() != -1) {
+        
+        glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getBoneWeightBufferID());
+        glEnableVertexAttribArrayARB(7);
+        glVertexAttribPointer(7, 4, GL_FLOAT, 0, 0,  (char *)NULL);
+    }
+    
+    if(glVertexBuffer->getBoneIndexBufferID() != -1) {
+        
+        glBindBufferARB( GL_ARRAY_BUFFER_ARB, glVertexBuffer->getBoneIndexBufferID());
+        glEnableVertexAttribArrayARB(8);
+        glVertexAttribPointer(8, 4, GL_FLOAT, 0, 0,  (char *)NULL);
+    }
+    
 	GLenum mode = GL_TRIANGLES;
 	
 	switch(buffer->meshType) {
@@ -454,6 +468,9 @@ void OpenGLRenderer::drawVertexBuffer(VertexBuffer *buffer, bool enableColorBuff
 	}
     
     glDisableVertexAttribArrayARB(6);
+    glDisableVertexAttribArrayARB(7);
+    glDisableVertexAttribArrayARB(8);
+    
 	glDisableClientState( GL_VERTEX_ARRAY);
 	glDisableClientState( GL_TEXTURE_COORD_ARRAY );		
 	glDisableClientState( GL_NORMAL_ARRAY );
