@@ -82,11 +82,14 @@ EntityEditorPropertyView::EntityEditorPropertyView() : UIElement() {
     entitySheet = new EntitySheet();
     entityProps->addPropSheet(entitySheet);
     entitySheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
-    
-    propSheet = new EntityPropSheet();
-    entityProps->addPropSheet(propSheet);
-    propSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
-    
+
+	std::vector<Resource*> plugins = Services()->getResourceManager()->getGlobalPool()->getResources(Resource::RESOURCE_PLUGIN);
+	for (int p = 0; p < plugins.size(); p++) {
+		EntityPropSheet *propSheet = new EntityPropSheet(dynamic_cast<Plugin*>(plugins[p]));
+		entityProps->addPropSheet(propSheet);
+		propSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
+		propSheets.push_back(propSheet);
+	}
 }
 
 void EntityEditorPropertyView::setEntityInstance(SceneEntityInstance *instance) {
@@ -176,7 +179,9 @@ void EntityEditorPropertyView::setEntity(Entity *entity) {
     particleSheet->setParticleEmitter(emitter);
 
     entitySheet->setEntity(entity);
-    propSheet->setEntity(entity);
+	for (int p = 0; p < propSheets.size(); p++) {
+		propSheets[p]->setEntity(entity);
+	}
     transformSheet->setEntity(entity);
         
     Resize(getWidth(), getHeight());

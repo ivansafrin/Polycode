@@ -330,8 +330,7 @@ void ResourceManager::parsePluginsIntoPool(ResourcePool *pool, const String& dir
 					pool->addResource(plugins[p]);
 				}
 			}
-		}
-		else {
+		} else {
 			if (recursive)
 				parsePluginsIntoPool(pool, dirPath + "/" + resourceDir[i].name, true);
 		}

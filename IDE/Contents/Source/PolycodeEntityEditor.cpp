@@ -2136,6 +2136,13 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
     }
     entry->addChild("tags", tagString);
 
+	if (entity->requiredPlugins.size() > 0) {
+		ObjectEntry *reqPluginsEntry = entry->addChild("requiredPlugins");
+		for (int p = 0; p < entity->requiredPlugins.size(); p++) {
+			ObjectEntry* requiredPlugin = reqPluginsEntry->addChild("requiredPlugin");
+			requiredPlugin->addChild("name", entity->requiredPlugins[p]->getResourceName());
+		}
+	}
     
     if(entity->entityProps.size() > 0) {
         ObjectEntry *props = entry->addChild("props");
@@ -2506,7 +2513,7 @@ void PolycodeEntityEditor::saveFile() {
     
     ObjectEntry *children = saveObject.root.addChild("root");
     saveEntityToObjectEntry(mainView->getObjectRoot(), children);
-        
+
     saveObject.saveToXML(filePath);
     setHasChanges(false);
 }
@@ -2521,19 +2528,13 @@ void PolycodeEntityEditor::savePropsToEntry(ObjectEntry *entry, std::vector<Enti
 	for (int i = 0; i < props.size(); i++) {
 		ObjectEntry *prop = entry->addChild("prop");
 		prop->addChild("name", props[i]->name);
-		//prop->addChild("value", entity->entityProps[i].propValue);
+		prop->addChild("type", props[i]->type);
 		switch (props[i]->type) {
 		case Prop::PROP_STRING:
 			prop->addChild("value", props[i]->stringVal);
 			break;
 		case Prop::PROP_ARRAY:
-			ObjectEntry *childrenProps;
-			for (int a = 0; a < props[i]->arrayVal.size(); a++) {
-				ObjectEntry* childProp;
-				savePropsToEntry(childProp, props[i]->arrayVal);
-				childrenProps->addChild(childProp);
-			}
-			prop->addChild(childrenProps);
+			savePropsToEntry(prop, props[i]->arrayVal);
 			break;
 		case Prop::PROP_BOOL:
 			prop->addChild("value", props[i]->boolVal);
@@ -2548,7 +2549,6 @@ void PolycodeEntityEditor::savePropsToEntry(ObjectEntry *entry, std::vector<Enti
 			prop->addChild("value", props[i]->stringVal);
 			break;
 		}
-		prop->addChild("type", props[i]->type);
 	}
 }
 

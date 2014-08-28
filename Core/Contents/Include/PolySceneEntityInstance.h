@@ -57,6 +57,7 @@ class SceneEntityInstance : public Entity {
 		void clearInstance();
 
 		void parseObjectIntoCurve(ObjectEntry *entry, BezierCurve *curve);
+		std::vector<EntityProp*> parseObjectEntryIntoProps(ObjectEntry *propsEntry);
 		Entity *loadObjectEntryIntoEntity(ObjectEntry *entry, Entity *targetEntity = NULL, int entityFileVersion = 1);
 		bool loadFromFile(const String& fileName);
         void applySceneMesh(ObjectEntry *entry, SceneMesh *sceneMesh);
@@ -79,8 +80,6 @@ class SceneEntityInstance : public Entity {
     
         SceneEntityInstanceLayer *createNewLayer(String name);
 	
-		void addPluginByName(const String& name, ResourcePool *resourcePool = NULL);
-
 		String getFileName() const;
 		bool cloneUsingReload;
 
@@ -96,8 +95,6 @@ class SceneEntityInstance : public Entity {
         std::vector<ResourcePool*> resourcePools;
         Scene *parentScene;
 		SceneEntityInstanceResourceEntry *resourceEntry;
-
-		std::vector<Plugin*> requiredPlugins;
 		
 };
     

@@ -36,20 +36,45 @@ class PolycodeEditorPropActionData;
 
 class PropProp : public UIElement {
 	public:
-		PropProp(String caption, String type);
+		PropProp(String caption, int type);
 		~PropProp();
 
 		virtual void setPropData(PolycodeEditorPropActionData* data) {}
 		
 		virtual void setPropWidth(Number width) {}
         void setPropName(String newName);
-    
-		String propType;
+		String getPropName();
+
+		int propType;
 		UILabel *label;
 		Entity *propContents;				
 		
 		bool suppressChangeEvent;		
 		bool settingFromData;
+		
+		static const int PROP_VECTOR3 = 0;
+		static const int PROP_VECTOR2 = 1;
+		static const int PROP_SLIDER = 2;
+		static const int PROP_BUTTON = 3;
+		static const int PROP_NUMBER = 4;
+		static const int PROP_TARGET_BINDING = 5;
+		static const int PROP_RENDER_TARGET = 6;
+		static const int PROP_SHADER_PASS = 7;
+		static const int PROP_REMOVABLE_STRING = 8;
+		static const int PROP_LAYER = 9;
+		static const int PROP_CUSTOM = 10;
+		static const int PROP_STRING = 11;
+		static const int PROP_COLOR = 12;
+		static const int PROP_COMBO = 13;
+		static const int PROP_BOOL = 14;
+		static const int PROP_SOUND = 15;
+		static const int PROP_BEZIER_RGBA_CURVE = 16;
+		static const int PROP_BEZIER_CURVE = 17;
+		static const int PROP_MATERIAL = 18;
+		static const int PROP_MATERIAL_PREVIEW = 19;
+		static const int PROP_TEXTURE = 20;
+		static const int PROP_SCENE_SPRITE = 21;
+		static const int PROP_SCENE_ENTITY_INSTANCE = 22;
 };
 
 class Vector3Prop : public PropProp {
@@ -773,19 +798,26 @@ class MaterialPropSheet : public PropSheet {
 
 class EntityPropSheet : public PropSheet {
 	public:
-		EntityPropSheet();		
-		void handleEvent(Event *event);
+		EntityPropSheet(Plugin* plugin);
+		
 		void Update();
 		void refreshProps();
+		void reloadSheetFromEntry(ObjectEntry *sheetEntry);
 		void applyPropActionData(PolycodeEditorPropActionData *data);
         void setEntity(Entity *entity);
+		void handleEvent(Event *event);
+		
+		//void refreshProps(ObjectEntry *propsEntry);
 
-        ButtonProp *addButtonProp;
+        //ButtonProp *addButtonProp;
 		
 		Entity *entity;
     
+		String plugin;
+
 		int lastNumProps;		
 		int removeIndex;
+		
 };
 
 class SceneLabelSheet : public PropSheet {
@@ -935,37 +967,7 @@ class LinkedMaterialsSheet : public PropSheet {
 
 class CustomSheet : public PropSheet {
 public:
-	CustomSheet(ObjectEntry *sheetEntry);
-	~CustomSheet();
-
-	void handleEvent(Event *event);
-	void reloadSheetFromFile(ObjectEntry *sheetEntry);
-	void refreshProps(ObjectEntry *propsEntry);
-	void Update();
-	
-	static const int PROP_VECTOR3				= 0;
-	static const int PROP_VECTOR2				= 1;
-	static const int PROP_SLIDER				= 2;
-	static const int PROP_BUTTON				= 3;
-	static const int PROP_NUMBER				= 4;
-	static const int PROP_TARGET_BINDING		= 5;
-	static const int PROP_RENDER_TARGET			= 6;
-	static const int PROP_SHADER_PASS			= 7;
-	static const int PROP_REMOVABLE_STRING		= 8;
-	static const int PROP_LAYER					= 9;
-	static const int PROP_CUSTOM				= 10;
-	static const int PROP_STRING				= 11;
-	static const int PROP_COLOR					= 12;
-	static const int PROP_COMBO					= 13;
-	static const int PROP_BOOL					= 14;
-	static const int PROP_SOUND					= 15;
-	static const int PROP_BEZIER_RGBA_CURVE		= 16;
-	static const int PROP_BEZIER_CURVE			= 17;
-	static const int PROP_MATERIAL				= 18;
-	static const int PROP_TEXTURE				= 19;
-	static const int PROP_SCENE_SPRITE			= 20;
-	static const int PROP_SCENE_ENTITY_INSTANCE = 21;
-	
+		
 //private:
 //	std::vector<PropProp*> props;
 };

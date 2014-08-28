@@ -25,6 +25,7 @@ THE SOFTWARE.
 #include "PolyCoreServices.h"
 #include "PolyPluginManager.h"
 #include "PolyResourceManager.h"
+#include "PolyLogger.h"
 
 using namespace Polycode;
 
@@ -32,36 +33,38 @@ Plugin::Plugin(const String& name) : Resource(Resource::RESOURCE_PLUGIN) {
 	Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_PLUGIN, name);
 }
 
+Plugin::Plugin(ObjectEntry *entry) : Resource(Resource::RESOURCE_PLUGIN) {
+	loadPluginFromEntry(entry);
+}
+
 Plugin::~Plugin() {}
 
-//void Plugin::loadPluginFromFile(const String& fileName) {
-//	Object loadFile;
-//	if (!loadFile.loadFromBinary(fileName))
-//		if (!loadFile.loadFromXML(fileName))
-//			return;
-//	
-//	ObjectEntry plugin = loadFile.root;
-//
-//}
-
-
-Plugin* Plugin::loadPluginFromEntry(ObjectEntry* entry){
+Plugin* Plugin::loadPluginFromEntry(ObjectEntry* entry){	
+	if ((*entry)["name"])
+		this->setResourceName((*entry)["name"]->stringVal);
 	
-	this->setResourceName((*entry)["name"]->stringVal);
+	if ((*entry)["fileext"])
+		this->ext = (*entry)["fileext"]->stringVal;
+	
+	if ((*entry)["sheet"] && (*(*entry)["sheet"])["props"])
+		this->sheetEntry = (*entry)["sheet"];
+
+	if ((*entry)["type"])
+		this->pluginType = (*entry)["type"]->intVal;
+	
 	ObjectEntry* props = (*entry)["props"];
-	if (!props)
-		return NULL;
+	if (props) {
+		for (int k = 0; k < props->length; k++) {
+			ObjectEntry* propEntry = props->children[k];
+			if (!propEntry)
+				continue;
 
-	for (int k = 0; k < props->length; k++){
-		ObjectEntry* propEntry = props->children[k];
-		if (!propEntry)
-			continue;
-		
-		Prop *prop;
-		prop->loadPropFromEntry(propEntry);
-
-		this->addProp(prop);
+			Prop *prop = new Prop(propEntry);
+			this->addProp(prop);
+		}
 	}
+	Logger::log("Adding plugin: [%s]\n", this->getResourceName().c_str());
+	return this;
 }
 
 unsigned int Plugin::getNumProps() const {
@@ -85,29 +88,13 @@ std::vector<Prop*> Plugin::getProps() const {
 	return props;
 }
 
-//Prop::Prop(int val){
-//	this->intVal = val;
-//	this->type = PROP_INT;
-//}
-//
-//Prop::Prop(Number val) {
-//	this->numberVal = val;
-//	this->type = PROP_NUMBER;
-//}
-//
-//Prop::Prop(bool val) {
-//	this->boolVal = val;
-//	this->type = PROP_BOOL;
-//}
-//
-//Prop::Prop(PolyBase *val) {
-//	this->classVal = val;
-//	this->type = PROP_CLASS;
-//}
-
 Prop::Prop(const String& name, const int type){
 	this->type = type;
 	this->name = name;
+}
+
+Prop::Prop(ObjectEntry *entry) {
+	loadPropFromEntry(entry);
 }
 
 Prop::~Prop(){}
@@ -121,32 +108,18 @@ Prop* Prop::loadPropFromEntry(ObjectEntry* entry){
 		return NULL;
 	String name = (*entry)["name"]->stringVal;
 
-	Prop(name, type);
-
-	/*switch (type){
-	case Prop::PROP_NUMBER:
-	prop = new Prop(propEntry->NumberVal);
-	break;
-	case Prop::PROP_INT:
-	prop = new Prop(propEntry->intVal);
-	break;
-	case Prop::PROP_BOOL:
-	prop = new Prop(propEntry->NumberVal);
-	break;
-	case Prop::PROP_CLASS:
-	prop = new Prop(&propEntry->stringVal);
-	break;
-	default:
-	continue;
-	}*/
+	this->type = type;
+	this->name = name;
 
 	if (type == 4){
-		int i = 0;
-		while (i < entry->length){
-			children.push_back(loadPropFromEntry((*entry->children[i])["prop"]));
-			i++;
+		int l = 0;
+		for (int i = 0; i < entry->children.size(); i++) {
+			if (entry->children[i]->name == "prop") {
+				children.push_back(new Prop(entry->children[i]));
+				l++;
+			}
 		}
-		this->length = i;
+		this->length = l;
 	}
 	return this;
 }

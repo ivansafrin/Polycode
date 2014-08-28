@@ -23,6 +23,7 @@ THE SOFTWARE.
 #include "PolyPluginManager.h"
 #include "PolyPlugin.h"
 #include "PolyObject.h"
+#include "PolyLogger.h"
 
 using namespace Polycode;
 
@@ -38,19 +39,28 @@ std::vector<Plugin*> PluginManager::loadPluginsFromFile(const String &fileName){
 	if (!pluginFile.loadFromBinary(fileName))
 		if (!pluginFile.loadFromXML(fileName))
 			return retPlugins;
+	
+	//Logger::log("Loading plugins from %s", fileName.c_str());
 
-	ObjectEntry* versionEntry = pluginFile.root["version"];
-	if (!versionEntry->NumberVal <= version)
-		return retPlugins;
+	version = 1.0;
 
-	for (int i = 0; i < pluginFile.root.length; i++){
+	//ObjectEntry* versionEntry = pluginFile.root["version"];
+	//if (versionEntry->NumberVal > version)
+	//	return retPlugins;
+	
+	//if (!pluginsEntry) {
+	//	Logger::log("No plugins in %s\n", fileName.c_str());
+	//	return retPlugins;
+	//}
+	
+	for (int i = 0; i < pluginFile.root.children.size(); i++){
 		ObjectEntry* pluginEntry = pluginFile.root.children[i];
-		if (!pluginEntry)
+		if (!pluginEntry || pluginEntry->name != "plugin")
 			continue;
 
-		Plugin *plugin;
-		plugin->loadPluginFromEntry(pluginEntry);
+		Plugin *plugin = new Plugin(pluginEntry);
 		if (plugin)
 			retPlugins.push_back(plugin);
 	}
+	return retPlugins;
 }

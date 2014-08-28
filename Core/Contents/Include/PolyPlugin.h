@@ -31,6 +31,7 @@ namespace Polycode {
 	class _PolyExport Prop : public PolyBase {
 	public:
 		Prop(const String& name, const int type = Prop::PROP_STRING);
+		Prop(ObjectEntry *entry);
 		~Prop();
 
 		Prop *loadPropFromEntry(ObjectEntry* entry);
@@ -52,6 +53,7 @@ namespace Polycode {
 	class _PolyExport Plugin : public Resource {
 		public:
 			Plugin(const String& name);
+			Plugin(ObjectEntry *entry);
 			~Plugin();
 		
 			Plugin* loadPluginFromEntry(ObjectEntry *entry);
@@ -63,9 +65,14 @@ namespace Polycode {
 			std::vector<Prop*> getProps() const;
 			unsigned int getNumProps() const;
 
-		protected:
-			String ext;
+			unsigned int pluginType;
 
+			static const unsigned int PLUGIN_ENTITY = 0;
+
+			String ext;
+			ObjectEntry *sheetEntry;
+
+		protected:
 			std::vector<Prop*> props;
 	};
 }

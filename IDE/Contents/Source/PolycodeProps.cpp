@@ -333,7 +333,11 @@ void PropProp::setPropName(String newName) {
     label->setText(newName);
 }
 
-PropProp::PropProp(String caption, String type) : UIElement() {
+String PropProp::getPropName() {
+	return label->getText();
+}
+
+PropProp::PropProp(String caption, int type) : UIElement() {
 
 	suppressChangeEvent = false;
 	propType = type;
@@ -353,7 +357,7 @@ PropProp::~PropProp() {
 
 }
 
-ButtonProp::ButtonProp(const String &caption) : PropProp("", "ButtonProp") {
+ButtonProp::ButtonProp(const String &caption) : PropProp("", PropProp::PROP_BUTTON) {
     button = new UIButton(caption, 100);
     addChild(button);
     setHeight(25);
@@ -372,7 +376,7 @@ void ButtonProp::setPropWidth(Number width) {
 }
 
 
-Vector3Prop::Vector3Prop(String caption) : PropProp(caption, "Vector3") {
+Vector3Prop::Vector3Prop(String caption) : PropProp(caption, PropProp::PROP_VECTOR3) {
     
     xInput = NULL;
     yInput = NULL;
@@ -463,7 +467,7 @@ Vector3Prop::~Vector3Prop() {
     
 }
 
-Vector2Prop::Vector2Prop(String caption) : PropProp(caption, "Vector2") {
+Vector2Prop::Vector2Prop(String caption) : PropProp(caption, PropProp::PROP_VECTOR2) {
 
 	labelX = new UILabel("X:", 11);
 	labelX->color.a = 1.0;
@@ -545,7 +549,7 @@ Vector2Prop::~Vector2Prop() {
 
 }
 
-RemovableStringProp::RemovableStringProp(const String &caption) : PropProp("", "RemovableStringProp") {
+RemovableStringProp::RemovableStringProp(const String &caption) : PropProp("", PropProp::PROP_REMOVABLE_STRING){
     
     label = new UILabel(caption, 12);
     addChild(label);
@@ -573,7 +577,7 @@ void RemovableStringProp::handleEvent(Event *event) {
     }
 }
 
-LayerProp::LayerProp(SceneEntityInstance *instance, SceneEntityInstanceLayer *layer) : PropProp("", "Layer") {
+LayerProp::LayerProp(SceneEntityInstance *instance, SceneEntityInstanceLayer *layer) : PropProp("", PropProp::PROP_LAYER) {
 	layerID = 0;
 
     bgRect = new UIRect(1.0, 1.0);
@@ -697,7 +701,7 @@ void LayerProp::setPropWidth(Number width) {
     removeLayerButton->setPosition(width-PROP_PADDING-propContents->getPosition().x-20, 5.0);
 }
 
-CustomProp::CustomProp(String key, String value) : PropProp("", "Custom") {
+CustomProp::CustomProp(String key, String value) : PropProp("", PropProp::PROP_CUSTOM) {
 	keyEntry = new UITextInput(false, 120, 12);
 	keyEntry->setText(key);
 	keyEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
@@ -758,7 +762,7 @@ String CustomProp::getKey() {
 }
 
 
-StringProp::StringProp(String caption) : PropProp(caption, "String") {
+StringProp::StringProp(String caption) : PropProp(caption, PropProp::PROP_STRING) {
 
 	stringEntry = new UITextInput(false, 150, 12);
 	stringEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
@@ -807,7 +811,7 @@ StringProp::~StringProp() {
 
 }
 
-SliderProp::SliderProp(String caption, Number min, Number max) : PropProp(caption, "Slider") {
+SliderProp::SliderProp(String caption, Number min, Number max) : PropProp(caption, PropProp::PROP_SLIDER) {
 	
 	slider = new UIHSlider(min, max, 100);
 	slider->addEventListener(this, UIEvent::CHANGE_EVENT);
@@ -866,7 +870,7 @@ SliderProp::~SliderProp() {
 
 }
 
-NumberProp::NumberProp(String caption) : PropProp(caption, "Number") {
+NumberProp::NumberProp(String caption) : PropProp(caption, PropProp::PROP_NUMBER) {
 
 	numberEntry = new UITextInput(false, 50, 20);
 	numberEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
@@ -918,7 +922,7 @@ NumberProp::~NumberProp() {
 
 }
 
-ColorProp::ColorProp(String caption) : PropProp(caption, "Color") {
+ColorProp::ColorProp(String caption) : PropProp(caption, PropProp::PROP_COLOR) {
 
 	colorEntry = new UIColorBox(globalColorPicker, Color(), 45, 25);
 	colorEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
@@ -965,7 +969,7 @@ ColorProp::~ColorProp() {
 
 }
 
-ComboProp::ComboProp(String caption) : PropProp(caption, "Combo") {
+ComboProp::ComboProp(String caption) : PropProp(caption, PropProp::PROP_COMBO) {
 	comboEntry = new UIComboBox(globalMenu, 150);
 	comboEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
 	propContents->addChild(comboEntry);
@@ -1010,7 +1014,7 @@ ComboProp::~ComboProp() {
 
 }
 
-BoolProp::BoolProp(String caption) : PropProp(caption, "Bool") {
+BoolProp::BoolProp(String caption) : PropProp(caption, PropProp::PROP_BOOL) {
 
 	checkEntry = new UICheckBox("", false);
 	checkEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
@@ -1052,7 +1056,7 @@ BoolProp::~BoolProp() {
 }
 
 
-SoundProp::SoundProp(String caption) : PropProp(caption, "Sound"){
+SoundProp::SoundProp(String caption) : PropProp(caption, PropProp::PROP_SOUND) {
 
 	soundFile = new UILabel("", 11);
 	soundFile->setPosition(0, 5);
@@ -1135,7 +1139,7 @@ String SoundProp::get() {
 	return "";
 }
 
-BezierRGBACurveProp::BezierRGBACurveProp(String caption) : PropProp(caption, "BezierRGBA") {
+BezierRGBACurveProp::BezierRGBACurveProp(String caption) : PropProp(caption, PropProp::PROP_BEZIER_RGBA_CURVE) {
 
 
 	changeButton = new UIButton("Edit", 120);
@@ -1162,13 +1166,13 @@ void BezierRGBACurveProp::handleEvent(Event *event) {
 			globalFrame->curveEditor->addCurve("Red", curveR, Color(1.0, 0.0, 0.0, 1.0));
 			globalFrame->curveEditor->addCurve("Green", curveG, Color(0.0, 1.0, 0.0, 1.0));
 			globalFrame->curveEditor->addCurve("Blue", curveB, Color(0.0, 0.0, 1.0, 1.0));
-			globalFrame->curveEditor->addCurve("Alpha", curveA, Color(1.0, 1.0, 1.0, 1.0));		
+			globalFrame->curveEditor->addCurve("Alpha", curveA, Color(1.0, 1.0, 1.0, 1.0));
 			globalFrame->showCurveEditor();
 		}
 	}
 }
 
-BezierCurveProp::BezierCurveProp(String caption, String curveName) : PropProp(caption, "BezierCurve") {
+BezierCurveProp::BezierCurveProp(String caption, String curveName) : PropProp(caption, PropProp::PROP_BEZIER_CURVE) {
 
 	this->curveName = curveName;
 
@@ -1196,7 +1200,7 @@ void BezierCurveProp::handleEvent(Event *event) {
 	}
 }
 
-MaterialProp::MaterialProp(const String &caption) : PropProp(caption, "Material"){
+MaterialProp::MaterialProp(const String &caption) : PropProp(caption, PropProp::PROP_MATERIAL) {
     currentMaterial = NULL;
     
 	previewShape = new UIRect(48, 48);
@@ -1314,7 +1318,7 @@ void MaterialProp::setPropWidth(Number width) {
 }
 
 
-TextureProp::TextureProp(String caption) : PropProp(caption, "Texture"){
+TextureProp::TextureProp(String caption) : PropProp(caption, PropProp::PROP_TEXTURE) {
 	previewShape = new UIRect(48, 48);
 	previewShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	previewShape->setPosition(2, 1);
@@ -1389,7 +1393,7 @@ Texture* TextureProp::get() {
 	return previewShape->getTexture();
 }
 
-SceneSpriteProp::SceneSpriteProp(String caption) : PropProp(caption, "SceneSprite"){
+SceneSpriteProp::SceneSpriteProp(String caption) : PropProp(caption, PropProp::PROP_SCENE_SPRITE) {
 
 	previewSprite = NULL;
     
@@ -1500,7 +1504,7 @@ Sprite *SceneSpriteProp::get() {
 	return sprite;
 }
 
-SceneEntityInstanceProp::SceneEntityInstanceProp(String caption) : PropProp(caption, "SceneEntityInstance"){
+SceneEntityInstanceProp::SceneEntityInstanceProp(String caption) : PropProp(caption, PropProp::PROP_SCENE_ENTITY_INSTANCE){
 //	previewInstance = new SceneEntityInstance("default/default.entity");
 	previewInstance->setAnchorPoint(-1.0, -1.0, 0.0);
 	previewInstance->setPosition(2, 1);
@@ -1565,7 +1569,7 @@ String SceneEntityInstanceProp::get() {
 	return previewInstance->getFileName();
 }
 
-ShaderPassProp::ShaderPassProp(Material *material, int shaderIndex) : PropProp("", "ShaderPassProp") {
+ShaderPassProp::ShaderPassProp(Material *material, int shaderIndex) : PropProp("", PropProp::PROP_SHADER_PASS) {
 	this->material = material;
 	this->shader = material->getShader(shaderIndex);
 	this->shaderIndex = shaderIndex;
@@ -1629,7 +1633,7 @@ void ShaderPassProp::setPropWidth(Number width) {
 	editButton->Resize(floor(adjustedWidth * 0.25), editButton->getHeight());
 }
 
-TargetBindingProp::TargetBindingProp(Shader *shader, Material *material, ShaderBinding *binding, RenderTargetBinding *targetBinding) : PropProp("", "TargetBindingProp") {
+TargetBindingProp::TargetBindingProp(Shader *shader, Material *material, ShaderBinding *binding, RenderTargetBinding *targetBinding) : PropProp("", PropProp::PROP_TARGET_BINDING) {
 	this->targetBinding = targetBinding;
 	this->material = material;
 	this->shader = shader;
@@ -1763,7 +1767,7 @@ void TargetBindingProp::setPropWidth(Number width) {
 
 }
 
-RenderTargetProp::RenderTargetProp(ShaderRenderTarget *renderTarget, Material *material) : PropProp("", "RenderTargetProp") {
+RenderTargetProp::RenderTargetProp(ShaderRenderTarget *renderTarget, Material *material) : PropProp("", PropProp::PROP_RENDER_TARGET) {
 
 	this->material = material;
 	this->renderTarget = renderTarget;
@@ -2129,20 +2133,19 @@ void RenderTargetsSheet::handleEvent(Event *event) {
 	PropSheet::handleEvent(event);
 }
 
-
-EntityPropSheet::EntityPropSheet() : PropSheet("CUSTOM PROPERTIES", "entityProps"){
-	
-    addButtonProp = new ButtonProp("Add Property");
-    addProp(addButtonProp);
-    addButtonProp->getButton()->addEventListener(this, UIEvent::CLICK_EVENT);
+EntityPropSheet::EntityPropSheet(Plugin* plugin) : PropSheet(plugin->getResourceName().toUpperCase(), plugin->ext){
+	this->plugin = plugin->getResourceName();
 
 	customUndoHandler = true;
-	
+
 	entity = NULL;
-	
+
 	lastNumProps = 0;
 	removeIndex = -1;
-    enabled = false;
+	enabled = false;
+
+	if (plugin->sheetEntry)
+		refreshProps();
 }
 
 void EntityPropSheet::applyPropActionData(PolycodeEditorPropActionData *data) {
@@ -2161,16 +2164,6 @@ void EntityPropSheet::applyPropActionData(PolycodeEditorPropActionData *data) {
 void EntityPropSheet::handleEvent(Event *event) {
 	if(!entity)
 		return;
-		
-	if(event->getDispatcher() == addButtonProp->getButton() && event->getEventType() == "UIEvent") {
-		PolycodeEditorPropActionData *beforeData = PropDataEntity(entity);	
-		entity->entityProps.push_back(new EntityProp(""));
-		refreshProps();
-		PolycodeEditorPropActionData *afterData = PropDataEntity(entity);			
-		PropEvent *propEvent = new PropEvent(NULL, this, beforeData, afterData);
-		dispatchEvent(propEvent, PropEvent::EVENT_PROP_CHANGE);					
-		
-	}
 	
 	for(int i=0; i < props.size(); i++) {
 		if(event->getDispatcher() == props[i] && event->getEventType() == "") {
@@ -2180,9 +2173,103 @@ void EntityPropSheet::handleEvent(Event *event) {
 				break;
 				case Event::CHANGE_EVENT:
 					PolycodeEditorPropActionData *beforeData = PropDataEntity(entity);
-					if(i-1 < entity->entityProps.size()) {
-						entity->entityProps[i-1]->name = ((CustomProp*)props[i])->getKey();
-						entity->entityProps[i-1]->stringVal= ((CustomProp*)props[i])->getValue();
+					if(i < entity->entityProps.size()) {
+						
+						std::vector<EntityProp*> propsVector;
+						EntityProp* prop;
+
+						switch (props[i]->propType) {
+						case PropProp::PROP_VECTOR3:
+							prop = new EntityProp(props[i]->getPropName() + "x", Prop::PROP_NUMBER);
+							prop->numberVal = ((Vector3Prop*)props[i])->get().x;
+							propsVector.push_back(prop);
+							prop = new EntityProp(props[i]->getPropName() + "y", Prop::PROP_NUMBER);
+							prop->numberVal = ((Vector3Prop*)props[i])->get().y;
+							propsVector.push_back(prop);
+							prop = new EntityProp(props[i]->getPropName() + "z", Prop::PROP_NUMBER);
+							prop->numberVal = ((Vector3Prop*)props[i])->get().z;
+							propsVector.push_back(prop);
+							entity->setEntityProp(props[i]->getPropName(), propsVector);
+							break;
+						case PropProp::PROP_VECTOR2:
+							prop = new EntityProp(props[i]->getPropName() + "x", Prop::PROP_NUMBER);
+							propsVector.push_back(prop);
+							prop = new EntityProp(props[i]->getPropName() + "y", Prop::PROP_NUMBER);
+							propsVector.push_back(prop);
+							entity->setEntityProp(props[i]->getPropName(), propsVector);
+							break;
+						case PropProp::PROP_SLIDER:
+							entity->setEntityProp(props[i]->getPropName(), ((SliderProp*)props[i])->get());
+							break;
+							//case PropProp::PROP_BUTTON:
+							//	prop = new ButtonProp(caption);
+							//	break;
+						case PropProp::PROP_NUMBER:
+							entity->setEntityProp(props[i]->getPropName(), ((NumberProp*)props[i])->get());
+							break;
+							//case PropProp::PROP_TARGET_BINDING:
+							//
+							//	break;
+							//case PropProp::PROP_RENDER_TARGET:
+							//	break;
+							//case PropProp::PROP_SHADER_PASS:
+							//	break;
+						case PropProp::PROP_REMOVABLE_STRING:
+							entity->setEntityProp(props[i]->getPropName(), ((RemovableStringProp*)props[i])->getCaption());
+							break;
+							//case PropProp::PROP_LAYER:
+							//	break;
+						case PropProp::PROP_STRING:
+							entity->setEntityProp(((StringProp*)props[i])->getPropName(), ((StringProp*)props[i])->get());
+							break;
+						case PropProp::PROP_COLOR:
+							entity->setEntityProp(props[i]->getPropName() + "R", ((ColorProp*)props[i])->get().r);
+							entity->setEntityProp(props[i]->getPropName() + "G", ((ColorProp*)props[i])->get().g);
+							entity->setEntityProp(props[i]->getPropName() + "B", ((ColorProp*)props[i])->get().b);
+							entity->setEntityProp(props[i]->getPropName() + "A", ((ColorProp*)props[i])->get().a);
+							break;
+						//case PropProp::PROP_COMBO:
+						//	//entity->setEntityProp(props[i]->getPropName() + String::NumberToString(c, 0), ((ComboProp*)props[i])->comboEntry->getItemAtIndex(c)->label);
+						//	switch (((ComboProp*)props[i])->comboEntry->getSelectedItem()->data[0]) {
+						//	case Prop::PROP_ARRAY:
+						//		entity->setEntityProp(caption, entity->getEntityPropArrayByName(((ComboProp*)props[i])->comboEntry->getSelectedItem()->label));
+						//	case Prop::PROP_BOOL:
+						//		entity->setEntityProp(caption, entity->getEntityPropBoolByName(((ComboProp*)props[i])->comboEntry->getSelectedItem()->label));
+						//	case Prop::PROP_INT:
+						//		entity->setEntityProp(caption, entity->getEntityPropIntByName(((ComboProp*)props[i])->comboEntry->getSelectedItem()->label));
+						//	case Prop::PROP_NUMBER:
+						//		entity->setEntityProp(caption, entity->getEntityPropNumberByName(((ComboProp*)props[i])->comboEntry->getSelectedItem()->label));
+						//	case Prop::PROP_STRING:
+						//		entity->setEntityProp(caption, entity->getEntityPropStringByName(((ComboProp*)props[i])->comboEntry->getSelectedItem()->label));
+						//	}
+						//	break;
+						case PropProp::PROP_BOOL:
+							entity->setEntityProp(props[i]->getPropName(), ((BoolProp*)props[i])->get());
+							break;
+						case PropProp::PROP_SOUND:
+							entity->setEntityProp(props[i]->getPropName(), ((SoundProp*)props[i])->get());
+							break;
+						//case PropProp::PROP_BEZIER_RGBA_CURVE:
+						//	break;
+						//case PropProp::PROP_BEZIER_CURVE:
+						//	break;
+						case PropProp::PROP_MATERIAL:
+							entity->setEntityProp(props[i]->getPropName(), ((MaterialProp*)props[i])->get()->getName());
+							break;
+						case PropProp::PROP_TEXTURE:
+							entity->setEntityProp(props[i]->getPropName(), ((TextureProp*)props[i])->get()->getResourceName());
+							break;
+						case PropProp::PROP_SCENE_SPRITE:
+							entity->setEntityProp(props[i]->getPropName(), ((SceneSpriteProp*)props[i])->get()->getResourceName());
+							break;
+						case PropProp::PROP_SCENE_ENTITY_INSTANCE:
+							entity->setEntityProp(props[i]->getPropName(), ((SceneEntityInstanceProp*)props[i])->get());
+							break;
+						case PropProp::PROP_CUSTOM:
+						default:
+							entity->setEntityProp(((CustomProp*)props[i])->getKey(), ((CustomProp*)props[i])->getValue());
+							break;
+						}
 					}
 					PolycodeEditorPropActionData *afterData = PropDataEntity(entity);
 					PropEvent *propEvent = new PropEvent(NULL, this, beforeData, afterData);
@@ -2194,28 +2281,227 @@ void EntityPropSheet::handleEvent(Event *event) {
 	PropSheet::handleEvent(event);
 }
 
-void EntityPropSheet::refreshProps() {
+void EntityPropSheet::reloadSheetFromEntry(ObjectEntry *sheetEntry) {
+	ObjectEntry *propsEntry = (*sheetEntry)["props"];
+	if (propsEntry) {
+		refreshProps();
+		//PropProp *prop;
+		//if (propsEntry) {
+		//	for (int i = 0; i < propsEntry->children.size(); i++) {
+		//		ObjectEntry* propEntry = propsEntry->children[i];
+		//		String caption = (*propEntry)["name"]->stringVal;
+		//		switch ((*propEntry)["type"]->intVal) {
+		//		case PropProp::PROP_VECTOR3:
+		//			prop = new Vector3Prop(caption);
+		//			break;
+		//		case PropProp::PROP_VECTOR2:
+		//			prop = new Vector2Prop(caption);
+		//			break;
+		//		case PropProp::PROP_SLIDER:
+		//			prop = new SliderProp(caption, (*propEntry)["min"]->NumberVal, (*propEntry)["max"]->NumberVal);
+		//			break;
+		//			//case PropProp::PROP_BUTTON:
+		//			//	prop = new ButtonProp(caption);
+		//			//	break;
+		//		case PropProp::PROP_NUMBER:
+		//			prop = new NumberProp(caption);
+		//			break;
+		//			//case PropProp::PROP_TARGET_BINDING:
+		//			//	Shader *shader;
+		//			//	Material *material;
+		//			//	ShaderBinding *shaderBin;
+		//			//	RenderTargetBinding *targetBin;
+		//			//
+		//			//	prop = new TargetBindingProp(shader, material, shaderBin, targetBin);
+		//			//
+		//			//	break;
+		//			//case PropProp::PROP_RENDER_TARGET:
+		//			//	ShaderRenderTarget *renderTarget;
+		//			//	Material *material;
+		//			//	prop = new RenderTargetProp(renderTarget, material);
+		//			//	break;
+		//			//case PropProp::PROP_SHADER_PASS:
+		//			//	prop = new ShaderPassProp();
+		//			//	break;
+		//			//case PropProp::PROP_REMOVABLE_STRING:
+		//			//	prop = new RemovableStringProp(caption);
+		//			//	break;
+		//			//case PropProp::PROP_LAYER:
+		//			//	SceneEntityInstance *instance = new SceneEntityInstance();
+		//			//	prop = new LayerProp();
+		//			//	break;
+		//		case PropProp::PROP_STRING:
+		//			prop = new StringProp(caption);
+		//			break;
+		//		case PropProp::PROP_COLOR:
+		//			prop = new ColorProp(caption);
+		//			break;
+		//		case PropProp::PROP_COMBO:
+		//			prop = new ComboProp(caption);
+		//			break;
+		//		case PropProp::PROP_BOOL:
+		//			prop = new BoolProp(caption);
+		//			break;
+		//		case PropProp::PROP_SOUND:
+		//			prop = new SoundProp(caption);
+		//			break;
+		//		case PropProp::PROP_BEZIER_RGBA_CURVE:
+		//			prop = new BezierRGBACurveProp(caption);
+		//			break;
+		//		case PropProp::PROP_BEZIER_CURVE:
+		//			prop = new BezierCurveProp(caption, (*propEntry)["curveName"]->stringVal);
+		//			break;
+		//		case PropProp::PROP_MATERIAL:
+		//			prop = new MaterialProp(caption);
+		//			break;
+		//		case PropProp::PROP_TEXTURE:
+		//			prop = new TextureProp(caption);
+		//			break;
+		//		case PropProp::PROP_SCENE_SPRITE:
+		//			prop = new SceneSpriteProp(caption);
+		//			break;
+		//		case PropProp::PROP_SCENE_ENTITY_INSTANCE:
+		//			prop = new SceneEntityInstanceProp(caption);
+		//			break;
+		//		case PropProp::PROP_CUSTOM:
+		//		default:
+		//			prop = new CustomProp(caption, "");
+		//			break;
+		//		}
+		//		addProp(prop);
+		//	}
+		//}
+	}
+}
 
+void EntityPropSheet::refreshProps() {
 	for(int i=0; i < props.size(); i++) {
-        if(props[i] != addButtonProp) {
-            contents->removeChild(props[i]);
-            props[i]->removeAllHandlersForListener(this);
-            delete props[i];
-        }
+        contents->removeChild(props[i]);
+        props[i]->removeAllHandlersForListener(this);
+        delete props[i];
 	}
 	props.clear();
-    props.push_back(addButtonProp);
-    
-	
-	for(int i=0; i < entity->entityProps.size(); i++) {			
-		EntityProp* prop = entity->entityProps[i];
-		CustomProp *newProp = new CustomProp(prop->name, prop->stringVal);
-		newProp->addEventListener(this, Event::CANCEL_EVENT);
-		newProp->addEventListener(this, Event::CHANGE_EVENT);		
-		addProp(newProp);
+
+	if (!entity)
+		entity = new Entity();
+
+	if (!entity->isRequiredPlugin(plugin)) {
+		this->enabled = false;
+		this->visible = false;
+		return;
+	} else {
+		this->enabled = true;
+		this->visible = true;
 	}
-	
-	
+
+	ObjectEntry* propsEntry = (*dynamic_cast<Plugin*>(Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_PLUGIN, plugin))->sheetEntry)["props"];
+	if (propsEntry) {
+		PropProp* prop;
+		for (int i = 0; i < propsEntry->children.size(); i++) {
+			ObjectEntry* propEntry = propsEntry->children[i];
+			String caption = (*propEntry)["name"]->stringVal;
+			switch ((*propEntry)["type"]->intVal) {
+			case PropProp::PROP_VECTOR3:
+				prop = new Vector3Prop(caption);
+				dynamic_cast<Vector3Prop*>(prop)->set(Vector3(entity->getEntityPropNumberByName(caption + "x"), entity->getEntityPropNumberByName(caption + "y"), entity->getEntityPropNumberByName(caption + "z")));
+				break;
+			case PropProp::PROP_VECTOR2:
+				prop = new Vector2Prop(caption);
+				dynamic_cast<Vector2Prop*>(prop)->set(Vector2(entity->getEntityPropNumberByName(caption + "x"), entity->getEntityPropNumberByName(caption + "y")));
+				break;
+			case PropProp::PROP_SLIDER:
+				prop = new SliderProp(caption, (*propEntry)["min"]->NumberVal, (*propEntry)["max"]->NumberVal);
+				dynamic_cast<SliderProp*>(prop)->set(entity->getEntityPropNumberByName(caption));
+				break;
+				//case PropProp::PROP_BUTTON:
+				//	prop = new ButtonProp(caption);
+				//	break;
+			case PropProp::PROP_NUMBER:
+				prop = new NumberProp(caption);
+				prop->setPropData(PropDataNumber(entity->getEntityPropNumberByName(caption)));
+				break;
+				//case PropProp::PROP_TARGET_BINDING:
+				//	Shader *shader = ((Shader*)Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_SHADER, entity->getEntityPropStringByName(caption)));
+				//	Material *material = ((Material*)Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, entity->getEntityPropStringByName(caption)));
+				//	ShaderBinding *shaderBin = new ShaderBinding(shader);
+				//	RenderTargetBinding *targetBin = new RenderTargetBinding();
+				//
+				//	prop = new TargetBindingProp(shader, material, shaderBin, targetBin);
+				//
+				//	break;
+				//case PropProp::PROP_RENDER_TARGET:
+				//	ShaderRenderTarget *renderTarget;
+				//	Material *material;
+				//	prop = new RenderTargetProp(renderTarget, material);
+				//	break;
+				//case PropProp::PROP_SHADER_PASS:
+				//	prop = new ShaderPassProp();
+				//	break;
+			case PropProp::PROP_REMOVABLE_STRING:
+				prop = new RemovableStringProp(caption);
+				prop->setPropData(PropDataString(entity->getEntityPropStringByName(caption)));
+				break;
+				//case PropProp::PROP_LAYER:
+				//	SceneEntityInstance *instance = new SceneEntityInstance();
+				//	prop = new LayerProp();
+				//	break;
+			case PropProp::PROP_STRING:
+				prop = new StringProp(caption);
+				((StringProp*)prop)->set(entity->getEntityPropStringByName(caption));
+				break;
+			case PropProp::PROP_COLOR:
+				prop = new ColorProp(caption);
+				((ColorProp*)prop)->set(new Color(entity->getEntityPropNumberByName(caption + "r"), entity->getEntityPropNumberByName(caption + "g"), entity->getEntityPropNumberByName(caption + "b"), entity->getEntityPropNumberByName(caption + "a")));
+				break;
+			case PropProp::PROP_COMBO:
+				prop = new ComboProp(caption);
+				for (int c = 0; c < (*propsEntry)[caption]->children.size(); c++) {
+					((ComboProp*)prop)->comboEntry->addComboItem(caption + String::NumberToString(c, 0), &(*propsEntry)[caption][c]["type"]->intVal);
+				}
+				break;
+			case PropProp::PROP_BOOL:
+				prop = new BoolProp(caption);
+				((BoolProp*)prop)->set(entity->getEntityPropBoolByName(caption));
+				break;
+			case PropProp::PROP_SOUND:
+				prop = new SoundProp(caption);
+				((SoundProp*)prop)->set(entity->getEntityPropStringByName(caption));
+				break;
+			//case PropProp::PROP_BEZIER_RGBA_CURVE:
+			//	prop = new BezierRGBACurveProp(caption);
+			//	for (int c = 0; c < entity->getEntityPropArrayByName(caption + "r").size(); c++) {
+			//		((BezierRGBACurveProp*)prop)->curveR->addControlPoint2d(entity->getEntityPropArrayByName(caption + "r")[c]);
+			//	}
+			//	break;
+			//case PropProp::PROP_BEZIER_CURVE:
+				//prop = new BezierCurveProp(caption, (*propEntry)["curveName"]->stringVal);
+				//break;
+			case PropProp::PROP_MATERIAL:
+				prop = new MaterialProp(caption);
+				((MaterialProp*)prop)->set(new Material(entity->getEntityPropStringByName(caption)));
+				break;
+			case PropProp::PROP_TEXTURE:
+				prop = new TextureProp(caption);
+				((TextureProp*)prop)->set(((Texture*)Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_TEXTURE, entity->getEntityPropStringByName(caption))));
+				break;
+			case PropProp::PROP_SCENE_SPRITE:
+				prop = new SceneSpriteProp(caption);
+				((SceneSpriteProp*)prop)->set(((Sprite*)Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_SPRITE, entity->getEntityPropStringByName(caption))));
+				break;
+			case PropProp::PROP_SCENE_ENTITY_INSTANCE:
+				prop = new SceneEntityInstanceProp(caption);
+				((SceneEntityInstanceProp*)prop)->set(entity->getEntityPropStringByName(caption));
+				break;
+			case PropProp::PROP_CUSTOM:
+			default:
+				prop = new CustomProp(caption, "");
+				break;
+			}
+			prop->addEventListener(this, Event::CHANGE_EVENT);
+			addProp(prop);
+		}
+	}
+
 	if(lastNumProps != entity->entityProps.size()) {
 		dispatchEvent(new Event(), Event::COMPLETE_EVENT);
 	}
@@ -2271,12 +2557,12 @@ void ShaderOptionsSheet::handleEvent(Event *event) {
                 
                 LocalShaderParam *param = binding->getLocalParamByName(props[i]->label->getText());
                 
-				if(props[i]->propType == "Number") {
+				if(props[i]->propType == PropProp::PROP_NUMBER) {
                     if(!param){
                         param = binding->addParam(ProgramParam::PARAM_NUMBER, props[i]->label->getText());
                     }
 					(*(Number*)param->data) = ((NumberProp*)props[i])->get();
-				} else if(props[i]->propType == "Color") {
+				} else if(props[i]->propType == PropProp::PROP_COLOR) {
                     
                     if(!param){
                         param = binding->addParam(ProgramParam::PARAM_COLOR, props[i]->label->getText());
@@ -3992,120 +4278,20 @@ void SoundSheet::setSound(SceneSound *sound) {
 	}
 }
 
-CustomSheet::CustomSheet(ObjectEntry *sheetEntry) : PropSheet((*sheetEntry)["name"]->stringVal.toUpperCase(), (*sheetEntry)["fileext"]->stringVal) {
-	//ObjectEntry *propsEntry = (*sheetEntry)["props"];
-	reloadSheetFromFile(sheetEntry);
-}
+//CustomSheet::CustomSheet(ObjectEntry *sheetEntry) : PropSheet((*sheetEntry)["name"]->stringVal.toUpperCase(), (*sheetEntry)["fileext"]->stringVal) {
+//	reloadSheetFromFile(sheetEntry);
+//}
 
-CustomSheet::~CustomSheet(){}
-
-void CustomSheet::reloadSheetFromFile(ObjectEntry *sheetEntry){
-	if (!(*sheetEntry)["props"])
-		return;
-
-	ObjectEntry *propsEntry = (*sheetEntry)["props"];
-	refreshProps(propsEntry);
-	PropProp *prop;
-	if (propsEntry->children.size() == 0)
-		return;
-
-	for (int i = 0; i < propsEntry->children.size(); i++) {
-		String caption = (*propsEntry->children[i])["name"]->stringVal;
-		switch ((*propsEntry->children[i])["type"]->intVal){
-		case PROP_VECTOR3:
-			prop = new Vector3Prop(caption);
-			prop->setPropData(PropDataVector3(Vector3((*propsEntry->children[i])["v1"]->NumberVal, (*propsEntry->children[i])["v2"]->NumberVal, (*propsEntry->children[i])["v3"]->NumberVal)));
-			break;
-		case PROP_VECTOR2:
-			prop = new Vector2Prop(caption);
-			prop->setPropData(PropDataVector2(Vector2((*propsEntry->children[i])["v1"]->NumberVal, (*propsEntry->children[i])["v2"]->NumberVal)));
-			break;
-		case PROP_SLIDER:
-			prop = new SliderProp(caption, (*propsEntry->children[i])["min"]->NumberVal, (*propsEntry->children[i])["max"]->NumberVal);
-			dynamic_cast<SliderProp*>(prop)->set((*propsEntry->children[i])["current"]->NumberVal);
-			break;
-		case PROP_BUTTON:
-			prop = new ButtonProp(caption);
-			break;
-		case PROP_NUMBER:
-			prop = new NumberProp(caption);
-			break;
-			//case PROP_TARGET_BINDING:
-			//	Shader *shader;
-			//	Material *material;
-			//	ShaderBinding *shaderBin;
-			//	RenderTargetBinding *targetBin;
-
-			//	prop = new TargetBindingProp(shader, material, shaderBin, targetBin);
-
-			//	break;
-			//case PROP_RENDER_TARGET:
-			//	ShaderRenderTarget *renderTarget;
-			//	Material *material;
-			//	prop = new RenderTargetProp(renderTarget, material);
-			//	break;
-			//case PROP_SHADER_PASS:
-			//	prop = new ShaderPassProp();
-			//	break;
-			//case PROP_REMOVABLE_STRING:
-			//	prop = new RemovableStringProp(caption);
-			//	break;
-			//case PROP_LAYER:
-			//	SceneEntityInstance *instance = new SceneEntityInstance();
-			//	prop = new LayerProp();
-			//	break;
-		case PROP_STRING:
-			prop = new StringProp(caption);
-			dynamic_cast<StringProp*>(prop)->set((*propsEntry->children[i])["current"]->stringVal);
-			break;
-		case PROP_COLOR:
-			prop = new ColorProp(caption);
-			break;
-		case PROP_COMBO:
-			prop = new ComboProp(caption);
-			break;
-		case PROP_BOOL:
-			prop = new BoolProp(caption);
-			break;
-		case PROP_SOUND:
-			prop = new SoundProp(caption);
-			break;
-		case PROP_BEZIER_RGBA_CURVE:
-			prop = new BezierRGBACurveProp(caption);
-			break;
-		case PROP_BEZIER_CURVE:
-			prop = new BezierCurveProp(caption, (*propsEntry->children[i])["curvename"]->stringVal);
-			break;
-		case PROP_MATERIAL:
-			prop = new MaterialProp(caption);
-			break;
-		case PROP_TEXTURE:
-			prop = new TextureProp(caption);
-			break;
-		case PROP_SCENE_SPRITE:
-			prop = new SceneSpriteProp(caption);
-			break;
-		case PROP_SCENE_ENTITY_INSTANCE:
-			prop = new SceneEntityInstanceProp(caption);
-			break;
-		case PROP_CUSTOM:
-		default:
-			prop = new CustomProp(caption, caption);
-			break;
-		}
-		addProp(prop);
-		props[i] = prop;
-	}
-}
-
-void CustomSheet::refreshProps(ObjectEntry *propsEntry){
-	
-}
-
-void CustomSheet::Update(){
-
-}
-
-void CustomSheet::handleEvent(Event *e){
-
-}
+//CustomSheet::~CustomSheet(){}
+//
+//void CustomSheet::refreshProps(ObjectEntry *propsEntry){
+//
+//}
+//
+//void CustomSheet::Update(){
+//
+//}
+//
+//void CustomSheet::handleEvent(Event *e){
+//
+//}

@@ -36,6 +36,7 @@
 namespace Polycode {
 
 	class Renderer;
+	class ResourcePool;
 
 	class _PolyExport MouseEventResult {
 		public:
@@ -725,12 +726,16 @@ namespace Polycode {
              * @param Property name to look up.
              * @return String property for specified property name or "null" if this property doesn't exist.
              */
-			bool readEntityProp(const String& propName, String& propVal);
-			bool readEntityProp(const String& propName, int& propVal);
-			bool readEntityProp(const String& propName, Number& propVal);
-			bool readEntityProp(const String& propName, bool& propVal);
-			bool readEntityProp(const String& propName, std::vector<EntityProp*>& propVal);
+			//bool readEntityProp(const String& propName, String& propVal);
+			//bool readEntityProp(const String& propName, int& propVal);
+			//bool readEntityProp(const String& propName, Number& propVal);
+			//bool readEntityProp(const String& propName, bool& propVal);
+			//bool readEntityProp(const String& propName, std::vector<EntityProp*>& propVal);
 
+			int		getEntityPropIntByName		(const String& propName) const;
+			Number	getEntityPropNumberByName	(const String& propName) const;
+			bool	getEntityPropBoolByName		(const String& propName) const;
+			String	getEntityPropStringByName	(const String& propName) const;
 			std::vector<EntityProp*> getEntityPropArrayByName(const String& propName) const;
             /**
              * Sets the entity property for a specified property name in the entity's custom property dictionary.
@@ -741,8 +746,11 @@ namespace Polycode {
 			void setEntityProp(const String& propName, const int& propVal);
 			void setEntityProp(const String& propName, const Number& propVal);
 			void setEntityProp(const String& propName, const bool& propVal);
-			void setEntityProp(const String& propName, const std::vector<EntityProp*>& propVal);
-			
+			void setEntityProp(const String& propName, std::vector<EntityProp*> propVal);
+
+			bool isRequiredPlugin(const String& pluginName) const;
+			void addPluginByName(const String& name, ResourcePool *resourcePool = NULL);
+
             /**
              * If set to true, the y position of the entity matrix will be multiplied by -1.0, inverting its Y-axis coordinate system.
              */
@@ -908,7 +916,7 @@ namespace Polycode {
             unsigned char layerID;
 
             std::vector <EntityProp*> entityProps;
-        
+			std::vector<Plugin*> requiredPlugins;
 		protected:
         
 		

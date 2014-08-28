@@ -35,7 +35,7 @@ namespace Polycode {
 
 		std::vector<Plugin*> loadPluginsFromFile(const String &fileName);
 
-	private:
+	protected:
 		Number version;
 		std::vector<Plugin*> plugins;
 	};

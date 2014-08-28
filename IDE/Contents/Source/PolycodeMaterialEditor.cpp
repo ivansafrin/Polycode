@@ -826,7 +826,7 @@ void MaterialPreviewBox::handleEvent(Event *event) {
 	}
 }
 
-MaterialPreviewProp::MaterialPreviewProp() : PropProp("", "") {
+MaterialPreviewProp::MaterialPreviewProp() : PropProp("", PropProp::PROP_MATERIAL_PREVIEW) {
 	previewBox = new MaterialPreviewBox();
 	propContents->addChild(previewBox);		
 	setHeight(300);	
