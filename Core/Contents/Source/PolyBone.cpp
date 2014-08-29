@@ -33,6 +33,7 @@ Bone::Bone(const String& boneName) : Entity() {
 	this->boneName = boneName;
 	parentBone = NULL;
 	boneMatrix.identity();
+    disableAnimation = false;
 }
 
 Bone::~Bone() {

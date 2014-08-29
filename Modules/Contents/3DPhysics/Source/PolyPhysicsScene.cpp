@@ -35,6 +35,10 @@ using namespace Polycode;
 
 PhysicsSceneEvent::PhysicsSceneEvent() : Event () {
 	eventType = "PhysicsSceneEvent";
+    collisionEntityA = NULL;
+    collisionEntityB = NULL;
+    entityA = NULL;
+    entityB = NULL;
 }
 
 PhysicsSceneEvent::~PhysicsSceneEvent() {

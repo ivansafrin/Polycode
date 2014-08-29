@@ -118,9 +118,11 @@ SkeletonAnimation *Skeleton::getAnimation(const String& name) const {
 void Skeleton::Update() {
     
     for(int i=0; i < bones.size(); i++) {
-        bones[i]->setRotationByQuaternion(bones[i]->baseRotation);
-        bones[i]->setPosition(bones[i]->basePosition);
-        bones[i]->setScale(bones[i]->baseScale);
+        if(!bones[i]->disableAnimation) {
+            bones[i]->setRotationByQuaternion(bones[i]->baseRotation);
+            bones[i]->setPosition(bones[i]->basePosition);
+            bones[i]->setScale(bones[i]->baseScale);
+        }
     }
     
     if(baseAnimation) {
@@ -440,6 +442,9 @@ void BoneTrack::Update(Number elapsed) {
         boneQuat = quatCurve->interpolate(time/length, true);
     }
 
+    if(targetBone->disableAnimation) {
+        return;
+    }
     
     Quaternion rotationQuat = targetBone->getRotationQuat();
     rotationQuat = Quaternion::Slerp(weight, rotationQuat, boneQuat, true);

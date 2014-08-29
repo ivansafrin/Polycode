@@ -657,8 +657,8 @@ Vector3 Mesh::calculateBBox() {
     
     for(int i=0; i < vertexPositionArray.data.size()-2; i += 3) {
 		retVec.x = max(retVec.x,(Number)fabs(vertexPositionArray.data[i]));
-		retVec.y = max(retVec.y,(Number)fabs(vertexPositionArray.data[i]+1));
-		retVec.z = max(retVec.z,(Number)fabs(vertexPositionArray.data[i]+2));
+		retVec.y = max(retVec.y,(Number)fabs(vertexPositionArray.data[i+1]));
+		retVec.z = max(retVec.z,(Number)fabs(vertexPositionArray.data[i+2]));
     }
     
     if(retVec.x == 0.0) {

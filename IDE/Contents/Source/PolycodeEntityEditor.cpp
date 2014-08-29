@@ -2254,6 +2254,19 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
         
     }
     
+    if(dynamic_cast<SceneLabel*>(entity)) {
+        SceneLabel *label = (SceneLabel*) entity;
+        
+        if(!(*(entry))["type"])
+            entry->addChild("type", "SceneLabel");
+        ObjectEntry *labelEntry = entry->addChild("SceneLabel");
+        labelEntry->addChild("text", label->getText());
+        labelEntry->addChild("font", label->getLabel()->getFont()->getFontName());
+        labelEntry->addChild("size", (Number)label->getLabel()->getSize());
+        labelEntry->addChild("actualHeight", label->getLabelActualHeight());
+        labelEntry->addChild("aaMode", (int)label->getLabel()->getAntialiasMode());
+    }
+    
     if(dynamic_cast<SceneLight*>(entity)) {
         SceneLight *light = (SceneLight*) entity;
         if(!(*(entry))["type"]) {

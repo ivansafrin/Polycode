@@ -16,7 +16,7 @@ def mkdir_p(path): # Same effect as mkdir -p, create dir and all necessary paren
 		else: raise
 
 def template_returnPtrLookupArray(prefix, className, ptr):
-	out = ""
+	out = "%sif %s == nil then return nil end\n" % (prefix, ptr)
 	out += "%sfor i=1,count(%s) do\n" % (prefix, ptr)
 	out += "%s\tlocal __c  = _G[%s](\"__skip_ptr__\")\n" % (prefix, className.replace("*", ""))
 	out += "%s\t__c.__ptr = %s[i]\n" % (prefix, ptr)
@@ -27,7 +27,7 @@ def template_returnPtrLookupArray(prefix, className, ptr):
 
 # Note we expect className to be a valid string
 def template_returnPtrLookup(prefix, className, ptr):
-	out = ""
+	out = "%sif %s == nil then return nil end\n" % (prefix, ptr)
 	out += "%slocal __c = _G[%s](\"__skip_ptr__\")\n" % (prefix, className.replace("*", ""))
 	out += "%s__c.__ptr = %s\n" % (prefix, ptr)
 	out += "%sreturn __c\n" % (prefix)
@@ -319,8 +319,12 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 								wrappersHeaderOut += "\t%s(L, inst->%s%s);\n" % (outfunc, pp["name"], retFunc)
 							else:
 								if pp["type"].find("*") != -1:
-									wrappersHeaderOut += "\tPolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));\n"
-									wrappersHeaderOut += "\t*userdataPtr = (PolyBase*)inst->%s%s;\n" % (pp["name"], retFunc)
+									wrappersHeaderOut += "\tif(!inst->%s%s) {\n" % (pp["name"], retFunc)
+									wrappersHeaderOut += "\t\tlua_pushnil(L);\n"
+									wrappersHeaderOut += "\t} else {\n"
+									wrappersHeaderOut += "\t\tPolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));\n"
+									wrappersHeaderOut += "\t\t*userdataPtr = (PolyBase*)inst->%s%s;\n" % (pp["name"], retFunc)
+									wrappersHeaderOut += "\t}\n"
 								else:
 									wrappersHeaderOut += "\tPolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));\n"
 									wrappersHeaderOut += "\t*userdataPtr = (PolyBase*)&inst->%s%s;\n" % (pp["name"], retFunc)
@@ -731,7 +735,6 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 							if basicType == True: # Yes, a primitive
 								luaClassBindingOut += "\treturn retVal\n"
 							else: # Yes, a pointer was returned
-								luaClassBindingOut += "\tif retVal == nil then return nil end\n"
 								if vectorReturn == True:
 									className = vectorReturnClass.replace("*", "")
 									luaClassBindingOut += template_returnPtrLookupArray("\t",template_quote(className),"retVal")

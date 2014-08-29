@@ -156,6 +156,8 @@ namespace Polycode {
             Vector3 baseScale;
             Vector3 basePosition;
         
+            bool disableAnimation;
+        
 		protected:
 			Bone* parentBone;
 			std::vector<Bone*> childBones;
