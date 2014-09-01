@@ -871,65 +871,16 @@ void Entity::setEntityProp(const String& propName, std::vector<EntityProp*> prop
 	entityProps.push_back(entityProp);
 }
 
-//bool Entity::readEntityProp(const String& propName, String& propVal) {
-//	for(int i=0; i < entityProps.size(); i++) {
-//		if (entityProps[i]->name == propName && entityProps[i]->type == Prop::PROP_STRING) {
-//			 propVal = entityProps[i]->stringVal;
-//			 return true;
-//		} else if (entityProps[i]->name == propName && entityProps[i]->type != Prop::PROP_STRING) {
-//			return false;
-//		}
-//	}
-//	return false;
-//}
-//
-//bool Entity::readEntityProp(const String& propName, Number& propVal) {
-//	for (int i = 0; i < entityProps.size(); i++) {
-//		if (entityProps[i]->name == propName && entityProps[i]->type == Prop::PROP_NUMBER) {
-//			propVal = entityProps[i]->numberVal;
-//			return true;
-//		} else if (entityProps[i]->name == propName && entityProps[i]->type != Prop::PROP_NUMBER) {
-//			return false;
-//		}
-//	}
-//	return false;
-//}
-//
-//bool Entity::readEntityProp(const String& propName, int& propVal) {
-//	for (int i = 0; i < entityProps.size(); i++) {
-//		if (entityProps[i]->name == propName && entityProps[i]->type == Prop::PROP_INT) {
-//			propVal = entityProps[i]->intVal;
-//			return true;
-//		} else if (entityProps[i]->name == propName && entityProps[i]->type != Prop::PROP_INT) {
-//			return false;
-//		}
-//	}
-//	return false;
-//}
-//
-//bool Entity::readEntityProp(const String& propName, bool& propVal) {
-//	for (int i = 0; i < entityProps.size(); i++) {
-//		if (entityProps[i]->name == propName && entityProps[i]->type == Prop::PROP_BOOL) {
-//			propVal = entityProps[i]->boolVal;
-//			return true;
-//		} else if (entityProps[i]->name == propName && entityProps[i]->type != Prop::PROP_BOOL) {
-//			return false;
-//		}
-//	}
-//	return false;
-//}
-//
-//bool Entity::readEntityProp(const String& propName, std::vector<EntityProp*>& propVal) {
-//	for (int i = 0; i < entityProps.size(); i++) {
-//		if (entityProps[i]->name == propName && entityProps[i]->type == Prop::PROP_ARRAY) {
-//			propVal = entityProps[i]->arrayVal;
-//			return true;
-//		} else if (entityProps[i]->name == propName && entityProps[i]->type != Prop::PROP_ARRAY) {
-//			return false;
-//		}
-//	}
-//	return false;
-//}
+void Entity::setEntityProp(EntityProp* prop){
+	for (int i = 0; i < entityProps.size(); i++) {
+		if (entityProps[i] == prop) {
+			entityProps[i] = prop;
+			return;
+		}
+	}
+
+	entityProps.push_back(prop);
+}
 
 int	Entity::getEntityPropIntByName(const String& propName) const {
 	for (int i = 0; i < entityProps.size(); i++) {
@@ -1453,10 +1404,31 @@ EntityProp::EntityProp(const String& name, const unsigned int& type) : Prop(name
 
 void Entity::addPluginByName(const String& pluginName, ResourcePool *resourcePool) {
 	Plugin *plugin;
+	
 	if (resourcePool) {
 		plugin = (Plugin*)resourcePool->getResource(Resource::RESOURCE_PLUGIN, pluginName);
 	} else {
 		plugin = (Plugin*)Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_PLUGIN, pluginName);
 	}
-	requiredPlugins.push_back(plugin);
+
+	if (plugin){
+
+		for (int i = 0; i < requiredPlugins.size(); i++) {
+			if (requiredPlugins[i] == plugin) {
+				requiredPlugins[i] = plugin;
+				return;
+			}
+		}
+
+		requiredPlugins.push_back(plugin);
+	}
+}
+
+void Entity::removePluginByName(const String& pluginName) {
+	for (int i = 0; i < requiredPlugins.size(); i++) {
+		if (requiredPlugins[i]->getResourceName() == pluginName) {
+			requiredPlugins.erase(requiredPlugins.begin() + i);
+			return;
+		}
+	}
 }

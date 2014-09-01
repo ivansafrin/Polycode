@@ -59,6 +59,7 @@ namespace Polycode {
 			Plugin* loadPluginFromEntry(ObjectEntry *entry);
 
 			void addProp(Prop* prop);
+			void setProp(Prop* prop);
 
 			void removeProp(Prop* prop);
 

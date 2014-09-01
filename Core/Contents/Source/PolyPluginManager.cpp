@@ -24,6 +24,7 @@ THE SOFTWARE.
 #include "PolyPlugin.h"
 #include "PolyObject.h"
 #include "PolyLogger.h"
+#include "PolyResourceManager.h"
 
 using namespace Polycode;
 
@@ -33,25 +34,14 @@ PluginManager::PluginManager() {
 
 PluginManager::~PluginManager(){}
 
-std::vector<Plugin*> PluginManager::loadPluginsFromFile(const String &fileName){
+std::vector<Plugin*> PluginManager::loadPluginsFromFile(ResourcePool *pool, const String &fileName){
 	std::vector<Plugin*> retPlugins;
 	Object pluginFile;
 	if (!pluginFile.loadFromBinary(fileName))
 		if (!pluginFile.loadFromXML(fileName))
 			return retPlugins;
 	
-	//Logger::log("Loading plugins from %s", fileName.c_str());
-
 	version = 1.0;
-
-	//ObjectEntry* versionEntry = pluginFile.root["version"];
-	//if (versionEntry->NumberVal > version)
-	//	return retPlugins;
-	
-	//if (!pluginsEntry) {
-	//	Logger::log("No plugins in %s\n", fileName.c_str());
-	//	return retPlugins;
-	//}
 	
 	for (int i = 0; i < pluginFile.root.children.size(); i++){
 		ObjectEntry* pluginEntry = pluginFile.root.children[i];
@@ -59,8 +49,20 @@ std::vector<Plugin*> PluginManager::loadPluginsFromFile(const String &fileName){
 			continue;
 
 		Plugin *plugin = new Plugin(pluginEntry);
-		if (plugin)
+		if (plugin){
+			pool->addResource(plugin);
 			retPlugins.push_back(plugin);
+		}
 	}
 	return retPlugins;
+}
+
+void PluginManager::loadPluginLibraryIntoPool(ResourcePool *pool, const String &pluginFile) {
+	Logger::log("LOADING [%s] into pool [%s]\n", pluginFile.c_str(), pool->getName().c_str());
+	
+	loadPluginsFromFile(pool, pluginFile);
+}
+
+void PluginManager::addPlugin(Plugin* plugin) {
+	plugins.push_back(plugin);
 }

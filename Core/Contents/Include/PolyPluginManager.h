@@ -26,6 +26,7 @@ THE SOFTWARE.
 
 namespace Polycode {
 
+	class ResourcePool;
 	class String;
 
 	class PluginManager : public PolyBase {
@@ -33,7 +34,10 @@ namespace Polycode {
 		PluginManager();
 		~PluginManager();
 
-		std::vector<Plugin*> loadPluginsFromFile(const String &fileName);
+		std::vector<Plugin*> loadPluginsFromFile(ResourcePool* pool, const String &fileName);
+		void loadPluginLibraryIntoPool(ResourcePool *pool, const String &pluginFile);
+
+		void addPlugin(Plugin* plugin);
 
 	protected:
 		Number version;

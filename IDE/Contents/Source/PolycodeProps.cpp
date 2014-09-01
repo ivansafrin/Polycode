@@ -1866,6 +1866,98 @@ void RenderTargetProp::handleEvent(Event *event) {
 	PropProp::handleEvent(event);
 }
 
+PropEditProp::PropEditProp(PropProp *newProp) : PropProp(newProp->getPropName(), PropProp::PROP_EDIT) {
+	nameInput = NULL;
+	typeChooser = NULL;
+	
+	nameLabel = new UILabel("Name:", 11);
+	nameLabel->color.a = 1.0;
+	propContents->addChild(nameLabel);
+	nameLabel->setPosition(-20, 5);
+
+	typeLabel = new UIMultilineLabel("Type:\n(ni) = not implemented", 11, 7);
+	typeLabel->color.a = 1.0;
+	propContents->addChild(typeLabel);
+	typeLabel->setPosition(-20, 27);
+
+	nameInput = new UITextInput(false, 50, 12);
+	nameInput->addEventListener(this, UIEvent::CHANGE_EVENT);
+	nameInput->setText(newProp->getPropName());
+	propContents->addChild(nameInput);
+	nameInput->setPosition(50, 0);
+
+	typeChooser = new UIComboBox(globalMenu, 200);
+	typeChooser->addComboItem("Vector3", (void*)0);
+	typeChooser->addComboItem("Vector2", (void*)1);
+	typeChooser->addComboItem("Slider", (void*)2);
+	typeChooser->addComboItem("Button (ni)", (void*)3);
+	typeChooser->addComboItem("Number", (void*)4);
+	typeChooser->addComboItem("Target Binding (ni)",(void*)5);
+	typeChooser->addComboItem("Render Target (ni)",(void*)6);
+	typeChooser->addComboItem("Shader Pass (ni)", (void*)7);
+	typeChooser->addComboItem("Removable String", (void*)8);
+	typeChooser->addComboItem("Layer (ni)", (void*)9);
+	typeChooser->addComboItem("Custom", (void*)10);
+	typeChooser->addComboItem("String", (void*)11);
+	typeChooser->addComboItem("Color", (void*)12);
+	typeChooser->addComboItem("Combo (ni)", (void*)13);
+	typeChooser->addComboItem("Bool", (void*)14);
+	typeChooser->addComboItem("Sound", (void*)15);
+	typeChooser->addComboItem("Bezier RGBA Curve (ni)", (void*)16);
+	typeChooser->addComboItem("Bezier Curve (ni)", (void*)17);
+	typeChooser->addComboItem("Material", (void*)18);
+	typeChooser->addComboItem("Material Preview", (void*)19);
+	typeChooser->addComboItem("Texture", (void*)20);
+	typeChooser->addComboItem("Scene Sprite", (void*)21);
+	typeChooser->addComboItem("Scene Entity Instance", (void*)22);
+	typeChooser->setSelectedIndex(newProp->propType);
+	typeChooser->addEventListener(this, UIEvent::CHANGE_EVENT);
+	propContents->addChild(typeChooser);
+	typeChooser->setPosition(50, 25);
+
+	currentValue = newProp->propType;
+
+	setHeight(65);
+}
+
+PropEditProp::~PropEditProp(){}
+
+void PropEditProp::handleEvent(Event *event){
+	if (event->getDispatcher() == typeChooser) {
+		if (event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CHANGE_EVENT) {
+			lastValue = currentValue;
+			currentValue = typeChooser->getSelectedIndex();
+			if (!suppressChangeEvent) {
+				dispatchEvent(new Event(), Event::CHANGE_EVENT);
+				dispatchEvent(new PropEvent(this, NULL, PropDataInt(lastValue), PropDataInt(currentValue)), PropEvent::EVENT_PROP_CHANGE);
+			}
+		}
+	}
+	if (event->getDispatcher() == nameInput) {
+		if (event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CHANGE_EVENT) {
+			lastName = currentName;
+			currentName = nameInput->getText();
+			setPropName(nameInput->getText());
+			if (!suppressChangeEvent) {
+				dispatchEvent(new Event(), Event::CHANGE_EVENT);
+				dispatchEvent(new PropEvent(this, NULL, PropDataString(lastName), PropDataString(currentName)), PropEvent::EVENT_PROP_CHANGE);
+			}
+		}
+	}
+}
+
+void PropEditProp::set(PropProp *newProp){
+	currentProp = newProp;
+}
+
+PropProp *PropEditProp::get(){
+	return currentProp;
+}
+
+int PropEditProp::getPropType(){
+	return currentValue;
+}
+
 ShaderPassesSheet::ShaderPassesSheet(ResourcePool *resourcePool) : PropSheet("SHADER PASSES", "shaderPasses") {
     this->resourcePool = resourcePool;
 	propHeight = 70;
@@ -2133,7 +2225,7 @@ void RenderTargetsSheet::handleEvent(Event *event) {
 	PropSheet::handleEvent(event);
 }
 
-EntityPropSheet::EntityPropSheet(Plugin* plugin) : PropSheet(plugin->getResourceName().toUpperCase(), plugin->ext){
+EntityPropSheet::EntityPropSheet(Plugin* plugin) : PropSheet(plugin->getResourceName().toUpperCase(), plugin->getResourceName().toLowerCase()){
 	this->plugin = plugin->getResourceName();
 
 	customUndoHandler = true;
@@ -2143,6 +2235,8 @@ EntityPropSheet::EntityPropSheet(Plugin* plugin) : PropSheet(plugin->getResource
 	lastNumProps = 0;
 	removeIndex = -1;
 	enabled = false;
+
+
 
 	if (plugin->sheetEntry)
 		refreshProps();
@@ -2154,7 +2248,7 @@ void EntityPropSheet::applyPropActionData(PolycodeEditorPropActionData *data) {
 		
 	entity->entityProps.clear();
 	for(int i=0; i < data->entity->entityProps.size(); i++) {
-			entity->entityProps.push_back(data->entity->entityProps[i]);
+			entity->setEntityProp(data->entity->entityProps[i]);
 	}
 	
 	refreshProps();
@@ -2173,7 +2267,7 @@ void EntityPropSheet::handleEvent(Event *event) {
 				break;
 				case Event::CHANGE_EVENT:
 					PolycodeEditorPropActionData *beforeData = PropDataEntity(entity);
-					if(i < entity->entityProps.size()) {
+					if(i <= entity->entityProps.size()) {
 						
 						std::vector<EntityProp*> propsVector;
 						EntityProp* prop;
@@ -2285,92 +2379,6 @@ void EntityPropSheet::reloadSheetFromEntry(ObjectEntry *sheetEntry) {
 	ObjectEntry *propsEntry = (*sheetEntry)["props"];
 	if (propsEntry) {
 		refreshProps();
-		//PropProp *prop;
-		//if (propsEntry) {
-		//	for (int i = 0; i < propsEntry->children.size(); i++) {
-		//		ObjectEntry* propEntry = propsEntry->children[i];
-		//		String caption = (*propEntry)["name"]->stringVal;
-		//		switch ((*propEntry)["type"]->intVal) {
-		//		case PropProp::PROP_VECTOR3:
-		//			prop = new Vector3Prop(caption);
-		//			break;
-		//		case PropProp::PROP_VECTOR2:
-		//			prop = new Vector2Prop(caption);
-		//			break;
-		//		case PropProp::PROP_SLIDER:
-		//			prop = new SliderProp(caption, (*propEntry)["min"]->NumberVal, (*propEntry)["max"]->NumberVal);
-		//			break;
-		//			//case PropProp::PROP_BUTTON:
-		//			//	prop = new ButtonProp(caption);
-		//			//	break;
-		//		case PropProp::PROP_NUMBER:
-		//			prop = new NumberProp(caption);
-		//			break;
-		//			//case PropProp::PROP_TARGET_BINDING:
-		//			//	Shader *shader;
-		//			//	Material *material;
-		//			//	ShaderBinding *shaderBin;
-		//			//	RenderTargetBinding *targetBin;
-		//			//
-		//			//	prop = new TargetBindingProp(shader, material, shaderBin, targetBin);
-		//			//
-		//			//	break;
-		//			//case PropProp::PROP_RENDER_TARGET:
-		//			//	ShaderRenderTarget *renderTarget;
-		//			//	Material *material;
-		//			//	prop = new RenderTargetProp(renderTarget, material);
-		//			//	break;
-		//			//case PropProp::PROP_SHADER_PASS:
-		//			//	prop = new ShaderPassProp();
-		//			//	break;
-		//			//case PropProp::PROP_REMOVABLE_STRING:
-		//			//	prop = new RemovableStringProp(caption);
-		//			//	break;
-		//			//case PropProp::PROP_LAYER:
-		//			//	SceneEntityInstance *instance = new SceneEntityInstance();
-		//			//	prop = new LayerProp();
-		//			//	break;
-		//		case PropProp::PROP_STRING:
-		//			prop = new StringProp(caption);
-		//			break;
-		//		case PropProp::PROP_COLOR:
-		//			prop = new ColorProp(caption);
-		//			break;
-		//		case PropProp::PROP_COMBO:
-		//			prop = new ComboProp(caption);
-		//			break;
-		//		case PropProp::PROP_BOOL:
-		//			prop = new BoolProp(caption);
-		//			break;
-		//		case PropProp::PROP_SOUND:
-		//			prop = new SoundProp(caption);
-		//			break;
-		//		case PropProp::PROP_BEZIER_RGBA_CURVE:
-		//			prop = new BezierRGBACurveProp(caption);
-		//			break;
-		//		case PropProp::PROP_BEZIER_CURVE:
-		//			prop = new BezierCurveProp(caption, (*propEntry)["curveName"]->stringVal);
-		//			break;
-		//		case PropProp::PROP_MATERIAL:
-		//			prop = new MaterialProp(caption);
-		//			break;
-		//		case PropProp::PROP_TEXTURE:
-		//			prop = new TextureProp(caption);
-		//			break;
-		//		case PropProp::PROP_SCENE_SPRITE:
-		//			prop = new SceneSpriteProp(caption);
-		//			break;
-		//		case PropProp::PROP_SCENE_ENTITY_INSTANCE:
-		//			prop = new SceneEntityInstanceProp(caption);
-		//			break;
-		//		case PropProp::PROP_CUSTOM:
-		//		default:
-		//			prop = new CustomProp(caption, "");
-		//			break;
-		//		}
-		//		addProp(prop);
-		//	}
-		//}
 	}
 }
 
@@ -3469,7 +3477,7 @@ EntitySheet::EntitySheet() : PropSheet("ENTITY", "entity"){
 	blendingProp->comboEntry->addComboItem("Color");
 	blendingProp->comboEntry->addComboItem("Premultiplied");
 	blendingProp->comboEntry->addComboItem("Multiply");
-	
+
 	propHeight = 160;
 	
 	entity = NULL;
@@ -3512,7 +3520,8 @@ void EntitySheet::handleEvent(Event *event) {
 	} else if(event->getDispatcher() == layersProp  && event->getEventCode() == Event::CHANGE_EVENT) {
         SceneEntityInstanceLayer *layer = (SceneEntityInstanceLayer*)layersProp->comboEntry->getSelectedItem()->data;
         entity->layerID = layer->layerID;
-	}
+	} 
+
 	PropSheet::handleEvent(event);	
 }
 
@@ -3547,10 +3556,54 @@ void EntitySheet::setEntity(Entity *entity) {
         
         bBoxProp->set(entity->getLocalBoundingBox());
         refreshLayers();
+
         enabled = true;
     } else {
         enabled = false;
     }
+}
+
+PluginsSheet::PluginsSheet() : PropSheet("PLUGINS SHEETS", "plugins"){
+	for (int p = 0; p < Services()->getResourceManager()->getGlobalPool()->getResources(Resource::RESOURCE_PLUGIN).size(); p++){
+		BoolProp *pluginProp = new BoolProp(Services()->getResourceManager()->getGlobalPool()->getResources(Resource::RESOURCE_PLUGIN)[p]->getResourceName());
+		pluginsProp.push_back(pluginProp);
+		addProp(pluginProp);
+	}
+
+	entity = NULL;
+
+	propHeight = 160;
+	enabled = false;
+}
+
+PluginsSheet::~PluginsSheet() {}
+
+void PluginsSheet::handleEvent(Event *event) {
+	for (int p = 0; p < pluginsProp.size(); p++){
+		if (event->getDispatcher() == pluginsProp[p]) {
+			if (pluginsProp[p]->get()){
+				entity->addPluginByName(pluginsProp[p]->getPropName());
+			} else {
+				entity->removePluginByName(pluginsProp[p]->getPropName());
+			}
+			dispatchEvent(new Event(), Event::CHANGE_EVENT);
+		}
+	}
+
+	PropSheet::handleEvent(event);
+}
+
+void PluginsSheet::setEntity(Entity *entity) {
+	this->entity = entity;
+	if (entity) {
+		for (int p = 0; p < pluginsProp.size(); p++){
+			pluginsProp[p]->set(entity->isRequiredPlugin(pluginsProp[p]->getPropName()));
+		}
+
+		enabled = true;
+	} else {
+		enabled = false;
+	}
 }
 
 CameraSheet::CameraSheet() : PropSheet("CAMERA", "camera") {
@@ -4277,21 +4330,3 @@ void SoundSheet::setSound(SceneSound *sound) {
 		enabled = false;
 	}
 }
-
-//CustomSheet::CustomSheet(ObjectEntry *sheetEntry) : PropSheet((*sheetEntry)["name"]->stringVal.toUpperCase(), (*sheetEntry)["fileext"]->stringVal) {
-//	reloadSheetFromFile(sheetEntry);
-//}
-
-//CustomSheet::~CustomSheet(){}
-//
-//void CustomSheet::refreshProps(ObjectEntry *propsEntry){
-//
-//}
-//
-//void CustomSheet::Update(){
-//
-//}
-//
-//void CustomSheet::handleEvent(Event *e){
-//
-//}

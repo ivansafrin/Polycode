@@ -83,6 +83,10 @@ EntityEditorPropertyView::EntityEditorPropertyView() : UIElement() {
     entityProps->addPropSheet(entitySheet);
     entitySheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
 
+	pluginsSheet = new PluginsSheet();
+	entityProps->addPropSheet(pluginsSheet);
+	pluginsSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
+
 	std::vector<Resource*> plugins = Services()->getResourceManager()->getGlobalPool()->getResources(Resource::RESOURCE_PLUGIN);
 	for (int p = 0; p < plugins.size(); p++) {
 		EntityPropSheet *propSheet = new EntityPropSheet(dynamic_cast<Plugin*>(plugins[p]));
@@ -108,6 +112,13 @@ void EntityEditorPropertyView::handleEvent(Event *event) {
         
         PropEvent *propEvent = (PropEvent*) event;
         
+		if (event->getDispatcher() == pluginsSheet){
+			for (int p = 0; p < propSheets.size(); p++){
+				propSheets[p]->setEntity(this->targetEntity);
+			}
+			
+		}
+
         PropEvent *newPropEvent = new PropEvent(propEvent->prop, propEvent->sheet, propEvent->beforeData, propEvent->afterData);
         dispatchEvent(newPropEvent, PropEvent::EVENT_PROP_CHANGE);
     } else {
@@ -179,6 +190,9 @@ void EntityEditorPropertyView::setEntity(Entity *entity) {
     particleSheet->setParticleEmitter(emitter);
 
     entitySheet->setEntity(entity);
+
+	pluginsSheet->setEntity(entity);
+
 	for (int p = 0; p < propSheets.size(); p++) {
 		propSheets[p]->setEntity(entity);
 	}

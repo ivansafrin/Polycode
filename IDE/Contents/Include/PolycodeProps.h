@@ -75,6 +75,7 @@ class PropProp : public UIElement {
 		static const int PROP_TEXTURE = 20;
 		static const int PROP_SCENE_SPRITE = 21;
 		static const int PROP_SCENE_ENTITY_INSTANCE = 22;
+		static const int PROP_EDIT = 23;
 };
 
 class Vector3Prop : public PropProp {
@@ -493,6 +494,32 @@ class SceneEntityInstanceProp : public PropProp {
 		
 };
 
+class PropEditProp : public PropProp {
+public:
+	PropEditProp(PropProp* newProp);
+	~PropEditProp();
+	void handleEvent(Event *event);
+
+	void set(PropProp *newProp);
+	PropProp *get();
+
+	int getPropType();
+
+	PropProp *currentProp;
+
+	UITextInput *nameInput;
+	UIComboBox *typeChooser;
+
+	UILabel *nameLabel;
+	UIMultilineLabel *typeLabel;
+
+	int lastValue;
+	int currentValue;
+
+	String lastName;
+	String currentName;
+};
+
 class PropSheet : public UIElement {
 	public:
 		PropSheet(String caption, String type);
@@ -579,6 +606,8 @@ class EntitySheet : public PropSheet {
     
         void setEntityInstance(SceneEntityInstance *instance);
 
+		std::vector<BoolProp*> pluginsProp;
+
     protected:
 		Entity *entity;
 		
@@ -589,6 +618,20 @@ class EntitySheet : public PropSheet {
 		ColorProp *colorProp;
 		ComboProp *blendingProp;
 		Vector3Prop *bBoxProp;
+		
+};
+
+class PluginsSheet : public PropSheet {
+public:
+	PluginsSheet();
+	~PluginsSheet();
+
+	void handleEvent(Event *event);
+	void setEntity(Entity *entity);
+	
+	std::vector<BoolProp*> pluginsProp;
+
+	Entity *entity;
 };
 
 class ShaderPassesSheet : public PropSheet {

@@ -722,34 +722,80 @@ namespace Polycode {
             std::vector<Entity*> getEntitiesByLayerID(unsigned char layerID, bool recursive) const;
         
             /** 
-             * Returns custom string dictionary property of the entity based on the property name.
+             * Returns int property of the entity based on the property name.
              * @param Property name to look up.
-             * @return String property for specified property name or "null" if this property doesn't exist.
+             * @return int property for specified property name or false if this property doesn't exist.
              */
-			//bool readEntityProp(const String& propName, String& propVal);
-			//bool readEntityProp(const String& propName, int& propVal);
-			//bool readEntityProp(const String& propName, Number& propVal);
-			//bool readEntityProp(const String& propName, bool& propVal);
-			//bool readEntityProp(const String& propName, std::vector<EntityProp*>& propVal);
-
 			int		getEntityPropIntByName		(const String& propName) const;
+
+			/**
+			* Returns Number property of the entity based on the property name.
+			* @param Property name to look up.
+			* @return Number property for specified property name or 0 if this property doesn't exist.
+			*/
 			Number	getEntityPropNumberByName	(const String& propName) const;
+
+			/**
+			* Returns Bool property of the entity based on the property name.
+			* @param Property name to look up.
+			* @return Bool property for specified property name or -1 if this property doesn't exist.
+			*/
 			bool	getEntityPropBoolByName		(const String& propName) const;
+			
+			/**
+			* Returns String property of the entity based on the property name.
+			* @param Property name to look up.
+			* @return String property for specified property name or "null" if this property doesn't exist.
+			*/
 			String	getEntityPropStringByName	(const String& propName) const;
+
+			/**
+			* Returns vector of EntityProp property of the entity based on the property name.
+			* @param Property name to look up.
+			* @return vector of EntityProp property for specified property name - is empty if this property doesn't exist.
+			*/
 			std::vector<EntityProp*> getEntityPropArrayByName(const String& propName) const;
-            /**
-             * Sets the entity property for a specified property name in the entity's custom property dictionary.
+            
+			/**
+             * Sets the entity property for a specified property name.
              * @param propName Property name to set.
-             * @param propValue Value to set for the specified property name.
+             * @param propVal String to set for the specified property name.
              */
 			void setEntityProp(const String& propName, const String& propVal);
+
+			/**
+			* Sets the entity property for a specified property name.
+			* @param propName Property name to set.
+			* @param propVal int to set for the specified property name.
+			*/
 			void setEntityProp(const String& propName, const int& propVal);
+			
+			/**
+			* Sets the entity property for a specified property name.
+			* @param propName Property name to set.
+			* @param propVal Number to set for the specified property name.
+			*/
 			void setEntityProp(const String& propName, const Number& propVal);
+			
+			/**
+			* Sets the entity property for a specified property name.
+			* @param propName Property name to set.
+			* @param propVal bool to set for the specified property name.
+			*/
 			void setEntityProp(const String& propName, const bool& propVal);
+			
+			/**
+			* Sets the entity property for a specified property name.
+			* @param propName Property name to set.
+			* @param propVal vector of EntityProp* to set for the specified property name.
+			*/
 			void setEntityProp(const String& propName, std::vector<EntityProp*> propVal);
+
+			void setEntityProp(EntityProp* prop);
 
 			bool isRequiredPlugin(const String& pluginName) const;
 			void addPluginByName(const String& name, ResourcePool *resourcePool = NULL);
+			void removePluginByName(const String& name);
 
             /**
              * If set to true, the y position of the entity matrix will be multiplied by -1.0, inverting its Y-axis coordinate system.

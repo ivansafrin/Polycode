@@ -30,7 +30,13 @@ THE SOFTWARE.
 using namespace Polycode;
 
 Plugin::Plugin(const String& name) : Resource(Resource::RESOURCE_PLUGIN) {
-	Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_PLUGIN, name);
+	if (!Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_PLUGIN, name)) {
+		setResourceName("");
+		ext = "";
+		pluginType = 0;
+		type = Resource::RESOURCE_PLUGIN;
+		sheetEntry = NULL;
+	}
 }
 
 Plugin::Plugin(ObjectEntry *entry) : Resource(Resource::RESOURCE_PLUGIN) {
@@ -75,9 +81,21 @@ void Plugin::addProp(Prop *prop) {
 	props.push_back(prop);
 }
 
+void Plugin::setProp(Prop *prop) {
+	for (int i = 0; i < props.size(); i++) {
+		if (props[i]->name == prop->name) {
+			props[i] = prop;
+			return;
+		}
+	}
+
+	props.push_back(prop);
+}
+
 void Plugin::removeProp(Prop *propToRemove) {
 	for (int i = 0; i<props.size(); i++) {
 		if (props[i] == propToRemove) {
+			delete props[i];
 			props.erase(props.begin() + i);
 			return;
 		}

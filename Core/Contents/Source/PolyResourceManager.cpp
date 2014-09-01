@@ -323,12 +323,8 @@ void ResourceManager::parsePluginsIntoPool(ResourcePool *pool, const String& dir
 	for (int i = 0; i < resourceDir.size(); i++) {
 		if (resourceDir[i].type == OSFileEntry::TYPE_FILE) {
 			if (resourceDir[i].extension == "plugin") {
-
 				PluginManager *pluginManager = CoreServices::getInstance()->getPluginManager();
-				std::vector<Plugin*> plugins = pluginManager->loadPluginsFromFile(resourceDir[i].fullPath);
-				for (int p = 0; p < plugins.size(); p++) {
-					pool->addResource(plugins[p]);
-				}
+				std::vector<Plugin*> plugins = pluginManager->loadPluginsFromFile(Services()->getResourceManager()->getGlobalPool(), resourceDir[i].fullPath);
 			}
 		} else {
 			if (recursive)
