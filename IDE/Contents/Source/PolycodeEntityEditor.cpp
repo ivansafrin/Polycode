@@ -2137,18 +2137,17 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
     entry->addChild("tags", tagString);
 
 	if (entity->requiredPlugins.size() > 0) {
-		ObjectEntry *reqPluginsEntry = entry->addChild("requiredPlugins");
+		ObjectEntry *pluginsEntry = entry->addChild("plugins");
 		for (int p = 0; p < entity->requiredPlugins.size(); p++) {
-			ObjectEntry* requiredPlugin = reqPluginsEntry->addChild("requiredPlugin");
-			requiredPlugin->addChild("name", entity->requiredPlugins[p]->getResourceName());
+			ObjectEntry* plugin = pluginsEntry->addChild("plugin");
+			plugin->addChild("name", entity->requiredPlugins[p]->getResourceName());
+			if (entity->entityProps.size() > 0) {
+				ObjectEntry *props = plugin->addChild("props");
+				savePropsToEntry(props, entity->entityProps, entity->requiredPlugins[p]->getResourceName());
+			}
 		}
 	}
-    
-    if(entity->entityProps.size() > 0) {
-        ObjectEntry *props = entry->addChild("props");
-		savePropsToEntry(props, entity->entityProps);
-    }
-    
+
     if(dynamic_cast<SceneEntityInstance*>(entity) && entity != mainView->getObjectRoot()) {
         if(!(*(entry))["type"]) {
             entry->addChild("type", "SceneEntityInstance");
@@ -2524,17 +2523,17 @@ void PolycodeEntityEditor::Resize(int x, int y) {
 	PolycodeEditor::Resize(x,y);
 }
 
-void PolycodeEntityEditor::savePropsToEntry(ObjectEntry *entry, std::vector<EntityProp*> props) {
+void PolycodeEntityEditor::savePropsToEntry(ObjectEntry *entry, std::vector<EntityProp*> props, const String& pluginName) {
 	for (int i = 0; i < props.size(); i++) {
 		ObjectEntry *prop = entry->addChild("prop");
-		prop->addChild("name", props[i]->name);
+		prop->addChild("name", props[i]->name.replace(pluginName, ""));
 		prop->addChild("type", props[i]->type);
 		switch (props[i]->type) {
 		case Prop::PROP_STRING:
 			prop->addChild("value", props[i]->stringVal);
 			break;
 		case Prop::PROP_ARRAY:
-			savePropsToEntry(prop, props[i]->arrayVal);
+			savePropsToEntry(prop, props[i]->arrayVal, pluginName);
 			break;
 		case Prop::PROP_BOOL:
 			prop->addChild("value", props[i]->boolVal);

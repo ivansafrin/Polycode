@@ -273,29 +273,29 @@ void SceneEntityInstance::parseObjectIntoCurve(ObjectEntry *entry, BezierCurve *
 	
 }
 
-std::vector<EntityProp*> SceneEntityInstance::parseObjectEntryIntoProps(ObjectEntry *propsEntry) {
+std::vector<EntityProp*> SceneEntityInstance::parseObjectEntryIntoProps(ObjectEntry *propsEntry, const String& pluginName) {
 	Entity *retEntity = new Entity();
 	for (int i = 0; i < propsEntry->children.size(); i++) {
 		ObjectEntry *prop = ((*propsEntry))[i];
 		if (prop->name=="prop") {
 			switch ((*prop)["type"]->intVal) {
 			case Prop::PROP_STRING:
-				retEntity->setEntityProp((*prop)["name"]->stringVal, (*prop)["value"]->stringVal);
+				retEntity->setEntityProp(pluginName + (*prop)["name"]->stringVal, (*prop)["value"]->stringVal);
 				break;
 			case Prop::PROP_ARRAY:
-				retEntity->setEntityProp((*prop)["name"]->stringVal, parseObjectEntryIntoProps(prop));
+				retEntity->setEntityProp(pluginName + (*prop)["name"]->stringVal, parseObjectEntryIntoProps(prop, pluginName));
 				break;
 			case Prop::PROP_BOOL:
-				retEntity->setEntityProp((*prop)["name"]->stringVal, (*prop)["value"]->boolVal);
+				retEntity->setEntityProp(pluginName + (*prop)["name"]->stringVal, (*prop)["value"]->boolVal);
 				break;
 			case Prop::PROP_INT:
-				retEntity->setEntityProp((*prop)["name"]->stringVal, (*prop)["value"]->intVal);
+				retEntity->setEntityProp(pluginName + (*prop)["name"]->stringVal, (*prop)["value"]->intVal);
 				break;
 			case Prop::PROP_NUMBER:
-				retEntity->setEntityProp((*prop)["name"]->stringVal, (*prop)["value"]->NumberVal);
+				retEntity->setEntityProp(pluginName + (*prop)["name"]->stringVal, (*prop)["value"]->NumberVal);
 				break;
 			default:
-				retEntity->setEntityProp((*prop)["name"]->stringVal, (*prop)["value"]->stringVal);
+				retEntity->setEntityProp(pluginName + (*prop)["name"]->stringVal, (*prop)["value"]->stringVal);
 				break;
 			}
 		}
@@ -568,18 +568,31 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
 			}
 		}
 	} else {
-		ObjectEntry *plugins = (*entry)["requiredPlugins"];
-		if (plugins) {
+		//ObjectEntry *plugins = (*entry)["requiredPlugins"];
+		//if (plugins) {
+		//	for (int p = 0; p < plugins->children.size(); p++) {
+		//		if (plugins->children[p]->name == "requiredPlugin") {
+		//			String requiredPlugin = (*plugins->children[p])["name"]->stringVal;
+		//			entity->addPluginByName(requiredPlugin);
+		//		}
+		//	}
+		//}
+		ObjectEntry *plugins = (*entry)["plugins"];
+		if (plugins){
 			for (int p = 0; p < plugins->children.size(); p++) {
-				if (plugins->children[p]->name == "requiredPlugin") {
-					String requiredPlugin = (*plugins->children[p])["name"]->stringVal;
-					entity->addPluginByName(requiredPlugin);
+				ObjectEntry *plugin = plugins->children[p];
+				if (plugin){
+					if (plugin->name == "plugin") {
+						String pluginName = (*plugin)["name"]->stringVal;
+						entity->addPluginByName(pluginName);
+
+						ObjectEntry *props = (*plugin)["props"];
+						if (props) {
+							entity->entityProps = parseObjectEntryIntoProps(props, pluginName);
+						}
+					}
 				}
 			}
-		}
-		ObjectEntry *props = (*entry)["props"];
-		if (props) {
-			entity->entityProps = parseObjectEntryIntoProps(props);
 		}
 	}
 

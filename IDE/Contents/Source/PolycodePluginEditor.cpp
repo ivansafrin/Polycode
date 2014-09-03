@@ -122,9 +122,7 @@ PluginEditorPane::PluginEditorPane(ResourcePool *resourcePool) : UIElement() {
 	enabled = false;
 }
 
-PluginEditorPane::~PluginEditorPane() {
-
-}
+PluginEditorPane::~PluginEditorPane() {}
 
 void PluginEditorPane::handleEvent(Event *event) {
 	if (!changingPlugin) {
