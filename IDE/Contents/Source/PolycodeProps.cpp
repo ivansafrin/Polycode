@@ -1873,19 +1873,19 @@ PropEditProp::PropEditProp(PropProp *newProp) : PropProp(newProp->getPropName(),
 	nameLabel = new UILabel("Name:", 11);
 	nameLabel->color.a = 1.0;
 	propContents->addChild(nameLabel);
-	nameLabel->setPosition(-20, 5);
+	nameLabel->setPosition(0, 5);
 
 	typeLabel = new UIMultilineLabel("Type:\n(ni) = not implemented", 11, 7);
 	typeLabel->color.a = 1.0;
 	propContents->addChild(typeLabel);
-	typeLabel->setPosition(-20, 27);
+	typeLabel->setPosition(0, 27);
 
-	nameInput = new UITextInput(false, 50, 12);
+	nameInput = new UITextInput(false, 200, 12);
 	nameInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	nameInput->setText(newProp->getPropName());
 	propContents->addChild(nameInput);
-	nameInput->setPosition(50, 0);
-
+	nameInput->setPosition(70, 0);
+	
 	typeChooser = new UIComboBox(globalMenu, 200);
 	typeChooser->addComboItem("Vector3", (void*)0);
 	typeChooser->addComboItem("Vector2", (void*)1);
@@ -1913,7 +1913,7 @@ PropEditProp::PropEditProp(PropProp *newProp) : PropProp(newProp->getPropName(),
 	typeChooser->setSelectedIndex(newProp->propType);
 	typeChooser->addEventListener(this, UIEvent::CHANGE_EVENT);
 	propContents->addChild(typeChooser);
-	typeChooser->setPosition(50, 25);
+	typeChooser->setPosition(70, 25);
 
 	currentValue = newProp->propType;
 
@@ -1952,6 +1952,10 @@ void PropEditProp::set(PropProp *newProp){
 
 PropProp *PropEditProp::get(){
 	return currentProp;
+}
+
+int PropEditProp::updatePadding(){
+	return label->getWidth();
 }
 
 int PropEditProp::getPropType(){
@@ -2418,7 +2422,7 @@ void EntityPropSheet::refreshProps() {
 				dynamic_cast<Vector2Prop*>(prop)->set(Vector2(entity->getEntityPropNumberByName(caption + "x"), entity->getEntityPropNumberByName(caption + "y")));
 				break;
 			case PropProp::PROP_SLIDER:
-				prop = new SliderProp(caption, (*propEntry)["min"]->NumberVal, (*propEntry)["max"]->NumberVal);
+				prop = new SliderProp(caption, entity->getEntityPropNumberByName(caption + "min"), entity->getEntityPropNumberByName(caption + "max"));
 				dynamic_cast<SliderProp*>(prop)->set(entity->getEntityPropNumberByName(caption));
 				break;
 				//case PropProp::PROP_BUTTON:
@@ -2507,6 +2511,7 @@ void EntityPropSheet::refreshProps() {
 			}
 			prop->addEventListener(this, Event::CHANGE_EVENT);
 			addProp(prop);
+			prop->Resize(getWidth(), prop->getHeight());
 		}
 	}
 

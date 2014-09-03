@@ -94,6 +94,8 @@ namespace Polycode {
 		StringProp* newPropName;
 		ButtonProp* addPropButton;
 
+		int padding;
+
 		//std::vector<PropEditProp*> editProps;
 		//std::vector<PropProp*> props;
 	};

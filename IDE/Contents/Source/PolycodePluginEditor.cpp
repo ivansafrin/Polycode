@@ -134,19 +134,31 @@ void PluginEditorPane::handleEvent(Event *event) {
 			dispatchEvent(new Event(), Event::CHANGE_EVENT);
 		}
 
+		int maxPadding = 0;
 		for (int p = 0; p < propsSheet->props.size(); p++){
 			if (event->getDispatcher() == propsSheet->props[p]) {
 				dispatchEvent(new Event(), Event::CHANGE_EVENT);
+			}
+			if (((PropEditProp*)propsSheet->props[p])->updatePadding() > maxPadding){
+				maxPadding = ((PropEditProp*)propsSheet->props[p])->updatePadding();
+			}
+		}
+
+		padding = maxPadding;
+
+		if (padding < (propList->getWidth() - 320)){
+			for (int p = 0; p < propsSheet->props.size(); p++){
+				propsSheet->props[p]->propContents->setPositionX(padding + 20);
 			}
 		}
 
 		if (event->getDispatcher() == addPropButton->getButton()) {
 			PropEditProp *newProp = new PropEditProp(new PropProp("", 0));
 			propsSheet->addProp(newProp);
+			newProp->addEventListener(this, Event::CHANGE_EVENT);
+			newProp->propContents->setPositionX(padding + 20);
 			dispatchEvent(new Event(), Event::CHANGE_EVENT);
 		}
-
-		
 	}
 }
 
@@ -167,6 +179,10 @@ void PluginEditorPane::setPlugin(Plugin *plugin) {
 		}
 	}
 	
+	for (int p = 0; p < propsSheet->props.size(); p++){
+		propsSheet->props[p]->propContents->setPositionX(padding + 20);
+	}
+
 	enabled = true;
 
 	changingPlugin = false;
@@ -176,6 +192,7 @@ void PluginEditorPane::Resize(Number width, Number height) {
 	headerBg->Resize(width, 30);
 	propList->Resize(width, height);
 	propList->updateProps();
+	
 }
 
 std::vector<PropProp*> PluginEditorPane::getProps() {
@@ -186,13 +203,16 @@ void PluginEditorPane::setProp(const String& name, PropProp* prop){
 	for (int i = 0; i < propsSheet->props.size(); i++) {
 		if (propsSheet->props[i]->getPropName() == name) {
 			PropEditProp *newProp = new PropEditProp(prop);
-			propsSheet->props[i] = newProp;
+			if (((PropEditProp*)newProp)->updatePadding() > padding)
+				padding = ((PropEditProp*)newProp)->updatePadding();
 			newProp->addEventListener(this, Event::CHANGE_EVENT);
 			return;
 		}
 	}
 
 	PropEditProp *newProp = new PropEditProp(prop);
+	if (((PropEditProp*)newProp)->updatePadding() > padding)
+		padding = ((PropEditProp*)newProp)->updatePadding();
 	propsSheet->addProp(newProp);
 	newProp->addEventListener(this, Event::CHANGE_EVENT);
 }

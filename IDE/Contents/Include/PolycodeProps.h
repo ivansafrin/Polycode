@@ -503,6 +503,8 @@ public:
 	void set(PropProp *newProp);
 	PropProp *get();
 
+	int updatePadding();
+
 	int getPropType();
 
 	PropProp *currentProp;
@@ -849,10 +851,6 @@ class EntityPropSheet : public PropSheet {
 		void applyPropActionData(PolycodeEditorPropActionData *data);
         void setEntity(Entity *entity);
 		void handleEvent(Event *event);
-		
-		//void refreshProps(ObjectEntry *propsEntry);
-
-        //ButtonProp *addButtonProp;
 		
 		Entity *entity;
     
