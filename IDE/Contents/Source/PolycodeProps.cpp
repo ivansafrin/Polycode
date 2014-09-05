@@ -23,6 +23,7 @@
 #include "PolycodeProps.h"
 #include "PolycodeFrame.h"
 #include "PolyCubemap.h"
+#include "PolyUIComboBox.h"
 
 extern UIColorPicker *globalColorPicker;
 extern PolycodeFrame *globalFrame;
@@ -1900,7 +1901,7 @@ PropEditProp::PropEditProp(PropProp *newProp) : PropProp(newProp->getPropName(),
 	typeChooser->addComboItem("Custom", (void*)10);
 	typeChooser->addComboItem("String", (void*)11);
 	typeChooser->addComboItem("Color", (void*)12);
-	typeChooser->addComboItem("Combo (ni)", (void*)13);
+	typeChooser->addComboItem("Combo", (void*)13);
 	typeChooser->addComboItem("Bool", (void*)14);
 	typeChooser->addComboItem("Sound", (void*)15);
 	typeChooser->addComboItem("Bezier RGBA Curve (ni)", (void*)16);
@@ -1917,7 +1918,18 @@ PropEditProp::PropEditProp(PropProp *newProp) : PropProp(newProp->getPropName(),
 
 	currentValue = newProp->propType;
 
-	setHeight(65);
+	if (currentValue != PropProp::PROP_COMBO){
+		comboEditProp = new ComboPropEditProp(new ComboProp(nameInput->getText()));
+		comboEditProp->enabled = false;
+		comboEditProp->visible = false;
+		setHeight(65);
+	} else {
+		comboEditProp = new ComboPropEditProp(((ComboProp*)newProp));
+		setHeight(65 + comboEditProp->getHeight());
+	}
+	comboEditProp->addEventListener(this, Event::CHANGE_EVENT);
+	propContents->addChild(comboEditProp);
+	comboEditProp->setPosition(-80, 60);
 }
 
 PropEditProp::~PropEditProp(){}
@@ -1930,6 +1942,15 @@ void PropEditProp::handleEvent(Event *event){
 			if (!suppressChangeEvent) {
 				dispatchEvent(new Event(), Event::CHANGE_EVENT);
 				dispatchEvent(new PropEvent(this, NULL, PropDataInt(lastValue), PropDataInt(currentValue)), PropEvent::EVENT_PROP_CHANGE);
+			}
+			if (currentValue == PropProp::PROP_COMBO){
+				comboEditProp->setPropName(nameInput->getText());
+				comboEditProp->set(comboEditProp->currentCombo);
+				comboEditProp->enabled = true;
+				comboEditProp->visible = true;
+			} else if (lastValue == PropProp::PROP_COMBO && currentValue != PropProp::PROP_COMBO){
+				comboEditProp->enabled = false;
+				comboEditProp->visible = false;
 			}
 		}
 	}
@@ -1944,10 +1965,25 @@ void PropEditProp::handleEvent(Event *event){
 			}
 		}
 	}
+	if (event->getDispatcher() == comboEditProp){
+		if (event->getEventCode() == Event::CHANGE_EVENT) {
+			setHeight(80 + comboEditProp->getHeight());
+			if (!suppressChangeEvent) {
+				dispatchEvent(new Event(), Event::CHANGE_EVENT);
+			}
+		}
+	}
 }
 
 void PropEditProp::set(PropProp *newProp){
 	currentProp = newProp;
+	nameInput->setText(newProp->getPropName());
+	typeChooser->setSelectedIndex(newProp->propType);
+	if (newProp->propType != PropProp::PROP_COMBO){
+		comboEditProp->set(new ComboProp(nameInput->getText()));
+	} else {
+		comboEditProp->set(((ComboProp*)newProp));
+	}
 }
 
 PropProp *PropEditProp::get(){
@@ -1960,6 +1996,127 @@ int PropEditProp::updatePadding(){
 
 int PropEditProp::getPropType(){
 	return currentValue;
+}
+
+ComboPropEditProp::ComboPropEditProp(ComboProp* newCombo) : PropProp("", PropProp::PROP_COMBO_EDIT){
+	nameLabel = new UILabel("New Item:", 11);
+	nameLabel->color.a = 1.0;
+	propContents->addChild(nameLabel);
+	nameLabel->setPosition(0, 5);
+
+	newItemName = new UITextInput(false, 130, 12);
+	newItemName->addEventListener(this, UIEvent::CHANGE_EVENT);
+	newItemName->setText(newCombo->getPropName());
+	propContents->addChild(newItemName);
+	newItemName->setPosition(70, 0);
+
+	addItemButton = new UIButton("Add Item", 80);
+	addItemButton->addEventListener(this, UIEvent::CLICK_EVENT);
+	propContents->addChild(addItemButton);
+	addItemButton->setPosition(220, 0);
+
+	currentCombo = newCombo;
+
+	for (int c = 0; c < currentCombo->comboEntry->getNumItems(); c++){
+		RemovableStringProp *newProp = new RemovableStringProp(currentCombo->comboEntry->getItemAtIndex(c)->label);
+		newProp->addEventListener(this, Event::REMOVE_EVENT);
+		propContents->addChild(newProp);
+		items.push_back(newProp);
+
+		StringProp *newDataProp = new StringProp("Data:");
+		newDataProp->set(((int)currentCombo->comboEntry->getItemAtIndex(c)->data));
+		newDataProp->stringEntry->setPosition(-70, 0);
+		newDataProp->stringEntry->Resize(40, newDataProp->stringEntry->getHeight());
+		newDataProp->stringEntry->setNumberOnly(true);
+		newDataProp->addEventListener(this, Event::CHANGE_EVENT);
+		propContents->addChild(newDataProp);
+		datas.push_back(newDataProp);
+	}
+
+	layoutProps();
+	setWidth(370);
+}
+
+ComboPropEditProp::~ComboPropEditProp(){}
+
+void ComboPropEditProp::handleEvent(Event *event){
+	if (event->getDispatcher() == addItemButton) {
+		RemovableStringProp *newProp = new RemovableStringProp(newItemName->getText());
+		newProp->addEventListener(this, Event::REMOVE_EVENT);
+		propContents->addChild(newProp);
+		items.push_back(newProp);
+		currentCombo->comboEntry->addComboItem(newItemName->getText());
+		
+		StringProp *newDataProp = new StringProp("Data:");
+		newDataProp->stringEntry->setPosition(-70, 0);
+		newDataProp->stringEntry->Resize(40, newDataProp->stringEntry->getHeight());
+		newDataProp->stringEntry->setNumberOnly(true);
+		newDataProp->addEventListener(this, Event::CHANGE_EVENT);
+		propContents->addChild(newDataProp);
+		datas.push_back(newDataProp);
+
+		layoutProps();
+		newItemName->setText("");
+		dispatchEvent(new Event(), Event::CHANGE_EVENT);
+	}
+	for (int i = 0; i < items.size(); i++) {
+		if (items[i] == event->getDispatcher()) {
+			//items[i]->enabled = false;
+			//items[i]->visible = false;
+			propContents->removeChild(items[i]);
+			items[i]->removeAllHandlersForListener(this);
+			
+			propContents->removeChild(datas[i]);
+			datas[i]->removeAllHandlersForListener(this);
+
+			currentCombo->comboEntry->removeComboItemAtIndex(i);
+			items.erase(items.begin() + i);
+			datas.erase(datas.begin() + i);
+			layoutProps();
+			dispatchEvent(new Event(), Event::CHANGE_EVENT);
+		}
+	}
+}
+
+void ComboPropEditProp::layoutProps(){
+	for (int i = 0; i < items.size(); i++){
+		items[i]->setPosition(75, 30 + i * 20);
+		datas[i]->setPosition(0, 30 + i * 20);
+	}
+	setHeight(30 + items.size() * 20);
+}
+
+void ComboPropEditProp::set(ComboProp *newCombo){
+	for (int c = 0; c < currentCombo->comboEntry->getNumItems(); c++){
+		delete items[c];
+	}
+	items.clear();
+
+
+	lastCombo = currentCombo;
+	currentCombo = newCombo;
+
+	for (int c = 0; c < newCombo->comboEntry->getNumItems(); c++){
+		RemovableStringProp *newProp = new RemovableStringProp(newCombo->comboEntry->getItemAtIndex(c)->label);
+		newProp->addEventListener(this, Event::REMOVE_EVENT);
+		propContents->addChild(newProp);
+		items.push_back(newProp);
+
+		StringProp *newDataProp = new StringProp("Data:");
+		newDataProp->set(((int)currentCombo->comboEntry->getItemAtIndex(c)->data));
+		newDataProp->stringEntry->setPosition(-70, 0);
+		newDataProp->stringEntry->Resize(40, newDataProp->stringEntry->getHeight());
+		newDataProp->stringEntry->setNumberOnly(true);
+		newDataProp->addEventListener(this, Event::CHANGE_EVENT);
+		propContents->addChild(newDataProp);
+		datas.push_back(newDataProp);
+	}
+
+	layoutProps();
+}
+
+ComboProp *ComboPropEditProp::get(){
+	return currentCombo;
 }
 
 ShaderPassesSheet::ShaderPassesSheet(ResourcePool *resourcePool) : PropSheet("SHADER PASSES", "shaderPasses") {
@@ -2278,32 +2435,32 @@ void EntityPropSheet::handleEvent(Event *event) {
 
 						switch (props[i]->propType) {
 						case PropProp::PROP_VECTOR3:
-							prop = new EntityProp(props[i]->getPropName() + "x", Prop::PROP_NUMBER);
+							prop = new EntityProp(plugin + props[i]->getPropName() + "x", Prop::PROP_NUMBER);
 							prop->numberVal = ((Vector3Prop*)props[i])->get().x;
 							propsVector.push_back(prop);
-							prop = new EntityProp(props[i]->getPropName() + "y", Prop::PROP_NUMBER);
+							prop = new EntityProp(plugin + props[i]->getPropName() + "y", Prop::PROP_NUMBER);
 							prop->numberVal = ((Vector3Prop*)props[i])->get().y;
 							propsVector.push_back(prop);
-							prop = new EntityProp(props[i]->getPropName() + "z", Prop::PROP_NUMBER);
+							prop = new EntityProp(plugin + props[i]->getPropName() + "z", Prop::PROP_NUMBER);
 							prop->numberVal = ((Vector3Prop*)props[i])->get().z;
 							propsVector.push_back(prop);
-							entity->setEntityProp(props[i]->getPropName(), propsVector);
+							entity->setEntityProp(plugin + props[i]->getPropName(), propsVector);
 							break;
 						case PropProp::PROP_VECTOR2:
-							prop = new EntityProp(props[i]->getPropName() + "x", Prop::PROP_NUMBER);
+							prop = new EntityProp(plugin + props[i]->getPropName() + "x", Prop::PROP_NUMBER);
 							propsVector.push_back(prop);
-							prop = new EntityProp(props[i]->getPropName() + "y", Prop::PROP_NUMBER);
+							prop = new EntityProp(plugin + props[i]->getPropName() + "y", Prop::PROP_NUMBER);
 							propsVector.push_back(prop);
-							entity->setEntityProp(props[i]->getPropName(), propsVector);
+							entity->setEntityProp(plugin + props[i]->getPropName(), propsVector);
 							break;
 						case PropProp::PROP_SLIDER:
-							entity->setEntityProp(props[i]->getPropName(), ((SliderProp*)props[i])->get());
+							entity->setEntityProp(plugin + props[i]->getPropName(), ((SliderProp*)props[i])->get());
 							break;
 							//case PropProp::PROP_BUTTON:
 							//	prop = new ButtonProp(caption);
 							//	break;
 						case PropProp::PROP_NUMBER:
-							entity->setEntityProp(props[i]->getPropName(), ((NumberProp*)props[i])->get());
+							entity->setEntityProp(plugin + props[i]->getPropName(), ((NumberProp*)props[i])->get());
 							break;
 							//case PropProp::PROP_TARGET_BINDING:
 							//
@@ -2313,59 +2470,47 @@ void EntityPropSheet::handleEvent(Event *event) {
 							//case PropProp::PROP_SHADER_PASS:
 							//	break;
 						case PropProp::PROP_REMOVABLE_STRING:
-							entity->setEntityProp(props[i]->getPropName(), ((RemovableStringProp*)props[i])->getCaption());
+							entity->setEntityProp(plugin + props[i]->getPropName(), ((RemovableStringProp*)props[i])->getCaption());
 							break;
 							//case PropProp::PROP_LAYER:
 							//	break;
 						case PropProp::PROP_STRING:
-							entity->setEntityProp(((StringProp*)props[i])->getPropName(), ((StringProp*)props[i])->get());
+							entity->setEntityProp(plugin + props[i]->getPropName(), ((StringProp*)props[i])->get());
 							break;
 						case PropProp::PROP_COLOR:
-							entity->setEntityProp(props[i]->getPropName() + "R", ((ColorProp*)props[i])->get().r);
-							entity->setEntityProp(props[i]->getPropName() + "G", ((ColorProp*)props[i])->get().g);
-							entity->setEntityProp(props[i]->getPropName() + "B", ((ColorProp*)props[i])->get().b);
-							entity->setEntityProp(props[i]->getPropName() + "A", ((ColorProp*)props[i])->get().a);
+							entity->setEntityProp(plugin + props[i]->getPropName() + "R", ((ColorProp*)props[i])->get().r);
+							entity->setEntityProp(plugin + props[i]->getPropName() + "G", ((ColorProp*)props[i])->get().g);
+							entity->setEntityProp(plugin + props[i]->getPropName() + "B", ((ColorProp*)props[i])->get().b);
+							entity->setEntityProp(plugin + props[i]->getPropName() + "A", ((ColorProp*)props[i])->get().a);
 							break;
-						//case PropProp::PROP_COMBO:
-						//	//entity->setEntityProp(props[i]->getPropName() + String::NumberToString(c, 0), ((ComboProp*)props[i])->comboEntry->getItemAtIndex(c)->label);
-						//	switch (((ComboProp*)props[i])->comboEntry->getSelectedItem()->data[0]) {
-						//	case Prop::PROP_ARRAY:
-						//		entity->setEntityProp(caption, entity->getEntityPropArrayByName(((ComboProp*)props[i])->comboEntry->getSelectedItem()->label));
-						//	case Prop::PROP_BOOL:
-						//		entity->setEntityProp(caption, entity->getEntityPropBoolByName(((ComboProp*)props[i])->comboEntry->getSelectedItem()->label));
-						//	case Prop::PROP_INT:
-						//		entity->setEntityProp(caption, entity->getEntityPropIntByName(((ComboProp*)props[i])->comboEntry->getSelectedItem()->label));
-						//	case Prop::PROP_NUMBER:
-						//		entity->setEntityProp(caption, entity->getEntityPropNumberByName(((ComboProp*)props[i])->comboEntry->getSelectedItem()->label));
-						//	case Prop::PROP_STRING:
-						//		entity->setEntityProp(caption, entity->getEntityPropStringByName(((ComboProp*)props[i])->comboEntry->getSelectedItem()->label));
-						//	}
-						//	break;
+						case PropProp::PROP_COMBO:
+							entity->setEntityProp(plugin + props[i]->getPropName(), ((int)((ComboProp*)props[i])->comboEntry->getSelectedItem()->data));
+							break;
 						case PropProp::PROP_BOOL:
-							entity->setEntityProp(props[i]->getPropName(), ((BoolProp*)props[i])->get());
+							entity->setEntityProp(plugin + props[i]->getPropName(), ((BoolProp*)props[i])->get());
 							break;
 						case PropProp::PROP_SOUND:
-							entity->setEntityProp(props[i]->getPropName(), ((SoundProp*)props[i])->get());
+							entity->setEntityProp(plugin + props[i]->getPropName(), ((SoundProp*)props[i])->get());
 							break;
 						//case PropProp::PROP_BEZIER_RGBA_CURVE:
 						//	break;
 						//case PropProp::PROP_BEZIER_CURVE:
 						//	break;
 						case PropProp::PROP_MATERIAL:
-							entity->setEntityProp(props[i]->getPropName(), ((MaterialProp*)props[i])->get()->getName());
+							entity->setEntityProp(plugin + props[i]->getPropName(), ((MaterialProp*)props[i])->get()->getName());
 							break;
 						case PropProp::PROP_TEXTURE:
-							entity->setEntityProp(props[i]->getPropName(), ((TextureProp*)props[i])->get()->getResourceName());
+							entity->setEntityProp(plugin + props[i]->getPropName(), ((TextureProp*)props[i])->get()->getResourceName());
 							break;
 						case PropProp::PROP_SCENE_SPRITE:
-							entity->setEntityProp(props[i]->getPropName(), ((SceneSpriteProp*)props[i])->get()->getResourceName());
+							entity->setEntityProp(plugin + props[i]->getPropName(), ((SceneSpriteProp*)props[i])->get()->getResourceName());
 							break;
 						case PropProp::PROP_SCENE_ENTITY_INSTANCE:
-							entity->setEntityProp(props[i]->getPropName(), ((SceneEntityInstanceProp*)props[i])->get());
+							entity->setEntityProp(plugin + props[i]->getPropName(), ((SceneEntityInstanceProp*)props[i])->get());
 							break;
 						case PropProp::PROP_CUSTOM:
 						default:
-							entity->setEntityProp(((CustomProp*)props[i])->getKey(), ((CustomProp*)props[i])->getValue());
+							entity->setEntityProp(plugin + ((CustomProp*)props[i])->getKey(), ((CustomProp*)props[i])->getValue());
 							break;
 						}
 					}
@@ -2470,8 +2615,18 @@ void EntityPropSheet::refreshProps() {
 				break;
 			case PropProp::PROP_COMBO:
 				prop = new ComboProp(caption);
-				for (int c = 0; c < (*propsEntry)[caption]->children.size(); c++) {
-					((ComboProp*)prop)->comboEntry->addComboItem(plugin + caption + String::NumberToString(c, 0), &(*propsEntry)[plugin + caption][c]["type"]->intVal);
+				for (int c = 0; c < propEntry->children.size(); c++) {
+					ObjectEntry* comboEntry = propEntry->children[c];
+					if (comboEntry){
+						if (comboEntry->name == "prop" && (*comboEntry)["name"] && (*comboEntry)["value"]){
+							((ComboProp*)prop)->comboEntry->addComboItem((*comboEntry)["name"]->stringVal, ((void*)(*comboEntry)["value"]->intVal));
+						}
+					}
+				}
+				for (int s = 0; s < ((ComboProp*)prop)->comboEntry->getNumItems(); s++){
+					if (((int)((ComboProp*)prop)->comboEntry->getItemAtIndex(s)->data) == entity->getEntityPropIntByName(plugin + caption)){
+						((ComboProp*)prop)->comboEntry->setSelectedIndex(s);
+					}
 				}
 				break;
 			case PropProp::PROP_BOOL:
@@ -2509,7 +2664,7 @@ void EntityPropSheet::refreshProps() {
 				break;
 			case PropProp::PROP_CUSTOM:
 			default:
-				prop = new CustomProp(caption, "");
+				prop = new CustomProp(caption, entity->getEntityPropStringByName(plugin + caption));
 				break;
 			}
 			prop->addEventListener(this, Event::CHANGE_EVENT);
@@ -4246,7 +4401,6 @@ void LinkedMaterialsSheet::updateMaterials() {
     
     addProp(addMaterialProp);
 }
-
 
 void LinkedMaterialsSheet::setEntityInstance(SceneEntityInstance *instance) {
     this->instance = instance;

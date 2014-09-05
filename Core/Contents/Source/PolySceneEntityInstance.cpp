@@ -273,29 +273,29 @@ void SceneEntityInstance::parseObjectIntoCurve(ObjectEntry *entry, BezierCurve *
 	
 }
 
-std::vector<EntityProp*> SceneEntityInstance::parseObjectEntryIntoProps(ObjectEntry *propsEntry, const String& pluginName) {
+std::vector<EntityProp*> SceneEntityInstance::parseObjectEntryIntoProps(ObjectEntry *propsEntry, const String& baseName) {
 	Entity *retEntity = new Entity();
 	for (int i = 0; i < propsEntry->children.size(); i++) {
 		ObjectEntry *prop = ((*propsEntry))[i];
 		if (prop->name=="prop") {
 			switch ((*prop)["type"]->intVal) {
 			case Prop::PROP_STRING:
-				retEntity->setEntityProp(pluginName + (*prop)["name"]->stringVal, (*prop)["value"]->stringVal);
+				retEntity->setEntityProp(baseName + (*prop)["name"]->stringVal, (*prop)["value"]->stringVal);
 				break;
 			case Prop::PROP_ARRAY:
-				retEntity->setEntityProp(pluginName + (*prop)["name"]->stringVal, parseObjectEntryIntoProps(prop, pluginName));
+				retEntity->setEntityProp(baseName + (*prop)["name"]->stringVal, parseObjectEntryIntoProps(prop, baseName + (*prop)["name"]->stringVal));
 				break;
 			case Prop::PROP_BOOL:
-				retEntity->setEntityProp(pluginName + (*prop)["name"]->stringVal, (*prop)["value"]->boolVal);
+				retEntity->setEntityProp(baseName + (*prop)["name"]->stringVal, (*prop)["value"]->boolVal);
 				break;
 			case Prop::PROP_INT:
-				retEntity->setEntityProp(pluginName + (*prop)["name"]->stringVal, (*prop)["value"]->intVal);
+				retEntity->setEntityProp(baseName + (*prop)["name"]->stringVal, (*prop)["value"]->intVal);
 				break;
 			case Prop::PROP_NUMBER:
-				retEntity->setEntityProp(pluginName + (*prop)["name"]->stringVal, (*prop)["value"]->NumberVal);
+				retEntity->setEntityProp(baseName + (*prop)["name"]->stringVal, (*prop)["value"]->NumberVal);
 				break;
 			default:
-				retEntity->setEntityProp(pluginName + (*prop)["name"]->stringVal, (*prop)["value"]->stringVal);
+				retEntity->setEntityProp(baseName + (*prop)["name"]->stringVal, (*prop)["value"]->stringVal);
 				break;
 			}
 		}

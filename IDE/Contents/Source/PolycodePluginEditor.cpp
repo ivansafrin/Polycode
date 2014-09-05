@@ -135,6 +135,10 @@ void PluginEditorPane::handleEvent(Event *event) {
 		int maxPadding = 0;
 		for (int p = 0; p < propsSheet->props.size(); p++){
 			if (event->getDispatcher() == propsSheet->props[p]) {
+				if (((int)((PropEditProp*)propsSheet->props[p])->typeChooser->getSelectedItem()->data) == PropProp::PROP_COMBO){
+
+				}
+
 				dispatchEvent(new Event(), Event::CHANGE_EVENT);
 			}
 			if (((PropEditProp*)propsSheet->props[p])->updatePadding() > maxPadding){
@@ -142,11 +146,11 @@ void PluginEditorPane::handleEvent(Event *event) {
 			}
 		}
 
-		padding = maxPadding;
+		padding = maxPadding + 20;
 
-		if (padding < (propList->getWidth() - 320)){
+		if (padding < (propList->getWidth() - 370)){
 			for (int p = 0; p < propsSheet->props.size(); p++){
-				propsSheet->props[p]->propContents->setPositionX(padding + 20);
+				propsSheet->props[p]->propContents->setPositionX(padding);
 			}
 		}
 
@@ -154,8 +158,12 @@ void PluginEditorPane::handleEvent(Event *event) {
 			PropEditProp *newProp = new PropEditProp(new PropProp("", 0));
 			propsSheet->addProp(newProp);
 			newProp->addEventListener(this, Event::CHANGE_EVENT);
-			newProp->propContents->setPositionX(padding + 20);
+			newProp->propContents->setPositionX(padding);
 			dispatchEvent(new Event(), Event::CHANGE_EVENT);
+		}
+
+		if (event->getEventCode() == Event::CHANGE_EVENT){
+			propList->Resize(propList->getWidth(), propList->getHeight());
 		}
 	}
 }
@@ -172,13 +180,24 @@ void PluginEditorPane::setPlugin(Plugin *plugin) {
 		for (int p = 0; p < propsEntry->children.size(); p++) {
 			ObjectEntry* propEntry = (*propsEntry)[p];
 			if (propEntry && propEntry->name == "prop") {
-				setProp((*propEntry)["name"]->stringVal, new PropProp((*propEntry)["name"]->stringVal, (*propEntry)["type"]->intVal));
+				if ((*propEntry)["type"]->intVal != PropProp::PROP_COMBO){
+					setProp((*propEntry)["name"]->stringVal, new PropProp((*propEntry)["name"]->stringVal, (*propEntry)["type"]->intVal));
+				} else {
+					ComboProp *newComboProp =  new ComboProp((*propEntry)["name"]->stringVal);
+					for (int c = 0; c < propEntry->children.size(); c++){
+						ObjectEntry *comboEntry = propEntry->children[c];
+						if (comboEntry && comboEntry->name == "prop"){
+							newComboProp->comboEntry->addComboItem((*comboEntry)["name"]->stringVal, ((void*)(*comboEntry)["value"]->intVal));
+						}
+					}
+					setProp(newComboProp->getPropName(), newComboProp);
+				}
 			}
 		}
 	}
 	
 	for (int p = 0; p < propsSheet->props.size(); p++){
-		propsSheet->props[p]->propContents->setPositionX(padding + 20);
+		propsSheet->props[p]->propContents->setPositionX(padding);
 	}
 
 	enabled = true;
@@ -201,16 +220,16 @@ void PluginEditorPane::setProp(const String& name, PropProp* prop){
 	for (int i = 0; i < propsSheet->props.size(); i++) {
 		if (propsSheet->props[i]->getPropName() == name) {
 			PropEditProp *newProp = new PropEditProp(prop);
-			if (((PropEditProp*)newProp)->updatePadding() > padding)
-				padding = ((PropEditProp*)newProp)->updatePadding();
+			if (((PropEditProp*)newProp)->updatePadding() > (padding - 20))
+				padding = ((PropEditProp*)newProp)->updatePadding() + 20;
 			newProp->addEventListener(this, Event::CHANGE_EVENT);
 			return;
 		}
 	}
 
 	PropEditProp *newProp = new PropEditProp(prop);
-	if (((PropEditProp*)newProp)->updatePadding() > padding)
-		padding = ((PropEditProp*)newProp)->updatePadding();
+	if (((PropEditProp*)newProp)->updatePadding() > (padding - 20))
+		padding = ((PropEditProp*)newProp)->updatePadding() + 20;
 	propsSheet->addProp(newProp);
 	newProp->addEventListener(this, Event::CHANGE_EVENT);
 }
@@ -316,6 +335,13 @@ void PolycodePluginEditor::savePluginToObjectEntry(Plugin* plugin, ObjectEntry* 
 		ObjectEntry* propEntry = propsEntry->addChild("prop");
 		propEntry->addChild("type", ((PropEditProp*)props[i])->getPropType());
 		propEntry->addChild("name", props[i]->getPropName());
+		if (((PropEditProp*)props[i])->getPropType() == PropProp::PROP_COMBO){
+			for (int c = 0; c < ((PropEditProp*)props[i])->comboEditProp->items.size(); c++){
+				ObjectEntry *comboEntry = propEntry->addChild("prop");
+				comboEntry->addChild("name", ((PropEditProp*)props[i])->comboEditProp->get()->comboEntry->getItemAtIndex(c)->label);
+				comboEntry->addChild("value", ((int)((PropEditProp*)props[i])->comboEditProp->get()->comboEntry->getItemAtIndex(c)->data));
+			}
+		}
 	}
 }
 

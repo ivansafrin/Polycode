@@ -76,6 +76,7 @@ class PropProp : public UIElement {
 		static const int PROP_SCENE_SPRITE = 21;
 		static const int PROP_SCENE_ENTITY_INSTANCE = 22;
 		static const int PROP_EDIT = 23;
+		static const int PROP_COMBO_EDIT = 24;
 };
 
 class Vector3Prop : public PropProp {
@@ -494,6 +495,28 @@ class SceneEntityInstanceProp : public PropProp {
 		
 };
 
+class ComboPropEditProp : public PropProp {
+public:
+	ComboPropEditProp(ComboProp* newCombo);
+	~ComboPropEditProp();
+	void handleEvent(Event *event);
+
+	void set(ComboProp *newCombo);
+	ComboProp *get();
+	
+	void layoutProps();
+
+	UILabel *nameLabel;
+	UIButton *addItemButton;
+	UITextInput *newItemName;
+	
+	std::vector<RemovableStringProp*> items;
+	std::vector<StringProp*> datas;
+
+	ComboProp *lastCombo;
+	ComboProp *currentCombo;
+};
+
 class PropEditProp : public PropProp {
 public:
 	PropEditProp(PropProp* newProp);
@@ -508,6 +531,7 @@ public:
 	int getPropType();
 
 	PropProp *currentProp;
+	ComboPropEditProp *comboEditProp;
 
 	UITextInput *nameInput;
 	UIComboBox *typeChooser;
