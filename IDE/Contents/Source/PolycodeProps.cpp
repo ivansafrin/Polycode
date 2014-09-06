@@ -325,6 +325,18 @@ void PropSheet::addProp(PropProp *prop) {
 	Resize(getWidth(), getHeight());
 }
 
+void PropSheet::removeProp(PropProp *prop) {
+	contents->removeChild(prop);
+	prop->removeAllHandlers();
+
+	for (int p = 0; p < props.size(); p++){
+		if (props[p] == prop){
+			props.erase(props.begin() + p);
+		}
+	}
+
+	Resize(getWidth(), getHeight());
+}
 
 void PropSheet::applyPropActionData(PolycodeEditorPropActionData *data) {
 	data->prop->setPropData(data);
@@ -1881,6 +1893,11 @@ PropEditProp::PropEditProp(PropProp *newProp) : PropProp(newProp->getPropName(),
 	propContents->addChild(typeLabel);
 	typeLabel->setPosition(0, 27);
 
+	delButton = new UIImageButton("main/remove_icon.png", 1.0, 12, 12);
+	delButton->addEventListener(this, UIEvent::CLICK_EVENT);
+	addChild(delButton);
+	delButton->setPosition(0, 25);
+
 	nameInput = new UITextInput(false, 200, 12);
 	nameInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	nameInput->setText(newProp->getPropName());
@@ -1972,6 +1989,9 @@ void PropEditProp::handleEvent(Event *event){
 				dispatchEvent(new Event(), Event::CHANGE_EVENT);
 			}
 		}
+	}
+	if (event->getDispatcher() == delButton) {
+		dispatchEvent(new Event(), Event::REMOVE_EVENT);
 	}
 }
 

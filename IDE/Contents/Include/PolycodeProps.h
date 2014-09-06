@@ -539,6 +539,8 @@ public:
 	UILabel *nameLabel;
 	UIMultilineLabel *typeLabel;
 
+	UIImageButton *delButton;
+
 	int lastValue;
 	int currentValue;
 
@@ -561,6 +563,8 @@ class PropSheet : public UIElement {
 		
 		void addProp(PropProp *prop);
 		void setTopPadding(Number padding);
+
+		void removeProp(PropProp *prop);
 				
 		String caption;
 		String type;

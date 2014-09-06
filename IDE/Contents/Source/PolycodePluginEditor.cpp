@@ -135,14 +135,19 @@ void PluginEditorPane::handleEvent(Event *event) {
 		int maxPadding = 0;
 		for (int p = 0; p < propsSheet->props.size(); p++){
 			if (event->getDispatcher() == propsSheet->props[p]) {
-				if (((int)((PropEditProp*)propsSheet->props[p])->typeChooser->getSelectedItem()->data) == PropProp::PROP_COMBO){
-
-				}
+				//if (((int)((PropEditProp*)propsSheet->props[p])->typeChooser->getSelectedItem()->data) == PropProp::PROP_COMBO){
+				//}
 
 				dispatchEvent(new Event(), Event::CHANGE_EVENT);
 			}
+			
 			if (((PropEditProp*)propsSheet->props[p])->updatePadding() > maxPadding){
 				maxPadding = ((PropEditProp*)propsSheet->props[p])->updatePadding();
+			}
+			
+			if (event->getEventCode() == Event::REMOVE_EVENT && event->getDispatcher() == propsSheet->props[p]){
+				propsSheet->removeProp(propsSheet->props[p]);
+				dispatchEvent(new Event(), Event::REMOVE_EVENT);
 			}
 		}
 
@@ -220,9 +225,11 @@ void PluginEditorPane::setProp(const String& name, PropProp* prop){
 	for (int i = 0; i < propsSheet->props.size(); i++) {
 		if (propsSheet->props[i]->getPropName() == name) {
 			PropEditProp *newProp = new PropEditProp(prop);
+			propsSheet->props[i] = newProp;
 			if (((PropEditProp*)newProp)->updatePadding() > (padding - 20))
 				padding = ((PropEditProp*)newProp)->updatePadding() + 20;
 			newProp->addEventListener(this, Event::CHANGE_EVENT);
+			newProp->addEventListener(this, Event::REMOVE_EVENT);
 			return;
 		}
 	}
@@ -232,6 +239,7 @@ void PluginEditorPane::setProp(const String& name, PropProp* prop){
 		padding = ((PropEditProp*)newProp)->updatePadding() + 20;
 	propsSheet->addProp(newProp);
 	newProp->addEventListener(this, Event::CHANGE_EVENT);
+	newProp->addEventListener(this, Event::REMOVE_EVENT);
 }
 
 PluginMainWindow::PluginMainWindow(ResourcePool *resourcePool) : UIElement() {
