@@ -130,6 +130,6 @@ void Bone::setRestMatrix(const Matrix4& matrix) {
 	restMatrix = matrix;
 }
 
-const String& Bone::getName() const {
+String Bone::getName() const {
 	return boneName;
 }

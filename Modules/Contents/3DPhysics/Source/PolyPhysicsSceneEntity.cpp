@@ -185,22 +185,15 @@ PhysicsEntity::PhysicsEntity(Entity *entity, int type, Number mass, Number frict
     enabled = true;
 	this->mass = mass;
 	btVector3 localInertia(0,0,0);
-	Vector3 pos = entity->getPosition();	
 	btTransform transform;
-	transform.setIdentity();		
-	/*
-	transform.setOrigin(btVector3(pos.x,pos.y,pos.z));
-	Quaternion q = entity->getRotationQuat();
-	transform.setRotation(btQuaternion(q.x,q.y,q.z,q.w));
-	*/
-	entity->rebuildTransformMatrix();
+	transform.setIdentity();
+    
 	Matrix4 ent_mat = entity->getConcatenatedMatrix();
-	
-	btScalar mat[16];
-	for(int i=0; i < 16; i++) {
-		mat[i] = ent_mat.ml[i];
-	}	
-	transform.setFromOpenGLMatrix(mat);	
+    Vector3 pos = ent_mat * Vector3(0.0, 0.0, 0.0);
+	transform.setOrigin(btVector3(pos.x,pos.y,pos.z));
+    
+	Quaternion q = entity->getConcatenatedQuat();
+	transform.setRotation(btQuaternion(q.x,q.y,q.z,q.w));
 	
 	if(mass != 0.0f) {
 		shape->calculateLocalInertia(mass,localInertia);

@@ -708,6 +708,14 @@ Quaternion Entity::getRotationQuat() const {
 	return rotationQuat;
 }
 
+Quaternion Entity::getConcatenatedQuat() const {
+    if(parentEntity ) {
+        return rotationQuat * parentEntity->getConcatenatedQuat();
+    } else {
+        return rotationQuat;
+    }
+}
+
 Vector3 Entity::getScale() const {
 	return scale;
 }

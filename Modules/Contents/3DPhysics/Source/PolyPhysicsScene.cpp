@@ -86,6 +86,7 @@ void PhysicsScene::initPhysicsScene(Vector3 size) {
 	broadphase = new btDbvtBroadphase();	
 	physicsWorld = new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfiguration);
 	
+    
 //	physicsWorld->getSolverInfo().m_solverMode |= SOLVER_RANDMIZE_ORDER;
 	physicsWorld->setGravity(btVector3(0,-10,0));
 	axisSweep->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());

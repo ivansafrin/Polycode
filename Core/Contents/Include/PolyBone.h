@@ -47,7 +47,7 @@ namespace Polycode {
 			* Returns the name of the bone.
 			* @return Name of the bone.
 			*/
-			const String& getName() const;
+			String getName() const;
 
 			/**
 			* Sets the parent bone of this bone.

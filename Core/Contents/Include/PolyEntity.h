@@ -524,6 +524,9 @@ namespace Polycode {
 			*/
 			Quaternion getRotationQuat() const;
 			
+        
+            Quaternion getConcatenatedQuat() const;
+        
 			/**
 			* Orients the entity towards the specified location with the provided up vector. The up vector determines which side of the entity will be pointing in that direction.
 			* @param loc Location to look at.

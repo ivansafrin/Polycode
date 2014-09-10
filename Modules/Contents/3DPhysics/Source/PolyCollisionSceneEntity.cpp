@@ -145,7 +145,8 @@ btCollisionShape *CollisionEntity::createCollisionShape(Entity *entity, int type
 		break;
 	}
     
-   // collisionShape->setLocalScaling(btVector3(scale.x, scale.y, scale.z));
+    
+    //collisionShape->setLocalScaling(btVector3(scale.x, scale.y, scale.z));
     
 	return collisionShape; 
 }

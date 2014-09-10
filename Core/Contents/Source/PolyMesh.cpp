@@ -753,6 +753,7 @@ void Mesh::subdivideToRadius(Number radius, int subdivisions)
 			else {
 				vmi01 = vertexPositionArray.data.size()/3;
 				addVertex(vm01.x, vm01.y, vm01.z);
+                addTexCoord(0.0, 0.0);
 				dividedEdges[key01] = vmi01;
 			}
 			EdgeSet::iterator it12 = dividedEdges.find(key12);
@@ -763,6 +764,7 @@ void Mesh::subdivideToRadius(Number radius, int subdivisions)
 			else {
 				vmi12 = vertexPositionArray.data.size()/3;
 				addVertex(vm12.x, vm12.y, vm12.z);
+                addTexCoord(0.0, 0.0);
 				dividedEdges[key12] = vmi12;
 			}
 			EdgeSet::iterator it20 = dividedEdges.find(key20);
@@ -773,6 +775,7 @@ void Mesh::subdivideToRadius(Number radius, int subdivisions)
 			else {
 				vmi20 = vertexPositionArray.data.size()/3;
 				addVertex(vm20.x, vm20.y, vm20.z);
+                addTexCoord(0.0, 0.0);                
 				dividedEdges[key20] = vmi20;
 			}
 
@@ -808,6 +811,7 @@ void Mesh::createOctosphere(Number radius, int subdivisions) {
 		Vector3 v = n * radius;
 		addVertex(v.x, v.y, v.z);
         addNormal(n.x, n.y, n.z);
+        addTexCoord(0.0, 0.0);
 	}
 
 	addIndexedFace(0, 4, 2);
@@ -854,6 +858,7 @@ void Mesh::createIcosphere(Number radius, int subdivisions) {
 		Vector3 v = n * radius;
 		addVertex(v.x, v.y, v.z);
         addNormal(n.x, n.y, n.z);
+        addTexCoord(0.0, 0.0);
 	}
 
 	addIndexedFace(0, 11, 5);
