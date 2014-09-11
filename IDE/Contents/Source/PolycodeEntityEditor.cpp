@@ -2523,30 +2523,32 @@ void PolycodeEntityEditor::Resize(int x, int y) {
 	PolycodeEditor::Resize(x,y);
 }
 
-void PolycodeEntityEditor::savePropsToEntry(ObjectEntry *entry, std::vector<EntityProp*> props, const String& pluginName) {
+void PolycodeEntityEditor::savePropsToEntry(ObjectEntry *entry, std::vector<EntityProp*> props, const String& baseName) {
 	for (int i = 0; i < props.size(); i++) {
-		ObjectEntry *prop = entry->addChild("prop");
-		prop->addChild("name", props[i]->name.replace(pluginName, ""));
-		prop->addChild("type", props[i]->type);
-		switch (props[i]->type) {
-		case Prop::PROP_STRING:
-			prop->addChild("value", props[i]->stringVal);
-			break;
-		case Prop::PROP_ARRAY:
-			savePropsToEntry(prop, props[i]->arrayVal, pluginName);
-			break;
-		case Prop::PROP_BOOL:
-			prop->addChild("value", props[i]->boolVal);
-			break;
-		case Prop::PROP_INT:
-			prop->addChild("value", props[i]->intVal);
-			break;
-		case Prop::PROP_NUMBER:
-			prop->addChild("value", props[i]->numberVal);
-			break;
-		default:
-			prop->addChild("value", props[i]->stringVal);
-			break;
+		if (props[i]->name.find(baseName) == 0){
+			ObjectEntry *prop = entry->addChild("prop");
+			prop->addChild("name", props[i]->name.replace(baseName, ""));
+			prop->addChild("type", props[i]->type);
+			switch (props[i]->type) {
+			case Prop::PROP_STRING:
+				prop->addChild("value", props[i]->stringVal);
+				break;
+			//case Prop::PROP_ARRAY:
+			//	savePropsToEntry(prop, props[i]->arrayVal, props[i]->name);
+			//	break;
+			case Prop::PROP_BOOL:
+				prop->addChild("value", props[i]->boolVal);
+				break;
+			case Prop::PROP_INT:
+				prop->addChild("value", props[i]->intVal);
+				break;
+			case Prop::PROP_NUMBER:
+				prop->addChild("value", props[i]->numberVal);
+				break;
+			default:
+				prop->addChild("value", props[i]->stringVal);
+				break;
+			}
 		}
 	}
 }

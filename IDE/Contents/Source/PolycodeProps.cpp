@@ -2035,6 +2035,9 @@ ComboPropEditProp::ComboPropEditProp(ComboProp* newCombo) : PropProp("", PropPro
 	propContents->addChild(addItemButton);
 	addItemButton->setPosition(220, 0);
 
+	label->enabled = false;
+	label->visible = false;
+
 	currentCombo = newCombo;
 
 	for (int c = 0; c < currentCombo->comboEntry->getNumItems(); c++){
@@ -2044,7 +2047,7 @@ ComboPropEditProp::ComboPropEditProp(ComboProp* newCombo) : PropProp("", PropPro
 		items.push_back(newProp);
 
 		StringProp *newDataProp = new StringProp("Data:");
-		newDataProp->set(((int)currentCombo->comboEntry->getItemAtIndex(c)->data));
+		newDataProp->set(String::NumberToString((int)currentCombo->comboEntry->getItemAtIndex(c)->data));
 		newDataProp->stringEntry->setPosition(-70, 0);
 		newDataProp->stringEntry->Resize(40, newDataProp->stringEntry->getHeight());
 		newDataProp->stringEntry->setNumberOnly(true);
@@ -2079,7 +2082,13 @@ void ComboPropEditProp::handleEvent(Event *event){
 		newItemName->setText("");
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}
+	
 	for (int i = 0; i < items.size(); i++) {
+		if (event->getDispatcher() == datas[i]){
+			currentCombo->comboEntry->getItemAtIndex(i)->data = (void*)datas[i]->get().toInteger();
+			dispatchEvent(new Event(), Event::CHANGE_EVENT);
+		}
+
 		if (items[i] == event->getDispatcher()) {
 			//items[i]->enabled = false;
 			//items[i]->visible = false;
@@ -2450,28 +2459,27 @@ void EntityPropSheet::handleEvent(Event *event) {
 					PolycodeEditorPropActionData *beforeData = PropDataEntity(entity);
 					if(i <= entity->entityProps.size()) {
 						
-						std::vector<EntityProp*> propsVector;
+						//std::vector<EntityProp*> propsVector;
 						EntityProp* prop;
 
 						switch (props[i]->propType) {
 						case PropProp::PROP_VECTOR3:
-							prop = new EntityProp(plugin + props[i]->getPropName() + "x", Prop::PROP_NUMBER);
-							prop->numberVal = ((Vector3Prop*)props[i])->get().x;
-							propsVector.push_back(prop);
-							prop = new EntityProp(plugin + props[i]->getPropName() + "y", Prop::PROP_NUMBER);
-							prop->numberVal = ((Vector3Prop*)props[i])->get().y;
-							propsVector.push_back(prop);
-							prop = new EntityProp(plugin + props[i]->getPropName() + "z", Prop::PROP_NUMBER);
-							prop->numberVal = ((Vector3Prop*)props[i])->get().z;
-							propsVector.push_back(prop);
-							entity->setEntityProp(plugin + props[i]->getPropName(), propsVector);
+							//prop = new EntityProp(plugin + props[i]->getPropName() + "x", Prop::PROP_NUMBER);
+							//prop->numberVal = ((Vector3Prop*)props[i])->get().x;
+							////propsVector.push_back(prop);
+							//prop = new EntityProp(plugin + props[i]->getPropName() + "y", Prop::PROP_NUMBER);
+							//prop->numberVal = ((Vector3Prop*)props[i])->get().y;
+							////propsVector.push_back(prop);
+							//prop = new EntityProp(plugin + props[i]->getPropName() + "z", Prop::PROP_NUMBER);
+							//prop->numberVal = ((Vector3Prop*)props[i])->get().z;
+							//propsVector.push_back(prop);
+							entity->setEntityProp(plugin + props[i]->getPropName() + "x", ((Vector3Prop*)props[i])->get().x);
+							entity->setEntityProp(plugin + props[i]->getPropName() + "y", ((Vector3Prop*)props[i])->get().y);
+							entity->setEntityProp(plugin + props[i]->getPropName() + "z", ((Vector3Prop*)props[i])->get().z);
 							break;
 						case PropProp::PROP_VECTOR2:
-							prop = new EntityProp(plugin + props[i]->getPropName() + "x", Prop::PROP_NUMBER);
-							propsVector.push_back(prop);
-							prop = new EntityProp(plugin + props[i]->getPropName() + "y", Prop::PROP_NUMBER);
-							propsVector.push_back(prop);
-							entity->setEntityProp(plugin + props[i]->getPropName(), propsVector);
+							entity->setEntityProp(plugin + props[i]->getPropName() + "x", ((Vector2Prop*)props[i])->get().x);
+							entity->setEntityProp(plugin + props[i]->getPropName() + "y", ((Vector2Prop*)props[i])->get().y);
 							break;
 						case PropProp::PROP_SLIDER:
 							entity->setEntityProp(plugin + props[i]->getPropName(), ((SliderProp*)props[i])->get());
@@ -2643,11 +2651,12 @@ void EntityPropSheet::refreshProps() {
 						}
 					}
 				}
-				for (int s = 0; s < ((ComboProp*)prop)->comboEntry->getNumItems(); s++){
-					if (((int)((ComboProp*)prop)->comboEntry->getItemAtIndex(s)->data) == entity->getEntityPropIntByName(plugin + caption)){
-						((ComboProp*)prop)->comboEntry->setSelectedIndex(s);
-					}
-				}
+				//for (int s = 0; s < ((ComboProp*)prop)->comboEntry->getNumItems(); s++){
+				//	if (((int)((ComboProp*)prop)->comboEntry->getItemAtIndex(s)->data) == entity->getEntityPropIntByName(plugin + caption)){
+				//		((ComboProp*)prop)->comboEntry->setSelectedIndex(s);
+				//	}
+				//}
+				((ComboProp*)prop)->comboEntry->setSelectedIndex(entity->getEntityPropIntByName(plugin + caption));
 				break;
 			case PropProp::PROP_BOOL:
 				prop = new BoolProp(caption);

@@ -31,7 +31,7 @@ PluginBrowser::PluginBrowser() : UIElement() {
 	treeContainer->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
 	treeContainer->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 
-	pluginNode = treeContainer->getRootNode()->addTreeChild("materialEditor/plugin_icon.png", "Plugins", NULL);
+	pluginNode = treeContainer->getRootNode()->addTreeChild("pluginEditor/plugin_icon.png", "Plugins", NULL);
 
 	addChild(treeContainer);
 	selectedData = NULL;
@@ -41,7 +41,7 @@ PluginBrowser::PluginBrowser() : UIElement() {
 	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 
-	newPluginButton = new UIImageButton("materialEditor/new_plugin.png", 1.0, 22, 22);
+	newPluginButton = new UIImageButton("pluginEditor/new_plugin.png", 1.0, 22, 22);
 	addChild(newPluginButton);
 	newPluginButton->setPosition(5, 4);
 
@@ -75,7 +75,7 @@ void PluginBrowser::handleEvent(Event *event) {
 UITree *PluginBrowser::addPlugin(Plugin *plugin) {
 	PluginBrowserData *data = new PluginBrowserData();
 	data->plugin = plugin;
-	return pluginNode->addTreeChild("materialEditor/material_icon.png", plugin->getResourceName(), (void*)data);
+	return pluginNode->addTreeChild("pluginEditor/plugin_icon.png", plugin->getResourceName(), (void*)data);
 }
 
 void PluginBrowser::Resize(Number width, Number height) {
@@ -179,23 +179,25 @@ void PluginEditorPane::setPlugin(Plugin *plugin) {
 	currentPlugin = plugin;
 
 	nameProp->set(plugin->getResourceName());
-
-	ObjectEntry *propsEntry = (*plugin->sheetEntry)["props"];
-	if (propsEntry) {
-		for (int p = 0; p < propsEntry->children.size(); p++) {
-			ObjectEntry* propEntry = (*propsEntry)[p];
-			if (propEntry && propEntry->name == "prop") {
-				if ((*propEntry)["type"]->intVal != PropProp::PROP_COMBO){
-					setProp((*propEntry)["name"]->stringVal, new PropProp((*propEntry)["name"]->stringVal, (*propEntry)["type"]->intVal));
-				} else {
-					ComboProp *newComboProp =  new ComboProp((*propEntry)["name"]->stringVal);
-					for (int c = 0; c < propEntry->children.size(); c++){
-						ObjectEntry *comboEntry = propEntry->children[c];
-						if (comboEntry && comboEntry->name == "prop"){
-							newComboProp->comboEntry->addComboItem((*comboEntry)["name"]->stringVal, ((void*)(*comboEntry)["value"]->intVal));
+	
+	if (plugin->sheetEntry){
+		ObjectEntry *propsEntry = (*plugin->sheetEntry)["props"];
+		if (propsEntry) {
+			for (int p = 0; p < propsEntry->children.size(); p++) {
+				ObjectEntry* propEntry = (*propsEntry)[p];
+				if (propEntry && propEntry->name == "prop") {
+					if ((*propEntry)["type"]->intVal != PropProp::PROP_COMBO){
+						setProp((*propEntry)["name"]->stringVal, new PropProp((*propEntry)["name"]->stringVal, (*propEntry)["type"]->intVal));
+					} else {
+						ComboProp *newComboProp = new ComboProp((*propEntry)["name"]->stringVal);
+						for (int c = 0; c < propEntry->children.size(); c++){
+							ObjectEntry *comboEntry = propEntry->children[c];
+							if (comboEntry && comboEntry->name == "prop"){
+								newComboProp->comboEntry->addComboItem((*comboEntry)["name"]->stringVal, ((void*)(*comboEntry)["value"]->intVal));
+							}
 						}
+						setProp(newComboProp->getPropName(), newComboProp);
 					}
-					setProp(newComboProp->getPropName(), newComboProp);
 				}
 			}
 		}

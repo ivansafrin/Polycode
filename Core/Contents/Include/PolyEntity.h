@@ -52,7 +52,7 @@ namespace Polycode {
 		Number	numberVal;
 		int		intVal;
 		bool	boolVal;
-		std::vector<EntityProp*> arrayVal;
+		//std::vector<EntityProp*> arrayVal;
 	};
     
     class _PolyExport AABB {
@@ -754,7 +754,7 @@ namespace Polycode {
 			* @param Property name to look up.
 			* @return vector of EntityProp property for specified property name - is empty if this property doesn't exist.
 			*/
-			std::vector<EntityProp*> getEntityPropArrayByName(const String& propName) const;
+			//std::vector<EntityProp*> getEntityPropArrayByName(const String& propName) const;
             
 			/**
              * Sets the entity property for a specified property name.
@@ -789,7 +789,7 @@ namespace Polycode {
 			* @param propName Property name to set.
 			* @param propVal vector of EntityProp* to set for the specified property name.
 			*/
-			void setEntityProp(const String& propName, std::vector<EntityProp*> propVal);
+			//void setEntityProp(const String& propName, std::vector<EntityProp*> propVal);
 
 			void setEntityProp(EntityProp* prop);
 

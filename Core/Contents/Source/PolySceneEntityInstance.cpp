@@ -275,6 +275,7 @@ void SceneEntityInstance::parseObjectIntoCurve(ObjectEntry *entry, BezierCurve *
 
 std::vector<EntityProp*> SceneEntityInstance::parseObjectEntryIntoProps(ObjectEntry *propsEntry, const String& baseName) {
 	Entity *retEntity = new Entity();
+	std::vector<EntityProp*> entProps;
 	for (int i = 0; i < propsEntry->children.size(); i++) {
 		ObjectEntry *prop = ((*propsEntry))[i];
 		if (prop->name=="prop") {
@@ -283,7 +284,10 @@ std::vector<EntityProp*> SceneEntityInstance::parseObjectEntryIntoProps(ObjectEn
 				retEntity->setEntityProp(baseName + (*prop)["name"]->stringVal, (*prop)["value"]->stringVal);
 				break;
 			case Prop::PROP_ARRAY:
-				retEntity->setEntityProp(baseName + (*prop)["name"]->stringVal, parseObjectEntryIntoProps(prop, baseName + (*prop)["name"]->stringVal));
+				entProps = parseObjectEntryIntoProps(prop, baseName + (*prop)["name"]->stringVal);
+				for (int i = 0; i < entProps.size(); i++){
+					retEntity->setEntityProp(entProps[i]);
+				}
 				break;
 			case Prop::PROP_BOOL:
 				retEntity->setEntityProp(baseName + (*prop)["name"]->stringVal, (*prop)["value"]->boolVal);
@@ -587,8 +591,9 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
 						entity->addPluginByName(pluginName);
 
 						ObjectEntry *props = (*plugin)["props"];
-						if (props) {
-							entity->entityProps = parseObjectEntryIntoProps(props, pluginName);
+						std::vector<EntityProp*> entProps = parseObjectEntryIntoProps(props, pluginName);
+						for (int i = 0; i < entProps.size(); i++){
+							entity->entityProps.push_back(entProps[i]);
 						}
 					}
 				}
