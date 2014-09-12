@@ -133,7 +133,7 @@ namespace Polycode {
 		UIHSizer *mainSizer;
 
 		PluginMainWindow *mainWindow;
-		std::vector<Plugin*> plugins;
+		//std::vector<Plugin*> plugins;
 		
 		UITree *selectedPluginNode;
 	};

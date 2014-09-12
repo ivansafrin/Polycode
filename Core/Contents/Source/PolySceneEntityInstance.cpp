@@ -280,22 +280,22 @@ std::vector<EntityProp*> SceneEntityInstance::parseObjectEntryIntoProps(ObjectEn
 		ObjectEntry *prop = ((*propsEntry))[i];
 		if (prop->name=="prop") {
 			switch ((*prop)["type"]->intVal) {
-			case Prop::PROP_STRING:
+			case EntityProp::PROP_STRING:
 				retEntity->setEntityProp(baseName + (*prop)["name"]->stringVal, (*prop)["value"]->stringVal);
 				break;
-			case Prop::PROP_ARRAY:
+			case EntityProp::PROP_ARRAY:
 				entProps = parseObjectEntryIntoProps(prop, baseName + (*prop)["name"]->stringVal);
 				for (int i = 0; i < entProps.size(); i++){
 					retEntity->setEntityProp(entProps[i]);
 				}
 				break;
-			case Prop::PROP_BOOL:
+			case EntityProp::PROP_BOOL:
 				retEntity->setEntityProp(baseName + (*prop)["name"]->stringVal, (*prop)["value"]->boolVal);
 				break;
-			case Prop::PROP_INT:
+			case EntityProp::PROP_INT:
 				retEntity->setEntityProp(baseName + (*prop)["name"]->stringVal, (*prop)["value"]->intVal);
 				break;
-			case Prop::PROP_NUMBER:
+			case EntityProp::PROP_NUMBER:
 				retEntity->setEntityProp(baseName + (*prop)["name"]->stringVal, (*prop)["value"]->NumberVal);
 				break;
 			default:

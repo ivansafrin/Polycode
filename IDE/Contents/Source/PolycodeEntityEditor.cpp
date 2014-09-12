@@ -2530,19 +2530,19 @@ void PolycodeEntityEditor::savePropsToEntry(ObjectEntry *entry, std::vector<Enti
 			prop->addChild("name", props[i]->name.replace(baseName, ""));
 			prop->addChild("type", props[i]->type);
 			switch (props[i]->type) {
-			case Prop::PROP_STRING:
+			case EntityProp::PROP_STRING:
 				prop->addChild("value", props[i]->stringVal);
 				break;
 			//case Prop::PROP_ARRAY:
 			//	savePropsToEntry(prop, props[i]->arrayVal, props[i]->name);
 			//	break;
-			case Prop::PROP_BOOL:
+			case EntityProp::PROP_BOOL:
 				prop->addChild("value", props[i]->boolVal);
 				break;
-			case Prop::PROP_INT:
+			case EntityProp::PROP_INT:
 				prop->addChild("value", props[i]->intVal);
 				break;
-			case Prop::PROP_NUMBER:
+			case EntityProp::PROP_NUMBER:
 				prop->addChild("value", props[i]->numberVal);
 				break;
 			default:
