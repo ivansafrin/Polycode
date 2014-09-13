@@ -44,15 +44,24 @@ namespace Polycode {
 			bool blocked;
 	};
 
-	class _PolyExport EntityProp : public Prop {
+	class _PolyExport EntityProp : public PolyBase {
 	public:
-		EntityProp(const String& name, const unsigned int& type = Prop::PROP_STRING);
+		EntityProp(const String& name, const unsigned int& type = EntityProp::PROP_STRING);
+
+		int type;
+		String name;
 
 		String	stringVal;
 		Number	numberVal;
 		int		intVal;
 		bool	boolVal;
 		//std::vector<EntityProp*> arrayVal;
+
+		static const unsigned int PROP_NUMBER = 0;
+		static const unsigned int PROP_INT = 1;
+		static const unsigned int PROP_BOOL = 2;
+		static const unsigned int PROP_STRING = 3;
+		static const unsigned int PROP_ARRAY = 4;
 	};
     
     class _PolyExport AABB {

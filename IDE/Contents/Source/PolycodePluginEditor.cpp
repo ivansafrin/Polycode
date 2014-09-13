@@ -134,10 +134,17 @@ void PluginEditorPane::handleEvent(Event *event) {
 
 		int maxPadding = 0;
 		for (int p = 0; p < propsSheet->props.size(); p++){
-			if (event->getDispatcher() == propsSheet->props[p]) {
-				//if (((int)((PropEditProp*)propsSheet->props[p])->typeChooser->getSelectedItem()->data) == PropProp::PROP_COMBO){
-				//}
-
+			if (event->getEventCode() == Event::CHANGE_EVENT && event->getDispatcher() == propsSheet->props[p]) {
+				currentPlugin->getProps()[p]->name = propsSheet->props[p]->getPropName();
+				currentPlugin->getProps()[p]->type = ((PropEditProp*)propsSheet->props[p])->getPropType();
+				if (currentPlugin->getProps()[p]->type == Prop::PROP_COMBO){
+					currentPlugin->getProps()[p]->children.clear();
+					for (int c = 0; c < ((PropEditProp*)propsSheet->props[p])->comboEditProp->currentCombo->comboEntry->getNumItems(); c++){
+						Prop* newProp = new Prop(((PropEditProp*)propsSheet->props[p])->comboEditProp->currentCombo->comboEntry->getItemAtIndex(c)->label, Prop::PROP_COMBO);
+						newProp->value = (int)((PropEditProp*)propsSheet->props[p])->comboEditProp->currentCombo->comboEntry->getItemAtIndex(c)->data;
+						currentPlugin->getProps()[p]->children.push_back(newProp);
+					}
+				}
 				dispatchEvent(new Event(), Event::CHANGE_EVENT);
 			}
 			
@@ -146,6 +153,7 @@ void PluginEditorPane::handleEvent(Event *event) {
 			}
 			
 			if (event->getEventCode() == Event::REMOVE_EVENT && event->getDispatcher() == propsSheet->props[p]){
+				currentPlugin->removeProp(propsSheet->props[p]->getPropName());
 				propsSheet->removeProp(propsSheet->props[p]);
 				dispatchEvent(new Event(), Event::REMOVE_EVENT);
 			}
@@ -162,7 +170,9 @@ void PluginEditorPane::handleEvent(Event *event) {
 		if (event->getDispatcher() == addPropButton->getButton()) {
 			PropEditProp *newProp = new PropEditProp(new PropProp("", 0));
 			propsSheet->addProp(newProp);
+			currentPlugin->setProp(new Prop("", 0));
 			newProp->addEventListener(this, Event::CHANGE_EVENT);
+			newProp->addEventListener(this, Event::REMOVE_EVENT);
 			newProp->propContents->setPositionX(padding);
 			dispatchEvent(new Event(), Event::CHANGE_EVENT);
 		}
@@ -174,32 +184,27 @@ void PluginEditorPane::handleEvent(Event *event) {
 }
 
 void PluginEditorPane::setPlugin(Plugin *plugin) {
+	for (int p = propsSheet->props.size(); p > 0; p--){
+		propsSheet->removeProp(propsSheet->props[p - 1]);
+	}
+
 	changingPlugin = true;
 
 	currentPlugin = plugin;
 
 	nameProp->set(plugin->getResourceName());
 	
-	if (plugin->sheetEntry){
-		ObjectEntry *propsEntry = (*plugin->sheetEntry)["props"];
-		if (propsEntry) {
-			for (int p = 0; p < propsEntry->children.size(); p++) {
-				ObjectEntry* propEntry = (*propsEntry)[p];
-				if (propEntry && propEntry->name == "prop") {
-					if ((*propEntry)["type"]->intVal != PropProp::PROP_COMBO){
-						setProp((*propEntry)["name"]->stringVal, new PropProp((*propEntry)["name"]->stringVal, (*propEntry)["type"]->intVal));
-					} else {
-						ComboProp *newComboProp = new ComboProp((*propEntry)["name"]->stringVal);
-						for (int c = 0; c < propEntry->children.size(); c++){
-							ObjectEntry *comboEntry = propEntry->children[c];
-							if (comboEntry && comboEntry->name == "prop"){
-								newComboProp->comboEntry->addComboItem((*comboEntry)["name"]->stringVal, ((void*)(*comboEntry)["value"]->intVal));
-							}
-						}
-						setProp(newComboProp->getPropName(), newComboProp);
-					}
-				}
+	for (int p = 0; p < plugin->getProps().size(); p++) {
+		Prop* propEntry = plugin->getProps()[p];
+		if (propEntry->type != PropProp::PROP_COMBO){
+			setProp(propEntry->name, new PropProp(propEntry->name, propEntry->type));
+		} else {
+			ComboProp *newComboProp = new ComboProp(propEntry->name);
+			for (int c = 0; c < propEntry->children.size(); c++){
+				Prop *comboEntry = propEntry->children[c];
+				newComboProp->comboEntry->addComboItem(comboEntry->name, (void*)comboEntry->value);
 			}
+			setProp(newComboProp->getPropName(), newComboProp);
 		}
 	}
 	
@@ -232,6 +237,16 @@ void PluginEditorPane::setProp(const String& name, PropProp* prop){
 				padding = ((PropEditProp*)newProp)->updatePadding() + 20;
 			newProp->addEventListener(this, Event::CHANGE_EVENT);
 			newProp->addEventListener(this, Event::REMOVE_EVENT);
+			currentPlugin->getProps()[i]->name = name;
+			currentPlugin->getProps()[i]->type = prop->propType;
+			if (currentPlugin->getProps()[i]->type == Prop::PROP_COMBO){
+				currentPlugin->getProps()[i]->children.clear();
+				for (int c = 0; c < ((ComboProp*)prop)->comboEntry->getNumItems(); c++){
+					Prop* newProp = new Prop(((ComboProp*)prop)->comboEntry->getItemAtIndex(c)->label, Prop::PROP_COMBO);
+					newProp->value = (int)((ComboProp*)prop)->comboEntry->getItemAtIndex(c)->data;
+					currentPlugin->getProps()[i]->children.push_back(newProp);
+				}
+			}
 			return;
 		}
 	}
@@ -242,6 +257,15 @@ void PluginEditorPane::setProp(const String& name, PropProp* prop){
 	propsSheet->addProp(newProp);
 	newProp->addEventListener(this, Event::CHANGE_EVENT);
 	newProp->addEventListener(this, Event::REMOVE_EVENT);
+	Prop* pProp = new Prop(name, prop->propType);
+	if (prop->propType == Prop::PROP_COMBO){
+		for (int c = 0; c < ((ComboProp*)prop)->comboEntry->getNumItems(); c++){
+			Prop* comboProp = new Prop(((ComboProp*)prop)->comboEntry->getItemAtIndex(c)->label, Prop::PROP_COMBO);
+			comboProp->value = (int)((ComboProp*)prop)->comboEntry->getItemAtIndex(c)->data;
+			pProp->children.push_back(comboProp);
+		}
+	}
+	currentPlugin->setProp(pProp);
 }
 
 PluginMainWindow::PluginMainWindow(ResourcePool *resourcePool) : UIElement() {
@@ -324,9 +348,7 @@ void PolycodePluginEditor::saveFile() {
 	saveFile.root.addChild("version", 1);
 	for (int p = 0; p < resourcePool->getResources(Resource::RESOURCE_PLUGIN).size(); p++) {
 		ObjectEntry* pluginEntry = saveFile.root.addChild("plugin");
-		if (pluginEntry) {
-			savePluginToObjectEntry(pluginBrowser->selectedData->plugin, pluginEntry);
-		}
+		savePluginToObjectEntry((Plugin*)resourcePool->getResources(Resource::RESOURCE_PLUGIN)[p], pluginEntry);
 	}
 	saveFile.saveToXML(filePath.fullPath);
 	setHasChanges(false);
@@ -340,16 +362,16 @@ void PolycodePluginEditor::savePluginToObjectEntry(Plugin* plugin, ObjectEntry* 
 	ObjectEntry* sheetEntry = entry->addChild("sheet");
 	//sheetEntry->addChild("name", plugin->getSheetName());
 	ObjectEntry* propsEntry = sheetEntry->addChild("props");
-	std::vector<PropProp*> props = mainWindow->pluginPane->getProps();
+	std::vector<Prop*> props = plugin->getProps();
 	for (int i = 0; i < props.size(); i++) {
 		ObjectEntry* propEntry = propsEntry->addChild("prop");
-		propEntry->addChild("type", ((PropEditProp*)props[i])->getPropType());
-		propEntry->addChild("name", props[i]->getPropName());
-		if (((PropEditProp*)props[i])->getPropType() == PropProp::PROP_COMBO){
-			for (int c = 0; c < ((PropEditProp*)props[i])->comboEditProp->items.size(); c++){
+		propEntry->addChild("type", props[i]->type);
+		propEntry->addChild("name", props[i]->name);
+		if (props[i]->type == PropProp::PROP_COMBO){
+			for (int c = 0; c < props[i]->children.size(); c++){
 				ObjectEntry *comboEntry = propEntry->addChild("prop");
-				comboEntry->addChild("name", ((PropEditProp*)props[i])->comboEditProp->get()->comboEntry->getItemAtIndex(c)->label);
-				comboEntry->addChild("value", ((int)((PropEditProp*)props[i])->comboEditProp->get()->comboEntry->getItemAtIndex(c)->data));
+				comboEntry->addChild("name", props[i]->children[c]->name);
+				comboEntry->addChild("value", props[i]->children[c]->value);
 			}
 		}
 	}
@@ -384,6 +406,7 @@ void PolycodePluginEditor::handleEvent(Event *event) {
 				}
 			}
 		}
+		setHasChanges(true);
 	}
 
 	if (event->getDispatcher() == pluginBrowser) {

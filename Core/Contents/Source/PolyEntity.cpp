@@ -800,13 +800,13 @@ void Entity::setEntityProp(const String& propName, const String& propVal) {
 	for (int i = 0; i < entityProps.size(); i++) {
 		if (entityProps[i]->name == propName) {
 			entityProps[i]->stringVal = propVal;
-			entityProps[i]->type = Prop::PROP_STRING;
+			entityProps[i]->type = EntityProp::PROP_STRING;
 			return;
 		}
 	}
 
 
-	EntityProp* entityProp = new EntityProp(propName, Prop::PROP_STRING);
+	EntityProp* entityProp = new EntityProp(propName, EntityProp::PROP_STRING);
 	entityProp->stringVal = propVal;
 	entityProps.push_back(entityProp);
 }
@@ -816,12 +816,12 @@ void Entity::setEntityProp(const String& propName, const int& propVal) {
 	for (int i = 0; i < entityProps.size(); i++) {
 		if (entityProps[i]->name == propName) {
 			entityProps[i]->intVal = propVal;
-			entityProps[i]->type = Prop::PROP_INT;
+			entityProps[i]->type = EntityProp::PROP_INT;
 			return;
 		}
 	}
 
-	EntityProp* entityProp = new EntityProp(propName, Prop::PROP_INT);
+	EntityProp* entityProp = new EntityProp(propName, EntityProp::PROP_INT);
 	entityProp->intVal = propVal;
 	entityProps.push_back(entityProp);
 }
@@ -831,12 +831,12 @@ void Entity::setEntityProp(const String& propName, const Number& propVal) {
 	for (int i = 0; i < entityProps.size(); i++) {
 		if (entityProps[i]->name == propName) {
 			entityProps[i]->numberVal = propVal;
-			entityProps[i]->type = Prop::PROP_NUMBER;
+			entityProps[i]->type = EntityProp::PROP_NUMBER;
 			return;
 		}
 	}
 
-	EntityProp* entityProp = new EntityProp(propName, Prop::PROP_NUMBER);
+	EntityProp* entityProp = new EntityProp(propName, EntityProp::PROP_NUMBER);
 	entityProp->numberVal = propVal;
 	entityProps.push_back(entityProp);
 }
@@ -846,12 +846,12 @@ void Entity::setEntityProp(const String& propName, const bool& propVal) {
 	for (int i = 0; i < entityProps.size(); i++) {
 		if (entityProps[i]->name == propName) {
 			entityProps[i]->boolVal = propVal;
-			entityProps[i]->type = Prop::PROP_BOOL;
+			entityProps[i]->type = EntityProp::PROP_BOOL;
 			return;
 		}
 	}
 
-	EntityProp* entityProp = new EntityProp(propName, Prop::PROP_BOOL);
+	EntityProp* entityProp = new EntityProp(propName, EntityProp::PROP_BOOL);
 	entityProp->boolVal = propVal;
 	entityProps.push_back(entityProp);
 }
@@ -861,12 +861,12 @@ void Entity::setEntityProp(const String& propName, const bool& propVal) {
 //	for (int i = 0; i < entityProps.size(); i++) {
 //		if (entityProps[i]->name == propName) {
 //			entityProps[i]->arrayVal = propVal;
-//			entityProps[i]->type = Prop::PROP_ARRAY;
+//			entityProps[i]->type = EntityProp::PROP_ARRAY;
 //			return;
 //		}
 //	}
 //
-//	EntityProp* entityProp = new EntityProp(propName, Prop::PROP_ARRAY);
+//	EntityProp* entityProp = new EntityProp(propName, EntityProp::PROP_ARRAY);
 //	entityProp->arrayVal = propVal;
 //	entityProps.push_back(entityProp);
 //}
@@ -884,7 +884,7 @@ void Entity::setEntityProp(EntityProp* prop){
 
 int	Entity::getEntityPropIntByName(const String& propName) const {
 	for (int i = 0; i < entityProps.size(); i++) {
-		if (entityProps[i]->name == propName && entityProps[i]->type == Prop::PROP_INT) {
+		if (entityProps[i]->name == propName && entityProps[i]->type == EntityProp::PROP_INT) {
 			return entityProps[i]->intVal;
 		}
 	}
@@ -893,7 +893,7 @@ int	Entity::getEntityPropIntByName(const String& propName) const {
 
 Number Entity::getEntityPropNumberByName(const String& propName) const {
 	for (int i = 0; i < entityProps.size(); i++) {
-		if (entityProps[i]->name == propName && entityProps[i]->type == Prop::PROP_NUMBER) {
+		if (entityProps[i]->name == propName && entityProps[i]->type == EntityProp::PROP_NUMBER) {
 			return entityProps[i]->numberVal;
 		}
 	}
@@ -902,7 +902,7 @@ Number Entity::getEntityPropNumberByName(const String& propName) const {
 
 bool Entity::getEntityPropBoolByName(const String& propName) const {
 	for (int i = 0; i < entityProps.size(); i++) {
-		if (entityProps[i]->name == propName && entityProps[i]->type == Prop::PROP_BOOL) {
+		if (entityProps[i]->name == propName && entityProps[i]->type == EntityProp::PROP_BOOL) {
 			return entityProps[i]->boolVal;
 		}
 	}
@@ -911,7 +911,7 @@ bool Entity::getEntityPropBoolByName(const String& propName) const {
 
 String Entity::getEntityPropStringByName(const String& propName) const {
 	for (int i = 0; i < entityProps.size(); i++) {
-		if (entityProps[i]->name == propName && entityProps[i]->type == Prop::PROP_STRING) {
+		if (entityProps[i]->name == propName && entityProps[i]->type == EntityProp::PROP_STRING) {
 			return entityProps[i]->stringVal;
 		}
 	}
@@ -920,10 +920,10 @@ String Entity::getEntityPropStringByName(const String& propName) const {
 
 //std::vector<EntityProp*> Entity::getEntityPropArrayByName(const String& propName) const {
 //	for (int i = 0; i < entityProps.size(); i++) {
-//		if (entityProps[i]->name == propName && entityProps[i]->type == Prop::PROP_ARRAY) {
+//		if (entityProps[i]->name == propName && entityProps[i]->type == EntityProp::PROP_ARRAY) {
 //			return entityProps[i]->arrayVal;
 //		}
-//		if (entityProps[i]->type == Prop::PROP_ARRAY) {
+//		if (entityProps[i]->type == EntityProp::PROP_ARRAY) {
 //			getEntityPropIntByName(propName);
 //		}
 //	}
@@ -1363,7 +1363,10 @@ MouseEventResult Entity::onMouseWheelDown(const Ray &ray, int timestamp) {
 	return ret;
 }
 
-EntityProp::EntityProp(const String& name, const unsigned int& type) : Prop(name, type) {}
+EntityProp::EntityProp(const String& name, const unsigned int& type) {
+	this->name = name;
+	this->type = type;
+}
 
 void Entity::addPluginByName(const String& pluginName, ResourcePool *resourcePool) {
 	Plugin *plugin;
@@ -1377,7 +1380,7 @@ void Entity::addPluginByName(const String& pluginName, ResourcePool *resourcePoo
 	if (plugin){
 
 		for (int i = 0; i < requiredPlugins.size(); i++) {
-			if (requiredPlugins[i] == plugin) {
+			if (requiredPlugins[i]->getResourceName() == plugin->getResourceName()) {
 				requiredPlugins[i] = plugin;
 				return;
 			}

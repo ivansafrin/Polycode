@@ -35,7 +35,7 @@ Plugin::Plugin(const String& name) : Resource(Resource::RESOURCE_PLUGIN) {
 		ext = "";
 		pluginType = 0;
 		type = Resource::RESOURCE_PLUGIN;
-		sheetEntry = NULL;
+		//sheetEntry = NULL;
 	}
 }
 
@@ -52,21 +52,26 @@ Plugin* Plugin::loadPluginFromEntry(ObjectEntry* entry){
 	if ((*entry)["fileext"])
 		this->ext = (*entry)["fileext"]->stringVal;
 	
-	if ((*entry)["sheet"] && (*(*entry)["sheet"])["props"])
-		this->sheetEntry = (*entry)["sheet"];
+	//if ((*entry)["sheet"] && (*(*entry)["sheet"])["props"])
+	//	this->sheetEntry = (*entry)["sheet"];
 
 	if ((*entry)["type"])
 		this->pluginType = (*entry)["type"]->intVal;
 	
-	ObjectEntry* props = (*entry)["props"];
-	if (props) {
-		for (int k = 0; k < props->length; k++) {
-			ObjectEntry* propEntry = props->children[k];
-			if (!propEntry)
-				continue;
+	if ((*entry)["sheet"]){
+		ObjectEntry* sheetEntry = (*entry)["sheet"];
+		if ((*sheetEntry)["props"]){
+			ObjectEntry* propsEntry = (*sheetEntry)["props"];
+			if (propsEntry) {
+				for (int k = 0; k < propsEntry->children.size(); k++) {
+					ObjectEntry* propEntry = propsEntry->children[k];
+					if (!propEntry || propEntry->name != "prop")
+						continue;
 
-			Prop *prop = new Prop(propEntry);
-			this->addProp(prop);
+					Prop *prop = new Prop(propEntry);
+					this->setProp(prop);
+				}
+			}
 		}
 	}
 	Logger::log("Adding plugin: [%s]\n", this->getResourceName().c_str());
@@ -102,6 +107,16 @@ void Plugin::removeProp(Prop *propToRemove) {
 	}
 }
 
+void Plugin::removeProp(const String& propName) {
+	for (int i = 0; i < props.size(); i++) {
+		if (props[i]->name == propName) {
+			delete props[i];
+			props.erase(props.begin() + i);
+			return;
+		}
+	}
+}
+
 std::vector<Prop*> Plugin::getProps() const {
 	return props;
 }
@@ -118,26 +133,21 @@ Prop::Prop(ObjectEntry *entry) {
 Prop::~Prop(){}
 
 Prop* Prop::loadPropFromEntry(ObjectEntry* entry){
-	int type = (*entry)["type"]->intVal;
-	if (!type)
+	if (!entry->readInt("type", &this->type))
 		return NULL;
 
 	if (!(*entry)["name"])
 		return NULL;
-	String name = (*entry)["name"]->stringVal;
+	this->name = (*entry)["name"]->stringVal;
 
-	this->type = type;
-	this->name = name;
-
-	if (type == 4){
-		int l = 0;
+	if (type == Prop::PROP_COMBO){
 		for (int i = 0; i < entry->children.size(); i++) {
 			if (entry->children[i]->name == "prop") {
-				children.push_back(new Prop(entry->children[i]));
-				l++;
+				Prop* newProp = new Prop((*entry->children[i])["name"]->stringVal, Prop::PROP_COMBO);
+				newProp->value = (*entry->children[i])["value"]->intVal;
+				children.push_back(newProp);
 			}
 		}
-		this->length = l;
 	}
 	return this;
 }

@@ -36,18 +36,37 @@ namespace Polycode {
 
 		Prop *loadPropFromEntry(ObjectEntry* entry);
 
-		int type;
-		String name;
 
-		int length;
+		int type;
+
+		String name;
+		int value;
 
 		std::vector<Prop*> children;
 
-		static const unsigned int PROP_NUMBER	= 0;
-		static const unsigned int PROP_INT		= 1;
-		static const unsigned int PROP_BOOL		= 2;
-		static const unsigned int PROP_STRING	= 3;
-		static const unsigned int PROP_ARRAY	= 4;
+		static const int PROP_VECTOR3 = 0;
+		static const int PROP_VECTOR2 = 1;
+		static const int PROP_SLIDER = 2;
+		static const int PROP_BUTTON = 3;
+		static const int PROP_NUMBER = 4;
+		static const int PROP_TARGET_BINDING = 5;
+		static const int PROP_RENDER_TARGET = 6;
+		static const int PROP_SHADER_PASS = 7;
+		static const int PROP_REMOVABLE_STRING = 8;
+		static const int PROP_LAYER = 9;
+		static const int PROP_CUSTOM = 10;
+		static const int PROP_STRING = 11;
+		static const int PROP_COLOR = 12;
+		static const int PROP_COMBO = 13;
+		static const int PROP_BOOL = 14;
+		static const int PROP_SOUND = 15;
+		static const int PROP_BEZIER_RGBA_CURVE = 16;
+		static const int PROP_BEZIER_CURVE = 17;
+		static const int PROP_MATERIAL = 18;
+		static const int PROP_MATERIAL_PREVIEW = 19;
+		static const int PROP_TEXTURE = 20;
+		static const int PROP_SCENE_SPRITE = 21;
+		static const int PROP_SCENE_ENTITY_INSTANCE = 22;
 	};
 
 	class _PolyExport Plugin : public Resource {
@@ -62,6 +81,7 @@ namespace Polycode {
 			void setProp(Prop* prop);
 
 			void removeProp(Prop* prop);
+			void removeProp(const String& propName);
 
 			std::vector<Prop*> getProps() const;
 			unsigned int getNumProps() const;
@@ -71,7 +91,7 @@ namespace Polycode {
 			static const unsigned int PLUGIN_ENTITY = 0;
 
 			String ext;
-			ObjectEntry *sheetEntry;
+			//ObjectEntry *sheetEntry;
 
 		protected:
 			std::vector<Prop*> props;

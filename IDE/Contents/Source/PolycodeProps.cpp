@@ -2428,7 +2428,7 @@ EntityPropSheet::EntityPropSheet(Plugin* plugin) : PropSheet(plugin->getResource
 
 
 
-	if (plugin->sheetEntry)
+	//if (plugin->sheetEntry)
 		refreshProps();
 }
 
@@ -2579,93 +2579,86 @@ void EntityPropSheet::refreshProps() {
 		this->visible = true;
 	}
 
-	ObjectEntry* propsEntry = (*dynamic_cast<Plugin*>(Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_PLUGIN, plugin))->sheetEntry)["props"];
-	if (propsEntry) {
-		PropProp* prop;
+	std::vector<Prop*> props = dynamic_cast<Plugin*>(Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_PLUGIN, plugin))->getProps();
+	PropProp* prop;
 
-		for (int i = 0; i < propsEntry->children.size(); i++) {
-			ObjectEntry* propEntry = propsEntry->children[i];
-			
-			String caption = (*propEntry)["name"]->stringVal;
+	for (int i = 0; i < props.size(); i++) {
+		Prop* propEntry = props[i];
+		String caption = propEntry->name;
 
-			switch ((*propEntry)["type"]->intVal) {
-			case PropProp::PROP_VECTOR3:
-				prop = new Vector3Prop(caption);
-				dynamic_cast<Vector3Prop*>(prop)->set(Vector3(entity->getEntityPropNumberByName(plugin + caption + "x"), entity->getEntityPropNumberByName(plugin + caption + "y"), entity->getEntityPropNumberByName(plugin + caption + "z")));
-				break;
-			case PropProp::PROP_VECTOR2:
-				prop = new Vector2Prop(caption);
-				dynamic_cast<Vector2Prop*>(prop)->set(Vector2(entity->getEntityPropNumberByName(plugin + caption + "x"), entity->getEntityPropNumberByName(plugin + caption + "y")));
-				break;
-			case PropProp::PROP_SLIDER:
-				prop = new SliderProp(caption, entity->getEntityPropNumberByName(plugin + caption + "min"), entity->getEntityPropNumberByName(plugin + caption + "max"));
-				dynamic_cast<SliderProp*>(prop)->set(entity->getEntityPropNumberByName(plugin + caption));
-				break;
-				//case PropProp::PROP_BUTTON:
-				//	prop = new ButtonProp(caption);
-				//	break;
-			case PropProp::PROP_NUMBER:
-				prop = new NumberProp(caption);
-				prop->setPropData(PropDataNumber(entity->getEntityPropNumberByName(plugin + caption)));
-				break;
-				//case PropProp::PROP_TARGET_BINDING:
-				//	Shader *shader = ((Shader*)Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_SHADER, entity->getEntityPropStringByName(plugin + caption)));
-				//	Material *material = ((Material*)Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, entity->getEntityPropStringByName(plugin + caption)));
-				//	ShaderBinding *shaderBin = new ShaderBinding(shader);
-				//	RenderTargetBinding *targetBin = new RenderTargetBinding();
-				//
-				//	prop = new TargetBindingProp(shader, material, shaderBin, targetBin);
-				//
-				//	break;
-				//case PropProp::PROP_RENDER_TARGET:
-				//	ShaderRenderTarget *renderTarget;
-				//	Material *material;
-				//	prop = new RenderTargetProp(renderTarget, material);
-				//	break;
-				//case PropProp::PROP_SHADER_PASS:
-				//	prop = new ShaderPassProp();
-				//	break;
-			case PropProp::PROP_REMOVABLE_STRING:
-				prop = new RemovableStringProp(caption);
-				prop->setPropData(PropDataString(entity->getEntityPropStringByName(plugin + caption)));
-				break;
-				//case PropProp::PROP_LAYER:
-				//	SceneEntityInstance *instance = new SceneEntityInstance();
-				//	prop = new LayerProp();
-				//	break;
-			case PropProp::PROP_STRING:
-				prop = new StringProp(caption);
-				((StringProp*)prop)->set(entity->getEntityPropStringByName(plugin + caption));
-				break;
-			case PropProp::PROP_COLOR:
-				prop = new ColorProp(caption);
-				((ColorProp*)prop)->set(new Color(entity->getEntityPropNumberByName(plugin + caption + "r"), entity->getEntityPropNumberByName(plugin + caption + "g"), entity->getEntityPropNumberByName(plugin + caption + "b"), entity->getEntityPropNumberByName(plugin + caption + "a")));
-				break;
-			case PropProp::PROP_COMBO:
-				prop = new ComboProp(caption);
-				for (int c = 0; c < propEntry->children.size(); c++) {
-					ObjectEntry* comboEntry = propEntry->children[c];
-					if (comboEntry){
-						if (comboEntry->name == "prop" && (*comboEntry)["name"] && (*comboEntry)["value"]){
-							((ComboProp*)prop)->comboEntry->addComboItem((*comboEntry)["name"]->stringVal, ((void*)(*comboEntry)["value"]->intVal));
-						}
-					}
+		switch (propEntry->type) {
+		case PropProp::PROP_VECTOR3:
+			prop = new Vector3Prop(caption);
+			dynamic_cast<Vector3Prop*>(prop)->set(Vector3(entity->getEntityPropNumberByName(plugin + caption + "x"), entity->getEntityPropNumberByName(plugin + caption + "y"), entity->getEntityPropNumberByName(plugin + caption + "z")));
+			break;
+		case PropProp::PROP_VECTOR2:
+			prop = new Vector2Prop(caption);
+			dynamic_cast<Vector2Prop*>(prop)->set(Vector2(entity->getEntityPropNumberByName(plugin + caption + "x"), entity->getEntityPropNumberByName(plugin + caption + "y")));
+			break;
+		case PropProp::PROP_SLIDER:
+			prop = new SliderProp(caption, entity->getEntityPropNumberByName(plugin + caption + "min"), entity->getEntityPropNumberByName(plugin + caption + "max"));
+			dynamic_cast<SliderProp*>(prop)->set(entity->getEntityPropNumberByName(plugin + caption));
+			break;
+			//case PropProp::PROP_BUTTON:
+			//	prop = new ButtonProp(caption);
+			//	break;
+		case PropProp::PROP_NUMBER:
+			prop = new NumberProp(caption);
+			prop->setPropData(PropDataNumber(entity->getEntityPropNumberByName(plugin + caption)));
+			break;
+			//case PropProp::PROP_TARGET_BINDING:
+			//	Shader *shader = ((Shader*)Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_SHADER, entity->getEntityPropStringByName(plugin + caption)));
+			//	Material *material = ((Material*)Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, entity->getEntityPropStringByName(plugin + caption)));
+			//	ShaderBinding *shaderBin = new ShaderBinding(shader);
+			//	RenderTargetBinding *targetBin = new RenderTargetBinding();
+			//
+			//	prop = new TargetBindingProp(shader, material, shaderBin, targetBin);
+			//
+			//	break;
+			//case PropProp::PROP_RENDER_TARGET:
+			//	ShaderRenderTarget *renderTarget;
+			//	Material *material;
+			//	prop = new RenderTargetProp(renderTarget, material);
+			//	break;
+			//case PropProp::PROP_SHADER_PASS:
+			//	prop = new ShaderPassProp();
+			//	break;
+		case PropProp::PROP_REMOVABLE_STRING:
+			prop = new RemovableStringProp(caption);
+			prop->setPropData(PropDataString(entity->getEntityPropStringByName(plugin + caption)));
+			break;
+			//case PropProp::PROP_LAYER:
+			//	SceneEntityInstance *instance = new SceneEntityInstance();
+			//	prop = new LayerProp();
+			//	break;
+		case PropProp::PROP_STRING:
+			prop = new StringProp(caption);
+			((StringProp*)prop)->set(entity->getEntityPropStringByName(plugin + caption));
+			break;
+		case PropProp::PROP_COLOR:
+			prop = new ColorProp(caption);
+			((ColorProp*)prop)->set(new Color(entity->getEntityPropNumberByName(plugin + caption + "r"), entity->getEntityPropNumberByName(plugin + caption + "g"), entity->getEntityPropNumberByName(plugin + caption + "b"), entity->getEntityPropNumberByName(plugin + caption + "a")));
+			break;
+		case PropProp::PROP_COMBO:
+			prop = new ComboProp(caption);
+			for (int c = 0; c < propEntry->children.size(); c++) {
+				Prop* comboEntry = propEntry->children[c];
+				((ComboProp*)prop)->comboEntry->addComboItem(comboEntry->name, ((void*)comboEntry->value));
+			}
+			for (int s = 0; s < ((ComboProp*)prop)->comboEntry->getNumItems(); s++){
+				if (((int)((ComboProp*)prop)->comboEntry->getItemAtIndex(s)->data) == entity->getEntityPropIntByName(plugin + caption)){
+					((ComboProp*)prop)->comboEntry->setSelectedIndex(s);
 				}
-				//for (int s = 0; s < ((ComboProp*)prop)->comboEntry->getNumItems(); s++){
-				//	if (((int)((ComboProp*)prop)->comboEntry->getItemAtIndex(s)->data) == entity->getEntityPropIntByName(plugin + caption)){
-				//		((ComboProp*)prop)->comboEntry->setSelectedIndex(s);
-				//	}
-				//}
-				((ComboProp*)prop)->comboEntry->setSelectedIndex(entity->getEntityPropIntByName(plugin + caption));
-				break;
-			case PropProp::PROP_BOOL:
-				prop = new BoolProp(caption);
-				((BoolProp*)prop)->set(entity->getEntityPropBoolByName(plugin + caption));
-				break;
-			case PropProp::PROP_SOUND:
-				prop = new SoundProp(caption);
-				((SoundProp*)prop)->set(entity->getEntityPropStringByName(plugin + caption));
-				break;
+			}
+			break;
+		case PropProp::PROP_BOOL:
+			prop = new BoolProp(caption);
+			((BoolProp*)prop)->set(entity->getEntityPropBoolByName(plugin + caption));
+			break;
+		case PropProp::PROP_SOUND:
+			prop = new SoundProp(caption);
+			((SoundProp*)prop)->set(entity->getEntityPropStringByName(plugin + caption));
+			break;
 			//case PropProp::PROP_BEZIER_RGBA_CURVE:
 			//	prop = new BezierRGBACurveProp(caption);
 			//	for (int c = 0; c < entity->getEntityPropArrayByName(plugin + caption + "r").size(); c++) {
@@ -2673,33 +2666,32 @@ void EntityPropSheet::refreshProps() {
 			//	}
 			//	break;
 			//case PropProp::PROP_BEZIER_CURVE:
-				//prop = new BezierCurveProp(caption, (*propEntry)["curveName"]->stringVal);
-				//break;
-			case PropProp::PROP_MATERIAL:
-				prop = new MaterialProp(caption);
-				((MaterialProp*)prop)->set(new Material(entity->getEntityPropStringByName(plugin + caption)));
-				break;
-			case PropProp::PROP_TEXTURE:
-				prop = new TextureProp(caption);
-				((TextureProp*)prop)->set(((Texture*)Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_TEXTURE, entity->getEntityPropStringByName(plugin + caption))));
-				break;
-			case PropProp::PROP_SCENE_SPRITE:
-				prop = new SceneSpriteProp(caption);
-				((SceneSpriteProp*)prop)->set(((Sprite*)Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_SPRITE, entity->getEntityPropStringByName(plugin + caption))));
-				break;
-			case PropProp::PROP_SCENE_ENTITY_INSTANCE:
-				prop = new SceneEntityInstanceProp(caption);
-				((SceneEntityInstanceProp*)prop)->set(entity->getEntityPropStringByName(plugin + caption));
-				break;
-			case PropProp::PROP_CUSTOM:
-			default:
-				prop = new CustomProp(caption, entity->getEntityPropStringByName(plugin + caption));
-				break;
-			}
-			prop->addEventListener(this, Event::CHANGE_EVENT);
-			addProp(prop);
-			prop->Resize(getWidth(), prop->getHeight());
+			//prop = new BezierCurveProp(caption, (*propEntry)["curveName"]->stringVal);
+			//break;
+		case PropProp::PROP_MATERIAL:
+			prop = new MaterialProp(caption);
+			((MaterialProp*)prop)->set(new Material(entity->getEntityPropStringByName(plugin + caption)));
+			break;
+		case PropProp::PROP_TEXTURE:
+			prop = new TextureProp(caption);
+			((TextureProp*)prop)->set(((Texture*)Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_TEXTURE, entity->getEntityPropStringByName(plugin + caption))));
+			break;
+		case PropProp::PROP_SCENE_SPRITE:
+			prop = new SceneSpriteProp(caption);
+			((SceneSpriteProp*)prop)->set(((Sprite*)Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_SPRITE, entity->getEntityPropStringByName(plugin + caption))));
+			break;
+		case PropProp::PROP_SCENE_ENTITY_INSTANCE:
+			prop = new SceneEntityInstanceProp(caption);
+			((SceneEntityInstanceProp*)prop)->set(entity->getEntityPropStringByName(plugin + caption));
+			break;
+		case PropProp::PROP_CUSTOM:
+		default:
+			prop = new CustomProp(caption, entity->getEntityPropStringByName(plugin + caption));
+			break;
 		}
+		prop->addEventListener(this, Event::CHANGE_EVENT);
+		addProp(prop);
+		prop->Resize(getWidth(), prop->getHeight());
 	}
 
 	if(lastNumProps != entity->entityProps.size()) {
