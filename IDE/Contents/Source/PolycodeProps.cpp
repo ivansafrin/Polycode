@@ -2428,9 +2428,7 @@ EntityPropSheet::EntityPropSheet(Plugin* plugin) : PropSheet(plugin->getResource
 
 
 
-	//if (plugin->sheetEntry)
-		refreshProps();
-}
+	refreshProps();}
 
 void EntityPropSheet::applyPropActionData(PolycodeEditorPropActionData *data) {
 	if(!entity)
@@ -2560,10 +2558,10 @@ void EntityPropSheet::reloadSheetFromEntry(ObjectEntry *sheetEntry) {
 }
 
 void EntityPropSheet::refreshProps() {
-	for(int i=0; i < props.size(); i++) {
-        contents->removeChild(props[i]);
-        props[i]->removeAllHandlersForListener(this);
-        delete props[i];
+	for (int i = 0; i < props.size(); i++) {
+		contents->removeChild(props[i]);
+		props[i]->removeAllHandlersForListener(this);
+		delete props[i];
 	}
 	props.clear();
 
@@ -2694,13 +2692,13 @@ void EntityPropSheet::refreshProps() {
 		prop->Resize(getWidth(), prop->getHeight());
 	}
 
-	if(lastNumProps != entity->entityProps.size()) {
+	if (lastNumProps != entity->entityProps.size()) {
 		dispatchEvent(new Event(), Event::COMPLETE_EVENT);
 	}
-	
+
 	lastNumProps = entity->entityProps.size();
-		
-	Resize(getWidth(), getHeight());	
+
+	Resize(getWidth(), getHeight());
 }
 
 void EntityPropSheet::setEntity(Entity *entity){

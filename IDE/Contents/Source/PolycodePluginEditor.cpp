@@ -170,8 +170,7 @@ void PluginEditorPane::handleEvent(Event *event) {
 		if (event->getDispatcher() == addPropButton->getButton()) {
 			PropEditProp *newProp = new PropEditProp(new PropProp("", 0));
 			propsSheet->addProp(newProp);
-			currentPlugin->setProp(new Prop("", 0));
-			newProp->addEventListener(this, Event::CHANGE_EVENT);
+			currentPlugin->setProp(new Prop("", 0));			newProp->addEventListener(this, Event::CHANGE_EVENT);
 			newProp->addEventListener(this, Event::REMOVE_EVENT);
 			newProp->propContents->setPositionX(padding);
 			dispatchEvent(new Event(), Event::CHANGE_EVENT);
@@ -187,7 +186,6 @@ void PluginEditorPane::setPlugin(Plugin *plugin) {
 	for (int p = propsSheet->props.size(); p > 0; p--){
 		propsSheet->removeProp(propsSheet->props[p - 1]);
 	}
-
 	changingPlugin = true;
 
 	currentPlugin = plugin;
@@ -207,6 +205,7 @@ void PluginEditorPane::setPlugin(Plugin *plugin) {
 			setProp(newComboProp->getPropName(), newComboProp);
 		}
 	}
+	
 	
 	for (int p = 0; p < propsSheet->props.size(); p++){
 		propsSheet->props[p]->propContents->setPositionX(padding);

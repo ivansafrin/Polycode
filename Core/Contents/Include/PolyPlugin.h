@@ -35,16 +35,15 @@ namespace Polycode {
 		~Prop();
 
 		Prop *loadPropFromEntry(ObjectEntry* entry);
-
+		
 
 		int type;
-
 		String name;
 		int value;
 
 		std::vector<Prop*> children;
 
-		static const int PROP_VECTOR3 = 0;
+static const int PROP_VECTOR3 = 0;
 		static const int PROP_VECTOR2 = 1;
 		static const int PROP_SLIDER = 2;
 		static const int PROP_BUTTON = 3;
@@ -66,8 +65,7 @@ namespace Polycode {
 		static const int PROP_MATERIAL_PREVIEW = 19;
 		static const int PROP_TEXTURE = 20;
 		static const int PROP_SCENE_SPRITE = 21;
-		static const int PROP_SCENE_ENTITY_INSTANCE = 22;
-	};
+		static const int PROP_SCENE_ENTITY_INSTANCE = 22;	};
 
 	class _PolyExport Plugin : public Resource {
 		public:
@@ -77,7 +75,6 @@ namespace Polycode {
 		
 			Plugin* loadPluginFromEntry(ObjectEntry *entry);
 
-			void addProp(Prop* prop);
 			void setProp(Prop* prop);
 
 			void removeProp(Prop* prop);
