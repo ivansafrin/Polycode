@@ -934,12 +934,13 @@ void EntityEditorMainView::Update() {
     }
     
     if(entitiesToSelect.size() != 0) {
+        
         sort (entitiesToSelect.begin(), entitiesToSelect.end(), distanceSorter);
         
         if(multiselectIndex > entitiesToSelect.size()-1 || selectingNewEntities()) {
             multiselectIndex = 0;
         }
-
+        
         // force dummy to always select
         for(int i=0; i < entitiesToSelect.size(); i++) {
             if(entitiesToSelect[i].entity == dummyEntity) {
@@ -993,7 +994,7 @@ void EntityEditorMainView::createIcon(Entity *entity, String iconFile) {
     
     entity->removeAllHandlersForListener(this);
     
-    ScenePrimitive *iconPrimitive = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 0.4, 0.4);
+    ScenePrimitive *iconPrimitive = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 0.3, 0.3);
     
     iconPrimitive->setMaterialByName("Unlit");
 	Texture *tex = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile("entityEditor/"+iconFile);
