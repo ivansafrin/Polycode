@@ -1137,7 +1137,7 @@ std::vector<String> Win32Core::openFilePicker(std::vector<CoreFileExtension> ext
 	ofn.nMaxFileTitle = 0;
 	ofn.lpstrInitialDir=NULL;
 
-	if(allowMultiple) {
+	if(!allowMultiple) {
 		ofn.Flags = OFN_PATHMUSTEXIST|OFN_FILEMUSTEXIST|OFN_EXPLORER;
 	} else {
 		ofn.Flags = OFN_PATHMUSTEXIST|OFN_FILEMUSTEXIST|OFN_ALLOWMULTISELECT|OFN_EXPLORER;
@@ -1147,7 +1147,23 @@ std::vector<String> Win32Core::openFilePicker(std::vector<CoreFileExtension> ext
 
 	if(GetOpenFileName(&ofn)) {
 		if(allowMultiple) {
-
+			String dir = fBuffer;
+			size_t pos = dir.length(), last = 0;
+			while (true){
+				if (fBuffer[pos + 1] == NULL){
+					if (retVec.size() == 0){
+						retVec.push_back(dir);
+					}
+					break;
+				} else {
+					String fileName;
+					for (last = pos + 1; fBuffer[pos + 1] != NULL; pos++){
+						fileName.append(fBuffer[pos + 1]);
+					}
+					retVec.push_back(dir + "/" + fileName);
+					pos++;
+				}
+			}
 		} else {
 			retVec.push_back(String(fBuffer));
 		}

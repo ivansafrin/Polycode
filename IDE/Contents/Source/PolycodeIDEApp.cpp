@@ -703,6 +703,15 @@ void PolycodeIDEApp::openFile(OSFileEntry file) {
 	}
 }
 
+void PolycodeIDEApp::openFilePicker() {
+	std::vector<CoreFileExtension> extensions = editorManager->getExtensionsWithEditor();
+	extensions.insert(extensions.begin(), CoreFileExtension("All Types", "*"));
+	std::vector<String> filePaths = core->openFilePicker(extensions, true);
+	for (int f = 0; f < filePaths.size(); f++){
+		openFile(OSFileEntry(filePaths[f], OSFileEntry::TYPE_FILE));
+	}
+}
+
 void PolycodeIDEApp::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == frame->assetImporterWindow) {

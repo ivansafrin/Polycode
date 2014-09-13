@@ -2536,4 +2536,3 @@ void PolycodeEntityEditor::Resize(int x, int y) {
 	mainSizer->Resize(x, y);
 	PolycodeEditor::Resize(x,y);
 }
-
