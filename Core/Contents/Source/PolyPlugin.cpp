@@ -35,7 +35,6 @@ Plugin::Plugin(const String& name) : Resource(Resource::RESOURCE_PLUGIN) {
 		ext = "";
 		pluginType = 0;
 		type = Resource::RESOURCE_PLUGIN;
-		//sheetEntry = NULL;
 	}
 }
 
@@ -45,19 +44,20 @@ Plugin::Plugin(ObjectEntry *entry) : Resource(Resource::RESOURCE_PLUGIN) {
 
 Plugin::~Plugin() {}
 
-Plugin* Plugin::loadPluginFromEntry(ObjectEntry* entry){	
+Plugin* Plugin::loadPluginFromEntry(ObjectEntry* entry){
 	if ((*entry)["name"])
 		this->setResourceName((*entry)["name"]->stringVal);
+
+	if ((*entry)["author"])
+		this->author = (*entry)["author"]->stringVal;
 	
 	if ((*entry)["fileext"])
 		this->ext = (*entry)["fileext"]->stringVal;
-	
-//if ((*entry)["sheet"] && (*(*entry)["sheet"])["props"])
-	//	this->sheetEntry = (*entry)["sheet"];
+
 	if ((*entry)["type"])
 		this->pluginType = (*entry)["type"]->intVal;
 	
-if ((*entry)["sheet"]){
+	if ((*entry)["sheet"]){
 		ObjectEntry* sheetEntry = (*entry)["sheet"];
 		if ((*sheetEntry)["props"]){
 			ObjectEntry* propsEntry = (*sheetEntry)["props"];
@@ -127,20 +127,22 @@ Prop::Prop(ObjectEntry *entry) {
 Prop::~Prop(){}
 
 Prop* Prop::loadPropFromEntry(ObjectEntry* entry){
-if (!entry->readInt("type", &this->type))
+	if (!entry->readInt("type", &this->type))
 		return NULL;
+
 	if (!(*entry)["name"])
 		return NULL;
 	this->name = (*entry)["name"]->stringVal;
 
-
-if (type == Prop::PROP_COMBO){		for (int i = 0; i < entry->children.size(); i++) {
+	if (type == Prop::PROP_COMBO || type == Prop::PROP_SLIDER){
+		for (int i = 0; i < entry->children.size(); i++) {
 			if (entry->children[i]->name == "prop") {
 				Prop* newProp = new Prop((*entry->children[i])["name"]->stringVal, Prop::PROP_COMBO);
 				newProp->value = (*entry->children[i])["value"]->intVal;
 				children.push_back(newProp);
 			}
 		}
+
+		return this;
 	}
-	return this;
 }

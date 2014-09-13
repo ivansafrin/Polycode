@@ -104,9 +104,13 @@ PluginEditorPane::PluginEditorPane(ResourcePool *resourcePool) : UIElement() {
 	PropSheet *baseProps = new PropSheet("PLUGIN SETTINGS", "");
 	propList->addPropSheet(baseProps);
 
-	nameProp = new StringProp("Name");
+	nameProp = new StringProp("Name:");
 	baseProps->addProp(nameProp);
 	nameProp->addEventListener(this, Event::CHANGE_EVENT);
+
+	author = new StringProp("Author:");
+	baseProps->addProp(author);
+	author->addEventListener(this, Event::CHANGE_EVENT);
 
 	addPropButton = new ButtonProp("New Prop");
 	baseProps->addProp(addPropButton);
@@ -132,6 +136,11 @@ void PluginEditorPane::handleEvent(Event *event) {
 			dispatchEvent(new Event(), Event::CHANGE_EVENT);
 		}
 
+		if (event->getDispatcher() == author) {
+			currentPlugin->author = author->get();
+			dispatchEvent(new Event(), Event::CHANGE_EVENT);
+		}
+
 		int maxPadding = 0;
 		for (int p = 0; p < propsSheet->props.size(); p++){
 			if (event->getEventCode() == Event::CHANGE_EVENT && event->getDispatcher() == propsSheet->props[p]) {
@@ -144,6 +153,14 @@ void PluginEditorPane::handleEvent(Event *event) {
 						newProp->value = (int)((PropEditProp*)propsSheet->props[p])->comboEditProp->currentCombo->comboEntry->getItemAtIndex(c)->data;
 						currentPlugin->getProps()[p]->children.push_back(newProp);
 					}
+				} else if (currentPlugin->getProps()[p]->type == Prop::PROP_SLIDER){
+					currentPlugin->getProps()[p]->children.clear();
+					Prop* newProp = new Prop("min", Prop::PROP_SLIDER);
+					newProp->value = ((PropEditProp*)propsSheet->props[p])->sliderEditProp->currentSlider->slider->getStart();
+					currentPlugin->getProps()[p]->children.push_back(newProp);
+					newProp = new Prop("max", Prop::PROP_SLIDER);
+					newProp->value = ((PropEditProp*)propsSheet->props[p])->sliderEditProp->currentSlider->slider->getEnd();
+					currentPlugin->getProps()[p]->children.push_back(newProp);
 				}
 				dispatchEvent(new Event(), Event::CHANGE_EVENT);
 			}
@@ -155,7 +172,7 @@ void PluginEditorPane::handleEvent(Event *event) {
 			if (event->getEventCode() == Event::REMOVE_EVENT && event->getDispatcher() == propsSheet->props[p]){
 				currentPlugin->removeProp(propsSheet->props[p]->getPropName());
 				propsSheet->removeProp(propsSheet->props[p]);
-				dispatchEvent(new Event(), Event::REMOVE_EVENT);
+				dispatchEvent(new Event(), Event::CHANGE_EVENT);
 			}
 		}
 
@@ -170,7 +187,8 @@ void PluginEditorPane::handleEvent(Event *event) {
 		if (event->getDispatcher() == addPropButton->getButton()) {
 			PropEditProp *newProp = new PropEditProp(new PropProp("", 0));
 			propsSheet->addProp(newProp);
-			currentPlugin->setProp(new Prop("", 0));			newProp->addEventListener(this, Event::CHANGE_EVENT);
+			currentPlugin->setProp(new Prop("", 0));
+			newProp->addEventListener(this, Event::CHANGE_EVENT);
 			newProp->addEventListener(this, Event::REMOVE_EVENT);
 			newProp->propContents->setPositionX(padding);
 			dispatchEvent(new Event(), Event::CHANGE_EVENT);
@@ -191,18 +209,32 @@ void PluginEditorPane::setPlugin(Plugin *plugin) {
 	currentPlugin = plugin;
 
 	nameProp->set(plugin->getResourceName());
-	
+	author->set(plugin->author);
+
 	for (int p = 0; p < plugin->getProps().size(); p++) {
 		Prop* propEntry = plugin->getProps()[p];
-		if (propEntry->type != PropProp::PROP_COMBO){
-			setProp(propEntry->name, new PropProp(propEntry->name, propEntry->type));
-		} else {
+		if (propEntry->type == PropProp::PROP_COMBO){
 			ComboProp *newComboProp = new ComboProp(propEntry->name);
 			for (int c = 0; c < propEntry->children.size(); c++){
 				Prop *comboEntry = propEntry->children[c];
 				newComboProp->comboEntry->addComboItem(comboEntry->name, (void*)comboEntry->value);
 			}
 			setProp(newComboProp->getPropName(), newComboProp);
+		} else if (propEntry->type == PropProp::PROP_SLIDER) {
+			SliderProp *newSliderProp = new SliderProp(propEntry->name, 0, 0);
+			Number min, max;
+			for (int s = 0; s < propEntry->children.size(); s++){
+				Prop *sliderEntry = propEntry->children[s];
+				if (sliderEntry->name == "min"){
+					min = sliderEntry->value;
+				} else if (sliderEntry->name == "max"){
+					max = sliderEntry->value;
+				}
+			}
+			newSliderProp->slider->setStartEnd(min, max);
+			setProp(newSliderProp->getPropName(), newSliderProp);
+		} else {
+			setProp(propEntry->name, new PropProp(propEntry->name, propEntry->type));
 		}
 	}
 	
@@ -245,6 +277,14 @@ void PluginEditorPane::setProp(const String& name, PropProp* prop){
 					newProp->value = (int)((ComboProp*)prop)->comboEntry->getItemAtIndex(c)->data;
 					currentPlugin->getProps()[i]->children.push_back(newProp);
 				}
+			} else if (currentPlugin->getProps()[i]->type == Prop::PROP_SLIDER){
+				currentPlugin->getProps()[i]->children.clear();
+				Prop* newProp = new Prop("min", Prop::PROP_SLIDER);
+				newProp->value = ((SliderProp*)prop)->slider->getStart();
+				currentPlugin->getProps()[i]->children.push_back(newProp);
+				newProp = new Prop("max", Prop::PROP_SLIDER);
+				newProp->value = ((SliderProp*)prop)->slider->getEnd();
+				currentPlugin->getProps()[i]->children.push_back(newProp);
 			}
 			return;
 		}
@@ -263,6 +303,13 @@ void PluginEditorPane::setProp(const String& name, PropProp* prop){
 			comboProp->value = (int)((ComboProp*)prop)->comboEntry->getItemAtIndex(c)->data;
 			pProp->children.push_back(comboProp);
 		}
+	} else if (prop->propType == Prop::PROP_SLIDER){
+		Prop* sliderProp = new Prop("min", Prop::PROP_SLIDER);
+		sliderProp->value = ((SliderProp*)prop)->slider->getStart();
+		pProp->children.push_back(sliderProp);
+		sliderProp = new Prop("max", Prop::PROP_SLIDER);
+		sliderProp->value = ((SliderProp*)prop)->slider->getEnd();
+		pProp->children.push_back(sliderProp);
 	}
 	currentPlugin->setProp(pProp);
 }
@@ -355,11 +402,11 @@ void PolycodePluginEditor::saveFile() {
 
 void PolycodePluginEditor::savePluginToObjectEntry(Plugin* plugin, ObjectEntry* entry) {
 	entry->addChild("name", plugin->getResourceName());
+	entry->addChild("author", plugin->author);
 	entry->addChild("fileext", plugin->ext);
 	entry->addChild("type", (int)plugin->pluginType);
 	
 	ObjectEntry* sheetEntry = entry->addChild("sheet");
-	//sheetEntry->addChild("name", plugin->getSheetName());
 	ObjectEntry* propsEntry = sheetEntry->addChild("props");
 	std::vector<Prop*> props = plugin->getProps();
 	for (int i = 0; i < props.size(); i++) {
@@ -371,6 +418,18 @@ void PolycodePluginEditor::savePluginToObjectEntry(Plugin* plugin, ObjectEntry* 
 				ObjectEntry *comboEntry = propEntry->addChild("prop");
 				comboEntry->addChild("name", props[i]->children[c]->name);
 				comboEntry->addChild("value", props[i]->children[c]->value);
+			}
+		} else if (props[i]->type == PropProp::PROP_SLIDER){
+			for (int s = 0; s < props[i]->children.size(); s++){
+				if (props[i]->children[s]->name == "min"){
+					ObjectEntry* min = propEntry->addChild("prop");
+					min->addChild("name", props[i]->children[s]->name);
+					min->addChild("value", props[i]->children[s]->value);
+				} else if (props[i]->children[s]->name == "max"){
+					ObjectEntry* max = propEntry->addChild("prop");
+					max->addChild("name", props[i]->children[s]->name);
+					max->addChild("value", props[i]->children[s]->value);
+				}
 			}
 		}
 	}

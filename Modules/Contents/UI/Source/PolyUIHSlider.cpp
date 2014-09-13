@@ -102,6 +102,19 @@ void UIHSlider::setSliderValue(Number val) {
 	}
 }
 
+void UIHSlider::setStartEnd(Number start, Number end){
+	startValue = start;
+	endValue = end;
+}
+
+Number UIHSlider::getStart(){
+	return startValue;
+}
+
+Number UIHSlider::getEnd(){
+	return endValue;
+}
+
 bool UIHSlider::isContinuous() {
 	return continuous;
 }

@@ -46,7 +46,11 @@ namespace Polycode {
 			void setContinuous(bool _continuous);
 			
 			void setSliderValue(Number val);
-			Number getSliderValue();			
+			Number getSliderValue();
+
+			void setStartEnd(Number start, Number end);
+			Number getStart();
+			Number getEnd();
 			
 		private:
 		

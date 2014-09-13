@@ -36,14 +36,13 @@ namespace Polycode {
 
 		Prop *loadPropFromEntry(ObjectEntry* entry);
 		
-
 		int type;
 		String name;
 		int value;
 
 		std::vector<Prop*> children;
 
-static const int PROP_VECTOR3 = 0;
+		static const int PROP_VECTOR3 = 0;
 		static const int PROP_VECTOR2 = 1;
 		static const int PROP_SLIDER = 2;
 		static const int PROP_BUTTON = 3;
@@ -88,7 +87,7 @@ static const int PROP_VECTOR3 = 0;
 			static const unsigned int PLUGIN_ENTITY = 0;
 
 			String ext;
-			//ObjectEntry *sheetEntry;
+			String author;
 
 		protected:
 			std::vector<Prop*> props;

@@ -715,22 +715,17 @@ void LayerProp::setPropWidth(Number width) {
 }
 
 CustomProp::CustomProp(String key, String value) : PropProp("", PropProp::PROP_CUSTOM) {
-	keyEntry = new UITextInput(false, 120, 12);
+	keyEntry = new UITextInput(false, 130, 12);
 	keyEntry->setText(key);
 	keyEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
 	propContents->addChild(keyEntry);
-	keyEntry->setPosition(-90, 0);
+	keyEntry->setPosition(-110, 0);
 
-	valueEntry = new UITextInput(false, 120, 12);
+	valueEntry = new UITextInput(false, 140, 12);
 	valueEntry->setText(value);	
 	valueEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
 	propContents->addChild(valueEntry);
-	valueEntry->setPosition(45, 0);
-	
-	removeButton = new UIImageButton("main/remove_icon.png", 1.0, 12, 12);
-	removeButton->addEventListener(this, UIEvent::CLICK_EVENT);	
-	propContents->addChild(removeButton);
-	removeButton->setPosition(-110, 6);
+	valueEntry->setPosition(55, 0);
 	
 	setHeight(25);
 
@@ -746,7 +741,6 @@ void CustomProp::setPropWidth(Number width) {
 CustomProp::~CustomProp() {
 	keyEntry->removeAllHandlersForListener(this);
 	valueEntry->removeAllHandlersForListener(this);
-	removeButton->removeAllHandlersForListener(this);
 }
 
 void CustomProp::handleEvent(Event *event) {
@@ -757,9 +751,6 @@ void CustomProp::handleEvent(Event *event) {
 			dispatchEvent(new Event(), Event::CHANGE_EVENT);		
 		}	
 	
-		if(event->getDispatcher() == removeButton) {
-			dispatchEvent(new Event(), Event::CANCEL_EVENT);
-		}
 	}
 }
 
@@ -1947,6 +1938,19 @@ PropEditProp::PropEditProp(PropProp *newProp) : PropProp(newProp->getPropName(),
 	comboEditProp->addEventListener(this, Event::CHANGE_EVENT);
 	propContents->addChild(comboEditProp);
 	comboEditProp->setPosition(-80, 60);
+
+	if (currentValue != PropProp::PROP_SLIDER){
+		sliderEditProp = new SliderEditProp(new SliderProp(nameInput->getText(), 0, 0));
+		sliderEditProp->enabled = false;
+		sliderEditProp->visible = false;
+		setHeight(65);
+	} else {
+		sliderEditProp = new SliderEditProp(((SliderProp*)newProp));
+		setHeight(65 + sliderEditProp->getHeight());
+	}
+	sliderEditProp->addEventListener(this, Event::CHANGE_EVENT);
+	propContents->addChild(sliderEditProp);
+	sliderEditProp->setPosition(-80, 60);
 }
 
 PropEditProp::~PropEditProp(){}
@@ -1960,14 +1964,26 @@ void PropEditProp::handleEvent(Event *event){
 				dispatchEvent(new Event(), Event::CHANGE_EVENT);
 				dispatchEvent(new PropEvent(this, NULL, PropDataInt(lastValue), PropDataInt(currentValue)), PropEvent::EVENT_PROP_CHANGE);
 			}
+			setHeight(80);
 			if (currentValue == PropProp::PROP_COMBO){
 				comboEditProp->setPropName(nameInput->getText());
 				comboEditProp->set(comboEditProp->currentCombo);
 				comboEditProp->enabled = true;
 				comboEditProp->visible = true;
-			} else if (lastValue == PropProp::PROP_COMBO && currentValue != PropProp::PROP_COMBO){
+				setHeight(80 + comboEditProp->getHeight());
+			} else if (lastValue == PropProp::PROP_COMBO){
 				comboEditProp->enabled = false;
 				comboEditProp->visible = false;
+			}
+			if (currentValue == PropProp::PROP_SLIDER){
+				sliderEditProp->setPropName(nameInput->getText());
+				sliderEditProp->set(sliderEditProp->currentSlider);
+				sliderEditProp->enabled = true;
+				sliderEditProp->visible = true;
+				setHeight(80 + sliderEditProp->getHeight());
+			} else if (lastValue == PropProp::PROP_SLIDER){
+				sliderEditProp->enabled = false;
+				sliderEditProp->visible = false;
 			}
 		}
 	}
@@ -1990,6 +2006,16 @@ void PropEditProp::handleEvent(Event *event){
 			}
 		}
 	}
+
+	if (event->getDispatcher() == sliderEditProp){
+		if (event->getEventCode() == Event::CHANGE_EVENT) {
+			setHeight(80 + sliderEditProp->getHeight());
+			if (!suppressChangeEvent) {
+				dispatchEvent(new Event(), Event::CHANGE_EVENT);
+			}
+		}
+	}
+
 	if (event->getDispatcher() == delButton) {
 		dispatchEvent(new Event(), Event::REMOVE_EVENT);
 	}
@@ -1999,10 +2025,19 @@ void PropEditProp::set(PropProp *newProp){
 	currentProp = newProp;
 	nameInput->setText(newProp->getPropName());
 	typeChooser->setSelectedIndex(newProp->propType);
+	setHeight(80);
 	if (newProp->propType != PropProp::PROP_COMBO){
 		comboEditProp->set(new ComboProp(nameInput->getText()));
 	} else {
 		comboEditProp->set(((ComboProp*)newProp));
+		setHeight(80 + comboEditProp->getHeight());
+	}
+
+	if (newProp->propType != PropProp::PROP_SLIDER){
+		sliderEditProp->set(new SliderProp(nameInput->getText(), 0, 0));
+	} else {
+		sliderEditProp->set((SliderProp*)newProp);
+		setHeight(80 + sliderEditProp->getHeight());
 	}
 }
 
@@ -2090,8 +2125,6 @@ void ComboPropEditProp::handleEvent(Event *event){
 		}
 
 		if (items[i] == event->getDispatcher()) {
-			//items[i]->enabled = false;
-			//items[i]->visible = false;
 			propContents->removeChild(items[i]);
 			items[i]->removeAllHandlersForListener(this);
 			
@@ -2132,7 +2165,7 @@ void ComboPropEditProp::set(ComboProp *newCombo){
 		items.push_back(newProp);
 
 		StringProp *newDataProp = new StringProp("Data:");
-		newDataProp->set(((int)currentCombo->comboEntry->getItemAtIndex(c)->data));
+		newDataProp->set(String::IntToString((int)currentCombo->comboEntry->getItemAtIndex(c)->data));
 		newDataProp->stringEntry->setPosition(-70, 0);
 		newDataProp->stringEntry->Resize(40, newDataProp->stringEntry->getHeight());
 		newDataProp->stringEntry->setNumberOnly(true);
@@ -2146,6 +2179,52 @@ void ComboPropEditProp::set(ComboProp *newCombo){
 
 ComboProp *ComboPropEditProp::get(){
 	return currentCombo;
+}
+
+SliderEditProp::SliderEditProp(SliderProp* newSlider) : PropProp("", PropProp::PROP_COMBO_EDIT){
+	minProp = new StringProp("Min:");
+	minProp->stringEntry->setNumberOnly(true);
+	minProp->set(String::NumberToString(newSlider->slider->getStart(), 1));
+	minProp->addEventListener(this, Event::CHANGE_EVENT);
+	propContents->addChild(minProp);
+	minProp->setPosition(10, 0);
+
+	maxProp = new StringProp("Max:");
+	maxProp->stringEntry->setNumberOnly(true);
+	maxProp->set(String::NumberToString(newSlider->slider->getEnd(), 1));
+	maxProp->addEventListener(this, Event::CHANGE_EVENT);
+	propContents->addChild(maxProp);
+	maxProp->setPosition(10, 30);
+
+	label->enabled = false;
+	label->visible = false;
+
+	currentSlider = newSlider;
+
+	setWidth(100);
+	setHeight(60);
+}
+
+SliderEditProp::~SliderEditProp(){}
+
+void SliderEditProp::handleEvent(Event *event){
+	if (event->getDispatcher() == minProp || event->getDispatcher() == maxProp){
+		lastSlider = currentSlider;
+		currentSlider->slider->setStartEnd(minProp->get().toNumber(), maxProp->get().toNumber());
+		dispatchEvent(new Event, Event::CHANGE_EVENT);
+	}
+}
+
+void SliderEditProp::set(SliderProp *newSlider){
+	lastSlider = currentSlider;
+	currentSlider = newSlider;
+
+	minProp->set(String::NumberToString(currentSlider->slider->getStart(), 1));
+	maxProp->set(String::NumberToString(currentSlider->slider->getEnd(), 1));
+}
+
+SliderProp *SliderEditProp::get(){
+	return currentSlider;
 }
 
 ShaderPassesSheet::ShaderPassesSheet(ResourcePool *resourcePool) : PropSheet("SHADER PASSES", "shaderPasses") {
@@ -2425,9 +2504,7 @@ EntityPropSheet::EntityPropSheet(Plugin* plugin) : PropSheet(plugin->getResource
 	lastNumProps = 0;
 	removeIndex = -1;
 	enabled = false;
-
-
-
+	
 	refreshProps();}
 
 void EntityPropSheet::applyPropActionData(PolycodeEditorPropActionData *data) {
@@ -2456,21 +2533,8 @@ void EntityPropSheet::handleEvent(Event *event) {
 				case Event::CHANGE_EVENT:
 					PolycodeEditorPropActionData *beforeData = PropDataEntity(entity);
 					if(i <= entity->entityProps.size()) {
-						
-						//std::vector<EntityProp*> propsVector;
-						EntityProp* prop;
-
 						switch (props[i]->propType) {
 						case PropProp::PROP_VECTOR3:
-							//prop = new EntityProp(plugin + props[i]->getPropName() + "x", Prop::PROP_NUMBER);
-							//prop->numberVal = ((Vector3Prop*)props[i])->get().x;
-							////propsVector.push_back(prop);
-							//prop = new EntityProp(plugin + props[i]->getPropName() + "y", Prop::PROP_NUMBER);
-							//prop->numberVal = ((Vector3Prop*)props[i])->get().y;
-							////propsVector.push_back(prop);
-							//prop = new EntityProp(plugin + props[i]->getPropName() + "z", Prop::PROP_NUMBER);
-							//prop->numberVal = ((Vector3Prop*)props[i])->get().z;
-							//propsVector.push_back(prop);
 							entity->setEntityProp(plugin + props[i]->getPropName() + "x", ((Vector3Prop*)props[i])->get().x);
 							entity->setEntityProp(plugin + props[i]->getPropName() + "y", ((Vector3Prop*)props[i])->get().y);
 							entity->setEntityProp(plugin + props[i]->getPropName() + "z", ((Vector3Prop*)props[i])->get().z);
@@ -2594,7 +2658,15 @@ void EntityPropSheet::refreshProps() {
 			dynamic_cast<Vector2Prop*>(prop)->set(Vector2(entity->getEntityPropNumberByName(plugin + caption + "x"), entity->getEntityPropNumberByName(plugin + caption + "y")));
 			break;
 		case PropProp::PROP_SLIDER:
-			prop = new SliderProp(caption, entity->getEntityPropNumberByName(plugin + caption + "min"), entity->getEntityPropNumberByName(plugin + caption + "max"));
+			Number min, max;
+			for (int s = 0; s < propEntry->children.size(); s++){
+				if (propEntry->children[s]->name == "min"){
+					min = propEntry->children[s]->value;
+				} else if (propEntry->children[s]->name == "max"){
+					max = propEntry->children[s]->value;
+				}
+			}
+			prop = new SliderProp(caption, min, max);
 			dynamic_cast<SliderProp*>(prop)->set(entity->getEntityPropNumberByName(plugin + caption));
 			break;
 			//case PropProp::PROP_BUTTON:

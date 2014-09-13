@@ -77,6 +77,7 @@ class PropProp : public UIElement {
 		static const int PROP_SCENE_ENTITY_INSTANCE = 22;
 		static const int PROP_EDIT = 23;
 		static const int PROP_COMBO_EDIT = 24;
+		static const int PROP_SLIDER_EDIT = 25;
 };
 
 class Vector3Prop : public PropProp {
@@ -284,7 +285,7 @@ class CustomProp : public PropProp {
 				
 		UITextInput *keyEntry;
 		UITextInput *valueEntry;
-		UIImageButton *removeButton;
+		//UIImageButton *removeButton;
 };
 
 class StringProp : public PropProp {
@@ -495,6 +496,22 @@ class SceneEntityInstanceProp : public PropProp {
 		
 };
 
+class SliderEditProp : public PropProp {
+public:
+	SliderEditProp(SliderProp* newSlider);
+	~SliderEditProp();
+	void handleEvent(Event *event);
+
+	void set(SliderProp *newCombo);
+	SliderProp *get();
+
+	StringProp *minProp;
+	StringProp *maxProp;
+
+	SliderProp *lastSlider;
+	SliderProp *currentSlider;
+};
+
 class ComboPropEditProp : public PropProp {
 public:
 	ComboPropEditProp(ComboProp* newCombo);
@@ -532,6 +549,7 @@ public:
 
 	PropProp *currentProp;
 	ComboPropEditProp *comboEditProp;
+	SliderEditProp *sliderEditProp;
 
 	UITextInput *nameInput;
 	UIComboBox *typeChooser;
