@@ -2222,26 +2222,6 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
 
     }
     
-    if(dynamic_cast<SceneSprite*>(entity)) {
-        
-        if(!(*(entry))["type"])
-            entry->addChild("type", "SceneSprite");
-        SceneSprite *sprite = (SceneSprite*) entity;
-        
-        ObjectEntry *spriteEntry = entry->addChild("SceneSprite");
-        
-        spriteEntry->addChild("sprite_set", sprite->getSpriteSet()->getName());
-        spriteEntry->addChild("sprite", sprite->getCurrentSprite()->getName());
-        spriteEntry->addChild("random_frame", sprite->getStartOnRandomFrame());
-        
-        String animName = "";
-        if(sprite->getCurrentSpriteState()) {
-            animName = sprite->getCurrentSpriteState()->getName();
-        }
-        spriteEntry->addChild("state", animName);
-        
-    }
-    
     if(dynamic_cast<SceneCurve*>(entity)) {
         SceneCurve *curve = (SceneCurve*) entity;
         
