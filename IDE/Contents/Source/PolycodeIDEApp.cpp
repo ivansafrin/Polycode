@@ -187,6 +187,7 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	fileEntry->addItem("New File", "new_file", KEY_n);
 	fileEntry->addItem("New Project", "new_project", KEY_LSHIFT, KEY_n);
 	fileEntry->addItem("New Folder", "new_folder", KEY_LSHIFT, KEY_f);
+	fileEntry->addItem("Open File", "open_file", KEY_o);
 	fileEntry->addItem("Open Project", "open_project", KEY_LSHIFT, KEY_o);
 	fileEntry->addItem("Close Project", "close_project", KEY_LSHIFT, KEY_w);
 	fileEntry->addItem("Close File", "close_file", KEY_w);
@@ -781,7 +782,9 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 			newProject();
 		} else if(action == "new_folder") {
 			newGroup();
-		} else if(action == "open_project") {
+		} else if (action == "open_file") {
+			openFilePicker();
+		} else if (action == "open_project") {
 			openProject();
 		} else if(action == "close_project") {
 			closeProject();
