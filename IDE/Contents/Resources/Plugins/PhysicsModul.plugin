@@ -1,0 +1,45 @@
+<?xml version="1.0" ?>
+<plugins version="1">
+    <plugin name="Physics3D" author="fodinabor" polystring:fileext="" type="0">
+        <sheet>
+            <props>
+                <prop type="13" name="Shape">
+                    <prop name="Box" value="0" />
+                    <prop name="Terrain" value="1" />
+                    <prop name="Sphere" value="2" />
+                    <prop name="Mesh" value="3" />
+                    <prop name="Char Controller" value="4" />
+                    <prop name="Capsule" value="5" />
+                    <prop name="Plane" value="6" />
+                    <prop name="Cone" value="7" />
+                    <prop name="Cylinder" value="8" />
+                </prop>
+                <prop type="4" name="Mass" />
+                <prop type="4" name="Friction" />
+                <prop type="4" name="Restitution" />
+                <prop type="14" name="Comp Children?" />
+            </props>
+        </sheet>
+    </plugin>
+    <plugin name="Physics2D" author="fodinabor" polystring:fileext="" type="0">
+        <sheet>
+            <props>
+                <prop type="13" name="Shape">
+                    <prop name="Rectangle" value="1" />
+                    <prop name="Circle" value="2" />
+                    <prop name="Mesh (ni)" value="3" />
+                    <prop name="Edge" value="4" />
+                    <prop name="Capsule" value="5" />
+                    <prop name="Triple Circle" value="6" />
+                </prop>
+                <prop type="14" name="Static?" />
+                <prop type="4" name="Friction" />
+                <prop type="4" name="Density" />
+                <prop type="4" name="Restitution" />
+                <prop type="14" name="Sensor?" />
+                <prop type="14" name="Fixed Rot?" />
+                <prop type="4" name="Group Index" />
+            </props>
+        </sheet>
+    </plugin>
+</plugins>
