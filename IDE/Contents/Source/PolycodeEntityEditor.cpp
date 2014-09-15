@@ -1328,8 +1328,8 @@ void EntityEditorMainView::deleteSelected(bool doAction) {
         selectedEntities[i]->setOwnsChildrenRecursive(true);
         for(int j=0; j < icons.size(); j++) {
             if(icons[j]->getUserData() == selectedEntities[i]) {
-                delete icons[j];
                 icons[j]->getParentEntity()->removeChild(icons[j]);
+				delete icons[j];
                 icons.erase(icons.begin()+j);
                 break;
             }
