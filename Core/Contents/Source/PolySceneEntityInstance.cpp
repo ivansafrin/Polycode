@@ -437,6 +437,7 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
                 if(fileName) {
                     SceneMesh *newMesh = new SceneMesh(fileName->stringVal);
                     applySceneMesh(meshEntry, newMesh);
+                    newMesh->cacheToVertexBuffer(true);
                     entity = newMesh;
                 }
             }

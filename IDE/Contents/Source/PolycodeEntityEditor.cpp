@@ -934,12 +934,13 @@ void EntityEditorMainView::Update() {
     }
     
     if(entitiesToSelect.size() != 0) {
+        
         sort (entitiesToSelect.begin(), entitiesToSelect.end(), distanceSorter);
         
         if(multiselectIndex > entitiesToSelect.size()-1 || selectingNewEntities()) {
             multiselectIndex = 0;
         }
-
+        
         // force dummy to always select
         for(int i=0; i < entitiesToSelect.size(); i++) {
             if(entitiesToSelect[i].entity == dummyEntity) {
@@ -993,7 +994,7 @@ void EntityEditorMainView::createIcon(Entity *entity, String iconFile) {
     
     entity->removeAllHandlersForListener(this);
     
-    ScenePrimitive *iconPrimitive = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 0.4, 0.4);
+    ScenePrimitive *iconPrimitive = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 0.3, 0.3);
     
     iconPrimitive->setMaterialByName("Unlit");
 	Texture *tex = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile("entityEditor/"+iconFile);
@@ -2219,26 +2220,6 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
         }
         spriteEntry->addChild("state", animName);
 
-    }
-    
-    if(dynamic_cast<SceneSprite*>(entity)) {
-        
-        if(!(*(entry))["type"])
-            entry->addChild("type", "SceneSprite");
-        SceneSprite *sprite = (SceneSprite*) entity;
-        
-        ObjectEntry *spriteEntry = entry->addChild("SceneSprite");
-        
-        spriteEntry->addChild("sprite_set", sprite->getSpriteSet()->getName());
-        spriteEntry->addChild("sprite", sprite->getCurrentSprite()->getName());
-        spriteEntry->addChild("random_frame", sprite->getStartOnRandomFrame());
-        
-        String animName = "";
-        if(sprite->getCurrentSpriteState()) {
-            animName = sprite->getCurrentSpriteState()->getName();
-        }
-        spriteEntry->addChild("state", animName);
-        
     }
     
     if(dynamic_cast<SceneCurve*>(entity)) {

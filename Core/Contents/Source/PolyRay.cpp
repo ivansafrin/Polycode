@@ -133,7 +133,9 @@ Number Ray::boxIntersect(const Vector3 &box, const Matrix4 &transformMatrix, flo
 		tmax = tzmax;
 		
 	if( (tmin < far) && (tmax > near) ) {
-        return fabs(tmin);
+        Vector3 hitpoint = r.origin + (r.direction * fabs(tmin));
+        hitpoint = transformMatrix * hitpoint;
+        return origin.distance(hitpoint);
     } else {
         return -1.0;
     }
