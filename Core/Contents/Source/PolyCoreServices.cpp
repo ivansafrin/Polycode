@@ -35,6 +35,7 @@
 #include "PolyTimerManager.h"
 #include "PolyTweenManager.h"
 #include "PolySoundManager.h"
+#include "PolyPluginManager.h"
 
 using namespace Polycode;
 
@@ -95,6 +96,10 @@ FontManager *CoreServices::getFontManager() {
 	return fontManager;
 }
 
+PluginManager *CoreServices::getPluginManager(){
+	return pluginManager;
+}
+
 Config *CoreServices::getConfig() {
 	return config;
 }
@@ -131,6 +136,7 @@ CoreServices::CoreServices() : EventDispatcher() {
 	tweenManager = new TweenManager();
 	soundManager = new SoundManager();
 	fontManager = new FontManager();
+	pluginManager = new PluginManager();
 }
 
 CoreServices::~CoreServices() {

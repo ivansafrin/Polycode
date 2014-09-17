@@ -114,6 +114,9 @@
     <ClCompile Include="..\WindowsShared\PolycodeWinIDEView.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Contents\Source\PolycodePluginEditor.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Contents\Include\ExampleBrowserWindow.h">
@@ -220,6 +223,9 @@
       <Filter>Include</Filter>
     </ClInclude>
     <ClInclude Include="..\WindowsShared\PolycodeWinIDEView.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Contents\Include\PolycodePluginEditor.h">
       <Filter>Include</Filter>
     </ClInclude>
   </ItemGroup>

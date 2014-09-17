@@ -23,6 +23,7 @@
 #include "PolyRenderer.h"
 #include "PolyCoreServices.h"
 #include "PolyInputEvent.h"
+#include "PolyResourceManager.h"
 
 using namespace Polycode;
 
@@ -804,28 +805,121 @@ void Entity::rebuildRotation() {
 	rotationQuat.fromAxes(rotation.x, rotation.y, rotation.z);
 }
 
-void Entity::setEntityProp(const String& propName, const String& propValue) {
+void Entity::setEntityProp(const String& propName, const String& propVal) {
 
-	for(int i=0; i < entityProps.size(); i++) {
-		if(entityProps[i].propName == propName) {
-			entityProps[i].propValue = propValue;
+	for (int i = 0; i < entityProps.size(); i++) {
+		if (entityProps[i]->name == propName) {
+			entityProps[i]->stringVal = propVal;
+			entityProps[i]->type = EntityProp::PROP_STRING;
 			return;
 		}
-	}		
+	}
 
-	EntityProp entityProp;
-	entityProp.propName = propName;
-	entityProp.propValue = propValue;
+
+	EntityProp* entityProp = new EntityProp(propName, EntityProp::PROP_STRING);
+	entityProp->stringVal = propVal;
 	entityProps.push_back(entityProp);
 }
 
-String Entity::getEntityProp(const String& propName) {
-	for(int i=0; i < entityProps.size(); i++) {
-		if(entityProps[i].propName == propName) {
-			return entityProps[i].propValue;
+void Entity::setEntityProp(const String& propName, const int& propVal) {
+
+	for (int i = 0; i < entityProps.size(); i++) {
+		if (entityProps[i]->name == propName) {
+			entityProps[i]->intVal = propVal;
+			entityProps[i]->type = EntityProp::PROP_INT;
+			return;
 		}
 	}
-	return "null";
+
+	EntityProp* entityProp = new EntityProp(propName, EntityProp::PROP_INT);
+	entityProp->intVal = propVal;
+	entityProps.push_back(entityProp);
+}
+
+void Entity::setEntityProp(const String& propName, const Number& propVal) {
+
+	for (int i = 0; i < entityProps.size(); i++) {
+		if (entityProps[i]->name == propName) {
+			entityProps[i]->numberVal = propVal;
+			entityProps[i]->type = EntityProp::PROP_NUMBER;
+			return;
+		}
+	}
+
+	EntityProp* entityProp = new EntityProp(propName, EntityProp::PROP_NUMBER);
+	entityProp->numberVal = propVal;
+	entityProps.push_back(entityProp);
+}
+
+void Entity::setEntityProp(const String& propName, const bool& propVal) {
+
+	for (int i = 0; i < entityProps.size(); i++) {
+		if (entityProps[i]->name == propName) {
+			entityProps[i]->boolVal = propVal;
+			entityProps[i]->type = EntityProp::PROP_BOOL;
+			return;
+		}
+	}
+
+	EntityProp* entityProp = new EntityProp(propName, EntityProp::PROP_BOOL);
+	entityProp->boolVal = propVal;
+	entityProps.push_back(entityProp);
+}
+
+void Entity::setEntityProp(EntityProp* prop){
+	for (int i = 0; i < entityProps.size(); i++) {
+		if (entityProps[i] == prop) {
+			entityProps[i] = prop;
+			return;
+		}
+	}
+
+	entityProps.push_back(prop);
+}
+
+int	Entity::getEntityPropIntByName(const String& propName) const {
+	for (int i = 0; i < entityProps.size(); i++) {
+		if (entityProps[i]->name == propName && entityProps[i]->type == EntityProp::PROP_INT) {
+			return entityProps[i]->intVal;
+		}
+	}
+	return false;
+}
+
+Number Entity::getEntityPropNumberByName(const String& propName) const {
+	for (int i = 0; i < entityProps.size(); i++) {
+		if (entityProps[i]->name == propName && entityProps[i]->type == EntityProp::PROP_NUMBER) {
+			return entityProps[i]->numberVal;
+		}
+	}
+	return Number(NULL);
+}
+
+bool Entity::getEntityPropBoolByName(const String& propName) const {
+	for (int i = 0; i < entityProps.size(); i++) {
+		if (entityProps[i]->name == propName && entityProps[i]->type == EntityProp::PROP_BOOL) {
+			return entityProps[i]->boolVal;
+		}
+	}
+	return -1;
+}
+
+String Entity::getEntityPropStringByName(const String& propName) const {
+	for (int i = 0; i < entityProps.size(); i++) {
+		if (entityProps[i]->name == propName && entityProps[i]->type == EntityProp::PROP_STRING) {
+			return entityProps[i]->stringVal;
+		}
+	}
+	return String("null");
+}
+
+bool Entity::isRequiredPlugin(const String& pluginName) const {
+	for (int i = 0; i < requiredPlugins.size(); i++) {
+		if (requiredPlugins[i]->getResourceName() == pluginName){
+			return true;
+		}
+	}
+	return false;
 }
 
 Vector3 Entity::getCombinedPosition() const {
@@ -1249,4 +1343,40 @@ MouseEventResult Entity::onMouseWheelDown(const Ray &ray, int timestamp) {
 		}
 	}
 	return ret;
+}
+
+EntityProp::EntityProp(const String& name, const unsigned int& type) {
+	this->name = name;
+	this->type = type;
+}
+
+void Entity::addPluginByName(const String& pluginName, ResourcePool *resourcePool) {
+	Plugin *plugin;
+	
+	if (resourcePool) {
+		plugin = (Plugin*)resourcePool->getResource(Resource::RESOURCE_PLUGIN, pluginName);
+	} else {
+		plugin = (Plugin*)Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_PLUGIN, pluginName);
+	}
+
+	if (plugin){
+
+		for (int i = 0; i < requiredPlugins.size(); i++) {
+			if (requiredPlugins[i]->getResourceName() == plugin->getResourceName()) {
+				requiredPlugins[i] = plugin;
+				return;
+			}
+		}
+
+		requiredPlugins.push_back(plugin);
+	}
+}
+
+void Entity::removePluginByName(const String& pluginName) {
+	for (int i = 0; i < requiredPlugins.size(); i++) {
+		if (requiredPlugins[i]->getResourceName() == pluginName) {
+			requiredPlugins.erase(requiredPlugins.begin() + i);
+			return;
+		}
+	}
 }

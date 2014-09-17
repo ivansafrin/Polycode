@@ -54,7 +54,10 @@ namespace Polycode {
 			
 			int addComboItem(String itemName);			
 			int addComboItem(String itemName, void *data);
-						
+			
+			void removeComboItem(const String& itemName);
+			void removeComboItemAtIndex(int index);
+
 			int getSelectedIndex();
 			UIComboBoxItem *getSelectedItem();
 			void setSelectedIndex(unsigned int newIndex, bool suppressChangeEvent = false);

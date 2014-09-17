@@ -38,6 +38,7 @@
     <ClCompile Include="..\..\Contents\Source\PolycodeImageEditor.cpp" />
     <ClCompile Include="..\..\Contents\Source\PolycodeMaterialEditor.cpp" />
     <ClCompile Include="..\..\Contents\Source\PolycodeMeshEditor.cpp" />
+    <ClCompile Include="..\..\Contents\Source\PolycodePluginEditor.cpp" />
     <ClCompile Include="..\..\Contents\Source\PolycodeProject.cpp" />
     <ClCompile Include="..\..\Contents\Source\PolycodeProjectBrowser.cpp" />
     <ClCompile Include="..\..\Contents\Source\PolycodeProjectEditor.cpp" />
@@ -76,6 +77,7 @@
     <ClInclude Include="..\..\Contents\Include\PolycodeImageEditor.h" />
     <ClInclude Include="..\..\Contents\Include\PolycodeMaterialEditor.h" />
     <ClInclude Include="..\..\Contents\Include\PolycodeMeshEditor.h" />
+    <ClInclude Include="..\..\Contents\Include\PolycodePluginEditor.h" />
     <ClInclude Include="..\..\Contents\Include\PolycodeProject.h" />
     <ClInclude Include="..\..\Contents\Include\PolycodeProjectBrowser.h" />
     <ClInclude Include="..\..\Contents\Include\PolycodeProjectEditor.h" />

@@ -106,6 +106,7 @@ namespace Polycode {
 			void parseShadersIntoPool(ResourcePool *pool, const String& dirPath, bool recursive);
 			void parseProgramsIntoPool(ResourcePool *pool, const String& dirPath, bool recursive);
 			void parseCubemapsIntoPool(ResourcePool *pool, const String& dirPath, bool recursive);
+			void parsePluginsIntoPool(ResourcePool *pool, const String& dirPath, bool recursive);
             void parseOtherIntoPool(ResourcePool *pool, const String& dirPath, bool recursive);
 		
             ResourcePool *getGlobalPool();

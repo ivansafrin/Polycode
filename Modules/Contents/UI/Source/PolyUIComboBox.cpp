@@ -140,6 +140,22 @@ int UIComboBox::addComboItem(String itemName) {
 	return addComboItem(itemName, NULL);
 }
 
+void UIComboBox::removeComboItem(const String& itemName){
+	for (int i = 0; i < items.size(); i++){
+		if (items[i]->label == itemName){
+			items.erase(items.begin() + i);
+			if (i == selectedIndex){
+				setSelectedIndex(0);
+			}
+			return;
+		}
+	}
+}
+
+void UIComboBox::removeComboItemAtIndex(int index){
+	items.erase(items.begin() + index);
+}
+
 UIComboBoxItem *UIComboBox::getSelectedItem() {
 	if(selectedIndex < items.size()) {
 		return items[selectedIndex];

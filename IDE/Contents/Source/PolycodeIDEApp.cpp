@@ -72,7 +72,8 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	CoreServices::getInstance()->getResourceManager()->addArchive("Physics3D.pak");
 	CoreServices::getInstance()->getResourceManager()->addArchive("UI.pak");
 
-	CoreServices::getInstance()->getResourceManager()->addDirResource("Materials");	
+	CoreServices::getInstance()->getResourceManager()->addDirResource("Materials");
+	CoreServices::getInstance()->getResourceManager()->addDirResource("Plugins");
 			
 	CoreServices::getInstance()->getFontManager()->registerFont("section", "Fonts/RobotoCondensed-Bold.ttf");
 
@@ -175,7 +176,8 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	editorManager->registerEditorFactory(new PolycodeSpriteEditorFactory());
 	editorManager->registerEditorFactory(new PolycodeMeshEditorFactory());
 	editorManager->registerEditorFactory(new PolycodeEntityEditorFactory());
-			
+	editorManager->registerEditorFactory(new PolycodePluginEditorFactory());
+
 	screen->addChild(globalMenu);	
 				
 	frame->console->applyTheme();

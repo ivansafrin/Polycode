@@ -83,6 +83,56 @@ CollisionEntity::CollisionEntity(Entity *entity, int type, bool compoundChildren
 //	}		
 }
 
+CollisionEntity::CollisionEntity(Entity *entity){
+	this->entity = entity;
+	shape = NULL;
+
+	this->type = entity->getEntityPropIntByName("Physics3DShape");
+	enabled = true;
+	lastPosition = entity->getPosition();
+
+
+	btMatrix3x3 basisA;
+	basisA.setIdentity();
+
+	collisionObject = new btCollisionObject();
+	collisionObject->getWorldTransform().setBasis(basisA);
+
+	if (entity->getEntityPropBoolByName("Physics3DComp Children?")) {
+		btCompoundShape* compoundShape = new btCompoundShape();
+
+		for (int i = 0; i < entity->getNumChildren(); i++) {
+			Entity *child = (Entity*)entity->getChildAtIndex(i);
+			btCollisionShape *childShape = createCollisionShape(child, child->collisionShapeType);
+			btTransform transform;
+
+			child->rebuildTransformMatrix();
+
+			btScalar mat[16];
+			Matrix4 ent_mat = child->getTransformMatrix();
+
+			for (int i = 0; i < 16; i++) {
+				mat[i] = ent_mat.ml[i];
+			}
+
+			transform.setFromOpenGLMatrix(mat);
+			compoundShape->addChildShape(transform, childShape);
+		}
+
+		shape = compoundShape;
+	} else {
+		shape = createCollisionShape(entity, type);
+	}
+
+	if (shape) {
+		collisionObject->setCollisionShape(shape);
+	}
+
+	collisionObject->setUserPointer((void*)this);
+
+	convexShape = dynamic_cast<btConvexShape*>(shape);
+}
+
 btCollisionShape *CollisionEntity::createCollisionShape(Entity *entity, int type) {
 	
 	btCollisionShape *collisionShape = NULL;	
