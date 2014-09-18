@@ -61,6 +61,7 @@ class EntityEditorPropertyView : public UIElement {
         SceneCurveSheet *curveSheet;
         CameraSheet *cameraSheet;
         EntityPropSheet *propSheet;
+        SceneMeshSheet *sceneMeshSheet;
     
         ShaderTexturesSheet *shaderTexturesSheet;
         ShaderOptionsSheet *shaderOptionsSheet;

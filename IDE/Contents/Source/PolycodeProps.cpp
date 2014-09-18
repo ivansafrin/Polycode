@@ -2838,10 +2838,13 @@ void SceneLightSheet::handleEvent(Event *event) {
     }
     PropSheet::handleEvent(event);
 }
-/*
-SceneMeshSheet::SceneMeshSheet() : PropSheet("MESH FILE", "scene_mesh_file") {
+
+SceneMeshSheet::SceneMeshSheet() : PropSheet("SCENE MESH", "scene_mesh") {
     enabled = false;
     sceneMesh = NULL;
+    
+    gpuSkinningProp = new BoolProp("GPU Skinning");
+    addProp(gpuSkinningProp);
 }
 
 SceneMeshSheet::~SceneMeshSheet() {
@@ -2849,13 +2852,30 @@ SceneMeshSheet::~SceneMeshSheet() {
 }
 
 void SceneMeshSheet::setSceneMesh(SceneMesh *mesh) {
+    this->sceneMesh = mesh;
     
+    if(sceneMesh) {
+        
+        gpuSkinningProp->set(sceneMesh->sendBoneMatricesToMaterial);
+        
+        enabled = true;
+    } else {
+        enabled = false;
+    }
 }
 
 void SceneMeshSheet::handleEvent(Event *event) {
+    if(!sceneMesh) {
+        return;
+    }
     
+    if(event->getDispatcher() == gpuSkinningProp) {
+        sceneMesh->sendBoneMatricesToMaterial = gpuSkinningProp->get();
+    }
+    
+    PropSheet::handleEvent(event);
 }
-*/
+
 
 ScenePrimitiveSheet::ScenePrimitiveSheet() : PropSheet("PRIMITIVE", "scene_primitive") {
     typeProp = new ComboProp("Type");
