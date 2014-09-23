@@ -19,7 +19,7 @@ SET(polycore_SRCS
     Source/PolyEventHandler.cpp
     Source/PolyFixedShader.cpp
     Source/PolyFont.cpp
-	Source/PolyFontGlyphSheet.cpp
+    Source/PolyFontGlyphSheet.cpp
     Source/PolyFontManager.cpp
     Source/PolyGLCubemap.cpp
     Source/PolyGLRenderer.cpp
@@ -40,6 +40,8 @@ SET(polycore_SRCS
     Source/PolyObject.cpp
     Source/PolyParticleEmitter.cpp
     Source/PolyPerlin.cpp
+    Source/PolyPlugin.cpp
+    Source/PolyPluginManager.cpp
     Source/PolyQuaternion.cpp
     Source/PolyQuaternionCurve.cpp
     Source/PolyRectangle.cpp
@@ -62,8 +64,8 @@ SET(polycore_SRCS
     Source/PolySound.cpp
     Source/PolySoundManager.cpp
     Source/PolyString.cpp
-	Source/PolyTextMesh.cpp
-	Source/PolyTexture.cpp
+    Source/PolyTextMesh.cpp
+    Source/PolyTexture.cpp
     Source/PolyThreaded.cpp
     Source/PolyTimer.cpp
     Source/PolyTimerManager.cpp
@@ -105,7 +107,7 @@ SET(polycore_HDRS
     Include/PolyEventHandler.h
     Include/PolyFixedShader.h
     Include/PolyFont.h
-	Include/PolyFontGlyphSheet.h
+    Include/PolyFontGlyphSheet.h
     Include/PolyFontManager.h
     Include/PolyGLCubemap.h
     Include/PolyGLHeaders.h
@@ -129,6 +131,8 @@ SET(polycore_HDRS
     Include/PolyObject.h
     Include/PolyParticleEmitter.h
     Include/PolyPerlin.h
+    Include/PolyPlugin.h
+    Include/PolyPluginManager.h
     Include/PolyQuaternionCurve.h
     Include/PolyQuaternion.h
     Include/PolyRectangle.h

@@ -186,6 +186,13 @@ public:
 	PhysicsScene2DEntity *addPhysicsChild(Entity *newEntity, int entType, bool isStatic, Number friction=0.1, Number density=1, Number restitution = 0, bool isSensor = false, bool fixedRotation = false, int groupIndex = 0);
     
 	/**
+	* Adds a Entity as a physics enabled child. Once an entity is added as a physics child, its transforms are set by the physics engine and you are not able to position it manually. Use addCollisionChild/trackCollisionChild to track collisions of entities that you can position manually.
+	* @param newEntity Screen entity to add, with the Physics2D plugin EntityProps loaded.
+	* @return The physics entity wrapper.
+	*/
+	PhysicsScene2DEntity *addPhysicsChildEntity(Entity *newEntity);
+
+	/**
 	* Tracks a Entity as a physics enabled child. Once an entity is added as a physics child, its transforms are set by the physics engine and you are not able to position it manually. Use addCollisionChild/trackCollisionChild to track collisions of entities that you can position manually.
 	* @param newEntity Screen entity to add.
 	* @param entType Physics entity type to add as. Possible values are PhysicsEntity::ENTITY_RECT, PhysicsEntity::ENTITY_CIRCLE and PhysicsEntity::ENTITY_MESH. If the type is ENTITY_MESH, the Entity passed must be a ScreenMesh!
@@ -223,7 +230,13 @@ public:
 	* @param entityToRemove Entity to remove from the screen.
 	*/	
 	PhysicsScene2DEntity *addCollisionChild(Entity *newEntity, int entType, int groupIndex = 0, bool sensorOnly = true);
-	
+
+	/**
+	* Begins tracking collisions for a Entity and adds it to the scene.
+	* @param newEntity Entity to track collisions for, with the Physics2D plugin EntityProps loaded.
+	*/
+	PhysicsScene2DEntity *addCollisionChildEntity(Entity *newEntity);
+
 	/**
 	* Begins tracking collisions for a Entity.
 	* @param newEntity Entity to track collisions for.

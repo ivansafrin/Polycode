@@ -36,20 +36,48 @@ class PolycodeEditorPropActionData;
 
 class PropProp : public UIElement {
 	public:
-		PropProp(String caption, String type);
+		PropProp(String caption, int type);
 		~PropProp();
 
 		virtual void setPropData(PolycodeEditorPropActionData* data) {}
 		
 		virtual void setPropWidth(Number width) {}
         void setPropName(String newName);
-    
-		String propType;
+		String getPropName();
+
+		int propType;
 		UILabel *label;
 		Entity *propContents;				
 		
 		bool suppressChangeEvent;		
 		bool settingFromData;
+		
+		static const int PROP_VECTOR3 = 0;
+		static const int PROP_VECTOR2 = 1;
+		static const int PROP_SLIDER = 2;
+		static const int PROP_BUTTON = 3;
+		static const int PROP_NUMBER = 4;
+		static const int PROP_TARGET_BINDING = 5;
+		static const int PROP_RENDER_TARGET = 6;
+		static const int PROP_SHADER_PASS = 7;
+		static const int PROP_REMOVABLE_STRING = 8;
+		static const int PROP_LAYER = 9;
+		static const int PROP_CUSTOM = 10;
+		static const int PROP_STRING = 11;
+		static const int PROP_COLOR = 12;
+		static const int PROP_COMBO = 13;
+		static const int PROP_BOOL = 14;
+		static const int PROP_SOUND = 15;
+		static const int PROP_BEZIER_RGBA_CURVE = 16;
+		static const int PROP_BEZIER_CURVE = 17;
+		static const int PROP_MATERIAL = 18;
+		static const int PROP_MATERIAL_PREVIEW = 19;
+		static const int PROP_TEXTURE = 20;
+		static const int PROP_SCENE_SPRITE = 21;
+		static const int PROP_SCENE_ENTITY_INSTANCE = 22;
+		static const int PROP_EDIT = 23;
+		static const int PROP_COMBO_EDIT = 24;
+		static const int PROP_SLIDER_EDIT = 25;
 };
 
 class Vector3Prop : public PropProp {
@@ -76,7 +104,6 @@ class Vector3Prop : public PropProp {
         Vector3 currentData;
     
 };
-
 
 class Vector2Prop : public PropProp {
 	public:
@@ -129,7 +156,6 @@ class ButtonProp : public PropProp {
     
         UIButton *button;
 };
-
 
 class NumberProp : public PropProp {
 	public:
@@ -220,7 +246,6 @@ public:
     UIImageButton *removeButton;
 };
 
-
 class LayerProp : public PropProp {
     public:
         LayerProp(SceneEntityInstance *instance, SceneEntityInstanceLayer *layer);
@@ -260,7 +285,7 @@ class CustomProp : public PropProp {
 				
 		UITextInput *keyEntry;
 		UITextInput *valueEntry;
-		UIImageButton *removeButton;
+		//UIImageButton *removeButton;
 };
 
 class StringProp : public PropProp {
@@ -471,6 +496,76 @@ class SceneEntityInstanceProp : public PropProp {
 		
 };
 
+class SliderEditProp : public PropProp {
+public:
+	SliderEditProp(SliderProp* newSlider);
+	~SliderEditProp();
+	void handleEvent(Event *event);
+
+	void set(SliderProp *newCombo);
+	SliderProp *get();
+
+	StringProp *minProp;
+	StringProp *maxProp;
+
+	SliderProp *lastSlider;
+	SliderProp *currentSlider;
+};
+
+class ComboPropEditProp : public PropProp {
+public:
+	ComboPropEditProp(ComboProp* newCombo);
+	~ComboPropEditProp();
+	void handleEvent(Event *event);
+
+	void set(ComboProp *newCombo);
+	ComboProp *get();
+	
+	void layoutProps();
+
+	UILabel *nameLabel;
+	UIButton *addItemButton;
+	UITextInput *newItemName;
+	
+	std::vector<RemovableStringProp*> items;
+	std::vector<StringProp*> datas;
+
+	ComboProp *lastCombo;
+	ComboProp *currentCombo;
+};
+
+class PropEditProp : public PropProp {
+public:
+	PropEditProp(PropProp* newProp);
+	~PropEditProp();
+	void handleEvent(Event *event);
+
+	void set(PropProp *newProp);
+	PropProp *get();
+
+	int updatePadding();
+
+	int getPropType();
+
+	PropProp *currentProp;
+	ComboPropEditProp *comboEditProp;
+	SliderEditProp *sliderEditProp;
+
+	UITextInput *nameInput;
+	UIComboBox *typeChooser;
+
+	UILabel *nameLabel;
+	UIMultilineLabel *typeLabel;
+
+	UIImageButton *delButton;
+
+	int lastValue;
+	int currentValue;
+
+	String lastName;
+	String currentName;
+};
+
 class PropSheet : public UIElement {
 	public:
 		PropSheet(String caption, String type);
@@ -486,6 +581,8 @@ class PropSheet : public UIElement {
 		
 		void addProp(PropProp *prop);
 		void setTopPadding(Number padding);
+
+		void removeProp(PropProp *prop);
 				
 		String caption;
 		String type;
@@ -557,6 +654,8 @@ class EntitySheet : public PropSheet {
     
         void setEntityInstance(SceneEntityInstance *instance);
 
+		std::vector<BoolProp*> pluginsProp;
+
     protected:
 		Entity *entity;
 		
@@ -567,6 +666,20 @@ class EntitySheet : public PropSheet {
 		ColorProp *colorProp;
 		ComboProp *blendingProp;
 		Vector3Prop *bBoxProp;
+		
+};
+
+class PluginsSheet : public PropSheet {
+public:
+	PluginsSheet();
+	~PluginsSheet();
+
+	void handleEvent(Event *event);
+	void setEntity(Entity *entity);
+	
+	std::vector<BoolProp*> pluginsProp;
+
+	Entity *entity;
 };
 
 class ShaderPassesSheet : public PropSheet {
@@ -777,19 +890,22 @@ class MaterialPropSheet : public PropSheet {
 
 class EntityPropSheet : public PropSheet {
 	public:
-		EntityPropSheet();		
-		void handleEvent(Event *event);
+		EntityPropSheet(Plugin* plugin);
+		
 		void Update();
 		void refreshProps();
+		void reloadSheetFromEntry(ObjectEntry *sheetEntry);
 		void applyPropActionData(PolycodeEditorPropActionData *data);
         void setEntity(Entity *entity);
-
-        ButtonProp *addButtonProp;
+		void handleEvent(Event *event);
 		
 		Entity *entity;
     
+		String plugin;
+
 		int lastNumProps;		
 		int removeIndex;
+		
 };
 
 class SceneLabelSheet : public PropSheet {
@@ -837,14 +953,13 @@ class SceneSpriteSheet : public PropSheet {
         void setSprite(SceneSprite *sprite);
     
         void setEntityInstance(SceneEntityInstance *instance);
-				
+		
 		SceneSprite *sprite;
     
         SceneSpriteProp *spriteProp;
         BoolProp *randomFrameProp;
         ComboProp *defaultStateProp;
 };
-
 
 class CameraSheet : public PropSheet {
     public:
@@ -869,7 +984,6 @@ class CameraSheet : public PropSheet {
     
         Camera *camera;
 };
-
 
 class SceneEntityInstanceSheet : public PropSheet {
 	public:
@@ -937,6 +1051,13 @@ class LinkedMaterialsSheet : public PropSheet {
     
         int poolRemoveIndex;
     
+};
+
+class CustomSheet : public PropSheet {
+public:
+		
+//private:
+//	std::vector<PropProp*> props;
 };
 
 class PropList : public UIElement {

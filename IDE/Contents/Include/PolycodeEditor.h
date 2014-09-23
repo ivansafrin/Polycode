@@ -127,7 +127,9 @@ public:
 	
 	bool canHandleExtension(String extension);
 	
+	std::vector<String> getExtensions();
+	
 protected:
-	std::vector<std::string> extensions;
+	std::vector<String> extensions;
 	
 };

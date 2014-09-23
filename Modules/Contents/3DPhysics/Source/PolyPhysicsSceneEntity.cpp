@@ -213,6 +213,38 @@ PhysicsEntity::PhysicsEntity(Entity *entity, int type, Number mass, Number frict
 	}
 }
 
+PhysicsEntity::PhysicsEntity(Entity *entity) : CollisionEntity(entity) {
+	enabled = true;
+	this->mass = entity->getEntityPropNumberByName("Physics3DMass");
+	btVector3 localInertia(0, 0, 0);
+	btTransform transform;
+	transform.setIdentity();
+
+	Matrix4 ent_mat = entity->getConcatenatedMatrix();
+	Vector3 pos = ent_mat * Vector3(0.0, 0.0, 0.0);
+	transform.setOrigin(btVector3(pos.x, pos.y, pos.z));
+
+	Quaternion q = entity->getConcatenatedQuat();
+	transform.setRotation(btQuaternion(q.x, q.y, q.z, q.w));
+
+	if (mass != 0.0f) {
+		shape->calculateLocalInertia(mass, localInertia);
+	}
+
+	if (entity->getEntityPropIntByName("Physics3DShape") == CHARACTER_CONTROLLER) {
+		rigidBody = NULL;
+		myMotionState = NULL;
+	} else {
+		myMotionState = new btDefaultMotionState(transform);
+		btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, shape, localInertia);
+		rigidBody = new btRigidBody(rbInfo);
+		//		rigidBody->setActivationState(ISLAND_SLEEPING);		
+		rigidBody->setFriction(entity->getEntityPropNumberByName("Physics3DFriction"));
+		rigidBody->setRestitution(entity->getEntityPropNumberByName("Physics3DRestitution"));
+		rigidBody->setUserPointer((void*)this);
+	}
+}
+
 void PhysicsEntity::setFriction(Number friction) {
 		rigidBody->setFriction(friction);
 }

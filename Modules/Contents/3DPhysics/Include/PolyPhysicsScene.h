@@ -109,7 +109,8 @@ namespace Polycode {
 		void removePhysicsChild(Entity *entity);
 		PhysicsEntity *getPhysicsEntityByEntity(Entity *entity);
 		
-		PhysicsEntity *addPhysicsChild(Entity *newEntity, int type=0, Number mass = 0.0f, Number friction=1, Number restitution=0, int group=1, bool compoundChildren = false);		
+		PhysicsEntity *addPhysicsChild(Entity *newEntity, int type=0, Number mass = 0.0f, Number friction=1, Number restitution=0, int group=1, bool compoundChildren = false);
+		PhysicsEntity *addPhysicsChildEntity(Entity *newEntity);
 		PhysicsEntity *trackPhysicsChild(Entity *newEntity, int type=0, Number mass = 0.0f, Number friction=1, Number restitution=0, int group=1, bool compoundChildren = false);		
 		
 		PhysicsCharacter *addCharacterChild(Entity *newEntity, Number mass, Number friction, Number stepSize, int group  = 1);

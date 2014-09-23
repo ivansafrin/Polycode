@@ -114,7 +114,8 @@ struct CollisionResult {
             bool isColliding(Entity *ent1);
         
 			virtual CollisionEntity *addCollisionChild(Entity *newEntity, int type=0, int group=1);
-			CollisionEntity *trackCollision(Entity *newEntity, int type=0, int group=1);
+			virtual CollisionEntity *addCollisionChildEntity(Entity *newEntity);
+			CollisionEntity *trackCollision(Entity *newEntity, int type = 0, int group = 1);
 			void removeCollision(Entity *entity);
 			void adjustForCollision(CollisionEntity *collisionEntity);
 			

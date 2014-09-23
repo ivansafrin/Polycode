@@ -343,6 +343,14 @@ PhysicsScene2DEntity *PhysicsScene2D::addCollisionChild(Entity *newEntity, int e
 	return ret;
 }
 
+PhysicsScene2DEntity *PhysicsScene2D::addCollisionChildEntity(Entity *newEntity) {
+	PhysicsScene2DEntity *ret;
+	ret = addPhysicsChild(newEntity, newEntity->getEntityPropIntByName("Physics2DShape"), false, 0, 0, 0, newEntity->getEntityPropBoolByName("Physics2DSensor?"), false, newEntity->getEntityPropIntByName("Physics2DGroup"));
+	newEntity->ignoreParentMatrix = false;
+	ret->collisionOnly = true;
+	return ret;
+}
+
 PhysicsScene2DEntity *PhysicsScene2D::trackCollisionChild(Entity *newEntity, int entType, int groupIndex) {
 	PhysicsScene2DEntity *ret;
 	ret = trackPhysicsChild(newEntity, entType, false, 0,0.0,0, true, false, groupIndex);
@@ -468,6 +476,12 @@ void PhysicsScene2D::destroyMouseJoint(b2MouseJoint *mJoint) {
 PhysicsScene2DEntity *PhysicsScene2D::addPhysicsChild(Entity *newEntity, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation, int groupIndex) {
 	addChild(newEntity);
 	return trackPhysicsChild(newEntity, entType, isStatic, friction, density, restitution, isSensor, fixedRotation, groupIndex);
+
+}
+
+PhysicsScene2DEntity *PhysicsScene2D::addPhysicsChildEntity(Entity *newEntity) {
+	addChild(newEntity);
+	return trackPhysicsChild(newEntity, newEntity->getEntityPropIntByName("Physics2DShape"), newEntity->getEntityPropBoolByName("Physics2DStatic?"), newEntity->getEntityPropNumberByName("Physics2DFriction"), newEntity->getEntityPropNumberByName("Physics2DDensity"), newEntity->getEntityPropNumberByName("Physics2DRestitution"), newEntity->getEntityPropBoolByName("Physics2DSensor?"), newEntity->getEntityPropBoolByName("Physics2DFixed Rot?"), newEntity->getEntityPropIntByName("Physics2DGroup"));
 
 }
 

@@ -41,6 +41,7 @@ namespace Polycode {
 	class _PolyExport PhysicsEntity : public CollisionEntity {
 	public:
 		PhysicsEntity(Entity *entity, int type, Number mass, Number friction, Number restitution, bool compoundChildren = false);
+		PhysicsEntity(Entity *entity);
 		virtual ~PhysicsEntity();
 		virtual void Update();
 				

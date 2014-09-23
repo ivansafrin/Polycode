@@ -38,10 +38,11 @@ namespace Polycode {
 	class TweenManager;
 	class ResourceManager;
 	class SoundManager;
+	class PluginManager;
 	class Core;
 	class CoreMutex;
 	class Logger;
-	
+
 	/**
 	* Global services singleton. CoreServices instantiates and provides global Singleton access to all of the main manager classes in Polycode as well as the Renderer and Config classes.
 	*/
@@ -142,6 +143,13 @@ namespace Polycode {
 			FontManager *getFontManager();
 
 			/**
+			* Returns the plugin manager. The plugin manager is responsible for loading and managing plugins.
+			* @return Plugin Manager
+			* @see PluginManager
+			*/
+			PluginManager *getPluginManager();
+
+			/**
 			* Returns the logger. It can log messages and broadcast them to listeners.
 			*/
 			Logger *getLogger();
@@ -181,6 +189,7 @@ namespace Polycode {
 			ResourceManager *resourceManager;
 			SoundManager *soundManager;
 			FontManager *fontManager;
+			PluginManager *pluginManager;
 			Renderer *renderer;
 	};
     

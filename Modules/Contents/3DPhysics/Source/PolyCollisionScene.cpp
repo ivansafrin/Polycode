@@ -259,3 +259,12 @@ CollisionEntity *CollisionScene::addCollisionChild(Entity *newEntity, int type, 
 	return trackCollision(newEntity, type, group);
 
 }
+
+CollisionEntity *CollisionScene::addCollisionChildEntity(Entity *newEntity) {
+	addEntity(newEntity);
+	int group = newEntity->getEntityPropIntByName("Collision3DGroup");
+	if (group == 0){
+		group = 1;
+	}
+	return trackCollision(newEntity, newEntity->getEntityPropIntByName("Collision3DShape"), group);
+}

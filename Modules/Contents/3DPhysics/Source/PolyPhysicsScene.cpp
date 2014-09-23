@@ -451,3 +451,12 @@ PhysicsEntity *PhysicsScene::addPhysicsChild(Entity *newEntity, int type, Number
 	addEntity(newEntity);	
 	return trackPhysicsChild(newEntity, type, mass, friction, restitution, group, compoundChildren);	
 }
+
+PhysicsEntity *PhysicsScene::addPhysicsChildEntity(Entity *newEntity) {
+	addEntity(newEntity);
+	int group = newEntity->getEntityPropIntByName("Physics3DGroup");
+	if (group == 0){
+		group = 1;
+	}
+	return trackPhysicsChild(newEntity, newEntity->getEntityPropIntByName("Physics3DShape"), newEntity->getEntityPropNumberByName("Physics3DMass"), newEntity->getEntityPropNumberByName("Physics3DFriction"), newEntity->getEntityPropNumberByName("Physics3DRestitution"), group, newEntity->getEntityPropBoolByName("Physics3DComp Children?"));
+}

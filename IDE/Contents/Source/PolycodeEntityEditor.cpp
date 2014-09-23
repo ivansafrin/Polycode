@@ -1329,9 +1329,9 @@ void EntityEditorMainView::deleteSelected(bool doAction) {
         selectedEntities[i]->setOwnsChildrenRecursive(true);
         for(int j=0; j < icons.size(); j++) {
             if(icons[j]->getUserData() == selectedEntities[i]) {
-                delete icons[j];
-                icons[j]->getParentEntity()->removeChild(icons[j]);
-                icons.erase(icons.begin()+j);
+				icons[j]->getParentEntity()->removeChild(icons[j]);
+				delete icons[j];
+				icons.erase(icons.begin()+j);
                 break;
             }
         }
@@ -2139,16 +2139,18 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
     }
     entry->addChild("tags", tagString);
 
-    
-    if(entity->entityProps.size() > 0) {
-        ObjectEntry *props = entry->addChild("props");
-        for(int i=0; i < entity->entityProps.size(); i++) {
-            ObjectEntry *prop = props->addChild("prop");
-            prop->addChild("name", entity->entityProps[i].propName);
-            prop->addChild("value", entity->entityProps[i].propValue);
-        }
-    }
-    
+	if (entity->requiredPlugins.size() > 0) {
+		ObjectEntry *pluginsEntry = entry->addChild("plugins");
+		for (int p = 0; p < entity->requiredPlugins.size(); p++) {
+			ObjectEntry* plugin = pluginsEntry->addChild("plugin");
+			plugin->addChild("name", entity->requiredPlugins[p]->getResourceName());
+			if (entity->entityProps.size() > 0) {
+				ObjectEntry *props = plugin->addChild("props");
+				savePropsToEntry(props, entity->entityProps, entity->requiredPlugins[p]->getResourceName());
+			}
+		}
+	}
+
     if(dynamic_cast<SceneEntityInstance*>(entity) && entity != mainView->getObjectRoot()) {
         if(!(*(entry))["type"]) {
             entry->addChild("type", "SceneEntityInstance");
@@ -2502,12 +2504,11 @@ void PolycodeEntityEditor::saveFile() {
     }
     
     saveObject.root.name = "entity";
-    saveObject.root.addChild("version", 2);
+    saveObject.root.addChild("version", 3);
     
     ObjectEntry *children = saveObject.root.addChild("root");
     saveEntityToObjectEntry(mainView->getObjectRoot(), children);
-    
-    
+
     saveObject.saveToXML(filePath);
     setHasChanges(false);
 }
@@ -2518,3 +2519,28 @@ void PolycodeEntityEditor::Resize(int x, int y) {
 	PolycodeEditor::Resize(x,y);
 }
 
+void PolycodeEntityEditor::savePropsToEntry(ObjectEntry *entry, std::vector<EntityProp*> props, const String& baseName) {
+	for (int i = 0; i < props.size(); i++) {
+		if (props[i]->name.find(baseName) == 0){
+			ObjectEntry *prop = entry->addChild("prop");
+			prop->addChild("name", props[i]->name.replace(baseName, ""));
+			prop->addChild("type", props[i]->type);
+			switch (props[i]->type) {
+			case EntityProp::PROP_STRING:
+				prop->addChild("value", props[i]->stringVal);
+				break;
+			case EntityProp::PROP_BOOL:				prop->addChild("value", props[i]->boolVal);
+				break;
+			case EntityProp::PROP_INT:
+				prop->addChild("value", props[i]->intVal);
+				break;
+			case EntityProp::PROP_NUMBER:
+				prop->addChild("value", props[i]->numberVal);
+				break;
+			default:
+				prop->addChild("value", props[i]->stringVal);
+				break;
+			}
+		}
+	}
+}

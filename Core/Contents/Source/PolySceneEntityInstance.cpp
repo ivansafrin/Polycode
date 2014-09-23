@@ -273,6 +273,40 @@ void SceneEntityInstance::parseObjectIntoCurve(ObjectEntry *entry, BezierCurve *
 	
 }
 
+std::vector<EntityProp*> SceneEntityInstance::parseObjectEntryIntoProps(ObjectEntry *propsEntry, const String& baseName) {
+	Entity *retEntity = new Entity();
+	std::vector<EntityProp*> entProps;
+	for (int i = 0; i < propsEntry->children.size(); i++) {
+		ObjectEntry *prop = ((*propsEntry))[i];
+		if (prop->name=="prop") {
+			switch ((*prop)["type"]->intVal) {
+			case EntityProp::PROP_STRING:
+				retEntity->setEntityProp(baseName + (*prop)["name"]->stringVal, (*prop)["value"]->stringVal);
+				break;
+			case EntityProp::PROP_ARRAY:
+				entProps = parseObjectEntryIntoProps(prop, baseName + (*prop)["name"]->stringVal);
+				for (int i = 0; i < entProps.size(); i++){
+					retEntity->setEntityProp(entProps[i]);
+				}
+				break;
+			case EntityProp::PROP_BOOL:
+				retEntity->setEntityProp(baseName + (*prop)["name"]->stringVal, (*prop)["value"]->boolVal);
+				break;
+			case EntityProp::PROP_INT:
+				retEntity->setEntityProp(baseName + (*prop)["name"]->stringVal, (*prop)["value"]->intVal);
+				break;
+			case EntityProp::PROP_NUMBER:
+				retEntity->setEntityProp(baseName + (*prop)["name"]->stringVal, (*prop)["value"]->NumberVal);
+				break;
+			default:
+				retEntity->setEntityProp(baseName + (*prop)["name"]->stringVal, (*prop)["value"]->stringVal);
+				break;
+			}
+		}
+	}
+	return retEntity->entityProps;
+}
+
 Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entity *targetEntity, int entityFileVersion) {
 
 	Entity *entity = NULL;
@@ -498,7 +532,6 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
 	entity->color.b = (*entry)["cB"]->NumberVal;
 	entity->color.a = (*entry)["cA"]->NumberVal;
 
-
 	if(!targetEntity) {	
 		entity->blendingMode = (*entry)["blendMode"]->intVal;
 
@@ -529,16 +562,39 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
 		}
 	}
 	
-	ObjectEntry *props = (*entry)["props"];
-	if(props) {
-		for(int i=0; i < props->length; i++) {		
-			ObjectEntry *prop = ((*props))[i];		
-			if(prop) {
-				entity->setEntityProp((*prop)["name"]->stringVal, (*prop)["value"]->stringVal);
+	if (entityFileVersion <= 2){
+		ObjectEntry *props = (*entry)["props"];
+		if (props) {
+			for (int i = 0; i < props->length; i++) {
+				ObjectEntry *prop = ((*props))[i];
+				if (prop) {
+					entity->setEntityProp((*prop)["name"]->stringVal, (*prop)["value"]->stringVal);
+				}
+			}
+		}
+	} else {
+		ObjectEntry *plugins = (*entry)["plugins"];
+		if (plugins){
+			for (int p = 0; p < plugins->children.size(); p++) {
+				ObjectEntry *plugin = plugins->children[p];
+				if (plugin){
+					if (plugin->name == "plugin") {
+						String pluginName = (*plugin)["name"]->stringVal;
+						entity->addPluginByName(pluginName);
+
+						ObjectEntry *props = (*plugin)["props"];
+						if (props){
+							std::vector<EntityProp*> entProps = parseObjectEntryIntoProps(props, pluginName);
+							for (int i = 0; i < entProps.size(); i++){
+								entity->setEntityProp(entProps[i]);
+							}
+						}
+					}
+				}
 			}
 		}
 	}
-														
+
 	ObjectEntry *children = (*entry)["children"];
 	
 	if(children) {
@@ -704,6 +760,7 @@ bool SceneEntityInstance::loadFromFile(const String& fileName) {
                 }
             }
         }
+
     }
     
 	ObjectEntry *root = loadObject.root["root"];
@@ -725,3 +782,12 @@ bool SceneEntityInstance::loadFromFile(const String& fileName) {
 	
 	return true;
 }
+
+
+
+
+
+
+
+
+

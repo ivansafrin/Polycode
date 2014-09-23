@@ -59,7 +59,8 @@ namespace Polycode {
 			static const int RESOURCE_CUBEMAP = 6;
 			static const int RESOURCE_SPRITE = 7;
 			static const int RESOURCE_ENTITY_INSTANCE = 8;
-			
+			static const int RESOURCE_PLUGIN = 9;
+
 			bool reloadOnFileModify;
         
             static bool defaultReloadOnFileModify;
@@ -69,12 +70,8 @@ namespace Polycode {
 			//@}
 			
 		protected:
-
-			
 			int type;
 			String resourcePath;
 			String name;
-	
-					
 	};
 }
