@@ -76,6 +76,10 @@ namespace Polycode {
 			inline Vector2 operator * (const Number val) const {
 				return Vector2(x * val, y * val);
 			}
+        
+            inline Vector2 operator * (const Vector2 &v2) const {
+                return Vector2(x * v2.x, y * v2.y);
+            }
 
 			inline Vector2 operator / (const Number val) const {
 				assert( val != 0.0 );

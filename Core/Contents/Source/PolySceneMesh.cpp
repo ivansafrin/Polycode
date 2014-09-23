@@ -393,6 +393,12 @@ void SceneMesh::Render() {
         }
     }
     
+    bool useVertexBuffer = this->useVertexBuffer;
+
+    if(useVertexBuffer && skeleton && !sendBoneMatricesToMaterial) {
+        useVertexBuffer = false;
+    }
+    
 	if(useVertexBuffer) {
         VertexBuffer *vb = mesh->getVertexBuffer();
         if(vb){

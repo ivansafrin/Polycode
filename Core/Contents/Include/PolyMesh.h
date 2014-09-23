@@ -381,6 +381,8 @@ namespace Polycode {
         
             static Vector3 calculateFaceTangent(const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, const Vector2 &texCoord1, const Vector2 &texCoord2, const Vector2 &texCoord3);
         
+            void saveAsOBJ(const String fileName);
+        
             void normalizeBoneWeights();
         
             VertexDataArray vertexPositionArray;

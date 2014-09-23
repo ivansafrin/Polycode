@@ -722,7 +722,7 @@ class SceneLightSheet : public PropSheet {
         SliderProp *shadowMapFOVProp;
         NumberProp *shadowResolutionProp;
 };
-/*
+
 class SceneMeshSheet : public PropSheet {
     public:
         SceneMeshSheet();
@@ -733,9 +733,10 @@ class SceneMeshSheet : public PropSheet {
     
     private:
     
+        BoolProp *gpuSkinningProp;
         SceneMesh *sceneMesh;
 };
-*/
+
 
 class ScenePrimitiveSheet : public PropSheet {
 public:
