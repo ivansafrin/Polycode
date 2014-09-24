@@ -777,5 +777,5 @@ void Image::transformCoordinates(int *x, int *y) {
 }
 
 void Image::transformCoordinates(int *x, int *y, int *w, int *h) {
-	*y = this->height - *h - *y - 1;
+	*y = this->height - *h - *y;
 }

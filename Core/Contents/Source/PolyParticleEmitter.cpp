@@ -240,30 +240,36 @@ void SceneParticleEmitter::rebuildParticles() {
                     mesh->setMeshType(Mesh::TRI_MESH);
                     
                     int indexOffset = 0;
+
+					mesh->indexedMesh = true;
                     
                     int meshIndex = particles[i].varianceIndex;
                     if(meshIndex < sourceMeshes.size()) {
                         
-                        indexOffset = mesh->getVertexCount();
+						indexOffset = mesh->vertexPositionArray.data.size()/3;
                         
-                        // TODO: fix
-                        /*
-                        for(int v=0; v <  sourceMeshes[meshIndex]->getVertexCount(); v++) {
-                            Vertex *sv = sourceMeshes[meshIndex]->getVertex(v);
-                            
-                            Vector3 vpos = Vector3(sv->x, sv->y, sv->z) * finalParticleSize;
+						Mesh *sourceMesh = sourceMeshes[meshIndex];
+
+						mesh->setMeshType(sourceMesh->getMeshType());
+
+                        for(int v=0; v <  sourceMesh->getVertexCount(); v++) {
+                           
+							Vector3 vpos = Vector3(sourceMesh->vertexPositionArray.data[(v * 3)], sourceMesh->vertexPositionArray.data[(v * 3)+1], sourceMesh->vertexPositionArray.data[(v * 3)+2]) * finalParticleSize;
                             vpos = q.applyTo(vpos);
                             
                             vpos += particlePosition;
-                            mesh->addVertexWithUV(vpos.x, vpos.y, vpos.z, sv->texCoord.x, sv->texCoord.y);
-                            mesh->addColor(vertexColor);
-                            mesh->addNormal(q.applyTo(sv->normal);
+							mesh->addVertex(vpos.x, vpos.y, vpos.z);
+							mesh->addTexCoord(sourceMesh->vertexTexCoordArray.data[(v * 2)], sourceMesh->vertexTexCoordArray.data[(v * 2) + 1]);
+							mesh->addColor(vertexColor);
+							Vector3 svNormal = Vector3(sourceMesh->vertexNormalArray.data[(v * 3)], sourceMesh->vertexNormalArray.data[(v * 3) + 1], sourceMesh->vertexNormalArray.data[(v * 3) + 2]);
+							svNormal = q.applyTo(svNormal);
+							mesh->addNormal(svNormal.x, svNormal.y, svNormal.z);
                         }
                         
-                        for(int v=0; v < sourceMeshes[meshIndex]->getIndexCount(); v++) {
-                            mesh->addIndex(indexOffset + sourceMeshes[meshIndex]->getIndexAt(v));
+						for (int v = 0; v < sourceMesh->indexArray.data.size(); v++) {
+							mesh->addIndex(indexOffset + sourceMesh->indexArray.data[v]);
                         }
-                         */
+                         
                     }
                     
                 } else {
