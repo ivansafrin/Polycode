@@ -39,6 +39,7 @@ namespace Polycode {
 	class ResourceManager;
 	class SoundManager;
 	class Core;
+    class CoreInput;
 	class CoreMutex;
 	class Logger;
 	
@@ -81,6 +82,13 @@ namespace Polycode {
 			* @see Core
 			*/																														
 			Core *getCore();
+        
+            /**
+             * Returns the core input.
+             * @return Core input.
+             * @see CoreInput
+             */
+            CoreInput *getInput();
 			
 			void handleEvent(Event *event);
 		

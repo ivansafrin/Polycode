@@ -164,6 +164,9 @@ Core *CoreServices::getCore() {
 	return core;
 }
 
+CoreInput *CoreServices::getInput() {
+	return core->getInput();
+}
 
 void CoreServices::setRenderer(Renderer *renderer) {
 	this->renderer = renderer;
