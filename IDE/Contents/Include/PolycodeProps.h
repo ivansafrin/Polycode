@@ -895,7 +895,8 @@ class SoundSheet : public PropSheet {
 
 		SoundProp *soundProp;		
 		NumberProp *referenceDistance;
-		NumberProp *maxDistance;		
+        BoolProp *loopOnLoad;
+		NumberProp *maxDistance;
 		SliderProp *volume;
 		SliderProp *pitch;
 };

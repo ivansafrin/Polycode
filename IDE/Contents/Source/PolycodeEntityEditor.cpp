@@ -2080,6 +2080,14 @@ bool PolycodeEntityEditor::openFile(OSFileEntry filePath) {
 //    return true;
     loadedInstance = new SceneEntityInstance(mainView->getMainScene(), filePath.fullPath);
     
+    // disable sounds :)
+    for(int i=0; i < loadedInstance->getNumChildren(); i++) {
+        SceneSound *sound = dynamic_cast<SceneSound*>(loadedInstance->getChildAtIndex(i));
+        if(sound) {
+            sound->getSound()->Stop();
+        }
+    }
+    
     mainView->setObjectRoot(loadedInstance);
     mainView->setEditorPropsRecursive(loadedInstance);
     
@@ -2298,6 +2306,7 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
         soundEntry->addChild("maxDistance", sound->getSound()->getMaxDistance());
         soundEntry->addChild("volume", sound->getSound()->getVolume());
         soundEntry->addChild("pitch", sound->getSound()->getPitch());
+        soundEntry->addChild("loopOnLoad", sound->getLoopOnLoad());
     }
 
     if(dynamic_cast<Camera*>(entity)) {

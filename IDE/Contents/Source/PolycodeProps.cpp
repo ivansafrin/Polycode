@@ -3943,10 +3943,14 @@ SoundSheet::SoundSheet() : PropSheet("SOUND", "sound") {
 	referenceDistance = new NumberProp("Reference dist");
 	referenceDistance->addEventListener(this, Event::CHANGE_EVENT);
 	addProp(referenceDistance);
-
+    
 	maxDistance = new NumberProp("Max dist");
 	maxDistance->addEventListener(this, Event::CHANGE_EVENT);
 	addProp(maxDistance);
+    
+    loopOnLoad = new BoolProp("Loop on load");
+    loopOnLoad->addEventListener(this, Event::CHANGE_EVENT);
+    addProp(loopOnLoad);
 
 	volume = new SliderProp("Volume", 0.0, 1.0);
 	volume->addEventListener(this, Event::CHANGE_EVENT);
@@ -3989,6 +3993,10 @@ void SoundSheet::handleEvent(Event *event) {
 	if(event->getDispatcher() == soundProp  && event->getEventCode() == Event::CHANGE_EVENT) {
 		sound->getSound()->loadFile(soundProp->get(), false);
 	}
+    
+    if(event->getDispatcher() == loopOnLoad && event->getEventCode() == Event::CHANGE_EVENT) {
+        sound->setLoopOnLoad(loopOnLoad->get());
+    }
 
 
 	PropSheet::handleEvent(event);
@@ -4006,6 +4014,7 @@ void SoundSheet::setSound(SceneSound *sound) {
         volume->set(sound->getSound()->getVolume());
         pitch->set(sound->getSound()->getPitch());
         soundProp->previewSound->setPitch(sound->getSound()->getPitch());
+        loopOnLoad->set(sound->getLoopOnLoad());
 
 	} else {
 		enabled = false;

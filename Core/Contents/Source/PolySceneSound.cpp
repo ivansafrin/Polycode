@@ -43,6 +43,15 @@ void SceneSoundListener::Update() {
 	CoreServices::getInstance()->getSoundManager()->setListenerOrientation(direction, upVector);
 }
 
+void SceneSound::setLoopOnLoad(bool val) {
+    loopOnLoad = val;
+}
+
+bool SceneSound::getLoopOnLoad() {
+    return loopOnLoad;
+}
+
+
 Entity *SceneSound::Clone(bool deepClone, bool ignoreEditorOnly) const {
     SceneSound *newSound = new SceneSound(sound->getFileName(), sound->getReferenceDistance(), sound->getMaxDistance(), directionalSound);
     applyClone(newSound, deepClone, ignoreEditorOnly);
@@ -52,7 +61,7 @@ Entity *SceneSound::Clone(bool deepClone, bool ignoreEditorOnly) const {
 void SceneSound::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
     Entity::applyClone(clone, deepClone, ignoreEditorOnly);
     SceneSound *cloneSound = (SceneSound*) clone;
-    
+    cloneSound->setLoopOnLoad(loopOnLoad);
     cloneSound->getSound()->setPositionalProperties(sound->getReferenceDistance(), sound->getMaxDistance());
     cloneSound->setDirectionalSound(directionalSound);
     cloneSound->getSound()->setVolume(sound->getVolume());
@@ -62,7 +71,7 @@ void SceneSound::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly
 SceneSound::SceneSound(const String& fileName, Number referenceDistance, Number maxDistance, bool directionalSound) : Entity() {
 
 	this->directionalSound = directionalSound;
-	
+	loopOnLoad = false;
 	sound = new Sound(fileName);
 	sound->setIsPositional(true);
 	sound->setPositionalProperties(referenceDistance, maxDistance);

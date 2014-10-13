@@ -98,6 +98,7 @@ namespace Polycode {
 		PolyKEY key;
 		
 		
+        wchar_t getCharCode();
 		
 		int keyCode() { return key; }
 		

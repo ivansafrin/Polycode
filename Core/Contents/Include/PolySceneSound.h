@@ -58,9 +58,13 @@ namespace Polycode {
 			* Returns the sound object associated with this positional sound.
 			*/
 			Sound *getSound();
+        
+            void setLoopOnLoad(bool val);
+            bool getLoopOnLoad();
 			
 		protected:
 		
+            bool loopOnLoad;
 			bool directionalSound;
 			Sound *sound;
 	};

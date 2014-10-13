@@ -454,6 +454,15 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
 			sound->getSound()->setVolume(volume);
 			sound->getSound()->setPitch(pitch);
 			
+            if((*soundEntry)["loopOnLoad"]) {
+                bool loopOnLoad = (*soundEntry)["loopOnLoad"]->boolVal;
+                sound->setLoopOnLoad(loopOnLoad);
+                if(loopOnLoad) {
+                    sound->getSound()->Play(true);
+                }
+            }
+            
+            
 			entity = sound;
         } else if(entityType->stringVal == "Camera") {
 			ObjectEntry *cameraEntry = (*entry)["Camera"];
