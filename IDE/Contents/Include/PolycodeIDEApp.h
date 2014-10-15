@@ -70,6 +70,8 @@ public:
 	void openFile(OSFileEntry file);
 	
 	void stopProject();
+
+	void checkUpdates();
 	
 	// menu commands
 	void renameFile();
@@ -150,4 +152,6 @@ private:
 	
 	// used in saving/closing files via popup dialog prompts
 	std::vector<PolycodeEditor*> tempEditorStore;
+
+	HTTPFetcher *updater;
 };

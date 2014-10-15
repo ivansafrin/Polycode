@@ -51,3 +51,24 @@ class SettingsWindow : public UIWindow {
 		UIButton *cancelButton;
 		UIButton *okButton;
 };
+
+class UpdateEvent : public Event {
+public:
+	UpdateEvent(String url) { this->url = url; }
+	~UpdateEvent() {}
+	String url;
+
+	static const int EVENT_UPDATE_AVAILABLE = 0;
+};
+
+class UpdaterWindow : public UIWindow {
+public:
+	UpdaterWindow();
+	~UpdaterWindow();
+
+	void handleEvent(Event *e);
+	void updateUI();
+
+	UILabel *newUpdateNot;
+	UIButton *openDownloadButton;
+};

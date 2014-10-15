@@ -154,6 +154,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				case ID_HELP_REFERENCE:
 					globalApp->openDocs(); 
 					break;
+				case ID_HELP_LOOKFORUPDATES:
+					globalApp->checkUpdates();
+					break;
 			}
 		break;
 	case WM_COPYDATA:

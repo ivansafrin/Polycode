@@ -86,6 +86,7 @@
 #include "PolyServer.h"
 #include "PolyServerWorld.h"
 #include "PolySocket.h"
+#include "PolyHTTPFetcher.h"
 #include "PolyRay.h"
 #include "PolySceneSprite.h"
 #include "PolySceneEntityInstance.h"

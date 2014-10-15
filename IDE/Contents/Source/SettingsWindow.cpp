@@ -211,3 +211,25 @@ void SettingsWindow::updateUI() {
 	
 SettingsWindow::~SettingsWindow() {
 }
+
+UpdaterWindow::UpdaterWindow() : UIWindow("New Update!", 150,60) {
+	closeOnEscape = true;
+
+	newUpdateNot = new UILabel("Version: "+ Services()->getConfig()->getStringValue("Polycode", "UpdateVersion"), 12);
+	openDownloadButton = new UIButton("Download Update", 130);
+	addChild(newUpdateNot);
+	newUpdateNot->setPosition(10, 25);
+	addChild(openDownloadButton);
+	openDownloadButton->setPosition(10, 40);
+	openDownloadButton->addEventListener(this, UIEvent::CLICK_EVENT);
+}
+
+void UpdaterWindow::handleEvent(Event *e) {
+	if (e->getDispatcher() == openDownloadButton && e->getEventCode() == UIEvent::CLICK_EVENT) {
+		Services()->getCore()->openURL(Services()->getConfig()->getStringValue("Polycode","UpdateURL"));
+		onClose();
+	}
+	UIWindow::handleEvent(e);
+}
+
+UpdaterWindow::~UpdaterWindow() {}
