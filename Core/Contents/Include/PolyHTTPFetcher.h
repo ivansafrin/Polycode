@@ -57,7 +57,7 @@ namespace Polycode {
 
 	private:
 		SOCKET s;
-		Address serverAddress;
+		String address;
 		String bodyReturn;
 		int pathIndex;
 		String host;

@@ -28,6 +28,7 @@ THE SOFTWARE.
 using namespace Polycode;
 
 HTTPFetcher::HTTPFetcher(String address) : EventDispatcher() {
+	this->address = address;
 	int protocolIndex = address.find_first_of("://");
 	if (protocolIndex != NULL){
 		protocolIndex += strlen("://");
@@ -100,8 +101,8 @@ bool HTTPFetcher::receiveHTTPData(){
 	//Send some data
 	String request;
 	if (pathIndex) {
-		request = "GET /updater.xml HTTP/1.1\r\n" + String("Host: dl.war-of-universe.com\r\n") + String("Connection: close\r\n\r\n"); //+ String("Accept-Charset: ISO-8859-1,UTF-8;q=0.7,*;q=0.7");
-		//request = "GET " + address.substr(pathIndex, address.length()) + " " + String(HTTP_VERSION) + "\r\nHost: " + host + "\r\nUser-Agent: " + DEFAULT_USER_AGENT + "\r\nConnection: close\r\n\r\n";
+		//request = "GET /updater.xml HTTP/1.1\r\n" + String("Host: dl.war-of-universe.com\r\n") + String("Connection: close\r\n\r\n"); //+ String("Accept-Charset: ISO-8859-1,UTF-8;q=0.7,*;q=0.7");
+		request = "GET " + address.substr(pathIndex, address.length()) + " " + String(HTTP_VERSION) + "\r\nHost: " + host + "\r\nUser-Agent: " + DEFAULT_USER_AGENT + "\r\nConnection: close\r\n\r\n";
 	} else {
 		request = "GET / " + String(HTTP_VERSION) + "\r\nHost: " + host + "\r\nUser-Agent: " + DEFAULT_USER_AGENT + "\r\nConnection: close\r\n\r\n";
 	}
