@@ -22,15 +22,13 @@ THE SOFTWARE.
 
 #include "PolyHTTPFetcher.h"
 #include "PolyLogger.h"
-#include "PolyTimer.h"
-#include "Ws2tcpip.h"
 
 using namespace Polycode;
 
 HTTPFetcher::HTTPFetcher(String address) : EventDispatcher() {
 	this->address = address;
 	int protocolIndex = address.find_first_of("://");
-	if (protocolIndex != NULL){
+    if (protocolIndex != 0){
 		protocolIndex += strlen("://");
 		pathIndex = address.find_first_of("/", protocolIndex);
 		
@@ -52,32 +50,46 @@ HTTPFetcher::HTTPFetcher(String address) : EventDispatcher() {
 	struct sockaddr_in server;
 		
 	addrinfo *result = NULL;
-	addrinfo *ptr = NULL;
 	addrinfo hints;
 
-	char ipstringbuffer[46];
-	unsigned long ipbufferlength = 46;
+    //Create a socket
+#if PLATFORM == PLATFORM_WINDOWS
+    char ipstringbuffer[46];
+    unsigned long ipbufferlength;
 
-	//Create a socket
-	if ((s = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET) {
-		Logger::log("HTTP Fetcher: Could not create socket: %d\n", WSAGetLastError());
+    if ((s = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET) {
+        Logger::log("HTTP Fetcher: Could not create socket: %d\n", WSAGetLastError());
+#elif PLATFORM == PLATFORM_MAC || PLATFORM == PLATFORM_UNIX
+    char* ipstringbuffer;
+
+    if ((s = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
+        Logger::log("HTTP Fetcher: Could not create socket: %s\n", strerror(errno));
+#endif
 	}
-	
-	ZeroMemory(&hints, sizeof(hints));
+
+    memset(&hints, 0, sizeof(hints));
 	hints.ai_family = AF_UNSPEC;
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_protocol = IPPROTO_TCP;
 	
 	if (getaddrinfo(host.c_str(), address.substr(0, protocolIndex - strlen("://")).c_str(), &hints, &result) != 0) {
+#if PLATFORM == PLATFORM_WINDOWS
 		Logger::log("HTTP Fetcher: Address resolve error: %d\n", WSAGetLastError());
+#elif PLATFORM == PLATFORM_MAC || PLATFORM == PLATFORM_UNIX
+        Logger::log("HTTP Fetcher: Address resolve error: %s\n", strerror(errno));
+#endif
 		return;
 	}
 	
-#ifdef _WINDOWS
+#if PLATFORM == PLATFORM_WINDOWS
 	if (WSAAddressToStringA(result->ai_addr, (unsigned long)result->ai_addrlen, NULL, ipstringbuffer, &ipbufferlength) != 0) {
 		Logger::log("HTTP Fetcher: Address to String convert error: %d\n", WSAGetLastError());
 		return;
 	}
+#elif PLATFORM == PLATFORM_MAC || PLATFORM == PLATFORM_UNIX
+    in_addr addr;
+    addr = ((sockaddr_in*)result->ai_addr)->sin_addr;
+    ipstringbuffer = inet_ntoa(addr);
 #endif
 
 	String ipString = ipstringbuffer;
@@ -89,7 +101,11 @@ HTTPFetcher::HTTPFetcher(String address) : EventDispatcher() {
 
 	//Connect to remote server
 	if (connect(s, (struct sockaddr *)&server, sizeof(server)) < 0) {
-		Logger::log("HTTP Fetcher: connect error code: %d\n", WSAGetLastError());
+#if PLATFORM == PLATFORM_WINDOWS
+        Logger::log("HTTP Fetcher: connect error code: %d\n", WSAGetLastError());
+#elif PLATFORM == PLATFORM_MAC || PLATFORM == PLATFORM_UNIX
+        Logger::log("HTTP Fetcher: connect error code: %s\n", strerror(errno));
+#endif
 		return;
 	}
 }
@@ -97,50 +113,59 @@ HTTPFetcher::HTTPFetcher(String address) : EventDispatcher() {
 HTTPFetcher::~HTTPFetcher(){}
 
 bool HTTPFetcher::receiveHTTPData(){
-
 	//Send some data
 	String request;
 	if (pathIndex) {
-		//request = "GET /updater.xml HTTP/1.1\r\n" + String("Host: dl.war-of-universe.com\r\n") + String("Connection: close\r\n\r\n"); //+ String("Accept-Charset: ISO-8859-1,UTF-8;q=0.7,*;q=0.7");
 		request = "GET " + address.substr(pathIndex, address.length()) + " " + String(HTTP_VERSION) + "\r\nHost: " + host + "\r\nUser-Agent: " + DEFAULT_USER_AGENT + "\r\nConnection: close\r\n\r\n";
 	} else {
 		request = "GET / " + String(HTTP_VERSION) + "\r\nHost: " + host + "\r\nUser-Agent: " + DEFAULT_USER_AGENT + "\r\nConnection: close\r\n\r\n";
 	}
 	if (send(s, request.c_str(), strlen(request.c_str()), 0) < 0) {
-		Logger::log("HTTP Fetcher: Send failed %d\n", WSAGetLastError());
+#if PLATFORM == PLATFORM_WINDOWS
+        Logger::log("HTTP Fetcher: Send failed: %d\n", WSAGetLastError());
+#elif PLATFORM == PLATFORM_MAC || PLATFORM == PLATFORM_UNIX
+        Logger::log("HTTP Fetcher: Send failed: %s\n",strerror(errno));
+#endif
 		return false;
 	}
 
 	char server_reply[DEFAULT_PAGE_BUF_SIZE];
 	unsigned long recv_size;
 	//Receive a reply from the server
-	if ((recv_size = recv(s, server_reply, 2000, 0)) == SOCKET_ERROR) {
-		Logger::log("HTTP Fetcher: recv failed %d\n", WSAGetLastError());
+#if PLATFORM == PLATFORM_WINDOWS
+    if ((recv_size = recv(s, server_reply, DEFAULT_PAGE_BUF_SIZE, 0)) == SOCKET_ERROR) {
+        Logger::log("HTTP Fetcher: recv failed: %d\n", WSAGetLastError());
+#elif PLATFORM == PLATFORM_MAC || PLATFORM == PLATFORM_UNIX
+    if ((recv_size = recv(s, server_reply, DEFAULT_PAGE_BUF_SIZE, 0)) == -1) {
+        Logger::log("HTTP Fetcher: recv failed: %s\n", strerror(errno));
+#endif
 		return false;
 	}
 
 	//Add a NULL terminating character to make it a proper string before printing
 	server_reply[recv_size] = '\0';
 
-	HTTPFetcherEvent *event = new HTTPFetcherEvent();
-	event->data = server_reply;
-	char *charIndex = strstr(event->data, "HTTP/");
-	int i;
+    HTTPFetcherEvent *event = new HTTPFetcherEvent();
+    char *charIndex = strstr(server_reply, "HTTP/");
+    if(charIndex == NULL){
+        return false;
+    }
+    int i;
 	if (sscanf(charIndex, "HTTP/1.1 %d", &i) != 1 || i < 200 || i>299) {
 		return false;
 	}
-	charIndex = strstr(event->data, "Content-Length:");
+    charIndex = strstr(server_reply, "Content-Length:");
 	if (charIndex == NULL)
-		charIndex = strstr(event->data, "Content-length:");
+        charIndex = strstr(server_reply, "Content-length:");
 	if (sscanf(charIndex + strlen("content-length: "), "%d", &i) != 1) {
 		return false;
 	}
 
-	charIndex = strstr(event->data, "\r\n\r\n") + strlen("\r\n\r\n");
+    charIndex = strstr(server_reply, "\r\n\r\n") + strlen("\r\n\r\n");
 
-	event->data = charIndex;
+    event->data = charIndex;
 	bodyReturn = String(charIndex);
-	dispatchEvent(event, HTTPFetcherEvent::EVENT_HTTP_DATA_RECEIVED);
+    dispatchEvent(event, HTTPFetcherEvent::EVENT_HTTP_DATA_RECEIVED);
 	return true;
 }
 

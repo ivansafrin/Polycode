@@ -21,7 +21,21 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyPeer.h"
+#include <string.h>
+#ifdef _WINDOWS
+	#include <winsock2.h>
+	#include <Ws2tcpip.h>
+#else
+	#include <sys/socket.h>
+	#include <sys/types.h>
+	#include <netinet/in.h>
+	#include <netdb.h>
+    #include <arpa/inet.h>
+    #include <errno.h>
+#endif
+#include "PolyGlobals.h"
+#include "PolyEvent.h"
+#include "PolyEventDispatcher.h"
 
 #define PORT_NUMBER 			80
 #define HTTP_VERSION 			"HTTP/1.0"
@@ -56,7 +70,7 @@ namespace Polycode {
 		String getData();
 
 	private:
-		SOCKET s;
+        int s;
 		String address;
 		String bodyReturn;
 		int pathIndex;

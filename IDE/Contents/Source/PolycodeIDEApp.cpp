@@ -214,7 +214,7 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	UIMenuBarEntry *helpEntry = menuBar->addMenuBarEntry("Help");
 	helpEntry->addItem("API Reference", "show_api");
 	helpEntry->addItem("About Polycode", "show_about");
-
+    helpEntry->addItem("Check For Updates", "check_update");
 
 	menuBar->addEventListener(this, UIEvent::OK_EVENT);
 
@@ -233,9 +233,8 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	
 	applyFinalConfig();
     
-	updater = new HTTPFetcher("http://127.0.0.1/updater.xml");
-	updater->addEventListener(this, HTTPFetcherEvent::EVENT_HTTP_DATA_RECEIVED);
-	updater->receiveHTTPData();
+    updater = new HTTPFetcher("http://www.polycode.org/updater.xml");
+    checkUpdates();
 
     core->updateAndRender();
     frame->Resize(core->getXRes(), core->getYRes());
@@ -708,16 +707,20 @@ void PolycodeIDEApp::openFile(OSFileEntry file) {
 }
 
 void PolycodeIDEApp::checkUpdates(){
-	int newMaj, newMin, newFix, maj, min, fix;
-	char newState[3], state[6];
+    if(!updater->receiveHTTPData())
+        return;
+
+    int newMaj, newMin, newFix, maj, min, fix;
+    char *newState = (char*)malloc(2*sizeof(char));
+    char *state = (char*)malloc(6*sizeof(char));
 	
 	Object updateObj;
 	updateObj.loadFromXMLString(updater->getData());
 	if (updateObj.root["version"]){
 		String newVersion = updateObj.root["version"]->stringVal;
 		String curVersion = String(POLYCODE_VERSION_STRING);
-		sscanf(newVersion.c_str(), "%d.%d.%d%s", &newMaj, &newMin, &newFix, &newState);
-		sscanf(curVersion.c_str(), "%d.%d.%d%s", &maj, &min, &fix, &state);
+        sscanf(newVersion.c_str(), "%d.%d.%d%s", &newMaj, &newMin, &newFix, newState);
+        sscanf(curVersion.c_str(), "%d.%d.%d%s", &maj, &min, &fix, state);
 		if (newMaj > maj || newMin > min || newFix > fix || (strstr(state, "a") != NULL && (strstr(newState, "b")!=NULL || strstr(newState, "r")!=NULL) || (strstr(state, "b")!=NULL && strstr(newState, "r")!=NULL))) {
 			if (updateObj.root["url"]) {
 				Services()->getConfig()->setStringValue("Polycode", "UpdateURL", updateObj.root["url"]->stringVal);
@@ -822,6 +825,8 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 			openDocs();
 		} else if(action == "show_about") {
 			showAbout();
+        } else if(action == "check_update"){
+            checkUpdates();
 		} else if(action == "toggle_console") {
 			toggleConsole();
 		} else if(action == "settings") {
@@ -1161,12 +1166,6 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 						openFile(selectedData->fileEntry);
 				}
 			}
-		}
-	}
-
-	if (event->getDispatcher() == updater){
-		if (event->getEventCode() == HTTPFetcherEvent::EVENT_HTTP_DATA_RECEIVED){
-			checkUpdates();
 		}
 	}
 }

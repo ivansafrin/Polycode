@@ -227,7 +227,7 @@ UpdaterWindow::UpdaterWindow() : UIWindow("New Update!", 150,60) {
 void UpdaterWindow::handleEvent(Event *e) {
 	if (e->getDispatcher() == openDownloadButton && e->getEventCode() == UIEvent::CLICK_EVENT) {
 		Services()->getCore()->openURL(Services()->getConfig()->getStringValue("Polycode","UpdateURL"));
-		onClose();
+        dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);
 	}
 	UIWindow::handleEvent(e);
 }
