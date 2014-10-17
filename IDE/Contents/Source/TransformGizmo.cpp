@@ -1173,14 +1173,12 @@ void TransformGizmo::Update() {
     
 	Number scale;
     if(gizmoMode != GIZMO_MODE_3D) {
-        scale = targetCamera->getPosition().length() * 0.1;
+        scale = targetCamera->getOrthoSizeX() * 0.1;
+
     } else {
         scale = getPosition().distance(targetCamera->getPosition()) * 0.1;
     }
-    
-    if(scale < 0.0) {
-        scale = 0.0;
-    }
+
 	setScale(scale, scale, scale);
 }
 

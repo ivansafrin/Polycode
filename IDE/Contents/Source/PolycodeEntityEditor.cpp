@@ -818,6 +818,10 @@ SceneRenderTexture *EntityEditorMainView::getRenderTexture() {
 void EntityEditorMainView::setEditorMode(int newMode) {
     editorMode = newMode;
     
+    if(newMode != EDITOR_MODE_3D) {
+        trackballCamera->setOrbitingCenter(Vector3(0.0, 0.0, 0.0));        
+    }
+    
     switch(editorMode) {
         case EDITOR_MODE_3D:
             mainScene->setSceneType(Scene::SCENE_3D);
@@ -828,6 +832,7 @@ void EntityEditorMainView::setEditorMode(int newMode) {
             trackballCamera->disableRotation(false);
         break;
         case EDITOR_MODE_3D_X:
+            
             mainScene->setSceneType(Scene::SCENE_2D);
             mainScene->getDefaultCamera()->setOrthoMode(true);
             mainScene->getDefaultCamera()->setClippingPlanes(-0.1, 1000);
@@ -838,6 +843,7 @@ void EntityEditorMainView::setEditorMode(int newMode) {
             Update();
         break;
         case EDITOR_MODE_3D_Y:
+            
             mainScene->setSceneType(Scene::SCENE_2D);
             mainScene->getDefaultCamera()->setOrthoMode(true);
             mainScene->getDefaultCamera()->setClippingPlanes(-0.1, 1000);
@@ -1435,6 +1441,7 @@ void EntityEditorMainView::handleEvent(Event *event) {
         focusSelf();
     } else if(event->getDispatcher() == trackballCamera) {
         Update();
+        transformGizmo->Update();
     } else if(event->getDispatcher() == viewModeSelector) {
         setEditorMode(viewModeSelector->getSelectedIndex());
     } else if(event->getDispatcher() == globalFrame->assetBrowser) {
