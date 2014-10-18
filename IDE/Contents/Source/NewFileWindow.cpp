@@ -133,7 +133,7 @@ void NewFileWindow::parseTemplatesIntoTree(UITree *tree, OSFileEntry folder) {
 	for(int i=0; i < templates.size(); i++) {
 		OSFileEntry entry = templates[i];	
 		if(entry.type != OSFileEntry::TYPE_FOLDER) {
-			UITree *newChild = tree->addTreeChild("file.png", entry.nameWithoutExtension, NULL);
+            UITree *newChild = tree->addTreeChild(PolycodeProjectBrowser::getIconForExtension(entry.extension), entry.nameWithoutExtension, NULL);
 			FileTemplateUserData *data = new FileTemplateUserData();
 			data->type = 1;
 			data->templatePath = entry.fullPath;

@@ -62,7 +62,7 @@ class PolycodeProjectBrowser : public UIElement {
 		UITree *nodeHasName(UITree *node, String name);
 		bool listHasFileEntry(vector<OSFileEntry> files, OSFileEntry fileEntry);
 		
-        String getIconForExtension(String extension);
+        static String getIconForExtension(String extension);
     
 		void Refresh();
 		
