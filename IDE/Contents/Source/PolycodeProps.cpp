@@ -1945,8 +1945,8 @@ void ShaderPassesSheet::handleEvent(Event *event) {
 					selectedProp = (ShaderPassProp*)props[i];
 					dispatchEvent(new Event(), Event::SELECT_EVENT);				
 				} else if(event->getEventCode() == Event::REMOVE_EVENT) {
-					removeIndex = i;
-					dispatchEvent(new Event(), Event::REMOVE_EVENT);					
+					removeIndex = i-1;
+					dispatchEvent(new Event(), Event::REMOVE_EVENT);
 				}
 			}
 		}
@@ -2117,7 +2117,7 @@ void RenderTargetsSheet::handleEvent(Event *event) {
 		if(event->getDispatcher() == props[i] && event->getEventType() == "") {
 			switch(event->getEventCode()) {						
 				case Event::CANCEL_EVENT:
-					removeIndex = i;
+					removeIndex = i-1;
 				break;
 				case Event::CHANGE_EVENT:
 				break;				
