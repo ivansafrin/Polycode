@@ -49,6 +49,7 @@ Camera::Camera(Scene *parentScene) : Entity() {
 	topLeftOrtho = false;
     orthoSizeX = 1.0;
 	orthoSizeY = 1.0;
+    useGlobalFramebuffer = false;
 }
 
 Camera::~Camera() {	
@@ -58,6 +59,14 @@ Camera::~Camera() {
 
 	delete originalSceneTexture;
 	delete zBufferSceneTexture;
+}
+
+void Camera::setUseGlobalFramebuffer(bool val) {
+    useGlobalFramebuffer = val;
+}
+
+bool Camera::getUseGlobalFramebuffer() const {
+    return useGlobalFramebuffer;
 }
 
 void Camera::setClippingPlanes(Number nearClipPlane, Number farClipPlane) {
@@ -361,38 +370,57 @@ void Camera::drawFilter(Texture *targetTexture, Number targetTextureWidth, Numbe
 	if(!filterShaderMaterial)
 		return;
 		
-	Texture *finalTargetColorTexture;
-	Texture *finalTargetZTexture;	
+	Texture *finalTargetColorTexture = NULL;
+	Texture *finalTargetZTexture = NULL;
 		
 	if(targetTexture) {	
 		finalTargetColorTexture = targetColorTexture;
 		finalTargetZTexture = targetZTexture;		
 		renderer->setViewportSize(targetTextureWidth, targetTextureHeight);		
 	} else {
-		finalTargetColorTexture = originalSceneTexture;
-		finalTargetZTexture = zBufferSceneTexture;	
-		renderer->setViewportSize(renderer->getXRes(), renderer->getYRes());
+        if(!useGlobalFramebuffer) {
+            finalTargetColorTexture = originalSceneTexture;
+            finalTargetZTexture = zBufferSceneTexture;
+        }
+        renderer->setViewportSize(renderer->getXRes(), renderer->getYRes());
 	}
-	renderer->bindFrameBufferTexture(finalTargetColorTexture);
-	renderer->bindFrameBufferTextureDepth(finalTargetZTexture);
+    
+    if(finalTargetColorTexture) {
+        renderer->bindFrameBufferTexture(finalTargetColorTexture);
+    }
+    if(finalTargetZTexture) {
+        renderer->bindFrameBufferTextureDepth(finalTargetZTexture);
+    }
 	parentScene->Render(this);
-	renderer->unbindFramebuffers();
+    
+    if(finalTargetColorTexture && finalTargetZTexture) {
+        renderer->unbindFramebuffers();
+    }
 
 
-	ShaderBinding* materialBinding;		
+	ShaderBinding* materialBinding;
 	for(int i=0; i < filterShaderMaterial->getNumShaders(); i++) {
 		materialBinding = filterShaderMaterial->getShaderBinding(i);
 		
 		for(int j=0; j < materialBinding->getNumColorTargetBindings(); j++) {
 			RenderTargetBinding *colorBinding = materialBinding->getColorTargetBinding(j);
 			materialBinding->clearTexture(colorBinding->name);
-			materialBinding->addTexture(colorBinding->name, finalTargetColorTexture);
+            
+            if(finalTargetColorTexture) {
+                materialBinding->addTexture(colorBinding->name, finalTargetColorTexture);
+            } else {
+                materialBinding->addTexture(colorBinding->name, renderer->getGlobalColorFramebuffer());
+            }
 		}
 
 		for(int j=0; j < materialBinding->getNumDepthTargetBindings(); j++) {
 			RenderTargetBinding *depthBinding = materialBinding->getDepthTargetBinding(j);
 			materialBinding->clearTexture(depthBinding->name);
-			materialBinding->addTexture(depthBinding->name, finalTargetZTexture);
+            if(finalTargetZTexture) {
+                materialBinding->addTexture(depthBinding->name, finalTargetZTexture);
+            } else {
+                materialBinding->addTexture(depthBinding->name, renderer->getGlobalDepthFramebuffer());
+            }
 		}
 		
 		renderer->applyMaterial(filterShaderMaterial, localShaderOptions[i], i, true);
@@ -406,6 +434,13 @@ void Camera::drawFilter(Texture *targetTexture, Number targetTextureWidth, Numbe
 					renderer->drawScreenQuad(targetTextureWidth, targetTextureHeight);
 					renderer->unbindFramebuffers();									
 				} else {
+                    // global framebuffer ONLY used for input
+                    // we must unbind it here.
+                    // this is a bit of a hack, a better system
+                    // would be to define override buffers
+                    if(useGlobalFramebuffer) {
+                        renderer->unbindFramebuffers();
+                    }
 					renderer->setViewportSize(renderer->getXRes(), renderer->getYRes());
 					renderer->clearScreen();
 					renderer->loadIdentity();
@@ -494,5 +529,5 @@ void Camera::doCameraTransform() {
 	Matrix4 camMatrix = getConcatenatedMatrix();
 	renderer->setCameraMatrix(camMatrix);	
 	camMatrix = camMatrix.Inverse();
-	renderer->multModelviewMatrix(camMatrix);		
+	renderer->multModelviewMatrix(camMatrix);
 }

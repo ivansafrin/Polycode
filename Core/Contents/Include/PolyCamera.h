@@ -309,11 +309,14 @@ namespace Polycode {
              */
 			int getProjectionMode() const { return projectionMode; }
 
+            void setUseGlobalFramebuffer(bool val);
+            bool getUseGlobalFramebuffer() const;
 
 		protected:
 
+            bool useGlobalFramebuffer;
 			int projectionMode;
-
+        
 			Matrix4 projectionMatrix;
 
 			Polycode::Rectangle viewport;

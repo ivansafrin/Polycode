@@ -51,6 +51,50 @@ Renderer::Renderer() : clearColor(0.2, 0.2, 0.2, 0.0), currentTexture(NULL), lig
     backingResolutionScaleX = 1.0;
     backingResolutionScaleY = 1.0;
     overrideMaterial = NULL;
+    renderToGlobalFramebuffer = false;
+    globalColorFramebuffer = NULL;
+    globalDepthFramebuffer = NULL;
+}
+
+void Renderer::setRenderToGlobalFramebuffer(bool val) {
+    
+    if(val == renderToGlobalFramebuffer) {
+        return;
+    }
+    
+    renderToGlobalFramebuffer = val;
+    
+    if(renderToGlobalFramebuffer) {
+        createRenderTextures(&globalColorFramebuffer, &globalDepthFramebuffer, getXRes(), getYRes(), false);
+    } else {
+        delete globalColorFramebuffer;
+        delete globalDepthFramebuffer;
+    }
+}
+
+void Renderer::BeginRender() {
+    if(renderToGlobalFramebuffer) {
+        bindFrameBufferTexture(globalColorFramebuffer);
+        bindFrameBufferTextureDepth(globalDepthFramebuffer);
+    }
+}
+
+void Renderer::EndRender() {
+    if(renderToGlobalFramebuffer) {
+        unbindFramebuffers();
+    }
+}
+
+bool Renderer::getRenderToGlobalFramebuffer() const {
+    return renderToGlobalFramebuffer;
+}
+
+Texture *Renderer::getGlobalColorFramebuffer() const {
+    return globalColorFramebuffer;
+}
+
+Texture *Renderer::getGlobalDepthFramebuffer() const {
+    return globalDepthFramebuffer;
 }
 
 void Renderer::setOverrideMaterial(Material *material) {

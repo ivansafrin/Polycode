@@ -640,6 +640,9 @@ void OpenGLRenderer::setPerspectiveDefaults() {
 }
 
 void OpenGLRenderer::BeginRender() {
+    
+    Renderer::BeginRender();
+    
 	if(doClearBuffer) {
 		glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -1027,6 +1030,7 @@ void OpenGLRenderer::setVertexColor(Number r, Number g, Number b, Number a) {
 }
 
 void OpenGLRenderer::EndRender() {
+    Renderer::EndRender();
 ///	glFlush();
 //	glFinish();	
 }

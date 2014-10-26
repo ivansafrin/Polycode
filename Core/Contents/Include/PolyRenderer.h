@@ -93,8 +93,8 @@ namespace Polycode {
 
 		virtual void Resize(int xRes, int yRes) = 0;
 		
-		virtual void BeginRender() = 0;
-		virtual void EndRender() = 0;
+        virtual void BeginRender();
+        virtual void EndRender();
 		
 		virtual Cubemap *createCubemap(Texture *t0, Texture *t1, Texture *t2, Texture *t3, Texture *t4, Texture *t5) = 0;		
 		virtual Texture *createTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, bool createMipmaps, int type=Image::IMAGE_RGBA) = 0;
@@ -301,6 +301,12 @@ namespace Polycode {
         void loadVertexColorIdentity();
         void multiplyVertexColor(const Color &color);
         
+        void setRenderToGlobalFramebuffer(bool val);
+        bool getRenderToGlobalFramebuffer() const;
+        
+        Texture *getGlobalColorFramebuffer() const;
+        Texture *getGlobalDepthFramebuffer() const;
+        
 	protected:
 		virtual void initOSSpecific() {};
         
@@ -337,6 +343,10 @@ namespace Polycode {
         
 		PolycodeShaderModule* currentShaderModule;
 		std::vector <PolycodeShaderModule*> shaderModules;
+        
+        bool renderToGlobalFramebuffer;
+        Texture *globalColorFramebuffer;
+        Texture *globalDepthFramebuffer;
 
 		std::vector<LightInfo> lights;
 		std::vector<LightInfo> pointLights;
