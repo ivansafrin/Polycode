@@ -60,7 +60,6 @@ class TrackballCamera : public EventDispatcher {
 
 		int mouseMode;
 	
-		Vector3 getMouseProjectionOnBall(const Vector2 &mousePosition);
 		void updateCamera();	
 		void processMouseMovement(const Vector2 &newPosition);
 		
@@ -72,8 +71,6 @@ class TrackballCamera : public EventDispatcher {
 		Vector2 trackBallMouseStart;
 		Vector2 trackBallMouseEnd;			
 		Vector3 orbitingCenter;
-		Vector3 trackballRotateStart;
-		Vector3 trackballRotateEnd;	
 		Vector3 trackballEye;		
 		Number cameraDistance;
 		CoreInput *coreInput;		

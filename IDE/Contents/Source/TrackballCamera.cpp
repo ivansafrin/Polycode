@@ -46,11 +46,8 @@ TrackballCamera::TrackballCamera(Camera *targetCamera, Entity *trackballShape) :
 	
 	coreInput = CoreServices::getInstance()->getCore()->getInput();
 	
-	targetCamera->setPosition(cameraDistance, cameraDistance, cameraDistance);
-	trackballRotateEnd = getMouseProjectionOnBall(Vector2(trackballShape->getWidth()/2.0, trackballShape->getHeight()/2.0));
-	trackballRotateStart = trackballRotateEnd;
-	
-	updateCamera();	
+	targetCamera->lookAt(orbitingCenter);
+	updateCamera();
 }
 
 Number TrackballCamera::getCameraDistance() {
@@ -98,7 +95,10 @@ void TrackballCamera::handleEvent(Event *event) {
 					} else {
                         if(!rotationDisabled) {
                             mouseMode = MOUSE_MODE_ORBITING;
-                            trackballRotateStart = trackballRotateEnd = getMouseProjectionOnBall(inputEvent->getMousePosition());
+							trackBallMouseStart = trackBallMouseEnd = Vector2(
+								inputEvent->getMousePosition().x / trackballShape->getWidth(),
+								inputEvent->getMousePosition().y / trackballShape->getHeight()
+							);
                         }
 					}
 				}
@@ -125,15 +125,18 @@ void TrackballCamera::handleEvent(Event *event) {
 
 void TrackballCamera::setOrbitingCenter(const Vector3 &newCenter) {
 	orbitingCenter = newCenter;
-	updateCamera();	
 }
 
 void TrackballCamera::processMouseMovement(const Vector2 &newPosition) {
 	switch(mouseMode) {
 		case MOUSE_MODE_ORBITING:
 		{
-			trackballRotateEnd = getMouseProjectionOnBall(newPosition);
+			trackBallMouseEnd  = Vector2(
+							newPosition.x / trackballShape->getWidth(),
+							newPosition.y / trackballShape->getHeight()
+						);
 			updateCamera();
+			trackBallMouseStart = trackBallMouseEnd;
 		}	
 		break;
 		case MOUSE_MODE_PANNING:
@@ -183,6 +186,7 @@ void TrackballCamera::processMouseMovement(const Vector2 &newPosition) {
 
 void TrackballCamera::setCameraPosition(Vector3 cameraPosition) {
     targetCamera->setPosition(cameraPosition);
+	targetCamera->lookAt(orbitingCenter);
     updateCamera();
 }
 
@@ -192,28 +196,30 @@ Vector3 TrackballCamera::getOribitingCenter() {
 
 void TrackballCamera::updateCamera() {
 
+	Quaternion currentCamQuat = targetCamera->getRotationQuat();
 	trackballEye = targetCamera->getPosition() - orbitingCenter;
 	trackballEye.setLength(cameraDistance);
-	
-	
-	Number angle = acos(trackballRotateStart.dot(trackballRotateEnd) / trackballRotateStart.length() / trackballRotateEnd.length());
-	
-	if(angle == angle) {
-		Vector3 axis = trackballRotateStart.crossProduct(trackballRotateEnd);
-		axis.Normalize();
+
+	if(mouseMode == MOUSE_MODE_ORBITING) {
+		Vector2 localMouse =  trackBallMouseEnd - trackBallMouseStart;
+
 		Quaternion q;
-		
-		angle *= trackballRotateSpeed;	
-		q.fromAngleAxis(angle, axis);
-		
+		// yaw
+		if(Vector3(0.0, 1.0, 0.0).dot(currentCamQuat.applyTo(Vector3(0.0, 0.0, -1.0))) > 0.0)
+			q.fromAngleAxis(localMouse.x*2.0, Vector3(0.0, 1.0, 0.0));
+		else
+			q.fromAngleAxis(localMouse.x*-2.0, Vector3(0.0, 1.0, 0.0));
+		currentCamQuat = q * currentCamQuat;
 		trackballEye = q.applyTo(trackballEye);
-		trackballRotateEnd = q.applyTo(trackballRotateEnd);
-		
-		trackballRotateStart = trackballRotateEnd;
+
+		// local pitch
+		q.fromAngleAxis(localMouse.y*-2.0, currentCamQuat.applyTo(Vector3(1.0, 0.0, 0.0)));
+		currentCamQuat = q * currentCamQuat;
+		trackballEye = q.applyTo(trackballEye);
 	}
 		
 	targetCamera->setPosition(orbitingCenter + trackballEye);	
-	targetCamera->lookAt(orbitingCenter);
+	targetCamera->setRotationByQuaternion(currentCamQuat);
     dispatchEvent(new Event(), Event::CHANGE_EVENT);
 }
 
@@ -221,31 +227,6 @@ void TrackballCamera::disableRotation(bool val) {
     rotationDisabled = val;
 }
 
-Vector3 TrackballCamera::getMouseProjectionOnBall(const Vector2 &mousePosition) {
-
-	Vector3 mouseOnBall = Vector3((mousePosition.x - (trackballShape->getWidth() * 0.5)) / (trackballShape->getWidth() * 0.5),(mousePosition.y - (trackballShape->getHeight() * 0.5)) / (trackballShape->getHeight() * 0.5), 0.0);
-	mouseOnBall.x *= -1;	
-	
-	Number length = mouseOnBall.length();
-	
-
-	if (length < sqrt(0.5)) {
-		mouseOnBall.z = sqrt(1.0 - length*length);
-	} else {
-		mouseOnBall.z = 0.5 / length;
-	}
-
-	trackballEye = targetCamera->getPosition() - orbitingCenter;
-	
-	Vector3 projection = Vector3(0.0, 1.0, 0.0).setLength(mouseOnBall.y);		
-	
-	projection = projection + (Vector3(0.0, 1.0, 0.0).crossProduct(trackballEye).setLength(mouseOnBall.x));				
-	
-	trackballEye.setLength(mouseOnBall.z);
-	projection = projection + (trackballEye);
-	
-	return projection;	
-}
 /*
 void TrackballCamera::setCameraPosition(Vector3 cameraPosition) {
 
