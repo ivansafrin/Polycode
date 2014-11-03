@@ -476,6 +476,9 @@ void PolycodeIDEApp::doRunProject() {
 	printf("Running project...\n");
 	stopProject();
 
+    debugger->resetDebugger();
+    frame->console->clearBacktraces();
+    
 	frame->showConsole();
 
 	String outPath = PolycodeToolLauncher::generateTempPath(projectManager->getActiveProject()) + ".polyapp";

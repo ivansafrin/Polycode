@@ -809,6 +809,9 @@ CFArrayRef elements;
 	GamepadDeviceEntry *entry = new GamepadDeviceEntry();
 	entry->device = device;
 	entry->input  = core->getInput();
+    entry->numButtons = 0;
+    entry->numAxes = 0;
+    
 	entry->deviceID = core->nextDeviceID++;
 	core->gamepads.push_back(entry);	
 	core->getInput()->addJoystick(entry->deviceID);
@@ -864,6 +867,13 @@ static void onDeviceRemoved(void * context, IOReturn result, void * sender, IOHI
 void CocoaCore::shutdownGamepad() {
 	if (hidManager != NULL) {
 		
+        
+        for (int i = 0; i < gamepads.size(); i++) {
+            IOHIDDeviceRegisterInputValueCallback(gamepads[i]->device, NULL, NULL);
+            delete gamepads[i];
+        }
+        
+        
 		IOHIDManagerRegisterDeviceMatchingCallback(hidManager, NULL, NULL);
 		IOHIDManagerRegisterDeviceRemovalCallback(hidManager, NULL, NULL);		
 		
@@ -871,11 +881,7 @@ void CocoaCore::shutdownGamepad() {
 		IOHIDManagerClose(hidManager, 0);
 		CFRelease(hidManager);
 		hidManager = NULL;
-		
-		for (int i = 0; i < gamepads.size(); i++) {
-			IOHIDDeviceRegisterInputValueCallback(gamepads[i]->device, NULL, NULL);		
-			delete gamepads[i];
-		}
+
 		
 	}
 }

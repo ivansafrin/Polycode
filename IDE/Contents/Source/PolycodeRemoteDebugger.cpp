@@ -55,6 +55,11 @@ void PolycodeRemoteDebugger::Disconnect() {
 	debuggerClients.clear();
 }
 
+void PolycodeRemoteDebugger::resetDebugger() {
+    receivedBacktraceData.clear();
+    hasErred = false;
+}
+
 void PolycodeRemoteDebugger::handleEvent(Event *event) {
 	
 	if(event->getDispatcher() == server) {
@@ -81,16 +86,27 @@ void PolycodeRemoteDebugger::handleEvent(Event *event) {
 							
 							CoreServices::getInstance()->getCore()->makeApplicationMain();
 						}
-						//							hasErred = true;
+                        hasErred = true;
 					}
 						break;			
 					case EVENT_DEBUG_BACKTRACE_INFO:
 					{			
 						
-						RemoteBacktraceData *data = (RemoteBacktraceData*)serverEvent->data;			
+                        
+						RemoteBacktraceData *data = (RemoteBacktraceData*)serverEvent->data;
+                        
+                        for(int i=0;i <receivedBacktraceData.size(); i++) {
+                            if(receivedBacktraceData[i].lineNumber == data->lineNumber && String(receivedBacktraceData[i].fileName) == String(data->fileName)) {
+                                return;
+                            }
+                        }
+                        
+                        
 						PolycodeConsole::print("In file "+String(data->fileName)+" on line "+String::IntToString(data->lineNumber)+"\n");
 						
 						PolycodeConsole::addBacktrace(String(data->fileName), data->lineNumber, projectManager->getActiveProject());
+                        
+                        receivedBacktraceData.push_back(*data);
 						
 					}
 						break;							

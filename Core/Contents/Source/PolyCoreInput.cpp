@@ -63,7 +63,7 @@ namespace Polycode {
 	}
 	
 	JoystickInfo *CoreInput::getJoystickInfoByIndex(unsigned int index) {
-        if(index > joysticks.size()-1) {
+        if(index > joysticks.size()-1 || joysticks.size() == 0) {
             return NULL;
         }
 		return &joysticks[index];

@@ -89,6 +89,7 @@ namespace Polycode {
 		public:
 			GamepadDeviceEntry() {
 				numAxes = 0;
+                numButtons = 0;
 			}
 			vector<HIDGamepadAxis> axisElements;
 			vector<HIDGamepadButton> buttonElements;			

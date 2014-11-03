@@ -53,6 +53,7 @@ class PolycodeRemoteDebugger : EventHandler {
 		void injectCode(String code);
 		
 		void handleEvent(Event *event);
+        void resetDebugger();
 			
 		bool isConnected();
 		
@@ -70,6 +71,8 @@ class PolycodeRemoteDebugger : EventHandler {
 	protected:
 		
 		bool hasErred;
+    
+        std::vector<RemoteBacktraceData> receivedBacktraceData;
 		
 		PolycodeProjectManager *projectManager;
 		
