@@ -55,6 +55,11 @@ Vector3 Ray::planeIntersectPoint(const Vector3 &planeNormal, Number planeDistanc
 	 return origin + direction * (-distanceToOrigin / direction.dot(planeNormal));
 }
 
+Vector3 Ray::planeIntersectPoint(const Vector3 &planeNormal, const Vector3 &planePosition) const {
+	Number d = (planePosition - origin).dot(planeNormal) / direction.dot(planeNormal);
+	return origin + direction * d;
+}
+
 bool Ray::polygonIntersect(const Vector3 &v1, const Vector3 &v2, const Vector3 &v3) const {
 
     Number t,u,v;
@@ -91,6 +96,40 @@ bool Ray::polygonIntersect(const Vector3 &v1, const Vector3 &v2, const Vector3 &
 	if (t <= 0)
 			return false;
 			
+	return true;
+}
+
+Vector3 Ray::closestPointOnRay(const Vector3 &point) const {
+	Number b = (point - origin).dot(direction)/ direction.dot(direction);
+	return origin + direction*b;
+}
+
+bool Ray::closestPointsBetween(const Ray &ray2, Vector3 *point1, Vector3 *point2) {
+	Vector3 wOrigin = origin - ray2.origin;
+
+	Number a = direction.dot(direction);
+	Number b = direction.dot(ray2.direction);
+	Number c = ray2.direction.dot(ray2.direction);
+	Number d = direction.dot(wOrigin);
+	Number e = ray2.direction.dot(wOrigin);
+	Number denom = a*c - b*b;
+
+	if(denom < 0.00001) {
+		if(point1)
+			*point1 = Vector3(0); 
+		if(point2)
+			*point2 = Vector3(0); 
+		return false;
+	}
+
+	Number s = (b*e - c*d)/denom;
+	Number t = (a*e - b*d)/denom;
+
+	
+	if(point1)
+		*point1 = origin + direction*s; 
+	if(point2)
+		*point2 = ray2.origin + ray2.direction*t; 
 	return true;
 }
 
