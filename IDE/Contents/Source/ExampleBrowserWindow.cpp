@@ -45,6 +45,7 @@ ExampleBrowserWindow::ExampleBrowserWindow() : UIWindow(L"Example Browser", 320,
 	templateContainer->getRootNode()->toggleCollapsed();
 	
 	templateContainer->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
+	templateContainer->getRootNode()->addEventListener(this, UITreeEvent::EXECUTED_EVENT);
 	
 	vector<OSFileEntry> templates = OSBasics::parseFolder(RESOURCE_PATH"Standalone/Examples/Lua", false);
 	for(int i=0; i < templates.size(); i++) {
@@ -104,12 +105,21 @@ void ExampleBrowserWindow::handleEvent(Event *event) {
 		}
 	}
 	
-	if(event->getEventType() == "UITreeEvent" && event->getEventCode() == UITreeEvent::SELECTED_EVENT) {
-		if(event->getDispatcher() == templateContainer->getRootNode()) {
-			UITreeEvent *treeEvent = (UITreeEvent*) event;
-			ExampleTemplateUserData *data = (ExampleTemplateUserData *)treeEvent->selection->getUserData();
-			if(data->type == 1)
-				templateFolder = data->templateFolder;
+	if(event->getEventType() == "UITreeEvent") {
+		if (event->getDispatcher() == templateContainer->getRootNode()) {
+			UITreeEvent *treeEvent = (UITreeEvent*)event;
+			if (event->getEventCode() == UITreeEvent::SELECTED_EVENT){
+				ExampleTemplateUserData *data = (ExampleTemplateUserData *)treeEvent->selection->getUserData();
+				if (data->type == 1)
+					templateFolder = data->templateFolder;
+			}
+			if (event->getEventCode() == UITreeEvent::EXECUTED_EVENT){
+				UITree *node = treeEvent->selection;
+				if (node) {
+					ExampleTemplateUserData *data = (ExampleTemplateUserData*)node->getUserData();
+					dispatchEvent(new UIEvent(), UIEvent::OK_EVENT);
+				}
+			}
 		}
 	}
 	

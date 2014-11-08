@@ -196,7 +196,11 @@ void UITree::handleEvent(Event *event) {
 				}
 			break;						
 			case InputEvent::EVENT_DOUBLECLICK:
-				dispatchEvent(new UITreeEvent(this), UITreeEvent::EXECUTED_EVENT);				
+				if (hasTreeChildren()){
+					toggleCollapsed();
+				} else {
+					dispatchEvent(new UITreeEvent(this), UITreeEvent::EXECUTED_EVENT);
+				}
 			break;
 			default:				
 			break;
