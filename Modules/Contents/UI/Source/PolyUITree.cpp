@@ -196,7 +196,7 @@ void UITree::handleEvent(Event *event) {
 				}
 			break;						
 			case InputEvent::EVENT_DOUBLECLICK:
-				if (hasTreeChildren()){
+				if (hasTreeChildren() && ((InputEvent*)event)->getMouseButton() == 0){
 					toggleCollapsed();
 				} else {
 					dispatchEvent(new UITreeEvent(this), UITreeEvent::EXECUTED_EVENT);
