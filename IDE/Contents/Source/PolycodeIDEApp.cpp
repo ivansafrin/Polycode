@@ -476,6 +476,8 @@ void PolycodeIDEApp::doRunProject() {
 
 	frame->showConsole();
 
+	CoreServices::getInstance()->getCore()->pauseOnLoseFocus = false;
+
 	String outPath = PolycodeToolLauncher::generateTempPath(projectManager->getActiveProject()) + ".polyapp";
 	PolycodeToolLauncher::buildProject(projectManager->getActiveProject(), outPath, false);
 	PolycodeToolLauncher::runPolyapp(outPath);
