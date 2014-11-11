@@ -110,7 +110,13 @@ HTTPFetcher::HTTPFetcher(String address) : EventDispatcher() {
 	}
 }
 
-HTTPFetcher::~HTTPFetcher(){}
+HTTPFetcher::~HTTPFetcher(){
+#ifdef _WINDOWS
+	closesocket(s);
+#else
+	close(s);
+#endif
+}
 
 bool HTTPFetcher::receiveHTTPData(){
 	//Send some data
