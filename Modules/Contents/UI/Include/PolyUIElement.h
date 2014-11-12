@@ -166,7 +166,8 @@ namespace Polycode {
         String labelFontName;
         int labelAAMode;
         int spacing;
-        
+		int linesCount;
+
         void clearLabels();
         std::vector<UILabel*> labels;
 	};

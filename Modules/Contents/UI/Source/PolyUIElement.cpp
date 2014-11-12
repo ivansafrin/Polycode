@@ -42,8 +42,9 @@ void UIMultilineLabel::setText(const String& text) {
     clearLabels();
     
     std::vector<String> lines = text.split("\n");
-    
-    Number lineSize = spacing;
+	linesCount = lines.size();
+
+	Number lineSize = spacing;
     Number yPos = 0.0;
     for(int i=0; i < lines.size(); i++) {
         if(lines[i] == "") {
@@ -107,13 +108,12 @@ Number UIMultilineLabel::getWidth(){
 }
 
 Number UIMultilineLabel::getHeight(){
-	Number maxHeight = 0;
+	Number retHeight = 0;
 	for (int i = 0; i < labels.size(); i++) {
-		if (labels[i]->getHeight() > maxHeight){
-			maxHeight = labels[i]->getHeight();
-		}
+		retHeight += labels[i]->getHeight() + spacing;
 	}
-	return maxHeight;
+	retHeight += (linesCount - labels.size()) * (labelSize + spacing);
+	return retHeight;
 }
 
 UIMultilineLabel::~UIMultilineLabel() {
