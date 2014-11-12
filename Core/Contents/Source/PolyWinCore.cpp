@@ -724,6 +724,25 @@ bool Win32Core::checkSpecialKeyEvents(PolyKEY key) {
 
 void Win32Core::checkEvents() {
 	lockMutex(eventMutex);
+
+	if ((GetKeyState(VK_LBUTTON) & 0x80) != 0 && !input->getMouseButtonState(CoreInput::MOUSE_BUTTON1)){
+		input->setMouseButtonState(CoreInput::MOUSE_BUTTON1, true, getTicks());
+	} else if ((GetKeyState(VK_LBUTTON) & 0x80) == 0 && input->getMouseButtonState(CoreInput::MOUSE_BUTTON1)) {
+		input->setMouseButtonState(CoreInput::MOUSE_BUTTON1, false, getTicks());
+	}
+
+	if ((GetKeyState(VK_RBUTTON) & 0x80) != 0 && !input->getMouseButtonState(CoreInput::MOUSE_BUTTON2)){
+		input->setMouseButtonState(CoreInput::MOUSE_BUTTON2, true, getTicks());
+	} else if ((GetKeyState(VK_RBUTTON) & 0x80) == 0 && input->getMouseButtonState(CoreInput::MOUSE_BUTTON2)){
+		input->setMouseButtonState(CoreInput::MOUSE_BUTTON2, false, getTicks());
+	}
+
+	if ((GetKeyState(VK_MBUTTON) & 0x80) != 0 && !input->getMouseButtonState(CoreInput::MOUSE_BUTTON3)){
+			input->setMouseButtonState(CoreInput::MOUSE_BUTTON3, true, getTicks());
+	} else if ((GetKeyState(VK_MBUTTON) & 0x80) == 0 && input->getMouseButtonState(CoreInput::MOUSE_BUTTON3)) {
+			input->setMouseButtonState(CoreInput::MOUSE_BUTTON3, false, getTicks());
+	}
+	
 	Win32Event event;
 	for(int i=0; i < win32Events.size(); i++) {
 		event = win32Events[i];
@@ -744,12 +763,6 @@ void Win32Core::checkEvents() {
 						lastMouseX = event.mouseX;
 						lastMouseY = event.mouseY;
 						input->setMousePosition(event.mouseX, event.mouseY, getTicks());						
-					break;
-					case InputEvent::EVENT_MOUSEDOWN:
-							input->setMouseButtonState(event.mouseButton, true, getTicks());						
-					break;
-					case InputEvent::EVENT_MOUSEUP:
-							input->setMouseButtonState(event.mouseButton, false, getTicks());
 					break;
 					case InputEvent::EVENT_MOUSEWHEEL_UP:
 						input->mouseWheelUp(getTicks());
