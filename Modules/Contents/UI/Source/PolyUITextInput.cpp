@@ -1655,6 +1655,7 @@ void UITextInput::Copy() {
 void UITextInput::Paste() {
 	saveUndoState();
 	String clip = CoreServices::getInstance()->getCore()->getClipboardString().replace("\r\n", "\n");
+	clip = clip.replace("\r", "\n");
 	insertText(clip);
 }
 
