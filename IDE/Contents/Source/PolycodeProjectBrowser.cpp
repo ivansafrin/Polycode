@@ -69,7 +69,7 @@ void PolycodeProjectBrowser::handleEvent(Event *event) {
 	if(event->getDispatcher() == contextMenu) {
 		UIMenuItem *item = contextMenu->getSelectedItem();
 
-		PolycodeProjectBrowserEvent *bEvent = new PolycodeProjectBrowserEvent();			
+		PolycodeProjectBrowserEvent *bEvent = new PolycodeProjectBrowserEvent();
 		bEvent->command = item->_id;
 		dispatchEvent(bEvent, PolycodeProjectBrowserEvent::HANDLE_MENU_COMMAND);
 						
@@ -91,9 +91,13 @@ void PolycodeProjectBrowser::handleEvent(Event *event) {
 			contextMenu->addOption("Import 3D assets", "import_assets");
 			contextMenu->addDivider();
 			contextMenu->addOption("Refresh", "refresh");
-			contextMenu->addOption("Rename", "rename");						
-			contextMenu->addDivider();
-			contextMenu->addOption("Remove", "remove");
+			if (treeContainer->getRootNode() == treeContainer->getRootNode()->getSelectedNode()){
+				contextMenu->addOption("Close Project", "close_project");
+			} else {
+				contextMenu->addOption("Rename", "rename");
+				contextMenu->addDivider();
+				contextMenu->addOption("Remove", "remove");
+			}
 
 			contextMenu->fitToScreenVertical();
 			
