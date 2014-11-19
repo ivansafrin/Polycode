@@ -12,6 +12,7 @@
 	<uiSmallHeaderBgColor>0x3a3a3aff</uiSmallHeaderBgColor>
 	<uiHeaderFontColor>0x545454FF</uiHeaderFontColor>
 	<uiSectionFontColor>0x00000080</uiSectionFontColor>
+	<uiMenuBarBgColor>0x00000000</uiMenuBarBgColor>
 
 	<uiTextInputFontName>sans</uiTextInputFontName>
 	<uiTextInputFontNameMultiLine>mono</uiTextInputFontNameMultiLine>

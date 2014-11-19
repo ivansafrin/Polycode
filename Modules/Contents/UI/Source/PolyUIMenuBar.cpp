@@ -46,7 +46,7 @@ UIMenuBarEntry::UIMenuBarEntry(String name): UIElement() {
 	bg->setAnchorPoint(-1.0, -1.0, 0.0);
 	addChild(bg);
 	bg->processInputEvents = true;
-	bg->color.setColorHex(0x00000000);
+	bg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiMenuBarBgColor"));
 	addChild(label);
 	label->setPosition(10, 5);
 }
@@ -56,7 +56,7 @@ void UIMenuBarEntry::Select() {
 }
 
 void UIMenuBarEntry::Deselect() {
-	bg->color.setColorHex(0x00000000);
+	bg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiMenuBarBgColor"));
 }
 
 void UIMenuBarEntry::addItem(String name, String code, PolyKEY shortCut1, PolyKEY shortCut2) {
@@ -69,12 +69,15 @@ UIMenuBarEntry::~UIMenuBarEntry() {
 }
 
 UIMenuBar::UIMenuBar(int width, UIGlobalMenu *globalMenu) : UIElement() {
+	Config *conf = CoreServices::getInstance()->getConfig();
 
 	this->globalMenu = globalMenu;
 
 	bgShape = new UIRect(width, 25);
 	addChild(bgShape);
-	bgShape->setColor(0.0, 0.0, 0.0, 1.0);
+	Color bgColor = new Color();
+	bgColor.setColorHexFromString(conf->getStringValue("Polycode", "uiMenuBarBgColor"));
+	bgShape->setColor(bgColor);
 	bgShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	entryOffset = 0;
 
