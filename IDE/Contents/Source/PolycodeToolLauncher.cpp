@@ -51,7 +51,7 @@ void PolycodeRunner::runThread() {
 #if defined(__APPLE__) && defined(__MACH__)
 	String command = "../MacOS/PolycodePlayer";	
 	String inFolder = polycodeBasePath+"/Standalone/Player/PolycodePlayer.app/Contents/Resources";
-	String args = polyappPath;
+	String args = "\""+polyappPath+"\""+;
 #elif defined _WINDOWS
 	String command = "\""+polycodeBasePath+"/Standalone/Player/PolycodePlayer.exe\"";
 	String args = "\""+polyappPath+"\"";
@@ -59,7 +59,7 @@ void PolycodeRunner::runThread() {
 #else
 	String command = "./PolycodePlayer";	
 	String inFolder = polycodeBasePath+"/Standalone/Player";
-	String args = polyappPath;
+	String args = "\""+polyappPath+"\"";
 #endif
 
 	String ret = CoreServices::getInstance()->getCore()->executeExternalCommand(command, args, inFolder);
