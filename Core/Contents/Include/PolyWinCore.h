@@ -38,6 +38,7 @@
 
 
 #include <vector>
+#include <sstream>
 
 #ifndef VK_0
 #define VK_0	'0'
