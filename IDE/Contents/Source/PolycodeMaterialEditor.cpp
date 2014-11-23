@@ -53,7 +53,7 @@ PostEditorPane::PostEditorPane(ResourcePool *resourcePool) : UIElement() {
 	baseProps->addProp(fp16Prop);
 	fp16Prop->addEventListener(this, Event::CHANGE_EVENT);
 		
-	baseProps->propHeight = 100;	
+	baseProps->propHeight = 300;
 
 	targetsProps = new RenderTargetsSheet();
 	propList->addPropSheet(targetsProps);
