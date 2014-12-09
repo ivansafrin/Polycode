@@ -232,9 +232,9 @@ namespace Polycode {
 		KEY_LEFT		= 276,
 		KEY_INSERT		= 277,
 		KEY_HOME		= 278,
-		KEY_END		= 279,
+		KEY_END			= 279,
 		KEY_PAGEUP		= 280,
-		KEY_PAGEDOWN		= 281,
+		KEY_PAGEDOWN	= 281,
 		
 		/* Function keys */
 		KEY_F1			= 282,
