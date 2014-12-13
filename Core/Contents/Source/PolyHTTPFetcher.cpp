@@ -54,14 +54,9 @@ HTTPFetcher::HTTPFetcher(String address) : EventDispatcher() {
 
     //Create a socket
 #if PLATFORM == PLATFORM_WINDOWS
-    char ipstringbuffer[46];
-    unsigned long ipbufferlength;
-
     if ((s = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET) {
         Logger::log("HTTP Fetcher: Could not create socket: %d\n", WSAGetLastError());
 #elif PLATFORM == PLATFORM_MAC || PLATFORM == PLATFORM_UNIX
-    char* ipstringbuffer;
-
     if ((s = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
         Logger::log("HTTP Fetcher: Could not create socket: %s\n", strerror(errno));
 #endif
@@ -81,23 +76,9 @@ HTTPFetcher::HTTPFetcher(String address) : EventDispatcher() {
 		return;
 	}
 	
-#if PLATFORM == PLATFORM_WINDOWS
-	if (WSAAddressToStringA(result->ai_addr, (unsigned long)result->ai_addrlen, NULL, ipstringbuffer, &ipbufferlength) != 0) {
-		Logger::log("HTTP Fetcher: Address to String convert error: %d\n", WSAGetLastError());
-		return;
-	}
-#elif PLATFORM == PLATFORM_MAC || PLATFORM == PLATFORM_UNIX
-    in_addr addr;
-    addr = ((sockaddr_in*)result->ai_addr)->sin_addr;
-    ipstringbuffer = inet_ntoa(addr);
-#endif
-
-	String ipString = ipstringbuffer;
-	ipString = ipString.substr(0, ipString.find_first_of(":"));
-
-	server.sin_addr.s_addr = inet_addr(ipString.c_str());
+	server.sin_addr = ((sockaddr_in*)result->ai_addr)->sin_addr;
 	server.sin_family = AF_INET;
-	server.sin_port = htons(80);
+	server.sin_port = ((sockaddr_in*)result->ai_addr)->sin_port;
 
 	//Connect to remote server
 	if (connect(s, (struct sockaddr *)&server, sizeof(server)) < 0) {
