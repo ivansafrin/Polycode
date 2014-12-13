@@ -37,14 +37,8 @@ THE SOFTWARE.
 #include "PolyEvent.h"
 #include "PolyEventDispatcher.h"
 
-#define PORT_NUMBER 			80
 #define HTTP_VERSION 			"HTTP/1.0"
 #define DEFAULT_USER_AGENT		"Polycode HTTP Fetcher/1.0"
-#define DEFAULT_READ_TIMEOUT	30		/* Seconds to wait before giving up
-										 *	when no data is arriving */
-
-#define REQUEST_BUF_SIZE 		1024
-#define HEADER_BUF_SIZE 		1024
 #define DEFAULT_PAGE_BUF_SIZE 	1024 * 200	/* 200K should hold most things */
 
 namespace Polycode {
