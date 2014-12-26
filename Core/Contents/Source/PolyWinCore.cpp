@@ -239,6 +239,8 @@ void Win32Core::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, in
 		resetContext = true;
 	}
 
+	bool wasFullscreen = this->fullScreen;
+
 	this->xRes = xRes;
 	this->yRes = yRes;
 	this->fullScreen = fullScreen;
@@ -248,6 +250,7 @@ void Win32Core::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, in
 
 		SetWindowLong(hWnd, GWL_STYLE, WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP);
 		ShowWindow(hWnd, SW_SHOW);
+		MoveWindow(hWnd, 0, 0, xRes, yRes, TRUE);
 
 		DEVMODE dmScreenSettings;					// Device Mode
 		memset(&dmScreenSettings,0,sizeof(dmScreenSettings));		// Makes Sure Memory's Cleared
@@ -258,11 +261,19 @@ void Win32Core::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, in
 		dmScreenSettings.dmFields=DM_BITSPERPEL|DM_PELSWIDTH|DM_PELSHEIGHT;
 		ChangeDisplaySettings(&dmScreenSettings,CDS_FULLSCREEN);
 
-		SetWindowPos(hWnd, NULL, 0, 0, xRes, yRes, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
+		//SetWindowPos(hWnd, NULL, 0, 0, xRes, yRes, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
 	} else {
-	//	SetWindowLong(hWnd, GWL_STYLE, WS_OVERLAPPED|WS_SYSMENU);
-	//	ShowWindow(hWnd, SW_SHOW);
-		ClientResize(hWnd, xRes, yRes);
+		RECT rect;
+		rect.left = 0;
+		rect.top = 0;
+		rect.right = xRes;
+		rect.bottom = yRes;
+		SetWindowLongPtr(hWnd, GWL_STYLE, WS_CAPTION | WS_POPUPWINDOW | WS_VISIBLE);
+		AdjustWindowRect(&rect, WS_CAPTION | WS_POPUPWINDOW, FALSE);
+		MoveWindow(hWnd, 0, 0, rect.right-rect.left, rect.bottom-rect.top, TRUE);
+
+		ChangeDisplaySettings(0, 0);
+	
 	}
 
 
@@ -1022,6 +1033,7 @@ DWORD WINAPI Win32LaunchThread(LPVOID data) {
 
 
 void Win32Core::createThread(Threaded *target) {
+	Core::createThread(target);
 	DWORD dwGenericThread; 
 	HANDLE handle = CreateThread(NULL,0,Win32LaunchThread,target,0,&dwGenericThread);
 }
