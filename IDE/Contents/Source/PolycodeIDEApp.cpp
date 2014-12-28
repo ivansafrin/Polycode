@@ -187,6 +187,7 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	fileEntry->addItem("New File", "new_file", KEY_n);
 	fileEntry->addItem("New Project", "new_project", KEY_LSHIFT, KEY_n);
 	fileEntry->addItem("New Folder", "new_folder", KEY_LSHIFT, KEY_f);
+	fileEntry->addItem("Open File", "open_file", KEY_o);
 	fileEntry->addItem("Open Project", "open_project", KEY_LSHIFT, KEY_o);
 	fileEntry->addItem("Close Project", "close_project", KEY_LSHIFT, KEY_w);
 	fileEntry->addItem("Close File", "close_file", KEY_w);
@@ -706,6 +707,25 @@ void PolycodeIDEApp::openFile(OSFileEntry file) {
 	}
 }
 
+void PolycodeIDEApp::openFilePicker() {
+	std::vector<CoreFileExtension> extensions = editorManager->getExtensionsWithEditor();
+ #ifdef USE_POLYCODEUI_FILE_DIALOGS
+	std::vector<String> exts;
+	for(int e = 0; e < extensions.size(); e++){
+		exts.push_back((extensions[e].extension));
+	}
+	frame->showFileBrowser(CoreServices::getInstance()->getCore()->getUserHomeDirectory(),	false, exts, false);
+	frame->fileDialog->addEventListener(this, UIEvent::OK_EVENT);
+	frame->fileDialog->action = "openFile";
+#else
+	extensions.insert(extensions.begin(), CoreFileExtension("All Types", "*"));
+	std::vector<String> filePaths = core->openFilePicker(extensions, true);
+	for (int f = 0; f < filePaths.size(); f++){
+		openFile(OSFileEntry(filePaths[f], OSFileEntry::TYPE_FILE));
+	}
+#endif
+}
+
 void PolycodeIDEApp::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == frame->assetImporterWindow) {
@@ -761,6 +781,8 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 					frame->assetImporterWindow->setSourceFileAndTargetFolder(path, projectManager->activeFolder, projectManager->activeFolder.replace(projectManager->getActiveProject()->getRootFolder(), ""));
 					frame->showModal(frame->assetImporterWindow);
 					frame->assetImporterWindow->addEventListener(this, UIEvent::OK_EVENT);
+				} else if(frame->fileDialog->action == "openFile") {
+					openFile(OSFileEntry(path, OSFileEntry::TYPE_FILE));
 				}
 			}
 		}
@@ -775,7 +797,9 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 			newProject();
 		} else if(action == "new_folder") {
 			newGroup();
-		} else if(action == "open_project") {
+		} else if (action == "open_file") {
+			openFilePicker();
+		} else if (action == "open_project") {
 			openProject();
 		} else if(action == "close_project") {
 			closeProject();

@@ -45,6 +45,17 @@ PolycodeEditorFactory *PolycodeEditorManager::getEditorFactoryForExtension(Strin
 	return NULL;
 }
 
+std::vector<CoreFileExtension> PolycodeEditorManager::getExtensionsWithEditor(){
+	std::vector<CoreFileExtension> extensions;
+	for (int i = 0; i < editorFactories.size(); i++) {
+		PolycodeEditorFactory *factory = editorFactories[i];
+		for (int e = 0; e < factory->getExtensions().size(); e++){
+			extensions.push_back(CoreFileExtension(factory->getExtensions()[e], factory->getExtensions()[e]));
+		}
+	}
+	return extensions;
+}
+
 PolycodeEditor *PolycodeEditorManager::createEditorForExtension(String extension) {
 	for(int i=0;i < editorFactories.size(); i++) {
 		PolycodeEditorFactory *factory = editorFactories[i];

@@ -38,6 +38,8 @@ class PolycodeEditorManager : public EventDispatcher {
 		void registerEditorFactory(PolycodeEditorFactory *editorFactory);
 		
 		PolycodeEditorFactory *getEditorFactoryForExtension(String extension);
+
+		std::vector<CoreFileExtension> getExtensionsWithEditor();
 	
 		void handleEvent(Event *event);
 		
