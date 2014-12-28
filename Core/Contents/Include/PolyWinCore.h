@@ -228,6 +228,12 @@ public:
 		void initTouch();
 
 		void handleViewResize(int width, int height);
+
+		/**
+		* Handles focus changes
+		* @param newFocus bool value: true if gained focus, false if lost focus
+		*/
+		void handleFocusChange(bool newFocus);
 		
 		String executeExternalCommand(String command,  String args, String inDirectory);
 		std::vector<String> openFilePicker(std::vector<CoreFileExtension> extensions, bool allowMultiple);

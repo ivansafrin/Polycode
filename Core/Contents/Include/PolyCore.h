@@ -404,7 +404,9 @@ namespace Polycode {
 		String defaultWorkingDirectory;
 		
 		void *userPointer;
-		
+
+		//used for pausing workaround..
+		int frameRate;
 		long refreshInterval;
 		unsigned int timeSleptMs;
 		
