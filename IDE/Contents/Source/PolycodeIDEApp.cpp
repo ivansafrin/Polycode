@@ -866,7 +866,9 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 						renameFile();
 					} else if(bEvent->command == "remove") {
 						removeFile();
-					}																				
+					} else if (bEvent->command == "close_project"){
+						closeProject();
+					}
 				break;
 			}
 		}

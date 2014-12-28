@@ -41,6 +41,7 @@ NewFileWindow::NewFileWindow() : UIWindow(L"Create New File", 580, 280) {
 	templateContainer->getRootNode()->toggleCollapsed();
 	
 	templateContainer->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
+	templateContainer->getRootNode()->addEventListener(this, UITreeEvent::EXECUTED_EVENT);
 	
 	
 	vector<OSFileEntry> templates = OSBasics::parseFolder(RESOURCE_PATH"FileTemplates", false);
@@ -105,22 +106,31 @@ void NewFileWindow::handleEvent(Event *event) {
 	if(event->getEventType() == "UIEvent") {
 		if(event->getEventCode() == UIEvent::CLICK_EVENT) {
 			if(event->getDispatcher() == okButton) {
-				dispatchEvent(new UIEvent(), UIEvent::OK_EVENT);						
+				dispatchEvent(new UIEvent(), UIEvent::OK_EVENT);
 			}
 			
 			if(event->getDispatcher() == cancelButton) {
-				dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);				
+				dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);
 			}									
 		}
 	}
 	}
 	
-	if(event->getEventType() == "UITreeEvent" && event->getEventCode() == UITreeEvent::SELECTED_EVENT) {
-		if(event->getDispatcher() == templateContainer->getRootNode()) {
-			UITreeEvent *treeEvent = (UITreeEvent*) event;
+	if(event->getEventType() == "UITreeEvent") {
+		if (event->getEventCode() == UITreeEvent::SELECTED_EVENT){
+			if (event->getDispatcher() == templateContainer->getRootNode()) {
+				UITreeEvent *treeEvent = (UITreeEvent*)event;
+				FileTemplateUserData *data = (FileTemplateUserData *)treeEvent->selection->getUserData();
+				if (data->type == 1)
+					templatePath = data->templatePath;
+			}
+		}
+		if (event->getEventCode() == UITreeEvent::EXECUTED_EVENT){
+			UITreeEvent *treeEvent = (UITreeEvent*)event;
 			FileTemplateUserData *data = (FileTemplateUserData *)treeEvent->selection->getUserData();
-			if(data->type == 1)
+			if (data->type == 1)
 				templatePath = data->templatePath;
+			dispatchEvent(new UIEvent(), UIEvent::OK_EVENT);
 		}
 	}
 	

@@ -371,7 +371,7 @@ std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseLua(String tex
 				tokens.push_back(SyntaxHighlightToken(line, type));
 			tokens.push_back(SyntaxHighlightToken(ch, ch_type));
 
-			if(ch == '-' && lastSeparator == '-' && mode != MODE_STRING) {
+			if(ch == '-' && lastSeparator == '-' && text[i-1] == lastSeparator && mode != MODE_STRING) {
 				isComment = true;
 				tokens[tokens.size()-1].type = MODE_COMMENT;
 				tokens[tokens.size()-2].type = MODE_COMMENT;				

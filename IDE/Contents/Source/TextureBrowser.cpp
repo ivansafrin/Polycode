@@ -215,6 +215,7 @@ void AssetList::showFolder(String folderPath) {
 			if(hasExtension(entry.extension)) {
 				AssetEntry *newEntry = new AssetEntry(entry.fullPath, entry.name, entry.extension, NULL);
 				newEntry->selectShape->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+				newEntry->selectShape->addEventListener(this, InputEvent::EVENT_DOUBLECLICK);
 				assetEntries.push_back(newEntry);
 				newEntry->setPosition(xPos, yPos);
 				xPos += 120;
@@ -244,14 +245,19 @@ void AssetList::handleEvent(Event *event) {
 		showFolder(currentFolderPath);
 	} else {
 		for(int i=0; i < assetEntries.size(); i++) {
-			if(event->getDispatcher() == assetEntries[i]->selectShape && event->getEventCode() == InputEvent::EVENT_MOUSEDOWN) {
-				assetEntries[i]->selectShape->visible = true;
-				selectedPath = assetEntries[i]->assetPath;
-				if(currentEntry) {
-					currentEntry->selectShape->visible = false;
+			if (event->getDispatcher() == assetEntries[i]->selectShape) {
+				if (event->getEventCode() == InputEvent::EVENT_MOUSEDOWN){
+					if (currentEntry) {
+						currentEntry->selectShape->visible = false;
+					}
+					assetEntries[i]->selectShape->visible = true;
+					selectedPath = assetEntries[i]->assetPath;
+					currentEntry = assetEntries[i];
+					selectedResource = assetEntries[i]->resource;
 				}
-				currentEntry = assetEntries[i];
-                selectedResource = assetEntries[i]->resource;
+				if (event->getEventCode() == InputEvent::EVENT_DOUBLECLICK){
+					dispatchEvent(new UIEvent(), UIEvent::OK_EVENT);
+				}
 			}
 		}
 	}
@@ -281,9 +287,10 @@ AssetBrowser::AssetBrowser() : UIWindow(L"Asset Browser", 850, 500) {
 	
 		
 	assetList = new AssetList();
-	
+	assetList->addEventListener(this, UIEvent::OK_EVENT);
+
 	listContainer = new UIScrollContainer(assetList, false, true, 640, 480-topPadding-padding-padding);
-	listContainer->setPosition(220,topPadding+padding);		
+	listContainer->setPosition(220,topPadding+padding);
 	addChild(listContainer);
 
 	cancelButton = new UIButton(L"Cancel", 100);
@@ -408,6 +415,9 @@ void AssetBrowser::handleEvent(Event *event) {
 				dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);
                 removeAllHandlers();
 			}									
+		}
+		if (event->getEventCode() == UIEvent::OK_EVENT){
+			dispatchEvent(new UIEvent(), UIEvent::OK_EVENT);
 		}
 	}
 	

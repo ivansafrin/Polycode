@@ -1655,6 +1655,7 @@ void UITextInput::Copy() {
 void UITextInput::Paste() {
 	saveUndoState();
 	String clip = CoreServices::getInstance()->getCore()->getClipboardString().replace("\r\n", "\n");
+	clip = clip.replace("\r", "\n");
 	insertText(clip);
 }
 
@@ -1849,17 +1850,43 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 	}
 
 	if(key == KEY_HOME) {
-		if(multiLine) {
-			scrollContainer->setScrollValue(0, 0);
-		
+		if (actualCaretPosition < lines[actualLineOffset].text.length() || lineOffset + 1 < lines.size()) {
+			if (input->getKeyState(KEY_LSHIFT) || input->getKeyState(KEY_RSHIFT)) {
+				// Holding down shift allows you to select with the arrow keys.
+				if (hasSelection) {
+					setSelection(actualLineOffset, selectionLine, actualCaretPosition, 0);
+				} else {
+					setSelection(actualLineOffset, actualLineOffset, actualCaretPosition, 0);
+				}
+			} else {
+				clearSelection();
+
+				int newLineEnd = actualLineOffset;
+				actualCaretPosition = 0;
+				actualLineOffset = newLineEnd;
+			}
+			updateCaretPosition();
 		}
 		return;
 	}
 	
 	if(key == KEY_END) {
-		if(multiLine) {
-			scrollContainer->setScrollValue(0, 1);
-		
+		if (actualCaretPosition < lines[actualLineOffset].text.length() || lineOffset + 1 < lines.size()) {
+			if (input->getKeyState(KEY_LSHIFT) || input->getKeyState(KEY_RSHIFT)) {
+				// Holding down shift allows you to select with the arrow keys.
+				if (hasSelection) {
+					setSelection(actualLineOffset, selectionLine, actualCaretPosition, lines[selectionLine].text.length());
+				} else {
+					setSelection(actualLineOffset, actualLineOffset, actualCaretPosition, lines[actualLineOffset].text.length());
+				}
+			} else {
+				clearSelection();
+
+				int newLineEnd = actualLineOffset;
+				actualCaretPosition = lines[actualLineOffset].text.length();
+				actualLineOffset = newLineEnd;
+			}
+			updateCaretPosition();
 		}
 		return;
 	}

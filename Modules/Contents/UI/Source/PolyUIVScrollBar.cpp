@@ -88,7 +88,7 @@ UIVScrollBar::UIVScrollBar(Number width, Number height, Number initialRatio) : U
 	setHeight(height);
 	setWidth(width);	
 	
-	tickSize = 0.01;
+	tickSize = 0.1;
 }
 
 void UIVScrollBar::Resize(int newHeight) {
