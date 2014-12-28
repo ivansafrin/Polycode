@@ -141,7 +141,6 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	textContainer->setPosition(padding + decoratorOffset, padding + textInputOffsetY);
 	
 	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
-	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEUP);	
 	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_DOWN);
 	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_UP);	
 	inputRect->addEventListener(this, InputEvent::EVENT_DOUBLECLICK);		
@@ -221,6 +220,7 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	indentType = INDENT_TAB;
 	
 	core->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
+	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEUP);
 }
 
 void UITextInput::checkBufferLines() {
@@ -2495,6 +2495,9 @@ void UITextInput::handleEvent(Event *event) {
 			InputEvent *inputEvent = (InputEvent*) event;
 			onKeyDown(inputEvent->key, inputEvent->charCode);
 		}
+		if (event->getEventCode() == InputEvent::EVENT_MOUSEUP) {
+			draggingSelection = false;
+		}
 	}
 
 	if(event->getDispatcher() == contextMenu) {
@@ -2564,9 +2567,6 @@ void UITextInput::handleEvent(Event *event) {
 					dragMouseStart = ((InputEvent*)event)->mousePosition;
 					draggingSelection = true;
 				}
-			break;
-			case InputEvent::EVENT_MOUSEUP:
-				draggingSelection = false;
 			break;
 			case InputEvent::EVENT_MOUSEWHEEL_UP:
 				if(scrollContainer) {
