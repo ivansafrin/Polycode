@@ -38,7 +38,18 @@ namespace Polycode {
 			Number boxIntersect(const Vector3 &box, const Matrix4 &transformMatrix, float near = 0.0, float far = 9999.0) const;
 			
 			Vector3 planeIntersectPoint(const Vector3 &planeNormal, Number planeDistance) const;
+			Vector3 planeIntersectPoint(const Vector3 &planeNormal, const Vector3 &planePosition) const;
 			Ray tranformByMatrix(const Matrix4& matrix) const;
+
+			/**
+			* finds the two closest point on the ray to an arbitrary point space.
+			*/
+			Vector3 closestPointOnRay(const Vector3 &point) const;
+
+			/**
+			* finds the two closest points between two rays, returns false if they're parallel.
+			*/
+			bool closestPointsBetween(const Ray &ray2, Vector3 *point1, Vector3 *point2);
 			
 			bool polygonIntersect(const Vector3 &v1, const Vector3 &v2, const Vector3 &v3) const;
 		

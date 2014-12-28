@@ -94,17 +94,26 @@ class TransformGizmo : public Entity {
 		
 		void transformSelectedEntities(const Vector3 &move, const Vector3 &scale, Number rotate);
 		Vector3 getTransformPlanePosition();
-		
+		Vector3 getPositionAlongAxis();
+		bool isConstrainedToSingleAxis();
+
 		Number getTransformPlaneAngle();
+		Number get2dAngle();
+		Vector2 getCorrectedMousePosition();
+
+		void resetTransform();
     
         void setTransformOrientation(int orientation);
     
         void updateOrientationForEntity(Entity *entity);
     
         void setTransformPlane(Number x, Number y, Number z, bool forceGlobal = false);
+		void setTransformPlane(bool useX, bool useY, bool useZ);
         void setTransformPlaneFromView();
     
         void setCenterMode(int centerMode);
+
+		void toggleOrientation();
 		
 		static const int TRANSFORM_MOVE = 0;
 		static const int TRANSFORM_SCALE = 1;
@@ -136,11 +145,16 @@ class TransformGizmo : public Entity {
         int transformMode;
         int gizmoMode;
         int orientation;
+		int startingOrientation;
     
         int centerMode;
 	
 		std::vector<Entity*> selectedEntities;
 		std::vector<Vector3> entityPositions;
+
+		std::vector<Vector3> oldPosition;
+		std::vector<Vector3> oldScale;
+		std::vector<Quaternion> oldRotation;
     
 		Scene *targetScene;
 		Camera *targetCamera;
@@ -164,6 +178,8 @@ class TransformGizmo : public Entity {
         Vector3 gizmoPoint;
 		Vector3 startingPoint;
 		Number startingAngle;
+
+		Vector2 mouseStart2d;
     
         Number scaleAmount;
 				
