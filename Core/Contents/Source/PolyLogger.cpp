@@ -46,11 +46,13 @@ LoggerEvent::~LoggerEvent() {
 
 Logger::Logger() : EventDispatcher() {
 	logToFile = false;
-	//logFile = fopen("poly.log", "w");
+    logFile = NULL;
 }
 
 Logger::~Logger() {
-	fclose(logFile);
+    if(logFile) {
+        fclose(logFile);
+    }
 }
 
 void Logger::logBroadcast(String message) {
