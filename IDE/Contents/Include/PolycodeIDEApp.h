@@ -22,6 +22,8 @@
 
 #if defined(__APPLE__) && defined(__MACH__)
 #import "PolycodeView.h"
+#elif defined(_WINDOWS)
+#include "PolycodeWinIDEView.h"
 #else
 #include "PolycodeView.h"
 #endif
@@ -53,7 +55,7 @@ using namespace Polycode;
 class PolycodeIDEApp : public EventDispatcher {
 public:
 #ifdef _WINDOWS
-	PolycodeIDEApp(PolycodeViewBase *view);
+	PolycodeIDEApp(PolycodeWinIDEView *view);
 #else
 	PolycodeIDEApp(PolycodeView *view);
 #endif

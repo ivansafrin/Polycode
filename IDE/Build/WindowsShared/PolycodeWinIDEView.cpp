@@ -286,7 +286,7 @@ PolycodeWinIDEView::PolycodeWinIDEView(HINSTANCE hInstance, int nCmdShow, LPCTST
 	wcex.hIcon			= LoadIcon(hInstance, IDI_APPLICATION);
 	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
 	wcex.hbrBackground	= NULL;
-	wcex.lpszMenuName = MAKEINTRESOURCE(IDR_POLYCODEMENU);
+	wcex.lpszMenuName	= MAKEINTRESOURCE(IDR_POLYCODEMENU);
 	wcex.lpszClassName	= L"POLYCODEAPPLICATION";
 	wcex.hIconSm		= LoadIcon(hInstance, IDI_APPLICATION);
 

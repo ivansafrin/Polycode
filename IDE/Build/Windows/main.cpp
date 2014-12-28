@@ -1,11 +1,13 @@
 #include <Polycode.h>
 #include "PolycodeIDEApp.h"
-#include "PolycodeView.h"
+#include "PolycodeWinIDEView.h"
 #include "windows.h"
 #include "resource.h"
 #include <Shlobj.h>
 #include <Shlwapi.h>
 #include <shellapi.h>
+
+extern PolycodeIDEApp *globalApp;
 
 using namespace Polycode;
 
@@ -73,8 +75,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	PathRemoveFileSpec( FilePath );    
 	SetCurrentDirectory( FilePath );
 
-	PolycodeView *view = new PolycodeView(hInstance, nCmdShow, L"Polycode", true, false);
+	PolycodeWinIDEView *view = new PolycodeWinIDEView(hInstance, nCmdShow, L"Polycode", true, false);
 	PolycodeIDEApp *app = new PolycodeIDEApp(view);
+
+	globalApp = app;
 
 	if(fileName != "") {
 		app->openProject(fileName);
@@ -89,8 +93,11 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	MSG Msg;
 	do {
 		while (PeekMessage(&Msg, NULL, 0, 0, PM_REMOVE)) {
-			TranslateMessage(&Msg);
-			DispatchMessage(&Msg);
+
+			if (!TranslateAccelerator(view->hwnd, view->haccel, &Msg)) {
+				TranslateMessage(&Msg);
+				DispatchMessage(&Msg);
+			}
 		}
 		if(((Win32Core*)app->core)->hasCopyDataString) {
 			app->openProject(((Win32Core*)app->core)->copyDataString);
