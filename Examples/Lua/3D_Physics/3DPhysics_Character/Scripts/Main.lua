@@ -45,41 +45,31 @@ hud:addChild(onGroundLabel)
 
 
 scene:getDefaultCamera():setPosition(7, 7, 7)
-scene:getDefaultCamera():lookAt(Vector3(0, 0, 0), Vector3(1, 1, 1))
+scene:getDefaultCamera():lookAt(Vector3(0, 0, 0), Vector3(0, 1, 0))
 
-function handleKeyEvent(t, e)
-	if not e:getDispatcher() == CoreServices.getInstance():getCore():getInput() then return end
-
-	local inputEvent = safe_cast(e, InputEvent)
-	
-	local eventKeyCode = e:getEventCode()
-	if eventKeyCode == InputEvent.EVENT_KEYDOWN then
-		local keyCode = inputEvent:keyCode()
-
-		if keyCode == KEY_r then
-			playerController:warpCharacter(Vector3(2, 1, 2))
-		elseif keyCode == KEY_UP then
-			walkSpeed = 0.05
-		elseif keyCode == KEY_DOWN then
-			walkSpeed = -0.05
-		elseif keyCode == KEY_LEFT then
-			rotateSpeed = 3
-		elseif keyCode == KEY_RIGHT then
-			rotateSpeed = -3
-		elseif keyCode == KEY_SPACE then
-			playerController:jump()
-		end
-	elseif eventKeyCode == InputEvent.EVENT_KEYUP then
-		if inputEvent.key == KEY_DOWN then
-			walkSpeed = 0
-		elseif inputEvent.key == KEY_RIGHT then
-			rotateSpeed = 0
-		end
+function onKeyDown(keyCode)
+	if keyCode == KEY_r then
+		playerController:warpCharacter(Vector3(2, 1, 2))
+	elseif keyCode == KEY_UP then
+		walkSpeed = 0.05
+	elseif keyCode == KEY_DOWN then
+		walkSpeed = -0.05
+	elseif keyCode == KEY_LEFT then
+		rotateSpeed = 3
+	elseif keyCode == KEY_RIGHT then
+		rotateSpeed = -3
+	elseif keyCode == KEY_SPACE then
+		playerController:jump()
 	end
 end
 
-CoreServices.getInstance():getCore():getInput():addEventListener(nil, handleKeyEvent, InputEvent.EVENT_KEYDOWN)
-CoreServices.getInstance():getCore():getInput():addEventListener(nil, handleKeyEvent, InputEvent.EVENT_KEYUP)
+function onKeyUp(keyCode)
+	if keyCode == KEY_DOWN or keyCode == KEY_UP then
+		walkSpeed = 0
+	elseif keyCode == KEY_RIGHT or keyCode == KEY_LEFT then
+		rotateSpeed = 0
+	end
+end
 
 function Update(elapsed)
 	playerDirection = playerDirection + rotateSpeed * elapsed

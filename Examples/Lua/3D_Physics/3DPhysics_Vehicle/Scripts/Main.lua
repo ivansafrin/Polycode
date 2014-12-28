@@ -7,14 +7,14 @@ scene:addPhysicsChild(ground, 0, 0)
 -- Some obstacles
 local box = ScenePrimitive(ScenePrimitive.TYPE_BOX, 4,4,6)
 box:setPitch(25)
-box:setPosition(7, -15, 0)
+box:setPosition(7, -1, 0)
 box:setColor(0.5, 0.5, 1,1)
 box:loadTexture("Resources/green_texture.png")
 scene:addPhysicsChild(box, 0, 0)
 
 box = ScenePrimitive(ScenePrimitive.TYPE_BOX, 4, 4, 6)
 box:setPitch(25)
-box:setPosition(-7,-15, 0)
+box:setPosition(-7, -1, 0)
 box:setColor(0.5,0.5,1,1)
 box:loadTexture("Resources/green_texture.png")
 scene:addPhysicsChild(box, 0, 0)
@@ -77,42 +77,33 @@ scene:addCollisionChild(testBox, 0)
 
 
 scene:getDefaultCamera():setPosition(16, 16, 16)
-scene:getDefaultCamera():lookAt(Vector3(0, 0, 0), Vector3(1, 1, 1))
+scene:getDefaultCamera():lookAt(Vector3(0, 0, 0), Vector3(0, 1, 0))
 
-local function handleKeyEvent(t, e)
-	if not e:getDispatcher() == CoreServices.getInstance():getCore():getInput() then return end
-	
-	local inputEvent = safe_cast(e, InputEvent)
-	
-	local eventKeyCode = e:getEventCode()
-	if eventKeyCode == InputEvent.EVENT_KEYDOWN then
-		local keyCode = inputEvent:keyCode()
-
-		if keyCode == KEY_r then
-			vehicleController:warpVehicle(Vector3(6,1,5))
-		elseif keyCode == KEY_UP then
-			engineForce = -15
-		elseif keyCode == KEY_DOWN then
-			engineForce = 15
-		elseif keyCode == KEY_LEFT then
-			steeringValue = 0.5
-		elseif keyCode == KEY_RIGHT then
-			steeringValue = -0.5
-		elseif keyCode == KEY_SPACE then
-			breaking = true
-		end
-	elseif eventKeyCode == InputEvent.EVENT_KEYUP then
-		if inputEvent.key == KEY_DOWN then
-			engineForce = 0	
-		elseif inputEvent.key == KEY_RIGHT then
-			steeringValue = 0
-		elseif inputEvent.key == KEY_SPACE then
-			breaking = false
-		end
+function onKeyDown(keyCode)
+	if keyCode == KEY_r then
+		vehicleController:warpVehicle(Vector3(6,1,5))
+	elseif keyCode == KEY_UP then
+		engineForce = -15
+	elseif keyCode == KEY_DOWN then
+		engineForce = 15
+	elseif keyCode == KEY_LEFT then
+		steeringValue = 0.5
+	elseif keyCode == KEY_RIGHT then
+		steeringValue = -0.5
+	elseif keyCode == KEY_SPACE then
+		breaking = true
 	end
 end
-CoreServices.getInstance():getCore():getInput():addEventListener(nil, handleKeyEvent, InputEvent.EVENT_KEYDOWN)
-CoreServices.getInstance():getCore():getInput():addEventListener(nil, handleKeyEvent, InputEvent.EVENT_KEYUP)
+
+function onKeyUp(keyCode)
+	if keyCode == KEY_DOWN or keyCode == KEY_UP then
+		engineForce = 0	
+	elseif keyCode == KEY_RIGHT or keyCode == KEY_LEFT then
+		steeringValue = 0
+	elseif keyCode == KEY_SPACE then
+		breaking = false
+	end
+end
 
 function Update(elapsed)
 	

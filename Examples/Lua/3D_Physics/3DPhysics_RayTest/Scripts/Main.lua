@@ -28,26 +28,20 @@ scene:addCollisionChild(cylinder, CollisionEntity.SHAPE_CYLINDER)
 
 
 scene:getDefaultCamera():setPosition(7, 7, 7)
-scene:getDefaultCamera():lookAt(Vector3(0, 0, 0), Vector3(1, 1, 1))
+scene:getDefaultCamera():lookAt(Vector3(0, 0, 0), Vector3(0, 1, 0))
 
 local lastEntity = nil
-function mouseDownEvent(t, e)
-	if not e:getDispatcher() == CoreServices.getInstance():getCore():getInput() then return end
 
-	local inputEvent = safe_cast(e, InputEvent)
+function onMouseDown(button, x, y)
+	local ray = scene:projectRayFromCameraAndViewportCoordinate(scene:getActiveCamera(), Vector2(x,y))
+	local res = scene:getFirstEntityInRay(ray.origin, Vector3(ray.direction.x * 100, ray.direction.y * 100, ray.direction.z * 100))
 
-	if e:getEventCode() == InputEvent.EVENT_MOUSEDOWN then
-        local ray = scene:projectRayFromCameraAndViewportCoordinate(scene:getActiveCamera(), inputEvent.mousePosition)
-		local res = scene:getFirstEntityInRay(ray.origin, Vector3(ray.direction.x * 100, ray.direction.y * 100, ray.direction.z * 100))
-
-		if lastEntity then
-			lastEntity:setColor(1, 1, 1, 1)
-		end
-
-		if res.entity then
-			res.entity:setColor(1, 0, 0, 1)
-			lastEntity = res.entity
-		end
+	if lastEntity then
+		lastEntity:setColor(1, 1, 1, 1)
 	end
+
+	if res.entity then
+		res.entity:setColor(1, 0, 0, 1)
+		lastEntity = res.entity
+		end
 end
-CoreServices.getInstance():getCore():getInput():addEventListener(nil, mouseDownEvent, InputEvent.EVENT_MOUSEDOWN)

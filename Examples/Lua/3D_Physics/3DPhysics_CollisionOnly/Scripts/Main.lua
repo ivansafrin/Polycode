@@ -17,7 +17,7 @@ scene:addCollisionChild(bigBox, CollisionEntity.SHAPE_BOX)
 
 
 scene:getDefaultCamera():setPosition(7, 7, 7)
-scene:getDefaultCamera():lookAt(Vector3(0, 0, 0), Vector3(1, 1, 1))
+scene:getDefaultCamera():lookAt(Vector3(0, 0, 0), Vector3(0, 1, 0))
 
 local swingValue = 0
 
@@ -26,7 +26,7 @@ function Update(elapsed)
 	box:setPosition(math.sin(swingValue) * 5, 1, 0)	
 	
 	if scene:testCollision(box, bigBox).collided then
-		bigBox:setColor(1, 1, 0, 0)		
+		bigBox:setColor(1, 1, 0, 0.5)		
 	else
 		bigBox:setColor(0, 1, 1, 0.5)	
 	end

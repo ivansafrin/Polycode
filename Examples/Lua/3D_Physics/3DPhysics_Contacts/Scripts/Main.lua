@@ -16,14 +16,13 @@ for i = 1, 100 do
 end
 
 scene:getDefaultCamera():setPosition(7, 7, 7)
-scene:getDefaultCamera():lookAt(Vector3(0, 0, 0), Vector3(1, 1, 1))
+scene:getDefaultCamera():lookAt(Vector3(0, 0, 0), Vector3(0, 1, 0))
 
 collisionSound = Sound("Resources/hit.wav")
 
 function onCollisionEvent(t, event)
-	if not event:getDispatcher() == scene then return end
-
-	if safe_cast(event, PhysicsSceneEvent).physEvent.appliedImpulse > 2 then
+	local physEvent = safe_cast(event, PhysicsSceneEvent)
+	if physEvent.appliedImpulse > 2 then
 			collisionSound:Play()
 	end
 end

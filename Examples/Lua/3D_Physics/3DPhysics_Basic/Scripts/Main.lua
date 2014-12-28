@@ -14,4 +14,4 @@ for i = 1, 100 do
 end
 
 scene:getDefaultCamera():setPosition(7, 7, 7)
-scene:getDefaultCamera():lookAt(Vector3(0, 0, 0), Vector3(1, 1, 1))
+scene:getDefaultCamera():lookAt(Vector3(0, 0, 0), Vector3(0, 1, 0))
