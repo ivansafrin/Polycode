@@ -393,10 +393,19 @@ void Image::drawLine(int x0, int y0, int x1, int y1, Color col) {
 }
 
 void Image::fill(Color color) {
-	unsigned int val = color.getUint();
-	unsigned int *imageData32 = (unsigned int*) imageData;
-	for(int i=0; i< width*height; i++) {
-		imageData32[i] = val;
+	if(imageType == Image::IMAGE_RGB) {
+		for(int i = 0; i < width*height*pixelSize; i+=3) {
+			imageData[i] = color.r;
+			imageData[i+1] = color.g;
+			imageData[i+2] = color.b;
+		}
+	} else {
+		unsigned int val = color.getUint();
+		unsigned int *imageData32 = (unsigned int*) imageData;
+
+		for(int i=0; i< width*height; i++) {
+			imageData32[i] = val;
+		}
 	}
 }
 
