@@ -960,8 +960,8 @@ void SpriteStateEditBar::refreshBar() {
     meshGrips->clearMesh();
     meshGrips->indexedMesh = true;
     
-    Number frameOffset;
-    Number frameSize;
+    Number frameOffset = 0;
+    Number frameSize = 0;
     
     unsigned int offset = 0;
     unsigned int offsetIcon = 0;

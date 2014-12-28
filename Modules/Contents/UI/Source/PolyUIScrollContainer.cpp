@@ -115,6 +115,10 @@ Number UIScrollContainer::getVScrollWidth() {
 	}
 }
 
+UIVScrollBar *UIScrollContainer::getVScrollBar() { return vScrollBar; }
+
+UIHScrollBar *UIScrollContainer::getHScrollBar() { return hScrollBar; }
+
 void UIScrollContainer::setContentSize(Number newContentWidth, Number newContentHeight) {
     
     if(newContentWidth < 1.0)

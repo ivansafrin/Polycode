@@ -119,7 +119,7 @@ namespace Polycode {
     
     class SpriteSet : public ResourcePool {
     public:
-        SpriteSet(String imageFileName, ResourcePool *parentPool);
+        SpriteSet(String imageFileName, ResourcePool *parentPool = CoreServices::getInstance()->getResourceManager()->getGlobalPool());
         ~SpriteSet();
         
         void setTexture(Texture *texture);
