@@ -73,6 +73,12 @@ namespace Polycode {
 			FILE *getLogFile();
 
 			/**
+			* Sets the file where the Logger should log to
+			* @param f A pointer to a opened FILE
+			*/
+			void setLogFile(FILE *f);
+
+			/**
 			* @return The logger instance
 			*/
 			static Logger *getInstance();
