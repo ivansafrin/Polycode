@@ -67,8 +67,16 @@ typedef unsigned int PolyRendererIndexType;
 
 #if defined(_WINDOWS) && defined(Polycore_EXPORTS)
 	#define _PolyExport __declspec(dllexport)
+	#define _PolyExportAligned __declspec(dllexport, aligned(16))
 #else
 	#define _PolyExport
+	#define _PolyExportAligned
+#endif
+
+#if defined(__GNUG__)
+	#define _PolyMathAlignSuffix __attribute__((aligned(16)))
+#else
+	#define _PolyMathAlignSuffix
 #endif
 
 //#define COMPILE_SDL_CORE		1

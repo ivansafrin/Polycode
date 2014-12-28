@@ -33,7 +33,7 @@ namespace Polycode {
 	/**
 	* 4D Vector class.
 	*/
-	class _PolyExport Vector4 : public PolyBase {
+	class _PolyExportAligned Vector4 : public PolyBase {
 		public:
 		
 			/**
@@ -141,7 +141,17 @@ namespace Polycode {
 			* @return Dor product with the vector.
 			*/			
 			inline Number dot(const Vector4 &u) const {
+#if defined(NDEBUG) && defined(__GNUG__)
+				Number res = 0;
+				const Number* a = &x;
+				const Number* b = &u.x;
+				for (int i = 0; i < 4; i++) {
+					res += a[i] * b[i];
+				}
+				return res;
+#else
 				return x * u.x + y * u.y + z * u.z + w * u.w;
+#endif
 			}
 
 			/**
@@ -164,5 +174,5 @@ namespace Polycode {
              */
             Number w;
 
-	};
+	} _PolyMathAlignSuffix;
 }
