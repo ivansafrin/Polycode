@@ -21,6 +21,7 @@
  */
  
 #include "TransformGizmo.h"
+#include <cmath>
 
 extern UIGlobalMenu *globalMenu;
 
