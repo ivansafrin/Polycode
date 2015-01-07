@@ -4,9 +4,9 @@
 \mainpage Polycode
 
 \section Modules
-<a href="../../../Core/Polycode/html/index.html">Core</a> <br>
-<a href="../../../Modules/PolycodeUI/html/index.html">UI Module</a> <br> 
-<a href="../../../Modules/Physics2D/html/index.html">Physics2D</a> <br>
-<a href="../../../Modules/Physics3D/html/index.html">Physics3D</a> <br>
+<a href="index.html">Core</a> <br>
+<a href="../../Modules/PolycodeUI/html/index.html">UI Module</a> <br> 
+<a href="../../Modules/Physics2D/html/index.html">Physics2D</a> <br>
+<a href="../../Modules/Physics3D/html/index.html">Physics3D</a> <br>
 
 */
