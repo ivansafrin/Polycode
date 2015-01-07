@@ -57,6 +57,7 @@ namespace Polycode {
 		PolycodeViewBase() { windowData = NULL; }
 		virtual ~PolycodeViewBase(){}
 		void *windowData;
+		bool resizable;
 	};
 	
 	class _PolyExport TimeInfo {

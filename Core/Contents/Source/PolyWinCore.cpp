@@ -113,6 +113,7 @@ Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScre
 	eventMutex = createMutex();
 
 	isFullScreen = fullScreen;
+	this->resizable = view->resizable;
 
 	renderer = new OpenGLRenderer();
 	services->setRenderer(renderer);
@@ -268,8 +269,13 @@ void Win32Core::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, in
 		rect.top = 0;
 		rect.right = xRes;
 		rect.bottom = yRes;
-		SetWindowLongPtr(hWnd, GWL_STYLE, WS_CAPTION | WS_POPUPWINDOW | WS_VISIBLE);
-		AdjustWindowRect(&rect, WS_CAPTION | WS_POPUPWINDOW, FALSE);
+		if (resizable){
+			SetWindowLongPtr(hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_SYSMENU | WS_VISIBLE);
+			AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW | WS_SYSMENU, FALSE);
+		} else {
+			SetWindowLongPtr(hWnd, GWL_STYLE, WS_OVERLAPPED | WS_SYSMENU | WS_VISIBLE);
+			AdjustWindowRect(&rect, WS_OVERLAPPED | WS_SYSMENU, FALSE);
+		}
 		MoveWindow(hWnd, 0, 0, rect.right-rect.left, rect.bottom-rect.top, TRUE);
 
 		ChangeDisplaySettings(0, 0);

@@ -184,6 +184,8 @@ PolycodeView::PolycodeView(HINSTANCE hInstance, int nCmdShow, LPCTSTR windowTitl
 
 	RegisterClassEx(&wcex);
 
+	this->resizable = resizable;
+
 	if(resizable) {
 		hwnd = CreateWindowEx(WS_EX_APPWINDOW, L"POLYCODEAPPLICATION", windowTitle, WS_OVERLAPPEDWINDOW|WS_SYSMENU, 0, 0, 640, 480, NULL, NULL, hInstance, NULL);
 	} else {
