@@ -273,8 +273,8 @@ void Win32Core::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, in
 			SetWindowLongPtr(hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_SYSMENU | WS_VISIBLE);
 			AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW | WS_SYSMENU, FALSE);
 		} else {
-			SetWindowLongPtr(hWnd, GWL_STYLE, WS_OVERLAPPED | WS_SYSMENU | WS_VISIBLE);
-			AdjustWindowRect(&rect, WS_OVERLAPPED | WS_SYSMENU, FALSE);
+			SetWindowLongPtr(hWnd, GWL_STYLE, WS_CAPTION | WS_POPUP | WS_SYSMENU | WS_VISIBLE);
+			AdjustWindowRect(&rect, WS_CAPTION | WS_POPUP | WS_SYSMENU, FALSE);
 		}
 		MoveWindow(hWnd, 0, 0, rect.right-rect.left, rect.bottom-rect.top, TRUE);
 

@@ -187,9 +187,9 @@ PolycodeView::PolycodeView(HINSTANCE hInstance, int nCmdShow, LPCTSTR windowTitl
 	this->resizable = resizable;
 
 	if(resizable) {
-		hwnd = CreateWindowEx(WS_EX_APPWINDOW, L"POLYCODEAPPLICATION", windowTitle, WS_OVERLAPPEDWINDOW|WS_SYSMENU, 0, 0, 640, 480, NULL, NULL, hInstance, NULL);
+		hwnd = CreateWindowEx(WS_EX_APPWINDOW, L"POLYCODEAPPLICATION", windowTitle, WS_OVERLAPPEDWINDOW | WS_SYSMENU, 0, 0, 640, 480, NULL, NULL, hInstance, NULL);
 	} else {
-		hwnd = CreateWindowEx(WS_EX_APPWINDOW, L"POLYCODEAPPLICATION", windowTitle, WS_OVERLAPPED|WS_SYSMENU, 0, 0, 640, 480, NULL, NULL, hInstance, NULL);
+		hwnd = CreateWindowEx(WS_EX_APPWINDOW, L"POLYCODEAPPLICATION", windowTitle, WS_CAPTION | WS_POPUP | WS_SYSMENU, 0, 0, 640, 480, NULL, NULL, hInstance, NULL);
 	}
 
   windowData = (void*)&hwnd;
