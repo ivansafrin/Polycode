@@ -1073,11 +1073,12 @@ std::vector<Polycode::Rectangle> Win32Core::getVideoModes() {
 
 String Win32Core::executeExternalCommand(String command,  String args, String inDirectory) {
 	String execInDirectory = inDirectory;
+	
 	if(inDirectory == "") {
 		execInDirectory = defaultWorkingDirectory;
 	}
 
-	String cmdString = "cd \""+execInDirectory+"\" & "+command+" "+args;
+	String cmdString = inDirectory.substr(0, inDirectory.find_first_of(":")+1)+" & cd \"" + execInDirectory + "\" & " + command + " " + args;
 
 	char   psBuffer[128];
 	FILE   *pPipe;

@@ -63,7 +63,7 @@ void PolycodeRunner::runThread() {
 #endif
 
 	String ret = CoreServices::getInstance()->getCore()->executeExternalCommand(command, args, inFolder);
-	CoreServices::getInstance()->getCore()->removeDiskItem(polyappPath);	
+	CoreServices::getInstance()->getCore()->removeDiskItem(polyappPath);
 }
 
 PolycodeToolLauncher::PolycodeToolLauncher() {
